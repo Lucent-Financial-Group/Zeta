@@ -122,6 +122,12 @@ describe("the k3d lane installs metal's Cilium configuration", () => {
     expect(code.match(/server\.service\.type=ClusterIP/g)?.length ?? 0).toBe(2);
   });
 
+  test("both helm installs read the Application pin — a restated 1.16.5 would desync ArgoCD adopt", () => {
+    const code = codeWithoutComments(readFileSync(USE_CASES, "utf8"));
+    expect((code.match(/shippedCiliumChartVersion\(\)/g) ?? []).length).toBeGreaterThanOrEqual(2);
+    expect(code).not.toMatch(/version:\s*"1\.16\.\d+"/);
+  });
+
   test("the k3d bring-up points CoreDNS at a reachable upstream — 127.0.0.11 is not one", () => {
     // MEASURED: k3s's Corefile ends `forward . /etc/resolv.conf`, and inside a
     // k3d node that file names Docker's embedded resolver 127.0.0.11 -- which,

@@ -36,9 +36,18 @@ not about the headscale **project**, which is actively developed.
 | the project's latest release (`juanfont/headscale`) | — | **v0.29.3** (2026-07-29) |
 
 So the chart **moved home**. `charts.gabe565.com` is a third-party personal chart
-repo — still alive (it publishes `adguard-home` actively) — that simply stopped
-updating its headscale chart. We are four minor server releases behind as a
-result, and nothing in the tree says so.
+repo, and **the whole repository is dead**. We are four minor server releases
+behind as a result, and nothing in the tree says so.
+
+> **CORRECTED 2026-09-02.** This first said the repo was "still alive (it
+> publishes `adguard-home` actively)" and had merely stopped updating its
+> headscale chart. Wrong, and wrong in the **acquitting** direction. Measured:
+> `max(created)` across **all 39 charts** in that index is 2025-02-19,
+> adguard-home's own newest is 2025-02-19, and the index has not been regenerated
+> since 2025-02-20. The error came from reading a version LIST and inferring
+> activity from version numbers without reading a date — the same shape as reading
+> a green check without asking whether it ran. An independent second review of
+> every chart pin caught it.
 
 This is the same shape as the `tempo` and `cert-manager` repoURL relocations: the
 pin resolves, the chart renders, and the coordinate is quietly abandoned.
@@ -73,11 +82,30 @@ chart report would have caught this without anyone reading a row by eye.
    MIGRATION, not a bump — different packager, different values schema — so it
    needs the treatment redis→valkey got: render both, diff storage/resources,
    check inert keys, re-derive any ledger row.
-2. **Or stay** on gabe565 0.16.0 deliberately, and say so in the Application, so
-   the next reader does not re-derive this.
+2. ~~**Or stay** on gabe565 0.16.0 deliberately~~ — **CLOSED BY POLICY**, Aaron
+   2026-09-02: *"we never want to stay on projects who don't push updates, this is
+   a security hazard."* Staying is not an option, and the dead-repo measurement
+   above removes any remaining doubt.
 
-Not decided here. What is established here is that the current state is not
-"headscale is unmaintained" — it is "our packager is".
+**AND THERE IS NO OFFICIAL CHART TO RELOCATE TO.** Measured 2026-09-02:
+`juanfont/headscale` contains no `Chart.yaml` and no `charts/` directory, and its
+`packaging/` holds deb/rpm only. So the criterion cannot be "go official"; it has
+to be "pick the third party that actually tracks the app". Best measured
+candidate: `oci://codeberg.org/wrenix/helm-charts/headscale` **1.0.19 /
+appVersion 0.29.3**, using the official `ghcr.io/juanfont/headscale` image.
+Runners-up: `sinextra` 0.1.0/v0.29.3, `szpadel` 0.30.2/0.29.1, `quenchworks`
+0.0.7/0.29.2. The other honest option is in-repo manifests over the official
+image, which the tree already does for 11 git-path Applications.
+
+**DO NOT TAKE THE CHEAP PATH.** A second review rendered gabe565 0.16.0 with
+`image.tag: v0.29.3` overridden: it templates fine and the PVC is unchanged — and
+that is exactly the trap. The chart's init container writes a v0.25-era config and
+hardcodes `HEADSCALE_IP_PREFIXES`, which headscale renamed after 0.25. A clean
+render there is **not** evidence the pod boots; it is a check that cannot fail on
+the thing that matters. Relocate; do not override the tag.
+
+What is established: the current state is not "headscale is unmaintained" — it is
+"our packager is".
 
 ## Provenance
 

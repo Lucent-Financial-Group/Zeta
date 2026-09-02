@@ -528,7 +528,27 @@ module ReferenceFrameFactorHeterarchy =
                        Disposition = ConflictDetected
                        ObjectFactorId = None
                        PositionFactorId = None },
-                     { state with Conflicts = Array.append state.Conflicts [| receipt |] })
+                     // IDEMPOTENT. Appending unconditionally made the conflict COUNT a channel
+                     // through which at-least-once delivery changed the conclusion: redeliver one
+                     // conflicting message N times and `EvidenceConflicted(N, _)` grew without
+                     // bound -- in the one module whose stated invariant is that replaying the
+                     // same evidence identity must not change what is concluded. The same
+                     // conflict, reported again, is ONE conflict.
+                     //
+                     // DEDUPED ON THE WHOLE RECEIPT, not on a subset of its fields. An earlier
+                     // draft keyed on (EvidenceId, RetainedFingerprint, ChangedFingerprint) and
+                     // merged emitter labels into the matched receipt, on the theory that a NEW
+                     // emitter reporting a known conflict was new information. That branch is
+                     // UNREACHABLE: the content fingerprint already covers the emitter column, so
+                     // two emitters asserting byte-identical content still produce different
+                     // fingerprints and are, by this module's own definition, two conflicts. The
+                     // merge was code for a case that cannot occur -- so it is gone rather than
+                     // left in looking load-bearing. RFFH-10c pins the behaviour that made it
+                     // unreachable, so a future change to the fingerprint has to face this.
+                     { state with
+                         Conflicts =
+                             if Array.contains receipt state.Conflicts then state.Conflicts
+                             else Array.append state.Conflicts [| receipt |] })
             | None ->
                 tryTransformGaussian message.SenderToRoom message.ObservedPosition
                 |> Result.map (fun roomPosition ->

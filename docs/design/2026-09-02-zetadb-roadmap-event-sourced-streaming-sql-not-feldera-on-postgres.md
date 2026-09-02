@@ -237,6 +237,19 @@ ZetaFS exists **for ZetaDB**. If another filesystem plus the ferry is better for
 
 Until a bench of "ZetaDB small-write storm on ZetaFS" vs "same storm on APFS/ext4 + GroupCommitDiskDeltaLog" exists, the FS-speed claim stays `toy`. This document names that bench; it does not invent its numbers.
 
+### ReFS-shaped resilience (Aaron 2026-09-02)
+
+**Feel, not a port.** Windows ReFS (Sinofsky / Microsoft, 2012 allocate-on-write; Server 2016 block cloning) is the Beacon for *resilience by pointer updates*: copies remap logical clusters, writes to shared regions allocate new clusters, metadata is never patched in place (shadow paging — Lorie 1977), checksums detect torn writes and bit-rot, repair needs a redundant copy (mirror/parity). On a single disk ReFS **detects** and returns an error; it does not invent a second copy. Same as our K14 (1-disk ECC is sector/die, not disk death).
+
+We do **not** implement ReFS, copy its on-disk format, or take a Windows-only path. Requirements that crossed the wall:
+
+1. **Pointer-not-copy (D9).** A clone, a snapshot, a small overwrite, a fork: update Bindings / Jumprope leaf ids / ContentId. Write bits only for new or mutated chunks. This is already the Jumprope + CAS shape; the volume path must not fall back to copying the file.
+2. **Crash DST for FS *and* DB (D12).** FoundationDB-shaped: crash-mid-write, reorder, corrupt-last-write, same seed. ChaosEnv today is flush-fail 5% — not enough. The database commit path and the filesystem freeze path must share the `IFileSystem` door so one corpus covers both.
+3. **Cache co-design (D10).** If the DB and the FS each keep a buffer of the same bytes, we pay RAM twice and we lie about whose `Buffered` won. One authority. Preferred: library-FS, DB owns mutbuf, POSIX mount is a view (already K6). `Durability.OsBuffered` and freeze `Buffered` must be the same named class, or a documented mapping. ReFS's allocate-on-write metadata plus a lazy cache manager is a known RAM explosion (KB 4016173); do not copy that caching.
+4. **CoW must not 10× the volume (D11).** This is why `keep-all | rolling | none | regen` exist. A DB that freezes every small write under `keep-all` will look like git. Rolling/none/regen are the bound. The falsifier is reclaim-eligibility, not a comment.
+
+Integrity streams analogue: ContentId **is** the data checksum (always on). Metadata (bindings, freeze-intent/commit, Jumprope trunk) is checksummed as objects. Optional "repair from parity" is placement `mirror` / later LRC, not a 1-disk promise.
+
 ### Requirements the first-product spec must carry
 
 These are additive to K1–K18 / E1–E12 / C1–C10. They do not reopen them.
@@ -251,8 +264,12 @@ These are additive to K1–K18 / E1–E12 / C1–C10. They do not reopen them.
 | **D6** | Per-stream / per-table placement: a node need not hold every stream. | "Replica" is a misnomer. | Designed as partitioned tips; not a volume feature |
 | **D7** | Notify ZetaDB of durability class (already K6). Observer does not throw. | Tables must not read a Journaled name with missing leaves (E2). | Freeze observer exists |
 | **D8** | ShivaGC / Futamura: historical data may become a generator. Collecting a generator that still has live `Regen` refs is forbidden. | Same as D3. | ShivaGc is DynamicValue mark-sweep, not volume |
+| **D9** | Pointer-not-copy (ReFS-shaped allocate-on-write). Forks and small edits remap ids; bits written only for new chunks. | Space and crash: in-place metadata is a torn-write class. | Jumprope prefix-share + `DagFs.editLocal` converge. Volume freeze still whole-object. |
+| **D10** | One cache authority. DB and FS must not each buffer the same bytes. `Buffered` is one class. | RAM + DST: two caches are two truths. | `Durability.fs` vs freeze classes are two vocabularies. |
+| **D11** | CoW amplification bounded by policy. `rolling(N)` after M>N freezes ⇒ ≥ M−N bodies reclaim-eligible. | Else the DB explodes the volume (git-forever). | Caller supplies `RollingLive`; window fold not yet the reclaim input. |
+| **D12** | Crash DST for filesystem **and** database on the same door. | ReFS-class survival is earned by a seed, not a journal story. | Flush-fail 5%; PR12 still `toy`. |
 
-**Cannot claim today:** POSIX mount, crash-safe Durable, `ns=bindings`, Windows Durable, ZetaFS faster than APFS for small writes.
+**Cannot claim today:** POSIX mount, crash-safe Durable, `ns=bindings`, Windows Durable, ZetaFS faster than APFS for small writes, ReFS-class repair on one disk.
 
 ---
 
@@ -261,11 +278,13 @@ These are additive to K1–K18 / E1–E12 / C1–C10. They do not reopen them.
 Order, each with a falsifier:
 
 1. **Keep unique-key Nexmark honest** (Q1/Q2 across OS; Q3+ incremental join). Allocated column required. **This Mac Q2 is now recorded** (was missing because only Q1 unique was run locally on 2026-09-01).
-2. **Standing-query mix** — register N queries, feed deltas, measure tick + alloc (Reaqtor feel).
-3. **Small-write OLTP-shaped storm** — 1-at-a-time producer, ferry consumer, DoP=1 vs N. Run on host FS *and* `.zetafs` when freeze uses the ferry (D4).
-4. **SQL text** on the same circuits (ZetaDB package), ANSI subset named.
-5. **Wire adapter** — `psql` against a toy catalog, then a real one.
-6. **Multi-node** — partitioned tips, no single lock; DST partitions.
+2. **Freeze through the ferry (ZD2 / D4)** — without this, crash grouping and small-write batching are two logs.
+3. **Crash DST corpus (PR12 / D12)** — FS *and* DB, same `IFileSystem` door. Leaves `toy` only when a named seed has crashed mid-write.
+4. **Standing-query mix (ZD1)** — register N queries, feed deltas, measure tick + alloc (Reaqtor feel).
+5. **Small-write OLTP-shaped storm** — 1-at-a-time producer, ferry consumer, DoP=1 vs N. Run on host FS *and* `.zetafs` when freeze uses the ferry (D4). CoW amplification under `rolling` vs `keep-all` is a column of that bench (D11).
+6. **SQL text** on the same circuits (ZetaDB package), ANSI subset named.
+7. **Wire adapter** — `psql` against a toy catalog, then a real one.
+8. **Multi-node** — partitioned tips, no single lock; DST partitions.
 
 ---
 
@@ -281,10 +300,14 @@ Order, each with a falsifier:
 8. **Own LINQ over Z-sets;** ZLinq is a crutch, not the identity.
 9. **Planner prefers batch/SIMD** because the ferry auto-batches. DoP=1 remains DST.
 10. **No appointed hub; no split-brain class.** Forward progress, CRDT merge, throw-away, or named fork.
-11. **ZetaFS is optional as a product** until it wins the product-existence bench against host FS + group-commit. Fork, CAS, Regen, EC, per-entity policy are the reasons it might win.
+11. **ZetaFS is optional as a product** until it wins the product-existence bench against host FS + group-commit. Fork, CAS, Regen, EC, per-entity policy, **and ReFS-shaped crash/pointer/cache** are the reasons it might win.
 12. **`Regen` must not drop original bytes until the generator is metered.** Today's Singleton mapping is the conservative floor.
 13. **Freeze must eventually use the ferry** (D4). Today's single-writer freeze log is a gap, not a design choice to keep.
 14. **Stay in this monorepo** until ZetaFS v0.9ish and until ZetaDB has a signed, tested cut. Do not mint product GitHubs as a prerequisite.
+15. **Pointer-not-copy, not bit-copy** (D9). ReFS block cloning is the Beacon, not the implementation.
+16. **One cache authority** (D10). Double-buffering is a bug, not a feature.
+17. **Policies exist to bound CoW** (D11). A workload that 10×s the volume under `keep-all` is using the wrong policy, not a missing compressor.
+18. **Crash DST covers FS and DB** (D12). The claim stays `toy` until PR12's corpus runs on both.
 
 ---
 
@@ -339,7 +362,14 @@ Independently reviewable. Tests green or it does not land. ZetaFS numbered PRs s
 
 - **Depends on:** no-single-tip design (exists). Runtime, not another essay.
 
-ZetaFS PR12 (DST corpus) and PR13 (FUSE) remain on the FS spec. They are not delayed by ZetaDB, and ZetaDB must not claim crash-safe until PR12.
+### ZD9 — ReFS-shaped falsifiers + elevate PR12 (FS *and* DB crash DST)
+
+- **Files:** first-product D9–D12, this section, Jumprope 1-byte-edit reuse test, rolling-window reclaim test. PR12 corpus remains the promotion out of `toy`.
+- **Depends on:** ZD0 (landed #16341). Composes with `081M1C59ZG4087G0R000VM8DZN` PR12.
+- **Does not:** claim crash-safe, port ReFS, or wire freeze through the ferry (that's ZD2).
+- **Workitem:** `081M1HK4AQE087G0R002RRJXWE`.
+
+ZetaFS PR12 (DST corpus) and PR13 (FUSE) remain on the FS spec. They are not delayed by ZetaDB, and ZetaDB must not claim crash-safe until PR12. D12 makes PR12 load-bearing for **both** products, not only the mount.
 
 ---
 
@@ -361,3 +391,4 @@ ZetaFS PR12 (DST corpus) and PR13 (FUSE) remain on the FS spec. They are not del
 - ZLinq (crutch): <https://github.com/Cysharp/ZLinq>
 - Budiu et al., DBSP, VLDB 2023; McSherry et al., Differential Dataflow, CIDR 2013; Carbone et al., Flink, 2015; Arasu/Babu/Widom, CQL, 2006; Meijer, *Your Mouse is a Database*; De Smet, IQbservable / Nuqleon / Reaqtor.
 - Zhou et al., FoundationDB, SIGMOD 2021; Will Wilson, DST, Strange Loop 2014; TigerBeetle journal (ambition, not a measured claim).
+- ReFS (Beacon, not a port): Sinofsky, "Building the next generation file system for Windows: ReFS" (Building Windows 8, 2012) — allocate-on-write / shadow paging; [Block cloning](https://learn.microsoft.com/en-us/windows-server/storage/refs/block-cloning); [Integrity streams](https://learn.microsoft.com/en-us/windows-server/storage/refs/integrity-streams); Lorie, *Physical Integrity in a Large Segmented Database* (ACM TODS 1977) for shadow paging. KB 4016173 — allocate-on-write metadata + lazy cache can explode RAM.

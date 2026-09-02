@@ -1,7 +1,7 @@
 # Trajectory - USB / zflash Installer
 
 Status: active — shipped + iterating; first surfaced as a trajectory 2026-05-29 from substrate inventory (the flashing mechanism works on `origin/main`; this surface was missing, so the workstream lived head-only)
-Last refreshed: 2026-09-01
+Last refreshed: 2026-09-02
 Type: workstream (current-focus) — a trajectory the operator is _actively powering_. Many trajectories can be tracked; only a few are workstreams at once (finite-focus / WIP-bounded — a workstream is a trajectory under sustained thrust, and thrust budget is finite, so most trajectories coast). (Genus = "trajectory"; "workstream" is the species: a trajectory under sustained thrust toward a deliverable, vs. emergent-posture trajectories like `anti-infection`. See [`factory-trajectory-surface`](../factory-trajectory-surface/RESUME.md) for the genus/species taxonomy.) One of the operator's three current cluster workstreams (encryption / usb-zflash / ts-workflow-engine).
 Eventual encoding (design-stage — the human maintainer 2026-05-23 genetic-ID substrate + Clifford/HKT): this trajectory's state is trackable as a 128-bit genetic-ID seed (discrete, reversible via parser-combinator ↔ generator-function) → Clifford-space path (continuous, eventual). Mirrors the three-lane I8-lattice / I9-manifold split.
 Current blocker: hardware — metal S6 first-login + WiFi radio / Touch ID / TPM
@@ -65,19 +65,25 @@ LANDED on 2026-08-29 in `133a95b5de` (#15983). `WRONG_QEMU_PASSPHRASE`,
 and `installer/passphrase-source.ts` (`planPassphraseSource` pure,
 `PassphraseSourceEffects` injected) are all on `main` with unit falsifiers.
 
-**AND PHASE 2B HAS NEVER RUN.** It executes inside the restore lane, which only
-runs on `workflow_dispatch`. The last two GREEN restore dispatches were
-2026-08-26 and 2026-08-27 — both BEFORE the code existed. So the real next
-action is not to build it: it is to DISPATCH the lane once and read the first
-verdict. Same shape the k3d provider had (supported in code, dispatched by
-nothing, for two months).
+**PHASE 2B HAS RUN.** Do not re-dispatch restore as if the harness were unproven.
+`main` workflow_dispatch
+[33462406161](https://github.com/Lucent-Financial-Group/Zeta/actions/runs/33462406161)
+(2026-09-01, SHA `ed765bbed`, #15983 is an ancestor) restore step succeeded.
+Serial (job `build-iso` step `UEFI keyfile restore decrypt`):
 
-Blocked on one thing: `build-ai-cluster-iso` was red on `main` 2026-08-30 →
-2026-08-31 (see the mise regression note above), so a dispatch would have died
-at scenario 2 long before reaching restore. Dispatch when main's ISO push run is
-green AND the concurrency group is idle — the 2026-08-24 handoff's rule, which
-still holds. Then a human hardware run of the metal-path runbook.
-Not a Cloud VM metal proof.
+- `zeta-creds-restore: wrote 1 creds (target-root: /)` (happy-path phase 2)
+- `phase 2b — rebooting installed disk with WRONG fw_cfg passphrase`
+- `UEFI keyfile restore wrong-passphrase contract ok (decrypt refused; no write; still fw_cfg / not metal)`
+
+The 2026-08-31 "never run" sentence was true of the August 26/27 dispatches and
+false once 33462406161 finished. Same failure as "restore is proven" vs a red
+lane: a green claim about one step is not a claim about the next step, and a
+stale "never" is not a claim about the last dispatch.
+
+Do **not** re-dispatch restore to re-prove this. The remaining restore gap is
+metal `tty1` (hardware). Next software on this trajectory is the kind+Cilium
+CNI mode so `live-kind-cilium-included` can create its own cluster
+(`081M1DFQ2MZ087G0R000CMNHQX`) — not another ISO restore.
 
 Next concrete action: **minimize metal** — S6 physical first-login +
 WiFi radio / Touch ID / TPM (human-gated). Software deepen landed:
@@ -414,7 +420,7 @@ bringup.
 **Software (closed, do not re-litigate):** non-interactive 6.95-picker
 (`--defer-all` #14852) and restore non-zero write (#15912, dispatch
 33126215487). Sibling dispatch steps already `if: always()`.
-**Next software:** ~~in-guest wrong-passphrase phase 2b + passphrase~~ **BOTH LANDED 2026-08-29 (`133a95b5de`) AND NEITHER HAS RUN — dispatch the restore lane, do not rebuild.** Superseded text kept below for lineage:
+**Next software:** ~~in-guest wrong-passphrase phase 2b + passphrase~~ **BOTH LANDED 2026-08-29 (`133a95b5de`) AND BOTH RAN on dispatch [33462406161](https://github.com/Lucent-Financial-Group/Zeta/actions/runs/33462406161) (2026-09-01) — do not rebuild, do not re-dispatch restore.** Next software is kind `--cni cilium` so the included proof creates its own cluster (`081M1DFQ2MZ`). **The mode exists in this branch** (`argocd-health-test.ts --cni cilium`, job `live-kind-cilium-included` no longer uses `--existing`). It still needs a dispatch to produce per-app verdicts — code landing is not the distinguishing test. Superseded text kept below for lineage:
 **Superseded:** in-guest wrong-passphrase phase 2b + passphrase
 hexagonal port (`passphrase-source.ts`) so a human can run the metal
 tty1 runbook without the software door being untested. Dispatch restore

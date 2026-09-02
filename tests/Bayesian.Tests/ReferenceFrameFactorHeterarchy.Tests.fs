@@ -254,6 +254,52 @@ module ReferenceFrameFactorHeterarchyTests =
         | other -> failwithf "expected visible conflict, got %A" other
 
     [<Fact>]
+    let ``RFFH-10b: REDELIVERING one conflict does not grow the conflict count`` () =
+        // The falsifier for at-least-once delivery. Before this, every redelivery of
+        // the SAME conflicting message appended another receipt, so
+        // `EvidenceConflicted(N, _)` counted deliveries rather than conflicts -- an
+        // unbounded channel through which replay changed the conclusion, in the one
+        // module whose stated invariant forbids exactly that.
+        let position = gaussian (vector 0.0 0.0 0.0) (diagonal 1.0 1.0 1.0)
+        let original = message "same" "a" (Map.ofList [ "cup", log 9.0 ]) position Rffh.identityPose
+        let changed = message "same" "b" (Map.ofList [ "bowl", log 9.0 ]) position Rffh.identityPose
+        let _, once = add original (empty ())
+        let _, twice = add changed once
+        let _, thrice = add changed twice
+        let _, fourth = add changed thrice
+        Assert.Equal(1, Rffh.conflictReceipts fourth |> Array.length)
+        Assert.Equal<string array>([| "a"; "b" |], (Rffh.conflictReceipts fourth).[0].Emitters)
+        match Rffh.tryConsensusStatus 0.9 fourth |> unwrap with
+        | Rffh.EvidenceConflicted (1, _) -> ()
+        | other -> failwithf "expected ONE conflict after redelivery, got %A" other
+
+    [<Fact>]
+    let ``RFFH-10c: the content fingerprint COVERS the emitter, so two emitters are two conflicts`` () =
+        // Pins the property that makes emitter-merging unreachable, and it is worth
+        // pinning because it is not obvious: "b" and "c" assert byte-identical
+        // content under one evidence identity and still produce DIFFERENT
+        // fingerprints, hence two receipts. Discovered by writing a merge branch
+        // for the case and finding it could never fire.
+        //
+        // If the fingerprint is ever narrowed to exclude the emitter, this test goes
+        // red and whoever narrows it has to decide -- deliberately -- whether two
+        // columns disagreeing identically is one conflict or two.
+        let position = gaussian (vector 0.0 0.0 0.0) (diagonal 1.0 1.0 1.0)
+        let original = message "same" "a" (Map.ofList [ "cup", log 9.0 ]) position Rffh.identityPose
+        let fromB = message "same" "b" (Map.ofList [ "bowl", log 9.0 ]) position Rffh.identityPose
+        let fromC = message "same" "c" (Map.ofList [ "bowl", log 9.0 ]) position Rffh.identityPose
+        let _, s1 = add original (empty ())
+        let _, s2 = add fromB s1
+        let _, s3 = add fromC s2
+        let conflicts = Rffh.conflictReceipts s3
+        Assert.Equal(2, conflicts |> Array.length)
+        Assert.NotEqual<string>(conflicts.[0].ChangedFingerprint, conflicts.[1].ChangedFingerprint)
+        // ...and redelivering either of them still adds nothing.
+        let _, s4 = add fromB s3
+        let _, s5 = add fromC s4
+        Assert.Equal(2, Rffh.conflictReceipts s5 |> Array.length)
+
+    [<Fact>]
     let ``RFFH-12: removing the lateral edge blocks designated cross-column evidence`` () =
         let withLink =
             Rffh.tryCreateTopology

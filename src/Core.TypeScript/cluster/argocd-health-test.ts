@@ -13,6 +13,7 @@
  *   bun src/Core.TypeScript/cluster/argocd-health-test.ts --dry-run
  *   bun src/Core.TypeScript/cluster/argocd-health-test.ts --preflight
  *   bun src/Core.TypeScript/cluster/argocd-health-test.ts --run --provider kind --git-ref main
+ *   bun src/Core.TypeScript/cluster/argocd-health-test.ts --run --provider kind --cni cilium --scope included --git-ref main
  *   bun src/Core.TypeScript/cluster/argocd-health-test.ts --run --provider k3d --git-ref main
  *   bun src/Core.TypeScript/cluster/argocd-health-test.ts --run --existing --cluster-name zeta-dev
  *
@@ -35,7 +36,7 @@ import {
   DEV_STORAGE_ALIAS_MANIFEST_RELPATHS,
   type DevBootstrapSecretSpec,
 } from "./dev-cluster/lib.ts";
-import { DEFAULT_ROOT_DEV_CATALOG } from "./ports.ts";
+import { DEFAULT_ROOT_DEV_CATALOG, ciliumOwnsCniSlot, type KindCni } from "./ports.ts";
 // Ordinal (code-point) ordering, per .claude/rules/culture-invariant-by-default.md.
 // NOT localeCompare: it is culture-SENSITIVE, so the same directory names sort
 // differently per machine locale. That matters here because this ordering is not
@@ -56,6 +57,7 @@ export type Provider = "k3d" | "kind";
 export type Mode = "dry-run" | "preflight" | "run";
 export type Scope = "smoke" | "included" | "full";
 export type ContainerRuntime = "docker" | "podman";
+export type { KindCni };
 
 export type FailureKind =
   | "UsageError"
@@ -95,6 +97,12 @@ export interface CliOptions {
   readonly scope: Scope;
   readonly scopeExplicit: boolean;
   readonly runtime: ContainerRuntime;
+  /**
+   * kind-only CNI. Default kindnetd. `cilium` selects the no-default-CNI
+   * profile and helm-installs the shipped Cilium surface during bring-up so
+   * the included proof does not need `--existing` (081M1DFQ2MZ).
+   */
+  readonly kindCni: KindCni;
   /**
    * Run the ephemeral Vault init+unseal ceremony against the cluster THIS
    * process created (`./ephemeral-vault-init.ts`). Opt-in only: never defaulted
@@ -191,6 +199,7 @@ interface MutableCliOptions {
   scope: Scope;
   scopeExplicit: boolean;
   runtime: ContainerRuntime;
+  kindCni: KindCni;
   ephemeralVaultInit: boolean;
 }
 
@@ -233,11 +242,12 @@ type ParseOptionsResult = ParseOptionsSuccess | ParseFailure;
 const REPO_ROOT = resolve(import.meta.dir, "../../..");
 const DEFAULT_K3D_CONFIG = "full-ai-cluster/dev-cluster/k3d-config.yaml";
 const DEFAULT_KIND_CONFIG = "full-ai-cluster/dev-cluster/profiles/ci.kind-config.yaml";
+const DEFAULT_KIND_CILIUM_CONFIG = "full-ai-cluster/dev-cluster/profiles/ci.cilium.kind-config.yaml";
 const DEFAULT_TIMEOUT_SECONDS = 900;
 const DEFAULT_POLL_SECONDS = 10;
 const SPAWN_MAX_BUFFER = 64 * 1024 * 1024;
 const HELP_TEXT =
-  "usage: bun src/Core.TypeScript/cluster/argocd-health-test.ts [--dry-run|--preflight|--run] [--provider k3d|kind] [--scope smoke|included|full] [--runtime docker|podman] [--git-ref REF] [--cluster-name NAME] [--config PATH] [--existing] [--timeout-sec N] [--poll-sec N] [--drift-check] [--ephemeral-vault-init]";
+  "usage: bun src/Core.TypeScript/cluster/argocd-health-test.ts [--dry-run|--preflight|--run] [--provider k3d|kind] [--cni kindnetd|cilium] [--scope smoke|included|full] [--runtime docker|podman] [--git-ref REF] [--cluster-name NAME] [--config PATH] [--existing] [--timeout-sec N] [--poll-sec N] [--drift-check] [--ephemeral-vault-init]";
 const MODE_FLAGS: Readonly<Record<string, Mode>> = {
   "--dry-run": "dry-run",
   "--preflight": "preflight",
@@ -315,7 +325,8 @@ export const DEV_EXCLUDED_REASONS: ReadonlyMap<string, string> = new Map([
       "from THIS Application's own valuesObject on a profile with no default CNI " +
       "(full-ai-cluster/dev-cluster/profiles/ci.cilium.kind-config.yaml). " +
       "LIFTS WHEN: the app-of-apps included proof runs on that profile, so ArgoCD is reconciling a cluster " +
-      "whose CNI slot Cilium already owns. " +
+      "whose CNI slot Cilium already owns. kind `--cni cilium` is the flag that selects the profile; the " +
+      "default kind lane stays kindnetd, so this glob still defers cilium there. " +
       "ANCHORS, CHECKED BY `reason-truth.ts`: each names an artifact this tree holds, so a claim that outlives its artifact goes red instead of reading on. " +
       "[cite: path full-ai-cluster/dev-cluster/profiles/ci.cilium.kind-config.yaml] " +
       '[cite: workflow-job k8s-argocd-health-test.yml "live kind Cilium CNI"] ' +
@@ -1146,16 +1157,14 @@ export function devLonghornStorageClassAliasDeclared(repoRoot = REPO_ROOT): bool
  *   they are describing.
  */
 /**
- * Applications whose exclusion is PROVIDER-CONDITIONAL, with the provider that
- * lifts each one.
+ * Applications whose exclusion is PROVIDER-CONDITIONAL.
  *
  * WHY THIS EXISTS. `cilium`'s recorded LIFTS WHEN reads "the app-of-apps
  * included proof runs on that profile, so ArgoCD is reconciling a cluster whose
- * CNI slot Cilium already owns." That condition became TRUE on 2026-08-31 when
- * the k3d lane went green at `--scope included` -- and it could not fire,
- * because this function had no provider argument and `discoverExpectedApplications`
- * threaded none. A lift condition the mechanism cannot evaluate is a latent
- * vacuity: it reads like a promise and can never be kept.
+ * CNI slot Cilium already owns." `ciliumOwnsCniSlot` is that condition: true on
+ * k3d always, and on kind only with `--cni cilium`. A lift condition the
+ * mechanism cannot evaluate is a latent vacuity: it reads like a promise and
+ * can never be kept.
  *
  * `cilium-lb-ipam` IS DELIBERATELY NOT HERE, and that is the interesting half.
  * Its lift is CONJUNCTIVE -- "`cilium` above lifts AND the pool is parameterised
@@ -1165,8 +1174,6 @@ export function devLonghornStorageClassAliasDeclared(repoRoot = REPO_ROOT): bool
  * Lifting it because its sibling lifted would satisfy half a condition and call
  * it whole.
  */
-const PROVIDER_CONDITIONAL_LIFTS: ReadonlyMap<string, Provider> = new Map([["cilium", "k3d"]]);
-
 export function isExcludedFromIncludedProof(
   dir: string,
   appText: string,
@@ -1184,9 +1191,9 @@ export function isExcludedFromIncludedProof(
    * conservative direction, and identical to the behaviour before this change.
    */
   provider: Provider | null = null,
+  kindCni: KindCni = "kindnetd",
 ): boolean {
-  const liftsOn = PROVIDER_CONDITIONAL_LIFTS.get(dir);
-  if (liftsOn !== undefined && provider === liftsOn) return false;
+  if (dir === "cilium" && ciliumOwnsCniSlot(provider, kindCni)) return false;
   if (DEV_EXCLUDED_DIRS.has(dir)) return true;
   if (DEV_INCLUDED_PROOF_DEFERRED_DIRS.has(dir)) return true;
   if (yamlTreeRequestsReadWriteMany(appDir)) return true;
@@ -1265,6 +1272,7 @@ function defaultCliOptions(env: NodeJS.ProcessEnv): ParseOptionsResult {
       scope: provider === "kind" ? "smoke" : "full",
       scopeExplicit: false,
       runtime,
+      kindCni: "kindnetd",
       ephemeralVaultInit: false,
     },
   };
@@ -1332,6 +1340,20 @@ function parseScopeFlag(argv: readonly string[], index: number, options: Mutable
   return { ok: true, nextIndex: index + 2 };
 }
 
+function isKindCni(value: string): value is KindCni {
+  return value === "kindnetd" || value === "cilium";
+}
+
+function parseCniFlag(argv: readonly string[], index: number, options: MutableCliOptions): ParseArgResult {
+  const parsed = readFlagValue(argv, index, "--cni", "kindnetd or cilium");
+  if (!parsed.ok) return parsed;
+  if (!isKindCni(parsed.value)) {
+    return { ok: false, failure: usageFailure(`unsupported cni: ${parsed.value}`) };
+  }
+  options.kindCni = parsed.value;
+  return { ok: true, nextIndex: index + 2 };
+}
+
 function parseRuntimeFlag(argv: readonly string[], index: number, options: MutableCliOptions): ParseArgResult {
   const parsed = readFlagValue(argv, index, "--runtime", "docker or podman");
   if (!parsed.ok) return parsed;
@@ -1351,6 +1373,7 @@ function parseArg(argv: readonly string[], index: number, options: MutableCliOpt
   }
   if (arg === "--provider") return parseProviderFlag(argv, index, options);
   if (arg === "--scope") return parseScopeFlag(argv, index, options);
+  if (arg === "--cni") return parseCniFlag(argv, index, options);
   if (arg === "--runtime") return parseRuntimeFlag(argv, index, options);
   if (STRING_FLAGS.has(arg)) return parseStringFlag(argv, index, options);
   if (INTEGER_FLAGS.has(arg)) return parseIntegerFlag(argv, index, options);
@@ -1384,6 +1407,23 @@ function validateOptions(options: CliOptions): Failure | null {
   if (options.provider === "k3d" && options.runtime === "podman") {
     return usageFailure("k3d + podman is not wired yet; use --provider kind --runtime podman for the Podman lane");
   }
+  if (options.provider === "k3d" && options.kindCni !== "kindnetd") {
+    return usageFailure("--cni is kind-only; k3d always installs Cilium");
+  }
+  if (options.provider === "kind" && options.kindCni === "cilium") {
+    const cfg = basename(options.configPath).toLowerCase();
+    if (!cfg.includes("cilium")) {
+      return usageFailure(
+        "--cni cilium requires a no-default-CNI kind profile (ci.cilium.kind-config.yaml)",
+      );
+    }
+  }
+  if (options.provider === "kind" && options.kindCni === "kindnetd") {
+    const cfg = basename(options.configPath).toLowerCase();
+    if (cfg.includes("cilium")) {
+      return usageFailure("kindnetd cannot use the Cilium kind profile; pass --cni cilium");
+    }
+  }
   if (options.provider === "kind" && options.scope === "full") {
     return usageFailure(
       "kind provider supports smoke or included scope; use --scope included or --provider k3d for full",
@@ -1409,8 +1449,8 @@ function validateOptions(options: CliOptions): Failure | null {
 }
 
 function normalizeProviderDefaults(options: MutableCliOptions): void {
-  if (!options.configExplicit && options.provider === "kind" && options.configPath === DEFAULT_K3D_CONFIG) {
-    options.configPath = DEFAULT_KIND_CONFIG;
+  if (!options.configExplicit && options.provider === "kind") {
+    options.configPath = options.kindCni === "cilium" ? DEFAULT_KIND_CILIUM_CONFIG : DEFAULT_KIND_CONFIG;
   }
   if (!options.scopeExplicit && options.provider === "kind" && options.scope === "full") {
     options.scope = "smoke";
@@ -1480,6 +1520,7 @@ export function discoverExpectedApplications(
   repoRoot = REPO_ROOT,
   /** See `isExcludedFromIncludedProof`'s `provider` note: optional, `null` lifts nothing. */
   provider: Provider | null = null,
+  kindCni: KindCni = "kindnetd",
 ): readonly ExpectedApplication[] {
   // Read the substrate condition ONCE for the whole roster: it is a property of
   // the repo, not of any one Application, and re-reading it per directory would
@@ -1506,7 +1547,7 @@ export function discoverExpectedApplications(
         dir,
         name,
         path: appPath.slice(repoRoot.length + 1),
-        excludedFromDev: isExcludedFromIncludedProof(dir, appText, appDir, aliasDeclared, provider),
+        excludedFromDev: isExcludedFromIncludedProof(dir, appText, appDir, aliasDeclared, provider, kindCni),
         manualSync: classifySyncPolicy(appText).kind === "manual",
       },
     ];
@@ -1546,7 +1587,7 @@ export function buildPlan(options: CliOptions, repoRoot = REPO_ROOT): HarnessPla
     // which is the same defect (a lift condition nothing can evaluate) one
     // layer up. `buildPlan` is the only caller that knows which substrate the
     // proof is about; the repo-level callers keep the `null` default.
-    expectedApplications = discoverExpectedApplications(repoRoot, options.provider);
+    expectedApplications = discoverExpectedApplications(repoRoot, options.provider, options.kindCni);
   } catch (error) {
     return {
       kind: "ApplicationManifestInvalid",
@@ -1588,7 +1629,7 @@ export function buildPlan(options: CliOptions, repoRoot = REPO_ROOT): HarnessPla
     ],
     notes: [
       "081KSXN940008QG0R000SCP2H1 is separate from 081KSNY2Z0008QG0R0008PN7RQ; this harness does not test USB reformat retention.",
-      "Dev health assertions exclude cilium, the Longhorn chart itself, GPU model-SERVING (ollama/vllm), ReadWriteMany claims, and apps deferred on a named blocker recorded in APPLIED_BUT_UNASSERTED_REASONS; k3d bootstraps Cilium directly and kind CI uses its default CNI.",
+      "Dev health assertions exclude cilium (except k3d, and kind --cni cilium), the Longhorn chart itself, GPU model-SERVING (ollama/vllm), ReadWriteMany claims, and apps deferred on a named blocker recorded in APPLIED_BUT_UNASSERTED_REASONS; k3d and kind --cni cilium bootstrap Cilium directly, kind --cni kindnetd uses kind's default CNI.",
       "Longhorn-BACKED manifests are no longer storage-excluded: dev applies a StorageClass named longhorn over rancher.io/local-path (dev-cluster/manifests/longhorn.yaml), so those PVCs bind. MEASURED on run 32519516070: 6 of the 11 formerly-excluded apps reached Synced+Healthy (headscale, mimir, nats, oz, redis, tempo); the other 5 bound their volumes and then failed for named NON-storage defects, visible for the first time. TWO of those five are fixed as of 2026-08-21 and are PROVEN so by live run 32532470499 -- cockroachdb (the chart init Job moved out of ArgoCD PostSync, which deadlocks against the health it is needed to produce) and kube-prometheus-stack (Grafana admin Secret minted at bring-up). weaviate was asserted alongside them for a few hours and the same run refuted it: two `type: LoadBalancer` Services can never be Healthy on a kind node, a blocker independent of the render nondeterminism that was fixed. hindsight remains, on three independent blockers. Still excluded outright are ReadWriteMany claims, which no dev provisioner can serve, and the whole rule returns if that manifest is absent (081M0JXF6MS087G0R001HC34TM).",
       "ZETA_CONTAINER_RUNTIME is the repo-wide OCI runtime switch; use --runtime for one-off explicit harness runs.",
     ],
@@ -1823,6 +1864,7 @@ function bootstrapCluster(plan: HarnessPlan, options: CliOptions): Failure | nul
         clusterName: plan.clusterName,
         gitRef: options.gitRef,
         containerRuntime: options.runtime,
+        cni: options.kindCni,
       });
       return null;
     } catch (e) {

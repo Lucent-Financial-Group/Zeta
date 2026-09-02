@@ -107,6 +107,56 @@ cell.
 
 ---
 
+### Unique-confirm leftover OPEN #16344 leftover unique @ d265b8ea (2026-09-02)
+
+unique-confirm leftover UNIQUE leftover OPEN #16344 leftover unique @
+d265b8ea87751bbf40c7b91a4012cc401a61069f UNIQUE HOLDS leftover NEW CELL.
+https://github.com/Lucent-Financial-Group/Zeta/pull/16344
+docs(anchors): the DAG-of-Bayesian-networks term is PROBABILISTIC
+CIRCUITS -- and why the search missed it. AceHack OPEN. Branch
+shadow/dag-anchor-resolved-probabilistic-circuits. Agent shadow.
+Human-directed. Sit leftover. Do not merge. CoS does not merge.
+Live REST HEAD leftover unique @ d265b8ea CONFIRMED (PR head.sha, 1
+commit, +63/-3, 1 file
+docs/research/2026-09-01-a-dag-of-bayesian-networks-candidate-anchors-none-confirmed.md;
+never a merge-ref). Parent leftover unique @
+d647d7d0066bca4f28a4171e788fbabaa7a52313 (do not grade as this unique).
+Never grade squash leftover unique @
+9eed3362b9edc5a95ed452678b6d2697b2588fed.
+Not leftover-of leftover OPEN #16308 leftover unique @ d81ccff4 or
+leftover-on-main #16274 leftover unique @ 84fd359a. Complementary naming
+remainder of the RFFH/AEFL lane, not a replacement unique.
+
+Object: resolution of the 2026-09-01 DAG-of-BN search. Original
+UNRESOLVED search record kept intact (status line becomes Status when
+written: UNRESOLVED; body of the 2026-09-01 search not rewritten).
+Resolution appended in-file per numerology-vs-number-theory
+promote-not-replace.
+
+GRADE: VERIFIED PC as umbrella (Choi, Vergari, Van den Broeck 2020
+ProbCirc20; field unifying-framework cite; bibliographic register is
+UCLA techreport/WIP tutorial not a journal). VERIFIED Darwiche JACM
+50(3) 2003 A Differential Approach to Inference in Bayesian Networks
+compiles a Bayes net into an arithmetic circuit (the Bayes-net-compile
+lineage and the older-than-expected date). VERIFIED SPN (Poon and
+Domingos UAI 2011) correctly framed as the instance offered 2026-09-01
+and rejected as too narrow -- genus/instance miss. VERIFIED original
+UNRESOLVED search kept vs rewritten. HONEST-REGISTER: naming the
+nearest tradition is not membership; RFFH / equivariant factor layer
+smoothness, decomposability, determinism unmeasured. OPEN: those three
+PC structural properties of RFFH/AEFL (with math review). ANALOGY:
+repo-puts-guarantees-in-structure vs PC tractability-from-structure;
+Aaron's DAG-of-BNs phrase vs PC as rooted DAG of sum/product nodes
+(OOBN/MSBN were the literal DAG-of-BNs reading and were already
+rejected).
+
+Falsifiers: Aaron retracts the identification; RFFH/AEFL measured and
+fails smoothness or decomposability or determinism (refutes
+membership, not the naming of nearest tradition); Choi et al. 2020
+not used as the field's unifying-framework source.
+
+---
+
 ### Unique-confirm leftover OPEN #16308 leftover unique @ d81ccff4 (2026-09-02)
 
 UNIQUE MOVES. unique-confirm leftover UNIQUE leftover
