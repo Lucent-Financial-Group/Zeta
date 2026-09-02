@@ -103,14 +103,18 @@ Allocated/tick from MemoryDiagnoser is the allocation column.
 
 ## Unique-key Zeta tick (indicative, N=3, high variance)
 
-Same box, 2026-09-01, `dotnet run -c Release --project bench/Feldera.Bench -- --filter '*Q1Unique*' --iterationCount 3 --warmupCount 1`. Not the pasted-Release table (that needs a longer BDN). `|Z-set| = EventCount`.
+`dotnet run -c Release --project bench/Feldera.Bench -- --filter '*Unique*' --iterationCount 3 --warmupCount 1`. `|Z-set| = EventCount`. Means move; **Allocated** is the cross-OS column. GHA run [33606669849](https://github.com/Lucent-Financial-Group/Zeta/actions/runs/33606669849) (PR #16334). this-Mac Q1 is the 2026-09-01 box run. Windows uses `--inProcess` (out-of-process BDN hung 84 min on "Building 1 exe", run 33598890480).
 
-| Method | EventCount | Mean | Allocated |
-|---|---:|---:|---:|
-| Q1_Unique | 10,000 | 143 µs | 234 KB |
-| Q1_Unique | 100,000 | 718 µs | 2.34 MB |
+| Host | Q1 10k | Q1 100k | Q2 10k | Q2 100k | Alloc Q1 100k / Q2 100k |
+|---|---:|---:|---:|---:|---|
+| this M2 Ultra | 143 µs | 718 µs | — | — | 2.34 MB / — |
+| GHA ubuntu-24.04 | 217 µs | 1.87 ms | 47 µs | 1.23 ms | 2.34 MB / 1.17 MB |
+| GHA macos-26 | 244 µs | 1.51 ms | 134 µs | 1.57 ms | 2.34 MB / 1.17 MB |
+| GHA windows-2025 | 333 µs | 2.01 ms | 126 µs | 1.41 ms | 2.34 MB / 1.17 MB |
 
-Feldera's 100k-event streaming Q1 was 69.8 ms / ~105 MiB RSS. That is a
+Lookup N=4096, 0 B: ubuntu 24.9 ns, macos 22.8 ns, windows 17.8 ns.
+
+Feldera's 100k-event streaming Q1 was 69.8–74.2 ms / ~100 MiB RSS. That is a
 pipeline (generate + step loop), not one prebuilt `Send+Step`. Do not
 divide 100k / 718 µs and call it Feldera events/s. The unique-key tick
 is the Big-O shape (linear in N, ~23 B/key alloc); a longer BDN belongs
@@ -122,8 +126,6 @@ change. Drift check, not `gate (required)`. Feldera itself is not
 cloned there. Windows stays on this lane (our F# benches). Native
 `dbsp` compile + Nexmark Q1/Q2 100k/1-core is unix-only
 (`feldera-native.yml`, ubuntu + macos).
-Compare timeout is 90 min: windows-2025 run 33557970586 hit the
-old 40 min cap during Unique-key BDN after `install.ps1`.
 
 ## Native compile deps (install.sh, all OSes)
 
@@ -150,9 +152,8 @@ and warns (does not scoop) when it is not. Unix cmake is apt/brew.
 
 ## Not yet a result
 
-A longer unique-key BDN pasted into `docs/BENCHMARKS.md`. windows-2025
-run 33598890480 hit the 90 min job cap still on BDN "Building 1 exe"
-(never measured). Windows BDN is `--inProcess` after that.
+A longer unique-key BDN pasted into `docs/BENCHMARKS.md` (GHA N=3 Error
+bars are not publication-grade).
 
 ## rustc bisect (Feldera `dbsp` `--release`, debuginfo=0)
 

@@ -81,9 +81,10 @@ coalesce + one-thread `Step`. These rows are **our tick**, not a
 head-to-head win.
 
 Unique-key path is now in the harness: `NexmarkQ1Unique` / `NexmarkQ2Unique`
-(`BidRow { Idx; Price }`, `|Z-set| = N`). A short N=3 run on this box
-(2026-09-01) was Q1 10k ~143 µs / 234 KB and Q1 100k ~718 µs / 2.34 MB —
-indicative, high variance, not this table. Factory-pin Feldera native
+(`BidRow { Idx; Price }`, `|Z-set| = N`). Short N=3 unique-key Q1 100k
+(run 33606669849): this Mac 718 µs, GHA ubuntu 1.87 ms, macos 1.51 ms,
+windows-2025 2.01 ms (`--inProcess`); alloc **2.34 MB on every OS**.
+Indicative, high variance, not this table. Factory-pin Feldera native
 Q1/Q2 100k 1-core (rustc **1.99.0-beta.3**, run 33603177913): this M2
 Ultra Q1 74.2 ms / 1.35 M/s, GHA ubuntu-24.04 95.2 ms / 1.05 M/s, GHA
 macos-26 127.8 ms / 0.78 M/s. The 1.93.1 MSRV binary on this Mac was
