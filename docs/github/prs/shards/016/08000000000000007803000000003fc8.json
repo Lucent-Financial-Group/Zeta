@@ -1,0 +1,12 @@
+{
+  "pr_number": 16328,
+  "archive_path": "docs/history/pr-reviews/PR-16328-chore-lint-exclude-gitignored-helm-schema-cache-from-markdownlint.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-02T06:57:58.628Z",
+  "schema_version": "v1",
+  "commit_sha": "70e2410cc87485fb41f4e7f312ac0d75d4426c51",
+  "title": "chore(lint): exclude gitignored .helm-schema-cache from markdownlint",
+  "state": "MERGED",
+  "merged_at": "2026-09-02T06:57:13Z",
+  "head_ref": "alexa/markdownlint-ignore-helm-schema-cache"
+}
