@@ -1,0 +1,14 @@
+{
+  "id": "080d031885d8b010a0130008325983fb",
+  "at": "2026-09-02T17:00:35.990Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1HH1ERN087G0R00309EG9D",
+    "type": "bug",
+    "title": "headscale is NOT dormant — the chart moved home; we are pinned to a stale third-party mirror four server releases behind",
+    "slug": "headscale-is-not-dormant-the-chart-moved-home-we-are-pinned",
+    "priority": "P2",
+    "filename": "081M1HH1ERN087G0R00309EG9D-headscale-is-not-dormant-the-chart-moved-home-we-are-pinned.md"
+  }
+}
