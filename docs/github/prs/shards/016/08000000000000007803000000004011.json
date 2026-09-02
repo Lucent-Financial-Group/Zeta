@@ -1,0 +1,12 @@
+{
+  "pr_number": 16401,
+  "archive_path": "docs/history/pr-reviews/PR-16401-feat-cluster-apply-a-kind-cilium-lb-ipam-pool-for-testing.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-02T23:07:39.533Z",
+  "schema_version": "v1",
+  "commit_sha": "6ec2d21de8a245ae24191a4ae12696ef9a453a45",
+  "title": "feat(cluster): apply a kind Cilium LB-IPAM pool for testing",
+  "state": "MERGED",
+  "merged_at": "2026-09-02T23:07:00Z",
+  "head_ref": "cursor/kind-cilium-lb-pool-27c5"
+}
