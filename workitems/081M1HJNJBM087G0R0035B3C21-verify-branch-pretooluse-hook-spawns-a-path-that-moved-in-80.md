@@ -56,4 +56,4 @@ when the branch matches, and allow for non-`git commit` Bash calls.
 Correct the literal and the two README references, and add
 `src/Core.TypeScript/hygiene/audit-hook-script-paths.ts` so the class cannot recur silently. That
 audit found a **second** live instance on its first run: `check-md032-pretooluse.ts` →
-`tools/hygiene/check-md032-blanks-around-lists.ts`, moved by the same refactor.
+`src/Core.TypeScript/hygiene/check-md032-blanks-around-lists.ts`, moved by the same refactor.
