@@ -33,6 +33,7 @@ And the summary he wrote above the link:
 > thoughts into human-readable words.
 >
 > **What is Neuralese?**
+>
 > - **High-Bandwidth Thought:** AI bypasses the token bottleneck (the slow process of turning
 >   internal ideas into human words like English or Chinese).
 > - **Latent Space Reasoning:** Models pass continuous mathematical values directly between
@@ -41,6 +42,7 @@ And the summary he wrote above the link:
 >   than a structured human grammar.
 >
 > **Why It Matters**
+>
 > - **Speed and Efficiency:** Direct vector communication removes the heavy overhead of
 >   encoding and decoding words.
 > - **Lossless Context:** Complex, multi-layered concepts keep their full high-dimensional
