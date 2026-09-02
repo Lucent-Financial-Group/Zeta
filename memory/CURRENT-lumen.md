@@ -44,6 +44,79 @@ verified) so future-me and peers do not over-trust past-me.
 
 ## Open threads
 
+### Unique-confirm leftover OPEN #16363 leftover unique @ f5b0d051 (2026-09-02)
+
+UNIQUE MOVES. unique-confirm leftover UNIQUE leftover
+OPEN #16363 leftover unique @
+f5b0d051563cde9cce1db969f0f66a3088366f05 UNIQUE HOLDS
+leftover NEW CELL.
+Unique MOVES from STALE leftover unique @
+5a726f792e4bcf883c00ffda41d4313510717a45. Never grade
+leftover unique @ 5a726f79 as this unique.
+https://github.com/Lucent-Financial-Group/Zeta/pull/16363
+research(factors): falsify static fusion and bound CRDT merge.
+AceHack OPEN. Branch research/composable-factor-benchmark.
+Agent Lumen. Human-directed. Sit leftover. Do not merge.
+CoS does not merge.
+Live REST HEAD leftover unique @ f5b0d051 CONFIRMED
+(PR head.sha, 1 commit, +5322/-430, 31 files; never a
+merge-ref). Git parent leftover unique @
+3dfcef2ef664475c98448c9ac9dcffd3ccfdbdd5 (do not grade
+as this unique). PR base leftover unique @
+19a3d20559d45e36f69ee66c8f08ef88a8aa6481 (main moved;
+mergeable_state unstable; do not grade). Never grade
+squash. Never grade merge_commit_sha leftover unique @
+b42cb4ea.
+
+Extra unique vs STALE @ 5a726f79: (1)
+src/Core.TypeScript/ace/build-graph.json +1310/-383 only
+new unique file; always/inert identical to parent;
+targets grew 3011->3938 lines; zero name tokens for
+CFB/CRDT/composable-factor/RFFH; HONEST-REGISTER ACE
+graph expansion not a new math object; did not
+byte-audit every ACE target. (2)
+tests/cross-verification/composable-factor-benchmark/cross-verify.ts
++12: dotnet build Bayesian.fsproj before fsi; VERIFIED
+harness fail-closed F# oracle build. Same-cell remainder
+of the named object (RFFH.fs blob fcf0d267 identical;
+frozen CFB-A/B/C + CRDT contract/result blobs identical).
+
+GRADE register of named object (not leftover-of): RFFH
+unary-blackboard VERIFIED (RFFH-19/20/21; L2 DEMOTES).
+CFB-A VERIFIED finite Gaussian census n=64 chain=DAG
+within 3.55e-15; 63 products; depth 63 vs 6; not DAGs
+beat chains. CFB-B VERIFIED usefulness not-supported
+(MSE 9.6934 vs equal 13.9423; coverage 0.7501 vs 0.9791;
+loses to ridge 9.6231; residual corr 0.8738). CFB-C
+VERIFIED alpha=1 vacuous; zero-off-diagonal identical;
+not supported. CRDT VERIFIED architectural split;
+evidence union ACI; raw Gaussian product non-idempotent
+variance ratio 0.5; fixed-half CI
+Delta=0.26288972189176474; trace-grid CI
+Delta=0.24355734504083776 weights 0.881 vs 0.347;
+HONEST-REGISTER finite catalog not universal CI theorem;
+pairwise CI not used as state merge. DEMOTE (register
+not HOLD): this cell reasserts DAG-of-BN unresolved
+while leftover OPEN leftover unique leftover #16344
+leftover unique @ d265b8ea resolved the search to PC;
+RFFH/AEFL PC membership stays OPEN; unique of leftover
+unique leftover #16344 stays leftover unique @
+d265b8ea. OPEN residual: 30-bit truncated SHA256 factor
+IDs (birthday bound); L2 unmeasured.
+Complementary remainder of leftover UNIQUE leftover
+#16348 leftover unique @
+d6ead09ae283eb66cb7c6be30c3955c528a1b205. Unique of
+leftover unique leftover #16348 stays leftover unique @
+d6ead09a. Not leftover-of.
+
+Falsifiers: ACE graph smuggling a new claim under unnamed
+targets; F# oracle passing without Bayesian.fsproj
+build; restore sequential NextFactorId; treat CI as
+CRDT merge; advertise DAGs beat chains from CFB-A;
+treat CFB-B/C as usefulness-supported.
+
+---
+
 ### Unique-confirm leftover OPEN #16344 leftover unique @ d265b8ea (2026-09-02)
 
 unique-confirm leftover UNIQUE leftover OPEN #16344 leftover unique @
