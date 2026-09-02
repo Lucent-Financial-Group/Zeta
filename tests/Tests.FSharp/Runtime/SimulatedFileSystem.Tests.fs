@@ -195,6 +195,45 @@ let ``InMemoryFileSystem crash-mid-write is one-shot and the same arm replays`` 
     Assert.Equal<byte>(fullA, fullB)
 
 [<Fact>]
+let ``InMemoryFileSystem corrupt-last-write flips a suffix and still acks`` () =
+    let fs = InMemoryFileSystem()
+    let ifs = fs :> IFileSystem
+    fs.ArmCorruptLastWrite("/corrupt", 8)
+    let payload = Array.init 100 (fun i -> byte i)
+    let stream = ifs.OpenWrite("/corrupt", false)
+    stream.Write(payload, 0, payload.Length)
+    stream.Dispose()
+    let got = ifs.ReadAllBytes("/corrupt")
+    Assert.Equal(100, got.Length)
+    Assert.Equal(payload.[0], got.[0])
+    Assert.Equal(payload.[91], got.[91])
+    Assert.Equal(payload.[92] ^^^ 0xA5uy, got.[92])
+    Assert.Equal(payload.[99] ^^^ 0xA5uy, got.[99])
+
+[<Fact>]
+let ``InMemoryFileSystem corrupt-last-write is one-shot and the same arm replays`` () =
+    let run () =
+        let fs = InMemoryFileSystem()
+        let ifs = fs :> IFileSystem
+        fs.ArmCorruptLastWrite("/corrupt", 8)
+        let payload = Array.init 100 (fun i -> byte (i + 3))
+        let stream = ifs.OpenWrite("/corrupt", false)
+        stream.Write(payload, 0, payload.Length)
+        stream.Dispose()
+        let flipped = ifs.ReadAllBytes("/corrupt")
+        let stream2 = ifs.OpenWrite("/corrupt-full", false)
+        stream2.Write(payload, 0, payload.Length)
+        stream2.Dispose()
+        flipped, ifs.ReadAllBytes("/corrupt-full")
+
+    let a, fullA = run ()
+    let b, fullB = run ()
+    Assert.Equal<byte>(a, b)
+    Assert.Equal<byte>(fullA, fullB)
+    Assert.Equal(fullA.[99], byte (99 + 3))
+    Assert.Equal(a.[99], byte (99 + 3) ^^^ 0xA5uy)
+
+[<Fact>]
 let ``FileSystemBlockIo reads back a block written through IFileSystem`` () =
     let mock = InMemoryFileSystem() :> IFileSystem
     let io = FileSystemBlockIo(mock, "/vol/blocks", 4096) :> IBlockIo

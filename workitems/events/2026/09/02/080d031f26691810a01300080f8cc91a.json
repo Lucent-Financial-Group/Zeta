@@ -1,0 +1,14 @@
+{
+  "id": "080d031f26691810a01300080f8cc91a",
+  "at": "2026-09-02T20:52:14.243Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1HY9K92087G0R002GN49HS",
+    "type": "task",
+    "title": "PR12: corrupt-last-write intercept on IFileSystem",
+    "slug": "pr12-corrupt-last-write-intercept-on-ifilesystem",
+    "priority": "P1",
+    "filename": "081M1HY9K92087G0R002GN49HS-pr12-corrupt-last-write-intercept-on-ifilesystem.md"
+  }
+}

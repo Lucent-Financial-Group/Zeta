@@ -180,7 +180,8 @@ type SimulatedFileStream
         base.Dispose(disposing)
 
 /// An in-memory mock file system that supports simulating latency, read/write sector corruption exceptions,
-/// file creation/modification tracking, and one-shot crash-mid-write (D12 door).
+/// file creation/modification tracking, and one-shot crash-mid-write /
+/// corrupt-last-write (D12 door).
 type InMemoryFileSystem() =
     let files = System.Collections.Concurrent.ConcurrentDictionary<string, byte[]>()
     let mutable latencyMs = 0L
@@ -188,7 +189,10 @@ type InMemoryFileSystem() =
     let mutable errorRate = 0.0
     let mutable rngState = 12345L
     let mutable crashArm: (string * int) option = None
+    let mutable corruptArm: (string * int) option = None
     let lockObj = obj ()
+
+    let corruptXor = 0xA5uy
 
     let splitMix () =
         rngState <- rngState + 0x9E3779B97F4A7C15L
@@ -218,7 +222,23 @@ type InMemoryFileSystem() =
                 let prefix = Array.sub bytes 0 afterBytes
                 files.[path] <- prefix
                 raise (CrashMidWriteException(path, afterBytes, bytes.Length))
-            | _ -> files.[path] <- bytes)
+            | _ ->
+                match corruptArm with
+                | Some(needle, lastBytes) when
+                    path.IndexOf(needle, StringComparison.Ordinal) >= 0
+                    && bytes.Length > 0
+                    && lastBytes > 0
+                    ->
+                    corruptArm <- None
+                    let copy = Array.copy bytes
+                    let n = min lastBytes copy.Length
+                    let start = copy.Length - n
+
+                    for i in start .. copy.Length - 1 do
+                        copy.[i] <- copy.[i] ^^^ corruptXor
+
+                    files.[path] <- copy
+                | _ -> files.[path] <- bytes)
 
     member _.Files = files
 
@@ -232,6 +252,17 @@ type InMemoryFileSystem() =
             invalidArg (nameof afterBytes) "afterBytes must be >= 0"
 
         lock lockObj (fun () -> crashArm <- Some(pathContains, afterBytes))
+
+    /// One-shot: next matching write Dispose XORs the last `lastBytes` with 0xA5
+    /// and commits. The write acks; recovery must not trust the tail.
+    member _.ArmCorruptLastWrite(pathContains: string, lastBytes: int) =
+        if String.IsNullOrEmpty pathContains then
+            invalidArg (nameof pathContains) "pathContains must be non-empty"
+
+        if lastBytes < 1 then
+            invalidArg (nameof lastBytes) "lastBytes must be >= 1"
+
+        lock lockObj (fun () -> corruptArm <- Some(pathContains, lastBytes))
 
     /// Injected latency in virtual milliseconds. Never wall-clock sleep.
     member _.VirtualElapsedMs = lock lockObj (fun () -> virtualElapsedMs)
