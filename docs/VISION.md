@@ -4013,3 +4013,89 @@ glossary-churn watching already named in the anti-Babel rule.
 (the invariant this is the conversational-scale instance of) ·
 [`.claude/rules/dv2-data-split-discipline-activated.md`](../.claude/rules/dv2-data-split-discipline-activated.md)
 (raw vault: both definitions held, each with its path)
+
+## Design FOR quantum, do not predict it — the disagreement is the prediction (2026-09-02, Aaron)
+
+Aaron, on the `EMIT ∘ RETRACT = I` result:
+
+> *"This is how we design for quantum, not predict it. The predictions come from where the
+> computer hardware disagree because of higher level abstractions."*
+
+### The stance
+
+We make no claim about what a quantum computer will do. **We write one structure and require both
+substrates to satisfy it.** The classical realisation and the quantum realisation are then not two
+predictions to be compared — they are **two instantiations of one law**, and the law is the artifact.
+
+The worked case is small enough to check by eye. In `src/Core.QSharp.ReferenceOracle/ZSetISA.qs`:
+
+| | classical (DBSP / Z-set) | quantum (Q#) |
+|---|---|---|
+| `EMIT(k)` | weight `+1` | `Ry(θ, k)` |
+| `RETRACT(k)` | weight `−1` | `Adjoint Emit` |
+| the law | `+1` then `−1` = `0` | `U` then `U†` = `I` |
+
+**`EMIT ∘ RETRACT = I` holds on both sides by construction, not by coincidence and not by test.**
+The Z-set weight is an integer in an abelian group, so it has an inverse. A quantum gate is a
+unitary, so it has an adjoint. **Retraction and the adjoint are the same operation** — and neither
+side had to be predicted from the other.
+
+### Why the disagreements are the valuable part
+
+If the two substrates satisfied the law identically everywhere, running on quantum hardware would
+teach us nothing. They will not. **Where they diverge, the divergence localises an abstraction that
+did not survive the crossing** — and that is a finding, not a failure.
+
+This is the four-oracle byte-lock discipline extended one layer down. Four language oracles must
+agree on golden vectors, and where they diverge the divergence *is* the result — the canonical case
+being UTF-16 code units versus UTF-8 bytes above the BMP, which no amount of good intent would have
+surfaced without the treaty. **Classical versus quantum is the same experiment at the hardware
+layer**: agreement is the floor, and disagreement is the measurement.
+
+And it composes with monodromy, already load-bearing here: two paths around a pole yield genuinely
+different results, **and that difference is information, not error.** A substrate disagreement is
+recorded as two branches with their paths, never reconciled to one surviving value.
+
+### The connection that makes this more than a slogan: the leak is usually a hidden branch
+
+**Higher-level abstractions leak at exactly the places we already refuse to go.** The clearest
+offender is the one named the same day: **a boolean forces an `if`, and an `if` is control
+structure that no channel declares.** A classical branch takes one path and discards the other; it
+has no quantum counterpart, because the discarded path is precisely what a superposition keeps.
+
+So the ISA's `BRANCH` is a Hadamard — *both states coexist while the tick is open* — and `MERGE` /
+`FOLD` are explicitly **not measurement**, with Born collapse marked sim-only and never live. The
+same design move that removes hidden control structure is what lets the structure **survive to the
+other substrate at all.**
+
+> **Refusing hidden control structure is what makes cross-substrate agreement possible; the
+> disagreements that remain are therefore informative rather than ambient.**
+
+That is why this belongs in the vision and not in a tools note. It says what we will *never* need in
+order to build on hardware we do not have: not a prediction, not a roadmap of what quantum will
+deliver — only a structure both substrates can be held to, and the discipline to notice where one of
+them cannot.
+
+### Status — and the honest gap is large
+
+**`toy`, and the experiment is currently unrunnable.** Stated plainly because this section is
+otherwise easy to over-read:
+
+- **Nothing in Zeta holds an encoded qubit.** `CssStabilizerCodes.qs` says so in its own body:
+  *"the simulator is a program, not a device."*
+- The Q# is **written, simulator-checked once per surface change** (`generate-qsharp-golden.py`
+  against Microsoft QDK), and **text-checked in CI** — `zset-isa.test.ts` reads the `.qs` file and
+  parses it with string matching. CI runs neither compiler nor simulator.
+- So the *method* is defined and the **disagreement half has never been run.** Classical-vs-simulator
+  is not classical-vs-quantum, and a simulator agrees by construction with the algebra it was
+  programmed from.
+
+What exists today is therefore the **floor** — one law, two transcriptions, byte-locked. The
+predictions the stance promises arrive only when there is hardware to disagree with us, and saying
+that clearly is what keeps this a design principle rather than a claim about physics.
+
+**Related:** [`docs/research/2026-09-02-alexas-open-questions-answered-from-the-qsharp-and-qec-routing-work.md`](research/2026-09-02-alexas-open-questions-answered-from-the-qsharp-and-qec-routing-work.md)
+§Q4, §Q4b — where the `EMIT ∘ RETRACT` result and the hidden-control-structure principle are
+derived · `src/Core.QSharp.ReferenceOracle/ZSetISA.qs` ·
+[`.claude/rules/anti-babel-preserve-reconcilability.md`](../.claude/rules/anti-babel-preserve-reconcilability.md)
+(monodromy: both branches held with their paths).
