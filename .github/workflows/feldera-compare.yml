@@ -11,10 +11,16 @@
 #   cargo build --release -p dbsp_nexmark --bench nexmark
 # Same-box numbers: docs/research/feldera-comparison-status.md
 #
-# Windows in the gate matrix is push-to-main only (~21 min, priced and
-# declined per-PR). This job is short BDN after install, path-filtered, so
-# the three-OS surface is cheap enough to run when the harness actually
-# changes. Aaron 2026-09-01 asked for mac + windows + linux.
+# WINDOWS STAYS HERE. `feldera-native.yml` compiles Feldera `dbsp` on
+# ubuntu + macos only (feldera-storage is unix `pread` / `AsRawFd`).
+# This workflow benches *our* F# Nexmark + zero-alloc Z-set paths, so
+# windows-2025 remains in the matrix. Aaron 2026-09-02: do not drop
+# Zeta benches on Windows when skipping Feldera-native Windows.
+#
+# Timeout is 90 min because windows-2025 run 33557970586 hit the old
+# 40 min cap during the first BDN (install.ps1 had already succeeded;
+# Unique-key Nexmark was cancelled at 40:05). Ubuntu/mac finished in
+# ~8-13 min; Windows needs install.ps1 + BDN headroom.
 
 name: feldera-compare
 
@@ -59,7 +65,7 @@ env:
 jobs:
   compare:
     name: compare (${{ matrix.os }})
-    timeout-minutes: 40
+    timeout-minutes: 90
     strategy:
       fail-fast: false
       matrix:

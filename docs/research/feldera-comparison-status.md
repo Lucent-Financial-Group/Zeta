@@ -94,9 +94,10 @@ in `docs/BENCHMARKS.md` when variance is honest.
 CI: `.github/workflows/feldera-compare.yml` runs this harness on
 ubuntu-24.04, macos-26, and windows-2025 when the bench/Z-set paths
 change. Drift check, not `gate (required)`. Feldera itself is not
-cloned there. Native `dbsp` compile is
-`.github/workflows/feldera-native.yml` (`workflow_dispatch`, plus a
-self-path filter so this PR can run it before the file is on main).
+cloned there. Windows stays on this lane (our F# benches); native
+`dbsp` compile is unix-only (`feldera-native.yml`, ubuntu + macos).
+Compare timeout is 90 min: windows-2025 run 33557970586 hit the
+old 40 min cap during Unique-key BDN after `install.ps1`.
 
 ## Native compile deps (install.sh, all OSes)
 
@@ -204,8 +205,10 @@ on 1.98 with ThinLTO + debuginfo would be the discriminator; we
 did not run that.
 
 `feldera-native.yml` `native` compiles factory rust 1.96.1 `dbsp`
-on GHA ubuntu-24.04 / macos-26 / windows-2025. `probe` (PR +
-dispatch only) repeats the compile on 1.97.0 / 1.98.0 / beta.
+on GHA ubuntu-24.04 / macos-26. Windows is omitted: Feldera
+0.342.0 `feldera-storage` uses `std::os::fd` / `libc::pread`
+(measured FAIL on windows-2025). `probe` (PR + dispatch only)
+repeats the compile on 1.97.0 / 1.98.0 / beta.
 
 GHA run 33561885627 (PR #16304, 2026-09-01),
 `cargo build --release -p dbsp` debuginfo=0, Feldera `48312b69`:
@@ -214,7 +217,7 @@ GHA run 33561885627 (PR #16304, 2026-09-01),
 |---|---|---|
 | ubuntu-24.04 | 1.96.1 | PASS |
 | macos-26 | 1.96.1 | PASS |
-| windows-2025 | 1.96.1 | FAIL `feldera-storage` `std::os::fd` / `libc::pread` (unix-only; not the ICE) |
+| windows-2025 | 1.96.1 | FAIL `feldera-storage` `std::os::fd` / `libc::pread` (unix-only; not the ICE). Native job no longer runs Windows. |
 | ubuntu-24.04 | 1.97.0 | ICE+match `StarJoinFuncTrait` / `first_method_vtable_slot` / `DynClone` rc=101 |
 | macos-26 | 1.97.0 | ICE+match (same) |
 | ubuntu-24.04 | 1.98.0 | ICE+match (same) |
