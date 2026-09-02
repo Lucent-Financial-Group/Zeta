@@ -228,6 +228,7 @@
     <Compile Include="Fusion.Equation.fs" />
     <Compile Include="DeterministicSyncContext.fs" />
     <Compile Include="FerryThrottler.fs" />
+    <Compile Include="BlockIoFerry.fs" />
     <Compile Include="CellScheduler.fs" />
     <Compile Include="DbspCellGraph.fs" />
     <Compile Include="Spine.fs" />

@@ -631,6 +631,7 @@
     <Compile Include="Runtime/Concurrency.Tests.fs" />
     <Compile Include="Runtime/VirtualTimeSchedulerIntegration.Tests.fs" />
     <Compile Include="Runtime/SimulatedFileSystem.Tests.fs" />
+    <Compile Include="Runtime/BlockIoFerry.Tests.fs" />
     <Compile Include="Runtime/Buggify.Tests.fs" />
     <Compile Include="Runtime/TimeWarpDbsp.Tests.fs" />
     <Compile Include="Runtime/NetworkSimulator.Tests.fs" />

@@ -158,6 +158,23 @@ let ``InMemoryFileSystem swarm stress test scenario`` () =
         FileSystem.Reset()
 
 [<Fact>]
+let ``InMemoryFileSystem Flush publishes without firing crash-mid-write`` () =
+    let fs = InMemoryFileSystem()
+    let ifs = fs :> IFileSystem
+    fs.ArmCrashMidWrite("/flushed", 8)
+    let payload = Array.init 100 (fun i -> byte i)
+    let stream = ifs.OpenWrite("/flushed", false)
+    stream.Write(payload, 0, payload.Length)
+    stream.Flush()
+    Assert.True(ifs.Exists "/flushed")
+    Assert.Equal(100, ifs.ReadAllBytes("/flushed").Length)
+    Assert.Equal<byte>(payload, ifs.ReadAllBytes("/flushed"))
+    let ex = Assert.Throws<CrashMidWriteException>(fun () -> stream.Dispose())
+    Assert.Equal(8, ex.CommittedBytes)
+    Assert.Equal(8, ifs.ReadAllBytes("/flushed").Length)
+    Assert.Equal<byte>(Array.sub payload 0 8, ifs.ReadAllBytes("/flushed"))
+
+[<Fact>]
 let ``InMemoryFileSystem crash-mid-write commits a prefix then throws`` () =
     let fs = InMemoryFileSystem()
     let ifs = fs :> IFileSystem

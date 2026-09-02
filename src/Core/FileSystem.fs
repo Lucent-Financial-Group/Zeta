@@ -19,9 +19,12 @@ type IFileSystem =
     abstract GetFiles: path: string * searchPattern: string -> string[]
     abstract CreateDirectory: path: string -> unit
 
-/// Native-volume block door (PR1 sketch). Every op is an event.
-/// The polyfill adapter maps a host file through `IFileSystem`.
-/// A later device impl must not go through POSIX files.
+/// Native-volume block *primitive* (one LBA, one call). This is the device,
+/// not the IO program. Batch/single/multibatch dispatch is `BlockIoFerry`
+/// (Haskell `IO a` interpreted by `FerryThrottler`). The polyfill adapter
+/// maps a host file through `IFileSystem`. A later device impl must not go
+/// through POSIX files. Adjacent-LBA coalescer (batch/single) is not this
+/// interface.
 type IBlockIo =
     abstract BlockSize: int
     abstract Read: lba: uint64 * dst: Memory<byte> -> int
@@ -151,6 +154,10 @@ type CrashMidSweepException(path: string) =
     member _.Path = path
 
 /// A mock FileStream that commits its MemoryStream buffer to the InMemoryFileSystem registry upon disposal.
+/// `Flush` publishes the current buffer without firing crash/corrupt/reorder
+/// arms. Those arms stay on Dispose (`commitWrite`). A Flush that used
+/// `commitWrite` would let a later Dispose republish the full buffer and
+/// undo a tear.
 type SimulatedFileStream
     (
         path: string,
@@ -159,7 +166,8 @@ type SimulatedFileStream
         files: System.Collections.Concurrent.ConcurrentDictionary<string, byte[]>,
         checkFault: unit -> unit,
         applyLatency: unit -> unit,
-        commitWrite: string -> byte[] -> unit
+        commitWrite: string -> byte[] -> unit,
+        flushPublish: string -> byte[] -> unit
     ) =
     inherit MemoryStream()
     let mutable isDisposed = false
@@ -176,6 +184,24 @@ type SimulatedFileStream
                 base.Seek(0L, SeekOrigin.Begin) |> ignore
         elif not exists && mode = FileMode.Open then
             raise (FileNotFoundException(path))
+
+    override this.Flush() =
+        if (not isDisposed) && access.HasFlag(FileAccess.Write) then
+            flushPublish path (this.ToArray())
+
+        base.Flush()
+
+    override this.FlushAsync(cancellationToken) =
+        if cancellationToken.IsCancellationRequested then
+            Task.FromCanceled cancellationToken
+        elif isDisposed then
+            Task.CompletedTask
+        else
+            try
+                this.Flush()
+                Task.CompletedTask
+            with ex ->
+                Task.FromException ex
 
     override this.Dispose(disposing) =
         if disposing && not isDisposed then
@@ -228,6 +254,9 @@ type InMemoryFileSystem() =
     let applyLatency () =
         if latencyMs > 0L then
             lock lockObj (fun () -> virtualElapsedMs <- virtualElapsedMs + latencyMs)
+
+    let flushPublish (path: string) (bytes: byte[]) =
+        lock lockObj (fun () -> publish path bytes)
 
     let commitWrite (path: string) (bytes: byte[]) =
         lock lockObj (fun () ->
@@ -288,8 +317,8 @@ type InMemoryFileSystem() =
 
     /// One-shot: hold the first matching Dispose (file not yet visible), then
     /// the second matching Dispose commits itself first and flushes the held
-    /// write. Freeze still finishes object puts before the log boat, so this
-    /// does not scramble freeze vs leaves.
+    /// write. Flush-publish does not arm this door. Freeze writes intent
+    /// (Flush), then leaves (object Dispose), then commit (log Dispose).
     member _.ArmReorderNextTwo(pathContains: string) =
         if String.IsNullOrEmpty pathContains then
             invalidArg (nameof pathContains) "pathContains must be non-empty"
@@ -361,13 +390,13 @@ type InMemoryFileSystem() =
         }
 
         member _.OpenFile(path, mode, access, _share) =
-            new SimulatedFileStream(path, mode, access, files, checkFault, applyLatency, commitWrite) :> Stream
+            new SimulatedFileStream(path, mode, access, files, checkFault, applyLatency, commitWrite, flushPublish) :> Stream
 
         member _.OpenWrite(path, _fsync) =
-            new SimulatedFileStream(path, FileMode.Create, FileAccess.Write, files, checkFault, applyLatency, commitWrite) :> Stream
+            new SimulatedFileStream(path, FileMode.Create, FileAccess.Write, files, checkFault, applyLatency, commitWrite, flushPublish) :> Stream
 
         member _.OpenRead(path) =
-            new SimulatedFileStream(path, FileMode.Open, FileAccess.Read, files, checkFault, applyLatency, commitWrite) :> Stream
+            new SimulatedFileStream(path, FileMode.Open, FileAccess.Read, files, checkFault, applyLatency, commitWrite, flushPublish) :> Stream
 
         member _.GetFiles(path, searchPattern) =
             checkFault()
