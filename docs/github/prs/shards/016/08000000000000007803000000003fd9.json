@@ -1,0 +1,12 @@
+{
+  "pr_number": 16345,
+  "archive_path": "docs/history/pr-reviews/PR-16345-feat-hygiene-a-chart-source-that-stopped-shipping-is-a-security-finding-not-a-cu.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-02T17:53:04.627Z",
+  "schema_version": "v1",
+  "commit_sha": "5b8474f3bf3eaa0e3621d7accee5b02c12315601",
+  "title": "feat(hygiene): a chart source that stopped shipping is a SECURITY finding, not a currency note",
+  "state": "MERGED",
+  "merged_at": "2026-09-02T17:52:24Z",
+  "head_ref": "shadow/dormant-source-is-a-finding"
+}
