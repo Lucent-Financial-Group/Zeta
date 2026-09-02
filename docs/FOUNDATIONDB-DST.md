@@ -37,7 +37,8 @@ to hit production without a traditional integration suite.
    only**. Crash-mid-write intercept landed on `InMemoryFileSystem`
    (`ArmCrashMidWrite`). Plain freeze-log replay restores intact
    boats. Corrupt-last-write intercept landed (`ArmCorruptLastWrite`).
-   Sealed-log replay / reorder remain
+   Reorder door landed (`ArmReorderNextTwo`); freeze still finishes object
+   puts before the log boat. Sealed-log replay remains
    first-product **PR12** and ZetaDB **D12**: the same door covers the
    **database commit path and the filesystem freeze path**. Until
    that corpus is green the honest word is `toy`, not crash-safe.

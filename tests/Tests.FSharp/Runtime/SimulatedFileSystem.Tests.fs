@@ -234,6 +234,48 @@ let ``InMemoryFileSystem corrupt-last-write is one-shot and the same arm replays
     Assert.Equal(a.[99], byte (99 + 3) ^^^ 0xA5uy)
 
 [<Fact>]
+let ``InMemoryFileSystem reorder holds the first write until the second commits`` () =
+    let fs = InMemoryFileSystem()
+    let ifs = fs :> IFileSystem
+    fs.ArmReorderNextTwo("/pair")
+    let aBytes = [| 1uy; 2uy |]
+    let bBytes = [| 3uy; 4uy |]
+    let streamA = ifs.OpenWrite("/pair/a", false)
+    streamA.Write(aBytes, 0, aBytes.Length)
+    streamA.Dispose()
+    Assert.False(ifs.Exists "/pair/a")
+    Assert.Equal(0, fs.CommitOrder.Length)
+    let streamB = ifs.OpenWrite("/pair/b", false)
+    streamB.Write(bBytes, 0, bBytes.Length)
+    streamB.Dispose()
+    Assert.True(ifs.Exists "/pair/a")
+    Assert.True(ifs.Exists "/pair/b")
+    Assert.Equal<byte>(aBytes, ifs.ReadAllBytes "/pair/a")
+    Assert.Equal<byte>(bBytes, ifs.ReadAllBytes "/pair/b")
+    Assert.Equal<string>([| "/pair/b"; "/pair/a" |], fs.CommitOrder)
+
+[<Fact>]
+let ``InMemoryFileSystem reorder is one-shot and the same arm replays`` () =
+    let run () =
+        let fs = InMemoryFileSystem()
+        let ifs = fs :> IFileSystem
+        fs.ArmReorderNextTwo("/pair")
+        let sa = ifs.OpenWrite("/pair/a", false)
+        sa.Write([| 1uy |], 0, 1)
+        sa.Dispose()
+        let sb = ifs.OpenWrite("/pair/b", false)
+        sb.Write([| 2uy |], 0, 1)
+        sb.Dispose()
+        let sc = ifs.OpenWrite("/pair/c", false)
+        sc.Write([| 3uy |], 0, 1)
+        sc.Dispose()
+        fs.CommitOrder
+
+    let expected = [| "/pair/b"; "/pair/a"; "/pair/c" |]
+    Assert.Equal<string>(expected, run ())
+    Assert.Equal<string>(expected, run ())
+
+[<Fact>]
 let ``FileSystemBlockIo reads back a block written through IFileSystem`` () =
     let mock = InMemoryFileSystem() :> IFileSystem
     let io = FileSystemBlockIo(mock, "/vol/blocks", 4096) :> IBlockIo
