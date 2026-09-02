@@ -150,8 +150,9 @@ and warns (does not scoop) when it is not. Unix cmake is apt/brew.
 
 ## Not yet a result
 
-A longer unique-key BDN pasted into `docs/BENCHMARKS.md`. Windows
-unique-key BDN is still the slow lane (90 min cap).
+A longer unique-key BDN pasted into `docs/BENCHMARKS.md`. windows-2025
+run 33598890480 hit the 90 min job cap still on BDN "Building 1 exe"
+(never measured). Windows BDN is `--job InProcess` after that.
 
 ## rustc bisect (Feldera `dbsp` `--release`, debuginfo=0)
 

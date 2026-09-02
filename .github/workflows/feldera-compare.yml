@@ -17,10 +17,13 @@
 # windows-2025 remains in the matrix. Aaron 2026-09-02: do not drop
 # Zeta benches on Windows when skipping Feldera-native Windows.
 #
-# Timeout is 90 min because windows-2025 run 33557970586 hit the old
-# 40 min cap during the first BDN (install.ps1 had already succeeded;
-# Unique-key Nexmark was cancelled at 40:05). Ubuntu/mac finished in
-# ~8-13 min; Windows needs install.ps1 + BDN headroom.
+# Timeout is 90 min for install.ps1 + two short BDNs. windows-2025
+# run 33598890480 (90 min cap) never measured: BDN printed
+# "Building 1 exe(s) in Parallel: Start" at 06:33Z and was still
+# there at 07:57Z job timeout. Out-of-process toolchain hangs on
+# that runner; Windows BDN uses --job InProcess. Ubuntu/mac stay
+# out-of-process. Unique-key step timeout 25 min so a hang fails
+# fast.
 
 name: feldera-compare
 
@@ -127,21 +130,25 @@ jobs:
         run: ./tools/setup/install.ps1 -SkipLoopRegister
 
       - name: Unique-key Nexmark Q1/Q2 (short BDN)
+        timeout-minutes: 25
         run: >
           dotnet run -c Release --project bench/Feldera.Bench --
           --filter '*Unique*'
           --iterationCount 3
           --warmupCount 1
+          ${{ startsWith(matrix.os, 'windows-') && '--job InProcess' || '' }}
 
       - name: Claimed zero-alloc Z-set paths (short BDN)
+        timeout-minutes: 25
         run: >
           dotnet run -c Release --project bench/Benchmarks --
           --filter '*ZSetZeroAlloc*'
           --iterationCount 3
           --warmupCount 1
+          ${{ startsWith(matrix.os, 'windows-') && '--job InProcess' || '' }}
 
       - name: Upload BDN CSV
-        if: always()
+        if: ${{ !cancelled() }}
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: feldera-compare-${{ matrix.os }}
