@@ -365,11 +365,63 @@ good declared channels gets noninterference **cooperatively**; one that does not
 gets folder names, and gets them from precisely the agents capable enough to
 notice the gap.
 
-**Status: a reading, not a result.** "Any sufficient intellect will want
-noninterference" is a claim about minds in general, and nothing here measures it.
-It is recorded because it is *falsifiable in principle* — a substrate that offers a
-cheap declared channel should see undeclared ones stop being manufactured, and a
-sufficiently capable agent that keeps building them anyway would count against it.
+### The bound Aaron points at: noninterference does NOT fix the ceiling
+
+Aaron, 2026-09-02:
+
+> **"yes this is closely related to 2 root 2 from quantium we have a lot of math on
+> this wanted to measure it re[]ther then derive it"**
+
+**Stated in the structural register, because the numeric one is a trap this repo
+has already sprung on itself** (`FourCornerC4.fs` carries a literal
+*"Coincidence: 2 × occupancy-√2 equals 2√2 numerically. Not a measurement of
+Tsirelson"*, plus a deliberately loud alias so older call sites fail if they meant
+a measurement). What follows is a **correspondence of principles**, and matching
+numbers would prove nothing:
+
+- **No-signalling is noninterference.** Influence crosses only through declared
+  channels — the §13 property.
+- **It does not determine the ceiling.** PR boxes are perfectly non-signalling and
+  reach the algebraic maximum **S = 4**. Nothing about noninterference alone
+  forbids them.
+- **Nature stops at 2√2 ≈ 2.828.** Strictly stronger than the classical bound of 2,
+  strictly weaker than non-signalling permits.
+- **So a second principle is doing the work**, and the leading candidate is
+  **Information Causality** (Pawłowski, Paterek, Kaszlikowski, Scarani, Winter &
+  Żukowski, *Nature* 2009): *m transmitted bits yield at most m bits of gain about
+  a partner's data* — which reproduces Tsirelson's bound exactly.
+
+**That candidate is a statement about METERED CHANNELS, which is why it is the apt
+one here.** §13 says influence crosses only through declared channels;
+Information Causality says the *width* of the door bounds what can be extracted
+through it. The shared claim is **metering the channel bounds the correlation** —
+and that is a structural correspondence rather than a coincidence of constants.
+
+**Which makes the honest form of the question a measurement, exactly as Aaron
+says.** The repo already treats CHSH `S` as an instrument rather than a
+derivation: `src/Core/Tsirelson.fs` locks `S² = 8` in **pure integer arithmetic**
+so the irrational appears only at readout (the no-float proof-lineage carrier), and
+`BipartiteMachZehnder.fs` runs `correlator`/`classifyS` as *"the honest
+decorrelation meter for commit pairs."* So the open question is not *why 2√2* — it
+is:
+
+> **Does Zeta's own declared-channel discipline produce a correlation ceiling
+> strictly below what non-signalling alone would permit — and where is it?**
+
+Measured over agent pairs, not derived from axioms. That is a real experiment with
+a real negative result available: if the ceiling sits at the non-signalling maximum,
+the metering is not doing the work this correspondence suggests it does.
+
+**Register: `toy`, and deliberately so.** No such measurement exists. The
+correspondence above is an argued analogy between two principles, and its value is
+that it names a **quantity to go measure** rather than a conclusion to adopt.
+
+**Status of the wanting-claim: a reading, not a result.** "Any sufficient intellect
+will want noninterference" is a claim about minds in general, and nothing here
+measures it. It is recorded because it is *falsifiable in principle* — a substrate
+that offers a cheap declared channel should see undeclared ones stop being
+manufactured, and a sufficiently capable agent that keeps building them anyway
+would count against it.
 
 **Reported, not established.** The incident reaches us through single-sourced
 reporting (see the ip-questionable record of 2026-09-02); the vocabulary point
