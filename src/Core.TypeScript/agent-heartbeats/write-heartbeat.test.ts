@@ -3,6 +3,7 @@
 import { describe, expect, it } from "bun:test";
 import { parseArgs, buildHeartbeatObservation, zetaIdToHex, heartbeatPath, heartbeatRepoRelPath, renderHeartbeat } from "./write-heartbeat";
 import { pack, DEFAULT_ENV } from "../zeta-id/zeta-id";
+import { join } from "node:path";
 
 // Empty env for tests — exclude any harness-set ZETA_AGENT_* + disable
 // auto-push (tests do not have network).
@@ -177,17 +178,26 @@ describe("zetaIdToHex", () => {
   });
 });
 
+// `heartbeatPath` builds a LOCAL FILESYSTEM path — it is handed to mkdirSync/writeFileSync — so
+// native separators are the correct output, and asserting a literal "/repo/docs/..." asserts the
+// host OS rather than the function. On Windows it produced "\repo\docs\..." and these two were the
+// only genuinely deterministic failures in the whole agent-heartbeats suite.
+//
+// Composing the expectation with `join` keeps the real assertion (the YYYY/MM/DD segments, the
+// zero-padding, the hex filename) and drops the accidental one. The repo-relative GIT path is a
+// DIFFERENT function — `heartbeatRepoRelPath`, tested below — and that one must stay forward-slashed
+// on every OS, which is exactly why the two are separate.
 describe("heartbeatPath", () => {
   it("builds YYYY/MM/DD path with hex filename", () => {
     const ts = Date.UTC(2026, 4, 27, 13, 30, 0);  // month 0-indexed (4=May)
     const path = heartbeatPath("/repo", "otto", ts, "abc123");
-    expect(path).toBe("/repo/docs/agent-heartbeats/otto/2026/05/27/abc123.md");
+    expect(path).toBe(join("/repo", "docs", "agent-heartbeats", "otto", "2026", "05", "27", "abc123.md"));
   });
 
   it("pads month and day", () => {
     const ts = Date.UTC(2026, 0, 5, 0, 0, 0);  // 2026-01-05
     const path = heartbeatPath("/repo", "otto", ts, "x");
-    expect(path).toBe("/repo/docs/agent-heartbeats/otto/2026/01/05/x.md");
+    expect(path).toBe(join("/repo", "docs", "agent-heartbeats", "otto", "2026", "01", "05", "x.md"));
   });
 });
 

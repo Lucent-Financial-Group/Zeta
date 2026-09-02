@@ -7,6 +7,26 @@ import { afterEach, describe, expect, it } from "bun:test";
 
 import { annotateFailure, isLosslessLineExtension, prepareHeartbeatBranch } from "./prepare-heartbeat-branch";
 
+/**
+ * Every test here builds a REAL git repository and drives it with real `git` subprocesses —
+ * init, commit, fetch, merge, rebase, reset — so it is slow BY NATURE, not by accident.
+ *
+ * `bunfig.toml` states the rule this follows: bun does not implement `[test] timeout`, the
+ * effective per-test cap is the built-in 5000 ms, and a whole-run `--timeout` is deliberately
+ * not set in the gate (a global raise hides slow tests and lets a hung one burn the job cap).
+ * So a test that is slow by nature carries its own timeout, visible at the call site.
+ *
+ * WITHOUT THIS the file passes alone and fails in company, which is the worst shape a test can
+ * have. Measured on Windows 2026-09-02: run on its own the file is green; run in the same
+ * `bun test` invocation as its two siblings, git subprocess contention pushes several tests past
+ * 5000 ms and they fail at ~5.0 s with an EMPTY stderr — a timeout wearing the costume of a git
+ * error (`git fetch origin failed:` with nothing after the colon). Re-running the identical
+ * files with `--timeout 60000` left exactly zero of those failures. Linux CI is fast enough to
+ * hide it, so the flake only ever fires on a contributor's machine, where it reads as `main`
+ * being broken.
+ */
+const GIT_DRIVER_TIMEOUT_MS = 30_000;
+
 const roots: string[] = [];
 
 function git(cwd: string, ...args: string[]): string {
@@ -70,7 +90,7 @@ describe("prepareHeartbeatBranch", () => {
       value: { head: "heartbeat/alexa", remoteFound: false, carried: false, healed: [], resolved: [] },
     });
     expect(git(work, "branch", "--show-current")).toBe("heartbeat/alexa");
-  });
+  }, GIT_DRIVER_TIMEOUT_MS);
 
   it("carries multiple unflushed ticks when the mutable lane is rebuilt", () => {
     const { work } = fixture();
@@ -91,7 +111,7 @@ describe("prepareHeartbeatBranch", () => {
     expect(readFileSync(join(work, "event-1.json"), "utf8")).toContain('"tick":1');
     expect(readFileSync(join(work, "event-2.json"), "utf8")).toContain('"tick":2');
     expect(git(work, "diff", "--cached", "--name-only").split("\n").sort()).toEqual(["event-1.json", "event-2.json"]);
-  });
+  }, GIT_DRIVER_TIMEOUT_MS);
 
   it("does not restage a lane whose final tree already landed by squash", () => {
     const { work } = fixture();
@@ -108,7 +128,7 @@ describe("prepareHeartbeatBranch", () => {
     expect(result).toMatchObject({ ok: true, value: { remoteFound: true, carried: false } });
     expect(readFileSync(join(work, "event-1.json"), "utf8")).toContain('"tick":1');
     expect(git(work, "diff", "--cached", "--name-only")).toBe("");
-  });
+  }, GIT_DRIVER_TIMEOUT_MS);
 
   it("reports a content conflict and leaves the remote lane unchanged", () => {
     const { work } = fixture();
@@ -126,7 +146,7 @@ describe("prepareHeartbeatBranch", () => {
     if (result.ok) throw new Error("conflicting state was accepted");
     expect(result.error).toContain("carry unflushed heartbeat state failed");
     expect(git(work, "ls-remote", "origin", "refs/heads/heartbeat/alexa").split("\t")[0]).toBe(remoteBefore);
-  });
+  }, GIT_DRIVER_TIMEOUT_MS);
 
   // --- PARTIAL FLUSH (2026-08-16 lane wedge) ------------------------------------------------
   // The pre-existing "already landed by squash" test above only covers a TOTAL flush. The lanes
@@ -157,7 +177,7 @@ describe("prepareHeartbeatBranch", () => {
     const lines = readFileSync(join(work, p), "utf8").split("\n").filter(Boolean);
     expect(lines).toEqual(['{"n":1}', '{"n":2}', '{"n":3}']);
     expect(lines).not.toContain("<<<<<<< HEAD");
-  });
+  }, GIT_DRIVER_TIMEOUT_MS);
 
   it("carries the PR manifest, which is append-only but NOT lane-scoped", () => {
     // The path that wedged soraya at 02:43Z on 2026-08-17 (run 31988867656), after the three
@@ -185,7 +205,7 @@ describe("prepareHeartbeatBranch", () => {
     const lines = readFileSync(join(work, p), "utf8").split("\n").filter(Boolean);
     expect(lines).toEqual(['{"pr_number":1}', '{"pr_number":2}', '{"pr_number":3}']);
     expect(lines).not.toContain("<<<<<<< HEAD");
-  });
+  }, GIT_DRIVER_TIMEOUT_MS);
 
   it("carries the RS block log, which several lanes append to under a per-row writer", () => {
     // The path that wedged otto and soraya at 16:43Z on 2026-08-17 (run 32046921903), while the
@@ -221,7 +241,7 @@ describe("prepareHeartbeatBranch", () => {
     // true, this assertion is what catches it rather than a comment claiming it.
     expect(lines.filter((l) => l === '{"agent":"otto","seq":1}')).toHaveLength(1);
     expect(lines).not.toContain("<<<<<<< HEAD");
-  });
+  }, GIT_DRIVER_TIMEOUT_MS);
 
   it("carries the drift-rate CI log when two lanes CREATED it independently", () => {
     // The path that wedged otto, alexa and soraya at 22:05Z and 22:24Z on 2026-08-22, plus the
@@ -253,7 +273,7 @@ describe("prepareHeartbeatBranch", () => {
     expect(lines).toContain('{"checkId":"agent-heartbeat","outcome":"green","lane":"otto"}');
     expect(lines).toContain('{"checkId":"agent-heartbeat","outcome":"green","lane":"alexa"}');
     expect(lines).not.toContain("<<<<<<< HEAD");
-  });
+  }, GIT_DRIVER_TIMEOUT_MS);
 
   it("carries the tick-reasoning log when main holds a strict PREFIX it has no ancestor for", () => {
     // The path that wedged alexa from 23:42Z on 2026-08-26 (run 33024333706) with
@@ -307,7 +327,7 @@ describe("prepareHeartbeatBranch", () => {
     // Every row must still PARSE: `union` on a whole-file JSON snapshot produces concatenated
     // objects, and this assertion is what distinguishes the append-only class from that one.
     for (const line of lines) expect(() => JSON.parse(line) as unknown).not.toThrow();
-  });
+  }, GIT_DRIVER_TIMEOUT_MS);
 
   it("keeps a regenerated snapshot parseable when both sides rewrote it", () => {
     const { work } = fixture();
@@ -323,7 +343,7 @@ describe("prepareHeartbeatBranch", () => {
     const merged = readFileSync(join(work, p), "utf8");
     expect(() => JSON.parse(merged) as unknown).not.toThrow();
     expect(JSON.parse(merged) as unknown).toEqual({ buffer: [1, 2, 3], seq: 3 });
-  });
+  }, GIT_DRIVER_TIMEOUT_MS);
 
   it("registers the theirs driver, which git does not provide", () => {
     const { work } = fixture();
@@ -332,7 +352,7 @@ describe("prepareHeartbeatBranch", () => {
     // Without this, `merge=theirs` is silently ignored and the snapshot paths keep wedging --
     // the attributes block alone is NOT the fix.
     expect(git(work, "config", "--local", "merge.theirs.driver")).toBe("cp -f -- %B %A");
-  });
+  }, GIT_DRIVER_TIMEOUT_MS);
 
   it("carries a PR shard both sides CREATED, keeping one whole record", () => {
     // The shape that wedged soraya at 00:17Z on 2026-08-18: `CONFLICT (add/add)`, not a content
@@ -367,7 +387,7 @@ describe("prepareHeartbeatBranch", () => {
     expect(parsed.title).toBe("feat(hall): LLMTV society grid");
     expect(parsed.archive_path).toBe("docs/history/pr-reviews/PR-9180.md");
     expect(merged).not.toContain("<<<<<<< HEAD");
-  });
+  }, GIT_DRIVER_TIMEOUT_MS);
 
   it("carries a PR review archive both sides CREATED, keeping the copy that HAS the threads", () => {
     // The shape that wedged soraya from 05:11Z on 2026-08-18 (run 32104099738): `CONFLICT
@@ -404,7 +424,7 @@ describe("prepareHeartbeatBranch", () => {
     expect(merged).toContain("PRRT_kwDOSF9kNM6N_x6l");
     expect(merged).not.toContain("_none recorded_");
     expect(merged).not.toContain("<<<<<<< HEAD");
-  });
+  }, GIT_DRIVER_TIMEOUT_MS);
 
 
   it("carries a ci-runs log both sides CREATED, keeping every row exactly once", () => {
@@ -451,7 +471,7 @@ describe("prepareHeartbeatBranch", () => {
     for (const r of [soraya1, soraya2, alexa1]) expect(merged).toContain(r.trim());
     // Still one JSON object per line -- a concatenation would make the log unparseable.
     for (const l of lines) expect(() => JSON.parse(l) as unknown).not.toThrow();
-  });
+  }, GIT_DRIVER_TIMEOUT_MS);
   it("still refuses a conflict outside the declared lane paths", () => {
     const { work } = fixture();
     seedAttributes(work);
@@ -462,7 +482,7 @@ describe("prepareHeartbeatBranch", () => {
     expect(result.ok).toBe(false);
     if (result.ok) throw new Error("an undeclared conflicting path was auto-resolved");
     expect(result.error).toContain("carry unflushed heartbeat state failed");
-  });
+  }, GIT_DRIVER_TIMEOUT_MS);
 
   it("rejects an unsafe lane name as a value", () => {
     const { work } = fixture();
@@ -470,7 +490,7 @@ describe("prepareHeartbeatBranch", () => {
       ok: false,
       error: "agent must be one safe branch component; got ../../main",
     });
-  });
+  }, GIT_DRIVER_TIMEOUT_MS);
 });
 
 describe("annotateFailure", () => {
@@ -491,7 +511,7 @@ describe("annotateFailure", () => {
     // `.gitattributes` heartbeat block. An annotation that omitted it would be no better than
     // the exit code it replaces.
     expect(annotation).toContain("CONFLICT (add/add): Merge conflict in data/tick-reasoning.jsonl");
-  });
+  }, GIT_DRIVER_TIMEOUT_MS);
 
   it("survives as ONE workflow command, so nothing after the first line is truncated", () => {
     const annotation = annotateFailure(LIVE_FAILURE);
@@ -501,7 +521,7 @@ describe("annotateFailure", () => {
     // not catch.
     expect(annotation).not.toContain("\n");
     expect(annotation.split("%0A")).toHaveLength(6);
-  });
+  }, GIT_DRIVER_TIMEOUT_MS);
 
   it("escapes the percent sign before the newline, so an encoded body is not re-read", () => {
     // Order matters: escaping `\n` first and `%` second would rewrite the `%0A` just emitted into
@@ -509,7 +529,7 @@ describe("annotateFailure", () => {
     expect(annotateFailure("100%\ndone")).toBe(
       "::error title=heartbeat lane preparation failed::100%25%0Adone",
     );
-  });
+  }, GIT_DRIVER_TIMEOUT_MS);
 });
 
 describe("prepare-heartbeat-branch CLI", () => {
@@ -545,7 +565,7 @@ describe("prepare-heartbeat-branch CLI", () => {
     // the git fixture, so it is the most load-sensitive one in the file. The default 5s is
     // already marginal for the git-only tests on a busy runner; leaving this one on the default
     // would make it the first to flake, and a flaky falsifier gets deleted rather than fixed.
-  }, 30_000);
+  }, GIT_DRIVER_TIMEOUT_MS);
 });
 
 /**
@@ -602,7 +622,7 @@ describe("prepareHeartbeatBranch — squash-flush divergence", () => {
     expect(merge.status).not.toBe(0);
     expect(merge.stdout + merge.stderr).toContain("CONFLICT (add/add)");
     expect(merge.stdout + merge.stderr).toContain(LANE_PATH);
-  });
+  }, GIT_DRIVER_TIMEOUT_MS);
 
   it("CARRIES it anyway when main's copy embeds in the lane's by insertions only", () => {
     const { work } = fixture();
@@ -618,7 +638,7 @@ describe("prepareHeartbeatBranch — squash-flush divergence", () => {
     expect(carried).not.toContain("<<<<<<<");
     const rows = carried.split("\n").filter((l) => l.length > 0);
     expect(rows).toEqual(new Array(...new Set(rows)));
-  });
+  }, GIT_DRIVER_TIMEOUT_MS);
 
   it("BREAKS THE LOOP: the healed tick advances the merge base past the flush", () => {
     const { work } = fixture();
@@ -640,7 +660,7 @@ describe("prepareHeartbeatBranch — squash-flush divergence", () => {
     // And the next tick is an ordinary clean carry — the divergence is gone, not deferred.
     const next = prepareHeartbeatBranch("alexa", work);
     expect(next).toMatchObject({ ok: true, value: { healed: [] } });
-  });
+  }, GIT_DRIVER_TIMEOUT_MS);
 
   it("REFUSES when main holds a line the lane does not — the rule can still fail", () => {
     const { work } = fixture();
@@ -654,7 +674,7 @@ describe("prepareHeartbeatBranch — squash-flush divergence", () => {
     if (result.ok) throw new Error("unreachable");
     expect(result.error).toContain("carry unflushed heartbeat state");
     expect(result.error).toContain(LANE_PATH);
-  });
+  }, GIT_DRIVER_TIMEOUT_MS);
 
   it("REFUSES a mid-line prefix — a byte prefix that rewrites main's last row", () => {
     const { work } = fixture();
@@ -663,7 +683,7 @@ describe("prepareHeartbeatBranch — squash-flush divergence", () => {
     wedge(work, '{"row":1}\n{"row":2}', '{"row":1}\n{"row":22}\n');
 
     expect(prepareHeartbeatBranch("alexa", work)).toMatchObject({ ok: false });
-  });
+  }, GIT_DRIVER_TIMEOUT_MS);
 
   it("leaves the index untouched when any one path is refused (all-or-nothing)", () => {
     const { work } = fixture();
@@ -684,7 +704,7 @@ describe("prepareHeartbeatBranch — squash-flush divergence", () => {
     // a partial resolution would leave a half-carried tick behind whatever gets reported.
     const unmerged = git(work, "diff", "--name-only", "--diff-filter=U");
     expect(unmerged.split("\n").filter((l) => l.length > 0).sort()).toEqual([healable, rival].sort());
-  });
+  }, GIT_DRIVER_TIMEOUT_MS);
 
   /**
    * The NUL refusal has to be shown doing WORK, not merely present.
@@ -701,16 +721,16 @@ describe("prepareHeartbeatBranch — squash-flush divergence", () => {
     expect(
       isLosslessLineExtension(Buffer.from([0x61, 0x00, 0x0a]), Buffer.from([0x61, 0x00, 0x0a, 0x62, 0x0a])),
     ).toBe(false);
-  });
+  }, GIT_DRIVER_TIMEOUT_MS);
 
   it("accepts an EMPTY main side — the ours=0 signature this class was first measured with", () => {
     expect(isLosslessLineExtension(Buffer.alloc(0), Buffer.from("{}\n"))).toBe(true);
-  });
+  }, GIT_DRIVER_TIMEOUT_MS);
 
   it("refuses equal blobs and a longer ours — neither is a STRICT extension", () => {
     expect(isLosslessLineExtension(Buffer.from("a\n"), Buffer.from("a\n"))).toBe(false);
     expect(isLosslessLineExtension(Buffer.from("a\nb\n"), Buffer.from("a\n"))).toBe(false);
-  });
+  }, GIT_DRIVER_TIMEOUT_MS);
 });
 
 /** The live-feed index path, and the exact bytes its publisher emits. Shared by the two blocks below. */
@@ -787,7 +807,7 @@ describe("prepareHeartbeatBranch — canonically-ordered set divergence", () => 
     const theirs = Buffer.from(liveFeedIndexJson(LOW, HIGH));
     expect(theirs.subarray(0, ours.length).equals(ours)).toBe(false);
     expect(isLosslessLineExtension(ours, theirs)).toBe(true);
-  });
+  }, GIT_DRIVER_TIMEOUT_MS);
 
   it("CARRIES it: the low-sorting entry is inserted and main's entry survives verbatim", () => {
     const { work } = fixture();
@@ -803,7 +823,7 @@ describe("prepareHeartbeatBranch — canonically-ordered set divergence", () => 
     expect(carried).toBe(liveFeedIndexJson(LOW, HIGH));
     const parsed = JSON.parse(carried) as { readonly entries: readonly { readonly eventId: string }[] };
     expect(parsed.entries.map((entry) => entry.eventId)).toEqual([LOW, HIGH]);
-  });
+  }, GIT_DRIVER_TIMEOUT_MS);
 
   it("NEVER LOSES an entry main published that the lane never saw", () => {
     const { work } = fixture();
@@ -831,7 +851,7 @@ describe("prepareHeartbeatBranch — canonically-ordered set divergence", () => 
     expect(carried).toContain(LOW);
     expect(carried).toContain(HIGH);
     expect(result.value.resolved.map((r) => r.path)).toContain(INDEX_PATH);
-  });
+  }, GIT_DRIVER_TIMEOUT_MS);
 
   it("REFUSES a rewritten entry — same key, changed content key", () => {
     const ours = Buffer.from(liveFeedIndexJson(HIGH));
@@ -839,18 +859,18 @@ describe("prepareHeartbeatBranch — canonically-ordered set divergence", () => 
     // Every structural line still matches; only the value line changed. An embedding that ignored
     // content would accept this and silently republish a different content address.
     expect(isLosslessLineExtension(ours, theirs)).toBe(false);
-  });
+  }, GIT_DRIVER_TIMEOUT_MS);
 
   it("REFUSES a REORDER — main's lines all present, but not in main's order", () => {
     // The property is subsequence, not subset. `b` before `a` on main cannot embed in `a` then
     // `b`, so a file whose records carry positional meaning is never silently re-sequenced.
     expect(isLosslessLineExtension(Buffer.from("b\na\n"), Buffer.from("a\nb\nc\n"))).toBe(false);
     expect(isLosslessLineExtension(Buffer.from("a\nb\n"), Buffer.from("a\nb\nc\n"))).toBe(true);
-  });
+  }, GIT_DRIVER_TIMEOUT_MS);
 
   it("REFUSES a DELETION dressed as an insertion — main's line absent from a longer lane copy", () => {
     expect(isLosslessLineExtension(Buffer.from("a\nb\n"), Buffer.from("a\nc\nd\ne\n"))).toBe(false);
-  });
+  }, GIT_DRIVER_TIMEOUT_MS);
 
   /**
    * The whole-line property, pinned where it now lives.
@@ -869,7 +889,7 @@ describe("prepareHeartbeatBranch — canonically-ordered set divergence", () => 
     // And the honest converse: an unterminated fragment that survives verbatim IS carried, so the
     // refusal above is about the record CHANGING, not about the missing newline as such.
     expect(isLosslessLineExtension(Buffer.from("a\nb"), Buffer.from("a\nc\nb"))).toBe(true);
-  });
+  }, GIT_DRIVER_TIMEOUT_MS);
 });
 
 /**
@@ -905,7 +925,7 @@ describe("merge=union is disqualified for the JSON live-feed index", () => {
     expect(rc).toBe(0);
     const parsed = JSON.parse(body) as { readonly entries: readonly { readonly eventId: string }[] };
     expect(parsed.entries.map((entry) => entry.eventId)).toEqual(["aaa", "bbb"]);
-  });
+  }, GIT_DRIVER_TIMEOUT_MS);
 
   it("SILENTLY publishes unparseable JSON on the divergent case, with exit code 0", () => {
     // Main holds `zzz`, which the lane never saw. This is the case the preparer's rule refuses
@@ -914,12 +934,12 @@ describe("merge=union is disqualified for the JSON live-feed index", () => {
     const { rc, body } = unionMerge(["aaa", "zzz"], ["aaa", "bbb"]);
     expect(rc).toBe(0);
     expect(() => JSON.parse(body) as unknown).toThrow();
-  });
+  }, GIT_DRIVER_TIMEOUT_MS);
 
   it("and so the shipped attributes must NOT declare a merge driver on that path", () => {
     // The guard on the reflex. Deleting this test is the only way to add the line, which is the
     // intended friction: whoever does it has to read the two cases above first.
     const declaration = new RegExp(`^\\s*${INDEX_PATH.replaceAll(".", "\\.")}\\s+.*merge=`, "m");
     expect(REPO_GITATTRIBUTES).not.toMatch(declaration);
-  });
+  }, GIT_DRIVER_TIMEOUT_MS);
 });
