@@ -4184,6 +4184,46 @@ not idle. **The second half of his sentence — "when the percentages go up, so 
 — I have not confidently mapped**, and per this repository's own discipline I am not going to
 infer what he meant. It is recorded verbatim, unglossed, pending him saying more.
 
+#### Aaron's Collatz take, its formal backing, and the one place I push back
+
+> *"Here is my controversial take, and it can be wrong but still in the same spirit: 3n+1, if it
+> ever ends, is very similar to primes. It's an engine — if we find the answer to it we have to
+> find another engine. This is game theory over infinite iterated games."*
+> — Aaron, 2026-09-02, flagging it as controversial himself
+
+**The spirit is right, and it has a theorem behind it that is stronger than the intuition.**
+**Conway (1972), *Unpredictable Iterations*,** proved that the *generalised* Collatz problem — the
+natural class of piecewise-linear iterations 3n+1 sits inside — is **undecidable**, and his
+**FRACTRAN** is Turing-complete built from exactly this kind of iteration. So *"if we solve one we
+must find another engine"* is not a hope about mathematical sociology. It is a **property of the
+class**: settling the specific instance leaves the class inexhaustible, because no procedure
+decides all of them. **The engine provably does not run out.** That is also the rigorous backing
+for the infinite-game framing — an infinite game requires an inexhaustible supply of open
+positions, and undecidability supplies exactly that. (Anchor for the framing itself: **James Carse,
+*Finite and Infinite Games*, 1986** — a finite game is played to win, an infinite game to continue
+play; already Aaron's recorded strategy as *tit-for-lesser-tat, teach, play*.)
+
+**Where I push back: primes and Collatz are not similar in the way the analogy needs.** Both are
+"famous open problems that resist" — that is a *matching count*, and by this repository's own rule
+a matching count is not an identification. The invariant that separates them is **generativity**:
+
+- **Primes are generative.** They built analytic number theory — the zeta function, RH, the
+  distribution theorems, the whole apparatus. The problem produced a field.
+- **Collatz is famously sterile.** Erdős's remark is the standard summary: *"Mathematics may not be
+  ready for such problems."* It has resisted for ninety years and generated comparatively little
+  structure around itself.
+
+**Resisting is not the same as generating**, and "engine" is a claim about *generating*. So the
+analogy holds at the level of the *class* (Conway: undecidable, inexhaustible) and fails at the
+level of the *instance* (Collatz has not been an engine in the way primes have). Both halves are
+worth keeping — the first is stronger than Aaron claimed, the second weaker.
+
+**Register:** stored as a **coincidence-with-its-register**, per
+[`numerology-vs-number-theory`](../.claude/rules/numerology-vs-number-theory.md) — the Conway
+undecidability half is a **checked anchor**; the primes↔Collatz similarity is a **labelled
+resonance that this note declines to promote**, with the excluding invariant (generativity) named
+so it does not silently become a belief later.
+
 **Register:** the direction is a **design decision, in force**. BQP vs BPP is **cited, open, and
 not ours to settle**. The Riemann link is a **labelled resonance** with two checked anchors and one
 unmapped clause — a generator, not a claim, per
