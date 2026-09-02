@@ -18,6 +18,8 @@ EXPERTS = ("last", "window-start", "train-mean", "ridge-window")
 LAMBDAS = (0.0, 1e-6, 1e-4, 1e-2, 1.0)
 Z95 = 1.959963984540054
 SHRINKAGES = tuple(step / 10.0 for step in range(11))
+COMMON_NOISE_UNIQUENESS_FLOOR = 0.05
+COMMON_NOISE_RIDGE = 0.25
 
 
 def xorshift32(state: int) -> int:
@@ -152,6 +154,97 @@ def serializable_artifact(artifact: dict[str, object]) -> dict[str, object]:
     }
 
 
+def fit_common_noise(
+    training_targets: np.ndarray,
+    training_forecasts: np.ndarray,
+    validation_targets: np.ndarray,
+    validation_forecasts: np.ndarray,
+    drop_common_factor: bool = False,
+    flip_loading_sign: bool = False,
+) -> dict[str, object]:
+    residuals = training_targets[:, None] - training_forecasts
+    residual_means = np.mean(residuals, axis=0)
+    covariance = np.cov(residuals, rowvar=False, ddof=1)
+    if np.any(~np.isfinite(covariance)) or np.any(np.diag(covariance) <= 0.0):
+        raise ValueError("CFB-COMMON-NOISE-COVARIANCE")
+
+    eigenvalues, eigenvectors = np.linalg.eigh(covariance)
+    leading_index = int(np.argmax(eigenvalues))
+    leading_value = float(eigenvalues[leading_index])
+    leading_vector = eigenvectors[:, leading_index].copy()
+    if float(np.sum(leading_vector)) < 0.0:
+        leading_vector *= -1.0
+    raw_loading = math.sqrt(max(leading_value, 0.0)) * leading_vector
+    scale = 1.0
+    for index in range(4):
+        loading = abs(float(raw_loading[index]))
+        if loading > 0.0:
+            scale = min(
+                scale,
+                math.sqrt((1.0 - COMMON_NOISE_UNIQUENESS_FLOOR) * covariance[index, index]) / loading,
+            )
+    factor_loading = scale * raw_loading
+    if flip_loading_sign:
+        factor_loading *= -1.0
+    if drop_common_factor:
+        factor_loading = np.zeros(4, dtype=np.float64)
+    uniqueness = np.diag(covariance) - factor_loading * factor_loading
+    uniqueness_ratios = uniqueness / np.diag(covariance)
+    if np.any(uniqueness_ratios < COMMON_NOISE_UNIQUENESS_FLOOR - 1e-12):
+        raise ValueError("CFB-COMMON-NOISE-UNIQUENESS-FLOOR")
+
+    factor_covariance = np.outer(factor_loading, factor_loading)
+    np.fill_diagonal(factor_covariance, np.diag(covariance))
+    ridge = 0.5 if os.environ.get("CFB_D_MUTANT") == "ridge-half" else COMMON_NOISE_RIDGE
+    regularized = factor_covariance + ridge * float(np.trace(covariance) / 4.0) * np.eye(4)
+    active_mask, weights, predicted_variance = active_set_weights(regularized)
+    validation_errors = validation_forecasts @ weights - validation_targets
+    interval_variance = float(np.mean(validation_errors * validation_errors))
+    if interval_variance <= 0.0 or not math.isfinite(interval_variance):
+        raise ValueError("CFB-COMMON-NOISE-INTERVAL-VARIANCE")
+    return {
+        "residualMeans": residual_means,
+        "residualCovariance": covariance,
+        "leadingEigenvalue": leading_value,
+        "leadingEigenvalueShare": leading_value / float(np.trace(covariance)),
+        "loadingScale": 0.0 if drop_common_factor else scale,
+        "factorLoading": factor_loading,
+        "uniqueness": uniqueness,
+        "uniquenessRatios": uniqueness_ratios,
+        "factorCovariance": factor_covariance,
+        "regularizedCovariance": regularized,
+        "activeMask": active_mask,
+        "weights": weights,
+        "predictedVariance": predicted_variance,
+        "intervalVariance": interval_variance,
+        "validationMse": interval_variance,
+        "ridge": ridge,
+        "fittedScalarCount": 15,
+    }
+
+
+def serializable_common_noise_artifact(artifact: dict[str, object]) -> dict[str, object]:
+    return {
+        "residualMeans": np.asarray(artifact["residualMeans"]).tolist(),
+        "residualCovariance": np.asarray(artifact["residualCovariance"]).tolist(),
+        "leadingEigenvalue": float(artifact["leadingEigenvalue"]),
+        "leadingEigenvalueShare": float(artifact["leadingEigenvalueShare"]),
+        "loadingScale": float(artifact["loadingScale"]),
+        "factorLoading": np.asarray(artifact["factorLoading"]).tolist(),
+        "uniqueness": np.asarray(artifact["uniqueness"]).tolist(),
+        "uniquenessRatios": np.asarray(artifact["uniquenessRatios"]).tolist(),
+        "factorCovariance": np.asarray(artifact["factorCovariance"]).tolist(),
+        "regularizedCovariance": np.asarray(artifact["regularizedCovariance"]).tolist(),
+        "activeMask": int(artifact["activeMask"]),
+        "weights": np.asarray(artifact["weights"]).tolist(),
+        "predictedVariance": float(artifact["predictedVariance"]),
+        "intervalVariance": float(artifact["intervalVariance"]),
+        "validationMse": float(artifact["validationMse"]),
+        "ridge": float(artifact["ridge"]),
+        "fittedScalarCount": int(artifact["fittedScalarCount"]),
+    }
+
+
 def main() -> None:
     if len(sys.argv) != 3:
         raise SystemExit("usage: etth1_static_oracle.py MANIFEST_JSON ETTH1_CSV")
@@ -218,6 +311,7 @@ def main() -> None:
             design_matrix @ coefficients,
         ))
 
+    training_forecasts = forecasts(train, train_design)
     validation_forecasts = forecasts(validation, validation_design)
     test_forecasts = forecasts(test, test_design)
     validation_residuals = validation[:, 3, None] - validation_forecasts
@@ -354,6 +448,140 @@ def main() -> None:
     )
     correlated_status = "useful" if useful else "calibration-repair-only" if calibration_repair else "not-supported"
 
+    common_artifact = fit_common_noise(
+        train[:, 3],
+        training_forecasts,
+        validation[:, 3],
+        validation_forecasts,
+    )
+    common_weights = np.asarray(common_artifact["weights"], dtype=np.float64)
+    common_means = test_forecasts @ common_weights
+    common_variances = np.full(len(test), float(common_artifact["intervalVariance"]))
+    common_metrics = metrics(targets, common_means, common_variances)
+    common_error = common_means - targets
+    common_nll = 0.5 * (
+        np.log(2.0 * math.pi * common_variances)
+        + common_error * common_error / common_variances
+    )
+    common_bootstrap_best = {
+        "mse": moving_block(
+            common_error * common_error,
+            best_error * best_error,
+            int(bootstrap["seed"]),
+            int(bootstrap["replicates"]),
+            int(bootstrap["blockLength"]),
+        ),
+        "gaussianNll": moving_block(
+            common_nll,
+            best_nll,
+            int(bootstrap["seed"]) ^ 0x9E3779B9,
+            int(bootstrap["replicates"]),
+            int(bootstrap["blockLength"]),
+        ),
+    }
+    common_bootstrap_static = {
+        "mse": moving_block(
+            common_error * common_error,
+            static_error * static_error,
+            int(bootstrap["seed"]),
+            int(bootstrap["replicates"]),
+            int(bootstrap["blockLength"]),
+        ),
+        "gaussianNll": moving_block(
+            common_nll,
+            static_nll,
+            int(bootstrap["seed"]) ^ 0x9E3779B9,
+            int(bootstrap["replicates"]),
+            int(bootstrap["blockLength"]),
+        ),
+    }
+    diagonal_artifact = fit_common_noise(
+        train[:, 3],
+        training_forecasts,
+        validation[:, 3],
+        validation_forecasts,
+        drop_common_factor=True,
+    )
+    diagonal_weights = np.asarray(diagonal_artifact["weights"], dtype=np.float64)
+    diagonal_means = test_forecasts @ diagonal_weights
+    diagonal_variances = np.full(len(test), float(diagonal_artifact["intervalVariance"]))
+    diagonal_metrics = metrics(targets, diagonal_means, diagonal_variances)
+    reversed_artifact = fit_common_noise(
+        train[::-1, 3],
+        training_forecasts[::-1],
+        validation[:, 3],
+        validation_forecasts,
+    )
+    sign_flipped_artifact = fit_common_noise(
+        train[:, 3],
+        training_forecasts,
+        validation[:, 3],
+        validation_forecasts,
+        flip_loading_sign=True,
+    )
+    factor_covariance = np.asarray(common_artifact["factorCovariance"])
+    off_diagonal = factor_covariance.copy()
+    np.fill_diagonal(off_diagonal, 0.0)
+    maximum_off_diagonal = float(np.max(np.abs(off_diagonal)))
+    diagonal_weight_difference = float(np.max(np.abs(common_weights - diagonal_weights)))
+    active_weight_count = int(np.sum(common_weights > 1e-9))
+    uniqueness_floor_holds = bool(
+        np.all(np.asarray(common_artifact["uniquenessRatios"]) >= COMMON_NOISE_UNIQUENESS_FLOOR - 1e-12)
+    )
+    non_vacuity_passes = (
+        maximum_off_diagonal > 1e-9
+        and active_weight_count >= 2
+        and diagonal_weight_difference > 1e-6
+        and uniqueness_floor_holds
+    )
+    reversed_difference = float(max(
+        np.max(np.abs(np.asarray(common_artifact["factorLoading"]) - np.asarray(reversed_artifact["factorLoading"]))),
+        np.max(np.abs(common_weights - np.asarray(reversed_artifact["weights"]))),
+        np.max(np.abs(factor_covariance - np.asarray(reversed_artifact["factorCovariance"]))),
+    ))
+    sign_covariance_difference = float(np.max(np.abs(
+        factor_covariance - np.asarray(sign_flipped_artifact["factorCovariance"])
+    )))
+    sign_weight_difference = float(np.max(np.abs(
+        common_weights - np.asarray(sign_flipped_artifact["weights"])
+    )))
+    common_permutation_seed = (int(bootstrap["seed"]) ^ 0x2C1B3C6D) & 0xFFFFFFFF
+    common_shuffled_targets = targets.copy()
+    permutation_state = common_permutation_seed
+    for index in range(len(common_shuffled_targets) - 1, 0, -1):
+        permutation_state = xorshift32(permutation_state)
+        swap_index = permutation_state % (index + 1)
+        common_shuffled_targets[index], common_shuffled_targets[swap_index] = (
+            common_shuffled_targets[swap_index],
+            common_shuffled_targets[index],
+        )
+    common_permuted_metrics = metrics(common_shuffled_targets, common_means, common_variances)
+    common_coverage_degradation = lane_metrics["equal"]["coverage95"] - common_metrics["coverage95"]
+    common_useful = (
+        non_vacuity_passes
+        and common_bootstrap_best["mse"]["upper95"] < 0.0
+        and common_coverage_degradation <= 0.05
+        and common_metrics["gaussianNll"] <= lane_metrics["best-validation"]["gaussianNll"]
+    )
+    common_mse_inflation = (
+        common_metrics["mse"] - lane_metrics["zeta-static"]["mse"]
+    ) / lane_metrics["zeta-static"]["mse"]
+    common_calibration_repair = (
+        non_vacuity_passes
+        and common_metrics["coverage95"] - lane_metrics["zeta-static"]["coverage95"] >= 0.10
+        and common_mse_inflation <= 0.01
+        and common_metrics["gaussianNll"] < lane_metrics["zeta-static"]["gaussianNll"]
+    )
+    common_status = (
+        "invalid-vacuous"
+        if not non_vacuity_passes
+        else "useful"
+        if common_useful
+        else "calibration-repair-only"
+        if common_calibration_repair
+        else "non-vacuous-not-supported"
+    )
+
     report = {
         "dataset": {"sha256": digest, "rows": len(target_series), "examples": count, "splits": [len(train), len(validation), len(test)]},
         "ridge": {
@@ -396,6 +624,42 @@ def main() -> None:
                 "nllChange": correlated_permuted_metrics["gaussianNll"] - correlated_metrics["gaussianNll"],
             },
             "verdict": correlated_status,
+        },
+        "commonNoise": {
+            "artifact": serializable_common_noise_artifact(common_artifact),
+            "metrics": common_metrics,
+            "nonVacuity": {
+                "passes": non_vacuity_passes,
+                "maximumOffDiagonal": maximum_off_diagonal,
+                "activeWeightCount": active_weight_count,
+                "diagonalWeightDifference": diagonal_weight_difference,
+                "uniquenessFloorHolds": uniqueness_floor_holds,
+            },
+            "diagonalMutation": {
+                "artifact": serializable_common_noise_artifact(diagonal_artifact),
+                "maximumPredictionDifference": float(max(
+                    np.max(np.abs(common_means - diagonal_means)),
+                    np.max(np.abs(common_variances - diagonal_variances)),
+                )),
+                "metricDifference": max(
+                    abs(common_metrics["mse"] - diagonal_metrics["mse"]),
+                    abs(common_metrics["gaussianNll"] - diagonal_metrics["gaussianNll"]),
+                ),
+            },
+            "reversedTrainingOrderDifference": reversed_difference,
+            "signFlip": {
+                "covarianceDifference": sign_covariance_difference,
+                "weightDifference": sign_weight_difference,
+            },
+            "bootstrapVersusBestValidation": common_bootstrap_best,
+            "bootstrapVersusStaticDag": common_bootstrap_static,
+            "permutedTargets": {
+                "seed": common_permutation_seed,
+                "metrics": common_permuted_metrics,
+                "mseChange": common_permuted_metrics["mse"] - common_metrics["mse"],
+                "nllChange": common_permuted_metrics["gaussianNll"] - common_metrics["gaussianNll"],
+            },
+            "verdict": common_status,
         },
     }
     print(json.dumps(report, sort_keys=True))

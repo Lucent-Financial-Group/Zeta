@@ -13,9 +13,9 @@
     }
   },
   "crossVerification": {
-    "typescriptPython": "7 metric lanes and 6 moving-block intervals agree within 1e-9",
+    "typescriptPython": "10 metric lanes and 10 moving-block intervals agree within 1e-9",
     "typescriptFsharp": "6 Gaussian topology cases agree within 1e-12",
-    "mutationControl": "Python CFB-C grid without alpha=1 is rejected"
+    "mutationControl": "Python CFB-C grid without alpha=1 and CFB-D ridge 0.5 mutation are rejected"
   },
   "cfbA": {
     "evidenceCounts": [2, 4, 8, 16, 32, 64],
@@ -132,6 +132,98 @@
       "nllChange": 0.3732421644503665
     },
     "usefulness": "not-supported"
+  },
+  "cfbD": {
+    "artifact": {
+      "residualMeans": [
+        -0.15128305906989745,
+        -0.23363422468712589,
+        2.810393453755125e-13,
+        7.623538595947887e-15
+      ],
+      "leadingEigenvalue": 85.09925675764171,
+      "leadingEigenvalueShare": 0.6357784347605134,
+      "loadingScale": 1,
+      "factorLoading": [
+        2.6111092175197737,
+        2.774130707407056,
+        7.782439478608397,
+        3.1653119896534165
+      ],
+      "uniquenessRatios": [
+        0.6912804473860308,
+        0.6825319710702055,
+        0.1473461358371146,
+        0.39248572251339414
+      ],
+      "activeMask": 11,
+      "weights": [
+        0.31806021106245463,
+        0.28289542237260573,
+        0,
+        0.3990443665649397
+      ],
+      "predictedVariance": 15.032217902211007,
+      "intervalVariance": 8.558089417452802,
+      "ridge": 0.25,
+      "fittedScalarCount": 15
+    },
+    "nonVacuity": {
+      "passes": true,
+      "maximumOffDiagonal": 24.63384899039124,
+      "activeWeightCount": 3,
+      "diagonalWeightDifference": 0.10826463321067252,
+      "reversedTrainingOrderDifference": 0,
+      "signFlipCovarianceDifference": 0,
+      "signFlipWeightDifference": 0
+    },
+    "metrics": {
+      "mse": 9.76909777837169,
+      "mae": 2.413811474141154,
+      "gaussianNll": 2.563129277883838,
+      "coverage95": 0.922228670922809,
+      "meanIntervalWidth95": 11.467440530643369
+    },
+    "bootstrapMinusBestValidation": {
+      "mse": {
+        "pointEstimate": 0.145994946918817,
+        "lower95": -0.502679741733235,
+        "upper95": 0.7739477038786403
+      },
+      "gaussianNll": {
+        "pointEstimate": 0.011523829581146585,
+        "lower95": -0.023834645135345035,
+        "upper95": 0.05185903776305313
+      }
+    },
+    "bootstrapMinusStaticDag": {
+      "mse": {
+        "pointEstimate": 0.07569736464776489,
+        "lower95": -0.26255181619134343,
+        "upper95": 0.42588653217326555
+      },
+      "gaussianNll": {
+        "pointEstimate": -0.41300870204194645,
+        "lower95": -0.7107137688023479,
+        "upper95": -0.17077427405406975
+      }
+    },
+    "diagonalMutation": {
+      "activeMask": 15,
+      "weights": [
+        0.28229952991629187,
+        0.26362692820978284,
+        0.10826463321067252,
+        0.3458089086632527
+      ],
+      "maximumPredictionDifference": 2.3422768858214233,
+      "metricDifference": 0.4121142318675375
+    },
+    "permutedTargets": {
+      "mseChange": 10.47782370758137,
+      "nllChange": 0.6121590460490856
+    },
+    "usefulness": "calibration-repair-only"
   },
   "crdtBeliefFusion": {
     "evidenceUnion": {
