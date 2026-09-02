@@ -28,7 +28,9 @@ import {
   isApplicationSynced,
   isIncludedScope,
   isZetaGitDirectoryApplicationSource,
+  mergeArgoCdTimeoutDiagnostics,
   parseApplicationList,
+  REPO_BACKED_CHILD_WAIT_DIAGNOSTIC_COMMANDS,
   parseApplicationName,
   parseArgs,
   parseK3dClusterName,
@@ -304,13 +306,7 @@ describe("081KSXN940008QG0R000SCP2H1 argocd-health-test argument parsing", () =>
 
   test("rejects the Cilium kind profile without --cni cilium", () => {
     const parsed = parseArgs(
-      [
-        "--run",
-        "--provider",
-        "kind",
-        "--config",
-        "full-ai-cluster/dev-cluster/profiles/ci.cilium.kind-config.yaml",
-      ],
+      ["--run", "--provider", "kind", "--config", "full-ai-cluster/dev-cluster/profiles/ci.cilium.kind-config.yaml"],
       {},
     );
     expect("kind" in parsed).toBe(true);
@@ -903,6 +899,38 @@ describe("081KSXN940008QG0R000SCP2H1 argocd-health-test planning", () => {
     // Application the federated-identity work stands on.
     expect(included).toContain("spire");
     expect(included).toContain("spire-crds");
+  });
+
+  test("child-wait diagnostic commands name the surfaces run 33684309073 lacked", () => {
+    const labels = REPO_BACKED_CHILD_WAIT_DIAGNOSTIC_COMMANDS.map((command) => command.label);
+    expect(labels).toContain("zeta-root-dev");
+    expect(labels).toContain("applications");
+    expect(labels).toContain("repo-server-logs");
+    expect(labels).toContain("application-controller-logs");
+    const root = REPO_BACKED_CHILD_WAIT_DIAGNOSTIC_COMMANDS.find((command) => command.label === "zeta-root-dev");
+    expect(root?.args).toContain("zeta-root-dev");
+    const repoServer = REPO_BACKED_CHILD_WAIT_DIAGNOSTIC_COMMANDS.find(
+      (command) => command.label === "repo-server-logs",
+    );
+    expect(repoServer?.args.join(" ")).toContain("argocd-repo-server");
+  });
+
+  test("child-wait diagnostic merge keeps the NotFound stderr and attaches dumps", () => {
+    const merged = mergeArgoCdTimeoutDiagnostics(
+      {
+        kind: "ArgoCdTimeout",
+        message: "timed out waiting for repo-backed child Applications before git-ref patch",
+        command: ["kubectl", "-n", "argocd", "get", "application", "hat-system"],
+        detail: {
+          stdout: "",
+          stderr: 'Error from server (NotFound): applications.argoproj.io "hat-system" not found\n',
+        },
+      },
+      { "zeta-root-dev": "sync=Unknown health=Progressing ComparisonError: ..." },
+    );
+    const detail = merged.detail as { stderr: string; diagnostics: Record<string, string> };
+    expect(detail.stderr).toContain("hat-system");
+    expect(detail.diagnostics["zeta-root-dev"]).toContain("ComparisonError");
   });
 
   test("detects repo-backed child Applications that should track the harness git ref", () => {

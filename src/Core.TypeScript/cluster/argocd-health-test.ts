@@ -1413,9 +1413,7 @@ function validateOptions(options: CliOptions): Failure | null {
   if (options.provider === "kind" && options.kindCni === "cilium") {
     const cfg = basename(options.configPath).toLowerCase();
     if (!cfg.includes("cilium")) {
-      return usageFailure(
-        "--cni cilium requires a no-default-CNI kind profile (ci.cilium.kind-config.yaml)",
-      );
+      return usageFailure("--cni cilium requires a no-default-CNI kind profile (ci.cilium.kind-config.yaml)");
     }
   }
   if (options.provider === "kind" && options.kindCni === "kindnetd") {
@@ -1838,7 +1836,16 @@ function waitForKubectl(
   pollSeconds: number,
   message: string,
 ): Promise<Failure | null> {
+  const startedAt = Date.now();
+  let lastProgressAt = startedAt;
+  console.log(`Waiting: ${message}`);
   return waitFor(timeoutSeconds, pollSeconds, () => {
+    const now = Date.now();
+    if (now - lastProgressAt >= 60_000) {
+      const elapsedSec = Math.floor((now - startedAt) / 1000);
+      console.log(`still waiting (${elapsedSec}s): ${message}`);
+      lastProgressAt = now;
+    }
     const result = kubectl(args, Math.max(pollSeconds, 10));
     if (result.status === 0) return null;
     return {
@@ -2080,6 +2087,65 @@ export function isZetaGitDirectoryApplicationSource(source: Record<string, unkno
   return path.startsWith("full-ai-cluster/k8s/applications");
 }
 
+/**
+ * kubectl surfaces dumped when App-of-Apps never produces children.
+ *
+ * MEASURED on run 33684309073 (kind+Cilium included, `--cni cilium`, no
+ * `--existing`): Cilium 1.20.1 installed, ArgoCD rollouts succeeded, root
+ * App-of-Apps applied, then 2400s of silence waiting for `hat-system`.
+ * Failure JSON was only `NotFound`. The four-app table printed ZERO VERDICTS
+ * PARSED. Kindnetd included on the same SHA DID create children. Without this
+ * dump the next probe is another 40-minute non-measurement (081M1DFQ2MZ).
+ */
+export const REPO_BACKED_CHILD_WAIT_DIAGNOSTIC_COMMANDS: readonly {
+  readonly label: string;
+  readonly args: readonly string[];
+}[] = [
+  { label: "zeta-root-dev", args: ["-n", "argocd", "get", "application", "zeta-root-dev", "-o", "yaml"] },
+  { label: "applications", args: ["-n", "argocd", "get", "applications.argoproj.io", "-o", "wide"] },
+  { label: "argocd-pods", args: ["-n", "argocd", "get", "pods", "-o", "wide"] },
+  { label: "repo-server-logs", args: ["-n", "argocd", "logs", "deploy/argocd-repo-server", "--tail=150"] },
+  {
+    label: "application-controller-logs",
+    args: ["-n", "argocd", "logs", "statefulset/argocd-application-controller", "--tail=150"],
+  },
+  { label: "kube-system-pods", args: ["-n", "kube-system", "get", "pods", "-o", "wide"] },
+];
+
+export function mergeArgoCdTimeoutDiagnostics(failure: Failure, dumps: Readonly<Record<string, string>>): Failure {
+  const existing = asRecord(failure.detail) ?? {};
+  return {
+    ...failure,
+    detail: {
+      ...existing,
+      diagnostics: dumps,
+    },
+  };
+}
+
+function collectRepoBackedChildWaitDiagnostics(): Record<string, string> {
+  const dumps: Record<string, string> = {};
+  for (const { label, args } of REPO_BACKED_CHILD_WAIT_DIAGNOSTIC_COMMANDS) {
+    const result = kubectl(args, 20);
+    const text = [result.stdout, result.stderr]
+      .filter((part) => part.length > 0)
+      .join("\n")
+      .slice(-4000);
+    dumps[label] = text.length > 0 ? text : `(empty, exit ${String(result.status)})`;
+  }
+  return dumps;
+}
+
+function attachRepoBackedChildWaitDiagnostics(failure: Failure): Failure {
+  const dumps = collectRepoBackedChildWaitDiagnostics();
+  console.log("=== repo-backed child wait timed out; cluster state at timeout ===");
+  for (const { label } of REPO_BACKED_CHILD_WAIT_DIAGNOSTIC_COMMANDS) {
+    console.log(`--- ${label} ---`);
+    console.log(dumps[label] ?? "");
+  }
+  return mergeArgoCdTimeoutDiagnostics(failure, dumps);
+}
+
 function patchGitBackedApplicationsToGitRef(gitRef: string): Failure | null {
   if (gitRef === "main") return null;
   const command = ["-n", "argocd", "get", "applications.argoproj.io", "-o", "json"];
@@ -2156,7 +2222,7 @@ async function waitForArgoCd(plan: HarnessPlan, options: CliOptions): Promise<Fa
     poll,
     "timed out waiting for repo-backed child Applications before git-ref patch",
   );
-  if (childFailure !== null) return childFailure;
+  if (childFailure !== null) return attachRepoBackedChildWaitDiagnostics(childFailure);
 
   return patchGitBackedApplicationsToGitRef(plan.gitRef);
 }
