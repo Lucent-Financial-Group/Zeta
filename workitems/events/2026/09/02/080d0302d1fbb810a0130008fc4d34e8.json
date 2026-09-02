@@ -1,0 +1,14 @@
+{
+  "id": "080d0302d1fbb810a0130008fc4d34e8",
+  "at": "2026-09-02T04:22:02.359Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1G5MFVP087G0R000JRBK4Z",
+    "type": "bug",
+    "title": "build-and-test (windows-2025) fails at the Test step intermittently on main — 3 of the last 8 commits, build always green",
+    "slug": "build-and-test-windows-2025-fails-at-the-test-step-intermitt",
+    "priority": "P2",
+    "filename": "081M1G5MFVP087G0R000JRBK4Z-build-and-test-windows-2025-fails-at-the-test-step-intermitt.md"
+  }
+}
