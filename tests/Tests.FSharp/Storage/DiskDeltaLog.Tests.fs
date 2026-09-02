@@ -107,6 +107,26 @@ let ``group-commit segment log appends and replays in sequence order`` () =
 
 
 [<Fact>]
+let ``group-commit N small appends land in one segment file not N files`` () =
+    // Product-existence floor for ZetaFS (ZetaDB D4 / ZD4): auto-batch of small
+    // writes already exists on a host directory. A custom FS must win on
+    // something else. Falsifier: 32 concurrent appends → one `delta.segment`,
+    // zero `DiskDeltaLog`-style `*.delta` files.
+    withDir "gcdl-one-segment" (fun dir ->
+        use log = new GroupCommitDiskDeltaLog<int>(dir, CborEntryCodec<int>(keyEnc, keyDec))
+        let dlog = log :> IDeltaLog<int>
+        let tasks =
+            [| for i in 1 .. 32 ->
+                   dlog.AppendAsync(ZSet.ofKeys [ i ], empty, ct).AsTask() |]
+        System.Threading.Tasks.Task.WaitAll(tasks |> Array.map (fun t -> t :> System.Threading.Tasks.Task))
+        Directory.GetFiles(dir, "*.delta").Length |> should equal 0
+        let segment = Path.Combine(dir, "delta.segment")
+        File.Exists segment |> should equal true
+        FileInfo(segment).Length > 0L |> should equal true
+        (dlog.ReplayAsync(0L, ct).AsTask().Result).Length |> should equal 32)
+
+
+[<Fact>]
 let ``group-commit segment log recovers high-water across a fresh instance`` () =
     withDir "gcdl-reopen" (fun dir ->
         (use log1 = new GroupCommitDiskDeltaLog<int>(dir, CborEntryCodec<int>(keyEnc, keyDec))

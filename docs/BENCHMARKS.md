@@ -9,7 +9,7 @@ At N = 4096 entries:
 
 | Op | Time | Allocated | Throughput (ops/sec) |
 |---|---:|---:|---:|
-| **Lookup** (binary search) | **218 ns** | **0 B** | ~4.6 M |
+| **Lookup** (binary search, older `ZSetBench`) | **218 ns** | **0 B** | ~4.6 M |
 | **WeightedCount** | 9.5 µs | **0 B** | N/A |
 | **Neg** | 11.6 µs | 65 KB (output) | — |
 | **Scale** | 14.8 µs | 65 KB | — |
@@ -81,16 +81,29 @@ coalesce + one-thread `Step`. These rows are **our tick**, not a
 head-to-head win.
 
 Unique-key path is now in the harness: `NexmarkQ1Unique` / `NexmarkQ2Unique`
-(`BidRow { Idx; Price }`, `|Z-set| = N`). Short N=3 unique-key Q1 100k
-(run 33606669849): this Mac 718 µs, GHA ubuntu 1.87 ms, macos 1.51 ms,
-windows-2025 2.01 ms (`--inProcess`); alloc **2.34 MB on every OS**.
-Indicative, high variance, not this table. Factory-pin Feldera native
-Q1/Q2 100k 1-core (rustc **1.99.0-beta.3**, run 33603177913): this M2
-Ultra Q1 74.2 ms / 1.35 M/s, GHA ubuntu-24.04 95.2 ms / 1.05 M/s, GHA
-macos-26 127.8 ms / 0.78 M/s. The 1.93.1 MSRV binary on this Mac was
-Q1 69.8 ms / 1.43 M/s. Detail: `docs/research/feldera-comparison-status.md`.
-CI drift check of **our** unique-key + zero-alloc benches on
-ubuntu-24.04 / macos-26 / windows-2025: `.github/workflows/feldera-compare.yml`.
+(`BidRow { Idx; Price }`, `|Z-set| = N`). Short N=3 (run 33606669849 + this
+Mac 2026-09-02):
+
+| Host | Q1 10k | Q1 100k | Q2 10k | Q2 100k | Alloc Q1 100k / Q2 100k |
+|---|---:|---:|---:|---:|---|
+| this M2 Ultra | 143 µs | 718 µs | 72.03 µs | 617.55 µs | 2.34 MB / 1.17 MB |
+| GHA ubuntu-24.04 | 217 µs | 1.87 ms | 47 µs | 1.23 ms | 2.34 MB / 1.17 MB |
+| GHA macos-26 | 244 µs | 1.51 ms | 134 µs | 1.57 ms | 2.34 MB / 1.17 MB |
+| GHA windows-2025 `--inProcess` | 333 µs | 2.01 ms | 126 µs | 1.41 ms | 2.34 MB / 1.17 MB |
+
+Indicative, high variance. **Allocated** is the cross-OS column. this-Mac
+Q2 was missing until 2026-09-02 (only Q1 unique had been run locally).
+`ZSetZeroAlloc.Lookup` N=4096, 0 B, same N=3 job: this Mac **17.3 ns**
+(GHA ubuntu 24.9 ns, macos-26 22.8 ns, windows 17.8 ns). The 218 ns Lookup
+row above is the older `ZSetBench`, not this class.
+
+Factory-pin Feldera native Q1/Q2 100k 1-core (rustc **1.99.0-beta.3**, run
+33603177913): this M2 Ultra Q1 74.2 ms / 1.35 M/s, GHA ubuntu-24.04 95.2 ms
+/ 1.05 M/s, GHA macos-26 127.8 ms / 0.78 M/s. The 1.93.1 MSRV binary on
+this Mac was Q1 69.8 ms / 1.43 M/s. Detail:
+`docs/research/feldera-comparison-status.md`. CI drift check of **our**
+unique-key + zero-alloc benches on ubuntu-24.04 / macos-26 / windows-2025:
+`.github/workflows/feldera-compare.yml`.
 
 Ingest complexity (081M1ETY8TY087G0R0022CT4R5):
 

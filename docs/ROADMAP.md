@@ -147,6 +147,15 @@ shipped: truncate writes a commit with the old tip as parent (Reversible through
 the DAG; read surface still Erasing). Remaining: BLAKE3 as the tamper-evident
 default, factory path stops execing `git`/`gh`. Workitem `081M108RYNT087G0R001JSRNZE`.
 
+**ZetaDB product (2026-09-02):** the whole database — event log as WAL, tables as
+views, streaming SQL with Flink/Reaqtor *feel*, Feldera as the DBSP competitor
+(not Postgres-on-DBSP; their Postgres is connectors). SQL is a **package**
+targeting Core, not a compiler stuffed into Core (WONT-DO 2026-04-17 revisit).
+Design:
+[`docs/design/2026-09-02-zetadb-roadmap-event-sourced-streaming-sql-not-feldera-on-postgres.md`](design/2026-09-02-zetadb-roadmap-event-sourced-streaming-sql-not-feldera-on-postgres.md)
+(`081M1HGD1QA087G0R001GRHPFW`). ZetaFS is optional as a product until it wins
+the small-write bench against host FS + `GroupCommitDiskDeltaLog`.
+
 **First-product spec (2026-08-30/31):** ZetaFS is the custom filesystem **for ZetaDB**
 (git/Venti-class CAS, POSIX as a mount, history as a fold, per-entity policy). Not
 ext4-but-hashed. Design:
@@ -530,7 +539,8 @@ Gaps: **fsync floor** (unshipped), **multi-key ACID/isolation** (only single-str
 - **Remaining TLA+ specs** — `TransactionInterleaving`, `ChaosEnvDeterminism`, `ConsistentHashRebalance`
 - **TLC-validation test** — run the `.tla` files in a `dotnet test` to prevent drift
 - **No-`app` needle remaining** — do not fuse `InterruptFeedback` into `FourCornerTrace`; keep Kleisli ISR for interrupts so CHIP-8/9 / scheduler self-prediction stays run-ahead (`081M10AZ6KS087G0R0000SSFMH`)
-- **ZetaFS dual-fold remaining** — Parent edge shipped. **CLI factory path:** `zeta init` writes `.zetafs`; `StoreSelect` prefers it over LibGit2Sharp git discover (`081M177JJX9087G0R000BDYG88`). Own BLAKE3 (`Blake3Spec`) is the store hasher; NuGet is the test oracle. Core's `defaultHasher` stays XxHash128. Remaining: factory scripts still exec `git`/`gh`; git fallback stays for repos without `.zetafs`. First-product cut (CAS store, per-entity policy, log-as-truth, POSIX as a mount) is specified in [`docs/design/2026-08-30-zetafs-first-product-cas-store-per-entity-policy.md`](design/2026-08-30-zetafs-first-product-cas-store-per-entity-policy.md) (`081M1C59ZG4087G0R000VM8DZN`). `081M108RYNT087G0R001JSRNZE`
+- **ZetaDB product** — map landed 2026-09-02 (event log as WAL, tables as views, Flink/Reaqtor feel, Feldera as DBSP competitor not Postgres-on-DBSP). SQL is a package targeting Core, not inside Core. Next: ZD1 standing-query bench, ZD2 freeze-through-ferry (D4), ZD4 FS product-existence bench. [`docs/design/2026-09-02-zetadb-roadmap-event-sourced-streaming-sql-not-feldera-on-postgres.md`](design/2026-09-02-zetadb-roadmap-event-sourced-streaming-sql-not-feldera-on-postgres.md) `081M1HGD1QA087G0R001GRHPFW`
+- **ZetaFS dual-fold remaining** — Parent edge shipped. **CLI factory path:** `zeta init` writes `.zetafs`; `StoreSelect` prefers it over LibGit2Sharp git discover (`081M177JJX9087G0R000BDYG88`). Own BLAKE3 (`Blake3Spec`) is the store hasher; NuGet is the test oracle. Core's `defaultHasher` stays XxHash128. Remaining: factory scripts still exec `git`/`gh`; git fallback stays for repos without `.zetafs`. First-product cut (CAS store, per-entity policy, log-as-truth, POSIX as a mount) is specified in [`docs/design/2026-08-30-zetafs-first-product-cas-store-per-entity-policy.md`](design/2026-08-30-zetafs-first-product-cas-store-per-entity-policy.md) (`081M1C59ZG4087G0R000VM8DZN`). ZetaDB product map and FS requirements D1–D8: [`docs/design/2026-09-02-zetadb-roadmap-event-sourced-streaming-sql-not-feldera-on-postgres.md`](design/2026-09-02-zetadb-roadmap-event-sourced-streaming-sql-not-feldera-on-postgres.md) (`081M1HGD1QA087G0R001GRHPFW`). `081M108RYNT087G0R001JSRNZE`
 - **DU expand remaining** — route `NextAction` / `DbCommand` through `DuExpand`; BNN chooser reads SoftValue over DU cases (`081M10AAVAT087G0R0027M0GV5`)
 - **Next extract after Harny** — pick by measured git-history co-change **and** live dependency graph (not by a layer name); DV2 change-rate *or* toolchain closure (round 3: `zeta-formal` / `zeta-wasm` strongest on CRP); **12-factor** as the app-shaped categorization of an extract. Dogfood first, then `create-repo` cutover (gated). `081M120GFSV087G0R003XCPC64` · `081M12CZRHC087G0R0008X7SYG`
 - **Repeated-correction corpus** — the coding-defaults trainset (building-code layer, any code). Prompt-paste does not produce adherence (`ρ` trainset floor). Collector: retractable `(rule, violation, repair)` on `labelled-observation` (`fromLintFinding` shipped). Lint-tier machine-applicable rate is 0/27; 13 healers exist as a *separate* population with no shared rule id. Composable one-shot rules (expert-system shape); BNN-the-name is wrong for an addressable DAG. If you route up, take metrics. Write-set disjointness of live Tier-0 is a roster property, not a harness law — test it, do not pretend `certify()` implies confluence. `081M12CZRHC087G0R0008X7SYG`
@@ -607,7 +617,8 @@ Taken from scout agent:
 ## Where Feldera beats us today
 
 - Multi-node distribution (we're single-process)
-- SQL compiler (we're F#/C# host-language only)
+- SQL compiler (we're F#/C# host-language only; ZetaDB package is the
+  2026-09-02 revisit — not inside Core)
 - Compiled Rust circuits (our LINQ IL-emit is P1)
 - Mature production deployment experience
 

@@ -1,0 +1,363 @@
+# ZetaDB — event-sourced streaming SQL, not Feldera sitting on Postgres
+
+**Author:** Ani (Grok Build) / Aaron 2026-09-02
+**Date:** 2026-09-02
+**Work item:** `081M1HGD1QA087G0R001GRHPFW`
+**Composes with:** ZetaFS first product `081M1C59ZG4087G0R000VM8DZN`
+**Status:** Product design. Pieces are in-tree; the assembled engine is not.
+**Register:** product design. Does not replace [`docs/ROADMAP.md`](../ROADMAP.md) (hub) or the ZetaFS first-product spec. This is the **ZetaDB satellite**.
+**Extends (do not contradict):**
+
+- [`docs/ROADMAP.md`](../ROADMAP.md) north star (git-native two-plane database)
+- [`docs/design/2026-08-30-zetafs-first-product-cas-store-per-entity-policy.md`](2026-08-30-zetafs-first-product-cas-store-per-entity-policy.md)
+- [`docs/design/2026-08-28-there-is-no-single-tip-partitioned-zset-tips-joined-by-shippable-rx-queries.md`](2026-08-28-there-is-no-single-tip-partitioned-zset-tips-joined-by-shippable-rx-queries.md)
+- [`docs/DECISIONS/2026-08-09-event-driven-browser-zetadb-node.md`](../DECISIONS/2026-08-09-event-driven-browser-zetadb-node.md)
+- [`docs/FOUNDATIONDB-DST.md`](../FOUNDATIONDB-DST.md)
+
+**Does not settle:** the public name (still gated: naming-expert + Ilyana + Aaron). Working label **ZetaDB**. Never claim a signed v1 database or a v0.9 filesystem from this document.
+
+---
+
+## Honesty peel
+
+Zeta.Core already has a DBSP algebra, Z-sets, ferry group-commit, Rx/LINQ surfaces, a toy query plan, a `zeta { }` computation expression, columnar SIMD kernels, Arrow IPC, and a ZetaFS *polyfill*. That is **not** a database product. Assembling those pieces into a streaming SQL engine with a wire protocol, a planner that batch/SIMD-s most of the time, and a store that is first-class for the engine is the work this roadmap names.
+
+`docs/ZETA-CORE-TECHNOLOGY-FOR-MAX.md` Phase 1 saying ZetaDB is "already a full relational model" overclaims the same way Phase 2 overclaims the DAG-FS. What shipped is the algebra plus adapters. The query planner, ANSI SQL surface, wire adapters, multi-node topology, and crash-safe FS are **designed here, not shipped**.
+
+This PR does **not** ship ZetaFS v0.9. Crash recovery stays `toy` until first-product PR12. On-disk `ns` is still `git-trees`. POSIX mount is PR13. What this cut *does* ship: the product map, the WONT-DO revisit (SQL as a **package**, not inside Core), ZetaFS requirements the database actually needs, this-Mac Q2/Lookup numbers, and two small FS falsifiers (one-segment group-commit; `Regen` is Singleton until a generator is metered).
+
+---
+
+## Overview
+
+ZetaDB is the **whole database**: event log as source of truth, tables as incremental materialized views over that log, a streaming SQL pipeline on top of Rx / LINQ / F# computation expressions, protocol adapters so existing clients can migrate, and ZetaFS as the custom store *if and only if* it makes the database faster or safer than a host filesystem plus the ferry.
+
+**Feel, not clone:** Apache Flink (unified batch + streaming) and [Reaqtor](https://github.com/reaqtive/reaqtor) (durable standing Rx queries that survive restart). Feldera is the **DBSP competitor**, not the product shape.
+
+**Not Feldera-on-Postgres.** Feldera's own docs: DBSP is a query engine, not a database. Their storage is their own (`PosixBackend` / `MemoryBackend`, log-structured batches). Postgres appears as **connectors** (input: SQL query → JSON → Feldera; output: experimental INSERT/UPDATE/DELETE or CDC). ZetaDB does not sit on Postgres, MySQL, or any other engine for compute or for the WAL. We wire the entire stack. Protocol adapters speak *their wire*; they do not borrow *their storage*.
+
+**Relativistic, no appointed hub.** Any node may replicate any table or stream and run operations on it. "Replica" is a misnomer — placement is per-stream, not a full copy of the universe. Data **and code** move. There is no split-brain as a failure class: forward progress first, later CRDT reconciliation, or work thrown away, or a named permanent fork. That is why the filesystem must treat fork as first-class.
+
+---
+
+## What ZetaDB is
+
+1. **Event sourcing as truth.** The WAL *is* the database. Tables are standing queries over the event log — the same stream/table duality `QuerySurface` already states (`batch(R) == Σ streaming(ΔR_t)`). Treating the WAL as truth is not a metaphor; it is the storage contract.
+2. **A streaming SQL pipeline** with Flink/Reaqtor feel: standing queries, retraction-native deltas, batch and streaming as two execution modes of one plan.
+3. **Host-language backbone under SQL:** Rx queries, LINQ, F# computation expressions. SQL is a *front end* over that backbone, not a second algebra.
+4. **Protocol adapters** (Postgres wire, MySQL wire, our own, later others) so teams migrate without a flag day. Compatibility lives at the **wire**, not the internals (`sql-engine-expert`).
+5. **First-class row store and column store.** Column layout is Apache Arrow-compatible. Not a MariaDB ColumnStore side engine; two layouts over one Z-set algebra.
+6. **SIMD / low-alloc everywhere the planner can.** FerryThrottler auto-batches (producer 1-at-a-time, consumer batches, and the reverse). The planner should prefer batch/SIMD most of the time *because* the ferry exists.
+7. **DoP=1 → N, same code.** FoundationDB-style deterministic simulation at DoP=1; throughput at DoP=N. No `Task.Run` on the scored path.
+8. **TigerBeetle-shaped ambition on the commit path**, with honesty: we have not metered that yet. Auto-batch + mux/full-duplex + zero-alloc Z-set ops are the *bets*, not the measured result.
+9. **No central tip.** Partitioned Z-set tips joined by shippable Rx queries ([no-single-tip design](2026-08-28-there-is-no-single-tip-partitioned-zset-tips-joined-by-shippable-rx-queries.md)).
+10. **Historical data compresses toward a generator.** When a generator can reproduce a history, the original bytes need not stay on disk. That is the columnar idea aimed at the **event store**, not only at tables.
+
+---
+
+## What ZetaDB is not
+
+- Not Feldera with a different SQL compiler.
+- Not Postgres with DBSP views bolted on (Materialize-shaped "engine on foreign storage").
+- Not a drop-in CockroachDB replacement this quarter (`docs/ZETA-ARCHITECTURE-UNIFIED.md` still names Cockroach as current cluster backing; that line is a *plan*, not a ship).
+- Not stuffing a SQL compiler into `Zeta.Core`. Core stays the algebra + runtime. ZetaDB is the **product package** that targets that surface. This is the WONT-DO 2026-04-17 distinction, revisited rather than silently flipped.
+- Not an appointed hub-and-spoke (Itron patent boundary; manifesto §1).
+
+---
+
+## Feldera is the DBSP competitor
+
+| | Feldera | ZetaDB |
+|---|---|---|
+| Category | Incremental SQL *query engine* + connectors | Whole database (log, views, SQL, wire, store) |
+| Compute storage | Own (posix/memory backends, not Postgres) | Own (ZetaFS if it wins; host FS + ferry until then) |
+| Postgres | Input connector + experimental output sink | Wire **adapter** only; never the WAL |
+| Feel | Incremental SQL over changing inputs | Flink unified batch/stream + Reaqtor durable Rx |
+| Testing | Rust benches, their pipeline manager | DoP=1 DST, chaos, four-oracle byte-lock, alloc benches |
+| Distribution | Multi-node (they beat us here today) | Relativistic, per-stream placement, no split-brain |
+| SQL | Mature compiler | Host-language first; ANSI SQL is the product overlay |
+
+ROADMAP already records where they beat us (distribution, SQL compiler, compiled Rust circuits, production time). This document does not reopen those as insults; it names the product that *closes* the SQL and storage gaps without becoming them.
+
+Compare numbers stay in [`docs/research/feldera-comparison-status.md`](../research/feldera-comparison-status.md). Do not divide unique-key `Send+Step` by Feldera pipeline elapsed and call it events/s.
+
+---
+
+## Feel: Flink and Reaqtor, not "another Feldera"
+
+**Flink (Carbone et al., IEEE Data Eng. Bull. 2015).** One engine, two modes. Dynamic tables. Batch is a finite stream. `QuerySurface` already cites this paper and the mode-equivalence law. Clean-room: papers only, no Flink source.
+
+**Reaqtor (Bart De Smet / Microsoft, now [reaqtive/reaqtor](https://github.com/reaqtive/reaqtor)).** Server-side Rx: standing queries registered once, evaluated continuously, subscriptions that survive process restart. Nuqleon Bonsai is the persistable expression subset. In-tree: `src/Core/QuerySurface.fs` (IQueryable / IQbservable → one plan), `src/Core/Rx.fs`, ROADMAP P2 "IQbservable / Reaqtor-style Bonsai slim IR" (`ZSetRx.connectQuery` shipped). That is the *feel* of durable standing queries. We do not port Reaqtor.
+
+**CQL (Arasu, Babu, Widom, VLDBJ 2006).** Stream↔relation conversion is the missing generality `QuerySurface` already refuses to claim. When SQL lands, Istream/Dstream/Rstream (or an honest subset) has to be a named decision, not an accident.
+
+---
+
+## Event log as WAL; tables are views
+
+Aaron: *"the tables are just really views over the event source data. it's very similar to treating our WAL as the source of truth."*
+
+This is already the algebra:
+
+- Append to the log = `+w` (assert) or `−w` (retract).
+- A table is `I` (integrate) of a standing query over those deltas.
+- A changelog of a table is `D` (differentiate) of that view.
+- `Q^Δ = D ∘ Q ∘ I` (Budiu et al., VLDB 2023) is the law `ToyPlan.modeEquivalence` exists to earn.
+
+**Transactional tables** are still views. Isolation is a property of how deltas are *admitted* to the log (single-stream batch exactly-once is shipped; multi-key ACID is ROADMAP item 10 / honest-reliability gap). Do not invent a second heap that becomes truth.
+
+Browser ADR (2026-08-09): every executor is a temporary fold of the same durable image. No process owns the database by staying alive. That ADR is the *control-plane* reading of the same WAL-as-truth rule.
+
+---
+
+## Relativistic topology — replicas are a misnomer
+
+- **No central node.** Any node may hold any subset of tables/streams and run ops on what it holds.
+- **Placement is per-stream**, not "this box is a replica of the cluster." A node that never subscribed to `orders` does not have `orders`.
+- **Code moves, not only data.** A shippable Rx query / Bonsai plan / Futamura-specialized operator is a value. The no-single-tip design already persists queries with the partitions.
+- **No split-brain class.** Partition is not a pair of truths that must be voted off. Prefer:
+
+  1. **Forward progress** on each side (local fold continues).
+  2. **Later CRDT / Z-set merge** when the partition heals (commutative majority).
+  3. **Throw the work away** when it was speculative and lost (retraction is `−1`).
+  4. **Named permanent fork** when the histories must diverge (filesystem fork is first-class; this is git's cheap branch, not Raft's "one of you is dead").
+
+Local time never filters the shared fold (`.claude/rules/local-time-never-enters-the-shared-fold.md`).
+
+---
+
+## Query stack — pieces in tree, not assembled
+
+| Piece | Path | Register | What it actually is |
+|---|---|---|---|
+| LINQ on streams | `src/Core/Query.fs` | unmetered | Fluent `Where`/`Select`/`Join` on `Stream<ZSet<_>>`. Not F# `query { }`. |
+| One plan, two modes | `src/Core/QuerySurface.fs` | **toy** | `IQueryable` / `IQbservable` → one plan. Batch vs streaming. Mode-equivalence test exists; no real workload. |
+| `zeta { }` CE | `src/Core/ZetaSqlBuilder.fs` | unmetered | Typed eager CE. Delegates to `ZSet.filter/map/join/flatMap` (the Seq copies were a defect). Sibling of `ToyPlan`, not merged. |
+| Rx adapters | `src/Core/Rx.fs` | shipped-as-adapter | `IObservable`; real `IQbservable` is QuerySurface. |
+| Columnar SIMD | `src/Core/ColumnZSet.fs`, `ColumnLinearOps.fs` | measured kernels | SoA + vectorised Where/Select. ZLinq is Beacon, not a dependency. |
+| Ferry auto-batch | `src/Core/FerryThrottler.fs` | shipped | DoP knob, `ProcessAsync` + `ProcessManyAsync`. Caller is clueless of `MaxBatchSize`. |
+| Group-commit log | `GroupCommitDiskDeltaLog` in `DiskDeltaLog.fs` | shipped | N small appends, one `Flush(true)`. **This already runs on a host filesystem.** |
+| Circuit / windows / Arrow | ROADMAP shipped list | shipped | Tumbling/sliding/session; Arrow IPC+zstd; in-process Flight. |
+| SQL text parser | — | **absent** | WONT-DO 2026-04-17: not inside Core. This roadmap puts it in the ZetaDB *package*. |
+| Postgres/MySQL wire | — | **absent** | Adapter layer. `sql-engine-expert` already names Postgres-wire-compatible. |
+| Planner cost model | — | **absent** | Fusion exists (Map/Filter IL-emit). Cost-based join order does not. |
+| Realistic TPC / streaming mix | `bench/Feldera.Bench` Nexmark | micro | Unique-key Q1/Q2 is Big-O, not TPC-C. |
+
+**ZLinq ([Cysharp/ZLinq](https://github.com/Cysharp/ZLinq)).** Crutch for zero-alloc LINQ *shape*. Our operators are Z-set / G-set / indexed-set. Prefer our own LINQ over those types. F# computation expressions stay regardless. Do not take a ZLinq dependency on the hot path until a bench shows the crutch winning; ColumnLinearOps already did the SIMD Where/Select without it.
+
+---
+
+## WONT-DO revisit — SQL is the ZetaDB package, not Core
+
+`docs/WONT-DO.md` (2026-04-17) rejected a SQL tokenizer/parser/binder/planner **inside `Zeta.Core`**, because Core is the algebra and "a SQL compiler is Feldera's product category." The **Revisit when** line was: *"a user workload specifically needs SQL-text parsing as a **separate package**."*
+
+Aaron 2026-09-02 is that revisit. The distinction that keeps the 2026-04-17 *why* intact:
+
+- **Still refused:** SQL compiler, `sql_features` matrix, vendor dialects, DuckDB layering **inside Zeta.Core**.
+- **Now on the roadmap:** a **ZetaDB package** that owns SQL text, ANSI (latest) dialect as the native, protocol adapters at the wire, planner that batch/SIMD-s, catalog, transactions. It *targets* the Z-set operator surface. Host-language embedding remains first-class (Rx, LINQ, `zeta { }`, `circuit { }`).
+
+Columnar WONT-DO said "if ever needed, lands as a separate package with Arrow-native segments." ColumnZSet in Core is the algebra. ZetaDB owns the **layout product** (row pages + Arrow-compatible columns). Not a side engine.
+
+MariaDB-style pluggable storage engines stay refused. Row vs column is a **layout**, not a swappable engine.
+
+---
+
+## SIMD, ferry, and the planner
+
+Linearity (`Q^Δ = Q` for Where/Select) is why SIMD and DoP=N are the same fact: a SIMD lane is a part, and `Q(a ⊎ b) = Q(a) ⊎ Q(b)` (`ColumnLinearOps` header). The planner should:
+
+1. Prefer vectorised/columnar kernels when the layout is columnar and the op is linear.
+2. Rely on FerryThrottler to **auto-batch** morsels even if the producer is 1-at-a-time (and the reverse: a batched producer can still be consumed 1-at-a-time at DoP=1).
+3. Keep DoP=1 as the DST/default path — same code, knob only.
+4. Not put SIMD in `fillBoat` (already decided: `081M125DNKK087G0R00292E3ET`). SIMD specializes `processBatch`.
+
+Mux / full-duplex on the wire (Arrow Flight stream duplex is shipped in-process) is the other half of "fastest engines" — don't block a request on an unrelated response. That is protocol, not SQL.
+
+---
+
+## Row store, column store, Arrow
+
+- **Row:** OLTP-shaped, EntityId-stable, mutbuf until freeze. ZetaFS first-product already has this for files; tables reuse EntityId + ContentId + Binding.
+- **Column:** `ColumnZSet` SoA today; product column store is Arrow-compatible (IPC shipped, Flight in-process shipped, gRPC encoding still out of Core).
+- Both are views over the same event log. A query may pick a layout; it must not pick a second truth.
+
+---
+
+## Testing — FoundationDB DST, DoP=1→N, alloc honesty
+
+- **DST:** every scored path closes under `ISimulationEnvironment`. Crash-mid-write stays `toy` until ZetaFS PR12. Do not claim Durable recovery before that corpus.
+- **DoP=1 is the correctness knob;** DoP=N is throughput. Same ferry.
+- **Allocations are a column, not a footnote.** Unique-key Nexmark already reports Allocated/tick (~23.4 B/key Q1, ~11.7 B/key Q2, identical across ubuntu/mac/windows).
+- **Realistic workloads** are the next metering step after Nexmark micro: unique-key Q1–Q8, then a standing-query mix (Reaqtor-shaped), then an OLTP-shaped event-sourced mix (not TPC-C as a religion — as a *shape*: many small writes, ferry-batched). The point of realistic workloads is to see whether ZetaFS beats host FS + `GroupCommitDiskDeltaLog`.
+
+TigerBeetle is an **ambition** (static allocation, LSN, deterministic) until we meter a comparable journal. Do not quote TigerBeetle IOPS as ours.
+
+---
+
+## Protocol adapters — migrate without a flag day
+
+Adapters speak a foreign **wire** and lower to one plan:
+
+| Adapter | Role | Status |
+|---|---|---|
+| Native | Zeta plan + Arrow Flight / our mux | in-process Flight shipped |
+| Postgres wire | `psql` / Npgsql / pgx see a server | designed, not shipped |
+| MySQL wire | gradual move for those clients | later than Postgres |
+| Own | first-class; not a compatibility crutch | with the SQL package |
+
+Dialect **SQL text** is not the same as dialect **wire**. Native ANSI (latest we claim, named) is the SQL we compile. Postgres-wire can still carry that SQL, or a documented subset. Do not implement three compilers.
+
+Closed command set: the far side **names** a verb, never **defines** one.
+
+---
+
+## Code mobility and stored procs
+
+ROADMAP two-plane split stays: data plane is fast and dumb; Futamura / `gen/` / stored-proc *evolution* live in the control plane. A stored proc on the data plane is a standing query (Bonsai / `zeta { }` / SQL) with no learner on the hot path.
+
+Shipping a query to another node is the no-single-tip mechanism. Shipping an operator implementation (specialized IL, WASM procedure ABI from the browser ADR) is the code-mobility half. Untrusted procs need a metered host before they join automatic ticks (ADR already says `trusted-cooperative`).
+
+---
+
+## ZetaFS requirements from ZetaDB
+
+ZetaFS exists **for ZetaDB**. If another filesystem plus the ferry is better for the database, ZetaFS-as-product may not be necessary. That is a **falsifier**, not a vibe.
+
+### Product-existence test (load-bearing)
+
+`GroupCommitDiskDeltaLog` already auto-batches small appends **on a host directory** (one segment file, one `Flush(true)` per boat). The major "custom FS makes small writes fast" bet is therefore **already available without ZetaFS**. ZetaFS must win on something the host FS + ferry does not:
+
+1. **CAS + EntityId stability** — write does not churn foreign keys / `st_ino`.
+2. **First-class fork** — cheap COW branch, good GC, named permanent divergence.
+3. **Erasure coding / placement as a pure function** — no appointed allocator.
+4. **Generator-history (`Regen`)** — original bytes drop once a metered generator exists.
+5. **Per-entity policy on one volume** — `keep-all` catalog next to `rolling` WAL next to `none` scratch.
+6. **Typed durability notified to the DB** — `Buffered | Journaled | Durable`.
+7. **No central tip / ordinal shared fold.**
+
+Until a bench of "ZetaDB small-write storm on ZetaFS" vs "same storm on APFS/ext4 + GroupCommitDiskDeltaLog" exists, the FS-speed claim stays `toy`. This document names that bench; it does not invent its numbers.
+
+### Requirements the first-product spec must carry
+
+These are additive to K1–K18 / E1–E12 / C1–C10. They do not reopen them.
+
+| Id | Requirement | Why the database needs it | Today |
+|---|---|---|---|
+| **D1** | Fork is first-class (COW; `editLocal` default). Permanent named fork is a legal outcome, not a disaster. | Relativistic progress; no split-brain. | `DagFs.editLocal` in-memory; volume fork not a snap/ref product yet |
+| **D2** | GC follows lifetimes: Singleton / Scoped / Transient ≈ keep-all / rolling / none; nested scope = open file / ASP.NET request / Rust lifetime. Amortize via reclaim ferry (already K7). | DB objects and files share one collector. | `ZetaFsReclaim` maps those three; `Regen` is Singleton (conservative) |
+| **D3** | `Regen` is two-phase: keep original until the generator is metered; then original is reclaim-eligible and the generator is Singleton. | Event-store "columnar" compression: history as a function. | Policy case exists; phase-2 reclaim **not** implemented (must not silently drop bytes) |
+| **D4** | Small-write storms on the **volume log** go through FerryThrottler (same auto-batch as `GroupCommitDiskDeltaLog`). | DB commit path. | Freeze log is a single-writer file (`ZetaFsFreeze`); **not** the ferry. Named gap. |
+| **D5** | Content-addressed objects + erasure-coded placement (K1/K2). | Distribution without a hub. | Polyfill `single` only |
+| **D6** | Per-stream / per-table placement: a node need not hold every stream. | "Replica" is a misnomer. | Designed as partitioned tips; not a volume feature |
+| **D7** | Notify ZetaDB of durability class (already K6). Observer does not throw. | Tables must not read a Journaled name with missing leaves (E2). | Freeze observer exists |
+| **D8** | ShivaGC / Futamura: historical data may become a generator. Collecting a generator that still has live `Regen` refs is forbidden. | Same as D3. | ShivaGc is DynamicValue mark-sweep, not volume |
+
+**Cannot claim today:** POSIX mount, crash-safe Durable, `ns=bindings`, Windows Durable, ZetaFS faster than APFS for small writes.
+
+---
+
+## Moving realistic workloads forward
+
+Order, each with a falsifier:
+
+1. **Keep unique-key Nexmark honest** (Q1/Q2 across OS; Q3+ incremental join). Allocated column required. **This Mac Q2 is now recorded** (was missing because only Q1 unique was run locally on 2026-09-01).
+2. **Standing-query mix** — register N queries, feed deltas, measure tick + alloc (Reaqtor feel).
+3. **Small-write OLTP-shaped storm** — 1-at-a-time producer, ferry consumer, DoP=1 vs N. Run on host FS *and* `.zetafs` when freeze uses the ferry (D4).
+4. **SQL text** on the same circuits (ZetaDB package), ANSI subset named.
+5. **Wire adapter** — `psql` against a toy catalog, then a real one.
+6. **Multi-node** — partitioned tips, no single lock; DST partitions.
+
+---
+
+## Key Decisions
+
+1. **ZetaDB is the whole database**, not an engine on Postgres. Feldera's Postgres usage is connectors. Ours will not be.
+2. **Feel is Flink + Reaqtor.** Feldera is the DBSP competitor we measure against.
+3. **WAL is truth; tables are views.** No second heap.
+4. **SQL lives in the ZetaDB package**, not in `Zeta.Core`. WONT-DO 2026-04-17 is revisited, not silently reversed.
+5. **Host-language queries stay first-class** (Rx, LINQ, `zeta { }`, `circuit { }`). SQL compiles onto the same plan.
+6. **Wire adapters, not storage engines.** Postgres/MySQL compatibility is protocol.
+7. **Row and column are layouts** over one algebra. Arrow-compatible columns.
+8. **Own LINQ over Z-sets;** ZLinq is a crutch, not the identity.
+9. **Planner prefers batch/SIMD** because the ferry auto-batches. DoP=1 remains DST.
+10. **No appointed hub; no split-brain class.** Forward progress, CRDT merge, throw-away, or named fork.
+11. **ZetaFS is optional as a product** until it wins the product-existence bench against host FS + group-commit. Fork, CAS, Regen, EC, per-entity policy are the reasons it might win.
+12. **`Regen` must not drop original bytes until the generator is metered.** Today's Singleton mapping is the conservative floor.
+13. **Freeze must eventually use the ferry** (D4). Today's single-writer freeze log is a gap, not a design choice to keep.
+14. **Stay in this monorepo** until ZetaFS v0.9ish and until ZetaDB has a signed, tested cut. Do not mint product GitHubs as a prerequisite.
+
+---
+
+## PR Plan
+
+Independently reviewable. Tests green or it does not land. ZetaFS numbered PRs stay in the first-product spec; these are **ZetaDB** slices plus the FS requirements they force.
+
+### ZD0 — this document + WONT-DO revisit + FS requirement peel + Mac Q2/Lookup (this PR)
+
+- **Files:** this design, `docs/ROADMAP.md` hub pointer, `docs/WONT-DO.md` revisit notes, first-product spec D1–D8, `docs/BENCHMARKS.md` / `feldera-comparison-status.md`, group-commit one-segment test, `Regen` lifetime test.
+- **Depends on:** nothing.
+- **Does not:** ship v0.9 FS, SQL parser, or wire.
+
+### ZD1 — Standing-query mix bench (Reaqtor feel)
+
+- **Files:** `bench/` + docs. Register N `zeta { }` / QuerySurface plans, feed unique-key deltas, MemoryDiagnoser.
+- **Depends on:** ZD0.
+- **Earns:** QuerySurface leaves `toy` only if a non-fixture workload is in this bench (still `unmetered` until production-shaped).
+
+### ZD2 — Wire freeze/small-object log through FerryThrottler (D4)
+
+- **Files:** `ZetaFsFreeze.fs` / volume log. DoP=1 DST. Same auto-batch contract as `GroupCommitDiskDeltaLog`.
+- **Depends on:** first-product PR7 (landed). Best after or with PR12 door for crash-mid-boat.
+- **Falsifier:** N concurrent small freezes → boat count ≪ N; Durable still one fsync per boat not per caller.
+
+### ZD3 — Unique-key Nexmark Q3+ on IncrementalJoin; then SQL-shaped names for Q1–Q3
+
+- **Files:** `bench/Feldera.Bench`, QuerySurface lowering.
+- **Depends on:** IncrementalJoin (exists). SQL names wait for ZD5.
+
+### ZD4 — Product-existence bench: host FS + group-commit vs `.zetafs`
+
+- **Files:** bench + first-product metering path. Small-write storm. Numbers stay `toy` until both legs run.
+- **Depends on:** ZD2 (otherwise we are comparing ferry-on-host vs freeze-without-ferry — not a FS comparison).
+
+### ZD5 — ZetaDB SQL package (separate from Core)
+
+- **Files:** new project targeting Core. Parser → binder → plan that *is* QuerySurface/Circuit. ANSI subset named. No dialect compilers.
+- **Depends on:** ZD1 (so the plan has a workload). WONT-DO revisit is ZD0.
+- **Clean-room:** papers + SQL standard; do not read Feldera SQL compiler sources in the implementing agent.
+
+### ZD6 — Postgres wire adapter (toy catalog)
+
+- **Depends on:** ZD5 for SQL text, or a host-language-only catalog for a thinner first cut.
+- **Non-goal:** Postgres storage, catalogs as source of truth, `sql_features` matrix inside Core.
+
+### ZD7 — `Regen` phase-2 reclaim (D3)
+
+- **Depends on:** metered generator (Futamura / ShivaGcRegen). Must fail tests if original bytes vanish before the generator is proven.
+
+### ZD8 — Per-stream placement + shippable query (no-single-tip as runtime)
+
+- **Depends on:** no-single-tip design (exists). Runtime, not another essay.
+
+ZetaFS PR12 (DST corpus) and PR13 (FUSE) remain on the FS spec. They are not delayed by ZetaDB, and ZetaDB must not claim crash-safe until PR12.
+
+---
+
+## Open Questions
+
+1. **Public names** for ZetaDB / ZetaFS — still gated.
+2. **First SQL subset** — which ANSI:2023 features are in v0 vs later (windows? `MATCH_RECOGNIZE` is ROADMAP P2 CEP). Do not silently pick "all of Postgres."
+3. **ZD6 before or after ZD5** — a Postgres-wire *empty server* can prove the adapter without SQL. Prefer a real catalog if ZD5 is close; otherwise a host-language catalog is an allowed thinner cut.
+4. **When ZetaFS-as-product is killed** — only after ZD4 has numbers. Until then it stays the designed store.
+
+---
+
+## Pointers
+
+- Feldera Postgres **input** connector: <https://docs.feldera.com/connectors/sources/postgresql/>
+- Feldera Postgres **output** (experimental): <https://docs.feldera.com/connectors/sinks/postgresql/>
+- Feldera: DBSP is a query engine, connectors convert to/from Z-sets — <https://www.feldera.com/blog/communicating-with-dbsp>
+- Reaqtor: <https://github.com/reaqtive/reaqtor>
+- ZLinq (crutch): <https://github.com/Cysharp/ZLinq>
+- Budiu et al., DBSP, VLDB 2023; McSherry et al., Differential Dataflow, CIDR 2013; Carbone et al., Flink, 2015; Arasu/Babu/Widom, CQL, 2006; Meijer, *Your Mouse is a Database*; De Smet, IQbservable / Nuqleon / Reaqtor.
+- Zhou et al., FoundationDB, SIGMOD 2021; Will Wilson, DST, Strange Loop 2014; TigerBeetle journal (ambition, not a measured claim).

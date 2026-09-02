@@ -2,9 +2,9 @@
 
 **Author:** Ani (Grok Build) / design-doc-writer; human maintainer Aaron
 **Date:** 2026-08-30
-**Revised:** 2026-09-01 (in-tree PR1-PR11 honesty peel; stay in this monorepo until v0.9ish; do not mint a product GitHub)
+**Revised:** 2026-09-02 (ZetaDB-derived requirements D1–D8; product-existence bench vs host FS + group-commit; `Regen` stays Singleton until a generator is metered)
 **Work item:** `081M1C59ZG4087G0R000VM8DZN`
-**Status:** Design spec. PR1-PR11 polyfill is in-tree. Crash recovery remains `toy` until PR12. Stay in this monorepo until a signed, tested v0.9ish FS. Do not mint a GitHub product repo as a prerequisite. Later split: `docs/research/2026-09-01-zetafs-stays-in-monorepo-until-v09-then-product-per-language-ir-oracles.md`.
+**Status:** Design spec. PR1-PR11 polyfill is in-tree. Crash recovery remains `toy` until PR12. Stay in this monorepo until a signed, tested v0.9ish FS. Do not mint a GitHub product repo as a prerequisite. Later split: `docs/research/2026-09-01-zetafs-stays-in-monorepo-until-v09-then-product-per-language-ir-oracles.md`. ZetaDB-derived D1–D8 added 2026-09-02; freeze still does not use the ferry (D4).
 **Register:** product design. Existing code cited below is a polyfill / algebra substrate, not this product.
 **Extends (do not contradict):** [`docs/design/2026-08-27-zetafs-names-are-tags-multi-parented-files-and-symlink-native-presentation.md`](../../docs/design/2026-08-27-zetafs-names-are-tags-multi-parented-files-and-symlink-native-presentation.md)
 **Settles:** retention and GC, which that document left unset in **section 6.3 / section 8.3** (cycle guard: section 6.2, specified here). Names-are-tags **section 7** is platform presentation (FUSE / FSKit / ProjFS, case-fold refuse) -- not the retention hole. **Also settles** the former Open Questions as **composable knobs** (C1-C10). C8 is the one exclusive ZetaId slot (`StoreEntity = 13`). C9 is **not** "pick TPM": unwrap oracles compose (passphrase, Keychain, Secure Enclave when a seal tier exists, TPM 2.0 on Linux if present, PKCS#11 HSMs of several manufacturers, live USB probe). R8's tpmSeal-vs-usbISerial XOR is the installer defect; this FS must not repeat it.
@@ -24,6 +24,23 @@ Durability truth is the **event log** (`ZetaFsDeltaLog` / DBSP), not the POSIX c
 Consumers of the first cut: **ZetaDB first**, then agent stores, emulator images, git-polyfill. Tooling tax is accepted for those. Steam, Photoshop, and "drop-in APFS" are not claims of this document.
 
 **ZetaDB contract (the long-term exclusive picks live here).** The database needs: an event log as WAL (typed `Buffered | Journaled | Durable`); stable **EntityId** hubs so a row does not change identity on `write()`; **ContentId** as value identity (CDC/Jumprope); per-prefix retention so catalogs can be `keep-all` next to WAL/temp as `rolling`/`none` without minting a dataset; ordinal names in the shared fold; placement as a profile, not a format fork. When a knob looks like XOR, keep both if they are layers or views. Pick one only when the algebra cannot fork (one ZetaId category; one object AEAD).
+
+**ZetaDB product map (2026-09-02):** [`docs/design/2026-09-02-zetadb-roadmap-event-sourced-streaming-sql-not-feldera-on-postgres.md`](2026-09-02-zetadb-roadmap-event-sourced-streaming-sql-not-feldera-on-postgres.md) (`081M1HGD1QA087G0R001GRHPFW`). Feel is Flink/Reaqtor; Feldera is the DBSP competitor, not Postgres-on-DBSP. D1–D8 below are what the database needs from this FS. **Product-existence test:** `GroupCommitDiskDeltaLog` already auto-batches small writes on a host directory. ZetaFS-as-product is necessary only if it wins on fork / CAS / `Regen` / erasure coding / per-entity policy / typed durability — not on batching alone. Do not claim a v0.9 ship from the ZetaDB roadmap PR.
+
+### ZetaDB-derived requirements (D1–D8, 2026-09-02)
+
+Additive. Do not reopen K1–K18.
+
+| Id | Requirement | Today |
+|---|---|---|
+| **D1** | Fork is first-class (`editLocal` default; named permanent fork is legal, not a split-brain disaster). | `DagFs.editLocal` in-memory; volume fork is not a snap/ref product yet. |
+| **D2** | GC lifetimes Singleton / Scoped / Transient ≈ keep-all / rolling / none; nested scope = open file. Amortized reclaim ferry (K7). | `ZetaFsReclaim` maps the three. |
+| **D3** | `Regen` is two-phase: keep original until the generator is metered; then original is reclaim-eligible. | Policy case exists; `lifetimeOf Regen` is **Singleton** (conservative). Phase-2 must not silently drop bytes. |
+| **D4** | Volume small-write storms go through `FerryThrottler` (same auto-batch as `GroupCommitDiskDeltaLog`). | `ZetaFsFreeze` is a single-writer file, **not** the ferry. Named gap. |
+| **D5** | Content-addressed objects + erasure-coded placement (K1/K2). | Polyfill `single` only. |
+| **D6** | Per-stream placement: a node need not hold every table/stream. | Partitioned tips designed; not a volume feature. |
+| **D7** | Durability class notified to ZetaDB (K6); observer does not throw. | Freeze observer exists. |
+| **D8** | Collecting a generator that still has live `Regen` refs is forbidden. | ShivaGc is DynamicValue mark-sweep, not volume. |
 
 ---
 
@@ -1311,6 +1328,7 @@ Aaron settled K1-K18. E1-E12 closed the implementability holes. C1-C10 closed th
 
 1. **Public name** -- still gated (naming-expert + Ilyana + Aaron). Working label ZetaFS. Never `ZFS`.
 2. **When Secure Enclave and dual-vendor HSM become metered** -- sovereignty-path (`docs/trajectories/ai-sovereignty-path/RESUME.md`): SE seal tier unbuilt; CardContact SmartCard-HSM not in hand. ZetaFS must open this Mac without them. Not a volume-format fork.
+3. **Does ZetaFS-as-product survive ZD4?** -- only after the small-write storm on `.zetafs` vs host FS + `GroupCommitDiskDeltaLog` has numbers. Until then the store stays designed, not proven faster. See ZetaDB roadmap D4 / ZD4.
 
 Numbers that stay **unmetered until measured** (not product forks): C1's N=32, C5 stripe unit and LRC `(k,l,r)`, C2 throughput, K14 expansion ratio, C6 delta T. They earn `metered` from the existing harness **grown by dogfood** (Metering path): PR9/PR8/PR19 are the bench slices; ROADMAP 8b + dogfood ledger row 11 are the factory slices. We do not wait for a harness that is not started.
 
