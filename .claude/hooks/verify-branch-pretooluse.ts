@@ -1,6 +1,6 @@
 #!/usr/bin/env bun
 // verify-branch-pretooluse.ts -- Claude Code PreToolUse hook wrapper
-// for tools/orchestrator-checks/verify-branch.ts.
+// for src/Core.TypeScript/orchestrator-checks/verify-branch.ts.
 //
 // Reads stdin JSON per the Claude Code hooks contract
 // (https://code.claude.com/docs/en/hooks-guide). Filters to
@@ -68,7 +68,7 @@ function main(): number {
   const projectDir = process.env.CLAUDE_PROJECT_DIR ?? process.cwd();
   const result = spawnSync(
     "bun",
-    [`${projectDir}/tools/orchestrator-checks/verify-branch.ts`],
+    [`${projectDir}/src/Core.TypeScript/orchestrator-checks/verify-branch.ts`],
     {
       encoding: "utf8",
       stdio: ["ignore", "pipe", "pipe"],

@@ -1,0 +1,14 @@
+{
+  "id": "080d0319564bb010a0130008cb7fa088",
+  "at": "2026-09-02T17:29:03.606Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1HJNJBM087G0R0035B3C21",
+    "type": "bug",
+    "title": "verify-branch PreToolUse hook spawns a path that moved in #8048, so the branch gate is inert",
+    "slug": "verify-branch-pretooluse-hook-spawns-a-path-that-moved-in-80",
+    "priority": "P2",
+    "filename": "081M1HJNJBM087G0R0035B3C21-verify-branch-pretooluse-hook-spawns-a-path-that-moved-in-80.md"
+  }
+}
