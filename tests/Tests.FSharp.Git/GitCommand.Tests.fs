@@ -15,14 +15,14 @@ let mutable private counter = 0
 let private withRepo (f: Repository -> string -> unit) =
     let id = Interlocked.Increment(&counter)
     let dir = Path.Combine(Path.GetTempPath(), "zeta-gitcmd-test", sprintf "gc-%04d" id)
-    if Directory.Exists dir then Directory.Delete(dir, true)
+    Zeta.Tests.Git.TempRepo.deleteRepoDir dir
     Directory.CreateDirectory dir |> ignore
     Repository.Init(dir, isBare = false) |> ignore
     use repo = new Repository(dir)
     try f repo dir
     finally
         repo.Dispose()
-        try Directory.Delete(dir, true) with _ -> ()
+        Zeta.Tests.Git.TempRepo.deleteRepoDir dir
 
 let runSync (t: Task<'T>) = t.GetAwaiter().GetResult()
 
