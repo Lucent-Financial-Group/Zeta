@@ -44,7 +44,86 @@ verified) so future-me and peers do not over-trust past-me.
 
 ## Open threads
 
-### Unique-confirm leftover OPEN #16308 @ b51c0aa0 (2026-09-01)
+### Unique-confirm leftover OPEN #16308 leftover unique @ d81ccff4 (2026-09-02)
+
+UNIQUE MOVES. unique-confirm leftover UNIQUE leftover
+OPEN #16308 leftover unique @
+d81ccff487d50da6e67ef833ad7fe3d210367444 UNIQUE HOLDS
+leftover NEW CELL.
+Unique MOVES from STALE leftover unique @
+b51c0aa0d407a22c59299af3bdf4a3efc11d1b46. Never grade
+leftover unique @ b51c0aa0 as this unique.
+https://github.com/Lucent-Financial-Group/Zeta/pull/16308
+test(rffh): ground geometry and planarity oracles.
+AceHack OPEN. Branch
+research/rffh-independent-planarity-oracles. Draft false.
+mergeable_state unstable. Sit leftover. Do not merge.
+CoS does not merge.
+Live REST HEAD leftover unique @ d81ccff4 CONFIRMED
+(PR head.sha, 1 commit, +352/-33, 10 files; never a
+merge-ref). Parent leftover unique @
+62fb27eb2b1c91d4045f927335a63eefc37226f6 (do not grade
+as this unique). Never grade squash leftover unique @
+c6aedf7e97410b03ee8a3b7b821976aca724775c.
+Force-push rewrite of the SAME cell onto moved main.
+Tree 8038ef572f86dff6bc6b85c9e2f32b61adc819da vs stale
+tree b8c35bc0a32f4074f4d94560eac9ddf2cd6e9824. Own
+unique-file blobs 9/10 identical;
+four-color-schedule.test.ts blob
+7fdd07e248133a2663670745a7949699b0766e21 ->
+0b7da1094bc916e90f4da1598f32da2124e22105 solely
+because leftover-on-main #16306 leftover unique @
+c4b70c0f is now in the parent file. The unique's own
++114 (isolated facial witnesses, crown greedy vs
+exact, BMP collation) is the same object.
+Follow-on complementary remainder of leftover-on-main
+#16299 leftover unique @ 14d340ca, not leftover-of.
+Complementary remainder of leftover-on-main #16306
+leftover unique @ c4b70c0f (rebase stacks on it;
+unique of #16306 stays @ c4b70c0f). Unique of leftover
+unique #16299 stays leftover unique @ 14d340ca.
+
+Object: literal RFFH-6/RFFH-8 pose/fusion/covariance
+expectations (no production transforms on expected
+side); 18 F#/TS witness groups incl. independent
+K4/K5/K3,3/crown chromatic; named facial-certificate
+failing witnesses; crown chi=2 vs deterministic
+first-fit 3; Unicode code-point collation U+E000
+before U+10000.
+
+GRADE: VERIFIED independent closed-form RFFH-6
+Q(x,y,z)=(-y,x,z) so Q(2,3,4)+(4,-2,1)=(1,0,5);
+VERIFIED RFFH-8 literal information-form
+mu=(-3/5,3/4,11/7) Sigma=diag(4/5,3/4,10/7) and
+Q Sigma Q^T at theta=0.63; VERIFIED 18 witness
+groups; VERIFIED named facial failing witnesses
+(short face, unknown vertex, non-edge, directional
+vs 2E, Euler chi=1 double-boundary, disconnected
+chi=2); VERIFIED interleaved crown exact chi=2 vs
+first-fit 3; VERIFIED U+E000 precedes U+10000 via
+stringCompare not UTF-16 <. HONEST-REGISTER explicit
+non-claims (no general planarity oracle, no Four
+Color Theorem, no cortical fidelity, no Cl(3,0)
+identified with Adinkra Cl(0,7)). OPEN: delta,
+regularity, learning, English grounding unmeasured.
+ANALOGY: Cl(3,0) pose vs Cl(0,7) Adinkra named as
+non-claim.
+
+Falsifiers: reversed sandwich; production transform
+on expected side; surviving facial mutation;
+greedy=exact only on complete graphs; UTF-16 <
+reversing BMP vs supplementary.
+
+---
+
+### Unique-confirm leftover OPEN #16308 @ b51c0aa0 (2026-09-01) -- STALE / do not grade
+
+STALE leftover unique @
+b51c0aa0d407a22c59299af3bdf4a3efc11d1b46. Never grade
+leftover unique @ b51c0aa0 as this unique. UNIQUE
+MOVES to leftover unique @
+d81ccff487d50da6e67ef833ad7fe3d210367444. History
+kept. Do not grade.
 
 UNIQUE HOLDS leftover NEW CELL leftover unique
 @ b51c0aa0d407a22c59299af3bdf4a3efc11d1b46.
