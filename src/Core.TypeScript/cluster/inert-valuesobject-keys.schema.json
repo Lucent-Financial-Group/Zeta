@@ -17313,13 +17313,16 @@
         "traefik=traefik@10.19.4"
       ]
     },
-    "https://charts.jetstack.io|cert-manager|v1.16.2": {
+    "https://charts.jetstack.io|cert-manager|v1.21.1": {
       "literal": {
         "acmesolver": {
           "image": {
+            "name": {},
             "pullPolicy": {},
+            "registry": {},
             "repository": {}
-          }
+          },
+          "runtimeClassName": {}
         },
         "affinity": {},
         "approveSignerNames": {},
@@ -17342,8 +17345,15 @@
           "extraEnv": {},
           "featureGates": {},
           "image": {
+            "name": {},
             "pullPolicy": {},
+            "registry": {},
             "repository": {}
+          },
+          "networkPolicy": {
+            "egress": {},
+            "enabled": {},
+            "ingress": {}
           },
           "nodeSelector": {
             "kubernetes": {
@@ -17354,11 +17364,13 @@
           "podDisruptionBudget": {
             "enabled": {},
             "maxUnavailable": {},
-            "minAvailable": {}
+            "minAvailable": {},
+            "unhealthyPodEvictionPolicy": {}
           },
           "podLabels": {},
           "replicaCount": {},
           "resources": {},
+          "runtimeClassName": {},
           "securityContext": {
             "runAsNonRoot": {},
             "seccompProfile": {
@@ -17402,6 +17414,7 @@
         "enableServiceLinks": {},
         "enabled": {},
         "extraArgs": {},
+        "extraContainers": {},
         "extraEnv": {},
         "extraObjects": {},
         "featureGates": {},
@@ -17411,9 +17424,13 @@
         "http_proxy": {},
         "https_proxy": {},
         "image": {
+          "name": {},
           "pullPolicy": {},
+          "registry": {},
           "repository": {}
         },
+        "imageNamespace": {},
+        "imageRegistry": {},
         "ingressShim": {},
         "installCRDs": {},
         "livenessProbe": {
@@ -17427,6 +17444,11 @@
         "maxConcurrentChallenges": {},
         "nameOverride": {},
         "namespace": {},
+        "networkPolicy": {
+          "egress": {},
+          "enabled": {},
+          "ingress": {}
+        },
         "no_proxy": {},
         "nodeSelector": {
           "kubernetes": {
@@ -17437,7 +17459,8 @@
         "podDisruptionBudget": {
           "enabled": {},
           "maxUnavailable": {},
-          "minAvailable": {}
+          "minAvailable": {},
+          "unhealthyPodEvictionPolicy": {}
         },
         "podDnsConfig": {},
         "podDnsPolicy": {},
@@ -17452,7 +17475,6 @@
             "interval": {},
             "labels": {},
             "namespace": {},
-            "path": {},
             "prometheusInstance": {},
             "scrapeTimeout": {}
           },
@@ -17464,14 +17486,13 @@
             "interval": {},
             "labels": {},
             "namespace": {},
-            "path": {},
             "prometheusInstance": {},
-            "scrapeTimeout": {},
-            "targetPort": {}
+            "scrapeTimeout": {}
           }
         },
         "replicaCount": {},
         "resources": {},
+        "runtimeClassName": {},
         "securityContext": {
           "runAsNonRoot": {},
           "seccompProfile": {
@@ -17505,7 +17526,9 @@
           "extraArgs": {},
           "extraEnv": {},
           "image": {
+            "name": {},
             "pullPolicy": {},
+            "registry": {},
             "repository": {}
           },
           "jobAnnotations": {
@@ -17532,6 +17555,7 @@
             }
           },
           "resources": {},
+          "runtimeClassName": {},
           "securityContext": {
             "runAsNonRoot": {},
             "seccompProfile": {
@@ -17553,6 +17577,7 @@
           },
           "timeout": {},
           "tolerations": {},
+          "ttlSecondsAfterFinished": {},
           "volumeMounts": {},
           "volumes": {}
         },
@@ -17563,7 +17588,9 @@
         "volumes": {},
         "webhook": {
           "affinity": {},
+          "apiserverClientCertSubjects": {},
           "automountServiceAccountToken": {},
+          "clientCAFile": {},
           "config": {},
           "containerSecurityContext": {
             "allowPrivilegeEscalation": {},
@@ -17573,13 +17600,16 @@
             "readOnlyRootFilesystem": {}
           },
           "deploymentAnnotations": {},
+          "enableClientVerification": {},
           "enableServiceLinks": {},
           "extraArgs": {},
           "extraEnv": {},
           "featureGates": {},
           "hostNetwork": {},
           "image": {
+            "name": {},
             "pullPolicy": {},
+            "registry": {},
             "repository": {}
           },
           "livenessProbe": {
@@ -17608,7 +17638,8 @@
           "podDisruptionBudget": {
             "enabled": {},
             "maxUnavailable": {},
-            "minAvailable": {}
+            "minAvailable": {},
+            "unhealthyPodEvictionPolicy": {}
           },
           "podLabels": {},
           "readinessProbe": {
@@ -17620,6 +17651,7 @@
           },
           "replicaCount": {},
           "resources": {},
+          "runtimeClassName": {},
           "securePort": {},
           "securityContext": {
             "runAsNonRoot": {},
@@ -17662,6 +17694,8 @@
         "cainjector.containerSecurityContext.capabilities.drop",
         "cainjector.extraArgs",
         "cainjector.extraEnv",
+        "cainjector.networkPolicy.egress",
+        "cainjector.networkPolicy.ingress",
         "cainjector.podLabels",
         "cainjector.resources",
         "cainjector.serviceLabels",
@@ -17673,11 +17707,14 @@
         "config",
         "containerSecurityContext.capabilities.drop",
         "extraArgs",
+        "extraContainers",
         "extraEnv",
         "extraObjects",
         "global",
         "hostAliases",
         "ingressShim",
+        "networkPolicy.egress",
+        "networkPolicy.ingress",
         "podLabels",
         "prometheus.podmonitor.annotations",
         "prometheus.podmonitor.endpointAdditionalProperties",
@@ -17722,7 +17759,7 @@
         "webhook.volumes"
       ],
       "dynamic": [],
-      "charts": ["<root>=cert-manager@v1.16.2"]
+      "charts": ["<root>=cert-manager@v1.21.1"]
     },
     "https://charts.jetstack.io|trust-manager|v0.24.0": {
       "literal": {
@@ -17907,6 +17944,401 @@
       ],
       "dynamic": [],
       "charts": ["<root>=trust-manager@v0.24.0"]
+    },
+    "https://charts.longhorn.io|longhorn|1.12.1": {
+      "literal": {
+        "annotations": {},
+        "csi": {
+          "attacherReplicaCount": {},
+          "kubeletRootDir": {},
+          "podAntiAffinityPreset": {},
+          "provisionerReplicaCount": {},
+          "resizerReplicaCount": {},
+          "snapshotterReplicaCount": {}
+        },
+        "defaultBackupStore": {
+          "backupTarget": {},
+          "backupTargetCredentialSecret": {},
+          "pollInterval": {}
+        },
+        "defaultSettings": {
+          "allowCollectingLonghornUsageMetrics": {},
+          "allowEmptyDiskSelectorVolume": {},
+          "allowEmptyNodeSelectorVolume": {},
+          "allowRecurringJobWhileVolumeDetached": {},
+          "allowVolumeCreationWithDegradedAvailability": {},
+          "autoCleanupRecurringJobBackupSnapshot": {},
+          "autoCleanupSnapshotAfterOnDemandBackupCompleted": {},
+          "autoCleanupSnapshotWhenDeleteBackup": {},
+          "autoCleanupSystemGeneratedSnapshot": {},
+          "autoDeletePodWhenVolumeDetachedUnexpectedly": {},
+          "autoSalvage": {},
+          "backingImageCleanupWaitInterval": {},
+          "backingImageRecoveryWaitInterval": {},
+          "backupCompressionMethod": {},
+          "backupConcurrentLimit": {},
+          "backupExecutionTimeout": {},
+          "blacklistForAutoDeletePodWhenVolumeDetachedUnexpectedly": {},
+          "concurrentAutomaticEngineUpgradePerNodeLimit": {},
+          "concurrentReplicaRebuildPerNodeLimit": {},
+          "concurrentVolumeBackupRestorePerNodeLimit": {},
+          "createDefaultDiskLabeledNodes": {},
+          "csiAllowedTopologyKeys": {},
+          "csiStorageCapacityTracking": {},
+          "dataEngineCPUIsolationEnabled": {},
+          "dataEngineCPUMask": {},
+          "dataEngineHugepageEnabled": {},
+          "dataEngineInterruptModeEnabled": {},
+          "dataEngineIobufLargePoolSize": {},
+          "dataEngineIobufSmallPoolSize": {},
+          "dataEngineLogFlags": {},
+          "dataEngineLogLevel": {},
+          "dataEngineMemorySize": {},
+          "dataEngineNumberOfCPUCores": {},
+          "defaultBackupBlockSize": {},
+          "defaultDataLocality": {},
+          "defaultDataPath": {},
+          "defaultLonghornStaticStorageClass": {},
+          "defaultReplicaCount": {},
+          "defaultUblkNumberOfQueue": {},
+          "defaultUblkQueueDepth": {},
+          "deletingConfirmationFlag": {},
+          "detachManuallyAttachedVolumesWhenCordoned": {},
+          "disableRevisionCounter": {},
+          "disableSchedulingOnCordonedNode": {},
+          "disableSnapshotPurge": {},
+          "endpointNetworkForRWXVolume": {},
+          "engineImagePodLivenessProbeFailureThreshold": {},
+          "engineImagePodLivenessProbePeriod": {},
+          "engineImagePodLivenessProbeTimeout": {},
+          "engineReplicaTimeout": {},
+          "failedBackupTTL": {},
+          "fastReplicaRebuildEnabled": {},
+          "freezeFilesystemForSnapshot": {},
+          "guaranteedInstanceManagerCPU": {},
+          "instanceManagerPodLivenessProbeTimeout": {},
+          "kubernetesClusterAutoscalerEnabled": {},
+          "kubernetesMetricsServerMetricsEnabled": {},
+          "logLevel": {},
+          "logPath": {},
+          "longGRPCTimeOut": {},
+          "managerUrl": {},
+          "nodeDiskHealthMonitoring": {},
+          "nodeDownPodDeletionPolicy": {},
+          "nodeDrainPolicy": {},
+          "offlineReplicaRebuilding": {},
+          "orphanResourceAutoDeletion": {},
+          "orphanResourceAutoDeletionGracePeriod": {},
+          "priorityClass": {},
+          "rebuildConcurrentSyncLimit": {},
+          "recurringFailedJobsHistoryLimit": {},
+          "recurringJobMaxRetention": {},
+          "recurringSuccessfulJobsHistoryLimit": {},
+          "removeSnapshotsDuringFilesystemTrim": {},
+          "replicaAutoBalance": {},
+          "replicaDiskSoftAntiAffinity": {},
+          "replicaFileSyncHttpClientTimeout": {},
+          "replicaRebuildingBandwidthLimit": {},
+          "replicaReplenishmentWaitInterval": {},
+          "replicaSoftAntiAffinity": {},
+          "replicaZoneSoftAntiAffinity": {},
+          "restoreConcurrentLimit": {},
+          "restoreVolumeRecurringJobs": {},
+          "rwxVolumeFastFailover": {},
+          "snapshotCountWarningThreshold": {},
+          "snapshotDataIntegrity": {},
+          "snapshotDataIntegrityCronjob": {},
+          "snapshotDataIntegrityImmediateCheckAfterSnapshotCreation": {},
+          "snapshotHeavyTaskConcurrentLimit": {},
+          "snapshotMaxCount": {},
+          "storageMinimalAvailablePercentage": {},
+          "storageNetwork": {},
+          "storageOverProvisioningPercentage": {},
+          "storageReservedPercentageForDefaultDisk": {},
+          "supportBundleFailedHistoryLimit": {},
+          "systemManagedCSIComponentsResourceLimits": {},
+          "systemManagedComponentsNodeSelector": {},
+          "systemManagedPodsImagePullPolicy": {},
+          "taintToleration": {},
+          "upgradeChecker": {},
+          "upgradeResponderURL": {},
+          "v1DataEngine": {},
+          "v2DataEngine": {}
+        },
+        "enableGoCoverDir": {},
+        "enablePSP": {},
+        "extraObjects": {},
+        "global": {},
+        "httproute": {
+          "annotations": {},
+          "enabled": {},
+          "hostnames": {},
+          "parentRefs": {},
+          "path": {},
+          "pathType": {}
+        },
+        "image": {
+          "csi": {
+            "attacher": {
+              "registry": {},
+              "repository": {},
+              "tag": {}
+            },
+            "livenessProbe": {
+              "registry": {},
+              "repository": {},
+              "tag": {}
+            },
+            "nodeDriverRegistrar": {
+              "registry": {},
+              "repository": {},
+              "tag": {}
+            },
+            "provisioner": {
+              "registry": {},
+              "repository": {},
+              "tag": {}
+            },
+            "resizer": {
+              "registry": {},
+              "repository": {},
+              "tag": {}
+            },
+            "snapshotter": {
+              "registry": {},
+              "repository": {},
+              "tag": {}
+            }
+          },
+          "longhorn": {
+            "backingImageManager": {
+              "registry": {},
+              "repository": {},
+              "tag": {}
+            },
+            "engine": {
+              "registry": {},
+              "repository": {},
+              "tag": {}
+            },
+            "instanceManager": {
+              "registry": {},
+              "repository": {},
+              "tag": {}
+            },
+            "manager": {
+              "registry": {},
+              "repository": {},
+              "tag": {}
+            },
+            "shareManager": {
+              "registry": {},
+              "repository": {},
+              "tag": {}
+            },
+            "supportBundleKit": {
+              "registry": {},
+              "repository": {},
+              "tag": {}
+            },
+            "ui": {
+              "registry": {},
+              "repository": {},
+              "tag": {}
+            }
+          },
+          "openshift": {
+            "oauthProxy": {
+              "registry": {},
+              "repository": {},
+              "tag": {}
+            }
+          },
+          "pullPolicy": {}
+        },
+        "ingress": {
+          "annotations": {},
+          "enabled": {},
+          "extraHosts": {},
+          "host": {},
+          "ingressClassName": {},
+          "path": {},
+          "pathType": {},
+          "secrets": {},
+          "secureBackends": {},
+          "tls": {},
+          "tlsSecret": {}
+        },
+        "longhornDriver": {
+          "log": {
+            "format": {}
+          },
+          "nodeSelector": {},
+          "priorityClass": {},
+          "tolerations": {}
+        },
+        "longhornManager": {
+          "distro": {},
+          "log": {
+            "format": {}
+          },
+          "nodeSelector": {},
+          "priorityClass": {},
+          "resources": {},
+          "serviceAnnotations": {},
+          "serviceLabels": {},
+          "tolerations": {},
+          "updateStrategy": {}
+        },
+        "longhornUI": {
+          "affinity": {},
+          "nodeSelector": {},
+          "podDisruptionBudget": {
+            "enabled": {},
+            "maxUnavailable": {},
+            "minAvailable": {}
+          },
+          "priorityClass": {},
+          "replicas": {},
+          "tolerations": {}
+        },
+        "metrics": {
+          "serviceMonitor": {
+            "additionalLabels": {},
+            "annotations": {},
+            "enabled": {},
+            "interval": {},
+            "metricRelabelings": {},
+            "relabelings": {},
+            "sampleLimit": {},
+            "scrapeTimeout": {}
+          }
+        },
+        "nameOverride": {},
+        "namespaceOverride": {},
+        "networkPolicies": {
+          "enabled": {},
+          "kubeAPIServerSourceCIDRs": {},
+          "restrictInternalTraffic": {},
+          "type": {}
+        },
+        "openshift": {
+          "enabled": {},
+          "ui": {
+            "port": {},
+            "proxy": {},
+            "route": {}
+          }
+        },
+        "persistence": {
+          "annotations": {},
+          "backingImage": {
+            "dataSourceParameters": {},
+            "dataSourceType": {},
+            "enable": {},
+            "expectedChecksum": {},
+            "name": {}
+          },
+          "backupTargetName": {},
+          "createStorageClass": {},
+          "dataEngine": {},
+          "defaultClass": {},
+          "defaultClassReplicaCount": {},
+          "defaultDataLocality": {},
+          "defaultDiskSelector": {
+            "enable": {},
+            "selector": {}
+          },
+          "defaultFsType": {},
+          "defaultMkfsParams": {},
+          "defaultNodeSelector": {
+            "enable": {},
+            "selector": {}
+          },
+          "disableRevisionCounter": {},
+          "migratable": {},
+          "nfsOptions": {},
+          "reclaimPolicy": {},
+          "recurringJobSelector": {
+            "enable": {},
+            "jobList": {}
+          },
+          "shareManagerNodeSelector": {
+            "enable": {},
+            "selector": {}
+          },
+          "shareManagerTolerations": {
+            "enable": {},
+            "tolerations": {}
+          },
+          "unmapMarkSnapChainRemoved": {},
+          "volumeBindingMode": {}
+        },
+        "preUpgradeChecker": {
+          "jobEnabled": {},
+          "upgradeVersionCheck": {}
+        },
+        "privateRegistry": {
+          "createSecret": {},
+          "registryPasswd": {},
+          "registrySecret": {},
+          "registryUrl": {},
+          "registryUser": {}
+        },
+        "service": {
+          "manager": {
+            "nodePort": {},
+            "type": {}
+          },
+          "ui": {
+            "annotations": {},
+            "labels": {},
+            "loadBalancerClass": {},
+            "loadBalancerIP": {},
+            "loadBalancerSourceRanges": {},
+            "nodePort": {},
+            "type": {}
+          }
+        },
+        "serviceAccount": {
+          "annotations": {}
+        }
+      },
+      "open": [
+        "annotations",
+        "defaultSettings.systemManagedComponentsNodeSelector",
+        "defaultSettings.taintToleration",
+        "extraObjects",
+        "global",
+        "httproute.annotations",
+        "httproute.hostnames",
+        "httproute.parentRefs",
+        "ingress.annotations",
+        "ingress.extraHosts",
+        "longhornDriver.nodeSelector",
+        "longhornDriver.tolerations",
+        "longhornManager.nodeSelector",
+        "longhornManager.serviceAnnotations",
+        "longhornManager.serviceLabels",
+        "longhornManager.tolerations",
+        "longhornManager.updateStrategy",
+        "longhornUI.affinity",
+        "longhornUI.nodeSelector",
+        "longhornUI.tolerations",
+        "metrics.serviceMonitor.additionalLabels",
+        "metrics.serviceMonitor.annotations",
+        "metrics.serviceMonitor.metricRelabelings",
+        "metrics.serviceMonitor.relabelings",
+        "networkPolicies.kubeAPIServerSourceCIDRs",
+        "persistence.annotations",
+        "persistence.recurringJobSelector.jobList",
+        "service.ui.annotations",
+        "service.ui.labels",
+        "service.ui.loadBalancerSourceRanges",
+        "serviceAccount.annotations"
+      ],
+      "dynamic": [],
+      "charts": ["<root>=longhorn@1.12.1"]
     },
     "https://charts.longhorn.io|longhorn|1.7.2": {
       "literal": {
@@ -26581,7 +27013,7 @@
       "dynamic": [],
       "charts": ["<root>=tempo@1.18.0"]
     },
-    "https://helm.cilium.io/|cilium|1.16.5": {
+    "https://helm.cilium.io/|cilium|1.20.1": {
       "literal": {
         "AsMap": {},
         "MTU": {},
@@ -26596,7 +27028,13 @@
           "enabled": {}
         },
         "alibabacloud": {
-          "enabled": {}
+          "enabled": {},
+          "nodeSpec": {
+            "securityGroupTags": {},
+            "securityGroups": {},
+            "vSwitchTags": {},
+            "vSwitches": {}
+          }
         },
         "annotateK8sNode": {},
         "annotations": {},
@@ -26628,6 +27066,8 @@
                   "labels": {},
                   "nodeSelector": {},
                   "podSecurityContext": {},
+                  "priorityClassName": {},
+                  "resources": {},
                   "securityContext": {},
                   "serviceAccount": {
                     "create": {},
@@ -26676,6 +27116,8 @@
                   "labels": {},
                   "nodeSelector": {},
                   "podSecurityContext": {},
+                  "priorityClassName": {},
+                  "resources": {},
                   "securityContext": {},
                   "service": {
                     "annotations": {},
@@ -26701,6 +27143,9 @@
           "clientID": {},
           "clientSecret": {},
           "enabled": {},
+          "nodeSpec": {
+            "azureInterfaceName": {}
+          },
           "resourceGroup": {},
           "subscriptionID": {},
           "tenantID": {},
@@ -26709,20 +27154,24 @@
         },
         "bandwidthManager": {
           "bbr": {},
-          "enabled": {}
-        },
-        "bgp": {
-          "announce": {
-            "loadbalancerIP": {},
-            "podCIDR": {}
-          },
+          "bbrHostNamespaceOnly": {},
           "enabled": {}
         },
         "bgpControlPlane": {
           "enabled": {},
+          "legacyOriginAttribute": {
+            "enabled": {}
+          },
+          "routerIDAllocation": {
+            "ipPool": {},
+            "mode": {}
+          },
           "secretsNamespace": {
             "create": {},
             "name": {}
+          },
+          "statusReport": {
+            "enabled": {}
           }
         },
         "bpf": {
@@ -26730,12 +27179,20 @@
           "autoMount": {
             "enabled": {}
           },
+          "ctAccounting": {},
           "ctAnyMax": {},
           "ctTcpMax": {},
           "datapathMode": {},
           "disableExternalIPMitigation": {},
+          "distributedLRU": {
+            "enabled": {}
+          },
           "enableTCX": {},
           "events": {
+            "default": {
+              "burstLimit": {},
+              "rateLimit": {}
+            },
             "drop": {
               "enabled": {}
             },
@@ -26747,17 +27204,23 @@
             }
           },
           "hostLegacyRouting": {},
+          "lbAlgorithmAnnotation": {},
           "lbExternalClusterIP": {},
           "lbMapMax": {},
+          "lbModeAnnotation": {},
+          "lbSourceRangeAllTypes": {},
           "mapDynamicSizeRatio": {},
           "masquerade": {},
           "monitorAggregation": {},
           "monitorFlags": {},
           "monitorInterval": {},
+          "monitorTraceIPOption": {},
           "natMax": {},
           "neighMax": {},
           "nodeMapMax": {},
           "policyMapMax": {},
+          "policyMapPressureMetricsThreshold": {},
+          "policyStatsMapMax": {},
           "preallocateMaps": {},
           "root": {},
           "tproxy": {},
@@ -26770,8 +27233,14 @@
             "cronJob": {},
             "job": {}
           },
+          "cronJob": {
+            "failedJobsHistoryLimit": {},
+            "successfulJobsHistoryLimit": {}
+          },
+          "enforceCAValidityThroughoutLeavesDuration": {},
           "extraVolumeMounts": {},
           "extraVolumes": {},
+          "generateCA": {},
           "image": {
             "digest": {},
             "override": {},
@@ -26780,7 +27249,10 @@
             "tag": {},
             "useDigest": {}
           },
+          "nodeSelector": {},
           "podLabels": {},
+          "priorityClassName": {},
+          "resources": {},
           "tolerations": {},
           "ttlSecondsAfterFinished": {}
         },
@@ -26826,6 +27298,7 @@
               },
               "storageMedium": {}
             },
+            "etcdQPS": {},
             "extraArgs": {},
             "extraEnv": {},
             "extraVolumeMounts": {},
@@ -26841,10 +27314,12 @@
             },
             "kvstoremesh": {
               "enabled": {},
+              "etcdQPS": {},
               "extraArgs": {},
               "extraEnv": {},
               "extraVolumeMounts": {},
               "healthPort": {},
+              "kvstoreMode": {},
               "lifecycle": {},
               "readinessProbe": {},
               "resources": {},
@@ -26874,18 +27349,21 @@
                 "etcd": {
                   "interval": {},
                   "metricRelabelings": {},
-                  "relabelings": {}
+                  "relabelings": {},
+                  "scrapeTimeout": {}
                 },
                 "interval": {},
                 "kvstoremesh": {
                   "interval": {},
                   "metricRelabelings": {},
-                  "relabelings": {}
+                  "relabelings": {},
+                  "scrapeTimeout": {}
                 },
                 "labels": {},
                 "metricRelabelings": {},
                 "namespace": {},
-                "relabelings": {}
+                "relabelings": {},
+                "scrapeTimeout": {}
               }
             },
             "nodeSelector": {
@@ -26916,40 +27394,30 @@
               "annotations": {},
               "enableSessionAffinity": {},
               "externalTrafficPolicy": {},
+              "externallyCreated": {},
               "internalTrafficPolicy": {},
+              "labels": {},
               "loadBalancerClass": {},
               "loadBalancerIP": {},
+              "loadBalancerSourceRanges": {},
               "nodePort": {},
               "type": {}
             },
             "terminationGracePeriodSeconds": {},
             "tls": {
-              "admin": {
-                "cert": {},
-                "key": {}
-              },
               "authMode": {},
               "auto": {
                 "certManagerIssuerRef": {},
                 "certValidityDuration": {},
                 "enabled": {},
                 "method": {},
-                "schedule": {}
-              },
-              "client": {
-                "cert": {},
-                "key": {}
-              },
-              "enableSecrets": {},
-              "remote": {
-                "cert": {},
-                "key": {}
-              },
-              "server": {
-                "cert": {},
-                "extraDnsNames": {},
-                "extraIpAddresses": {},
-                "key": {}
+                "privateKey": {},
+                "schedule": {},
+                "server": {
+                  "extraDnsNames": {},
+                  "extraIpAddresses": {}
+                },
+                "subject": {}
               }
             },
             "tolerations": {},
@@ -26962,14 +27430,43 @@
               "type": {}
             }
           },
+          "cacheTTL": {},
           "config": {
             "clusters": {},
             "domain": {},
             "enabled": {}
           },
+          "defaultGlobalNamespace": {},
+          "disableKubernetesHostAliases": {},
           "enableEndpointSliceSynchronization": {},
-          "enableMCSAPISupport": {},
           "maxConnectedClusters": {},
+          "mcsapi": {
+            "corednsAutoConfigure": {
+              "affinity": {},
+              "annotations": {},
+              "coredns": {
+                "clusterDomain": {},
+                "clustersetDomain": {},
+                "configMapName": {},
+                "deploymentName": {},
+                "namespace": {},
+                "serviceAccountName": {}
+              },
+              "enabled": {},
+              "extraArgs": {},
+              "extraVolumeMounts": {},
+              "extraVolumes": {},
+              "nodeSelector": {},
+              "podLabels": {},
+              "priorityClassName": {},
+              "resources": {},
+              "tolerations": {},
+              "ttlSecondsAfterFinished": {}
+            },
+            "enabled": {},
+            "installCRDs": {}
+          },
+          "policyDefaultLocalCluster": {},
           "useAPIServer": {}
         },
         "cni": {
@@ -26986,9 +27483,14 @@
           "externalRouting": {},
           "hostConfDirMountPath": {},
           "install": {},
+          "iptablesRemoveAWSRules": {},
           "logFile": {},
           "readCniConf": {},
           "resources": {
+            "limits": {
+              "cpu": {},
+              "memory": {}
+            },
             "requests": {
               "cpu": {},
               "memory": {}
@@ -26996,16 +27498,21 @@
           },
           "uninstall": {}
         },
+        "commonLabels": {},
+        "configDriftDetection": {
+          "driftChecker": {},
+          "enabled": {},
+          "ignoredKeys": {}
+        },
+        "connectivityProbeFrequencyRatio": {},
         "conntrackGCInterval": {},
         "conntrackGCMaxInterval": {},
         "crdWaitTimeout": {},
-        "customCalls": {
-          "enabled": {}
-        },
         "daemon": {
           "allowedConfigOverrides": {},
           "blockedConfigOverrides": {},
           "configSources": {},
+          "enableSourceIPVerification": {},
           "runPath": {}
         },
         "dashboards": {
@@ -27015,10 +27522,16 @@
           "labelValue": {},
           "namespace": {}
         },
+        "datapathPlugins": {
+          "enabled": {},
+          "stateDir": {}
+        },
         "debug": {
           "enabled": {},
+          "metricsSamplingInterval": {},
           "verbose": {}
         },
+        "defaultLBServiceIPAM": {},
         "devices": {},
         "directRoutingSkipUnreachable": {},
         "disableEndpointCRD": {},
@@ -27034,6 +27547,7 @@
           "idleConnectionGracePeriod": {},
           "maxDeferredConnectionDeletes": {},
           "minTtl": {},
+          "preAllocateIdentities": {},
           "preCache": {},
           "proxyPort": {},
           "proxyResponseMaxDelay": {},
@@ -27045,7 +27559,6 @@
           "reconciliationTriggerInterval": {}
         },
         "egressMasqueradeInterfaces": {},
-        "enableCiliumEndpointSlice": {},
         "enableCnpStatusUpdates": {},
         "enableCriticalPriorityClass": {},
         "enableIPv4BIGTCP": {},
@@ -27053,16 +27566,16 @@
         "enableIPv6BIGTCP": {},
         "enableIPv6Masquerade": {},
         "enableIdentityMark": {},
-        "enableK8sEndpointSlice": {},
+        "enableInternalTrafficPolicy": {},
         "enableK8sEventHandover": {},
-        "enableK8sTerminatingEndpoint": {},
+        "enableLBIPAM": {},
         "enableMasqueradeRouteSource": {},
-        "enableRuntimeDeviceDetection": {},
+        "enableNoServiceEndpointsRoutable": {},
+        "enableNonDefaultDenyPolicies": {},
         "enableXTSocketFallback": {},
         "encryption": {
           "enabled": {},
           "ipsec": {
-            "encryptedOverlay": {},
             "interface": {},
             "keyFile": {},
             "keyRotationDuration": {},
@@ -27072,19 +27585,77 @@
           },
           "nodeEncryption": {},
           "strictMode": {
-            "allowRemoteNodeIdentities": {},
-            "cidr": {},
-            "enabled": {}
+            "egress": {
+              "allowRemoteNodeIdentities": {},
+              "cidr": {},
+              "enabled": {}
+            },
+            "ingress": {
+              "enabled": {}
+            }
           },
           "type": {},
           "wireguard": {
-            "persistentKeepalive": {},
-            "userspaceFallback": {}
+            "persistentKeepalive": {}
+          },
+          "ztunnel": {
+            "affinity": {},
+            "annotations": {},
+            "ca": {
+              "type": {}
+            },
+            "caAddress": {},
+            "extraEnv": {},
+            "extraVolumeMounts": {},
+            "extraVolumes": {},
+            "healthPort": {},
+            "image": {
+              "digest": {},
+              "override": {},
+              "pullPolicy": {},
+              "repository": {},
+              "tag": {},
+              "useDigest": {}
+            },
+            "minReadySeconds": {},
+            "nodeSelector": {
+              "kubernetes": {
+                "io/os": {}
+              }
+            },
+            "podAnnotations": {},
+            "podLabels": {},
+            "priorityClassName": {},
+            "readinessProbe": {
+              "failureThreshold": {},
+              "initialDelaySeconds": {},
+              "periodSeconds": {}
+            },
+            "resources": {
+              "requests": {
+                "cpu": {},
+                "memory": {}
+              }
+            },
+            "secrets": {
+              "bootstrapRootCert": {}
+            },
+            "terminationGracePeriodSeconds": {},
+            "tolerations": {},
+            "updateStrategy": {
+              "rollingUpdate": {
+                "maxSurge": {},
+                "maxUnavailable": {}
+              },
+              "type": {}
+            }
           }
         },
         "endpointHealthChecking": {
           "enabled": {}
         },
+        "endpointLockdownOnMapOverflow": {},
+        "endpointPolicyUpdateTimeoutDuration": {},
         "endpointRoutes": {
           "enabled": {}
         },
@@ -27098,9 +27669,19 @@
           "gcTags": {},
           "iamRole": {},
           "instanceTagsFilter": {},
+          "nodeSpec": {
+            "deleteOnTermination": {},
+            "disablePrefixDelegation": {},
+            "excludeInterfaceTags": {},
+            "firstInterfaceIndex": {},
+            "securityGroupTags": {},
+            "securityGroups": {},
+            "subnetIDs": {},
+            "subnetTags": {},
+            "usePrimaryAddress": {}
+          },
           "subnetIDsFilter": {},
-          "subnetTagsFilter": {},
-          "updateEC2AdapterLimitViaAPI": {}
+          "subnetTagsFilter": {}
         },
         "envoy": {
           "affinity": {
@@ -27118,6 +27699,10 @@
           },
           "annotations": {},
           "baseID": {},
+          "bootstrapConfigMap": {},
+          "clusterMaxConnections": {},
+          "clusterMaxPendingRequests": {},
+          "clusterMaxRequests": {},
           "connectTimeoutSeconds": {},
           "debug": {
             "admin": {
@@ -27134,6 +27719,8 @@
           "extraVolumeMounts": {},
           "extraVolumes": {},
           "healthPort": {},
+          "httpRetryCount": {},
+          "httpUpstreamLingerTimeout": {},
           "idleTimeoutDurationSeconds": {},
           "image": {
             "digest": {},
@@ -27143,17 +27730,31 @@
             "tag": {},
             "useDigest": {}
           },
+          "initContainers": {},
           "initialFetchTimeoutSeconds": {},
           "livenessProbe": {
+            "enabled": {},
             "failureThreshold": {},
-            "periodSeconds": {}
+            "initialDelaySeconds": {},
+            "periodSeconds": {},
+            "timeoutSeconds": {}
           },
           "log": {
+            "accessLogBufferSize": {},
+            "accessLogEnabled": {},
+            "defaultLevel": {},
             "format": {},
+            "format_json": {},
             "path": {}
           },
+          "maxConcurrentRetries": {},
           "maxConnectionDurationSeconds": {},
+          "maxGlobalDownstreamConnections": {},
           "maxRequestsPerConnection": {},
+          "minReadySeconds": {},
+          "nodeLocality": {
+            "enabled": {}
+          },
           "nodeSelector": {
             "kubernetes": {
               "io/os": {}
@@ -27166,6 +27767,7 @@
               "type": {}
             }
           },
+          "policyRestoreTimeoutDuration": {},
           "priorityClassName": {},
           "prometheus": {
             "enabled": {},
@@ -27177,12 +27779,15 @@
               "labels": {},
               "metricRelabelings": {},
               "namespace": {},
-              "relabelings": {}
+              "relabelings": {},
+              "scrapeTimeout": {}
             }
           },
           "readinessProbe": {
             "failureThreshold": {},
-            "periodSeconds": {}
+            "initialDelaySeconds": {},
+            "periodSeconds": {},
+            "timeoutSeconds": {}
           },
           "resources": {},
           "rollOutPods": {},
@@ -27198,9 +27803,13 @@
             }
           },
           "startupProbe": {
+            "enabled": {},
             "failureThreshold": {},
-            "periodSeconds": {}
+            "initialDelaySeconds": {},
+            "periodSeconds": {},
+            "timeoutSeconds": {}
           },
+          "streamIdleTimeoutDurationSeconds": {},
           "terminationGracePeriodSeconds": {},
           "tolerations": {},
           "updateStrategy": {
@@ -27209,6 +27818,8 @@
             },
             "type": {}
           },
+          "useOriginalSourceAddress": {},
+          "xdsMode": {},
           "xffNumTrustedHopsL7PolicyEgress": {},
           "xffNumTrustedHopsL7PolicyIngress": {}
         },
@@ -27224,12 +27835,6 @@
           "enabled": {},
           "endpoints": {},
           "ssl": {}
-        },
-        "externalIPs": {
-          "enabled": {}
-        },
-        "externalWorkloads": {
-          "enabled": {}
         },
         "extraArgs": {},
         "extraConfig": {},
@@ -27261,6 +27866,7 @@
             "name": {},
             "sync": {}
           },
+          "useRemoteAddress": {},
           "xffNumTrustedHops": {}
         },
         "gke": {
@@ -27268,15 +27874,10 @@
           "enabled": {}
         },
         "global": {},
+        "healthCheckICMPFailureThreshold": {},
         "healthChecking": {},
         "healthPort": {},
-        "highScaleIPcache": {
-          "enabled": {}
-        },
         "hostFirewall": {
-          "enabled": {}
-        },
-        "hostPort": {
           "enabled": {}
         },
         "hostServices": {},
@@ -27291,6 +27892,7 @@
           "eventBufferCapacity": {},
           "eventQueueSize": {},
           "export": {
+            "aggregationInterval": {},
             "dynamic": {
               "config": {
                 "configMapName": {},
@@ -27299,17 +27901,25 @@
               },
               "enabled": {}
             },
+            "fileCompress": {},
             "fileMaxBackups": {},
             "fileMaxSizeMb": {},
             "static": {
+              "aggregationInterval": {},
               "allowList": {},
               "denyList": {},
               "enabled": {},
+              "fieldAggregate": {},
               "fieldMask": {},
+              "fileCompress": {},
+              "fileMaxBackups": {},
+              "fileMaxSizeMb": {},
               "filePath": {}
             }
           },
+          "hostUsers": {},
           "listenAddress": {},
+          "lostEventSendInterval": {},
           "metrics": {
             "dashboards": {
               "annotations": {},
@@ -27317,6 +27927,14 @@
               "label": {},
               "labelValue": {},
               "namespace": {}
+            },
+            "dynamic": {
+              "config": {
+                "configMapName": {},
+                "content": {},
+                "createConfigMap": {}
+              },
+              "enabled": {}
             },
             "enableOpenMetrics": {},
             "enabled": {},
@@ -27330,6 +27948,7 @@
               "labels": {},
               "metricRelabelings": {},
               "relabelings": {},
+              "scrapeTimeout": {},
               "tlsConfig": {}
             },
             "tls": {
@@ -27349,6 +27968,9 @@
               }
             }
           },
+          "networkPolicyCorrelation": {
+            "enabled": {}
+          },
           "peerService": {
             "clusterDomain": {},
             "servicePort": {},
@@ -27364,9 +27986,6 @@
               },
               "urlQuery": {},
               "userInfo": {}
-            },
-            "kafka": {
-              "apiKey": {}
             }
           },
           "relay": {
@@ -27376,7 +27995,6 @@
               }
             },
             "annotations": {},
-            "dialTimeout": {},
             "enabled": {},
             "extraEnv": {},
             "extraVolumeMounts": {},
@@ -27395,6 +28013,10 @@
             },
             "listenHost": {},
             "listenPort": {},
+            "logOptions": {
+              "format": {},
+              "level": {}
+            },
             "nodeSelector": {
               "kubernetes": {
                 "io/os": {}
@@ -27404,11 +28026,16 @@
             "podDisruptionBudget": {},
             "podLabels": {},
             "podSecurityContext": {
-              "fsGroup": {}
+              "fsGroup": {},
+              "seccompProfile": {
+                "type": {}
+              }
             },
             "pprof": {
               "address": {},
+              "blockProfileRate": {},
               "enabled": {},
+              "mutexProfileFraction": {},
               "port": {}
             },
             "priorityClassName": {},
@@ -27422,7 +28049,8 @@
                 "labels": {},
                 "metricRelabelings": {},
                 "namespace": {},
-                "relabelings": {}
+                "relabelings": {},
+                "scrapeTimeout": {}
               }
             },
             "replicas": {},
@@ -27430,12 +28058,17 @@
             "retryTimeout": {},
             "rollOutPods": {},
             "securityContext": {
+              "allowPrivilegeEscalation": {},
               "capabilities": {
                 "drop": {}
               },
+              "readOnlyRootFilesystem": {},
               "runAsGroup": {},
               "runAsNonRoot": {},
-              "runAsUser": {}
+              "runAsUser": {},
+              "seccompProfile": {
+                "type": {}
+              }
             },
             "service": {
               "nodePort": {},
@@ -27479,7 +28112,9 @@
               "certValidityDuration": {},
               "enabled": {},
               "method": {},
-              "schedule": {}
+              "privateKey": {},
+              "schedule": {},
+              "subject": {}
             },
             "enabled": {},
             "server": {
@@ -27505,14 +28140,13 @@
                 "tag": {},
                 "useDigest": {}
               },
-              "livenessProbe": {
-                "enabled": {}
-              },
-              "readinessProbe": {
-                "enabled": {}
-              },
               "resources": {},
-              "securityContext": {}
+              "securityContext": {
+                "allowPrivilegeEscalation": {},
+                "capabilities": {
+                  "drop": {}
+                }
+              }
             },
             "baseUrl": {},
             "enabled": {},
@@ -27529,7 +28163,12 @@
                 "useDigest": {}
               },
               "resources": {},
-              "securityContext": {},
+              "securityContext": {
+                "allowPrivilegeEscalation": {},
+                "capabilities": {
+                  "drop": {}
+                }
+              },
               "server": {
                 "ipv6": {
                   "enabled": {}
@@ -27544,6 +28183,7 @@
               "labels": {},
               "tls": {}
             },
+            "labels": {},
             "nodeSelector": {
               "kubernetes": {
                 "io/os": {}
@@ -27558,10 +28198,15 @@
             "securityContext": {
               "fsGroup": {},
               "runAsGroup": {},
-              "runAsUser": {}
+              "runAsNonRoot": {},
+              "runAsUser": {},
+              "seccompProfile": {
+                "type": {}
+              }
             },
             "service": {
               "annotations": {},
+              "labels": {},
               "nodePort": {},
               "type": {}
             },
@@ -27578,6 +28223,7 @@
                 "key": {}
               }
             },
+            "tmpVolume": {},
             "tolerations": {},
             "topologySpreadConstraints": {},
             "updateStrategy": {
@@ -27590,6 +28236,7 @@
         },
         "identityAllocationMode": {},
         "identityChangeGracePeriod": {},
+        "identityManagementMode": {},
         "image": {
           "digest": {},
           "override": {},
@@ -27608,10 +28255,13 @@
           "enforceHttps": {},
           "hostNetwork": {
             "enabled": {},
+            "httpPort": {},
+            "httpsPort": {},
             "nodes": {
               "matchLabels": {}
             },
-            "sharedListenerPort": {}
+            "sharedListenerPort": {},
+            "tlsPassthroughPort": {}
           },
           "ingressLBAnnotationPrefixes": {},
           "loadbalancerMode": {},
@@ -27631,7 +28281,9 @@
             "name": {},
             "secureNodePort": {},
             "type": {}
-          }
+          },
+          "useRemoteAddress": {},
+          "xffNumTrustedHops": {}
         },
         "initResources": {},
         "installNoConntrackIptablesRules": {},
@@ -27641,7 +28293,15 @@
         },
         "ipam": {
           "ciliumNodeUpdateRate": {},
+          "installUplinkRoutesForDelegatedIPAM": {},
           "mode": {},
+          "multiPoolPreAllocation": {},
+          "nodeSpec": {
+            "ipamMaxAllocate": {},
+            "ipamMinAllocate": {},
+            "ipamPreAllocate": {},
+            "ipamStaticIPTags": {}
+          },
           "operator": {
             "autoCreateCiliumPodIPPools": {},
             "clusterPoolIPv4MaskSize": {},
@@ -27663,18 +28323,37 @@
         },
         "ipv6NativeRoutingCIDR": {},
         "k8s": {
+          "apiServerURLs": {},
           "requireIPv4PodCIDR": {},
           "requireIPv6PodCIDR": {},
           "serviceProxyName": {}
         },
+        "k8sClientExponentialBackoff": {
+          "backoffBaseSeconds": {},
+          "backoffMaxDurationSeconds": {},
+          "enabled": {}
+        },
         "k8sClientRateLimit": {
           "burst": {},
+          "operator": {
+            "burst": {},
+            "qps": {}
+          },
           "qps": {}
+        },
+        "k8sClusterNetworkPolicy": {
+          "enabled": {}
         },
         "k8sNetworkPolicy": {
           "enabled": {}
         },
         "k8sServiceHost": {},
+        "k8sServiceHostRef": {
+          "key": {},
+          "name": {}
+        },
+        "k8sServiceLookupConfigMapName": {},
+        "k8sServiceLookupNamespace": {},
         "k8sServicePort": {},
         "keepDeprecatedLabels": {},
         "keepDeprecatedProbes": {},
@@ -27682,8 +28361,7 @@
         "kubeProxyReplacement": {},
         "kubeProxyReplacementHealthzBindAddr": {},
         "l2NeighDiscovery": {
-          "enabled": {},
-          "refreshPeriod": {}
+          "enabled": {}
         },
         "l2announcements": {
           "enabled": {},
@@ -27693,13 +28371,14 @@
         },
         "l2podAnnouncements": {
           "enabled": {},
-          "interface": {}
+          "interfacePattern": {}
         },
         "l7Proxy": {},
         "labels": {},
         "livenessProbe": {
           "failureThreshold": {},
-          "periodSeconds": {}
+          "periodSeconds": {},
+          "requireK8sConnectivity": {}
         },
         "loadBalancer": {
           "acceleration": {},
@@ -27711,19 +28390,25 @@
             "ports": {}
           },
           "mode": {},
-          "serviceTopology": {},
-          "standalone": {}
+          "reflectorWaitTime": {},
+          "serviceTopology": {}
+        },
+        "localRedirectPolicies": {
+          "addressMatcherCIDRs": {},
+          "enabled": {}
         },
         "localRedirectPolicy": {},
         "logOptions": {},
         "logSystemLoad": {},
         "maglev": {},
+        "minReadySeconds": {},
         "monitor": {
           "enabled": {},
           "eventTypes": {},
           "resources": {}
         },
         "name": {},
+        "namespaceOverride": {},
         "nat": {
           "mapStatsEntries": {},
           "mapStatsInterval": {}
@@ -27731,17 +28416,19 @@
         "nat46x64Gateway": {
           "enabled": {}
         },
+        "nativeRoutingCIDRFromClusterPool": {},
         "nodeIPAM": {
           "enabled": {}
         },
+        "nodeLabels": {},
         "nodePort": {
           "addresses": {},
           "autoProtectPortRange": {},
           "bindProtection": {},
           "directRoutingDevice": {},
+          "enableDynamicSourceLookup": {},
           "enableHealthCheck": {},
           "enableHealthCheckLoadBalancerIP": {},
-          "enabled": {},
           "range": {}
         },
         "nodeSelector": {
@@ -27766,6 +28453,7 @@
             "tag": {},
             "useDigest": {}
           },
+          "minReadySeconds": {},
           "nodeSelector": {
             "kubernetes": {
               "io/os": {}
@@ -27793,6 +28481,7 @@
           },
           "revertReconfigureKubelet": {},
           "securityContext": {
+            "allowPrivilegeEscalation": {},
             "capabilities": {
               "add": {}
             },
@@ -27809,8 +28498,10 @@
           "tolerations": {},
           "updateStrategy": {
             "type": {}
-          }
+          },
+          "waitForCloudInit": {}
         },
+        "nonIdempotentAnnotations": {},
         "operator": {
           "affinity": {
             "podAntiAffinity": {
@@ -27834,6 +28525,7 @@
           "extraVolumeMounts": {},
           "extraVolumes": {},
           "hostNetwork": {},
+          "hostUsers": {},
           "identityGCInterval": {},
           "identityHeartbeatTimeout": {},
           "image": {
@@ -27857,15 +28549,22 @@
           "podAnnotations": {},
           "podDisruptionBudget": {},
           "podLabels": {},
-          "podSecurityContext": {},
+          "podSecurityContext": {
+            "seccompProfile": {
+              "type": {}
+            }
+          },
           "pprof": {
             "address": {},
+            "blockProfileRate": {},
             "enabled": {},
+            "mutexProfileFraction": {},
             "port": {}
           },
           "priorityClassName": {},
           "prometheus": {
             "enabled": {},
+            "metricsService": {},
             "port": {},
             "serviceMonitor": {
               "annotations": {},
@@ -27875,14 +28574,29 @@
               "labels": {},
               "metricRelabelings": {},
               "namespace": {},
-              "relabelings": {}
+              "relabelings": {},
+              "scrapeTimeout": {}
+            },
+            "tls": {
+              "enabled": {},
+              "server": {
+                "existingSecret": {},
+                "mtls": {
+                  "enabled": {}
+                }
+              }
             }
           },
           "removeNodeTaints": {},
           "replicas": {},
           "resources": {},
           "rollOutPods": {},
-          "securityContext": {},
+          "securityContext": {
+            "allowPrivilegeEscalation": {},
+            "capabilities": {
+              "drop": {}
+            }
+          },
           "setNodeNetworkStatus": {},
           "setNodeTaints": {},
           "skipCRDCreation": {},
@@ -27890,7 +28604,8 @@
           "topologySpreadConstraints": {},
           "unmanagedPodWatcher": {
             "intervalSeconds": {},
-            "restart": {}
+            "restart": {},
+            "selector": {}
           },
           "updateStrategy": {
             "rollingUpdate": {
@@ -27901,23 +28616,31 @@
           }
         },
         "pmtuDiscovery": {
-          "enabled": {}
+          "enabled": {},
+          "packetizationLayerPMTUDMode": {}
         },
         "podAnnotations": {},
         "podLabels": {},
         "podSecurityContext": {
           "appArmorProfile": {
             "type": {}
+          },
+          "seccompProfile": {
+            "type": {}
           }
         },
         "policyAuditMode": {},
         "policyCIDRMatchMode": {},
+        "policyDenyResponse": {},
         "policyEnforcementMode": {},
         "pprof": {
           "address": {},
+          "blockProfileRate": {},
           "enabled": {},
+          "mutexProfileFraction": {},
           "port": {}
         },
+        "preferIpv6": {},
         "preflight": {
           "affinity": {
             "podAffinity": {
@@ -27926,6 +28649,16 @@
           },
           "annotations": {},
           "enabled": {},
+          "envoy": {
+            "image": {
+              "digest": {},
+              "override": {},
+              "pullPolicy": {},
+              "repository": {},
+              "tag": {},
+              "useDigest": {}
+            }
+          },
           "extraEnv": {},
           "extraVolumeMounts": {},
           "extraVolumes": {},
@@ -27952,9 +28685,10 @@
             "periodSeconds": {}
           },
           "resources": {},
-          "securityContext": {},
+          "securityContext": {
+            "allowPrivilegeEscalation": {}
+          },
           "terminationGracePeriodSeconds": {},
-          "tofqdnsPreCache": {},
           "tolerations": {},
           "updateStrategy": {
             "type": {}
@@ -27966,6 +28700,7 @@
           "controllerGroupMetrics": {},
           "enabled": {},
           "metrics": {},
+          "metricsService": {},
           "port": {},
           "serviceMonitor": {
             "annotations": {},
@@ -27976,6 +28711,7 @@
             "metricRelabelings": {},
             "namespace": {},
             "relabelings": {},
+            "scrapeTimeout": {},
             "trustCRDsExist": {}
           }
         },
@@ -28002,10 +28738,16 @@
         "resources": {},
         "rollOutCiliumPods": {},
         "routingMode": {},
+        "scheduling": {
+          "mode": {}
+        },
         "sctp": {
           "enabled": {}
         },
+        "secretsNamespaceAnnotations": {},
+        "secretsNamespaceLabels": {},
         "securityContext": {
+          "allowPrivilegeEscalation": {},
           "capabilities": {
             "applySysctlOverwrites": {},
             "ciliumAgent": {},
@@ -28032,6 +28774,12 @@
             "name": {}
           },
           "clustermeshcertgen": {
+            "annotations": {},
+            "automount": {},
+            "create": {},
+            "name": {}
+          },
+          "corednsMCSAPI": {
             "annotations": {},
             "automount": {},
             "create": {},
@@ -28079,20 +28827,53 @@
             "automount": {},
             "create": {},
             "name": {}
+          },
+          "ztunnel": {
+            "annotations": {},
+            "automount": {},
+            "create": {},
+            "name": {}
           }
         },
         "serviceNoBackendResponse": {},
-        "sessionAffinity": {},
         "sleepAfterInit": {},
         "socketLB": {
+          "enabled": {}
+        },
+        "standaloneDnsProxy": {
+          "annotations": {},
+          "automountServiceAccountToken": {},
+          "debug": {},
           "enabled": {},
-          "terminatePodConnections": {}
+          "image": {
+            "digest": {},
+            "override": {},
+            "pullPolicy": {},
+            "repository": {},
+            "tag": {},
+            "useDigest": {}
+          },
+          "minReadySeconds": {},
+          "nodeSelector": {
+            "kubernetes": {
+              "io/os": {}
+            }
+          },
+          "rollOutPods": {},
+          "serverPort": {},
+          "tolerations": {},
+          "updateStrategy": {
+            "rollingUpdate": {
+              "maxSurge": {},
+              "maxUnavailable": {}
+            },
+            "type": {}
+          }
         },
         "startupProbe": {
           "failureThreshold": {},
           "periodSeconds": {}
         },
-        "svcSourceRangeCheck": {},
         "synchronizeK8sNodes": {},
         "sysctlfix": {
           "enabled": {}
@@ -28111,12 +28892,23 @@
             "name": {},
             "useSecret": {}
           },
-          "secretsBackend": {}
+          "readSecretsOnlyFromSecretsNamespace": {},
+          "secretSync": {
+            "enabled": {}
+          },
+          "secretsBackend": {},
+          "secretsNamespace": {
+            "create": {},
+            "name": {}
+          }
         },
+        "tmpVolume": {},
         "tolerations": {},
         "tunnel": {},
         "tunnelPort": {},
         "tunnelProtocol": {},
+        "tunnelSourcePortRange": {},
+        "underlayProtocol": {},
         "updateStrategy": {
           "rollingUpdate": {
             "maxUnavailable": {}
@@ -28138,6 +28930,10 @@
       },
       "open": [
         "affinity.podAntiAffinity.requiredDuringSchedulingIgnoredDuringExecution",
+        "alibabacloud.nodeSpec.securityGroupTags",
+        "alibabacloud.nodeSpec.securityGroups",
+        "alibabacloud.nodeSpec.vSwitchTags",
+        "alibabacloud.nodeSpec.vSwitches",
         "annotations",
         "authentication.mutual.spire.annotations",
         "authentication.mutual.spire.install.agent.affinity",
@@ -28145,6 +28941,7 @@
         "authentication.mutual.spire.install.agent.labels",
         "authentication.mutual.spire.install.agent.nodeSelector",
         "authentication.mutual.spire.install.agent.podSecurityContext",
+        "authentication.mutual.spire.install.agent.resources",
         "authentication.mutual.spire.install.agent.securityContext",
         "authentication.mutual.spire.install.agent.tolerations",
         "authentication.mutual.spire.install.server.affinity",
@@ -28153,6 +28950,7 @@
         "authentication.mutual.spire.install.server.labels",
         "authentication.mutual.spire.install.server.nodeSelector",
         "authentication.mutual.spire.install.server.podSecurityContext",
+        "authentication.mutual.spire.install.server.resources",
         "authentication.mutual.spire.install.server.securityContext",
         "authentication.mutual.spire.install.server.service.annotations",
         "authentication.mutual.spire.install.server.service.labels",
@@ -28162,7 +28960,9 @@
         "certgen.annotations.job",
         "certgen.extraVolumeMounts",
         "certgen.extraVolumes",
+        "certgen.nodeSelector",
         "certgen.podLabels",
+        "certgen.resources",
         "certgen.tolerations",
         "cgroup.autoMount.resources",
         "ciliumEndpointSlice.rateLimits",
@@ -28195,17 +28995,45 @@
         "clustermesh.apiserver.resources",
         "clustermesh.apiserver.securityContext.capabilities.drop",
         "clustermesh.apiserver.service.annotations",
+        "clustermesh.apiserver.service.labels",
+        "clustermesh.apiserver.service.loadBalancerSourceRanges",
         "clustermesh.apiserver.tls.auto.certManagerIssuerRef",
-        "clustermesh.apiserver.tls.server.extraDnsNames",
-        "clustermesh.apiserver.tls.server.extraIpAddresses",
+        "clustermesh.apiserver.tls.auto.privateKey",
+        "clustermesh.apiserver.tls.auto.server.extraDnsNames",
+        "clustermesh.apiserver.tls.auto.server.extraIpAddresses",
+        "clustermesh.apiserver.tls.auto.subject",
         "clustermesh.apiserver.tolerations",
         "clustermesh.apiserver.topologySpreadConstraints",
         "clustermesh.config.clusters",
+        "clustermesh.mcsapi.corednsAutoConfigure.affinity",
+        "clustermesh.mcsapi.corednsAutoConfigure.annotations",
+        "clustermesh.mcsapi.corednsAutoConfigure.extraArgs",
+        "clustermesh.mcsapi.corednsAutoConfigure.extraVolumeMounts",
+        "clustermesh.mcsapi.corednsAutoConfigure.extraVolumes",
+        "clustermesh.mcsapi.corednsAutoConfigure.nodeSelector",
+        "clustermesh.mcsapi.corednsAutoConfigure.podLabels",
+        "clustermesh.mcsapi.corednsAutoConfigure.resources",
+        "clustermesh.mcsapi.corednsAutoConfigure.tolerations",
         "cni.chainingMode",
+        "commonLabels",
+        "configDriftDetection.ignoredKeys",
         "dashboards.annotations",
+        "encryption.ztunnel.affinity",
+        "encryption.ztunnel.annotations",
+        "encryption.ztunnel.extraEnv",
+        "encryption.ztunnel.extraVolumeMounts",
+        "encryption.ztunnel.extraVolumes",
+        "encryption.ztunnel.podAnnotations",
+        "encryption.ztunnel.podLabels",
+        "encryption.ztunnel.tolerations",
         "eni.eniTags",
         "eni.gcTags",
         "eni.instanceTagsFilter",
+        "eni.nodeSpec.excludeInterfaceTags",
+        "eni.nodeSpec.securityGroupTags",
+        "eni.nodeSpec.securityGroups",
+        "eni.nodeSpec.subnetIDs",
+        "eni.nodeSpec.subnetTags",
         "eni.subnetIDsFilter",
         "eni.subnetTagsFilter",
         "envoy.affinity.nodeAffinity.requiredDuringSchedulingIgnoredDuringExecution.nodeSelectorTerms",
@@ -28218,6 +29046,8 @@
         "envoy.extraHostPathMounts",
         "envoy.extraVolumeMounts",
         "envoy.extraVolumes",
+        "envoy.initContainers",
+        "envoy.log.format_json",
         "envoy.podAnnotations",
         "envoy.podLabels",
         "envoy.prometheus.serviceMonitor.annotations",
@@ -28242,8 +29072,10 @@
         "hubble.export.dynamic.config.content",
         "hubble.export.static.allowList",
         "hubble.export.static.denyList",
+        "hubble.export.static.fieldAggregate",
         "hubble.export.static.fieldMask",
         "hubble.metrics.dashboards.annotations",
+        "hubble.metrics.dynamic.config.content",
         "hubble.metrics.serviceAnnotations",
         "hubble.metrics.serviceMonitor.annotations",
         "hubble.metrics.serviceMonitor.labels",
@@ -28271,6 +29103,8 @@
         "hubble.relay.tolerations",
         "hubble.relay.topologySpreadConstraints",
         "hubble.tls.auto.certManagerIssuerRef",
+        "hubble.tls.auto.privateKey",
+        "hubble.tls.auto.subject",
         "hubble.tls.server.extraDnsNames",
         "hubble.tls.server.extraIpAddresses",
         "hubble.ui.affinity",
@@ -28279,22 +29113,25 @@
         "hubble.ui.backend.extraVolumeMounts",
         "hubble.ui.backend.extraVolumes",
         "hubble.ui.backend.resources",
-        "hubble.ui.backend.securityContext",
+        "hubble.ui.backend.securityContext.capabilities.drop",
         "hubble.ui.baseUrl",
         "hubble.ui.frontend.extraEnv",
         "hubble.ui.frontend.extraVolumeMounts",
         "hubble.ui.frontend.extraVolumes",
         "hubble.ui.frontend.resources",
-        "hubble.ui.frontend.securityContext",
+        "hubble.ui.frontend.securityContext.capabilities.drop",
         "hubble.ui.ingress.annotations",
         "hubble.ui.ingress.hosts",
         "hubble.ui.ingress.labels",
         "hubble.ui.ingress.tls",
+        "hubble.ui.labels",
         "hubble.ui.podAnnotations",
         "hubble.ui.podDisruptionBudget",
         "hubble.ui.podLabels",
         "hubble.ui.service.annotations",
+        "hubble.ui.service.labels",
         "hubble.ui.standalone.tls.certsVolume",
+        "hubble.ui.tmpVolume",
         "hubble.ui.tolerations",
         "hubble.ui.topologySpreadConstraints",
         "imagePullSecrets",
@@ -28304,6 +29141,7 @@
         "ingressController.service.labels",
         "initResources",
         "ipMasqAgent.config",
+        "ipam.nodeSpec.ipamStaticIPTags",
         "ipam.operator.autoCreateCiliumPodIPPools",
         "ipam.operator.clusterPoolIPv4PodCIDRList",
         "ipam.operator.clusterPoolIPv6PodCIDRList",
@@ -28328,16 +29166,17 @@
         "operator.extraHostPathMounts",
         "operator.extraVolumeMounts",
         "operator.extraVolumes",
+        "operator.image.tag",
         "operator.podAnnotations",
         "operator.podDisruptionBudget",
         "operator.podLabels",
-        "operator.podSecurityContext",
         "operator.prometheus.serviceMonitor.annotations",
         "operator.prometheus.serviceMonitor.labels",
         "operator.resources",
-        "operator.securityContext",
+        "operator.securityContext.capabilities.drop",
         "operator.tolerations",
         "operator.topologySpreadConstraints",
+        "operator.unmanagedPodWatcher.intervalSeconds",
         "podAnnotations",
         "podLabels",
         "preflight.affinity.podAffinity.requiredDuringSchedulingIgnoredDuringExecution",
@@ -28350,13 +29189,14 @@
         "preflight.podLabels",
         "preflight.podSecurityContext",
         "preflight.resources",
-        "preflight.securityContext",
         "preflight.tolerations",
         "prometheus.controllerGroupMetrics",
         "prometheus.serviceMonitor.annotations",
         "prometheus.serviceMonitor.labels",
         "prometheus.serviceMonitor.relabelings",
         "resources",
+        "secretsNamespaceAnnotations",
+        "secretsNamespaceLabels",
         "securityContext.capabilities.applySysctlOverwrites",
         "securityContext.capabilities.ciliumAgent",
         "securityContext.capabilities.cleanCiliumState",
@@ -28364,6 +29204,7 @@
         "serviceAccounts.cilium.annotations",
         "serviceAccounts.clustermeshApiserver.annotations",
         "serviceAccounts.clustermeshcertgen.annotations",
+        "serviceAccounts.corednsMCSAPI.annotations",
         "serviceAccounts.envoy.annotations",
         "serviceAccounts.hubblecertgen.annotations",
         "serviceAccounts.nodeinit.annotations",
@@ -28371,13 +29212,17 @@
         "serviceAccounts.preflight.annotations",
         "serviceAccounts.relay.annotations",
         "serviceAccounts.ui.annotations",
+        "serviceAccounts.ztunnel.annotations",
+        "standaloneDnsProxy.annotations",
+        "standaloneDnsProxy.tolerations",
         "tls.ca.cert",
         "tls.ca.key",
         "tls.caBundle.content",
+        "tmpVolume",
         "tolerations"
       ],
       "dynamic": [],
-      "charts": ["<root>=cilium@1.16.5"]
+      "charts": ["<root>=cilium@1.20.1"]
     },
     "https://helm.releases.hashicorp.com|vault|0.34.1": {
       "literal": {
@@ -30510,12 +31355,14 @@
       "dynamic": [],
       "charts": ["<root>=ollama@1.6.0"]
     },
-    "https://prometheus-community.github.io/helm-charts|kube-prometheus-stack|65.5.0": {
+    "https://prometheus-community.github.io/helm-charts|kube-prometheus-stack|88.6.2": {
       "literal": {
         "additionalPrometheusRules": {},
         "additionalPrometheusRulesMap": {},
         "alertmanager": {
+          "additionalLabels": {},
           "alertmanagerSpec": {
+            "additionalArgs": {},
             "additionalConfig": {},
             "additionalConfigString": {},
             "additionalPeers": {},
@@ -30530,26 +31377,37 @@
             "clusterLabel": {},
             "clusterPeerTimeout": {},
             "clusterPushpullInterval": {},
+            "clusterTLS": {},
             "configMaps": {},
             "configSecret": {},
             "containers": {},
+            "dnsConfig": {},
+            "dnsPolicy": {},
+            "enableServiceLinks": {},
             "externalUrl": {},
             "forceEnableClusterMode": {},
+            "hostAliases": {},
+            "hostNetwork": {},
+            "hostUsers": {},
             "image": {
+              "pullPolicy": {},
               "registry": {},
               "repository": {},
               "sha": {},
               "tag": {}
             },
             "initContainers": {},
+            "limits": {},
             "listenLocal": {},
             "logFormat": {},
             "logLevel": {},
             "minReadySeconds": {},
             "nodeSelector": {},
             "paused": {},
+            "persistentVolumeClaimRetentionPolicy": {},
             "podAntiAffinity": {},
             "podAntiAffinityTopologyKey": {},
+            "podManagementPolicy": {},
             "podMetadata": {},
             "portName": {},
             "priorityClassName": {},
@@ -30557,13 +31415,17 @@
             "resources": {},
             "retention": {},
             "routePrefix": {},
+            "schedulerName": {},
             "scheme": {},
             "secrets": {},
             "securityContext": {},
+            "serviceName": {},
             "storage": {},
+            "terminationGracePeriodSeconds": {},
             "tlsConfig": {},
             "tolerations": {},
             "topologySpreadConstraints": {},
+            "updateStrategy": {},
             "useExistingSecret": {},
             "version": {},
             "volumeMounts": {},
@@ -30580,9 +31442,11 @@
             "data": {},
             "name": {}
           },
+          "forceDeployDashboards": {},
           "ingress": {
             "annotations": {},
             "enabled": {},
+            "extraPaths": {},
             "hosts": {},
             "ingressClassName": {},
             "labels": {},
@@ -30593,11 +31457,32 @@
             "tls": {}
           },
           "ingressPerReplica": {},
+          "namespaceOverride": {},
+          "networkPolicy": {
+            "additionalIngress": {},
+            "egress": {
+              "enabled": {},
+              "rules": {}
+            },
+            "enableClusterRules": {},
+            "enabled": {},
+            "gateway": {
+              "namespace": {},
+              "podLabels": {}
+            },
+            "monitoringRules": {
+              "configReloader": {},
+              "prometheus": {}
+            },
+            "policyTypes": {}
+          },
           "podDisruptionBudget": {
             "enabled": {},
-            "maxUnavailable": {},
-            "minAvailable": {}
+            "minAvailable": {},
+            "unhealthyPodEvictionPolicy": {}
           },
+          "route": {},
+          "routePerReplica": {},
           "secret": {
             "annotations": {}
           },
@@ -30605,6 +31490,8 @@
             "additionalPorts": {},
             "annotations": {},
             "clusterIP": {},
+            "clusterPort": {},
+            "enabled": {},
             "externalIPs": {},
             "externalTrafficPolicy": {},
             "ipDualStack": {
@@ -30636,7 +31523,18 @@
           "servicePerReplica": {},
           "stringConfig": {},
           "templateFiles": {},
-          "tplConfig": {}
+          "tplConfig": {},
+          "verticalPodAutoscaler": {
+            "controlledResources": {},
+            "controlledValues": {},
+            "enabled": {},
+            "maxAllowed": {},
+            "minAllowed": {},
+            "recommenders": {},
+            "updatePolicy": {
+              "updateMode": {}
+            }
+          }
         },
         "cleanPrometheusOperatorObjectNames": {},
         "commonLabels": {},
@@ -30656,7 +31554,68 @@
           "serviceMonitor": {}
         },
         "crds": {
-          "enabled": {}
+          "enabled": {},
+          "global": {
+            "imagePullSecrets": {},
+            "imageRegistry": {}
+          },
+          "upgradeJob": {
+            "affinity": {},
+            "annotations": {},
+            "automountServiceAccountToken": {},
+            "containerSecurityContext": {
+              "allowPrivilegeEscalation": {},
+              "capabilities": {
+                "drop": {}
+              },
+              "readOnlyRootFilesystem": {}
+            },
+            "enabled": {},
+            "env": {},
+            "extraVolumeMounts": {},
+            "extraVolumes": {},
+            "forceConflicts": {},
+            "image": {
+              "busybox": {
+                "pullPolicy": {},
+                "registry": {},
+                "repository": {},
+                "sha": {},
+                "tag": {}
+              },
+              "kubectl": {
+                "pullPolicy": {},
+                "registry": {},
+                "repository": {},
+                "sha": {},
+                "tag": {}
+              },
+              "sha": {}
+            },
+            "labels": {},
+            "nodeSelector": {},
+            "podAnnotations": {},
+            "podLabels": {},
+            "podSecurityContext": {
+              "fsGroup": {},
+              "runAsGroup": {},
+              "runAsNonRoot": {},
+              "runAsUser": {},
+              "seccompProfile": {
+                "type": {}
+              }
+            },
+            "resources": {},
+            "serviceAccount": {
+              "annotations": {},
+              "automountServiceAccountToken": {},
+              "create": {},
+              "labels": {},
+              "name": {}
+            },
+            "tolerations": {},
+            "topologySpreadConstraints": {}
+          }
         },
         "customRules": {},
         "defaultRules": {
@@ -30738,10 +31697,19 @@
           },
           "additionalRuleLabels": {},
           "annotations": {},
+          "appNamespacesOperator": {},
           "appNamespacesTarget": {},
           "create": {},
           "disabled": {},
           "keepFiringFor": {},
+          "kubeletClientCertificateExpiration": {
+            "critical": {},
+            "warning": {}
+          },
+          "kubeletServerCertificateExpiration": {
+            "critical": {},
+            "warning": {}
+          },
           "labels": {},
           "node": {
             "fsSelector": {}
@@ -30793,6 +31761,7 @@
         "global": {},
         "grafana": {
           "additionalDataSources": {},
+          "additionalDataSourcesString": {},
           "admin": {
             "existingSecret": {},
             "passwordKey": {},
@@ -30821,6 +31790,7 @@
             "capabilities": {
               "drop": {}
             },
+            "privileged": {},
             "seccompProfile": {
               "type": {}
             }
@@ -30830,8 +31800,10 @@
           "dashboards": {},
           "dashboardsConfigMaps": {},
           "datasources": {},
+          "defaultCurlOptions": {},
           "defaultDashboardsEditable": {},
           "defaultDashboardsEnabled": {},
+          "defaultDashboardsInterval": {},
           "defaultDashboardsTimezone": {},
           "deleteDatasources": {},
           "deploymentStrategy": {
@@ -30888,14 +31860,15 @@
             "imagePullSecrets": {},
             "imageRegistry": {}
           },
+          "goMemLimit": {
+            "enabled": {},
+            "factor": {}
+          },
           "gossipPortName": {},
           "grafana": {
             "ini": {
               "analytics": {
                 "check_for_updates": {}
-              },
-              "grafana_net": {
-                "url": {}
               },
               "log": {
                 "mode": {}
@@ -30908,11 +31881,15 @@
               },
               "server": {
                 "domain": {}
+              },
+              "unified_storage": {
+                "index_path": {}
               }
             }
           },
           "headlessService": {},
           "hostAliases": {},
+          "hostUsers": {},
           "image": {
             "pullPolicy": {},
             "pullSecrets": {},
@@ -30925,6 +31902,7 @@
             "affinity": {},
             "annotations": {},
             "appProtocol": {},
+            "automountServiceAccountToken": {},
             "autoscaling": {
               "behavior": {},
               "enabled": {},
@@ -30945,16 +31923,21 @@
               }
             },
             "deploymentStrategy": {},
+            "dnsConfig": {},
+            "dnsPolicy": {},
             "enabled": {},
             "env": {},
             "envValueFrom": {},
+            "existingSecret": {},
             "extraConfigmapMounts": {},
             "extraSecretMounts": {},
             "extraVolumeMounts": {},
             "extraVolumes": {},
             "grafanaProtocol": {},
             "grafanaSubPath": {},
+            "healthcheckPath": {},
             "hostAliases": {},
+            "hostUsers": {},
             "image": {
               "pullPolicy": {},
               "pullSecrets": {},
@@ -30974,6 +31957,7 @@
             "podLabels": {},
             "podPortName": {},
             "priorityClassName": {},
+            "progressDeadlineSeconds": {},
             "renderingCallbackURL": {},
             "replicas": {},
             "resources": {},
@@ -31004,6 +31988,7 @@
               "targetLabels": {},
               "tlsConfig": {}
             },
+            "token": {},
             "tolerations": {}
           },
           "ingress": {
@@ -31029,8 +32014,10 @@
             "resources": {},
             "securityContext": {
               "capabilities": {
-                "add": {}
+                "add": {},
+                "drop": {}
               },
+              "readOnlyRootFilesystem": {},
               "runAsNonRoot": {},
               "runAsUser": {},
               "seccompProfile": {
@@ -31045,6 +32032,7 @@
             "existingSecret": {}
           },
           "lifecycleHooks": {},
+          "listenerSet": {},
           "livenessProbe": {
             "failureThreshold": {},
             "httpGet": {
@@ -31054,6 +32042,7 @@
             "initialDelaySeconds": {},
             "timeoutSeconds": {}
           },
+          "name": {},
           "nameOverride": {},
           "namespaceOverride": {},
           "networkPolicy": {
@@ -31065,11 +32054,21 @@
               "to": {}
             },
             "enabled": {},
+            "explicitIpBlocks": {},
             "explicitNamespacesSelector": {},
             "ingress": {}
           },
           "nodeSelector": {},
           "notifiers": {},
+          "operator": {
+            "annotations": {},
+            "dashboardsConfigMapRefEnabled": {},
+            "folder": {},
+            "folderRef": {},
+            "folderUID": {},
+            "matchLabels": {},
+            "resyncPeriod": {}
+          },
           "persistence": {
             "accessModes": {},
             "annotations": {},
@@ -31083,11 +32082,13 @@
               "sizeLimit": {}
             },
             "lookupVolumeName": {},
+            "persistentVolumeClaimRetentionPolicy": {},
             "selectorLabels": {},
             "size": {},
             "storageClassName": {},
             "subPath": {},
-            "type": {}
+            "type": {},
+            "volumeName": {}
           },
           "plugins": {},
           "podAnnotations": {},
@@ -31095,12 +32096,14 @@
           "podLabels": {},
           "podPortName": {},
           "priorityClassName": {},
+          "progressDeadlineSeconds": {},
           "prune": {},
           "rbac": {
             "create": {},
             "extraClusterRoleRules": {},
             "extraRoleRules": {},
             "namespaced": {},
+            "namespaces": {},
             "pspEnabled": {},
             "pspUseAppArmor": {},
             "useExistingClusterRole": {},
@@ -31115,6 +32118,7 @@
           "replicas": {},
           "resources": {},
           "revisionHistoryLimit": {},
+          "route": {},
           "schedulerName": {},
           "securityContext": {
             "fsGroup": {},
@@ -31138,7 +32142,9 @@
             "nodePort": {},
             "port": {},
             "portName": {},
+            "sessionAffinity": {},
             "targetPort": {},
+            "trafficDistribution": {},
             "type": {}
           },
           "serviceAccount": {
@@ -31151,6 +32157,7 @@
             "nameTest": {}
           },
           "serviceMonitor": {
+            "basicAuth": {},
             "enabled": {},
             "interval": {},
             "labels": {},
@@ -31163,23 +32170,36 @@
             "targetLabels": {},
             "tlsConfig": {}
           },
+          "shadowBundledPlugins": {},
+          "shareProcessNamespace": {},
           "sidecar": {
             "alerts": {
               "enabled": {},
               "env": {},
+              "envValueFrom": {},
               "extraMounts": {},
               "ignoreAlreadyProcessed": {},
               "initAlerts": {},
               "label": {},
               "labelValue": {},
               "logLevel": {},
+              "maxConnectRetries": {},
+              "maxReadRetries": {},
+              "maxTotalRetries": {},
               "reloadURL": {},
               "resource": {},
+              "resourceName": {},
+              "restartPolicy": {},
               "script": {},
               "searchNamespace": {},
               "sizeLimit": {},
               "skipReload": {},
               "skipTlsVerify": {},
+              "startupProbe": {
+                "httpGet": {
+                  "port": {}
+                }
+              },
               "watchClientTimeout": {},
               "watchMethod": {},
               "watchServerTimeout": {}
@@ -31196,9 +32216,13 @@
               "folder": {},
               "folderAnnotation": {},
               "ignoreAlreadyProcessed": {},
+              "initDashboards": {},
               "label": {},
               "labelValue": {},
               "logLevel": {},
+              "maxConnectRetries": {},
+              "maxReadRetries": {},
+              "maxTotalRetries": {},
               "multicluster": {
                 "etcd": {
                   "enabled": {}
@@ -31220,10 +32244,18 @@
               },
               "reloadURL": {},
               "resource": {},
+              "resourceName": {},
+              "restartPolicy": {},
               "script": {},
               "searchNamespace": {},
               "sizeLimit": {},
               "skipReload": {},
+              "skipTlsVerify": {},
+              "startupProbe": {
+                "httpGet": {
+                  "port": {}
+                }
+              },
               "watchClientTimeout": {},
               "watchMethod": {},
               "watchServerTimeout": {}
@@ -31239,12 +32271,14 @@
               },
               "annotations": {},
               "createPrometheusReplicasDatasources": {},
+              "customQueryParameters": {},
               "defaultDatasourceEnabled": {},
               "defaultDatasourceScrapeInterval": {},
               "enabled": {},
               "env": {},
               "envValueFrom": {},
               "exemplarTraceIdDestinations": {},
+              "extraJsonData": {},
               "extraMounts": {},
               "httpMethod": {},
               "ignoreAlreadyProcessed": {},
@@ -31253,13 +32287,25 @@
               "label": {},
               "labelValue": {},
               "logLevel": {},
+              "maxConnectRetries": {},
+              "maxReadRetries": {},
+              "maxTotalRetries": {},
               "name": {},
+              "prometheusServiceName": {},
               "reloadURL": {},
               "resource": {},
+              "resourceName": {},
+              "restartPolicy": {},
               "script": {},
               "searchNamespace": {},
               "sizeLimit": {},
               "skipReload": {},
+              "skipTlsVerify": {},
+              "startupProbe": {
+                "httpGet": {
+                  "port": {}
+                }
+              },
               "timeout": {},
               "uid": {},
               "url": {},
@@ -31286,12 +32332,23 @@
               "label": {},
               "labelValue": {},
               "logLevel": {},
+              "maxConnectRetries": {},
+              "maxReadRetries": {},
+              "maxTotalRetries": {},
               "reloadURL": {},
               "resource": {},
+              "resourceName": {},
+              "restartPolicy": {},
               "script": {},
               "searchNamespace": {},
               "sizeLimit": {},
               "skipReload": {},
+              "skipTlsVerify": {},
+              "startupProbe": {
+                "httpGet": {
+                  "port": {}
+                }
+              },
               "watchClientTimeout": {},
               "watchMethod": {},
               "watchServerTimeout": {}
@@ -31305,12 +32362,17 @@
               "label": {},
               "labelValue": {},
               "logLevel": {},
+              "maxConnectRetries": {},
+              "maxReadRetries": {},
+              "maxTotalRetries": {},
               "reloadURL": {},
               "resource": {},
+              "resourceName": {},
               "script": {},
               "searchNamespace": {},
               "sizeLimit": {},
               "skipReload": {},
+              "skipTlsVerify": {},
               "watchClientTimeout": {},
               "watchMethod": {},
               "watchServerTimeout": {}
@@ -31333,7 +32395,9 @@
             "passwordKey": {},
             "userKey": {}
           },
+          "startupProbe": {},
           "testFramework": {
+            "containerSecurityContext": {},
             "enabled": {},
             "image": {
               "registry": {},
@@ -31346,23 +32410,35 @@
           },
           "tolerations": {},
           "topologySpreadConstraints": {},
-          "useStatefulSet": {}
+          "useStatefulSet": {},
+          "verticalPodAutoscaler": {}
         },
         "kube-state-metrics": {
           "affinity": {},
           "annotations": {},
+          "authFilter": {
+            "enabled": {}
+          },
           "automountServiceAccountToken": {},
           "autosharding": {
             "enabled": {}
           },
           "collectors": {},
+          "collectorsExclude": {},
+          "collectorsExtra": {},
           "containerSecurityContext": {},
           "containers": {},
           "customLabels": {},
           "customResourceState": {
             "config": {},
-            "enabled": {}
+            "create": {},
+            "enabled": {},
+            "key": {},
+            "name": {}
           },
+          "dnsConfig": {},
+          "dnsPolicy": {},
+          "env": {},
           "extraArgs": {},
           "extraManifests": {},
           "fullnameOverride": {},
@@ -31371,6 +32447,7 @@
             "imageRegistry": {}
           },
           "hostNetwork": {},
+          "hostUsers": {},
           "image": {
             "pullPolicy": {},
             "registry": {},
@@ -31384,6 +32461,7 @@
             "containerSecurityContext": {},
             "enabled": {},
             "extraArgs": {},
+            "ignoreProbePaths": {},
             "image": {
               "pullPolicy": {},
               "registry": {},
@@ -31391,14 +32469,16 @@
               "sha": {},
               "tag": {}
             },
+            "port": {},
+            "proxyEndpointsPort": {},
             "resources": {},
             "volumeMounts": {}
           },
-          "kubeTargetVersionOverride": {},
           "kubeconfig": {
             "enabled": {},
             "secret": {}
           },
+          "labels": {},
           "livenessProbe": {
             "failureThreshold": {},
             "httpGet": {
@@ -31419,12 +32499,8 @@
           "namespaces": {},
           "namespacesDenylist": {},
           "networkPolicy": {
-            "cilium": {
-              "kubeApiServerSelector": {}
-            },
             "egress": {},
             "enabled": {},
-            "flavor": {},
             "ingress": {},
             "podSelector": {}
           },
@@ -31432,18 +32508,18 @@
           "podAnnotations": {},
           "podDisruptionBudget": {},
           "podLabels": {},
-          "podSecurityPolicy": {
-            "additionalVolumes": {},
-            "annotations": {},
-            "enabled": {}
-          },
           "priorityClassName": {},
           "prometheus": {
-            "monitor": {}
+            "monitor": {},
+            "scrapeconfig": {}
           },
           "prometheusScrape": {},
           "rbac": {
+            "clusterRoleSelectors": {},
             "create": {},
+            "customResourceState": {
+              "createClusterRoleRules": {}
+            },
             "extraRules": {},
             "useClusterRole": {},
             "useExistingRole": {}
@@ -31531,6 +32607,7 @@
         },
         "kubeApiServer": {
           "enabled": {},
+          "jobNameOverride": {},
           "serviceMonitor": {},
           "tlsConfig": {
             "insecureSkipVerify": {},
@@ -31540,6 +32617,7 @@
         "kubeControllerManager": {
           "enabled": {},
           "endpoints": {},
+          "jobNameOverride": {},
           "service": {
             "enabled": {},
             "ipDualStack": {
@@ -31592,6 +32670,7 @@
         "kubeProxy": {
           "enabled": {},
           "endpoints": {},
+          "jobNameOverride": {},
           "service": {
             "enabled": {},
             "ipDualStack": {
@@ -31608,6 +32687,7 @@
         "kubeScheduler": {
           "enabled": {},
           "endpoints": {},
+          "jobNameOverride": {},
           "service": {
             "enabled": {},
             "ipDualStack": {
@@ -31628,6 +32708,7 @@
         "kubeVersionOverride": {},
         "kubelet": {
           "enabled": {},
+          "jobNameOverride": {},
           "namespace": {},
           "serviceMonitor": {}
         },
@@ -31652,6 +32733,7 @@
           }
         },
         "prometheus": {
+          "additionalLabels": {},
           "additionalPodMonitors": {},
           "additionalRulesForClusterRole": {},
           "additionalServiceMonitors": {},
@@ -31666,6 +32748,7 @@
           "ingress": {
             "annotations": {},
             "enabled": {},
+            "extraPaths": {},
             "hosts": {},
             "ingressClassName": {},
             "labels": {},
@@ -31685,17 +32768,13 @@
             "enabled": {},
             "flavor": {},
             "ingress": {},
+            "namespace": {},
             "podSelector": {}
           },
           "podDisruptionBudget": {
             "enabled": {},
-            "maxUnavailable": {},
-            "minAvailable": {}
-          },
-          "podSecurityPolicy": {
-            "allowedCapabilities": {},
-            "allowedHostPaths": {},
-            "volumes": {}
+            "minAvailable": {},
+            "unhealthyPodEvictionPolicy": {}
           },
           "prometheusSpec": {
             "additionalAlertManagerConfigs": {},
@@ -31716,12 +32795,20 @@
             "apiserverConfig": {},
             "arbitraryFSAccessThroughSMs": {},
             "automountServiceAccountToken": {},
+            "bodySizeLimit": {},
             "configMaps": {},
             "containers": {},
+            "convertClassicHistogramsToNHCB": {},
+            "disableAlerting": {},
             "disableCompaction": {},
+            "dnsConfig": {},
+            "dnsPolicy": {},
             "enableAdminAPI": {},
             "enableFeatures": {},
+            "enableOTLPReceiver": {},
             "enableRemoteWriteReceiver": {},
+            "enableServiceLinks": {},
+            "enforcedBodySizeLimit": {},
             "enforcedKeepDroppedTargets": {},
             "enforcedLabelLimit": {},
             "enforcedLabelNameLengthLimit": {},
@@ -31736,30 +32823,41 @@
             "externalUrl": {},
             "hostAliases": {},
             "hostNetwork": {},
+            "hostUsers": {},
             "ignoreNamespaceSelectors": {},
             "image": {
+              "pullPolicy": {},
               "registry": {},
               "repository": {},
               "sha": {},
               "tag": {}
             },
             "initContainers": {},
+            "keepDroppedTargets": {},
+            "labelLimit": {},
+            "labelNameLengthLimit": {},
+            "labelValueLengthLimit": {},
             "listenLocal": {},
             "logFormat": {},
             "logLevel": {},
             "maximumStartupDurationSeconds": {},
             "minReadySeconds": {},
+            "nameEscapingScheme": {},
+            "nameValidationScheme": {},
             "nodeSelector": {},
+            "otlp": {},
             "overrideHonorLabels": {},
             "overrideHonorTimestamps": {},
             "paused": {},
             "persistentVolumeClaimRetentionPolicy": {},
             "podAntiAffinity": {},
             "podAntiAffinityTopologyKey": {},
+            "podManagementPolicy": {},
             "podMetadata": {},
             "podMonitorNamespaceSelector": {},
             "podMonitorSelector": {},
             "podMonitorSelectorNilUsesHelmValues": {},
+            "podTargetLabels": {},
             "portName": {},
             "priorityClassName": {},
             "probeNamespaceSelector": {},
@@ -31770,9 +32868,11 @@
             "prometheusRulesExcludedFromEnforce": {},
             "query": {},
             "queryLogFile": {},
+            "reloadStrategy": {},
             "remoteRead": {},
             "remoteWrite": {},
             "remoteWriteDashboards": {},
+            "remoteWriteReceiverMessageVersions": {},
             "replicaExternalLabelName": {},
             "replicaExternalLabelNameClear": {},
             "replicas": {},
@@ -31781,14 +32881,21 @@
             "retentionSize": {},
             "routePrefix": {},
             "ruleNamespaceSelector": {},
+            "ruleQueryOffset": {},
             "ruleSelector": {},
             "ruleSelectorNilUsesHelmValues": {},
+            "runtime": {},
             "sampleLimit": {},
+            "schedulerName": {},
             "scrapeClasses": {},
+            "scrapeClassicHistograms": {},
             "scrapeConfigNamespaceSelector": {},
             "scrapeConfigSelector": {},
             "scrapeConfigSelectorNilUsesHelmValues": {},
+            "scrapeFailureLogFile": {},
             "scrapeInterval": {},
+            "scrapeNativeHistograms": {},
+            "scrapeProtocols": {},
             "scrapeTimeout": {},
             "secrets": {},
             "securityContext": {},
@@ -31796,8 +32903,13 @@
             "serviceMonitorNamespaceSelector": {},
             "serviceMonitorSelector": {},
             "serviceMonitorSelectorNilUsesHelmValues": {},
+            "serviceName": {},
+            "shardRetentionPolicy": {},
+            "shardingStrategy": {},
             "shards": {},
             "storageSpec": {},
+            "targetLimit": {},
+            "terminationGracePeriodSeconds": {},
             "thanos": {},
             "tolerations": {},
             "topologySpreadConstraints": {},
@@ -31805,16 +32917,20 @@
             "tsdb": {
               "outOfOrderTimeWindow": {}
             },
+            "updateStrategy": {},
             "version": {},
             "volumeMounts": {},
             "volumes": {},
             "walCompression": {},
             "web": {}
           },
+          "route": {},
+          "routePerReplica": {},
           "service": {
             "additionalPorts": {},
             "annotations": {},
             "clusterIP": {},
+            "enabled": {},
             "externalIPs": {},
             "externalTrafficPolicy": {},
             "ipDualStack": {
@@ -31828,6 +32944,7 @@
             "nodePort": {},
             "port": {},
             "publishNotReadyAddresses": {},
+            "reloaderWebNodePort": {},
             "reloaderWebPort": {},
             "sessionAffinity": {},
             "sessionAffinityConfig": {
@@ -31896,7 +33013,18 @@
             "targetPort": {},
             "type": {}
           },
-          "thanosServiceMonitor": {}
+          "thanosServiceMonitor": {},
+          "verticalPodAutoscaler": {
+            "controlledResources": {},
+            "controlledValues": {},
+            "enabled": {},
+            "maxAllowed": {},
+            "minAllowed": {},
+            "recommenders": {},
+            "updatePolicy": {
+              "updateMode": {}
+            }
+          }
         },
         "prometheus-node-exporter": {
           "affinity": {},
@@ -31907,12 +33035,15 @@
           },
           "daemonsetAnnotations": {},
           "dnsConfig": {},
+          "dnsPolicy": {},
           "endpoints": {},
           "env": {},
           "extraArgs": {},
           "extraHostVolumeMounts": {},
           "extraInitContainers": {},
           "extraManifests": {},
+          "extraVolumeMounts": {},
+          "extraVolumes": {},
           "fullnameOverride": {},
           "global": {
             "imagePullSecrets": {},
@@ -31931,8 +33062,10 @@
           "hostSysFsMount": {
             "mountPropagation": {}
           },
+          "hostUsers": {},
           "image": {
             "digest": {},
+            "distroless": {},
             "pullPolicy": {},
             "registry": {},
             "repository": {},
@@ -31947,6 +33080,7 @@
             "enabled": {},
             "env": {},
             "extraArgs": {},
+            "extraVolumeMounts": {},
             "image": {
               "pullPolicy": {},
               "registry": {},
@@ -31954,10 +33088,15 @@
               "sha": {},
               "tag": {}
             },
+            "listenHost": {},
             "port": {},
             "portName": {},
             "proxyEndpointsPort": {},
-            "resources": {}
+            "resources": {},
+            "tls": {
+              "enabled": {},
+              "tlsClientAuth": {}
+            }
           },
           "livenessProbe": {
             "failureThreshold": {},
@@ -31981,6 +33120,18 @@
               "io/os": {}
             }
           },
+          "permissionInitContainer": {
+            "extraCommands": {},
+            "fixes": {},
+            "image": {
+              "pullPolicy": {},
+              "registry": {},
+              "repository": {},
+              "sha": {},
+              "tag": {}
+            },
+            "securityContext": {}
+          },
           "podAnnotations": {
             "cluster-autoscaler": {
               "kubernetes": {
@@ -31996,7 +33147,6 @@
           },
           "rbac": {
             "create": {},
-            "pspAnnotations": {},
             "pspEnabled": {},
             "useExistingRole": {}
           },
@@ -32031,6 +33181,7 @@
             "clusterIP": {},
             "enabled": {},
             "externalTrafficPolicy": {},
+            "internalTrafficPolicy": {},
             "ipDualStack": {
               "enabled": {},
               "ipFamilies": {},
@@ -32060,6 +33211,14 @@
             "enabled": {},
             "terminationMessagePath": {},
             "terminationMessagePolicy": {}
+          },
+          "tlsSecret": {
+            "caItem": {},
+            "certItem": {},
+            "enabled": {},
+            "keyItem": {},
+            "secretName": {},
+            "volumeName": {}
           },
           "tolerations": {},
           "updateStrategy": {
@@ -32193,12 +33352,14 @@
             "caBundle": {},
             "certManager": {
               "admissionCert": {
-                "duration": {}
+                "duration": {},
+                "revisionHistoryLimit": {}
               },
               "enabled": {},
               "issuerRef": {},
               "rootCert": {
-                "duration": {}
+                "duration": {},
+                "revisionHistoryLimit": {}
               }
             },
             "createSecretJob": {
@@ -32238,9 +33399,14 @@
               "logLevel": {},
               "nodeSelector": {},
               "podAnnotations": {},
-              "podDisruptionBudget": {},
+              "podDisruptionBudget": {
+                "enabled": {},
+                "minAvailable": {},
+                "unhealthyPodEvictionPolicy": {}
+              },
               "podLabels": {},
               "priorityClassName": {},
+              "promqlOptions": {},
               "readinessProbe": {
                 "enabled": {},
                 "failureThreshold": {},
@@ -32287,6 +33453,7 @@
             },
             "enabled": {},
             "failurePolicy": {},
+            "matchConditions": {},
             "mutatingWebhookConfiguration": {
               "annotations": {}
             },
@@ -32344,10 +33511,13 @@
           "dnsConfig": {},
           "enabled": {},
           "env": {},
+          "extraArgs": {},
           "extraVolumeMounts": {},
           "extraVolumes": {},
+          "featureGates": {},
           "fullnameOverride": {},
           "hostNetwork": {},
+          "hostUsers": {},
           "image": {
             "pullPolicy": {},
             "registry": {},
@@ -32364,6 +33534,7 @@
             "selector": {}
           },
           "labels": {},
+          "lifecycle": {},
           "livenessProbe": {
             "enabled": {},
             "failureThreshold": {},
@@ -32385,6 +33556,11 @@
           },
           "nodeSelector": {},
           "podAnnotations": {},
+          "podDisruptionBudget": {
+            "enabled": {},
+            "minAvailable": {},
+            "unhealthyPodEvictionPolicy": {}
+          },
           "podLabels": {},
           "priorityClassName": {},
           "prometheusConfigReloader": {
@@ -32439,6 +33615,7 @@
           },
           "serviceMonitor": {},
           "strategy": {},
+          "terminationGracePeriodSeconds": {},
           "thanosImage": {
             "registry": {},
             "repository": {},
@@ -32486,13 +33663,15 @@
           "name": {},
           "podDisruptionBudget": {
             "enabled": {},
-            "maxUnavailable": {},
-            "minAvailable": {}
+            "minAvailable": {},
+            "unhealthyPodEvictionPolicy": {}
           },
+          "route": {},
           "service": {
             "additionalPorts": {},
             "annotations": {},
             "clusterIP": {},
+            "enabled": {},
             "externalIPs": {},
             "externalTrafficPolicy": {},
             "ipDualStack": {
@@ -32521,34 +33700,53 @@
             "affinity": {},
             "alertDropLabels": {},
             "alertQueryUrl": {},
+            "alertRelabelConfigFile": {},
+            "alertRelabelConfigs": {
+              "existingSecret": {},
+              "secret": {}
+            },
             "alertmanagersConfig": {
               "existingSecret": {},
               "secret": {}
             },
             "alertmanagersUrl": {},
             "containers": {},
+            "dnsConfig": {},
+            "dnsPolicy": {},
+            "enableFeatures": {},
+            "enableServiceLinks": {},
+            "enforcedNamespaceLabel": {},
             "evaluationInterval": {},
+            "excludedFromEnforcement": {},
             "externalPrefix": {},
             "externalPrefixNilUsesHelmValues": {},
+            "extraEnv": {},
+            "grpcServerTlsConfig": {},
+            "hostAliases": {},
+            "hostUsers": {},
             "image": {
               "registry": {},
               "repository": {},
               "sha": {},
               "tag": {}
             },
+            "imagePullPolicy": {},
             "initContainers": {},
             "labels": {},
             "listenLocal": {},
             "logFormat": {},
             "logLevel": {},
+            "minReadySeconds": {},
             "nodeSelector": {},
             "objectStorageConfig": {
               "existingSecret": {},
               "secret": {}
             },
+            "objectStorageConfigFile": {},
             "paused": {},
             "podAntiAffinity": {},
             "podAntiAffinityTopologyKey": {},
+            "podManagementPolicy": {},
             "podMetadata": {},
             "portName": {},
             "priorityClassName": {},
@@ -32557,17 +33755,32 @@
               "secret": {}
             },
             "queryEndpoints": {},
+            "remoteWrite": {},
             "replicas": {},
+            "resendDelay": {},
             "resources": {},
             "retention": {},
             "routePrefix": {},
+            "ruleConcurrentEval": {},
+            "ruleGracePeriod": {},
             "ruleNamespaceSelector": {},
+            "ruleOutageTolerance": {},
+            "ruleQueryOffset": {},
             "ruleSelector": {},
             "ruleSelectorNilUsesHelmValues": {},
             "securityContext": {},
+            "serviceName": {},
             "storage": {},
+            "terminationGracePeriodSeconds": {},
             "tolerations": {},
             "topologySpreadConstraints": {},
+            "tracingConfig": {
+              "existingSecret": {},
+              "secret": {}
+            },
+            "tracingConfigFile": {},
+            "updateStrategy": {},
+            "version": {},
             "volumeMounts": {},
             "volumes": {},
             "web": {}
@@ -32579,6 +33792,8 @@
       },
       "open": [
         "additionalPrometheusRulesMap",
+        "alertmanager.additionalLabels",
+        "alertmanager.alertmanagerSpec.additionalArgs",
         "alertmanager.alertmanagerSpec.additionalConfig",
         "alertmanager.alertmanagerSpec.additionalPeers",
         "alertmanager.alertmanagerSpec.affinity",
@@ -32586,20 +33801,27 @@
         "alertmanager.alertmanagerSpec.alertmanagerConfigNamespaceSelector",
         "alertmanager.alertmanagerSpec.alertmanagerConfigSelector",
         "alertmanager.alertmanagerSpec.alertmanagerConfiguration",
+        "alertmanager.alertmanagerSpec.clusterTLS",
         "alertmanager.alertmanagerSpec.configMaps",
         "alertmanager.alertmanagerSpec.containers",
+        "alertmanager.alertmanagerSpec.dnsConfig",
         "alertmanager.alertmanagerSpec.externalUrl",
+        "alertmanager.alertmanagerSpec.hostAliases",
         "alertmanager.alertmanagerSpec.initContainers",
+        "alertmanager.alertmanagerSpec.limits",
         "alertmanager.alertmanagerSpec.nodeSelector",
+        "alertmanager.alertmanagerSpec.persistentVolumeClaimRetentionPolicy",
         "alertmanager.alertmanagerSpec.podMetadata",
         "alertmanager.alertmanagerSpec.replicas",
         "alertmanager.alertmanagerSpec.resources",
         "alertmanager.alertmanagerSpec.secrets",
         "alertmanager.alertmanagerSpec.securityContext",
+        "alertmanager.alertmanagerSpec.serviceName",
         "alertmanager.alertmanagerSpec.storage",
         "alertmanager.alertmanagerSpec.tlsConfig",
         "alertmanager.alertmanagerSpec.tolerations",
         "alertmanager.alertmanagerSpec.topologySpreadConstraints",
+        "alertmanager.alertmanagerSpec.updateStrategy",
         "alertmanager.alertmanagerSpec.volumeMounts",
         "alertmanager.alertmanagerSpec.volumes",
         "alertmanager.alertmanagerSpec.web",
@@ -32609,6 +33831,7 @@
         "alertmanager.extraSecret.annotations",
         "alertmanager.extraSecret.data",
         "alertmanager.ingress.annotations",
+        "alertmanager.ingress.extraPaths",
         "alertmanager.ingress.hosts",
         "alertmanager.ingress.labels",
         "alertmanager.ingress.pathType",
@@ -32617,6 +33840,12 @@
         "alertmanager.ingress.servicePort",
         "alertmanager.ingress.tls",
         "alertmanager.ingressPerReplica",
+        "alertmanager.networkPolicy.additionalIngress",
+        "alertmanager.networkPolicy.egress.rules",
+        "alertmanager.networkPolicy.gateway.podLabels",
+        "alertmanager.networkPolicy.policyTypes",
+        "alertmanager.route",
+        "alertmanager.routePerReplica",
         "alertmanager.secret.annotations",
         "alertmanager.service.additionalPorts",
         "alertmanager.service.annotations",
@@ -32629,10 +33858,29 @@
         "alertmanager.serviceMonitor",
         "alertmanager.servicePerReplica",
         "alertmanager.templateFiles",
+        "alertmanager.verticalPodAutoscaler.controlledResources",
+        "alertmanager.verticalPodAutoscaler.maxAllowed",
+        "alertmanager.verticalPodAutoscaler.minAllowed",
         "commonLabels",
         "coreDns.service.ipDualStack.ipFamilies",
         "coreDns.service.selector",
         "coreDns.serviceMonitor",
+        "crds.global.imageRegistry",
+        "crds.upgradeJob.affinity",
+        "crds.upgradeJob.annotations",
+        "crds.upgradeJob.containerSecurityContext.capabilities.drop",
+        "crds.upgradeJob.env",
+        "crds.upgradeJob.extraVolumeMounts",
+        "crds.upgradeJob.extraVolumes",
+        "crds.upgradeJob.labels",
+        "crds.upgradeJob.nodeSelector",
+        "crds.upgradeJob.podAnnotations",
+        "crds.upgradeJob.podLabels",
+        "crds.upgradeJob.resources",
+        "crds.upgradeJob.serviceAccount.annotations",
+        "crds.upgradeJob.serviceAccount.labels",
+        "crds.upgradeJob.tolerations",
+        "crds.upgradeJob.topologySpreadConstraints",
         "customRules",
         "defaultRules.additionalAggregationLabels",
         "defaultRules.additionalRuleAnnotations",
@@ -32702,6 +33950,7 @@
         "defaultRules.additionalRuleGroupLabels.prometheusOperator",
         "defaultRules.additionalRuleLabels",
         "defaultRules.annotations",
+        "defaultRules.appNamespacesOperator",
         "defaultRules.appNamespacesTarget",
         "defaultRules.disabled",
         "defaultRules.labels",
@@ -32747,6 +33996,7 @@
         "grafana.imageRenderer.autoscaling.behavior",
         "grafana.imageRenderer.containerSecurityContext.capabilities.drop",
         "grafana.imageRenderer.deploymentStrategy",
+        "grafana.imageRenderer.dnsConfig",
         "grafana.imageRenderer.env",
         "grafana.imageRenderer.envValueFrom",
         "grafana.imageRenderer.extraConfigmapMounts",
@@ -32754,6 +34004,7 @@
         "grafana.imageRenderer.extraVolumeMounts",
         "grafana.imageRenderer.extraVolumes",
         "grafana.imageRenderer.hostAliases",
+        "grafana.imageRenderer.image.pullSecrets",
         "grafana.imageRenderer.networkPolicy.extraIngressSelectors",
         "grafana.imageRenderer.nodeSelector",
         "grafana.imageRenderer.podAnnotations",
@@ -32774,27 +34025,39 @@
         "grafana.ingress.tls",
         "grafana.initChownData.resources",
         "grafana.initChownData.securityContext.capabilities.add",
+        "grafana.initChownData.securityContext.capabilities.drop",
         "grafana.ldap.config",
         "grafana.lifecycleHooks",
+        "grafana.listenerSet",
         "grafana.networkPolicy.egress.ports",
         "grafana.networkPolicy.egress.to",
+        "grafana.networkPolicy.explicitIpBlocks",
         "grafana.networkPolicy.explicitNamespacesSelector",
         "grafana.nodeSelector",
         "grafana.notifiers",
+        "grafana.operator.annotations",
+        "grafana.operator.folder",
+        "grafana.operator.folderRef",
+        "grafana.operator.folderUID",
+        "grafana.operator.matchLabels",
         "grafana.persistence.accessModes",
         "grafana.persistence.extraPvcLabels",
         "grafana.persistence.finalizers",
+        "grafana.persistence.persistentVolumeClaimRetentionPolicy",
         "grafana.plugins",
         "grafana.podDisruptionBudget",
         "grafana.rbac.extraClusterRoleRules",
         "grafana.rbac.extraRoleRules",
+        "grafana.rbac.namespaces",
         "grafana.resources",
+        "grafana.route",
         "grafana.service.annotations",
         "grafana.service.ipFamilies",
         "grafana.service.labels",
         "grafana.service.loadBalancerSourceRanges",
         "grafana.service.port",
         "grafana.serviceAccount.labels",
+        "grafana.serviceMonitor.basicAuth",
         "grafana.serviceMonitor.labels",
         "grafana.serviceMonitor.metricRelabelings",
         "grafana.serviceMonitor.namespace",
@@ -32802,41 +34065,54 @@
         "grafana.serviceMonitor.targetLabels",
         "grafana.serviceMonitor.tlsConfig",
         "grafana.sidecar.alerts.env",
+        "grafana.sidecar.alerts.envValueFrom",
         "grafana.sidecar.alerts.extraMounts",
-        "grafana.sidecar.alerts.sizeLimit",
+        "grafana.sidecar.alerts.label",
+        "grafana.sidecar.alerts.startupProbe.httpGet.port",
         "grafana.sidecar.dashboards.annotations",
         "grafana.sidecar.dashboards.env",
         "grafana.sidecar.dashboards.envValueFrom",
         "grafana.sidecar.dashboards.extraMounts",
-        "grafana.sidecar.dashboards.sizeLimit",
+        "grafana.sidecar.dashboards.label",
+        "grafana.sidecar.dashboards.startupProbe.httpGet.port",
         "grafana.sidecar.datasources.annotations",
         "grafana.sidecar.datasources.defaultDatasourceScrapeInterval",
         "grafana.sidecar.datasources.env",
         "grafana.sidecar.datasources.envValueFrom",
         "grafana.sidecar.datasources.exemplarTraceIdDestinations",
         "grafana.sidecar.datasources.extraMounts",
-        "grafana.sidecar.datasources.sizeLimit",
+        "grafana.sidecar.datasources.label",
+        "grafana.sidecar.datasources.startupProbe.httpGet.port",
         "grafana.sidecar.livenessProbe",
         "grafana.sidecar.notifiers.env",
         "grafana.sidecar.notifiers.extraMounts",
-        "grafana.sidecar.notifiers.sizeLimit",
+        "grafana.sidecar.notifiers.label",
+        "grafana.sidecar.notifiers.startupProbe.httpGet.port",
         "grafana.sidecar.plugins.env",
         "grafana.sidecar.plugins.extraMounts",
-        "grafana.sidecar.plugins.sizeLimit",
+        "grafana.sidecar.plugins.label",
+        "grafana.sidecar.plugins.labelValue",
         "grafana.sidecar.readinessProbe",
         "grafana.sidecar.resources",
         "grafana.sidecar.securityContext.capabilities.drop",
+        "grafana.startupProbe",
+        "grafana.testFramework.containerSecurityContext",
         "grafana.testFramework.resources",
         "grafana.testFramework.securityContext",
         "grafana.tolerations",
         "grafana.topologySpreadConstraints",
+        "grafana.verticalPodAutoscaler",
         "kube-state-metrics.affinity",
         "kube-state-metrics.annotations",
         "kube-state-metrics.collectors",
+        "kube-state-metrics.collectorsExclude",
+        "kube-state-metrics.collectorsExtra",
         "kube-state-metrics.containerSecurityContext",
         "kube-state-metrics.containers",
         "kube-state-metrics.customLabels",
         "kube-state-metrics.customResourceState.config",
+        "kube-state-metrics.dnsConfig",
+        "kube-state-metrics.env",
         "kube-state-metrics.extraArgs",
         "kube-state-metrics.extraManifests",
         "kube-state-metrics.global.imagePullSecrets",
@@ -32846,12 +34122,12 @@
         "kube-state-metrics.kubeRBACProxy.extraArgs",
         "kube-state-metrics.kubeRBACProxy.resources",
         "kube-state-metrics.kubeRBACProxy.volumeMounts",
+        "kube-state-metrics.labels",
         "kube-state-metrics.livenessProbe.httpGet.httpHeaders",
         "kube-state-metrics.metricAllowlist",
         "kube-state-metrics.metricAnnotationsAllowList",
         "kube-state-metrics.metricDenylist",
         "kube-state-metrics.metricLabelsAllowlist",
-        "kube-state-metrics.networkPolicy.cilium.kubeApiServerSelector",
         "kube-state-metrics.networkPolicy.egress",
         "kube-state-metrics.networkPolicy.ingress",
         "kube-state-metrics.networkPolicy.podSelector",
@@ -32859,9 +34135,9 @@
         "kube-state-metrics.podAnnotations",
         "kube-state-metrics.podDisruptionBudget",
         "kube-state-metrics.podLabels",
-        "kube-state-metrics.podSecurityPolicy.additionalVolumes",
-        "kube-state-metrics.podSecurityPolicy.annotations",
         "kube-state-metrics.prometheus.monitor",
+        "kube-state-metrics.prometheus.scrapeconfig",
+        "kube-state-metrics.rbac.clusterRoleSelectors",
         "kube-state-metrics.rbac.extraRules",
         "kube-state-metrics.readinessProbe.httpGet.httpHeaders",
         "kube-state-metrics.resources",
@@ -32911,18 +34187,23 @@
         "prometheus-node-exporter.extraHostVolumeMounts",
         "prometheus-node-exporter.extraInitContainers",
         "prometheus-node-exporter.extraManifests",
+        "prometheus-node-exporter.extraVolumeMounts",
+        "prometheus-node-exporter.extraVolumes",
         "prometheus-node-exporter.global.imagePullSecrets",
         "prometheus-node-exporter.imagePullSecrets",
         "prometheus-node-exporter.kubeRBACProxy.containerSecurityContext",
         "prometheus-node-exporter.kubeRBACProxy.env",
         "prometheus-node-exporter.kubeRBACProxy.extraArgs",
+        "prometheus-node-exporter.kubeRBACProxy.extraVolumeMounts",
         "prometheus-node-exporter.kubeRBACProxy.resources",
         "prometheus-node-exporter.livenessProbe.httpGet.httpHeaders",
         "prometheus-node-exporter.networkPolicy.ingress",
+        "prometheus-node-exporter.permissionInitContainer.extraCommands",
+        "prometheus-node-exporter.permissionInitContainer.fixes",
+        "prometheus-node-exporter.permissionInitContainer.securityContext",
         "prometheus-node-exporter.podLabels",
         "prometheus-node-exporter.prometheus.monitor",
         "prometheus-node-exporter.prometheus.podMonitor",
-        "prometheus-node-exporter.rbac.pspAnnotations",
         "prometheus-node-exporter.readinessProbe.httpGet.httpHeaders",
         "prometheus-node-exporter.resources",
         "prometheus-node-exporter.secrets",
@@ -32933,6 +34214,8 @@
         "prometheus-node-exporter.sidecarHostVolumeMounts",
         "prometheus-node-exporter.sidecarVolumeMount",
         "prometheus-node-exporter.sidecars",
+        "prometheus-node-exporter.tlsSecret.secretName",
+        "prometheus-node-exporter.tlsSecret.volumeName",
         "prometheus-node-exporter.tolerations",
         "prometheus-node-exporter.verticalPodAutoscaler.controlledResources",
         "prometheus-node-exporter.verticalPodAutoscaler.maxAllowed",
@@ -32963,6 +34246,7 @@
         "prometheus-windows-exporter.sidecarVolumeMount",
         "prometheus-windows-exporter.sidecars",
         "prometheus-windows-exporter.tolerations",
+        "prometheus.additionalLabels",
         "prometheus.additionalPodMonitors",
         "prometheus.additionalRulesForClusterRole",
         "prometheus.additionalServiceMonitors",
@@ -32970,6 +34254,7 @@
         "prometheus.extraSecret.annotations",
         "prometheus.extraSecret.data",
         "prometheus.ingress.annotations",
+        "prometheus.ingress.extraPaths",
         "prometheus.ingress.hosts",
         "prometheus.ingress.labels",
         "prometheus.ingress.pathType",
@@ -32983,9 +34268,6 @@
         "prometheus.networkPolicy.egress",
         "prometheus.networkPolicy.ingress",
         "prometheus.networkPolicy.podSelector",
-        "prometheus.podSecurityPolicy.allowedCapabilities",
-        "prometheus.podSecurityPolicy.allowedHostPaths",
-        "prometheus.podSecurityPolicy.volumes",
         "prometheus.prometheusSpec.additionalAlertManagerConfigs",
         "prometheus.prometheusSpec.additionalAlertManagerConfigsSecret",
         "prometheus.prometheusSpec.additionalAlertRelabelConfigs",
@@ -33003,6 +34285,7 @@
         "prometheus.prometheusSpec.arbitraryFSAccessThroughSMs",
         "prometheus.prometheusSpec.configMaps",
         "prometheus.prometheusSpec.containers",
+        "prometheus.prometheusSpec.dnsConfig",
         "prometheus.prometheusSpec.enableFeatures",
         "prometheus.prometheusSpec.excludedFromEnforcement",
         "prometheus.prometheusSpec.exemplars",
@@ -33011,35 +34294,46 @@
         "prometheus.prometheusSpec.hostAliases",
         "prometheus.prometheusSpec.initContainers",
         "prometheus.prometheusSpec.nodeSelector",
+        "prometheus.prometheusSpec.otlp",
         "prometheus.prometheusSpec.persistentVolumeClaimRetentionPolicy",
         "prometheus.prometheusSpec.podMetadata",
         "prometheus.prometheusSpec.podMonitorNamespaceSelector",
         "prometheus.prometheusSpec.podMonitorSelector",
+        "prometheus.prometheusSpec.podTargetLabels",
         "prometheus.prometheusSpec.probeNamespaceSelector",
         "prometheus.prometheusSpec.probeSelector",
         "prometheus.prometheusSpec.prometheusRulesExcludedFromEnforce",
         "prometheus.prometheusSpec.query",
         "prometheus.prometheusSpec.remoteRead",
         "prometheus.prometheusSpec.remoteWrite",
+        "prometheus.prometheusSpec.remoteWriteReceiverMessageVersions",
         "prometheus.prometheusSpec.replicas",
         "prometheus.prometheusSpec.resources",
         "prometheus.prometheusSpec.ruleNamespaceSelector",
         "prometheus.prometheusSpec.ruleSelector",
+        "prometheus.prometheusSpec.runtime",
         "prometheus.prometheusSpec.scrapeClasses",
         "prometheus.prometheusSpec.scrapeConfigNamespaceSelector",
         "prometheus.prometheusSpec.scrapeConfigSelector",
+        "prometheus.prometheusSpec.scrapeProtocols",
         "prometheus.prometheusSpec.secrets",
         "prometheus.prometheusSpec.securityContext",
         "prometheus.prometheusSpec.serviceMonitorNamespaceSelector",
         "prometheus.prometheusSpec.serviceMonitorSelector",
+        "prometheus.prometheusSpec.serviceName",
+        "prometheus.prometheusSpec.shardRetentionPolicy",
+        "prometheus.prometheusSpec.shardingStrategy",
         "prometheus.prometheusSpec.storageSpec",
         "prometheus.prometheusSpec.thanos",
         "prometheus.prometheusSpec.tolerations",
         "prometheus.prometheusSpec.topologySpreadConstraints",
         "prometheus.prometheusSpec.tracingConfig",
+        "prometheus.prometheusSpec.updateStrategy",
         "prometheus.prometheusSpec.volumeMounts",
         "prometheus.prometheusSpec.volumes",
         "prometheus.prometheusSpec.web",
+        "prometheus.route",
+        "prometheus.routePerReplica",
         "prometheus.service.additionalPorts",
         "prometheus.service.annotations",
         "prometheus.service.externalIPs",
@@ -33063,6 +34357,9 @@
         "prometheus.thanosServiceExternal.labels",
         "prometheus.thanosServiceExternal.loadBalancerSourceRanges",
         "prometheus.thanosServiceMonitor",
+        "prometheus.verticalPodAutoscaler.controlledResources",
+        "prometheus.verticalPodAutoscaler.maxAllowed",
+        "prometheus.verticalPodAutoscaler.minAllowed",
         "prometheusOperator.admissionWebhooks.annotations",
         "prometheusOperator.admissionWebhooks.certManager.issuerRef",
         "prometheusOperator.admissionWebhooks.createSecretJob.securityContext.capabilities.drop",
@@ -33073,8 +34370,8 @@
         "prometheusOperator.admissionWebhooks.deployment.labels",
         "prometheusOperator.admissionWebhooks.deployment.nodeSelector",
         "prometheusOperator.admissionWebhooks.deployment.podAnnotations",
-        "prometheusOperator.admissionWebhooks.deployment.podDisruptionBudget",
         "prometheusOperator.admissionWebhooks.deployment.podLabels",
+        "prometheusOperator.admissionWebhooks.deployment.promqlOptions",
         "prometheusOperator.admissionWebhooks.deployment.resources",
         "prometheusOperator.admissionWebhooks.deployment.securityContext",
         "prometheusOperator.admissionWebhooks.deployment.service.additionalPorts",
@@ -33086,6 +34383,8 @@
         "prometheusOperator.admissionWebhooks.deployment.serviceAccount.annotations",
         "prometheusOperator.admissionWebhooks.deployment.strategy",
         "prometheusOperator.admissionWebhooks.deployment.tolerations",
+        "prometheusOperator.admissionWebhooks.failurePolicy",
+        "prometheusOperator.admissionWebhooks.matchConditions",
         "prometheusOperator.admissionWebhooks.mutatingWebhookConfiguration.annotations",
         "prometheusOperator.admissionWebhooks.namespaceSelector",
         "prometheusOperator.admissionWebhooks.objectSelector",
@@ -33107,9 +34406,12 @@
         "prometheusOperator.denyNamespaces",
         "prometheusOperator.dnsConfig",
         "prometheusOperator.env",
+        "prometheusOperator.extraArgs",
         "prometheusOperator.extraVolumeMounts",
         "prometheusOperator.extraVolumes",
+        "prometheusOperator.featureGates",
         "prometheusOperator.labels",
+        "prometheusOperator.lifecycle",
         "prometheusOperator.namespaces",
         "prometheusOperator.networkPolicy.cilium.egress",
         "prometheusOperator.networkPolicy.matchLabels",
@@ -33143,6 +34445,7 @@
         "thanosRuler.ingress.pathType",
         "thanosRuler.ingress.paths",
         "thanosRuler.ingress.tls",
+        "thanosRuler.route",
         "thanosRuler.service.additionalPorts",
         "thanosRuler.service.annotations",
         "thanosRuler.service.externalIPs",
@@ -33156,11 +34459,19 @@
         "thanosRuler.thanosRulerSpec.additionalConfig",
         "thanosRuler.thanosRulerSpec.affinity",
         "thanosRuler.thanosRulerSpec.alertDropLabels",
+        "thanosRuler.thanosRulerSpec.alertRelabelConfigs.existingSecret",
+        "thanosRuler.thanosRulerSpec.alertRelabelConfigs.secret",
         "thanosRuler.thanosRulerSpec.alertmanagersConfig.existingSecret",
         "thanosRuler.thanosRulerSpec.alertmanagersConfig.secret",
         "thanosRuler.thanosRulerSpec.alertmanagersUrl",
         "thanosRuler.thanosRulerSpec.containers",
+        "thanosRuler.thanosRulerSpec.dnsConfig",
+        "thanosRuler.thanosRulerSpec.enableFeatures",
+        "thanosRuler.thanosRulerSpec.excludedFromEnforcement",
         "thanosRuler.thanosRulerSpec.externalPrefix",
+        "thanosRuler.thanosRulerSpec.extraEnv",
+        "thanosRuler.thanosRulerSpec.grpcServerTlsConfig",
+        "thanosRuler.thanosRulerSpec.hostAliases",
         "thanosRuler.thanosRulerSpec.initContainers",
         "thanosRuler.thanosRulerSpec.labels",
         "thanosRuler.thanosRulerSpec.nodeSelector",
@@ -33170,25 +34481,36 @@
         "thanosRuler.thanosRulerSpec.queryConfig.existingSecret",
         "thanosRuler.thanosRulerSpec.queryConfig.secret",
         "thanosRuler.thanosRulerSpec.queryEndpoints",
+        "thanosRuler.thanosRulerSpec.remoteWrite",
         "thanosRuler.thanosRulerSpec.resources",
         "thanosRuler.thanosRulerSpec.ruleNamespaceSelector",
         "thanosRuler.thanosRulerSpec.ruleSelector",
         "thanosRuler.thanosRulerSpec.securityContext",
+        "thanosRuler.thanosRulerSpec.serviceName",
         "thanosRuler.thanosRulerSpec.storage",
         "thanosRuler.thanosRulerSpec.tolerations",
         "thanosRuler.thanosRulerSpec.topologySpreadConstraints",
+        "thanosRuler.thanosRulerSpec.tracingConfig.existingSecret",
+        "thanosRuler.thanosRulerSpec.tracingConfig.secret",
+        "thanosRuler.thanosRulerSpec.updateStrategy",
         "thanosRuler.thanosRulerSpec.volumeMounts",
         "thanosRuler.thanosRulerSpec.volumes",
         "thanosRuler.thanosRulerSpec.web"
       ],
-      "dynamic": ["alertmanager.ingress.hosts", "prometheus.ingress.hosts", "thanosRuler.ingress.hosts"],
+      "dynamic": [
+        "alertmanager.ingress.hosts",
+        "alertmanager.route.main.hostnames",
+        "prometheus.ingress.hosts",
+        "prometheus.route.main.hostnames",
+        "thanosRuler.ingress.hosts"
+      ],
       "charts": [
-        "<root>=kube-prometheus-stack@65.5.0",
+        "<root>=kube-prometheus-stack@88.6.2",
         "crds=crds@0.0.0",
-        "grafana=grafana@8.5.8",
-        "kube-state-metrics=kube-state-metrics@5.26.0",
-        "prometheus-node-exporter=prometheus-node-exporter@4.40.0",
-        "prometheus-windows-exporter=prometheus-windows-exporter@0.7.0"
+        "grafana=grafana@12.11.2",
+        "kube-state-metrics=kube-state-metrics@8.4.1",
+        "prometheus-node-exporter=prometheus-node-exporter@4.56.3",
+        "prometheus-windows-exporter=prometheus-windows-exporter@0.12.8"
       ]
     },
     "https://seaweedfs.github.io/seaweedfs/helm|seaweedfs|4.33.0": {
@@ -36933,16 +38255,16 @@
     {
       "appId": "full-ai-cluster/cert-manager",
       "chart": "cert-manager",
-      "targetRevision": "v1.16.2",
+      "targetRevision": "v1.21.1",
       "repoURL": "https://charts.jetstack.io",
-      "chartKey": "https://charts.jetstack.io|cert-manager|v1.16.2"
+      "chartKey": "https://charts.jetstack.io|cert-manager|v1.21.1"
     },
     {
       "appId": "full-ai-cluster/cilium",
       "chart": "cilium",
-      "targetRevision": "1.16.5",
+      "targetRevision": "1.20.1",
       "repoURL": "https://helm.cilium.io/",
-      "chartKey": "https://helm.cilium.io/|cilium|1.16.5"
+      "chartKey": "https://helm.cilium.io/|cilium|1.20.1"
     },
     {
       "appId": "full-ai-cluster/cilium-lb-ipam",
@@ -37043,9 +38365,9 @@
     {
       "appId": "full-ai-cluster/kube-prometheus-stack",
       "chart": "kube-prometheus-stack",
-      "targetRevision": "65.5.0",
+      "targetRevision": "88.6.2",
       "repoURL": "https://prometheus-community.github.io/helm-charts",
-      "chartKey": "https://prometheus-community.github.io/helm-charts|kube-prometheus-stack|65.5.0"
+      "chartKey": "https://prometheus-community.github.io/helm-charts|kube-prometheus-stack|88.6.2"
     },
     {
       "appId": "full-ai-cluster/kubevirt",
@@ -37067,9 +38389,9 @@
     {
       "appId": "full-ai-cluster/longhorn",
       "chart": "longhorn",
-      "targetRevision": "1.7.2",
+      "targetRevision": "1.12.1",
       "repoURL": "https://charts.longhorn.io",
-      "chartKey": "https://charts.longhorn.io|longhorn|1.7.2"
+      "chartKey": "https://charts.longhorn.io|longhorn|1.12.1"
     },
     {
       "appId": "full-ai-cluster/mimir",

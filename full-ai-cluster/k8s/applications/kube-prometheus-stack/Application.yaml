@@ -13,7 +13,12 @@ spec:
   source:
     repoURL: https://prometheus-community.github.io/helm-charts
     chart: kube-prometheus-stack
-    targetRevision: 65.5.0
+    # 65.5.0 -> 88.6.2 on 2026-09-01. Rendered at BOTH versions with this
+    # Application's own valuesObject; it loses five resources and every one is a grafana HELM TEST fixture (grafana-test
+    # Pod/ConfigMap/ServiceAccount and its Role/RoleBinding), not a runtime component.
+    # Also: the checker reported `repeat_interval: 12h` lost. It is not -- the
+    # alertmanager config moved into a base64 Secret; decoded and confirmed present.
+    targetRevision: 88.6.2
     helm:
       releaseName: kube-prometheus-stack
       valuesObject:
