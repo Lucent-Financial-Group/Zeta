@@ -119,3 +119,37 @@ let ``partial apply deletes only the minted paths; live files stay`` () =
         Assert.True(fs.Exists live)
     finally
         FileSystem.Reset()
+
+[<Fact>]
+let ``crash-mid-sweep deletes the matching path then leaves remaining garbage and live files`` () =
+    let mock = InMemoryFileSystem()
+    FileSystem.Register(mock)
+
+    try
+        let fs = FileSystem.Current
+        let root = "reclaim-crash"
+        let live = Path.Combine(root, "live")
+        let g1 = Path.Combine(root, "g1")
+        let g2 = Path.Combine(root, "g2")
+        let g3 = Path.Combine(root, "g3")
+        fs.CreateDirectory root
+        FileSystemIo.writeAllBytes fs live [| 1uy |]
+        FileSystemIo.writeAllBytes fs g1 [| 2uy |]
+        FileSystemIo.writeAllBytes fs g2 [| 3uy |]
+        FileSystemIo.writeAllBytes fs g3 [| 4uy |]
+        mock.ArmCrashOnDelete("g2")
+        let ex =
+            Assert.Throws<CrashMidSweepException>(fun () ->
+                ZetaFsReclaim.apply
+                    fs
+                    [| cid 1uy, g1; cid 2uy, g2; cid 3uy, g3 |]
+                    { Bytes = 100UL; Count = 10 }
+                |> ignore)
+
+        Assert.Equal(g2, ex.Path)
+        Assert.False(fs.Exists g1)
+        Assert.False(fs.Exists g2)
+        Assert.True(fs.Exists g3)
+        Assert.True(fs.Exists live)
+    finally
+        FileSystem.Reset()
