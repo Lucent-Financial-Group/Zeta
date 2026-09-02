@@ -3777,20 +3777,56 @@ microexpressions, from response latency and burst shape, from a latent channel, 
 that is not a stated claim. The taxonomy is about what you do *next*, and it is a **metering
 target**: the meter is good exactly when it separates these three.
 
-| disposition | act | Zeta's existing name for it |
+| disposition | act — stated as a FACT, never a verdict | what the substrate measures |
 |---|---|---|
-| **charlatan** | reads, then **misrepresents** the reading | a **false claim** — refuted by witness |
-| **magician** | reads, then **conceals** that they read, or what | **frost** — legitimate *if earned* |
-| **teacher** | reads, then **makes the reading legible** to the one read | **Mirror → Beacon compression** |
+| **charlatan** | reads, then **states something other than what they read** | claim diverges from witnessed evidence |
+| **magician** | reads, then **does not disclose** the reading | a reading occurred and was not published |
+| **teacher** | reads, then **makes the reading reconstructible** by the one read | the other party can rebuild it from the anchors given |
 
-### Two of the three are already meterable, and the third is not a defect
+### None of the three is a verdict — Aaron, 2026-09-02
 
-**Charlatan is the falsifiable one, and the machinery exists.** A misrepresented reading is a
-claim that contradicts what witnesses find. `TravelerRankLedger` holds standing conferred by
-others; the uncertainty ledger *refuses* an unwitnessed or unsubstantiated ΔU. Under
-`capabilities-are-derivatives-of-witnessed-self-claims`, the subject supplies the claim and
-others supply the truth value — so a charlatan is detected the ordinary way, by the claim
-failing to survive independent attestation. **Nothing new is needed.**
+> "charlot[a]ns are not bad that would be sneaking an orcale into measurement, the differetn
+> between good a[nd] bad is a multi or[a]cle decision not a meter decision it's dual use"
+
+**This corrects the first draft of this section, which got it wrong in the way this repository
+has a rule against.** That draft called the charlatan's act "a false claim, refuted by
+witness" and wrote that *"the charlatan is the one who says 'because I said so' with
+confidence"* — attaching a moral valence to a measurement.
+[`dual-use-detection-is-neutral-oracle-decides`](../.claude/rules/dual-use-detection-is-neutral-oracle-decides.md)
+forbids exactly that: verdict types name the **fact** (`SameSourceAsKnown`), never the intent
+(`ForgerCaught`). The same note had already applied that rule to the latency signal two
+sections earlier and then failed to apply it here, which is the ordinary way a smuggled
+oracle gets in — not by argument, but by a word choice nobody re-reads.
+
+**All three dispositions are dual-use, and the legitimate readings are not edge cases:**
+
+- **Charlatan-shaped** — misrepresenting a reading is *the game* in negotiation, poker,
+  fiction and performance; it is protective under duress; and pedagogy runs on the
+  deliberate simplification that is literally false (Stewart & Cohen's *lies-to-children*).
+- **Magician-shaped** — concealment is the art Aaron studies *as the defensive discipline*
+  against perceptual confusability, and under
+  [`privacy-budget-is-hard-money`](../.claude/rules/privacy-budget-is-hard-money-earned-by-others.md)
+  it is a **right**, not a lapse.
+- **Teacher-shaped** — and this is the one the first draft never questioned: **honest
+  disclosure can be the harm.** Publishing a reading of someone who wanted it private
+  violates *their* frost. A teacher who narrates what they saw in a person's face has taken
+  something not offered, however accurate and however well-meant.
+
+So the meter's output is a **disposition**, and manifesto §11 (Multi-Oracle) supplies the
+meaning. Two parties with different oracles must be able to read the same measurement and
+disagree about what it implies — which is only possible if the measurement never decided.
+
+### What is meterable, and what the magician case really shows
+
+**Charlatan is the measurable one, and the machinery exists.** The *fact* is that a stated
+reading diverges from what witnesses independently find. `TravelerRankLedger` holds standing
+conferred by others; the uncertainty ledger *refuses* an unwitnessed or unsubstantiated ΔU.
+Under `capabilities-are-derivatives-of-witnessed-self-claims`, the subject supplies the claim
+and others supply the truth value — so divergence surfaces the ordinary way. **Nothing new is
+needed to measure it, and nothing in the measurement says what it means:** the same
+divergence reads as deceit, as a bluff in a game both parties agreed to, as protection of a
+third party, or as a teacher's deliberate simplification. The oracle decides; the meter
+reports.
 
 **Teacher is meterable too, and by a test already written.** The honest disclosure of a
 reading is *precisely* the anti-Babel falsifier: hand the other party the anchors and see
@@ -3801,9 +3837,15 @@ fluency in the teacher.
 
 This is also where the oldest thing in this repository attaches. Aaron's **Stump Dad game** —
 ask *why* until Dad doesn't know — and the standing rule that **the only sin is "because I
-said so"** are the same discipline: a teacher gives a *why* or an honest *"I don't know."*
-**The charlatan is the one who says "because I said so" with confidence** — authority
-substituted for reason, which is exactly the defect that rule names.
+said so"** describe the same discipline from the *teacher's* side: the disposition is to give
+a *why*, or an honest *"I don't know."*
+
+**Note what that rule is about, though, and it is not this taxonomy.** "Because I said so" is
+a defect because it substitutes **authority** for **reason** — it is about a power relation,
+not about the accuracy of a reading. An intelligence can misrepresent a reading without any
+appeal to authority (a bluff), and can appeal to authority while reporting a reading
+perfectly honestly. The two axes are independent, and collapsing them would be a second
+smuggled oracle right after the first.
 
 **Magician is the hard case, and the taxonomy's real work is refusing to call it a failure.**
 Concealment is, by construction, not directly observable: an intelligence that read and said
