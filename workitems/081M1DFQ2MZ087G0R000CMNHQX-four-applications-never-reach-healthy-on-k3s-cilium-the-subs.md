@@ -1,7 +1,7 @@
 ---
 id: 081M1DFQ2MZ087G0R000CMNHQX
 type: bug
-state: backlog
+state: in-progress
 priority: P2
 slug: four-applications-never-reach-healthy-on-k3s-cilium-the-subs
 title: "Four Applications never reach Healthy on k3s+Cilium — the substrate metal runs"
@@ -15,6 +15,24 @@ composes_with: []
 <!-- Work-item body. ZetaId-keyed (conflict-free, time-sortable). "Backlog" is a
      STATE = this folder; completion moves the file to workitems/done/YYYY/MM/.
      Identity is the zetaid prefix — resolve cross-refs by `081M1DFQ2MZ087G0R000CMNHQX-*.md` glob. -->
+
+## Pre-start checklist
+
+- Prior art: kind `networking.disableDefaultCNI: true` and Cilium's kind install
+  path are already in `full-ai-cluster/dev-cluster/profiles/ci.cilium.kind-config.yaml`
+  and `docs.cilium.io/en/stable/installation/kind/`. The missing piece was never
+  "can kind host Cilium" (`live-kind-cilium` proves that). It was "can the
+  included proof CREATE that cluster" — `--existing` is not a supported path.
+- Four `--existing` refusals (this item): `UsageError` git-ref; `--ephemeral-vault-init`
+  refused with `--existing`; `DevStorageClassMissing`; `DevBootstrapSecretMissing`.
+  Do not add a fifth hand-applied preparation step.
+- Do not re-lift k3d `--scope included`. The lift condition is these four
+  understood, not another green smoke.
+- Cilium helm-install follows the Application `targetRevision` (currently
+  `1.20.1`, via `shippedCiliumChartVersion()`). Do not bump
+  `cilium-install.yaml` (still `1.16.5`, metal first-boot) in this item:
+  Cilium forbids skipping minors on an in-place upgrade, and matching the two
+  pins is a different job.
 
 ## What was measured
 
@@ -118,8 +136,11 @@ enumerated anywhere as a list a caller can replay.
 
 **The exit is to make the harness build the cluster.** Give the kind provider a
 Cilium-CNI mode so the proof creates and prepares its own cluster and `--existing` is
-not needed. That is real tooling work across `argocd-health-test.ts` and
-`dev-cluster/use-cases.ts`, it is a maintainer-scoped decision, and it is NOT started.
+not needed. That is `argocd-health-test.ts --cni cilium` plus
+`bringUpKindCiCluster({ cni: "cilium" })`. The mode exists; `live-kind-cilium-included`
+is rewired to one harness invocation with `--ephemeral-vault-init` and no
+`--existing`. **State stays in-progress until a dispatch produces per-app
+verdicts.** Do not treat the code landing as the distinguishing test.
 
 **Consequence for this item:** step 2 cannot settle `openziti-controller`,
 `trust-manager` or `spire` until that lands. `vault` is separately unmeasurable on this

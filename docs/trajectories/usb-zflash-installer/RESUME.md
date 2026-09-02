@@ -420,7 +420,7 @@ bringup.
 **Software (closed, do not re-litigate):** non-interactive 6.95-picker
 (`--defer-all` #14852) and restore non-zero write (#15912, dispatch
 33126215487). Sibling dispatch steps already `if: always()`.
-**Next software:** ~~in-guest wrong-passphrase phase 2b + passphrase~~ **BOTH LANDED 2026-08-29 (`133a95b5de`) AND BOTH RAN on dispatch [33462406161](https://github.com/Lucent-Financial-Group/Zeta/actions/runs/33462406161) (2026-09-01) — do not rebuild, do not re-dispatch restore.** Next software is kind `--cni cilium` so the included proof creates its own cluster (`081M1DFQ2MZ`). Superseded text kept below for lineage:
+**Next software:** ~~in-guest wrong-passphrase phase 2b + passphrase~~ **BOTH LANDED 2026-08-29 (`133a95b5de`) AND BOTH RAN on dispatch [33462406161](https://github.com/Lucent-Financial-Group/Zeta/actions/runs/33462406161) (2026-09-01) — do not rebuild, do not re-dispatch restore.** Next software is kind `--cni cilium` so the included proof creates its own cluster (`081M1DFQ2MZ`). **The mode exists in this branch** (`argocd-health-test.ts --cni cilium`, job `live-kind-cilium-included` no longer uses `--existing`). It still needs a dispatch to produce per-app verdicts — code landing is not the distinguishing test. Superseded text kept below for lineage:
 **Superseded:** in-guest wrong-passphrase phase 2b + passphrase
 hexagonal port (`passphrase-source.ts`) so a human can run the metal
 tty1 runbook without the software door being untested. Dispatch restore

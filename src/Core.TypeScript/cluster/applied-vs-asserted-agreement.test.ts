@@ -28,7 +28,12 @@ import { discoverExpectedApplications } from "./argocd-health-test.ts";
 import { excludeGlobDirs, rootDevCatalogExcludeGlobFor } from "./ports.ts";
 
 const REPO_ROOT = join(import.meta.dir, "..", "..", "..");
-const PROVIDERS = ["kind", "k3d", null] as const;
+const CASES = [
+  { provider: "kind" as const, kindCni: "kindnetd" as const, label: "kind/kindnetd" },
+  { provider: "kind" as const, kindCni: "cilium" as const, label: "kind/cilium" },
+  { provider: "k3d" as const, kindCni: "kindnetd" as const, label: "k3d" },
+  { provider: null, kindCni: "kindnetd" as const, label: "null" },
+];
 
 /**
  * Dirs ArgoCD is told NOT to apply, FOR THIS PROVIDER. Prefix-matched:
@@ -38,21 +43,27 @@ const PROVIDERS = ["kind", "k3d", null] as const;
  * STATIC glob would keep measuring the wrong thing the moment either side
  * learned about providers — which is exactly how the defect got in.
  */
-function appliedExcluded(provider: (typeof PROVIDERS)[number]): readonly string[] {
-  return excludeGlobDirs(rootDevCatalogExcludeGlobFor(provider));
+function appliedExcluded(
+  provider: (typeof CASES)[number]["provider"],
+  kindCni: (typeof CASES)[number]["kindCni"] = "kindnetd",
+): readonly string[] {
+  return excludeGlobDirs(rootDevCatalogExcludeGlobFor(provider, kindCni));
 }
 
-function asserted(provider: (typeof PROVIDERS)[number]): readonly string[] {
-  return discoverExpectedApplications(REPO_ROOT, provider)
+function asserted(
+  provider: (typeof CASES)[number]["provider"],
+  kindCni: (typeof CASES)[number]["kindCni"] = "kindnetd",
+): readonly string[] {
+  return discoverExpectedApplications(REPO_ROOT, provider, kindCni)
     .filter((a) => !a.excludedFromDev)
     .map((a) => a.dir);
 }
 
 describe("nothing the harness ASSERTS may be excluded from what ArgoCD APPLIES", () => {
-  for (const provider of PROVIDERS) {
-    test(`provider=${String(provider)}: no asserted Application is in the catalog's exclude glob`, () => {
-      const excluded = appliedExcluded(provider);
-      const orphans = asserted(provider).filter((dir) =>
+  for (const { provider, kindCni, label } of CASES) {
+    test(`${label}: no asserted Application is in the catalog's exclude glob`, () => {
+      const excluded = appliedExcluded(provider, kindCni);
+      const orphans = asserted(provider, kindCni).filter((dir) =>
         excluded.some((e) => dir === e || dir.startsWith(`${e}/`)),
       );
       // Each orphan would make the lane wait its FULL timeout for an
@@ -62,14 +73,19 @@ describe("nothing the harness ASSERTS may be excluded from what ArgoCD APPLIES",
     });
   }
 
+  test("kind --cni cilium asserts cilium AND the catalog applies it — the original timeout class", () => {
+    expect(asserted("kind", "cilium")).toContain("cilium");
+    expect(appliedExcluded("kind", "cilium")).not.toContain("cilium");
+  });
+
   test("the check is not vacuous — the asserted set is non-empty on every provider", () => {
     // Without this, an empty asserted set would satisfy every case above.
-    for (const provider of PROVIDERS) {
-      expect(asserted(provider).length).toBeGreaterThan(10);
+    for (const { provider, kindCni } of CASES) {
+      expect(asserted(provider, kindCni).length).toBeGreaterThan(10);
     }
   });
 
   test("and the exclude glob is non-empty — otherwise there is nothing to disagree with", () => {
-    for (const provider of PROVIDERS) expect(appliedExcluded(provider).length).toBeGreaterThan(0);
+    for (const { provider, kindCni } of CASES) expect(appliedExcluded(provider, kindCni).length).toBeGreaterThan(0);
   });
 });

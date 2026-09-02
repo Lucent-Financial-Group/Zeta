@@ -48,6 +48,24 @@ export interface ContainerHost {
 
 export type LocalClusterShape = "kind-in-docker" | "k3d-in-docker";
 
+/** CNI the kind provider installs. k3d always uses Cilium; this flag is kind-only. */
+export type KindCni = "kindnetd" | "cilium";
+
+/**
+ * Does this substrate already own the CNI slot with Cilium?
+ *
+ * k3d always does (flannel + kube-proxy disabled in the profile). kind does
+ * only when `--cni cilium` selected the no-default-CNI profile. An unknown
+ * provider lifts nothing.
+ */
+export function ciliumOwnsCniSlot(
+  provider: "kind" | "k3d" | null,
+  kindCni: KindCni = "kindnetd",
+): boolean {
+  if (provider === "k3d") return true;
+  return provider === "kind" && kindCni === "cilium";
+}
+
 export interface LocalClusterCreateSpec {
   readonly name: string;
   readonly configPath: string;
@@ -157,7 +175,12 @@ export interface PackageDriver {
 
 /** Git-backed app-of-apps bootstrap for dev/CI. */
 export interface AppCatalogApplicator {
-  applyRootDevCatalog(gitRef: string, gitRepoUrl: string, provider?: "kind" | "k3d" | null): void;
+  applyRootDevCatalog(
+    gitRef: string,
+    gitRepoUrl: string,
+    provider?: "kind" | "k3d" | null,
+    kindCni?: KindCni,
+  ): void;
 }
 
 export interface DevClusterPorts {
@@ -232,13 +255,16 @@ export const DEFAULT_ROOT_DEV_CATALOG: RootDevCatalogSpec = {
  * `null` (provider unknown) returns the glob unchanged — the conservative
  * default, identical to the behaviour before providers existed here.
  */
-export function rootDevCatalogExcludeGlobFor(provider: "kind" | "k3d" | null): string {
-  if (provider !== "k3d") return DEFAULT_ROOT_DEV_CATALOG.excludeGlob;
-  // k3d hands the CNI slot to Cilium (flannel + kube-proxy disabled in the
-  // profile), which is the condition `cilium`'s own LIFTS WHEN names. Drop it
-  // from the exclude so ArgoCD actually syncs what the harness will assert.
-  // `cilium-lb-ipam` deliberately stays: its lift is conjunctive and the second
-  // conjunct (a substrate-parameterised pool) is measurably false.
+export function rootDevCatalogExcludeGlobFor(
+  provider: "kind" | "k3d" | null,
+  kindCni: KindCni = "kindnetd",
+): string {
+  if (!ciliumOwnsCniSlot(provider, kindCni)) return DEFAULT_ROOT_DEV_CATALOG.excludeGlob;
+  // The substrate already handed the CNI slot to Cilium (k3d profile, or kind
+  // `--cni cilium`), which is the condition `cilium`'s own LIFTS WHEN names.
+  // Drop it from the exclude so ArgoCD actually syncs what the harness will
+  // assert. `cilium-lb-ipam` deliberately stays: its lift is conjunctive and
+  // the second conjunct (a substrate-parameterised pool) is measurably false.
   const kept = excludeGlobDirs(DEFAULT_ROOT_DEV_CATALOG.excludeGlob).filter((d) => d !== "cilium");
   return `{${kept.map((d) => `${d}/**`).join(",")}}`;
 }

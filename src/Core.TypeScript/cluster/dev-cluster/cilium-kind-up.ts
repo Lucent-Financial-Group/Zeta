@@ -50,20 +50,19 @@ import {
   CILIUM_KIND_PROFILE,
   GATEWAY_API_CRD_BUNDLE,
   GATEWAY_API_CRD_GAP_REASONS,
+  CILIUM_CHART_REPO,
   ciliumKindValues,
   encryptionReachability,
   kindClusterShape,
   metalClusterShape,
   readCiliumValueSurfaces,
   renderValuesYaml,
+  shippedCiliumChartVersion,
 } from "../cilium-kind-lane.ts";
 import { cidrBounds } from "../cluster-cidr.ts";
 import type { ProcessRunner } from "../ports.ts";
 import { assertKindCiStackReady, liveDevClusterPorts } from "./deps.ts";
 import { assertDnsLabel, REPO_ROOT } from "./lib.ts";
-
-const CILIUM_CHART_VERSION = "1.16.5";
-const CILIUM_CHART_REPO = "https://helm.cilium.io";
 
 interface Check {
   readonly name: string;
@@ -330,8 +329,9 @@ function main(argv: readonly string[]): void {
     process.exit(1);
   }
   const { values, deltas } = ciliumKindValues(shipped, clusterName);
+  const chartVersion = shippedCiliumChartVersion();
 
-  console.log(`Installing Cilium ${CILIUM_CHART_VERSION} from ${surfaces.map((s) => s.path).join(", ")}`);
+  console.log(`Installing Cilium ${chartVersion} from ${surfaces.map((s) => s.path).join(", ")}`);
   console.log(`Value deltas for the kind substrate (${deltas.length}):`);
   for (const delta of deltas) console.log(`  ${delta.path}: ${delta.shipped} -> ${delta.kind} (${delta.reason})`);
 
@@ -375,7 +375,7 @@ function main(argv: readonly string[]): void {
     packages.install({
       release: "cilium",
       chart: "cilium/cilium",
-      version: CILIUM_CHART_VERSION,
+      version: chartVersion,
       namespace: "kube-system",
       repoAlias: "cilium",
       repoUrl: CILIUM_CHART_REPO,
@@ -454,7 +454,7 @@ function main(argv: readonly string[]): void {
       {
         ok: failed.length === 0,
         cluster: clusterName,
-        ciliumChartVersion: CILIUM_CHART_VERSION,
+        ciliumChartVersion: chartVersion,
         valueDeltas: deltas.map((delta) => delta.path),
         encryption: { here: reach.verdict, metal: metalReach.verdict, reasons: reach.reasons },
         checks,

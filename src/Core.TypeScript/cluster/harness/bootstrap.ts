@@ -17,6 +17,7 @@ import {
   parseK3dClusterName,
 } from "../dev-cluster/lib.ts";
 import { bringUpKindCiCluster, bringUpK3dDevCluster } from "../dev-cluster/use-cases.ts";
+import type { KindCni } from "../ports.ts";
 
 export interface KindBootstrapOptions {
   readonly configPath: string;
@@ -24,6 +25,7 @@ export interface KindBootstrapOptions {
   readonly gitRef: string;
   readonly gitRepoUrl?: string;
   readonly containerRuntime?: string;
+  readonly cni?: KindCni;
 }
 
 export function bootstrapKindClusterInProcess(options: KindBootstrapOptions): void {
@@ -42,6 +44,7 @@ export function bootstrapKindClusterInProcess(options: KindBootstrapOptions): vo
     clusterName: options.clusterName,
     gitRef: options.gitRef,
     gitRepoUrl,
+    ...(options.cni === undefined ? {} : { cni: options.cni }),
   });
 }
 
@@ -74,6 +77,10 @@ export function bootstrapK3dClusterInProcess(options: K3dBootstrapOptions): void
 
 export function defaultKindConfigPath(): string {
   return join(DEV_CLUSTER_SUBSTRATE_DIR, "profiles", "ci.kind-config.yaml");
+}
+
+export function defaultKindCiliumConfigPath(): string {
+  return join(DEV_CLUSTER_SUBSTRATE_DIR, "profiles", "ci.cilium.kind-config.yaml");
 }
 
 export function defaultK3dConfigPath(): string {

@@ -11,6 +11,7 @@ import {
   devStorageAliasManifestPath,
   resolveRegistryToken,
 } from "./lib.ts";
+import { GATEWAY_API_CRD_BUNDLE } from "../cilium-kind-lane.ts";
 import { applyDevRegistryPullSecret, bringUpK3dDevCluster, bringUpKindCiCluster } from "./use-cases.ts";
 import type {
   AppCatalogApplicator,
@@ -36,7 +37,10 @@ function fakePorts(log: string[], existingResources: readonly string[] = []): De
   const localCluster: LocalClusterDriver = {
     shape: "kind-in-docker",
     list: () => [],
-    create: () => log.push("create"),
+    create: (spec) => {
+      log.push("create");
+      log.push(`create:waitForReady=${String(spec.waitForReady !== false)}`);
+    },
     delete: () => log.push("delete"),
     contextName: (name) => `kind-${name}`,
   };
@@ -95,9 +99,46 @@ describe("kind CI use case", () => {
       gitRepoUrl: "https://github.com/Lucent-Financial-Group/Zeta",
     });
     expect(log).toContain("create");
+    expect(log).toContain("create:waitForReady=true");
     expect(log).toContain("context:kind-zeta-ci");
     expect(log).toContain("install:argocd");
     expect(log).toContain("catalog:main@https://github.com/Lucent-Financial-Group/Zeta");
+    expect(log).toContain(
+      "remote:https://github.com/kubernetes-sigs/gateway-api/releases/download/v1.2.0/standard-install.yaml",
+    );
+    expect(log).not.toContain("install:cilium");
+  });
+
+  /**
+   * 081M1DFQ2MZ — THE EXIT FROM `--existing`.
+   *
+   * Four probe attempts used `--existing` against a cluster `cilium-kind-up.ts`
+   * built, and each skipped one more piece of bring-up. This path creates the
+   * cluster itself: no-CNI wait, vendored Gateway API (the metal file), shipped
+   * Cilium helm, THEN nodes Ready, THEN the same catalog the kindnetd lane
+   * applies. Delete `cni: "cilium"` from the call and waitForReady goes back
+   * to true, which times out on a cluster with no CNI.
+   */
+  test("kind --cni cilium waits for the API, installs shipped Cilium, then nodes Ready", () => {
+    const log: string[] = [];
+    bringUpKindCiCluster(fakePorts(log), {
+      configPath: "/tmp/kind-cilium.yaml",
+      clusterName: "zeta-ci-cilium",
+      gitRef: "main",
+      gitRepoUrl: "https://github.com/Lucent-Financial-Group/Zeta",
+      cni: "cilium",
+    });
+    expect(log).toContain("create:waitForReady=false");
+    expect(log.indexOf("api-ready")).toBeGreaterThan(-1);
+    expect(log.indexOf("nodes-ready")).toBeGreaterThan(-1);
+    expect(log.indexOf("api-ready")).toBeLessThan(log.indexOf("nodes-ready"));
+    expect(log).toContain("install:cilium");
+    expect(log.indexOf("install:cilium")).toBeLessThan(log.indexOf("nodes-ready"));
+    const catalogAt = log.findIndex((entry) => entry.startsWith("catalog:"));
+    expect(catalogAt).toBeGreaterThan(-1);
+    expect(log.indexOf("install:cilium")).toBeLessThan(catalogAt);
+    expect(log.some((entry) => entry.startsWith("file:") && entry.includes(GATEWAY_API_CRD_BUNDLE))).toBe(true);
+    expect(log.some((entry) => entry.includes("gateway-api/releases/download/v1.2.0"))).toBe(false);
   });
 
   /**
