@@ -1,0 +1,12 @@
+{
+  "pr_number": 16322,
+  "archive_path": "docs/history/pr-reviews/PR-16322-bug-081m1g5mfvp087g0r000jrbk4z-windows-2025-test-step-is-flaky-on-main-3-of-8-bu.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-02T04:39:12.910Z",
+  "schema_version": "v1",
+  "commit_sha": "b7e84d1c319e07bf159456f4a7c86eda3c4be5b2",
+  "title": "bug(081M1G5MFVP087G0R000JRBK4Z): windows-2025 Test step is flaky on main — 3 of 8, build always green",
+  "state": "MERGED",
+  "merged_at": "2026-09-02T04:38:30Z",
+  "head_ref": "shadow/windows-test-flake-inventory"
+}
