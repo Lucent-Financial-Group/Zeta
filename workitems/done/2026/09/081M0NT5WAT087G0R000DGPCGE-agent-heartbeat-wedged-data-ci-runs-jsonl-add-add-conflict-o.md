@@ -1,11 +1,12 @@
 ---
 id: 081M0NT5WAT087G0R000DGPCGE
 type: bug
-state: backlog
+state: done
 priority: P2
 slug: agent-heartbeat-wedged-data-ci-runs-jsonl-add-add-conflict-o
 title: "agent-heartbeat wedged: data/ci-runs.jsonl add/add conflict once the file reached main"
 created: 2026-08-22T22:41:34.042Z
+completed: 2026-09-02T16:53:49.800Z
 depends_on: []
 composes_with: []
 ---
