@@ -198,6 +198,88 @@ demixer it would be whatever downstream consumer finally has to *act*, and that 
 is a legitimate branch **because it is named**. The claim is never "no branches" — it is **"no
 branch that no channel declares."**
 
+## Q4c — AmplitudeEmu and "more quantum resistant": the ISA's two groups ARE the classical-simulability boundary
+
+Aaron, 2026-09-02: *"yes this is our AmplitudeEmu in the basic form — do you know a way to make it
+more quantum resistant?"*
+
+**Reading, stated because the phrase is ambiguous and I am not going to guess silently.** I read
+this as *"make the classical emulator carry more of the quantum structure"*, not as post-quantum
+cryptography (Shor/Grover-resistant primitives), which is a different question the KSK/PKI work
+owns. Answering the first; say the word if the second was meant.
+
+### First, what `AmplitudeEmu` already is — and its own honest scope
+
+`src/Core/AmplitudeEmu.fs` carries complex amplitudes over the **free ℂ-module on frames**,
+`ℂ[Frame]`; `merge` sums amplitudes so opposite phases **cancel** and equal phases **reinforce**
+(interference, in code), and `bornProb` measures by `|a|²`. Its own peel is the important part:
+
+> *"Interference is real here; the entanglement exponential is NOT escaped … General
+> high-entanglement state needs `4ⁿ` reals … `support` growing un-merged IS the exponential, logged
+> not hidden."*
+
+and it separates three resources that get conflated everywhere else: **interference ≠ entanglement
+≠ signalling.** It has the first, explicitly not the second, and Bell still bounds correlations at
+`S = 2` for a local generator.
+
+### The finding: Q4's two groups are exactly Clifford vs non-Clifford
+
+This is the third consequence of §Q4, and it is checkable rather than resonant.
+**Gottesman–Knill**: circuits built from the **Clifford** group — `H`, `CNOT`, `S`, Paulis — are
+classically simulable in **polynomial time, with arbitrary entanglement**. The classical cost of
+simulation lives *entirely* in the **non-Clifford** gates.
+
+Now put the ISA's own table beside that:
+
+| ISA operator | Q# | group | Clifford? | classical cost |
+|---|---|---|---|---|
+| `BRANCH` | `H` | ℤ/2ℤ | **yes** | polynomial |
+| `JOIN` | `CNOT` | ℤ/2ℤ | **yes** | polynomial |
+| `EMIT` / `RETRACT` | `Ry(θ)` / `Adjoint` | U(1) | **no**, for generic θ | exponential in the count |
+
+> **The ℤ/2ℤ half of the ISA is precisely the classically-simulable half, and the U(1) half is
+> precisely the part that is not.**
+
+That is not a coincidence of form — Clifford versus non-Clifford *is* the classical-simulability
+boundary, and the ISA's split falls on it exactly. So Q4's "two groups, not one" — which read as an
+inconsistency when Alexa's chain wanted a single binary primitive — is the design placing the
+quantum-advantage surface in one named operator pair and nowhere else.
+
+### The recommendation: do not make it more quantum — make its DISTANCE from quantum a metered quantity
+
+The honest answer to "how do we make the emulator more quantum" is that in general **you cannot**;
+`4ⁿ` is a theorem, not an engineering gap. What you *can* do is buy specific, **priced** amounts of
+quantum structure, and each known technique comes with its own meter:
+
+| structure | what it buys | the meter (and it is the point) |
+|---|---|---|
+| **stabiliser / Gottesman–Knill** | arbitrary entanglement, free, while you stay Clifford | **T-count / non-Clifford count**; stabiliser-rank cost ≈ `2^{0.23t}` (Bravyi–Gosset) |
+| **tensor networks / MPS** | bounded-entanglement states in `poly(n)·χ³` | **bond dimension χ**, and the **truncation error is computable** — an error bar, not a silent approximation |
+| **what is already there** | reconverging-path collapse | **`support` size**, which the module already logs |
+
+**And the last row is why this is a small change rather than a rewrite.** `AmplitudeEmu` already
+logs `support` growth and already says *"logged not hidden."* The upgrade is to promote that log
+into a **declared budget with a refusal** — the same shape as the entropy budget under §13
+noninterference. Neither MPS nor the stabiliser formalism requires abandoning the current algebra
+either: `ℂ[Frame]` is a vector space and both are **structured subspaces of it**, so they are
+representations of the object the module already has.
+
+**Why this is the right answer in this repository's idiom specifically:** it closes the loop with
+the VISION section written the same day. *The disagreement is the prediction* — and the point at
+which the classical emulator must truncate **is** the predicted disagreement location. Metering
+T-count and χ means that point is **computed in advance rather than discovered on hardware**, which
+is the only version of the claim we can currently act on, since nothing here holds an encoded qubit.
+
+**Falsifier (F6).** Instrument `AmplitudeEmu` with a non-Clifford counter and a truncation-error
+budget; then exhibit a circuit the emulator **refuses** rather than silently approximates. If no
+circuit in the tree ever trips it, the budget is the vacuity class and the instrumentation bought
+nothing.
+
+**Anchors:** Gottesman (1998), *The Heisenberg Representation of Quantum Computers*; Aaronson &
+Gottesman (2004), *Improved Simulation of Stabilizer Circuits*; Bravyi & Gosset (2016), stabiliser
+rank / simulation of Clifford+T; Vidal (2003) and Schollwöck (2011) for MPS and bond dimension.
+**Register: all cited, none checked by entailment here.**
+
 ## Q5 — the "missing row": a meter that should have frozen but didn't
 
 **Already added and merged**, before this review arrived, in
