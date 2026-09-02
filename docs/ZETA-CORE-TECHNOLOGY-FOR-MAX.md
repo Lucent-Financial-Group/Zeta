@@ -393,7 +393,28 @@ _Added 2026-09-02 at Aaron's request, to say plainly how four things that look u
 the same shape. Register is marked throughout: what is **built**, what is **prior art**, and
 what is **`toy`** — a resonance we have not earned the right to assert._
 
-### The one sentence
+### In plain words
+
+> **It is context-jurisdiction-aware queries.**
+
+Aaron, on reading the first draft of this section: _"this seems like a lot of overly complicated
+text to say context jurisdiction aware queries."_ He is right, so the plain name goes first and
+the elaboration goes after it.
+
+**You are in several contexts at once. They overlap. They do not nest. Every question has to be
+answered for the set you are actually in, not for one bucket someone filed you under.** That is
+the whole idea. If Max reads only this much, he has it.
+
+Two consequences worth carrying even without the rest:
+
+- **A permission is a signature, not a boolean** — the list of which contexts contain this act.
+- **There is no root to descend from**, so no single authority can answer the question for you.
+  That is why decentralisation here is a correctness requirement, not a preference.
+
+The remaining sections are why this is hard, who solved it before us, and what it connects to.
+They are detail, not the point.
+
+### The same thing, said longer
 
 > **Membership in overlapping regions that do not nest is a single computation.** Elections
 > and GIS solve it in physical space and have for fifty years. Neural networks solve it in
