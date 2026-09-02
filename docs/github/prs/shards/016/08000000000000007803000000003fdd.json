@@ -1,0 +1,12 @@
+{
+  "pr_number": 16349,
+  "archive_path": "docs/history/pr-reviews/PR-16349-task-081m1hjmatc087g0r000hhk3kc-four-signals-the-currency-report-misses-and-corr.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-02T17:51:17.095Z",
+  "schema_version": "v1",
+  "commit_sha": "ed215650d06ba3eeb39c42b2bdd4ecd07d92a207",
+  "title": "task(081M1HJMATC087G0R000HHK3KC): four signals the currency report misses — and correcting my own gabe565 claim",
+  "state": "MERGED",
+  "merged_at": "2026-09-02T17:48:42Z",
+  "head_ref": "shadow/chart-review-second-pass-findings"
+}
