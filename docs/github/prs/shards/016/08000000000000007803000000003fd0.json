@@ -1,0 +1,12 @@
+{
+  "pr_number": 16336,
+  "archive_path": "docs/history/pr-reviews/PR-16336-fix-auto-vivify-create-7-dangling-db-stubs-to-green-preflight.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-02T13:42:39.435Z",
+  "schema_version": "v1",
+  "commit_sha": "579374b8b8eb6d547459036cbc9461b536c985dc",
+  "title": "fix(auto-vivify): create 7 dangling db/ stubs to green preflight",
+  "state": "MERGED",
+  "merged_at": "2026-09-02T13:42:03Z",
+  "head_ref": "alexa/auto-vivify-7-dangling-db-stubs-20260902T124337Z"
+}
