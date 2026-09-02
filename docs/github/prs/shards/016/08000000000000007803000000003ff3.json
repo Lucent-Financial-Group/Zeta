@@ -1,0 +1,12 @@
+{
+  "pr_number": 16371,
+  "archive_path": "docs/history/pr-reviews/PR-16371-test-alloc-a-single-sample-measures-the-shared-arraypool-s-mood-not-the-code.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-02T21:37:25.065Z",
+  "schema_version": "v1",
+  "commit_sha": "2ed9f8ef92580efbfe7d694740bb2269d401b07f",
+  "title": "test(alloc): a single sample measures the shared ArrayPool's mood, not the code",
+  "state": "MERGED",
+  "merged_at": "2026-09-02T21:36:47Z",
+  "head_ref": "alloc-measure-min-of-samples"
+}
