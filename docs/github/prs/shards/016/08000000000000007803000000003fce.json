@@ -1,0 +1,12 @@
+{
+  "pr_number": 16334,
+  "archive_path": "docs/history/pr-reviews/PR-16334-fix-081m1f1xzy4087g0r002z01fga-windows-bdn-in-process-it-never-measured.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-02T08:41:21.732Z",
+  "schema_version": "v1",
+  "commit_sha": "0793e6027b35cf0771cbae8162a02acc14f203c9",
+  "title": "fix(081M1F1XZY4087G0R002Z01FGA): Windows BDN in-process, it never measured",
+  "state": "MERGED",
+  "merged_at": "2026-09-02T08:40:37Z",
+  "head_ref": "feat/windows-bdn-inprocess"
+}
