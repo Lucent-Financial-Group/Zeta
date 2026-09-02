@@ -2,9 +2,9 @@
 
 <!-- GENERATED FILE. Do not hand-edit: `bun src/Core.TypeScript/hygiene/report-chart-currency.ts --write` overwrites it. -->
 
-**As of:** 2026-09-02T17:48:53Z — the instant `published-chart-versions.json` was last refreshed. Every age below is measured against that instant, not against the moment you are reading this, so this file is byte-reproducible from committed data.
+**As of:** 2026-09-02T18:31:52Z — the instant `published-chart-versions.json` was last refreshed. Every age below is measured against that instant, not against the moment you are reading this, so this file is byte-reproducible from committed data.
 
-**This is a report, never a gate.** Being behind is a standing condition, not a regression: 6 of 35 pins are behind upstream right now. A CI check on that would be red from birth and learned-to-ignore within a week. The blocking question — *does this pin resolve at all?* — is a different one and is answered on every PR by `src/Core.TypeScript/hygiene/audit-chart-target-revisions.ts`.
+**This is a report, never a gate.** Being behind is a standing condition, not a regression: 5 of 35 pins are behind upstream right now. A CI check on that would be red from birth and learned-to-ignore within a week. The blocking question — *does this pin resolve at all?* — is a different one and is answered on every PR by `src/Core.TypeScript/hygiene/audit-chart-target-revisions.ts`.
 
 **Behind is not unmaintained.** A pure versions-behind metric reports the most dangerous dependency in this tree as the healthiest one, which is exactly what happened with `minio`: it is the only pin that is not behind, and only because upstream archived the repository. So the gap and upstream's publishing record are two separate columns, and a chart nobody has published in over a year reads `DORMANT`, not `CURRENT`.
 
@@ -13,10 +13,10 @@
 | | count |
 |---|---|
 | chart coordinates under `full-ai-cluster/k8s/applications` | 35 |
-| behind upstream | 6 |
+| behind upstream | 5 |
 | …of those, crossing a **major** boundary | 2 |
 | …of those, a `0.x` minor (breaking by semver convention) | 2 |
-| at the newest version and upstream still active | 28 |
+| at the newest version and upstream still active | 29 |
 | **`DORMANT`** — at the newest version because upstream stopped publishing | 1 |
 | upstream silent for over a year (any gap) | 1 |
 | **`UNREACHABLE`** — the refresh could not reach the repository | 0 |
@@ -32,7 +32,6 @@
 | `BEHIND-MAJOR` | `temporal` | `temporal` | `0.59.0` | 2025-03-28 | `1.6.0` | 2026-07-13 | 26 | **MAJOR** | active 51d |
 | `BEHIND` | `hindsight` | `hindsight` | `0.3.0` | ? | `0.9.2` | ? | 46 | minor (0.x) | unknown |
 | `BEHIND` | `spire` | `spire` | `0.24.2` | 2025-02-27 | `0.30.1` | 2026-08-23 | 16 | minor (0.x) | active 10d |
-| `BEHIND` | `openziti-controller` | `ziti-controller` | `3.1.1` | 2026-02-24 | `3.3.1` | 2026-08-31 | 4 | minor | active 1d |
 | `BEHIND` | `kube-prometheus-stack` | `kube-prometheus-stack` | `88.6.2` | 2026-08-31 | `88.6.3` | 2026-09-02 | 1 | patch | active 0d |
 | `CURRENT` | `alloy` | `alloy` | `1.12.1` | 2026-08-27 | `1.12.1` | 2026-08-27 | 0 | -- | active 6d |
 | `CURRENT` | `arc-controller` | `gha-runner-scale-set-controller` | `0.14.2` | ? | `0.14.2` | ? | 0 | -- | unknown |
@@ -43,7 +42,7 @@
 | `CURRENT` | `cert-manager` | `cert-manager` | `v1.21.1` | 2026-07-29 | `v1.21.1` | 2026-07-29 | 0 | -- | active 35d |
 | `CURRENT` | `cilium` | `cilium` | `1.20.1` | 2026-08-18 | `1.20.1` | 2026-08-18 | 0 | -- | active 15d |
 | `CURRENT` | `cockroachdb` | `cockroachdb` | `22.0.3` | 2026-08-28 | `22.0.3` | 2026-08-28 | 0 | -- | active 5d |
-| `CURRENT` | `dapr` | `dapr` | `1.18.3` | 2026-08-28 | `1.18.3` | 2026-08-28 | 0 | -- | active 5d |
+| `CURRENT` | `dapr` | `dapr` | `1.18.3` | 2026-09-02 | `1.18.3` | 2026-09-02 | 0 | -- | active 0d |
 | `CURRENT` | `external-secrets` | `external-secrets` | `2.10.0` | 2026-08-28 | `2.10.0` | 2026-08-28 | 0 | -- | active 5d |
 | `CURRENT` | `forgejo` | `forgejo` | `17.1.5` | ? | `17.1.5` | ? | 0 | -- | unknown |
 | `CURRENT` | `headlamp` | `headlamp` | `0.45.0` | 2026-08-20 | `0.45.0` | 2026-08-20 | 0 | -- | active 12d |
@@ -54,6 +53,7 @@
 | `CURRENT` | `node-feature-discovery` | `node-feature-discovery` | `0.19.0` | 2026-07-10 | `0.19.0` | 2026-07-10 | 0 | -- | active 54d |
 | `CURRENT` | `ollama` | `ollama` | `1.79.0` | 2026-09-02 | `1.79.0` | 2026-09-02 | 0 | -- | active 0d |
 | `CURRENT` | `open-policy-agent` | `gatekeeper` | `3.23.1` | 2026-08-27 | `3.23.1` | 2026-08-27 | 0 | -- | active 5d |
+| `CURRENT` | `openziti-controller` | `ziti-controller` | `3.3.1` | 2026-08-31 | `3.3.1` | 2026-08-31 | 0 | -- | active 2d |
 | `CURRENT` | `redis` | `valkey` | `0.12.0` | 2026-09-02 | `0.12.0` | 2026-09-02 | 0 | -- | active 0d |
 | `CURRENT` | `sealed-secrets` | `sealed-secrets` | `2.19.3` | 2026-08-20 | `2.19.3` | 2026-08-20 | 0 | -- | active 13d |
 | `CURRENT` | `seaweedfs` | `seaweedfs` | `4.45.0` | 2026-09-01 | `4.45.0` | 2026-09-01 | 0 | -- | active 1d |

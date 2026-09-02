@@ -278,15 +278,24 @@ describe("THE BAR — red on all four instances as they stood before their fixes
   });
 
   test("oz at a pin that EXISTS — `adminSecret` is refused, which is the key-set comparison itself", () => {
-    // The demonstration the case above cannot give. Same historical
-    // valuesObject, checked against ziti-controller 3.1.1 — a published version,
-    // and the one the repair moved to. `adminSecret` is a key ziti-controller
-    // has never had in ANY published version.
+      // The demonstration the case above cannot give. Same historical
+      // valuesObject, checked against ziti-controller 3.3.1 -- a published
+      // version, and the one the repair moved to. `adminSecret` is a key
+      // ziti-controller has never had in ANY published version, which is why
+      // re-pointing this proof from 3.1.1 to 3.3.1 with the OpenZiti v2 upgrade
+      // preserves it exactly rather than weakening it: the claim was never about
+      // one version.
+      //
+      // Re-pointed rather than answered by retaining a 3.1.1 schema.
+      // `snapshotSchema` REFUSES a pin the snapshot no longer carries instead of
+      // skipping -- "the proof could not run" fails here, correctly -- and
+      // keeping a schema for a version nothing deploys would have answered that
+      // refusal with a fixture nobody re-measures.
     const historical = historicalCase("oz");
     const findings = findingsForApplication(
       "full-ai-cluster/oz",
       historical.valuesObject,
-      snapshotSchema(historical.repoURL, "ziti-controller", "3.1.1"),
+      snapshotSchema(historical.repoURL, "ziti-controller", "3.3.1"),
       "ziti-controller",
       "3.1.1",
     );

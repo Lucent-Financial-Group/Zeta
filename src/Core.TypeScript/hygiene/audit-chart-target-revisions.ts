@@ -206,6 +206,16 @@ export interface RosterEntry {
    */
   readonly versions: readonly string[];
   /**
+   * Versions the publisher marked `deprecated: true`, when the source can say.
+   *
+   * OPTIONAL and absent-by-default, because "not deprecated" and "this source
+   * cannot tell us" are different facts. A classic Helm index carries the flag
+   * per entry; an OCI tag list carries no metadata at all, so for OCI
+   * coordinates this stays undefined rather than becoming an empty array that
+   * would read as a clean bill of health nobody issued.
+   */
+  readonly deprecatedVersions?: readonly string[];
+  /**
    * Set when the refresh could not reach the repository AT ALL, carrying the
    * error verbatim; `versions` is then empty.
    *
@@ -825,6 +835,18 @@ export function ociTarget(repoURL: string, chart: string): { host: string; repos
 interface HelmIndexRead {
   readonly versions: readonly string[];
   readonly created: Readonly<Record<string, string>>;
+  /**
+   * Versions the publisher marked `deprecated: true`.
+   *
+   * Rides along for exactly the reason `created` does -- it is ALREADY in the
+   * index entry being parsed, so collecting it costs zero requests. And it
+   * answers a question neither version-distance nor publish-date can: a chart
+   * can be at its newest version, published recently, and RETIRED. `grafana/tempo`
+   * 1.24.4 is all three at once, and until this field was read the report called
+   * it "BEHIND ... quiet 214d", which reads as "a bit stale" rather than "the
+   * publisher has stopped maintaining this line".
+   */
+  readonly deprecated: Readonly<Record<string, boolean>>;
 }
 
 async function fetchHelmIndexVersions(repoURL: string, chart: string): Promise<HelmIndexRead> {
@@ -837,18 +859,24 @@ async function fetchHelmIndexVersions(repoURL: string, chart: string): Promise<H
   if (!Array.isArray(charts)) throw new Error(url + " publishes no chart named `" + chart + "`");
   const versions: string[] = [];
   const created: Record<string, string> = {};
+  const deprecated: Record<string, boolean> = {};
   for (const entry of charts) {
     if (!isRecord(entry)) continue;
     const version = stringAt(entry, "version");
     if (version === "") continue;
     versions.push(version);
+    // Recorded ONLY when the publisher wrote the boolean `true`. A missing or
+    // non-boolean `deprecated` is left absent rather than coerced: "this chart
+    // is not marked retired" and "we could not tell" must not become the same
+    // value, and truthiness coercion is how they would.
+    if (entry.deprecated === true) deprecated[version] = true;
     // An index entry without `created` is left ABSENT, never defaulted. A
     // missing date must reach the report as "unknown"; a substituted one would
     // be the check-that-did-not-run wearing a plausible number.
     const when = stringAt(entry, "created");
     if (when !== "") created[version] = when;
   }
-  return { versions, created };
+  return { versions, created, deprecated };
 }
 
 async function fetchOciTags(repoURL: string, chart: string): Promise<readonly string[]> {
@@ -898,7 +926,11 @@ async function refresh(repoRoot: string): Promise<number> {
     try {
       const read =
         coordinate.kind === "oci"
-          ? { versions: await fetchOciTags(coordinate.repoURL, coordinate.chart), created: undefined }
+          ? {
+              versions: await fetchOciTags(coordinate.repoURL, coordinate.chart),
+              created: undefined,
+              deprecated: undefined,
+            }
           : await fetchHelmIndexVersions(coordinate.repoURL, coordinate.chart);
       const versions = read.versions;
       if (versions.length === 0) throw new Error("upstream listed zero versions");
@@ -911,7 +943,9 @@ async function refresh(repoRoot: string): Promise<number> {
         chart: coordinate.chart,
         kind: coordinate.kind,
         fetchedAt,
-        versions,
+          versions,
+          // Absent for OCI, where the source cannot answer -- see the field doc.
+          ...(read.deprecated === undefined ? {} : { deprecatedVersions: Object.keys(read.deprecated).sort() }),
       };
       process.stdout.write("  ok   " + key + " (" + String(versions.length) + " versions)\n");
     } catch (error) {
