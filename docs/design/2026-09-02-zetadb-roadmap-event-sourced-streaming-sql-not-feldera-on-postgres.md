@@ -244,7 +244,7 @@ Until a bench of "ZetaDB small-write storm on ZetaFS" vs "same storm on APFS/ext
 We do **not** implement ReFS, copy its on-disk format, or take a Windows-only path. Requirements that crossed the wall:
 
 1. **Pointer-not-copy (D9).** A clone, a snapshot, a small overwrite, a fork: update Bindings / Jumprope leaf ids / ContentId. Write bits only for new or mutated chunks. This is already the Jumprope + CAS shape; the volume path must not fall back to copying the file.
-2. **Crash DST for FS *and* DB (D12).** FoundationDB-shaped: crash-mid-write, reorder, corrupt-last-write, same seed. ChaosEnv is still flush-fail 5%. The intercept is `InMemoryFileSystem.ArmCrashMidWrite` on the shared `IFileSystem` door (freeze torn-tail + GroupCommit torn-tail). Reorder / corrupt-last-write / freeze-log replay are still open.
+2. **Crash DST for FS *and* DB (D12).** FoundationDB-shaped: crash-mid-write, reorder, corrupt-last-write, same seed. ChaosEnv is still flush-fail 5%. The intercept is `InMemoryFileSystem.ArmCrashMidWrite` on the shared `IFileSystem` door (freeze torn-tail + GroupCommit torn-tail). Plain freeze-log replay restores intact boats. Reorder / corrupt-last-write / sealed-log replay are still open.
 3. **Cache co-design (D10).** If the DB and the FS each keep a buffer of the same bytes, we pay RAM twice and we lie about whose `Buffered` won. One authority. Preferred: library-FS, DB owns mutbuf, POSIX mount is a view (already K6). `Durability.OsBuffered` and freeze `Buffered` must be the same named class, or a documented mapping. ReFS's allocate-on-write metadata plus a lazy cache manager is a known RAM explosion (KB 4016173); do not copy that caching.
 4. **CoW must not 10× the volume (D11).** This is why `keep-all | rolling | none | regen` exist. A DB that freezes every small write under `keep-all` will look like git. Rolling/none/regen are the bound. The falsifier is reclaim-eligibility, not a comment.
 
@@ -302,7 +302,7 @@ Order, each with a falsifier:
 10. **No appointed hub; no split-brain class.** Forward progress, CRDT merge, throw-away, or named fork.
 11. **ZetaFS is optional as a product** until it wins the product-existence bench against host FS + group-commit. Fork, CAS, Regen, EC, per-entity policy, **and ReFS-shaped crash/pointer/cache** are the reasons it might win.
 12. **`Regen` must not drop original bytes until the generator is metered.** Today's Singleton mapping is the conservative floor.
-13. **Freeze uses the ferry** (D4 / ZD2). Journaled/Durable log appends are boats. Crash-mid-write intercept landed; freeze-log replay stays `toy`.
+13. **Freeze uses the ferry** (D4 / ZD2). Journaled/Durable log appends are boats. Crash-mid-write intercept landed; plain-log replay of intact boats landed.
 14. **Stay in this monorepo** until ZetaFS v0.9ish and until ZetaDB has a signed, tested cut. Do not mint product GitHubs as a prerequisite.
 15. **Pointer-not-copy, not bit-copy** (D9). ReFS block cloning is the Beacon, not the implementation.
 16. **One cache authority** (D10). Double-buffering is a bug, not a feature.
