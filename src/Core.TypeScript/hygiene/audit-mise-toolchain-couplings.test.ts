@@ -17,6 +17,11 @@ describe("parseRustPin — both spellings mise accepts", () => {
       parseRustPin(`rust = { version = "1.87.0", components = ["rustfmt", "clippy"], targets = ["wasm32-unknown-unknown"] }`),
     ).toBe("1.87.0");
   });
+  test("table form accepts a beta point-release", () => {
+    expect(
+      parseRustPin(`rust = { version = "1.99.0-beta.3", components = ["rustfmt"] }`),
+    ).toBe("1.99.0-beta.3");
+  });
   test("plain form", () => {
     expect(parseRustPin(`rust = "1.87.0"`)).toBe("1.87.0");
   });
@@ -33,9 +38,31 @@ describe("findRustRestatements — what counts as OPERATIVE", () => {
     expect(r[0]?.kind).toBe("rustup cache glob");
   });
 
+  test("a beta point-release glob is a restatement of the full pin, not 1.99.0", () => {
+    const r = findRustRestatements(
+      "gate.yml",
+      `            ~/.rustup/toolchains/1.99.0-beta.3-*\n`,
+    );
+    expect(r).toHaveLength(1);
+    expect(r[0]?.version).toBe("1.99.0-beta.3");
+  });
+
   test("a shell RUST_VERSION default is a restatement", () => {
     const r = findRustRestatements("install-rust-wasm32.sh", `RUST_VERSION="\${RUST_VERSION:-1.87.0}"\n`);
     expect(r.map((x) => x.kind)).toEqual(["RUST_VERSION shell default"]);
+  });
+
+  test("a YAML RUSTUP_TOOLCHAIN pin is a restatement of the full beta pin", () => {
+    const r = findRustRestatements("feldera-native.yml", `  RUSTUP_TOOLCHAIN: "1.99.0-beta.3"\n`);
+    expect(r).toHaveLength(1);
+    expect(r[0]?.kind).toBe("RUSTUP_TOOLCHAIN yaml");
+    expect(r[0]?.version).toBe("1.99.0-beta.3");
+  });
+
+  test("an interpolated RUSTUP_TOOLCHAIN is a probe compiler, not a restatement", () => {
+    expect(
+      findRustRestatements("feldera-native.yml", `      RUSTUP_TOOLCHAIN: \${{ matrix.pair.rust }}\n`),
+    ).toEqual([]);
   });
 
   test("a second mise config's own pin is a restatement", () => {
@@ -73,7 +100,7 @@ describe("the REAL tree — the state this check was written to protect", () => 
   const canonical = readFileSync(CANONICAL, "utf8");
 
   test("the canonical pins are present and parse", () => {
-    expect(parseRustPin(canonical)).toMatch(/^\d+\.\d+\.\d+$/);
+    expect(parseRustPin(canonical)).toMatch(/^\d+\.\d+\.\d+(?:-beta\.\d+)?$/);
     expect(parseZigPin(canonical)).toMatch(/^\d+\.\d+\.\d+$/);
   });
 

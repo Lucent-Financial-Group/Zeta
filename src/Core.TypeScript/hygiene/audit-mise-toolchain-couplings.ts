@@ -107,10 +107,20 @@ export function parseZigPin(text: string): string | null {
  * descriptive — a bare `1.87.0` inside a `#` comment is not a restatement, and matching one
  * would make this checker fire on its own explanatory prose.
  */
-const RUSTUP_CACHE_GLOB = /~\/\.rustup\/toolchains\/(\d+\.\d+\.\d+)-\*/;
-const RUST_VERSION_SHELL_DEFAULT = /RUST_VERSION[ \t]*=[ \t]*"?\$\{RUST_VERSION:-(\d+\.\d+\.\d+)\}/;
-const MISE_RUST_TABLE = /^[ \t]*rust[ \t]*=[ \t]*\{[^}]*?version[ \t]*=[ \t]*"(\d+\.\d+\.\d+)"/;
-const MISE_RUST_PLAIN = /^[ \t]*rust[ \t]*=[ \t]*"(\d+\.\d+\.\d+)"/;
+// Stable `1.96.1` or a point-release beta `1.99.0-beta.3`. Not a floating
+// channel name (`beta` / `nightly`) — those are not a pin.
+const RUST_VER = String.raw`\d+\.\d+\.\d+(?:-beta\.\d+)?`;
+const RUSTUP_CACHE_GLOB = new RegExp(String.raw`~/\.rustup/toolchains/(${RUST_VER})-\*`);
+const RUST_VERSION_SHELL_DEFAULT = new RegExp(
+  String.raw`RUST_VERSION[ \t]*=[ \t]*"?\$\{RUST_VERSION:-(${RUST_VER})\}`,
+);
+const RUSTUP_TOOLCHAIN_YAML = new RegExp(
+  String.raw`^[ \t]*RUSTUP_TOOLCHAIN:[ \t]*["']?(${RUST_VER})["']?[ \t]*$`,
+);
+const MISE_RUST_TABLE = new RegExp(
+  String.raw`^[ \t]*rust[ \t]*=[ \t]*\{[^}]*?version[ \t]*=[ \t]*"(${RUST_VER})"`,
+);
+const MISE_RUST_PLAIN = new RegExp(String.raw`^[ \t]*rust[ \t]*=[ \t]*"(${RUST_VER})"`);
 const MISE_ZIG_PIN = /^[ \t]*zig[ \t]*=[ \t]*"(\d+\.\d+\.\d+)"/;
 
 export function findRustRestatements(file: string, text: string): Restatement[] {
@@ -122,6 +132,12 @@ export function findRustRestatements(file: string, text: string): Restatement[] 
     const envDefault = RUST_VERSION_SHELL_DEFAULT.exec(line);
     if (envDefault?.[1])
       out.push({ file, line: i + 1, kind: "RUST_VERSION shell default", version: envDefault[1] });
+
+    // Workflow `env: RUSTUP_TOOLCHAIN: "1.99.0-beta.3"`. Interpolation
+    // (`${{ matrix.pair.rust }}`) is a probe compiler, not a restatement.
+    const yamlToolchain = RUSTUP_TOOLCHAIN_YAML.exec(line);
+    if (yamlToolchain?.[1])
+      out.push({ file, line: i + 1, kind: "RUSTUP_TOOLCHAIN yaml", version: yamlToolchain[1] });
 
     // A mise `rust = …` pin in a SECOND mise config (.mise.full.toml). Two simple patterns
     // rather than one alternation: the combined form tripped sonarjs/regex-complexity, and

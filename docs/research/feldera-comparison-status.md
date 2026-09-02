@@ -20,10 +20,11 @@ not copy expression into Zeta.
 
 ## What is true today
 
-- Factory rust is mise-pinned **1.96.1** via `tools/setup/install.sh`
+- Factory rust is mise-pinned **1.99.0-beta.3** via `tools/setup/install.sh`
   (ace). Feldera 0.342.0 MSRV is 1.93.1. rustc **1.97.0 is first-bad**
-  (`dbsp` ICE); 1.96.1 is the last 1.96 patch (no 1.96.2) and compiles
-  `dbsp`. Do not `rustup install` a second compiler to build prior-art.
+  (`dbsp` ICE on 1.97.0 and 1.98.0). 1.96.1 is last-good stable; 1.99.0-beta.3
+  is the first later line that compiles `dbsp` (GHA + this box). Do not
+  `rustup install` a second compiler to build prior-art.
 - Clone: `references/prior-art/feldera/` (gitignored), SHA `48312b6`.
 - Native Rust Nexmark (not SQL / pipeline-manager):
 
@@ -57,7 +58,7 @@ not copy expression into Zeta.
 
 Feldera 0.342.0 `48312b6`, `--query q1 --query q2 --max-events 100000 --cpu-cores 1`.
 Binary was `cargo bench --no-run` under rustc **1.93.1** (Feldera MSRV).
-Factory pin is rustc **1.96.1** (last 1.96 patch). Compiling Feldera's
+Factory pin is rustc **1.99.0-beta.3**. Compiling Feldera's
 `dbsp` crate on 1.97.0 and 1.98.0 ICE's in `rustc_next_trait_solver`.
 1.98.0 also SIGSEGV'd this Darwin LLVM twice before the ICE became
 reproducible. SplitMix64 oracle + golden vector pass on 1.98.0. Do not
@@ -139,16 +140,15 @@ Feldera 0.342.0 `48312b69`. Separate `CARGO_TARGET_DIR` per version.
 | 1.94.0 | 2026-03-02 | not probed (between two PASSes) |
 | 1.95.0 | 2026-04-14 | not probed (between two PASSes) |
 | **1.96.0** `ac68faa20` | 2026-05-25 | **PASS** |
-| **1.96.1** `31fca3adb` | 2026-06-26 | **PASS** (last 1.96 patch; factory pin) |
+| **1.96.1** `31fca3adb` | 2026-06-26 | **PASS** (last 1.96 patch; last-good stable) |
 | **1.97.0** `2d8144b78` | 2026-07-07 | **FAIL rc=101** (first-bad ICE) |
 | 1.98.0 `88d9e12ae` | 2026-08-18 | FAIL rc=101 (same ICE; also earlier LLVM SIGSEGV) |
-| **1.99.0-beta.3** `cbae9b4ca` | 2026-08-28 | **PASS** (4m 47s, debuginfo=0) |
+| **1.99.0-beta.3** `cbae9b4ca` | 2026-08-28 | **PASS** (factory pin; 4m 47s, debuginfo=0) |
 | 1.100.0-nightly `0dfb098f3` | 2026-08-31 | 4-line ICE repro PASS; `dbsp` not re-run |
 
 1.94/1.95 were skipped: 1.93.1 and 1.96.0 both PASS, so the ICE break is
-in (1.96.1, 1.97.0]. Factory pin is **1.96.1**. No 1.96.2 exists.
-1.99.0-beta.3 compiles `dbsp`; do not move the factory pin to 1.99 until
-stable 1.99 exists and `feldera-native.yml` has run it.
+in (1.96.1, 1.97.0]. No 1.96.2 exists. Factory pin is **1.99.0-beta.3**
+(Aaron 2026-09-02: latest beta for now). 1.96.1 remains last-good stable.
 
 ### Two failures, do not mix
 
@@ -204,11 +204,10 @@ hardware-shaped on this Mac; it is not a tiny rustc repro. GHA
 on 1.98 with ThinLTO + debuginfo would be the discriminator; we
 did not run that.
 
-`feldera-native.yml` `native` compiles factory rust 1.96.1 `dbsp`
-on GHA ubuntu-24.04 / macos-26. Windows is omitted: Feldera
+`feldera-native.yml` `native` compiles factory rust **1.99.0-beta.3**
+`dbsp` on GHA ubuntu-24.04 / macos-26. Windows is omitted: Feldera
 0.342.0 `feldera-storage` uses `std::os::fd` / `libc::pread`
-(measured FAIL on windows-2025). `probe` (PR + dispatch only)
-repeats the compile on 1.97.0 / 1.98.0 / beta.
+(measured FAIL on windows-2025). `probe` is workflow_dispatch only.
 
 GHA run 33561885627 (PR #16304, 2026-09-01),
 `cargo build --release -p dbsp` debuginfo=0, Feldera `48312b69`:
@@ -226,7 +225,6 @@ GHA run 33561885627 (PR #16304, 2026-09-01),
 | macos-26 | 1.99.0-beta.3 | PASS rc=0 |
 
 The ICE is a compiler bug, not this Mac. The 1.98 LLVM SIGSEGV did
-**not** reproduce on GHA macos-26 (debuginfo=0). Factory pin stays
-**1.96.1** (diagnosis confirmed; 1.99 beta is the next compiling
-line, not taken). Same-box Nexmark numbers stay the 1.93.1 binary
+**not** reproduce on GHA macos-26 (debuginfo=0). Factory pin is
+**1.99.0-beta.3**. Same-box Nexmark numbers stay the 1.93.1 binary
 until a factory-pin harness run is timed.
