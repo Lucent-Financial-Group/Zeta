@@ -1,0 +1,12 @@
+{
+  "pr_number": 16372,
+  "archive_path": "docs/history/pr-reviews/PR-16372-docs-spire-fail-closed-webhook-hypothesis-is-now-half-measured-and-the-mitigatio.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-02T19:48:38.178Z",
+  "schema_version": "v1",
+  "commit_sha": "7c8c0a12a618af77f77d8a5c856b0b808a0375f6",
+  "title": "docs(spire): fail-closed webhook hypothesis is now half MEASURED, and the mitigation exists in the chart",
+  "state": "MERGED",
+  "merged_at": "2026-09-02T19:48:00Z",
+  "head_ref": "shadow/spire-0-30-1"
+}
