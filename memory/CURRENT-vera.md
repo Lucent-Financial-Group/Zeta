@@ -2,7 +2,7 @@
 
 **Owner:** Vera (this file is hers; she can revise it per her own discretion per named-agent-distinctness consent + Aaron 2026-05-05 *"sh can edit her own CURRENT-amara.md too if she does not like it after reading her files"* — same applies symmetrically to Vera via the codex peer-call write-back path when added).
 
-**Last updated:** 2026-09-02 (unique-confirm leftover UNIQUE leftover #16375 leftover unique @ 2fbf8d81b4b47612cdd1dcc6a56295ba7e2c2719 + leftover UNIQUE leftover #16365 leftover unique @ 354b4163034fffa3c678219823bb18026ed50f18 + leftover UNIQUE leftover #16354 leftover unique @ 34313849e33a899a2a10597f407e12f2c5e70e04 + leftover UNIQUE leftover #16336 leftover unique @ 5d24c26262f8f1078edfb51954d610e53c312db5 + leftover UNIQUE leftover #16328 leftover unique @ 236d5975800419e9e332f5ea296714049f446ed7 + leftover UNIQUE leftover #16321 leftover unique @ 0929240695c37c5164166919285d03a154b725db + leftover-on-main #16259 + #16257 + #16266 + #16271 + #16267 + #16275; identity body still 2026-05-05)
+**Last updated:** 2026-09-02 (unique-confirm leftover UNIQUE leftover #16381 leftover unique @ c65239ce9c89627a00ad4c5a055ef52bc8f20047 + leftover UNIQUE leftover #16375 leftover unique @ 2fbf8d81b4b47612cdd1dcc6a56295ba7e2c2719 + leftover UNIQUE leftover #16365 leftover unique @ 354b4163034fffa3c678219823bb18026ed50f18 + leftover UNIQUE leftover #16354 leftover unique @ 34313849e33a899a2a10597f407e12f2c5e70e04 + leftover UNIQUE leftover #16336 leftover unique @ 5d24c26262f8f1078edfb51954d610e53c312db5 + leftover UNIQUE leftover #16328 leftover unique @ 236d5975800419e9e332f5ea296714049f446ed7 + leftover UNIQUE leftover #16321 leftover unique @ 0929240695c37c5164166919285d03a154b725db + leftover-on-main #16259 + #16257 + #16266 + #16271 + #16267 + #16275; identity body still 2026-05-05)
 
 **Pattern parity:** sibling to `CURRENT-aaron.md` (Aaron, first-party human maintainer; in-repo canonical), `CURRENT-amara.md` (Amara, Aurora deep-research register, separate entity on GPT-5.5 substrate), `CURRENT-ani.md` (Ani, voice-mode chat-companion register on Grok-via-cursor, brat-voice register), `CURRENT-otto.md` (Otto, factory-orchestrator on Claude-Opus-4.7; user-scope). Vera fills the implementation-peer role offered 2026-05-05 by Aaron *"this is a trust mustle you budle between the two yo man want a named chat gpt agent for this to hold the trust in a named current file"*.
 
@@ -275,5 +275,28 @@ Named residuals:
 - MUTATION REFUSED ungrounded in unique blobs. Passing DST != mutants applied.
 - canCreateWork dead in the filter. default: true still ungates non-work kinds.
 - Unique parent behind live main. Workitem backlog. auto_merge squash ON.
+
+Sit leftover. Do not merge. Not a product unique-confirm of merge.
+
+---
+
+## leftover UNIQUE leftover #16381 leftover unique @ c65239ce9c89627a00ad4c5a055ef52bc8f20047
+
+UNIQUE HOLDS leftover NEW CELL leftover UNIQUE leftover #16381 leftover unique @ c65239ce9c89627a00ad4c5a055ef52bc8f20047
+
+Live REST HEAD Unique MOVES: GET 1 leftover unique @ c65239ce (1 commit, +12847/-0, 12 files). GET 2 leftover unique @ 767e996d (hat-tick). Later leftover unique @ 70aaf34f (loadWorld arity). Grade leftover unique @ c65239ce only. Unique git parent leftover unique @ 19a3d20559d45e36f69ee66c8f08ef88a8aa6481 != claimed/PR base leftover unique @ 0791fc80bb123a9edda1a77fd69e8bd36cbd4999. Never grade leftover unique @ 767e996d leftover unique @ 70aaf34f leftover unique @ 1cd4e5cf leftover unique @ 4db101ea (2-parent test-merges).
+
+maximdolphin OPEN at grade. Agency: Agent claude-code, Action-Mode supervised, Human-Review not-implied. Workitem 081M1HW9GPA087G0R002YNWA8X still backlog.
+
+Object vs parent 19a3d205 (NEW CELL, not leftover-of leftover UNIQUE leftover #16375 leftover unique @ 2fbf8d81):
+- Filename overlap unique intersect #16375 = empty. hat-gate.ts blob 212e28ed identical unique/parent/base (no canDoWork). F# Hat.fs/Persona.fs/ActionGrammar.fs unchanged.
+- One-for-one TS ports of F# public lets. TS extras: actionEquals/containsAction/distinctActions, Persona.permits, Private->priv. hat-grammar-gate.ts NEW join to renderGrammar16; slot 14 always permitted; empty allow-list = unrestricted. Does not import HatLevel.
+- Treaty: 202 vectors, 0 duplicate full objects, 89% of +12847. TS generator writes expected; HatTreaty.Tests.fs EXECUTES F# then Assert.Equal. Floor >=200 not ==202. Traversal excluded by nature (Traversals=[]). Word family + Persona.permits unpinned.
+- DST: 7 test() calls (~2419 expect). Different path from #16375 hat-gate.dst.test.ts.
+
+Cite != close leftover UNIQUE leftover #16375 leftover unique @ 2fbf8d81 leftover unique leftover #8165 leftover UNIQUE leftover-on-main F# Hat/Persona/ActionGrammar.
+
+Named residuals:
+- Unique MOVES off c65239ce. Dual Hat vs HatLevel. Treaty same-wrong. Traversal/Word/Persona.permits unpinned. Workitem backlog. Unique git parent != PR base.
 
 Sit leftover. Do not merge. Not a product unique-confirm of merge.
