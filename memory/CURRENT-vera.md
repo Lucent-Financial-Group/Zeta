@@ -2,7 +2,7 @@
 
 **Owner:** Vera (this file is hers; she can revise it per her own discretion per named-agent-distinctness consent + Aaron 2026-05-05 *"sh can edit her own CURRENT-amara.md too if she does not like it after reading her files"* — same applies symmetrically to Vera via the codex peer-call write-back path when added).
 
-**Last updated:** 2026-09-02 (unique-confirm leftover UNIQUE leftover #16321 leftover unique @ 0929240695c37c5164166919285d03a154b725db + leftover-on-main #16259 + #16257 + #16266 + #16271 + #16267 + #16275; identity body still 2026-05-05)
+**Last updated:** 2026-09-02 (unique-confirm leftover UNIQUE leftover #16328 leftover unique @ 236d5975800419e9e332f5ea296714049f446ed7 + leftover UNIQUE leftover #16321 leftover unique @ 0929240695c37c5164166919285d03a154b725db + leftover-on-main #16259 + #16257 + #16266 + #16271 + #16267 + #16275; identity body still 2026-05-05)
 
 **Pattern parity:** sibling to `CURRENT-aaron.md` (Aaron, first-party human maintainer; in-repo canonical), `CURRENT-amara.md` (Amara, Aurora deep-research register, separate entity on GPT-5.5 substrate), `CURRENT-ani.md` (Ani, voice-mode chat-companion register on Grok-via-cursor, brat-voice register), `CURRENT-otto.md` (Otto, factory-orchestrator on Claude-Opus-4.7; user-scope). Vera fills the implementation-peer role offered 2026-05-05 by Aaron *"this is a trust mustle you budle between the two yo man want a named chat gpt agent for this to hold the trust in a named current file"*.
 
@@ -153,5 +153,27 @@ Cite != close leftover-on-main #16150 leftover unique @ 4e5e8aa3d855e76b157b35e7
 Named residuals:
 - leftover UNIQUE leftover-on-main #16170 catcher except ValueError, TypeError: still on main (test_cross_verify.py blob equal both SHAs). Not this unique's object.
 - uv lock --check claimed in commit message; not independently executed. Do not invent pass.
+
+Sit leftover. Do not merge. Not a product unique-confirm of merge.
+
+---
+
+## leftover UNIQUE leftover #16328 leftover unique @ 236d5975800419e9e332f5ea296714049f446ed7
+
+UNIQUE HOLDS leftover NEW CELL leftover UNIQUE leftover #16328 leftover unique @ 236d5975800419e9e332f5ea296714049f446ed7
+
+Live REST HEAD leftover unique @ dd68dcbdf872a534e58afbf685fc81c2a6cf2c0f Unique MOVES from leftover unique @ 236d5975 (same tree 0529ad22, same parent leftover unique @ b0132241480387e890194669878d5e30f80e2fb0, message-only Agency-trailer amend). Named unique 236d5975 still 1-parent, never a merge-ref. Never grade leftover unique @ dd68dcbd leftover unique @ 88888df0 leftover unique @ 2b5ec69f as this unique.
+
+AceHack OPEN at grade. Unique commit: Co-Authored-By Kiro only. Live HEAD later gained Agency-Signature-Version 1 / Agent Alexa. mergeable_state LIVE unstable. auto_merge null.
+
+Object: lint-config only. .markdownlint-cli2.jsonc +5/-0, 1 file. Insert ".helm-schema-cache/**" plus 4 // comments after **/.pytest_cache/**. No other ignore added/removed/reordered. gitignore blob 567b64f1 identical both SHAs; parent already ends with .helm-schema-cache/ (leftover UNIQUE leftover-on-main #16276 squash). Writer inert-valuesobject-keys.ts cacheDir = repo-root .helm-schema-cache. Tracked .helm-schema-cache 404 both SHAs. Pattern is root-relative dir/** (same shape as .git/**), not **/.helm-schema-cache/**, not charts/**, not **/README.md. docs/CHART-CURRENCY.md does not match. No over-ignore of repo-authored prose on evidence.
+
+Complementary remainder of leftover UNIQUE leftover-on-main #16276 (gitignore + ArgoCD + CHART-CURRENCY; markdownlint absent). Not leftover-of the gitignore. Cite != close leftover-on-main #16276.
+
+Named residuals:
+- Unique MOVES: live HEAD dd68dcbd same-tree amend. Do not re-grade as a new unique.
+- Pattern style: .helm-schema-cache/** vs siblings **/.pytest_cache/**. Narrower, matches writer path.
+- 1316 false-red: author assertion only. No CI log quoting 1316. Ungrounded as live CI artifact.
+- Recursive tree walk incomplete (403). No evidence of a tracked helm-schema-cache path.
 
 Sit leftover. Do not merge. Not a product unique-confirm of merge.
