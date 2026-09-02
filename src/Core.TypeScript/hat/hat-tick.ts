@@ -73,7 +73,9 @@ if (parsed.error !== undefined) {
   process.exit(2);
 }
 
-const world = await loadWorld({ by: "otto", eventDir: "docs/observe-events", repoRoot: process.cwd() });
+// `loadWorld` is synchronous and takes no agent id: the identity lives on the Persona, not on the
+// world channel. (Caught by tsc, not by running it — bun strips types, so the wrong call ran fine.)
+const world = loadWorld({ eventDir: "docs/observe-events", repoRoot: process.cwd() });
 const persona: Persona<never, never, never> = wearAll(parsed.hats, create("otto"));
 const rendered = renderGrammar16(world);
 const gated = gateSlots(rendered, persona);
