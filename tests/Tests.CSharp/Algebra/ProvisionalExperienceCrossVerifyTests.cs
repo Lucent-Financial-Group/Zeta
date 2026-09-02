@@ -130,11 +130,41 @@ public class ProvisionalExperienceCrossVerifyTests
         return Sha256Bytes(Encoding.UTF8.GetBytes(sb.ToString()));
     }
 
+    /// <summary>
+    /// The fixture tree contains two git symlinks (mode 120000). Git checks a symlink out as a REAL
+    /// symlink only when <c>core.symlinks</c> is true — on Windows that needs Developer Mode or an
+    /// elevated clone, and git sets it to <c>false</c> otherwise. With it false the entries arrive as
+    /// ORDINARY FILES whose content is the target path ("../file1.txt", ".."), so
+    /// <see cref="HashDirectory"/> classifies them <c>file</c> instead of <c>symlink</c> and hashes a
+    /// different tree.
+    ///
+    /// That must not read as a byte-lock failure. The golden vector is the four-oracle treaty and it
+    /// is not wrong; the CHECKOUT cannot represent the input the treaty is stated over. Measured on
+    /// Windows 2026-09-02: expected 081478c5…, got ec742172… — a mismatch with no defect behind it.
+    ///
+    /// So this is detected and named rather than asserted through. Not silently: the test SKIPS with
+    /// the reason, which xunit reports as skipped-with-cause, never as a pass.
+    /// </summary>
+    private static bool SymlinksAreRealInThisCheckout(string fixtureDir)
+    {
+        var link = new FileInfo(Path.Join(fixtureDir, "subdir1", "link_to_file1"));
+        return link.Exists && link.Attributes.HasFlag(FileAttributes.ReparsePoint);
+    }
+
     [Fact]
     public void ProvisionalExperienceReplayMatchesGoldenVectors()
     {
         var root = RepoRoot();
         var fixtureDir = Path.Join(root, "tests", "cross-verification", "experience", "fixtures", "tree1");
+
+        if (!SymlinksAreRealInThisCheckout(fixtureDir))
+        {
+            Assert.Skip(
+                "fixture symlinks were checked out as plain files (git core.symlinks=false) — the tree "
+                + "this golden vector is stated over cannot be represented in this checkout. Enable "
+                + "Developer Mode / `git config core.symlinks true` and re-clone to run it.");
+        }
+
         var rootHash = HashDirectory(fixtureDir);
 
         var caps = new[] { "speak", "traverse" };
