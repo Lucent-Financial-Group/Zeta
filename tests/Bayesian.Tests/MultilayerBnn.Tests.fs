@@ -822,3 +822,190 @@ let ``MLBNN-36: evidence is absorbed once, not once per inference path`` () =
         bits m1.[0].Precision = bits m3.[0].Precision && bits m2.[0].Precision = bits m3.[0].Precision,
         sprintf "layer 0 marginal precision drifted across runs: %.17g / %.17g / %.17g"
             m1.[0].Precision m2.[0].Precision m3.[0].Precision)
+
+// ── Online per-edge update boundary ──────────────────────────────────────────
+
+[<Fact>]
+let ``MLBNN-37: one-layer factor-graph update reduces to MinimalBnn update`` () =
+    let net = MultilayerBnn.tryCreateUniform 1 prior 0.5 |> unwrap
+    let direct = MinimalBnn.update 2.5 net.Layers.[0] |> unwrap
+    let receipt = MultilayerBnn.tryUpdateViaFactorGraph 1e-13 100 true 2.5 net |> unwrap
+
+    Assert.Equal(MultilayerBnn.ExactAcyclic, receipt.Exactness)
+    Assert.True(receipt.Converged)
+    Assert.Equal(bits direct.Posterior.Precision, bits receipt.Marginals.[0].Precision)
+    Assert.Equal(bits direct.Posterior.PrecisionMean, bits receipt.Marginals.[0].PrecisionMean)
+    Assert.Equal(1, receipt.Network.Layers.[0].Objective.ObservationCount)
+
+[<Fact>]
+let ``MLBNN-38: online sequential marginals agree with independent joint precision inversion`` () =
+    let priors =
+        [| Gaussian.ofMeanVariance -0.5 1.25
+           Gaussian.ofMeanVariance 0.25 0.8
+           Gaussian.ofMeanVariance 1.0 1.5
+           Gaussian.ofMeanVariance -0.75 0.6 |]
+    let variances = [| 0.4; 0.7; 0.3; 1.1 |]
+    let net = MultilayerBnn.tryCreate priors variances MultilayerBnn.Sequential |> unwrap
+    let receipt = MultilayerBnn.tryInferViaFactorGraph 1e-13 500 true [ 2.0; 2.0; 2.0 ] net |> unwrap
+    let expectedMeans, expectedVariances =
+        exactChainMarginals
+            (priors |> Array.map _.Precision)
+            (priors |> Array.map _.PrecisionMean)
+            variances
+            3
+            2.0
+
+    Assert.Equal(MultilayerBnn.ExactAcyclic, receipt.Exactness)
+    for i in 0 .. priors.Length - 1 do
+        Assert.True(
+            abs (Gaussian.mean receipt.Marginals.[i] - expectedMeans.[i]) < 1e-10,
+            sprintf "layer %d mean %.17g != dense %.17g" i (Gaussian.mean receipt.Marginals.[i]) expectedMeans.[i])
+        Assert.True(
+            abs (Gaussian.variance receipt.Marginals.[i] - expectedVariances.[i]) < 1e-10,
+            sprintf "layer %d variance %.17g != dense %.17g" i (Gaussian.variance receipt.Marginals.[i]) expectedVariances.[i])
+
+[<Fact>]
+let ``MLBNN-39: DAG spelling of a chain gives the same online marginals`` () =
+    let priors = Array.init 4 (fun i -> Gaussian.ofMeanVariance (float i * 0.2 - 0.3) (0.8 + float i * 0.1))
+    let variances = [| 0.45; 0.65; 0.85; 1.05 |]
+    let sequential = MultilayerBnn.tryCreate priors variances MultilayerBnn.Sequential |> unwrap
+    let dag =
+        MultilayerBnn.tryCreate priors variances (MultilayerBnn.Dag [| []; [ 0 ]; [ 1 ]; [ 2 ] |])
+        |> unwrap
+    let observations = [ -1.0; 0.5; 3.0 ]
+    let a = MultilayerBnn.tryInferViaFactorGraph 1e-13 500 true observations sequential |> unwrap
+    let b = MultilayerBnn.tryInferViaFactorGraph 1e-13 500 true observations dag |> unwrap
+
+    Assert.Equal(MultilayerBnn.ExactAcyclic, a.Exactness)
+    Assert.Equal(MultilayerBnn.ExactAcyclic, b.Exactness)
+    for i in 0 .. priors.Length - 1 do
+        Assert.True(Gaussian.distance a.Marginals.[i] b.Marginals.[i] < 1e-12)
+
+[<Fact>]
+let ``MLBNN-40: top-layer evidence changes the smoothed layer-zero marginal`` () =
+    let priors =
+        [| Gaussian.ofMeanVariance 0.0 1.0
+           Gaussian.ofMeanVariance 0.0 2.0
+           Gaussian.ofMeanVariance 8.0 0.1 |]
+    let net = MultilayerBnn.tryCreate priors [| 0.5; 0.25; 0.25 |] MultilayerBnn.Sequential |> unwrap
+    let receipt = MultilayerBnn.tryUpdateViaFactorGraph 1e-13 500 true 0.0 net |> unwrap
+    let localMean = Gaussian.mean receipt.Network.Layers.[0].Posterior
+    let smoothedMean = Gaussian.mean receipt.Marginals.[0]
+
+    Assert.True(
+        abs (smoothedMean - localMean) > 1e-3,
+        sprintf "backward evidence was vacuous: local %.17g smoothed %.17g" localMean smoothedMean)
+
+[<Fact>]
+let ``MLBNN-41: online update absorbs each observation exactly once and queries are replay-stable`` () =
+    let priors =
+        [| Gaussian.ofMeanVariance -1.0 2.0
+           Gaussian.ofMeanVariance 0.5 1.5
+           Gaussian.ofMeanVariance 1.5 0.75 |]
+    let variances = [| 0.5; 0.8; 1.1 |]
+    let net = MultilayerBnn.tryCreate priors variances MultilayerBnn.Sequential |> unwrap
+    let receipt = MultilayerBnn.tryInferViaFactorGraph 1e-13 500 true [ 1.0; 2.0; 3.0; 4.0 ] net |> unwrap
+    let expectedPrecision = priors.[0].Precision + 4.0 / variances.[0]
+
+    Assert.True(abs (receipt.Network.Layers.[0].Posterior.Precision - expectedPrecision) < 1e-12)
+    Assert.Equal(4, receipt.Network.Layers.[0].Objective.ObservationCount)
+    for i in 1 .. priors.Length - 1 do
+        Assert.Equal(bits priors.[i].Precision, bits receipt.Network.Layers.[i].Posterior.Precision)
+        Assert.Equal(bits priors.[i].PrecisionMean, bits receipt.Network.Layers.[i].Posterior.PrecisionMean)
+        Assert.Equal(0, receipt.Network.Layers.[i].Objective.ObservationCount)
+
+    let replay = MultilayerBnn.tryInferViaFactorGraph 1e-13 500 true [] receipt.Network |> unwrap
+    Assert.Equal(bits expectedPrecision, bits replay.Network.Layers.[0].Posterior.Precision)
+    for i in 0 .. priors.Length - 1 do
+        Assert.Equal(bits receipt.Marginals.[i].Precision, bits replay.Marginals.[i].Precision)
+        Assert.Equal(bits receipt.Marginals.[i].PrecisionMean, bits replay.Marginals.[i].PrecisionMean)
+
+[<Fact>]
+let ``MLBNN-42: converged loopy online update has exact means but not exact variances`` () =
+    let depth = 4
+    let priors = Array.init depth (fun _ -> Gaussian.ofMeanVariance 0.0 1.0)
+    let variances = Array.create depth 1.0
+    let topology = MultilayerBnn.SkipConnections [ (0, 2); (0, 3); (1, 3) ]
+    let net = MultilayerBnn.tryCreate priors variances topology |> unwrap
+    let receipt =
+        MultilayerBnn.tryInferViaFactorGraph 1e-13 1000 true [ 5.0; 5.0; 5.0; 5.0 ] net
+        |> unwrap
+    let priorTau = Array.init depth (fun i -> receipt.Network.Layers.[i].Posterior.Precision)
+    let priorNu = Array.init depth (fun i -> receipt.Network.Layers.[i].Posterior.PrecisionMean)
+    let exactMeans, exactVariances = exactDagMarginals priorTau priorNu variances (MultilayerBnn.parentsOf topology)
+
+    Assert.Equal(MultilayerBnn.ConvergedLoopyMeansOnly, receipt.Exactness)
+    Assert.True(receipt.Converged)
+    let meanError =
+        [ 0 .. depth - 1 ]
+        |> List.sumBy (fun i -> abs (Gaussian.mean receipt.Marginals.[i] - exactMeans.[i]))
+    let varianceError =
+        [ 0 .. depth - 1 ]
+        |> List.sumBy (fun i -> abs (Gaussian.variance receipt.Marginals.[i] - exactVariances.[i]))
+    Assert.True(meanError < 1e-9, sprintf "loopy mean L1 error %.17g" meanError)
+    Assert.True(varianceError > 1e-6, sprintf "loopy variances unexpectedly exact: L1 %.17g" varianceError)
+
+[<Fact>]
+let ``MLBNN-43: strict non-convergence refuses while permissive mode labels the iterate`` () =
+    let topology = MultilayerBnn.SkipConnections [ (0, 2); (0, 3); (1, 3) ]
+    let net =
+        MultilayerBnn.tryCreate
+            (Array.create 4 (Gaussian.ofMeanVariance 0.0 1.0))
+            (Array.create 4 1.0)
+            topology
+        |> unwrap
+    let strictResult = MultilayerBnn.tryUpdateViaFactorGraph 0.0 1 true 5.0 net
+    let permissive = MultilayerBnn.tryUpdateViaFactorGraph 0.0 1 false 5.0 net |> unwrap
+
+    match strictResult with
+    | Ok _ -> failwith "strict mode returned an unsettled iterate"
+    | Error message -> Assert.Contains("did not converge in 1/1 rounds", message)
+    Assert.Equal(0, net.Layers.[0].Objective.ObservationCount)
+    Assert.Equal(bits 1.0, bits net.Layers.[0].Posterior.Precision)
+    Assert.Equal(bits 0.0, bits net.Layers.[0].Posterior.PrecisionMean)
+    Assert.False(permissive.Converged)
+    Assert.Equal(MultilayerBnn.UnsettledLoopy, permissive.Exactness)
+    Assert.Equal(1, permissive.Network.Layers.[0].Objective.ObservationCount)
+
+[<Fact>]
+let ``MLBNN-44: online factor-graph update refuses malformed topology and budgets`` () =
+    let expectErrorContains (fragment: string) =
+        function
+        | Ok _ -> failwith $"expected teaching error containing '{fragment}'"
+        | Error(message: string) -> Assert.Contains(fragment, message)
+    let update topology depth =
+        MultilayerBnn.tryCreate (Array.create depth prior) (Array.create depth variance) topology
+        |> unwrap
+        |> MultilayerBnn.tryUpdateViaFactorGraph 1e-13 100 true 1.0
+
+    update (MultilayerBnn.Dag [| [] |]) 2
+    |> expectErrorContains "topology has 1 parent rows but network has 2 layers"
+    update (MultilayerBnn.Dag [| []; [ -1 ] |]) 2
+    |> expectErrorContains "layer 1 parent -1"
+    update (MultilayerBnn.Dag [| []; [ 1 ] |]) 2
+    |> expectErrorContains "layer 1 parent 1"
+    update (MultilayerBnn.Dag [| []; [ 2 ]; [] |]) 3
+    |> expectErrorContains "layer 1 parent 2"
+    update (MultilayerBnn.Dag [| []; [ 5 ] |]) 2
+    |> expectErrorContains "layer 1 parent 5"
+    update (MultilayerBnn.Dag [| []; [ 0; 0 ] |]) 2
+    |> expectErrorContains "layers 1 name a parent more than once"
+    update (MultilayerBnn.SkipConnections [ (0, 0) ]) 2
+    |> expectErrorContains "skip connection child 0"
+
+    let valid = MultilayerBnn.tryCreateUniform 2 prior variance |> unwrap
+    MultilayerBnn.tryUpdateViaFactorGraph nan 100 true 1.0 valid
+    |> expectErrorContains "tol must be finite and non-negative"
+    MultilayerBnn.tryUpdateViaFactorGraph -1e-3 100 true 1.0 valid
+    |> expectErrorContains "tol must be finite and non-negative"
+    MultilayerBnn.tryUpdateViaFactorGraph 1e-13 0 true 1.0 valid
+    |> expectErrorContains "maxRounds must be positive"
+    MultilayerBnn.tryUpdateViaFactorGraph 1e-13 100 true nan valid
+    |> expectErrorContains "factor-graph online update: observation must be finite"
+
+    { valid with ObservationVariances = [| variance |] }
+    |> MultilayerBnn.tryUpdateViaFactorGraph 1e-13 100 true 1.0
+    |> expectErrorContains "network array lengths must match 2 layers"
+    { valid with ObservationVariances = [| variance; 0.0 |] }
+    |> MultilayerBnn.tryUpdateViaFactorGraph 1e-13 100 true 1.0
+    |> expectErrorContains "ObservationVariances[1] must be finite and > 0"
