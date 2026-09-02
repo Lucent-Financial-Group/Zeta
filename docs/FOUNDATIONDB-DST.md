@@ -35,8 +35,8 @@ to hit production without a traditional integration suite.
    go through a simulator interface.** ZetaFS PR1 routed `.zetafs`
    through `IFileSystem`; `ISimulatedFs` is still **flush-fail 5%
    only**. Crash-mid-write intercept landed on `InMemoryFileSystem`
-   (`ArmCrashMidWrite`); `ISimulatedFs` is still **flush-fail 5%
-   only**. Reorder / corrupt-last-write / freeze-log replay remain
+   (`ArmCrashMidWrite`). Plain freeze-log replay restores intact
+   boats. Sealed-log replay / reorder / corrupt-last-write remain
    first-product **PR12** and ZetaDB **D12**: the same door covers the
    **database commit path and the filesystem freeze path**. Until
    that corpus is green the honest word is `toy`, not crash-safe.

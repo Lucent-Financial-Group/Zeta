@@ -12,8 +12,9 @@ open Zeta.Core.FSharp.Blake3
 /// freeze-intent then CAS puts then freeze-commit. Durable fsyncs every
 /// leaf+trunk **before** commit and withholds the ack. Readable iff commit
 /// exists and every leaf is present. Crash-mid-write *intercept* is
-/// `InMemoryFileSystem.ArmCrashMidWrite`. Freeze-log replay / recovery stays
-/// `toy` until the rest of the PR12 corpus.
+/// `InMemoryFileSystem.ArmCrashMidWrite`. Plain-log replay restores intact
+/// intent+commit pairs on create (torn tail / intent-without-commit dropped).
+/// Sealed-log replay, reorder, and corrupt-last-write stay `toy`.
 ///
 /// DoP=1 on this log. No Task.Run except the ferry launch (injected context
 /// on the DST path; `manual` + `PumpToIdleAsync` for tests).
@@ -255,6 +256,175 @@ module ZetaFsFreeze =
     let private defaultConfig =
         { FerryThrottlerConfig.deterministic with MaxBatchSize = 64 }
 
+    let private tryHash (v: DynamicValue) : ContentHash256 option =
+        match v with
+        | DynamicValue.Bytes b when not b.IsDefault && b.Length = 32 ->
+            let raw = Array.zeroCreate 32
+            b.AsSpan().CopyTo(Span<byte> raw)
+            Some { Raw = raw }
+        | _ -> None
+
+    let private tryInt (v: DynamicValue) : int64 option =
+        match v with
+        | DynamicValue.Int x -> Some x
+        | _ -> None
+
+    let private tryString (v: DynamicValue) : string option =
+        match v with
+        | DynamicValue.String s -> Some s
+        | _ -> None
+
+    let private tryFind (pairs: (string * DynamicValue) list) (key: string) : DynamicValue option =
+        pairs
+        |> List.tryFind (fun (k, _) -> k.Equals(key, StringComparison.Ordinal))
+        |> Option.map snd
+
+    let private classFromName (s: string) : DurabilityClass option =
+        match s with
+        | "buffered" -> Some DurabilityClass.Buffered
+        | "journaled" -> Some DurabilityClass.Journaled
+        | "durable" -> Some DurabilityClass.Durable
+        | _ -> None
+
+    type private PlainRec =
+        | Intent of entity: ZetaFsNamespace.EntityId * content: ContentHash256 * leaves: ContentHash256[] * cls: DurabilityClass * lsn: int64
+        | Commit of intentLsn: int64 * content: ContentHash256 * lsn: int64
+
+    let private decodePlain (payload: byte[]) : PlainRec option =
+        match DynamicValue.fromCanonicalCbor payload with
+        | Error _ -> None
+        | Ok(DynamicValue.Object pairs) ->
+            match tryFind pairs "t" |> Option.bind tryString with
+            | Some "freeze-intent/1" ->
+                let entity =
+                    tryFind pairs "entity"
+                    |> Option.bind tryString
+                    |> Option.bind ZetaFsNamespace.EntityId.tryParse
+                let content = tryFind pairs "content" |> Option.bind tryHash
+                let cls = tryFind pairs "class" |> Option.bind tryString |> Option.bind classFromName
+                let lsn = tryFind pairs "lsn" |> Option.bind tryInt
+                let leaves =
+                    match tryFind pairs "leaves" with
+                    | Some(DynamicValue.Array xs) ->
+                        let acc = ResizeArray<ContentHash256>()
+                        let mutable ok = true
+
+                        for x in xs do
+                            match tryHash x with
+                            | Some h when ok -> acc.Add h
+                            | _ -> ok <- false
+
+                        if ok then Some(acc.ToArray()) else None
+                    | _ -> None
+
+                match entity, content, leaves, cls, lsn with
+                | Some e, Some c, Some ls, Some k, Some n -> Some(Intent(e, c, ls, k, n))
+                | _ -> None
+            | Some "freeze-commit/1" ->
+                match
+                    tryFind pairs "intentLsn" |> Option.bind tryInt,
+                    tryFind pairs "content" |> Option.bind tryHash,
+                    tryFind pairs "lsn" |> Option.bind tryInt
+                with
+                | Some i, Some c, Some n -> Some(Commit(i, c, n))
+                | _ -> None
+            | _ -> None
+        | Ok _ -> None
+
+    /// Restore Commits/Leaves from intact plain frames. Trailing torn frame or
+    /// intent-without-commit is truncated. Sealed logs are not this slice.
+    let private replayPlainLog (fs: IFileSystem) (volume: Volume) =
+        let logPath = volume.Log.LogPath
+
+        if fs.Exists logPath then
+            use stream = fs.OpenFile(logPath, FileMode.Open, FileAccess.ReadWrite, FileShare.Read)
+            use br = new BinaryReader(stream)
+            let mutable scanning = true
+            let mutable pendingStart = -1L
+            let mutable pending: PlainRec option = None
+            let mutable maxLsn = 0L
+
+            while scanning do
+                let recordStart = stream.Position
+
+                if stream.Length - stream.Position = 0L then
+                    scanning <- false
+                elif stream.Length - stream.Position < 8L then
+                    stream.SetLength recordStart
+                    scanning <- false
+                else
+                    let len = br.ReadInt32()
+                    let expectedCrc = br.ReadUInt32()
+
+                    if len < 0 then
+                        invalidOp (sprintf "ZetaFsFreeze: negative frame length %d at byte %d" len recordStart)
+                    elif stream.Length - stream.Position < int64 len then
+                        stream.SetLength recordStart
+                        scanning <- false
+                    else
+                        let payload = br.ReadBytes len
+                        let actualCrc = HardwareCrc.Crc32C(ReadOnlySpan payload)
+
+                        if actualCrc <> expectedCrc then
+                            if stream.Position = stream.Length then
+                                stream.SetLength recordStart
+                                scanning <- false
+                            else
+                                invalidOp (sprintf "ZetaFsFreeze: CRC mismatch at byte %d" recordStart)
+                        else
+                            match decodePlain payload with
+                            | None ->
+                                if stream.Position = stream.Length then
+                                    stream.SetLength recordStart
+                                    scanning <- false
+                                else
+                                    invalidOp (sprintf "ZetaFsFreeze: malformed frame at byte %d" recordStart)
+                            | Some(Intent _ as intentRec) ->
+                                match pending with
+                                | Some _ ->
+                                    invalidOp (sprintf "ZetaFsFreeze: intent without commit at byte %d" pendingStart)
+                                | None ->
+                                    pending <- Some intentRec
+                                    pendingStart <- recordStart
+                            | Some(Commit(intentLsn, content, commitLsn)) ->
+                                match pending with
+                                | Some(Intent(entity, intentContent, leaves, cls, intentLsn2)) when
+                                    intentLsn = intentLsn2 && content.Equals intentContent
+                                    ->
+                                    pending <- None
+                                    pendingStart <- -1L
+
+                                    if intentLsn > maxLsn then
+                                        maxLsn <- intentLsn
+
+                                    if commitLsn > maxLsn then
+                                        maxLsn <- commitLsn
+
+                                    // Span/Generation are not in the v1 frame.
+                                    volume.Commits.[content] <-
+                                        { Entity = entity
+                                          Content = content
+                                          Span = 0UL
+                                          Class = cls
+                                          Generation = 0UL
+                                          IntentLsn = intentLsn
+                                          CommitLsn = commitLsn }
+
+                                    volume.Leaves.[content] <- leaves
+                                | _ ->
+                                    if stream.Position = stream.Length then
+                                        stream.SetLength recordStart
+                                        scanning <- false
+                                    else
+                                        invalidOp (sprintf "ZetaFsFreeze: commit without matching intent at byte %d" recordStart)
+
+            match pending with
+            | Some _ when pendingStart >= 0L -> stream.SetLength pendingStart
+            | _ -> ()
+
+            if maxLsn >= volume.NextLsn then
+                volume.NextLsn <- maxLsn + 1L
+
     let createFull
         (storeDir: string)
         (mutbuf: ZetaFsMutbuf.Catalog)
@@ -266,7 +436,16 @@ module ZetaFsFreeze =
         let fs = FileSystem.Current
         fs.CreateDirectory (Path.Combine(storeDir, "log"))
         fs.CreateDirectory (Path.Combine(storeDir, "objects"))
-        new Volume(storeDir, mutbuf, observer, session, config, manual)
+        let volume = new Volume(storeDir, mutbuf, observer, session, config, manual)
+
+        try
+            if session.IsNone then
+                lock volume.Gate (fun () -> replayPlainLog fs volume)
+
+            volume
+        with ex ->
+            (volume :> IDisposable).Dispose()
+            raise ex
 
     let createWith
         (storeDir: string)
