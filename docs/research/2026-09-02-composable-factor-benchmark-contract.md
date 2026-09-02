@@ -1,12 +1,12 @@
 # Composable Factor Benchmark Contract
 
-**Status:** Frozen before data acquisition and implementation; CFB-A/B implemented and independently cross-verified
+**Status:** Frozen before data acquisition and implementation; CFB-A/B/C/D implemented and independently cross-verified
 
 **Author:** Manus AI
 
 ## Key Recommendation
 
-Run two distinct experiments and do not merge their conclusions. **CFB-A** tests whether Zeta’s chain and DAG execution paths preserve the same Gaussian product and whether branch deletion is detectable. **CFB-B** tests whether static uncertainty-weighted fusion is useful on the public ETTh1 forecasting dataset. CFB-A is a finite conformance census, not a learning benchmark. CFB-B is a public-data benchmark, but it is not a reproduction of the 2026 Dynamic/Noisy Precision-Gated Experts models.
+Keep four distinct experiments and do not merge their conclusions. **CFB-A** tests whether Zeta’s chain and DAG execution paths preserve the same Gaussian product and whether branch deletion is detectable. **CFB-B** tests static uncertainty-weighted fusion on public ETTh1. **CFB-C** tests validation-selected residual-covariance shrinkage. **CFB-D** tests a frozen one-common-noise factor as a deterministic query. CFB-A is a finite conformance census, not a learning benchmark. CFB-B/C/D are public-data forecast-combination studies, not reproductions of the 2026 Dynamic/Noisy Precision-Gated Experts models.
 
 ## 1. CFB-A — Exact Topology-Utility Census
 
@@ -106,6 +106,8 @@ If CFB-B demonstrates useful calibrated static fusion, the next direct-competito
 
 The first follow-on was executed under the separately frozen `2026-09-02-correlated-error-query-contract.md`. It did not satisfy its usefulness or calibration-repair rule and selected complete off-diagonal shrinkage, making the final lane equivalent to a diagonal-error model. This is retained as a negative result rather than tuned after seeing held-out data.
 
+The second follow-on was executed under the separately frozen `2026-09-02-common-noise-query-contract.md`. Its rank-one-plus-diagonal training-residual model passes a mandatory non-vacuity gate and satisfies the frozen calibration-repair-only rule, but it does not beat the validation-selected ridge expert. It remains a query over canonical evidence state, not a state merge or learned DAG.
+
 ## 5. Measured Result
 
 | Experiment | Independently reproduced result | Allowed conclusion |
@@ -117,12 +119,14 @@ The first follow-on was executed under the separately frozen `2026-09-02-correla
 | Moving-block MSE difference, static minus equal | `−4.2489`, 95% interval `[−7.0740, −1.2172]` | The MSE improvement over equal weighting is statistically retained under the declared block procedure |
 | Maximum absolute validation residual correlation | `0.8738` | The independent-error premise is materially violated in this finite expert set |
 | Duplicate-expert fault | Coverage falls from `0.7501` to `0.6875`; NLL rises by `0.4261` | Treating a duplicate as independent evidence creates additional overconfidence |
+| CFB-C, validation-selected covariance shrinkage | MSE `10.8695`, NLL `2.6154`, coverage `0.9608`; selected `α=1`; diagonal mutation identical | Calibration improves but the claimed correlation mechanism is vacuous and usefulness is not supported |
+| CFB-D, one-common-noise query | MSE `9.7691`, NLL `2.5631`, coverage `0.9222`; factor mutation changes a weight by `0.1083` | The mechanism is non-vacuous and meets calibration-repair-only, but predictive usefulness is not supported |
 
-The TypeScript and separately authored NumPy/Python implementations agree on source digest, row/window/split counts, ridge fit, validation variances, residual correlation, five original metric lanes, duplicate/permutation controls, and two moving-block intervals within `1e-9`.
+The TypeScript and separately authored NumPy/Python implementations agree on source digest, row/window/split counts, ridge fit, validation variances, residual correlation, ten metric lanes, CFB-C/D artifacts and faults, and ten moving-block intervals within `1e-9`. CFB-D’s independent oracle uses direct symmetric eigendecomposition rather than the TypeScript fixed power iteration.
 
 ## 6. Explicit Non-Claims
 
-This benchmark does not establish that DAGs universally outperform chains, that Zeta learns topology, that RFFH learns object models, that cortical heterarchies are implemented, that English is geospatial, or that any competitor result has been reproduced before its exact artifacts run. CFB-A measures finite Gaussian composition. CFB-B measures one public time-series target with four declared experts.
+This benchmark does not establish that DAGs universally outperform chains, that Zeta learns topology, that RFFH learns object models, that cortical heterarchies are implemented, that English is geospatial, or that any competitor result has been reproduced before its exact artifacts run. CFB-A measures finite Gaussian composition. CFB-B/C/D measure one public time-series target with four declared experts.
 
 ## References
 

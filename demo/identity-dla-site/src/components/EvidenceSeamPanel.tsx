@@ -104,13 +104,23 @@ const SPECTRUM = [
   {
     lane: "composable factor benchmark",
     carrier: "64 Gaussian leaves · ETTh1 n=3,446",
-    operators: "CFB-A F#/TS · CFB-B/C TS/Python",
+    operators: "CFB-A F#/TS · CFB-B/C/D TS/Python",
     defect: "—",
     readout: "NOT SUPPORTED",
     verdict: "depth 63 → 6 · predictive usefulness rule failed",
-    detail: "precision coverage 0.7501 · max |r| 0.8738 · correlated-error query selected α=1 and was vacuous",
+    detail: "precision coverage 0.7501 · CFB-C α=1 vacuous · CFB-D calibration repair only",
     tone: "var(--fail-red)",
     emphasis: true,
+  },
+  {
+    lane: "one-common-noise query",
+    carrier: "rank-one + diagonal residual covariance · ETTh1 n=3,446",
+    operators: "CFB-D TypeScript power iteration · NumPy direct eigensolver",
+    defect: "—",
+    readout: "REPAIR ONLY",
+    verdict: "non-vacuous factor · predictive usefulness not supported",
+    detail: "coverage 0.9222 · MSE 9.7691 · diagonal mutation weight Δ 0.1083 · ridge remains better",
+    tone: "var(--amber)",
   },
 ] as const;
 

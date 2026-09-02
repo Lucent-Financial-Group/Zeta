@@ -322,6 +322,21 @@
         <div class="verdict" style="color:var(--red)"><strong>Verdict: not supported.</strong> Calibration improves, but the selected artifact is not operationally correlation-aware and loses the frozen usefulness comparison.</div>
       </article>
 
+      <article class="card">
+        <span class="card-tag" style="color:var(--amber);background:rgba(245,158,11,0.12)">CFB-D · One-common-noise query</span>
+        <h2 class="card-title" style="color:var(--amber)">A non-vacuous factor repairs calibration, not prediction</h2>
+        <p class="card-copy">
+          A training-fitted rank-one-plus-diagonal residual model changes the weight artifact when its common factor is removed.
+          It raises held-out coverage to 92.22% while limiting MSE inflation against static precision fusion to 0.781%.
+        </p>
+        <div class="metric-grid">
+          <div class="metric"><div class="metric-label">MSE</div><div class="metric-value">9.7691</div></div>
+          <div class="metric"><div class="metric-label">Coverage</div><div class="metric-value">0.9222</div></div>
+          <div class="metric"><div class="metric-label">Weight &Delta;</div><div class="metric-value">0.1083</div></div>
+        </div>
+        <div class="verdict" style="color:var(--amber)"><strong>Verdict: calibration repair only.</strong> TypeScript and an independent NumPy eigensolver agree, but validation-selected ridge retains lower MSE and NLL; predictive usefulness is not supported.</div>
+      </article>
+
       <article class="card card-wide">
         <span class="card-tag" style="color:var(--green);background:rgba(52,211,153,0.1)">CRDT boundary · TS/Python</span>
         <h2 class="card-title" style="color:var(--green)">Replicate evidence; query beliefs</h2>
@@ -393,7 +408,7 @@
         <table class="boundary-table">
           <thead><tr><th>Claim family</th><th>Current status</th></tr></thead>
           <tbody>
-            <tr><td>DAG learning or causal discovery</td><td>Not implemented or measured by CFB-A/B/C. All benchmark topologies are declared in advance.</td></tr>
+            <tr><td>DAG learning or causal discovery</td><td>Not implemented or measured by CFB-A/B/C/D. All benchmark topologies are declared in advance.</td></tr>
             <tr><td>Predictive superiority</td><td>Not supported by the frozen ETTh1 usefulness rule. The negative result is retained.</td></tr>
             <tr><td>Thousand Brains equivalence</td><td>Learning, cortical-column fidelity, sensorimotor voting, and Monty-equivalent behavior remain unmeasured.</td></tr>
             <tr><td>Language or geospatial semantics</td><td>No evidence here establishes that English meaning runs on the same geometry.</td></tr>

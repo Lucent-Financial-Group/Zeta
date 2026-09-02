@@ -2,6 +2,7 @@ import { createHash } from "node:crypto";
 import { readFileSync } from "node:fs";
 import { basename, resolve } from "node:path";
 import { assertNoSplitLeakage, buildEtth1Examples, parseAndValidateEtth1, type Etth1Manifest } from "./etth1-dataset";
+import { runCommonNoiseQueryBenchmark } from "./etth1-common-noise-query";
 import { runCorrelatedErrorQueryBenchmark } from "./etth1-correlated-error-query";
 import { runStaticEnsembleBenchmark } from "./etth1-static-ensemble";
 import { measureGaussianTopology } from "./gaussian-topology";
@@ -35,6 +36,11 @@ const correlatedError = runCorrelatedErrorQueryBenchmark(train, validation, test
   bootstrapReplicates: manifest.benchmark.bootstrap.replicates,
   bootstrapBlockLength: manifest.benchmark.bootstrap.blockLength,
 });
+const commonNoise = runCommonNoiseQueryBenchmark(train, validation, test, {
+  bootstrapSeed: manifest.benchmark.bootstrap.seed,
+  bootstrapReplicates: manifest.benchmark.bootstrap.replicates,
+  bootstrapBlockLength: manifest.benchmark.bootstrap.blockLength,
+});
 const executionMillis = performance.now() - started;
 
 console.log(JSON.stringify({
@@ -54,6 +60,7 @@ console.log(JSON.stringify({
   topology,
   ensemble,
   correlatedError,
+  commonNoise,
   performance: {
     executionMillis,
     status: "single-run local measurement; not a portable speed claim",
