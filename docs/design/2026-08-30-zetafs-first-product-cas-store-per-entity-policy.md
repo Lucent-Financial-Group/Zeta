@@ -4,14 +4,14 @@
 **Date:** 2026-08-30
 **Revised:** 2026-09-02 (D1–D12: ReFS-shaped pointer-not-copy, crash DST for FS and DB, cache co-design, CoW amplification bound)
 **Work item:** `081M1C59ZG4087G0R000VM8DZN`
-**Status:** Design spec. PR1-PR11 polyfill is in-tree. Crash recovery remains `toy` until PR12. Stay in this monorepo until a signed, tested v0.9ish FS. Do not mint a GitHub product repo as a prerequisite. Later split: `docs/research/2026-09-01-zetafs-stays-in-monorepo-until-v09-then-product-per-language-ir-oracles.md`. ZetaDB-derived D1–D12: freeze still does not use the ferry (D4); `ISimulatedFs` is still flush-only (D12).
+**Status:** Design spec. PR1-PR11 polyfill is in-tree. Freeze log uses the ferry (D4/ZD2). Crash-mid-write intercept is `InMemoryFileSystem.ArmCrashMidWrite` (D12 door). Crash *recovery* remains `toy` until the rest of the PR12 corpus (reorder, corrupt-last-write, freeze-log replay, reclaim sweep). `ISimulatedFs` is still flush-only. Stay in this monorepo until a signed, tested v0.9ish FS. Do not mint a GitHub product repo as a prerequisite. Later split: `docs/research/2026-09-01-zetafs-stays-in-monorepo-until-v09-then-product-per-language-ir-oracles.md`.
 **Register:** product design. Existing code cited below is a polyfill / algebra substrate, not this product.
 **Extends (do not contradict):** [`docs/design/2026-08-27-zetafs-names-are-tags-multi-parented-files-and-symlink-native-presentation.md`](../../docs/design/2026-08-27-zetafs-names-are-tags-multi-parented-files-and-symlink-native-presentation.md)
 **Settles:** retention and GC, which that document left unset in **section 6.3 / section 8.3** (cycle guard: section 6.2, specified here). Names-are-tags **section 7** is platform presentation (FUSE / FSKit / ProjFS, case-fold refuse) -- not the retention hole. **Also settles** the former Open Questions as **composable knobs** (C1-C10). C8 is the one exclusive ZetaId slot (`StoreEntity = 13`). C9 is **not** "pick TPM": unwrap oracles compose (passphrase, Keychain, Secure Enclave when a seal tier exists, TPM 2.0 on Linux if present, PKCS#11 HSMs of several manufacturers, live USB probe). R8's tpmSeal-vs-usbISerial XOR is the installer defect; this FS must not repeat it.
 **Does not settle:** the public name (still gated: naming-expert + Ilyana + Aaron). Working label remains **ZetaFS**. Never abbreviate to `ZFS` (OpenZFS occupies it).
 **Why this product exists:** ZetaFS is a **custom filesystem for ZetaDB**, not a general-purpose Finder disk. ROADMAP item 1 (no git CLI; dual Z-set folds over our own store) is the same product. POSIX is a mount so tools can see the DB; the DB does not live *on* POSIX.
 
-> **Honesty peel (same register as the names-are-tags doc).** Algebra + host-directory polyfill through PR11 is in-tree: FORMAT, FileSync Result + Darwin `F_FULLFSYNC`, TagBinding namespace, mutbuf, policy, Jumprope, freeze (`Buffered`/`Journaled`/`Durable`), placement (polyfill `single` only), explicit-nonce GCM, reclaim ferry, CLI prefixes. On-disk `ns` is still `git-trees`; `ns=bindings` refuses. POSIX mount, native volume, and crash recovery that is more than `toy` -- **designed here, not shipped.** Do not mint a product GitHub until a signed v0.9ish FS. `docs/ZETA-CORE-TECHNOLOGY-FOR-MAX.md` Phase 2 saying "the DAG-FS layer is already shipped" overclaims: what shipped is the algebra + a git-shaped polyfill, not a volume.
+> **Honesty peel (same register as the names-are-tags doc).** Algebra + host-directory polyfill through PR11 is in-tree: FORMAT, FileSync Result + Darwin `F_FULLFSYNC`, TagBinding namespace, mutbuf, policy, Jumprope, freeze (`Buffered`/`Journaled`/`Durable`), placement (polyfill `single` only), explicit-nonce GCM, reclaim ferry, CLI prefixes. On-disk `ns` is still `git-trees`; `ns=bindings` refuses. POSIX mount, native volume, and crash recovery that is more than `toy` (intercept landed; corpus not green) -- **designed here, not shipped.** Do not mint a product GitHub until a signed v0.9ish FS. `docs/ZETA-CORE-TECHNOLOGY-FOR-MAX.md` Phase 2 saying "the DAG-FS layer is already shipped" overclaims: what shipped is the algebra + a git-shaped polyfill, not a volume.
 
 ---
 
@@ -36,7 +36,7 @@ Additive. Do not reopen K1–K18. D9–D12: Aaron 2026-09-02 (ReFS feel, crash D
 | **D1** | Fork is first-class (`editLocal` default; named permanent fork is legal, not a split-brain disaster). | `DagFs.editLocal` in-memory; volume fork is not a snap/ref product yet. |
 | **D2** | GC lifetimes Singleton / Scoped / Transient ≈ keep-all / rolling / none; nested scope = open file. Amortized reclaim ferry (K7). | `ZetaFsReclaim` maps the three. |
 | **D3** | `Regen` is two-phase: keep original until the generator is metered; then original is reclaim-eligible. | Policy case exists; `lifetimeOf Regen` is **Singleton** (conservative). Phase-2 must not silently drop bytes. |
-| **D4** | Volume small-write storms go through `FerryThrottler` (same auto-batch as `GroupCommitDiskDeltaLog`). | **ZD2 landed:** Journaled/Durable log appends ride `FreezeLog` (DoP=1, MaxBatchSize=64). `createManual` + `pumpLog` packs N freezes into one boat. Buffered still skips the log. Crash-mid-boat stays `toy` until PR12. |
+| **D4** | Volume small-write storms go through `FerryThrottler` (same auto-batch as `GroupCommitDiskDeltaLog`). | **ZD2 landed:** Journaled/Durable log appends ride `FreezeLog` (DoP=1, MaxBatchSize=64). `createManual` + `pumpLog` packs N freezes into one boat. Buffered still skips the log. Crash-mid-write intercept landed; freeze-log replay stays `toy`. |
 | **D5** | Content-addressed objects + erasure-coded placement (K1/K2). | Polyfill `single` only. |
 | **D6** | Per-stream placement: a node need not hold every table/stream. | Partitioned tips designed; not a volume feature. |
 | **D7** | Durability class notified to ZetaDB (K6); observer does not throw. | Freeze observer exists. |
@@ -44,7 +44,7 @@ Additive. Do not reopen K1–K18. D9–D12: Aaron 2026-09-02 (ReFS feel, crash D
 | **D9** | **Pointer-not-copy (ReFS-shaped).** Copies and forks remap metadata (ContentId / Jumprope leaf ids / Binding). Physical bits are written only for new or mutated chunks (allocate-on-write). Metadata is never updated in place (shadow paging). Integrity checksums on metadata always; data checksums are the ContentId. | Jumprope already shares prefix chunks; `DagFs.editLocal` converges on identical content. Volume freeze still writes whole objects. Not ReFS, not a port. |
 | **D10** | **One cache authority.** DB and FS must share a buffering contract so we do not double-buffer (OS page cache + mutbuf + DB buffer pool). Preferred for DST: the library-FS path, DB owns the buffer, POSIX mount is a view. `Buffered \| Journaled \| Durable` is the named contract; `Durability.OsBuffered` must not be a second vocabulary. | Two vocabularies today (`Durability.fs` vs freeze classes). ReFS lesson: allocate-on-write + a lazy metadata cache can explode RAM (KB 4016173) — we will not copy that. |
 | **D11** | **CoW amplification is bounded by policy.** `keep-all` may grow; `rolling(N)` / `none` / `Regen` exist so a DB workload cannot store 10× logical bytes. Falsifier: after M>N freezes of one entity under `rolling(N)`, at least M−N bodies are reclaim-eligible. A 1-byte edit must not duplicate the file (D9). | Policy type exists; reclaim pins what the caller marks `RollingLive`. Window fold that *computes* that pin set from N is not the reclaim ferry. |
-| **D12** | **Crash DST for the filesystem *and* the database** on the same `IFileSystem` door. Crash-mid-write, reorder, corrupt-last-write, torn sector. Same seed replays. FoundationDB-shaped. | `ISimulatedFs` is flush-fail 5%. `InMemoryFileSystem` commits the whole stream on Dispose. PR12 corpus still `toy`. |
+| **D12** | **Crash DST for the filesystem *and* the database** on the same `IFileSystem` door. Crash-mid-write, reorder, corrupt-last-write, torn sector. Same seed replays. FoundationDB-shaped. | **Intercept landed:** `ArmCrashMidWrite` commits a prefix then throws. Freeze torn-tail + GroupCommit torn-tail seeds exist. `ISimulatedFs` is still flush-fail 5%. Reorder / corrupt-last-write / freeze-log replay / reclaim sweep still open. Recovery stays `toy`. |
 
 ---
 
@@ -108,7 +108,7 @@ The factory already speaks content-addressed objects, Z-set deltas, and git as a
 | TPM / USB seal | `docs/design/2026-08-21-credential-binding-tpm-seal-or-usb-iserial-the-r8-decision-brief.md` | Installer credential blob. iSerial restore is **recorded serial, not live probe**. R8 XOR is refused for ZetaFS (C9). |
 | HSM / SE inventory | `docs/trajectories/ai-sovereignty-path/RESUME.md`; `frost-hardware-probe.ts` | Darwin: no TPM; SE present unused; YubiHSM 2 ×1; YubiKey ×1; CardContact 0 in hand. PKCS#11, not a brand. |
 | WebDAV experiment | `experiments/zetafs-webdav/` | Read-only in-memory `DagFs` via `mount_webdav`. **Experiment only.** |
-| DST gap | `docs/FOUNDATIONDB-DST.md`, `src/Core/ChaosEnv.fs` `ISimulatedFs`, `src/Core/FileSystem.fs` | **PR1 door landed:** `ZetaFsDeltaLog` / `ZetaFsStore.init` use `FileSystem.Current`; `IBlockIo` is a sketched polyfill adapter (`FileSystemBlockIo`). `InMemoryFileSystem` latency is virtual milliseconds, not `Thread.Sleep`. Still missing: reorder / crash-mid-write / corrupt-last-write intercept, native `IBlockIo`. Crash recovery claims stay `toy` until the PR12 corpus. |
+| DST gap | `docs/FOUNDATIONDB-DST.md`, `src/Core/ChaosEnv.fs` `ISimulatedFs`, `src/Core/FileSystem.fs` | **PR1 door landed:** `ZetaFsDeltaLog` / `ZetaFsStore.init` use `FileSystem.Current`; `IBlockIo` is a sketched polyfill adapter (`FileSystemBlockIo`). `InMemoryFileSystem` latency is virtual milliseconds, not `Thread.Sleep`. **Crash-mid-write intercept landed** (`ArmCrashMidWrite`). Still missing: reorder / corrupt-last-write, native `IBlockIo`, freeze-log replay. Crash recovery claims stay `toy`. |
 
 Pain: today's namespace (`ZetaFs.updatePath`, `ZetaFsDeltaLog` JSON trees) is git trees. Changing a file rewrites the directory object. That is exactly the cost Venti and this product refuse. `DagFs` already multi-parents by ContentId, which collapses POSIX inode identity with content identity -- the bug three-identities exists to prevent.
 
@@ -315,7 +315,7 @@ Former Open Questions. **Prefer AND of layers/views over XOR of products.** Excl
 |---|---|---|
 | `bench/Benchmarks/EncryptedDiskBackingStoreBench.fs` | Spine `DiskBackingStore` plain vs `AesGcmCryptoProvider` | ZetaFS volume / log / freeze path |
 | `docs/BENCHMARKS.md` + BenchmarkDotNet | Hot-path Core operators | Placement, rolling-window bloat, FUSE |
-| `ChaosEnv` / `ISimulatedFs` / `IFileSystem` | Flush Buggify (5%); PR1 door on `.zetafs`; virtual latency | Crash-mid-write, reorder, volume recovery (PR12 corpus) |
+| `ChaosEnv` / `ISimulatedFs` / `IFileSystem` | Flush Buggify (5%); PR1 door; virtual latency; **crash-mid-write intercept** | Reorder, corrupt-last-write, freeze-log replay, volume recovery (rest of PR12) |
 | Harny + `observe.ts` | Library: login ladder, closed `fs_*`/`db_*` **in-memory** | Fleet still vendor CLI + `git`/`gh`. No paid-agent loop on `.zetafs` yet |
 | Dogfood ledger row 11 | `DagFs` + dual fold + `ZetaFsDeltaLog` as algebra | Not the OS FS; factory still `git` |
 
@@ -1090,11 +1090,11 @@ Source and dest kinds (`File`/`Symlink` vs `Directory`) are taken from the live 
 
 ### DST / crash recovery
 
-`docs/FOUNDATIONDB-DST.md` lists disk I/O interception as a gap. `ISimulatedFs` only hooks flush. PR1 routed `.zetafs` through `IFileSystem` and sketched `IBlockIo` (`FileSystemBlockIo`). `InMemoryFileSystem` latency is virtual, not `Thread.Sleep`; it still commits the whole `MemoryStream` on Dispose -- not reorder / crash-mid-write / corrupt-last-write. Native device `IBlockIo` does not exist. Crash recovery stays `toy` until PR12.
+`docs/FOUNDATIONDB-DST.md` lists disk I/O interception as a gap. `ISimulatedFs` only hooks flush. PR1 routed `.zetafs` through `IFileSystem` and sketched `IBlockIo` (`FileSystemBlockIo`). `InMemoryFileSystem` latency is virtual, not `Thread.Sleep`. **Crash-mid-write intercept landed:** `ArmCrashMidWrite` commits a prefix then throws (`CrashMidWriteException`). FreezeLog disposes the stream *before* Reply so a torn log cannot ack. GroupCommit torn-tail recovery already existed on a physical file; the same door now tears an in-memory segment. Still missing: reorder / corrupt-last-write, native `IBlockIo`, freeze-log replay. Crash recovery stays `toy`.
 
-**PR1 door (landed, not a later retrofit):** `.zetafs` goes through `IFileSystem`. `IBlockIo` is sketched (`FileSystemBlockIo`). The mock records virtual latency; it does not `Thread.Sleep` / `Task.Delay`. Build freeze/CAS/log only behind that door. The log constructor takes `ISimulationEnvironment`; Create/Freeze/Setattr-without-times stamp `MtimeNs`/`CtimeNs` from `env.UtcNow()` (or the interface's unix-ns equivalent), **never** `DateTime.UtcNow`. Seeded DST runs then agree on satellite bytes and snap roots. Crash-mid-write intercept is still PR12.
+**PR1 door (landed, not a later retrofit):** `.zetafs` goes through `IFileSystem`. `IBlockIo` is sketched (`FileSystemBlockIo`). The mock records virtual latency; it does not `Thread.Sleep` / `Task.Delay`. Build freeze/CAS/log only behind that door. The log constructor takes `ISimulationEnvironment`; Create/Freeze/Setattr-without-times stamp `MtimeNs`/`CtimeNs` from `env.UtcNow()` (or the interface's unix-ns equivalent), **never** `DateTime.UtcNow`. Seeded DST runs then agree on satellite bytes and snap roots.
 
-**Later DST PR (scenario corpus):** promotion out of `toy`, not the first intercept.
+**Later DST PR (scenario corpus):** promotion out of `toy`. The intercept is not that promotion.
 
 **Required before any non-toy recovery claim:**
 
@@ -1467,7 +1467,7 @@ Each PR is independently reviewable and mergeable. Tests green or it does not la
 - **Title:** `zetafs: freeze-intent/commit WAL; Durable fsyncs CAS before log commit`
 - **Files:** freeze path; `GroupCommitDiskDeltaLog` shape (torn-tail + loud mid CRC); PR2 FileSync Result on Durable; `IDurabilityObserver.OnJournaled` / `OnDurable` as Result
 - **Depends on:** PR2, PR4, PR6 (body to freeze)
-- **Changes:** E2. Snapshot mutbuf (generation G) before CDC; concurrent pwrite hits G+1. Readable iff commit+leaves. DST seeds for subset-of-leaves and pwrite-during-freeze (may stay `toy` until PR12 corpus, but the protocol is specified). DoP=1 log. No `Task.Run` except Ferry launch with injected context. **Landing:** `src/Core/ZetaFsFreeze.fs` — Buffered skips the log (not POSIX-readable); Journaled appends intent/commit; Durable fsyncs CAS then log via FileSync Result (`F_FULLFSYNC` on Darwin). Windows Durable refused. Crash-mid-write still `toy`.
+- **Changes:** E2. Snapshot mutbuf (generation G) before CDC; concurrent pwrite hits G+1. Readable iff commit+leaves. DST seeds for subset-of-leaves and pwrite-during-freeze (may stay `toy` until PR12 corpus, but the protocol is specified). DoP=1 log. No `Task.Run` except Ferry launch with injected context. **Landing:** `src/Core/ZetaFsFreeze.fs` — Buffered skips the log (not POSIX-readable); Journaled appends intent/commit; Durable fsyncs CAS then log via FileSync Result (`F_FULLFSYNC` on Darwin). Windows Durable refused. Crash-mid-write intercept landed; freeze-log replay still `toy`.
 
 ### PR8 -- Placement as HRW-over-ZetaIds + simulated-disk falsifiers
 
@@ -1502,7 +1502,7 @@ Each PR is independently reviewable and mergeable. Tests green or it does not la
 - **Title:** `zetafs: fake-VFS + simulated-disk crash seeds`
 - **Files:** ChaosEnv beyond flush-only `ISimulatedFs`; `IBlockIo` impl; seed corpus (intent-before-leaf-flush, subset leaves, torn tail, mid CRC, reclaim sweep)
 - **Depends on:** PR1 (door), PR7 (something to crash); best after PR8/PR10 so placement and reclaim are in the scenarios
-- **Changes:** This **promotes** recovery from `toy`. The intercept already exists (PR1). Seed list includes pwrite-during-freeze (ContentId equals snapshot G, never a mix). Until this corpus is green, READMEs keep the peel.
+- **Changes:** This **promotes** recovery from `toy`. **Slice landed (081M1HR580V087G0R000NMY47N):** `ArmCrashMidWrite` + freeze torn-tail + GroupCommit in-memory torn-tail. That is the intercept, not the promotion. Still open: reorder, corrupt-last-write, freeze-log replay, reclaim sweep, native `IBlockIo`. Seed list includes pwrite-during-freeze (ContentId equals snapshot G, never a mix). Until this corpus is green, READMEs keep the peel.
 
 ### PR13 -- Linux FUSE and FUSE-T POSIX view
 

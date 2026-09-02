@@ -34,10 +34,12 @@ to hit production without a traditional integration suite.
    write, corrupt on-disk state. **Our `DiskBackingStore` doesn't
    go through a simulator interface.** ZetaFS PR1 routed `.zetafs`
    through `IFileSystem`; `ISimulatedFs` is still **flush-fail 5%
-   only**. Crash-mid-write / reorder / corrupt-last-write is first-product
-   **PR12** and ZetaDB **D12**: the same door must cover the
+   only**. Crash-mid-write intercept landed on `InMemoryFileSystem`
+   (`ArmCrashMidWrite`); `ISimulatedFs` is still **flush-fail 5%
+   only**. Reorder / corrupt-last-write / freeze-log replay remain
+   first-product **PR12** and ZetaDB **D12**: the same door covers the
    **database commit path and the filesystem freeze path**. Until
-   that corpus exists the honest word is `toy`, not crash-safe.
+   that corpus is green the honest word is `toy`, not crash-safe.
    ReFS-shaped resilience (allocate-on-write, pointer-not-copy) is
    the *why*; DST is how it is earned. `081M1HK4AQE087G0R002RRJXWE`.
 3. **Deterministic scheduler at the Task level.** FDB's `flow`

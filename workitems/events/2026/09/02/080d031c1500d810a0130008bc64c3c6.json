@@ -1,0 +1,14 @@
+{
+  "id": "080d031c1500d810a0130008bc64c3c6",
+  "at": "2026-09-02T19:05:00.187Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1HR580V087G0R000NMY47N",
+    "type": "task",
+    "title": "PR12 intercept: crash-mid-write on IFileSystem (freeze log torn tail)",
+    "slug": "pr12-intercept-crash-mid-write-on-ifilesystem-freeze-log-tor",
+    "priority": "P1",
+    "filename": "081M1HR580V087G0R000NMY47N-pr12-intercept-crash-mid-write-on-ifilesystem-freeze-log-tor.md"
+  }
+}
