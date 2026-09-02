@@ -1954,9 +1954,10 @@ function assertDevStorageClassPresent(plan: HarnessPlan): Failure | null {
  * The LIVE half of lifting `kube-prometheus-stack` and `oz` out of the deferred
  * set.
  *
- * `applyDevBootstrapSecrets` mints `monitoring/grafana-admin-credentials` and
- * `openziti/ziti-admin-credentials` at bring-up, and `use-cases.test.ts` proves
- * the loop is wired into all three doors. Neither of those observes a CLUSTER.
+ * `applyDevBootstrapSecrets` mints `monitoring/grafana-admin-credentials`,
+ * `openziti/ziti-admin-credentials`, and `redis/redis-auth` at bring-up, and
+ * `use-cases.test.ts` proves the loop is wired into all three doors. None of
+ * those observes a CLUSTER.
  * If a Secret is absent anyway -- a bring-up that predates this change, an
  * `--existing` run against a hand-built cluster, a kubectl apply that silently
  * failed -- the consuming pod returns to `CreateContainerConfigError`, ArgoCD

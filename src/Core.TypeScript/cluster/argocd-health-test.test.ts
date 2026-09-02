@@ -11,7 +11,7 @@ import {
 } from "node:fs";
 import { tmpdir } from "node:os";
 import { parse as parseYaml } from "yaml";
-import { DEV_GRAFANA_ADMIN_SECRET, DEV_ZITI_ADMIN_SECRET } from "./dev-cluster/lib.ts";
+import { DEV_GRAFANA_ADMIN_SECRET, DEV_REDIS_AUTH_SECRET, DEV_ZITI_ADMIN_SECRET } from "./dev-cluster/lib.ts";
 import { join, resolve } from "node:path";
 import {
   APPLIED_BUT_UNASSERTED_REASONS,
@@ -66,7 +66,8 @@ async function withFakeClusterCli(
     | "storageclass-present"
     | "storageclass-wrong-provisioner"
     | "grafana-secret-missing"
-    | "ziti-secret-missing",
+    | "ziti-secret-missing"
+    | "redis-secret-missing",
   action: () => Promise<void>,
 ): Promise<void> {
   const cliDir = mkdtempSync(join(tmpdir(), "zeta-argocd-health-cli-"));
@@ -104,6 +105,7 @@ async function withFakeClusterCli(
     '  want="${3:-}"',
     '  if [ "$mode" = grafana-secret-missing ] && [ "$want" = grafana-admin-credentials ]; then echo "Error from server (NotFound): secrets \\"grafana-admin-credentials\\" not found" >&2; exit 1; fi',
     '  if [ "$mode" = ziti-secret-missing ] && [ "$want" = ziti-admin-credentials ]; then echo "Error from server (NotFound): secrets \\"ziti-admin-credentials\\" not found" >&2; exit 1; fi',
+    '  if [ "$mode" = redis-secret-missing ] && [ "$want" = redis-auth ]; then echo "Error from server (NotFound): secrets \\"redis-auth\\" not found" >&2; exit 1; fi',
     '  printf "secret/%s" "$want"',
     "  exit 0",
     "fi",
@@ -1093,13 +1095,39 @@ describe("081KSXN940008QG0R000SCP2H1 argocd-health-test live failure shaping", (
   });
 
   /**
+   * THE THIRD ENTRY IN THE ROSTER, checked separately and on purpose.
+   *
+   * `redis` left Bitnami for Valkey (`usersExistingSecret: redis-auth`). The
+   * included proof went red with `redis is OutOfSync/Progressing` on run
+   * 33657954802. If the guard only looked at grafana and ziti it would still
+   * pass those tests while asserting nothing about this Secret, and Valkey
+   * would return to the same Progressing report 2400 seconds later.
+   */
+  test("included scope REFUSES when the dev redis ACL credential is absent", async () => {
+    await withFakeClusterCli("redis-secret-missing", async () => {
+      const parsed = parseArgs(
+        ["--run", "--provider", "kind", "--scope", "included", "--existing", "--timeout-sec", "1", "--poll-sec", "1"],
+        {},
+      );
+      if ("kind" in parsed) throw new Error(parsed.message);
+
+      const result = await runHarness(parsed);
+      expect(result.ok).toBe(false);
+      if (result.ok) throw new Error("expected a missing dev redis credential to fail the harness");
+      expect(result.failure.kind).toBe("DevBootstrapSecretMissing");
+      expect(result.failure.message).toContain("redis-auth");
+      expect(result.failure.message).toContain("redis");
+    });
+  });
+
+  /**
    * And the SMOKE roster does not assert kube-prometheus-stack or oz, so it has
    * no business failing on those Applications' credentials. A guard that fires
    * outside the scope it belongs to is a check reporting on something it was
    * never asked about.
    */
   test("smoke scope does NOT refuse on the bootstrap credentials", async () => {
-    for (const mode of ["grafana-secret-missing", "ziti-secret-missing"] as const) {
+    for (const mode of ["grafana-secret-missing", "ziti-secret-missing", "redis-secret-missing"] as const) {
       await withFakeClusterCli(mode, async () => {
         const parsed = parseArgs(
           ["--run", "--provider", "kind", "--scope", "smoke", "--existing", "--timeout-sec", "1", "--poll-sec", "1"],
@@ -1529,6 +1557,13 @@ describe("081M0JXXFV0087G0R00...: the four newly-visible non-storage defects", (
     // it. On metal that is a bootstrap manifest; the k3s deploy controller
     // applies files in lexical order and `o` < `t`.
     expect(existsSync(join(bootstrapRoot, "openziti-namespace.yaml"))).toBe(true);
+  });
+
+  test("the redis ACL credential the bring-up mints is the one the chart asks for", () => {
+    const text = readApp("redis");
+    expect(text).toContain(`usersExistingSecret: ${DEV_REDIS_AUTH_SECRET.name}`);
+    expect(text).toContain(`passwordKey: ${DEV_REDIS_AUTH_SECRET.passwordKey}`);
+    expect(text).toContain(`namespace: ${DEV_REDIS_AUTH_SECRET.namespace}`);
   });
 
   /**

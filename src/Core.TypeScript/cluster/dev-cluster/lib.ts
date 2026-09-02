@@ -155,9 +155,41 @@ export const DEV_ZITI_ADMIN_SECRET: DevBootstrapSecretSpec = {
 } as const;
 
 /**
+ * The Valkey ACL credential `redis` expects to ALREADY EXIST.
+ *
+ * SAME SHAPE AS GRAFANA AND ZITI: the Application sets
+ * `auth.usersExistingSecret: redis-auth` and both ACL users (`default` and
+ * `replicator`) read `passwordKey: password`. The chart does not mint that
+ * Secret. MEASURED 2026-09-02 (k8s-argocd-health-test run 33657954802):
+ * `live kind included` failed with `redis is OutOfSync/Progressing` -- the
+ * exact ArgoCD report a missing `secretKeyRef` produces, and the reason the
+ * included proof already refuses a missing grafana/ziti Secret in seconds
+ * instead of burning 2400s.
+ *
+ * WHY NOT INLINE THE PASSWORD IN valuesObject. That would put a credential
+ * in git so metal and CI share it. The Application already names an existing
+ * Secret for metal (Sealed Secret / Vault). Dev/CI mint the same name here.
+ * Orleans stays at replicas 0 because metal still has no secret in the tree.
+ *
+ * `username` is unused by the chart (ACL usernames live in values). It is
+ * present so this object stays on the same DevBootstrapSecretSpec as the
+ * other two rather than growing a password-only fork for one consumer.
+ */
+export const DEV_REDIS_AUTH_SECRET: DevBootstrapSecretSpec = {
+  namespace: "redis",
+  name: "redis-auth",
+  userKey: "username",
+  passwordKey: "password",
+  user: "default",
+  reason:
+    "Minted per dev/CI cluster at bring-up so the Valkey chart's " +
+    "auth.usersExistingSecret resolves.",
+} as const;
+
+/**
  * Every credential the dev/CI bring-up mints, in mint order.
  *
- * A LIST rather than two call sites, so that adding a third Application in this
+ * A LIST rather than N call sites, so that adding another Application in this
  * class is one entry and cannot be half-wired: `use-cases.ts` loops this,
  * `argocd-health-test.ts` refuses an included run for any member that is absent
  * from the cluster, and `use-cases.test.ts` asserts the loop covers all of it.
@@ -165,6 +197,7 @@ export const DEV_ZITI_ADMIN_SECRET: DevBootstrapSecretSpec = {
 export const DEV_BOOTSTRAP_SECRETS: readonly DevBootstrapSecretSpec[] = [
   DEV_GRAFANA_ADMIN_SECRET,
   DEV_ZITI_ADMIN_SECRET,
+  DEV_REDIS_AUTH_SECRET,
 ] as const;
 
 /**
