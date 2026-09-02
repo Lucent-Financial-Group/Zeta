@@ -22,21 +22,26 @@
     "loki": {
       "namespace": "loki",
       "chart": "loki",
-      "repoURL": "https://grafana.github.io/helm-charts",
-      "version": "6.18.0",
-      "valuesHash": "sha256:ab155bf993b21641efdbbe30080e4b6bdeed532c4f310caeab215e16c9e3a792",
+      "repoURL": "https://grafana-community.github.io/helm-charts",
+      "version": "18.11.7",
+      "valuesHash": "sha256:f53b0c5fb65f4a77d42f1be8d562680a7cd6c5741621f61c71cf1524eaf21139",
       "services": {
         "loki-query-scheduler-discovery": [
           3100,
           9095
         ],
-        "loki-backend-headless": [
-          3100,
-          9095
-        ],
         "loki-backend": [
           3100,
-          9095
+          9095,
+          9096
+        ],
+        "loki-backend-headless": [
+          3100,
+          9095,
+          9096
+        ],
+        "loki-gateway-exporter": [
+          4040
         ],
         "loki-gateway": [
           80
@@ -44,24 +49,28 @@
         "loki-canary": [
           3500
         ],
-        "loki-read-headless": [
-          3100,
-          9095
-        ],
         "loki-read": [
           3100,
-          9095
+          9095,
+          9096
+        ],
+        "loki-read-headless": [
+          3100,
+          9095,
+          9096
         ],
         "loki-memberlist": [
           7946
         ],
-        "loki-write-headless": [
-          3100,
-          9095
-        ],
         "loki-write": [
           3100,
-          9095
+          9095,
+          9096
+        ],
+        "loki-write-headless": [
+          3100,
+          9095,
+          9096
         ]
       }
     },
@@ -170,22 +179,21 @@
     "tempo": {
       "namespace": "tempo",
       "chart": "tempo",
-      "repoURL": "https://grafana.github.io/helm-charts",
-      "version": "1.18.0",
-      "valuesHash": "sha256:ec437b28e0078a7ad035f9e080a90cbf8dc7a785aa475491e337d52ca37206b7",
+      "repoURL": "https://grafana-community.github.io/helm-charts",
+      "version": "2.3.0",
+      "valuesHash": "sha256:9dfdbbb8489ede820dbbc762345e16f0a8848715e6d8d90c77fef57a35e786c0",
       "services": {
         "tempo": [
           6831,
           6832,
-          3100,
+          3200,
           14268,
           14250,
           9411,
           55680,
           55681,
           4317,
-          4318,
-          55678
+          4318
         ]
       }
     }

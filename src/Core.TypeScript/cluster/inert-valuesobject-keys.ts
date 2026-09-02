@@ -337,6 +337,31 @@ export function templateValuesRefs(text: string): { literal: string[]; open: str
     const segments = path.split(".");
     for (let index = 1; index <= segments.length; index += 1) literal.push(segments.slice(0, index).join("."));
   }
+  // SPRIG `dig` PUTS THE DICT LAST, and the branch above cannot see it.
+  //
+  // `index`/`get`/`pluck` take the collection FIRST -- `index .Values "a" "b"` --
+  // which is what that regex matches. `dig` is the odd one out: its signature is
+  // `dig "k1" "k2" ... <default> <dict>`, so the path segments come BEFORE
+  // `.Values`. Every `dig` reach was therefore invisible, and an invisible read
+  // produces a FALSE INERT verdict -- the direction that gets a LIVE setting
+  // deleted, which is strictly worse than a missed defect.
+  //
+  // MEASURED 2026-09-02 on loki 18.11.7 (`templates/_helpers.tpl:228`):
+  //   {{- $bucketName := required "Please define loki.storage.bucketNames.chunks"
+  //         (dig "storage" "bucketNames" "chunks" "" .Values.loki) }}
+  // The guard reported `loki.storage.bucketNames` as governing NOTHING. It is
+  // `required`: the chart REFUSES TO RENDER without it, and the rendered ConfigMap
+  // carries `bucketnames: loki-chunks` from exactly that value. Acting on the
+  // report would have deleted the object-storage configuration of the log store.
+  for (const match of text.matchAll(/dig\s+((?:"[^"]*"\s+)+)\S+\s+\.Values((?:\.[A-Za-z_][A-Za-z0-9_-]*)*)/g)) {
+    const base = (match[2] ?? "").replace(/^\./, "");
+    const keys = [...(match[1] ?? "").matchAll(/"([^"]*)"/g)].map((m) => m[1] ?? "");
+    const path = [base, ...keys].filter((segment) => segment !== "").join(".");
+    if (path === "") continue;
+    const segments = path.split(".");
+    for (let index = 1; index <= segments.length; index += 1) literal.push(segments.slice(0, index).join("."));
+  }
+
   if (/range\s+\$[A-Za-z0-9_]+\s*,\s*\$[A-Za-z0-9_]+\s*:=\s*\.Values\s*[}|]/.test(text)) dynamic.push("");
 
   return { literal, open, dynamic };
