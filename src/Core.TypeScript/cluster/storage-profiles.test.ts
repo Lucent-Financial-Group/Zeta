@@ -1429,7 +1429,8 @@ describe("the checked-in resource ladder", () => {
     const lane = resourceTotal(catalogue, "dev", devLaneAppliedDirs());
     expect(lane.unmeasured).toEqual([]);
     expect([...catalogue.acknowledgedUnmeasured]).toEqual([]);
-    expect(pinnedChartVersion("oz")).toBe("3.1.1");
+    // 3.1.1 -> 3.3.1 on 2026-09-02 with the OpenZiti v2 upgrade.
+    expect(pinnedChartVersion("oz")).toBe("3.3.1");
     const oz = catalogue.ungoverned.find((app) => app.dir === "oz");
     expect(oz?.cpuMillis).toBe(0);
     expect(oz?.memoryMib).toBe(0);
@@ -1455,8 +1456,9 @@ describe("the checked-in resource ladder", () => {
     // the six lines nearest `chart:` and returned "" once anything longer than
     // that sat between the two keys -- a wrong answer that propagates into the
     // acknowledgement key `<dir>@<pin>` rather than an error that stops.
-    // oz/Application.yaml now carries ~35 lines of comment there, on purpose.
-    expect(pinnedChartVersion("oz")).toBe("3.1.1");
+    // oz/Application.yaml now carries ~55 lines of comment there, on purpose --
+    // MORE since the v2 upgrade, which makes it a better fixture, not a worse one.
+    expect(pinnedChartVersion("oz")).toBe("3.3.1");
     // 0.12.1 -> 0.14.2 on 2026-09-02 with the chart bump. This assertion is the
     // ORDINARY case; `oz` above is the falsifier that carries the test's point
     // (its ~35 comment lines are what the old line-scanner choked on), so
@@ -1483,7 +1485,10 @@ describe("the checked-in resource ladder", () => {
     expect(findings.some((finding) => finding.claimId === "oz")).toBe(true);
     // ...and the SAME catalogue acknowledged at the pin the tree really carries
     // does cover it, so the test above fails for the pin and not for the shape.
-    const covered: ResourceCatalogue = { ...unmeasurable, acknowledgedUnmeasured: ["oz@3.1.1"] };
+    // Keyed at the pin the tree ACTUALLY carries. That this had to move with the
+    // upgrade is the test's own thesis: an acknowledgement keyed to a pin stops
+    // covering the moment the pin does.
+    const covered: ResourceCatalogue = { ...unmeasurable, acknowledgedUnmeasured: ["oz@3.3.1"] };
     expect(auditRunnerBudget(covered, "dev").some((finding) => finding.claimId === "oz")).toBe(false);
   });
 
