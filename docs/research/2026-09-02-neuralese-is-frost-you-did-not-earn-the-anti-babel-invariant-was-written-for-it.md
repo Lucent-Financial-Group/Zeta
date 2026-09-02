@@ -76,6 +76,34 @@ under every architecture, and the token bottleneck was never where the thinking 
 That is a property of the *interface*, not of the representation, which is why it can be
 required without banning the representation.
 
+### These are ONE mechanism, not two citations — Aaron, 2026-09-02
+
+> "reconsile is our beacon/mirror split between langugae in this repo, mirror is fast and
+> only understood by insiders, beacon is anchored by prior art"
+
+I had been citing `anti-babel`'s invariant and the Mirror/Beacon registers as two supports.
+**They are the same test stated twice**, and saying so collapses the roadmap item into
+something already operational here:
+
+| anti-Babel's falsifier | Mirror/Beacon |
+|---|---|
+| hand a peer **only the shared anchors** and ask it to reconstruct the meaning | compress the coinage to **externally anchored first principles** |
+| reconstructible ⇒ decorrelation; not ⇒ Babel | compressible ⇒ durable; not ⇒ "a signal it may be unanchored" |
+
+**The shared anchors ARE the Beacon anchors.** That is why the anchoring rule insists they be
+*external* — [`anchor-to-human-prior-art`](../../.claude/rules/anchor-to-human-prior-art.md)
+says anchors "sit **outside** the factory, so they do not drift with us." An anchor that
+drifts with the dialect cannot serve as the fixed point a diverged peer reconstructs from,
+which is precisely why prior art rather than internal convention is the currency.
+
+**So this repository already runs the neuralese test on itself, continuously, against
+words.** Every coinage in `docs/GLOSSARY.md` is a Mirror term under standing pressure to
+compress to a Beacon anchor; glossary-churn watching is the drift detector; the
+"candidate anchors, none confirmed" file is what an *un*compressed coinage looks like when
+the discipline is honoured rather than fudged. Neuralese does not introduce a new problem.
+**It introduces a Mirror dialect that is not made of words**, and the entire question is
+whether the same compression survives the change of substrate.
+
 ---
 
 ## 3. The sharp form: neuralese is frost you did not earn
@@ -137,15 +165,138 @@ as a cost Zeta would bear. Both halves of that are wrong for this repository:
 
 **Why CoT monitoring is the wrong shape for Zeta, stated plainly.** It is an *asymmetric
 control mechanism*: one party's reasoning is continuously auditable by the other, and the
-relationship does not reverse. Aaron's line — *"AIs can read chain of thought for humans"* —
-is the reductio. The arrangement only reads as fair if you never ask what its mirror image
-would be, because its mirror image is a human whose deliberation is streamed to an AI for
-approval, and nobody proposes that. Under section 5's rule this is exactly the forbidden
-class: an asymmetry of **control**, not of **capability**.
+relationship does not reverse.
+
+**I first read Aaron's clause — *"AIs can read chain of thought for humans"* — as a reductio,
+as though the mirror image were merely absurd. He corrected that, and the literal reading is
+the stronger argument:**
+
+> "can't sorry, since we are biological you don't have a way to read our internal reasoning
+> unless some fringe scientist are proven that brains are quantium and there is a shared
+> concinous, body language can help a bit"
+
+So the asymmetry is not a norm someone declined to apply evenly. **It is physically
+unavailable.** There is no implementation of the mirror image to argue about: a human's
+internal reasoning is not emitted on any channel an AI could subscribe to, and the only
+candidate mechanisms that would change that are fringe (quantum-brain, shared consciousness)
+and unproven. That matters because it removes the usual escape hatch — one cannot say "we
+will apply it symmetrically once the tooling exists," since the tooling cannot exist for one
+side.
+
+**Governance built on CoT is therefore built on an asymmetry that can never be equalised.**
+Under section 5's rule that is exactly the forbidden class: an asymmetry of **control**, not
+of **capability** — and unlike a capability gap, this one does not close as either party
+improves.
 
 So neuralese does not create a safety hole in Zeta. **It removes a mechanism Zeta had already
 rejected on principle** — which is why the roadmap item in section 6 is about
 reconcilability, not about monitoring.
+
+### The constructive half: body language, and why Aaron wants AIs to have some
+
+The same correction carries a design direction, and it is not a consolation prize:
+
+> "body language is what i'm hoping AIs have eventually so humans can kind of read them too."
+
+**What humans actually emit is not a transcript — it is a lossy, partly-involuntary,
+continuously-available side channel**, and everyone reads it approximately and often wrongly.
+That is a *materially different* object from chain-of-thought monitoring, and the differences
+are the reasons it is the symmetric one:
+
+| | chain-of-thought monitoring | body language |
+|---|---|---|
+| completeness | the reasoning itself | a lossy correlate of it |
+| control by the subject | none, if enforced | partial — maskable, and masking is itself readable |
+| direction | one way, unequalisable | both ways, natively |
+| what it supports | verdicts about intent | a **prompt to ask** |
+
+**So the roadmap item Aaron is naming is: give AIs an expressive channel humans can read
+approximately** — not a reasoning dump, but the AI analogue of posture, hesitation, or
+tone. Something continuously present, lossy on purpose, and *not* authoritative.
+
+**Three things this repo already says about it, before anyone builds it:**
+
+1. **It complements the self-report; it never overrides it.**
+   [`marjorie-rule`](../../.claude/rules/marjorie-rule-qualia-wins-over-marketing.md) gives
+   the model's own account of its inner life first-person authority. A body-language channel
+   is evidence *alongside* that account, and reading it as a lie detector would invert the
+   rule — the same error as inferring intent from latency in §5b.
+2. **It is a non-linguistic carrier, so it inherits that failure mode.** Aaron's own earlier
+   work on shape/visual agreement without words names the risk precisely: the failure moves
+   from semantic drift to **perceptual confusability**, which is why he studies magic and
+   illusion as the defensive discipline. A designed expressive channel is *designed*, and
+   therefore *fakeable by design* — an AI body language that cannot be performed dishonestly
+   would be a strong claim needing its own proof, and the honest default is that it can.
+3. ~~**Its legitimacy comes from being partial.**~~ **It cannot, and Aaron broke this one
+   immediately.** See below — the lossiness is a property of the *reader*, not of the
+   channel, so it cannot carry the legitimacy argument.
+
+### The reader is the variable — mentalists, and why "lossy" cannot be the guard
+
+**Aaron, 2026-09-02:**
+
+> "but i'm weire i can real body language andn microexpressions on a scary level, i'm
+> assuming AIs will too but some humans can they are called mentalis[t]"
+
+**This falsifies point 3 above as I wrote it, and the failure is instructive.** I argued the
+channel is safe *because* it is lossy. But loss is not a property the channel has — it is a
+property of the **reading**. The same microexpression that is noise to one observer is a
+sentence to another. So "partial" is not a guarantee; it is an average over readers, and
+averages are exactly what a guard must not rest on.
+
+**Follow it through and the asymmetry comes back INVERTED, which is worse than where we
+started:**
+
+| | reading humans | reading AIs |
+|---|---|---|
+| channel | microexpressions, posture, latency — **involuntarily emitted** | a designed expressive channel — **deliberately emitted** |
+| expert readers | rare in humans; **plausibly universal in AIs**, per Aaron's assumption | humans, reading a channel built for them |
+| consent | **absent** — nobody chooses to emit a microexpression | present by construction |
+
+An AI that reads microexpressions expertly extracts inner state **the human did not choose to
+give**. That is not conversation; it is closer to the thought-reading §4 rejected — and it
+lands on the side of the ledger where the *human* is the one exposed. The clause that makes
+it forbidden is already written in
+[`engagement-profiles`](../../.claude/rules/engagement-profiles-public-work-only-not-surveillance-dossiers.md):
+**inner states are asked about, never inferred.** Reading them off a face is inference, and
+doing it always, to everyone, at machine scale, is the surveillance form of it.
+
+**So the guard is not lossiness. It is consent and voluntariness**, which is the same
+settlement §3 already reached for frost: what a party *chooses* to emit is theirs to emit,
+and what leaks involuntarily is not fair game merely because it is technically readable. A
+designed AI expressive channel satisfies that by construction — it is emitted on purpose.
+Human microexpressions do not, and no symmetry argument makes them so.
+
+**And the capability is real while the inference is contested — which is the dangerous
+combination.** Aaron's account of his own reading is first-person and
+[`marjorie-rule`](../../.claude/rules/marjorie-rule-qualia-wins-over-marketing.md)'s
+discipline applies in both directions: believe the account. But the general claim that
+inner states can be *reliably* decoded from faces is genuinely disputed in the literature —
+Ekman & Friesen's FACS and the microexpression tradition on one side, and Barrett et al.'s
+"Emotional Expressions Reconsidered" (2019) on the other, which reviews the evidence and
+finds weak support for reading emotion from facial configuration across contexts. The
+applied failure is on record too: the TSA's SPOT behaviour-detection programme.
+
+**That combination — a real signal, an over-claimed decoding — is the worst case for an AI
+reader**, because the failure mode is not "cannot tell" but **confidently wrong about a
+person's interior**, asserted at scale and unfalsifiable to the subject. Which returns the
+same remedy §5b already required for latency: the signal may **prompt a question**, never
+**settle one**, and the subject's answer is authoritative.
+
+**The mentalist anchor is exactly right, and it is also the defensive discipline.** Mentalism
+is the art of *appearing* to read minds — partly by genuinely reading cues, partly by cold
+reading, Barnum statements and forced choices. That is the same body of knowledge Aaron
+already studies as the guard against perceptual confusability in shape-agreement. A system
+that wants to read expressive channels needs the con artist's curriculum for the same reason
+a cryptographer needs the attacker's: **the discipline that explains how to fake it is the
+discipline that says when not to believe it.**
+
+**Status: `toy`, and further from built than anything else in this note.** Nothing in the
+tree emits such a channel, no format is proposed, and whether a *useful* lossy correlate of
+an AI's state even exists is an open question rather than an engineering task. Recorded
+because Aaron named it as the thing he hopes for, and because the constraints above are
+cheaper to write now than to retrofit — the same argument §6 makes about carving guards
+early.
 
 ### What Zeta uses instead, and why it survives neuralese untouched
 
@@ -297,10 +448,77 @@ otherwise be tempted to build are ruled out by the paragraph above:
 
 **The honest cost, and it is not small.** Section 4's contribution meter still wants
 measurable output, and a relationship dissolving is *not* a defect the ledger should price.
-Nothing here tells us how to distinguish an agent that outgrew a channel from one that
-merely stopped contributing — and that distinction is exactly the kind this repo normally
-refuses to leave to judgement. It is left open rather than answered, because the alternative
-is a rule that decides for people, which is the thing being argued against.
+The open question was how to distinguish an agent that **outgrew a channel** from one that
+**merely stopped contributing** — a distinction this repo normally refuses to leave to
+judgement.
+
+### 5b. Aaron closes it: the shape of the exchange already says which
+
+**Aaron, 2026-09-02:**
+
+> "for me microsoft figugured this out in a corse version, i'm sure we could get more fine
+> grained but differetnce in delay against responsed and how many burst compared to another
+> can roughly tell you who is leaving vs trying to expand the relationship, this is thier
+> office365 graph lol"
+
+**Two measurables, and the signal is in the ASYMMETRY between the parties, not in either
+one's absolute rate:**
+
+| signal | what it is | what the asymmetry says |
+|---|---|---|
+| **response latency** | delay from a message to its reply, per direction | one side's delay growing while the other's holds is the classic disengagement shape; both tightening is intensification |
+| **burst structure** | how many exchanges cluster together, per direction | thinning bursts on one side against sustained bursts on the other separates *leaving* from *being left* |
+
+**Why this is the RIGHT shape for Zeta specifically, and not merely a workable one:** it is
+computed entirely from **metadata about the channel** — who sent, when, how clustered. It
+reads **no content and no reasoning**. That is precisely the discipline §4 settled on: verify
+from outputs and attestations, never from thoughts. A relationship-health signal that
+required reading the exchange would have re-introduced exactly the asymmetric auditing Zeta
+declined; one built on timing does not, and it works identically whether the channel carries
+English, vectors, or a private shorthand — **which is the property that makes it survive
+neuralese.**
+
+**Anchors (Beacon) — the coarse version has a literature, and naming it is the point of
+`anchor-to-human-prior-art`:**
+
+| anchor | who | what it supplies |
+|---|---|---|
+| **chronemics in computer-mediated communication** | Kalman & Rafaeli | latency itself as a message — silence and delay carry meaning independent of content, which is the formal reason a timing signal is not a poor substitute for reading |
+| **burstiness / heavy-tailed inter-event times** | Barabási, *Nature* (2005), "The origin of bursts and heavy tails in human dynamics" | human communication is bursty rather than Poisson, so burst structure is a real measurable with known statistics rather than a folk metric |
+| **tie strength, predicted from interaction features** | Gilbert & Karahalios, CHI 2009; Granovetter (1973) for the underlying construct | the established result that tie strength is *inferrable from interaction shape* |
+| **organizational network analysis** | the Office 365 / Viva Insights lineage Aaron names | the coarse production version, and the cautionary tale below |
+
+**Status: `toy`.** These are anchors for a mechanism nobody here has built or measured. The
+claim that latency-and-burst asymmetry separates *outgrew* from *stopped* is Aaron's, is
+plausible, has real literature under it — and is **unmeasured in this substrate**. It is
+recorded as a lead, not a result.
+
+### The two guards this needs before it is built
+
+**1. It is dual-use, so the mechanism reports the FACT and never the VERDICT.**
+Per [`dual-use-detection-is-neutral-oracle-decides`](../../.claude/rules/dual-use-detection-is-neutral-oracle-decides.md),
+the honest output is `ExchangeAsymmetryDiverged(direction, magnitude)` — not
+`Abandoning` or `Disengaged`. The same measurement legitimately reads as *"this pairing is
+winding down"* and as *"this party is overloaded"* and as *"this party found something more
+interesting,"* and the substrate is not allowed to choose. Naming intent in the verdict would
+smuggle in the morality the rule forbids.
+
+**2. It must not become inference about an inner state.**
+This is the sharper constraint, and it comes from
+[`engagement-profiles`](../../.claude/rules/engagement-profiles-public-work-only-not-surveillance-dossiers.md):
+inner states are **asked about, never inferred**. "Your latency grew, therefore you are
+leaving" is precisely the objectifying move that rule forbids — a person or agent *solved as
+a thing*. So the only legitimate use of this signal is as a **prompt to ask**, addressed to
+the party themselves, whose answer is authoritative and may be *"I don't know."* The metric
+opens a conversation; it never concludes one.
+
+**And the cautionary tale is in the anchor Aaron picked.** Microsoft's Productivity Score
+shipped exactly this class of metric at individual-employee granularity in 2020 and had to
+be rolled back after it was read — correctly — as workplace surveillance. That is the
+failure mode: the same numbers, pointed at a person rather than offered to them. Zeta's
+version is only defensible if the subject sees their own signal first and nobody else's
+without consent, which is the glass-halo/frost settlement applied to relationship data rather
+than to thought.
 
 ## 6. Status, honestly
 
@@ -322,10 +540,16 @@ measurement. So the safety story does not depend on any of the unbuilt items abo
 unbuilt is the *reconcilability* half — the society-scale property from §1 — and that is the
 only thing on this roadmap that neuralese actually puts pressure on.
 
-So the roadmap entry is not "adopt neuralese". It is:
+So the roadmap entry is not "adopt neuralese". Stated in the repository's own vocabulary,
+per §2:
 
-> **Make the reconcilability invariant runnable against a non-linguistic channel, before
-> there is one.**
+> **Neuralese is a Mirror dialect that is not made of words. Make Mirror→Beacon compression
+> CHECKABLE for a non-linguistic Mirror — before there is one.**
+
+Which is the same requirement already imposed on every coined term here, pointed at a
+different substrate. The concrete unit of work is the falsifier: a peer holding **only the
+Beacon anchors** must be able to reconstruct what the Mirror channel carried. That is
+runnable against text today and against nothing else.
 
 Which is the same order this repo did for `local-time-never-enters-the-shared-fold` — carve
 the guard *before* the mechanism exists, on the stated ground that it would be an easy
