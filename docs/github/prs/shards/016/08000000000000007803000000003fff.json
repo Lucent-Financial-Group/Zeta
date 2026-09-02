@@ -1,0 +1,12 @@
+{
+  "pr_number": 16383,
+  "archive_path": "docs/history/pr-reviews/PR-16383-fix-room-rooms-could-run-forever-and-the-loop-now-actually-runs-through-the-boun.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-02T21:26:32.321Z",
+  "schema_version": "v1",
+  "commit_sha": "959d44ab138152592411fc6dfdacab624a63cdd7",
+  "title": "fix(room): rooms could run forever — and the loop now actually runs through the bounded runner",
+  "state": "MERGED",
+  "merged_at": "2026-09-02T21:25:50Z",
+  "head_ref": "room-bounded-execution"
+}
