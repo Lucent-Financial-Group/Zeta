@@ -9,15 +9,39 @@ open Zeta.Core
 
 /// Measure allocations of an action. The GC counter is thread-local and
 /// precise to the byte. Warm up first so JIT is done.
+///
+/// TAKES THE MINIMUM OF SEVERAL SAMPLES, and that is load-bearing rather than tidiness.
+///
+/// The paths under test rent a workspace from `ArrayPool<'T>.Shared` (`Pool.Rent`, returned via
+/// `Pool.Return`), and that pool is PROCESS-WIDE. A rent that hits the pool allocates nothing; a
+/// rent that misses allocates a whole power-of-two bucket. Which one happens is decided by what
+/// every other test in the process did to the shared pool between the warm-up and the read — so a
+/// single sample measures the pool's mood, not the code.
+///
+/// MEASURED, Windows 2026-09-02: `ZSet.add allocates only the output array` read 384 bytes in the
+/// full-suite run and failed its `< 200` bound, while passing 49/49 in three consecutive isolated
+/// runs. The number is exact and decomposes cleanly: `Pool.Rent 5` takes the 16-element bucket
+/// (16 x sizeof<ZEntry<int>> + 24-byte header = 280) and `Pool.FreezeSlice` allocates the intended
+/// 5-entry output (80 + 24 = 104). 280 + 104 = 384. One pool MISS plus the allocation the test is
+/// actually about.
+///
+/// The minimum is the steady-state cost — the sample where the rent hit, which is the behaviour the
+/// invariant is stated over. It does NOT weaken the assertion: an extra allocation on every call
+/// raises the minimum too, so a real regression still fails. What it stops failing on is a
+/// neighbouring test having emptied a shared bucket.
 let private measure (warmup: int) (action: unit -> unit) : int64 =
+    let samples = 5
     for _ in 1 .. warmup do action ()
     GC.Collect()
     GC.WaitForPendingFinalizers()
     GC.Collect()
-    let before = GC.GetAllocatedBytesForCurrentThread()
-    action ()
-    let after = GC.GetAllocatedBytesForCurrentThread()
-    after - before
+    let mutable best = Int64.MaxValue
+    for _ in 1 .. samples do
+        let before = GC.GetAllocatedBytesForCurrentThread()
+        action ()
+        let after = GC.GetAllocatedBytesForCurrentThread()
+        best <- min best (after - before)
+    best
 
 
 [<Fact>]
