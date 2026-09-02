@@ -13,6 +13,7 @@
 
   <ItemGroup>
     <Compile Include="AssemblyInfo.fs" />
+    <Compile Include="TempRepo.fs" />
     <Compile Include="GitDeltaLog.Tests.fs" />
     <Compile Include="GitDeltaLog.Erasure.Laws.Tests.fs" />
     <Compile Include="GitCommand.Tests.fs" />

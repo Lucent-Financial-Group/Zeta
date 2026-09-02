@@ -33,11 +33,11 @@ let mutable private counter = 0
 let private withRepoDir (f: string -> unit) =
     let id = Interlocked.Increment(&counter)
     let dir = Path.Combine(Path.GetTempPath(), "zeta-git-test", sprintf "saga-%04d" id)
-    if Directory.Exists dir then Directory.Delete(dir, true)
+    Zeta.Tests.Git.TempRepo.deleteRepoDir dir
     Directory.CreateDirectory dir |> ignore
     Repository.Init(dir, isBare = true) |> ignore
     try f dir
-    finally try Directory.Delete(dir, true) with _ -> ()
+    finally Zeta.Tests.Git.TempRepo.deleteRepoDir dir
 
 let private openLog (dir: string) : IDeltaLog<int> =
     let repo = new Repository(dir)
