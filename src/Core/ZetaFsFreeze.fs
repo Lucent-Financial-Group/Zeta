@@ -15,8 +15,9 @@ open Zeta.Core.FSharp.Blake3
 /// `InMemoryFileSystem.ArmCrashMidWrite`. Journaled/Durable boats write
 /// intent, Flush (visible, no crash arm), put leaves, then commit.
 /// Plain and sealed log replay restore intact intent+commit pairs on create
-/// (torn tail / intent-without-commit dropped). Sealed frames carry LSN in
-/// the clear so `openLog` can rebuild the nonce. Reclaim sweep stays `toy`.
+/// (torn tail / intent-without-commit / mid-log CRC dropped from the bad
+/// frame; prefix kept). Sealed frames carry LSN in the clear so `openLog`
+/// can rebuild the nonce. Reclaim sweep stays `toy`.
 ///
 /// DoP=1 on this log. No Task.Run except the ferry launch (injected context
 /// on the DST path; `manual` + `PumpToIdleAsync` for tests).
@@ -392,8 +393,9 @@ module ZetaFsFreeze =
                 else
                     invalidOp (sprintf "ZetaFsFreeze: commit without matching intent at byte %d" recordStart)
 
-    /// Restore Commits/Leaves from intact plain frames. Trailing torn frame or
-    /// intent-without-commit is truncated.
+    /// Restore Commits/Leaves from intact plain frames. Trailing torn frame,
+    /// intent-without-commit, or a CRC mismatch (tail or mid) is truncated
+    /// from that frame; the verified prefix is kept.
     let private replayPlainLog (fs: IFileSystem) (volume: Volume) =
         let logPath = volume.Log.LogPath
 
@@ -427,11 +429,11 @@ module ZetaFsFreeze =
                         let actualCrc = HardwareCrc.Crc32C(ReadOnlySpan payload)
 
                         if actualCrc <> expectedCrc then
-                            if stream.Position = stream.Length then
-                                stream.SetLength recordStart
-                                scanning <- false
-                            else
-                                invalidOp (sprintf "ZetaFsFreeze: CRC mismatch at byte %d" recordStart)
+                            // Tail or mid: keep the intact prefix, drop from here.
+                            // A mid-file CRC that throws would refuse the volume and
+                            // lose freezes that already verified.
+                            stream.SetLength recordStart
+                            scanning <- false
                         else
                             let atTail = stream.Position = stream.Length
                             scanning <-
@@ -492,7 +494,7 @@ module ZetaFsFreeze =
                         | Error ZetaFsCrypto.CryptoError.GcmAuthFailed when pending.IsNone && recordStart = 0L ->
                             scanning <- false
                         | Error ZetaFsCrypto.CryptoError.MacMismatch
-                        | Error ZetaFsCrypto.CryptoError.GcmAuthFailed when atTail ->
+                        | Error ZetaFsCrypto.CryptoError.GcmAuthFailed ->
                             stream.SetLength recordStart
                             scanning <- false
                         | Error e ->

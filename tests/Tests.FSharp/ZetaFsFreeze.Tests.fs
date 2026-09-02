@@ -519,3 +519,123 @@ let ``Journaled freeze crash during leaf put leaves extra garbage and is not rea
         finally
             FileSystem.Reset()
     }
+
+[<Fact>]
+let ``reopen after a mid-log CRC mismatch keeps the prefix and drops the suffix`` () : Task =
+    task {
+        ensureHasher ()
+        let mock = InMemoryFileSystem()
+        FileSystem.Register(mock)
+        let store = "/freeze-mid-crc"
+        let mutbuf = ZetaFsMutbuf.create store ZetaFsMutbuf.Coherence.Shared
+        let volume = ZetaFsFreeze.createManual store mutbuf None
+        let logPath = Path.Combine(store, "log", "freeze")
+
+        try
+            let id1 = mintId ()
+            let h1 = ZetaFsMutbuf.openHandle volume.Mutbuf id1
+            ZetaFsMutbuf.pwrite volume.Mutbuf h1 0L [| 1uy |] |> ignore
+            let pending1 = (freezeAsync volume id1 ZetaFsFreeze.Journaled).AsTask()
+            do! (ZetaFsFreeze.pumpLog volume CancellationToken.None).ConfigureAwait(false)
+            let! first = pending1.ConfigureAwait(false)
+
+            match first with
+            | Error e -> Assert.Fail(ZetaFsFreeze.errorName e)
+            | Ok first ->
+                let prefixLen = FileSystem.Current.ReadAllBytes(logPath).Length
+                let id2 = mintId ()
+                let h2 = ZetaFsMutbuf.openHandle volume.Mutbuf id2
+                ZetaFsMutbuf.pwrite volume.Mutbuf h2 0L [| 2uy |] |> ignore
+                let pending2 = (freezeAsync volume id2 ZetaFsFreeze.Journaled).AsTask()
+                do! (ZetaFsFreeze.pumpLog volume CancellationToken.None).ConfigureAwait(false)
+                let! second = pending2.ConfigureAwait(false)
+
+                match second with
+                | Error e -> Assert.Fail(ZetaFsFreeze.errorName e)
+                | Ok second ->
+                    Assert.True(ZetaFsFreeze.isReadable volume first.Content)
+                    Assert.True(ZetaFsFreeze.isReadable volume second.Content)
+                    let full = mock.Files.[logPath]
+                    Assert.True(full.Length > prefixLen + 8)
+                    let flipped = Array.copy full
+                    flipped.[prefixLen + 4] <- flipped.[prefixLen + 4] ^^^ 0xA5uy
+                    mock.Files.[logPath] <- flipped
+                    ZetaFsFreeze.dispose volume
+                    let reopened = ZetaFsFreeze.createManual store mutbuf None
+
+                    try
+                        Assert.True(ZetaFsFreeze.isReadable reopened first.Content)
+                        Assert.False(ZetaFsFreeze.isReadable reopened second.Content)
+                        let recovered = FileSystem.Current.ReadAllBytes logPath
+                        Assert.True(recovered.Length < flipped.Length)
+                        Assert.True(recovered.Length > 8)
+                        Assert.True((recovered.Length = prefixLen))
+                    finally
+                        ZetaFsFreeze.dispose reopened
+        finally
+            FileSystem.Reset()
+    }
+
+[<Fact>]
+let ``reopen after a mid-log sealed MAC mismatch keeps the prefix and drops the suffix`` () : Task =
+    task {
+        ensureHasher ()
+        let mock = InMemoryFileSystem()
+        FileSystem.Register(mock)
+        let store = "/freeze-mid-mac"
+        let mutbuf = ZetaFsMutbuf.create store ZetaFsMutbuf.Coherence.Shared
+        let vault = Array.init 32 (fun i -> byte i)
+        let mutable volume: ZetaFsFreeze.Volume option = None
+        let logPath = Path.Combine(store, "log", "freeze")
+
+        try
+            match ZetaFsCrypto.sessionFromVaultKey 1u vault with
+            | Error e -> Assert.Fail(ZetaFsCrypto.errorName e)
+            | Ok session ->
+                let v = ZetaFsFreeze.createManualWith store mutbuf None (Some session)
+                volume <- Some v
+                let id1 = mintId ()
+                let h1 = ZetaFsMutbuf.openHandle mutbuf id1
+                ZetaFsMutbuf.pwrite mutbuf h1 0L [| 1uy |] |> ignore
+                let pending1 = (freezeAsync v id1 ZetaFsFreeze.Journaled).AsTask()
+                do! (ZetaFsFreeze.pumpLog v CancellationToken.None).ConfigureAwait(false)
+                let! first = pending1.ConfigureAwait(false)
+
+                match first with
+                | Error e -> Assert.Fail(ZetaFsFreeze.errorName e)
+                | Ok first ->
+                    let prefixLen = FileSystem.Current.ReadAllBytes(logPath).Length
+                    let id2 = mintId ()
+                    let h2 = ZetaFsMutbuf.openHandle mutbuf id2
+                    ZetaFsMutbuf.pwrite mutbuf h2 0L [| 2uy |] |> ignore
+                    let pending2 = (freezeAsync v id2 ZetaFsFreeze.Journaled).AsTask()
+                    do! (ZetaFsFreeze.pumpLog v CancellationToken.None).ConfigureAwait(false)
+                    let! second = pending2.ConfigureAwait(false)
+
+                    match second with
+                    | Error e -> Assert.Fail(ZetaFsFreeze.errorName e)
+                    | Ok second ->
+                        let full = mock.Files.[logPath]
+                        Assert.True(full.Length > prefixLen + 12)
+                        let flipped = Array.copy full
+                        flipped.[prefixLen + 12] <- flipped.[prefixLen + 12] ^^^ 0xA5uy
+                        mock.Files.[logPath] <- flipped
+                        ZetaFsFreeze.dispose v
+                        volume <- None
+                        let reopened = ZetaFsFreeze.createManualWith store mutbuf None (Some session)
+
+                        try
+                            Assert.True(ZetaFsFreeze.isReadable reopened first.Content)
+                            Assert.False(ZetaFsFreeze.isReadable reopened second.Content)
+                            let recovered = FileSystem.Current.ReadAllBytes logPath
+                            Assert.True(recovered.Length < flipped.Length)
+                            Assert.True(recovered.Length > 12)
+                            Assert.True((recovered.Length = prefixLen))
+                        finally
+                            ZetaFsFreeze.dispose reopened
+        finally
+            match volume with
+            | Some v -> ZetaFsFreeze.dispose v
+            | None -> ()
+            FileSystem.Reset()
+    }

@@ -1,11 +1,12 @@
 ---
 id: 081M1J5CE6A087G0R000RVJC9H
 type: task
-state: backlog
+state: done
 priority: P1
 slug: pr12-freeze-intent-then-leaves-then-commit
 title: "PR12 freeze intent then leaves then commit"
 created: 2026-09-02T22:56:07.370Z
+completed: 2026-09-02T23:24:05.011Z
 depends_on: []
 composes_with: ["081M1C59ZG4087G0R000VM8DZN", "081M1HNCGN8087G0R000ZK7ZGX"]
 ---
