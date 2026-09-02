@@ -1,0 +1,12 @@
+{
+  "pr_number": 16380,
+  "archive_path": "docs/history/pr-reviews/PR-16380-feat-081m1hvvn9p087g0r003z7e7b3-replay-intact-freeze-log-boats.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-02T20:51:50.242Z",
+  "schema_version": "v1",
+  "commit_sha": "f8f1f715c515994921a88d11dd7316eb989d75f7",
+  "title": "feat(081M1HVVN9P087G0R003Z7E7B3): replay intact freeze-log boats",
+  "state": "MERGED",
+  "merged_at": "2026-09-02T20:51:05Z",
+  "head_ref": "feat/zetafs-freeze-log-replay"
+}
