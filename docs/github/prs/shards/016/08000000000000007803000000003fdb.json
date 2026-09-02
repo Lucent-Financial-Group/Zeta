@@ -1,0 +1,12 @@
+{
+  "pr_number": 16347,
+  "archive_path": "docs/history/pr-reviews/PR-16347-docs-memory-unique-confirm-leftover-open-16344-on-current-lumen.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-02T17:52:19.162Z",
+  "schema_version": "v1",
+  "commit_sha": "a4dc65192a25464787dd2faf9c213fc40414d476",
+  "title": "docs(memory): unique-confirm leftover OPEN #16344 on CURRENT-lumen",
+  "state": "MERGED",
+  "merged_at": "2026-09-02T17:51:40Z",
+  "head_ref": "cursor/lumen-unique-confirm-16344-68fd"
+}
