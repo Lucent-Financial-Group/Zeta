@@ -78,18 +78,23 @@ table yet.
 ### Factory pin 1.99.0-beta.3 (2026-09-02, same M2 Ultra)
 
 Same command, rustc **1.99.0-beta.3** (`cbae9b4ca`), `CARGO_PROFILE_RELEASE_DEBUG=0`
-`RUSTFLAGS=-C debuginfo=0`. CSV: `/tmp/feldera-nexmark-1.99.0-beta.3.csv`
-(not committed). GHA repeats this on ubuntu-24.04 / macos-26 in
-`feldera-native.yml` `native` (path-filtered).
+`RUSTFLAGS=-C debuginfo=0`. One run per host, not a compiler-speed claim.
 
-| Query | Events | Cores | Elapsed | Throughput | Peak RSS |
-|---|---:|---:|---:|---:|---:|
-| Q1 | 100,000 | 1 | 74.161 ms | 1.348 M/s | 99.33 MiB |
-| Q2 | 100,000 | 1 | 49.138 ms | 2.035 M/s | 105.08 MiB |
+| Host | Query | Events | Cores | Elapsed | Throughput | Peak RSS |
+|---|---|---:|---:|---:|---:|---:|
+| this M2 Ultra | Q1 | 100,000 | 1 | 74.161 ms | 1.348 M/s | 99.33 MiB |
+| this M2 Ultra | Q2 | 100,000 | 1 | 49.138 ms | 2.035 M/s | 105.08 MiB |
+| GHA ubuntu-24.04 (Xeon 8573C 2c/4t) | Q1 | 100,000 | 1 | 95.193 ms | 1.050 M/s | 152.5 MiB |
+| GHA ubuntu-24.04 | Q2 | 100,000 | 1 | 62.324 ms | 1.605 M/s | 152.5 MiB |
+| GHA macos-26 (M1 virtual, 3 cores) | Q1 | 100,000 | 1 | 127.798 ms | 0.782 M/s | 104.3 MiB |
+| GHA macos-26 | Q2 | 100,000 | 1 | 81.798 ms | 1.223 M/s | 110.1 MiB |
 
-Same-box vs the 1.93.1 binary: Q1 ~6 % slower, Q2 ~11 % faster, RSS
-in the same band. One run, not a compiler-speed claim. GHA runner
-CSVs will sit next to these once `feldera-native.yml` lands.
+GHA CSVs: run [33603177913](https://github.com/Lucent-Financial-Group/Zeta/actions/runs/33603177913)
+(`feldera-nexmark-ubuntu-24.04`, `feldera-nexmark-macos-26`). Same-box vs
+the 1.93.1 binary: Q1 ~6 % slower, Q2 ~11 % faster, RSS in the same
+band. Runners are slower than this Mac (ubuntu Q1 ~1.3×, GHA mac
+virtual ~1.7×) — hardware, not a different algorithm. Windows omitted
+(unix fd).
 
 Zeta price-keyed Q1 100k at 54.89 µs (PR #16275) is **not** this
 denominator: `|Z-set| ≤ 10_000` after `ofArray` coalesces prices.
@@ -145,9 +150,8 @@ and warns (does not scoop) when it is not. Unix cmake is apt/brew.
 
 ## Not yet a result
 
-A longer unique-key BDN pasted into `docs/BENCHMARKS.md`. GHA
-ubuntu/macos factory-pin Nexmark CSVs (this PR's `feldera-native.yml`
-`native` job) are not in the table above yet.
+A longer unique-key BDN pasted into `docs/BENCHMARKS.md`. Windows
+unique-key BDN is still the slow lane (90 min cap).
 
 ## rustc bisect (Feldera `dbsp` `--release`, debuginfo=0)
 
