@@ -237,6 +237,19 @@ export interface AdvanceRequest {
  * same device, because the device cannot perform one.
  */
 export function advance(state: CeremonyState, request: AdvanceRequest): ProvisioningResult {
+  // THE REFUSAL IS APPLIED HERE, and until now it was not applied anywhere.
+  //
+  // `refuseSecretShapedFields` documented itself as guarding "the one path *into this substrate*",
+  // and that path is this function — but nothing called it. Every reference in the repo was its own
+  // definition and its own test, so the refusal was a test rather than a boundary: a record
+  // smuggling key material through `advance` was accepted.
+  //
+  // TypeScript does not close this on its own. Excess-property checking fires only on an object
+  // literal assigned straight to the annotated type; a widened value, a spread, a parsed JSON body
+  // or an `as AdvanceRequest` all pass, and at runtime the types are gone entirely.
+  const smuggled = refuseSmuggledSecretFields(request);
+  if (smuggled !== null) return { ok: false, why: smuggled };
+
   const { step, approver } = request;
 
   if (state.completed.includes(step)) {
@@ -322,6 +335,45 @@ function normaliseFieldName(name: string): string {
  * The residual gap — no end-to-end proof that key material stayed off disk — is unclosed and is
  * named as unclosed.
  */
+/**
+ * The fields `AdvanceRequest` declares. Everything else on the object is an EXCESS field the caller
+ * put there, which is the only place a smuggled secret can hide.
+ *
+ * Kept next to the interface it mirrors, because the two must move together — a new declared field
+ * that is not listed here would be refused as smuggled the moment anyone used it.
+ */
+const ADVANCE_REQUEST_FIELDS: ReadonlySet<string> = new Set(["step", "approver", "udsCommitment"]);
+
+/**
+ * The ceremony's own guard: refuse an `AdvanceRequest` carrying an UNDECLARED field named like key
+ * material.
+ *
+ * WHY THIS IS NOT JUST `refuseSecretShapedFields(request)`, which is what it looks like it should
+ * be. The generic refusal is a name-shaped heuristic, and `KEY_MATERIAL_NAME_FRAGMENTS` contains
+ * `"uds"` — so it refuses **`udsCommitment`**, the ceremony's own required input for the
+ * `uds-injected` step. Wiring the generic form directly here would reject every legitimate UDS
+ * burn, which is very likely why it was never wired at all.
+ *
+ * A commitment is not the secret it commits to; that is the entire point of a commitment. But a
+ * name-shaped heuristic cannot tell them apart, so the discrimination has to come from somewhere
+ * else — and the declared schema is exactly the right somewhere. The declared fields are reviewed
+ * when the interface changes; an undeclared one is not, and that asymmetry is what makes excess
+ * fields the thing worth scanning.
+ *
+ * Honest ceiling, inherited from the generic form and not improved on here: this is still a check
+ * on NAMES. A secret smuggled in a field called `notes` passes, and a UDS printed to a log by a
+ * provisioning script never comes near this function. The residual gap the module already names —
+ * no end-to-end proof that key material stayed off disk — stays open.
+ */
+export function refuseSmuggledSecretFields(request: object): ProvisioningRefusal | null {
+  for (const field of Object.keys(request)) {
+    if (ADVANCE_REQUEST_FIELDS.has(field)) continue;
+    const refusal = refuseSecretShapedFields({ [field]: true });
+    if (refusal !== null) return refusal;
+  }
+  return null;
+}
+
 export function refuseSecretShapedFields(record: object): ProvisioningRefusal | null {
   for (const field of Object.keys(record)) {
     const normalised = normaliseFieldName(field);
