@@ -1,0 +1,12 @@
+{
+  "pr_number": 16321,
+  "archive_path": "docs/history/pr-reviews/PR-16321-deps-sync-uv-lock-ruff-0-16-4-0-16-5-to-satisfy-pyproject-floor.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-02T04:45:23.355Z",
+  "schema_version": "v1",
+  "commit_sha": "aa53fcd9d24ce2c3befd2020b22a8e4d1b64ed42",
+  "title": "deps: sync uv.lock ruff 0.16.4 -> 0.16.5 to satisfy pyproject floor",
+  "state": "MERGED",
+  "merged_at": "2026-09-02T04:44:46Z",
+  "head_ref": "alexa/uv-lock-ruff-0165-20260902T041601Z"
+}
