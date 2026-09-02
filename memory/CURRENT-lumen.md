@@ -60,7 +60,12 @@ tests/Bayesian.Tests/ReferenceFrameFactorHeterarchy.Tests.fs; never a
 merge-ref). Parent leftover unique @
 d647d7d0066bca4f28a4171e788fbabaa7a52313 (do not grade as this
 unique). Never grade squash leftover unique @
-a6de48a4c06928708d0e8cb647f383ca448a9932.
+a6de48a4c06928708d0e8cb647f383ca448a9932 (2-parent
+merge-ref) or leftover unique @
+8c31679421276cb31b539145b159fbb1521e49b2 (GitHub
+squash onto main after leftover OPEN REST confirm;
+unique still not an ancestor of origin/main). Unique
+does not move.
 Not leftover-of leftover OPEN #16308 leftover unique @ d81ccff4,
 leftover OPEN #16344 leftover unique @ d265b8ea, leftover-on-main
 #16299 leftover unique @ 14d340ca, leftover-on-main #16306 leftover
