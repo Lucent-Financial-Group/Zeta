@@ -32,7 +32,14 @@ to hit production without a traditional integration suite.
 2. **Disk I/O interception.** Every write becomes a recorded event;
    the simulator can reorder flushes, crash in the middle of a
    write, corrupt on-disk state. **Our `DiskBackingStore` doesn't
-   go through a simulator interface.**
+   go through a simulator interface.** ZetaFS PR1 routed `.zetafs`
+   through `IFileSystem`; `ISimulatedFs` is still **flush-fail 5%
+   only**. Crash-mid-write / reorder / corrupt-last-write is first-product
+   **PR12** and ZetaDB **D12**: the same door must cover the
+   **database commit path and the filesystem freeze path**. Until
+   that corpus exists the honest word is `toy`, not crash-safe.
+   ReFS-shaped resilience (allocate-on-write, pointer-not-copy) is
+   the *why*; DST is how it is earned. `081M1HK4AQE087G0R002RRJXWE`.
 3. **Deterministic scheduler at the Task level.** FDB's `flow`
    library wraps every actor so the simulator picks the interleaving
    deterministically. .NET's TPL scheduler is our equivalent; we

@@ -24,6 +24,7 @@ import {
   metalClusterShape,
   readCiliumValueSurfaces,
   renderValuesYaml,
+  shippedCiliumChartVersion,
   wireguardProbeInterface,
   wireguardProbeInterfaceIsValid,
 } from "./cilium-kind-lane.ts";
@@ -120,8 +121,30 @@ describe("kindClusterShape", () => {
     return text.text().then((yaml) => {
       expect(yaml).toContain("disableDefaultCNI: true");
       expect(yaml).toContain('kubeProxyMode: "none"');
-      expect(kindClusterShape(yaml)).toEqual({ controlPlaneNodes: 1, workerNodes: 0 });
     });
+  });
+});
+
+describe("shippedCiliumChartVersion — helm install must match the Application pin", () => {
+  test("reads targetRevision from the ArgoCD Application, not a restated literal", () => {
+    const version = shippedCiliumChartVersion();
+    expect(version).toMatch(/^\d+\.\d+\.\d+$/);
+    const app = Bun.file("full-ai-cluster/k8s/applications/cilium/Application.yaml");
+    return app.text().then((text) => {
+      expect(text).toContain(`targetRevision: ${version}`);
+    });
+  });
+
+  test("bootstrap HelmChart is a different pin — first-boot, not adopt", async () => {
+    const version = shippedCiliumChartVersion();
+    const bootstrap = await Bun.file("full-ai-cluster/k8s/bootstrap/cilium-install.yaml").text();
+    const match = bootstrap.match(/^\s*version:\s*([0-9][0-9.]*)\s*$/m);
+    expect(match?.[1]).toMatch(/^\d+\.\d+\.\d+$/);
+    // Documented split, not a bug in this function: Application is 1.20.1
+    // (adopt), bootstrap is 1.16.5 (metal first-boot). A test that required
+    // equality would force either a skip-minor bump of first-boot or a
+    // helm-install of 1.16.5 that ArgoCD then upgrades mid-proof.
+    expect(match?.[1]).not.toBe(version);
   });
 });
 

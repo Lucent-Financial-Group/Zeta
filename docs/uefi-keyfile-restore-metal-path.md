@@ -41,11 +41,16 @@ that green covers, so no one quotes it for a guarantee it does not make.
   metal-capable=yes` and never claims fw_cfg. The Nix unit **calls** that
   script (`--stage`); there is no second shell implementation of the three
   transports. Serial strings stay byte-identical to the QEMU restore contract.
-- **In-guest wrong-passphrase (harness; dispatch after merge).** Restore-lane
+- **In-guest wrong-passphrase (proven on `main` dispatch 2026-09-01).** Restore-lane
   phase 2b reboots the same installed disk with `WRONG_QEMU_PASSPHRASE` on
-  fw_cfg and asserts `zeta-creds-restore: decrypt:` with no write. Still
-  hypervisor transport. Not a metal claim. Proven only after a green `main`
-  dispatch of `build-ai-cluster-iso.yml`.
+  fw_cfg and asserts decrypt refusal with no write. Still hypervisor
+  transport. Not a metal claim. In-guest proof: workflow_dispatch run
+  [33462406161](https://github.com/Lucent-Financial-Group/Zeta/actions/runs/33462406161)
+  on `main` @ `ed765bbed` (#15983 is an ancestor). Serial:
+
+  - `[qemu-full-install-test] phase 2b — rebooting installed disk with WRONG fw_cfg passphrase (still hypervisor transport; not metal)`
+  - `[qemu-full-install-test] UEFI keyfile restore wrong-passphrase contract ok (decrypt refused; no write; still fw_cfg / not metal)`
+  - `zeta-creds-restore: wrote 1 creds (target-root: /)` (happy-path phase 2 on the same disk, before 2b)
 
 ## NOT verified in CI — remaining gap
 
@@ -56,7 +61,7 @@ that green covers, so no one quotes it for a guarantee it does not make.
 (an operator types the passphrase). No CI harness can drive that console
 prompt, so the live `interactive-ask-password metal-capable=yes` path has
 **never executed on hardware**. The QEMU green proves decrypt, bind, non-zero
-write, and (after the next dispatch) in-guest AEAD refusal. The hexagonal
+write, and in-guest AEAD refusal (dispatch 33462406161). The hexagonal
 port proves the metal *decision* and mock adapter. Together that is **ready
 for a human hardware run**. It is not a hardware proof.
 

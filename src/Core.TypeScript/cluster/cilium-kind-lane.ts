@@ -59,6 +59,27 @@ export const NODE_LEDGER = "full-ai-cluster/k8s/single-node-budget.json";
 /** The kind profile that brings up a cluster with NO default CNI, for Cilium to fill. */
 export const CILIUM_KIND_PROFILE = "full-ai-cluster/dev-cluster/profiles/ci.cilium.kind-config.yaml";
 
+export const CILIUM_CHART_REPO = "https://helm.cilium.io";
+
+/**
+ * The Cilium chart pin the ArgoCD Application will adopt.
+ *
+ * Read, not restated: helm-installing a different version than `targetRevision`
+ * makes the first ArgoCD sync a chart upgrade in the middle of the health
+ * proof. The bootstrap HelmChart (`cilium-install.yaml`) is a different pin on
+ * purpose today: it is metal first-boot (still 1.16.5). Matching the two is a
+ * different job — Cilium forbids skipping minors on an in-place upgrade.
+ */
+export function shippedCiliumChartVersion(repoRoot = REPO_ROOT): string {
+  const path = join(repoRoot, "full-ai-cluster/k8s/applications/cilium/Application.yaml");
+  const text = readFileSync(path, "utf8");
+  const match = text.match(/^\s*targetRevision:\s*([0-9][0-9.]*)\s*$/m);
+  if (match === null || match[1] === undefined) {
+    throw new Error(`Cilium Application.yaml carries no targetRevision pin: ${path}`);
+  }
+  return match[1];
+}
+
 /** The nix module that owns the WireGuard preflight probe, including the device name it uses. */
 export const CILIUM_WIREGUARD_PREFLIGHT_NIX = "full-ai-cluster/nixos/modules/cilium-wireguard-preflight-checks.nix";
 

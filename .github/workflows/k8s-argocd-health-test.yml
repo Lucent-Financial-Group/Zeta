@@ -371,7 +371,10 @@ jobs:
           bun test \
             src/Core.TypeScript/cluster/argocd-health-test.test.ts \
             src/Core.TypeScript/cluster/included-proof-summary.test.ts \
-            src/Core.TypeScript/cluster/dev-cluster/use-cases.test.ts
+            src/Core.TypeScript/cluster/dev-cluster/use-cases.test.ts \
+            src/Core.TypeScript/cluster/provider-conditional-lift.test.ts \
+            src/Core.TypeScript/cluster/applied-vs-asserted-agreement.test.ts \
+            src/Core.TypeScript/cluster/cilium-k3d-values.test.ts
 
       # WHICH Application MANIFESTS DOES A ROOT ACTUALLY REACH, AND WHICH OF
       # THOSE DOES ANY CHECK ASSERT ON. Offline, pure, ~1s -- so it lives in
@@ -1297,18 +1300,18 @@ jobs:
   #   CNI        orchestrator   app roster asserted   result
   #   kindnetd   kind           included              green, 25 apps
   #   Cilium     k3s (k3d)      included              4 never reach Healthy
-  #   Cilium     kind           NEVER ASSERTED        <- this job
+  #   Cilium     kind           included, own cluster <- this job (081M1DFQ2MZ)
   #
-  # `live-kind-cilium` proves Cilium comes UP on kind and stops there -- it never
-  # runs the app roster, which is why it could not settle this. Running the same
-  # `included` proof that is green on kindnetd against a kind cluster whose CNI is
-  # Cilium changes exactly ONE variable against that green baseline, so a red here
-  # convicts Cilium and a green here convicts k3s.
+  # Four `--existing` attempts produced zero per-app verdicts: the included proof
+  # depends on preparation the harness performs during ITS OWN cluster creation.
+  # `--cni cilium` is the exit. The harness creates the no-default-CNI cluster,
+  # helm-installs the shipped Cilium pin, runs the vault ceremony, then asserts
+  # the same roster as `live-kind-included`. One variable against that baseline:
+  # CNI. vault is no longer confounded.
   #
-  # Deliberately a SEPARATE job rather than a step bolted onto `live-kind-cilium`:
-  # that lane's 30-minute ceiling is a real guard on a bring-up that should take
-  # ~15, and widening it to fit a 40-minute proof would weaken the guard on every
-  # ordinary run to serve an experiment that runs by hand.
+  # `live-kind-cilium` still exists: it proves Cilium comes UP on kind and stops
+  # there. This job is the App-of-Apps half, deliberately separate so the CNI
+  # lane's 30-minute ceiling stays a real guard.
   live-kind-cilium-included:
     name: PROBE kind+Cilium included proof (${{ matrix.runner }})
     needs: dry-run
@@ -1366,89 +1369,33 @@ jobs:
           sudo ip link del dev "$iface"
           echo "runner kernel can create a WireGuard device"
 
-      - name: Bring up kind with Cilium as the CNI
-        id: cilium
-        run: |
-          set -o pipefail
-          bun src/Core.TypeScript/cluster/dev-cluster/cilium-kind-up.ts \
-            --cluster-name zeta-ci-cilium-included \
-            --timeout-sec 600 \
-            | tee "$RUNNER_TEMP/cilium-kind.log"
-
-      # `--existing`: the cluster is already up WITH Cilium, so the harness must not
-      # create one (its own kind path would bring up kindnetd and destroy the single
-      # variable this job exists to isolate).
-      # THE DEV PREPARATION `--existing` SKIPS, APPLIED BY HAND.
-      #
-      # Measured on run 33481362793: the Cilium bring-up succeeded and the proof then
-      # refused, correctly and before measuring anything:
-      #
-      #   {"kind":"DevStorageClassMissing","message":"... declares a dev StorageClass named
-      #    \"longhorn\" over rancher.io/local-path, and the included proof asserts
-      #    Applications that request it, but in cluster zeta-ci-cilium-included it is not
-      #    present. Those PVCs would stay Pending, which ArgoCD reports as PROGRESSING
-      #    rather than Degraded ..."}
-      #
-      # THAT REFUSAL SAVED THIS EXPERIMENT FROM A FALSE POSITIVE, and it is worth being
-      # explicit about why: `Progressing` is the EXACT symptom the four Applications show
-      # on k3d. Without the guard this job would have reported apps Progressing on
-      # kind+Cilium and the obvious reading -- "Cilium causes it" -- would have been wrong,
-      # caused instead by a StorageClass that `--existing` skipped.
-      #
-      # `bringUpKindCiCluster` applies this during ITS cluster creation; `cilium-kind-up.ts`
-      # builds the cluster a different way and does not. Applied here rather than inside
-      # `cilium-kind-up.ts` deliberately: that module also serves the `live kind Cilium CNI`
-      # lane, which tests the CNI alone and has no business growing a StorageClass it does
-      # not need.
-      - name: Apply the dev StorageClass the harness would have applied
-        run: |
-          set -euo pipefail
-          kubectl apply -f full-ai-cluster/dev-cluster/manifests/longhorn.yaml
-          # Assert rather than assume: a silent apply that produced no StorageClass would
-          # send us straight back into the refusal above, one 30-minute run later.
-          got="$(kubectl get storageclass longhorn -o jsonpath='{.provisioner}')"
-          echo "longhorn StorageClass provisioner: ${got}"
-          test -n "$got"
-
       - name: Run the included Synced+Healthy proof on kind+Cilium
         id: proof
         env:
           ZETA_GHCR_PULL_TOKEN: ${{ github.token }}
-          # MEASURED 2026-09-01, run 33474432508: this line was missing and the step
-          # expanded `--git-ref ""`, so the harness refused with
-          #   {"kind":"UsageError","message":"git ref must match [A-Za-z0-9._/-]+ ..."}
-          # and exited 2 -- a USAGE error, which is a check that never ran, not a check
-          # that failed. The command line was copied from `live-kind-included` without
-          # the step env that defines the variable it quotes. Every other lane in this
-          # file (735, 823, 1007, 1415) sets it exactly like this.
           ZETA_ARGOCD_GIT_REF: ${{ github.event.pull_request.head.sha || github.sha }}
-        # NO `--ephemeral-vault-init` HERE, AND IT IS NOT AN OVERSIGHT. The harness
-        # refuses the combination on purpose (run 33478106365):
-        #   "--ephemeral-vault-init cannot be combined with --existing: the ceremony is
-        #    authorised only for a cluster this process creates and destroys."
-        # This job MUST pass `--existing`: the Cilium bring-up has to happen before the
-        # proof, because the no-CNI profile cannot schedule ArgoCD until a CNI is
-        # installed. So the ceremony is unavailable here by construction, not by choice.
-        #
-        # CONSEQUENCE, AND IT BOUNDS WHAT THIS JOB CAN CONCLUDE: the green baseline
-        # (`live-kind-included`) DOES run the ceremony, so `vault` in this lane is not
-        # comparable to it -- an uninitialised vault may fail to reach Healthy for
-        # reasons that have nothing to do with the CNI. `vault` is therefore CONFOUNDED
-        # here and the verdict table says so rather than reporting its state as evidence.
-        # The other three (openziti-controller, trust-manager, spire) do not depend on
-        # the ceremony and are what this probe can actually speak to.
+          ZETA_ARGOCD_GIT_REPO_URL: ${{ github.event.pull_request.head.repo.clone_url || 'https://github.com/Lucent-Financial-Group/Zeta' }}
+        # ONE harness invocation. `--cni cilium` creates the no-default-CNI
+        # cluster, helm-installs the shipped Cilium surface, applies StorageClass
+        # aliases and bootstrap secrets, and runs the vault ceremony. `--existing`
+        # is not on this line: four attempts showed it cannot carry the included
+        # proof (081M1DFQ2MZ). `--ephemeral-vault-init` is now legal because this
+        # process creates and destroys the cluster, so vault is comparable to
+        # `live-kind-included`.
         run: |
           set -o pipefail
           bun src/Core.TypeScript/cluster/argocd-health-test.ts \
             --run \
-            --existing \
             --provider kind \
+            --cni cilium \
             --scope included \
             --runtime docker \
+            --config full-ai-cluster/dev-cluster/profiles/ci.cilium.kind-config.yaml \
             --cluster-name zeta-ci-cilium-included \
             --git-ref "$ZETA_ARGOCD_GIT_REF" \
             --timeout-sec 2400 \
             --poll-sec 15 \
+            --ephemeral-vault-init \
             | tee "$RUNNER_TEMP/cilium-included-proof.log"
 
       # The verdict table is the POINT of this job, so it is printed whether the
@@ -1481,26 +1428,17 @@ jobs:
             echo "would manufacture a finding out of a run that measured nothing."
             exit 0
           fi
-          echo "=== the three this probe can speak to ==="
-          for app in openziti-controller trust-manager spire; do
+          echo "=== the four this probe can speak to ==="
+          for app in openziti-controller trust-manager spire vault; do
             line="$(grep -oE "=== $app: sync=[A-Za-z]+ health=[A-Za-z]+" "$LOG" 2>/dev/null | head -1)"
             # Safe: reached only when the proof emitted >=1 verdict, so an absent app
             # genuinely means absent from an asserted roster.
             echo "  ${line:-=== $app: NOT ASSERTED IN THIS SCOPE (roster had ${total} apps)}"
           done
-          echo "=== vault: CONFOUNDED IN THIS LANE, NOT EVIDENCE ==="
-          vline="$(grep -oE '=== vault: sync=[A-Za-z]+ health=[A-Za-z]+' "$LOG" 2>/dev/null | head -1)"
-          echo "  observed: ${vline:-<no vault verdict>}"
-          echo "  This lane cannot run --ephemeral-vault-init (the harness refuses it with"
-          echo "  --existing), while the green baseline live-kind-included DOES run it. An"
-          echo "  uninitialised vault can fail to reach Healthy for reasons unrelated to the"
-          echo "  CNI, so the line above is NOT comparable to the baseline and must not be"
-          echo "  read as evidence about Cilium. vault's standing evidence remains the"
-          echo "  kind-vs-k3d divergence recorded in 081M1DFQ2MZ087G0R000CMNHQX." 
 
       - name: Tear down kind cluster
         if: always()
-        run: kind delete cluster --name zeta-ci-cilium-included || true
+        run: bun src/Core.TypeScript/cluster/dev-cluster/kind-down.ts --cluster-name zeta-ci-cilium-included
 
   live-kind-included:
     name: live kind included Synced+Healthy proof (${{ matrix.runner }})

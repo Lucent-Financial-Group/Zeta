@@ -2,9 +2,9 @@
 
 **Author:** Ani (Grok Build) / design-doc-writer; human maintainer Aaron
 **Date:** 2026-08-30
-**Revised:** 2026-09-02 (ZetaDB-derived requirements D1–D8; product-existence bench vs host FS + group-commit; `Regen` stays Singleton until a generator is metered)
+**Revised:** 2026-09-02 (D1–D12: ReFS-shaped pointer-not-copy, crash DST for FS and DB, cache co-design, CoW amplification bound)
 **Work item:** `081M1C59ZG4087G0R000VM8DZN`
-**Status:** Design spec. PR1-PR11 polyfill is in-tree. Crash recovery remains `toy` until PR12. Stay in this monorepo until a signed, tested v0.9ish FS. Do not mint a GitHub product repo as a prerequisite. Later split: `docs/research/2026-09-01-zetafs-stays-in-monorepo-until-v09-then-product-per-language-ir-oracles.md`. ZetaDB-derived D1–D8 added 2026-09-02; freeze still does not use the ferry (D4).
+**Status:** Design spec. PR1-PR11 polyfill is in-tree. Crash recovery remains `toy` until PR12. Stay in this monorepo until a signed, tested v0.9ish FS. Do not mint a GitHub product repo as a prerequisite. Later split: `docs/research/2026-09-01-zetafs-stays-in-monorepo-until-v09-then-product-per-language-ir-oracles.md`. ZetaDB-derived D1–D12: freeze still does not use the ferry (D4); `ISimulatedFs` is still flush-only (D12).
 **Register:** product design. Existing code cited below is a polyfill / algebra substrate, not this product.
 **Extends (do not contradict):** [`docs/design/2026-08-27-zetafs-names-are-tags-multi-parented-files-and-symlink-native-presentation.md`](../../docs/design/2026-08-27-zetafs-names-are-tags-multi-parented-files-and-symlink-native-presentation.md)
 **Settles:** retention and GC, which that document left unset in **section 6.3 / section 8.3** (cycle guard: section 6.2, specified here). Names-are-tags **section 7** is platform presentation (FUSE / FSKit / ProjFS, case-fold refuse) -- not the retention hole. **Also settles** the former Open Questions as **composable knobs** (C1-C10). C8 is the one exclusive ZetaId slot (`StoreEntity = 13`). C9 is **not** "pick TPM": unwrap oracles compose (passphrase, Keychain, Secure Enclave when a seal tier exists, TPM 2.0 on Linux if present, PKCS#11 HSMs of several manufacturers, live USB probe). R8's tpmSeal-vs-usbISerial XOR is the installer defect; this FS must not repeat it.
@@ -25,11 +25,11 @@ Consumers of the first cut: **ZetaDB first**, then agent stores, emulator images
 
 **ZetaDB contract (the long-term exclusive picks live here).** The database needs: an event log as WAL (typed `Buffered | Journaled | Durable`); stable **EntityId** hubs so a row does not change identity on `write()`; **ContentId** as value identity (CDC/Jumprope); per-prefix retention so catalogs can be `keep-all` next to WAL/temp as `rolling`/`none` without minting a dataset; ordinal names in the shared fold; placement as a profile, not a format fork. When a knob looks like XOR, keep both if they are layers or views. Pick one only when the algebra cannot fork (one ZetaId category; one object AEAD).
 
-**ZetaDB product map (2026-09-02):** [`docs/design/2026-09-02-zetadb-roadmap-event-sourced-streaming-sql-not-feldera-on-postgres.md`](2026-09-02-zetadb-roadmap-event-sourced-streaming-sql-not-feldera-on-postgres.md) (`081M1HGD1QA087G0R001GRHPFW`). Feel is Flink/Reaqtor; Feldera is the DBSP competitor, not Postgres-on-DBSP. D1–D8 below are what the database needs from this FS. **Product-existence test:** `GroupCommitDiskDeltaLog` already auto-batches small writes on a host directory. ZetaFS-as-product is necessary only if it wins on fork / CAS / `Regen` / erasure coding / per-entity policy / typed durability — not on batching alone. Do not claim a v0.9 ship from the ZetaDB roadmap PR.
+**ZetaDB product map (2026-09-02):** [`docs/design/2026-09-02-zetadb-roadmap-event-sourced-streaming-sql-not-feldera-on-postgres.md`](2026-09-02-zetadb-roadmap-event-sourced-streaming-sql-not-feldera-on-postgres.md) (`081M1HGD1QA087G0R001GRHPFW`). Feel is Flink/Reaqtor; Feldera is the DBSP competitor, not Postgres-on-DBSP. D1–D12 below are what the database needs from this FS. **Product-existence test:** `GroupCommitDiskDeltaLog` already auto-batches small writes on a host directory. ZetaFS-as-product is necessary only if it wins on fork / CAS / `Regen` / erasure coding / per-entity policy / typed durability / **ReFS-shaped crash resilience and pointer-not-copy** — not on batching alone. Do not claim a v0.9 ship from a docs PR.
 
-### ZetaDB-derived requirements (D1–D8, 2026-09-02)
+### ZetaDB-derived requirements (D1–D12, 2026-09-02)
 
-Additive. Do not reopen K1–K18.
+Additive. Do not reopen K1–K18. D9–D12: Aaron 2026-09-02 (ReFS feel, crash DST for FS *and* DB, cache co-design, CoW must not 10× the volume). Workitem `081M1HK4AQE087G0R002RRJXWE`.
 
 | Id | Requirement | Today |
 |---|---|---|
@@ -41,6 +41,10 @@ Additive. Do not reopen K1–K18.
 | **D6** | Per-stream placement: a node need not hold every table/stream. | Partitioned tips designed; not a volume feature. |
 | **D7** | Durability class notified to ZetaDB (K6); observer does not throw. | Freeze observer exists. |
 | **D8** | Collecting a generator that still has live `Regen` refs is forbidden. | ShivaGc is DynamicValue mark-sweep, not volume. |
+| **D9** | **Pointer-not-copy (ReFS-shaped).** Copies and forks remap metadata (ContentId / Jumprope leaf ids / Binding). Physical bits are written only for new or mutated chunks (allocate-on-write). Metadata is never updated in place (shadow paging). Integrity checksums on metadata always; data checksums are the ContentId. | Jumprope already shares prefix chunks; `DagFs.editLocal` converges on identical content. Volume freeze still writes whole objects. Not ReFS, not a port. |
+| **D10** | **One cache authority.** DB and FS must share a buffering contract so we do not double-buffer (OS page cache + mutbuf + DB buffer pool). Preferred for DST: the library-FS path, DB owns the buffer, POSIX mount is a view. `Buffered \| Journaled \| Durable` is the named contract; `Durability.OsBuffered` must not be a second vocabulary. | Two vocabularies today (`Durability.fs` vs freeze classes). ReFS lesson: allocate-on-write + a lazy metadata cache can explode RAM (KB 4016173) — we will not copy that. |
+| **D11** | **CoW amplification is bounded by policy.** `keep-all` may grow; `rolling(N)` / `none` / `Regen` exist so a DB workload cannot store 10× logical bytes. Falsifier: after M>N freezes of one entity under `rolling(N)`, at least M−N bodies are reclaim-eligible. A 1-byte edit must not duplicate the file (D9). | Policy type exists; reclaim pins what the caller marks `RollingLive`. Window fold that *computes* that pin set from N is not the reclaim ferry. |
+| **D12** | **Crash DST for the filesystem *and* the database** on the same `IFileSystem` door. Crash-mid-write, reorder, corrupt-last-write, torn sector. Same seed replays. FoundationDB-shaped. | `ISimulatedFs` is flush-fail 5%. `InMemoryFileSystem` commits the whole stream on Dispose. PR12 corpus still `toy`. |
 
 ---
 

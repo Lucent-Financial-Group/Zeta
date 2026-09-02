@@ -1,0 +1,14 @@
+{
+  "id": "080d031991577810a013000881f4874e",
+  "at": "2026-09-02T17:37:07.311Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1HK4AQE087G0R002RRJXWE",
+    "type": "task",
+    "title": "ReFS-shaped ZetaFS/ZetaDB resilience: pointer-not-copy, crash DST, cache co-design, CoW amplification bound",
+    "slug": "refs-shaped-zetafs-zetadb-resilience-pointer-not-copy-crash",
+    "priority": "P1",
+    "filename": "081M1HK4AQE087G0R002RRJXWE-refs-shaped-zetafs-zetadb-resilience-pointer-not-copy-crash.md"
+  }
+}

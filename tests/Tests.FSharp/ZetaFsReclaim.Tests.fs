@@ -62,6 +62,25 @@ let ``rolling Scoped survivors stay pinned`` () =
     Assert.Equal(0, (ZetaFsReclaim.propose r [| x |] { Bytes = 100UL; Count = 4 }).Length)
 
 [<Fact>]
+let ``rolling window of 2 after 5 versions leaves 3 reclaim-eligible`` () =
+    // D11: policies exist so a DB freeze storm cannot 10× the volume.
+    // keep-all would pin all five; rolling(N=2) pins the last two and the
+    // older three must be eligible. The window fold that *computes*
+    // RollingLive from N is not this ferry — this is the bound once that
+    // pin set is supplied.
+    let versions = [| for n in 1uy .. 5uy -> obj n 8UL [||] |]
+    let pinLastTwo = versions.[3..] |> Array.map (fun v -> ZetaFsReclaim.hex v.Id)
+    let r = roots [||] [||] [||] pinLastTwo [||]
+    let got = ZetaFsReclaim.propose r versions { Bytes = 1000UL; Count = 10 }
+    Assert.Equal(3, got.Length)
+    let eligible = got |> Array.map ZetaFsReclaim.hex |> Set.ofArray
+    Assert.True(eligible.Contains(ZetaFsReclaim.hex versions.[0].Id))
+    Assert.True(eligible.Contains(ZetaFsReclaim.hex versions.[1].Id))
+    Assert.True(eligible.Contains(ZetaFsReclaim.hex versions.[2].Id))
+    Assert.False(eligible.Contains(ZetaFsReclaim.hex versions.[3].Id))
+    Assert.False(eligible.Contains(ZetaFsReclaim.hex versions.[4].Id))
+
+[<Fact>]
 let ``pacer budget is freeze bytes, not a clock, and skips objects larger than remaining`` () =
     Assert.Equal(0UL, (ZetaFsReclaim.pacer 0UL).Bytes)
     Assert.Equal(40UL, (ZetaFsReclaim.pacer 40UL).Bytes)
