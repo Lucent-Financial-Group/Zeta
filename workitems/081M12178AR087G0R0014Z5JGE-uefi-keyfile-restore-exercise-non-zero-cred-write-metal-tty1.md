@@ -58,18 +58,25 @@ typed passphrase → `metal-capable=yes`). Nix `ExecStart` calls that script
 phase 2b in `qemu-full-install-test.ts`
 (`assertUefiKeyfileRestoreWrongPassphraseContract`) — same installed disk,
 wrong fw_cfg, decrypt refusal, no write. Still hypervisor transport.
-Needs a green `main` dispatch of `build-ai-cluster-iso.yml` before the
-in-guest refusal is proven. Metal hardware runbook remains open — this
-slice makes it ready for a human to run, it does not claim the run happened.
+Harness-only until a `main` dispatch.
+
+## Progress (2026-09-01, Riven — phase 2b ran)
+
+In-guest refusal is proven on `main` dispatch
+[33462406161](https://github.com/Lucent-Financial-Group/Zeta/actions/runs/33462406161)
+(SHA `ed765bbed`, #15983 is an ancestor). Serial:
+`UEFI keyfile restore wrong-passphrase contract ok (decrypt refused; no write; still fw_cfg / not metal)`
+plus happy-path `wrote 1 creds`. Metal hardware runbook remains open — this
+does not claim the hardware run happened.
 
 ## Plan
 
 - **Non-zero write (CI-verifiable):** DONE 2026-08-28. Bake path + write-path
   contract landed in #15912; `main` dispatch run 33126215487 serial
   `wrote 1 creds`.
-- **Wrong-passphrase / wrong-device refusal in-guest:** phase 2b harness in
-  tree. Dispatch `build-ai-cluster-iso.yml` on idle `main` after merge to
-  prove the serial. Still fw_cfg — not metal.
+- **Wrong-passphrase / wrong-device refusal in-guest:** DONE 2026-09-01.
+  Phase 2b harness in tree (#15983). Proven on `main` dispatch 33462406161
+  serial `wrong-passphrase contract ok`. Still fw_cfg — not metal.
 - **Metal `tty1`:** execute the hardware runbook in
   `docs/uefi-keyfile-restore-metal-path.md` §1 and land the captured evidence
   under `docs/hygiene-history/`. Software door is mock-tested and Nix-wired.
@@ -78,5 +85,7 @@ slice makes it ready for a human to run, it does not claim the run happened.
 
 - QEMU restore scenario asserts `wrote >= 1` on the bake path (green on a `main`
   dispatch). **Proven 2026-08-28** — run 33126215487, serial `wrote 1 creds`.
+- In-guest wrong-passphrase refusal on a `main` restore dispatch (decrypt
+  refused, no write, still fw_cfg). **Proven 2026-09-01** — run 33462406161.
 - Metal runbook executed once with captured serial + wrong-passphrase refusal;
   evidence linked from the metal-path doc. **Open** (hardware-gated).
