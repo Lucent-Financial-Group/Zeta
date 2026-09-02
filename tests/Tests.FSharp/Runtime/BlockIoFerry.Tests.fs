@@ -90,3 +90,76 @@ let ``BlockIoFerry cancelled token before admit does not start a boat`` () : Tas
         Assert.True(t.IsCanceled)
         Assert.Equal(0, door.Boats)
     }
+
+let private blockBytes (seed: byte) =
+    Array.init 4096 (fun i -> byte ((int seed + i) &&& 0xFF))
+
+[<Fact>]
+let ``BlockIoFerry coalesces adjacent whole-block writes into one device write`` () : Task =
+    task {
+        let mock = InMemoryFileSystem() :> IFileSystem
+        let device = FileSystemBlockIo(mock, "/vol/coal", 4096) :> IBlockIo
+        let config = { FerryThrottlerConfig.deterministic with MaxBatchSize = 64 }
+        use door = new BlockIoFerry.Door(device, config, manual = true)
+        let a = blockBytes 1uy
+        let b = blockBytes 2uy
+        let ops =
+            [| BlockIoFerry.Op.Write(0UL, memPayload a)
+               BlockIoFerry.Op.Write(1UL, memPayload b) |]
+
+        let pending = door.RunManyAsync(ReadOnlyMemory ops, CancellationToken.None)
+        do! door.PumpToIdleAsync(CancellationToken.None).ConfigureAwait(false)
+        let! results = pending.ConfigureAwait(false)
+        Assert.Equal(2, results.Length)
+        Assert.Equal(1, door.Boats)
+        Assert.Equal(1, door.DeviceWrites)
+        Assert.Equal(4096, results.[0].Bytes)
+        Assert.Equal(4096, results.[1].Bytes)
+        let gotA = Array.zeroCreate<byte> 4096
+        let gotB = Array.zeroCreate<byte> 4096
+        let readA = door.RunAsync(BlockIoFerry.Op.Read(0UL, memDst gotA), CancellationToken.None)
+        let readB = door.RunAsync(BlockIoFerry.Op.Read(1UL, memDst gotB), CancellationToken.None)
+        do! door.PumpToIdleAsync(CancellationToken.None).ConfigureAwait(false)
+        let! _ = readA.AsTask().ConfigureAwait(false)
+        let! _ = readB.AsTask().ConfigureAwait(false)
+        Assert.Equal<byte>(a, gotA)
+        Assert.Equal<byte>(b, gotB)
+    }
+
+[<Fact>]
+let ``BlockIoFerry does not coalesce a hole, a flush, or a partial block`` () : Task =
+    task {
+        let mock = InMemoryFileSystem() :> IFileSystem
+        let device = FileSystemBlockIo(mock, "/vol/hole", 4096) :> IBlockIo
+        let config = { FerryThrottlerConfig.deterministic with MaxBatchSize = 64 }
+        use door = new BlockIoFerry.Door(device, config, manual = true)
+        let a = blockBytes 3uy
+        let b = blockBytes 4uy
+        let hole =
+            [| BlockIoFerry.Op.Write(0UL, memPayload a)
+               BlockIoFerry.Op.Write(2UL, memPayload b) |]
+
+        let pendingHole = door.RunManyAsync(ReadOnlyMemory hole, CancellationToken.None)
+        do! door.PumpToIdleAsync(CancellationToken.None).ConfigureAwait(false)
+        let! _ = pendingHole.ConfigureAwait(false)
+        Assert.Equal(2, door.DeviceWrites)
+        let afterHole = door.DeviceWrites
+        let barrier =
+            [| BlockIoFerry.Op.Write(3UL, memPayload a)
+               BlockIoFerry.Op.Flush
+               BlockIoFerry.Op.Write(4UL, memPayload b) |]
+
+        let pendingBarrier = door.RunManyAsync(ReadOnlyMemory barrier, CancellationToken.None)
+        do! door.PumpToIdleAsync(CancellationToken.None).ConfigureAwait(false)
+        let! _ = pendingBarrier.ConfigureAwait(false)
+        Assert.Equal(afterHole + 2, door.DeviceWrites)
+        let afterBarrier = door.DeviceWrites
+        let partial =
+            [| BlockIoFerry.Op.Write(5UL, memPayload [| 1uy |])
+               BlockIoFerry.Op.Write(6UL, memPayload [| 2uy |]) |]
+
+        let pendingPartial = door.RunManyAsync(ReadOnlyMemory partial, CancellationToken.None)
+        do! door.PumpToIdleAsync(CancellationToken.None).ConfigureAwait(false)
+        let! _ = pendingPartial.ConfigureAwait(false)
+        Assert.Equal(afterBarrier + 2, door.DeviceWrites)
+    }

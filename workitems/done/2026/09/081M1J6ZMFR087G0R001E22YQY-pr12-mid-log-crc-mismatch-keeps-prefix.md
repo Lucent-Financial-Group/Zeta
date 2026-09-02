@@ -1,11 +1,12 @@
 ---
 id: 081M1J6ZMFR087G0R001E22YQY
 type: task
-state: backlog
+state: done
 priority: P1
 slug: pr12-mid-log-crc-mismatch-keeps-prefix
 title: "PR12 mid-log CRC mismatch keeps prefix"
 created: 2026-09-02T23:23:00.000Z
+completed: 2026-09-02T23:51:21.924Z
 depends_on: []
 composes_with: ["081M1J5CE6A087G0R000RVJC9H"]
 ---
