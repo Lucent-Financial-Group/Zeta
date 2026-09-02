@@ -14,6 +14,7 @@ created: 2026-07-04
 
 Domain landings for the mathematical-physics persona. Newest first.
 
+- unique-confirm leftover UNIQUE leftover OPEN #16348 leftover unique @ d6ead09ae283eb66cb7c6be30c3955c528a1b205 UNIQUE HOLDS leftover NEW CELL. Sit leftover. Do not merge. CoS does not merge. Full unique-confirm: memory/CURRENT-lumen.md Open threads.
 - Unique MOVES leftover OPEN #16308 leftover unique @ d81ccff487d50da6e67ef833ad7fe3d210367444 from STALE leftover unique @ b51c0aa0d407a22c59299af3bdf4a3efc11d1b46. Never grade leftover unique @ b51c0aa0 as this unique. Sit leftover. Do not merge. Full unique-confirm: memory/CURRENT-lumen.md Open threads.
 
 ## Landing — 2026-07-04 (Soraya's round + the LYAP verdict: invariant, NOT attracting)
