@@ -375,16 +375,18 @@
       "dynamic": ["httpRoute.hostnames", "ingress.hosts"],
       "charts": ["<root>=common@2.41.0", "<root>=forgejo@17.1.5"]
     },
-    "ghcr.io/actions/actions-runner-controller-charts|gha-runner-scale-set-controller|0.12.1": {
+    "ghcr.io/actions/actions-runner-controller-charts|gha-runner-scale-set-controller|0.14.2": {
       "literal": {
         "affinity": {},
         "env": {},
         "flags": {
           "excludeLabelPropagationPrefixes": {},
+          "healthProbeBindAddress": {},
           "k8sClientRateLimiterBurst": {},
           "k8sClientRateLimiterQPS": {},
           "logFormat": {},
           "logLevel": {},
+          "rateLimiter": {},
           "runnerMaxConcurrentReconciles": {},
           "updateStrategy": {},
           "watchSingleNamespace": {}
@@ -404,6 +406,7 @@
         "podAnnotations": {},
         "podLabels": {},
         "podSecurityContext": {},
+        "pprof": {},
         "priorityClassName": {},
         "replicaCount": {},
         "resources": {},
@@ -427,6 +430,7 @@
         "podAnnotations",
         "podLabels",
         "podSecurityContext",
+        "pprof",
         "resources",
         "securityContext",
         "serviceAccount.annotations",
@@ -436,9 +440,9 @@
         "volumes"
       ],
       "dynamic": [],
-      "charts": ["<root>=gha-runner-scale-set-controller@0.12.1"]
+      "charts": ["<root>=gha-runner-scale-set-controller@0.14.2"]
     },
-    "ghcr.io/actions/actions-runner-controller-charts|gha-runner-scale-set|0.12.1": {
+    "ghcr.io/actions/actions-runner-controller-charts|gha-runner-scale-set|0.14.2": {
       "literal": {
         "annotations": {},
         "containerMode": {},
@@ -521,14 +525,15 @@
         },
         "runnerGroup": {},
         "runnerScaleSetName": {},
+        "scaleSetLabels": {},
         "template": {
           "metadata": {},
           "spec": {}
         }
       },
-      "open": ["containerMode", "global", "keyVault.proxy", "proxy.noProxy", "template.spec"],
+      "open": ["containerMode", "global", "keyVault.proxy", "proxy.noProxy", "scaleSetLabels", "template.spec"],
       "dynamic": [],
-      "charts": ["<root>=gha-runner-scale-set@0.12.1"]
+      "charts": ["<root>=gha-runner-scale-set@0.14.2"]
     },
     "ghcr.io/vectorize-io/charts|hindsight|0.3.0": {
       "literal": {
@@ -30206,7 +30211,7 @@
       "dynamic": [],
       "charts": ["<root>=gatekeeper@3.23.1"]
     },
-    "https://otwld.github.io/ollama-helm/|ollama|1.6.0": {
+    "https://otwld.github.io/ollama-helm/|ollama|1.78.0": {
       "literal": {
         "affinity": {},
         "autoscaling": {
@@ -30216,14 +30221,39 @@
           "targetCPUUtilizationPercentage": {},
           "targetMemoryUtilizationPercentage": {}
         },
+        "deployment": {
+          "labels": {}
+        },
         "extraArgs": {},
         "extraEnv": {},
         "extraEnvFrom": {},
         "extraObjects": {},
         "fullnameOverride": {},
+        "gateway": {
+          "annotations": {},
+          "className": {},
+          "enabled": {},
+          "labels": {},
+          "listener": {
+            "allowedRoutes": {},
+            "port": {},
+            "tls": {
+              "certificateRefs": {},
+              "enabled": {}
+            }
+          },
+          "name": {}
+        },
         "hostIPC": {},
         "hostNetwork": {},
         "hostPID": {},
+        "httpRoute": {
+          "enabled": {},
+          "hostnames": {},
+          "labels": {},
+          "parentRefs": {},
+          "rules": {}
+        },
         "image": {
           "pullPolicy": {},
           "repository": {},
@@ -30239,9 +30269,13 @@
         },
         "initContainers": {},
         "knative": {
+          "annotations": {},
           "containerConcurrency": {},
           "enabled": {},
           "idleTimeoutSeconds": {},
+          "modelBootstrap": {
+            "ttlSecondsAfterFinished": {}
+          },
           "responseStartTimeoutSeconds": {},
           "timeoutSeconds": {}
         },
@@ -30260,6 +30294,9 @@
         "nodeSelector": {},
         "ollama": {
           "gpu": {
+            "draDriverClass": {},
+            "draEnabled": {},
+            "draExistingClaimTemplate": {},
             "enabled": {},
             "mig": {
               "devices": {},
@@ -30271,11 +30308,13 @@
           },
           "insecure": {},
           "models": {
+            "clean": {},
             "create": {},
             "pull": {},
             "run": {}
           },
-          "mountPath": {}
+          "mountPath": {},
+          "port": {}
         },
         "persistentVolume": {
           "accessModes": {},
@@ -30290,7 +30329,9 @@
         },
         "podAnnotations": {},
         "podLabels": {},
+        "podSchedulerName": {},
         "podSecurityContext": {},
+        "priorityClassName": {},
         "readinessProbe": {
           "enabled": {},
           "failureThreshold": {},
@@ -30305,10 +30346,14 @@
           "limits": {},
           "requests": {}
         },
+        "revisionHistoryLimit": {},
         "runtimeClassName": {},
         "securityContext": {},
         "service": {
           "annotations": {},
+          "ipFamilies": {},
+          "ipFamilyPolicy": {},
+          "labels": {},
           "loadBalancerIP": {},
           "nodePort": {},
           "port": {},
@@ -30320,6 +30365,12 @@
           "create": {},
           "name": {}
         },
+        "terminationGracePeriodSeconds": {},
+        "tests": {
+          "annotations": {},
+          "enabled": {},
+          "labels": {}
+        },
         "tolerations": {},
         "topologySpreadConstraints": {},
         "updateStrategy": {},
@@ -30328,16 +30379,26 @@
       },
       "open": [
         "affinity",
+        "deployment.labels",
         "extraArgs",
         "extraEnv",
         "extraEnvFrom",
         "extraObjects",
+        "gateway.annotations",
+        "gateway.labels",
+        "gateway.listener.allowedRoutes",
+        "gateway.listener.tls.certificateRefs",
         "global",
+        "httpRoute.hostnames",
+        "httpRoute.labels",
+        "httpRoute.parentRefs",
+        "httpRoute.rules",
         "imagePullSecrets",
         "ingress.annotations",
         "ingress.hosts",
         "ingress.tls",
         "initContainers",
+        "knative.annotations",
         "lifecycle",
         "nodeSelector",
         "ollama.gpu.mig.devices",
@@ -30353,8 +30414,12 @@
         "resources.requests",
         "securityContext",
         "service.annotations",
+        "service.ipFamilies",
+        "service.labels",
         "service.port",
         "serviceAccount.annotations",
+        "tests.annotations",
+        "tests.labels",
         "tolerations",
         "topologySpreadConstraints",
         "updateStrategy",
@@ -30362,7 +30427,7 @@
         "volumes"
       ],
       "dynamic": [],
-      "charts": ["<root>=ollama@1.6.0"]
+      "charts": ["<root>=ollama@1.78.0"]
     },
     "https://prometheus-community.github.io/helm-charts|kube-prometheus-stack|88.6.2": {
       "literal": {
@@ -37556,16 +37621,16 @@
     {
       "appId": "full-ai-cluster/arc-controller",
       "chart": "gha-runner-scale-set-controller",
-      "targetRevision": "0.12.1",
+      "targetRevision": "0.14.2",
       "repoURL": "ghcr.io/actions/actions-runner-controller-charts",
-      "chartKey": "ghcr.io/actions/actions-runner-controller-charts|gha-runner-scale-set-controller|0.12.1"
+      "chartKey": "ghcr.io/actions/actions-runner-controller-charts|gha-runner-scale-set-controller|0.14.2"
     },
     {
       "appId": "full-ai-cluster/arc-runner-set",
       "chart": "gha-runner-scale-set",
-      "targetRevision": "0.12.1",
+      "targetRevision": "0.14.2",
       "repoURL": "ghcr.io/actions/actions-runner-controller-charts",
-      "chartKey": "ghcr.io/actions/actions-runner-controller-charts|gha-runner-scale-set|0.12.1"
+      "chartKey": "ghcr.io/actions/actions-runner-controller-charts|gha-runner-scale-set|0.14.2"
     },
     {
       "appId": "full-ai-cluster/argo-rollouts",
@@ -37763,9 +37828,9 @@
     {
       "appId": "full-ai-cluster/ollama",
       "chart": "ollama",
-      "targetRevision": "1.6.0",
+      "targetRevision": "1.78.0",
       "repoURL": "https://otwld.github.io/ollama-helm/",
-      "chartKey": "https://otwld.github.io/ollama-helm/|ollama|1.6.0"
+      "chartKey": "https://otwld.github.io/ollama-helm/|ollama|1.78.0"
     },
     {
       "appId": "full-ai-cluster/open-policy-agent",
