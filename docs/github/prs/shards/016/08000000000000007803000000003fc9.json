@@ -1,0 +1,12 @@
+{
+  "pr_number": 16329,
+  "archive_path": "docs/history/pr-reviews/PR-16329-fix-081m1f1xzy4087g0r002z01fga-do-not-compile-feldera-dbsp-on-windows.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-02T06:50:10.671Z",
+  "schema_version": "v1",
+  "commit_sha": "75f8968dbf42314addb5be1c0e431e6181925c74",
+  "title": "fix(081M1F1XZY4087G0R002Z01FGA): do not compile Feldera dbsp on Windows",
+  "state": "MERGED",
+  "merged_at": "2026-09-02T06:49:26Z",
+  "head_ref": "feat/feldera-native-no-windows"
+}
