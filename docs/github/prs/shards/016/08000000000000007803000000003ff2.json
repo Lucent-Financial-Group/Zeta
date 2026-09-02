@@ -1,0 +1,12 @@
+{
+  "pr_number": 16370,
+  "archive_path": "docs/history/pr-reviews/PR-16370-feat-081m1hr580v087g0r000nmy47n-crash-mid-write-intercept-on-ifilesystem.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-02T20:09:06.875Z",
+  "schema_version": "v1",
+  "commit_sha": "68a9a964852610390d29b5d24d08839b3b7fa0db",
+  "title": "feat(081M1HR580V087G0R000NMY47N): crash-mid-write intercept on IFileSystem",
+  "state": "MERGED",
+  "merged_at": "2026-09-02T20:07:36Z",
+  "head_ref": "feat/zetafs-crash-mid-write"
+}
