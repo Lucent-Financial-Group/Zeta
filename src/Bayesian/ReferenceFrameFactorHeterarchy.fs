@@ -106,7 +106,17 @@ module ReferenceFrameFactorHeterarchy =
               PositionGraph: FactorGraph<Gaussian3>
               Evidence: Map<string, string * string>
               Conflicts: ConflictReceipt array
-              NextFactorId: int }
+              FactorOwners: Map<int, string> }
+
+    type InferenceArchitectureCensus =
+        { ObjectVariableIds: int array
+          PositionVariableIds: int array
+          ObjectFactorCount: int
+          PositionFactorCount: int
+          ObjectMultiNeighborFactorCount: int
+          PositionMultiNeighborFactorCount: int
+          ObjectMessagesChangeAfterSevenMoreRounds: bool
+          PositionMessagesChangeAfterSevenMoreRounds: bool }
 
     let private finite value = Double.IsFinite value
 
@@ -388,6 +398,23 @@ module ReferenceFrameFactorHeterarchy =
     let private canonicalFloat (value: float) =
         value.ToString("R", CultureInfo.InvariantCulture)
 
+    /// Deterministic compensated addition for accepted finite natural parameters.
+    /// Sorting by magnitude makes the reduction independent of factor-map insertion order;
+    /// Neumaier compensation retains low-order terms across large cancellation.
+    let private stableSum (values: seq<float>) =
+        let ordered =
+            values
+            |> Seq.sortBy (fun value -> -abs value, value)
+        let mutable sum = 0.0
+        let mutable compensation = 0.0
+        for value in ordered do
+            let next = sum + value
+            compensation <-
+                compensation
+                + if abs sum >= abs value then (sum - next) + value else (value - next) + sum
+            sum <- next
+        sum + compensation
+
     let private messageFingerprint (message: ColumnMessage) =
         let rotation = rotationCoefficients message.SenderToRoom.Rotation |> Array.map canonicalFloat |> String.concat ","
         let translation =
@@ -425,6 +452,12 @@ module ReferenceFrameFactorHeterarchy =
         |> Convert.ToHexString
         |> _.ToLowerInvariant()
 
+    let private deterministicFactorIds evidenceId fingerprint =
+        let identityBytes = Encoding.UTF8.GetBytes(evidenceId + "|" + fingerprint)
+        let digest = SHA256.HashData identityBytes
+        let baseId = BitConverter.ToUInt32(digest, 0) &&& 0x3fffffffu
+        int (baseId <<< 1), int ((baseId <<< 1) ||| 1u)
+
     let tryCreateWithGeneratorOrder generatorOrder (candidates: seq<string>) =
         let normalized =
             candidates
@@ -450,7 +483,7 @@ module ReferenceFrameFactorHeterarchy =
                   PositionGraph = FactorGraph.empty Gaussian3.algebra
                   Evidence = Map.empty
                   Conflicts = [||]
-                  NextFactorId = 0 }
+                  FactorOwners = Map.empty }
 
     let tryCreate (candidates: seq<string>) =
         tryCreateWithGeneratorOrder "declared" candidates
@@ -551,44 +584,83 @@ module ReferenceFrameFactorHeterarchy =
                              else Array.append state.Conflicts [| receipt |] })
             | None ->
                 tryTransformGaussian message.SenderToRoom message.ObservedPosition
-                |> Result.map (fun roomPosition ->
+                |> Result.bind (fun roomPosition ->
                     let objectEvidence =
                         state.Candidates
                         |> Seq.map (fun candidate ->
                             candidate, message.ObjectEvidence |> Map.tryFind candidate |> Option.defaultValue 0.0)
                         |> Map.ofSeq
                         |> fun natural -> { Natural = natural }
-                    let objectFactorId = state.NextFactorId * 2
-                    let positionFactorId = objectFactorId + 1
-                    let objectGraph =
-                        state.ObjectGraph
-                        |> FactorGraph.addFactor objectFactorId (Factor.prior 0 objectEvidence)
-                        |> FactorGraph.passOnce
-                    let positionGraph =
-                        state.PositionGraph
-                        |> FactorGraph.addFactor positionFactorId (Factor.prior 0 roomPosition)
-                        |> FactorGraph.passOnce
-                    ({ EvidenceId = message.EvidenceId
-                       ContentFingerprint = fingerprint
-                       EmitterColumn = message.EmitterColumn
-                       Disposition = Accepted
-                       ObjectFactorId = Some objectFactorId
-                       PositionFactorId = Some positionFactorId },
-                     { state with
-                         ObjectGraph = objectGraph
-                         PositionGraph = positionGraph
-                         Evidence = state.Evidence |> Map.add message.EvidenceId (fingerprint, message.EmitterColumn)
-                         NextFactorId = state.NextFactorId + 1 })))
+                    let objectFactorId, positionFactorId = deterministicFactorIds message.EvidenceId fingerprint
+                    match state.FactorOwners |> Map.tryFind objectFactorId with
+                    | Some retainedEvidenceId when retainedEvidenceId <> message.EvidenceId ->
+                        Error
+                            { Code = "RFFH-FACTOR-ID-COLLISION"
+                              Field = "EvidenceId"
+                              Observed = sprintf "%s collides with %s" message.EvidenceId retainedEvidenceId
+                              SafeNextStep = "Retain both messages outside the fold and widen or replace the deterministic factor-id projection." }
+                    | _ ->
+                        let objectGraph =
+                            state.ObjectGraph
+                            |> FactorGraph.addFactor objectFactorId (Factor.prior 0 objectEvidence)
+                            |> FactorGraph.passOnce
+                        let positionGraph =
+                            state.PositionGraph
+                            |> FactorGraph.addFactor positionFactorId (Factor.prior 0 roomPosition)
+                            |> FactorGraph.passOnce
+                        Ok
+                            ({ EvidenceId = message.EvidenceId
+                               ContentFingerprint = fingerprint
+                               EmitterColumn = message.EmitterColumn
+                               Disposition = Accepted
+                               ObjectFactorId = Some objectFactorId
+                               PositionFactorId = Some positionFactorId },
+                             { state with
+                                 ObjectGraph = objectGraph
+                                 PositionGraph = positionGraph
+                                 Evidence = state.Evidence |> Map.add message.EvidenceId (fingerprint, message.EmitterColumn)
+                                 FactorOwners =
+                                     state.FactorOwners
+                                     |> Map.add objectFactorId message.EvidenceId
+                                     |> Map.add positionFactorId message.EvidenceId })))
 
     let objectPosterior (state: Heterarchy) =
-        state.ObjectGraph
-        |> FactorGraph.marginal 0
+        let messages =
+            state.ObjectGraph.FactorToVar
+            |> Map.values
+            |> Seq.choose (Map.tryFind 0)
+            |> Seq.toArray
+        state.Candidates
+        |> Seq.map (fun candidate ->
+            candidate,
+            messages
+            |> Seq.map (fun message -> message.Natural |> Map.tryFind candidate |> Option.defaultValue 0.0)
+            |> stableSum)
+        |> Map.ofSeq
+        |> fun natural -> { Natural = natural }
         |> LogCategorical.probabilities state.Candidates
 
     let positionPosterior (state: Heterarchy) =
         if Map.isEmpty state.Evidence then None
         else
-            let posterior = FactorGraph.marginal 0 state.PositionGraph
+            let messages =
+                state.PositionGraph.FactorToVar
+                |> Map.values
+                |> Seq.choose (Map.tryFind 0)
+                |> Seq.toArray
+            let sumNaturalComponent selector = messages |> Seq.map selector |> stableSum
+            let posterior =
+                { PrecisionMean =
+                    { X = sumNaturalComponent (fun message -> message.PrecisionMean.X)
+                      Y = sumNaturalComponent (fun message -> message.PrecisionMean.Y)
+                      Z = sumNaturalComponent (fun message -> message.PrecisionMean.Z) }
+                  Precision =
+                    { XX = sumNaturalComponent (fun message -> message.Precision.XX)
+                      XY = sumNaturalComponent (fun message -> message.Precision.XY)
+                      XZ = sumNaturalComponent (fun message -> message.Precision.XZ)
+                      YY = sumNaturalComponent (fun message -> message.Precision.YY)
+                      YZ = sumNaturalComponent (fun message -> message.Precision.YZ)
+                      ZZ = sumNaturalComponent (fun message -> message.Precision.ZZ) } }
             if Gaussian3.isProper posterior then Some posterior else None
 
     let tryConsensusStatus resolutionThreshold (state: Heterarchy) =
@@ -618,6 +690,32 @@ module ReferenceFrameFactorHeterarchy =
     let candidateObjects (state: Heterarchy) = state.Candidates
 
     let generatorOrder (state: Heterarchy) = state.GeneratorOrder
+
+    let private graphVariableIds (graph: FactorGraph<'message>) =
+        graph.Factors
+        |> Map.values
+        |> Seq.collect _.Neighbors
+        |> Seq.distinct
+        |> Seq.sort
+        |> Seq.toArray
+
+    let private multiNeighborFactorCount (graph: FactorGraph<'message>) =
+        graph.Factors
+        |> Map.values
+        |> Seq.filter (fun factor -> factor.Neighbors.Length > 1)
+        |> Seq.length
+
+    let inferenceArchitectureCensus (state: Heterarchy) =
+        let objectAfter = FactorGraph.passRounds 7 state.ObjectGraph
+        let positionAfter = FactorGraph.passRounds 7 state.PositionGraph
+        { ObjectVariableIds = graphVariableIds state.ObjectGraph
+          PositionVariableIds = graphVariableIds state.PositionGraph
+          ObjectFactorCount = state.ObjectGraph.Factors.Count
+          PositionFactorCount = state.PositionGraph.Factors.Count
+          ObjectMultiNeighborFactorCount = multiNeighborFactorCount state.ObjectGraph
+          PositionMultiNeighborFactorCount = multiNeighborFactorCount state.PositionGraph
+          ObjectMessagesChangeAfterSevenMoreRounds = state.ObjectGraph.FactorToVar <> objectAfter.FactorToVar
+          PositionMessagesChangeAfterSevenMoreRounds = state.PositionGraph.FactorToVar <> positionAfter.FactorToVar }
 
     let private canonicalPair left right =
         if String.CompareOrdinal(left, right) <= 0 then left, right else right, left
