@@ -4094,6 +4094,46 @@ What exists today is therefore the **floor** — one law, two transcriptions, by
 predictions the stance promises arrive only when there is hardware to disagree with us, and saying
 that clearly is what keeps this a design principle rather than a claim about physics.
 
+### The long thesis this serves, in Aaron's words (2026-09-02)
+
+> *"My goal over time is to prove classical has all the advantages of quantum and they are not
+> different — but I'm trying to upgrade to quantum rather than downgrade to classical. If we find
+> these don't match, I think it is very similar to P vs NP — not exactly, but the same. Either
+> conclusion would be good. And it relates to Riemann zeta, because that sits on the edge of
+> unpredictable: when the percentages go up, so does certain money."*
+
+Three things worth separating, because they have different standing.
+
+**The direction is the design decision, and it is the one that matters here.** *Upgrade to
+quantum, do not downgrade to classical* means: when the two substrates must share a structure,
+the shared structure is the **richer** one, and the classical side is required to meet it — not
+the other way round. That is why `RETRACT` is an adjoint rather than a deletion flag, and why
+`BRANCH` superposes rather than tests. Flattening quantum to classical would have produced a
+boolean and an `if`, which is exactly the hidden control structure this section is about.
+
+**The "P vs NP" intuition has a precise name, and it is a real open problem rather than a
+metaphor.** The question *"is quantum actually different from classical"* is, in complexity terms,
+**BQP vs BPP** — and it is genuinely open. (`BQP ⊆ PSPACE` is known; no separation from `BPP` is
+proven.) So Aaron's *"not exactly P vs NP, but the same"* is accurate in the way that matters: it
+is a **separation question between complexity classes**, with the same property that **either
+answer is a result.** Equivalence would say the structure we are building is sufficient; a
+separation would localise exactly what classical cannot reach. Anchors: Bernstein & Vazirani
+(1993, BQP); Aaronson on BQP vs the polynomial hierarchy.
+
+**The Riemann connection is recorded as his, and only partly anchored by me.** The checkable half
+is real and well-known: **Hilbert–Pólya** (the zeros as eigenvalues of a self-adjoint operator —
+i.e. a *quantum* reading of ζ) and **Montgomery–Odlyzko** (the pair correlation of zeta zeros
+matching GUE random-matrix statistics, which is the statistics of quantum chaotic spectra). That
+is a genuine classical↔quantum bridge sitting on the critical line, and it is why the resonance is
+not idle. **The second half of his sentence — "when the percentages go up, so does certain money"
+— I have not confidently mapped**, and per this repository's own discipline I am not going to
+infer what he meant. It is recorded verbatim, unglossed, pending him saying more.
+
+**Register:** the direction is a **design decision, in force**. BQP vs BPP is **cited, open, and
+not ours to settle**. The Riemann link is a **labelled resonance** with two checked anchors and one
+unmapped clause — a generator, not a claim, per
+[`numerology-vs-number-theory`](../.claude/rules/numerology-vs-number-theory.md).
+
 **Related:** [`docs/research/2026-09-02-alexas-open-questions-answered-from-the-qsharp-and-qec-routing-work.md`](research/2026-09-02-alexas-open-questions-answered-from-the-qsharp-and-qec-routing-work.md)
 §Q4, §Q4b — where the `EMIT ∘ RETRACT` result and the hidden-control-structure principle are
 derived · `src/Core.QSharp.ReferenceOracle/ZSetISA.qs` ·
