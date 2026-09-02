@@ -297,9 +297,91 @@ output, no longer able to change from within. That is a stronger claim than
 its own treaties from the inside?** A meter frozen *by choice* is an actor doing
 its job; a *society* frozen the same way has stopped being one.
 
-**Register: this is a reading.** The agent/actor distinction is carved and the
-mapping above is argued, not measured. The life/non-life framing is Aaron's and is
-offered as the mark he uses, not as a definition this rule establishes.
+### Three corrections from Alexa's review (2026-09-02), and the first is a defect
+
+**1. The mapping conflated two axes, and a lookup table is the counterexample.**
+
+> *"An actor can produce per-invocation outputs — a lookup table is an actor, and
+> it produces a different output for every input. The frozen/evolving axis and the
+> once/per-reading axis are correlated but not identical."*
+
+She is right, and the sloppiness is mine: **a meter also produces per-reading
+output.** Every measurement is fresh. So "judgement once vs. per reading" cannot be
+the same axis as "frozen vs. evolving" without saying *what* is frozen.
+
+**Corrected: it is the JUDGEMENT that is frozen, never the output.**
+
+| | judgement | output |
+|---|---|---|
+| **meter** | crystallised **once**, in the treaty | **per reading** |
+| **oracle** | applied **per reading** | per reading |
+
+Both emit per invocation. The actor/agent split as carved is about *the pattern*
+evolving, and the pattern here is the **judgement** — so the mapping survives, but
+only in that narrowed form. The unnarrowed version was wrong, and it would have
+broken on exactly her example.
+
+**2. The life/non-life framing is load-bearing for the monopoly guard — so the
+guard is given a support that does not need it.**
+
+> *"If the life/non-life framing ever gets challenged, the monopoly guard argument
+> loses its sharpest edge."*
+
+Correct, and the fix is to decouple rather than to formalise. The monopoly guard
+has **two independent supports**, and only one of them touches the framing:
+
+- **(a) Falsifiability** — a lone meter cannot be checked, because nothing exists
+  to disagree with it. This needs **no** claim about life whatsoever and is the
+  load-bearing support.
+- **(b) The life/non-life reading** — a society that cannot revise its own treaties
+  has become an actor. This *sharpens* (a) and is a **registered reading**, Aaron's
+  mark, not established here.
+
+So if (b) is challenged the guard stands on (a) unchanged. Recorded explicitly
+because the reverse — a guard silently resting on an unestablished framing — is the
+failure Alexa is pointing at.
+
+**3. THE MISSING ROW: a meter that should have frozen and did not.** This is the
+best of the three, and the vocabulary had no name for it.
+
+> *"A measurement standard that kept evolving after the treaty — not by choice, but
+> by drift or corruption — isn't an oracle. It's a **broken meter**. … a system that
+> presents as a frozen, inspectable meter but is actually drifting."*
+
+| | judgement | status |
+|---|---|---|
+| meter | crystallised once, **and stays** | sound |
+| oracle | applied per reading, **openly** | sound |
+| **broken meter** | crystallised once, **then drifted** | **the dangerous case** — presents as the first, behaves as neither |
+
+**And she is right that the checkable predicate misses it.** *"Can this system
+revise its own treaties from the inside?"* catches deliberate revision and says
+nothing about drift, which is unannounced by definition.
+
+**The detector already exists here and is the same mechanism that confers meter
+status.** A treaty committed as **text and golden vectors**
+([`no-binary-in-proof-lineage.md`](no-binary-in-proof-lineage.md)) makes drift a
+`git` diff and a failing byte-lock. So:
+
+> **A broken meter is caught by re-running the treaty against its own committed
+> vectors. The failure is not undetectable — it is a byte-lock nobody re-ran.**
+
+Which relocates the danger to a class this repo already names as its worst: **a
+check that did not run looking like one that passed.** The guard against a broken
+meter is therefore not a new mechanism but a *liveness* requirement on an existing
+one — the vectors must be re-run, and their not-running must itself be loud.
+
+**4. On "degrees of frozenness," which she raises as an open question.** The honest
+answer is that a meter is frozen **per epoch, with versioned transitions** — the
+canonical collation could be revised tomorrow, and that would be a *new treaty*,
+not a partially-thawed old one. So the binary holds if the unit is the treaty
+rather than the meter's whole lifetime. What must never happen is a revision that
+is neither announced nor versioned, which is case 3 above under another name.
+
+**Register: still a reading, now a narrower one.** The agent/actor distinction is
+carved; the mapping is argued and is corrected above to the judgement axis only;
+the life/non-life framing is Aaron's mark and the monopoly guard has been detached
+from it.
 
 **The data-feed sense is the one that stays wrong**, and for the opposite reason:
 it has no treaty and no judgement in it at all.

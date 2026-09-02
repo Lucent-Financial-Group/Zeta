@@ -48,6 +48,38 @@ export function devStorageAliasManifestPath(key: keyof typeof DEV_STORAGE_ALIAS_
 }
 
 /**
+ * Repo-relative path of the kind-only Cilium LB-IPAM alias.
+ *
+ * THE APPLICATION stays excluded: `cilium-lb-ipam/ip-pool.yaml` pins
+ * 192.168.1.240-250. Applying that Application on kind would assign IPs that
+ * ArgoCD calls Healthy and that nothing can route, AND would selfHeal over
+ * this alias. So bring-up applies THIS file, and the catalogue keeps the
+ * Application glob-excluded.
+ *
+ * ONE constant, TWO consumers: `use-cases.ts` applies it; the bring-up tests
+ * assert that kind `--cni cilium` is the only path that does.
+ */
+export const DEV_CILIUM_LB_KIND_MANIFEST_RELPATH =
+  "full-ai-cluster/dev-cluster/manifests/cilium-lb-ipam.kind.yaml";
+
+/**
+ * Cilium CRDs the kind LB alias needs Established before apply.
+ *
+ * Helm `wait: true` waits for the agent/operator pods, not for these names.
+ * Applying the pool before they exist is a NotFound that looks like "Cilium
+ * does not do LoadBalancer" rather than "we raced the CRD install".
+ */
+export const DEV_CILIUM_LB_KIND_CRDS = [
+  "ciliumloadbalancerippools.cilium.io",
+  "ciliuml2announcementpolicies.cilium.io",
+] as const;
+
+/** Absolute path of the kind Cilium LB-IPAM alias, for the bring-up use-case. */
+export function devCiliumLbKindManifestPath(): string {
+  return join(REPO_ROOT, DEV_CILIUM_LB_KIND_MANIFEST_RELPATH);
+}
+
+/**
  * A credential a dev/CI cluster must ALREADY HOLD before the app-of-apps root
  * syncs, because the Application that consumes it does not mint its own.
  *

@@ -1,0 +1,71 @@
+# Kind/CI alias for Cilium LB-IPAM + L2 announcement.
+#
+# WHY THIS FILE EXISTS. `type: LoadBalancer` Services (weaviate, game-hosting,
+# the portal, Cilium's own ingress) never receive `status.loadBalancer.ingress`
+# on a kind node: `servicelb` is disabled so Cilium owns L2-L4, and the metal
+# Application (`applications/cilium-lb-ipam/`) pins 192.168.1.240-250, a LAN
+# range with no meaning inside a container network. Applying that Application
+# here would ASSIGN IPs (enough for ArgoCD to call it Healthy) that nothing can
+# route -- worse than not running it -- AND selfHeal over this alias.
+#
+# WHAT THIS FILE IS. The same two CRs the metal Application ships
+# (`CiliumLoadBalancerIPPool` `zeta-lb-pool`, `CiliumL2AnnouncementPolicy`
+# `zeta-l2-announce`), with a pool that lives on kind's typical docker-bridge
+# subnet instead of one maintainer's LAN. ArgoCD never reads this file: it
+# lives under `full-ai-cluster/dev-cluster/`, which is not on any Application
+# path. Only `bringUpKindCiCluster` applies it, and only when `cni === "cilium"`.
+#
+# THE COLLISION THAT CANNOT HAPPEN, and its guard: if `cilium-lb-ipam` were
+# dropped from `DEFAULT_ROOT_DEV_CATALOG.excludeGlob` while this alias is
+# applied, ArgoCD would selfHeal the metal pool over these objects. The
+# provider-conditional-lift tests keep the Application excluded on kind
+# `--cni cilium` until the Application pool itself is parameterised.
+#
+# WHAT THIS ALIAS DOES AND DOES NOT BUY. Assignment is the goal: a
+# `type: LoadBalancer` Service gets an address in `status.loadBalancer.ingress`,
+# which is what ArgoCD needs to stop reporting Progressing. L2 ARP on `eth0`
+# (kind's node NIC, already covered by `^eth[0-9]+`) is extra -- it may make
+# those IPs reachable from the docker bridge, and it may not, depending on
+# whether the kind network is actually 172.18.0.0/16. Do not read an assigned
+# address as "routable from the runner". Measure that separately.
+#
+# k3d is a follow-up. k3d also helm-installs Cilium and also has no substrate
+# pool; its docker network is not this range. Applying this file there would
+# be the same class of defect as applying the metal pool on kind.
+#
+# Do NOT lift weaviate (or any other LoadBalancer app) from this file existing.
+# Lift after a live run shows `status.loadBalancer.ingress` populated.
+---
+apiVersion: cilium.io/v2alpha1
+kind: CiliumLoadBalancerIPPool
+metadata:
+  name: zeta-lb-pool
+  annotations:
+    zeta.io/dev-substrate-alias: "true"
+    zeta.io/dev-substrate-alias-reason: >-
+      kind/CI stand-in for applications/cilium-lb-ipam/ip-pool.yaml so
+      type: LoadBalancer Services can be assigned an address; never applied
+      to the bare-metal cluster, never the metal 192.168.1.x subnet.
+spec:
+  blocks:
+    - start: "172.18.255.200"
+      stop: "172.18.255.220"
+---
+apiVersion: cilium.io/v2alpha1
+kind: CiliumL2AnnouncementPolicy
+metadata:
+  name: zeta-l2-announce
+  annotations:
+    zeta.io/dev-substrate-alias: "true"
+    zeta.io/dev-substrate-alias-reason: >-
+      kind/CI stand-in for applications/cilium-lb-ipam/l2-policy.yaml;
+      eth0 is kind's node NIC and already matches ^eth[0-9]+.
+spec:
+  loadBalancerIPs: true
+  interfaces:
+    - "^en[ops].*"
+    - "^eth[0-9]+"
+  nodeSelector:
+    matchExpressions:
+      - key: node-role.kubernetes.io/control-plane
+        operator: Exists

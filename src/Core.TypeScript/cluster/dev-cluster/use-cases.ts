@@ -7,7 +7,9 @@ import {
   buildDevAdminSecretManifest,
   buildDevRegistryPullSecretManifest,
   DEV_BOOTSTRAP_SECRETS,
+  DEV_CILIUM_LB_KIND_CRDS,
   DEV_GHCR_PULL_SECRET,
+  devCiliumLbKindManifestPath,
   devStorageAliasManifestPath,
   resolveRegistryToken,
   REPO_ROOT,
@@ -35,6 +37,33 @@ export function applyDevStorageClassAliases(ports: DevClusterPorts): void {
   console.log("Ensuring dev/CI alias StorageClasses (zeta-local-path, longhorn) ...");
   ports.controlPlane.applyFileManifest(devStorageAliasManifestPath("zetaLocalPath"));
   ports.controlPlane.applyFileManifest(devStorageAliasManifestPath("longhorn"));
+}
+
+/**
+ * Apply the kind/CI Cilium LB-IPAM pool, AFTER Cilium helm, BEFORE the catalogue.
+ *
+ * Same shape as `applyDevStorageClassAliases`: a name the workloads already
+ * ask for (`type: LoadBalancer`), answered by a substrate object ArgoCD never
+ * reads. Different from the StorageClass aliases in TWO ways that are load-
+ * bearing, not tidy:
+ *
+ *   1. KIND `--cni cilium` ONLY. kindnetd has no Cilium CRDs. k3d helm-installs
+ *      Cilium too, but its docker network is not this range -- applying the kind
+ *      pool there is the same class of defect as applying the metal 192.168.1.x
+ *      pool on kind. k3d is a follow-up, not this helper.
+ *   2. CRDs FIRST. The pool is a Cilium CR. Helm `wait: true` is pods, not CRDs.
+ *
+ * NOT called from `apply-root-app.ts`. That entrypoint does not know the CNI,
+ * and applying these CRs on kindnetd is a NotFound. The kind `--cni cilium`
+ * bring-up is the door that created the cluster; it is the door that applies
+ * the pool.
+ */
+export function applyDevCiliumLbKindAlias(ports: DevClusterPorts): void {
+  console.log("Ensuring kind Cilium LB-IPAM pool (not the metal 192.168.1.x subnet) ...");
+  for (const crd of DEV_CILIUM_LB_KIND_CRDS) {
+    ports.controlPlane.waitForCrdEstablished(crd, 120);
+  }
+  ports.controlPlane.applyFileManifest(devCiliumLbKindManifestPath());
 }
 
 /**
@@ -241,6 +270,7 @@ export function bringUpKindCiCluster(ports: DevClusterPorts, options: KindCiBrin
     controlPlane.applyFileManifest(join(REPO_ROOT, GATEWAY_API_CRD_BUNDLE));
     installShippedCiliumOnKind(ports, options.clusterName);
     controlPlane.waitForAllNodesReady(180);
+    applyDevCiliumLbKindAlias(ports);
   } else {
     controlPlane.waitForAllNodesReady(180);
     console.log("Installing Gateway API CRDs (cert-manager enableGatewayAPI on kind/k3d) ...");

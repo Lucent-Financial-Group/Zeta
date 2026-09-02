@@ -909,7 +909,7 @@
       "dynamic": [],
       "charts": ["<root>=hindsight@0.9.2"]
     },
-    "https://argoproj.github.io/argo-helm|argo-cd|10.6.4": {
+    "https://argoproj.github.io/argo-helm|argo-cd|10.7.0": {
       "literal": {
         "apiVersionOverrides": {},
         "applicationSet": {
@@ -1102,6 +1102,7 @@
             "enabled": {},
             "labels": {},
             "recommenders": {},
+            "startupBoost": {},
             "updateMode": {}
           }
         },
@@ -1206,6 +1207,7 @@
             "enabled": {},
             "labels": {},
             "recommenders": {},
+            "startupBoost": {},
             "updateMode": {}
           }
         },
@@ -1473,6 +1475,7 @@
             "enabled": {},
             "labels": {},
             "recommenders": {},
+            "startupBoost": {},
             "updateMode": {}
           }
         },
@@ -1639,6 +1642,7 @@
             "enabled": {},
             "labels": {},
             "recommenders": {},
+            "startupBoost": {},
             "updateMode": {}
           }
         },
@@ -1797,6 +1801,7 @@
             "enabled": {},
             "labels": {},
             "recommenders": {},
+            "startupBoost": {},
             "updateMode": {}
           }
         },
@@ -1957,6 +1962,7 @@
             "enabled": {},
             "labels": {},
             "recommenders": {},
+            "startupBoost": {},
             "updateMode": {}
           }
         },
@@ -2556,6 +2562,7 @@
             "enabled": {},
             "labels": {},
             "recommenders": {},
+            "startupBoost": {},
             "updateMode": {}
           }
         },
@@ -2860,6 +2867,7 @@
             "enabled": {},
             "labels": {},
             "recommenders": {},
+            "startupBoost": {},
             "updateMode": {}
           }
         }
@@ -2922,6 +2930,7 @@
         "applicationSet.vpa.containerPolicy",
         "applicationSet.vpa.labels",
         "applicationSet.vpa.recommenders",
+        "applicationSet.vpa.startupBoost",
         "commitServer.affinity",
         "commitServer.containerSecurityContext.capabilities.drop",
         "commitServer.deploymentAnnotations",
@@ -2949,6 +2958,7 @@
         "commitServer.vpa.containerPolicy",
         "commitServer.vpa.labels",
         "commitServer.vpa.recommenders",
+        "commitServer.vpa.startupBoost",
         "configs.clusterCredentials",
         "configs.cm.annotations",
         "configs.cm.resourceExclusionsAdditional",
@@ -3014,6 +3024,7 @@
         "controller.vpa.containerPolicy",
         "controller.vpa.labels",
         "controller.vpa.recommenders",
+        "controller.vpa.startupBoost",
         "crds.additionalLabels",
         "dex.affinity",
         "dex.certificateSecret.annotations",
@@ -3053,6 +3064,7 @@
         "dex.vpa.containerPolicy",
         "dex.vpa.labels",
         "dex.vpa.recommenders",
+        "dex.vpa.startupBoost",
         "externalRedis.secretAnnotations",
         "extraObjects",
         "global",
@@ -3100,6 +3112,7 @@
         "notifications.vpa.containerPolicy",
         "notifications.vpa.labels",
         "notifications.vpa.recommenders",
+        "notifications.vpa.startupBoost",
         "redis-ha.additionalAffinities",
         "redis-ha.authSecretAnnotations",
         "redis-ha.configmap.labels",
@@ -3231,6 +3244,7 @@
         "redis.vpa.containerPolicy",
         "redis.vpa.labels",
         "redis.vpa.recommenders",
+        "redis.vpa.startupBoost",
         "redisSecretInit.affinity",
         "redisSecretInit.containerSecurityContext.capabilities.drop",
         "redisSecretInit.dnsConfig",
@@ -3291,6 +3305,7 @@
         "repoServer.vpa.containerPolicy",
         "repoServer.vpa.labels",
         "repoServer.vpa.recommenders",
+        "repoServer.vpa.startupBoost",
         "server.affinity",
         "server.autoscaling.behavior",
         "server.autoscaling.metrics",
@@ -3379,10 +3394,11 @@
         "server.vpa.annotations",
         "server.vpa.containerPolicy",
         "server.vpa.labels",
-        "server.vpa.recommenders"
+        "server.vpa.recommenders",
+        "server.vpa.startupBoost"
       ],
       "dynamic": [],
-      "charts": ["<root>=argo-cd@10.6.4", "redis-ha=redis-ha@4.38.0"]
+      "charts": ["<root>=argo-cd@10.7.0", "redis-ha=redis-ha@4.38.0"]
     },
     "https://argoproj.github.io/argo-helm|argo-rollouts|2.39.5": {
       "literal": {
@@ -32187,7 +32203,7 @@
       "dynamic": [],
       "charts": ["<root>=ollama@1.79.0"]
     },
-    "https://prometheus-community.github.io/helm-charts|kube-prometheus-stack|88.6.2": {
+    "https://prometheus-community.github.io/helm-charts|kube-prometheus-stack|88.6.3": {
       "literal": {
         "additionalPrometheusRules": {},
         "additionalPrometheusRulesMap": {},
@@ -35337,7 +35353,7 @@
         "thanosRuler.ingress.hosts"
       ],
       "charts": [
-        "<root>=kube-prometheus-stack@88.6.2",
+        "<root>=kube-prometheus-stack@88.6.3",
         "crds=crds@0.0.0",
         "grafana=grafana@12.11.2",
         "kube-state-metrics=kube-state-metrics@8.4.1",
@@ -39407,9 +39423,9 @@
     {
       "appId": "full-ai-cluster/argocd",
       "chart": "argo-cd",
-      "targetRevision": "10.6.4",
+      "targetRevision": "10.7.0",
       "repoURL": "https://argoproj.github.io/argo-helm",
-      "chartKey": "https://argoproj.github.io/argo-helm|argo-cd|10.6.4"
+      "chartKey": "https://argoproj.github.io/argo-helm|argo-cd|10.7.0"
     },
     {
       "appId": "full-ai-cluster/cdi",
@@ -39534,9 +39550,9 @@
     {
       "appId": "full-ai-cluster/kube-prometheus-stack",
       "chart": "kube-prometheus-stack",
-      "targetRevision": "88.6.2",
+      "targetRevision": "88.6.3",
       "repoURL": "https://prometheus-community.github.io/helm-charts",
-      "chartKey": "https://prometheus-community.github.io/helm-charts|kube-prometheus-stack|88.6.2"
+      "chartKey": "https://prometheus-community.github.io/helm-charts|kube-prometheus-stack|88.6.3"
     },
     {
       "appId": "full-ai-cluster/kubevirt",

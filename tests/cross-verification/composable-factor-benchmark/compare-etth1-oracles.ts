@@ -19,6 +19,12 @@ function string(record: UnknownRecord, key: string, label: string): string {
   return value;
 }
 
+function boolean(record: UnknownRecord, key: string, label: string): boolean {
+  const value = record[key];
+  if (typeof value !== "boolean") throw new Error(`CFB-B-SCHEMA:${label}.${key}`);
+  return value;
+}
+
 function close(left: number, right: number, tolerance = 1e-9): boolean {
   return Math.abs(left - right) <= tolerance;
 }
@@ -178,9 +184,95 @@ compareMetricGroup(
 if (string(object(correlated["verdict"], "typescript.correlatedError.verdict"), "status", "typescript.correlatedError.verdict")
   !== string(pythonCorrelated, "verdict", "python.correlatedError")) failures.push("correlated.verdict");
 
+const common = object(typescript["commonNoise"], "typescript.commonNoise");
+const pythonCommon = object(pythonReport["commonNoise"], "python.commonNoise");
+const commonArtifact = object(common["artifact"], "typescript.commonNoise.artifact");
+const pythonCommonArtifact = object(pythonCommon["artifact"], "python.commonNoise.artifact");
+const commonArtifactScalars = [
+  "leadingEigenvalue",
+  "leadingEigenvalueShare",
+  "loadingScale",
+  "activeMask",
+  "predictedVariance",
+  "intervalVariance",
+  "validationMse",
+  "ridge",
+  "fittedScalarCount",
+] as const;
+for (const key of commonArtifactScalars) {
+  const left = number(commonArtifact, key, "typescript.commonNoise.artifact");
+  const right = number(pythonCommonArtifact, key, "python.commonNoise.artifact");
+  if (!close(left, right)) failures.push(`common.artifact.${key}:${String(left)}:${String(right)}`);
+}
+for (const key of ["residualMeans", "factorLoading", "uniqueness", "uniquenessRatios", "weights"] as const) {
+  compareNumberArrays(failures, `common.artifact.${key}`, commonArtifact[key], pythonCommonArtifact[key]);
+}
+for (const key of ["residualCovariance", "factorCovariance", "regularizedCovariance"] as const) {
+  compareNumberMatrices(failures, `common.artifact.${key}`, commonArtifact[key], pythonCommonArtifact[key]);
+}
+compareMetricGroup(failures, "common.metrics", common["metrics"], pythonCommon["metrics"]);
+const commonNonVacuity = object(common["nonVacuity"], "typescript.commonNoise.nonVacuity");
+const pythonCommonNonVacuity = object(pythonCommon["nonVacuity"], "python.commonNoise.nonVacuity");
+for (const key of ["maximumOffDiagonal", "activeWeightCount", "diagonalWeightDifference"] as const) {
+  const left = number(commonNonVacuity, key, "typescript.commonNoise.nonVacuity");
+  const right = number(pythonCommonNonVacuity, key, "python.commonNoise.nonVacuity");
+  if (!close(left, right)) failures.push(`common.nonVacuity.${key}:${String(left)}:${String(right)}`);
+}
+for (const key of ["passes", "uniquenessFloorHolds"] as const) {
+  if (boolean(commonNonVacuity, key, "typescript.commonNoise.nonVacuity")
+    !== boolean(pythonCommonNonVacuity, key, "python.commonNoise.nonVacuity")) failures.push(`common.nonVacuity.${key}`);
+}
+const commonDiagonal = object(common["diagonalMutation"], "typescript.commonNoise.diagonalMutation");
+const pythonCommonDiagonal = object(pythonCommon["diagonalMutation"], "python.commonNoise.diagonalMutation");
+for (const key of ["maximumPredictionDifference", "metricDifference"] as const) {
+  const left = number(commonDiagonal, key, "typescript.commonNoise.diagonalMutation");
+  const right = number(pythonCommonDiagonal, key, "python.commonNoise.diagonalMutation");
+  if (!close(left, right)) failures.push(`common.diagonal.${key}:${String(left)}:${String(right)}`);
+}
+const commonDiagonalArtifact = object(commonDiagonal["artifact"], "typescript.commonNoise.diagonalMutation.artifact");
+const pythonCommonDiagonalArtifact = object(pythonCommonDiagonal["artifact"], "python.commonNoise.diagonalMutation.artifact");
+for (const key of commonArtifactScalars) {
+  const left = number(commonDiagonalArtifact, key, "typescript.commonNoise.diagonalMutation.artifact");
+  const right = number(pythonCommonDiagonalArtifact, key, "python.commonNoise.diagonalMutation.artifact");
+  if (!close(left, right)) failures.push(`common.diagonal.artifact.${key}:${String(left)}:${String(right)}`);
+}
+for (const key of ["residualMeans", "factorLoading", "uniqueness", "uniquenessRatios", "weights"] as const) {
+  compareNumberArrays(failures, `common.diagonal.artifact.${key}`, commonDiagonalArtifact[key], pythonCommonDiagonalArtifact[key]);
+}
+for (const key of ["residualCovariance", "factorCovariance", "regularizedCovariance"] as const) {
+  compareNumberMatrices(failures, `common.diagonal.artifact.${key}`, commonDiagonalArtifact[key], pythonCommonDiagonalArtifact[key]);
+}
+for (const comparison of ["bootstrapVersusBestValidation", "bootstrapVersusStaticDag"] as const) {
+  const leftComparison = object(common[comparison], `typescript.commonNoise.${comparison}`);
+  const rightComparison = object(pythonCommon[comparison], `python.commonNoise.${comparison}`);
+  for (const metric of ["mse", "gaussianNll"]) {
+    compareIntervals(failures, `common.${comparison}.${metric}`, leftComparison[metric], rightComparison[metric]);
+  }
+}
+const commonSignFlip = object(common["signFlip"], "typescript.commonNoise.signFlip");
+const pythonCommonSignFlip = object(pythonCommon["signFlip"], "python.commonNoise.signFlip");
+for (const key of ["covarianceDifference", "weightDifference"] as const) {
+  const left = number(commonSignFlip, key, "typescript.commonNoise.signFlip");
+  const right = number(pythonCommonSignFlip, key, "python.commonNoise.signFlip");
+  if (!close(left, right)) failures.push(`common.signFlip.${key}:${String(left)}:${String(right)}`);
+}
+const reversedLeft = number(common, "reversedTrainingOrderDifference", "typescript.commonNoise");
+const reversedRight = number(pythonCommon, "reversedTrainingOrderDifference", "python.commonNoise");
+if (!close(reversedLeft, reversedRight)) failures.push(`common.reversedTrainingOrderDifference:${String(reversedLeft)}:${String(reversedRight)}`);
+const commonPermuted = object(common["permutedTargets"], "typescript.commonNoise.permutedTargets");
+const pythonCommonPermuted = object(pythonCommon["permutedTargets"], "python.commonNoise.permutedTargets");
+compareMetricGroup(failures, "common.permuted", commonPermuted["metrics"], pythonCommonPermuted["metrics"]);
+for (const key of ["seed", "mseChange", "nllChange"] as const) {
+  const left = number(commonPermuted, key, "typescript.commonNoise.permutedTargets");
+  const right = number(pythonCommonPermuted, key, "python.commonNoise.permutedTargets");
+  if (!close(left, right)) failures.push(`common.permuted.${key}:${String(left)}:${String(right)}`);
+}
+if (string(object(common["verdict"], "typescript.commonNoise.verdict"), "status", "typescript.commonNoise.verdict")
+  !== string(pythonCommon, "verdict", "python.commonNoise")) failures.push("common.verdict");
+
 const source = object(typescript["source"], "typescript.source");
 if (string(source, "sha256", "typescript.source") !== string(pythonDataset, "sha256", "python.dataset")) failures.push("sha256");
-console.log(`CFB-B/C cross-verification: 7 metric lanes + 6 intervals; failures ${String(failures.length)}`);
+console.log(`CFB-B/C/D cross-verification: 10 metric lanes + 10 intervals; failures ${String(failures.length)}`);
 if (failures.length > 0) {
   for (const failure of failures) console.error(failure);
   process.exit(1);

@@ -39,7 +39,8 @@ to hit production without a traditional integration suite.
    boats. Corrupt-last-write intercept landed (`ArmCorruptLastWrite`).
    Reorder door landed (`ArmReorderNextTwo`); freeze still finishes object
    puts before the log boat. Sealed-log replay landed (LSN on the frame).
-   Reclaim sweep remains
+   Reclaim crash-mid-sweep intercept landed (`ArmCrashOnDelete`).
+   Native `IBlockIo` remains
    first-product **PR12** and ZetaDB **D12**: the same door covers the
    **database commit path and the filesystem freeze path**. Until
    that corpus is green the honest word is `toy`, not crash-safe.

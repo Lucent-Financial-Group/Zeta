@@ -91,6 +91,25 @@ describe("cilium-lb-ipam stays excluded — half a conjunction is not a conditio
     );
     expect(pool).toMatch(/192\.168\.\d+\.\d+/);
   });
+
+  test("the kind bring-up alias is not a lift of this Application", () => {
+    // A pool that is not 192.168.1.x exists. That is the testing substrate.
+    // It is not this Application, and lifting this Application would selfHeal
+    // the metal range over it.
+    const alias = readFileSync(
+      join(REPO_ROOT, "full-ai-cluster/dev-cluster/manifests/cilium-lb-ipam.kind.yaml"),
+      "utf8",
+    );
+    expect(alias).toContain("kind: CiliumLoadBalancerIPPool");
+    expect(alias).toContain('start: "172.18.255.200"');
+    expect(alias).not.toMatch(/start:\s*"192\.168\.1\./);
+    expect(alias).not.toMatch(/stop:\s*"192\.168\.1\./);
+    expect(
+      discoverExpectedApplications(REPO_ROOT, "kind", "cilium")
+        .filter((a) => !a.excludedFromDev)
+        .map((a) => a.dir),
+    ).not.toContain("cilium-lb-ipam");
+  });
 });
 
 describe("the default is conservative", () => {
