@@ -1,0 +1,12 @@
+{
+  "pr_number": 16279,
+  "archive_path": "docs/history/pr-reviews/PR-16279-fix-seaweedfs-4-33-0-4-45-0-closes-cve-2026-77611-high-chart-currency-now-gates-.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-02T01:07:52.449Z",
+  "schema_version": "v1",
+  "commit_sha": "0ab1adbb71e0030c1bc9c88fa8653a518f4849a8",
+  "title": "fix(seaweedfs): 4.33.0 -> 4.45.0 — closes CVE-2026-77611 (HIGH); chart currency now gates the USB test",
+  "state": "MERGED",
+  "merged_at": "2026-09-02T01:07:14Z",
+  "head_ref": "shadow/chart-currency-gates-the-usb-test"
+}
