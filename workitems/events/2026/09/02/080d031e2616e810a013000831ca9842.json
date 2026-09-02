@@ -1,0 +1,14 @@
+{
+  "id": "080d031e2616e810a013000831ca9842",
+  "at": "2026-09-02T20:17:14.461Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1HW9GPA087G0R002YNWA8X",
+    "type": "task",
+    "title": "Migrate the F# Hat/Persona/ActionGrammar model to TypeScript and gate the 16-slot grammar with it",
+    "slug": "migrate-the-f-hat-persona-actiongrammar-model-to-typescript",
+    "priority": "P2",
+    "filename": "081M1HW9GPA087G0R002YNWA8X-migrate-the-f-hat-persona-actiongrammar-model-to-typescript.md"
+  }
+}
