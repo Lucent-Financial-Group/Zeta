@@ -1,0 +1,12 @@
+{
+  "pr_number": 16402,
+  "archive_path": "docs/history/pr-reviews/PR-16402-feat-authorization-separation-of-duties-from-agentic-organization-keyed-on-the-p.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-02T23:07:07.294Z",
+  "schema_version": "v1",
+  "commit_sha": "f591a090438876a28a5bfb6b696efc11beee8f37",
+  "title": "feat(authorization): separation of duties from agentic-organization — keyed on the persona, not the hat",
+  "state": "MERGED",
+  "merged_at": "2026-09-02T23:06:29Z",
+  "head_ref": "separation-of-duties"
+}

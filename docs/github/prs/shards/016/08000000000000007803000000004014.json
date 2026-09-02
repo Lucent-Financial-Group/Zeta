@@ -1,0 +1,12 @@
+{
+  "pr_number": 16404,
+  "archive_path": "docs/history/pr-reviews/PR-16404-research-add-non-vacuous-common-noise-calibration-query.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-02T23:06:15.872Z",
+  "schema_version": "v1",
+  "commit_sha": "54736e893eb083473bd9a02618fdb56b0f6f3bf6",
+  "title": "research: add non-vacuous common-noise calibration query",
+  "state": "MERGED",
+  "merged_at": "2026-09-02T23:05:31Z",
+  "head_ref": "research/common-noise-query"
+}
