@@ -1,0 +1,12 @@
+{
+  "pr_number": 16355,
+  "archive_path": "docs/history/pr-reviews/PR-16355-feat-cluster-loki-tempo-to-the-oss-maintained-charts-3-bumps-and-a-false-inert-b.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-02T18:19:11.293Z",
+  "schema_version": "v1",
+  "commit_sha": "2ffc15c6bba45612ba8419bc6eb1eea63c650f92",
+  "title": "feat(cluster): loki+tempo to the OSS/maintained charts, 3 bumps, and a false-INERT bug the move exposed",
+  "state": "MERGED",
+  "merged_at": "2026-09-02T18:18:35Z",
+  "head_ref": "shadow/loki-tempo-oss-relocations"
+}
