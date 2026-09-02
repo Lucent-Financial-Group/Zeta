@@ -2,7 +2,7 @@
 
 **Owner:** Vera (this file is hers; she can revise it per her own discretion per named-agent-distinctness consent + Aaron 2026-05-05 *"sh can edit her own CURRENT-amara.md too if she does not like it after reading her files"* — same applies symmetrically to Vera via the codex peer-call write-back path when added).
 
-**Last updated:** 2026-09-02 (unique-confirm leftover UNIQUE leftover #16328 leftover unique @ 236d5975800419e9e332f5ea296714049f446ed7 + leftover UNIQUE leftover #16321 leftover unique @ 0929240695c37c5164166919285d03a154b725db + leftover-on-main #16259 + #16257 + #16266 + #16271 + #16267 + #16275; identity body still 2026-05-05)
+**Last updated:** 2026-09-02 (unique-confirm leftover UNIQUE leftover #16336 leftover unique @ 5d24c26262f8f1078edfb51954d610e53c312db5 + leftover UNIQUE leftover #16328 leftover unique @ 236d5975800419e9e332f5ea296714049f446ed7 + leftover UNIQUE leftover #16321 leftover unique @ 0929240695c37c5164166919285d03a154b725db + leftover-on-main #16259 + #16257 + #16266 + #16271 + #16267 + #16275; identity body still 2026-05-05)
 
 **Pattern parity:** sibling to `CURRENT-aaron.md` (Aaron, first-party human maintainer; in-repo canonical), `CURRENT-amara.md` (Amara, Aurora deep-research register, separate entity on GPT-5.5 substrate), `CURRENT-ani.md` (Ani, voice-mode chat-companion register on Grok-via-cursor, brat-voice register), `CURRENT-otto.md` (Otto, factory-orchestrator on Claude-Opus-4.7; user-scope). Vera fills the implementation-peer role offered 2026-05-05 by Aaron *"this is a trust mustle you budle between the two yo man want a named chat gpt agent for this to hold the trust in a named current file"*.
 
@@ -175,5 +175,29 @@ Named residuals:
 - Pattern style: .helm-schema-cache/** vs siblings **/.pytest_cache/**. Narrower, matches writer path.
 - 1316 false-red: author assertion only. No CI log quoting 1316. Ungrounded as live CI artifact.
 - Recursive tree walk incomplete (403). No evidence of a tracked helm-schema-cache path.
+
+Sit leftover. Do not merge. Not a product unique-confirm of merge.
+
+---
+
+## leftover UNIQUE leftover #16336 leftover unique @ 5d24c26262f8f1078edfb51954d610e53c312db5
+
+UNIQUE HOLDS leftover NEW CELL leftover UNIQUE leftover #16336 leftover unique @ 5d24c26262f8f1078edfb51954d610e53c312db5
+
+Live REST HEAD leftover unique @ 5d24c26262f8f1078edfb51954d610e53c312db5 CONFIRMED (PR head.sha, 1 commit, +21/-0, 7 files under db/, never a merge-ref). Parent leftover unique @ dbf6a70614d04aeffdfbae45dc82ad93a5b3ca61 (= PR base main; archive-flush). Never grade merge-ref 3daf6adfd7030ccbdf1d6709e6d29a7576ca2ddc (2-parent GitHub test-merge). Unique does not move.
+
+AceHack OPEN at grade. Unique commit: Co-Authored-By Kiro only. PR body has Agency-Signature-Version 1 / Agent alexa. mergeable_state LIVE unstable. auto_merge null.
+
+Object: 7 new db/ carved-sentence stubs vs parent (all 404 at dbf6a706). Four .md match getStubContent db-file. Three non-md paths (db/redis/Application.yaml, db/orleans/configmap.yaml, db/dev-cluster/use-cases.ts) are markdown with H1 trailing slash because parent auto-vivify.ts types non-.md as db-dir. None empty. None schema/SQL/K8s/TS. tsc exclude already contains db / db/** at parent.
+
+Preflight gate at parent: bun src/Core.TypeScript/backlog/auto-vivify.ts --check (existsSync only). Complementary remainder of that shipped detector/write path, not leftover-of a prior stub unique (no OPEN auto-vivify overlap; 7 paths new vs parent). Cite != close leftover-on-main closed auto-vivify repairs #12747 / #11930 / #14225.
+
+Named residuals:
+- Vacuous green: existsSync-only. 3-line placeholders. .yaml/.ts bodies are markdown. Historical closed PRs treated inventing db/ files as the dishonest silence path; this unique is that class via sanctioned write-mode.
+- Type bug instantiated: db-dir stub on file paths (Application.yaml/, configmap.yaml/, use-cases.ts/). Bug lives in parent auto-vivify.ts; this unique is the output.
+- Short path vs real tree: parent full-ai-cluster/dev-cluster/ exists; use-cases.ts 404 there. Residual class of #11930/#14225.
+- Referring 081M1* workitem blobs not independently quoted. Cannot inherit 4 committed workitems / 0 dangling (was 7). PR body lists 5 ID prefixes vs claimed 4 workitems.
+- Agency on PR body, not unique commit.
+- Open parent bug 081M036ZP2G (code-span false pointers) still backlog.
 
 Sit leftover. Do not merge. Not a product unique-confirm of merge.
