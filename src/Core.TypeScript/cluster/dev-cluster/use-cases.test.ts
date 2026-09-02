@@ -323,24 +323,34 @@ describe("dev/CI bootstrap credentials", () => {
   /**
    * PER-SECRET idempotency, which the all-present case above cannot show.
    *
-   * A cluster can legitimately hold one and not the other -- a bring-up that
-   * predates a roster entry is exactly that state, and it is the state every
-   * existing dev cluster is in the moment `openziti/ziti-admin-credentials`
-   * joins the roster. The mint must converge it by creating ONLY the missing
-   * one. A loop that bailed on the first `resourceExists` hit, or that skipped
-   * the check entirely, would fail here and pass every other test in this file.
+   * A cluster can legitimately hold every rostered Secret but one -- a
+   * bring-up that predates a roster entry is exactly that state, and it is
+   * the state every existing dev cluster is in the moment `redis/redis-auth`
+   * joins the roster. The mint must converge it by creating the missing
+   * Secret and no other. A loop that bailed on the first `resourceExists`
+   * hit, or that skipped the check entirely, would fail here and pass every
+   * other test in this file.
+   *
+   * The pin is the minted metadata.name list, not an absence search for the
+   * already-present names. `not.toContain("grafana-admin-credentials")` is an
+   * R5 taint-shaped check: it passes whenever the leak is spelled differently
+   * (a sibling key, a comment, a rename), which is exactly the arity hole
+   * the hygiene census ratchets.
    */
-  test("a cluster holding every rostered credential but one converges by minting only the missing one", () => {
+  test("a cluster holding every rostered credential but one converges by minting the missing metadata.name", () => {
     const log: string[] = [];
     const already = DEV_BOOTSTRAP_SECRETS.filter((spec) => spec !== DEV_REDIS_AUTH_SECRET).map(
       (spec) => `secret/${spec.name}@${spec.namespace}`,
     );
     bringUpKindCiCluster(fakePorts(log, already), kindOptions);
-    const mints = log.filter((entry) => entry.startsWith("inline-manifest:"));
-    expect(mints.length).toBe(1);
-    expect(mints[0]).toContain(`name: ${DEV_REDIS_AUTH_SECRET.name}`);
-    expect(mints[0]).not.toContain(`name: ${DEV_GRAFANA_ADMIN_SECRET.name}`);
-    expect(mints[0]).not.toContain(`name: ${DEV_ZITI_ADMIN_SECRET.name}`);
+    const mintedNames = log
+      .filter((entry) => entry.startsWith("inline-manifest:"))
+      .map((entry) => {
+        const match = /^metadata:\n  name: ([^\n]+)/m.exec(entry.slice("inline-manifest:".length));
+        if (match === null) throw new Error(`minted manifest has no metadata.name:\n${entry}`);
+        return match[1];
+      });
+    expect(mintedNames).toEqual([DEV_REDIS_AUTH_SECRET.name]);
   });
 
   /**
