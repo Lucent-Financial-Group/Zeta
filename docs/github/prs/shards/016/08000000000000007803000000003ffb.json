@@ -1,0 +1,12 @@
+{
+  "pr_number": 16379,
+  "archive_path": "docs/history/pr-reviews/PR-16379-docs-memory-unique-confirm-leftover-unique-leftover-16381.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-02T21:46:25.960Z",
+  "schema_version": "v1",
+  "commit_sha": "f8b74891bad282c2bf5d63c0ce3b35867e9274e3",
+  "title": "docs(memory): unique-confirm leftover UNIQUE leftover #16381",
+  "state": "MERGED",
+  "merged_at": "2026-09-02T21:45:47Z",
+  "head_ref": "cursor/vera-notebook-unique-16375-83a1"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 16387,
+  "archive_path": "docs/history/pr-reviews/PR-16387-research-neuralese-the-anti-babel-invariant-was-written-for-it-and-zeta-declined.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-02T21:54:25.231Z",
+  "schema_version": "v1",
+  "commit_sha": "a91d57b5f9671303d15d0cb6f84a036f20865935",
+  "title": "research(neuralese): the anti-Babel invariant was written for it — and Zeta declined CoT monitoring on symmetry grounds",
+  "state": "MERGED",
+  "merged_at": "2026-09-02T21:53:44Z",
+  "head_ref": "shadow/neuralese-roadmap"
+}

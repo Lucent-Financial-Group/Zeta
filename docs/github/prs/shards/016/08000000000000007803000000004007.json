@@ -1,0 +1,12 @@
+{
+  "pr_number": 16391,
+  "archive_path": "docs/history/pr-reviews/PR-16391-docs-pages-synchronize-bounded-factor-and-crdt-spectrum.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-02T21:52:22.230Z",
+  "schema_version": "v1",
+  "commit_sha": "fd9520e7110f12c8145f10766c1587666566a014",
+  "title": "docs(pages): synchronize bounded factor and CRDT spectrum",
+  "state": "MERGED",
+  "merged_at": "2026-09-02T21:51:47Z",
+  "head_ref": "research/evidence-spectrum-sync"
+}

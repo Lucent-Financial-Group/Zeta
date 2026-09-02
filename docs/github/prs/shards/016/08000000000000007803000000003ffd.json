@@ -1,0 +1,12 @@
+{
+  "pr_number": 16381,
+  "archive_path": "docs/history/pr-reviews/PR-16381-feat-hat-migrate-the-f-hat-persona-actiongrammar-model-to-typescript-pinned-by-a.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-02T21:40:19.312Z",
+  "schema_version": "v1",
+  "commit_sha": "2f09d3af5c4cf85af572bbcdfb3d043b5120692c",
+  "title": "feat(hat): migrate the F# Hat/Persona/ActionGrammar model to TypeScript, pinned by a 202-vector treaty",
+  "state": "MERGED",
+  "merged_at": "2026-09-02T21:39:41Z",
+  "head_ref": "hat-persona-fsharp-to-ts-migration"
+}
