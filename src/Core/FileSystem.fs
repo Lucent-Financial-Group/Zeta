@@ -181,7 +181,7 @@ type SimulatedFileStream
 
 /// An in-memory mock file system that supports simulating latency, read/write sector corruption exceptions,
 /// file creation/modification tracking, and one-shot crash-mid-write /
-/// corrupt-last-write (D12 door).
+/// corrupt-last-write / reorder (D12 door).
 type InMemoryFileSystem() =
     let files = System.Collections.Concurrent.ConcurrentDictionary<string, byte[]>()
     let mutable latencyMs = 0L
@@ -190,9 +190,19 @@ type InMemoryFileSystem() =
     let mutable rngState = 12345L
     let mutable crashArm: (string * int) option = None
     let mutable corruptArm: (string * int) option = None
+    let mutable reorderNeedle: string option = None
+    let mutable heldWrite: (string * byte[]) option = None
+    let commitOrder = ResizeArray<string>()
     let lockObj = obj ()
 
     let corruptXor = 0xA5uy
+
+    let pathMatches (needle: string) (path: string) =
+        path.IndexOf(needle, StringComparison.Ordinal) >= 0
+
+    let publish (path: string) (bytes: byte[]) =
+        files.[path] <- bytes
+        commitOrder.Add path
 
     let splitMix () =
         rngState <- rngState + 0x9E3779B97F4A7C15L
@@ -214,20 +224,15 @@ type InMemoryFileSystem() =
     let commitWrite (path: string) (bytes: byte[]) =
         lock lockObj (fun () ->
             match crashArm with
-            | Some(needle, afterBytes) when
-                path.IndexOf(needle, StringComparison.Ordinal) >= 0
-                && bytes.Length > afterBytes
-                ->
+            | Some(needle, afterBytes) when pathMatches needle path && bytes.Length > afterBytes ->
                 crashArm <- None
                 let prefix = Array.sub bytes 0 afterBytes
-                files.[path] <- prefix
+                publish path prefix
                 raise (CrashMidWriteException(path, afterBytes, bytes.Length))
             | _ ->
                 match corruptArm with
                 | Some(needle, lastBytes) when
-                    path.IndexOf(needle, StringComparison.Ordinal) >= 0
-                    && bytes.Length > 0
-                    && lastBytes > 0
+                    pathMatches needle path && bytes.Length > 0 && lastBytes > 0
                     ->
                     corruptArm <- None
                     let copy = Array.copy bytes
@@ -237,8 +242,17 @@ type InMemoryFileSystem() =
                     for i in start .. copy.Length - 1 do
                         copy.[i] <- copy.[i] ^^^ corruptXor
 
-                    files.[path] <- copy
-                | _ -> files.[path] <- bytes)
+                    publish path copy
+                | _ ->
+                    match reorderNeedle, heldWrite with
+                    | Some needle, None when pathMatches needle path ->
+                        heldWrite <- Some(path, bytes)
+                    | Some needle, Some(heldPath, heldBytes) when pathMatches needle path ->
+                        reorderNeedle <- None
+                        heldWrite <- None
+                        publish path bytes
+                        publish heldPath heldBytes
+                    | _ -> publish path bytes)
 
     member _.Files = files
 
@@ -263,6 +277,21 @@ type InMemoryFileSystem() =
             invalidArg (nameof lastBytes) "lastBytes must be >= 1"
 
         lock lockObj (fun () -> corruptArm <- Some(pathContains, lastBytes))
+
+    /// One-shot: hold the first matching Dispose (file not yet visible), then
+    /// the second matching Dispose commits itself first and flushes the held
+    /// write. Freeze still finishes object puts before the log boat, so this
+    /// does not scramble freeze vs leaves.
+    member _.ArmReorderNextTwo(pathContains: string) =
+        if String.IsNullOrEmpty pathContains then
+            invalidArg (nameof pathContains) "pathContains must be non-empty"
+
+        lock lockObj (fun () ->
+            reorderNeedle <- Some pathContains
+            heldWrite <- None)
+
+    /// Paths in the order they became visible. Held writes are absent until flushed.
+    member _.CommitOrder = lock lockObj (fun () -> commitOrder.ToArray())
 
     /// Injected latency in virtual milliseconds. Never wall-clock sleep.
     member _.VirtualElapsedMs = lock lockObj (fun () -> virtualElapsedMs)
