@@ -1,0 +1,14 @@
+{
+  "id": "080d031ab2154810a013000803578fa3",
+  "at": "2026-09-02T18:16:32.681Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1HNCGN8087G0R000ZK7ZGX",
+    "type": "task",
+    "title": "ZetaFsFreeze log through FerryThrottler (ZD2 / D4 auto-batch)",
+    "slug": "zetafsfreeze-log-through-ferrythrottler-zd2-d4-auto-batch",
+    "priority": "P1",
+    "filename": "081M1HNCGN8087G0R000ZK7ZGX-zetafsfreeze-log-through-ferrythrottler-zd2-d4-auto-batch.md"
+  }
+}

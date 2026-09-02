@@ -4,6 +4,8 @@ open System
 open System.Buffers.Binary
 open System.Collections.Generic
 open System.IO
+open System.Threading
+open System.Threading.Tasks
 open Zeta.Core.FSharp.Blake3
 
 /// WAL freeze (E2 / PR7). Snapshot mutbuf G, Jumprope that snapshot, log
@@ -11,12 +13,17 @@ open Zeta.Core.FSharp.Blake3
 /// leaf+trunk **before** commit and withholds the ack. Readable iff commit
 /// exists and every leaf is present. Crash-mid-write stays `toy` until PR12.
 ///
-/// DoP=1 on this log (one gate). No Task.Run.
+/// DoP=1 on this log. No Task.Run except the ferry launch (injected context
+/// on the DST path; `manual` + `PumpToIdleAsync` for tests).
 ///
-/// D4 gap (ZetaDB 2026-09-02): small-write storms are supposed to go through
-/// `FerryThrottler` the way `GroupCommitDiskDeltaLog` already does on a host
-/// directory. This module is still a single-writer file (`log/freeze`), not
-/// that ferry. Wiring it is ZD2; do not claim auto-batch of freezes today.
+/// ZD2 / D4: Journaled and Durable log appends go through `FerryThrottler`
+/// the way `GroupCommitDiskDeltaLog` already does. One boat writes N freeze
+/// records then one Flush/fsync. Buffered still skips the log.
+///
+/// Cancellation: `freezeAsync` takes the token (DST / Generic Host
+/// `ApplicationStopping`). Nested ferry calls pass it through. There is no
+/// ambient token (noninterference). Cancel before admit skips the boat;
+/// cancel after admit still writes (same shield as group-commit).
 module ZetaFsFreeze =
 
     type DurabilityClass =
@@ -45,19 +52,173 @@ module ZetaFsFreeze =
         abstract OnJournaled: FreezeResult -> Result<unit, FreezeError>
         abstract OnDurable: FreezeResult -> Result<unit, FreezeError>
 
-    type Volume =
-        { StoreDir: string
-          Mutbuf: ZetaFsMutbuf.Catalog
-          Gate: obj
-          Commits: Dictionary<ContentHash256, FreezeResult>
-          Leaves: Dictionary<ContentHash256, ContentHash256[]>
-          mutable NextLsn: int64
-          Observer: IDurabilityObserver option
-          /// None = FORMAT enc=off (default). Some = explicit-nonce GCM on the log.
-          Session: ZetaFsCrypto.Session option }
+    type internal LogItem =
+        { IntentLsn: int64
+          CommitLsn: int64
+          Frames: byte[]
+          Durable: bool
+          ObjectIds: ContentHash256[]
+          Reply: TaskCompletionSource<Result<struct (int64 * int64), FreezeError>> }
+
+    /// DoP=1 segment writer. One boat = N freezes, one Flush; Durable adds one
+    /// fsync of objects-dir + log. `manual` is the DST pump (no background ferry).
+    [<Sealed>]
+    type internal FreezeLog
+        (storeDir: string, config: FerryThrottlerConfig, manual: bool) =
+
+        do
+            if config.MaxDegreeOfParallelism <> 1 then
+                invalidArg (nameof config) "FreezeLog writes one segment file; MaxDegreeOfParallelism must be 1."
+
+        let logDir = Path.Combine(storeDir, "log")
+        let logPath = Path.Combine(logDir, "freeze")
+        let objectsDir = Path.Combine(storeDir, "objects")
+        let mutable boats = 0
+        let mutable lastBoat = 0
+
+        let processBatch (boat: ReadOnlyMemory<LogItem>) (ct: CancellationToken) : Task =
+            ct.ThrowIfCancellationRequested()
+            boats <- boats + 1
+            lastBoat <- boat.Length
+            let fs = FileSystem.Current
+            fs.CreateDirectory logDir
+            use stream = fs.OpenFile(logPath, FileMode.Append, FileAccess.Write, FileShare.Read)
+            let mutable err: FreezeError option = None
+            let anyDurable =
+                let mutable d = false
+                let mutable i = 0
+
+                while i < boat.Length do
+                    if boat.Span.[i].Durable then
+                        d <- true
+
+                    i <- i + 1
+
+                d
+
+            if anyDurable then
+                let mutable i = 0
+
+                while err.IsNone && i < boat.Length do
+                    let item = boat.Span.[i]
+
+                    if item.Durable then
+                        let mutable j = 0
+
+                        while err.IsNone && j < item.ObjectIds.Length do
+                            let hex = (ContentHash256.toContentAddress128 item.ObjectIds.[j]).ToHex()
+                            let path = Path.Combine(objectsDir, hex.Substring(0, 2), hex.Substring(2))
+
+                            match FileSync.fsyncFile path with
+                            | Ok() -> ()
+                            | Error e -> err <- Some(FreezeError.Fsync e)
+
+                            j <- j + 1
+
+                    i <- i + 1
+
+                if err.IsNone then
+                    match FileSync.fsyncDir objectsDir with
+                    | Error e -> err <- Some(FreezeError.Fsync e)
+                    | Ok() -> ()
+
+            if err.IsNone then
+                for i in 0 .. boat.Length - 1 do
+                    let frames = boat.Span.[i].Frames
+                    stream.Write(frames, 0, frames.Length)
+
+                stream.Flush()
+
+            if err.IsNone && anyDurable then
+                match FileSync.fsyncFile logPath with
+                | Error e -> err <- Some(FreezeError.Fsync e)
+                | Ok() ->
+                    match FileSync.fsyncDir logDir with
+                    | Error e -> err <- Some(FreezeError.Fsync e)
+                    | Ok() -> ()
+
+            for i in 0 .. boat.Length - 1 do
+                let it = boat.Span.[i]
+                let outcome =
+                    match err with
+                    | Some e -> Error e
+                    | None -> Ok(struct (it.IntentLsn, it.CommitLsn))
+
+                it.Reply.TrySetResult outcome |> ignore
+
+            Task.CompletedTask
+
+        let throttler = new FerryThrottler<LogItem>(config, processBatch, manual = manual)
+
+        member _.Boats = boats
+        member _.LastBoatSize = lastBoat
+        member _.LogPath = logPath
+
+        member _.SubmitAsync(item: LogItem, ct: CancellationToken) : ValueTask<Result<struct (int64 * int64), FreezeError>> =
+            if ct.IsCancellationRequested then
+                item.Reply.TrySetCanceled ct |> ignore
+                ValueTask<Result<struct (int64 * int64), FreezeError>>(Task.FromCanceled<Result<struct (int64 * int64), FreezeError>> ct)
+            else
+                let write = throttler.EnqueueAsync(item, ct)
+                let wait (enqueue: ValueTask) =
+                    task {
+                        try
+                            if not enqueue.IsCompletedSuccessfully then
+                                do! enqueue.AsTask().ConfigureAwait(false)
+
+                            return! item.Reply.Task.WaitAsync(ct).ConfigureAwait(false)
+                        with
+                        | :? OperationCanceledException as ex ->
+                            item.Reply.TrySetCanceled ct |> ignore
+                            return raise ex
+                        | ex ->
+                            item.Reply.TrySetException ex |> ignore
+                            return raise ex
+                    }
+
+                if write.IsCompletedSuccessfully then
+                    ValueTask<Result<struct (int64 * int64), FreezeError>>(wait (ValueTask()))
+                else
+                    ValueTask<Result<struct (int64 * int64), FreezeError>>(wait write)
+
+        member _.PumpToIdleAsync(?cancellationToken: CancellationToken) =
+            throttler.PumpToIdleAsync(?cancellationToken = cancellationToken)
+
+        interface IDisposable with
+            member _.Dispose() = (throttler :> IDisposable).Dispose()
+
+    [<Sealed>]
+    type Volume
+        (
+            storeDir: string,
+            mutbuf: ZetaFsMutbuf.Catalog,
+            observer: IDurabilityObserver option,
+            session: ZetaFsCrypto.Session option,
+            config: FerryThrottlerConfig,
+            manual: bool
+        ) =
+        let gate = obj ()
+        let commits = Dictionary<ContentHash256, FreezeResult>()
+        let leaves = Dictionary<ContentHash256, ContentHash256[]>()
+        let mutable nextLsn = 1L
+        let log = new FreezeLog(storeDir, config, manual)
+
+        member _.StoreDir = storeDir
+        member _.Mutbuf = mutbuf
+        member _.Observer = observer
+        member _.Session = session
+        member internal _.Gate = gate
+        member internal _.Commits = commits
+        member internal _.Leaves = leaves
+        member internal _.NextLsn
+            with get () = nextLsn
+            and set v = nextLsn <- v
+        member internal _.Log = log
+
+        interface IDisposable with
+            member _.Dispose() = (log :> IDisposable).Dispose()
 
     let private logDir (v: Volume) = Path.Combine(v.StoreDir, "log")
-    let private logPath (v: Volume) = Path.Combine(logDir v, "freeze")
     let private objectsDir (v: Volume) = Path.Combine(v.StoreDir, "objects")
 
     let private objectPath (storeDir: string) (id: ContentHash256) =
@@ -73,27 +234,49 @@ module ZetaFsFreeze =
         | FreezeError.Malformed _ -> "Malformed"
         | FreezeError.Crypto e -> ZetaFsCrypto.errorName e
 
+    let private defaultConfig =
+        { FerryThrottlerConfig.deterministic with MaxBatchSize = 64 }
+
+    let createFull
+        (storeDir: string)
+        (mutbuf: ZetaFsMutbuf.Catalog)
+        (observer: IDurabilityObserver option)
+        (session: ZetaFsCrypto.Session option)
+        (config: FerryThrottlerConfig)
+        (manual: bool)
+        : Volume =
+        let fs = FileSystem.Current
+        fs.CreateDirectory (Path.Combine(storeDir, "log"))
+        fs.CreateDirectory (Path.Combine(storeDir, "objects"))
+        new Volume(storeDir, mutbuf, observer, session, config, manual)
+
     let createWith
         (storeDir: string)
         (mutbuf: ZetaFsMutbuf.Catalog)
         (observer: IDurabilityObserver option)
         (session: ZetaFsCrypto.Session option)
         : Volume =
-        let fs = FileSystem.Current
-        fs.CreateDirectory (Path.Combine(storeDir, "log"))
-        fs.CreateDirectory (Path.Combine(storeDir, "objects"))
-        { StoreDir = storeDir
-          Mutbuf = mutbuf
-          Gate = obj ()
-          Commits = Dictionary<ContentHash256, FreezeResult>()
-          Leaves = Dictionary<ContentHash256, ContentHash256[]>()
-          NextLsn = 1L
-          Observer = observer
-          Session = session }
+        createFull storeDir mutbuf observer session defaultConfig false
 
     /// Unencrypted control (FORMAT enc=off). The default first-product profile.
     let create (storeDir: string) (mutbuf: ZetaFsMutbuf.Catalog) (observer: IDurabilityObserver option) : Volume =
         createWith storeDir mutbuf observer None
+
+    /// DST / test: no background ferry. Caller drives with `pumpLog`.
+    let createManual
+        (storeDir: string)
+        (mutbuf: ZetaFsMutbuf.Catalog)
+        (observer: IDurabilityObserver option)
+        : Volume =
+        createFull storeDir mutbuf observer None defaultConfig true
+
+    let dispose (volume: Volume) = (volume :> IDisposable).Dispose()
+
+    let pumpLog (volume: Volume) (ct: CancellationToken) : Task =
+        volume.Log.PumpToIdleAsync(ct)
+
+    let logBoatCount (volume: Volume) = volume.Log.Boats
+    let logLastBoatSize (volume: Volume) = volume.Log.LastBoatSize
 
     let private putObject (storeDir: string) (id: ContentHash256) (bytes: byte[]) =
         let path = objectPath storeDir id
@@ -103,43 +286,6 @@ module ZetaFsFreeze =
 
     let private objectExists (storeDir: string) (id: ContentHash256) : bool =
         FileSystem.Current.Exists(objectPath storeDir id)
-
-    let private fsyncObject (storeDir: string) (id: ContentHash256) : Result<unit, FreezeError> =
-        match FileSync.fsyncFile (objectPath storeDir id) with
-        | Ok() -> Ok()
-        | Error e -> Error(FreezeError.Fsync e)
-
-    let private appendLog (volume: Volume) (payload: byte[]) : Result<int64, FreezeError> =
-        let fs = FileSystem.Current
-        fs.CreateDirectory (logDir volume)
-        let lsn = volume.NextLsn
-
-        match volume.Session with
-        | None ->
-            let crc = HardwareCrc.Crc32C(ReadOnlySpan payload)
-            let frame = Array.zeroCreate (8 + payload.Length)
-            BinaryPrimitives.WriteInt32LittleEndian(Span(frame, 0, 4), payload.Length)
-            BinaryPrimitives.WriteUInt32LittleEndian(Span(frame, 4, 4), crc)
-            Buffer.BlockCopy(payload, 0, frame, 8, payload.Length)
-            let path = logPath volume
-            use stream = fs.OpenFile(path, FileMode.Append, FileAccess.Write, FileShare.Read)
-            stream.Write(frame, 0, frame.Length)
-            stream.Flush()
-            volume.NextLsn <- lsn + 1L
-            Ok lsn
-        | Some session ->
-            match ZetaFsCrypto.sealLog session lsn payload with
-            | Error e -> Error(FreezeError.Crypto e)
-            | Ok inner ->
-                let frame = Array.zeroCreate (4 + inner.Length)
-                BinaryPrimitives.WriteInt32LittleEndian(Span(frame, 0, 4), inner.Length)
-                Buffer.BlockCopy(inner, 0, frame, 4, inner.Length)
-                let path = logPath volume
-                use stream = fs.OpenFile(path, FileMode.Append, FileAccess.Write, FileShare.Read)
-                stream.Write(frame, 0, frame.Length)
-                stream.Flush()
-                volume.NextLsn <- lsn + 1L
-                Ok lsn
 
     let private className (c: DurabilityClass) =
         match c with
@@ -170,6 +316,26 @@ module ZetaFsFreeze =
                   "lsn", DynamicValue.Int lsn ]
         )
 
+    let private framePlain (payload: byte[]) : byte[] =
+        let crc = HardwareCrc.Crc32C(ReadOnlySpan payload)
+        let frame = Array.zeroCreate (8 + payload.Length)
+        BinaryPrimitives.WriteInt32LittleEndian(Span(frame, 0, 4), payload.Length)
+        BinaryPrimitives.WriteUInt32LittleEndian(Span(frame, 4, 4), crc)
+        Buffer.BlockCopy(payload, 0, frame, 8, payload.Length)
+        frame
+
+    let private frameSealed (inner: byte[]) : byte[] =
+        let frame = Array.zeroCreate (4 + inner.Length)
+        BinaryPrimitives.WriteInt32LittleEndian(Span(frame, 0, 4), inner.Length)
+        Buffer.BlockCopy(inner, 0, frame, 4, inner.Length)
+        frame
+
+    let private concatFrames (a: byte[]) (b: byte[]) : byte[] =
+        let all = Array.zeroCreate (a.Length + b.Length)
+        Buffer.BlockCopy(a, 0, all, 0, a.Length)
+        Buffer.BlockCopy(b, 0, all, a.Length, b.Length)
+        all
+
     let isReadable (volume: Volume) (content: ContentHash256) : bool =
         lock volume.Gate (fun () ->
             match volume.Commits.TryGetValue content with
@@ -189,95 +355,135 @@ module ZetaFsFreeze =
 
                     ok)
 
-    let freeze
+    let private finish
+        (volume: Volume)
+        (entity: ZetaFsNamespace.EntityId)
+        (content: ContentHash256)
+        (span: uint64)
+        (cls: DurabilityClass)
+        (generation: uint64)
+        (leafIds: ContentHash256[])
+        (intentLsn: int64)
+        (commitLsn: int64)
+        : Result<FreezeResult, FreezeError> =
+        let result =
+            { Entity = entity
+              Content = content
+              Span = span
+              Class = cls
+              Generation = generation
+              IntentLsn = intentLsn
+              CommitLsn = commitLsn }
+
+        lock volume.Gate (fun () ->
+            volume.Commits.[content] <- result
+            volume.Leaves.[content] <- leafIds)
+
+        match cls, volume.Observer with
+        | Durable, Some o -> o.OnDurable result |> Result.map (fun () -> result)
+        | Durable, None -> Ok result
+        | _, Some o -> o.OnJournaled result |> Result.map (fun () -> result)
+        | _, None -> Ok result
+
+    /// Library path: ValueTask. Await once (`let!` / `ConfigureAwait(false)`).
+    ///
+    /// `ct` is required (F# let-bound functions cannot take optional args).
+    /// Callers: tests pass `CancellationToken.None` at *their* entry; a Generic
+    /// Host passes `ApplicationStopping`. Nested ferry calls pass `ct` through.
+    /// Cancel before admit skips the boat; cancel after admit still writes
+    /// (group-commit shield) but the waiter observes the token.
+    let freezeAsync
         (volume: Volume)
         (entity: ZetaFsNamespace.EntityId)
         (cls: DurabilityClass)
-        : Result<FreezeResult, FreezeError> =
-        if cls = Durable && OperatingSystem.IsWindows() then
-            Error FreezeError.WindowsDurableNotClaimed
+        (ct: CancellationToken)
+        : ValueTask<Result<FreezeResult, FreezeError>> =
+        if ct.IsCancellationRequested then
+            ValueTask<Result<FreezeResult, FreezeError>>(Task.FromCanceled<Result<FreezeResult, FreezeError>> ct)
+        elif cls = Durable && OperatingSystem.IsWindows() then
+            ValueTask<Result<FreezeResult, FreezeError>>(Error FreezeError.WindowsDurableNotClaimed)
         else
-            lock volume.Gate (fun () ->
-                let snap = ZetaFsMutbuf.snapshot volume.Mutbuf entity
-                let rope = ZetaFsJumprope.buildV1 snap.Bytes
-                let leafIds = [| for id, _ in rope.Leaves -> id |]
+            let snap = ZetaFsMutbuf.snapshot volume.Mutbuf entity
+            let rope = ZetaFsJumprope.buildV1 snap.Bytes
+            let leafIds = [| for id, _ in rope.Leaves -> id |]
 
-                for kv in rope.Cas.Objects do
-                    putObject volume.StoreDir kv.Key kv.Value
+            for kv in rope.Cas.Objects do
+                putObject volume.StoreDir kv.Key kv.Value
 
-                match cls with
-                | Buffered ->
-                    let result =
-                        { Entity = entity
-                          Content = rope.Content
-                          Span = rope.Span
-                          Class = cls
-                          Generation = snap.Generation
-                          IntentLsn = 0L
-                          CommitLsn = 0L }
+            match cls with
+            | Buffered ->
+                let result =
+                    { Entity = entity
+                      Content = rope.Content
+                      Span = rope.Span
+                      Class = cls
+                      Generation = snap.Generation
+                      IntentLsn = 0L
+                      CommitLsn = 0L }
 
-                    Ok result
-                | Journaled
-                | Durable ->
-                    let durableFlush () : Result<unit, FreezeError> =
-                        if cls <> Durable then
-                            Ok()
-                        else
-                            let mutable err: FreezeError option = None
+                ValueTask<Result<FreezeResult, FreezeError>>(Ok result)
+            | Journaled
+            | Durable ->
+                let intentLsn, commitLsn =
+                    lock volume.Gate (fun () ->
+                        let a = volume.NextLsn
+                        volume.NextLsn <- a + 2L
+                        a, a + 1L)
 
-                            for kv in rope.Cas.Objects do
-                                if err.IsNone then
-                                    match fsyncObject volume.StoreDir kv.Key with
-                                    | Ok() -> ()
-                                    | Error e -> err <- Some e
+                let intentPt = encodeIntent entity rope.Content leafIds cls intentLsn
+                let commitPt = encodeCommit intentLsn rope.Content commitLsn
 
-                            match err with
-                            | Some e -> Error e
-                            | None ->
-                                match FileSync.fsyncDir (objectsDir volume) with
-                                | Error e -> Error(FreezeError.Fsync e)
-                                | Ok() ->
-                                    match FileSync.fsyncDir (logDir volume) with
-                                    | Error e -> Error(FreezeError.Fsync e)
-                                    | Ok() ->
-                                        match FileSync.fsyncFile (logPath volume) with
-                                        | Error e -> Error(FreezeError.Fsync e)
-                                        | Ok() -> Ok()
+                let framed: Result<byte[], FreezeError> =
+                    match volume.Session with
+                    | None -> Ok(concatFrames (framePlain intentPt) (framePlain commitPt))
+                    | Some session ->
+                        match ZetaFsCrypto.sealLog session intentLsn intentPt with
+                        | Error e -> Error(FreezeError.Crypto e)
+                        | Ok i ->
+                            match ZetaFsCrypto.sealLog session commitLsn commitPt with
+                            | Error e -> Error(FreezeError.Crypto e)
+                            | Ok c -> Ok(concatFrames (frameSealed i) (frameSealed c))
 
-                    let finish (intentLsn: int64) (commitLsn: int64) : Result<FreezeResult, FreezeError> =
-                        let result =
-                            { Entity = entity
-                              Content = rope.Content
-                              Span = rope.Span
-                              Class = cls
-                              Generation = snap.Generation
-                              IntentLsn = intentLsn
-                              CommitLsn = commitLsn }
+                match framed with
+                | Error e -> ValueTask<Result<FreezeResult, FreezeError>>(Error e)
+                | Ok frames ->
+                    let reply =
+                        TaskCompletionSource<Result<struct (int64 * int64), FreezeError>>(
+                            TaskCreationOptions.RunContinuationsAsynchronously
+                        )
 
-                        volume.Commits.[rope.Content] <- result
-                        volume.Leaves.[rope.Content] <- leafIds
+                    let objectIds =
+                        let ids = Array.zeroCreate (leafIds.Length + 1)
+                        ids.[0] <- rope.Content
+                        Array.Copy(leafIds, 0, ids, 1, leafIds.Length)
+                        ids
 
-                        match cls, volume.Observer with
-                        | Durable, Some o -> o.OnDurable result |> Result.map (fun () -> result)
-                        | Durable, None -> Ok result
-                        | _, Some o -> o.OnJournaled result |> Result.map (fun () -> result)
-                        | _, None -> Ok result
+                    let item =
+                        { IntentLsn = intentLsn
+                          CommitLsn = commitLsn
+                          Frames = frames
+                          Durable = (cls = Durable)
+                          ObjectIds = objectIds
+                          Reply = reply }
 
-                    match appendLog volume (encodeIntent entity rope.Content leafIds cls volume.NextLsn) with
-                    | Error e -> Error e
-                    | Ok intentLsn ->
-                        match durableFlush () with
-                        | Error e -> Error e
-                        | Ok() ->
-                            match appendLog volume (encodeCommit intentLsn rope.Content volume.NextLsn) with
-                            | Error e -> Error e
-                            | Ok commitLsn ->
-                                match cls with
-                                | Durable ->
-                                    match FileSync.fsyncFile (logPath volume) with
-                                    | Error e -> Error(FreezeError.Fsync e)
-                                    | Ok() ->
-                                        match FileSync.fsyncDir (logDir volume) with
-                                        | Error e -> Error(FreezeError.Fsync e)
-                                        | Ok() -> finish intentLsn commitLsn
-                                | _ -> finish intentLsn commitLsn)
+                    let pending = volume.Log.SubmitAsync(item, ct)
+
+                    if pending.IsCompletedSuccessfully then
+                        match pending.Result with
+                        | Error e -> ValueTask<Result<FreezeResult, FreezeError>>(Error e)
+                        | Ok(struct (i, c)) ->
+                            ValueTask<Result<FreezeResult, FreezeError>>(
+                                finish volume entity rope.Content rope.Span cls snap.Generation leafIds i c
+                            )
+                    else
+                        let work =
+                            task {
+                                let! logged = pending.AsTask().ConfigureAwait(false)
+
+                                match logged with
+                                | Error e -> return Error e
+                                | Ok(struct (i, c)) ->
+                                    return finish volume entity rope.Content rope.Span cls snap.Generation leafIds i c
+                            }
+
+                        ValueTask<Result<FreezeResult, FreezeError>> work
