@@ -1,4 +1,5 @@
-# Compile Feldera's dbsp crate with factory rust on Linux and macOS.
+# Compile Feldera's dbsp crate with factory rust on Linux and macOS,
+# then time native Nexmark Q1/Q2 (100k events, 1 core).
 #
 # Not on every PR. Building dbsp is a cargo-minute bomb
 # (Aaron 2026-09-01: do not clone Feldera on every PR). Triggers:
@@ -6,7 +7,8 @@
 #   * pull_request / push-to-main path-filtered to THIS file
 #
 # Jobs:
-#   native -- factory pin (mise 1.99.0-beta.3) x ubuntu + macos.
+#   native -- factory pin (mise 1.99.0-beta.3) x ubuntu + macos:
+#             compile dbsp, then dbsp_nexmark Q1/Q2 100k / 1 core.
 #   probe  -- 1.97.0 / 1.98.0 / beta x ubuntu + macos. workflow_dispatch
 #             only (ICE already reproduced on GHA 33561885627).
 # Windows is omitted: Feldera 0.342.0 `feldera-storage` uses
@@ -16,6 +18,8 @@
 #
 # Pin: feldera/feldera 0.342.0 at 48312b69bde1af8ab8c6bc3551c9545897664b26
 # Compile: cargo build --release -p dbsp with debuginfo=0.
+# Nexmark: cargo bench -p dbsp_nexmark --bench nexmark -- --query q1 --query q2
+#          --max-events 100000 --cpu-cores 1 --csv ...
 
 name: feldera-native
 
@@ -39,6 +43,7 @@ concurrency:
 env:
   CARGO_INCREMENTAL: "0"
   CARGO_PROFILE_RELEASE_DEBUG: "0"
+  CARGO_PROFILE_BENCH_DEBUG: "0"
   CARGO_TERM_COLOR: always
   RUSTFLAGS: "-C debuginfo=0"
   RUSTUP_TOOLCHAIN: "1.99.0-beta.3"
@@ -89,6 +94,36 @@ jobs:
       - name: Compile dbsp Release (debuginfo=0)
         working-directory: .feldera-native
         run: cargo build --release -p dbsp
+
+      - name: Nexmark Q1/Q2 100k 1-core (factory rust)
+        working-directory: .feldera-native
+        run: |
+          set -euo pipefail
+          echo "rustc $(rustc -V)"
+          out="${GITHUB_WORKSPACE}/feldera-nexmark-out"
+          mkdir -p "$out"
+          cargo bench --locked -p dbsp_nexmark --bench nexmark -- \
+            --query q1 --query q2 --max-events 100000 --cpu-cores 1 --no-progress \
+            --csv "$out/feldera-nexmark.csv"
+          {
+            echo "### Feldera native Nexmark (factory 1.99.0-beta.3, 100k events, 1 core)"
+            echo ""
+            echo "- runner: \`${{ matrix.os }}\`"
+            echo "- rustc: \`$(rustc -V)\`"
+            echo ""
+            echo '```csv'
+            cat "$out/feldera-nexmark.csv"
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload Feldera Nexmark CSV
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.0
+        with:
+          name: feldera-nexmark-${{ matrix.os }}
+          path: feldera-nexmark-out/feldera-nexmark.csv
+          if-no-files-found: error
+          retention-days: 14
 
   # ubuntu + macos x 1.97.0 / 1.98.0 / beta. Probe rustc is NOT the
   # factory pin: interpolated RUSTUP_TOOLCHAIN, no rustup cache glob.
