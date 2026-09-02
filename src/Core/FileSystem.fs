@@ -143,6 +143,13 @@ type CrashMidWriteException(path: string, committedBytes: int, attemptedBytes: i
     member _.CommittedBytes = committedBytes
     member _.AttemptedBytes = attemptedBytes
 
+/// DST: reclaim Delete committed, then the process died. Extra garbage may
+/// remain; a live object must not be missing.
+[<Sealed>]
+type CrashMidSweepException(path: string) =
+    inherit IOException(sprintf "crash-mid-sweep at %s" path)
+    member _.Path = path
+
 /// A mock FileStream that commits its MemoryStream buffer to the InMemoryFileSystem registry upon disposal.
 type SimulatedFileStream
     (
@@ -192,6 +199,7 @@ type InMemoryFileSystem() =
     let mutable corruptArm: (string * int) option = None
     let mutable reorderNeedle: string option = None
     let mutable heldWrite: (string * byte[]) option = None
+    let mutable deleteCrashArm: string option = None
     let commitOrder = ResizeArray<string>()
     let lockObj = obj ()
 
@@ -290,6 +298,13 @@ type InMemoryFileSystem() =
             reorderNeedle <- Some pathContains
             heldWrite <- None)
 
+    /// One-shot: next matching Delete removes the file then throws.
+    member _.ArmCrashOnDelete(pathContains: string) =
+        if String.IsNullOrEmpty pathContains then
+            invalidArg (nameof pathContains) "pathContains must be non-empty"
+
+        lock lockObj (fun () -> deleteCrashArm <- Some pathContains)
+
     /// Paths in the order they became visible. Held writes are absent until flushed.
     member _.CommitOrder = lock lockObj (fun () -> commitOrder.ToArray())
 
@@ -310,7 +325,18 @@ type InMemoryFileSystem() =
 
         member _.Delete(path) =
             checkFault()
+            let crash =
+                lock lockObj (fun () ->
+                    match deleteCrashArm with
+                    | Some needle when pathMatches needle path ->
+                        deleteCrashArm <- None
+                        true
+                    | _ -> false)
+
             files.TryRemove(path) |> ignore
+
+            if crash then
+                raise (CrashMidSweepException path)
 
         member _.Move(src, dest, _overwrite) =
             checkFault()

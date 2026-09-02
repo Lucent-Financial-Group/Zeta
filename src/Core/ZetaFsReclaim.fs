@@ -10,8 +10,9 @@ open Zeta.Core.FSharp.Blake3
 /// Open-file is a nested Transient scope (POSIX last-close). Eligibility is
 /// a rank-2 brand: a raw ContentId cannot mint a token. Mark is ShivaGc's
 /// cycle-safe reachability. Pacer budget is freeze bytes since the last
-/// tick, never local wall-clock. Crash-mid-sweep stays `toy` until PR12:
-/// a partial tick leaves extra garbage, not a missing live object.
+/// tick, never local wall-clock. Crash-mid-sweep intercept:
+/// `InMemoryFileSystem.ArmCrashOnDelete`. A partial tick leaves extra
+/// garbage, not a missing live object.
 ///
 /// DoP=1 on this ferry. No Task.Run.
 module ZetaFsReclaim =
@@ -150,7 +151,7 @@ module ZetaFsReclaim =
                     acc.ToArray() }
 
     /// Apply minted deletions through IFileSystem. Partial apply is extra
-    /// garbage, not a missing live object. Crash-mid-sweep remains `toy`.
+    /// garbage, not a missing live object. ArmCrashOnDelete is the DST door.
     let apply (fs: IFileSystem) (paths: (ContentHash256 * string)[]) (budget: Budget) : int =
         let mutable n = 0
         let mutable i = 0
