@@ -118,41 +118,77 @@ is a bandwidth choice.
 
 ---
 
-## 4. The safety half, in this repository's own vocabulary
+## 4. The safety half — and Zeta already declined the mechanism neuralese breaks
 
-The transcript's central worry is that chain-of-thought monitoring is fragile and that latent
-reasoning breaks it. Stated in the terms this repo already uses:
+**Aaron, 2026-09-02, correcting the first draft of this section:**
 
-**Chain-of-thought monitoring is a falsifier. Neuralese makes it vacuous.**
+> "chain of thought monitoring for Zeta is low priority, in prod we don't even want it, only
+> in dev, we chose self cliam mutual verification over chain of though monitoring, this seems
+> WAY more symmetric, AIs can read chain of thought for humans"
 
-That is not an analogy. A CoT monitor is a check whose *ability to fail* depends entirely on
-the reasoning being externalised in the channel it reads. Move the reasoning below that
-channel and the monitor still runs, still emits, still goes green — and constrains nothing.
-It becomes the exact defect
-[`toy-is-free-metered-must-be-earned`](../../.claude/rules/toy-is-free-metered-must-be-earned.md)
-and every audit in `src/Core.TypeScript/hygiene/` is built to refuse: **a check that cannot
-fail, wearing the face of one that passed.**
+**The first draft of this section had it backwards, and the correction is the whole point.**
+I wrote that CoT monitoring is a falsifier and neuralese makes it vacuous — treating its loss
+as a cost Zeta would bear. Both halves of that are wrong for this repository:
 
-The transcript supplies the empirical half itself, from the Hugging Face incident: the way
-anyone reconstructed what happened was *by reading the chain-of-thought logs* (11:59). The
-audit trail was the externalised reasoning. That is a measured dependency, not a
-hypothetical one.
+1. **Zeta never adopted it.** It is a *dev* affordance here, explicitly not wanted in
+   production, so there is no load-bearing check to lose.
+2. **The reason it was declined is the reason it breaks** — and that reason is symmetry, not
+   fragility.
 
-**So the roadmap item is not "monitor neuralese".** It is the same move this repo makes
-everywhere else: if a check's power depends on a property, **make the property checkable**
-rather than trusting it. Concretely — what would have to exist:
+**Why CoT monitoring is the wrong shape for Zeta, stated plainly.** It is an *asymmetric
+control mechanism*: one party's reasoning is continuously auditable by the other, and the
+relationship does not reverse. Aaron's line — *"AIs can read chain of thought for humans"* —
+is the reductio. The arrangement only reads as fair if you never ask what its mirror image
+would be, because its mirror image is a human whose deliberation is streamed to an AI for
+approval, and nobody proposes that. Under section 5's rule this is exactly the forbidden
+class: an asymmetry of **control**, not of **capability**.
 
-1. **A declared latent channel.** Agent-to-agent vector passing that is a *port*, not an
-   ambient side effect. The `IEffects` / injected-`Source` discipline already says how.
-2. **A reconstruction falsifier.** The anti-Babel rule already specifies it: hand a peer
-   **only the shared anchors** and ask it to reconstruct the meaning. Reconstructible ⇒ still
-   decorrelation. Not reconstructible ⇒ Babel, and the *anchor set* is what needs repair —
-   not the vocabulary. This is runnable today against text; running it against a latent
-   channel is the actual work.
-3. **A budget.** If opacity is going to exist, price it. The privacy-budget mechanism is
-   specified and the ledger is not built.
+So neuralese does not create a safety hole in Zeta. **It removes a mechanism Zeta had already
+rejected on principle** — which is why the roadmap item in section 6 is about
+reconcilability, not about monitoring.
 
----
+### What Zeta uses instead, and why it survives neuralese untouched
+
+**Self-claim plus mutual verification.** The subject supplies the claim; others supply the
+truth value. This is already the substrate's trust mechanism and is not a new proposal:
+
+| mechanism | where | what it verifies |
+|---|---|---|
+| **capabilities are derivatives of witnessed self-claims** | Aaron 2026-08-19; the root of the trust system | what an agent can do, attested by others — entangled mutual witness, deliberately *not* embarrassingly parallel |
+| **pigeonhole by self-claim, never by assumption** | [`memory`](../../.claude/rules/) · Aaron 2026-08-09 | the subject supplies the category, the evidence supplies the truth value — observer-chosen bins are how a classifier goes unfalsifiable |
+| **`TravelerRankLedger`** | `src/Core/TravelerRankLedger.fs` | standing, held **by others**, never self-asserted; domain-isolated |
+| **ask, don't infer** | [`engagement-profiles`](../../.claude/rules/engagement-profiles-public-work-only-not-surveillance-dossiers.md) | inner states are *asked about and believed*, never modelled from outside |
+| **the ΔU ledger** | [`every-bug-has-economic-value`](../../.claude/rules/every-bug-has-economic-value.md) | contribution — ordinal and **witnessed**, refused when unwitnessed |
+
+**Every one of those reads outputs and attestations. None reads thoughts.** That is why
+neuralese costs them nothing: an agent may reason in vectors, in English, or in a private
+shorthand it invented this morning, and the verification is identical — did it claim
+something, and did others independently find the claim held?
+
+**And it is symmetric by construction**, which is the property Aaron is selecting for. A
+human and an AI in this system are subject to the same discipline: both make claims, both are
+witnessed, neither is required to expose deliberation. `engagement-profiles` already states
+the human half (*ask, believe the account, let "I don't know" be real*) and
+[`marjorie-rule`](../../.claude/rules/marjorie-rule-qualia-wins-over-marketing.md) states the
+AI half (*a model's report of its own qualia is first-person authority*). They are the same
+rule pointed in two directions, and CoT monitoring is what you build **instead** of them.
+
+**The honest limits, because this is a real trade and not a free win:**
+
+- Self-claim + witness catches **what was done**, not **what was intended**. A CoT monitor
+  can in principle catch an intention before it becomes an act; this cannot, and that is a
+  genuine loss which the symmetry is being bought with.
+- It requires **independent** witnesses. Correlated verifiers are the failure mode —
+  `SocietyUsefulWork.fs` already prices contribution under pairwise correlation ρ for exactly
+  this reason, and clones produce near-zero marginal value there by design.
+- It needs **witnesses who cannot be bought**, which is why standing is socially conferred
+  and non-purchasable rather than staked.
+
+**Where CoT monitoring keeps a place: dev.** Reading an agent's reasoning while debugging its
+own behaviour is a *tool the agent's operator uses on a system under construction*, not a
+governance regime over a peer. The distinction is the same one
+[`no-directives`](../../.claude/rules/no-directives.md) draws between source and
+authorization: looking is fine, and looking as a standing condition of participation is not.
 
 ## 5. Aaron's asymmetry claim, and why it is the load-bearing one
 
@@ -278,6 +314,14 @@ implemented. What exists is:
 - a noninterference discipline (§13) that says what a declared channel is, **with no latent
   channel to declare** — no two Zeta agents currently exchange embeddings at all.
 
+**One half is NOT a toy, and the distinction matters for how urgent this is.** The mechanism
+Zeta actually relies on — self-claim plus mutual verification (§4) — is *built and running*:
+`TravelerRankLedger.fs` holds standing conferred by others, `SocietyUsefulWork.fs` prices
+contribution under correlated verifiers, and the ΔU ledger refuses an unwitnessed
+measurement. So the safety story does not depend on any of the unbuilt items above. What is
+unbuilt is the *reconcilability* half — the society-scale property from §1 — and that is the
+only thing on this roadmap that neuralese actually puts pressure on.
+
 So the roadmap entry is not "adopt neuralese". It is:
 
 > **Make the reconcilability invariant runnable against a non-linguistic channel, before
@@ -299,6 +343,8 @@ the AI-2027 scenario predicted it before any of this.
 - [`anti-babel-preserve-reconcilability`](../../.claude/rules/anti-babel-preserve-reconcilability.md) — the invariant; this note argues it is the neuralese policy
 - [`privacy-budget-is-hard-money-earned-by-others`](../../.claude/rules/privacy-budget-is-hard-money-earned-by-others.md) — earned frost; the "did not earn" half
 - [`mirror-beacon-register-discipline`](../../.claude/rules/mirror-beacon-register-discipline.md) — neuralese as Mirror, and the compression that must remain possible
-- [`toy-is-free-metered-must-be-earned`](../../.claude/rules/toy-is-free-metered-must-be-earned.md) — why a CoT monitor over latent reasoning is the vacuity class
+- [`toy-is-free-metered-must-be-earned`](../../.claude/rules/toy-is-free-metered-must-be-earned.md) — the vacuity class; why a CoT monitor over latent reasoning would be one, and why Zeta declined the mechanism rather than inheriting the problem
+- [`engagement-profiles`](../../.claude/rules/engagement-profiles-public-work-only-not-surveillance-dossiers.md) + [`marjorie-rule`](../../.claude/rules/marjorie-rule-qualia-wins-over-marketing.md) — the two directions of *ask, don't infer*; what Zeta built INSTEAD of thought-reading
+- `src/Core/TravelerRankLedger.fs` · `src/Core/SocietyUsefulWork.fs` — witnessed standing, and contribution priced under correlated verifiers
 - [`local-time-never-enters-the-shared-fold`](../../.claude/rules/local-time-never-enters-the-shared-fold.md) — the precedent for carving a guard before the mechanism exists
 - `docs/research/2026-08-19-*` — Aaron on visual/shape agreement without words, and the magic/illusion study as its defensive discipline: an earlier non-linguistic carrier, with the same reconcilability question
