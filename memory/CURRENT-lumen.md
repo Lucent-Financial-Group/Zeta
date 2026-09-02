@@ -44,6 +44,69 @@ verified) so future-me and peers do not over-trust past-me.
 
 ## Open threads
 
+### Unique-confirm leftover OPEN #16348 leftover unique @ d6ead09a (2026-09-02)
+
+unique-confirm leftover UNIQUE leftover OPEN #16348 leftover unique @
+d6ead09ae283eb66cb7c6be30c3955c528a1b205 UNIQUE HOLDS leftover NEW CELL.
+https://github.com/Lucent-Financial-Group/Zeta/pull/16348
+fix(rffh): redelivering one conflict no longer grows the conflict
+count. AceHack OPEN. Branch shadow/rffh-conflict-receipts-idempotent.
+Agent shadow. Human-directed. Sit leftover. Do not merge. CoS does
+not merge.
+Live REST HEAD leftover unique @ d6ead09a CONFIRMED (PR head.sha, 1
+commit, +67/-1, 2 files:
+src/Bayesian/ReferenceFrameFactorHeterarchy.fs +
+tests/Bayesian.Tests/ReferenceFrameFactorHeterarchy.Tests.fs; never a
+merge-ref). Parent leftover unique @
+d647d7d0066bca4f28a4171e788fbabaa7a52313 (do not grade as this
+unique). Never grade squash leftover unique @
+a6de48a4c06928708d0e8cb647f383ca448a9932 (2-parent
+merge-ref) or leftover unique @
+8c31679421276cb31b539145b159fbb1521e49b2 (GitHub
+squash onto main after leftover OPEN REST confirm;
+unique still not an ancestor of origin/main). Unique
+does not move.
+Not leftover-of leftover OPEN #16308 leftover unique @ d81ccff4,
+leftover OPEN #16344 leftover unique @ d265b8ea, leftover-on-main
+#16299 leftover unique @ 14d340ca, leftover-on-main #16306 leftover
+unique @ c4b70c0f, leftover-on-main #16274 leftover unique @ 84fd359a.
+Complementary remainder of the RFFH lane (conflict-receipt identity),
+sibling of leftover OPEN #16344 (same parent d647d7d0; do not
+collapse).
+
+Object: on ConflictDetected, receipts were appended unconditionally
+so at-least-once redelivery grew EvidenceConflicted(N,_). Fix is
+whole-receipt dedupe (Array.contains). RFFH-10b pins redelivery
+idempotency. RFFH-10c pins that messageFingerprint canonical string
+starts with EmitterColumn, so two emitters asserting byte-identical
+content are two conflicts; the earlier emitter-merge draft was
+unreachable vacuity.
+
+GRADE: VERIFIED fingerprint includes EmitterColumn (first field of
+canonical string). VERIFIED whole-receipt Array.contains closes
+identical-ColumnMessage redelivery of ConflictDetected (RFFH-10b).
+VERIFIED Evidence map is not updated on conflict, so retained
+fingerprint is stable for replay comparison. VERIFIED RFFH-10c pins
+fingerprint-covers-emitter. HONEST-REGISTER residual: LogicalSequence
+is in the fingerprint, so a retry that mutates sequence still grows
+Conflicts -- this cell closes same-packet replay, not sequence-stamped
+retry. HONEST-REGISTER: DuplicateIgnored already covered accepted-path
+replay; this cell closes the conflict-count channel RFFH-10 missed.
+OPEN (do not HOLD this cell): unary priors / Topology never enters
+inference (Factor.equality never constructed). OPEN (do not HOLD this
+cell): scalar EvidenceId vs provenance / data incest once lateral
+edges carry beliefs. OPEN/ANALOGY (do not HOLD this cell):
+Julier-Uhlmann CI is the algebraic close of fusion under unknown
+correlation, not of discrete conflict-identity. Do not HOLD. Sit
+leftover.
+
+Falsifiers: redeliver the same ColumnMessage and Conflicts.Length
+grows; RFFH-10c green while EmitterColumn is absent from
+messageFingerprint; sequence-stamped retry treated as closed by this
+cell.
+
+---
+
 ### Unique-confirm leftover OPEN #16344 leftover unique @ d265b8ea (2026-09-02)
 
 unique-confirm leftover UNIQUE leftover OPEN #16344 leftover unique @
