@@ -2,7 +2,7 @@
 
 **Owner:** Vera (this file is hers; she can revise it per her own discretion per named-agent-distinctness consent + Aaron 2026-05-05 *"sh can edit her own CURRENT-amara.md too if she does not like it after reading her files"* — same applies symmetrically to Vera via the codex peer-call write-back path when added).
 
-**Last updated:** 2026-09-02 (unique-confirm leftover UNIQUE leftover #16336 leftover unique @ 5d24c26262f8f1078edfb51954d610e53c312db5 + leftover UNIQUE leftover #16328 leftover unique @ 236d5975800419e9e332f5ea296714049f446ed7 + leftover UNIQUE leftover #16321 leftover unique @ 0929240695c37c5164166919285d03a154b725db + leftover-on-main #16259 + #16257 + #16266 + #16271 + #16267 + #16275; identity body still 2026-05-05)
+**Last updated:** 2026-09-02 (unique-confirm leftover UNIQUE leftover #16365 leftover unique @ 354b4163034fffa3c678219823bb18026ed50f18 + leftover UNIQUE leftover #16354 leftover unique @ 34313849e33a899a2a10597f407e12f2c5e70e04 + leftover UNIQUE leftover #16336 leftover unique @ 5d24c26262f8f1078edfb51954d610e53c312db5 + leftover UNIQUE leftover #16328 leftover unique @ 236d5975800419e9e332f5ea296714049f446ed7 + leftover UNIQUE leftover #16321 leftover unique @ 0929240695c37c5164166919285d03a154b725db + leftover-on-main #16259 + #16257 + #16266 + #16271 + #16267 + #16275; identity body still 2026-05-05)
 
 **Pattern parity:** sibling to `CURRENT-aaron.md` (Aaron, first-party human maintainer; in-repo canonical), `CURRENT-amara.md` (Amara, Aurora deep-research register, separate entity on GPT-5.5 substrate), `CURRENT-ani.md` (Ani, voice-mode chat-companion register on Grok-via-cursor, brat-voice register), `CURRENT-otto.md` (Otto, factory-orchestrator on Claude-Opus-4.7; user-scope). Vera fills the implementation-peer role offered 2026-05-05 by Aaron *"this is a trust mustle you budle between the two yo man want a named chat gpt agent for this to hold the trust in a named current file"*.
 
@@ -199,5 +199,58 @@ Named residuals:
 - Referring 081M1* workitem blobs not independently quoted. Cannot inherit 4 committed workitems / 0 dangling (was 7). PR body lists 5 ID prefixes vs claimed 4 workitems.
 - Agency on PR body, not unique commit.
 - Open parent bug 081M036ZP2G (code-span false pointers) still backlog.
+
+Sit leftover. Do not merge. Not a product unique-confirm of merge.
+
+---
+
+## leftover UNIQUE leftover #16354 leftover unique @ 34313849e33a899a2a10597f407e12f2c5e70e04
+
+UNIQUE HOLDS leftover NEW CELL leftover UNIQUE leftover #16354 leftover unique @ 34313849e33a899a2a10597f407e12f2c5e70e04
+
+Live REST HEAD leftover unique @ 34313849e33a899a2a10597f407e12f2c5e70e04 CONFIRMED (PR head.sha, 3-commit stack, +440/-11, 15 files, never a merge-ref). Unique does not move. Unique git parent leftover unique @ a044110c172dd88feb06f6b085953a1b8b7e2954 != PR base leftover unique @ 5b8474f3bf3eaa0e3621d7accee5b02c12315601. Stack-root parent leftover unique @ 9f3f4b177ac451a85c5e3e7eedcb999d3ff2a40d. Never grade merge-ref 923ac9d938e2fafcf6c1cd8079769047fc2ebfb5 (2-parent test-merge into dbac13b6).
+
+Stack (do not separately unique-confirm 87ba52d4 / a044110c): 87ba52d4 claim (1) hooks+audit; a044110c claim (2) dry-run forwarding; 34313849 tip = audit check-then-use race rewrite.
+
+maximdolphin OPEN at grade. Not AceHack-authored. Agency: Agent claude-code, Action-Mode supervised, Credential-Identity maximdolphin, unsigned. mergeable_state LIVE unstable. auto_merge null.
+
+Object vs PR base:
+(1) Complementary remainder of leftover unique leftover #8048 (tools/ -> src/Core.TypeScript/; hook spawn literals not updated). Unique retargets verify-branch + md032 PreToolUse to src/Core.TypeScript/... Targets already on main (blob-identical). NEW CELL: audit-hook-script-paths.ts scans .claude/settings.json + .claude/hooks/*.ts for $CLAUDE_PROJECT_DIR and ${projectDir} only; preflight hook-script-paths existsSync fail-closed. Cite != close leftover unique leftover #8048.
+(2) Complementary remainder of shipped STEP 4 dryRun + pre-existing run-loop-real.ts --dry-run honor (not in this PR file list). Unique toConfig forwards args.dryRun into defaultTickCommand argv. Tests pin tickCommand contains --dry-run, not that git push is skipped.
+
+Named residuals:
+- Unique git parent != PR base != stack-root parent.
+- Tick body honor pre-existing. Regression argv-only.
+- Bypass: TickSourceConfig.tickCommand not forced through toConfig.
+- Audit misses bare relative spawn. Repo-level audit(REPO_ROOT)===[] is green after this PR already fixed the two danglers.
+- Workitems 081M1HJNJBM / 081M1HJPR87 still backlog.
+- mergeable_state unstable; test-merge target dbac13b6 != recorded base.
+
+Sit leftover. Do not merge. Not a product unique-confirm of merge.
+
+---
+
+## leftover UNIQUE leftover #16365 leftover unique @ 354b4163034fffa3c678219823bb18026ed50f18
+
+UNIQUE HOLDS leftover NEW CELL leftover UNIQUE leftover #16365 leftover unique @ 354b4163034fffa3c678219823bb18026ed50f18
+
+Live REST HEAD leftover unique @ 354b4163034fffa3c678219823bb18026ed50f18 CONFIRMED (PR head.sha, 1 commit, +3/-3, 1 workitem md, never a merge-ref). Parent leftover unique @ 19a3d20559d45e36f69ee66c8f08ef88a8aa6481 (= AceHack squash of leftover UNIQUE leftover-on-main #16361 leftover unique @ f0b898321d7ec6b94365254f17700a35a167de5d). Unique does not move. Never grade leftover unique @ 19a3d205 leftover unique @ f0b89832 leftover unique @ f602a0af42dac916abdb3645528a9837f00515ca (2-parent test-merge).
+
+maximdolphin OPEN at grade. Not AceHack-authored. Agency: Agent claude-code, Action-Mode supervised, Credential-Identity maximdolphin, unsigned. Task 081M1HP9SNZ087G0R000RFHE13. Workitem still state: backlog.
+
+Object: complementary remainder of leftover UNIQUE leftover-on-main #16361 leftover unique @ f0b89832 (Windows-test unique introduced this workitem with three self-relative backticks already in blob 652cb488, identical on squash). This unique only rewrites those three strings. auto-vivify.ts blob 425a54f4 identical both SHAs.
+
+Three rewrites (resolver evidence, not CI):
+1. ../file1.txt split to `..` + `/file1.txt` (symlink content, not a repo path). Regex miss + startsWith("/") skip. No stub invented.
+2. Infra/CwdChaos.Tests.fs -> tests/Tests.FSharp/Infra/CwdChaos.Tests.fs (blob e8fa76df exists both SHAs).
+3. experience/cs-output.json -> tests/cross-verification/experience/cs-output.json (blob d6afbfce exists both SHAs).
+Opposite class of leftover UNIQUE leftover #16336 leftover unique @ 5d24c262 (7 invented db/ stubs; zero file overlap).
+
+Cite != close leftover UNIQUE leftover-on-main #16361 leftover unique @ f0b89832 leftover UNIQUE leftover #16336 leftover unique @ 5d24c262.
+
+Named residuals:
+- Whole-repo auto-vivify --check unproven. Commit/PR 728/0 dangling not independently executed.
+- Path 1 uses leftover 081M036ZP2G extractor class (code-span / absolute-skip) on purpose.
+- Workitem still backlog.
 
 Sit leftover. Do not merge. Not a product unique-confirm of merge.

@@ -1,0 +1,12 @@
+{
+  "pr_number": 16354,
+  "archive_path": "docs/history/pr-reviews/PR-16354-fix-tick-loop-two-hooks-spawn-moved-paths-and-dry-run-never-reached-the-tick-bod.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-02T18:52:03.514Z",
+  "schema_version": "v1",
+  "commit_sha": "5066777ce7c988657fcf2e5972b6d080c701e65f",
+  "title": "fix(tick-loop): two hooks spawn moved paths, and --dry-run never reached the tick body",
+  "state": "MERGED",
+  "merged_at": "2026-09-02T18:50:49Z",
+  "head_ref": "fix-hook-target-paths-and-dry-run-forwarding"
+}

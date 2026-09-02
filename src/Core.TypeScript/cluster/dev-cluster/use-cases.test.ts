@@ -7,6 +7,7 @@ import {
   DEV_BOOTSTRAP_SECRETS,
   DEV_GHCR_PULL_SECRET,
   DEV_GRAFANA_ADMIN_SECRET,
+  DEV_REDIS_AUTH_SECRET,
   DEV_ZITI_ADMIN_SECRET,
   devStorageAliasManifestPath,
   resolveRegistryToken,
@@ -225,14 +226,14 @@ describe("kind CI use case", () => {
  *
  * THE ROSTER IS WALKED, NOT RETYPED. Every test below that enumerates Secrets
  * enumerates `DEV_BOOTSTRAP_SECRETS`, so adding a third entry to the mint
- * without wiring it is caught here rather than in a live run. The two named
+ * without wiring it is caught here rather than in a live run. The named
  * constants appear only where a specific Application's contract is the subject.
  */
 describe("dev/CI bootstrap credentials", () => {
   // `env: {}` IS LOAD-BEARING, not tidiness. The bring-up also mints a registry
   // pull credential when a token is in scope, and these tests are about the
-  // DRAWN admin roster. Left ambient, `mints.length` below would be 2 on a
-  // laptop and 3 in CI (which exports `GITHUB_TOKEN`) -- the same commit passing
+  // DRAWN admin roster. Left ambient, `mints.length` below would be 3 on a
+  // laptop and 4 in CI (which exports `GITHUB_TOKEN`) -- the same commit passing
   // or failing on where it ran. The registry path has its own describe block.
   const kindOptions = {
     configPath: "/tmp/kind.yaml",
@@ -248,10 +249,11 @@ describe("dev/CI bootstrap credentials", () => {
    * "for each" test below vacuous -- passing over an empty-ish set is the
    * classic shape of a check that cannot fail.
    */
-  test("the roster holds both Applications' credentials, and they are distinct objects", () => {
+  test("the roster holds every Application's credential, and they are distinct objects", () => {
     expect(DEV_BOOTSTRAP_SECRETS).toContain(DEV_GRAFANA_ADMIN_SECRET);
     expect(DEV_BOOTSTRAP_SECRETS).toContain(DEV_ZITI_ADMIN_SECRET);
-    expect(DEV_BOOTSTRAP_SECRETS.length).toBe(2);
+    expect(DEV_BOOTSTRAP_SECRETS).toContain(DEV_REDIS_AUTH_SECRET);
+    expect(DEV_BOOTSTRAP_SECRETS.length).toBe(3);
     const refs = DEV_BOOTSTRAP_SECRETS.map((spec) => `${spec.namespace}/${spec.name}`);
     expect(new Set(refs).size).toBe(refs.length);
   });
@@ -321,23 +323,34 @@ describe("dev/CI bootstrap credentials", () => {
   /**
    * PER-SECRET idempotency, which the all-present case above cannot show.
    *
-   * A cluster can legitimately hold one and not the other -- a bring-up that
-   * predates a roster entry is exactly that state, and it is the state every
-   * existing dev cluster is in the moment `openziti/ziti-admin-credentials`
-   * joins the roster. The mint must converge it by creating ONLY the missing
-   * one. A loop that bailed on the first `resourceExists` hit, or that skipped
-   * the check entirely, would fail here and pass every other test in this file.
+   * A cluster can legitimately hold every rostered Secret but one -- a
+   * bring-up that predates a roster entry is exactly that state, and it is
+   * the state every existing dev cluster is in the moment `redis/redis-auth`
+   * joins the roster. The mint must converge it by creating the missing
+   * Secret and no other. A loop that bailed on the first `resourceExists`
+   * hit, or that skipped the check entirely, would fail here and pass every
+   * other test in this file.
+   *
+   * The pin is the minted metadata.name list, not an absence search for the
+   * already-present names. `not.toContain("grafana-admin-credentials")` is an
+   * R5 taint-shaped check: it passes whenever the leak is spelled differently
+   * (a sibling key, a comment, a rename), which is exactly the arity hole
+   * the hygiene census ratchets.
    */
-  test("a cluster holding only one converges by minting only the other", () => {
+  test("a cluster holding every rostered credential but one converges by minting the missing metadata.name", () => {
     const log: string[] = [];
-    bringUpKindCiCluster(
-      fakePorts(log, [`secret/${DEV_GRAFANA_ADMIN_SECRET.name}@${DEV_GRAFANA_ADMIN_SECRET.namespace}`]),
-      kindOptions,
+    const already = DEV_BOOTSTRAP_SECRETS.filter((spec) => spec !== DEV_REDIS_AUTH_SECRET).map(
+      (spec) => `secret/${spec.name}@${spec.namespace}`,
     );
-    const mints = log.filter((entry) => entry.startsWith("inline-manifest:"));
-    expect(mints.length).toBe(1);
-    expect(mints[0]).toContain(`name: ${DEV_ZITI_ADMIN_SECRET.name}`);
-    expect(mints[0]).not.toContain(`name: ${DEV_GRAFANA_ADMIN_SECRET.name}`);
+    bringUpKindCiCluster(fakePorts(log, already), kindOptions);
+    const mintedNames = log
+      .filter((entry) => entry.startsWith("inline-manifest:"))
+      .map((entry) => {
+        const match = /^metadata:\n  name: ([^\n]+)/m.exec(entry.slice("inline-manifest:".length));
+        if (match === null) throw new Error(`minted manifest has no metadata.name:\n${entry}`);
+        return match[1];
+      });
+    expect(mintedNames).toEqual([DEV_REDIS_AUTH_SECRET.name]);
   });
 
   /**
@@ -365,7 +378,7 @@ describe("dev/CI bootstrap credentials", () => {
    * reused across the roster would make compromising one credential compromise
    * every other, which is the same defect one blast radius wider.
    */
-  test("two fresh clusters get different passwords, and the two Secrets never share one", () => {
+  test("two fresh clusters get different passwords, and the rostered Secrets never share one", () => {
     const runs = [0, 1].map((n) => {
       const log: string[] = [];
       bringUpKindCiCluster(fakePorts(log), { ...kindOptions, configPath: `/tmp/kind-${n}.yaml` });
@@ -374,11 +387,14 @@ describe("dev/CI bootstrap credentials", () => {
     expect(runs[0]!.length).toBe(DEV_BOOTSTRAP_SECRETS.length);
     // Across clusters.
     expect(runs[0]![0]).not.toBe(runs[1]![0]);
-    // Within one cluster: strip the parts that are identical by construction
-    // (both specs use `admin-user`/`admin-password`) and compare the values.
-    const passwordOf = (manifest: string): string =>
-      manifest.split("admin-password: ")[1]?.trim() ?? "";
-    const values = runs[0]!.map(passwordOf);
+    // Within one cluster: parse each spec's passwordKey, not a restated
+    // `admin-password` string -- redis-auth uses `password`.
+    const passwordOf = (manifest: string, spec: (typeof DEV_BOOTSTRAP_SECRETS)[number]): string => {
+      const needle = `${spec.passwordKey}: `;
+      const line = manifest.split("\n").find((l) => l.includes(needle));
+      return line?.slice(line.indexOf(needle) + needle.length).trim() ?? "";
+    };
+    const values = runs[0]!.map((manifest, i) => passwordOf(manifest, DEV_BOOTSTRAP_SECRETS[i]!));
     expect(values.every((v) => v.length > 0)).toBe(true);
     expect(new Set(values).size).toBe(values.length);
   });

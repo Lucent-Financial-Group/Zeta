@@ -185,7 +185,7 @@ Mux / full-duplex on the wire (Arrow Flight stream duplex is shipped in-process)
 
 ## Testing — FoundationDB DST, DoP=1→N, alloc honesty
 
-- **DST:** every scored path closes under `ISimulationEnvironment`. Crash-mid-write stays `toy` until ZetaFS PR12. Do not claim Durable recovery before that corpus.
+- **DST:** every scored path closes under `ISimulationEnvironment`. Crash-mid-write *intercept* landed (`ArmCrashMidWrite`); recovery stays `toy` until the rest of ZetaFS PR12. Do not claim Durable recovery before that corpus.
 - **DoP=1 is the correctness knob;** DoP=N is throughput. Same ferry.
 - **Allocations are a column, not a footnote.** Unique-key Nexmark already reports Allocated/tick (~23.4 B/key Q1, ~11.7 B/key Q2, identical across ubuntu/mac/windows).
 - **Realistic workloads** are the next metering step after Nexmark micro: unique-key Q1–Q8, then a standing-query mix (Reaqtor-shaped), then an OLTP-shaped event-sourced mix (not TPC-C as a religion — as a *shape*: many small writes, ferry-batched). The point of realistic workloads is to see whether ZetaFS beats host FS + `GroupCommitDiskDeltaLog`.
@@ -244,7 +244,7 @@ Until a bench of "ZetaDB small-write storm on ZetaFS" vs "same storm on APFS/ext
 We do **not** implement ReFS, copy its on-disk format, or take a Windows-only path. Requirements that crossed the wall:
 
 1. **Pointer-not-copy (D9).** A clone, a snapshot, a small overwrite, a fork: update Bindings / Jumprope leaf ids / ContentId. Write bits only for new or mutated chunks. This is already the Jumprope + CAS shape; the volume path must not fall back to copying the file.
-2. **Crash DST for FS *and* DB (D12).** FoundationDB-shaped: crash-mid-write, reorder, corrupt-last-write, same seed. ChaosEnv today is flush-fail 5% — not enough. The database commit path and the filesystem freeze path must share the `IFileSystem` door so one corpus covers both.
+2. **Crash DST for FS *and* DB (D12).** FoundationDB-shaped: crash-mid-write, reorder, corrupt-last-write, same seed. ChaosEnv is still flush-fail 5%. The intercept is `InMemoryFileSystem.ArmCrashMidWrite` on the shared `IFileSystem` door (freeze torn-tail + GroupCommit torn-tail). Reorder / corrupt-last-write / freeze-log replay are still open.
 3. **Cache co-design (D10).** If the DB and the FS each keep a buffer of the same bytes, we pay RAM twice and we lie about whose `Buffered` won. One authority. Preferred: library-FS, DB owns mutbuf, POSIX mount is a view (already K6). `Durability.OsBuffered` and freeze `Buffered` must be the same named class, or a documented mapping. ReFS's allocate-on-write metadata plus a lazy cache manager is a known RAM explosion (KB 4016173); do not copy that caching.
 4. **CoW must not 10× the volume (D11).** This is why `keep-all | rolling | none | regen` exist. A DB that freezes every small write under `keep-all` will look like git. Rolling/none/regen are the bound. The falsifier is reclaim-eligibility, not a comment.
 
@@ -267,7 +267,7 @@ These are additive to K1–K18 / E1–E12 / C1–C10. They do not reopen them.
 | **D9** | Pointer-not-copy (ReFS-shaped allocate-on-write). Forks and small edits remap ids; bits written only for new chunks. | Space and crash: in-place metadata is a torn-write class. | Jumprope prefix-share + `DagFs.editLocal` converge. Volume freeze still whole-object. |
 | **D10** | One cache authority. DB and FS must not each buffer the same bytes. `Buffered` is one class. | RAM + DST: two caches are two truths. | `Durability.fs` vs freeze classes are two vocabularies. |
 | **D11** | CoW amplification bounded by policy. `rolling(N)` after M>N freezes ⇒ ≥ M−N bodies reclaim-eligible. | Else the DB explodes the volume (git-forever). | Caller supplies `RollingLive`; window fold not yet the reclaim input. |
-| **D12** | Crash DST for filesystem **and** database on the same door. | ReFS-class survival is earned by a seed, not a journal story. | Flush-fail 5%; PR12 still `toy`. |
+| **D12** | Crash DST for filesystem **and** database on the same door. | ReFS-class survival is earned by a seed, not a journal story. | Intercept landed (`ArmCrashMidWrite`); remaining corpus still `toy`. |
 
 **Cannot claim today:** POSIX mount, crash-safe Durable, `ns=bindings`, Windows Durable, ZetaFS faster than APFS for small writes, ReFS-class repair on one disk.
 
@@ -302,12 +302,12 @@ Order, each with a falsifier:
 10. **No appointed hub; no split-brain class.** Forward progress, CRDT merge, throw-away, or named fork.
 11. **ZetaFS is optional as a product** until it wins the product-existence bench against host FS + group-commit. Fork, CAS, Regen, EC, per-entity policy, **and ReFS-shaped crash/pointer/cache** are the reasons it might win.
 12. **`Regen` must not drop original bytes until the generator is metered.** Today's Singleton mapping is the conservative floor.
-13. **Freeze uses the ferry** (D4 / ZD2). Journaled/Durable log appends are boats. Crash-mid-boat stays `toy` until PR12.
+13. **Freeze uses the ferry** (D4 / ZD2). Journaled/Durable log appends are boats. Crash-mid-write intercept landed; freeze-log replay stays `toy`.
 14. **Stay in this monorepo** until ZetaFS v0.9ish and until ZetaDB has a signed, tested cut. Do not mint product GitHubs as a prerequisite.
 15. **Pointer-not-copy, not bit-copy** (D9). ReFS block cloning is the Beacon, not the implementation.
 16. **One cache authority** (D10). Double-buffering is a bug, not a feature.
 17. **Policies exist to bound CoW** (D11). A workload that 10×s the volume under `keep-all` is using the wrong policy, not a missing compressor.
-18. **Crash DST covers FS and DB** (D12). The claim stays `toy` until PR12's corpus runs on both.
+18. **Crash DST covers FS and DB** (D12). Intercept landed on both paths; the recovery claim stays `toy` until PR12's remaining corpus is green.
 
 ---
 

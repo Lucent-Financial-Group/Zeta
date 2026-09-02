@@ -65,13 +65,13 @@ separate functions and why only one of them may use `join`.
 `ProvisionalExperienceReplayMatchesGoldenVectors` hashes a fixture tree containing two git symlinks
 (mode `120000`). Git materialises those as real symlinks only when `core.symlinks` is true — on
 Windows that needs Developer Mode or an elevated clone, and git sets it `false` otherwise. With it
-false they arrive as **ordinary files whose content is the target path** (`../file1.txt`, `..`), so
+false they arrive as **ordinary files whose content is the target path** (the literal text `..` followed by `/file1.txt`, and `..`), so
 `HashDirectory` classifies them `file` instead of `symlink` and hashes a different tree. Measured:
 expected `081478c5…`, got `ec742172…`.
 
 The golden vector is not wrong and must not be touched — it is the four-oracle treaty. What is wrong
 is presenting an unrepresentable input as a byte-lock failure. Detected and skipped with the reason
-named, via the `Assert.Skip` idiom already used in `Infra/CwdChaos.Tests.fs`.
+named, via the `Assert.Skip` idiom already used in `tests/Tests.FSharp/Infra/CwdChaos.Tests.fs`.
 
 ## Reported, not fixed
 
@@ -82,5 +82,5 @@ named, via the `Assert.Skip` idiom already used in `Infra/CwdChaos.Tests.fs`.
   speculative fix would be worse than an accurate report.
 - **The .NET suite dirties the working tree** — the cross-verification tests write
   `tests/cross-verification/*/{cs,fsharp}-output.json` into the repo, with CRLF on Windows. Three
-  differ only by line ending (`.gitattributes` normalises on commit); `experience/cs-output.json`
+  differ only by line ending (`.gitattributes` normalises on commit); `tests/cross-verification/experience/cs-output.json`
   takes real content from the §3 hash. Worth a look, out of scope here.

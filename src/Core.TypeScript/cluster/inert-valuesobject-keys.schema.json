@@ -663,6 +663,252 @@
       "dynamic": [],
       "charts": ["<root>=hindsight@0.3.0"]
     },
+    "ghcr.io/vectorize-io/charts|hindsight|0.9.2": {
+      "literal": {
+        "affinity": {},
+        "api": {
+          "affinity": {},
+          "enabled": {},
+          "env": {},
+          "extraVolumeMounts": {},
+          "extraVolumes": {},
+          "image": {
+            "pullPolicy": {},
+            "repository": {},
+            "tag": {}
+          },
+          "livenessProbe": {},
+          "persistence": {
+            "modelCache": {
+              "accessModes": {},
+              "annotations": {},
+              "enabled": {},
+              "size": {},
+              "storageClass": {}
+            }
+          },
+          "podDisruptionBudget": {
+            "enabled": {},
+            "maxUnavailable": {},
+            "minAvailable": {}
+          },
+          "readinessProbe": {},
+          "replicaCount": {},
+          "resources": {},
+          "secrets": {},
+          "service": {
+            "port": {},
+            "targetPort": {},
+            "type": {}
+          }
+        },
+        "autoscaling": {
+          "enabled": {},
+          "maxReplicas": {},
+          "minReplicas": {},
+          "targetCPUUtilizationPercentage": {},
+          "targetMemoryUtilizationPercentage": {}
+        },
+        "controlPlane": {
+          "affinity": {},
+          "enabled": {},
+          "env": {},
+          "image": {
+            "pullPolicy": {},
+            "repository": {},
+            "tag": {}
+          },
+          "livenessProbe": {},
+          "podDisruptionBudget": {
+            "enabled": {},
+            "maxUnavailable": {},
+            "minAvailable": {}
+          },
+          "readinessProbe": {},
+          "replicaCount": {},
+          "resources": {},
+          "secrets": {},
+          "service": {
+            "port": {},
+            "targetPort": {},
+            "type": {}
+          }
+        },
+        "databaseUrl": {},
+        "existingSecret": {},
+        "fullnameOverride": {},
+        "ingress": {
+          "annotations": {},
+          "className": {},
+          "enabled": {},
+          "hosts": {},
+          "tls": {}
+        },
+        "nameOverride": {},
+        "nodeSelector": {},
+        "podAnnotations": {},
+        "podSecurityContext": {},
+        "postgresql": {
+          "auth": {
+            "database": {},
+            "password": {},
+            "username": {}
+          },
+          "enabled": {},
+          "external": {
+            "database": {},
+            "host": {},
+            "password": {},
+            "port": {},
+            "username": {}
+          },
+          "image": {
+            "pullPolicy": {},
+            "repository": {},
+            "tag": {}
+          },
+          "persistence": {
+            "enabled": {},
+            "size": {},
+            "storageClass": {}
+          },
+          "resources": {},
+          "service": {
+            "port": {}
+          }
+        },
+        "securityContext": {},
+        "serviceAccount": {
+          "annotations": {},
+          "create": {},
+          "name": {}
+        },
+        "tei": {
+          "embedding": {
+            "args": {},
+            "enabled": {},
+            "env": {},
+            "image": {
+              "pullPolicy": {},
+              "repository": {},
+              "tag": {}
+            },
+            "livenessProbe": {},
+            "model": {},
+            "port": {},
+            "readinessProbe": {},
+            "replicaCount": {},
+            "resources": {}
+          },
+          "reranker": {
+            "args": {},
+            "enabled": {},
+            "env": {},
+            "image": {
+              "pullPolicy": {},
+              "repository": {},
+              "tag": {}
+            },
+            "livenessProbe": {},
+            "model": {},
+            "port": {},
+            "readinessProbe": {},
+            "replicaCount": {},
+            "resources": {}
+          }
+        },
+        "tolerations": {},
+        "version": {},
+        "worker": {
+          "affinity": {},
+          "enabled": {},
+          "env": {
+            "HINDSIGHT_API_WORKER_BATCH_SIZE": {},
+            "HINDSIGHT_API_WORKER_HTTP_PORT": {},
+            "HINDSIGHT_API_WORKER_MAX_RETRIES": {},
+            "HINDSIGHT_API_WORKER_POLL_INTERVAL_MS": {}
+          },
+          "extraVolumeMounts": {},
+          "extraVolumes": {},
+          "image": {
+            "pullPolicy": {},
+            "repository": {},
+            "tag": {}
+          },
+          "livenessProbe": {},
+          "persistence": {
+            "modelCache": {
+              "accessModes": {},
+              "annotations": {},
+              "enabled": {},
+              "size": {},
+              "storageClass": {}
+            }
+          },
+          "podDisruptionBudget": {
+            "enabled": {},
+            "maxUnavailable": {},
+            "minAvailable": {}
+          },
+          "readinessProbe": {},
+          "replicaCount": {},
+          "resources": {},
+          "secrets": {},
+          "service": {
+            "port": {},
+            "targetPort": {}
+          }
+        }
+      },
+      "open": [
+        "affinity",
+        "api.env",
+        "api.extraVolumeMounts",
+        "api.extraVolumes",
+        "api.livenessProbe",
+        "api.persistence.modelCache.accessModes",
+        "api.persistence.modelCache.annotations",
+        "api.readinessProbe",
+        "api.resources",
+        "api.secrets",
+        "controlPlane.env",
+        "controlPlane.livenessProbe",
+        "controlPlane.readinessProbe",
+        "controlPlane.resources",
+        "controlPlane.secrets",
+        "global",
+        "ingress.annotations",
+        "ingress.hosts",
+        "ingress.tls",
+        "nodeSelector",
+        "podAnnotations",
+        "podSecurityContext",
+        "postgresql.resources",
+        "securityContext",
+        "serviceAccount.annotations",
+        "tei.embedding.args",
+        "tei.embedding.env",
+        "tei.embedding.livenessProbe",
+        "tei.embedding.readinessProbe",
+        "tei.embedding.resources",
+        "tei.reranker.args",
+        "tei.reranker.env",
+        "tei.reranker.livenessProbe",
+        "tei.reranker.readinessProbe",
+        "tei.reranker.resources",
+        "tolerations",
+        "worker.extraVolumeMounts",
+        "worker.extraVolumes",
+        "worker.livenessProbe",
+        "worker.persistence.modelCache.accessModes",
+        "worker.persistence.modelCache.annotations",
+        "worker.readinessProbe",
+        "worker.resources",
+        "worker.secrets"
+      ],
+      "dynamic": [],
+      "charts": ["<root>=hindsight@0.9.2"]
+    },
     "https://argoproj.github.io/argo-helm|argo-cd|10.6.4": {
       "literal": {
         "apiVersionOverrides": {},
@@ -39281,9 +39527,9 @@
     {
       "appId": "full-ai-cluster/hindsight",
       "chart": "hindsight",
-      "targetRevision": "0.3.0",
+      "targetRevision": "0.9.2",
       "repoURL": "ghcr.io/vectorize-io/charts",
-      "chartKey": "ghcr.io/vectorize-io/charts|hindsight|0.3.0"
+      "chartKey": "ghcr.io/vectorize-io/charts|hindsight|0.9.2"
     },
     {
       "appId": "full-ai-cluster/kube-prometheus-stack",
