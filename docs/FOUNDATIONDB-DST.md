@@ -39,7 +39,8 @@ to hit production without a traditional integration suite.
    boats. Corrupt-last-write intercept landed (`ArmCorruptLastWrite`).
    Reorder door landed (`ArmReorderNextTwo`). Journaled/Durable freeze
    writes intent, Flush, puts leaves, then commit (`intent-before-leaf-flush`).
-   Sealed-log replay landed (LSN on the frame).
+   Sealed-log replay landed (LSN on the frame). Mid-log CRC/MAC mismatch
+   keeps the verified prefix and truncates from the bad frame.
    Reclaim crash-mid-sweep intercept landed (`ArmCrashOnDelete`).
    `IBlockIo` remains the device primitive; `BlockIoFerry` interprets
    ops through `FerryThrottler` (single/single, batch/batch,

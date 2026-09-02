@@ -1,11 +1,12 @@
 ---
 id: 081M1J5CE74087G0R001FE7Z8B
 type: task
-state: backlog
+state: done
 priority: P1
 slug: iblockio-ferry-dispatch-from-ferrythrottler
 title: "IBlockIo ferry dispatch from FerryThrottler"
 created: 2026-09-02T22:56:07.396Z
+completed: 2026-09-02T23:24:05.038Z
 depends_on: []
 composes_with: ["081M1J5CE6A087G0R000RVJC9H"]
 ---

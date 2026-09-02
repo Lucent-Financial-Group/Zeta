@@ -277,7 +277,7 @@ These are additive to K1–K18 / E1–E12 / C1–C10. They do not reopen them.
 | **D9** | Pointer-not-copy (ReFS-shaped allocate-on-write). Forks and small edits remap ids; bits written only for new chunks. | Space and crash: in-place metadata is a torn-write class. | Jumprope prefix-share + `DagFs.editLocal` converge. Volume freeze still whole-object. |
 | **D10** | One cache authority. DB and FS must not each buffer the same bytes. `Buffered` is one class. | RAM + DST: two caches are two truths. | `Durability.fs` vs freeze classes are two vocabularies. |
 | **D11** | CoW amplification bounded by policy. `rolling(N)` after M>N freezes ⇒ ≥ M−N bodies reclaim-eligible. | Else the DB explodes the volume (git-forever). | Caller supplies `RollingLive`; window fold not yet the reclaim input. |
-| **D12** | Crash DST for filesystem **and** database on the same door. | ReFS-class survival is earned by a seed, not a journal story. | Intercepts + plain/sealed replay + reclaim sweep + intent-before-leaves landed. Native device I/O still open. Recovery stays `toy`. |
+| **D12** | Crash DST for filesystem **and** database on the same door. | ReFS-class survival is earned by a seed, not a journal story. | Intercepts + plain/sealed replay + reclaim sweep + intent-before-leaves + mid-CRC prefix keep landed. Native device I/O still open. Recovery stays `toy`. |
 
 **Cannot claim today:** POSIX mount, crash-safe Durable, `ns=bindings`, Windows Durable, ZetaFS faster than APFS for small writes, ReFS-class repair on one disk.
 
