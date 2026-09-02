@@ -186,6 +186,94 @@ let ``sealed log does not leave freeze-intent ASCII in the clear`` () : Task =
     }
 
 [<Fact>]
+let ``a fresh volume replays a sealed Journaled freeze from the log`` () : Task =
+    task {
+        ensureHasher ()
+        FileSystem.Register(InMemoryFileSystem())
+        let store = "/freeze-sealed-replay"
+        let mutbuf = ZetaFsMutbuf.create store ZetaFsMutbuf.Coherence.Shared
+        let vault = Array.init 32 (fun i -> byte i)
+        let mutable volume: ZetaFsFreeze.Volume option = None
+
+        try
+            match ZetaFsCrypto.sessionFromVaultKey 1u vault with
+            | Error e -> Assert.Fail(ZetaFsCrypto.errorName e)
+            | Ok session ->
+                let v = ZetaFsFreeze.createManualWith store mutbuf None (Some session)
+                volume <- Some v
+                let id = mintId ()
+                let h = ZetaFsMutbuf.openHandle mutbuf id
+                ZetaFsMutbuf.pwrite mutbuf h 0L [| 1uy; 2uy |] |> ignore
+                let pending = (freezeAsync v id ZetaFsFreeze.Journaled).AsTask()
+                do! (ZetaFsFreeze.pumpLog v CancellationToken.None).ConfigureAwait(false)
+                let! first = pending.ConfigureAwait(false)
+
+                match first with
+                | Error e -> Assert.Fail(ZetaFsFreeze.errorName e)
+                | Ok first ->
+                    ZetaFsFreeze.dispose v
+                    volume <- None
+                    let reopened = ZetaFsFreeze.createManualWith store mutbuf None (Some session)
+
+                    try
+                        Assert.True(ZetaFsFreeze.isReadable reopened first.Content)
+                    finally
+                        ZetaFsFreeze.dispose reopened
+        finally
+            match volume with
+            | Some v -> ZetaFsFreeze.dispose v
+            | None -> ()
+            FileSystem.Reset()
+    }
+
+[<Fact>]
+let ``sealed replay with the wrong vault key recovers nothing and leaves the log`` () : Task =
+    task {
+        ensureHasher ()
+        FileSystem.Register(InMemoryFileSystem())
+        let store = "/freeze-sealed-wrong-key"
+        let mutbuf = ZetaFsMutbuf.create store ZetaFsMutbuf.Coherence.Shared
+        let vault = Array.init 32 (fun i -> byte i)
+        let other = Array.init 32 (fun i -> byte (i + 1))
+        let mutable volume: ZetaFsFreeze.Volume option = None
+
+        try
+            match ZetaFsCrypto.sessionFromVaultKey 1u vault, ZetaFsCrypto.sessionFromVaultKey 1u other with
+            | Error e, _ -> Assert.Fail(ZetaFsCrypto.errorName e)
+            | _, Error e -> Assert.Fail(ZetaFsCrypto.errorName e)
+            | Ok session, Ok otherSession ->
+                let v = ZetaFsFreeze.createManualWith store mutbuf None (Some session)
+                volume <- Some v
+                let id = mintId ()
+                let h = ZetaFsMutbuf.openHandle mutbuf id
+                ZetaFsMutbuf.pwrite mutbuf h 0L [| 9uy |] |> ignore
+                let pending = (freezeAsync v id ZetaFsFreeze.Journaled).AsTask()
+                do! (ZetaFsFreeze.pumpLog v CancellationToken.None).ConfigureAwait(false)
+                let! first = pending.ConfigureAwait(false)
+
+                match first with
+                | Error e -> Assert.Fail(ZetaFsFreeze.errorName e)
+                | Ok first ->
+                    let logPath = Path.Combine(store, "log", "freeze")
+                    let before = FileSystem.Current.ReadAllBytes logPath
+                    ZetaFsFreeze.dispose v
+                    volume <- None
+                    let reopened = ZetaFsFreeze.createManualWith store mutbuf None (Some otherSession)
+
+                    try
+                        Assert.False(ZetaFsFreeze.isReadable reopened first.Content)
+                        let after = FileSystem.Current.ReadAllBytes logPath
+                        Assert.True((after.Length = before.Length))
+                    finally
+                        ZetaFsFreeze.dispose reopened
+        finally
+            match volume with
+            | Some v -> ZetaFsFreeze.dispose v
+            | None -> ()
+            FileSystem.Reset()
+    }
+
+[<Fact>]
 let ``cancelled token before admit does not start a log boat`` () : Task =
     task {
         ensureHasher ()

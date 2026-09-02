@@ -12,9 +12,10 @@ open Zeta.Core.FSharp.Blake3
 /// freeze-intent then CAS puts then freeze-commit. Durable fsyncs every
 /// leaf+trunk **before** commit and withholds the ack. Readable iff commit
 /// exists and every leaf is present. Crash-mid-write *intercept* is
-/// `InMemoryFileSystem.ArmCrashMidWrite`. Plain-log replay restores intact
-/// intent+commit pairs on create (torn tail / intent-without-commit dropped).
-/// Sealed-log replay, reorder, and corrupt-last-write stay `toy`.
+/// `InMemoryFileSystem.ArmCrashMidWrite`. Plain and sealed log replay restore
+/// intact intent+commit pairs on create (torn tail / intent-without-commit
+/// dropped). Sealed frames carry LSN in the clear so `openLog` can rebuild
+/// the nonce. Reclaim sweep stays `toy`.
 ///
 /// DoP=1 on this log. No Task.Run except the ferry launch (injected context
 /// on the DST path; `manual` + `PumpToIdleAsync` for tests).
@@ -331,8 +332,65 @@ module ZetaFsFreeze =
             | _ -> None
         | Ok _ -> None
 
+    let private applyDecoded
+        (volume: Volume)
+        (pending: byref<PlainRec option>)
+        (pendingStart: byref<int64>)
+        (maxLsn: byref<int64>)
+        (recordStart: int64)
+        (atTail: bool)
+        (truncate: int64 -> unit)
+        (decoded: PlainRec option)
+        : bool =
+        match decoded with
+        | None ->
+            if atTail then
+                truncate recordStart
+                false
+            else
+                invalidOp (sprintf "ZetaFsFreeze: malformed frame at byte %d" recordStart)
+        | Some(Intent _ as intentRec) ->
+            match pending with
+            | Some _ ->
+                invalidOp (sprintf "ZetaFsFreeze: intent without commit at byte %d" pendingStart)
+            | None ->
+                pending <- Some intentRec
+                pendingStart <- recordStart
+                true
+        | Some(Commit(intentLsn, content, commitLsn)) ->
+            match pending with
+            | Some(Intent(entity, intentContent, leaves, cls, intentLsn2)) when
+                intentLsn = intentLsn2 && content.Equals intentContent
+                ->
+                pending <- None
+                pendingStart <- -1L
+
+                if intentLsn > maxLsn then
+                    maxLsn <- intentLsn
+
+                if commitLsn > maxLsn then
+                    maxLsn <- commitLsn
+
+                volume.Commits.[content] <-
+                    { Entity = entity
+                      Content = content
+                      Span = 0UL
+                      Class = cls
+                      Generation = 0UL
+                      IntentLsn = intentLsn
+                      CommitLsn = commitLsn }
+
+                volume.Leaves.[content] <- leaves
+                true
+            | _ ->
+                if atTail then
+                    truncate recordStart
+                    false
+                else
+                    invalidOp (sprintf "ZetaFsFreeze: commit without matching intent at byte %d" recordStart)
+
     /// Restore Commits/Leaves from intact plain frames. Trailing torn frame or
-    /// intent-without-commit is truncated. Sealed logs are not this slice.
+    /// intent-without-commit is truncated.
     let private replayPlainLog (fs: IFileSystem) (volume: Volume) =
         let logPath = volume.Log.LogPath
 
@@ -372,51 +430,81 @@ module ZetaFsFreeze =
                             else
                                 invalidOp (sprintf "ZetaFsFreeze: CRC mismatch at byte %d" recordStart)
                         else
-                            match decodePlain payload with
-                            | None ->
-                                if stream.Position = stream.Length then
-                                    stream.SetLength recordStart
-                                    scanning <- false
-                                else
-                                    invalidOp (sprintf "ZetaFsFreeze: malformed frame at byte %d" recordStart)
-                            | Some(Intent _ as intentRec) ->
-                                match pending with
-                                | Some _ ->
-                                    invalidOp (sprintf "ZetaFsFreeze: intent without commit at byte %d" pendingStart)
-                                | None ->
-                                    pending <- Some intentRec
-                                    pendingStart <- recordStart
-                            | Some(Commit(intentLsn, content, commitLsn)) ->
-                                match pending with
-                                | Some(Intent(entity, intentContent, leaves, cls, intentLsn2)) when
-                                    intentLsn = intentLsn2 && content.Equals intentContent
-                                    ->
-                                    pending <- None
-                                    pendingStart <- -1L
+                            let atTail = stream.Position = stream.Length
+                            scanning <-
+                                applyDecoded
+                                    volume
+                                    &pending
+                                    &pendingStart
+                                    &maxLsn
+                                    recordStart
+                                    atTail
+                                    stream.SetLength
+                                    (decodePlain payload)
 
-                                    if intentLsn > maxLsn then
-                                        maxLsn <- intentLsn
+            match pending with
+            | Some _ when pendingStart >= 0L -> stream.SetLength pendingStart
+            | _ -> ()
 
-                                    if commitLsn > maxLsn then
-                                        maxLsn <- commitLsn
+            if maxLsn >= volume.NextLsn then
+                volume.NextLsn <- maxLsn + 1L
 
-                                    // Span/Generation are not in the v1 frame.
-                                    volume.Commits.[content] <-
-                                        { Entity = entity
-                                          Content = content
-                                          Span = 0UL
-                                          Class = cls
-                                          Generation = 0UL
-                                          IntentLsn = intentLsn
-                                          CommitLsn = commitLsn }
+    /// Sealed frames: [len:i32][lsn:i64][inner]. LSN is public so openLog can
+    /// rebuild the nonce. Wrong-key MAC on the first frame recovers nothing
+    /// and does not truncate.
+    let private replaySealedLog (fs: IFileSystem) (volume: Volume) (session: ZetaFsCrypto.Session) =
+        let logPath = volume.Log.LogPath
 
-                                    volume.Leaves.[content] <- leaves
-                                | _ ->
-                                    if stream.Position = stream.Length then
-                                        stream.SetLength recordStart
-                                        scanning <- false
-                                    else
-                                        invalidOp (sprintf "ZetaFsFreeze: commit without matching intent at byte %d" recordStart)
+        if fs.Exists logPath then
+            use stream = fs.OpenFile(logPath, FileMode.Open, FileAccess.ReadWrite, FileShare.Read)
+            use br = new BinaryReader(stream)
+            let mutable scanning = true
+            let mutable pendingStart = -1L
+            let mutable pending: PlainRec option = None
+            let mutable maxLsn = 0L
+
+            while scanning do
+                let recordStart = stream.Position
+
+                if stream.Length - stream.Position = 0L then
+                    scanning <- false
+                elif stream.Length - stream.Position < 12L then
+                    stream.SetLength recordStart
+                    scanning <- false
+                else
+                    let len = br.ReadInt32()
+                    let lsn = br.ReadInt64()
+
+                    if len < 0 then
+                        invalidOp (sprintf "ZetaFsFreeze: negative sealed length %d at byte %d" len recordStart)
+                    elif stream.Length - stream.Position < int64 len then
+                        stream.SetLength recordStart
+                        scanning <- false
+                    else
+                        let inner = br.ReadBytes len
+                        let atTail = stream.Position = stream.Length
+
+                        match ZetaFsCrypto.openLog session lsn inner with
+                        | Error ZetaFsCrypto.CryptoError.MacMismatch
+                        | Error ZetaFsCrypto.CryptoError.GcmAuthFailed when pending.IsNone && recordStart = 0L ->
+                            scanning <- false
+                        | Error ZetaFsCrypto.CryptoError.MacMismatch
+                        | Error ZetaFsCrypto.CryptoError.GcmAuthFailed when atTail ->
+                            stream.SetLength recordStart
+                            scanning <- false
+                        | Error e ->
+                            invalidOp (sprintf "ZetaFsFreeze: sealed frame at byte %d: %s" recordStart (ZetaFsCrypto.errorName e))
+                        | Ok plaintext ->
+                            scanning <-
+                                applyDecoded
+                                    volume
+                                    &pending
+                                    &pendingStart
+                                    &maxLsn
+                                    recordStart
+                                    atTail
+                                    stream.SetLength
+                                    (decodePlain plaintext)
 
             match pending with
             | Some _ when pendingStart >= 0L -> stream.SetLength pendingStart
@@ -439,8 +527,10 @@ module ZetaFsFreeze =
         let volume = new Volume(storeDir, mutbuf, observer, session, config, manual)
 
         try
-            if session.IsNone then
-                lock volume.Gate (fun () -> replayPlainLog fs volume)
+            lock volume.Gate (fun () ->
+                match session with
+                | None -> replayPlainLog fs volume
+                | Some s -> replaySealedLog fs volume s)
 
             volume
         with ex ->
@@ -466,6 +556,14 @@ module ZetaFsFreeze =
         (observer: IDurabilityObserver option)
         : Volume =
         createFull storeDir mutbuf observer None defaultConfig true
+
+    let createManualWith
+        (storeDir: string)
+        (mutbuf: ZetaFsMutbuf.Catalog)
+        (observer: IDurabilityObserver option)
+        (session: ZetaFsCrypto.Session option)
+        : Volume =
+        createFull storeDir mutbuf observer session defaultConfig true
 
     let dispose (volume: Volume) = (volume :> IDisposable).Dispose()
 
@@ -521,10 +619,11 @@ module ZetaFsFreeze =
         Buffer.BlockCopy(payload, 0, frame, 8, payload.Length)
         frame
 
-    let private frameSealed (inner: byte[]) : byte[] =
-        let frame = Array.zeroCreate (4 + inner.Length)
+    let private frameSealed (lsn: int64) (inner: byte[]) : byte[] =
+        let frame = Array.zeroCreate (12 + inner.Length)
         BinaryPrimitives.WriteInt32LittleEndian(Span(frame, 0, 4), inner.Length)
-        Buffer.BlockCopy(inner, 0, frame, 4, inner.Length)
+        BinaryPrimitives.WriteInt64LittleEndian(Span(frame, 4, 8), lsn)
+        Buffer.BlockCopy(inner, 0, frame, 12, inner.Length)
         frame
 
     let private concatFrames (a: byte[]) (b: byte[]) : byte[] =
@@ -639,7 +738,7 @@ module ZetaFsFreeze =
                         | Ok i ->
                             match ZetaFsCrypto.sealLog session commitLsn commitPt with
                             | Error e -> Error(FreezeError.Crypto e)
-                            | Ok c -> Ok(concatFrames (frameSealed i) (frameSealed c))
+                            | Ok c -> Ok(concatFrames (frameSealed intentLsn i) (frameSealed commitLsn c))
 
                 match framed with
                 | Error e -> ValueTask<Result<FreezeResult, FreezeError>>(Error e)
