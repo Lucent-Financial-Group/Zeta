@@ -24,7 +24,7 @@ zig = "0.13.0"
 # dropped. A partial mirror is therefore not a harmless duplicate; it is an
 # override that disarms the base-tier declaration on every host carrying both
 # files. Re-check this if the mirror is ever reduced back to a version pin.
-rust = { version = "1.96.0", components = ["rustfmt", "clippy"], targets = ["wasm32-unknown-unknown"] }
+rust = { version = "1.96.1", components = ["rustfmt", "clippy"], targets = ["wasm32-unknown-unknown"] }
 
 # -- Kubernetes tooling (full-tier only) --
 k3d = "5.8.3"

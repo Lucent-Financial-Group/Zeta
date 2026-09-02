@@ -1,0 +1,12 @@
+{
+  "pr_number": 16295,
+  "archive_path": "docs/history/pr-reviews/PR-16295-fix-081m1f1xzy4087g0r002z01fga-pin-rust-1-96-1-last-1-96-patch.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-01T20:54:20.578Z",
+  "schema_version": "v1",
+  "commit_sha": "70fe2ea45098a52d3ad8a83472cb652b6c3e92d7",
+  "title": "fix(081M1F1XZY4087G0R002Z01FGA): pin rust 1.96.1, last 1.96 patch",
+  "state": "MERGED",
+  "merged_at": "2026-09-01T20:53:41Z",
+  "head_ref": "feat/rust-1.96.1-last-good-patch"
+}

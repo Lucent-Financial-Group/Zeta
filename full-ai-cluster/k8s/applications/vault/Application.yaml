@@ -114,7 +114,17 @@ spec:
     #
     # Filed rather than rushed. The audit's own timing note still holds -- decide this
     # BEFORE the unseal ceremony creates live data, which is now, not later.
-    targetRevision: 0.29.1
+    # 0.29.1 -> 0.34.1 on 2026-09-01. audit-vault-topology-coherence refuses a bump
+    # whose behaviours nobody re-measured, so this one was measured: rendered at both
+    # versions with this Application's own valuesObject, 18 resources each, none added
+    # or removed, 11 of the 13 differences being only the helm.sh/chart label. The
+    # audit then passed at the new pin -- 12 rules, 0 findings. Full evidence lives
+    # beside MEASURED_CHART_VERSION in that audit, so there is one copy to go stale.
+    #
+    # THE VAULT BINARY GOES 1.18.1 -> 2.0.4, a MAJOR, and no rule in that audit would
+    # notice a behavioural change inside it. What is checked is that the chart renders
+    # the same shapes from the same values. Recorded here rather than left implied.
+    targetRevision: 0.34.1
     helm:
       releaseName: vault
       valuesObject:

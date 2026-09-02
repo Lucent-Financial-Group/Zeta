@@ -1,0 +1,12 @@
+{
+  "pr_number": 16306,
+  "archive_path": "docs/history/pr-reviews/PR-16306-test-four-color-falsify-the-planarity-criteria-that-nothing-was-testing.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-01T22:40:03.571Z",
+  "schema_version": "v1",
+  "commit_sha": "a224152100c0acf2ceeccdb2312ec8390c4b0d44",
+  "title": "test(four-color): falsify the planarity criteria that nothing was testing",
+  "state": "MERGED",
+  "merged_at": "2026-09-01T22:39:25Z",
+  "head_ref": "shadow/planarity-mutants-that-survive"
+}

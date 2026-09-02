@@ -63,8 +63,38 @@ import { fileURLToPath } from "node:url";
 import { parseArgs } from "node:util";
 import { parse as parseYaml } from "yaml";
 
-/** The chart revision behind every encoded behaviour in this file. */
-export const MEASURED_CHART_VERSION = "0.29.1";
+/**
+ * The chart revision behind every encoded behaviour in this file.
+ *
+ * 0.29.1 -> 0.34.1 on 2026-09-01, RE-MEASURED rather than renumbered. This constant
+ * exists so a version cannot move underneath the rules without someone checking, and
+ * the check it demands is a render comparison, not a judgement call. What was done:
+ *
+ *   `helm template` at BOTH versions, with the Application's own valuesObject and the
+ *   same --kube-version, then a structural diff of the results:
+ *
+ *     18 resources at 0.29.1, 18 at 0.34.1 -- NONE added, NONE removed
+ *     13 differ at all, and 11 of those differ ONLY by the `helm.sh/chart` label
+ *     the 3 substantive differences are image bumps (vault-k8s 1.5.0 -> 1.7.6,
+ *       vault 1.18.1 -> 2.0.4) plus one new startup guard in the StatefulSet that
+ *       greps storageconfig.hcl for `autopilot_redundancy_zone`
+ *
+ * So every SHAPE these rules reason about -- topology and replica counts, raft
+ * retry_join, the PDB, the seal stanza, listener scheme against VAULT_ADDR,
+ * anti-affinity, the storage class at its sync wave, the injector -- renders
+ * identically at both versions. The audit then ran clean at the new pin: 12 rules,
+ * 0 findings.
+ *
+ * WHAT THIS EVIDENCE DOES NOT COVER, said plainly because "the audit passes" must not
+ * be read as more than it is: the Vault APPLICATION goes 1.18.1 -> 2.0.4, a major.
+ * These rules encode what the CHART renders from our values, not what the Vault binary
+ * does with the resulting config, and no rule here would notice a behavioural change
+ * inside Vault 2.0. That is a separate question from this constant.
+ *
+ * The direction is still strongly favourable: hashicorp/vault:1.18.1 was last
+ * published 2024-10-30 -- nearly two years -- and 2.0.4 on 2026-08-04.
+ */
+export const MEASURED_CHART_VERSION = "0.34.1";
 
 /** Node topologies the Vault Application may declare, and their node counts. */
 export const TOPOLOGY_NODE_COUNT: Readonly<Record<string, number>> = {

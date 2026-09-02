@@ -28,7 +28,36 @@ spec:
   source:
     repoURL: https://seaweedfs.github.io/seaweedfs/helm
     chart: seaweedfs
-    targetRevision: 4.33.0
+    # 4.33.0 -> 4.45.0 on 2026-09-01. THIS CLOSES AN UNPATCHED HIGH CVE IN THE PIN
+    # WE WERE SHIPPING: CVE-2026-77611 / GHSA-9x53-cjpr-m682, CVSS 7.1, published
+    # 2026-08-21, vulnerable range `< 4.39` -- an authenticated S3 object-scope
+    # bypass where a SCOPED principal can overwrite an object outside its permitted
+    # key prefix via PutObjectAcl on a nested key.
+    #
+    # The uncomfortable part, recorded rather than smoothed: minio was removed from
+    # this tree days earlier FOR HAVING UNPATCHED HIGH ADVISORIES, and its
+    # replacement was sitting on one. Nobody chose that -- the CVE published after
+    # the replacement was designed -- and it is exactly the argument for checking
+    # upstream health on a schedule rather than only at swap time.
+    #
+    # Exposure was LOW AND THE REASON IS CHECKABLE, which is why this is a bump and
+    # not an incident: the bypass needs a scoped identity to escape FROM, and the
+    # valuesObject below defines exactly one principal, `admin`, with full access.
+    # There is no restricted identity for it to victimise. That is a reason it was
+    # not an emergency, never a reason to leave it.
+    #
+    # MEASURED before bumping -- `helm template` at both versions with the exact
+    # valuesObject below: both render; 9 -> 10 resources; the single addition is
+    # Secret/blob-store-seaweedfs-s3-secret (the S3 credential becomes a real Secret
+    # instead of being inlined); nothing removed. Every value still takes effect --
+    # all five buckets render, the PVC is still 20Gi on zeta-local-path under the
+    # same claimName, auth is still on, master/volume/filer stay disabled.
+    #
+    # WATCH ON FIRST DEPLOY: seaweedfs changed its S3 identity loader to fail CLOSED
+    # rather than open when zero identities load. That is the safer direction, but
+    # it turns a silently-permissive misconfiguration into a hard failure, so
+    # smoke-test createBuckets/auth rather than assuming.
+    targetRevision: 4.45.0
     helm:
       # Must differ from minio in object-store; keeps Service blob-store-seaweedfs-all-in-one.
       releaseName: blob-store-seaweedfs

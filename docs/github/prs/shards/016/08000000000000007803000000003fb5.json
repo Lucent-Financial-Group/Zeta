@@ -1,0 +1,12 @@
+{
+  "pr_number": 16309,
+  "archive_path": "docs/history/pr-reviews/PR-16309-bug-081m1fg1rcw087g0r000tazwjx-the-blob-store-s-s3-auth-is-inert-at-the-pinned-c.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-01T22:25:50.924Z",
+  "schema_version": "v1",
+  "commit_sha": "f4a8d264e915c365ec78a6e2858e9c02f7d83d78",
+  "title": "bug(081M1FG1RCW087G0R000TAZWJX): the blob store's S3 auth is inert at the pinned chart",
+  "state": "MERGED",
+  "merged_at": "2026-09-01T22:25:13Z",
+  "head_ref": "shadow/seaweedfs-auth-was-inert"
+}

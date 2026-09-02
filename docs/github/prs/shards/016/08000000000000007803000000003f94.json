@@ -1,0 +1,12 @@
+{
+  "pr_number": 16276,
+  "archive_path": "docs/history/pr-reviews/PR-16276-feat-argocd-7-7-10-10-6-0-argocd-v2-13-2-v3-5-2-both-pins-move-together.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-01T21:16:44.596Z",
+  "schema_version": "v1",
+  "commit_sha": "5776787ffd8e9be4be72255943ffcfd2f4c53c31",
+  "title": "feat(argocd): 7.7.10 -> 10.6.0 (ArgoCD v2.13.2 -> v3.5.2) — both pins move together",
+  "state": "MERGED",
+  "merged_at": "2026-09-01T21:16:04Z",
+  "head_ref": "shadow/argocd-2-13-to-3-5-both-pins-move-together"
+}

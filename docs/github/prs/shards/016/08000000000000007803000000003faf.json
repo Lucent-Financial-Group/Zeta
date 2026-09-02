@@ -1,0 +1,12 @@
+{
+  "pr_number": 16303,
+  "archive_path": "docs/history/pr-reviews/PR-16303-docs-spatial-language-add-the-linguistics-lineage-and-the-control-it-demands.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-01T21:52:00.928Z",
+  "schema_version": "v1",
+  "commit_sha": "83f5f295ede7b3a102462aeaa2b7b6e19c03a482",
+  "title": "docs(spatial-language): add the linguistics lineage, and the control it demands",
+  "state": "MERGED",
+  "merged_at": "2026-09-01T21:51:17Z",
+  "head_ref": "shadow/spatial-language-anchors"
+}

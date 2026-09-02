@@ -1,0 +1,12 @@
+{
+  "pr_number": 16296,
+  "archive_path": "docs/history/pr-reviews/PR-16296-feat-kube-version-one-declared-kubernetes-version-read-by-every-consumer.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-01T21:06:14.890Z",
+  "schema_version": "v1",
+  "commit_sha": "8c11a7e4cd9ab0dc5e1732ca838dfc94718293c8",
+  "title": "feat(kube-version): one declared Kubernetes version, read by every consumer",
+  "state": "MERGED",
+  "merged_at": "2026-09-01T21:05:33Z",
+  "head_ref": "shadow/kube-version-derived-not-guessed"
+}

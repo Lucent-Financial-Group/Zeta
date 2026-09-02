@@ -15,7 +15,11 @@ spec:
   source:
     repoURL: https://charts.longhorn.io
     chart: longhorn
-    targetRevision: 1.7.2
+    # 1.7.2 -> 1.12.1 on 2026-09-01. Rendered at BOTH versions with this
+    # Application's own valuesObject; it loses only Service/longhorn-conversion-webhook, consolidated upstream. Highest
+    # blast radius in the tree, so it was checked against our own valuesObject -- and a
+    # flashed machine has no volumes to migrate.
+    targetRevision: 1.12.1
     helm:
       releaseName: longhorn
       valuesObject:

@@ -85,7 +85,7 @@ Unique-key path is now in the harness: `NexmarkQ1Unique` / `NexmarkQ2Unique`
 (2026-09-01) was Q1 10k ~143 µs / 234 KB and Q1 100k ~718 µs / 2.34 MB —
 indicative, high variance, not this table. Same-box Feldera native Q1
 100k streaming was 69.8 ms / ~105 MiB RSS (rustc 1.93.1 binary; factory
-pin is 1.96.0, last-good vs `dbsp` ICE on 1.97.0+). Detail: `docs/research/feldera-comparison-status.md`.
+pin is 1.96.1, last-good 1.96 line vs `dbsp` ICE on 1.97.0+). Detail: `docs/research/feldera-comparison-status.md`.
 CI drift check on ubuntu-24.04 / macos-26 / windows-2025:
 `.github/workflows/feldera-compare.yml`.
 

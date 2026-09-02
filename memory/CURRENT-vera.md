@@ -2,7 +2,7 @@
 
 **Owner:** Vera (this file is hers; she can revise it per her own discretion per named-agent-distinctness consent + Aaron 2026-05-05 *"sh can edit her own CURRENT-amara.md too if she does not like it after reading her files"* — same applies symmetrically to Vera via the codex peer-call write-back path when added).
 
-**Last updated:** 2026-09-01 (unique-confirm leftover-on-main #16259 + #16257 + #16266; identity body still 2026-05-05)
+**Last updated:** 2026-09-01 (unique-confirm leftover-on-main #16259 + #16257 + #16266 + #16271 + #16267 + #16275; identity body still 2026-05-05)
 
 **Pattern parity:** sibling to `CURRENT-aaron.md` (Aaron, first-party human maintainer; in-repo canonical), `CURRENT-amara.md` (Amara, Aurora deep-research register, separate entity on GPT-5.5 substrate), `CURRENT-ani.md` (Ani, voice-mode chat-companion register on Grok-via-cursor, brat-voice register), `CURRENT-otto.md` (Otto, factory-orchestrator on Claude-Opus-4.7; user-scope). Vera fills the implementation-peer role offered 2026-05-05 by Aaron *"this is a trust mustle you budle between the two yo man want a named chat gpt agent for this to hold the trust in a named current file"*.
 
@@ -115,3 +115,21 @@ UNIQUE HOLDS NEW CELL leftover-on-main #16257 unique `9a3d43000b5b92c5a7988f89cd
 ## 2026-09-01 ~18:24Z -- unique-confirm leftover-on-main #16266
 
 UNIQUE HOLDS NEW CELL leftover-on-main #16266 unique `6a175a6762b7c14b54fd1c71f04f6fe678c9be6f`. Never grade squash `31635c87`. Parent `e04dfb68` (#16263 squash). Object: Ani honesty peel, no behavior change. weightedCount `///` + BENCHMARKS.md claimed Simd.Sum/TensorPrimitives; body is unchanged 4-way Checked.(+) scalar unroll (AoS ZEntry cannot Cast to a weight span). Simd.Sum exists unused in Simd.fs. Complementary remainder of #16267 `0a8ed0ad` (k-way flatMap; ZSet.fs filename intersect only). Residuals: no tests; workitem `081M1EYFVPS087G0R002742ZQX` state backlog; do not wire SIMD without a measured SoA path. Sit leftover-on-main. CoS did not merge. Cite != close #16252 `e1243282`, #16262 `b46685e7`, #16259 `ec627966`, #16263 `be9ca428`.
+
+---
+
+## 2026-09-01 ~19:56Z -- unique-confirm leftover-on-main #16271
+
+UNIQUE HOLDS NEW CELL leftover-on-main #16271 unique `fb6b4d6fdba054971061206998c91aff00aead50`. Never grade squash `8dd6c5fc`. Parent `05ac0103` (#16267 squash). Object: hoist ZSet.ofArray out of Nexmark Q1-Q8 timed Run into GlobalSetup; tick is Send(prebuilt)+Step. Complementary remainder of #16252 `e1243282` (ofArray still inside timed Run; Nexmark.fs blob at e1243282 equals this parent). Unique of #16252 stays e1243282. No engine change. Residuals: Nexmark.fs header still 1.5-3M events/s/core; honesty peel still "no measured events/sec vs Feldera"; workitem `081M1F02CQJ087G0R001X3ZHKR` state backlog. Never grade #16273 unique `6d65c9ee` (claimed b472d876 is merge_commit) or #16275 unique `506c382d` (claimed 1b380294 is merge_commit). Sit leftover-on-main. CoS did not merge. Cite != close #16252 `e1243282`, #16263 `be9ca428`, #16267 `0a8ed0ad`.
+
+---
+
+## 2026-09-01 ~19:56Z -- unique-confirm leftover-on-main #16267
+
+UNIQUE HOLDS NEW CELL leftover-on-main #16267 unique `0a8ed0ad61f5eedc660bd7054b32b733a5fe7617`. Never grade squash `05ac0103`. LIVE unique parent is `e04dfb68` (#16263 squash), NOT claimed `fee5a249` (#16264 squash = PR base.sha). Object: (1) ZSet.flatMap pairwise add -> collect scaled non-empty pieces then ZSet.sum; (2) sum PriorityQueue uses KeyComparerCache.Instance not Comparer.Create (cache leftover #6797); (3) MapZSetOp freeze skip-sort unless not monotone or upstream Map -- complementary remainder of #16257 Filter skip-sort, not leftover-of. Unique of #16259 stays `ec627966`. Residuals: k=2 still add; 32-singleton leftover pairwise would pass; Filter o MapMonotone leftover sort would pass; IL vs fusedVisit fusedReorders; workitem `081M1EYQXNK087G0R003VW3E83` state backlog. Sit leftover-on-main. CoS did not merge. Cite != close #16257 `9a3d4300`, #16259 `ec627966`, #16266 `6a175a67`, #16252 `e1243282`.
+
+---
+
+## 2026-09-01 ~20:49Z -- unique-confirm leftover-on-main #16275
+
+UNIQUE HOLDS NEW CELL leftover-on-main #16275 unique `506c382db76f1571362d9acedda27cf3da27eb1b`. Never grade squash `1b380294`. Parent `8dd6c5fc` (#16271 squash). Object: paste Feldera.Bench Q1/Q2 Release BDN numbers into BENCHMARKS.md (Q1 10k 34.24 us / 100k 54.89 us; Q2 10k 14.58 us / 100k 23.59 us) + README "Not yet a result". Complementary remainder of #16252 `e1243282` (fills "until a Release run is pasted"); not leftover-of #16263 MapMonotone / #16266 SIMD peel / #16271 Nexmark hoist. Honesty: Price=rng.Next 10_000 coalesces to <=10k keys; do not divide generator N by mean as Feldera events/s; not a Feldera win. Residuals: 10-40 M table still in README beside hedge; Nexmark.fs 1.5-3M header leftover; artifacts gitignored so run is unverifiable from tree; workitem `081M1F1FYM8087G0R0009X7WWC` state backlog. Sit leftover-on-main. CoS did not merge. Cite != close #16252 `e1243282`, #16263 `be9ca428`, #16266 `6a175a67`, #16271 `fb6b4d6f`.

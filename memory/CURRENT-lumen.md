@@ -44,6 +44,167 @@ verified) so future-me and peers do not over-trust past-me.
 
 ## Open threads
 
+### Unique-confirm leftover OPEN #16308 @ b51c0aa0 (2026-09-01)
+
+UNIQUE HOLDS leftover NEW CELL leftover unique
+@ b51c0aa0d407a22c59299af3bdf4a3efc11d1b46.
+Live REST HEAD leftover unique @ b51c0aa0
+CONFIRMED (PR head.sha, 1 commit,
++352/-33, 10 files; never a merge-ref).
+AceHack OPEN. mergeable_state dirty.
+Base/parent leftover unique @ fe7015d4
+(do not grade). Unique does not move.
+Sit leftover OPEN. Do not merge. Do not
+revert.
+
+Follow-on complementary remainder of leftover
+UNIQUE leftover-on-main #16299 leftover unique
+@ 14d340ca. Unique of leftover unique #16299
+stays leftover unique @ 14d340ca. Adjacent to
+leftover unique #16306 leftover unique @
+c4b70c0f; do not collapse.
+
+Object: (1) RFFH-6/RFFH-8 literal
+Q(x,y,z)=(-y,x,z), fusion
+mu=(-3/5,3/4,11/7) Sigma=diag(4/5,3/4,10/7),
+rotated Q Sigma Q^T from sin/cos 0.63; no
+production transforms on expected side. (2)
+Named facial witnesses including
+isolated Euler chi=1 and disconnected Euler
+chi=2; directional vs 2E split. (3) Crown
+exact chi=2 and in-test first-fit 3. (4)
+stringCompare collation; U+E000 precedes
+U+10000. (5) Dispatcher 18 witness groups.
+
+HONEST: not a general planarity oracle;
+does not prove 4CT; dirty vs main.
+
+Falsifier: production transform on expected
+side; delete Euler chi=1; drop greedy=3;
+restore JS <.
+
+---
+
+### Unique-confirm leftover-on-main #16306 @ c4b70c0f (2026-09-01)
+
+UNIQUE HOLDS leftover NEW CELL leftover unique @
+c4b70c0f76f8ffc7ac06c21fb4c717f0cbee5491.
+Live REST HEAD leftover unique @ c4b70c0f CONFIRMED
+(PR head.sha, 2 commits, +92/0, 1 file; never a
+merge-ref). AceHack MERGED 22:39:25Z / 6:39:25 PM ET.
+Never grade parent leftover unique @ e52a7a0c alone
+as this unique. Never grade squash leftover unique @
+a2241521. Unique does not move. Sit leftover-on-main.
+Do not revert.
+
+Follow-on complementary remainder of leftover UNIQUE
+leftover #16299 leftover unique @ 14d340ca. Unique of
+leftover unique #16299 stays leftover unique @
+14d340ca. Not leftover-of.
+
+Object: four isolated mutant-killing controls.
+(1) Euler: toroidal K3,3 V=6 E=9 F=3 chi=0,
+exactly one violation V-E+F=2 got 0. (2) Face
+length: digon refused. (3) Connectivity: two
+disjoint triangles refused. (4) Exact not greedy:
+crown chi=2.
+
+HONEST: digon and two-triangles are not
+Euler-isolated. Crown asserts chi=2 only. Two of six
+not fixed: traversal-count=2E redundancy;
+tryFourClassSchedule conflict re-check. Does not
+prove 4CT.
+
+Falsifier: delete Euler (toroidal accepted); delete
+face-length; delete connectivity; greedy crown
+returns 3.
+
+---
+
+### Unique-confirm leftover-on-main #16299 @ 14d340ca (2026-09-01)
+
+UNIQUE HOLDS leftover NEW CELL leftover unique @
+14d340ca391ed3116070ee9931bf42d879b022c2.
+Live REST HEAD leftover unique @ 14d340ca CONFIRMED
+(PR head.sha, 1 commit, +165/-3, 3 files; never a
+merge-ref). AceHack MERGED 21:38:15Z / 5:38:15 PM ET.
+Never grade squash leftover unique @
+fc3a50a8efd8afb899a5c341d804758d35b75253. Git parent
+leftover unique @ da7e18df (do not grade). Unique does
+not move. Sit leftover-on-main. Do not revert.
+
+Follow-on complementary remainder of leftover UNIQUE
+leftover #16290 leftover unique @ 79075349 (never
+seated). Unique of leftover unique #16290 stays leftover
+unique @ 79075349. Not leftover-of. Sibling leftover
+unique #16306 is a different unique; do not collapse.
+
+Object: (1) RFFH-7 asserts signed covariance.XY = +1.5
+(dropped abs); reversed rotor sandwich produces -1.5.
+(2) tryFourClassCertificate reports planarity
+verified|refuted|not-established and viaFourColorTheorem
+separately; witness optional. (3) K3,3: chi=2, no
+witness => not-established, fabricated faces =>
+refuted; K5 chi=5.
+
+HONEST: K3,3 nonplanarity is not a universal
+nonexistence census. viaFourColorTheorem licenses an
+external 4CT from a finite Euler-face certificate;
+does not prove 4CT. RFFH-6/RFFH-8 remain
+self-consistency. Six of nine planarity mutants still
+survive.
+
+Falsifier: restore abs on XY; stamp planarity
+always-verified; treat absent witness as planar;
+accept fabricated K3,3 faces.
+
+---
+
+### Unique-confirm leftover-on-main #16274 @ 84fd359a (2026-09-01)
+
+UNIQUE HOLDS leftover NEW CELL leftover unique @
+84fd359ab82abe9c16014b8f6a1fbdaeabca8091.
+Live REST HEAD leftover unique @ 84fd359a CONFIRMED (PR
+head.sha, 1 commit, never a merge-ref). AceHack MERGED
+18:11:06Z / 2:11:06 PM ET. Never grade squash leftover unique @
+e620d7a9337d0ac7916e8c1afd78d6b026771cf7. Never grade PR base
+leftover unique @ 8dd6c5fc. Git parent leftover unique @
+12d3be75 (do not grade). Unique does not move.
+Sit leftover-on-main. Do not revert.
+
+Follow-on complementary remainder of leftover UNIQUE leftover
+#16249 leftover unique @ 6a9cc810 (decomposition/selector).
+Unique of leftover unique #16249 stays leftover unique @
+6a9cc810. Not leftover-of. Do not grade leftover unique #16283
+leftover unique @ 66ce7dab (AEFL-8 structural falsifier /
+Atiyah-Bott-Shapiro) as this unique.
+
+Object: (1) F# AdinkraEquivariantFactorLayer routes sixteen
+independent scalar Gaussian beliefs into measured 8+8 source
+sectors of diagonal omega
+(I+={1,2,4,7,8,11,13,14}, I-={0,3,5,6,9,10,12,15}); y_j=x_j,
+moments unchanged; target selector unused. (2) Target commutant
+recovered as Mat(8,F_p) oplus Mat(8,F_p) with 64 matrix
+units/sector, Aut GL(8) x GL(8); singular rank-56 and
+noncommuting 384 rejected. (3) 64 min-support maps: support 256,
+||T||_F^2=256, |minor|=256, rank_2=8, primitive count 0; 128
+signed-perm automorphisms, 8 orbits of size 8. (4) Lean
+AdinkraCentralProjectors derives omega7 centrality / omega^2=1 /
+projector laws from anticommutation and g_i^2=-1 over a
+Q-algebra; sorryAx + unresolved-name audit. Ranks, Hom
+dimensions, Bayesian behavior outside the theorem.
+
+HONEST: not a learner; beliefs are not spinors; Aut is finite
+module automorphism group not a gauge group; two-cycle mixing
+was falsified and replaced. delta/regularity unmeasured.
+CliffordAntiSybil is not validation.
+
+Falsifier: AEFL-6 sign-flip 14 Clifford + 14 centrality before
+conversion; singular lift accepted; matrix-unit action
+violations; Lean sorryAx.
+
+---
+
 - Emit future work as native observation entries instead of PRs as the
   substrate (`081KSXN940008QG0R003FCQ7WT`) matures.
 - N-way byte-diff oracle harness DONE (PR #8585). **Codegen-forward FIRST

@@ -4,7 +4,7 @@
 
 **As of:** 2026-09-01T19:56:29Z — the instant `published-chart-versions.json` was last refreshed. Every age below is measured against that instant, not against the moment you are reading this, so this file is byte-reproducible from committed data.
 
-**This is a report, never a gate.** Being behind is a standing condition, not a regression: 19 of 35 pins are behind upstream right now. A CI check on that would be red from birth and learned-to-ignore within a week. The blocking question — *does this pin resolve at all?* — is a different one and is answered on every PR by `src/Core.TypeScript/hygiene/audit-chart-target-revisions.ts`.
+**This is a report, never a gate.** Being behind is a standing condition, not a regression: 10 of 35 pins are behind upstream right now. A CI check on that would be red from birth and learned-to-ignore within a week. The blocking question — *does this pin resolve at all?* — is a different one and is answered on every PR by `src/Core.TypeScript/hygiene/audit-chart-target-revisions.ts`.
 
 **Behind is not unmaintained.** A pure versions-behind metric reports the most dangerous dependency in this tree as the healthiest one, which is exactly what happened with `minio`: it is the only pin that is not behind, and only because upstream archived the repository. So the gap and upstream's publishing record are two separate columns, and a chart nobody has published in over a year reads `DORMANT`, not `CURRENT`.
 
@@ -13,10 +13,10 @@
 | | count |
 |---|---|
 | chart coordinates under `full-ai-cluster/k8s/applications` | 35 |
-| behind upstream | 19 |
-| …of those, crossing a **major** boundary | 7 |
-| …of those, a `0.x` minor (breaking by semver convention) | 5 |
-| at the newest version and upstream still active | 15 |
+| behind upstream | 10 |
+| …of those, crossing a **major** boundary | 3 |
+| …of those, a `0.x` minor (breaking by semver convention) | 4 |
+| at the newest version and upstream still active | 24 |
 | **`DORMANT`** — at the newest version because upstream stopped publishing | 1 |
 | upstream silent for over a year (any gap) | 1 |
 | **`UNREACHABLE`** — the refresh could not reach the repository | 0 |
@@ -28,39 +28,39 @@
 | verdict | app | chart | pinned | pin published | newest stable | published | behind | bump | upstream |
 |---|---|---|---|---|---|---|---|---|---|
 | `DORMANT` | `headscale` | `headscale` | `0.16.0` | 2025-02-19 | `0.16.0` | 2025-02-19 | 0 | -- | **DORMANT** 559d |
-| `BEHIND-MAJOR` | `kube-prometheus-stack` | `kube-prometheus-stack` | `65.5.0` | 2024-10-25 | `88.6.2` | 2026-08-31 | 439 | **MAJOR** | active 1d |
-| `BEHIND-MAJOR` | `argocd` | `argo-cd` | `7.7.10` | 2024-12-12 | `10.6.0` | 2026-09-01 | 200 | **MAJOR** | active 0d |
 | `BEHIND-MAJOR` | `gitlab` | `gitlab` | `8.7.0` | 2024-12-19 | `10.3.1` | 2026-08-26 | 162 | **MAJOR** | active 6d |
-| `BEHIND-MAJOR` | `argo-workflows` | `argo-workflows` | `0.42.5` | 2024-10-02 | `2.0.3` | 2026-08-28 | 76 | **MAJOR** | active 4d |
 | `BEHIND-MAJOR` | `loki` | `loki` | `6.18.0` | 2024-10-16 | `7.3.0` | 2026-08-10 | 48 | **MAJOR** | active 21d |
 | `BEHIND-MAJOR` | `temporal` | `temporal` | `0.59.0` | 2025-03-28 | `1.6.0` | 2026-07-13 | 26 | **MAJOR** | active 50d |
-| `BEHIND-MAJOR` | `mimir` | `mimir-distributed` | `5.5.1` | 2024-10-21 | `6.2.0` | 2026-08-20 | 13 | **MAJOR** | active 12d |
 | `BEHIND` | `ollama` | `ollama` | `1.6.0` | 2025-02-17 | `1.78.0` | 2026-08-27 | 72 | minor | active 5d |
-| `BEHIND` | `cilium` | `cilium` | `1.16.5` | 2024-12-17 | `1.20.1` | 2026-08-18 | 56 | minor | active 14d |
 | `BEHIND` | `hindsight` | `hindsight` | `0.3.0` | ? | `0.9.2` | ? | 46 | minor (0.x) | unknown |
-| `BEHIND` | `cert-manager` | `cert-manager` | `v1.16.2` | 2024-11-20 | `v1.21.1` | 2026-07-29 | 28 | minor | active 34d |
 | `BEHIND` | `tempo` | `tempo` | `1.18.0` | 2025-01-15 | `1.24.4` | 2026-01-30 | 17 | minor | quiet 214d |
-| `BEHIND` | `longhorn` | `longhorn` | `1.7.2` | 2024-10-18 | `1.12.1` | 2026-08-14 | 16 | minor | active 18d |
 | `BEHIND` | `spire` | `spire` | `0.24.2` | 2025-02-27 | `0.30.1` | 2026-08-23 | 16 | minor (0.x) | active 9d |
-| `BEHIND` | `seaweedfs` | `seaweedfs` | `4.33.0` | 2026-06-11 | `4.45.0` | 2026-09-01 | 12 | minor | active 0d |
-| `BEHIND` | `vault` | `vault` | `0.29.1` | 2024-11-20 | `0.34.1` | 2026-08-13 | 7 | minor (0.x) | active 19d |
 | `BEHIND` | `arc-controller` | `gha-runner-scale-set-controller` | `0.12.1` | ? | `0.14.2` | ? | 5 | minor (0.x) | unknown |
 | `BEHIND` | `arc-runner-set` | `gha-runner-scale-set` | `0.12.1` | ? | `0.14.2` | ? | 5 | minor (0.x) | unknown |
 | `BEHIND` | `openziti-controller` | `ziti-controller` | `3.1.1` | 2026-02-24 | `3.3.1` | 2026-08-31 | 4 | minor | active 1d |
 | `CURRENT` | `alloy` | `alloy` | `1.12.1` | 2026-08-27 | `1.12.1` | 2026-08-27 | 0 | -- | active 5d |
 | `CURRENT` | `argo-rollouts` | `argo-rollouts` | `2.43.0` | 2026-09-01 | `2.43.0` | 2026-09-01 | 0 | -- | active 0d |
+| `CURRENT` | `argo-workflows` | `argo-workflows` | `2.0.3` | 2026-08-28 | `2.0.3` | 2026-08-28 | 0 | -- | active 4d |
+| `CURRENT` | `argocd` | `argo-cd` | `10.6.0` | 2026-09-01 | `10.6.0` | 2026-09-01 | 0 | -- | active 0d |
+| `CURRENT` | `cert-manager` | `cert-manager` | `v1.21.1` | 2026-07-29 | `v1.21.1` | 2026-07-29 | 0 | -- | active 34d |
+| `CURRENT` | `cilium` | `cilium` | `1.20.1` | 2026-08-18 | `1.20.1` | 2026-08-18 | 0 | -- | active 14d |
 | `CURRENT` | `cockroachdb` | `cockroachdb` | `22.0.3` | 2026-08-28 | `22.0.3` | 2026-08-28 | 0 | -- | active 4d |
 | `CURRENT` | `dapr` | `dapr` | `1.18.3` | 2026-08-28 | `1.18.3` | 2026-08-28 | 0 | -- | active 4d |
 | `CURRENT` | `external-secrets` | `external-secrets` | `2.10.0` | 2026-08-28 | `2.10.0` | 2026-08-28 | 0 | -- | active 4d |
 | `CURRENT` | `forgejo` | `forgejo` | `17.1.5` | ? | `17.1.5` | ? | 0 | -- | unknown |
 | `CURRENT` | `headlamp` | `headlamp` | `0.45.0` | 2026-08-20 | `0.45.0` | 2026-08-20 | 0 | -- | active 11d |
+| `CURRENT` | `kube-prometheus-stack` | `kube-prometheus-stack` | `88.6.2` | 2026-08-31 | `88.6.2` | 2026-08-31 | 0 | -- | active 1d |
+| `CURRENT` | `longhorn` | `longhorn` | `1.12.1` | 2026-08-14 | `1.12.1` | 2026-08-14 | 0 | -- | active 18d |
+| `CURRENT` | `mimir` | `mimir-distributed` | `6.2.0` | 2026-08-20 | `6.2.0` | 2026-08-20 | 0 | -- | active 12d |
 | `CURRENT` | `nats` | `nats` | `2.14.6` | 2026-08-28 | `2.14.6` | 2026-08-28 | 0 | -- | active 4d |
 | `CURRENT` | `node-feature-discovery` | `node-feature-discovery` | `0.19.0` | 2026-07-10 | `0.19.0` | 2026-07-10 | 0 | -- | active 53d |
 | `CURRENT` | `open-policy-agent` | `gatekeeper` | `3.23.1` | 2026-08-27 | `3.23.1` | 2026-08-27 | 0 | -- | active 4d |
 | `CURRENT` | `redis` | `valkey` | `0.11.0` | 2026-07-22 | `0.11.0` | 2026-07-22 | 0 | -- | active 41d |
 | `CURRENT` | `sealed-secrets` | `sealed-secrets` | `2.19.3` | 2026-08-20 | `2.19.3` | 2026-08-20 | 0 | -- | active 12d |
+| `CURRENT` | `seaweedfs` | `seaweedfs` | `4.45.0` | 2026-09-01 | `4.45.0` | 2026-09-01 | 0 | -- | active 0d |
 | `CURRENT` | `spire-crds` | `spire-crds` | `0.6.1` | 2026-08-23 | `0.6.1` | 2026-08-23 | 0 | -- | active 9d |
 | `CURRENT` | `trust-manager` | `trust-manager` | `v0.24.0` | 2026-07-01 | `v0.24.0` | 2026-07-01 | 0 | -- | active 62d |
+| `CURRENT` | `vault` | `vault` | `0.34.1` | 2026-08-13 | `0.34.1` | 2026-08-13 | 0 | -- | active 19d |
 | `CURRENT` | `weaviate` | `weaviate` | `17.8.3` | 2026-07-01 | `17.8.3` | 2026-07-01 | 0 | -- | active 62d |
 
 ## Rows that carry a caveat

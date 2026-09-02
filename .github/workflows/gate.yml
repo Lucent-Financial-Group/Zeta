@@ -55,13 +55,13 @@
 #     https://static.rust-lang.org/dist/channel-rust-1.87.0.toml on every
 #     job (~50 s each) and took three PRs down on 2026-08-16 (#10903,
 #     #10930, #10963) — each reported under the name of a lint that never
-#     executed. Cached paths are `~/.rustup/toolchains/1.96.0-*`,
+#     executed. Cached paths are `~/.rustup/toolchains/1.96.1-*`,
 #     `settings.toml`, `update-hashes`, `~/.cargo`.
 #     ONLY the pinned toolchain: the ubuntu-24.04 image already ships
 #     `~/.rustup/toolchains/stable-*` (624 MB) that RUSTUP_TOOLCHAIN never
 #     selects. Measured on the runner — whole-dir 1681 MB vs pinned-only
 #     1486 MB against a 1270 MB baseline, i.e. +216 MB instead of +411 MB.
-#     `1.96.0` here must stay in sync with `rust` in `.mise.toml`; a stale
+#     `1.96.1` here must stay in sync with `rust` in `.mise.toml`; a stale
 #     glob degrades to the pre-2026-08-16 behaviour (CDN fetch), never to a
 #     wrong toolchain. `!`-exclusion was tried and measured as INERT —
 #     `path: ~/.rustup/toolchains` + `!~/.rustup/toolchains/stable-*`
@@ -836,7 +836,7 @@ jobs:
             ~/.dotnet/tools
             ~/.elan
             ~/.config/zeta
-            ~/.rustup/toolchains/1.96.0-*
+            ~/.rustup/toolchains/1.96.1-*
             ~/.rustup/settings.toml
             ~/.rustup/update-hashes
             ~/.cargo
@@ -921,7 +921,7 @@ jobs:
             ~/.dotnet/tools
             ~/.elan
             ~/.config/zeta
-            ~/.rustup/toolchains/1.96.0-*
+            ~/.rustup/toolchains/1.96.1-*
             ~/.rustup/settings.toml
             ~/.rustup/update-hashes
             ~/.cargo
@@ -1060,22 +1060,34 @@ jobs:
         # -strict: reject unknown fields on the manifests we DO have schemas for.
         # find-pipe so it recurses explicitly (portable across kubeconform versions).
         #
-        # -kubernetes-version 1.33.0 ADDED 2026-08-25. Without it kubeconform checks
+        # AN EXPLICIT KUBERNETES VERSION WAS ADDED 2026-08-25. Without one kubeconform checks
         # against the schema registry's `master` set -- i.e. against whatever
         # Kubernetes released most recently, which is NOT the version any of our
         # clusters run and which DRIFTS UNDER US with no commit here. The pin's
-        # provenance is this repo's own already-declared target: the `kube-version`
+        # provenance was this repo's own already-declared target: the `kube-version`
         # default in infra/k8s/tests/validate-applications.ts, which the helm-validate
-        # lane has been rendering against for the other cluster tree. Two lanes
+        # lane had been rendering against for the other cluster tree. Two lanes
         # validating the same kinds against two different Kubernetes versions is the
-        # drift this closes. MEASURED on the agentic-org tree before landing: 26
+        # drift that closed.
+        #
+        # IT CLOSED TWO LANES AND LEFT A THIRD. audit-observability-chain was still
+        # rendering against 1.31.0, and both were behind the k3s the cluster actually
+        # ships. Since 2026-09-01 all three read
+        # full-ai-cluster/k8s/kubernetes-version.json, and
+        # lint-kubernetes-version-agrees refuses a literal that disagrees with it --
+        # which is how this comment's own stale number was found. MEASURED on the agentic-org tree before landing: 26
         # resources in 12 files, Valid 26 / Invalid 0 both with and without the flag,
         # so the pin changes no verdict today -- it fixes WHICH QUESTION is being asked.
         run: |
+          # READ, not written here. This was a literal 1.33.0 while the observability
+          # audit said 1.31.0 and k3s shipped 1.35.6 -- the very drift the comment above
+          # says this pin closes, left open in a third lane.
+          kube_version="$(python3 -c 'import json;print(json.load(open("full-ai-cluster/k8s/kubernetes-version.json"))["kubernetesVersion"])')"
+          echo "[yaml/k8s] validating against Kubernetes $kube_version (declared)"
           crd_kinds="Application,Blueprint,CiliumL2AnnouncementPolicy,CiliumLoadBalancerIPPool,ClusterIssuer,ConstraintTemplate,Deployable,Gateway,HTTPRoute,Hat,HatConflict,HatCooldown,HatMaxBindings,HatMaxNew,HatNoCycle,HatPolicy,HatQuorum,HatWarmup,HelmChart,Policy"
           kc() {
             find full-ai-cluster/k8s infra/k8s agentic-organization/deploy -type f \( -name '*.yaml' -o -name '*.yml' \) -print0 \
-              | xargs -0 kubeconform -strict -ignore-missing-schemas -summary -schema-location default -kubernetes-version 1.33.0 -skip "$crd_kinds"
+              | xargs -0 kubeconform -strict -ignore-missing-schemas -summary -schema-location default -kubernetes-version "$kube_version" -skip "$crd_kinds"
           }
           kc || { echo "[yaml/k8s] retry in 30s (schema-registry rate limit?)"; sleep 30; kc; } \
              || { echo "[yaml/k8s] retry in 90s"; sleep 90; kc; }
@@ -1180,7 +1192,7 @@ jobs:
             ~/.dotnet/tools
             ~/.elan
             ~/.config/zeta
-            ~/.rustup/toolchains/1.96.0-*
+            ~/.rustup/toolchains/1.96.1-*
             ~/.rustup/settings.toml
             ~/.rustup/update-hashes
             ~/.cargo
@@ -1841,7 +1853,7 @@ jobs:
             ~/.dotnet/tools
             ~/.elan
             ~/.config/zeta
-            ~/.rustup/toolchains/1.96.0-*
+            ~/.rustup/toolchains/1.96.1-*
             ~/.rustup/settings.toml
             ~/.rustup/update-hashes
             ~/.cargo
@@ -1910,7 +1922,7 @@ jobs:
             ~/.dotnet/tools
             ~/.elan
             ~/.config/zeta
-            ~/.rustup/toolchains/1.96.0-*
+            ~/.rustup/toolchains/1.96.1-*
             ~/.rustup/settings.toml
             ~/.rustup/update-hashes
             ~/.cargo
@@ -1976,7 +1988,7 @@ jobs:
             ~/.dotnet/tools
             ~/.elan
             ~/.config/zeta
-            ~/.rustup/toolchains/1.96.0-*
+            ~/.rustup/toolchains/1.96.1-*
             ~/.rustup/settings.toml
             ~/.rustup/update-hashes
             ~/.cargo
@@ -2696,7 +2708,7 @@ jobs:
             ~/.dotnet/tools
             ~/.elan
             ~/.config/zeta
-            ~/.rustup/toolchains/1.96.0-*
+            ~/.rustup/toolchains/1.96.1-*
             ~/.rustup/settings.toml
             ~/.rustup/update-hashes
             ~/.cargo
@@ -2753,7 +2765,7 @@ jobs:
             ~/.dotnet/tools
             ~/.elan
             ~/.config/zeta
-            ~/.rustup/toolchains/1.96.0-*
+            ~/.rustup/toolchains/1.96.1-*
             ~/.rustup/settings.toml
             ~/.rustup/update-hashes
             ~/.cargo
@@ -2810,7 +2822,7 @@ jobs:
             ~/.dotnet/tools
             ~/.elan
             ~/.config/zeta
-            ~/.rustup/toolchains/1.96.0-*
+            ~/.rustup/toolchains/1.96.1-*
             ~/.rustup/settings.toml
             ~/.rustup/update-hashes
             ~/.cargo
@@ -2867,7 +2879,7 @@ jobs:
             ~/.dotnet/tools
             ~/.elan
             ~/.config/zeta
-            ~/.rustup/toolchains/1.96.0-*
+            ~/.rustup/toolchains/1.96.1-*
             ~/.rustup/settings.toml
             ~/.rustup/update-hashes
             ~/.cargo
@@ -2924,7 +2936,7 @@ jobs:
             ~/.dotnet/tools
             ~/.elan
             ~/.config/zeta
-            ~/.rustup/toolchains/1.96.0-*
+            ~/.rustup/toolchains/1.96.1-*
             ~/.rustup/settings.toml
             ~/.rustup/update-hashes
             ~/.cargo
@@ -3337,7 +3349,7 @@ jobs:
             ~/.dotnet/tools
             ~/.elan
             ~/.config/zeta
-            ~/.rustup/toolchains/1.96.0-*
+            ~/.rustup/toolchains/1.96.1-*
             ~/.rustup/settings.toml
             ~/.rustup/update-hashes
             ~/.cargo
@@ -3434,7 +3446,7 @@ jobs:
             ~/.dotnet/tools
             ~/.elan
             ~/.config/zeta
-            ~/.rustup/toolchains/1.96.0-*
+            ~/.rustup/toolchains/1.96.1-*
             ~/.rustup/settings.toml
             ~/.rustup/update-hashes
             ~/.cargo

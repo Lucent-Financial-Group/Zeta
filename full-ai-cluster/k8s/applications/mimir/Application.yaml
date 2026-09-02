@@ -16,7 +16,23 @@ spec:
   source:
     repoURL: https://grafana.github.io/helm-charts
     chart: mimir-distributed
-    targetRevision: 5.5.1
+    # 5.5.1 -> 6.2.0 on 2026-09-01. HELD EARLIER THE SAME DAY AND NOW RELEASED, because
+    # the blocker was never this chart.
+    #
+    # Chart 6.x declares `kubeVersion: ^1.32.0-0`. The bump was reverted when
+    # audit-observability-chain refused to render it -- against a KUBE_VERSION literal of
+    # 1.31.0 that nothing derived and nobody had checked. The cluster ships k3s 1.35.6.
+    #
+    # #16296 replaced that literal with full-ai-cluster/k8s/kubernetes-version.json,
+    # derived from this repo's own flake lock. MEASURED after it merged: mimir 6.2.0
+    # renders cleanly at 1.35.6 with this Application's own valuesObject. The constraint
+    # was real and simply did not apply to us.
+    #
+    # The rest of the earlier reading stands: this loses the four mimir-nginx resources
+    # (chart 6.x drops the bundled nginx gateway for `gateway.*`; we never configured
+    # nginx and nothing in the tree references it), and `minio.enabled: false` below is
+    # still load-bearing -- this chart defaults it TRUE.
+    targetRevision: 6.2.0
     helm:
       releaseName: mimir
       valuesObject:

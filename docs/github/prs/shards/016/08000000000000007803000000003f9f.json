@@ -1,0 +1,12 @@
+{
+  "pr_number": 16287,
+  "archive_path": "docs/history/pr-reviews/PR-16287-feat-cluster-bump-5-charts-cilium-off-eol-spire-held-pending-a-live-lane-isolati.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-02T00:13:30.524Z",
+  "schema_version": "v1",
+  "commit_sha": "7ff021ee47202a14e6c6e6cab8e5df48dad0a037",
+  "title": "feat(cluster): bump 5 charts — cilium off EOL; spire held pending a live-lane isolation",
+  "state": "MERGED",
+  "merged_at": "2026-09-02T00:12:37Z",
+  "head_ref": "shadow/chart-bumps-batch-2"
+}

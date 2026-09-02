@@ -14,7 +14,24 @@ metadata:
 spec:
   chart: argo-cd
   repo: https://argoproj.github.io/argo-helm
-  version: 7.7.10
+  # 7.7.10 -> 10.6.0 on 2026-09-01, i.e. ArgoCD v2.13.2 -> v3.5.2. This pin and
+  # the one in k8s/applications/argocd/Application.yaml MUST move together: the
+  # Application adopts this installation, so a drift makes ArgoCD try to change
+  # its own version on first reconcile, in the earliest sync wave.
+  #
+  # MEASURED before bumping, not assumed. `helm template` with THIS FILE'S exact
+  # values at both versions:
+  #   both render clean; 45 resources -> 50
+  #   the five new ones are all NetworkPolicy (application-controller, dex-server,
+  #     redis, repo-server, server) -- ADDITIONS, and nothing was removed
+  #   every value we set still takes effect at 10.6.0: global.domain appears,
+  #     server.service.type is ClusterIP, server.insecure reaches
+  #     argocd-cmd-params-cm, and notifications.enabled=false still renders zero
+  #     notifications resources
+  # A chart that renders is not a cluster that reconciles, so the k8s lanes are
+  # what actually clear this; the render is what says the VALUES survived, which
+  # is the half a major chart bump usually breaks.
+  version: 10.6.0
   targetNamespace: argocd
   createNamespace: false   # argocd-namespace.yaml creates it explicitly
   valuesContent: |-

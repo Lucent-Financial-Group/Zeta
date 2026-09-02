@@ -15,7 +15,12 @@ spec:
   source:
     repoURL: https://charts.jetstack.io
     chart: cert-manager
-    targetRevision: v1.16.2
+    # v1.16.2 -> v1.21.1 on 2026-09-01. Rendered at BOTH versions with this
+    # Application's own valuesObject; it loses only Role/RoleBinding cert-manager-tokenrequest. The SIX CRDs the first
+    # diff called removed were a FALSE POSITIVE: the newer chart quotes metadata.name
+    # and the older does not, so an unstripped compare read every quoted resource as
+    # removed-and-re-added. All six render at both versions.
+    targetRevision: v1.21.1
     helm:
       releaseName: cert-manager
       valuesObject:

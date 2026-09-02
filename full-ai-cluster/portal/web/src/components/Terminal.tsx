@@ -106,7 +106,7 @@ export function Terminal({ fqn, kind }: { fqn: string; kind: "shell" | "rcon" })
           spellCheck={false}
           autoComplete="off"
           placeholder={kind === "rcon" ? "status   (try: players, changelevel gm_construct, help)" : "ls   (try: ps, env, help)"}
-          className="flex-1 bg-transparent text-slate-200 outline-none placeholder:text-slate-600"
+          className="flex-1 bg-transparent text-slate-200 outline-hidden placeholder:text-slate-600"
         />
       </div>
     </div>
