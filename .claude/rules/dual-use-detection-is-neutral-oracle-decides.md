@@ -257,6 +257,50 @@ the treaty, and is thereafter fixed and inspectable. That second property is wha
 lets it still satisfy the good-meter test above — anyone can inspect the treaty and
 agree to its rules — even though a judgement is buried in it.
 
+### Crystallised judgement has a name here already — and it is the agent/actor line
+
+Aaron, 2026-09-02, on the metrology phrasing above:
+
+> **"Judgement crystallised is our quasi time crystals, that is the mark between
+> life and non-life life can internally evolve"**
+
+That vocabulary is already carved, in `docs/CONCEPT-REGISTRY.md`, in his own
+earlier ruling on what an agent is:
+
+> *"its a persistent pattern that propagates over time but **can evolve**, if it's
+> **frozen like a quasi time crystal** then it's an **actor** not an **agent**
+> cause it can be copied and reproduced in deterministic simulation testing"*
+>
+> *"agents are what remains, actors are what acts"*
+
+**So the meter/oracle split resolves onto the agent/actor line, and the mapping is
+tight rather than poetic:**
+
+| | frozen? | already called | why it must be that |
+|---|---|---|---|
+| **meter** | **yes** — judgement crystallised, once, in a treaty | **actor** — copyable, DST-reproducible | a meter that evolved between readings could not be inspected-and-agreed-to in advance. **Frozenness is what makes it a meter** |
+| **oracle** | **no** — judgement applied per reading | **agent** — what remains, entangled memory, can evolve | an oracle that could not evolve would be a lookup table, and its judgement would have been made by whoever wrote it |
+
+**This is why the good-meter test and DST are the same requirement.** "Anyone can
+inspect it and agree to the rules" and "it can be copied and reproduced in
+deterministic simulation testing" are two statements of one property — a frozen,
+inspectable pattern. The byte-lock treaty qualifies precisely because it *stopped
+evolving*; that is not a limitation of the four implementations, it is their
+qualification.
+
+**And it gives the monopoly guard a sharper form than "freedom dies".** A system
+whose measurement layer may not be contradicted has frozen the one part of itself
+that was supposed to keep evolving. Under Aaron's mark — *life can internally
+evolve* — such a system has become an **actor**: still running, still producing
+output, no longer able to change from within. That is a stronger claim than
+"monopolies are bad", and it is checkable in principle: **can this system revise
+its own treaties from the inside?** A meter frozen *by choice* is an actor doing
+its job; a *society* frozen the same way has stopped being one.
+
+**Register: this is a reading.** The agent/actor distinction is carved and the
+mapping above is argued, not measured. The life/non-life framing is Aaron's and is
+offered as the mark he uses, not as a definition this rule establishes.
+
 **The data-feed sense is the one that stays wrong**, and for the opposite reason:
 it has no treaty and no judgement in it at all.
 
