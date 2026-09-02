@@ -18337,9 +18337,10 @@
         "dapr_sidecar_injector=dapr_sidecar_injector@1.18.3"
       ]
     },
-    "https://docs.openziti.io/helm-charts/|ziti-controller|3.1.1": {
+    "https://docs.openziti.io/helm-charts/|ziti-controller|3.3.1": {
       "literal": {
         "additionalConfigs": {
+          "cluster": {},
           "ctrl": {},
           "edge": {},
           "events": {},
@@ -18400,9 +18401,12 @@
         "cluster": {
           "agentAppAddr": {},
           "endpoint": {},
+          "joinRetries": {},
+          "joinRetryDelaySeconds": {},
           "mode": {},
           "nodeName": {},
-          "trustDomain": {}
+          "trustDomain": {},
+          "voter": {}
         },
         "console": {
           "altIngress": {},
@@ -18448,6 +18452,7 @@
           }
         },
         "ctrlPlaneCasBundle": {
+          "caCert": {},
           "configMapName": {},
           "namespaceSelector": {}
         },
@@ -18461,6 +18466,7 @@
             "renewBefore": {}
           },
           "alternativeIssuer": {},
+          "caSecretName": {},
           "enabled": {}
         },
         "edition": {},
@@ -18602,6 +18608,7 @@
         }
       },
       "open": [
+        "additionalConfigs.cluster",
         "additionalConfigs.ctrl",
         "additionalConfigs.edge",
         "additionalConfigs.events",
@@ -18631,6 +18638,7 @@
         "ctrlPlane.ingress.tls",
         "ctrlPlane.traefikTcpRoute.entryPoints",
         "ctrlPlane.traefikTcpRoute.labels",
+        "ctrlPlaneCasBundle.caCert",
         "ctrlPlaneCasBundle.namespaceSelector",
         "edgeSignerPki.alternativeIssuer",
         "env",
@@ -18670,7 +18678,7 @@
         "webBindingPki.alternativeIssuer"
       ],
       "dynamic": [],
-      "charts": ["<root>=ziti-controller@3.1.1"]
+      "charts": ["<root>=ziti-controller@3.3.1"]
     },
     "https://go.temporal.io/helm-charts|temporal|0.59.0": {
       "literal": {
@@ -39356,9 +39364,9 @@
     {
       "appId": "full-ai-cluster/oz",
       "chart": "ziti-controller",
-      "targetRevision": "3.1.1",
+      "targetRevision": "3.3.1",
       "repoURL": "https://docs.openziti.io/helm-charts/",
-      "chartKey": "https://docs.openziti.io/helm-charts/|ziti-controller|3.1.1"
+      "chartKey": "https://docs.openziti.io/helm-charts/|ziti-controller|3.3.1"
     },
     {
       "appId": "full-ai-cluster/platform",

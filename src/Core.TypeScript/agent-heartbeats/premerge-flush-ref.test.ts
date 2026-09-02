@@ -7,6 +7,26 @@ import { afterEach, describe, expect, it } from "bun:test";
 
 import { parseArgs, premergeFlushRef } from "./premerge-flush-ref";
 
+/**
+ * Every test here builds a REAL git repository and drives it with real `git` subprocesses —
+ * init, commit, fetch, merge, rebase, reset — so it is slow BY NATURE, not by accident.
+ *
+ * `bunfig.toml` states the rule this follows: bun does not implement `[test] timeout`, the
+ * effective per-test cap is the built-in 5000 ms, and a whole-run `--timeout` is deliberately
+ * not set in the gate (a global raise hides slow tests and lets a hung one burn the job cap).
+ * So a test that is slow by nature carries its own timeout, visible at the call site.
+ *
+ * WITHOUT THIS the file passes alone and fails in company, which is the worst shape a test can
+ * have. Measured on Windows 2026-09-02: run on its own the file is green; run in the same
+ * `bun test` invocation as its two siblings, git subprocess contention pushes several tests past
+ * 5000 ms and they fail at ~5.0 s with an EMPTY stderr — a timeout wearing the costume of a git
+ * error (`git fetch origin failed:` with nothing after the colon). Re-running the identical
+ * files with `--timeout 60000` left exactly zero of those failures. Linux CI is fast enough to
+ * hide it, so the flake only ever fires on a contributor's machine, where it reads as `main`
+ * being broken.
+ */
+const GIT_DRIVER_TIMEOUT_MS = 30_000;
+
 const roots: string[] = [];
 
 function run(cwd: string, args: readonly string[]): { readonly status: number; readonly stdout: string; readonly stderr: string } {
@@ -103,7 +123,7 @@ describe("premergeFlushRef", () => {
     // ...and so did main, which is what lets GitHub fast-forward.
     const mainSha = git(work, "rev-parse", "origin/main");
     expect(containsStatus(work, mainSha, merged)).toBe(0);
-  });
+  }, GIT_DRIVER_TIMEOUT_MS);
 
   it("CONTROL: the previous implementation — merging while still on main — loses the lane", () => {
     // Not a test of production code. It reproduces the exact four lines this file replaced,
@@ -121,7 +141,7 @@ describe("premergeFlushRef", () => {
 
     expect(oldMerged).toBe(git(work, "rev-parse", "origin/main"));
     expect(containsStatus(work, laneSha, oldMerged)).toBe(1);
-  });
+  }, GIT_DRIVER_TIMEOUT_MS);
 
   it("applies the repository's union driver instead of conflicting on a co-appended index", () => {
     // docs/github/prs/manifest.jsonl is `merge=union` in .gitattributes. This is the file
@@ -138,7 +158,7 @@ describe("premergeFlushRef", () => {
     const merged = git(work, "show", `${result.value.mergedSha}:docs/github/prs/manifest.jsonl`);
     expect(merged).toContain('{"pr":2}');
     expect(merged).toContain('{"pr":3}');
-  });
+  }, GIT_DRIVER_TIMEOUT_MS);
 
   it("reports a genuine conflict as backpressure and leaves HEAD back on the parked tip", () => {
     const { work } = fixture();
@@ -153,7 +173,7 @@ describe("premergeFlushRef", () => {
     expect(git(work, "rev-parse", "HEAD")).toBe(laneSha);
     // The parked ref is untouched — nothing is lost by a conflicting pre-merge.
     expect(git(work, "rev-parse", "origin/heartbeat/soraya")).toBe(laneSha);
-  });
+  }, GIT_DRIVER_TIMEOUT_MS);
 
   it("refuses to touch anything when the lane tip is already on the base", () => {
     const { work } = fixture();
@@ -168,7 +188,7 @@ describe("premergeFlushRef", () => {
     expect(result).toEqual({ ok: true, value: { kind: "already-in-base", mergedSha: laneSha } });
     // No checkout happened: a fast-forward here is what wrote main over the snapshot ref.
     expect(git(work, "rev-parse", "HEAD")).toBe(before);
-  });
+  }, GIT_DRIVER_TIMEOUT_MS);
 
   it("needs no merge commit when the lane already contains the base", () => {
     const { work } = fixture();
@@ -178,19 +198,19 @@ describe("premergeFlushRef", () => {
 
     const result = premergeFlushRef({ laneSha, cwd: work });
     expect(result).toEqual({ ok: true, value: { kind: "base-already-merged", mergedSha: laneSha } });
-  });
+  }, GIT_DRIVER_TIMEOUT_MS);
 
   it("refuses a lane SHA that is not a 40-hex commit id rather than guessing a revision", () => {
     const { work } = fixture();
     const result = premergeFlushRef({ laneSha: "heartbeat/soraya", cwd: work });
     expect(result.ok).toBe(false);
-  });
+  }, GIT_DRIVER_TIMEOUT_MS);
 
   it("refuses a lane SHA that is well-formed but absent", () => {
     const { work } = fixture();
     const result = premergeFlushRef({ laneSha: "0".repeat(40), cwd: work });
     expect(result.ok).toBe(false);
-  });
+  }, GIT_DRIVER_TIMEOUT_MS);
 });
 
 describe("parseArgs", () => {
@@ -203,5 +223,5 @@ describe("parseArgs", () => {
     expect(parseArgs(["--base", "main"])).toEqual({ ok: false });
     expect(parseArgs(["--lane-sha"])).toEqual({ ok: false });
     expect(parseArgs(["--lane-sha", "a".repeat(40), "--nope", "x"])).toEqual({ ok: false });
-  });
+  }, GIT_DRIVER_TIMEOUT_MS);
 });

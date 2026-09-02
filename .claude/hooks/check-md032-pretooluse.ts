@@ -1,6 +1,6 @@
 #!/usr/bin/env bun
 // check-md032-pretooluse.ts — Claude Code PreToolUse hook wrapper
-// for tools/hygiene/check-md032-blanks-around-lists.ts.
+// for src/Core.TypeScript/hygiene/check-md032-blanks-around-lists.ts.
 //
 // Reads stdin JSON per the Claude Code hooks contract
 // (https://code.claude.com/docs/en/hooks-guide). Filters to
@@ -74,7 +74,7 @@ function main(): number {
   // eslint-disable-next-line sonarjs/no-os-command-from-path -- bun invoked as explicit args array; no shell, no user input.
   const result = spawnSync(
     "bun",
-    [`${projectDir}/tools/hygiene/check-md032-blanks-around-lists.ts`, "--staged"],
+    [`${projectDir}/src/Core.TypeScript/hygiene/check-md032-blanks-around-lists.ts`, "--staged"],
     {
       encoding: "utf8",
       stdio: ["ignore", "pipe", "pipe"],

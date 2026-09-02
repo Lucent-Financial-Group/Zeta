@@ -54,10 +54,33 @@ spec:
     # WHAT A RENDER CANNOT TELL YOU, said out loud: that the ziti 1.7.2 server
     # behaves identically under chart 3.1.1 as under 1.3.4 is NOT established
     # here. Only the manifest surface and the rendered objects were compared.
-    targetRevision: 3.1.1
+    targetRevision: 3.3.1
     helm:
       releaseName: ziti-controller
       valuesObject:
+        # REQUIRED FROM CHART 3.2.0 ONWARD, and the reason this pin sat still.
+        # ziti-controller 3.2.0 took appVersion 1.7.2 -> 2.0.0 (a SERVER major) and
+        # made `cluster.mode` mandatory: the chart refuses to render without it,
+        # naming standalone / cluster-init / cluster-join / cluster-migrate.
+        #
+        # `standalone` is not a lesser choice here, it is the FAITHFUL one: 1.7.2 had
+        # no cluster concept at all, so a single controller is exactly what this
+        # Application has always deployed. Choosing it changes no behaviour; it just
+        # says out loud what was previously implicit.
+        #
+        # MEASURED 2026-09-02 by rendering 3.1.1 and 3.3.1 against THIS valuesObject
+        # at kube-version 1.35.6: byte-identical object sets -- Secret 1, ConfigMap 1,
+        # PersistentVolumeClaim 1 (oz-controller, 3Gi, longhorn), Service 1,
+        # Deployment 1, Bundle 1, Certificate 8, Issuer 5 -- with the image the only
+        # difference: openziti/ziti-controller 1.7.2 -> 2.0.2. So no storage row and
+        # no resource row moves.
+        #
+        # `cluster-init` also renders clean (checked) and is the choice to make if a
+        # clustered Raft control plane is ever wanted; it additionally requires
+        # cluster.trustDomain and cluster.nodeName for the SPIFFE ID. There is a
+        # `cluster-migrate` mode, so this is not a one-way door.
+        cluster:
+          mode: standalone
         ctrlPlane:
           service:
             type: ClusterIP

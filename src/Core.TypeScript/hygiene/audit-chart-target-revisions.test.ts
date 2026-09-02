@@ -59,7 +59,10 @@ describe("THE LIVE TREE -- the check must be able to fail, on the real repo", ()
     const oz = extraction.coordinates.find((c) => c.chart === "ziti-controller");
     expect(oz).toBeDefined();
     expect(oz?.manifest).toBe("full-ai-cluster/k8s/applications/oz/Application.yaml");
-    expect(oz?.targetRevision).toBe("3.1.1");
+    // 3.1.1 -> 3.3.1 on 2026-09-02 (OpenZiti v2, cluster.mode: standalone). The
+    // test's point is that the real oz coordinate RESOLVES against a live index;
+    // which resolvable pin it carries is incidental to that.
+    expect(oz?.targetRevision).toBe("3.3.1");
 
     // With NO acknowledgements at all, the real tree against the real roster is
     // clean. That is a stronger statement than "the shipped register makes it

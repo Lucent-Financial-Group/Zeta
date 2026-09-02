@@ -1,0 +1,14 @@
+{
+  "id": "080d031b27361810a01300089dbdaf01",
+  "at": "2026-09-02T18:32:32.195Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1HP9SNZ087G0R000RFHE13",
+    "type": "bug",
+    "title": "Windows: tests pass alone and fail in company — bun 5s default, a POSIX path assertion, and git core.symlinks",
+    "slug": "windows-tests-pass-alone-and-fail-in-company-bun-5s-default",
+    "priority": "P2",
+    "filename": "081M1HP9SNZ087G0R000RFHE13-windows-tests-pass-alone-and-fail-in-company-bun-5s-default.md"
+  }
+}

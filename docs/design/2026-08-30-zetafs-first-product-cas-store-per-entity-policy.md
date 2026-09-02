@@ -36,7 +36,7 @@ Additive. Do not reopen K1–K18. D9–D12: Aaron 2026-09-02 (ReFS feel, crash D
 | **D1** | Fork is first-class (`editLocal` default; named permanent fork is legal, not a split-brain disaster). | `DagFs.editLocal` in-memory; volume fork is not a snap/ref product yet. |
 | **D2** | GC lifetimes Singleton / Scoped / Transient ≈ keep-all / rolling / none; nested scope = open file. Amortized reclaim ferry (K7). | `ZetaFsReclaim` maps the three. |
 | **D3** | `Regen` is two-phase: keep original until the generator is metered; then original is reclaim-eligible. | Policy case exists; `lifetimeOf Regen` is **Singleton** (conservative). Phase-2 must not silently drop bytes. |
-| **D4** | Volume small-write storms go through `FerryThrottler` (same auto-batch as `GroupCommitDiskDeltaLog`). | `ZetaFsFreeze` is a single-writer file, **not** the ferry. Named gap. |
+| **D4** | Volume small-write storms go through `FerryThrottler` (same auto-batch as `GroupCommitDiskDeltaLog`). | **ZD2 landed:** Journaled/Durable log appends ride `FreezeLog` (DoP=1, MaxBatchSize=64). `createManual` + `pumpLog` packs N freezes into one boat. Buffered still skips the log. Crash-mid-boat stays `toy` until PR12. |
 | **D5** | Content-addressed objects + erasure-coded placement (K1/K2). | Polyfill `single` only. |
 | **D6** | Per-stream placement: a node need not hold every table/stream. | Partitioned tips designed; not a volume feature. |
 | **D7** | Durability class notified to ZetaDB (K6); observer does not throw. | Freeze observer exists. |

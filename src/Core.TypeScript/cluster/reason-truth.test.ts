@@ -144,7 +144,7 @@ describe("the historical cases this checker exists for", () => {
     expect(reasonTruthExitCode(report)).toBe(1);
     const moved = report.refuted.find((finding) => finding.rule === "cited-pin-moved");
     expect(moved).toBeDefined();
-    expect(moved?.detail).toContain("pins ziti-controller at 3.1.1");
+    expect(moved?.detail).toContain("pins ziti-controller at 3.3.1");
   });
 
   test("oz's OTHER clause was true then and is true now, so it is not refuted", () => {

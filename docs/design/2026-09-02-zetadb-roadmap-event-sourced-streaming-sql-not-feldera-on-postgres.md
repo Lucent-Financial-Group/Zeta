@@ -259,7 +259,7 @@ These are additive to K1–K18 / E1–E12 / C1–C10. They do not reopen them.
 | **D1** | Fork is first-class (COW; `editLocal` default). Permanent named fork is a legal outcome, not a disaster. | Relativistic progress; no split-brain. | `DagFs.editLocal` in-memory; volume fork not a snap/ref product yet |
 | **D2** | GC follows lifetimes: Singleton / Scoped / Transient ≈ keep-all / rolling / none; nested scope = open file / ASP.NET request / Rust lifetime. Amortize via reclaim ferry (already K7). | DB objects and files share one collector. | `ZetaFsReclaim` maps those three; `Regen` is Singleton (conservative) |
 | **D3** | `Regen` is two-phase: keep original until the generator is metered; then original is reclaim-eligible and the generator is Singleton. | Event-store "columnar" compression: history as a function. | Policy case exists; phase-2 reclaim **not** implemented (must not silently drop bytes) |
-| **D4** | Small-write storms on the **volume log** go through FerryThrottler (same auto-batch as `GroupCommitDiskDeltaLog`). | DB commit path. | Freeze log is a single-writer file (`ZetaFsFreeze`); **not** the ferry. Named gap. |
+| **D4** | Small-write storms on the **volume log** go through FerryThrottler (same auto-batch as `GroupCommitDiskDeltaLog`). | DB commit path. | **ZD2 landed** (`FreezeLog`, DoP=1). Manual pump packs N Journaled freezes into one boat. |
 | **D5** | Content-addressed objects + erasure-coded placement (K1/K2). | Distribution without a hub. | Polyfill `single` only |
 | **D6** | Per-stream / per-table placement: a node need not hold every stream. | "Replica" is a misnomer. | Designed as partitioned tips; not a volume feature |
 | **D7** | Notify ZetaDB of durability class (already K6). Observer does not throw. | Tables must not read a Journaled name with missing leaves (E2). | Freeze observer exists |
@@ -302,7 +302,7 @@ Order, each with a falsifier:
 10. **No appointed hub; no split-brain class.** Forward progress, CRDT merge, throw-away, or named fork.
 11. **ZetaFS is optional as a product** until it wins the product-existence bench against host FS + group-commit. Fork, CAS, Regen, EC, per-entity policy, **and ReFS-shaped crash/pointer/cache** are the reasons it might win.
 12. **`Regen` must not drop original bytes until the generator is metered.** Today's Singleton mapping is the conservative floor.
-13. **Freeze must eventually use the ferry** (D4). Today's single-writer freeze log is a gap, not a design choice to keep.
+13. **Freeze uses the ferry** (D4 / ZD2). Journaled/Durable log appends are boats. Crash-mid-boat stays `toy` until PR12.
 14. **Stay in this monorepo** until ZetaFS v0.9ish and until ZetaDB has a signed, tested cut. Do not mint product GitHubs as a prerequisite.
 15. **Pointer-not-copy, not bit-copy** (D9). ReFS block cloning is the Beacon, not the implementation.
 16. **One cache authority** (D10). Double-buffering is a bug, not a feature.
@@ -327,11 +327,11 @@ Independently reviewable. Tests green or it does not land. ZetaFS numbered PRs s
 - **Depends on:** ZD0.
 - **Earns:** QuerySurface leaves `toy` only if a non-fixture workload is in this bench (still `unmetered` until production-shaped).
 
-### ZD2 — Wire freeze/small-object log through FerryThrottler (D4)
+### ZD2 — Wire freeze/small-object log through FerryThrottler (D4) — landed
 
-- **Files:** `ZetaFsFreeze.fs` / volume log. DoP=1 DST. Same auto-batch contract as `GroupCommitDiskDeltaLog`.
-- **Depends on:** first-product PR7 (landed). Best after or with PR12 door for crash-mid-boat.
-- **Falsifier:** N concurrent small freezes → boat count ≪ N; Durable still one fsync per boat not per caller.
+- **Files:** `ZetaFsFreeze.fs` `FreezeLog`. DoP=1. Same auto-batch contract as `GroupCommitDiskDeltaLog`.
+- **Falsifier:** `createManual` + 16 Journaled `freezeAsync` + `pumpLog` ⇒ one boat of 16.
+- **Still toy:** crash-mid-boat (PR12). Windows Durable refused.
 
 ### ZD3 — Unique-key Nexmark Q3+ on IncrementalJoin; then SQL-shaped names for Q1–Q3
 

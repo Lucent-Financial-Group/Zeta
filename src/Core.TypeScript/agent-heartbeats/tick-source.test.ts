@@ -306,6 +306,36 @@ describe("local-tick CLI", () => {
     ]);
   });
 
+
+  test("a dry run forwards --dry-run INTO the tick body", () => {
+    // The bug this pins: `runTick`'s dryRun branch only skips the LANE push (STEP 4), but the
+    // body it spawns is folder-direct-to-main and pushes `origin/main` itself long before STEP 4
+    // is reached. `--dry-run` therefore promised "declines to move the remote ref" while a remote
+    // ref moved. Forwarding the flag is what makes the promise true at the only layer that can
+    // keep it — the process that does the pushing.
+    expect(defaultTickCommand("otto", "llama3.2:1b", "docs/observe-events", true)).toEqual([
+      "src/Core.TypeScript/observe/run-loop-real.ts",
+      "--by",
+      "otto",
+      "--event-dir",
+      "docs/observe-events",
+      "--participant",
+      "local-llm:llama3.2:1b",
+      "--dry-run",
+    ]);
+  });
+
+  test("toConfig carries the operator's --dry-run all the way to the body argv", () => {
+    // The defect was HERE, not in defaultTickCommand: toConfig set `dryRun` on the config (which
+    // only gates the lane push) and dropped it when building `tickCommand`. A test that only
+    // exercised defaultTickCommand directly would have stayed green through the whole bug.
+    const dry = toConfig({ agent: "a", repoRoot: ".", model: "m", runtime: "r", remote: "origin", dryRun: true });
+    expect(dry.tickCommand).toContain("--dry-run");
+
+    const wet = toConfig({ agent: "a", repoRoot: ".", model: "m", runtime: "r", remote: "origin", dryRun: false });
+    expect(wet.tickCommand).not.toContain("--dry-run");
+  });
+
   test("credential mode is declared `shared`, matching the credential actually used", () => {
     // The push rides the invoking user's existing git credential. Claiming `dedicated-agent`
     // would assert an isolation this adapter does not have.

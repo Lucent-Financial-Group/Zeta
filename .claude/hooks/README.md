@@ -70,7 +70,7 @@ Settings wiring pattern for a discipline hook (PreToolUse, Edit matcher):
 
 ### `verify-branch-pretooluse.ts`
 
-Wraps `tools/orchestrator-checks/verify-branch.ts` (PR #1585) into the Claude Code PreToolUse JSON contract. Mechanizes the orchestrator branch-verify rule (per 081KQR4HQ0008QG0R002YNV361) -- when `ZETA_EXPECTED_BRANCH` is set in the session env and `git branch --show-current` doesn't match, the hook blocks the `git commit` Bash invocation with `permissionDecision: "deny"` and the script's stderr as the reason.
+Wraps `src/Core.TypeScript/orchestrator-checks/verify-branch.ts` (PR #1585) into the Claude Code PreToolUse JSON contract. Mechanizes the orchestrator branch-verify rule (per 081KQR4HQ0008QG0R002YNV361) -- when `ZETA_EXPECTED_BRANCH` is set in the session env and `git branch --show-current` doesn't match, the hook blocks the `git commit` Bash invocation with `permissionDecision: "deny"` and the script's stderr as the reason.
 
 If `ZETA_EXPECTED_BRANCH` is unset, the hook is a no-op (exits 0, allow). The default-off behavior means wiring this hook does not change any commit flow unless an agent (or maintainer) explicitly sets the env var for a task.
 
@@ -111,7 +111,7 @@ The `matcher` fires on all Bash tool calls, but the script itself reads stdin JS
 
 #### Composes with
 
-- `tools/orchestrator-checks/verify-branch.ts` (PR #1585) -- the underlying check.
+- `src/Core.TypeScript/orchestrator-checks/verify-branch.ts` (PR #1585) -- the underlying check.
 - `memory/feedback_orchestrator_pre_commit_verify_branch_rule_aaron_2026_05_04.md` (PR #1568) -- the manual discipline this mechanizes.
 - `memory/feedback_dst_justifies_ts_quality_over_bash_and_harness_hooks_suffice_no_git_hooks_aaron_2026_05_03.md` -- the harness-hooks-suffice rule.
 - `docs/backlog/P1/081KQR4HQ0008QG0R002YNV361-orchestrator-branch-verify-mechanization-design-aaron-2026-05-04.md` (PR #1571) -- the design.
