@@ -349,7 +349,7 @@ let ``reopen after a torn second freeze keeps the first and drops the tail`` () 
                     Assert.True(ZetaFsFreeze.isReadable reopened first.Content)
                     let recoveredLen = FileSystem.Current.ReadAllBytes(logPath).Length
                     Assert.True(recoveredLen < tornLen)
-                    Assert.True(recoveredLen = intactBytes.Length)
+                    Assert.True((recoveredLen = intactBytes.Length))
                 finally
                     ZetaFsFreeze.dispose reopened
         finally
