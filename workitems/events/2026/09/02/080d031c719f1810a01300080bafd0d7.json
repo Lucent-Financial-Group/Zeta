@@ -1,0 +1,14 @@
+{
+  "id": "080d031c719f1810a01300080bafd0d7",
+  "at": "2026-09-02T19:17:38.915Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1HRWCYT087G0R0027P9DZB",
+    "type": "bug",
+    "title": "Allocation tests measure the shared ArrayPool's mood: one sample makes a pool miss look like a regression",
+    "slug": "allocation-tests-measure-the-shared-arraypool-s-mood-one-sam",
+    "priority": "P2",
+    "filename": "081M1HRWCYT087G0R0027P9DZB-allocation-tests-measure-the-shared-arraypool-s-mood-one-sam.md"
+  }
+}
