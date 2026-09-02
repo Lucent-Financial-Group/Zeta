@@ -289,13 +289,20 @@ type GroupCommitDiskDeltaLog<'K when 'K : comparison>
                 let seq = lock gate (fun () -> nextSeq <- nextSeq + 1L; nextSeq)
                 let payload = framePayload (DeltaLogEntry<'K>(seq, delta, captured))
                 let req = { Seq = seq; Record = frameRecord payload }
+                // Admit-shield (tested): once the seq is minted the boat writes
+                // even if the caller later cancels. The token is still the door
+                // *before* admit (`IsCancellationRequested` above). Passing None
+                // into ProcessAsync is that policy, not a missing DST seam.
                 throttler.ProcessAsync(req, CancellationToken.None)
 
-        member _.ReplayAsync(fromSeqExclusive, _ct) =
-            scanEntries false
-            |> Array.filter (fun e -> e.Seq > fromSeqExclusive)
-            |> Array.sortBy _.Seq
-            |> ValueTask<DeltaLogEntry<'K>[]>
+        member _.ReplayAsync(fromSeqExclusive, ct) =
+            if ct.IsCancellationRequested then
+                ValueTask<DeltaLogEntry<'K>[]>(Task.FromCanceled<DeltaLogEntry<'K>[]> ct)
+            else
+                scanEntries false
+                |> Array.filter (fun e -> e.Seq > fromSeqExclusive)
+                |> Array.sortBy _.Seq
+                |> ValueTask<DeltaLogEntry<'K>[]>
 
         member _.HighWater = lock gate (fun () -> nextSeq)
 
