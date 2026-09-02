@@ -35,7 +35,7 @@ spec:
     # commit as the bootstrap pin for exactly the reason above. The render
     # evidence lives beside that pin rather than being restated here, so there is
     # one copy of it to go stale.
-    targetRevision: 10.6.4
+    targetRevision: 10.7.0
     helm:
       releaseName: argocd
       valuesObject:
