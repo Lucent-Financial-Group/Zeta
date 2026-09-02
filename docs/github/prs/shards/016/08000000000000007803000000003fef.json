@@ -1,0 +1,12 @@
+{
+  "pr_number": 16367,
+  "archive_path": "docs/history/pr-reviews/PR-16367-test-git-the-git-suite-could-pass-at-most-once-per-temp-lifetime-on-windows.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-02T19:49:35.312Z",
+  "schema_version": "v1",
+  "commit_sha": "e6eb8b90ffe46c4c3217790d3bda4ea67ef6054f",
+  "title": "test(git): the Git suite could pass at most ONCE per temp lifetime on Windows",
+  "state": "MERGED",
+  "merged_at": "2026-09-02T19:49:02Z",
+  "head_ref": "git-temp-cleanup-windows"
+}
