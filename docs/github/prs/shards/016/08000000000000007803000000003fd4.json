@@ -1,0 +1,12 @@
+{
+  "pr_number": 16340,
+  "archive_path": "docs/history/pr-reviews/PR-16340-chore-workitems-close-081m0nt5wat-ci-runs-jsonl-fix-verified-on-main.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-02T17:40:49.583Z",
+  "schema_version": "v1",
+  "commit_sha": "2006153b6a15651b6890167015a998d320e4813a",
+  "title": "chore(workitems): close 081M0NT5WAT — ci-runs.jsonl fix verified on main",
+  "state": "MERGED",
+  "merged_at": "2026-09-02T17:40:09Z",
+  "head_ref": "alexa/close-081M0NT5WAT-ci-runs-jsonl-verified-done"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 16344,
+  "archive_path": "docs/history/pr-reviews/PR-16344-docs-anchors-the-dag-of-bayesian-networks-term-is-probabilistic-circuits-and-why.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-02T17:30:24.631Z",
+  "schema_version": "v1",
+  "commit_sha": "2dc8adb203eb05cb4dcb40e1eedf7237cc0725ad",
+  "title": "docs(anchors): the DAG-of-Bayesian-networks term is PROBABILISTIC CIRCUITS — and why the search missed it",
+  "state": "MERGED",
+  "merged_at": "2026-09-02T17:29:43Z",
+  "head_ref": "shadow/dag-anchor-resolved-probabilistic-circuits"
+}
