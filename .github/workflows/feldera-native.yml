@@ -7,8 +7,8 @@
 #
 # Jobs:
 #   native -- factory pin (mise 1.96.1) x ubuntu + macos.
-#   probe  -- 1.97.0 / 1.98.0 / beta x ubuntu + macos. PR + dispatch
-#             only, not push-to-main.
+#   probe  -- 1.97.0 / 1.98.0 / beta x ubuntu + macos. workflow_dispatch
+#             only (ICE already reproduced on GHA 33561885627).
 # Windows is omitted: Feldera 0.342.0 `feldera-storage` uses
 # `std::os::fd` / `libc::pread` (GHA windows-2025, 1.96.1, E0432).
 # Classifier: pass / ice / sigsegv / other. expect=ice must be the
@@ -94,7 +94,7 @@ jobs:
   # factory pin: no ~/.rustup/toolchains/<ver>-* glob (coupling audit).
   probe:
     name: probe dbsp (${{ matrix.os }}, ${{ matrix.pair.rust }})
-    if: github.event_name == 'workflow_dispatch' || github.event_name == 'pull_request'
+    if: github.event_name == 'workflow_dispatch'
     timeout-minutes: 90
     strategy:
       fail-fast: false

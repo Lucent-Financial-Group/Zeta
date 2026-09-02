@@ -94,9 +94,10 @@ in `docs/BENCHMARKS.md` when variance is honest.
 CI: `.github/workflows/feldera-compare.yml` runs this harness on
 ubuntu-24.04, macos-26, and windows-2025 when the bench/Z-set paths
 change. Drift check, not `gate (required)`. Feldera itself is not
-cloned there. Native `dbsp` compile is
-`.github/workflows/feldera-native.yml` (`workflow_dispatch`, plus a
-self-path filter so this PR can run it before the file is on main).
+cloned there. Windows stays on this lane (our F# benches); native
+`dbsp` compile is unix-only (`feldera-native.yml`, ubuntu + macos).
+Compare timeout is 90 min: windows-2025 run 33557970586 hit the
+old 40 min cap during Unique-key BDN after `install.ps1`.
 
 ## Native compile deps (install.sh, all OSes)
 
