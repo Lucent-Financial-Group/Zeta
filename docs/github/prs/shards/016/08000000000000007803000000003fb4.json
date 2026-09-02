@@ -1,0 +1,12 @@
+{
+  "pr_number": 16308,
+  "archive_path": "docs/history/pr-reviews/PR-16308-test-rffh-ground-geometry-and-planarity-oracles.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-02T01:02:01.140Z",
+  "schema_version": "v1",
+  "commit_sha": "857f91b3a5cfa5b67be654244d35acced27ac017",
+  "title": "test(rffh): ground geometry and planarity oracles",
+  "state": "MERGED",
+  "merged_at": "2026-09-02T01:01:26Z",
+  "head_ref": "research/rffh-independent-planarity-oracles"
+}

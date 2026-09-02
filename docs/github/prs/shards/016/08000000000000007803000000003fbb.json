@@ -1,0 +1,12 @@
+{
+  "pr_number": 16315,
+  "archive_path": "docs/history/pr-reviews/PR-16315-docs-memory-unique-confirm-leftover-open-16308-plus-16306-16299-on-current-lumen.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-02T00:19:02.754Z",
+  "schema_version": "v1",
+  "commit_sha": "ec45b8ec3804b30afff05a372ec11c362b95f28a",
+  "title": "docs(memory): unique-confirm leftover OPEN #16308 plus #16306 #16299 on CURRENT-lumen",
+  "state": "MERGED",
+  "merged_at": "2026-09-02T00:18:16Z",
+  "head_ref": "cursor/lumen-unique-confirm-16299-d911"
+}
