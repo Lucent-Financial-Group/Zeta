@@ -66,7 +66,8 @@ Aaron 2026-09-02, compressing the whole rule to one line:
 This supplies the step the rule above leaves implicit, and it turns §11 from an
 ethical preference into a **structural consequence**:
 
-1. A meter reports facts and **never judges** — that is the rule above.
+1. A meter reports **raw value** and **never judges** — that is the rule above,
+   with one word corrected below.
 2. Judgement still has to happen; a substrate that only measures decides nothing.
 3. So judging is the **oracle's** job, definitionally.
 4. And if there were exactly **one** oracle, its judgement would be *mandatory* —
@@ -92,7 +93,7 @@ Aaron, completing it 2026-09-02:
 
 | | how many | why |
 |---|---|---|
-| **meter** | **one SUFFICES — never one PERMITTED** | facts converge, so a second is not needed for *agreement*. It is needed for everything else — see below |
+| **meter** | **one SUFFICES — never one PERMITTED** | one meter is enough to *have a measurement*. It is not enough to have agreement, and assuming it were is the error corrected below |
 | **oracle** | **always many** | values diverge legitimately. One oracle is a mandatory morality |
 
 **SUFFICIENCY IS NOT EXCLUSIVITY, and reading it as such is the failure mode.**
@@ -119,6 +120,54 @@ the **only** path it violates §1. A single sanctioned meter is that failure app
 to measurement itself, and measurement is the worse place for it — a monopoly on
 *what is true here* is upstream of every judgement any oracle could make.
 
+### A meter reports RAW VALUE — and "facts converge" was an unproven import
+
+Aaron, 2026-09-02, on step 1 above:
+
+> **"a meter repor[t]s raw valu[e] like in the DV2.0 sense, assuming other meters
+> would measure the same is importing gauge theories we've not prov[]n for our
+> system yet"**
+
+**Two corrections, and the second one retracts a claim this rule made a paragraph
+earlier.**
+
+**(a) The output is a raw-vault record, not "the fact".** In the DV2.0 sense a
+meter emits *what was asserted, as sourced, unfiltered* — **this meter, at this
+time, measured this** — with no reconciliation and no winner picked. That is the
+raw vault's own sentence: **a single version of the FACTS, never a single version
+of the TRUTH**
+([`dv2-data-split-discipline-activated.md`](dv2-data-split-discipline-activated.md)).
+Saying a meter "reports facts" already sounds like it reports *the* fact, which is
+half an oracle in one word.
+
+**(b) I wrote "facts converge" and that is an ASSUMPTION THIS SYSTEM HAS NOT
+EARNED.** Assuming two independent meters would measure the same thing is assuming
+their readings are related by a known transformation — importing gauge invariance,
+in Aaron's phrase — and no such transformation has been established for Zeta's
+measurements. Under `toy-is-free-metered-must-be-earned` that made the claim a
+`toy` asserted as `metered`, inside the rule about not asserting what you have not
+measured.
+
+**And the repo already said the opposite, which is how the error is visible.**
+[`anti-babel-preserve-reconcilability.md`](anti-babel-preserve-reconcilability.md):
+*reintegration is NOT reconvergence* — two paths around a pole yield genuinely
+different results, and **that difference is information, not error** (monodromy).
+So "two meters disagreeing is a defect in one of them" — which the first draft of
+the table said outright — contradicts a rule already carved here.
+
+**The corrected disposition toward meter disagreement:**
+
+| reading | when |
+|---|---|
+| one meter is **broken** | a transformation between them is known and the readings violate it |
+| the difference is **information** | no such transformation is established — which is where we are today |
+
+So disagreeing meters go in the **raw vault, both held, each with its path
+recorded** — not into a reconciliation that manufactures one number. Picking a
+winner without an established transformation is the single-version-of-the-truth
+collapse, and it would also destroy the falsifiability argument below, since the
+disagreement is exactly the signal.
+
 **And there is a second, harder reason that is not about freedom at all: a lone
 meter cannot be falsified.** If only one meter is permitted, its errors are
 undetectable by construction — nothing exists to disagree with it, so it is
@@ -132,8 +181,9 @@ on correlated redundancy is the standing anchor). So:
 > to be wrong.
 
 The honest summary of the counts, then: **oracles must be plural because values
-differ; meters must be permitted to be plural because meters can be WRONG, and a
-meter nobody may contradict is not a meter — it is an authority.**
+differ; meters must be permitted to be plural because meters can be WRONG *and
+because they may legitimately differ* — and a meter nobody may contradict is not a
+meter, it is an authority.**
 
 **And this hands the meter a QUALITY TEST it can fail** — which the rule above did
 not supply. A meter is *good* when **anyone can inspect it and agree to its rules**.
