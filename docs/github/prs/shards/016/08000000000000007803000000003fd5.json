@@ -1,0 +1,12 @@
+{
+  "pr_number": 16341,
+  "archive_path": "docs/history/pr-reviews/PR-16341-docs-081m1hgd1qa087g0r001grhpfw-zetadb-product-roadmap-and-fs-requirements.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-02T17:19:51.809Z",
+  "schema_version": "v1",
+  "commit_sha": "4a501e9c88b9b0341b2f68d9b2a118b169a98ed3",
+  "title": "docs(081M1HGD1QA087G0R001GRHPFW): ZetaDB product roadmap and FS requirements",
+  "state": "MERGED",
+  "merged_at": "2026-09-02T17:19:01Z",
+  "head_ref": "docs/zetadb-roadmap"
+}
