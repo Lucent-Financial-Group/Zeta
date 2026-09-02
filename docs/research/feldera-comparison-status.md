@@ -107,12 +107,14 @@ Allocated/tick from MemoryDiagnoser is the allocation column.
 
 | Host | Q1 10k | Q1 100k | Q2 10k | Q2 100k | Alloc Q1 100k / Q2 100k |
 |---|---:|---:|---:|---:|---|
-| this M2 Ultra | 143 µs | 718 µs | — | — | 2.34 MB / — |
+| this M2 Ultra | 143 µs | 718 µs | 72.03 µs | 617.55 µs | 2.34 MB / 1.17 MB |
 | GHA ubuntu-24.04 | 217 µs | 1.87 ms | 47 µs | 1.23 ms | 2.34 MB / 1.17 MB |
 | GHA macos-26 | 244 µs | 1.51 ms | 134 µs | 1.57 ms | 2.34 MB / 1.17 MB |
 | GHA windows-2025 | 333 µs | 2.01 ms | 126 µs | 1.41 ms | 2.34 MB / 1.17 MB |
 
-Lookup N=4096, 0 B: ubuntu 24.9 ns, macos 22.8 ns, windows 17.8 ns.
+this-Mac Q2 (2026-09-02, same short N=3 job as GHA): 10k **72.03 µs / 116.53 KB**, 100k **617.55 µs / 1172.31 KB**. Q2 was missing locally because only Q1 unique ran on this box on 2026-09-01; GHA already had all four Unique cells.
+
+Lookup N=4096, 0 B (`ZSetZeroAlloc.Lookup`, not the older 218 ns `ZSetBench` row in `docs/BENCHMARKS.md`): this M2 Ultra **17.3 ns**, GHA ubuntu 24.9 ns, GHA macos-26 22.8 ns, GHA windows-2025 17.8 ns. Size=256 on this Mac is 10.8 ns / 0 B. Count/IsEmpty at N=3 are ZeroMeasurement (too fast); do not quote 0.000 ns as a result.
 
 Feldera's 100k-event streaming Q1 was 69.8–74.2 ms / ~100 MiB RSS. That is a
 pipeline (generate + step loop), not one prebuilt `Send+Step`. Do not

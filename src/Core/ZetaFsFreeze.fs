@@ -12,6 +12,11 @@ open Zeta.Core.FSharp.Blake3
 /// exists and every leaf is present. Crash-mid-write stays `toy` until PR12.
 ///
 /// DoP=1 on this log (one gate). No Task.Run.
+///
+/// D4 gap (ZetaDB 2026-09-02): small-write storms are supposed to go through
+/// `FerryThrottler` the way `GroupCommitDiskDeltaLog` already does on a host
+/// directory. This module is still a single-writer file (`log/freeze`), not
+/// that ferry. Wiring it is ZD2; do not claim auto-batch of freezes today.
 module ZetaFsFreeze =
 
     type DurabilityClass =

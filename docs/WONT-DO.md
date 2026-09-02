@@ -309,6 +309,12 @@ library in F#. Declining them here saves review cycles.
 - **Revisit when:** A research result (e.g. verified query
   optimisation in Lean 4, PLDI/POPL gap #4) or a user workload
   specifically needs SQL-text parsing as a separate package.
+- **Revisit opened 2026-09-02 (Aaron):** the *separate package* is now
+  named **ZetaDB**. SQL text, ANSI subset, planner, and wire adapters
+  live there. The 2026-04-17 *why* still holds for Core — do not move
+  a parser into `Zeta.Core`. Design:
+  `docs/design/2026-09-02-zetadb-roadmap-event-sourced-streaming-sql-not-feldera-on-postgres.md`
+  (`081M1HGD1QA087G0R001GRHPFW`).
 
 ### SQL standards-conformance feature matrix
 
@@ -330,6 +336,9 @@ library in F#. Declining them here saves review cycles.
 - **Why not:** Same reason — no SQL surface to have dialects of.
 - **Revisit when:** SQL front-end project exists and multiple
   dialects become useful.
+- **Revisit opened 2026-09-02:** ZetaDB protocol adapters speak
+  Postgres/MySQL **wire**, not three SQL compilers. Native ANSI is
+  the text we compile. See the ZetaDB roadmap (same workitem).
 
 ### B-tree page parsing, varint decoding, overflow-page reconstruction
 
@@ -499,6 +508,10 @@ ClickHouse / Iceberg / Delta Lake)
 - **Revisit when:** A user workload demonstrably needs columnar
   pruning that Z-set operators can't cover, and a publication
   story exists for it.
+- **Revisit opened 2026-09-02:** ZetaDB wants first-class row
+  *and* column **layouts** over one algebra (Arrow-compatible
+  columns). `ColumnZSet` in Core stays the algebra. A MariaDB
+  ColumnStore *side engine* stays refused. See the ZetaDB roadmap.
 
 ### pluggable SQL dialects, LINQ-as-SQL-front-end compiler, SQL-shaped
 
@@ -512,6 +525,10 @@ parser research
   the `circuit { }` CE + fluent extensions; persistable queries
   use IQbservable (P2). Neither lowers to a SQL logical model.
 - **Revisit when:** A SQL compiler package is on the roadmap.
+- **Revisit opened 2026-09-02:** that package is ZetaDB. LINQ / Rx /
+  `zeta { }` stay first-class and lower to the same plan as SQL.
+  Pluggable *dialects* as multiple compilers stay refused; wire
+  adapters are not dialects.
 
 ### Large extension catalog / DI-based plugin loading / versioned
 

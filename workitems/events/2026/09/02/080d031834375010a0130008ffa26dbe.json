@@ -1,0 +1,14 @@
+{
+  "id": "080d031834375010a0130008ffa26dbe",
+  "at": "2026-09-02T16:49:27.274Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1HGD1QA087G0R001GRHPFW",
+    "type": "task",
+    "title": "ZetaDB product roadmap: event-sourced streaming SQL and ZetaFS requirements",
+    "slug": "zetadb-product-roadmap-event-sourced-streaming-sql-and-zetaf",
+    "priority": "P1",
+    "filename": "081M1HGD1QA087G0R001GRHPFW-zetadb-product-roadmap-event-sourced-streaming-sql-and-zetaf.md"
+  }
+}

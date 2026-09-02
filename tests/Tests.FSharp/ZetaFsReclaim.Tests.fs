@@ -26,6 +26,12 @@ let ``lifetime maps keep-all rolling none onto Singleton Scoped Transient`` () =
     Assert.Equal(ZetaFsReclaim.Lifetime.Singleton, ZetaFsReclaim.lifetimeOf ZetaFsPolicy.HistoryPolicy.KeepAll)
     Assert.Equal(ZetaFsReclaim.Lifetime.Scoped, ZetaFsReclaim.lifetimeOf (ZetaFsPolicy.HistoryPolicy.Rolling(Some 32, None, None)))
     Assert.Equal(ZetaFsReclaim.Lifetime.Transient, ZetaFsReclaim.lifetimeOf ZetaFsPolicy.HistoryPolicy.KeepNone)
+    // D3: Regen stays Singleton until a generator is metered. Phase-2 reclaim
+    // of the original bytes is a later PR; this mapping must not silently
+    // become Transient.
+    Assert.Equal(
+        ZetaFsReclaim.Lifetime.Singleton,
+        ZetaFsReclaim.lifetimeOf (ZetaFsPolicy.HistoryPolicy.Regen("gen", [])))
 
 [<Fact>]
 let ``live ref and jumprope edge are not reclaim-eligible`` () =
