@@ -3,7 +3,8 @@
  *
  * Design: retained amber branch geometry carries proof states; calibrated controls recede around decisive readouts.
  * Teal marks unresolved state and red marks witnessed conflicts. No rounded decorative chrome.
- * Evidence values mirror merged Zeta PRs #15638, #15660, #15669, and #15680.
+ * Evidence values mirror merged Zeta PRs #15638, #15660, #15669, #15680,
+ * #16363, and the bounded Pages correction in #16385.
  */
 import { useMemo, useState } from "react";
 
@@ -80,14 +81,36 @@ const SPECTRUM = [
     emphasis: true,
   },
   {
-    lane: "reference-frame factor heterarchy",
-    carrier: "finite modules + room frame",
-    operators: "18 F# · 15 TS · 18-group F#/TS · Lean laws",
+    lane: "reference-frame unary blackboards",
+    carrier: "two one-variable modules + room frame",
+    operators: "23 F# · 15 TS · 18-group F#/TS · Lean laws",
     defect: "—",
-    readout: "18 F# · 15 TS",
-    verdict: "closed-form fusion + Cl₃ covariance checked",
-    detail: "K4 → 4 · K5 → 5 · K3,3 → 2 / nonplanar · language / learning / cortical fidelity unmeasured",
+    readout: "23 F# · 15 TS",
+    verdict: "unary factors + deterministic compensated fusion",
+    detail: "admission / pose topology only · equality-edge positive control is separate · language / learning / cortical fidelity unmeasured",
     tone: "var(--amber)",
+  },
+  {
+    lane: "content-addressed evidence CRDT",
+    carrier: "canonical multi-value evidence map",
+    operators: "union state · deterministic queries · TS/Python",
+    defect: "—",
+    readout: "ACI STATE",
+    verdict: "finite ACI + redelivery + conflict retention checked",
+    detail: "Gaussian product is non-idempotent · fixed-half CI Δ 0.2628897219 · trace-grid CI Δ 0.2435573450",
+    tone: "var(--amber)",
+    emphasis: true,
+  },
+  {
+    lane: "composable factor benchmark",
+    carrier: "64 Gaussian leaves · ETTh1 n=3,446",
+    operators: "CFB-A F#/TS · CFB-B/C TS/Python",
+    defect: "—",
+    readout: "NOT SUPPORTED",
+    verdict: "depth 63 → 6 · predictive usefulness rule failed",
+    detail: "precision coverage 0.7501 · max |r| 0.8738 · correlated-error query selected α=1 and was vacuous",
+    tone: "var(--fail-red)",
+    emphasis: true,
   },
 ] as const;
 
@@ -271,7 +294,7 @@ export default function EvidenceSeamPanel() {
         </div>
         <div style={{ textAlign: "right", fontSize: "0.55rem", color: "var(--muted-foreground)", lineHeight: 1.55 }}>
           PR #15638 seam · #15660 mutation gate
-          <br />#15669 authority · #15680 defect spectrum
+          <br />#15669 authority · #15680 defect spectrum · #16363 factor/CRDT census
         </div>
       </header>
 
