@@ -355,3 +355,38 @@ let ``reopen after a torn second freeze keeps the first and drops the tail`` () 
         finally
             FileSystem.Reset()
     }
+
+[<Fact>]
+let ``Journaled freeze that acks with a corrupt last write is not readable after reopen`` () : Task =
+    task {
+        ensureHasher ()
+        let mock = InMemoryFileSystem()
+        let logNeedle = Path.Combine("log", "freeze")
+        mock.ArmCorruptLastWrite(logNeedle, 8)
+        FileSystem.Register(mock)
+        let store = "/corrupt-last-freeze"
+        let mutbuf = ZetaFsMutbuf.create store ZetaFsMutbuf.Coherence.Shared
+        let volume = ZetaFsFreeze.createManual store mutbuf None
+
+        try
+            let id = mintId ()
+            let h = ZetaFsMutbuf.openHandle volume.Mutbuf id
+            ZetaFsMutbuf.pwrite volume.Mutbuf h 0L [| 1uy; 2uy; 3uy |] |> ignore
+            let pending = (freezeAsync volume id ZetaFsFreeze.Journaled).AsTask()
+            do! (ZetaFsFreeze.pumpLog volume CancellationToken.None).ConfigureAwait(false)
+            let! first = pending.ConfigureAwait(false)
+
+            match first with
+            | Error e -> Assert.Fail(ZetaFsFreeze.errorName e)
+            | Ok first ->
+                Assert.True(ZetaFsFreeze.isReadable volume first.Content)
+                ZetaFsFreeze.dispose volume
+                let reopened = ZetaFsFreeze.createManual store mutbuf None
+
+                try
+                    Assert.False(ZetaFsFreeze.isReadable reopened first.Content)
+                finally
+                    ZetaFsFreeze.dispose reopened
+        finally
+            FileSystem.Reset()
+    }

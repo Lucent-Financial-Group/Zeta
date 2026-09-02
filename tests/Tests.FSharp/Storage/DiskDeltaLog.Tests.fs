@@ -203,6 +203,33 @@ let ``group-commit crash-mid-write through IFileSystem tears the tail and a fres
     }
 
 [<Fact>]
+let ``group-commit corrupt-last-write through IFileSystem acks then a fresh instance drops the tail`` () : Task =
+    task {
+        let mock = InMemoryFileSystem()
+        FileSystem.Register(mock)
+        let dir = DeterministicTestPath.nextDir "gcdl-corrupt-last"
+        try
+            let codec = CborEntryCodec<int>(keyEnc, keyDec)
+            mock.ArmCorruptLastWrite("delta.segment", 8)
+            let log1 = new GroupCommitDiskDeltaLog<int>(dir, codec)
+            try
+                let dlog1 = log1 :> IDeltaLog<int>
+                let! seq1 = dlog1.AppendAsync(ZSet.ofKeys [ 1 ], empty, ct).AsTask().ConfigureAwait(false)
+                Assert.Equal(1L, seq1)
+            finally
+                (log1 :> IDisposable).Dispose()
+
+            use log2 = new GroupCommitDiskDeltaLog<int>(dir, codec)
+            let dlog2 = log2 :> IDeltaLog<int>
+            Assert.Equal(0L, dlog2.HighWater)
+            let! replayed = dlog2.ReplayAsync(0L, ct).AsTask().ConfigureAwait(false)
+            Assert.Equal(0, replayed.Length)
+        finally
+            FileSystem.Reset()
+            try Directory.Delete(dir, true) with _ -> ()
+    }
+
+[<Fact>]
 let ``group-commit segment log truncates torn trailing record on recovery`` () =
     withDir "gcdl-torn" (fun dir ->
         (use log = new GroupCommitDiskDeltaLog<int>(dir, CborEntryCodec<int>(keyEnc, keyDec))
