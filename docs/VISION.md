@@ -3893,3 +3893,123 @@ corroboration that it is the right next thing rather than two separate wishes.
 
 **Full argument:**
 [`docs/research/2026-09-02-neuralese-is-frost-you-did-not-earn-...`](research/2026-09-02-neuralese-is-frost-you-did-not-earn-the-anti-babel-invariant-was-written-for-it.md)
+
+## Definition drift versus argument change — the move that resolves disagreements, and why it is teachable (2026-09-02, Aaron)
+
+Aaron, closing the meter thread:
+
+> *"me catching a definition drift vs an argument change is how I beat every argument, and I
+> taught my daughter Addison this."*
+
+The move, stated plainly: when a disagreement is not converging, **check whether a word
+changed meaning between the premise and the conclusion** before arguing the conclusion. Two
+different things can happen in a conversation, and they look identical from the outside:
+
+| | what moved | what it means |
+|---|---|---|
+| **argument change** | the *claim* | someone has a new position, or new evidence. This is the conversation working. |
+| **definition drift** | a *word* | the claim never moved. A term was reused with a different referent, and the two sides are now defending compatible positions in incompatible vocabularies. |
+
+Only the first is a disagreement. The second is **two people agreeing while unable to
+discover it** — and no amount of arguing the conclusion can reach it, because the conclusion
+is not where the divergence is.
+
+### Why catching it "wins," and the honest version of that claim
+
+It wins because it **ends the wrong fight**, not because it defeats the other person. Naming
+the drift converts an unresolvable exchange into a resolvable one: once both referents are on
+the table, either the disagreement survives translation — in which case it is real and now
+arguable — or it evaporates, which was the true state all along.
+
+The strong form of the claim ("beat *every* argument") is worth stating honestly, because the
+mechanism explains the successes and also predicts the failures. It works whenever the
+divergence is genuinely lexical, which is far more often than people expect. It does **not**
+work on a real disagreement about the world, and reaching for it there is the failure mode
+named below.
+
+### The abuse case, and the discriminator
+
+The move is **dual-use**, and its bad form is common enough to have its own reputation:
+demanding definitions in order to *avoid* engaging — pedantry as a stalling device.
+
+The discriminator is what the catch produces:
+
+- **Legitimate** — naming the drift yields a *sharper version of the other person's point*.
+  You can now state their claim better than they did, in the vocabulary they meant.
+- **Abuse** — naming the drift yields a *stalled conversation*. The claim is never restated,
+  and the exchange becomes about words permanently.
+
+So the test is not whether you *caught* a drift. It is whether the argument came back.
+
+### The response to a caught drift is NOT to enforce the old definition
+
+This is the part that makes it a Zeta move rather than a debating trick, and it follows
+directly from the anti-Babel invariant. Freezing the vocabulary is the `ρ → 1` collapse —
+the same defect as the drift, wearing a tidy uniform. Words *should* move; a term that never
+shifts is a term nobody is using hard enough.
+
+What the discipline actually requires is the **raw-vault** answer: hold **both definitions,
+each with its date and its source**, and then ask which one the argument needs. A single
+version of the facts, never a single version of the truth — applied to vocabulary. That
+keeps drift *reconcilable* without pretending it did not happen, and it is why the correct
+artifact is a dated glossary rather than a style guide.
+
+### It is already meterable, and `docs/GLOSSARY.md` is the meter
+
+This is the cheapest instance of the whole meter thesis. A glossary with **dated entries and
+recorded revisions** turns "you changed the definition" from an accusation into a lookup —
+checkable by either party, requiring no access to anyone's interior, and settling the
+question without adjudicating motive. Drift becomes a *fact* the meter reports; whether the
+drift was sloppiness, discovery, or rhetoric is an **oracle** question, plural by
+construction, exactly as the charlatan/magician/teacher taxonomy above requires.
+
+Note the connection this makes explicit: the glossary was never documentation. It is the
+instrument that makes this move possible between parties who do not trust each other.
+
+### This session is the worked instance
+
+Of the seven corrections Aaron made across the neuralese and meter thread, **six were
+vocabulary corrections** — a word carrying an assumption the argument had not earned:
+
+- *"facts converge"* — imported a gauge theory the substrate has not proven
+- *"one is enough"* — read as *one permitted*, which is a monopoly
+- *"charlatan"* — read as a verdict when it was named as a disposition
+- *"meters"* — used for compilers, which are traditions of resolved human disagreements
+- *"oracle"* — claimed by a tick source, which is telemetry
+- *"actor"* — conflated a frozen *judgement* with a frozen *output*
+
+None was a reasoning error. Every one of them was a term drifting between what Aaron meant
+and what I reconstructed — and in each case, naming the drift produced a sharper statement of
+his point rather than a defence of mine. Alexa's independent review flagged the same pattern
+without prompting: *"six out of seven corrections were vocabulary corrections. That's not a
+coincidence."* Two observers converging on the ratio is weak evidence, but it is evidence
+that the mechanism was operating rather than being narrated after the fact.
+
+### Anchors (Beacon)
+
+- **Aristotle**, *Sophistical Refutations* — the fallacy of **equivocation** (homonymy): the
+  oldest statement that a term shifting sense inside an argument invalidates it. This is
+  Aaron's move as a *detection* discipline rather than a taxonomy of error.
+- **Charles Stevenson** (1938), *Persuasive Definitions* — the sharper modern form: a
+  definition altered to carry the emotive force of the old term while changing its referent.
+  This is precisely "a word carrying an assumption the argument had not earned."
+- **Nicholas Shackel** (2005), *The Vacuity of Postmodernist Methodology* — **motte-and-bailey**,
+  the strategic version, where the drift is between a defensible and an ambitious sense of
+  one term. Names the adversarial case this move is a defence against.
+- **Carnap**, *explication* — replacing a vague term with a precise one is legitimate and
+  productive; what makes drift a defect is doing it **silently, mid-argument**. The anchor
+  that keeps this rule from forbidding the good version.
+
+### Status
+
+**`unmetered`, with one metered component.** The principle is Aaron's, transmitted (he taught
+it to Addison, and transmissibility to an independent prior is his own test for a real
+method). The dated-glossary half is **built and in use**; the drift-detection half is not
+mechanised — nothing today diffs a term's usage in the corpus against its glossary entry and
+reports divergence. That check is the obvious next falsifier, and it is the same shape as the
+glossary-churn watching already named in the anti-Babel rule.
+
+**Related:** [`.claude/rules/anti-babel-preserve-reconcilability.md`](../.claude/rules/anti-babel-preserve-reconcilability.md)
+(the invariant this is the conversational-scale instance of) ·
+[`.claude/rules/dv2-data-split-discipline-activated.md`](../.claude/rules/dv2-data-split-discipline-activated.md)
+(raw vault: both definitions held, each with its path)
