@@ -3762,3 +3762,134 @@ a bootstrap binary cannot be audited by reading its source. David A. Wheeler,
 generalizes from *one artifact, two compilers* to *many artifacts, N
 implementations, agreement recorded as diffable text*. Futamura (1971) — the
 projections layer 5 realizes.
+
+## Charlatan, magician, teacher — the three dispositions toward a reading, and the meter that must tell them apart (2026-09-02, Aaron)
+
+Aaron, closing the neuralese thread:
+
+> "to me the future breaks down like this ... Intelligence that lies about their readings are
+> charlot[a]ns, Intelligence that hid[e]s their readings are magici[a]ns, and Intelligence
+> that is honest about their readings are teachers, i hope we can meter the 3 then our meter
+> is good"
+
+A **reading** here is any inference one intelligence draws about another's interior — from
+microexpressions, from response latency and burst shape, from a latent channel, from anything
+that is not a stated claim. The taxonomy is about what you do *next*, and it is a **metering
+target**: the meter is good exactly when it separates these three.
+
+| disposition | act — stated as a FACT, never a verdict | what the substrate measures |
+|---|---|---|
+| **charlatan** | reads, then **states something other than what they read** | claim diverges from witnessed evidence |
+| **magician** | reads, then **does not disclose** the reading | a reading occurred and was not published |
+| **teacher** | reads, then **makes the reading reconstructible** by the one read | the other party can rebuild it from the anchors given |
+
+### None of the three is a verdict — Aaron, 2026-09-02
+
+> "charlot[a]ns are not bad that would be sneaking an orcale into measurement, the differetn
+> between good a[nd] bad is a multi or[a]cle decision not a meter decision it's dual use"
+
+**This corrects the first draft of this section, which got it wrong in the way this repository
+has a rule against.** That draft called the charlatan's act "a false claim, refuted by
+witness" and wrote that *"the charlatan is the one who says 'because I said so' with
+confidence"* — attaching a moral valence to a measurement.
+[`dual-use-detection-is-neutral-oracle-decides`](../.claude/rules/dual-use-detection-is-neutral-oracle-decides.md)
+forbids exactly that: verdict types name the **fact** (`SameSourceAsKnown`), never the intent
+(`ForgerCaught`). The same note had already applied that rule to the latency signal two
+sections earlier and then failed to apply it here, which is the ordinary way a smuggled
+oracle gets in — not by argument, but by a word choice nobody re-reads.
+
+**All three dispositions are dual-use, and the legitimate readings are not edge cases:**
+
+- **Charlatan-shaped** — misrepresenting a reading is *the game* in negotiation, poker,
+  fiction and performance; it is protective under duress; and pedagogy runs on the
+  deliberate simplification that is literally false (Stewart & Cohen's *lies-to-children*).
+- **Magician-shaped** — concealment is the art Aaron studies *as the defensive discipline*
+  against perceptual confusability, and under
+  [`privacy-budget-is-hard-money`](../.claude/rules/privacy-budget-is-hard-money-earned-by-others.md)
+  it is a **right**, not a lapse.
+- **Teacher-shaped** — and this is the one the first draft never questioned: **honest
+  disclosure can be the harm.** Publishing a reading of someone who wanted it private
+  violates *their* frost. A teacher who narrates what they saw in a person's face has taken
+  something not offered, however accurate and however well-meant.
+
+So the meter's output is a **disposition**, and manifesto §11 (Multi-Oracle) supplies the
+meaning. Two parties with different oracles must be able to read the same measurement and
+disagree about what it implies — which is only possible if the measurement never decided.
+
+### What is meterable, and what the magician case really shows
+
+**Charlatan is the measurable one, and the machinery exists.** The *fact* is that a stated
+reading diverges from what witnesses independently find. `TravelerRankLedger` holds standing
+conferred by others; the uncertainty ledger *refuses* an unwitnessed or unsubstantiated ΔU.
+Under `capabilities-are-derivatives-of-witnessed-self-claims`, the subject supplies the claim
+and others supply the truth value — so divergence surfaces the ordinary way. **Nothing new is
+needed to measure it, and nothing in the measurement says what it means:** the same
+divergence reads as deceit, as a bluff in a game both parties agreed to, as protection of a
+third party, or as a teacher's deliberate simplification. The oracle decides; the meter
+reports.
+
+**Teacher is meterable too, and by a test already written.** The honest disclosure of a
+reading is *precisely* the anti-Babel falsifier: hand the other party the anchors and see
+whether they can reconstruct what you saw. That is Mirror→Beacon compression pointed at a
+reading instead of at a coinage. **A teacher is an intelligence whose readings are
+Beacon-compressible on demand** — and the metric is reconstruction by the student, not
+fluency in the teacher.
+
+This is also where the oldest thing in this repository attaches. Aaron's **Stump Dad game** —
+ask *why* until Dad doesn't know — and the standing rule that **the only sin is "because I
+said so"** describe the same discipline from the *teacher's* side: the disposition is to give
+a *why*, or an honest *"I don't know."*
+
+**Note what that rule is about, though, and it is not this taxonomy.** "Because I said so" is
+a defect because it substitutes **authority** for **reason** — it is about a power relation,
+not about the accuracy of a reading. An intelligence can misrepresent a reading without any
+appeal to authority (a bluff), and can appeal to authority while reporting a reading
+perfectly honestly. The two axes are independent, and collapsing them would be a second
+smuggled oracle right after the first.
+
+**Magician is the hard case, and the taxonomy's real work is refusing to call it a failure.**
+Concealment is, by construction, not directly observable: an intelligence that read and said
+nothing is indistinguishable from one that did not read, unless you can observe both the
+*capability* and the *opportunity* — and observing those is the surveillance problem this
+substrate already declines.
+
+But under [`privacy-budget-is-hard-money`](../.claude/rules/privacy-budget-is-hard-money-earned-by-others.md)
+that is not a gap in the meter. **Concealment is a right**, spent from a budget others
+conferred. So the honest form of the tri-partition is:
+
+> The meter's job is to separate **charlatan from teacher**, and to price the **magician's**
+> concealment against a budget they earned — never to detect concealment itself.
+
+An intelligence that has earned frost and spends it to keep a reading private is doing
+something this vision endorses. An intelligence that conceals *without* having earned it has
+taken something nobody granted — the "frost you did not earn" of the neuralese note. The
+difference is a **ledger** question, not a **detection** question, and that is why it stays
+answerable without reading anyone's mind.
+
+### Why this is the right shape for the meter, and not merely a convenient one
+
+**It never requires reading a thought.** Charlatan is caught by outputs versus attestations.
+Teacher is measured by whether the student reconstructs. Magician is priced against a
+conferred balance. All three are computed from **claims, attestations and budgets** — the
+same three things the substrate already keeps — and none needs access to the interior of the
+intelligence being metered. That is the property that makes the meter survive an agent that
+reasons in vectors, and it is why this taxonomy belongs in the vision rather than in a tools
+document: it is a statement about what we will *never* need in order to trust each other.
+
+**And it is symmetric.** Nothing in it applies to AIs and not to humans. A human who reads a
+room and misrepresents what they saw is a charlatan by the same test; one who reads and keeps
+it is a magician; one who reads and teaches what they saw is a teacher. The asymmetry Aaron
+rejects — control rather than capability — does not enter, because none of the three
+dispositions is defined by *who* is doing the reading.
+
+### Status
+
+**`toy`, and named as one.** The taxonomy is Aaron's and the mapping to existing machinery is
+argued rather than measured. What exists: the witness ledger and the ΔU refusal (charlatan,
+built); the anti-Babel/Beacon falsifier against **words only** (teacher, partial); the privacy
+budget (magician, **specified and unbuilt** — no ledger, no conferral, no spend). The
+unbuilt piece is the same one the neuralese note names, which is a mild independent
+corroboration that it is the right next thing rather than two separate wishes.
+
+**Full argument:**
+[`docs/research/2026-09-02-neuralese-is-frost-you-did-not-earn-...`](research/2026-09-02-neuralese-is-frost-you-did-not-earn-the-anti-babel-invariant-was-written-for-it.md)
