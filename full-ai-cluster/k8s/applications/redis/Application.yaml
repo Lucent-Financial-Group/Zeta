@@ -68,9 +68,12 @@ spec:
         #
         # 100m / 128Mi per pod matches what bitnami's `resourcesPreset: nano`
         # rendered, so this is the old reservation carried forward rather than a
-        # new number invented at the switch. Two pods render (primary + one
-        # replica), so the Application totals 200m / 256Mi -- DOWN from 300m /
-        # 384Mi, because bitnami rendered three pods for the same role.
+        # new number invented at the switch. Three pods render (primary + two
+        # replicas, see `replica.replicas` below), so the Application totals
+        # 300m / 384Mi -- IDENTICAL to the bitnami pin. A chart migration is not
+        # the place to change a capacity decision: if 3 pods is the wrong number
+        # for redis it should be argued and measured on its own, not slipped in
+        # under a migration diff where the reduction reads as a chart detail.
         resources:
           requests:
             cpu: 100m
@@ -94,10 +97,16 @@ spec:
               passwordKey: password
         replica:
           enabled: true
-          # WAS replicaCount 2 under Bitnami; this chart counts replicas SEPARATELY
-          # from the primary (total pods = replicas + 1), so 1 here is 2 pods, the
-          # same footprint as before rather than a silent halving.
-          replicas: 1
+          # WAS replicaCount 2 under Bitnami, which rendered 3 pods (a separate
+          # `master` StatefulSet plus 2 replicas). This chart has ONE StatefulSet
+          # and counts `replicas` EXCLUDING the primary, so 2 here is 3 pods --
+          # the same footprint. An earlier draft of this file said 1 (=2 pods)
+          # was "the same footprint", which was simply wrong, and it contradicted
+          # the resources comment above that correctly counted bitnami's three.
+          # The ledger encodes this exclusive reading as
+          # `podsFieldExcludesPrimary`, so the off-by-one is checked rather than
+          # remembered.
+          replicas: 2
           # `replicationUser`, NOT `username`. inert-valuesobject-keys refused the
           # first spelling and was right: the chart defaults replicationUser to
           # "default", so a wrong key here renders CLEANLY and silently replicates
@@ -113,9 +122,10 @@ spec:
             storageClass: longhorn
         # NO TOP-LEVEL `persistence:` HERE. An earlier draft had one and
         # inert-valuesobject-keys refused it: this chart has no such key. One
-        # StatefulSet renders with `replicas: 2` -- primary plus replica -- and the
-        # single volumeClaimTemplate above covers both pods, so the top-level block
-        # governed nothing while looking like it governed the primary's disk.
+        # StatefulSet renders with `replicas: 3` -- primary plus two replicas --
+        # and the single volumeClaimTemplate above covers ALL of them, so the
+        # top-level block governed nothing while looking like it governed the
+        # primary's disk.
   destination:
     server: https://kubernetes.default.svc
     namespace: redis

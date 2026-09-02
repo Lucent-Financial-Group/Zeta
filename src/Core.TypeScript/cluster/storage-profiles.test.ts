@@ -16,6 +16,7 @@ import {
   crossCheckClaims,
   loadCatalogue,
   parseFieldPath,
+  podsScalarFor,
   profileBringUpGib,
   profileTotalGib,
   verifyProfileApplied,
@@ -295,7 +296,11 @@ describe("verifyProfileApplied", () => {
     try {
       const catalogue = loadCatalogue("profiles.json", fx.root);
       const findings = verifyProfileApplied(catalogue, "large", fx.root);
-      expect(findings.some((finding) => finding.problem.includes("5 pods"))).toBe(true);
+      // "declares 5 at <field>", not "declares 5 pods": the scalar's meaning
+      // depends on podsFieldExcludesPrimary, so the message reports the raw
+      // value it read and the pod count it wanted, separately.
+      expect(findings.some((f) => /declares 5 at .*statefulset\.replicas/.test(f.problem))).toBe(true);
+      expect(findings.some((f) => f.problem.includes('says 3 pods'))).toBe(true);
     } finally {
       fx.cleanup();
     }
@@ -1306,11 +1311,11 @@ describe("the checked-in resource ladder", () => {
   test("metal is exactly what the manifests render today", () => {
     expect(verifyResourceProfileApplied(catalogue, "metal")).toEqual([]);
     const lane = resourceTotal(catalogue, "metal", devLaneAppliedDirs());
-    expect(lane.cpuMillis).toBe(5131);
-    expect(lane.memoryMib).toBe(12963);
+    expect(lane.cpuMillis).toBe(6240);
+    expect(lane.memoryMib).toBe(14160);
     const all = resourceTotal(catalogue, "metal", applicationDirs());
-    expect(all.cpuMillis).toBe(9156);
-    expect(all.memoryMib).toBe(21298);
+    expect(all.cpuMillis).toBe(10265);
+    expect(all.memoryMib).toBe(22495);
   });
 
   // Aaron 2026-08-20: "make things small enough to fit for disk and ram on the
@@ -1349,8 +1354,8 @@ describe("the checked-in resource ladder", () => {
   test("`dev` FITS AGAIN at 1081m — the rung reaches the raw manifests, and the governed rows are floored", () => {
     const budget = envelopeBudget(catalogue.envelope);
     const dev = resourceTotal(catalogue, "dev", devLaneAppliedDirs());
-    expect(dev.cpuMillis).toBe(1056);
-    expect(dev.memoryMib).toBe(7871);
+    expect(dev.cpuMillis).toBe(1115);
+    expect(dev.memoryMib).toBe(9036);
     expect(dev.cpuMillis).toBeLessThan(budget.cpuMillis);
     expect(dev.memoryMib).toBeLessThan(budget.memoryMib);
 
@@ -1375,8 +1380,8 @@ describe("the checked-in resource ladder", () => {
     // re-sized the hardware this rung exists to describe.
     expect(auditRunnerBudget(catalogue, "metal").length).toBeGreaterThan(0);
     const metal = resourceTotal(catalogue, "metal", devLaneAppliedDirs());
-    expect(metal.cpuMillis).toBe(5131);
-    expect(metal.memoryMib).toBe(12963);
+    expect(metal.cpuMillis).toBe(6240);
+    expect(metal.memoryMib).toBe(14160);
 
     // gmod is still COUNTED -- reachability is not exclusion. It contributes
     // 100m at `dev` where it used to contribute 1000m, and 1000m at `metal`
@@ -1525,6 +1530,114 @@ describe("the checked-in resource ladder", () => {
     }
     for (const app of catalogue.ungoverned) {
       expect(app.evidence.trim().length).toBeGreaterThan(20);
+    }
+  });
+});
+
+// ---------------------------------------------------------------------------
+// podsFieldExcludesPrimary
+//
+// Charts disagree about whether a `replicas` key counts the primary, and the
+// key name never says. Bitnami paired `replica.replicaCount` with a separate
+// `master` block; valkey-io/valkey-helm renders ONE StatefulSet whose values
+// `replicas` is likewise exclusive while its RENDERED .spec.replicas is the
+// true total. So the ledger reads two different numbers off one concept, and
+// the flag is what keeps them from being confused for each other.
+//
+// The load-bearing test is the discrimination pair at the bottom: the same
+// manifest must pass WITH the flag and fail WITHOUT it. A flag that let both
+// readings pass would be a setting that cannot take effect.
+// ---------------------------------------------------------------------------
+
+describe("podsFieldExcludesPrimary", () => {
+  const TWO_POD_YAML = APP_YAML.replace("replicas: 3", "replicas: 2");
+
+  test("defaults to false, so every pre-existing row keeps its meaning", () => {
+    const fx = fixture(writeCatalogue({ "apps/db/Application.yaml": APP_YAML }, catalogueJson()));
+    try {
+      const claim = loadCatalogue("profiles.json", fx.root).claims[0];
+      expect(claim?.podsFieldExcludesPrimary).toBe(false);
+      expect(podsScalarFor({ id: "x", podsFieldExcludesPrimary: false }, 3)).toBe(3);
+    } finally {
+      fx.cleanup();
+    }
+  });
+
+  test("RED: the flag with no podsField is refused -- it could never take effect", () => {
+    const fx = fixture(
+      writeCatalogue(
+        { "apps/db/Application.yaml": APP_YAML },
+        catalogueJson({ podsField: null, podsFieldExcludesPrimary: true, podsSource: "chart-default", podsEvidence: "x" }),
+      ),
+    );
+    try {
+      expect(() => loadCatalogue("profiles.json", fx.root)).toThrow(/can never take effect/);
+    } finally {
+      fx.cleanup();
+    }
+  });
+
+  test("RED: a non-boolean flag is refused", () => {
+    const fx = fixture(
+      writeCatalogue({ "apps/db/Application.yaml": APP_YAML }, catalogueJson({ podsFieldExcludesPrimary: "yes" })),
+    );
+    try {
+      expect(() => loadCatalogue("profiles.json", fx.root)).toThrow(/must be a boolean/);
+    } finally {
+      fx.cleanup();
+    }
+  });
+
+  test("RED: a pod count of 0 has no primary to exclude, so the subtraction is refused", () => {
+    expect(() => podsScalarFor({ id: "tree/x", podsFieldExcludesPrimary: true }, 0)).toThrow(/would be negative/);
+  });
+
+  test("scalar is pods - 1 when the primary is excluded", () => {
+    expect(podsScalarFor({ id: "x", podsFieldExcludesPrimary: true }, 2)).toBe(1);
+    expect(podsScalarFor({ id: "x", podsFieldExcludesPrimary: true }, 1)).toBe(0);
+  });
+
+  // The discrimination pair. One manifest (`replicas: 2`), one profile
+  // (large = 3 pods). Exactly one reading of that manifest is correct, and the
+  // flag is the only thing that decides which.
+  test("GREEN with the flag: replicas 2 MEANS 3 pods", () => {
+    const fx = fixture(
+      writeCatalogue({ "apps/db/Application.yaml": TWO_POD_YAML }, catalogueJson({ podsFieldExcludesPrimary: true })),
+    );
+    try {
+      const catalogue = loadCatalogue("profiles.json", fx.root);
+      expect(verifyProfileApplied(catalogue, "large", fx.root)).toEqual([]);
+    } finally {
+      fx.cleanup();
+    }
+  });
+
+  test("RED without the flag: the same manifest is a one-pod disagreement", () => {
+    const fx = fixture(writeCatalogue({ "apps/db/Application.yaml": TWO_POD_YAML }, catalogueJson()));
+    try {
+      const catalogue = loadCatalogue("profiles.json", fx.root);
+      const findings = verifyProfileApplied(catalogue, "large", fx.root);
+      expect(findings).toHaveLength(1);
+      expect(findings[0]?.problem).toMatch(/declares 2 at .*replicas, but profile "large" says 3 pods/);
+    } finally {
+      fx.cleanup();
+    }
+  });
+
+  test("the applier WRITES pods - 1, so the ladder scales the cluster by the right amount", () => {
+    const fx = fixture(
+      writeCatalogue({ "apps/db/Application.yaml": TWO_POD_YAML }, catalogueJson({ podsFieldExcludesPrimary: true })),
+    );
+    try {
+      const catalogue = loadCatalogue("profiles.json", fx.root);
+      // minimal = 1 pod => the primary alone => the replica scalar goes to 0.
+      const edits = applyProfile(catalogue, "minimal", fx.root, true);
+      expect(edits.some((e) => e.field.endsWith("statefulset.replicas") && e.from === "2" && e.to === "0")).toBe(true);
+      expect(readFileSync(join(fx.root, "apps/db/Application.yaml"), "utf8")).toContain("replicas: 0");
+      // and it round-trips: the written manifest now verifies clean.
+      expect(verifyProfileApplied(catalogue, "minimal", fx.root)).toEqual([]);
+    } finally {
+      fx.cleanup();
     }
   });
 });

@@ -438,6 +438,20 @@ export interface StorageExtractionOptions {
   readonly clusterDefault?: string | null;
   /** Blueprints some Deployable instantiates; see `instantiatedBlueprints`. */
   readonly instantiated?: ReadonlySet<string> | undefined;
+  /**
+   * Coordinates -- `"<path> <storageClassField>"` -- whose governing replica
+   * scalar EXCLUDES the primary, so the true pod count is that scalar plus one.
+   *
+   * The extractor reads YAML and cannot know a chart's convention: valkey's
+   * `replica.replicas: 2` is three pods, bitnami's `replica.replicaCount: 2`
+   * was two (it had a separate `master` StatefulSet). Nothing in the manifest
+   * distinguishes them, so the fact comes from the catalogue row that already
+   * declares it (`podsFieldExcludesPrimary`) and `auditAll` passes it down.
+   * Without it this module silently multiplies a per-pod claim by one pod too
+   * few, which is an UNDERCOUNT of real disk -- the same class of error as
+   * dropping a blank storageClassName.
+   */
+  readonly excludesPrimaryAt?: ReadonlySet<string> | undefined;
 }
 
 export function extractStorageClaims(
@@ -463,7 +477,8 @@ export function extractStorageClaims(
       const scope = field.slice(0, Math.max(0, field.lastIndexOf(".")));
       const size = sizeNear(doc, scope);
       if (size === null) continue;
-      const replicas = replicasGoverning(doc, field);
+      const governing = replicasGoverning(doc, field);
+      const replicas = options.excludesPrimaryAt?.has(`${manifest.path} ${field}`) === true ? governing + 1 : governing;
       out.push({
         app: manifest.app,
         path: manifest.path,
@@ -1770,6 +1785,23 @@ export function findLedgerFigureDrift(
   ];
 }
 
+/**
+ * The `excludesPrimaryAt` coordinate set for a catalogue.
+ *
+ * Exported because BUILDING IT IN TWO PLACES IS THE BUG IT PREVENTS: the audit
+ * and the figure-drift check each extract the tree, and while only one of them
+ * knew about the offset they computed two different longhorn totals (895 vs
+ * 903) off the same YAML -- a disagreement with no defect under it, which is
+ * the most expensive kind to chase.
+ */
+export function excludesPrimaryCoordinates(catalogue: ProfileCatalogue | null): ReadonlySet<string> {
+  return new Set(
+    (catalogue?.claims ?? [])
+      .filter((claim) => claim.podsFieldExcludesPrimary)
+      .map((claim) => `${claim.path} ${claim.storageClassField}`),
+  );
+}
+
 export function auditAll(
   ledger: Ledger,
   roots: readonly string[] = DEFAULT_ROOTS,
@@ -1785,6 +1817,7 @@ export function auditAll(
   const extraction: StorageExtractionOptions = {
     clusterDefault: clusterDefaultStorageClass(repoRoot),
     instantiated: instantiatedBlueprints(manifests),
+    excludesPrimaryAt: excludesPrimaryCoordinates(catalogue),
   };
   const storageClaims = manifests.flatMap((manifest) => extractStorageClaims(manifest, extraction));
   // The profile total REPLACES the derived one for budgeted classes when a

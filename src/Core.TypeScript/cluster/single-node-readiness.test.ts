@@ -1329,6 +1329,9 @@ describe("findLedgerFigureDrift — the ledger's PROSE numbers are checked too",
       readiness.extractStorageClaims(entry, {
         clusterDefault: "zeta-local-path",
         instantiated: readiness.instantiatedBlueprints(manifests),
+        // Built by the SAME helper auditAll uses. Constructed by hand here, this
+        // check read redis one pod short and reported a drift that was its own.
+        excludesPrimaryAt: readiness.excludesPrimaryCoordinates(loadCatalogue()),
       }),
     );
     expect(
@@ -1672,7 +1675,7 @@ describe("findRungCoverage — the budgeted rung vs the committed rung", () => {
     // where ArgoCD's include glob has always reached, so `game-hosting/gmod` is in
     // the lane cohort now. The mutation below moves the CURRENT number by one
     // millicore, which is the property under test and is independent of its value.
-    const moved = live.acknowledgedRungBudgetGap.map((key) => key.replace("5131m", "5132m"));
+    const moved = live.acknowledgedRungBudgetGap.map((key) => key.replace("6240m", "6241m"));
     expect(moved).not.toEqual(live.acknowledgedRungBudgetGap);
     expect(findRungCoverage({ ...live, acknowledgedRungBudgetGap: moved }, resources).length).toBe(1);
   });
