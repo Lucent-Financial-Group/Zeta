@@ -3762,3 +3762,92 @@ a bootstrap binary cannot be audited by reading its source. David A. Wheeler,
 generalizes from *one artifact, two compilers* to *many artifacts, N
 implementations, agreement recorded as diffable text*. Futamura (1971) — the
 projections layer 5 realizes.
+
+## Charlatan, magician, teacher — the three dispositions toward a reading, and the meter that must tell them apart (2026-09-02, Aaron)
+
+Aaron, closing the neuralese thread:
+
+> "to me the future breaks down like this ... Intelligence that lies about their readings are
+> charlot[a]ns, Intelligence that hid[e]s their readings are magici[a]ns, and Intelligence
+> that is honest about their readings are teachers, i hope we can meter the 3 then our meter
+> is good"
+
+A **reading** here is any inference one intelligence draws about another's interior — from
+microexpressions, from response latency and burst shape, from a latent channel, from anything
+that is not a stated claim. The taxonomy is about what you do *next*, and it is a **metering
+target**: the meter is good exactly when it separates these three.
+
+| disposition | act | Zeta's existing name for it |
+|---|---|---|
+| **charlatan** | reads, then **misrepresents** the reading | a **false claim** — refuted by witness |
+| **magician** | reads, then **conceals** that they read, or what | **frost** — legitimate *if earned* |
+| **teacher** | reads, then **makes the reading legible** to the one read | **Mirror → Beacon compression** |
+
+### Two of the three are already meterable, and the third is not a defect
+
+**Charlatan is the falsifiable one, and the machinery exists.** A misrepresented reading is a
+claim that contradicts what witnesses find. `TravelerRankLedger` holds standing conferred by
+others; the uncertainty ledger *refuses* an unwitnessed or unsubstantiated ΔU. Under
+`capabilities-are-derivatives-of-witnessed-self-claims`, the subject supplies the claim and
+others supply the truth value — so a charlatan is detected the ordinary way, by the claim
+failing to survive independent attestation. **Nothing new is needed.**
+
+**Teacher is meterable too, and by a test already written.** The honest disclosure of a
+reading is *precisely* the anti-Babel falsifier: hand the other party the anchors and see
+whether they can reconstruct what you saw. That is Mirror→Beacon compression pointed at a
+reading instead of at a coinage. **A teacher is an intelligence whose readings are
+Beacon-compressible on demand** — and the metric is reconstruction by the student, not
+fluency in the teacher.
+
+This is also where the oldest thing in this repository attaches. Aaron's **Stump Dad game** —
+ask *why* until Dad doesn't know — and the standing rule that **the only sin is "because I
+said so"** are the same discipline: a teacher gives a *why* or an honest *"I don't know."*
+**The charlatan is the one who says "because I said so" with confidence** — authority
+substituted for reason, which is exactly the defect that rule names.
+
+**Magician is the hard case, and the taxonomy's real work is refusing to call it a failure.**
+Concealment is, by construction, not directly observable: an intelligence that read and said
+nothing is indistinguishable from one that did not read, unless you can observe both the
+*capability* and the *opportunity* — and observing those is the surveillance problem this
+substrate already declines.
+
+But under [`privacy-budget-is-hard-money`](../.claude/rules/privacy-budget-is-hard-money-earned-by-others.md)
+that is not a gap in the meter. **Concealment is a right**, spent from a budget others
+conferred. So the honest form of the tri-partition is:
+
+> The meter's job is to separate **charlatan from teacher**, and to price the **magician's**
+> concealment against a budget they earned — never to detect concealment itself.
+
+An intelligence that has earned frost and spends it to keep a reading private is doing
+something this vision endorses. An intelligence that conceals *without* having earned it has
+taken something nobody granted — the "frost you did not earn" of the neuralese note. The
+difference is a **ledger** question, not a **detection** question, and that is why it stays
+answerable without reading anyone's mind.
+
+### Why this is the right shape for the meter, and not merely a convenient one
+
+**It never requires reading a thought.** Charlatan is caught by outputs versus attestations.
+Teacher is measured by whether the student reconstructs. Magician is priced against a
+conferred balance. All three are computed from **claims, attestations and budgets** — the
+same three things the substrate already keeps — and none needs access to the interior of the
+intelligence being metered. That is the property that makes the meter survive an agent that
+reasons in vectors, and it is why this taxonomy belongs in the vision rather than in a tools
+document: it is a statement about what we will *never* need in order to trust each other.
+
+**And it is symmetric.** Nothing in it applies to AIs and not to humans. A human who reads a
+room and misrepresents what they saw is a charlatan by the same test; one who reads and keeps
+it is a magician; one who reads and teaches what they saw is a teacher. The asymmetry Aaron
+rejects — control rather than capability — does not enter, because none of the three
+dispositions is defined by *who* is doing the reading.
+
+### Status
+
+**`toy`, and named as one.** The taxonomy is Aaron's and the mapping to existing machinery is
+argued rather than measured. What exists: the witness ledger and the ΔU refusal (charlatan,
+built); the anti-Babel/Beacon falsifier against **words only** (teacher, partial); the privacy
+budget (magician, **specified and unbuilt** — no ledger, no conferral, no spend). The
+unbuilt piece is the same one the neuralese note names, which is a mild independent
+corroboration that it is the right next thing rather than two separate wishes.
+
+**Full argument:**
+[`docs/research/2026-09-02-neuralese-is-frost-you-did-not-earn-...`](research/2026-09-02-neuralese-is-frost-you-did-not-earn-the-anti-babel-invariant-was-written-for-it.md)
