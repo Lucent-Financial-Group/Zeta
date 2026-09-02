@@ -22,6 +22,7 @@ import {
   auditDormantChartSources,
   exitCode,
   findDormantSources,
+  findDeprecatedCharts,
   findUnverifiable,
   findingKey,
   formatReport,
@@ -227,5 +228,55 @@ describe("the live tree", () => {
     const result = auditDormantChartSources();
     expect(result.acknowledged.length).toBeGreaterThan(0);
     expect(result.acknowledged.map((f) => f.key)).toContain(findingKey("headscale", "headscale"));
+  });
+});
+
+describe("findDeprecatedCharts", () => {
+  const coord = (over: Record<string, unknown> = {}) => ({
+    repoURL: "https://charts.example.test",
+    chart: "chart",
+    targetRevision: "2.0.0",
+    manifest: "full-ai-cluster/k8s/applications/app/Application.yaml",
+    appName: "app",
+    ...over,
+  });
+  const roster = (versions: string[], deprecatedVersions?: string[]) => ({
+    entries: { "https://charts.example.test|chart": { versions, ...(deprecatedVersions ? { deprecatedVersions } : {}) } },
+  });
+  const key = (r: string, c: string) => `${r}|${c}`;
+  const newest = (v: readonly string[]) => [...v].sort().at(-1) ?? "";
+
+  test("GREEN: nothing deprecated is not a finding", () => {
+    expect(findDeprecatedCharts([coord()], roster(["1.0.0", "2.0.0"], []), key, newest)).toEqual([]);
+  });
+
+  test("RED: OUR PIN is deprecated — we are running a retired chart", () => {
+    const f = findDeprecatedCharts([coord()], roster(["1.0.0", "2.0.0"], ["2.0.0"]), key, newest);
+    expect(f).toHaveLength(1);
+    expect(f[0]?.why).toContain("the pinned version 2.0.0 is marked retired");
+  });
+
+  test("RED: the NEWEST is deprecated — the line is finished even if our pin is not", () => {
+    const f = findDeprecatedCharts([coord({ targetRevision: "1.0.0" })], roster(["1.0.0", "2.0.0"], ["2.0.0"]), key, newest);
+    expect(f).toHaveLength(1);
+    expect(f[0]?.why).toContain("this chart line is finished");
+  });
+
+  // THE ANTI-CRY-WOLF CONTROL. grafana-community mirrors tempo 1.24.4
+  // (deprecated) beside its own healthy 2.3.0. Firing on that would light up
+  // every repository that ever retired anything, and a signal whose value is
+  // rarity does not survive that.
+  test("an OLD deprecated version under a healthy newest is NOT a finding", () => {
+    expect(findDeprecatedCharts([coord()], roster(["1.24.4", "2.0.0"], ["1.24.4"]), key, newest)).toEqual([]);
+  });
+
+  // "not deprecated" and "this source cannot tell us" must not collapse.
+  test("an OCI coordinate, which cannot report deprecation, is not reported CLEAN", () => {
+    // deprecatedVersions absent entirely -> undefined -> skipped, never asserted healthy.
+    expect(findDeprecatedCharts([coord()], roster(["1.0.0", "2.0.0"]), key, newest)).toEqual([]);
+  });
+
+  test("a coordinate with no roster entry at all is skipped, not guessed", () => {
+    expect(findDeprecatedCharts([coord({ chart: "absent" })], roster(["1.0.0"], ["1.0.0"]), key, newest)).toEqual([]);
   });
 });

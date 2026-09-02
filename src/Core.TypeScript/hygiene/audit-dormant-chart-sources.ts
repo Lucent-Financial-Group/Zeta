@@ -89,9 +89,9 @@
 import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
 
-import { extractTree, readRoster } from "./audit-chart-target-revisions.ts";
+import { extractTree, readRoster, rosterKey } from "./audit-chart-target-revisions.ts";
 import { readChartDates } from "./chart-publish-dates.ts";
-import { computeRows, type CurrencyRow } from "./report-chart-currency.ts";
+import { computeRows, newestStableVersion, type CurrencyRow } from "./report-chart-currency.ts";
 
 const REPO_ROOT = resolve(import.meta.dir, "../../..");
 export const BASELINE_RELATIVE_PATH = "src/Core.TypeScript/hygiene/dormant-chart-sources.baseline.json";
@@ -158,6 +158,66 @@ export function findDormantSources(rows: readonly CurrencyRow[]): readonly Dorma
       pinned: row.pinned,
       silentDays: row.silentDays,
       why,
+    });
+  }
+  return out.sort((a, b) => (a.key < b.key ? -1 : a.key > b.key ? 1 : 0));
+}
+
+/**
+ * Coordinates whose chart the PUBLISHER has formally retired.
+ *
+ * A third axis, orthogonal to both of the others, and the one that is hardest to
+ * see by eye: a chart can be at its newest version, published recently, and
+ * RETIRED. `grafana/tempo` 1.24.4 was all three at once, and the currency report
+ * called it "BEHIND ... quiet 214d" -- which reads as "a bit stale" rather than
+ * "the publisher has stopped maintaining this line."
+ *
+ * TWO CASES, and both matter:
+ *
+ *   PIN     our pinned version carries `deprecated: true` -- we are running a
+ *           chart its publisher has retired.
+ *   NEWEST  the newest published version carries it -- the LINE is retired, so
+ *           no future version is coming, whatever our distance from it is.
+ *
+ * Deliberately NOT a finding: an old deprecated version sitting in an index
+ * whose newest is healthy. `grafana-community` mirrors tempo 1.24.4 (deprecated)
+ * alongside its own 2.3.0 (not), and flagging that would fire on every repo that
+ * ever retired anything -- cry-wolf on a signal whose whole value is rarity.
+ */
+export function findDeprecatedCharts(
+  coordinates: readonly {
+    readonly repoURL: string;
+    readonly chart: string;
+    readonly targetRevision: string;
+    readonly manifest: string;
+    readonly appName: string;
+  }[],
+  roster: { readonly entries: Readonly<Record<string, { readonly versions: readonly string[]; readonly deprecatedVersions?: readonly string[] }>> },
+  rosterKeyOf: (repoURL: string, chart: string) => string,
+  newestOf: (versions: readonly string[]) => string,
+): readonly DormantFinding[] {
+  const out: DormantFinding[] = [];
+  for (const c of coordinates) {
+    const entry = roster.entries[rosterKeyOf(c.repoURL, c.chart)];
+    const deprecated = entry?.deprecatedVersions;
+    // Undefined means the SOURCE cannot say (OCI carries no metadata), which is
+    // not the same as "not deprecated" and must not be reported as clean.
+    if (entry === undefined || deprecated === undefined || deprecated.length === 0) continue;
+    const newest = newestOf(entry.versions);
+    const pinRetired = deprecated.includes(c.targetRevision);
+    const lineRetired = newest !== "" && deprecated.includes(newest);
+    if (!pinRetired && !lineRetired) continue;
+    out.push({
+      key: findingKey(c.appName, c.chart),
+      app: c.appName,
+      chart: c.chart,
+      repoURL: c.repoURL,
+      manifest: c.manifest,
+      pinned: c.targetRevision,
+      silentDays: null,
+      why: pinRetired
+        ? `deprecated: the pinned version ${c.targetRevision} is marked retired by its publisher`
+        : `deprecated: the newest version ${newest} is marked retired, so this chart line is finished`,
     });
   }
   return out.sort((a, b) => (a.key < b.key ? -1 : a.key > b.key ? 1 : 0));
@@ -274,8 +334,17 @@ export function formatReport(a: Adjudicated): string {
 }
 
 export function auditDormantChartSources(repoRoot = REPO_ROOT): Adjudicated {
-  const rows = computeRows(extractTree(repoRoot), readRoster(), readChartDates());
-  return adjudicate(findDormantSources(rows), readBaseline(BASELINE_RELATIVE_PATH, repoRoot), findUnverifiable(rows));
+  const extraction = extractTree(repoRoot);
+  const roster = readRoster();
+  const rows = computeRows(extraction, roster, readChartDates());
+  // Two independent reasons a source is not maintaining what we run: it stopped
+  // PUBLISHING, or it formally RETIRED the chart. Neither implies the other --
+  // tempo's publisher was active and had retired the line -- so both are
+  // collected and de-duplicated by key rather than one standing in for the other.
+  const findings = [...findDormantSources(rows), ...findDeprecatedCharts(extraction.coordinates, roster, rosterKey, newestStableVersion)];
+  const seen = new Set<string>();
+  const unique = findings.filter((f) => (seen.has(f.key) ? false : (seen.add(f.key), true)));
+  return adjudicate(unique, readBaseline(BASELINE_RELATIVE_PATH, repoRoot), findUnverifiable(rows));
 }
 
 function main(): void {
