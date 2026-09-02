@@ -1,5 +1,6 @@
 import { describe, expect, test } from "bun:test";
 import {
+  canonicalConflictGraph,
   countScheduleConflicts,
   findMinimumColorSchedule,
   tryFourClassSchedule,
@@ -7,6 +8,7 @@ import {
   type ConflictGraph,
   type PlanarEmbeddingWitness,
 } from "./four-color-schedule";
+import { stringCompare } from "../collation/collation";
 
 const k4: ConflictGraph = {
   vertices: ["a", "b", "c", "d"],
@@ -241,5 +243,116 @@ describe("the planarity criteria are each falsified by something", () => {
       ),
     };
     expect(findMinimumColorSchedule(crown).colorCount).toBe(2);
+  });
+});
+
+describe("each planar-embedding condition has an isolated finite witness", () => {
+  const triangle: ConflictGraph = {
+    vertices: ["a", "b", "c"],
+    edges: [["a", "b"], ["b", "c"], ["c", "a"]],
+  };
+
+  test("short faces, unknown vertices, and non-edge traversals are separately named", () => {
+    const shortFace = verifyPlanarEmbedding(triangle, { faces: [["a", "b"]] });
+    expect(shortFace.violations).toContain("face 0 has fewer than three boundary vertices");
+
+    const unknown = verifyPlanarEmbedding(triangle, { faces: [["a", "b", "outside"]] });
+    expect(unknown.violations).toContain("face 0 names an unknown vertex");
+
+    const cycle4: ConflictGraph = {
+      vertices: ["a", "b", "c", "d"],
+      edges: [["a", "b"], ["b", "c"], ["c", "d"], ["d", "a"]],
+    };
+    const nonEdge = verifyPlanarEmbedding(cycle4, { faces: [["a", "c", "b", "d"]] });
+    expect(nonEdge.violations.some((violation) => violation.includes("traverses non-edge"))).toBe(true);
+  });
+
+  test("directional and total facial traversal checks fail on distinct witnesses", () => {
+    const sameOrientation = verifyPlanarEmbedding(triangle, {
+      faces: [["a", "b", "c"], ["a", "b", "c"]],
+    });
+    expect(sameOrientation.violations.some((violation) => violation.includes("one facial traversal"))).toBe(true);
+    expect(sameOrientation.violations).not.toContain("facial boundary traversal count is not twice the edge count");
+
+    const extraFace = verifyPlanarEmbedding(triangle, {
+      faces: [["a", "b", "c"], ["a", "c", "b"], ["a", "b", "c"]],
+    });
+    expect(extraFace.violations).toContain("facial boundary traversal count is not twice the edge count");
+  });
+
+  test("Euler characteristic is checked even when every directed edge appears exactly once", () => {
+    const oneFaceDoubleBoundary = verifyPlanarEmbedding(triangle, {
+      faces: [["a", "b", "c", "a", "c", "b"]],
+    });
+    expect(oneFaceDoubleBoundary.eulerCharacteristic).toBe(1);
+    expect(oneFaceDoubleBoundary.violations).toEqual(["connected spherical embedding requires V-E+F=2; got 1"]);
+  });
+
+  test("connectedness is checked independently of edge traversal counts and Euler characteristic", () => {
+    const disconnectedTriangles: ConflictGraph = {
+      vertices: ["a", "b", "c", "d", "e", "f"],
+      edges: [
+        ["a", "b"], ["b", "c"], ["c", "a"],
+        ["d", "e"], ["e", "f"], ["f", "d"],
+      ],
+    };
+    const result = verifyPlanarEmbedding(disconnectedTriangles, {
+      faces: [
+        ["a", "b", "c", "a", "c", "b"],
+        ["d", "e", "f", "d", "f", "e"],
+      ],
+    });
+    expect(result.eulerCharacteristic).toBe(2);
+    expect(result.violations).toEqual(["embedding witness currently requires a connected graph"]);
+  });
+});
+
+describe("exact coloring and canonical collation remain independently observable", () => {
+  test("an interleaved crown graph is bipartite although deterministic first-fit greedy uses three colors", () => {
+    const left = ["1a", "2a", "3a"];
+    const right = ["1b", "2b", "3b"];
+    const crown: ConflictGraph = {
+      vertices: left.flatMap((vertex, index) => [vertex, right[index] as string]),
+      edges: left.flatMap((leftVertex, leftIndex) =>
+        right.flatMap((rightVertex, rightIndex) => leftIndex === rightIndex ? [] : [[leftVertex, rightVertex] as const]),
+      ),
+    };
+    const adjacency = new Map(crown.vertices.map((vertex) => [vertex, new Set<string>()]));
+    for (const [leftVertex, rightVertex] of crown.edges) {
+      adjacency.get(leftVertex)?.add(rightVertex);
+      adjacency.get(rightVertex)?.add(leftVertex);
+    }
+    const order = [...crown.vertices].sort((leftVertex, rightVertex) => {
+      const degreeDifference = (adjacency.get(rightVertex)?.size ?? 0) - (adjacency.get(leftVertex)?.size ?? 0);
+      return degreeDifference || stringCompare(leftVertex, rightVertex);
+    });
+    const greedyAssignment = new Map<string, number>();
+    for (const vertex of order) {
+      const forbidden = new Set(
+        [...(adjacency.get(vertex) ?? [])]
+          .map((neighbour) => greedyAssignment.get(neighbour))
+          .filter((color): color is number => color !== undefined),
+      );
+      let color = 0;
+      while (forbidden.has(color)) color += 1;
+      greedyAssignment.set(vertex, color);
+    }
+    const greedyColorCount = Math.max(...greedyAssignment.values()) + 1;
+
+    expect(findMinimumColorSchedule(crown).colorCount).toBe(2);
+    expect(greedyColorCount).toBe(3);
+  });
+
+  test("canonical vertices and edge endpoints use Unicode code-point order above the BMP", () => {
+    const bmp = "\uE000";
+    const supplementary = "\u{10000}";
+    const canonical = canonicalConflictGraph({
+      vertices: [supplementary, bmp],
+      edges: [[supplementary, bmp]],
+    });
+    expect(canonical.vertices).toEqual([bmp, supplementary]);
+    expect(canonical.edges).toEqual([[bmp, supplementary]]);
+    expect(findMinimumColorSchedule({ vertices: [supplementary, bmp], edges: [[supplementary, bmp]] }).assignment)
+      .toEqual({ [bmp]: 0, [supplementary]: 1 });
   });
 });

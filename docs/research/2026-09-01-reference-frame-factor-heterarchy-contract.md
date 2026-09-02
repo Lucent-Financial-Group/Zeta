@@ -110,16 +110,17 @@ The production F# implementation uses `FactorGraph<LogCategorical>` and `FactorG
 | Gaussian fusion | Two equal variance-2 observations produce variance 1 |
 | Contradiction | Equal `cup`/`bowl` evidence remains `0.5/0.5` and unresolved |
 | Arrival order | All six permutations of three messages produce equal posteriors |
-| Covariance rotation | A 45-degree `e12` rotor maps `diag(4,1,9)` to `XX=YY=2.5`, `|XY|=1.5`, `ZZ=9` |
-| Passive coordinate change | Transform-then-fuse and fuse-then-transform agree within `10⁻¹⁰` |
+| Covariance rotation | A 45-degree `e12` rotor maps `diag(4,1,9)` to `XX=YY=2.5`, signed `XY=+1.5`, `ZZ=9` |
+| Independent frame alignment | Literal `Q(x,y,z)=(-y,x,z)` at `π/2` gives `Q(2,3,4)+(4,-2,1)=(1,0,5)`; two variance-2 observations fuse to variance 1 |
+| Passive coordinate change | Direct information-form and trigonometric expected values agree for all mean/covariance components within `10⁻¹⁰`; the expected side calls no production transform |
 | Parent-child topology | Explicit child-to-parent paths compose as the semidirect pose action |
 | Lateral topology | Removing the declared lateral edge blocks cross-module evidence |
 | Cycles | Parent cycles are refused rather than labeled exact loopy inference |
 | Convention mismatch | A message with a different generator order is refused at the room boundary |
 
-The F# suite now contains eighteen named scenarios. The strict TypeScript four-color scheduler has five additional scenarios: an explicit spherical `K4` embedding validates and needs four classes; `K5` needs five and has no four-class schedule; malformed face and coloring certificates fail; and canonical output is invariant under input ordering.
+The F# suite contains eighteen named scenarios. The strict TypeScript scheduler now has fifteen scenarios: `K4`, `K5`, and `K3,3` keep colorability distinct from planarity; every declared facial-certificate condition has an isolated failing witness; an interleaved crown graph needs two colors exactly but three under deterministic first-fit; and canonical output follows Unicode code-point order above the BMP.
 
-A standalone cross-language dispatcher executes the production F# layer and compares fourteen aggregate witness groups against independent TypeScript calculations, including analytic Bayesian odds, precision, covariance, naturality, topology errors, and independently solved `K4`/`K5` chromatic numbers. It reports zero failures. An external ten-mutant review found eight direct kills, one control in the adjacent Adinkra module, and one apparent tie gap. The tie report was resolved by the pre-existing strict-majority invariant: a resolution threshold must lie in `(0.5,1]`, so two equal maxima cannot resolve. RFFH-18 now freezes that boundary directly.
+A standalone cross-language dispatcher executes the production F# layer and compares eighteen aggregate witness groups against TypeScript calculations. The F# oracle now computes frame-alignment and coordinate-naturality expectations from literal formulas rather than production transforms and independently solves `K4`, `K5`, `K3,3`, and crown chromatic numbers. It reports zero failures. An external ten-mutant review found eight direct kills, one control in the adjacent Adinkra module, and one apparent tie gap. The tie report was resolved by the pre-existing strict-majority invariant: a resolution threshold must lie in `(0.5,1]`, so two equal maxima cannot resolve. RFFH-18 freezes that boundary directly.
 
 Two machine-checked Lean modules establish the algebra used below the implementation. `RigidPoseSemidirect` proves action identity, inverse, composition, and associativity for a group acting on an additive coordinate space. `ConflictFreeColorSchedule` proves that every class of a proper coloring is conflict-free and specializes this implication to supplied `Fin 4` witnesses. Both are in the default Lean build and protected by crash-aware axiom audits denying `sorryAx` and unresolved declaration names. The Lean theorem does not prove planarity or the Four Color Theorem; finite graph certificates remain explicit inputs.
 

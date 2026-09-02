@@ -70,6 +70,18 @@ let covariancePose = pose (Cl3.rotor (Math.PI / 4.0) Cl3.e12) (vector 0.0 0.0 0.
 let covarianceInput = gaussian (vector 1.0 0.0 0.0) (diagonal 4.0 1.0 9.0)
 let covarianceOutput = R.tryTransformGaussian covariancePose covarianceInput |> unwrap |> R.Gaussian3.covariance
 
+// Independent frame-alignment witness: Q(x,y,z)=(-y,x,z) at +π/2 in e12, so
+// Q(2,3,4)+(4,-2,1)=(1,0,5). The expected values below do not use production transforms.
+let alignmentTarget = vector 1.0 0.0 5.0
+let alignmentPose = pose (Cl3.rotor (Math.PI / 2.0) Cl3.e12) (vector 4.0 -2.0 1.0)
+let alignmentA = message "align-a" "a" Map.empty (gaussian alignmentTarget (diagonal 2.0 2.0 2.0)) R.identityPose
+let alignmentB = message "align-b" "b" Map.empty (gaussian (vector 2.0 3.0 4.0) (diagonal 2.0 2.0 2.0)) alignmentPose
+let _, alignment1 = add alignmentA (empty ())
+let _, alignment2 = add alignmentB alignment1
+let alignmentPosterior = R.positionPosterior alignment2 |> Option.get
+let alignmentMean = R.Gaussian3.mean alignmentPosterior
+let alignmentCovariance = R.Gaussian3.covariance alignmentPosterior
+
 let coordinateChange = pose (Cl3.rotor 0.63 Cl3.e12) (vector 4.0 -2.0 1.0)
 let firstPosition = gaussian (vector 1.0 0.0 2.0) (diagonal 4.0 1.0 2.0)
 let secondPosition = gaussian (vector -1.0 3.0 0.5) (diagonal 1.0 3.0 5.0)
@@ -83,18 +95,42 @@ let secondChanged = { secondOriginal with SenderToRoom = coordinateChange }
 let _, changed1 = add firstChanged (empty ())
 let _, changed2 = add secondChanged changed1
 let changedPosterior = R.positionPosterior changed2 |> Option.get
-let expectedChanged = R.tryTransformGaussian coordinateChange originalPosterior |> unwrap
 let changedMean = R.Gaussian3.mean changedPosterior
-let expectedMean = R.Gaussian3.mean expectedChanged
 let changedCovariance = R.Gaussian3.covariance changedPosterior
-let expectedCovariance = R.Gaussian3.covariance expectedChanged
+let fusedX, fusedY, fusedZ = -3.0 / 5.0, 3.0 / 4.0, 11.0 / 7.0
+let varianceX, varianceY, varianceZ = 4.0 / 5.0, 3.0 / 4.0, 10.0 / 7.0
+let originalMean = R.Gaussian3.mean originalPosterior
+let originalCovariance = R.Gaussian3.covariance originalPosterior
+let originalFusionMaxError =
+    [ abs (originalMean.X - fusedX)
+      abs (originalMean.Y - fusedY)
+      abs (originalMean.Z - fusedZ)
+      abs (originalCovariance.XX - varianceX)
+      abs originalCovariance.XY
+      abs originalCovariance.XZ
+      abs (originalCovariance.YY - varianceY)
+      abs originalCovariance.YZ
+      abs (originalCovariance.ZZ - varianceZ) ]
+    |> List.max
+let cosine, sine = cos 0.63, sin 0.63
+let expectedMean =
+    vector
+        (cosine * fusedX - sine * fusedY + 4.0)
+        (sine * fusedX + cosine * fusedY - 2.0)
+        (fusedZ + 1.0)
+let expectedXX = cosine * cosine * varianceX + sine * sine * varianceY
+let expectedYY = sine * sine * varianceX + cosine * cosine * varianceY
+let expectedXY = cosine * sine * (varianceX - varianceY)
 let naturalityMaxError =
     [ abs (changedMean.X - expectedMean.X)
       abs (changedMean.Y - expectedMean.Y)
       abs (changedMean.Z - expectedMean.Z)
-      abs (changedCovariance.XX - expectedCovariance.XX)
-      abs (changedCovariance.XY - expectedCovariance.XY)
-      abs (changedCovariance.YY - expectedCovariance.YY) ]
+      abs (changedCovariance.XX - expectedXX)
+      abs (changedCovariance.XY - expectedXY)
+      abs changedCovariance.XZ
+      abs (changedCovariance.YY - expectedYY)
+      abs changedCovariance.YZ
+      abs (changedCovariance.ZZ - varianceZ) ]
     |> List.max
 
 let duplicateReceipt, duplicateState = add agreeingA agreeingOnce
@@ -160,6 +196,13 @@ let k4Vertices = [ "a"; "b"; "c"; "d" ]
 let k4Edges = [ for i in 0 .. 3 do for j in i + 1 .. 3 do yield k4Vertices.[i], k4Vertices.[j] ]
 let k5Vertices = [ "a"; "b"; "c"; "d"; "e" ]
 let k5Edges = [ for i in 0 .. 4 do for j in i + 1 .. 4 do yield k5Vertices.[i], k5Vertices.[j] ]
+let k33Vertices = [ "a1"; "a2"; "a3"; "b1"; "b2"; "b3" ]
+let k33Edges = [ for left in [ "a1"; "a2"; "a3" ] do for right in [ "b1"; "b2"; "b3" ] do yield left, right ]
+let crownVertices = [ "1a"; "1b"; "2a"; "2b"; "3a"; "3b" ]
+let crownEdges =
+    [ for leftIndex, left in [ "1a"; "2a"; "3a" ] |> List.indexed do
+          for rightIndex, right in [ "1b"; "2b"; "3b" ] |> List.indexed do
+              if leftIndex <> rightIndex then yield left, right ]
 
 let agreeingPositionCovariance = R.positionPosterior agreeingTwice |> Option.get |> R.Gaussian3.covariance
 let report =
@@ -170,6 +213,9 @@ let report =
        permutationCount = permutationPosteriors.Length
        permutationInvariant = permutationPosteriors |> Array.forall ((=) permutationPosteriors.[0])
        rotatedCovariance = [| covarianceOutput.XX; covarianceOutput.XY; covarianceOutput.YY; covarianceOutput.ZZ |]
+       alignmentMean = [| alignmentMean.X; alignmentMean.Y; alignmentMean.Z |]
+       alignmentVarianceX = alignmentCovariance.XX
+       originalFusionMaxError = originalFusionMaxError
        naturalityMaxError = naturalityMaxError
        duplicateDisposition = string duplicateReceipt.Disposition
        duplicateAcceptedCount = R.acceptedEvidenceCount duplicateState
@@ -180,6 +226,8 @@ let report =
        cycleCode = cycleCode
        generatorMismatchCode = generatorMismatchCode
        k4ChromaticNumber = chromaticNumber k4Vertices k4Edges
-       k5ChromaticNumber = chromaticNumber k5Vertices k5Edges |}
+       k5ChromaticNumber = chromaticNumber k5Vertices k5Edges
+       k33ChromaticNumber = chromaticNumber k33Vertices k33Edges
+       crownChromaticNumber = chromaticNumber crownVertices crownEdges |}
 
 printfn "%s" (JsonSerializer.Serialize report)

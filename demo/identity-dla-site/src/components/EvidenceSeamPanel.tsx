@@ -82,11 +82,11 @@ const SPECTRUM = [
   {
     lane: "reference-frame factor heterarchy",
     carrier: "finite modules + room frame",
-    operators: "18 F# · 5 TS · F#/TS oracle · Lean laws",
+    operators: "18 F# · 15 TS · 18-group F#/TS · Lean laws",
     defect: "—",
-    readout: "18 controls",
-    verdict: "Bayesian fusion + Cl₃ covariance checked",
-    detail: "K4 → 4 · K5 → 5 · language / learning / cortical fidelity unmeasured",
+    readout: "18 F# · 15 TS",
+    verdict: "closed-form fusion + Cl₃ covariance checked",
+    detail: "K4 → 4 · K5 → 5 · K3,3 → 2 / nonplanar · language / learning / cortical fidelity unmeasured",
     tone: "var(--amber)",
   },
 ] as const;
