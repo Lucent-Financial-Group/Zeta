@@ -24,7 +24,7 @@ spec:
   source:
     repoURL: ghcr.io/vectorize-io/charts
     chart: hindsight
-    targetRevision: 0.3.0 # bump to latest as vectorize-io publishes
+    targetRevision: 0.9.2 # latest published by vectorize-io
     helm:
       releaseName: hindsight
       valuesObject:
@@ -33,6 +33,24 @@ spec:
         # backing store once the cluster's CockroachDB Application
         # is healthy.
         postgresql:
+          # OFF `ankane/pgvector:latest`, WHICH IS ARCHIVED. Docker Hub reports that
+          # repository `status_description: archived` with no push since 2023-10-11, and
+          # the chart still defaults to it at 0.9.2 -- so the version bump does NOT fix
+          # this and saying otherwise would be the "behind is not unmaintained" error in
+          # reverse. `pgvector/pgvector` is the maintained successor (pushed 2026-08-13).
+          #
+          # ON THE POSTGRES MAJOR, stated because it is the thing a reader would
+          # reasonably assume was checked and it was not: `ankane/pgvector`s tags are
+          # pgvector EXTENSION versions (v0.5.1, ...), not PG majors, so the base major
+          # of the image being replaced is UNDETERMINED here. That is tolerable only
+          # because there is no data to migrate -- hindsight has never reached Healthy
+          # in any lane (it is in APPLIED_BUT_UNASSERTED_REASONS) and its dev PVC is
+          # recreated per cluster. IF hindsight is ever promoted with persisted data,
+          # changing this tag becomes a dump/restore and must be treated as one.
+          image:
+            repository: pgvector/pgvector
+            tag: pg17-trixie
+            pullPolicy: IfNotPresent
           enabled: true
           # NOT `primary.persistence.*` -- that is the BITNAMI postgresql
           # subchart layout, and this chart is not that chart. hindsight 0.3.0

@@ -1,0 +1,12 @@
+{
+  "pr_number": 16361,
+  "archive_path": "docs/history/pr-reviews/PR-16361-test-windows-21-failures-that-are-the-environment-not-a-defect.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-02T18:57:13.924Z",
+  "schema_version": "v1",
+  "commit_sha": "19a3d20559d45e36f69ee66c8f08ef88a8aa6481",
+  "title": "test(windows): 21 failures that are the environment, not a defect",
+  "state": "MERGED",
+  "merged_at": "2026-09-02T18:56:34Z",
+  "head_ref": "windows-test-robustness"
+}

@@ -41,7 +41,7 @@ export function applyDevStorageClassAliases(ports: DevClusterPorts): void {
  * Mint the dev/CI credentials that Applications expect to find ALREADY PRESENT,
  * BEFORE the app-of-apps root syncs.
  *
- * TWO Secrets today, both listed in `DEV_BOOTSTRAP_SECRETS`, both for the same
+ * THREE Secrets today, all listed in `DEV_BOOTSTRAP_SECRETS`, all for the same
  * structural reason: the Application deliberately does not let its chart invent
  * an admin password (so none is committed here), and nothing in the dev lane
  * ever supplied one.
@@ -59,6 +59,9 @@ export function applyDevStorageClassAliases(ports: DevClusterPorts): void {
  *      (ArgoCD's repo-server has no cluster for the chart's `lookup` to hit),
  *      which under `selfHeal: true` rotates the credential forever. See
  *      `DEV_ZITI_ADMIN_SECRET` for the measurement.
+ *   `redis/redis-auth` -- Valkey `auth.usersExistingSecret`. Without it the
+ *      included proof reported `redis is OutOfSync/Progressing` (run
+ *      33657954802). Same Progressing-not-Degraded class as the two above.
  *
  * ORDER IS LOAD-BEARING for the same reason the StorageClass aliases are:
  * kubelet resolves `envFrom`/`env.valueFrom` at container-create time and a
