@@ -21,7 +21,7 @@
 # run 33598890480 (90 min cap) never measured: BDN printed
 # "Building 1 exe(s) in Parallel: Start" at 06:33Z and was still
 # there at 07:57Z job timeout. Out-of-process toolchain hangs on
-# that runner; Windows BDN uses --job InProcess. Ubuntu/mac stay
+# that runner; Windows BDN uses --inProcess. Ubuntu/mac stay
 # out-of-process. Unique-key step timeout 25 min so a hang fails
 # fast.
 
@@ -136,7 +136,7 @@ jobs:
           --filter '*Unique*'
           --iterationCount 3
           --warmupCount 1
-          ${{ startsWith(matrix.os, 'windows-') && '--job InProcess' || '' }}
+          ${{ startsWith(matrix.os, 'windows-') && '--inProcess' || '' }}
 
       - name: Claimed zero-alloc Z-set paths (short BDN)
         timeout-minutes: 25
@@ -145,7 +145,7 @@ jobs:
           --filter '*ZSetZeroAlloc*'
           --iterationCount 3
           --warmupCount 1
-          ${{ startsWith(matrix.os, 'windows-') && '--job InProcess' || '' }}
+          ${{ startsWith(matrix.os, 'windows-') && '--inProcess' || '' }}
 
       - name: Upload BDN CSV
         if: ${{ !cancelled() }}

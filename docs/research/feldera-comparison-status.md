@@ -152,7 +152,7 @@ and warns (does not scoop) when it is not. Unix cmake is apt/brew.
 
 A longer unique-key BDN pasted into `docs/BENCHMARKS.md`. windows-2025
 run 33598890480 hit the 90 min job cap still on BDN "Building 1 exe"
-(never measured). Windows BDN is `--job InProcess` after that.
+(never measured). Windows BDN is `--inProcess` after that.
 
 ## rustc bisect (Feldera `dbsp` `--release`, debuginfo=0)
 
