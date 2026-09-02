@@ -78,18 +78,23 @@ table yet.
 ### Factory pin 1.99.0-beta.3 (2026-09-02, same M2 Ultra)
 
 Same command, rustc **1.99.0-beta.3** (`cbae9b4ca`), `CARGO_PROFILE_RELEASE_DEBUG=0`
-`RUSTFLAGS=-C debuginfo=0`. CSV: `/tmp/feldera-nexmark-1.99.0-beta.3.csv`
-(not committed). GHA repeats this on ubuntu-24.04 / macos-26 in
-`feldera-native.yml` `native` (path-filtered).
+`RUSTFLAGS=-C debuginfo=0`. One run per host, not a compiler-speed claim.
 
-| Query | Events | Cores | Elapsed | Throughput | Peak RSS |
-|---|---:|---:|---:|---:|---:|
-| Q1 | 100,000 | 1 | 74.161 ms | 1.348 M/s | 99.33 MiB |
-| Q2 | 100,000 | 1 | 49.138 ms | 2.035 M/s | 105.08 MiB |
+| Host | Query | Events | Cores | Elapsed | Throughput | Peak RSS |
+|---|---|---:|---:|---:|---:|---:|
+| this M2 Ultra | Q1 | 100,000 | 1 | 74.161 ms | 1.348 M/s | 99.33 MiB |
+| this M2 Ultra | Q2 | 100,000 | 1 | 49.138 ms | 2.035 M/s | 105.08 MiB |
+| GHA ubuntu-24.04 (Xeon 8573C 2c/4t) | Q1 | 100,000 | 1 | 95.193 ms | 1.050 M/s | 152.5 MiB |
+| GHA ubuntu-24.04 | Q2 | 100,000 | 1 | 62.324 ms | 1.605 M/s | 152.5 MiB |
+| GHA macos-26 (M1 virtual, 3 cores) | Q1 | 100,000 | 1 | 127.798 ms | 0.782 M/s | 104.3 MiB |
+| GHA macos-26 | Q2 | 100,000 | 1 | 81.798 ms | 1.223 M/s | 110.1 MiB |
 
-Same-box vs the 1.93.1 binary: Q1 ~6 % slower, Q2 ~11 % faster, RSS
-in the same band. One run, not a compiler-speed claim. GHA runner
-CSVs will sit next to these once `feldera-native.yml` lands.
+GHA CSVs: run [33603177913](https://github.com/Lucent-Financial-Group/Zeta/actions/runs/33603177913)
+(`feldera-nexmark-ubuntu-24.04`, `feldera-nexmark-macos-26`). Same-box vs
+the 1.93.1 binary: Q1 ~6 % slower, Q2 ~11 % faster, RSS in the same
+band. Runners are slower than this Mac (ubuntu Q1 ~1.3×, GHA mac
+virtual ~1.7×) — hardware, not a different algorithm. Windows omitted
+(unix fd).
 
 Zeta price-keyed Q1 100k at 54.89 µs (PR #16275) is **not** this
 denominator: `|Z-set| ≤ 10_000` after `ofArray` coalesces prices.
@@ -98,14 +103,18 @@ Allocated/tick from MemoryDiagnoser is the allocation column.
 
 ## Unique-key Zeta tick (indicative, N=3, high variance)
 
-Same box, 2026-09-01, `dotnet run -c Release --project bench/Feldera.Bench -- --filter '*Q1Unique*' --iterationCount 3 --warmupCount 1`. Not the pasted-Release table (that needs a longer BDN). `|Z-set| = EventCount`.
+`dotnet run -c Release --project bench/Feldera.Bench -- --filter '*Unique*' --iterationCount 3 --warmupCount 1`. `|Z-set| = EventCount`. Means move; **Allocated** is the cross-OS column. GHA run [33606669849](https://github.com/Lucent-Financial-Group/Zeta/actions/runs/33606669849) (PR #16334). this-Mac Q1 is the 2026-09-01 box run. Windows uses `--inProcess` (out-of-process BDN hung 84 min on "Building 1 exe", run 33598890480).
 
-| Method | EventCount | Mean | Allocated |
-|---|---:|---:|---:|
-| Q1_Unique | 10,000 | 143 µs | 234 KB |
-| Q1_Unique | 100,000 | 718 µs | 2.34 MB |
+| Host | Q1 10k | Q1 100k | Q2 10k | Q2 100k | Alloc Q1 100k / Q2 100k |
+|---|---:|---:|---:|---:|---|
+| this M2 Ultra | 143 µs | 718 µs | — | — | 2.34 MB / — |
+| GHA ubuntu-24.04 | 217 µs | 1.87 ms | 47 µs | 1.23 ms | 2.34 MB / 1.17 MB |
+| GHA macos-26 | 244 µs | 1.51 ms | 134 µs | 1.57 ms | 2.34 MB / 1.17 MB |
+| GHA windows-2025 | 333 µs | 2.01 ms | 126 µs | 1.41 ms | 2.34 MB / 1.17 MB |
 
-Feldera's 100k-event streaming Q1 was 69.8 ms / ~105 MiB RSS. That is a
+Lookup N=4096, 0 B: ubuntu 24.9 ns, macos 22.8 ns, windows 17.8 ns.
+
+Feldera's 100k-event streaming Q1 was 69.8–74.2 ms / ~100 MiB RSS. That is a
 pipeline (generate + step loop), not one prebuilt `Send+Step`. Do not
 divide 100k / 718 µs and call it Feldera events/s. The unique-key tick
 is the Big-O shape (linear in N, ~23 B/key alloc); a longer BDN belongs
@@ -117,8 +126,6 @@ change. Drift check, not `gate (required)`. Feldera itself is not
 cloned there. Windows stays on this lane (our F# benches). Native
 `dbsp` compile + Nexmark Q1/Q2 100k/1-core is unix-only
 (`feldera-native.yml`, ubuntu + macos).
-Compare timeout is 90 min: windows-2025 run 33557970586 hit the
-old 40 min cap during Unique-key BDN after `install.ps1`.
 
 ## Native compile deps (install.sh, all OSes)
 
@@ -145,9 +152,8 @@ and warns (does not scoop) when it is not. Unix cmake is apt/brew.
 
 ## Not yet a result
 
-A longer unique-key BDN pasted into `docs/BENCHMARKS.md`. GHA
-ubuntu/macos factory-pin Nexmark CSVs (this PR's `feldera-native.yml`
-`native` job) are not in the table above yet.
+A longer unique-key BDN pasted into `docs/BENCHMARKS.md` (GHA N=3 Error
+bars are not publication-grade).
 
 ## rustc bisect (Feldera `dbsp` `--release`, debuginfo=0)
 

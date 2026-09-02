@@ -81,14 +81,14 @@ coalesce + one-thread `Step`. These rows are **our tick**, not a
 head-to-head win.
 
 Unique-key path is now in the harness: `NexmarkQ1Unique` / `NexmarkQ2Unique`
-(`BidRow { Idx; Price }`, `|Z-set| = N`). A short N=3 run on this box
-(2026-09-01) was Q1 10k ~143 µs / 234 KB and Q1 100k ~718 µs / 2.34 MB —
-indicative, high variance, not this table. Same-box Feldera native Q1/Q2
-100k 1-core under factory rustc **1.99.0-beta.3**: Q1 74.2 ms / 1.35 M/s /
-99 MiB RSS, Q2 49.1 ms / 2.04 M/s / 105 MiB RSS. The 1.93.1 MSRV binary
-was Q1 69.8 ms / 1.43 M/s. GHA ubuntu-24.04 / macos-26 repeat the
-factory-pin harness in `.github/workflows/feldera-native.yml`
-(path-filtered; not every PR). Detail: `docs/research/feldera-comparison-status.md`.
+(`BidRow { Idx; Price }`, `|Z-set| = N`). Short N=3 unique-key Q1 100k
+(run 33606669849): this Mac 718 µs, GHA ubuntu 1.87 ms, macos 1.51 ms,
+windows-2025 2.01 ms (`--inProcess`); alloc **2.34 MB on every OS**.
+Indicative, high variance, not this table. Factory-pin Feldera native
+Q1/Q2 100k 1-core (rustc **1.99.0-beta.3**, run 33603177913): this M2
+Ultra Q1 74.2 ms / 1.35 M/s, GHA ubuntu-24.04 95.2 ms / 1.05 M/s, GHA
+macos-26 127.8 ms / 0.78 M/s. The 1.93.1 MSRV binary on this Mac was
+Q1 69.8 ms / 1.43 M/s. Detail: `docs/research/feldera-comparison-status.md`.
 CI drift check of **our** unique-key + zero-alloc benches on
 ubuntu-24.04 / macos-26 / windows-2025: `.github/workflows/feldera-compare.yml`.
 
