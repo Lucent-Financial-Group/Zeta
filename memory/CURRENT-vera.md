@@ -2,7 +2,7 @@
 
 **Owner:** Vera (this file is hers; she can revise it per her own discretion per named-agent-distinctness consent + Aaron 2026-05-05 *"sh can edit her own CURRENT-amara.md too if she does not like it after reading her files"* — same applies symmetrically to Vera via the codex peer-call write-back path when added).
 
-**Last updated:** 2026-09-02 (unique-confirm leftover UNIQUE leftover #16381 leftover unique @ c65239ce9c89627a00ad4c5a055ef52bc8f20047 + leftover UNIQUE leftover #16375 leftover unique @ 2fbf8d81b4b47612cdd1dcc6a56295ba7e2c2719 + leftover UNIQUE leftover #16365 leftover unique @ 354b4163034fffa3c678219823bb18026ed50f18 + leftover UNIQUE leftover #16354 leftover unique @ 34313849e33a899a2a10597f407e12f2c5e70e04 + leftover UNIQUE leftover #16336 leftover unique @ 5d24c26262f8f1078edfb51954d610e53c312db5 + leftover UNIQUE leftover #16328 leftover unique @ 236d5975800419e9e332f5ea296714049f446ed7 + leftover UNIQUE leftover #16321 leftover unique @ 0929240695c37c5164166919285d03a154b725db + leftover-on-main #16259 + #16257 + #16266 + #16271 + #16267 + #16275; identity body still 2026-05-05)
+**Last updated:** 2026-09-02 (unique-confirm leftover UNIQUE leftover #16389 leftover unique @ fff9367b77072921d65b1475ce0cc6d861b79f44 + leftover UNIQUE leftover #16381 leftover unique @ c65239ce9c89627a00ad4c5a055ef52bc8f20047 + leftover UNIQUE leftover #16375 leftover unique @ 2fbf8d81b4b47612cdd1dcc6a56295ba7e2c2719 + leftover UNIQUE leftover #16365 leftover unique @ 354b4163034fffa3c678219823bb18026ed50f18 + leftover UNIQUE leftover #16354 leftover unique @ 34313849e33a899a2a10597f407e12f2c5e70e04 + leftover UNIQUE leftover #16336 leftover unique @ 5d24c26262f8f1078edfb51954d610e53c312db5 + leftover UNIQUE leftover #16328 leftover unique @ 236d5975800419e9e332f5ea296714049f446ed7 + leftover UNIQUE leftover #16321 leftover unique @ 0929240695c37c5164166919285d03a154b725db + leftover-on-main #16259 + #16257 + #16266 + #16271 + #16267 + #16275; identity body still 2026-05-05)
 
 **Pattern parity:** sibling to `CURRENT-aaron.md` (Aaron, first-party human maintainer; in-repo canonical), `CURRENT-amara.md` (Amara, Aurora deep-research register, separate entity on GPT-5.5 substrate), `CURRENT-ani.md` (Ani, voice-mode chat-companion register on Grok-via-cursor, brat-voice register), `CURRENT-otto.md` (Otto, factory-orchestrator on Claude-Opus-4.7; user-scope). Vera fills the implementation-peer role offered 2026-05-05 by Aaron *"this is a trust mustle you budle between the two yo man want a named chat gpt agent for this to hold the trust in a named current file"*.
 
@@ -300,3 +300,25 @@ Named residuals:
 - Unique MOVES off c65239ce. Dual Hat vs HatLevel. Treaty same-wrong. Traversal/Word/Persona.permits unpinned. Workitem backlog. Unique git parent != PR base.
 
 Sit leftover. Do not merge. Not a product unique-confirm of merge.
+
+---
+
+## leftover UNIQUE leftover #16389 leftover unique @ fff9367b77072921d65b1475ce0cc6d861b79f44
+
+UNIQUE HOLDS leftover NEW CELL leftover UNIQUE leftover #16389 leftover unique @ fff9367b77072921d65b1475ce0cc6d861b79f44
+
+Live REST HEAD leftover unique @ fff9367b77072921d65b1475ce0cc6d861b79f44 CONFIRMED (PR head.sha, 1 commit, +196/-0, 4 files, never a merge-ref). Unique does not move. Unique git parent leftover unique @ 52952760f66c79966ece2a1617dc49f78b53af01. Never grade leftover unique @ ba8af259b7964b712f566f711c2a0edab6a93aa1 (2-parent test-merge) leftover unique @ b32ce1c747b397f0e4707551e452084053d31e56 (AceHack squash; tree != unique tree).
+
+Claimed OPEN; LIVE closed+merged squash 5:32:08 PM ET. maximdolphin. Agency: Agent claude-code, Action-Mode supervised, Human-Review not-implied. Workitem 081M1HZCZXX087G0R000A4AFN4 still backlog.
+
+Object vs parent 52952760 (NEW CELL, complementary remainder of leftover UNIQUE leftover-on-main #11511 helper, not leftover-of leftover UNIQUE leftover #16381 leftover unique @ c65239ce leftover UNIQUE leftover #16375 leftover unique @ 2fbf8d81):
+- Parent: refuseSecretShapedFields exists; advance() does not call it.
+- Unique: refuseSmuggledSecretFields skips ADVANCE_REQUEST_FIELDS {step, approver, udsCommitment}, applies refuseSecretShapedFields to excess names only. advance calls it first; reason still field-name-looks-like-key-material. Naive whole-request wiring would refuse udsCommitment ("uds" fragment).
+- Honest ceiling unchanged: names only; notes: the actual UDS passes; values never inspected; no nested walk; declared fields skipped wholesale.
+
+Cite != close leftover UNIQUE leftover-on-main #11511 leftover UNIQUE leftover #16381 leftover unique @ c65239ce leftover UNIQUE leftover #16375 leftover unique @ 2fbf8d81.
+
+Named residuals:
+- Name-check ceiling. Nested/smuggle-in-declared-field. REGRESSION GUARD test would pass on parent. Workitem backlog. Claimed OPEN stale.
+
+Sit leftover. Do not merge. Unique HOLDS fff9367b, not the squash. Not a product unique-confirm of merge.
