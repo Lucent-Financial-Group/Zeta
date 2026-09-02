@@ -146,7 +146,7 @@ export function toConfig(args: LocalTickArgs): TickSourceConfig {
     credentialIdentity: "AceHack",
     credentialMode: "shared",
     remote: args.remote,
-    tickCommand: defaultTickCommand(args.agent, args.model, eventDir),
+    tickCommand: defaultTickCommand(args.agent, args.model, eventDir, args.dryRun),
     eventDir,
     dryRun: args.dryRun,
   };

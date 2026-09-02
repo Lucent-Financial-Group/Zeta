@@ -104,8 +104,33 @@ export interface TickOutcome {
   readonly commitSubject?: string;
 }
 
-/** The `run-loop-real.ts` invocation the Actions lane uses, kept in one place. */
-export function defaultTickCommand(agent: string, model: string, eventDir: string): readonly string[] {
+/**
+ * The `run-loop-real.ts` invocation the Actions lane uses, kept in one place.
+ *
+ * `dryRun` FORWARDS to the body, and that forwarding is the whole point of the parameter.
+ *
+ * The body's event sink is folder-direct-to-main: on a real tick it commits the event and pushes
+ * it to `origin/main` ITSELF, before this module's own lane push is ever reached. So a caller that
+ * set `dryRun` — and read `local-tick`'s promise that a dry run "only declines to move the remote
+ * ref" — still got a remote ref moved, by the child rather than the parent. `runTick`'s dryRun
+ * branch sits at STEP 4 and cannot see, let alone stop, a push the body already made.
+ *
+ * Observed 2026-09-02 on a fresh clone: `run-loop-real.ts` without `--dry-run` attempted
+ * `git push` to `origin/main` three times with rebase-retry, and was stopped only by GitHub's
+ * branch-protection ruleset (`GH013 ... Required status check "gate (required)" is expected`). On
+ * a repo without that ruleset — a fork, a mirror, any clone whose default branch is unprotected —
+ * nothing would have stopped it. A dry run whose safety depends on a server-side setting the flag
+ * knows nothing about is not a dry run.
+ *
+ * The Actions lane never passes `dryRun`, so the "same body as the Actions lane" invariant that
+ * `tick-source.test.ts` pins is unchanged: default false, identical argv.
+ */
+export function defaultTickCommand(
+  agent: string,
+  model: string,
+  eventDir: string,
+  dryRun = false,
+): readonly string[] {
   return [
     "src/Core.TypeScript/observe/run-loop-real.ts",
     "--by",
@@ -114,6 +139,7 @@ export function defaultTickCommand(agent: string, model: string, eventDir: strin
     eventDir,
     "--participant",
     `local-llm:${model}`,
+    ...(dryRun ? ["--dry-run"] : []),
   ];
 }
 
