@@ -5,6 +5,6 @@
  *   git/   — trust-based rooms (work against any remote)
  *   forge/ — ceremony rooms (only when the host requires it)
  */
-export { scopeWorld, tickRooms, type Room, type RoomState, type ScopePredicate, type RoomTickResult } from "./room";
+export { scopeWorld, tickRooms, DEFAULT_ROOM_BUDGET, STEPS_USED_KEY, type Room, type RoomState, type ScopePredicate, type RoomTickResult, type RoomBudget, type SeamMode } from "./room";
 export { createBacklogRoom, createShadowRoom, type BacklogRoomState, type ShadowRoomState } from "./git/rooms";
 export { createPrRoom, createMergeRoom, type PrRoomState, type MergeRoomState } from "./forge/rooms";
