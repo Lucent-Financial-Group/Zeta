@@ -1,0 +1,14 @@
+{
+  "id": "080d0322bddbb810a0130008dd14360d",
+  "at": "2026-09-02T22:57:46.359Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1J5FEVQ087G0R002BZY9KX",
+    "type": "task",
+    "title": "Multitrack music demixing as an overlapping-signature inference problem on the DBSP factor-graph substrate",
+    "slug": "multitrack-music-demixing-as-an-overlapping-signature-infere",
+    "priority": "P2",
+    "filename": "081M1J5FEVQ087G0R002BZY9KX-multitrack-music-demixing-as-an-overlapping-signature-infere.md"
+  }
+}
