@@ -201,6 +201,31 @@ Services at timeout, and refuses in seconds if bring-up dropped the pool
 alias. Dispatch that probe on the wait-fix branch, not on current `main` —
 another 40-minute hat-system wait is not a second measurement.
 
+## MEASURED 2026-09-02 — run 33695849211 (wait-fix branch, 180s)
+
+Dispatch: [run 33695849211](https://github.com/Lucent-Financial-Group/Zeta/actions/runs/33695849211)
+`workflow_dispatch` on `cursor/child-wait-ahead-of-hat-27c5` at `3f13a8c23`,
+`cilium_included_probe=true`.
+
+**The wait-fix held.** Child wait logged at 0/60/120s and timed out at 180s.
+Not 2400s. Not `hat-system` NotFound.
+
+**The testing load balancer is real:**
+
+    zeta-lb-pool   DISABLED=false  CONFLICTING=False  IPS AVAILABLE=20
+    kube-system/cilium-ingress  LoadBalancer  EXTERNAL-IP=172.18.255.200
+
+**Why there are still zero children:** `zeta-root-dev` is Healthy with
+`sync=Unknown` and ComparisonError:
+
+    Could not resolve host: github.com
+
+Same class as the k3d CoreDNS `127.0.0.11` finding (2026-08-31). kubeadm
+CoreDNS does not import `coredns-custom`, so the k3d ConfigMap would be
+ignored on kind. The next probe patches the kubeadm Corefile to
+`forward . 1.1.1.1 8.8.8.8` on kind `--cni cilium` only. Do not invent a
+Cilium values tweak (`routingMode`, chart bump) from this.
+
 State stays in-progress until a dispatch produces per-app verdicts.
 
 ## The distinguishing test

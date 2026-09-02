@@ -153,10 +153,11 @@ describe("the k3d lane installs metal's Cilium configuration", () => {
     expect(code).toContain("rollout");
   });
 
-  test("the override is k3d-ONLY — the kind bring-up and metal must not get it", () => {
+  test("the override is k3d's coredns-custom — kindnetd must not get it, kind+Cilium patches the kubeadm Corefile", () => {
     const src = readFileSync(USE_CASES, "utf8");
     const kindFn = src.slice(src.indexOf("export function bringUpKindCiCluster"), src.indexOf("export function tearDownKindCluster"));
     expect(kindFn).not.toContain("applyK3dCoreDnsUpstreamOverride");
+    expect(kindFn).toContain("applyKindCiliumCoreDnsUpstreamOverride(ports)");
   });
 
   test("a missing surface REFUSES rather than falling back to chart defaults", () => {

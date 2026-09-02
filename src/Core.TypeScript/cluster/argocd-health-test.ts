@@ -2176,6 +2176,10 @@ export const REPO_BACKED_CHILD_WAIT_DIAGNOSTIC_COMMANDS: readonly {
   { label: "kube-system-pods", args: ["-n", "kube-system", "get", "pods", "-o", "wide"] },
   { label: "cilium-lb-pool", args: ["get", "ciliumloadbalancerippools.cilium.io", "-o", "wide"] },
   { label: "loadbalancer-services", args: ["get", "svc", "-A", "--field-selector", "spec.type=LoadBalancer"] },
+  {
+    label: "coredns-corefile",
+    args: ["-n", "kube-system", "get", "configmap", "coredns", "-o", "jsonpath={.data.Corefile}"],
+  },
 ];
 
 export function mergeArgoCdTimeoutDiagnostics(failure: Failure, dumps: Readonly<Record<string, string>>): Failure {

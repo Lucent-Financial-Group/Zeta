@@ -912,6 +912,7 @@ describe("081KSXN940008QG0R000SCP2H1 argocd-health-test planning", () => {
     expect(labels).toContain("application-controller-logs");
     expect(labels).toContain("cilium-lb-pool");
     expect(labels).toContain("loadbalancer-services");
+    expect(labels).toContain("coredns-corefile");
     const root = REPO_BACKED_CHILD_WAIT_DIAGNOSTIC_COMMANDS.find((command) => command.label === "zeta-root-dev");
     expect(root?.args).toContain("zeta-root-dev");
     const repoServer = REPO_BACKED_CHILD_WAIT_DIAGNOSTIC_COMMANDS.find(
