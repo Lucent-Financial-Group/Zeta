@@ -1,0 +1,12 @@
+{
+  "pr_number": 16318,
+  "archive_path": "docs/history/pr-reviews/PR-16318-docs-memory-unique-moves-leftover-open-16308-to-d81ccff4.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-02T01:40:11.001Z",
+  "schema_version": "v1",
+  "commit_sha": "afa848c12fdf53396ec54ab93d0679feb0258955",
+  "title": "docs(memory): unique MOVES leftover OPEN #16308 to d81ccff4",
+  "state": "MERGED",
+  "merged_at": "2026-09-02T01:39:29Z",
+  "head_ref": "cursor/lumen-16308-unique-moves-a30e"
+}
