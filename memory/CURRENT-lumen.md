@@ -44,6 +44,62 @@ verified) so future-me and peers do not over-trust past-me.
 
 ## Open threads
 
+### Unique-confirm leftover-on-main #16404 leftover unique @ e974b430 (2026-09-02)
+
+unique-confirm leftover UNIQUE leftover-on-main #16404 leftover unique @
+e974b430d42e562c576cd37997cdd96877ef95e1 UNIQUE HOLDS leftover NEW CELL.
+Unique does not move.
+https://github.com/Lucent-Financial-Group/Zeta/pull/16404
+research: add non-vacuous common-noise calibration query. AceHack
+MERGED 23:05:31Z / 7:05:31 PM ET. Branch research/common-noise-query.
+Agent Lumen. Human-directed. Sit leftover-on-main. Do not revert. CoS
+does not merge.
+Live REST HEAD leftover unique @ e974b430 CONFIRMED (PR head.sha, 1
+commit, +1228/-16, 12 files; never a merge-ref). Parent leftover unique
+@ b0a679b7 (do not grade as this unique). Never grade squash leftover
+unique @ 54736e89. Never grade base leftover unique @ d2618594. Never
+grade leftover unique leftover-on-main #16363 leftover unique @
+1ae4a2e4 as this unique.
+
+Cite != close leftover unique leftover-on-main #16363 leftover unique @
+1ae4a2e4, leftover unique leftover #16385 leftover unique @ 25d6c996,
+leftover unique leftover #16391 leftover unique @ bad514a3.
+Complementary remainder of the CFB/CRDT/pages lane, not leftover-of.
+Unique of leftover unique #16363 stays leftover unique @ 1ae4a2e4.
+Unique of leftover unique #16385 stays leftover unique @ 25d6c996.
+Unique of leftover unique #16391 stays leftover unique @ bad514a3.
+
+Object: CFB-D rank-one common-error factor plus diagonal uniqueness as a
+deterministic query over the frozen four-expert evidence panel. Not a
+CRDT merge.
+
+GRADE: VERIFIED non-vacuity gate (max |F_ij|=24.6338489904; 3 active
+weights mask 11; diagonal-mutation weight delta 0.1082646332;
+uniqueness floor q=0.05 holds). VERIFIED F = ll^T + diag(psi) with
+diag(F)=diag(S); frozen ridge tau=0.25; 15-subset active set. VERIFIED
+TS 256-step power iteration vs NumPy eigh within declared 1e-9; ridge
+mutant tau=0.5 is the comparator kill. VERIFIED calibration-repair-only
+(coverage 0.7501 to 0.9222; MSE inflation 0.781%; NLL delta -0.4130
+interval [-0.7107, -0.1708]). VERIFIED usefulness not supported (MSE
+9.7691 / NLL 2.5631 lose to ridge 9.6231 / 2.5516). VERIFIED public
+amber REPAIR ONLY vs red NOT SUPPORTED. VERIFIED state/query split
+(no Gaussian product or pairwise CI as CRDT merge). HONEST-REGISTER:
+256-step power iteration is a fixed algorithm not a residual-convergence
+certificate; this cell queries the inherited CFB-B panel and does not
+re-prove evidence-union ACI; loadingScale=1 (floor did not bind);
+train-mean dropped by the factor and re-enters the diagonal mutant.
+ANALOGY: Poncela/Senra and Weigt/Wilfling justify shape and chronology,
+not an ETTh1 theorem. OPEN (do not HOLD this cell): second factor;
+Dynamic/Noisy PGE; RFFH/AEFL PC membership; multi-variable heterarchical
+inference. Do not HOLD. Sit leftover-on-main.
+
+Falsifiers: non-vacuity fails (off-diagonal or weight delta collapse);
+TS/eigh disagree beyond 1e-9; usefulness claimed while ridge still wins;
+Gaussian product or CI called a CRDT merge; public pages collapse
+REPAIR ONLY into predictive success.
+
+---
+
 ### Unique-confirm leftover OPEN #16348 leftover unique @ d6ead09a (2026-09-02)
 
 unique-confirm leftover UNIQUE leftover OPEN #16348 leftover unique @
