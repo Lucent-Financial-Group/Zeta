@@ -44,6 +44,63 @@ verified) so future-me and peers do not over-trust past-me.
 
 ## Open threads
 
+### Unique-confirm leftover OPEN #16363 leftover unique @ 1ae4a2e4 (2026-09-02)
+
+unique-confirm leftover UNIQUE leftover OPEN #16363 leftover unique @
+1ae4a2e4b2a43ffcaee9cc448052d1555f380e34 UNIQUE HOLDS leftover NEW CELL.
+Unique MOVES from STALE leftover unique @
+52dbdfedb403a1865f9285fec2f41e1da38ab5fe. Never grade leftover unique
+@ 52dbdfed leftover unique @ f5b0d051 leftover unique @ 5a726f79
+leftover unique @ 3dfcef2e or any squash as this unique.
+https://github.com/Lucent-Financial-Group/Zeta/pull/16363
+research(factors): falsify static fusion and bound CRDT merge.
+AceHack OPEN. Branch research/composable-factor-benchmark. Agent
+Lumen. Human-directed. Sit leftover. Do not merge. CoS does not merge.
+Live REST HEAD leftover unique @ 1ae4a2e4 CONFIRMED (PR head.sha, 1
+commit, +5321/-430, 31 files; never a merge-ref). Parent leftover
+unique @ e6eb8b90 (do not grade as this unique). Same-cell rebase onto
+moved main. Tree 3dcb93e7424743738d91fe71031657ac59d01f5a vs STALE
+tree 633e5dfb975285026f1544eaeb4efb5bd79a2ae0. Unique-file git blobs
+identical including RFFH.fs fcf0d267157acba688a51d1c92e2c0e0e64a3b41.
+Extra unique vs 52dbdfed: empty of math.
+Not leftover-of leftover OPEN #16348 leftover unique @ d6ead09a,
+leftover OPEN #16344 leftover unique @ d265b8ea, leftover OPEN #16308
+leftover unique @ d81ccff4. Complementary remainder of the
+RFFH/CFB/CRDT research lane; do not collapse.
+
+STALE history (do not grade): leftover unique @ 52dbdfed leftover
+unique @ f5b0d051 leftover unique @ 5a726f79. Never grade leftover
+unique @ 3dfcef2e or any squash as this unique.
+
+Object: RFFH unary-blackboard correction (RFFH-19/20/21) + frozen
+CFB-A/B/C + CRDT evidence/query split.
+
+GRADE: VERIFIED RFFH-19 unary-star census; RFFH-20 compensated
+Neumaier fold; RFFH-21 two-variable equality-factor control; CFB-A
+posterior agreement <=3.55e-15, 63 products, ideal depth 63 vs 6;
+CFB-B usefulness not-supported (coverage 0.7501, residual corr
+0.8738, loses to validation ridge); CFB-C not-supported (alpha=1
+vacuous, MSE 10.8695); CRDT evidence-union ACI; Gaussian product
+non-idempotent (repeated-evidence variance ratio 0.5); fixed-half CI
+non-associativity 0.26288972189176474; trace-grid CI
+0.24355734504083776 (weights 0.881 vs 0.347); state/query split.
+DEMOTE: cell re-asserts DAG-of-BN UNRESOLVED; leftover OPEN #16344
+leftover unique @ d265b8ea already resolved that name to the PC
+umbrella; RFFH/AEFL membership remains OPEN. HONEST-REGISTER: ACE
+graph +1310/-383 is autodiscovery roster (no CFB/CRDT/RFFH name
+tokens); naming PC is not membership. OPEN (do not HOLD this cell):
+multi-variable heterarchical factor inference; PC
+smoothness/decomposability/determinism of RFFH/AEFL. Do not HOLD.
+Sit leftover.
+
+Falsifiers: unary census finds a multi-neighbor factor; compensated
+fold disagrees across the six 1e16/-1e16/1 permutations; CFB-B
+coverage gate met without residual-correlation disclosure; CFB-C
+selected alpha != 1 while claiming correlation-aware; evidence union
+fails ACI; CI associativity claimed after the catalog witnesses.
+
+---
+
 ### Unique-confirm leftover OPEN #16348 leftover unique @ d6ead09a (2026-09-02)
 
 unique-confirm leftover UNIQUE leftover OPEN #16348 leftover unique @
