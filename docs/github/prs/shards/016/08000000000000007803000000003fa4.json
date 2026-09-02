@@ -1,0 +1,12 @@
+{
+  "pr_number": 16292,
+  "archive_path": "docs/history/pr-reviews/PR-16292-feat-redis-leave-bitnami-for-the-valkey-project-s-own-chart.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-02T02:30:32.929Z",
+  "schema_version": "v1",
+  "commit_sha": "220eb8693772dc046bfedf690f357e34daeadb85",
+  "title": "feat(redis): leave Bitnami for the Valkey project's own chart",
+  "state": "MERGED",
+  "merged_at": "2026-09-02T02:29:46Z",
+  "head_ref": "shadow/redis-to-valkey-official-chart"
+}
