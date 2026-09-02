@@ -1,0 +1,12 @@
+{
+  "pr_number": 16385,
+  "archive_path": "docs/history/pr-reviews/PR-16385-docs-pages-replace-proof-overclaims-with-bounded-evidence.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-02T21:14:19.249Z",
+  "schema_version": "v1",
+  "commit_sha": "77eccd2c165bbffeb87693b017f35055ae2225ec",
+  "title": "docs(pages): replace proof overclaims with bounded evidence",
+  "state": "MERGED",
+  "merged_at": "2026-09-02T21:13:44Z",
+  "head_ref": "research/bounded-evidence-gallery"
+}
