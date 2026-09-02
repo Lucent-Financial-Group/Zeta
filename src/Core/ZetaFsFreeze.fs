@@ -12,10 +12,11 @@ open Zeta.Core.FSharp.Blake3
 /// freeze-intent then CAS puts then freeze-commit. Durable fsyncs every
 /// leaf+trunk **before** commit and withholds the ack. Readable iff commit
 /// exists and every leaf is present. Crash-mid-write *intercept* is
-/// `InMemoryFileSystem.ArmCrashMidWrite`. Plain and sealed log replay restore
-/// intact intent+commit pairs on create (torn tail / intent-without-commit
-/// dropped). Sealed frames carry LSN in the clear so `openLog` can rebuild
-/// the nonce. Reclaim sweep stays `toy`.
+/// `InMemoryFileSystem.ArmCrashMidWrite`. Journaled/Durable boats write
+/// intent, Flush (visible, no crash arm), put leaves, then commit.
+/// Plain and sealed log replay restore intact intent+commit pairs on create
+/// (torn tail / intent-without-commit dropped). Sealed frames carry LSN in
+/// the clear so `openLog` can rebuild the nonce. Reclaim sweep stays `toy`.
 ///
 /// DoP=1 on this log. No Task.Run except the ferry launch (injected context
 /// on the DST path; `manual` + `PumpToIdleAsync` for tests).
@@ -59,9 +60,10 @@ module ZetaFsFreeze =
     type internal LogItem =
         { IntentLsn: int64
           CommitLsn: int64
-          Frames: byte[]
+          IntentFrame: byte[]
+          CommitFrame: byte[]
           Durable: bool
-          ObjectIds: ContentHash256[]
+          Objects: struct (ContentHash256 * byte[])[]
           Reply: TaskCompletionSource<Result<struct (int64 * int64), FreezeError>> }
 
     /// DoP=1 segment writer. One boat = N freezes, one Flush; Durable adds one
@@ -118,43 +120,44 @@ module ZetaFsFreeze =
 
                     d
 
-                if anyDurable then
+                // Intent Flush publishes without crash arms. Leaf puts and the
+                // log Dispose still fire them. Commit (Dispose) before Reply.
+                do
+                    use stream = fsDoor.OpenFile(logPath, FileMode.Append, FileAccess.Write, FileShare.Read)
+
                     let mutable i = 0
 
                     while err.IsNone && i < boat.Length do
                         let item = boat.Span.[i]
+                        stream.Write(item.IntentFrame, 0, item.IntentFrame.Length)
+                        stream.Flush()
 
-                        if item.Durable then
-                            let mutable j = 0
+                        let mutable j = 0
 
-                            while err.IsNone && j < item.ObjectIds.Length do
-                                let hex = (ContentHash256.toContentAddress128 item.ObjectIds.[j]).ToHex()
-                                let path = Path.Combine(objectsDir, hex.Substring(0, 2), hex.Substring(2))
+                        while err.IsNone && j < item.Objects.Length do
+                            let struct (id, bytes) = item.Objects.[j]
+                            let hex = (ContentHash256.toContentAddress128 id).ToHex()
+                            let path = Path.Combine(objectsDir, hex.Substring(0, 2), hex.Substring(2))
+                            let dir = Path.GetDirectoryName path
+                            fsDoor.CreateDirectory dir
+                            FileSystemIo.writeAllBytes fsDoor path bytes
 
+                            if item.Durable then
                                 match FileSync.fsyncFile path with
                                 | Ok() -> ()
                                 | Error e -> err <- Some(FreezeError.Fsync e)
 
-                                j <- j + 1
+                            j <- j + 1
+
+                        if err.IsNone && item.Durable then
+                            match FileSync.fsyncDir objectsDir with
+                            | Error e -> err <- Some(FreezeError.Fsync e)
+                            | Ok() -> ()
+
+                        if err.IsNone then
+                            stream.Write(item.CommitFrame, 0, item.CommitFrame.Length)
 
                         i <- i + 1
-
-                    if err.IsNone then
-                        match FileSync.fsyncDir objectsDir with
-                        | Error e -> err <- Some(FreezeError.Fsync e)
-                        | Ok() -> ()
-
-                // Commit (Dispose) before Reply. A crash-mid-write on Dispose must
-                // fault the boat; Ok-then-throw would lie that the log is durable.
-                do
-                    use stream = fsDoor.OpenFile(logPath, FileMode.Append, FileAccess.Write, FileShare.Read)
-
-                    if err.IsNone then
-                        for i in 0 .. boat.Length - 1 do
-                            let frames = boat.Span.[i].Frames
-                            stream.Write(frames, 0, frames.Length)
-
-                        stream.Flush()
 
                     if err.IsNone && anyDurable then
                         match FileSync.fsyncFile logPath with
@@ -626,12 +629,6 @@ module ZetaFsFreeze =
         Buffer.BlockCopy(inner, 0, frame, 12, inner.Length)
         frame
 
-    let private concatFrames (a: byte[]) (b: byte[]) : byte[] =
-        let all = Array.zeroCreate (a.Length + b.Length)
-        Buffer.BlockCopy(a, 0, all, 0, a.Length)
-        Buffer.BlockCopy(b, 0, all, a.Length, b.Length)
-        all
-
     let isReadable (volume: Volume) (content: ContentHash256) : bool =
         lock volume.Gate (fun () ->
             match volume.Commits.TryGetValue content with
@@ -703,11 +700,11 @@ module ZetaFsFreeze =
             let rope = ZetaFsJumprope.buildV1 snap.Bytes
             let leafIds = [| for id, _ in rope.Leaves -> id |]
 
-            for kv in rope.Cas.Objects do
-                putObject volume.StoreDir kv.Key kv.Value
-
             match cls with
             | Buffered ->
+                for kv in rope.Cas.Objects do
+                    putObject volume.StoreDir kv.Key kv.Value
+
                 let result =
                     { Entity = entity
                       Content = rope.Content
@@ -729,37 +726,42 @@ module ZetaFsFreeze =
                 let intentPt = encodeIntent entity rope.Content leafIds cls intentLsn
                 let commitPt = encodeCommit intentLsn rope.Content commitLsn
 
-                let framed: Result<byte[], FreezeError> =
+                let framed: Result<byte[] * byte[], FreezeError> =
                     match volume.Session with
-                    | None -> Ok(concatFrames (framePlain intentPt) (framePlain commitPt))
+                    | None -> Ok(framePlain intentPt, framePlain commitPt)
                     | Some session ->
                         match ZetaFsCrypto.sealLog session intentLsn intentPt with
                         | Error e -> Error(FreezeError.Crypto e)
                         | Ok i ->
                             match ZetaFsCrypto.sealLog session commitLsn commitPt with
                             | Error e -> Error(FreezeError.Crypto e)
-                            | Ok c -> Ok(concatFrames (frameSealed intentLsn i) (frameSealed commitLsn c))
+                            | Ok c -> Ok(frameSealed intentLsn i, frameSealed commitLsn c)
 
                 match framed with
                 | Error e -> ValueTask<Result<FreezeResult, FreezeError>>(Error e)
-                | Ok frames ->
+                | Ok(intentFrame, commitFrame) ->
                     let reply =
                         TaskCompletionSource<Result<struct (int64 * int64), FreezeError>>(
                             TaskCreationOptions.RunContinuationsAsynchronously
                         )
 
-                    let objectIds =
-                        let ids = Array.zeroCreate (leafIds.Length + 1)
-                        ids.[0] <- rope.Content
-                        Array.Copy(leafIds, 0, ids, 1, leafIds.Length)
-                        ids
+                    let objects =
+                        let arr = Array.zeroCreate rope.Cas.Objects.Count
+                        let mutable i = 0
+
+                        for kv in rope.Cas.Objects do
+                            arr.[i] <- struct (kv.Key, kv.Value)
+                            i <- i + 1
+
+                        arr
 
                     let item =
                         { IntentLsn = intentLsn
                           CommitLsn = commitLsn
-                          Frames = frames
+                          IntentFrame = intentFrame
+                          CommitFrame = commitFrame
                           Durable = (cls = Durable)
-                          ObjectIds = objectIds
+                          Objects = objects
                           Reply = reply }
 
                     let pending = volume.Log.SubmitAsync(item, ct)

@@ -244,11 +244,21 @@ Until a bench of "ZetaDB small-write storm on ZetaFS" vs "same storm on APFS/ext
 We do **not** implement ReFS, copy its on-disk format, or take a Windows-only path. Requirements that crossed the wall:
 
 1. **Pointer-not-copy (D9).** A clone, a snapshot, a small overwrite, a fork: update Bindings / Jumprope leaf ids / ContentId. Write bits only for new or mutated chunks. This is already the Jumprope + CAS shape; the volume path must not fall back to copying the file.
-2. **Crash DST for FS *and* DB (D12).** FoundationDB-shaped: crash-mid-write, reorder, corrupt-last-write, same seed. ChaosEnv is still flush-fail 5%. The intercept is `InMemoryFileSystem.ArmCrashMidWrite` on the shared `IFileSystem` door (freeze torn-tail + GroupCommit torn-tail). Plain freeze-log replay restores intact boats. Corrupt-last-write and reorder doors landed (freeze still puts objects before the log). Sealed-log replay landed. Reclaim crash-mid-sweep intercept landed. Native `IBlockIo` is still open.
+2. **Crash DST for FS *and* DB (D12).** FoundationDB-shaped: crash-mid-write, reorder, corrupt-last-write, same seed. ChaosEnv is still flush-fail 5%. The intercept is `InMemoryFileSystem.ArmCrashMidWrite` on the shared `IFileSystem` door (freeze torn-tail + GroupCommit torn-tail). Plain freeze-log replay restores intact boats. Corrupt-last-write and reorder doors landed. Journaled/Durable boats write intent, Flush, put leaves, then commit (`intent-before-leaf-flush`). Sealed-log replay landed. Reclaim crash-mid-sweep intercept landed. `IBlockIo` is still the device primitive; `BlockIoFerry` is the Haskell-IO-shaped interpreter generated from `FerryThrottler` (batch/single coalescer deferred). Native NVMe is still open.
 3. **Cache co-design (D10).** If the DB and the FS each keep a buffer of the same bytes, we pay RAM twice and we lie about whose `Buffered` won. One authority. Preferred: library-FS, DB owns mutbuf, POSIX mount is a view (already K6). `Durability.OsBuffered` and freeze `Buffered` must be the same named class, or a documented mapping. ReFS's allocate-on-write metadata plus a lazy cache manager is a known RAM explosion (KB 4016173); do not copy that caching.
 4. **CoW must not 10× the volume (D11).** This is why `keep-all | rolling | none | regen` exist. A DB that freezes every small write under `keep-all` will look like git. Rolling/none/regen are the bound. The falsifier is reclaim-eligibility, not a comment.
 
 Integrity streams analogue: ContentId **is** the data checksum (always on). Metadata (bindings, freeze-intent/commit, Jumprope trunk) is checksummed as objects. Optional "repair from parity" is placement `mirror` / later LRC, not a 1-disk promise.
+
+### Overlay is the query shape (Aaron 2026-09-02)
+
+ZetaDB/ZetaFS are optimizing for **membership in overlapping regions that do not nest**. A ballot style is the combination of every jurisdiction that contains an address; those regions do not form a tree (school districts cross counties). GIS overlay is the same computation: keep the layers, do not merge them (Warren Manning; Jacqueline Tyrwhitt; Ian McHarg, *Design with Nature*, 1969), then query with map algebra (Dana Tomlin / Joseph Berry, ~1983). McHarg's stack of sheets is DV2.0's raw vault in geographic form.
+
+**Reconcile first.** Overlay on unreconciled boundaries is a check that cannot fail: it returns an answer at every point and the answer is wrong near every line. Aaron (2026-09-02), dated by him to roughly 2016: Safe Software's FME is the best tool he has seen for studying different jurisdictions drawing different boundaries. That assessment stays **his, dated**; it is not upgraded to a 2026 ranking. FME's job in this stack is anti-Babel: make layers comparable while keeping both. It does not pick a winner.
+
+Our instance is policy, not precincts. A traveler is inside their node policy, the room, the hat, the counterparty's rules, and the manifesto floor at once. None of those nest. A permission is a **signature** (which jurisdictions contain the act), not a boolean. The honest output is a **distribution** over signatures (factor graph / probabilistic circuits — Darwiche 2003; Choi / Vergari / Van den Broeck 2020). That application is `toy` until metered. Clifford meet as one overlay operator is prior art for the algebra and `toy` for our use (an arbitrary polygon is not a blade).
+
+Do not merge agency boundaries, policy layers, or event-log facts into one truth so a SQL overlay can look like a tree.
 
 ### Requirements the first-product spec must carry
 
@@ -267,7 +277,7 @@ These are additive to K1–K18 / E1–E12 / C1–C10. They do not reopen them.
 | **D9** | Pointer-not-copy (ReFS-shaped allocate-on-write). Forks and small edits remap ids; bits written only for new chunks. | Space and crash: in-place metadata is a torn-write class. | Jumprope prefix-share + `DagFs.editLocal` converge. Volume freeze still whole-object. |
 | **D10** | One cache authority. DB and FS must not each buffer the same bytes. `Buffered` is one class. | RAM + DST: two caches are two truths. | `Durability.fs` vs freeze classes are two vocabularies. |
 | **D11** | CoW amplification bounded by policy. `rolling(N)` after M>N freezes ⇒ ≥ M−N bodies reclaim-eligible. | Else the DB explodes the volume (git-forever). | Caller supplies `RollingLive`; window fold not yet the reclaim input. |
-| **D12** | Crash DST for filesystem **and** database on the same door. | ReFS-class survival is earned by a seed, not a journal story. | Intercept landed (`ArmCrashMidWrite`); remaining corpus still `toy`. |
+| **D12** | Crash DST for filesystem **and** database on the same door. | ReFS-class survival is earned by a seed, not a journal story. | Intercepts + plain/sealed replay + reclaim sweep + intent-before-leaves landed. Native device I/O still open. Recovery stays `toy`. |
 
 **Cannot claim today:** POSIX mount, crash-safe Durable, `ns=bindings`, Windows Durable, ZetaFS faster than APFS for small writes, ReFS-class repair on one disk.
 

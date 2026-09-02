@@ -478,3 +478,44 @@ let ``Journaled freeze that acks with a corrupt last write is not readable after
         finally
             FileSystem.Reset()
     }
+
+[<Fact>]
+let ``Journaled freeze crash during leaf put leaves extra garbage and is not readable`` () : Task =
+    task {
+        ensureHasher ()
+        let mock = InMemoryFileSystem()
+        mock.ArmCrashMidWrite("objects", 0)
+        FileSystem.Register(mock)
+        let store = "/crash-intent-leaves"
+        let mutbuf = ZetaFsMutbuf.create store ZetaFsMutbuf.Coherence.Shared
+        let volume = ZetaFsFreeze.createManual store mutbuf None
+        let logPath = Path.Combine(store, "log", "freeze")
+
+        try
+            let id = mintId ()
+            let h = ZetaFsMutbuf.openHandle volume.Mutbuf id
+            ZetaFsMutbuf.pwrite volume.Mutbuf h 0L [| 1uy; 2uy; 3uy |] |> ignore
+            let pending = (freezeAsync volume id ZetaFsFreeze.Journaled).AsTask()
+            do! (ZetaFsFreeze.pumpLog volume CancellationToken.None).ConfigureAwait(false)
+            let! _ =
+                Assert
+                    .ThrowsAsync<CrashMidWriteException>(fun () -> pending :> Task)
+                    .ConfigureAwait(false)
+
+            Assert.Equal(1, ZetaFsFreeze.logBoatCount volume)
+            Assert.True(FileSystem.Current.Exists logPath)
+            let intentLen = FileSystem.Current.ReadAllBytes(logPath).Length
+            Assert.True(intentLen > 0)
+            Assert.Equal(logPath, mock.CommitOrder.[0])
+            ZetaFsFreeze.dispose volume
+            let reopened = ZetaFsFreeze.createManual store mutbuf None
+
+            try
+                let recoveredLen = FileSystem.Current.ReadAllBytes(logPath).Length
+                Assert.True(recoveredLen < intentLen)
+                Assert.Equal(0, recoveredLen)
+            finally
+                ZetaFsFreeze.dispose reopened
+        finally
+            FileSystem.Reset()
+    }
