@@ -7,9 +7,9 @@
 
 ## 1. Decision
 
-Retain the finite **Reference-Frame Factor Heterarchy (RFFH)** as a real column-inspired factor-layer boundary. It now demonstrates typed object-plus-pose message exchange, coordinate-frame alignment, full-covariance uncertainty transport, Bayesian evidence fusion, duplicate/conflict control, and explicit acyclic parent-child plus lateral topology. It is not a cortical simulation, a weight-learning algorithm, or evidence that the architecture can perform every neocortical task.
+Retain the finite **Reference-Frame Factor Heterarchy (RFFH)** name for the whole boundary, but describe its implemented inference core precisely: it is a reference-frame evidence blackboard with logarithmic opinion pooling for object labels and information-form sensor fusion for position. The current `FactorGraph` containers are two one-variable stars of unary prior factors. Parent-child and lateral topology gates admission and composes poses outside those factor graphs; it does not yet participate in multi-variable inference. The module demonstrates typed object-plus-pose exchange, coordinate-frame alignment, full-covariance uncertainty transport, duplicate/conflict control, and explicit admission topology. It is not a cortical simulation, a weight-learning algorithm, or evidence that the architecture can perform every neocortical task.
 
-The user’s remembered older term for a “DAG of Bayesian networks” remains **unresolved** after they explicitly rejected the closest historical candidates.[1] The current Thousand Brains connectivity term is **heterarchy**. RFFH does not need the missing name: the heterarchy is the module graph, and factor graphs perform declared probabilistic inference. GMDH remains separate structure-search prior art rather than an asserted identification.
+The user’s remembered older term for a “DAG of Bayesian networks” remains **unresolved** after they explicitly rejected the closest historical candidates.[1] The current Thousand Brains connectivity term is **heterarchy**. RFFH does not need the missing name: the heterarchy is the external module/admission graph, while the present probabilistic fold is blackboard fusion. A future multi-variable factor graph must make parent/lateral edges load-bearing before it is described as heterarchical graphical inference. GMDH remains separate structure-search prior art rather than an asserted identification.
 
 ## 2. Typed Surfaces
 
@@ -53,11 +53,11 @@ Let a room-frame pose be `g=(R,t)`, with unit `Cl3` rotor `R` and vector transla
 
 where `Q(R)` is the real `3×3` rotation induced by the Clifford sandwich action. The implementation must derive `Q(R)` by rotating the three basis vectors, not by copying an unrelated quaternion formula.
 
-The factor graph combines aligned Gaussian messages in information form and combines independent categorical evidence in log-natural form. Geometry changes coordinates; probability represents uncertainty. Neither operation is defined as the other.
+The unary factor store retains aligned Gaussian and categorical natural parameters. A deterministic magnitude-ordered compensated reduction combines Gaussian information components and categorical log-weights, making the finite fold independent of accepted-message arrival order even under large cancellation. Geometry changes coordinates; probability represents uncertainty. Neither operation is defined as the other.
 
 ## 4. Heterarchy Semantics
 
-An RFFH topology is a directed acyclic parent-child relation plus an undirected or reciprocal lateral relation. Parent-child edges relate whole object hypotheses through explicit transforms. Lateral edges exchange votes about a shared object. The first implementation may execute a finite tree or DAG only. Loopy BP requires damping and a convergence receipt; no loopy result may be labeled exact merely because an iteration cap was reached.
+An RFFH topology is a directed acyclic parent-child relation plus an undirected or reciprocal lateral relation. In the current implementation, parent-child edges authorize and compose explicit transforms before evidence enters the room blackboard; lateral edges authorize cross-column admission. These links are not edges in `ObjectGraph` or `PositionGraph`. A positive control with a real two-variable equality factor shows that genuine graph propagation changes a remote marginal after a second round, while seven additional rounds on the current unary stars are inert. Loopy BP requires damping and a convergence receipt; no loopy result may be labeled exact merely because an iteration cap was reached.
 
 Column voting is Bayesian evidence fusion, not a majority count. Votes must be aligned into the receiving frame before combination. Evidence dependence is explicit: messages with overlapping evidence provenance are deduplicated or rejected, rather than multiplied as independent likelihoods.
 
@@ -69,14 +69,17 @@ Column voting is Bayesian evidence fusion, not a majority count. Votes must be a
 | RFFH-2 | Two independent agreeing columns | Categorical odds and pose precision increase | No real evidence fusion |
 | RFFH-3 | Two conflicting object hypotheses | Both candidates remain finite; status is unresolved/conflict | Early argmax erased uncertainty |
 | RFFH-4 | Same `EvidenceId` replayed | Posterior is byte/equality-identical to one copy | Duplicate evidence is double-counted |
-| RFFH-5 | Same messages in every permutation | Tree/DAG posterior is invariant | Schedule leaks into meaning |
+| RFFH-5 | Same messages in every permutation | Unary-blackboard posterior is invariant | Schedule leaks into meaning |
 | RFFH-6 | Two coordinate frames viewing one point | Aligned room-frame means agree within tolerance | Pose action or frame direction is wrong |
 | RFFH-7 | Rotate anisotropic covariance | Off-diagonal covariance appears as analytically expected | Mean-only transform silently corrupts uncertainty |
 | RFFH-8 | Passive room-frame coordinate change | Transformed posterior commutes with fusion | Geometry adapter is not natural |
 | RFFH-9 | Non-unit rotor, NaN translation, or non-SPD covariance | Teaching error names the violated field and safe next step | Malformed geometry enters inference |
 | RFFH-10 | Same ID with changed fingerprint | Visible conflict; neither version silently wins | Content identity is not enforced |
-| RFFH-11 | Parent-child transform composition | Composed factor matches direct pose composition | Heterarchical composition is only prose |
-| RFFH-12 | Lateral edge removed | A designated cross-column inference changes or stays unresolved | Lateral wiring is vacuous |
+| RFFH-11 | Parent-child transform composition | Composed admission transform matches direct pose composition | Parent-path geometry is only prose |
+| RFFH-12 | Lateral edge removed | Cross-column admission is refused | Lateral admission wiring is vacuous |
+| RFFH-19 | Accepted messages inspected as graph structure | Two variable-0 unary stars; zero multi-neighbor factors; seven extra rounds inert | Heterarchy inference was overstated |
+| RFFH-20 | Three contributions `10¹⁶,-10¹⁶,1` in all orders | Object and Gaussian posteriors equal the compensated exact fold in all six orders | Floating-point association leaks arrival order into meaning |
+| RFFH-21 | Separate two-variable equality-factor graph | Remote marginal changes from `0.5` to `0.9` after propagation | Architecture census cannot detect real topology load |
 
 ## 6. Mutation Controls
 
@@ -89,8 +92,8 @@ Each mutation must kill at least one named scenario. A surviving mutation is rep
 | Level | Statement | Current status |
 |---|---|---|
 | L0 | Typed messages can carry object, pose, uncertainty, provenance, and unresolved state | Implemented and tested |
-| L1 | Finite frame alignment and Bayesian fusion satisfy RFFH-1…12 | Measured; all named scenarios pass |
-| L2 | Multiple modules improve inference efficiency or robustness | Unmeasured; requires benchmark |
+| L1 | Finite frame alignment and blackboard fusion satisfy RFFH-1…21 | Measured; all named scenarios pass |
+| L2 | Parent/lateral topology participates in multi-variable factor inference | Unmeasured; current census finds only unary stars |
 | L3 | Modules learn reusable object models | Unmeasured |
 | L4 | Active sensing accelerates disambiguation | Unmeasured |
 | L5 | Parent-child modules learn compositional objects | Unmeasured |
@@ -99,7 +102,7 @@ Each mutation must kill at least one named scenario. A surviving mutation is rep
 
 ## 8. Measured Result
 
-The production F# implementation uses `FactorGraph<LogCategorical>` and `FactorGraph<Gaussian3>`. Object evidence is fused in log-natural form. Position evidence is transformed from sender coordinates into room coordinates using the existing `Cl3` sandwich action, with the induced real matrix obtained by rotating basis vectors. Covariance is transported as `QΣQᵀ`; it is not left behind or replaced by a diagonal approximation.
+The production F# implementation stores evidence in `FactorGraph<LogCategorical>` and `FactorGraph<Gaussian3>`, but the executable architecture census finds one variable and only unary prior factors in each graph. Object evidence is fused in log-natural form; position evidence is fused in information form. Deterministic factor IDs derive from evidence identity and content fingerprint, collision detection fails closed, and posterior reduction uses magnitude ordering plus Neumaier compensation. Position evidence is transformed from sender coordinates into room coordinates using the existing `Cl3` sandwich action, with the induced real matrix obtained by rotating basis vectors. Covariance is transported as `QΣQᵀ`; it is not left behind or replaced by a diagonal approximation.
 
 | Surface | Exact bounded result |
 |---|---|
@@ -109,7 +112,7 @@ The production F# implementation uses `FactorGraph<LogCategorical>` and `FactorG
 | Categorical fusion | Two independent `9:1` messages produce posterior `81/82` |
 | Gaussian fusion | Two equal variance-2 observations produce variance 1 |
 | Contradiction | Equal `cup`/`bowl` evidence remains `0.5/0.5` and unresolved |
-| Arrival order | All six permutations of three messages produce equal posteriors |
+| Arrival order | All six permutations of `10¹⁶,-10¹⁶,1` produce categorical `logit⁻¹(1)` and Gaussian mean/variance `1/3`; content-addressed factor IDs are identical |
 | Covariance rotation | A 45-degree `e12` rotor maps `diag(4,1,9)` to `XX=YY=2.5`, signed `XY=+1.5`, `ZZ=9` |
 | Independent frame alignment | Literal `Q(x,y,z)=(-y,x,z)` at `π/2` gives `Q(2,3,4)+(4,-2,1)=(1,0,5)`; two variance-2 observations fuse to variance 1 |
 | Passive coordinate change | Direct information-form and trigonometric expected values agree for all mean/covariance components within `10⁻¹⁰`; the expected side calls no production transform |
@@ -117,8 +120,10 @@ The production F# implementation uses `FactorGraph<LogCategorical>` and `FactorG
 | Lateral topology | Removing the declared lateral edge blocks cross-module evidence |
 | Cycles | Parent cycles are refused rather than labeled exact loopy inference |
 | Convention mismatch | A message with a different generator order is refused at the room boundary |
+| Architecture census | Each current graph has variable set `{0}`, only unary factors, and no message change after seven additional rounds |
+| Topology positive control | A separate two-variable equality-factor graph changes its remote `cup` posterior from `0.5` after one round to `0.9` after two |
 
-The F# suite contains eighteen named scenarios. The strict TypeScript scheduler now has fifteen scenarios: `K4`, `K5`, and `K3,3` keep colorability distinct from planarity; every declared facial-certificate condition has an isolated failing witness; an interleaved crown graph needs two colors exactly but three under deterministic first-fit; and canonical output follows Unicode code-point order above the BMP.
+The focused F# suite contains twenty-three named tests, including the replay-idempotence additions from PR #16348 and the architecture/associativity controls above. The strict TypeScript scheduler has fifteen scenarios: `K4`, `K5`, and `K3,3` keep colorability distinct from planarity; every declared facial-certificate condition has an isolated failing witness; an interleaved crown graph needs two colors exactly but three under deterministic first-fit; and canonical output follows Unicode code-point order above the BMP.
 
 A standalone cross-language dispatcher executes the production F# layer and compares eighteen aggregate witness groups against TypeScript calculations. The F# oracle now computes frame-alignment and coordinate-naturality expectations from literal formulas rather than production transforms and independently solves `K4`, `K5`, `K3,3`, and crown chromatic numbers. It reports zero failures. An external ten-mutant review found eight direct kills, one control in the adjacent Adinkra module, and one apparent tie gap. The tie report was resolved by the pre-existing strict-majority invariant: a resolution threshold must lie in `(0.5,1]`, so two equal maxima cannot resolve. RFFH-18 freezes that boundary directly.
 
@@ -126,7 +131,7 @@ Two machine-checked Lean modules establish the algebra used below the implementa
 
 ## 9. Non-Claims
 
-RFFH does not establish a biological cortical column, broad neocortical grid cells, consciousness, theory of mind, universal language grounding, substrate-independent identity, or physical equivalence between agents and Clifford modules. It does not connect spatial `Cl(3,0)` to the finite Adinkra `Cl(0,7)` action. It does not turn a factor graph into a neural network or a learning rule. Regularity and homoiconicity remain separately unmeasured.
+RFFH does not establish a biological cortical column, broad neocortical grid cells, consciousness, theory of mind, universal language grounding, substrate-independent identity, or physical equivalence between agents and Clifford modules. It does not connect spatial `Cl(3,0)` to the finite Adinkra `Cl(0,7)` action. It does not yet implement multi-variable heterarchical factor inference, turn a factor graph into a neural network, or supply a learning rule. Regularity and homoiconicity remain separately unmeasured.
 
 ## References
 

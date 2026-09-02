@@ -1,0 +1,160 @@
+{
+  "schemaVersion": 1,
+  "benchmarkId": "CFB-2026-09-02",
+  "source": {
+    "manifest": "2026-09-02-etth1-benchmark-manifest.json",
+    "sha256": "f18de3ad269cef59bb07b5438d79bb3042d3be49bdeecf01c1cd6d29695ee066",
+    "rowCount": 17420,
+    "exampleCount": 17229,
+    "splitCounts": {
+      "train": 10337,
+      "validation": 3446,
+      "test": 3446
+    }
+  },
+  "crossVerification": {
+    "typescriptPython": "7 metric lanes and 6 moving-block intervals agree within 1e-9",
+    "typescriptFsharp": "6 Gaussian topology cases agree within 1e-12",
+    "mutationControl": "Python CFB-C grid without alpha=1 is rejected"
+  },
+  "cfbA": {
+    "evidenceCounts": [2, 4, 8, 16, 32, 64],
+    "maximumMomentDifference": 3.552713678800501e-15,
+    "at64": {
+      "productCount": 63,
+      "chainCriticalPathDepth": 63,
+      "balancedDagCriticalPathDepth": 6,
+      "status": "posterior-equivalent-with-lower-ideal-balanced-depth"
+    }
+  },
+  "cfbB": {
+    "maximumAbsoluteValidationResidualCorrelation": 0.873765567689012,
+    "lanes": {
+      "equal": {
+        "mse": 13.942337551652765,
+        "mae": 3.024531673942452,
+        "gaussianNll": 2.74846423427795,
+        "coverage95": 0.9791062100986652,
+        "meanIntervalWidth95": 16.404096950342396
+      },
+      "bestValidation": {
+        "expert": "ridge-window",
+        "mse": 9.62310283145292,
+        "mae": 2.399585685141317,
+        "gaussianNll": 2.5516054483026926,
+        "coverage95": 0.9393499709808474,
+        "meanIntervalWidth95": 11.872123164888615
+      },
+      "zetaStatic": {
+        "mse": 9.693400413723944,
+        "mae": 2.398708994819202,
+        "gaussianNll": 2.976137979925782,
+        "coverage95": 0.7501450957632038,
+        "meanIntervalWidth95": 7.152270066856491,
+        "chainDagMaximumDifference": 3.552713678800501e-15
+      }
+    },
+    "bootstrapStaticMinusEqual": {
+      "mse": {
+        "pointEstimate": -4.248937137928809,
+        "lower95": -7.074049447550338,
+        "upper95": -1.2171743550740957
+      },
+      "gaussianNll": {
+        "pointEstimate": 0.22767374564783516,
+        "lower95": -0.10808177296933168,
+        "upper95": 0.6284170539222317
+      }
+    },
+    "duplicateExpert": {
+      "coverageChange": -0.06268136970400473,
+      "nllChange": 0.4261076464071687,
+      "status": "invalid-dependent-evidence"
+    },
+    "permutedTargets": {
+      "mseChange": 10.236508402170644,
+      "nllChange": 1.537411818119164
+    },
+    "usefulness": "not-supported"
+  },
+  "cfbC": {
+    "artifact": {
+      "shrinkage": 1,
+      "activeMask": 15,
+      "weights": [
+        0.2700940641295486,
+        0.23216559567882905,
+        0.1443786095037343,
+        0.35336173068788806
+      ],
+      "predictedVariance": 2.6671295480499966,
+      "intervalVariance": 12.260958465878465,
+      "diagonalVarianceRatio": 2.447465950132651
+    },
+    "metrics": {
+      "mse": 10.869532344042451,
+      "mae": 2.5909684518935103,
+      "gaussianNll": 2.6154064428875388,
+      "coverage95": 0.960824143934997,
+      "meanIntervalWidth95": 13.725883148113462
+    },
+    "bootstrapMinusBestValidation": {
+      "mse": {
+        "pointEstimate": 1.246429512589579,
+        "lower95": -0.15021448440181634,
+        "upper95": 2.52428569265292
+      },
+      "gaussianNll": {
+        "pointEstimate": 0.06380099458485045,
+        "lower95": -0.0025852221546236774,
+        "upper95": 0.12215027641277308
+      }
+    },
+    "bootstrapMinusStaticDag": {
+      "mse": {
+        "pointEstimate": 1.1761319303185238,
+        "lower95": -0.43497916212571314,
+        "upper95": 2.6996122504212465
+      },
+      "gaussianNll": {
+        "pointEstimate": -0.36073153703824407,
+        "lower95": -0.7160763556966673,
+        "upper95": -0.06566783205452723
+      }
+    },
+    "zeroOffDiagonalControl": {
+      "maximumPredictionDifference": 0,
+      "metricDifference": 0,
+      "status": "selected-artifact-is-vacuous-as-a-correlation-aware-model"
+    },
+    "permutedTargets": {
+      "mseChange": 9.152613352081104,
+      "nllChange": 0.3732421644503665
+    },
+    "usefulness": "not-supported"
+  },
+  "crdtBeliefFusion": {
+    "evidenceUnion": {
+      "associative": true,
+      "commutative": true,
+      "idempotent": true,
+      "monotonicByKeyInclusion": true,
+      "redeliveryInvariant": true,
+      "conflictRetaining": true
+    },
+    "gaussianProduct": {
+      "idempotent": false,
+      "repeatedEvidenceVarianceRatio": 0.5
+    },
+    "fixedHalfCi": {
+      "associative": false,
+      "firstWitnessMaximumDifference": 0.26288972189176474
+    },
+    "traceGridCi": {
+      "associative": false,
+      "firstWitnessMaximumDifference": 0.24355734504083776,
+      "leftFinalWeight": 0.881,
+      "rightFinalWeight": 0.347
+    }
+  }
+}

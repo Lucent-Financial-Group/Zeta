@@ -394,3 +394,69 @@ module ReferenceFrameFactorHeterarchyTests =
             close 1e-12 0.5 probabilities.["cup"]
             close 1e-12 0.5 probabilities.["bowl"]
         | other -> failwithf "a lexicographic tie-break manufactured resolution: %A" other
+
+    [<Fact>]
+    let ``RFFH-19: current inference is two unary-factor stars and extra rounds are inert`` () =
+        let position = gaussian (vector 1.0 2.0 3.0) (diagonal 1.0 2.0 3.0)
+        let observations =
+            [ message "e1" "a" (Map.ofList [ "cup", log 2.0 ]) position Rffh.identityPose
+              message "e2" "b" (Map.ofList [ "bowl", log 3.0 ]) position Rffh.identityPose
+              message "e3" "c" (Map.ofList [ "cup", log 5.0 ]) position Rffh.identityPose ]
+        let state = observations |> List.fold (fun current observation -> add observation current |> snd) (empty ())
+        let census = Rffh.inferenceArchitectureCensus state
+        Assert.Equal<int array>([| 0 |], census.ObjectVariableIds)
+        Assert.Equal<int array>([| 0 |], census.PositionVariableIds)
+        Assert.Equal(3, census.ObjectFactorCount)
+        Assert.Equal(3, census.PositionFactorCount)
+        Assert.Equal(0, census.ObjectMultiNeighborFactorCount)
+        Assert.Equal(0, census.PositionMultiNeighborFactorCount)
+        Assert.False(census.ObjectMessagesChangeAfterSevenMoreRounds)
+        Assert.False(census.PositionMessagesChangeAfterSevenMoreRounds)
+
+    [<Fact>]
+    let ``RFFH-20: three cancellation-sensitive messages are stable across all six arrival orders`` () =
+        let extremeMessage id contribution =
+            message id id
+                (Map.ofList [ "cup", contribution ])
+                (gaussian (vector contribution 0.0 0.0) (diagonal 1.0 1.0 1.0))
+                Rffh.identityPose
+        let observations =
+            [ extremeMessage "large-positive" 1e16
+              extremeMessage "large-negative" -1e16
+              extremeMessage "unit" 1.0 ]
+        let snapshots =
+            permutations observations
+            |> Seq.map (fun ordering ->
+                let state, factorIds =
+                    ordering
+                    |> List.fold (fun (current, ids) observation ->
+                        let receipt, next = add observation current
+                        let factorPair = Option.get receipt.ObjectFactorId, Option.get receipt.PositionFactorId
+                        next, ids |> Map.add observation.EvidenceId factorPair) ((empty ()), Map.empty)
+                let objects = Rffh.objectPosterior state
+                let position = Rffh.positionPosterior state |> Option.get
+                objects.["cup"], (Rffh.Gaussian3.mean position).X, (Rffh.Gaussian3.covariance position).XX, factorIds)
+            |> Seq.toArray
+        let expectedCup = 1.0 / (1.0 + exp -1.0)
+        let _, _, _, baselineFactorIds = snapshots.[0]
+        for cup, meanX, varianceX, factorIds in snapshots do
+            close 1e-12 expectedCup cup
+            close 1e-12 (1.0 / 3.0) meanX
+            close 1e-12 (1.0 / 3.0) varianceX
+            Assert.Equal<Map<string, int * int>>(baselineFactorIds, factorIds)
+
+    [<Fact>]
+    let ``RFFH-21: a real equality edge changes a remote marginal after propagation`` () =
+        let candidates = Set.ofList [ "cup"; "bowl" ]
+        let evidence: Rffh.LogCategorical = { Natural = Map.ofList [ "cup", log 9.0; "bowl", 0.0 ] }
+        let graph =
+            FactorGraph.empty Rffh.LogCategorical.algebra
+            |> FactorGraph.addFactor 0 (Factor.prior 0 evidence)
+            |> FactorGraph.addFactor 1 (Factor.equality Rffh.LogCategorical.algebra [ 0; 1 ])
+        let afterOne = FactorGraph.passOnce graph
+        let afterTwo = FactorGraph.passOnce afterOne
+        let remoteOnce = FactorGraph.marginal 1 afterOne |> Rffh.LogCategorical.probabilities candidates
+        let remoteTwice = FactorGraph.marginal 1 afterTwo |> Rffh.LogCategorical.probabilities candidates
+        close 1e-12 0.5 remoteOnce.["cup"]
+        close 1e-12 0.9 remoteTwice.["cup"]
+        Assert.True(afterOne.FactorToVar <> afterTwo.FactorToVar)
