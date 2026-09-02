@@ -1,0 +1,14 @@
+{
+  "id": "080d03224896c010a0130008527966b9",
+  "at": "2026-09-02T22:41:45.688Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1J4J4PC087G0R002MR34FJ",
+    "type": "task",
+    "title": "Bring separation of duties over from agentic-organization, keyed on the persona rather than the hat",
+    "slug": "bring-separation-of-duties-over-from-agentic-organization-ke",
+    "priority": "P2",
+    "filename": "081M1J4J4PC087G0R002MR34FJ-bring-separation-of-duties-over-from-agentic-organization-ke.md"
+  }
+}
