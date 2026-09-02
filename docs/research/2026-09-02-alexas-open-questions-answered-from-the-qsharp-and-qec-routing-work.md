@@ -270,6 +270,11 @@ which the classical emulator must truncate **is** the predicted disagreement loc
 T-count and χ means that point is **computed in advance rather than discovered on hardware**, which
 is the only version of the claim we can currently act on, since nothing here holds an encoded qubit.
 
+**CONFIRMED BY AARON, 2026-09-02: _"yes metered distance is the right answer."_** That moves this
+from shadow's proposal to an endorsed direction, and it is now work item `081M1J8DG67087G0R0009DXXV1`. The register
+change is real: the recommendation was mine, the *direction* is his, and the instrumentation is
+unbuilt either way.
+
 **Falsifier (F6).** Instrument `AmplitudeEmu` with a non-Clifford counter and a truncation-error
 budget; then exhibit a circuit the emulator **refuses** rather than silently approximates. If no
 circuit in the tree ever trips it, the budget is the vacuity class and the instrumentation bought
