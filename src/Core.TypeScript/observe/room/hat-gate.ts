@@ -32,7 +32,27 @@ export interface HatAuthority {
   readonly level: HatLevel;
   /** Can this hat trigger merges? (typically manager+) */
   readonly canMerge: boolean;
-  /** Can this hat create new work items / PRs? */
+  /**
+   * Can this hat EXECUTE an offered work item (`do_item`, and therefore `self_claim`)?
+   *
+   * Separate from `canCreateWork` on purpose. Doing work and creating work are different
+   * authorities, and conflating them produced a hierarchy in which the individual contributor —
+   * the tier that exists to do the work — could not do any: `do_item` was gated on
+   * `canCreateWork`, which is `false` at that level, so an IC's menu contained only free modes.
+   * A corporation in which the ICs may not work is not a hierarchy, it is a caste system.
+   *
+   * True at every level including IC. Merges remain separately gated by `canMerge`.
+   */
+  readonly canDoWork: boolean;
+  /**
+   * Can this hat create NEW work items / PRs?
+   *
+   * HONEST NOTE: after `canDoWork` took over `do_item`, no action in the current 16-slot grammar
+   * is gated on this bit — the grammar has no "create a work item" action (`decompose` creates
+   * sub-tasks and is gated by `canDecompose`). It is kept because the distinction is real and the
+   * grammar is expected to grow one, and it is called out here rather than left as a silently
+   * dead field. Wiring it to an action is the grammar owner's call, not this filter's.
+   */
   readonly canCreateWork: boolean;
   /** Can this hat decompose items? (always true for lead+) */
   readonly canDecompose: boolean;
@@ -45,12 +65,14 @@ export interface HatAuthority {
 // ─── Default authority by level ─────────────────────────────────────
 
 const AUTHORITY_BY_LEVEL: Record<HatLevel, HatAuthority> = {
-  executive_board: { level: "executive_board", canMerge: true, canCreateWork: true, canDecompose: true, canAccessOperator: true, canEditGrammar: true },
-  c_suite: { level: "c_suite", canMerge: true, canCreateWork: true, canDecompose: true, canAccessOperator: true, canEditGrammar: true },
-  director: { level: "director", canMerge: true, canCreateWork: true, canDecompose: true, canAccessOperator: false, canEditGrammar: true },
-  manager: { level: "manager", canMerge: true, canCreateWork: true, canDecompose: true, canAccessOperator: false, canEditGrammar: false },
-  lead: { level: "lead", canMerge: false, canCreateWork: true, canDecompose: true, canAccessOperator: false, canEditGrammar: false },
-  individual_contributor: { level: "individual_contributor", canMerge: false, canCreateWork: false, canDecompose: false, canAccessOperator: false, canEditGrammar: false },
+  executive_board: { level: "executive_board", canMerge: true, canDoWork: true, canCreateWork: true, canDecompose: true, canAccessOperator: true, canEditGrammar: true },
+  c_suite: { level: "c_suite", canMerge: true, canDoWork: true, canCreateWork: true, canDecompose: true, canAccessOperator: true, canEditGrammar: true },
+  director: { level: "director", canMerge: true, canDoWork: true, canCreateWork: true, canDecompose: true, canAccessOperator: false, canEditGrammar: true },
+  manager: { level: "manager", canMerge: true, canDoWork: true, canCreateWork: true, canDecompose: true, canAccessOperator: false, canEditGrammar: false },
+  lead: { level: "lead", canMerge: false, canDoWork: true, canCreateWork: true, canDecompose: true, canAccessOperator: false, canEditGrammar: false },
+  // canDoWork is TRUE here and canCreateWork is FALSE: an IC executes offered work but does not
+  // open new work. That distinction is the entire reason the two bits are separate.
+  individual_contributor: { level: "individual_contributor", canMerge: false, canDoWork: true, canCreateWork: false, canDecompose: false, canAccessOperator: false, canEditGrammar: false },
 };
 
 export function authorityForLevel(level: HatLevel): HatAuthority {
@@ -66,6 +88,16 @@ export function authorityForLevel(level: HatLevel): HatAuthority {
  */
 export function hatFilter(menu: readonly NextAction[], authority: HatAuthority): readonly NextAction[] {
   return menu.filter(action => isAuthorized(action, authority));
+}
+
+/**
+ * May this hat act on this item at all? One definition, shared by `do_item` and `self_claim`, so
+ * the two can never drift apart — the drift is what let a claim outrank the execution it promises.
+ */
+function canExecuteItem(itemId: string, auth: HatAuthority): boolean {
+  // A merge is a distinct authority, not a harder kind of work.
+  if (itemId.startsWith("merge-pr-")) return auth.canMerge;
+  return auth.canDoWork;
 }
 
 function isAuthorized(action: NextAction, auth: HatAuthority): boolean {
@@ -84,10 +116,18 @@ function isAuthorized(action: NextAction, auth: HatAuthority): boolean {
 
     // Work execution — depends on hat level
     case "do_item":
-      // Merge actions require canMerge
-      if (action.item.id.startsWith("merge-pr-")) return auth.canMerge;
-      // Regular work requires canCreateWork
-      return auth.canCreateWork;
+      return canExecuteItem(action.item.id, auth);
+
+    /**
+     * A claim is a PROMISE TO EXECUTE ("I will deliver this by tick T"), so it is gated exactly as
+     * the execution is. Before this it fell through to `default: return true` and was ungated at
+     * every level — a hat could commit to delivering an item the same hat was forbidden to touch,
+     * which is worse than either outcome alone: the work does not happen AND a peer stood down
+     * because someone said they had it. An unbackable commitment is the one thing a coordination
+     * primitive must not permit.
+     */
+    case "self_claim":
+      return canExecuteItem(action.item.id, auth);
 
     // Decompose — lead+ only
     case "decompose":
@@ -108,6 +148,7 @@ function isAuthorized(action: NextAction, auth: HatAuthority): boolean {
 export const SOVEREIGN: HatAuthority = {
   level: "executive_board",
   canMerge: true,
+  canDoWork: true,
   canCreateWork: true,
   canDecompose: true,
   canAccessOperator: true,

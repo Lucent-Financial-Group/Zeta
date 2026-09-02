@@ -1,0 +1,14 @@
+{
+  "id": "080d031d2cb67010a0130008cfb4a3d3",
+  "at": "2026-09-02T19:43:11.566Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1HTB5PC087G0R0038S2SKH",
+    "type": "bug",
+    "title": "Corporate hat gate: an IC could not do work, and a claim outranked the execution it promised",
+    "slug": "corporate-hat-gate-an-ic-could-not-do-work-and-a-claim-outra",
+    "priority": "P2",
+    "filename": "081M1HTB5PC087G0R0038S2SKH-corporate-hat-gate-an-ic-could-not-do-work-and-a-claim-outra.md"
+  }
+}
