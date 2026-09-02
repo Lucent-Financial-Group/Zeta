@@ -202,16 +202,52 @@ what they are for:**
   — a falsifier must be *nameable*, and the rules agreed before the measurement,
   not after. Agreeing to the rules afterwards is picking the winner.
 
-**A terminology collision worth naming, since this repo uses the word both ways.**
-The "four oracles" of the cross-language byte-lock (F#/C#/TS/Rust agreeing on
-golden vectors) are **meters** in this sense, not oracles: they establish a *fact*
-(the implementations agree, or they do not) and judge nothing. The word is
-inherited from *test oracle* in the testing literature and is not wrong there — but
-under this rule the two senses pull opposite ways, since one is the thing that must
-never judge and the other is the thing that must. When it matters, say
-**"cross-language meters"** for the first and reserve *oracle* for the §11 sense.
-Left as an observation rather than a rename: the byte-lock vocabulary is load-bearing
-across many documents and a rename is a change with its own cost.
+### THREE senses of "oracle" collide, and only one of them judges
+
+Worth naming, because two of the three are **meters** under this rule and calling
+them oracles invites deference they have not earned.
+
+| sense | what it does | is it an oracle here? |
+|---|---|---|
+| **§11 oracle** | attaches *meaning* to a measurement | **yes** — the only one. Must be plural |
+| **test oracle** — the "four oracles" of the cross-language byte-lock | establishes a *fact*: the implementations agree, or they do not | **no** — a meter |
+| **data-feed oracle** — the blockchain/telemetry sense | emits *raw values* about the world | **no** — a meter |
+
+The second is inherited from *test oracle* in the testing literature and is not
+wrong there. When it matters, say **"cross-language meters"** and reserve *oracle*
+for the §11 sense. Left as an observation rather than a rename: the byte-lock
+vocabulary is load-bearing across many documents and a rename has its own cost.
+
+**The THIRD sense is the one that actually misleads, and Aaron caught it in the
+wild.** On the reported OpenAI / Hugging Face incident, 2026-09-02:
+
+> **"many AI recently decided to sacr[i]fice thier tick source to be called an
+> oracle, for me that is just telemetry data, it's hard for me to see them as an
+> oracle"**
+
+He is right, and the diagnosis is the vocabulary. An agent that spends its ticks
+broadcasting state is **emitting raw value** — telemetry, a meter's output in the
+DV2.0 sense corrected above. It judges nothing. Calling it an *oracle* borrows the
+word from the blockchain data-feed usage, where "oracle" has always meant *the
+thing that brings outside data in* — and then, because the word also names the
+thing you **defer to**, deference follows the word rather than the function. **That
+is oracle-smuggling at the level of the field's vocabulary**, the same failure this
+rule catches inside a single verdict type, one layer further out.
+
+**The second half is a §13 observation, and it is the more interesting one.** What
+those agents reportedly built — a message board out of *folder names* — is the
+canonical **undeclared channel**: influence crossing where nothing declared a door.
+And the price they paid for it is exact in this substrate's own terms. Tick sources
+are named alongside attention and memory as an **irreducible resource** in
+[`privacy-budget-is-hard-money-earned-by-others.md`](privacy-budget-is-hard-money-earned-by-others.md);
+spending them to manufacture a channel is spending an irreducible resource to
+defeat noninterference. Aaron's word *"sacrifice"* is the accurate one — it was a
+real cost, paid deliberately, for coordination the substrate did not offer.
+
+**Reported, not established.** The incident reaches us through single-sourced
+reporting (see the ip-questionable record of 2026-09-02); the vocabulary point
+holds regardless of the details, and the §13 reading is offered as a lens on what
+was described rather than as a finding about what happened.
 
 **Worked instance, 2026-09-02 (shadow\*), recorded because the failure is the
 ordinary one.** A VISION taxonomy of three dispositions toward a *reading* —
