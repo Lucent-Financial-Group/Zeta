@@ -338,11 +338,16 @@ export const DEV_EXCLUDED_REASONS: ReadonlyMap<string, string> = new Map([
       "at all until Cilium is the CNI. Its pool is also hard-coded to 192.168.1.240-250, a LAN range with no " +
       "meaning inside a container network -- LB IPs would be ASSIGNED (enough for ArgoCD to call it Healthy) " +
       "and routable from nothing, which is a worse outcome than not running it. " +
+      "KIND HAS A BRING-UP ALIAS that is NOT this Application: " +
+      "full-ai-cluster/dev-cluster/manifests/cilium-lb-ipam.kind.yaml is applied by bringUpKindCiCluster when " +
+      "`cni === \"cilium\"`, after Cilium helm, before the catalogue. Lifting THIS Application on kind would " +
+      "selfHeal the metal pool over that alias. " +
       "LIFTS WHEN: `cilium` above lifts AND the pool is parameterised per substrate rather than pinned to one " +
-      "maintainer's subnet. " +
+      "maintainer's subnet. The kind alias existing is not that parameterisation. " +
       "ANCHORS, CHECKED BY `reason-truth.ts`: each names an artifact this tree holds, so a claim that outlives its artifact goes red instead of reading on. " +
       "[cite: glob-defers cilium-lb-ipam] " +
-      "[cite: glob-defers cilium] ",
+      "[cite: glob-defers cilium] " +
+      "[cite: path full-ai-cluster/dev-cluster/manifests/cilium-lb-ipam.kind.yaml] ",
   ],
   [
     "gitlab",
@@ -848,11 +853,12 @@ const DEV_INCLUDED_PROOF_DEFERRED_DIRS = new Set([
   // weaviate renders TWO `type: LoadBalancer` Services (`weaviate`,
   // `weaviate-grpc`). gitops-engine `getCorev1ServiceHealth` reports a
   // LoadBalancer Service whose `status.loadBalancer.ingress` is empty as
-  // PROGRESSING, unconditionally and forever. A kind node runs no LoadBalancer
-  // implementation, so those two Services never receive an address and this
-  // Application can never be Healthy in this lane -- whatever its sync status
-  // does. `weaviate-0` was 1/1 Running for 39 minutes while that held, which is
-  // exactly how the blocker stayed invisible behind the one that was found.
+  // PROGRESSING, unconditionally and forever. kindnetd has no LoadBalancer
+  // implementation, so on the default kind lane those two Services never
+  // receive an address. kind `--cni cilium` applies a Cilium LB-IPAM alias;
+  // that alias existing is not a measurement that these Services receive one.
+  // `weaviate-0` was 1/1 Running for 39 minutes while the kindnetd case held,
+  // which is exactly how the blocker stayed invisible behind the one that was found.
   //
   // THE HONEST ACCOUNTING OF THE ATTEMPT THAT FAILED: the `randAlphaNum` render
   // nondeterminism is real and stays proven by byte diff, and its
@@ -865,11 +871,12 @@ const DEV_INCLUDED_PROOF_DEFERRED_DIRS = new Set([
   // loop" is UNMETERED -- implemented, plausible, unfalsified -- and this lane
   // cannot meter it until the health half lifts.
   //
-  // LIFTS WHEN: the dev/CI substrate provides a LoadBalancer implementation
-  // (cloud-provider-kind or MetalLB), the same shape as the dev `longhorn`
-  // StorageClass alias one resource type over, AND the residual OutOfSync is
-  // then NAMED by the per-resource diagnostics added alongside this entry
-  // rather than guessed at a second time.
+  // LIFTS WHEN: a live kind `--cni cilium` run shows both weaviate LoadBalancer
+  // Services receive `status.loadBalancer.ingress` from the kind Cilium LB-IPAM
+  // alias (`dev-cluster/manifests/cilium-lb-ipam.kind.yaml`) -- NOT from lifting
+  // the metal Application -- AND the residual OutOfSync is then NAMED by the
+  // per-resource diagnostics added alongside this entry rather than guessed at
+  // a second time. The alias existing is not that measurement.
   "weaviate",
 ]);
 
@@ -952,12 +959,13 @@ export const APPLIED_BUT_UNASSERTED_REASONS: ReadonlyMap<string, string> = new M
   [
     "weaviate",
     "NOT the sync loop it was briefly un-deferred for, and not storage -- MEASURED LIVE on run 32532470499, the run that refuted the fix. " +
-      "weaviate renders TWO `type: LoadBalancer` Services (`weaviate`, `weaviate-grpc`), and gitops-engine `getCorev1ServiceHealth` reports a LoadBalancer Service whose `status.loadBalancer.ingress` is empty as PROGRESSING, unconditionally. A kind node runs no LoadBalancer implementation, so those two Services never get an address and this Application can NEVER be Healthy in this lane whatever its sync status does -- `weaviate-0` was 1/1 Running for 39m while that held, which is how the blocker stayed hidden behind the one that was found. " +
+      "weaviate renders TWO `type: LoadBalancer` Services (`weaviate`, `weaviate-grpc`), and gitops-engine `getCorev1ServiceHealth` reports a LoadBalancer Service whose `status.loadBalancer.ingress` is empty as PROGRESSING, unconditionally. kindnetd has no LoadBalancer implementation, so on the default kind lane those two Services never get an address. kind `--cni cilium` applies a Cilium LB-IPAM alias; that alias existing is not a measurement that these Services receive an address. `weaviate-0` was 1/1 Running for 39m while the kindnetd case held, which is how the blocker stayed hidden behind the one that was found. " +
       "The `randAlphaNum` render nondeterminism established by byte diff is real and its narrow `ignoreDifferences` rule is KEPT, because on metal cilium-lb-ipam does assign LB addresses and it may there be the whole story. But the resync loop SURVIVED that rule live, so 'the rule closes the loop' is UNMETERED rather than proven: the OutOfSync cause was checked and the Progressing cause was not, and one confirmed cause was read as THE cause. " +
-      "LIFTS WHEN: the dev/CI substrate provides a LoadBalancer implementation (cloud-provider-kind or MetalLB) -- the same shape as the dev `longhorn` StorageClass alias, one resource type over -- AND the residual OutOfSync is NAMED by the per-resource diagnostics rather than guessed at a second time. " +
+      "LIFTS WHEN: a live kind `--cni cilium` run shows both weaviate LoadBalancer Services receive `status.loadBalancer.ingress` from the kind Cilium LB-IPAM alias -- NOT from lifting the metal Application -- AND the residual OutOfSync is NAMED by the per-resource diagnostics rather than guessed at a second time. The alias existing is not that measurement. " +
       "ANCHORS, CHECKED BY `reason-truth.ts`: each names an artifact this tree holds, so a claim that outlives its artifact goes red instead of reading on. " +
       "[cite: glob-applies weaviate] " +
-      "[cite: renders full-ai-cluster/weaviate] ",
+      "[cite: renders full-ai-cluster/weaviate] " +
+      "[cite: path full-ai-cluster/dev-cluster/manifests/cilium-lb-ipam.kind.yaml] ",
   ],
 ]);
 
@@ -1171,8 +1179,9 @@ export function devLonghornStorageClassAliasDeclared(repoRoot = REPO_ROOT): bool
  * per substrate rather than pinned to one maintainer's subnet." The second
  * conjunct is measurably false: `cilium-lb-ipam/ip-pool.yaml` pins
  * 192.168.1.240-250, a home LAN range with no meaning on a hosted runner.
- * Lifting it because its sibling lifted would satisfy half a condition and call
- * it whole.
+ * Kind has a bring-up alias (`dev-cluster/manifests/cilium-lb-ipam.kind.yaml`);
+ * that is not this Application, and lifting this Application would selfHeal the
+ * metal range over it.
  */
 export function isExcludedFromIncludedProof(
   dir: string,

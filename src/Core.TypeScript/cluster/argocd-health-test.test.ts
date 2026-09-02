@@ -1318,6 +1318,9 @@ describe("DEV_EXCLUDED_REASONS", () => {
   test("the CNI entries still name the lane that DOES exercise them", () => {
     expect(DEV_EXCLUDED_REASONS.get("cilium")).toContain("ci.cilium.kind-config.yaml");
     expect(DEV_EXCLUDED_REASONS.get("cilium-lb-ipam")).toContain("cilium");
+    expect(DEV_EXCLUDED_REASONS.get("cilium-lb-ipam")).toContain(
+      "full-ai-cluster/dev-cluster/manifests/cilium-lb-ipam.kind.yaml",
+    );
   });
 
   test("the registry is what the exclusion set is BUILT from, so the two cannot disagree", () => {
