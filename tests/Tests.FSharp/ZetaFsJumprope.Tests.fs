@@ -171,6 +171,35 @@ let ``unknown major tag is refused`` () =
     | Ok _ -> Assert.Fail("delta/1 must be refused")
 
 [<Fact>]
+let ``one-byte edit remaps the trunk and reuses most chunk ContentIds`` () =
+    // D9 / ReFS-shaped: a small overwrite is a pointer update (new trunk +
+    // the mutated FastCDC chunks), not a second copy of the file. FastCDC
+    // can shift a neighbour boundary, so the bound is "not 2× leaves", not
+    // "exactly one new chunk".
+    ensureHasher ()
+    let before = Array.init 500_000 (fun i -> byte (i % 251))
+    let after = Array.copy before
+    after.[250_000] <- after.[250_000] ^^^ 1uy
+    let ra = ZetaFsJumprope.buildV1 before
+    let rb = ZetaFsJumprope.buildV1 after
+    Assert.True(ra.Leaves.Length > 6, sprintf "need several chunks, got %d" ra.Leaves.Length)
+    Assert.NotEqual<string>(ra.Content.ToHex(), rb.Content.ToHex())
+    let ids (r: ZetaFsJumprope.Rope) =
+        r.Leaves |> Array.map (fun (id, _) -> id.ToHex()) |> Set.ofArray
+
+    let shared = Set.intersect (ids ra) (ids rb)
+    Assert.True(
+        shared.Count >= ra.Leaves.Length - 3,
+        sprintf "shared %d of %d leaves — a 1-byte edit copied too much of the file" shared.Count ra.Leaves.Length
+    )
+    let combined = Set.union (ids ra) (ids rb)
+    Assert.True(
+        combined.Count < 2 * ra.Leaves.Length,
+        sprintf "union %d vs 2× %d — bit-copy, not pointer-not-copy" combined.Count ra.Leaves.Length
+    )
+
+
+[<Fact>]
 let ``pread copies into a caller buffer without a full materialize`` () =
     ensureHasher ()
     let bytes = Array.init 50_000 (fun i -> byte (i % 251))
