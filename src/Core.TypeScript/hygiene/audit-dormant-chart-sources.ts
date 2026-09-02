@@ -36,8 +36,16 @@
 //
 // THE WORKED INSTANCE, and the reason the label alone was not enough. Our
 // `headscale` chart is pinned to `charts.gabe565.com` -- a third-party PERSONAL
-// chart repository. It is still alive (it publishes `adguard-home` actively) and
-// simply stopped updating its headscale chart 559 days ago. So:
+// chart repository, and the WHOLE REPOSITORY is dead. So:
+//
+// CORRECTED 2026-09-02, and the correction is instructive. This comment first
+// said the repo "is still alive (it publishes `adguard-home` actively)" and that
+// only its headscale chart had stalled. That was wrong, and wrong in the
+// acquitting direction: `max(created)` across ALL 39 charts in that index is
+// 2025-02-19, adguard-home's own newest is 2025-02-19, and the index has not been
+// regenerated since 2025-02-20. I read a version LIST and inferred activity
+// without reading a single date -- the same mistake as reading a green check
+// without asking whether it ran. A second review caught it.
 //
 //   * the pin RESOLVES, so `audit-chart-target-revisions` is green
 //   * the chart RENDERS, so nothing in the cluster tree complains
