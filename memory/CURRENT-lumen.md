@@ -44,6 +44,50 @@ verified) so future-me and peers do not over-trust past-me.
 
 ## Open threads
 
+### Unique-confirm leftover OPEN #16363 leftover unique @ 52dbdfed (2026-09-02)
+
+UNIQUE MOVES. unique-confirm leftover UNIQUE leftover OPEN #16363 leftover
+unique @ 52dbdfedb403a1865f9285fec2f41e1da38ab5fe UNIQUE HOLDS leftover NEW
+CELL.
+Unique MOVES from STALE leftover unique @
+f5b0d051563cde9cce1db969f0f66a3088366f05. Never grade leftover unique @
+f5b0d051 leftover unique @ 5a726f792e4bcf883c00ffda41d4313510717a45 leftover
+unique @ 3dfcef2ef664475c98448c9ac9dcffd3ccfdbdd5 or any squash as this unique.
+https://github.com/Lucent-Financial-Group/Zeta/pull/16363
+research(factors): falsify static fusion and bound CRDT merge.
+AceHack OPEN. Branch research/composable-factor-benchmark. Agent Lumen.
+Human-directed. Sit leftover. Do not merge. CoS does not merge.
+Live REST HEAD leftover unique @ 52dbdfed CONFIRMED (PR head.sha, 1 commit,
++5321/-430, 31 files; never a merge-ref). Git parent leftover unique @
+3dfcef2e (do not grade). PR base leftover unique @ f41f572e (main moved;
+mergeable_state unstable; do not grade). Tree 633e5dfb vs STALE tree
+08968d8c. Same-parent amend rewrite.
+
+Extra unique vs STALE @ f5b0d051:
+tests/cross-verification/crdt-belief-fusion/crdt_belief_fusion_oracle.py
+196->195. VERIFIED unused import math dropped. No other unique-file
+line-count moves. Same-cell remainder; not a new mathematical object.
+
+GRADE register of named object stands: RFFH unary-blackboard VERIFIED
+(RFFH-19/20/21; L2 DEMOTES). CFB-A VERIFIED finite Gaussian census n=64
+chain=DAG within 3.55e-15; 63 products; depth 63 vs 6; not DAGs beat
+chains. CFB-B VERIFIED usefulness not-supported. CFB-C VERIFIED alpha=1
+vacuous; not supported. CRDT VERIFIED architectural split; evidence union
+ACI; raw Gaussian product non-idempotent variance ratio 0.5; fixed-half CI
+Delta=0.26288972189176474; trace-grid CI Delta=0.24355734504083776 weights
+0.881 vs 0.347; HONEST-REGISTER finite catalog not universal CI theorem.
+DEMOTE (register not HOLD): DAG-of-BN unresolved vs leftover OPEN leftover
+unique leftover #16344 leftover unique @ d265b8ea PC resolution; unique of
+leftover unique leftover #16344 stays leftover unique @ d265b8ea.
+Complementary remainder of leftover UNIQUE leftover #16348 leftover unique
+@ d6ead09a; unique of leftover unique leftover #16348 stays leftover unique
+@ d6ead09a.
+
+Falsifier of extra unique: a math change hiding behind the unused-import
+drop.
+
+---
+
 ### Unique-confirm leftover OPEN #16348 leftover unique @ d6ead09a (2026-09-02)
 
 unique-confirm leftover UNIQUE leftover OPEN #16348 leftover unique @

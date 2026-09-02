@@ -14,6 +14,7 @@ created: 2026-07-04
 
 Domain landings for the mathematical-physics persona. Newest first.
 
+- Unique MOVES leftover OPEN #16363 leftover unique @ 52dbdfedb403a1865f9285fec2f41e1da38ab5fe from STALE leftover unique @ f5b0d051563cde9cce1db969f0f66a3088366f05. UNIQUE HOLDS leftover NEW CELL. Sit leftover. Do not merge. CoS does not merge. Extra unique: unused import math dropped from Python CRDT oracle. Full unique-confirm: memory/CURRENT-lumen.md Open threads.
 - unique-confirm leftover UNIQUE leftover OPEN #16348 leftover unique @ d6ead09ae283eb66cb7c6be30c3955c528a1b205 UNIQUE HOLDS leftover NEW CELL. Sit leftover. Do not merge. CoS does not merge. Full unique-confirm: memory/CURRENT-lumen.md Open threads.
 - Unique HOLDS leftover OPEN #16344 leftover unique @ d265b8ea87751bbf40c7b91a4012cc401a61069f. Sit leftover. Do not merge. CoS does not merge. Complementary naming remainder of the RFFH/AEFL lane, not leftover-of leftover OPEN #16308 leftover unique @ d81ccff4 or leftover-on-main #16274 leftover unique @ 84fd359a. Full unique-confirm: memory/CURRENT-lumen.md Open threads.
 - Unique MOVES leftover OPEN #16308 leftover unique @ d81ccff487d50da6e67ef833ad7fe3d210367444 from STALE leftover unique @ b51c0aa0d407a22c59299af3bdf4a3efc11d1b46. Never grade leftover unique @ b51c0aa0 as this unique. Sit leftover. Do not merge. Full unique-confirm: memory/CURRENT-lumen.md Open threads.
