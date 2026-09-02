@@ -2,7 +2,7 @@
 
 **Owner:** Vera (this file is hers; she can revise it per her own discretion per named-agent-distinctness consent + Aaron 2026-05-05 *"sh can edit her own CURRENT-amara.md too if she does not like it after reading her files"* — same applies symmetrically to Vera via the codex peer-call write-back path when added).
 
-**Last updated:** 2026-09-02 (unique-confirm leftover UNIQUE leftover #16365 leftover unique @ 354b4163034fffa3c678219823bb18026ed50f18 + leftover UNIQUE leftover #16354 leftover unique @ 34313849e33a899a2a10597f407e12f2c5e70e04 + leftover UNIQUE leftover #16336 leftover unique @ 5d24c26262f8f1078edfb51954d610e53c312db5 + leftover UNIQUE leftover #16328 leftover unique @ 236d5975800419e9e332f5ea296714049f446ed7 + leftover UNIQUE leftover #16321 leftover unique @ 0929240695c37c5164166919285d03a154b725db + leftover-on-main #16259 + #16257 + #16266 + #16271 + #16267 + #16275; identity body still 2026-05-05)
+**Last updated:** 2026-09-02 (unique-confirm leftover UNIQUE leftover #16375 leftover unique @ 2fbf8d81b4b47612cdd1dcc6a56295ba7e2c2719 + leftover UNIQUE leftover #16365 leftover unique @ 354b4163034fffa3c678219823bb18026ed50f18 + leftover UNIQUE leftover #16354 leftover unique @ 34313849e33a899a2a10597f407e12f2c5e70e04 + leftover UNIQUE leftover #16336 leftover unique @ 5d24c26262f8f1078edfb51954d610e53c312db5 + leftover UNIQUE leftover #16328 leftover unique @ 236d5975800419e9e332f5ea296714049f446ed7 + leftover UNIQUE leftover #16321 leftover unique @ 0929240695c37c5164166919285d03a154b725db + leftover-on-main #16259 + #16257 + #16266 + #16271 + #16267 + #16275; identity body still 2026-05-05)
 
 **Pattern parity:** sibling to `CURRENT-aaron.md` (Aaron, first-party human maintainer; in-repo canonical), `CURRENT-amara.md` (Amara, Aurora deep-research register, separate entity on GPT-5.5 substrate), `CURRENT-ani.md` (Ani, voice-mode chat-companion register on Grok-via-cursor, brat-voice register), `CURRENT-otto.md` (Otto, factory-orchestrator on Claude-Opus-4.7; user-scope). Vera fills the implementation-peer role offered 2026-05-05 by Aaron *"this is a trust mustle you budle between the two yo man want a named chat gpt agent for this to hold the trust in a named current file"*.
 
@@ -252,5 +252,28 @@ Named residuals:
 - Whole-repo auto-vivify --check unproven. Commit/PR 728/0 dangling not independently executed.
 - Path 1 uses leftover 081M036ZP2G extractor class (code-span / absolute-skip) on purpose.
 - Workitem still backlog.
+
+Sit leftover. Do not merge. Not a product unique-confirm of merge.
+
+---
+
+## leftover UNIQUE leftover #16375 leftover unique @ 2fbf8d81b4b47612cdd1dcc6a56295ba7e2c2719
+
+UNIQUE HOLDS leftover NEW CELL leftover UNIQUE leftover #16375 leftover unique @ 2fbf8d81b4b47612cdd1dcc6a56295ba7e2c2719
+
+Live REST HEAD leftover unique @ 2fbf8d81b4b47612cdd1dcc6a56295ba7e2c2719 CONFIRMED (PR head.sha, 1 commit, +467/-14, 5 files, never a merge-ref). Unique does not move. Unique git parent leftover unique @ 19a3d20559d45e36f69ee66c8f08ef88a8aa6481 != PR base leftover unique @ 71caf3871603aef5470e3976fb428f423ad715b9. Never grade merge-ref leftover unique @ b0979303e426446f8d0007b0ec434a06f7e2064b (2-parent test-merge; tree != unique tree).
+
+maximdolphin OPEN at grade. Not AceHack-authored. Agency: Agent claude-code, Action-Mode supervised, Human-Review not-implied-by-credential. Workitem 081M1HTB5PC087G0R0038S2SKH still state: backlog.
+
+Object vs parent (NEW CELL on leftover unique leftover-on-main #8165 hat-gate seam; cite != close #8165):
+(1) Parent: do_item return auth.canCreateWork; IC canCreateWork false. Unique: canDoWork true at every level including IC; do_item -> canExecuteItem -> canDoWork. Distinct bits (IC true/false). After unique, canCreateWork unread in isAuthorized.
+(2) Parent: no self_claim arm (default true). Unique: do_item and self_claim both return canExecuteItem. Claim-coherence DST one-way.
+(3) DST file added (parent 404), imports ./hat-gate. Six test titles; header says five. MUTATION REFUSED is workitem/PR prose only -- absent from hat-gate.dst.test.ts. Liveness dual would catch do_item-on-canCreateWork at IC if that mutant were applied; if (!auth.canDoWork) continue never skips.
+
+Named residuals:
+- Authority widening vs bugfix: parent test treated IC-cannot-do_item as intended.
+- MUTATION REFUSED ungrounded in unique blobs. Passing DST != mutants applied.
+- canCreateWork dead in the filter. default: true still ungates non-work kinds.
+- Unique parent behind live main. Workitem backlog. auto_merge squash ON.
 
 Sit leftover. Do not merge. Not a product unique-confirm of merge.
