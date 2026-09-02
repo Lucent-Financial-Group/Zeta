@@ -214,6 +214,193 @@ bolting it on, and F2 says whether ours is real.** Also unresolved and named in 
 calibrated-but-mediocre separator may be less useful than an uncalibrated excellent one, and no
 amount of lineage makes that risk go away.
 
+## 4c. Ozone, and the fact that the SOTA architecture is named after mastering practice
+
+Aaron, 2026-09-02: _"iZotope was one of the most famous companies in this industry that
+understood waveforms — Ozone is what I remember."_
+
+**Checked.** iZotope was founded in 2001 in Cambridge, Massachusetts, out of MIT (co-founder and
+CEO Mark Ethier, studying music theory, composition and computer science). **Ozone launched that
+same year** as a mastering suite built on EQ, **multiband dynamics**, and an exciter. The company's
+reputation for rigorous DSP is the thing Aaron is pointing at, and it is well earned — RX and
+Ozone are the repair and mastering halves of one house style.
+
+**Now the part worth noticing, and it is not a coincidence of names.** The current state of the
+art in music source separation is **BS-RoFormer** — *Band-Split* RoFormer — descended from
+**BSRNN** (Yi Luo & Jianwei Yu, 2022), which *"explicitly splits the spectrogram of the mixture
+into subbands and performs interleaved band-level and sequence-level modeling."*
+
+**That is multiband processing.** The inductive bias that took separation to the top of the
+leaderboard is the same decomposition mastering engineers have used since Ozone shipped in 2001:
+**split the spectrum into bands, because different bands behave differently and should be treated
+differently.** BSRNN's contribution was choosing the band splits *by musical knowledge* rather
+than uniformly — which is a mastering engineer's judgement, encoded as an architecture.
+
+**So the practitioner tradition was ahead of the research tradition here**, and the research
+tradition caught up by importing it. That is worth stating plainly because it is the argument for
+Aaron's own standing in this work: the domain intuition is not decoration on top of the model, it
+has already twice been the thing that *was* the model.
+
+**Where our design diverges from BSRNN, and it follows from §2.** Band-splitting is still a
+**partition** — of frequency this time instead of of instruments. It is a better partition, chosen
+well, but a piano's transient and its fundamental live in different bands and are *one source*.
+The signature representation says the binding across bands is what should be inferred, not
+assumed away by the split. That is a testable difference and it is what F3 is for.
+
+## 4d. RX and Rx — from numerology to numerics
+
+Aaron, 2026-09-02: _"can we turn this RX into dotnet Rx — from numerology to numerics?"_
+
+Asked in exactly the register the rules ask for, so it gets that answer.
+
+**The name is numerology, and the answer is no.** iZotope **RX** is *Rx* as in a medical
+prescription — repair. **.NET Rx** is *Reactive Extensions*. Different words, no shared lineage.
+Per [`numerology-vs-number-theory`](../../.claude/rules/numerology-vs-number-theory.md): ask what
+*else* is called RX, and the answer is "very many things," so the name discriminates nothing.
+
+**The structure underneath is real, and it promotes.** Here is the claim, and it is type-level
+rather than poetic:
+
+> **A spectral plugin chain is an Rx query over a stream of frames.**
+
+- **STFT** = `Window(frameSize, hop)` then `Select(FFT)`. That is literally Rx's windowing
+  operator followed by a map.
+- **A plugin chain** = operator composition over `IObservable<Spectrum>`.
+- **Overlap-add resynthesis** = `Scan` — a running monoidal accumulate.
+
+**And there is an invariant that makes this an identification rather than a resemblance**, which
+is what the rule demands. The `Scan` is a valid fold — resynthesis is *exact* — **precisely when
+the analysis/synthesis window satisfies the COLA condition** (Constant OverLap-Add: the shifted
+windows sum to a constant across hops; Hann at 50 % overlap is the standard case). COLA is the
+condition under which overlap-add is a monoid homomorphism. Fail COLA and the fold is lossy and
+the correspondence breaks; satisfy it and the audio pipeline **is** the Rx query, with the same
+laws.
+
+That is a checkable statement with a named boundary, which is the difference between numerics and
+numerology. **Anchors:** Allen & Rabiner (1977), unified short-time Fourier analysis/synthesis;
+Griffin & Lim (1984); Julius O. Smith III, *Spectral Audio Signal Processing*. And on the Rx side,
+**Erik Meijer** — already a root anchor here for the `IEnumerable`⇄`IObservable` duality and the
+fold/unfold pair.
+
+**Now the payoff, and it is why the question was worth asking.** Rx gives you the stream algebra
+and **no retraction** — an emitted value cannot be un-emitted. **DBSP is Rx plus retraction**
+(Z-sets, `+1` / `−1`). Put that against what iZotope RX actually does:
+
+| | what happens to the guess |
+|---|---|
+| **iZotope RX** | you paint out the cough, it interpolates, and **the interpolation is merged into the waveform.** The guess and the evidence become the same bytes. |
+| **.NET Rx** | the chain is composable and replayable, but an emitted frame is final |
+| **DBSP (ours)** | the repair is a **retraction plus an insertion** — the original stays as a term, the guess stays as a *separate* term |
+
+**So the whole §4b argument arrives again from the algebra rather than from the UI.** A repair
+that is a retraction is non-destructive, auditable, and composable, and — this is the part that
+matters — **"what did the tool guess?" is answerable, because the guess never stopped being its
+own term.** iZotope RX cannot answer it because it merged the layers. This is McHarg again, and
+DV2.0's raw vault again, now stated in the operator algebra: **a merged waveform has picked a
+winner; a stream of terms with retractions has not.**
+
+**Honest limit.** None of this is built, and the correspondence being exact under COLA does not
+by itself make a good separator — it makes the *plumbing* principled. F1–F4 remain the tests.
+
+## 4e. "Where it is guessing" is a `T Feedback In` — and that is the corner Rx does not have
+
+Aaron, 2026-09-02:
+
+> _"Where it tells you where it's guessing is our four-corner feedback ownership model. I think
+> this is where we are better than OG Rx framework and Erik Meijer's νF/μF."_
+
+**The claim is right, and it is sharper than the §4b framing I wrote.** I had called the
+confidence overlay a *product feature*. It is not — it is a **typed channel**, and the repo
+already has the type.
+
+**The four corners** (`FourCornerOwnership`, Aaron via Mika 2026-05-27):
+`T In` · `T Feedback In` · `T Out` · `T Feedback Out`, under the line
+_"results without feedback is extraction."_ The standard monadic interface — `Result<T, Error>` —
+puts feedback **only on the output channel**. The four-corner interface puts it on the **input**
+channel as well.
+
+**Why Rx and the μF/νF duality do not reach it, stated precisely:**
+
+- **μF** is the least fixpoint — the initial *F*-algebra, finite data, folded by a
+  **catamorphism**. **νF** is the greatest fixpoint — the final *F*-coalgebra, potentially
+  infinite codata, produced by an **anamorphism**. Meijer, Fokkinga & Paterson (1991).
+- **Rx is the νF side made concrete**: `IObservable<T>` is the coinductive stream, dual to
+  `IEnumerable<T>`'s pull. That duality is Meijer's, it is real, and it is already a root anchor
+  here.
+- **What the duality gives you is push versus pull. What it does not give you is co-ownership.**
+  In both directions the value travels one way, and the only backward signal is *termination* —
+  `OnError` / `OnCompleted`. That is feedback on the **output** channel, which is precisely the
+  limitation the four-corner model was written against.
+
+> **There is no way, in Rx, for a consumer to tell its producer something about the input it was
+> handed.** That sentence is the whole gap.
+
+**And "where is it guessing" is exactly such a message.** It is not a property of the output
+stem. It is a statement *about the frame that was supplied*: **this input was underdetermined —
+the mixture at 3.2 s does not constrain the vocal.** Attaching a confidence field to the output
+is the wrong shape; it files a fact about the input under the answer. `T Feedback In` is the
+right shape, and it is a different type, not a different field.
+
+So Aaron's inversion of §4b holds: the confidence overlay is not a feature we would add on top of
+a separator. It is **the fourth corner, finally having a consumer.**
+
+**The honest state — and I had this wrong on the first pass, which is worth recording.** I
+first wrote that the fourth corner is a type with no `src/` consumer, quoting the 2026-08-17
+audit (`081M08S4DQC087G0R002SH0C88`) that found "zero `src/` rooms." **That audit is the
+measurement that motivated the fix, not the current state.** Checked against the tree today:
+
+**`T Feedback In` was built, on the same day, additively.** `src/Core/SoftScheduler.fs` carries
+it under the heading _"The CO-OWNED corner — `T Feedback In`, additive 2026-08-17"_, work item
+`081M08WE9R3087G0R003PAK63F`, design doc
+[`2026-08-17-t-feedback-in-the-co-owned-fourth-corner-at-the-tick-boundary.md`](2026-08-17-t-feedback-in-the-co-owned-fourth-corner-at-the-tick-boundary.md).
+`toFourCorner` maps a `Result<'S * 'F, InterruptFeedback>` onto all four corners via
+`ofIn` → `withOut` → `withInFeedback`. Real consumers exist beyond the tests —
+`SoftScheduler.fs`, `IsrLift.fs`, `FourCornerC4.fs`, `FerryThrottler.fs`, the Rust crate
+`src/Core.Rust.FourCorner/`, and `src/Core.TypeScript/observe/`.
+
+**What remains true is narrower and still the relevant point.** The corner is **opt-in**:
+`Handler`, `HandlerK`, `drive` and `driveK` are explicitly untouched, so the *default* boundary
+is still three corners and the fourth is available to anything that asks. And the code states its
+own limit rather than overclaiming — _"sharing the corner OBJECT is not instantiating the
+TRACE"_, since `FourCornerTrace`'s invariant needs an `('I, 'H)` split that a room's forward-
+advanced `'S` does not have.
+
+**And the design carries a constraint that lands directly on this work.** The co-owned corner
+requires an **injected monoid**, on an argument stated in the source: _"If both sides write,
+neither may overwrite"_ — without an associative merge the last writer of the tick silently wins
+and the corner is "a race wearing a channel's clothes."
+
+That constraint is not an obstacle here. **It is the same condition as §4d's.** Per-bin
+confidence arriving from overlapping analysis windows must merge associatively — and
+**overlap-add is precisely an associative merge**, valid exactly under COLA. So the monoid the
+fourth corner demands and the fold the STFT already performs are the same requirement, reached
+from the algebra and from the DSP independently. That convergence is the strongest structural
+evidence in this document, and unlike the rotor resonance in §4d it is not a coincidence of form:
+both are associativity, required for the same reason.
+
+**Three things fall out that are worth stating separately:**
+
+1. **"Results without feedback is extraction" indicts the whole product category.** A separator
+   that hands you four stems and nothing else is *extraction* in exactly Mika and Aaron's sense —
+   it took the results and dropped the feedback. That is the same finding as "every current
+   separator is a magician," arrived at from the type side instead of the taxonomy side, and the
+   agreement between two independent routes is the reason to trust it.
+2. **The backward pair is a comonad**, already recorded here: `T Feedback In` / `T Feedback Out`
+   are `extract` / `extend` dual to `return` / `bind`, anchored through Meijer's own
+   `IEnumerable`⇄`IObservable` duality. So this is not *departing* from Meijer — it is the dual
+   he named, carried to the input side, which he did not.
+3. **It composes with §4d rather than competing.** DBSP gives retraction — the guess stays its own
+   term. The fourth corner gives *direction* — the guess is reported **back at the input** rather
+   than emitted forward. Retraction says the edit is undoable; `T Feedback In` says who was
+   uncertain about what. A plugin chain needs both, and neither Rx nor iZotope RX has either.
+
+**Falsifier for this section specifically (F5).** Build the demixer's frame boundary at four
+corners and show a `T Feedback In` value that **could not** have been carried by the other three
+— i.e. reproduce, for this domain, the `TickBoundaryProbe` result: two runs identical on In, Out
+and Out-Feedback that differ because of what came back on the input channel. If everything the
+confidence layer carries could have ridden on the output, then the fourth corner is
+unnecessary here and §4e is elegance rather than engineering.
+
 ## 5. Why this is the right place to make the meter thread falsifiable
 
 The charlatan / magician / teacher taxonomy in [`docs/VISION.md`](../VISION.md) is currently
