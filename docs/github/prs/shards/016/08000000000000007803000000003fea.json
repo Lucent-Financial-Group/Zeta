@@ -1,0 +1,12 @@
+{
+  "pr_number": 16362,
+  "archive_path": "docs/history/pr-reviews/PR-16362-feat-cluster-mint-redis-auth-at-bring-up-so-included-proof-can-start-valkey.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-02T19:23:30.002Z",
+  "schema_version": "v1",
+  "commit_sha": "cc5b7b216bbf6117f001ed6fb1f4464f9fc31dd2",
+  "title": "feat(cluster): mint redis-auth at bring-up so included proof can start Valkey",
+  "state": "MERGED",
+  "merged_at": "2026-09-02T19:22:30Z",
+  "head_ref": "cursor/redis-auth-dev-secret-27c5"
+}

@@ -50,7 +50,8 @@ type Buggify =
         Buggify.IsActive(probability)
 
 
-/// Simulated filesystem interface.
+/// Simulated filesystem interface. Flush-fail only (Buggify 5%).
+/// Crash-mid-write is `InMemoryFileSystem.ArmCrashMidWrite`, not this type.
 type ISimulatedFs =
     abstract FlushToStableStorage: path: string -> unit
 

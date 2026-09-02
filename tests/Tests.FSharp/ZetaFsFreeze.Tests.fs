@@ -240,3 +240,36 @@ let ``manual pump packs N journaled freezes into one log boat`` () : Task =
             ZetaFsFreeze.dispose volume
             FileSystem.Reset()
     }
+
+[<Fact>]
+let ``Journaled freeze crash-mid-write leaves a torn log and does not finish`` () : Task =
+    task {
+        ensureHasher ()
+        let mock = InMemoryFileSystem()
+        let logNeedle = Path.Combine("log", "freeze")
+        mock.ArmCrashMidWrite(logNeedle, 8)
+        FileSystem.Register(mock)
+        let store = "/crash-mid-freeze"
+        let volume =
+            ZetaFsFreeze.createManual store (ZetaFsMutbuf.create store ZetaFsMutbuf.Coherence.Shared) None
+
+        try
+            let id = mintId ()
+            let h = ZetaFsMutbuf.openHandle volume.Mutbuf id
+            ZetaFsMutbuf.pwrite volume.Mutbuf h 0L [| 1uy; 2uy; 3uy |] |> ignore
+            let pending = (freezeAsync volume id ZetaFsFreeze.Journaled).AsTask()
+            do! (ZetaFsFreeze.pumpLog volume CancellationToken.None).ConfigureAwait(false)
+            let! ex =
+                Assert
+                    .ThrowsAsync<CrashMidWriteException>(fun () -> pending :> Task)
+                    .ConfigureAwait(false)
+
+            Assert.Equal(8, ex.CommittedBytes)
+            Assert.Equal(1, ZetaFsFreeze.logBoatCount volume)
+            let logPath = Path.Combine(store, "log", "freeze")
+            Assert.True(FileSystem.Current.Exists logPath)
+            Assert.Equal(8, FileSystem.Current.ReadAllBytes(logPath).Length)
+        finally
+            ZetaFsFreeze.dispose volume
+            FileSystem.Reset()
+    }

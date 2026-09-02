@@ -62,8 +62,14 @@ type DiskDeltaLog<'K when 'K : comparison>
             let tmp = path + ".tmp"
             do! (task {
                     use fs: Stream = FileSystem.Current.OpenWrite(tmp, fsync)
-                    do! fs.WriteAsync(ReadOnlyMemory bytes, ct).AsTask()
-                    do! fs.FlushAsync ct
+                    let vt = fs.WriteAsync(ReadOnlyMemory bytes, ct)
+                    if vt.IsCompletedSuccessfully then
+                        vt.GetAwaiter().GetResult()
+                    else
+                        do! vt.ConfigureAwait(false)
+                    let flush = fs.FlushAsync ct
+                    if not flush.IsCompletedSuccessfully then
+                        do! flush.ConfigureAwait(false)
                     if fsync then
                         match fs with
                         | :? FileStream as fileStream -> fileStream.Flush(flushToDisk = true)
@@ -178,7 +184,10 @@ type GroupCommitDiskDeltaLog<'K when 'K : comparison>
      ?maxBatchBytes: int) =
 
     let root = Path.GetFullPath dir
-    do FileSystem.Current.CreateDirectory root
+    // Bind the door at construction. Background ferries must not re-read
+    // FileSystem.Current (AsyncLocal does not survive every channel wake).
+    let fsDoor = FileSystem.Current
+    do fsDoor.CreateDirectory root
 
     let segmentPath = Path.Combine(root, "delta.segment")
     let gate = obj ()
@@ -215,11 +224,11 @@ type GroupCommitDiskDeltaLog<'K when 'K : comparison>
     let decodePayload (payload: byte[]) : DeltaLogEntry<'K> = entryCodec.Decode payload
 
     let scanEntries (truncateTrailingTornWrite: bool) : DeltaLogEntry<'K>[] =
-        if not (FileSystem.Current.Exists segmentPath) then
+        if not (fsDoor.Exists segmentPath) then
             [||]
         else
             let access = if truncateTrailingTornWrite then FileAccess.ReadWrite else FileAccess.Read
-            use fs: Stream = FileSystem.Current.OpenFile(segmentPath, FileMode.Open, access, FileShare.ReadWrite)
+            use fs: Stream = fsDoor.OpenFile(segmentPath, FileMode.Open, access, FileShare.ReadWrite)
             use br = new BinaryReader(fs)
             let entries = ResizeArray<DeltaLogEntry<'K>>()
             let mutable scanning = true
@@ -261,17 +270,32 @@ type GroupCommitDiskDeltaLog<'K when 'K : comparison>
 
     let appendBoat (boat: ReadOnlyMemory<GroupCommitDeltaAppendRequest>) (ct: CancellationToken) : Task<int64 array> =
         task {
-            let createdSegment = not (FileSystem.Current.Exists segmentPath)
-            use fs: Stream = FileSystem.Current.OpenFile(segmentPath, FileMode.Append, FileAccess.Write, FileShare.Read)
-            for i in 0 .. boat.Length - 1 do
-                let req = boat.Span.[i]
-                do! fs.WriteAsync(ReadOnlyMemory req.Record, ct).AsTask()
-            do! fs.FlushAsync ct
-            match fs with
-            | :? FileStream as fileStream -> fileStream.Flush(flushToDisk = true)
-            | _ -> fs.Flush()
-            if createdSegment then
-                FileSync.fsyncDirBestEffort root
+            let createdSegment = not (fsDoor.Exists segmentPath)
+            let stream: Stream = fsDoor.OpenFile(segmentPath, FileMode.Append, FileAccess.Write, FileShare.Read)
+            // Dispose/commit before the boat result. Crash-mid-write on Dispose
+            // must fault ProcessAsync; Ok-then-throw would ack a torn segment.
+            try
+                for i in 0 .. boat.Length - 1 do
+                    let vt = stream.WriteAsync(ReadOnlyMemory boat.Span.[i].Record, ct)
+                    // FileStream's WriteAsync is a pooled ValueTask. AsTask() would
+                    // allocate a Task per record; GetResult is legal only because
+                    // this branch is already complete.
+                    if vt.IsCompletedSuccessfully then
+                        vt.GetAwaiter().GetResult()
+                    else
+                        do! vt.ConfigureAwait(false)
+
+                let flush = stream.FlushAsync ct
+                if not flush.IsCompletedSuccessfully then
+                    do! flush.ConfigureAwait(false)
+
+                match stream with
+                | :? FileStream as fileStream -> fileStream.Flush(flushToDisk = true)
+                | _ -> stream.Flush()
+                if createdSegment then
+                    FileSync.fsyncDirBestEffort root
+            finally
+                stream.Dispose()
             return [| for i in 0 .. boat.Length - 1 -> boat.Span.[i].Seq |]
         }
 

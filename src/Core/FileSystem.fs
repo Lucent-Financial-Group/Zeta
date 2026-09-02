@@ -87,7 +87,7 @@ type PhysicalFileSystem() =
 
 /// Byte helpers over `IFileSystem`. Temp+rename so a crash cannot leave a
 /// half-written FORMAT / object / ref. Dispose the write stream *before*
-/// Move: `InMemoryFileSystem` commits on Dispose.
+/// Move: `InMemoryFileSystem` commits on Dispose (prefix + throw if armed).
 [<RequireQualifiedAccess>]
 module FileSystemIo =
     let writeAllBytes (fs: IFileSystem) (path: string) (bytes: byte[]) =
@@ -129,8 +129,31 @@ module FileSystemIo =
                 else
                     Some(Array.take offset bytes)
 
+/// DST: write committed a prefix, then the process died. Not a FreezeError.
+[<Sealed>]
+type CrashMidWriteException(path: string, committedBytes: int, attemptedBytes: int) =
+    inherit IOException(
+        sprintf
+            "crash-mid-write: committed %d of %d bytes at %s"
+            committedBytes
+            attemptedBytes
+            path)
+
+    member _.Path = path
+    member _.CommittedBytes = committedBytes
+    member _.AttemptedBytes = attemptedBytes
+
 /// A mock FileStream that commits its MemoryStream buffer to the InMemoryFileSystem registry upon disposal.
-type SimulatedFileStream(path: string, mode: FileMode, access: FileAccess, files: System.Collections.Concurrent.ConcurrentDictionary<string, byte[]>, checkFault: unit -> unit, applyLatency: unit -> unit) =
+type SimulatedFileStream
+    (
+        path: string,
+        mode: FileMode,
+        access: FileAccess,
+        files: System.Collections.Concurrent.ConcurrentDictionary<string, byte[]>,
+        checkFault: unit -> unit,
+        applyLatency: unit -> unit,
+        commitWrite: string -> byte[] -> unit
+    ) =
     inherit MemoryStream()
     let mutable isDisposed = false
     do
@@ -153,17 +176,18 @@ type SimulatedFileStream(path: string, mode: FileMode, access: FileAccess, files
             checkFault()
             applyLatency()
             if access.HasFlag(FileAccess.Write) then
-                files.[path] <- this.ToArray()
+                commitWrite path (this.ToArray())
         base.Dispose(disposing)
 
 /// An in-memory mock file system that supports simulating latency, read/write sector corruption exceptions,
-/// and file creation/modification tracking.
+/// file creation/modification tracking, and one-shot crash-mid-write (D12 door).
 type InMemoryFileSystem() =
     let files = System.Collections.Concurrent.ConcurrentDictionary<string, byte[]>()
     let mutable latencyMs = 0L
     let mutable virtualElapsedMs = 0L
     let mutable errorRate = 0.0
     let mutable rngState = 12345L
+    let mutable crashArm: (string * int) option = None
     let lockObj = obj ()
 
     let splitMix () =
@@ -183,7 +207,31 @@ type InMemoryFileSystem() =
         if latencyMs > 0L then
             lock lockObj (fun () -> virtualElapsedMs <- virtualElapsedMs + latencyMs)
 
+    let commitWrite (path: string) (bytes: byte[]) =
+        lock lockObj (fun () ->
+            match crashArm with
+            | Some(needle, afterBytes) when
+                path.IndexOf(needle, StringComparison.Ordinal) >= 0
+                && bytes.Length > afterBytes
+                ->
+                crashArm <- None
+                let prefix = Array.sub bytes 0 afterBytes
+                files.[path] <- prefix
+                raise (CrashMidWriteException(path, afterBytes, bytes.Length))
+            | _ -> files.[path] <- bytes)
+
     member _.Files = files
+
+    /// One-shot: next matching write Dispose commits `afterBytes` then throws.
+    /// `ISimulatedFs` stays flush-only; this is the crash-mid-write intercept.
+    member _.ArmCrashMidWrite(pathContains: string, afterBytes: int) =
+        if String.IsNullOrEmpty pathContains then
+            invalidArg (nameof pathContains) "pathContains must be non-empty"
+
+        if afterBytes < 0 then
+            invalidArg (nameof afterBytes) "afterBytes must be >= 0"
+
+        lock lockObj (fun () -> crashArm <- Some(pathContains, afterBytes))
 
     /// Injected latency in virtual milliseconds. Never wall-clock sleep.
     member _.VirtualElapsedMs = lock lockObj (fun () -> virtualElapsedMs)
@@ -227,13 +275,13 @@ type InMemoryFileSystem() =
         }
 
         member _.OpenFile(path, mode, access, _share) =
-            new SimulatedFileStream(path, mode, access, files, checkFault, applyLatency) :> Stream
- 
+            new SimulatedFileStream(path, mode, access, files, checkFault, applyLatency, commitWrite) :> Stream
+
         member _.OpenWrite(path, _fsync) =
-            new SimulatedFileStream(path, FileMode.Create, FileAccess.Write, files, checkFault, applyLatency) :> Stream
- 
+            new SimulatedFileStream(path, FileMode.Create, FileAccess.Write, files, checkFault, applyLatency, commitWrite) :> Stream
+
         member _.OpenRead(path) =
-            new SimulatedFileStream(path, FileMode.Open, FileAccess.Read, files, checkFault, applyLatency) :> Stream
+            new SimulatedFileStream(path, FileMode.Open, FileAccess.Read, files, checkFault, applyLatency, commitWrite) :> Stream
 
         member _.GetFiles(path, searchPattern) =
             checkFault()

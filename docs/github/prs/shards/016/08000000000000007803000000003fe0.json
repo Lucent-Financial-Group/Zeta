@@ -1,0 +1,12 @@
+{
+  "pr_number": 16352,
+  "archive_path": "docs/history/pr-reviews/PR-16352-docs-081m1hk4aqe087g0r002rrjxwe-refs-shaped-resilience-for-zetafs-and-zetadb.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-02T18:03:35.134Z",
+  "schema_version": "v1",
+  "commit_sha": "f6e2a9e94ad291c5e8e1db900bc7d3b662fc905a",
+  "title": "docs(081M1HK4AQE087G0R002RRJXWE): ReFS-shaped resilience for ZetaFS and ZetaDB",
+  "state": "MERGED",
+  "merged_at": "2026-09-02T18:02:57Z",
+  "head_ref": "feat/zetadb-refs-resilience"
+}
