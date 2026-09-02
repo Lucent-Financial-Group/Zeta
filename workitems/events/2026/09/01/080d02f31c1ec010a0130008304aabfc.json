@@ -1,0 +1,14 @@
+{
+  "id": "080d02f31c1ec010a0130008304aabfc",
+  "at": "2026-09-01T19:12:55.256Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1F670YQ087G0R002N986B6",
+    "type": "bug",
+    "title": "KUBE_VERSION is hardcoded 1.31.0 while the cluster ships k3s 1.34 — the chart audit renders against a version we do not run",
+    "slug": "kube-version-is-hardcoded-1-31-0-while-the-cluster-ships-k3s",
+    "priority": "P2",
+    "filename": "081M1F670YQ087G0R002N986B6-kube-version-is-hardcoded-1-31-0-while-the-cluster-ships-k3s.md"
+  }
+}

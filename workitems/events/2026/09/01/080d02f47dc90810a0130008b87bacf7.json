@@ -1,0 +1,14 @@
+{
+  "id": "080d02f47dc90810a0130008b87bacf7",
+  "at": "2026-09-01T20:01:12.481Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1F8ZE90087G0R003X3PYN9",
+    "type": "task",
+    "title": "Re-model the redis storage/resource ledger for Valkey — one StatefulSet with a shared volumeClaimTemplate, not master+replicas",
+    "slug": "re-model-the-redis-storage-resource-ledger-for-valkey-one-st",
+    "priority": "P2",
+    "filename": "081M1F8ZE90087G0R003X3PYN9-re-model-the-redis-storage-resource-ledger-for-valkey-one-st.md"
+  }
+}

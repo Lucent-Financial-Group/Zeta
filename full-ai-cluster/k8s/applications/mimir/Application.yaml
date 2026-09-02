@@ -105,6 +105,26 @@ spec:
           persistentVolume:
             storageClass: longhorn
             size: 16Gi
+        # DECLARED so the ladder can price it. mimir-distributed 6.2.0 turns the
+        # INGEST-STORAGE architecture on by default -- `kafka.enabled: true` plus
+        # `ingest_storage.enabled: true` in the chart's own values -- so writes now
+        # route through a bundled StatefulSet that 5.5.1 did not render at all.
+        #
+        # These are the CHART'S OWN numbers (`cpu: 1`, `memory: 1Gi`), written out
+        # so a row can govern them rather than to change what renders at metal. The
+        # dev rung then floors the CPU like every other row does; memory is left
+        # alone because it is a ceiling, not a share.
+        #
+        # WHETHER WE WANT INGEST-STORAGE AT ALL IS STILL OPEN, and this block does
+        # not settle it: opting back out means setting BOTH `kafka.enabled: false`
+        # and `ingest_storage.enabled: false`, and the chart notes the two paths
+        # need different ingester-zone counts (2 vs 3), so it is not a one-line
+        # revert. Declaring the cost is what makes that choice measurable.
+        kafka:
+          resources:
+            requests:
+              cpu: 1
+              memory: 1024Mi
   destination:
     server: https://kubernetes.default.svc
     namespace: mimir

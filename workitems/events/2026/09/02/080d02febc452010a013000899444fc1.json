@@ -1,0 +1,14 @@
+{
+  "id": "080d02febc452010a013000899444fc1",
+  "at": "2026-09-02T01:59:15.876Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1FXF253087G0R000F9SYJ7",
+    "type": "task",
+    "title": "mimir 6.2.0 turns on ingest-storage by default — decide whether to keep the bundled Kafka",
+    "slug": "mimir-6-2-0-turns-on-ingest-storage-by-default-decide-whethe",
+    "priority": "P2",
+    "filename": "081M1FXF253087G0R000F9SYJ7-mimir-6-2-0-turns-on-ingest-storage-by-default-decide-whethe.md"
+  }
+}

@@ -1,4 +1,47 @@
-# Redis — cache. Bitnami chart for the standard ergonomics.
+# Valkey — the cache, and Orleans' cluster-membership store.
+#
+# WAS BITNAMI REDIS UNTIL 2026-09-01. The move is not a version bump; it is an
+# escape from a distribution that stopped shipping versioned tags.
+#
+# WHAT WAS MEASURED, not assumed (2026-09-01, Docker Hub API):
+#   docker.io/bitnamilegacy/redis   last published 2025-08-22 -- an ARCHIVE, frozen
+#                                   over a year, explicitly receiving no updates
+#   docker.io/bitnami/redis         active, but EVERY tag is `latest` or a cosign
+#                                   artifact -- no versioned tags at all
+#   docker.io/bitnami/valkey        the SAME: `latest` and `latest-metadata`, nothing
+#                                   else. Bitnami's valkey chart defaults to
+#                                   `tag: latest`, so switching flavours inside
+#                                   Bitnami escapes nothing
+#   docker.io/valkey/valkey         9.1.x, real versioned tags, published the day
+#                                   this was written
+#
+# So bumping the Bitnami chart would have traded a frozen archive for an UNPINNED
+# ROLLING TAG, which is worse: a frozen tag at least does not change under you.
+#
+# WHY THIS CHART. `valkey-io/valkey-helm` is the Valkey project's own chart, and it
+# pins `valkey/valkey` with `tag: ""` -- resolving to the chart's appVersion rather
+# than to `latest`. Rendered here at 0.11.0 it produces
+# `docker.io/valkey/valkey:9.1.1`, a real immutable tag.
+#
+# WHY NOT KEEP A BITNAMI CHART AND OVERRIDE THE IMAGE. That is what the old pin did
+# (`bitnamilegacy/redis` + `allowInsecureImages`), and it worked only because the
+# archive is still a BITNAMI image with Bitnami's filesystem layout. Pointing a
+# Bitnami chart at `valkey/valkey` would not work: the chart's scripts assume
+# `/opt/bitnami`, and `allowInsecureImages` silences the assertion that would have
+# told us so.
+#
+# WORKFLOW FIT. Orleans reads cluster membership from here
+# (`Microsoft.Orleans.Clustering.Redis` over StackExchange.Redis). Valkey is
+# wire-compatible, so the client is unchanged; the endpoint moved and
+# orleans/configmap.yaml moved with it, in this same commit.
+#
+# AUTH IS ACL-BASED HERE, which is the one real difference. Bitnami took a single
+# password; Valkey defines users. `default` carries our existing `redis-auth`
+# secret's `password` key, so StackExchange.Redis's plain AUTH still works, and a
+# `replicator` user exists because the chart REFUSES replica mode without one.
+#
+# STILL OPEN, and unchanged by this commit: the `redis-auth` secret does not exist
+# in the tree. That is why the orleans StatefulSet stays at replicas 0.
 
 apiVersion: argoproj.io/v1alpha1
 kind: Application
@@ -11,77 +54,78 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: https://charts.bitnami.com/bitnami
-    chart: redis
-    targetRevision: 20.5.0
+    repoURL: https://valkey-io.github.io/valkey-helm
+    chart: valkey
+    targetRevision: 0.11.0
     helm:
       releaseName: redis
       valuesObject:
-        # BITNAMI WITHDREW THE VERSIONED TAGS; `bitnamilegacy` IS WHERE THEY WENT.
+        # DECLARED, because this chart declares nothing. `resources: {}` is its
+        # default, which renders BestEffort pods -- and a BestEffort pod is the
+        # first thing evicted under node pressure. Orleans reads its CLUSTER
+        # MEMBERSHIP from here, so an evicted cache is a cluster that loses its
+        # membership store, not a cache miss.
         #
-        # MEASURED 2026-08-23, not assumed. `docker.io/bitnami/redis` still
-        # exists on Docker Hub -- a `tags/list` against it returns 474 entries --
-        # but every one of them is `latest`, `latest-metadata`, or a
-        # `sha256-...`/`.sig`/`.att`/`.metadata` cosign artifact. The versioned
-        # tags are gone, so chart 20.5.0's default
-        # `docker.io/bitnami/redis:7.4.1-debian-12-r2` returns HTTP 404 from the
-        # registry: an ImagePullBackOff in the cluster, and an UNMEASURABLE image
-        # to `measure-lane-footprints.ts`, which is why this whole Application sat
-        # in the partitioner's CANNOT BE PRICED quarantine and was never tested.
-        #
-        # `docker.io/bitnamilegacy/redis:7.4.1-debian-12-r2` -- the SAME tag, the
-        # archive repository Bitnami moved the free catalogue to -- resolves and
-        # measures 51,672,225 compressed bytes. Only the repository path changes;
-        # the tag is untouched, so this is a re-point, not a version bump.
-        #
-        # HONEST LIMIT: `bitnamilegacy` is explicitly an ARCHIVE. It receives no
-        # further updates and Bitnami reserves the right to remove it, so this
-        # pin buys a testable chart today and is not a long-term answer. The
-        # long-term answers are a non-Bitnami redis chart or a Bitnami Secure
-        # Images subscription, and both are maintainer calls rather than ones to
-        # make inside a measurement fix.
-        #
-        # `global.security.allowInsecureImages` IS REQUIRED, AND IT IS THE
-        # CHART'S OWN SWITCH FOR EXACTLY THIS MOVE -- not a security control
-        # being turned off. MEASURED: with the repository re-pointed and this
-        # flag absent, `helm template` FAILS outright at
-        # `redis/templates/NOTES.txt:216` with "Original containers have been
-        # substituted for unrecognized ones". That is a chart-side assertion
-        # that the image path is one of Bitnami's own; it gates nothing in the
-        # cluster, admits nothing to it, and its only effect here is to let the
-        # chart render against the archive repository Bitnami itself published.
-        global:
-          security:
-            allowInsecureImages: true
-        image:
-          repository: bitnamilegacy/redis
-        architecture: replication
+        # 100m / 128Mi per pod matches what bitnami's `resourcesPreset: nano`
+        # rendered, so this is the old reservation carried forward rather than a
+        # new number invented at the switch. Three pods render (primary + two
+        # replicas, see `replica.replicas` below), so the Application totals
+        # 300m / 384Mi -- IDENTICAL to the bitnami pin. A chart migration is not
+        # the place to change a capacity decision: if 3 pods is the wrong number
+        # for redis it should be argued and measured on its own, not slipped in
+        # under a migration diff where the reduction reads as a chart detail.
+        resources:
+          requests:
+            cpu: 100m
+            memory: 128Mi
+          limits:
+            memory: 256Mi
         auth:
+          # ACL users, not a bare password. The chart REFUSES to render with
+          # auth.enabled and no `default` user -- a good refusal: without one,
+          # anyone reaches the database with no credential at all.
           enabled: true
-          existingSecret: redis-auth # create via Sealed Secret / Vault
-          existingSecretPasswordKey: password
-        master:
+          usersExistingSecret: redis-auth # create via Sealed Secret / Vault
+          aclUsers:
+            default:
+              permissions: "~* &* +@all"
+              passwordKey: password
+            replicator:
+              # The chart requires a replica user when replica.enabled is true,
+              # and requires it to hold exactly these verbs.
+              permissions: "+psync +replconf +ping"
+              passwordKey: password
+        replica:
+          enabled: true
+          # WAS replicaCount 2 under Bitnami, which rendered 3 pods (a separate
+          # `master` StatefulSet plus 2 replicas). This chart has ONE StatefulSet
+          # and counts `replicas` EXCLUDING the primary, so 2 here is 3 pods --
+          # the same footprint. An earlier draft of this file said 1 (=2 pods)
+          # was "the same footprint", which was simply wrong, and it contradicted
+          # the resources comment above that correctly counted bitnami's three.
+          # The ledger encodes this exclusive reading as
+          # `podsFieldExcludesPrimary`, so the off-by-one is checked rather than
+          # remembered.
+          replicas: 2
+          # `replicationUser`, NOT `username`. inert-valuesobject-keys refused the
+          # first spelling and was right: the chart defaults replicationUser to
+          # "default", so a wrong key here renders CLEANLY and silently replicates
+          # as the full-privilege default user instead of this minimal one. Exactly
+          # the failure that guard exists to catch, caught on my own values.
+          replicationUser: replicator
           persistence:
-            enabled: true
-            storageClass: longhorn
-            # SIZE CUT, NOT A POD CUT: 10Gi -> 8Gi. Exactly ONE master pod
-            # renders here regardless of the replicaCount below (bitnami redis
-            # 20.5.0 with architecture: replication), so this claim is 8 GiB and
-            # not 16. The volume is RDB/AOF spill, so it bounds what survives a
-            # restart, not what can be cached in memory -- maxmemory governs
+            # SIZE CARRIED FORWARD from the Bitnami pin: 8Gi, chosen there as a
+            # size cut and not a pod cut. The volume is RDB/AOF spill, so it bounds
+            # what survives a restart, not what can be cached -- maxmemory governs
             # that and is a memory setting, not this one.
             size: 8Gi
-        replica:
-          replicaCount: 2
-          persistence:
-            enabled: true
             storageClass: longhorn
-            # SIZE CUT, NOT A POD CUT: 10Gi -> 8Gi x 2 replicas. `replicaCount:
-            # 2` is UNTOUCHED, so read fan-out and the warm standby both stay.
-            # (`minimal` drops to 1; bitnami replication is ASYNCHRONOUS so
-            # there is no quorum to lose there either way, but there is one
-            # fewer warm copy.)
-            size: 8Gi
+        # NO TOP-LEVEL `persistence:` HERE. An earlier draft had one and
+        # inert-valuesobject-keys refused it: this chart has no such key. One
+        # StatefulSet renders with `replicas: 3` -- primary plus two replicas --
+        # and the single volumeClaimTemplate above covers ALL of them, so the
+        # top-level block governed nothing while looking like it governed the
+        # primary's disk.
   destination:
     server: https://kubernetes.default.svc
     namespace: redis

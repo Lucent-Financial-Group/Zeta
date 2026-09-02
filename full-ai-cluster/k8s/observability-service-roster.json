@@ -70,7 +70,7 @@
       "chart": "mimir-distributed",
       "repoURL": "https://grafana.github.io/helm-charts",
       "version": "6.2.0",
-      "valuesHash": "sha256:eafb929e6f0276fce2016bb3a453d29f1bcd80f7e2c9bf399c56f79d9717bc77",
+      "valuesHash": "sha256:80b3fd18d94bd2477c84d979009769718646cd12ef1d1f1e25dc30aedd697aec",
       "services": {
         "mimir-rollout-operator": [
           443

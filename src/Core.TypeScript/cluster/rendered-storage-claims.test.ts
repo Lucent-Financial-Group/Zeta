@@ -613,7 +613,11 @@ describe("the live catalogue against the measured render", () => {
     // None of that disk is new. It stopped being invisible, which is the only
     // thing an unrenderable app ever hides.
     expect(totals.get("longhorn")).toBe(867);
-    expect(totals.get("zeta-local-path")).toBe(249);
+    // 249 -> 301 on 2026-09-01, when the snapshot was re-measured against the
+    // charts already merged on main: dapr's scheduler 1Gi x1 -> 16Gi x3 (+47)
+    // and mimir 6.2.0's bundled Kafka (+5). The disk was rendered the moment
+    // those bumps landed; only the measurement was stale.
+    expect(totals.get("zeta-local-path")).toBe(301);
   });
 
   // WAS "the two live inert-values defects are still exactly two apps". Both

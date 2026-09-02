@@ -666,6 +666,25 @@
       }
     },
     {
+      "id": "full-ai-cluster/mimir/kafka",
+      "dir": "mimir",
+      "path": "full-ai-cluster/k8s/applications/mimir/Application.yaml",
+      "docIndex": 0,
+      "requestsField": "spec.source.helm.valuesObject.kafka.resources.requests",
+      "pods": 1,
+      "metalSource": "manifest",
+      "evidence": "mimir-distributed 6.2.0 renders StatefulSet/mimir-kafka (apache/kafka-native 4.1.0) because the chart enables the ingest-storage architecture by default: `kafka.enabled: true` AND `mimir.structuredConfig.ingest_storage.enabled: true` in its own values.yaml. 5.5.1 rendered no such workload. Measured 2026-09-01 from the resource snapshot: 1 pod requesting 1000m / 1024Mi, IDENTICAL at both rungs before this row existed -- identical because no field of ours governed it. The metal numbers here are the chart's own (`cpu: 1`, `memory: 1Gi`) written into our Application unchanged, so this row prices what already rendered rather than changing it.",
+      "consequence": "Kafka is now on mimir's WRITE PATH, not beside it: with ingest_storage enabled the distributors publish to this broker and the ingesters consume from it, so this pod being unschedulable does not degrade mimir, it stops metric ingestion. That is why the memory request is left at the chart's 1Gi -- it is a ceiling on a JVM-less broker holding in-flight segments, and an OOMKill here loses the un-consumed tail. DEV CPU FLOORED 2026-09-01 under the standing floor (see $comment_devCpuFloor): 1000m -> 25m per pod x 1 pod = -975m, by far the largest single saving in the dev lane, and defensible for the same reason as every other row -- CPU is compressible, so a floored request costs guaranteed share under contention and never headroom. METAL IS UNTOUCHED at 1000m. Whether we want this architecture at all is a separate, still-open question recorded on the Application; this row makes its cost visible either way.",
+      "cpuMillis": {
+        "dev": 25,
+        "metal": 1000
+      },
+      "memoryMib": {
+        "dev": 1024,
+        "metal": 1024
+      }
+    },
+    {
       "id": "full-ai-cluster/mimir/ingester",
       "dir": "mimir",
       "path": "full-ai-cluster/k8s/applications/mimir/Application.yaml",
@@ -842,10 +861,11 @@
       "path": "full-ai-cluster/k8s/applications/node-feature-discovery/Application.yaml",
       "docIndex": 0,
       "requestsField": "spec.source.helm.valuesObject.master.resources.requests",
-      "pods": 1,
+      "pods": 2,
       "metalSource": "manifest",
       "evidence": "",
       "consequence": "The NFD master holds the feature set of every node. On a one-node kind cluster that is a handful of labels, so 96Mi is generous; on a large fleet it is not, which is why `metal` keeps 128Mi. DEV CPU FLOORED 2026-08-23, AUTHORIZED BY AARON (\"cpu is a compressible resource, can we not set the requests smaller to make it fit? seems like should be able to test more charts\"): dev 50m -> 25m per pod x 1 pod(s) = -25m. METAL IS UNTOUCHED at 100m -- this is a rung-scoped override, and the hardware deployment does not move. A request is a SCHEDULING reservation and a cgroup share, not a ceiling: nothing here lowers a limit, so the cut costs guaranteed CPU under contention (slower start, a readiness probe with less slack) and NOT headroom. CPU is compressible -- the pod is throttled, never killed -- which is why this floor touches cpuMillis and leaves memoryMib exactly where it was. See $comment_devCpuFloor for the sensitivity curve and what this does not reach.",
+      "evidence": "ONE requests field, TWO workloads. `master.resources` governs both `Deployment/nfd-node-feature-discovery-master` and `Job/nfd-node-feature-discovery-prune`, which the chart renders with the SAME requests -- measured 2026-09-01 at both rungs (dev 25m / 96Mi, metal 100m / 128Mi, identical for the two). The row said pods 1 while the field priced 2, so every rung total understated this Application by exactly one master-sized pod. Found by re-measuring the resource snapshot, not by reading the chart: the prune Job arrived in a chart bump and no declaration moved.",
       "cpuMillis": {
         "dev": 25,
         "metal": 100
@@ -951,34 +971,15 @@
       }
     },
     {
-      "id": "full-ai-cluster/redis/master",
+      "id": "full-ai-cluster/redis",
       "dir": "redis",
       "path": "full-ai-cluster/k8s/applications/redis/Application.yaml",
       "docIndex": 0,
-      "requestsField": "spec.source.helm.valuesObject.master.resources.requests",
-      "pods": 1,
-      "metalSource": "chart-default",
-      "evidence": "bitnami redis 20.5.0 ships master.resourcesPreset: nano, which renders 100m / 128Mi; the chart's own values.yaml documents that an explicit master.resources OVERRIDES the preset. Rendered and counted 2026-08-21. Setting the field therefore takes the value off the preset ladder, which is a behaviour change worth knowing about even though the metal number is identical.",
-      "consequence": "Redis holds its whole dataset in memory. 64Mi is a hard ceiling on the dataset, not a throttle: past it the master is OOMKilled and every key not yet persisted is gone. This is the cut in this ladder with the least margin, and it is only defensible because the dev lane's redis holds a smoke-test dataset. DEV CPU FLOORED 2026-08-23, AUTHORIZED BY AARON (\"cpu is a compressible resource, can we not set the requests smaller to make it fit? seems like should be able to test more charts\"): dev 50m -> 25m per pod x 1 pod(s) = -25m. METAL IS UNTOUCHED at 100m -- this is a rung-scoped override, and the hardware deployment does not move. A request is a SCHEDULING reservation and a cgroup share, not a ceiling: nothing here lowers a limit, so the cut costs guaranteed CPU under contention (slower start, a readiness probe with less slack) and NOT headroom. CPU is compressible -- the pod is throttled, never killed -- which is why this floor touches cpuMillis and leaves memoryMib exactly where it was. See $comment_devCpuFloor for the sensitivity curve and what this does not reach.",
-      "cpuMillis": {
-        "dev": 25,
-        "metal": 100
-      },
-      "memoryMib": {
-        "dev": 64,
-        "metal": 128
-      }
-    },
-    {
-      "id": "full-ai-cluster/redis/replicas",
-      "dir": "redis",
-      "path": "full-ai-cluster/k8s/applications/redis/Application.yaml",
-      "docIndex": 0,
-      "requestsField": "spec.source.helm.valuesObject.replica.resources.requests",
-      "pods": 2,
-      "metalSource": "chart-default",
-      "evidence": "bitnami redis 20.5.0 replica.resourcesPreset: nano -> 100m / 128Mi, multiplied by this Application's replica.replicaCount: 2. Rendered and counted 2026-08-21.",
-      "consequence": "Each replica holds a full copy of the master's dataset, so the same ceiling applies twice over: a replica that OOMKills re-syncs from scratch, which on a real dataset is a full RDB transfer. Nominal redundancy only on one node -- see acknowledgedFalseRedundancy. DEV CPU FLOORED 2026-08-23, AUTHORIZED BY AARON (\"cpu is a compressible resource, can we not set the requests smaller to make it fit? seems like should be able to test more charts\"): dev 50m -> 25m per pod x 2 pod(s) = -50m. METAL IS UNTOUCHED at 100m -- this is a rung-scoped override, and the hardware deployment does not move. A request is a SCHEDULING reservation and a cgroup share, not a ceiling: nothing here lowers a limit, so the cut costs guaranteed CPU under contention (slower start, a readiness probe with less slack) and NOT headroom. CPU is compressible -- the pod is throttled, never killed -- which is why this floor touches cpuMillis and leaves memoryMib exactly where it was. See $comment_devCpuFloor for the sensitivity curve and what this does not reach.",
+      "requestsField": "spec.source.helm.valuesObject.resources.requests",
+      "pods": 3,
+      "metalSource": "manifest",
+      "evidence": "valkey-io/valkey-helm 0.11.0 ships `resources: {}`, which renders BestEffort pods -- so unlike bitnami there is NO preset to inherit and this Application declares the requests itself. That is why metalSource is manifest here and was chart-default on the two rows this replaces. 100m / 128Mi per pod is bitnami redis 20.5.0's `resourcesPreset: nano` carried forward unchanged, multiplied by the 3 pods the single StatefulSet renders. Rendered and counted 2026-09-01: `replica.replicas: 2` EXCLUDES the primary, so StatefulSet redis-valkey renders spec.replicas=3. Total 300m / 384Mi -- IDENTICAL to the two bitnami rows summed (master 1 pod + replicas 2 pods), so this re-model moves no compute.",
+      "consequence": "Redis holds its whole dataset in memory. 64Mi is a hard ceiling on the dataset, not a throttle: past it the pod is OOMKilled and every key not yet persisted is gone. Each replica holds a full copy, so the ceiling applies three times over; a replica that OOMKills re-syncs from scratch, which on a real dataset is a full RDB transfer. Orleans reads its CLUSTER MEMBERSHIP from here, so an evicted pod is a cluster that loses its membership store, not a cache miss -- which is the reason the requests are declared at all. This is the cut in this ladder with the least margin, and it is only defensible because the dev lane's redis holds a smoke-test dataset. Nominal redundancy only on one node -- see acknowledgedFalseRedundancy. DEV CPU FLOORED 2026-08-23, AUTHORIZED BY AARON (\"cpu is a compressible resource, can we not set the requests smaller to make it fit? seems like should be able to test more charts\"): dev 50m -> 25m per pod x 3 pod(s) = -75m. METAL IS UNTOUCHED at 100m -- this is a rung-scoped override, and the hardware deployment does not move. A request is a SCHEDULING reservation and a cgroup share, not a ceiling: nothing here lowers a limit, so the cut costs guaranteed CPU under contention (slower start, a readiness probe with less slack) and NOT headroom. CPU is compressible -- the pod is throttled, never killed -- which is why this floor touches cpuMillis and leaves memoryMib exactly where it was. See $comment_devCpuFloor for the sensitivity curve and what this does not reach.",
       "cpuMillis": {
         "dev": 25,
         "metal": 100
@@ -1087,9 +1088,9 @@
   "ungovernedRequests": [
     {
       "dir": "alloy",
-      "cpuMillis": 1,
-      "memoryMib": 5,
-      "evidence": "alloy 0.10.1 rendered with this Application's valuesObject, 2026-08-21: one DaemonSet pod, 1m / 5Mi. Too small to be worth a rung."
+      "cpuMillis": 10,
+      "memoryMib": 50,
+      "evidence": "alloy rendered with this Application's valuesObject, RE-MEASURED 2026-09-01: one DaemonSet pod, 10m / 50Mi. WAS 1m / 5Mi at 0.10.1 on 2026-08-21; the chart bump raised its own defaults and nothing re-read them until the resource snapshot was re-measured. Still too small to be worth a rung, which is why it stays here rather than becoming a governed row."
     },
     {
       "dir": "arc-runner-set",
@@ -1690,46 +1691,20 @@
       }
     },
     {
-      "id": "full-ai-cluster/redis/master",
-      "path": "full-ai-cluster/k8s/applications/redis/Application.yaml",
-      "docIndex": 0,
-      "storageClassField": "spec.source.helm.valuesObject.master.persistence.storageClass",
-      "sizeField": "spec.source.helm.valuesObject.master.persistence.size",
-      "podsField": null,
-      "podsSource": "singleton",
-      "podsEvidence": "bitnami/redis 20.5.0 with architecture: replication renders exactly ONE master StatefulSet pod. The readiness auditor's nearest-enclosing-replicas heuristic wrongly borrows replica.replicaCount=2 here, over-counting this claim by one pod.",
-      "scheduledAtBringUp": true,
-      "bringUpNote": "automated sync",
-      "consequence": "Redis is a cache; the volume is RDB/AOF spill. 4Gi bounds how much can be persisted across a restart, not how much can be cached in memory.",
-      "renderedApp": "full-ai-cluster/redis",
-      "renderedPvcPattern": "^redis-data/redis-master$",
-      "sizes": {
-        "minimal": "4Gi",
-        "standard": "8Gi",
-        "measured": "8Gi",
-        "large": "10Gi"
-      },
-      "pods": {
-        "minimal": 1,
-        "standard": 1,
-        "measured": 1,
-        "large": 1
-      }
-    },
-    {
-      "id": "full-ai-cluster/redis/replica",
+      "id": "full-ai-cluster/redis",
       "path": "full-ai-cluster/k8s/applications/redis/Application.yaml",
       "docIndex": 0,
       "storageClassField": "spec.source.helm.valuesObject.replica.persistence.storageClass",
       "sizeField": "spec.source.helm.valuesObject.replica.persistence.size",
-      "podsField": "spec.source.helm.valuesObject.replica.replicaCount",
+      "podsField": "spec.source.helm.valuesObject.replica.replicas",
+      "podsFieldExcludesPrimary": true,
       "podsSource": "manifest",
       "podsEvidence": "",
       "scheduledAtBringUp": true,
       "bringUpNote": "automated sync",
-      "consequence": "minimal drops from 2 read replicas to 1. HA LOSS, STATED \u2014 but the smallest of the three: bitnami redis replication is ASYNCHRONOUS, so there is no quorum to lose, and full-ai-cluster/redis is already in acknowledgedFalseRedundancy for the same single-node reason. What is lost is read fan-out and one warm standby.",
+      "consequence": "Redis is a cache; the volume is RDB/AOF spill, so the size bounds what survives a restart, not what can be cached in memory (maxmemory governs that, and it is a memory setting). ONE volumeClaimTemplate (`valkey-data`) now covers every pod, where bitnami had a separate master PVC plus per-replica PVCs -- so two ledger rows became one while the TOTAL is unchanged, because it was always size x pods: standard is 8Gi x 3 = 24Gi, exactly bitnami's 8Gi x 1 + 8Gi x 2. The 8Gi pin is CARRIED FORWARD from the bitnami row and its reasoning still holds: it was chosen there as a SIZE cut and not a pod cut. minimal drops from 2 replicas to 1. HA LOSS, STATED -- but the smallest kind: valkey replication is ASYNCHRONOUS, so there is no quorum to lose, and full-ai-cluster/redis is already in acknowledgedFalseRedundancy for the same single-node reason. What is lost is read fan-out and one warm standby.",
       "renderedApp": "full-ai-cluster/redis",
-      "renderedPvcPattern": "^redis-data/redis-replicas$",
+      "renderedPvcPattern": "^valkey-data/redis-valkey$",
       "sizes": {
         "minimal": "4Gi",
         "standard": "8Gi",
@@ -1737,10 +1712,10 @@
         "large": "10Gi"
       },
       "pods": {
-        "minimal": 1,
-        "standard": 2,
-        "measured": 2,
-        "large": 2
+        "minimal": 2,
+        "standard": 3,
+        "measured": 3,
+        "large": 3
       }
     },
     {

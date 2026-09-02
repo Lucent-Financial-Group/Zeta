@@ -83,6 +83,16 @@ export interface ProfileClaim {
   readonly sizeField: string;
   /** Dotted path of the replica scalar, or null when the pod count is not ours to set. */
   readonly podsField: string | null;
+  /**
+   * TRUE when `podsField` counts replicas EXCLUDING the primary, so the scalar
+   * in the manifest is `pods - 1`. Charts disagree on this and the key name
+   * never tells you: bitnami's `replica.replicaCount` excluded the primary and
+   * was paired with a separate `master` block, while valkey-io/valkey-helm has
+   * ONE StatefulSet whose `replicas` is also exclusive. Without this flag the
+   * ledger would read 1 where it wants 2 and, worse, APPLY 2 to mean 3 pods --
+   * a silent one-pod scale error in whichever direction the ladder moved.
+   */
+  readonly podsFieldExcludesPrimary: boolean;
   readonly podsSource: PodsSource;
   /** Required (non-empty) unless podsSource is "manifest". */
   readonly podsEvidence: string;
@@ -200,6 +210,26 @@ function requireString(value: unknown, label: string): string {
 }
 
 /**
+ * The scalar this claim's `podsField` must carry to MEAN `pods` running pods.
+ *
+ * Identity for the ordinary case. For a chart whose replica key excludes the
+ * primary it is `pods - 1`, which is why a pod count of 0 is refused rather
+ * than clamped: a claim that wants zero pods has no primary to exclude, so the
+ * subtraction would write -1 and the ladder would emit a manifest Kubernetes
+ * rejects. Refusing here keeps the arithmetic total.
+ */
+export function podsScalarFor(claim: Pick<ProfileClaim, "id" | "podsFieldExcludesPrimary">, pods: number): number {
+  if (!claim.podsFieldExcludesPrimary) return pods;
+  if (pods < 1) {
+    throw new Error(
+      `${claim.id}: podsFieldExcludesPrimary with a pod count of ${String(pods)} -- there is no primary to ` +
+        `exclude, so the field value would be negative`,
+    );
+  }
+  return pods - 1;
+}
+
+/**
  * Read and VALIDATE the catalogue. Every refusal below exists because its
  * absence would let the ladder mean nothing:
  *
@@ -247,6 +277,16 @@ export function loadCatalogue(path = DEFAULT_CATALOGUE_PATH, repoRoot = REPO_ROO
     const rawPodsField = raw.podsField;
     if (rawPodsField !== null && typeof rawPodsField !== "string") {
       throw new Error(`${path}: ${id}.podsField must be a string or null`);
+    }
+    const rawExcludes = raw.podsFieldExcludesPrimary ?? false;
+    if (typeof rawExcludes !== "boolean") {
+      throw new Error(`${path}: ${id}.podsFieldExcludesPrimary must be a boolean`);
+    }
+    if (rawExcludes && rawPodsField === null) {
+      throw new Error(
+        `${path}: ${id} sets podsFieldExcludesPrimary with no podsField -- the flag describes how to read a ` +
+          `field that does not exist, so it can never take effect`,
+      );
     }
     const sizes = raw.sizes as Record<string, unknown> | undefined;
     const pods = raw.pods as Record<string, unknown> | undefined;
@@ -327,6 +367,7 @@ export function loadCatalogue(path = DEFAULT_CATALOGUE_PATH, repoRoot = REPO_ROO
       storageClassField: requireString(raw.storageClassField, `${path}: ${id}.storageClassField`),
       sizeField: requireString(raw.sizeField, `${path}: ${id}.sizeField`),
       podsField: rawPodsField,
+      podsFieldExcludesPrimary: rawExcludes,
       podsSource,
       podsEvidence,
       scheduledAtBringUp: raw.scheduledAtBringUp === true,
@@ -461,18 +502,28 @@ export function verifyProfileApplied(
     }
     if (claim.podsField === null) continue;
     const wantPods = claim.pods[profile];
+    if (wantPods === undefined) {
+      // loadCatalogue fills every profile, so this is only reachable when the
+      // caller asks about a profile the catalogue never declared. Reporting it
+      // beats asserting non-null: an unknown profile is a real finding, and a
+      // `!` here would answer the question with a crash instead.
+      findings.push({ claimId: claim.id, problem: `no pod count declared for profile "${profile}"` });
+      continue;
+    }
+    const wantScalar = podsScalarFor(claim, wantPods);
     const pods = readField(repoRoot, claim, claim.podsField);
     if (!pods.found) {
       findings.push({
         claimId: claim.id,
         problem: `${claim.path} doc ${String(claim.docIndex)} has no value at ${claim.podsField}`,
       });
-    } else if (pods.value !== wantPods) {
+    } else if (pods.value !== wantScalar) {
+      const howRead = claim.podsFieldExcludesPrimary ? " (excludes the primary, so pods - 1)" : "";
       findings.push({
         claimId: claim.id,
         problem:
-          `${claim.path} declares ${String(pods.value)} pods at ${claim.podsField}, ` +
-          `but profile "${profile}" says ${String(wantPods)}`,
+          `${claim.path} declares ${String(pods.value)} at ${claim.podsField}${howRead}, ` +
+          `but profile "${profile}" says ${String(wantPods)} pods (expected ${String(wantScalar)} there)`,
       });
     }
   }
@@ -531,6 +582,16 @@ export function crossCheckClaims(
     matched.add(row.id);
     if (row.podsSource !== "manifest") continue;
     const declared = row.pods[profile];
+    // The extractor reads the SAME values scalar the applier writes, so it sees
+    // the chart's own convention -- which for a `podsFieldExcludesPrimary` row
+    // is `pods - 1`. Comparing its reading against the pod count directly would
+    // report a permanent one-pod disagreement on every such row and force
+    // someone to "fix" a manifest that is already correct.
+    // Compared POD COUNT to POD COUNT. The extractor is handed
+    // `excludesPrimaryAt` and has already added the primary back, so both sides
+    // mean the same thing here -- and an extraction that was NOT told still
+    // disagrees loudly, which is the correct outcome rather than a silent
+    // one-pod undercount.
     if (declared !== undefined && claim.replicas !== declared) {
       findings.push({
         claimId: row.id,
@@ -641,12 +702,13 @@ export function applyProfile(
       if (claim.podsField === null) continue;
       const wantPods = claim.pods[profile];
       if (wantPods === undefined) throw new Error(`${claim.id}: no pod count for profile "${profile}"`);
+      const wantScalar = podsScalarFor(claim, wantPods);
       const podsPath = parseFieldPath(claim.podsField);
       const currentPods: unknown = doc.getIn(podsPath, false);
       if (currentPods === undefined) throw new Error(`${claim.id}: ${path} has no value at ${claim.podsField}`);
-      if (currentPods !== wantPods) {
-        doc.setIn(podsPath, wantPods);
-        edits.push({ path, field: claim.podsField, from: String(currentPods), to: String(wantPods) });
+      if (currentPods !== wantScalar) {
+        doc.setIn(podsPath, wantScalar);
+        edits.push({ path, field: claim.podsField, from: String(currentPods), to: String(wantScalar) });
         touched = true;
       }
     }

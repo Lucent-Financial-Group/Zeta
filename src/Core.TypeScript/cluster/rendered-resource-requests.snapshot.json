@@ -1,5 +1,5 @@
 {
-  "measuredOn": "2026-09-01",
+  "measuredOn": "2026-09-02",
   "appsDiscovered": [
     "full-ai-cluster/agent-memory",
     "full-ai-cluster/alloy",
@@ -78,15 +78,15 @@
         },
         {
           "appId": "full-ai-cluster/alloy",
-          "cpuMillis": 1,
-          "memoryMib": 5,
+          "cpuMillis": 10,
+          "memoryMib": 50,
           "pods": 1,
           "workloads": [
             {
               "workload": "DaemonSet/alloy",
               "replicas": 1,
-              "cpuMillis": 1,
-              "memoryMib": 5
+              "cpuMillis": 10,
+              "memoryMib": 50
             }
           ],
           "overlaid": []
@@ -353,7 +353,7 @@
           "appId": "full-ai-cluster/dapr",
           "cpuMillis": 0,
           "memoryMib": 0,
-          "pods": 5,
+          "pods": 7,
           "workloads": [
             {
               "workload": "Deployment/dapr-operator",
@@ -381,7 +381,7 @@
             },
             {
               "workload": "StatefulSet/dapr-scheduler-server",
-              "replicas": 1,
+              "replicas": 3,
               "cpuMillis": 0,
               "memoryMib": 0
             }
@@ -788,9 +788,9 @@
         },
         {
           "appId": "full-ai-cluster/mimir",
-          "cpuMillis": 410,
-          "memoryMib": 2272,
-          "pods": 19,
+          "cpuMillis": 435,
+          "memoryMib": 3296,
+          "pods": 20,
           "workloads": [
             {
               "workload": "Deployment/mimir-distributor",
@@ -799,7 +799,7 @@
               "memoryMib": 192
             },
             {
-              "workload": "Deployment/mimir-nginx",
+              "workload": "Deployment/mimir-gateway",
               "replicas": 1,
               "cpuMillis": 0,
               "memoryMib": 0
@@ -877,6 +877,12 @@
               "memoryMib": 192
             },
             {
+              "workload": "StatefulSet/mimir-kafka",
+              "replicas": 1,
+              "cpuMillis": 25,
+              "memoryMib": 1024
+            },
+            {
               "workload": "StatefulSet/mimir-store-gateway-zone-a",
               "replicas": 1,
               "cpuMillis": 25,
@@ -900,6 +906,7 @@
             "full-ai-cluster/mimir/compactor",
             "full-ai-cluster/mimir/distributor",
             "full-ai-cluster/mimir/ingester",
+            "full-ai-cluster/mimir/kafka",
             "full-ai-cluster/mimir/overrides_exporter",
             "full-ai-cluster/mimir/querier",
             "full-ai-cluster/mimir/query_frontend",
@@ -932,8 +939,8 @@
         },
         {
           "appId": "full-ai-cluster/node-feature-discovery",
-          "cpuMillis": 75,
-          "memoryMib": 192,
+          "cpuMillis": 100,
+          "memoryMib": 288,
           "pods": 4,
           "workloads": [
             {
@@ -957,8 +964,8 @@
             {
               "workload": "Job/nfd-node-feature-discovery-prune",
               "replicas": 1,
-              "cpuMillis": 0,
-              "memoryMib": 0
+              "cpuMillis": 25,
+              "memoryMib": 96
             }
           ],
           "overlaid": [
@@ -1087,21 +1094,14 @@
           "pods": 3,
           "workloads": [
             {
-              "workload": "StatefulSet/redis-master",
-              "replicas": 1,
-              "cpuMillis": 25,
-              "memoryMib": 64
-            },
-            {
-              "workload": "StatefulSet/redis-replicas",
-              "replicas": 2,
+              "workload": "StatefulSet/redis-valkey",
+              "replicas": 3,
               "cpuMillis": 25,
               "memoryMib": 64
             }
           ],
           "overlaid": [
-            "full-ai-cluster/redis/master",
-            "full-ai-cluster/redis/replicas"
+            "full-ai-cluster/redis"
           ]
         },
         {
@@ -1595,15 +1595,15 @@
         },
         {
           "appId": "full-ai-cluster/alloy",
-          "cpuMillis": 1,
-          "memoryMib": 5,
+          "cpuMillis": 10,
+          "memoryMib": 50,
           "pods": 1,
           "workloads": [
             {
               "workload": "DaemonSet/alloy",
               "replicas": 1,
-              "cpuMillis": 1,
-              "memoryMib": 5
+              "cpuMillis": 10,
+              "memoryMib": 50
             }
           ],
           "overlaid": []
@@ -1870,7 +1870,7 @@
           "appId": "full-ai-cluster/dapr",
           "cpuMillis": 0,
           "memoryMib": 0,
-          "pods": 5,
+          "pods": 7,
           "workloads": [
             {
               "workload": "Deployment/dapr-operator",
@@ -1898,7 +1898,7 @@
             },
             {
               "workload": "StatefulSet/dapr-scheduler-server",
-              "replicas": 1,
+              "replicas": 3,
               "cpuMillis": 0,
               "memoryMib": 0
             }
@@ -2305,9 +2305,9 @@
         },
         {
           "appId": "full-ai-cluster/mimir",
-          "cpuMillis": 1610,
-          "memoryMib": 5124,
-          "pods": 19,
+          "cpuMillis": 2610,
+          "memoryMib": 6148,
+          "pods": 20,
           "workloads": [
             {
               "workload": "Deployment/mimir-distributor",
@@ -2316,7 +2316,7 @@
               "memoryMib": 512
             },
             {
-              "workload": "Deployment/mimir-nginx",
+              "workload": "Deployment/mimir-gateway",
               "replicas": 1,
               "cpuMillis": 0,
               "memoryMib": 0
@@ -2394,6 +2394,12 @@
               "memoryMib": 512
             },
             {
+              "workload": "StatefulSet/mimir-kafka",
+              "replicas": 1,
+              "cpuMillis": 1000,
+              "memoryMib": 1024
+            },
+            {
               "workload": "StatefulSet/mimir-store-gateway-zone-a",
               "replicas": 1,
               "cpuMillis": 100,
@@ -2417,6 +2423,7 @@
             "full-ai-cluster/mimir/compactor",
             "full-ai-cluster/mimir/distributor",
             "full-ai-cluster/mimir/ingester",
+            "full-ai-cluster/mimir/kafka",
             "full-ai-cluster/mimir/overrides_exporter",
             "full-ai-cluster/mimir/querier",
             "full-ai-cluster/mimir/query_frontend",
@@ -2449,8 +2456,8 @@
         },
         {
           "appId": "full-ai-cluster/node-feature-discovery",
-          "cpuMillis": 200,
-          "memoryMib": 256,
+          "cpuMillis": 300,
+          "memoryMib": 384,
           "pods": 4,
           "workloads": [
             {
@@ -2474,8 +2481,8 @@
             {
               "workload": "Job/nfd-node-feature-discovery-prune",
               "replicas": 1,
-              "cpuMillis": 0,
-              "memoryMib": 0
+              "cpuMillis": 100,
+              "memoryMib": 128
             }
           ],
           "overlaid": [
@@ -2604,21 +2611,14 @@
           "pods": 3,
           "workloads": [
             {
-              "workload": "StatefulSet/redis-master",
-              "replicas": 1,
-              "cpuMillis": 100,
-              "memoryMib": 128
-            },
-            {
-              "workload": "StatefulSet/redis-replicas",
-              "replicas": 2,
+              "workload": "StatefulSet/redis-valkey",
+              "replicas": 3,
               "cpuMillis": 100,
               "memoryMib": 128
             }
           ],
           "overlaid": [
-            "full-ai-cluster/redis/master",
-            "full-ai-cluster/redis/replicas"
+            "full-ai-cluster/redis"
           ]
         },
         {
