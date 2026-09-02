@@ -155,6 +155,65 @@ If incremental and batch disagree, the DBSP claim in §3(a) is unfounded.
 
 ---
 
+## 4b. The lineage this belongs to — and why the deliverable is a tool, not a leaderboard row
+
+Aaron, 2026-09-02:
+
+> _"I'm also a Pro Tools and Adobe Audition and even before that Cool Edit expert. I understand
+> FFT and plugins so much and how it evolved. I want to make demux the ultimate form of that
+> informed by AI."_
+
+That reframes the deliverable, and §4's falsifiers are now instrumentation rather than the goal.
+A leaderboard row is not the thing. **The thing is the next step in a fifty-year tool lineage**,
+and Aaron has first-hand practitioner standing in it — which is the strongest kind of anchor this
+repository recognises.
+
+**The lineage, checked (2026-09-02):**
+
+1. **FFT / STFT and the phase vocoder** — you can look at sound as time × frequency.
+2. **Cool Edit** (Syntrillium) → **Adobe Audition**. Not a loose descent: Audition's spectral
+   editing **is** Syntrillium's Cool Edit Pro v2, and its **Spectral Frequency Display** gives
+   pixel-level editing of the spectrogram. This is the moment the spectrogram stopped being a
+   *readout* and became a *canvas* — you could select a region of sound by drawing on it.
+3. **Spectral repair** — **iZotope RX**: heal a click, lift a cough, interpolate what was there.
+4. **AI rebalance** — **RX 12 Music Rebalance**, ARA 2, the current standard in post.
+
+**The defect that has survived every step of that lineage:** at no point does the tool tell you
+**where it is guessing.** You paint out a cough and RX interpolates; the result looks identical
+whether the interpolation was well-constrained or invented. You run Music Rebalance and get a
+vocal stem with no indication of which 200 ms are solid and which are the model's best story.
+Every one of these tools is, by our own taxonomy, a **magician** — it reads well and reports
+nothing about the reading.
+
+**So F2 is not an academic metric. It is the product.**
+
+> A calibrated per-bin source-presence probability **is a spectrogram layer.**
+
+The engineer sees the separation *and* a confidence overlay on the same canvas Cool Edit
+invented — trust it here, look closer there, that region is invented. Nothing in the lineage has
+ever offered that, and it falls directly out of building the model Bayesian instead of
+discriminative. It is not a feature bolted on; it is what you get for free from the substrate,
+and it is invisible to any system whose output is a waveform rather than a posterior.
+
+**And this closes the loop back to §1's other half.** Stems, confidence, and the original
+mixture are **layers you look through, not a merged result** — which is McHarg's light table
+(1969) and DV2.0's raw vault, arrived at from the audio side. A separator that hands you only
+the stems has merged the layers and destroyed the facts. One that hands you stems *plus* the
+residual *plus* the confidence has kept them.
+
+**Delivery surface, and a real gap.** The lineage's plugin evolution — DirectX → VST → AU →
+RTAS → AAX, now ARA 2 for host-integrated analysis — is the distribution channel, and Aaron
+knows it first-hand. Worth noting from the same check: **Adobe Audition has no native AI stem
+separation in 2026**; users reach for third-party plugins. The canvas and the AI have not been
+put in the same box by the vendor who owns the canvas.
+
+**Honest limits.** RX is a mature, well-funded commercial product and "we will build a better
+RX" is not a claim this document is making. What it claims is narrower and testable: **the
+confidence layer is missing from all of them, we would get it structurally rather than by
+bolting it on, and F2 says whether ours is real.** Also unresolved and named in §6: a
+calibrated-but-mediocre separator may be less useful than an uncalibrated excellent one, and no
+amount of lineage makes that risk go away.
+
 ## 5. Why this is the right place to make the meter thread falsifiable
 
 The charlatan / magician / teacher taxonomy in [`docs/VISION.md`](../VISION.md) is currently
