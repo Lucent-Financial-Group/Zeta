@@ -11,8 +11,13 @@ bun src/Core.TypeScript/agent-heartbeats/local-tick.ts \
   --model qwen2.5:0.5b --runtime "launchd/com.lucent.zeta.heartbeat.<lane>" --dry-run
 ```
 
-Drop `--dry-run` to push. `--dry-run` still prepares the lane, runs the tick body and commits
-locally; it only declines to move the remote ref.
+Drop `--dry-run` to push. `--dry-run` prepares the lane, runs the tick body in dry mode, and
+commits locally; **no remote ref moves** — not the lane's, and not `origin/main`.
+
+That second clause is why the flag is forwarded to the body rather than only checked here. The
+body's event sink is folder-direct-to-main: on a real tick it pushes `origin/main` itself, before
+this script's own push step is ever reached. So `--dry-run` used to promise "declines to move the
+remote ref" while a remote ref moved anyway, one process down.
 
 ## Install as a service
 

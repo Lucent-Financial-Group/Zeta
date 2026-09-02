@@ -1,0 +1,14 @@
+{
+  "id": "080d03195b084010a013000875761b38",
+  "at": "2026-09-02T17:29:42.408Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1HJPR87087G0R001A0PG5P",
+    "type": "bug",
+    "title": "local-tick --dry-run still lets the tick body push direct-to-main",
+    "slug": "local-tick-dry-run-still-lets-the-tick-body-push-direct-to-m",
+    "priority": "P2",
+    "filename": "081M1HJPR87087G0R001A0PG5P-local-tick-dry-run-still-lets-the-tick-body-push-direct-to-m.md"
+  }
+}

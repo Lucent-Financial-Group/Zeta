@@ -44,6 +44,9 @@ const CHECKS: readonly Check[] = [
   // Cheap file-presence + markdown first (fast feedback).
   { label: "no-conflict-markers", cmd: ["bun", "src/Core.TypeScript/hygiene/check-no-conflict-markers.ts"] },
   { label: "no-empty-dirs", cmd: ["bun", "src/Core.TypeScript/lint/no-empty-dirs.ts"] },
+  // A hook whose target moved still returns a well-formed deny — it just denies for the wrong
+  // reason, so nothing downstream can notice. Pure path existence; milliseconds.
+  { label: "hook-script-paths", cmd: ["bun", "src/Core.TypeScript/hygiene/audit-hook-script-paths.ts"] },
   {
     label: "identity-registry-sync",
     cmd: [

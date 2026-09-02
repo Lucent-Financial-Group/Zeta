@@ -1518,6 +1518,16 @@ jobs:
         # plus controls asserting the shapes that must NOT be flagged.
         run: bun run hygiene:check-arity-nonequality
 
+      - name: Hook script paths resolve (a hook that spawns a moved path is a hook that never runs)
+        id: hook_script_paths
+        # THE CLASS: a git/Claude hook shells a script by path, the script moves, and the hook
+        # keeps invoking the old path -- exiting 0 because the missing target is swallowed, so
+        # a guard that no longer exists reads exactly like a guard that passed. This audit walks
+        # the hook definitions and asserts every path they spawn resolves to a tracked file.
+        # Wired here (rather than left to preflight, the laptop/devcontainer mirror) so the
+        # linter-coverage audit one step down sees it invoked-by-name in CI.
+        run: bun run hygiene:hook-script-paths
+
       - name: Linter coverage vs CI invocation (a configured linter must be an invoked one)
         id: linter_coverage
         # THE CLASS: a linter is present, configured, believed to be checking a file, and does
@@ -1746,7 +1756,7 @@ jobs:
         # is strictly better than a step name. This step covers the other nineteen, which do not.
         if: failure()
         run: |
-          echo "::error title=lint (bash retirement + hygiene): which step failed::install-deps=${{ steps.install_deps.outcome }} bash-retirement=${{ steps.bash_retirement.outcome }} cred-hoist=${{ steps.cred_hoist.outcome }} decide-by-grep=${{ steps.decide_by_grep.outcome }} graphql=${{ steps.graphql_transport.outcome }} scan-floor=${{ steps.scan_floor.outcome }} ambient-time=${{ steps.ambient_time.outcome }} arity-equality=${{ steps.arity_equality.outcome }} arity-nonequality=${{ steps.arity_nonequality.outcome }} linter-coverage=${{ steps.linter_coverage.outcome }} consent-signoff=${{ steps.consent_signoff.outcome }} collation=${{ steps.collation.outcome }} mise-parity=${{ steps.mise_parity.outcome }} hygiene-tests=${{ steps.hygiene_tests.outcome }} audit-tests=${{ steps.audit_tests.outcome }} hw-inventory=${{ steps.hw_inventory.outcome }} inventory-readmodel=${{ steps.inventory_readmodel.outcome }} book-index=${{ steps.book_index.outcome }} inventory-tests=${{ steps.inventory_tests.outcome }}"
+          echo "::error title=lint (bash retirement + hygiene): which step failed::install-deps=${{ steps.install_deps.outcome }} bash-retirement=${{ steps.bash_retirement.outcome }} cred-hoist=${{ steps.cred_hoist.outcome }} decide-by-grep=${{ steps.decide_by_grep.outcome }} graphql=${{ steps.graphql_transport.outcome }} scan-floor=${{ steps.scan_floor.outcome }} ambient-time=${{ steps.ambient_time.outcome }} arity-equality=${{ steps.arity_equality.outcome }} arity-nonequality=${{ steps.arity_nonequality.outcome }} hook-script-paths=${{ steps.hook_script_paths.outcome }} linter-coverage=${{ steps.linter_coverage.outcome }} consent-signoff=${{ steps.consent_signoff.outcome }} collation=${{ steps.collation.outcome }} mise-parity=${{ steps.mise_parity.outcome }} hygiene-tests=${{ steps.hygiene_tests.outcome }} audit-tests=${{ steps.audit_tests.outcome }} hw-inventory=${{ steps.hw_inventory.outcome }} inventory-readmodel=${{ steps.inventory_readmodel.outcome }} book-index=${{ steps.book_index.outcome }} inventory-tests=${{ steps.inventory_tests.outcome }}"
           echo "[step-outcomes] a failing install means bun never provisioned; read that step's log."
           echo "[step-outcomes] arity-equality / arity-nonequality failures carry their own ::error annotations naming file and line."
 
