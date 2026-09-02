@@ -90,17 +90,43 @@ export function danglingReferences(
   return references.filter((r) => !exists(r.target));
 }
 
-/** Collect every file this audit reads: `.claude/settings.json` + `.claude/hooks/*.ts`. */
-export function hookSourceFiles(repoRoot: string): readonly string[] {
-  const sources: string[] = [];
-  const settings = ".claude/settings.json";
-  if (existsSync(join(repoRoot, settings))) sources.push(settings);
+/**
+ * Read a file, or report it absent.
+ *
+ * NOT `existsSync` then `readFileSync`: the answer the check returned is already stale when the
+ * use runs, so the guard reads as defensive and prevents nothing. One syscall, one answer.
+ * (`lint-check-then-use-file-races.ts` enforces this, and caught the first draft of this file.)
+ */
+function readTextOrAbsent(path: string): string | undefined {
+  try {
+    return readFileSync(path, "utf8");
+  } catch (err) {
+    if ((err as NodeJS.ErrnoException).code === "ENOENT") return undefined;
+    throw err;
+  }
+}
 
-  const hooksDir = join(repoRoot, ".claude", "hooks");
-  if (existsSync(hooksDir)) {
-    for (const entry of readdirSync(hooksDir).sort()) {
-      if (entry.endsWith(".ts")) sources.push(`.claude/hooks/${entry}`);
-    }
+/** List a directory, or report it absent — same one-syscall discipline as readTextOrAbsent. */
+function listDirOrAbsent(path: string): readonly string[] | undefined {
+  try {
+    return readdirSync(path);
+  } catch (err) {
+    const code = (err as NodeJS.ErrnoException).code;
+    if (code === "ENOENT" || code === "ENOTDIR") return undefined;
+    throw err;
+  }
+}
+
+/**
+ * The candidate files this audit reads: `.claude/settings.json` + `.claude/hooks/*.ts`.
+ *
+ * Settings is listed unconditionally — a candidate, not a promise. `audit` skips what it cannot
+ * read, which is the same answer without a second syscall to race against.
+ */
+export function hookSourceFiles(repoRoot: string): readonly string[] {
+  const sources: string[] = [".claude/settings.json"];
+  for (const entry of [...(listDirOrAbsent(join(repoRoot, ".claude", "hooks")) ?? [])].sort()) {
+    if (entry.endsWith(".ts")) sources.push(`.claude/hooks/${entry}`);
   }
   return sources;
 }
@@ -108,8 +134,11 @@ export function hookSourceFiles(repoRoot: string): readonly string[] {
 export function audit(repoRoot: string): readonly HookReference[] {
   const references: HookReference[] = [];
   for (const source of hookSourceFiles(repoRoot)) {
-    references.push(...extractReferences(source, readFileSync(join(repoRoot, source), "utf8")));
+    const text = readTextOrAbsent(join(repoRoot, source));
+    if (text !== undefined) references.push(...extractReferences(source, text));
   }
+  // Existence is the whole question here — nothing is read afterwards, so there is no
+  // check-then-use window to close.
   return danglingReferences(references, (target) => existsSync(join(repoRoot, target)));
 }
 
