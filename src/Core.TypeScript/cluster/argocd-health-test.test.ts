@@ -30,7 +30,10 @@ import {
   isZetaGitDirectoryApplicationSource,
   mergeArgoCdTimeoutDiagnostics,
   parseApplicationList,
+  REPO_BACKED_CHILD_APPEAR_TIMEOUT_SECONDS,
   REPO_BACKED_CHILD_WAIT_DIAGNOSTIC_COMMANDS,
+  repoBackedChildNames,
+  ROOT_DEV_APPLICATION_NAME,
   parseApplicationName,
   parseArgs,
   parseK3dClusterName,
@@ -907,6 +910,8 @@ describe("081KSXN940008QG0R000SCP2H1 argocd-health-test planning", () => {
     expect(labels).toContain("applications");
     expect(labels).toContain("repo-server-logs");
     expect(labels).toContain("application-controller-logs");
+    expect(labels).toContain("cilium-lb-pool");
+    expect(labels).toContain("loadbalancer-services");
     const root = REPO_BACKED_CHILD_WAIT_DIAGNOSTIC_COMMANDS.find((command) => command.label === "zeta-root-dev");
     expect(root?.args).toContain("zeta-root-dev");
     const repoServer = REPO_BACKED_CHILD_WAIT_DIAGNOSTIC_COMMANDS.find(
@@ -920,17 +925,57 @@ describe("081KSXN940008QG0R000SCP2H1 argocd-health-test planning", () => {
       {
         kind: "ArgoCdTimeout",
         message: "timed out waiting for repo-backed child Applications before git-ref patch",
-        command: ["kubectl", "-n", "argocd", "get", "application", "hat-system"],
+        command: ["kubectl", "-n", "argocd", "get", "applications.argoproj.io", "-o", "json"],
         detail: {
-          stdout: "",
-          stderr: 'Error from server (NotFound): applications.argoproj.io "hat-system" not found\n',
+          stdout: '{"items":[{"metadata":{"name":"zeta-root-dev"}}]}',
+          stderr: "",
+          childCount: 0,
         },
       },
       { "zeta-root-dev": "sync=Unknown health=Progressing ComparisonError: ..." },
     );
-    const detail = merged.detail as { stderr: string; diagnostics: Record<string, string> };
-    expect(detail.stderr).toContain("hat-system");
+    const detail = merged.detail as { childCount: number; diagnostics: Record<string, string> };
+    expect(detail.childCount).toBe(0);
     expect(detail.diagnostics["zeta-root-dev"]).toContain("ComparisonError");
+  });
+
+  test("child-appear wait is capped below the health budget, and is ANY child not hat-system", () => {
+    // Run 33684309073 spent 2400s on `kubectl get application hat-system`.
+    // The cap must not be that budget. hat-system is wave -10 (the head);
+    // waiting for the NAME, not the head, is the defect.
+    expect(REPO_BACKED_CHILD_APPEAR_TIMEOUT_SECONDS).toBeLessThan(600);
+    expect(REPO_BACKED_CHILD_APPEAR_TIMEOUT_SECONDS).toBeGreaterThan(60);
+    const source = readFileSync(new URL("./argocd-health-test.ts", import.meta.url), "utf8");
+    expect(source).not.toContain('get", "application", "hat-system"');
+    expect(repoBackedChildNames([{ name: ROOT_DEV_APPLICATION_NAME, syncStatus: "", healthStatus: "", message: "" }])).toEqual(
+      [],
+    );
+    expect(
+      repoBackedChildNames([
+        { name: ROOT_DEV_APPLICATION_NAME, syncStatus: "", healthStatus: "", message: "" },
+        { name: "hat-system", syncStatus: "Synced", healthStatus: "Healthy", message: "" },
+        { name: "redis", syncStatus: "Synced", healthStatus: "Healthy", message: "" },
+      ]),
+    ).toEqual(["hat-system", "redis"]);
+  });
+
+  test("kind --cni cilium plan names the LB pool assert", () => {
+    const parsed = parseArgs(
+      ["--dry-run", "--provider", "kind", "--cni", "cilium", "--scope", "included"],
+      {},
+    );
+    if ("kind" in parsed) throw new Error(parsed.message);
+    const plan = buildPlan(parsed);
+    if ("kind" in plan) throw new Error(plan.message);
+    expect(plan.checks.join("\n")).toContain("zeta-lb-pool");
+  });
+
+  test("kindnetd included plan does not assert the Cilium LB pool", () => {
+    const parsed = parseArgs(["--dry-run", "--provider", "kind", "--scope", "included"], {});
+    if ("kind" in parsed) throw new Error(parsed.message);
+    const plan = buildPlan(parsed);
+    if ("kind" in plan) throw new Error(plan.message);
+    expect(plan.checks.join("\n")).not.toContain("zeta-lb-pool");
   });
 
   test("detects repo-backed child Applications that should track the harness git ref", () => {

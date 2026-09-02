@@ -1436,11 +1436,12 @@ jobs:
             echo "  ${line:-=== $app: NOT ASSERTED IN THIS SCOPE (roster had ${total} apps)}"
           done
 
-      # Run 33684309073 died waiting for hat-system with only NotFound in the
-      # proof JSON. The four-app table correctly refused to invent verdicts.
-      # These dumps are why the next dispatch can speak: zeta-root-dev status,
-      # whether ANY child exists, repo-server clone errors, Cilium/CoreDNS
-      # pods. `|| true`: a diagnostics step must never fail the job.
+      # Run 33684309073 died waiting for hat-system (the NAME, wave -10) with
+      # only NotFound in the proof JSON. The wait is now ANY child, 180s, not
+      # the 2400s health budget. These dumps are why the next dispatch can speak:
+      # zeta-root-dev status, whether ANY child exists, repo-server clone
+      # errors, Cilium/CoreDNS pods, the kind LB-IPAM pool, LoadBalancer
+      # Services. `|| true`: a diagnostics step must never fail the job.
       - name: Why App-of-Apps produced no children
         if: always()
         run: |
@@ -1456,6 +1457,10 @@ jobs:
           kubectl -n argocd logs statefulset/argocd-application-controller --tail=150 || true
           echo "=== kube-system pods ==="
           kubectl -n kube-system get pods -o wide || true
+          echo "=== cilium LB IPAM pool (kind alias zeta-lb-pool) ==="
+          kubectl get ciliumloadbalancerippools.cilium.io -o wide || true
+          echo "=== LoadBalancer Services ==="
+          kubectl get svc -A --field-selector spec.type=LoadBalancer || true
 
       - name: Name the drifting resources (per-Application, failures only)
         if: always()

@@ -192,6 +192,15 @@ dispatch must print `zeta-root-dev` status, the Application list, and
 repo-server / application-controller logs at that timeout. Do not invent a
 Cilium values tweak from a silent wait.
 
+**Wait defect, not a Cilium finding:** `hat-system` is sync-wave `-10` (the
+head of the catalog). Pinning the wait to that NAME made a silent catalog look
+like a slow hat-system and spent the entire 2400s health budget on one
+NotFound. The next dispatch waits for ANY child other than `zeta-root-dev`,
+capped at 180s, dumps the kind LB-IPAM pool (`zeta-lb-pool`) and LoadBalancer
+Services at timeout, and refuses in seconds if bring-up dropped the pool
+alias. Dispatch that probe on the wait-fix branch, not on current `main` —
+another 40-minute hat-system wait is not a second measurement.
+
 State stays in-progress until a dispatch produces per-app verdicts.
 
 ## The distinguishing test

@@ -30,6 +30,8 @@ import { parse as parseYaml } from "yaml";
 import { bootstrapKindClusterInProcess, bootstrapK3dClusterInProcess } from "./harness/bootstrap.ts";
 import {
   DEV_BOOTSTRAP_SECRETS,
+  DEV_CILIUM_LB_KIND_MANIFEST_RELPATH,
+  DEV_CILIUM_LB_KIND_POOL_NAME,
   DEV_GHCR_PULL_SECRET,
   DEV_LONGHORN_ALIAS_CLASS_NAME,
   DEV_SATISFIABLE_PROVISIONERS,
@@ -68,6 +70,7 @@ export type FailureKind =
   | "ContainerRuntimeUnavailable"
   | "ClusterBootstrapFailed"
   | "DevStorageClassMissing"
+  | "DevCiliumLbPoolMissing"
   | "DevBootstrapSecretMissing"
   | "DevRegistryPullSecretMissing"
   | "KubectlFailed"
@@ -1624,6 +1627,11 @@ export function buildPlan(options: CliOptions, repoRoot = REPO_ROOT): HarnessPla
               (spec) =>
                 `assert the dev credential ${spec.namespace}/${spec.name} the bring-up mints is actually present, before its Application waits on a Secret that must pre-exist`,
             ),
+            ...(options.provider === "kind" && options.kindCni === "cilium"
+              ? [
+                  `assert the kind Cilium LB-IPAM pool "${DEV_CILIUM_LB_KIND_POOL_NAME}" is present, before any LoadBalancer Service waits for an address`,
+                ]
+              : []),
           ]
         : []),
       "assert root App-of-Apps exists",
@@ -1967,6 +1975,32 @@ function assertDevStorageClassPresent(plan: HarnessPlan): Failure | null {
 }
 
 /**
+ * Kind `--cni cilium` apply of the LB-IPAM alias is a claim about CODE THAT
+ * RUNS. `type: LoadBalancer` Services sit Progressing forever without a pool.
+ * Fail now if bring-up dropped the apply, rather than waiting for weaviate
+ * (or Cilium's own ingress) to burn the health timeout.
+ */
+function assertKindCiliumLbPoolPresent(options: CliOptions): Failure | null {
+  if (options.provider !== "kind" || options.kindCni !== "cilium") return null;
+  const args = ["get", "ciliumloadbalancerippools.cilium.io", DEV_CILIUM_LB_KIND_POOL_NAME];
+  const result = runCommand("kubectl", args, 60_000);
+  if (result.status === 0) return null;
+  return {
+    kind: "DevCiliumLbPoolMissing",
+    message:
+      `${DEV_CILIUM_LB_KIND_MANIFEST_RELPATH} declares CiliumLoadBalancerIPPool ` +
+      `"${DEV_CILIUM_LB_KIND_POOL_NAME}", and kind --cni cilium bring-up is supposed to apply it ` +
+      `after Cilium helm, but kubectl get returned exit ${String(result.status)}. ` +
+      `LoadBalancer Services would stay Progressing. Failing now instead.`,
+    command: ["kubectl", ...args],
+    detail: {
+      stdout: result.stdout.slice(-2000),
+      stderr: result.stderr.slice(-2000),
+    },
+  };
+}
+
+/**
  * The LIVE half of lifting `kube-prometheus-stack` and `oz` out of the deferred
  * set.
  *
@@ -2105,7 +2139,28 @@ export function isZetaGitDirectoryApplicationSource(source: Record<string, unkno
  * Failure JSON was only `NotFound`. The four-app table printed ZERO VERDICTS
  * PARSED. Kindnetd included on the same SHA DID create children. Without this
  * dump the next probe is another 40-minute non-measurement (081M1DFQ2MZ).
+ *
+ * `hat-system` is sync-wave `-10` (the HEAD of the catalog). Pinning the wait
+ * to that one name made a missing catalog spend the entire health budget on
+ * one NotFound. The wait is now ANY child, capped below the health timeout.
  */
+export const ROOT_DEV_APPLICATION_NAME = "zeta-root-dev";
+
+/**
+ * How long to wait for App-of-Apps to produce ANY child before git-ref patch.
+ *
+ * NOT `options.timeoutSeconds`. That budget is for Synced+Healthy of the
+ * included roster. Run 33684309073 spent all 2400s of it on `kubectl get
+ * application hat-system` returning NotFound. Kindnetd on the same SHA had
+ * children in well under three minutes. Three minutes is enough to know the
+ * catalog is producing objects; forty is the health wait, used later.
+ */
+export const REPO_BACKED_CHILD_APPEAR_TIMEOUT_SECONDS = 180;
+
+export function repoBackedChildNames(snapshots: readonly ArgoApplicationSnapshot[]): readonly string[] {
+  return snapshots.map((snapshot) => snapshot.name).filter((name) => name !== ROOT_DEV_APPLICATION_NAME);
+}
+
 export const REPO_BACKED_CHILD_WAIT_DIAGNOSTIC_COMMANDS: readonly {
   readonly label: string;
   readonly args: readonly string[];
@@ -2119,6 +2174,8 @@ export const REPO_BACKED_CHILD_WAIT_DIAGNOSTIC_COMMANDS: readonly {
     args: ["-n", "argocd", "logs", "statefulset/argocd-application-controller", "--tail=150"],
   },
   { label: "kube-system-pods", args: ["-n", "kube-system", "get", "pods", "-o", "wide"] },
+  { label: "cilium-lb-pool", args: ["get", "ciliumloadbalancerippools.cilium.io", "-o", "wide"] },
+  { label: "loadbalancer-services", args: ["get", "svc", "-A", "--field-selector", "spec.type=LoadBalancer"] },
 ];
 
 export function mergeArgoCdTimeoutDiagnostics(failure: Failure, dumps: Readonly<Record<string, string>>): Failure {
@@ -2225,15 +2282,48 @@ async function waitForArgoCd(plan: HarnessPlan, options: CliOptions): Promise<Fa
 
   if (plan.gitRef === "main") return null;
 
-  const childFailure = await waitForKubectl(
-    ["-n", "argocd", "get", "application", "hat-system"],
-    timeout,
-    poll,
-    "timed out waiting for repo-backed child Applications before git-ref patch",
-  );
+  const childFailure = await waitForRepoBackedChild(poll);
   if (childFailure !== null) return attachRepoBackedChildWaitDiagnostics(childFailure);
 
   return patchGitBackedApplicationsToGitRef(plan.gitRef);
+}
+
+/**
+ * First child, not a named one. `hat-system` is wave -10 so it is usually
+ * that head -- but waiting for the NAME made a silent catalog look like a
+ * slow hat-system, and consumed the health timeout doing it.
+ */
+async function waitForRepoBackedChild(pollSeconds: number): Promise<Failure | null> {
+  const message = "timed out waiting for repo-backed child Applications before git-ref patch";
+  const startedAt = Date.now();
+  let lastProgressAt = startedAt;
+  console.log(`Waiting: ${message} (cap ${String(REPO_BACKED_CHILD_APPEAR_TIMEOUT_SECONDS)}s, any child)`);
+  return waitFor(REPO_BACKED_CHILD_APPEAR_TIMEOUT_SECONDS, pollSeconds, () => {
+    const now = Date.now();
+    if (now - lastProgressAt >= 60_000) {
+      const elapsedSec = Math.floor((now - startedAt) / 1000);
+      console.log(`still waiting (${elapsedSec}s): ${message}`);
+      lastProgressAt = now;
+    }
+    const command = ["-n", "argocd", "get", "applications.argoproj.io", "-o", "json"];
+    const result = kubectl(command, Math.max(pollSeconds, 10));
+    if (result.status !== 0) {
+      return kubectlFailure("could not list ArgoCD Applications while waiting for children", command, result);
+    }
+    const snapshots = parseApplicationListOrFailure(result.stdout, command);
+    if (isFailure(snapshots)) return snapshots;
+    if (repoBackedChildNames(snapshots).length > 0) return null;
+    return {
+      kind: "ArgoCdTimeout",
+      message,
+      command: ["kubectl", ...command],
+      detail: {
+        stdout: result.stdout.slice(-2000),
+        stderr: result.stderr.slice(-2000),
+        childCount: 0,
+      },
+    };
+  });
 }
 
 function asRecord(value: unknown): Record<string, unknown> | null {
@@ -2674,6 +2764,11 @@ export async function runHarness(options: CliOptions): Promise<HarnessResult> {
   const bootstrapSecretFailure = assertDevBootstrapSecretsPresent(plan);
   if (bootstrapSecretFailure !== null) {
     return { ok: false, plan, preflight, failure: bootstrapSecretFailure };
+  }
+
+  const lbPoolFailure = assertKindCiliumLbPoolPresent(options);
+  if (lbPoolFailure !== null) {
+    return { ok: false, plan, preflight, failure: lbPoolFailure };
   }
 
   const pullSecretFailure = assertDevRegistryPullSecretPresent(plan);
