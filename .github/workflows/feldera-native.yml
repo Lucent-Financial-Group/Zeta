@@ -1,20 +1,18 @@
-# Compile Feldera's dbsp crate with factory rust on Linux, macOS, and Windows.
+# Compile Feldera's dbsp crate with factory rust on Linux and macOS.
 #
-# Not on every PR. Building dbsp on three OS is a cargo-minute bomb
+# Not on every PR. Building dbsp is a cargo-minute bomb
 # (Aaron 2026-09-01: do not clone Feldera on every PR). Triggers:
 #   * workflow_dispatch
 #   * pull_request / push-to-main path-filtered to THIS file
 #
 # Jobs:
-#   native -- factory pin (mise 1.96.1) x 3 OS. Last-good 1.96 line.
+#   native -- factory pin (mise 1.96.1) x ubuntu + macos.
 #   probe  -- 1.97.0 / 1.98.0 / beta x ubuntu + macos. PR + dispatch
-#             only, not push-to-main. Windows is omitted: 1.96.1 already
-#             fails in feldera-storage (`std::os::fd` / libc::pread),
-#             so a 1.97 probe there cannot reach the dbsp ICE.
-#             Classifier: pass / ice / sigsegv / other. expect=ice must
-#             be the StarJoinFuncTrait Alias panic (rust-lang issue
-#             159457 family). A pass or SIGSEGV on 1.97/1.98 means
-#             this-Mac hardware, not the diagnosis.
+#             only, not push-to-main.
+# Windows is omitted: Feldera 0.342.0 `feldera-storage` uses
+# `std::os::fd` / `libc::pread` (GHA windows-2025, 1.96.1, E0432).
+# Classifier: pass / ice / sigsegv / other. expect=ice must be the
+# StarJoinFuncTrait Alias panic (rust-lang issue 159457 family).
 #
 # Pin: feldera/feldera 0.342.0 at 48312b69bde1af8ab8c6bc3551c9545897664b26
 # Compile: cargo build --release -p dbsp with debuginfo=0.
@@ -53,13 +51,9 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-24.04, macos-26, windows-2025]
+        os: [ubuntu-24.04, macos-26]
     runs-on: ${{ matrix.os }}
     steps:
-      - name: Enable git long paths (Windows; pre-checkout)
-        if: startsWith(matrix.os, 'windows-')
-        run: git config --system core.longpaths true
-
       - name: Checkout Zeta
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
@@ -74,19 +68,12 @@ jobs:
           key: rustup-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('.mise.toml', '.mise.full.toml') }}
 
       - name: Restore apt archives
-        if: startsWith(matrix.os, 'windows-') == false
         uses: ./.github/actions/apt-archive-cache
         with:
           tier: full
 
-      - name: Install toolchain (Unix)
-        if: startsWith(matrix.os, 'windows-') == false
+      - name: Install toolchain
         run: ./tools/setup/install.sh
-
-      - name: Install toolchain (Windows)
-        if: startsWith(matrix.os, 'windows-')
-        shell: pwsh
-        run: ./tools/setup/install.ps1 -SkipLoopRegister
 
       - name: Checkout feldera (pinned SHA; not a submodule)
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -124,10 +111,6 @@ jobs:
     env:
       RUSTUP_TOOLCHAIN: ${{ matrix.pair.rust }}
     steps:
-      - name: Enable git long paths (Windows; pre-checkout)
-        if: startsWith(matrix.os, 'windows-')
-        run: git config --system core.longpaths true
-
       - name: Checkout Zeta
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
@@ -140,19 +123,12 @@ jobs:
           key: feldera-probe-${{ runner.os }}-${{ runner.arch }}-${{ matrix.pair.rust }}
 
       - name: Restore apt archives
-        if: startsWith(matrix.os, 'windows-') == false
         uses: ./.github/actions/apt-archive-cache
         with:
           tier: full
 
-      - name: Install toolchain (Unix)
-        if: startsWith(matrix.os, 'windows-') == false
+      - name: Install toolchain
         run: ./tools/setup/install.sh
-
-      - name: Install toolchain (Windows)
-        if: startsWith(matrix.os, 'windows-')
-        shell: pwsh
-        run: ./tools/setup/install.ps1 -SkipLoopRegister
 
       - name: rustup install probe compiler
         shell: bash
