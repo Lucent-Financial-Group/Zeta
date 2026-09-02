@@ -274,7 +274,78 @@ Sources: [PostgreSQL-Clustering.sql](https://github.com/dotnet/orleans/blob/main
 [Orleans cluster management](https://learn.microsoft.com/en-us/dotnet/orleans/implementation/cluster-management) ·
 [Orleans Redis integration](https://orleans.dev/integrations/redis/)
 
-### THE ONE THING BLOCKING THE USB RIGHT NOW
+### CHART CURRENCY NOW GATES THE USB TEST (Aaron, 2026-09-01)
+
+> _"lets put them in our current path for tasks to complete before we test the usb i
+> really want all our charts to be on latest version before i test the usb again."_
+
+So the ordering is fixed: **charts first, USB second.** The audit that produced the work
+list is `081M1F2F4WQ087G0R000ZWZXTB`; `bitnamilegacy` is `081M1F1K5N5087G0R0019JKRV0`.
+
+#### The reframe that makes this achievable, and it is the SAME argument as ArgoCD's
+
+The audit is full of staged-upgrade requirements that look prohibitive: cockroachdb
+permits **one major at a time** across six; cilium needs **five sequential hops**; nats
+changes its **stream state file format**; temporal wants worker deletion plus a schema
+migration; dapr's 1.14 -> 1.15 hop carries a documented **actor-reminder data-loss
+warning**.
+
+**Every one of those is an UPGRADE requirement, and a USB install is not an upgrade.**
+A machine flashed from this ISO comes up with no cluster and no data, so there is no path
+to walk between versions — the question is only _which version gets installed_. That is
+exactly why the ArgoCD bump (#16276) was safe despite being 200 versions behind, and the
+argument generalises to the whole set.
+
+**What does NOT get waived by a fresh install**, because it is not about version distance:
+
+| still required | why a fresh install does not help |
+|---|---|
+| repoURL relocations — `tempo`, `cert-manager`, and possibly `loki`, `headscale` | the current repo is frozen or a legacy mirror; installing _from_ it installs the frozen thing |
+| `redis` off `bitnamilegacy` | the image is archived at every chart version; 28.0.12 defaults to an UNPINNED `bitnami/redis:latest`, which is worse |
+| `hindsight`'s bundled `ankane/pgvector:latest` | archived since 2023-10-11, and a subchart image is invisible to the chart version |
+| **our `valuesObject` keys still being READ** | this is the one that actually bites: a key that silently stops being read renders fine and configures nothing |
+| `mimir`'s `minio.enabled: false` override | the chart still defaults it TRUE; a values reset re-adds a bundled archived minio |
+| `seaweedfs` >= 4.40 | closes an unpatched HIGH CVE in the pin we ship today — see below |
+
+#### FIRST IN THE QUEUE: seaweedfs, and the irony is the point
+
+`seaweedfs 4.33.0` carries **CVE-2026-77611 / GHSA-9x53-cjpr-m682, CVSS 7.1 HIGH**,
+published 2026-08-21: a scoped S3 principal can write outside its permitted key prefix via
+`PutObjectAcl` on a nested key. Fixed in **4.40+**; we are pinned below it.
+
+**We removed minio for unpatched HIGH advisories and moved to a version of its replacement
+that has one.** Nobody chose that — the CVE published after the replacement was designed —
+but it is the exact failure this audit exists to catch, landing on the audit's own
+recommendation.
+
+Exposure today is **low and checkable**: the bug needs a _scoped_ identity to escape, and
+our config defines exactly one principal, `admin`, with full access — there is no
+restricted identity for it to victimise. That is a reason it is not an emergency, not a
+reason to leave it. The fix rides along with a bump already recommended as `UPGRADE-SAFE`.
+
+Note when bumping: seaweedfs also changed its S3 identity loader to fail **closed** rather
+than open when zero identities load, so smoke-test the `createBuckets`/auth config after.
+
+#### The per-chart procedure, already executed once
+
+ArgoCD is the worked example (#16276). For each chart:
+
+1. Point `repoURL` at the **live** source, where the audit found it moved.
+2. Bump to newest published; `audit-chart-target-revisions --refresh` refuses a pin
+   upstream never published, so it checks the number rather than trusting it.
+3. `helm template` at **both** versions with our exact `valuesObject`, and verify **key by
+   key** that every value still takes effect — not merely that it renders.
+4. Diff the rendered resource sets and record additions/removals.
+5. Let the k8s lanes prove reconciliation. A chart that renders is not a cluster that syncs.
+
+#### Honest statement of the goal
+
+"All charts on latest" is achievable for a fresh install in a way it is not for a live
+cluster — but it will not be _uniformly_ true on the day it lands: `loki` needs a
+maintainer call on the OSS/GEL fork, and `headscale`'s best chart source is an open
+question. Those two get named, not silently skipped.
+
+### THE ONE THING BLOCKING THE USB RIGHT NOW — now the SECOND thing
 
 Nothing technical. The ISO is staged and verified, `/dev/disk6` (124 GB, no
 filesystem) is plugged in, and `zflash` refuses because the target was

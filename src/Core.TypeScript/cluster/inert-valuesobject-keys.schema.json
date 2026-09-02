@@ -1,5 +1,5 @@
 {
-  "measuredOn": "2026-09-01",
+  "measuredOn": "2026-09-02",
   "appsDiscovered": 53,
   "charts": {
     "code.forgejo.org/forgejo-helm|forgejo|17.1.5": {
@@ -34513,7 +34513,7 @@
         "prometheus-windows-exporter=prometheus-windows-exporter@0.12.8"
       ]
     },
-    "https://seaweedfs.github.io/seaweedfs/helm|seaweedfs|4.33.0": {
+    "https://seaweedfs.github.io/seaweedfs/helm|seaweedfs|4.45.0": {
       "literal": {
         "admin": {
           "affinity": {},
@@ -34589,6 +34589,7 @@
           "replicas": {},
           "resources": {},
           "restartPolicy": {},
+          "schedulerName": {},
           "secret": {
             "adminPassword": {},
             "adminUser": {},
@@ -34599,6 +34600,10 @@
           "secretExtraEnvironmentVars": {},
           "service": {
             "annotations": {},
+            "loadBalancerClass": {},
+            "loadBalancerIP": {},
+            "loadBalancerSourceRanges": {},
+            "nodePorts": {},
             "type": {}
           },
           "serviceAccountName": {},
@@ -34694,10 +34699,15 @@
             "port": {},
             "trafficDistribution": {}
           },
+          "schedulerName": {},
           "secretExtraEnvironmentVars": {},
           "service": {
             "annotations": {},
             "internalTrafficPolicy": {},
+            "loadBalancerClass": {},
+            "loadBalancerIP": {},
+            "loadBalancerSourceRanges": {},
+            "nodePorts": {},
             "type": {}
           },
           "serviceAccountName": {},
@@ -34732,6 +34742,7 @@
             "renewBefore": {}
           },
           "commonName": {},
+          "dnsNames": {},
           "duration": {},
           "externalCertificates": {
             "enabled": {}
@@ -34764,6 +34775,7 @@
           "replicas": {},
           "resources": {},
           "restartPolicy": {},
+          "schedulerName": {},
           "sidecar": {
             "image": {},
             "logLevel": {},
@@ -34814,14 +34826,34 @@
           "filerGroup": {},
           "grpcPort": {},
           "imageOverride": {},
-          "ingress": {
-            "annotations": {},
-            "className": {},
-            "enabled": {},
-            "host": {},
-            "path": {},
-            "pathType": {},
-            "tls": {}
+          "ingresses": {
+            "grpc": {
+              "annotations": {
+                "nginx": {
+                  "ingress": {
+                    "kubernetes": {
+                      "io/backend-protocol": {}
+                    }
+                  }
+                }
+              },
+              "className": {},
+              "enabled": {},
+              "entryPoint": {},
+              "host": {},
+              "path": {},
+              "pathType": {},
+              "tls": {}
+            },
+            "http": {
+              "annotations": {},
+              "className": {},
+              "enabled": {},
+              "host": {},
+              "path": {},
+              "pathType": {},
+              "tls": {}
+            }
           },
           "initContainers": {},
           "ipBind": {},
@@ -34894,6 +34926,7 @@
             "port": {},
             "trafficDistribution": {}
           },
+          "schedulerName": {},
           "secretExtraEnvironmentVars": {},
           "serviceAccountName": {},
           "sidecars": {},
@@ -35000,6 +35033,7 @@
           "resources": {},
           "restartPolicy": {},
           "resumeState": {},
+          "schedulerName": {},
           "serviceAccountName": {},
           "sidecars": {},
           "tolerations": {},
@@ -35009,6 +35043,7 @@
           "volumeSizeLimitMB": {}
         },
         "nameOverride": {},
+        "networkPolicy": {},
         "path": {
           "to": {
             "the": {
@@ -35060,6 +35095,16 @@
           },
           "initContainers": {},
           "internalTrafficPolicy": {},
+          "lanceIngress": {
+            "annotations": {},
+            "className": {},
+            "enabled": {},
+            "host": {},
+            "path": {},
+            "pathType": {},
+            "tls": {}
+          },
+          "lancePort": {},
           "legacySecretName": {},
           "livenessProbe": {
             "enabled": {},
@@ -35103,7 +35148,12 @@
           "resources": {},
           "restartPolicy": {},
           "reuseLegacySecret": {},
+          "schedulerName": {},
           "service": {
+            "loadBalancerClass": {},
+            "loadBalancerIP": {},
+            "loadBalancerSourceRanges": {},
+            "nodePorts": {},
             "type": {}
           },
           "serviceAccountName": {},
@@ -35170,7 +35220,12 @@
           "replicas": {},
           "resources": {},
           "restartPolicy": {},
+          "schedulerName": {},
           "service": {
+            "loadBalancerClass": {},
+            "loadBalancerIP": {},
+            "loadBalancerSourceRanges": {},
+            "nodePorts": {},
             "type": {}
           },
           "serviceAccountName": {},
@@ -35270,6 +35325,7 @@
           "resources": {},
           "restartPolicy": {},
           "rust": {},
+          "schedulerName": {},
           "serviceAccountName": {},
           "sidecars": {},
           "tolerations": {},
@@ -35295,6 +35351,7 @@
           "imageOverride": {},
           "initContainers": {},
           "jobType": {},
+          "lanceMetricsPort": {},
           "livenessProbe": {
             "enabled": {},
             "failureThreshold": {},
@@ -35320,6 +35377,7 @@
           "maxExecute": {},
           "metricsIp": {},
           "metricsPort": {},
+          "namespaceUrl": {},
           "nodeSelector": {},
           "podAnnotations": {},
           "podLabels": {},
@@ -35352,6 +35410,7 @@
             }
           },
           "restartPolicy": {},
+          "schedulerName": {},
           "serviceAccountName": {},
           "serviceMonitor": {
             "annotations": {}
@@ -35384,6 +35443,9 @@
         "admin.secret.existingSecret",
         "admin.secretExtraEnvironmentVars",
         "admin.service.annotations",
+        "admin.service.loadBalancerSourceRanges",
+        "admin.service.nodePorts",
+        "admin.service.type",
         "admin.serviceMonitor.annotations",
         "admin.sidecars",
         "admin.tolerations",
@@ -35411,6 +35473,9 @@
         "allInOne.s3.port",
         "allInOne.secretExtraEnvironmentVars",
         "allInOne.service.annotations",
+        "allInOne.service.loadBalancerSourceRanges",
+        "allInOne.service.nodePorts",
+        "allInOne.service.type",
         "allInOne.sftp.authMethods",
         "allInOne.sftp.bannerMessage",
         "allInOne.sftp.clientAliveCountMax",
@@ -35423,6 +35488,7 @@
         "allInOne.sftp.trustedUserCAKeys",
         "allInOne.tolerations",
         "allInOne.topologySpreadConstraints",
+        "certificates.dnsNames",
         "certificates.ipAddresses",
         "cosi.affinity",
         "cosi.bucketClassParameters",
@@ -35443,7 +35509,9 @@
         "filer.extraVolumeMounts",
         "filer.extraVolumes",
         "filer.imageOverride",
-        "filer.ingress.annotations",
+        "filer.ingresses.grpc.tls",
+        "filer.ingresses.http.annotations",
+        "filer.ingresses.http.tls",
         "filer.initContainers",
         "filer.nodeSelector",
         "filer.notificationConfig",
@@ -35480,6 +35548,7 @@
         "master.sidecars",
         "master.tolerations",
         "master.topologySpreadConstraints",
+        "networkPolicy",
         "podAnnotations",
         "podLabels",
         "s3.affinity",
@@ -35502,11 +35571,17 @@
         "s3.ingress.host",
         "s3.ingress.tls",
         "s3.initContainers",
+        "s3.lanceIngress.annotations",
+        "s3.lanceIngress.host",
+        "s3.lanceIngress.tls",
         "s3.nodeSelector",
         "s3.podAnnotations",
         "s3.podLabels",
         "s3.podSecurityContext",
         "s3.resources",
+        "s3.service.loadBalancerSourceRanges",
+        "s3.service.nodePorts",
+        "s3.service.type",
         "s3.sidecars",
         "s3.tolerations",
         "s3.topologySpreadConstraints",
@@ -35526,6 +35601,9 @@
         "sftp.podLabels",
         "sftp.podSecurityContext",
         "sftp.resources",
+        "sftp.service.loadBalancerSourceRanges",
+        "sftp.service.nodePorts",
+        "sftp.service.type",
         "sftp.sidecars",
         "sftp.tolerations",
         "sftp.topologySpreadConstraints",
@@ -35563,7 +35641,7 @@
         "worker.topologySpreadConstraints"
       ],
       "dynamic": [],
-      "charts": ["<root>=seaweedfs@4.33.0"]
+      "charts": ["<root>=seaweedfs@4.45.0"]
     },
     "https://spiffe.github.io/helm-charts-hardened/|spire-crds|0.6.1": {
       "literal": {
@@ -38482,9 +38560,9 @@
     {
       "appId": "full-ai-cluster/seaweedfs",
       "chart": "seaweedfs",
-      "targetRevision": "4.33.0",
+      "targetRevision": "4.45.0",
       "repoURL": "https://seaweedfs.github.io/seaweedfs/helm",
-      "chartKey": "https://seaweedfs.github.io/seaweedfs/helm|seaweedfs|4.33.0"
+      "chartKey": "https://seaweedfs.github.io/seaweedfs/helm|seaweedfs|4.45.0"
     },
     {
       "appId": "full-ai-cluster/spire",
