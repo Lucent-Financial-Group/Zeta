@@ -122,6 +122,82 @@ collapse is **sim-only**.
 
 ---
 
+## Q4b — WHY the ISA has no binary primitive: a boolean forces a branch, and a branch is hidden control structure
+
+Aaron, on reading Q4: _"yes yes yes — this is trying to avoid hidden control structure. These hide
+in the binary if statements."_
+
+That is the **design reason**, and it turns Q4 from a correction into the most load-bearing finding
+in this document. The ISA does not lack a binary primitive by oversight or by convenience. **A
+binary primitive is avoided on purpose, because a boolean forces an `if`, and an `if` is control
+structure that is not a channel.**
+
+### The carved form (rule candidate, cooling — not added to `.claude/rules/` here)
+
+> **A boolean forces a branch, and a branch is control structure that no channel declares.** Prefer
+> a value that **carries** — a weight, a signature, a feedback corner — over a test that
+> **decides**. Where a decision is genuinely unavoidable, declare it as a channel and meter it;
+> never let it hide in an `if`.
+
+This is **§13 noninterference stated for control flow.** The existing rule governs *entropy*
+crossing a membrane through declared, metered channels. A branch is the same violation in the
+other currency: an **influence** point that no type mentions, no trace records, and no probe can
+see, because the decision leaves no residue — the untaken path simply does not exist afterwards.
+
+### The ISA's `BRANCH` does not branch, and the name is exact rather than ironic
+
+`ZSetISA.qs`:
+
+> `/// BRANCH(k): H gate. Superposition (both states coexist while tick open).`
+
+**A classical `BRANCH` is the if-statement — it takes one path and discards the other.** The
+Hadamard takes neither: both states coexist for the duration of the tick. No decision is made, so
+there is no undeclared decision-maker. The file then closes the obvious escape hatch:
+`MERGE`/`FOLD` are *"superposition/interference merge, NOT measurement"*, with **"no decoherence to
+classical"** and **Born collapse "sim-only, terminal, never live."**
+
+Measurement is exactly where the branch would reappear — and it is pushed out of the live path
+entirely. **The ISA avoids hidden control structure by never collapsing inside a tick.**
+
+And this is why `EMIT`/`RETRACT` are `Ry(θ)` rather than a bit flip: **a continuous parameter cannot
+be reduced to a test.** There is no `if` that recovers θ. The U(1) half of Q4's table, which looked
+like an inconsistency, is the principle doing its job.
+
+### The same move, in five places this session, all of which now read as one
+
+| surface | the branch it removes | what carries instead |
+|---|---|---|
+| **ISA** | `if (bit) A else B` | `H` superposes; `Ry(θ)` carries a real |
+| **Four corners** | `Result`'s error position — the source says it **"short-circuits rather than carries"** | `T Feedback In` **carries** |
+| **Z-sets / DBSP** | `if (retracted) drop` | weight `−1`; retraction is an *addition*, not a test |
+| **Jurisdictions** | a tree — a chain of `if`s descending from a root | an overlay; **a permission is a signature, not a boolean** |
+| **Demixing** | `argmax` over four stems, which is an `if`-chain | a per-bin **signature** over sources |
+
+**Every one of those was reached independently in this session**, from Q#, from Meijer, from
+election districts, from Ozone, and from Alexa's review. The convergence is the evidence, and it is
+the kind this repo trusts: five surfaces that do not share a mechanism arriving at one shape.
+
+That also retroactively explains the §2 result of the demixing doc. *"A tree cannot represent a
+lattice"* is the same sentence: a tree **is** the if-chain, and the lattice is what you get when
+you refuse to branch.
+
+### It is already metered in one domain, which is worth knowing
+
+The phrase is not new to the tree, but it arrived narrowly — as **GPU warp divergence** (*"warp
+hidden control structure"*, in the soft-regime and BNN-encoding research). That is the same
+principle with a **performance** falsifier attached: divergent branches serialise a warp, so
+hidden control structure has a measurable cost on real hardware. The general form above is what
+was missing; the narrow form already pays rent.
+
+### The honest limit
+
+**A decision has to happen somewhere.** This does not abolish branching — it relocates it: out of
+the tick, to a declared boundary, where it is measurable. In the ISA that boundary is measurement,
+and it is marked sim-only. In the four-corner model it is the driver's injected monoid. In the
+demixer it would be whatever downstream consumer finally has to *act*, and that consumer's choice
+is a legitimate branch **because it is named**. The claim is never "no branches" — it is **"no
+branch that no channel declares."**
+
 ## Q5 — the "missing row": a meter that should have frozen but didn't
 
 **Already added and merged**, before this review arrived, in
