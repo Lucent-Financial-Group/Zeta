@@ -195,6 +195,7 @@ describe("081KSXN940008QG0R000SCP2H1 argocd-health-test argument parsing", () =>
     if ("kind" in parsed) throw new Error(parsed.message);
     expect(parsed.provider).toBe("kind");
     expect(parsed.scope).toBe("smoke");
+    expect(parsed.kindCni).toBe("kindnetd");
     expect(parsed.configPath).toBe("full-ai-cluster/dev-cluster/profiles/ci.kind-config.yaml");
   });
 
@@ -246,6 +247,73 @@ describe("081KSXN940008QG0R000SCP2H1 argocd-health-test argument parsing", () =>
     if ("kind" in parsed) throw new Error(parsed.message);
     expect(parsed.scope).toBe("included");
     expect(isIncludedScope(parsed.scope)).toBe(true);
+  });
+
+  test("kind --cni cilium selects the no-default-CNI profile", () => {
+    const parsed = parseArgs(["--run", "--provider", "kind", "--cni", "cilium", "--scope", "included"], {});
+    expect("kind" in parsed).toBe(false);
+    if ("kind" in parsed) throw new Error(parsed.message);
+    expect(parsed.kindCni).toBe("cilium");
+    expect(parsed.configPath).toBe("full-ai-cluster/dev-cluster/profiles/ci.cilium.kind-config.yaml");
+  });
+
+  test("explicit --config is not overwritten by --cni cilium", () => {
+    const parsed = parseArgs(
+      [
+        "--run",
+        "--provider",
+        "kind",
+        "--cni",
+        "cilium",
+        "--config",
+        "full-ai-cluster/dev-cluster/profiles/ci.cilium.kind-config.yaml",
+      ],
+      {},
+    );
+    expect("kind" in parsed).toBe(false);
+    if ("kind" in parsed) throw new Error(parsed.message);
+    expect(parsed.configPath).toBe("full-ai-cluster/dev-cluster/profiles/ci.cilium.kind-config.yaml");
+  });
+
+  test("rejects --cni cilium on k3d — k3d always installs Cilium", () => {
+    const parsed = parseArgs(["--run", "--provider", "k3d", "--cni", "cilium"], {});
+    expect("kind" in parsed).toBe(true);
+    if (!("kind" in parsed)) throw new Error("expected usage error");
+    expect(parsed.message).toContain("--cni is kind-only");
+  });
+
+  test("rejects --cni cilium against the kindnetd profile", () => {
+    const parsed = parseArgs(
+      [
+        "--run",
+        "--provider",
+        "kind",
+        "--cni",
+        "cilium",
+        "--config",
+        "full-ai-cluster/dev-cluster/profiles/ci.kind-config.yaml",
+      ],
+      {},
+    );
+    expect("kind" in parsed).toBe(true);
+    if (!("kind" in parsed)) throw new Error("expected usage error");
+    expect(parsed.message).toContain("no-default-CNI");
+  });
+
+  test("rejects the Cilium kind profile without --cni cilium", () => {
+    const parsed = parseArgs(
+      [
+        "--run",
+        "--provider",
+        "kind",
+        "--config",
+        "full-ai-cluster/dev-cluster/profiles/ci.cilium.kind-config.yaml",
+      ],
+      {},
+    );
+    expect("kind" in parsed).toBe(true);
+    if (!("kind" in parsed)) throw new Error("expected usage error");
+    expect(parsed.message).toContain("pass --cni cilium");
   });
 });
 

@@ -31,13 +31,21 @@ function included(provider: "kind" | "k3d" | null): readonly string[] {
     .map((a) => a.dir);
 }
 
-describe("cilium lifts on k3d and only on k3d", () => {
+describe("cilium lifts when Cilium owns the CNI slot, and only then", () => {
   test("k3d includes cilium — the condition its own reason names", () => {
     expect(included("k3d")).toContain("cilium");
   });
 
-  test("kind does NOT include cilium — kind runs its own CNI, which is the whole reason", () => {
+  test("kind default does NOT include cilium — kindnetd already owns the slot", () => {
     expect(included("kind")).not.toContain("cilium");
+  });
+
+  test("kind --cni cilium DOES include cilium — same condition, now evaluable on kind", () => {
+    expect(
+      discoverExpectedApplications(REPO_ROOT, "kind", "cilium")
+        .filter((a) => !a.excludedFromDev)
+        .map((a) => a.dir),
+    ).toContain("cilium");
   });
 
   test("an UNKNOWN provider lifts nothing — absence of information is not permission", () => {
@@ -52,6 +60,14 @@ describe("cilium lifts on k3d and only on k3d", () => {
     expect(onlyK3d).toEqual(["cilium"]);
     expect(onlyKind).toEqual([]);
   });
+
+  test("kind --cni cilium matches the k3d roster — one variable: who owns the CNI slot", () => {
+    const k3d = included("k3d");
+    const kindCilium = discoverExpectedApplications(REPO_ROOT, "kind", "cilium")
+      .filter((a) => !a.excludedFromDev)
+      .map((a) => a.dir);
+    expect([...kindCilium]).toEqual([...k3d]);
+  });
 });
 
 describe("cilium-lb-ipam stays excluded — half a conjunction is not a condition", () => {
@@ -59,6 +75,11 @@ describe("cilium-lb-ipam stays excluded — half a conjunction is not a conditio
     for (const p of ["k3d", "kind", null] as const) {
       expect(included(p)).not.toContain("cilium-lb-ipam");
     }
+    expect(
+      discoverExpectedApplications(REPO_ROOT, "kind", "cilium")
+        .filter((a) => !a.excludedFromDev)
+        .map((a) => a.dir),
+    ).not.toContain("cilium-lb-ipam");
   });
 
   test("the unmet conjunct is REAL and checkable: the pool is a pinned home subnet", () => {
@@ -105,6 +126,19 @@ describe("the provider actually REACHES the plan — the wiring, not just the pr
 
   test("a kind PLAN does not", () => {
     expect(planIncluded("kind")).not.toContain("cilium");
+  });
+
+  test("a kind --cni cilium PLAN includes cilium", () => {
+    const parsed = parseArgs(
+      ["--dry-run", "--provider", "kind", "--cni", "cilium", "--scope", "included"],
+      {},
+    );
+    if ("kind" in parsed) throw new Error(`parseArgs rejected a valid argv: ${parsed.message}`);
+    const plan = buildPlan(parsed, REPO_ROOT);
+    if ("kind" in plan) throw new Error(`buildPlan failed: ${plan.message}`);
+    const dirs = plan.expectedApplications.filter((a) => !a.excludedFromDev).map((a) => a.dir);
+    expect(dirs).toContain("cilium");
+    expect(dirs).not.toContain("cilium-lb-ipam");
   });
 
   test("neither plan includes cilium-lb-ipam", () => {

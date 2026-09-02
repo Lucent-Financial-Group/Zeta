@@ -1,8 +1,8 @@
 import { randomBytes } from "node:crypto";
 import { writeFileSync } from "node:fs";
 import { join } from "node:path";
-import { ciliumK3dValues, readCiliumValueSurfaces, renderValuesYaml } from "../cilium-kind-lane.ts";
-import type { DevClusterPorts } from "../ports.ts";
+import { ciliumK3dValues, ciliumKindValues, readCiliumValueSurfaces, renderValuesYaml, shippedCiliumChartVersion, CILIUM_CHART_REPO, GATEWAY_API_CRD_BUNDLE } from "../cilium-kind-lane.ts";
+import type { DevClusterPorts, KindCni } from "../ports.ts";
 import {
   buildDevAdminSecretManifest,
   buildDevRegistryPullSecretManifest,
@@ -10,6 +10,7 @@ import {
   DEV_GHCR_PULL_SECRET,
   devStorageAliasManifestPath,
   resolveRegistryToken,
+  REPO_ROOT,
 } from "./lib.ts";
 
 /**
@@ -163,6 +164,14 @@ export interface KindCiBringUpOptions {
   readonly gitRef: string;
   readonly gitRepoUrl: string;
   /**
+   * CNI the kind cluster uses. Default kindnetd is the existing green
+   * baseline. `cilium` uses the no-default-CNI profile and helm-installs
+   * the shipped Cilium surface before ArgoCD, so the included proof can
+   * create its own cluster instead of attaching with `--existing`
+   * (081M1DFQ2MZ).
+   */
+  readonly cni?: KindCni;
+  /**
    * The environment the registry pull credential is sourced from.
    *
    * DECLARED rather than ambient (manifesto §13 noninterference): this value
@@ -202,24 +211,41 @@ export interface K3dDevBringUpOptions {
 export function bringUpKindCiCluster(ports: DevClusterPorts, options: KindCiBringUpOptions): void {
   const { localCluster, controlPlane, packages, appCatalog } = ports;
   const context = localCluster.contextName(options.clusterName);
+  const cni: KindCni = options.cni ?? "kindnetd";
+  // No default CNI: nodes cannot reach Ready until Cilium is installed.
+  // Waiting here would time out every time and blame the wrong thing.
+  const waitForReady = cni !== "cilium";
 
   if (localCluster.list().includes(options.clusterName)) {
     console.log(
       `Cluster ${options.clusterName} already exists. Use bun src/Core.TypeScript/cluster/dev-cluster/kind-down.ts --cluster-name ${options.clusterName} to recreate.`,
     );
   } else {
-    console.log(`Creating kind cluster ${options.clusterName} ...`);
-    localCluster.create({ name: options.clusterName, configPath: options.configPath, waitForReady: true, waitTimeoutSec: 180 });
+    console.log(`Creating kind cluster ${options.clusterName} (cni=${cni}) ...`);
+    localCluster.create({
+      name: options.clusterName,
+      configPath: options.configPath,
+      waitForReady,
+      waitTimeoutSec: 180,
+    });
   }
 
   controlPlane.selectContext(context);
-  controlPlane.waitForAllNodesReady(180);
-
-  console.log("Installing Gateway API CRDs (cert-manager enableGatewayAPI on kind/k3d) ...");
-  controlPlane.applyRemoteManifest(
-    "https://github.com/kubernetes-sigs/gateway-api/releases/download/v1.2.0/standard-install.yaml",
-    true,
-  );
+  if (cni === "cilium") {
+    console.log("Waiting for Kubernetes API readiness (nodes stay NotReady until Cilium is the CNI) ...");
+    controlPlane.waitForApiReady(60, 3000);
+    console.log("Applying the VENDORED Gateway API CRD bundle (the same file first boot applies on metal) ...");
+    controlPlane.applyFileManifest(join(REPO_ROOT, GATEWAY_API_CRD_BUNDLE));
+    installShippedCiliumOnKind(ports, options.clusterName);
+    controlPlane.waitForAllNodesReady(180);
+  } else {
+    controlPlane.waitForAllNodesReady(180);
+    console.log("Installing Gateway API CRDs (cert-manager enableGatewayAPI on kind/k3d) ...");
+    controlPlane.applyRemoteManifest(
+      "https://github.com/kubernetes-sigs/gateway-api/releases/download/v1.2.0/standard-install.yaml",
+      true,
+    );
+  }
 
   applyDevStorageClassAliases(ports);
   applyDevBootstrapSecrets(ports);
@@ -241,7 +267,41 @@ export function bringUpKindCiCluster(ports: DevClusterPorts, options: KindCiBrin
   }
 
   controlPlane.waitForCrdEstablished("applications.argoproj.io", 120);
-  appCatalog.applyRootDevCatalog(options.gitRef, options.gitRepoUrl, "kind");
+  appCatalog.applyRootDevCatalog(options.gitRef, options.gitRepoUrl, "kind", cni);
+}
+
+/**
+ * Helm-install the SHIPPED Cilium surface onto a kind cluster whose profile
+ * left the CNI slot empty. Same refusal as k3d: a missing Application.yaml
+ * valuesObject must not silently become the chart defaults.
+ */
+function installShippedCiliumOnKind(ports: DevClusterPorts, clusterName: string): void {
+  if (ports.packages.releaseInstalled("kube-system", "cilium")) return;
+  const surfaces = readCiliumValueSurfaces();
+  const shipped = surfaces.find((surface) => surface.path.includes("applications/cilium/"))?.values;
+  if (shipped === undefined) {
+    throw new Error(
+      "the ArgoCD Cilium value surface was not found in the roster; refusing to invent values for the kind cluster",
+    );
+  }
+  const { values, deltas } = ciliumKindValues(shipped, clusterName);
+  console.log(`Installing Cilium from ${surfaces.map((s) => s.path).join(", ")}`);
+  console.log(`Value deltas for the kind substrate (${deltas.length}):`);
+  for (const delta of deltas) console.log(`  ${delta.path}: ${delta.shipped} -> ${delta.kind} (${delta.reason})`);
+  const valuesPath = join(process.env["RUNNER_TEMP"] ?? "/tmp", `cilium-kind-values-${clusterName}.json`);
+  writeFileSync(valuesPath, renderValuesYaml(values));
+  console.log(`Rendered Cilium values to ${valuesPath}`);
+  ports.packages.addRepo("cilium", CILIUM_CHART_REPO);
+  ports.packages.updateRepo("cilium");
+  ports.packages.install({
+    release: "cilium",
+    chart: "cilium/cilium",
+    version: shippedCiliumChartVersion(),
+    namespace: "kube-system",
+    setValues: [],
+    valuesFiles: [valuesPath],
+    wait: true,
+  });
 }
 
 export function tearDownKindCluster(ports: DevClusterPorts, clusterName: string): void {
@@ -377,12 +437,12 @@ export function bringUpK3dDevCluster(ports: DevClusterPorts, options: K3dDevBrin
     writeFileSync(valuesPath, renderValuesYaml(values));
     console.log(`Rendered Cilium values to ${valuesPath}`);
 
-    packages.addRepo("cilium", "https://helm.cilium.io");
+    packages.addRepo("cilium", CILIUM_CHART_REPO);
     packages.updateRepo("cilium");
     packages.install({
       release: "cilium",
       chart: "cilium/cilium",
-      version: "1.16.5",
+      version: shippedCiliumChartVersion(),
       namespace: "kube-system",
       setValues: [],
       valuesFiles: [valuesPath],
