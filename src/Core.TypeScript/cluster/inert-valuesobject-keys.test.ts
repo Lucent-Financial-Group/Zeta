@@ -557,6 +557,28 @@ describe("the extraction rules, at the unit", () => {
     // chart reads, not an invitation to nest arbitrary keys under it.
     expect(tree.open).not.toContain("storageClass");
   });
+  // SPRIG `dig` PUTS THE DICT LAST — the regression that produced a FALSE INERT
+  // verdict on a REQUIRED key. `index`/`get`/`pluck` take the collection first,
+  // so the existing branch matched them; `dig "k1" "k2" ... <default> <dict>`
+  // puts the path segments BEFORE `.Values` and was invisible.
+  //
+  // MEASURED on loki 18.11.7 `_helpers.tpl:228`. The guard reported
+  // `loki.storage.bucketNames` as governing NOTHING while the chart marks it
+  // `required` and the rendered ConfigMap carries `bucketnames: loki-chunks`
+  // from it. A false INERT is the direction that gets a live setting deleted,
+  // which is worse than a missed defect — hence a named control.
+  test("templateValuesRefs — sprig `dig` is read dict-LAST, so its path is literal", () => {
+    const refs = templateValuesRefs(
+      '{{- $b := required "Please define loki.storage.bucketNames.chunks" (dig "storage" "bucketNames" "chunks" "" .Values.loki) }}',
+    );
+    expect(refs.literal).toContain("loki.storage.bucketNames.chunks");
+    expect(refs.literal).toContain("loki.storage.bucketNames");
+    expect(refs.literal).toContain("loki.storage");
+    // ...and it is LITERAL, not dynamic: every segment is a quoted constant, so
+    // the key set is fully derivable and the rest of the chart stays decidable.
+    expect(refs.dynamic).toEqual([]);
+  });
+
 
   test("templateValuesRefs — every ancestor of a literal reference is itself literal", () => {
     const refs = templateValuesRefs("{{ .Values.clientApi.advertisedHost }}");
