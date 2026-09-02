@@ -11,7 +11,9 @@ open Zeta.Core.FSharp.Blake3
 /// WAL freeze (E2 / PR7). Snapshot mutbuf G, Jumprope that snapshot, log
 /// freeze-intent then CAS puts then freeze-commit. Durable fsyncs every
 /// leaf+trunk **before** commit and withholds the ack. Readable iff commit
-/// exists and every leaf is present. Crash-mid-write stays `toy` until PR12.
+/// exists and every leaf is present. Crash-mid-write *intercept* is
+/// `InMemoryFileSystem.ArmCrashMidWrite`. Freeze-log replay / recovery stays
+/// `toy` until the rest of the PR12 corpus.
 ///
 /// DoP=1 on this log. No Task.Run except the ferry launch (injected context
 /// on the DST path; `manual` + `PumpToIdleAsync` for tests).
@@ -73,80 +75,96 @@ module ZetaFsFreeze =
         let logDir = Path.Combine(storeDir, "log")
         let logPath = Path.Combine(logDir, "freeze")
         let objectsDir = Path.Combine(storeDir, "objects")
+        let fsDoor = FileSystem.Current
         let mutable boats = 0
         let mutable lastBoat = 0
 
         let processBatch (boat: ReadOnlyMemory<LogItem>) (ct: CancellationToken) : Task =
-            ct.ThrowIfCancellationRequested()
-            boats <- boats + 1
-            lastBoat <- boat.Length
-            let fs = FileSystem.Current
-            fs.CreateDirectory logDir
-            use stream = fs.OpenFile(logPath, FileMode.Append, FileAccess.Write, FileShare.Read)
-            let mutable err: FreezeError option = None
-            let anyDurable =
-                let mutable d = false
-                let mutable i = 0
-
-                while i < boat.Length do
-                    if boat.Span.[i].Durable then
-                        d <- true
-
-                    i <- i + 1
-
-                d
-
-            if anyDurable then
-                let mutable i = 0
-
-                while err.IsNone && i < boat.Length do
-                    let item = boat.Span.[i]
-
-                    if item.Durable then
-                        let mutable j = 0
-
-                        while err.IsNone && j < item.ObjectIds.Length do
-                            let hex = (ContentHash256.toContentAddress128 item.ObjectIds.[j]).ToHex()
-                            let path = Path.Combine(objectsDir, hex.Substring(0, 2), hex.Substring(2))
-
-                            match FileSync.fsyncFile path with
-                            | Ok() -> ()
-                            | Error e -> err <- Some(FreezeError.Fsync e)
-
-                            j <- j + 1
-
-                    i <- i + 1
-
-                if err.IsNone then
-                    match FileSync.fsyncDir objectsDir with
-                    | Error e -> err <- Some(FreezeError.Fsync e)
-                    | Ok() -> ()
-
-            if err.IsNone then
+            let succeed (err: FreezeError option) =
                 for i in 0 .. boat.Length - 1 do
-                    let frames = boat.Span.[i].Frames
-                    stream.Write(frames, 0, frames.Length)
+                    let it = boat.Span.[i]
+                    let outcome =
+                        match err with
+                        | Some e -> Error e
+                        | None -> Ok(struct (it.IntentLsn, it.CommitLsn))
 
-                stream.Flush()
+                    it.Reply.TrySetResult outcome |> ignore
 
-            if err.IsNone && anyDurable then
-                match FileSync.fsyncFile logPath with
-                | Error e -> err <- Some(FreezeError.Fsync e)
-                | Ok() ->
-                    match FileSync.fsyncDir logDir with
-                    | Error e -> err <- Some(FreezeError.Fsync e)
-                    | Ok() -> ()
+                Task.CompletedTask
 
-            for i in 0 .. boat.Length - 1 do
-                let it = boat.Span.[i]
-                let outcome =
-                    match err with
-                    | Some e -> Error e
-                    | None -> Ok(struct (it.IntentLsn, it.CommitLsn))
+            let fail (ex: exn) =
+                for i in 0 .. boat.Length - 1 do
+                    boat.Span.[i].Reply.TrySetException ex |> ignore
 
-                it.Reply.TrySetResult outcome |> ignore
+                Task.CompletedTask
 
-            Task.CompletedTask
+            try
+                ct.ThrowIfCancellationRequested()
+                boats <- boats + 1
+                lastBoat <- boat.Length
+                fsDoor.CreateDirectory logDir
+                let mutable err: FreezeError option = None
+                let anyDurable =
+                    let mutable d = false
+                    let mutable i = 0
+
+                    while i < boat.Length do
+                        if boat.Span.[i].Durable then
+                            d <- true
+
+                        i <- i + 1
+
+                    d
+
+                if anyDurable then
+                    let mutable i = 0
+
+                    while err.IsNone && i < boat.Length do
+                        let item = boat.Span.[i]
+
+                        if item.Durable then
+                            let mutable j = 0
+
+                            while err.IsNone && j < item.ObjectIds.Length do
+                                let hex = (ContentHash256.toContentAddress128 item.ObjectIds.[j]).ToHex()
+                                let path = Path.Combine(objectsDir, hex.Substring(0, 2), hex.Substring(2))
+
+                                match FileSync.fsyncFile path with
+                                | Ok() -> ()
+                                | Error e -> err <- Some(FreezeError.Fsync e)
+
+                                j <- j + 1
+
+                        i <- i + 1
+
+                    if err.IsNone then
+                        match FileSync.fsyncDir objectsDir with
+                        | Error e -> err <- Some(FreezeError.Fsync e)
+                        | Ok() -> ()
+
+                // Commit (Dispose) before Reply. A crash-mid-write on Dispose must
+                // fault the boat; Ok-then-throw would lie that the log is durable.
+                do
+                    use stream = fsDoor.OpenFile(logPath, FileMode.Append, FileAccess.Write, FileShare.Read)
+
+                    if err.IsNone then
+                        for i in 0 .. boat.Length - 1 do
+                            let frames = boat.Span.[i].Frames
+                            stream.Write(frames, 0, frames.Length)
+
+                        stream.Flush()
+
+                    if err.IsNone && anyDurable then
+                        match FileSync.fsyncFile logPath with
+                        | Error e -> err <- Some(FreezeError.Fsync e)
+                        | Ok() ->
+                            match FileSync.fsyncDir logDir with
+                            | Error e -> err <- Some(FreezeError.Fsync e)
+                            | Ok() -> ()
+
+                succeed err
+            with
+            | ex -> fail ex
 
         let throttler = new FerryThrottler<LogItem>(config, processBatch, manual = manual)
 
