@@ -4094,6 +4094,61 @@ What exists today is therefore the **floor** — one law, two transcriptions, by
 predictions the stance promises arrive only when there is hardware to disagree with us, and saying
 that clearly is what keeps this a design principle rather than a claim about physics.
 
+### Futamura says WHERE the `if`s go: we spec in the branch-free language, and specialisations carry the branches
+
+Aaron, 2026-09-02:
+
+> *"Yes — save this to vision about our Futamura. I think this is the language we spec in, and then
+> specialisations have the ifs."*
+
+This is the part that turns "no hidden control structure" from a prohibition into an architecture,
+and it resolves the obvious objection — *a decision has to happen somewhere.* It does. **Futamura
+says exactly where.**
+
+**Partial evaluation is, mechanically, the elimination of branches on known data.** A specialiser
+given `if (static) A else B` and a binding for `static` emits **just `A`** — the branch is
+*consumed* by specialisation. That is not a side effect of partial evaluation; on the static half
+it is most of what partial evaluation *is*.
+
+So the layers separate cleanly, and each one's relationship to branching is different:
+
+| layer | branches | why |
+|---|---|---|
+| **the spec language** | **none** | substrate-neutral, both paths alive, superposition-compatible — this is where we write |
+| **binding-time analysis** | *declares* which will survive | static ⇒ consumed at specialisation; dynamic ⇒ survives into the residual |
+| **the residual program** | **only the dynamic ones** | and every one of them was *declared in advance* by BTA |
+
+> **Binding-time analysis is the declaration that makes a branch legitimate.**
+
+That is the precise form of "no branch that no channel declares." A branch in the spec is hidden
+control structure. A branch in the residual program is the **output of a named transformation**,
+with an annotation saying in advance that it would be there. Same `if`, and the difference is
+entirely whether something declared it.
+
+**And this is what "upgrade to quantum, don't downgrade to classical" means operationally.** The
+spec is written at the level a quantum substrate can carry — branch-free, both paths alive. **A
+classical machine then runs a *specialisation* of that spec**, with the branches introduced by
+binding, not by authorship. Classical is not a lesser language we write in; it is the **residual
+program** of the one we write in.
+
+The tree already said this in a different vocabulary, which is worth noting as corroboration
+rather than novelty: `docs/research/2026-07-02-futamura-two-column-general-mix-and-intrinsic-hardware-isa-interpreter-is-the-one-object-residual-target-is-a-knob.md`
+— *"the intrinsic hardware ISA interpreter is the one object; residual target is a **knob**."*
+**Classical-versus-quantum is that knob.** The finding here is that the knob's setting is exactly
+what decides how many `if`s the residual carries, which is why the substrate disagreement of the
+previous section is informative: it is a *difference between two specialisations of one spec*, and
+the spec is the invariant they are both answerable to.
+
+**Anchors (Beacon).** Futamura (1971), *Partial Evaluation of Computation Process* — the three
+projections, already a checked anchor here. **Jones, Gomard & Sestoft**, *Partial Evaluation and
+Automatic Program Generation* (1993) — where **binding-time analysis** is developed as the static/
+dynamic separation this section leans on. Ershov, *mixed computation*.
+
+**Register:** `toy` in the same sense as the rest of this section — the mix/Futamura work exists in
+F# (`MixIr.fs`, `MixCogen.fs`), and *"compiled" is currently true only in the Futamura sense* per
+§1547 of this document. **No specialiser in this tree currently emits a quantum residual**, so the
+two-target claim is a design statement, not a demonstration.
+
 ### The long thesis this serves, in Aaron's words (2026-09-02)
 
 > *"My goal over time is to prove classical has all the advantages of quantum and they are not
