@@ -35,7 +35,7 @@ spec:
     # Pinned, never a floating tag: an unpinned controller upgrades itself under
     # the runners it manages, which is a silent capability change on hardware we
     # provisioned deliberately.
-    targetRevision: 0.12.1
+    targetRevision: 0.14.2
     helm:
       releaseName: arc-controller
       valuesObject:

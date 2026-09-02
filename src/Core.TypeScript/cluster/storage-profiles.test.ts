@@ -1457,7 +1457,11 @@ describe("the checked-in resource ladder", () => {
     // acknowledgement key `<dir>@<pin>` rather than an error that stops.
     // oz/Application.yaml now carries ~35 lines of comment there, on purpose.
     expect(pinnedChartVersion("oz")).toBe("3.1.1");
-    expect(pinnedChartVersion("arc-runner-set")).toBe("0.12.1");
+    // 0.12.1 -> 0.14.2 on 2026-09-02 with the chart bump. This assertion is the
+    // ORDINARY case; `oz` above is the falsifier that carries the test's point
+    // (its ~35 comment lines are what the old line-scanner choked on), so
+    // tracking the real pin here costs the test nothing.
+    expect(pinnedChartVersion("arc-runner-set")).toBe("0.14.2");
     // A git-path source has no chart version, and "" is the RIGHT answer there.
     expect(pinnedChartVersion("orleans")).toBe("");
     expect(pinnedChartVersion("no-such-application-dir")).toBe("");
