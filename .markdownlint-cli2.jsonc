@@ -16,6 +16,11 @@
     "**/.claude/**",
     "**/.kiro/**",
     "**/.pytest_cache/**",
+    // Generated Helm chart schema cache (gitignored, see `.gitignore` +
+    // `src/Core.TypeScript/cluster/inert-valuesobject-keys.ts`). Contains
+    // verbatim upstream chart READMEs (cert-manager, etc.), not
+    // repository-authored prose.
+    ".helm-schema-cache/**",
     // Python virtual environments are generated dependency trees. Their package
     // Markdown is upstream content, not repository-authored prose.
     "src/Arc.Python/.venv/**",
