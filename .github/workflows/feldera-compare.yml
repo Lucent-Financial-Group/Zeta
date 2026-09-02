@@ -7,12 +7,12 @@
 #
 # Feldera's own native Rust harness is NOT cloned here. references/prior-art/
 # is gitignored; building dbsp on three OS every PR is a cargo-minute bomb.
-# Run it locally with factory rust (mise 1.96.1 via tools/setup/install.sh):
-#   cargo build --release -p dbsp_nexmark --bench nexmark
+# Factory-rust Nexmark Q1/Q2 (100k, 1 core) is timed on ubuntu + macos in
+# `feldera-native.yml` (path-filtered to that file, not every PR).
 # Same-box numbers: docs/research/feldera-comparison-status.md
 #
-# WINDOWS STAYS HERE. `feldera-native.yml` compiles Feldera `dbsp` on
-# ubuntu + macos only (feldera-storage is unix `pread` / `AsRawFd`).
+# WINDOWS STAYS HERE. `feldera-native.yml` compiles Feldera `dbsp` and times
+# Nexmark on ubuntu + macos only (feldera-storage is unix `pread` / `AsRawFd`).
 # This workflow benches *our* F# Nexmark + zero-alloc Z-set paths, so
 # windows-2025 remains in the matrix. Aaron 2026-09-02: do not drop
 # Zeta benches on Windows when skipping Feldera-native Windows.
@@ -105,7 +105,7 @@ jobs:
         uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
           path: |
-            ~/.rustup/toolchains/1.96.1-*
+            ~/.rustup/toolchains/1.99.0-beta.3-*
             ~/.rustup/settings.toml
             ~/.rustup/update-hashes
             ~/.cargo

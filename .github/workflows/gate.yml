@@ -55,13 +55,13 @@
 #     https://static.rust-lang.org/dist/channel-rust-1.87.0.toml on every
 #     job (~50 s each) and took three PRs down on 2026-08-16 (#10903,
 #     #10930, #10963) — each reported under the name of a lint that never
-#     executed. Cached paths are `~/.rustup/toolchains/1.96.1-*`,
+#     executed. Cached paths are `~/.rustup/toolchains/1.99.0-beta.3-*`,
 #     `settings.toml`, `update-hashes`, `~/.cargo`.
 #     ONLY the pinned toolchain: the ubuntu-24.04 image already ships
 #     `~/.rustup/toolchains/stable-*` (624 MB) that RUSTUP_TOOLCHAIN never
 #     selects. Measured on the runner — whole-dir 1681 MB vs pinned-only
 #     1486 MB against a 1270 MB baseline, i.e. +216 MB instead of +411 MB.
-#     `1.96.1` here must stay in sync with `rust` in `.mise.toml`; a stale
+#     `1.99.0-beta.3` here must stay in sync with `rust` in `.mise.toml`; a stale
 #     glob degrades to the pre-2026-08-16 behaviour (CDN fetch), never to a
 #     wrong toolchain. `!`-exclusion was tried and measured as INERT —
 #     `path: ~/.rustup/toolchains` + `!~/.rustup/toolchains/stable-*`
@@ -836,7 +836,7 @@ jobs:
             ~/.dotnet/tools
             ~/.elan
             ~/.config/zeta
-            ~/.rustup/toolchains/1.96.1-*
+            ~/.rustup/toolchains/1.99.0-beta.3-*
             ~/.rustup/settings.toml
             ~/.rustup/update-hashes
             ~/.cargo
@@ -921,7 +921,7 @@ jobs:
             ~/.dotnet/tools
             ~/.elan
             ~/.config/zeta
-            ~/.rustup/toolchains/1.96.1-*
+            ~/.rustup/toolchains/1.99.0-beta.3-*
             ~/.rustup/settings.toml
             ~/.rustup/update-hashes
             ~/.cargo
@@ -1192,7 +1192,7 @@ jobs:
             ~/.dotnet/tools
             ~/.elan
             ~/.config/zeta
-            ~/.rustup/toolchains/1.96.1-*
+            ~/.rustup/toolchains/1.99.0-beta.3-*
             ~/.rustup/settings.toml
             ~/.rustup/update-hashes
             ~/.cargo
@@ -1853,7 +1853,7 @@ jobs:
             ~/.dotnet/tools
             ~/.elan
             ~/.config/zeta
-            ~/.rustup/toolchains/1.96.1-*
+            ~/.rustup/toolchains/1.99.0-beta.3-*
             ~/.rustup/settings.toml
             ~/.rustup/update-hashes
             ~/.cargo
@@ -1922,7 +1922,7 @@ jobs:
             ~/.dotnet/tools
             ~/.elan
             ~/.config/zeta
-            ~/.rustup/toolchains/1.96.1-*
+            ~/.rustup/toolchains/1.99.0-beta.3-*
             ~/.rustup/settings.toml
             ~/.rustup/update-hashes
             ~/.cargo
@@ -1988,7 +1988,7 @@ jobs:
             ~/.dotnet/tools
             ~/.elan
             ~/.config/zeta
-            ~/.rustup/toolchains/1.96.1-*
+            ~/.rustup/toolchains/1.99.0-beta.3-*
             ~/.rustup/settings.toml
             ~/.rustup/update-hashes
             ~/.cargo
@@ -2708,7 +2708,7 @@ jobs:
             ~/.dotnet/tools
             ~/.elan
             ~/.config/zeta
-            ~/.rustup/toolchains/1.96.1-*
+            ~/.rustup/toolchains/1.99.0-beta.3-*
             ~/.rustup/settings.toml
             ~/.rustup/update-hashes
             ~/.cargo
@@ -2765,7 +2765,7 @@ jobs:
             ~/.dotnet/tools
             ~/.elan
             ~/.config/zeta
-            ~/.rustup/toolchains/1.96.1-*
+            ~/.rustup/toolchains/1.99.0-beta.3-*
             ~/.rustup/settings.toml
             ~/.rustup/update-hashes
             ~/.cargo
@@ -2822,7 +2822,7 @@ jobs:
             ~/.dotnet/tools
             ~/.elan
             ~/.config/zeta
-            ~/.rustup/toolchains/1.96.1-*
+            ~/.rustup/toolchains/1.99.0-beta.3-*
             ~/.rustup/settings.toml
             ~/.rustup/update-hashes
             ~/.cargo
@@ -2879,7 +2879,7 @@ jobs:
             ~/.dotnet/tools
             ~/.elan
             ~/.config/zeta
-            ~/.rustup/toolchains/1.96.1-*
+            ~/.rustup/toolchains/1.99.0-beta.3-*
             ~/.rustup/settings.toml
             ~/.rustup/update-hashes
             ~/.cargo
@@ -2936,7 +2936,7 @@ jobs:
             ~/.dotnet/tools
             ~/.elan
             ~/.config/zeta
-            ~/.rustup/toolchains/1.96.1-*
+            ~/.rustup/toolchains/1.99.0-beta.3-*
             ~/.rustup/settings.toml
             ~/.rustup/update-hashes
             ~/.cargo
@@ -3349,7 +3349,7 @@ jobs:
             ~/.dotnet/tools
             ~/.elan
             ~/.config/zeta
-            ~/.rustup/toolchains/1.96.1-*
+            ~/.rustup/toolchains/1.99.0-beta.3-*
             ~/.rustup/settings.toml
             ~/.rustup/update-hashes
             ~/.cargo
@@ -3446,7 +3446,7 @@ jobs:
             ~/.dotnet/tools
             ~/.elan
             ~/.config/zeta
-            ~/.rustup/toolchains/1.96.1-*
+            ~/.rustup/toolchains/1.99.0-beta.3-*
             ~/.rustup/settings.toml
             ~/.rustup/update-hashes
             ~/.cargo

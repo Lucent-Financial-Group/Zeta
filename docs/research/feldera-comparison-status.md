@@ -20,12 +20,14 @@ not copy expression into Zeta.
 
 ## What is true today
 
-- Factory rust is mise-pinned **1.96.1** via `tools/setup/install.sh`
+- Factory rust is mise-pinned **1.99.0-beta.3** via `tools/setup/install.sh`
   (ace). Feldera 0.342.0 MSRV is 1.93.1. rustc **1.97.0 is first-bad**
-  (`dbsp` ICE); 1.96.1 is the last 1.96 patch (no 1.96.2) and compiles
-  `dbsp`. Do not `rustup install` a second compiler to build prior-art.
+  (`dbsp` ICE on 1.97.0 and 1.98.0). 1.96.1 is last-good stable; 1.99.0-beta.3
+  is the first later line that compiles `dbsp` (GHA + this box). Do not
+  `rustup install` a second compiler to build prior-art.
 - Clone: `references/prior-art/feldera/` (gitignored), SHA `48312b6`.
-- Native Rust Nexmark (not SQL / pipeline-manager):
+- Native Rust Nexmark (not SQL / pipeline-manager), factory rust
+  **1.99.0-beta.3**:
 
   ```bash
   cd references/prior-art/feldera
@@ -35,7 +37,9 @@ not copy expression into Zeta.
 
   Default `--max-events` is 100 million. Use 100k (and later 10k) to
   match `bench/Feldera.Bench` `EventCount`. `--cpu-cores 1` is the
-  DoP=1 compare against `Circuit.Step`.
+  DoP=1 compare against `Circuit.Step`. GHA `feldera-native.yml`
+  `native` runs this after `cargo build -p dbsp` on ubuntu-24.04 and
+  macos-26 (path-filtered; not every PR). Windows omitted (unix fd).
 - Zeta Q1/Q2 **price-keyed** Release numbers live on PR #16275
   (`docs/BENCHMARKS.md`). Those ticks coalesce `Price = rng.Next 10_000`
   so `|Z-set| ≤ 10_000`. Do not divide generator N by mean and call it
@@ -57,7 +61,7 @@ not copy expression into Zeta.
 
 Feldera 0.342.0 `48312b6`, `--query q1 --query q2 --max-events 100000 --cpu-cores 1`.
 Binary was `cargo bench --no-run` under rustc **1.93.1** (Feldera MSRV).
-Factory pin is rustc **1.96.1** (last 1.96 patch). Compiling Feldera's
+Factory pin is rustc **1.99.0-beta.3**. Compiling Feldera's
 `dbsp` crate on 1.97.0 and 1.98.0 ICE's in `rustc_next_trait_solver`.
 1.98.0 also SIGSEGV'd this Darwin LLVM twice before the ICE became
 reproducible. SplitMix64 oracle + golden vector pass on 1.98.0. Do not
@@ -70,6 +74,22 @@ table yet.
 |---|---:|---:|---:|---:|---:|
 | Q1 | 100,000 | 1 | 69.810 ms | 1.432 M/s | 104.91 MiB |
 | Q2 | 100,000 | 1 | 55.133 ms | 1.814 M/s | 106.56 MiB |
+
+### Factory pin 1.99.0-beta.3 (2026-09-02, same M2 Ultra)
+
+Same command, rustc **1.99.0-beta.3** (`cbae9b4ca`), `CARGO_PROFILE_RELEASE_DEBUG=0`
+`RUSTFLAGS=-C debuginfo=0`. CSV: `/tmp/feldera-nexmark-1.99.0-beta.3.csv`
+(not committed). GHA repeats this on ubuntu-24.04 / macos-26 in
+`feldera-native.yml` `native` (path-filtered).
+
+| Query | Events | Cores | Elapsed | Throughput | Peak RSS |
+|---|---:|---:|---:|---:|---:|
+| Q1 | 100,000 | 1 | 74.161 ms | 1.348 M/s | 99.33 MiB |
+| Q2 | 100,000 | 1 | 49.138 ms | 2.035 M/s | 105.08 MiB |
+
+Same-box vs the 1.93.1 binary: Q1 ~6 % slower, Q2 ~11 % faster, RSS
+in the same band. One run, not a compiler-speed claim. GHA runner
+CSVs will sit next to these once `feldera-native.yml` lands.
 
 Zeta price-keyed Q1 100k at 54.89 µs (PR #16275) is **not** this
 denominator: `|Z-set| ≤ 10_000` after `ofArray` coalesces prices.
@@ -94,8 +114,9 @@ in `docs/BENCHMARKS.md` when variance is honest.
 CI: `.github/workflows/feldera-compare.yml` runs this harness on
 ubuntu-24.04, macos-26, and windows-2025 when the bench/Z-set paths
 change. Drift check, not `gate (required)`. Feldera itself is not
-cloned there. Windows stays on this lane (our F# benches); native
-`dbsp` compile is unix-only (`feldera-native.yml`, ubuntu + macos).
+cloned there. Windows stays on this lane (our F# benches). Native
+`dbsp` compile + Nexmark Q1/Q2 100k/1-core is unix-only
+(`feldera-native.yml`, ubuntu + macos).
 Compare timeout is 90 min: windows-2025 run 33557970586 hit the
 old 40 min cap during Unique-key BDN after `install.ps1`.
 
@@ -124,9 +145,9 @@ and warns (does not scoop) when it is not. Unix cmake is apt/brew.
 
 ## Not yet a result
 
-A longer unique-key BDN pasted into `docs/BENCHMARKS.md`, and a
-factory-rust **1.96.1** Nexmark run of Feldera (lib linked; harness
-not yet timed).
+A longer unique-key BDN pasted into `docs/BENCHMARKS.md`. GHA
+ubuntu/macos factory-pin Nexmark CSVs (this PR's `feldera-native.yml`
+`native` job) are not in the table above yet.
 
 ## rustc bisect (Feldera `dbsp` `--release`, debuginfo=0)
 
@@ -139,16 +160,15 @@ Feldera 0.342.0 `48312b69`. Separate `CARGO_TARGET_DIR` per version.
 | 1.94.0 | 2026-03-02 | not probed (between two PASSes) |
 | 1.95.0 | 2026-04-14 | not probed (between two PASSes) |
 | **1.96.0** `ac68faa20` | 2026-05-25 | **PASS** |
-| **1.96.1** `31fca3adb` | 2026-06-26 | **PASS** (last 1.96 patch; factory pin) |
+| **1.96.1** `31fca3adb` | 2026-06-26 | **PASS** (last 1.96 patch; last-good stable) |
 | **1.97.0** `2d8144b78` | 2026-07-07 | **FAIL rc=101** (first-bad ICE) |
 | 1.98.0 `88d9e12ae` | 2026-08-18 | FAIL rc=101 (same ICE; also earlier LLVM SIGSEGV) |
-| **1.99.0-beta.3** `cbae9b4ca` | 2026-08-28 | **PASS** (4m 47s, debuginfo=0) |
+| **1.99.0-beta.3** `cbae9b4ca` | 2026-08-28 | **PASS** (factory pin; 4m 47s, debuginfo=0) |
 | 1.100.0-nightly `0dfb098f3` | 2026-08-31 | 4-line ICE repro PASS; `dbsp` not re-run |
 
 1.94/1.95 were skipped: 1.93.1 and 1.96.0 both PASS, so the ICE break is
-in (1.96.1, 1.97.0]. Factory pin is **1.96.1**. No 1.96.2 exists.
-1.99.0-beta.3 compiles `dbsp`; do not move the factory pin to 1.99 until
-stable 1.99 exists and `feldera-native.yml` has run it.
+in (1.96.1, 1.97.0]. No 1.96.2 exists. Factory pin is **1.99.0-beta.3**
+(Aaron 2026-09-02: latest beta for now). 1.96.1 remains last-good stable.
 
 ### Two failures, do not mix
 
@@ -204,11 +224,11 @@ hardware-shaped on this Mac; it is not a tiny rustc repro. GHA
 on 1.98 with ThinLTO + debuginfo would be the discriminator; we
 did not run that.
 
-`feldera-native.yml` `native` compiles factory rust 1.96.1 `dbsp`
-on GHA ubuntu-24.04 / macos-26. Windows is omitted: Feldera
-0.342.0 `feldera-storage` uses `std::os::fd` / `libc::pread`
-(measured FAIL on windows-2025). `probe` (PR + dispatch only)
-repeats the compile on 1.97.0 / 1.98.0 / beta.
+`feldera-native.yml` `native` compiles factory rust **1.99.0-beta.3**
+`dbsp` then times `dbsp_nexmark` Q1/Q2 100k events / 1 core on GHA
+ubuntu-24.04 / macos-26. Windows is omitted: Feldera 0.342.0
+`feldera-storage` uses `std::os::fd` / `libc::pread` (measured FAIL
+on windows-2025). `probe` is workflow_dispatch only.
 
 GHA run 33561885627 (PR #16304, 2026-09-01),
 `cargo build --release -p dbsp` debuginfo=0, Feldera `48312b69`:
@@ -226,7 +246,6 @@ GHA run 33561885627 (PR #16304, 2026-09-01),
 | macos-26 | 1.99.0-beta.3 | PASS rc=0 |
 
 The ICE is a compiler bug, not this Mac. The 1.98 LLVM SIGSEGV did
-**not** reproduce on GHA macos-26 (debuginfo=0). Factory pin stays
-**1.96.1** (diagnosis confirmed; 1.99 beta is the next compiling
-line, not taken). Same-box Nexmark numbers stay the 1.93.1 binary
-until a factory-pin harness run is timed.
+**not** reproduce on GHA macos-26 (debuginfo=0). Factory pin is
+**1.99.0-beta.3**. The 1.93.1 table above is the MSRV binary; factory-pin
+Nexmark is `feldera-native.yml` `native` (ubuntu + macos) plus this Mac.
