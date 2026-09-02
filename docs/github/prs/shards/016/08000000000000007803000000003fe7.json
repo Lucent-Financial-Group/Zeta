@@ -1,0 +1,12 @@
+{
+  "pr_number": 16359,
+  "archive_path": "docs/history/pr-reviews/PR-16359-feat-081m1hncgn8087g0r000zk7zgx-freeze-log-through-ferrythrottler.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-02T18:53:49.086Z",
+  "schema_version": "v1",
+  "commit_sha": "476e6280c5b345ca3aa06bf903e16007dd1116ea",
+  "title": "feat(081M1HNCGN8087G0R000ZK7ZGX): freeze log through FerryThrottler",
+  "state": "MERGED",
+  "merged_at": "2026-09-02T18:53:10Z",
+  "head_ref": "feat/zetafs-freeze-ferry"
+}
