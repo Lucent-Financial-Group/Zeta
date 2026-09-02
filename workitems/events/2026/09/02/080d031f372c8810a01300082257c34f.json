@@ -1,0 +1,14 @@
+{
+  "id": "080d031f372c8810a01300082257c34f",
+  "at": "2026-09-02T20:54:31.569Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1HYDSCG087G0R0033RSEXV",
+    "type": "task",
+    "title": "Wire tickRooms into run-loop-real so the loop's pick is a bounded room",
+    "slug": "wire-tickrooms-into-run-loop-real-so-the-loop-s-pick-is-a-bo",
+    "priority": "P2",
+    "filename": "081M1HYDSCG087G0R0033RSEXV-wire-tickrooms-into-run-loop-real-so-the-loop-s-pick-is-a-bo.md"
+  }
+}
