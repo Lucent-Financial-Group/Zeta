@@ -10,21 +10,19 @@
 
 // ─── Result type (project convention: Result-over-exception) ────────────────
 
-export type Result<T, E> =
-  | { readonly ok: true; readonly value: T }
-  | { readonly ok: false; readonly error: E };
+export type Result<T, E> = { readonly ok: true; readonly value: T } | { readonly ok: false; readonly error: E };
 
 // ─── Error types ────────────────────────────────────────────────────────────
 
 export type ForgeErrorKind =
-  | "not-supported"      // adapter hasn't implemented this method
-  | "auth-failure"       // credentials invalid or expired
-  | "rate-limited"       // API rate limit hit
-  | "not-found"          // resource doesn't exist
-  | "network"            // transient network failure
-  | "parse-failure"      // response couldn't be parsed
-  | "permission-denied"  // valid auth but insufficient permissions
-  | "internal";          // unexpected adapter error
+  | "not-supported" // adapter hasn't implemented this method
+  | "auth-failure" // credentials invalid or expired
+  | "rate-limited" // API rate limit hit
+  | "not-found" // resource doesn't exist
+  | "network" // transient network failure
+  | "parse-failure" // response couldn't be parsed
+  | "permission-denied" // valid auth but insufficient permissions
+  | "internal"; // unexpected adapter error
 
 export interface ForgeError {
   readonly kind: ForgeErrorKind;
@@ -35,14 +33,7 @@ export interface ForgeError {
 
 // ─── Forge detection ────────────────────────────────────────────────────────
 
-export type ForgeType =
-  | "github"
-  | "gitlab"
-  | "gitea"
-  | "bitbucket"
-  | "sourcehut"
-  | "codeberg"
-  | "unknown";
+export type ForgeType = "github" | "gitlab" | "gitea" | "bitbucket" | "sourcehut" | "codeberg" | "unknown";
 
 export interface DetectedForge {
   readonly forge: ForgeType;
@@ -72,13 +63,7 @@ export interface PullRequest {
   readonly author: string;
 }
 
-export type NextAction =
-  | "wait-ci"
-  | "fix-failed-checks"
-  | "resolve-threads"
-  | "rebase"
-  | "verify-merge"
-  | "none";
+export type NextAction = "wait-ci" | "fix-failed-checks" | "resolve-threads" | "rebase" | "verify-merge" | "none";
 
 export interface CheckSummary {
   readonly ok: number;
@@ -93,7 +78,18 @@ export interface PrGateState {
   readonly gate: "clean" | "blocked" | "dirty" | "unstable" | "unknown";
   readonly checks: CheckSummary;
   readonly requiredChecks: CheckSummary;
+  /**
+   * How many threads BLOCK — every unresolved one, whether or not it can be answered from here.
+   * Counted from the raw response on purpose: deriving it from `threads` would let a thread the
+   * parser could not identify quietly reduce the blocker count, which is a merge permitted because
+   * a field was missing.
+   */
   readonly unresolvedThreads: number;
+  /**
+   * The subset that can be ANSWERED — those carrying an id, which is all `resolveThread` accepts.
+   * May be smaller than `unresolvedThreads`; when it is, `warnings` says so.
+   */
+  readonly threads: readonly ReviewThread[];
   readonly autoMerge: "armed" | "none";
   readonly mergeCommit: string | null;
   readonly warnings: readonly string[];
@@ -101,6 +97,28 @@ export interface PrGateState {
 }
 
 // ─── Thread types ───────────────────────────────────────────────────────────
+
+/**
+ * A review thread, identified well enough to ANSWER.
+ *
+ * `resolveThread(threadId, body)` has been on the port since it was written, and nothing could call
+ * it: no method returned a thread id. The gate reported `unresolvedThreads: 3` — a count you can be
+ * blocked by and cannot act on. This is the missing half.
+ *
+ * `firstComment` is what a reviewer actually said. A responder that knows only "there are 3 threads"
+ * can resolve them, which is worse than not being able to: resolving without answering is the
+ * laundering move the whole review stage exists to prevent.
+ */
+export interface ReviewThread {
+  /** The node id `resolveThread` takes. */
+  readonly id: string;
+  readonly isResolved: boolean;
+  /** The diff moved under it. Still blocking, but the line it referred to may be gone. */
+  readonly isOutdated: boolean;
+  readonly path?: string;
+  readonly line?: number;
+  readonly firstComment?: { readonly author: string; readonly body: string };
+}
 
 export interface ThreadResolution {
   readonly threadId: string;
@@ -126,9 +144,15 @@ export interface Issue {
 // ─── CI types ───────────────────────────────────────────────────────────────
 
 export type CiConclusion =
-  | "success" | "neutral" | "skipped"
-  | "failure" | "cancelled" | "timed-out"
-  | "startup-failure" | "action-required" | "stale";
+  | "success"
+  | "neutral"
+  | "skipped"
+  | "failure"
+  | "cancelled"
+  | "timed-out"
+  | "startup-failure"
+  | "action-required"
+  | "stale";
 
 export interface CiCheck {
   readonly name: string;

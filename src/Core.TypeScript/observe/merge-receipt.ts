@@ -111,11 +111,39 @@ export function mergePermitted(state: WorkLifecycleState): MergeVerdict {
   return { permitted: false, why: result.reason };
 }
 
+/**
+ * How many threads to quote before summarising.
+ *
+ * Bounded because a refusal is read, and a fifty-line refusal is not. The COUNT above it is never
+ * truncated — only the quoting is, so the number of blockers stays exact.
+ */
+const MAX_NAMED_THREADS = 5;
+
+/** A reviewer's first line, bounded. The whole comment belongs in the thread, not in a log line. */
+function firstLine(body: string): string {
+  const line = body.split("\n")[0] ?? "";
+  return line.length > 120 ? `${line.slice(0, 117)}...` : line;
+}
+
 /** Why a PR is not mergeable, in the operator's words rather than a state tag. */
 export function describeGateRefusal(gate: PrGateState): string {
   const reasons: string[] = [];
   if (gate.unresolvedThreads > 0) {
     reasons.push(`${String(gate.unresolvedThreads)} unresolved review thread(s) — the review is not finished`);
+    // NAME them. "3 unresolved threads" is a wall; "lior asked about the retry bound in do-item.ts"
+    // is a task. The gate now carries the reviewer's actual words, so the refusal carries them too.
+    const open = gate.threads.filter((x) => !x.isResolved);
+    for (const t of open.slice(0, MAX_NAMED_THREADS)) {
+      const where = t.path === undefined ? "" : ` (${t.path}${t.line === undefined ? "" : `:${String(t.line)}`})`;
+      const said =
+        t.firstComment === undefined
+          ? "no comment text available"
+          : `${t.firstComment.author}: "${firstLine(t.firstComment.body)}"`;
+      reasons.push(`  - ${said}${where}${t.isOutdated ? " [outdated — the diff moved under it]" : ""}`);
+    }
+    if (open.length > MAX_NAMED_THREADS) {
+      reasons.push(`  - ... and ${String(open.length - MAX_NAMED_THREADS)} more`);
+    }
   }
   if (gate.requiredChecks.failed > 0) reasons.push(`${String(gate.requiredChecks.failed)} required check(s) failing`);
   const notDone = gate.requiredChecks.pending + gate.requiredChecks.inProgress;
