@@ -210,9 +210,9 @@ cert-manager Synced/Healthy, 0 restarts; cert-manager issued
 `app.kubernetes.io/name=spire-agent`, and hostNetwork/dnsPolicy are
 hardcoded. Dump now targets `daemonset/spire-agent`. Do not re-lift
 `--scope included`. Do not invent a Cilium values tweak. Do not re-dispatch
-the Cilium included probe. live-k3d smoke [33751425785](https://github.com/Lucent-Financial-Group/Zeta/actions/runs/33751425785)
-job `100636645454`: dump now sees the agent. Crash is missing
-`bundle.crt` because `spire-server-0` is Pending on local-path, not
+the Cilium included probe. live-k3d smoke [33754516236](https://github.com/Lucent-Financial-Group/Zeta/actions/runs/33754516236)
+job `100646643214`: `configmap/spire-bundle` is DATA 0. Crash is
+missing `bundle.crt` because the server is Pending on local-path, not
 the included-class DNS timeout.
 
 **Expect chart-level surprises on metal.** Boot and join are proven; what runs on

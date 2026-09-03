@@ -1171,10 +1171,15 @@ jobs:
           # because spire-server-0 was Pending on rancher.io/local-path, not
           # the included-class DNS timeout. Do not collapse the two.
           kubectl -n spire get pvc,cm -o wide || true
+          echo "--- spire-bundle keys (MEASURED 33754516236: DATA 0, no bundle.crt) ---"
+          kubectl -n spire get cm spire-bundle -o jsonpath='data={.data}{"\n"}' || true
           echo "--- cilium-dbg service list (do not swallow exec failure) ---"
           DNS_IP="$(kubectl -n kube-system get svc kube-dns -o jsonpath='{.spec.clusterIP}' 2>/dev/null || true)"
           echo "kube-dns ClusterIP=${DNS_IP:-NONE}"
-          kubectl -n kube-system exec ds/cilium -c cilium-agent -- cilium-dbg service list || echo "cilium-dbg service list FAILED rc=$?"
+          if ! kubectl -n kube-system exec ds/cilium -c cilium-agent -- cilium-dbg service list; then
+            echo "cilium-dbg service list FAILED (MEASURED 33754516236: container not found cilium-agent)"
+            kubectl -n kube-system get ds,pods -l k8s-app=cilium -o wide || true
+          fi
 
       - name: Print cluster diagnostics
         if: always()

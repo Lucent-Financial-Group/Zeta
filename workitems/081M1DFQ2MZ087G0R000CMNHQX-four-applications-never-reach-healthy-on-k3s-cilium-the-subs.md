@@ -509,6 +509,22 @@ startup race smoke always sees. It is **not** the included-class
 with stderr discarded and printed nothing — next dump prints the
 list without swallowing exec failure.
 
+## MEASURED 2026-09-03 — live-k3d smoke 33754516236, bundle ConfigMap is empty
+
+Job `100646643214` on SHA `fe51920bc` (PR #16504)
+[run 33754516236](https://github.com/Lucent-Financial-Group/Zeta/actions/runs/33754516236)
+**succeeded**. Same crash, now with PVC + ConfigMaps:
+
+    persistentvolumeclaim/spire-data-spire-server-0   Pending   zeta-local-path
+    configmap/spire-bundle                             DATA 0
+
+The ConfigMap exists and is mounted. It has **zero keys**. That is why
+the agent can start and still fail `open /run/spire/bundle/bundle.crt`.
+`cilium-dbg service list` failed `container not found ("cilium-agent")`
+— Cilium Application was still Progressing; dump now prints the Cilium
+DaemonSet/pods on that failure. kube-dns ClusterIP `10.43.0.10`,
+endpoints `10.143.0.138` (cluster-pool).
+
 Do not invent a Cilium values tweak. Do not re-lift `--scope included`.
 The included-class DNS timeout is still the remaining second class
 **after** the server writes the bundle. Smoke cannot see it while
