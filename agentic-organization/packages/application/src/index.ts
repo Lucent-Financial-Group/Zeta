@@ -895,6 +895,9 @@ export {
   type OrgCycleRmoCandidateSource,
   type OrgCycleRmoCandidateSourceInput,
 } from "./org-runtime.ts";
+// The demo candidate source: a synthetic RMO reputation feed, so a caller can drive a full org
+// cycle without standing up a reputation store.
+export { createDemoOrgCycleRmoCandidateSource } from "./org-runtime-demo.ts";
 export {
   AuthorityScope,
   authorityScopeOf,
@@ -913,6 +916,12 @@ export {
   type QaCycleDeps,
   type QaCycleReport,
 } from "./qa.ts";
+export {
+  createSandboxTestExecutor,
+  QaPassToken,
+  QaSandboxEvidencePrefix,
+  type QaToolRequestBuilder,
+} from "./qa-sandbox-executor.ts";
 export {
   EscalationTrigger,
   EscalationAction,
@@ -935,7 +944,12 @@ export {
   type NormalizedIntake,
   type IntakeDeps,
 } from "./intake.ts";
-export { runWorkOsCycle, type WorkOsCycleDeps, type WorkOsCycleReport } from "./work-os-runtime.ts";
+export {
+  runWorkOsCycle,
+  type WorkImplementer,
+  type WorkOsCycleDeps,
+  type WorkOsCycleReport,
+} from "./work-os-runtime.ts";
 export {
   clamp01,
   computeFreshness,

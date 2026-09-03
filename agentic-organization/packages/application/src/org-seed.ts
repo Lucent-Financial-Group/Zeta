@@ -201,6 +201,17 @@ const HAT_SPECS: readonly HatSpec[] = [
   { id: "documentation_enforcement_reviewer", name: "Documentation Enforcement Reviewer", departmentId: D.DocumentationAndProjectSkills, level: L.IndividualContributor, reportsTo: "documentation_systems_director", toolBundles: [B.DocumentationContext, B.ReviewAndGates, B.Task, B.ArtifactAndEvidence, B.Memory], approvalScopes: ["documentation_compliance_gate"] },
 
   // ── Operations and Infrastructure ──
+  // The Resource Management Office. It was ACTING before it existed: `rmo.ts` emits hat-assignment
+  // events with `actorHatId: "rmo_office"` and `reputation.ts` names it in a supervisor chain, but
+  // no hat was defined — so the office that decides who wears every OTHER hat was the one actor
+  // outside the hat system: no level (invisible to `eventsByLevel`), no department, no `reportsTo`
+  // and therefore no supervisor, and no way for it to be staffed, bound, expired or succeeded like
+  // everything it staffs.
+  //
+  // Director under the COO, mirroring `hat_approval_steward` (a Director whose scopes govern hat
+  // classes): the RMO's domain is scarce-resource allocation — hat supply, schedules, sessions,
+  // worktrees, review queues — and the COO owns schedule policy and operating cadence.
+  { id: "rmo_office", name: "Resource Management Office", departmentId: D.OperationsAndInfrastructure, level: L.Director, reportsTo: "coo", toolBundles: [B.HatAuthorization, B.AgentInsight, B.PortfolioAndInitiative, B.Status, B.ScheduledReviews, B.Voting, B.Observability], approvalScopes: ["hat_assignment", "capacity_allocation"], votingScopes: ["hat_supply"] },
   { id: "operations_director", name: "Operations Director", departmentId: D.OperationsAndInfrastructure, level: L.Director, reportsTo: "coo", toolBundles: [B.AlwaysOnRuntime, B.Observability, B.DevOps, B.Status, B.Meeting, B.ScheduledReviews], approvalScopes: ["operations_priority", "incident_process"], votingScopes: ["hat_supply"] },
   { id: "platform_operator", name: "Platform Operator", departmentId: D.OperationsAndInfrastructure, level: L.IndividualContributor, reportsTo: "operations_director", toolBundles: [B.AlwaysOnRuntime, B.Observability, B.DevOps, B.Status, B.Messaging, B.ArtifactAndEvidence] },
   { id: "runtime_steward", name: "Runtime Steward", departmentId: D.OperationsAndInfrastructure, level: L.IndividualContributor, reportsTo: "operations_director", toolBundles: [B.AlwaysOnRuntime, B.Observability, B.BacklogAndDefect, B.DocumentationContext, B.ReviewAndGates] },

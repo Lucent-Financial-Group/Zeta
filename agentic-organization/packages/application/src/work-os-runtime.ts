@@ -26,12 +26,31 @@ import {
   type WorkItem,
 } from "../../domain/src/index.ts";
 import { createWorkItemFromIntake, normalizeIntake, triageIntake, type IntakeDeps } from "./intake.ts";
-import { createDeterministicExecutor, deriveTestCasesFromBrd, runQaCycle } from "./qa.ts";
+import { createDeterministicExecutor, deriveTestCasesFromBrd, runQaCycle, type TestExecutor } from "./qa.ts";
 import { bounceBackCount, decideEscalation, detectChurn, EscalationAction, EscalationTrigger } from "./escalation.ts";
 import { decideHatSupply, type HatSupplyVote } from "./rmo.ts";
 import { firstLegalChooser } from "./org-decision.ts";
 import { observeForHat, type OrgWorkState } from "./observe-for-hat.ts";
 import { type ScopeMetrics, type TestSummary } from "../../observability/src/work-batch-metrics.ts";
+
+/**
+ * What the dev hat DOES at the develop stage.
+ *
+ * The loop previously emitted "fix implemented" as a transition and produced nothing — the whole
+ * structure decided, staffed and gated a work item that no one ever worked on. This is the seam
+ * where the hat bound to implementation actually acts, and the attempt number is passed so a
+ * re-attempt after a QA bounce-back can differ from the first (which is what makes the churn →
+ * escalation path mean something).
+ */
+export type WorkImplementer = {
+  implement(input: {
+    workItemId: string;
+    initiativeBranch: string;
+    /** 1 on the first pass; incremented on each post-QA rework. */
+    attempt: number;
+    implementerHatId: string;
+  }): Promise<{ ok: boolean; detail: string; evidenceRefs?: readonly string[] }>;
+};
 
 export type WorkOsCycleDeps = {
   organizationId: string;
@@ -42,6 +61,30 @@ export type WorkOsCycleDeps = {
   baseTimeMs: number;
   createId: (prefix: string) => string;
   appendEvent: (event: OrgEvent) => Promise<void>;
+  /**
+   * The QA execution port. OPTIONAL, and the default is the scripted executor this loop has always
+   * used — so every existing caller behaves exactly as before, and a caller that wants the org to
+   * verify REAL work supplies a real one.
+   *
+   * `TestExecutor` documents itself as "the real runner is computer-use / browser / API", and until
+   * now `createDeterministicExecutor` was its ONLY implementation anywhere in the tree. A port with
+   * one fake adapter and no injection point is a seam that cannot be used.
+   */
+  qaExecutor?: TestExecutor;
+  /** What the dev hat actually does. Absent ⇒ the loop only records the transition, as before. */
+  implementer?: WorkImplementer;
+  /**
+   * The work item this delivery run is about. OPTIONAL, defaulting to a freshly minted id.
+   *
+   * Without it the loop invents its own id, so a governance run (`runOrgCycle`, where the Executive
+   * Board, C-suite and Directors prioritize and the RMO staffs) and a delivery run were always about
+   * TWO DIFFERENT work items — two disconnected stories that could never be joined into one chain
+   * from C-suite down to the dev who implements it.
+   *
+   * Supplied at intake rather than patched afterwards, so every event in the trace — including the
+   * intake events emitted before the item exists as a value — carries the same id.
+   */
+  workItemId?: string;
 };
 
 export type WorkOsCycleReport = {
@@ -54,6 +97,10 @@ export type WorkOsCycleReport = {
   escalations: readonly EscalationAction[];
   agentsAddedViaRmo: number;
   architectBroughtIn: boolean;
+  /** How many times the dev hat actually ran an implementation (0 when no implementer is wired). */
+  implementationAttempts: number;
+  /** True when the LAST implementation attempt reported success. */
+  implementationSucceeded: boolean;
   totalEvents: number;
   eventsByKind: Record<string, number>;
   execScopeRollup: ScopeMetrics;
@@ -85,7 +132,10 @@ export async function runWorkOsCycle(deps: WorkOsCycleDeps): Promise<WorkOsCycle
   const intakeDeps: IntakeDeps = {
     organizationId: deps.organizationId, initiativeId: deps.initiativeId,
     createdBy: { agentId: "intake-svc", hatAssignmentId: "ha-intake" },
-    createId: deps.createId, nowIso: nextIso, existsByExternalRef: () => false, appendEvent: emit,
+    // The governed id, if the caller supplied one, at the point the work item is MINTED — so the
+    // intake events carry it too and the trace has one id rather than two.
+    createId: (prefix) => (prefix === "wi" && deps.workItemId !== undefined ? deps.workItemId : deps.createId(prefix)),
+    nowIso: nextIso, existsByExternalRef: () => false, appendEvent: emit,
   };
 
   // ── 1. External customer defect flows IN → triaged into the backlog ──
@@ -110,7 +160,26 @@ export async function runWorkOsCycle(deps: WorkOsCycleDeps): Promise<WorkOsCycle
   const owners = ["backend_implementer", "code_reviewer"].filter((id) => byId.has(id));
   await simpleTransition(item.workItemId, WorkItemState.Ready, WorkItemState.InProgress, emanager.id, "assigned + development started");
   item = { ...item, state: WorkItemState.InProgress };
-  await simpleTransition(item.workItemId, WorkItemState.InProgress, WorkItemState.Review, "backend_implementer", "fix implemented; into review/QA");
+  // The dev hat ACTS here when an implementer is wired. Without one the loop behaves as it always
+  // has — it records the transition — which is why every existing caller is unaffected.
+  let implementationAttempts = 0;
+  let implementationSucceeded = false;
+  const runImplementation = async (attempt: number): Promise<string> => {
+    if (deps.implementer === undefined) {
+      return "fix implemented; into review/QA";
+    }
+    implementationAttempts += 1;
+    const outcome = await deps.implementer.implement({
+      workItemId: item.workItemId,
+      initiativeBranch: deps.initiativeBranch,
+      attempt,
+      implementerHatId: "backend_implementer",
+    });
+    implementationSucceeded = outcome.ok;
+    return `attempt ${String(attempt)}: ${outcome.detail}`;
+  };
+
+  await simpleTransition(item.workItemId, WorkItemState.InProgress, WorkItemState.Review, "backend_implementer", await runImplementation(1));
   item = { ...item, state: WorkItemState.Review };
 
   // ── 4. QA standing dept: a regression is caught; the fix keeps bouncing back ──
@@ -129,7 +198,11 @@ export async function runWorkOsCycle(deps: WorkOsCycleDeps): Promise<WorkOsCycle
     const qa = await runQaCycle({
       organizationId: deps.organizationId, initiativeBranch: deps.initiativeBranch,
       workItemIdByTestCase: new Map(cases.map((c) => [c.testCaseId, item.workItemId])),
-      cases, priorRuns: accumulatedRuns, executor: createDeterministicExecutor(failPlan),
+      cases, priorRuns: accumulatedRuns,
+      // The injected executor when the caller supplied one; otherwise the scripted plan this loop
+      // has always run. A real executor makes the QA verdict a function of real work rather than a
+      // fixture — which is the difference between modelling the loop and running it.
+      executor: deps.qaExecutor ?? createDeterministicExecutor(failPlan),
       qaHatId: "qa_verifier", qaAgentId: "agent-qa", createId: deps.createId, nowIso: nextIso, appendEvent: emit,
       openDefect: async () => ({ defectId: deps.createId("def") }),
     });
@@ -138,7 +211,7 @@ export async function runWorkOsCycle(deps: WorkOsCycleDeps): Promise<WorkOsCycle
     testSummary = qa.summary;
     // QA failed → bounce back to development (the churn signal)
     await simpleTransition(item.workItemId, WorkItemState.Review, WorkItemState.InProgress, "qa_verifier", `QA round ${round + 1} failed → rework (bounce-back)`);
-    await simpleTransition(item.workItemId, WorkItemState.InProgress, WorkItemState.Review, "backend_implementer", "re-attempt fix; back to QA");
+    await simpleTransition(item.workItemId, WorkItemState.InProgress, WorkItemState.Review, "backend_implementer", await runImplementation(round + 2));
   }
 
   // ── 5. CHURN detected → escalation: bring on more agents + an architect re-approach ──
@@ -206,6 +279,8 @@ export async function runWorkOsCycle(deps: WorkOsCycleDeps): Promise<WorkOsCycle
     bounceBacks: bounceBackCount(item.workItemId, allEvents),
     churnDetected: churn,
     regressionsCaught,
+    implementationAttempts,
+    implementationSucceeded,
     escalations,
     agentsAddedViaRmo,
     architectBroughtIn,
