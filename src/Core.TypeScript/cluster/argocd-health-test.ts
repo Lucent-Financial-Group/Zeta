@@ -316,24 +316,31 @@ const SMOKE_MIN_APPLICATIONS = 20;
 export const PLATFORM_APP_DIR = "platform";
 
 export const DEV_EXCLUDED_REASONS: ReadonlyMap<string, string> = new Map([
-  [
-    "agent-memory",
-    "HELD BY THE GLOB, NOT BY A MEASUREMENT -- and that distinction is the honest part of this entry. It " +
-      "went into `excludeGlob` because statefulset.yaml:71-83 asks RWO/8Gi on `storageClassName: longhorn`, " +
-      "and at the time nothing in the dev lane answered to that name. `dev-cluster/manifests/longhorn.yaml` " +
-      "now does, and RWO/8Gi is exactly what `rancher.io/local-path` behind that alias serves -- the same " +
-      "condition that un-deferred ten other Applications on 2026-08-21. So the recorded blocker is very " +
-      "likely spent, and NOBODY HAS MEASURED IT, because the glob keeps this Application off every CI " +
-      "cluster and an app that never syncs never produces a verdict to read. " +
-      "LIFTS WHEN: `agent-memory/**` is dropped from `DEFAULT_ROOT_DEV_CATALOG.excludeGlob` and one included " +
-      "run reports its actual verdict -- pass or fail, either is information; the current state is neither. " +
-      "ANCHORS, CHECKED BY `reason-truth.ts`: each names an artifact this tree holds, so a claim that outlives its artifact goes red instead of reading on. " +
-      "[cite: path statefulset.yaml:83] " +
-      "[cite: path full-ai-cluster/dev-cluster/manifests/longhorn.yaml] " +
-      "[cite: pvc-class full-ai-cluster/agent-memory longhorn] " +
-      "[cite: pvc-total full-ai-cluster/agent-memory 8] " +
-      "[cite: glob-defers agent-memory] ",
-  ],
+  // `agent-memory` is NOT here. It LEFT this map on 2026-09-03, and the entry is
+  // recorded as closed rather than the lines silently deleted.
+  //
+  //   WAS: "HELD BY THE GLOB, NOT BY A MEASUREMENT". It went into `excludeGlob`
+  //   because statefulset.yaml:71-83 asks RWO/8Gi on `storageClassName: longhorn`
+  //   and at the time nothing in the dev lane answered to that name. Its own text
+  //   said the blocker was "very likely spent" once
+  //   `dev-cluster/manifests/longhorn.yaml` shipped (2026-08-21 -- the same
+  //   condition that un-deferred ten other Applications that day), and that
+  //   NOBODY HAD MEASURED IT, because the glob kept the Application off every CI
+  //   cluster and an app that never syncs never produces a verdict to read.
+  //
+  //   LIFTED ON ITS OWN STATED CONDITION, verbatim: "`agent-memory/**` is dropped
+  //   from `DEFAULT_ROOT_DEV_CATALOG.excludeGlob` and one included run reports its
+  //   actual verdict -- pass or fail, either is information; the current state is
+  //   neither." The first half is this change. The second half is the NEXT
+  //   included run, which this change cannot contain: it is a MEASUREMENT, not a
+  //   repair -- nothing about the Application was fixed, because nothing was known
+  //   to be broken. If that run goes red the deferral comes back with a real
+  //   reason attached, which is strictly more than it had.
+  //
+  //   Checked before lifting: RWO (not RWX, so `yamlTreeRequestsReadWriteMany`
+  //   does not catch it), 8Gi on the `longhorn` alias, `busybox:1.36`, one
+  //   replica, 50m/64Mi requested at the rung the tree carries. No registry
+  //   credential, no GPU. Its dev-lane cost is in the lane totals below.
   [
     "cilium",
     "The CNI itself. The default kind profile brings up kind's own CNI (kindnetd) BEFORE ArgoCD exists -- " +
@@ -655,11 +662,19 @@ export function auditDevExclusionReasons(
  * instead of one -- see APPLIED_BUT_UNASSERTED_REASONS.
  */
 const DEV_INCLUDED_PROOF_DEFERRED_DIRS = new Set([
-  // volumeClaimTemplates pin `storageClassName: longhorn`, which is excluded
-  // above, so the PVC never binds. Independently caught by the longhorn rule
-  // in isExcludedFromIncludedProof -- this entry is redundant, and kept only so
-  // the deferral stays legible next to its siblings.
-  "agent-memory",
+  // `agent-memory` is NOT here. It LEFT this set on 2026-09-03 together with its
+  // DEV_EXCLUDED_REASONS entry, and the comment it carried was WRONG WHEN READ.
+  //
+  //   It claimed the entry was "redundant ... independently caught by the
+  //   longhorn rule in isExcludedFromIncludedProof". That rule sits BEHIND
+  //   `if (aliasDeclared) return false;`, and `devLonghornStorageClassAliasDeclared()`
+  //   has returned true since `dev-cluster/manifests/longhorn.yaml` shipped on
+  //   2026-08-21 -- so for the whole interval the longhorn rule was unreachable
+  //   for this dir and caught nothing. Two entries claiming to back each other
+  //   up while one was inert is exactly the shape a redundant-looking check hides
+  //   in, which is why the stale claim is written down rather than the line just
+  //   deleted. The mechanism itself is correct (rule 4 is MEANT to be dormant
+  //   while the alias is declared); the prose that leaned on it was not.
   // Needs a GitHub App credential + a live runner registration that CI has no
   // secret to bind. Listed EXPLICITLY even though `requestsReadWriteMany` below
   // also excludes it: that rule is about storage and this reason is not, so if
@@ -952,7 +967,7 @@ export const APPLIED_BUT_UNASSERTED_REASONS: ReadonlyMap<string, string> = new M
     "hindsight",
     "THREE independent blockers, established 2026-08-21 by rendering hindsight 0.3.0 against this Application's own valuesObject; any ONE of them defers it. " +
       "(1) CAPACITY -- AND HINDSIGHT IS THE SYMPTOM, NOT THE CAUSE. MEASURED run 32519516070: hindsight-postgresql-0 never scheduled -- FailedScheduling `0/1 nodes are available: 1 Insufficient cpu` -- so hindsight-api and hindsight-control-plane CrashLoopBackOff waiting on a database with nowhere to run. Its three requests are 500m (api) + 250m (control-plane) + 250m (postgresql), re-rendered 2026-08-22 from chart 0.3.0 against this Application's own valuesObject; every one is a CHART DEFAULT (`metalSource: chart-default` on all three rows), so no number here is a measurement of hindsight's working set and neither rung claims to be -- both are reservations. " +
-      "THE ARITHMETIC THAT SAYS `SYMPTOM`, and it is why the deferral does not lift by shrinking this app: the dev lane APPLIES 38 Applications totalling 5231m at the rung the tree ships, against a 2500m budget (4000m runner less 1500m reserved). Hindsight is 1000m of that. Take hindsight to ZERO and the lane is still 4231m -- over by 1731m. Take hindsight alone to its `dev` rung (400m) and the lane is 4631m. Take the WHOLE lane to `dev` and it is 1081m, which FITS with 1419m of spare. THAT IS THE THIRD ANSWER THIS SENTENCE HAS CARRIED and the earlier two are kept rather than overwritten: 1906m fits, then 2906m over by 406m (gmod became visible), then 2006m fits (the rung learned to reach raw in-repo manifests), and now 1081m -- because 18 governed `cpuMillis.dev` rows were floored at 25m on 2026-08-23 (-1250m across all 47; -925m inside this lane), which is Aaron's observation that CPU is compressible taken at the rung where it is true. So the only cut that closes this is lane-wide -- and lane-wide is SUFFICIENT again, which is the second change of answer this sentence has carried and is written as a sequence rather than as a replacement: it closed at 1906m, then did NOT close at 2906m, and now closes at 2006m. mimir, at 1610m, is the larger single reservation. WHY IT MOVED TWICE: every number in that paragraph rose by 1000m on 2026-08-22 and nothing grew -- applicationDirs() enumerated depth 1, ArgoCD's include glob is not path-segment bounded (established against a LIVE cluster in app-of-apps-discovery.ts), and `game-hosting/gmod` -- an in-repo StatefulSet whose manifest carries a literal cpu 1 / memory 2Gi -- had been applied by this root since it was written and counted by nothing. This catalogue asserted in writing that it contributes 0m / 0Mi. It was then recorded here that `NO RUNG REACHES IT: it is a git-path source with no valuesObject, so `--resource-profile dev --apply` cannot touch it`. THE FIRST CLAUSE WAS TRUE AND THE SECOND WAS FALSE: `applyResourceProfile` writes a dotted path into an arbitrary manifest and always could reach statefulset.yaml; only the render-side reader demanded a valuesObject coordinate. Since 2026-08-23 three git-path Applications we own (1150m in total) are governed rows addressing their own manifests, gmod is 100m at `dev` and the unchanged 1000m at `metal`, and the lane closes. gmod did not schedule TODAY because its sync fails on gatekeeper's webhook -- a reprieve of the same shape as the one in the next paragraph, one resource type over -- and it was priced and governed rather than waited out. " +
+      "THE ARITHMETIC THAT SAYS `SYMPTOM`, and it is why the deferral does not lift by shrinking this app: the dev lane APPLIES 38 Applications totalling 5231m at the rung the tree ships, against a 2500m budget (4000m runner less 1500m reserved). Hindsight is 1000m of that. Take hindsight to ZERO and the lane is still 4231m -- over by 1731m. Take hindsight alone to its `dev` rung (400m) and the lane is 4631m. Take the WHOLE lane to `dev` and it is 1081m, which FITS with 1419m of spare. THAT IS THE THIRD ANSWER THIS SENTENCE HAS CARRIED and the earlier two are kept rather than overwritten: 1906m fits, then 2906m over by 406m (gmod became visible), then 2006m fits (the rung learned to reach raw in-repo manifests), and now 1081m -- because 18 governed `cpuMillis.dev` rows were floored at 25m on 2026-08-23 (-1250m across all 47; -925m inside this lane), which is Aaron's observation that CPU is compressible taken at the rung where it is true. So the only cut that closes this is lane-wide -- and lane-wide is SUFFICIENT again, which is the second change of answer this sentence has carried and is written as a sequence rather than as a replacement: it closed at 1906m, then did NOT close at 2906m, and now closes at 2006m. mimir, at 1610m, is the larger single reservation. WHY IT MOVED TWICE: every number in that paragraph rose by 1000m on 2026-08-22 and nothing grew -- applicationDirs() enumerated depth 1, ArgoCD's include glob is not path-segment bounded (established against a LIVE cluster in app-of-apps-discovery.ts), and `game-hosting/gmod` -- an in-repo StatefulSet whose manifest carries a literal cpu 1 / memory 2Gi -- had been applied by this root since it was written and counted by nothing. This catalogue asserted in writing that it contributes 0m / 0Mi. It was then recorded here that `NO RUNG REACHES IT: it is a git-path source with no valuesObject, so `--resource-profile dev --apply` cannot touch it`. THE FIRST CLAUSE WAS TRUE AND THE SECOND WAS FALSE: `applyResourceProfile` writes a dotted path into an arbitrary manifest and always could reach statefulset.yaml; only the render-side reader demanded a valuesObject coordinate. Since 2026-08-23 three git-path Applications we own (1150m in total) are governed rows addressing their own manifests, gmod is 100m at `dev` and the unchanged 1000m at `metal`, and the lane closes. gmod did not schedule TODAY because its sync fails on gatekeeper's webhook -- a reprieve of the same shape as the one in the next paragraph, one resource type over -- and it was priced and governed rather than waited out. THE FOURTH ANSWER, 2026-09-03, and the three before it are kept: the lane is 39 Applications now, 6390m at the rung the tree ships and 1165m at `dev` (1335m of spare), because `agent-memory` LIFTED from the dev root's excludeGlob on its own recorded condition -- held by the glob, not by a measurement -- and brought 50m at `metal` / 25m at the `dev` floor with it. Between the third answer and this one the citations below moved 1081m -> 1056m -> 1115m -> 1140m without this sentence following (minio removed; mimir kafka + the nfd prune Job + alloy re-measured; cloudnativepg added), which is the drift the citations exist to catch and the prose did not. Nothing in this paragraph's argument changes: hindsight to ZERO still leaves 5390m, over by 2890m; lane-wide `dev` still closes it. " +
       "AND THE LANE HAS BEEN OVER-COMMITTED SINCE THE LONGHORN ALIAS LANDED, which storage-profiles.json predicted in writing: `the only reason that has not bitten is that 14 of them hang Missing on a longhorn StorageClass the dev catalog excludes, so they never schedule a pod. That is a reprieve, not a fit, and it evaporates the moment the StorageClass exists.` The dev lane now applies a `longhorn` StorageClass over rancher.io/local-path, so it has evaporated, and hindsight-postgresql-0 is the first pod to be handed the bill. " +
       "THE TWO SUBSTRATES ARE NOT CLOSE, which is why a fix for one is wrong for the other: the runner is 4000m (envelope, and `--measure-runner` convicts a smaller machine, so it is checked rather than trusted), while the checked-in ClusterNode registrations measure 16 cores (maintainers/Addisons820/cluster-nodes/node-ad1efd, node-b1e1b5) and 22 cores (maintainers/maximdolphin/cluster-nodes/node-5b2dfa, node-f82aa6). ~4x. The whole 47-app catalogue at `metal` is 9256m, which does not fit one runner and fits one 16-core box comfortably. THAT SECOND HALF IS CHECKED NOW, and it was not when this reason was first written: `compute-provenance` in single-node-readiness.ts compares the ACTIVE resource rung's total over the metal cohort against `spec.hardware.cores` and `spec.hardware.memory` on the smallest registered node, the same one-way way `capacity-provenance` compares the storage ladder against `spec.hardware.storage`. It REFUSES when no registration carries both. Green today -- 9256m against 16000m raw -- and the arithmetic is printed on every auditor run rather than only when it fails. Two units traps were found building it and are recorded at the parser: `cores` is `nproc`, i.e. LOGICAL CPUs (22 on a 16-core Ultra 9 185H), and `memory` is captured with `free -h --si`, i.e. DECIMAL, so `66G` is 62942Mi and not 67584Mi -- reading it as binary would have inflated the bound, which is the acquitting direction. " +
       "(2) THE `dev` RESOURCE RUNG CANNOT REACH THIS LANE, which is the part that looked like the fix and is not. `storage-profiles.ts --resource-profile dev --apply` rewrites the WORKING TREE; ArgoCD syncs the COMMITTED tree at `--git-ref`, and `bootstrap/root-application.yaml` points the METAL cluster at the same `main`/`full-ai-cluster/k8s/applications` path. One committed tree, two substrates, no override point -- so lowering these numbers lowers them for the 16-core box too, where the cost of an under-request is a pod evictable under node pressure rather than one refused a node. That trade is a maintainer call, not a CI convenience. " +
@@ -967,8 +982,8 @@ export const APPLIED_BUT_UNASSERTED_REASONS: ReadonlyMap<string, string> = new M
       "[cite: chart-pin full-ai-cluster/hindsight hindsight 0.9.2] " +
       "[cite: resource-rung hindsight metal 1000] " +
       "[cite: resource-rung hindsight dev 75] " +
-      "[cite: lane-cpu metal 6340 over] " +
-      "[cite: lane-cpu dev 1140 fits] " +
+      "[cite: lane-cpu metal 6390 over] " +
+      "[cite: lane-cpu dev 1165 fits] " +
       "[cite: workflow-job k8s-argocd-health-test.yml dry-run] " +
       "[cite: path full-ai-cluster/k8s/bootstrap/root-application.yaml] " +
       "[cite: path maintainers/Addisons820/cluster-nodes/node-ad1efd/node.yaml] " +

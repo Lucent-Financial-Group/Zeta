@@ -225,7 +225,7 @@ export const DEFAULT_ROOT_DEV_CATALOG: RootDevCatalogSpec = {
   gitRepoUrl: process.env.ZETA_ARGOCD_GIT_REPO_URL ?? "https://github.com/Lucent-Financial-Group/Zeta",
   applicationsPath: "full-ai-cluster/k8s/applications",
   excludeGlob:
-    "{cilium/**,cilium-lb-ipam/**,longhorn/**,ollama/**,vllm/**,gitlab/**,temporal/**,agent-memory/**,platform/**}",
+    "{cilium/**,cilium-lb-ipam/**,longhorn/**,ollama/**,vllm/**,gitlab/**,temporal/**,platform/**}",
 };
 
 /**

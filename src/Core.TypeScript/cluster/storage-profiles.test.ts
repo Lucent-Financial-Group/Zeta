@@ -1284,9 +1284,17 @@ describe("the checked-in resource ladder", () => {
   // webhooks and claims no storage, so there is nothing about it the dev lane
   // cannot run. Both numbers move together; if only one had, that would be the
   // finding rather than the fix.
-  test("the dev lane applies 38 of the 47 Applications", () => {
+  //
+  // 47 -> 47 and 38 -> 39 on 2026-09-03: `agent-memory` LIFTED. NOTHING WAS ADDED
+  // TO THE TREE; an Application that already shipped left the dev root's
+  // excludeGlob on its own recorded condition ("held by the glob, not by a
+  // measurement"). This is the first move where ONLY the applied count changed,
+  // and that is correct here: the shipped count is about the tree and the applied
+  // count is about the glob, and only the glob moved.
+  test("the dev lane applies 39 of the 47 Applications", () => {
     expect(applicationDirs()).toHaveLength(47);
-    expect(devLaneAppliedDirs()).toHaveLength(38);
+    expect(devLaneAppliedDirs()).toHaveLength(39);
+    expect(devLaneAppliedDirs()).toContain("agent-memory");
     expect(applicationDirs()).toContain("game-hosting/gmod");
   });
 
@@ -1317,8 +1325,11 @@ describe("the checked-in resource ladder", () => {
   test("metal is exactly what the manifests render today", () => {
     expect(verifyResourceProfileApplied(catalogue, "metal")).toEqual([]);
     const lane = resourceTotal(catalogue, "metal", devLaneAppliedDirs());
-    expect(lane.cpuMillis).toBe(6340);
-    expect(lane.memoryMib).toBe(14288);
+    // 6340m/14288Mi -> 6390m/14352Mi on 2026-09-03: `agent-memory` joined the dev
+    // lane at its literal 50m/64Mi. The all-47 totals below did NOT move, because
+    // agent-memory was always in the tree -- only the lane's membership changed.
+    expect(lane.cpuMillis).toBe(6390);
+    expect(lane.memoryMib).toBe(14352);
     const all = resourceTotal(catalogue, "metal", applicationDirs());
     expect(all.cpuMillis).toBe(10365);
     expect(all.memoryMib).toBe(22623);
@@ -1357,11 +1368,14 @@ describe("the checked-in resource ladder", () => {
   //
   // `metal` IS UNCHANGED THROUGHOUT and that is asserted below, because the
   // whole point of a rung is that shrinking one does not touch the other.
-  test("`dev` FITS at 1140m — the rung reaches the raw manifests, and the governed rows are floored", () => {
+  test("`dev` FITS at 1165m — the rung reaches the raw manifests, and the governed rows are floored", () => {
     const budget = envelopeBudget(catalogue.envelope);
     const dev = resourceTotal(catalogue, "dev", devLaneAppliedDirs());
-    expect(dev.cpuMillis).toBe(1140);
-    expect(dev.memoryMib).toBe(9100);
+    // 1140m/9100Mi -> 1165m/9164Mi on 2026-09-03: `agent-memory` joined the dev
+    // lane; its governed row is floored to 25m at `dev` and keeps 64Mi at both
+    // rungs. Memory spare is now 52Mi -- the tightest axis in this lane.
+    expect(dev.cpuMillis).toBe(1165);
+    expect(dev.memoryMib).toBe(9164);
     expect(dev.cpuMillis).toBeLessThan(budget.cpuMillis);
     expect(dev.memoryMib).toBeLessThan(budget.memoryMib);
 
@@ -1386,8 +1400,8 @@ describe("the checked-in resource ladder", () => {
     // re-sized the hardware this rung exists to describe.
     expect(auditRunnerBudget(catalogue, "metal").length).toBeGreaterThan(0);
     const metal = resourceTotal(catalogue, "metal", devLaneAppliedDirs());
-    expect(metal.cpuMillis).toBe(6340);
-    expect(metal.memoryMib).toBe(14288);
+    expect(metal.cpuMillis).toBe(6390);
+    expect(metal.memoryMib).toBe(14352);
 
     // gmod is still COUNTED -- reachability is not exclusion. It contributes
     // 100m at `dev` where it used to contribute 1000m, and 1000m at `metal`
