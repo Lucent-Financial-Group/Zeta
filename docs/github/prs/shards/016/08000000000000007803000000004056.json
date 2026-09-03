@@ -1,0 +1,12 @@
+{
+  "pr_number": 16470,
+  "archive_path": "docs/history/pr-reviews/PR-16470-bug-rffh-30-bit-collision-bound-unfalsifiable-guard-findings-from-the-routed-mat.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-03T09:26:18.303Z",
+  "schema_version": "v1",
+  "commit_sha": "4a6dbe54b264523641b20439ac937164218dccbe",
+  "title": "bug(RFFH): 30-bit collision bound + unfalsifiable guard — findings from the routed math review",
+  "state": "MERGED",
+  "merged_at": "2026-09-03T09:25:40Z",
+  "head_ref": "shadow/math-review-findings"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 16468,
+  "archive_path": "docs/history/pr-reviews/PR-16468-feat-081m1k72zng087g0r001qr0esz-cas-objects-through-iblockio.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-03T09:13:08.075Z",
+  "schema_version": "v1",
+  "commit_sha": "d8aaed651e43ccb72f35fa133d75b7e4173513e7",
+  "title": "feat(081M1K72ZNG087G0R001QR0ESZ): CAS objects through IBlockIo",
+  "state": "MERGED",
+  "merged_at": "2026-09-03T09:12:27Z",
+  "head_ref": "feat/zetafs-block-cas-objects"
+}
