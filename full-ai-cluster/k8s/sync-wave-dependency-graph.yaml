@@ -148,6 +148,20 @@ spec:
           cert-manager". cert-manager's webhook is a Service; it cannot serve
           admission requests before pod networking exists.
 
+    - chart: cloudnativepg
+      dependsOn: [cilium]
+      citations:
+        cilium: >-
+          The operator ships a ValidatingWebhookConfiguration and a
+          MutatingWebhookConfiguration backed by the `cnpg-webhook-service`
+          Service (rendered from chart 0.29.0, measured 2026-09-02), so it cannot
+          serve admission requests before pod networking exists — the same
+          grounding as "Cilium -> cert-manager" above. NO cert-manager edge is
+          declared: CNPG issues and rotates its own webhook certificate, and the
+          chart carries no cert-manager key and emits no
+          `cert-manager.io/inject-ca-from` annotation. An edge that does not exist
+          is as wrong to declare as a real one is to omit.
+
     - chart: vault
       dependsOn: [cert-manager]
       citations:

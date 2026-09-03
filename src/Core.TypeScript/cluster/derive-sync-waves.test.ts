@@ -75,15 +75,17 @@ describe("the live full-ai-cluster tree", () => {
     // Pinned so that a roster that silently shrinks (a glob narrowed, a walk
     // that stops recursing) cannot make "everything is declared" true by
     // declaring less.
-    // 46 -> 47 on 2026-08-22: the `spire-crds` Application joined the roster
+    // 46 -> 47 on 2026-09-02: the `cloudnativepg` Application joined the roster
+    // (the PostgreSQL operator, prerequisite of the gitlab and temporal bumps).
+    // 45 -> 46 on 2026-08-22: the `spire-crds` Application joined the roster
     // (081M0JXXFV0087G0R001PGEEM4 follow-on). Bumping this number is the point
     // of pinning it -- a new Application must be a VISIBLE edit here, because
     // an integer that silently keeps passing is how a lane stops asserting
     // what it claims to.
     const manifests = listApplicationManifests();
-    expect(manifests.length).toBe(46);
-    expect(readShippedApplications().length).toBe(46);
-    expect(audit.derivedWaves.size).toBe(46);
+    expect(manifests.length).toBe(47);
+    expect(readShippedApplications().length).toBe(47);
+    expect(audit.derivedWaves.size).toBe(47);
   });
 
   test("the eight known disagreements are all registered WITH a reason", () => {
@@ -148,7 +150,7 @@ describe("the live full-ai-cluster tree", () => {
   test("the declaration parses as ace's own AppDependencyGraph kind", () => {
     const { spec, nodes } = readDeclaration();
     expect(spec.kind).toBe("AppDependencyGraph");
-    expect(nodes.length).toBe(46);
+    expect(nodes.length).toBe(47);
     // The synthetic root `resolveGraph` injects must not collide with a chart.
     expect(nodes.some((n) => n.chart === spec.metadata.name)).toBe(false);
   });

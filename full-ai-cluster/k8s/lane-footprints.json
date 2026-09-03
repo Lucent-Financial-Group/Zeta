@@ -1,67 +1,70 @@
 {
-  "measuredOn": "2026-09-01",
+  "measuredOn": "2026-09-02",
   "compressionRatio": 2.67,
   "imagesByApp": {
     "full-ai-cluster/agent-memory": [
       "busybox:1.36"
     ],
     "full-ai-cluster/alloy": [
-      "docker.io/grafana/alloy:v1.5.1",
-      "ghcr.io/jimmidyson/configmap-reload:v0.12.0"
+      "docker.io/grafana/alloy:v1.19.2",
+      "quay.io/prometheus-operator/prometheus-config-reloader:v0.91.0@sha256:7d9e4eea5f1139e602508871f422b0116c60e87c662f3dcd234d5ab60cd0d8c1"
     ],
     "full-ai-cluster/arc-controller": [
-      "ghcr.io/actions/gha-runner-scale-set-controller:0.12.1"
+      "ghcr.io/actions/gha-runner-scale-set-controller:0.14.2"
     ],
     "full-ai-cluster/arc-runner-set": [
       "docker:dind",
       "ghcr.io/actions/actions-runner:2.330.0"
     ],
     "full-ai-cluster/argo-rollouts": [
-      "quay.io/argoproj/argo-rollouts:v1.8.2",
-      "quay.io/argoproj/kubectl-argo-rollouts:v1.8.2"
+      "quay.io/argoproj/argo-rollouts:v1.10.0",
+      "quay.io/argoproj/kubectl-argo-rollouts:v1.10.0"
     ],
     "full-ai-cluster/argo-workflows": [
-      "quay.io/argoproj/argocli:v3.5.11",
-      "quay.io/argoproj/workflow-controller:v3.5.11"
+      "quay.io/argoproj/argocli:v4.1.2",
+      "quay.io/argoproj/workflow-controller:v4.1.2"
     ],
     "full-ai-cluster/argocd": [
-      "ghcr.io/dexidp/dex:v2.41.1",
-      "public.ecr.aws/docker/library/redis:7.4.1-alpine",
-      "quay.io/argoproj/argocd:v2.13.2"
+      "ecr-public.aws.com/docker/library/redis:8.6.4-alpine",
+      "ghcr.io/dexidp/dex:v2.45.1",
+      "quay.io/argoproj/argocd:v3.5.2"
     ],
     "full-ai-cluster/cdi": [
       "quay.io/kubevirt/cdi-operator:v1.65.0"
     ],
     "full-ai-cluster/cert-manager": [
-      "quay.io/jetstack/cert-manager-cainjector:v1.16.2",
-      "quay.io/jetstack/cert-manager-controller:v1.16.2",
-      "quay.io/jetstack/cert-manager-startupapicheck:v1.16.2",
-      "quay.io/jetstack/cert-manager-webhook:v1.16.2"
+      "quay.io/jetstack/cert-manager-cainjector:v1.21.1",
+      "quay.io/jetstack/cert-manager-controller:v1.21.1",
+      "quay.io/jetstack/cert-manager-startupapicheck:v1.21.1",
+      "quay.io/jetstack/cert-manager-webhook:v1.21.1"
     ],
     "full-ai-cluster/cilium": [
-      "quay.io/cilium/cilium-envoy:v1.30.8-1733837904-eaae5aca0fb988583e5617170a65ac5aa51c0aa8@sha256:709c08ade3d17d52da4ca2af33f431360ec26268d288d9a6cd1d98acc9a1dced",
-      "quay.io/cilium/cilium:v1.16.5@sha256:758ca0793f5995bb938a2fa219dcce63dc0b3fa7fc4ce5cc851125281fb7361d",
-      "quay.io/cilium/hubble-relay:v1.16.5@sha256:6cfae1d1afa566ba941f03d4d7e141feddd05260e5cd0a1509aba1890a45ef00",
-      "quay.io/cilium/hubble-ui-backend:v0.13.1@sha256:0e0eed917653441fded4e7cdb096b7be6a3bddded5a2dd10812a27b1fc6ed95b",
-      "quay.io/cilium/hubble-ui:v0.13.1@sha256:e2e9313eb7caf64b0061d9da0efbdad59c6c461f6ca1752768942bfeda0796c6",
-      "quay.io/cilium/operator-generic:v1.16.5@sha256:f7884848483bbcd7b1e0ccfd34ba4546f258b460cb4b7e2f06a1bcc96ef88039"
+      "quay.io/cilium/cilium-envoy:v1.37.5-1786810558-766ccfb37260a43e9d228837aa84ce3faf9f64e7@sha256:75b8094c7127736a2ffd2dce3945e0931cb6df21b0372ff661940eca26730b91",
+      "quay.io/cilium/cilium:v1.20.1@sha256:ae9ea21f7427fe24bc6ea7247eb552157a1b0a431744045d3f641545ca71d11b",
+      "quay.io/cilium/hubble-relay:v1.20.1@sha256:59be0ae7d475ab9011a5e954618c0f27b5778b17140381425b308b55ba4917f4",
+      "quay.io/cilium/hubble-ui-backend:v0.13.5@sha256:fac0c300ae119274edca11fd89b1ad23c788792d8bc4ea2ba631c709e8d3c688",
+      "quay.io/cilium/hubble-ui:v0.13.5@sha256:f7d514fc54d784ed6df9d58cf0e97648b143f92b766dd1780ed3fc845bd4c516",
+      "quay.io/cilium/operator-generic:v1.20.1@sha256:6c3885fc7b629099fdbe2a5c87869c86feb825fa18fae299eac0f61918d16ecf"
     ],
     "full-ai-cluster/cilium-lb-ipam": [],
+    "full-ai-cluster/cloudnativepg": [
+      "ghcr.io/cloudnative-pg/cloudnative-pg:1.30.0"
+    ],
     "full-ai-cluster/cockroachdb": [
       "busybox",
-      "cockroachdb/cockroach:v24.2.4",
-      "gcr.io/cockroachlabs-helm-charts/cockroach-self-signer-cert:1.5"
+      "cockroachdb/cockroach:v26.3.1",
+      "docker.io/cockroachdb/cockroach-self-signer-cert:1.10"
     ],
     "full-ai-cluster/dapr": [
-      "ghcr.io/dapr/injector:1.14.4",
-      "ghcr.io/dapr/operator:1.14.4",
-      "ghcr.io/dapr/placement:1.14.4",
-      "ghcr.io/dapr/scheduler:1.14.4",
-      "ghcr.io/dapr/sentry:1.14.4"
+      "ghcr.io/dapr/injector:1.18.3",
+      "ghcr.io/dapr/operator:1.18.3",
+      "ghcr.io/dapr/placement:1.18.3",
+      "ghcr.io/dapr/scheduler:1.18.3",
+      "ghcr.io/dapr/sentry:1.18.3"
     ],
     "full-ai-cluster/deepseek-coder": [],
     "full-ai-cluster/external-secrets": [
-      "oci.external-secrets.io/external-secrets/external-secrets:v0.10.7"
+      "ghcr.io/external-secrets/external-secrets:v2.10.0"
     ],
     "full-ai-cluster/forgejo": [
       "busybox:latest",
@@ -98,71 +101,71 @@
       "ghcr.io/lucent-financial-group/hat-system-operator:placeholder"
     ],
     "full-ai-cluster/headlamp": [
-      "ghcr.io/headlamp-k8s/headlamp:v0.30.0"
+      "ghcr.io/headlamp-k8s/headlamp:v0.45.0"
     ],
     "full-ai-cluster/headscale": [
       "alpine",
-      "headscale/headscale:0.18.0"
+      "ghcr.io/juanfont/headscale:v0.25.0"
     ],
     "full-ai-cluster/hindsight": [
-      "ankane/pgvector:latest",
-      "ghcr.io/vectorize-io/hindsight-api:0.1.1",
-      "ghcr.io/vectorize-io/hindsight-control-plane:0.1.1"
+      "ghcr.io/vectorize-io/hindsight-api:0.9.2",
+      "ghcr.io/vectorize-io/hindsight-control-plane:0.9.2",
+      "pgvector/pgvector:pg17-trixie"
     ],
     "full-ai-cluster/kube-prometheus-stack": [
-      "docker.io/bats/bats:v1.4.1",
-      "docker.io/grafana/grafana:11.2.2-security-01",
-      "docker.io/library/busybox:1.31.1",
-      "quay.io/kiwigrid/k8s-sidecar:1.28.0",
-      "quay.io/prometheus-operator/prometheus-operator:v0.77.2",
-      "quay.io/prometheus/alertmanager:v0.27.0",
-      "quay.io/prometheus/node-exporter:v1.8.2",
-      "quay.io/prometheus/prometheus:v2.55.0",
-      "registry.k8s.io/ingress-nginx/kube-webhook-certgen:v20221220-controller-v1.5.1-58-g787ea74b6",
-      "registry.k8s.io/kube-state-metrics/kube-state-metrics:v2.13.0"
+      "docker.io/grafana/grafana:13.2.0",
+      "docker.io/library/busybox:1.38.0",
+      "ghcr.io/jkroepke/kube-webhook-certgen:1.8.8",
+      "quay.io/kiwigrid/k8s-sidecar:2.10.1",
+      "quay.io/prometheus-operator/prometheus-operator:v0.93.1",
+      "quay.io/prometheus/alertmanager:v0.34.0",
+      "quay.io/prometheus/node-exporter:v1.12.1-distroless",
+      "quay.io/prometheus/prometheus:v3.14.0-distroless",
+      "registry.k8s.io/kube-state-metrics/kube-state-metrics:v2.20.0"
     ],
     "full-ai-cluster/kubevirt": [
       "quay.io/kubevirt/virt-operator:v1.8.4"
     ],
     "full-ai-cluster/loki": [
-      "docker.io/grafana/loki-canary:3.2.0",
-      "docker.io/grafana/loki-helm-test:ewelch-distributed-helm-chart-17db5ee",
-      "docker.io/grafana/loki:3.2.0",
-      "docker.io/nginxinc/nginx-unprivileged:1.27-alpine",
-      "kiwigrid/k8s-sidecar:1.27.5"
+      "docker.io/grafana/loki-canary:3.7.7",
+      "docker.io/grafana/loki:3.7.7",
+      "docker.io/kiwigrid/k8s-sidecar:2.10.3",
+      "docker.io/nginxinc/nginx-unprivileged:1.31-alpine",
+      "ghcr.io/jkroepke/access-log-exporter:0.4.12"
     ],
     "full-ai-cluster/longhorn": [
-      "longhornio/longhorn-manager:v1.7.2",
-      "longhornio/longhorn-share-manager:v1.7.2",
-      "longhornio/longhorn-ui:v1.7.2"
+      "docker.io/longhornio/longhorn-manager:v1.12.1",
+      "docker.io/longhornio/longhorn-share-manager:v1.12.1",
+      "docker.io/longhornio/longhorn-ui:v1.12.1"
     ],
     "full-ai-cluster/mimir": [
-      "docker.io/nginxinc/nginx-unprivileged:1.27-alpine",
-      "grafana/mimir:2.14.0",
-      "grafana/rollout-operator:v0.19.1"
+      "docker.io/apache/kafka-native:4.1.0",
+      "docker.io/grafana/mimir:3.2.0",
+      "docker.io/grafana/rollout-operator:v0.38.1",
+      "docker.io/nginxinc/nginx-unprivileged:1.29-alpine"
     ],
     "full-ai-cluster/nats": [
-      "nats:2.10.23-alpine",
-      "natsio/nats-box:0.15.0",
-      "natsio/nats-server-config-reloader:0.16.0"
+      "nats:2.14.6-alpine",
+      "natsio/nats-box:0.19.7",
+      "natsio/nats-server-config-reloader:0.23.0"
     ],
     "full-ai-cluster/node-feature-discovery": [
-      "registry.k8s.io/nfd/node-feature-discovery:v0.17.1"
+      "registry.k8s.io/nfd/node-feature-discovery:v0.19.0"
     ],
     "full-ai-cluster/ollama": [
       "busybox",
-      "ollama/ollama:0.5.11"
+      "ollama/ollama:0.33.2"
     ],
     "full-ai-cluster/open-policy-agent": [
-      "curlimages/curl:7.83.1",
-      "openpolicyagent/gatekeeper-crds:v3.18.1",
-      "openpolicyagent/gatekeeper:v3.18.1"
+      "curlimages/curl:8.20.0",
+      "openpolicyagent/gatekeeper-crds:v3.23.1",
+      "openpolicyagent/gatekeeper:v3.23.1"
     ],
     "full-ai-cluster/orleans": [
       "ghcr.io/lucent-financial-group/zeta-orleans-silo:latest"
     ],
     "full-ai-cluster/oz": [
-      "docker.io/openziti/ziti-controller:1.7.2"
+      "docker.io/openziti/ziti-controller:2.0.2"
     ],
     "full-ai-cluster/platform": [
       "atmoz/sftp:alpine",
@@ -177,13 +180,13 @@
     ],
     "full-ai-cluster/qwen-coder": [],
     "full-ai-cluster/redis": [
-      "docker.io/bitnamilegacy/redis:7.4.1-debian-12-r2"
+      "docker.io/valkey/valkey:9.1.2"
     ],
     "full-ai-cluster/sealed-secrets": [
       "docker.io/bitnami/sealed-secrets-controller:0.39.1"
     ],
     "full-ai-cluster/seaweedfs": [
-      "chrislusf/seaweedfs:4.33"
+      "chrislusf/seaweedfs:4.45"
     ],
     "full-ai-cluster/spire": [
       "cgr.dev/chainguard/bash:latest@sha256:bcaf350e298d474d12901adf9a1e78d8cf470d4434a82e0c718d514fc2032fa7",
@@ -195,7 +198,7 @@
     ],
     "full-ai-cluster/spire-crds": [],
     "full-ai-cluster/tempo": [
-      "grafana/tempo:2.7.0"
+      "docker.io/grafana/tempo:2.10.8"
     ],
     "full-ai-cluster/temporal": [
       "temporalio/admin-tools:1.27.2-tctl-1.18.2-cli-1.3.0",
@@ -203,11 +206,11 @@
       "temporalio/ui:2.36.1"
     ],
     "full-ai-cluster/trust-manager": [
-      "quay.io/jetstack/trust-manager:v0.15.0"
+      "quay.io/jetstack/trust-manager:v0.24.0"
     ],
     "full-ai-cluster/vault": [
-      "hashicorp/vault-k8s:1.5.0",
-      "hashicorp/vault:1.18.1"
+      "hashicorp/vault-k8s:1.7.6",
+      "hashicorp/vault:2.0.4"
     ],
     "full-ai-cluster/vllm": [
       "vllm/vllm-openai:latest"
@@ -266,9 +269,6 @@
     "alpine": {
       "compressedBytes": 3847002
     },
-    "ankane/pgvector:latest": {
-      "compressedBytes": 159829743
-    },
     "atmoz/sftp:alpine": {
       "compressedBytes": 9381917
     },
@@ -287,8 +287,8 @@
     "cgr.dev/chainguard/bash:latest@sha256:bcaf350e298d474d12901adf9a1e78d8cf470d4434a82e0c718d514fc2032fa7": {
       "compressedBytes": 14418999
     },
-    "chrislusf/seaweedfs:4.33": {
-      "compressedBytes": 104574614
+    "chrislusf/seaweedfs:4.45": {
+      "compressedBytes": 190971251
     },
     "cm2network/steamcmd:root": {
       "compressedBytes": 140801002
@@ -296,20 +296,20 @@
     "cockroachdb/cockroach:v24.1.1": {
       "compressedBytes": 168024034
     },
-    "cockroachdb/cockroach:v24.2.4": {
-      "compressedBytes": 181072653
+    "cockroachdb/cockroach:v26.3.1": {
+      "compressedBytes": 191689261
     },
     "code.forgejo.org/forgejo/forgejo:15.0.7-rootless": {
       "compressedBytes": 76740161
     },
-    "curlimages/curl:7.83.1": {
-      "compressedBytes": 6441495
+    "curlimages/curl:8.20.0": {
+      "compressedBytes": 10629318
     },
     "docker.io/alpine:latest": {
       "compressedBytes": 3847002
     },
-    "docker.io/bats/bats:v1.4.1": {
-      "compressedBytes": 17466404
+    "docker.io/apache/kafka-native:4.1.0": {
+      "compressedBytes": 51734454
     },
     "docker.io/bitnami/sealed-secrets-controller:0.39.1": {
       "compressedBytes": 29959253
@@ -326,38 +326,65 @@
     "docker.io/bitnamilegacy/redis:6.2.16-debian-12-r1": {
       "compressedBytes": 48916895
     },
-    "docker.io/bitnamilegacy/redis:7.4.1-debian-12-r2": {
-      "compressedBytes": 51672225
+    "docker.io/cockroachdb/cockroach-self-signer-cert:1.10": {
+      "compressedBytes": 199192647
     },
-    "docker.io/grafana/alloy:v1.5.1": {
-      "compressedBytes": 116986542
+    "docker.io/grafana/alloy:v1.19.2": {
+      "compressedBytes": 210772299
     },
-    "docker.io/grafana/grafana:11.2.2-security-01": {
-      "compressedBytes": 126095698
+    "docker.io/grafana/grafana:13.2.0": {
+      "compressedBytes": 474095051
     },
-    "docker.io/grafana/loki-canary:3.2.0": {
-      "compressedBytes": 17483182
+    "docker.io/grafana/loki-canary:3.7.7": {
+      "compressedBytes": 14931997
     },
-    "docker.io/grafana/loki-helm-test:ewelch-distributed-helm-chart-17db5ee": {
-      "compressedBytes": 8898458
+    "docker.io/grafana/loki:3.7.7": {
+      "compressedBytes": 47896050
     },
-    "docker.io/grafana/loki:3.2.0": {
-      "compressedBytes": 36282631
+    "docker.io/grafana/mimir:3.2.0": {
+      "compressedBytes": 37671365
     },
-    "docker.io/library/busybox:1.31.1": {
-      "compressedBytes": 761949
+    "docker.io/grafana/rollout-operator:v0.38.1": {
+      "compressedBytes": 35581925
     },
-    "docker.io/nginxinc/nginx-unprivileged:1.27-alpine": {
-      "compressedBytes": 20976656
+    "docker.io/grafana/tempo:2.10.8": {
+      "compressedBytes": 37426981
     },
-    "docker.io/openziti/ziti-controller:1.7.2": {
-      "compressedBytes": 180293815
+    "docker.io/kiwigrid/k8s-sidecar:2.10.3": {
+      "compressedBytes": 30405049
+    },
+    "docker.io/library/busybox:1.38.0": {
+      "compressedBytes": 2226786
+    },
+    "docker.io/longhornio/longhorn-manager:v1.12.1": {
+      "compressedBytes": 134261317
+    },
+    "docker.io/longhornio/longhorn-share-manager:v1.12.1": {
+      "compressedBytes": 125637438
+    },
+    "docker.io/longhornio/longhorn-ui:v1.12.1": {
+      "compressedBytes": 75531965
+    },
+    "docker.io/nginxinc/nginx-unprivileged:1.29-alpine": {
+      "compressedBytes": 23088694
+    },
+    "docker.io/nginxinc/nginx-unprivileged:1.31-alpine": {
+      "compressedBytes": 25771275
+    },
+    "docker.io/openziti/ziti-controller:2.0.2": {
+      "compressedBytes": 182892251
     },
     "docker.io/semitechnologies/weaviate:1.32.7": {
       "compressedBytes": 84940612
     },
+    "docker.io/valkey/valkey:9.1.2": {
+      "compressedBytes": 47343586
+    },
     "docker:dind": {
       "compressedBytes": 147302479
+    },
+    "ecr-public.aws.com/docker/library/redis:8.6.4-alpine": {
+      "compressedBytes": 34485719
     },
     "gcr.io/cockroachlabs-helm-charts/cockroach-self-signer-cert:1.5": {
       "compressedBytes": 170028269
@@ -368,29 +395,35 @@
     "ghcr.io/actions/actions-runner:2.330.0": {
       "compressedBytes": 517658379
     },
-    "ghcr.io/actions/gha-runner-scale-set-controller:0.12.1": {
-      "compressedBytes": 58284688
+    "ghcr.io/actions/gha-runner-scale-set-controller:0.14.2": {
+      "compressedBytes": 58183279
     },
-    "ghcr.io/dapr/injector:1.14.4": {
-      "compressedBytes": 13929157
+    "ghcr.io/cloudnative-pg/cloudnative-pg:1.30.0": {
+      "compressedBytes": 37153091
     },
-    "ghcr.io/dapr/operator:1.14.4": {
-      "compressedBytes": 14720322
+    "ghcr.io/dapr/injector:1.18.3": {
+      "compressedBytes": 17007622
     },
-    "ghcr.io/dapr/placement:1.14.4": {
-      "compressedBytes": 13069810
+    "ghcr.io/dapr/operator:1.18.3": {
+      "compressedBytes": 17373693
     },
-    "ghcr.io/dapr/scheduler:1.14.4": {
-      "compressedBytes": 15444924
+    "ghcr.io/dapr/placement:1.18.3": {
+      "compressedBytes": 15490636
     },
-    "ghcr.io/dapr/sentry:1.14.4": {
-      "compressedBytes": 14572945
+    "ghcr.io/dapr/scheduler:1.18.3": {
+      "compressedBytes": 19654093
     },
-    "ghcr.io/dexidp/dex:v2.41.1": {
-      "compressedBytes": 38258814
+    "ghcr.io/dapr/sentry:1.18.3": {
+      "compressedBytes": 17330599
     },
-    "ghcr.io/headlamp-k8s/headlamp:v0.30.0": {
-      "compressedBytes": 79802688
+    "ghcr.io/dexidp/dex:v2.45.1": {
+      "compressedBytes": 48086703
+    },
+    "ghcr.io/external-secrets/external-secrets:v2.10.0": {
+      "compressedBytes": 99688852
+    },
+    "ghcr.io/headlamp-k8s/headlamp:v0.45.0": {
+      "compressedBytes": 108980776
     },
     "ghcr.io/ich777/steamcmd:garrysmod": {
       "compressedBytes": 45334537
@@ -398,22 +431,27 @@
     "ghcr.io/ich777/steamcmd:unturned": {
       "compressedBytes": 44600518
     },
-    "ghcr.io/jimmidyson/configmap-reload:v0.12.0": {
-      "compressedBytes": 4562842
+    "ghcr.io/jkroepke/access-log-exporter:0.4.12": {
+      "compressedBytes": 4813608
+    },
+    "ghcr.io/jkroepke/kube-webhook-certgen:1.8.8": {
+      "compressedBytes": 9453826
+    },
+    "ghcr.io/juanfont/headscale:v0.25.0": {
+      "compressedBytes": 30922340
     },
     "ghcr.io/lucent-financial-group/hat-system-operator:placeholder": {
       "compressedBytes": null,
       "unmeasurableReason": "manifest HTTP 401; the registry REFUSED an anonymous pull token — the repository is private or does not exist, and a registry that answers 401 for an unknown repository cannot distinguish the two"
     },
     "ghcr.io/lucent-financial-group/zeta-orleans-silo:latest": {
-      "compressedBytes": null,
-      "unmeasurableReason": "manifest HTTP 401; the registry REFUSED an anonymous pull token — the repository is private or does not exist, and a registry that answers 401 for an unknown repository cannot distinguish the two"
+      "compressedBytes": 90514359
     },
     "ghcr.io/lucent-financial-group/zeta-platform-controller:latest": {
       "compressedBytes": 42887183
     },
     "ghcr.io/lucent-financial-group/zeta-portal:latest": {
-      "compressedBytes": 43254359
+      "compressedBytes": 43256725
     },
     "ghcr.io/spiffe/spiffe-csi-driver:0.2.3": {
       "compressedBytes": 3703909
@@ -427,32 +465,17 @@
     "ghcr.io/spiffe/spire-server:1.11.2": {
       "compressedBytes": 37206252
     },
-    "ghcr.io/vectorize-io/hindsight-api:0.1.1": {
-      "compressedBytes": 8806509423
+    "ghcr.io/vectorize-io/hindsight-api:0.9.2": {
+      "compressedBytes": 1418462917
     },
-    "ghcr.io/vectorize-io/hindsight-control-plane:0.1.1": {
-      "compressedBytes": 79783966
+    "ghcr.io/vectorize-io/hindsight-control-plane:0.9.2": {
+      "compressedBytes": 73364183
     },
-    "grafana/mimir:2.14.0": {
-      "compressedBytes": 26570424
+    "hashicorp/vault-k8s:1.7.6": {
+      "compressedBytes": 37741434
     },
-    "grafana/rollout-operator:v0.19.1": {
-      "compressedBytes": 29814269
-    },
-    "grafana/tempo:2.7.0": {
-      "compressedBytes": 55716856
-    },
-    "hashicorp/vault-k8s:1.5.0": {
-      "compressedBytes": 38282315
-    },
-    "hashicorp/vault:1.18.1": {
-      "compressedBytes": 165381834
-    },
-    "headscale/headscale:0.18.0": {
-      "compressedBytes": 18956619
-    },
-    "kiwigrid/k8s-sidecar:1.27.5": {
-      "compressedBytes": 26481141
+    "hashicorp/vault:2.0.4": {
+      "compressedBytes": 192414879
     },
     "longhornio/longhorn-manager:v1.7.2": {
       "compressedBytes": 118327944
@@ -469,44 +492,50 @@
     "minio/minio:RELEASE.2017-12-28T01-21-00Z": {
       "compressedBytes": 10806911
     },
-    "nats:2.10.23-alpine": {
-      "compressedBytes": 10020723
+    "nats:2.14.6-alpine": {
+      "compressedBytes": 11108648
     },
-    "natsio/nats-box:0.15.0": {
-      "compressedBytes": 43160324
+    "natsio/nats-box:0.19.7": {
+      "compressedBytes": 43902570
     },
-    "natsio/nats-server-config-reloader:0.16.0": {
-      "compressedBytes": 4794154
+    "natsio/nats-server-config-reloader:0.23.0": {
+      "compressedBytes": 5173326
     },
     "nginx:1.27-alpine": {
       "compressedBytes": 20971416
     },
-    "oci.external-secrets.io/external-secrets/external-secrets:v0.10.7": {
-      "compressedBytes": 66389236
+    "ollama/ollama:0.33.2": {
+      "compressedBytes": 3383205370
     },
-    "ollama/ollama:0.5.11": {
-      "compressedBytes": 1586915258
+    "openpolicyagent/gatekeeper-crds:v3.23.1": {
+      "compressedBytes": 18679772
     },
-    "openpolicyagent/gatekeeper-crds:v3.18.1": {
-      "compressedBytes": 17165782
+    "openpolicyagent/gatekeeper:v3.23.1": {
+      "compressedBytes": 47759377
     },
-    "openpolicyagent/gatekeeper:v3.18.1": {
-      "compressedBytes": 43467016
+    "pgvector/pgvector:pg17-trixie": {
+      "compressedBytes": 162878530
     },
     "postgres:16-alpine": {
       "compressedBytes": 116061734
     },
-    "public.ecr.aws/docker/library/redis:7.4.1-alpine": {
-      "compressedBytes": 19450558
+    "quay.io/argoproj/argo-rollouts:v1.10.0": {
+      "compressedBytes": 53477358
     },
     "quay.io/argoproj/argo-rollouts:v1.8.2": {
       "compressedBytes": 51082028
     },
-    "quay.io/argoproj/argocd:v2.13.2": {
-      "compressedBytes": 180006546
+    "quay.io/argoproj/argocd:v3.5.2": {
+      "compressedBytes": 210602600
     },
     "quay.io/argoproj/argocli:v3.5.11": {
       "compressedBytes": 57380086
+    },
+    "quay.io/argoproj/argocli:v4.1.2": {
+      "compressedBytes": 76363029
+    },
+    "quay.io/argoproj/kubectl-argo-rollouts:v1.10.0": {
+      "compressedBytes": 54046558
     },
     "quay.io/argoproj/kubectl-argo-rollouts:v1.8.2": {
       "compressedBytes": 52495924
@@ -514,41 +543,44 @@
     "quay.io/argoproj/workflow-controller:v3.5.11": {
       "compressedBytes": 36887992
     },
-    "quay.io/cilium/cilium-envoy:v1.30.8-1733837904-eaae5aca0fb988583e5617170a65ac5aa51c0aa8@sha256:709c08ade3d17d52da4ca2af33f431360ec26268d288d9a6cd1d98acc9a1dced": {
-      "compressedBytes": 62860538
+    "quay.io/argoproj/workflow-controller:v4.1.2": {
+      "compressedBytes": 50035019
     },
-    "quay.io/cilium/cilium:v1.16.5@sha256:758ca0793f5995bb938a2fa219dcce63dc0b3fa7fc4ce5cc851125281fb7361d": {
-      "compressedBytes": 224304032
+    "quay.io/cilium/cilium-envoy:v1.37.5-1786810558-766ccfb37260a43e9d228837aa84ce3faf9f64e7@sha256:75b8094c7127736a2ffd2dce3945e0931cb6df21b0372ff661940eca26730b91": {
+      "compressedBytes": 73103218
     },
-    "quay.io/cilium/hubble-relay:v1.16.5@sha256:6cfae1d1afa566ba941f03d4d7e141feddd05260e5cd0a1509aba1890a45ef00": {
-      "compressedBytes": 28573582
+    "quay.io/cilium/cilium:v1.20.1@sha256:ae9ea21f7427fe24bc6ea7247eb552157a1b0a431744045d3f641545ca71d11b": {
+      "compressedBytes": 257676413
     },
-    "quay.io/cilium/hubble-ui-backend:v0.13.1@sha256:0e0eed917653441fded4e7cdb096b7be6a3bddded5a2dd10812a27b1fc6ed95b": {
-      "compressedBytes": 20023308
+    "quay.io/cilium/hubble-relay:v1.20.1@sha256:59be0ae7d475ab9011a5e954618c0f27b5778b17140381425b308b55ba4917f4": {
+      "compressedBytes": 24278313
     },
-    "quay.io/cilium/hubble-ui:v0.13.1@sha256:e2e9313eb7caf64b0061d9da0efbdad59c6c461f6ca1752768942bfeda0796c6": {
-      "compressedBytes": 11077384
+    "quay.io/cilium/hubble-ui-backend:v0.13.5@sha256:fac0c300ae119274edca11fd89b1ad23c788792d8bc4ea2ba631c709e8d3c688": {
+      "compressedBytes": 22078721
     },
-    "quay.io/cilium/operator-generic:v1.16.5@sha256:f7884848483bbcd7b1e0ccfd34ba4546f258b460cb4b7e2f06a1bcc96ef88039": {
-      "compressedBytes": 31214411
+    "quay.io/cilium/hubble-ui:v0.13.5@sha256:f7d514fc54d784ed6df9d58cf0e97648b143f92b766dd1780ed3fc845bd4c516": {
+      "compressedBytes": 11874726
     },
-    "quay.io/jetstack/cert-manager-cainjector:v1.16.2": {
-      "compressedBytes": 15423063
+    "quay.io/cilium/operator-generic:v1.20.1@sha256:6c3885fc7b629099fdbe2a5c87869c86feb825fa18fae299eac0f61918d16ecf": {
+      "compressedBytes": 36812851
     },
-    "quay.io/jetstack/cert-manager-controller:v1.16.2": {
-      "compressedBytes": 21188304
+    "quay.io/jetstack/cert-manager-cainjector:v1.21.1": {
+      "compressedBytes": 12384798
     },
-    "quay.io/jetstack/cert-manager-startupapicheck:v1.16.2": {
-      "compressedBytes": 14091294
+    "quay.io/jetstack/cert-manager-controller:v1.21.1": {
+      "compressedBytes": 24867877
     },
-    "quay.io/jetstack/cert-manager-webhook:v1.16.2": {
-      "compressedBytes": 18188321
+    "quay.io/jetstack/cert-manager-startupapicheck:v1.21.1": {
+      "compressedBytes": 11503446
     },
-    "quay.io/jetstack/trust-manager:v0.15.0": {
-      "compressedBytes": 16802505
+    "quay.io/jetstack/cert-manager-webhook:v1.21.1": {
+      "compressedBytes": 19777904
     },
-    "quay.io/kiwigrid/k8s-sidecar:1.28.0": {
-      "compressedBytes": 23054307
+    "quay.io/jetstack/trust-manager:v0.24.0": {
+      "compressedBytes": 13473423
+    },
+    "quay.io/kiwigrid/k8s-sidecar:2.10.1": {
+      "compressedBytes": 30217607
     },
     "quay.io/kubevirt/cdi-operator:v1.65.0": {
       "compressedBytes": 95534327
@@ -556,17 +588,20 @@
     "quay.io/kubevirt/virt-operator:v1.8.4": {
       "compressedBytes": 133359009
     },
-    "quay.io/prometheus-operator/prometheus-operator:v0.77.2": {
-      "compressedBytes": 18755216
+    "quay.io/prometheus-operator/prometheus-config-reloader:v0.91.0@sha256:7d9e4eea5f1139e602508871f422b0116c60e87c662f3dcd234d5ab60cd0d8c1": {
+      "compressedBytes": 14227492
     },
-    "quay.io/prometheus/alertmanager:v0.27.0": {
-      "compressedBytes": 32408248
+    "quay.io/prometheus-operator/prometheus-operator:v0.93.1": {
+      "compressedBytes": 20928485
     },
-    "quay.io/prometheus/node-exporter:v1.8.2": {
-      "compressedBytes": 12038792
+    "quay.io/prometheus/alertmanager:v0.34.0": {
+      "compressedBytes": 40711915
     },
-    "quay.io/prometheus/prometheus:v2.55.0": {
-      "compressedBytes": 114283515
+    "quay.io/prometheus/node-exporter:v1.12.1-distroless": {
+      "compressedBytes": 13118255
+    },
+    "quay.io/prometheus/prometheus:v3.14.0-distroless": {
+      "compressedBytes": 109068772
     },
     "rancher/local-path-provisioner:v0.0.27": {
       "compressedBytes": 17841206
@@ -613,14 +648,11 @@
     "registry.gitlab.com/gitlab-org/gitlab-runner:alpine-v17.6.0": {
       "compressedBytes": 140920746
     },
-    "registry.k8s.io/ingress-nginx/kube-webhook-certgen:v20221220-controller-v1.5.1-58-g787ea74b6": {
-      "compressedBytes": 19684914
+    "registry.k8s.io/kube-state-metrics/kube-state-metrics:v2.20.0": {
+      "compressedBytes": 19256935
     },
-    "registry.k8s.io/kube-state-metrics/kube-state-metrics:v2.13.0": {
-      "compressedBytes": 14423067
-    },
-    "registry.k8s.io/nfd/node-feature-discovery:v0.17.1": {
-      "compressedBytes": 80695517
+    "registry.k8s.io/nfd/node-feature-discovery:v0.19.0": {
+      "compressedBytes": 85408598
     },
     "registry.k8s.io/sig-storage/csi-node-driver-registrar:v2.9.4": {
       "compressedBytes": 10873372

@@ -330,9 +330,9 @@
   "$comment_acknowledgedComputeShortfall": [
     "EMPTY, and unlike the storage list above it has never carried an entry.",
     "",
-    "The `metal` rung reserves 10265m / 22495Mi across the 46 Applications the",
+    "The `metal` rung reserves 10365m / 22623Mi across the 47 Applications the",
     "bootstrap root applies. The smallest registered node measures 16 logical CPUs",
-    "(16000m) and 62942 MiB, so the rung fits with 5735m / 40447Mi of the raw",
+    "(16000m) and 62942 MiB, so the rung fits with 5635m / 40319Mi of the raw",
     "bound unspent. That is a REPORT, not a pass: the bound reserves nothing for",
     "the kubelet, the control plane, kube-system or the OS, and 29 of the 46",
     "Applications render BestEffort pods that no arithmetic here ever sees.",
@@ -382,7 +382,7 @@
     "",
     "CARRIED, NOT RESOLVED, and it is deliberately not the auditor's call to",
     "resolve. `metal` over the 37 Applications the dev lane applies is 6240m /",
-    "14160Mi against a 2500m / 9216Mi runner budget. The arithmetic that makes",
+    "14288Mi against a 2500m / 9216Mi runner budget. The arithmetic that makes",
     "this a maintainer decision rather than a code change:",
     "",
     "  dev lane at `metal` (what the tree carries)   6240m   over by 3740m",
@@ -441,7 +441,7 @@
     "and this goes red until the trade is re-stated."
   ],
 
-  "acknowledgedRungBudgetGap": ["metal@dev-lane=6240m/14160Mi>>2500m/9216Mi"],
+  "acknowledgedRungBudgetGap": ["metal@dev-lane=6340m/14288Mi>>2500m/9216Mi"],
 
   "$comment_acknowledgedRootAppDuplicates": [
     "argocd/zeta-root is declared TWICE with two different spec.source.path values:",

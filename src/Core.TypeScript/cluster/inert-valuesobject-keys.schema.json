@@ -1,6 +1,6 @@
 {
-  "measuredOn": "2026-09-02",
-  "appsDiscovered": 53,
+  "measuredOn": "2026-09-03",
+  "appsDiscovered": 54,
   "charts": {
     "code.forgejo.org/forgejo-helm|forgejo|17.1.5": {
       "literal": {
@@ -17913,6 +17913,133 @@
       ],
       "dynamic": [],
       "charts": ["<root>=longhorn@1.7.2"]
+    },
+    "https://cloudnative-pg.github.io/charts|cloudnative-pg|0.29.0": {
+      "literal": {
+        "additionalArgs": {},
+        "additionalEnv": {},
+        "affinity": {},
+        "commonAnnotations": {},
+        "config": {
+          "clusterWide": {},
+          "create": {},
+          "data": {},
+          "maxConcurrentReconciles": {},
+          "name": {},
+          "secret": {}
+        },
+        "containerSecurityContext": {},
+        "crds": {
+          "create": {}
+        },
+        "dnsPolicy": {},
+        "fullnameOverride": {},
+        "global": {},
+        "hostNetwork": {},
+        "image": {
+          "pullPolicy": {},
+          "repository": {},
+          "tag": {}
+        },
+        "imagePullSecrets": {},
+        "monitoring": {
+          "fullnameOverride": {},
+          "grafanaDashboard": {
+            "annotations": {},
+            "configMapName": {},
+            "create": {},
+            "labels": {},
+            "namespace": {},
+            "sidecarLabel": {},
+            "sidecarLabelValue": {}
+          },
+          "nameOverride": {},
+          "podMonitorAdditionalLabels": {},
+          "podMonitorEnabled": {},
+          "podMonitorMetricRelabelings": {},
+          "podMonitorRelabelings": {}
+        },
+        "monitoringQueriesConfigMap": {
+          "name": {},
+          "queries": {}
+        },
+        "nameOverride": {},
+        "namespaceOverride": {},
+        "nodeSelector": {},
+        "podAnnotations": {},
+        "podLabels": {},
+        "podSecurityContext": {},
+        "priorityClassName": {},
+        "rbac": {
+          "aggregateClusterRoles": {},
+          "annotations": {},
+          "create": {}
+        },
+        "replicaCount": {},
+        "resources": {},
+        "service": {
+          "ipFamilies": {},
+          "ipFamilyPolicy": {},
+          "name": {},
+          "port": {},
+          "type": {}
+        },
+        "serviceAccount": {
+          "create": {},
+          "name": {}
+        },
+        "tolerations": {},
+        "topologySpreadConstraints": {},
+        "updateStrategy": {},
+        "webhook": {
+          "livenessProbe": {
+            "initialDelaySeconds": {}
+          },
+          "mutating": {
+            "create": {},
+            "failurePolicy": {}
+          },
+          "port": {},
+          "readinessProbe": {
+            "initialDelaySeconds": {}
+          },
+          "startupProbe": {
+            "failureThreshold": {},
+            "periodSeconds": {}
+          },
+          "validating": {
+            "create": {},
+            "failurePolicy": {}
+          }
+        }
+      },
+      "open": [
+        "additionalArgs",
+        "additionalEnv",
+        "affinity",
+        "commonAnnotations",
+        "config.data",
+        "containerSecurityContext",
+        "global",
+        "imagePullSecrets",
+        "monitoring.grafanaDashboard.annotations",
+        "monitoring.grafanaDashboard.labels",
+        "monitoring.podMonitorAdditionalLabels",
+        "monitoring.podMonitorMetricRelabelings",
+        "monitoring.podMonitorRelabelings",
+        "monitoringQueriesConfigMap.queries",
+        "nodeSelector",
+        "podAnnotations",
+        "podLabels",
+        "podSecurityContext",
+        "resources",
+        "service.ipFamilies",
+        "tolerations",
+        "topologySpreadConstraints",
+        "updateStrategy"
+      ],
+      "dynamic": [],
+      "charts": ["<root>=cloudnative-pg@0.29.0", "monitoring=cluster@0.0.5"]
     },
     "https://dapr.github.io/helm-charts/|dapr|1.18.3": {
       "literal": {
@@ -39460,6 +39587,13 @@
         "reason": "no-chart-yaml",
         "detail": "full-ai-cluster/k8s/applications/cilium-lb-ipam is a git-path source with no Chart.yaml — nothing declares a schema"
       }
+    },
+    {
+      "appId": "full-ai-cluster/cloudnativepg",
+      "chart": "cloudnative-pg",
+      "targetRevision": "0.29.0",
+      "repoURL": "https://cloudnative-pg.github.io/charts",
+      "chartKey": "https://cloudnative-pg.github.io/charts|cloudnative-pg|0.29.0"
     },
     {
       "appId": "full-ai-cluster/cockroachdb",
