@@ -161,6 +161,21 @@ let generatorMismatchCode =
     | Error error -> error.Code
     | Ok _ -> "unexpected-ok"
 
+let narrowState = R.tryCreateWithFactorIdBitWidth 8 [ "cup"; "bowl" ] |> unwrap
+let narrowFirst =
+    message "collision-source" "column-a" (Map.ofList [ ("cup", log 5.0) ]) position R.identityPose
+let narrowReceipt, narrowAccepted = add narrowFirst narrowState
+let narrowObjectFactorId = narrowReceipt.ObjectFactorId |> Option.get
+let narrowPositionFactorId = narrowReceipt.PositionFactorId |> Option.get
+let narrowCollisionCode =
+    seq { 0 .. 4095 }
+    |> Seq.map (fun index ->
+        message (sprintf "collision-candidate-%d" index) "column-b" (Map.ofList [ ("bowl", log 7.0) ]) position R.identityPose)
+    |> Seq.pick (fun candidate ->
+        match R.applyMessage candidate narrowAccepted with
+        | Error error when error.Code = "RFFH-FACTOR-ID-COLLISION" -> Some error.Code
+        | _ -> None)
+
 let chromaticNumber vertices edges =
     let adjacency =
         vertices
@@ -225,6 +240,10 @@ let report =
        lateralMissingCode = lateralMissingCode
        cycleCode = cycleCode
        generatorMismatchCode = generatorMismatchCode
+       narrowObjectFactorId = narrowObjectFactorId
+       narrowPositionFactorId = narrowPositionFactorId
+       narrowCollisionCode = narrowCollisionCode
+       narrowAcceptedCount = R.acceptedEvidenceCount narrowAccepted
        k4ChromaticNumber = chromaticNumber k4Vertices k4Edges
        k5ChromaticNumber = chromaticNumber k5Vertices k5Edges
        k33ChromaticNumber = chromaticNumber k33Vertices k33Edges

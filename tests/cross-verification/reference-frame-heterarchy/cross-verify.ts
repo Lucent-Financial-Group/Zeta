@@ -31,6 +31,10 @@ interface OracleReport {
   readonly lateralMissingCode: string;
   readonly cycleCode: string;
   readonly generatorMismatchCode: string;
+  readonly narrowObjectFactorId: number;
+  readonly narrowPositionFactorId: number;
+  readonly narrowCollisionCode: string;
+  readonly narrowAcceptedCount: number;
   readonly k4ChromaticNumber: number;
   readonly k5ChromaticNumber: number;
   readonly k33ChromaticNumber: number;
@@ -43,10 +47,11 @@ function isReport(value: unknown): value is OracleReport {
   const numeric = [
     "agreeingCupProbability", "agreeingPositionVarianceX", "contradictionCupProbability",
     "contradictionBowlProbability", "permutationCount", "alignmentVarianceX", "originalFusionMaxError",
-    "naturalityMaxError", "duplicateAcceptedCount", "conflictCount", "k4ChromaticNumber",
+    "naturalityMaxError", "duplicateAcceptedCount", "conflictCount", "narrowObjectFactorId",
+    "narrowPositionFactorId", "narrowAcceptedCount", "k4ChromaticNumber",
     "k5ChromaticNumber", "k33ChromaticNumber", "crownChromaticNumber",
   ];
-  const textual = ["duplicateDisposition", "conflictDisposition", "lateralMissingCode", "cycleCode", "generatorMismatchCode"];
+  const textual = ["duplicateDisposition", "conflictDisposition", "lateralMissingCode", "cycleCode", "generatorMismatchCode", "narrowCollisionCode"];
   return numeric.every((key) => typeof record[key] === "number")
     && textual.every((key) => typeof record[key] === "string")
     && typeof record.permutationInvariant === "boolean"
@@ -132,6 +137,16 @@ check(parsed.conflictDisposition === "ConflictDetected" && parsed.conflictCount 
 check(parsed.lateralAccepted && parsed.lateralMissingCode === "RFFH-NO-LATERAL-EDGE", "lateral wiring");
 check(parsed.cycleCode === "RFFH-PARENT-CYCLE", "parent-cycle refusal");
 check(parsed.generatorMismatchCode === "RFFH-GENERATOR-ORDER-MISMATCH", "generator-order refusal");
+check(
+  parsed.narrowObjectFactorId >= 0
+    && parsed.narrowPositionFactorId < 0
+    && parsed.narrowObjectFactorId !== parsed.narrowPositionFactorId,
+  "disjoint signed object and position factor namespaces",
+);
+check(
+  parsed.narrowCollisionCode === "RFFH-FACTOR-ID-COLLISION" && parsed.narrowAcceptedCount === 1,
+  "finite retained-domain collision refusal leaves accepted evidence unchanged",
+);
 
 const k4 = findMinimumColorSchedule(completeGraph(4)).colorCount;
 const k5 = findMinimumColorSchedule(completeGraph(5)).colorCount;
@@ -160,4 +175,4 @@ if (failures.length > 0) {
   console.error(`reference-frame-heterarchy cross-verify failures: ${failures.join(", ")}`);
   process.exit(1);
 }
-console.log("reference-frame-heterarchy cross-verify: 18 finite witness groups across F#/TypeScript, 0 failure(s).");
+console.log("reference-frame-heterarchy cross-verify: 20 finite witness groups across F#/TypeScript, 0 failure(s).");

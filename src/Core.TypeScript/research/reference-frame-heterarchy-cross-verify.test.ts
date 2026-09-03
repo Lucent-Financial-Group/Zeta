@@ -16,7 +16,7 @@ describe("reference-frame factor heterarchy cross-verification", () => {
     expect(child.error).toBeUndefined();
     expect(child.status, child.stderr || child.stdout).toBe(0);
     expect(child.stdout).toContain(
-      "reference-frame-heterarchy cross-verify: 18 finite witness groups across F#/TypeScript, 0 failure(s).",
+      "reference-frame-heterarchy cross-verify: 20 finite witness groups across F#/TypeScript, 0 failure(s).",
     );
   }, 240_000);
 });

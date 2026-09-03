@@ -21,6 +21,17 @@ let sequential = MultilayerBnn.tryCreate priors variances MultilayerBnn.Sequenti
 let receipt =
     MultilayerBnn.tryInferViaFactorGraph 1e-13 500 true [ 2.0; 2.0; 2.0 ] sequential
     |> unwrap
+let denseSequential =
+    MultilayerBnn.tryInferExactDenseGaussian [ 2.0; 2.0; 2.0 ] sequential
+    |> unwrap
+let denseReplay = MultilayerBnn.tryQueryExactDenseGaussian denseSequential.Network |> unwrap
+let denseReplayBitInvariant =
+    Array.forall2
+        (fun left right ->
+            bits left.Precision = bits right.Precision
+            && bits left.PrecisionMean = bits right.PrecisionMean)
+        denseSequential.Marginals
+        denseReplay.Marginals
 let replay = MultilayerBnn.tryInferViaFactorGraph 1e-13 500 true [] receipt.Network |> unwrap
 let replayBitInvariant =
     Array.forall2
@@ -58,6 +69,12 @@ let permissive = MultilayerBnn.tryUpdateViaFactorGraph 0.0 1 false 5.0 loopy |> 
 let convergedLoopy =
     MultilayerBnn.tryInferViaFactorGraph 1e-13 1000 true [ 5.0; 5.0; 5.0; 5.0 ] loopy
     |> unwrap
+let denseLoopy =
+    MultilayerBnn.tryInferExactDenseGaussian [ 5.0; 5.0; 5.0; 5.0 ] loopy
+    |> unwrap
+let loopyOnDenseEvidence =
+    MultilayerBnn.tryInferViaFactorGraph 1e-13 1000 true [] denseLoopy.Network
+    |> unwrap
 
 let malformedError =
     let malformed =
@@ -73,6 +90,15 @@ let malformedError =
 let report =
     {| sequentialMeans = receipt.Marginals |> Array.map Gaussian.mean
        sequentialVariances = receipt.Marginals |> Array.map Gaussian.variance
+       exactDenseSequentialMeans = denseSequential.Marginals |> Array.map Gaussian.mean
+       exactDenseSequentialVariances = denseSequential.Marginals |> Array.map Gaussian.variance
+       exactDenseLoopyMeans = denseLoopy.Marginals |> Array.map Gaussian.mean
+       exactDenseLoopyVariances = denseLoopy.Marginals |> Array.map Gaussian.variance
+       loopyOnDenseEvidenceMeans = loopyOnDenseEvidence.Marginals |> Array.map Gaussian.mean
+       loopyOnDenseEvidenceVariances = loopyOnDenseEvidence.Marginals |> Array.map Gaussian.variance
+       exactDenseLayerCount = denseSequential.LayerCount
+       exactDenseAbsorbedObservationCount = denseSequential.AbsorbedObservationCount
+       exactDenseReplayBitInvariant = denseReplayBitInvariant
        layerZeroPrecision = receipt.Network.Layers.[0].Posterior.Precision
        layerZeroObservationCount = receipt.Network.Layers.[0].Objective.ObservationCount
        deeperObservationCounts = receipt.Network.Layers.[1..] |> Array.map _.Objective.ObservationCount

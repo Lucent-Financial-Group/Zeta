@@ -1,0 +1,26 @@
+{
+  "schemaVersion": 1,
+  "contract": "docs/research/2026-09-03-rffh-factor-identity-contract.md",
+  "productionIdentifierModel": {
+    "factorGraphKeyType": "signed 32-bit int",
+    "retainedDigestBitsPerNamespace": 31,
+    "objectNamespace": "nonnegative signed int",
+    "positionNamespace": "negative signed int",
+    "domainSeparatedSha256Inputs": true,
+    "productionAllocation": "no sequential probing"
+  },
+  "finiteCollisionControl": {
+    "testOnlyRetainedBits": 8,
+    "candidateEnumerationInclusiveRange": [0, 4095],
+    "collisionCode": "RFFH-FACTOR-ID-COLLISION",
+    "acceptedEvidenceCountAfterRefusal": 1,
+    "originalObjectPosteriorUnchanged": true,
+    "originalPositionPosteriorUnchanged": true
+  },
+  "verification": {
+    "focusedFSharpScenarioCount": 26,
+    "fsharpTypeScriptWitnessGroups": 20,
+    "invalidWidthsRefused": [0, -1, 32]
+  },
+  "verdict": "bounded-deterministic-31-bit-per-namespace-factor-identity-supported"
+}
