@@ -1,11 +1,12 @@
 ---
 id: 081M1JB621H087G0R002Q2XA99
 type: task
-state: backlog
+state: done
 priority: P1
 slug: simulatedblockio-corrupt-last-write-and-reorder-intercepts
 title: "SimulatedBlockIo corrupt-last-write and reorder intercepts"
 created: 2026-09-03T00:37:00.000Z
+completed: 2026-09-03T01:01:36.259Z
 depends_on: []
 composes_with: ["081M1J9YFJB087G0R002JFZAG3"]
 ---

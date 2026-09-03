@@ -71,7 +71,7 @@ module ZetaFsFreeze =
     /// fsync of objects-dir + log. `manual` is the DST pump (no background ferry).
     [<Sealed>]
     type internal FreezeLog
-        (storeDir: string, config: FerryThrottlerConfig, manual: bool) =
+        (storeDir: string, config: FerryThrottlerConfig, manual: bool, blockIo: SimulatedBlockIo option) =
 
         do
             if config.MaxDegreeOfParallelism <> 1 then
@@ -121,52 +121,83 @@ module ZetaFsFreeze =
 
                     d
 
-                // Intent Flush publishes without crash arms. Leaf puts and the
-                // log Dispose still fire them. Commit (Dispose) before Reply.
-                do
-                    use stream = fsDoor.OpenFile(logPath, FileMode.Append, FileAccess.Write, FileShare.Read)
+                let putLeaves (item: LogItem) =
+                    let mutable j = 0
 
+                    while err.IsNone && j < item.Objects.Length do
+                        let struct (id, bytes) = item.Objects.[j]
+                        let hex = (ContentHash256.toContentAddress128 id).ToHex()
+                        let path = Path.Combine(objectsDir, hex.Substring(0, 2), hex.Substring(2))
+                        let dir = Path.GetDirectoryName path
+                        fsDoor.CreateDirectory dir
+                        FileSystemIo.writeAllBytes fsDoor path bytes
+
+                        if item.Durable then
+                            match FileSync.fsyncFile path with
+                            | Ok() -> ()
+                            | Error e -> err <- Some(FreezeError.Fsync e)
+
+                        j <- j + 1
+
+                    if err.IsNone && item.Durable then
+                        match FileSync.fsyncDir objectsDir with
+                        | Error e -> err <- Some(FreezeError.Fsync e)
+                        | Ok() -> ()
+
+                // Intent Flush publishes without crash arms on the file door.
+                // On IBlockIo, Flush is the barrier; crash arms fire on Write.
+                match blockIo with
+                | Some io ->
                     let mutable i = 0
+                    let device = io :> IBlockIo
 
                     while err.IsNone && i < boat.Length do
                         let item = boat.Span.[i]
-                        stream.Write(item.IntentFrame, 0, item.IntentFrame.Length)
-                        stream.Flush()
+                        let afterIntent =
+                            BlockLog.append
+                                device
+                                io.LogicalBytes
+                                (System.ReadOnlyMemory<byte>.op_Implicit item.IntentFrame)
 
-                        let mutable j = 0
-
-                        while err.IsNone && j < item.Objects.Length do
-                            let struct (id, bytes) = item.Objects.[j]
-                            let hex = (ContentHash256.toContentAddress128 id).ToHex()
-                            let path = Path.Combine(objectsDir, hex.Substring(0, 2), hex.Substring(2))
-                            let dir = Path.GetDirectoryName path
-                            fsDoor.CreateDirectory dir
-                            FileSystemIo.writeAllBytes fsDoor path bytes
-
-                            if item.Durable then
-                                match FileSync.fsyncFile path with
-                                | Ok() -> ()
-                                | Error e -> err <- Some(FreezeError.Fsync e)
-
-                            j <- j + 1
-
-                        if err.IsNone && item.Durable then
-                            match FileSync.fsyncDir objectsDir with
-                            | Error e -> err <- Some(FreezeError.Fsync e)
-                            | Ok() -> ()
+                        io.LogicalBytes <- afterIntent
+                        device.Flush()
+                        putLeaves item
 
                         if err.IsNone then
-                            stream.Write(item.CommitFrame, 0, item.CommitFrame.Length)
+                            let afterCommit =
+                                BlockLog.append
+                                    device
+                                    io.LogicalBytes
+                                    (System.ReadOnlyMemory<byte>.op_Implicit item.CommitFrame)
+
+                            io.LogicalBytes <- afterCommit
+                            device.Flush()
 
                         i <- i + 1
+                | None ->
+                    do
+                        use stream = fsDoor.OpenFile(logPath, FileMode.Append, FileAccess.Write, FileShare.Read)
 
-                    if err.IsNone && anyDurable then
-                        match FileSync.fsyncFile logPath with
-                        | Error e -> err <- Some(FreezeError.Fsync e)
-                        | Ok() ->
-                            match FileSync.fsyncDir logDir with
+                        let mutable i = 0
+
+                        while err.IsNone && i < boat.Length do
+                            let item = boat.Span.[i]
+                            stream.Write(item.IntentFrame, 0, item.IntentFrame.Length)
+                            stream.Flush()
+                            putLeaves item
+
+                            if err.IsNone then
+                                stream.Write(item.CommitFrame, 0, item.CommitFrame.Length)
+
+                            i <- i + 1
+
+                        if err.IsNone && anyDurable then
+                            match FileSync.fsyncFile logPath with
                             | Error e -> err <- Some(FreezeError.Fsync e)
-                            | Ok() -> ()
+                            | Ok() ->
+                                match FileSync.fsyncDir logDir with
+                                | Error e -> err <- Some(FreezeError.Fsync e)
+                                | Ok() -> ()
 
                 succeed err
             with
@@ -177,6 +208,7 @@ module ZetaFsFreeze =
         member _.Boats = boats
         member _.LastBoatSize = lastBoat
         member _.LogPath = logPath
+        member _.BlockIo = blockIo
 
         member _.SubmitAsync(item: LogItem, ct: CancellationToken) : ValueTask<Result<struct (int64 * int64), FreezeError>> =
             if ct.IsCancellationRequested then
@@ -219,13 +251,14 @@ module ZetaFsFreeze =
             observer: IDurabilityObserver option,
             session: ZetaFsCrypto.Session option,
             config: FerryThrottlerConfig,
-            manual: bool
+            manual: bool,
+            blockIo: SimulatedBlockIo option
         ) =
         let gate = obj ()
         let commits = Dictionary<ContentHash256, FreezeResult>()
         let leaves = Dictionary<ContentHash256, ContentHash256[]>()
         let mutable nextLsn = 1L
-        let log = new FreezeLog(storeDir, config, manual)
+        let log = new FreezeLog(storeDir, config, manual, blockIo)
 
         member _.StoreDir = storeDir
         member _.Mutbuf = mutbuf
@@ -396,63 +429,71 @@ module ZetaFsFreeze =
     /// Restore Commits/Leaves from intact plain frames. Trailing torn frame,
     /// intent-without-commit, or a CRC mismatch (tail or mid) is truncated
     /// from that frame; the verified prefix is kept.
-    let private replayPlainLog (fs: IFileSystem) (volume: Volume) =
-        let logPath = volume.Log.LogPath
+    let private replayPlainFromStream (stream: Stream) (volume: Volume) =
+        use br = new BinaryReader(stream, Text.Encoding.UTF8, leaveOpen = true)
+        let mutable scanning = true
+        let mutable pendingStart = -1L
+        let mutable pending: PlainRec option = None
+        let mutable maxLsn = 0L
 
-        if fs.Exists logPath then
-            use stream = fs.OpenFile(logPath, FileMode.Open, FileAccess.ReadWrite, FileShare.Read)
-            use br = new BinaryReader(stream)
-            let mutable scanning = true
-            let mutable pendingStart = -1L
-            let mutable pending: PlainRec option = None
-            let mutable maxLsn = 0L
+        while scanning do
+            let recordStart = stream.Position
 
-            while scanning do
-                let recordStart = stream.Position
+            if stream.Length - stream.Position = 0L then
+                scanning <- false
+            elif stream.Length - stream.Position < 8L then
+                stream.SetLength recordStart
+                scanning <- false
+            else
+                let len = br.ReadInt32()
+                let expectedCrc = br.ReadUInt32()
 
-                if stream.Length - stream.Position = 0L then
-                    scanning <- false
-                elif stream.Length - stream.Position < 8L then
+                if len < 0 then
+                    invalidOp (sprintf "ZetaFsFreeze: negative frame length %d at byte %d" len recordStart)
+                elif stream.Length - stream.Position < int64 len then
                     stream.SetLength recordStart
                     scanning <- false
                 else
-                    let len = br.ReadInt32()
-                    let expectedCrc = br.ReadUInt32()
+                    let payload = br.ReadBytes len
+                    let actualCrc = HardwareCrc.Crc32C(ReadOnlySpan payload)
 
-                    if len < 0 then
-                        invalidOp (sprintf "ZetaFsFreeze: negative frame length %d at byte %d" len recordStart)
-                    elif stream.Length - stream.Position < int64 len then
+                    if actualCrc <> expectedCrc then
                         stream.SetLength recordStart
                         scanning <- false
                     else
-                        let payload = br.ReadBytes len
-                        let actualCrc = HardwareCrc.Crc32C(ReadOnlySpan payload)
+                        let atTail = stream.Position = stream.Length
+                        scanning <-
+                            applyDecoded
+                                volume
+                                &pending
+                                &pendingStart
+                                &maxLsn
+                                recordStart
+                                atTail
+                                stream.SetLength
+                                (decodePlain payload)
 
-                        if actualCrc <> expectedCrc then
-                            // Tail or mid: keep the intact prefix, drop from here.
-                            // A mid-file CRC that throws would refuse the volume and
-                            // lose freezes that already verified.
-                            stream.SetLength recordStart
-                            scanning <- false
-                        else
-                            let atTail = stream.Position = stream.Length
-                            scanning <-
-                                applyDecoded
-                                    volume
-                                    &pending
-                                    &pendingStart
-                                    &maxLsn
-                                    recordStart
-                                    atTail
-                                    stream.SetLength
-                                    (decodePlain payload)
+        match pending with
+        | Some _ when pendingStart >= 0L -> stream.SetLength pendingStart
+        | _ -> ()
 
-            match pending with
-            | Some _ when pendingStart >= 0L -> stream.SetLength pendingStart
-            | _ -> ()
+        if maxLsn >= volume.NextLsn then
+            volume.NextLsn <- maxLsn + 1L
 
-            if maxLsn >= volume.NextLsn then
-                volume.NextLsn <- maxLsn + 1L
+    let private replayPlainLog (fs: IFileSystem) (volume: Volume) =
+        match volume.Log.BlockIo with
+        | Some io when io.LogicalBytes > 0L ->
+            let bytes = BlockLog.read (io :> IBlockIo) io.LogicalBytes
+            use stream = new MemoryStream(bytes, 0, bytes.Length, writable = true, publiclyVisible = true)
+            replayPlainFromStream stream volume
+            io.LogicalBytes <- stream.Length
+        | Some _ -> ()
+        | None ->
+            let logPath = volume.Log.LogPath
+
+            if fs.Exists logPath then
+                use stream = fs.OpenFile(logPath, FileMode.Open, FileAccess.ReadWrite, FileShare.Read)
+                replayPlainFromStream stream volume
 
     /// Sealed frames: [len:i32][lsn:i64][inner]. LSN is public so openLog can
     /// rebuild the nonce. Wrong-key MAC on the first frame recovers nothing
@@ -525,11 +566,12 @@ module ZetaFsFreeze =
         (session: ZetaFsCrypto.Session option)
         (config: FerryThrottlerConfig)
         (manual: bool)
+        (blockIo: SimulatedBlockIo option)
         : Volume =
         let fs = FileSystem.Current
         fs.CreateDirectory (Path.Combine(storeDir, "log"))
         fs.CreateDirectory (Path.Combine(storeDir, "objects"))
-        let volume = new Volume(storeDir, mutbuf, observer, session, config, manual)
+        let volume = new Volume(storeDir, mutbuf, observer, session, config, manual, blockIo)
 
         try
             lock volume.Gate (fun () ->
@@ -548,7 +590,7 @@ module ZetaFsFreeze =
         (observer: IDurabilityObserver option)
         (session: ZetaFsCrypto.Session option)
         : Volume =
-        createFull storeDir mutbuf observer session defaultConfig false
+        createFull storeDir mutbuf observer session defaultConfig false None
 
     /// Unencrypted control (FORMAT enc=off). The default first-product profile.
     let create (storeDir: string) (mutbuf: ZetaFsMutbuf.Catalog) (observer: IDurabilityObserver option) : Volume =
@@ -560,7 +602,7 @@ module ZetaFsFreeze =
         (mutbuf: ZetaFsMutbuf.Catalog)
         (observer: IDurabilityObserver option)
         : Volume =
-        createFull storeDir mutbuf observer None defaultConfig true
+        createFull storeDir mutbuf observer None defaultConfig true None
 
     let createManualWith
         (storeDir: string)
@@ -568,7 +610,19 @@ module ZetaFsFreeze =
         (observer: IDurabilityObserver option)
         (session: ZetaFsCrypto.Session option)
         : Volume =
-        createFull storeDir mutbuf observer session defaultConfig true
+        createFull storeDir mutbuf observer session defaultConfig true None
+
+    /// DST: Journaled log frames go through `IBlockIo` (RMW on the tail block).
+    /// Objects still speak files. Logical length lives on the `SimulatedBlockIo`
+    /// instance so reopen can replay without a superblock. A real device needs
+    /// a superblock; that is not this slice.
+    let createManualWithBlocks
+        (storeDir: string)
+        (mutbuf: ZetaFsMutbuf.Catalog)
+        (observer: IDurabilityObserver option)
+        (blocks: SimulatedBlockIo)
+        : Volume =
+        createFull storeDir mutbuf observer None defaultConfig true (Some blocks)
 
     let dispose (volume: Volume) = (volume :> IDisposable).Dispose()
 
@@ -577,6 +631,16 @@ module ZetaFsFreeze =
 
     let logBoatCount (volume: Volume) = volume.Log.Boats
     let logLastBoatSize (volume: Volume) = volume.Log.LastBoatSize
+
+    let logLogicalBytes (volume: Volume) =
+        match volume.Log.BlockIo with
+        | Some io -> io.LogicalBytes
+        | None ->
+            let path = volume.Log.LogPath
+            if FileSystem.Current.Exists path then
+                int64 (FileSystem.Current.ReadAllBytes path).Length
+            else
+                0L
 
     let private putObject (storeDir: string) (id: ContentHash256) (bytes: byte[]) =
         let path = objectPath storeDir id

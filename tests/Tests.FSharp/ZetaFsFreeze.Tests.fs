@@ -639,3 +639,71 @@ let ``reopen after a mid-log sealed MAC mismatch keeps the prefix and drops the 
             | None -> ()
             FileSystem.Reset()
     }
+
+[<Fact>]
+let ``Journaled freeze through SimulatedBlockIo is readable after reopen`` () : Task =
+    task {
+        ensureHasher ()
+        FileSystem.Register(InMemoryFileSystem())
+        let store = "/freeze-blocks"
+        let mutbuf = ZetaFsMutbuf.create store ZetaFsMutbuf.Coherence.Shared
+        let blocks = SimulatedBlockIo(4096)
+        let volume = ZetaFsFreeze.createManualWithBlocks store mutbuf None blocks
+
+        try
+            let id = mintId ()
+            let h = ZetaFsMutbuf.openHandle volume.Mutbuf id
+            ZetaFsMutbuf.pwrite volume.Mutbuf h 0L [| 1uy; 2uy; 3uy |] |> ignore
+            let pending = (freezeAsync volume id ZetaFsFreeze.Journaled).AsTask()
+            do! (ZetaFsFreeze.pumpLog volume CancellationToken.None).ConfigureAwait(false)
+            let! first = pending.ConfigureAwait(false)
+
+            match first with
+            | Error e -> Assert.Fail(ZetaFsFreeze.errorName e)
+            | Ok first ->
+                Assert.True(ZetaFsFreeze.isReadable volume first.Content)
+                Assert.True(blocks.LogicalBytes > 0L)
+                ZetaFsFreeze.dispose volume
+                let reopened = ZetaFsFreeze.createManualWithBlocks store mutbuf None blocks
+
+                try
+                    Assert.True(ZetaFsFreeze.isReadable reopened first.Content)
+                finally
+                    ZetaFsFreeze.dispose reopened
+        finally
+            FileSystem.Reset()
+    }
+
+[<Fact>]
+let ``Journaled freeze crash-mid-write on IBlockIo does not finish`` () : Task =
+    task {
+        ensureHasher ()
+        FileSystem.Register(InMemoryFileSystem())
+        let store = "/freeze-blocks-crash"
+        let mutbuf = ZetaFsMutbuf.create store ZetaFsMutbuf.Coherence.Shared
+        let blocks = SimulatedBlockIo(4096)
+        blocks.ArmCrashMidWrite(8)
+        let volume = ZetaFsFreeze.createManualWithBlocks store mutbuf None blocks
+
+        try
+            let id = mintId ()
+            let h = ZetaFsMutbuf.openHandle volume.Mutbuf id
+            ZetaFsMutbuf.pwrite volume.Mutbuf h 0L [| 1uy; 2uy; 3uy |] |> ignore
+            let pending = (freezeAsync volume id ZetaFsFreeze.Journaled).AsTask()
+            do! (ZetaFsFreeze.pumpLog volume CancellationToken.None).ConfigureAwait(false)
+            let! _ =
+                Assert
+                    .ThrowsAsync<CrashMidWriteException>(fun () -> pending :> Task)
+                    .ConfigureAwait(false)
+
+            Assert.Equal(1, ZetaFsFreeze.logBoatCount volume)
+            ZetaFsFreeze.dispose volume
+            let reopened = ZetaFsFreeze.createManualWithBlocks store mutbuf None blocks
+
+            try
+                Assert.Equal(0L, blocks.LogicalBytes)
+            finally
+                ZetaFsFreeze.dispose reopened
+        finally
+            FileSystem.Reset()
+    }
