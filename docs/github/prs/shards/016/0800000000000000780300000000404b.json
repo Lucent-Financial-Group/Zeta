@@ -1,0 +1,12 @@
+{
+  "pr_number": 16459,
+  "archive_path": "docs/history/pr-reviews/PR-16459-test-observe-the-default-event-transport-had-one-assertion-that-could-not-fail.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-03T08:13:31.944Z",
+  "schema_version": "v1",
+  "commit_sha": "411e8108ae20c16adfb00eb98f065c64d99a17c8",
+  "title": "test(observe): the default event transport had one assertion that could not fail",
+  "state": "MERGED",
+  "merged_at": "2026-09-03T08:12:54Z",
+  "head_ref": "real-git-sink-test"
+}
