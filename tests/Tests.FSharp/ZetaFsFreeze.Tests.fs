@@ -945,3 +945,54 @@ let ``Sealed block replay with the wrong vault key recovers nothing and does not
             finally
                 FileSystem.Reset()
     }
+
+[<Fact>]
+let ``Sealed journaled freeze CAS objects on IBlockIo reopen from cloned media`` () : Task =
+    task {
+        ensureHasher ()
+        FileSystem.Register(InMemoryFileSystem())
+        let store = "/freeze-sealed-cas-blocks"
+        let mutbuf = ZetaFsMutbuf.create store ZetaFsMutbuf.Coherence.Shared
+        let vault = Array.init 32 (fun i -> byte i)
+        let logDev = SimulatedBlockIo(4096)
+        let objDev = SimulatedBlockIo(4096)
+        let cas = BlockCas(objDev)
+
+        match ZetaFsCrypto.sessionFromVaultKey 1u vault with
+        | Error e -> Assert.Fail(ZetaFsCrypto.errorName e)
+        | Ok session ->
+            let volume =
+                ZetaFsFreeze.createManualWithSealedBlockStore store mutbuf None session logDev cas
+
+            try
+                let id = mintId ()
+                let h = ZetaFsMutbuf.openHandle volume.Mutbuf id
+                ZetaFsMutbuf.pwrite volume.Mutbuf h 0L [| 1uy; 2uy; 3uy |] |> ignore
+                let pending = (freezeAsync volume id ZetaFsFreeze.Journaled).AsTask()
+                do! (ZetaFsFreeze.pumpLog volume CancellationToken.None).ConfigureAwait(false)
+                let! first = pending.ConfigureAwait(false)
+
+                match first with
+                | Error e -> Assert.Fail(ZetaFsFreeze.errorName e)
+                | Ok first ->
+                    Assert.True(cas.Count > 0)
+                    Assert.Equal(0, FileSystem.Current.GetFiles(Path.Combine(store, "objects"), "*").Length)
+                    let logIo = logDev :> IBlockIo
+                    let logBytes = BlockLog.readAt logIo (BlockLog.origin logIo) logDev.LogicalBytes
+                    let needle = Text.Encoding.UTF8.GetBytes "freeze-intent/1"
+                    Assert.Equal(-1, MemoryExtensions.IndexOf(ReadOnlySpan<byte> logBytes, ReadOnlySpan<byte> needle))
+                    ZetaFsFreeze.dispose volume
+                    let logClone = logDev.CloneMedia()
+                    let objClone = objDev.CloneMedia()
+                    let cas2 = BlockCas(objClone)
+                    Assert.True(cas2.Count > 0)
+                    let reopened =
+                        ZetaFsFreeze.createManualWithSealedBlockStore store mutbuf None session logClone cas2
+
+                    try
+                        Assert.True(ZetaFsFreeze.isReadable reopened first.Content)
+                    finally
+                        ZetaFsFreeze.dispose reopened
+            finally
+                FileSystem.Reset()
+    }

@@ -686,6 +686,17 @@ module ZetaFsFreeze =
         : Volume =
         createFull storeDir mutbuf observer None defaultConfig true (Some logBlocks) (Some objectCas)
 
+    /// DST: sealed Journaled log on one disk, CAS objects on another.
+    let createManualWithSealedBlockStore
+        (storeDir: string)
+        (mutbuf: ZetaFsMutbuf.Catalog)
+        (observer: IDurabilityObserver option)
+        (session: ZetaFsCrypto.Session)
+        (logBlocks: SimulatedBlockIo)
+        (objectCas: BlockCas)
+        : Volume =
+        createFull storeDir mutbuf observer (Some session) defaultConfig true (Some logBlocks) (Some objectCas)
+
     let dispose (volume: Volume) = (volume :> IDisposable).Dispose()
 
     let pumpLog (volume: Volume) (ct: CancellationToken) : Task =
