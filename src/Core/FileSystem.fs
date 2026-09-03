@@ -465,6 +465,7 @@ type SimulatedBlockIo(blockSize: int) =
     let mutable heldWrite: (uint64 * byte[]) option = None
     let commitOrder = ResizeArray<uint64>()
     let mutable writes = 0
+    let mutable logicalBytes = 0L
     let corruptXor = 0xA5uy
 
     let writeRange (startLba: uint64) (src: ReadOnlySpan<byte>) =
@@ -506,6 +507,11 @@ type SimulatedBlockIo(blockSize: int) =
     member _.Writes = lock lockObj (fun () -> writes)
 
     member _.CommitOrder = lock lockObj (fun () -> commitOrder.ToArray())
+
+    /// Logical payload length the caller maintains (log bytes, not padded blocks).
+    member _.LogicalBytes
+        with get () = lock lockObj (fun () -> logicalBytes)
+        and set v = lock lockObj (fun () -> logicalBytes <- v)
 
     interface IBlockIo with
         member _.BlockSize = blockSize
@@ -577,6 +583,45 @@ type SimulatedBlockIo(blockSize: int) =
                             src.Length)
 
         member _.Flush() = ()
+
+/// Append/read a byte stream on `IBlockIo` with tail-block read-modify-write.
+/// Position is a byte offset. Does not pad the logical length to a block.
+[<RequireQualifiedAccess>]
+module BlockLog =
+    let append (io: IBlockIo) (pos: int64) (src: ReadOnlyMemory<byte>) : int64 =
+        if pos < 0L then
+            invalidArg (nameof pos) "pos must be >= 0"
+
+        let bs = io.BlockSize
+        let mutable off = 0
+        let mutable p = pos
+
+        while off < src.Length do
+            let lba = uint64 (p / int64 bs)
+            let within = int (p % int64 bs)
+            let room = bs - within
+            let n = min room (src.Length - off)
+
+            if within = 0 && n = bs then
+                io.Write(lba, src.Slice(off, n)) |> ignore
+            else
+                let buf = Array.zeroCreate bs
+                io.Read(lba, Memory buf) |> ignore
+                src.Span.Slice(off, n).CopyTo(Span(buf, within, n))
+                io.Write(lba, System.ReadOnlyMemory<byte>.op_Implicit buf) |> ignore
+
+            off <- off + n
+            p <- p + int64 n
+
+        p
+
+    let read (io: IBlockIo) (len: int64) : byte[] =
+        if len <= 0L then
+            Array.empty
+        else
+            let dst = Array.zeroCreate (int len)
+            io.Read(0UL, Memory dst) |> ignore
+            dst
 
 
 /// The global file system registry containing the active IFileSystem implementation.
