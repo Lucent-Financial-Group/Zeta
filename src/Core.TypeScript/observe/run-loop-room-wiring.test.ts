@@ -33,7 +33,7 @@ function participantThat(
     choose: async () => {
       if (behaviour === "throws") throw new Error("chooser exploded");
       if (behaviour === "hangs") await new Promise(() => {}); // never resolves
-      return { index, raw: "test", fallback: false };
+      return { index, raw: "test", fallback: false, cause: "none" as const };
     },
   };
 }

@@ -22,15 +22,30 @@
  */
 
 import { observe, buildMenu, actionLabel, type World, type NextAction } from "./observe";
-import { ollamaBackend, chooseIndex } from "../accelerator/local-llm";
+import { ollamaBackend, chooseIndex, type ChooseFallbackCause } from "../accelerator/local-llm";
 import type { ISummon, SummonResult } from "../peer-call/summon";
 
 // ─── The Participant interface ───────────────────────────────────────────────
 
+export type { ChooseFallbackCause };
+
 export interface ChooseResult {
-  readonly index: number;        // which menu item was chosen
-  readonly raw: string;          // the chooser's raw response (for audit)
-  readonly fallback: boolean;    // true = the chooser failed, fell back to oracle
+  readonly index: number; // which menu item was chosen
+  readonly raw: string; // the chooser's raw response (for audit)
+  readonly fallback: boolean; // true = the oracle's pick was used instead
+  /**
+   * WHAT went wrong, as distinct from WHAT WAS DONE ABOUT IT.
+   *
+   * `fallback` and `cause` are deliberately independent here, because participants recover from
+   * the same fault differently: `chooseIndex` answers an out-of-range pick with the ORACLE, while
+   * `testPersonaParticipant` and `humanParticipant` CLAMP into range. A clamp is a recovery and
+   * not an oracle fallback, so collapsing the two would misreport one of them.
+   *
+   * What matters for the promotion gate is the fault, not the recovery: `out-of-range` is a lane
+   * reaching past the menu it was given — an ILLEGAL SELECTION — and it was previously invisible in
+   * both paths. Under the clamp it did not even set `fallback`.
+   */
+  readonly cause: ChooseFallbackCause;
 }
 
 export interface Participant {
@@ -47,7 +62,7 @@ export function oracleParticipant(): Participant {
     name: "oracle",
     choose: async (_world) => {
       // The oracle always picks index 0 (which is observe(world) by construction)
-      return { index: 0, raw: "oracle-default", fallback: false };
+      return { index: 0, raw: "oracle-default", fallback: false, cause: "none" };
     },
   };
 }
@@ -81,10 +96,7 @@ export function localLlmParticipant(opts?: {
 
 // ─── Cloud persona participant (via ISummon) ─────────────────────────────────
 
-export function cloudPersonaParticipant(
-  summoner: ISummon,
-  persona: string,
-): Participant {
+export function cloudPersonaParticipant(summoner: ISummon, persona: string): Participant {
   return {
     kind: "cloud-persona",
     name: `persona:${persona}`,
@@ -104,21 +116,21 @@ export function cloudPersonaParticipant(
       try {
         result = await summoner.summon(persona, prompt, { allowEmpty: true });
       } catch {
-        return { index: 0, raw: "summon-failed", fallback: true };
+        return { index: 0, raw: "summon-failed", fallback: true, cause: "backend-error" };
       }
 
       if (!result.success) {
-        return { index: 0, raw: `summon-error:${result.exitCode}`, fallback: true };
+        return { index: 0, raw: `summon-error:${result.exitCode}`, fallback: true, cause: "backend-error" };
       }
 
       // Parse the response for a number
       const match = result.stdout.match(/\d+/);
-      if (!match) return { index: 0, raw: result.stdout.slice(0, 100), fallback: true };
+      if (!match) return { index: 0, raw: result.stdout.slice(0, 100), fallback: true, cause: "unparseable" };
       const idx = parseInt(match[0]!, 10);
       if (isNaN(idx) || idx < 0 || idx >= menu.length) {
-        return { index: 0, raw: result.stdout.slice(0, 100), fallback: true };
+        return { index: 0, raw: result.stdout.slice(0, 100), fallback: true, cause: "out-of-range" };
       }
-      return { index: idx, raw: result.stdout.slice(0, 100), fallback: false };
+      return { index: idx, raw: result.stdout.slice(0, 100), fallback: false, cause: "none" };
     },
   };
 }
@@ -135,7 +147,11 @@ export function testPersonaParticipant(
     choose: async (world, menu) => {
       const idx = await chooseFn(world, menu);
       const clamped = Math.max(0, Math.min(menu.length - 1, idx));
-      return { index: clamped, raw: `test-${name}`, fallback: false };
+      // The clamp is KEPT (the recovery is unchanged) and the fault is now REPORTED. Before this,
+      // a persona naming slot 999 of 15 produced slot 14 with `fallback: false` — an illegal
+      // selection recorded as a legitimate choice.
+      const cause: ChooseFallbackCause = clamped === idx ? "none" : "out-of-range";
+      return { index: clamped, raw: `test-${name}`, fallback: false, cause };
     },
   };
 }
@@ -159,10 +175,11 @@ export function humanParticipant(
       await notifier.notify(world, menu);
       const response = await notifier.waitForResponse(timeoutMs);
       if (!response) {
-        return { index: 0, raw: "timeout-fallback-to-oracle", fallback: true };
+        return { index: 0, raw: "timeout-fallback-to-oracle", fallback: true, cause: "backend-error" };
       }
       const clamped = Math.max(0, Math.min(menu.length - 1, response.choice));
-      return { index: clamped, raw: `human-${name}`, fallback: false };
+      const cause: ChooseFallbackCause = clamped === response.choice ? "none" : "out-of-range";
+      return { index: clamped, raw: `human-${name}`, fallback: false, cause };
     },
   };
 }
@@ -173,19 +190,75 @@ export function humanParticipant(
  * Like observeWithLlm, but takes any Participant.
  * Falls back to the oracle on any failure (degrade-toward-correct).
  */
-export async function observeWithParticipant(world: World, participant: Participant): Promise<NextAction> {
+/**
+ * One tick's worth of participation, with the facts a caller needs to COUNT it.
+ *
+ * `observeWithParticipant` returned only the `NextAction` and threw the `ChooseResult` away, so
+ * nothing downstream could tell a lane that picked the oracle's action from a lane that named a slot
+ * outside its menu and got substituted. `illegalSelections` — the counter the promotion gate
+ * demotes on — was therefore structurally always zero, and a lane reaching past its menu on every
+ * tick would have soaked its way to primary with a clean record.
+ *
+ * The recovery is unchanged in every case. Only the reporting is new.
+ */
+export interface ParticipantTick {
+  /** What the loop will actually do. */
+  readonly action: NextAction;
+  readonly menuSize: number;
+  /** The index the participant named, or `null` when `choose()` threw. */
+  readonly chosenIndex: number | null;
+  /** The participant named a slot the menu does not have. THE counter. */
+  readonly illegalSelection: boolean;
+  /** The oracle's pick was used instead of the participant's. */
+  readonly fellBackToOracle: boolean;
+  readonly cause: ChooseFallbackCause;
+  /** The action differs in KIND from what the deterministic oracle would have picked. */
+  readonly divergedFromOracle: boolean;
+}
+
+export async function participantTick(world: World, participant: Participant): Promise<ParticipantTick> {
   const menu = buildMenu(world);
+  const oracleAction = observe(world);
+
   let result: ChooseResult;
   try {
     result = await participant.choose(world, menu);
   } catch {
-    // Degrade-toward-correct: a rejected/throwing chooser (human-notifier
-    // rejection, test-persona throw, future I/O failure) must not abort the
-    // observe loop. Fall back to the deterministic oracle pick.
-    return observe(world);
+    // Degrade-toward-correct: a rejected/throwing chooser (human-notifier rejection, test-persona
+    // throw, future I/O failure) must not abort the observe loop. A THROW is not an illegal
+    // selection — nothing was selected — so it is counted as a backend error, not against the lane.
+    return {
+      action: oracleAction,
+      menuSize: menu.length,
+      chosenIndex: null,
+      illegalSelection: false,
+      fellBackToOracle: true,
+      cause: "backend-error",
+      divergedFromOracle: false,
+    };
   }
-  if (result.fallback) return observe(world);
-  return menu[result.index] ?? observe(world);
+
+  // Two ways a slot can be illegal, and the second one is why this is not just `cause`: a
+  // participant that CLAMPS reports `out-of-range` while handing back an in-range index, and one
+  // that does not clamp hands back an index the menu cannot resolve. Both are the same fault.
+  const resolved = menu[result.index];
+  const illegalSelection = result.cause === "out-of-range" || (!result.fallback && resolved === undefined);
+
+  const action = result.fallback ? oracleAction : (resolved ?? oracleAction);
+  return {
+    action,
+    menuSize: menu.length,
+    chosenIndex: result.index,
+    illegalSelection,
+    fellBackToOracle: result.fallback || resolved === undefined,
+    cause: result.cause,
+    divergedFromOracle: action.kind !== oracleAction.kind,
+  };
+}
+
+/** The action alone. Unchanged behaviour — every existing caller keeps working. */
+export async function observeWithParticipant(world: World, participant: Participant): Promise<NextAction> {
+  return (await participantTick(world, participant)).action;
 }
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
@@ -205,7 +278,9 @@ function describeWorldCompact(world: World): string {
   if (world.backlog.length === 0) {
     parts.push("Backlog: empty");
   } else {
-    parts.push(`Backlog: ${world.backlog.map(i => `${i.id}(${i.ready ? "ready" : i.ambiguous ? "ambig" : "blocked"})`).join(", ")}`);
+    parts.push(
+      `Backlog: ${world.backlog.map((i) => `${i.id}(${i.ready ? "ready" : i.ambiguous ? "ambig" : "blocked"})`).join(", ")}`,
+    );
   }
   if (world.mode) parts.push(`Mode: ${world.mode}`);
   return parts.join(" | ");
