@@ -1,0 +1,12 @@
+{
+  "pr_number": 16500,
+  "archive_path": "docs/history/pr-reviews/PR-16500-feat-081m1kg7p68087g0r001mfqxzp-freeze-cas-through-filesystemblockio.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-03T11:48:03.085Z",
+  "schema_version": "v1",
+  "commit_sha": "22522bc259330f49da2ad3cd6129b57d973641f4",
+  "title": "feat(081M1KG7P68087G0R001MFQXZP): freeze CAS through FileSystemBlockIo",
+  "state": "MERGED",
+  "merged_at": "2026-09-03T11:47:25Z",
+  "head_ref": "feat/zetafs-file-block-cas"
+}
