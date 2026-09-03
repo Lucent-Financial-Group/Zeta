@@ -1,0 +1,12 @@
+{
+  "pr_number": 16460,
+  "archive_path": "docs/history/pr-reviews/PR-16460-test-observe-the-loop-s-acting-path-had-never-been-run-outside-production.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-03T08:04:11.942Z",
+  "schema_version": "v1",
+  "commit_sha": "daa3059258553ca3988ac665dc64b2b881e9752c",
+  "title": "test(observe): the loop's acting path had never been run outside production",
+  "state": "MERGED",
+  "merged_at": "2026-09-03T08:03:34Z",
+  "head_ref": "acting-probe"
+}
