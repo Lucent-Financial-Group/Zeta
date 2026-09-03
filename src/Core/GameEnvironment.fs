@@ -322,17 +322,15 @@ module GameEnvironment =
             member _.Step(state, action) =
                 result {
                     do! validateConfiguration ()
-
-                    if String.IsNullOrWhiteSpace state.Guid then
-                        return! Error(InvalidConfiguration "ARC episode id must be non-empty")
+                    let! current = validateObservation state
 
                     let! actionName, point = arcCommand action
 
-                    if state.AvailableInputs |> List.contains actionName |> not then
+                    if current.AvailableInputs |> List.contains actionName |> not then
                         return! Error(UnsupportedAction actionName)
 
                     let! envelope =
-                        port.Step(gameId, state.Guid, actionName, point)
+                        port.Step(gameId, current.Guid, actionName, point)
                         |> Result.mapError AdapterFailure
 
                     let! observation = decodeArcEnvelope gameId envelope
