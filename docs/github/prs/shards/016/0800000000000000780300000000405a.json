@@ -1,0 +1,12 @@
+{
+  "pr_number": 16474,
+  "archive_path": "docs/history/pr-reviews/PR-16474-fix-formal-a-jvm-that-failed-to-start-was-reported-as-toolchain-drift.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-03T09:44:25.183Z",
+  "schema_version": "v1",
+  "commit_sha": "6eb07ad2919c4c0840118047d2f28d8005b2f99c",
+  "title": "fix(formal): a JVM that failed to start was reported as toolchain drift",
+  "state": "MERGED",
+  "merged_at": "2026-09-03T09:43:11Z",
+  "head_ref": "tlc-jvm-diagnosis"
+}
