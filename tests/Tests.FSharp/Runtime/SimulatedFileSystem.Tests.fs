@@ -338,3 +338,38 @@ let ``SimulatedBlockIo crash-mid-write commits a prefix then throws`` () =
     let got = Array.zeroCreate<byte> 16
     Assert.Equal(16, io.Read(1UL, System.Memory<byte>.op_Implicit got))
     Assert.Equal<byte>(whole, got)
+
+[<Fact>]
+let ``SimulatedBlockIo corrupt-last-write flips a suffix and still acks`` () =
+    let device = SimulatedBlockIo(4096)
+    let io = device :> IBlockIo
+    device.ArmCorruptLastWrite(8)
+    let payload = Array.init 100 (fun i -> byte i)
+    Assert.Equal(100, io.Write(0UL, System.ReadOnlyMemory<byte>.op_Implicit payload))
+    let got = Array.zeroCreate<byte> 100
+    Assert.Equal(100, io.Read(0UL, System.Memory<byte>.op_Implicit got))
+    Assert.Equal(payload.[0], got.[0])
+    Assert.Equal(payload.[91], got.[91])
+    Assert.Equal(payload.[92] ^^^ 0xA5uy, got.[92])
+    Assert.Equal(payload.[99] ^^^ 0xA5uy, got.[99])
+
+[<Fact>]
+let ``SimulatedBlockIo reorder holds the first write until the second commits`` () =
+    let device = SimulatedBlockIo(4096)
+    let io = device :> IBlockIo
+    device.ArmReorderNextTwo()
+    let a = [| 1uy; 2uy |]
+    let b = [| 3uy; 4uy |]
+    Assert.Equal(2, io.Write(0UL, System.ReadOnlyMemory<byte>.op_Implicit a))
+    let unseen = Array.zeroCreate<byte> 2
+    Assert.Equal(2, io.Read(0UL, System.Memory<byte>.op_Implicit unseen))
+    Assert.Equal(0uy, unseen.[0])
+    Assert.Equal(0uy, unseen.[1])
+    Assert.Equal(2, io.Write(1UL, System.ReadOnlyMemory<byte>.op_Implicit b))
+    let gotA = Array.zeroCreate<byte> 2
+    let gotB = Array.zeroCreate<byte> 2
+    Assert.Equal(2, io.Read(0UL, System.Memory<byte>.op_Implicit gotA))
+    Assert.Equal(2, io.Read(1UL, System.Memory<byte>.op_Implicit gotB))
+    Assert.Equal<byte>(a, gotA)
+    Assert.Equal<byte>(b, gotB)
+    Assert.Equal<uint64>([| 1UL; 0UL |], device.CommitOrder)
