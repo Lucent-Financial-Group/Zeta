@@ -12,7 +12,7 @@ We just landed the hard `FerryThrottler` TypeScript port (PR #7861, merged) and 
 `PriorityFerryThrottler` — a composition layer that manages N lane queues with a shared ferry
 pool and a drain scheduler (strict priority or Deficit Round Robin). Design doc at:
 
-`.kiro/specs/ferry-throttler-priority-lanes/design.md`
+`docs/design/2026-06-11-ferry-throttler-priority-lanes/design.md`
 
 The existing `SoftThrottle.fs` already provides the soft half for the single-lane throttler:
 
@@ -116,5 +116,5 @@ and drain counts to compute per-lane pressure and coupled-tank interactions.
 - `src/Core/SoftEmu.fs` — soft emulator (ensemble modeling pattern)
 - `src/Core/FerryThrottler.fs` — hard ferry throttler (F#)
 - `src/Core.TypeScript/ferry-throttler/ferry-throttler.ts` — hard ferry throttler (TS port)
-- `.kiro/specs/ferry-throttler-priority-lanes/design.md` — priority lanes design
-- `.kiro/specs/ferry-throttler-priority-lanes/requirements.md` — priority lanes requirements
+- `docs/design/2026-06-11-ferry-throttler-priority-lanes/design.md` — priority lanes design
+- `docs/design/2026-06-11-ferry-throttler-priority-lanes/requirements.md` — priority lanes requirements
