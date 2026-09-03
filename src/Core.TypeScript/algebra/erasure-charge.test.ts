@@ -164,3 +164,60 @@ describe("postToTracker — the wire from the classification to the two-ledger m
     expect(auditEntropyLedger(t).unmeasuredReasons[0]).toContain("malformed declaration");
   });
 });
+
+// ═══════════════════════════════════════════════════════════════════════════
+// ORDER INDEPENDENCE — the property the ErasureCharge treaty forced.
+//
+// `settle` returned its holes in the JS `Map`'s INSERTION order and `settleAll` returned its
+// observations the same way, so both depended on the order postings happened to arrive. F#'s
+// `Ledger.Holes` is `Map.toList` over an ordered map and `Account.Observations` sorts with
+// `String.CompareOrdinal` — explicitly, with a comment saying never a culture collation.
+//
+// This is not cosmetic. `renderReading` prints the hole keys, so the same account rendered
+// differently in the two runtimes; and under §7 DST a reading whose rendering depends on arrival
+// order is not replayable in the observable sense.
+//
+// Asserted here as well as in the treaty because a transcript can be regenerated and a named
+// property cannot be regenerated away.
+// ═══════════════════════════════════════════════════════════════════════════
+
+describe("order independence", () => {
+  const hole = (representation: string, observation: string, reason: string): ErasureProfile => ({
+    representation,
+    operation: "op",
+    observation,
+    recoveryChannel: "unknown",
+    classification: "unmeasured",
+    evidence: { kind: "no-admissible-measurement", reason },
+  });
+
+  // Ordinally "Aaa…" < "Zzz…", so posting Zzz first is the discriminating order.
+  const first = hole("Zzz", "zzz-observation", "not enumerable");
+  const second = hole("Aaa", "aaa-observation", "not enumerable either");
+
+  test("hole order does not depend on which posting arrived first", () => {
+    const forward = settle([first, second]).holes.map((h) => h.key);
+    const reverse = settle([second, first]).holes.map((h) => h.key);
+
+    expect(forward).toEqual(reverse);
+    // …and it is ORDINAL, which is the order F# produces — not merely stable.
+    expect(forward).toEqual(["Aaa::op::aaa-observation", "Zzz::op::zzz-observation"]);
+  });
+
+  test("observation order does not depend on which posting arrived first", () => {
+    const forward = [...settleAll([first, second]).keys()];
+    const reverse = [...settleAll([second, first]).keys()];
+
+    expect(forward).toEqual(reverse);
+    expect(forward).toEqual(["aaa-observation", "zzz-observation"]);
+  });
+
+  test("ordinal, not linguistic: case-mixed keys sort by code point", () => {
+    // The distinction nothing else in this file exercises. Ordinally "B" precedes "a"; every
+    // common linguistic collation puts "a" first. A `localeCompare` here would pass every other
+    // assertion in this describe block and still diverge from F#.
+    const keys = settle([hole("a", "o", "r"), hole("B", "o", "r"), hole("A", "o", "r")]).holes.map((h) => h.key);
+
+    expect(keys).toEqual(["A::op::o", "B::op::o", "a::op::o"]);
+  });
+});

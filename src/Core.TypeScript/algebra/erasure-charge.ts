@@ -44,12 +44,7 @@
  * Goguen-Meseguer 1982 (noninterference — the charge crosses a declared, metered door).
  */
 
-import {
-  bitsErasedPpm,
-  largestFibre,
-  profileKey,
-  type ErasureProfile,
-} from "./erasure-class.ts";
+import { bitsErasedPpm, largestFibre, profileKey, type ErasureProfile } from "./erasure-class.ts";
 import type { EntropyTracker } from "./entropy-tracker.ts";
 
 /** What a ledger does with one declared profile. Four cases, and only the first is free. */
@@ -153,7 +148,12 @@ export function settle(postings: readonly ErasureProfile[]): Reading {
   return {
     bitsPpm,
     complete: holes.size === 0,
-    holes: [...holes].map(([key, why]) => ({ key, why })),
+    // ORDINALLY SORTED BY KEY, matching F#'s `Ledger.Holes` (`Map.toList` over an ordered map).
+    // This used to return the JS `Map`'s INSERTION order, so the same account rendered differently
+    // depending on the order postings happened to arrive — and `renderReading` prints these keys, so
+    // the difference was user-visible. Under §7 DST a reading whose rendering depends on arrival
+    // order is not replayable in the observable sense. Found by the ErasureCharge treaty.
+    holes: [...holes].sort(([a], [b]) => (a < b ? -1 : a > b ? 1 : 0)).map(([key, why]) => ({ key, why })),
     chargedPostings,
     freePostings,
     holePostings,
@@ -171,8 +171,14 @@ export function settleAll(postings: readonly ErasureProfile[]): ReadonlyMap<stri
     if (bucket === undefined) byObservation.set(p.observation, [p]);
     else bucket.push(p);
   }
+  // Inserted in ORDINAL observation order, so iteration does not depend on which observation was
+  // posted first. F#'s `Account.Observations` sorts with `String.CompareOrdinal` and says so
+  // explicitly; this had been returning insertion order. Same defect as the hole ordering above,
+  // one level up, and found the same way.
   const out = new Map<string, Reading>();
-  for (const [observation, ps] of byObservation) out.set(observation, settle(ps));
+  for (const observation of [...byObservation.keys()].sort((a, b) => (a < b ? -1 : a > b ? 1 : 0))) {
+    out.set(observation, settle(byObservation.get(observation) ?? []));
+  }
   return out;
 }
 
