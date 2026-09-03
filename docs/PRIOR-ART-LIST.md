@@ -2516,14 +2516,17 @@ status per row: **page** = theorem read from the full text; **abstract** = abstr
 - **Bin Li, Qinliang Su & Yik-Chung Wu — "Fixed points of Gaussian belief propagation and
   relation to convergence" (IEEE TSP 67(23), 2019)** — explicit error expression for the
   BP variance and a distributed correction whose residual vanishes once the remaining
-  graph is loop-free: the distributed form of pseudo-FVS. (abstract)
+  graph is loop-free: the distributed form of pseudo-FVS. **(UNPROVEN — not locatable on
+  arXiv; description from a second-hand abstract summary; check against the paper before
+  relying on it.)**
 - **Joseph Ortiz, Talfan Evans & Andrew J. Davison — "A visual introduction to Gaussian
   belief propagation" (arXiv:2107.02308, 2021)**; **"Learning in deep factor graphs with
   Gaussian belief propagation" (arXiv:2311.14649, 2023)**; **"Belief propagation converges
   to Gaussian distributions in sparsely-connected factor graphs" (arXiv:2601.21935,
-  2026)** — the frontier: the accessible restatement, the learned/amortised branch
-  (rejected for Zeta because its output depends on a training set, not on the evidence
-  set), and the 2026 result that variable beliefs become Gaussian in sparse loopy factor
+  2026)** — the frontier: the accessible restatement; the learning branch (2311.14649
+  casts _training and prediction_ as GBP inference in a deep Gaussian factor graph — it
+  is not a learned correction to BP variances; rejected for Zeta because a trained
+  model's output depends on a training set, not on the evidence set); and the 2026 result that variable beliefs become Gaussian in sparse loopy factor
   graphs — relevant to the non-Gaussian lane, since it argues the Gaussian family is an
   attractor rather than an assumption. (abstract)
 

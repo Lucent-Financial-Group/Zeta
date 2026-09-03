@@ -22,8 +22,9 @@ correction — the covariance the loopy run drops is the sum over the walks that
 leave a spanning tree, and conditioning on a **feedback vertex set** (FVS) of
 size `k` recovers it with `k + 1` runs of the tree solver we already have plus a
 `k × k` dense solve (Liu, Chandrasekaran, Anandkumar and Willsky 2012, Theorem 1;
-§4.2 checks the entailment). Cost `O(k² n)`. For every graph the test suite
-actually exercises, `k ≤ 2` (§5). The method is a pure function of the evidence
+§4.2 checks the entailment). The paper's cost is `O(k² n)` with a two-pass tree
+solver; with the solver this repo actually has it is `O(k·d·m + k² n)` (§8). For
+every graph the test suite actually exercises, `k ≤ 2` (§5). The method is a pure function of the evidence
 **set** and the declared graph, so it satisfies the order-independence invariant
 (§7) by construction — provided the evidence fold is canonicalised, which today
 it is not (§7.2 is a real finding).
@@ -89,12 +90,12 @@ Anchor discipline (`.claude/rules/anchor-to-human-prior-art.md`): an anchor must
 | 4 | **Walk-sums** (analysis, not an algorithm) | Malioutov, Johnson, Willsky JMLR 2006 | *explains* the gap: Lemma 19 — the LBP variance is the sum over **backtracking** self-return walks only; the true variance sums all self-return walks (Prop 5) | — | Prop 21: walk-summable (`ρ(|R|) < 1`) ⇒ LBP well-posed, means exact, variances converge to the backtracking walk-sum; Prop 25: `ρ∞ < 1` characterises variance convergence | — | page |
 | 5 | **Path-sums** | Giscard, Choo, Thwaite, Jaksch JMLR 2016 | exact covariance as a finite branched continued fraction | not better than `O(n³)` in general; exploits sparsity | exact for **every positive-definite `J`**, walk-summable or not | yes | page |
 | 6 | **Linear response** | Welling & Teh, Neural Computation 2004, §7 | exact covariance of a Gaussian MRF by propagating a first-order perturbation | "translates into a perhaps unexpected algorithm to invert the matrix"; iterative, `O(n·m)`-class per iteration | requires BP to converge to a stable fixed point | yes | page |
-| 7 | **Distributed variance correction** | Li, Su, Wu, IEEE TSP 67(23) 2019 | explicit error expression for the BP variance; distributed message-passing correction; residual bound decreases with the selected node set and **vanishes when the remaining graph is loop-free** | distributed; grows with selected set | this is the distributed form of pseudo-FVS (#1) | yes | abstract |
+| 7 | **Distributed variance correction** | Li, Su, Wu, IEEE TSP 67(23) 2019 | explicit error expression for the BP variance; distributed message-passing correction; residual bound decreases with the selected node set and **vanishes when the remaining graph is loop-free** | distributed; grows with selected set | this is the distributed form of pseudo-FVS (#1) | yes | **UNPROVEN** — not locatable on arXiv; only a second-hand abstract summary was read |
 | 8 | **Generalized BP / Kikuchi** | Yedidia, Freeman, Weiss NIPS 2000; Cseke & Heskes JAIR 2011 (Gaussian) | larger regions absorb short loops; exact only when the region graph is a junction tree | grows with region size | Gaussian Bethe: stable fixed points are local minima of the Bethe free energy; pairwise-normalisability ⇒ bounded; **no exactness certificate** for variances in general | yes | abstract |
 | 9 | **Expectation propagation** | Minka 2001 | with a fully-factorised Gaussian family on a Gaussian model EP **is** loopy BP — same fixed points, same wrong variances; with a joint-Gaussian family it is the dense solve | — | inherits #4/#2 | yes | repo (Minka is the standing EP anchor of `Message.fs`) |
 | 10 | **Tree-reweighted BP** | Wainwright, Jaakkola, Willsky 2005 | convexified Bethe; bounds, not exactness | — | variances not exact; no certificate | yes | abstract |
 | 11 | **Junction tree** | Lauritzen & Spiegelhalter 1988 | exact | Gaussian: `O(n · w³)`, `w` = treewidth | exact | yes | abstract |
-| 12 | **Neural / amortised BP** | Davison lab, arXiv 2311.14649 (2023); "BP converges to Gaussian in sparse factor graphs", arXiv 2601.21935 (2026) | learned corrections / justification of the Gaussian family | training + inference | no exactness; **output depends on a training set** | **no** — rejected on the invariant | abstract |
+| 12 | **Learning in Gaussian factor graphs / amortised BP** | arXiv 2311.14649 (2023): training and prediction both phrased as GBP inference in a deep Gaussian factor graph — **not** a learned correction to BP variances; "BP converges to Gaussian in sparse factor graphs", arXiv 2601.21935 (2026) | a learning framework, and a justification of the Gaussian family | training + inference | no exactness certificate; a trained model's **output depends on the training set** | **no** — rejected on the invariant | abstract |
 
 Two frontier results worth keeping without adopting: 2601.21935 (2026) proves
 variable beliefs become Gaussian in sparse loopy factor graphs after a few
@@ -188,8 +189,12 @@ is never materialised — the tree solver *is* `J_T⁻¹`).
    an `F` variable, fold the assigned value into a constant **offset** (an `F`
    parent `p` at value `c_p` turns `x_i = Σ parents + w` into
    `x_i − c_p = Σ other parents + w`; an `F` child at value `c_i` turns it into
-   `N(Σ parents ; c_i, v)`). `sumLinkFactor` gains one `offset : float`
-   parameter; nothing else in `FactorGraph` changes.
+   `N(Σ parents ; c_i, v)`). Two factor shapes are needed, not one: the
+   parent-in-`F` case is `sumLinkFactor` with an added `offset : float`; the
+   **child-in-`F`** case has `Neighbors = remaining parents` only and emits no
+   child message, so it is a second factor (`sumConstraintFactor`) rather than a
+   parameter. The second shape occurs in F3's own catalog (every-other depth 8,
+   `F = {1, 3, 5}`, child 3 ∈ F). Nothing in `FactorGraph` itself changes.
 2. **Refuse if still loopy.** `isAcyclicFactorGraph` on the conditioned graph
    must return `true`, else fail closed with the residual named. This is the
    guard that makes a wrong `F` a refusal rather than a silently-wrong variance.
@@ -226,8 +231,12 @@ The FVS is part of the *query*, so its choice must be a pure function of the
 declared topology (never of arrival, never of the realised floats):
 
 - `n ≤ 20`: exact minimum FVS by exhaustive subset search in increasing size,
-  ties broken by lexicographically smallest index set. Deterministic, and at our
-  `n` the search is a few thousand union-finds.
+  ties broken by lexicographically smallest index set. Deterministic. Cost is
+  `Σ_{i≤k} C(n, i)` union-finds, which is small when `k` is small (`k = 2` on
+  MLBNN-42: 11 subsets) but reaches `≈ 6 × 10⁵` at `n = 20, k ≈ 10` — and
+  dense-residual graphs have `k = n − 2`. So the exhaustive path is bounded by
+  the same `feedbackBudget` below: search stops at `i = feedbackBudget` and
+  refuses, which caps it at `Σ_{i≤8} C(20, i) ≈ 2.6 × 10⁵` in the worst case.
 - `n > 20`: greedy by Liu et al. Fig. 5 — score `s(i) = Σ_{j∈N(i)} |J_ij|`,
   pick the max, ties to the lowest index, repeat until acyclic — but with the
   score taken from the **declared** coupling precisions `1/v`, not from a
@@ -261,7 +270,10 @@ path, which is **not** removed — MLBNN-42 stays as-is (§6, F2).
 
 The result record is the existing `FactorGraphUpdate`. `Rounds` reports the
 *sum* of the `k + 1` tree runs' rounds; `Converged` is the conjunction of their
-receipts (each must be `true` on a tree; a `false` is a bug and must surface).
+receipts. A `false` on a tree is **legitimate** when `maxRounds < diameter + 1`
+(synchronous flooding needs that many rounds), so it is a **refusal** — a
+teaching error naming the run, its rounds and the cap — never an assertion and
+never a silently-labelled `Unsettled*` iterate.
 
 ## 5. FVS / treewidth arithmetic for our real graphs
 
@@ -295,11 +307,23 @@ Reading the table honestly:
 Walk-summability of the MLBNN-42 model (`toy`, `scratchpad/ws.py`): normalising
 `J` to unit diagonal, `ρ(|R|) ≈ 0.649 < 1`, so the model is walk-summable and
 Malioutov et al. Prop 21 *predicts* the loopy convergence MLBNN-33 observes (1000
-rounds budget, converged). The greedy Fig. 5 score on the declared couplings is
-`s = (2, 2, 1, 3)`, picking layer 3 first — which does **not** break all factor-graph
-cycles alone (needs a second node), so the greedy path lands on `k = 2` as the
-exhaustive one does. Both facts belong in phase 2's classifier test (F8), not in
-phase 1.
+rounds budget, converged).
+
+Greedy selection, computed three ways (`toy`, `scratchpad/ws.py`), because the
+first draft of this note scored the *realised, unnormalised* `J` — which includes
+the cancellation zeros §4.1 says are never exploited — and the review caught it:
+
+| scoring | `s(0), s(1), s(2), s(3)` | first pick | `k` reached |
+|---|---|---|---|
+| realised unnormalised `Σ_j |J_ij|` (first draft — wrong per §4.1) | `2, 2, 1, 3` | layer 3 | 2 |
+| Liu et al. Fig. 5 as written: unit-diagonal normalisation, `Σ_j |R_ij|` | `0.427, 0.530, 0.408, 1.012` | layer 3 | 2 |
+| §4.3's declared-topology score (`1/v` per clique co-member, no cancellation) | `6, 6, 5, 3` | layer 0 (tie with 1, lowest index) | 2 |
+
+The conclusion `k = 2` survives all three, but the *first pick* does not: the
+paper's scoring and the spec's own scoring disagree on which node leads. That is
+fine for phase 1 (exhaustive search decides for `n ≤ 20`) and is exactly what F8
+must pin for phase 2: the implementation follows §4.3 (declared topology),
+records which node it picked, and the test asserts `k = 2`, not the pick.
 
 ## 6. Falsifiers — a test that fails without the claim, and the mutation that breaks it
 
@@ -315,7 +339,7 @@ the existing `bits` helper.
 | **F2** | the plain BP path is unchanged and still wrong | `MLBNN-42` stays verbatim (`variance L¹ > 1e-6`, `ConvergedLoopyMeansOnly`); a twin `MLBNN-50` asserts the FMP path on the *same* `receipt.Network` has variance L¹ `< 1e-9` | route `tryInferViaFactorGraph` through FMP → MLBNN-42 fails (the wrong path must stay observable) |
 | **F3** | FMP agrees with the dense query | `MLBNN-51`: declared catalog (rows of §5 that exist in the suite + every-other depth 8 + dense-residual depth 6): FMP vs `tryQueryExactDenseGaussian` within `1e-10` per layer, and FMP vs `exactDagMarginals` within `1e-9` | flip the sign of `J_FT` in step 4 → disagreement on every loopy row; #16482's existing coupling-sign mutant is reused. Note FMP and the dense query **share** `compileJointPrecision`, so the independence in this row comes from `exactDagMarginals` and the Python oracle, not from the dense query |
 | **F4** | trees reduce to plain BP bit-for-bit | `MLBNN-52`: on every acyclic row, `k = 0`, and FMP marginals are **bit-identical** to `tryMarginalsViaFactorGraph` (same graph, same solver, one run) | add a spurious correction pass when `k = 0` → bits move |
-| **F5** | **order independence** (the invariant) | `MLBNN-53`: a declared evidence set of six distinct observations `{−1.0, 2.0, 3.0, 0.5, −2.25, 1.75}`; for each of a declared list of permutations *and* the full 720 if cheap, build the network through the **canonical fold** (§7.2) and query FMP: all marginals bit-identical. **Negative control in the same test:** fold the same set in raw arrival order for the 720 permutations and assert that at least one pair differs in `bits Layers.[0].Posterior.PrecisionMean` — if none does, the control is vacuous on these values and the test must fail loudly so the values are changed | replace the canonical sort by arrival order → the bit-identity assertion fails on the permutation the control found |
+| **F5** | **order independence** (the invariant) | `MLBNN-53`: a declared evidence set of five **non-dyadic** observations `{0.1, 0.2, 0.3, 0.4, 0.5}` at observation variance `1`; for all 120 permutations, build the network through the **canonical fold** (§7.2) and query FMP: all marginals bit-identical. **Negative control in the same test:** fold the same set in raw arrival order and assert that at least two permutations differ in `bits Layers.[0].Posterior.PrecisionMean` — if none does, the control is vacuous on these values and the test must fail loudly. **Why these values:** the first draft used `{−1.0, 2.0, 3.0, 0.5, −2.25, 1.75}`, which are dyadic with ≤ 2 fractional bits, so every partial sum is exact and all 720 permutations give **one** bit pattern — the control was vacuous and the test would have been red on first run (caught in review; reproduced: 1 pattern). `{0.1, …, 0.5}` gives **3** distinct patterns over 120 permutations (reproduced). The `Precision` clause of §7.2 is demonstrated separately: unit observations at variances `[0.3, 0.7, 1.1, 2.9]` give **1** pattern over 24 permutations (not a control), while `[0.3, 0.7, 1.1, 2.9, 1.3]` gives **3** over 120, so the test uses the five-variance set for that half | replace the canonical sort by arrival order → the bit-identity assertion fails on the permutation the control found |
 | **F6** | purity / idempotency | `MLBNN-54` (MLBNN-35 pattern): two FMP calls on the same network are bit-identical and `toJsonString` of the network is unchanged | scribble on `net.UpwardMessages` inside the conditioned builder → fails |
 | **F7** | budget refuses loudly | `MLBNN-55`: dense-residual depth 6 with `feedbackBudget = 3` (its `k = 4`) → `Error` naming `k = 4` and the budget; network unchanged | silently fall back to BP and label `ConvergedLoopyMeansOnly` → the test expects `Error` |
 | **F8** (phase 2) | walk-summability classifier | `ρ(|R|)` by power iteration on the normalised declared `J`; MLBNN-42 model within `1e-6` of `0.649`; a declared non-walk-summable model (to be constructed; none found in the current catalog) refuses pseudo-FVS mode | return `0.0` unconditionally → the non-WS row is mislabelled |
@@ -350,9 +374,13 @@ input does**.
 natural-parameter addition, once per observation in **arrival order**. Floating-point
 addition is commutative but not associative, so for three or more distinct
 observations the resulting `PrecisionMean` (and, with unequal observation
-variances, `Precision`) can differ in the last ulp between two arrival orders.
-MLBNN-42's observations are four copies of `5.0`, which is why nothing has noticed:
-identical terms sum identically in any order. The order-independence tests in
+variances, `Precision`) can differ in the last ulp between two arrival orders —
+**when the values are not exactly representable**: `{0.1, …, 0.5}` yields 3
+distinct `PrecisionMean` bit patterns over 120 orders, and five unequal variances
+yield 3 distinct `Precision` patterns, whereas dyadic values with few fractional
+bits sum exactly in every order (F5 records both, and the review that caught the
+dyadic draft). MLBNN-42's observations are four copies of `5.0`, which is why
+nothing has noticed: identical terms sum identically in any order. The order-independence tests in
 the suite (MLBNN-41's replay, MLBNN-47's bit-stable replay) test **replay of one
 order**, not **permutation of the set** — which is the rule's own warning about a
 check that did not run.
@@ -383,16 +411,26 @@ proves the raw fold is bit-sensitive on the chosen values.
 
 ## 8. Cost
 
-| mode | tree-BP runs | dense solve | correction | total | when |
+Let `m` be the number of factor-graph edges and `d` the diameter of the
+conditioned tree. **The paper's `O(k² n)` assumes a two-pass `O(n)` tree solver.
+This repo's `runToFixpoint` is synchronous flooding**: `≤ d + 1` rounds, each
+`O(m)`, so one tree run costs `O(d · m)` — `O(n²)` on a chain-shaped tree — and
+the first draft of this note wrote "`≤ diameter + 1` rounds" in one column and
+`O(k² n)` in the next, which do not add up. Corrected:
+
+| mode | tree-BP runs | dense solve | correction | total (this solver) | when |
 |---|---|---|---|---|---|
 | plain BP (today) | 1 loopy run to fixpoint (`≤ maxRounds`) | — | — | `O(rounds · m)` | means-only |
-| **FMP exact** | `k + 1`, each `≤ diameter + 1` rounds on a tree | `k × k` | `O(k² n)` | **`O(k² n)`** | `k ≤ feedbackBudget` |
+| **FMP exact** | `k + 1`, each `≤ d + 1` synchronous rounds of `O(m)` | `k × k`, `O(k³)` | `O(k² n)` | **`O(k · d · m + k² n)`** | `k ≤ feedbackBudget` |
+| FMP exact, leaf-to-root schedule (not implemented) | `k + 1` two-pass runs, `O(m)` each | `O(k³)` | `O(k² n)` | `O(k² n)` — the paper's bound, **only under that schedule** | same |
 | dense (#16482) | — | `n × n` | — | `O(n³)` | `n ≤ 64` |
-| pseudo-FVS (phase 2) | `k̃ + 1` loopy runs on the residual | `k̃ × k̃` | `O(k̃² n)` | + convergence receipt | `k > budget`, walk-summable residual |
+| pseudo-FVS (phase 2) | `k̃ + 1` loopy runs on the residual | `k̃ × k̃` | `O(k̃² n)` | `O(k̃ · rounds · m + k̃² n)` + convergence receipt | `k > budget`, walk-summable residual |
 
-At MLBNN-42's size all three exact-capable modes are sub-microsecond; the crossover
-where FMP beats dense is `k ≪ n`, which holds for sparse-skip stacks and fails
-for band-shaped ones (§5). Memory is `O(k n)` for the gains. Everything is
+At MLBNN-42's size (`n = 4, m = 9, d ≤ 3`) every exact-capable mode is
+sub-microsecond; the crossover where FMP beats dense is `k · d · m ≪ n³`, which
+holds for sparse-skip stacks and fails for band-shaped ones (§5). A leaf-to-root
+schedule on `FactorGraph` would recover the paper's bound and is a separate,
+optional change. Memory is `O(k n)` for the gains. Everything is
 `Result`-typed; the only exceptions are the existing `invalidArg` constructors.
 
 ## 9. Coordination with Lumen (cite, do not duplicate)
@@ -424,12 +462,14 @@ writing, so this spec cites the artifacts that do:
 
 Hand-off sentence for the implementation PR: *implement phase 1 (§4, F1–F7) as a
 fourth query path beside the three existing ones; do not modify the BP path; the
-`sumLinkFactor` offset is the only change to a shared primitive.*
+`sumLinkFactor` offset and the new `sumConstraintFactor` (§4.2 step 1) are the
+only changes to shared primitives.*
 
 ## 10. Register — what is claimed, what is `toy`, what is not claimed
 
 - **Claimed (checked):** Theorem 1 of Liu et al. 2012 entails exact means and
-  variances for FVS conditioning at `O(k² n)`; Lemma 19 / Prop 21 of Malioutov et
+  variances for FVS conditioning, at `O(k² n)` under the paper's two-pass tree
+  solver (`O(k·d·m + k² n)` under ours, §8); Lemma 19 / Prop 21 of Malioutov et
   al. 2006 entail the mechanism of the gap and the convergence precondition; the
   block-inverse identity in §4.2 is elementary algebra.
 - **`toy` (computed here, unmeasured in the suite):** every number in §1's exact
@@ -483,13 +523,17 @@ Modern (page-checked unless marked):
 - Giscard, P.-L., Choo, Z., Thwaite, S. J. & Jaksch, D. (2016). *Exact inference
   on Gaussian graphical models of arbitrary topology using path-sums.* JMLR 17.
 - Li, B., Su, Q. & Wu, Y.-C. (2019). *Fixed points of Gaussian belief propagation
-  and relation to convergence.* IEEE TSP 67(23). (abstract)
+  and relation to convergence.* IEEE TSP 67(23). **(UNPROVEN — not locatable on
+  arXiv; the description in §2 row 7 comes from a second-hand abstract summary and
+  must be checked against the paper before it is relied on.)**
 
 Frontier (abstract-checked):
 
 - Ortiz, J., Evans, T. & Davison, A. J. (2021). *A visual introduction to Gaussian
   belief propagation.* arXiv:2107.02308.
-- *Learning in deep factor graphs with Gaussian belief propagation.* arXiv:2311.14649 (2023).
+- *Learning in deep factor graphs with Gaussian belief propagation.* arXiv:2311.14649
+  (2023) — training and prediction both cast as GBP inference; not a variance
+  correction.
 - *Belief propagation converges to Gaussian distributions in sparsely-connected
   factor graphs.* arXiv:2601.21935 (2026).
 
