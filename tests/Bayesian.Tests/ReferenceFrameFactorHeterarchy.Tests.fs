@@ -36,6 +36,9 @@ module ReferenceFrameFactorHeterarchyTests =
 
     let private empty () = Rffh.tryCreate [ "cup"; "bowl" ] |> unwrap
 
+    let private emptyWithFactorIdBitWidth bitWidth =
+        Rffh.tryCreateWithFactorIdBitWidth bitWidth [ "cup"; "bowl" ] |> unwrap
+
     let private add observation state = Rffh.applyMessage observation state |> unwrap
 
     let private close tolerance expected actual =
@@ -444,6 +447,56 @@ module ReferenceFrameFactorHeterarchyTests =
             close 1e-12 (1.0 / 3.0) meanX
             close 1e-12 (1.0 / 3.0) varianceX
             Assert.Equal<Map<string, int * int>>(baselineFactorIds, factorIds)
+
+    [<Fact>]
+    let ``RFFH-20b: domain-separated factor IDs retain 31 bits per signed namespace`` () =
+        let observation =
+            message "factor-domain" "column-a" (Map.ofList [ "cup", log 3.0 ])
+                (gaussian (vector 0.0 0.0 0.0) (diagonal 1.0 1.0 1.0)) Rffh.identityPose
+        let receipt, _ = add observation (empty ())
+        let objectFactorId = receipt.ObjectFactorId |> Option.get
+        let positionFactorId = receipt.PositionFactorId |> Option.get
+        Assert.True(objectFactorId >= 0, sprintf "object factor was not nonnegative: %d" objectFactorId)
+        Assert.True(positionFactorId < 0, sprintf "position factor was not negative: %d" positionFactorId)
+        Assert.NotEqual(objectFactorId, positionFactorId)
+
+    [<Fact>]
+    let ``RFFH-20c: a real small-domain collision refuses both factor insertion and posterior mutation`` () =
+        let position = gaussian (vector 1.0 2.0 3.0) (diagonal 2.0 3.0 4.0)
+        let first = message "collision-source" "column-a" (Map.ofList [ "cup", log 5.0 ]) position Rffh.identityPose
+        let firstReceipt, once = add first (emptyWithFactorIdBitWidth 8)
+        let originalIds = firstReceipt.ObjectFactorId, firstReceipt.PositionFactorId
+        let beforeObjects = Rffh.objectPosterior once
+        let beforePosition = Rffh.positionPosterior once
+        let collision =
+            seq { 0 .. 4095 }
+            |> Seq.map (fun index ->
+                message (sprintf "collision-candidate-%d" index) "column-b" (Map.ofList [ "bowl", log 7.0 ]) position Rffh.identityPose)
+            |> Seq.pick (fun candidate ->
+                match Rffh.applyMessage candidate once with
+                | Error error when error.Code = "RFFH-FACTOR-ID-COLLISION" -> Some(candidate, error)
+                | _ -> None)
+        let candidate, error = collision
+        Assert.Contains(candidate.EvidenceId, error.Observed)
+        Assert.Contains(first.EvidenceId, error.Observed)
+        Assert.Equal(1, Rffh.acceptedEvidenceCount once)
+        Assert.Equal<Map<string, float>>(beforeObjects, Rffh.objectPosterior once)
+        Assert.Equal<Rffh.Gaussian3 option>(beforePosition, Rffh.positionPosterior once)
+        let replayReceipt, replay = add first once
+        Assert.Equal<Rffh.EvidenceDisposition>(Rffh.DuplicateIgnored, replayReceipt.Disposition)
+        Assert.Equal(originalIds, (firstReceipt.ObjectFactorId, firstReceipt.PositionFactorId))
+        Assert.Equal(None, replayReceipt.ObjectFactorId)
+        Assert.Equal(None, replayReceipt.PositionFactorId)
+        Assert.Equal(1, Rffh.acceptedEvidenceCount replay)
+
+    [<Fact>]
+    let ``RFFH-20d: invalid retained factor-ID widths fail closed`` () =
+        for width in [ 0; -1; 32 ] do
+            match Rffh.tryCreateWithFactorIdBitWidth width [ "cup" ] with
+            | Error error ->
+                Assert.Equal("RFFH-INVALID-FACTOR-ID-WIDTH", error.Code)
+                Assert.Contains("1 through 31", error.SafeNextStep)
+            | Ok _ -> failwithf "accepted invalid factor-id width %d" width
 
     [<Fact>]
     let ``RFFH-21: a real equality edge changes a remote marginal after propagation`` () =

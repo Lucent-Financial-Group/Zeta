@@ -40,9 +40,13 @@
     "language": "Python",
     "method": "separately authored pure-Python joint-precision inversion",
     "comparisonTolerance": 1e-10,
-    "witnessGroups": 14,
+    "crossOracleComparisons": 9,
+    "productionReceiptControls": 12,
+    "mutationControls": 3,
     "failures": 0,
-    "couplingSignMutantDisagreements": 4
+    "couplingSignMutantDisagreements": { "means": 4, "variances": 0 },
+    "channelVarianceMutantDisagreements": { "means": 4, "variances": 4 },
+    "observationDoubleCountMutantDisagreements": { "means": 4, "variances": 4 }
   },
   "verdict": "online-per-edge-update-supported-with-explicit-tree-and-loopy-boundaries"
 }

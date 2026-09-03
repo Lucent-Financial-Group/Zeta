@@ -102,6 +102,7 @@ module ReferenceFrameFactorHeterarchy =
         private
             { Candidates: Set<string>
               GeneratorOrder: string
+              FactorIdBitWidth: int
               ObjectGraph: FactorGraph<LogCategorical>
               PositionGraph: FactorGraph<Gaussian3>
               Evidence: Map<string, string * string>
@@ -452,18 +453,35 @@ module ReferenceFrameFactorHeterarchy =
         |> Convert.ToHexString
         |> _.ToLowerInvariant()
 
-    let private deterministicFactorIds evidenceId fingerprint =
-        let identityBytes = Encoding.UTF8.GetBytes(evidenceId + "|" + fingerprint)
-        let digest = SHA256.HashData identityBytes
-        let baseId = BitConverter.ToUInt32(digest, 0) &&& 0x3fffffffu
-        int (baseId <<< 1), int ((baseId <<< 1) ||| 1u)
+    let private validFactorIdBitWidth bitWidth = bitWidth >= 1 && bitWidth <= 31
 
-    let tryCreateWithGeneratorOrder generatorOrder (candidates: seq<string>) =
+    let private retainedFactorMask bitWidth =
+        if bitWidth = 31 then 0x7fffffffu else (1u <<< bitWidth) - 1u
+
+    let private deterministicFactorId domain bitWidth evidenceId fingerprint =
+        let identityBytes =
+            Encoding.UTF8.GetBytes(
+                String.concat "|" [ "RFFH"; domain; "v1"; evidenceId; fingerprint ]
+            )
+        let retained = SHA256.HashData identityBytes |> fun digest -> BitConverter.ToUInt32(digest, 0) &&& retainedFactorMask bitWidth
+        if domain = "object-factor" then int (int32 retained) else int (int32 (retained ||| 0x80000000u))
+
+    let private deterministicFactorIds bitWidth evidenceId fingerprint =
+        deterministicFactorId "object-factor" bitWidth evidenceId fingerprint,
+        deterministicFactorId "position-factor" bitWidth evidenceId fingerprint
+
+    let private tryCreateInternal generatorOrder factorIdBitWidth (candidates: seq<string>) =
         let normalized =
             candidates
             |> Seq.filter (String.IsNullOrWhiteSpace >> not)
             |> Set.ofSeq
-        if String.IsNullOrWhiteSpace generatorOrder then
+        if not (validFactorIdBitWidth factorIdBitWidth) then
+            Error
+                { Code = "RFFH-INVALID-FACTOR-ID-WIDTH"
+                  Field = "FactorIdBitWidth"
+                  Observed = string factorIdBitWidth
+                  SafeNextStep = "Use a retained factor-id width from 1 through 31 bits." }
+        elif String.IsNullOrWhiteSpace generatorOrder then
             Error
                 { Code = "RFFH-EMPTY-ROOM-GENERATOR-ORDER"
                   Field = "GeneratorOrder"
@@ -479,11 +497,19 @@ module ReferenceFrameFactorHeterarchy =
             Ok
                 { Candidates = normalized
                   GeneratorOrder = generatorOrder
+                  FactorIdBitWidth = factorIdBitWidth
                   ObjectGraph = FactorGraph.empty LogCategorical.algebra
                   PositionGraph = FactorGraph.empty Gaussian3.algebra
                   Evidence = Map.empty
                   Conflicts = [||]
                   FactorOwners = Map.empty }
+
+    let tryCreateWithGeneratorOrder generatorOrder (candidates: seq<string>) =
+        tryCreateInternal generatorOrder 31 candidates
+
+    /// Test-only retained-domain constructor. Production callers use the 31-bit default above.
+    let tryCreateWithFactorIdBitWidth factorIdBitWidth (candidates: seq<string>) =
+        tryCreateInternal "declared" factorIdBitWidth candidates
 
     let tryCreate (candidates: seq<string>) =
         tryCreateWithGeneratorOrder "declared" candidates
@@ -591,13 +617,20 @@ module ReferenceFrameFactorHeterarchy =
                             candidate, message.ObjectEvidence |> Map.tryFind candidate |> Option.defaultValue 0.0)
                         |> Map.ofSeq
                         |> fun natural -> { Natural = natural }
-                    let objectFactorId, positionFactorId = deterministicFactorIds message.EvidenceId fingerprint
-                    match state.FactorOwners |> Map.tryFind objectFactorId with
-                    | Some retainedEvidenceId when retainedEvidenceId <> message.EvidenceId ->
+                    let objectFactorId, positionFactorId =
+                        deterministicFactorIds state.FactorIdBitWidth message.EvidenceId fingerprint
+                    let collision =
+                        [| objectFactorId; positionFactorId |]
+                        |> Array.tryPick (fun factorId ->
+                            match state.FactorOwners |> Map.tryFind factorId with
+                            | Some retainedEvidenceId when retainedEvidenceId <> message.EvidenceId -> Some(factorId, retainedEvidenceId)
+                            | _ -> None)
+                    match collision with
+                    | Some (factorId, retainedEvidenceId) ->
                         Error
                             { Code = "RFFH-FACTOR-ID-COLLISION"
-                              Field = "EvidenceId"
-                              Observed = sprintf "%s collides with %s" message.EvidenceId retainedEvidenceId
+                              Field = "FactorId"
+                              Observed = sprintf "%s collides with %s at %d" message.EvidenceId retainedEvidenceId factorId
                               SafeNextStep = "Retain both messages outside the fold and widen or replace the deterministic factor-id projection." }
                     | _ ->
                         let objectGraph =
