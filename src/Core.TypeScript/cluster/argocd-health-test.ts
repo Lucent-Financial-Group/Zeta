@@ -85,6 +85,14 @@ export interface Failure {
   readonly message: string;
   readonly command?: readonly string[];
   readonly detail?: unknown;
+  /**
+   * When true, `waitFor` returns this failure on the current poll instead of
+   * retrying until timeout. Use for defects that cannot heal by waiting
+   * (MEASURED run 33695849211: zeta-root-dev ComparisonError
+   * `Could not resolve host: github.com` was already present at T+0 of the
+   * 180s child wait).
+   */
+  readonly terminal?: boolean;
 }
 
 export interface CliOptions {
@@ -138,6 +146,11 @@ export interface ExpectedApplication {
   readonly path: string;
 }
 
+export interface ArgoApplicationCondition {
+  readonly type: string;
+  readonly message: string;
+}
+
 export interface ArgoApplicationSnapshot {
   readonly name: string;
   readonly syncStatus: string;
@@ -145,6 +158,7 @@ export interface ArgoApplicationSnapshot {
   readonly message: string;
   readonly operationPhase?: string;
   readonly syncRevision?: string;
+  readonly conditions?: readonly ArgoApplicationCondition[];
 }
 
 export interface ApplicationVerdict {
@@ -1828,6 +1842,10 @@ function runOrFail(
   };
 }
 
+export function isTerminalFailure(failure: Failure | null): boolean {
+  return failure !== null && failure.terminal === true;
+}
+
 async function waitFor(
   timeoutSeconds: number,
   pollSeconds: number,
@@ -1838,6 +1856,7 @@ async function waitFor(
   while (Date.now() <= deadline) {
     lastFailure = action();
     if (lastFailure === null) return null;
+    if (isTerminalFailure(lastFailure)) return lastFailure;
     await Bun.sleep(pollSeconds * 1000);
   }
   return lastFailure;
@@ -2161,6 +2180,68 @@ export function repoBackedChildNames(snapshots: readonly ArgoApplicationSnapshot
   return snapshots.map((snapshot) => snapshot.name).filter((name) => name !== ROOT_DEV_APPLICATION_NAME);
 }
 
+/**
+ * Catalog DNS is already broken: waiting 180s (or 2400s) cannot clone
+ * github.com. MEASURED run 33695849211 had this ComparisonError at T+0 of
+ * the child wait; the wait still burned the full 180s cap.
+ */
+const GITHUB_HOST_UNRESOLVABLE =
+  /could not resolve host:\s*github\.com|lookup github\.com|error resolving git hostname/i;
+
+export function applicationConditionTexts(snapshot: ArgoApplicationSnapshot): readonly string[] {
+  const fromConditions = (snapshot.conditions ?? []).map((condition) =>
+    condition.type.length > 0 ? `${condition.type}: ${condition.message}` : condition.message,
+  );
+  return snapshot.message.length > 0 ? [snapshot.message, ...fromConditions] : fromConditions;
+}
+
+export function isGitHubHostUnresolvableText(text: string): boolean {
+  return text.includes("github.com") && GITHUB_HOST_UNRESOLVABLE.test(text);
+}
+
+export function rootCatalogGitHostFailure(
+  snapshots: readonly ArgoApplicationSnapshot[],
+): Failure | null {
+  const root = snapshots.find((snapshot) => snapshot.name === ROOT_DEV_APPLICATION_NAME);
+  if (root === undefined) return null;
+  const hit = applicationConditionTexts(root).find(isGitHubHostUnresolvableText);
+  if (hit === undefined) return null;
+  return {
+    kind: "ArgoCdTimeout",
+    message:
+      "zeta-root-dev cannot clone github.com (ComparisonError); waiting will not produce children",
+    terminal: true,
+    detail: {
+      syncStatus: root.syncStatus,
+      healthStatus: root.healthStatus,
+      evidence: hit,
+      conditions: root.conditions ?? [],
+    },
+  };
+}
+
+export const HEALTH_WAIT_LAGGARD_LIMIT = 8;
+
+export function formatHealthWaitProgress(
+  elapsedSec: number,
+  verdicts: readonly ApplicationVerdict[],
+): string {
+  const okCount = verdicts.filter((verdict) => verdict.ok).length;
+  const laggards = verdicts.filter((verdict) => !verdict.ok);
+  const shown = laggards
+    .slice(0, HEALTH_WAIT_LAGGARD_LIMIT)
+    .map((verdict) => `${verdict.name}=${verdict.syncStatus}/${verdict.healthStatus}`);
+  const extra =
+    laggards.length > HEALTH_WAIT_LAGGARD_LIMIT
+      ? ` +${String(laggards.length - HEALTH_WAIT_LAGGARD_LIMIT)}`
+      : "";
+  const laggardText = shown.length === 0 ? "none" : `${shown.join(", ")}${extra}`;
+  return (
+    `still waiting (${String(elapsedSec)}s): health ${String(okCount)}/` +
+    `${String(verdicts.length)} ok; laggards: ${laggardText}`
+  );
+}
+
 export const REPO_BACKED_CHILD_WAIT_DIAGNOSTIC_COMMANDS: readonly {
   readonly label: string;
   readonly args: readonly string[];
@@ -2316,6 +2397,8 @@ async function waitForRepoBackedChild(pollSeconds: number): Promise<Failure | nu
     }
     const snapshots = parseApplicationListOrFailure(result.stdout, command);
     if (isFailure(snapshots)) return snapshots;
+    const catalogDns = rootCatalogGitHostFailure(snapshots);
+    if (catalogDns !== null) return catalogDns;
     if (repoBackedChildNames(snapshots).length > 0) return null;
     return {
       kind: "ArgoCdTimeout",
@@ -2345,6 +2428,22 @@ function recordAt(record: Record<string, unknown>, key: string): Record<string, 
   return asRecord(record[key]);
 }
 
+function parseApplicationConditions(
+  status: Record<string, unknown> | null,
+): readonly ArgoApplicationCondition[] {
+  if (status === null) return [];
+  const raw = status.conditions;
+  if (!Array.isArray(raw)) return [];
+  return raw.flatMap((item) => {
+    const record = asRecord(item);
+    if (record === null) return [];
+    const type = stringAt(record, "type");
+    const message = stringAt(record, "message");
+    if (type.length === 0 && message.length === 0) return [];
+    return [{ type, message }];
+  });
+}
+
 export function parseApplicationList(jsonText: string): readonly ArgoApplicationSnapshot[] {
   const root = asRecord(JSON.parse(jsonText));
   const items = Array.isArray(root?.items) ? root.items : [];
@@ -2359,6 +2458,7 @@ export function parseApplicationList(jsonText: string): readonly ArgoApplication
     if (name.length === 0) return [];
     const operationPhase = operationState ? stringAt(operationState, "phase") : "";
     const syncRevision = sync ? stringAt(sync, "revision") : "";
+    const conditions = parseApplicationConditions(status);
     const snapshot: ArgoApplicationSnapshot = {
       name,
       syncStatus: sync ? stringAt(sync, "status") : "",
@@ -2366,6 +2466,7 @@ export function parseApplicationList(jsonText: string): readonly ArgoApplication
       message: health ? stringAt(health, "message") : "",
       ...(operationPhase.length > 0 ? { operationPhase } : {}),
       ...(syncRevision.length > 0 ? { syncRevision } : {}),
+      ...(conditions.length > 0 ? { conditions } : {}),
     };
     return [snapshot];
   });
@@ -2554,6 +2655,11 @@ async function waitForApplications(
   options: CliOptions,
 ): Promise<readonly ApplicationVerdict[] | Failure> {
   let lastVerdicts: readonly ApplicationVerdict[] = [];
+  const startedAt = Date.now();
+  let lastProgressAt = startedAt;
+  console.log(
+    `Waiting: ArgoCD Applications Synced+Healthy (cap ${String(options.timeoutSeconds)}s)`,
+  );
   const failure = await waitFor(options.timeoutSeconds, options.pollSeconds, () => {
     const command = ["-n", "argocd", "get", "applications.argoproj.io", "-o", "json"];
     const result = kubectl(command, Math.max(options.pollSeconds, 10));
@@ -2562,6 +2668,8 @@ async function waitForApplications(
     }
     const snapshots = parseApplicationListOrFailure(result.stdout, command);
     if (isFailure(snapshots)) return snapshots;
+    const catalogDns = rootCatalogGitHostFailure(snapshots);
+    if (catalogDns !== null) return catalogDns;
     lastVerdicts =
       plan.scope === "smoke"
         ? classifySmokeApplications(snapshots)
@@ -2569,6 +2677,12 @@ async function waitForApplications(
           ? classifyApplications(plan.expectedApplications, snapshots)
           : classifyApplications(plan.expectedApplications, snapshots);
     if (lastVerdicts.every((verdict) => verdict.ok)) return null;
+    const now = Date.now();
+    if (now - lastProgressAt >= 60_000) {
+      const elapsedSec = Math.floor((now - startedAt) / 1000);
+      console.log(formatHealthWaitProgress(elapsedSec, lastVerdicts));
+      lastProgressAt = now;
+    }
     return {
       kind: lastVerdicts.some((verdict) => verdict.syncStatus === "Missing")
         ? "ApplicationMissing"

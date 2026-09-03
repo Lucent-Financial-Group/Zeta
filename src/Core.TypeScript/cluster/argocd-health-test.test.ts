@@ -30,10 +30,14 @@ import {
   isZetaGitDirectoryApplicationSource,
   mergeArgoCdTimeoutDiagnostics,
   parseApplicationList,
+  formatHealthWaitProgress,
+  isGitHubHostUnresolvableText,
+  isTerminalFailure,
   REPO_BACKED_CHILD_APPEAR_TIMEOUT_SECONDS,
   REPO_BACKED_CHILD_WAIT_DIAGNOSTIC_COMMANDS,
   repoBackedChildNames,
   ROOT_DEV_APPLICATION_NAME,
+  rootCatalogGitHostFailure,
   parseApplicationName,
   parseArgs,
   parseK3dClusterName,
@@ -938,6 +942,82 @@ describe("081KSXN940008QG0R000SCP2H1 argocd-health-test planning", () => {
     const detail = merged.detail as { childCount: number; diagnostics: Record<string, string> };
     expect(detail.childCount).toBe(0);
     expect(detail.diagnostics["zeta-root-dev"]).toContain("ComparisonError");
+  });
+
+  test("parses Application conditions from kubectl list JSON", () => {
+    const snapshots = parseApplicationList(
+      JSON.stringify({
+        items: [
+          {
+            metadata: { name: "zeta-root-dev" },
+            status: {
+              sync: { status: "Unknown" },
+              health: { status: "Healthy", message: "" },
+              conditions: [
+                {
+                  type: "ComparisonError",
+                  message:
+                    "Failed to load target state: Could not resolve host: github.com",
+                },
+              ],
+            },
+          },
+        ],
+      }),
+    );
+    expect(snapshots[0]?.conditions).toEqual([
+      {
+        type: "ComparisonError",
+        message: "Failed to load target state: Could not resolve host: github.com",
+      },
+    ]);
+  });
+
+  test("catalog DNS ComparisonError is terminal and does not wait out the child cap", () => {
+    // MEASURED run 33695849211: this condition was present at T+0 of the 180s wait.
+    const failure = rootCatalogGitHostFailure([
+      {
+        name: ROOT_DEV_APPLICATION_NAME,
+        syncStatus: "Unknown",
+        healthStatus: "Healthy",
+        message: "",
+        conditions: [
+          {
+            type: "ComparisonError",
+            message: "Could not resolve host: github.com",
+          },
+        ],
+      },
+    ]);
+    expect(failure).not.toBeNull();
+    expect(isTerminalFailure(failure)).toBe(true);
+    expect(failure?.message).toContain("cannot clone github.com");
+    expect(isGitHubHostUnresolvableText("lookup github.com on 10.96.0.10:53: no such host")).toBe(
+      true,
+    );
+    expect(isGitHubHostUnresolvableText("ComparisonError: chart not found")).toBe(false);
+    expect(
+      rootCatalogGitHostFailure([
+        {
+          name: ROOT_DEV_APPLICATION_NAME,
+          syncStatus: "Unknown",
+          healthStatus: "Healthy",
+          message: "",
+          conditions: [{ type: "ComparisonError", message: "helm chart not found" }],
+        },
+      ]),
+    ).toBeNull();
+  });
+
+  test("health-wait progress names laggards instead of sitting silent for 2400s", () => {
+    const line = formatHealthWaitProgress(120, [
+      { name: "hat-system", ok: true, syncStatus: "Synced", healthStatus: "Healthy" },
+      { name: "vault", ok: false, syncStatus: "Unknown", healthStatus: "Progressing" },
+      { name: "mimir", ok: false, syncStatus: "Unknown", healthStatus: "Degraded" },
+    ]);
+    expect(line).toBe(
+      "still waiting (120s): health 1/3 ok; laggards: vault=Unknown/Progressing, mimir=Unknown/Degraded",
+    );
   });
 
   test("child-appear wait is capped below the health budget, and is ANY child not hat-system", () => {

@@ -228,6 +228,30 @@ Cilium values tweak (`routingMode`, chart bump) from this.
 
 State stays in-progress until a dispatch produces per-app verdicts.
 
+## Landed 2026-09-03 — wait-fix + kind+Cilium CoreDNS on `main`
+
+PR #16412 squash `db60442338`. Child wait is any child, 180s, not
+`hat-system`. Kind `--cni cilium` rewrites the kubeadm Corefile to
+`forward . 1.1.1.1 8.8.8.8` after the LB-IPAM alias.
+
+Dispatch [run 33697305243](https://github.com/Lucent-Financial-Group/Zeta/actions/runs/33697305243)
+on the wait-fix branch at `bd240fbd2` (same CoreDNS patch, pre-squash) is
+the measurement. Do not dispatch a competing probe on `main` while that
+proof step is still running. Logs are unreadable until the job completes.
+
+## Next-run harness (catalog DNS fail-fast + health roster)
+
+Run 33695849211 already had `Could not resolve host: github.com` at T+0
+of the child wait. Waiting 180s after that is not a second measurement. The
+harness now returns a **terminal** `ArgoCdTimeout` as soon as
+`zeta-root-dev` carries that ComparisonError, and logs `N/M ok` plus named
+laggards every 60s during the Synced+Healthy wait so a 2400s health wait is
+not another dark stretch.
+
+Do not invent a Cilium values tweak (`routingMode`, chart bump) from a
+silent wait. Do not lift `weaviate` or the metal `cilium-lb-ipam`
+Application from `cilium-ingress` getting `172.18.255.200`.
+
 ## The distinguishing test
 
 For each of the four, the question is the same and it is answerable:
