@@ -583,7 +583,23 @@ Cilium values. Do not re-lift `--scope included`.
 
 Sibling on the same run: `live kind included` failed only on mimir
 Synced/Degraded + agent-memory OutOfSync/Missing — Otto `081M1FG1RCW`,
-not this PR. `gate (required)` green.
+not this PR. `gate (required)` green. #16508 squash `183322698` is on
+`main`.
+
+## Next dump — hostNetwork TCP ClusterIP distinguisher
+
+PR #16508 (bring-up: metal `control-plane` hosts + SAN + nodes Ready) made
+the second class visible on smoke: server Running, `bundle.crt` present,
+agent `lookup spire-server.spire on 10.43.0.10:53: i/o timeout`.
+
+The live-k3d dump now probes TCP ClusterIP from the k3d node (same netns
+as hostNetwork spire-agent):
+
+- TCP OPEN + DNS timeout => chart `hostAliases` is next software.
+- TCP FAIL => not DNS-only; do not invent Cilium values.
+
+Do not treat OPEN/FAIL as measured until a live-k3d dump prints those
+lines. Do not re-lift `--scope included` on the back of this dump.
 
 ## The distinguishing test
 
