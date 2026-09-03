@@ -1,0 +1,15 @@
+{
+  "pr_number": 16419,
+  "archive_path": "docs/history/pr-reviews/PR-16419-fix-cluster-fail-fast-on-catalog-dns-assert-weaviate-on-kind-cilium.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7ppmFX",
+    "thread:PRRT_kwDOSF9kNM6eu8oY"
+  ],
+  "fetched_at": "2026-09-03T02:41:12.531Z",
+  "schema_version": "v1",
+  "commit_sha": "18367ea198a27964daf2e1f42ed1a8a034f56a89",
+  "title": "fix(cluster): fail fast on catalog DNS; assert weaviate on kind+Cilium",
+  "state": "MERGED",
+  "merged_at": "2026-09-03T02:40:33Z",
+  "head_ref": "cursor/cilium-catalog-dns-failfast-27c5"
+}
