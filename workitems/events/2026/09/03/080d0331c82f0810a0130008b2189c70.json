@@ -1,0 +1,14 @@
+{
+  "id": "080d0331c82f0810a0130008b2189c70",
+  "at": "2026-09-03T07:43:28.225Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1K3J1EY087G0R0036YM4CW",
+    "type": "task",
+    "title": "the loop's acting path had never been run outside production",
+    "slug": "the-loop-s-acting-path-had-never-been-run-outside-production",
+    "priority": "P2",
+    "filename": "081M1K3J1EY087G0R0036YM4CW-the-loop-s-acting-path-had-never-been-run-outside-production.md"
+  }
+}
