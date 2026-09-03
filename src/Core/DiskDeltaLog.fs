@@ -202,13 +202,18 @@ type GroupCommitDiskDeltaLog<'K when 'K : comparison>
      entryCodec: IEntryCodec<'K>,
      ?config: FerryThrottlerConfig,
      ?maxBatchBytes: int,
-     ?maxSegmentBytes: int64) =
+     ?maxSegmentBytes: int64,
+     ?useBlockIo: bool) =
 
     let root = Path.GetFullPath dir
     // Bind the door at construction. Background ferries must not re-read
     // FileSystem.Current (AsyncLocal does not survive every channel wake).
     let fsDoor = FileSystem.Current
     do fsDoor.CreateDirectory root
+    /// Opt-in `FileSystemBlockIo` + dual-slot `ZGL2` superblock. Default is
+    /// still the whole-file stream path so existing Dispose crash tests keep
+    /// their door. Crash/corrupt/reorder then tear the LBA, not the file.
+    let viaBlockIo = defaultArg useBlockIo false
 
     /// Roll threshold for the active segment. The default favours few large
     /// segments; tests (and the erasure law pack) dial it down to force rollover.
@@ -258,7 +263,13 @@ type GroupCommitDiskDeltaLog<'K when 'K : comparison>
     let segments = discoverSegments ()
 
     let segmentLength (path: string) : int64 =
-        if not (fsDoor.Exists path) then 0L
+        if not (fsDoor.Exists path) then
+            0L
+        elif viaBlockIo then
+            let io = FileSystemBlockIo(fsDoor, path, 4096)
+            match BlockSuper.tryReadGroup (io :> IBlockIo) with
+            | Some n when n > 0L -> n
+            | _ -> 0L
         else
             use fs = fsDoor.OpenFile(path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite)
             fs.Length
@@ -305,50 +316,69 @@ type GroupCommitDiskDeltaLog<'K when 'K : comparison>
     /// the active segment's torn TRAILING record is truncated (`ReadWrite`
     /// recovery scan) or ignored (read-only live replay). Non-trailing CRC
     /// corruption is loud everywhere.
+    let scanFromStream
+        (fs: Stream)
+        (isSealed: bool)
+        (truncateTrailingTornWrite: bool)
+        (name: string)
+        : DeltaLogEntry<'K>[] =
+        use br = new BinaryReader(fs, Text.Encoding.UTF8, leaveOpen = true)
+        let entries = ResizeArray<DeltaLogEntry<'K>>()
+        let torn (recordStart: int64) (what: string) =
+            if isSealed then
+                invalidOp
+                    $"GroupCommitDiskDeltaLog: {what} at byte {recordStart} in SEALED segment {name} — corruption (a torn write can only trail the active segment)."
+            elif truncateTrailingTornWrite then
+                fs.SetLength recordStart
+        let mutable scanning = true
+        while scanning do
+            let recordStart = fs.Position
+            if fs.Length - fs.Position = 0L then
+                scanning <- false
+            elif fs.Length - fs.Position < 8L then
+                torn recordStart "short record header"
+                scanning <- false
+            else
+                let len = br.ReadInt32()
+                let expectedCrc = br.ReadUInt32()
+                if len < 0 then
+                    invalidOp $"GroupCommitDiskDeltaLog: negative record length {len} at byte {recordStart} in {name}."
+                elif fs.Length - fs.Position < int64 len then
+                    torn recordStart "short record body"
+                    scanning <- false
+                else
+                    let payload = br.ReadBytes len
+                    let actualCrc = HardwareCrc.Crc32C(ReadOnlySpan payload)
+                    if actualCrc <> expectedCrc then
+                        if fs.Position = fs.Length && not isSealed then
+                            torn recordStart "trailing CRC mismatch"
+                            scanning <- false
+                        else
+                            invalidOp
+                                $"GroupCommitDiskDeltaLog: CRC mismatch at byte {recordStart} in {name} (expected 0x{expectedCrc:X8}, got 0x{actualCrc:X8})."
+                    else
+                        entries.Add(decodePayload payload)
+        entries.ToArray()
+
     let scanSegment (path: string) (isSealed: bool) (truncateTrailingTornWrite: bool) : DeltaLogEntry<'K>[] =
         if not (fsDoor.Exists path) then
             [||]
+        elif viaBlockIo then
+            let io = FileSystemBlockIo(fsDoor, path, 4096)
+            let device = io :> IBlockIo
+            match BlockSuper.tryReadGroup device with
+            | Some logical when logical > 0L ->
+                let bytes = BlockLog.readAt device (BlockLog.origin device) logical
+                use ms = new MemoryStream(bytes, 0, bytes.Length, writable = true, publiclyVisible = true)
+                let entries = scanFromStream ms isSealed truncateTrailingTornWrite (Path.GetFileName path)
+                if truncateTrailingTornWrite && ms.Length <> logical then
+                    BlockSuper.writeGroup device ms.Length
+                entries
+            | _ -> [||]
         else
             let access = if truncateTrailingTornWrite then FileAccess.ReadWrite else FileAccess.Read
             use fs: Stream = fsDoor.OpenFile(path, FileMode.Open, access, FileShare.ReadWrite)
-            use br = new BinaryReader(fs)
-            let entries = ResizeArray<DeltaLogEntry<'K>>()
-            let name = Path.GetFileName path
-            let torn (recordStart: int64) (what: string) =
-                if isSealed then
-                    invalidOp
-                        $"GroupCommitDiskDeltaLog: {what} at byte {recordStart} in SEALED segment {name} — corruption (a torn write can only trail the active segment)."
-                elif truncateTrailingTornWrite then
-                    fs.SetLength recordStart
-            let mutable scanning = true
-            while scanning do
-                let recordStart = fs.Position
-                if fs.Length - fs.Position = 0L then
-                    scanning <- false
-                elif fs.Length - fs.Position < 8L then
-                    torn recordStart "short record header"
-                    scanning <- false
-                else
-                    let len = br.ReadInt32()
-                    let expectedCrc = br.ReadUInt32()
-                    if len < 0 then
-                        invalidOp $"GroupCommitDiskDeltaLog: negative record length {len} at byte {recordStart} in {name}."
-                    elif fs.Length - fs.Position < int64 len then
-                        torn recordStart "short record body"
-                        scanning <- false
-                    else
-                        let payload = br.ReadBytes len
-                        let actualCrc = HardwareCrc.Crc32C(ReadOnlySpan payload)
-                        if actualCrc <> expectedCrc then
-                            if fs.Position = fs.Length && not isSealed then
-                                torn recordStart "trailing CRC mismatch"
-                                scanning <- false
-                            else
-                                invalidOp
-                                    $"GroupCommitDiskDeltaLog: CRC mismatch at byte {recordStart} in {name} (expected 0x{expectedCrc:X8}, got 0x{actualCrc:X8})."
-                        else
-                            entries.Add(decodePayload payload)
-            entries.ToArray()
+            scanFromStream fs isSealed truncateTrailingTornWrite (Path.GetFileName path)
 
     /// Scan every segment in coverage order. Only the LAST is active.
     let scanEntries (truncateTrailingTornWrite: bool) : DeltaLogEntry<'K>[] =
@@ -383,35 +413,59 @@ type GroupCommitDiskDeltaLog<'K when 'K : comparison>
                     else
                         let struct (_, last) = segments.[segments.Count - 1]
                         struct (last, not (fsDoor.Exists last)))
-            let stream: Stream = fsDoor.OpenFile(segPath, FileMode.Append, FileAccess.Write, FileShare.Read)
-            let mutable written = 0L
-            // Dispose/commit before the boat result. Crash-mid-write on Dispose
-            // must fault ProcessAsync; Ok-then-throw would ack a torn segment.
-            try
+            if viaBlockIo then
+                let io = FileSystemBlockIo(fsDoor, segPath, 4096)
+                let device = io :> IBlockIo
+                let origin = BlockLog.origin device
+                let logical =
+                    match BlockSuper.tryReadGroup device with
+                    | Some n when n > 0L -> n
+                    | _ -> 0L
+                let mutable pos = origin + logical
                 for i in 0 .. boat.Length - 1 do
-                    let record = boat.Span.[i].Record
-                    let vt = stream.WriteAsync(ReadOnlyMemory record, ct)
-                    // FileStream's WriteAsync is a pooled ValueTask. AsTask() would
-                    // allocate a Task per record; GetResult is legal only because
-                    // this branch is already complete.
-                    if vt.IsCompletedSuccessfully then
-                        vt.GetAwaiter().GetResult()
-                    else
-                        do! vt.ConfigureAwait(false)
-                    written <- written + int64 record.Length
-
-                let flush = stream.FlushAsync ct
-                if not flush.IsCompletedSuccessfully then
-                    do! flush.ConfigureAwait(false)
-
-                match stream with
-                | :? FileStream as fileStream -> fileStream.Flush(flushToDisk = true)
-                | _ -> stream.Flush()
+                    pos <-
+                        BlockLog.append
+                            device
+                            pos
+                            (System.ReadOnlyMemory<byte>.op_Implicit boat.Span.[i].Record)
+                let newLogical = pos - origin
+                // Superblock after payload. Crash on the payload WriteAt leaves
+                // the previous generation; crash on the inactive slot does too.
+                BlockSuper.writeGroup device newLogical
+                device.Flush()
                 if createdSegment then
                     FileSync.fsyncDirBestEffort root
-            finally
-                stream.Dispose()
-            lock gate (fun () -> activeSize <- activeSize + written)
+                lock gate (fun () -> activeSize <- newLogical)
+            else
+                let stream: Stream = fsDoor.OpenFile(segPath, FileMode.Append, FileAccess.Write, FileShare.Read)
+                let mutable written = 0L
+                // Dispose/commit before the boat result. Crash-mid-write on Dispose
+                // must fault ProcessAsync; Ok-then-throw would ack a torn segment.
+                try
+                    for i in 0 .. boat.Length - 1 do
+                        let record = boat.Span.[i].Record
+                        let vt = stream.WriteAsync(ReadOnlyMemory record, ct)
+                        // FileStream's WriteAsync is a pooled ValueTask. AsTask()
+                        // would allocate a Task per record; GetResult is legal
+                        // only because this branch is already complete.
+                        if vt.IsCompletedSuccessfully then
+                            vt.GetAwaiter().GetResult()
+                        else
+                            do! vt.ConfigureAwait(false)
+                        written <- written + int64 record.Length
+
+                    let flush = stream.FlushAsync ct
+                    if not flush.IsCompletedSuccessfully then
+                        do! flush.ConfigureAwait(false)
+
+                    match stream with
+                    | :? FileStream as fileStream -> fileStream.Flush(flushToDisk = true)
+                    | _ -> stream.Flush()
+                    if createdSegment then
+                        FileSync.fsyncDirBestEffort root
+                finally
+                    stream.Dispose()
+                lock gate (fun () -> activeSize <- activeSize + written)
             return [| for i in 0 .. boat.Length - 1 -> boat.Span.[i].Seq |]
         }
 

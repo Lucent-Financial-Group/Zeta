@@ -772,13 +772,15 @@ module BlockLog =
     let origin (io: IBlockIo) = 2L * int64 io.BlockSize
 
 /// Two checksummed superblock copies at LBA 0 and LBA 1. Payload starts at
-/// `BlockLog.origin`. Log magic `ZFL2`, CAS magic `ZCA2`. A torn or corrupt
-/// write of the inactive slot leaves the previous generation readable.
-/// Index must fit in one block. CRC is IEEE-802 over bytes after offset 8.
+/// `BlockLog.origin`. Log magic `ZFL2`, CAS magic `ZCA2`, group-commit
+/// segment magic `ZGL2`. A torn or corrupt write of the inactive slot
+/// leaves the previous generation readable. Index must fit in one block.
+/// CRC is IEEE-802 over bytes after offset 8.
 [<RequireQualifiedAccess>]
 module BlockSuper =
     let logMagic = [| byte 'Z'; byte 'F'; byte 'L'; byte '2' |]
     let casMagic = [| byte 'Z'; byte 'C'; byte 'A'; byte '2' |]
+    let groupMagic = [| byte 'Z'; byte 'G'; byte 'L'; byte '2' |]
 
     let private crcOf (buf: byte[]) =
         Crc32.HashToUInt32(ReadOnlySpan(buf, 8, buf.Length - 8))
@@ -815,8 +817,8 @@ module BlockSuper =
         | None -> 0UL, 1L
         | Some(slot, gen, _) -> 1UL - slot, gen + 1L
 
-    let private parseLog (buf: byte[]) : (int64 * int64) option =
-        if magicOk buf logMagic && crcOk buf then
+    let private parseNamed (buf: byte[]) (magic: byte[]) : (int64 * int64) option =
+        if magicOk buf magic && crcOk buf then
             let gen = BinaryPrimitives.ReadInt64LittleEndian(ReadOnlySpan(buf, 8, 8))
             let logical = BinaryPrimitives.ReadInt64LittleEndian(ReadOnlySpan(buf, 16, 8))
             Some(gen, logical)
@@ -884,20 +886,28 @@ module BlockSuper =
             BinaryPrimitives.WriteInt32LittleEndian(Span(buf, o, 4), len)
             o <- o + 4
 
-    let writeLog (io: IBlockIo) (logical: int64) =
-        let current = pick (parseLog (readSlot io 0UL)) (parseLog (readSlot io 1UL))
+    let private writeNamed (io: IBlockIo) (magic: byte[]) (logical: int64) =
+        let current = pick (parseNamed (readSlot io 0UL) magic) (parseNamed (readSlot io 1UL) magic)
         let lba, gen = nextSlot current
         let buf = Array.zeroCreate io.BlockSize
-        Buffer.BlockCopy(logMagic, 0, buf, 0, 4)
+        Buffer.BlockCopy(magic, 0, buf, 0, 4)
         BinaryPrimitives.WriteInt64LittleEndian(Span(buf, 8, 8), gen)
         BinaryPrimitives.WriteInt64LittleEndian(Span(buf, 16, 8), logical)
         BinaryPrimitives.WriteUInt32LittleEndian(Span(buf, 4, 4), crcOf buf)
         io.Write(lba, System.ReadOnlyMemory<byte>.op_Implicit buf) |> ignore
 
-    let tryReadLog (io: IBlockIo) : int64 option =
-        match pick (parseLog (readSlot io 0UL)) (parseLog (readSlot io 1UL)) with
+    let private tryReadNamed (io: IBlockIo) (magic: byte[]) : int64 option =
+        match pick (parseNamed (readSlot io 0UL) magic) (parseNamed (readSlot io 1UL) magic) with
         | Some(_, _, logical) -> Some logical
         | None -> None
+
+    let writeLog (io: IBlockIo) (logical: int64) = writeNamed io logMagic logical
+
+    let tryReadLog (io: IBlockIo) : int64 option = tryReadNamed io logMagic
+
+    let writeGroup (io: IBlockIo) (logical: int64) = writeNamed io groupMagic logical
+
+    let tryReadGroup (io: IBlockIo) : int64 option = tryReadNamed io groupMagic
 
     let writeCas (io: IBlockIo) (entries: (string * int64 * int) array) =
         let current = pick (parseCas (readSlot io 0UL)) (parseCas (readSlot io 1UL))
