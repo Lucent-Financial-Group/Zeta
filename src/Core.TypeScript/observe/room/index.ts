@@ -8,3 +8,14 @@
 export { scopeWorld, tickRooms, type Room, type RoomState, type ScopePredicate, type RoomTickResult } from "./room";
 export { createBacklogRoom, createShadowRoom, type BacklogRoomState, type ShadowRoomState } from "./git/rooms";
 export { createPrRoom, createMergeRoom, type PrRoomState, type MergeRoomState } from "./forge/rooms";
+export {
+  sandboxedExecutor,
+  grantedTools,
+  declaredHosts,
+  inlinedCredential,
+  deterministicProxy,
+  type RoomSandbox,
+  type EgressPolicy,
+  type CredentialProxy,
+  type ToolGrant,
+} from "./sandbox";
