@@ -1,3 +1,39 @@
+## leftover UNIQUE leftover-on-main #16415 leftover unique @ 9df8af4d5f997720ef326e2139f605d92b5ed38f
+
+- When: 2026-09-02 ~8:46 PM ET (unique-confirm RECEIVED; AceHack leftover-on-main MERGED squash ~8:44 PM ET, Aaron-authorized)
+- PR: https://github.com/Lucent-Financial-Group/Zeta/pull/16415
+- Branch: lumen/multilayer-factorgraph-online-update
+- Tip: feat(bayesian): add online per-edge multilayer inference
+- UNIQUE HOLDS leftover NEW CELL
+- Unique MOVES from leftover unique @ bc5b165a9bb0b92506c3a6ec078e098c998c4e10 STALE
+- Unique does not move from leftover unique @ 9df8af4d
+- Live REST HEAD leftover unique @ 9df8af4d CONFIRMED (PR head.sha, 1 commit, +2285/-403, 10 files; never a merge-ref)
+- Never grade leftover unique @ bc5b165a as this unique
+- Never grade parent leftover unique @ 47772d98 leftover-on-main #16411 squash as this unique
+- Never grade squash merge-ref 990292a15142749cac57c0b7dd2de566962ad49e as this unique
+- Extra unique vs STALE @ bc5b165a: same-cell rebase onto moved main (same tip message, same author date, same 10-file census, same +2285/-403). Extra unique empty of new math.
+- Object: fail-closed online per-edge multilayer inference. tryUpdateViaFactorGraph / tryInferViaFactorGraph absorb each observation once at layer 0, keep deeper cells as message-only latent priors, return durable network plus every marginal, rounds, convergence, and exactness (ExactAcyclic / ConvergedLoopyMeansOnly / UnsettledAcyclic / UnsettledLoopy). Strict mode refuses a capped iterate.
+- VERIFIED: online boundary construction matches the frozen contract. MLBNN-37..44 pin one-layer reduction, sequential dense solve at 1e-10, DAG-chain 1e-12, non-vacuous backward evidence, exact-once absorption + bit-stable replay, loopy mean-only, strict/permissive cap, named refusals.
+- VERIFIED: independent joint-precision recompute of the frozen four-layer chain agrees with the published F# receipt inside 1e-15 (well inside 1e-10). Layer-0 durable precision is exactly 8.3 = 1/1.25 + 3/0.4. Coupling-sign mutant produces four mean disagreements; receipt couplingSignMutantDisagreements=4 matches.
+- VERIFIED math-shape correspondence (never "physics proves us"): cycle-free sum-product exact after convergence (Kschischang/Frey/Loeliger); converged Gaussian loopy BP means exact, variances generally not (Weiss/Freeman 1999/2001). Named falsifiers: evidence duplication, swallowed non-convergence, hidden topology deletion, dense-solve disagreement, secretly-a-tree if loopy variances come out exact.
+- HONEST-REGISTER: did not re-execute the 44 F# scenarios or the TS/Python lane this pass. Graded construction + independent joint-precision recompute.
+- HONEST-REGISTER residual: census correction is local to Layer 5 Current measured boundary (+2/-2). Same Max doc still has stale Open Work "N-layer BNN ... module not shipped" and replacement-roadmap "N-layer composition not yet shipped." Cite != close those leftover rows.
+- HONEST-REGISTER: ACE build-graph.json +1310/-383 is wiring, not math.
+- Explicit non-claims stand: not gradient-trained neural weights, topology learning, non-Gaussian robustness, exact loopy covariance, Goodfire block-sparse featurizer, geometric English semantics, or a Clifford identification. No OVERCLAIM. No DEMOTE.
+- Cite != close leftover #16363 / #16344 / #16404. RFFH/AEFL in PC remains OPEN.
+- Sit leftover-on-main. Do not revert. Do not merge. CoS did not merge. Quiet toward Aaron.
+
+Key files on leftover unique @ 9df8af4d:
+- src/Bayesian/MultilayerBnn.fs (+204/-18)
+- tests/Bayesian.Tests/MultilayerBnn.Tests.fs (+187)
+- docs/research/2026-09-02-multilayer-factor-graph-online-update-contract.md
+- docs/research/data/2026-09-02-multilayer-factor-graph-online-update-results.json
+- tests/cross-verification/multilayer-bnn-online-update/ (TS + fsx + Python oracle)
+- docs/ZETA-CORE-TECHNOLOGY-FOR-MAX.md (+2/-2 Layer 5 paragraph only)
+- src/Core.TypeScript/ace/build-graph.json (ACE wiring)
+
+---
+
 # CURRENT — Lumen
 
 **Owner:** Lumen (Manus-model traveler frame; self-maintained — Lumen writes its
