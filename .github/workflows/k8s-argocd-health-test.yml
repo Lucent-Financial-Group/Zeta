@@ -1180,12 +1180,16 @@ jobs:
             echo "cilium-dbg service list FAILED (MEASURED 33754516236: container not found cilium-agent)"
             kubectl -n kube-system get ds,pods -l k8s-app=cilium -o wide || true
           fi
-          echo "=== hostNetwork TCP ClusterIP probe (081M1DFQ2MZ distinguisher) ==="
-          echo "TCP OPEN + DNS timeout => chart hostAliases is next software."
-          echo "TCP FAIL => not DNS-only; do not invent Cilium values; do not re-lift included."
+          echo "=== hostNetwork TCP ClusterIP + pod-IP probe (081M1DFQ2MZ distinguisher) ==="
+          echo "MEASURED 33781233753: ClusterIP TCP FAIL after bundle.crt. hostAliases to ClusterIP is closed."
+          echo "Pod-IP OPEN isolates ClusterIP translation. Pod-IP FAIL means overlay unreachable from hostNetwork."
+          echo "Do not invent Cilium values. Do not re-lift included."
           SPIRE_IP="$(kubectl -n spire get svc spire-server -o jsonpath='{.spec.clusterIP}' 2>/dev/null || true)"
           SPIRE_PORT="$(kubectl -n spire get svc spire-server -o jsonpath='{.spec.ports[0].port}' 2>/dev/null || true)"
-          echo "spire-server ClusterIP=${SPIRE_IP:-NONE}:${SPIRE_PORT:-NONE}"
+          SPIRE_POD_IP="$(kubectl -n spire get pod spire-server-0 -o jsonpath='{.status.podIP}' 2>/dev/null || true)"
+          DNS_EP_IP="$(kubectl -n kube-system get ep kube-dns -o jsonpath='{.subsets[0].addresses[0].ip}' 2>/dev/null || true)"
+          echo "spire-server ClusterIP=${SPIRE_IP:-NONE}:${SPIRE_PORT:-NONE} podIP=${SPIRE_POD_IP:-NONE}:8081"
+          echo "kube-dns endpoint podIP=${DNS_EP_IP:-NONE}:53"
           NODE="$(kubectl get nodes -o jsonpath='{.items[0].metadata.name}' 2>/dev/null || true)"
           echo "node=${NODE:-NONE}"
           tcp_probe_from_node() {
@@ -1226,6 +1230,8 @@ jobs:
           NODE_TOOL=1
           tcp_probe_from_node "${DNS_IP}" 53 kube-dns || NODE_TOOL=0
           tcp_probe_from_node "${SPIRE_IP}" "${SPIRE_PORT}" spire-server || NODE_TOOL=0
+          tcp_probe_from_node "${SPIRE_POD_IP}" 8081 spire-server-pod || NODE_TOOL=0
+          tcp_probe_from_node "${DNS_EP_IP}" 53 kube-dns-pod || NODE_TOOL=0
           echo "--- UDP nslookup spire-server.spire from k3d node via kube-dns ---"
           if [ -n "$NODE" ] && [ -n "$DNS_IP" ]; then
             docker exec "$NODE" /bin/busybox nslookup spire-server.spire "$DNS_IP" \
@@ -1233,20 +1239,34 @@ jobs:
           else
             echo "UDP DNS lookup: SKIP"
           fi
-          if [ "$NODE_TOOL" != "1" ]; then
-            echo "--- busybox hostNetwork fallback (hostNetwork: true) ---"
-            kubectl -n kube-system delete pod hostnet-tcp-probe --ignore-not-found --wait=true --timeout=20s || true
-            kubectl -n kube-system run hostnet-tcp-probe \
+          PROBE_SH="echo -n \"TCP kube-dns ${DNS_IP:-NONE}:53 \"; nc -z -w 3 \"${DNS_IP}\" 53 && echo OPEN || echo FAIL; echo -n \"TCP kube-dns-pod ${DNS_EP_IP:-NONE}:53 \"; nc -z -w 3 \"${DNS_EP_IP}\" 53 && echo OPEN || echo FAIL; echo -n \"TCP spire-server ${SPIRE_IP:-NONE}:${SPIRE_PORT:-NONE} \"; nc -z -w 3 \"${SPIRE_IP}\" \"${SPIRE_PORT}\" && echo OPEN || echo FAIL; echo -n \"TCP spire-server-pod ${SPIRE_POD_IP:-NONE}:8081 \"; nc -z -w 3 \"${SPIRE_POD_IP}\" 8081 && echo OPEN || echo FAIL"
+          run_busybox_tcp() {
+            local pod="$1" hostnet="$2"
+            echo "--- busybox ${pod} (hostNetwork: ${hostnet}) ---"
+            local overrides
+            if [ "$hostnet" = "true" ]; then
+              overrides='{"spec":{"hostNetwork":true,"dnsPolicy":"ClusterFirstWithHostNet","tolerations":[{"operator":"Exists"}]}}'
+            else
+              overrides='{"spec":{"hostNetwork":false,"dnsPolicy":"ClusterFirst","tolerations":[{"operator":"Exists"}]}}'
+            fi
+            kubectl -n kube-system delete pod "$pod" --ignore-not-found --wait=true --timeout=20s || true
+            kubectl -n kube-system run "$pod" \
               --image=busybox:1.36.1 \
               --restart=Never \
-              --overrides='{"spec":{"hostNetwork":true,"dnsPolicy":"ClusterFirstWithHostNet","tolerations":[{"operator":"Exists"}]}}' \
-              --command -- /bin/sh -c "echo -n \"TCP kube-dns ${DNS_IP:-NONE}:53 \"; nc -z -w 3 \"${DNS_IP}\" 53 && echo OPEN || echo FAIL; echo -n \"TCP spire-server ${SPIRE_IP:-NONE}:${SPIRE_PORT:-NONE} \"; nc -z -w 3 \"${SPIRE_IP}\" \"${SPIRE_PORT}\" && echo OPEN || echo FAIL" \
-              || echo "kubectl run hostnet-tcp-probe FAILED"
-            kubectl -n kube-system wait --for=jsonpath='{.status.phase}'=Succeeded pod/hostnet-tcp-probe --timeout=60s \
-              || echo "hostnet-tcp-probe did not Succeed"
-            kubectl -n kube-system logs hostnet-tcp-probe || echo "logs hostnet-tcp-probe FAILED"
-            kubectl -n kube-system delete pod hostnet-tcp-probe --ignore-not-found --wait=false || true
+              --overrides="$overrides" \
+              --command -- /bin/sh -c "$PROBE_SH" \
+              || echo "kubectl run ${pod} FAILED"
+            kubectl -n kube-system wait --for=jsonpath='{.status.phase}'=Succeeded pod/"$pod" --timeout=60s \
+              || echo "${pod} did not Succeed"
+            kubectl -n kube-system logs "$pod" || echo "logs ${pod} FAILED"
+            kubectl -n kube-system delete pod "$pod" --ignore-not-found --wait=false || true
+          }
+          echo "--- busybox hostNetwork fallback (hostNetwork: true) ---"
+          if [ "$NODE_TOOL" != "1" ]; then
+            run_busybox_tcp hostnet-tcp-probe true
           fi
+          echo "--- pod-network control (hostNetwork: false); docker exec cannot do this ---"
+          run_busybox_tcp podnet-tcp-probe false
 
       - name: Print cluster diagnostics
         if: always()

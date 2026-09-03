@@ -109,10 +109,9 @@ describe("every supported provider is exercised by a real CI lane", () => {
    * `cilium-dbg` with `2>/dev/null | grep` also goes red: that dump
    * printed nothing and looked like KPR had no kube-dns.
    *
-   * The remaining included-class question is TCP ClusterIP from the
-   * hostNetwork netns (the k3d node). MEASURED live-k3d 33781233753:
-   * busybox hostNetwork TCP kube-dns FAIL after bundle.crt present.
-   * Delete the probe strings and this goes red.
+   * The remaining included-class question is TCP to the **pod IP**
+   * from hostNetwork (ClusterIP FAIL is measured 33781233753). Delete
+   * `TCP spire-server-pod` or the pod-network control and this goes red.
    */
   test("live-k3d dump logs the spire-agent DaemonSet, not a label the chart does not set", () => {
     const dump = (jobs()["live-k3d"]!.steps ?? []).find((s) =>
@@ -129,9 +128,13 @@ describe("every supported provider is exercised by a real CI lane", () => {
     expect(run).toContain("get cm spire-bundle");
     expect(run.includes("cilium-dbg service list 2>/dev/null")).toBe(false);
     expect(run).toContain("k8s-app=cilium");
-    expect(run).toContain("hostNetwork TCP ClusterIP probe");
+    expect(run).toContain("hostNetwork TCP ClusterIP");
     expect(run).toContain("TCP kube-dns");
     expect(run).toContain("TCP spire-server");
+    expect(run).toContain("TCP spire-server-pod");
+    expect(run).toContain("TCP kube-dns-pod");
+    expect(run).toContain("8081");
+    expect(run).toContain("pod-network control");
     expect(run).toContain("busybox nc");
     expect(run).toContain("hostNetwork: true");
     expect(run).not.toMatch(/docker exec.*\|\s*(grep|rg)\s+-[^\n]*q/);
