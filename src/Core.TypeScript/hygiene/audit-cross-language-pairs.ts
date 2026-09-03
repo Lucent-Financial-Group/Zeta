@@ -102,9 +102,19 @@ const PIN_ALIASES: ReadonlyMap<string, readonly string[]> = new Map([
   // The log's frames and directory layout are what a spine's recovery crosses on.
   ["DiskDeltaLog", ["DeltaLogInterop", "delta-log-interop-fixture"]],
   ["RecoverableSpine", ["DeltaLogInterop", "SnapshotManifestInterop"]],
+  // `DeltaCodec.fs` ships the entry codec that `DeltaLogEntryCodec.Tests.fs` replays against the
+  // four-language golden vectors in `delta-log-entry/`. The replay is named for the FORMAT rather
+  // than the module, so the qualified-call scan does not see it.
+  ["DeltaCodec", ["DeltaLogEntryCodec", "delta-log-entry"]],
 ]);
 
-function pinsFor(concept: string, kebab: string, tsFiles: readonly string[], fsTestFiles: readonly string[]): string[] {
+function pinsFor(
+  concept: string,
+  kebab: string,
+  tsFiles: readonly string[],
+  fsTestFiles: readonly string[],
+  readText: (f: string) => string,
+): string[] {
   const pins: string[] = [];
 
   const aliases = PIN_ALIASES.get(concept) ?? [];
@@ -114,21 +124,46 @@ function pinsFor(concept: string, kebab: string, tsFiles: readonly string[], fsT
     }
   }
 
-  for (const f of tsFiles) {
-    const b = basename(f);
-    const isEvidence = b.includes("golden-vectors") || b.includes("treaty-transcript") || b.includes("interop-fixture");
-    if (!isEvidence) continue;
-    // The evidence must belong to this concept: either its directory is the concept's, or its
-    // filename names it. A repo-wide `golden-vectors.json` elsewhere is not this pair's pin.
-    if (f.replace(/\\/g, "/").includes(`/${kebab}/`) || b.includes(kebab)) pins.push(f);
-  }
-
+  // ── The strongest signal: an F# REPLAY that calls into the module ──────────
+  //
+  // Filename matching was the first version of this and it over-reported badly. `ActionGrammar`
+  // and `Persona` were both flagged unwatched while `HatTreaty.Tests.fs` replays them — it calls
+  // `ActionGrammar.join`, `ActionGrammar.meet`, `ActionGrammar.complement` against the transcript's
+  // `Lattice` vectors and carries 22 `Persona*` vector types — because the evidence is named for
+  // the DIRECTORY (`hat/`) rather than for each concept in it. One treaty routinely pins several
+  // modules, and a roster that cannot see that cries wolf.
+  //
+  // Asking "does a replay test actually CALL this module?" answers the real question. A qualified
+  // call `Concept.something` in a file that also reads a transcript or golden file is a replay
+  // exercising that module, whatever anyone named the files.
   for (const f of fsTestFiles) {
     const b = basename(f);
-    if (b.startsWith(`${concept}Treaty`) || b.startsWith(`${concept}Interop`)) pins.push(f);
-    // `SnapshotStore` is pinned by `SnapshotManifestInterop`, so allow a prefix match on the
-    // concept's leading word when the file also says Treaty/Interop.
-    else if ((b.includes("Treaty") || b.includes("Interop")) && b.includes(concept)) pins.push(f);
+    if (b.startsWith(`${concept}Treaty`) || b.startsWith(`${concept}Interop`)) {
+      pins.push(f);
+      continue;
+    }
+    const text = readText(f);
+    if (text.length === 0) continue;
+    const isReplay =
+      text.includes("transcript") || text.includes("golden") || b.includes("Treaty") || b.includes("Interop");
+    // `\\b` and `\\.`, not `\b` and `\.`: inside a template literal those are a BACKSPACE character
+    // and a bare dot, so the first version searched for `<BS>ActionGrammar.` and matched nothing —
+    // a detector that silently found no pins and reported every pair unwatched.
+    if (isReplay && new RegExp(`\\b${concept}\\.`).test(text)) pins.push(f);
+  }
+
+  // ── TypeScript-side evidence ───────────────────────────────────────────────
+  for (const f of tsFiles) {
+    const b = basename(f);
+    const isEvidence =
+      b.includes("golden-vectors") ||
+      b.includes("treaty-transcript") ||
+      b.includes("interop-fixture") ||
+      // `resume-golden.json` — the same artifact under a different spelling. Missing it reported a
+      // module with real vectors as unwatched.
+      b.includes("-golden");
+    if (!isEvidence) continue;
+    if (f.replaceAll("\\", "/").includes(`/${kebab}/`) || b.includes(kebab)) pins.push(f);
   }
 
   return pins;
@@ -146,6 +181,21 @@ export function findPairs(): Pair[] {
     parts.pop();
     tsDirs.add(parts.join("/"));
   }
+
+  // Read each F# test once: 538 concepts against the test corpus would otherwise be quadratic.
+  const textCache = new Map<string, string>();
+  const readText = (f: string): string => {
+    const hit = textCache.get(f);
+    if (hit !== undefined) return hit;
+    let text = "";
+    try {
+      text = readFileSync(f, "utf8");
+    } catch {
+      text = "";
+    }
+    textCache.set(f, text);
+    return text;
+  };
 
   const pairs: Pair[] = [];
   for (const fsPath of fsharpFiles) {
@@ -170,7 +220,12 @@ export function findPairs(): Pair[] {
     }
     if (ts === undefined) continue;
 
-    pairs.push({ concept, fsharp: fsPath, typescript: ts, pinnedBy: pinsFor(concept, kebab, tsFiles, fsTestFiles) });
+    pairs.push({
+      concept,
+      fsharp: fsPath,
+      typescript: ts,
+      pinnedBy: pinsFor(concept, kebab, tsFiles, fsTestFiles, readText),
+    });
   }
   return pairs.sort((a, b) => (a.concept < b.concept ? -1 : a.concept > b.concept ? 1 : 0));
 }
@@ -181,7 +236,47 @@ export function findPairs(): Pair[] {
  * An allowlist with no reasons is a way to make a check quiet; the reason is what lets the next
  * reader judge whether it still holds.
  */
-export const DECLARED_UNPINNED: ReadonlyMap<string, string> = new Map([]);
+export const DECLARED_UNPINNED: ReadonlyMap<string, string> = new Map([
+  // ── NAME COLLISIONS: the roster pairs by name, and these two files share a word, not an idea.
+  //    Each was checked by opening both sides; the paths alone mostly give it away.
+  [
+    "Crypto",
+    "Name collision. F# `Crypto.fs` is the crypto NOUN-CLASS (operations as events over a hexagonal port); TypeScript's is `crypto/better-git-crypt/crypto.ts`, a git-crypt tool. Nothing crosses between them, so a treaty would pin two unrelated things to each other.",
+  ],
+  [
+    "Plan",
+    "Name collision. F# `Plan.fs` is QUERY-PLAN metadata — per-operator estimates from a topo walk. TypeScript's is `installer/multiboot/plan.ts`, a USB partition layout planner. Different domains entirely.",
+  ],
+  [
+    "Metrics",
+    "Name collision. F# `Metrics.fs` is per-operator observability via `System.Diagnostics.Metrics`. TypeScript's is `pr-categorization/metrics.ts` — precision/recall for a classifier. Same English word, unrelated jobs.",
+  ],
+  [
+    "Query",
+    "Name collision. F# `Query.fs` is fluent LINQ-style extensions over `Stream<ZSet<_>>`; TypeScript's is `file-type-plugin/query.ts`, which evaluates a bonsai `Expr` against tagged rows. Related in spirit, but neither is an implementation of the other and no value crosses.",
+  ],
+  [
+    "Heat",
+    "Name collision. F# `Heat.fs` is the thermodynamic shed — whether a payload was DEFERRED or ANNIHILATED. TypeScript's is `darkhall-ui/heat.ts`, a UI signal union (`forgotten` | `backpressure` | …). A treaty would assert an equivalence that was never intended.",
+  ],
+  // ── DECLARATION ONLY: there is no behaviour to replay on either side.
+  [
+    "Ctm",
+    "Both files say DECLARATION ONLY in their own first line: the Conscious Turing Machine as a typed interface, v0, with no implementation behind it. A treaty needs two implementations to disagree; two declarations cannot.",
+  ],
+]);
+
+/**
+ * The pairs the tool actually REPORTS: unpinned, and not declared as a non-pair.
+ *
+ * Exported so the CLI and the tests ask the same question through the same function. The first
+ * version left this filter inline in the `import.meta.main` block, so a test could only re-implement
+ * it — and a test that re-implements the thing it is checking agrees with itself rather than with
+ * the tool. That is how a check drifts from the code it guards without either one changing.
+ */
+export function unwatchedPairs(): Pair[] {
+  return findPairs().filter((p) => p.pinnedBy.length === 0 && !DECLARED_UNPINNED.has(p.concept));
+}
 
 const BASELINE_PATH = join(REPO_ROOT, "src", "Core.TypeScript", "hygiene", "audit-cross-language-pairs.baseline.json");
 
@@ -207,7 +302,7 @@ export function readBaseline(): Baseline {
 
 if (import.meta.main) {
   const pairs = findPairs();
-  const unpinned = pairs.filter((p) => p.pinnedBy.length === 0 && !DECLARED_UNPINNED.has(p.concept));
+  const unpinned = unwatchedPairs();
   const baseline = readBaseline();
   const known = new Set(baseline.unpinned);
   const fresh = unpinned.filter((p) => !known.has(p.concept));
