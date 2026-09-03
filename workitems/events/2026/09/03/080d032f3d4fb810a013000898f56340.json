@@ -1,0 +1,14 @@
+{
+  "id": "080d032f3d4fb810a013000898f56340",
+  "at": "2026-09-03T06:14:36.279Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1JYFAFM087G0R001H0SX93",
+    "type": "task",
+    "title": "TypeScript had no durable delta log, so recovery came back short and said nothing",
+    "slug": "typescript-had-no-durable-delta-log-so-recovery-came-back-sh",
+    "priority": "P2",
+    "filename": "081M1JYFAFM087G0R001H0SX93-typescript-had-no-durable-delta-log-so-recovery-came-back-sh.md"
+  }
+}

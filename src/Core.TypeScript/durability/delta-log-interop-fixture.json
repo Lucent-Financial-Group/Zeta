@@ -1,0 +1,17 @@
+{
+  "_comment": "A delta-log directory written by the TypeScript DiskDeltaLog (src/Core.TypeScript/durability/disk-delta-log.ts), recorded as hex-in-JSON per .claude/rules/no-binary-in-proof-lineage.md. tests/Tests.FSharp/DeltaLogInterop.Tests.fs materialises these files and replays them with the REAL F# DiskDeltaLog. Regenerate: bun src/Core.TypeScript/durability/generate-delta-log-interop-fixture.ts",
+  "files": [
+    {
+      "name": "00000000000000000001.delta",
+      "hex": "a3686361707475726564a265636c6f636b6a31373030303030303030647365656461346564656c7461828265616c70686102826462657461206373657101"
+    },
+    {
+      "name": "00000000000000000002.delta",
+      "hex": "a3686361707475726564a1646e6f74657824636173652d6d697865643a206f7264696e616c206f7264657220697320412c422c612c626564656c746184826141228261420182616101826162056373657102"
+    },
+    {
+      "name": "00000000000000000003.delta",
+      "hex": "a3686361707475726564a06564656c7461806373657103"
+    }
+  ]
+}
