@@ -192,8 +192,8 @@ def adapter_totals(versions, compensated):
     return ((sums[0], sums[1]), (sums[1], sums[2])), (sums[3], sums[4])
 
 
-def adapter_query(state, compensated=True):
-    canonical = adapter_canonical_state(state)
+def adapter_query(state, compensated=True, canonicalize=True):
+    canonical = adapter_canonical_state(state) if canonicalize else tuple(state)
     ordered_fingerprints = [adapter_fingerprint(key, estimate) for key, estimate in canonical]
     conflicts = conflict_keys(canonical)
     if conflicts:
@@ -244,7 +244,8 @@ def main():
         (sa[0], sb[0], sc[0]), (sa[0], sc[0], sb[0]), (sb[0], sa[0], sc[0]),
         (sb[0], sc[0], sa[0]), (sc[0], sa[0], sb[0]), (sc[0], sb[0], sa[0]),
     )
-    use_compensation = os.environ.get("CRDT_BELIEF_MUTANT") != "adapter-naive"
+    mutant = os.environ.get("CRDT_BELIEF_MUTANT")
+    use_compensation = mutant != "adapter-naive"
     adapter_receipts = tuple(adapter_query(order, use_compensation) for order in adapter_orders)
     adapter_baseline = adapter_receipts[0]
     cancellation_state = (
@@ -254,6 +255,34 @@ def main():
     )
     compensated_cancellation = adapter_query(cancellation_state, use_compensation)
     naive_cancellation = adapter_query(cancellation_state, False)
+    numerical_orders = (
+        (("a", ((0.0, 0.0), ((1e-16, 0.0), (0.0, 1.0)))),
+         ("b", ((0.0, 0.0), ((1.0, 0.0), (0.0, 1.0)))),
+         ("c", ((0.0, 0.0), ((1.0, 0.0), (0.0, 1.0))))),
+        (("a", ((0.0, 0.0), ((1e-16, 0.0), (0.0, 1.0)))),
+         ("c", ((0.0, 0.0), ((1.0, 0.0), (0.0, 1.0)))),
+         ("b", ((0.0, 0.0), ((1.0, 0.0), (0.0, 1.0))))),
+        (("b", ((0.0, 0.0), ((1.0, 0.0), (0.0, 1.0)))),
+         ("a", ((0.0, 0.0), ((1e-16, 0.0), (0.0, 1.0)))),
+         ("c", ((0.0, 0.0), ((1.0, 0.0), (0.0, 1.0))))),
+        (("b", ((0.0, 0.0), ((1.0, 0.0), (0.0, 1.0)))),
+         ("c", ((0.0, 0.0), ((1.0, 0.0), (0.0, 1.0)))),
+         ("a", ((0.0, 0.0), ((1e-16, 0.0), (0.0, 1.0))))),
+        (("c", ((0.0, 0.0), ((1.0, 0.0), (0.0, 1.0)))),
+         ("a", ((0.0, 0.0), ((1e-16, 0.0), (0.0, 1.0)))),
+         ("b", ((0.0, 0.0), ((1.0, 0.0), (0.0, 1.0))))),
+        (("c", ((0.0, 0.0), ((1.0, 0.0), (0.0, 1.0)))),
+         ("b", ((0.0, 0.0), ((1.0, 0.0), (0.0, 1.0)))),
+         ("a", ((0.0, 0.0), ((1e-16, 0.0), (0.0, 1.0))))),
+    )
+    numerical_receipts = tuple(
+        adapter_query(order, use_compensation, canonicalize=mutant != "adapter-unsorted")
+        for order in numerical_orders
+    )
+    numerical_posteriors = {
+        receipt["posterior"]["covariance"][0][0]
+        for receipt in numerical_receipts
+    }
     report = {
         "evidenceMerge": {
             "idempotent": evidence_state_merge(sa, sa) == sa,
@@ -292,6 +321,8 @@ def main():
             ),
             "compensatedCancellationVariance00": compensated_cancellation["posterior"]["covariance"][0][0],
             "naiveCancellationVariance00": naive_cancellation["posterior"]["covariance"][0][0],
+            "orderSensitivePosteriorCount": len(numerical_posteriors),
+            "orderSensitiveReceiptsIdentical": all(receipt == numerical_receipts[0] for receipt in numerical_receipts),
         },
     }
     print(json.dumps(report, separators=(",", ":"), allow_nan=False))

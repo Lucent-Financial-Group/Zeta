@@ -44,6 +44,8 @@ interface CanonicalQueryReport {
   readonly kahanVsNaiveVariance00Different: boolean;
   readonly compensatedCancellationVariance00: number;
   readonly naiveCancellationVariance00: number;
+  readonly orderSensitivePosteriorCount: number;
+  readonly orderSensitiveReceiptsIdentical: boolean;
 }
 
 function close(left: number, right: number, tolerance = 1e-12): boolean {
@@ -128,8 +130,8 @@ function parseCanonicalQuery(value: unknown): CanonicalQueryReport {
   const code = "CRDT-BELIEF-PYTHON-QUERY-SCHEMA";
   if (typeof value !== "object" || value === null) throw new Error(code);
   const record = value as Record<string, unknown>;
-  const numericFields = ["compensatedCancellationVariance00", "naiveCancellationVariance00"] as const;
-  if (typeof record.permutationReceiptsIdentical !== "boolean" || typeof record.redeliveryIdentical !== "boolean" || typeof record.kahanVsNaiveVariance00Different !== "boolean" || !numericFields.every((field) => typeof record[field] === "number" && Number.isFinite(record[field]))) {
+  const numericFields = ["compensatedCancellationVariance00", "naiveCancellationVariance00", "orderSensitivePosteriorCount"] as const;
+  if (typeof record.permutationReceiptsIdentical !== "boolean" || typeof record.redeliveryIdentical !== "boolean" || typeof record.kahanVsNaiveVariance00Different !== "boolean" || typeof record.orderSensitiveReceiptsIdentical !== "boolean" || !numericFields.every((field) => typeof record[field] === "number" && Number.isFinite(record[field]))) {
     throw new Error(code);
   }
   return {
@@ -141,6 +143,8 @@ function parseCanonicalQuery(value: unknown): CanonicalQueryReport {
     kahanVsNaiveVariance00Different: record.kahanVsNaiveVariance00Different,
     compensatedCancellationVariance00: record.compensatedCancellationVariance00 as number,
     naiveCancellationVariance00: record.naiveCancellationVariance00 as number,
+    orderSensitivePosteriorCount: record.orderSensitivePosteriorCount as number,
+    orderSensitiveReceiptsIdentical: record.orderSensitiveReceiptsIdentical,
   };
 }
 
@@ -241,6 +245,31 @@ for (const changed of [queryReport.changedMean, queryReport.changedUncertainty])
 const normalKahanControl = queryReport.kahanVsNaiveVariance00Different
   && !close(queryReport.compensatedCancellationVariance00, queryReport.naiveCancellationVariance00, 0);
 if (!normalKahanControl) failures.push("canonical:kahan-control");
+if (queryReport.orderSensitivePosteriorCount !== 1 || !queryReport.orderSensitiveReceiptsIdentical) {
+  failures.push("canonical:numerical-order-control");
+}
+
+const numericalFirst = { key: "a", estimate: { mean: [0, 0] as const, covariance: [[1e-16, 0], [0, 1]] as const } };
+const numericalSecond = { key: "b", estimate: { mean: [0, 0] as const, covariance: [[1, 0], [0, 1]] as const } };
+const numericalThird = { key: "c", estimate: { mean: [0, 0] as const, covariance: [[1, 0], [0, 1]] as const } };
+const numericalPermutations = [
+  [numericalFirst, numericalSecond, numericalThird],
+  [numericalFirst, numericalThird, numericalSecond],
+  [numericalSecond, numericalFirst, numericalThird],
+  [numericalSecond, numericalThird, numericalFirst],
+  [numericalThird, numericalFirst, numericalSecond],
+  [numericalThird, numericalSecond, numericalFirst],
+] as const;
+const numericalReceipts = numericalPermutations.map((versions) => queryCanonicalGaussianEvidence({ versions }));
+if (!numericalReceipts.every((receipt) => receipt.status === "Ready")) {
+  failures.push("canonical:typescript-numerical-query-not-ready");
+} else {
+  const readyReceipts = numericalReceipts as readonly ReadyQueryReport[];
+  const baselineVariance = readyReceipts[0]?.posterior.covariance[0]?.[0];
+  if (baselineVariance === undefined || !readyReceipts.every((receipt) => receipt.posterior.covariance[0]?.[0] === baselineVariance)) {
+    failures.push("canonical:typescript-numerical-order-control");
+  }
+}
 
 const mutantProcess = Bun.spawnSync(["python3", oracle], {
   cwd: root,
@@ -257,7 +286,19 @@ const adapterMutationDetected = !close(
 );
 if (!adapterMutationDetected) failures.push("canonical:naive-mutant-not-detected");
 
-console.log(`CRDT belief-fusion cross-verification: 5 law groups; adapter-naive mutant ${adapterMutationDetected ? "detected" : "not-detected"}; failures ${String(failures.length)}`);
+const unsortedMutantProcess = Bun.spawnSync(["python3", oracle], {
+  cwd: root,
+  stdout: "pipe",
+  stderr: "pipe",
+  env: { ...process.env, CRDT_BELIEF_MUTANT: "adapter-unsorted" },
+});
+if (unsortedMutantProcess.exitCode !== 0) throw new Error(`CRDT-BELIEF-PYTHON-UNSORTED-MUTANT-FAILED:${unsortedMutantProcess.stderr.toString().trim()}`);
+const unsortedMutant = parseReport(JSON.parse(unsortedMutantProcess.stdout.toString()) as unknown);
+const canonicalOrderMutationDetected = unsortedMutant.canonicalQuery.orderSensitivePosteriorCount === 2
+  && !unsortedMutant.canonicalQuery.orderSensitiveReceiptsIdentical;
+if (!canonicalOrderMutationDetected) failures.push("canonical:unsorted-mutant-not-detected");
+
+console.log(`CRDT belief-fusion cross-verification: 5 law groups; adapter-naive mutant ${adapterMutationDetected ? "detected" : "not-detected"}; adapter-unsorted mutant ${canonicalOrderMutationDetected ? "detected" : "not-detected"}; failures ${String(failures.length)}`);
 if (failures.length > 0) {
   for (const failure of failures) console.error(failure);
   process.exit(1);
