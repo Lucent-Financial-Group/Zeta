@@ -1,0 +1,12 @@
+{
+  "pr_number": 16450,
+  "archive_path": "docs/history/pr-reviews/PR-16450-test-observe-failure-injection-against-the-real-loop-and-two-gaps-it-found.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-03T06:07:29.366Z",
+  "schema_version": "v1",
+  "commit_sha": "7038fe09161d22a47d32d6fc2962c744c7b8fc91",
+  "title": "test(observe): failure injection against the real loop, and two gaps it found",
+  "state": "MERGED",
+  "merged_at": "2026-09-03T06:06:44Z",
+  "head_ref": "resilience-probe"
+}
