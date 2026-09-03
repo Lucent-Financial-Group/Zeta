@@ -1,0 +1,14 @@
+{
+  "id": "080d033248ba3810a0130008cf525018",
+  "at": "2026-09-03T08:01:01.255Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1K4J5T3087G0R000FP34KS",
+    "type": "bug",
+    "title": "an ambiguous model reply became a confident wrong choice",
+    "slug": "an-ambiguous-model-reply-became-a-confident-wrong-choice",
+    "priority": "P2",
+    "filename": "081M1K4J5T3087G0R000FP34KS-an-ambiguous-model-reply-became-a-confident-wrong-choice.md"
+  }
+}

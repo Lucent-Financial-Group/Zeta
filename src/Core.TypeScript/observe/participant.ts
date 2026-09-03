@@ -22,7 +22,7 @@
  */
 
 import { observe, buildMenu, actionLabel, type World, type NextAction } from "./observe";
-import { ollamaBackend, chooseIndex, type ChooseFallbackCause } from "../accelerator/local-llm";
+import { ollamaBackend, chooseIndex, parseChosenIndex, type ChooseFallbackCause } from "../accelerator/local-llm";
 import type { ISummon, SummonResult } from "../peer-call/summon";
 
 // ─── The Participant interface ───────────────────────────────────────────────
@@ -125,11 +125,12 @@ export function cloudPersonaParticipant(summoner: ISummon, persona: string): Par
         return { index: 0, raw: `summon-error:${result.exitCode}`, fallback: true, cause: "backend-error" };
       }
 
-      // Parse the response for a number
-      const match = result.stdout.match(/\d+/);
-      if (!match) return { index: 0, raw: result.stdout.slice(0, 100), fallback: true, cause: "unparseable" };
-      const idx = parseInt(match[0]!, 10);
-      if (isNaN(idx) || idx < 0 || idx >= menu.length) {
+      // The SAME parser the local path uses. This one matters more: a summon has no token cap, so
+      // prose is the normal case here rather than the exception, and the old first-run-of-digits
+      // match would read "0-based index: 4" as 0 and report it as a genuine choice.
+      const idx = parseChosenIndex(result.stdout);
+      if (idx === null) return { index: 0, raw: result.stdout.slice(0, 100), fallback: true, cause: "unparseable" };
+      if (idx < 0 || idx >= menu.length) {
         return { index: 0, raw: result.stdout.slice(0, 100), fallback: true, cause: "out-of-range" };
       }
       return { index: idx, raw: result.stdout.slice(0, 100), fallback: false, cause: "none" };

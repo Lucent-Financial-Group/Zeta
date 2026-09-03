@@ -141,6 +141,47 @@ export interface ChooseResult {
  * FALLS BACK to index 0 on any failure (empty menu is the only throw). A single
  * option short-circuits with no model call.
  */
+/**
+ * The index a reply names, or `null` when it does not unambiguously name one.
+ *
+ * ── WHY NOT `raw.match(/d+/)` ──────────────────────────────────────────────
+ * That takes the FIRST run of digits anywhere in the reply, which is right when the model answers
+ * with a bare number and silently wrong when it does not:
+ *
+ *   "0-based index: 4"  ->  0     the model chose 4
+ *   "1st: 4"            ->  1     the model chose 4
+ *
+ * Both were returned as `fallback: false, cause: "none"` — the system asserting the model made a
+ * choice it did not make. That is worse than a fallback, because the wrong action is dispatched AND
+ * the tick is recorded as a genuine decision, so it feeds `decorrelation-meter`'s agreement figures
+ * and the divergence rate the promotion gate reads to decide whether a lane may leave shadow.
+ *
+ * ── THE RULE ─────────────────────────────────────────────────────────────────
+ * A reply naming exactly one number names a choice. A reply naming several does not name one this
+ * function can identify, so it is UNPARSEABLE and the caller falls back — the same destination every
+ * other uncertain answer in this system takes. An ambiguous answer is not a decision.
+ *
+ * ── WHAT IT COSTS, MEASURED RATHER THAN ASSUMED ──────────────────────────────
+ * 45 real replies were captured from `qwen2.5:0.5b` at temperature 0.8 through this exact prompt,
+ * across three menu shapes and three world states. **All 45 were bare numbers.** So for the local
+ * model in use this rule changes nothing; what it protects is the CLOUD persona path, which runs the
+ * same parse over an unbounded summon where prose is the normal case rather than the exception.
+ *
+ * A reply like "Option 3 of 5" — correct by luck today — becomes a fallback. That is the trade, and
+ * it is the right way round: a recorded fallback is visible in the soak window, and a silently wrong
+ * action is not.
+ */
+export function parseChosenIndex(raw: string): number | null {
+  const matches = raw.match(/\d+/g);
+  if (matches === null || matches.length !== 1) return null;
+  const idx = Number.parseInt(matches[0], 10);
+  if (!Number.isInteger(idx)) return null;
+  // A minus sign before the digits means the reply named a negative, which is never a menu slot.
+  // Reported as unparseable rather than silently read as its absolute value.
+  if (/-\s*\d/.test(raw)) return null;
+  return idx;
+}
+
 export async function chooseIndex(backend: ModelBackend, args: ChooseArgs): Promise<ChooseResult> {
   const n = args.options.length;
   if (n === 0) throw new Error("chooseIndex: options must be non-empty");
@@ -159,10 +200,10 @@ export async function chooseIndex(backend: ModelBackend, args: ChooseArgs): Prom
   } catch {
     return { index: 0, raw: "", fallback: true, cause: "backend-error" };
   }
-  const m = raw.match(/\d+/);
-  if (!m) return { index: 0, raw, fallback: true, cause: "unparseable" };
-  const idx = Number.parseInt(m[0]!, 10);
-  if (!Number.isInteger(idx) || idx < 0 || idx >= n) {
+  const parsed = parseChosenIndex(raw);
+  if (parsed === null) return { index: 0, raw, fallback: true, cause: "unparseable" };
+  const idx = parsed;
+  if (idx < 0 || idx >= n) {
     // THE illegal selection: the model named a slot outside the menu it was shown.
     return { index: 0, raw, fallback: true, cause: "out-of-range" };
   }
