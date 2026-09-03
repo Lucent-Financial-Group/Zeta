@@ -414,6 +414,9 @@ type InMemoryFileSystem() =
 /// Polyfill `IBlockIo`: one host file, LBA * BlockSize offset, through `IFileSystem`.
 [<Sealed>]
 type FileSystemBlockIo(fs: IFileSystem, path: string, blockSize: int) =
+    let lockObj = obj ()
+    let mutable logicalBytes = 0L
+
     do
         if blockSize <= 0 || (blockSize &&& (blockSize - 1)) <> 0 then
             invalidArg "blockSize" "block size must be a positive power of two"
@@ -421,6 +424,12 @@ type FileSystemBlockIo(fs: IFileSystem, path: string, blockSize: int) =
         if not (fs.Exists path) then
             use stream = fs.OpenWrite(path, false)
             ()
+
+    member _.Path = path
+
+    member _.LogicalBytes
+        with get () = lock lockObj (fun () -> logicalBytes)
+        and set v = lock lockObj (fun () -> logicalBytes <- v)
 
     interface IBlockIo with
         member _.BlockSize = blockSize

@@ -465,9 +465,6 @@ module ReferenceFrameFactorHeterarchyTests =
         let position = gaussian (vector 1.0 2.0 3.0) (diagonal 2.0 3.0 4.0)
         let first = message "collision-source" "column-a" (Map.ofList [ "cup", log 5.0 ]) position Rffh.identityPose
         let firstReceipt, once = add first (emptyWithFactorIdBitWidth 8)
-        let originalIds = firstReceipt.ObjectFactorId, firstReceipt.PositionFactorId
-        let beforeObjects = Rffh.objectPosterior once
-        let beforePosition = Rffh.positionPosterior once
         let collision =
             seq { 0 .. 4095 }
             |> Seq.map (fun index ->
@@ -479,15 +476,26 @@ module ReferenceFrameFactorHeterarchyTests =
         let candidate, error = collision
         Assert.Contains(candidate.EvidenceId, error.Observed)
         Assert.Contains(first.EvidenceId, error.Observed)
-        Assert.Equal(1, Rffh.acceptedEvidenceCount once)
-        Assert.Equal<Map<string, float>>(beforeObjects, Rffh.objectPosterior once)
-        Assert.Equal<Rffh.Gaussian3 option>(beforePosition, Rffh.positionPosterior once)
-        let replayReceipt, replay = add first once
+        let fallback =
+            seq { 0 .. 4095 }
+            |> Seq.map (fun index ->
+                message (sprintf "post-refusal-%d" index) "column-c" (Map.ofList [ "cup", log 11.0 ]) position Rffh.identityPose)
+            |> Seq.pick (fun observation ->
+                match Rffh.applyMessage observation once with
+                | Ok _ -> Some observation
+                | Error _ -> None)
+        let _, afterRefusal = add fallback once
+        let _, cleanFirst = add first (emptyWithFactorIdBitWidth 8)
+        let _, expected = add fallback cleanFirst
+        Assert.Equal(2, Rffh.acceptedEvidenceCount afterRefusal)
+        Assert.Equal(Rffh.acceptedEvidenceCount expected, Rffh.acceptedEvidenceCount afterRefusal)
+        Assert.Equal<Map<string, float>>(Rffh.objectPosterior expected, Rffh.objectPosterior afterRefusal)
+        Assert.Equal<Rffh.Gaussian3 option>(Rffh.positionPosterior expected, Rffh.positionPosterior afterRefusal)
+        let replayReceipt, replay = add first afterRefusal
         Assert.Equal<Rffh.EvidenceDisposition>(Rffh.DuplicateIgnored, replayReceipt.Disposition)
-        Assert.Equal(originalIds, (firstReceipt.ObjectFactorId, firstReceipt.PositionFactorId))
         Assert.Equal(None, replayReceipt.ObjectFactorId)
         Assert.Equal(None, replayReceipt.PositionFactorId)
-        Assert.Equal(1, Rffh.acceptedEvidenceCount replay)
+        Assert.Equal(Rffh.acceptedEvidenceCount expected, Rffh.acceptedEvidenceCount replay)
 
     [<Fact>]
     let ``RFFH-20d: invalid retained factor-ID widths fail closed`` () =

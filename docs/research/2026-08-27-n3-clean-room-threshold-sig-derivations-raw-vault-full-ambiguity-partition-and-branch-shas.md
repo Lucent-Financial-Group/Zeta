@@ -29,7 +29,8 @@ passed. This document does not restate the combine and does not supersede it.
 
 **What is genuinely unpreserved, and is what this document adds:**
 
-1. **The three raw per-derivation reports** (836 lines total) exist *only* on the branches.
+1. **The three raw per-derivation reports** (836 lines total) exist *only* on the branches.  
+   *(2026-09-03: no longer true -- the three reports are on `main` at `docs/derivations/`, PR #16481; the implementations remain only on the archive tags.)*
    The combine is a synthesis; under
    [`dv2-data-split-discipline-activated`](../../.claude/rules/dv2-data-split-discipline-activated.md)
    the reports are the **raw vault** — a single version of the facts — and a synthesis is not

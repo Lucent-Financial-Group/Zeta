@@ -1065,18 +1065,26 @@ let ``MLBNN-46: exact dense query corrects the known loopy variance gap against 
             sprintf "layer %d dense covariance is not the independent exact covariance" i)
 
 [<Fact>]
-let ``MLBNN-47: exact dense queries replay bit-stably and do not absorb evidence`` () =
-    let net = MultilayerBnn.tryCreateUniform 4 prior 0.75 |> unwrap
+let ``MLBNN-47: exact dense query does not re-absorb evidence and matches the independent joint control`` () =
+    let topology = MultilayerBnn.Sequential
+    let channelVariances = Array.create 4 0.75
+    let net = MultilayerBnn.tryCreate (Array.create 4 prior) channelVariances topology |> unwrap
     let updated = MultilayerBnn.tryInferExactDenseGaussian [ -1.0; 2.0; 3.0 ] net |> unwrap
     let beforePrecision = updated.Network.Layers.[0].Posterior.Precision
-    let first = MultilayerBnn.tryQueryExactDenseGaussian updated.Network |> unwrap
-    let second = MultilayerBnn.tryQueryExactDenseGaussian updated.Network |> unwrap
+    let queried = MultilayerBnn.tryQueryExactDenseGaussian updated.Network |> unwrap
+    let priorTau = Array.init 4 (fun i -> updated.Network.Layers.[i].Posterior.Precision)
+    let priorNu = Array.init 4 (fun i -> updated.Network.Layers.[i].Posterior.PrecisionMean)
+    let expectedMeans, expectedVariances = exactDagMarginals priorTau priorNu channelVariances (MultilayerBnn.parentsOf topology)
 
-    Assert.Equal(3, first.AbsorbedObservationCount)
-    Assert.Equal(bits beforePrecision, bits second.Network.Layers.[0].Posterior.Precision)
-    for i in 0 .. first.Marginals.Length - 1 do
-        Assert.Equal(bits first.Marginals.[i].Precision, bits second.Marginals.[i].Precision)
-        Assert.Equal(bits first.Marginals.[i].PrecisionMean, bits second.Marginals.[i].PrecisionMean)
+    Assert.Equal(3, queried.AbsorbedObservationCount)
+    Assert.Equal(bits beforePrecision, bits queried.Network.Layers.[0].Posterior.Precision)
+    for i in 0 .. queried.Marginals.Length - 1 do
+        Assert.True(
+            abs (expectedMeans.[i] - Gaussian.mean queried.Marginals.[i]) < 1e-12,
+            sprintf "layer %d query mean diverged from independent control" i)
+        Assert.True(
+            abs (expectedVariances.[i] - Gaussian.variance queried.Marginals.[i]) < 1e-12,
+            sprintf "layer %d query variance diverged from independent control" i)
 
 [<Fact>]
 let ``MLBNN-48: exact dense query refuses the declared over-cap dimension`` () =
