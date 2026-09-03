@@ -1,0 +1,14 @@
+{
+  "id": "080d033415c53810a01300088582d85a",
+  "at": "2026-09-03T09:03:58.119Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1K85E56087G0R001TAAZHM",
+    "type": "bug",
+    "title": "RFFH 30-bit factor IDs collide at ~4.6k evidence messages and the collision guard is unfalsifiable",
+    "slug": "rffh-30-bit-factor-ids-collide-at-4-6k-evidence-messages-and",
+    "priority": "P2",
+    "filename": "081M1K85E56087G0R001TAAZHM-rffh-30-bit-factor-ids-collide-at-4-6k-evidence-messages-and.md"
+  }
+}
