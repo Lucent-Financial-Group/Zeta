@@ -109,10 +109,9 @@ describe("every supported provider is exercised by a real CI lane", () => {
    * `cilium-dbg` with `2>/dev/null | grep` also goes red: that dump
    * printed nothing and looked like KPR had no kube-dns.
    *
-   * MEASURED 33804533591: --disable=servicelb emptied app=svclb;
-   * hostNetwork ClusterIP still FAIL. Next dump is cilium-dbg status
-   * (Socket LB) and docker CgroupnsMode. Delete those or `app=svclb`
-   * and this goes red.
+   * MEASURED 33809535624: CgroupnsMode=private, KPR True, ClusterIP
+   * still FAIL. Next dump is `cilium-dbg config get` socket-LB knobs.
+   * Delete those or `app=svclb` and this goes red.
    */
   test("live-k3d dump logs the spire-agent DaemonSet, not a label the chart does not set", () => {
     const dump = (jobs()["live-k3d"]!.steps ?? []).find((s) =>
@@ -141,6 +140,9 @@ describe("every supported provider is exercised by a real CI lane", () => {
     expect(run).toContain("app=svclb");
     expect(run).toContain("cilium-dbg status");
     expect(run).toContain("CgroupnsMode");
+    expect(run).toContain("cilium-dbg config get");
+    expect(run).toContain("enable-socket-lb");
+    expect(run).toContain("bpf-lb-external-clusterip");
     expect(run).not.toMatch(/docker exec.*\|\s*(grep|rg)\s+-[^\n]*q/);
   });
 });

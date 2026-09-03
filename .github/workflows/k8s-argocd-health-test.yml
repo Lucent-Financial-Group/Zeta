@@ -1240,7 +1240,15 @@ jobs:
           echo "--- cilium-dbg status (Socket LB / KubeProxyReplacement; do not invent helm values) ---"
           kubectl -n kube-system exec ds/cilium -c cilium-agent -- cilium-dbg status \
             || echo "cilium-dbg status FAILED"
-          echo "--- k3d node cgroupns (Cilium kind Socket LB docs: private ns different from host) ---"
+          echo "--- cilium-dbg config get (socket-LB knobs; read, do not set) ---"
+          echo "MEASURED 33809535624: CgroupnsMode=private Privileged=true; KubeProxyReplacement True; Host BPF; Cluster health endpoints 0/1."
+          echo "Non-verbose status has no Socket LB coverage line. Do not invent helm values."
+          for key in enable-socket-lb bpf-lb-sock bpf-lb-sock-hostns-only bpf-lb-external-clusterip enable-host-legacy-routing; do
+            printf '%s=' "$key"
+            kubectl -n kube-system exec ds/cilium -c cilium-agent -- cilium-dbg config get "$key" \
+              || echo "FAILED"
+          done
+          echo "--- k3d node cgroupns (MEASURED 33809535624: private, not the hole) ---"
           if [ -n "$NODE" ]; then
             docker inspect "$NODE" --format 'CgroupnsMode={{.HostConfig.CgroupnsMode}} Privileged={{.HostConfig.Privileged}}' \
               || echo "docker inspect FAILED"

@@ -679,18 +679,35 @@ Job `100812620217` on SHA `c350832fd`
 
 **Klipper is not the ClusterIP translator.** Keep `--disable=servicelb`
 (metal match). Do not invent Cilium values. Do not re-lift included.
-Next dump is `cilium-dbg status` (Socket LB / KubeProxyReplacement) and
-the k3d node's Docker `CgroupnsMode` versus the runner host — Cilium's
-kind Socket-LB docs require a private cgroup namespace different from
-the host. k3d's config schema has no `CgroupnsMode` key; measure first.
+MEASURED 33809535624: cgroupns already private; KPR True; ClusterIP
+still FAIL.
 
-## Next dump — Socket LB status + cgroup namespace
+## MEASURED 2026-09-03 — live-k3d 33809535624: cgroupns already private, ClusterIP still FAIL
 
-live-k3d dump now prints `cilium-dbg status` and
-`docker inspect CgroupnsMode` plus host vs node `/proc/1/ns/cgroup`.
-Do not treat those as measured until a dump with server Running +
-`bundle.crt` + empty `app=svclb` prints them. Do not invent Cilium
-values.
+Job `100828865623` on SHA `6fc9e33f2`
+[run 33809535624](https://github.com/Lucent-Financial-Group/Zeta/actions/runs/33809535624)
+**succeeded** at smoke. `gate (required)` green. `lint (actionlint)` green.
+
+| Signal | Value |
+|---|---|
+| `app=svclb` | No resources found |
+| Docker `CgroupnsMode` | **private** (Privileged=true) |
+| `KubeProxyReplacement` | True, Direct Routing on eth0 `172.18.0.2` |
+| Routing | Network: Native, **Host: BPF** |
+| Cluster health | node 1/1, **endpoints 0/1** |
+| hostNetwork ClusterIP | **FAIL** (TCP + UDP DNS timeout) |
+| hostNetwork overlay pod IPs | **OPEN** |
+| pod-network ClusterIP | **OPEN** |
+
+**Cgroup namespace is not the hole.** k3d already uses private cgroupns, which is what Cilium's kind Socket-LB docs require. Non-verbose `cilium-dbg status` has no Socket LB coverage line. Next dump reads `cilium-dbg config get` for `enable-socket-lb` / `bpf-lb-sock-hostns-only` / `bpf-lb-external-clusterip` — a read, not a helm invention.
+
+`live kind included` red is Otto mimir (`081M1FG1RCW`), not this item.
+
+## Next dump — socket-LB config keys (read, do not set)
+
+live-k3d dump now prints `cilium-dbg config get` for the socket-LB knobs.
+Do not treat those as measured until a dump with empty `app=svclb` +
+ClusterIP FAIL prints the values. Do not invent Cilium helm values.
 
 ## The distinguishing test
 
