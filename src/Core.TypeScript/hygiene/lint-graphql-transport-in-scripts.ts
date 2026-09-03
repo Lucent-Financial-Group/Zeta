@@ -181,10 +181,34 @@ import { extname, join } from "node:path";
  * The remedy is carried in the data, not written into a generic message,
  * because a refusal that does not name the replacement is a refusal people
  * route around. Every entry was checked against `gh api` on this repo.
+ *
+ * ── AND ONE OF THEM WAS NOT EQUIVALENT ───────────────────────────────────────
+ * Re-measured 2026-09-03 against this repo's live API, because "checked" is a claim with a shelf
+ * life and this file's whole value is that a reader can follow its advice without thinking:
+ *
+ *   GET /pulls?state=open&per_page=1   ->  mergeable_state ABSENT, mergeable ABSENT
+ *   GET /pulls/{number}                ->  mergeable_state "unknown", mergeable null
+ *
+ * So the `pr list` remedy, followed literally, DROPS `mergeStateStatus`. That is not hypothetical:
+ * `observe/world-infra.ts` calls `gh pr list --json number,title,mergeStateStatus` and derives its
+ * CLEAN set from that field. A caller who took the one-line fix would get `mergeState: ""` for every
+ * PR and a clean-set computed from an empty string — the silent-wrong-answer class, arriving through
+ * the remediation text of a lint that exists to prevent silent failures.
+ *
+ * The entry now names the per-PR follow-up. The trade is still right — REST is the uncontended
+ * budget, so N+1 there beats one call on the contended one — but it has to be stated, because a
+ * one-liner reads as a drop-in replacement and this one is not.
  */
 export const GRAPHQL_ROUTES: ReadonlyMap<string, string> = new Map([
   ["pr view", "gh api repos/{owner}/{repo}/pulls/{number}  (fields: state, mergeable, auto_merge, head.sha)"],
-  ["pr list", 'gh api "repos/{owner}/{repo}/pulls?state=open&per_page=100"  (paginate with --paginate)'],
+  [
+    "pr list",
+    'gh api "repos/{owner}/{repo}/pulls?state=open&per_page=100"  (paginate with --paginate). ' +
+      "NOTE: the LIST payload carries NO mergeable_state/mergeable — those exist only on the " +
+      "single-PR route, so a caller that needs merge state must add a per-PR " +
+      "gh api repos/{owner}/{repo}/pulls/{number}. REST is the uncontended budget, so N+1 there " +
+      "is still the right trade; substituting the list route ALONE silently drops the field.",
+  ],
   ["pr checks", "gh api repos/{owner}/{repo}/commits/{sha}/check-runs  (per-step: .../actions/runs/{id}/jobs)"],
   ["run view", "gh api repos/{owner}/{repo}/actions/runs/{id}  (per-step: .../actions/runs/{id}/jobs)"],
 ]);
