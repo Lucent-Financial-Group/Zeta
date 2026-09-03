@@ -456,6 +456,37 @@ re-lift `--scope included` because smoke went green.
 Unknown/Degraded. Otto `081M1FG1RCW`. This change did not leak onto
 kindnetd. `live kind Cilium CNI` succeeded. Probe stayed skipped.
 
+## Chart fact (2026-09-03) — the dump's `-l app=spire-agent` cannot see the agent
+
+spire-agent 0.24.2 `daemonset.yaml` **hardcodes** (not a values key, so
+the Application cannot turn it off):
+
+    hostNetwork: true
+    dnsPolicy: ClusterFirstWithHostNet
+
+Selector labels (`spire-agent.selectorLabels`):
+
+    app.kubernetes.io/name: spire-agent
+    app.kubernetes.io/instance: <release>
+
+There is no `app=spire-agent` label. That is why smoke 33739778288
+printed an empty log block while the pod was 0/1 with 2 restarts. The
+live-k3d always() dump now logs `daemonset/spire-agent` (current +
+`--previous`), prints hostNetwork/dnsPolicy, kube-dns ClusterIP +
+endpoints, and `cilium-dbg service list` for that ClusterIP (cilium-agent
+is also hostNetwork — if KPR has kube-dns, the miss is the UDP path,
+not an unprogrammed Service). Falsifier:
+`provider-coverage.test.ts` "live-k3d dump logs the spire-agent
+DaemonSet, not a label the chart does not set".
+
+Do not invent a Cilium `routingMode` / `socketLB` / `hostLegacyRouting`
+tweak from the timeout. The next measurement is: UDP-only vs all
+ClusterIP from hostNetwork. `hostAliases` (a real values key) only
+helps if TCP to the spire-server ClusterIP works after DNS is skipped.
+
+#16477 squash is on `main` (`819dea212`). Do not re-lift `--scope
+included` because that dump is now louder.
+
 ## The distinguishing test
 
 For each of the four, the question is the same and it is answerable:
@@ -483,8 +514,11 @@ obvious common thread, and the k3d lane has already produced one DNS defect.
 
 ## Pointers
 
-- `.github/workflows/k8s-argocd-health-test.yml` — `live-k3d`, and the in-place
-  note recording the reverted lift
+- `.github/workflows/k8s-argocd-health-test.yml` — `live-k3d`, the
+  in-place note recording the reverted lift, and the always() dump of
+  Gateway API CRDs + the four + `daemonset/spire-agent` logs
+- `src/Core.TypeScript/cluster/provider-coverage.test.ts` — dump must
+  not use a label the chart never sets
 - `src/Core.TypeScript/cluster/argocd-health-test.ts` — `APPLIED_BUT_UNASSERTED_REASONS`,
   the format a justified deferral takes
 - `src/Core.TypeScript/cluster/applied-vs-asserted-agreement.test.ts` — the check

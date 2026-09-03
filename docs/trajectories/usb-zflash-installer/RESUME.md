@@ -205,7 +205,10 @@ plus a **second** class (spire-agent hostNetwork DNS i/o timeout).
 **MEASURED live-k3d smoke [33739778288](https://github.com/Lucent-Financial-Group/Zeta/actions/runs/33739778288)
 job `100600115401` (SHA `d83e0b643`): succeeded.** Vendored CRDs present;
 cert-manager Synced/Healthy, 0 restarts; cert-manager issued
-`trust-manager-1`. spire-agent still 0/1 with 2 restarts. Do not re-lift
+`trust-manager-1`. spire-agent still 0/1 with 2 restarts. The dump's
+`-l app=spire-agent` printed no logs: chart 0.24.2 selector is
+`app.kubernetes.io/name=spire-agent`, and hostNetwork/dnsPolicy are
+hardcoded. Dump now targets `daemonset/spire-agent`. Do not re-lift
 `--scope included`. Do not invent a Cilium values tweak. Do not re-dispatch
 the Cilium included probe.
 
@@ -436,7 +439,7 @@ bringup.
 **Software (closed, do not re-litigate):** non-interactive 6.95-picker
 (`--defer-all` #14852) and restore non-zero write (#15912, dispatch
 33126215487). Sibling dispatch steps already `if: always()`.
-**Next software:** ~~in-guest wrong-passphrase phase 2b + passphrase~~ **BOTH LANDED 2026-08-29 (`133a95b5de`) AND BOTH RAN on dispatch [33462406161](https://github.com/Lucent-Financial-Group/Zeta/actions/runs/33462406161) (2026-09-01) — do not rebuild, do not re-dispatch restore.** ~~kind `--cni cilium` so the included proof creates its own cluster~~ **THAT CELL CLOSED 2026-09-03** (kindnetd Healthy / kind+Cilium Healthy / k3d Degraded; weaviate asserted on kind+Cilium; #16419 squash `18367ea19`). ~~k3d applying vendored Gateway API CRDs~~ **MEASURED live-k3d smoke [33739778288](https://github.com/Lucent-Financial-Group/Zeta/actions/runs/33739778288) job `100600115401`: CRDs present, cert-manager Healthy 0 restarts, trust-manager cert issued.** Remaining k3s/k3d class is spire-agent hostNetwork restarts (`081M1DFQ2MZ`). Do **not** re-lift k3d `--scope included`. Do **not** dispatch another Cilium included probe. Do **not** invent Cilium helm values. Otto takes mimir (`081M1FG1RCW`). Superseded text kept below for lineage:
+**Next software:** ~~in-guest wrong-passphrase phase 2b + passphrase~~ **BOTH LANDED 2026-08-29 (`133a95b5de`) AND BOTH RAN on dispatch [33462406161](https://github.com/Lucent-Financial-Group/Zeta/actions/runs/33462406161) (2026-09-01) — do not rebuild, do not re-dispatch restore.** ~~kind `--cni cilium` so the included proof creates its own cluster~~ **THAT CELL CLOSED 2026-09-03** (kindnetd Healthy / kind+Cilium Healthy / k3d Degraded; weaviate asserted on kind+Cilium; #16419 squash `18367ea19`). ~~k3d applying vendored Gateway API CRDs~~ **MEASURED live-k3d smoke [33739778288](https://github.com/Lucent-Financial-Group/Zeta/actions/runs/33739778288) job `100600115401`: CRDs present, cert-manager Healthy 0 restarts, trust-manager cert issued.** Remaining k3s/k3d class is spire-agent hostNetwork restarts (`081M1DFQ2MZ`). The 33739778288 dump's `-l app=spire-agent` matched nothing (chart selector is `app.kubernetes.io/name`); dump now logs `daemonset/spire-agent`. Do **not** re-lift k3d `--scope included`. Do **not** dispatch another Cilium included probe. Do **not** invent Cilium helm values. Otto takes mimir (`081M1FG1RCW`). Superseded text kept below for lineage:
 **Superseded:** in-guest wrong-passphrase phase 2b + passphrase
 hexagonal port (`passphrase-source.ts`) so a human can run the metal
 tty1 runbook without the software door being untested. Dispatch restore
