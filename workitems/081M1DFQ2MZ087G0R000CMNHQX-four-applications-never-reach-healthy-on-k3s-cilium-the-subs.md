@@ -331,19 +331,22 @@ PR #16412 squash `db60442338`. Child wait is any child, 180s, not
 `forward . 1.1.1.1 8.8.8.8` after the LB-IPAM alias. Measured on
 33697305243 (pre-squash `bd240fbd2`) and confirmed on 33701456828.
 
-## Next-run harness (catalog DNS fail-fast + health roster)
+## Landed 2026-09-03 — catalog DNS fail-fast + weaviate on kind+Cilium
 
-Run 33695849211 already had `Could not resolve host: github.com` at T+0
-of the child wait. Waiting 180s after that is not a second measurement. The
-harness now returns a **terminal** `ArgoCdTimeout` as soon as
-`zeta-root-dev` carries that ComparisonError, and logs `N/M ok` plus named
-laggards every 60s during the Synced+Healthy wait so a 2400s health wait is
-not another dark stretch.
+PR #16419 squash `18367ea19`, AceHack 02:40:33Z. On `main`:
 
-Do not invent a Cilium values tweak (`routingMode`, chart bump) from a
-silent wait. Do not lift the metal `cilium-lb-ipam` Application from
-`cilium-ingress` getting `172.18.255.200`. weaviate's LIFTS WHEN was
-measured on run 33697305243; it is asserted on kind `--cni cilium` only.
+- Catalog `github.com` ComparisonError is a **terminal** `ArgoCdTimeout`.
+- Health wait logs `N/M ok` plus named laggards every 60s.
+- Probe verdicts come from kubectl, not a `=== name: sync=` grep.
+- weaviate is asserted on kind `--cni cilium` only. kindnetd/k3d still
+  exclude it. Metal `cilium-lb-ipam` stays excluded.
+- Hostname match is the regex, not `text.includes("github.com")`.
+
+Kind+Cilium cell is closed for the four (Healthy) and for weaviate
+(asserted and Healthy). Item stays in-progress for k3d/k3s plus named
+residuals `mimir` (`081M1FG1RCW`) and `arc-controller`. Do not invent a
+Cilium values tweak. Do not re-lift k3d `--scope included`. Do not
+dispatch another competing Cilium included probe.
 
 ## The distinguishing test
 
