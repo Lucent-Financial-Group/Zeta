@@ -1,0 +1,14 @@
+{
+  "id": "080d0336e24a6010a0130008c969786f",
+  "at": "2026-09-03T10:41:47.852Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1KDRJAA087G0R003S519DD",
+    "type": "task",
+    "title": "Journaled freeze log through FileSystemBlockIo polyfill",
+    "slug": "journaled-freeze-log-through-filesystemblockio-polyfill",
+    "priority": "P1",
+    "filename": "081M1KDRJAA087G0R003S519DD-journaled-freeze-log-through-filesystemblockio-polyfill.md"
+  }
+}
