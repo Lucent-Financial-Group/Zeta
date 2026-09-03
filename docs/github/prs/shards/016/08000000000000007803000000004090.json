@@ -1,0 +1,12 @@
+{
+  "pr_number": 16528,
+  "archive_path": "docs/history/pr-reviews/PR-16528-test-bayesian-the-permutation-control-pinned-canonical-reporting-not-canonical-n.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-03T20:50:19.306Z",
+  "schema_version": "v1",
+  "commit_sha": "064129220abc30373cf722fdc32f80df2e7f3ad7",
+  "title": "test(bayesian): the permutation control pinned canonical REPORTING, not canonical numerics",
+  "state": "MERGED",
+  "merged_at": "2026-09-03T20:49:41Z",
+  "head_ref": "otto/canonical-order-falsifier"
+}

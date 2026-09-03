@@ -1,0 +1,12 @@
+{
+  "pr_number": 16529,
+  "archive_path": "docs/history/pr-reviews/PR-16529-test-081m1meckwb087g0r00053sea6-polyfill-corrupt-and-reorder-keep-the-first.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-03T20:52:57.993Z",
+  "schema_version": "v1",
+  "commit_sha": "9915bd14f40465146ca7d34e329c2743a704ff24",
+  "title": "test(081M1MECKWB087G0R00053SEA6): polyfill corrupt and reorder keep the first",
+  "state": "MERGED",
+  "merged_at": "2026-09-03T20:52:08Z",
+  "head_ref": "feat/zetafs-polyfill-corrupt-reorder"
+}
