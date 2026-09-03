@@ -1,0 +1,14 @@
+{
+  "id": "080d032c12496810a013000888db8e25",
+  "at": "2026-09-03T04:23:52.365Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1JR4J9B087G0R003PR6X2J",
+    "type": "task",
+    "title": "Pin the loop's gate wiring so a control cannot be silently removed",
+    "slug": "pin-the-loop-s-gate-wiring-so-a-control-cannot-be-silently-r",
+    "priority": "P2",
+    "filename": "081M1JR4J9B087G0R003PR6X2J-pin-the-loop-s-gate-wiring-so-a-control-cannot-be-silently-r.md"
+  }
+}
