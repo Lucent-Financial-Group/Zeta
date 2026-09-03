@@ -1,0 +1,12 @@
+{
+  "pr_number": 16519,
+  "archive_path": "docs/history/pr-reviews/PR-16519-fix-cluster-probe-tcp-clusterip-from-k3d-hostnetwork-netns.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-03T18:26:10.342Z",
+  "schema_version": "v1",
+  "commit_sha": "95021b8838af8a7b64eaa4435167cdb0c5c5ff0a",
+  "title": "fix(cluster): probe TCP ClusterIP from k3d hostNetwork netns",
+  "state": "MERGED",
+  "merged_at": "2026-09-03T18:25:27Z",
+  "head_ref": "cursor/k3d-hostnet-tcp-probe-27c5"
+}
