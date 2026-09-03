@@ -1410,31 +1410,29 @@ jobs:
         if: always()
         run: |
           LOG="$RUNNER_TEMP/cilium-included-proof.log"
-          if [ ! -s "$LOG" ]; then
-            echo "NO PROOF OUTPUT: '$LOG' is missing or empty."
-            echo "The proof did not run. This job measured NOTHING about Cilium; it is"
-            echo "not evidence that any Application is or is not healthy."
-            exit 0
-          fi
-          total="$(grep -cE '=== [a-z0-9-]+: sync=[A-Za-z]+ health=[A-Za-z]+' "$LOG" 2>/dev/null || true)"
-          echo "=== every app verdict on kind+Cilium (count=${total:-0}) ==="
-          grep -oE '=== [a-z0-9-]+: sync=[A-Za-z]+ health=[A-Za-z]+' "$LOG" 2>/dev/null | sort || true
-          if [ "${total:-0}" -eq 0 ]; then
-            echo
-            echo "ZERO VERDICTS PARSED -- the proof produced no per-app lines at all."
-            echo "That is a proof that did not complete, NOT a roster in which these"
-            echo "applications are absent. Read the proof step's failure, not this table;"
-            echo "the four below are deliberately NOT listed, because listing them here"
-            echo "would manufacture a finding out of a run that measured nothing."
-            exit 0
-          fi
+          echo "=== every app verdict on kind+Cilium (live cluster, not log-grep) ==="
+          kubectl -n argocd get applications.argoproj.io \
+            -o custom-columns=NAME:.metadata.name,SYNC:.status.sync.status,HEALTH:.status.health.status \
+            --no-headers 2>/dev/null | sort || true
+          echo
           echo "=== the four this probe can speak to ==="
           for app in openziti-controller trust-manager spire vault; do
-            line="$(grep -oE "=== $app: sync=[A-Za-z]+ health=[A-Za-z]+" "$LOG" 2>/dev/null | head -1)"
-            # Safe: reached only when the proof emitted >=1 verdict, so an absent app
-            # genuinely means absent from an asserted roster.
-            echo "  ${line:-=== $app: NOT ASSERTED IN THIS SCOPE (roster had ${total} apps)}"
+            line="$(kubectl -n argocd get application "$app" \
+              -o jsonpath='=== {.metadata.name}: sync={.status.sync.status} health={.status.health.status}' \
+              2>/dev/null || true)"
+            if [ -z "$line" ] || [ "$line" = "=== : sync= health=" ]; then
+              echo "  === $app: NOT FOUND IN CLUSTER"
+            else
+              echo "  $line"
+            fi
           done
+          echo
+          echo "=== weaviate LoadBalancer Services (LIFTS WHEN for weaviate) ==="
+          kubectl get svc -A --field-selector spec.type=LoadBalancer || true
+          if [ ! -s "$LOG" ]; then
+            echo
+            echo "NO PROOF OUTPUT: '$LOG' is missing or empty."
+          fi
 
       # Run 33684309073 died waiting for hat-system (the NAME, wave -10) with
       # only NotFound in the proof JSON. The wait is now ANY child, 180s, not
