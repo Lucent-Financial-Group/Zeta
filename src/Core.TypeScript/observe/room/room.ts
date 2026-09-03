@@ -16,7 +16,7 @@
 import type { NextAction, World, BacklogItem } from "../observe";
 import type { ChooserResult } from "../chooser";
 import type { CommandExecutor } from "../do-item";
-import { isMergeItem, itemIdOf, rowFor } from "../action-reconciliation";
+import { isSyntheticForgeItem, itemIdOf, rowFor } from "../action-reconciliation";
 import { grantedTools, sandboxedExecutor, type RoomSandbox, type ToolGrant } from "./sandbox";
 
 // ─── Scope predicate (Lior's enforcement requirement) ───────────────
@@ -272,7 +272,8 @@ function isActionInScope(action: NextAction, scope: ScopePredicate): boolean {
       // No item on an item-scoped action is a shape the table does not describe; nothing is being
       // reached into, so nothing is out of scope.
       if (id === null) return true;
-      return scope.backlogIds.has(id) || isMergeItem(id);
+      // A forge-produced item has no backlog file, so `backlogIds` can never contain one.
+      return scope.backlogIds.has(id) || isSyntheticForgeItem(id);
     }
   }
   return assertNeverScope(requirement);

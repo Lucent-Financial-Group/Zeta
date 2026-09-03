@@ -1,0 +1,14 @@
+{
+  "id": "080d032ca3c5c810a01300082e1fdc66",
+  "at": "2026-09-03T04:43:44.185Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1JS8Y5Q087G0R0025HR271",
+    "type": "bug",
+    "title": "resolveThread was uncallable — nothing returned a thread id",
+    "slug": "resolvethread-was-uncallable-nothing-returned-a-thread-id",
+    "priority": "P2",
+    "filename": "081M1JS8Y5Q087G0R0025HR271-resolvethread-was-uncallable-nothing-returned-a-thread-id.md"
+  }
+}

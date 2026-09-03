@@ -274,10 +274,29 @@ export interface ForgeState {
   readonly openPrCount: number;
   readonly cleanPrCount: number;
   readonly cleanPrNumbers: readonly number[];
+  /**
+   * Open PRs whose review asked for changes.
+   *
+   * Optional so every existing `ForgeState` literal stays valid, and ABSENT means "not measured",
+   * not "none" — a forge read that could not classify must not read as "no review work", which is
+   * the same "I failed to look equals there is nothing" collapse `readPRStateAsync` already refuses.
+   */
+  readonly changesRequestedPrNumbers?: readonly number[];
 }
 
 // Centralized reason strings — used by BOTH observe() and buildMenu() so the
 // oracle's pick and the model's menu label can't drift in wording (Copilot #6229).
+/**
+ * The first open PR whose review asked for changes, or `undefined`.
+ *
+ * `undefined` covers BOTH "no review work" and "the forge did not report" — deliberately, because
+ * the loop's response to each is the same (offer nothing), and the DIFFERENCE is reported by the
+ * forge diagnosis rather than smuggled into an empty list here.
+ */
+export function firstReviewBlockedPr(world: World): number | undefined {
+  return world.forgeState?.changesRequestedPrNumbers?.[0];
+}
+
 const PRESERVE_FERRY_REASON = "operator ferried verbatim content — preserve before it's lost to compaction";
 const RESPOND_OPERATOR_REASON = "operator spoke — engage (highest-signal source)";
 // The FREE MODES — the agent's self-directed options, always available.
@@ -417,6 +436,27 @@ export function observe(world: World): NextAction {
       item: {
         id: `merge-pr-${prNum}`,
         title: `Merge clean PR #${prNum}`,
+        ready: true,
+        ambiguous: false,
+        needsNewAction: false,
+      },
+    };
+  }
+
+  // Forge-aware, the other half: a PR whose review asked for changes is WORK THIS AGENT OWES.
+  // It sat invisible — the loop saw `openPrCount` and acted only on CLEAN PRs, so a PR blocked on
+  // an unanswered review was the one kind of work the loop could never pick up.
+  //
+  // Offered AFTER merge work on purpose: a clean PR is one action from landing, while a review is a
+  // conversation. Finishing what is nearly done before starting what is not is the cheaper order,
+  // and both are still only OFFERED — the chooser may take a free mode instead (NCI).
+  const reviewPr = firstReviewBlockedPr(world);
+  if (reviewPr !== undefined) {
+    return {
+      kind: "do_item",
+      item: {
+        id: `review-pr-${String(reviewPr)}`,
+        title: `Answer the review on PR #${String(reviewPr)}`,
         ready: true,
         ambiguous: false,
         needsNewAction: false,

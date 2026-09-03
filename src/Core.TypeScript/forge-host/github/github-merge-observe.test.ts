@@ -188,6 +188,105 @@ describe("observeMerge", () => {
   });
 });
 
+describe("review threads — what BLOCKS vs what can be ANSWERED", () => {
+  const t = (id: string | undefined, isResolved: boolean, extra: Record<string, unknown> = {}) => ({
+    ...(id === undefined ? {} : { id }),
+    isResolved,
+    ...extra,
+  });
+
+  test("the thread id reaches the gate — it is the only thing resolveThread accepts", () => {
+    const got = mapMergeObserve(
+      envelope({ reviewThreads: { nodes: [t("PRRT_1", false, { path: "a.ts", line: 7 })] } }),
+    );
+    expect(got.ok).toBe(true);
+    if (!got.ok) return;
+    expect(got.value.threads.map((x) => x.id)).toEqual(["PRRT_1"]);
+    expect(got.value.threads[0]?.path).toBe("a.ts");
+    expect(got.value.threads[0]?.line).toBe(7);
+  });
+
+  test("the reviewer's first comment comes through", () => {
+    const got = mapMergeObserve(
+      envelope({
+        reviewThreads: {
+          nodes: [
+            t("PRRT_1", false, { comments: { nodes: [{ author: { login: "lior" }, body: "unbounded retry" }] } }),
+          ],
+        },
+      }),
+    );
+    expect(got.ok).toBe(true);
+    if (!got.ok) return;
+    expect(got.value.threads[0]?.firstComment).toEqual({ author: "lior", body: "unbounded retry" });
+  });
+
+  test("an ID-LESS unresolved thread still BLOCKS — the count must not fail open", () => {
+    // Deriving the blocker count from the answerable subset would let a malformed thread quietly
+    // reduce it, which is a merge permitted because a field was missing.
+    const got = mapMergeObserve(envelope({ reviewThreads: { nodes: [t(undefined, false), t("PRRT_2", false)] } }));
+    expect(got.ok).toBe(true);
+    if (!got.ok) return;
+    expect(got.value.unresolvedThreads).toBe(2);
+    expect(got.value.threads).toHaveLength(1);
+  });
+
+  test("and the gap is SAID, not left as a difference between two numbers", () => {
+    const got = mapMergeObserve(envelope({ reviewThreads: { nodes: [t(undefined, false)] } }));
+    expect(got.ok).toBe(true);
+    if (!got.ok) return;
+    expect(got.value.warnings.some((w) => w.includes("cannot be answered from here"))).toBe(true);
+  });
+
+  test("no warning when every unresolved thread is answerable", () => {
+    const got = mapMergeObserve(envelope({ reviewThreads: { nodes: [t("PRRT_1", false)] } }));
+    expect(got.ok).toBe(true);
+    if (!got.ok) return;
+    expect(got.value.warnings.some((w) => w.includes("cannot be answered from here"))).toBe(false);
+  });
+
+  test("resolved threads are carried but do not block", () => {
+    const got = mapMergeObserve(envelope({ reviewThreads: { nodes: [t("PRRT_1", true)] } }));
+    expect(got.ok).toBe(true);
+    if (!got.ok) return;
+    expect(got.value.unresolvedThreads).toBe(0);
+    expect(got.value.threads).toHaveLength(1);
+    expect(got.value.threads[0]?.isResolved).toBe(true);
+  });
+
+  test("a thread that omits isResolved is treated as UNRESOLVED, not as resolved", () => {
+    // An absent field must never read as "already handled". `=== true` and `!== false` are
+    // identical on every fixture that sets the flag, and opposite on the one that does not — a
+    // mutant swapping them SURVIVED until this test existed.
+    const got = mapMergeObserve(envelope({ reviewThreads: { nodes: [{ id: "PRRT_1" }] } }));
+    expect(got.ok).toBe(true);
+    if (!got.ok) return;
+    expect(got.value.threads[0]?.isResolved).toBe(false);
+    expect(got.value.unresolvedThreads).toBe(1);
+  });
+
+  test("an absent isOutdated is treated as NOT outdated", () => {
+    const got = mapMergeObserve(envelope({ reviewThreads: { nodes: [{ id: "PRRT_1", isResolved: false }] } }));
+    expect(got.ok).toBe(true);
+    if (!got.ok) return;
+    expect(got.value.threads[0]?.isOutdated).toBe(false);
+  });
+
+  test("the reviewThreads selection asks for the id, the outdated flag and the first comment", () => {
+    // Scoped to the reviewThreads BLOCK. `toContain("id")` over the whole query is satisfied by
+    // `mergeCommit { oid }` — a mutant deleting the thread id survived it. Found by the matrix.
+    const at = MERGE_OBSERVE_QUERY.indexOf("reviewThreads(first: 100)");
+    expect(at).toBeGreaterThan(-1);
+    const block = MERGE_OBSERVE_QUERY.slice(at, MERGE_OBSERVE_QUERY.indexOf("commits(last: 1)", at));
+    // A STANDALONE `id` field, not the substring: `oid` and `isOutdated` both contain "id".
+    const standaloneId = block.split("\n").some((l) => l.trim() === "id");
+    expect(standaloneId).toBe(true);
+    for (const field of ["isResolved", "isOutdated", "path", "line", "comments(first: 1)", "author { login }"]) {
+      expect(block).toContain(field);
+    }
+  });
+});
+
 describe("MERGE_OBSERVE_QUERY — the shape GitHub will actually accept", () => {
   test("a union type condition is applied to the NODE, never to the connection", () => {
     // The defect: `contexts { ... on CheckRun { ... } }`. `contexts` is a

@@ -9,7 +9,7 @@
 // GitHub's mergeStateStatus already IS that discriminator. Webhooks
 // (check_suite / pull_request_review) are the next cost cut, not this file.
 
-import type { CheckSummary, ForgeError, NextAction, PrGateState, PullRequest, Result } from "../types";
+import type { CheckSummary, ForgeError, NextAction, PrGateState, PullRequest, Result, ReviewThread } from "../types";
 import { err, forgeError, ok } from "../result";
 import type { GithubRest } from "./github-pr-rest.ts";
 
@@ -32,7 +32,16 @@ export const MERGE_OBSERVE_QUERY = `query MergeObserve($owner: String!, $name: S
       number state isDraft mergeable mergeStateStatus reviewDecision
       autoMergeRequest { enabledAt }
       mergeCommit { oid }
-      reviewThreads(first: 100) { nodes { isResolved } }
+      reviewThreads(first: 100) {
+        nodes {
+          id
+          isResolved
+          isOutdated
+          path
+          line
+          comments(first: 1) { nodes { author { login } body } }
+        }
+      }
       commits(last: 1) {
         nodes {
           commit {
@@ -103,13 +112,15 @@ export function mapOpenPullRequests(text: string): Result<readonly PullRequest[]
   } catch (e) {
     return err(forgeError("parse-failure", e instanceof Error ? e.message : String(e)));
   }
-  if (typeof parsed !== "object" || parsed === null) return err(forgeError("parse-failure", "open merges: not an object"));
+  if (typeof parsed !== "object" || parsed === null)
+    return err(forgeError("parse-failure", "open merges: not an object"));
   const errors = (parsed as { errors?: unknown }).errors;
   if (Array.isArray(errors) && errors.length > 0) {
     const first = errors[0] as { message?: unknown };
     return err(forgeError("internal", typeof first.message === "string" ? first.message : "graphql error"));
   }
-  const nodes = (parsed as { data?: { repository?: { pullRequests?: { nodes?: unknown } } } }).data?.repository?.pullRequests?.nodes;
+  const nodes = (parsed as { data?: { repository?: { pullRequests?: { nodes?: unknown } } } }).data?.repository
+    ?.pullRequests?.nodes;
   if (!Array.isArray(nodes)) return err(forgeError("parse-failure", "open merges: missing nodes"));
   const out: PullRequest[] = [];
   for (const n of nodes) {
@@ -134,7 +145,9 @@ export function mapOpenPullRequests(text: string): Result<readonly PullRequest[]
       baseRef: typeof row.baseRefName === "string" ? row.baseRefName : "",
       state: "open",
       isDraft: row.isDraft === true,
-      mergeStateStatus: mapListedMergeStatus(typeof row.mergeStateStatus === "string" ? row.mergeStateStatus : undefined),
+      mergeStateStatus: mapListedMergeStatus(
+        typeof row.mergeStateStatus === "string" ? row.mergeStateStatus : undefined,
+      ),
       reviewDecision: mapListedReview(typeof row.reviewDecision === "string" ? row.reviewDecision : null),
       url: typeof row.url === "string" ? row.url : "",
       updatedAt: typeof row.updatedAt === "string" ? row.updatedAt : "",
@@ -164,7 +177,11 @@ function mapListedReview(decision: string | null): PullRequest["reviewDecision"]
   return null;
 }
 
-export async function observeMerge(rest: GithubRest, nwo: string, number: number): Promise<Result<PrGateState, ForgeError>> {
+export async function observeMerge(
+  rest: GithubRest,
+  nwo: string,
+  number: number,
+): Promise<Result<PrGateState, ForgeError>> {
   const call = mergeObserveRequest(nwo, number);
   if (!call.ok) return call;
   const raw = await rest.request(call.value.method, call.value.path, {
@@ -182,7 +199,8 @@ export function mapMergeObserve(text: string): Result<PrGateState, ForgeError> {
   } catch (e) {
     return err(forgeError("parse-failure", e instanceof Error ? e.message : String(e)));
   }
-  if (typeof parsed !== "object" || parsed === null) return err(forgeError("parse-failure", "merge observe: not an object"));
+  if (typeof parsed !== "object" || parsed === null)
+    return err(forgeError("parse-failure", "merge observe: not an object"));
   const errors = (parsed as { errors?: unknown }).errors;
   if (Array.isArray(errors) && errors.length > 0) {
     const first = errors[0] as { message?: unknown };
@@ -193,7 +211,18 @@ export function mapMergeObserve(text: string): Result<PrGateState, ForgeError> {
   const p = pr as GraphQlPr;
   const rollup = p.commits?.nodes?.[0]?.commit?.statusCheckRollup?.contexts?.nodes ?? [];
   const checks = classifyChecks(rollup.map(normalizeContext));
-  const unresolvedThreads = (p.reviewThreads?.nodes ?? []).filter((t) => t.isResolved !== true).length;
+  // TWO different questions, and collapsing them fails OPEN.
+  //
+  // WHAT BLOCKS is every unresolved node, id or no id — counted from the raw response, so a thread
+  // the parser cannot make actionable still holds the merge. Deriving the count from the actionable
+  // subset (the first thing I wrote) meant a malformed thread quietly REDUCED the blocker count,
+  // which is a merge permitted because a field was missing. An existing test caught it.
+  //
+  // WHAT IS ANSWERABLE is the subset carrying an id, because `resolveThread` takes nothing else.
+  const rawThreads = p.reviewThreads?.nodes ?? [];
+  const unresolvedThreads = rawThreads.filter((t) => t.isResolved !== true).length;
+  const threads = rawThreads.map(normalizeThread).filter((t): t is ReviewThread => t !== null);
+  const unanswerable = unresolvedThreads - threads.filter((t) => !t.isResolved).length;
   const state = mapPrState(p.state);
   const gate = classifyGate(p.mergeStateStatus ?? "", p.state ?? "", checks, unresolvedThreads);
   return ok({
@@ -203,9 +232,18 @@ export function mapMergeObserve(text: string): Result<PrGateState, ForgeError> {
     checks,
     requiredChecks: checks,
     unresolvedThreads,
+    threads,
     autoMerge: p.autoMergeRequest ? "armed" : "none",
     mergeCommit: p.mergeCommit?.oid ?? null,
-    warnings: ["required-set not enumerated; mergeStateStatus is the discriminator (one GraphQL call)"],
+    warnings: [
+      "required-set not enumerated; mergeStateStatus is the discriminator (one GraphQL call)",
+      // Said out loud rather than left as a silent difference between two numbers.
+      ...(unanswerable > 0
+        ? [
+            `${String(unanswerable)} unresolved review thread(s) carry no id and cannot be answered from here — they still block`,
+          ]
+        : []),
+    ],
     nextAction: computeNextAction(state, gate, checks, unresolvedThreads),
   });
 }
@@ -216,7 +254,7 @@ interface GraphQlPr {
   readonly mergeStateStatus?: string;
   readonly autoMergeRequest?: { readonly enabledAt?: string } | null;
   readonly mergeCommit?: { readonly oid?: string } | null;
-  readonly reviewThreads?: { readonly nodes?: readonly { readonly isResolved?: boolean }[] };
+  readonly reviewThreads?: { readonly nodes?: readonly GraphQlThread[] };
   readonly commits?: {
     readonly nodes?: readonly {
       readonly commit?: {
@@ -225,6 +263,40 @@ interface GraphQlPr {
         };
       };
     }[];
+  };
+}
+
+interface GraphQlThread {
+  readonly id?: string;
+  readonly isResolved?: boolean;
+  readonly isOutdated?: boolean;
+  readonly path?: string | null;
+  readonly line?: number | null;
+  readonly comments?: {
+    readonly nodes?: readonly { readonly author?: { readonly login?: string } | null; readonly body?: string }[];
+  };
+}
+
+/**
+ * A thread with NO id is dropped, not defaulted.
+ *
+ * The id is the only part that makes a thread actionable — `resolveThread` takes it and nothing
+ * else. A thread carried forward without one would show up in the blocked-merge reason as something
+ * to answer and then be unanswerable, which is worse than not listing it: it would look like a task
+ * and behave like a wall.
+ */
+function normalizeThread(t: GraphQlThread): ReviewThread | null {
+  if (typeof t.id !== "string" || t.id.length === 0) return null;
+  const first = t.comments?.nodes?.[0];
+  const author = first?.author?.login;
+  const body = first?.body;
+  return {
+    id: t.id,
+    isResolved: t.isResolved === true,
+    isOutdated: t.isOutdated === true,
+    ...(typeof t.path === "string" ? { path: t.path } : {}),
+    ...(typeof t.line === "number" ? { line: t.line } : {}),
+    ...(typeof author === "string" && typeof body === "string" ? { firstComment: { author, body } } : {}),
   };
 }
 
@@ -259,24 +331,51 @@ function splitNwo(nwo: string): { owner: string; name: string } | null {
 }
 
 const OK_CONCLUSIONS = new Set(["SUCCESS", "NEUTRAL", "SKIPPED"]);
-const BLOCKING_CONCLUSIONS = new Set(["FAILURE", "CANCELLED", "TIMED_OUT", "STARTUP_FAILURE", "ACTION_REQUIRED", "STALE", "ERROR"]);
+const BLOCKING_CONCLUSIONS = new Set([
+  "FAILURE",
+  "CANCELLED",
+  "TIMED_OUT",
+  "STARTUP_FAILURE",
+  "ACTION_REQUIRED",
+  "STALE",
+  "ERROR",
+]);
 const PENDING_STATUSES = new Set(["QUEUED", "PENDING", "EXPECTED", "REQUESTED", "WAITING"]);
 
-export function classifyChecks(rollup: readonly { status?: string; conclusion?: string; name?: string }[]): CheckSummary {
-  let okCount = 0, inProgress = 0, pending = 0, failed = 0;
+export function classifyChecks(
+  rollup: readonly { status?: string; conclusion?: string; name?: string }[],
+): CheckSummary {
+  let okCount = 0,
+    inProgress = 0,
+    pending = 0,
+    failed = 0;
   for (const c of rollup) {
     const status = (c.status ?? "").toUpperCase();
     const conclusion = (c.conclusion ?? "").toUpperCase();
-    if (status === "IN_PROGRESS") { inProgress++; continue; }
-    if (PENDING_STATUSES.has(status)) { pending++; continue; }
-    if (OK_CONCLUSIONS.has(conclusion)) { okCount++; continue; }
-    if (BLOCKING_CONCLUSIONS.has(conclusion)) { failed++; }
+    if (status === "IN_PROGRESS") {
+      inProgress++;
+      continue;
+    }
+    if (PENDING_STATUSES.has(status)) {
+      pending++;
+      continue;
+    }
+    if (OK_CONCLUSIONS.has(conclusion)) {
+      okCount++;
+      continue;
+    }
+    if (BLOCKING_CONCLUSIONS.has(conclusion)) {
+      failed++;
+    }
   }
   return { ok: okCount, inProgress, pending, failed };
 }
 
 export function classifyGate(
-  mergeStateStatus: string, state: string, requiredChecks: CheckSummary, unresolvedThreads: number,
+  mergeStateStatus: string,
+  state: string,
+  requiredChecks: CheckSummary,
+  unresolvedThreads: number,
 ): PrGateState["gate"] {
   const st = state.toUpperCase();
   const ms = mergeStateStatus.toUpperCase();

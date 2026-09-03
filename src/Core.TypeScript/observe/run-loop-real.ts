@@ -38,6 +38,7 @@ import { readPRStateAsync } from "./world-infra";
 import "../forge-host/github/index"; // registers the GitHub adapter
 import { portExecuteItem } from "./kiro-executor-v2";
 import { currentExecutionMode, executorForMode } from "./execution-mode";
+import { isSyntheticForgeItem } from "./action-reconciliation";
 import { describeError, describeForgeError, forgeFailureDisposition } from "./forge-diagnosis";
 import { codegenExecuteItem } from "./codegen-executor";
 import { realWorkspacePort, type WorkspacePort } from "./workspace-port";
@@ -223,8 +224,12 @@ async function main(): Promise<number> {
         openPrCount: prState.open.length,
         cleanPrCount: prState.clean.length,
         cleanPrNumbers: prState.clean.map((pr) => pr.number),
+        changesRequestedPrNumbers: prState.changesRequested.map((pr) => pr.number),
       };
-      console.log(`[forge:${forgeResult.value.forgeName}] ${forgeState.openPrCount} open PRs, ${forgeState.cleanPrCount} clean`);
+      console.log(
+        `[forge:${forgeResult.value.forgeName}] ${forgeState.openPrCount} open PRs, ${forgeState.cleanPrCount} clean, ` +
+          `${String(prState.changesRequested.length)} awaiting a review answer`,
+      );
     } else {
       // PR read FAILED (auth / rate-limit / network). Do NOT fall through to a
       // zero-PR forgeState — that would read as "no PR work" and the loop would
@@ -482,8 +487,10 @@ async function main(): Promise<number> {
           ...(prGate !== undefined ? { prGate } : {}),
         });
       }
-      // merge-pr items always route through codegenExecuteItem (which handles the merge)
-      if (action.item.id.startsWith("merge-pr-")) {
+      // Forge-produced items (merge-pr-N, review-pr-N) always route through codegenExecuteItem:
+      // one handles the merge, the other builds the prompt from the reviewer's own words. Neither
+      // has a backlog file for the port executor to read.
+      if (isSyntheticForgeItem(action.item.id)) {
         return codegenExecuteItem(action.item, {
           repoRoot: args.repoRoot,
           agentId: args.by,

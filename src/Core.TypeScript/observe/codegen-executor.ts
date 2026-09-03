@@ -33,6 +33,8 @@
 
 import { spawnSync } from "node:child_process";
 import { authorizeMerge, type PrGateReader } from "./merge-receipt";
+import { reviewPrompt } from "./review-work";
+import { forgePrNumber, isMergeItem, isReviewItem } from "./action-reconciliation";
 import { existsSync, readdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import type { CommandExecutor, RunSpec, RunOutcome, ExecutorTier } from "./do-item";
@@ -87,7 +89,9 @@ function readItemFile(repoRoot: string, item: BacklogItem): string | null {
           return content;
         }
       }
-    } catch { continue; }
+    } catch {
+      continue;
+    }
   }
   return null;
 }
@@ -222,13 +226,18 @@ export function codegenExecutor(options?: CodegenExecutorOptions): CommandExecut
  * Flow: read item → create branch → invoke Claude CLI → commit results → push.
  * Special case: `merge-pr-N` items trigger a PR merge instead of codegen.
  */
-export async function codegenExecuteItem(
-  item: BacklogItem,
-  options?: CodegenExecutorOptions,
-): Promise<RunOutcome> {
+export async function codegenExecuteItem(item: BacklogItem, options?: CodegenExecutorOptions): Promise<RunOutcome> {
   // Special case: merge-pr-N items are PR merges, not codegen
-  if (item.id.startsWith("merge-pr-")) {
+  if (isMergeItem(item.id)) {
     return mergePullRequest(item, options);
+  }
+
+  // Special case: review-pr-N items are ANSWERING a review. Still codegen — the answer to a review
+  // is a change to the code — but the prompt is the reviewer's words rather than the backlog row's.
+  if (isReviewItem(item.id)) {
+    const prepared = await prepareReviewItem(item, options);
+    if (!prepared.ok) return prepared.outcome;
+    item = { ...item, title: prepared.title };
   }
 
   const opts = {
@@ -265,16 +274,12 @@ export async function codegenExecuteItem(
 
   // 5. Invoke Claude CLI
   try {
-    const result = spawnSync(
-      opts.command,
-      ["-p", "--model", opts.model, "--permission-mode", "auto", prompt],
-      {
-        cwd: opts.repoRoot,
-        encoding: "utf-8",
-        timeout: opts.timeoutMs,
-        env: { ...process.env, GIT_TERMINAL_PROMPT: "0" },
-      },
-    );
+    const result = spawnSync(opts.command, ["-p", "--model", opts.model, "--permission-mode", "auto", prompt], {
+      cwd: opts.repoRoot,
+      encoding: "utf-8",
+      timeout: opts.timeoutMs,
+      env: { ...process.env, GIT_TERMINAL_PROMPT: "0" },
+    });
 
     if (result.error) {
       const errCode = (result.error as NodeJS.ErrnoException).code;
@@ -309,8 +314,61 @@ export async function codegenExecuteItem(
   }
 }
 
-
 // ═══ PR Merge Executor ═════════════════════════════════════════════════════════
+
+/**
+ * Turn a `review-pr-N` item into a prompt built from what the reviewer actually said.
+ *
+ * REFUSES rather than guesses when it cannot read the review. An agent handed "answer the review on
+ * PR 42" with no threads would invent something to answer — which is worse than doing nothing,
+ * because it produces a change that looks like a response and addresses nobody.
+ */
+async function prepareReviewItem(
+  item: BacklogItem,
+  options?: CodegenExecutorOptions,
+): Promise<{ ok: true; title: string } | { ok: false; outcome: RunOutcome }> {
+  const prNum = forgePrNumber(item.id);
+  if (prNum === null) {
+    return { ok: false, outcome: { ok: false, reason: `invalid review-pr id: ${item.id}`, exitCode: 1, stderr: "" } };
+  }
+  if (options?.prGate === undefined) {
+    return {
+      ok: false,
+      outcome: {
+        ok: false,
+        reason: `cannot answer the review on PR #${String(prNum)}: no forge reader, so the reviewer's comments cannot be read — answering a review you cannot see would be inventing one`,
+        exitCode: 126,
+        stderr: "",
+      },
+    };
+  }
+  const receipt = await options.prGate(prNum);
+  if (!receipt.ok) {
+    return {
+      ok: false,
+      outcome: {
+        ok: false,
+        reason: `cannot read the review on PR #${String(prNum)}: ${receipt.why}`,
+        exitCode: 126,
+        stderr: "",
+      },
+    };
+  }
+  const gate = receipt.gate;
+  const open = gate.threads.filter((t) => !t.isResolved);
+  const unanswerable = gate.unresolvedThreads - open.length;
+  if (open.length === 0 && unanswerable === 0) {
+    return {
+      ok: false,
+      outcome: {
+        ok: true,
+        stdout: `PR #${String(prNum)} has no unresolved review threads — nothing to answer`,
+        exitCode: 0,
+      },
+    };
+  }
+  return { ok: true, title: reviewPrompt({ prNumber: prNum, threads: gate.threads, unanswerable }) };
+}
 
 /**
  * Merge a clean pull request. Invoked when the observe loop picks a `merge-pr-N`
@@ -327,10 +385,7 @@ export async function codegenExecuteItem(
  *
  * Falls back to direct git merge if `gh` is unavailable.
  */
-async function mergePullRequest(
-  item: BacklogItem,
-  options?: CodegenExecutorOptions,
-): Promise<RunOutcome> {
+async function mergePullRequest(item: BacklogItem, options?: CodegenExecutorOptions): Promise<RunOutcome> {
   const opts = {
     repoRoot: options?.repoRoot ?? process.cwd(),
     dryRun: options?.dryRun ?? false,
@@ -371,16 +426,12 @@ async function mergePullRequest(
   // (ENOENT) — merging by the one route that bypasses the pull request, triggered by the loop
   // LOSING THE ABILITY TO ASK whether merging was allowed. A missing tool is not authorisation.
   try {
-    const ghResult = spawnSync(
-      "gh",
-      ["pr", "merge", String(prNum), "--squash", "--auto", "--delete-branch"],
-      {
-        cwd: opts.repoRoot,
-        encoding: "utf-8",
-        timeout: 60_000,
-        env: { ...process.env, GIT_TERMINAL_PROMPT: "0" },
-      },
-    );
+    const ghResult = spawnSync("gh", ["pr", "merge", String(prNum), "--squash", "--auto", "--delete-branch"], {
+      cwd: opts.repoRoot,
+      encoding: "utf-8",
+      timeout: 60_000,
+      env: { ...process.env, GIT_TERMINAL_PROMPT: "0" },
+    });
 
     if (ghResult.error) {
       const errCode = (ghResult.error as NodeJS.ErrnoException).code;

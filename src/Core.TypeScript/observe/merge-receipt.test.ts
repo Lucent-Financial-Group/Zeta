@@ -7,7 +7,7 @@
  */
 
 import { describe, expect, test } from "bun:test";
-import type { CheckSummary, PrGateState } from "../forge-host/types";
+import type { CheckSummary, PrGateState, ReviewThread } from "../forge-host/types";
 import {
   authorizeMerge,
   describeGateRefusal,
@@ -27,6 +27,7 @@ function gateState(patch: Partial<PrGateState> = {}): PrGateState {
     checks: GREEN,
     requiredChecks: GREEN,
     unresolvedThreads: 0,
+    threads: [],
     autoMerge: "none",
     mergeCommit: null,
     warnings: [],
@@ -125,6 +126,73 @@ describe("authorizeMerge — being unable to ask is not permission", () => {
     };
     await authorizeMerge(1337, "t", reader);
     expect(asked).toEqual([1337]);
+  });
+});
+
+function thread(patch: Partial<ReviewThread> = {}): ReviewThread {
+  return {
+    id: "PRRT_kwbase",
+    isResolved: false,
+    isOutdated: false,
+    path: "src/Core.TypeScript/observe/do-item.ts",
+    line: 42,
+    firstComment: { author: "lior", body: "this retry has no bound" },
+    ...patch,
+  };
+}
+
+describe("the refusal names the threads, so a block is a task and not a wall", () => {
+  test("it quotes the reviewer, the file and the line", () => {
+    const why = describeGateRefusal(gateState({ unresolvedThreads: 1, threads: [thread()] }));
+    expect(why).toContain("lior");
+    expect(why).toContain("this retry has no bound");
+    expect(why).toContain("do-item.ts:42");
+  });
+
+  test("an outdated thread is marked as such — it still blocks, and the line has moved", () => {
+    const why = describeGateRefusal(gateState({ unresolvedThreads: 1, threads: [thread({ isOutdated: true })] }));
+    expect(why).toContain("outdated");
+  });
+
+  test("resolved threads are not quoted", () => {
+    const why = describeGateRefusal(
+      gateState({
+        unresolvedThreads: 1,
+        threads: [thread(), thread({ isResolved: true, firstComment: { author: "vera", body: "already handled" } })],
+      }),
+    );
+    expect(why).toContain("lior");
+    expect(why).not.toContain("already handled");
+  });
+
+  test("the quoting is bounded but the COUNT is never truncated", () => {
+    // A fifty-line refusal is not read. The number of blockers still has to be exact.
+    const many = Array.from({ length: 9 }, (_, i) =>
+      thread({ id: `t${String(i)}`, firstComment: { author: "r", body: `point ${String(i)}` } }),
+    );
+    const why = describeGateRefusal(gateState({ unresolvedThreads: 9, threads: many }));
+    expect(why).toContain("9 unresolved review thread(s)");
+    expect(why).toContain("and 4 more");
+    expect(why).toContain("point 0");
+    expect(why).not.toContain("point 8");
+  });
+
+  test("a thread with no comment text still appears, named as such", () => {
+    // Built without the key rather than with `firstComment: undefined` — under
+    // `exactOptionalPropertyTypes` those are different types, and the absent key is the real shape.
+    const noComment: ReviewThread = { id: "t-quiet", isResolved: false, isOutdated: false };
+    const why = describeGateRefusal(gateState({ unresolvedThreads: 1, threads: [noComment] }));
+    expect(why).toContain("no comment text available");
+  });
+
+  test("a long comment is cut to one bounded line", () => {
+    const body = `${"x".repeat(300)}
+second line`;
+    const why = describeGateRefusal(
+      gateState({ unresolvedThreads: 1, threads: [thread({ firstComment: { author: "r", body } })] }),
+    );
+    expect(why).toContain("...");
+    expect(why).not.toContain("second line");
   });
 });
 
