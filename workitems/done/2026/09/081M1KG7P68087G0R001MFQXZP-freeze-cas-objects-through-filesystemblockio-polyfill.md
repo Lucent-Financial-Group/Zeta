@@ -1,11 +1,12 @@
 ---
 id: 081M1KG7P68087G0R001MFQXZP
 type: task
-state: backlog
+state: done
 priority: P1
 slug: freeze-cas-objects-through-filesystemblockio-polyfill
 title: "Freeze CAS objects through FileSystemBlockIo polyfill"
 created: 2026-09-03T11:25:00.000Z
+completed: 2026-09-03T11:48:18.217Z
 depends_on: ["081M1KEYNPD087G0R000DX5MT7"]
 composes_with: ["081M1KEYNPD087G0R000DX5MT7"]
 ---
