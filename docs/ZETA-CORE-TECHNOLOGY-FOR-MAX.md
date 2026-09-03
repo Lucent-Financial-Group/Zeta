@@ -94,11 +94,11 @@ The algebraic foundation is `WSet<'K,'W>` in `src/Core/WSet.fs`: a weighted set 
 
 (The right column names an _illustrative_ domain for each ring, not necessarily a literal `WSet` call-site: the concrete verified `WSet` instantiation is `BipartiteMachZehnder`'s `WSet<int*int, Complex>`; the trust/calibration ledgers are Real-valued Bayesian but run their own Gaussian/Beta streaming code, not the `WSet` path.)
 
-The three wiring primitives form a comonoid (laws verified in `WSet.Comonoid.Laws.Tests.fs`): `WSet.copy` (fan-out Δ, line 76), `WSet.tensor` (Kronecker ⊗, line 88), `WSet.discard` (marginalise ε, line 82). These are exactly the wiring primitives a neural network needs. A single factor-graph cell (`src/Bayesian/MinimalBnn.fs`) equipped with these three operations is a composable layer.
+The three wiring primitives form a comonoid (laws verified in `WSet.Comonoid.Laws.Tests.fs`): `WSet.copy` (fan-out Δ, line 76), `WSet.tensor` (Kronecker ⊗, line 88), `WSet.discard` (marginalise ε, line 82). These are general fan-out, product, and marginalisation primitives. `MinimalBnn` is a single conjugate Gaussian factor-graph cell; `MultilayerBnn` composes Gaussian latent layers under sequential, skip, or declared-DAG wiring.
 
 The underlying algorithm is the **Generalized Distributive Law** (Aji–McEliece 2000): sum-product message passing over a commutative semiring. The `FactorGraph` (`src/Bayesian/FactorGraph.fs`) implements the sum-product round (Kschischang–Frey–Loeliger 2001). EP (`src/Bayesian/Ep.fs`) implements Minka's expectation propagation. Training and inference are the same message pass — `MinimalBnn.update` absorbs one observation and updates the posterior in a single call.
 
-**Honest scope boundary:** The N-layer BNN composition (stacking multiple `MinimalBnn` cells with a shared EP backward pass through all layers) is the next engineering step. The primitives are present; the module is not yet shipped.
+**Current measured boundary:** The N-layer module is shipped. A sequential topology has an exact forward/backward tree smoother. Multi-parent node-level sweeps remain explicitly approximate, while the per-edge factor-graph path reports exact acyclic marginals and `ConvergedLoopyMeansOnly` for converged Gaussian loops. The online boundary absorbs each observation exactly once at layer 0 and returns marginals, rounds, convergence, and exactness as a separate query receipt. This is Bayesian latent-state inference, not gradient-trained neural weights, learned topology, non-Gaussian robustness, or a Goodfire-equivalent block-sparse featurizer. See `docs/research/2026-09-02-multilayer-factor-graph-online-update-contract.md`.
 
 **Key files:** `src/Core/WSet.fs`, `src/Core/CayleyDickson.fs`, `src/Bayesian/FactorGraph.fs`, `src/Bayesian/Ep.fs`, `src/Bayesian/MinimalBnn.fs`
 
@@ -384,3 +384,285 @@ The deepest connection: the `gen(gen)==gen` fixed point (Layer 7) is the propert
 | ACE CLI (replace package managers)      | Package format spec shipped; CLI not yet started                           | `ace install / verify / list` TypeScript commands                            |
 
 Max is aware of this path and is excited about it. The document you are reading is the technical foundation for all five workstreams.
+
+---
+
+## The Geometry Thread — jurisdictions, language, Bayes, and Clifford are one computation
+
+_Added 2026-09-02 at Aaron's request, to say plainly how four things that look unrelated are
+the same shape. Register is marked throughout: what is **built**, what is **prior art**, and
+what is **`toy`** — a resonance we have not earned the right to assert._
+
+### In plain words
+
+> **It is context-jurisdiction-aware queries.**
+
+Aaron, on reading the first draft of this section: _"this seems like a lot of overly complicated
+text to say context jurisdiction aware queries."_ He is right, so the plain name goes first and
+the elaboration goes after it.
+
+**You are in several contexts at once. They overlap. They do not nest. Every question has to be
+answered for the set you are actually in, not for one bucket someone filed you under.** That is
+the whole idea. If Max reads only this much, he has it.
+
+Two consequences worth carrying even without the rest:
+
+- **A permission is a signature, not a boolean** — the list of which contexts contain this act.
+- **There is no root to descend from**, so no single authority can answer the question for you.
+  That is why decentralisation here is a correctness requirement, not a preference.
+
+The remaining sections are why this is hard, who solved it before us, and what it connects to.
+They are detail, not the point.
+
+### The same thing, said longer
+
+> **Membership in overlapping regions that do not nest is a single computation.** Elections
+> and GIS solve it in physical space and have for fifty years. Neural networks solve it in
+> concept space and we are only now able to see them doing it. Clifford algebra is the
+> algebra in which that computation is _one operator_ instead of a pipeline. And because
+> every real instance has uncertainty at the boundary, the honest output is a **distribution
+> over memberships**, which is the Bayesian half.
+
+### 1. The concrete case Max can check: a ballot style
+
+**Prior art, verifiable, and the cleanest statement of the problem.** Ask an election
+official what ballot a given address gets. The address sits inside, simultaneously:
+
+- a county · a municipality · a precinct
+- a congressional district · a state senate district · a state house district
+- a school district · a water district · a fire district · a library district · a hospital district
+
+**These do not nest.** A school district crosses county lines. A water district crosses city
+lines. There is no tree, so there is no path from the root that identifies you. The ballot
+style is the **combination of every region that contains the point** — and where two boundary
+systems disagree, the precinct itself is cut into **precinct splits**, which is the industry's
+own name for "the overlap is real and we had to subdivide reality to represent it."
+
+The scale is not academic. ES&S **Electionware** documentation describes managing on the order
+of **15,000 ballot styles against just under 10,000 precincts** — more styles than precincts,
+which is the arithmetic signature of non-nesting overlap. The EAC's _Local Election Officials'
+Guide to Redistricting_ and MIT Election Lab's work on splits both say the same thing outright:
+most jurisdictions are not equipped for misaligned boundaries.
+
+**Why this is the right teaching example:** it is a domain where the naive model (a hierarchy)
+is _provably_ wrong, the failure is _expensive_ (a voter gets the wrong ballot), and the
+correct model was worked out by practitioners rather than theorists.
+
+### 2. The same problem, already solved as an algebra: GIS overlay
+
+**Prior art, and it supplies our human anchors.** GIS answers the question with **overlay**:
+each jurisdiction type is a **layer**; the query is the intersection of the layers containing
+the point. In ArcGIS terms an input layer and an overlay layer produce an output layer, and
+polygon overlay _splits features where they are overlapped_ — creating new areas exactly where
+polygons intersect. That is the precinct split, arrived at independently.
+
+**Beacon anchors, and the lineage matters:**
+
+- **Warren Manning**, then **Jacqueline Tyrwhitt** and **Ian McHarg** (_Design with Nature_,
+  1969) — overlay as physical transparent map sheets stacked on a light table. The insight is
+  pre-computational: **you do not merge the layers, you keep them and look through them.**
+- **Dana Tomlin** and **Joseph Berry**, ~1983 — **map algebra** / cartographic modeling, which
+  turned McHarg's manual procedure into an _algebra_: layers are variables, and overlay is an
+  operator with arithmetic, set and Boolean forms.
+
+McHarg → Tomlin is the move we keep making in this repo: a practice becomes a formalism, and
+once it is a formalism you can compose it, check it, and generate from it.
+
+**Note what McHarg's rule already is.** _Keep the layers, do not merge them_ is
+[`dv2-data-split-discipline`](../.claude/rules/dv2-data-split-discipline-activated.md)'s raw
+vault — a single version of the facts, never a single version of the truth — stated in 1969
+about maps. A merged map has picked a winner; a stack of layers has not.
+
+### 2b. FME — the step §2 assumes, and the one that is actually hard
+
+**Prior art, and Aaron's assessment, dated by him.** Overlay in §2 quietly assumes the layers
+are already comparable. They are not. Two agencies draw "the same" boundary differently — a
+different vintage, a different survey, a different projection, a different schema, a different
+idea of where the centreline of the river is — and until that is reconciled, intersecting them
+produces confident nonsense.
+
+Aaron, 2026-09-02:
+
+> _"As far as I've seen Safe FME is the best software on earth for trying to study different
+> jurisdictions drawing different boundaries — I could be wrong, this was based on analysis
+> several years ago, maybe 10."_
+
+**Safe Software's FME** (Feature Manipulation Engine, British Columbia) is the spatial ETL
+platform for exactly this: reading essentially every geospatial format, transforming geometry
+and schema between them, and reconciling reference systems that do not agree. Its Workbench is
+a graphical transformation pipeline — restructure, merge from multiple sources, map one data
+model onto another, run it repeatably and traceably.
+
+**Register, stated honestly rather than laundered.** Aaron dates his own assessment to roughly
+2016 and flags it as possibly stale — that qualifier is his, and it is kept because a
+ten-year-old competitive read is a _claim about 2016_, not about today. What I verified
+(2026-09-02) is that FME exists, is actively developed, and still occupies this role; I did
+**not** find a current head-to-head evaluation against alternatives, so "best on earth" stays
+**his assessment, dated**, and is not upgraded to a finding by my having looked it up.
+
+**Why this subsection earns its place: FME is the anti-Babel half.** Note what FME does _not_
+do — it does not decide which agency's boundary is correct. It makes them **comparable while
+keeping both.** That is precisely
+[`anti-babel-preserve-reconcilability`](../.claude/rules/anti-babel-preserve-reconcilability.md):
+divergence is fine, and the invariant to protect is that a diverged peer's meaning can still be
+reconstructed. Two agencies with two boundaries are decorrelated; two agencies with two
+boundaries _and no translation between them_ is Babel, and the cost is a voter handed the wrong
+ballot.
+
+So the stack has three floors, and we have names for all three:
+
+| floor | GIS instance | our name |
+|---|---|---|
+| make the layers comparable | **FME** — spatial ETL, schema and CRS reconciliation | anti-Babel / Mirror→Beacon compression |
+| keep the layers, do not merge | **McHarg** — transparent sheets on a light table | DV2.0 raw vault |
+| query across them | **Tomlin** — map algebra; ArcGIS overlay | the overlay query (§4's meet) |
+
+**And the ordering is the lesson.** Reconciliation comes _first_. An overlay run on
+unreconciled layers is a check that cannot fail — it returns an answer for every point and the
+answer is wrong near every boundary, which is the vacuity class in geographic form.
+
+### 3. Zeta already has this problem, and it is our policy model
+
+**Built, and this is the payoff for Max.** Aaron's standing architecture: _agreement is
+pairwise overlap of local policies, never global._ Every trust decision is made locally; hubs
+and hyperscalers must **negotiate with node rules, never command**.
+
+Read that as a jurisdiction problem and it is exactly the ballot style. A traveler performing
+one action is simultaneously inside:
+
+| region | our name for it |
+|---|---|
+| their own node's policy | local policy (the OPA-shaped, modeled ruleset) |
+| the room they are acting in | `RoomBoundary` / soft-room membrane |
+| the hat they are wearing | role-conditional obligations and claims |
+| the counterparty's policy | _their_ local rules, which we do not control |
+| the substrate floor | HARD LIMITS / manifesto §1–§13 |
+
+**None of these nest.** A hat's obligations are not a subset of a room's; a counterparty's
+policy is not a subset of ours. So "what is permitted here" is an **overlay query**, not a
+lookup, and there is no root to descend from. That is why a single global policy authority
+would be both a §1 violation and _technically wrong_ — a tree cannot represent a lattice.
+
+This also names the real object: **a permission is not a boolean, it is a signature** — the
+vector of which jurisdictions contain this act. Two travelers can differ in one component and
+agree in all others, and that partial agreement is exactly what pairwise negotiation is
+computing.
+
+### 4. Clifford algebra is where overlay becomes one operator
+
+**Prior art for the algebra; `toy` for our use of it.**
+
+A **k-blade** in a geometric algebra _is_ an oriented subspace of dimension k. A **multivector**
+is a sum of blades of different grades — which is to say, **a single object that carries
+membership in several subspaces at once with their orientations intact.** That is the signature
+from §3, given an algebra.
+
+The operator that matters: in **Conformal Geometric Algebra**, intersection is the **meet**,
+`A ∨ B = (A_ ∧ B_)*` — the dual of the wedge of the duals. Point-in-region, region∩region, and
+region∩line are **the same operation at different grades**. Where GIS has a toolbox of overlay
+functions and elections has a pipeline of assignment steps, CGA has one operator and a grade.
+
+**The honest limit, stated because it is load-bearing.** CGA's blades represent _rounds and
+flats_ — points, lines, planes, circles, spheres. **An arbitrary polygon is not a blade.** You
+cannot encode a school district boundary as a CGA object and get exact overlay. So this is
+**not** "Clifford algebra solves the election problem." What transfers is narrower and still
+worth having:
+
+- the **representation**: membership-in-many-overlapping-subspaces as one graded object
+- the **operator**: intersection as a single algebraic primitive rather than a procedure
+- and, in the one domain where regions genuinely _are_ linear subspaces, it transfers exactly —
+  which is §5.
+
+### 5. Language, and why this is not a metaphor there
+
+**Their measurement is prior art; our reading of it is `toy`.**
+
+Goodfire (Tom McGrath and team, 2026) measured that concepts inside language models live on
+**curved manifolds, not on rays**. Days of the week and months of the year come out as
+**circles**. Their sparse autoencoders — whose built-in assumption is that a feature is a
+_direction_ — were **tiling those curves with many rays**, reconstructing them well while
+learning nothing about them, which made genuinely algorithmic computation look like "a bag of
+heuristics." Their fix was to make the feature primitive a **subspace of adaptively-learned
+dimension** (block-sparse featurizers, work led by Thomas Fel).
+
+Two further measurements matter for us:
+
+- **A reused general addition module.** In Llama 3.1 8B, day-of-week arithmetic and month
+  arithmetic do not have separate calculators. Both are _translated into a common
+  representation_, passed through **one general addition module**, and translated back. Similar
+  behaviour in Llama 3.1 70B and, far more surprisingly, DeepSeek V4 Flash — different
+  architecture entirely.
+- **Steering fails by leaving the manifold.** Interpolating in a straight line between two
+  points on a curved concept manifold lands in a region the network never occupies. That is why
+  activation steering is sometimes Golden-Gate-Claude and sometimes instant gibberish.
+
+**Here the Clifford limit from §4 does not bite.** These regions _are_ linear subspaces of an
+activation space, which is precisely what blades represent. So the mapping is tight where it is
+tight, and Aaron's _"english runs on the same geospatial wiring"_ has a named mechanism behind
+it: **Jeff Hawkins' Thousand Brains** — cortical columns using grid- and place-cell reference
+frames for _all_ concepts, not only for physical space. Under that hypothesis, "which districts
+contain this address" and "which concepts contain this word" are not analogous computations;
+they are the _same_ cortical machinery pointed at different inputs.
+
+**Register, held honestly.** The circular concepts _look_ like rotors — modular addition "done
+in a Fourier way" is rotation in a plane, and in geometric algebra a rotation is `exp(Bθ)` for a
+unit bivector `B`. **That is a coincidence of form, not an identification.** To promote it we
+would have to exhibit (a) an actual **grade** — a stable nonzero wedge, not merely a dimension;
+(b) the **group law**, `exp(Bθ₁)exp(Bθ₂) = exp(B(θ₁+θ₂))`, not just periodicity; and (c) the
+**same generator** recovered across concept families after the change of frame. None of that is
+done. Per
+[`numerology-vs-number-theory`](../.claude/rules/numerology-vs-number-theory.md), a matching
+shape is a place to look, never a result.
+
+### 6. Bayes is not a fifth thing — it is what happens at every boundary
+
+**Built (our factor-graph substrate); the application here is `toy`.**
+
+Every instance above has the same defect at the edges:
+
+| domain | boundary uncertainty |
+|---|---|
+| elections | geocoding error near a district line assigns a real voter the wrong ballot |
+| GIS | polygons from different agencies at different vintages and precisions do not coincide |
+| Zeta policy | two nodes' rules overlap _partially_; whether this act is inside is genuinely unsettled |
+| language | a token near a concept boundary is in both regions to a degree |
+
+So the honest output of an overlay query is never a set — it is a **distribution over
+signatures**. Structurally that is a factor graph: an uncertain point, one factor per boundary,
+and the query is a **sum over consistent assignments**. Which is exactly the class Aaron named
+when he found the missing prior art: **probabilistic circuits** (Darwiche's arithmetic circuits,
+2003; Choi / Vergari / Van den Broeck, 2020) — the family whose whole point is that such queries
+are _tractable by construction_ rather than approximated.
+
+This is why our compute layer is a **BNN over categorical tensors on a factor-graph DAG**
+(Layer 5) rather than a stack of dense linear layers. The DAG is not stylistic. It is the shape
+of an overlay query with uncertainty at every boundary.
+
+### How to read this section
+
+**One computation, four vocabularies.** GIS and elections give the **worked engineering
+practice** and the human anchors (McHarg 1969, Tomlin 1983) — plus the proof that the
+hierarchical model fails in the real world at real cost. Zeta's policy model gives our
+**instance**, and it is why decentralization is a correctness requirement here and not a
+preference. Clifford gives the **algebra** where the query is one operator, tightly in concept
+space and only partially in physical space. Bayes gives the **boundary**, which is where all
+four are actually hard.
+
+**What is genuinely ours and unbuilt:** an overlay query over _policy_ jurisdictions, returning
+a distribution over permission signatures, evaluated pairwise and locally with no global
+authority. Everything above is either prior art or a pointer at that.
+
+**Related, for the deeper dive:**
+[`docs/research/ip-questionable/2026-09-02-mlst-tom-mcgrath-goodfire-neural-geometry-...`](research/ip-questionable/2026-09-02-mlst-tom-mcgrath-goodfire-neural-geometry-manifolds-block-sparse-featurizers-general-addition-module-aaron-forwarded-verbatim.md)
+— the Goodfire transcript and its measurements ·
+[`docs/GLOSSARY.md`](GLOSSARY.md) §Meter, §Oracle ·
+[`docs/VISION.md`](VISION.md) §Charlatan, magician, teacher.
+
+**Sources for §1–§2b** (checked 2026-09-02):
+[FME / Safe Software](https://fme.safe.com/guides/spatial-computing/geospatial-data-integration/) ·
+[FME (software) — Wikipedia](https://en.wikipedia.org/wiki/FME_(software)) ·
+[ES&S Electionware](https://www.essvote.com/products/electionware/) ·
+[EAC — Local Election Officials' Guide to Redistricting](https://www.eac.gov/sites/default/files/2021-08/LEO_Guide_to_Redistricting.pdf) ·
+[MIT Election Lab — Measuring and Managing Splits](https://electionlab.mit.edu/articles/measuring-and-managing-splits-election-administration) ·
+[ArcGIS — Overlay analysis](https://desktop.arcgis.com/en/arcmap/latest/analyze/commonly-used-tools/overlay-analysis.htm) ·
+[GIS Commons §5.3 Overlay Analysis](https://geo.libretexts.org/Bookshelves/Geography_(Physical)/GIS_Commons:_An_Introductory_Textbook_on_Geographic_Information_Systems/05:_Analysis/5.03:_Overlay_Analysis)

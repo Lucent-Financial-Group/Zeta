@@ -1,0 +1,14 @@
+{
+  "id": "080d032091bf4810a0130008f888a130",
+  "at": "2026-09-02T21:41:50.697Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1J14DZ9087G0R0033PRAAX",
+    "type": "task",
+    "title": "PR12: replay sealed freeze-log boats",
+    "slug": "pr12-replay-sealed-freeze-log-boats",
+    "priority": "P1",
+    "filename": "081M1J14DZ9087G0R0033PRAAX-pr12-replay-sealed-freeze-log-boats.md"
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 16417,
+  "archive_path": "docs/history/pr-reviews/PR-16417-feat-081m1j9yfjb087g0r002jfzag3-simulatedblockio-is-lba-not-posix.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-03T00:37:23.947Z",
+  "schema_version": "v1",
+  "commit_sha": "7d351c6d8391d4b96029c63cb6eb03c0428fbc50",
+  "title": "feat(081M1J9YFJB087G0R002JFZAG3): SimulatedBlockIo is LBA, not POSIX",
+  "state": "MERGED",
+  "merged_at": "2026-09-03T00:36:44Z",
+  "head_ref": "feat/zetafs-simulated-blockio"
+}

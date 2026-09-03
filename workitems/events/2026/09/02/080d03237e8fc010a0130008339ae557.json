@@ -1,0 +1,14 @@
+{
+  "id": "080d03237e8fc010a0130008339ae557",
+  "at": "2026-09-02T23:24:04.984Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1J6ZMFR087G0R001E22YQY",
+    "type": "task",
+    "title": "PR12 mid-log CRC mismatch keeps prefix",
+    "slug": "pr12-mid-log-crc-mismatch-keeps-prefix",
+    "priority": "P1",
+    "filename": "081M1J6ZMFR087G0R001E22YQY-pr12-mid-log-crc-mismatch-keeps-prefix.md"
+  }
+}

@@ -15,6 +15,8 @@
 
 import type { NextAction, World, BacklogItem } from "../observe";
 import type { ChooserResult } from "../chooser";
+import type { CommandExecutor } from "../do-item";
+import { grantedTools, sandboxedExecutor, type RoomSandbox, type ToolGrant } from "./sandbox";
 
 // ─── Scope predicate (Lior's enforcement requirement) ───────────────
 
@@ -32,9 +34,8 @@ export interface ScopePredicate {
 
 /** Narrow a World to only what the scope predicate allows. */
 export function scopeWorld(world: World, scope: ScopePredicate): World {
-  const filteredBacklog: readonly BacklogItem[] = scope.backlogIds.size === 0
-    ? []
-    : world.backlog.filter(item => scope.backlogIds.has(item.id));
+  const filteredBacklog: readonly BacklogItem[] =
+    scope.backlogIds.size === 0 ? [] : world.backlog.filter((item) => scope.backlogIds.has(item.id));
 
   const scoped: World = {
     ...world,
@@ -51,7 +52,7 @@ export function scopeWorld(world: World, scope: ScopePredicate): World {
   if (world.forgeState && scope.prNumbers.size > 0) {
     copy.forgeState = {
       ...world.forgeState,
-      cleanPrNumbers: world.forgeState.cleanPrNumbers.filter(n => scope.prNumbers.has(n)),
+      cleanPrNumbers: world.forgeState.cleanPrNumbers.filter((n) => scope.prNumbers.has(n)),
     };
   }
 
@@ -63,6 +64,43 @@ export function scopeWorld(world: World, scope: ScopePredicate): World {
 /** Opaque per-room state that survives across ticks. JSON-serializable. */
 export type RoomState = Record<string, unknown>;
 
+// ─── Seam mode + budget: a room is BOUNDED, in either mode ──────────
+
+/**
+ * Which dependencies this room's seams are bound to.
+ *
+ * `mock` = injected test doubles at every IO boundary (the deterministic-simulation mode);
+ * `real` = the live adapters. Same room, same code path, different bindings — which is the point:
+ * a room run under mocks and the same room run in production differ in what is INJECTED, never in
+ * kind. Mirrors `agentic-organization/packages/application/src/room.ts`'s `SeamMode`.
+ */
+export type SeamMode = "real" | "mock";
+
+/**
+ * A room's execution bound. **In EITHER seam mode a room cannot run forever** — that is the whole
+ * property, and it was previously nowhere: the org-side `RoomBudget` declared `maxSteps` and
+ * nothing ever read it (`maxSteps` appeared only in its own file; the factory was called only by
+ * its own test), while this runner had no bound of any kind and would await a room's tick
+ * indefinitely.
+ */
+export interface RoomBudget {
+  /** Total ticks this room may ever run. Refused once reached — it is not a soft target. */
+  readonly maxSteps: number;
+  /** How long the runner will wait for ONE tick before giving up on it. */
+  readonly maxTickMs: number;
+}
+
+/** `maxSteps` matches the org-side default (1024) so the two halves agree on the ceiling. */
+export const DEFAULT_ROOM_BUDGET: RoomBudget = { maxSteps: 1024, maxTickMs: 30_000 };
+
+/** Where the runner records consumed steps. Namespaced so it cannot collide with a room's own keys. */
+export const STEPS_USED_KEY = "__zeta_stepsUsed";
+
+function stepsUsedOf(state: RoomState): number {
+  const raw = state[STEPS_USED_KEY];
+  return typeof raw === "number" && Number.isFinite(raw) && raw >= 0 ? raw : 0;
+}
+
 // ─── Room interface ─────────────────────────────────────────────────
 
 export interface Room {
@@ -72,44 +110,141 @@ export interface Room {
   readonly scope: ScopePredicate;
   /** Tick-surviving state. Mutated by the room, persisted by the runner. */
   state: RoomState;
+  /** Whether this room's seams are bound to test doubles or live adapters. Default `real`. */
+  readonly seamMode?: SeamMode;
+  /** Execution bound. Default `DEFAULT_ROOM_BUDGET` — a room without one is still bounded. */
+  readonly budget?: RoomBudget;
+  /**
+   * The room's isolation boundary: who is acting, what they may reach, and the credential proxy that
+   * mediates tools. Absent means the room declares no sandbox — and the runner then hands it NO
+   * executor at all rather than an unguarded one (see `tickRooms`).
+   */
+  readonly sandbox?: RoomSandbox;
   /**
    * Run one tick of this room against its scoped world.
    * Returns the chosen action (which the runner executes within the scope).
+   *
+   * `ctx.executor` is the ONLY way a room should run a command: the runner has already wrapped it in
+   * the room's own policy, so egress and credential rules are applied before anything executes. It is
+   * absent when the room declared no sandbox — the room then has no execution capability, which is
+   * the safe reading of "no policy declared".
    */
-  tick(scopedWorld: World): Promise<ChooserResult>;
+  tick(scopedWorld: World, ctx?: RoomTickContext): Promise<ChooserResult>;
+}
+
+/** What the runner hands a room for the duration of one tick. */
+export interface RoomTickContext {
+  /** Already wrapped in this room's sandbox policy. Absent when the room declared no sandbox. */
+  readonly executor?: CommandExecutor;
+  /** Tool grants for this room's identity — scope NAMES, never credentials. */
+  readonly grants?: readonly ToolGrant[];
 }
 
 // ─── Room runner (the fan-out) ──────────────────────────────────────
 
 export interface RoomTickResult {
   readonly roomId: string;
-  readonly result: ChooserResult;
+  /** Absent when the room did not produce one — refused on budget, or timed out. */
+  readonly result?: ChooserResult;
   readonly scopeViolation: boolean;
+  /** Seam bindings this room ran under. */
+  readonly seamMode: SeamMode;
+  /** Steps consumed INCLUDING this tick. */
+  readonly stepsUsed: number;
+  /** The room had already spent `maxSteps`; it was not run at all. */
+  readonly budgetExhausted: boolean;
+  /** The tick exceeded `maxTickMs` and the runner stopped waiting for it. */
+  readonly timedOut: boolean;
+}
+
+/** Resolves to the sentinel after `ms`, so a tick can be raced against its deadline. */
+const TIMED_OUT = Symbol("room-tick-timeout");
+function deadline(ms: number): Promise<typeof TIMED_OUT> {
+  return new Promise((resolve) => {
+    const t = setTimeout(() => resolve(TIMED_OUT), ms);
+    // Never hold the process open just to enforce a deadline.
+    (t as unknown as { unref?: () => void }).unref?.();
+  });
 }
 
 /**
  * Run all active rooms in parallel against the world.
- * Each room sees only its scoped slice (Lior's enforcement).
- * Returns results per room for the runner to execute.
+ *
+ * Each room sees only its scoped slice, and — the property this runner previously did not have —
+ * **a room cannot run forever, in either seam mode.** Two independent bounds, because one alone
+ * does not close it:
+ *
+ *   maxSteps   the room is REFUSED once it has spent its steps. Not throttled, not warned: not run.
+ *   maxTickMs  the runner stops waiting for a single tick that overruns.
+ *
+ * A TIMED-OUT TICK STILL CONSUMES A STEP, and that is the load-bearing detail. If timeouts were
+ * free, a room that hangs on every tick would be retried forever — bounded per tick and unbounded
+ * in aggregate, which is the same runaway wearing a smaller costume.
+ *
+ * HONEST LIMIT, stated rather than implied: JavaScript cannot cancel an in-flight promise, so the
+ * deadline bounds HOW LONG THE RUNNER WAITS, not the room's own execution — a hung tick's work may
+ * continue in the background until the process ends. What the step budget then guarantees is that
+ * such a room is never STARTED again. Claiming the tick itself was killed would be a stronger
+ * promise than the runtime can keep.
  */
-export async function tickRooms(rooms: readonly Room[], world: World): Promise<readonly RoomTickResult[]> {
+export async function tickRooms(
+  rooms: readonly Room[],
+  world: World,
+  opts?: { readonly executor?: CommandExecutor },
+): Promise<readonly RoomTickResult[]> {
   // Validate no overlapping scopes (Lior's drift guard)
   validateNoOverlap(rooms);
 
   const results = await Promise.all(
     rooms.map(async (room): Promise<RoomTickResult> => {
-      const scopedWorld = scopeWorld(world, room.scope);
-      const result = await room.tick(scopedWorld);
+      const budget = room.budget ?? DEFAULT_ROOM_BUDGET;
+      const seamMode: SeamMode = room.seamMode ?? "real";
+      const alreadyUsed = stepsUsedOf(room.state);
 
-      // Enforce: action must be within scope
-      const violation = !isActionInScope(result.action, room.scope);
-      if (violation) {
-        // Return the result but flag the violation — runner decides what to do
-        return { roomId: room.id, result, scopeViolation: true };
+      // Out of steps: the room is not run. No tick, no action, no chance to overrun again.
+      if (alreadyUsed >= budget.maxSteps) {
+        return {
+          roomId: room.id,
+          scopeViolation: false,
+          seamMode,
+          stepsUsed: alreadyUsed,
+          budgetExhausted: true,
+          timedOut: false,
+        };
       }
 
-      return { roomId: room.id, result, scopeViolation: false };
-    })
+      // The attempt is charged BEFORE it runs, so a tick that hangs or throws still costs a step.
+      const stepsUsed = alreadyUsed + 1;
+      room.state[STEPS_USED_KEY] = stepsUsed;
+
+      const scopedWorld = scopeWorld(world, room.scope);
+
+      // THE ROOM IS THE SANDBOX. A room gets an executor only through its own policy: the base
+      // executor is wrapped in the room's egress + credential rules before it is handed over, so a
+      // room cannot run a command that skipped them.
+      //
+      // A room with NO declared sandbox gets NO executor — not an unguarded one. "No policy
+      // declared" must not read as "no policy applies", which is the fail-open shape that turns an
+      // isolation boundary into a comment.
+      const ctx: RoomTickContext =
+        room.sandbox === undefined || opts?.executor === undefined
+          ? {}
+          : {
+              executor: sandboxedExecutor(opts.executor, room.sandbox),
+              grants: grantedTools(room.sandbox),
+            };
+
+      const raced = await Promise.race([room.tick(scopedWorld, ctx), deadline(budget.maxTickMs)]);
+
+      if (raced === TIMED_OUT) {
+        return { roomId: room.id, scopeViolation: false, seamMode, stepsUsed, budgetExhausted: false, timedOut: true };
+      }
+
+      const result = raced;
+      // Enforce: action must be within scope
+      const scopeViolation = !isActionInScope(result.action, room.scope);
+      return { roomId: room.id, result, scopeViolation, seamMode, stepsUsed, budgetExhausted: false, timedOut: false };
+    }),
   );
 
   return results;
@@ -118,9 +253,13 @@ export async function tickRooms(rooms: readonly Room[], world: World): Promise<r
 /** Check if an action is within the room's declared scope. */
 function isActionInScope(action: NextAction, scope: ScopePredicate): boolean {
   // Free modes and edit_grammar are always in scope (no external effects)
-  if (action.kind === "explore" || action.kind === "play" ||
-      action.kind === "self_reflect" || action.kind === "free_time" ||
-      action.kind === "edit_grammar") {
+  if (
+    action.kind === "explore" ||
+    action.kind === "play" ||
+    action.kind === "self_reflect" ||
+    action.kind === "free_time" ||
+    action.kind === "edit_grammar"
+  ) {
     return true;
   }
 
@@ -131,8 +270,7 @@ function isActionInScope(action: NextAction, scope: ScopePredicate): boolean {
 
   // Work actions require the item to be in scope
   if (action.kind === "do_item" || action.kind === "decompose") {
-    return scope.backlogIds.has(action.item.id) ||
-           action.item.id.startsWith("merge-pr-"); // merge actions checked via prNumbers
+    return scope.backlogIds.has(action.item.id) || action.item.id.startsWith("merge-pr-"); // merge actions checked via prNumbers
   }
 
   return true;

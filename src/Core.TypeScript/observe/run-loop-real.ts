@@ -47,12 +47,21 @@ import {
   type Participant,
 } from "./participant";
 import { buildMenu, actionLabel } from "./observe";
+import { tickRooms, type Room } from "./room";
+import type { ChooserResult } from "./chooser";
+
 import { recordReasoning, formatReasoning, type TickReasoning } from "./tick-reasoning";
 import { PersonaSummoner } from "../peer-call/summon";
 import { createPhaseClock, stampPhase, type PhaseClock } from "./phase-clock";
 import { createRSAccumulator } from "./rs-phase-accumulator";
 import { join } from "node:path";
 import { DEFAULT_FLAGS_PATH, haltDecisionFromSource, loadFlags } from "../enforcement/control-plane";
+
+/**
+ * How long the runner waits for ONE loop tick before giving up on it. Generous by default because a
+ * cloud persona or a cold local model can legitimately take a while; override for a tighter lane.
+ */
+const LOOP_TICK_DEADLINE_MS = Number.parseInt(process.env["ZETA_LOOP_MAX_TICK_MS"] ?? "", 10) || 120_000;
 
 interface CliArgs {
   by: string;
@@ -110,6 +119,60 @@ function resolveParticipant(spec: string): Participant {
   // Unknown spec — warn and degrade to oracle (safe default)
   console.warn(`[participant] unknown spec "${spec}" — falling back to oracle`);
   return oracleParticipant();
+}
+
+/** What the loop needs to build its room. Extracted so the WIRING itself is testable. */
+export interface LoopRoomDeps {
+  readonly by: string;
+  readonly dryRun: boolean;
+  /** Backlog ids the loop already had — the room admits exactly these and narrows nothing. */
+  readonly backlogIds: readonly string[];
+  readonly participant: Participant;
+  readonly deadlineMs: number;
+  /** Hands the raw choose result back so the caller can record reasoning. */
+  readonly onChoose: (r: { index: number; raw: string; fallback: boolean }) => void;
+}
+
+/**
+ * The loop's pick, as a Room.
+ *
+ * Deliberately BEHAVIOUR-NEUTRAL: the scope admits exactly the backlog the loop already had, keeps
+ * the operator channel, and declares no PR numbers so `scopeWorld` leaves `forgeState` untouched.
+ * It bounds the tick; it does not narrow what the loop may see.
+ *
+ * `maxSteps: 1` is the honest budget — this process runs ONE tick. `maxTickMs` is what a hanging
+ * chooser runs into: `participant.choose` has no timeout of its own, so a `cloud:<persona>` or
+ * `local-llm` that never returns would otherwise hang the process forever.
+ *
+ * Exported so a test can drive it with a hanging participant. The loop is where the bound has to
+ * hold, so the loop's own room is what a test needs to reach.
+ */
+export function createLoopRoom(deps: LoopRoomDeps): Room {
+  return {
+    id: `loop-${deps.by}`,
+    scope: {
+      backlogIds: new Set(deps.backlogIds),
+      prNumbers: new Set<number>(),
+      operatorAccess: true,
+      writeAccess: !deps.dryRun,
+    },
+    state: {},
+    // A dry run binds mock seams; a real tick binds the live ones. Same code path either way.
+    seamMode: deps.dryRun ? "mock" : "real",
+    budget: { maxSteps: 1, maxTickMs: deps.deadlineMs },
+    tick: async (scopedWorld): Promise<ChooserResult> => {
+      const scopedMenu = buildMenu(scopedWorld);
+      let chosen: { index: number; raw: string; fallback: boolean };
+      try {
+        chosen = await deps.participant.choose(scopedWorld, scopedMenu);
+      } catch {
+        chosen = { index: 0, raw: "choose-threw", fallback: true };
+      }
+      deps.onChoose(chosen);
+      const picked = scopedMenu[chosen.index] ?? scopedMenu[0]!;
+      return { action: picked, tier: "oracle", confidence: chosen.fallback ? 0 : 1 };
+    },
+  };
 }
 
 async function main(): Promise<number> {
@@ -192,14 +255,59 @@ async function main(): Promise<number> {
   console.log(`[participant] ${participant.kind}:${participant.name}`);
 
   // Capture the reasoning alongside the action — makes the small LLM's intelligence visible.
+  //
+  // THE PICK RUNS AS A ROOM. `tickRooms` is the room runner, and until now nothing in production
+  // called it — it and its budget existed only under test, so the "a room cannot run forever"
+  // property was true of a code path the loop never took. Running the loop's own pick through it
+  // makes the property real HERE, where an unbounded chooser actually costs something: a
+  // `cloud:<persona>` or `local-llm` participant that never returns would otherwise hang this
+  // process indefinitely, and `participant.choose` has no timeout of its own.
+  //
+  // The room is deliberately shaped to be BEHAVIOUR-NEUTRAL. Its scope admits exactly the backlog
+  // the loop already had, keeps the operator channel, and declares no PR numbers (so `scopeWorld`
+  // leaves `forgeState` untouched). It bounds the tick; it does not narrow what the loop may see.
+  // `maxSteps: 1` is the honest budget: this process runs ONE tick.
   const menu = buildMenu(observeWorld);
-  let chooseResult: { index: number; raw: string; fallback: boolean };
-  try {
-    chooseResult = await participant.choose(observeWorld, menu);
-  } catch {
-    chooseResult = { index: 0, raw: "choose-threw", fallback: true };
+  let chooseResult: { index: number; raw: string; fallback: boolean } = {
+    index: 0,
+    raw: "not-chosen",
+    fallback: true,
+  };
+
+  const loopRoom = createLoopRoom({
+    by: args.by,
+    dryRun: args.dryRun,
+    backlogIds: observeWorld.backlog.map((i) => i.id),
+    participant,
+    deadlineMs: LOOP_TICK_DEADLINE_MS,
+    onChoose: (r) => {
+      chooseResult = r;
+    },
+  });
+
+  const [roomTick] = await tickRooms([loopRoom], observeWorld);
+  if (roomTick === undefined) {
+    console.error("[room] the runner returned no result for the loop room — refusing to act");
+    return 1;
   }
-  const action = menu[chooseResult.index] ?? menu[0]!;
+  if (roomTick.timedOut) {
+    // The bound doing its job. Nothing is executed: a tick with no pick has nothing to append, and
+    // guessing an action here would be worse than stopping.
+    console.error(
+      `[room] tick exceeded ${LOOP_TICK_DEADLINE_MS}ms (participant ${participant.kind}:${participant.name}) — no action taken`,
+    );
+    return 1;
+  }
+  if (roomTick.budgetExhausted) {
+    console.error(`[room] step budget exhausted after ${roomTick.stepsUsed} step(s) — no action taken`);
+    return 1;
+  }
+  if (roomTick.scopeViolation) {
+    console.error(`[room] pick fell outside the room's declared scope — refusing to act`);
+    return 1;
+  }
+  const action = roomTick.result!.action;
+  console.log(`[room] ${roomTick.roomId} seams=${roomTick.seamMode} step=${roomTick.stepsUsed}/${loopRoom.budget!.maxSteps}`);
 
   // Record + log the reasoning (non-fatal)
   const reasoning: TickReasoning = {

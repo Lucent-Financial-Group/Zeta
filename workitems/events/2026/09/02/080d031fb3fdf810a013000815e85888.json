@@ -1,0 +1,14 @@
+{
+  "id": "080d031fb3fdf810a013000815e85888",
+  "at": "2026-09-02T21:11:34.079Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1HZCZXX087G0R000A4AFN4",
+    "type": "bug",
+    "title": "The provisioning secret-field refusal guarded nothing: advance never called it, and the generic form refuses the ceremony own udsCommitment",
+    "slug": "the-provisioning-secret-field-refusal-guarded-nothing-advanc",
+    "priority": "P2",
+    "filename": "081M1HZCZXX087G0R000A4AFN4-the-provisioning-secret-field-refusal-guarded-nothing-advanc.md"
+  }
+}

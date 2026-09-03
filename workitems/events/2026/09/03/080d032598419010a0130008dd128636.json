@@ -1,0 +1,14 @@
+{
+  "id": "080d032598419010a0130008dd128636",
+  "at": "2026-09-03T00:37:29.778Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1JB621H087G0R002Q2XA99",
+    "type": "task",
+    "title": "SimulatedBlockIo corrupt-last-write and reorder intercepts",
+    "slug": "simulatedblockio-corrupt-last-write-and-reorder-intercepts",
+    "priority": "P1",
+    "filename": "081M1JB621H087G0R002Q2XA99-simulatedblockio-corrupt-last-write-and-reorder-intercepts.md"
+  }
+}

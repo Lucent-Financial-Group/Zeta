@@ -131,6 +131,29 @@ module MultilayerBnn =
           /// backward sweep. Uniform at the top layer by construction.
           DownwardMessages: Gaussian array }
 
+    /// Exactness of a bounded per-edge factor-graph query.
+    ///
+    /// Acyclic sum-product is exact only after convergence. On a loopy Gaussian
+    /// graph, convergence makes the means exact but generally not the variances
+    /// (Weiss and Freeman 1999/2001). An unsettled iterate is always labelled as
+    /// such rather than promoted to a posterior.
+    type FactorGraphExactness =
+        | ExactAcyclic
+        | ConvergedLoopyMeansOnly
+        | UnsettledAcyclic
+        | UnsettledLoopy
+
+    /// One durable online evidence update plus its bounded per-edge inference
+    /// receipt. `Network` carries the observation absorbed exactly once at layer
+    /// zero; `Marginals` are a query result and are not copied into the node-level
+    /// upward/downward sweep arrays.
+    type FactorGraphUpdate =
+        { Network: Network
+          Marginals: Gaussian array
+          Rounds: int
+          Converged: bool
+          Exactness: FactorGraphExactness }
+
     // -- Construction -------------------------------------------------------------
 
     /// Create an N-layer network from an array of Gaussian priors and
@@ -452,20 +475,109 @@ module MultilayerBnn =
     /// Layer 0's prior factor carries the ABSORBED DATA, not the original prior —
     /// `Layers.[0].Posterior` is the conjugate accumulation, so the evidence
     /// enters once, as a leaf, exactly as it does in the sweeps.
-    let tryToFactorGraph (net: Network) : Result<FactorGraph<Gaussian>, string> =
+    let private tryValidatedNetworkShape (net: Network) : Result<unit, string> =
         let n = net.Layers.Length
-        let parentsFor i = parentsOf net.Topology i |> List.filter (fun p -> p >= 0 && p < n)
-        let offenders =
-            [ 0 .. n - 1 ]
-            |> List.filter (fun i ->
-                let ps = parentsFor i
-                List.length ps <> List.length (List.distinct ps))
-        if not (List.isEmpty offenders) then
-            let names = offenders |> List.map string |> String.concat ", "
+        if n = 0 then
+            Error "network must have at least one layer"
+        elif
+            net.ObservationVariances.Length <> n
+            || net.UpwardMessages.Length <> n
+            || net.DownwardMessages.Length <> n
+        then
             Error(
-                $"layers {names} name a parent more than once; the factor-graph path "
-                + "keys messages by variable and cannot express a repeated addend")
+                $"network array lengths must match {n} layers; variances={net.ObservationVariances.Length}, "
+                + $"upward={net.UpwardMessages.Length}, downward={net.DownwardMessages.Length}")
         else
+            match
+                net.ObservationVariances
+                |> Array.tryFindIndex (fun variance -> not (System.Double.IsFinite variance) || variance <= 0.0)
+            with
+            | Some index -> Error $"ObservationVariances[{index}] must be finite and > 0"
+            | None -> Ok()
+
+    let private tryValidatedParents (net: Network) : Result<int list array, string> =
+        tryValidatedNetworkShape net
+        |> Result.bind (fun () ->
+            let n = net.Layers.Length
+            let rawError =
+                match net.Topology with
+                | Sequential -> None
+                | SkipConnections pairs ->
+                    pairs
+                    |> List.tryPick (fun (parent, child) ->
+                        if child <= 0 || child >= n then
+                            Some $"skip connection child {child} must satisfy 0 < child < {n}"
+                        elif parent < 0 || parent >= child then
+                            Some $"layer {child} parent {parent} must satisfy 0 <= parent < child < {n}"
+                        else
+                            None)
+                | Dag rows when rows.Length <> n ->
+                    Some $"topology has {rows.Length} parent rows but network has {n} layers"
+                | Dag _ -> None
+            match rawError with
+            | Some message -> Error message
+            | None ->
+                let parentsByChild = Array.init n (parentsOf net.Topology)
+                let invalid =
+                    parentsByChild
+                    |> Array.mapi (fun child parents ->
+                        parents
+                        |> List.tryFind (fun parent -> parent < 0 || parent >= child)
+                        |> Option.map (fun parent -> child, parent))
+                    |> Array.tryPick id
+                match invalid with
+                | Some(child, parent) ->
+                    Error $"layer {child} parent {parent} must satisfy 0 <= parent < child < {n}"
+                | None ->
+                    let offenders =
+                        parentsByChild
+                        |> Array.mapi (fun child parents ->
+                            if List.length parents <> List.length (List.distinct parents) then Some child else None)
+                        |> Array.choose id
+                    if offenders.Length > 0 then
+                        let names = offenders |> Array.map string |> String.concat ", "
+                        Error(
+                            $"layers {names} name a parent more than once; the factor-graph path "
+                            + "keys messages by variable and cannot express a repeated addend")
+                    else
+                        Ok parentsByChild)
+
+    let private isAcyclicFactorGraph (parentsByChild: int list array) : bool =
+        let n = parentsByChild.Length
+        let representative = Array.init (2 * n) id
+        let rec find node =
+            if representative.[node] = node then
+                node
+            else
+                let root = find representative.[node]
+                representative.[node] <- root
+                root
+        let mutable acyclic = true
+        for child in 0 .. n - 1 do
+            let parents = parentsByChild.[child]
+            if not (List.isEmpty parents) then
+                let factorNode = n + child
+                for variable in parents @ [ child ] do
+                    let variableRoot = find variable
+                    let factorRoot = find factorNode
+                    if variableRoot = factorRoot then
+                        acyclic <- false
+                    else
+                        representative.[variableRoot] <- factorRoot
+        acyclic
+
+    let private validInferenceBudget (tol: float) (maxRounds: int) : Result<unit, string> =
+        if not (System.Double.IsFinite tol) || tol < 0.0 then
+            Error "tol must be finite and non-negative"
+        elif maxRounds <= 0 then
+            Error "maxRounds must be positive"
+        else
+            Ok()
+
+    let tryToFactorGraph (net: Network) : Result<FactorGraph<Gaussian>, string> =
+        tryValidatedParents net
+        |> Result.map (fun parentsByChild ->
+            let n = net.Layers.Length
             let withPriors =
                 [ 0 .. n - 1 ]
                 |> List.fold
@@ -474,11 +586,11 @@ module MultilayerBnn =
             [ 0 .. n - 1 ]
             |> List.fold
                 (fun g i ->
-                    match parentsFor i with
+                    match parentsByChild.[i] with
                     | [] -> g
                     | ps -> FactorGraph.addFactor (n + i) (sumLinkFactor net.ObservationVariances.[i] ps i) g)
                 withPriors
-            |> Ok
+            )
 
     /// Per-layer marginals by sum-product to a fixed point, plus the rounds run
     /// and whether it converged before the cap.
@@ -491,11 +603,85 @@ module MultilayerBnn =
         (maxRounds: int)
         (net: Network)
         : Result<Gaussian array * int * bool, string> =
-        tryToFactorGraph net
-        |> Result.map (fun g ->
-            let settled, rounds, converged =
-                FactorGraph.runToFixpoint Gaussian.distance tol maxRounds g
-            Array.init net.Layers.Length (fun i -> FactorGraph.marginal i settled), rounds, converged)
+        validInferenceBudget tol maxRounds
+        |> Result.bind (fun () ->
+            tryToFactorGraph net
+            |> Result.map (fun g ->
+                let settled, rounds, converged =
+                    FactorGraph.runToFixpoint Gaussian.distance tol maxRounds g
+                Array.init net.Layers.Length (fun i -> FactorGraph.marginal i settled), rounds, converged))
+
+    let private tryQueryViaFactorGraph
+        (tol: float)
+        (maxRounds: int)
+        (requireConvergence: bool)
+        (net: Network)
+        : Result<FactorGraphUpdate, string> =
+        tryValidatedParents net
+        |> Result.bind (fun parentsByChild ->
+            tryMarginalsViaFactorGraph tol maxRounds net
+            |> Result.bind (fun (marginals, rounds, converged) ->
+                let acyclic = isAcyclicFactorGraph parentsByChild
+                let exactness =
+                    match acyclic, converged with
+                    | true, true -> ExactAcyclic
+                    | true, false -> UnsettledAcyclic
+                    | false, true -> ConvergedLoopyMeansOnly
+                    | false, false -> UnsettledLoopy
+                if requireConvergence && not converged then
+                    Error $"factor-graph inference did not converge in {rounds}/{maxRounds} rounds at tolerance {tol:R}"
+                else
+                    Ok
+                        { Network = net
+                          Marginals = marginals
+                          Rounds = rounds
+                          Converged = converged
+                          Exactness = exactness }))
+
+    /// Absorb one observation exactly once at layer zero, then run bounded
+    /// per-edge sum-product over the complete declared graph. The returned
+    /// network is durable evidence state; marginals and exactness are the query
+    /// receipt. Strict mode refuses a capped, unsettled iterate.
+    let tryUpdateViaFactorGraph
+        (tol: float)
+        (maxRounds: int)
+        (requireConvergence: bool)
+        (observation: float)
+        (net: Network)
+        : Result<FactorGraphUpdate, string> =
+        validInferenceBudget tol maxRounds
+        |> Result.bind (fun () -> tryValidatedParents net |> Result.map ignore)
+        |> Result.bind (fun () ->
+            MinimalBnn.update observation net.Layers.[0]
+            |> Result.mapError (fun message -> "factor-graph online update: " + message))
+        |> Result.bind (fun layerZero ->
+            let layers = Array.copy net.Layers
+            layers.[0] <- layerZero
+            tryQueryViaFactorGraph
+                tol
+                maxRounds
+                requireConvergence
+                { net with Layers = layers })
+
+    /// Absorb a finite stream through the same online boundary. A query is run
+    /// after every observation so a strict non-convergence stops at the first
+    /// unsettled state rather than absorbing the remainder invisibly.
+    let tryInferViaFactorGraph
+        (tol: float)
+        (maxRounds: int)
+        (requireConvergence: bool)
+        (observations: seq<float>)
+        (net: Network)
+        : Result<FactorGraphUpdate, string> =
+        tryQueryViaFactorGraph tol maxRounds requireConvergence net
+        |> fun initial ->
+            observations
+            |> Seq.fold
+                (fun result observation ->
+                    result
+                    |> Result.bind (fun previous ->
+                        tryUpdateViaFactorGraph tol maxRounds requireConvergence observation previous.Network))
+                initial
 
     // -- Combined forward+backward ---------------------------------------------------
 

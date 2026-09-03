@@ -264,7 +264,8 @@ export function rootDevCatalogExcludeGlobFor(
   // `--cni cilium`), which is the condition `cilium`'s own LIFTS WHEN names.
   // Drop it from the exclude so ArgoCD actually syncs what the harness will
   // assert. `cilium-lb-ipam` deliberately stays: its lift is conjunctive and
-  // the second conjunct (a substrate-parameterised pool) is measurably false.
+  // the second conjunct (a substrate-parameterised Application pool) is
+  // still false -- kind has a bring-up alias, which is not this Application.
   const kept = excludeGlobDirs(DEFAULT_ROOT_DEV_CATALOG.excludeGlob).filter((d) => d !== "cilium");
   return `{${kept.map((d) => `${d}/**`).join(",")}}`;
 }

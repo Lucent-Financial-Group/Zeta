@@ -1,0 +1,14 @@
+{
+  "id": "080d031fdb5d3810a01300082451c1ff",
+  "at": "2026-09-02T21:16:56.615Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1HZPTX7087G0R0013PARBX",
+    "type": "task",
+    "title": "PR12: reorder next two matching writes on IFileSystem",
+    "slug": "pr12-reorder-next-two-matching-writes-on-ifilesystem",
+    "priority": "P1",
+    "filename": "081M1HZPTX7087G0R0013PARBX-pr12-reorder-next-two-matching-writes-on-ifilesystem.md"
+  }
+}

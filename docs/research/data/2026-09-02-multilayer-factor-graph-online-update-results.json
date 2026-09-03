@@ -1,0 +1,48 @@
+{
+  "schemaVersion": 1,
+  "contract": "docs/research/2026-09-02-multilayer-factor-graph-online-update-contract.md",
+  "production": {
+    "language": "F#",
+    "scenarioCount": 44,
+    "newScenarioGroups": 8,
+    "sequential": {
+      "means": [
+        1.6145528293042877,
+        0.7751047675621993,
+        0.6122556003657003,
+        -0.26920390575328224
+      ],
+      "variances": [
+        0.10916865063711363,
+        0.2958162588118453,
+        0.37407936809961156,
+        0.4348334160954533
+      ],
+      "rounds": 5,
+      "converged": true,
+      "exactness": "ExactAcyclic"
+    },
+    "durableEvidence": {
+      "layerZeroPrecision": 8.3,
+      "layerZeroObservationCount": 3,
+      "deeperObservationCounts": [0, 0, 0]
+    },
+    "controls": {
+      "backwardMeanDelta": 2.5754527162977867,
+      "replayBitInvariant": true,
+      "strictOneRoundLoopyCapRefused": true,
+      "permissiveOneRoundExactness": "UnsettledLoopy",
+      "convergedLoopyExactness": "ConvergedLoopyMeansOnly",
+      "negativeParentRefused": true
+    }
+  },
+  "independentOracle": {
+    "language": "Python",
+    "method": "separately authored pure-Python joint-precision inversion",
+    "comparisonTolerance": 1e-10,
+    "witnessGroups": 14,
+    "failures": 0,
+    "couplingSignMutantDisagreements": 4
+  },
+  "verdict": "online-per-edge-update-supported-with-explicit-tree-and-loopy-boundaries"
+}

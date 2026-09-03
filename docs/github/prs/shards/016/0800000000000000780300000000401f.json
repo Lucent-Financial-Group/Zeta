@@ -1,0 +1,12 @@
+{
+  "pr_number": 16415,
+  "archive_path": "docs/history/pr-reviews/PR-16415-feat-bayesian-add-online-per-edge-multilayer-inference.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-03T00:45:13.047Z",
+  "schema_version": "v1",
+  "commit_sha": "990292a15142749cac57c0b7dd2de566962ad49e",
+  "title": "feat(bayesian): add online per-edge multilayer inference",
+  "state": "MERGED",
+  "merged_at": "2026-09-03T00:44:36Z",
+  "head_ref": "lumen/multilayer-factorgraph-online-update"
+}

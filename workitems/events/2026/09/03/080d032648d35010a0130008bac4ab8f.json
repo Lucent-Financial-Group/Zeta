@@ -1,0 +1,14 @@
+{
+  "id": "080d032648d35010a0130008bac4ab8f",
+  "at": "2026-09-03T01:01:36.234Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1JCJ6K9087G0R002XVEG0Q",
+    "type": "task",
+    "title": "FreezeLog Journaled boats can write through IBlockIo",
+    "slug": "freezelog-journaled-boats-can-write-through-iblockio",
+    "priority": "P1",
+    "filename": "081M1JCJ6K9087G0R002XVEG0Q-freezelog-journaled-boats-can-write-through-iblockio.md"
+  }
+}

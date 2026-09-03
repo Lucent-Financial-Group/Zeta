@@ -30,6 +30,8 @@ import { parse as parseYaml } from "yaml";
 import { bootstrapKindClusterInProcess, bootstrapK3dClusterInProcess } from "./harness/bootstrap.ts";
 import {
   DEV_BOOTSTRAP_SECRETS,
+  DEV_CILIUM_LB_KIND_MANIFEST_RELPATH,
+  DEV_CILIUM_LB_KIND_POOL_NAME,
   DEV_GHCR_PULL_SECRET,
   DEV_LONGHORN_ALIAS_CLASS_NAME,
   DEV_SATISFIABLE_PROVISIONERS,
@@ -68,6 +70,7 @@ export type FailureKind =
   | "ContainerRuntimeUnavailable"
   | "ClusterBootstrapFailed"
   | "DevStorageClassMissing"
+  | "DevCiliumLbPoolMissing"
   | "DevBootstrapSecretMissing"
   | "DevRegistryPullSecretMissing"
   | "KubectlFailed"
@@ -338,11 +341,16 @@ export const DEV_EXCLUDED_REASONS: ReadonlyMap<string, string> = new Map([
       "at all until Cilium is the CNI. Its pool is also hard-coded to 192.168.1.240-250, a LAN range with no " +
       "meaning inside a container network -- LB IPs would be ASSIGNED (enough for ArgoCD to call it Healthy) " +
       "and routable from nothing, which is a worse outcome than not running it. " +
+      "KIND HAS A BRING-UP ALIAS that is NOT this Application: " +
+      "full-ai-cluster/dev-cluster/manifests/cilium-lb-ipam.kind.yaml is applied by bringUpKindCiCluster when " +
+      "`cni === \"cilium\"`, after Cilium helm, before the catalogue. Lifting THIS Application on kind would " +
+      "selfHeal the metal pool over that alias. " +
       "LIFTS WHEN: `cilium` above lifts AND the pool is parameterised per substrate rather than pinned to one " +
-      "maintainer's subnet. " +
+      "maintainer's subnet. The kind alias existing is not that parameterisation. " +
       "ANCHORS, CHECKED BY `reason-truth.ts`: each names an artifact this tree holds, so a claim that outlives its artifact goes red instead of reading on. " +
       "[cite: glob-defers cilium-lb-ipam] " +
-      "[cite: glob-defers cilium] ",
+      "[cite: glob-defers cilium] " +
+      "[cite: path full-ai-cluster/dev-cluster/manifests/cilium-lb-ipam.kind.yaml] ",
   ],
   [
     "gitlab",
@@ -848,11 +856,12 @@ const DEV_INCLUDED_PROOF_DEFERRED_DIRS = new Set([
   // weaviate renders TWO `type: LoadBalancer` Services (`weaviate`,
   // `weaviate-grpc`). gitops-engine `getCorev1ServiceHealth` reports a
   // LoadBalancer Service whose `status.loadBalancer.ingress` is empty as
-  // PROGRESSING, unconditionally and forever. A kind node runs no LoadBalancer
-  // implementation, so those two Services never receive an address and this
-  // Application can never be Healthy in this lane -- whatever its sync status
-  // does. `weaviate-0` was 1/1 Running for 39 minutes while that held, which is
-  // exactly how the blocker stayed invisible behind the one that was found.
+  // PROGRESSING, unconditionally and forever. kindnetd has no LoadBalancer
+  // implementation, so on the default kind lane those two Services never
+  // receive an address. kind `--cni cilium` applies a Cilium LB-IPAM alias;
+  // that alias existing is not a measurement that these Services receive one.
+  // `weaviate-0` was 1/1 Running for 39 minutes while the kindnetd case held,
+  // which is exactly how the blocker stayed invisible behind the one that was found.
   //
   // THE HONEST ACCOUNTING OF THE ATTEMPT THAT FAILED: the `randAlphaNum` render
   // nondeterminism is real and stays proven by byte diff, and its
@@ -865,11 +874,12 @@ const DEV_INCLUDED_PROOF_DEFERRED_DIRS = new Set([
   // loop" is UNMETERED -- implemented, plausible, unfalsified -- and this lane
   // cannot meter it until the health half lifts.
   //
-  // LIFTS WHEN: the dev/CI substrate provides a LoadBalancer implementation
-  // (cloud-provider-kind or MetalLB), the same shape as the dev `longhorn`
-  // StorageClass alias one resource type over, AND the residual OutOfSync is
-  // then NAMED by the per-resource diagnostics added alongside this entry
-  // rather than guessed at a second time.
+  // LIFTS WHEN: a live kind `--cni cilium` run shows both weaviate LoadBalancer
+  // Services receive `status.loadBalancer.ingress` from the kind Cilium LB-IPAM
+  // alias (`dev-cluster/manifests/cilium-lb-ipam.kind.yaml`) -- NOT from lifting
+  // the metal Application -- AND the residual OutOfSync is then NAMED by the
+  // per-resource diagnostics added alongside this entry rather than guessed at
+  // a second time. The alias existing is not that measurement.
   "weaviate",
 ]);
 
@@ -952,12 +962,13 @@ export const APPLIED_BUT_UNASSERTED_REASONS: ReadonlyMap<string, string> = new M
   [
     "weaviate",
     "NOT the sync loop it was briefly un-deferred for, and not storage -- MEASURED LIVE on run 32532470499, the run that refuted the fix. " +
-      "weaviate renders TWO `type: LoadBalancer` Services (`weaviate`, `weaviate-grpc`), and gitops-engine `getCorev1ServiceHealth` reports a LoadBalancer Service whose `status.loadBalancer.ingress` is empty as PROGRESSING, unconditionally. A kind node runs no LoadBalancer implementation, so those two Services never get an address and this Application can NEVER be Healthy in this lane whatever its sync status does -- `weaviate-0` was 1/1 Running for 39m while that held, which is how the blocker stayed hidden behind the one that was found. " +
+      "weaviate renders TWO `type: LoadBalancer` Services (`weaviate`, `weaviate-grpc`), and gitops-engine `getCorev1ServiceHealth` reports a LoadBalancer Service whose `status.loadBalancer.ingress` is empty as PROGRESSING, unconditionally. kindnetd has no LoadBalancer implementation, so on the default kind lane those two Services never get an address. kind `--cni cilium` applies a Cilium LB-IPAM alias; that alias existing is not a measurement that these Services receive an address. `weaviate-0` was 1/1 Running for 39m while the kindnetd case held, which is how the blocker stayed hidden behind the one that was found. " +
       "The `randAlphaNum` render nondeterminism established by byte diff is real and its narrow `ignoreDifferences` rule is KEPT, because on metal cilium-lb-ipam does assign LB addresses and it may there be the whole story. But the resync loop SURVIVED that rule live, so 'the rule closes the loop' is UNMETERED rather than proven: the OutOfSync cause was checked and the Progressing cause was not, and one confirmed cause was read as THE cause. " +
-      "LIFTS WHEN: the dev/CI substrate provides a LoadBalancer implementation (cloud-provider-kind or MetalLB) -- the same shape as the dev `longhorn` StorageClass alias, one resource type over -- AND the residual OutOfSync is NAMED by the per-resource diagnostics rather than guessed at a second time. " +
+      "LIFTS WHEN: a live kind `--cni cilium` run shows both weaviate LoadBalancer Services receive `status.loadBalancer.ingress` from the kind Cilium LB-IPAM alias -- NOT from lifting the metal Application -- AND the residual OutOfSync is NAMED by the per-resource diagnostics rather than guessed at a second time. The alias existing is not that measurement. " +
       "ANCHORS, CHECKED BY `reason-truth.ts`: each names an artifact this tree holds, so a claim that outlives its artifact goes red instead of reading on. " +
       "[cite: glob-applies weaviate] " +
-      "[cite: renders full-ai-cluster/weaviate] ",
+      "[cite: renders full-ai-cluster/weaviate] " +
+      "[cite: path full-ai-cluster/dev-cluster/manifests/cilium-lb-ipam.kind.yaml] ",
   ],
 ]);
 
@@ -1171,8 +1182,9 @@ export function devLonghornStorageClassAliasDeclared(repoRoot = REPO_ROOT): bool
  * per substrate rather than pinned to one maintainer's subnet." The second
  * conjunct is measurably false: `cilium-lb-ipam/ip-pool.yaml` pins
  * 192.168.1.240-250, a home LAN range with no meaning on a hosted runner.
- * Lifting it because its sibling lifted would satisfy half a condition and call
- * it whole.
+ * Kind has a bring-up alias (`dev-cluster/manifests/cilium-lb-ipam.kind.yaml`);
+ * that is not this Application, and lifting this Application would selfHeal the
+ * metal range over it.
  */
 export function isExcludedFromIncludedProof(
   dir: string,
@@ -1413,9 +1425,7 @@ function validateOptions(options: CliOptions): Failure | null {
   if (options.provider === "kind" && options.kindCni === "cilium") {
     const cfg = basename(options.configPath).toLowerCase();
     if (!cfg.includes("cilium")) {
-      return usageFailure(
-        "--cni cilium requires a no-default-CNI kind profile (ci.cilium.kind-config.yaml)",
-      );
+      return usageFailure("--cni cilium requires a no-default-CNI kind profile (ci.cilium.kind-config.yaml)");
     }
   }
   if (options.provider === "kind" && options.kindCni === "kindnetd") {
@@ -1617,6 +1627,11 @@ export function buildPlan(options: CliOptions, repoRoot = REPO_ROOT): HarnessPla
               (spec) =>
                 `assert the dev credential ${spec.namespace}/${spec.name} the bring-up mints is actually present, before its Application waits on a Secret that must pre-exist`,
             ),
+            ...(options.provider === "kind" && options.kindCni === "cilium"
+              ? [
+                  `assert the kind Cilium LB-IPAM pool "${DEV_CILIUM_LB_KIND_POOL_NAME}" is present, before any LoadBalancer Service waits for an address`,
+                ]
+              : []),
           ]
         : []),
       "assert root App-of-Apps exists",
@@ -1838,7 +1853,16 @@ function waitForKubectl(
   pollSeconds: number,
   message: string,
 ): Promise<Failure | null> {
+  const startedAt = Date.now();
+  let lastProgressAt = startedAt;
+  console.log(`Waiting: ${message}`);
   return waitFor(timeoutSeconds, pollSeconds, () => {
+    const now = Date.now();
+    if (now - lastProgressAt >= 60_000) {
+      const elapsedSec = Math.floor((now - startedAt) / 1000);
+      console.log(`still waiting (${elapsedSec}s): ${message}`);
+      lastProgressAt = now;
+    }
     const result = kubectl(args, Math.max(pollSeconds, 10));
     if (result.status === 0) return null;
     return {
@@ -1946,6 +1970,32 @@ function assertDevStorageClassPresent(plan: HarnessPlan): Failure | null {
       stderr: result.stderr.slice(-2000),
       clusterName: plan.clusterName,
       observedProvisioner: provisioner,
+    },
+  };
+}
+
+/**
+ * Kind `--cni cilium` apply of the LB-IPAM alias is a claim about CODE THAT
+ * RUNS. `type: LoadBalancer` Services sit Progressing forever without a pool.
+ * Fail now if bring-up dropped the apply, rather than waiting for weaviate
+ * (or Cilium's own ingress) to burn the health timeout.
+ */
+function assertKindCiliumLbPoolPresent(options: CliOptions): Failure | null {
+  if (options.provider !== "kind" || options.kindCni !== "cilium") return null;
+  const args = ["get", "ciliumloadbalancerippools.cilium.io", DEV_CILIUM_LB_KIND_POOL_NAME];
+  const result = runCommand("kubectl", args, 60_000);
+  if (result.status === 0) return null;
+  return {
+    kind: "DevCiliumLbPoolMissing",
+    message:
+      `${DEV_CILIUM_LB_KIND_MANIFEST_RELPATH} declares CiliumLoadBalancerIPPool ` +
+      `"${DEV_CILIUM_LB_KIND_POOL_NAME}", and kind --cni cilium bring-up is supposed to apply it ` +
+      `after Cilium helm, but kubectl get returned exit ${String(result.status)}. ` +
+      `LoadBalancer Services would stay Progressing. Failing now instead.`,
+    command: ["kubectl", ...args],
+    detail: {
+      stdout: result.stdout.slice(-2000),
+      stderr: result.stderr.slice(-2000),
     },
   };
 }
@@ -2080,6 +2130,92 @@ export function isZetaGitDirectoryApplicationSource(source: Record<string, unkno
   return path.startsWith("full-ai-cluster/k8s/applications");
 }
 
+/**
+ * kubectl surfaces dumped when App-of-Apps never produces children.
+ *
+ * MEASURED on run 33684309073 (kind+Cilium included, `--cni cilium`, no
+ * `--existing`): Cilium 1.20.1 installed, ArgoCD rollouts succeeded, root
+ * App-of-Apps applied, then 2400s of silence waiting for `hat-system`.
+ * Failure JSON was only `NotFound`. The four-app table printed ZERO VERDICTS
+ * PARSED. Kindnetd included on the same SHA DID create children. Without this
+ * dump the next probe is another 40-minute non-measurement (081M1DFQ2MZ).
+ *
+ * `hat-system` is sync-wave `-10` (the HEAD of the catalog). Pinning the wait
+ * to that one name made a missing catalog spend the entire health budget on
+ * one NotFound. The wait is now ANY child, capped below the health timeout.
+ */
+export const ROOT_DEV_APPLICATION_NAME = "zeta-root-dev";
+
+/**
+ * How long to wait for App-of-Apps to produce ANY child before git-ref patch.
+ *
+ * NOT `options.timeoutSeconds`. That budget is for Synced+Healthy of the
+ * included roster. Run 33684309073 spent all 2400s of it on `kubectl get
+ * application hat-system` returning NotFound. Kindnetd on the same SHA had
+ * children in well under three minutes. Three minutes is enough to know the
+ * catalog is producing objects; forty is the health wait, used later.
+ */
+export const REPO_BACKED_CHILD_APPEAR_TIMEOUT_SECONDS = 180;
+
+export function repoBackedChildNames(snapshots: readonly ArgoApplicationSnapshot[]): readonly string[] {
+  return snapshots.map((snapshot) => snapshot.name).filter((name) => name !== ROOT_DEV_APPLICATION_NAME);
+}
+
+export const REPO_BACKED_CHILD_WAIT_DIAGNOSTIC_COMMANDS: readonly {
+  readonly label: string;
+  readonly args: readonly string[];
+}[] = [
+  { label: "zeta-root-dev", args: ["-n", "argocd", "get", "application", "zeta-root-dev", "-o", "yaml"] },
+  { label: "applications", args: ["-n", "argocd", "get", "applications.argoproj.io", "-o", "wide"] },
+  { label: "argocd-pods", args: ["-n", "argocd", "get", "pods", "-o", "wide"] },
+  { label: "repo-server-logs", args: ["-n", "argocd", "logs", "deploy/argocd-repo-server", "--tail=150"] },
+  {
+    label: "application-controller-logs",
+    args: ["-n", "argocd", "logs", "statefulset/argocd-application-controller", "--tail=150"],
+  },
+  { label: "kube-system-pods", args: ["-n", "kube-system", "get", "pods", "-o", "wide"] },
+  { label: "cilium-lb-pool", args: ["get", "ciliumloadbalancerippools.cilium.io", "-o", "wide"] },
+  { label: "loadbalancer-services", args: ["get", "svc", "-A", "--field-selector", "spec.type=LoadBalancer"] },
+  {
+    label: "coredns-corefile",
+    args: ["-n", "kube-system", "get", "configmap", "coredns", "-o", "jsonpath={.data.Corefile}"],
+  },
+];
+
+export function mergeArgoCdTimeoutDiagnostics(failure: Failure, dumps: Readonly<Record<string, string>>): Failure {
+  const existing = asRecord(failure.detail) ?? {};
+  return {
+    ...failure,
+    detail: {
+      ...existing,
+      diagnostics: dumps,
+    },
+  };
+}
+
+function collectRepoBackedChildWaitDiagnostics(): Record<string, string> {
+  const dumps: Record<string, string> = {};
+  for (const { label, args } of REPO_BACKED_CHILD_WAIT_DIAGNOSTIC_COMMANDS) {
+    const result = kubectl(args, 20);
+    const text = [result.stdout, result.stderr]
+      .filter((part) => part.length > 0)
+      .join("\n")
+      .slice(-4000);
+    dumps[label] = text.length > 0 ? text : `(empty, exit ${String(result.status)})`;
+  }
+  return dumps;
+}
+
+function attachRepoBackedChildWaitDiagnostics(failure: Failure): Failure {
+  const dumps = collectRepoBackedChildWaitDiagnostics();
+  console.log("=== repo-backed child wait timed out; cluster state at timeout ===");
+  for (const { label } of REPO_BACKED_CHILD_WAIT_DIAGNOSTIC_COMMANDS) {
+    console.log(`--- ${label} ---`);
+    console.log(dumps[label] ?? "");
+  }
+  return mergeArgoCdTimeoutDiagnostics(failure, dumps);
+}
+
 function patchGitBackedApplicationsToGitRef(gitRef: string): Failure | null {
   if (gitRef === "main") return null;
   const command = ["-n", "argocd", "get", "applications.argoproj.io", "-o", "json"];
@@ -2150,15 +2286,48 @@ async function waitForArgoCd(plan: HarnessPlan, options: CliOptions): Promise<Fa
 
   if (plan.gitRef === "main") return null;
 
-  const childFailure = await waitForKubectl(
-    ["-n", "argocd", "get", "application", "hat-system"],
-    timeout,
-    poll,
-    "timed out waiting for repo-backed child Applications before git-ref patch",
-  );
-  if (childFailure !== null) return childFailure;
+  const childFailure = await waitForRepoBackedChild(poll);
+  if (childFailure !== null) return attachRepoBackedChildWaitDiagnostics(childFailure);
 
   return patchGitBackedApplicationsToGitRef(plan.gitRef);
+}
+
+/**
+ * First child, not a named one. `hat-system` is wave -10 so it is usually
+ * that head -- but waiting for the NAME made a silent catalog look like a
+ * slow hat-system, and consumed the health timeout doing it.
+ */
+async function waitForRepoBackedChild(pollSeconds: number): Promise<Failure | null> {
+  const message = "timed out waiting for repo-backed child Applications before git-ref patch";
+  const startedAt = Date.now();
+  let lastProgressAt = startedAt;
+  console.log(`Waiting: ${message} (cap ${String(REPO_BACKED_CHILD_APPEAR_TIMEOUT_SECONDS)}s, any child)`);
+  return waitFor(REPO_BACKED_CHILD_APPEAR_TIMEOUT_SECONDS, pollSeconds, () => {
+    const now = Date.now();
+    if (now - lastProgressAt >= 60_000) {
+      const elapsedSec = Math.floor((now - startedAt) / 1000);
+      console.log(`still waiting (${elapsedSec}s): ${message}`);
+      lastProgressAt = now;
+    }
+    const command = ["-n", "argocd", "get", "applications.argoproj.io", "-o", "json"];
+    const result = kubectl(command, Math.max(pollSeconds, 10));
+    if (result.status !== 0) {
+      return kubectlFailure("could not list ArgoCD Applications while waiting for children", command, result);
+    }
+    const snapshots = parseApplicationListOrFailure(result.stdout, command);
+    if (isFailure(snapshots)) return snapshots;
+    if (repoBackedChildNames(snapshots).length > 0) return null;
+    return {
+      kind: "ArgoCdTimeout",
+      message,
+      command: ["kubectl", ...command],
+      detail: {
+        stdout: result.stdout.slice(-2000),
+        stderr: result.stderr.slice(-2000),
+        childCount: 0,
+      },
+    };
+  });
 }
 
 function asRecord(value: unknown): Record<string, unknown> | null {
@@ -2599,6 +2768,11 @@ export async function runHarness(options: CliOptions): Promise<HarnessResult> {
   const bootstrapSecretFailure = assertDevBootstrapSecretsPresent(plan);
   if (bootstrapSecretFailure !== null) {
     return { ok: false, plan, preflight, failure: bootstrapSecretFailure };
+  }
+
+  const lbPoolFailure = assertKindCiliumLbPoolPresent(options);
+  if (lbPoolFailure !== null) {
+    return { ok: false, plan, preflight, failure: lbPoolFailure };
   }
 
   const pullSecretFailure = assertDevRegistryPullSecretPresent(plan);

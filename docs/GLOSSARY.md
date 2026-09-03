@@ -1035,6 +1035,82 @@ the `Zeta=heaven-on-earth` (Mirror) /
 `Zeta's alignment claim` (Beacon) entries that follow
 are the canonical instances of the discipline.
 
+### Meter (and why one suffices but never one permitted)
+
+**A thing that reports RAW VALUE and never judges.** In the
+Data Vault 2.0 sense its output is a raw-vault record —
+*this meter, at this time, measured this*, sourced and
+unreconciled. A single version of the facts, never a
+single version of the truth.
+
+**A meter is GOOD when anyone can inspect it and agree to
+its rules** (Aaron, 2026-09-02). Not accuracy, not
+authority, not provenance — inspectability plus
+agreement-in-advance. A meter you must *trust* is an oracle
+that has not admitted what it is.
+
+**Frozen by construction, and that is its qualification.**
+A meter's judgement is crystallised once, in a treaty, and
+thereafter fixed — which is what lets it be inspected and
+agreed to *before* a reading, and what makes it
+DST-reproducible. In this repo's agent/actor vocabulary a
+meter is an **actor**: copyable, deterministically
+replayable, not internally evolving.
+
+**Counts are asymmetric.** One meter *suffices* — but never
+one *permitted*. Sufficiency is not exclusivity: a meter
+everyone must route through is an appointed hub, and a lone
+meter cannot be falsified because nothing exists to
+disagree with it.
+
+**Do NOT assume two meters agree.** That imports a gauge
+assumption this system has not earned. Absent an
+established transformation between them, disagreement is
+*information*, not a defect in one — both readings are held
+in the raw vault with their paths recorded.
+
+**Contrast:** oracle — the thing that judges.
+
+**Detail:** `.claude/rules/dual-use-detection-is-neutral-oracle-decides.md`
+
+### Oracle (the §11 sense, and two impostors)
+
+**A thing that attaches MEANING to a measurement.** Meters
+never judge; oracles do — **and that is why there must be
+many.** If there were exactly one, its judgement would be
+mandatory, which is the Multi-Oracle Principle (manifesto
+§11) stated as a structural consequence rather than an
+ethical preference.
+
+**Test:** two parties with different oracles must be able
+to read the same measurement and *disagree* about what it
+implies. If they cannot, an oracle was smuggled upstream
+into the measurement's own vocabulary. `SameSourceAsKnown`
+passes; `ForgerCaught` fails.
+
+**An oracle is an agent, not an actor** — judgement is
+applied per reading, so it must be able to evolve. One that
+could not would be a lookup table whose judgement was made
+by whoever wrote it.
+
+**TWO IMPOSTORS use the same word and do not judge:**
+
+- **test oracle** — the cross-language byte-lock's "four
+  oracles" (F#/C#/TS/Rust over golden vectors). These are
+  meters *whose calibration was negotiated*: the four do
+  not agree by default (C#/TS sort by UTF-16 code units,
+  Rust `str` by UTF-8 bytes), so agreement is **achieved**
+  by treaty — "the seed is the treaty". Keeping the name is
+  defensible, since a compiler is a tradition of resolved
+  human disagreements rather than an instrument.
+- **data-feed oracle** — the blockchain/telemetry sense.
+  This one is simply wrong here: it emits raw values with
+  no treaty and no judgement in it at all. Calling a
+  telemetry source an oracle invites deference the function
+  never earned.
+
+**Detail:** `.claude/rules/dual-use-detection-is-neutral-oracle-decides.md`
+
 ### Beacon
 
 **Project-internal term for the external,

@@ -1,0 +1,12 @@
+{
+  "pr_number": 16426,
+  "archive_path": "docs/history/pr-reviews/PR-16426-feat-081m1jcj6k9087g0r002xveg0q-journaled-freeze-log-through-iblockio.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-03T01:48:45.937Z",
+  "schema_version": "v1",
+  "commit_sha": "93bec701750cfec0c4ff9f08e674adc06270a75a",
+  "title": "feat(081M1JCJ6K9087G0R002XVEG0Q): Journaled freeze log through IBlockIo",
+  "state": "MERGED",
+  "merged_at": "2026-09-03T01:48:09Z",
+  "head_ref": "feat/zetafs-freeze-log-blockio"
+}

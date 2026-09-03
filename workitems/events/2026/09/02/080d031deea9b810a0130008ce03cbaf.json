@@ -1,0 +1,14 @@
+{
+  "id": "080d031deea9b810a0130008ce03cbaf",
+  "at": "2026-09-02T20:09:40.407Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1HVVN9P087G0R003Z7E7B3",
+    "type": "task",
+    "title": "PR12: replay intact freeze-log boats; drop torn tail",
+    "slug": "pr12-replay-intact-freeze-log-boats-drop-torn-tail",
+    "priority": "P1",
+    "filename": "081M1HVVN9P087G0R003Z7E7B3-pr12-replay-intact-freeze-log-boats-drop-torn-tail.md"
+  }
+}

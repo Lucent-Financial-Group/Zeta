@@ -1,0 +1,14 @@
+{
+  "id": "080d032446615010a013000869ba8c95",
+  "at": "2026-09-02T23:51:21.898Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1J8HK19087G0R003A897JV",
+    "type": "task",
+    "title": "BlockIoFerry coalesces adjacent LBA writes",
+    "slug": "blockioferry-coalesces-adjacent-lba-writes",
+    "priority": "P1",
+    "filename": "081M1J8HK19087G0R003A897JV-blockioferry-coalesces-adjacent-lba-writes.md"
+  }
+}

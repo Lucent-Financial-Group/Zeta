@@ -1,0 +1,12 @@
+{
+  "pr_number": 16396,
+  "archive_path": "docs/history/pr-reviews/PR-16396-fix-cluster-dump-argocd-state-when-included-children-never-appear.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-02T23:26:10.947Z",
+  "schema_version": "v1",
+  "commit_sha": "0b9bcc75fa04529ed3a9b9cded98a0d3d90bf320",
+  "title": "fix(cluster): dump ArgoCD state when included children never appear",
+  "state": "MERGED",
+  "merged_at": "2026-09-02T23:25:33Z",
+  "head_ref": "cursor/cilium-included-child-wait-diag-27c5"
+}

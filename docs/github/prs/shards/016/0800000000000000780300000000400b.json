@@ -1,0 +1,12 @@
+{
+  "pr_number": 16395,
+  "archive_path": "docs/history/pr-reviews/PR-16395-feat-081m1j2jyj7087g0r000jscd3k-crash-mid-sweep-leaves-extra-garbage.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-02T22:29:30.143Z",
+  "schema_version": "v1",
+  "commit_sha": "3c9f704779dd7d3fe39e7dc32bbbbff04e533aca",
+  "title": "feat(081M1J2JYJ7087G0R000JSCD3K): crash-mid-sweep leaves extra garbage",
+  "state": "MERGED",
+  "merged_at": "2026-09-02T22:28:53Z",
+  "head_ref": "feat/zetafs-reclaim-sweep-crash"
+}

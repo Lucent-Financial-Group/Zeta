@@ -150,6 +150,84 @@ it, so the two are not comparable even if the proof completes.
 The probe lane is kept: it is dispatch-gated, blocks nothing, and now refuses to report
 a non-measurement as a roster. It is one harness change away from answering the question.
 
+## MEASURED 2026-09-02 — first `--cni cilium` included dispatch still produced zero verdicts
+
+Dispatch: [run 33684309073](https://github.com/Lucent-Financial-Group/Zeta/actions/runs/33684309073)
+`workflow_dispatch` on `main` at `e9adba250776`, `cilium_included_probe=true`.
+The probe is **not skipped**. `--existing` is gone. This is the distinguishing
+test the item asked for, and it still did not emit per-app lines.
+
+**kind+Cilium included (the probe):**
+
+- Cilium helm-installed 1.20.1. Nodes Ready. Dev StorageClass aliases + grafana /
+  ziti / redis-auth secrets minted. ArgoCD installed. Root App-of-Apps applied
+  at 21:26:36Z.
+- Then 2400s of silence. Failure:
+
+      kind: ArgoCdTimeout
+      message: timed out waiting for repo-backed child Applications before git-ref patch
+      stderr: Error from server (NotFound): applications.argoproj.io "hat-system" not found
+
+- Verdict table: `ZERO VERDICTS PARSED`. Correctly refused to list the four.
+  **openziti-controller, trust-manager, spire, vault remain unmeasured on
+  kind+Cilium.** Do not read this as those four being unhealthy.
+
+**kindnetd included (same run, same SHA) DID create children.** Failed later on
+`mimir is Unknown/Degraded`. The four at timeout:
+
+    openziti-controller   OutOfSync   Healthy
+    trust-manager         Synced      Healthy
+    spire                 Synced      Healthy
+    vault                 OutOfSync   Healthy
+
+Contrast still red on kindnetd: `mimir` Unknown/Degraded (CrashLoopBackOff +
+Pending pods); `arc-controller` Unknown/Healthy; `redis` OutOfSync/Healthy
+with all three valkey replicas Running.
+
+So the Cilium cell is a **third class**, earlier than health: App-of-Apps never
+produced children in 40 minutes, while kindnetd on the same SHA did. That is
+compatible with ArgoCD repo-server failing to clone over Cilium (DNS /
+kube-proxy replacement), but run 33684309073 dumped only `NotFound`. The next
+dispatch must print `zeta-root-dev` status, the Application list, and
+repo-server / application-controller logs at that timeout. Do not invent a
+Cilium values tweak from a silent wait.
+
+**Wait defect, not a Cilium finding:** `hat-system` is sync-wave `-10` (the
+head of the catalog). Pinning the wait to that NAME made a silent catalog look
+like a slow hat-system and spent the entire 2400s health budget on one
+NotFound. The next dispatch waits for ANY child other than `zeta-root-dev`,
+capped at 180s, dumps the kind LB-IPAM pool (`zeta-lb-pool`) and LoadBalancer
+Services at timeout, and refuses in seconds if bring-up dropped the pool
+alias. Dispatch that probe on the wait-fix branch, not on current `main` —
+another 40-minute hat-system wait is not a second measurement.
+
+## MEASURED 2026-09-02 — run 33695849211 (wait-fix branch, 180s)
+
+Dispatch: [run 33695849211](https://github.com/Lucent-Financial-Group/Zeta/actions/runs/33695849211)
+`workflow_dispatch` on `cursor/child-wait-ahead-of-hat-27c5` at `3f13a8c23`,
+`cilium_included_probe=true`.
+
+**The wait-fix held.** Child wait logged at 0/60/120s and timed out at 180s.
+Not 2400s. Not `hat-system` NotFound.
+
+**The testing load balancer is real:**
+
+    zeta-lb-pool   DISABLED=false  CONFLICTING=False  IPS AVAILABLE=20
+    kube-system/cilium-ingress  LoadBalancer  EXTERNAL-IP=172.18.255.200
+
+**Why there are still zero children:** `zeta-root-dev` is Healthy with
+`sync=Unknown` and ComparisonError:
+
+    Could not resolve host: github.com
+
+Same class as the k3d CoreDNS `127.0.0.11` finding (2026-08-31). kubeadm
+CoreDNS does not import `coredns-custom`, so the k3d ConfigMap would be
+ignored on kind. The next probe patches the kubeadm Corefile to
+`forward . 1.1.1.1 8.8.8.8` on kind `--cni cilium` only. Do not invent a
+Cilium values tweak (`routingMode`, chart bump) from this.
+
+State stays in-progress until a dispatch produces per-app verdicts.
+
 ## The distinguishing test
 
 For each of the four, the question is the same and it is answerable:

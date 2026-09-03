@@ -5,15 +5,18 @@ import {
   buildDevAdminSecretManifest,
   buildDevRegistryPullSecretManifest,
   DEV_BOOTSTRAP_SECRETS,
+  DEV_CILIUM_LB_KIND_CRDS,
+  DEV_CILIUM_LB_KIND_MANIFEST_RELPATH,
   DEV_GHCR_PULL_SECRET,
   DEV_GRAFANA_ADMIN_SECRET,
   DEV_REDIS_AUTH_SECRET,
   DEV_ZITI_ADMIN_SECRET,
+  devCiliumLbKindManifestPath,
   devStorageAliasManifestPath,
   resolveRegistryToken,
 } from "./lib.ts";
 import { GATEWAY_API_CRD_BUNDLE } from "../cilium-kind-lane.ts";
-import { applyDevRegistryPullSecret, bringUpK3dDevCluster, bringUpKindCiCluster } from "./use-cases.ts";
+import { applyDevRegistryPullSecret, bringUpK3dDevCluster, bringUpKindCiCluster, rewriteCorefileForwardToPublicResolvers } from "./use-cases.ts";
 import type {
   AppCatalogApplicator,
   ClusterControlPlane,
@@ -140,6 +143,122 @@ describe("kind CI use case", () => {
     expect(log.indexOf("install:cilium")).toBeLessThan(catalogAt);
     expect(log.some((entry) => entry.startsWith("file:") && entry.includes(GATEWAY_API_CRD_BUNDLE))).toBe(true);
     expect(log.some((entry) => entry.includes("gateway-api/releases/download/v1.2.0"))).toBe(false);
+  });
+
+  /**
+   * THE LOAD-BALANCER ALIAS -- same wiring-falsifier shape as longhorn.
+   *
+   * A `type: LoadBalancer` Service on kind never gets
+   * `status.loadBalancer.ingress` until something implements LB-IPAM. The
+   * metal Application pins 192.168.1.x, so it stays excluded. This file is
+   * the substrate that answers the name. Delete the `applyDevCiliumLbKindAlias`
+   * call from the cilium branch of `bringUpKindCiCluster` and this goes red.
+   *
+   * ORDER IS ASSERTED: Cilium helm, then CRDs Established, then the pool,
+   * then the catalogue. Applying the pool before the CRDs is a NotFound
+   * that reads as "Cilium does not do LoadBalancer". Applying it after the
+   * catalogue lets a LoadBalancer Service land with no pool.
+   */
+  test("kind --cni cilium applies the LB-IPAM alias after Cilium helm and CRDs, before the catalogue", () => {
+    const log: string[] = [];
+    bringUpKindCiCluster(fakePorts(log), {
+      configPath: "/tmp/kind-cilium.yaml",
+      clusterName: "zeta-ci-cilium",
+      gitRef: "main",
+      gitRepoUrl: "https://github.com/Lucent-Financial-Group/Zeta",
+      cni: "cilium",
+    });
+    const pool = `file:${devCiliumLbKindManifestPath()}`;
+    expect(log).toContain("install:cilium");
+    expect(log).toContain(pool);
+    expect(log.indexOf("install:cilium")).toBeLessThan(log.indexOf("nodes-ready"));
+    expect(log.indexOf("nodes-ready")).toBeLessThan(log.indexOf(pool));
+    for (const crd of DEV_CILIUM_LB_KIND_CRDS) {
+      const crdAt = log.indexOf(`crd:${crd}`);
+      expect(crdAt).toBeGreaterThan(-1);
+      expect(log.indexOf("nodes-ready")).toBeLessThan(crdAt);
+      expect(crdAt).toBeLessThan(log.indexOf(pool));
+    }
+    const catalogAt = log.findIndex((entry) => entry.startsWith("catalog:"));
+    expect(catalogAt).toBeGreaterThan(-1);
+    expect(log.indexOf(pool)).toBeLessThan(catalogAt);
+  });
+
+  test("kind --cni cilium patches kubeadm CoreDNS to public resolvers before the catalogue", () => {
+    // MEASURED run 33695849211: ComparisonError Could not resolve host: github.com
+    // with zeta-lb-pool assigned. k3d's coredns-custom ConfigMap is ignored by
+    // kubeadm CoreDNS. This is the kind surface of the same class.
+    const log: string[] = [];
+    bringUpKindCiCluster(fakePorts(log), {
+      configPath: "/tmp/kind-cilium.yaml",
+      clusterName: "zeta-ci-cilium",
+      gitRef: "main",
+      gitRepoUrl: "https://github.com/Lucent-Financial-Group/Zeta",
+      cni: "cilium",
+    });
+    const patch = log.find((entry) => entry.startsWith("patch:configmap/coredns@kube-system:"));
+    expect(patch).toBeDefined();
+    expect(patch).toContain("1.1.1.1");
+    expect(patch).toContain("8.8.8.8");
+    const catalogAt = log.findIndex((entry) => entry.startsWith("catalog:"));
+    expect(log.indexOf(patch!)).toBeLessThan(catalogAt);
+  });
+
+  test("kindnetd bring-up does not apply the Cilium LB-IPAM alias", () => {
+    const log: string[] = [];
+    bringUpKindCiCluster(fakePorts(log), {
+      configPath: "/tmp/kind.yaml",
+      clusterName: "zeta-ci",
+      gitRef: "main",
+      gitRepoUrl: "https://github.com/Lucent-Financial-Group/Zeta",
+    });
+    expect(log).not.toContain(`file:${devCiliumLbKindManifestPath()}`);
+    for (const crd of DEV_CILIUM_LB_KIND_CRDS) {
+      expect(log).not.toContain(`crd:${crd}`);
+    }
+    expect(log.some((entry) => entry.startsWith("patch:configmap/coredns@"))).toBe(false);
+  });
+
+  test("k3d bring-up does not apply the kind LB-IPAM alias — k3d has Cilium, not this pool", () => {
+    // k3d helm-installs Cilium. The tempting edit is "apply the pool whenever
+    // Cilium is installed". That would put kind's docker-bridge range onto
+    // k3d's network -- the same class of defect as applying 192.168.1.x on kind.
+    const log: string[] = [];
+    bringUpK3dDevCluster(fakePorts(log), {
+      configPath: "/tmp/k3d.yaml",
+      clusterName: "zeta-dev",
+      agentCount: 0,
+      kubeApiHost: "host.k3d.internal",
+      gitRef: "main",
+      gitRepoUrl: "https://github.com/Lucent-Financial-Group/Zeta",
+      env: {},
+    });
+    expect(log).toContain("install:cilium");
+    expect(log).not.toContain(`file:${devCiliumLbKindManifestPath()}`);
+    for (const crd of DEV_CILIUM_LB_KIND_CRDS) {
+      expect(log).not.toContain(`crd:${crd}`);
+    }
+  });
+
+  test("the kind LB-IPAM alias exists, is a Cilium pool, and is not the metal subnet", () => {
+    const manifest = readFileSync(devCiliumLbKindManifestPath(), "utf8");
+    expect(DEV_CILIUM_LB_KIND_MANIFEST_RELPATH).toBe(
+      "full-ai-cluster/dev-cluster/manifests/cilium-lb-ipam.kind.yaml",
+    );
+    expect(manifest).toContain("kind: CiliumLoadBalancerIPPool");
+    expect(manifest).toContain("kind: CiliumL2AnnouncementPolicy");
+    expect(manifest).toContain("name: zeta-lb-pool");
+    // Comments may name the metal range they refuse. The SPEC is the claim.
+    expect(manifest).toContain('start: "172.18.255.200"');
+    expect(manifest).toContain('stop: "172.18.255.220"');
+    expect(manifest).not.toMatch(/start:\s*"192\.168\.1\./);
+    expect(manifest).not.toMatch(/stop:\s*"192\.168\.1\./);
+  });
+
+  test("applyRootApp does not apply the Cilium LB kind alias — it does not know the CNI", () => {
+    const source = readFileSync(new URL("./apply-root-app.ts", import.meta.url), "utf8");
+    expect(source).not.toContain("applyDevCiliumLbKindAlias");
+    expect(source).not.toContain("cilium-lb-ipam.kind.yaml");
   });
 
   /**
@@ -534,5 +653,32 @@ describe("dev/CI registry pull credential", () => {
     const catalogAt = source.indexOf("applyRootDevCatalog(gitRef, gitRepoUrl)");
     expect(mintAt).toBeGreaterThan(-1);
     expect(mintAt).toBeLessThan(catalogAt);
+  });
+});
+
+describe("kind+Cilium CoreDNS forward rewrite", () => {
+  test("replaces kubeadm forward . /etc/resolv.conf including the options block", () => {
+    const input = [
+      ".:53 {",
+      "    kubernetes cluster.local in-addr.arpa ip6.arpa {",
+      "       pods insecure",
+      "    }",
+      "    forward . /etc/resolv.conf {",
+      "       max_concurrent 1000",
+      "    }",
+      "    cache 30",
+      "}",
+      "",
+    ].join("\n");
+    const out = rewriteCorefileForwardToPublicResolvers(input);
+    expect(out).toContain("forward . 1.1.1.1 8.8.8.8");
+    expect(out).not.toContain("/etc/resolv.conf");
+    expect(out).toContain("kubernetes cluster.local");
+  });
+
+  test("empty Corefile falls back to a kubeadm Corefile that still answers cluster names", () => {
+    const out = rewriteCorefileForwardToPublicResolvers("");
+    expect(out).toContain("forward . 1.1.1.1 8.8.8.8");
+    expect(out).toContain("kubernetes cluster.local");
   });
 });

@@ -1,0 +1,12 @@
+{
+  "pr_number": 16386,
+  "archive_path": "docs/history/pr-reviews/PR-16386-feat-081m1hy9k92087g0r002gn49hs-corrupt-last-write-intercept-on-ifilesystem.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-02T21:16:24.204Z",
+  "schema_version": "v1",
+  "commit_sha": "e9adba250776b0a2d5d1ee1725b13be632611c01",
+  "title": "feat(081M1HY9K92087G0R002GN49HS): corrupt-last-write intercept on IFileSystem",
+  "state": "MERGED",
+  "merged_at": "2026-09-02T21:15:45Z",
+  "head_ref": "feat/zetafs-corrupt-last-write"
+}

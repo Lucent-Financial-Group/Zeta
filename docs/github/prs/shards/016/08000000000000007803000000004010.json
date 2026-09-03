@@ -1,0 +1,12 @@
+{
+  "pr_number": 16400,
+  "archive_path": "docs/history/pr-reviews/PR-16400-feat-cluster-argocd-10-7-0-kube-prometheus-stack-88-6-3-behind-list-down-to-3.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-02T22:49:52.425Z",
+  "schema_version": "v1",
+  "commit_sha": "3a84499051d87aedb072c3d04438ecd2e41eda1d",
+  "title": "feat(cluster): argocd 10.7.0, kube-prometheus-stack 88.6.3 — behind list down to 3",
+  "state": "MERGED",
+  "merged_at": "2026-09-02T22:49:11Z",
+  "head_ref": "shadow/chart-currency-argocd-10-7-0-kps-88-6-3"
+}

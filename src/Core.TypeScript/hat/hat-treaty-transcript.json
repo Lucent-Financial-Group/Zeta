@@ -1,0 +1,11434 @@
+[
+  {
+    "vectorType": "Lattice",
+    "a": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+    ],
+    "b": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+    ],
+    "join": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+    ],
+    "meet": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+    ],
+    "complementA": [
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true
+    ],
+    "leqAB": true,
+    "weightA": 0,
+    "keysA": []
+  },
+  {
+    "vectorType": "Lattice",
+    "a": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+    ],
+    "b": [
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true
+    ],
+    "join": [
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true
+    ],
+    "meet": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+    ],
+    "complementA": [
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true
+    ],
+    "leqAB": true,
+    "weightA": 0,
+    "keysA": []
+  },
+  {
+    "vectorType": "Lattice",
+    "a": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+    ],
+    "b": [
+      true,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+    ],
+    "join": [
+      true,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+    ],
+    "meet": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+    ],
+    "complementA": [
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true
+    ],
+    "leqAB": true,
+    "weightA": 0,
+    "keysA": []
+  },
+  {
+    "vectorType": "Lattice",
+    "a": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+    ],
+    "b": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      true,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+    ],
+    "join": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      true,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+    ],
+    "meet": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+    ],
+    "complementA": [
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true
+    ],
+    "leqAB": true,
+    "weightA": 0,
+    "keysA": []
+  },
+  {
+    "vectorType": "Lattice",
+    "a": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+    ],
+    "b": [
+      true,
+      false,
+      false,
+      false,
+      false,
+      true,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+    ],
+    "join": [
+      true,
+      false,
+      false,
+      false,
+      false,
+      true,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+    ],
+    "meet": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+    ],
+    "complementA": [
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true
+    ],
+    "leqAB": true,
+    "weightA": 0,
+    "keysA": []
+  },
+  {
+    "vectorType": "Lattice",
+    "a": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+    ],
+    "b": [
+      false,
+      true,
+      false,
+      true,
+      false,
+      true,
+      false,
+      true,
+      false,
+      true,
+      false,
+      true,
+      false,
+      true,
+      false,
+      true
+    ],
+    "join": [
+      false,
+      true,
+      false,
+      true,
+      false,
+      true,
+      false,
+      true,
+      false,
+      true,
+      false,
+      true,
+      false,
+      true,
+      false,
+      true
+    ],
+    "meet": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+    ],
+    "complementA": [
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true
+    ],
+    "leqAB": true,
+    "weightA": 0,
+    "keysA": []
+  },
+  {
+    "vectorType": "Lattice",
+    "a": [
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true
+    ],
+    "b": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+    ],
+    "join": [
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true
+    ],
+    "meet": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+    ],
+    "complementA": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+    ],
+    "leqAB": false,
+    "weightA": 16,
+    "keysA": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15
+    ]
+  },
+  {
+    "vectorType": "Lattice",
+    "a": [
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true
+    ],
+    "b": [
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true
+    ],
+    "join": [
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true
+    ],
+    "meet": [
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true
+    ],
+    "complementA": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+    ],
+    "leqAB": true,
+    "weightA": 16,
+    "keysA": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15
+    ]
+  },
+  {
+    "vectorType": "Lattice",
+    "a": [
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true
+    ],
+    "b": [
+      true,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+    ],
+    "join": [
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true
+    ],
+    "meet": [
+      true,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+    ],
+    "complementA": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+    ],
+    "leqAB": false,
+    "weightA": 16,
+    "keysA": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15
+    ]
+  },
+  {
+    "vectorType": "Lattice",
+    "a": [
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true
+    ],
+    "b": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      true,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+    ],
+    "join": [
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true
+    ],
+    "meet": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      true,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+    ],
+    "complementA": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+    ],
+    "leqAB": false,
+    "weightA": 16,
+    "keysA": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15
+    ]
+  },
+  {
+    "vectorType": "Lattice",
+    "a": [
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true
+    ],
+    "b": [
+      true,
+      false,
+      false,
+      false,
+      false,
+      true,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+    ],
+    "join": [
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true
+    ],
+    "meet": [
+      true,
+      false,
+      false,
+      false,
+      false,
+      true,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+    ],
+    "complementA": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+    ],
+    "leqAB": false,
+    "weightA": 16,
+    "keysA": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15
+    ]
+  },
+  {
+    "vectorType": "Lattice",
+    "a": [
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true
+    ],
+    "b": [
+      false,
+      true,
+      false,
+      true,
+      false,
+      true,
+      false,
+      true,
+      false,
+      true,
+      false,
+      true,
+      false,
+      true,
+      false,
+      true
+    ],
+    "join": [
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true
+    ],
+    "meet": [
+      false,
+      true,
+      false,
+      true,
+      false,
+      true,
+      false,
+      true,
+      false,
+      true,
+      false,
+      true,
+      false,
+      true,
+      false,
+      true
+    ],
+    "complementA": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+    ],
+    "leqAB": false,
+    "weightA": 16,
+    "keysA": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15
+    ]
+  },
+  {
+    "vectorType": "Lattice",
+    "a": [
+      true,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+    ],
+    "b": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+    ],
+    "join": [
+      true,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+    ],
+    "meet": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+    ],
+    "complementA": [
+      false,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true
+    ],
+    "leqAB": false,
+    "weightA": 1,
+    "keysA": [
+      0
+    ]
+  },
+  {
+    "vectorType": "Lattice",
+    "a": [
+      true,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+    ],
+    "b": [
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true
+    ],
+    "join": [
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true
+    ],
+    "meet": [
+      true,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+    ],
+    "complementA": [
+      false,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true
+    ],
+    "leqAB": true,
+    "weightA": 1,
+    "keysA": [
+      0
+    ]
+  },
+  {
+    "vectorType": "Lattice",
+    "a": [
+      true,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+    ],
+    "b": [
+      true,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+    ],
+    "join": [
+      true,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+    ],
+    "meet": [
+      true,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+    ],
+    "complementA": [
+      false,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true
+    ],
+    "leqAB": true,
+    "weightA": 1,
+    "keysA": [
+      0
+    ]
+  },
+  {
+    "vectorType": "Lattice",
+    "a": [
+      true,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+    ],
+    "b": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      true,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+    ],
+    "join": [
+      true,
+      false,
+      false,
+      false,
+      false,
+      true,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+    ],
+    "meet": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+    ],
+    "complementA": [
+      false,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true
+    ],
+    "leqAB": false,
+    "weightA": 1,
+    "keysA": [
+      0
+    ]
+  },
+  {
+    "vectorType": "Lattice",
+    "a": [
+      true,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+    ],
+    "b": [
+      true,
+      false,
+      false,
+      false,
+      false,
+      true,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+    ],
+    "join": [
+      true,
+      false,
+      false,
+      false,
+      false,
+      true,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+    ],
+    "meet": [
+      true,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+    ],
+    "complementA": [
+      false,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true
+    ],
+    "leqAB": true,
+    "weightA": 1,
+    "keysA": [
+      0
+    ]
+  },
+  {
+    "vectorType": "Lattice",
+    "a": [
+      true,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+    ],
+    "b": [
+      false,
+      true,
+      false,
+      true,
+      false,
+      true,
+      false,
+      true,
+      false,
+      true,
+      false,
+      true,
+      false,
+      true,
+      false,
+      true
+    ],
+    "join": [
+      true,
+      true,
+      false,
+      true,
+      false,
+      true,
+      false,
+      true,
+      false,
+      true,
+      false,
+      true,
+      false,
+      true,
+      false,
+      true
+    ],
+    "meet": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+    ],
+    "complementA": [
+      false,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true
+    ],
+    "leqAB": false,
+    "weightA": 1,
+    "keysA": [
+      0
+    ]
+  },
+  {
+    "vectorType": "Lattice",
+    "a": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      true,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+    ],
+    "b": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+    ],
+    "join": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      true,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+    ],
+    "meet": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+    ],
+    "complementA": [
+      true,
+      true,
+      true,
+      true,
+      true,
+      false,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true
+    ],
+    "leqAB": false,
+    "weightA": 1,
+    "keysA": [
+      5
+    ]
+  },
+  {
+    "vectorType": "Lattice",
+    "a": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      true,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+    ],
+    "b": [
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true
+    ],
+    "join": [
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true
+    ],
+    "meet": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      true,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+    ],
+    "complementA": [
+      true,
+      true,
+      true,
+      true,
+      true,
+      false,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true
+    ],
+    "leqAB": true,
+    "weightA": 1,
+    "keysA": [
+      5
+    ]
+  },
+  {
+    "vectorType": "Lattice",
+    "a": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      true,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+    ],
+    "b": [
+      true,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+    ],
+    "join": [
+      true,
+      false,
+      false,
+      false,
+      false,
+      true,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+    ],
+    "meet": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+    ],
+    "complementA": [
+      true,
+      true,
+      true,
+      true,
+      true,
+      false,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true
+    ],
+    "leqAB": false,
+    "weightA": 1,
+    "keysA": [
+      5
+    ]
+  },
+  {
+    "vectorType": "Lattice",
+    "a": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      true,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+    ],
+    "b": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      true,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+    ],
+    "join": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      true,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+    ],
+    "meet": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      true,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+    ],
+    "complementA": [
+      true,
+      true,
+      true,
+      true,
+      true,
+      false,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true
+    ],
+    "leqAB": true,
+    "weightA": 1,
+    "keysA": [
+      5
+    ]
+  },
+  {
+    "vectorType": "Lattice",
+    "a": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      true,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+    ],
+    "b": [
+      true,
+      false,
+      false,
+      false,
+      false,
+      true,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+    ],
+    "join": [
+      true,
+      false,
+      false,
+      false,
+      false,
+      true,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+    ],
+    "meet": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      true,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+    ],
+    "complementA": [
+      true,
+      true,
+      true,
+      true,
+      true,
+      false,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true
+    ],
+    "leqAB": true,
+    "weightA": 1,
+    "keysA": [
+      5
+    ]
+  },
+  {
+    "vectorType": "Lattice",
+    "a": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      true,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+    ],
+    "b": [
+      false,
+      true,
+      false,
+      true,
+      false,
+      true,
+      false,
+      true,
+      false,
+      true,
+      false,
+      true,
+      false,
+      true,
+      false,
+      true
+    ],
+    "join": [
+      false,
+      true,
+      false,
+      true,
+      false,
+      true,
+      false,
+      true,
+      false,
+      true,
+      false,
+      true,
+      false,
+      true,
+      false,
+      true
+    ],
+    "meet": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      true,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+    ],
+    "complementA": [
+      true,
+      true,
+      true,
+      true,
+      true,
+      false,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true
+    ],
+    "leqAB": true,
+    "weightA": 1,
+    "keysA": [
+      5
+    ]
+  },
+  {
+    "vectorType": "Lattice",
+    "a": [
+      true,
+      false,
+      false,
+      false,
+      false,
+      true,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+    ],
+    "b": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+    ],
+    "join": [
+      true,
+      false,
+      false,
+      false,
+      false,
+      true,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+    ],
+    "meet": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+    ],
+    "complementA": [
+      false,
+      true,
+      true,
+      true,
+      true,
+      false,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true
+    ],
+    "leqAB": false,
+    "weightA": 2,
+    "keysA": [
+      0,
+      5
+    ]
+  },
+  {
+    "vectorType": "Lattice",
+    "a": [
+      true,
+      false,
+      false,
+      false,
+      false,
+      true,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+    ],
+    "b": [
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true
+    ],
+    "join": [
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true
+    ],
+    "meet": [
+      true,
+      false,
+      false,
+      false,
+      false,
+      true,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+    ],
+    "complementA": [
+      false,
+      true,
+      true,
+      true,
+      true,
+      false,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true
+    ],
+    "leqAB": true,
+    "weightA": 2,
+    "keysA": [
+      0,
+      5
+    ]
+  },
+  {
+    "vectorType": "Lattice",
+    "a": [
+      true,
+      false,
+      false,
+      false,
+      false,
+      true,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+    ],
+    "b": [
+      true,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+    ],
+    "join": [
+      true,
+      false,
+      false,
+      false,
+      false,
+      true,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+    ],
+    "meet": [
+      true,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+    ],
+    "complementA": [
+      false,
+      true,
+      true,
+      true,
+      true,
+      false,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true
+    ],
+    "leqAB": false,
+    "weightA": 2,
+    "keysA": [
+      0,
+      5
+    ]
+  },
+  {
+    "vectorType": "Lattice",
+    "a": [
+      true,
+      false,
+      false,
+      false,
+      false,
+      true,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+    ],
+    "b": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      true,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+    ],
+    "join": [
+      true,
+      false,
+      false,
+      false,
+      false,
+      true,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+    ],
+    "meet": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      true,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+    ],
+    "complementA": [
+      false,
+      true,
+      true,
+      true,
+      true,
+      false,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true
+    ],
+    "leqAB": false,
+    "weightA": 2,
+    "keysA": [
+      0,
+      5
+    ]
+  },
+  {
+    "vectorType": "Lattice",
+    "a": [
+      true,
+      false,
+      false,
+      false,
+      false,
+      true,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+    ],
+    "b": [
+      true,
+      false,
+      false,
+      false,
+      false,
+      true,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+    ],
+    "join": [
+      true,
+      false,
+      false,
+      false,
+      false,
+      true,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+    ],
+    "meet": [
+      true,
+      false,
+      false,
+      false,
+      false,
+      true,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+    ],
+    "complementA": [
+      false,
+      true,
+      true,
+      true,
+      true,
+      false,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true
+    ],
+    "leqAB": true,
+    "weightA": 2,
+    "keysA": [
+      0,
+      5
+    ]
+  },
+  {
+    "vectorType": "Lattice",
+    "a": [
+      true,
+      false,
+      false,
+      false,
+      false,
+      true,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+    ],
+    "b": [
+      false,
+      true,
+      false,
+      true,
+      false,
+      true,
+      false,
+      true,
+      false,
+      true,
+      false,
+      true,
+      false,
+      true,
+      false,
+      true
+    ],
+    "join": [
+      true,
+      true,
+      false,
+      true,
+      false,
+      true,
+      false,
+      true,
+      false,
+      true,
+      false,
+      true,
+      false,
+      true,
+      false,
+      true
+    ],
+    "meet": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      true,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+    ],
+    "complementA": [
+      false,
+      true,
+      true,
+      true,
+      true,
+      false,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true
+    ],
+    "leqAB": false,
+    "weightA": 2,
+    "keysA": [
+      0,
+      5
+    ]
+  },
+  {
+    "vectorType": "Lattice",
+    "a": [
+      false,
+      true,
+      false,
+      true,
+      false,
+      true,
+      false,
+      true,
+      false,
+      true,
+      false,
+      true,
+      false,
+      true,
+      false,
+      true
+    ],
+    "b": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+    ],
+    "join": [
+      false,
+      true,
+      false,
+      true,
+      false,
+      true,
+      false,
+      true,
+      false,
+      true,
+      false,
+      true,
+      false,
+      true,
+      false,
+      true
+    ],
+    "meet": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+    ],
+    "complementA": [
+      true,
+      false,
+      true,
+      false,
+      true,
+      false,
+      true,
+      false,
+      true,
+      false,
+      true,
+      false,
+      true,
+      false,
+      true,
+      false
+    ],
+    "leqAB": false,
+    "weightA": 8,
+    "keysA": [
+      1,
+      3,
+      5,
+      7,
+      9,
+      11,
+      13,
+      15
+    ]
+  },
+  {
+    "vectorType": "Lattice",
+    "a": [
+      false,
+      true,
+      false,
+      true,
+      false,
+      true,
+      false,
+      true,
+      false,
+      true,
+      false,
+      true,
+      false,
+      true,
+      false,
+      true
+    ],
+    "b": [
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true
+    ],
+    "join": [
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true
+    ],
+    "meet": [
+      false,
+      true,
+      false,
+      true,
+      false,
+      true,
+      false,
+      true,
+      false,
+      true,
+      false,
+      true,
+      false,
+      true,
+      false,
+      true
+    ],
+    "complementA": [
+      true,
+      false,
+      true,
+      false,
+      true,
+      false,
+      true,
+      false,
+      true,
+      false,
+      true,
+      false,
+      true,
+      false,
+      true,
+      false
+    ],
+    "leqAB": true,
+    "weightA": 8,
+    "keysA": [
+      1,
+      3,
+      5,
+      7,
+      9,
+      11,
+      13,
+      15
+    ]
+  },
+  {
+    "vectorType": "Lattice",
+    "a": [
+      false,
+      true,
+      false,
+      true,
+      false,
+      true,
+      false,
+      true,
+      false,
+      true,
+      false,
+      true,
+      false,
+      true,
+      false,
+      true
+    ],
+    "b": [
+      true,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+    ],
+    "join": [
+      true,
+      true,
+      false,
+      true,
+      false,
+      true,
+      false,
+      true,
+      false,
+      true,
+      false,
+      true,
+      false,
+      true,
+      false,
+      true
+    ],
+    "meet": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+    ],
+    "complementA": [
+      true,
+      false,
+      true,
+      false,
+      true,
+      false,
+      true,
+      false,
+      true,
+      false,
+      true,
+      false,
+      true,
+      false,
+      true,
+      false
+    ],
+    "leqAB": false,
+    "weightA": 8,
+    "keysA": [
+      1,
+      3,
+      5,
+      7,
+      9,
+      11,
+      13,
+      15
+    ]
+  },
+  {
+    "vectorType": "Lattice",
+    "a": [
+      false,
+      true,
+      false,
+      true,
+      false,
+      true,
+      false,
+      true,
+      false,
+      true,
+      false,
+      true,
+      false,
+      true,
+      false,
+      true
+    ],
+    "b": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      true,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+    ],
+    "join": [
+      false,
+      true,
+      false,
+      true,
+      false,
+      true,
+      false,
+      true,
+      false,
+      true,
+      false,
+      true,
+      false,
+      true,
+      false,
+      true
+    ],
+    "meet": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      true,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+    ],
+    "complementA": [
+      true,
+      false,
+      true,
+      false,
+      true,
+      false,
+      true,
+      false,
+      true,
+      false,
+      true,
+      false,
+      true,
+      false,
+      true,
+      false
+    ],
+    "leqAB": false,
+    "weightA": 8,
+    "keysA": [
+      1,
+      3,
+      5,
+      7,
+      9,
+      11,
+      13,
+      15
+    ]
+  },
+  {
+    "vectorType": "Lattice",
+    "a": [
+      false,
+      true,
+      false,
+      true,
+      false,
+      true,
+      false,
+      true,
+      false,
+      true,
+      false,
+      true,
+      false,
+      true,
+      false,
+      true
+    ],
+    "b": [
+      true,
+      false,
+      false,
+      false,
+      false,
+      true,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+    ],
+    "join": [
+      true,
+      true,
+      false,
+      true,
+      false,
+      true,
+      false,
+      true,
+      false,
+      true,
+      false,
+      true,
+      false,
+      true,
+      false,
+      true
+    ],
+    "meet": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      true,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+    ],
+    "complementA": [
+      true,
+      false,
+      true,
+      false,
+      true,
+      false,
+      true,
+      false,
+      true,
+      false,
+      true,
+      false,
+      true,
+      false,
+      true,
+      false
+    ],
+    "leqAB": false,
+    "weightA": 8,
+    "keysA": [
+      1,
+      3,
+      5,
+      7,
+      9,
+      11,
+      13,
+      15
+    ]
+  },
+  {
+    "vectorType": "Lattice",
+    "a": [
+      false,
+      true,
+      false,
+      true,
+      false,
+      true,
+      false,
+      true,
+      false,
+      true,
+      false,
+      true,
+      false,
+      true,
+      false,
+      true
+    ],
+    "b": [
+      false,
+      true,
+      false,
+      true,
+      false,
+      true,
+      false,
+      true,
+      false,
+      true,
+      false,
+      true,
+      false,
+      true,
+      false,
+      true
+    ],
+    "join": [
+      false,
+      true,
+      false,
+      true,
+      false,
+      true,
+      false,
+      true,
+      false,
+      true,
+      false,
+      true,
+      false,
+      true,
+      false,
+      true
+    ],
+    "meet": [
+      false,
+      true,
+      false,
+      true,
+      false,
+      true,
+      false,
+      true,
+      false,
+      true,
+      false,
+      true,
+      false,
+      true,
+      false,
+      true
+    ],
+    "complementA": [
+      true,
+      false,
+      true,
+      false,
+      true,
+      false,
+      true,
+      false,
+      true,
+      false,
+      true,
+      false,
+      true,
+      false,
+      true,
+      false
+    ],
+    "leqAB": true,
+    "weightA": 8,
+    "keysA": [
+      1,
+      3,
+      5,
+      7,
+      9,
+      11,
+      13,
+      15
+    ]
+  },
+  {
+    "vectorType": "Single",
+    "k": 0,
+    "expected": [
+      true,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+    ]
+  },
+  {
+    "vectorType": "Single",
+    "k": 1,
+    "expected": [
+      false,
+      true,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+    ]
+  },
+  {
+    "vectorType": "Single",
+    "k": 5,
+    "expected": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      true,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+    ]
+  },
+  {
+    "vectorType": "Single",
+    "k": 15,
+    "expected": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      true
+    ]
+  },
+  {
+    "vectorType": "Single",
+    "k": 16,
+    "expected": [
+      true,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+    ]
+  },
+  {
+    "vectorType": "Single",
+    "k": 17,
+    "expected": [
+      false,
+      true,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+    ]
+  },
+  {
+    "vectorType": "Single",
+    "k": 31,
+    "expected": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      true
+    ]
+  },
+  {
+    "vectorType": "Single",
+    "k": -1,
+    "expected": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      true
+    ]
+  },
+  {
+    "vectorType": "Single",
+    "k": -16,
+    "expected": [
+      true,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+    ]
+  },
+  {
+    "vectorType": "OfGrid",
+    "row": -2,
+    "col": -2,
+    "expected": 0
+  },
+  {
+    "vectorType": "OfGrid",
+    "row": -2,
+    "col": -1,
+    "expected": 0
+  },
+  {
+    "vectorType": "OfGrid",
+    "row": -2,
+    "col": 0,
+    "expected": 0
+  },
+  {
+    "vectorType": "OfGrid",
+    "row": -2,
+    "col": 1,
+    "expected": 1
+  },
+  {
+    "vectorType": "OfGrid",
+    "row": -2,
+    "col": 2,
+    "expected": 2
+  },
+  {
+    "vectorType": "OfGrid",
+    "row": -2,
+    "col": 3,
+    "expected": 3
+  },
+  {
+    "vectorType": "OfGrid",
+    "row": -2,
+    "col": 4,
+    "expected": 3
+  },
+  {
+    "vectorType": "OfGrid",
+    "row": -2,
+    "col": 9,
+    "expected": 3
+  },
+  {
+    "vectorType": "OfGrid",
+    "row": -1,
+    "col": -2,
+    "expected": 0
+  },
+  {
+    "vectorType": "OfGrid",
+    "row": -1,
+    "col": -1,
+    "expected": 0
+  },
+  {
+    "vectorType": "OfGrid",
+    "row": -1,
+    "col": 0,
+    "expected": 0
+  },
+  {
+    "vectorType": "OfGrid",
+    "row": -1,
+    "col": 1,
+    "expected": 1
+  },
+  {
+    "vectorType": "OfGrid",
+    "row": -1,
+    "col": 2,
+    "expected": 2
+  },
+  {
+    "vectorType": "OfGrid",
+    "row": -1,
+    "col": 3,
+    "expected": 3
+  },
+  {
+    "vectorType": "OfGrid",
+    "row": -1,
+    "col": 4,
+    "expected": 3
+  },
+  {
+    "vectorType": "OfGrid",
+    "row": -1,
+    "col": 9,
+    "expected": 3
+  },
+  {
+    "vectorType": "OfGrid",
+    "row": 0,
+    "col": -2,
+    "expected": 0
+  },
+  {
+    "vectorType": "OfGrid",
+    "row": 0,
+    "col": -1,
+    "expected": 0
+  },
+  {
+    "vectorType": "OfGrid",
+    "row": 0,
+    "col": 0,
+    "expected": 0
+  },
+  {
+    "vectorType": "OfGrid",
+    "row": 0,
+    "col": 1,
+    "expected": 1
+  },
+  {
+    "vectorType": "OfGrid",
+    "row": 0,
+    "col": 2,
+    "expected": 2
+  },
+  {
+    "vectorType": "OfGrid",
+    "row": 0,
+    "col": 3,
+    "expected": 3
+  },
+  {
+    "vectorType": "OfGrid",
+    "row": 0,
+    "col": 4,
+    "expected": 3
+  },
+  {
+    "vectorType": "OfGrid",
+    "row": 0,
+    "col": 9,
+    "expected": 3
+  },
+  {
+    "vectorType": "OfGrid",
+    "row": 1,
+    "col": -2,
+    "expected": 4
+  },
+  {
+    "vectorType": "OfGrid",
+    "row": 1,
+    "col": -1,
+    "expected": 4
+  },
+  {
+    "vectorType": "OfGrid",
+    "row": 1,
+    "col": 0,
+    "expected": 4
+  },
+  {
+    "vectorType": "OfGrid",
+    "row": 1,
+    "col": 1,
+    "expected": 5
+  },
+  {
+    "vectorType": "OfGrid",
+    "row": 1,
+    "col": 2,
+    "expected": 6
+  },
+  {
+    "vectorType": "OfGrid",
+    "row": 1,
+    "col": 3,
+    "expected": 7
+  },
+  {
+    "vectorType": "OfGrid",
+    "row": 1,
+    "col": 4,
+    "expected": 7
+  },
+  {
+    "vectorType": "OfGrid",
+    "row": 1,
+    "col": 9,
+    "expected": 7
+  },
+  {
+    "vectorType": "OfGrid",
+    "row": 2,
+    "col": -2,
+    "expected": 8
+  },
+  {
+    "vectorType": "OfGrid",
+    "row": 2,
+    "col": -1,
+    "expected": 8
+  },
+  {
+    "vectorType": "OfGrid",
+    "row": 2,
+    "col": 0,
+    "expected": 8
+  },
+  {
+    "vectorType": "OfGrid",
+    "row": 2,
+    "col": 1,
+    "expected": 9
+  },
+  {
+    "vectorType": "OfGrid",
+    "row": 2,
+    "col": 2,
+    "expected": 10
+  },
+  {
+    "vectorType": "OfGrid",
+    "row": 2,
+    "col": 3,
+    "expected": 11
+  },
+  {
+    "vectorType": "OfGrid",
+    "row": 2,
+    "col": 4,
+    "expected": 11
+  },
+  {
+    "vectorType": "OfGrid",
+    "row": 2,
+    "col": 9,
+    "expected": 11
+  },
+  {
+    "vectorType": "OfGrid",
+    "row": 3,
+    "col": -2,
+    "expected": 12
+  },
+  {
+    "vectorType": "OfGrid",
+    "row": 3,
+    "col": -1,
+    "expected": 12
+  },
+  {
+    "vectorType": "OfGrid",
+    "row": 3,
+    "col": 0,
+    "expected": 12
+  },
+  {
+    "vectorType": "OfGrid",
+    "row": 3,
+    "col": 1,
+    "expected": 13
+  },
+  {
+    "vectorType": "OfGrid",
+    "row": 3,
+    "col": 2,
+    "expected": 14
+  },
+  {
+    "vectorType": "OfGrid",
+    "row": 3,
+    "col": 3,
+    "expected": 15
+  },
+  {
+    "vectorType": "OfGrid",
+    "row": 3,
+    "col": 4,
+    "expected": 15
+  },
+  {
+    "vectorType": "OfGrid",
+    "row": 3,
+    "col": 9,
+    "expected": 15
+  },
+  {
+    "vectorType": "OfGrid",
+    "row": 4,
+    "col": -2,
+    "expected": 12
+  },
+  {
+    "vectorType": "OfGrid",
+    "row": 4,
+    "col": -1,
+    "expected": 12
+  },
+  {
+    "vectorType": "OfGrid",
+    "row": 4,
+    "col": 0,
+    "expected": 12
+  },
+  {
+    "vectorType": "OfGrid",
+    "row": 4,
+    "col": 1,
+    "expected": 13
+  },
+  {
+    "vectorType": "OfGrid",
+    "row": 4,
+    "col": 2,
+    "expected": 14
+  },
+  {
+    "vectorType": "OfGrid",
+    "row": 4,
+    "col": 3,
+    "expected": 15
+  },
+  {
+    "vectorType": "OfGrid",
+    "row": 4,
+    "col": 4,
+    "expected": 15
+  },
+  {
+    "vectorType": "OfGrid",
+    "row": 4,
+    "col": 9,
+    "expected": 15
+  },
+  {
+    "vectorType": "OfGrid",
+    "row": 9,
+    "col": -2,
+    "expected": 12
+  },
+  {
+    "vectorType": "OfGrid",
+    "row": 9,
+    "col": -1,
+    "expected": 12
+  },
+  {
+    "vectorType": "OfGrid",
+    "row": 9,
+    "col": 0,
+    "expected": 12
+  },
+  {
+    "vectorType": "OfGrid",
+    "row": 9,
+    "col": 1,
+    "expected": 13
+  },
+  {
+    "vectorType": "OfGrid",
+    "row": 9,
+    "col": 2,
+    "expected": 14
+  },
+  {
+    "vectorType": "OfGrid",
+    "row": 9,
+    "col": 3,
+    "expected": 15
+  },
+  {
+    "vectorType": "OfGrid",
+    "row": 9,
+    "col": 4,
+    "expected": 15
+  },
+  {
+    "vectorType": "OfGrid",
+    "row": 9,
+    "col": 9,
+    "expected": 15
+  },
+  {
+    "vectorType": "ToGrid",
+    "k": 0,
+    "row": 0,
+    "col": 0
+  },
+  {
+    "vectorType": "ToGrid",
+    "k": 1,
+    "row": 0,
+    "col": 1
+  },
+  {
+    "vectorType": "ToGrid",
+    "k": 4,
+    "row": 1,
+    "col": 0
+  },
+  {
+    "vectorType": "ToGrid",
+    "k": 5,
+    "row": 1,
+    "col": 1
+  },
+  {
+    "vectorType": "ToGrid",
+    "k": 7,
+    "row": 1,
+    "col": 3
+  },
+  {
+    "vectorType": "ToGrid",
+    "k": 15,
+    "row": 3,
+    "col": 3
+  },
+  {
+    "vectorType": "OfKeys",
+    "ks": [],
+    "expected": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+    ]
+  },
+  {
+    "vectorType": "OfKeys",
+    "ks": [
+      0
+    ],
+    "expected": [
+      true,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+    ]
+  },
+  {
+    "vectorType": "OfKeys",
+    "ks": [
+      0,
+      5
+    ],
+    "expected": [
+      true,
+      false,
+      false,
+      false,
+      false,
+      true,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+    ]
+  },
+  {
+    "vectorType": "OfKeys",
+    "ks": [
+      15
+    ],
+    "expected": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      true
+    ]
+  },
+  {
+    "vectorType": "OfKeys",
+    "ks": [
+      16
+    ],
+    "expected": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+    ]
+  },
+  {
+    "vectorType": "OfKeys",
+    "ks": [
+      -1
+    ],
+    "expected": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+    ]
+  },
+  {
+    "vectorType": "OfKeys",
+    "ks": [
+      0,
+      16,
+      5,
+      -3,
+      15
+    ],
+    "expected": [
+      true,
+      false,
+      false,
+      false,
+      false,
+      true,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      true
+    ]
+  },
+  {
+    "vectorType": "Holds",
+    "k": -1,
+    "a": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+    ],
+    "expected": false
+  },
+  {
+    "vectorType": "Holds",
+    "k": -1,
+    "a": [
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true
+    ],
+    "expected": false
+  },
+  {
+    "vectorType": "Holds",
+    "k": -1,
+    "a": [
+      true,
+      false,
+      false,
+      false,
+      false,
+      true,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+    ],
+    "expected": false
+  },
+  {
+    "vectorType": "Holds",
+    "k": 0,
+    "a": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+    ],
+    "expected": false
+  },
+  {
+    "vectorType": "Holds",
+    "k": 0,
+    "a": [
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true
+    ],
+    "expected": true
+  },
+  {
+    "vectorType": "Holds",
+    "k": 0,
+    "a": [
+      true,
+      false,
+      false,
+      false,
+      false,
+      true,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+    ],
+    "expected": true
+  },
+  {
+    "vectorType": "Holds",
+    "k": 5,
+    "a": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+    ],
+    "expected": false
+  },
+  {
+    "vectorType": "Holds",
+    "k": 5,
+    "a": [
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true
+    ],
+    "expected": true
+  },
+  {
+    "vectorType": "Holds",
+    "k": 5,
+    "a": [
+      true,
+      false,
+      false,
+      false,
+      false,
+      true,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+    ],
+    "expected": true
+  },
+  {
+    "vectorType": "Holds",
+    "k": 15,
+    "a": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+    ],
+    "expected": false
+  },
+  {
+    "vectorType": "Holds",
+    "k": 15,
+    "a": [
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true
+    ],
+    "expected": true
+  },
+  {
+    "vectorType": "Holds",
+    "k": 15,
+    "a": [
+      true,
+      false,
+      false,
+      false,
+      false,
+      true,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+    ],
+    "expected": false
+  },
+  {
+    "vectorType": "Holds",
+    "k": 16,
+    "a": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+    ],
+    "expected": false
+  },
+  {
+    "vectorType": "Holds",
+    "k": 16,
+    "a": [
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true
+    ],
+    "expected": false
+  },
+  {
+    "vectorType": "Holds",
+    "k": 16,
+    "a": [
+      true,
+      false,
+      false,
+      false,
+      false,
+      true,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+    ],
+    "expected": false
+  },
+  {
+    "vectorType": "HatAddress",
+    "gameKey": "g1",
+    "hat": {
+      "name": "architect",
+      "scope": "Meta",
+      "lenses": [
+        {
+          "name": "lens-a",
+          "cells": [
+            "PC",
+            "I"
+          ]
+        }
+      ],
+      "landmarks": [
+        [
+          "PC",
+          {
+            "tag": "Constant",
+            "value": 7
+          }
+        ]
+      ],
+      "allowedActions": [],
+      "traversals": [],
+      "controls": [
+        "reducer"
+      ]
+    },
+    "expected": "^hat/architect"
+  },
+  {
+    "vectorType": "HatAddress",
+    "gameKey": "chip8-fingerprint",
+    "hat": {
+      "name": "architect",
+      "scope": "Meta",
+      "lenses": [
+        {
+          "name": "lens-a",
+          "cells": [
+            "PC",
+            "I"
+          ]
+        }
+      ],
+      "landmarks": [
+        [
+          "PC",
+          {
+            "tag": "Constant",
+            "value": 7
+          }
+        ]
+      ],
+      "allowedActions": [],
+      "traversals": [],
+      "controls": [
+        "reducer"
+      ]
+    },
+    "expected": "^hat/architect"
+  },
+  {
+    "vectorType": "HatLandmarkCells",
+    "hat": {
+      "name": "architect",
+      "scope": "Meta",
+      "lenses": [
+        {
+          "name": "lens-a",
+          "cells": [
+            "PC",
+            "I"
+          ]
+        }
+      ],
+      "landmarks": [
+        [
+          "PC",
+          {
+            "tag": "Constant",
+            "value": 7
+          }
+        ]
+      ],
+      "allowedActions": [],
+      "traversals": [],
+      "controls": [
+        "reducer"
+      ]
+    },
+    "expected": [
+      "PC"
+    ]
+  },
+  {
+    "vectorType": "HatIsPersona",
+    "hat": {
+      "name": "architect",
+      "scope": "Meta",
+      "lenses": [
+        {
+          "name": "lens-a",
+          "cells": [
+            "PC",
+            "I"
+          ]
+        }
+      ],
+      "landmarks": [
+        [
+          "PC",
+          {
+            "tag": "Constant",
+            "value": 7
+          }
+        ]
+      ],
+      "allowedActions": [],
+      "traversals": [],
+      "controls": [
+        "reducer"
+      ]
+    },
+    "expected": true
+  },
+  {
+    "vectorType": "HatControls",
+    "other": "reducer",
+    "hat": {
+      "name": "architect",
+      "scope": "Meta",
+      "lenses": [
+        {
+          "name": "lens-a",
+          "cells": [
+            "PC",
+            "I"
+          ]
+        }
+      ],
+      "landmarks": [
+        [
+          "PC",
+          {
+            "tag": "Constant",
+            "value": 7
+          }
+        ]
+      ],
+      "allowedActions": [],
+      "traversals": [],
+      "controls": [
+        "reducer"
+      ]
+    },
+    "expected": true
+  },
+  {
+    "vectorType": "HatControls",
+    "other": "architect",
+    "hat": {
+      "name": "architect",
+      "scope": "Meta",
+      "lenses": [
+        {
+          "name": "lens-a",
+          "cells": [
+            "PC",
+            "I"
+          ]
+        }
+      ],
+      "landmarks": [
+        [
+          "PC",
+          {
+            "tag": "Constant",
+            "value": 7
+          }
+        ]
+      ],
+      "allowedActions": [],
+      "traversals": [],
+      "controls": [
+        "reducer"
+      ]
+    },
+    "expected": false
+  },
+  {
+    "vectorType": "HatControls",
+    "other": "absent",
+    "hat": {
+      "name": "architect",
+      "scope": "Meta",
+      "lenses": [
+        {
+          "name": "lens-a",
+          "cells": [
+            "PC",
+            "I"
+          ]
+        }
+      ],
+      "landmarks": [
+        [
+          "PC",
+          {
+            "tag": "Constant",
+            "value": 7
+          }
+        ]
+      ],
+      "allowedActions": [],
+      "traversals": [],
+      "controls": [
+        "reducer"
+      ]
+    },
+    "expected": false
+  },
+  {
+    "vectorType": "HatPermits",
+    "action": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+    ],
+    "hat": {
+      "name": "architect",
+      "scope": "Meta",
+      "lenses": [
+        {
+          "name": "lens-a",
+          "cells": [
+            "PC",
+            "I"
+          ]
+        }
+      ],
+      "landmarks": [
+        [
+          "PC",
+          {
+            "tag": "Constant",
+            "value": 7
+          }
+        ]
+      ],
+      "allowedActions": [],
+      "traversals": [],
+      "controls": [
+        "reducer"
+      ]
+    },
+    "expected": true
+  },
+  {
+    "vectorType": "HatPermits",
+    "action": [
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true
+    ],
+    "hat": {
+      "name": "architect",
+      "scope": "Meta",
+      "lenses": [
+        {
+          "name": "lens-a",
+          "cells": [
+            "PC",
+            "I"
+          ]
+        }
+      ],
+      "landmarks": [
+        [
+          "PC",
+          {
+            "tag": "Constant",
+            "value": 7
+          }
+        ]
+      ],
+      "allowedActions": [],
+      "traversals": [],
+      "controls": [
+        "reducer"
+      ]
+    },
+    "expected": true
+  },
+  {
+    "vectorType": "HatPermits",
+    "action": [
+      true,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+    ],
+    "hat": {
+      "name": "architect",
+      "scope": "Meta",
+      "lenses": [
+        {
+          "name": "lens-a",
+          "cells": [
+            "PC",
+            "I"
+          ]
+        }
+      ],
+      "landmarks": [
+        [
+          "PC",
+          {
+            "tag": "Constant",
+            "value": 7
+          }
+        ]
+      ],
+      "allowedActions": [],
+      "traversals": [],
+      "controls": [
+        "reducer"
+      ]
+    },
+    "expected": true
+  },
+  {
+    "vectorType": "HatPermits",
+    "action": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      true,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+    ],
+    "hat": {
+      "name": "architect",
+      "scope": "Meta",
+      "lenses": [
+        {
+          "name": "lens-a",
+          "cells": [
+            "PC",
+            "I"
+          ]
+        }
+      ],
+      "landmarks": [
+        [
+          "PC",
+          {
+            "tag": "Constant",
+            "value": 7
+          }
+        ]
+      ],
+      "allowedActions": [],
+      "traversals": [],
+      "controls": [
+        "reducer"
+      ]
+    },
+    "expected": true
+  },
+  {
+    "vectorType": "HatPermits",
+    "action": [
+      true,
+      false,
+      false,
+      false,
+      false,
+      true,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+    ],
+    "hat": {
+      "name": "architect",
+      "scope": "Meta",
+      "lenses": [
+        {
+          "name": "lens-a",
+          "cells": [
+            "PC",
+            "I"
+          ]
+        }
+      ],
+      "landmarks": [
+        [
+          "PC",
+          {
+            "tag": "Constant",
+            "value": 7
+          }
+        ]
+      ],
+      "allowedActions": [],
+      "traversals": [],
+      "controls": [
+        "reducer"
+      ]
+    },
+    "expected": true
+  },
+  {
+    "vectorType": "HatPermits",
+    "action": [
+      false,
+      true,
+      false,
+      true,
+      false,
+      true,
+      false,
+      true,
+      false,
+      true,
+      false,
+      true,
+      false,
+      true,
+      false,
+      true
+    ],
+    "hat": {
+      "name": "architect",
+      "scope": "Meta",
+      "lenses": [
+        {
+          "name": "lens-a",
+          "cells": [
+            "PC",
+            "I"
+          ]
+        }
+      ],
+      "landmarks": [
+        [
+          "PC",
+          {
+            "tag": "Constant",
+            "value": 7
+          }
+        ]
+      ],
+      "allowedActions": [],
+      "traversals": [],
+      "controls": [
+        "reducer"
+      ]
+    },
+    "expected": true
+  },
+  {
+    "vectorType": "HatRestrict",
+    "actions": [
+      [
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false
+      ],
+      [
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true
+      ],
+      [
+        true,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false
+      ],
+      [
+        false,
+        false,
+        false,
+        false,
+        false,
+        true,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false
+      ],
+      [
+        true,
+        false,
+        false,
+        false,
+        false,
+        true,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false
+      ],
+      [
+        false,
+        true,
+        false,
+        true,
+        false,
+        true,
+        false,
+        true,
+        false,
+        true,
+        false,
+        true,
+        false,
+        true,
+        false,
+        true
+      ]
+    ],
+    "hat": {
+      "name": "architect",
+      "scope": "Meta",
+      "lenses": [
+        {
+          "name": "lens-a",
+          "cells": [
+            "PC",
+            "I"
+          ]
+        }
+      ],
+      "landmarks": [
+        [
+          "PC",
+          {
+            "tag": "Constant",
+            "value": 7
+          }
+        ]
+      ],
+      "allowedActions": [],
+      "traversals": [],
+      "controls": [
+        "reducer"
+      ]
+    },
+    "expected": [
+      [
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false
+      ],
+      [
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true
+      ],
+      [
+        true,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false
+      ],
+      [
+        false,
+        false,
+        false,
+        false,
+        false,
+        true,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false
+      ],
+      [
+        true,
+        false,
+        false,
+        false,
+        false,
+        true,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false
+      ],
+      [
+        false,
+        true,
+        false,
+        true,
+        false,
+        true,
+        false,
+        true,
+        false,
+        true,
+        false,
+        true,
+        false,
+        true,
+        false,
+        true
+      ]
+    ]
+  },
+  {
+    "vectorType": "HatAddress",
+    "gameKey": "g1",
+    "hat": {
+      "name": "reducer",
+      "scope": "GameSpecific",
+      "lenses": [
+        {
+          "name": "lens-b",
+          "cells": [
+            "V0"
+          ]
+        }
+      ],
+      "landmarks": [
+        [
+          "V0",
+          {
+            "tag": "Monotonic",
+            "value": -1
+          }
+        ]
+      ],
+      "allowedActions": [
+        [
+          true,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false
+        ],
+        [
+          false,
+          false,
+          false,
+          false,
+          false,
+          true,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false
+        ]
+      ],
+      "traversals": [],
+      "controls": []
+    },
+    "expected": "game/g1/hat/reducer"
+  },
+  {
+    "vectorType": "HatAddress",
+    "gameKey": "chip8-fingerprint",
+    "hat": {
+      "name": "reducer",
+      "scope": "GameSpecific",
+      "lenses": [
+        {
+          "name": "lens-b",
+          "cells": [
+            "V0"
+          ]
+        }
+      ],
+      "landmarks": [
+        [
+          "V0",
+          {
+            "tag": "Monotonic",
+            "value": -1
+          }
+        ]
+      ],
+      "allowedActions": [
+        [
+          true,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false
+        ],
+        [
+          false,
+          false,
+          false,
+          false,
+          false,
+          true,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false
+        ]
+      ],
+      "traversals": [],
+      "controls": []
+    },
+    "expected": "game/chip8-fingerprint/hat/reducer"
+  },
+  {
+    "vectorType": "HatLandmarkCells",
+    "hat": {
+      "name": "reducer",
+      "scope": "GameSpecific",
+      "lenses": [
+        {
+          "name": "lens-b",
+          "cells": [
+            "V0"
+          ]
+        }
+      ],
+      "landmarks": [
+        [
+          "V0",
+          {
+            "tag": "Monotonic",
+            "value": -1
+          }
+        ]
+      ],
+      "allowedActions": [
+        [
+          true,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false
+        ],
+        [
+          false,
+          false,
+          false,
+          false,
+          false,
+          true,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false
+        ]
+      ],
+      "traversals": [],
+      "controls": []
+    },
+    "expected": [
+      "V0"
+    ]
+  },
+  {
+    "vectorType": "HatIsPersona",
+    "hat": {
+      "name": "reducer",
+      "scope": "GameSpecific",
+      "lenses": [
+        {
+          "name": "lens-b",
+          "cells": [
+            "V0"
+          ]
+        }
+      ],
+      "landmarks": [
+        [
+          "V0",
+          {
+            "tag": "Monotonic",
+            "value": -1
+          }
+        ]
+      ],
+      "allowedActions": [
+        [
+          true,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false
+        ],
+        [
+          false,
+          false,
+          false,
+          false,
+          false,
+          true,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false
+        ]
+      ],
+      "traversals": [],
+      "controls": []
+    },
+    "expected": false
+  },
+  {
+    "vectorType": "HatControls",
+    "other": "reducer",
+    "hat": {
+      "name": "reducer",
+      "scope": "GameSpecific",
+      "lenses": [
+        {
+          "name": "lens-b",
+          "cells": [
+            "V0"
+          ]
+        }
+      ],
+      "landmarks": [
+        [
+          "V0",
+          {
+            "tag": "Monotonic",
+            "value": -1
+          }
+        ]
+      ],
+      "allowedActions": [
+        [
+          true,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false
+        ],
+        [
+          false,
+          false,
+          false,
+          false,
+          false,
+          true,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false
+        ]
+      ],
+      "traversals": [],
+      "controls": []
+    },
+    "expected": false
+  },
+  {
+    "vectorType": "HatControls",
+    "other": "architect",
+    "hat": {
+      "name": "reducer",
+      "scope": "GameSpecific",
+      "lenses": [
+        {
+          "name": "lens-b",
+          "cells": [
+            "V0"
+          ]
+        }
+      ],
+      "landmarks": [
+        [
+          "V0",
+          {
+            "tag": "Monotonic",
+            "value": -1
+          }
+        ]
+      ],
+      "allowedActions": [
+        [
+          true,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false
+        ],
+        [
+          false,
+          false,
+          false,
+          false,
+          false,
+          true,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false
+        ]
+      ],
+      "traversals": [],
+      "controls": []
+    },
+    "expected": false
+  },
+  {
+    "vectorType": "HatControls",
+    "other": "absent",
+    "hat": {
+      "name": "reducer",
+      "scope": "GameSpecific",
+      "lenses": [
+        {
+          "name": "lens-b",
+          "cells": [
+            "V0"
+          ]
+        }
+      ],
+      "landmarks": [
+        [
+          "V0",
+          {
+            "tag": "Monotonic",
+            "value": -1
+          }
+        ]
+      ],
+      "allowedActions": [
+        [
+          true,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false
+        ],
+        [
+          false,
+          false,
+          false,
+          false,
+          false,
+          true,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false
+        ]
+      ],
+      "traversals": [],
+      "controls": []
+    },
+    "expected": false
+  },
+  {
+    "vectorType": "HatPermits",
+    "action": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+    ],
+    "hat": {
+      "name": "reducer",
+      "scope": "GameSpecific",
+      "lenses": [
+        {
+          "name": "lens-b",
+          "cells": [
+            "V0"
+          ]
+        }
+      ],
+      "landmarks": [
+        [
+          "V0",
+          {
+            "tag": "Monotonic",
+            "value": -1
+          }
+        ]
+      ],
+      "allowedActions": [
+        [
+          true,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false
+        ],
+        [
+          false,
+          false,
+          false,
+          false,
+          false,
+          true,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false
+        ]
+      ],
+      "traversals": [],
+      "controls": []
+    },
+    "expected": false
+  },
+  {
+    "vectorType": "HatPermits",
+    "action": [
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true
+    ],
+    "hat": {
+      "name": "reducer",
+      "scope": "GameSpecific",
+      "lenses": [
+        {
+          "name": "lens-b",
+          "cells": [
+            "V0"
+          ]
+        }
+      ],
+      "landmarks": [
+        [
+          "V0",
+          {
+            "tag": "Monotonic",
+            "value": -1
+          }
+        ]
+      ],
+      "allowedActions": [
+        [
+          true,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false
+        ],
+        [
+          false,
+          false,
+          false,
+          false,
+          false,
+          true,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false
+        ]
+      ],
+      "traversals": [],
+      "controls": []
+    },
+    "expected": false
+  },
+  {
+    "vectorType": "HatPermits",
+    "action": [
+      true,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+    ],
+    "hat": {
+      "name": "reducer",
+      "scope": "GameSpecific",
+      "lenses": [
+        {
+          "name": "lens-b",
+          "cells": [
+            "V0"
+          ]
+        }
+      ],
+      "landmarks": [
+        [
+          "V0",
+          {
+            "tag": "Monotonic",
+            "value": -1
+          }
+        ]
+      ],
+      "allowedActions": [
+        [
+          true,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false
+        ],
+        [
+          false,
+          false,
+          false,
+          false,
+          false,
+          true,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false
+        ]
+      ],
+      "traversals": [],
+      "controls": []
+    },
+    "expected": true
+  },
+  {
+    "vectorType": "HatPermits",
+    "action": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      true,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+    ],
+    "hat": {
+      "name": "reducer",
+      "scope": "GameSpecific",
+      "lenses": [
+        {
+          "name": "lens-b",
+          "cells": [
+            "V0"
+          ]
+        }
+      ],
+      "landmarks": [
+        [
+          "V0",
+          {
+            "tag": "Monotonic",
+            "value": -1
+          }
+        ]
+      ],
+      "allowedActions": [
+        [
+          true,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false
+        ],
+        [
+          false,
+          false,
+          false,
+          false,
+          false,
+          true,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false
+        ]
+      ],
+      "traversals": [],
+      "controls": []
+    },
+    "expected": true
+  },
+  {
+    "vectorType": "HatPermits",
+    "action": [
+      true,
+      false,
+      false,
+      false,
+      false,
+      true,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+    ],
+    "hat": {
+      "name": "reducer",
+      "scope": "GameSpecific",
+      "lenses": [
+        {
+          "name": "lens-b",
+          "cells": [
+            "V0"
+          ]
+        }
+      ],
+      "landmarks": [
+        [
+          "V0",
+          {
+            "tag": "Monotonic",
+            "value": -1
+          }
+        ]
+      ],
+      "allowedActions": [
+        [
+          true,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false
+        ],
+        [
+          false,
+          false,
+          false,
+          false,
+          false,
+          true,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false
+        ]
+      ],
+      "traversals": [],
+      "controls": []
+    },
+    "expected": false
+  },
+  {
+    "vectorType": "HatPermits",
+    "action": [
+      false,
+      true,
+      false,
+      true,
+      false,
+      true,
+      false,
+      true,
+      false,
+      true,
+      false,
+      true,
+      false,
+      true,
+      false,
+      true
+    ],
+    "hat": {
+      "name": "reducer",
+      "scope": "GameSpecific",
+      "lenses": [
+        {
+          "name": "lens-b",
+          "cells": [
+            "V0"
+          ]
+        }
+      ],
+      "landmarks": [
+        [
+          "V0",
+          {
+            "tag": "Monotonic",
+            "value": -1
+          }
+        ]
+      ],
+      "allowedActions": [
+        [
+          true,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false
+        ],
+        [
+          false,
+          false,
+          false,
+          false,
+          false,
+          true,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false
+        ]
+      ],
+      "traversals": [],
+      "controls": []
+    },
+    "expected": false
+  },
+  {
+    "vectorType": "HatRestrict",
+    "actions": [
+      [
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false
+      ],
+      [
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true
+      ],
+      [
+        true,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false
+      ],
+      [
+        false,
+        false,
+        false,
+        false,
+        false,
+        true,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false
+      ],
+      [
+        true,
+        false,
+        false,
+        false,
+        false,
+        true,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false
+      ],
+      [
+        false,
+        true,
+        false,
+        true,
+        false,
+        true,
+        false,
+        true,
+        false,
+        true,
+        false,
+        true,
+        false,
+        true,
+        false,
+        true
+      ]
+    ],
+    "hat": {
+      "name": "reducer",
+      "scope": "GameSpecific",
+      "lenses": [
+        {
+          "name": "lens-b",
+          "cells": [
+            "V0"
+          ]
+        }
+      ],
+      "landmarks": [
+        [
+          "V0",
+          {
+            "tag": "Monotonic",
+            "value": -1
+          }
+        ]
+      ],
+      "allowedActions": [
+        [
+          true,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false
+        ],
+        [
+          false,
+          false,
+          false,
+          false,
+          false,
+          true,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false
+        ]
+      ],
+      "traversals": [],
+      "controls": []
+    },
+    "expected": [
+      [
+        true,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false
+      ],
+      [
+        false,
+        false,
+        false,
+        false,
+        false,
+        true,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false
+      ]
+    ]
+  },
+  {
+    "vectorType": "HatAddress",
+    "gameKey": "g1",
+    "hat": {
+      "name": "critic",
+      "scope": "GameSpecific",
+      "lenses": [
+        {
+          "name": "lens-a",
+          "cells": [
+            "PC",
+            "I"
+          ]
+        },
+        {
+          "name": "lens-b",
+          "cells": [
+            "V0"
+          ]
+        }
+      ],
+      "landmarks": [
+        [
+          "I",
+          {
+            "tag": "Erratic"
+          }
+        ]
+      ],
+      "allowedActions": [
+        [
+          false,
+          false,
+          false,
+          false,
+          false,
+          true,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false
+        ],
+        [
+          true,
+          false,
+          false,
+          false,
+          false,
+          true,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false
+        ]
+      ],
+      "traversals": [],
+      "controls": [
+        "reducer",
+        "architect"
+      ]
+    },
+    "expected": "game/g1/hat/critic"
+  },
+  {
+    "vectorType": "HatAddress",
+    "gameKey": "chip8-fingerprint",
+    "hat": {
+      "name": "critic",
+      "scope": "GameSpecific",
+      "lenses": [
+        {
+          "name": "lens-a",
+          "cells": [
+            "PC",
+            "I"
+          ]
+        },
+        {
+          "name": "lens-b",
+          "cells": [
+            "V0"
+          ]
+        }
+      ],
+      "landmarks": [
+        [
+          "I",
+          {
+            "tag": "Erratic"
+          }
+        ]
+      ],
+      "allowedActions": [
+        [
+          false,
+          false,
+          false,
+          false,
+          false,
+          true,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false
+        ],
+        [
+          true,
+          false,
+          false,
+          false,
+          false,
+          true,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false
+        ]
+      ],
+      "traversals": [],
+      "controls": [
+        "reducer",
+        "architect"
+      ]
+    },
+    "expected": "game/chip8-fingerprint/hat/critic"
+  },
+  {
+    "vectorType": "HatLandmarkCells",
+    "hat": {
+      "name": "critic",
+      "scope": "GameSpecific",
+      "lenses": [
+        {
+          "name": "lens-a",
+          "cells": [
+            "PC",
+            "I"
+          ]
+        },
+        {
+          "name": "lens-b",
+          "cells": [
+            "V0"
+          ]
+        }
+      ],
+      "landmarks": [
+        [
+          "I",
+          {
+            "tag": "Erratic"
+          }
+        ]
+      ],
+      "allowedActions": [
+        [
+          false,
+          false,
+          false,
+          false,
+          false,
+          true,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false
+        ],
+        [
+          true,
+          false,
+          false,
+          false,
+          false,
+          true,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false
+        ]
+      ],
+      "traversals": [],
+      "controls": [
+        "reducer",
+        "architect"
+      ]
+    },
+    "expected": [
+      "I"
+    ]
+  },
+  {
+    "vectorType": "HatIsPersona",
+    "hat": {
+      "name": "critic",
+      "scope": "GameSpecific",
+      "lenses": [
+        {
+          "name": "lens-a",
+          "cells": [
+            "PC",
+            "I"
+          ]
+        },
+        {
+          "name": "lens-b",
+          "cells": [
+            "V0"
+          ]
+        }
+      ],
+      "landmarks": [
+        [
+          "I",
+          {
+            "tag": "Erratic"
+          }
+        ]
+      ],
+      "allowedActions": [
+        [
+          false,
+          false,
+          false,
+          false,
+          false,
+          true,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false
+        ],
+        [
+          true,
+          false,
+          false,
+          false,
+          false,
+          true,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false
+        ]
+      ],
+      "traversals": [],
+      "controls": [
+        "reducer",
+        "architect"
+      ]
+    },
+    "expected": false
+  },
+  {
+    "vectorType": "HatControls",
+    "other": "reducer",
+    "hat": {
+      "name": "critic",
+      "scope": "GameSpecific",
+      "lenses": [
+        {
+          "name": "lens-a",
+          "cells": [
+            "PC",
+            "I"
+          ]
+        },
+        {
+          "name": "lens-b",
+          "cells": [
+            "V0"
+          ]
+        }
+      ],
+      "landmarks": [
+        [
+          "I",
+          {
+            "tag": "Erratic"
+          }
+        ]
+      ],
+      "allowedActions": [
+        [
+          false,
+          false,
+          false,
+          false,
+          false,
+          true,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false
+        ],
+        [
+          true,
+          false,
+          false,
+          false,
+          false,
+          true,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false
+        ]
+      ],
+      "traversals": [],
+      "controls": [
+        "reducer",
+        "architect"
+      ]
+    },
+    "expected": true
+  },
+  {
+    "vectorType": "HatControls",
+    "other": "architect",
+    "hat": {
+      "name": "critic",
+      "scope": "GameSpecific",
+      "lenses": [
+        {
+          "name": "lens-a",
+          "cells": [
+            "PC",
+            "I"
+          ]
+        },
+        {
+          "name": "lens-b",
+          "cells": [
+            "V0"
+          ]
+        }
+      ],
+      "landmarks": [
+        [
+          "I",
+          {
+            "tag": "Erratic"
+          }
+        ]
+      ],
+      "allowedActions": [
+        [
+          false,
+          false,
+          false,
+          false,
+          false,
+          true,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false
+        ],
+        [
+          true,
+          false,
+          false,
+          false,
+          false,
+          true,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false
+        ]
+      ],
+      "traversals": [],
+      "controls": [
+        "reducer",
+        "architect"
+      ]
+    },
+    "expected": true
+  },
+  {
+    "vectorType": "HatControls",
+    "other": "absent",
+    "hat": {
+      "name": "critic",
+      "scope": "GameSpecific",
+      "lenses": [
+        {
+          "name": "lens-a",
+          "cells": [
+            "PC",
+            "I"
+          ]
+        },
+        {
+          "name": "lens-b",
+          "cells": [
+            "V0"
+          ]
+        }
+      ],
+      "landmarks": [
+        [
+          "I",
+          {
+            "tag": "Erratic"
+          }
+        ]
+      ],
+      "allowedActions": [
+        [
+          false,
+          false,
+          false,
+          false,
+          false,
+          true,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false
+        ],
+        [
+          true,
+          false,
+          false,
+          false,
+          false,
+          true,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false
+        ]
+      ],
+      "traversals": [],
+      "controls": [
+        "reducer",
+        "architect"
+      ]
+    },
+    "expected": false
+  },
+  {
+    "vectorType": "HatPermits",
+    "action": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+    ],
+    "hat": {
+      "name": "critic",
+      "scope": "GameSpecific",
+      "lenses": [
+        {
+          "name": "lens-a",
+          "cells": [
+            "PC",
+            "I"
+          ]
+        },
+        {
+          "name": "lens-b",
+          "cells": [
+            "V0"
+          ]
+        }
+      ],
+      "landmarks": [
+        [
+          "I",
+          {
+            "tag": "Erratic"
+          }
+        ]
+      ],
+      "allowedActions": [
+        [
+          false,
+          false,
+          false,
+          false,
+          false,
+          true,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false
+        ],
+        [
+          true,
+          false,
+          false,
+          false,
+          false,
+          true,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false
+        ]
+      ],
+      "traversals": [],
+      "controls": [
+        "reducer",
+        "architect"
+      ]
+    },
+    "expected": false
+  },
+  {
+    "vectorType": "HatPermits",
+    "action": [
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true
+    ],
+    "hat": {
+      "name": "critic",
+      "scope": "GameSpecific",
+      "lenses": [
+        {
+          "name": "lens-a",
+          "cells": [
+            "PC",
+            "I"
+          ]
+        },
+        {
+          "name": "lens-b",
+          "cells": [
+            "V0"
+          ]
+        }
+      ],
+      "landmarks": [
+        [
+          "I",
+          {
+            "tag": "Erratic"
+          }
+        ]
+      ],
+      "allowedActions": [
+        [
+          false,
+          false,
+          false,
+          false,
+          false,
+          true,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false
+        ],
+        [
+          true,
+          false,
+          false,
+          false,
+          false,
+          true,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false
+        ]
+      ],
+      "traversals": [],
+      "controls": [
+        "reducer",
+        "architect"
+      ]
+    },
+    "expected": false
+  },
+  {
+    "vectorType": "HatPermits",
+    "action": [
+      true,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+    ],
+    "hat": {
+      "name": "critic",
+      "scope": "GameSpecific",
+      "lenses": [
+        {
+          "name": "lens-a",
+          "cells": [
+            "PC",
+            "I"
+          ]
+        },
+        {
+          "name": "lens-b",
+          "cells": [
+            "V0"
+          ]
+        }
+      ],
+      "landmarks": [
+        [
+          "I",
+          {
+            "tag": "Erratic"
+          }
+        ]
+      ],
+      "allowedActions": [
+        [
+          false,
+          false,
+          false,
+          false,
+          false,
+          true,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false
+        ],
+        [
+          true,
+          false,
+          false,
+          false,
+          false,
+          true,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false
+        ]
+      ],
+      "traversals": [],
+      "controls": [
+        "reducer",
+        "architect"
+      ]
+    },
+    "expected": false
+  },
+  {
+    "vectorType": "HatPermits",
+    "action": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      true,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+    ],
+    "hat": {
+      "name": "critic",
+      "scope": "GameSpecific",
+      "lenses": [
+        {
+          "name": "lens-a",
+          "cells": [
+            "PC",
+            "I"
+          ]
+        },
+        {
+          "name": "lens-b",
+          "cells": [
+            "V0"
+          ]
+        }
+      ],
+      "landmarks": [
+        [
+          "I",
+          {
+            "tag": "Erratic"
+          }
+        ]
+      ],
+      "allowedActions": [
+        [
+          false,
+          false,
+          false,
+          false,
+          false,
+          true,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false
+        ],
+        [
+          true,
+          false,
+          false,
+          false,
+          false,
+          true,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false
+        ]
+      ],
+      "traversals": [],
+      "controls": [
+        "reducer",
+        "architect"
+      ]
+    },
+    "expected": true
+  },
+  {
+    "vectorType": "HatPermits",
+    "action": [
+      true,
+      false,
+      false,
+      false,
+      false,
+      true,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+    ],
+    "hat": {
+      "name": "critic",
+      "scope": "GameSpecific",
+      "lenses": [
+        {
+          "name": "lens-a",
+          "cells": [
+            "PC",
+            "I"
+          ]
+        },
+        {
+          "name": "lens-b",
+          "cells": [
+            "V0"
+          ]
+        }
+      ],
+      "landmarks": [
+        [
+          "I",
+          {
+            "tag": "Erratic"
+          }
+        ]
+      ],
+      "allowedActions": [
+        [
+          false,
+          false,
+          false,
+          false,
+          false,
+          true,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false
+        ],
+        [
+          true,
+          false,
+          false,
+          false,
+          false,
+          true,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false
+        ]
+      ],
+      "traversals": [],
+      "controls": [
+        "reducer",
+        "architect"
+      ]
+    },
+    "expected": true
+  },
+  {
+    "vectorType": "HatPermits",
+    "action": [
+      false,
+      true,
+      false,
+      true,
+      false,
+      true,
+      false,
+      true,
+      false,
+      true,
+      false,
+      true,
+      false,
+      true,
+      false,
+      true
+    ],
+    "hat": {
+      "name": "critic",
+      "scope": "GameSpecific",
+      "lenses": [
+        {
+          "name": "lens-a",
+          "cells": [
+            "PC",
+            "I"
+          ]
+        },
+        {
+          "name": "lens-b",
+          "cells": [
+            "V0"
+          ]
+        }
+      ],
+      "landmarks": [
+        [
+          "I",
+          {
+            "tag": "Erratic"
+          }
+        ]
+      ],
+      "allowedActions": [
+        [
+          false,
+          false,
+          false,
+          false,
+          false,
+          true,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false
+        ],
+        [
+          true,
+          false,
+          false,
+          false,
+          false,
+          true,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false
+        ]
+      ],
+      "traversals": [],
+      "controls": [
+        "reducer",
+        "architect"
+      ]
+    },
+    "expected": false
+  },
+  {
+    "vectorType": "HatRestrict",
+    "actions": [
+      [
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false
+      ],
+      [
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true
+      ],
+      [
+        true,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false
+      ],
+      [
+        false,
+        false,
+        false,
+        false,
+        false,
+        true,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false
+      ],
+      [
+        true,
+        false,
+        false,
+        false,
+        false,
+        true,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false
+      ],
+      [
+        false,
+        true,
+        false,
+        true,
+        false,
+        true,
+        false,
+        true,
+        false,
+        true,
+        false,
+        true,
+        false,
+        true,
+        false,
+        true
+      ]
+    ],
+    "hat": {
+      "name": "critic",
+      "scope": "GameSpecific",
+      "lenses": [
+        {
+          "name": "lens-a",
+          "cells": [
+            "PC",
+            "I"
+          ]
+        },
+        {
+          "name": "lens-b",
+          "cells": [
+            "V0"
+          ]
+        }
+      ],
+      "landmarks": [
+        [
+          "I",
+          {
+            "tag": "Erratic"
+          }
+        ]
+      ],
+      "allowedActions": [
+        [
+          false,
+          false,
+          false,
+          false,
+          false,
+          true,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false
+        ],
+        [
+          true,
+          false,
+          false,
+          false,
+          false,
+          true,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false
+        ]
+      ],
+      "traversals": [],
+      "controls": [
+        "reducer",
+        "architect"
+      ]
+    },
+    "expected": [
+      [
+        false,
+        false,
+        false,
+        false,
+        false,
+        true,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false
+      ],
+      [
+        true,
+        false,
+        false,
+        false,
+        false,
+        true,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false
+      ]
+    ]
+  },
+  {
+    "vectorType": "HatPersonasOf",
+    "hats": [
+      {
+        "name": "architect",
+        "scope": "Meta",
+        "lenses": [
+          {
+            "name": "lens-a",
+            "cells": [
+              "PC",
+              "I"
+            ]
+          }
+        ],
+        "landmarks": [
+          [
+            "PC",
+            {
+              "tag": "Constant",
+              "value": 7
+            }
+          ]
+        ],
+        "allowedActions": [],
+        "traversals": [],
+        "controls": [
+          "reducer"
+        ]
+      },
+      {
+        "name": "reducer",
+        "scope": "GameSpecific",
+        "lenses": [
+          {
+            "name": "lens-b",
+            "cells": [
+              "V0"
+            ]
+          }
+        ],
+        "landmarks": [
+          [
+            "V0",
+            {
+              "tag": "Monotonic",
+              "value": -1
+            }
+          ]
+        ],
+        "allowedActions": [
+          [
+            true,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false
+          ],
+          [
+            false,
+            false,
+            false,
+            false,
+            false,
+            true,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false
+          ]
+        ],
+        "traversals": [],
+        "controls": []
+      },
+      {
+        "name": "critic",
+        "scope": "GameSpecific",
+        "lenses": [
+          {
+            "name": "lens-a",
+            "cells": [
+              "PC",
+              "I"
+            ]
+          },
+          {
+            "name": "lens-b",
+            "cells": [
+              "V0"
+            ]
+          }
+        ],
+        "landmarks": [
+          [
+            "I",
+            {
+              "tag": "Erratic"
+            }
+          ]
+        ],
+        "allowedActions": [
+          [
+            false,
+            false,
+            false,
+            false,
+            false,
+            true,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false
+          ],
+          [
+            true,
+            false,
+            false,
+            false,
+            false,
+            true,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false
+          ]
+        ],
+        "traversals": [],
+        "controls": [
+          "reducer",
+          "architect"
+        ]
+      }
+    ],
+    "expected": [
+      "architect"
+    ]
+  },
+  {
+    "vectorType": "HatGameSpecificOf",
+    "hats": [
+      {
+        "name": "architect",
+        "scope": "Meta",
+        "lenses": [
+          {
+            "name": "lens-a",
+            "cells": [
+              "PC",
+              "I"
+            ]
+          }
+        ],
+        "landmarks": [
+          [
+            "PC",
+            {
+              "tag": "Constant",
+              "value": 7
+            }
+          ]
+        ],
+        "allowedActions": [],
+        "traversals": [],
+        "controls": [
+          "reducer"
+        ]
+      },
+      {
+        "name": "reducer",
+        "scope": "GameSpecific",
+        "lenses": [
+          {
+            "name": "lens-b",
+            "cells": [
+              "V0"
+            ]
+          }
+        ],
+        "landmarks": [
+          [
+            "V0",
+            {
+              "tag": "Monotonic",
+              "value": -1
+            }
+          ]
+        ],
+        "allowedActions": [
+          [
+            true,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false
+          ],
+          [
+            false,
+            false,
+            false,
+            false,
+            false,
+            true,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false
+          ]
+        ],
+        "traversals": [],
+        "controls": []
+      },
+      {
+        "name": "critic",
+        "scope": "GameSpecific",
+        "lenses": [
+          {
+            "name": "lens-a",
+            "cells": [
+              "PC",
+              "I"
+            ]
+          },
+          {
+            "name": "lens-b",
+            "cells": [
+              "V0"
+            ]
+          }
+        ],
+        "landmarks": [
+          [
+            "I",
+            {
+              "tag": "Erratic"
+            }
+          ]
+        ],
+        "allowedActions": [
+          [
+            false,
+            false,
+            false,
+            false,
+            false,
+            true,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false
+          ],
+          [
+            true,
+            false,
+            false,
+            false,
+            false,
+            true,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false
+          ]
+        ],
+        "traversals": [],
+        "controls": [
+          "reducer",
+          "architect"
+        ]
+      }
+    ],
+    "expected": [
+      "reducer",
+      "critic"
+    ]
+  },
+  {
+    "vectorType": "PersonaOps",
+    "ops": [],
+    "available": [
+      {
+        "name": "architect",
+        "scope": "Meta",
+        "lenses": [
+          {
+            "name": "lens-a",
+            "cells": [
+              "PC",
+              "I"
+            ]
+          }
+        ],
+        "landmarks": [
+          [
+            "PC",
+            {
+              "tag": "Constant",
+              "value": 7
+            }
+          ]
+        ],
+        "allowedActions": [],
+        "traversals": [],
+        "controls": [
+          "reducer"
+        ]
+      },
+      {
+        "name": "reducer",
+        "scope": "GameSpecific",
+        "lenses": [
+          {
+            "name": "lens-b",
+            "cells": [
+              "V0"
+            ]
+          }
+        ],
+        "landmarks": [
+          [
+            "V0",
+            {
+              "tag": "Monotonic",
+              "value": -1
+            }
+          ]
+        ],
+        "allowedActions": [
+          [
+            true,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false
+          ],
+          [
+            false,
+            false,
+            false,
+            false,
+            false,
+            true,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false
+          ]
+        ],
+        "traversals": [],
+        "controls": []
+      },
+      {
+        "name": "critic",
+        "scope": "GameSpecific",
+        "lenses": [
+          {
+            "name": "lens-a",
+            "cells": [
+              "PC",
+              "I"
+            ]
+          },
+          {
+            "name": "lens-b",
+            "cells": [
+              "V0"
+            ]
+          }
+        ],
+        "landmarks": [
+          [
+            "I",
+            {
+              "tag": "Erratic"
+            }
+          ]
+        ],
+        "allowedActions": [
+          [
+            false,
+            false,
+            false,
+            false,
+            false,
+            true,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false
+          ],
+          [
+            true,
+            false,
+            false,
+            false,
+            false,
+            true,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false
+          ]
+        ],
+        "traversals": [],
+        "controls": [
+          "reducer",
+          "architect"
+        ]
+      }
+    ],
+    "wornNames": [],
+    "allowedActions": [],
+    "lenses": [],
+    "landmarks": [],
+    "controls": [],
+    "hatFlags": 0
+  },
+  {
+    "vectorType": "PersonaOps",
+    "ops": [
+      {
+        "tag": "Wear",
+        "hatName": "architect"
+      }
+    ],
+    "available": [
+      {
+        "name": "architect",
+        "scope": "Meta",
+        "lenses": [
+          {
+            "name": "lens-a",
+            "cells": [
+              "PC",
+              "I"
+            ]
+          }
+        ],
+        "landmarks": [
+          [
+            "PC",
+            {
+              "tag": "Constant",
+              "value": 7
+            }
+          ]
+        ],
+        "allowedActions": [],
+        "traversals": [],
+        "controls": [
+          "reducer"
+        ]
+      },
+      {
+        "name": "reducer",
+        "scope": "GameSpecific",
+        "lenses": [
+          {
+            "name": "lens-b",
+            "cells": [
+              "V0"
+            ]
+          }
+        ],
+        "landmarks": [
+          [
+            "V0",
+            {
+              "tag": "Monotonic",
+              "value": -1
+            }
+          ]
+        ],
+        "allowedActions": [
+          [
+            true,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false
+          ],
+          [
+            false,
+            false,
+            false,
+            false,
+            false,
+            true,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false
+          ]
+        ],
+        "traversals": [],
+        "controls": []
+      },
+      {
+        "name": "critic",
+        "scope": "GameSpecific",
+        "lenses": [
+          {
+            "name": "lens-a",
+            "cells": [
+              "PC",
+              "I"
+            ]
+          },
+          {
+            "name": "lens-b",
+            "cells": [
+              "V0"
+            ]
+          }
+        ],
+        "landmarks": [
+          [
+            "I",
+            {
+              "tag": "Erratic"
+            }
+          ]
+        ],
+        "allowedActions": [
+          [
+            false,
+            false,
+            false,
+            false,
+            false,
+            true,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false
+          ],
+          [
+            true,
+            false,
+            false,
+            false,
+            false,
+            true,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false
+          ]
+        ],
+        "traversals": [],
+        "controls": [
+          "reducer",
+          "architect"
+        ]
+      }
+    ],
+    "wornNames": [
+      "architect"
+    ],
+    "allowedActions": [],
+    "lenses": [
+      {
+        "name": "lens-a",
+        "cells": [
+          "PC",
+          "I"
+        ]
+      }
+    ],
+    "landmarks": [
+      [
+        "PC",
+        {
+          "tag": "Constant",
+          "value": 7
+        }
+      ]
+    ],
+    "controls": [
+      "reducer"
+    ],
+    "hatFlags": 1
+  },
+  {
+    "vectorType": "PersonaOps",
+    "ops": [
+      {
+        "tag": "Wear",
+        "hatName": "architect"
+      },
+      {
+        "tag": "Wear",
+        "hatName": "architect"
+      }
+    ],
+    "available": [
+      {
+        "name": "architect",
+        "scope": "Meta",
+        "lenses": [
+          {
+            "name": "lens-a",
+            "cells": [
+              "PC",
+              "I"
+            ]
+          }
+        ],
+        "landmarks": [
+          [
+            "PC",
+            {
+              "tag": "Constant",
+              "value": 7
+            }
+          ]
+        ],
+        "allowedActions": [],
+        "traversals": [],
+        "controls": [
+          "reducer"
+        ]
+      },
+      {
+        "name": "reducer",
+        "scope": "GameSpecific",
+        "lenses": [
+          {
+            "name": "lens-b",
+            "cells": [
+              "V0"
+            ]
+          }
+        ],
+        "landmarks": [
+          [
+            "V0",
+            {
+              "tag": "Monotonic",
+              "value": -1
+            }
+          ]
+        ],
+        "allowedActions": [
+          [
+            true,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false
+          ],
+          [
+            false,
+            false,
+            false,
+            false,
+            false,
+            true,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false
+          ]
+        ],
+        "traversals": [],
+        "controls": []
+      },
+      {
+        "name": "critic",
+        "scope": "GameSpecific",
+        "lenses": [
+          {
+            "name": "lens-a",
+            "cells": [
+              "PC",
+              "I"
+            ]
+          },
+          {
+            "name": "lens-b",
+            "cells": [
+              "V0"
+            ]
+          }
+        ],
+        "landmarks": [
+          [
+            "I",
+            {
+              "tag": "Erratic"
+            }
+          ]
+        ],
+        "allowedActions": [
+          [
+            false,
+            false,
+            false,
+            false,
+            false,
+            true,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false
+          ],
+          [
+            true,
+            false,
+            false,
+            false,
+            false,
+            true,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false
+          ]
+        ],
+        "traversals": [],
+        "controls": [
+          "reducer",
+          "architect"
+        ]
+      }
+    ],
+    "wornNames": [
+      "architect"
+    ],
+    "allowedActions": [],
+    "lenses": [
+      {
+        "name": "lens-a",
+        "cells": [
+          "PC",
+          "I"
+        ]
+      }
+    ],
+    "landmarks": [
+      [
+        "PC",
+        {
+          "tag": "Constant",
+          "value": 7
+        }
+      ]
+    ],
+    "controls": [
+      "reducer"
+    ],
+    "hatFlags": 1
+  },
+  {
+    "vectorType": "PersonaOps",
+    "ops": [
+      {
+        "tag": "Wear",
+        "hatName": "reducer"
+      },
+      {
+        "tag": "Wear",
+        "hatName": "architect"
+      }
+    ],
+    "available": [
+      {
+        "name": "architect",
+        "scope": "Meta",
+        "lenses": [
+          {
+            "name": "lens-a",
+            "cells": [
+              "PC",
+              "I"
+            ]
+          }
+        ],
+        "landmarks": [
+          [
+            "PC",
+            {
+              "tag": "Constant",
+              "value": 7
+            }
+          ]
+        ],
+        "allowedActions": [],
+        "traversals": [],
+        "controls": [
+          "reducer"
+        ]
+      },
+      {
+        "name": "reducer",
+        "scope": "GameSpecific",
+        "lenses": [
+          {
+            "name": "lens-b",
+            "cells": [
+              "V0"
+            ]
+          }
+        ],
+        "landmarks": [
+          [
+            "V0",
+            {
+              "tag": "Monotonic",
+              "value": -1
+            }
+          ]
+        ],
+        "allowedActions": [
+          [
+            true,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false
+          ],
+          [
+            false,
+            false,
+            false,
+            false,
+            false,
+            true,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false
+          ]
+        ],
+        "traversals": [],
+        "controls": []
+      },
+      {
+        "name": "critic",
+        "scope": "GameSpecific",
+        "lenses": [
+          {
+            "name": "lens-a",
+            "cells": [
+              "PC",
+              "I"
+            ]
+          },
+          {
+            "name": "lens-b",
+            "cells": [
+              "V0"
+            ]
+          }
+        ],
+        "landmarks": [
+          [
+            "I",
+            {
+              "tag": "Erratic"
+            }
+          ]
+        ],
+        "allowedActions": [
+          [
+            false,
+            false,
+            false,
+            false,
+            false,
+            true,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false
+          ],
+          [
+            true,
+            false,
+            false,
+            false,
+            false,
+            true,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false
+          ]
+        ],
+        "traversals": [],
+        "controls": [
+          "reducer",
+          "architect"
+        ]
+      }
+    ],
+    "wornNames": [
+      "reducer",
+      "architect"
+    ],
+    "allowedActions": [],
+    "lenses": [
+      {
+        "name": "lens-b",
+        "cells": [
+          "V0"
+        ]
+      },
+      {
+        "name": "lens-a",
+        "cells": [
+          "PC",
+          "I"
+        ]
+      }
+    ],
+    "landmarks": [
+      [
+        "V0",
+        {
+          "tag": "Monotonic",
+          "value": -1
+        }
+      ],
+      [
+        "PC",
+        {
+          "tag": "Constant",
+          "value": 7
+        }
+      ]
+    ],
+    "controls": [
+      "reducer"
+    ],
+    "hatFlags": 3
+  },
+  {
+    "vectorType": "PersonaOps",
+    "ops": [
+      {
+        "tag": "Wear",
+        "hatName": "architect"
+      },
+      {
+        "tag": "Doff",
+        "hatName": "architect"
+      }
+    ],
+    "available": [
+      {
+        "name": "architect",
+        "scope": "Meta",
+        "lenses": [
+          {
+            "name": "lens-a",
+            "cells": [
+              "PC",
+              "I"
+            ]
+          }
+        ],
+        "landmarks": [
+          [
+            "PC",
+            {
+              "tag": "Constant",
+              "value": 7
+            }
+          ]
+        ],
+        "allowedActions": [],
+        "traversals": [],
+        "controls": [
+          "reducer"
+        ]
+      },
+      {
+        "name": "reducer",
+        "scope": "GameSpecific",
+        "lenses": [
+          {
+            "name": "lens-b",
+            "cells": [
+              "V0"
+            ]
+          }
+        ],
+        "landmarks": [
+          [
+            "V0",
+            {
+              "tag": "Monotonic",
+              "value": -1
+            }
+          ]
+        ],
+        "allowedActions": [
+          [
+            true,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false
+          ],
+          [
+            false,
+            false,
+            false,
+            false,
+            false,
+            true,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false
+          ]
+        ],
+        "traversals": [],
+        "controls": []
+      },
+      {
+        "name": "critic",
+        "scope": "GameSpecific",
+        "lenses": [
+          {
+            "name": "lens-a",
+            "cells": [
+              "PC",
+              "I"
+            ]
+          },
+          {
+            "name": "lens-b",
+            "cells": [
+              "V0"
+            ]
+          }
+        ],
+        "landmarks": [
+          [
+            "I",
+            {
+              "tag": "Erratic"
+            }
+          ]
+        ],
+        "allowedActions": [
+          [
+            false,
+            false,
+            false,
+            false,
+            false,
+            true,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false
+          ],
+          [
+            true,
+            false,
+            false,
+            false,
+            false,
+            true,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false
+          ]
+        ],
+        "traversals": [],
+        "controls": [
+          "reducer",
+          "architect"
+        ]
+      }
+    ],
+    "wornNames": [],
+    "allowedActions": [],
+    "lenses": [],
+    "landmarks": [],
+    "controls": [],
+    "hatFlags": 0
+  },
+  {
+    "vectorType": "PersonaOps",
+    "ops": [
+      {
+        "tag": "Doff",
+        "hatName": "never-worn"
+      }
+    ],
+    "available": [
+      {
+        "name": "architect",
+        "scope": "Meta",
+        "lenses": [
+          {
+            "name": "lens-a",
+            "cells": [
+              "PC",
+              "I"
+            ]
+          }
+        ],
+        "landmarks": [
+          [
+            "PC",
+            {
+              "tag": "Constant",
+              "value": 7
+            }
+          ]
+        ],
+        "allowedActions": [],
+        "traversals": [],
+        "controls": [
+          "reducer"
+        ]
+      },
+      {
+        "name": "reducer",
+        "scope": "GameSpecific",
+        "lenses": [
+          {
+            "name": "lens-b",
+            "cells": [
+              "V0"
+            ]
+          }
+        ],
+        "landmarks": [
+          [
+            "V0",
+            {
+              "tag": "Monotonic",
+              "value": -1
+            }
+          ]
+        ],
+        "allowedActions": [
+          [
+            true,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false
+          ],
+          [
+            false,
+            false,
+            false,
+            false,
+            false,
+            true,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false
+          ]
+        ],
+        "traversals": [],
+        "controls": []
+      },
+      {
+        "name": "critic",
+        "scope": "GameSpecific",
+        "lenses": [
+          {
+            "name": "lens-a",
+            "cells": [
+              "PC",
+              "I"
+            ]
+          },
+          {
+            "name": "lens-b",
+            "cells": [
+              "V0"
+            ]
+          }
+        ],
+        "landmarks": [
+          [
+            "I",
+            {
+              "tag": "Erratic"
+            }
+          ]
+        ],
+        "allowedActions": [
+          [
+            false,
+            false,
+            false,
+            false,
+            false,
+            true,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false
+          ],
+          [
+            true,
+            false,
+            false,
+            false,
+            false,
+            true,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false
+          ]
+        ],
+        "traversals": [],
+        "controls": [
+          "reducer",
+          "architect"
+        ]
+      }
+    ],
+    "wornNames": [],
+    "allowedActions": [],
+    "lenses": [],
+    "landmarks": [],
+    "controls": [],
+    "hatFlags": 0
+  },
+  {
+    "vectorType": "PersonaOps",
+    "ops": [
+      {
+        "tag": "WearAll"
+      }
+    ],
+    "available": [
+      {
+        "name": "architect",
+        "scope": "Meta",
+        "lenses": [
+          {
+            "name": "lens-a",
+            "cells": [
+              "PC",
+              "I"
+            ]
+          }
+        ],
+        "landmarks": [
+          [
+            "PC",
+            {
+              "tag": "Constant",
+              "value": 7
+            }
+          ]
+        ],
+        "allowedActions": [],
+        "traversals": [],
+        "controls": [
+          "reducer"
+        ]
+      },
+      {
+        "name": "reducer",
+        "scope": "GameSpecific",
+        "lenses": [
+          {
+            "name": "lens-b",
+            "cells": [
+              "V0"
+            ]
+          }
+        ],
+        "landmarks": [
+          [
+            "V0",
+            {
+              "tag": "Monotonic",
+              "value": -1
+            }
+          ]
+        ],
+        "allowedActions": [
+          [
+            true,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false
+          ],
+          [
+            false,
+            false,
+            false,
+            false,
+            false,
+            true,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false
+          ]
+        ],
+        "traversals": [],
+        "controls": []
+      },
+      {
+        "name": "critic",
+        "scope": "GameSpecific",
+        "lenses": [
+          {
+            "name": "lens-a",
+            "cells": [
+              "PC",
+              "I"
+            ]
+          },
+          {
+            "name": "lens-b",
+            "cells": [
+              "V0"
+            ]
+          }
+        ],
+        "landmarks": [
+          [
+            "I",
+            {
+              "tag": "Erratic"
+            }
+          ]
+        ],
+        "allowedActions": [
+          [
+            false,
+            false,
+            false,
+            false,
+            false,
+            true,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false
+          ],
+          [
+            true,
+            false,
+            false,
+            false,
+            false,
+            true,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false
+          ]
+        ],
+        "traversals": [],
+        "controls": [
+          "reducer",
+          "architect"
+        ]
+      }
+    ],
+    "wornNames": [
+      "architect",
+      "reducer",
+      "critic"
+    ],
+    "allowedActions": [],
+    "lenses": [
+      {
+        "name": "lens-a",
+        "cells": [
+          "PC",
+          "I"
+        ]
+      },
+      {
+        "name": "lens-b",
+        "cells": [
+          "V0"
+        ]
+      }
+    ],
+    "landmarks": [
+      [
+        "PC",
+        {
+          "tag": "Constant",
+          "value": 7
+        }
+      ],
+      [
+        "V0",
+        {
+          "tag": "Monotonic",
+          "value": -1
+        }
+      ],
+      [
+        "I",
+        {
+          "tag": "Erratic"
+        }
+      ]
+    ],
+    "controls": [
+      "reducer",
+      "architect"
+    ],
+    "hatFlags": 7
+  },
+  {
+    "vectorType": "PersonaOps",
+    "ops": [
+      {
+        "tag": "WearAll"
+      },
+      {
+        "tag": "Decide",
+        "chosen": [
+          "critic",
+          "architect"
+        ]
+      }
+    ],
+    "available": [
+      {
+        "name": "architect",
+        "scope": "Meta",
+        "lenses": [
+          {
+            "name": "lens-a",
+            "cells": [
+              "PC",
+              "I"
+            ]
+          }
+        ],
+        "landmarks": [
+          [
+            "PC",
+            {
+              "tag": "Constant",
+              "value": 7
+            }
+          ]
+        ],
+        "allowedActions": [],
+        "traversals": [],
+        "controls": [
+          "reducer"
+        ]
+      },
+      {
+        "name": "reducer",
+        "scope": "GameSpecific",
+        "lenses": [
+          {
+            "name": "lens-b",
+            "cells": [
+              "V0"
+            ]
+          }
+        ],
+        "landmarks": [
+          [
+            "V0",
+            {
+              "tag": "Monotonic",
+              "value": -1
+            }
+          ]
+        ],
+        "allowedActions": [
+          [
+            true,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false
+          ],
+          [
+            false,
+            false,
+            false,
+            false,
+            false,
+            true,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false
+          ]
+        ],
+        "traversals": [],
+        "controls": []
+      },
+      {
+        "name": "critic",
+        "scope": "GameSpecific",
+        "lenses": [
+          {
+            "name": "lens-a",
+            "cells": [
+              "PC",
+              "I"
+            ]
+          },
+          {
+            "name": "lens-b",
+            "cells": [
+              "V0"
+            ]
+          }
+        ],
+        "landmarks": [
+          [
+            "I",
+            {
+              "tag": "Erratic"
+            }
+          ]
+        ],
+        "allowedActions": [
+          [
+            false,
+            false,
+            false,
+            false,
+            false,
+            true,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false
+          ],
+          [
+            true,
+            false,
+            false,
+            false,
+            false,
+            true,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false
+          ]
+        ],
+        "traversals": [],
+        "controls": [
+          "reducer",
+          "architect"
+        ]
+      }
+    ],
+    "wornNames": [
+      "architect",
+      "critic"
+    ],
+    "allowedActions": [],
+    "lenses": [
+      {
+        "name": "lens-a",
+        "cells": [
+          "PC",
+          "I"
+        ]
+      },
+      {
+        "name": "lens-b",
+        "cells": [
+          "V0"
+        ]
+      }
+    ],
+    "landmarks": [
+      [
+        "PC",
+        {
+          "tag": "Constant",
+          "value": 7
+        }
+      ],
+      [
+        "I",
+        {
+          "tag": "Erratic"
+        }
+      ]
+    ],
+    "controls": [
+      "reducer",
+      "architect"
+    ],
+    "hatFlags": 5
+  },
+  {
+    "vectorType": "PersonaOps",
+    "ops": [
+      {
+        "tag": "Wear",
+        "hatName": "critic"
+      },
+      {
+        "tag": "Decide",
+        "chosen": []
+      }
+    ],
+    "available": [
+      {
+        "name": "architect",
+        "scope": "Meta",
+        "lenses": [
+          {
+            "name": "lens-a",
+            "cells": [
+              "PC",
+              "I"
+            ]
+          }
+        ],
+        "landmarks": [
+          [
+            "PC",
+            {
+              "tag": "Constant",
+              "value": 7
+            }
+          ]
+        ],
+        "allowedActions": [],
+        "traversals": [],
+        "controls": [
+          "reducer"
+        ]
+      },
+      {
+        "name": "reducer",
+        "scope": "GameSpecific",
+        "lenses": [
+          {
+            "name": "lens-b",
+            "cells": [
+              "V0"
+            ]
+          }
+        ],
+        "landmarks": [
+          [
+            "V0",
+            {
+              "tag": "Monotonic",
+              "value": -1
+            }
+          ]
+        ],
+        "allowedActions": [
+          [
+            true,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false
+          ],
+          [
+            false,
+            false,
+            false,
+            false,
+            false,
+            true,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false
+          ]
+        ],
+        "traversals": [],
+        "controls": []
+      },
+      {
+        "name": "critic",
+        "scope": "GameSpecific",
+        "lenses": [
+          {
+            "name": "lens-a",
+            "cells": [
+              "PC",
+              "I"
+            ]
+          },
+          {
+            "name": "lens-b",
+            "cells": [
+              "V0"
+            ]
+          }
+        ],
+        "landmarks": [
+          [
+            "I",
+            {
+              "tag": "Erratic"
+            }
+          ]
+        ],
+        "allowedActions": [
+          [
+            false,
+            false,
+            false,
+            false,
+            false,
+            true,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false
+          ],
+          [
+            true,
+            false,
+            false,
+            false,
+            false,
+            true,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false
+          ]
+        ],
+        "traversals": [],
+        "controls": [
+          "reducer",
+          "architect"
+        ]
+      }
+    ],
+    "wornNames": [],
+    "allowedActions": [],
+    "lenses": [],
+    "landmarks": [],
+    "controls": [],
+    "hatFlags": 0
+  },
+  {
+    "vectorType": "PersonaOps",
+    "ops": [
+      {
+        "tag": "WearAll"
+      },
+      {
+        "tag": "Doff",
+        "hatName": "architect"
+      }
+    ],
+    "available": [
+      {
+        "name": "architect",
+        "scope": "Meta",
+        "lenses": [
+          {
+            "name": "lens-a",
+            "cells": [
+              "PC",
+              "I"
+            ]
+          }
+        ],
+        "landmarks": [
+          [
+            "PC",
+            {
+              "tag": "Constant",
+              "value": 7
+            }
+          ]
+        ],
+        "allowedActions": [],
+        "traversals": [],
+        "controls": [
+          "reducer"
+        ]
+      },
+      {
+        "name": "reducer",
+        "scope": "GameSpecific",
+        "lenses": [
+          {
+            "name": "lens-b",
+            "cells": [
+              "V0"
+            ]
+          }
+        ],
+        "landmarks": [
+          [
+            "V0",
+            {
+              "tag": "Monotonic",
+              "value": -1
+            }
+          ]
+        ],
+        "allowedActions": [
+          [
+            true,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false
+          ],
+          [
+            false,
+            false,
+            false,
+            false,
+            false,
+            true,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false
+          ]
+        ],
+        "traversals": [],
+        "controls": []
+      },
+      {
+        "name": "critic",
+        "scope": "GameSpecific",
+        "lenses": [
+          {
+            "name": "lens-a",
+            "cells": [
+              "PC",
+              "I"
+            ]
+          },
+          {
+            "name": "lens-b",
+            "cells": [
+              "V0"
+            ]
+          }
+        ],
+        "landmarks": [
+          [
+            "I",
+            {
+              "tag": "Erratic"
+            }
+          ]
+        ],
+        "allowedActions": [
+          [
+            false,
+            false,
+            false,
+            false,
+            false,
+            true,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false
+          ],
+          [
+            true,
+            false,
+            false,
+            false,
+            false,
+            true,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false
+          ]
+        ],
+        "traversals": [],
+        "controls": [
+          "reducer",
+          "architect"
+        ]
+      }
+    ],
+    "wornNames": [
+      "reducer",
+      "critic"
+    ],
+    "allowedActions": [
+      [
+        true,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false
+      ],
+      [
+        false,
+        false,
+        false,
+        false,
+        false,
+        true,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false
+      ],
+      [
+        true,
+        false,
+        false,
+        false,
+        false,
+        true,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false
+      ]
+    ],
+    "lenses": [
+      {
+        "name": "lens-b",
+        "cells": [
+          "V0"
+        ]
+      },
+      {
+        "name": "lens-a",
+        "cells": [
+          "PC",
+          "I"
+        ]
+      }
+    ],
+    "landmarks": [
+      [
+        "V0",
+        {
+          "tag": "Monotonic",
+          "value": -1
+        }
+      ],
+      [
+        "I",
+        {
+          "tag": "Erratic"
+        }
+      ]
+    ],
+    "controls": [
+      "reducer",
+      "architect"
+    ],
+    "hatFlags": 6
+  },
+  {
+    "vectorType": "PersonaAddress",
+    "name": "otto",
+    "scope": {
+      "kind": "Global"
+    },
+    "expected": "^persona/otto"
+  },
+  {
+    "vectorType": "PersonaAddress",
+    "name": "otto",
+    "scope": {
+      "kind": "GameScoped",
+      "key": "g1"
+    },
+    "expected": "game/g1/persona/otto"
+  },
+  {
+    "vectorType": "PersonaRoute",
+    "relevance": {
+      "architect": 0.9,
+      "reducer": 0.5,
+      "critic": 0.5
+    },
+    "k": -1,
+    "available": [
+      {
+        "name": "architect",
+        "scope": "Meta",
+        "lenses": [
+          {
+            "name": "lens-a",
+            "cells": [
+              "PC",
+              "I"
+            ]
+          }
+        ],
+        "landmarks": [
+          [
+            "PC",
+            {
+              "tag": "Constant",
+              "value": 7
+            }
+          ]
+        ],
+        "allowedActions": [],
+        "traversals": [],
+        "controls": [
+          "reducer"
+        ]
+      },
+      {
+        "name": "reducer",
+        "scope": "GameSpecific",
+        "lenses": [
+          {
+            "name": "lens-b",
+            "cells": [
+              "V0"
+            ]
+          }
+        ],
+        "landmarks": [
+          [
+            "V0",
+            {
+              "tag": "Monotonic",
+              "value": -1
+            }
+          ]
+        ],
+        "allowedActions": [
+          [
+            true,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false
+          ],
+          [
+            false,
+            false,
+            false,
+            false,
+            false,
+            true,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false
+          ]
+        ],
+        "traversals": [],
+        "controls": []
+      },
+      {
+        "name": "critic",
+        "scope": "GameSpecific",
+        "lenses": [
+          {
+            "name": "lens-a",
+            "cells": [
+              "PC",
+              "I"
+            ]
+          },
+          {
+            "name": "lens-b",
+            "cells": [
+              "V0"
+            ]
+          }
+        ],
+        "landmarks": [
+          [
+            "I",
+            {
+              "tag": "Erratic"
+            }
+          ]
+        ],
+        "allowedActions": [
+          [
+            false,
+            false,
+            false,
+            false,
+            false,
+            true,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false
+          ],
+          [
+            true,
+            false,
+            false,
+            false,
+            false,
+            true,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false
+          ]
+        ],
+        "traversals": [],
+        "controls": [
+          "reducer",
+          "architect"
+        ]
+      }
+    ],
+    "wornNames": []
+  },
+  {
+    "vectorType": "PersonaRoute",
+    "relevance": {
+      "architect": 0.9,
+      "reducer": 0.5,
+      "critic": 0.5
+    },
+    "k": 0,
+    "available": [
+      {
+        "name": "architect",
+        "scope": "Meta",
+        "lenses": [
+          {
+            "name": "lens-a",
+            "cells": [
+              "PC",
+              "I"
+            ]
+          }
+        ],
+        "landmarks": [
+          [
+            "PC",
+            {
+              "tag": "Constant",
+              "value": 7
+            }
+          ]
+        ],
+        "allowedActions": [],
+        "traversals": [],
+        "controls": [
+          "reducer"
+        ]
+      },
+      {
+        "name": "reducer",
+        "scope": "GameSpecific",
+        "lenses": [
+          {
+            "name": "lens-b",
+            "cells": [
+              "V0"
+            ]
+          }
+        ],
+        "landmarks": [
+          [
+            "V0",
+            {
+              "tag": "Monotonic",
+              "value": -1
+            }
+          ]
+        ],
+        "allowedActions": [
+          [
+            true,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false
+          ],
+          [
+            false,
+            false,
+            false,
+            false,
+            false,
+            true,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false
+          ]
+        ],
+        "traversals": [],
+        "controls": []
+      },
+      {
+        "name": "critic",
+        "scope": "GameSpecific",
+        "lenses": [
+          {
+            "name": "lens-a",
+            "cells": [
+              "PC",
+              "I"
+            ]
+          },
+          {
+            "name": "lens-b",
+            "cells": [
+              "V0"
+            ]
+          }
+        ],
+        "landmarks": [
+          [
+            "I",
+            {
+              "tag": "Erratic"
+            }
+          ]
+        ],
+        "allowedActions": [
+          [
+            false,
+            false,
+            false,
+            false,
+            false,
+            true,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false
+          ],
+          [
+            true,
+            false,
+            false,
+            false,
+            false,
+            true,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false
+          ]
+        ],
+        "traversals": [],
+        "controls": [
+          "reducer",
+          "architect"
+        ]
+      }
+    ],
+    "wornNames": []
+  },
+  {
+    "vectorType": "PersonaRoute",
+    "relevance": {
+      "architect": 0.9,
+      "reducer": 0.5,
+      "critic": 0.5
+    },
+    "k": 1,
+    "available": [
+      {
+        "name": "architect",
+        "scope": "Meta",
+        "lenses": [
+          {
+            "name": "lens-a",
+            "cells": [
+              "PC",
+              "I"
+            ]
+          }
+        ],
+        "landmarks": [
+          [
+            "PC",
+            {
+              "tag": "Constant",
+              "value": 7
+            }
+          ]
+        ],
+        "allowedActions": [],
+        "traversals": [],
+        "controls": [
+          "reducer"
+        ]
+      },
+      {
+        "name": "reducer",
+        "scope": "GameSpecific",
+        "lenses": [
+          {
+            "name": "lens-b",
+            "cells": [
+              "V0"
+            ]
+          }
+        ],
+        "landmarks": [
+          [
+            "V0",
+            {
+              "tag": "Monotonic",
+              "value": -1
+            }
+          ]
+        ],
+        "allowedActions": [
+          [
+            true,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false
+          ],
+          [
+            false,
+            false,
+            false,
+            false,
+            false,
+            true,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false
+          ]
+        ],
+        "traversals": [],
+        "controls": []
+      },
+      {
+        "name": "critic",
+        "scope": "GameSpecific",
+        "lenses": [
+          {
+            "name": "lens-a",
+            "cells": [
+              "PC",
+              "I"
+            ]
+          },
+          {
+            "name": "lens-b",
+            "cells": [
+              "V0"
+            ]
+          }
+        ],
+        "landmarks": [
+          [
+            "I",
+            {
+              "tag": "Erratic"
+            }
+          ]
+        ],
+        "allowedActions": [
+          [
+            false,
+            false,
+            false,
+            false,
+            false,
+            true,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false
+          ],
+          [
+            true,
+            false,
+            false,
+            false,
+            false,
+            true,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false
+          ]
+        ],
+        "traversals": [],
+        "controls": [
+          "reducer",
+          "architect"
+        ]
+      }
+    ],
+    "wornNames": [
+      "architect"
+    ]
+  },
+  {
+    "vectorType": "PersonaRoute",
+    "relevance": {
+      "architect": 0.9,
+      "reducer": 0.5,
+      "critic": 0.5
+    },
+    "k": 2,
+    "available": [
+      {
+        "name": "architect",
+        "scope": "Meta",
+        "lenses": [
+          {
+            "name": "lens-a",
+            "cells": [
+              "PC",
+              "I"
+            ]
+          }
+        ],
+        "landmarks": [
+          [
+            "PC",
+            {
+              "tag": "Constant",
+              "value": 7
+            }
+          ]
+        ],
+        "allowedActions": [],
+        "traversals": [],
+        "controls": [
+          "reducer"
+        ]
+      },
+      {
+        "name": "reducer",
+        "scope": "GameSpecific",
+        "lenses": [
+          {
+            "name": "lens-b",
+            "cells": [
+              "V0"
+            ]
+          }
+        ],
+        "landmarks": [
+          [
+            "V0",
+            {
+              "tag": "Monotonic",
+              "value": -1
+            }
+          ]
+        ],
+        "allowedActions": [
+          [
+            true,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false
+          ],
+          [
+            false,
+            false,
+            false,
+            false,
+            false,
+            true,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false
+          ]
+        ],
+        "traversals": [],
+        "controls": []
+      },
+      {
+        "name": "critic",
+        "scope": "GameSpecific",
+        "lenses": [
+          {
+            "name": "lens-a",
+            "cells": [
+              "PC",
+              "I"
+            ]
+          },
+          {
+            "name": "lens-b",
+            "cells": [
+              "V0"
+            ]
+          }
+        ],
+        "landmarks": [
+          [
+            "I",
+            {
+              "tag": "Erratic"
+            }
+          ]
+        ],
+        "allowedActions": [
+          [
+            false,
+            false,
+            false,
+            false,
+            false,
+            true,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false
+          ],
+          [
+            true,
+            false,
+            false,
+            false,
+            false,
+            true,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false
+          ]
+        ],
+        "traversals": [],
+        "controls": [
+          "reducer",
+          "architect"
+        ]
+      }
+    ],
+    "wornNames": [
+      "architect",
+      "reducer"
+    ]
+  },
+  {
+    "vectorType": "PersonaRoute",
+    "relevance": {
+      "architect": 0.9,
+      "reducer": 0.5,
+      "critic": 0.5
+    },
+    "k": 3,
+    "available": [
+      {
+        "name": "architect",
+        "scope": "Meta",
+        "lenses": [
+          {
+            "name": "lens-a",
+            "cells": [
+              "PC",
+              "I"
+            ]
+          }
+        ],
+        "landmarks": [
+          [
+            "PC",
+            {
+              "tag": "Constant",
+              "value": 7
+            }
+          ]
+        ],
+        "allowedActions": [],
+        "traversals": [],
+        "controls": [
+          "reducer"
+        ]
+      },
+      {
+        "name": "reducer",
+        "scope": "GameSpecific",
+        "lenses": [
+          {
+            "name": "lens-b",
+            "cells": [
+              "V0"
+            ]
+          }
+        ],
+        "landmarks": [
+          [
+            "V0",
+            {
+              "tag": "Monotonic",
+              "value": -1
+            }
+          ]
+        ],
+        "allowedActions": [
+          [
+            true,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false
+          ],
+          [
+            false,
+            false,
+            false,
+            false,
+            false,
+            true,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false
+          ]
+        ],
+        "traversals": [],
+        "controls": []
+      },
+      {
+        "name": "critic",
+        "scope": "GameSpecific",
+        "lenses": [
+          {
+            "name": "lens-a",
+            "cells": [
+              "PC",
+              "I"
+            ]
+          },
+          {
+            "name": "lens-b",
+            "cells": [
+              "V0"
+            ]
+          }
+        ],
+        "landmarks": [
+          [
+            "I",
+            {
+              "tag": "Erratic"
+            }
+          ]
+        ],
+        "allowedActions": [
+          [
+            false,
+            false,
+            false,
+            false,
+            false,
+            true,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false
+          ],
+          [
+            true,
+            false,
+            false,
+            false,
+            false,
+            true,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false
+          ]
+        ],
+        "traversals": [],
+        "controls": [
+          "reducer",
+          "architect"
+        ]
+      }
+    ],
+    "wornNames": [
+      "architect",
+      "reducer",
+      "critic"
+    ]
+  },
+  {
+    "vectorType": "PersonaRoute",
+    "relevance": {
+      "architect": 0.9,
+      "reducer": 0.5,
+      "critic": 0.5
+    },
+    "k": 5,
+    "available": [
+      {
+        "name": "architect",
+        "scope": "Meta",
+        "lenses": [
+          {
+            "name": "lens-a",
+            "cells": [
+              "PC",
+              "I"
+            ]
+          }
+        ],
+        "landmarks": [
+          [
+            "PC",
+            {
+              "tag": "Constant",
+              "value": 7
+            }
+          ]
+        ],
+        "allowedActions": [],
+        "traversals": [],
+        "controls": [
+          "reducer"
+        ]
+      },
+      {
+        "name": "reducer",
+        "scope": "GameSpecific",
+        "lenses": [
+          {
+            "name": "lens-b",
+            "cells": [
+              "V0"
+            ]
+          }
+        ],
+        "landmarks": [
+          [
+            "V0",
+            {
+              "tag": "Monotonic",
+              "value": -1
+            }
+          ]
+        ],
+        "allowedActions": [
+          [
+            true,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false
+          ],
+          [
+            false,
+            false,
+            false,
+            false,
+            false,
+            true,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false
+          ]
+        ],
+        "traversals": [],
+        "controls": []
+      },
+      {
+        "name": "critic",
+        "scope": "GameSpecific",
+        "lenses": [
+          {
+            "name": "lens-a",
+            "cells": [
+              "PC",
+              "I"
+            ]
+          },
+          {
+            "name": "lens-b",
+            "cells": [
+              "V0"
+            ]
+          }
+        ],
+        "landmarks": [
+          [
+            "I",
+            {
+              "tag": "Erratic"
+            }
+          ]
+        ],
+        "allowedActions": [
+          [
+            false,
+            false,
+            false,
+            false,
+            false,
+            true,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false
+          ],
+          [
+            true,
+            false,
+            false,
+            false,
+            false,
+            true,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false
+          ]
+        ],
+        "traversals": [],
+        "controls": [
+          "reducer",
+          "architect"
+        ]
+      }
+    ],
+    "wornNames": [
+      "architect",
+      "reducer",
+      "critic"
+    ]
+  },
+  {
+    "vectorType": "PersonaRegularization",
+    "privLength": 0,
+    "expected": 0
+  },
+  {
+    "vectorType": "PersonaRegularization",
+    "privLength": 1,
+    "expected": 1
+  },
+  {
+    "vectorType": "PersonaRegularization",
+    "privLength": 32,
+    "expected": 32
+  }
+]

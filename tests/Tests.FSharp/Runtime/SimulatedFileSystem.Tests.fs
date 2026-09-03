@@ -158,6 +158,23 @@ let ``InMemoryFileSystem swarm stress test scenario`` () =
         FileSystem.Reset()
 
 [<Fact>]
+let ``InMemoryFileSystem Flush publishes without firing crash-mid-write`` () =
+    let fs = InMemoryFileSystem()
+    let ifs = fs :> IFileSystem
+    fs.ArmCrashMidWrite("/flushed", 8)
+    let payload = Array.init 100 (fun i -> byte i)
+    let stream = ifs.OpenWrite("/flushed", false)
+    stream.Write(payload, 0, payload.Length)
+    stream.Flush()
+    Assert.True(ifs.Exists "/flushed")
+    Assert.Equal(100, ifs.ReadAllBytes("/flushed").Length)
+    Assert.Equal<byte>(payload, ifs.ReadAllBytes("/flushed"))
+    let ex = Assert.Throws<CrashMidWriteException>(fun () -> stream.Dispose())
+    Assert.Equal(8, ex.CommittedBytes)
+    Assert.Equal(8, ifs.ReadAllBytes("/flushed").Length)
+    Assert.Equal<byte>(Array.sub payload 0 8, ifs.ReadAllBytes("/flushed"))
+
+[<Fact>]
 let ``InMemoryFileSystem crash-mid-write commits a prefix then throws`` () =
     let fs = InMemoryFileSystem()
     let ifs = fs :> IFileSystem
@@ -195,6 +212,87 @@ let ``InMemoryFileSystem crash-mid-write is one-shot and the same arm replays`` 
     Assert.Equal<byte>(fullA, fullB)
 
 [<Fact>]
+let ``InMemoryFileSystem corrupt-last-write flips a suffix and still acks`` () =
+    let fs = InMemoryFileSystem()
+    let ifs = fs :> IFileSystem
+    fs.ArmCorruptLastWrite("/corrupt", 8)
+    let payload = Array.init 100 (fun i -> byte i)
+    let stream = ifs.OpenWrite("/corrupt", false)
+    stream.Write(payload, 0, payload.Length)
+    stream.Dispose()
+    let got = ifs.ReadAllBytes("/corrupt")
+    Assert.Equal(100, got.Length)
+    Assert.Equal(payload.[0], got.[0])
+    Assert.Equal(payload.[91], got.[91])
+    Assert.Equal(payload.[92] ^^^ 0xA5uy, got.[92])
+    Assert.Equal(payload.[99] ^^^ 0xA5uy, got.[99])
+
+[<Fact>]
+let ``InMemoryFileSystem corrupt-last-write is one-shot and the same arm replays`` () =
+    let run () =
+        let fs = InMemoryFileSystem()
+        let ifs = fs :> IFileSystem
+        fs.ArmCorruptLastWrite("/corrupt", 8)
+        let payload = Array.init 100 (fun i -> byte (i + 3))
+        let stream = ifs.OpenWrite("/corrupt", false)
+        stream.Write(payload, 0, payload.Length)
+        stream.Dispose()
+        let flipped = ifs.ReadAllBytes("/corrupt")
+        let stream2 = ifs.OpenWrite("/corrupt-full", false)
+        stream2.Write(payload, 0, payload.Length)
+        stream2.Dispose()
+        flipped, ifs.ReadAllBytes("/corrupt-full")
+
+    let a, fullA = run ()
+    let b, fullB = run ()
+    Assert.Equal<byte>(a, b)
+    Assert.Equal<byte>(fullA, fullB)
+    Assert.Equal(fullA.[99], byte (99 + 3))
+    Assert.Equal(a.[99], byte (99 + 3) ^^^ 0xA5uy)
+
+[<Fact>]
+let ``InMemoryFileSystem reorder holds the first write until the second commits`` () =
+    let fs = InMemoryFileSystem()
+    let ifs = fs :> IFileSystem
+    fs.ArmReorderNextTwo("/pair")
+    let aBytes = [| 1uy; 2uy |]
+    let bBytes = [| 3uy; 4uy |]
+    let streamA = ifs.OpenWrite("/pair/a", false)
+    streamA.Write(aBytes, 0, aBytes.Length)
+    streamA.Dispose()
+    Assert.False(ifs.Exists "/pair/a")
+    Assert.Equal(0, fs.CommitOrder.Length)
+    let streamB = ifs.OpenWrite("/pair/b", false)
+    streamB.Write(bBytes, 0, bBytes.Length)
+    streamB.Dispose()
+    Assert.True(ifs.Exists "/pair/a")
+    Assert.True(ifs.Exists "/pair/b")
+    Assert.Equal<byte>(aBytes, ifs.ReadAllBytes "/pair/a")
+    Assert.Equal<byte>(bBytes, ifs.ReadAllBytes "/pair/b")
+    Assert.Equal<string>([| "/pair/b"; "/pair/a" |], fs.CommitOrder)
+
+[<Fact>]
+let ``InMemoryFileSystem reorder is one-shot and the same arm replays`` () =
+    let run () =
+        let fs = InMemoryFileSystem()
+        let ifs = fs :> IFileSystem
+        fs.ArmReorderNextTwo("/pair")
+        let sa = ifs.OpenWrite("/pair/a", false)
+        sa.Write([| 1uy |], 0, 1)
+        sa.Dispose()
+        let sb = ifs.OpenWrite("/pair/b", false)
+        sb.Write([| 2uy |], 0, 1)
+        sb.Dispose()
+        let sc = ifs.OpenWrite("/pair/c", false)
+        sc.Write([| 3uy |], 0, 1)
+        sc.Dispose()
+        fs.CommitOrder
+
+    let expected = [| "/pair/b"; "/pair/a"; "/pair/c" |]
+    Assert.Equal<string>(expected, run ())
+    Assert.Equal<string>(expected, run ())
+
+[<Fact>]
 let ``FileSystemBlockIo reads back a block written through IFileSystem`` () =
     let mock = InMemoryFileSystem() :> IFileSystem
     let io = FileSystemBlockIo(mock, "/vol/blocks", 4096) :> IBlockIo
@@ -205,3 +303,73 @@ let ``FileSystemBlockIo reads back a block written through IFileSystem`` () =
     let dst = Array.zeroCreate<byte> 4
     Assert.Equal(4, io.Read(0UL, System.Memory<byte>.op_Implicit dst))
     Assert.Equal<byte>(payload, dst)
+
+[<Fact>]
+let ``SimulatedBlockIo reads back a write without IFileSystem`` () =
+    let io = SimulatedBlockIo(4096) :> IBlockIo
+    Assert.Equal(4096, io.BlockSize)
+    let payload = [| 1uy; 2uy; 3uy; 4uy |]
+    Assert.Equal(4, io.Write(0UL, System.ReadOnlyMemory<byte>.op_Implicit payload))
+    io.Flush()
+    let dst = Array.zeroCreate<byte> 4
+    Assert.Equal(4, io.Read(0UL, System.Memory<byte>.op_Implicit dst))
+    Assert.Equal<byte>(payload, dst)
+
+[<Fact>]
+let ``SimulatedBlockIo crash-mid-write commits a prefix then throws`` () =
+    let device = SimulatedBlockIo(4096)
+    let io = device :> IBlockIo
+    device.ArmCrashMidWrite(8)
+    let payload = Array.init 100 (fun i -> byte i)
+    let ex =
+        Assert.Throws<CrashMidWriteException>(fun () ->
+            io.Write(0UL, System.ReadOnlyMemory<byte>.op_Implicit payload)
+            |> ignore)
+
+    Assert.Equal(8, ex.CommittedBytes)
+    Assert.Equal(100, ex.AttemptedBytes)
+    Assert.Equal(1, device.Writes)
+    let dst = Array.zeroCreate<byte> 100
+    Assert.Equal(100, io.Read(0UL, System.Memory<byte>.op_Implicit dst))
+    Assert.Equal<byte>(Array.sub payload 0 8, Array.sub dst 0 8)
+    Assert.Equal(0uy, dst.[8])
+    let whole = Array.init 16 (fun i -> byte (200 + i))
+    Assert.Equal(16, io.Write(1UL, System.ReadOnlyMemory<byte>.op_Implicit whole))
+    let got = Array.zeroCreate<byte> 16
+    Assert.Equal(16, io.Read(1UL, System.Memory<byte>.op_Implicit got))
+    Assert.Equal<byte>(whole, got)
+
+[<Fact>]
+let ``SimulatedBlockIo corrupt-last-write flips a suffix and still acks`` () =
+    let device = SimulatedBlockIo(4096)
+    let io = device :> IBlockIo
+    device.ArmCorruptLastWrite(8)
+    let payload = Array.init 100 (fun i -> byte i)
+    Assert.Equal(100, io.Write(0UL, System.ReadOnlyMemory<byte>.op_Implicit payload))
+    let got = Array.zeroCreate<byte> 100
+    Assert.Equal(100, io.Read(0UL, System.Memory<byte>.op_Implicit got))
+    Assert.Equal(payload.[0], got.[0])
+    Assert.Equal(payload.[91], got.[91])
+    Assert.Equal(payload.[92] ^^^ 0xA5uy, got.[92])
+    Assert.Equal(payload.[99] ^^^ 0xA5uy, got.[99])
+
+[<Fact>]
+let ``SimulatedBlockIo reorder holds the first write until the second commits`` () =
+    let device = SimulatedBlockIo(4096)
+    let io = device :> IBlockIo
+    device.ArmReorderNextTwo()
+    let a = [| 1uy; 2uy |]
+    let b = [| 3uy; 4uy |]
+    Assert.Equal(2, io.Write(0UL, System.ReadOnlyMemory<byte>.op_Implicit a))
+    let unseen = Array.zeroCreate<byte> 2
+    Assert.Equal(2, io.Read(0UL, System.Memory<byte>.op_Implicit unseen))
+    Assert.Equal(0uy, unseen.[0])
+    Assert.Equal(0uy, unseen.[1])
+    Assert.Equal(2, io.Write(1UL, System.ReadOnlyMemory<byte>.op_Implicit b))
+    let gotA = Array.zeroCreate<byte> 2
+    let gotB = Array.zeroCreate<byte> 2
+    Assert.Equal(2, io.Read(0UL, System.Memory<byte>.op_Implicit gotA))
+    Assert.Equal(2, io.Read(1UL, System.Memory<byte>.op_Implicit gotB))
+    Assert.Equal<byte>(a, gotA)
+    Assert.Equal<byte>(b, gotB)
+    Assert.Equal<uint64>([| 1UL; 0UL |], device.CommitOrder)
