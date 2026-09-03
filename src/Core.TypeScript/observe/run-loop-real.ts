@@ -196,7 +196,11 @@ async function main(): Promise<number> {
   // explicit `undefined` — the two are different types here, and the distinction is the right one:
   // "this actor has no provider" is not "this actor's provider is the value undefined".
   const cloudProvider = args.participant.startsWith("cloud:") ? args.participant.slice("cloud:".length) : null;
-  const halt = haltDecisionFromSource(loadFlags(join(args.repoRoot, DEFAULT_FLAGS_PATH)), {
+  // Overridable, matching `ZETA_PROMOTION_WINDOW`. It was hardcoded to the repo path, which made
+  // the e-stop the one control nobody could rehearse without writing a halt flag into a live
+  // checkout — so the guard you most want to test was the one it was least safe to test.
+  const flagsPath = process.env["ZETA_CONTROL_PLANE_FLAGS"] ?? join(args.repoRoot, DEFAULT_FLAGS_PATH);
+  const halt = haltDecisionFromSource(loadFlags(flagsPath), {
     agent: args.by,
     ...(cloudProvider === null ? {} : { provider: cloudProvider }),
   });
