@@ -1,11 +1,12 @@
 ---
 id: 081M1KHJB60087G0R0016G69KV
 type: task
-state: backlog
+state: done
 priority: P1
 slug: sealed-freeze-cas-through-filesystemblockio-polyfill
 title: "Sealed freeze CAS through FileSystemBlockIo polyfill"
 created: 2026-09-03T11:48:00.000Z
+completed: 2026-09-03T12:12:01.516Z
 depends_on: ["081M1KG7P68087G0R001MFQXZP"]
 composes_with: ["081M1KG7P68087G0R001MFQXZP"]
 ---
