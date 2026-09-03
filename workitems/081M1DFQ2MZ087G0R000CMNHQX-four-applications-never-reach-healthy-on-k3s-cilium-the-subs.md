@@ -348,6 +348,72 @@ residuals `mimir` (`081M1FG1RCW`) and `arc-controller`. Do not invent a
 Cilium values tweak. Do not re-lift k3d `--scope included`. Do not
 dispatch another competing Cilium included probe.
 
+## MEASURED 2026-09-03 — k3d included lift 33429761222 is a cascade, not four independent defects
+
+Source: [run 33429761222](https://github.com/Lucent-Financial-Group/Zeta/actions/runs/33429761222)
+(`feat(k8s): lift the k3d lane from smoke to included`, job `99614682092`
+`live k3d ArgoCD health`, 2026-08-31). Revert was #16218. This is a
+**diagnostic dump of that already-run included lift**, not another
+included proof.
+
+**`failure.detail` at included:**
+
+    cert-manager           Unknown   Progressing
+    openziti-controller    Unknown   Degraded
+    spire                  Synced   Progressing
+    trust-manager          Synced   Degraded
+    vault                  Unknown   Progressing
+
+**Runtime (the dump):**
+
+- **cert-manager controller CrashLoopBackOff** (17 restarts):
+  `the Gateway API CRDs do not seem to be present, but ExperimentalGatewayAPISupport is set to true`.
+- **trust-manager** ContainerCreating 40m: `FailedMount` secret
+  `trust-manager-tls` not found (cert-manager never issued it).
+- **openziti** Init:0/1: `FailedMount` ConfigMap
+  `ziti-controller-ctrl-plane-cas` missing; secrets
+  `ziti-controller-ctrl-plane-client-identity-secret`,
+  `ziti-controller-web-identity-secret`,
+  `ziti-controller-ctrl-plane-identity-secret` missing.
+- **spire-agent** CrashLoop: `lookup spire-server.spire on 10.43.0.10:53: dial udp 10.43.0.10:53: i/o timeout`.
+  Server + SPIFFE CSI Running. **Separate** from cert-manager (CoreDNS/UDP
+  to cluster DNS). Do not invent a Cilium `routingMode` tweak from it.
+- **vault-0** 0/1 Running (not Ready). Not fully dumped.
+
+**Lead for trust-manager / ziti (and likely vault certs):** k3d bring-up
+**did not apply Gateway API CRDs**. Metal does (`k3s-server.nix`
+`aa-gateway-api-crds` first). Kindnetd applies remote
+`gateway-api` v1.2.0. Kind `--cni cilium` applies vendored
+`full-ai-cluster/k8s/bootstrap/gateway-api-crds.yaml`. k3d skipped all of
+that. The kindnetd log line even said `"kind/k3d"` while the call was
+**only** on the kindnetd branch.
+
+Three of the four (openziti, trust-manager, and the cert-manager smoke
+anchor that feeds them) are **one cascade**. spire-agent DNS i/o timeout
+is a **second k3s/k3d class**. Do not collapse it into Gateway API.
+
+**Distinguishing table (the useful artifact):**
+
+| Substrate | The four |
+|---|---|
+| kindnetd | Healthy |
+| kind+Cilium | Healthy |
+| k3d (k3s+Cilium) | Degraded / Progressing |
+
+Isolates to **k3s vs k3d**, not Cilium. Next software is k3d bring-up
+applying the **vendored** metal bundle (same file, never the GitHub
+remote — CI already RST'd `helm.cilium.io`). That is matching metal
+first-boot order. It is **not** a Cilium values tweak and **not** a
+k3d included re-lift.
+
+**Split (AceHack + Otto, 2026-09-03):** Otto takes mimir (`081M1FG1RCW`).
+Riven keeps this item. Hardware/USB stays Riven by default. Ownership of
+a loop, not a wall. Otto's mimir note (do not steal): static path is
+coherent; strongest live lead is Kafka ingest
+(`docker.io/apache/kafka-native:4.1.0`), look there before S3.
+Seaweedfs 4.33 was fail-open with zero identities; 4.45 made auth real;
+consumers already carry matching credentials, so that is not the break.
+
 ## The distinguishing test
 
 For each of the four, the question is the same and it is answerable:

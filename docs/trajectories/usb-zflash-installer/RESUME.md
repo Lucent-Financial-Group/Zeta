@@ -1,7 +1,7 @@
 # Trajectory - USB / zflash Installer
 
 Status: active — shipped + iterating; first surfaced as a trajectory 2026-05-29 from substrate inventory (the flashing mechanism works on `origin/main`; this surface was missing, so the workstream lived head-only)
-Last refreshed: 2026-09-02
+Last refreshed: 2026-09-03
 Type: workstream (current-focus) — a trajectory the operator is _actively powering_. Many trajectories can be tracked; only a few are workstreams at once (finite-focus / WIP-bounded — a workstream is a trajectory under sustained thrust, and thrust budget is finite, so most trajectories coast). (Genus = "trajectory"; "workstream" is the species: a trajectory under sustained thrust toward a deliverable, vs. emergent-posture trajectories like `anti-infection`. See [`factory-trajectory-surface`](../factory-trajectory-surface/RESUME.md) for the genus/species taxonomy.) One of the operator's three current cluster workstreams (encryption / usb-zflash / ts-workflow-engine).
 Eventual encoding (design-stage — the human maintainer 2026-05-23 genetic-ID substrate + Clifford/HKT): this trajectory's state is trackable as a 128-bit genetic-ID seed (discrete, reversible via parser-combinator ↔ generator-function) → Clifford-space path (continuous, eventual). Mirrors the three-lane I8-lattice / I9-manifold split.
 Current blocker: hardware — metal S6 first-login + WiFi radio / Touch ID / TPM
@@ -81,9 +81,12 @@ lane: a green claim about one step is not a claim about the next step, and a
 stale "never" is not a claim about the last dispatch.
 
 Do **not** re-dispatch restore to re-prove this. The remaining restore gap is
-metal `tty1` (hardware). Next software on this trajectory is the kind+Cilium
-CNI mode so `live-kind-cilium-included` can create its own cluster
-(`081M1DFQ2MZ087G0R000CMNHQX`) — not another ISO restore.
+metal `tty1` (hardware). Next software on this trajectory is k3d applying the
+vendored Gateway API CRDs metal first-boot applies (`aa-gateway-api-crds`),
+so `live-k3d` matches the substrate metal actually boots
+(`081M1DFQ2MZ087G0R000CMNHQX`) — not another ISO restore, and not another
+kind `--cni cilium` dispatch. That distinguishing cell already closed:
+kindnetd Healthy / kind+Cilium Healthy / k3d Degraded.
 
 Next concrete action: **minimize metal** — S6 physical first-login +
 WiFi radio / Touch ID / TPM (human-gated). Software deepen landed:
@@ -185,13 +188,23 @@ Never asserted anywhere — the nine standing `excludeGlob` deferrals: `cilium`,
 `agent-memory`, `platform`.
 
 **THE SUBSTRATE GAP, which is the single biggest metal risk.** Metal runs
-**k3s + Cilium**. The 18 healthy charts are proven on **kind + kindnetd**. The lane
-that tests metal's actual configuration at chart depth is `live-k3d`, and it was
-reverted to `smoke` scope on 2026-09-01 after four Applications would not reach
-Healthy there (`081M1DFQ2MZ087G0R000CMNHQX`). Four probe attempts to separate
-"Cilium's fault" from "k3s's fault" produced **zero data** — see that work-item;
-`--existing` is not a supported path for the `included` proof and the exit is to
-give the kind provider a Cilium-CNI mode.
+**k3s + Cilium**. The 18 healthy charts are proven on **kind + kindnetd**.
+Kind `--cni cilium` included (dispatch 33701456828) now reports the four
+Healthy too — Cilium is not the cause. The lane that tests metal's actual
+configuration at chart depth is `live-k3d`, and it was reverted to `smoke`
+scope on 2026-09-01 after four Applications would not reach Healthy there
+(`081M1DFQ2MZ087G0R000CMNHQX`). Distinguishing table:
+
+- kindnetd: Healthy
+- kind+Cilium: Healthy
+- k3d (k3s+Cilium): Degraded / Progressing
+
+The k3d included dump (run 33429761222) is a cascade from **missing Gateway
+API CRDs** (cert-manager CrashLoop → trust-manager / openziti FailedMount),
+plus a **second** class (spire-agent hostNetwork DNS i/o timeout). Next
+software is k3d bring-up applying the vendored metal bundle. Do not re-lift
+`--scope included`. Do not invent a Cilium values tweak. Do not re-dispatch
+the Cilium included probe.
 
 **Expect chart-level surprises on metal.** Boot and join are proven; what runs on
 top of them is proven on a different substrate.
@@ -420,7 +433,7 @@ bringup.
 **Software (closed, do not re-litigate):** non-interactive 6.95-picker
 (`--defer-all` #14852) and restore non-zero write (#15912, dispatch
 33126215487). Sibling dispatch steps already `if: always()`.
-**Next software:** ~~in-guest wrong-passphrase phase 2b + passphrase~~ **BOTH LANDED 2026-08-29 (`133a95b5de`) AND BOTH RAN on dispatch [33462406161](https://github.com/Lucent-Financial-Group/Zeta/actions/runs/33462406161) (2026-09-01) — do not rebuild, do not re-dispatch restore.** Next software is kind `--cni cilium` so the included proof creates its own cluster (`081M1DFQ2MZ`). **The mode exists in this branch** (`argocd-health-test.ts --cni cilium`, job `live-kind-cilium-included` no longer uses `--existing`). It still needs a dispatch to produce per-app verdicts — code landing is not the distinguishing test. Superseded text kept below for lineage:
+**Next software:** ~~in-guest wrong-passphrase phase 2b + passphrase~~ **BOTH LANDED 2026-08-29 (`133a95b5de`) AND BOTH RAN on dispatch [33462406161](https://github.com/Lucent-Financial-Group/Zeta/actions/runs/33462406161) (2026-09-01) — do not rebuild, do not re-dispatch restore.** ~~kind `--cni cilium` so the included proof creates its own cluster~~ **THAT CELL CLOSED 2026-09-03** (kindnetd Healthy / kind+Cilium Healthy / k3d Degraded; weaviate asserted on kind+Cilium; #16419 squash `18367ea19`). Next software is k3d applying the vendored Gateway API CRDs metal first-boot applies (`aa-gateway-api-crds`) so `live-k3d` is not missing the file that keeps cert-manager from crash-looping (`081M1DFQ2MZ`). Do **not** re-lift k3d `--scope included`. Do **not** dispatch another Cilium included probe. Do **not** invent Cilium helm values. Otto takes mimir (`081M1FG1RCW`). Superseded text kept below for lineage:
 **Superseded:** in-guest wrong-passphrase phase 2b + passphrase
 hexagonal port (`passphrase-source.ts`) so a human can run the metal
 tty1 runbook without the software door being untested. Dispatch restore

@@ -67,6 +67,29 @@ export function applyDevCiliumLbKindAlias(ports: DevClusterPorts): void {
 }
 
 /**
+ * Apply the vendored Gateway API CRD bundle metal first-boot applies as
+ * `aa-gateway-api-crds`. Cilium does NOT ship these. cert-manager with
+ * `enableGatewayAPI: true` crash-loops without them:
+ *
+ *     the Gateway API CRDs do not seem to be present, but
+ *     ExperimentalGatewayAPISupport is set to true
+ *
+ * MEASURED k3d included lift run 33429761222 (job 99614682092): cert-manager
+ * controller CrashLoopBackOff (17 restarts) on that line; trust-manager then
+ * FailedMount on `trust-manager-tls`; openziti Init FailedMount on missing
+ * ziti identity secrets. Kind `--cni cilium` already applies this file.
+ * k3d skipped it. Kindnetd still uses the GitHub remote.
+ *
+ * BEFORE Cilium helm and BEFORE the catalogue. Metal's `aa-` prefix is the
+ * same ordering intent. Shared by kind `--cni cilium` and k3d so the two
+ * Cilium lanes cannot drift on which file they apply.
+ */
+export function applyVendoredGatewayApiCrds(ports: DevClusterPorts): void {
+  console.log("Applying the VENDORED Gateway API CRD bundle (the same file first boot applies on metal) ...");
+  ports.controlPlane.applyFileManifest(join(REPO_ROOT, GATEWAY_API_CRD_BUNDLE));
+}
+
+/**
  * Mint the dev/CI credentials that Applications expect to find ALREADY PRESENT,
  * BEFORE the app-of-apps root syncs.
  *
@@ -266,15 +289,14 @@ export function bringUpKindCiCluster(ports: DevClusterPorts, options: KindCiBrin
   if (cni === "cilium") {
     console.log("Waiting for Kubernetes API readiness (nodes stay NotReady until Cilium is the CNI) ...");
     controlPlane.waitForApiReady(60, 3000);
-    console.log("Applying the VENDORED Gateway API CRD bundle (the same file first boot applies on metal) ...");
-    controlPlane.applyFileManifest(join(REPO_ROOT, GATEWAY_API_CRD_BUNDLE));
+    applyVendoredGatewayApiCrds(ports);
     installShippedCiliumOnKind(ports, options.clusterName);
     controlPlane.waitForAllNodesReady(180);
     applyDevCiliumLbKindAlias(ports);
     applyKindCiliumCoreDnsUpstreamOverride(ports);
   } else {
     controlPlane.waitForAllNodesReady(180);
-    console.log("Installing Gateway API CRDs (cert-manager enableGatewayAPI on kind/k3d) ...");
+    console.log("Installing Gateway API CRDs (cert-manager enableGatewayAPI on kindnetd; k3d applies the vendored metal bundle) ...");
     controlPlane.applyRemoteManifest(
       "https://github.com/kubernetes-sigs/gateway-api/releases/download/v1.2.0/standard-install.yaml",
       true,
@@ -502,6 +524,7 @@ export function bringUpK3dDevCluster(ports: DevClusterPorts, options: K3dDevBrin
   controlPlane.waitForApiReady(60, 3000);
 
   applyK3dCoreDnsUpstreamOverride(ports);
+  applyVendoredGatewayApiCrds(ports);
 
   if (!packages.releaseInstalled("kube-system", "cilium")) {
     // INSTALL THE SHIPPED VALUE SURFACE, never a hand-written --set list.
