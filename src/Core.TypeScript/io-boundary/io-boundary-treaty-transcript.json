@@ -1,0 +1,941 @@
+[
+  {
+    "vectorType": "Fuse",
+    "numeric": false,
+    "ledger": [],
+    "expectedExterior": [],
+    "expectedCount": 0,
+    "expectedIsEmpty": true
+  },
+  {
+    "vectorType": "Fuse",
+    "numeric": false,
+    "ledger": [
+      {
+        "e": "a",
+        "w": 1
+      }
+    ],
+    "expectedExterior": ["a"],
+    "expectedCount": 1,
+    "expectedIsEmpty": false
+  },
+  {
+    "vectorType": "Fuse",
+    "numeric": false,
+    "ledger": [
+      {
+        "e": "a",
+        "w": 0
+      }
+    ],
+    "expectedExterior": [],
+    "expectedCount": 0,
+    "expectedIsEmpty": true
+  },
+  {
+    "vectorType": "Fuse",
+    "numeric": false,
+    "ledger": [
+      {
+        "e": "a",
+        "w": -1
+      }
+    ],
+    "expectedExterior": [],
+    "expectedCount": 0,
+    "expectedIsEmpty": true
+  },
+  {
+    "vectorType": "Fuse",
+    "numeric": false,
+    "ledger": [
+      {
+        "e": "a",
+        "w": 5
+      }
+    ],
+    "expectedExterior": ["a"],
+    "expectedCount": 1,
+    "expectedIsEmpty": false
+  },
+  {
+    "vectorType": "Fuse",
+    "numeric": false,
+    "ledger": [
+      {
+        "e": "B",
+        "w": 1
+      },
+      {
+        "e": "a",
+        "w": 1
+      },
+      {
+        "e": "A",
+        "w": 1
+      },
+      {
+        "e": "b",
+        "w": 1
+      }
+    ],
+    "expectedExterior": ["A", "B", "a", "b"],
+    "expectedCount": 4,
+    "expectedIsEmpty": false
+  },
+  {
+    "vectorType": "Fuse",
+    "numeric": false,
+    "ledger": [
+      {
+        "e": "z",
+        "w": 3
+      },
+      {
+        "e": "y",
+        "w": -2
+      },
+      {
+        "e": "x",
+        "w": 1
+      },
+      {
+        "e": "w",
+        "w": 0
+      }
+    ],
+    "expectedExterior": ["x", "z"],
+    "expectedCount": 2,
+    "expectedIsEmpty": false
+  },
+  {
+    "vectorType": "Fuse",
+    "numeric": false,
+    "ledger": [
+      {
+        "e": "k1",
+        "w": 1
+      },
+      {
+        "e": "k2",
+        "w": -1
+      },
+      {
+        "e": "k3",
+        "w": 2
+      }
+    ],
+    "expectedExterior": ["k1", "k3"],
+    "expectedCount": 2,
+    "expectedIsEmpty": false
+  },
+  {
+    "vectorType": "Fuse",
+    "numeric": true,
+    "ledger": [],
+    "expectedExterior": [],
+    "expectedCount": 0,
+    "expectedIsEmpty": true
+  },
+  {
+    "vectorType": "Fuse",
+    "numeric": true,
+    "ledger": [
+      {
+        "e": 0,
+        "w": 1
+      }
+    ],
+    "expectedExterior": [0],
+    "expectedCount": 1,
+    "expectedIsEmpty": false
+  },
+  {
+    "vectorType": "Fuse",
+    "numeric": true,
+    "ledger": [
+      {
+        "e": 3,
+        "w": 1
+      },
+      {
+        "e": 1,
+        "w": -1
+      },
+      {
+        "e": 2,
+        "w": 0
+      },
+      {
+        "e": -5,
+        "w": 4
+      }
+    ],
+    "expectedExterior": [-5, 3],
+    "expectedCount": 2,
+    "expectedIsEmpty": false
+  },
+  {
+    "vectorType": "ComposeThenFuse",
+    "numeric": false,
+    "left": [
+      {
+        "e": "a",
+        "w": 1
+      }
+    ],
+    "right": [
+      {
+        "e": "a",
+        "w": -1
+      }
+    ],
+    "expectedExterior": []
+  },
+  {
+    "vectorType": "ComposeThenFuse",
+    "numeric": false,
+    "left": [
+      {
+        "e": "a",
+        "w": 1
+      }
+    ],
+    "right": [
+      {
+        "e": "a",
+        "w": 1
+      }
+    ],
+    "expectedExterior": ["a"]
+  },
+  {
+    "vectorType": "ComposeThenFuse",
+    "numeric": false,
+    "left": [
+      {
+        "e": "a",
+        "w": 2
+      }
+    ],
+    "right": [
+      {
+        "e": "a",
+        "w": -1
+      }
+    ],
+    "expectedExterior": ["a"]
+  },
+  {
+    "vectorType": "ComposeThenFuse",
+    "numeric": false,
+    "left": [
+      {
+        "e": "a",
+        "w": 1
+      }
+    ],
+    "right": [
+      {
+        "e": "b",
+        "w": -1
+      }
+    ],
+    "expectedExterior": ["a"]
+  },
+  {
+    "vectorType": "ComposeThenFuse",
+    "numeric": false,
+    "left": [
+      {
+        "e": "b",
+        "w": 1
+      },
+      {
+        "e": "A",
+        "w": 1
+      }
+    ],
+    "right": [
+      {
+        "e": "a",
+        "w": 1
+      },
+      {
+        "e": "B",
+        "w": -1
+      }
+    ],
+    "expectedExterior": ["A", "a", "b"]
+  },
+  {
+    "vectorType": "ComposeThenFuse",
+    "numeric": false,
+    "left": [],
+    "right": [
+      {
+        "e": "a",
+        "w": 1
+      }
+    ],
+    "expectedExterior": ["a"]
+  },
+  {
+    "vectorType": "ComposeThenFuse",
+    "numeric": false,
+    "left": [
+      {
+        "e": "a",
+        "w": 1
+      }
+    ],
+    "right": [],
+    "expectedExterior": ["a"]
+  },
+  {
+    "vectorType": "ComposeAllThenFuse",
+    "numeric": false,
+    "ledgers": [],
+    "expectedExterior": []
+  },
+  {
+    "vectorType": "ComposeAllThenFuse",
+    "numeric": false,
+    "ledgers": [
+      [
+        {
+          "e": "a",
+          "w": 1
+        }
+      ]
+    ],
+    "expectedExterior": ["a"]
+  },
+  {
+    "vectorType": "ComposeAllThenFuse",
+    "numeric": false,
+    "ledgers": [
+      [
+        {
+          "e": "a",
+          "w": 1
+        }
+      ],
+      [
+        {
+          "e": "a",
+          "w": -1
+        }
+      ],
+      [
+        {
+          "e": "a",
+          "w": 1
+        }
+      ]
+    ],
+    "expectedExterior": ["a"]
+  },
+  {
+    "vectorType": "ComposeAllThenFuse",
+    "numeric": false,
+    "ledgers": [
+      [
+        {
+          "e": "a",
+          "w": 1
+        }
+      ],
+      [
+        {
+          "e": "b",
+          "w": 1
+        }
+      ],
+      [
+        {
+          "e": "a",
+          "w": -1
+        }
+      ],
+      [
+        {
+          "e": "c",
+          "w": 2
+        }
+      ]
+    ],
+    "expectedExterior": ["b", "c"]
+  },
+  {
+    "vectorType": "Contains",
+    "numeric": false,
+    "ledger": [],
+    "key": "a",
+    "expected": false
+  },
+  {
+    "vectorType": "Contains",
+    "numeric": false,
+    "ledger": [],
+    "key": "A",
+    "expected": false
+  },
+  {
+    "vectorType": "Contains",
+    "numeric": false,
+    "ledger": [],
+    "key": "b",
+    "expected": false
+  },
+  {
+    "vectorType": "Contains",
+    "numeric": false,
+    "ledger": [],
+    "key": "zzz",
+    "expected": false
+  },
+  {
+    "vectorType": "Contains",
+    "numeric": false,
+    "ledger": [
+      {
+        "e": "a",
+        "w": 1
+      }
+    ],
+    "key": "a",
+    "expected": true
+  },
+  {
+    "vectorType": "Contains",
+    "numeric": false,
+    "ledger": [
+      {
+        "e": "a",
+        "w": 1
+      }
+    ],
+    "key": "A",
+    "expected": false
+  },
+  {
+    "vectorType": "Contains",
+    "numeric": false,
+    "ledger": [
+      {
+        "e": "a",
+        "w": 1
+      }
+    ],
+    "key": "b",
+    "expected": false
+  },
+  {
+    "vectorType": "Contains",
+    "numeric": false,
+    "ledger": [
+      {
+        "e": "a",
+        "w": 1
+      }
+    ],
+    "key": "zzz",
+    "expected": false
+  },
+  {
+    "vectorType": "Contains",
+    "numeric": false,
+    "ledger": [
+      {
+        "e": "a",
+        "w": 0
+      }
+    ],
+    "key": "a",
+    "expected": false
+  },
+  {
+    "vectorType": "Contains",
+    "numeric": false,
+    "ledger": [
+      {
+        "e": "a",
+        "w": 0
+      }
+    ],
+    "key": "A",
+    "expected": false
+  },
+  {
+    "vectorType": "Contains",
+    "numeric": false,
+    "ledger": [
+      {
+        "e": "a",
+        "w": 0
+      }
+    ],
+    "key": "b",
+    "expected": false
+  },
+  {
+    "vectorType": "Contains",
+    "numeric": false,
+    "ledger": [
+      {
+        "e": "a",
+        "w": 0
+      }
+    ],
+    "key": "zzz",
+    "expected": false
+  },
+  {
+    "vectorType": "Contains",
+    "numeric": false,
+    "ledger": [
+      {
+        "e": "a",
+        "w": -1
+      }
+    ],
+    "key": "a",
+    "expected": false
+  },
+  {
+    "vectorType": "Contains",
+    "numeric": false,
+    "ledger": [
+      {
+        "e": "a",
+        "w": -1
+      }
+    ],
+    "key": "A",
+    "expected": false
+  },
+  {
+    "vectorType": "Contains",
+    "numeric": false,
+    "ledger": [
+      {
+        "e": "a",
+        "w": -1
+      }
+    ],
+    "key": "b",
+    "expected": false
+  },
+  {
+    "vectorType": "Contains",
+    "numeric": false,
+    "ledger": [
+      {
+        "e": "a",
+        "w": -1
+      }
+    ],
+    "key": "zzz",
+    "expected": false
+  },
+  {
+    "vectorType": "Contains",
+    "numeric": false,
+    "ledger": [
+      {
+        "e": "a",
+        "w": 5
+      }
+    ],
+    "key": "a",
+    "expected": true
+  },
+  {
+    "vectorType": "Contains",
+    "numeric": false,
+    "ledger": [
+      {
+        "e": "a",
+        "w": 5
+      }
+    ],
+    "key": "A",
+    "expected": false
+  },
+  {
+    "vectorType": "Contains",
+    "numeric": false,
+    "ledger": [
+      {
+        "e": "a",
+        "w": 5
+      }
+    ],
+    "key": "b",
+    "expected": false
+  },
+  {
+    "vectorType": "Contains",
+    "numeric": false,
+    "ledger": [
+      {
+        "e": "a",
+        "w": 5
+      }
+    ],
+    "key": "zzz",
+    "expected": false
+  },
+  {
+    "vectorType": "Contains",
+    "numeric": false,
+    "ledger": [
+      {
+        "e": "B",
+        "w": 1
+      },
+      {
+        "e": "a",
+        "w": 1
+      },
+      {
+        "e": "A",
+        "w": 1
+      },
+      {
+        "e": "b",
+        "w": 1
+      }
+    ],
+    "key": "a",
+    "expected": true
+  },
+  {
+    "vectorType": "Contains",
+    "numeric": false,
+    "ledger": [
+      {
+        "e": "B",
+        "w": 1
+      },
+      {
+        "e": "a",
+        "w": 1
+      },
+      {
+        "e": "A",
+        "w": 1
+      },
+      {
+        "e": "b",
+        "w": 1
+      }
+    ],
+    "key": "A",
+    "expected": true
+  },
+  {
+    "vectorType": "Contains",
+    "numeric": false,
+    "ledger": [
+      {
+        "e": "B",
+        "w": 1
+      },
+      {
+        "e": "a",
+        "w": 1
+      },
+      {
+        "e": "A",
+        "w": 1
+      },
+      {
+        "e": "b",
+        "w": 1
+      }
+    ],
+    "key": "b",
+    "expected": true
+  },
+  {
+    "vectorType": "Contains",
+    "numeric": false,
+    "ledger": [
+      {
+        "e": "B",
+        "w": 1
+      },
+      {
+        "e": "a",
+        "w": 1
+      },
+      {
+        "e": "A",
+        "w": 1
+      },
+      {
+        "e": "b",
+        "w": 1
+      }
+    ],
+    "key": "zzz",
+    "expected": false
+  },
+  {
+    "vectorType": "Contains",
+    "numeric": false,
+    "ledger": [
+      {
+        "e": "z",
+        "w": 3
+      },
+      {
+        "e": "y",
+        "w": -2
+      },
+      {
+        "e": "x",
+        "w": 1
+      },
+      {
+        "e": "w",
+        "w": 0
+      }
+    ],
+    "key": "a",
+    "expected": false
+  },
+  {
+    "vectorType": "Contains",
+    "numeric": false,
+    "ledger": [
+      {
+        "e": "z",
+        "w": 3
+      },
+      {
+        "e": "y",
+        "w": -2
+      },
+      {
+        "e": "x",
+        "w": 1
+      },
+      {
+        "e": "w",
+        "w": 0
+      }
+    ],
+    "key": "A",
+    "expected": false
+  },
+  {
+    "vectorType": "Contains",
+    "numeric": false,
+    "ledger": [
+      {
+        "e": "z",
+        "w": 3
+      },
+      {
+        "e": "y",
+        "w": -2
+      },
+      {
+        "e": "x",
+        "w": 1
+      },
+      {
+        "e": "w",
+        "w": 0
+      }
+    ],
+    "key": "b",
+    "expected": false
+  },
+  {
+    "vectorType": "Contains",
+    "numeric": false,
+    "ledger": [
+      {
+        "e": "z",
+        "w": 3
+      },
+      {
+        "e": "y",
+        "w": -2
+      },
+      {
+        "e": "x",
+        "w": 1
+      },
+      {
+        "e": "w",
+        "w": 0
+      }
+    ],
+    "key": "zzz",
+    "expected": false
+  },
+  {
+    "vectorType": "Contains",
+    "numeric": false,
+    "ledger": [
+      {
+        "e": "k1",
+        "w": 1
+      },
+      {
+        "e": "k2",
+        "w": -1
+      },
+      {
+        "e": "k3",
+        "w": 2
+      }
+    ],
+    "key": "a",
+    "expected": false
+  },
+  {
+    "vectorType": "Contains",
+    "numeric": false,
+    "ledger": [
+      {
+        "e": "k1",
+        "w": 1
+      },
+      {
+        "e": "k2",
+        "w": -1
+      },
+      {
+        "e": "k3",
+        "w": 2
+      }
+    ],
+    "key": "A",
+    "expected": false
+  },
+  {
+    "vectorType": "Contains",
+    "numeric": false,
+    "ledger": [
+      {
+        "e": "k1",
+        "w": 1
+      },
+      {
+        "e": "k2",
+        "w": -1
+      },
+      {
+        "e": "k3",
+        "w": 2
+      }
+    ],
+    "key": "b",
+    "expected": false
+  },
+  {
+    "vectorType": "Contains",
+    "numeric": false,
+    "ledger": [
+      {
+        "e": "k1",
+        "w": 1
+      },
+      {
+        "e": "k2",
+        "w": -1
+      },
+      {
+        "e": "k3",
+        "w": 2
+      }
+    ],
+    "key": "zzz",
+    "expected": false
+  },
+  {
+    "vectorType": "EmitRetractThenFuse",
+    "ops": [
+      {
+        "op": "emit",
+        "key": "a"
+      }
+    ],
+    "expectedExterior": ["a"]
+  },
+  {
+    "vectorType": "EmitRetractThenFuse",
+    "ops": [
+      {
+        "op": "emit",
+        "key": "a"
+      },
+      {
+        "op": "retract",
+        "key": "a"
+      }
+    ],
+    "expectedExterior": []
+  },
+  {
+    "vectorType": "EmitRetractThenFuse",
+    "ops": [
+      {
+        "op": "emit",
+        "key": "a"
+      },
+      {
+        "op": "emit",
+        "key": "a"
+      },
+      {
+        "op": "retract",
+        "key": "a"
+      }
+    ],
+    "expectedExterior": ["a"]
+  },
+  {
+    "vectorType": "EmitRetractThenFuse",
+    "ops": [
+      {
+        "op": "retract",
+        "key": "a"
+      },
+      {
+        "op": "emit",
+        "key": "a"
+      }
+    ],
+    "expectedExterior": []
+  },
+  {
+    "vectorType": "EmitRetractThenFuse",
+    "ops": [
+      {
+        "op": "emit",
+        "key": "b"
+      },
+      {
+        "op": "emit",
+        "key": "a"
+      },
+      {
+        "op": "retract",
+        "key": "b"
+      },
+      {
+        "op": "emit",
+        "key": "C"
+      }
+    ],
+    "expectedExterior": ["C", "a"]
+  }
+]
