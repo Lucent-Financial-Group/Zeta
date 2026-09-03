@@ -6,7 +6,7 @@ const ROOT = resolve(import.meta.dir, "../../..");
 const DISPATCHER = join(ROOT, "tests/cross-verification/multilayer-bnn-online-update/cross-verify.ts");
 
 describe("multilayer BNN online factor-graph update cross-verification", () => {
-  test("production F# agrees with an independent Python joint-Gaussian solve and catches a coupling-sign mutant", () => {
+  test("production F# agrees with an independent Python joint-Gaussian solve and pins mean- and covariance-sensitive mutants", () => {
     const child = spawnSync(process.execPath, [DISPATCHER], {
       cwd: ROOT,
       encoding: "utf8",
@@ -16,7 +16,10 @@ describe("multilayer BNN online factor-graph update cross-verification", () => {
     expect(child.error).toBeUndefined();
     expect(child.status, child.stderr || child.stdout).toBe(0);
     expect(child.stdout).toContain(
-      "multilayer-bnn-online-update cross-verify: 14 finite witness groups across production F#/independent Python",
+      "multilayer-bnn-online-update cross-verify: 9 cross-oracle comparisons, 12 production-only receipt controls, 3 mutation controls",
     );
+    expect(child.stdout).toContain("coupling-sign disagreements=means:4,variances:0");
+    expect(child.stdout).toContain("channel-variance disagreements=means:4,variances:4");
+    expect(child.stdout).toContain("double-count disagreements=means:4,variances:4");
   }, 240_000);
 });

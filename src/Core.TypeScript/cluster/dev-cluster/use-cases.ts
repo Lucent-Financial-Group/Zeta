@@ -315,7 +315,23 @@ export function bringUpKindCiCluster(ports: DevClusterPorts, options: KindCiBrin
     packages.install({
       release: "argocd",
       chart: "argo/argo-cd",
-      version: "7.7.10",
+      // 7.7.10 -> 10.7.0 on 2026-09-03 (ArgoCD v2.13.2 -> v3.5.2). NOT cosmetic, and NOT
+      // "match the Application": v3.5.x is the first ArgoCD that ships Helm 4 ONLY
+      // (hack/tool-versions.sh: helm4_version=4.2.1; util/helm/cmd.go: "We now support
+      // v4 only"), and seaweedfs >= 4.33.0 uses the Helm-4-only template function
+      // `fromToml` (templates/shared/security-configmap.yaml). Under v2.13.2 the
+      // repo-server fails `helm template` with `function "fromToml" not defined`, and
+      // ArgoCD CACHES that manifest-generation error per revision -- so the wave -90
+      // self-upgrade to 10.7.0 arrives after the failure is already cached and cannot
+      // clear it. Measured on run 33736439359 (2026-09-03): seaweedfs sync=Unknown with
+      // `Manifest generation error (cached)`, health=Healthy VACUOUSLY (zero applied
+      // resources), so no Service, kube-dns answers `no such host` 700x, and mimir's
+      // startup sanity-check dies -- every mimir module "depends on sanity-check".
+      // The k3s bootstrap (k8s/bootstrap/argocd-install.yaml) was moved to 10.6.0 on
+      // 2026-09-01; this kind-lane pin was the one left behind. Pinned to 10.7.0 to
+      // EQUAL the self-managed Application, so bootstrap and self-management agree and
+      // no mid-run upgrade happens at all.
+      version: "10.7.0",
       namespace: "argocd",
       setValues: ["server.service.type=ClusterIP"],
       wait: true,
@@ -580,7 +596,10 @@ export function bringUpK3dDevCluster(ports: DevClusterPorts, options: K3dDevBrin
     packages.install({
       release: "argocd",
       chart: "argo/argo-cd",
-      version: "7.7.10",
+      // 7.7.10 -> 10.7.0 on 2026-09-03 -- same reason and same measurement as the
+      // default-profile install above (Helm-4-only `fromToml` in seaweedfs; cached
+      // repo-server error survives the self-upgrade). Kept equal to the Application.
+      version: "10.7.0",
       namespace: "argocd",
       // ClusterIP, NOT LoadBalancer -- and this line is downstream of installing
       // the shipped Cilium surface above.

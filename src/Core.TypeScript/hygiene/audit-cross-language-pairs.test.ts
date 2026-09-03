@@ -6,7 +6,7 @@
  */
 
 import { describe, expect, test } from "bun:test";
-import { findPairs, kebabOf, readBaseline, DECLARED_UNPINNED } from "./audit-cross-language-pairs";
+import { findPairs, kebabOf, readBaseline, unwatchedPairs, DECLARED_UNPINNED } from "./audit-cross-language-pairs";
 
 describe("kebabOf — the naming convention the two trees follow", () => {
   test("PascalCase becomes the kebab name TypeScript uses", () => {
@@ -51,6 +51,32 @@ describe("the roster", () => {
       const p = byName.get(concept);
       expect(p, `roster lost ${concept}`).toBeDefined();
       expect(p?.pinnedBy.length ?? 0, `${concept} reported unpinned`).toBeGreaterThan(0);
+    }
+  });
+
+  test("a declared non-pair is EXCLUDED from the report, and says why", () => {
+    // The triage half. `Plan` is F#'s query-plan metadata against TypeScript's USB multiboot layout
+    // planner — a shared word, not a shared idea — so reporting it forever would train readers to
+    // ignore the roster. Each declaration carries the reason, because an allowlist without reasons
+    // is just a way to make a check quiet.
+    // Through the tool's OWN function, not a re-implementation of its filter.
+    const reported = new Set(unwatchedPairs().map((x) => x.concept));
+    for (const concept of DECLARED_UNPINNED.keys()) {
+      expect(reported.has(concept), `${concept} is declared yet still reported`).toBe(false);
+    }
+    expect(DECLARED_UNPINNED.size).toBeGreaterThan(0);
+  });
+
+  test("a replay that CALLS a module counts as its pin, whatever the file is named", () => {
+    // The detection defect this roster shipped with: it matched evidence by filename and directory,
+    // so `ActionGrammar` and `Persona` were reported unwatched while `HatTreaty.Tests.fs` replays
+    // both — one treaty routinely pins several modules. Acting on that would have meant writing a
+    // second treaty for work already done.
+    const byName = new Map(findPairs().map((x) => [x.concept, x]));
+    for (const concept of ["ActionGrammar", "Persona", "Collation", "ErasureClass"]) {
+      const pair = byName.get(concept);
+      expect(pair, `roster lost ${concept}`).toBeDefined();
+      expect(pair?.pinnedBy.length ?? 0, `${concept} reported unpinned`).toBeGreaterThan(0);
     }
   });
 

@@ -1,0 +1,47 @@
+{
+  "schemaVersion": 1,
+  "contract": "docs/research/2026-09-03-multilayer-exact-gaussian-query-contract.md",
+  "model": "finite declared linear-Gaussian multilayer network",
+  "method": "ExactDenseGaussian",
+  "limits": {
+    "maximumLayers": 64,
+    "timeComplexity": "O(n^3)",
+    "storageComplexity": "O(n^2)"
+  },
+  "acyclicReceipt": {
+    "layerCount": 4,
+    "absorbedObservationCount": 3,
+    "means": [
+      1.6145528293042875,
+      0.7751047675621989,
+      0.6122556003657003,
+      -0.26920390575328235
+    ],
+    "variances": [
+      0.10916865063711363,
+      0.2958162588118453,
+      0.3740793680996115,
+      0.43483341609545334
+    ],
+    "replayBitInvariant": true
+  },
+  "loopyCovarianceWitness": {
+    "exactDenseMeans": [2.72, -0.32, 0.47999999999999987, 1.44],
+    "exactDenseVariances": [0.136, 0.296, 0.41600000000000004, 0.7439999999999999],
+    "convergedLoopyMeans": [2.7200000000000024, -0.3199999999999908, 0.4799999999999929, 1.4399999999999782],
+    "convergedLoopyVariances": [0.15520133232616018, 0.36471886077740145, 0.498828411189295, 0.6876474916069649],
+    "meanL1Difference": 4.0190073491430667e-14,
+    "varianceL1Difference": 0.22710111268589156
+  },
+  "independentVerification": {
+    "implementation": "separately authored pure-Python joint-precision inversion",
+    "comparisonTolerance": 1e-10,
+    "crossOracleComparisons": 9,
+    "productionReceiptControls": 12,
+    "mutationControls": 3,
+    "couplingSignDisagreements": { "means": 4, "variances": 0 },
+    "channelVarianceDisagreements": { "means": 4, "variances": 4 },
+    "observationDoubleCountDisagreements": { "means": 4, "variances": 4 }
+  },
+  "verdict": "exact-covariance-query-supported-for-finite-declared-linear-gaussian-model-only"
+}

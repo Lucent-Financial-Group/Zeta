@@ -67,11 +67,33 @@ module ZetaFsFreeze =
           Objects: struct (ContentHash256 * byte[])[]
           Reply: TaskCompletionSource<Result<struct (int64 * int64), FreezeError>> }
 
+    /// Log device for freeze frames. `Simulated` is the LBA DST door.
+    /// `HostFile` is the `FileSystemBlockIo` polyfill (still not the default
+    /// `create` / `createManual` path).
+    type FreezeBlockIo =
+        | Simulated of SimulatedBlockIo
+        | HostFile of FileSystemBlockIo
+
+        member this.Device =
+            match this with
+            | Simulated io -> io :> IBlockIo
+            | HostFile io -> io :> IBlockIo
+
+        member this.LogicalBytes
+            with get () =
+                match this with
+                | Simulated io -> io.LogicalBytes
+                | HostFile io -> io.LogicalBytes
+            and set v =
+                match this with
+                | Simulated io -> io.LogicalBytes <- v
+                | HostFile io -> io.LogicalBytes <- v
+
     /// DoP=1 segment writer. One boat = N freezes, one Flush; Durable adds one
     /// fsync of objects-dir + log. `manual` is the DST pump (no background ferry).
     [<Sealed>]
     type internal FreezeLog
-        (storeDir: string, config: FerryThrottlerConfig, manual: bool, blockIo: SimulatedBlockIo option, objectCas: BlockCas option) =
+        (storeDir: string, config: FerryThrottlerConfig, manual: bool, blockIo: FreezeBlockIo option, objectCas: BlockCas option) =
 
         do
             if config.MaxDegreeOfParallelism <> 1 then
@@ -155,19 +177,21 @@ module ZetaFsFreeze =
                 // Intent Flush publishes without crash arms on the file door.
                 // On IBlockIo, Flush is the barrier; crash arms fire on Write.
                 match blockIo with
-                | Some io ->
+                | Some door ->
                     let mutable i = 0
-                    let device = io :> IBlockIo
+                    let device = door.Device
+                    let origin = BlockLog.origin device
 
                     while err.IsNone && i < boat.Length do
                         let item = boat.Span.[i]
                         let afterIntent =
                             BlockLog.append
                                 device
-                                io.LogicalBytes
+                                (origin + door.LogicalBytes)
                                 (System.ReadOnlyMemory<byte>.op_Implicit item.IntentFrame)
 
-                        io.LogicalBytes <- afterIntent
+                        door.LogicalBytes <- afterIntent - origin
+                        BlockSuper.writeLog device door.LogicalBytes
                         device.Flush()
                         putLeaves item
 
@@ -175,10 +199,11 @@ module ZetaFsFreeze =
                             let afterCommit =
                                 BlockLog.append
                                     device
-                                    io.LogicalBytes
+                                    (origin + door.LogicalBytes)
                                     (System.ReadOnlyMemory<byte>.op_Implicit item.CommitFrame)
 
-                            io.LogicalBytes <- afterCommit
+                            door.LogicalBytes <- afterCommit - origin
+                            BlockSuper.writeLog device door.LogicalBytes
                             device.Flush()
 
                         i <- i + 1
@@ -261,7 +286,7 @@ module ZetaFsFreeze =
             session: ZetaFsCrypto.Session option,
             config: FerryThrottlerConfig,
             manual: bool,
-            blockIo: SimulatedBlockIo option,
+            blockIo: FreezeBlockIo option,
             objectCas: BlockCas option
         ) =
         let gate = obj ()
@@ -492,12 +517,19 @@ module ZetaFsFreeze =
 
     let private replayPlainLog (fs: IFileSystem) (volume: Volume) =
         match volume.Log.BlockIo with
-        | Some io when io.LogicalBytes > 0L ->
-            let bytes = BlockLog.read (io :> IBlockIo) io.LogicalBytes
-            use stream = new MemoryStream(bytes, 0, bytes.Length, writable = true, publiclyVisible = true)
-            replayPlainFromStream stream volume
-            io.LogicalBytes <- stream.Length
-        | Some _ -> ()
+        | Some door ->
+            let device = door.Device
+
+            match BlockSuper.tryReadLog device with
+            | Some n -> door.LogicalBytes <- n
+            | None -> ()
+
+            if door.LogicalBytes > 0L then
+                let bytes = BlockLog.readAt device (BlockLog.origin device) door.LogicalBytes
+                use stream = new MemoryStream(bytes, 0, bytes.Length, writable = true, publiclyVisible = true)
+                replayPlainFromStream stream volume
+                door.LogicalBytes <- stream.Length
+                BlockSuper.writeLog device door.LogicalBytes
         | None ->
             let logPath = volume.Log.LogPath
 
@@ -508,66 +540,84 @@ module ZetaFsFreeze =
     /// Sealed frames: [len:i32][lsn:i64][inner]. LSN is public so openLog can
     /// rebuild the nonce. Wrong-key MAC on the first frame recovers nothing
     /// and does not truncate.
-    let private replaySealedLog (fs: IFileSystem) (volume: Volume) (session: ZetaFsCrypto.Session) =
-        let logPath = volume.Log.LogPath
+    let private replaySealedFromStream (stream: Stream) (volume: Volume) (session: ZetaFsCrypto.Session) =
+        use br = new BinaryReader(stream, Text.Encoding.UTF8, leaveOpen = true)
+        let mutable scanning = true
+        let mutable pendingStart = -1L
+        let mutable pending: PlainRec option = None
+        let mutable maxLsn = 0L
 
-        if fs.Exists logPath then
-            use stream = fs.OpenFile(logPath, FileMode.Open, FileAccess.ReadWrite, FileShare.Read)
-            use br = new BinaryReader(stream)
-            let mutable scanning = true
-            let mutable pendingStart = -1L
-            let mutable pending: PlainRec option = None
-            let mutable maxLsn = 0L
+        while scanning do
+            let recordStart = stream.Position
 
-            while scanning do
-                let recordStart = stream.Position
+            if stream.Length - stream.Position = 0L then
+                scanning <- false
+            elif stream.Length - stream.Position < 12L then
+                stream.SetLength recordStart
+                scanning <- false
+            else
+                let len = br.ReadInt32()
+                let lsn = br.ReadInt64()
 
-                if stream.Length - stream.Position = 0L then
-                    scanning <- false
-                elif stream.Length - stream.Position < 12L then
+                if len < 0 then
+                    invalidOp (sprintf "ZetaFsFreeze: negative sealed length %d at byte %d" len recordStart)
+                elif stream.Length - stream.Position < int64 len then
                     stream.SetLength recordStart
                     scanning <- false
                 else
-                    let len = br.ReadInt32()
-                    let lsn = br.ReadInt64()
+                    let inner = br.ReadBytes len
+                    let atTail = stream.Position = stream.Length
 
-                    if len < 0 then
-                        invalidOp (sprintf "ZetaFsFreeze: negative sealed length %d at byte %d" len recordStart)
-                    elif stream.Length - stream.Position < int64 len then
+                    match ZetaFsCrypto.openLog session lsn inner with
+                    | Error ZetaFsCrypto.CryptoError.MacMismatch
+                    | Error ZetaFsCrypto.CryptoError.GcmAuthFailed when pending.IsNone && recordStart = 0L ->
+                        scanning <- false
+                    | Error ZetaFsCrypto.CryptoError.MacMismatch
+                    | Error ZetaFsCrypto.CryptoError.GcmAuthFailed ->
                         stream.SetLength recordStart
                         scanning <- false
-                    else
-                        let inner = br.ReadBytes len
-                        let atTail = stream.Position = stream.Length
+                    | Error e ->
+                        invalidOp (sprintf "ZetaFsFreeze: sealed frame at byte %d: %s" recordStart (ZetaFsCrypto.errorName e))
+                    | Ok plaintext ->
+                        scanning <-
+                            applyDecoded
+                                volume
+                                &pending
+                                &pendingStart
+                                &maxLsn
+                                recordStart
+                                atTail
+                                stream.SetLength
+                                (decodePlain plaintext)
 
-                        match ZetaFsCrypto.openLog session lsn inner with
-                        | Error ZetaFsCrypto.CryptoError.MacMismatch
-                        | Error ZetaFsCrypto.CryptoError.GcmAuthFailed when pending.IsNone && recordStart = 0L ->
-                            scanning <- false
-                        | Error ZetaFsCrypto.CryptoError.MacMismatch
-                        | Error ZetaFsCrypto.CryptoError.GcmAuthFailed ->
-                            stream.SetLength recordStart
-                            scanning <- false
-                        | Error e ->
-                            invalidOp (sprintf "ZetaFsFreeze: sealed frame at byte %d: %s" recordStart (ZetaFsCrypto.errorName e))
-                        | Ok plaintext ->
-                            scanning <-
-                                applyDecoded
-                                    volume
-                                    &pending
-                                    &pendingStart
-                                    &maxLsn
-                                    recordStart
-                                    atTail
-                                    stream.SetLength
-                                    (decodePlain plaintext)
+        match pending with
+        | Some _ when pendingStart >= 0L -> stream.SetLength pendingStart
+        | _ -> ()
 
-            match pending with
-            | Some _ when pendingStart >= 0L -> stream.SetLength pendingStart
-            | _ -> ()
+        if maxLsn >= volume.NextLsn then
+            volume.NextLsn <- maxLsn + 1L
 
-            if maxLsn >= volume.NextLsn then
-                volume.NextLsn <- maxLsn + 1L
+    let private replaySealedLog (fs: IFileSystem) (volume: Volume) (session: ZetaFsCrypto.Session) =
+        match volume.Log.BlockIo with
+        | Some door ->
+            let device = door.Device
+
+            match BlockSuper.tryReadLog device with
+            | Some n -> door.LogicalBytes <- n
+            | None -> ()
+
+            if door.LogicalBytes > 0L then
+                let bytes = BlockLog.readAt device (BlockLog.origin device) door.LogicalBytes
+                use stream = new MemoryStream(bytes, 0, bytes.Length, writable = true, publiclyVisible = true)
+                replaySealedFromStream stream volume session
+                door.LogicalBytes <- stream.Length
+                BlockSuper.writeLog device door.LogicalBytes
+        | None ->
+            let logPath = volume.Log.LogPath
+
+            if fs.Exists logPath then
+                use stream = fs.OpenFile(logPath, FileMode.Open, FileAccess.ReadWrite, FileShare.Read)
+                replaySealedFromStream stream volume session
 
     let createFull
         (storeDir: string)
@@ -576,7 +626,7 @@ module ZetaFsFreeze =
         (session: ZetaFsCrypto.Session option)
         (config: FerryThrottlerConfig)
         (manual: bool)
-        (blockIo: SimulatedBlockIo option)
+        (blockIo: FreezeBlockIo option)
         (objectCas: BlockCas option)
         : Volume =
         let fs = FileSystem.Current
@@ -625,20 +675,30 @@ module ZetaFsFreeze =
 
     /// DST: Journaled log frames go through `IBlockIo` (RMW on the tail block).
     /// Objects still speak files unless `createManualWithBlockStore` is used.
-    /// Logical length lives on the `SimulatedBlockIo` instance so reopen can
-    /// replay without a superblock. A real device needs a superblock; that is
-    /// not this slice.
+    /// LBA 0 and 1 are checksummed `ZFL2` copies; payload starts at LBA 2.
     let createManualWithBlocks
         (storeDir: string)
         (mutbuf: ZetaFsMutbuf.Catalog)
         (observer: IDurabilityObserver option)
         (blocks: SimulatedBlockIo)
         : Volume =
-        createFull storeDir mutbuf observer None defaultConfig true (Some blocks) None
+        createFull storeDir mutbuf observer None defaultConfig true (Some(Simulated blocks)) None
+
+    /// DST: sealed Journaled frames through `IBlockIo`. Same dual-slot
+    /// superblock as `createManualWithBlocks`. Wrong-key MAC on the first
+    /// frame recovers nothing and does not truncate.
+    let createManualWithSealedBlocks
+        (storeDir: string)
+        (mutbuf: ZetaFsMutbuf.Catalog)
+        (observer: IDurabilityObserver option)
+        (session: ZetaFsCrypto.Session)
+        (blocks: SimulatedBlockIo)
+        : Volume =
+        createFull storeDir mutbuf observer (Some session) defaultConfig true (Some(Simulated blocks)) None
 
     /// DST: log on one simulated disk, CAS objects on another. Two devices
-    /// so a crash arm on objects cannot tear the log. Index is instance
-    /// state on `BlockCas` (no superblock).
+    /// so a crash arm on objects cannot tear the log. LBA 0 and 1 on each
+    /// disk are checksummed superblock copies (`ZFL2` / `ZCA2`).
     let createManualWithBlockStore
         (storeDir: string)
         (mutbuf: ZetaFsMutbuf.Catalog)
@@ -646,7 +706,32 @@ module ZetaFsFreeze =
         (logBlocks: SimulatedBlockIo)
         (objectCas: BlockCas)
         : Volume =
-        createFull storeDir mutbuf observer None defaultConfig true (Some logBlocks) (Some objectCas)
+        createFull storeDir mutbuf observer None defaultConfig true (Some(Simulated logBlocks)) (Some objectCas)
+
+    /// DST: sealed Journaled log on one disk, CAS objects on another.
+    let createManualWithSealedBlockStore
+        (storeDir: string)
+        (mutbuf: ZetaFsMutbuf.Catalog)
+        (observer: IDurabilityObserver option)
+        (session: ZetaFsCrypto.Session)
+        (logBlocks: SimulatedBlockIo)
+        (objectCas: BlockCas)
+        : Volume =
+        createFull storeDir mutbuf observer (Some session) defaultConfig true (Some(Simulated logBlocks)) (Some objectCas)
+
+    /// DST: journaled freeze log through the `FileSystemBlockIo` polyfill
+    /// (one host file, LBA offsets). `create` / `createManual` still speak
+    /// a raw frame stream. Objects still speak files.
+    let createManualWithFileLog
+        (storeDir: string)
+        (mutbuf: ZetaFsMutbuf.Catalog)
+        (observer: IDurabilityObserver option)
+        : Volume =
+        let fs = FileSystem.Current
+        fs.CreateDirectory(Path.Combine(storeDir, "log"))
+        let path = Path.Combine(storeDir, "log", "freeze")
+        let io = FileSystemBlockIo(fs, path, 4096)
+        createFull storeDir mutbuf observer None defaultConfig true (Some(HostFile io)) None
 
     let dispose (volume: Volume) = (volume :> IDisposable).Dispose()
 
@@ -658,7 +743,7 @@ module ZetaFsFreeze =
 
     let logLogicalBytes (volume: Volume) =
         match volume.Log.BlockIo with
-        | Some io -> io.LogicalBytes
+        | Some door -> door.LogicalBytes
         | None ->
             let path = volume.Log.LogPath
             if FileSystem.Current.Exists path then

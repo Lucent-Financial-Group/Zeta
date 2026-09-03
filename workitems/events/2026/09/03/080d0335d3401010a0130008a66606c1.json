@@ -1,0 +1,14 @@
+{
+  "id": "080d0335d3401010a0130008a66606c1",
+  "at": "2026-09-03T10:04:47.490Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1KBMT00087G0R003P71VYB",
+    "type": "task",
+    "title": "Sealed freeze CAS objects through IBlockIo",
+    "slug": "sealed-freeze-cas-objects-through-iblockio",
+    "priority": "P1",
+    "filename": "081M1KBMT00087G0R003P71VYB-sealed-freeze-cas-objects-through-iblockio.md"
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "id": "080d0334b49f1010a0130008287f9e3e",
+  "at": "2026-09-03T09:25:39.426Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1K9D4Z0087G0R0002TFA8R",
+    "type": "task",
+    "title": "Dual checksummed superblock slots on LBA 0 and 1",
+    "slug": "dual-checksummed-superblock-slots-on-lba-0-and-1",
+    "priority": "P1",
+    "filename": "081M1K9D4Z0087G0R0002TFA8R-dual-checksummed-superblock-slots-on-lba-0-and-1.md"
+  }
+}

@@ -1009,3 +1009,86 @@ let ``MLBNN-44: online factor-graph update refuses malformed topology and budget
     { valid with ObservationVariances = [| variance; 0.0 |] }
     |> MultilayerBnn.tryUpdateViaFactorGraph 1e-13 100 true 1.0
     |> expectErrorContains "ObservationVariances[1] must be finite and > 0"
+
+// ── Exact dense linear-Gaussian query -----------------------------------------
+
+[<Fact>]
+let ``MLBNN-45: exact dense query agrees with the acyclic sequential smoother`` () =
+    let priors =
+        [| Gaussian.ofMeanVariance -0.5 1.25
+           Gaussian.ofMeanVariance 0.25 0.8
+           Gaussian.ofMeanVariance 1.0 1.5
+           Gaussian.ofMeanVariance -0.75 0.6 |]
+    let variances = [| 0.4; 0.7; 0.3; 1.1 |]
+    let observations = [ 2.0; 2.0; 2.0 ]
+    let net = MultilayerBnn.tryCreate priors variances MultilayerBnn.Sequential |> unwrap
+    let dense = MultilayerBnn.tryInferExactDenseGaussian observations net |> unwrap
+    let factorGraph = MultilayerBnn.tryInferViaFactorGraph 1e-13 500 true observations net |> unwrap
+
+    Assert.Equal(4, dense.LayerCount)
+    Assert.Equal(3, dense.AbsorbedObservationCount)
+    for i in 0 .. priors.Length - 1 do
+        Assert.True(
+            abs (Gaussian.mean dense.Marginals.[i] - Gaussian.mean factorGraph.Marginals.[i]) < 1e-10,
+            sprintf "layer %d dense/tree mean mismatch" i)
+        Assert.True(
+            abs (Gaussian.variance dense.Marginals.[i] - Gaussian.variance factorGraph.Marginals.[i]) < 1e-10,
+            sprintf "layer %d dense/tree variance mismatch" i)
+
+[<Fact>]
+let ``MLBNN-46: exact dense query corrects the known loopy variance gap against an independent joint solve`` () =
+    let depth = 4
+    let priors = Array.init depth (fun _ -> Gaussian.ofMeanVariance 0.0 1.0)
+    let variances = Array.create depth 1.0
+    let topology = MultilayerBnn.SkipConnections [ (0, 2); (0, 3); (1, 3) ]
+    let net = MultilayerBnn.tryCreate priors variances topology |> unwrap
+    let dense = MultilayerBnn.tryInferExactDenseGaussian [ 5.0; 5.0; 5.0; 5.0 ] net |> unwrap
+    let priorTau = Array.init depth (fun i -> dense.Network.Layers.[i].Posterior.Precision)
+    let priorNu = Array.init depth (fun i -> dense.Network.Layers.[i].Posterior.PrecisionMean)
+    let expectedMeans, expectedVariances = exactDagMarginals priorTau priorNu variances (MultilayerBnn.parentsOf topology)
+    let loopy = MultilayerBnn.tryInferViaFactorGraph 1e-13 1000 true [] dense.Network |> unwrap
+
+    let denseError =
+        [ 0 .. depth - 1 ]
+        |> List.sumBy (fun i ->
+            abs (Gaussian.mean dense.Marginals.[i] - expectedMeans.[i])
+            + abs (Gaussian.variance dense.Marginals.[i] - expectedVariances.[i]))
+    let loopyVarianceError =
+        [ 0 .. depth - 1 ]
+        |> List.sumBy (fun i -> abs (Gaussian.variance loopy.Marginals.[i] - expectedVariances.[i]))
+
+    Assert.True(denseError < 1e-10, sprintf "exact-dense result diverged from independent solve: %.17g" denseError)
+    Assert.True(loopyVarianceError > 1e-6, sprintf "loopy variance gap vanished; update the known limitation: %.17g" loopyVarianceError)
+    for i in 0 .. depth - 1 do
+        Assert.True(
+            abs (Gaussian.variance dense.Marginals.[i] - expectedVariances.[i]) < 1e-10,
+            sprintf "layer %d dense covariance is not the independent exact covariance" i)
+
+[<Fact>]
+let ``MLBNN-47: exact dense query does not re-absorb evidence and matches the independent joint control`` () =
+    let topology = MultilayerBnn.Sequential
+    let channelVariances = Array.create 4 0.75
+    let net = MultilayerBnn.tryCreate (Array.create 4 prior) channelVariances topology |> unwrap
+    let updated = MultilayerBnn.tryInferExactDenseGaussian [ -1.0; 2.0; 3.0 ] net |> unwrap
+    let beforePrecision = updated.Network.Layers.[0].Posterior.Precision
+    let queried = MultilayerBnn.tryQueryExactDenseGaussian updated.Network |> unwrap
+    let priorTau = Array.init 4 (fun i -> updated.Network.Layers.[i].Posterior.Precision)
+    let priorNu = Array.init 4 (fun i -> updated.Network.Layers.[i].Posterior.PrecisionMean)
+    let expectedMeans, expectedVariances = exactDagMarginals priorTau priorNu channelVariances (MultilayerBnn.parentsOf topology)
+
+    Assert.Equal(3, queried.AbsorbedObservationCount)
+    Assert.Equal(bits beforePrecision, bits queried.Network.Layers.[0].Posterior.Precision)
+    for i in 0 .. queried.Marginals.Length - 1 do
+        Assert.True(
+            abs (expectedMeans.[i] - Gaussian.mean queried.Marginals.[i]) < 1e-12,
+            sprintf "layer %d query mean diverged from independent control" i)
+        Assert.True(
+            abs (expectedVariances.[i] - Gaussian.variance queried.Marginals.[i]) < 1e-12,
+            sprintf "layer %d query variance diverged from independent control" i)
+
+[<Fact>]
+let ``MLBNN-48: exact dense query refuses the declared over-cap dimension`` () =
+    let net = MultilayerBnn.tryCreateUniform 65 prior 1.0 |> unwrap
+    match MultilayerBnn.tryQueryExactDenseGaussian net with
+    | Ok _ -> failwith "exact dense query accepted more than 64 layers"
+    | Error message -> Assert.Contains("at most 64 layers, got 65", message)

@@ -1,11 +1,12 @@
 ---
 id: 081M1K72ZNG087G0R001QR0ESZ
 type: task
-state: backlog
+state: done
 priority: P1
 slug: freeze-cas-objects-through-iblockio
 title: "Freeze CAS objects through IBlockIo"
 created: 2026-09-03T00:00:00.000Z
+completed: 2026-09-03T09:15:15.054Z
 depends_on: []
 composes_with: ["081M1JCJ6K9087G0R002XVEG0Q"]
 ---

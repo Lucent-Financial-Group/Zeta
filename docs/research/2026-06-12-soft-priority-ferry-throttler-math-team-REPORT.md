@@ -116,5 +116,5 @@ unverified (irrelevant to DST claims, which are DoP=1).
 ## Sources verified
 
 SoftThrottle.fs · SoftEmu.fs · FerryThrottler.fs · ferry-throttler.ts · drain-scheduler.ts ·
-priority-ferry-throttler.ts · .kiro/specs/ferry-throttler-priority-lanes/{design,requirements}.md
+priority-ferry-throttler.ts · docs/design/2026-06-11-ferry-throttler-priority-lanes/{design,requirements}.md
 (line-level claims checked against landed code; read-only).

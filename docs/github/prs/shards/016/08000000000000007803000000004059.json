@@ -1,0 +1,12 @@
+{
+  "pr_number": 16473,
+  "archive_path": "docs/history/pr-reviews/PR-16473-feat-081m1k8t36n087g0r0005yqgjw-lba-0-superblock-for-log-and-cas.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-03T09:43:15.266Z",
+  "schema_version": "v1",
+  "commit_sha": "ead92846b4d6354d5235f3a4added65630a2f9ef",
+  "title": "feat(081M1K8T36N087G0R0005YQGJW): LBA 0 superblock for log and CAS",
+  "state": "MERGED",
+  "merged_at": "2026-09-03T09:42:38Z",
+  "head_ref": "feat/zetafs-block-superblock"
+}

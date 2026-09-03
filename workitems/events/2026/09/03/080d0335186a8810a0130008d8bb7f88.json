@@ -1,0 +1,14 @@
+{
+  "id": "080d0335186a8810a0130008d8bb7f88",
+  "at": "2026-09-03T09:39:16.945Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1KA63AC087G0R00349Q7WE",
+    "type": "task",
+    "title": "the pair roster over-reported: 31 candidates triaged to 14",
+    "slug": "the-pair-roster-over-reported-31-candidates-triaged-to-14",
+    "priority": "P2",
+    "filename": "081M1KA63AC087G0R00349Q7WE-the-pair-roster-over-reported-31-candidates-triaged-to-14.md"
+  }
+}

@@ -154,6 +154,15 @@ module MultilayerBnn =
           Converged: bool
           Exactness: FactorGraphExactness }
 
+    /// Exact dense marginal query for the finite declared linear-Gaussian
+    /// multilayer model. This is a correctness fallback for at most 64 layers,
+    /// not a replacement for distributed per-edge message passing.
+    type ExactDenseGaussianQuery =
+        { Network: Network
+          Marginals: Gaussian array
+          LayerCount: int
+          AbsorbedObservationCount: int }
+
     // -- Construction -------------------------------------------------------------
 
     /// Create an N-layer network from an array of Gaussian priors and
@@ -681,6 +690,181 @@ module MultilayerBnn =
                     result
                     |> Result.bind (fun previous ->
                         tryUpdateViaFactorGraph tol maxRounds requireConvergence observation previous.Network))
+                initial
+
+    // -- Exact dense Gaussian query -------------------------------------------------
+    //
+    // Gaussian BP is exact on a tree, and converged loopy Gaussian BP has exact
+    // means but generally not variances. For this declared finite linear-Gaussian
+    // model, compiling the information form and inverting it supplies the bounded
+    // exact covariance fallback. The implementation is deliberately separate from
+    // FactorGraph because that generic API does not expose a joint precision matrix.
+
+    let private exactDenseLayerLimit = 64
+
+    let private tryValidateExactDenseNetwork (net: Network) : Result<int list array, string> =
+        tryValidatedParents net
+        |> Result.bind (fun parents ->
+            if net.Layers.Length > exactDenseLayerLimit then
+                Error $"exact dense Gaussian query supports at most {exactDenseLayerLimit} layers, got {net.Layers.Length}"
+            else
+                match net.Layers |> Array.tryFindIndex (fun layer -> not (Gaussian.isProper layer.Posterior)) with
+                | Some index -> Error $"layer {index} posterior must be a finite proper Gaussian"
+                | None -> Ok parents)
+
+    let private addPrecision (matrix: float array array) row column amount =
+        matrix.[row].[column] <- matrix.[row].[column] + amount
+
+    let private tryCholeskyPositiveDefinite (matrix: float array array) : Result<unit, string> =
+        let n = matrix.Length
+        let lower = Array.init n (fun _ -> Array.zeroCreate<float> n)
+        let mutable failure: string option = None
+        let mutable i = 0
+        while i < n && failure.IsNone do
+            let mutable j = 0
+            while j <= i && failure.IsNone do
+                let mutable sum = matrix.[i].[j]
+                let mutable k = 0
+                while k < j do
+                    sum <- sum - lower.[i].[k] * lower.[j].[k]
+                    k <- k + 1
+                if i = j then
+                    if not (System.Double.IsFinite sum) || sum <= 0.0 then
+                        failure <- Some $"joint precision is not positive definite at pivot {i}"
+                    else
+                        lower.[i].[j] <- sqrt sum
+                else
+                    let diagonal = lower.[j].[j]
+                    if not (System.Double.IsFinite diagonal) || diagonal <= 0.0 then
+                        failure <- Some $"joint precision has invalid Cholesky diagonal {j}"
+                    else
+                        lower.[i].[j] <- sum / diagonal
+                j <- j + 1
+            i <- i + 1
+        match failure with
+        | Some message -> Error message
+        | None -> Ok()
+
+    let private tryInvertDeterministic (matrix: float array array) : Result<float array array, string> =
+        let n = matrix.Length
+        let augmented =
+            Array.init n (fun row ->
+                Array.init (2 * n) (fun column ->
+                    if column < n then matrix.[row].[column]
+                    elif column - n = row then 1.0
+                    else 0.0))
+        let mutable failure: string option = None
+        let mutable column = 0
+        while column < n && failure.IsNone do
+            let pivotRow =
+                [ column .. n - 1 ]
+                |> List.maxBy (fun row -> abs augmented.[row].[column], -row)
+            let pivot = augmented.[pivotRow].[column]
+            if not (System.Double.IsFinite pivot) || abs pivot <= 1e-15 then
+                failure <- Some $"joint precision has non-positive elimination pivot {column}"
+            else
+                if pivotRow <> column then
+                    let swap = augmented.[column]
+                    augmented.[column] <- augmented.[pivotRow]
+                    augmented.[pivotRow] <- swap
+                let divisor = augmented.[column].[column]
+                for index in 0 .. 2 * n - 1 do
+                    augmented.[column].[index] <- augmented.[column].[index] / divisor
+                for row in 0 .. n - 1 do
+                    if row <> column then
+                        let scale = augmented.[row].[column]
+                        for index in 0 .. 2 * n - 1 do
+                            augmented.[row].[index] <- augmented.[row].[index] - scale * augmented.[column].[index]
+                column <- column + 1
+        match failure with
+        | Some message -> Error message
+        | None ->
+            let inverse = Array.init n (fun row -> Array.init n (fun column -> augmented.[row].[n + column]))
+            if inverse |> Array.exists (Array.exists (System.Double.IsFinite >> not)) then
+                Error "joint precision inversion produced non-finite covariance"
+            else
+                Ok inverse
+
+    let private compileJointPrecision (parentsByChild: int list array) (net: Network) =
+        let n = net.Layers.Length
+        let precision = Array.init n (fun _ -> Array.zeroCreate<float> n)
+        let information = Array.zeroCreate<float> n
+        for layer in 0 .. n - 1 do
+            let posterior = net.Layers.[layer].Posterior
+            addPrecision precision layer layer posterior.Precision
+            information.[layer] <- posterior.PrecisionMean
+        for child in 0 .. n - 1 do
+            match parentsByChild.[child] with
+            | [] -> ()
+            | parents ->
+                let couplingPrecision = 1.0 / net.ObservationVariances.[child]
+                addPrecision precision child child couplingPrecision
+                for parent in parents do
+                    addPrecision precision parent parent couplingPrecision
+                    addPrecision precision child parent -couplingPrecision
+                    addPrecision precision parent child -couplingPrecision
+                for firstIndex in 0 .. List.length parents - 1 do
+                    for secondIndex in firstIndex + 1 .. List.length parents - 1 do
+                        let firstParent = List.item firstIndex parents
+                        let secondParent = List.item secondIndex parents
+                        addPrecision precision firstParent secondParent couplingPrecision
+                        addPrecision precision secondParent firstParent couplingPrecision
+        precision, information
+
+    let private queryExactDenseGaussian (net: Network) : Result<ExactDenseGaussianQuery, string> =
+        tryValidateExactDenseNetwork net
+        |> Result.bind (fun parentsByChild ->
+            let precision, information = compileJointPrecision parentsByChild net
+            tryCholeskyPositiveDefinite precision
+            |> Result.bind (fun () ->
+                tryInvertDeterministic precision
+                |> Result.map (fun covariance ->
+                    let marginals =
+                        Array.init net.Layers.Length (fun row ->
+                            let mean =
+                                [ 0 .. net.Layers.Length - 1 ]
+                                |> List.sumBy (fun column -> covariance.[row].[column] * information.[column])
+                            Gaussian.ofMeanVariance mean covariance.[row].[row])
+                    { Network = net
+                      Marginals = marginals
+                      LayerCount = net.Layers.Length
+                      AbsorbedObservationCount = net.Layers.[0].Objective.ObservationCount })))
+
+    /// Query exact marginals for the current finite declared linear-Gaussian
+    /// network. It does not absorb evidence and is bit-stable for the canonical
+    /// network state passed by the caller.
+    let tryQueryExactDenseGaussian (net: Network) : Result<ExactDenseGaussianQuery, string> =
+        queryExactDenseGaussian net
+
+    /// Absorb one observation exactly once at layer zero, then query the exact
+    /// finite dense Gaussian model. This is a query path, not a CRDT merge.
+    let tryUpdateExactDenseGaussian
+        (observation: float)
+        (net: Network)
+        : Result<ExactDenseGaussianQuery, string> =
+        tryValidatedParents net
+        |> Result.map ignore
+        |> Result.bind (fun () ->
+            MinimalBnn.update observation net.Layers.[0]
+            |> Result.mapError (fun message -> "exact dense Gaussian online update: " + message))
+        |> Result.bind (fun layerZero ->
+            let layers = Array.copy net.Layers
+            layers.[0] <- layerZero
+            queryExactDenseGaussian { net with Layers = layers })
+
+    /// Absorb a finite stream through the exact dense query boundary. Every
+    /// observation is applied once, in the caller-declared stream order.
+    let tryInferExactDenseGaussian
+        (observations: seq<float>)
+        (net: Network)
+        : Result<ExactDenseGaussianQuery, string> =
+        queryExactDenseGaussian net
+        |> fun initial ->
+            observations
+            |> Seq.fold
+                (fun result observation ->
+                    result
+                    |> Result.bind (fun previous -> tryUpdateExactDenseGaussian observation previous.Network))
                 initial
 
     // -- Combined forward+backward ---------------------------------------------------

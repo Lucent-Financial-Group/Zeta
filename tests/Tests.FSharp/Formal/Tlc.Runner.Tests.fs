@@ -304,10 +304,73 @@ let private runTlcUnlocked (model: PinnedModel) : int * string =
     p.ExitCode, stdout + stderr
 
 
+/// Did the JVM fail before TLC ever ran?
+///
+/// The banner check below cannot tell "this jar is a different TLC" from "no TLC ran at all", and
+/// those call for opposite responses: the first is drift an operator must fix, the second is an
+/// environment fault that will pass on the next run.
+///
+/// Observed 2026-09-03, once in three full-suite runs: under the memory pressure of the whole F#
+/// suite the JVM could not start —
+///
+///     Error occurred during initialization of VM
+///     Could not reserve enough space for object heap
+///
+/// — and the test reported `TOOLCHAIN DRIFT … a different TLC is a different experiment`, sending a
+/// reader to hunt a jar mismatch that did not exist. Same class as `forge-diagnosis`: a failure
+/// whose KIND is misreported costs more than the failure.
+let private jvmNeverStarted (stdout: string) =
+    [ "Could not reserve enough space for object heap"
+      "Error occurred during initialization of VM"
+      "Unable to access jarfile"
+      "OutOfMemoryError" ]
+    |> List.exists (fun marker -> stdout.Contains(marker, StringComparison.Ordinal))
+
+/// Attempts allowed when the JVM cannot start. The RUN is retried, never the verdict.
+[<Literal>]
+let private JvmStartAttempts = 3
+
+/// Should this run be attempted again?
+///
+/// Split out of the loop so the POLICY can be tested without launching a JVM. The two ways to get
+/// this wrong are opposite and both bad: retrying an answer turns a real failure intermittent, and
+/// not bounding the retry turns a persistent shortage into a hang.
+let internal shouldRetryJvmStart (attempt: int) (stdout: string) =
+    attempt < JvmStartAttempts && jvmNeverStarted stdout
+
 let private runTlc (model: PinnedModel) : int * string =
     tlcProcessGate.Wait()
-    try runTlcUnlocked model
-    finally tlcProcessGate.Release() |> ignore
+
+    try
+        // RETRY ONLY A JVM THAT NEVER STARTED.
+        //
+        // The registry pins `-Xmx4g`, and on a box running the whole 6,000-test suite the JVM
+        // sometimes cannot reserve it — observed once in three full runs on 2026-09-03. Nothing
+        // about the model or the jar is wrong when that happens; the process simply never got far
+        // enough to check anything.
+        //
+        // A model check is deterministic and idempotent, so re-running one is free of consequence —
+        // which is exactly the condition that makes a retry honest rather than a way of averaging
+        // over a flaky result. The retry is bounded and the LAST output is returned either way, so a
+        // persistent shortage still fails, and still fails with the "TLC DID NOT RUN" diagnosis
+        // rather than being retried into silence.
+        //
+        // Deliberately NOT retried: a violated invariant, a wrong banner, a missing completion
+        // marker. Those are answers, and re-asking a question you already have an answer to is how a
+        // real failure becomes intermittent.
+        let mutable attempt = 1
+        let mutable result = runTlcUnlocked model
+
+        while shouldRetryJvmStart attempt (snd result) do
+            attempt <- attempt + 1
+            // A moment for whatever else was holding the memory to release it. Re-reserving
+            // instantly would usually just fail again.
+            Thread.Sleep 2000
+            result <- runTlcUnlocked model
+
+        result
+    finally
+        tlcProcessGate.Release() |> ignore
 
 
 let private cleanMarker = "Model checking completed. No error has been found"
@@ -322,6 +385,13 @@ let private distinctStatesRegex =
 /// marker, the pinned error substring, and the pinned exhaustive state
 /// count all have to agree with the registry.
 let private judge (model: PinnedModel) (exitCode: int) (stdout: string) =
+    // Asked BEFORE the banner check, because a JVM that never started cannot print a banner and the
+    // absence would otherwise be read as evidence about the jar's version.
+    if jvmNeverStarted stdout then
+        failwithf
+            "TLC DID NOT RUN on %s — the JVM failed to start, so this says NOTHING about the model or the jar's version. NOT toolchain drift: retry, and if it persists give the runner more memory or lower TLC's heap.\nstdout head:\n%s"
+            model.Id (stdout.Substring(0, min 400 stdout.Length))
+
     if not (stdout.Contains(pinnedBanner, StringComparison.Ordinal)) then
         failwithf
             "TOOLCHAIN DRIFT on %s: the registry pins %s and this jar reports something else. A different TLC is a different experiment.\nstdout head:\n%s"
@@ -476,3 +546,76 @@ let ``models that cannot deadlock say so in the registry`` () =
     vacuous |> should contain "WagerSolvency"
     for model in allModels do
         [ "off-cfg"; "on-vacuous"; "on" ] |> should contain model.Deadlock
+
+
+// ── "TLC did not run" is not "TLC is the wrong version" ──────────────────────
+//
+// `judge`'s first question used to be the banner, and a missing banner was reported as TOOLCHAIN
+// DRIFT. But a JVM that never started cannot print a banner either, so one verdict covered two
+// causes that call for opposite responses: drift is an operator's job, a failed JVM is a retry.
+//
+// Observed once in three full-suite runs on 2026-09-03 — under the memory pressure of the whole F#
+// suite the JVM reported `Could not reserve enough space for object heap`, and the test announced
+// that the jar was a different TLC. A reader would have gone looking for a version mismatch that did
+// not exist. Same class as `forge-diagnosis`: a failure whose KIND is misreported costs more than
+// the failure.
+
+let private aModel =
+    { Id = "FixtureModel"
+      Module = "Fixture"
+      Config = "Fixture.cfg"
+      Expect = "valid"
+      ExpectDetail = ""
+      ExitCode = 0
+      Tier = "gate"
+      Deadlock = "on"
+      DistinctStates = None }
+
+[<Fact>]
+let ``a JVM that never started is reported as such, not as toolchain drift`` () =
+    let jvmDied =
+        "Error occurred during initialization of VM\nCould not reserve enough space for object heap\n"
+
+    let ex = Assert.Throws<Exception>(fun () -> judge aModel 1 jvmDied)
+
+    // The verdict must name what happened…
+    Assert.Contains("TLC DID NOT RUN", ex.Message)
+    // …and must NOT send the reader after a jar mismatch that does not exist.
+    Assert.DoesNotContain("TOOLCHAIN DRIFT", ex.Message)
+    // A run that did not happen says nothing about the model either way — the message says so, so
+    // the failure cannot be read as evidence about the specification.
+    Assert.Contains("NOTHING about the model", ex.Message)
+
+[<Fact>]
+let ``a jar reporting a different version IS toolchain drift`` () =
+    // The other half. A guard that called everything an environment fault would be as wrong as the
+    // one that called everything drift, and it would silently accept an unpinned checker.
+    let wrongJar = "TLC2 Version 1900.01.01.000000 (rev: deadbee)\nModel checking completed.\n"
+
+    let ex = Assert.Throws<Exception>(fun () -> judge aModel 0 wrongJar)
+
+    Assert.Contains("TOOLCHAIN DRIFT", ex.Message)
+    Assert.DoesNotContain("TLC DID NOT RUN", ex.Message)
+
+
+// ── The retry POLICY, tested without launching a JVM ─────────────────────────
+
+[<Fact>]
+let ``a JVM that never started is retried`` () =
+    // The observed case: -Xmx4g cannot be reserved while the whole suite runs.
+    Assert.True(shouldRetryJvmStart 1 "Could not reserve enough space for object heap")
+
+[<Fact>]
+let ``the retry is BOUNDED — a persistent shortage still fails`` () =
+    // Without this the run would spin on a box that simply does not have the memory, and a hang is
+    // a worse failure than a red test because nothing reports it.
+    Assert.False(shouldRetryJvmStart JvmStartAttempts "Could not reserve enough space for object heap")
+
+[<Fact>]
+let ``an ANSWER is never retried`` () =
+    // The half that matters most. TLC reporting a violation, a wrong banner, or a missing completion
+    // marker has ANSWERED; re-asking is how a real, reproducible failure becomes intermittent — and
+    // an intermittent failure is one people learn to re-run rather than read.
+    Assert.False(shouldRetryJvmStart 1 "Error: Invariant Solvency is violated.")
+    Assert.False(shouldRetryJvmStart 1 "TLC2 Version 1900.01.01.000000 (rev: deadbee)")
+    Assert.False(shouldRetryJvmStart 1 "Model checking completed. No error has been found")

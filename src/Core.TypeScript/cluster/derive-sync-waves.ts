@@ -115,6 +115,28 @@ const CNI_CHART = "cilium";
  */
 export const ORDER_ADJUDICATION_PENDING: ReadonlyMap<string, string> = new Map([
   [
+    "platform -> kube-prometheus-stack",
+    "FOUND 2026-09-03 by deriving edges from the CRD evidence class -- scanning in-repo manifests for " +
+      "non-core apiVersions and mapping each custom kind to its installing Application. It was the ONLY " +
+      "missing edge that class found across all 47 Applications, and service-DNS derivation cannot see it. " +
+      "`platform/monitoring.yaml` ships a monitoring.coreos.com/v1 ServiceMonitor and PrometheusRule, both " +
+      "applied (`monitoring` is one of the 15 names in the Application's own directory.include glob), while " +
+      "kube-prometheus-stack installs those CRDs at wave 0 against platform's -20. " +
+      "THIS ONE DEGRADES DIFFERENTLY FROM ITS TWO SIBLINGS, which is why it is registered separately rather " +
+      "than folded in: a Gateway with no pool is ADMITTED and simply address-less, and a PVC with no " +
+      "StorageClass PENDS -- both are quiet waits. A custom resource whose CRD does not exist is REJECTED by " +
+      "the API server, so platform reports SyncFailed on those two objects on every cold boot until wave 0 " +
+      "lands. ArgoCD's retry does converge it, so this is bootstrap noise and a degraded-status window, not a " +
+      "permanent failure. " +
+      "FOUR REPAIRS, NOT EQUIVALENT: (1) move platform after kube-prometheus-stack -- but platform installs " +
+      "eight CRDs other Applications create resources against, so this is the expensive one; (2) split " +
+      "monitoring.yaml into its own Application at a later wave -- cheapest, and it is the only object in " +
+      "platform needing a wave later than -20; (3) add SkipDryRunOnMissingResource=true to platform's " +
+      "syncOptions -- silences the symptom and keeps the inversion; (4) drop the ServiceMonitor/PrometheusRule. " +
+      "(2) looks right and is still a maintainer call, because it changes which Application owns the " +
+      "platform's own telemetry.",
+  ],
+  [
     "platform -> longhorn",
     "The portal StatefulSet's PVC is Longhorn-backed but `platform` syncs at -20 and longhorn at -15, so the " +
       "PVC pends until Longhorn lands. This is fact #6 of vault/TOPOLOGY.md repeating on a second Application: " +
