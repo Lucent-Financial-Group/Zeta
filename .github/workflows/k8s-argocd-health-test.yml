@@ -1224,11 +1224,10 @@ jobs:
             kubectl -n kube-system get ds,pods -l k8s-app=cilium -o wide || true
           fi
           echo "=== hostNetwork TCP ClusterIP + pod-IP probe (081M1DFQ2MZ distinguisher) ==="
-          echo "MEASURED 33800779819: hostNetwork ClusterIP FAIL, overlay pod IP OPEN; pod-network both OPEN."
-          echo "Cilium service list had kube-dns and spire-server ClusterIP backends active."
-          echo "klipper svclb-cilium-ingress was 2/2 Running; metal --disable=servicelb, k3d skipped it."
-          echo "Do not invent Cilium values. Do not re-lift included. Do not hostAliases to ClusterIP."
-          echo "--- klipper svclb (empty after --disable=servicelb) ---"
+          echo "MEASURED 33804533591: --disable=servicelb emptied app=svclb; hostNetwork ClusterIP still FAIL, pod IP OPEN."
+          echo "Agent lookup spire-server.spire on 10.43.0.10:53 i/o timeout with bundle.crt present."
+          echo "Klipper is not the translator. Do not invent Cilium values. Do not re-lift included."
+          echo "--- klipper svclb (MEASURED 33804533591: No resources found) ---"
           kubectl get ds,pods -A -l app=svclb -o wide || true
           SPIRE_IP="$(kubectl -n spire get svc spire-server -o jsonpath='{.spec.clusterIP}' 2>/dev/null || true)"
           SPIRE_PORT="$(kubectl -n spire get svc spire-server -o jsonpath='{.spec.ports[0].port}' 2>/dev/null || true)"
@@ -1238,6 +1237,18 @@ jobs:
           echo "kube-dns endpoint podIP=${DNS_EP_IP:-NONE}:53"
           NODE="$(kubectl get nodes -o jsonpath='{.items[0].metadata.name}' 2>/dev/null || true)"
           echo "node=${NODE:-NONE}"
+          echo "--- cilium-dbg status (Socket LB / KubeProxyReplacement; do not invent helm values) ---"
+          kubectl -n kube-system exec ds/cilium -c cilium-agent -- cilium-dbg status \
+            || echo "cilium-dbg status FAILED"
+          echo "--- k3d node cgroupns (Cilium kind Socket LB docs: private ns different from host) ---"
+          if [ -n "$NODE" ]; then
+            docker inspect "$NODE" --format 'CgroupnsMode={{.HostConfig.CgroupnsMode}} Privileged={{.HostConfig.Privileged}}' \
+              || echo "docker inspect FAILED"
+            echo "host /proc/1/ns/cgroup=$(readlink /proc/1/ns/cgroup 2>/dev/null || echo NONE)"
+            echo "node /proc/1/ns/cgroup=$(docker exec "$NODE" readlink /proc/1/ns/cgroup 2>/dev/null || echo NONE)"
+          else
+            echo "cgroupns: NO_NODE"
+          fi
           tcp_probe_from_node() {
             local ip="$1" port="$2" label="$3"
             echo "--- TCP ${label} ${ip:-NONE}:${port:-NONE} from k3d node (hostNetwork netns) ---"

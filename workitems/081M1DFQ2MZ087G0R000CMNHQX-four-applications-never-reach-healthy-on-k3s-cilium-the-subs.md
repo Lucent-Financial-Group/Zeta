@@ -656,19 +656,41 @@ does not. Pod-network ClusterIP works. kind+Cilium is Healthy on the
 dump shows klipper running.
 
 **hostAliases to ClusterIP stays closed.** **Do not invent Cilium
-values** (`socketLB`, `routingMode`, chart bumps). Next software is
-the metal k3s flag k3d skipped: `--disable=servicelb`. The next dump
-must show `app=svclb` empty and re-print the four TCP lines. If
-ClusterIP from hostNetwork is still FAIL with klipper gone, the class
-is host-ns socket-LB attach on k3d, still without inventing values.
+values** (`socketLB`, `routingMode`, chart bumps). Next software was
+the metal k3s flag k3d skipped: `--disable=servicelb`. MEASURED
+33804533591: klipper gone, ClusterIP still FAIL.
 
-## Next dump — hostNetwork ClusterIP after `--disable=servicelb`
+## MEASURED 2026-09-03 — live-k3d 33804533591: svclb gone, ClusterIP still FAIL (PR #16533)
 
-live-k3d dump still probes the four TCP targets from hostNetwork and
-pod-network, and lists `app=svclb`. Empty svclb + ClusterIP OPEN
-closes this cell. Empty svclb + ClusterIP FAIL means klipper was not
-the translator. Do not re-lift `--scope included`. Do not invent
-Cilium values.
+Job `100812620217` on SHA `c350832fd`
+[run 33804533591](https://github.com/Lucent-Financial-Group/Zeta/actions/runs/33804533591)
+**succeeded** at smoke after `--disable=servicelb`. Server 2/2,
+`bundle.crt` present.
+
+| Signal | Value |
+|---|---|
+| `app=svclb` | **No resources found** (klipper gone) |
+| hostNetwork kube-dns ClusterIP `:53` | **FAIL** |
+| hostNetwork kube-dns pod `:53` | **OPEN** |
+| hostNetwork spire-server ClusterIP `:443` | **FAIL** |
+| hostNetwork spire-server pod `:8081` | **OPEN** |
+| pod-network all four | **OPEN** |
+| spire-agent | `lookup spire-server.spire on 10.43.0.10:53: dial udp 10.43.0.10:53: i/o timeout` |
+
+**Klipper is not the ClusterIP translator.** Keep `--disable=servicelb`
+(metal match). Do not invent Cilium values. Do not re-lift included.
+Next dump is `cilium-dbg status` (Socket LB / KubeProxyReplacement) and
+the k3d node's Docker `CgroupnsMode` versus the runner host — Cilium's
+kind Socket-LB docs require a private cgroup namespace different from
+the host. k3d's config schema has no `CgroupnsMode` key; measure first.
+
+## Next dump — Socket LB status + cgroup namespace
+
+live-k3d dump now prints `cilium-dbg status` and
+`docker inspect CgroupnsMode` plus host vs node `/proc/1/ns/cgroup`.
+Do not treat those as measured until a dump with server Running +
+`bundle.crt` + empty `app=svclb` prints them. Do not invent Cilium
+values.
 
 ## The distinguishing test
 
