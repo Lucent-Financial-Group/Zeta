@@ -1,11 +1,12 @@
 ---
 id: 081M1KAFQJ5087G0R003A6HKEY
 type: task
-state: backlog
+state: done
 priority: P1
 slug: sealed-freeze-log-replay-through-iblockio
 title: "Sealed freeze log replay through IBlockIo"
 created: 2026-09-03T09:45:00.000Z
+completed: 2026-09-03T10:19:33.343Z
 depends_on: ["081M1K9D4Z0087G0R0002TFA8R"]
 composes_with: ["081M1K9D4Z0087G0R0002TFA8R"]
 ---
