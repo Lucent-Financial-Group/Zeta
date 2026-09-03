@@ -68,6 +68,12 @@ options:
       # kubeconfig exists.
       - arg: --cluster-init
         nodeFilters: [server:*]
+      # Metal k3s-server.nix. Do NOT add hostAliases 127.0.0.1 control-plane
+      # here: this profile has agents, and that mapping is true only on the
+      # founder. bringUpK3dDevCluster writes the founder hosts entry on the
+      # server container only.
+      - arg: --tls-san=control-plane
+        nodeFilters: [server:*]
       # Disable bundled CNI / kube-proxy / network-policy - Cilium
       # takes all three.
       - arg: --flannel-backend=none

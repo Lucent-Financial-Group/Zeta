@@ -530,6 +530,61 @@ The included-class DNS timeout is still the remaining second class
 **after** the server writes the bundle. Smoke cannot see it while
 the PVC is still provisioning.
 
+## MEASURED 2026-09-03 — k3d skipped metal's `control-plane` hosts + SAN, and never waited for nodes Ready
+
+Smoke 33754516236 dump, T+~47s of catalog:
+
+- kube-dns already had cluster-pool IP `10.143.0.138` (CNI assigned once)
+- cert-manager, trust-manager, SPIFFE CSI: ContainerCreating, no pod IP
+- `cilium-dbg` failed `container not found ("cilium-agent")`
+- PVC `spire-data-spire-server-0` still Pending
+
+That is not "Cilium never installed". Helm `--wait` is Cilium pods.
+k3d create is `wait: false` because there is no CNI yet. kind `--cni
+cilium` then calls `waitForAllNodesReady(180)`. k3d did not.
+
+Separately, metal `k3s-server.nix` maps `control-plane -> 127.0.0.1` on
+the founder and `--tls-san=control-plane` so Cilium can dial the
+Application's `k8sServiceHost: control-plane`. k3d skipped both (the
+same class as skipping Gateway API CRDs). Helm deltas the host to the
+Docker DNS name; ArgoCD's cilium Application wants the metal name back.
+
+Next software is matching those metal first-boot facts, **not** a
+Cilium values tweak and **not** an included re-lift. The CI profile
+(agents: 0) may `hostAliases` 127.0.0.1 on every node it creates. The
+local three-node profile must SAN the cert and write founder hosts on
+the server container only — the same mapping on an agent is the
+joining-node defect `k3s-server.nix` refuses.
+
+## MEASURED 2026-09-03 — live-k3d smoke 33771284753 after control-plane hosts + nodes Ready (PR #16508)
+
+Job `100702922886` on SHA `3dde8ce4f`
+[run 33771284753](https://github.com/Lucent-Financial-Group/Zeta/actions/runs/33771284753)
+**succeeded** at smoke scope. Bring-up logged `Mapping control-plane ->
+127.0.0.1` and `Waiting for nodes Ready now that Cilium is the CNI`.
+
+**Dump contrast (same ~T+110s class as 33754516236):**
+
+| Signal | 33754516236 (before) | 33771284753 (after) |
+|---|---|---|
+| cert-manager | ContainerCreating | 1/1 Running, RESTARTS=0 |
+| trust-manager | ContainerCreating | Synced/Healthy |
+| spire-server-0 | 0/2 Pending | 2/2 Running |
+| spire-bundle | DATA 0 | `bundle.crt` present |
+| cilium-dbg kube-dns | container not found | `10.43.0.10` => `10.143.0.177` active |
+| spire-agent crash | missing `bundle.crt` | DNS i/o timeout to `spire-server.spire` |
+
+The startup race (empty bundle while PVC Pending / Cilium Progressing)
+is **closed** on smoke. The **second class** (hostNetwork agent
+`lookup spire-server.spire on 10.43.0.10:53: dial udp 10.43.0.10:53:
+i/o timeout`) is **visible again** once the server runs — same line as
+included dump 33429761222. Do not collapse the two. Do not invent
+Cilium values. Do not re-lift `--scope included`.
+
+Sibling on the same run: `live kind included` failed only on mimir
+Synced/Degraded + agent-memory OutOfSync/Missing — Otto `081M1FG1RCW`,
+not this PR. `gate (required)` green.
+
 ## The distinguishing test
 
 For each of the four, the question is the same and it is answerable:

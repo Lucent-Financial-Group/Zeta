@@ -146,6 +146,8 @@ describe("the k3d lane installs metal's Cilium configuration", () => {
     );
     expect(k3dBody).toContain("applyK3dCoreDnsUpstreamOverride(ports)");
     expect(k3dBody).toContain("applyVendoredGatewayApiCrds(ports)");
+    expect(k3dBody).toContain("applyK3dControlPlaneHostsAlias(ports, options.kubeApiHost)");
+    expect(k3dBody).toContain("waitForAllNodesReady(180)");
     expect(k3dBody).not.toContain("gateway-api/releases/download");
     expect(code).toContain("coredns-custom");
     // The restart must be a REAL call. The first draft used
@@ -159,6 +161,7 @@ describe("the k3d lane installs metal's Cilium configuration", () => {
     const src = readFileSync(USE_CASES, "utf8");
     const kindFn = src.slice(src.indexOf("export function bringUpKindCiCluster"), src.indexOf("export function tearDownKindCluster"));
     expect(kindFn).not.toContain("applyK3dCoreDnsUpstreamOverride");
+    expect(kindFn).not.toContain("applyK3dControlPlaneHostsAlias");
     expect(kindFn).toContain("applyKindCiliumCoreDnsUpstreamOverride(ports)");
     expect(kindFn).toContain("applyVendoredGatewayApiCrds(ports)");
   });
