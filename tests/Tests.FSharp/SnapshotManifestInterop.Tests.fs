@@ -4,7 +4,9 @@ open System
 open System.Collections.Generic
 open System.IO
 open System.Text.Json
+open System.Threading
 open Xunit
+open Zeta.Core
 
 /// Can F# read a snapshot manifest that TypeScript wrote?
 ///
@@ -79,6 +81,45 @@ module SnapshotManifestInteropTests =
             let fsharpName = sprintf "snapshot-%020d.snap" seq
             let typescriptName = "snapshot-" + string(seq).PadLeft(20, '0') + ".snap"
             Assert.Equal(fsharpName, typescriptName)
+
+    [<Fact>]
+    let ``the REAL F# store opens a directory the REAL TypeScript store wrote`` () =
+        // The RUNTIME crossing, as opposed to the byte assertion above. The fixture was produced by
+        // `DiskSnapshotStore.write` in TypeScript — the same call a live loop makes — and this
+        // constructs an F# `DiskSnapshotStore` over that directory and asks `LatestAsync` for the
+        // pointer. Reading the bytes and running the reader are different claims: the first says the
+        // format was transcribed correctly, the second says the two stores can actually find each
+        // other's work. If either side's ADDRESSING drifts, only this one goes red.
+        //
+        // The codec is never invoked — `LatestAsync` reads the manifest and nothing else — so
+        // `CheckpointDeltaCodec` is here to satisfy the constructor, not to assert anything.
+        // Snapshot BYTES need codec parity, which is a SEPARATE treaty; said plainly so a green here
+        // is not mistaken for byte-level interop it does not check.
+        task {
+            let fixture =
+                Path.Join(repoRoot (), "src", "Core.TypeScript", "durability", "snapshot-interop-fixture")
+
+            Assert.True(
+                Directory.Exists fixture,
+                sprintf
+                    "fixture missing at %s — regenerate with: bun src/Core.TypeScript/durability/generate-snapshot-interop-fixture.ts"
+                    fixture
+            )
+
+            let store =
+                new DiskSnapshotStore<string>(fixture, CheckpointDeltaCodec<string>()) :> ISnapshotStore<string>
+
+            let! pointer = store.LatestAsync CancellationToken.None
+
+            Assert.NotNull pointer
+            Assert.Equal(11L, pointer.Seq)
+            Assert.Equal("snapshot-00000000000000000011.snap", pointer.Handle :?> string)
+
+            // And the file the pointer NAMES is really there. A manifest pointing at a snapshot that
+            // does not exist satisfies every assertion above and fails at the one moment it is
+            // needed — recovery.
+            Assert.True(File.Exists(Path.Join(fixture, pointer.Handle :?> string)))
+        }
 
     [<Fact>]
     let ``the TypeScript disk store exists at all`` () =
