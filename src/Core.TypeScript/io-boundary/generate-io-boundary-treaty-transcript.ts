@@ -35,22 +35,30 @@ import { join } from "node:path";
 import * as IO from "./io-boundary";
 import * as ZSet from "../z-set/z-set";
 
+/** A ledger key: the string ledgers and the numeric ones share one transcript. */
+type Key = string | number;
+
 /** Ordinal, like F#'s structural comparison on strings. NOT `localeCompare`. */
-const cmpStr = (a: string, b: string): number => (a < b ? -1 : a > b ? 1 : 0);
-const cmpNum = (a: number, b: number): number => a - b;
+const cmpStr: ZSet.Compare<Key> = (a, b) => {
+  const x = String(a);
+  const y = String(b);
+  if (x < y) return -1;
+  if (x > y) return 1;
+  return 0;
+};
+
+const cmpNum: ZSet.Compare<Key> = (a, b) => Number(a) - Number(b);
 
 interface Entry {
-  readonly e: string | number;
+  readonly e: Key;
   readonly w: number;
 }
 
 type LedgerSpec = readonly Entry[];
 
-function ledgerOf(spec: LedgerSpec, numeric: boolean): ZSet.ZSet<never> {
+function ledgerOf(spec: LedgerSpec, numeric: boolean): ZSet.ZSet<Key> {
   const entries = spec.map((x) => ({ e: x.e, w: x.w }));
-  return (
-    numeric ? ZSet.ofEntries(cmpNum as never, entries as never) : ZSet.ofEntries(cmpStr as never, entries as never)
-  ) as ZSet.ZSet<never>;
+  return ZSet.ofEntries(numeric ? cmpNum : cmpStr, entries);
 }
 
 interface FuseVector {
@@ -132,10 +140,6 @@ const NUMERIC_LEDGERS: readonly LedgerSpec[] = [
   ],
 ];
 
-function exteriorOf(spec: LedgerSpec, numeric: boolean): (string | number)[] {
-  return IO.toArray(IO.fuse(IO.input(ledgerOf(spec, numeric)))) as (string | number)[];
-}
-
 const vectors: Vector[] = [];
 
 for (const numeric of [false, true]) {
@@ -146,7 +150,7 @@ for (const numeric of [false, true]) {
       vectorType: "Fuse",
       numeric,
       ledger: spec,
-      expectedExterior: IO.toArray(outside) as (string | number)[],
+      expectedExterior: IO.toArray(outside),
       expectedCount: IO.count(outside),
       expectedIsEmpty: IO.isEmpty(outside),
     });
@@ -174,13 +178,13 @@ const COMPOSE_PAIRS: readonly (readonly [LedgerSpec, LedgerSpec])[] = [
 ];
 
 for (const [l, r] of COMPOSE_PAIRS) {
-  const composed = IO.compose(cmpStr as never, IO.input(ledgerOf(l, false)), IO.input(ledgerOf(r, false)));
+  const composed = IO.compose(cmpStr, IO.input(ledgerOf(l, false)), IO.input(ledgerOf(r, false)));
   vectors.push({
     vectorType: "ComposeThenFuse",
     numeric: false,
     left: l,
     right: r,
-    expectedExterior: IO.toArray(IO.fuse(composed)) as (string | number)[],
+    expectedExterior: IO.toArray(IO.fuse(composed)),
   });
 }
 
@@ -193,14 +197,14 @@ const COMPOSE_ALL: readonly (readonly LedgerSpec[])[] = [
 
 for (const ledgers of COMPOSE_ALL) {
   const composed = IO.composeAll(
-    cmpStr as never,
+    cmpStr,
     ledgers.map((l) => IO.input(ledgerOf(l, false))),
   );
   vectors.push({
     vectorType: "ComposeAllThenFuse",
     numeric: false,
     ledgers,
-    expectedExterior: IO.toArray(IO.fuse(composed)) as (string | number)[],
+    expectedExterior: IO.toArray(IO.fuse(composed)),
   });
 }
 
@@ -212,7 +216,7 @@ for (const spec of STRING_LEDGERS) {
       numeric: false,
       ledger: spec,
       key,
-      expected: IO.contains(cmpStr as never, key as never, outside),
+      expected: IO.contains(cmpStr, key, outside),
     });
   }
 }
@@ -244,11 +248,11 @@ const OP_RUNS: readonly (readonly { op: "emit" | "retract"; key: string }[])[] =
 
 for (const ops of OP_RUNS) {
   const insides = ops.map((o) => (o.op === "emit" ? IO.emit(o.key) : IO.retract(o.key)));
-  const composed = IO.composeAll(cmpStr as never, insides as never);
+  const composed = IO.composeAll(cmpStr, insides);
   vectors.push({
     vectorType: "EmitRetractThenFuse",
     ops,
-    expectedExterior: IO.toArray(IO.fuse(composed)) as string[],
+    expectedExterior: IO.toArray(IO.fuse(composed)).map(String),
   });
 }
 
@@ -258,4 +262,3 @@ console.log(`wrote ${String(vectors.length)} vectors to ${out}`);
 const byType = new Map<string, number>();
 for (const v of vectors) byType.set(v.vectorType, (byType.get(v.vectorType) ?? 0) + 1);
 for (const [k, n] of [...byType].sort()) console.log(`  ${k.padEnd(22)} ${String(n)}`);
-void exteriorOf;
