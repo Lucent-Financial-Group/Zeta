@@ -192,6 +192,40 @@ dispatch must print `zeta-root-dev` status, the Application list, and
 repo-server / application-controller logs at that timeout. Do not invent a
 Cilium values tweak from a silent wait.
 
+**Wait defect, not a Cilium finding:** `hat-system` is sync-wave `-10` (the
+head of the catalog). Pinning the wait to that NAME made a silent catalog look
+like a slow hat-system and spent the entire 2400s health budget on one
+NotFound. The next dispatch waits for ANY child other than `zeta-root-dev`,
+capped at 180s, dumps the kind LB-IPAM pool (`zeta-lb-pool`) and LoadBalancer
+Services at timeout, and refuses in seconds if bring-up dropped the pool
+alias. Dispatch that probe on the wait-fix branch, not on current `main` —
+another 40-minute hat-system wait is not a second measurement.
+
+## MEASURED 2026-09-02 — run 33695849211 (wait-fix branch, 180s)
+
+Dispatch: [run 33695849211](https://github.com/Lucent-Financial-Group/Zeta/actions/runs/33695849211)
+`workflow_dispatch` on `cursor/child-wait-ahead-of-hat-27c5` at `3f13a8c23`,
+`cilium_included_probe=true`.
+
+**The wait-fix held.** Child wait logged at 0/60/120s and timed out at 180s.
+Not 2400s. Not `hat-system` NotFound.
+
+**The testing load balancer is real:**
+
+    zeta-lb-pool   DISABLED=false  CONFLICTING=False  IPS AVAILABLE=20
+    kube-system/cilium-ingress  LoadBalancer  EXTERNAL-IP=172.18.255.200
+
+**Why there are still zero children:** `zeta-root-dev` is Healthy with
+`sync=Unknown` and ComparisonError:
+
+    Could not resolve host: github.com
+
+Same class as the k3d CoreDNS `127.0.0.11` finding (2026-08-31). kubeadm
+CoreDNS does not import `coredns-custom`, so the k3d ConfigMap would be
+ignored on kind. The next probe patches the kubeadm Corefile to
+`forward . 1.1.1.1 8.8.8.8` on kind `--cni cilium` only. Do not invent a
+Cilium values tweak (`routingMode`, chart bump) from this.
+
 State stays in-progress until a dispatch produces per-app verdicts.
 
 ## The distinguishing test

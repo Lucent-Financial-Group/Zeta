@@ -16,7 +16,7 @@ import {
   resolveRegistryToken,
 } from "./lib.ts";
 import { GATEWAY_API_CRD_BUNDLE } from "../cilium-kind-lane.ts";
-import { applyDevRegistryPullSecret, bringUpK3dDevCluster, bringUpKindCiCluster } from "./use-cases.ts";
+import { applyDevRegistryPullSecret, bringUpK3dDevCluster, bringUpKindCiCluster, rewriteCorefileForwardToPublicResolvers } from "./use-cases.ts";
 import type {
   AppCatalogApplicator,
   ClusterControlPlane,
@@ -184,6 +184,26 @@ describe("kind CI use case", () => {
     expect(log.indexOf(pool)).toBeLessThan(catalogAt);
   });
 
+  test("kind --cni cilium patches kubeadm CoreDNS to public resolvers before the catalogue", () => {
+    // MEASURED run 33695849211: ComparisonError Could not resolve host: github.com
+    // with zeta-lb-pool assigned. k3d's coredns-custom ConfigMap is ignored by
+    // kubeadm CoreDNS. This is the kind surface of the same class.
+    const log: string[] = [];
+    bringUpKindCiCluster(fakePorts(log), {
+      configPath: "/tmp/kind-cilium.yaml",
+      clusterName: "zeta-ci-cilium",
+      gitRef: "main",
+      gitRepoUrl: "https://github.com/Lucent-Financial-Group/Zeta",
+      cni: "cilium",
+    });
+    const patch = log.find((entry) => entry.startsWith("patch:configmap/coredns@kube-system:"));
+    expect(patch).toBeDefined();
+    expect(patch).toContain("1.1.1.1");
+    expect(patch).toContain("8.8.8.8");
+    const catalogAt = log.findIndex((entry) => entry.startsWith("catalog:"));
+    expect(log.indexOf(patch!)).toBeLessThan(catalogAt);
+  });
+
   test("kindnetd bring-up does not apply the Cilium LB-IPAM alias", () => {
     const log: string[] = [];
     bringUpKindCiCluster(fakePorts(log), {
@@ -196,6 +216,7 @@ describe("kind CI use case", () => {
     for (const crd of DEV_CILIUM_LB_KIND_CRDS) {
       expect(log).not.toContain(`crd:${crd}`);
     }
+    expect(log.some((entry) => entry.startsWith("patch:configmap/coredns@"))).toBe(false);
   });
 
   test("k3d bring-up does not apply the kind LB-IPAM alias — k3d has Cilium, not this pool", () => {
@@ -632,5 +653,32 @@ describe("dev/CI registry pull credential", () => {
     const catalogAt = source.indexOf("applyRootDevCatalog(gitRef, gitRepoUrl)");
     expect(mintAt).toBeGreaterThan(-1);
     expect(mintAt).toBeLessThan(catalogAt);
+  });
+});
+
+describe("kind+Cilium CoreDNS forward rewrite", () => {
+  test("replaces kubeadm forward . /etc/resolv.conf including the options block", () => {
+    const input = [
+      ".:53 {",
+      "    kubernetes cluster.local in-addr.arpa ip6.arpa {",
+      "       pods insecure",
+      "    }",
+      "    forward . /etc/resolv.conf {",
+      "       max_concurrent 1000",
+      "    }",
+      "    cache 30",
+      "}",
+      "",
+    ].join("\n");
+    const out = rewriteCorefileForwardToPublicResolvers(input);
+    expect(out).toContain("forward . 1.1.1.1 8.8.8.8");
+    expect(out).not.toContain("/etc/resolv.conf");
+    expect(out).toContain("kubernetes cluster.local");
+  });
+
+  test("empty Corefile falls back to a kubeadm Corefile that still answers cluster names", () => {
+    const out = rewriteCorefileForwardToPublicResolvers("");
+    expect(out).toContain("forward . 1.1.1.1 8.8.8.8");
+    expect(out).toContain("kubernetes cluster.local");
   });
 });

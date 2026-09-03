@@ -271,6 +271,7 @@ export function bringUpKindCiCluster(ports: DevClusterPorts, options: KindCiBrin
     installShippedCiliumOnKind(ports, options.clusterName);
     controlPlane.waitForAllNodesReady(180);
     applyDevCiliumLbKindAlias(ports);
+    applyKindCiliumCoreDnsUpstreamOverride(ports);
   } else {
     controlPlane.waitForAllNodesReady(180);
     console.log("Installing Gateway API CRDs (cert-manager enableGatewayAPI on kind/k3d) ...");
@@ -372,19 +373,24 @@ export function tearDownKindCluster(ports: DevClusterPorts, clusterName: string)
  * still resolve (the `kubernetes` plugin answers them locally, which is exactly
  * why the cluster looks healthy); every external name fails.
  *
- * WHY KIND DOES NOT HAVE THIS, and why that matters: kind's node image
- * substitutes the host's real resolvers into the node resolv.conf for this
- * precise reason. k3s leaves 127.0.0.11 in place. So the kind/k3d asymmetry is
- * explained WITHOUT invoking Cilium -- the CNI was never the cause, and this is
- * a k3d substrate gap, NOT a defect in anything metal runs. On metal
- * /etc/resolv.conf names a routable nameserver and this override is unnecessary.
+ * WHY KINDNETD DOES NOT HAVE THIS: kind's node image substitutes the host's
+ * real resolvers into the node resolv.conf. kindnetd App-of-Apps clones
+ * github.com without this override.
+ *
+ * KIND + CILIUM DOES HAVE THIS. MEASURED run 33695849211 (081M1DFQ2MZ):
+ * same ComparisonError, same `Could not resolve host: github.com`, while
+ * `zeta-lb-pool` assigned `cilium-ingress` 172.18.255.200. kubeadm CoreDNS
+ * does not import `coredns-custom`, so the kind+Cilium path patches the
+ * Corefile itself (`applyKindCiliumCoreDnsUpstreamOverride`). This k3d
+ * function stays k3d-only. On metal /etc/resolv.conf names a routable
+ * nameserver and neither override is necessary.
  *
  * The fix uses k3s's own documented extension point (`coredns-custom`, imported
  * by the shipped Corefile above) rather than rewriting the Corefile, so it
  * survives a k3s upgrade that regenerates it.
  *
- * SCOPE: k3d bring-up only. `bringUpKindCiCluster` does not call this, and
- * neither does anything on the metal path.
+ * SCOPE: k3d bring-up only. `bringUpKindCiCluster` kindnetd does not call this.
+ * kind `--cni cilium` calls `applyKindCiliumCoreDnsUpstreamOverride` instead.
  */
 export function applyK3dCoreDnsUpstreamOverride(ports: DevClusterPorts): void {
   console.log("Pointing k3d CoreDNS at a reachable upstream (127.0.0.11 is unreachable from a pod netns) ...");
@@ -413,6 +419,66 @@ export function applyK3dCoreDnsUpstreamOverride(ports: DevClusterPorts): void {
   // draft called `controlPlane.restartDeployment?.(...)` -- a method that DOES
   // NOT EXIST on that interface, so the optional-call would have compiled, run,
   // and done NOTHING. A silent no-op inside the fix for a silent no-op.
+  ports.process.run("kubectl", ["-n", "kube-system", "rollout", "restart", "deployment/coredns"], { timeoutMs: 60_000 });
+  ports.process.run("kubectl", ["-n", "kube-system", "rollout", "status", "deployment/coredns", "--timeout=90s"], { timeoutMs: 120_000 });
+}
+
+/**
+ * kubeadm CoreDNS (kind) has no `coredns-custom` import. k3d's ConfigMap
+ * would be ignored here. Patch the Corefile's `forward` stanza to public
+ * resolvers, then restart, before ArgoCD's repo-server clones github.com.
+ *
+ * MEASURED run 33695849211: kind+Cilium included, 180s any-child wait,
+ * `zeta-lb-pool` present, cilium-ingress EXTERNAL-IP 172.18.255.200,
+ * then ComparisonError `Could not resolve host: github.com`. Kindnetd
+ * on the same SHA creates children. Do not invent a Cilium values tweak
+ * from that; this is the CoreDNS forward, the same class k3d already
+ * patched via a different surface.
+ */
+export const DEV_COREDNS_UPSTREAM_FORWARD = "forward . 1.1.1.1 8.8.8.8";
+
+const KIND_CILIUM_COREDNS_FALLBACK_COREFILE = [
+  ".:53 {",
+  "    errors",
+  "    health {",
+  "       lameduck 5s",
+  "    }",
+  "    ready",
+  "    kubernetes cluster.local in-addr.arpa ip6.arpa {",
+  "       pods insecure",
+  "       fallthrough in-addr.arpa ip6.arpa",
+  "       ttl 30",
+  "    }",
+  "    prometheus :9153",
+  `    ${DEV_COREDNS_UPSTREAM_FORWARD} {`,
+  "       max_concurrent 1000",
+  "    }",
+  "    cache 30",
+  "    loop",
+  "    reload",
+  "    loadbalance",
+  "}",
+  "",
+].join("\n");
+
+export function rewriteCorefileForwardToPublicResolvers(corefile: string): string {
+  const replacement = `${DEV_COREDNS_UPSTREAM_FORWARD} {\n       max_concurrent 1000\n    }`;
+  if (/forward \. \/etc\/resolv\.conf/.test(corefile)) {
+    return corefile.replace(/forward \. \/etc\/resolv\.conf(\s*\{[^}]*\})?/, replacement);
+  }
+  if (corefile.includes(DEV_COREDNS_UPSTREAM_FORWARD)) return corefile;
+  return KIND_CILIUM_COREDNS_FALLBACK_COREFILE;
+}
+
+export function applyKindCiliumCoreDnsUpstreamOverride(ports: DevClusterPorts): void {
+  console.log(
+    "Pointing kind+Cilium CoreDNS at 1.1.1.1/8.8.8.8 (MEASURED run 33695849211: repo-server Could not resolve host: github.com) ...",
+  );
+  const get = ports.process.run("kubectl", ["-n", "kube-system", "get", "configmap", "coredns", "-o", "jsonpath={.data.Corefile}"], {
+    timeoutMs: 30_000,
+  });
+  const corefile = rewriteCorefileForwardToPublicResolvers(get.stdout);
+  ports.controlPlane.mergePatch("configmap/coredns", "kube-system", JSON.stringify({ data: { Corefile: corefile } }));
   ports.process.run("kubectl", ["-n", "kube-system", "rollout", "restart", "deployment/coredns"], { timeoutMs: 60_000 });
   ports.process.run("kubectl", ["-n", "kube-system", "rollout", "status", "deployment/coredns", "--timeout=90s"], { timeoutMs: 120_000 });
 }

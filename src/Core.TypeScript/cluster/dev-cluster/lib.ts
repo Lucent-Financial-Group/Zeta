@@ -74,6 +74,9 @@ export const DEV_CILIUM_LB_KIND_CRDS = [
   "ciliuml2announcementpolicies.cilium.io",
 ] as const;
 
+/** Object name the kind alias declares. Bring-up and the harness both use this. */
+export const DEV_CILIUM_LB_KIND_POOL_NAME = "zeta-lb-pool";
+
 /** Absolute path of the kind Cilium LB-IPAM alias, for the bring-up use-case. */
 export function devCiliumLbKindManifestPath(): string {
   return join(REPO_ROOT, DEV_CILIUM_LB_KIND_MANIFEST_RELPATH);
