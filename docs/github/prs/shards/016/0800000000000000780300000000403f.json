@@ -1,0 +1,12 @@
+{
+  "pr_number": 16447,
+  "archive_path": "docs/history/pr-reviews/PR-16447-feat-observe-the-corporate-sink-the-declared-half-of-the-sink-du.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-03T05:57:27.890Z",
+  "schema_version": "v1",
+  "commit_sha": "b7bb39e50e788c499d83bd1224695612f976d657",
+  "title": "feat(observe): the corporate sink — the declared half of the sink DU",
+  "state": "MERGED",
+  "merged_at": "2026-09-03T05:56:57Z",
+  "head_ref": "corporate-sink"
+}
