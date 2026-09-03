@@ -87,8 +87,12 @@ let ``the persisted form folds to the same schema as the live log`` (log: Schema
     | Error e -> failwithf "round-trip failed: %A" e
 
 [<Property(Arbitrary = [| typeof<LogArb> |])>]
-let ``encode is deterministic: same log, same bytes`` (log: SchemaLog) =
-    SchemaLogCodec.encode log = SchemaLogCodec.encode log
+let ``encode emits one escaped record line per source event after the fixed header`` (log: SchemaLog) =
+    let encoded = SchemaLogCodec.encode log
+    let lines = encoded.Split '\n'
+    Assert.Equal<string>("zschemalog/1", lines.[0])
+    Assert.Equal(List.length log, lines.Length - 1)
+    Assert.DoesNotContain("\r", encoded)
 
 // ── 2. Golden vectors (cross-oracle byte lock) ───────────────────────
 
