@@ -1,0 +1,12 @@
+{
+  "pr_number": 16466,
+  "archive_path": "docs/history/pr-reviews/PR-16466-feat-hygiene-the-sweep-that-found-three-defects-was-done-once-by-hand.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-03T09:00:58.483Z",
+  "schema_version": "v1",
+  "commit_sha": "9f14b17c5e3e3d1365ce9545905f7029a3a78cd7",
+  "title": "feat(hygiene): the sweep that found three defects was done once, by hand",
+  "state": "MERGED",
+  "merged_at": "2026-09-03T09:00:19Z",
+  "head_ref": "cross-language-pair-roster"
+}
