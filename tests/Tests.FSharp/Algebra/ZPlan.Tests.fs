@@ -165,8 +165,8 @@ let ``retraction rides through any plan: run p (-a) = -(run p a)`` (plan: ZPlan)
     runOk (sourcesOf (-a) (-b)) plan = -(runOk (sourcesOf a b) plan)
 
 [<Property(Arbitrary = [| typeof<PlanArb> |])>]
-let ``determinism: two runs of one plan are equal`` (plan: ZPlan) (a: ZSet<ZAtom>) (b: ZSet<ZAtom>) =
-    ZPlan.run reg (sourcesOf a b) plan = ZPlan.run reg (sourcesOf a b) plan
+let ``ZERO PRESERVATION: every plan maps the all-zero source to the zero ZSet`` (plan: ZPlan) =
+    runOk (sourcesOf ZSet.empty ZSet.empty) plan = ZSet.empty
 
 // ── 3. Run-time honesty ──────────────────────────────────────────────
 
