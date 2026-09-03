@@ -635,7 +635,7 @@ module ZetaFsFreeze =
 
     /// DST: Journaled log frames go through `IBlockIo` (RMW on the tail block).
     /// Objects still speak files unless `createManualWithBlockStore` is used.
-    /// LBA 0 is a `ZFL1` superblock; payload starts at LBA 1.
+    /// LBA 0 and 1 are checksummed `ZFL2` copies; payload starts at LBA 2.
     let createManualWithBlocks
         (storeDir: string)
         (mutbuf: ZetaFsMutbuf.Catalog)
@@ -645,8 +645,8 @@ module ZetaFsFreeze =
         createFull storeDir mutbuf observer None defaultConfig true (Some blocks) None
 
     /// DST: log on one simulated disk, CAS objects on another. Two devices
-    /// so a crash arm on objects cannot tear the log. LBA 0 on each disk is
-    /// the superblock (`ZFL1` / `ZCA1`).
+    /// so a crash arm on objects cannot tear the log. LBA 0 and 1 on each
+    /// disk are checksummed superblock copies (`ZFL2` / `ZCA2`).
     let createManualWithBlockStore
         (storeDir: string)
         (mutbuf: ZetaFsMutbuf.Catalog)
