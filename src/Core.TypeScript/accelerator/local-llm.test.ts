@@ -5,7 +5,7 @@
 // validate here; the actual on-runner model is exercised by the workflow).
 
 import { describe, expect, test } from "bun:test";
-import { chooseIndex, classify, type ModelBackend } from "./local-llm.ts";
+import { chooseIndex, classify, parseChosenIndex, type ModelBackend } from "./local-llm.ts";
 
 function mockBackend(reply: string): ModelBackend {
   return { name: "mock", complete: async () => reply };
@@ -96,5 +96,78 @@ describe("classify — observe.ts auto-classifier shape", () => {
     const r = await classify(throwingBackend(), { input: "x", labels: ["a", "b"] });
     expect(r.label).toBe("a");
     expect(r.fallback).toBe(true);
+  });
+});
+
+// ═══════════════════════════════════════════════════════════════════════════
+// parseChosenIndex — a reply that does not unambiguously name one number is NOT a choice.
+//
+// The parser used to be `raw.match(/\d+/)`, the FIRST run of digits anywhere in the reply. That is
+// right when the model answers bare and silently wrong when it does not: "0-based index: 4" parsed
+// as 0 and "1st: 4" as 1, each returned with `fallback: false, cause: "none"` — the system asserting
+// the model made a choice it did not make.
+//
+// That is worse than falling back. The wrong action is dispatched AND the tick is recorded as a
+// genuine decision, so it feeds the agreement figures in `decorrelation-meter` and the divergence
+// rate the promotion gate reads to decide whether a lane may leave shadow. A misparse launders
+// itself into the evidence for promotion.
+// ═══════════════════════════════════════════════════════════════════════════
+
+describe("parseChosenIndex", () => {
+  it("reads a bare number, with or without ordinary decoration", () => {
+    expect(parseChosenIndex("4")).toBe(4);
+    expect(parseChosenIndex("  4  ")).toBe(4);
+    expect(parseChosenIndex("4.")).toBe(4);
+    expect(parseChosenIndex("#4")).toBe(4);
+    expect(parseChosenIndex("4 (explore)")).toBe(4);
+    expect(parseChosenIndex("I pick 2")).toBe(2);
+  });
+
+  it("REFUSES a reply naming two numbers, rather than guessing which is the choice", () => {
+    // The two cases that were silently wrong. Both name 4; the old parser answered 0 and 1.
+    expect(parseChosenIndex("0-based index: 4")).toBeNull();
+    expect(parseChosenIndex("1st: 4")).toBeNull();
+    // Correct-by-luck under the old parser, and this is the cost of the rule: it becomes a fallback.
+    // The right way round — a recorded fallback is visible in the soak window, a silently wrong
+    // action is not.
+    expect(parseChosenIndex("Option 3 of 5")).toBeNull();
+  });
+
+  it("REFUSES a negative rather than reading it as its absolute value", () => {
+    // `/\d+/` does not match the sign, so "-3" used to parse as 3 — a slot the model did not name.
+    expect(parseChosenIndex("-3")).toBeNull();
+  });
+
+  it("refuses a reply with no number at all", () => {
+    expect(parseChosenIndex("the answer")).toBeNull();
+    expect(parseChosenIndex("")).toBeNull();
+  });
+
+  it("returns the number even when out of range — RANGE is the caller's judgement", () => {
+    // Keeping the two decisions separate is what lets `chooseIndex` distinguish `unparseable` from
+    // `out-of-range`, and the promotion gate treats an out-of-range pick as an ILLEGAL SELECTION
+    // rather than a parse failure. Collapsing them would hide a lane reaching past its menu.
+    expect(parseChosenIndex("99")).toBe(99);
+    expect(parseChosenIndex("007")).toBe(7);
+  });
+});
+
+describe("chooseIndex routes the parse through parseChosenIndex", () => {
+  const opts = { context: "c", options: ["a", "b", "c", "d", "e"] };
+
+  it("an ambiguous reply is unparseable, not a confident wrong pick", async () => {
+    const r = await chooseIndex(mockBackend("0-based index: 4"), opts);
+    expect(r.cause).toBe("unparseable");
+    expect(r.fallback).toBe(true);
+    // The specific defect: this used to be `index: 0, fallback: false, cause: "none"` — action 0
+    // dispatched and recorded as the model's own choice.
+    expect(r.index).toBe(0);
+  });
+
+  it("a bare number is still a first-class choice", async () => {
+    const r = await chooseIndex(mockBackend("3"), opts);
+    expect(r.index).toBe(3);
+    expect(r.fallback).toBe(false);
+    expect(r.cause).toBe("none");
   });
 });
