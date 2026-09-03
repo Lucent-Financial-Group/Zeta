@@ -503,3 +503,124 @@ let ``a non-positive segment cap is rejected at construction`` () =
     withDir "gcdl-bad-cap" (fun dir ->
         (fun () -> new GroupCommitDiskDeltaLog<int>(dir, FixedBytesEntryCodec 100, oneRecordBoats, maxSegmentBytes = 0L) |> ignore)
         |> should throw typeof<System.ArgumentException>)
+
+
+[<Fact>]
+let ``group-commit FileSystemBlockIo round-trip reopens the records`` () : Task =
+    task {
+        let mock = InMemoryFileSystem()
+        FileSystem.Register(mock)
+        let dir = DeterministicTestPath.nextDir "gcdl-blockio-roundtrip"
+        try
+            let codec = CborEntryCodec<int>(keyEnc, keyDec)
+            let log1 = new GroupCommitDiskDeltaLog<int>(dir, codec, useBlockIo = true)
+            try
+                let dlog1 = log1 :> IDeltaLog<int>
+                let! s1 = dlog1.AppendAsync(ZSet.ofKeys [ 1 ], empty, ct).AsTask().ConfigureAwait(false)
+                let! s2 = dlog1.AppendAsync(ZSet.ofKeys [ 2 ], empty, ct).AsTask().ConfigureAwait(false)
+                Assert.Equal(1L, s1)
+                Assert.Equal(2L, s2)
+            finally
+                (log1 :> IDisposable).Dispose()
+
+            use log2 = new GroupCommitDiskDeltaLog<int>(dir, codec, useBlockIo = true)
+            let dlog2 = log2 :> IDeltaLog<int>
+            Assert.Equal(2L, dlog2.HighWater)
+            let! replayed = dlog2.ReplayAsync(0L, ct).AsTask().ConfigureAwait(false)
+            Assert.Equal<int64>([| 1L; 2L |], replayed |> Array.map (fun e -> e.Seq))
+            let segmentPath = Path.Combine(Path.GetFullPath dir, "delta-00000000000000000001.segment")
+            let io = FileSystemBlockIo(FileSystem.Current, segmentPath, 4096)
+            Assert.True((BlockSuper.tryReadGroup (io :> IBlockIo)).IsSome)
+            Assert.True((BlockSuper.tryReadLog (io :> IBlockIo)).IsNone)
+        finally
+            FileSystem.Reset()
+    }
+
+[<Fact>]
+let ``group-commit FileSystemBlockIo crash-mid-write of the second append keeps the first`` () : Task =
+    task {
+        let mock = InMemoryFileSystem()
+        FileSystem.Register(mock)
+        let dir = DeterministicTestPath.nextDir "gcdl-blockio-crash-prefix"
+        try
+            let codec = CborEntryCodec<int>(keyEnc, keyDec)
+            let log1 = new GroupCommitDiskDeltaLog<int>(dir, codec, useBlockIo = true)
+            try
+                let dlog1 = log1 :> IDeltaLog<int>
+                let! seq1 = dlog1.AppendAsync(ZSet.ofKeys [ 1 ], empty, ct).AsTask().ConfigureAwait(false)
+                Assert.Equal(1L, seq1)
+                mock.ArmCrashMidWrite(".segment", 8)
+                let append2 = dlog1.AppendAsync(ZSet.ofKeys [ 2 ], empty, ct).AsTask()
+                let! ex =
+                    Assert
+                        .ThrowsAsync<CrashMidWriteException>(fun () -> append2 :> Task)
+                        .ConfigureAwait(false)
+
+                Assert.Equal(8, ex.CommittedBytes)
+            finally
+                (log1 :> IDisposable).Dispose()
+
+            use log2 = new GroupCommitDiskDeltaLog<int>(dir, codec, useBlockIo = true)
+            let dlog2 = log2 :> IDeltaLog<int>
+            Assert.Equal(1L, dlog2.HighWater)
+            let! replayed = dlog2.ReplayAsync(0L, ct).AsTask().ConfigureAwait(false)
+            Assert.Equal<int64>([| 1L |], replayed |> Array.map (fun e -> e.Seq))
+        finally
+            FileSystem.Reset()
+    }
+
+[<Fact>]
+let ``group-commit FileSystemBlockIo corrupt-last-write of the second append acks and keeps the first`` () : Task =
+    task {
+        let mock = InMemoryFileSystem()
+        FileSystem.Register(mock)
+        let dir = DeterministicTestPath.nextDir "gcdl-blockio-corrupt-prefix"
+        try
+            let codec = CborEntryCodec<int>(keyEnc, keyDec)
+            let log1 = new GroupCommitDiskDeltaLog<int>(dir, codec, useBlockIo = true)
+            try
+                let dlog1 = log1 :> IDeltaLog<int>
+                let! seq1 = dlog1.AppendAsync(ZSet.ofKeys [ 1 ], empty, ct).AsTask().ConfigureAwait(false)
+                Assert.Equal(1L, seq1)
+                mock.ArmCorruptLastWrite(".segment", 8)
+                let! seq2 = dlog1.AppendAsync(ZSet.ofKeys [ 2 ], empty, ct).AsTask().ConfigureAwait(false)
+                Assert.Equal(2L, seq2)
+            finally
+                (log1 :> IDisposable).Dispose()
+
+            use log2 = new GroupCommitDiskDeltaLog<int>(dir, codec, useBlockIo = true)
+            let dlog2 = log2 :> IDeltaLog<int>
+            Assert.True(dlog2.HighWater >= 1L)
+            let! replayed = dlog2.ReplayAsync(0L, ct).AsTask().ConfigureAwait(false)
+            Assert.Equal(1L, replayed.[0].Seq)
+        finally
+            FileSystem.Reset()
+    }
+
+[<Fact>]
+let ``group-commit FileSystemBlockIo reorder of the second append completes and keeps the first`` () : Task =
+    task {
+        let mock = InMemoryFileSystem()
+        FileSystem.Register(mock)
+        let dir = DeterministicTestPath.nextDir "gcdl-blockio-reorder-prefix"
+        try
+            let codec = CborEntryCodec<int>(keyEnc, keyDec)
+            let log1 = new GroupCommitDiskDeltaLog<int>(dir, codec, useBlockIo = true)
+            try
+                let dlog1 = log1 :> IDeltaLog<int>
+                let! seq1 = dlog1.AppendAsync(ZSet.ofKeys [ 1 ], empty, ct).AsTask().ConfigureAwait(false)
+                Assert.Equal(1L, seq1)
+                mock.ArmReorderNextTwo ".segment"
+                let! seq2 = dlog1.AppendAsync(ZSet.ofKeys [ 2 ], empty, ct).AsTask().ConfigureAwait(false)
+                Assert.Equal(2L, seq2)
+            finally
+                (log1 :> IDisposable).Dispose()
+
+            use log2 = new GroupCommitDiskDeltaLog<int>(dir, codec, useBlockIo = true)
+            let dlog2 = log2 :> IDeltaLog<int>
+            Assert.True(dlog2.HighWater >= 1L)
+            let! replayed = dlog2.ReplayAsync(0L, ct).AsTask().ConfigureAwait(false)
+            Assert.Equal(1L, replayed.[0].Seq)
+        finally
+            FileSystem.Reset()
+    }
