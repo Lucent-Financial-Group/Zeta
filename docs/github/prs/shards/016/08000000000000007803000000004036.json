@@ -1,0 +1,12 @@
+{
+  "pr_number": 16438,
+  "archive_path": "docs/history/pr-reviews/PR-16438-fix-observe-the-illegal-selection-counter-the-gate-reads-was-always-zero.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-03T04:09:21.959Z",
+  "schema_version": "v1",
+  "commit_sha": "1c5329fe5ed8735d5c5a07ac8c8db05fc6317c4c",
+  "title": "fix(observe): the illegal-selection counter the gate reads was always zero",
+  "state": "MERGED",
+  "merged_at": "2026-09-03T04:08:47Z",
+  "head_ref": "illegal-selection-observable"
+}
