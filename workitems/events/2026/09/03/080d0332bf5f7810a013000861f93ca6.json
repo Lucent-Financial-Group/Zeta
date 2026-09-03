@@ -1,0 +1,14 @@
+{
+  "id": "080d0332bf5f7810a013000861f93ca6",
+  "at": "2026-09-03T08:17:13.199Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1K5FTZC087G0R003B34R0X",
+    "type": "bug",
+    "title": "a lint's own remediation advice would cause the silent data loss it guards against",
+    "slug": "a-lint-s-own-remediation-advice-would-cause-the-silent-data",
+    "priority": "P2",
+    "filename": "081M1K5FTZC087G0R003B34R0X-a-lint-s-own-remediation-advice-would-cause-the-silent-data.md"
+  }
+}

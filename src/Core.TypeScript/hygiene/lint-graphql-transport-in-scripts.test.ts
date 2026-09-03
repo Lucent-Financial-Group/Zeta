@@ -434,3 +434,39 @@ describe("CLI over real directories", () => {
     }
   });
 });
+
+// ═══════════════════════════════════════════════════════════════════════════
+// The remedy TEXT is part of the lint, not decoration around it.
+//
+// This file's stated design is that the replacement travels in the data, "because a refusal that
+// does not name the replacement is a refusal people route around." That makes the remedy text
+// load-bearing: a reader is expected to follow it without re-deriving it.
+//
+// Re-measured 2026-09-03 against this repo's live API:
+//
+//   GET /pulls?state=open&per_page=1  ->  mergeable_state ABSENT, mergeable ABSENT
+//   GET /pulls/{number}               ->  mergeable_state "unknown", mergeable null
+//
+// So the `pr list` remedy, taken literally, drops `mergeStateStatus` — the exact field
+// `observe/world-infra.ts` derives its CLEAN set from. A caller who followed it would compute the
+// clean set from an empty string: a silent wrong answer, delivered by the remediation text of a lint
+// that exists to prevent silent failures.
+// ═══════════════════════════════════════════════════════════════════════════
+
+describe("the remedy text", () => {
+  test("the `pr list` route warns that the LIST payload has no merge state", () => {
+    const remedy = GRAPHQL_ROUTES.get("pr list") ?? "";
+    expect(remedy).toContain("pulls?state=open");
+    // The half that was missing, and the reason this test exists.
+    expect(remedy).toContain("mergeable_state");
+    expect(remedy).toContain("pulls/{number}");
+  });
+
+  test("every route names a concrete REST endpoint, not just an admonition", () => {
+    // A remedy that says "use REST" without saying which call is the refusal people route around.
+    for (const [route, remedy] of GRAPHQL_ROUTES) {
+      expect(remedy.length).toBeGreaterThan(20);
+      expect(remedy, `route ${route} does not name an endpoint`).toContain("gh api");
+    }
+  });
+});
