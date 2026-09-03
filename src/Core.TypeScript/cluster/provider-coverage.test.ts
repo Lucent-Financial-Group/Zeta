@@ -110,8 +110,9 @@ describe("every supported provider is exercised by a real CI lane", () => {
    * printed nothing and looked like KPR had no kube-dns.
    *
    * The remaining included-class question is TCP ClusterIP from the
-   * hostNetwork netns (the k3d node). OPEN + DNS timeout => hostAliases.
-   * FAIL => not DNS-only. Delete the probe strings and this goes red.
+   * hostNetwork netns (the k3d node). MEASURED live-k3d 33781233753:
+   * busybox hostNetwork TCP kube-dns FAIL after bundle.crt present.
+   * Delete the probe strings and this goes red.
    */
   test("live-k3d dump logs the spire-agent DaemonSet, not a label the chart does not set", () => {
     const dump = (jobs()["live-k3d"]!.steps ?? []).find((s) =>

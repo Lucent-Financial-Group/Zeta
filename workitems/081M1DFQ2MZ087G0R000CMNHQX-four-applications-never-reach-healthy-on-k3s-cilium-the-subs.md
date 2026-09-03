@@ -598,8 +598,36 @@ as hostNetwork spire-agent):
 - TCP OPEN + DNS timeout => chart `hostAliases` is next software.
 - TCP FAIL => not DNS-only; do not invent Cilium values.
 
-Do not treat OPEN/FAIL as measured until a live-k3d dump prints those
-lines. Do not re-lift `--scope included` on the back of this dump.
+## MEASURED 2026-09-03 — live-k3d 33781233753: TCP ClusterIP FAIL after bundle.crt (PR #16519)
+
+Job `100736414774` on SHA `6822fb1f6`
+[run 33781233753](https://github.com/Lucent-Financial-Group/Zeta/actions/runs/33781233753)
+**succeeded** at smoke. Bring-up logged `Mapping control-plane -> 127.0.0.1`
+and `Waiting for nodes Ready`. This is the distinguisher, not the
+pre-rebase dump on `d70198f3b` (server Pending / missing `bundle.crt`).
+
+| Signal | Value |
+|---|---|
+| cert-manager | 1/1 Running, RESTARTS=0 |
+| spire-server-0 | 2/2 Running, pod IP `10.143.0.44` |
+| PVC | Bound |
+| spire-bundle | `bundle.crt` present |
+| spire-agent | CrashLoop, `lookup spire-server.spire on 10.43.0.10:53: dial udp 10.43.0.10:53: i/o timeout` |
+| TCP kube-dns `10.43.0.10:53` (busybox hostNetwork) | **FAIL** |
+| TCP spire-server ClusterIP `:443` (busybox hostNetwork) | **FAIL** |
+| UDP nslookup from k3d node | FAIL |
+
+k3s node has neither busybox `nc` nor python3 (`NO_TOOL`); the
+measurement is the busybox `hostNetwork: true` fallback.
+
+**hostAliases to ClusterIP is not next software.** TCP to ClusterIP
+fails from the same netns as the agent. Do not invent Cilium values.
+Do not re-lift `--scope included`. Next measured step is TCP to the
+**pod IP** (`10.143.0.44`) from hostNetwork: OPEN isolates ClusterIP
+translation; FAIL means hostNetwork cannot reach the overlay either.
+
+Sibling on the same run: `live kind included` failed (Otto
+`081M1FG1RCW`). `gate (required)` green.
 
 ## The distinguishing test
 
