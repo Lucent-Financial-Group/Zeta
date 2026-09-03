@@ -1,0 +1,12 @@
+{
+  "pr_number": 16409,
+  "archive_path": "docs/history/pr-reviews/PR-16409-docs-research-alexa-s-open-questions-answered-from-the-q-qec-routing-work.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-03T00:10:10.467Z",
+  "schema_version": "v1",
+  "commit_sha": "c00b4f0b73f3f3b999879d8fab6465fbddb99071",
+  "title": "docs(research): Alexa's open questions answered from the Q# / QEC-routing work",
+  "state": "MERGED",
+  "merged_at": "2026-09-03T00:09:27Z",
+  "head_ref": "shadow/alexa-questions-answered-from-qsharp-and-qec-routing"
+}

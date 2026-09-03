@@ -1,0 +1,12 @@
+{
+  "pr_number": 16405,
+  "archive_path": "docs/history/pr-reviews/PR-16405-ferry-research-goodfire-neural-geometry-the-geometry-thread-for-max.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-02T23:27:00.635Z",
+  "schema_version": "v1",
+  "commit_sha": "8dd6b83612326882ffd40b37503f6c5f6a9212c2",
+  "title": "ferry(research): Goodfire neural geometry + the geometry thread for Max",
+  "state": "MERGED",
+  "merged_at": "2026-09-02T23:26:25Z",
+  "head_ref": "shadow/geometry-thread-jurisdictions-language-clifford"
+}
