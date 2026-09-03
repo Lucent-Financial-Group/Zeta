@@ -152,6 +152,10 @@ export class GitLabAdapter implements ForgeHost {
   async updateRef(_ref: string, _sha: string, _force?: boolean): Promise<Result<void, ForgeError>> {
     return err(forgeError("not-supported", "GitLab: updateRef not yet implemented"));
   }
+
+  async createRef(_ref: string, _sha: string): Promise<Result<void, ForgeError>> {
+    return err(forgeError("not-supported", "GitLab: createRef not yet implemented"));
+  }
   async getRef(_ref: string): Promise<Result<import("../types").GitRef, ForgeError>> {
     return err(forgeError("not-supported", "GitLab: getRef not yet implemented"));
   }

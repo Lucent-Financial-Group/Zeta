@@ -333,6 +333,16 @@ export class GitHubAdapter implements ForgeHost {
     return ok(undefined);
   }
 
+  async createRef(ref: string, sha: string): Promise<Result<void, ForgeError>> {
+    // POST, not PATCH: `updateRef` cannot create. The API also wants the FULL ref name here
+    // ("refs/heads/x") while `getRef`/`updateRef` take the short form — normalised so callers
+    // pass one shape and this adapter owns the difference.
+    const full = ref.startsWith("refs/") ? ref : `refs/${ref}`;
+    const result = await this.rest.request("POST", `repos/${this.nwo}/git/refs`, { ref: full, sha });
+    if (!result.ok) return result;
+    return ok(undefined);
+  }
+
   async getRef(ref: string): Promise<Result<import("../types").GitRef, ForgeError>> {
     const r = await this.rest.request("GET", `repos/${this.nwo}/git/ref/${ref}`);
     if (!r.ok) return r;

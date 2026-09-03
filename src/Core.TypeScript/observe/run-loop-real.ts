@@ -39,16 +39,13 @@ import "../forge-host/github/index"; // registers the GitHub adapter
 import { portExecuteItem } from "./kiro-executor-v2";
 import { currentExecutionMode, executorForMode } from "./execution-mode";
 import { isSyntheticForgeItem } from "./action-reconciliation";
+import { corporateSink, type CorporateSink } from "./event-sink-corporate";
+import { mintObserveEventIdHex } from "./event-sink-folder";
 import { describeError, describeForgeError, forgeFailureDisposition } from "./forge-diagnosis";
 import { codegenExecuteItem } from "./codegen-executor";
 import { realWorkspacePort, type WorkspacePort } from "./workspace-port";
 import type { DoItemOptions } from "./do-item";
-import {
-  oracleParticipant,
-  localLlmParticipant,
-  cloudPersonaParticipant,
-  type Participant,
-} from "./participant";
+import { oracleParticipant, localLlmParticipant, cloudPersonaParticipant, type Participant } from "./participant";
 import { buildMenu, actionLabel } from "./observe";
 import { tickRooms, type Room } from "./room";
 import type { ChooserResult } from "./chooser";
@@ -205,7 +202,9 @@ async function main(): Promise<number> {
     return 0;
   }
   if (halt.halted) {
-    console.warn(`[control-plane] HALTED (${halt.flag}) by ${halt.setBy}: ${halt.reason} — dry run continues, observation is not gated`);
+    console.warn(
+      `[control-plane] HALTED (${halt.flag}) by ${halt.setBy}: ${halt.reason} — dry run continues, observation is not gated`,
+    );
   }
 
   // 1. Load the real world
@@ -262,9 +261,13 @@ async function main(): Promise<number> {
   // "I want work done." The agent can still pick free modes from the menu (NCI
   // preserved) but the deterministic default shifts to work.
   const executorMode = process.env.ZETA_EXECUTOR ?? "port";
-  const observeWorld = (executorMode === "codegen" && enrichedWorld.backlog.length > 0 && enrichedWorld.mode !== "work")
-    ? (() => { const { mode: _, ...rest } = enrichedWorld; return rest; })()
-    : enrichedWorld;
+  const observeWorld =
+    executorMode === "codegen" && enrichedWorld.backlog.length > 0 && enrichedWorld.mode !== "work"
+      ? (() => {
+          const { mode: _, ...rest } = enrichedWorld;
+          return rest;
+        })()
+      : enrichedWorld;
 
   // 2. Pick the next action (via Participant — configurable chooser)
   const participant = resolveParticipant(args.participant);
@@ -327,7 +330,9 @@ async function main(): Promise<number> {
     return 1;
   }
   const action = roomTick.result!.action;
-  console.log(`[room] ${roomTick.roomId} seams=${roomTick.seamMode} step=${roomTick.stepsUsed}/${loopRoom.budget!.maxSteps}`);
+  console.log(
+    `[room] ${roomTick.roomId} seams=${roomTick.seamMode} step=${roomTick.stepsUsed}/${loopRoom.budget!.maxSteps}`,
+  );
 
   // Record + log the reasoning (non-fatal)
   const reasoning: TickReasoning = {
@@ -369,9 +374,13 @@ async function main(): Promise<number> {
   // handles commit+push separately — needed for heartbeat branch mode where the
   // sink can't push to main directly).
   const sinkMode = process.env.ZETA_SINK_MODE ?? "git";
-  const localCommit = sinkMode === "local"
-    ? (_filePath: string, _envelope: import("./event-sink-folder").EventEnvelope): import("./event-sink-folder").CommitOutcome => ({ ok: true })
-    : undefined;
+  const localCommit =
+    sinkMode === "local"
+      ? (
+          _filePath: string,
+          _envelope: import("./event-sink-folder").EventEnvelope,
+        ): import("./event-sink-folder").CommitOutcome => ({ ok: true })
+      : undefined;
 
   // The phase clock: time as a 4th traveler. Created BEFORE the sink so append IS tick.
   // Each agent carries its own phase clock — no wall-clock needed for multi-planet.
@@ -382,7 +391,9 @@ async function main(): Promise<number> {
     try {
       const { readdirSync, readFileSync } = require("node:fs") as typeof import("node:fs");
       const { join } = require("node:path") as typeof import("node:path");
-      const files = readdirSync(args.eventDir).filter((f: string) => f.endsWith(".json")).sort();
+      const files = readdirSync(args.eventDir)
+        .filter((f: string) => f.endsWith(".json"))
+        .sort();
       // Read the last ~20 events (most recent) to find our highest phase
       const recent = files.slice(-20);
       // Collect OUR OWN stamps so the resume point can be verified as a chain, not
@@ -397,7 +408,9 @@ async function main(): Promise<number> {
           const phase = raw.phase?.phase;
           const seed = raw.phase?.derived;
           if (Number.isSafeInteger(phase) && Number.isSafeInteger(seed)) own.push({ phase, seed });
-        } catch { /* skip malformed */ }
+        } catch {
+          /* skip malformed */
+        }
       }
       if (own.length === 0) return undefined;
       own.sort((a, b) => a.phase - b.phase);
@@ -425,7 +438,9 @@ async function main(): Promise<number> {
       }
       const last = own[own.length - 1]!;
       return { phase: last.phase, seed: last.seed };
-    } catch { return undefined; }
+    } catch {
+      return undefined;
+    }
   })();
   const phaseClock: PhaseClock = createPhaseClock(undefined, resumePoint);
   if (resumePoint) {
@@ -439,7 +454,9 @@ async function main(): Promise<number> {
     try {
       const { readdirSync, readFileSync } = require("node:fs") as typeof import("node:fs");
       const { join } = require("node:path") as typeof import("node:path");
-      const files = readdirSync(args.eventDir).filter((f: string) => f.endsWith(".json")).sort();
+      const files = readdirSync(args.eventDir)
+        .filter((f: string) => f.endsWith(".json"))
+        .sort();
       const recent = files.slice(-50); // scan more events for peer phases
       let peerMaxPhase = -1;
       for (const f of recent) {
@@ -448,16 +465,39 @@ async function main(): Promise<number> {
           if (raw.by !== args.by && raw.phase?.phase > peerMaxPhase) {
             peerMaxPhase = raw.phase.phase;
           }
-        } catch { /* skip */ }
+        } catch {
+          /* skip */
+        }
       }
       if (peerMaxPhase > phaseClock.state.phase) {
         phaseClock.observe(peerMaxPhase);
         console.log(`[phase] observed peer at phase ${peerMaxPhase} → advanced to ${phaseClock.state.phase}`);
       }
-    } catch { /* no events to observe — fine */ }
+    } catch {
+      /* no events to observe — fine */
+    }
   })();
 
-  const sink = folderSink({ eventDir: args.eventDir, by: args.by, phaseClock, ...(localCommit ? { commit: localCommit } : {}) });
+  // THE SINK DU, both halves now real.
+  //
+  //   sovereign (default)  folderSink — one event, one commit, straight to main.
+  //   corporate            corporateSink — the tick is STAGED and proposed as a branch + PR.
+  //
+  // Sovereign stays the default deliberately: it is the lane this repo runs on, and switching it
+  // silently would change where every tick lands. `ZETA_SINK_MODE=corporate` opts in.
+  const corporate: CorporateSink | undefined =
+    sinkMode === "corporate"
+      ? corporateSink({
+          eventDir: args.eventDir,
+          by: args.by,
+          mint: mintObserveEventIdHex,
+          now: () => Date.now(),
+          ...(forgeResult.ok ? { forge: forgeResult.value } : {}),
+        })
+      : undefined;
+  const sink =
+    corporate ??
+    folderSink({ eventDir: args.eventDir, by: args.by, phaseClock, ...(localCommit ? { commit: localCommit } : {}) });
 
   // Wire the executor for do_item: codegen (Claude CLI) or port (claim-only).
   // ZETA_EXECUTOR=codegen enables autonomous code generation via the Claude CLI.
@@ -513,9 +553,10 @@ async function main(): Promise<number> {
 
   // Build DoItemOptions for the port executor path.
   // The RunSpec.script is a no-op placeholder — execution goes through the port.
-  const doItemOpts: DoItemOptions | undefined = action.kind === "do_item"
-    ? { spec: { script: "# port-executor: no bash", cwd: args.repoRoot }, gated: false }
-    : undefined;
+  const doItemOpts: DoItemOptions | undefined =
+    action.kind === "do_item"
+      ? { spec: { script: "# port-executor: no bash", cwd: args.repoRoot }, gated: false }
+      : undefined;
 
   // Placeholder OperatorPort — just logs; real implementation writes to transcript
   const operatorPort: OperatorPort = {
@@ -530,6 +571,20 @@ async function main(): Promise<number> {
   };
 
   const result = await execute(enrichedWorld, action, sink, gatedExecutor, doItemOpts, operatorPort);
+
+  // The corporate lane batches, so SOMEONE has to flush — and a tick is the natural boundary: it is
+  // the unit a reviewer reads. A batch nobody flushes is a batch nobody proposed, which is the
+  // quietest possible way for this lane to lose work.
+  if (corporate) {
+    const flushed = await corporate.flush();
+    if (flushed.ok && flushed.kind === "proposed") {
+      console.log(
+        `[sink:corporate] proposed ${String(flushed.eventIds.length)} event(s) as ${flushed.branch} -> PR #${String(flushed.prNumber)} ${flushed.url}`,
+      );
+    } else if (!flushed.ok) {
+      console.error(`[sink:corporate] the batch was NOT proposed and is still held: ${flushed.reason}`);
+    }
+  }
 
   // 4. The unity: append IS tick IS measurement IS Landauer cost.
   // The phase advanced during append. The entropy was paid during append.
@@ -569,9 +624,13 @@ async function main(): Promise<number> {
               lastSeq = block.seq;
               lastEndPhase = block.endPhase ?? -1;
             }
-          } catch { /* skip */ }
+          } catch {
+            /* skip */
+          }
         }
-      } catch { /* no blocks file yet */ }
+      } catch {
+        /* no blocks file yet */
+      }
 
       if (lastSeq < 0) {
         // No blocks emitted yet — start fresh
@@ -579,7 +638,9 @@ async function main(): Promise<number> {
       }
 
       // 2. Collect own stamps from the event log that are AFTER the last block's endPhase
-      const files = readdirSync(args.eventDir).filter((f: string) => f.endsWith(".json")).sort();
+      const files = readdirSync(args.eventDir)
+        .filter((f: string) => f.endsWith(".json"))
+        .sort();
       const recentFiles = files.slice(-50); // scan recent events
       const buffer: { phase: number; derived: number }[] = [];
       for (const f of recentFiles) {
@@ -591,17 +652,23 @@ async function main(): Promise<number> {
           if (Number.isSafeInteger(p) && Number.isSafeInteger(d) && p > lastEndPhase) {
             buffer.push({ phase: p, derived: d });
           }
-        } catch { /* skip */ }
+        } catch {
+          /* skip */
+        }
       }
       buffer.sort((a, b) => a.phase - b.phase);
 
       // Cap at 11 (buffer emits at 12)
       const trimmed = buffer.slice(0, 11);
       if (trimmed.length > 0) {
-        console.log(`[rs-ecc] reconstructed buffer: ${trimmed.length} stamps after block #${lastSeq} (endPhase=${lastEndPhase})`);
+        console.log(
+          `[rs-ecc] reconstructed buffer: ${trimmed.length} stamps after block #${lastSeq} (endPhase=${lastEndPhase})`,
+        );
       }
       return { resumeBuffer: trimmed, startSeq: lastSeq + 1 };
-    } catch { return undefined; }
+    } catch {
+      return undefined;
+    }
   })();
   const rsAccumulator = createRSAccumulator(rsResumeBuffer);
   const rsResult = rsAccumulator.push(phase);
@@ -625,7 +692,9 @@ async function main(): Promise<number> {
       });
       require("node:fs").appendFileSync(blocksPath, blockRecord + "\n");
       console.log(`[rs-ecc] appended to data/rs-blocks.jsonl`);
-    } catch { /* non-fatal — block still logged, just not persisted */ }
+    } catch {
+      /* non-fatal — block still logged, just not persisted */
+    }
   } else {
     console.log(`[rs-ecc] buffered ${rsResult.buffered}/12 toward next block`);
   }
