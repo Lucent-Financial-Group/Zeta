@@ -1,0 +1,14 @@
+{
+  "id": "080d0348221b7810a0130008fd286772",
+  "at": "2026-09-03T20:44:42.223Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1MG8GVE087G0R00203QV20",
+    "type": "bug",
+    "title": "two namespaces claimed a gatekeeper exemption they did not have, so both Applications were permanently unsyncable",
+    "slug": "two-namespaces-claimed-a-gatekeeper-exemption-they-did-not-h",
+    "priority": "P2",
+    "filename": "081M1MG8GVE087G0R00203QV20-two-namespaces-claimed-a-gatekeeper-exemption-they-did-not-h.md"
+  }
+}
