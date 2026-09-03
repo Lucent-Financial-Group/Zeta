@@ -1,0 +1,12 @@
+{
+  "pr_number": 16414,
+  "archive_path": "docs/history/pr-reviews/PR-16414-feat-081m1j8hk19087g0r003a897jv-coalesce-adjacent-whole-block-writes.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-03T00:15:40.539Z",
+  "schema_version": "v1",
+  "commit_sha": "e738d7b2ed521751509c09c27b4c64099b2b1980",
+  "title": "feat(081M1J8HK19087G0R003A897JV): coalesce adjacent whole-block writes",
+  "state": "MERGED",
+  "merged_at": "2026-09-03T00:14:58Z",
+  "head_ref": "feat/zetafs-blockio-coalesce"
+}

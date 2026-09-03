@@ -1,0 +1,12 @@
+{
+  "pr_number": 16420,
+  "archive_path": "docs/history/pr-reviews/PR-16420-feat-081m1jb621h087g0r002q2xa99-lba-corrupt-and-reorder-intercepts.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-03T01:01:21.944Z",
+  "schema_version": "v1",
+  "commit_sha": "de3d35c7df9f0ee5be7d887f75f8c6b5240330bd",
+  "title": "feat(081M1JB621H087G0R002Q2XA99): LBA corrupt and reorder intercepts",
+  "state": "MERGED",
+  "merged_at": "2026-09-03T01:00:42Z",
+  "head_ref": "feat/zetafs-simulated-blockio-intercepts"
+}
