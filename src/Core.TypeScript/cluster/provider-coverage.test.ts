@@ -102,10 +102,12 @@ describe("every supported provider is exercised by a real CI lane", () => {
    * `dnsPolicy: ClusterFirstWithHostNet`. Selector labels are
    * `app.kubernetes.io/name=spire-agent` / `app.kubernetes.io/instance`.
    * MEASURED live-k3d smoke 33739778288: `-l app=spire-agent` printed no
-   * logs while the pod was 0/1 with 2 restarts. The dump must target the
-   * DaemonSet (or the chart's real selector), not a label the chart never
-   * sets. Delete `logs daemonset/spire-agent` or restore `-l app=spire-agent`
-   * and this goes red.
+   * logs while the pod was 0/1 with 2 restarts. MEASURED 33751425785:
+   * the real selector is `app.kubernetes.io/name=agent`; DaemonSet
+   * name is `spire-agent`. Delete `logs daemonset/spire-agent` or
+   * restore `logs -l app=spire-agent` and this goes red. Swallowing
+   * `cilium-dbg` with `2>/dev/null | grep` also goes red: that dump
+   * printed nothing and looked like KPR had no kube-dns.
    */
   test("live-k3d dump logs the spire-agent DaemonSet, not a label the chart does not set", () => {
     const dump = (jobs()["live-k3d"]!.steps ?? []).find((s) =>
@@ -118,5 +120,7 @@ describe("every supported provider is exercised by a real CI lane", () => {
     expect(run).not.toMatch(/logs\s+-l\s+app=spire-agent/);
     expect(run).toContain("k8s-app=kube-dns");
     expect(run).toContain("cilium-dbg service list");
+    expect(run).toContain("get pvc,cm");
+    expect(run.includes("cilium-dbg service list 2>/dev/null")).toBe(false);
   });
 });

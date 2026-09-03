@@ -464,28 +464,55 @@ the Application cannot turn it off):
     hostNetwork: true
     dnsPolicy: ClusterFirstWithHostNet
 
-Selector labels (`spire-agent.selectorLabels`):
+Selector labels, MEASURED on live-k3d 33751425785 (not the helper's
+`.Chart.Name`):
 
-    app.kubernetes.io/name: spire-agent
-    app.kubernetes.io/instance: <release>
+    app.kubernetes.io/name: agent
+    app.kubernetes.io/instance: spire
+    app.kubernetes.io/component: default
 
-There is no `app=spire-agent` label. That is why smoke 33739778288
-printed an empty log block while the pod was 0/1 with 2 restarts. The
-live-k3d always() dump now logs `daemonset/spire-agent` (current +
-`--previous`), prints hostNetwork/dnsPolicy, kube-dns ClusterIP +
-endpoints, and `cilium-dbg service list` for that ClusterIP (cilium-agent
-is also hostNetwork — if KPR has kube-dns, the miss is the UDP path,
-not an unprogrammed Service). Falsifier:
-`provider-coverage.test.ts` "live-k3d dump logs the spire-agent
-DaemonSet, not a label the chart does not set".
+DaemonSet name is `spire-agent`. There is no `app=spire-agent` label.
+That is why smoke 33739778288 printed an empty log block while the pod
+was 0/1 with 2 restarts. The dump now logs `daemonset/spire-agent`.
 
-Do not invent a Cilium `routingMode` / `socketLB` / `hostLegacyRouting`
-tweak from the timeout. The next measurement is: UDP-only vs all
-ClusterIP from hostNetwork. `hostAliases` (a real values key) only
-helps if TCP to the spire-server ClusterIP works after DNS is skipped.
+## MEASURED 2026-09-03 — live-k3d smoke 33751425785, dump can see the agent
 
-#16477 squash is on `main` (`819dea212`). Do not re-lift `--scope
-included` because that dump is now louder.
+Job `100636645454` on SHA `d81e93441` (PR #16501)
+[run 33751425785](https://github.com/Lucent-Financial-Group/Zeta/actions/runs/33751425785)
+**succeeded**. Dump is no longer empty.
+
+**The four at dump (smoke, T+~42s of the agent):**
+
+    openziti-controller   OutOfSync   Missing
+    trust-manager          OutOfSync  Progressing
+    spire                  Synced     Progressing
+    vault                  Synced      Progressing
+
+**spire-agent CrashLoop, and it is NOT the DNS timeout yet:**
+
+    could not parse trust bundle: open /run/spire/bundle/bundle.crt: no such file or directory
+
+Both current and `--previous` logs are that one line. hostNetwork=true,
+dnsPolicy=ClusterFirstWithHostNet, host IP `172.18.0.2`.
+
+**Why the bundle is missing:** `spire-server-0` is **0/2 Pending**.
+PVC `spire-data-spire-server-0` is still
+`ExternalProvisioning` on `rancher.io/local-path` (helper-pod
+ContainerCreating). The server writes `bundle.crt` into the ConfigMap
+at runtime. No server → empty mount → agent CrashLoop. This is the
+startup race smoke always sees. It is **not** the included-class
+`lookup spire-server.spire on 10.43.0.10:53: i/o timeout` from
+33429761222, where server + CSI were already Running.
+
+**kube-dns is programmed:** ClusterIP `10.43.0.10`, endpoints
+`10.143.0.41` (cluster-pool). `cilium-dbg service list` was grepped
+with stderr discarded and printed nothing — next dump prints the
+list without swallowing exec failure.
+
+Do not invent a Cilium values tweak. Do not re-lift `--scope included`.
+The included-class DNS timeout is still the remaining second class
+**after** the server writes the bundle. Smoke cannot see it while
+the PVC is still provisioning.
 
 ## The distinguishing test
 
@@ -516,7 +543,9 @@ obvious common thread, and the k3d lane has already produced one DNS defect.
 
 - `.github/workflows/k8s-argocd-health-test.yml` — `live-k3d`, the
   in-place note recording the reverted lift, and the always() dump of
-  Gateway API CRDs + the four + `daemonset/spire-agent` logs
+  Gateway API CRDs + the four + `daemonset/spire-agent` logs + PVC/CM
+- `src/Core.TypeScript/cluster/provider-coverage.test.ts` — dump must
+  not use a label the chart never sets, and must not swallow cilium-dbg
 - `src/Core.TypeScript/cluster/provider-coverage.test.ts` — dump must
   not use a label the chart never sets
 - `src/Core.TypeScript/cluster/argocd-health-test.ts` — `APPLIED_BUT_UNASSERTED_REASONS`,
