@@ -2467,3 +2467,70 @@ section is the first of them.
 **Cross-reference:** `src/Core/ColumnLinearOps.fs` — the kernels these anchors informed,
 including two written-in-advance predictions that the measurements **refuted** and the
 corrected accounts that replaced them.
+
+## Loopy Gaussian variance correction — the cutset / feedback-vertex-set lineage (added 2026-09-03, shadow, Fable 5.1 math team; spec `docs/research/2026-09-03-loopy-variance-correction-spec-feedback-message-passing-over-the-factor-graph-fvs.md`)
+
+Why this section exists: `MultilayerBnn` labels a converged loopy Gaussian run
+`ConvergedLoopyMeansOnly`, correctly. The literature that explains the dropped
+variance, and the literature that recovers it exactly, had no rows here. Checked
+status per row: **page** = theorem read from the full text; **abstract** = abstract only.
+
+- **Judea Pearl — "Fusion, propagation, and structuring in belief networks" (Artificial
+  Intelligence 29, 1986)** — loop-cutset conditioning: condition on a cutset whose removal
+  leaves a singly-connected network, propagate on the remainder once per cutset
+  assignment, combine. The OLD anchor under every method below; FMP is its Gaussian closed
+  form, where the cutset integral collapses to `k + 1` linear runs. (abstract)
+- **Yair Weiss & William T. Freeman — "Correctness of belief propagation in Gaussian
+  graphical models of arbitrary topology" (NIPS 1999; Neural Computation 13, 2001)** —
+  converged Gaussian loopy BP gives exact means and generally wrong variances. Checked
+  in-repo by MLBNN-33, which predicted the split before measuring it. (page)
+- **Dmitry Malioutov, Jason K. Johnson & Alan S. Willsky — "Walk-sums and belief
+  propagation in Gaussian graphical models" (JMLR 7, 2006)** — the mechanism of the gap:
+  covariance is a sum over walks (Prop 5); the LBP variance sums only the _backtracking_
+  self-return walks (Lemma 19); walk-summability `ρ(|R|) < 1` (Prop 1) guarantees LBP
+  convergence with exact means (Prop 21). (page)
+- **Erik B. Sudderth, Martin J. Wainwright & Alan S. Willsky — "Embedded trees: estimation
+  of Gaussian processes on graphs with cycles" (IEEE TSP 52(11), 2004; NIPS 2000)** —
+  iterate exact spanning-tree solves for the means; exact variances via low-rank
+  corrections sized by the cut edges. The edge-cutset sibling of FMP. (abstract)
+- **Max Welling & Yee Whye Teh — "Linear response algorithms for approximate inference in
+  graphical models" (Neural Computation 16, 2004)** §7 — linear response on a Gaussian
+  MRF recovers the exact covariance, "a perhaps unexpected algorithm to invert the
+  matrix". (page)
+- **Ying Liu, Venkat Chandrasekaran, Animashree Anandkumar & Alan S. Willsky — "Feedback
+  message passing for inference in Gaussian graphical models" (IEEE TSP 60(8), 2012;
+  arXiv:1105.1853)** ⭐ — **the chosen method.** Theorem 1: exact means and variances for
+  all nodes with a feedback vertex set of size `k`, cost `O(k² n)`; Theorem 2 / Prop 1–2:
+  the pseudo-FVS approximation (exact means everywhere, exact variances on the pseudo-FVS,
+  bounded error elsewhere under walk-summability); Fig. 5: the greedy selection score
+  `s(i) = Σ_j |J_ij|`. (page)
+- **P.-L. Giscard, Z. Choo, S. J. Thwaite & D. Jaksch — "Exact inference on Gaussian
+  graphical models of arbitrary topology using path-sums" (JMLR 17, 2016)** — resums the
+  walk-sum into a finite branched continued fraction; exact for every positive-definite
+  `J`, walk-summable or not. The fallback if a non-walk-summable model ever refuses the
+  pseudo-FVS mode. (page)
+- **Botond Cseke & Tom Heskes — "Properties of Bethe free energies and message passing in
+  Gaussian models" (JAIR 41, 2011)** — Gaussian Bethe / GBP: stable fixed points are local
+  minima; pairwise-normalisability bounds the free energy; no exact-variance certificate.
+  Why GBP ranks below FMP for this problem. (abstract)
+- **Bin Li, Qinliang Su & Yik-Chung Wu — "Fixed points of Gaussian belief propagation and
+  relation to convergence" (IEEE TSP 67(23), 2019)** — explicit error expression for the
+  BP variance and a distributed correction whose residual vanishes once the remaining
+  graph is loop-free: the distributed form of pseudo-FVS. **(UNPROVEN — not locatable on
+  arXiv; description from a second-hand abstract summary; check against the paper before
+  relying on it.)**
+- **Joseph Ortiz, Talfan Evans & Andrew J. Davison — "A visual introduction to Gaussian
+  belief propagation" (arXiv:2107.02308, 2021)**; **"Learning in deep factor graphs with
+  Gaussian belief propagation" (arXiv:2311.14649, 2023)**; **"Belief propagation converges
+  to Gaussian distributions in sparsely-connected factor graphs" (arXiv:2601.21935,
+  2026)** — the frontier: the accessible restatement; the learning branch (2311.14649
+  casts _training and prediction_ as GBP inference in a deep Gaussian factor graph — it
+  is not a learned correction to BP variances; rejected for Zeta because a trained
+  model's output depends on a training set, not on the evidence set); and the 2026 result that variable beliefs become Gaussian in sparse loopy factor
+  graphs — relevant to the non-Gaussian lane, since it argues the Gaussian family is an
+  attractor rather than an assumption. (abstract)
+
+**Cross-reference:** `src/Bayesian/MultilayerBnn.fs` (`FactorGraphExactness`,
+`compileJointPrecision`, `tryQueryExactDenseGaussian` from #16482) and
+`tests/Bayesian.Tests/MultilayerBnn.Tests.fs` MLBNN-33/42/46 — the measured gap
+(`0.227` variance L¹ at `4e-14` mean error) these anchors explain and the spec closes.
