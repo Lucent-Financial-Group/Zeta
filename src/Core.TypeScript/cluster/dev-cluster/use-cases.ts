@@ -90,6 +90,34 @@ export function applyVendoredGatewayApiCrds(ports: DevClusterPorts): void {
 }
 
 /**
+ * Map `control-plane` to 127.0.0.1 on the k3d SERVER node.
+ *
+ * Metal `k3s-server.nix` does this on the founder (`networking.hosts."127.0.0.1"
+ * = [ "control-plane" ]`) so Cilium can reach the API at the Application's
+ * `k8sServiceHost: control-plane`. k3d skipped it. Helm install deltas that
+ * host to the Docker DNS name; ArgoCD's cilium Application (included on k3d)
+ * then wants the metal name back. Without this mapping the agent cannot dial
+ * the API after that adopt.
+ *
+ * SERVER ONLY. The same mapping on an agent is the joining-node defect
+ * k3s-server.nix refuses: control-plane would resolve to the agent itself.
+ * `kubeApiHost` is `k3d-<cluster>-server-0`, the founder container.
+ *
+ * Idempotent: second bring-up against an existing cluster must not duplicate
+ * the line. YAML `hostAliases` on the CI profile (agents: 0) is the create-time
+ * twin; this call covers the existing-cluster path and the three-node local
+ * profile, which must not put 127.0.0.1 on agents.
+ */
+export function applyK3dControlPlaneHostsAlias(ports: DevClusterPorts, kubeApiHost: string): void {
+  console.log(
+    "Mapping control-plane -> 127.0.0.1 on the k3d server node (metal k3s-server.nix founder hosts) ...",
+  );
+  const script =
+    "grep -qE '(^|[[:space:]])control-plane($|[[:space:]])' /etc/hosts || echo '127.0.0.1 control-plane' >> /etc/hosts";
+  ports.process.run("docker", ["exec", kubeApiHost, "sh", "-c", script], { timeoutMs: 30_000 });
+}
+
+/**
  * Mint the dev/CI credentials that Applications expect to find ALREADY PRESENT,
  * BEFORE the app-of-apps root syncs.
  *
@@ -541,6 +569,7 @@ export function bringUpK3dDevCluster(ports: DevClusterPorts, options: K3dDevBrin
 
   applyK3dCoreDnsUpstreamOverride(ports);
   applyVendoredGatewayApiCrds(ports);
+  applyK3dControlPlaneHostsAlias(ports, options.kubeApiHost);
 
   if (!packages.releaseInstalled("kube-system", "cilium")) {
     // INSTALL THE SHIPPED VALUE SURFACE, never a hand-written --set list.
@@ -587,6 +616,13 @@ export function bringUpK3dDevCluster(ports: DevClusterPorts, options: K3dDevBrin
       wait: true,
     });
   }
+
+  // kind --cni cilium waits here. k3d create is waitForReady: false because
+  // there is no CNI yet. Helm --wait is Cilium pods, not node Ready. MEASURED
+  // live-k3d smoke 33754516236: kube-dns already had a cluster-pool IP, then
+  // new pods stayed ContainerCreating and cilium-agent was missing at dump.
+  console.log("Waiting for nodes Ready now that Cilium is the CNI ...");
+  controlPlane.waitForAllNodesReady(180);
 
   if (!packages.releaseInstalled("argocd", "argocd")) {
     console.log("Installing ArgoCD ...");

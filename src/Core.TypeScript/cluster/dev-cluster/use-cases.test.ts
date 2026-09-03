@@ -35,7 +35,10 @@ import type {
  */
 function fakePorts(log: string[], existingResources: readonly string[] = []): DevClusterPorts {
   const process: ProcessRunner = {
-    run: () => ({ status: 0, stdout: "", stderr: "" }),
+    run: (cmd, args) => {
+      log.push(`run:${cmd} ${args.join(" ")}`);
+      return { status: 0, stdout: "", stderr: "" };
+    },
   };
   const containerHost: ContainerHost = { kind: "docker", probe: () => true, clusterDriverEnv: () => undefined };
   const localCluster: LocalClusterDriver = {
@@ -177,6 +180,82 @@ describe("kind CI use case", () => {
     expect(gatewayAt).toBeLessThan(ciliumAt);
     expect(gatewayAt).toBeLessThan(catalogAt);
     expect(log.some((entry) => entry.includes("gateway-api/releases/download"))).toBe(false);
+  });
+
+  /**
+   * 081M1DFQ2MZ — k3d skipped metal's founder /etc/hosts + API SAN.
+   *
+   * Metal k3s-server.nix maps control-plane -> 127.0.0.1 on the founder and
+   * --tls-san=control-plane so Cilium can dial k8sServiceHost: control-plane.
+   * Helm install deltas that host to the Docker DNS name. The cilium
+   * Application (included on k3d) carries the metal name. Without the hosts
+   * entry the agent cannot reach the API after that adopt.
+   *
+   * SERVER ONLY: the same mapping on an agent is the joining-node defect.
+   * Delete the helper call from bringUpK3dDevCluster and this goes red.
+   * ORDER: after Gateway API CRDs, before Cilium helm.
+   */
+  test("k3d bring-up writes control-plane into the server node hosts before Cilium", () => {
+    const log: string[] = [];
+    bringUpK3dDevCluster(fakePorts(log), {
+      configPath: "/tmp/k3d.yaml",
+      clusterName: "zeta-dev",
+      agentCount: 0,
+      kubeApiHost: "k3d-zeta-dev-server-0",
+      gitRef: "main",
+      gitRepoUrl: "https://github.com/Lucent-Financial-Group/Zeta",
+      env: {},
+    });
+    const hostsAt = log.findIndex(
+      (entry) =>
+        entry.startsWith("run:docker exec k3d-zeta-dev-server-0") && entry.includes("control-plane"),
+    );
+    const ciliumAt = log.indexOf("install:cilium");
+    expect(hostsAt).toBeGreaterThan(-1);
+    expect(ciliumAt).toBeGreaterThan(-1);
+    expect(hostsAt).toBeLessThan(ciliumAt);
+    expect(log.some((entry) => entry.includes("127.0.0.1 control-plane"))).toBe(true);
+  });
+
+  /**
+   * kind --cni cilium waits for nodes Ready after Cilium helm. k3d create is
+   * waitForReady: false (no CNI yet) and then never waited. Helm --wait is
+   * pods, not node Ready. Delete waitForAllNodesReady from bringUpK3dDevCluster
+   * and this goes red.
+   */
+  test("k3d bring-up waits for nodes Ready after Cilium helm, before ArgoCD and the catalogue", () => {
+    const log: string[] = [];
+    bringUpK3dDevCluster(fakePorts(log), {
+      configPath: "/tmp/k3d.yaml",
+      clusterName: "zeta-dev",
+      agentCount: 0,
+      kubeApiHost: "k3d-zeta-dev-server-0",
+      gitRef: "main",
+      gitRepoUrl: "https://github.com/Lucent-Financial-Group/Zeta",
+      env: {},
+    });
+    const catalogAt = log.findIndex((entry) => entry.startsWith("catalog:"));
+    expect(log).toContain("install:cilium");
+    expect(log).toContain("nodes-ready");
+    expect(log.indexOf("install:cilium")).toBeLessThan(log.indexOf("nodes-ready"));
+    expect(log.indexOf("nodes-ready")).toBeLessThan(log.indexOf("install:argocd"));
+    expect(log.indexOf("nodes-ready")).toBeLessThan(catalogAt);
+  });
+
+  test("the k3d CI profile SANs control-plane and aliases it on the one-node founder", () => {
+    const ci = readFileSync(
+      new URL("../../../../full-ai-cluster/dev-cluster/profiles/ci.k3d-config.yaml", import.meta.url),
+      "utf8",
+    );
+    const local = readFileSync(
+      new URL("../../../../full-ai-cluster/dev-cluster/k3d-config.yaml", import.meta.url),
+      "utf8",
+    );
+    expect(ci).toContain("--tls-san=control-plane");
+    expect(ci).toContain("hostAliases:");
+    expect(local).toContain("--tls-san=control-plane");
+    // agents: 2 — founder mapping on every node would make agents dial themselves.
+    expect(local).not.toContain("hostAliases:");
   });
 
   /**

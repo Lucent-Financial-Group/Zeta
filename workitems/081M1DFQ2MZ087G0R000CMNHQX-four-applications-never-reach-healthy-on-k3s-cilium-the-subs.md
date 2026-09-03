@@ -514,6 +514,32 @@ The included-class DNS timeout is still the remaining second class
 **after** the server writes the bundle. Smoke cannot see it while
 the PVC is still provisioning.
 
+## MEASURED 2026-09-03 — k3d skipped metal's `control-plane` hosts + SAN, and never waited for nodes Ready
+
+Smoke 33754516236 dump, T+~47s of catalog:
+
+- kube-dns already had cluster-pool IP `10.143.0.138` (CNI assigned once)
+- cert-manager, trust-manager, SPIFFE CSI: ContainerCreating, no pod IP
+- `cilium-dbg` failed `container not found ("cilium-agent")`
+- PVC `spire-data-spire-server-0` still Pending
+
+That is not "Cilium never installed". Helm `--wait` is Cilium pods.
+k3d create is `wait: false` because there is no CNI yet. kind `--cni
+cilium` then calls `waitForAllNodesReady(180)`. k3d did not.
+
+Separately, metal `k3s-server.nix` maps `control-plane -> 127.0.0.1` on
+the founder and `--tls-san=control-plane` so Cilium can dial the
+Application's `k8sServiceHost: control-plane`. k3d skipped both (the
+same class as skipping Gateway API CRDs). Helm deltas the host to the
+Docker DNS name; ArgoCD's cilium Application wants the metal name back.
+
+Next software is matching those metal first-boot facts, **not** a
+Cilium values tweak and **not** an included re-lift. The CI profile
+(agents: 0) may `hostAliases` 127.0.0.1 on every node it creates. The
+local three-node profile must SAN the cert and write founder hosts on
+the server container only — the same mapping on an agent is the
+joining-node defect `k3s-server.nix` refuses.
+
 ## The distinguishing test
 
 For each of the four, the question is the same and it is answerable:

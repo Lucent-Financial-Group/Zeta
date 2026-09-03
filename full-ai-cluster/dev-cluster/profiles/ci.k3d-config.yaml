@@ -18,14 +18,30 @@ image: rancher/k3s:v1.36.1-k3s1
 
 network: zeta-ci
 
+# Metal k3s-server.nix maps control-plane -> 127.0.0.1 on the founder and
+# SANs the API cert for that name. Cilium's Application is
+# k8sServiceHost: control-plane. k3d skipped both. agents: 0, so the
+# founder mapping is true on every node this profile creates. The local
+# three-node profile must NOT copy this hostAliases (agents would resolve
+# the API to themselves).
+hostAliases:
+  - ip: 127.0.0.1
+    hostnames:
+      - control-plane
+
 options:
   k3d:
-    # Cilium is installed by up.sh immediately after cluster creation. Do not
-    # wait for node Ready before the CNI exists.
+    # Cilium is installed by bring-up immediately after cluster creation. Do not
+    # wait for node Ready before the CNI exists. bringUpK3dDevCluster waits
+    # after Cilium helm, the same way kind --cni cilium does.
     wait: false
   k3s:
     extraArgs:
       - arg: --cluster-init
+        nodeFilters: [server:*]
+      # Metal k3s-server.nix. Without this SAN, Cilium dialling
+      # k8sServiceHost: control-plane fails TLS even if /etc/hosts resolves.
+      - arg: --tls-san=control-plane
         nodeFilters: [server:*]
       - arg: --flannel-backend=none
         nodeFilters: [server:*]
