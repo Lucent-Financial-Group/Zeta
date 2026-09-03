@@ -1,0 +1,12 @@
+{
+  "pr_number": 16444,
+  "archive_path": "docs/history/pr-reviews/PR-16444-fix-forge-host-resolvethread-was-uncallable-nothing-returned-a-thread-id.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-03T05:19:00.963Z",
+  "schema_version": "v1",
+  "commit_sha": "427aaf325e072b3299fc2dc07a4e143b71fa8d80",
+  "title": "fix(forge-host): resolveThread was uncallable — nothing returned a thread id",
+  "state": "MERGED",
+  "merged_at": "2026-09-03T05:18:24Z",
+  "head_ref": "review-threads-answerable"
+}
