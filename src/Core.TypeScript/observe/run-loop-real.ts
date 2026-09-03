@@ -38,6 +38,7 @@ import { readPRStateAsync } from "./world-infra";
 import "../forge-host/github/index"; // registers the GitHub adapter
 import { portExecuteItem } from "./kiro-executor-v2";
 import { currentExecutionMode, executorForMode } from "./execution-mode";
+import { describeError, describeForgeError, forgeFailureDisposition } from "./forge-diagnosis";
 import { codegenExecuteItem } from "./codegen-executor";
 import { realWorkspacePort, type WorkspacePort } from "./workspace-port";
 import type { DoItemOptions } from "./do-item";
@@ -229,10 +230,19 @@ async function main(): Promise<number> {
       // zero-PR forgeState — that would read as "no PR work" and the loop would
       // go quiet. Leave forgeState undefined (same as forge-not-resolved): the
       // loop proceeds without PR data rather than on FALSE PR data.
+      const disposition = forgeFailureDisposition(prState.error);
       console.error(
-        `[forge] PR state read FAILED: ${prState.error instanceof Error ? prState.error.message : String(prState.error)} ` +
+        `[forge] PR state read FAILED — ${describeForgeError(prState.error)} ` +
           `— continuing WITHOUT PR state (NOT treating as zero PRs)`,
       );
+      if (disposition === "operator-must-act") {
+        // Said separately and loudly: a non-retryable failure is a STANDING condition. Reporting it
+        // in the same voice as a transient one is why an expired token can look like a network blip
+        // for as long as the lane keeps ticking.
+        console.error(
+          `[forge] this will not clear on its own (${prState.error.kind}) — the loop will keep running without PR state until an operator fixes it`,
+        );
+      }
     }
   } else {
     console.log(`[forge] not resolved: ${forgeResult.error.message} (continuing without PR state)`);
@@ -253,7 +263,11 @@ async function main(): Promise<number> {
 
   // 2. Pick the next action (via Participant — configurable chooser)
   const participant = resolveParticipant(args.participant);
-  console.log(`[participant] ${participant.kind}:${participant.name}`);
+  // `name` already carries its own kind prefix for every participant (`oracle`,
+  // `local-llm:qwen2.5:0.5b`, `persona:amara`, `human:max`), so prepending `kind` produced
+  // `local-llm:local-llm:qwen2.5:0.5b` and `oracle:oracle` — a log that misnames the one thing it
+  // exists to identify.
+  console.log(`[participant] ${participant.name}`);
 
   // Capture the reasoning alongside the action — makes the small LLM's intelligence visible.
   //
@@ -336,6 +350,11 @@ async function main(): Promise<number> {
   console.log(`[observe] ${renderAction(action)}`);
 
   if (args.dryRun) {
+    // The promotion gate is evaluated further down, AFTER this exit — so a dry run used to answer
+    // "what would you pick" while staying silent on "would it actually reach the world", which is
+    // the more consequential half of the same question. Report it here too.
+    const dryGate = currentExecutionMode(process.env["ZETA_PROMOTION_WINDOW"] ?? undefined);
+    console.log(`[promotion-gate] ${dryGate.mode} (${dryGate.reason}) — ${dryGate.detail}`);
     console.log("[dry-run] would execute — exiting without side-effects");
     return 0;
   }
@@ -631,7 +650,7 @@ async function main(): Promise<number> {
         console.warn(`[realtime] push failed (non-fatal): ${pushResult.reason}`);
       }
     } catch (err) {
-      console.warn(`[realtime] push error (non-fatal): ${err instanceof Error ? err.message : String(err)}`);
+      console.warn(`[realtime] push error (non-fatal): ${describeError(err)}`);
     } finally {
       rtClient.close();
     }
@@ -644,7 +663,7 @@ if (import.meta.main) {
   main().then(
     (code) => process.exit(code),
     (err) => {
-      console.error(`[fatal] ${err instanceof Error ? err.message : String(err)}`);
+      console.error(`[fatal] ${describeError(err)}`);
       process.exit(2);
     },
   );

@@ -20,6 +20,7 @@
 
 import { readFileSync } from "node:fs";
 import type { CommandExecutor, RunOutcome, RunSpec } from "./do-item";
+import { describeError } from "./forge-diagnosis";
 import {
   DEFAULT_WINDOW_PATH,
   decisionFromSource,
@@ -74,7 +75,7 @@ export function readWindowSource(path: string = DEFAULT_WINDOW_PATH): WindowSour
     // Only "the file is not there" is absent. A permission error or an I/O fault is a thing we
     // could not read, and that is a different answer with the same safe destination.
     if (code === "ENOENT") return { absent: true };
-    return { ok: false, why: `${code ?? "read failed"}: ${e instanceof Error ? e.message : String(e)}` };
+    return { ok: false, why: `${code ?? "read failed"}: ${describeError(e)}` };
   }
   return parseWindow(raw);
 }
