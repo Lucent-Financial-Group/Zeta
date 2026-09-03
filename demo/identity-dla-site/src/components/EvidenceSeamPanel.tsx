@@ -113,6 +113,16 @@ const SPECTRUM = [
     emphasis: true,
   },
   {
+    lane: "canonical evidence query",
+    carrier: "conflict-free multi-value evidence state",
+    operators: "full-fingerprint order · Kahan information sum · TS/Python",
+    defect: "—",
+    readout: "QUERY ONLY",
+    verdict: "six arrival orders + redelivery yield one declared receipt",
+    detail: "same-key changed content stays Conflict · exact-once by fingerprint · prior/correlation assumptions remain explicit · not a CRDT merge",
+    tone: "var(--amber)",
+  },
+  {
     lane: "composable factor benchmark",
     carrier: "64 Gaussian leaves · ETTh1 n=3,446",
     operators: "CFB-A F#/TS · CFB-B/C/D TS/Python",
