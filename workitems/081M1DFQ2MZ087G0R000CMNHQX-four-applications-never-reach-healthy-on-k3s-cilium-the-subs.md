@@ -699,13 +699,31 @@ Job `100828865623` on SHA `6fc9e33f2`
 | hostNetwork overlay pod IPs | **OPEN** |
 | pod-network ClusterIP | **OPEN** |
 
-**Cgroup namespace is not the hole.** k3d already uses private cgroupns, which is what Cilium's kind Socket-LB docs require. Non-verbose `cilium-dbg status` has no Socket LB coverage line. Next dump reads `cilium-dbg config get` for `enable-socket-lb` / `bpf-lb-sock-hostns-only` / `bpf-lb-external-clusterip` — a read, not a helm invention.
+**Cgroup namespace is not the hole.** k3d already uses private cgroupns, which is what Cilium's kind Socket-LB docs require. Non-verbose `cilium-dbg status` has no Socket LB coverage line. MEASURED 33814040666: `cilium-dbg config get` of guessed names is not the API.
 
 `live kind included` red is Otto mimir (`081M1FG1RCW`), not this item.
 
-## Next dump — socket-LB config keys (read, do not set)
+## MEASURED 2026-09-03 — live-k3d 33814040666: config get names do not exist
 
-live-k3d dump now prints `cilium-dbg config get` for the socket-LB knobs.
+Job `100842821668` on SHA `1fa71680a`
+[run 33814040666](https://github.com/Lucent-Financial-Group/Zeta/actions/runs/33814040666)
+**succeeded** at smoke. `gate (required)` green.
+
+`cilium-dbg config get` returned `Error: Configuration does not exist`
+for `enable-socket-lb`, `bpf-lb-sock`, `bpf-lb-sock-hostns-only`,
+`bpf-lb-external-clusterip`. The one key that exists:
+`enable-host-legacy-routing=false` (matches Host BPF).
+
+ClusterIP from hostNetwork still FAIL. Next dump reads those keys
+from ConfigMap `cilium-config` (what the agent actually runs) and
+`cilium-dbg status --verbose` KubeProxyReplacement Details (Socket LB
+coverage). Still a read. Do not invent helm values.
+
+## Next dump — cilium-config ConfigMap + verbose KPR details
+
+live-k3d dump now prints ConfigMap `cilium-config` keys
+(`bpf-lb-sock`, `bpf-lb-sock-hostns-only`, `bpf-lb-external-clusterip`)
+and `cilium-dbg status --verbose` KubeProxyReplacement Details.
 Do not treat those as measured until a dump with empty `app=svclb` +
 ClusterIP FAIL prints the values. Do not invent Cilium helm values.
 

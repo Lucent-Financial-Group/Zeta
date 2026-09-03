@@ -1240,14 +1240,14 @@ jobs:
           echo "--- cilium-dbg status (Socket LB / KubeProxyReplacement; do not invent helm values) ---"
           kubectl -n kube-system exec ds/cilium -c cilium-agent -- cilium-dbg status \
             || echo "cilium-dbg status FAILED"
-          echo "--- cilium-dbg config get (socket-LB knobs; read, do not set) ---"
-          echo "MEASURED 33809535624: CgroupnsMode=private Privileged=true; KubeProxyReplacement True; Host BPF; Cluster health endpoints 0/1."
-          echo "Non-verbose status has no Socket LB coverage line. Do not invent helm values."
-          for key in enable-socket-lb bpf-lb-sock bpf-lb-sock-hostns-only bpf-lb-external-clusterip enable-host-legacy-routing; do
-            printf '%s=' "$key"
-            kubectl -n kube-system exec ds/cilium -c cilium-agent -- cilium-dbg config get "$key" \
-              || echo "FAILED"
-          done
+          echo "--- cilium-config ConfigMap socket-LB keys (read, do not set) ---"
+          echo "MEASURED 33814040666: cilium-dbg config get enable-socket-lb bpf-lb-sock bpf-lb-sock-hostns-only bpf-lb-external-clusterip => Configuration does not exist; enable-host-legacy-routing=false."
+          kubectl -n kube-system get cm cilium-config -o jsonpath='bpf-lb-sock={.data.bpf-lb-sock} bpf-lb-sock-hostns-only={.data.bpf-lb-sock-hostns-only} bpf-lb-external-clusterip={.data.bpf-lb-external-clusterip} enable-host-reachable-services={.data.enable-host-reachable-services} kube-proxy-replacement={.data.kube-proxy-replacement} enable-host-legacy-routing={.data.enable-host-legacy-routing}{"\n"}' \
+            || echo "cilium-config ConfigMap FAILED"
+          echo "--- cilium-dbg status --verbose KubeProxyReplacement Details ---"
+          kubectl -n kube-system exec ds/cilium -c cilium-agent -- cilium-dbg status --verbose \
+            | awk '/KubeProxyReplacement Details/,/^$/' \
+            || echo "verbose KPR details FAILED"
           echo "--- k3d node cgroupns (MEASURED 33809535624: private, not the hole) ---"
           if [ -n "$NODE" ]; then
             docker inspect "$NODE" --format 'CgroupnsMode={{.HostConfig.CgroupnsMode}} Privileged={{.HostConfig.Privileged}}' \
