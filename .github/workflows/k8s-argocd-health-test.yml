@@ -149,6 +149,8 @@ on:
       - "src/Core.TypeScript/cluster/inert-valuesobject-keys.schema.json"
       - "src/Core.TypeScript/cluster/reason-truth.ts"
       - "src/Core.TypeScript/cluster/reason-truth.test.ts"
+      - "src/Core.TypeScript/cluster/lane-tree-source.ts"
+      - "src/Core.TypeScript/cluster/lane-tree-source.test.ts"
       - "docs/backlog/P1/081KSXN940008QG0R000SCP2H1-kubernetes-argocd-kind-k3d-integration-health-tests-separate.md"
       - ".github/workflows/k8s-argocd-health-test.yml"
       - ".mise.toml"
@@ -256,6 +258,8 @@ on:
       - "src/Core.TypeScript/cluster/inert-valuesobject-keys.schema.json"
       - "src/Core.TypeScript/cluster/reason-truth.ts"
       - "src/Core.TypeScript/cluster/reason-truth.test.ts"
+      - "src/Core.TypeScript/cluster/lane-tree-source.ts"
+      - "src/Core.TypeScript/cluster/lane-tree-source.test.ts"
       - "docs/backlog/P1/081KSXN940008QG0R000SCP2H1-kubernetes-argocd-kind-k3d-integration-health-tests-separate.md"
       - ".github/workflows/k8s-argocd-health-test.yml"
       - ".mise.toml"
@@ -426,6 +430,37 @@ jobs:
 
       - name: Run app-of-apps discovery unit tests
         run: bun test src/Core.TypeScript/cluster/app-of-apps-discovery.test.ts
+
+      # THE RESOURCE-RUNG OVERRIDE POINT, verified offline.
+      #
+      # `argocd-health-test.ts` already names the blocker this addresses: "One
+      # committed tree, two substrates, no override point." `--resource-profile dev
+      # --apply` rewrites the WORKING tree while ArgoCD syncs the COMMITTED tree at
+      # `--git-ref`, so the dev rung has never been able to reach this lane, and the
+      # lane applies `metal` -- 6390m of requests to a 4000m node. MEASURED on run
+      # 33790413535: mimir-kafka-0 and three hindsight pods Pending on
+      # `Insufficient cpu`, mimir Degraded, the included proof red.
+      #
+      # `lane-tree-source.ts` builds the tree the lane should sync: a staged copy of
+      # `full-ai-cluster/k8s` with the rung applied through the SAME
+      # `applyResourceProfile` the `--verify` path checks, self-referencing repoURLs
+      # pointed at an in-cluster server, committed to a bare repository and packed
+      # into a ConfigMap. Nothing is pushed and nothing leaves the runner, which is
+      # what keeps it off the repository-growth budget and makes it work for a fork.
+      #
+      # THIS STEP IS THE VERIFICATION, and it is genuinely end-to-end despite being
+      # offline: the test CLONES the bare repository it just built and reads
+      # mimir's kafka request out of the clone, asserting 25m (dev) rather than
+      # 1000m (metal, the value that could not be scheduled). Mutation-checked
+      # 2026-09-03 -- applying the rung AFTER the commit, a plausible ordering bug,
+      # turns exactly that assertion red.
+      #
+      # The measurement it prints is worth reading on every run: the packed tree is
+      # 419,840 bytes against a 716,800-byte budget (58.6%). The refusal above that
+      # budget is deliberate -- the day this tree outgrows ConfigMap delivery should
+      # arrive as a named message here, not as an etcd rejection inside a live lane.
+      - name: Run lane-tree source falsifiers (the resource-rung override point)
+        run: bun test src/Core.TypeScript/cluster/lane-tree-source.test.ts
 
       # SYNC-WAVE DERIVATION. The App-of-Apps bring-up order is DERIVED from
       # full-ai-cluster/k8s/sync-wave-dependency-graph.yaml by ace's own engine
