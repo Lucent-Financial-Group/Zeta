@@ -213,3 +213,28 @@ export function itemIdOf(action: NextAction): string | null {
 export function isMergeItem(itemId: string): boolean {
   return itemId.startsWith("merge-pr-");
 }
+
+/** Answering a review is ordinary work. Kept separate from `isMergeItem` because the AUTHORITY differs. */
+export function isReviewItem(itemId: string): boolean {
+  return itemId.startsWith("review-pr-");
+}
+
+/**
+ * An item the FORGE produced, not the backlog.
+ *
+ * These carry no backlog file, so a room's `backlogIds` can never contain one. Scoping them by
+ * backlog membership would make the loop refuse its own forge work — which is what happened to
+ * review items the moment they were offered, until this existed. The PR-number envelope is the
+ * right scope for them, and `ScopePredicate.prNumbers` is where that lives.
+ */
+export function isSyntheticForgeItem(itemId: string): boolean {
+  return isMergeItem(itemId) || isReviewItem(itemId);
+}
+
+/** The PR number inside a synthetic forge id, or `null` when the id is not one. */
+export function forgePrNumber(itemId: string): number | null {
+  const prefix = isMergeItem(itemId) ? "merge-pr-" : isReviewItem(itemId) ? "review-pr-" : null;
+  if (prefix === null) return null;
+  const n = Number.parseInt(itemId.slice(prefix.length), 10);
+  return Number.isInteger(n) && n > 0 ? n : null;
+}

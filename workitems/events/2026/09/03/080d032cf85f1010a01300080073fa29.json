@@ -1,0 +1,14 @@
+{
+  "id": "080d032cf85f1010a01300080073fa29",
+  "at": "2026-09-03T04:55:17.218Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1JSY2Z0087G0R002Q3RCVG",
+    "type": "bug",
+    "title": "The loop was blind to its own PRs blocked on an unanswered review",
+    "slug": "the-loop-was-blind-to-its-own-prs-blocked-on-an-unanswered-r",
+    "priority": "P2",
+    "filename": "081M1JSY2Z0087G0R002Q3RCVG-the-loop-was-blind-to-its-own-prs-blocked-on-an-unanswered-r.md"
+  }
+}

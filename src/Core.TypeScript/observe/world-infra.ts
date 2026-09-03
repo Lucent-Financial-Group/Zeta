@@ -75,6 +75,12 @@ export interface PRInfo {
   readonly number: number;
   readonly title: string;
   readonly mergeState: string;
+  /**
+   * The forge's review verdict. Already carried by `listOpenPullRequests` and dropped here, which
+   * is why the loop was blind to its own blocked PRs: it saw `openPrCount` and acted only on the
+   * CLEAN ones, so a PR sitting on an unanswered review was invisible work.
+   */
+  readonly reviewDecision?: string;
 }
 
 /**
@@ -127,10 +133,14 @@ export function readPRState(): { open: readonly PRInfo[]; clean: readonly PRInfo
  * `{ open:[], clean:[] }` makes the loop read a forge outage as "no PR work" and
  * go quiet while PRs rot — "I failed to look" must never equal "there is no work".
  */
-export async function readPRStateAsync(
-  forge: import("../forge-host/forge-host").ForgeHost,
-): Promise<
-  | { ok: true; open: readonly PRInfo[]; clean: readonly PRInfo[] }
+export async function readPRStateAsync(forge: import("../forge-host/forge-host").ForgeHost): Promise<
+  | {
+      ok: true;
+      open: readonly PRInfo[];
+      clean: readonly PRInfo[];
+      /** Open PRs a reviewer has asked for changes on. REVIEW work, as distinct from merge work. */
+      changesRequested: readonly PRInfo[];
+    }
   // The error is a ForgeError, NOT `unknown`. It was widened here, and the caller then had nothing
   // left to read but `String(error)` — which on a plain object is "[object Object]", so an expired
   // token and a network blip printed identically. Widening away a type you hold is how a rich
@@ -144,10 +154,13 @@ export async function readPRStateAsync(
     number: pr.number,
     title: pr.title,
     mergeState: (pr.mergeStateStatus ?? "").toLowerCase(),
+    ...(pr.reviewDecision === null || pr.reviewDecision === undefined ? {} : { reviewDecision: pr.reviewDecision }),
   }));
 
   return {
     ok: true,
+    // A reviewer asked for changes. Costs nothing extra: the field is already in the same call.
+    changesRequested: prs.filter((p) => p.reviewDecision === "changes_requested"),
     open: prs,
     clean: prs.filter((p) => p.mergeState === "clean"),
   };
