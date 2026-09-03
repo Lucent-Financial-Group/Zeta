@@ -1,0 +1,12 @@
+{
+  "pr_number": 16442,
+  "archive_path": "docs/history/pr-reviews/PR-16442-test-observe-the-loop-gates-cannot-be-silently-unwired.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-03T04:44:59.974Z",
+  "schema_version": "v1",
+  "commit_sha": "9737567fe20e182fef557387623bc3b20205d8d5",
+  "title": "test(observe): the loop gates cannot be silently unwired",
+  "state": "MERGED",
+  "merged_at": "2026-09-03T04:44:26Z",
+  "head_ref": "gates-cannot-be-unwired"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 16441,
+  "archive_path": "docs/history/pr-reviews/PR-16441-fix-forge-host-getprgatestate-never-worked-a-union-spread-on-a-connection.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-03T04:31:25.310Z",
+  "schema_version": "v1",
+  "commit_sha": "847363a2c0297411a4126b927474d45372e304b5",
+  "title": "fix(forge-host): getPrGateState never worked — a union spread on a connection",
+  "state": "MERGED",
+  "merged_at": "2026-09-03T04:30:48Z",
+  "head_ref": "forge-gate-query-never-worked"
+}
