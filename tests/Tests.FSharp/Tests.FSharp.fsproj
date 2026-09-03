@@ -730,6 +730,8 @@
     <Compile Include="IoBoundaryTreaty.Tests.fs" />
     <Compile Include="SnapshotManifestInterop.Tests.fs" />
     <Compile Include="DeltaLogInterop.Tests.fs" />
+    <Compile Include="IndexedZSetTreaty.Tests.fs" />
+    <Compile Include="IndexedZSetCollation.Tests.fs" />
     <Compile Include="../../src/Core/QuantumObservableDbsp.Tests.fs" />
     <Compile Include="ZetaToolStore.Tests.fs" />
     <Compile Include="ZetaToolStore.Golden.Tests.fs" />
