@@ -71,7 +71,7 @@ module ZetaFsFreeze =
     /// fsync of objects-dir + log. `manual` is the DST pump (no background ferry).
     [<Sealed>]
     type internal FreezeLog
-        (storeDir: string, config: FerryThrottlerConfig, manual: bool, blockIo: SimulatedBlockIo option) =
+        (storeDir: string, config: FerryThrottlerConfig, manual: bool, blockIo: SimulatedBlockIo option, objectCas: BlockCas option) =
 
         do
             if config.MaxDegreeOfParallelism <> 1 then
@@ -127,19 +127,27 @@ module ZetaFsFreeze =
                     while err.IsNone && j < item.Objects.Length do
                         let struct (id, bytes) = item.Objects.[j]
                         let hex = (ContentHash256.toContentAddress128 id).ToHex()
-                        let path = Path.Combine(objectsDir, hex.Substring(0, 2), hex.Substring(2))
-                        let dir = Path.GetDirectoryName path
-                        fsDoor.CreateDirectory dir
-                        FileSystemIo.writeAllBytes fsDoor path bytes
 
-                        if item.Durable then
-                            match FileSync.fsyncFile path with
-                            | Ok() -> ()
-                            | Error e -> err <- Some(FreezeError.Fsync e)
+                        match objectCas with
+                        | Some cas ->
+                            cas.Put(hex, bytes)
+
+                            if item.Durable then
+                                cas.Device.Flush()
+                        | None ->
+                            let path = Path.Combine(objectsDir, hex.Substring(0, 2), hex.Substring(2))
+                            let dir = Path.GetDirectoryName path
+                            fsDoor.CreateDirectory dir
+                            FileSystemIo.writeAllBytes fsDoor path bytes
+
+                            if item.Durable then
+                                match FileSync.fsyncFile path with
+                                | Ok() -> ()
+                                | Error e -> err <- Some(FreezeError.Fsync e)
 
                         j <- j + 1
 
-                    if err.IsNone && item.Durable then
+                    if err.IsNone && item.Durable && objectCas.IsNone then
                         match FileSync.fsyncDir objectsDir with
                         | Error e -> err <- Some(FreezeError.Fsync e)
                         | Ok() -> ()
@@ -209,6 +217,7 @@ module ZetaFsFreeze =
         member _.LastBoatSize = lastBoat
         member _.LogPath = logPath
         member _.BlockIo = blockIo
+        member _.ObjectCas = objectCas
 
         member _.SubmitAsync(item: LogItem, ct: CancellationToken) : ValueTask<Result<struct (int64 * int64), FreezeError>> =
             if ct.IsCancellationRequested then
@@ -252,13 +261,14 @@ module ZetaFsFreeze =
             session: ZetaFsCrypto.Session option,
             config: FerryThrottlerConfig,
             manual: bool,
-            blockIo: SimulatedBlockIo option
+            blockIo: SimulatedBlockIo option,
+            objectCas: BlockCas option
         ) =
         let gate = obj ()
         let commits = Dictionary<ContentHash256, FreezeResult>()
         let leaves = Dictionary<ContentHash256, ContentHash256[]>()
         let mutable nextLsn = 1L
-        let log = new FreezeLog(storeDir, config, manual, blockIo)
+        let log = new FreezeLog(storeDir, config, manual, blockIo, objectCas)
 
         member _.StoreDir = storeDir
         member _.Mutbuf = mutbuf
@@ -567,11 +577,12 @@ module ZetaFsFreeze =
         (config: FerryThrottlerConfig)
         (manual: bool)
         (blockIo: SimulatedBlockIo option)
+        (objectCas: BlockCas option)
         : Volume =
         let fs = FileSystem.Current
         fs.CreateDirectory (Path.Combine(storeDir, "log"))
         fs.CreateDirectory (Path.Combine(storeDir, "objects"))
-        let volume = new Volume(storeDir, mutbuf, observer, session, config, manual, blockIo)
+        let volume = new Volume(storeDir, mutbuf, observer, session, config, manual, blockIo, objectCas)
 
         try
             lock volume.Gate (fun () ->
@@ -590,7 +601,7 @@ module ZetaFsFreeze =
         (observer: IDurabilityObserver option)
         (session: ZetaFsCrypto.Session option)
         : Volume =
-        createFull storeDir mutbuf observer session defaultConfig false None
+        createFull storeDir mutbuf observer session defaultConfig false None None
 
     /// Unencrypted control (FORMAT enc=off). The default first-product profile.
     let create (storeDir: string) (mutbuf: ZetaFsMutbuf.Catalog) (observer: IDurabilityObserver option) : Volume =
@@ -602,7 +613,7 @@ module ZetaFsFreeze =
         (mutbuf: ZetaFsMutbuf.Catalog)
         (observer: IDurabilityObserver option)
         : Volume =
-        createFull storeDir mutbuf observer None defaultConfig true None
+        createFull storeDir mutbuf observer None defaultConfig true None None
 
     let createManualWith
         (storeDir: string)
@@ -610,19 +621,32 @@ module ZetaFsFreeze =
         (observer: IDurabilityObserver option)
         (session: ZetaFsCrypto.Session option)
         : Volume =
-        createFull storeDir mutbuf observer session defaultConfig true None
+        createFull storeDir mutbuf observer session defaultConfig true None None
 
     /// DST: Journaled log frames go through `IBlockIo` (RMW on the tail block).
-    /// Objects still speak files. Logical length lives on the `SimulatedBlockIo`
-    /// instance so reopen can replay without a superblock. A real device needs
-    /// a superblock; that is not this slice.
+    /// Objects still speak files unless `createManualWithBlockStore` is used.
+    /// Logical length lives on the `SimulatedBlockIo` instance so reopen can
+    /// replay without a superblock. A real device needs a superblock; that is
+    /// not this slice.
     let createManualWithBlocks
         (storeDir: string)
         (mutbuf: ZetaFsMutbuf.Catalog)
         (observer: IDurabilityObserver option)
         (blocks: SimulatedBlockIo)
         : Volume =
-        createFull storeDir mutbuf observer None defaultConfig true (Some blocks)
+        createFull storeDir mutbuf observer None defaultConfig true (Some blocks) None
+
+    /// DST: log on one simulated disk, CAS objects on another. Two devices
+    /// so a crash arm on objects cannot tear the log. Index is instance
+    /// state on `BlockCas` (no superblock).
+    let createManualWithBlockStore
+        (storeDir: string)
+        (mutbuf: ZetaFsMutbuf.Catalog)
+        (observer: IDurabilityObserver option)
+        (logBlocks: SimulatedBlockIo)
+        (objectCas: BlockCas)
+        : Volume =
+        createFull storeDir mutbuf observer None defaultConfig true (Some logBlocks) (Some objectCas)
 
     let dispose (volume: Volume) = (volume :> IDisposable).Dispose()
 
@@ -648,8 +672,13 @@ module ZetaFsFreeze =
         FileSystem.Current.CreateDirectory dir
         FileSystemIo.writeAllBytes FileSystem.Current path bytes
 
-    let private objectExists (storeDir: string) (id: ContentHash256) : bool =
-        FileSystem.Current.Exists(objectPath storeDir id)
+    let private objectKey (id: ContentHash256) =
+        (ContentHash256.toContentAddress128 id).ToHex()
+
+    let private objectExists (volume: Volume) (id: ContentHash256) : bool =
+        match volume.Log.ObjectCas with
+        | Some cas -> cas.Exists(objectKey id)
+        | None -> FileSystem.Current.Exists(objectPath volume.StoreDir id)
 
     let private className (c: DurabilityClass) =
         match c with
@@ -707,7 +736,7 @@ module ZetaFsFreeze =
                     let mutable i = 0
 
                     while ok && i < leaves.Length do
-                        if not (objectExists volume.StoreDir leaves.[i]) then
+                        if not (objectExists volume leaves.[i]) then
                             ok <- false
 
                         i <- i + 1

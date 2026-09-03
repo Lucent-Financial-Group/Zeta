@@ -1,0 +1,14 @@
+{
+  "id": "080d03338bf58810a01300089cbe94af",
+  "at": "2026-09-03T08:45:09.169Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1K72ZNG087G0R001QR0ESZ",
+    "type": "task",
+    "title": "Freeze CAS objects through IBlockIo",
+    "slug": "freeze-cas-objects-through-iblockio",
+    "priority": "P1",
+    "filename": "081M1K72ZNG087G0R001QR0ESZ-freeze-cas-objects-through-iblockio.md"
+  }
+}

@@ -707,3 +707,79 @@ let ``Journaled freeze crash-mid-write on IBlockIo does not finish`` () : Task =
         finally
             FileSystem.Reset()
     }
+
+[<Fact>]
+let ``Journaled freeze CAS objects on IBlockIo are readable and not POSIX files`` () : Task =
+    task {
+        ensureHasher ()
+        FileSystem.Register(InMemoryFileSystem())
+        let store = "/freeze-cas-blocks"
+        let mutbuf = ZetaFsMutbuf.create store ZetaFsMutbuf.Coherence.Shared
+        let logDev = SimulatedBlockIo(4096)
+        let objDev = SimulatedBlockIo(4096)
+        let cas = BlockCas(objDev)
+        let volume = ZetaFsFreeze.createManualWithBlockStore store mutbuf None logDev cas
+
+        try
+            let id = mintId ()
+            let h = ZetaFsMutbuf.openHandle volume.Mutbuf id
+            ZetaFsMutbuf.pwrite volume.Mutbuf h 0L [| 1uy; 2uy; 3uy |] |> ignore
+            let pending = (freezeAsync volume id ZetaFsFreeze.Journaled).AsTask()
+            do! (ZetaFsFreeze.pumpLog volume CancellationToken.None).ConfigureAwait(false)
+            let! first = pending.ConfigureAwait(false)
+
+            match first with
+            | Error e -> Assert.Fail(ZetaFsFreeze.errorName e)
+            | Ok first ->
+                Assert.True(ZetaFsFreeze.isReadable volume first.Content)
+                Assert.True(cas.Count > 0)
+                Assert.Equal(0, FileSystem.Current.GetFiles(Path.Combine(store, "objects"), "*").Length)
+                ZetaFsFreeze.dispose volume
+                let reopened = ZetaFsFreeze.createManualWithBlockStore store mutbuf None logDev cas
+
+                try
+                    Assert.True(ZetaFsFreeze.isReadable reopened first.Content)
+                finally
+                    ZetaFsFreeze.dispose reopened
+        finally
+            FileSystem.Reset()
+    }
+
+[<Fact>]
+let ``Journaled freeze crash during block CAS put drops the trailing intent`` () : Task =
+    task {
+        ensureHasher ()
+        FileSystem.Register(InMemoryFileSystem())
+        let store = "/freeze-cas-crash"
+        let mutbuf = ZetaFsMutbuf.create store ZetaFsMutbuf.Coherence.Shared
+        let logDev = SimulatedBlockIo(4096)
+        let objDev = SimulatedBlockIo(4096)
+        objDev.ArmCrashMidWrite(8)
+        let cas = BlockCas(objDev)
+        let volume = ZetaFsFreeze.createManualWithBlockStore store mutbuf None logDev cas
+
+        try
+            let id = mintId ()
+            let h = ZetaFsMutbuf.openHandle volume.Mutbuf id
+            ZetaFsMutbuf.pwrite volume.Mutbuf h 0L [| 1uy; 2uy; 3uy |] |> ignore
+            let pending = (freezeAsync volume id ZetaFsFreeze.Journaled).AsTask()
+            do! (ZetaFsFreeze.pumpLog volume CancellationToken.None).ConfigureAwait(false)
+            let! _ =
+                Assert
+                    .ThrowsAsync<CrashMidWriteException>(fun () -> pending :> Task)
+                    .ConfigureAwait(false)
+
+            Assert.Equal(1, ZetaFsFreeze.logBoatCount volume)
+            Assert.True(logDev.LogicalBytes > 0L)
+            Assert.Equal(0, cas.Count)
+            ZetaFsFreeze.dispose volume
+            let reopened = ZetaFsFreeze.createManualWithBlockStore store mutbuf None logDev cas
+
+            try
+                Assert.Equal(0L, logDev.LogicalBytes)
+                Assert.Equal(0, cas.Count)
+            finally
+                ZetaFsFreeze.dispose reopened
+        finally
+            FileSystem.Reset()
+    }
