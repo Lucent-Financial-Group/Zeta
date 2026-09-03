@@ -1,0 +1,12 @@
+{
+  "pr_number": 16431,
+  "archive_path": "docs/history/pr-reviews/PR-16431-feat-observe-one-authoritative-nextaction-table-a-new-kind-cannot-fail-open.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-03T03:10:10.805Z",
+  "schema_version": "v1",
+  "commit_sha": "67bdf7eef477669953cbd2934a6c53d7403bbdf4",
+  "title": "feat(observe): one authoritative NextAction table — a new kind cannot fail open",
+  "state": "MERGED",
+  "merged_at": "2026-09-03T03:09:33Z",
+  "head_ref": "action-table-v2"
+}

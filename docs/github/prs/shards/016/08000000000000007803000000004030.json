@@ -1,0 +1,12 @@
+{
+  "pr_number": 16432,
+  "archive_path": "docs/history/pr-reviews/PR-16432-feat-enforcement-observe-act-promotion-gate-a-lane-earns-dispatch.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-03T03:12:50.844Z",
+  "schema_version": "v1",
+  "commit_sha": "6075287bb572299bde788828b5cdaf97043bfad4",
+  "title": "feat(enforcement): observe-act promotion gate — a lane earns dispatch",
+  "state": "MERGED",
+  "merged_at": "2026-09-03T03:12:09Z",
+  "head_ref": "promotion-gate-v2"
+}
