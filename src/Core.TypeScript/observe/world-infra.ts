@@ -16,6 +16,7 @@
  */
 
 import { existsSync, readFileSync } from "node:fs";
+import { describeError } from "./forge-diagnosis";
 import { join } from "node:path";
 import { spawnSync } from "node:child_process";
 import { createLaunchctlControl } from "../service/service-control-port";
@@ -107,7 +108,7 @@ export function readPRState(): { open: readonly PRInfo[]; clean: readonly PRInfo
       mergeState: (p.mergeStateStatus ?? "").toLowerCase(),
     }));
   } catch (err) {
-    console.error(`[forge] gh pr list JSON parse failed: ${err instanceof Error ? err.message : String(err)}`);
+    console.error(`[forge] gh pr list JSON parse failed: ${describeError(err)}`);
   }
 
   return {
@@ -128,7 +129,14 @@ export function readPRState(): { open: readonly PRInfo[]; clean: readonly PRInfo
  */
 export async function readPRStateAsync(
   forge: import("../forge-host/forge-host").ForgeHost,
-): Promise<{ ok: true; open: readonly PRInfo[]; clean: readonly PRInfo[] } | { ok: false; error: unknown }> {
+): Promise<
+  | { ok: true; open: readonly PRInfo[]; clean: readonly PRInfo[] }
+  // The error is a ForgeError, NOT `unknown`. It was widened here, and the caller then had nothing
+  // left to read but `String(error)` — which on a plain object is "[object Object]", so an expired
+  // token and a network blip printed identically. Widening away a type you hold is how a rich
+  // diagnosis becomes an unreadable log line.
+  | { ok: false; error: import("../forge-host/types").ForgeError }
+> {
   const result = await forge.listOpenPullRequests({ limit: 20 });
   if (!result.ok) return { ok: false, error: result.error };
 

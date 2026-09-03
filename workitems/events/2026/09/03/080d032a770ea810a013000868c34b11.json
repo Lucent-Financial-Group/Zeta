@@ -1,0 +1,14 @@
+{
+  "id": "080d032a770ea810a013000868c34b11",
+  "at": "2026-09-03T03:27:43.573Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1JMXREK087G0R003AW2465",
+    "type": "bug",
+    "title": "The loop threw away every forge diagnosis it was handed",
+    "slug": "the-loop-threw-away-every-forge-diagnosis-it-was-handed",
+    "priority": "P2",
+    "filename": "081M1JMXREK087G0R003AW2465-the-loop-threw-away-every-forge-diagnosis-it-was-handed.md"
+  }
+}
