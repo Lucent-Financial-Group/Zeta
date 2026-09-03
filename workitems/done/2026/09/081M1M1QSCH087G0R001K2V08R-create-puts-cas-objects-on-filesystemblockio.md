@@ -1,11 +1,12 @@
 ---
 id: 081M1M1QSCH087G0R001K2V08R
 type: task
-state: backlog
+state: done
 priority: P1
 slug: create-puts-cas-objects-on-filesystemblockio
 title: "create puts CAS objects on FileSystemBlockIo"
 created: 2026-09-03T16:31:00.000Z
+completed: 2026-09-03T16:54:46.265Z
 depends_on: ["081M1M0AC9D087G0R003X7STF4"]
 composes_with: ["081M1M0AC9D087G0R003X7STF4"]
 ---
