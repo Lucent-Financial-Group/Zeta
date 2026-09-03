@@ -1,11 +1,12 @@
 ---
 id: 081M1K8T36N087G0R0005YQGJW
 type: task
-state: backlog
+state: done
 priority: P1
 slug: block-log-and-cas-superblock-on-lba-0
 title: "Block log and CAS superblock on LBA 0"
 created: 2026-09-03T09:13:00.000Z
+completed: 2026-09-03T09:43:03.004Z
 depends_on: []
 composes_with: ["081M1K72ZNG087G0R001QR0ESZ"]
 ---

@@ -373,3 +373,79 @@ let ``SimulatedBlockIo reorder holds the first write until the second commits`` 
     Assert.Equal<byte>(a, gotA)
     Assert.Equal<byte>(b, gotB)
     Assert.Equal<uint64>([| 1UL; 0UL |], device.CommitOrder)
+
+[<Fact>]
+let ``BlockSuper log dual slot keeps previous logical after crash-mid-write`` () =
+    let device = SimulatedBlockIo(4096)
+    let io = device :> IBlockIo
+    Assert.Equal(8192L, BlockLog.origin io)
+    BlockSuper.writeLog io 100L
+
+    match BlockSuper.tryReadLog io with
+    | Some n -> Assert.Equal(100L, n)
+    | None -> Assert.Fail("expected logical 100")
+
+    device.ArmCrashMidWrite(8)
+    let ex =
+        Assert.Throws<CrashMidWriteException>(fun () -> BlockSuper.writeLog io 200L)
+
+    Assert.Equal(8, ex.CommittedBytes)
+    let cloned = device.CloneMedia() :> IBlockIo
+
+    match BlockSuper.tryReadLog cloned with
+    | Some n -> Assert.Equal(100L, n)
+    | None -> Assert.Fail("torn new slot must not hide the previous generation")
+
+[<Fact>]
+let ``BlockSuper log dual slot keeps previous logical after corrupt-last-write`` () =
+    let device = SimulatedBlockIo(4096)
+    let io = device :> IBlockIo
+    BlockSuper.writeLog io 100L
+    device.ArmCorruptLastWrite(8)
+    BlockSuper.writeLog io 200L
+
+    match BlockSuper.tryReadLog io with
+    | Some n -> Assert.Equal(100L, n)
+    | None -> Assert.Fail("corrupt new slot must not hide the previous generation")
+
+[<Fact>]
+let ``BlockSuper log crash on the first slot recovers empty`` () =
+    let device = SimulatedBlockIo(4096)
+    let io = device :> IBlockIo
+    device.ArmCrashMidWrite(8)
+    Assert.Throws<CrashMidWriteException>(fun () -> BlockSuper.writeLog io 100L)
+    |> ignore
+
+    match BlockSuper.tryReadLog io with
+    | Some _ -> Assert.Fail("torn first slot must not parse")
+    | None -> ()
+
+[<Fact>]
+let ``BlockSuper CAS dual slot keeps previous index after crash-mid-write`` () =
+    let device = SimulatedBlockIo(4096)
+    let io = device :> IBlockIo
+    BlockSuper.writeCas io [| "aa", 8192L, 3 |]
+
+    match BlockSuper.tryReadCas io with
+    | Some entries ->
+        Assert.Equal(1, entries.Length)
+
+        match entries.[0] with
+        | key, _, _ -> Assert.Equal("aa", key)
+    | None -> Assert.Fail("expected one CAS entry")
+
+    device.ArmCrashMidWrite(8)
+
+    Assert.Throws<CrashMidWriteException>(fun () ->
+        BlockSuper.writeCas io [| "aa", 8192L, 3; "bb", 8195L, 1 |])
+    |> ignore
+
+    let cloned = device.CloneMedia() :> IBlockIo
+
+    match BlockSuper.tryReadCas cloned with
+    | Some entries ->
+        Assert.Equal(1, entries.Length)
+
+        match entries.[0] with
+        | key, _, _ -> Assert.Equal("aa", key)
+    | None -> Assert.Fail("torn new CAS slot must not hide the previous generation")

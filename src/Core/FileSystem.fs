@@ -4,6 +4,7 @@ open System
 open System.Buffers.Binary
 open System.Collections.Generic
 open System.IO
+open System.IO.Hashing
 open System.Text
 open System.Threading
 open System.Threading.Tasks
@@ -658,37 +659,106 @@ module BlockLog =
 
     let read (io: IBlockIo) (len: int64) : byte[] = readAt io 0L len
 
-    let origin (io: IBlockIo) = int64 io.BlockSize
+    /// Payload starts after two superblock slots (LBA 0 and LBA 1).
+    let origin (io: IBlockIo) = 2L * int64 io.BlockSize
 
-/// One-block superblock at LBA 0. Payload starts at `BlockLog.origin`.
-/// Log magic `ZFL1`, CAS magic `ZCA1`. Index must fit in one block.
+/// Two checksummed superblock copies at LBA 0 and LBA 1. Payload starts at
+/// `BlockLog.origin`. Log magic `ZFL2`, CAS magic `ZCA2`. A torn or corrupt
+/// write of the inactive slot leaves the previous generation readable.
+/// Index must fit in one block. CRC is IEEE-802 over bytes after offset 8.
 [<RequireQualifiedAccess>]
 module BlockSuper =
-    let logMagic = [| byte 'Z'; byte 'F'; byte 'L'; byte '1' |]
-    let casMagic = [| byte 'Z'; byte 'C'; byte 'A'; byte '1' |]
+    let logMagic = [| byte 'Z'; byte 'F'; byte 'L'; byte '2' |]
+    let casMagic = [| byte 'Z'; byte 'C'; byte 'A'; byte '2' |]
 
-    let writeLog (io: IBlockIo) (logical: int64) =
+    let private crcOf (buf: byte[]) =
+        Crc32.HashToUInt32(ReadOnlySpan(buf, 8, buf.Length - 8))
+
+    let private magicOk (buf: byte[]) (magic: byte[]) =
+        buf.Length >= 24
+        && buf.[0] = magic.[0]
+        && buf.[1] = magic.[1]
+        && buf.[2] = magic.[2]
+        && buf.[3] = magic.[3]
+
+    let private crcOk (buf: byte[]) =
+        let stored = BinaryPrimitives.ReadUInt32LittleEndian(ReadOnlySpan(buf, 4, 4))
+        stored = crcOf buf
+
+    let private readSlot (io: IBlockIo) (lba: uint64) =
         let buf = Array.zeroCreate io.BlockSize
-        Buffer.BlockCopy(logMagic, 0, buf, 0, 4)
-        BinaryPrimitives.WriteInt64LittleEndian(Span(buf, 4, 8), logical)
-        io.Write(0UL, System.ReadOnlyMemory<byte>.op_Implicit buf) |> ignore
+        io.Read(lba, Memory buf) |> ignore
+        buf
 
-    let tryReadLog (io: IBlockIo) : int64 option =
-        let buf = Array.zeroCreate io.BlockSize
-        let n = io.Read(0UL, Memory buf)
+    let private pick (a: (int64 * 'a) option) (b: (int64 * 'a) option) : (uint64 * int64 * 'a) option =
+        match a, b with
+        | None, None -> None
+        | Some(g, v), None -> Some(0UL, g, v)
+        | None, Some(g, v) -> Some(1UL, g, v)
+        | Some(g0, v0), Some(g1, v1) ->
+            if g0 >= g1 then
+                Some(0UL, g0, v0)
+            else
+                Some(1UL, g1, v1)
 
-        if n < 12 then
-            None
-        elif buf.[0] = logMagic.[0] && buf.[1] = logMagic.[1] && buf.[2] = logMagic.[2] && buf.[3] = logMagic.[3] then
-            Some(BinaryPrimitives.ReadInt64LittleEndian(ReadOnlySpan(buf, 4, 8)))
+    let private nextSlot (current: (uint64 * int64 * 'a) option) =
+        match current with
+        | None -> 0UL, 1L
+        | Some(slot, gen, _) -> 1UL - slot, gen + 1L
+
+    let private parseLog (buf: byte[]) : (int64 * int64) option =
+        if magicOk buf logMagic && crcOk buf then
+            let gen = BinaryPrimitives.ReadInt64LittleEndian(ReadOnlySpan(buf, 8, 8))
+            let logical = BinaryPrimitives.ReadInt64LittleEndian(ReadOnlySpan(buf, 16, 8))
+            Some(gen, logical)
         else
             None
 
-    let writeCas (io: IBlockIo) (entries: (string * int64 * int) array) =
-        let buf = Array.zeroCreate io.BlockSize
-        Buffer.BlockCopy(casMagic, 0, buf, 0, 4)
-        BinaryPrimitives.WriteInt32LittleEndian(Span(buf, 4, 4), entries.Length)
-        let mutable o = 8
+    let private parseCasEntries (buf: byte[]) : (string * int64 * int) array option =
+        let count = BinaryPrimitives.ReadInt32LittleEndian(ReadOnlySpan(buf, 16, 4))
+
+        if count < 0 then
+            None
+        else
+            let acc = ResizeArray<_>(count)
+            let mutable o = 20
+            let mutable ok = true
+            let mutable i = 0
+
+            while ok && i < count do
+                if o + 2 > buf.Length then
+                    ok <- false
+                else
+                    let klen = int (BinaryPrimitives.ReadUInt16LittleEndian(ReadOnlySpan(buf, o, 2)))
+                    o <- o + 2
+
+                    if klen < 1 || o + klen + 12 > buf.Length then
+                        ok <- false
+                    else
+                        let key = Encoding.UTF8.GetString(buf, o, klen)
+                        o <- o + klen
+                        let pos = BinaryPrimitives.ReadInt64LittleEndian(ReadOnlySpan(buf, o, 8))
+                        o <- o + 8
+                        let len = BinaryPrimitives.ReadInt32LittleEndian(ReadOnlySpan(buf, o, 4))
+                        o <- o + 4
+                        acc.Add((key, pos, len))
+                        i <- i + 1
+
+            if ok then Some(acc.ToArray()) else None
+
+    let private parseCas (buf: byte[]) : (int64 * (string * int64 * int) array) option =
+        if magicOk buf casMagic && crcOk buf then
+            let gen = BinaryPrimitives.ReadInt64LittleEndian(ReadOnlySpan(buf, 8, 8))
+
+            match parseCasEntries buf with
+            | Some entries -> Some(gen, entries)
+            | None -> None
+        else
+            None
+
+    let private encodeCas (buf: byte[]) (entries: (string * int64 * int) array) =
+        BinaryPrimitives.WriteInt32LittleEndian(Span(buf, 16, 4), entries.Length)
+        let mutable o = 20
 
         for key, pos, len in entries do
             let kb = Encoding.UTF8.GetBytes key
@@ -705,51 +775,39 @@ module BlockSuper =
             BinaryPrimitives.WriteInt32LittleEndian(Span(buf, o, 4), len)
             o <- o + 4
 
-        io.Write(0UL, System.ReadOnlyMemory<byte>.op_Implicit buf) |> ignore
+    let writeLog (io: IBlockIo) (logical: int64) =
+        let current = pick (parseLog (readSlot io 0UL)) (parseLog (readSlot io 1UL))
+        let lba, gen = nextSlot current
+        let buf = Array.zeroCreate io.BlockSize
+        Buffer.BlockCopy(logMagic, 0, buf, 0, 4)
+        BinaryPrimitives.WriteInt64LittleEndian(Span(buf, 8, 8), gen)
+        BinaryPrimitives.WriteInt64LittleEndian(Span(buf, 16, 8), logical)
+        BinaryPrimitives.WriteUInt32LittleEndian(Span(buf, 4, 4), crcOf buf)
+        io.Write(lba, System.ReadOnlyMemory<byte>.op_Implicit buf) |> ignore
+
+    let tryReadLog (io: IBlockIo) : int64 option =
+        match pick (parseLog (readSlot io 0UL)) (parseLog (readSlot io 1UL)) with
+        | Some(_, _, logical) -> Some logical
+        | None -> None
+
+    let writeCas (io: IBlockIo) (entries: (string * int64 * int) array) =
+        let current = pick (parseCas (readSlot io 0UL)) (parseCas (readSlot io 1UL))
+        let lba, gen = nextSlot current
+        let buf = Array.zeroCreate io.BlockSize
+        Buffer.BlockCopy(casMagic, 0, buf, 0, 4)
+        BinaryPrimitives.WriteInt64LittleEndian(Span(buf, 8, 8), gen)
+        encodeCas buf entries
+        BinaryPrimitives.WriteUInt32LittleEndian(Span(buf, 4, 4), crcOf buf)
+        io.Write(lba, System.ReadOnlyMemory<byte>.op_Implicit buf) |> ignore
 
     let tryReadCas (io: IBlockIo) : (string * int64 * int) array option =
-        let buf = Array.zeroCreate io.BlockSize
-        let n = io.Read(0UL, Memory buf)
+        match pick (parseCas (readSlot io 0UL)) (parseCas (readSlot io 1UL)) with
+        | Some(_, _, entries) -> Some entries
+        | None -> None
 
-        if n < 8 then
-            None
-        elif buf.[0] = casMagic.[0] && buf.[1] = casMagic.[1] && buf.[2] = casMagic.[2] && buf.[3] = casMagic.[3] then
-            let count = BinaryPrimitives.ReadInt32LittleEndian(ReadOnlySpan(buf, 4, 4))
-
-            if count < 0 then
-                None
-            else
-                let acc = ResizeArray<_>(count)
-                let mutable o = 8
-                let mutable ok = true
-                let mutable i = 0
-
-                while ok && i < count do
-                    if o + 2 > buf.Length then
-                        ok <- false
-                    else
-                        let klen = int (BinaryPrimitives.ReadUInt16LittleEndian(ReadOnlySpan(buf, o, 2)))
-                        o <- o + 2
-
-                        if klen < 1 || o + klen + 12 > buf.Length then
-                            ok <- false
-                        else
-                            let key = Encoding.UTF8.GetString(buf, o, klen)
-                            o <- o + klen
-                            let pos = BinaryPrimitives.ReadInt64LittleEndian(ReadOnlySpan(buf, o, 8))
-                            o <- o + 8
-                            let len = BinaryPrimitives.ReadInt32LittleEndian(ReadOnlySpan(buf, o, 4))
-                            o <- o + 4
-                            acc.Add((key, pos, len))
-                            i <- i + 1
-
-                if ok then Some(acc.ToArray()) else None
-        else
-            None
-
-/// Content-addressed objects on an `IBlockIo`. Payload starts at LBA 1.
-/// LBA 0 holds a `ZCA1` index. Crash during `Put` leaves the index unchanged
-/// until the superblock Write returns. Keys are ordinal hex strings.
+/// Content-addressed objects on an `IBlockIo`. Payload starts at LBA 2.
+/// LBA 0 and 1 hold checksummed `ZCA2` copies. Crash during `Put` leaves the
+/// previous generation readable. Keys are ordinal hex strings.
 [<Sealed>]
 type BlockCas(io: IBlockIo) =
     let index = Dictionary<string, struct (int64 * int)>(StringComparer.Ordinal)
@@ -786,7 +844,8 @@ type BlockCas(io: IBlockIo) =
             lock lockObj (fun () -> index.ContainsKey key)
 
     /// Append `bytes` through `BlockLog` after the superblock. Index and
-    /// superblock update only after the payload Write returns.
+    /// superblock update only after both the payload Write and the superblock
+    /// Write return. A torn superblock slot does not publish the name.
     member _.Put(key: string, bytes: byte[]) =
         if String.IsNullOrEmpty key then
             invalidArg (nameof key) "key must be non-empty"
@@ -799,14 +858,17 @@ type BlockCas(io: IBlockIo) =
             let after =
                 BlockLog.append io start (System.ReadOnlyMemory<byte>.op_Implicit bytes)
 
-            index.[key] <- struct (start, bytes.Length)
-            pos <- after
+            let snapshot = Dictionary(index, StringComparer.Ordinal)
+            snapshot.[key] <- struct (start, bytes.Length)
+
             let entries =
-                [| for kv in index ->
+                [| for kv in snapshot ->
                        let struct (s, n) = kv.Value
                        kv.Key, s, n |]
 
-            BlockSuper.writeCas io entries)
+            BlockSuper.writeCas io entries
+            index.[key] <- struct (start, bytes.Length)
+            pos <- after)
 
 
 /// The global file system registry containing the active IFileSystem implementation.
