@@ -1528,6 +1528,20 @@ jobs:
         # linter-coverage audit one step down sees it invoked-by-name in CI.
         run: bun run hygiene:hook-script-paths
 
+      - name: Cross-language pairs are watched (a concept in both languages needs a treaty)
+        id: cross_language_pairs
+        # THE CLASS: the same idea implemented in F# and in TypeScript, with nothing checking the
+        # two agree. A hand sweep in 2026-09 found 68 such concepts, six of them unpinned, and
+        # THREE of the six treaties then found a live defect -- two of those silent data loss (an
+        # index lookup returning empty for a key that was present; a recovery path that dropped
+        # every commit after the last snapshot while reporting success).
+        #
+        # That sweep was done once, by hand. This roster makes it standing, so a seventh unpinned
+        # pair fails instead of waiting to be remembered. It is baselined and reports only NEW
+        # pairs: the baseline is UNTRIAGED, and says so -- it records what the roster sees rather
+        # than asserting those pairs are fine.
+        run: bun run hygiene:cross-language-pairs
+
       - name: Linter coverage vs CI invocation (a configured linter must be an invoked one)
         id: linter_coverage
         # THE CLASS: a linter is present, configured, believed to be checking a file, and does

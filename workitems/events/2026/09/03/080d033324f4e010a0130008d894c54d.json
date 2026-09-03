@@ -1,0 +1,14 @@
+{
+  "id": "080d033324f4e010a0130008d894c54d",
+  "at": "2026-09-03T08:31:05.372Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1K697MT087G0R000AR9EFN",
+    "type": "task",
+    "title": "the sweep that found three defects was done once by hand",
+    "slug": "the-sweep-that-found-three-defects-was-done-once-by-hand",
+    "priority": "P2",
+    "filename": "081M1K697MT087G0R000AR9EFN-the-sweep-that-found-three-defects-was-done-once-by-hand.md"
+  }
+}
