@@ -1,0 +1,14 @@
+{
+  "id": "080d03353ef22810a0130008a2a9a736",
+  "at": "2026-09-03T09:44:32.581Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1KAFQJ5087G0R003A6HKEY",
+    "type": "task",
+    "title": "Sealed freeze log replay through IBlockIo",
+    "slug": "sealed-freeze-log-replay-through-iblockio",
+    "priority": "P1",
+    "filename": "081M1KAFQJ5087G0R003A6HKEY-sealed-freeze-log-replay-through-iblockio.md"
+  }
+}
