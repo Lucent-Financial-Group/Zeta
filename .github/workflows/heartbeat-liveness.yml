@@ -369,6 +369,12 @@ jobs:
           existing="$(gh api "repos/${REPO}/issues?labels=heartbeat-liveness&state=open&per_page=1" \
             --jq '[.[] | select(.pull_request == null)] | .[0].number // empty')"
 
+          # shellcheck disable=SC2016
+          # The single-quoted printf FORMAT is literal on purpose: the values are
+          # supplied as positional args ($summary, $RUN_URL) so the format must NOT
+          # expand. The backtick-wrapped `paused` inside the body is documentation
+          # prose, not a command substitution; SC2016 misreads it as an intended
+          # expansion. Same narrate-the-why convention as the SC2086 disable above.
           body="$(printf '%s\n\nWatchdog run: %s\n\nThe lane carries unflushed state forward, so a single dropped tick is recoverable and this threshold is set well above GitHub'"'"'s normal scheduling jitter (worst healthy gap measured: 43min). This firing means successes have stopped, not merely that a tick was late.\n\nThe subject workflow was ENROLLED (not disabled) when this was written — a switched-off subject reports `paused` and never reaches this step.\n\nThis issue does not auto-close. Close it once heartbeats are succeeding again.\n' "$summary" "$RUN_URL")"
 
           if [ -z "$existing" ]; then
