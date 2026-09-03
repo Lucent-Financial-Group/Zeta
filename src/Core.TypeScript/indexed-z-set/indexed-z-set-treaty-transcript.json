@@ -1,0 +1,3938 @@
+[
+  {
+    "vectorType": "IndexWith",
+    "name": "empty",
+    "src": [],
+    "expectedGroups": [],
+    "expectedKeyCount": 0,
+    "expectedTupleCount": 0,
+    "expectedIsEmpty": true
+  },
+  {
+    "vectorType": "Neg",
+    "name": "empty",
+    "src": [],
+    "expectedGroups": []
+  },
+  {
+    "vectorType": "ToZSet",
+    "name": "empty",
+    "src": [],
+    "expectedPairs": []
+  },
+  {
+    "vectorType": "Get",
+    "name": "empty/a",
+    "src": [],
+    "key": "a",
+    "expectedValues": []
+  },
+  {
+    "vectorType": "Get",
+    "name": "empty/b",
+    "src": [],
+    "key": "b",
+    "expectedValues": []
+  },
+  {
+    "vectorType": "Get",
+    "name": "empty/A",
+    "src": [],
+    "key": "A",
+    "expectedValues": []
+  },
+  {
+    "vectorType": "Get",
+    "name": "empty/B",
+    "src": [],
+    "key": "B",
+    "expectedValues": []
+  },
+  {
+    "vectorType": "Get",
+    "name": "empty/k1",
+    "src": [],
+    "key": "k1",
+    "expectedValues": []
+  },
+  {
+    "vectorType": "Get",
+    "name": "empty/k3",
+    "src": [],
+    "key": "k3",
+    "expectedValues": []
+  },
+  {
+    "vectorType": "Get",
+    "name": "empty/missing",
+    "src": [],
+    "key": "missing",
+    "expectedValues": []
+  },
+  {
+    "vectorType": "IndexWith",
+    "name": "single",
+    "src": [
+      {
+        "k": "a",
+        "v": "x",
+        "w": 1
+      }
+    ],
+    "expectedGroups": [
+      {
+        "key": "a",
+        "values": [
+          {
+            "e": "x",
+            "w": 1
+          }
+        ]
+      }
+    ],
+    "expectedKeyCount": 1,
+    "expectedTupleCount": 1,
+    "expectedIsEmpty": false
+  },
+  {
+    "vectorType": "Neg",
+    "name": "single",
+    "src": [
+      {
+        "k": "a",
+        "v": "x",
+        "w": 1
+      }
+    ],
+    "expectedGroups": [
+      {
+        "key": "a",
+        "values": [
+          {
+            "e": "x",
+            "w": -1
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "vectorType": "ToZSet",
+    "name": "single",
+    "src": [
+      {
+        "k": "a",
+        "v": "x",
+        "w": 1
+      }
+    ],
+    "expectedPairs": [
+      {
+        "e": "a|x",
+        "w": 1
+      }
+    ]
+  },
+  {
+    "vectorType": "Get",
+    "name": "single/a",
+    "src": [
+      {
+        "k": "a",
+        "v": "x",
+        "w": 1
+      }
+    ],
+    "key": "a",
+    "expectedValues": [
+      {
+        "e": "x",
+        "w": 1
+      }
+    ]
+  },
+  {
+    "vectorType": "Get",
+    "name": "single/b",
+    "src": [
+      {
+        "k": "a",
+        "v": "x",
+        "w": 1
+      }
+    ],
+    "key": "b",
+    "expectedValues": []
+  },
+  {
+    "vectorType": "Get",
+    "name": "single/A",
+    "src": [
+      {
+        "k": "a",
+        "v": "x",
+        "w": 1
+      }
+    ],
+    "key": "A",
+    "expectedValues": []
+  },
+  {
+    "vectorType": "Get",
+    "name": "single/B",
+    "src": [
+      {
+        "k": "a",
+        "v": "x",
+        "w": 1
+      }
+    ],
+    "key": "B",
+    "expectedValues": []
+  },
+  {
+    "vectorType": "Get",
+    "name": "single/k1",
+    "src": [
+      {
+        "k": "a",
+        "v": "x",
+        "w": 1
+      }
+    ],
+    "key": "k1",
+    "expectedValues": []
+  },
+  {
+    "vectorType": "Get",
+    "name": "single/k3",
+    "src": [
+      {
+        "k": "a",
+        "v": "x",
+        "w": 1
+      }
+    ],
+    "key": "k3",
+    "expectedValues": []
+  },
+  {
+    "vectorType": "Get",
+    "name": "single/missing",
+    "src": [
+      {
+        "k": "a",
+        "v": "x",
+        "w": 1
+      }
+    ],
+    "key": "missing",
+    "expectedValues": []
+  },
+  {
+    "vectorType": "IndexWith",
+    "name": "two-keys",
+    "src": [
+      {
+        "k": "a",
+        "v": "x",
+        "w": 1
+      },
+      {
+        "k": "b",
+        "v": "y",
+        "w": 2
+      }
+    ],
+    "expectedGroups": [
+      {
+        "key": "a",
+        "values": [
+          {
+            "e": "x",
+            "w": 1
+          }
+        ]
+      },
+      {
+        "key": "b",
+        "values": [
+          {
+            "e": "y",
+            "w": 2
+          }
+        ]
+      }
+    ],
+    "expectedKeyCount": 2,
+    "expectedTupleCount": 2,
+    "expectedIsEmpty": false
+  },
+  {
+    "vectorType": "Neg",
+    "name": "two-keys",
+    "src": [
+      {
+        "k": "a",
+        "v": "x",
+        "w": 1
+      },
+      {
+        "k": "b",
+        "v": "y",
+        "w": 2
+      }
+    ],
+    "expectedGroups": [
+      {
+        "key": "a",
+        "values": [
+          {
+            "e": "x",
+            "w": -1
+          }
+        ]
+      },
+      {
+        "key": "b",
+        "values": [
+          {
+            "e": "y",
+            "w": -2
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "vectorType": "ToZSet",
+    "name": "two-keys",
+    "src": [
+      {
+        "k": "a",
+        "v": "x",
+        "w": 1
+      },
+      {
+        "k": "b",
+        "v": "y",
+        "w": 2
+      }
+    ],
+    "expectedPairs": [
+      {
+        "e": "a|x",
+        "w": 1
+      },
+      {
+        "e": "b|y",
+        "w": 2
+      }
+    ]
+  },
+  {
+    "vectorType": "Get",
+    "name": "two-keys/a",
+    "src": [
+      {
+        "k": "a",
+        "v": "x",
+        "w": 1
+      },
+      {
+        "k": "b",
+        "v": "y",
+        "w": 2
+      }
+    ],
+    "key": "a",
+    "expectedValues": [
+      {
+        "e": "x",
+        "w": 1
+      }
+    ]
+  },
+  {
+    "vectorType": "Get",
+    "name": "two-keys/b",
+    "src": [
+      {
+        "k": "a",
+        "v": "x",
+        "w": 1
+      },
+      {
+        "k": "b",
+        "v": "y",
+        "w": 2
+      }
+    ],
+    "key": "b",
+    "expectedValues": [
+      {
+        "e": "y",
+        "w": 2
+      }
+    ]
+  },
+  {
+    "vectorType": "Get",
+    "name": "two-keys/A",
+    "src": [
+      {
+        "k": "a",
+        "v": "x",
+        "w": 1
+      },
+      {
+        "k": "b",
+        "v": "y",
+        "w": 2
+      }
+    ],
+    "key": "A",
+    "expectedValues": []
+  },
+  {
+    "vectorType": "Get",
+    "name": "two-keys/B",
+    "src": [
+      {
+        "k": "a",
+        "v": "x",
+        "w": 1
+      },
+      {
+        "k": "b",
+        "v": "y",
+        "w": 2
+      }
+    ],
+    "key": "B",
+    "expectedValues": []
+  },
+  {
+    "vectorType": "Get",
+    "name": "two-keys/k1",
+    "src": [
+      {
+        "k": "a",
+        "v": "x",
+        "w": 1
+      },
+      {
+        "k": "b",
+        "v": "y",
+        "w": 2
+      }
+    ],
+    "key": "k1",
+    "expectedValues": []
+  },
+  {
+    "vectorType": "Get",
+    "name": "two-keys/k3",
+    "src": [
+      {
+        "k": "a",
+        "v": "x",
+        "w": 1
+      },
+      {
+        "k": "b",
+        "v": "y",
+        "w": 2
+      }
+    ],
+    "key": "k3",
+    "expectedValues": []
+  },
+  {
+    "vectorType": "Get",
+    "name": "two-keys/missing",
+    "src": [
+      {
+        "k": "a",
+        "v": "x",
+        "w": 1
+      },
+      {
+        "k": "b",
+        "v": "y",
+        "w": 2
+      }
+    ],
+    "key": "missing",
+    "expectedValues": []
+  },
+  {
+    "vectorType": "IndexWith",
+    "name": "one-key-many-values",
+    "src": [
+      {
+        "k": "a",
+        "v": "z",
+        "w": 1
+      },
+      {
+        "k": "a",
+        "v": "x",
+        "w": 3
+      },
+      {
+        "k": "a",
+        "v": "y",
+        "w": -2
+      }
+    ],
+    "expectedGroups": [
+      {
+        "key": "a",
+        "values": [
+          {
+            "e": "x",
+            "w": 3
+          },
+          {
+            "e": "y",
+            "w": -2
+          },
+          {
+            "e": "z",
+            "w": 1
+          }
+        ]
+      }
+    ],
+    "expectedKeyCount": 1,
+    "expectedTupleCount": 3,
+    "expectedIsEmpty": false
+  },
+  {
+    "vectorType": "Neg",
+    "name": "one-key-many-values",
+    "src": [
+      {
+        "k": "a",
+        "v": "z",
+        "w": 1
+      },
+      {
+        "k": "a",
+        "v": "x",
+        "w": 3
+      },
+      {
+        "k": "a",
+        "v": "y",
+        "w": -2
+      }
+    ],
+    "expectedGroups": [
+      {
+        "key": "a",
+        "values": [
+          {
+            "e": "x",
+            "w": -3
+          },
+          {
+            "e": "y",
+            "w": 2
+          },
+          {
+            "e": "z",
+            "w": -1
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "vectorType": "ToZSet",
+    "name": "one-key-many-values",
+    "src": [
+      {
+        "k": "a",
+        "v": "z",
+        "w": 1
+      },
+      {
+        "k": "a",
+        "v": "x",
+        "w": 3
+      },
+      {
+        "k": "a",
+        "v": "y",
+        "w": -2
+      }
+    ],
+    "expectedPairs": [
+      {
+        "e": "a|x",
+        "w": 3
+      },
+      {
+        "e": "a|y",
+        "w": -2
+      },
+      {
+        "e": "a|z",
+        "w": 1
+      }
+    ]
+  },
+  {
+    "vectorType": "Get",
+    "name": "one-key-many-values/a",
+    "src": [
+      {
+        "k": "a",
+        "v": "z",
+        "w": 1
+      },
+      {
+        "k": "a",
+        "v": "x",
+        "w": 3
+      },
+      {
+        "k": "a",
+        "v": "y",
+        "w": -2
+      }
+    ],
+    "key": "a",
+    "expectedValues": [
+      {
+        "e": "x",
+        "w": 3
+      },
+      {
+        "e": "y",
+        "w": -2
+      },
+      {
+        "e": "z",
+        "w": 1
+      }
+    ]
+  },
+  {
+    "vectorType": "Get",
+    "name": "one-key-many-values/b",
+    "src": [
+      {
+        "k": "a",
+        "v": "z",
+        "w": 1
+      },
+      {
+        "k": "a",
+        "v": "x",
+        "w": 3
+      },
+      {
+        "k": "a",
+        "v": "y",
+        "w": -2
+      }
+    ],
+    "key": "b",
+    "expectedValues": []
+  },
+  {
+    "vectorType": "Get",
+    "name": "one-key-many-values/A",
+    "src": [
+      {
+        "k": "a",
+        "v": "z",
+        "w": 1
+      },
+      {
+        "k": "a",
+        "v": "x",
+        "w": 3
+      },
+      {
+        "k": "a",
+        "v": "y",
+        "w": -2
+      }
+    ],
+    "key": "A",
+    "expectedValues": []
+  },
+  {
+    "vectorType": "Get",
+    "name": "one-key-many-values/B",
+    "src": [
+      {
+        "k": "a",
+        "v": "z",
+        "w": 1
+      },
+      {
+        "k": "a",
+        "v": "x",
+        "w": 3
+      },
+      {
+        "k": "a",
+        "v": "y",
+        "w": -2
+      }
+    ],
+    "key": "B",
+    "expectedValues": []
+  },
+  {
+    "vectorType": "Get",
+    "name": "one-key-many-values/k1",
+    "src": [
+      {
+        "k": "a",
+        "v": "z",
+        "w": 1
+      },
+      {
+        "k": "a",
+        "v": "x",
+        "w": 3
+      },
+      {
+        "k": "a",
+        "v": "y",
+        "w": -2
+      }
+    ],
+    "key": "k1",
+    "expectedValues": []
+  },
+  {
+    "vectorType": "Get",
+    "name": "one-key-many-values/k3",
+    "src": [
+      {
+        "k": "a",
+        "v": "z",
+        "w": 1
+      },
+      {
+        "k": "a",
+        "v": "x",
+        "w": 3
+      },
+      {
+        "k": "a",
+        "v": "y",
+        "w": -2
+      }
+    ],
+    "key": "k3",
+    "expectedValues": []
+  },
+  {
+    "vectorType": "Get",
+    "name": "one-key-many-values/missing",
+    "src": [
+      {
+        "k": "a",
+        "v": "z",
+        "w": 1
+      },
+      {
+        "k": "a",
+        "v": "x",
+        "w": 3
+      },
+      {
+        "k": "a",
+        "v": "y",
+        "w": -2
+      }
+    ],
+    "key": "missing",
+    "expectedValues": []
+  },
+  {
+    "vectorType": "IndexWith",
+    "name": "duplicate-tuples-sum",
+    "src": [
+      {
+        "k": "a",
+        "v": "x",
+        "w": 2
+      },
+      {
+        "k": "a",
+        "v": "x",
+        "w": 5
+      }
+    ],
+    "expectedGroups": [
+      {
+        "key": "a",
+        "values": [
+          {
+            "e": "x",
+            "w": 7
+          }
+        ]
+      }
+    ],
+    "expectedKeyCount": 1,
+    "expectedTupleCount": 1,
+    "expectedIsEmpty": false
+  },
+  {
+    "vectorType": "Neg",
+    "name": "duplicate-tuples-sum",
+    "src": [
+      {
+        "k": "a",
+        "v": "x",
+        "w": 2
+      },
+      {
+        "k": "a",
+        "v": "x",
+        "w": 5
+      }
+    ],
+    "expectedGroups": [
+      {
+        "key": "a",
+        "values": [
+          {
+            "e": "x",
+            "w": -7
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "vectorType": "ToZSet",
+    "name": "duplicate-tuples-sum",
+    "src": [
+      {
+        "k": "a",
+        "v": "x",
+        "w": 2
+      },
+      {
+        "k": "a",
+        "v": "x",
+        "w": 5
+      }
+    ],
+    "expectedPairs": [
+      {
+        "e": "a|x",
+        "w": 7
+      }
+    ]
+  },
+  {
+    "vectorType": "Get",
+    "name": "duplicate-tuples-sum/a",
+    "src": [
+      {
+        "k": "a",
+        "v": "x",
+        "w": 2
+      },
+      {
+        "k": "a",
+        "v": "x",
+        "w": 5
+      }
+    ],
+    "key": "a",
+    "expectedValues": [
+      {
+        "e": "x",
+        "w": 7
+      }
+    ]
+  },
+  {
+    "vectorType": "Get",
+    "name": "duplicate-tuples-sum/b",
+    "src": [
+      {
+        "k": "a",
+        "v": "x",
+        "w": 2
+      },
+      {
+        "k": "a",
+        "v": "x",
+        "w": 5
+      }
+    ],
+    "key": "b",
+    "expectedValues": []
+  },
+  {
+    "vectorType": "Get",
+    "name": "duplicate-tuples-sum/A",
+    "src": [
+      {
+        "k": "a",
+        "v": "x",
+        "w": 2
+      },
+      {
+        "k": "a",
+        "v": "x",
+        "w": 5
+      }
+    ],
+    "key": "A",
+    "expectedValues": []
+  },
+  {
+    "vectorType": "Get",
+    "name": "duplicate-tuples-sum/B",
+    "src": [
+      {
+        "k": "a",
+        "v": "x",
+        "w": 2
+      },
+      {
+        "k": "a",
+        "v": "x",
+        "w": 5
+      }
+    ],
+    "key": "B",
+    "expectedValues": []
+  },
+  {
+    "vectorType": "Get",
+    "name": "duplicate-tuples-sum/k1",
+    "src": [
+      {
+        "k": "a",
+        "v": "x",
+        "w": 2
+      },
+      {
+        "k": "a",
+        "v": "x",
+        "w": 5
+      }
+    ],
+    "key": "k1",
+    "expectedValues": []
+  },
+  {
+    "vectorType": "Get",
+    "name": "duplicate-tuples-sum/k3",
+    "src": [
+      {
+        "k": "a",
+        "v": "x",
+        "w": 2
+      },
+      {
+        "k": "a",
+        "v": "x",
+        "w": 5
+      }
+    ],
+    "key": "k3",
+    "expectedValues": []
+  },
+  {
+    "vectorType": "Get",
+    "name": "duplicate-tuples-sum/missing",
+    "src": [
+      {
+        "k": "a",
+        "v": "x",
+        "w": 2
+      },
+      {
+        "k": "a",
+        "v": "x",
+        "w": 5
+      }
+    ],
+    "key": "missing",
+    "expectedValues": []
+  },
+  {
+    "vectorType": "IndexWith",
+    "name": "values-cancel-so-the-key-disappears",
+    "src": [
+      {
+        "k": "a",
+        "v": "x",
+        "w": 3
+      },
+      {
+        "k": "a",
+        "v": "x",
+        "w": -3
+      },
+      {
+        "k": "b",
+        "v": "y",
+        "w": 1
+      }
+    ],
+    "expectedGroups": [
+      {
+        "key": "b",
+        "values": [
+          {
+            "e": "y",
+            "w": 1
+          }
+        ]
+      }
+    ],
+    "expectedKeyCount": 1,
+    "expectedTupleCount": 1,
+    "expectedIsEmpty": false
+  },
+  {
+    "vectorType": "Neg",
+    "name": "values-cancel-so-the-key-disappears",
+    "src": [
+      {
+        "k": "a",
+        "v": "x",
+        "w": 3
+      },
+      {
+        "k": "a",
+        "v": "x",
+        "w": -3
+      },
+      {
+        "k": "b",
+        "v": "y",
+        "w": 1
+      }
+    ],
+    "expectedGroups": [
+      {
+        "key": "b",
+        "values": [
+          {
+            "e": "y",
+            "w": -1
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "vectorType": "ToZSet",
+    "name": "values-cancel-so-the-key-disappears",
+    "src": [
+      {
+        "k": "a",
+        "v": "x",
+        "w": 3
+      },
+      {
+        "k": "a",
+        "v": "x",
+        "w": -3
+      },
+      {
+        "k": "b",
+        "v": "y",
+        "w": 1
+      }
+    ],
+    "expectedPairs": [
+      {
+        "e": "b|y",
+        "w": 1
+      }
+    ]
+  },
+  {
+    "vectorType": "Get",
+    "name": "values-cancel-so-the-key-disappears/a",
+    "src": [
+      {
+        "k": "a",
+        "v": "x",
+        "w": 3
+      },
+      {
+        "k": "a",
+        "v": "x",
+        "w": -3
+      },
+      {
+        "k": "b",
+        "v": "y",
+        "w": 1
+      }
+    ],
+    "key": "a",
+    "expectedValues": []
+  },
+  {
+    "vectorType": "Get",
+    "name": "values-cancel-so-the-key-disappears/b",
+    "src": [
+      {
+        "k": "a",
+        "v": "x",
+        "w": 3
+      },
+      {
+        "k": "a",
+        "v": "x",
+        "w": -3
+      },
+      {
+        "k": "b",
+        "v": "y",
+        "w": 1
+      }
+    ],
+    "key": "b",
+    "expectedValues": [
+      {
+        "e": "y",
+        "w": 1
+      }
+    ]
+  },
+  {
+    "vectorType": "Get",
+    "name": "values-cancel-so-the-key-disappears/A",
+    "src": [
+      {
+        "k": "a",
+        "v": "x",
+        "w": 3
+      },
+      {
+        "k": "a",
+        "v": "x",
+        "w": -3
+      },
+      {
+        "k": "b",
+        "v": "y",
+        "w": 1
+      }
+    ],
+    "key": "A",
+    "expectedValues": []
+  },
+  {
+    "vectorType": "Get",
+    "name": "values-cancel-so-the-key-disappears/B",
+    "src": [
+      {
+        "k": "a",
+        "v": "x",
+        "w": 3
+      },
+      {
+        "k": "a",
+        "v": "x",
+        "w": -3
+      },
+      {
+        "k": "b",
+        "v": "y",
+        "w": 1
+      }
+    ],
+    "key": "B",
+    "expectedValues": []
+  },
+  {
+    "vectorType": "Get",
+    "name": "values-cancel-so-the-key-disappears/k1",
+    "src": [
+      {
+        "k": "a",
+        "v": "x",
+        "w": 3
+      },
+      {
+        "k": "a",
+        "v": "x",
+        "w": -3
+      },
+      {
+        "k": "b",
+        "v": "y",
+        "w": 1
+      }
+    ],
+    "key": "k1",
+    "expectedValues": []
+  },
+  {
+    "vectorType": "Get",
+    "name": "values-cancel-so-the-key-disappears/k3",
+    "src": [
+      {
+        "k": "a",
+        "v": "x",
+        "w": 3
+      },
+      {
+        "k": "a",
+        "v": "x",
+        "w": -3
+      },
+      {
+        "k": "b",
+        "v": "y",
+        "w": 1
+      }
+    ],
+    "key": "k3",
+    "expectedValues": []
+  },
+  {
+    "vectorType": "Get",
+    "name": "values-cancel-so-the-key-disappears/missing",
+    "src": [
+      {
+        "k": "a",
+        "v": "x",
+        "w": 3
+      },
+      {
+        "k": "a",
+        "v": "x",
+        "w": -3
+      },
+      {
+        "k": "b",
+        "v": "y",
+        "w": 1
+      }
+    ],
+    "key": "missing",
+    "expectedValues": []
+  },
+  {
+    "vectorType": "IndexWith",
+    "name": "everything-cancels",
+    "src": [
+      {
+        "k": "a",
+        "v": "x",
+        "w": 1
+      },
+      {
+        "k": "a",
+        "v": "x",
+        "w": -1
+      }
+    ],
+    "expectedGroups": [],
+    "expectedKeyCount": 0,
+    "expectedTupleCount": 0,
+    "expectedIsEmpty": true
+  },
+  {
+    "vectorType": "Neg",
+    "name": "everything-cancels",
+    "src": [
+      {
+        "k": "a",
+        "v": "x",
+        "w": 1
+      },
+      {
+        "k": "a",
+        "v": "x",
+        "w": -1
+      }
+    ],
+    "expectedGroups": []
+  },
+  {
+    "vectorType": "ToZSet",
+    "name": "everything-cancels",
+    "src": [
+      {
+        "k": "a",
+        "v": "x",
+        "w": 1
+      },
+      {
+        "k": "a",
+        "v": "x",
+        "w": -1
+      }
+    ],
+    "expectedPairs": []
+  },
+  {
+    "vectorType": "Get",
+    "name": "everything-cancels/a",
+    "src": [
+      {
+        "k": "a",
+        "v": "x",
+        "w": 1
+      },
+      {
+        "k": "a",
+        "v": "x",
+        "w": -1
+      }
+    ],
+    "key": "a",
+    "expectedValues": []
+  },
+  {
+    "vectorType": "Get",
+    "name": "everything-cancels/b",
+    "src": [
+      {
+        "k": "a",
+        "v": "x",
+        "w": 1
+      },
+      {
+        "k": "a",
+        "v": "x",
+        "w": -1
+      }
+    ],
+    "key": "b",
+    "expectedValues": []
+  },
+  {
+    "vectorType": "Get",
+    "name": "everything-cancels/A",
+    "src": [
+      {
+        "k": "a",
+        "v": "x",
+        "w": 1
+      },
+      {
+        "k": "a",
+        "v": "x",
+        "w": -1
+      }
+    ],
+    "key": "A",
+    "expectedValues": []
+  },
+  {
+    "vectorType": "Get",
+    "name": "everything-cancels/B",
+    "src": [
+      {
+        "k": "a",
+        "v": "x",
+        "w": 1
+      },
+      {
+        "k": "a",
+        "v": "x",
+        "w": -1
+      }
+    ],
+    "key": "B",
+    "expectedValues": []
+  },
+  {
+    "vectorType": "Get",
+    "name": "everything-cancels/k1",
+    "src": [
+      {
+        "k": "a",
+        "v": "x",
+        "w": 1
+      },
+      {
+        "k": "a",
+        "v": "x",
+        "w": -1
+      }
+    ],
+    "key": "k1",
+    "expectedValues": []
+  },
+  {
+    "vectorType": "Get",
+    "name": "everything-cancels/k3",
+    "src": [
+      {
+        "k": "a",
+        "v": "x",
+        "w": 1
+      },
+      {
+        "k": "a",
+        "v": "x",
+        "w": -1
+      }
+    ],
+    "key": "k3",
+    "expectedValues": []
+  },
+  {
+    "vectorType": "Get",
+    "name": "everything-cancels/missing",
+    "src": [
+      {
+        "k": "a",
+        "v": "x",
+        "w": 1
+      },
+      {
+        "k": "a",
+        "v": "x",
+        "w": -1
+      }
+    ],
+    "key": "missing",
+    "expectedValues": []
+  },
+  {
+    "vectorType": "IndexWith",
+    "name": "case-mixed-keys",
+    "src": [
+      {
+        "k": "B",
+        "v": "x",
+        "w": 1
+      },
+      {
+        "k": "a",
+        "v": "x",
+        "w": 1
+      },
+      {
+        "k": "A",
+        "v": "x",
+        "w": 1
+      },
+      {
+        "k": "b",
+        "v": "x",
+        "w": 1
+      }
+    ],
+    "expectedGroups": [
+      {
+        "key": "A",
+        "values": [
+          {
+            "e": "x",
+            "w": 1
+          }
+        ]
+      },
+      {
+        "key": "B",
+        "values": [
+          {
+            "e": "x",
+            "w": 1
+          }
+        ]
+      },
+      {
+        "key": "a",
+        "values": [
+          {
+            "e": "x",
+            "w": 1
+          }
+        ]
+      },
+      {
+        "key": "b",
+        "values": [
+          {
+            "e": "x",
+            "w": 1
+          }
+        ]
+      }
+    ],
+    "expectedKeyCount": 4,
+    "expectedTupleCount": 4,
+    "expectedIsEmpty": false
+  },
+  {
+    "vectorType": "Neg",
+    "name": "case-mixed-keys",
+    "src": [
+      {
+        "k": "B",
+        "v": "x",
+        "w": 1
+      },
+      {
+        "k": "a",
+        "v": "x",
+        "w": 1
+      },
+      {
+        "k": "A",
+        "v": "x",
+        "w": 1
+      },
+      {
+        "k": "b",
+        "v": "x",
+        "w": 1
+      }
+    ],
+    "expectedGroups": [
+      {
+        "key": "A",
+        "values": [
+          {
+            "e": "x",
+            "w": -1
+          }
+        ]
+      },
+      {
+        "key": "B",
+        "values": [
+          {
+            "e": "x",
+            "w": -1
+          }
+        ]
+      },
+      {
+        "key": "a",
+        "values": [
+          {
+            "e": "x",
+            "w": -1
+          }
+        ]
+      },
+      {
+        "key": "b",
+        "values": [
+          {
+            "e": "x",
+            "w": -1
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "vectorType": "ToZSet",
+    "name": "case-mixed-keys",
+    "src": [
+      {
+        "k": "B",
+        "v": "x",
+        "w": 1
+      },
+      {
+        "k": "a",
+        "v": "x",
+        "w": 1
+      },
+      {
+        "k": "A",
+        "v": "x",
+        "w": 1
+      },
+      {
+        "k": "b",
+        "v": "x",
+        "w": 1
+      }
+    ],
+    "expectedPairs": [
+      {
+        "e": "A|x",
+        "w": 1
+      },
+      {
+        "e": "B|x",
+        "w": 1
+      },
+      {
+        "e": "a|x",
+        "w": 1
+      },
+      {
+        "e": "b|x",
+        "w": 1
+      }
+    ]
+  },
+  {
+    "vectorType": "Get",
+    "name": "case-mixed-keys/a",
+    "src": [
+      {
+        "k": "B",
+        "v": "x",
+        "w": 1
+      },
+      {
+        "k": "a",
+        "v": "x",
+        "w": 1
+      },
+      {
+        "k": "A",
+        "v": "x",
+        "w": 1
+      },
+      {
+        "k": "b",
+        "v": "x",
+        "w": 1
+      }
+    ],
+    "key": "a",
+    "expectedValues": [
+      {
+        "e": "x",
+        "w": 1
+      }
+    ]
+  },
+  {
+    "vectorType": "Get",
+    "name": "case-mixed-keys/b",
+    "src": [
+      {
+        "k": "B",
+        "v": "x",
+        "w": 1
+      },
+      {
+        "k": "a",
+        "v": "x",
+        "w": 1
+      },
+      {
+        "k": "A",
+        "v": "x",
+        "w": 1
+      },
+      {
+        "k": "b",
+        "v": "x",
+        "w": 1
+      }
+    ],
+    "key": "b",
+    "expectedValues": [
+      {
+        "e": "x",
+        "w": 1
+      }
+    ]
+  },
+  {
+    "vectorType": "Get",
+    "name": "case-mixed-keys/A",
+    "src": [
+      {
+        "k": "B",
+        "v": "x",
+        "w": 1
+      },
+      {
+        "k": "a",
+        "v": "x",
+        "w": 1
+      },
+      {
+        "k": "A",
+        "v": "x",
+        "w": 1
+      },
+      {
+        "k": "b",
+        "v": "x",
+        "w": 1
+      }
+    ],
+    "key": "A",
+    "expectedValues": [
+      {
+        "e": "x",
+        "w": 1
+      }
+    ]
+  },
+  {
+    "vectorType": "Get",
+    "name": "case-mixed-keys/B",
+    "src": [
+      {
+        "k": "B",
+        "v": "x",
+        "w": 1
+      },
+      {
+        "k": "a",
+        "v": "x",
+        "w": 1
+      },
+      {
+        "k": "A",
+        "v": "x",
+        "w": 1
+      },
+      {
+        "k": "b",
+        "v": "x",
+        "w": 1
+      }
+    ],
+    "key": "B",
+    "expectedValues": [
+      {
+        "e": "x",
+        "w": 1
+      }
+    ]
+  },
+  {
+    "vectorType": "Get",
+    "name": "case-mixed-keys/k1",
+    "src": [
+      {
+        "k": "B",
+        "v": "x",
+        "w": 1
+      },
+      {
+        "k": "a",
+        "v": "x",
+        "w": 1
+      },
+      {
+        "k": "A",
+        "v": "x",
+        "w": 1
+      },
+      {
+        "k": "b",
+        "v": "x",
+        "w": 1
+      }
+    ],
+    "key": "k1",
+    "expectedValues": []
+  },
+  {
+    "vectorType": "Get",
+    "name": "case-mixed-keys/k3",
+    "src": [
+      {
+        "k": "B",
+        "v": "x",
+        "w": 1
+      },
+      {
+        "k": "a",
+        "v": "x",
+        "w": 1
+      },
+      {
+        "k": "A",
+        "v": "x",
+        "w": 1
+      },
+      {
+        "k": "b",
+        "v": "x",
+        "w": 1
+      }
+    ],
+    "key": "k3",
+    "expectedValues": []
+  },
+  {
+    "vectorType": "Get",
+    "name": "case-mixed-keys/missing",
+    "src": [
+      {
+        "k": "B",
+        "v": "x",
+        "w": 1
+      },
+      {
+        "k": "a",
+        "v": "x",
+        "w": 1
+      },
+      {
+        "k": "A",
+        "v": "x",
+        "w": 1
+      },
+      {
+        "k": "b",
+        "v": "x",
+        "w": 1
+      }
+    ],
+    "key": "missing",
+    "expectedValues": []
+  },
+  {
+    "vectorType": "IndexWith",
+    "name": "case-mixed-values-under-one-key",
+    "src": [
+      {
+        "k": "k",
+        "v": "B",
+        "w": 1
+      },
+      {
+        "k": "k",
+        "v": "a",
+        "w": 1
+      },
+      {
+        "k": "k",
+        "v": "A",
+        "w": 1
+      },
+      {
+        "k": "k",
+        "v": "b",
+        "w": 1
+      }
+    ],
+    "expectedGroups": [
+      {
+        "key": "k",
+        "values": [
+          {
+            "e": "A",
+            "w": 1
+          },
+          {
+            "e": "B",
+            "w": 1
+          },
+          {
+            "e": "a",
+            "w": 1
+          },
+          {
+            "e": "b",
+            "w": 1
+          }
+        ]
+      }
+    ],
+    "expectedKeyCount": 1,
+    "expectedTupleCount": 4,
+    "expectedIsEmpty": false
+  },
+  {
+    "vectorType": "Neg",
+    "name": "case-mixed-values-under-one-key",
+    "src": [
+      {
+        "k": "k",
+        "v": "B",
+        "w": 1
+      },
+      {
+        "k": "k",
+        "v": "a",
+        "w": 1
+      },
+      {
+        "k": "k",
+        "v": "A",
+        "w": 1
+      },
+      {
+        "k": "k",
+        "v": "b",
+        "w": 1
+      }
+    ],
+    "expectedGroups": [
+      {
+        "key": "k",
+        "values": [
+          {
+            "e": "A",
+            "w": -1
+          },
+          {
+            "e": "B",
+            "w": -1
+          },
+          {
+            "e": "a",
+            "w": -1
+          },
+          {
+            "e": "b",
+            "w": -1
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "vectorType": "ToZSet",
+    "name": "case-mixed-values-under-one-key",
+    "src": [
+      {
+        "k": "k",
+        "v": "B",
+        "w": 1
+      },
+      {
+        "k": "k",
+        "v": "a",
+        "w": 1
+      },
+      {
+        "k": "k",
+        "v": "A",
+        "w": 1
+      },
+      {
+        "k": "k",
+        "v": "b",
+        "w": 1
+      }
+    ],
+    "expectedPairs": [
+      {
+        "e": "k|A",
+        "w": 1
+      },
+      {
+        "e": "k|B",
+        "w": 1
+      },
+      {
+        "e": "k|a",
+        "w": 1
+      },
+      {
+        "e": "k|b",
+        "w": 1
+      }
+    ]
+  },
+  {
+    "vectorType": "Get",
+    "name": "case-mixed-values-under-one-key/a",
+    "src": [
+      {
+        "k": "k",
+        "v": "B",
+        "w": 1
+      },
+      {
+        "k": "k",
+        "v": "a",
+        "w": 1
+      },
+      {
+        "k": "k",
+        "v": "A",
+        "w": 1
+      },
+      {
+        "k": "k",
+        "v": "b",
+        "w": 1
+      }
+    ],
+    "key": "a",
+    "expectedValues": []
+  },
+  {
+    "vectorType": "Get",
+    "name": "case-mixed-values-under-one-key/b",
+    "src": [
+      {
+        "k": "k",
+        "v": "B",
+        "w": 1
+      },
+      {
+        "k": "k",
+        "v": "a",
+        "w": 1
+      },
+      {
+        "k": "k",
+        "v": "A",
+        "w": 1
+      },
+      {
+        "k": "k",
+        "v": "b",
+        "w": 1
+      }
+    ],
+    "key": "b",
+    "expectedValues": []
+  },
+  {
+    "vectorType": "Get",
+    "name": "case-mixed-values-under-one-key/A",
+    "src": [
+      {
+        "k": "k",
+        "v": "B",
+        "w": 1
+      },
+      {
+        "k": "k",
+        "v": "a",
+        "w": 1
+      },
+      {
+        "k": "k",
+        "v": "A",
+        "w": 1
+      },
+      {
+        "k": "k",
+        "v": "b",
+        "w": 1
+      }
+    ],
+    "key": "A",
+    "expectedValues": []
+  },
+  {
+    "vectorType": "Get",
+    "name": "case-mixed-values-under-one-key/B",
+    "src": [
+      {
+        "k": "k",
+        "v": "B",
+        "w": 1
+      },
+      {
+        "k": "k",
+        "v": "a",
+        "w": 1
+      },
+      {
+        "k": "k",
+        "v": "A",
+        "w": 1
+      },
+      {
+        "k": "k",
+        "v": "b",
+        "w": 1
+      }
+    ],
+    "key": "B",
+    "expectedValues": []
+  },
+  {
+    "vectorType": "Get",
+    "name": "case-mixed-values-under-one-key/k1",
+    "src": [
+      {
+        "k": "k",
+        "v": "B",
+        "w": 1
+      },
+      {
+        "k": "k",
+        "v": "a",
+        "w": 1
+      },
+      {
+        "k": "k",
+        "v": "A",
+        "w": 1
+      },
+      {
+        "k": "k",
+        "v": "b",
+        "w": 1
+      }
+    ],
+    "key": "k1",
+    "expectedValues": []
+  },
+  {
+    "vectorType": "Get",
+    "name": "case-mixed-values-under-one-key/k3",
+    "src": [
+      {
+        "k": "k",
+        "v": "B",
+        "w": 1
+      },
+      {
+        "k": "k",
+        "v": "a",
+        "w": 1
+      },
+      {
+        "k": "k",
+        "v": "A",
+        "w": 1
+      },
+      {
+        "k": "k",
+        "v": "b",
+        "w": 1
+      }
+    ],
+    "key": "k3",
+    "expectedValues": []
+  },
+  {
+    "vectorType": "Get",
+    "name": "case-mixed-values-under-one-key/missing",
+    "src": [
+      {
+        "k": "k",
+        "v": "B",
+        "w": 1
+      },
+      {
+        "k": "k",
+        "v": "a",
+        "w": 1
+      },
+      {
+        "k": "k",
+        "v": "A",
+        "w": 1
+      },
+      {
+        "k": "k",
+        "v": "b",
+        "w": 1
+      }
+    ],
+    "key": "missing",
+    "expectedValues": []
+  },
+  {
+    "vectorType": "IndexWith",
+    "name": "negative-weights-only",
+    "src": [
+      {
+        "k": "a",
+        "v": "x",
+        "w": -1
+      },
+      {
+        "k": "b",
+        "v": "y",
+        "w": -4
+      }
+    ],
+    "expectedGroups": [
+      {
+        "key": "a",
+        "values": [
+          {
+            "e": "x",
+            "w": -1
+          }
+        ]
+      },
+      {
+        "key": "b",
+        "values": [
+          {
+            "e": "y",
+            "w": -4
+          }
+        ]
+      }
+    ],
+    "expectedKeyCount": 2,
+    "expectedTupleCount": 2,
+    "expectedIsEmpty": false
+  },
+  {
+    "vectorType": "Neg",
+    "name": "negative-weights-only",
+    "src": [
+      {
+        "k": "a",
+        "v": "x",
+        "w": -1
+      },
+      {
+        "k": "b",
+        "v": "y",
+        "w": -4
+      }
+    ],
+    "expectedGroups": [
+      {
+        "key": "a",
+        "values": [
+          {
+            "e": "x",
+            "w": 1
+          }
+        ]
+      },
+      {
+        "key": "b",
+        "values": [
+          {
+            "e": "y",
+            "w": 4
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "vectorType": "ToZSet",
+    "name": "negative-weights-only",
+    "src": [
+      {
+        "k": "a",
+        "v": "x",
+        "w": -1
+      },
+      {
+        "k": "b",
+        "v": "y",
+        "w": -4
+      }
+    ],
+    "expectedPairs": [
+      {
+        "e": "a|x",
+        "w": -1
+      },
+      {
+        "e": "b|y",
+        "w": -4
+      }
+    ]
+  },
+  {
+    "vectorType": "Get",
+    "name": "negative-weights-only/a",
+    "src": [
+      {
+        "k": "a",
+        "v": "x",
+        "w": -1
+      },
+      {
+        "k": "b",
+        "v": "y",
+        "w": -4
+      }
+    ],
+    "key": "a",
+    "expectedValues": [
+      {
+        "e": "x",
+        "w": -1
+      }
+    ]
+  },
+  {
+    "vectorType": "Get",
+    "name": "negative-weights-only/b",
+    "src": [
+      {
+        "k": "a",
+        "v": "x",
+        "w": -1
+      },
+      {
+        "k": "b",
+        "v": "y",
+        "w": -4
+      }
+    ],
+    "key": "b",
+    "expectedValues": [
+      {
+        "e": "y",
+        "w": -4
+      }
+    ]
+  },
+  {
+    "vectorType": "Get",
+    "name": "negative-weights-only/A",
+    "src": [
+      {
+        "k": "a",
+        "v": "x",
+        "w": -1
+      },
+      {
+        "k": "b",
+        "v": "y",
+        "w": -4
+      }
+    ],
+    "key": "A",
+    "expectedValues": []
+  },
+  {
+    "vectorType": "Get",
+    "name": "negative-weights-only/B",
+    "src": [
+      {
+        "k": "a",
+        "v": "x",
+        "w": -1
+      },
+      {
+        "k": "b",
+        "v": "y",
+        "w": -4
+      }
+    ],
+    "key": "B",
+    "expectedValues": []
+  },
+  {
+    "vectorType": "Get",
+    "name": "negative-weights-only/k1",
+    "src": [
+      {
+        "k": "a",
+        "v": "x",
+        "w": -1
+      },
+      {
+        "k": "b",
+        "v": "y",
+        "w": -4
+      }
+    ],
+    "key": "k1",
+    "expectedValues": []
+  },
+  {
+    "vectorType": "Get",
+    "name": "negative-weights-only/k3",
+    "src": [
+      {
+        "k": "a",
+        "v": "x",
+        "w": -1
+      },
+      {
+        "k": "b",
+        "v": "y",
+        "w": -4
+      }
+    ],
+    "key": "k3",
+    "expectedValues": []
+  },
+  {
+    "vectorType": "Get",
+    "name": "negative-weights-only/missing",
+    "src": [
+      {
+        "k": "a",
+        "v": "x",
+        "w": -1
+      },
+      {
+        "k": "b",
+        "v": "y",
+        "w": -4
+      }
+    ],
+    "key": "missing",
+    "expectedValues": []
+  },
+  {
+    "vectorType": "IndexWith",
+    "name": "wide",
+    "src": [
+      {
+        "k": "k1",
+        "v": "v1",
+        "w": 1
+      },
+      {
+        "k": "k2",
+        "v": "v2",
+        "w": 2
+      },
+      {
+        "k": "k3",
+        "v": "v3",
+        "w": 3
+      },
+      {
+        "k": "k1",
+        "v": "v9",
+        "w": -1
+      },
+      {
+        "k": "k3",
+        "v": "v1",
+        "w": 7
+      }
+    ],
+    "expectedGroups": [
+      {
+        "key": "k1",
+        "values": [
+          {
+            "e": "v1",
+            "w": 1
+          },
+          {
+            "e": "v9",
+            "w": -1
+          }
+        ]
+      },
+      {
+        "key": "k2",
+        "values": [
+          {
+            "e": "v2",
+            "w": 2
+          }
+        ]
+      },
+      {
+        "key": "k3",
+        "values": [
+          {
+            "e": "v1",
+            "w": 7
+          },
+          {
+            "e": "v3",
+            "w": 3
+          }
+        ]
+      }
+    ],
+    "expectedKeyCount": 3,
+    "expectedTupleCount": 5,
+    "expectedIsEmpty": false
+  },
+  {
+    "vectorType": "Neg",
+    "name": "wide",
+    "src": [
+      {
+        "k": "k1",
+        "v": "v1",
+        "w": 1
+      },
+      {
+        "k": "k2",
+        "v": "v2",
+        "w": 2
+      },
+      {
+        "k": "k3",
+        "v": "v3",
+        "w": 3
+      },
+      {
+        "k": "k1",
+        "v": "v9",
+        "w": -1
+      },
+      {
+        "k": "k3",
+        "v": "v1",
+        "w": 7
+      }
+    ],
+    "expectedGroups": [
+      {
+        "key": "k1",
+        "values": [
+          {
+            "e": "v1",
+            "w": -1
+          },
+          {
+            "e": "v9",
+            "w": 1
+          }
+        ]
+      },
+      {
+        "key": "k2",
+        "values": [
+          {
+            "e": "v2",
+            "w": -2
+          }
+        ]
+      },
+      {
+        "key": "k3",
+        "values": [
+          {
+            "e": "v1",
+            "w": -7
+          },
+          {
+            "e": "v3",
+            "w": -3
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "vectorType": "ToZSet",
+    "name": "wide",
+    "src": [
+      {
+        "k": "k1",
+        "v": "v1",
+        "w": 1
+      },
+      {
+        "k": "k2",
+        "v": "v2",
+        "w": 2
+      },
+      {
+        "k": "k3",
+        "v": "v3",
+        "w": 3
+      },
+      {
+        "k": "k1",
+        "v": "v9",
+        "w": -1
+      },
+      {
+        "k": "k3",
+        "v": "v1",
+        "w": 7
+      }
+    ],
+    "expectedPairs": [
+      {
+        "e": "k1|v1",
+        "w": 1
+      },
+      {
+        "e": "k1|v9",
+        "w": -1
+      },
+      {
+        "e": "k2|v2",
+        "w": 2
+      },
+      {
+        "e": "k3|v1",
+        "w": 7
+      },
+      {
+        "e": "k3|v3",
+        "w": 3
+      }
+    ]
+  },
+  {
+    "vectorType": "Get",
+    "name": "wide/a",
+    "src": [
+      {
+        "k": "k1",
+        "v": "v1",
+        "w": 1
+      },
+      {
+        "k": "k2",
+        "v": "v2",
+        "w": 2
+      },
+      {
+        "k": "k3",
+        "v": "v3",
+        "w": 3
+      },
+      {
+        "k": "k1",
+        "v": "v9",
+        "w": -1
+      },
+      {
+        "k": "k3",
+        "v": "v1",
+        "w": 7
+      }
+    ],
+    "key": "a",
+    "expectedValues": []
+  },
+  {
+    "vectorType": "Get",
+    "name": "wide/b",
+    "src": [
+      {
+        "k": "k1",
+        "v": "v1",
+        "w": 1
+      },
+      {
+        "k": "k2",
+        "v": "v2",
+        "w": 2
+      },
+      {
+        "k": "k3",
+        "v": "v3",
+        "w": 3
+      },
+      {
+        "k": "k1",
+        "v": "v9",
+        "w": -1
+      },
+      {
+        "k": "k3",
+        "v": "v1",
+        "w": 7
+      }
+    ],
+    "key": "b",
+    "expectedValues": []
+  },
+  {
+    "vectorType": "Get",
+    "name": "wide/A",
+    "src": [
+      {
+        "k": "k1",
+        "v": "v1",
+        "w": 1
+      },
+      {
+        "k": "k2",
+        "v": "v2",
+        "w": 2
+      },
+      {
+        "k": "k3",
+        "v": "v3",
+        "w": 3
+      },
+      {
+        "k": "k1",
+        "v": "v9",
+        "w": -1
+      },
+      {
+        "k": "k3",
+        "v": "v1",
+        "w": 7
+      }
+    ],
+    "key": "A",
+    "expectedValues": []
+  },
+  {
+    "vectorType": "Get",
+    "name": "wide/B",
+    "src": [
+      {
+        "k": "k1",
+        "v": "v1",
+        "w": 1
+      },
+      {
+        "k": "k2",
+        "v": "v2",
+        "w": 2
+      },
+      {
+        "k": "k3",
+        "v": "v3",
+        "w": 3
+      },
+      {
+        "k": "k1",
+        "v": "v9",
+        "w": -1
+      },
+      {
+        "k": "k3",
+        "v": "v1",
+        "w": 7
+      }
+    ],
+    "key": "B",
+    "expectedValues": []
+  },
+  {
+    "vectorType": "Get",
+    "name": "wide/k1",
+    "src": [
+      {
+        "k": "k1",
+        "v": "v1",
+        "w": 1
+      },
+      {
+        "k": "k2",
+        "v": "v2",
+        "w": 2
+      },
+      {
+        "k": "k3",
+        "v": "v3",
+        "w": 3
+      },
+      {
+        "k": "k1",
+        "v": "v9",
+        "w": -1
+      },
+      {
+        "k": "k3",
+        "v": "v1",
+        "w": 7
+      }
+    ],
+    "key": "k1",
+    "expectedValues": [
+      {
+        "e": "v1",
+        "w": 1
+      },
+      {
+        "e": "v9",
+        "w": -1
+      }
+    ]
+  },
+  {
+    "vectorType": "Get",
+    "name": "wide/k3",
+    "src": [
+      {
+        "k": "k1",
+        "v": "v1",
+        "w": 1
+      },
+      {
+        "k": "k2",
+        "v": "v2",
+        "w": 2
+      },
+      {
+        "k": "k3",
+        "v": "v3",
+        "w": 3
+      },
+      {
+        "k": "k1",
+        "v": "v9",
+        "w": -1
+      },
+      {
+        "k": "k3",
+        "v": "v1",
+        "w": 7
+      }
+    ],
+    "key": "k3",
+    "expectedValues": [
+      {
+        "e": "v1",
+        "w": 7
+      },
+      {
+        "e": "v3",
+        "w": 3
+      }
+    ]
+  },
+  {
+    "vectorType": "Get",
+    "name": "wide/missing",
+    "src": [
+      {
+        "k": "k1",
+        "v": "v1",
+        "w": 1
+      },
+      {
+        "k": "k2",
+        "v": "v2",
+        "w": 2
+      },
+      {
+        "k": "k3",
+        "v": "v3",
+        "w": 3
+      },
+      {
+        "k": "k1",
+        "v": "v9",
+        "w": -1
+      },
+      {
+        "k": "k3",
+        "v": "v1",
+        "w": 7
+      }
+    ],
+    "key": "missing",
+    "expectedValues": []
+  },
+  {
+    "vectorType": "Add",
+    "name": "empty+single",
+    "left": [],
+    "right": [
+      {
+        "k": "a",
+        "v": "x",
+        "w": 1
+      }
+    ],
+    "expectedGroups": [
+      {
+        "key": "a",
+        "values": [
+          {
+            "e": "x",
+            "w": 1
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "vectorType": "Sub",
+    "name": "empty-single",
+    "left": [],
+    "right": [
+      {
+        "k": "a",
+        "v": "x",
+        "w": 1
+      }
+    ],
+    "expectedGroups": [
+      {
+        "key": "a",
+        "values": [
+          {
+            "e": "x",
+            "w": -1
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "vectorType": "Join",
+    "name": "empty⋈single",
+    "left": [],
+    "right": [
+      {
+        "k": "a",
+        "v": "x",
+        "w": 1
+      }
+    ],
+    "expectedPairs": []
+  },
+  {
+    "vectorType": "Add",
+    "name": "single+single",
+    "left": [
+      {
+        "k": "a",
+        "v": "x",
+        "w": 1
+      }
+    ],
+    "right": [
+      {
+        "k": "a",
+        "v": "x",
+        "w": 1
+      }
+    ],
+    "expectedGroups": [
+      {
+        "key": "a",
+        "values": [
+          {
+            "e": "x",
+            "w": 2
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "vectorType": "Sub",
+    "name": "single-single",
+    "left": [
+      {
+        "k": "a",
+        "v": "x",
+        "w": 1
+      }
+    ],
+    "right": [
+      {
+        "k": "a",
+        "v": "x",
+        "w": 1
+      }
+    ],
+    "expectedGroups": []
+  },
+  {
+    "vectorType": "Join",
+    "name": "single⋈single",
+    "left": [
+      {
+        "k": "a",
+        "v": "x",
+        "w": 1
+      }
+    ],
+    "right": [
+      {
+        "k": "a",
+        "v": "x",
+        "w": 1
+      }
+    ],
+    "expectedPairs": [
+      {
+        "e": "a|x|x",
+        "w": 1
+      }
+    ]
+  },
+  {
+    "vectorType": "Add",
+    "name": "two-keys+one-key-many-values",
+    "left": [
+      {
+        "k": "a",
+        "v": "x",
+        "w": 1
+      },
+      {
+        "k": "b",
+        "v": "y",
+        "w": 2
+      }
+    ],
+    "right": [
+      {
+        "k": "a",
+        "v": "z",
+        "w": 1
+      },
+      {
+        "k": "a",
+        "v": "x",
+        "w": 3
+      },
+      {
+        "k": "a",
+        "v": "y",
+        "w": -2
+      }
+    ],
+    "expectedGroups": [
+      {
+        "key": "a",
+        "values": [
+          {
+            "e": "x",
+            "w": 4
+          },
+          {
+            "e": "y",
+            "w": -2
+          },
+          {
+            "e": "z",
+            "w": 1
+          }
+        ]
+      },
+      {
+        "key": "b",
+        "values": [
+          {
+            "e": "y",
+            "w": 2
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "vectorType": "Sub",
+    "name": "two-keys-one-key-many-values",
+    "left": [
+      {
+        "k": "a",
+        "v": "x",
+        "w": 1
+      },
+      {
+        "k": "b",
+        "v": "y",
+        "w": 2
+      }
+    ],
+    "right": [
+      {
+        "k": "a",
+        "v": "z",
+        "w": 1
+      },
+      {
+        "k": "a",
+        "v": "x",
+        "w": 3
+      },
+      {
+        "k": "a",
+        "v": "y",
+        "w": -2
+      }
+    ],
+    "expectedGroups": [
+      {
+        "key": "a",
+        "values": [
+          {
+            "e": "x",
+            "w": -2
+          },
+          {
+            "e": "y",
+            "w": 2
+          },
+          {
+            "e": "z",
+            "w": -1
+          }
+        ]
+      },
+      {
+        "key": "b",
+        "values": [
+          {
+            "e": "y",
+            "w": 2
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "vectorType": "Join",
+    "name": "two-keys⋈one-key-many-values",
+    "left": [
+      {
+        "k": "a",
+        "v": "x",
+        "w": 1
+      },
+      {
+        "k": "b",
+        "v": "y",
+        "w": 2
+      }
+    ],
+    "right": [
+      {
+        "k": "a",
+        "v": "z",
+        "w": 1
+      },
+      {
+        "k": "a",
+        "v": "x",
+        "w": 3
+      },
+      {
+        "k": "a",
+        "v": "y",
+        "w": -2
+      }
+    ],
+    "expectedPairs": [
+      {
+        "e": "a|x|x",
+        "w": 3
+      },
+      {
+        "e": "a|x|y",
+        "w": -2
+      },
+      {
+        "e": "a|x|z",
+        "w": 1
+      }
+    ]
+  },
+  {
+    "vectorType": "Add",
+    "name": "one-key-many-values+negative-weights-only",
+    "left": [
+      {
+        "k": "a",
+        "v": "z",
+        "w": 1
+      },
+      {
+        "k": "a",
+        "v": "x",
+        "w": 3
+      },
+      {
+        "k": "a",
+        "v": "y",
+        "w": -2
+      }
+    ],
+    "right": [
+      {
+        "k": "a",
+        "v": "x",
+        "w": -1
+      },
+      {
+        "k": "b",
+        "v": "y",
+        "w": -4
+      }
+    ],
+    "expectedGroups": [
+      {
+        "key": "a",
+        "values": [
+          {
+            "e": "x",
+            "w": 2
+          },
+          {
+            "e": "y",
+            "w": -2
+          },
+          {
+            "e": "z",
+            "w": 1
+          }
+        ]
+      },
+      {
+        "key": "b",
+        "values": [
+          {
+            "e": "y",
+            "w": -4
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "vectorType": "Sub",
+    "name": "one-key-many-values-negative-weights-only",
+    "left": [
+      {
+        "k": "a",
+        "v": "z",
+        "w": 1
+      },
+      {
+        "k": "a",
+        "v": "x",
+        "w": 3
+      },
+      {
+        "k": "a",
+        "v": "y",
+        "w": -2
+      }
+    ],
+    "right": [
+      {
+        "k": "a",
+        "v": "x",
+        "w": -1
+      },
+      {
+        "k": "b",
+        "v": "y",
+        "w": -4
+      }
+    ],
+    "expectedGroups": [
+      {
+        "key": "a",
+        "values": [
+          {
+            "e": "x",
+            "w": 4
+          },
+          {
+            "e": "y",
+            "w": -2
+          },
+          {
+            "e": "z",
+            "w": 1
+          }
+        ]
+      },
+      {
+        "key": "b",
+        "values": [
+          {
+            "e": "y",
+            "w": 4
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "vectorType": "Join",
+    "name": "one-key-many-values⋈negative-weights-only",
+    "left": [
+      {
+        "k": "a",
+        "v": "z",
+        "w": 1
+      },
+      {
+        "k": "a",
+        "v": "x",
+        "w": 3
+      },
+      {
+        "k": "a",
+        "v": "y",
+        "w": -2
+      }
+    ],
+    "right": [
+      {
+        "k": "a",
+        "v": "x",
+        "w": -1
+      },
+      {
+        "k": "b",
+        "v": "y",
+        "w": -4
+      }
+    ],
+    "expectedPairs": [
+      {
+        "e": "a|x|x",
+        "w": -3
+      },
+      {
+        "e": "a|y|x",
+        "w": 2
+      },
+      {
+        "e": "a|z|x",
+        "w": -1
+      }
+    ]
+  },
+  {
+    "vectorType": "Add",
+    "name": "wide+two-keys",
+    "left": [
+      {
+        "k": "k1",
+        "v": "v1",
+        "w": 1
+      },
+      {
+        "k": "k2",
+        "v": "v2",
+        "w": 2
+      },
+      {
+        "k": "k3",
+        "v": "v3",
+        "w": 3
+      },
+      {
+        "k": "k1",
+        "v": "v9",
+        "w": -1
+      },
+      {
+        "k": "k3",
+        "v": "v1",
+        "w": 7
+      }
+    ],
+    "right": [
+      {
+        "k": "a",
+        "v": "x",
+        "w": 1
+      },
+      {
+        "k": "b",
+        "v": "y",
+        "w": 2
+      }
+    ],
+    "expectedGroups": [
+      {
+        "key": "a",
+        "values": [
+          {
+            "e": "x",
+            "w": 1
+          }
+        ]
+      },
+      {
+        "key": "b",
+        "values": [
+          {
+            "e": "y",
+            "w": 2
+          }
+        ]
+      },
+      {
+        "key": "k1",
+        "values": [
+          {
+            "e": "v1",
+            "w": 1
+          },
+          {
+            "e": "v9",
+            "w": -1
+          }
+        ]
+      },
+      {
+        "key": "k2",
+        "values": [
+          {
+            "e": "v2",
+            "w": 2
+          }
+        ]
+      },
+      {
+        "key": "k3",
+        "values": [
+          {
+            "e": "v1",
+            "w": 7
+          },
+          {
+            "e": "v3",
+            "w": 3
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "vectorType": "Sub",
+    "name": "wide-two-keys",
+    "left": [
+      {
+        "k": "k1",
+        "v": "v1",
+        "w": 1
+      },
+      {
+        "k": "k2",
+        "v": "v2",
+        "w": 2
+      },
+      {
+        "k": "k3",
+        "v": "v3",
+        "w": 3
+      },
+      {
+        "k": "k1",
+        "v": "v9",
+        "w": -1
+      },
+      {
+        "k": "k3",
+        "v": "v1",
+        "w": 7
+      }
+    ],
+    "right": [
+      {
+        "k": "a",
+        "v": "x",
+        "w": 1
+      },
+      {
+        "k": "b",
+        "v": "y",
+        "w": 2
+      }
+    ],
+    "expectedGroups": [
+      {
+        "key": "a",
+        "values": [
+          {
+            "e": "x",
+            "w": -1
+          }
+        ]
+      },
+      {
+        "key": "b",
+        "values": [
+          {
+            "e": "y",
+            "w": -2
+          }
+        ]
+      },
+      {
+        "key": "k1",
+        "values": [
+          {
+            "e": "v1",
+            "w": 1
+          },
+          {
+            "e": "v9",
+            "w": -1
+          }
+        ]
+      },
+      {
+        "key": "k2",
+        "values": [
+          {
+            "e": "v2",
+            "w": 2
+          }
+        ]
+      },
+      {
+        "key": "k3",
+        "values": [
+          {
+            "e": "v1",
+            "w": 7
+          },
+          {
+            "e": "v3",
+            "w": 3
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "vectorType": "Join",
+    "name": "wide⋈two-keys",
+    "left": [
+      {
+        "k": "k1",
+        "v": "v1",
+        "w": 1
+      },
+      {
+        "k": "k2",
+        "v": "v2",
+        "w": 2
+      },
+      {
+        "k": "k3",
+        "v": "v3",
+        "w": 3
+      },
+      {
+        "k": "k1",
+        "v": "v9",
+        "w": -1
+      },
+      {
+        "k": "k3",
+        "v": "v1",
+        "w": 7
+      }
+    ],
+    "right": [
+      {
+        "k": "a",
+        "v": "x",
+        "w": 1
+      },
+      {
+        "k": "b",
+        "v": "y",
+        "w": 2
+      }
+    ],
+    "expectedPairs": []
+  },
+  {
+    "vectorType": "Add",
+    "name": "case-mixed-keys+wide",
+    "left": [
+      {
+        "k": "B",
+        "v": "x",
+        "w": 1
+      },
+      {
+        "k": "a",
+        "v": "x",
+        "w": 1
+      },
+      {
+        "k": "A",
+        "v": "x",
+        "w": 1
+      },
+      {
+        "k": "b",
+        "v": "x",
+        "w": 1
+      }
+    ],
+    "right": [
+      {
+        "k": "k1",
+        "v": "v1",
+        "w": 1
+      },
+      {
+        "k": "k2",
+        "v": "v2",
+        "w": 2
+      },
+      {
+        "k": "k3",
+        "v": "v3",
+        "w": 3
+      },
+      {
+        "k": "k1",
+        "v": "v9",
+        "w": -1
+      },
+      {
+        "k": "k3",
+        "v": "v1",
+        "w": 7
+      }
+    ],
+    "expectedGroups": [
+      {
+        "key": "A",
+        "values": [
+          {
+            "e": "x",
+            "w": 1
+          }
+        ]
+      },
+      {
+        "key": "B",
+        "values": [
+          {
+            "e": "x",
+            "w": 1
+          }
+        ]
+      },
+      {
+        "key": "a",
+        "values": [
+          {
+            "e": "x",
+            "w": 1
+          }
+        ]
+      },
+      {
+        "key": "b",
+        "values": [
+          {
+            "e": "x",
+            "w": 1
+          }
+        ]
+      },
+      {
+        "key": "k1",
+        "values": [
+          {
+            "e": "v1",
+            "w": 1
+          },
+          {
+            "e": "v9",
+            "w": -1
+          }
+        ]
+      },
+      {
+        "key": "k2",
+        "values": [
+          {
+            "e": "v2",
+            "w": 2
+          }
+        ]
+      },
+      {
+        "key": "k3",
+        "values": [
+          {
+            "e": "v1",
+            "w": 7
+          },
+          {
+            "e": "v3",
+            "w": 3
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "vectorType": "Sub",
+    "name": "case-mixed-keys-wide",
+    "left": [
+      {
+        "k": "B",
+        "v": "x",
+        "w": 1
+      },
+      {
+        "k": "a",
+        "v": "x",
+        "w": 1
+      },
+      {
+        "k": "A",
+        "v": "x",
+        "w": 1
+      },
+      {
+        "k": "b",
+        "v": "x",
+        "w": 1
+      }
+    ],
+    "right": [
+      {
+        "k": "k1",
+        "v": "v1",
+        "w": 1
+      },
+      {
+        "k": "k2",
+        "v": "v2",
+        "w": 2
+      },
+      {
+        "k": "k3",
+        "v": "v3",
+        "w": 3
+      },
+      {
+        "k": "k1",
+        "v": "v9",
+        "w": -1
+      },
+      {
+        "k": "k3",
+        "v": "v1",
+        "w": 7
+      }
+    ],
+    "expectedGroups": [
+      {
+        "key": "A",
+        "values": [
+          {
+            "e": "x",
+            "w": 1
+          }
+        ]
+      },
+      {
+        "key": "B",
+        "values": [
+          {
+            "e": "x",
+            "w": 1
+          }
+        ]
+      },
+      {
+        "key": "a",
+        "values": [
+          {
+            "e": "x",
+            "w": 1
+          }
+        ]
+      },
+      {
+        "key": "b",
+        "values": [
+          {
+            "e": "x",
+            "w": 1
+          }
+        ]
+      },
+      {
+        "key": "k1",
+        "values": [
+          {
+            "e": "v1",
+            "w": -1
+          },
+          {
+            "e": "v9",
+            "w": 1
+          }
+        ]
+      },
+      {
+        "key": "k2",
+        "values": [
+          {
+            "e": "v2",
+            "w": -2
+          }
+        ]
+      },
+      {
+        "key": "k3",
+        "values": [
+          {
+            "e": "v1",
+            "w": -7
+          },
+          {
+            "e": "v3",
+            "w": -3
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "vectorType": "Join",
+    "name": "case-mixed-keys⋈wide",
+    "left": [
+      {
+        "k": "B",
+        "v": "x",
+        "w": 1
+      },
+      {
+        "k": "a",
+        "v": "x",
+        "w": 1
+      },
+      {
+        "k": "A",
+        "v": "x",
+        "w": 1
+      },
+      {
+        "k": "b",
+        "v": "x",
+        "w": 1
+      }
+    ],
+    "right": [
+      {
+        "k": "k1",
+        "v": "v1",
+        "w": 1
+      },
+      {
+        "k": "k2",
+        "v": "v2",
+        "w": 2
+      },
+      {
+        "k": "k3",
+        "v": "v3",
+        "w": 3
+      },
+      {
+        "k": "k1",
+        "v": "v9",
+        "w": -1
+      },
+      {
+        "k": "k3",
+        "v": "v1",
+        "w": 7
+      }
+    ],
+    "expectedPairs": []
+  },
+  {
+    "vectorType": "Add",
+    "name": "duplicate-tuples-sum+duplicate-tuples-sum",
+    "left": [
+      {
+        "k": "a",
+        "v": "x",
+        "w": 2
+      },
+      {
+        "k": "a",
+        "v": "x",
+        "w": 5
+      }
+    ],
+    "right": [
+      {
+        "k": "a",
+        "v": "x",
+        "w": 2
+      },
+      {
+        "k": "a",
+        "v": "x",
+        "w": 5
+      }
+    ],
+    "expectedGroups": [
+      {
+        "key": "a",
+        "values": [
+          {
+            "e": "x",
+            "w": 14
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "vectorType": "Sub",
+    "name": "duplicate-tuples-sum-duplicate-tuples-sum",
+    "left": [
+      {
+        "k": "a",
+        "v": "x",
+        "w": 2
+      },
+      {
+        "k": "a",
+        "v": "x",
+        "w": 5
+      }
+    ],
+    "right": [
+      {
+        "k": "a",
+        "v": "x",
+        "w": 2
+      },
+      {
+        "k": "a",
+        "v": "x",
+        "w": 5
+      }
+    ],
+    "expectedGroups": []
+  },
+  {
+    "vectorType": "Join",
+    "name": "duplicate-tuples-sum⋈duplicate-tuples-sum",
+    "left": [
+      {
+        "k": "a",
+        "v": "x",
+        "w": 2
+      },
+      {
+        "k": "a",
+        "v": "x",
+        "w": 5
+      }
+    ],
+    "right": [
+      {
+        "k": "a",
+        "v": "x",
+        "w": 2
+      },
+      {
+        "k": "a",
+        "v": "x",
+        "w": 5
+      }
+    ],
+    "expectedPairs": [
+      {
+        "e": "a|x|x",
+        "w": 49
+      }
+    ]
+  }
+]

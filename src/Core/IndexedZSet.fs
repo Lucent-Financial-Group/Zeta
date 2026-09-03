@@ -255,7 +255,19 @@ module IndexedZSet =
                             kbuf.[ki] <- kv.Key
                             ki <- ki + 1
                         let keysSpan = Span<'K>(kbuf, 0, bucketHead.Count)
-                        keysSpan.Sort<'K>()
+                        // ORDINAL, explicitly. A bare `Sort()` uses `Comparer<'K>.Default`, which for
+                        // `string` is CULTURE-SENSITIVE — and every consumer of this array assumes
+                        // ordinal order: `Item` binary-searches with `KeyComparerCache`, `(+)` merges
+                        // with it, and `join` merges with `Collation.forKey`. So the array was built
+                        // under one order and searched under another, which breaks the binary search's
+                        // invariant rather than merely reordering output: `idx.["A"]` could return
+                        // EMPTY for a key that is present, and a merge could miss a matching key
+                        // entirely. Found by the IndexedZSet cross-language treaty
+                        // (081M1K01377087G0R00111NV7Y); it is 081KT07NV0008QG0R001YDB73K again, where
+                        // the fix reached the consumers and missed the producer.
+                        // `Collation.forKey` rather than `KeyComparerCache` because this function is `inline`, so it
+                        // may only touch public surface — the same reason `join` resolves it this way.
+                        keysSpan.Sort<'K, IComparer<'K>>(Collation.forKey<'K> ())
 
                         let groupArr = Pool.AllocateExact<KeyGroup<'K, 'V>> bucketHead.Count
                         let valueBuf = Pool.Rent<ZEntry<'V>> span.Length

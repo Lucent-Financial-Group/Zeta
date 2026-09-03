@@ -1,0 +1,14 @@
+{
+  "id": "080d033004675810a01300089f2165c0",
+  "at": "2026-09-03T06:41:47.243Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1K01377087G0R00111NV7Y",
+    "type": "bug",
+    "title": "IndexedZSet built its group array culturally and searched it ordinally",
+    "slug": "indexedzset-built-its-group-array-culturally-and-searched-it",
+    "priority": "P2",
+    "filename": "081M1K01377087G0R00111NV7Y-indexedzset-built-its-group-array-culturally-and-searched-it.md"
+  }
+}
