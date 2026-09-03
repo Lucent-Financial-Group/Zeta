@@ -229,8 +229,22 @@ describe("coauthorFor — harness-specific trailer from the acting agent (shared
   });
 });
 
-describe("gitCommitToMain — exported (real default; not run here)", () => {
-  it("is a function (real git path is exercised by the runtime, not unit tests)", () => {
+describe("gitCommitToMain — the real git path", () => {
+  // This block used to hold one assertion, `expect(typeof gitCommitToMain).toBe("function")`, under
+  // the heading "real default; not run here" and the reasoning that the real git path "is exercised
+  // by the runtime, not unit tests".
+  //
+  // Both halves were a problem. The assertion cannot fail while the import resolves, so it reported
+  // coverage of the one function in this file that touches the outside world. And "exercised by the
+  // runtime" means exercised in production, against `origin/main` — which is a description of where
+  // the failures would land, not of a test.
+  //
+  // It is now genuinely exercised, against a real bare repository in a temp directory:
+  // `event-sink-folder.git.test.ts` covers the push, idempotent re-append, the off-main refusal,
+  // peer contention through `pull --rebase`, and the undo path — including the claim that a
+  // concurrent uncommitted edit in another file survives a failed push, which a `reset --hard`
+  // would break and which nothing had checked.
+  it("is re-exported for that suite to drive", () => {
     expect(typeof gitCommitToMain).toBe("function");
   });
 });

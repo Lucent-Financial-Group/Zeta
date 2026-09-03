@@ -732,6 +732,7 @@
     <Compile Include="DeltaLogInterop.Tests.fs" />
     <Compile Include="IndexedZSetTreaty.Tests.fs" />
     <Compile Include="IndexedZSetCollation.Tests.fs" />
+    <Compile Include="ErasureChargeTreaty.Tests.fs" />
     <Compile Include="../../src/Core/QuantumObservableDbsp.Tests.fs" />
     <Compile Include="SpecializationCacheTreaty.Tests.fs" />
     <Compile Include="ZetaToolStore.Tests.fs" />
