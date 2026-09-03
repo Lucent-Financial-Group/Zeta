@@ -1,0 +1,12 @@
+{
+  "pr_number": 16522,
+  "archive_path": "docs/history/pr-reviews/PR-16522-chore-081m1m33g8c087g0r000vp1w1w-complete-polyfill-crash-prefix-workitem.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-03T17:38:43.900Z",
+  "schema_version": "v1",
+  "commit_sha": "0663b5a53363a39e4dc8f0915e947392a52d1c3a",
+  "title": "chore(081M1M33G8C087G0R000VP1W1W): complete polyfill crash-prefix workitem",
+  "state": "MERGED",
+  "merged_at": "2026-09-03T17:38:04Z",
+  "head_ref": "feat/zetafs-complete-polyfill-crash"
+}
