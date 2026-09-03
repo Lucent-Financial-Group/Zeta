@@ -339,7 +339,7 @@ let ``Journaled freeze crash-mid-write leaves a torn log and does not finish`` (
         FileSystem.Register(mock)
         let store = "/crash-mid-freeze"
         let volume =
-            ZetaFsFreeze.createManual store (ZetaFsMutbuf.create store ZetaFsMutbuf.Coherence.Shared) None
+            ZetaFsFreeze.createManualStream store (ZetaFsMutbuf.create store ZetaFsMutbuf.Coherence.Shared) None
 
         try
             let id = mintId ()
@@ -401,7 +401,7 @@ let ``reopen after a torn second freeze keeps the first and drops the tail`` () 
         FileSystem.Register(mock)
         let store = "/freeze-replay-torn"
         let mutbuf = ZetaFsMutbuf.create store ZetaFsMutbuf.Coherence.Shared
-        let volume = ZetaFsFreeze.createManual store mutbuf None
+        let volume = ZetaFsFreeze.createManualStream store mutbuf None
         let logNeedle = Path.Combine("log", "freeze")
         let logPath = Path.Combine(store, "log", "freeze")
 
@@ -431,7 +431,7 @@ let ``reopen after a torn second freeze keeps the first and drops the tail`` () 
                 let tornLen = FileSystem.Current.ReadAllBytes(logPath).Length
                 Assert.True(tornLen > intactBytes.Length)
                 ZetaFsFreeze.dispose volume
-                let reopened = ZetaFsFreeze.createManual store mutbuf None
+                let reopened = ZetaFsFreeze.createManualStream store mutbuf None
 
                 try
                     Assert.True(ZetaFsFreeze.isReadable reopened first.Content)
@@ -454,7 +454,7 @@ let ``Journaled freeze that acks with a corrupt last write is not readable after
         FileSystem.Register(mock)
         let store = "/corrupt-last-freeze"
         let mutbuf = ZetaFsMutbuf.create store ZetaFsMutbuf.Coherence.Shared
-        let volume = ZetaFsFreeze.createManual store mutbuf None
+        let volume = ZetaFsFreeze.createManualStream store mutbuf None
 
         try
             let id = mintId ()
@@ -469,7 +469,7 @@ let ``Journaled freeze that acks with a corrupt last write is not readable after
             | Ok first ->
                 Assert.True(ZetaFsFreeze.isReadable volume first.Content)
                 ZetaFsFreeze.dispose volume
-                let reopened = ZetaFsFreeze.createManual store mutbuf None
+                let reopened = ZetaFsFreeze.createManualStream store mutbuf None
 
                 try
                     Assert.False(ZetaFsFreeze.isReadable reopened first.Content)
@@ -488,7 +488,7 @@ let ``Journaled freeze crash during leaf put leaves extra garbage and is not rea
         FileSystem.Register(mock)
         let store = "/crash-intent-leaves"
         let mutbuf = ZetaFsMutbuf.create store ZetaFsMutbuf.Coherence.Shared
-        let volume = ZetaFsFreeze.createManual store mutbuf None
+        let volume = ZetaFsFreeze.createManualStream store mutbuf None
         let logPath = Path.Combine(store, "log", "freeze")
 
         try
@@ -508,7 +508,7 @@ let ``Journaled freeze crash during leaf put leaves extra garbage and is not rea
             Assert.True(intentLen > 0)
             Assert.Equal(logPath, mock.CommitOrder.[0])
             ZetaFsFreeze.dispose volume
-            let reopened = ZetaFsFreeze.createManual store mutbuf None
+            let reopened = ZetaFsFreeze.createManualStream store mutbuf None
 
             try
                 let recoveredLen = FileSystem.Current.ReadAllBytes(logPath).Length
@@ -528,7 +528,7 @@ let ``reopen after a mid-log CRC mismatch keeps the prefix and drops the suffix`
         FileSystem.Register(mock)
         let store = "/freeze-mid-crc"
         let mutbuf = ZetaFsMutbuf.create store ZetaFsMutbuf.Coherence.Shared
-        let volume = ZetaFsFreeze.createManual store mutbuf None
+        let volume = ZetaFsFreeze.createManualStream store mutbuf None
         let logPath = Path.Combine(store, "log", "freeze")
 
         try
@@ -561,7 +561,7 @@ let ``reopen after a mid-log CRC mismatch keeps the prefix and drops the suffix`
                     flipped.[prefixLen + 4] <- flipped.[prefixLen + 4] ^^^ 0xA5uy
                     mock.Files.[logPath] <- flipped
                     ZetaFsFreeze.dispose volume
-                    let reopened = ZetaFsFreeze.createManual store mutbuf None
+                    let reopened = ZetaFsFreeze.createManualStream store mutbuf None
 
                     try
                         Assert.True(ZetaFsFreeze.isReadable reopened first.Content)
@@ -592,7 +592,7 @@ let ``reopen after a mid-log sealed MAC mismatch keeps the prefix and drops the 
             match ZetaFsCrypto.sessionFromVaultKey 1u vault with
             | Error e -> Assert.Fail(ZetaFsCrypto.errorName e)
             | Ok session ->
-                let v = ZetaFsFreeze.createManualWith store mutbuf None (Some session)
+                let v = ZetaFsFreeze.createManualWithStream store mutbuf None (Some session)
                 volume <- Some v
                 let id1 = mintId ()
                 let h1 = ZetaFsMutbuf.openHandle mutbuf id1
@@ -622,7 +622,7 @@ let ``reopen after a mid-log sealed MAC mismatch keeps the prefix and drops the 
                         mock.Files.[logPath] <- flipped
                         ZetaFsFreeze.dispose v
                         volume <- None
-                        let reopened = ZetaFsFreeze.createManualWith store mutbuf None (Some session)
+                        let reopened = ZetaFsFreeze.createManualWithStream store mutbuf None (Some session)
 
                         try
                             Assert.True(ZetaFsFreeze.isReadable reopened first.Content)

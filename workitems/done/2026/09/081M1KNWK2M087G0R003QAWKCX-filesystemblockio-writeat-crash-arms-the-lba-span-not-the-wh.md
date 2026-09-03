@@ -1,11 +1,12 @@
 ---
 id: 081M1KNWK2M087G0R003QAWKCX
 type: task
-state: backlog
+state: done
 priority: P1
 slug: filesystemblockio-writeat-crash-arms-the-lba-span-not-the-whole-file
 title: "FileSystemBlockIo WriteAt crash-arms the LBA span not the whole file"
 created: 2026-09-03T13:00:00.000Z
+completed: 2026-09-03T15:02:51.320Z
 depends_on: ["081M1KHJB60087G0R0016G69KV"]
 composes_with: ["081M1KHJB60087G0R0016G69KV"]
 ---

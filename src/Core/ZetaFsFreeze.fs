@@ -657,13 +657,44 @@ module ZetaFsFreeze =
     let create (storeDir: string) (mutbuf: ZetaFsMutbuf.Catalog) (observer: IDurabilityObserver option) : Volume =
         createWith storeDir mutbuf observer None
 
-    /// DST / test: no background ferry. Caller drives with `pumpLog`.
-    let createManual
+    /// DST: raw frame stream on `IFileSystem` (no superblock). Tests that
+    /// poke log bytes or arm whole-file Dispose still use this.
+    let createManualStream
         (storeDir: string)
         (mutbuf: ZetaFsMutbuf.Catalog)
         (observer: IDurabilityObserver option)
         : Volume =
         createFull storeDir mutbuf observer None defaultConfig true None None
+
+    let createManualWithStream
+        (storeDir: string)
+        (mutbuf: ZetaFsMutbuf.Catalog)
+        (observer: IDurabilityObserver option)
+        (session: ZetaFsCrypto.Session option)
+        : Volume =
+        createFull storeDir mutbuf observer session defaultConfig true None None
+
+    let private hostFileLog
+        (storeDir: string)
+        (mutbuf: ZetaFsMutbuf.Catalog)
+        (observer: IDurabilityObserver option)
+        (session: ZetaFsCrypto.Session option)
+        : Volume =
+        let fs = FileSystem.Current
+        fs.CreateDirectory(Path.Combine(storeDir, "log"))
+        let path = Path.Combine(storeDir, "log", "freeze")
+        let io = FileSystemBlockIo(fs, path, 4096)
+        createFull storeDir mutbuf observer session defaultConfig true (Some(HostFile io)) None
+
+    /// DST / test: no background ferry. Caller drives with `pumpLog`.
+    /// Journaled log rides `FileSystemBlockIo`. Objects still speak files.
+    /// `create` (background ferry) still speaks a raw frame stream.
+    let createManual
+        (storeDir: string)
+        (mutbuf: ZetaFsMutbuf.Catalog)
+        (observer: IDurabilityObserver option)
+        : Volume =
+        hostFileLog storeDir mutbuf observer None
 
     let createManualWith
         (storeDir: string)
@@ -671,7 +702,7 @@ module ZetaFsFreeze =
         (observer: IDurabilityObserver option)
         (session: ZetaFsCrypto.Session option)
         : Volume =
-        createFull storeDir mutbuf observer session defaultConfig true None None
+        hostFileLog storeDir mutbuf observer session
 
     /// DST: Journaled log frames go through `IBlockIo` (RMW on the tail block).
     /// Objects still speak files unless `createManualWithBlockStore` is used.
@@ -720,38 +751,28 @@ module ZetaFsFreeze =
         createFull storeDir mutbuf observer (Some session) defaultConfig true (Some(Simulated logBlocks)) (Some objectCas)
 
     /// DST: journaled freeze log through the `FileSystemBlockIo` polyfill
-    /// (one host file, LBA offsets). `create` / `createManual` still speak
-    /// a raw frame stream. Objects still speak files.
+    /// (one host file, LBA offsets). Same door as `createManual`.
     let createManualWithFileLog
         (storeDir: string)
         (mutbuf: ZetaFsMutbuf.Catalog)
         (observer: IDurabilityObserver option)
         : Volume =
-        let fs = FileSystem.Current
-        fs.CreateDirectory(Path.Combine(storeDir, "log"))
-        let path = Path.Combine(storeDir, "log", "freeze")
-        let io = FileSystemBlockIo(fs, path, 4096)
-        createFull storeDir mutbuf observer None defaultConfig true (Some(HostFile io)) None
+        hostFileLog storeDir mutbuf observer None
 
     /// DST: sealed journaled freeze log through the `FileSystemBlockIo`
     /// polyfill. Wrong-key MAC on the first frame recovers nothing and
-    /// does not truncate. `create` / `createManual` still speak a raw
-    /// frame stream.
+    /// does not truncate. Same door as `createManualWith`.
     let createManualWithSealedFileLog
         (storeDir: string)
         (mutbuf: ZetaFsMutbuf.Catalog)
         (observer: IDurabilityObserver option)
         (session: ZetaFsCrypto.Session)
         : Volume =
-        let fs = FileSystem.Current
-        fs.CreateDirectory(Path.Combine(storeDir, "log"))
-        let path = Path.Combine(storeDir, "log", "freeze")
-        let io = FileSystemBlockIo(fs, path, 4096)
-        createFull storeDir mutbuf observer (Some session) defaultConfig true (Some(HostFile io)) None
+        hostFileLog storeDir mutbuf observer (Some session)
 
     /// DST: journaled log on one host-file polyfill, CAS objects on another.
-    /// Two files so a crash arm on objects cannot tear the log. `create` /
-    /// `createManual` still speak a raw frame stream and POSIX objects.
+    /// Two files so a crash arm on objects cannot tear the log. `create`
+    /// still speaks a raw frame stream and POSIX objects.
     let createManualWithFileBlockStore
         (storeDir: string)
         (mutbuf: ZetaFsMutbuf.Catalog)
@@ -765,8 +786,7 @@ module ZetaFsFreeze =
         createFull storeDir mutbuf observer None defaultConfig true (Some(HostFile logIo)) (Some cas)
 
     /// DST: sealed journaled log on one host-file polyfill, CAS objects on
-    /// another. `create` / `createManual` still speak a raw frame stream
-    /// and POSIX objects.
+    /// another. `create` still speaks a raw frame stream and POSIX objects.
     let createManualWithSealedFileBlockStore
         (storeDir: string)
         (mutbuf: ZetaFsMutbuf.Catalog)
