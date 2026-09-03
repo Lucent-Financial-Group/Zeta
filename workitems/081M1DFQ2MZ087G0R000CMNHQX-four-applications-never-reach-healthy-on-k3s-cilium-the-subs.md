@@ -556,6 +556,35 @@ local three-node profile must SAN the cert and write founder hosts on
 the server container only — the same mapping on an agent is the
 joining-node defect `k3s-server.nix` refuses.
 
+## MEASURED 2026-09-03 — live-k3d smoke 33771284753 after control-plane hosts + nodes Ready (PR #16508)
+
+Job `100702922886` on SHA `3dde8ce4f`
+[run 33771284753](https://github.com/Lucent-Financial-Group/Zeta/actions/runs/33771284753)
+**succeeded** at smoke scope. Bring-up logged `Mapping control-plane ->
+127.0.0.1` and `Waiting for nodes Ready now that Cilium is the CNI`.
+
+**Dump contrast (same ~T+110s class as 33754516236):**
+
+| Signal | 33754516236 (before) | 33771284753 (after) |
+|---|---|---|
+| cert-manager | ContainerCreating | 1/1 Running, RESTARTS=0 |
+| trust-manager | ContainerCreating | Synced/Healthy |
+| spire-server-0 | 0/2 Pending | 2/2 Running |
+| spire-bundle | DATA 0 | `bundle.crt` present |
+| cilium-dbg kube-dns | container not found | `10.43.0.10` => `10.143.0.177` active |
+| spire-agent crash | missing `bundle.crt` | DNS i/o timeout to `spire-server.spire` |
+
+The startup race (empty bundle while PVC Pending / Cilium Progressing)
+is **closed** on smoke. The **second class** (hostNetwork agent
+`lookup spire-server.spire on 10.43.0.10:53: dial udp 10.43.0.10:53:
+i/o timeout`) is **visible again** once the server runs — same line as
+included dump 33429761222. Do not collapse the two. Do not invent
+Cilium values. Do not re-lift `--scope included`.
+
+Sibling on the same run: `live kind included` failed only on mimir
+Synced/Degraded + agent-memory OutOfSync/Missing — Otto `081M1FG1RCW`,
+not this PR. `gate (required)` green.
+
 ## The distinguishing test
 
 For each of the four, the question is the same and it is answerable:
