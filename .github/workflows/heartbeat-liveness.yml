@@ -369,7 +369,11 @@ jobs:
           existing="$(gh api "repos/${REPO}/issues?labels=heartbeat-liveness&state=open&per_page=1" \
             --jq '[.[] | select(.pull_request == null)] | .[0].number // empty')"
 
-          body="$(printf '%s\n\nWatchdog run: %s\n\nThe lane carries unflushed state forward, so a single dropped tick is recoverable and this threshold is set well above GitHub'"'"'s normal scheduling jitter (worst healthy gap measured: 43min). This firing means successes have stopped, not merely that a tick was late.\n\nThe subject workflow was ENROLLED (not disabled) when this was written — a switched-off subject reports `paused` and never reaches this step.\n\nThis issue does not auto-close. Close it once heartbeats are succeeding again.\n' "$summary" "$RUN_URL")"
+          lane_detail="The lane carries unflushed state forward, so a single dropped tick is recoverable and this threshold is set well above GitHub's normal scheduling jitter (worst healthy gap measured: 43min). This firing means successes have stopped, not merely that a tick was late."
+          subject_detail="The subject workflow was ENROLLED (not disabled) when this was written — a switched-off subject reports \`paused\` and never reaches this step."
+          close_detail="This issue does not auto-close. Close it once heartbeats are succeeding again."
+          body="$(printf '%s\n\nWatchdog run: %s\n\n%s\n\n%s\n\n%s\n' \
+            "$summary" "$RUN_URL" "$lane_detail" "$subject_detail" "$close_detail")"
 
           if [ -z "$existing" ]; then
             gh issue create --repo "$REPO" --title "$title" --body "$body" --label heartbeat-liveness
