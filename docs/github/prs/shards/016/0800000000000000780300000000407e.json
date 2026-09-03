@@ -1,0 +1,12 @@
+{
+  "pr_number": 16510,
+  "archive_path": "docs/history/pr-reviews/PR-16510-test-hygiene-strengthen-inherited-assertion-relations.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-03T13:35:10.667Z",
+  "schema_version": "v1",
+  "commit_sha": "7386c2c057d7f2f537e0471d82cbc71e4580fde3",
+  "title": "test(hygiene): strengthen inherited assertion relations",
+  "state": "MERGED",
+  "merged_at": "2026-09-03T13:34:26Z",
+  "head_ref": "lumen/repair-inherited-arity-hygiene"
+}
