@@ -1,0 +1,12 @@
+{
+  "pr_number": 16507,
+  "archive_path": "docs/history/pr-reviews/PR-16507-docs-081m1dfq2mz-spire-bundle-is-data-0-while-server-is-pending.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-03T13:58:07.567Z",
+  "schema_version": "v1",
+  "commit_sha": "4d5fd516111c8b6f5cbcf205d6d3fe1a388d3917",
+  "title": "docs(081M1DFQ2MZ): spire-bundle is DATA 0 while server is Pending",
+  "state": "MERGED",
+  "merged_at": "2026-09-03T13:57:27Z",
+  "head_ref": "cursor/k3d-spire-bundle-empty-27c5"
+}

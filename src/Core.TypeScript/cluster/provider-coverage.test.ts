@@ -121,6 +121,8 @@ describe("every supported provider is exercised by a real CI lane", () => {
     expect(run).toContain("k8s-app=kube-dns");
     expect(run).toContain("cilium-dbg service list");
     expect(run).toContain("get pvc,cm");
+    expect(run).toContain("get cm spire-bundle");
     expect(run.includes("cilium-dbg service list 2>/dev/null")).toBe(false);
+    expect(run).toContain("k8s-app=cilium");
   });
 });

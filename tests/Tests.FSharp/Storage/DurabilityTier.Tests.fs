@@ -141,9 +141,17 @@ let ``INVARIANT: in every accepted classification the surviving set is upward-cl
             || a.DependsOn |> List.forall (fun d -> DurabilityTier.survives tier.[d]))
 
 [<Property(Arbitrary = [| typeof<DagArb> |])>]
-let ``determinism: classification and manifest replay byte-identically`` (nodes: TierNode list) =
-    DurabilityTier.classifyToManifest nodes = DurabilityTier.classifyToManifest nodes
-    && DurabilityTier.classifyToManifest (List.rev nodes) = DurabilityTier.classifyToManifest nodes
+let ``manifest projects the classifier's canonical assignments, independently of declaration order`` (nodes: TierNode list) =
+    match DurabilityTier.classifyToManifest nodes, DurabilityTier.classify (List.rev nodes) with
+    | Ok (rows, manifest), Ok reversedRows ->
+        Assert.Equal<TierAssignment list>(rows, reversedRows)
+        let manifestNames =
+            manifest.Split '\n'
+            |> Array.skip 1
+            |> Array.map (fun line -> line.Split '\t' |> Array.head)
+            |> Array.toList
+        Assert.Equal<string list>(rows |> List.map (fun row -> row.Name), manifestNames)
+    | left, right -> failwithf "generated DAG should classify in either declaration order: %A / %A" left right
 
 // ── 3. Structure ─────────────────────────────────────────────────────
 
