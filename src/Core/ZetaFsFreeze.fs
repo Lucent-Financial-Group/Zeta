@@ -68,8 +68,7 @@ module ZetaFsFreeze =
           Reply: TaskCompletionSource<Result<struct (int64 * int64), FreezeError>> }
 
     /// Log device for freeze frames. `Simulated` is the LBA DST door.
-    /// `HostFile` is the `FileSystemBlockIo` polyfill (still not the default
-    /// `create` / `createManual` path).
+    /// `HostFile` is the `FileSystemBlockIo` polyfill (`create` / `createManual`).
     type FreezeBlockIo =
         | Simulated of SimulatedBlockIo
         | HostFile of FileSystemBlockIo
