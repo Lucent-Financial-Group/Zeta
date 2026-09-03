@@ -21,10 +21,9 @@ type IFileSystem =
 
 /// Native-volume block *primitive* (one LBA, one call). This is the device,
 /// not the IO program. Batch/single/multibatch dispatch is `BlockIoFerry`
-/// (Haskell `IO a` interpreted by `FerryThrottler`). The polyfill adapter
-/// maps a host file through `IFileSystem`. A later device impl must not go
-/// through POSIX files. Adjacent-LBA coalescer (batch/single) is not this
-/// interface.
+/// (Haskell `IO a` interpreted by `FerryThrottler`, including adjacent
+/// whole-block coalesce). The polyfill adapter maps a host file through
+/// `IFileSystem`. A later device impl must not go through POSIX files.
 type IBlockIo =
     abstract BlockSize: int
     abstract Read: lba: uint64 * dst: Memory<byte> -> int

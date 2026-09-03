@@ -6,19 +6,22 @@ open System.Threading.Tasks
 
 /// Block-door IO as an effect (Haskell `IO a`): a description until a ferry
 /// interprets it. Combinators are generated from `FerryThrottler` already in
-/// this repo. Adjacent-LBA coalescer (batch/single) is not generated.
+/// this repo. Adjacent whole-block writes coalesce in `processBatch`
+/// (batch/single). Native NVMe is not claimed.
 ///
 /// Dispatch (caller / device):
 /// - single / single — `RunAsync` one op (may still share a boat)
 /// - batch / batch — `RunManyAsync` N in, N out, aligned
 /// - single / batch — caller already holds N ops; `fillBoat` still cuts
 /// - batch / multibatch — `MaxBatchSize` / byte budget splits one submit
-/// - batch / single — coalescer. Named deferral, not this module.
+/// - batch / single — consecutive whole-block writes to sequential LBAs
+///   become one device `Write`; each row still gets its own outcome
 ///
 /// Primitive `IBlockIo` stays the device. This door is the interpreter.
 /// DoP must be 1: two ferries would reorder writes on one device.
 /// Buffers in `Op.Read` / `Op.Write` must stay alive until the ferry
-/// interprets that op.
+/// interprets that op. Read, Flush, partial blocks, and LBA holes
+/// break a coalesce run.
 module BlockIoFerry =
 
     type Op =
@@ -51,6 +54,11 @@ module BlockIoFerry =
         let isManual = defaultArg manual false
         let mutable boats = 0
         let mutable lastBoat = 0
+        let mutable deviceWrites = 0
+        let blockSize = device.BlockSize
+
+        let isWholeBlock (src: ReadOnlyMemory<byte>) =
+            src.Length > 0 && blockSize > 0 && src.Length % blockSize = 0
 
         let processBatch (boat: ReadOnlyMemory<Request>) (ct: CancellationToken) : Task =
             let fail (ex: exn) =
@@ -63,10 +71,65 @@ module BlockIoFerry =
                 ct.ThrowIfCancellationRequested()
                 boats <- boats + 1
                 lastBoat <- boat.Length
+                let mutable i = 0
 
-                for i in 0 .. boat.Length - 1 do
-                    let req = boat.Span.[i]
-                    req.Reply.TrySetResult(interpret device req.Op) |> ignore
+                while i < boat.Length do
+                    match boat.Span.[i].Op with
+                    | Op.Write(lba, src) when isWholeBlock src ->
+                        let mutable j = i + 1
+                        let mutable nextLba = lba + uint64 (src.Length / blockSize)
+                        let mutable total = src.Length
+                        let mutable merging = true
+
+                        while merging && j < boat.Length do
+                            match boat.Span.[j].Op with
+                            | Op.Write(l2, s2) when isWholeBlock s2 && l2 = nextLba ->
+                                total <- total + s2.Length
+                                nextLba <- nextLba + uint64 (s2.Length / blockSize)
+                                j <- j + 1
+                            | _ -> merging <- false
+
+                        if j = i + 1 then
+                            boat.Span.[i].Reply.TrySetResult(interpret device boat.Span.[i].Op)
+                            |> ignore
+
+                            deviceWrites <- deviceWrites + 1
+                            i <- i + 1
+                        else
+                            let buf = Array.zeroCreate total
+                            let mutable off = 0
+
+                            for k in i .. j - 1 do
+                                match boat.Span.[k].Op with
+                                | Op.Write(_, s) ->
+                                    s.Span.CopyTo(Span(buf, off, s.Length))
+                                    off <- off + s.Length
+                                | _ -> ()
+
+                            device.Write(lba, System.ReadOnlyMemory<byte>.op_Implicit buf)
+                            |> ignore
+
+                            deviceWrites <- deviceWrites + 1
+
+                            for k in i .. j - 1 do
+                                match boat.Span.[k].Op with
+                                | Op.Write(_, s) ->
+                                    boat.Span.[k].Reply.TrySetResult({ Bytes = s.Length })
+                                    |> ignore
+                                | _ -> ()
+
+                            i <- j
+                    | Op.Write _ ->
+                        boat.Span.[i].Reply.TrySetResult(interpret device boat.Span.[i].Op)
+                        |> ignore
+
+                        deviceWrites <- deviceWrites + 1
+                        i <- i + 1
+                    | _ ->
+                        boat.Span.[i].Reply.TrySetResult(interpret device boat.Span.[i].Op)
+                        |> ignore
+
+                        i <- i + 1
 
                 Task.CompletedTask
             with ex ->
@@ -76,6 +139,7 @@ module BlockIoFerry =
 
         member _.Boats = boats
         member _.LastBoatSize = lastBoat
+        member _.DeviceWrites = deviceWrites
 
         member _.RunAsync(op: Op, ct: CancellationToken) : ValueTask<Outcome> =
             let reply =
