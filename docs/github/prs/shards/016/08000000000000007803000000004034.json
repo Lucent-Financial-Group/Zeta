@@ -1,0 +1,12 @@
+{
+  "pr_number": 16436,
+  "archive_path": "docs/history/pr-reviews/PR-16436-fix-observe-the-loop-threw-away-every-forge-diagnosis-it-was-handed.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-03T03:48:46.829Z",
+  "schema_version": "v1",
+  "commit_sha": "91443ddb30a299b869717784d8207ee71286bbe1",
+  "title": "fix(observe): the loop threw away every forge diagnosis it was handed",
+  "state": "MERGED",
+  "merged_at": "2026-09-03T03:48:11Z",
+  "head_ref": "loop-diagnosis-resilience"
+}
