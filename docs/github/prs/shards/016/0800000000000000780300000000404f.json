@@ -1,0 +1,12 @@
+{
+  "pr_number": 16463,
+  "archive_path": "docs/history/pr-reviews/PR-16463-test-treaty-specializationcache-pinned-the-sweep-of-six-unpinned-pairs-is-closed.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-03T08:54:54.607Z",
+  "schema_version": "v1",
+  "commit_sha": "901b8041da23849d6665c1f03206da097a96bf63",
+  "title": "test(treaty): SpecializationCache pinned — the sweep of six unpinned pairs is closed",
+  "state": "MERGED",
+  "merged_at": "2026-09-03T08:54:15Z",
+  "head_ref": "specialization-cache-treaty-v2"
+}

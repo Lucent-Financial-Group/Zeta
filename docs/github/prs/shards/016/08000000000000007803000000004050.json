@@ -1,0 +1,12 @@
+{
+  "pr_number": 16464,
+  "archive_path": "docs/history/pr-reviews/PR-16464-fix-hygiene-a-lint-s-own-remedy-would-cause-the-silent-data-loss-it-guards-again.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-03T08:39:20.564Z",
+  "schema_version": "v1",
+  "commit_sha": "e3de4b4aeb8f1024cfd4124c34a2a61800957bf8",
+  "title": "fix(hygiene): a lint's own remedy would cause the silent data loss it guards against",
+  "state": "MERGED",
+  "merged_at": "2026-09-03T08:38:41Z",
+  "head_ref": "graphql-remedy-accuracy"
+}
