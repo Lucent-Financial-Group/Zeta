@@ -658,16 +658,30 @@ module ZetaFsFreeze =
         let io = FileSystemBlockIo(fs, path, 4096)
         createFull storeDir mutbuf observer session defaultConfig manual (Some(HostFile io)) None
 
+    let private hostFileStore
+        (storeDir: string)
+        (mutbuf: ZetaFsMutbuf.Catalog)
+        (observer: IDurabilityObserver option)
+        (session: ZetaFsCrypto.Session option)
+        (manual: bool)
+        : Volume =
+        let fs = FileSystem.Current
+        fs.CreateDirectory(Path.Combine(storeDir, "log"))
+        let logIo = FileSystemBlockIo(fs, Path.Combine(storeDir, "log", "freeze"), 4096)
+        let casIo = FileSystemBlockIo(fs, Path.Combine(storeDir, "cas"), 4096)
+        let cas = BlockCas(casIo)
+        createFull storeDir mutbuf observer session defaultConfig manual (Some(HostFile logIo)) (Some cas)
+
     let createWith
         (storeDir: string)
         (mutbuf: ZetaFsMutbuf.Catalog)
         (observer: IDurabilityObserver option)
         (session: ZetaFsCrypto.Session option)
         : Volume =
-        hostFileLog storeDir mutbuf observer session false
+        hostFileStore storeDir mutbuf observer session false
 
     /// Unencrypted control (FORMAT enc=off). The default first-product profile.
-    /// Journaled log rides `FileSystemBlockIo`. Objects still speak files.
+    /// Journaled log and CAS objects ride `FileSystemBlockIo`.
     let create (storeDir: string) (mutbuf: ZetaFsMutbuf.Catalog) (observer: IDurabilityObserver option) : Volume =
         createWith storeDir mutbuf observer None
 
@@ -689,13 +703,13 @@ module ZetaFsFreeze =
         createFull storeDir mutbuf observer session defaultConfig true None None
 
     /// DST / test: no background ferry. Caller drives with `pumpLog`.
-    /// Journaled log rides `FileSystemBlockIo`. Objects still speak files.
+    /// Journaled log and CAS objects ride `FileSystemBlockIo`.
     let createManual
         (storeDir: string)
         (mutbuf: ZetaFsMutbuf.Catalog)
         (observer: IDurabilityObserver option)
         : Volume =
-        hostFileLog storeDir mutbuf observer None true
+        hostFileStore storeDir mutbuf observer None true
 
     let createManualWith
         (storeDir: string)
@@ -703,7 +717,7 @@ module ZetaFsFreeze =
         (observer: IDurabilityObserver option)
         (session: ZetaFsCrypto.Session option)
         : Volume =
-        hostFileLog storeDir mutbuf observer session true
+        hostFileStore storeDir mutbuf observer session true
 
     /// DST: Journaled log frames go through `IBlockIo` (RMW on the tail block).
     /// Objects still speak files unless `createManualWithBlockStore` is used.
@@ -772,34 +786,23 @@ module ZetaFsFreeze =
         hostFileLog storeDir mutbuf observer (Some session) true
 
     /// DST: journaled log on one host-file polyfill, CAS objects on another.
-    /// Two files so a crash arm on objects cannot tear the log. Objects
-    /// still speak POSIX files unless this helper is used.
+    /// Same door as `createManual`.
     let createManualWithFileBlockStore
         (storeDir: string)
         (mutbuf: ZetaFsMutbuf.Catalog)
         (observer: IDurabilityObserver option)
         : Volume =
-        let fs = FileSystem.Current
-        fs.CreateDirectory(Path.Combine(storeDir, "log"))
-        let logIo = FileSystemBlockIo(fs, Path.Combine(storeDir, "log", "freeze"), 4096)
-        let casIo = FileSystemBlockIo(fs, Path.Combine(storeDir, "cas"), 4096)
-        let cas = BlockCas(casIo)
-        createFull storeDir mutbuf observer None defaultConfig true (Some(HostFile logIo)) (Some cas)
+        hostFileStore storeDir mutbuf observer None true
 
     /// DST: sealed journaled log on one host-file polyfill, CAS objects on
-    /// another. Objects still speak POSIX files unless this helper is used.
+    /// another. Same door as `createManualWith`.
     let createManualWithSealedFileBlockStore
         (storeDir: string)
         (mutbuf: ZetaFsMutbuf.Catalog)
         (observer: IDurabilityObserver option)
         (session: ZetaFsCrypto.Session)
         : Volume =
-        let fs = FileSystem.Current
-        fs.CreateDirectory(Path.Combine(storeDir, "log"))
-        let logIo = FileSystemBlockIo(fs, Path.Combine(storeDir, "log", "freeze"), 4096)
-        let casIo = FileSystemBlockIo(fs, Path.Combine(storeDir, "cas"), 4096)
-        let cas = BlockCas(casIo)
-        createFull storeDir mutbuf observer (Some session) defaultConfig true (Some(HostFile logIo)) (Some cas)
+        hostFileStore storeDir mutbuf observer (Some session) true
 
     let dispose (volume: Volume) = (volume :> IDisposable).Dispose()
 

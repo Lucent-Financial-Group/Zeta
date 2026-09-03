@@ -1,0 +1,14 @@
+{
+  "id": "080d0340df2c9010a0130008881478b9",
+  "at": "2026-09-03T16:30:53.842Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1M1QSCH087G0R001K2V08R",
+    "type": "task",
+    "title": "create puts CAS objects on FileSystemBlockIo",
+    "slug": "create-puts-cas-objects-on-filesystemblockio",
+    "priority": "P1",
+    "filename": "081M1M1QSCH087G0R001K2V08R-create-puts-cas-objects-on-filesystemblockio.md"
+  }
+}

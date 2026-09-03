@@ -1,11 +1,12 @@
 ---
 id: 081M1M0AC9D087G0R003X7STF4
 type: task
-state: backlog
+state: done
 priority: P1
 slug: create-rides-filesystemblockio
 title: "create rides FileSystemBlockIo"
 created: 2026-09-03T16:06:00.000Z
+completed: 2026-09-03T16:30:53.789Z
 depends_on: ["081M1KWPJPD087G0R001BPBZ3W"]
 composes_with: ["081M1KWPJPD087G0R001BPBZ3W"]
 ---

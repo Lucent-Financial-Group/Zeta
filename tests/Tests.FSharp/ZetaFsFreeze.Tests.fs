@@ -56,6 +56,8 @@ let ``Journaled freeze ContentId matches the mutbuf snapshot, not a later pwrite
                     Assert.Equal(1UL, second.Generation)
                     Assert.True(ZetaFsFreeze.isReadable volume first.Content)
                     Assert.True(ZetaFsFreeze.isReadable volume second.Content)
+                    Assert.True(FileSystem.Current.Exists "/freeze-mem/cas")
+                    Assert.Equal(0, FileSystem.Current.GetFiles("/freeze-mem/objects", "*").Length)
         finally
             ZetaFsFreeze.dispose volume
             FileSystem.Reset()
