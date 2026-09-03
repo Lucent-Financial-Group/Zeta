@@ -685,9 +685,10 @@ export function laneImages(model: PartitionModel, lane: Lane): readonly string[]
  *
  * THE UNION IS THE WHOLE POINT, and getting it wrong is silent. A lane's
  * non-members are the obvious half. The other half is
- * `DEFAULT_ROOT_DEV_CATALOG.excludeGlob` — the nine standing deferrals
- * (`platform`, `temporal`, `ollama`, `vllm`, `agent-memory`, `gitlab`,
- * `cilium`, `cilium-lb-ipam`, `longhorn`), each excluded from every CI cluster
+ * `DEFAULT_ROOT_DEV_CATALOG.excludeGlob` — the eight standing deferrals
+ * (`platform`, `temporal`, `ollama`, `vllm`, `gitlab`, `cilium`,
+ * `cilium-lb-ipam`, `longhorn`; `agent-memory` was the ninth until 2026-09-03,
+ * when it lifted on its own stated condition), each excluded from every CI cluster
  * for a reason recorded in `APPLIED_BUT_UNASSERTED_REASONS` or in
  * `argocd-health-test.ts`'s deferral set.
  *

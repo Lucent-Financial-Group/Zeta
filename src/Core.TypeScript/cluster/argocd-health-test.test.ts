@@ -354,7 +354,12 @@ describe("081KSXN940008QG0R000SCP2H1 argocd-health-test manifest parsing", () =>
     // so it is asserted rather than deferred. Pinned as NOT excluded, which is
     // the assertion that goes red if someone re-defers it.
     expect(applications.some((app) => app.dir === "vault" && !app.excludedFromDev)).toBe(true);
-    expect(applications.some((app) => app.dir === "agent-memory" && app.excludedFromDev)).toBe(true);
+    // `agent-memory` LIFTED 2026-09-03 on its own recorded condition: its deferral
+    // said it was "held by the glob, not by a measurement", and the glob entry is
+    // gone. Pinned as NOT excluded, so re-deferring it without a measured reason
+    // goes red here. (The verdict its first included run reports is the second
+    // half of that condition, and only that run can supply it.)
+    expect(applications.some((app) => app.dir === "agent-memory" && !app.excludedFromDev)).toBe(true);
     expect(applications.some((app) => app.dir === "gitlab" && app.excludedFromDev)).toBe(true);
     expect(applications.some((app) => app.dir === "temporal" && app.excludedFromDev)).toBe(true);
     const included = applications.filter((app) => !app.excludedFromDev);
@@ -571,7 +576,6 @@ describe("081KSXN940008QG0R000SCP2H1 argocd-health-test manifest parsing", () =>
     expect(rootDevCatalogExcludedDirs("{alpha/**,beta/**}")).toEqual(new Set(["alpha", "beta"]));
     expect(rootDevCatalogExcludedDirs()).toEqual(
       new Set([
-        "agent-memory",
         "cilium",
         "cilium-lb-ipam",
         "gitlab",
@@ -898,7 +902,11 @@ describe("081KSXN940008QG0R000SCP2H1 argocd-health-test planning", () => {
     const included = plan.expectedApplications.filter((app) => !app.excludedFromDev).map((app) => app.name);
     expect(included).not.toContain("gitlab");
     expect(included).not.toContain("forgejo");
-    expect(included).not.toContain("agent-memory");
+    // `agent-memory` FLIPPED SIDES 2026-09-03 -- pinned as NOT included while the
+    // glob held it, pinned as INCLUDED now that the glob does not. This is the
+    // line that turns its old LIFTS WHEN into a proof target the included lane
+    // actually asserts.
+    expect(included).toContain("agent-memory");
     // `spire` FLIPPED SIDES 2026-08-22 -- it was pinned as NOT included here
     // while it was deferred, and it is pinned as INCLUDED now that the CRD
     // source exists. Both directions matter: this is the assertion that goes
@@ -1594,8 +1602,8 @@ describe("081M0JXXFV0087G0R00...: the four newly-visible non-storage defects", (
     for (const cited of [
       "[cite: resource-rung hindsight metal 1000]",
       "[cite: resource-rung hindsight dev 75]",
-      "[cite: lane-cpu metal 6340 over]",
-      "[cite: lane-cpu dev 1140 fits]",
+      "[cite: lane-cpu metal 6390 over]",
+      "[cite: lane-cpu dev 1165 fits]",
     ]) {
       expect(reason).toContain(cited);
     }
