@@ -1,0 +1,14 @@
+{
+  "id": "080d033e5a567010a013000845027c45",
+  "at": "2026-09-03T15:02:51.342Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1KWPJPD087G0R001BPBZ3W",
+    "type": "task",
+    "title": "DST createManual rides FileSystemBlockIo",
+    "slug": "dst-createmanual-rides-filesystemblockio",
+    "priority": "P1",
+    "filename": "081M1KWPJPD087G0R001BPBZ3W-dst-createmanual-rides-filesystemblockio.md"
+  }
+}
