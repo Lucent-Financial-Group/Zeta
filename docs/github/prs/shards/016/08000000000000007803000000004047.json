@@ -1,0 +1,12 @@
+{
+  "pr_number": 16455,
+  "archive_path": "docs/history/pr-reviews/PR-16455-fix-observe-a-dry-run-wrote-to-a-tracked-file-and-printed-that-it-had-no-side-ef.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-03T07:31:53.447Z",
+  "schema_version": "v1",
+  "commit_sha": "7640d25c746c6a645c95df1b906f5b0c8d7dd53e",
+  "title": "fix(observe): a dry run wrote to a tracked file and printed that it had no side effects",
+  "state": "MERGED",
+  "merged_at": "2026-09-03T07:31:14Z",
+  "head_ref": "dry-run-side-effects"
+}
