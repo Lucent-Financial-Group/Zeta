@@ -48,6 +48,18 @@ describe("cilium lifts when Cilium owns the CNI slot, and only then", () => {
     ).toContain("cilium");
   });
 
+  test("kind --cni cilium asserts weaviate; kindnetd and k3d do not", () => {
+    // MEASURED run 33697305243: both weaviate LoadBalancer Services got IPs
+    // from zeta-lb-pool. kindnetd has no LB. k3d does not apply the kind alias.
+    expect(included("kind")).not.toContain("weaviate");
+    expect(included("k3d")).not.toContain("weaviate");
+    expect(
+      discoverExpectedApplications(REPO_ROOT, "kind", "cilium")
+        .filter((a) => !a.excludedFromDev)
+        .map((a) => a.dir),
+    ).toContain("weaviate");
+  });
+
   test("an UNKNOWN provider lifts nothing — absence of information is not permission", () => {
     expect(included(null)).not.toContain("cilium");
   });
@@ -61,12 +73,19 @@ describe("cilium lifts when Cilium owns the CNI slot, and only then", () => {
     expect(onlyKind).toEqual([]);
   });
 
-  test("kind --cni cilium matches the k3d roster — one variable: who owns the CNI slot", () => {
+  test("kind --cni cilium matches the k3d roster plus weaviate", () => {
+    // k3d and kind --cni cilium share the CNI-slot lift for `cilium`.
+    // weaviate is an extra on kind --cni cilium only: MEASURED run 33697305243
+    // assigned both LoadBalancer Services from zeta-lb-pool. k3d does not
+    // apply that kind alias, so weaviate stays deferred there.
     const k3d = included("k3d");
     const kindCilium = discoverExpectedApplications(REPO_ROOT, "kind", "cilium")
       .filter((a) => !a.excludedFromDev)
       .map((a) => a.dir);
-    expect([...kindCilium]).toEqual([...k3d]);
+    const onlyKindCilium = kindCilium.filter((dir) => !k3d.includes(dir));
+    const onlyK3d = k3d.filter((dir) => !kindCilium.includes(dir));
+    expect(onlyKindCilium).toEqual(["weaviate"]);
+    expect(onlyK3d).toEqual([]);
   });
 });
 
@@ -157,6 +176,7 @@ describe("the provider actually REACHES the plan — the wiring, not just the pr
     if ("kind" in plan) throw new Error(`buildPlan failed: ${plan.message}`);
     const dirs = plan.expectedApplications.filter((a) => !a.excludedFromDev).map((a) => a.dir);
     expect(dirs).toContain("cilium");
+    expect(dirs).toContain("weaviate");
     expect(dirs).not.toContain("cilium-lb-ipam");
   });
 

@@ -228,6 +228,55 @@ Cilium values tweak (`routingMode`, chart bump) from this.
 
 State stays in-progress until a dispatch produces per-app verdicts.
 
+## MEASURED 2026-09-03 — run 33697305243 (CoreDNS-fix SHA `bd240fbd2`)
+
+Dispatch: [run 33697305243](https://github.com/Lucent-Financial-Group/Zeta/actions/runs/33697305243)
+`workflow_dispatch` `cilium_included_probe=true` on
+`cursor/child-wait-ahead-of-hat-27c5`. Proof failed at 00:46:47Z
+(`ApplicationUnhealthy`). That is a **roster**, not another silent catalog.
+
+**The four this item asked about are Healthy on kind+Cilium:**
+
+    openziti-controller   OutOfSync   Healthy
+    trust-manager         Synced      Healthy
+    spire                 Synced      Healthy
+    vault                 OutOfSync   Healthy
+
+Same shape as kindnetd on run 33684309073. Cilium is not the cause.
+Do not invent a Cilium values tweak. Do not re-lift k3d `--scope included`.
+
+**Asserted failures on this probe** (not the four):
+
+    arc-controller   Unknown   Degraded
+    mimir            Unknown   Degraded
+
+kindnetd included on the **same SHA** failed only on `mimir`. `mimir` is
+Otto's live-cluster item (`081M1FG1RCW`). `arc-controller` Degraded on
+Cilium and not in the kindnetd failure set is a named residual, not a
+reason to tweak Cilium helm values.
+
+**CoreDNS fix held:**
+
+    configmap/coredns patched
+    forward . 1.1.1.1 8.8.8.8
+    children appeared (vault unsealed at 00:06:26Z)
+
+**Testing load balancer assigned three addresses:**
+
+    zeta-lb-pool   IPS AVAILABLE=18
+    kube-system/cilium-ingress   172.18.255.200
+    weaviate/weaviate           172.18.255.201
+    weaviate/weaviate-grpc      172.18.255.202
+
+weaviate Application: `OutOfSync/Healthy`. Residual OutOfSync is
+`StatefulSet/weaviate` rolling update complete. That is the LIFTS WHEN
+for asserting weaviate on kind `--cni cilium` only. kindnetd still has no
+LoadBalancer. Do not lift the metal `cilium-lb-ipam` Application.
+
+The probe's "ZERO VERDICTS PARSED" line is a **log-grep miss**: the harness
+prints JSON, not `=== name: sync=` lines. The cluster dump has the roster.
+The verdicts step now reads kubectl.
+
 ## Landed 2026-09-03 — wait-fix + kind+Cilium CoreDNS on `main`
 
 PR #16412 squash `db60442338`. Child wait is any child, 180s, not
@@ -249,8 +298,9 @@ laggards every 60s during the Synced+Healthy wait so a 2400s health wait is
 not another dark stretch.
 
 Do not invent a Cilium values tweak (`routingMode`, chart bump) from a
-silent wait. Do not lift `weaviate` or the metal `cilium-lb-ipam`
-Application from `cilium-ingress` getting `172.18.255.200`.
+silent wait. Do not lift the metal `cilium-lb-ipam` Application from
+`cilium-ingress` getting `172.18.255.200`. weaviate's LIFTS WHEN was
+measured on run 33697305243; it is asserted on kind `--cni cilium` only.
 
 ## The distinguishing test
 

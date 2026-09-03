@@ -906,6 +906,7 @@ describe("081KSXN940008QG0R000SCP2H1 argocd-health-test planning", () => {
     // Application the federated-identity work stands on.
     expect(included).toContain("spire");
     expect(included).toContain("spire-crds");
+    expect(included).not.toContain("weaviate");
   });
 
   test("child-wait diagnostic commands name the surfaces run 33684309073 lacked", () => {
@@ -1049,6 +1050,8 @@ describe("081KSXN940008QG0R000SCP2H1 argocd-health-test planning", () => {
     const plan = buildPlan(parsed);
     if ("kind" in plan) throw new Error(plan.message);
     expect(plan.checks.join("\n")).toContain("zeta-lb-pool");
+    const included = plan.expectedApplications.filter((app) => !app.excludedFromDev).map((app) => app.name);
+    expect(included).toContain("weaviate");
   });
 
   test("kindnetd included plan does not assert the Cilium LB pool", () => {
