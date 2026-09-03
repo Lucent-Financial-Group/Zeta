@@ -1,11 +1,12 @@
 ---
 id: 081M1M33G8C087G0R000VP1W1W
 type: task
-state: backlog
+state: done
 priority: P1
 slug: polyfill-crash-mid-write-keeps-the-previous-freeze
 title: "Polyfill crash-mid-write keeps the previous freeze"
 created: 2026-09-03T16:55:00.000Z
+completed: 2026-09-03T17:18:03.658Z
 depends_on: ["081M1M1QSCH087G0R001K2V08R"]
 composes_with: ["081M1M1QSCH087G0R001K2V08R"]
 ---
