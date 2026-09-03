@@ -1,0 +1,12 @@
+{
+  "pr_number": 16421,
+  "archive_path": "docs/history/pr-reviews/PR-16421-feat-room-the-room-is-the-sandbox-credential-proxy-default-deny-egress.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-03T01:07:27.998Z",
+  "schema_version": "v1",
+  "commit_sha": "6d073421ccc65ea63823171be0f6919e4eae1bc6",
+  "title": "feat(room): the room is the sandbox — credential proxy + default-deny egress",
+  "state": "MERGED",
+  "merged_at": "2026-09-03T01:06:48Z",
+  "head_ref": "room-credential-proxy"
+}
