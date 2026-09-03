@@ -60,7 +60,7 @@
  * fail on every infra entry and would be a check about nothing.
  */
 
-import { readdirSync, readFileSync, statSync } from "node:fs";
+import { readdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 
 import { parseAllDocuments } from "yaml";
@@ -105,13 +105,18 @@ export function collectNamespaces(root: string): {
   let total = 0;
 
   const walk = (dir: string): void => {
-    for (const entry of readdirSync(dir)) {
-      const path = join(dir, entry);
-      if (statSync(path).isDirectory()) {
+    // `withFileTypes` rather than a follow-up `statSync`: the kind arrives WITH the
+    // listing, so there is no second syscall for an entry to change under. A
+    // readdir-then-stat pair is a check-then-use race whose check already knew the
+    // answer (CWE-367), and both CodeQL and
+    // `lint-check-then-use-file-races.ts` refuse it.
+    for (const entry of readdirSync(dir, { withFileTypes: true })) {
+      const path = join(dir, entry.name);
+      if (entry.isDirectory()) {
         walk(path);
         continue;
       }
-      if (!entry.endsWith(".yaml") && !entry.endsWith(".yml")) continue;
+      if (!entry.name.endsWith(".yaml") && !entry.name.endsWith(".yml")) continue;
 
       let documents: ReturnType<typeof parseAllDocuments>;
       try {
