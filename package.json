@@ -66,7 +66,8 @@
     "inventory:repin": "bun ./src/Core.TypeScript/inventory/reconcile-surfaces.ts --repin",
     "measure": "bun ./src/Core.TypeScript/ledger/measure.ts",
     "shadow": "bun src/Core.TypeScript/shadow/zeta-shadow.ts",
-    "summon": "bun ./src/Core.TypeScript/peer-call/summon.ts"
+    "summon": "bun ./src/Core.TypeScript/peer-call/summon.ts",
+    "hygiene:cross-language-pairs": "bun ./src/Core.TypeScript/hygiene/audit-cross-language-pairs.ts"
   },
   "bin": {
     "ace": "src/Core.TypeScript/ace/ace.ts",
