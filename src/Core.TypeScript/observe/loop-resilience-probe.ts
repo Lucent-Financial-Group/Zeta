@@ -31,7 +31,7 @@
  */
 
 import { spawnSync } from "node:child_process";
-import { mkdtempSync, rmSync, writeFileSync, mkdirSync } from "node:fs";
+import { existsSync, mkdtempSync, readdirSync, rmSync, statSync, writeFileSync, mkdirSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 
@@ -225,6 +225,52 @@ export function runScenario(s: Scenario, repoRoot: string, participant: string):
   }
 }
 
+/**
+ * Tracked files a probe run must leave EXACTLY as it found them.
+ *
+ * The header above says the one thing this harness must never do is become the incident it is
+ * testing for. That was a claim, not a check — and it was FALSE: `run-loop-real.ts` called
+ * `recordReasoning` unconditionally, several lines above the banner reading "exiting without
+ * side-effects", so every probe run appended ten records to `data/tick-reasoning.jsonl`.
+ *
+ * The dirty working tree was the visible half. The consequential half is that
+ * `decorrelation-meter.ts` folds that file into PAIRWISE AGREEMENT BETWEEN AGENTS, keyed by the
+ * `agent` field — so the probe was injecting a phantom agent named "resilience", whose choices were
+ * made under a raised e-stop, a corrupt window, a dead daemon and a bad token, into the measurement
+ * of how much the real agents agree.
+ *
+ * A claim about side effects belongs in an assertion, so here it is.
+ */
+const MUST_NOT_CHANGE = ["data/tick-reasoning.jsonl", "workitems/events"] as const;
+
+type Fingerprint = { readonly path: string; readonly state: string };
+
+function fingerprint(repoRoot: string): Fingerprint[] {
+  return MUST_NOT_CHANGE.map((rel) => {
+    const abs = join(repoRoot, rel);
+    if (!existsSync(abs)) return { path: rel, state: "absent" };
+    const st = statSync(abs);
+    // Size for a file, entry count for a directory. Both change the moment something is appended,
+    // and neither depends on a clock the way an mtime would.
+    const state = st.isDirectory() ? `dir:${String(readdirCount(abs))}` : `file:${String(st.size)}`;
+    return { path: rel, state };
+  });
+}
+
+function readdirCount(dir: string): number {
+  let n = 0;
+  const stack = [dir];
+  while (stack.length > 0) {
+    const d = stack.pop();
+    if (d === undefined) break;
+    for (const e of readdirSync(d, { withFileTypes: true })) {
+      if (e.isDirectory()) stack.push(join(d, e.name));
+      else n += 1;
+    }
+  }
+  return n;
+}
+
 if (import.meta.main) {
   const argv = process.argv.slice(2);
   const at = argv.indexOf("--participant");
@@ -233,6 +279,9 @@ if (import.meta.main) {
   const repoRoot = process.cwd();
 
   console.log(`loop-resilience-probe: ${String(SCENARIOS.length)} scenarios, participant=${participant}\n`);
+
+  // Taken BEFORE any scenario runs, compared after the last one.
+  const before = fingerprint(repoRoot);
 
   const results: ScenarioResult[] = [];
   for (const s of SCENARIOS) {
@@ -251,11 +300,31 @@ if (import.meta.main) {
     }
   }
 
+  // The harness's own contract, checked rather than asserted in a comment.
+  const after = fingerprint(repoRoot);
+  // Indexed against the ORIGINAL array. Filtering first and then using the callback index would
+  // read `after` at the position in the FILTERED list — right whenever nothing changed, and wrong
+  // in exactly the case this check exists for.
+  const touched = before.flatMap((b, i) => {
+    const now = after[i]?.state ?? "?";
+    return now === b.state ? [] : [`${b.path}: ${b.state} -> ${now}`];
+  });
+
+  if (touched.length > 0) {
+    console.log("\nFAIL  the probe modified tracked state it promised not to touch:");
+    for (const t of touched) console.log(`        !! ${t}`);
+    console.log("      a resilience probe that writes to the repo is the incident it is testing for");
+  } else {
+    console.log(`\n  PASS  tracked state untouched (${String(MUST_NOT_CHANGE.length)} path(s) checked)`);
+  }
+
   const failed = results.filter((r) => !r.passed);
   console.log(`\n${String(results.length - failed.length)}/${String(results.length)} scenarios behaved as specified`);
-  if (failed.length > 0) {
-    console.log("FAILED:");
-    for (const f of failed) console.log(`  - ${f.name}`);
+  if (failed.length > 0 || touched.length > 0) {
+    if (failed.length > 0) {
+      console.log("FAILED:");
+      for (const f of failed) console.log(`  - ${f.name}`);
+    }
     process.exit(1);
   }
 }

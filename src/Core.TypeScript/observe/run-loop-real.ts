@@ -358,7 +358,19 @@ async function main(): Promise<number> {
     fallback: chooseResult.fallback,
     at: new Date().toISOString(),
   };
-  recordReasoning(args.repoRoot, reasoning);
+  // NOT on a dry run. This appends to `data/tick-reasoning.jsonl`, which is TRACKED — so a dry run
+  // dirtied the working tree several lines below a banner that says "exiting without side-effects",
+  // and the claim was simply false.
+  //
+  // The sharper reason is what reads that file. `decorrelation-meter.ts` folds it into PAIRWISE
+  // AGREEMENT BETWEEN AGENTS, keyed by the `agent` field. `loop-resilience-probe.ts` drives ten
+  // scenarios — a raised e-stop, a corrupt window, a dead daemon, a bad token — under the agent name
+  // "resilience", so every probe run injected a phantom agent, whose decisions were made under
+  // deliberately broken conditions, into the measurement of how much the real agents agree.
+  //
+  // A dry tick is an observation, not a decision that reached the world. It is still PRINTED, so
+  // nothing is hidden from the operator; it is not RECORDED, because the record is evidence.
+  if (!args.dryRun) recordReasoning(args.repoRoot, reasoning);
   console.log(formatReasoning(reasoning));
 
   console.log(`[observe] ${renderAction(action)}`);
@@ -369,7 +381,7 @@ async function main(): Promise<number> {
     // the more consequential half of the same question. Report it here too.
     const dryGate = currentExecutionMode(process.env["ZETA_PROMOTION_WINDOW"] ?? undefined);
     console.log(`[promotion-gate] ${dryGate.mode} (${dryGate.reason}) — ${dryGate.detail}`);
-    console.log("[dry-run] would execute — exiting without side-effects");
+    console.log("[dry-run] would execute — exiting without side-effects (no reasoning record written)");
     return 0;
   }
 
