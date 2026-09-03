@@ -348,6 +348,15 @@ jobs:
           # A red run in a repo with 60+ workflows is easy to miss, and the heartbeat lane
           # itself is often already red for its own reasons. One deduplicated issue is the
           # surface that survives outside the Actions tab.
+          #
+          # NO BACKTICKS IN THE `printf` FORMAT STRING BELOW, however much the body wants
+          # markdown code spans. The format is single-quoted, and a backtick there is command
+          # substitution syntax, so shellcheck raises SC2016 ("Expressions don't expand in
+          # single quotes") and actionlint turns that info-level finding into a failed lint
+          # job. Reproduced and fixed 2026-09-03 with the same shellcheck 0.11.0 the lane
+          # runs: one backtick pair around the word paused took `lint (actionlint)` red on
+          # main. Escaping is not available inside single quotes, so the prose says the word
+          # plainly instead.
           summary="$(head -n 1 liveness.txt 2>/dev/null || echo '[heartbeat-liveness] lane not alive')"
           title="heartbeat-liveness: the agent-heartbeat lane has stopped succeeding"
 
@@ -369,11 +378,7 @@ jobs:
           existing="$(gh api "repos/${REPO}/issues?labels=heartbeat-liveness&state=open&per_page=1" \
             --jq '[.[] | select(.pull_request == null)] | .[0].number // empty')"
 
-          lane_detail="The lane carries unflushed state forward, so a single dropped tick is recoverable and this threshold is set well above GitHub's normal scheduling jitter (worst healthy gap measured: 43min). This firing means successes have stopped, not merely that a tick was late."
-          subject_detail="The subject workflow was ENROLLED (not disabled) when this was written — a switched-off subject reports \`paused\` and never reaches this step."
-          close_detail="This issue does not auto-close. Close it once heartbeats are succeeding again."
-          body="$(printf '%s\n\nWatchdog run: %s\n\n%s\n\n%s\n\n%s\n' \
-            "$summary" "$RUN_URL" "$lane_detail" "$subject_detail" "$close_detail")"
+          body="$(printf '%s\n\nWatchdog run: %s\n\nThe lane carries unflushed state forward, so a single dropped tick is recoverable and this threshold is set well above GitHub'"'"'s normal scheduling jitter (worst healthy gap measured: 43min). This firing means successes have stopped, not merely that a tick was late.\n\nThe subject workflow was ENROLLED (not disabled) when this was written — a switched-off subject reports the paused state and never reaches this step.\n\nThis issue does not auto-close. Close it once heartbeats are succeeding again.\n' "$summary" "$RUN_URL")"
 
           if [ -z "$existing" ]; then
             gh issue create --repo "$REPO" --title "$title" --body "$body" --label heartbeat-liveness
