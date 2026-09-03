@@ -1,0 +1,12 @@
+{
+  "pr_number": 16412,
+  "archive_path": "docs/history/pr-reviews/PR-16412-fix-cluster-wait-for-any-child-not-hat-system-before-git-ref-patch.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-03T00:18:00.769Z",
+  "schema_version": "v1",
+  "commit_sha": "db60442338e4028e4f78a14e3dfca27ecd93eb72",
+  "title": "fix(cluster): wait for any child, not hat-system, before git-ref patch",
+  "state": "MERGED",
+  "merged_at": "2026-09-03T00:17:20Z",
+  "head_ref": "cursor/child-wait-ahead-of-hat-27c5"
+}
