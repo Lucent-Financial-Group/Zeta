@@ -1161,18 +1161,20 @@ jobs:
           kubectl -n kube-system get svc -l k8s-app=kube-dns -o wide || true
           kubectl -n kube-system get ep kube-dns -o wide || true
           echo "--- logs from DaemonSet/spire-agent ---"
-          # NOT the `app=spire-agent` label: chart selectorLabels are
-          # app.kubernetes.io/name=spire-agent + app.kubernetes.io/instance.
-          # MEASURED live-k3d smoke 33739778288: that label printed no logs
-          # while the pod was 0/1 with 2 restarts.
+          # Selector is app.kubernetes.io/name=agent (MEASURED 33751425785),
+          # not app=spire-agent. DaemonSet name is still spire-agent.
           kubectl -n spire logs daemonset/spire-agent --tail=80 --prefix=true || true
           kubectl -n spire logs daemonset/spire-agent --previous --tail=80 --prefix=true || true
-          echo "--- cilium-dbg service list for kube-dns (KPR map; cilium-agent is also hostNetwork) ---"
+          echo "--- spire PVC + ConfigMaps (server writes bundle.crt at runtime) ---"
+          # MEASURED 33751425785 job 100636645454: agent CrashLoop was
+          # "could not parse trust bundle: open /run/spire/bundle/bundle.crt"
+          # because spire-server-0 was Pending on rancher.io/local-path, not
+          # the included-class DNS timeout. Do not collapse the two.
+          kubectl -n spire get pvc,cm -o wide || true
+          echo "--- cilium-dbg service list (do not swallow exec failure) ---"
           DNS_IP="$(kubectl -n kube-system get svc kube-dns -o jsonpath='{.spec.clusterIP}' 2>/dev/null || true)"
           echo "kube-dns ClusterIP=${DNS_IP:-NONE}"
-          if [ -n "$DNS_IP" ]; then
-            kubectl -n kube-system exec ds/cilium -c cilium-agent -- cilium-dbg service list 2>/dev/null | grep -E "${DNS_IP}|PORT" || true
-          fi
+          kubectl -n kube-system exec ds/cilium -c cilium-agent -- cilium-dbg service list || echo "cilium-dbg service list FAILED rc=$?"
 
       - name: Print cluster diagnostics
         if: always()
