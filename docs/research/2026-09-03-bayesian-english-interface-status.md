@@ -12,6 +12,7 @@ The repository retains the user’s language-interface writeups and has working 
 | Bayesian substrate | Implemented, bounded | Multilayer Gaussian and factor-graph paths preserve declared uncertainty within their model contracts | It is not a non-Gaussian language learner |
 | Candidate English seed | Implemented as versioned data | `docs/linguistic-seed/english/seed.json` has 65 declared candidate entries | The list is an input hypothesis, not a universal semantic proof |
 | Lexical audit | Implemented and measured | `english-seed-coverage.ts` produces deterministic unknown-token receipts | Coverage is not definability, adequacy, or comprehension |
+| Lexical correction receipts | Implemented, finite, and independently checked | Content-addressed `accepted`, `replaced`, and `unknown` records preserve surface, source, version, and reason | A receipt is not a word sense, semantic interpretation, or generated utterance |
 | Contextual production prior | Unimplemented | Existing parser seam is identifiable | Requires declared features, data provenance, calibration, and held-out tests |
 | Grounded or conversational English | Unimplemented | No execution path establishes it | No claim is made |
 
@@ -22,6 +23,22 @@ The v0 report ran `declared-english-seed-coverage/v1` over the first sentence of
 > This low coverage is the expected finite baseline. The target documents define Zeta-specific technical terms, while the v0 candidate list contains only a small general-language hypothesis. The result falsifies any claim that the existing candidate seed already reconstructs or covers the project glossary.
 
 The report retains unknown tokens per heading. It does not silently discard function words, infer synonyms, call a language model, or treat unmatched tokens as errors in the underlying documents. It is an input-audit receipt.
+
+## Lexical correction receipts
+
+The follow-on `declared-lexical-correction-receipts/v1` substrate stores only a
+caller-declared normalized surface, explicit status (`accepted`, `replaced`, or
+`unknown`), an optional declared replacement, source, version, reason, and a
+UTF-8-length-prefixed content ID. The canonical state is a sorted content-ID
+union. Identical delivery is idempotent; changed content at one surface is a
+visible conflict. The query refuses to choose an automatic winner.
+
+The production TypeScript implementation and an independently authored Python
+oracle agree on the canonical normal receipt and three-receipt same-surface
+conflict. Six input permutations collapse to one canonical receipt, while an
+unsorted control yields more than one ordered input. A version-omission control
+collapses otherwise distinct versioned receipts. These are finite integrity
+controls; they establish no correction truth or lexical meaning.
 
 | Measured property | Result | Interpretation |
 |---|---:|---|
@@ -45,6 +62,7 @@ The following sequence keeps the language program falsifiable.
 | Increment | Minimum evidence before claim | Falsifier |
 |---|---|---|
 | Seed-pack v1 | Explicit pack data, acyclic dependencies, allolex mapping, and changed-receipt mutation | A removed declaration leaves coverage unchanged, or a pack cycle is accepted |
+| Lexical correction receipt | Declared surface/status/source/version/reason with canonical content-ID union and independent conflict control | Unsorted delivery changes the canonical result, version omission does not change identity, or a same-surface conflict receives an automatic winner |
 | Minimal grammar slice | A finite grammar, parse corpus, and fixed accepted/rejected strings | Parser accepts the paired negative or fails the declared positive |
 | Bayesian production prior | Labeled scale data, train/validation/test split, calibration and log-score report | Prior improves training fit only, loses held-out calibration, or lacks a declared conditioning feature |
 | Non-Gaussian factor family | Frozen likelihood, posterior approximation, independent oracle, and calibration benchmark | Approximation cannot beat or match declared baseline under its own preregistered rule |

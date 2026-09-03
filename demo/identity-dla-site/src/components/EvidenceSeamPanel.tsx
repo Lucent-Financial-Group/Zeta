@@ -143,6 +143,16 @@ const SPECTRUM = [
     tone: "var(--amber)",
   },
   {
+    lane: "lexical correction receipts",
+    carrier: "accepted / replaced / unknown · content-ID set",
+    operators: "UTF-8 identity · 6 orders · TS/Python",
+    defect: "—",
+    readout: "NO AUTO-WINNER",
+    verdict: "surface, source, version, and unknown retained",
+    detail: "same-surface changes remain visible conflicts · lexical receipt only · no word sense, semantics, or dialogue claim",
+    tone: "var(--amber)",
+  },
+  {
     lane: "composable factor benchmark",
     carrier: "64 Gaussian leaves · ETTh1 n=3,446",
     operators: "CFB-A F#/TS · CFB-B/C/D TS/Python",
