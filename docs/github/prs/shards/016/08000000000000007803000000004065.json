@@ -1,0 +1,12 @@
+{
+  "pr_number": 16485,
+  "archive_path": "docs/history/pr-reviews/PR-16485-fix-dev-cluster-kind-bootstrap-argocd-7-7-10-10-7-0-helm-4-so-seaweedfs-renders-.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-03T10:20:54.290Z",
+  "schema_version": "v1",
+  "commit_sha": "8da2edfbd4fe8d0612c9c9aca7ece9755f771fa6",
+  "title": "fix(dev-cluster): kind bootstrap ArgoCD 7.7.10 → 10.7.0 — Helm 4, so seaweedfs renders and mimir comes back",
+  "state": "MERGED",
+  "merged_at": "2026-09-03T10:20:12Z",
+  "head_ref": "shadow/kind-bootstrap-argocd-helm4"
+}

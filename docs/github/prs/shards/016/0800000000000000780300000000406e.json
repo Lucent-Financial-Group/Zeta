@@ -1,0 +1,12 @@
+{
+  "pr_number": 16494,
+  "archive_path": "docs/history/pr-reviews/PR-16494-research-bayesian-circuit-vs-network-split-edge-bnn-spec-fold-epoch-line.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-03T11:35:58.282Z",
+  "schema_version": "v1",
+  "commit_sha": "041ceb2c8b2aa1e5ac0adcc794a1e6cf6bf76847",
+  "title": "research(bayesian): circuit vs network split, edge-BNN spec, fold/epoch line",
+  "state": "MERGED",
+  "merged_at": "2026-09-03T11:35:17Z",
+  "head_ref": "fable/bayesian-circuit-vs-network-spec"
+}

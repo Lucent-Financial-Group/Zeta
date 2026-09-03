@@ -1,0 +1,12 @@
+{
+  "pr_number": 16498,
+  "archive_path": "docs/history/pr-reviews/PR-16498-feat-081m1keynpd087g0r000dx5mt7-sealed-freeze-through-filesystemblockio.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-03T11:25:09.237Z",
+  "schema_version": "v1",
+  "commit_sha": "e3c830b12787a023d6fa894acd7b136f4edb7f69",
+  "title": "feat(081M1KEYNPD087G0R000DX5MT7): sealed freeze through FileSystemBlockIo",
+  "state": "MERGED",
+  "merged_at": "2026-09-03T11:24:30Z",
+  "head_ref": "feat/zetafs-sealed-file-log"
+}

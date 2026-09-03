@@ -1,0 +1,12 @@
+{
+  "pr_number": 16479,
+  "archive_path": "docs/history/pr-reviews/PR-16479-fix-hygiene-the-pair-roster-over-reported-31-candidates-triaged-to-14.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-03T10:01:50.555Z",
+  "schema_version": "v1",
+  "commit_sha": "56caec2995f2a967e837b8700f868ca41c7c211f",
+  "title": "fix(hygiene): the pair roster over-reported — 31 candidates triaged to 14",
+  "state": "MERGED",
+  "merged_at": "2026-09-03T10:01:13Z",
+  "head_ref": "pair-roster-accuracy"
+}
