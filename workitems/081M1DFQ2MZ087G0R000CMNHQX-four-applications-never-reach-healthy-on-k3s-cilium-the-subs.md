@@ -277,16 +277,59 @@ The probe's "ZERO VERDICTS PARSED" line is a **log-grep miss**: the harness
 prints JSON, not `=== name: sync=` lines. The cluster dump has the roster.
 The verdicts step now reads kubectl.
 
+## MEASURED 2026-09-03 — run 33701456828 (weaviate asserted)
+
+Dispatch: [run 33701456828](https://github.com/Lucent-Financial-Group/Zeta/actions/runs/33701456828)
+`workflow_dispatch` `cilium_included_probe=true` on
+`cursor/cilium-catalog-dns-failfast-27c5` at `6a4f54eb5`. Probe job
+`100482190681` failed at 01:44:31Z (`ApplicationUnhealthy`). kubectl
+printed the roster. ZERO VERDICTS: 0 hits. Health wait ended
+`32/34 ok` with the same two laggards from T+743s through 2400s.
+
+**weaviate was asserted** (`dir: weaviate` `excludedFromDev: false`)
+and is `OutOfSync/Healthy`. It is **not** in `failure.detail`.
+kindnetd on the same run still has `weaviate` `excludedFromDev: true`.
+
+**The four remain Healthy:**
+
+    === openziti-controller: sync=Unknown health=Healthy
+    === trust-manager: sync=Synced health=Healthy
+    === spire: sync=Synced health=Healthy
+    === vault: sync=OutOfSync health=Healthy
+
+**`failure.detail` is only those two:**
+
+    arc-controller   Unknown   Degraded
+    mimir            Unknown   Degraded
+
+**kindnetd included on the same run** (job `100482190605`, failed
+01:47:00Z) is `31/32 ok`; `failure.detail` is only `mimir`
+Unknown/Degraded. `arc-controller` Degraded is Cilium-lane residual,
+not a Cilium helm-values finding, not Otto's mimir item.
+
+LoadBalancer IPs from `zeta-lb-pool` (DISABLED=false, CONFLICTING=False,
+IPS AVAILABLE=18):
+
+    kube-system/cilium-ingress   172.18.255.200
+    weaviate/weaviate           172.18.255.201
+    weaviate/weaviate-grpc      172.18.255.202
+
+Corefile still `forward . 1.1.1.1 8.8.8.8`.
+
+State stays in-progress: the kind+Cilium cell has per-app verdicts
+(the four are Healthy; weaviate is asserted and Healthy). Remaining is
+k3d/k3s, plus named residuals `mimir` and `arc-controller`. Do not
+invent a Cilium values tweak. Do not lift the metal `cilium-lb-ipam`
+Application. Do not re-lift k3d `--scope included`. Do not dispatch
+another competing Cilium included probe: 33701456828 already measured
+the weaviate assert.
+
 ## Landed 2026-09-03 — wait-fix + kind+Cilium CoreDNS on `main`
 
 PR #16412 squash `db60442338`. Child wait is any child, 180s, not
 `hat-system`. Kind `--cni cilium` rewrites the kubeadm Corefile to
-`forward . 1.1.1.1 8.8.8.8` after the LB-IPAM alias.
-
-Dispatch [run 33697305243](https://github.com/Lucent-Financial-Group/Zeta/actions/runs/33697305243)
-on the wait-fix branch at `bd240fbd2` (same CoreDNS patch, pre-squash) is
-the measurement. Do not dispatch a competing probe on `main` while that
-proof step is still running. Logs are unreadable until the job completes.
+`forward . 1.1.1.1 8.8.8.8` after the LB-IPAM alias. Measured on
+33697305243 (pre-squash `bd240fbd2`) and confirmed on 33701456828.
 
 ## Next-run harness (catalog DNS fail-fast + health roster)
 
