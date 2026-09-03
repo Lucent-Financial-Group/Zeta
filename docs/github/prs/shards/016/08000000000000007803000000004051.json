@@ -1,0 +1,12 @@
+{
+  "pr_number": 16465,
+  "archive_path": "docs/history/pr-reviews/PR-16465-fix-test-seven-tests-asserted-a-platform-s-path-separator-not-the-property-they-.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-03T08:45:21.301Z",
+  "schema_version": "v1",
+  "commit_sha": "40e830e7e0f677b297d0f748fba7c5284dc668af",
+  "title": "fix(test): seven tests asserted a platform's path separator, not the property they name",
+  "state": "MERGED",
+  "merged_at": "2026-09-03T08:44:45Z",
+  "head_ref": "windows-path-assertions"
+}
