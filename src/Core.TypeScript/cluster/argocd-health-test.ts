@@ -2204,7 +2204,11 @@ export function applicationConditionTexts(snapshot: ArgoApplicationSnapshot): re
 }
 
 export function isGitHubHostUnresolvableText(text: string): boolean {
-  return text.includes("github.com") && GITHUB_HOST_UNRESOLVABLE.test(text);
+  // Hostname match is the regex, not `text.includes("github.com")`.
+  // `includes` is js/incomplete-url-substring-sanitization (CodeQL on #16419):
+  // the host can sit anywhere in a longer URL. The measured strings bind it
+  // after `host:` / `lookup ` / `git hostname`.
+  return GITHUB_HOST_UNRESOLVABLE.test(text);
 }
 
 export function rootCatalogGitHostFailure(

@@ -997,6 +997,12 @@ describe("081KSXN940008QG0R000SCP2H1 argocd-health-test planning", () => {
       true,
     );
     expect(isGitHubHostUnresolvableText("ComparisonError: chart not found")).toBe(false);
+    // CodeQL js/incomplete-url-substring-sanitization: `github.com` as a
+    // substring of some other host or path is not a catalog DNS failure.
+    expect(isGitHubHostUnresolvableText("https://notgithub.com.attacker/Zeta")).toBe(false);
+    expect(
+      isGitHubHostUnresolvableText("repoURL https://github.com/Lucent-Financial-Group/Zeta is fine"),
+    ).toBe(false);
     expect(
       rootCatalogGitHostFailure([
         {
