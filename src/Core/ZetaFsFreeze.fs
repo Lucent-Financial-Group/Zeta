@@ -158,16 +158,18 @@ module ZetaFsFreeze =
                 | Some io ->
                     let mutable i = 0
                     let device = io :> IBlockIo
+                    let origin = BlockLog.origin device
 
                     while err.IsNone && i < boat.Length do
                         let item = boat.Span.[i]
                         let afterIntent =
                             BlockLog.append
                                 device
-                                io.LogicalBytes
+                                (origin + io.LogicalBytes)
                                 (System.ReadOnlyMemory<byte>.op_Implicit item.IntentFrame)
 
-                        io.LogicalBytes <- afterIntent
+                        io.LogicalBytes <- afterIntent - origin
+                        BlockSuper.writeLog device io.LogicalBytes
                         device.Flush()
                         putLeaves item
 
@@ -175,10 +177,11 @@ module ZetaFsFreeze =
                             let afterCommit =
                                 BlockLog.append
                                     device
-                                    io.LogicalBytes
+                                    (origin + io.LogicalBytes)
                                     (System.ReadOnlyMemory<byte>.op_Implicit item.CommitFrame)
 
-                            io.LogicalBytes <- afterCommit
+                            io.LogicalBytes <- afterCommit - origin
+                            BlockSuper.writeLog device io.LogicalBytes
                             device.Flush()
 
                         i <- i + 1
@@ -492,12 +495,19 @@ module ZetaFsFreeze =
 
     let private replayPlainLog (fs: IFileSystem) (volume: Volume) =
         match volume.Log.BlockIo with
-        | Some io when io.LogicalBytes > 0L ->
-            let bytes = BlockLog.read (io :> IBlockIo) io.LogicalBytes
-            use stream = new MemoryStream(bytes, 0, bytes.Length, writable = true, publiclyVisible = true)
-            replayPlainFromStream stream volume
-            io.LogicalBytes <- stream.Length
-        | Some _ -> ()
+        | Some io ->
+            let device = io :> IBlockIo
+
+            match BlockSuper.tryReadLog device with
+            | Some n -> io.LogicalBytes <- n
+            | None -> ()
+
+            if io.LogicalBytes > 0L then
+                let bytes = BlockLog.readAt device (BlockLog.origin device) io.LogicalBytes
+                use stream = new MemoryStream(bytes, 0, bytes.Length, writable = true, publiclyVisible = true)
+                replayPlainFromStream stream volume
+                io.LogicalBytes <- stream.Length
+                BlockSuper.writeLog device io.LogicalBytes
         | None ->
             let logPath = volume.Log.LogPath
 
@@ -625,9 +635,7 @@ module ZetaFsFreeze =
 
     /// DST: Journaled log frames go through `IBlockIo` (RMW on the tail block).
     /// Objects still speak files unless `createManualWithBlockStore` is used.
-    /// Logical length lives on the `SimulatedBlockIo` instance so reopen can
-    /// replay without a superblock. A real device needs a superblock; that is
-    /// not this slice.
+    /// LBA 0 is a `ZFL1` superblock; payload starts at LBA 1.
     let createManualWithBlocks
         (storeDir: string)
         (mutbuf: ZetaFsMutbuf.Catalog)
@@ -637,8 +645,8 @@ module ZetaFsFreeze =
         createFull storeDir mutbuf observer None defaultConfig true (Some blocks) None
 
     /// DST: log on one simulated disk, CAS objects on another. Two devices
-    /// so a crash arm on objects cannot tear the log. Index is instance
-    /// state on `BlockCas` (no superblock).
+    /// so a crash arm on objects cannot tear the log. LBA 0 on each disk is
+    /// the superblock (`ZFL1` / `ZCA1`).
     let createManualWithBlockStore
         (storeDir: string)
         (mutbuf: ZetaFsMutbuf.Catalog)
