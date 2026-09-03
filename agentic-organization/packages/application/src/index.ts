@@ -895,6 +895,9 @@ export {
   type OrgCycleRmoCandidateSource,
   type OrgCycleRmoCandidateSourceInput,
 } from "./org-runtime.ts";
+// The demo candidate source: a synthetic RMO reputation feed, so a caller can drive a full org
+// cycle without standing up a reputation store.
+export { createDemoOrgCycleRmoCandidateSource } from "./org-runtime-demo.ts";
 export {
   AuthorityScope,
   authorityScopeOf,

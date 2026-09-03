@@ -40,12 +40,15 @@ import { test } from "node:test";
 
 import {
   buildHatDefinitions,
+  createDemoOrgCycleRmoCandidateSource,
   createSandboxTestExecutor,
   QaPassToken,
+  runOrgCycle,
   runWorkOsCycle,
   type SandboxToolPort,
   type WorkImplementer,
 } from "../../../packages/application/src/index.ts";
+import { HatLevel } from "../../../packages/domain/src/index.ts";
 import { WorkItemState } from "../../../packages/domain/src/index.ts";
 import { createSubprocessSandbox } from "../src/adapters/subprocess-sandbox.ts";
 
@@ -234,4 +237,91 @@ test("a sandbox that could not RUN the check is a failure, not a pass", async ()
 test("the pass token is what the process prints, not what the caller wants", () => {
   // Guards the single line that decides every QA verdict.
   equal(QaPassToken, "PASS");
+});
+
+
+test("C-suite → director → manager → dev, on ONE work item, ending in a real artifact", async () => {
+  // THE GOAL, end to end. The two halves of the organization used to be two stories about two
+  // different work items: `runOrgCycle` is where the Executive Board, C-suite and Directors set
+  // priority and the RMO staffs the hats, and `runWorkOsCycle` is where managers and ICs actually
+  // deliver. Measured, the delivery loop touched ONLY `manager` and `individual_contributor` — no
+  // executive ever met the item they had prioritized, because delivery minted its own id.
+  //
+  // Joined by `workItemId`, one item now crosses every tier and ends in a file on disk.
+  const workspace = mkdtempSync(joinPath(tmpdir(), "org-full-chain-"));
+  const artifactPath = joinPath(workspace, "coupon.txt");
+  const sandbox = createSubprocessSandbox();
+  const WORK_ITEM = "WI-full-chain";
+
+  try {
+    const hats = buildHatDefinitions();
+    const byId = new Map(hats.map((h) => [h.id, h]));
+    const actorHats: string[] = [];
+    const subjects: string[] = [];
+    let n = 0;
+
+    const capture = async (e: unknown): Promise<void> => {
+      const r = e as Record<string, unknown>;
+      const actor = r["actorHatId"];
+      if (typeof actor === "string" && actor.length > 0) actorHats.push(actor);
+      const subject = r["subjectId"];
+      if (typeof subject === "string") subjects.push(subject);
+    };
+
+    // ── GOVERNANCE: the board, the C-suite and the directors decide; the RMO staffs ──
+    const governance = await runOrgCycle({
+      organizationId: "org-chain",
+      workItemId: WORK_ITEM,
+      baseTimeMs: Date.UTC(2026, 8, 3, 12, 0, 0),
+      createId: (prefix) => `${prefix}-${String(++n).padStart(4, "0")}`,
+      appendEvent: capture,
+      upsertBinding: async () => {},
+      rmoCandidateSource: createDemoOrgCycleRmoCandidateSource(),
+    });
+
+    // ── DELIVERY: the same item is implemented and verified for real ──
+    const delivery = await runWorkOsCycle({
+      organizationId: "org-chain",
+      projectId: "proj-chain",
+      initiativeId: "init-chain",
+      initiativeBranch: "initiative/coupon",
+      hats,
+      baseTimeMs: Date.UTC(2026, 8, 3, 13, 0, 0),
+      createId: (prefix) => `${prefix}-${String(++n).padStart(4, "0")}`,
+      appendEvent: capture,
+      workItemId: WORK_ITEM,
+      implementer: createFileWritingImplementer(sandbox, artifactPath),
+      qaExecutor: createSandboxTestExecutor(sandbox, buildQaRequest(artifactPath)),
+    });
+
+    // ── ONE ITEM, NOT TWO ────────────────────────────────────────────────────
+    equal(delivery.intakeWorkItemId, WORK_ITEM);
+    ok(subjects.includes(WORK_ITEM), "no event was about the governed work item");
+
+    // ── EVERY TIER PARTICIPATED ──────────────────────────────────────────────
+    // The goal's literal ask. Before the join, `c_suite` and `director` were absent from any run
+    // that produced work.
+    const levels = new Set(
+      [...new Set(actorHats)].map((id) => byId.get(id)?.level).filter((l): l is HatLevel => l !== undefined),
+    );
+    for (const required of [HatLevel.ExecutiveBoard, HatLevel.CSuite, HatLevel.Director, HatLevel.Manager, HatLevel.IndividualContributor]) {
+      ok(levels.has(required), `no hat at level ${required} acted on this work item`);
+    }
+
+    // ── THE RMO IS ONE OF THEM ───────────────────────────────────────────────
+    // It assigns every other hat, and until it was seeded it had no level at all — so the office
+    // that staffs the organization was invisible to the organization's own level index.
+    ok(actorHats.includes("rmo_office"), "the RMO never acted");
+    equal(byId.get("rmo_office")?.level, HatLevel.Director);
+    ok((byId.get("rmo_office")?.reportsToHatIds ?? []).length > 0, "the RMO reports to nobody");
+
+    // ── AND THE WORK IS REAL ─────────────────────────────────────────────────
+    equal(await readArtifact(sandbox, artifactPath), APPROVED_CONTENT);
+    ok(delivery.implementationAttempts > 1);
+    ok(delivery.regressionsCaught > 0);
+    equal(governance.gatesPassed > 0, true);
+    equal(delivery.finalState, WorkItemState.Done);
+  } finally {
+    rmSync(workspace, { recursive: true, force: true });
+  }
 });

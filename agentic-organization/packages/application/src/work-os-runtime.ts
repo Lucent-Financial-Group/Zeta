@@ -73,6 +73,18 @@ export type WorkOsCycleDeps = {
   qaExecutor?: TestExecutor;
   /** What the dev hat actually does. Absent ⇒ the loop only records the transition, as before. */
   implementer?: WorkImplementer;
+  /**
+   * The work item this delivery run is about. OPTIONAL, defaulting to a freshly minted id.
+   *
+   * Without it the loop invents its own id, so a governance run (`runOrgCycle`, where the Executive
+   * Board, C-suite and Directors prioritize and the RMO staffs) and a delivery run were always about
+   * TWO DIFFERENT work items — two disconnected stories that could never be joined into one chain
+   * from C-suite down to the dev who implements it.
+   *
+   * Supplied at intake rather than patched afterwards, so every event in the trace — including the
+   * intake events emitted before the item exists as a value — carries the same id.
+   */
+  workItemId?: string;
 };
 
 export type WorkOsCycleReport = {
@@ -120,7 +132,10 @@ export async function runWorkOsCycle(deps: WorkOsCycleDeps): Promise<WorkOsCycle
   const intakeDeps: IntakeDeps = {
     organizationId: deps.organizationId, initiativeId: deps.initiativeId,
     createdBy: { agentId: "intake-svc", hatAssignmentId: "ha-intake" },
-    createId: deps.createId, nowIso: nextIso, existsByExternalRef: () => false, appendEvent: emit,
+    // The governed id, if the caller supplied one, at the point the work item is MINTED — so the
+    // intake events carry it too and the trace has one id rather than two.
+    createId: (prefix) => (prefix === "wi" && deps.workItemId !== undefined ? deps.workItemId : deps.createId(prefix)),
+    nowIso: nextIso, existsByExternalRef: () => false, appendEvent: emit,
   };
 
   // ── 1. External customer defect flows IN → triaged into the backlog ──
