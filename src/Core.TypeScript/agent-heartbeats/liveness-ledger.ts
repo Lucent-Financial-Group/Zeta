@@ -64,8 +64,10 @@ import {
   type FleetLivenessVerdict,
   type FleetTickObservation,
   type HeartbeatRunRecord,
+  type SubjectWorkflowState,
   assessFleetLiveness,
   extractRuns,
+  parseSubjectWorkflowState,
   runsToObservations,
 } from "./heartbeat-liveness";
 
@@ -90,10 +92,13 @@ export const OBSERVATION_SCHEMA = "zeta.liveness.observation/1";
 /**
  * How the fleet looked at one moment, as recorded by one observer run.
  *
- * `outcome` deliberately has FOUR values, not two. `blind` is the one that carries this file's
+ * `outcome` deliberately has FIVE values, not two. `blind` is the one that carries this file's
  * whole argument: an observer that could not read its inputs must record that fact rather than
  * record nothing, because recording nothing is what an annotation-only channel already did and is
- * exactly what makes "healthy" and "not observing" look the same.
+ * exactly what makes "healthy" and "not observing" look the same. `paused` (added 2026-09-03)
+ * carries the neighbouring one: an observer watching a switched-off subject is not seeing a
+ * healthy fleet and is not seeing a dead one, and flattening that into either would put a guess
+ * in the durable record.
  */
 export interface LivenessObservation {
   readonly schema: typeof OBSERVATION_SCHEMA;
@@ -118,8 +123,28 @@ export type LivenessOutcome =
   | "degraded"
   /** No source is inside the threshold. This is the alarm. */
   | "not-alive"
+  /**
+   * No source is inside the threshold AND the watched Actions workflow is switched off, so the
+   * silence is expected. NOT a pass and NOT an outage — a declared pause.
+   */
+  | "paused"
   /** The observer could not read its own inputs. NOT a verdict about the fleet. */
   | "blind";
+
+/**
+ * WHY THE SCHEMA TAG DID NOT MOVE WHEN `paused` WAS ADDED (2026-09-03).
+ *
+ * Widening an enum under an unchanged version tag is normally how a reader gets surprised, so the
+ * claim that it is safe here is a measured one rather than a convention: the only consumer of
+ * `outcome` in this file is `readLedger`, which validates it with `typeof parsed?.outcome !==
+ * "string"` and then prints it verbatim in the summary. There is no exhaustive switch anywhere
+ * that a fifth value could fall through. An older reader therefore renders a `paused` record
+ * correctly — as the word `paused` — rather than mis-classifying it.
+ *
+ * The version tag exists so a reader never has to INFER the shape. The shape did not change; a
+ * label gained a member. Bumping to `/2` would have told every reader to expect a different
+ * record and then handed them the same one.
+ */
 
 export interface ObservedSource {
   readonly source: string;
@@ -138,6 +163,13 @@ export interface ObservedSource {
  * is the failure shape a level-triggered record is best placed to catch.
  */
 export function classifyOutcome(verdict: FleetLivenessVerdict): Exclude<LivenessOutcome, "blind"> {
+  // CHECKED BEFORE `alive`, because a paused verdict also carries `alive: false` and would
+  // otherwise be recorded as `not-alive` — an outage claim about a lane somebody switched off on
+  // purpose. Reading the three-valued `state` rather than re-deriving the distinction from
+  // `alive` plus the source list is deliberate: a second derivation is a second thing that can
+  // drift from the verdict, which is the exact defect the recompute-don't-scrape rule below
+  // exists to prevent.
+  if (verdict.state === "paused") return "paused";
   if (!verdict.alive) return "not-alive";
   return verdict.sources.some((s) => !s.fresh) ? "degraded" : "alive";
 }
@@ -201,9 +233,14 @@ export function verdictFromInputs(
   laneEvidence: readonly FleetTickObservation[],
   now: Date,
   thresholdMinutes: number,
+  subjectState?: SubjectWorkflowState,
 ): FleetLivenessVerdict {
   const runs: readonly HeartbeatRunRecord[] = extractRuns(runsPayload);
-  return assessFleetLiveness([...runsToObservations(runs), ...laneEvidence], now, thresholdMinutes);
+  // The subject state is threaded through for the same reason the runs and the lane evidence are:
+  // if the recorder computed its verdict over a different input set than the alarm did, the two
+  // would disagree about what was observed and nothing would notice. A ledger that says
+  // `not-alive` on the same run whose annotation says `paused` is worse than no ledger.
+  return assessFleetLiveness([...runsToObservations(runs), ...laneEvidence], now, thresholdMinutes, subjectState);
 }
 
 /** Day file an observation belongs in: `observations/YYYY-MM-DD.jsonl`, UTC. */
@@ -410,7 +447,11 @@ export function commitLedger(git: GitRunner, messageFile: string): GitResult {
   if (add.status !== 0) return add;
   const staged = git(["diff", "--cached", "--quiet"]);
   if (staged.status === 0) {
-    return { status: 1, stdout: "", stderr: "nothing staged after writing the observation — the record did not land on disk" };
+    return {
+      status: 1,
+      stdout: "",
+      stderr: "nothing staged after writing the observation — the record did not land on disk",
+    };
   }
   return git(["commit", "-F", messageFile]);
 }
@@ -442,7 +483,11 @@ export interface LedgerPushOptions {
  * Returns the last result. The CALLER decides what a failure means; this function never swallows
  * one, and never reports success it did not observe.
  */
-export function pushLedger(options: LedgerPushOptions): { readonly ok: boolean; readonly attempts: number; readonly last: GitResult } {
+export function pushLedger(options: LedgerPushOptions): {
+  readonly ok: boolean;
+  readonly attempts: number;
+  readonly last: GitResult;
+} {
   const maxAttempts = options.maxAttempts ?? 3;
   let last: GitResult = { status: -1, stdout: "", stderr: "push never attempted" };
   for (let attempt = 1; attempt <= maxAttempts; attempt += 1) {
@@ -479,6 +524,7 @@ export function isNonFastForward(result: GitResult): boolean {
 const USAGE = `usage:
   liveness-ledger.ts record  --dir <ledger-worktree> [--runs runs.json] [--evidence lane-evidence.json]
                              [--threshold 60] [--observer NAME] [--run-id ID] [--subject-out FILE]
+                             [--subject-state STATE]
   liveness-ledger.ts publish --dir <ledger-worktree> --message-file <file> [--attempts 3]
   liveness-ledger.ts read    --dir <ledger-worktree> [--threshold 60]
 
@@ -519,8 +565,7 @@ async function runRecord(argv: readonly string[]): Promise<number> {
     console.error(`invalid --threshold: ${String(thresholdRaw)}`);
     return 2;
   }
-  const observer =
-    argValue(argv, "--observer") ?? "github-actions/.github/workflows/heartbeat-liveness.yml";
+  const observer = argValue(argv, "--observer") ?? "github-actions/.github/workflows/heartbeat-liveness.yml";
   const runId = argValue(argv, "--run-id") ?? null;
   const now = new Date();
 
@@ -529,6 +574,12 @@ async function runRecord(argv: readonly string[]): Promise<number> {
   // an annotation. Throwing here would produce the silence this file exists to eliminate.
   const runs = await readJsonIfPresent(argValue(argv, "--runs"));
   const evidence = await readJsonIfPresent(argValue(argv, "--evidence"));
+
+  // Same fallback as the alarm CLI, and for the same reason: an unrecognised state is `undefined`,
+  // which the assessor reads as ENROLLED. Absent or unparseable enrollment can therefore only ever
+  // make the record MORE alarming, never less — the direction a recorder is allowed to be wrong in.
+  const subjectStateRaw = argValue(argv, "--subject-state");
+  const subjectState = subjectStateRaw === undefined ? undefined : parseSubjectWorkflowState(subjectStateRaw);
 
   let observation: LivenessObservation;
   if (runs.value === undefined) {
@@ -552,7 +603,7 @@ async function runRecord(argv: readonly string[]): Promise<number> {
         observer,
         observerRunId: runId,
         thresholdMinutes,
-        verdict: verdictFromInputs(runs.value, lane, now, thresholdMinutes),
+        verdict: verdictFromInputs(runs.value, lane, now, thresholdMinutes, subjectState),
       });
     } catch (error) {
       observation = buildObservation({

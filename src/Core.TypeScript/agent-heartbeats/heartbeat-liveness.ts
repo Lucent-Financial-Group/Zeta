@@ -217,6 +217,96 @@ export function extractRuns(payload: unknown): readonly HeartbeatRunRecord[] {
  * observations is NOT reported stale, it is simply not reported.
  */
 
+/**
+ * ---------------------------------------------------------------------------------------------
+ * ENROLLMENT - "is the thing I watch even switched on?"
+ * ---------------------------------------------------------------------------------------------
+ *
+ * WHAT WENT WRONG, measured on this repository 2026-09-03. `agent-heartbeat.yml`,
+ * `society-heartbeat.yml` and `tick-metrics.yml` were deliberately disabled on 2026-08-29 while
+ * the heartbeat lane is redesigned for space efficiency. This watchdog was re-enabled on
+ * 2026-09-03 without asking whether its subject was still switched on, so it answered the only
+ * question it knew how to ask - "how old is the newest success?" - and answered it CORRECTLY:
+ * very old. Result: 35 of 35 runs red in seventeen hours, and 68 comments on one tracking issue,
+ * every one of them a true statement about a condition somebody created on purpose.
+ *
+ * That is not a monitor working. It is the failure this file's own header warns about, arriving
+ * from an angle the header did not anticipate: "an alarm that cries wolf during healthy operation
+ * gets muted, which is a slower way of having no alarm at all." The threshold was sized against
+ * GitHub's scheduling jitter. Nothing was sized against the subject being turned off.
+ *
+ * THE DISTINCTION THE CODE WAS MISSING. A source that is expected to tick and has not is STALE.
+ * A source that nobody expects to tick is not stale - it is UNENROLLED, and reporting it as an
+ * outage manufactures a finding out of a decision. The repo already has this vocabulary: a loop
+ * participant that has recorded a `deregister` event is not a faulty participant, it is not a
+ * participant. Enrollment is that idea applied to the watchdog's own subject.
+ *
+ * WHY THIS DOES NOT MAKE THE CHECK UNFALSIFIABLE. Three properties, each of them checkable:
+ *
+ *   1. The enrollment answer is DERIVED FROM THE LIVE API (`workflow.state`), never from a
+ *      hand-maintained list in this repo. Nobody can silence the alarm by editing an allowlist,
+ *      and re-enabling the subject re-arms the alarm with no code change at all.
+ *   2. FRESHNESS WINS. A fresh source makes the fleet alive whatever the subject's state, so the
+ *      pause branch can only ever be reached when nothing has ticked anyway - it changes how that
+ *      silence is REPORTED, never whether a tick was seen.
+ *   3. UNRECOGNISED STATE FAILS CLOSED. Any state string this module does not know is treated as
+ *      `active`, so a renamed or invented state re-arms the alarm rather than silencing it.
+ *      Guessing "probably disabled" from an unknown value is how a monitor talks itself quiet.
+ *
+ * WHAT IT STILL CANNOT DISTINGUISH, stated rather than papered over: when the subject is disabled
+ * AND a non-Actions source is also silent, nothing here can tell whether that other source died
+ * or was paused alongside it. The verdict says so in as many words instead of picking the
+ * flattering reading - the stale sources are named in the summary under a `paused` outcome, so a
+ * reader sees "nobody is watching for these" rather than either "all well" or "they are dead".
+ */
+
+/**
+ * Lifecycle state of an Actions workflow, as reported by
+ * `GET /repos/{owner}/{repo}/actions/workflows/{file}` -> `.state`.
+ *
+ * Spelled out rather than typed as `string` so that a value GitHub adds later is a value this
+ * module does not recognise, which routes it to the fail-closed branch above.
+ */
+export type SubjectWorkflowState = "active" | "disabled_manually" | "disabled_inactivity" | "disabled_fork";
+
+/**
+ * The states under which the subject cannot tick, so its silence is expected rather than alarming.
+ *
+ * `disabled_inactivity` is included deliberately even though nobody chose it: GitHub switches a
+ * scheduled workflow off after 60 days without repository activity, and a lane that has been
+ * switched off BY the provider is exactly as unable to tick as one switched off by a human. What
+ * differs is that nobody decided it, which is why the paused summary names the state verbatim
+ * instead of saying "paused on purpose".
+ */
+const DISABLED_STATES: readonly string[] = ["disabled_manually", "disabled_inactivity", "disabled_fork"];
+
+/**
+ * Parse a `.state` value, returning `undefined` for anything unrecognised.
+ *
+ * Callers must treat `undefined` as `active`. That direction is not arbitrary: mapping an unknown
+ * value to "disabled" would let a typo, an API change or a truncated response silence a real
+ * outage, and a monitor that goes quiet on input it does not understand is the vacuity class with
+ * a parser bolted on.
+ */
+export function parseSubjectWorkflowState(raw: unknown): SubjectWorkflowState | undefined {
+  if (typeof raw !== "string") return undefined;
+  const trimmed = raw.trim();
+  switch (trimmed) {
+    case "active":
+    case "disabled_manually":
+    case "disabled_inactivity":
+    case "disabled_fork":
+      return trimmed;
+    default:
+      return undefined;
+  }
+}
+
+/** True only for a state this module recognises AND that prevents the subject from running. */
+export function subjectIsUnenrolled(state: SubjectWorkflowState | undefined): boolean {
+  return state !== undefined && DISABLED_STATES.includes(state);
+}
+
 /** One observed tick, attributed to the substrate that produced it. */
 export interface FleetTickObservation {
   readonly source: string;
@@ -234,6 +324,16 @@ export interface SourceLiveness {
 export interface FleetLivenessVerdict {
   /** True when AT LEAST ONE source has ticked inside the threshold. */
   readonly alive: boolean;
+  /**
+   * The three-valued reading. `alive` is kept alongside it and is exactly `state === "alive"`, so
+   * every existing caller keeps working unchanged; new callers that need to tell an outage apart
+   * from a switched-off subject read this instead.
+   *
+   * `paused` is NOT a pass. It says the watchdog is currently watching a subject that cannot tick,
+   * which is a thing a human should know about - it is reported, recorded on the ledger and
+   * warned about, and it merely stops being reported as a LANE OUTAGE, which it is not.
+   */
+  readonly state: "alive" | "stale" | "paused";
   readonly summary: string;
   /** Every source that produced at least one observation, newest-first by recency. */
   readonly sources: readonly SourceLiveness[];
@@ -266,15 +366,38 @@ export function assessFleetLiveness(
   observations: readonly FleetTickObservation[],
   now: Date,
   staleAfterMinutes: number = DEFAULT_STALE_AFTER_MINUTES,
+  subjectState?: SubjectWorkflowState,
 ): FleetLivenessVerdict {
   const considered = observations.length;
 
-  // NO EVIDENCE FROM ANY SOURCE IS AN ALARM, NOT A PASS. Same reasoning as the single-source
-  // version: a bad filter, a lost permission or an API hiccup all yield zero rows, and reading
-  // zero as "nothing wrong" makes the monitor report healthiest exactly when it has gone blind.
+  // Computed once, up front, so every branch below reads the same answer. `undefined` - the
+  // caller did not supply a state, or supplied one this module does not recognise - is FALSE
+  // here, which routes an unknown subject down the ordinary alarm path. See
+  // `parseSubjectWorkflowState` for why that direction is the safe one.
+  const unenrolled = subjectIsUnenrolled(subjectState);
+  const stateNote = subjectState === undefined ? "unknown" : subjectState;
+
   if (considered === 0) {
+    // A KNOWN-DISABLED SUBJECT EXPLAINS ZERO ROWS; AN UNKNOWN ONE DOES NOT. The empty case is
+    // normally an alarm precisely because a bad filter, a renamed workflow or a lost
+    // `actions: read` all look like this, and reading zero as "nothing wrong" would make the
+    // monitor report healthiest at the moment it went blind. That argument turns on not knowing
+    // WHY the rows are missing. Here we do: the caller obtained the subject's state from the same
+    // API, so the successful state read is itself the proof that the permission is intact and the
+    // workflow still exists under the name we asked for. Zero rows from a workflow we have just
+    // confirmed is switched off is not blindness, it is arithmetic.
+    if (unenrolled) {
+      return {
+        alive: false,
+        state: "paused",
+        summary: `no tick evidence from any source, and the watched Actions subject is ${stateNote} - this is a PAUSED lane, not an outage; re-enabling the workflow re-arms this alarm with no code change`,
+        sources: [],
+        consideredObservations: 0,
+      };
+    }
     return {
       alive: false,
+      state: "stale",
       summary:
         "no tick evidence from ANY source - either every tick source has stopped or the watchdog cannot see any of them; both need a human",
       sources: [],
@@ -293,8 +416,14 @@ export function assessFleetLiveness(
   }
 
   if (newestBySource.size === 0) {
+    // NOT ROUTED THROUGH THE PAUSE BRANCH, DELIBERATELY, however the subject is configured.
+    // Evidence that exists and cannot be parsed is a fault in this watchdog, and a watchdog fault
+    // must stay loud whether or not the thing it watches happens to be switched off. Letting a
+    // disabled subject downgrade a parser failure to `paused` would mean the one state in which
+    // nobody is checking the parser is also the state in which its failure is silent.
     return {
       alive: false,
+      state: "stale",
       summary: `no PARSEABLE tick timestamps among ${considered} observations - the evidence exists but cannot be read, which is a watchdog fault and not a clean bill of health`,
       sources: [],
       consideredObservations: considered,
@@ -320,31 +449,81 @@ export function assessFleetLiveness(
       ? ""
       : ` DEGRADED: ${stale.map((s) => `${s.source} last ticked ${s.ageMinutes}min ago`).join("; ")}.`;
 
+  if (alive) {
+    // FRESHNESS WINS OVER ENROLLMENT, and this ordering is the property that keeps the pause
+    // branch from being able to hide a tick. A source that HAS ticked inside the threshold makes
+    // the fleet alive no matter what state the Actions subject is in - including a source that is
+    // not GitHub at all, which is the whole point of fleet liveness. So the pause branch below is
+    // reachable only when nothing ticked anyway: it can change how silence is REPORTED and can
+    // never change whether a tick was SEEN.
+    return {
+      alive: true,
+      state: "alive",
+      summary: `fleet alive - ${sources.filter((s) => s.fresh).length}/${sources.length} tick sources fresh; newest ${freshest?.source} ${freshest?.ageMinutes}min ago (threshold ${staleAfterMinutes}min).${staleNote}`,
+      sources,
+      consideredObservations: considered,
+    };
+  }
+
+  if (unenrolled) {
+    // THE HONEST LIMIT, SAID OUT LOUD IN THE SUMMARY RATHER THAN RESOLVED. With the subject
+    // switched off and every other source silent, nothing available here can separate "that
+    // source was paused too" from "that source died" - the two produce identical evidence. So the
+    // stale sources are NAMED under a `paused` outcome instead of being folded into either
+    // reading. A reader gets "nobody is currently watching for these", which is true, rather than
+    // "all well" or "they are dead", each of which would be a guess wearing a verdict's clothes.
+    const unwatched =
+      sources.length === 0
+        ? ""
+        : ` Silent, and currently unwatched: ${sources.map((s) => `${s.source} (${s.ageMinutes}min)`).join("; ")}.`;
+    return {
+      alive: false,
+      state: "paused",
+      summary: `lane PAUSED - the watched Actions subject is ${stateNote}, so its silence is expected and is NOT reported as an outage.${unwatched} Whether the other silent sources are paused or dead cannot be told apart from here.`,
+      sources,
+      consideredObservations: considered,
+    };
+  }
+
   return {
-    alive,
-    summary: alive
-      ? `fleet alive - ${sources.filter((s) => s.fresh).length}/${sources.length} tick sources fresh; newest ${freshest?.source} ${freshest?.ageMinutes}min ago (threshold ${staleAfterMinutes}min).${staleNote}`
-      : `NO TICK FROM ANY SOURCE IN ${freshest?.ageMinutes} MINUTES - newest was ${freshest?.source} at ${freshest?.lastAt}, threshold ${staleAfterMinutes}min`,
+    alive: false,
+    state: "stale",
+    summary: `NO TICK FROM ANY SOURCE IN ${freshest?.ageMinutes} MINUTES - newest was ${freshest?.source} at ${freshest?.lastAt}, threshold ${staleAfterMinutes}min`,
     sources,
     consideredObservations: considered,
   };
 }
 
 /**
- * CLI: `bun heartbeat-liveness.ts <runs.json> [staleAfterMinutes] [evidence.json]`.
+ * CLI: `bun heartbeat-liveness.ts <runs.json> [staleAfterMinutes] [evidence.json] [subjectState]`.
  *
  * The third argument is OPTIONAL additional tick evidence - a JSON array of
  * `{ source, at }` produced by `lane-tick-evidence.ts`. When it is absent the verdict is computed
  * over the Actions runs alone, which is what this CLI did before fleet liveness existed; the
  * single-source path is therefore unchanged for any caller that does not opt in.
  *
- * Exits 1 when nothing is alive. The non-zero exit IS the alarm surface - the calling workflow
- * turns red - so it must never be softened into a warning.
+ * The fourth argument is the watched workflow's `.state` from the Actions API, verbatim. Omitting
+ * it, or passing a value this module does not recognise, keeps the pre-2026-09-03 behaviour
+ * exactly: the subject is assumed enrolled and silence is an outage.
+ *
+ * EXIT CODES, and the reason there are three outcomes but only two of them are red:
+ *
+ *   0  alive   - something ticked inside the threshold.
+ *   0  paused  - nothing ticked AND the watched workflow is switched off. Reported as a
+ *                `::warning::`, recorded on the ledger, and NOT red. A run that is permanently
+ *                red for a reason somebody chose is an alarm nobody reads: 35 of 35 red runs and
+ *                68 issue comments in seventeen hours on 2026-09-03 is what that looks like.
+ *   1  stale   - nothing ticked and the subject is enrolled. Unchanged; this is the alarm.
+ *
+ * `paused` exiting 0 is the one place this file trades loudness for legibility, so it is bounded
+ * on purpose: it is reachable ONLY when no source ticked (freshness wins) and ONLY when the live
+ * API says the subject cannot run (never a repo-side flag), and it says so in a warning on every
+ * single run rather than going quiet.
  */
 async function main(argv: readonly string[]): Promise<number> {
-  const [pathArg, thresholdArg, evidenceArg] = argv;
+  const [pathArg, thresholdArg, evidenceArg, subjectStateArg] = argv;
   if (pathArg === undefined) {
-    console.error("usage: heartbeat-liveness.ts <runs.json> [staleAfterMinutes] [evidence.json]");
+    console.error("usage: heartbeat-liveness.ts <runs.json> [staleAfterMinutes] [evidence.json] [subjectState]");
     return 2;
   }
 
@@ -369,8 +548,20 @@ async function main(argv: readonly string[]): Promise<number> {
     extra = parsed as readonly FleetTickObservation[];
   }
 
+  // An UNRECOGNISED state string is not an error here, it is `undefined` - which the assessor
+  // treats as enrolled. Failing the run on an unknown state would take the watchdog down over a
+  // vocabulary change in someone else's API; assuming "disabled" would silence it over the same
+  // change. Falling back to the alarm path is the only one of the three that cannot go quiet, and
+  // the fallback is announced below so it is never silent either.
+  const subjectState = subjectStateArg === undefined ? undefined : parseSubjectWorkflowState(subjectStateArg);
+  if (subjectStateArg !== undefined && subjectState === undefined) {
+    console.log(
+      `::warning::[heartbeat-liveness] unrecognised workflow state ${JSON.stringify(subjectStateArg)} - treating the subject as ENROLLED, so silence will still raise the alarm`,
+    );
+  }
+
   const observations = [...runsToObservations(runs), ...extra];
-  const verdict = assessFleetLiveness(observations, new Date(), staleAfterMinutes);
+  const verdict = assessFleetLiveness(observations, new Date(), staleAfterMinutes, subjectState);
 
   console.log(`[heartbeat-liveness] ${verdict.summary}`);
   console.log(
@@ -381,6 +572,18 @@ async function main(argv: readonly string[]): Promise<number> {
       `[heartbeat-liveness]   ${source.fresh ? "FRESH" : "STALE"} ${source.source} ${source.ageMinutes}min ago`,
     );
   }
+  if (verdict.state === "paused") {
+    // A WARNING ON EVERY RUN, not a one-off. This is the state in which the watchdog is watching
+    // something that cannot tick, and a reader who only ever sees green would have no way to tell
+    // that apart from a lane that is genuinely healthy. The annotation is the surface that keeps
+    // "paused" visible without making the run red for a condition somebody chose.
+    console.log(`::warning::[heartbeat-liveness] ${verdict.summary}`);
+    console.log(
+      "::warning::[heartbeat-liveness] this check is currently watching a switched-off subject; it will go red again on its own the moment that workflow is re-enabled",
+    );
+    return 0;
+  }
+
   if (!verdict.alive) {
     // `::error::` so the annotation lands on the run summary, not just in the log body.
     console.log(`::error::[heartbeat-liveness] ${verdict.summary}`);
