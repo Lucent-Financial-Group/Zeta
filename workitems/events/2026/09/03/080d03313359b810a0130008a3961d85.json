@@ -1,0 +1,14 @@
+{
+  "id": "080d03313359b810a0130008a3961d85",
+  "at": "2026-09-03T07:23:08.983Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1K2CTS8087G0R0006YYB1Q",
+    "type": "task",
+    "title": "SpecializationCache pinned — the sweep of six unpinned pairs is closed",
+    "slug": "specializationcache-pinned-the-sweep-of-six-unpinned-pairs-i",
+    "priority": "P2",
+    "filename": "081M1K2CTS8087G0R0006YYB1Q-specializationcache-pinned-the-sweep-of-six-unpinned-pairs-i.md"
+  }
+}
