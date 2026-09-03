@@ -1,6 +1,7 @@
 import { test, expect } from "bun:test";
 import seed from "./golden-vectors.json";
-import { type Tagged, canonicalCbor, toHex, fromHex, fromCanonicalCbor } from "../dynamic-value/cbor";
+import { canonicalCbor, toHex, fromHex, fromCanonicalCbor } from "../dynamic-value/cbor";
+import { type CanonicalEntry, entryToTagged, decodeEntry } from "./entry-codec";
 
 // ═══════════════════════════════════════════════════════════════════
 // Log noun — the TS oracle for the DeltaLogEntry byte-lock (workitem 081KTGD5JMD). Replays the shared
@@ -12,31 +13,11 @@ import { type Tagged, canonicalCbor, toHex, fromHex, fromCanonicalCbor } from ".
 // DeltaLogEntryDynamic.toDynamicValue (src/Core/DeltaCodec.fs) + the C# oracle.
 // ═══════════════════════════════════════════════════════════════════
 
-type Entry = { seq: number; delta: [string, number][]; captured: Record<string, string> };
-
-// Ordinal string order (UTF-16 code units == ordinal for the ASCII keys the seed uses; the seed
-// deliberately avoids astral codepoints where UTF-16 vs UTF-8 order would diverge — culture-invariant).
-const ordinal = (a: string, b: string): number => (a < b ? -1 : a > b ? 1 : 0);
-
-function entryToTagged(entry: Entry): Tagged {
-  const captured: [string, Tagged][] = Object.entries(entry.captured)
-    .sort((x, y) => ordinal(x[0], y[0]))
-    .map(([k, v]) => [k, { t: "str", v }] as [string, Tagged]);
-
-  const delta: Tagged[] = entry.delta
-    .slice()
-    .sort((x, y) => ordinal(x[0], y[0]))
-    .map(([k, w]) => ({ t: "arr", v: [{ t: "str", v: k }, { t: "int", v: String(w) }] }) as Tagged);
-
-  return {
-    t: "obj",
-    v: [
-      ["captured", { t: "obj", v: captured }],
-      ["delta", { t: "arr", v: delta }],
-      ["seq", { t: "int", v: String(entry.seq) }],
-    ],
-  };
-}
+// The encoder under test now lives in `entry-codec.ts` and is IMPORTED, not redefined here. It
+// used to be a copy local to this file, which meant these vectors locked a function nothing
+// shipped — a green byte-lock with no writer behind it. Importing it is what makes the lock
+// cover the product.
+type Entry = CanonicalEntry;
 
 const vectors = (seed as unknown as { vectors: { name: string; entry: Entry; cbor: string }[] }).vectors;
 
@@ -61,3 +42,46 @@ for (const v of vectors) {
     }
   });
 }
+
+// ── THE DECODER ─────────────────────────────────────────────────────────────
+// Every assertion above goes encode → hex, or hex → decode → re-encode → hex. Both directions run
+// through the ENCODER, so a decoder could have been absent or wrong and the byte-lock stayed green.
+// These assert the other direction against the same shared seed: the bytes the F# oracle produced
+// must come back as the entry the F# oracle started from.
+for (const v of vectors) {
+  test(`TS DeltaLogEntry decodes the shared seed: ${v.name}`, () => {
+    const decoded = decodeEntry(fromHex(v.cbor));
+    expect(decoded.ok).toBe(true);
+    if (!decoded.ok) return;
+
+    expect(decoded.entry.seq).toBe(v.entry.seq);
+    expect(decoded.entry.captured).toEqual(v.entry.captured);
+    // Ordinal order, because that is the order the canonical frame carries.
+    const expected = v.entry.delta.slice().sort((a, b) => (a[0] < b[0] ? -1 : a[0] > b[0] ? 1 : 0));
+    expect(decoded.entry.delta).toEqual(expected);
+  });
+}
+
+test("the decoder REFUSES a frame that is not an entry, rather than defaulting", () => {
+  // A defaulted seq replays the tail from the wrong point and loses committed deltas with no error
+  // anywhere. Refusal is the only safe reading of an unparseable frame.
+  const notAnEntry = canonicalCbor({ t: "arr", v: [{ t: "int", v: "1" }] });
+  expect(notAnEntry.ok).toBe(true);
+  const r = decodeEntry(notAnEntry.ok ? notAnEntry.value : []);
+  expect(r.ok).toBe(false);
+  if (!r.ok) expect(r.why).toContain("not an object");
+});
+
+test("the decoder REFUSES an entry whose seq is missing", () => {
+  const missingSeq = canonicalCbor({
+    t: "obj",
+    v: [
+      ["captured", { t: "obj", v: [] }],
+      ["delta", { t: "arr", v: [] }],
+    ],
+  });
+  expect(missingSeq.ok).toBe(true);
+  const r = decodeEntry(missingSeq.ok ? missingSeq.value : []);
+  expect(r.ok).toBe(false);
+  if (!r.ok) expect(r.why).toContain("seq");
+});

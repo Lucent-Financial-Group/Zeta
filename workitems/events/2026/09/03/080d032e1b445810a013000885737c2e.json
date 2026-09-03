@@ -1,0 +1,14 @@
+{
+  "id": "080d032e1b445810a013000885737c2e",
+  "at": "2026-09-03T05:35:00.235Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1JW6T4A087G0R003DWRHRT",
+    "type": "bug",
+    "title": "TypeScript had no durable snapshot store while claiming manifest-tracked recovery",
+    "slug": "typescript-had-no-durable-snapshot-store-while-claiming-mani",
+    "priority": "P2",
+    "filename": "081M1JW6T4A087G0R003DWRHRT-typescript-had-no-durable-snapshot-store-while-claiming-mani.md"
+  }
+}
