@@ -53,7 +53,7 @@ because the count did not move.
 
 | concept   | why no treaty                                                                                 |
 | --------- | --------------------------------------------------------------------------------------------- |
-| `Crypto`  | F# is the crypto noun-class over a hexagonal port; TypeScript is `better-git-crypt/crypto.ts` |
+| `Crypto`  | F# is the crypto noun-class over a hexagonal port; TypeScript is `src/Core.TypeScript/crypto/better-git-crypt/crypto.ts` |
 | `Plan`    | F# is query-plan metadata; TypeScript is a USB multiboot layout planner                       |
 | `Metrics` | F# is `System.Diagnostics.Metrics`; TypeScript is precision/recall for a classifier           |
 | `Query`   | F# is LINQ-style `Stream<ZSet<_>>` extensions; TypeScript evaluates a bonsai `Expr`           |

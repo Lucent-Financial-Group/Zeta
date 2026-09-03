@@ -23,7 +23,7 @@ this item is its §7.2 — the part that is a pure function of the evidence **se
 
 ## Deliverable
 
-A new module `src/Core/SocietyEscalation.fs` (after `SybilBftProtocol.fs` and `TravelerRankLedger.fs` in
+A new module named `SocietyEscalation.fs` under `src/Core/` (after `SybilBftProtocol.fs` and `TravelerRankLedger.fs` in
 `Core.fsproj`), reusing — never re-implementing — `SybilBft.tally`, `Consensus.decide`,
 `SybilBftProtocol`, `TravelerRankLedger.update`:
 

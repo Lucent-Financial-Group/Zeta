@@ -39,7 +39,7 @@ name: heartbeat-liveness
 
 on:
   schedule:
-        # RE-ENABLED 2026-09-03 (Aaron: "if it costs no storage are we just spending free CPU cycles
+    # RE-ENABLED 2026-09-03 (Aaron: "if it costs no storage are we just spending free CPU cycles
     # for the AI society? if so that sounds good"). It was `disabled_manually` 2026-08-29 alongside
     # the three heartbeat lanes during the storage-efficiency redesign, but THIS LANE IS NOT A
     # HEARTBEAT PRODUCER: it pushes `liveness/observations` (below), an ORPHAN ref that answers
@@ -48,6 +48,15 @@ on:
     # commits each. While it was off, `liveness-ledger.ts read` exited 1 indefinitely, which
     # CLAUDE.md defines as the standing-by failure; that is why it came back first and alone.
     # The three heartbeat producers stay paused.
+    #
+    # WHAT THAT RE-ENABLE GOT WRONG, recorded here because the workflow is where the next agent
+    # will look. The cost argument above was right and is unchanged. What went unasked was whether
+    # the SUBJECT was still switched on — and it was not, so the watchdog immediately began
+    # reporting a deliberately paused lane as an outage: 35 of 35 runs red and 68 comments on
+    # issue #15329 in seventeen hours, every statement true and none of it news. The subject's
+    # enrollment state is now an input to the verdict (see "Read the subject workflow's enrollment
+    # state" below), so a disabled subject reports `paused` — a warning on every run, recorded on
+    # the ledger, not red — and the alarm re-arms by itself when the workflow is switched back on.
     - cron: "*/15 * * * *"
   workflow_dispatch:
     inputs:
@@ -126,6 +135,29 @@ jobs:
           gh api "repos/${REPO}/actions/workflows/agent-heartbeat.yml/runs?per_page=50" > runs.json
           echo "fetched $(bun -e 'console.log(JSON.parse(require("fs").readFileSync("runs.json","utf8")).workflow_runs.length)') runs"
 
+      - name: Read the subject workflow's enrollment state
+        # WHY THIS EXISTS. On 2026-08-29 `agent-heartbeat.yml` was deliberately disabled while the
+        # lane is redesigned for space efficiency. This watchdog was re-enabled on 2026-09-03
+        # without asking whether its subject was still switched on, and then spent seventeen hours
+        # answering the only question it knew how to ask — "how old is the newest success?" —
+        # correctly, loudly, and uselessly: 35 of 35 runs red, 68 comments on issue #15329.
+        #
+        # A source nobody expects to tick is not STALE, it is UNENROLLED. This step is the only
+        # input that can tell the two apart, and it is read from the LIVE API rather than from any
+        # flag in this repository — so the alarm cannot be muted by editing a file, and it re-arms
+        # by itself the moment the workflow is switched back on.
+        #
+        # NOT piped through `|| echo`. A failure here must fail the step, where the cause is
+        # legible. Handing the assessor an empty state would be read as "unrecognised", which is
+        # SAFE (it falls back to the alarm) but would hide that the watchdog lost `actions: read`.
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REPO: ${{ github.repository }}
+        run: |
+          set -euo pipefail
+          gh api "repos/${REPO}/actions/workflows/agent-heartbeat.yml" --jq '.state' > subject-state.txt
+          echo "[enrollment] agent-heartbeat.yml state: $(cat subject-state.txt)"
+
       - name: Collect lane tick evidence (every source, not just Actions)
         # WHY THIS STEP EXISTS. The step above asks GitHub whether GitHub ran a job. That is the
         # provider's job status, and it is not the same question as "did a tick happen" -- the two
@@ -173,7 +205,10 @@ jobs:
           # reports nothing a human will ever see.
           # Third argument is the lane evidence. Without it this is the single-source check it
           # has always been; with it, "alive" means at least one tick source ticked, whichever one.
-          bun src/Core.TypeScript/agent-heartbeats/heartbeat-liveness.ts runs.json "$STALE_AFTER_MINUTES" lane-evidence.json \
+          # Fourth argument is the subject's enrollment state. With it, a disabled subject produces
+          # `paused` (exit 0, a warning on every run) instead of `stale` (exit 1); with an
+          # `active` subject the behaviour is byte-identical to before it existed.
+          bun src/Core.TypeScript/agent-heartbeats/heartbeat-liveness.ts runs.json "$STALE_AFTER_MINUTES" lane-evidence.json "$(cat subject-state.txt)" \
             | tee liveness.txt
 
       - name: Record the observation on the liveness ledger (direct push, no PR, no gate)
@@ -245,6 +280,7 @@ jobs:
             --evidence lane-evidence.json \
             --threshold "$STALE_AFTER_MINUTES" \
             --run-id "$RUN_ID" \
+            --subject-state "$(cat subject-state.txt 2>/dev/null || true)" \
             --subject-out "${RUNNER_TEMP}/liveness-subject.txt"
 
           SUBJECT="$(head -n 1 "${RUNNER_TEMP}/liveness-subject.txt")"
@@ -287,17 +323,40 @@ jobs:
 
       - name: Raise or refresh the tracking issue
         # `failure()` only — scoped to this job's own failure so an infrastructure error in
-        # checkout/setup does not get reported to humans as a heartbeat outage.
+        # checkout/setup does not get reported to humans as a heartbeat outage. A `paused` verdict
+        # exits 0, so a switched-off subject never reaches this step at all.
         if: failure() && steps.assess.outcome == 'failure'
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           REPO: ${{ github.repository }}
           RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          # HOW OFTEN A STANDING OUTAGE MAY RE-NOTIFY, in hours.
+          #
+          # Measured 2026-09-03: this step wrote 68 comments onto one issue in seventeen hours,
+          # one every fifteen minutes, each restating a fact established by the first. That is not
+          # a louder alarm, it is a quieter one — an issue nobody can read is the same outcome as
+          # an issue nobody raised, reached by a more expensive route, and it buries any human
+          # reply under machine text.
+          #
+          # A level-triggered check needs a re-notify FLOOR for the same reason it needs a
+          # threshold: the alarm's job is to be noticed once and stay findable, not to be repeated
+          # until it is filtered. Six hours means a genuine multi-day outage still produces four
+          # reminders a day and a bounded, readable thread.
+          REMINDER_FLOOR_HOURS: "6"
         run: |
           set -euo pipefail
           # A red run in a repo with 60+ workflows is easy to miss, and the heartbeat lane
           # itself is often already red for its own reasons. One deduplicated issue is the
           # surface that survives outside the Actions tab.
+          #
+          # NO BACKTICKS IN THE `printf` FORMAT STRING BELOW, however much the body wants
+          # markdown code spans. The format is single-quoted, and a backtick there is command
+          # substitution syntax, so shellcheck raises SC2016 ("Expressions don't expand in
+          # single quotes") and actionlint turns that info-level finding into a failed lint
+          # job. Reproduced and fixed 2026-09-03 with the same shellcheck 0.11.0 the lane
+          # runs: one backtick pair around the word paused took `lint (actionlint)` red on
+          # main. Escaping is not available inside single quotes, so the prose says the word
+          # plainly instead.
           summary="$(head -n 1 liveness.txt 2>/dev/null || echo '[heartbeat-liveness] lane not alive')"
           title="heartbeat-liveness: the agent-heartbeat lane has stopped succeeding"
 
@@ -310,11 +369,48 @@ jobs:
             grep -q "already exists" label_err.txt || { cat label_err.txt >&2; exit 1; }
           fi
 
-          existing="$(gh issue list --repo "$REPO" --label heartbeat-liveness --state open --limit 1 --json number --jq '.[0].number // empty')"
-          body="$(printf '%s\n\nWatchdog run: %s\n\nThe lane carries unflushed state forward, so a single dropped tick is recoverable and this threshold is set well above GitHub'"'"'s normal scheduling jitter (worst healthy gap measured: 43min). This firing means successes have stopped, not merely that a tick was late.\n\nThis issue does not auto-close. Close it once heartbeats are succeeding again.\n' "$summary" "$RUN_URL")"
+          # REST, not `gh issue list`. `gh issue list --json` is a GraphQL call, and GraphQL is the
+          # one of the two 5000/hour budgets this fleet actually exhausts — measured REST 33/5000
+          # against GraphQL 0/5000 twice in one hour, with observation rather than action being the
+          # drain. This step runs every fifteen minutes, unattended, forever, which is exactly the
+          # call `rest-is-the-default-transport` governs. `/issues` also returns pull requests, so
+          # the `pull_request == null` filter is load-bearing rather than defensive.
+          existing="$(gh api "repos/${REPO}/issues?labels=heartbeat-liveness&state=open&per_page=1" \
+            --jq '[.[] | select(.pull_request == null)] | .[0].number // empty')"
 
-          if [ -n "$existing" ]; then
-            gh issue comment "$existing" --repo "$REPO" --body "$body"
-          else
+          body="$(printf '%s\n\nWatchdog run: %s\n\nThe lane carries unflushed state forward, so a single dropped tick is recoverable and this threshold is set well above GitHub'"'"'s normal scheduling jitter (worst healthy gap measured: 43min). This firing means successes have stopped, not merely that a tick was late.\n\nThe subject workflow was ENROLLED (not disabled) when this was written — a switched-off subject reports the paused state and never reaches this step.\n\nThis issue does not auto-close. Close it once heartbeats are succeeding again.\n' "$summary" "$RUN_URL")"
+
+          if [ -z "$existing" ]; then
             gh issue create --repo "$REPO" --title "$title" --body "$body" --label heartbeat-liveness
+            exit 0
           fi
+
+          # THE RE-NOTIFY FLOOR. The issue already exists, so the outage is already reported and
+          # findable; what is in question is only whether to say it again.
+          #
+          # Read over REST for the same budget reason as above. `sort=created&direction=desc` asks
+          # the server for the newest comment rather than paging a thread that, left unbounded,
+          # grows without limit — the very failure being fixed.
+          newest_comment_at="$(gh api "repos/${REPO}/issues/${existing}/comments?sort=created&direction=desc&per_page=1" \
+            --jq '.[0].created_at // empty')"
+          # An issue with no comments yet falls back to when it was OPENED, so the floor applies to
+          # the gap after the opening post too. Otherwise the first reminder would always fire
+          # immediately, fifteen minutes after the issue was created.
+          if [ -z "$newest_comment_at" ]; then
+            newest_comment_at="$(gh api "repos/${REPO}/issues/${existing}" --jq '.created_at')"
+          fi
+
+          newest_epoch="$(date -u -d "$newest_comment_at" +%s)"
+          now_epoch="$(date -u +%s)"
+          age_hours=$(( (now_epoch - newest_epoch) / 3600 ))
+
+          if [ "$age_hours" -lt "$REMINDER_FLOOR_HOURS" ]; then
+            # SUPPRESSED, AND SAID SO. The run is still red and the annotation from the assess step
+            # still carries the verdict, so nothing about the alarm is quieter — only the thread is.
+            # Printing the reason is what keeps this from being a silent skip: a suppression nobody
+            # can see is indistinguishable from a step that failed to run.
+            echo "::notice::[heartbeat-liveness] issue #${existing} was updated ${age_hours}h ago (floor ${REMINDER_FLOOR_HOURS}h) — the outage is already reported; not adding another comment. The run is red and the verdict is on the run summary."
+            exit 0
+          fi
+
+          gh issue comment "$existing" --repo "$REPO" --body "$body"

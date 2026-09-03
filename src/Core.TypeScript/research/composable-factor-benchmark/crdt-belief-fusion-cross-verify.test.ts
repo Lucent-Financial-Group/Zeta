@@ -6,7 +6,7 @@ test("the independent Python oracle agrees on evidence-union, Gaussian-product, 
   const processResult = Bun.spawnSync([process.execPath, dispatcher], { stdout: "pipe", stderr: "pipe" });
   expect(processResult.exitCode).toBe(0);
   expect(processResult.stderr.toString()).toBe("");
-  expect(processResult.stdout.toString().trim()).toBe("CRDT belief-fusion cross-verification: 5 law groups; adapter-naive mutant detected; failures 0");
+  expect(processResult.stdout.toString().trim()).toBe("CRDT belief-fusion cross-verification: 5 law groups; adapter-naive mutant detected; adapter-unsorted mutant detected; failures 0");
 }, 30_000);
 
 test("the comparator rejects an independently mutated trace-grid discretization", () => {

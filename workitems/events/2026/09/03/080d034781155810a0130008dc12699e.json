@@ -1,0 +1,14 @@
+{
+  "id": "080d034781155810a0130008dc12699e",
+  "at": "2026-09-03T20:22:43.115Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1MF08NA087G0R000F8B000",
+    "type": "bug",
+    "title": "heartbeat-liveness reported a deliberately disabled subject as a lane outage",
+    "slug": "heartbeat-liveness-reported-a-deliberately-disabled-subject",
+    "priority": "P2",
+    "filename": "081M1MF08NA087G0R000F8B000-heartbeat-liveness-reported-a-deliberately-disabled-subject.md"
+  }
+}
