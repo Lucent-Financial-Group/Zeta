@@ -1,0 +1,12 @@
+{
+  "pr_number": 16454,
+  "archive_path": "docs/history/pr-reviews/PR-16454-fix-indexed-z-set-the-group-array-was-built-culturally-and-searched-ordinally.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-03T07:17:26.002Z",
+  "schema_version": "v1",
+  "commit_sha": "446e1776b45488b8535534af708133e3791ac0b6",
+  "title": "fix(indexed-z-set): the group array was built culturally and searched ordinally",
+  "state": "MERGED",
+  "merged_at": "2026-09-03T07:16:47Z",
+  "head_ref": "indexed-zset-treaty"
+}
