@@ -1,3 +1,4 @@
+[<global.Xunit.Collection("ZetaFsAmbientFileSystem")>]
 module Zeta.Tests.ZetaFsFreezeTests
 
 open System
