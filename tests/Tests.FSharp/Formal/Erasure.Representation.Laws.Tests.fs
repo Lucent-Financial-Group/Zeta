@@ -27,7 +27,9 @@ open Zeta.Core.FSharp.Blake3
 //   InMemoryDeltaLog        `list.RemoveAll`                      -> ERASING
 //   ZetaFsDeltaLog          new commit WITH old as parent         -> REVERSIBLE (DAG); ERASING (read surface)
 //   GitDeltaLog             new tree committed WITH old as parent -> REVERSIBLE
-//   GroupCommitDiskDeltaLog no-op; compaction unimplemented in v1 -> REVERSIBLE (the identity)
+//   GroupCommitDiskDeltaLog sealed segments unlinked, active kept  -> REVERSIBLE (default cap: no roll,
+//                                                                     so the identity IN THE MODEL);
+//                                                                     ERASING (cap forced to 1 byte)
 //
 // Same name, same caller, opposite class, decided entirely by the injected backend. So the
 // classification attaches to the concrete type via `IErasureDeclaring`, never to the interface —
@@ -313,6 +315,9 @@ let private pinnedObservation =
 
 let private fullObservation =
     "the log's own read surface (ReplayAsync(0) plus HighWater), including the truncation argument"
+
+let private forcedRollObservation =
+    "the log's own read surface (ReplayAsync(0) plus HighWater), at a pinned truncation point, with the segment cap forced to one byte so every boat seals its predecessor"
 let private contentObservation = "the store's content function (Load over every live handle)"
 
 let private asyncContentObservation =
@@ -388,6 +393,28 @@ let private sweeps: Sweep list =
                   pinnedDomain
                   (truncationProbe
                       (fun () -> new GroupCommitDiskDeltaLog<int>(tempDir (), codec ()) :> IDeltaLog<int>)
+                      readSurface) }
+
+      // The SAME representation and operation with the segment cap forced below one record, so
+      // every append seals its predecessor and truncation has sealed segments to unlink. This is
+      // the row that turned the v1 "reversible because unimplemented" declaration red the day
+      // compaction landed (revived 2026-09-03) — the classification changed, and the sweep, not
+      // the docstring, is what said so.
+      { Representation = "GroupCommitDiskDeltaLog"
+        Operation = "IDeltaLog.TruncateAsync"
+        Observation = forcedRollObservation
+        Measure =
+          fun () ->
+              measureLargestFibre
+                  pinnedDomain
+                  (truncationProbe
+                      (fun () ->
+                          new GroupCommitDiskDeltaLog<int>(
+                              tempDir (),
+                              codec (),
+                              { FerryThrottlerConfig.deterministic with MaxBatchSize = 1 },
+                              maxSegmentBytes = 1L)
+                          :> IDeltaLog<int>)
                       readSurface) }
 
       { Representation = "ZetaFsDeltaLog"

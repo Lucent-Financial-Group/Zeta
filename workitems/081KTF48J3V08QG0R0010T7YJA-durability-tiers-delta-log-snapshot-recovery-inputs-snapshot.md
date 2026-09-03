@@ -74,3 +74,36 @@ Vera follow-on: group-commit via FerryThrottler now exists as
 `GroupCommitDiskDeltaLog<'K>` (segment + CRC32C + one `Flush(true)` per byte-aware
 boat). Remaining: segment rollover/compaction, parent-dir fsync where relevant,
 stable snapshot addressing, then tier model.
+
+## Progress (2026-09-03) — increment 5 (tier model) + segment truncation landed
+
+(revived 2026-09-03 by shadow from `otto/agent-sovereign-keys-proposal` — tag
+`archive/2026-09-03-branch-sweep/otto/agent-sovereign-keys-proposal`, commits authored by
+desktop-Otto 2026-08-13; PR #10511 landed only that branch's research doc and left the code
+"for its author to land"; the author stopped running. Aaron overruled two reviewers' advice
+not to revive. Re-applied onto current main one increment at a time, not rebased.)
+
+Start-gate audit (verify-then-claim, re-run against current main): the
+"discovered gap" above is STALE — stable snapshot addressing exists on main
+(`SnapshotStore.fs`: `DiskSnapshotStore` with stable `snapshot-{seq:020}.snap`
+names + atomic `LATEST.json` manifest + dir-fsync; `RecoverableSpine.RecoverAsync`
+reads the manifest, cross-restart snapshot+tail proven in tests), and
+`DiskAsyncBackingStore` spills are content-addressed, not GUID-prefixed.
+Parent-dir fsync (inc 6) is present on all write paths. Landed in this PR:
+
+- **Increment 5 — the tier model** (`src/Core/DurabilityTier.fs`): the §7
+  locked decisions as code. `Durable`/`Derived`/`Ephemeral` joined at
+  registration; leaves DECLARE (Durable|Ephemeral; a Derived leaf is rejected
+  as the contradiction it is); internal relations AUTO-CLASSIFY (Derived when
+  every direct input survives; Ephemeral through a NAMED lost input — recorded,
+  never silent); override-UPWARD allowed (declare-Durable = snapshot instead of
+  recompute, sound because durable persistence is self-contained);
+  override-DOWNWARD rejected; the **upward-closed invariant** enforced at
+  classification with the violating edge named, and proven as an FsCheck
+  property over random DAGs. Generated **tier manifest** (`ztiermanifest/1`,
+  canonical bytes, golden-locked) = §7's audit-via-manifest decision. Pure over
+  the registration graph; it took no adaptation to current main.
+  Circuit/stream-group registration WIRING is still the follow-up — the
+  classifier is **unmetered** until a registration path consumes it.
+- **Segment rollover + physical truncation** (081KTF9T0E408QG0R003C002Q5's
+  remaining half) — see that row's progress note.
