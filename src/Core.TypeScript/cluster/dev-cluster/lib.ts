@@ -59,8 +59,7 @@ export function devStorageAliasManifestPath(key: keyof typeof DEV_STORAGE_ALIAS_
  * ONE constant, TWO consumers: `use-cases.ts` applies it; the bring-up tests
  * assert that kind `--cni cilium` is the only path that does.
  */
-export const DEV_CILIUM_LB_KIND_MANIFEST_RELPATH =
-  "full-ai-cluster/dev-cluster/manifests/cilium-lb-ipam.kind.yaml";
+export const DEV_CILIUM_LB_KIND_MANIFEST_RELPATH = "full-ai-cluster/dev-cluster/manifests/cilium-lb-ipam.kind.yaml";
 
 /**
  * Cilium CRDs the kind LB alias needs Established before apply.
@@ -138,8 +137,7 @@ export const DEV_GRAFANA_ADMIN_SECRET: DevBootstrapSecretSpec = {
   passwordKey: "admin-password",
   user: "admin",
   reason:
-    "Minted per dev/CI cluster at bring-up so kube-prometheus-stack's " +
-    "grafana.admin.existingSecret resolves.",
+    "Minted per dev/CI cluster at bring-up so kube-prometheus-stack's " + "grafana.admin.existingSecret resolves.",
 } as const;
 
 /**
@@ -216,9 +214,7 @@ export const DEV_REDIS_AUTH_SECRET: DevBootstrapSecretSpec = {
   userKey: "username",
   passwordKey: "password",
   user: "default",
-  reason:
-    "Minted per dev/CI cluster at bring-up so the Valkey chart's " +
-    "auth.usersExistingSecret resolves.",
+  reason: "Minted per dev/CI cluster at bring-up so the Valkey chart's " + "auth.usersExistingSecret resolves.",
 } as const;
 
 /**
@@ -419,8 +415,7 @@ export function buildDevRegistryPullSecretManifest(
   ].join("\n");
 }
 
-const GITHUB_REPO_URL =
-  /^https:\/\/github\.com\/[A-Za-z0-9_.-]+\/[A-Za-z0-9_.-]+(\.git)?$/;
+const GITHUB_REPO_URL = /^https:\/\/github\.com\/[A-Za-z0-9_.-]+\/[A-Za-z0-9_.-]+(\.git)?$/;
 
 export function fail(message: string): never {
   console.error(message);
@@ -502,6 +497,35 @@ export function readFlagValue(argv: readonly string[], index: number, flag: stri
     process.exit(1);
   }
   return value;
+}
+
+/**
+ * The ONE repository URL that is not on GitHub and is still allowed.
+ *
+ * `assertGitHubRepoUrl` refuses anything that is not `https://github.com/<o>/<r>`,
+ * and that refusal is load-bearing: ArgoCD clones what it is handed, so a lane
+ * that could be pointed anywhere is a lane that could be pointed at anything.
+ * Serving the rung-applied tree in-cluster needs exactly one exception, so it
+ * gets exactly one -- a literal, not a relaxation of the predicate.
+ *
+ * Matching the literal rather than a pattern like "any http:// on .svc.cluster.local"
+ * is the point. A pattern would accept every in-cluster service, including one an
+ * Application could stand up; a literal accepts the address this repository's own
+ * code generates and nothing else. `lane-tree-source.ts` builds the same string
+ * from the same constants, and a test pins that the two agree -- so this cannot
+ * drift into accepting a URL nothing produces, which would be an exception with no
+ * subject.
+ */
+export const LANE_TREE_REPO_URL = "http://zeta-lane-tree.zeta-lane-tree.svc.cluster.local:8080/tree.git";
+
+export function isLaneTreeRepoUrl(value: string): boolean {
+  return value === LANE_TREE_REPO_URL;
+}
+
+export function assertLaneTreeRepoUrl(value: string): void {
+  if (!isLaneTreeRepoUrl(value)) {
+    fail(`ERROR: lane tree repo URL must be exactly '${LANE_TREE_REPO_URL}' (got: '${value}')`);
+  }
 }
 
 export const DEFAULT_GIT_REPO_URL =

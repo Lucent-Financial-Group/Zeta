@@ -16,7 +16,12 @@ import {
   resolveRegistryToken,
 } from "./lib.ts";
 import { GATEWAY_API_CRD_BUNDLE } from "../cilium-kind-lane.ts";
-import { applyDevRegistryPullSecret, bringUpK3dDevCluster, bringUpKindCiCluster, rewriteCorefileForwardToPublicResolvers } from "./use-cases.ts";
+import {
+  applyDevRegistryPullSecret,
+  bringUpK3dDevCluster,
+  bringUpKindCiCluster,
+  rewriteCorefileForwardToPublicResolvers,
+} from "./use-cases.ts";
 import type {
   AppCatalogApplicator,
   ClusterControlPlane,
@@ -207,8 +212,7 @@ describe("kind CI use case", () => {
       env: {},
     });
     const hostsAt = log.findIndex(
-      (entry) =>
-        entry.startsWith("run:docker exec k3d-zeta-dev-server-0") && entry.includes("control-plane"),
+      (entry) => entry.startsWith("run:docker exec k3d-zeta-dev-server-0") && entry.includes("control-plane"),
     );
     const ciliumAt = log.indexOf("install:cilium");
     expect(hostsAt).toBeGreaterThan(-1);
@@ -355,9 +359,7 @@ describe("kind CI use case", () => {
 
   test("the kind LB-IPAM alias exists, is a Cilium pool, and is not the metal subnet", () => {
     const manifest = readFileSync(devCiliumLbKindManifestPath(), "utf8");
-    expect(DEV_CILIUM_LB_KIND_MANIFEST_RELPATH).toBe(
-      "full-ai-cluster/dev-cluster/manifests/cilium-lb-ipam.kind.yaml",
-    );
+    expect(DEV_CILIUM_LB_KIND_MANIFEST_RELPATH).toBe("full-ai-cluster/dev-cluster/manifests/cilium-lb-ipam.kind.yaml");
     expect(manifest).toContain("kind: CiliumLoadBalancerIPPool");
     expect(manifest).toContain("kind: CiliumL2AnnouncementPolicy");
     expect(manifest).toContain("name: zeta-lb-pool");
@@ -793,5 +795,84 @@ describe("kind+Cilium CoreDNS forward rewrite", () => {
     const out = rewriteCorefileForwardToPublicResolvers("");
     expect(out).toContain("forward . 1.1.1.1 8.8.8.8");
     expect(out).toContain("kubernetes cluster.local");
+  });
+});
+
+describe("the lane-tree resource-rung override point", () => {
+  const laneTree = {
+    manifests: "apiVersion: v1\nkind: Namespace\nmetadata:\n  name: zeta-lane-tree\n",
+    repoUrl: "http://zeta-lane-tree.zeta-lane-tree.svc.cluster.local:8080/tree.git",
+  };
+
+  const kindOptions = {
+    configPath: "full-ai-cluster/dev-cluster/profiles/ci.kind-config.yaml",
+    clusterName: "zeta-ci-included",
+    gitRef: "main",
+    gitRepoUrl: "https://github.com/Lucent-Financial-Group/Zeta",
+  };
+
+  test("the root Application clones the LANE tree, not the committed one", () => {
+    const log: string[] = [];
+    bringUpKindCiCluster(fakePorts(log), { ...kindOptions, laneTree });
+    expect(log).toContain(`catalog:main@${laneTree.repoUrl}`);
+    expect(log).not.toContain(`catalog:main@${kindOptions.gitRepoUrl}`);
+  });
+
+  test("the server is applied and WAITED ON before the root Application", () => {
+    // Ordering, not just presence. A root app pointed at a server that is not yet
+    // answering fails its first sync and then retries on ArgoCD's backoff, so the
+    // lane pays minutes for a race a readiness wait removes. Asserted by index for
+    // the same reason the existing tests here do it: "both happened" is a weaker
+    // claim than "in this order", and only the second one is the property.
+    const log: string[] = [];
+    bringUpKindCiCluster(fakePorts(log), { ...kindOptions, laneTree });
+    const applyAt = log.findIndex((line) => line.startsWith("inline-manifest:") && line.includes("zeta-lane-tree"));
+    const waitAt = log.findIndex((line) => line.startsWith("wait:deployment/zeta-lane-tree"));
+    const catalogAt = log.findIndex((line) => line.startsWith("catalog:"));
+    expect(applyAt).toBeGreaterThanOrEqual(0);
+    expect(waitAt).toBeGreaterThan(applyAt);
+    expect(catalogAt).toBeGreaterThan(waitAt);
+  });
+
+  test("the wait is on Available, which the readiness probe gates on the repository index", () => {
+    // `condition=Available` rather than pod-running: a container that is up with an
+    // empty volume satisfies the weaker condition and hands ArgoCD a 404 that reads
+    // like a bad repoURL.
+    const log: string[] = [];
+    bringUpKindCiCluster(fakePorts(log), { ...kindOptions, laneTree });
+    expect(log).toContain("wait:deployment/zeta-lane-tree@zeta-lane-tree:condition=Available");
+  });
+
+  test("NO SILENT FALLBACK: a server that never becomes Available throws, and the root app is never applied", () => {
+    // The dangerous outcome. Falling back to the committed tree would sync the
+    // `metal` rung onto a runner-sized node, reproduce `Insufficient cpu` on four
+    // pods, and look exactly like the failure this mechanism exists to remove --
+    // with nothing in the log saying the override had been skipped.
+    const log: string[] = [];
+    const ports = fakePorts(log);
+    const failing = {
+      ...ports,
+      controlPlane: {
+        ...ports.controlPlane,
+        waitForResource: (ref: string, ns: string | null, expr: string): boolean => {
+          log.push(`wait:${ref}@${ns ?? "-"}:${expr}`);
+          return false;
+        },
+      },
+    };
+    expect(() => {
+      bringUpKindCiCluster(failing, { ...kindOptions, laneTree });
+    }).toThrow(/never became Available/);
+    expect(log.some((line) => line.startsWith("catalog:"))).toBe(false);
+  });
+
+  test("WITHOUT the flag nothing changes — the committed tree is still what is synced", () => {
+    // The compatibility half. Every caller that does not opt in must be
+    // byte-identical to before the flag existed, or this is a behaviour change
+    // wearing an opt-in's clothes.
+    const log: string[] = [];
+    bringUpKindCiCluster(fakePorts(log), kindOptions);
+    expect(log).toContain(`catalog:main@${kindOptions.gitRepoUrl}`);
+    expect(log.some((line) => line.includes("zeta-lane-tree"))).toBe(false);
   });
 });

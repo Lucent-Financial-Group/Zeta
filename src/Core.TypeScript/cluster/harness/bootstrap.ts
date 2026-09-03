@@ -1,15 +1,12 @@
 // In-process dev-cluster bootstrap for argocd-health-test (no bun subprocess spawn).
 
 import { join } from "node:path";
-import {
-  assertKindCiStackReady,
-  assertK3dDevStackReady,
-  liveDevClusterPorts,
-} from "../dev-cluster/deps.ts";
+import { assertKindCiStackReady, assertK3dDevStackReady, liveDevClusterPorts } from "../dev-cluster/deps.ts";
 import {
   assertDnsLabel,
   assertFileExists,
   assertGitHubRepoUrl,
+  assertLaneTreeRepoUrl,
   assertSafeGitRef,
   DEFAULT_GIT_REPO_URL,
   DEV_CLUSTER_SUBSTRATE_DIR,
@@ -26,6 +23,11 @@ export interface KindBootstrapOptions {
   readonly gitRepoUrl?: string;
   readonly containerRuntime?: string;
   readonly cni?: KindCni;
+  /**
+   * Serve a rung-applied copy of the tree in-cluster and point ArgoCD at it.
+   * See `KindCiBringUpOptions.laneTree`; absent leaves the committed tree in use.
+   */
+  readonly laneTree?: { readonly manifests: string; readonly repoUrl: string };
 }
 
 export function bootstrapKindClusterInProcess(options: KindBootstrapOptions): void {
@@ -36,7 +38,15 @@ export function bootstrapKindClusterInProcess(options: KindBootstrapOptions): vo
   assertDnsLabel(options.clusterName, "cluster name");
   assertSafeGitRef(options.gitRef);
   const gitRepoUrl = options.gitRepoUrl ?? DEFAULT_GIT_REPO_URL;
+  // STILL ASSERTED, and deliberately still asserted on the GitHub URL rather than
+  // on whatever the lane ends up cloning. `gitRepoUrl` is the fallback the run
+  // uses if no lane tree is supplied, so it must satisfy the same rule it always
+  // did; the lane-tree URL is checked separately by `assertLaneTreeRepoUrl`, which
+  // accepts exactly one in-cluster shape and nothing else. Widening this predicate
+  // to "or an http:// URL" would have let any URL through on the strength of a
+  // flag, which is the opposite of what the original guard is for.
   assertGitHubRepoUrl(gitRepoUrl);
+  if (options.laneTree !== undefined) assertLaneTreeRepoUrl(options.laneTree.repoUrl);
   const ports = liveDevClusterPorts({ clusterShape: "kind-in-docker" });
   assertKindCiStackReady(ports);
   bringUpKindCiCluster(ports, {
@@ -45,6 +55,7 @@ export function bootstrapKindClusterInProcess(options: KindBootstrapOptions): vo
     gitRef: options.gitRef,
     gitRepoUrl,
     ...(options.cni === undefined ? {} : { cni: options.cni }),
+    ...(options.laneTree === undefined ? {} : { laneTree: options.laneTree }),
   });
 }
 
