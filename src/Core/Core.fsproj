@@ -513,6 +513,7 @@
     <Compile Include="ShapeAcceptance.fs" />
     <Compile Include="PhysUI.fs" />
     <Compile Include="ControlScheme.fs" />
+    <Compile Include="GameEnvironment.fs" />
     <Compile Include="MetaControl.fs" />
     <Compile Include="CorrespondencePong.fs" />
     <Compile Include="ChipAudio.fs" />
