@@ -84,7 +84,12 @@ describe("081M0N90CHX087G0R0034C7NPT — the out-of-subset constructs the graph 
     // added to the sync-wave graph (cilium -> cloudnativepg), the shared
     // prerequisite of the gitlab and temporal bumps. Its node carries one folded
     // `reason: >-` and one `dependsOn: [cilium]` flow sequence.
-    expect(folded).toBe(45);
+    // 45 -> 46 folded on 2026-09-03: the `platform` node gained a
+    // `kube-prometheus-stack: >-` citation (one folded `reason: >-`) when the
+    // previously-undeclared platform -> kube-prometheus-stack CRD edge was added.
+    // The node's existing `dependsOn: [...]` flow sequence was extended in place,
+    // so flow-seq is unchanged at 29.
+    expect(folded).toBe(46);
     expect(flowSeq).toBe(29);
   });
 });
