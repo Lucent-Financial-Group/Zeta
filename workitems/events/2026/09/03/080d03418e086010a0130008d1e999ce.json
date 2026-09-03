@@ -1,0 +1,14 @@
+{
+  "id": "080d03418e086010a0130008d1e999ce",
+  "at": "2026-09-03T16:54:46.284Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1M33G8C087G0R000VP1W1W",
+    "type": "task",
+    "title": "Polyfill crash-mid-write keeps the previous freeze",
+    "slug": "polyfill-crash-mid-write-keeps-the-previous-freeze",
+    "priority": "P1",
+    "filename": "081M1M33G8C087G0R000VP1W1W-polyfill-crash-mid-write-keeps-the-previous-freeze.md"
+  }
+}
