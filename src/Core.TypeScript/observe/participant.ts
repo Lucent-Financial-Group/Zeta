@@ -77,7 +77,9 @@ export function localLlmParticipant(opts?: {
 }): Participant {
   const backend = ollamaBackend({
     model: opts?.model ?? "qwen2.5:0.5b",
-    host: opts?.host ?? "http://127.0.0.1:11434",
+    // Env-overridable so "the daemon is down" is a scenario you can RUN rather than a paragraph
+    // you believe. Still loopback-guarded by `ollamaBackend` — this widens the port, not the host.
+    host: opts?.host ?? process.env["ZETA_OLLAMA_HOST"] ?? "http://127.0.0.1:11434",
     seed: opts?.seed ?? 42,
   });
   return {

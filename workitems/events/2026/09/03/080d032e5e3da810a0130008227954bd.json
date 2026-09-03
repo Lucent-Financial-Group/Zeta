@@ -1,0 +1,14 @@
+{
+  "id": "080d032e5e3da810a0130008227954bd",
+  "at": "2026-09-03T05:44:08.885Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1JWQHXJ087G0R001D251YW",
+    "type": "task",
+    "title": "Failure injection against the real loop — the e-stop was untestable without touching the repo",
+    "slug": "failure-injection-against-the-real-loop-the-e-stop-was-untes",
+    "priority": "P2",
+    "filename": "081M1JWQHXJ087G0R001D251YW-failure-injection-against-the-real-loop-the-e-stop-was-untes.md"
+  }
+}

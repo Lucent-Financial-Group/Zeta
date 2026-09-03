@@ -164,6 +164,14 @@ export interface ForgeHost extends CheckObservationSource {
   /** Update a ref to point to a new SHA. */
   updateRef(ref: string, sha: string, force?: boolean): Promise<Result<void, ForgeError>>;
 
+  /**
+   * Create a NEW ref. Distinct from `updateRef` because the forges distinguish them: GitHub
+   * creates with `POST /git/refs` and updates with `PATCH /git/refs/{ref}`, so `updateRef` on a
+   * ref that does not exist is a 404, not a create. Without this there is no way to make a branch,
+   * and therefore no way to open a pull request.
+   */
+  createRef(ref: string, sha: string): Promise<Result<void, ForgeError>>;
+
   // --- Git ref/commit read ---
   getRef(ref: string): Promise<Result<GitRef, ForgeError>>;
   getCommit(sha: string): Promise<Result<GitCommitInfo, ForgeError>>;
