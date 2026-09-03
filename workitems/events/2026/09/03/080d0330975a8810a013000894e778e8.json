@@ -1,0 +1,14 @@
+{
+  "id": "080d0330975a8810a013000894e778e8",
+  "at": "2026-09-03T07:01:51.057Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1K15TSX087G0R0012VT9YN",
+    "type": "bug",
+    "title": "ErasureCharge holes and observations came out in posting order, not ordinally",
+    "slug": "erasurecharge-holes-and-observations-came-out-in-posting-ord",
+    "priority": "P2",
+    "filename": "081M1K15TSX087G0R0012VT9YN-erasurecharge-holes-and-observations-came-out-in-posting-ord.md"
+  }
+}

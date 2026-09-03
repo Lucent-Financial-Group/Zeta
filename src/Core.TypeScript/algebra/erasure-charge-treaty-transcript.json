@@ -1,0 +1,832 @@
+[
+  {
+    "vectorType": "Disposition",
+    "name": "free",
+    "profile": {
+      "representation": "InMemoryDeltaLog",
+      "operation": "AppendAsync",
+      "observation": "log-read-surface",
+      "recoveryChannel": "the entry is still readable by replay",
+      "classification": "reversible",
+      "evidence": {
+        "kind": "exhaustive-sweep",
+        "domain": "all 4-entry logs",
+        "largestFibre": 1,
+        "bitsErasedPpm": 0
+      }
+    },
+    "key": "InMemoryDeltaLog::AppendAsync::log-read-surface",
+    "expectedKind": "free",
+    "expectedBitsPpm": null,
+    "expectedReason": null
+  },
+  {
+    "vectorType": "Disposition",
+    "name": "chargedSmall",
+    "profile": {
+      "representation": "InMemoryDeltaLog",
+      "operation": "TruncateAsync",
+      "observation": "log-read-surface",
+      "recoveryChannel": "nothing — the entries are unlinked",
+      "classification": "erasing",
+      "evidence": {
+        "kind": "exhaustive-sweep",
+        "domain": "all 4-entry logs",
+        "largestFibre": 2,
+        "bitsErasedPpm": 1000000
+      }
+    },
+    "key": "InMemoryDeltaLog::TruncateAsync::log-read-surface",
+    "expectedKind": "charged",
+    "expectedBitsPpm": 1000000,
+    "expectedReason": null
+  },
+  {
+    "vectorType": "Disposition",
+    "name": "chargedLarge",
+    "profile": {
+      "representation": "Spine",
+      "operation": "consolidate",
+      "observation": "log-read-surface",
+      "recoveryChannel": "nothing",
+      "classification": "erasing",
+      "evidence": {
+        "kind": "bounded-model-sweep",
+        "model": "fibre capped at 13 by the pinned quota",
+        "largestFibre": 13,
+        "bitsErasedPpm": 3700440
+      }
+    },
+    "key": "Spine::consolidate::log-read-surface",
+    "expectedKind": "charged",
+    "expectedBitsPpm": 3700440,
+    "expectedReason": null
+  },
+  {
+    "vectorType": "Disposition",
+    "name": "unmeasured",
+    "profile": {
+      "representation": "ZetaFsDeltaLog",
+      "operation": "TruncateAsync",
+      "observation": "physical-medium",
+      "recoveryChannel": "unknown — the medium may or may not retain the blocks",
+      "classification": "unmeasured",
+      "evidence": {
+        "kind": "no-admissible-measurement",
+        "reason": "a real filesystem is not enumerable; block reuse is the storage layer's business"
+      }
+    },
+    "key": "ZetaFsDeltaLog::TruncateAsync::physical-medium",
+    "expectedKind": "unmeasured",
+    "expectedBitsPpm": null,
+    "expectedReason": "a real filesystem is not enumerable; block reuse is the storage layer's business"
+  },
+  {
+    "vectorType": "Disposition",
+    "name": "malformedReversibleWideFibre",
+    "profile": {
+      "representation": "Broken",
+      "operation": "claimsFreeButIsNot",
+      "observation": "log-read-surface",
+      "recoveryChannel": "claimed reversible over a fibre of 4",
+      "classification": "reversible",
+      "evidence": {
+        "kind": "exhaustive-sweep",
+        "domain": "a domain where it collapses 4 to 1",
+        "largestFibre": 4,
+        "bitsErasedPpm": 2000000
+      }
+    },
+    "key": "Broken::claimsFreeButIsNot::log-read-surface",
+    "expectedKind": "malformed",
+    "expectedBitsPpm": null,
+    "expectedReason": null
+  },
+  {
+    "vectorType": "Disposition",
+    "name": "malformedErasingUnitFibre",
+    "profile": {
+      "representation": "Broken",
+      "operation": "claimsCostButIsInjective",
+      "observation": "log-read-surface",
+      "recoveryChannel": "claimed erasing over an injective map",
+      "classification": "erasing",
+      "evidence": {
+        "kind": "exhaustive-sweep",
+        "domain": "an injective domain",
+        "largestFibre": 1,
+        "bitsErasedPpm": 0
+      }
+    },
+    "key": "Broken::claimsCostButIsInjective::log-read-surface",
+    "expectedKind": "malformed",
+    "expectedBitsPpm": null,
+    "expectedReason": null
+  },
+  {
+    "vectorType": "Disposition",
+    "name": "malformedUnmeasuredWithSweep",
+    "profile": {
+      "representation": "Broken",
+      "operation": "claimsUnknownButWasSwept",
+      "observation": "physical-medium",
+      "recoveryChannel": "claimed unmeasured while carrying a sweep",
+      "classification": "unmeasured",
+      "evidence": {
+        "kind": "exhaustive-sweep",
+        "domain": "a domain that was in fact enumerated",
+        "largestFibre": 2,
+        "bitsErasedPpm": 1000000
+      }
+    },
+    "key": "Broken::claimsUnknownButWasSwept::physical-medium",
+    "expectedKind": "malformed",
+    "expectedBitsPpm": null,
+    "expectedReason": null
+  },
+  {
+    "vectorType": "Disposition",
+    "name": "malformedUnmeasuredBlankReason",
+    "profile": {
+      "representation": "Broken",
+      "operation": "holeWithNoReason",
+      "observation": "physical-medium",
+      "recoveryChannel": "unknown",
+      "classification": "unmeasured",
+      "evidence": {
+        "kind": "no-admissible-measurement",
+        "reason": "   "
+      }
+    },
+    "key": "Broken::holeWithNoReason::physical-medium",
+    "expectedKind": "malformed",
+    "expectedBitsPpm": null,
+    "expectedReason": null
+  },
+  {
+    "vectorType": "Disposition",
+    "name": "otherObservationCharged",
+    "profile": {
+      "representation": "GitDeltaLog",
+      "operation": "TruncateAsync",
+      "observation": "commit-dag",
+      "recoveryChannel": "the commit DAG still holds every entry",
+      "classification": "erasing",
+      "evidence": {
+        "kind": "exhaustive-sweep",
+        "domain": "all 4-entry logs",
+        "largestFibre": 2,
+        "bitsErasedPpm": 1000000
+      }
+    },
+    "key": "GitDeltaLog::TruncateAsync::commit-dag",
+    "expectedKind": "charged",
+    "expectedBitsPpm": 1000000,
+    "expectedReason": null
+  },
+  {
+    "vectorType": "Disposition",
+    "name": "otherObservationFree",
+    "profile": {
+      "representation": "GitDeltaLog",
+      "operation": "AppendAsync",
+      "observation": "commit-dag",
+      "recoveryChannel": "the commit is addressable",
+      "classification": "reversible",
+      "evidence": {
+        "kind": "exhaustive-sweep",
+        "domain": "all 4-entry logs",
+        "largestFibre": 1,
+        "bitsErasedPpm": 0
+      }
+    },
+    "key": "GitDeltaLog::AppendAsync::commit-dag",
+    "expectedKind": "free",
+    "expectedBitsPpm": null,
+    "expectedReason": null
+  },
+  {
+    "vectorType": "Settle",
+    "name": "nothing-posted",
+    "postings": [],
+    "expected": {
+      "bitsPpm": 0,
+      "complete": true,
+      "holeKeys": [],
+      "holeWhy": [],
+      "chargedPostings": 0,
+      "freePostings": 0,
+      "holePostings": 0
+    }
+  },
+  {
+    "vectorType": "Settle",
+    "name": "one-free",
+    "postings": [
+      {
+        "representation": "InMemoryDeltaLog",
+        "operation": "AppendAsync",
+        "observation": "log-read-surface",
+        "recoveryChannel": "the entry is still readable by replay",
+        "classification": "reversible",
+        "evidence": {
+          "kind": "exhaustive-sweep",
+          "domain": "all 4-entry logs",
+          "largestFibre": 1,
+          "bitsErasedPpm": 0
+        }
+      }
+    ],
+    "expected": {
+      "bitsPpm": 0,
+      "complete": true,
+      "holeKeys": [],
+      "holeWhy": [],
+      "chargedPostings": 0,
+      "freePostings": 1,
+      "holePostings": 0
+    }
+  },
+  {
+    "vectorType": "Settle",
+    "name": "one-charged",
+    "postings": [
+      {
+        "representation": "InMemoryDeltaLog",
+        "operation": "TruncateAsync",
+        "observation": "log-read-surface",
+        "recoveryChannel": "nothing — the entries are unlinked",
+        "classification": "erasing",
+        "evidence": {
+          "kind": "exhaustive-sweep",
+          "domain": "all 4-entry logs",
+          "largestFibre": 2,
+          "bitsErasedPpm": 1000000
+        }
+      }
+    ],
+    "expected": {
+      "bitsPpm": 1000000,
+      "complete": true,
+      "holeKeys": [],
+      "holeWhy": [],
+      "chargedPostings": 1,
+      "freePostings": 0,
+      "holePostings": 0
+    }
+  },
+  {
+    "vectorType": "Settle",
+    "name": "same-charge-three-times",
+    "postings": [
+      {
+        "representation": "InMemoryDeltaLog",
+        "operation": "TruncateAsync",
+        "observation": "log-read-surface",
+        "recoveryChannel": "nothing — the entries are unlinked",
+        "classification": "erasing",
+        "evidence": {
+          "kind": "exhaustive-sweep",
+          "domain": "all 4-entry logs",
+          "largestFibre": 2,
+          "bitsErasedPpm": 1000000
+        }
+      },
+      {
+        "representation": "InMemoryDeltaLog",
+        "operation": "TruncateAsync",
+        "observation": "log-read-surface",
+        "recoveryChannel": "nothing — the entries are unlinked",
+        "classification": "erasing",
+        "evidence": {
+          "kind": "exhaustive-sweep",
+          "domain": "all 4-entry logs",
+          "largestFibre": 2,
+          "bitsErasedPpm": 1000000
+        }
+      },
+      {
+        "representation": "InMemoryDeltaLog",
+        "operation": "TruncateAsync",
+        "observation": "log-read-surface",
+        "recoveryChannel": "nothing — the entries are unlinked",
+        "classification": "erasing",
+        "evidence": {
+          "kind": "exhaustive-sweep",
+          "domain": "all 4-entry logs",
+          "largestFibre": 2,
+          "bitsErasedPpm": 1000000
+        }
+      }
+    ],
+    "expected": {
+      "bitsPpm": 3000000,
+      "complete": true,
+      "holeKeys": [],
+      "holeWhy": [],
+      "chargedPostings": 3,
+      "freePostings": 0,
+      "holePostings": 0
+    }
+  },
+  {
+    "vectorType": "Settle",
+    "name": "free-does-not-reduce-the-charge",
+    "postings": [
+      {
+        "representation": "InMemoryDeltaLog",
+        "operation": "TruncateAsync",
+        "observation": "log-read-surface",
+        "recoveryChannel": "nothing — the entries are unlinked",
+        "classification": "erasing",
+        "evidence": {
+          "kind": "exhaustive-sweep",
+          "domain": "all 4-entry logs",
+          "largestFibre": 2,
+          "bitsErasedPpm": 1000000
+        }
+      },
+      {
+        "representation": "InMemoryDeltaLog",
+        "operation": "AppendAsync",
+        "observation": "log-read-surface",
+        "recoveryChannel": "the entry is still readable by replay",
+        "classification": "reversible",
+        "evidence": {
+          "kind": "exhaustive-sweep",
+          "domain": "all 4-entry logs",
+          "largestFibre": 1,
+          "bitsErasedPpm": 0
+        }
+      },
+      {
+        "representation": "InMemoryDeltaLog",
+        "operation": "AppendAsync",
+        "observation": "log-read-surface",
+        "recoveryChannel": "the entry is still readable by replay",
+        "classification": "reversible",
+        "evidence": {
+          "kind": "exhaustive-sweep",
+          "domain": "all 4-entry logs",
+          "largestFibre": 1,
+          "bitsErasedPpm": 0
+        }
+      }
+    ],
+    "expected": {
+      "bitsPpm": 1000000,
+      "complete": true,
+      "holeKeys": [],
+      "holeWhy": [],
+      "chargedPostings": 1,
+      "freePostings": 2,
+      "holePostings": 0
+    }
+  },
+  {
+    "vectorType": "Settle",
+    "name": "two-different-charges",
+    "postings": [
+      {
+        "representation": "InMemoryDeltaLog",
+        "operation": "TruncateAsync",
+        "observation": "log-read-surface",
+        "recoveryChannel": "nothing — the entries are unlinked",
+        "classification": "erasing",
+        "evidence": {
+          "kind": "exhaustive-sweep",
+          "domain": "all 4-entry logs",
+          "largestFibre": 2,
+          "bitsErasedPpm": 1000000
+        }
+      },
+      {
+        "representation": "Spine",
+        "operation": "consolidate",
+        "observation": "log-read-surface",
+        "recoveryChannel": "nothing",
+        "classification": "erasing",
+        "evidence": {
+          "kind": "bounded-model-sweep",
+          "model": "fibre capped at 13 by the pinned quota",
+          "largestFibre": 13,
+          "bitsErasedPpm": 3700440
+        }
+      }
+    ],
+    "expected": {
+      "bitsPpm": 4700440,
+      "complete": true,
+      "holeKeys": [],
+      "holeWhy": [],
+      "chargedPostings": 2,
+      "freePostings": 0,
+      "holePostings": 0
+    }
+  },
+  {
+    "vectorType": "Settle",
+    "name": "one-hole-among-many-measured",
+    "postings": [
+      {
+        "representation": "InMemoryDeltaLog",
+        "operation": "TruncateAsync",
+        "observation": "log-read-surface",
+        "recoveryChannel": "nothing — the entries are unlinked",
+        "classification": "erasing",
+        "evidence": {
+          "kind": "exhaustive-sweep",
+          "domain": "all 4-entry logs",
+          "largestFibre": 2,
+          "bitsErasedPpm": 1000000
+        }
+      },
+      {
+        "representation": "Spine",
+        "operation": "consolidate",
+        "observation": "log-read-surface",
+        "recoveryChannel": "nothing",
+        "classification": "erasing",
+        "evidence": {
+          "kind": "bounded-model-sweep",
+          "model": "fibre capped at 13 by the pinned quota",
+          "largestFibre": 13,
+          "bitsErasedPpm": 3700440
+        }
+      },
+      {
+        "representation": "InMemoryDeltaLog",
+        "operation": "AppendAsync",
+        "observation": "log-read-surface",
+        "recoveryChannel": "the entry is still readable by replay",
+        "classification": "reversible",
+        "evidence": {
+          "kind": "exhaustive-sweep",
+          "domain": "all 4-entry logs",
+          "largestFibre": 1,
+          "bitsErasedPpm": 0
+        }
+      },
+      {
+        "representation": "ZetaFsDeltaLog",
+        "operation": "TruncateAsync",
+        "observation": "physical-medium",
+        "recoveryChannel": "unknown — the medium may or may not retain the blocks",
+        "classification": "unmeasured",
+        "evidence": {
+          "kind": "no-admissible-measurement",
+          "reason": "a real filesystem is not enumerable; block reuse is the storage layer's business"
+        }
+      }
+    ],
+    "expected": {
+      "bitsPpm": 4700440,
+      "complete": false,
+      "holeKeys": ["ZetaFsDeltaLog::TruncateAsync::physical-medium"],
+      "holeWhy": ["unmeasured: a real filesystem is not enumerable; block reuse is the storage layer's business"],
+      "chargedPostings": 2,
+      "freePostings": 1,
+      "holePostings": 1
+    }
+  },
+  {
+    "vectorType": "Settle",
+    "name": "the-same-hole-repeatedly",
+    "postings": [
+      {
+        "representation": "ZetaFsDeltaLog",
+        "operation": "TruncateAsync",
+        "observation": "physical-medium",
+        "recoveryChannel": "unknown — the medium may or may not retain the blocks",
+        "classification": "unmeasured",
+        "evidence": {
+          "kind": "no-admissible-measurement",
+          "reason": "a real filesystem is not enumerable; block reuse is the storage layer's business"
+        }
+      },
+      {
+        "representation": "ZetaFsDeltaLog",
+        "operation": "TruncateAsync",
+        "observation": "physical-medium",
+        "recoveryChannel": "unknown — the medium may or may not retain the blocks",
+        "classification": "unmeasured",
+        "evidence": {
+          "kind": "no-admissible-measurement",
+          "reason": "a real filesystem is not enumerable; block reuse is the storage layer's business"
+        }
+      },
+      {
+        "representation": "ZetaFsDeltaLog",
+        "operation": "TruncateAsync",
+        "observation": "physical-medium",
+        "recoveryChannel": "unknown — the medium may or may not retain the blocks",
+        "classification": "unmeasured",
+        "evidence": {
+          "kind": "no-admissible-measurement",
+          "reason": "a real filesystem is not enumerable; block reuse is the storage layer's business"
+        }
+      }
+    ],
+    "expected": {
+      "bitsPpm": 0,
+      "complete": false,
+      "holeKeys": ["ZetaFsDeltaLog::TruncateAsync::physical-medium"],
+      "holeWhy": ["unmeasured: a real filesystem is not enumerable; block reuse is the storage layer's business"],
+      "chargedPostings": 0,
+      "freePostings": 0,
+      "holePostings": 3
+    }
+  },
+  {
+    "vectorType": "Settle",
+    "name": "holes-posted-out-of-ordinal-order",
+    "postings": [
+      {
+        "representation": "ZetaFsDeltaLog",
+        "operation": "TruncateAsync",
+        "observation": "physical-medium",
+        "recoveryChannel": "unknown — the medium may or may not retain the blocks",
+        "classification": "unmeasured",
+        "evidence": {
+          "kind": "no-admissible-measurement",
+          "reason": "a real filesystem is not enumerable; block reuse is the storage layer's business"
+        }
+      },
+      {
+        "representation": "Broken",
+        "operation": "claimsFreeButIsNot",
+        "observation": "log-read-surface",
+        "recoveryChannel": "claimed reversible over a fibre of 4",
+        "classification": "reversible",
+        "evidence": {
+          "kind": "exhaustive-sweep",
+          "domain": "a domain where it collapses 4 to 1",
+          "largestFibre": 4,
+          "bitsErasedPpm": 2000000
+        }
+      },
+      {
+        "representation": "Broken",
+        "operation": "claimsCostButIsInjective",
+        "observation": "log-read-surface",
+        "recoveryChannel": "claimed erasing over an injective map",
+        "classification": "erasing",
+        "evidence": {
+          "kind": "exhaustive-sweep",
+          "domain": "an injective domain",
+          "largestFibre": 1,
+          "bitsErasedPpm": 0
+        }
+      }
+    ],
+    "expected": {
+      "bitsPpm": 0,
+      "complete": false,
+      "holeKeys": [
+        "Broken::claimsCostButIsInjective::log-read-surface",
+        "Broken::claimsFreeButIsNot::log-read-surface",
+        "ZetaFsDeltaLog::TruncateAsync::physical-medium"
+      ],
+      "holeWhy": [
+        "malformed: classification erasing does not agree with its evidence (fibre=1, ppm=0)",
+        "malformed: classification reversible does not agree with its evidence (fibre=4, ppm=2000000)",
+        "unmeasured: a real filesystem is not enumerable; block reuse is the storage layer's business"
+      ],
+      "chargedPostings": 0,
+      "freePostings": 0,
+      "holePostings": 3
+    }
+  },
+  {
+    "vectorType": "Settle",
+    "name": "every-malformed-shape",
+    "postings": [
+      {
+        "representation": "Broken",
+        "operation": "claimsFreeButIsNot",
+        "observation": "log-read-surface",
+        "recoveryChannel": "claimed reversible over a fibre of 4",
+        "classification": "reversible",
+        "evidence": {
+          "kind": "exhaustive-sweep",
+          "domain": "a domain where it collapses 4 to 1",
+          "largestFibre": 4,
+          "bitsErasedPpm": 2000000
+        }
+      },
+      {
+        "representation": "Broken",
+        "operation": "claimsCostButIsInjective",
+        "observation": "log-read-surface",
+        "recoveryChannel": "claimed erasing over an injective map",
+        "classification": "erasing",
+        "evidence": {
+          "kind": "exhaustive-sweep",
+          "domain": "an injective domain",
+          "largestFibre": 1,
+          "bitsErasedPpm": 0
+        }
+      },
+      {
+        "representation": "Broken",
+        "operation": "claimsUnknownButWasSwept",
+        "observation": "physical-medium",
+        "recoveryChannel": "claimed unmeasured while carrying a sweep",
+        "classification": "unmeasured",
+        "evidence": {
+          "kind": "exhaustive-sweep",
+          "domain": "a domain that was in fact enumerated",
+          "largestFibre": 2,
+          "bitsErasedPpm": 1000000
+        }
+      },
+      {
+        "representation": "Broken",
+        "operation": "holeWithNoReason",
+        "observation": "physical-medium",
+        "recoveryChannel": "unknown",
+        "classification": "unmeasured",
+        "evidence": {
+          "kind": "no-admissible-measurement",
+          "reason": "   "
+        }
+      }
+    ],
+    "expected": {
+      "bitsPpm": 0,
+      "complete": false,
+      "holeKeys": [
+        "Broken::claimsCostButIsInjective::log-read-surface",
+        "Broken::claimsFreeButIsNot::log-read-surface",
+        "Broken::claimsUnknownButWasSwept::physical-medium",
+        "Broken::holeWithNoReason::physical-medium"
+      ],
+      "holeWhy": [
+        "malformed: classification erasing does not agree with its evidence (fibre=1, ppm=0)",
+        "malformed: classification reversible does not agree with its evidence (fibre=4, ppm=2000000)",
+        "malformed: classification unmeasured does not agree with its evidence (fibre=2, ppm=1000000)",
+        "malformed: unmeasured with no written reason — a hole must say why it is a hole"
+      ],
+      "chargedPostings": 0,
+      "freePostings": 0,
+      "holePostings": 4
+    }
+  },
+  {
+    "vectorType": "SettleAll",
+    "name": "empty-account",
+    "postings": [],
+    "expectedObservations": [],
+    "expectedReadings": []
+  },
+  {
+    "vectorType": "SettleAll",
+    "name": "three-observations-posted-in-reverse-ordinal-order",
+    "postings": [
+      {
+        "representation": "ZetaFsDeltaLog",
+        "operation": "TruncateAsync",
+        "observation": "physical-medium",
+        "recoveryChannel": "unknown — the medium may or may not retain the blocks",
+        "classification": "unmeasured",
+        "evidence": {
+          "kind": "no-admissible-measurement",
+          "reason": "a real filesystem is not enumerable; block reuse is the storage layer's business"
+        }
+      },
+      {
+        "representation": "InMemoryDeltaLog",
+        "operation": "TruncateAsync",
+        "observation": "log-read-surface",
+        "recoveryChannel": "nothing — the entries are unlinked",
+        "classification": "erasing",
+        "evidence": {
+          "kind": "exhaustive-sweep",
+          "domain": "all 4-entry logs",
+          "largestFibre": 2,
+          "bitsErasedPpm": 1000000
+        }
+      },
+      {
+        "representation": "InMemoryDeltaLog",
+        "operation": "AppendAsync",
+        "observation": "log-read-surface",
+        "recoveryChannel": "the entry is still readable by replay",
+        "classification": "reversible",
+        "evidence": {
+          "kind": "exhaustive-sweep",
+          "domain": "all 4-entry logs",
+          "largestFibre": 1,
+          "bitsErasedPpm": 0
+        }
+      },
+      {
+        "representation": "GitDeltaLog",
+        "operation": "TruncateAsync",
+        "observation": "commit-dag",
+        "recoveryChannel": "the commit DAG still holds every entry",
+        "classification": "erasing",
+        "evidence": {
+          "kind": "exhaustive-sweep",
+          "domain": "all 4-entry logs",
+          "largestFibre": 2,
+          "bitsErasedPpm": 1000000
+        }
+      },
+      {
+        "representation": "GitDeltaLog",
+        "operation": "AppendAsync",
+        "observation": "commit-dag",
+        "recoveryChannel": "the commit is addressable",
+        "classification": "reversible",
+        "evidence": {
+          "kind": "exhaustive-sweep",
+          "domain": "all 4-entry logs",
+          "largestFibre": 1,
+          "bitsErasedPpm": 0
+        }
+      }
+    ],
+    "expectedObservations": ["commit-dag", "log-read-surface", "physical-medium"],
+    "expectedReadings": [
+      {
+        "bitsPpm": 1000000,
+        "complete": true,
+        "holeKeys": [],
+        "holeWhy": [],
+        "chargedPostings": 1,
+        "freePostings": 1,
+        "holePostings": 0
+      },
+      {
+        "bitsPpm": 1000000,
+        "complete": true,
+        "holeKeys": [],
+        "holeWhy": [],
+        "chargedPostings": 1,
+        "freePostings": 1,
+        "holePostings": 0
+      },
+      {
+        "bitsPpm": 0,
+        "complete": false,
+        "holeKeys": ["ZetaFsDeltaLog::TruncateAsync::physical-medium"],
+        "holeWhy": ["unmeasured: a real filesystem is not enumerable; block reuse is the storage layer's business"],
+        "chargedPostings": 0,
+        "freePostings": 0,
+        "holePostings": 1
+      }
+    ]
+  },
+  {
+    "vectorType": "SettleAll",
+    "name": "one-observation-complete-another-not",
+    "postings": [
+      {
+        "representation": "GitDeltaLog",
+        "operation": "TruncateAsync",
+        "observation": "commit-dag",
+        "recoveryChannel": "the commit DAG still holds every entry",
+        "classification": "erasing",
+        "evidence": {
+          "kind": "exhaustive-sweep",
+          "domain": "all 4-entry logs",
+          "largestFibre": 2,
+          "bitsErasedPpm": 1000000
+        }
+      },
+      {
+        "representation": "ZetaFsDeltaLog",
+        "operation": "TruncateAsync",
+        "observation": "physical-medium",
+        "recoveryChannel": "unknown — the medium may or may not retain the blocks",
+        "classification": "unmeasured",
+        "evidence": {
+          "kind": "no-admissible-measurement",
+          "reason": "a real filesystem is not enumerable; block reuse is the storage layer's business"
+        }
+      }
+    ],
+    "expectedObservations": ["commit-dag", "physical-medium"],
+    "expectedReadings": [
+      {
+        "bitsPpm": 1000000,
+        "complete": true,
+        "holeKeys": [],
+        "holeWhy": [],
+        "chargedPostings": 1,
+        "freePostings": 0,
+        "holePostings": 0
+      },
+      {
+        "bitsPpm": 0,
+        "complete": false,
+        "holeKeys": ["ZetaFsDeltaLog::TruncateAsync::physical-medium"],
+        "holeWhy": ["unmeasured: a real filesystem is not enumerable; block reuse is the storage layer's business"],
+        "chargedPostings": 0,
+        "freePostings": 0,
+        "holePostings": 1
+      }
+    ]
+  }
+]
