@@ -448,9 +448,9 @@ type FileSystemBlockIo(fs: IFileSystem, path: string, blockSize: int) =
             stream.Flush()
 
 /// DST block device: LBA → sparse blocks in memory. Not POSIX, not NVMe.
-/// Write is visible immediately. `ArmCrashMidWrite` tears the next Write
-/// that is longer than `afterBytes`. Crash recovery of a volume on this
-/// door stays `toy` until freeze/CAS speak `IBlockIo` instead of files.
+/// Write is visible immediately unless reorder holds it. `ArmCrashMidWrite`
+/// tears the next Write that is longer than `afterBytes`. Crash recovery of
+/// a volume on this door stays `toy` until freeze/CAS speak `IBlockIo`.
 [<Sealed>]
 type SimulatedBlockIo(blockSize: int) =
     do
@@ -460,7 +460,12 @@ type SimulatedBlockIo(blockSize: int) =
     let blocks = System.Collections.Concurrent.ConcurrentDictionary<uint64, byte[]>()
     let lockObj = obj ()
     let mutable crashArm: int option = None
+    let mutable corruptArm: int option = None
+    let mutable reorderArmed = false
+    let mutable heldWrite: (uint64 * byte[]) option = None
+    let commitOrder = ResizeArray<uint64>()
     let mutable writes = 0
+    let corruptXor = 0xA5uy
 
     let writeRange (startLba: uint64) (src: ReadOnlySpan<byte>) =
         let mutable offset = 0
@@ -473,6 +478,10 @@ type SimulatedBlockIo(blockSize: int) =
             src.Slice(offset, n).CopyTo(Span(block, within, n))
             offset <- offset + n
 
+    let publish (startLba: uint64) (bytes: byte[]) =
+        writeRange startLba (ReadOnlySpan bytes)
+        commitOrder.Add startLba
+
     /// One-shot: next Write longer than `afterBytes` commits that prefix then throws.
     member _.ArmCrashMidWrite(afterBytes: int) =
         if afterBytes < 0 then
@@ -480,7 +489,23 @@ type SimulatedBlockIo(blockSize: int) =
 
         lock lockObj (fun () -> crashArm <- Some afterBytes)
 
+    /// One-shot: next Write XORs the last `lastBytes` with 0xA5 and commits. Acks.
+    member _.ArmCorruptLastWrite(lastBytes: int) =
+        if lastBytes < 1 then
+            invalidArg (nameof lastBytes) "lastBytes must be >= 1"
+
+        lock lockObj (fun () -> corruptArm <- Some lastBytes)
+
+    /// One-shot: hold the first Write (not visible), then the second Write
+    /// commits itself first and flushes the held write.
+    member _.ArmReorderNextTwo() =
+        lock lockObj (fun () ->
+            reorderArmed <- true
+            heldWrite <- None)
+
     member _.Writes = lock lockObj (fun () -> writes)
+
+    member _.CommitOrder = lock lockObj (fun () -> commitOrder.ToArray())
 
     interface IBlockIo with
         member _.BlockSize = blockSize
@@ -515,6 +540,7 @@ type SimulatedBlockIo(blockSize: int) =
                 | Some afterBytes when src.Length > afterBytes ->
                     crashArm <- None
                     writeRange lba (src.Span.Slice(0, afterBytes))
+                    commitOrder.Add lba
                     raise (
                         CrashMidWriteException(
                             "lba:"
@@ -523,8 +549,32 @@ type SimulatedBlockIo(blockSize: int) =
                             src.Length
                         ))
                 | _ ->
-                    writeRange lba src.Span
-                    src.Length)
+                    match corruptArm with
+                    | Some lastBytes when src.Length > 0 && lastBytes > 0 ->
+                        corruptArm <- None
+                        let copy = src.ToArray()
+                        let n = min lastBytes copy.Length
+                        let start = copy.Length - n
+
+                        for i in start .. copy.Length - 1 do
+                            copy.[i] <- copy.[i] ^^^ corruptXor
+
+                        publish lba copy
+                        src.Length
+                    | _ ->
+                        match reorderArmed, heldWrite with
+                        | true, None ->
+                            heldWrite <- Some(lba, src.ToArray())
+                            src.Length
+                        | true, Some(heldLba, heldBytes) ->
+                            reorderArmed <- false
+                            heldWrite <- None
+                            publish lba (src.ToArray())
+                            publish heldLba heldBytes
+                            src.Length
+                        | _ ->
+                            publish lba (src.ToArray())
+                            src.Length)
 
         member _.Flush() = ()
 
