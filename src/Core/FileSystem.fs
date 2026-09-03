@@ -1,6 +1,7 @@
 namespace Zeta.Core
 
 open System
+open System.Collections.Generic
 open System.IO
 open System.Text
 open System.Threading
@@ -622,6 +623,48 @@ module BlockLog =
             let dst = Array.zeroCreate (int len)
             io.Read(0UL, Memory dst) |> ignore
             dst
+
+/// Content-addressed objects on an `IBlockIo`. The index is DST instance
+/// state (same peel as freeze-log `LogicalBytes`). A real volume needs a
+/// superblock; that is not this type. Crash during `Put` leaves the index
+/// unchanged. Keys are ordinal hex strings.
+[<Sealed>]
+type BlockCas(io: IBlockIo) =
+    let index = Dictionary<string, struct (int64 * int)>(StringComparer.Ordinal)
+    let lockObj = obj ()
+    let mutable pos = 0L
+
+    do
+        if io.BlockSize <= 0 then
+            invalidArg (nameof io) "block size must be positive"
+
+    member _.Device = io
+
+    member _.Count = lock lockObj (fun () -> index.Count)
+
+    member _.Exists(key: string) =
+        if isNull key then
+            false
+        else
+            lock lockObj (fun () -> index.ContainsKey key)
+
+    /// Append `bytes` through `BlockLog`. Index updates only after the
+    /// device Write returns. A crash-mid-write therefore cannot publish a
+    /// name for a torn payload.
+    member _.Put(key: string, bytes: byte[]) =
+        if String.IsNullOrEmpty key then
+            invalidArg (nameof key) "key must be non-empty"
+
+        if isNull bytes then
+            invalidArg (nameof bytes) "bytes must not be null"
+
+        lock lockObj (fun () ->
+            let start = pos
+            let after =
+                BlockLog.append io start (System.ReadOnlyMemory<byte>.op_Implicit bytes)
+
+            index.[key] <- struct (start, bytes.Length)
+            pos <- after)
 
 
 /// The global file system registry containing the active IFileSystem implementation.
