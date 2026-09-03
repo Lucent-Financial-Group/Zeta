@@ -100,3 +100,35 @@ Synced/Healthy against the authenticated store.
 
 Found 2026-09-01 while diagnosing why #16279 (the seaweedfs CVE bump) failed the live
 kind proof. The CVE was the reason to look; this was underneath it.
+
+## 2026-09-03 — the live dump answered it, and the answer is not S3 auth
+
+Riven handed this lane over after closing the Cilium cell; the "must not be fixed by guessing"
+line above was right. Read from the included-proof dump on run 33713945771 / 33736439359:
+
+**Cause A — seaweedfs 4.45.0 does not render under the ArgoCD the kind lane bootstraps.**
+`condition ComparisonError … helm template … Error: parse error at
+(seaweedfs/templates/shared/security-configmap.yaml:21): function "fromToml" not defined`.
+`fromToml` is a **Helm 4** template function. The kind-lane bootstrap installed argo-cd
+**7.7.10 = ArgoCD v2.13.2 = Helm 3**; the self-managed Application upgrades to 10.7.0
+(v3.5.2, Helm 4 only) at wave −90 but the repo-server had already **cached** the failure
+(`Manifest generation error (cached)`), and a cache entry is not invalidated by a binary
+swap. Consequence chain, all measured: seaweedfs `sync=Unknown health=Healthy` **vacuously**
+(zero applied resources) → no `blob-store-seaweedfs-all-in-one` Service → kube-dns
+`no such host` ×700 → mimir's startup `sanity-check` module fails → every mimir module
+"failed … because it depends on module sanity-check" → 9–12 restarts each. Loki logged **zero**
+S3 lines: it never tried, so its Healthy was as vacuous as seaweedfs's. Fix: pin the kind
+bootstrap to 10.7.0 (this PR); the k3s bootstrap had already moved on 2026-09-01.
+
+**Cause B — independent of A — `mimir-kafka-0` never schedules:** `0/1 nodes are available:
+1 Insufficient cpu` (kafka requests `cpu: 1` at the metal rung the committed tree carries; the
+lane is over the runner budget, which is the already-acknowledged `acknowledgedRungBudgetGap`).
+With ingest-storage on by default in mimir-distributed 6.2.0, no Kafka means the write path
+cannot come up even after A is fixed. That is the next item on this lane, and it is a
+capacity/rung decision, not a chart fix.
+
+**What this leaves of the original claim.** The auth *finding* stands — 4.33.0 rendered zero
+identities and fails open, 4.45.0 renders them and fails closed — and the "done when" still
+holds: auth must be *demonstrated enforced* by a test. What is retracted is the implication that
+auth becoming real is *why mimir went Degraded*. It was not reachable to find out, because the
+store was never applied.
