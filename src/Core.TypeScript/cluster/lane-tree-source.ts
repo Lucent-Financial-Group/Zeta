@@ -92,7 +92,7 @@
  */
 
 import { execFileSync } from "node:child_process";
-import { cpSync, mkdirSync, readdirSync, readFileSync, rmSync, statSync, writeFileSync } from "node:fs";
+import { cpSync, mkdirSync, readdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { join, resolve } from "node:path";
 
 /**
@@ -138,9 +138,13 @@ export interface StagedTree {
 /** Count every file under a directory, recursively. */
 export function countFiles(dir: string): number {
   let total = 0;
-  for (const entry of readdirSync(dir)) {
-    const path = join(dir, entry);
-    if (statSync(path).isDirectory()) total += countFiles(path);
+  // `withFileTypes` rather than a follow-up `statSync`: the kind arrives WITH the
+  // listing, so there is no second syscall for an entry to change under. A
+  // readdir-then-stat pair is a check-then-use race whose check already knew the
+  // answer (CWE-367).
+  for (const entry of readdirSync(dir, { withFileTypes: true })) {
+    const path = join(dir, entry.name);
+    if (entry.isDirectory()) total += countFiles(path);
     else total += 1;
   }
   return total;
@@ -169,13 +173,14 @@ export function rewriteSelfRepoUrls(source: string, servedUrl: string): { text: 
 function rewriteTree(root: string, servedUrl: string): readonly string[] {
   const rewritten: string[] = [];
   const walk = (dir: string): void => {
-    for (const entry of readdirSync(dir)) {
-      const path = join(dir, entry);
-      if (statSync(path).isDirectory()) {
+    // Same reason as `countFiles`: one listing, one answer, no window.
+    for (const entry of readdirSync(dir, { withFileTypes: true })) {
+      const path = join(dir, entry.name);
+      if (entry.isDirectory()) {
         walk(path);
         continue;
       }
-      if (!entry.endsWith(".yaml") && !entry.endsWith(".yml")) continue;
+      if (!entry.name.endsWith(".yaml") && !entry.name.endsWith(".yml")) continue;
       const source = readFileSync(path, "utf8");
       const { text, rewrote } = rewriteSelfRepoUrls(source, servedUrl);
       if (!rewrote) continue;
