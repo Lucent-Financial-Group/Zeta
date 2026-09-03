@@ -1,11 +1,12 @@
 ---
 id: 081M1KEYNPD087G0R000DX5MT7
 type: task
-state: backlog
+state: done
 priority: P1
 slug: sealed-freeze-log-through-filesystemblockio-polyfill
 title: "Sealed freeze log through FileSystemBlockIo polyfill"
 created: 2026-09-03T11:03:00.000Z
+completed: 2026-09-03T11:25:00.464Z
 depends_on: ["081M1KDRJAA087G0R003S519DD"]
 composes_with: ["081M1KDRJAA087G0R003S519DD"]
 ---
