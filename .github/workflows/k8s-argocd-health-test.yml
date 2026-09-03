@@ -1154,8 +1154,25 @@ jobs:
             fi
           done
           echo "=== spire-agent (second k3s/k3d class: hostNetwork DNS i/o timeout; not Gateway API) ==="
-          kubectl -n spire get pods -o wide || true
-          kubectl -n spire logs -l app=spire-agent --tail=40 --prefix=true || true
+          echo "--- DaemonSets + pods (chart 0.24.2 hardcodes hostNetwork + ClusterFirstWithHostNet) ---"
+          kubectl -n spire get daemonset,pods -o wide || true
+          kubectl -n spire get pods -o custom-columns=NAME:.metadata.name,HOSTNET:.spec.hostNetwork,DNSPOL:.spec.dnsPolicy,LABELS:.metadata.labels --no-headers || true
+          echo "--- kube-dns ClusterIP (the 10.43.0.10 the agent dials) ---"
+          kubectl -n kube-system get svc -l k8s-app=kube-dns -o wide || true
+          kubectl -n kube-system get ep kube-dns -o wide || true
+          echo "--- logs from DaemonSet/spire-agent ---"
+          # NOT the `app=spire-agent` label: chart selectorLabels are
+          # app.kubernetes.io/name=spire-agent + app.kubernetes.io/instance.
+          # MEASURED live-k3d smoke 33739778288: that label printed no logs
+          # while the pod was 0/1 with 2 restarts.
+          kubectl -n spire logs daemonset/spire-agent --tail=80 --prefix=true || true
+          kubectl -n spire logs daemonset/spire-agent --previous --tail=80 --prefix=true || true
+          echo "--- cilium-dbg service list for kube-dns (KPR map; cilium-agent is also hostNetwork) ---"
+          DNS_IP="$(kubectl -n kube-system get svc kube-dns -o jsonpath='{.spec.clusterIP}' 2>/dev/null || true)"
+          echo "kube-dns ClusterIP=${DNS_IP:-NONE}"
+          if [ -n "$DNS_IP" ]; then
+            kubectl -n kube-system exec ds/cilium -c cilium-agent -- cilium-dbg service list 2>/dev/null | grep -E "${DNS_IP}|PORT" || true
+          fi
 
       - name: Print cluster diagnostics
         if: always()
