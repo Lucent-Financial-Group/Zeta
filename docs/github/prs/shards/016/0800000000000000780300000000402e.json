@@ -1,0 +1,12 @@
+{
+  "pr_number": 16430,
+  "archive_path": "docs/history/pr-reviews/PR-16430-docs-081m1dfq2mz-record-16419-squash-on-main.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-03T03:08:35.249Z",
+  "schema_version": "v1",
+  "commit_sha": "d3571702142b2ee92132266b3c43b500bd188721",
+  "title": "docs(081M1DFQ2MZ): record #16419 squash on main",
+  "state": "MERGED",
+  "merged_at": "2026-09-03T03:07:46Z",
+  "head_ref": "cursor/workitem-16419-landed-27c5"
+}
