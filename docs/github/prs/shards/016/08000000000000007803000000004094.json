@@ -1,0 +1,15 @@
+{
+  "pr_number": 16532,
+  "archive_path": "docs/history/pr-reviews/PR-16532-fix-081m1mg8gve087g0r00203qv20-two-namespaces-claimed-a-gatekeeper-exemption-the.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7qKcq4",
+    "thread:PRRT_kwDOSF9kNM6fE1Uf"
+  ],
+  "fetched_at": "2026-09-03T21:23:36.308Z",
+  "schema_version": "v1",
+  "commit_sha": "8cca0c83bd5984fe7e74d3c68a993fc5bbb651b3",
+  "title": "fix(081M1MG8GVE087G0R00203QV20): two namespaces claimed a gatekeeper exemption they did not have",
+  "state": "MERGED",
+  "merged_at": "2026-09-03T21:22:54Z",
+  "head_ref": "otto/gatekeeper-ignore-label-exemption"
+}
