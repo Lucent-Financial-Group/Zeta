@@ -107,10 +107,32 @@ export interface ChooseArgs {
   readonly instruction?: string;
 }
 
+/**
+ * WHY the chooser's answer was not used as given.
+ *
+ * `fallback: boolean` conflated three causes that call for opposite responses, and the one that
+ * matters most was the invisible one:
+ *
+ *   backend-error   the chooser could not answer. A property of the RUNTIME (ollama down, timeout).
+ *                   Not the lane misbehaving.
+ *   unparseable     it answered and the answer was not a number. A property of the MODEL's format
+ *                   discipline.
+ *   out-of-range    it named a slot that does not exist. An ILLEGAL SELECTION — the lane reaching
+ *                   past the menu it was given, which is the one thing a menu-bounded design must
+ *                   count.
+ *
+ * The promotion gate demotes on illegal selections and must not demote on a flaky daemon. With one
+ * boolean it could not tell them apart, so it would have read a dropped connection as misbehaviour
+ * and an out-of-range pick as nothing at all.
+ */
+export type ChooseFallbackCause = "none" | "backend-error" | "unparseable" | "out-of-range";
+
 export interface ChooseResult {
   readonly index: number; // always a valid index into options
   readonly raw: string; // the model's raw reply (for logging)
   readonly fallback: boolean; // true ⇒ index 0 chosen because the model failed
+  /** Why. `fallback` is exactly `cause !== "none"`; a test pins that they cannot drift. */
+  readonly cause: ChooseFallbackCause;
 }
 
 /**
@@ -122,7 +144,7 @@ export interface ChooseResult {
 export async function chooseIndex(backend: ModelBackend, args: ChooseArgs): Promise<ChooseResult> {
   const n = args.options.length;
   if (n === 0) throw new Error("chooseIndex: options must be non-empty");
-  if (n === 1) return { index: 0, raw: "", fallback: false };
+  if (n === 1) return { index: 0, raw: "", fallback: false, cause: "none" };
 
   const numbered = args.options.map((o, i) => `${i}: ${o}`).join("\n");
   const prompt =
@@ -135,13 +157,16 @@ export async function chooseIndex(backend: ModelBackend, args: ChooseArgs): Prom
   try {
     raw = (await backend.complete(prompt, { temperature: 0, maxTokens: 6 })).trim();
   } catch {
-    return { index: 0, raw: "", fallback: true };
+    return { index: 0, raw: "", fallback: true, cause: "backend-error" };
   }
   const m = raw.match(/\d+/);
-  if (!m) return { index: 0, raw, fallback: true };
+  if (!m) return { index: 0, raw, fallback: true, cause: "unparseable" };
   const idx = Number.parseInt(m[0]!, 10);
-  if (!Number.isInteger(idx) || idx < 0 || idx >= n) return { index: 0, raw, fallback: true };
-  return { index: idx, raw, fallback: false };
+  if (!Number.isInteger(idx) || idx < 0 || idx >= n) {
+    // THE illegal selection: the model named a slot outside the menu it was shown.
+    return { index: 0, raw, fallback: true, cause: "out-of-range" };
+  }
+  return { index: idx, raw, fallback: false, cause: "none" };
 }
 
 // ─── classify: observe.ts auto-classifier use case ───────────────────

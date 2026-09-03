@@ -20,9 +20,27 @@ function throwingBackend(): ModelBackend {
 }
 
 describe("chooseIndex — the CYOA / classifier choice primitive", () => {
+  test("the three fallback causes are distinguished, not conflated", async () => {
+    // One boolean could not tell a dropped connection from a lane reaching past its menu. The
+    // promotion gate demotes on the second and must not demote on the first.
+    const opts = { context: "x", options: ["a", "b", "c"] };
+    expect((await chooseIndex(throwingBackend(), opts)).cause).toBe("backend-error");
+    expect((await chooseIndex(mockBackend("no digits here"), opts)).cause).toBe("unparseable");
+    expect((await chooseIndex(mockBackend("99"), opts)).cause).toBe("out-of-range");
+    expect((await chooseIndex(mockBackend("2"), opts)).cause).toBe("none");
+  });
+
+  test("`fallback` and `cause` can never disagree", async () => {
+    const opts = { context: "x", options: ["a", "b", "c"] };
+    for (const backend of [throwingBackend(), mockBackend("nope"), mockBackend("99"), mockBackend("1")]) {
+      const r = await chooseIndex(backend, opts);
+      expect(r.fallback).toBe(r.cause !== "none");
+    }
+  });
+
   test("parses a clean index", async () => {
     const r = await chooseIndex(mockBackend("1"), { context: "x", options: ["a", "b", "c"] });
-    expect(r).toEqual({ index: 1, raw: "1", fallback: false });
+    expect(r).toEqual({ index: 1, raw: "1", fallback: false, cause: "none" });
   });
 
   test("extracts the first digit from noisy output", async () => {
@@ -55,7 +73,7 @@ describe("chooseIndex — the CYOA / classifier choice primitive", () => {
   test("single option short-circuits with no model call", async () => {
     // throwingBackend would throw if called — proves no call happened.
     const r = await chooseIndex(throwingBackend(), { context: "x", options: ["only"] });
-    expect(r).toEqual({ index: 0, raw: "", fallback: false });
+    expect(r).toEqual({ index: 0, raw: "", fallback: false, cause: "none" });
   });
 
   test("empty options throws (caller bug, not a model failure)", async () => {
