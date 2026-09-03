@@ -72,6 +72,10 @@ kind: Application
 metadata:
   name: cloudnativepg
   namespace: argocd
+  # Cascade deletion through ArgoCD, the same finalizer every other Application
+  # in this tree carries; without it the ratchet's Application-shape check counts
+  # this manifest as a new failure.
+  finalizers: [ resources-finalizer.argocd.argoproj.io ]
   annotations:
     # Height 1 in the declared graph (cilium -> cloudnativepg), the same height as
     # cert-manager, and checked by derive-sync-waves.ts against

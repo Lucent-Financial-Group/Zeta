@@ -80,8 +80,12 @@ describe("081M0N90CHX087G0R0034C7NPT — the out-of-subset constructs the graph 
     expect(flowSeq).toBeGreaterThan(0);
     // Exact counts as measured 2026-08-22. A change here is a real change to the
     // declaration, not drift — and it should be READ, not silently absorbed.
-    expect(folded).toBe(44);
-    expect(flowSeq).toBe(28);
+    // 44 -> 45 folded and 28 -> 29 flow-seq on 2026-09-02: `cloudnativepg` was
+    // added to the sync-wave graph (cilium -> cloudnativepg), the shared
+    // prerequisite of the gitlab and temporal bumps. Its node carries one folded
+    // `reason: >-` and one `dependsOn: [cilium]` flow sequence.
+    expect(folded).toBe(45);
+    expect(flowSeq).toBe(29);
   });
 });
 
@@ -191,7 +195,9 @@ describe("081M0N90CHX087G0R0034C7NPT — ace agrees with the two tools that rout
     expect(graph.kind).toBe("AppDependencyGraph");
     // 47 -> 46 on 2026-09-01: `minio` was removed from the sync-wave graph
     // (upstream project ARCHIVED; seaweedfs, already in the tree, is the store).
-    expect(graph.spec.dependsOn.length).toBe(46);
+    // 46 -> 47 on 2026-09-02: `cloudnativepg` added (cilium -> cloudnativepg),
+    // the shared prerequisite of the gitlab and temporal bumps.
+    expect(graph.spec.dependsOn.length).toBe(47);
   });
 
   test("ace, the yaml package, lane-partition and derive-sync-waves read the SAME nodes and edges", () => {
@@ -212,7 +218,7 @@ describe("081M0N90CHX087G0R0034C7NPT — ace agrees with the two tools that rout
 
     const viaDerive = flattenFromNodes(readDeclaration(REPO_ROOT).spec.spec.dependsOn);
 
-    expect(viaAce.nodes.length).toBe(46);
+    expect(viaAce.nodes.length).toBe(47);
     expect(viaAce.edges.length).toBeGreaterThan(0);
 
     expect(viaAce).toEqual(viaYamlPkg);
