@@ -1,0 +1,103 @@
+---
+id: 081M1K1MY84087G0R001NKY2MS
+type: bug
+state: backlog
+priority: P2
+slug: a-dry-run-wrote-to-a-tracked-file-and-printed-that-it-had-no
+title: "A dry run wrote to a tracked file and printed that it had no side effects"
+created: 2026-09-03T07:40:00.000Z
+depends_on: []
+composes_with: []
+---
+
+# A dry run wrote to a tracked file and printed that it had no side effects
+
+## The defect
+
+`run-loop-real.ts` called `recordReasoning(args.repoRoot, reasoning)` **unconditionally**, twelve
+lines above the branch that prints:
+
+```
+[dry-run] would execute — exiting without side-effects
+```
+
+`recordReasoning` appends to `data/tick-reasoning.jsonl`, which is **tracked**. So the banner was
+simply false, and every `--dry-run` invocation dirtied the working tree.
+
+## The consequential half
+
+The dirty tree is the visible symptom. What matters is **what reads that file**.
+
+`decorrelation-meter.ts` folds `tick-reasoning.jsonl` into **pairwise agreement between agents**,
+keyed by the `agent` field — the measurement of how much the agents' decisions correlate beyond
+chance.
+
+`loop-resilience-probe.ts` drives ten scenarios under the agent name `"resilience"`: a raised e-stop,
+a corrupt control-plane flags file, an unparseable promotion window, a window with a `NaN` counter, a
+dead Ollama daemon, an invalid forge token. **Every probe run injected a phantom agent into that
+measurement, whose every "decision" was made under deliberately broken conditions.**
+
+Measured: one probe run appended **21 records** and grew the file by 20,720 bytes.
+
+## The probe's own contract said this must not happen
+
+Its header already said it plainly:
+
+> A resilience probe that could push, merge, or write to the event log would be a chaos harness with
+> side effects, and the one thing it must never do is **become the incident it is testing for**.
+
+That was a claim in a comment, and it was false. It is now an **assertion**: the probe fingerprints
+`data/tick-reasoning.jsonl` and `workitems/events` before the first scenario, compares after the
+last, and **exits 1** if either changed.
+
+## The fix
+
+`if (!args.dryRun) recordReasoning(...)`. A dry tick is an observation, not a decision that reached
+the world. It is still **printed**, so nothing is hidden from an operator; it is not **recorded**,
+because the record is evidence.
+
+The banner now says so: `exiting without side-effects (no reasoning record written)`.
+
+## Falsifiers
+
+The harness check is verified by restoring the defect, not asserted:
+
+```
+# with recordReasoning unconditional again
+bun src/Core.TypeScript/observe/loop-resilience-probe.ts    # exit 1
+  FAIL  the probe modified tracked state it promised not to touch:
+        !! data/tick-reasoning.jsonl: file:156563 -> file:177283
+
+# with the guard
+bun src/Core.TypeScript/observe/loop-resilience-probe.ts    # exit 0
+  PASS  tracked state untouched (2 path(s) checked)
+10/10 scenarios behaved as specified
+```
+
+`git status data/tick-reasoning.jsonl` is clean after a full probe run and after a single
+`--dry-run` tick.
+
+## Two bugs in the check itself, caught before it landed
+
+Worth recording because a hygiene check that is wrong is worse than none — it reports PASS.
+
+1. **A filtered index read against the unfiltered array.** The first version was
+   `before.filter(...).map((b, i) => ... after[i] ...)`, where `i` is the position in the _filtered_
+   list. That is right whenever nothing changed and wrong in exactly the case the check exists for.
+   Now a single `flatMap` over the original.
+2. A mangled escape produced a literal newline inside a string, which failed to parse. Loud, and
+   fixed immediately — recorded only because it sat one line from the silent bug above.
+
+## Honest limit
+
+The check watches two paths by name. It catches a regression in the write it was built for and any
+new write to `workitems/events`; it would not catch a write to some third tracked path. A general
+`git status` check would be stronger and would also flag unrelated dirt in a developer's tree, which
+is why it is a named list — stated so the coverage is known rather than assumed.
+
+## Noticed in passing, not fixed here
+
+`bun test src/Core.TypeScript/observe/` has **7 pre-existing failures on unmodified `main`** — tilde
+expansion, repo-relative default paths, a ZetaId shard filename, and a `link` symlink test. All look
+Windows-specific and all fail identically without this change; verified by stashing it and re-running.
+Unrelated to this defect and left alone.
