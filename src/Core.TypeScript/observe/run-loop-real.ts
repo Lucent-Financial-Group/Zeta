@@ -37,6 +37,7 @@ import { resolveForgeHost } from "../forge-host/registry";
 import { readPRStateAsync } from "./world-infra";
 import "../forge-host/github/index"; // registers the GitHub adapter
 import { portExecuteItem } from "./kiro-executor-v2";
+import { currentExecutionMode, executorForMode } from "./execution-mode";
 import { codegenExecuteItem } from "./codegen-executor";
 import { realWorkspacePort, type WorkspacePort } from "./workspace-port";
 import type { DoItemOptions } from "./do-item";
@@ -433,6 +434,15 @@ async function main(): Promise<number> {
     },
   };
 
+  // THE PROMOTION GATE. A lane does not get to dispatch side effects because it feels ready — it
+  // gets to when a deterministic window says it earned it. Shadow is the default and the safe
+  // destination for every uncertain answer: no window, an unreadable window, a corrupt counter, or
+  // any demotion trip all land here. Evaluated per tick and stateless, so no lane carries a
+  // "promoted" flag past the evidence that justified it.
+  const gate = currentExecutionMode(process.env.ZETA_PROMOTION_WINDOW ?? undefined);
+  console.log(`[promotion-gate] ${gate.mode} (${gate.reason}) — ${gate.detail}`);
+  const gatedExecutor = executorForMode(gate.mode, executor);
+
   // Build DoItemOptions for the port executor path.
   // The RunSpec.script is a no-op placeholder — execution goes through the port.
   const doItemOpts: DoItemOptions | undefined = action.kind === "do_item"
@@ -451,7 +461,7 @@ async function main(): Promise<number> {
     },
   };
 
-  const result = await execute(enrichedWorld, action, sink, executor, doItemOpts, operatorPort);
+  const result = await execute(enrichedWorld, action, sink, gatedExecutor, doItemOpts, operatorPort);
 
   // 4. The unity: append IS tick IS measurement IS Landauer cost.
   // The phase advanced during append. The entropy was paid during append.
