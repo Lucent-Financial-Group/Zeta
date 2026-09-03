@@ -1,5 +1,6 @@
 import { resolve } from "node:path";
 import { measureCrdtBeliefFusion } from "../../../src/Core.TypeScript/research/composable-factor-benchmark/crdt-belief-fusion";
+import { queryCanonicalGaussianEvidence } from "../../../src/Core.TypeScript/research/composable-factor-benchmark/crdt-evidence-query-adapter";
 
 interface WitnessReport {
   readonly maxDifference: number;
@@ -14,6 +15,35 @@ interface OracleReport {
   readonly gaussianProduct: Readonly<Record<"idempotent" | "commutative" | "associative", boolean>> & { readonly repeatedEvidenceVarianceRatio: number };
   readonly fixedHalf: Readonly<Record<"idempotent" | "commutative" | "dominatesBothInputs", boolean>> & { readonly witness: WitnessReport | null };
   readonly traceGrid: Readonly<Record<"idempotent" | "commutative" | "dominatesBothInputs", boolean>> & { readonly witness: WitnessReport | null };
+  readonly canonicalQuery: CanonicalQueryReport;
+}
+
+interface ReadyQueryReport {
+  readonly status: "Ready";
+  readonly algorithm: "canonical-kahan-gaussian-product/v1";
+  readonly orderedFingerprints: readonly string[];
+  readonly evidenceCount: number;
+  readonly absorption: "ExactOnceByFingerprint";
+  readonly posterior: { readonly mean: readonly number[]; readonly covariance: readonly (readonly number[])[] };
+}
+
+interface ConflictQueryReport {
+  readonly status: "Conflict";
+  readonly algorithm: "canonical-kahan-gaussian-product/v1";
+  readonly orderedFingerprints: readonly string[];
+  readonly evidenceCount: number;
+  readonly conflictKeys: readonly string[];
+}
+
+interface CanonicalQueryReport {
+  readonly permutationReceiptsIdentical: boolean;
+  readonly redeliveryIdentical: boolean;
+  readonly ready: ReadyQueryReport;
+  readonly changedMean: ConflictQueryReport;
+  readonly changedUncertainty: ConflictQueryReport;
+  readonly kahanVsNaiveVariance00Different: boolean;
+  readonly compensatedCancellationVariance00: number;
+  readonly naiveCancellationVariance00: number;
 }
 
 function close(left: number, right: number, tolerance = 1e-12): boolean {
@@ -43,6 +73,77 @@ function parseWitness(value: unknown): WitnessReport | null {
   };
 }
 
+function finiteVector(value: unknown, length: number, code: string): readonly number[] {
+  if (!Array.isArray(value) || value.length !== length || !value.every((entry) => typeof entry === "number" && Number.isFinite(entry))) {
+    throw new Error(code);
+  }
+  return value as readonly number[];
+}
+
+function stringVector(value: unknown, code: string): readonly string[] {
+  if (!Array.isArray(value) || !value.every((entry) => typeof entry === "string")) throw new Error(code);
+  return value as readonly string[];
+}
+
+function parseReadyQuery(value: unknown): ReadyQueryReport {
+  const code = "CRDT-BELIEF-PYTHON-QUERY-READY-SCHEMA";
+  if (typeof value !== "object" || value === null) throw new Error(code);
+  const record = value as Record<string, unknown>;
+  if (record.status !== "Ready" || record.algorithm !== "canonical-kahan-gaussian-product/v1" || record.absorption !== "ExactOnceByFingerprint" || typeof record.evidenceCount !== "number") {
+    throw new Error(code);
+  }
+  if (typeof record.posterior !== "object" || record.posterior === null) throw new Error(code);
+  const posterior = record.posterior as Record<string, unknown>;
+  if (!Array.isArray(posterior.covariance) || posterior.covariance.length !== 2) throw new Error(code);
+  return {
+    status: "Ready",
+    algorithm: "canonical-kahan-gaussian-product/v1",
+    orderedFingerprints: stringVector(record.orderedFingerprints, code),
+    evidenceCount: record.evidenceCount,
+    absorption: "ExactOnceByFingerprint",
+    posterior: {
+      mean: finiteVector(posterior.mean, 2, code),
+      covariance: posterior.covariance.map((row) => finiteVector(row, 2, code)),
+    },
+  };
+}
+
+function parseConflictQuery(value: unknown): ConflictQueryReport {
+  const code = "CRDT-BELIEF-PYTHON-QUERY-CONFLICT-SCHEMA";
+  if (typeof value !== "object" || value === null) throw new Error(code);
+  const record = value as Record<string, unknown>;
+  if (record.status !== "Conflict" || record.algorithm !== "canonical-kahan-gaussian-product/v1" || typeof record.evidenceCount !== "number") {
+    throw new Error(code);
+  }
+  return {
+    status: "Conflict",
+    algorithm: "canonical-kahan-gaussian-product/v1",
+    orderedFingerprints: stringVector(record.orderedFingerprints, code),
+    evidenceCount: record.evidenceCount,
+    conflictKeys: stringVector(record.conflictKeys, code),
+  };
+}
+
+function parseCanonicalQuery(value: unknown): CanonicalQueryReport {
+  const code = "CRDT-BELIEF-PYTHON-QUERY-SCHEMA";
+  if (typeof value !== "object" || value === null) throw new Error(code);
+  const record = value as Record<string, unknown>;
+  const numericFields = ["compensatedCancellationVariance00", "naiveCancellationVariance00"] as const;
+  if (typeof record.permutationReceiptsIdentical !== "boolean" || typeof record.redeliveryIdentical !== "boolean" || typeof record.kahanVsNaiveVariance00Different !== "boolean" || !numericFields.every((field) => typeof record[field] === "number" && Number.isFinite(record[field]))) {
+    throw new Error(code);
+  }
+  return {
+    permutationReceiptsIdentical: record.permutationReceiptsIdentical,
+    redeliveryIdentical: record.redeliveryIdentical,
+    ready: parseReadyQuery(record.ready),
+    changedMean: parseConflictQuery(record.changedMean),
+    changedUncertainty: parseConflictQuery(record.changedUncertainty),
+    kahanVsNaiveVariance00Different: record.kahanVsNaiveVariance00Different,
+    compensatedCancellationVariance00: record.compensatedCancellationVariance00 as number,
+    naiveCancellationVariance00: record.naiveCancellationVariance00 as number,
+  };
+}
+
 function parseReport(value: unknown): OracleReport {
   if (typeof value !== "object" || value === null) throw new Error("CRDT-BELIEF-PYTHON-SCHEMA");
   const root = value as Record<string, unknown>;
@@ -69,6 +170,7 @@ function parseReport(value: unknown): OracleReport {
     gaussianProduct: gaussianProduct as unknown as OracleReport["gaussianProduct"],
     fixedHalf: { ...(fixedHalf as OracleReport["fixedHalf"]), witness: parseWitness(fixedHalf.witness) },
     traceGrid: { ...(traceGrid as OracleReport["traceGrid"]), witness: parseWitness(traceGrid.witness) },
+    canonicalQuery: parseCanonicalQuery(root.canonicalQuery),
   };
 }
 
@@ -108,7 +210,54 @@ for (const [name, oracleLane, measuredLane] of [
   }
 }
 
-console.log(`CRDT belief-fusion cross-verification: 4 law groups; failures ${String(failures.length)}`);
+const canonicalFirst = { key: "a", estimate: { mean: [0, 0] as const, covariance: [[1, 0], [0, 4]] as const } };
+const canonicalSecond = { key: "b", estimate: { mean: [1, 0] as const, covariance: [[4, 0], [0, 1]] as const } };
+const canonicalThird = { key: "c", estimate: { mean: [0, 1] as const, covariance: [[2, 1], [1, 2]] as const } };
+const canonicalReceipt = queryCanonicalGaussianEvidence({ versions: [canonicalFirst, canonicalSecond, canonicalThird] });
+if (canonicalReceipt.status !== "Ready") throw new Error("CRDT-BELIEF-TYPESCRIPT-QUERY-NOT-READY");
+const queryReport = oracleReport.canonicalQuery;
+if (!queryReport.permutationReceiptsIdentical) failures.push("canonical:permutations");
+if (!queryReport.redeliveryIdentical) failures.push("canonical:redelivery");
+if (JSON.stringify(queryReport.ready.orderedFingerprints) !== JSON.stringify(canonicalReceipt.orderedFingerprints)) failures.push("canonical:fingerprints");
+if (queryReport.ready.evidenceCount !== canonicalReceipt.evidenceCount) failures.push("canonical:count");
+for (let row = 0; row < 2; row += 1) {
+  const pythonMean = queryReport.ready.posterior.mean[row];
+  const typescriptMean = canonicalReceipt.posterior.mean[row];
+  const typescriptCovarianceRow = canonicalReceipt.posterior.covariance[row];
+  if (pythonMean === undefined || typescriptMean === undefined || typescriptCovarianceRow === undefined || !close(pythonMean, typescriptMean)) {
+    failures.push(`canonical:mean:${String(row)}`);
+  }
+  for (let column = 0; column < 2; column += 1) {
+    const pythonCovariance = queryReport.ready.posterior.covariance[row]?.[column];
+    const typescriptCovariance = typescriptCovarianceRow?.[column];
+    if (pythonCovariance === undefined || typescriptCovariance === undefined || !close(pythonCovariance, typescriptCovariance)) {
+      failures.push(`canonical:covariance:${String(row)}:${String(column)}`);
+    }
+  }
+}
+for (const changed of [queryReport.changedMean, queryReport.changedUncertainty]) {
+  if (changed.conflictKeys.length !== 1 || changed.conflictKeys[0] !== "a") failures.push("canonical:conflict");
+}
+const normalKahanControl = queryReport.kahanVsNaiveVariance00Different
+  && !close(queryReport.compensatedCancellationVariance00, queryReport.naiveCancellationVariance00, 0);
+if (!normalKahanControl) failures.push("canonical:kahan-control");
+
+const mutantProcess = Bun.spawnSync(["python3", oracle], {
+  cwd: root,
+  stdout: "pipe",
+  stderr: "pipe",
+  env: { ...process.env, CRDT_BELIEF_MUTANT: "adapter-naive" },
+});
+if (mutantProcess.exitCode !== 0) throw new Error(`CRDT-BELIEF-PYTHON-MUTANT-FAILED:${mutantProcess.stderr.toString().trim()}`);
+const mutant = parseReport(JSON.parse(mutantProcess.stdout.toString()) as unknown);
+const adapterMutationDetected = !close(
+  oracleReport.canonicalQuery.compensatedCancellationVariance00,
+  mutant.canonicalQuery.compensatedCancellationVariance00,
+  0,
+);
+if (!adapterMutationDetected) failures.push("canonical:naive-mutant-not-detected");
+
+console.log(`CRDT belief-fusion cross-verification: 5 law groups; adapter-naive mutant ${adapterMutationDetected ? "detected" : "not-detected"}; failures ${String(failures.length)}`);
 if (failures.length > 0) {
   for (const failure of failures) console.error(failure);
   process.exit(1);

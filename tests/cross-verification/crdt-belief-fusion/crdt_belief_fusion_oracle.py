@@ -7,6 +7,9 @@ import json
 import os
 
 
+ADAPTER_ALGORITHM = "canonical-kahan-gaussian-product/v1"
+
+
 def inv(matrix):
     a, b = matrix[0]
     c, d = matrix[1]
@@ -145,6 +148,82 @@ def conflict_keys(state):
     return tuple(sorted(key for key, versions in by_key.items() if len(versions) > 1))
 
 
+def adapter_number(value):
+    if value == 0:
+        return "0"
+    if value.is_integer():
+        return str(int(value))
+    return repr(value)
+
+
+def adapter_fingerprint(key, estimate):
+    values = (*estimate[0], *estimate[1][0], *estimate[1][1])
+    return key + "\0" + "|".join(adapter_number(value) for value in values)
+
+
+def adapter_canonical_state(state):
+    # The independent oracle scope is the declared ASCII key catalogue. Python's
+    # lexicographic order agrees with the TypeScript code-point ordering there.
+    versions = {adapter_fingerprint(key, estimate): (key, estimate) for key, estimate in state}
+    return tuple(versions[fingerprint_value] for fingerprint_value in sorted(versions))
+
+
+def adapter_totals(versions, compensated):
+    if compensated:
+        sums = [0.0] * 5
+        compensation = [0.0] * 5
+        def add(index, value):
+            adjusted = value - compensation[index]
+            next_sum = sums[index] + adjusted
+            compensation[index] = (next_sum - sums[index]) - adjusted
+            sums[index] = next_sum
+    else:
+        sums = [0.0] * 5
+        def add(index, value):
+            sums[index] += value
+    for _, estimate in versions:
+        information = inv(estimate[1])
+        natural = matrix_vector(information, estimate[0])
+        add(0, information[0][0])
+        add(1, information[0][1])
+        add(2, information[1][1])
+        add(3, natural[0])
+        add(4, natural[1])
+    return ((sums[0], sums[1]), (sums[1], sums[2])), (sums[3], sums[4])
+
+
+def adapter_query(state, compensated=True):
+    canonical = adapter_canonical_state(state)
+    ordered_fingerprints = [adapter_fingerprint(key, estimate) for key, estimate in canonical]
+    conflicts = conflict_keys(canonical)
+    if conflicts:
+        return {
+            "status": "Conflict",
+            "algorithm": ADAPTER_ALGORITHM,
+            "orderedFingerprints": ordered_fingerprints,
+            "evidenceCount": len(canonical),
+            "conflictKeys": list(conflicts),
+        }
+    if not canonical:
+        return {
+            "status": "Empty",
+            "algorithm": ADAPTER_ALGORITHM,
+            "orderedFingerprints": [],
+            "evidenceCount": 0,
+        }
+    information, natural = adapter_totals(canonical, compensated)
+    covariance = inv(information)
+    mean = matrix_vector(covariance, natural)
+    return {
+        "status": "Ready",
+        "algorithm": ADAPTER_ALGORITHM,
+        "orderedFingerprints": ordered_fingerprints,
+        "evidenceCount": len(canonical),
+        "absorption": "ExactOnceByFingerprint",
+        "posterior": {"mean": list(mean), "covariance": [list(row) for row in covariance]},
+    }
+
+
 def main():
     a = ((0.0, 0.0), COVARIANCES[0])
     b = ((1.0, 0.0), COVARIANCES[1])
@@ -161,6 +240,20 @@ def main():
     abc_left = evidence_state_merge(evidence_state_merge(sa, sb), sc)
     abc_right = evidence_state_merge(sa, evidence_state_merge(sb, sc))
     conflict = evidence_state_merge(sa, (("a", changed_a),))
+    adapter_orders = (
+        (sa[0], sb[0], sc[0]), (sa[0], sc[0], sb[0]), (sb[0], sa[0], sc[0]),
+        (sb[0], sc[0], sa[0]), (sc[0], sa[0], sb[0]), (sc[0], sb[0], sa[0]),
+    )
+    use_compensation = os.environ.get("CRDT_BELIEF_MUTANT") != "adapter-naive"
+    adapter_receipts = tuple(adapter_query(order, use_compensation) for order in adapter_orders)
+    adapter_baseline = adapter_receipts[0]
+    cancellation_state = (
+        ("a", ((0.0, 0.0), ((1e-16, 0.0), (0.0, 1.0)))),
+        ("b", ((0.0, 0.0), ((1.0, 0.0), (0.0, 1.0)))),
+        ("c", ((0.0, 0.0), ((1.0, 0.0), (0.0, 1.0)))),
+    )
+    compensated_cancellation = adapter_query(cancellation_state, use_compensation)
+    naive_cancellation = adapter_query(cancellation_state, False)
     report = {
         "evidenceMerge": {
             "idempotent": evidence_state_merge(sa, sa) == sa,
@@ -186,6 +279,19 @@ def main():
             "commutative": difference((trace_grid(a, b)[0], trace_grid(a, b)[1]), (trace_grid(b, a)[0], trace_grid(b, a)[1])) <= 1e-12,
             "dominatesBothInputs": dominates(trace_pair[1], a[1]) and dominates(trace_pair[1], b[1]),
             "witness": associativity_witness(trace_grid),
+        },
+        "canonicalQuery": {
+            "permutationReceiptsIdentical": all(receipt == adapter_baseline for receipt in adapter_receipts),
+            "redeliveryIdentical": adapter_query((sa[0], sb[0], sc[0], sa[0]), use_compensation) == adapter_baseline,
+            "ready": adapter_baseline,
+            "changedMean": adapter_query((sa[0], ("a", ((1.0, 0.0), COVARIANCES[0]))), use_compensation),
+            "changedUncertainty": adapter_query((sa[0], ("a", ((0.0, 0.0), ((2.0, 0.0), (0.0, 4.0))))), use_compensation),
+            "kahanVsNaiveVariance00Different": (
+                compensated_cancellation["posterior"]["covariance"][0][0]
+                != naive_cancellation["posterior"]["covariance"][0][0]
+            ),
+            "compensatedCancellationVariance00": compensated_cancellation["posterior"]["covariance"][0][0],
+            "naiveCancellationVariance00": naive_cancellation["posterior"]["covariance"][0][0],
         },
     }
     print(json.dumps(report, separators=(",", ":"), allow_nan=False))
