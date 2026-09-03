@@ -32,7 +32,7 @@
 
 import { afterEach, beforeEach, describe, expect, it } from "bun:test";
 import { execFileSync } from "node:child_process";
-import { chmodSync, existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+import { chmodSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { gitCommitToMain, type EventEnvelope } from "./event-sink-folder";
@@ -240,8 +240,10 @@ describe("gitCommitToMain — against a real repository", () => {
 
     // The modified tracked file keeps its uncommitted content…
     expect(readFileSync(join(work, "README.md"), "utf-8")).toBe(dirtyBefore);
-    // …and the untracked file is still there.
-    expect(existsSync(untracked)).toBe(true);
+    // …and the untracked file is still there, with its content. Reading it IS the existence check:
+    // an `existsSync` before the read is a check-then-use race (CWE-367) that this repo's own
+    // `lint-check-then-use-file-races` refuses, and it buys nothing here — a missing file makes the
+    // read throw, which fails this test just as loudly and with a better message.
     expect(readFileSync(untracked, "utf-8")).toBe("untracked work in progress\n");
   });
 
