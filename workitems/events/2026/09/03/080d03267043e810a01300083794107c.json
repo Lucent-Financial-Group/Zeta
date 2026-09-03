@@ -1,0 +1,14 @@
+{
+  "id": "080d03267043e810a01300083794107c",
+  "at": "2026-09-03T01:06:59.325Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1JCW23P087G0R000WC8259",
+    "type": "task",
+    "title": "Observe-act promotion gate — a lane earns dispatch, it does not assert it",
+    "slug": "observe-act-promotion-gate-a-lane-earns-dispatch-it-does-not",
+    "priority": "P2",
+    "filename": "081M1JCW23P087G0R000WC8259-observe-act-promotion-gate-a-lane-earns-dispatch-it-does-not.md"
+  }
+}

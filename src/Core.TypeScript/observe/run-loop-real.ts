@@ -37,6 +37,7 @@ import { resolveForgeHost } from "../forge-host/registry";
 import { readPRStateAsync } from "./world-infra";
 import "../forge-host/github/index"; // registers the GitHub adapter
 import { portExecuteItem } from "./kiro-executor-v2";
+import { currentExecutionMode, executorForMode } from "./execution-mode";
 import { codegenExecuteItem } from "./codegen-executor";
 import { realWorkspacePort, type WorkspacePort } from "./workspace-port";
 import type { DoItemOptions } from "./do-item";
@@ -54,6 +55,9 @@ import { recordReasoning, formatReasoning, type TickReasoning } from "./tick-rea
 import { PersonaSummoner } from "../peer-call/summon";
 import { createPhaseClock, stampPhase, type PhaseClock } from "./phase-clock";
 import { createRSAccumulator } from "./rs-phase-accumulator";
+import { join } from "node:path";
+import { DEFAULT_FLAGS_PATH, haltDecisionFromSource, loadFlags } from "../enforcement/control-plane";
+
 /**
  * How long the runner waits for ONE loop tick before giving up on it. Generous by default because a
  * cloud persona or a cold local model can legitimately take a while; override for a tighter lane.
@@ -174,6 +178,33 @@ export function createLoopRoom(deps: LoopRoomDeps): Room {
 
 async function main(): Promise<number> {
   const args = parseArgs(process.argv.slice(2));
+
+  // 0. THE HALT. Consulted before anything acts, because until now nothing in this loop consulted
+  // any halt flag at all — and this loop is cron-driven with a sink that pushes direct to main, so
+  // the only ways to stop it were deleting the cron or revoking the credential.
+  //
+  // A halt blocks ACTING, not observing. `--dry-run` still reports what it would have done: during
+  // an incident, the ability to look is the thing you least want to lose, and a dry run has no side
+  // effects to stop.
+  //
+  // Exit 0 on a deliberate halt. A halt is the system working, and a cron lane that exits non-zero
+  // on every tick of a declared incident pages people about a decision they made themselves. The log
+  // line is what carries the signal.
+  // `exactOptionalPropertyTypes` is on, so an absent provider must be an ABSENT KEY rather than an
+  // explicit `undefined` — the two are different types here, and the distinction is the right one:
+  // "this actor has no provider" is not "this actor's provider is the value undefined".
+  const cloudProvider = args.participant.startsWith("cloud:") ? args.participant.slice("cloud:".length) : null;
+  const halt = haltDecisionFromSource(loadFlags(join(args.repoRoot, DEFAULT_FLAGS_PATH)), {
+    agent: args.by,
+    ...(cloudProvider === null ? {} : { provider: cloudProvider }),
+  });
+  if (halt.halted && !args.dryRun) {
+    console.error(`[control-plane] HALTED (${halt.flag}) by ${halt.setBy}: ${halt.reason} — no action taken`);
+    return 0;
+  }
+  if (halt.halted) {
+    console.warn(`[control-plane] HALTED (${halt.flag}) by ${halt.setBy}: ${halt.reason} — dry run continues, observation is not gated`);
+  }
 
   // 1. Load the real world
   const world = loadWorld({
@@ -433,6 +464,15 @@ async function main(): Promise<number> {
     },
   };
 
+  // THE PROMOTION GATE. A lane does not get to dispatch side effects because it feels ready — it
+  // gets to when a deterministic window says it earned it. Shadow is the default and the safe
+  // destination for every uncertain answer: no window, an unreadable window, a corrupt counter, or
+  // any demotion trip all land here. Evaluated per tick and stateless, so no lane carries a
+  // "promoted" flag past the evidence that justified it.
+  const gate = currentExecutionMode(process.env.ZETA_PROMOTION_WINDOW ?? undefined);
+  console.log(`[promotion-gate] ${gate.mode} (${gate.reason}) — ${gate.detail}`);
+  const gatedExecutor = executorForMode(gate.mode, executor);
+
   // Build DoItemOptions for the port executor path.
   // The RunSpec.script is a no-op placeholder — execution goes through the port.
   const doItemOpts: DoItemOptions | undefined = action.kind === "do_item"
@@ -451,7 +491,7 @@ async function main(): Promise<number> {
     },
   };
 
-  const result = await execute(enrichedWorld, action, sink, executor, doItemOpts, operatorPort);
+  const result = await execute(enrichedWorld, action, sink, gatedExecutor, doItemOpts, operatorPort);
 
   // 4. The unity: append IS tick IS measurement IS Landauer cost.
   // The phase advanced during append. The entropy was paid during append.

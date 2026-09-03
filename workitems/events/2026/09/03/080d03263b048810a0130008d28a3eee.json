@@ -1,0 +1,14 @@
+{
+  "id": "080d03263b048810a0130008d28a3eee",
+  "at": "2026-09-03T00:59:43.121Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1JCER4F087G0R002TKB1K8",
+    "type": "task",
+    "title": "One authoritative NextAction table so a new kind cannot fail open",
+    "slug": "one-authoritative-nextaction-table-so-a-new-kind-cannot-fail",
+    "priority": "P2",
+    "filename": "081M1JCER4F087G0R002TKB1K8-one-authoritative-nextaction-table-so-a-new-kind-cannot-fail.md"
+  }
+}

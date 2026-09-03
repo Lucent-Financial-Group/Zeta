@@ -1,0 +1,14 @@
+{
+  "id": "080d032549b3a010a01300081e8646d2",
+  "at": "2026-09-03T00:26:46.260Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1JAJDKH087G0R003VQXFM2",
+    "type": "task",
+    "title": "Add a control-plane halt: the loop consulted no e-stop of any kind",
+    "slug": "add-a-control-plane-halt-the-loop-consulted-no-e-stop-of-any",
+    "priority": "P1",
+    "filename": "081M1JAJDKH087G0R003VQXFM2-add-a-control-plane-halt-the-loop-consulted-no-e-stop-of-any.md"
+  }
+}

@@ -24,6 +24,7 @@
 import { buildMenu, observe, actionLabel, isFirstSessionPending, type NextAction, type World } from "./observe";
 import { firstSessionLabel, firstSessionOracle, buildFirstSessionMenu } from "./first-session";
 import { GRAMMAR_16_V0, SLOT, type RenderedSlot } from "./grammar-16";
+import { FREE_MODE_KINDS, rowFor } from "./action-reconciliation";
 import { T, F, N, type Tri } from "../tri-boolean/index";
 
 /** A rendered slot that may open a sub-menu (Option A: slot 14 -> the free modes). */
@@ -35,7 +36,7 @@ export interface RenderedMenuSlot extends RenderedSlot {
 
 /** The free modes in CANONICAL order — slot 14's sub-menu is built in THIS order
  *  (not buildMenu's lead-first order) so it stays stable for muscle-memory. */
-const FREE_MODE_KINDS: readonly NextAction["kind"][] = ["explore", "play", "self_reflect", "free_time"];
+// FREE_MODE_KINDS now comes from the reconciliation table — one place, cross-checked by test.
 
 type SlotOverride = {
   label: string;
@@ -125,22 +126,8 @@ export function renderGrammar16(world: World): readonly RenderedMenuSlot[] {
 export function leadSlot(world: World): number | null {
   const lead = observe(world);
   if (isFirstSessionPending(world)) return SLOT.ACCEPT;
-  switch (lead.kind) {
-    case "do_item":
-    case "decompose":
-    case "self_claim":
-      return SLOT.ACCEPT;
-    case "edit_grammar":
-      return SLOT.EDIT_GRAMMAR;
-    case "explore":
-    case "play":
-    case "self_reflect":
-    case "free_time":
-      return SLOT.FREE_TIME;
-    case "preserve_ferry":
-    case "respond_to_operator":
-      return null; // operator-priority: above the menu, not a slot
-    default:
-      return null; // exhaustive: all known kinds handled above
-  }
+  // One table, not a second copy of the projection. `null` keeps its old meaning: the ADR has not
+  // assigned this kind a slot (operator priority sits above the menu; cartography is
+  // direction-dependent), never that one was forgotten.
+  return rowFor(lead.kind).leadSlot;
 }

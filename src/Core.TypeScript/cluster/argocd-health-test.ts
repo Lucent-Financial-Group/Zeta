@@ -85,6 +85,14 @@ export interface Failure {
   readonly message: string;
   readonly command?: readonly string[];
   readonly detail?: unknown;
+  /**
+   * When true, `waitFor` returns this failure on the current poll instead of
+   * retrying until timeout. Use for defects that cannot heal by waiting
+   * (MEASURED run 33695849211: zeta-root-dev ComparisonError
+   * `Could not resolve host: github.com` was already present at T+0 of the
+   * 180s child wait).
+   */
+  readonly terminal?: boolean;
 }
 
 export interface CliOptions {
@@ -138,6 +146,11 @@ export interface ExpectedApplication {
   readonly path: string;
 }
 
+export interface ArgoApplicationCondition {
+  readonly type: string;
+  readonly message: string;
+}
+
 export interface ArgoApplicationSnapshot {
   readonly name: string;
   readonly syncStatus: string;
@@ -145,6 +158,7 @@ export interface ArgoApplicationSnapshot {
   readonly message: string;
   readonly operationPhase?: string;
   readonly syncRevision?: string;
+  readonly conditions?: readonly ArgoApplicationCondition[];
 }
 
 export interface ApplicationVerdict {
@@ -874,12 +888,13 @@ const DEV_INCLUDED_PROOF_DEFERRED_DIRS = new Set([
   // loop" is UNMETERED -- implemented, plausible, unfalsified -- and this lane
   // cannot meter it until the health half lifts.
   //
-  // LIFTS WHEN: a live kind `--cni cilium` run shows both weaviate LoadBalancer
-  // Services receive `status.loadBalancer.ingress` from the kind Cilium LB-IPAM
-  // alias (`dev-cluster/manifests/cilium-lb-ipam.kind.yaml`) -- NOT from lifting
-  // the metal Application -- AND the residual OutOfSync is then NAMED by the
-  // per-resource diagnostics added alongside this entry rather than guessed at
-  // a second time. The alias existing is not that measurement.
+  // LIFTS WHEN on kindnetd: never. kindnetd has no LoadBalancer implementation.
+  // CLOSED ON kind `--cni cilium` by run 33697305243: both Services received
+  // `status.loadBalancer.ingress` from zeta-lb-pool, Application OutOfSync/
+  // Healthy, residual OutOfSync named as StatefulSet/weaviate rolling update
+  // complete. `isExcludedFromIncludedProof` returns false for this dir when
+  // `kindCni === "cilium"`. The metal Application `cilium-lb-ipam` stays
+  // excluded. This set entry remains so kindnetd does not assert it.
   "weaviate",
 ]);
 
@@ -964,7 +979,8 @@ export const APPLIED_BUT_UNASSERTED_REASONS: ReadonlyMap<string, string> = new M
     "NOT the sync loop it was briefly un-deferred for, and not storage -- MEASURED LIVE on run 32532470499, the run that refuted the fix. " +
       "weaviate renders TWO `type: LoadBalancer` Services (`weaviate`, `weaviate-grpc`), and gitops-engine `getCorev1ServiceHealth` reports a LoadBalancer Service whose `status.loadBalancer.ingress` is empty as PROGRESSING, unconditionally. kindnetd has no LoadBalancer implementation, so on the default kind lane those two Services never get an address. kind `--cni cilium` applies a Cilium LB-IPAM alias; that alias existing is not a measurement that these Services receive an address. `weaviate-0` was 1/1 Running for 39m while the kindnetd case held, which is how the blocker stayed hidden behind the one that was found. " +
       "The `randAlphaNum` render nondeterminism established by byte diff is real and its narrow `ignoreDifferences` rule is KEPT, because on metal cilium-lb-ipam does assign LB addresses and it may there be the whole story. But the resync loop SURVIVED that rule live, so 'the rule closes the loop' is UNMETERED rather than proven: the OutOfSync cause was checked and the Progressing cause was not, and one confirmed cause was read as THE cause. " +
-      "LIFTS WHEN: a live kind `--cni cilium` run shows both weaviate LoadBalancer Services receive `status.loadBalancer.ingress` from the kind Cilium LB-IPAM alias -- NOT from lifting the metal Application -- AND the residual OutOfSync is NAMED by the per-resource diagnostics rather than guessed at a second time. The alias existing is not that measurement. " +
+      "CLOSED ON kind `--cni cilium` by run 33697305243: weaviate=172.18.255.201, weaviate-grpc=172.18.255.202, Application OutOfSync/Healthy, residual OutOfSync named StatefulSet/weaviate rolling update complete. `isExcludedFromIncludedProof` returns false for weaviate when kindCni is cilium. Do not lift the metal cilium-lb-ipam Application. " +
+      "LIFTS WHEN: never on kindnetd -- that lane has no LoadBalancer implementation. The cilium-lane lift is already in code. " +
       "ANCHORS, CHECKED BY `reason-truth.ts`: each names an artifact this tree holds, so a claim that outlives its artifact goes red instead of reading on. " +
       "[cite: glob-applies weaviate] " +
       "[cite: renders full-ai-cluster/weaviate] " +
@@ -1206,6 +1222,12 @@ export function isExcludedFromIncludedProof(
   kindCni: KindCni = "kindnetd",
 ): boolean {
   if (dir === "cilium" && ciliumOwnsCniSlot(provider, kindCni)) return false;
+  // MEASURED run 33697305243 on kind --cni cilium: both weaviate LoadBalancer
+  // Services received ingress from zeta-lb-pool (weaviate 172.18.255.201,
+  // weaviate-grpc 172.18.255.202) and the Application was OutOfSync/Healthy.
+  // Residual OutOfSync is StatefulSet/weaviate rolling-update complete.
+  // kindnetd still has no LoadBalancer implementation -- keep deferred there.
+  if (dir === "weaviate" && kindCni === "cilium") return false;
   if (DEV_EXCLUDED_DIRS.has(dir)) return true;
   if (DEV_INCLUDED_PROOF_DEFERRED_DIRS.has(dir)) return true;
   if (yamlTreeRequestsReadWriteMany(appDir)) return true;
@@ -1828,6 +1850,10 @@ function runOrFail(
   };
 }
 
+export function isTerminalFailure(failure: Failure | null): boolean {
+  return failure !== null && failure.terminal === true;
+}
+
 async function waitFor(
   timeoutSeconds: number,
   pollSeconds: number,
@@ -1838,6 +1864,7 @@ async function waitFor(
   while (Date.now() <= deadline) {
     lastFailure = action();
     if (lastFailure === null) return null;
+    if (isTerminalFailure(lastFailure)) return lastFailure;
     await Bun.sleep(pollSeconds * 1000);
   }
   return lastFailure;
@@ -2161,6 +2188,72 @@ export function repoBackedChildNames(snapshots: readonly ArgoApplicationSnapshot
   return snapshots.map((snapshot) => snapshot.name).filter((name) => name !== ROOT_DEV_APPLICATION_NAME);
 }
 
+/**
+ * Catalog DNS is already broken: waiting 180s (or 2400s) cannot clone
+ * github.com. MEASURED run 33695849211 had this ComparisonError at T+0 of
+ * the child wait; the wait still burned the full 180s cap.
+ */
+const GITHUB_HOST_UNRESOLVABLE =
+  /could not resolve host:\s*github\.com|lookup github\.com|error resolving git hostname/i;
+
+export function applicationConditionTexts(snapshot: ArgoApplicationSnapshot): readonly string[] {
+  const fromConditions = (snapshot.conditions ?? []).map((condition) =>
+    condition.type.length > 0 ? `${condition.type}: ${condition.message}` : condition.message,
+  );
+  return snapshot.message.length > 0 ? [snapshot.message, ...fromConditions] : fromConditions;
+}
+
+export function isGitHubHostUnresolvableText(text: string): boolean {
+  // Hostname match is the regex, not `text.includes("github.com")`.
+  // `includes` is js/incomplete-url-substring-sanitization (CodeQL on #16419):
+  // the host can sit anywhere in a longer URL. The measured strings bind it
+  // after `host:` / `lookup ` / `git hostname`.
+  return GITHUB_HOST_UNRESOLVABLE.test(text);
+}
+
+export function rootCatalogGitHostFailure(
+  snapshots: readonly ArgoApplicationSnapshot[],
+): Failure | null {
+  const root = snapshots.find((snapshot) => snapshot.name === ROOT_DEV_APPLICATION_NAME);
+  if (root === undefined) return null;
+  const hit = applicationConditionTexts(root).find(isGitHubHostUnresolvableText);
+  if (hit === undefined) return null;
+  return {
+    kind: "ArgoCdTimeout",
+    message:
+      "zeta-root-dev cannot clone github.com (ComparisonError); waiting will not produce children",
+    terminal: true,
+    detail: {
+      syncStatus: root.syncStatus,
+      healthStatus: root.healthStatus,
+      evidence: hit,
+      conditions: root.conditions ?? [],
+    },
+  };
+}
+
+export const HEALTH_WAIT_LAGGARD_LIMIT = 8;
+
+export function formatHealthWaitProgress(
+  elapsedSec: number,
+  verdicts: readonly ApplicationVerdict[],
+): string {
+  const okCount = verdicts.filter((verdict) => verdict.ok).length;
+  const laggards = verdicts.filter((verdict) => !verdict.ok);
+  const shown = laggards
+    .slice(0, HEALTH_WAIT_LAGGARD_LIMIT)
+    .map((verdict) => `${verdict.name}=${verdict.syncStatus}/${verdict.healthStatus}`);
+  const extra =
+    laggards.length > HEALTH_WAIT_LAGGARD_LIMIT
+      ? ` +${String(laggards.length - HEALTH_WAIT_LAGGARD_LIMIT)}`
+      : "";
+  const laggardText = shown.length === 0 ? "none" : `${shown.join(", ")}${extra}`;
+  return (
+    `still waiting (${String(elapsedSec)}s): health ${String(okCount)}/` +
+    `${String(verdicts.length)} ok; laggards: ${laggardText}`
+  );
+}
+
 export const REPO_BACKED_CHILD_WAIT_DIAGNOSTIC_COMMANDS: readonly {
   readonly label: string;
   readonly args: readonly string[];
@@ -2316,6 +2409,8 @@ async function waitForRepoBackedChild(pollSeconds: number): Promise<Failure | nu
     }
     const snapshots = parseApplicationListOrFailure(result.stdout, command);
     if (isFailure(snapshots)) return snapshots;
+    const catalogDns = rootCatalogGitHostFailure(snapshots);
+    if (catalogDns !== null) return catalogDns;
     if (repoBackedChildNames(snapshots).length > 0) return null;
     return {
       kind: "ArgoCdTimeout",
@@ -2345,6 +2440,22 @@ function recordAt(record: Record<string, unknown>, key: string): Record<string, 
   return asRecord(record[key]);
 }
 
+function parseApplicationConditions(
+  status: Record<string, unknown> | null,
+): readonly ArgoApplicationCondition[] {
+  if (status === null) return [];
+  const raw = status.conditions;
+  if (!Array.isArray(raw)) return [];
+  return raw.flatMap((item) => {
+    const record = asRecord(item);
+    if (record === null) return [];
+    const type = stringAt(record, "type");
+    const message = stringAt(record, "message");
+    if (type.length === 0 && message.length === 0) return [];
+    return [{ type, message }];
+  });
+}
+
 export function parseApplicationList(jsonText: string): readonly ArgoApplicationSnapshot[] {
   const root = asRecord(JSON.parse(jsonText));
   const items = Array.isArray(root?.items) ? root.items : [];
@@ -2359,6 +2470,7 @@ export function parseApplicationList(jsonText: string): readonly ArgoApplication
     if (name.length === 0) return [];
     const operationPhase = operationState ? stringAt(operationState, "phase") : "";
     const syncRevision = sync ? stringAt(sync, "revision") : "";
+    const conditions = parseApplicationConditions(status);
     const snapshot: ArgoApplicationSnapshot = {
       name,
       syncStatus: sync ? stringAt(sync, "status") : "",
@@ -2366,6 +2478,7 @@ export function parseApplicationList(jsonText: string): readonly ArgoApplication
       message: health ? stringAt(health, "message") : "",
       ...(operationPhase.length > 0 ? { operationPhase } : {}),
       ...(syncRevision.length > 0 ? { syncRevision } : {}),
+      ...(conditions.length > 0 ? { conditions } : {}),
     };
     return [snapshot];
   });
@@ -2554,6 +2667,11 @@ async function waitForApplications(
   options: CliOptions,
 ): Promise<readonly ApplicationVerdict[] | Failure> {
   let lastVerdicts: readonly ApplicationVerdict[] = [];
+  const startedAt = Date.now();
+  let lastProgressAt = startedAt;
+  console.log(
+    `Waiting: ArgoCD Applications Synced+Healthy (cap ${String(options.timeoutSeconds)}s)`,
+  );
   const failure = await waitFor(options.timeoutSeconds, options.pollSeconds, () => {
     const command = ["-n", "argocd", "get", "applications.argoproj.io", "-o", "json"];
     const result = kubectl(command, Math.max(options.pollSeconds, 10));
@@ -2562,6 +2680,8 @@ async function waitForApplications(
     }
     const snapshots = parseApplicationListOrFailure(result.stdout, command);
     if (isFailure(snapshots)) return snapshots;
+    const catalogDns = rootCatalogGitHostFailure(snapshots);
+    if (catalogDns !== null) return catalogDns;
     lastVerdicts =
       plan.scope === "smoke"
         ? classifySmokeApplications(snapshots)
@@ -2569,6 +2689,12 @@ async function waitForApplications(
           ? classifyApplications(plan.expectedApplications, snapshots)
           : classifyApplications(plan.expectedApplications, snapshots);
     if (lastVerdicts.every((verdict) => verdict.ok)) return null;
+    const now = Date.now();
+    if (now - lastProgressAt >= 60_000) {
+      const elapsedSec = Math.floor((now - startedAt) / 1000);
+      console.log(formatHealthWaitProgress(elapsedSec, lastVerdicts));
+      lastProgressAt = now;
+    }
     return {
       kind: lastVerdicts.some((verdict) => verdict.syncStatus === "Missing")
         ? "ApplicationMissing"

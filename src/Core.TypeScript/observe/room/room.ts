@@ -16,6 +16,7 @@
 import type { NextAction, World, BacklogItem } from "../observe";
 import type { ChooserResult } from "../chooser";
 import type { CommandExecutor } from "../do-item";
+import { isMergeItem, itemIdOf, rowFor } from "../action-reconciliation";
 import { grantedTools, sandboxedExecutor, type RoomSandbox, type ToolGrant } from "./sandbox";
 
 // ─── Scope predicate (Lior's enforcement requirement) ───────────────
@@ -250,30 +251,36 @@ export async function tickRooms(
   return results;
 }
 
-/** Check if an action is within the room's declared scope. */
+/**
+ * Is this action within the room's declared scope?
+ *
+ * A LOOKUP, not a switch. The previous form enumerated the kinds it knew and ended in
+ * `return true`, so an unrecognised kind was in scope for every room — the scope predicate's own
+ * fail-open. Reading the requirement out of `ACTION_RECONCILIATION` makes a new kind a compile
+ * error, and it closed a live hole on the way: `self_claim` carries an item and was reaching that
+ * trailing `return true`, so a room could claim work outside its envelope.
+ */
 function isActionInScope(action: NextAction, scope: ScopePredicate): boolean {
-  // Free modes and edit_grammar are always in scope (no external effects)
-  if (
-    action.kind === "explore" ||
-    action.kind === "play" ||
-    action.kind === "self_reflect" ||
-    action.kind === "free_time" ||
-    action.kind === "edit_grammar"
-  ) {
-    return true;
+  const requirement = rowFor(action.kind).scope;
+  switch (requirement) {
+    case "unrestricted":
+      return true;
+    case "operator_access":
+      return scope.operatorAccess;
+    case "item_in_scope": {
+      const id = itemIdOf(action);
+      // No item on an item-scoped action is a shape the table does not describe; nothing is being
+      // reached into, so nothing is out of scope.
+      if (id === null) return true;
+      return scope.backlogIds.has(id) || isMergeItem(id);
+    }
   }
+  return assertNeverScope(requirement);
+}
 
-  // Operator actions require operator access
-  if (action.kind === "preserve_ferry" || action.kind === "respond_to_operator") {
-    return scope.operatorAccess;
-  }
-
-  // Work actions require the item to be in scope
-  if (action.kind === "do_item" || action.kind === "decompose") {
-    return scope.backlogIds.has(action.item.id) || action.item.id.startsWith("merge-pr-"); // merge actions checked via prNumbers
-  }
-
-  return true;
+/** Exhaustiveness, enforced by the compiler: a new `ScopeRequirement` fails to typecheck here. */
+function assertNeverScope(x: never): never {
+  throw new Error(`unhandled scope requirement: ${String(x)}`);
 }
 
 /** Validate no two rooms claim overlapping backlog IDs or PR numbers. */
