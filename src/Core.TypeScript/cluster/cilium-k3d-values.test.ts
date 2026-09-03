@@ -145,6 +145,8 @@ describe("the k3d lane installs metal's Cilium configuration", () => {
       code.indexOf("export function tearDownK3dDevCluster"),
     );
     expect(k3dBody).toContain("applyK3dCoreDnsUpstreamOverride(ports)");
+    expect(k3dBody).toContain("applyVendoredGatewayApiCrds(ports)");
+    expect(k3dBody).not.toContain("gateway-api/releases/download");
     expect(code).toContain("coredns-custom");
     // The restart must be a REAL call. The first draft used
     // `controlPlane.restartDeployment?.()` -- a method absent from that
@@ -158,6 +160,7 @@ describe("the k3d lane installs metal's Cilium configuration", () => {
     const kindFn = src.slice(src.indexOf("export function bringUpKindCiCluster"), src.indexOf("export function tearDownKindCluster"));
     expect(kindFn).not.toContain("applyK3dCoreDnsUpstreamOverride");
     expect(kindFn).toContain("applyKindCiliumCoreDnsUpstreamOverride(ports)");
+    expect(kindFn).toContain("applyVendoredGatewayApiCrds(ports)");
   });
 
   test("a missing surface REFUSES rather than falling back to chart defaults", () => {

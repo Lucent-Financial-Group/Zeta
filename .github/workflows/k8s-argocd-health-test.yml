@@ -1129,6 +1129,34 @@ jobs:
                 kubectl -n "$ns" logs "$pod" --all-containers=true --prefix=true --previous=true --tail=100 || true
               done || true
 
+      - name: Gateway API CRDs and the four (k3s-vs-k3d dump, not a re-lift)
+        # MEASURED run 33429761222: cert-manager CrashLoopBackOff
+        # "the Gateway API CRDs do not seem to be present, but ExperimentalGatewayAPISupport is set to true".
+        # Metal applies full-ai-cluster/k8s/bootstrap/gateway-api-crds.yaml first
+        # (`aa-gateway-api-crds`). Kind --cni cilium applies the same file. k3d
+        # bring-up used to skip it. This dump is diagnostic: smoke does not
+        # assert the four, so NOT FOUND is honest. Do not re-lift --scope included.
+        if: always()
+        run: |
+          echo "=== Gateway API CRDs (metal first-boot aa-gateway-api-crds) ==="
+          kubectl get crd -o name 2>/dev/null | grep -E 'gateway\.networking' || echo "NONE"
+          echo "=== cert-manager pods (CrashLoop here is the CRD-absent cascade) ==="
+          kubectl -n cert-manager get pods -o wide || true
+          echo "=== the four (NOT FOUND on smoke is honest) ==="
+          for app in openziti-controller trust-manager spire vault; do
+            line="$(kubectl -n argocd get application "$app" \
+              -o jsonpath='=== {.metadata.name}: sync={.status.sync.status} health={.status.health.status}' \
+              2>/dev/null || true)"
+            if [ -z "$line" ] || [ "$line" = "=== : sync= health=" ]; then
+              echo "  === $app: NOT FOUND IN CLUSTER"
+            else
+              echo "  $line"
+            fi
+          done
+          echo "=== spire-agent (second k3s/k3d class: hostNetwork DNS i/o timeout; not Gateway API) ==="
+          kubectl -n spire get pods -o wide || true
+          kubectl -n spire logs -l app=spire-agent --tail=40 --prefix=true || true
+
       - name: Print cluster diagnostics
         if: always()
         run: |

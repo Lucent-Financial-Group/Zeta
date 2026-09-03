@@ -146,6 +146,40 @@ describe("kind CI use case", () => {
   });
 
   /**
+   * 081M1DFQ2MZ — k3d skipped the file metal applies first.
+   *
+   * MEASURED run 33429761222: cert-manager CrashLoopBackOff
+   * "the Gateway API CRDs do not seem to be present, but ExperimentalGatewayAPISupport is set to true".
+   * Kind `--cni cilium` applies `GATEWAY_API_CRD_BUNDLE`. Kindnetd fetches the
+   * GitHub remote. k3d did neither. Delete the helper call from
+   * `bringUpK3dDevCluster` and this goes red. ORDER: CRDs before Cilium helm,
+   * same as metal `aa-gateway-api-crds` and the kind `--cni cilium` branch.
+   * The GitHub remote is forbidden here: CI already RST'd helm.cilium.io;
+   * github.com/kubernetes-sigs/gateway-api is the same class.
+   */
+  test("k3d bring-up applies the vendored Gateway API CRDs before Cilium, never the GitHub remote", () => {
+    const log: string[] = [];
+    bringUpK3dDevCluster(fakePorts(log), {
+      configPath: "/tmp/k3d.yaml",
+      clusterName: "zeta-dev",
+      agentCount: 0,
+      kubeApiHost: "host.k3d.internal",
+      gitRef: "main",
+      gitRepoUrl: "https://github.com/Lucent-Financial-Group/Zeta",
+      env: {},
+    });
+    const gatewayAt = log.findIndex((entry) => entry.startsWith("file:") && entry.includes(GATEWAY_API_CRD_BUNDLE));
+    const ciliumAt = log.indexOf("install:cilium");
+    const catalogAt = log.findIndex((entry) => entry.startsWith("catalog:"));
+    expect(gatewayAt).toBeGreaterThan(-1);
+    expect(ciliumAt).toBeGreaterThan(-1);
+    expect(catalogAt).toBeGreaterThan(-1);
+    expect(gatewayAt).toBeLessThan(ciliumAt);
+    expect(gatewayAt).toBeLessThan(catalogAt);
+    expect(log.some((entry) => entry.includes("gateway-api/releases/download"))).toBe(false);
+  });
+
+  /**
    * THE LOAD-BALANCER ALIAS -- same wiring-falsifier shape as longhorn.
    *
    * A `type: LoadBalancer` Service on kind never gets
