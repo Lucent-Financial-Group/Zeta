@@ -1,0 +1,472 @@
+[
+  {
+    "vectorType": "CacheScript",
+    "name": "first call specializes, the rest hit",
+    "why": "the baseline: one miss, then hits — a cache that missed every time would still be correct and would be pointless",
+    "steps": [
+      {
+        "op": "run",
+        "input": 1
+      },
+      {
+        "op": "run",
+        "input": 2
+      },
+      {
+        "op": "run",
+        "input": 3
+      }
+    ],
+    "expected": [
+      {
+        "step": 0,
+        "op": "run",
+        "result": "3",
+        "threw": false,
+        "hits": 0,
+        "misses": 1,
+        "errors": 0
+      },
+      {
+        "step": 1,
+        "op": "run",
+        "result": "5",
+        "threw": false,
+        "hits": 1,
+        "misses": 1,
+        "errors": 0
+      },
+      {
+        "step": 2,
+        "op": "run",
+        "result": "7",
+        "threw": false,
+        "hits": 2,
+        "misses": 1,
+        "errors": 0
+      }
+    ]
+  },
+  {
+    "vectorType": "CacheScript",
+    "name": "invalidate forces exactly one regeneration",
+    "why": "the deterministic door to the GC path — one miss after, then hits again, not a permanent miss",
+    "steps": [
+      {
+        "op": "run",
+        "input": 1
+      },
+      {
+        "op": "run",
+        "input": 2
+      },
+      {
+        "op": "invalidate"
+      },
+      {
+        "op": "run",
+        "input": 3
+      },
+      {
+        "op": "run",
+        "input": 4
+      }
+    ],
+    "expected": [
+      {
+        "step": 0,
+        "op": "run",
+        "result": "3",
+        "threw": false,
+        "hits": 0,
+        "misses": 1,
+        "errors": 0
+      },
+      {
+        "step": 1,
+        "op": "run",
+        "result": "5",
+        "threw": false,
+        "hits": 1,
+        "misses": 1,
+        "errors": 0
+      },
+      {
+        "step": 2,
+        "op": "invalidate",
+        "result": null,
+        "threw": false,
+        "hits": 1,
+        "misses": 1,
+        "errors": 0
+      },
+      {
+        "step": 3,
+        "op": "run",
+        "result": "7",
+        "threw": false,
+        "hits": 1,
+        "misses": 2,
+        "errors": 0
+      },
+      {
+        "step": 4,
+        "op": "run",
+        "result": "9",
+        "threw": false,
+        "hits": 2,
+        "misses": 2,
+        "errors": 0
+      }
+    ]
+  },
+  {
+    "vectorType": "CacheScript",
+    "name": "invalidate before any call is not an extra miss",
+    "why": "invalidating an empty cache must be a no-op, not an event",
+    "steps": [
+      {
+        "op": "invalidate"
+      },
+      {
+        "op": "run",
+        "input": 5
+      },
+      {
+        "op": "run",
+        "input": 6
+      }
+    ],
+    "expected": [
+      {
+        "step": 0,
+        "op": "invalidate",
+        "result": null,
+        "threw": false,
+        "hits": 0,
+        "misses": 0,
+        "errors": 0
+      },
+      {
+        "step": 1,
+        "op": "run",
+        "result": "11",
+        "threw": false,
+        "hits": 0,
+        "misses": 1,
+        "errors": 0
+      },
+      {
+        "step": 2,
+        "op": "run",
+        "result": "13",
+        "threw": false,
+        "hits": 1,
+        "misses": 1,
+        "errors": 0
+      }
+    ]
+  },
+  {
+    "vectorType": "CacheScript",
+    "name": "two invalidations in a row cost one regeneration",
+    "why": "the counter tracks regenerations, not invalidate calls",
+    "steps": [
+      {
+        "op": "run",
+        "input": 1
+      },
+      {
+        "op": "invalidate"
+      },
+      {
+        "op": "invalidate"
+      },
+      {
+        "op": "run",
+        "input": 2
+      },
+      {
+        "op": "run",
+        "input": 3
+      }
+    ],
+    "expected": [
+      {
+        "step": 0,
+        "op": "run",
+        "result": "3",
+        "threw": false,
+        "hits": 0,
+        "misses": 1,
+        "errors": 0
+      },
+      {
+        "step": 1,
+        "op": "invalidate",
+        "result": null,
+        "threw": false,
+        "hits": 0,
+        "misses": 1,
+        "errors": 0
+      },
+      {
+        "step": 2,
+        "op": "invalidate",
+        "result": null,
+        "threw": false,
+        "hits": 0,
+        "misses": 1,
+        "errors": 0
+      },
+      {
+        "step": 3,
+        "op": "run",
+        "result": "5",
+        "threw": false,
+        "hits": 0,
+        "misses": 2,
+        "errors": 0
+      },
+      {
+        "step": 4,
+        "op": "run",
+        "result": "7",
+        "threw": false,
+        "hits": 1,
+        "misses": 2,
+        "errors": 0
+      }
+    ]
+  },
+  {
+    "vectorType": "CacheScript",
+    "name": "AN ERROR IS NEVER CACHED",
+    "why": "the rule both modules state in capitals: a failing call increments misses AND errors, clears the cache, and rethrows — so the next call retries and succeeds",
+    "steps": [
+      {
+        "op": "failNext"
+      },
+      {
+        "op": "run",
+        "input": 1
+      },
+      {
+        "op": "run",
+        "input": 2
+      },
+      {
+        "op": "run",
+        "input": 3
+      }
+    ],
+    "expected": [
+      {
+        "step": 0,
+        "op": "failNext",
+        "result": null,
+        "threw": false,
+        "hits": 0,
+        "misses": 0,
+        "errors": 0
+      },
+      {
+        "step": 1,
+        "op": "run",
+        "result": null,
+        "threw": true,
+        "hits": 0,
+        "misses": 1,
+        "errors": 1
+      },
+      {
+        "step": 2,
+        "op": "run",
+        "result": "5",
+        "threw": false,
+        "hits": 0,
+        "misses": 2,
+        "errors": 1
+      },
+      {
+        "step": 3,
+        "op": "run",
+        "result": "7",
+        "threw": false,
+        "hits": 1,
+        "misses": 2,
+        "errors": 1
+      }
+    ]
+  },
+  {
+    "vectorType": "CacheScript",
+    "name": "an error after a warm cache does not poison it",
+    "why": "the failure clears the cache, so the following call is a MISS that succeeds — never a hit on a stale function, never a permanent failure",
+    "steps": [
+      {
+        "op": "run",
+        "input": 1
+      },
+      {
+        "op": "run",
+        "input": 2
+      },
+      {
+        "op": "invalidate"
+      },
+      {
+        "op": "failNext"
+      },
+      {
+        "op": "run",
+        "input": 3
+      },
+      {
+        "op": "run",
+        "input": 4
+      },
+      {
+        "op": "run",
+        "input": 5
+      }
+    ],
+    "expected": [
+      {
+        "step": 0,
+        "op": "run",
+        "result": "3",
+        "threw": false,
+        "hits": 0,
+        "misses": 1,
+        "errors": 0
+      },
+      {
+        "step": 1,
+        "op": "run",
+        "result": "5",
+        "threw": false,
+        "hits": 1,
+        "misses": 1,
+        "errors": 0
+      },
+      {
+        "step": 2,
+        "op": "invalidate",
+        "result": null,
+        "threw": false,
+        "hits": 1,
+        "misses": 1,
+        "errors": 0
+      },
+      {
+        "step": 3,
+        "op": "failNext",
+        "result": null,
+        "threw": false,
+        "hits": 1,
+        "misses": 1,
+        "errors": 0
+      },
+      {
+        "step": 4,
+        "op": "run",
+        "result": null,
+        "threw": true,
+        "hits": 1,
+        "misses": 2,
+        "errors": 1
+      },
+      {
+        "step": 5,
+        "op": "run",
+        "result": "9",
+        "threw": false,
+        "hits": 1,
+        "misses": 3,
+        "errors": 1
+      },
+      {
+        "step": 6,
+        "op": "run",
+        "result": "11",
+        "threw": false,
+        "hits": 2,
+        "misses": 3,
+        "errors": 1
+      }
+    ]
+  },
+  {
+    "vectorType": "CacheScript",
+    "name": "two failures in a row each count",
+    "why": "errors are invocations, not identities — a specializer failing twice is visibly not a specializer failing once",
+    "steps": [
+      {
+        "op": "failNext"
+      },
+      {
+        "op": "run",
+        "input": 1
+      },
+      {
+        "op": "failNext"
+      },
+      {
+        "op": "run",
+        "input": 2
+      },
+      {
+        "op": "run",
+        "input": 3
+      }
+    ],
+    "expected": [
+      {
+        "step": 0,
+        "op": "failNext",
+        "result": null,
+        "threw": false,
+        "hits": 0,
+        "misses": 0,
+        "errors": 0
+      },
+      {
+        "step": 1,
+        "op": "run",
+        "result": null,
+        "threw": true,
+        "hits": 0,
+        "misses": 1,
+        "errors": 1
+      },
+      {
+        "step": 2,
+        "op": "failNext",
+        "result": null,
+        "threw": false,
+        "hits": 0,
+        "misses": 1,
+        "errors": 1
+      },
+      {
+        "step": 3,
+        "op": "run",
+        "result": null,
+        "threw": true,
+        "hits": 0,
+        "misses": 2,
+        "errors": 2
+      },
+      {
+        "step": 4,
+        "op": "run",
+        "result": "7",
+        "threw": false,
+        "hits": 0,
+        "misses": 3,
+        "errors": 2
+      }
+    ]
+  }
+]

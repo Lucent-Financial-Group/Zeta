@@ -96,7 +96,7 @@
             "rule": "treaty-transcript",
             "kind": "treaty-transcript",
             "witness": "tests/Tests.FSharp/Chip9Treaty.Tests.fs",
-            "count": 10,
+            "count": 11,
             "holder": "dotnet:tests/Tests.FSharp"
           }
         ]
@@ -213,7 +213,7 @@
             "rule": "treaty-transcript",
             "kind": "treaty-transcript",
             "witness": "tests/Tests.FSharp/Chip9Treaty.Tests.fs",
-            "count": 10,
+            "count": 11,
             "holder": "dotnet:tests/Tests.FSharp"
           }
         ]
@@ -252,7 +252,7 @@
             "rule": "treaty-transcript",
             "kind": "treaty-transcript",
             "witness": "tests/Tests.FSharp/Chip9Treaty.Tests.fs",
-            "count": 10,
+            "count": 11,
             "holder": "dotnet:tests/Tests.FSharp"
           }
         ]
@@ -291,7 +291,7 @@
             "rule": "treaty-transcript",
             "kind": "treaty-transcript",
             "witness": "tests/Tests.FSharp/Chip9Treaty.Tests.fs",
-            "count": 10,
+            "count": 11,
             "holder": "dotnet:tests/Tests.FSharp"
           }
         ]
@@ -323,7 +323,7 @@
             "rule": "treaty-transcript",
             "kind": "treaty-transcript",
             "witness": "tests/Tests.FSharp/Chip9Treaty.Tests.fs",
-            "count": 10,
+            "count": 11,
             "holder": "dotnet:tests/Tests.FSharp"
           }
         ]
@@ -480,7 +480,7 @@
             "rule": "treaty-transcript",
             "kind": "treaty-transcript",
             "witness": "tests/Tests.FSharp/Chip9Treaty.Tests.fs",
-            "count": 10,
+            "count": 11,
             "holder": "dotnet:tests/Tests.FSharp"
           }
         ]
@@ -512,7 +512,7 @@
             "rule": "treaty-transcript",
             "kind": "treaty-transcript",
             "witness": "tests/Tests.FSharp/Chip9Treaty.Tests.fs",
-            "count": 10,
+            "count": 11,
             "holder": "dotnet:tests/Tests.FSharp"
           }
         ]
@@ -567,7 +567,7 @@
             "rule": "treaty-transcript",
             "kind": "treaty-transcript",
             "witness": "tests/Tests.FSharp/Chip9Treaty.Tests.fs",
-            "count": 10,
+            "count": 11,
             "holder": "dotnet:tests/Tests.FSharp"
           }
         ]
@@ -599,7 +599,7 @@
             "rule": "treaty-transcript",
             "kind": "treaty-transcript",
             "witness": "tests/Tests.FSharp/Chip9Treaty.Tests.fs",
-            "count": 10,
+            "count": 11,
             "holder": "dotnet:tests/Tests.FSharp"
           }
         ]
@@ -790,7 +790,7 @@
             "rule": "treaty-transcript",
             "kind": "treaty-transcript",
             "witness": "tests/Tests.FSharp/Chip9Treaty.Tests.fs",
-            "count": 10,
+            "count": 11,
             "holder": "dotnet:tests/Tests.FSharp"
           }
         ]
@@ -847,7 +847,7 @@
             "rule": "treaty-transcript",
             "kind": "treaty-transcript",
             "witness": "tests/Tests.FSharp/Chip9Treaty.Tests.fs",
-            "count": 10,
+            "count": 11,
             "holder": "dotnet:tests/Tests.FSharp"
           }
         ]
@@ -879,7 +879,7 @@
             "rule": "treaty-transcript",
             "kind": "treaty-transcript",
             "witness": "tests/Tests.FSharp/Chip9Treaty.Tests.fs",
-            "count": 10,
+            "count": 11,
             "holder": "dotnet:tests/Tests.FSharp"
           }
         ]
@@ -911,7 +911,7 @@
             "rule": "treaty-transcript",
             "kind": "treaty-transcript",
             "witness": "tests/Tests.FSharp/Chip9Treaty.Tests.fs",
-            "count": 10,
+            "count": 11,
             "holder": "dotnet:tests/Tests.FSharp"
           }
         ]
@@ -943,7 +943,7 @@
             "rule": "treaty-transcript",
             "kind": "treaty-transcript",
             "witness": "tests/Tests.FSharp/Chip9Treaty.Tests.fs",
-            "count": 10,
+            "count": 11,
             "holder": "dotnet:tests/Tests.FSharp"
           }
         ]
@@ -992,7 +992,7 @@
             "rule": "treaty-transcript",
             "kind": "treaty-transcript",
             "witness": "tests/Tests.FSharp/Chip9Treaty.Tests.fs",
-            "count": 10,
+            "count": 11,
             "holder": "dotnet:tests/Tests.FSharp"
           }
         ]
@@ -1024,7 +1024,7 @@
             "rule": "treaty-transcript",
             "kind": "treaty-transcript",
             "witness": "tests/Tests.FSharp/Chip9Treaty.Tests.fs",
-            "count": 10,
+            "count": 11,
             "holder": "dotnet:tests/Tests.FSharp"
           }
         ]
@@ -1056,7 +1056,7 @@
             "rule": "treaty-transcript",
             "kind": "treaty-transcript",
             "witness": "tests/Tests.FSharp/Chip9Treaty.Tests.fs",
-            "count": 10,
+            "count": 11,
             "holder": "dotnet:tests/Tests.FSharp"
           }
         ]
@@ -1088,7 +1088,7 @@
             "rule": "treaty-transcript",
             "kind": "treaty-transcript",
             "witness": "tests/Tests.FSharp/Chip9Treaty.Tests.fs",
-            "count": 10,
+            "count": 11,
             "holder": "dotnet:tests/Tests.FSharp"
           }
         ]
@@ -1137,7 +1137,7 @@
             "rule": "treaty-transcript",
             "kind": "treaty-transcript",
             "witness": "tests/Tests.FSharp/Chip9Treaty.Tests.fs",
-            "count": 10,
+            "count": 11,
             "holder": "dotnet:tests/Tests.FSharp"
           }
         ]
@@ -1176,7 +1176,7 @@
             "rule": "treaty-transcript",
             "kind": "treaty-transcript",
             "witness": "tests/Tests.FSharp/Chip9Treaty.Tests.fs",
-            "count": 10,
+            "count": 11,
             "holder": "dotnet:tests/Tests.FSharp"
           }
         ]
@@ -1232,7 +1232,7 @@
             "rule": "treaty-transcript",
             "kind": "treaty-transcript",
             "witness": "tests/Tests.FSharp/Chip9Treaty.Tests.fs",
-            "count": 10,
+            "count": 11,
             "holder": "dotnet:tests/Tests.FSharp"
           }
         ]
@@ -1264,7 +1264,7 @@
             "rule": "treaty-transcript",
             "kind": "treaty-transcript",
             "witness": "tests/Tests.FSharp/Chip9Treaty.Tests.fs",
-            "count": 10,
+            "count": 11,
             "holder": "dotnet:tests/Tests.FSharp"
           }
         ]
@@ -1489,7 +1489,7 @@
             "rule": "treaty-transcript",
             "kind": "treaty-transcript",
             "witness": "tests/Tests.FSharp/Chip9Treaty.Tests.fs",
-            "count": 10,
+            "count": 11,
             "holder": "dotnet:tests/Tests.FSharp"
           }
         ]
@@ -2870,7 +2870,7 @@
             "rule": "treaty-transcript",
             "kind": "treaty-transcript",
             "witness": "src/Core.TypeScript/algebra/generate-erasure-charge-treaty-transcript.ts",
-            "count": 7,
+            "count": 8,
             "holder": "ts:repo"
           }
         ]
