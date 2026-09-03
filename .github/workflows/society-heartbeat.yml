@@ -22,6 +22,12 @@ name: society-heartbeat
 
 on:
   schedule:
+    # TEMPORARILY DISABLED at the GitHub API level (workflow state `disabled_manually`,
+    # 2026-09-03). Not retired: the per-run storage growth (~100 MB/day across the heartbeat
+    # lanes) is being redesigned for space efficiency, with a heartbeat/telemetry repo split on
+    # the plan. The cron is left in place so re-enabling is one click and the tree does not
+    # describe a schedule that silently differs from the one GitHub runs. Existing parked
+    # `heartbeat/*` refs may still be flushed; no new ones are produced while this holds.
     - cron: '*/30 * * * *'  # every 30 minutes (2x per agent-heartbeat cycle)
   workflow_dispatch:         # manual trigger for testing
 
