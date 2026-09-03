@@ -1,0 +1,14 @@
+{
+  "id": "080d033eb3193010a013000846807038",
+  "at": "2026-09-03T15:14:58.470Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1KXCRRP087G0R002VF2Q14",
+    "type": "task",
+    "title": "the org structure decides but never implements: the executor ports have no real adapter",
+    "slug": "the-org-structure-decides-but-never-implements-the-executor",
+    "priority": "P2",
+    "filename": "081M1KXCRRP087G0R002VF2Q14-the-org-structure-decides-but-never-implements-the-executor.md"
+  }
+}

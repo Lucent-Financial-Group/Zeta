@@ -914,6 +914,12 @@ export {
   type QaCycleReport,
 } from "./qa.ts";
 export {
+  createSandboxTestExecutor,
+  QaPassToken,
+  QaSandboxEvidencePrefix,
+  type QaToolRequestBuilder,
+} from "./qa-sandbox-executor.ts";
+export {
   EscalationTrigger,
   EscalationAction,
   DEFAULT_CHURN_THRESHOLD,
@@ -935,7 +941,12 @@ export {
   type NormalizedIntake,
   type IntakeDeps,
 } from "./intake.ts";
-export { runWorkOsCycle, type WorkOsCycleDeps, type WorkOsCycleReport } from "./work-os-runtime.ts";
+export {
+  runWorkOsCycle,
+  type WorkImplementer,
+  type WorkOsCycleDeps,
+  type WorkOsCycleReport,
+} from "./work-os-runtime.ts";
 export {
   clamp01,
   computeFreshness,
