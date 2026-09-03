@@ -1,0 +1,14 @@
+{
+  "id": "080d0324f9f26010a01300080e8ef16d",
+  "at": "2026-09-03T00:15:52.908Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1J9YFJB087G0R002JFZAG3",
+    "type": "task",
+    "title": "SimulatedBlockIo DST door is LBA not POSIX",
+    "slug": "simulatedblockio-dst-door-is-lba-not-posix",
+    "priority": "P1",
+    "filename": "081M1J9YFJB087G0R002JFZAG3-simulatedblockio-dst-door-is-lba-not-posix.md"
+  }
+}

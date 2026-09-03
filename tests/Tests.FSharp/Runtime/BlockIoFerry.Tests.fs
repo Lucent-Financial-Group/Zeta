@@ -163,3 +163,30 @@ let ``BlockIoFerry does not coalesce a hole, a flush, or a partial block`` () : 
         let! _ = pendingPartial.ConfigureAwait(false)
         Assert.Equal(afterBarrier + 2, door.DeviceWrites)
     }
+
+[<Fact>]
+let ``BlockIoFerry coalesces onto SimulatedBlockIo without a POSIX file`` () : Task =
+    task {
+        let device = SimulatedBlockIo(4096)
+        let io = device :> IBlockIo
+        let config = { FerryThrottlerConfig.deterministic with MaxBatchSize = 64 }
+        use door = new BlockIoFerry.Door(io, config, manual = true)
+        let a = blockBytes 5uy
+        let b = blockBytes 6uy
+        let ops =
+            [| BlockIoFerry.Op.Write(0UL, memPayload a)
+               BlockIoFerry.Op.Write(1UL, memPayload b) |]
+
+        let pending = door.RunManyAsync(ReadOnlyMemory ops, CancellationToken.None)
+        do! door.PumpToIdleAsync(CancellationToken.None).ConfigureAwait(false)
+        let! results = pending.ConfigureAwait(false)
+        Assert.Equal(2, results.Length)
+        Assert.Equal(1, door.DeviceWrites)
+        Assert.Equal(1, device.Writes)
+        let gotA = Array.zeroCreate<byte> 4096
+        let gotB = Array.zeroCreate<byte> 4096
+        Assert.Equal(4096, io.Read(0UL, memDst gotA))
+        Assert.Equal(4096, io.Read(1UL, memDst gotB))
+        Assert.Equal<byte>(a, gotA)
+        Assert.Equal<byte>(b, gotB)
+    }

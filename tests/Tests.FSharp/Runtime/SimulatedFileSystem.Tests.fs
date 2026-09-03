@@ -303,3 +303,38 @@ let ``FileSystemBlockIo reads back a block written through IFileSystem`` () =
     let dst = Array.zeroCreate<byte> 4
     Assert.Equal(4, io.Read(0UL, System.Memory<byte>.op_Implicit dst))
     Assert.Equal<byte>(payload, dst)
+
+[<Fact>]
+let ``SimulatedBlockIo reads back a write without IFileSystem`` () =
+    let io = SimulatedBlockIo(4096) :> IBlockIo
+    Assert.Equal(4096, io.BlockSize)
+    let payload = [| 1uy; 2uy; 3uy; 4uy |]
+    Assert.Equal(4, io.Write(0UL, System.ReadOnlyMemory<byte>.op_Implicit payload))
+    io.Flush()
+    let dst = Array.zeroCreate<byte> 4
+    Assert.Equal(4, io.Read(0UL, System.Memory<byte>.op_Implicit dst))
+    Assert.Equal<byte>(payload, dst)
+
+[<Fact>]
+let ``SimulatedBlockIo crash-mid-write commits a prefix then throws`` () =
+    let device = SimulatedBlockIo(4096)
+    let io = device :> IBlockIo
+    device.ArmCrashMidWrite(8)
+    let payload = Array.init 100 (fun i -> byte i)
+    let ex =
+        Assert.Throws<CrashMidWriteException>(fun () ->
+            io.Write(0UL, System.ReadOnlyMemory<byte>.op_Implicit payload)
+            |> ignore)
+
+    Assert.Equal(8, ex.CommittedBytes)
+    Assert.Equal(100, ex.AttemptedBytes)
+    Assert.Equal(1, device.Writes)
+    let dst = Array.zeroCreate<byte> 100
+    Assert.Equal(100, io.Read(0UL, System.Memory<byte>.op_Implicit dst))
+    Assert.Equal<byte>(Array.sub payload 0 8, Array.sub dst 0 8)
+    Assert.Equal(0uy, dst.[8])
+    let whole = Array.init 16 (fun i -> byte (200 + i))
+    Assert.Equal(16, io.Write(1UL, System.ReadOnlyMemory<byte>.op_Implicit whole))
+    let got = Array.zeroCreate<byte> 16
+    Assert.Equal(16, io.Read(1UL, System.Memory<byte>.op_Implicit got))
+    Assert.Equal<byte>(whole, got)
