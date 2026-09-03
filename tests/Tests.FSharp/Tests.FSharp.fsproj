@@ -31,6 +31,8 @@
     <Compile Include="Algebra/ZSetW.Tests.fs" />
     <Compile Include="Algebra/SchemaZ.Tests.fs" />
     <Compile Include="Algebra/ZAtom.Tests.fs" />
+    <Compile Include="Algebra/ZPlan.Tests.fs" />
+    <Compile Include="Algebra/SchemaLogCodec.Tests.fs" />
     <Compile Include="Algebra/TropicalPaths.Tests.fs" />
     <Compile Include="Algebra/RationalRing.Tests.fs" />
     <Compile Include="Algebra/Provenance.Tests.fs" />
@@ -594,6 +596,7 @@
     <Compile Include="Storage/DeltaLog.Tests.fs" />
     <Compile Include="Storage/DeltaCodec.Tests.fs" />
     <Compile Include="Storage/DiskDeltaLog.Tests.fs" />
+    <Compile Include="Storage/DurabilityTier.Tests.fs" />
     <Compile Include="Storage/RecoverableSpine.Tests.fs" />
     <Compile Include="Storage/DurableSaga.Tests.fs" />
     <Compile Include="Storage/DurabilitySim.Tests.fs" />
