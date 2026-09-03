@@ -349,8 +349,18 @@ spec:
 
     # ── Layer 5: the platform control plane ──────────────────────────────────
     - chart: platform
-      dependsOn: [cert-manager, cilium, cilium-lb-ipam, longhorn]
+      dependsOn: [cert-manager, cilium, cilium-lb-ipam, longhorn, kube-prometheus-stack]
       citations:
+        kube-prometheus-stack: >-
+          full-ai-cluster/k8s/applications/platform/monitoring.yaml ships a
+          `monitoring.coreos.com/v1` ServiceMonitor (line 29) and PrometheusRule
+          (line 50), and `monitoring` is one of the 15 names in this Application's
+          own directory.include glob, so BOTH are applied. Those CRDs are installed
+          by kube-prometheus-stack. Derived mechanically 2026-09-03 by scanning
+          in-repo manifests for non-core apiVersions and mapping each custom kind to
+          its installing Application -- the CRD evidence class, which service-DNS
+          derivation cannot see. This edge was MISSING, and it is the only one that
+          class found across all 47 Applications.
         cert-manager: >-
           full-ai-cluster/k8s/applications/platform/clusterissuer.yaml:17,38
           declare `apiVersion: cert-manager.io/v1`, `kind: ClusterIssuer` — a

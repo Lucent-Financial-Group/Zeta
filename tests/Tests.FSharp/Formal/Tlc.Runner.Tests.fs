@@ -304,23 +304,6 @@ let private runTlcUnlocked (model: PinnedModel) : int * string =
     p.ExitCode, stdout + stderr
 
 
-let private runTlc (model: PinnedModel) : int * string =
-    tlcProcessGate.Wait()
-    try runTlcUnlocked model
-    finally tlcProcessGate.Release() |> ignore
-
-
-let private cleanMarker = "Model checking completed. No error has been found"
-
-
-let private distinctStatesRegex =
-    System.Text.RegularExpressions.Regex(@"([\d,]+) distinct states found")
-
-
-/// The verdict rule. Five independent ways to fail, none of them a
-/// matter of taste: the jar banner, the exit code, the completion
-/// marker, the pinned error substring, and the pinned exhaustive state
-/// count all have to agree with the registry.
 /// Did the JVM fail before TLC ever ran?
 ///
 /// The banner check below cannot tell "this jar is a different TLC" from "no TLC ran at all", and
@@ -343,6 +326,64 @@ let private jvmNeverStarted (stdout: string) =
       "OutOfMemoryError" ]
     |> List.exists (fun marker -> stdout.Contains(marker, StringComparison.Ordinal))
 
+/// Attempts allowed when the JVM cannot start. The RUN is retried, never the verdict.
+[<Literal>]
+let private JvmStartAttempts = 3
+
+/// Should this run be attempted again?
+///
+/// Split out of the loop so the POLICY can be tested without launching a JVM. The two ways to get
+/// this wrong are opposite and both bad: retrying an answer turns a real failure intermittent, and
+/// not bounding the retry turns a persistent shortage into a hang.
+let internal shouldRetryJvmStart (attempt: int) (stdout: string) =
+    attempt < JvmStartAttempts && jvmNeverStarted stdout
+
+let private runTlc (model: PinnedModel) : int * string =
+    tlcProcessGate.Wait()
+
+    try
+        // RETRY ONLY A JVM THAT NEVER STARTED.
+        //
+        // The registry pins `-Xmx4g`, and on a box running the whole 6,000-test suite the JVM
+        // sometimes cannot reserve it — observed once in three full runs on 2026-09-03. Nothing
+        // about the model or the jar is wrong when that happens; the process simply never got far
+        // enough to check anything.
+        //
+        // A model check is deterministic and idempotent, so re-running one is free of consequence —
+        // which is exactly the condition that makes a retry honest rather than a way of averaging
+        // over a flaky result. The retry is bounded and the LAST output is returned either way, so a
+        // persistent shortage still fails, and still fails with the "TLC DID NOT RUN" diagnosis
+        // rather than being retried into silence.
+        //
+        // Deliberately NOT retried: a violated invariant, a wrong banner, a missing completion
+        // marker. Those are answers, and re-asking a question you already have an answer to is how a
+        // real failure becomes intermittent.
+        let mutable attempt = 1
+        let mutable result = runTlcUnlocked model
+
+        while shouldRetryJvmStart attempt (snd result) do
+            attempt <- attempt + 1
+            // A moment for whatever else was holding the memory to release it. Re-reserving
+            // instantly would usually just fail again.
+            Thread.Sleep 2000
+            result <- runTlcUnlocked model
+
+        result
+    finally
+        tlcProcessGate.Release() |> ignore
+
+
+let private cleanMarker = "Model checking completed. No error has been found"
+
+
+let private distinctStatesRegex =
+    System.Text.RegularExpressions.Regex(@"([\d,]+) distinct states found")
+
+
+/// The verdict rule. Five independent ways to fail, none of them a
+/// matter of taste: the jar banner, the exit code, the completion
+/// marker, the pinned error substring, and the pinned exhaustive state
+/// count all have to agree with the registry.
 let private judge (model: PinnedModel) (exitCode: int) (stdout: string) =
     // Asked BEFORE the banner check, because a JVM that never started cannot print a banner and the
     // absence would otherwise be read as evidence about the jar's version.
@@ -555,3 +596,26 @@ let ``a jar reporting a different version IS toolchain drift`` () =
 
     Assert.Contains("TOOLCHAIN DRIFT", ex.Message)
     Assert.DoesNotContain("TLC DID NOT RUN", ex.Message)
+
+
+// ── The retry POLICY, tested without launching a JVM ─────────────────────────
+
+[<Fact>]
+let ``a JVM that never started is retried`` () =
+    // The observed case: -Xmx4g cannot be reserved while the whole suite runs.
+    Assert.True(shouldRetryJvmStart 1 "Could not reserve enough space for object heap")
+
+[<Fact>]
+let ``the retry is BOUNDED — a persistent shortage still fails`` () =
+    // Without this the run would spin on a box that simply does not have the memory, and a hang is
+    // a worse failure than a red test because nothing reports it.
+    Assert.False(shouldRetryJvmStart JvmStartAttempts "Could not reserve enough space for object heap")
+
+[<Fact>]
+let ``an ANSWER is never retried`` () =
+    // The half that matters most. TLC reporting a violation, a wrong banner, or a missing completion
+    // marker has ANSWERED; re-asking is how a real, reproducible failure becomes intermittent — and
+    // an intermittent failure is one people learn to re-run rather than read.
+    Assert.False(shouldRetryJvmStart 1 "Error: Invariant Solvency is violated.")
+    Assert.False(shouldRetryJvmStart 1 "TLC2 Version 1900.01.01.000000 (rev: deadbee)")
+    Assert.False(shouldRetryJvmStart 1 "Model checking completed. No error has been found")

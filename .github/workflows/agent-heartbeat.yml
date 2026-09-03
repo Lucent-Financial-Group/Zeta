@@ -18,6 +18,16 @@ on:
   schedule:
     # GitHub documents higher schedule delay/drop risk at the start of each hour.
     # This is an off-boundary 15-minute mitigation, not a delivery guarantee.
+    # TEMPORARILY DISABLED at the GitHub API level: workflow state `disabled_manually` since
+    # 2026-08-29 (REST `actions/workflows` updated_at; last scheduled run 2026-08-29T06:44-07:15Z).
+    # Recorded in-tree 2026-09-03, after a review found the cron reading as live. Not retired:
+    # the per-day storage growth of the heartbeat lanes (Aaron's estimate, ~100 MB/day,
+    # UNMEASURED) is being redesigned for space efficiency, with a heartbeat/telemetry repo
+    # split on the plan. The cron is left in place so re-enabling is one click and the tree
+    # does not describe a schedule that silently differs from the one GitHub runs. NOTHING IN
+    # CI FLUSHES while this holds: the only workflow that runs merge-heartbeats-to-main.ts is
+    # agent-heartbeat.yml, which is one of the four disabled -- parked `heartbeat/*` refs are
+    # flushed only by a local run of that script. No new refs are produced meanwhile.
     - cron: "7,22,37,52 * * * *" # every 15 minutes, offset from minute zero
   workflow_dispatch: # manual trigger for testing
 

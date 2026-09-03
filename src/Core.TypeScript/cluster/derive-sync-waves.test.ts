@@ -88,8 +88,8 @@ describe("the live full-ai-cluster tree", () => {
     expect(audit.derivedWaves.size).toBe(47);
   });
 
-  test("the eight known disagreements are all registered WITH a reason", () => {
-    expect(audit.orderViolations.length).toBe(8);
+  test("the nine known disagreements are all registered WITH a reason", () => {
+    expect(audit.orderViolations.length).toBe(9);
     for (const v of audit.orderViolations) {
       const reason = ORDER_ADJUDICATION_PENDING.get(orderViolationKey(v));
       expect(typeof reason).toBe("string");
