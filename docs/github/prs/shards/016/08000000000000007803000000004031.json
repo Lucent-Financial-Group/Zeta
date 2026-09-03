@@ -1,0 +1,12 @@
+{
+  "pr_number": 16433,
+  "archive_path": "docs/history/pr-reviews/PR-16433-feat-enforcement-the-change-control-clamp-four-authorities-one-legal-set.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-03T03:42:23.878Z",
+  "schema_version": "v1",
+  "commit_sha": "8cb9e0b66736f41421192e0e940d83eb4c9c9a14",
+  "title": "feat(enforcement): the change-control clamp — four authorities, one legal set",
+  "state": "MERGED",
+  "merged_at": "2026-09-03T03:41:08Z",
+  "head_ref": "change-control-v2"
+}
