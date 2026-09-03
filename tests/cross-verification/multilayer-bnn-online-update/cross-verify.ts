@@ -17,6 +17,16 @@ interface FSharpReport {
   readonly exactDenseLoopyVariances: readonly number[];
   readonly loopyOnDenseEvidenceMeans: readonly number[];
   readonly loopyOnDenseEvidenceVariances: readonly number[];
+  readonly fvsLoopyMeans: readonly number[];
+  readonly fvsLoopyVariances: readonly number[];
+  readonly fvsExactness: string;
+  readonly fvsFeedbackVertices: readonly number[];
+  readonly fvsSelection: string | null;
+  readonly fvsRounds: number;
+  readonly fvsConverged: boolean;
+  readonly fvsReplayBitInvariant: boolean;
+  readonly fvsBudgetError: string;
+  readonly fvsCappedTreeError: string;
   readonly exactDenseLayerCount: number;
   readonly exactDenseAbsorbedObservationCount: number;
   readonly exactDenseReplayBitInvariant: boolean;
@@ -71,6 +81,16 @@ function isFSharpReport(value: unknown): value is FSharpReport {
     && finiteArray(record.exactDenseLoopyVariances, 4)
     && finiteArray(record.loopyOnDenseEvidenceMeans, 4)
     && finiteArray(record.loopyOnDenseEvidenceVariances, 4)
+    && finiteArray(record.fvsLoopyMeans, 4)
+    && finiteArray(record.fvsLoopyVariances, 4)
+    && typeof record.fvsExactness === "string"
+    && integerArray(record.fvsFeedbackVertices, 2)
+    && (typeof record.fvsSelection === "string" || record.fvsSelection === null)
+    && Number.isInteger(record.fvsRounds)
+    && typeof record.fvsConverged === "boolean"
+    && typeof record.fvsReplayBitInvariant === "boolean"
+    && typeof record.fvsBudgetError === "string"
+    && typeof record.fvsCappedTreeError === "string"
     && Number.isInteger(record.exactDenseLayerCount)
     && Number.isInteger(record.exactDenseAbsorbedObservationCount)
     && typeof record.exactDenseReplayBitInvariant === "boolean"
@@ -196,6 +216,20 @@ check(fsharp.exactDenseLayerCount === 4 && fsharp.exactDenseAbsorbedObservationC
 check(fsharp.exactDenseReplayBitInvariant, "exact-dense query replay is bit-stable");
 check(arraysClose(fsharp.loopyOnDenseEvidenceMeans, fsharp.exactDenseLoopyMeans), "loopy means agree with exact-dense query");
 check(!arraysClose(fsharp.loopyOnDenseEvidenceVariances, fsharp.exactDenseLoopyVariances, 1e-6), "loopy covariance remains non-exact");
+check(arraysClose(fsharp.fvsLoopyMeans, pythonUnknown.exactDenseLoopyMeans), "FVS means agree with independent loopy dense solve");
+check(arraysClose(fsharp.fvsLoopyVariances, pythonUnknown.exactDenseLoopyVariances), "FVS variances agree with independent loopy dense solve");
+check(
+  fsharp.fvsExactness === "ExactLoopyViaFvs 2"
+    && fsharp.fvsFeedbackVertices[0] === 0
+    && fsharp.fvsFeedbackVertices[1] === 1
+    && fsharp.fvsSelection === "ExhaustiveMinimum"
+    && fsharp.fvsConverged,
+  "FVS structural exactness receipt",
+);
+check(fsharp.fvsRounds > 0 && fsharp.fvsRounds <= 3_000, "FVS aggregate tree-run budget");
+check(fsharp.fvsReplayBitInvariant, "FVS query replay is bit-stable");
+check(fsharp.fvsBudgetError.includes("feedbackBudget 1"), "FVS budget refusal");
+check(fsharp.fvsCappedTreeError.includes("feedback conditioned tree run did not converge"), "FVS conditioned-tree cap refusal");
 
 function disagreementCounts(report: PythonReport): { readonly means: number; readonly variances: number } {
   const means = report.sequentialMeans.filter((value, index) => {
@@ -249,7 +283,7 @@ if (failures.length > 0) {
 }
 
 console.log(
-  "multilayer-bnn-online-update cross-verify: 9 cross-oracle comparisons, 12 production-only receipt controls, 3 mutation controls; "
+  "multilayer-bnn-online-update cross-verify: 11 cross-oracle comparisons, 19 production-only receipt controls, 3 mutation controls; "
     + `coupling-sign disagreements=means:${couplingSignDisagreements.means},variances:${couplingSignDisagreements.variances}; `
     + `channel-variance disagreements=means:${varianceDisagreements.means},variances:${varianceDisagreements.variances}; `
     + `double-count disagreements=means:${doubleCountDisagreements.means},variances:${doubleCountDisagreements.variances}; 0 failure(s).`,

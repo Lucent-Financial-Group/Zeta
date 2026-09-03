@@ -1,0 +1,40 @@
+{
+  "schemaVersion": 1,
+  "contract": "docs/research/2026-09-03-fvs-feedback-query-implementation-contract.md",
+  "model": "finite declared four-layer linear-Gaussian skip topology",
+  "method": "feedback-vertex-set-conditioned-tree-query",
+  "inputBoundary": "read-only query over an unchanged network; no canonical arrival-order evidence claim",
+  "selection": {
+    "feedbackVertices": [0, 1],
+    "mode": "ExhaustiveMinimum",
+    "feedbackVertexCount": 2,
+    "aggregateConditionedTreeRounds": 9,
+    "converged": true,
+    "exactness": "ExactLoopyViaFvs 2"
+  },
+  "fvsMarginals": {
+    "means": [2.7199999999999998, -0.3199999999999998, 0.48, 1.4400000000000002],
+    "variances": [0.13599999999999998, 0.296, 0.41600000000000004, 0.744]
+  },
+  "ordinaryConvergedLoopyBp": {
+    "meanL1DifferenceFromExact": 4.0190073491430667e-14,
+    "variances": [0.15520133232616018, 0.36471886077740145, 0.498828411189295, 0.6876474916069649],
+    "varianceL1DifferenceFromExact": 0.22710111268589156
+  },
+  "finiteControls": {
+    "acyclicDelegationBitIdentical": true,
+    "replayBitInvariant": true,
+    "oneVertexBudgetRefused": true,
+    "oneRoundTreeCapRefused": true
+  },
+  "independentVerification": {
+    "implementation": "separately authored Python joint-precision inversion",
+    "comparisonTolerance": 1e-10,
+    "crossOracleComparisons": 11,
+    "productionReceiptControls": 19,
+    "mutationControls": 3,
+    "channelVarianceMutationDisagreements": { "means": 4, "variances": 4 },
+    "observationDoubleCountMutationDisagreements": { "means": 4, "variances": 4 }
+  },
+  "verdict": "fvs-conditioned-exact-covariance-query-supported-for-the-declared-finite-linear-gaussian-witness-only"
+}
