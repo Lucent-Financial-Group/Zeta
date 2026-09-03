@@ -34,7 +34,7 @@
  *   bun src/Core.TypeScript/hygiene/audit-cross-language-pairs.ts --list     # every pair
  */
 
-import { existsSync, readdirSync, readFileSync, statSync } from "node:fs";
+import { readdirSync, readFileSync, type Dirent } from "node:fs";
 import { basename, join } from "node:path";
 
 const REPO_ROOT = process.cwd();
@@ -52,8 +52,17 @@ export function kebabOf(pascal: string): string {
 
 /** Every file under `dir`, recursively, as repo-relative paths. */
 function walk(dir: string, out: string[] = []): string[] {
-  if (!existsSync(dir)) return out;
-  for (const entry of readdirSync(dir, { withFileTypes: true })) {
+  // One syscall, one answer. An `existsSync` before the read is a check-then-use race (CWE-367)
+  // that this repo's own `lint-check-then-use-file-races` refuses: between the two calls the path
+  // can be created, deleted or replaced, so the check's answer is already stale when the use runs.
+  let entries: Dirent[];
+  try {
+    entries = readdirSync(dir, { withFileTypes: true });
+  } catch (e) {
+    if ((e as NodeJS.ErrnoException).code === "ENOENT") return out;
+    throw e;
+  }
+  for (const entry of entries) {
     const full = join(dir, entry.name);
     if (entry.isDirectory()) {
       if (entry.name === "node_modules" || entry.name === "bin" || entry.name === "obj") continue;
@@ -154,7 +163,10 @@ export function findPairs(): Pair[] {
       // Any nested module with exactly this basename counts, e.g. algebra/erasure-charge.ts.
       const nested = tsFiles.find((f) => basename(f) === `${kebab}.ts`);
       if (nested !== undefined) ts = nested.replace(/\\/g, "/");
-      else if (tsDirs.has(asDir) && statSync(asDir).isDirectory()) ts = asDir;
+      // No `statSync` confirmation: `tsDirs` was built from `withFileTypes` entries during the
+      // walk, so it already holds only real directories. Asking the filesystem again would be a
+      // second syscall answering a question the listing already answered — and a race besides.
+      else if (tsDirs.has(asDir)) ts = asDir;
     }
     if (ts === undefined) continue;
 
@@ -178,8 +190,19 @@ interface Baseline {
 }
 
 export function readBaseline(): Baseline {
-  if (!existsSync(BASELINE_PATH)) return { unpinned: [] };
-  return JSON.parse(readFileSync(BASELINE_PATH, "utf8")) as Baseline;
+  // Same rule as `walk`: read and interpret the failure, rather than ask first and act on a stale
+  // answer. A MISSING baseline is an empty one — the honest reading for a repo that has not
+  // recorded any pairs yet. Any other error is re-thrown, because "I could not read the baseline"
+  // and "there is nothing baselined" are different facts and collapsing them would silently turn
+  // every recorded pair back into a new failure.
+  let raw: string;
+  try {
+    raw = readFileSync(BASELINE_PATH, "utf8");
+  } catch (e) {
+    if ((e as NodeJS.ErrnoException).code === "ENOENT") return { unpinned: [] };
+    throw e;
+  }
+  return JSON.parse(raw) as Baseline;
 }
 
 if (import.meta.main) {
