@@ -1,11 +1,12 @@
 ---
 id: 081M1J8HK19087G0R003A897JV
 type: task
-state: backlog
+state: done
 priority: P1
 slug: blockioferry-coalesces-adjacent-lba-writes
 title: "BlockIoFerry coalesces adjacent LBA writes"
 created: 2026-09-02T23:51:00.000Z
+completed: 2026-09-03T00:15:52.935Z
 depends_on: []
 composes_with: ["081M1J5CE74087G0R001FE7Z8B"]
 ---

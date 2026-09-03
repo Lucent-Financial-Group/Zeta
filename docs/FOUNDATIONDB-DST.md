@@ -44,7 +44,8 @@ to hit production without a traditional integration suite.
    Reclaim crash-mid-sweep intercept landed (`ArmCrashOnDelete`).
    `IBlockIo` remains the device primitive; `BlockIoFerry` interprets
    ops through `FerryThrottler` (single/single, batch/batch,
-   batch/multibatch, adjacent whole-block coalesce). Native NVMe remains
+   batch/multibatch, adjacent whole-block coalesce). `SimulatedBlockIo`
+   is the LBA DST door (not POSIX). Native NVMe remains
    first-product **PR12** and ZetaDB **D12**. Until
    that corpus is green the honest word is `toy`, not crash-safe.
    ReFS-shaped resilience (allocate-on-write, pointer-not-copy) is

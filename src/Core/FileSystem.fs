@@ -447,6 +447,87 @@ type FileSystemBlockIo(fs: IFileSystem, path: string, blockSize: int) =
             use stream = fs.OpenFile(path, FileMode.Open, FileAccess.ReadWrite, FileShare.Read)
             stream.Flush()
 
+/// DST block device: LBA → sparse blocks in memory. Not POSIX, not NVMe.
+/// Write is visible immediately. `ArmCrashMidWrite` tears the next Write
+/// that is longer than `afterBytes`. Crash recovery of a volume on this
+/// door stays `toy` until freeze/CAS speak `IBlockIo` instead of files.
+[<Sealed>]
+type SimulatedBlockIo(blockSize: int) =
+    do
+        if blockSize <= 0 || (blockSize &&& (blockSize - 1)) <> 0 then
+            invalidArg "blockSize" "block size must be a positive power of two"
+
+    let blocks = System.Collections.Concurrent.ConcurrentDictionary<uint64, byte[]>()
+    let lockObj = obj ()
+    let mutable crashArm: int option = None
+    let mutable writes = 0
+
+    let writeRange (startLba: uint64) (src: ReadOnlySpan<byte>) =
+        let mutable offset = 0
+
+        while offset < src.Length do
+            let lba = startLba + uint64 (offset / blockSize)
+            let within = offset % blockSize
+            let n = min (blockSize - within) (src.Length - offset)
+            let block = blocks.GetOrAdd(lba, fun _ -> Array.zeroCreate blockSize)
+            src.Slice(offset, n).CopyTo(Span(block, within, n))
+            offset <- offset + n
+
+    /// One-shot: next Write longer than `afterBytes` commits that prefix then throws.
+    member _.ArmCrashMidWrite(afterBytes: int) =
+        if afterBytes < 0 then
+            invalidArg (nameof afterBytes) "afterBytes must be >= 0"
+
+        lock lockObj (fun () -> crashArm <- Some afterBytes)
+
+    member _.Writes = lock lockObj (fun () -> writes)
+
+    interface IBlockIo with
+        member _.BlockSize = blockSize
+
+        member _.Read(lba, dst) =
+            if dst.Length = 0 then
+                0
+            else
+                let mutable copied = 0
+                let mutable offset = 0
+
+                while offset < dst.Length do
+                    let cur = lba + uint64 (offset / blockSize)
+                    let within = offset % blockSize
+                    let n = min (blockSize - within) (dst.Length - offset)
+
+                    match blocks.TryGetValue cur with
+                    | true, block -> Span(block, within, n).CopyTo(dst.Span.Slice(offset, n))
+                    | false, _ -> dst.Span.Slice(offset, n).Clear()
+
+                    copied <- copied + n
+
+                    offset <- offset + n
+
+                copied
+
+        member _.Write(lba, src) =
+            lock lockObj (fun () ->
+                writes <- writes + 1
+
+                match crashArm with
+                | Some afterBytes when src.Length > afterBytes ->
+                    crashArm <- None
+                    writeRange lba (src.Span.Slice(0, afterBytes))
+                    raise (
+                        CrashMidWriteException(
+                            "lba:"
+                            + lba.ToString(System.Globalization.CultureInfo.InvariantCulture),
+                            afterBytes,
+                            src.Length
+                        ))
+                | _ ->
+                    writeRange lba src.Span
+                    src.Length)
+
+        member _.Flush() = ()
+
 
 /// The global file system registry containing the active IFileSystem implementation.
 [<AbstractClass; Sealed>]
