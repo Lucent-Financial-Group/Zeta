@@ -1,0 +1,14 @@
+{
+  "id": "080d03486f3ca010a0130008c0311161",
+  "at": "2026-09-03T20:55:14.068Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1MGVSWK087G0R001EQ0YQN",
+    "type": "task",
+    "title": "resource-rung override point: the lane serves a dev-rung tree instead of syncing the committed metal one",
+    "slug": "resource-rung-override-point-the-lane-serves-a-dev-rung-tree",
+    "priority": "P2",
+    "filename": "081M1MGVSWK087G0R001EQ0YQN-resource-rung-override-point-the-lane-serves-a-dev-rung-tree.md"
+  }
+}
