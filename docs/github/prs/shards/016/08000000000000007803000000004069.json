@@ -1,0 +1,12 @@
+{
+  "pr_number": 16489,
+  "archive_path": "docs/history/pr-reviews/PR-16489-fix-formal-retry-a-jvm-that-never-started-and-only-that.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-03T10:33:01.080Z",
+  "schema_version": "v1",
+  "commit_sha": "4446c873e200f2258c0d469bd5f6ff1b8fc41c40",
+  "title": "fix(formal): retry a JVM that never started — and only that",
+  "state": "MERGED",
+  "merged_at": "2026-09-03T10:32:23Z",
+  "head_ref": "tlc-retry-v2"
+}

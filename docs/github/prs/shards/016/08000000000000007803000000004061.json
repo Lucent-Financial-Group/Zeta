@@ -1,0 +1,12 @@
+{
+  "pr_number": 16481,
+  "archive_path": "docs/history/pr-reviews/PR-16481-docs-derivations-land-the-three-n-3-clean-room-reports-annotate-the-paused-heart.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-03T10:38:58.246Z",
+  "schema_version": "v1",
+  "commit_sha": "beb0f82ae30616430a9a15b4b9f67f641134100b",
+  "title": "docs(derivations): land the three N=3 clean-room reports; annotate the paused heartbeat crons",
+  "state": "MERGED",
+  "merged_at": "2026-09-03T10:38:20Z",
+  "head_ref": "shadow/derivation-reports-to-docs"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 16495,
+  "archive_path": "docs/history/pr-reviews/PR-16495-research-081m1kcbts7087g0r001064t9v-society-connection-crdt-by-default-consensus.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-03T11:35:33.678Z",
+  "schema_version": "v1",
+  "commit_sha": "81ff29551826b87ca6d60ab3b90bf09e3dd8b7b1",
+  "title": "research(081M1KCBTS7087G0R001064T9V): society connection — CRDT by default, consensus escalated per key on measured disagreement and distrust",
+  "state": "MERGED",
+  "merged_at": "2026-09-03T11:34:54Z",
+  "head_ref": "fable/society-escalation-spec"
+}
