@@ -1,0 +1,12 @@
+{
+  "pr_number": 16508,
+  "archive_path": "docs/history/pr-reviews/PR-16508-fix-cluster-give-k3d-metal-s-control-plane-hosts-san-and-nodes-ready.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-03T16:50:35.430Z",
+  "schema_version": "v1",
+  "commit_sha": "1833226988d1ff05bd834af56eff1ae18682cb30",
+  "title": "fix(cluster): give k3d metal's control-plane hosts, SAN, and nodes Ready",
+  "state": "MERGED",
+  "merged_at": "2026-09-03T16:49:57Z",
+  "head_ref": "cursor/k3d-control-plane-hosts-27c5"
+}
