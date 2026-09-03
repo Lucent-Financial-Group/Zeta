@@ -1,0 +1,14 @@
+{
+  "id": "080d03317786e810a01300086b3f6522",
+  "at": "2026-09-03T07:32:27.485Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1K2XW6V087G0R000QR7XFK",
+    "type": "task",
+    "title": "the default event transport had one assertion that could not fail",
+    "slug": "the-default-event-transport-had-one-assertion-that-could-not",
+    "priority": "P2",
+    "filename": "081M1K2XW6V087G0R000QR7XFK-the-default-event-transport-had-one-assertion-that-could-not.md"
+  }
+}
