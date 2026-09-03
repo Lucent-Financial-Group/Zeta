@@ -1181,9 +1181,12 @@ jobs:
             kubectl -n kube-system get ds,pods -l k8s-app=cilium -o wide || true
           fi
           echo "=== hostNetwork TCP ClusterIP + pod-IP probe (081M1DFQ2MZ distinguisher) ==="
-          echo "MEASURED 33781233753: ClusterIP TCP FAIL after bundle.crt. hostAliases to ClusterIP is closed."
-          echo "Pod-IP OPEN isolates ClusterIP translation. Pod-IP FAIL means overlay unreachable from hostNetwork."
-          echo "Do not invent Cilium values. Do not re-lift included."
+          echo "MEASURED 33800779819: hostNetwork ClusterIP FAIL, overlay pod IP OPEN; pod-network both OPEN."
+          echo "Cilium service list had kube-dns and spire-server ClusterIP backends active."
+          echo "klipper svclb-cilium-ingress was 2/2 Running; metal --disable=servicelb, k3d skipped it."
+          echo "Do not invent Cilium values. Do not re-lift included. Do not hostAliases to ClusterIP."
+          echo "--- klipper svclb (empty after --disable=servicelb) ---"
+          kubectl get ds,pods -A -l app=svclb -o wide || true
           SPIRE_IP="$(kubectl -n spire get svc spire-server -o jsonpath='{.spec.clusterIP}' 2>/dev/null || true)"
           SPIRE_PORT="$(kubectl -n spire get svc spire-server -o jsonpath='{.spec.ports[0].port}' 2>/dev/null || true)"
           SPIRE_POD_IP="$(kubectl -n spire get pod spire-server-0 -o jsonpath='{.status.podIP}' 2>/dev/null || true)"

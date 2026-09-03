@@ -109,9 +109,10 @@ describe("every supported provider is exercised by a real CI lane", () => {
    * `cilium-dbg` with `2>/dev/null | grep` also goes red: that dump
    * printed nothing and looked like KPR had no kube-dns.
    *
-   * The remaining included-class question is TCP to the **pod IP**
-   * from hostNetwork (ClusterIP FAIL is measured 33781233753). Delete
-   * `TCP spire-server-pod` or the pod-network control and this goes red.
+   * MEASURED 33800779819: hostNetwork ClusterIP FAIL + overlay pod IP
+   * OPEN; pod-network both OPEN; klipper svclb Running. Delete
+   * `TCP spire-server-pod`, the pod-network control, or `app=svclb`
+   * and this goes red.
    */
   test("live-k3d dump logs the spire-agent DaemonSet, not a label the chart does not set", () => {
     const dump = (jobs()["live-k3d"]!.steps ?? []).find((s) =>
@@ -137,6 +138,7 @@ describe("every supported provider is exercised by a real CI lane", () => {
     expect(run).toContain("pod-network control");
     expect(run).toContain("busybox nc");
     expect(run).toContain("hostNetwork: true");
+    expect(run).toContain("app=svclb");
     expect(run).not.toMatch(/docker exec.*\|\s*(grep|rg)\s+-[^\n]*q/);
   });
 });

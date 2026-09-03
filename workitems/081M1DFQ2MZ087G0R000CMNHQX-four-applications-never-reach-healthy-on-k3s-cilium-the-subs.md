@@ -626,18 +626,49 @@ Do not re-lift `--scope included`. Next measured step is TCP to the
 **pod IP** (`10.143.0.44`) from hostNetwork: OPEN isolates ClusterIP
 translation; FAIL means hostNetwork cannot reach the overlay either.
 
-## Next dump — hostNetwork TCP pod IP (8081) + pod-network control
+## MEASURED 2026-09-03 — live-k3d 33800779819: hostNetwork ClusterIP FAIL, pod IP OPEN (PR #16526)
 
-live-k3d dump now probes:
+Job `100800757935` on SHA `711ce22ee`
+[run 33800779819](https://github.com/Lucent-Financial-Group/Zeta/actions/runs/33800779819)
+**succeeded** at smoke. Server 2/2 Running, `bundle.crt` present,
+Cilium service list had ClusterIP backends **active**. This is the
+pod-IP distinguisher, not a startup-race dump.
 
-- TCP `spire-server-0` **pod IP:8081** from hostNetwork (agent API, not Service :443)
-- TCP kube-dns **endpoint** pod IP:53 from hostNetwork
-- the same four targets from a **pod-network** busybox (`hostNetwork: false`)
+| Netns | kube-dns ClusterIP `:53` | kube-dns pod `:53` | spire-server ClusterIP `:443` | spire-server pod `:8081` |
+|---|---|---|---|---|
+| hostNetwork | **FAIL** | **OPEN** | **FAIL** | **OPEN** |
+| pod-network | **OPEN** | **OPEN** | **OPEN** | **OPEN** |
 
-OPEN on pod IP + FAIL on ClusterIP isolates kube-proxy-replacement
-translation. FAIL on both means overlay unreachable from hostNetwork.
-Do not treat OPEN/FAIL as measured until a dump with server Running +
-`bundle.crt` prints those lines. Do not invent Cilium values.
+| Signal | Value |
+|---|---|
+| cert-manager | 1/1 Running, RESTARTS=0 |
+| spire-server-0 | 2/2 Running, pod IP `10.143.0.70` |
+| PVC | Bound |
+| spire-bundle | `bundle.crt` present |
+| cilium-dbg kube-dns | `10.43.0.10:53` → `10.143.0.147:53` (active) |
+| cilium-dbg spire-server | `10.43.130.76:443` → `10.143.0.70:8081` (active) |
+| klipper | `svclb-cilium-ingress` 2/2 Running; `svclb-weaviate` Pending |
+
+Overlay from hostNetwork works. ClusterIP translation from hostNetwork
+does not. Pod-network ClusterIP works. kind+Cilium is Healthy on the
+**same** shipped helm values (only `k8sServiceHost` differs). Metal
+`k3s-server.nix` passes `--disable=servicelb`; k3d did not, and the
+dump shows klipper running.
+
+**hostAliases to ClusterIP stays closed.** **Do not invent Cilium
+values** (`socketLB`, `routingMode`, chart bumps). Next software is
+the metal k3s flag k3d skipped: `--disable=servicelb`. The next dump
+must show `app=svclb` empty and re-print the four TCP lines. If
+ClusterIP from hostNetwork is still FAIL with klipper gone, the class
+is host-ns socket-LB attach on k3d, still without inventing values.
+
+## Next dump — hostNetwork ClusterIP after `--disable=servicelb`
+
+live-k3d dump still probes the four TCP targets from hostNetwork and
+pod-network, and lists `app=svclb`. Empty svclb + ClusterIP OPEN
+closes this cell. Empty svclb + ClusterIP FAIL means klipper was not
+the translator. Do not re-lift `--scope included`. Do not invent
+Cilium values.
 
 ## The distinguishing test
 

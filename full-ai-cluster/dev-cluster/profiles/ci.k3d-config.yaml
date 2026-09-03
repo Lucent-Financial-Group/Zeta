@@ -49,6 +49,13 @@ options:
         nodeFilters: [server:*]
       - arg: --disable-network-policy
         nodeFilters: [server:*]
+      # Metal k3s-server.nix disables servicelb so Cilium owns L4.
+      # k3d skipped it. MEASURED live-k3d 33800779819: klipper
+      # svclb-cilium-ingress 2/2 Running while hostNetwork ClusterIP
+      # TCP FAIL and overlay pod IPs OPEN. kind+Cilium has no klipper
+      # and the four are Healthy on the same helm values.
+      - arg: --disable=servicelb
+        nodeFilters: [server:*]
       - arg: --disable=traefik
         nodeFilters: [server:*]
       - arg: --node-label=zeta.io/env=ci

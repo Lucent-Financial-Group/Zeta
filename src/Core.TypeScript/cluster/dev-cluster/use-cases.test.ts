@@ -259,6 +259,31 @@ describe("kind CI use case", () => {
   });
 
   /**
+   * Metal k3s-server.nix disables servicelb so Cilium owns L4. k3d
+   * copied traefik-off and left klipper on. MEASURED live-k3d
+   * 33800779819: svclb-cilium-ingress 2/2 Running, hostNetwork
+   * ClusterIP TCP FAIL, overlay pod IPs OPEN. Delete this flag
+   * from either profile and this goes red.
+   */
+  test("k3d profiles disable servicelb the same way metal k3s-server.nix does", () => {
+    const ci = readFileSync(
+      new URL("../../../../full-ai-cluster/dev-cluster/profiles/ci.k3d-config.yaml", import.meta.url),
+      "utf8",
+    );
+    const local = readFileSync(
+      new URL("../../../../full-ai-cluster/dev-cluster/k3d-config.yaml", import.meta.url),
+      "utf8",
+    );
+    const metal = readFileSync(
+      new URL("../../../../full-ai-cluster/nixos/modules/k3s-server.nix", import.meta.url),
+      "utf8",
+    );
+    expect(metal).toContain("--disable=servicelb");
+    expect(ci).toContain("--disable=servicelb");
+    expect(local).toContain("--disable=servicelb");
+  });
+
+  /**
    * THE LOAD-BALANCER ALIAS -- same wiring-falsifier shape as longhorn.
    *
    * A `type: LoadBalancer` Service on kind never gets
