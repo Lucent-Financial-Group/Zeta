@@ -1,0 +1,14 @@
+{
+  "id": "080d033415c5d810a0130008c38ffaa5",
+  "at": "2026-09-03T09:03:58.139Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1K85E5T087G0R001V4HZMD",
+    "type": "task",
+    "title": "Multilayer cross-verify: 12 of 14 witness groups are mutation-insensitive; add a variance-moving mutant and pin per-group counts",
+    "slug": "multilayer-cross-verify-12-of-14-witness-groups-are-mutation",
+    "priority": "P2",
+    "filename": "081M1K85E5T087G0R001V4HZMD-multilayer-cross-verify-12-of-14-witness-groups-are-mutation.md"
+  }
+}
