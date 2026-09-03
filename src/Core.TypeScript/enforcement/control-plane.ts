@@ -113,8 +113,7 @@ export function haltDecision(flags: readonly ControlPlaneFlag[], ctx: ActingCont
 
 /** The parse result, kept separate from the halt decision so "unreadable" is not silently "empty". */
 export type FlagSource =
-  | { readonly ok: true; readonly flags: readonly ControlPlaneFlag[] }
-  | { readonly ok: false; readonly why: string };
+  { readonly ok: true; readonly flags: readonly ControlPlaneFlag[] } | { readonly ok: false; readonly why: string };
 
 const VALID_KINDS: ReadonlySet<string> = new Set(FLAG_SEVERITY);
 const VALID_SCOPES: ReadonlySet<string> = new Set(["organization", "agent", "hat", "provider"]);
@@ -127,6 +126,31 @@ const VALID_SCOPES: ReadonlySet<string> = new Set(["organization", "agent", "hat
  * nobody could parse is exactly the one that might have been the estop. A parser that drops what it
  * does not understand turns a corrupt halt into a silent go.
  */
+/**
+ * Parse one flag's scope.
+ *
+ * Extracted so `parseFlags` stays under the complexity bound, but also because the null check below
+ * only reads as a real check when `scope` arrives as `unknown`. It previously arrived pre-cast to
+ * `Record<string, unknown> | undefined`, which told the type system `null` was impossible — so
+ * `scope === null` looked dead to a reader and to the linter while remaining load-bearing at
+ * runtime, since `typeof null === "object"`. A cast that makes a live guard look dead is exactly
+ * the shape that gets "tidied away" later.
+ */
+function parseScope(scope: unknown, i: number): { ok: true; scope: ControlPlaneScope } | { ok: false; why: string } {
+  if (typeof scope !== "object" || scope === null) return { ok: false, why: `flag ${String(i)} has no scope` };
+  const sc = scope as Record<string, unknown>;
+  const kind = sc.kind;
+  if (typeof kind !== "string" || !VALID_SCOPES.has(kind)) {
+    return { ok: false, why: `flag ${String(i)} has an unknown scope kind` };
+  }
+  if (kind === "organization") return { ok: true, scope: { kind: "organization" } };
+  const id = sc.id;
+  if (typeof id !== "string" || id.length === 0) {
+    return { ok: false, why: `flag ${String(i)} scope "${kind}" needs an id` };
+  }
+  return { ok: true, scope: { kind, id } as ControlPlaneScope };
+}
+
 export function parseFlags(raw: string): FlagSource {
   let parsed: unknown;
   try {
@@ -138,27 +162,18 @@ export function parseFlags(raw: string): FlagSource {
 
   const flags: ControlPlaneFlag[] = [];
   for (const [i, entry] of parsed.entries()) {
-    if (typeof entry !== "object" || entry === null) return { ok: false, why: `flag ${i} is not an object` };
+    if (typeof entry !== "object" || entry === null) return { ok: false, why: `flag ${String(i)} is not an object` };
     const e = entry as Record<string, unknown>;
-    if (typeof e["kind"] !== "string" || !VALID_KINDS.has(e["kind"])) return { ok: false, why: `flag ${i} has an unknown kind` };
-    if (typeof e["reason"] !== "string" || e["reason"].length === 0) return { ok: false, why: `flag ${i} has no reason` };
-    if (typeof e["setBy"] !== "string" || e["setBy"].length === 0) return { ok: false, why: `flag ${i} has no setBy` };
-    const scope = e["scope"] as Record<string, unknown> | undefined;
-    if (typeof scope !== "object" || scope === null) return { ok: false, why: `flag ${i} has no scope` };
-    const scopeKind = scope["kind"];
-    if (typeof scopeKind !== "string" || !VALID_SCOPES.has(scopeKind)) return { ok: false, why: `flag ${i} has an unknown scope kind` };
-    if (scopeKind !== "organization" && (typeof scope["id"] !== "string" || (scope["id"] as string).length === 0)) {
-      return { ok: false, why: `flag ${i} scope "${scopeKind}" needs an id` };
-    }
-    flags.push({
-      kind: e["kind"] as ControlPlaneFlagKind,
-      reason: e["reason"],
-      setBy: e["setBy"],
-      scope:
-        scopeKind === "organization"
-          ? { kind: "organization" }
-          : ({ kind: scopeKind, id: scope["id"] } as ControlPlaneScope),
-    });
+    const kind = e.kind;
+    const reason = e.reason;
+    const setBy = e.setBy;
+    if (typeof kind !== "string" || !VALID_KINDS.has(kind))
+      return { ok: false, why: `flag ${String(i)} has an unknown kind` };
+    if (typeof reason !== "string" || reason.length === 0) return { ok: false, why: `flag ${String(i)} has no reason` };
+    if (typeof setBy !== "string" || setBy.length === 0) return { ok: false, why: `flag ${String(i)} has no setBy` };
+    const scope = parseScope(e.scope, i);
+    if (!scope.ok) return { ok: false, why: scope.why };
+    flags.push({ kind: kind as ControlPlaneFlagKind, reason, setBy, scope: scope.scope });
   }
   return { ok: true, flags };
 }
