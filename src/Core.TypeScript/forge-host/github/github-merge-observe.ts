@@ -13,6 +13,19 @@ import type { CheckSummary, ForgeError, NextAction, PrGateState, PullRequest, Re
 import { err, forgeError, ok } from "../result";
 import type { GithubRest } from "./github-pr-rest.ts";
 
+/**
+ * THIS QUERY HAD NEVER RUN SUCCESSFULLY. It spread `... on CheckRun` directly inside `contexts`,
+ * and `contexts` is a CONNECTION (`StatusCheckRollupContextConnection`), not a list of nodes.
+ * GitHub answers every such request with:
+ *
+ *   Fragment on CheckRun can't be spread inside StatusCheckRollupContextConnection
+ *
+ * — so `getPrGateState` returned `internal` for every PR, which is why it had zero callers: nobody
+ * could have used it successfully. Found by pointing the new merge-receipt gate at a real PR.
+ *
+ * The type condition has to be applied to the NODE, so the connection is traversed explicitly.
+ * `__typename` is requested because a union node is otherwise indistinguishable once parsed.
+ */
 export const MERGE_OBSERVE_QUERY = `query MergeObserve($owner: String!, $name: String!, $number: Int!) {
   repository(owner: $owner, name: $name) {
     pullRequest(number: $number) {
@@ -24,9 +37,12 @@ export const MERGE_OBSERVE_QUERY = `query MergeObserve($owner: String!, $name: S
         nodes {
           commit {
             statusCheckRollup {
-              contexts {
-                ... on CheckRun { name status conclusion }
-                ... on StatusContext { context state }
+              contexts(first: 100) {
+                nodes {
+                  __typename
+                  ... on CheckRun { name status conclusion }
+                  ... on StatusContext { context state }
+                }
               }
             }
           }
@@ -175,7 +191,7 @@ export function mapMergeObserve(text: string): Result<PrGateState, ForgeError> {
   const pr = (parsed as { data?: { repository?: { pullRequest?: unknown } } }).data?.repository?.pullRequest;
   if (typeof pr !== "object" || pr === null) return err(forgeError("not-found", "merge observe: no pullRequest"));
   const p = pr as GraphQlPr;
-  const rollup = p.commits?.nodes?.[0]?.commit?.statusCheckRollup?.contexts ?? [];
+  const rollup = p.commits?.nodes?.[0]?.commit?.statusCheckRollup?.contexts?.nodes ?? [];
   const checks = classifyChecks(rollup.map(normalizeContext));
   const unresolvedThreads = (p.reviewThreads?.nodes ?? []).filter((t) => t.isResolved !== true).length;
   const state = mapPrState(p.state);
@@ -204,7 +220,9 @@ interface GraphQlPr {
   readonly commits?: {
     readonly nodes?: readonly {
       readonly commit?: {
-        readonly statusCheckRollup?: { readonly contexts?: readonly GraphQlContext[] };
+        readonly statusCheckRollup?: {
+          readonly contexts?: { readonly nodes?: readonly GraphQlContext[] };
+        };
       };
     }[];
   };

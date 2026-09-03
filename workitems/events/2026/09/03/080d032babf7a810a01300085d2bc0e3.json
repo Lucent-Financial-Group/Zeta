@@ -1,0 +1,14 @@
+{
+  "id": "080d032babf7a810a01300085d2bc0e3",
+  "at": "2026-09-03T04:09:54.165Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1JQAZQM087G0R002NPWH99",
+    "type": "bug",
+    "title": "getPrGateState never worked — a union fragment spread on a GraphQL connection",
+    "slug": "getprgatestate-never-worked-a-union-fragment-spread-on-a-gra",
+    "priority": "P2",
+    "filename": "081M1JQAZQM087G0R002NPWH99-getprgatestate-never-worked-a-union-fragment-spread-on-a-gra.md"
+  }
+}
