@@ -15,6 +15,7 @@
  */
 
 import type { NextAction } from "../observe";
+import { isMergeItem, itemIdOf, rowFor } from "../action-reconciliation";
 
 // ─── Hat types (minimal subset of agentic-organization/domain) ──────
 
@@ -96,50 +97,43 @@ export function hatFilter(menu: readonly NextAction[], authority: HatAuthority):
  */
 function canExecuteItem(itemId: string, auth: HatAuthority): boolean {
   // A merge is a distinct authority, not a harder kind of work.
-  if (itemId.startsWith("merge-pr-")) return auth.canMerge;
+  if (isMergeItem(itemId)) return auth.canMerge;
   return auth.canDoWork;
 }
 
+/**
+ * The gate is a LOOKUP, not a switch on the action itself.
+ *
+ * This used to be a `switch (action.kind)` ending in `default: return true` — which meant a kind
+ * nobody had thought about was authorized at every hat level, silently. Reading the gate out of
+ * `ACTION_RECONCILIATION` makes a new kind a COMPILE error (the table's `Record` demands a row)
+ * instead of a permission.
+ */
 function isAuthorized(action: NextAction, auth: HatAuthority): boolean {
-  switch (action.kind) {
-    // Free modes — always allowed (NCI: freedom is not gated)
-    case "explore":
-    case "play":
-    case "self_reflect":
-    case "free_time":
+  const gate = rowFor(action.kind).gate;
+  switch (gate) {
+    // NCI: freedom is not gated. And a kind with no authority attached yet stays permitted — the
+    // table names that gap (`UNGATED_KINDS`) rather than hiding it in a fall-through.
+    case "never_gated":
+    case "not_yet_assigned":
       return true;
-
-    // Operator channel — c_suite+ only
-    case "preserve_ferry":
-    case "respond_to_operator":
+    case "operator_channel":
       return auth.canAccessOperator;
-
-    // Work execution — depends on hat level
-    case "do_item":
-      return canExecuteItem(action.item.id, auth);
-
-    /**
-     * A claim is a PROMISE TO EXECUTE ("I will deliver this by tick T"), so it is gated exactly as
-     * the execution is. Before this it fell through to `default: return true` and was ungated at
-     * every level — a hat could commit to delivering an item the same hat was forbidden to touch,
-     * which is worse than either outcome alone: the work does not happen AND a peer stood down
-     * because someone said they had it. An unbackable commitment is the one thing a coordination
-     * primitive must not permit.
-     */
-    case "self_claim":
-      return canExecuteItem(action.item.id, auth);
-
-    // Decompose — lead+ only
     case "decompose":
       return auth.canDecompose;
-
-    // Grammar extension — director+ only
     case "edit_grammar":
       return auth.canEditGrammar;
-
-    default:
-      return true;
+    case "execute_item": {
+      const id = itemIdOf(action);
+      return id === null ? auth.canDoWork : canExecuteItem(id, auth);
+    }
   }
+  return assertNeverGate(gate);
+}
+
+/** Exhaustiveness, enforced by the compiler: a new `HatGate` value fails to typecheck here. */
+function assertNeverGate(x: never): never {
+  throw new Error(`unhandled hat gate: ${String(x)}`);
 }
 
 // ─── Sovereign mode (no hat) ────────────────────────────────────────
