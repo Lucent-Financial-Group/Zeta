@@ -1,0 +1,14 @@
+{
+  "id": "080d03349e3c2810a01300086906164e",
+  "at": "2026-09-03T09:22:36.037Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1K97HVN087G0R0013Q79MG",
+    "type": "bug",
+    "title": "a JVM that failed to start was reported as toolchain drift",
+    "slug": "a-jvm-that-failed-to-start-was-reported-as-toolchain-drift",
+    "priority": "P2",
+    "filename": "081M1K97HVN087G0R0013Q79MG-a-jvm-that-failed-to-start-was-reported-as-toolchain-drift.md"
+  }
+}
