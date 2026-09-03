@@ -1,0 +1,12 @@
+{
+  "pr_number": 16416,
+  "archive_path": "docs/history/pr-reviews/PR-16416-feat-cluster-cloudnativepg-operator-the-shared-prerequisite-of-the-gitlab-and-te.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-03T04:09:01.362Z",
+  "schema_version": "v1",
+  "commit_sha": "66abd2de569adc39edd087e9fa0be2ac90622573",
+  "title": "feat(cluster): CloudNativePG operator — the shared prerequisite of the gitlab and temporal bumps",
+  "state": "MERGED",
+  "merged_at": "2026-09-03T04:08:25Z",
+  "head_ref": "shadow/cloudnativepg-operator"
+}
