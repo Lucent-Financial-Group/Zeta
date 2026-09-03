@@ -1109,3 +1109,37 @@ let ``Sealed FileSystemBlockIo replay with the wrong vault key recovers nothing 
             finally
                 FileSystem.Reset()
     }
+
+[<Fact>]
+let ``Journaled freeze CAS objects through FileSystemBlockIo reopen and are not POSIX files`` () : Task =
+    task {
+        ensureHasher ()
+        FileSystem.Register(InMemoryFileSystem())
+        let store = "/freeze-file-cas-blocks"
+        let mutbuf = ZetaFsMutbuf.create store ZetaFsMutbuf.Coherence.Shared
+        let volume = ZetaFsFreeze.createManualWithFileBlockStore store mutbuf None
+
+        try
+            let id = mintId ()
+            let h = ZetaFsMutbuf.openHandle volume.Mutbuf id
+            ZetaFsMutbuf.pwrite volume.Mutbuf h 0L [| 1uy; 2uy; 3uy |] |> ignore
+            let pending = (freezeAsync volume id ZetaFsFreeze.Journaled).AsTask()
+            do! (ZetaFsFreeze.pumpLog volume CancellationToken.None).ConfigureAwait(false)
+            let! first = pending.ConfigureAwait(false)
+
+            match first with
+            | Error e -> Assert.Fail(ZetaFsFreeze.errorName e)
+            | Ok first ->
+                Assert.True(ZetaFsFreeze.isReadable volume first.Content)
+                Assert.True(FileSystem.Current.Exists(Path.Combine(store, "cas")))
+                Assert.Equal(0, FileSystem.Current.GetFiles(Path.Combine(store, "objects"), "*").Length)
+                ZetaFsFreeze.dispose volume
+                let reopened = ZetaFsFreeze.createManualWithFileBlockStore store mutbuf None
+
+                try
+                    Assert.True(ZetaFsFreeze.isReadable reopened first.Content)
+                finally
+                    ZetaFsFreeze.dispose reopened
+        finally
+            FileSystem.Reset()
+    }

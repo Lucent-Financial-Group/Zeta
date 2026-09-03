@@ -749,6 +749,21 @@ module ZetaFsFreeze =
         let io = FileSystemBlockIo(fs, path, 4096)
         createFull storeDir mutbuf observer (Some session) defaultConfig true (Some(HostFile io)) None
 
+    /// DST: journaled log on one host-file polyfill, CAS objects on another.
+    /// Two files so a crash arm on objects cannot tear the log. `create` /
+    /// `createManual` still speak a raw frame stream and POSIX objects.
+    let createManualWithFileBlockStore
+        (storeDir: string)
+        (mutbuf: ZetaFsMutbuf.Catalog)
+        (observer: IDurabilityObserver option)
+        : Volume =
+        let fs = FileSystem.Current
+        fs.CreateDirectory(Path.Combine(storeDir, "log"))
+        let logIo = FileSystemBlockIo(fs, Path.Combine(storeDir, "log", "freeze"), 4096)
+        let casIo = FileSystemBlockIo(fs, Path.Combine(storeDir, "cas"), 4096)
+        let cas = BlockCas(casIo)
+        createFull storeDir mutbuf observer None defaultConfig true (Some(HostFile logIo)) (Some cas)
+
     let dispose (volume: Volume) = (volume :> IDisposable).Dispose()
 
     let pumpLog (volume: Volume) (ct: CancellationToken) : Task =
