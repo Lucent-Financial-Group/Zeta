@@ -1,0 +1,14 @@
+{
+  "id": "080d03259bb16010a0130008fb652c41",
+  "at": "2026-09-03T00:37:57.932Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1JB6XH3087G0R003R26KTT",
+    "type": "task",
+    "title": "Room-scoped credential proxy and default-deny egress policy",
+    "slug": "room-scoped-credential-proxy-and-default-deny-egress-policy",
+    "priority": "P2",
+    "filename": "081M1JB6XH3087G0R003R26KTT-room-scoped-credential-proxy-and-default-deny-egress-policy.md"
+  }
+}
