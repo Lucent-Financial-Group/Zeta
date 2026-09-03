@@ -1,0 +1,12 @@
+{
+  "pr_number": 16461,
+  "archive_path": "docs/history/pr-reviews/PR-16461-fix-participant-an-ambiguous-model-reply-became-a-confident-wrong-choice.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-03T08:35:00.519Z",
+  "schema_version": "v1",
+  "commit_sha": "1ce288d8d09b7bd982af60a8d62bbe27dcf11abd",
+  "title": "fix(participant): an ambiguous model reply became a confident wrong choice",
+  "state": "MERGED",
+  "merged_at": "2026-09-03T08:34:17Z",
+  "head_ref": "unambiguous-choice-parse"
+}

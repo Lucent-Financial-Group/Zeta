@@ -1,0 +1,12 @@
+{
+  "pr_number": 16456,
+  "archive_path": "docs/history/pr-reviews/PR-16456-fix-erasure-charge-holes-and-observations-came-out-in-posting-order-not-ordinall.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-03T08:15:58.255Z",
+  "schema_version": "v1",
+  "commit_sha": "34b25c4440a6bf9cde25f193997f8164f3b7cd13",
+  "title": "fix(erasure-charge): holes and observations came out in posting order, not ordinally",
+  "state": "MERGED",
+  "merged_at": "2026-09-03T08:15:13Z",
+  "head_ref": "erasure-charge-treaty"
+}
