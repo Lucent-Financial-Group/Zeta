@@ -114,7 +114,7 @@ describe("classify — observe.ts auto-classifier shape", () => {
 // ═══════════════════════════════════════════════════════════════════════════
 
 describe("parseChosenIndex", () => {
-  it("reads a bare number, with or without ordinary decoration", () => {
+  test("reads a bare number, with or without ordinary decoration", () => {
     expect(parseChosenIndex("4")).toBe(4);
     expect(parseChosenIndex("  4  ")).toBe(4);
     expect(parseChosenIndex("4.")).toBe(4);
@@ -123,7 +123,7 @@ describe("parseChosenIndex", () => {
     expect(parseChosenIndex("I pick 2")).toBe(2);
   });
 
-  it("REFUSES a reply naming two numbers, rather than guessing which is the choice", () => {
+  test("REFUSES a reply naming two numbers, rather than guessing which is the choice", () => {
     // The two cases that were silently wrong. Both name 4; the old parser answered 0 and 1.
     expect(parseChosenIndex("0-based index: 4")).toBeNull();
     expect(parseChosenIndex("1st: 4")).toBeNull();
@@ -133,17 +133,17 @@ describe("parseChosenIndex", () => {
     expect(parseChosenIndex("Option 3 of 5")).toBeNull();
   });
 
-  it("REFUSES a negative rather than reading it as its absolute value", () => {
+  test("REFUSES a negative rather than reading it as its absolute value", () => {
     // `/\d+/` does not match the sign, so "-3" used to parse as 3 — a slot the model did not name.
     expect(parseChosenIndex("-3")).toBeNull();
   });
 
-  it("refuses a reply with no number at all", () => {
+  test("refuses a reply with no number at all", () => {
     expect(parseChosenIndex("the answer")).toBeNull();
     expect(parseChosenIndex("")).toBeNull();
   });
 
-  it("returns the number even when out of range — RANGE is the caller's judgement", () => {
+  test("returns the number even when out of range — RANGE is the caller's judgement", () => {
     // Keeping the two decisions separate is what lets `chooseIndex` distinguish `unparseable` from
     // `out-of-range`, and the promotion gate treats an out-of-range pick as an ILLEGAL SELECTION
     // rather than a parse failure. Collapsing them would hide a lane reaching past its menu.
@@ -155,7 +155,7 @@ describe("parseChosenIndex", () => {
 describe("chooseIndex routes the parse through parseChosenIndex", () => {
   const opts = { context: "c", options: ["a", "b", "c", "d", "e"] };
 
-  it("an ambiguous reply is unparseable, not a confident wrong pick", async () => {
+  test("an ambiguous reply is unparseable, not a confident wrong pick", async () => {
     const r = await chooseIndex(mockBackend("0-based index: 4"), opts);
     expect(r.cause).toBe("unparseable");
     expect(r.fallback).toBe(true);
@@ -164,7 +164,7 @@ describe("chooseIndex routes the parse through parseChosenIndex", () => {
     expect(r.index).toBe(0);
   });
 
-  it("a bare number is still a first-class choice", async () => {
+  test("a bare number is still a first-class choice", async () => {
     const r = await chooseIndex(mockBackend("3"), opts);
     expect(r.index).toBe(3);
     expect(r.fallback).toBe(false);
