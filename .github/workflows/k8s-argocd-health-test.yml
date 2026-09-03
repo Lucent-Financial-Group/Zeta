@@ -149,6 +149,8 @@ on:
       - "src/Core.TypeScript/cluster/inert-valuesobject-keys.schema.json"
       - "src/Core.TypeScript/cluster/reason-truth.ts"
       - "src/Core.TypeScript/cluster/reason-truth.test.ts"
+      - "src/Core.TypeScript/cluster/gatekeeper-ignore-label.ts"
+      - "src/Core.TypeScript/cluster/gatekeeper-ignore-label.test.ts"
       - "docs/backlog/P1/081KSXN940008QG0R000SCP2H1-kubernetes-argocd-kind-k3d-integration-health-tests-separate.md"
       - ".github/workflows/k8s-argocd-health-test.yml"
       - ".mise.toml"
@@ -256,6 +258,8 @@ on:
       - "src/Core.TypeScript/cluster/inert-valuesobject-keys.schema.json"
       - "src/Core.TypeScript/cluster/reason-truth.ts"
       - "src/Core.TypeScript/cluster/reason-truth.test.ts"
+      - "src/Core.TypeScript/cluster/gatekeeper-ignore-label.ts"
+      - "src/Core.TypeScript/cluster/gatekeeper-ignore-label.test.ts"
       - "docs/backlog/P1/081KSXN940008QG0R000SCP2H1-kubernetes-argocd-kind-k3d-integration-health-tests-separate.md"
       - ".github/workflows/k8s-argocd-health-test.yml"
       - ".mise.toml"
@@ -426,6 +430,45 @@ jobs:
 
       - name: Run app-of-apps discovery unit tests
         run: bun test src/Core.TypeScript/cluster/app-of-apps-discovery.test.ts
+
+      # DOES EVERY NAMESPACE THAT CLAIMS A GATEKEEPER EXEMPTION ACTUALLY HAVE ONE?
+      #
+      # Gatekeeper ships its own validating webhook, `check-ignore-label`, which
+      # refuses the label `admission.gatekeeper.sh/ignore` on any namespace outside
+      # the controller's exempt set. It is not one of our ConstraintTemplates and no
+      # Constraint can switch it off -- it guards the exemption mechanism itself, so
+      # a workload cannot exempt itself from policy by labelling its own namespace.
+      #
+      # Three namespaces in this tree carried that label and only one was exempt.
+      # MEASURED on run 33790413535 (main, 2026-09-03), the other two were denied on
+      # every sync attempt:
+      #
+      #   application/agent-memory  ... the namespace failed to apply, reason:
+      #     admission webhook "check-ignore-label.gatekeeper.sh" denied the request:
+      #     Only exempt namespace can have the admission.gatekeeper.sh/ignore label
+      #     (retried 5 times).
+      #   application/gmod          ... identical ...
+      #
+      # The Namespace never applies, so the Application never syncs, so it reads
+      # OutOfSync/Missing forever -- and `agent-memory is OutOfSync/Missing` is one
+      # of the two findings that failed the included proof below.
+      #
+      # WHY IT SURVIVED: the correspondence was asserted in a YAML COMMENT
+      # ("matches open-policy-agent exemptions") and never read from the other side.
+      # It was false when it was written. This step is that comment made mechanical,
+      # and it reproduces the whole failure offline in about a second.
+      #
+      # It is a SEPARATE step from the test file below on purpose: the audit reads
+      # the live tree and is what goes red when someone adds a labelled namespace;
+      # the tests pin the refusals that keep the audit from being vacuous -- an
+      # unreadable exempt list reported rather than defaulted in either direction, an
+      # empty list distinguished from an unreadable one, and a zero-namespace walk
+      # treated as an alarm rather than a pass.
+      - name: Audit gatekeeper ignore-label exemptions
+        run: bun src/Core.TypeScript/cluster/gatekeeper-ignore-label.ts
+
+      - name: Run gatekeeper ignore-label falsifiers
+        run: bun test src/Core.TypeScript/cluster/gatekeeper-ignore-label.test.ts
 
       # SYNC-WAVE DERIVATION. The App-of-Apps bring-up order is DERIVED from
       # full-ai-cluster/k8s/sync-wave-dependency-graph.yaml by ace's own engine
