@@ -1,0 +1,12 @@
+{
+  "pr_number": 16452,
+  "archive_path": "docs/history/pr-reviews/PR-16452-fix-durability-typescript-recovery-came-back-short-and-reported-success.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-03T06:37:20.592Z",
+  "schema_version": "v1",
+  "commit_sha": "edffe53862c1c55191fcd39c88b08a82c749e22f",
+  "title": "fix(durability): TypeScript recovery came back short and reported success",
+  "state": "MERGED",
+  "merged_at": "2026-09-03T06:36:44Z",
+  "head_ref": "durable-delta-log"
+}
