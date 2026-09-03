@@ -179,7 +179,7 @@ describe("GitHubAdapter", () => {
                 autoMergeRequest: { enabledAt: "t" },
                 mergeCommit: null,
                 reviewThreads: { nodes: [] },
-                commits: { nodes: [{ commit: { statusCheckRollup: { contexts: [] } } }] },
+                commits: { nodes: [{ commit: { statusCheckRollup: { contexts: { nodes: [] } } } }] },
               },
             },
           },

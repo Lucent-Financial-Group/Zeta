@@ -1,7 +1,14 @@
 import { describe, expect, test } from "bun:test";
 import { ok } from "../result";
 import type { GithubRest } from "./github-pr-rest.ts";
-import { MERGE_OBSERVE_QUERY, mapMergeObserve, mapOpenPullRequests, mergeObserveRequest, observeMerge, observeOpenPullRequests } from "./github-merge-observe.ts";
+import {
+  MERGE_OBSERVE_QUERY,
+  mapMergeObserve,
+  mapOpenPullRequests,
+  mergeObserveRequest,
+  observeMerge,
+  observeOpenPullRequests,
+} from "./github-merge-observe.ts";
 
 function envelope(over: Record<string, unknown>): string {
   return JSON.stringify({
@@ -14,7 +21,7 @@ function envelope(over: Record<string, unknown>): string {
           autoMergeRequest: null,
           mergeCommit: null,
           reviewThreads: { nodes: [] },
-          commits: { nodes: [{ commit: { statusCheckRollup: { contexts: [] } } }] },
+          commits: { nodes: [{ commit: { statusCheckRollup: { contexts: { nodes: [] } } } }] },
           ...over,
         },
       },
@@ -58,13 +65,20 @@ describe("mapMergeObserve", () => {
       envelope({
         mergeStateStatus: "BLOCKED",
         commits: {
-          nodes: [{
-            commit: {
-              statusCheckRollup: {
-                contexts: [{ name: "lint (TS)", status: "COMPLETED", conclusion: "FAILURE" }],
+          nodes: [
+            {
+              commit: {
+                statusCheckRollup: {
+                  // The REAL shape GitHub returns: `contexts` is a connection, so the union nodes
+                  // live under `nodes`. The old double said `contexts: [...]` — the same wrong shape
+                  // the query had — so this test agreed with the bug instead of catching it.
+                  contexts: {
+                    nodes: [{ __typename: "CheckRun", name: "lint (TS)", status: "COMPLETED", conclusion: "FAILURE" }],
+                  },
+                },
               },
             },
-          }],
+          ],
         },
       }),
     );
@@ -76,10 +90,12 @@ describe("mapMergeObserve", () => {
   });
 
   test("unresolved review thread → resolve-threads", () => {
-    const got = mapMergeObserve(envelope({
-      mergeStateStatus: "BLOCKED",
-      reviewThreads: { nodes: [{ isResolved: false }, { isResolved: true }] },
-    }));
+    const got = mapMergeObserve(
+      envelope({
+        mergeStateStatus: "BLOCKED",
+        reviewThreads: { nodes: [{ isResolved: false }, { isResolved: true }] },
+      }),
+    );
     expect(got.ok).toBe(true);
     if (!got.ok) return;
     expect(got.value.unresolvedThreads).toBe(1);
@@ -97,18 +113,42 @@ describe("mapMergeObserve", () => {
 
 describe("mapOpenPullRequests", () => {
   test("one GraphQL list carries mergeStateStatus so World.forgeState.cleanPrCount can be non-zero", () => {
-    const got = mapOpenPullRequests(JSON.stringify({
-      data: {
-        repository: {
-          pullRequests: {
-            nodes: [
-              { number: 1, title: "clean", mergeStateStatus: "CLEAN", url: "u", updatedAt: "t", isDraft: false, headRefName: "a", baseRefName: "main", author: { login: "ace" }, reviewDecision: "APPROVED" },
-              { number: 2, title: "blocked", mergeStateStatus: "BLOCKED", url: "u2", updatedAt: "t", isDraft: false, headRefName: "b", baseRefName: "main", author: { login: "ace" }, reviewDecision: null },
-            ],
+    const got = mapOpenPullRequests(
+      JSON.stringify({
+        data: {
+          repository: {
+            pullRequests: {
+              nodes: [
+                {
+                  number: 1,
+                  title: "clean",
+                  mergeStateStatus: "CLEAN",
+                  url: "u",
+                  updatedAt: "t",
+                  isDraft: false,
+                  headRefName: "a",
+                  baseRefName: "main",
+                  author: { login: "ace" },
+                  reviewDecision: "APPROVED",
+                },
+                {
+                  number: 2,
+                  title: "blocked",
+                  mergeStateStatus: "BLOCKED",
+                  url: "u2",
+                  updatedAt: "t",
+                  isDraft: false,
+                  headRefName: "b",
+                  baseRefName: "main",
+                  author: { login: "ace" },
+                  reviewDecision: null,
+                },
+              ],
+            },
           },
         },
-      },
-    }));
+      }),
+    );
     expect(got.ok).toBe(true);
     if (!got.ok) return;
     expect(got.value).toHaveLength(2);
@@ -145,5 +185,33 @@ describe("observeMerge", () => {
     const got = await observeMerge(rest, "o/r", 1);
     expect(got.ok).toBe(true);
     expect(calls).toEqual([{ method: "POST", path: "graphql" }]);
+  });
+});
+
+describe("MERGE_OBSERVE_QUERY — the shape GitHub will actually accept", () => {
+  test("a union type condition is applied to the NODE, never to the connection", () => {
+    // The defect: `contexts { ... on CheckRun { ... } }`. `contexts` is a
+    // StatusCheckRollupContextConnection, so GitHub refuses the WHOLE query with
+    // "Fragment on CheckRun cannot be spread inside StatusCheckRollupContextConnection" — every
+    // call, for every PR. No unit double could catch it: a double written from the implementation
+    // reproduces the implementation own idea of the shape, which is exactly what happened here.
+    // This asserts on the QUERY TEXT instead, which is the part the server judges.
+    const at = MERGE_OBSERVE_QUERY.indexOf("contexts");
+    expect(at).toBeGreaterThan(-1);
+    const rest = MERGE_OBSERVE_QUERY.slice(at);
+    const nodesAt = rest.indexOf("nodes {");
+    const spreadAt = rest.indexOf("... on CheckRun");
+    expect(nodesAt).toBeGreaterThan(-1);
+    expect(spreadAt).toBeGreaterThan(-1);
+    // The type condition must come AFTER the node traversal, never directly inside the connection.
+    expect(spreadAt).toBeGreaterThan(nodesAt);
+  });
+
+  test("the connection is paginated rather than unbounded", () => {
+    expect(MERGE_OBSERVE_QUERY).toContain("contexts(first:");
+  });
+
+  test("__typename is requested, so a union node stays distinguishable after parsing", () => {
+    expect(MERGE_OBSERVE_QUERY).toContain("__typename");
   });
 });
