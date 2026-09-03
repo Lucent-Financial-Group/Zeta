@@ -1199,13 +1199,18 @@ jobs:
               echo "TCP ${label}: NO_NODE"
               return 1
             fi
-            if docker exec "$NODE" /bin/busybox --list 2>/dev/null | tr ' ' '\n' | grep -qx nc; then
-              if docker exec "$NODE" /bin/busybox nc -z -w 3 "$ip" "$port"; then
-                echo "TCP ${label}: OPEN"
-              else
-                echo "TCP ${label}: FAIL"
+            APPLETS=""
+            if APPLETS="$(docker exec "$NODE" /bin/busybox --list)"; then
+              if echo "$APPLETS" | tr ' ' '\n' | grep -qx nc; then
+                if docker exec "$NODE" /bin/busybox nc -z -w 3 "$ip" "$port"; then
+                  echo "TCP ${label}: OPEN"
+                else
+                  echo "TCP ${label}: FAIL"
+                fi
+                return 0
               fi
-              return 0
+            else
+              echo "busybox --list failed on ${NODE} (not a TCP measurement)"
             fi
             if docker exec "$NODE" python3 -c "print('ok')" >/dev/null 2>&1; then
               if docker exec "$NODE" python3 -c "import socket; socket.create_connection(('$ip', int('$port')), 3).close()"; then

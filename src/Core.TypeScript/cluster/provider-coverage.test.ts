@@ -133,5 +133,6 @@ describe("every supported provider is exercised by a real CI lane", () => {
     expect(run).toContain("TCP spire-server");
     expect(run).toContain("busybox nc");
     expect(run).toContain("hostNetwork: true");
+    expect(run).not.toMatch(/docker exec.*\|\s*(grep|rg)\s+-[^\n]*q/);
   });
 });
