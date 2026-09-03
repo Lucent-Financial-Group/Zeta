@@ -1,0 +1,14 @@
+{
+  "id": "080d032436064010a0130008fc414bc1",
+  "at": "2026-09-02T23:49:07.912Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1J8DG67087G0R0009DXXV1",
+    "type": "task",
+    "title": "Meter AmplitudeEmu's distance from quantum: non-Clifford count, bond dimension, and a support budget that refuses",
+    "slug": "meter-amplitudeemu-s-distance-from-quantum-non-clifford-coun",
+    "priority": "P2",
+    "filename": "081M1J8DG67087G0R0009DXXV1-meter-amplitudeemu-s-distance-from-quantum-non-clifford-coun.md"
+  }
+}

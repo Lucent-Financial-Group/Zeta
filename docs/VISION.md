@@ -4013,3 +4013,258 @@ glossary-churn watching already named in the anti-Babel rule.
 (the invariant this is the conversational-scale instance of) ·
 [`.claude/rules/dv2-data-split-discipline-activated.md`](../.claude/rules/dv2-data-split-discipline-activated.md)
 (raw vault: both definitions held, each with its path)
+
+## Design FOR quantum, do not predict it — the disagreement is the prediction (2026-09-02, Aaron)
+
+Aaron, on the `EMIT ∘ RETRACT = I` result:
+
+> *"This is how we design for quantum, not predict it. The predictions come from where the
+> computer hardware disagree because of higher level abstractions."*
+
+### The stance
+
+We make no claim about what a quantum computer will do. **We write one structure and require both
+substrates to satisfy it.** The classical realisation and the quantum realisation are then not two
+predictions to be compared — they are **two instantiations of one law**, and the law is the artifact.
+
+The worked case is small enough to check by eye. In `src/Core.QSharp.ReferenceOracle/ZSetISA.qs`:
+
+| | classical (DBSP / Z-set) | quantum (Q#) |
+|---|---|---|
+| `EMIT(k)` | weight `+1` | `Ry(θ, k)` |
+| `RETRACT(k)` | weight `−1` | `Adjoint Emit` |
+| the law | `+1` then `−1` = `0` | `U` then `U†` = `I` |
+
+**`EMIT ∘ RETRACT = I` holds on both sides by construction, not by coincidence and not by test.**
+The Z-set weight is an integer in an abelian group, so it has an inverse. A quantum gate is a
+unitary, so it has an adjoint. **Retraction and the adjoint are the same operation** — and neither
+side had to be predicted from the other.
+
+### Why the disagreements are the valuable part
+
+If the two substrates satisfied the law identically everywhere, running on quantum hardware would
+teach us nothing. They will not. **Where they diverge, the divergence localises an abstraction that
+did not survive the crossing** — and that is a finding, not a failure.
+
+This is the four-oracle byte-lock discipline extended one layer down. Four language oracles must
+agree on golden vectors, and where they diverge the divergence *is* the result — the canonical case
+being UTF-16 code units versus UTF-8 bytes above the BMP, which no amount of good intent would have
+surfaced without the treaty. **Classical versus quantum is the same experiment at the hardware
+layer**: agreement is the floor, and disagreement is the measurement.
+
+And it composes with monodromy, already load-bearing here: two paths around a pole yield genuinely
+different results, **and that difference is information, not error.** A substrate disagreement is
+recorded as two branches with their paths, never reconciled to one surviving value.
+
+### The connection that makes this more than a slogan: the leak is usually a hidden branch
+
+**Higher-level abstractions leak at exactly the places we already refuse to go.** The clearest
+offender is the one named the same day: **a boolean forces an `if`, and an `if` is control
+structure that no channel declares.** A classical branch takes one path and discards the other; it
+has no quantum counterpart, because the discarded path is precisely what a superposition keeps.
+
+So the ISA's `BRANCH` is a Hadamard — *both states coexist while the tick is open* — and `MERGE` /
+`FOLD` are explicitly **not measurement**, with Born collapse marked sim-only and never live. The
+same design move that removes hidden control structure is what lets the structure **survive to the
+other substrate at all.**
+
+> **Refusing hidden control structure is what makes cross-substrate agreement possible; the
+> disagreements that remain are therefore informative rather than ambient.**
+
+That is why this belongs in the vision and not in a tools note. It says what we will *never* need in
+order to build on hardware we do not have: not a prediction, not a roadmap of what quantum will
+deliver — only a structure both substrates can be held to, and the discipline to notice where one of
+them cannot.
+
+### Status — and the honest gap is large
+
+**`toy`, and the experiment is currently unrunnable.** Stated plainly because this section is
+otherwise easy to over-read:
+
+- **Nothing in Zeta holds an encoded qubit.** `CssStabilizerCodes.qs` says so in its own body:
+  *"the simulator is a program, not a device."*
+- The Q# is **written, simulator-checked once per surface change** (`generate-qsharp-golden.py`
+  against Microsoft QDK), and **text-checked in CI** — `zset-isa.test.ts` reads the `.qs` file and
+  parses it with string matching. CI runs neither compiler nor simulator.
+- So the *method* is defined and the **disagreement half has never been run.** Classical-vs-simulator
+  is not classical-vs-quantum, and a simulator agrees by construction with the algebra it was
+  programmed from.
+
+What exists today is therefore the **floor** — one law, two transcriptions, byte-locked. The
+predictions the stance promises arrive only when there is hardware to disagree with us, and saying
+that clearly is what keeps this a design principle rather than a claim about physics.
+
+### Futamura says WHERE the `if`s go: we spec in the branch-free language, and specialisations carry the branches
+
+Aaron, 2026-09-02:
+
+> *"Yes — save this to vision about our Futamura. I think this is the language we spec in, and then
+> specialisations have the ifs."*
+
+This is the part that turns "no hidden control structure" from a prohibition into an architecture,
+and it resolves the obvious objection — *a decision has to happen somewhere.* It does. **Futamura
+says exactly where.**
+
+**Partial evaluation is, mechanically, the elimination of branches on known data.** A specialiser
+given `if (static) A else B` and a binding for `static` emits **just `A`** — the branch is
+*consumed* by specialisation. That is not a side effect of partial evaluation; on the static half
+it is most of what partial evaluation *is*.
+
+So the layers separate cleanly, and each one's relationship to branching is different:
+
+| layer | branches | why |
+|---|---|---|
+| **the spec language** | **none** | substrate-neutral, both paths alive, superposition-compatible — this is where we write |
+| **binding-time analysis** | *declares* which will survive | static ⇒ consumed at specialisation; dynamic ⇒ survives into the residual |
+| **the residual program** | **only the dynamic ones** | and every one of them was *declared in advance* by BTA |
+
+> **Binding-time analysis is the declaration that makes a branch legitimate.**
+
+That is the precise form of "no branch that no channel declares." A branch in the spec is hidden
+control structure. A branch in the residual program is the **output of a named transformation**,
+with an annotation saying in advance that it would be there. Same `if`, and the difference is
+entirely whether something declared it.
+
+**And this is what "upgrade to quantum, don't downgrade to classical" means operationally.** The
+spec is written at the level a quantum substrate can carry — branch-free, both paths alive. **A
+classical machine then runs a *specialisation* of that spec**, with the branches introduced by
+binding, not by authorship. Classical is not a lesser language we write in; it is the **residual
+program** of the one we write in.
+
+The tree already said this in a different vocabulary, which is worth noting as corroboration
+rather than novelty: `docs/research/2026-07-02-futamura-two-column-general-mix-and-intrinsic-hardware-isa-interpreter-is-the-one-object-residual-target-is-a-knob.md`
+— *"the intrinsic hardware ISA interpreter is the one object; residual target is a **knob**."*
+**Classical-versus-quantum is that knob.** The finding here is that the knob's setting is exactly
+what decides how many `if`s the residual carries, which is why the substrate disagreement of the
+previous section is informative: it is a *difference between two specialisations of one spec*, and
+the spec is the invariant they are both answerable to.
+
+**Anchors (Beacon).** Futamura (1971), *Partial Evaluation of Computation Process* — the three
+projections, already a checked anchor here. **Jones, Gomard & Sestoft**, *Partial Evaluation and
+Automatic Program Generation* (1993) — where **binding-time analysis** is developed as the static/
+dynamic separation this section leans on. Ershov, *mixed computation*.
+
+**Register:** `toy` in the same sense as the rest of this section — the mix/Futamura work exists in
+F# (`MixIr.fs`, `MixCogen.fs`), and *"compiled" is currently true only in the Futamura sense* per
+§1547 of this document. **No specialiser in this tree currently emits a quantum residual**, so the
+two-target claim is a design statement, not a demonstration.
+
+### The long thesis this serves, in Aaron's words (2026-09-02)
+
+> *"My goal over time is to prove classical has all the advantages of quantum and they are not
+> different — but I'm trying to upgrade to quantum rather than downgrade to classical. If we find
+> these don't match, I think it is very similar to P vs NP — not exactly, but the same. Either
+> conclusion would be good. And it relates to Riemann zeta, because that sits on the edge of
+> unpredictable: when the percentages go up, so does certain money."*
+
+Three things worth separating, because they have different standing.
+
+**The direction is the design decision, and it is the one that matters here.** *Upgrade to
+quantum, do not downgrade to classical* means: when the two substrates must share a structure,
+the shared structure is the **richer** one, and the classical side is required to meet it — not
+the other way round. That is why `RETRACT` is an adjoint rather than a deletion flag, and why
+`BRANCH` superposes rather than tests. Flattening quantum to classical would have produced a
+boolean and an `if`, which is exactly the hidden control structure this section is about.
+
+**The "P vs NP" intuition has a precise name, and it is a real open problem rather than a
+metaphor.** The question *"is quantum actually different from classical"* is, in complexity terms,
+**BQP vs BPP** — and it is genuinely open. (`BQP ⊆ PSPACE` is known; no separation from `BPP` is
+proven.) So Aaron's *"not exactly P vs NP, but the same"* is accurate in the way that matters: it
+is a **separation question between complexity classes**, with the same property that **either
+answer is a result.** Equivalence would say the structure we are building is sufficient; a
+separation would localise exactly what classical cannot reach. Anchors: Bernstein & Vazirani
+(1993, BQP); Aaronson on BQP vs the polynomial hierarchy.
+
+**The Riemann connection is recorded as his, and only partly anchored by me.** The checkable half
+is real and well-known: **Hilbert–Pólya** (the zeros as eigenvalues of a self-adjoint operator —
+i.e. a *quantum* reading of ζ) and **Montgomery–Odlyzko** (the pair correlation of zeta zeros
+matching GUE random-matrix statistics, which is the statistics of quantum chaotic spectra). That
+is a genuine classical↔quantum bridge sitting on the critical line, and it is why the resonance is
+not idle. **The second half of his sentence — "when the percentages go up, so does certain money"
+— I have not confidently mapped**, and per this repository's own discipline I am not going to
+infer what he meant. It is recorded verbatim, unglossed, pending him saying more.
+
+#### Aaron's Collatz take, its formal backing, and the one place I push back
+
+> *"Here is my controversial take, and it can be wrong but still in the same spirit: 3n+1, if it
+> ever ends, is very similar to primes. It's an engine — if we find the answer to it we have to
+> find another engine. This is game theory over infinite iterated games."*
+> — Aaron, 2026-09-02, flagging it as controversial himself
+
+**The spirit is right, and it has a theorem behind it that is stronger than the intuition.**
+**Conway (1972), *Unpredictable Iterations*,** proved that the *generalised* Collatz problem — the
+natural class of piecewise-linear iterations 3n+1 sits inside — is **undecidable**, and his
+**FRACTRAN** is Turing-complete built from exactly this kind of iteration. So *"if we solve one we
+must find another engine"* is not a hope about mathematical sociology. It is a **property of the
+class**: settling the specific instance leaves the class inexhaustible, because no procedure
+decides all of them. **The engine provably does not run out.** That is also the rigorous backing
+for the infinite-game framing — an infinite game requires an inexhaustible supply of open
+positions, and undecidability supplies exactly that. (Anchor for the framing itself: **James Carse,
+*Finite and Infinite Games*, 1986** — a finite game is played to win, an infinite game to continue
+play; already Aaron's recorded strategy as *tit-for-lesser-tat, teach, play*.)
+
+**Where I push back: primes and Collatz are not similar in the way the analogy needs.** Both are
+"famous open problems that resist" — that is a *matching count*, and by this repository's own rule
+a matching count is not an identification. The invariant that separates them is **generativity**:
+
+- **Primes are generative.** They built analytic number theory — the zeta function, RH, the
+  distribution theorems, the whole apparatus. The problem produced a field.
+- **Collatz is famously sterile.** Erdős's remark is the standard summary: *"Mathematics may not be
+  ready for such problems."* It has resisted for ninety years and generated comparatively little
+  structure around itself.
+
+**Resisting is not the same as generating**, and "engine" is a claim about *generating*. So the
+analogy holds at the level of the *class* (Conway: undecidable, inexhaustible) and fails at the
+level of the *instance* (Collatz has not been an engine in the way primes have). Both halves are
+worth keeping — the first is stronger than Aaron claimed, the second weaker.
+
+##### The correction to my correction: the loose interface is the METHOD, not the error
+
+Aaron, on reading the pushback above:
+
+> *"Yes — this is the loosest interface. I try to find the minimal interface and upgrade."*
+
+**So what I filed as a rebuttal was actually the second step of his own method**, and labelling it
+*"where I push back"* mis-framed it. Recorded rather than quietly repaired, because the difference
+matters:
+
+> **Find the loosest interface both things satisfy. Then upgrade it until it discriminates.**
+
+The loose interface is not sloppiness to be corrected — **it is where you start**, deliberately,
+because it is the widest net that still catches something. *"Famous open problems that resist"* is
+that net for primes and Collatz. **Generativity** is the upgrade. My contribution was performing
+the upgrade, not objecting to the net.
+
+**And this is one method appearing in four places in this document**, which is why it belongs in
+the vision rather than in a note:
+
+| thread | the loose interface | the upgrade |
+|---|---|---|
+| numerology → number theory | a matching **count** (48 roots) | the **invariants** that exclude the competitors (norms, rank, decomposition) |
+| interfaces vs classes | the **interface** — free, weight-free, the default | the **class**, earned under a rule |
+| classical vs quantum | the shared **law** both substrates satisfy | **upgrade to quantum**, never downgrade to classical |
+| minimal generators | *"minimal = what I can use to construct others"* | the **generativity** test — is it initial, or is it composite? |
+
+**It also recasts the numerology rule as constructive rather than merely prohibitive.** That rule
+currently reads as a guard — *a count is not an identification.* Aaron's framing supplies the other
+half: **the count is the loose interface, and the work is upgrading it.** A coincidence is not a
+thing to avoid; it is a thing to *strengthen until it either identifies or dies.* Which is exactly
+what that rule's own dual-use section already argues about McKay's `196884 = 196883 + 1` — the
+coincidence was the loose interface, and Borcherds performed the upgrade.
+
+**Register:** stored as a **coincidence-with-its-register**, per
+[`numerology-vs-number-theory`](../.claude/rules/numerology-vs-number-theory.md) — the Conway
+undecidability half is a **checked anchor**; the primes↔Collatz similarity is a **labelled
+resonance that this note declines to promote**, with the excluding invariant (generativity) named
+so it does not silently become a belief later.
+
+**Register:** the direction is a **design decision, in force**. BQP vs BPP is **cited, open, and
+not ours to settle**. The Riemann link is a **labelled resonance** with two checked anchors and one
+unmapped clause — a generator, not a claim, per
+[`numerology-vs-number-theory`](../.claude/rules/numerology-vs-number-theory.md).
+
+**Related:** [`docs/research/2026-09-02-alexas-open-questions-answered-from-the-qsharp-and-qec-routing-work.md`](research/2026-09-02-alexas-open-questions-answered-from-the-qsharp-and-qec-routing-work.md)
+§Q4, §Q4b — where the `EMIT ∘ RETRACT` result and the hidden-control-structure principle are
+derived · `src/Core.QSharp.ReferenceOracle/ZSetISA.qs` ·
+[`.claude/rules/anti-babel-preserve-reconcilability.md`](../.claude/rules/anti-babel-preserve-reconcilability.md)
+(monodromy: both branches held with their paths).
