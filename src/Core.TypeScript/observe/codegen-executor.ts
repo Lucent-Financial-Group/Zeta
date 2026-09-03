@@ -32,6 +32,7 @@
  */
 
 import { spawnSync } from "node:child_process";
+import { authorizeMerge, type PrGateReader } from "./merge-receipt";
 import { existsSync, readdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import type { CommandExecutor, RunSpec, RunOutcome, ExecutorTier } from "./do-item";
@@ -50,6 +51,13 @@ export interface CodegenExecutorOptions {
   readonly command?: string;
   /** Dry run: log the prompt but don't execute (for testing the dispatch). */
   readonly dryRun?: boolean;
+  /**
+   * How a `merge-pr-N` item obtains the forge's own answer about the PR.
+   *
+   * ABSENT MEANS NO MERGE. A merge is authorised by a receipt, and being unable to ask for one is
+   * not permission to proceed — see `observe/merge-receipt.ts` for the fallback this replaced.
+   */
+  readonly prGate?: PrGateReader;
 }
 
 /**
@@ -336,15 +344,32 @@ async function mergePullRequest(
     return { ok: false, reason: `invalid merge-pr id: ${item.id}`, exitCode: 1, stderr: "" };
   }
 
+  // THE RECEIPT, BEFORE ANYTHING ELSE — including before the dry-run report, so a dry run tells
+  // the operator whether this merge WOULD be authorised rather than only that it would be tried.
+  const authorization = await authorizeMerge(prNum, item.title, options?.prGate);
+  if (!authorization.permitted) {
+    return {
+      ok: false,
+      reason: `merge refused: ${authorization.why}`,
+      exitCode: 126,
+      stderr: authorization.why,
+    };
+  }
+
   if (opts.dryRun) {
     return {
       ok: true,
-      stdout: `[dry-run] Would merge PR #${prNum} (${item.title})`,
+      stdout: `[dry-run] Would merge PR #${prNum} (${item.title}) — authorised: ${authorization.why}`,
       exitCode: 0,
     };
   }
 
-  // Try gh CLI first (preferred — handles GitHub-specific auto-merge, checks, etc.)
+  // Through the forge, always. `gh pr merge` respects branch protection, required checks and
+  // required reviews; a local `git merge` + `git push origin main` respects none of them.
+  //
+  // THE REMOVED FALLBACK. This used to call `mergeViaGit` when `gh` was missing from PATH
+  // (ENOENT) — merging by the one route that bypasses the pull request, triggered by the loop
+  // LOSING THE ABILITY TO ASK whether merging was allowed. A missing tool is not authorisation.
   try {
     const ghResult = spawnSync(
       "gh",
@@ -360,8 +385,14 @@ async function mergePullRequest(
     if (ghResult.error) {
       const errCode = (ghResult.error as NodeJS.ErrnoException).code;
       if (errCode === "ENOENT") {
-        // gh not available — fall back to direct git merge
-        return mergeViaGit(prNum, item, opts);
+        return {
+          ok: false,
+          reason:
+            `cannot merge PR #${prNum}: the gh CLI is not on PATH, and merging around the forge ` +
+            `with a local git push would skip branch protection, required checks and required reviews`,
+          exitCode: 127,
+          stderr: "gh: not found",
+        };
       }
       return { ok: false, reason: `gh spawn failed: ${ghResult.error.message}`, exitCode: 1, stderr: "" };
     }
@@ -402,46 +433,15 @@ async function mergePullRequest(
   }
 }
 
-/**
- * Fallback: merge via direct git (when gh CLI is unavailable).
- * Fetches the PR branch, merges to main locally, pushes.
+/*
+ * `mergeViaGit` LIVED HERE and was deleted, not merely disconnected.
+ *
+ * It fetched the PR ref, merged it into `main` locally and ran `git push origin main` — the one
+ * route that bypasses the pull request entirely: no required checks, no required reviews, no
+ * unresolved-thread check, no merge queue. Its only caller was the `ENOENT` branch above, so it
+ * ran exactly when the loop had lost the ability to ask whether merging was allowed.
+ *
+ * Leaving it in place but unreachable would have left a working gate-bypass one edit away from
+ * being re-wired, which is the dead-control shape this repo keeps finding. An offline merge path
+ * can be rebuilt if it is ever wanted — with a receipt, like every other merge.
  */
-function mergeViaGit(
-  prNum: number,
-  item: BacklogItem,
-  opts: { repoRoot: string; agentId: string },
-): RunOutcome {
-  const git = (args: string[]): string => {
-    const r = spawnSync("git", args, { cwd: opts.repoRoot, encoding: "utf-8", timeout: 30_000 });
-    if (r.status !== 0) throw new Error(`git ${args.join(" ")} failed: ${(r.stderr ?? "").slice(0, 200)}`);
-    return (r.stdout ?? "").trim();
-  };
-
-  try {
-    // Fetch the PR ref
-    git(["fetch", "origin", `pull/${prNum}/head:pr-${prNum}`]);
-    // Checkout main
-    git(["checkout", "main"]);
-    git(["pull", "--ff-only", "origin", "main"]);
-    // Merge the PR branch
-    const msg = `merge(${opts.agentId}): PR #${prNum} — ${item.title.slice(0, 50)}\n\nAgent-to-agent merge (CI green).\n\nCo-Authored-By: Kiro <noreply@kiro.dev>`;
-    git(["merge", "--no-ff", `pr-${prNum}`, "-m", msg]);
-    // Push
-    git(["push", "origin", "main"]);
-    // Clean up local ref
-    git(["branch", "-D", `pr-${prNum}`]);
-
-    return {
-      ok: true,
-      stdout: `Merged PR #${prNum} (${item.title}) via direct git — agent: ${opts.agentId}`,
-      exitCode: 0,
-    };
-  } catch (err) {
-    return {
-      ok: false,
-      reason: `git merge failed: ${err instanceof Error ? err.message : String(err)}`,
-      exitCode: 1,
-      stderr: "",
-    };
-  }
-}

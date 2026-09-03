@@ -457,6 +457,16 @@ async function main(): Promise<number> {
   // Wire the executor for do_item: codegen (Claude CLI) or port (claim-only).
   // ZETA_EXECUTOR=codegen enables autonomous code generation via the Claude CLI.
   // Default is "port" (claim-file-only, the safe fallback).
+  // The merge receipt reader. Built from the ForgeHost the loop already resolved — and left
+  // UNDEFINED when no forge resolved, which `authorizeMerge` treats as a refusal. A merge with no
+  // way to consult the forge is exactly the case the removed `mergeViaGit` fallback used to serve.
+  const prGate: import("./merge-receipt").PrGateReader | undefined = forgeResult.ok
+    ? async (prNumber: number) => {
+        const r = await forgeResult.value.getPrGateState(prNumber);
+        return r.ok ? { ok: true as const, gate: r.value } : { ok: false as const, why: describeForgeError(r.error) };
+      }
+    : undefined;
+
   const port: WorkspacePort = realWorkspacePort(args.repoRoot);
   const executor: import("./do-item").CommandExecutor = {
     tier: "just-bash",
@@ -469,6 +479,7 @@ async function main(): Promise<number> {
           repoRoot: args.repoRoot,
           agentId: args.by,
           dryRun: args.dryRun,
+          ...(prGate !== undefined ? { prGate } : {}),
         });
       }
       // merge-pr items always route through codegenExecuteItem (which handles the merge)
@@ -477,6 +488,7 @@ async function main(): Promise<number> {
           repoRoot: args.repoRoot,
           agentId: args.by,
           dryRun: args.dryRun,
+          ...(prGate !== undefined ? { prGate } : {}),
         });
       }
       return portExecuteItem(port, action.item, args.by);
