@@ -305,6 +305,49 @@ let ``FileSystemBlockIo reads back a block written through IFileSystem`` () =
     Assert.Equal<byte>(payload, dst)
 
 [<Fact>]
+let ``FileSystemBlockIo crash-mid-write tears the LBA and keeps the previous one`` () =
+    let mock = InMemoryFileSystem()
+    let path = "/vol/lba-crash"
+    let io = FileSystemBlockIo(mock, path, 4096) :> IBlockIo
+    let first = Array.create 4096 1uy
+    let second = Array.create 4096 2uy
+    Assert.Equal(4096, io.Write(0UL, System.ReadOnlyMemory<byte>.op_Implicit first))
+    mock.ArmCrashMidWrite(path, 8)
+    let ex =
+        Assert.Throws<CrashMidWriteException>(fun () ->
+            io.Write(1UL, System.ReadOnlyMemory<byte>.op_Implicit second)
+            |> ignore)
+
+    Assert.Equal(8, ex.CommittedBytes)
+    Assert.Equal(4096, ex.AttemptedBytes)
+    let got0 = Array.zeroCreate<byte> 4096
+    Assert.Equal(4096, io.Read(0UL, System.Memory<byte>.op_Implicit got0))
+    Assert.Equal<byte>(first, got0)
+    let got1 = Array.zeroCreate<byte> 4096
+    Assert.Equal(8, io.Read(1UL, System.Memory<byte>.op_Implicit got1))
+    Assert.Equal<byte>(Array.sub second 0 8, Array.sub got1 0 8)
+
+[<Fact>]
+let ``FileSystemBlockIo corrupt-last-write flips the new LBA and keeps the previous one`` () =
+    let mock = InMemoryFileSystem()
+    let path = "/vol/lba-corrupt"
+    let io = FileSystemBlockIo(mock, path, 4096) :> IBlockIo
+    let first = Array.create 4096 1uy
+    let second = Array.init 4096 (fun i -> byte (i % 250))
+    Assert.Equal(4096, io.Write(0UL, System.ReadOnlyMemory<byte>.op_Implicit first))
+    mock.ArmCorruptLastWrite(path, 8)
+    Assert.Equal(4096, io.Write(1UL, System.ReadOnlyMemory<byte>.op_Implicit second))
+    let got0 = Array.zeroCreate<byte> 4096
+    Assert.Equal(4096, io.Read(0UL, System.Memory<byte>.op_Implicit got0))
+    Assert.Equal<byte>(first, got0)
+    let got1 = Array.zeroCreate<byte> 4096
+    Assert.Equal(4096, io.Read(1UL, System.Memory<byte>.op_Implicit got1))
+    Assert.Equal(second.[0], got1.[0])
+    Assert.Equal(second.[4087], got1.[4087])
+    Assert.Equal(second.[4088] ^^^ 0xA5uy, got1.[4088])
+    Assert.Equal(second.[4095] ^^^ 0xA5uy, got1.[4095])
+
+[<Fact>]
 let ``SimulatedBlockIo reads back a write without IFileSystem`` () =
     let io = SimulatedBlockIo(4096) :> IBlockIo
     Assert.Equal(4096, io.BlockSize)
