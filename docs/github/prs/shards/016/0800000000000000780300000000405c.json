@@ -1,0 +1,12 @@
+{
+  "pr_number": 16476,
+  "archive_path": "docs/history/pr-reviews/PR-16476-docs-kiro-retire-kiro-specs-all-three-superseded-and-one-was-cited.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-03T09:49:44.534Z",
+  "schema_version": "v1",
+  "commit_sha": "df7c6f19d12ace0fcbbd4b4fe3448de5acee8bfb",
+  "title": "docs(kiro): retire .kiro/specs — all three superseded, and one was cited",
+  "state": "MERGED",
+  "merged_at": "2026-09-03T09:49:10Z",
+  "head_ref": "shadow/retire-superseded-kiro-specs"
+}
