@@ -19,12 +19,7 @@ import { describe, expect, test, beforeEach, afterAll } from "bun:test";
 import { mkdtempSync, rmSync } from "node:fs";
 import { join } from "node:path";
 import { tmpdir } from "node:os";
-import {
-  simulatedWorkspacePort,
-  realWorkspacePort,
-  emptySimulatedState,
-  type WorkspacePort,
-} from "./workspace-port";
+import { simulatedWorkspacePort, realWorkspacePort, emptySimulatedState, type WorkspacePort } from "./workspace-port";
 
 // ─── Backend factory: each entry produces a fresh WorkspacePort ──────────────
 
@@ -59,7 +54,11 @@ const factories: BackendFactory[] = [
       },
       cleanup() {
         if (tmpDir) {
-          try { rmSync(tmpDir, { recursive: true, force: true }); } catch { /* */ }
+          try {
+            rmSync(tmpDir, { recursive: true, force: true });
+          } catch {
+            /* */
+          }
           tmpDir = null;
         }
       },
@@ -196,10 +195,29 @@ for (const factory of factories) {
 
     // ── Multi-home (link) ────────────────────────────────────────────
 
-    test("link creates a second path to the same content", () => {
+    test("link creates a second path to the same content, or REFUSES honestly", () => {
+      // The os-fs backend implements `link` with `symlinkSync`, which on Windows requires
+      // Developer Mode or elevation and otherwise fails EPERM. This test used to assert
+      // `linkResult.ok === true` unconditionally and was therefore RED on every unelevated Windows
+      // checkout — while the port was behaving correctly by reporting a refusal it could not avoid.
+      //
+      // A platform skip would hide it, and a check that quietly does not run is the failure this
+      // repo cares most about. So both outcomes are asserted, and each says something real:
+      //
+      //   linked   -> the two paths must read the SAME content (the actual contract)
+      //   refused  -> the port must say so as data, with a reason naming the path — never an
+      //               `ok: true` over a link that does not exist, which is the only answer that
+      //               would be a defect
       port.writeFile("src/shared/util.ts", "export const shared = true;");
       const linkResult = port.link("src/shared/util.ts", "packages/app/util.ts");
-      expect(linkResult.ok).toBe(true);
+
+      if (!linkResult.ok) {
+        expect(linkResult.reason).toContain("packages/app/util.ts");
+        expect(linkResult.reason.length).toBeGreaterThan(20);
+        // …and the refusal must be total: no half-made second path left behind.
+        expect(port.readFile("packages/app/util.ts").ok).toBe(false);
+        return;
+      }
 
       // Both paths read the same content
       const original = port.readFile("src/shared/util.ts");
@@ -251,7 +269,7 @@ for (const factory of factories) {
       port.writeFile("src/a.ts", "v1");
       port.stage(["src/a.ts"]);
       port.commit("first commit");
-      
+
       const h = port.history();
       expect(h.ok).toBe(true);
       if (h.ok) {

@@ -12,6 +12,7 @@
  */
 
 import { describe, expect, test } from "bun:test";
+import { join } from "node:path";
 
 import { COMMIT_CHECKS, type CommitRecord } from "./commit-practice-evidence";
 import { observePractice, type PracticeBinding, type PracticeEvidence } from "./practice-claims";
@@ -72,9 +73,7 @@ describe("a refused declaration is surfaced, never silently dropped", () => {
       supersessions: [
         { subject: SUBJECT, supersededId: TESTS_CLAIM.practiceId, replacementId: replacement.practiceId, at: 120 },
       ],
-      exceptions: [
-        { subject: SUBJECT, practiceId: TESTS_CLAIM.practiceId, evidenceId: "sha1", acknowledgedAt: 121 },
-      ],
+      exceptions: [{ subject: SUBJECT, practiceId: TESTS_CLAIM.practiceId, evidenceId: "sha1", acknowledgedAt: 121 }],
     };
     const { ledger, refusals } = loadBindings(file);
     expect(refusals).toEqual([]);
@@ -113,9 +112,7 @@ describe("the rendering states the fact and no verdict", () => {
 
   test("the menu printed for a pattern is strictly wider than for one record", () => {
     const { ledger } = loadBindings(file);
-    const one = renderReport(
-      observePractice(ledger, COMMIT_CHECKS, SUBJECT, [evidence(101, "sha1", ["src/a.ts"])]),
-    );
+    const one = renderReport(observePractice(ledger, COMMIT_CHECKS, SUBJECT, [evidence(101, "sha1", ["src/a.ts"])]));
     const many = renderReport(
       observePractice(ledger, COMMIT_CHECKS, SUBJECT, [
         evidence(101, "sha1", ["src/a.ts"]),
@@ -130,18 +127,14 @@ describe("the rendering states the fact and no verdict", () => {
   test("a clean record says so without congratulating anyone", () => {
     const { ledger } = loadBindings(file);
     const rendered = renderReport(
-      observePractice(ledger, COMMIT_CHECKS, SUBJECT, [
-        evidence(101, "sha1", ["src/a.ts", "src/a.test.ts"]),
-      ]),
+      observePractice(ledger, COMMIT_CHECKS, SUBJECT, [evidence(101, "sha1", ["src/a.ts", "src/a.test.ts"])]),
     );
     expect(rendered).toContain("does not contradict anything you claimed");
   });
 
   test("records that predate the claim are shown as not examined", () => {
     const { ledger } = loadBindings(file);
-    const rendered = renderReport(
-      observePractice(ledger, COMMIT_CHECKS, SUBJECT, [evidence(99, "old", ["src/a.ts"])]),
-    );
+    const rendered = renderReport(observePractice(ledger, COMMIT_CHECKS, SUBJECT, [evidence(99, "old", ["src/a.ts"])]));
     expect(rendered).toContain("records that predate the claim, not examined: 1");
   });
 });
@@ -156,7 +149,10 @@ describe("argument parsing refuses before it reads", () => {
   });
 
   test("defaults land on the repo-relative bindings path", () => {
-    expect(parseArgs([], "/repo").bindingsPath).toBe("/repo/db/self-claims/practice-bindings.json");
+    // `join`, not a POSIX literal — the code under test builds this with node's `path` module, so
+    // a hardcoded "/a/b" asserts the separator of whichever platform wrote the test rather than
+    // the path it is named for.
+    expect(parseArgs([], "/repo").bindingsPath).toBe(join("/repo", "db", "self-claims", "practice-bindings.json"));
   });
 });
 
@@ -199,7 +195,12 @@ describe("every flag is parsed as itself", () => {
   });
 
   test("--repo without --bindings resolves the default path under the repo, not the cwd", () => {
-    expect(parseArgs(["--repo", "/r"], "/cwd").bindingsPath).toBe("/r/db/self-claims/practice-bindings.json");
+    // `join`, not a POSIX literal — the code under test builds this with node's `path` module, so
+    // a hardcoded "/a/b" asserts the separator of whichever platform wrote the test rather than
+    // the path it is named for.
+    expect(parseArgs(["--repo", "/r"], "/cwd").bindingsPath).toBe(
+      join("/r", "db", "self-claims", "practice-bindings.json"),
+    );
   });
 
   test("defaults: no subject filter, human output, a bounded window", () => {

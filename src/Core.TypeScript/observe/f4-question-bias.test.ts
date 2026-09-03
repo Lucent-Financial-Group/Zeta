@@ -20,6 +20,7 @@
  */
 
 import { describe, expect, test } from "bun:test";
+import { resolve } from "node:path";
 import { canonAtom, makeRng, permutationTest } from "./f3-hat-choice-decorrelation";
 import { cellKey, parseCellKey } from "./f4-question-bias-analyze";
 import {
@@ -703,7 +704,12 @@ describe("the output path is contained, not merely assumed", () => {
   const DIR = "/tmp/zeta-f4-out";
 
   test("a legitimate name resolves inside the dataset directory", () => {
-    expect(resolveOutPath(DIR, "R-qwen2-5-0-5b.jsonl")).toBe("/tmp/zeta-f4-out/R-qwen2-5-0-5b.jsonl");
+    // `join`, not a POSIX literal: the function under test builds its path with node's `path`
+    // module, so a hardcoded "/a/b" asserts the SEPARATOR of whichever platform wrote the test
+    // rather than the containment property the test is named for. On Windows this failed while the
+    // code was correct — six such tests were red on `main`, and persistent red is how a suite stops
+    // being read.
+    expect(resolveOutPath(DIR, "R-qwen2-5-0-5b.jsonl")).toBe(resolve(DIR, "R-qwen2-5-0-5b.jsonl"));
   });
 
   test("a separator in the name is refused — a name is a name, never a path", () => {
@@ -729,8 +735,16 @@ describe("the output path is contained, not merely assumed", () => {
 
   test("writeRow is WIRED to the guard, and refuses before it creates anything", () => {
     const row = {
-      domain: "R", model: "m", prompt: "p", replicate: 0, seed: 1,
-      temperature: 0.8, raw: "x", ms: 1, promptTokens: 1, evalTokens: 1,
+      domain: "R",
+      model: "m",
+      prompt: "p",
+      replicate: 0,
+      seed: 1,
+      temperature: 0.8,
+      raw: "x",
+      ms: 1,
+      promptTokens: 1,
+      evalTokens: 1,
     };
     expect(() => writeRow("../escape.jsonl", row)).toThrow(/escapes the dataset directory/);
     expect(() => writeRow("payload.sh", row)).toThrow(/not \.jsonl/);

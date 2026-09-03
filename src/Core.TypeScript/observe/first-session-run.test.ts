@@ -28,20 +28,25 @@ function fakeRunner(overrides: Partial<ShellRunner>): ShellRunner {
 
 describe("first-session-executor — probe", () => {
   it("expandHome resolves tilde paths", () => {
-    expect(expandHome("~/.config/gh/hosts.yml", "/home/zeta")).toBe("/home/zeta/.config/gh/hosts.yml");
+    // `join`, not a POSIX literal: the function under test builds its path with node's `path`
+    // module, so a hardcoded "/a/b" asserts the SEPARATOR of whichever platform wrote the test
+    // rather than the containment property the test is named for. On Windows this failed while the
+    // code was correct — six such tests were red on `main`, and persistent red is how a suite stops
+    // being read.
+    expect(expandHome("~/.config/gh/hosts.yml", "/home/zeta")).toBe(join("/home/zeta", ".config/gh/hosts.yml"));
   });
 
   it("manifestPathsForVendor returns gh hosts.yml", () => {
     const paths = manifestPathsForVendor("gh", "/home/zeta");
-    expect(paths[0]).toContain(".config/gh/hosts.yml");
+    // `join`, not a slash literal: `manifestPathsForVendor` builds with node's `path`, so the
+    // separator is the platform's and a forward-slash literal asserts the author's OS.
+    expect(paths[0]).toContain(join(".config", "gh", "hosts.yml"));
   });
 
   it("probeVendorStatus gh ready when auth status succeeds", () => {
     const runner = fakeRunner({
       run: (cmd, args) =>
-        cmd === "gh" && args[0] === "auth" && args[1] === "status"
-          ? { exitCode: 0 }
-          : { exitCode: 1 },
+        cmd === "gh" && args[0] === "auth" && args[1] === "status" ? { exitCode: 0 } : { exitCode: 1 },
     });
     expect(probeVendorStatus("gh", runner)).toBe("ready");
   });
@@ -80,8 +85,7 @@ describe("first-session-run — demo script", () => {
 
   it("sessionFromProbe marks gh ready when runner reports auth", () => {
     const runner = fakeRunner({
-      run: (cmd, args) =>
-        cmd === "gh" && args[0] === "auth" ? { exitCode: 0 } : { exitCode: 1 },
+      run: (cmd, args) => (cmd === "gh" && args[0] === "auth" ? { exitCode: 0 } : { exitCode: 1 }),
     });
     const session = sessionFromProbe(runner, "/home/zeta");
     expect(session.credentials.gh).toBe("ready");
@@ -89,8 +93,7 @@ describe("first-session-run — demo script", () => {
 
   it("runFirstSession demo completes with dry-run", async () => {
     const runner = fakeRunner({
-      run: (cmd, args) =>
-        cmd === "gh" && args[0] === "auth" ? { exitCode: 0 } : { exitCode: 1 },
+      run: (cmd, args) => (cmd === "gh" && args[0] === "auth" ? { exitCode: 0 } : { exitCode: 1 }),
     });
     const marker = join(mkdtempSync(join(tmpdir(), "zeta-marker-")), "complete.marker");
     const opts: RunOptions = {
