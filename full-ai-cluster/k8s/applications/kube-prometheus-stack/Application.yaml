@@ -18,7 +18,7 @@ spec:
     # Pod/ConfigMap/ServiceAccount and its Role/RoleBinding), not a runtime component.
     # Also: the checker reported `repeat_interval: 12h` lost. It is not -- the
     # alertmanager config moved into a base64 Secret; decoded and confirmed present.
-    targetRevision: 88.6.2
+    targetRevision: 88.6.3
     helm:
       releaseName: kube-prometheus-stack
       valuesObject:

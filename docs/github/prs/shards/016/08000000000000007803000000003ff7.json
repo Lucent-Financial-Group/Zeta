@@ -1,0 +1,12 @@
+{
+  "pr_number": 16375,
+  "archive_path": "docs/history/pr-reviews/PR-16375-fix-hat-gate-an-ic-could-not-do-work-a-claim-outranked-its-own-execution-both-un.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-02T21:24:53.195Z",
+  "schema_version": "v1",
+  "commit_sha": "918b34198c744ad563bbf144d4ef69e5ebde2883",
+  "title": "fix(hat-gate): an IC could not do work, a claim outranked its own execution — both under DST",
+  "state": "MERGED",
+  "merged_at": "2026-09-02T21:24:12Z",
+  "head_ref": "hat-gate-authority-fixes-dst"
+}

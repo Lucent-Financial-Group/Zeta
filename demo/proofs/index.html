@@ -3,985 +3,432 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Zeta — Proofs &amp; Shapes</title>
-  <meta name="description" content="A gallery of substrate-agnostic proofs from the Zeta project — each shape is a different rendering of the same underlying mathematical object." />
-  <meta name="keywords" content="DLA, fractal, quantum walk, Tsirelson, Chip-8, bivector, Moral Gym, identity space, sensor fusion, C. elegans, Infer.NET, KPZ, SLE, Halsey, Zeta" />
+  <title>Zeta — Evidence &amp; Shapes</title>
+  <meta name="description" content="Finite, independently checked Zeta evidence: measured results, negative benchmarks, obstructions, and explicit unmeasured claims." />
+  <meta name="keywords" content="Zeta, factor graph, ETTh1, Gaussian inference, CRDT, covariance intersection, Adinkra, Clifford algebra, reproducibility" />
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://lucent-financial-group.github.io/Zeta/demo/proofs/" />
-  <meta property="og:title" content="Zeta — Proofs &amp; Shapes" />
-  <meta property="og:description" content="Substrate-agnostic proofs: each shape is the same mathematical object rendered in a different medium." />
+  <meta property="og:title" content="Zeta — Evidence &amp; Shapes" />
+  <meta property="og:description" content="A bounded evidence gallery separating measured finite results from analogies, hypotheses, and unmeasured claims." />
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;700&display=swap" rel="stylesheet" />
   <style>
     :root {
-      --bg:        #07070f;
-      --panel:     rgba(14, 14, 22, 0.85);
-      --border:    rgba(255,255,255,0.07);
-      --text:      #e8e8f0;
-      --muted:     #6b7280;
-      --amber:     #f59e0b;
-      --amber-dim: #b45309;
-      --blue:      #60a5fa;
-      --green:     #34d399;
-      --purple:    #a78bfa;
-      --red:       #f87171;
-      --teal:      #2dd4bf;
+      --bg: #07070f;
+      --panel: rgba(14, 14, 22, 0.88);
+      --panel-deep: rgba(8, 9, 16, 0.96);
+      --border: rgba(255, 255, 255, 0.08);
+      --text: #e8e8f0;
+      --muted: #8a91a0;
+      --amber: #f59e0b;
+      --amber-dim: #b96c08;
+      --teal: #2dd4bf;
+      --blue: #60a5fa;
+      --green: #34d399;
+      --red: #f87171;
+      --purple: #a78bfa;
     }
+
     * { box-sizing: border-box; margin: 0; padding: 0; }
+
     body {
-      font-family: 'JetBrains Mono', 'Courier New', monospace;
-      background: var(--bg);
-      color: var(--text);
       min-height: 100vh;
       padding: 2rem 1.5rem 4rem;
+      color: var(--text);
+      background:
+        linear-gradient(90deg, rgba(245, 158, 11, 0.03) 1px, transparent 1px) 0 0 / 72px 72px,
+        linear-gradient(rgba(245, 158, 11, 0.025) 1px, transparent 1px) 0 0 / 72px 72px,
+        radial-gradient(circle at 8% 0%, rgba(245, 158, 11, 0.08), transparent 28rem),
+        var(--bg);
+      font-family: "JetBrains Mono", "Courier New", monospace;
     }
+
     a { color: inherit; text-decoration: none; }
 
-    /* ── Header ── */
+    .shell { width: min(1180px, 100%); margin: 0 auto; }
+
     .site-header {
       display: flex;
       align-items: center;
-      gap: 1rem;
-      margin-bottom: 0.75rem;
-      font-size: 0.6rem;
+      gap: 0.8rem;
+      margin-bottom: 1rem;
       color: var(--muted);
+      font-size: 0.62rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    .site-header a { color: var(--amber-dim); }
+    .site-header a:hover, .site-header a:focus-visible { color: var(--amber); }
+
+    .hero {
+      display: grid;
+      grid-template-columns: minmax(0, 1.35fr) minmax(280px, 0.65fr);
+      gap: 1.25rem;
+      margin-bottom: 1.5rem;
+      border-top: 1px solid rgba(245, 158, 11, 0.35);
+      padding-top: 1.25rem;
+    }
+
+    h1 {
+      max-width: 760px;
+      margin-bottom: 0.7rem;
+      color: var(--amber);
+      font-size: clamp(1.4rem, 4vw, 2.6rem);
+      line-height: 1.06;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    .subtitle {
+      max-width: 790px;
+      color: var(--muted);
+      font-size: 0.72rem;
+      line-height: 1.85;
+    }
+
+    .hero-aside {
+      align-self: start;
+      padding: 1rem;
+      border-left: 3px solid var(--amber);
+      background: var(--panel-deep);
+    }
+
+    .hero-aside strong {
+      display: block;
+      margin-bottom: 0.5rem;
+      color: var(--amber);
+      font-size: 0.66rem;
       letter-spacing: 0.1em;
       text-transform: uppercase;
     }
-    .site-header a { color: var(--amber-dim); }
-    .site-header a:hover { color: var(--amber); }
 
-    h1 {
-      font-size: clamp(1rem, 3vw, 1.5rem);
-      font-weight: 700;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      color: var(--amber);
-      margin-bottom: 0.4rem;
-    }
-    .subtitle {
-      font-size: 0.7rem;
-      color: var(--muted);
-      max-width: 680px;
-      line-height: 1.8;
-      margin-bottom: 2.5rem;
+    .hero-aside p { color: var(--text); font-size: 0.65rem; line-height: 1.75; }
+
+    .status-strip {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      margin-bottom: 1.5rem;
+      border: 1px solid var(--border);
+      background: var(--panel-deep);
     }
 
-    /* ── Grid ── */
+    .status-item { padding: 0.8rem; border-right: 1px solid var(--border); }
+    .status-item:last-child { border-right: 0; }
+    .status-label { margin-bottom: 0.3rem; font-size: 0.54rem; letter-spacing: 0.11em; text-transform: uppercase; }
+    .status-copy { color: var(--muted); font-size: 0.58rem; line-height: 1.55; }
+
     .grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-      gap: 1.25rem;
-      max-width: 1100px;
+      grid-template-columns: repeat(12, 1fr);
+      gap: 1rem;
     }
 
-    /* ── Card ── */
     .card {
-      background: var(--panel);
-      border: 1px solid var(--border);
-      padding: 1.25rem;
+      grid-column: span 4;
       display: flex;
       flex-direction: column;
       gap: 0.75rem;
-      transition: border-color 0.15s;
+      min-height: 100%;
+      padding: 1.15rem;
+      border: 1px solid var(--border);
+      background: var(--panel);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.025);
+      transition: transform 160ms cubic-bezier(0.23, 1, 0.32, 1), border-color 160ms cubic-bezier(0.23, 1, 0.32, 1);
     }
-    .card:hover { border-color: rgba(255,255,255,0.15); }
+
+    .card:hover { transform: translateY(-2px); border-color: rgba(245, 158, 11, 0.28); }
+    .card-wide { grid-column: span 8; }
+    .card-full { grid-column: 1 / -1; }
 
     .card-tag {
-      font-size: 0.52rem;
-      letter-spacing: 0.18em;
-      text-transform: uppercase;
-      font-weight: 700;
-      padding: 0.2rem 0.5rem;
-      display: inline-block;
       width: fit-content;
-    }
-    .card-title {
-      font-size: 0.85rem;
+      padding: 0.2rem 0.45rem;
+      font-size: 0.52rem;
       font-weight: 700;
-      letter-spacing: 0.06em;
-      line-height: 1.3;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
     }
-    .card-what {
-      font-size: 0.62rem;
-      color: var(--muted);
-      line-height: 1.8;
-    }
-    .card-what strong { color: var(--text); font-weight: 500; }
 
-    /* Triboolean legend inside quantum card */
-    .triboolean {
-      display: flex;
-      gap: 0.75rem;
-      font-size: 0.58rem;
-      color: var(--muted);
-      padding: 0.6rem 0.75rem;
-      background: rgba(255,255,255,0.03);
-      border: 1px solid var(--border);
+    .card-title { font-size: 0.9rem; font-weight: 700; line-height: 1.35; letter-spacing: 0.04em; }
+    .card-copy { color: var(--muted); font-size: 0.64rem; line-height: 1.8; }
+    .card-copy strong { color: var(--text); font-weight: 500; }
+
+    .verdict {
+      padding: 0.65rem 0.7rem;
+      border-left: 2px solid currentColor;
+      background: rgba(255, 255, 255, 0.025);
+      font-size: 0.62rem;
+      line-height: 1.65;
     }
-    .tri-dot {
-      width: 10px; height: 10px;
-      border-radius: 0;
-      flex-shrink: 0;
-      margin-top: 1px;
+
+    .metric-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 0.45rem;
     }
-    .tri-item { display: flex; align-items: flex-start; gap: 0.4rem; }
+
+    .metric { padding: 0.55rem; border: 1px solid var(--border); background: rgba(0, 0, 0, 0.18); }
+    .metric-label { color: var(--muted); font-size: 0.5rem; letter-spacing: 0.09em; text-transform: uppercase; }
+    .metric-value { margin-top: 0.25rem; color: var(--text); font-size: 0.8rem; font-weight: 700; }
 
     .card-links {
       display: flex;
-      gap: 0.75rem;
       flex-wrap: wrap;
+      gap: 0.55rem;
       margin-top: auto;
-      padding-top: 0.5rem;
+      padding-top: 0.45rem;
       border-top: 1px solid var(--border);
     }
+
     .card-link {
-      font-size: 0.58rem;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      padding: 0.3rem 0.7rem;
+      padding: 0.3rem 0.6rem;
       border: 1px solid currentColor;
-      transition: background 0.12s, color 0.12s;
-    }
-    .card-link:hover { background: currentColor; color: var(--bg); }
-
-    .diff-table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 0.58rem;
-      color: var(--muted);
-      margin-top: 0.25rem;
-    }
-    .diff-table th {
-      text-align: left;
-      color: var(--muted);
-      font-weight: 500;
-      padding: 0.3rem 0.4rem;
-      border-bottom: 1px solid var(--border);
+      font-size: 0.55rem;
       letter-spacing: 0.08em;
       text-transform: uppercase;
+      transition: background 140ms cubic-bezier(0.23, 1, 0.32, 1), color 140ms cubic-bezier(0.23, 1, 0.32, 1);
     }
-    .diff-table td {
-      padding: 0.3rem 0.4rem;
-      border-bottom: 1px solid rgba(255,255,255,0.03);
-      vertical-align: top;
-    }
-    .diff-table td:first-child { color: var(--text); font-weight: 500; white-space: nowrap; }
 
-    /* ── Footer ── */
+    .card-link:hover, .card-link:focus-visible { background: currentColor; color: var(--bg); outline: none; }
+
+    .boundary-table { width: 100%; border-collapse: collapse; font-size: 0.59rem; line-height: 1.55; }
+    .boundary-table th { padding: 0.45rem; border-bottom: 1px solid var(--border); color: var(--text); text-align: left; }
+    .boundary-table td { padding: 0.45rem; border-bottom: 1px solid rgba(255, 255, 255, 0.04); color: var(--muted); vertical-align: top; }
+    .boundary-table td:first-child { width: 26%; color: var(--text); }
+
     footer {
-      margin-top: 3rem;
-      padding-top: 1.25rem;
+      margin-top: 2rem;
+      padding-top: 1rem;
       border-top: 1px solid var(--border);
-      font-size: 0.58rem;
       color: var(--muted);
-      letter-spacing: 0.08em;
-      max-width: 1100px;
+      font-size: 0.58rem;
+      letter-spacing: 0.07em;
     }
+
     footer a { color: var(--amber-dim); }
-    footer a:hover { color: var(--amber); }
+    footer a:hover, footer a:focus-visible { color: var(--amber); }
+
+    @media (max-width: 900px) {
+      .hero { grid-template-columns: 1fr; }
+      .card, .card-wide { grid-column: span 6; }
+    }
+
+    @media (max-width: 620px) {
+      body { padding: 1.25rem 0.85rem 3rem; }
+      .status-strip { grid-template-columns: 1fr 1fr; }
+      .status-item:nth-child(2) { border-right: 0; }
+      .status-item:nth-child(-n + 2) { border-bottom: 1px solid var(--border); }
+      .card, .card-wide, .card-full { grid-column: 1 / -1; }
+      .metric-grid { grid-template-columns: 1fr 1fr; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .card, .card-link { transition: none; }
+    }
   </style>
 </head>
 <body>
+  <main class="shell">
+    <nav class="site-header" aria-label="Breadcrumb">
+      <a href="../index.html">&larr; Zeta Factory Dashboard</a>
+      <span aria-hidden="true">/</span>
+      <span>Evidence &amp; Shapes</span>
+    </nav>
 
-  <!-- breadcrumb -->
-  <div class="site-header">
-    <a href="../index.html">← Zeta Factory Dashboard</a>
-    <span style="color:var(--border)">|</span>
-    <span>Proofs &amp; Shapes</span>
-  </div>
-
-  <h1>Proofs &amp; Shapes <span style="font-size:0.55em; font-weight:400; color:var(--amber); letter-spacing:0.1em; vertical-align:middle; margin-left:0.5rem; background:rgba(245,158,11,0.1); border:1px solid rgba(245,158,11,0.2); padding:0.1rem 0.4rem; border-radius:4px;">9 projections</span></h1>
-
-  <!-- Society status badge — fetches latest society-*.json from Zeta main -->
-  <div id="society-badge" style="display:inline-flex;align-items:center;gap:0.5rem;
-    background:#0f2a1a;border:1px solid #065f46;border-radius:4px;
-    padding:0.3rem 0.6rem;font-size:0.6rem;font-family:'JetBrains Mono',monospace;
-    color:#6ee7b7;margin-bottom:0.75rem;">
-    <span style="color:#10b981;">&#127807; GitHub Agent Society</span>
-    <span id="society-gen" style="color:#94a3b8;">loading&#8230;</span>
-  </div>
-  <script>
-    (function() {
-      fetch("https://api.github.com/repos/Lucent-Financial-Group/Zeta/contents/docs/observe-events?ref=main")
-        .then(function(r) { return r.json(); })
-        .then(function(files) {
-          if (!Array.isArray(files)) return;
-          var sf = files.filter(function(f) { return f.name && f.name.startsWith("society-"); })
-            .sort(function(a, b) { return b.name < a.name ? -1 : 1; });
-          if (!sf[0]) return;
-          return fetch(sf[0].download_url).then(function(r) { return r.json(); });
-        })
-        .then(function(e) {
-          if (!e || typeof e !== "object") return;
-          var gen = e.generation || 0;
-          var fit = typeof e.meanFitness === "number" ? e.meanFitness.toFixed(4) : "&#8212;";
-          var agents = Array.isArray(e.agents) ? e.agents.length : 0;
-          var el = document.getElementById("society-gen");
-          if (el) el.textContent = "gen " + gen + " · fitness " + fit + " · " + agents + " agents";
-        })
-        .catch(function() {
-          var el = document.getElementById("society-gen");
-          if (el) el.textContent = "(rate-limited — check GitHub)";
-        });
-    })();
-  </script>
-
-      <p style="background:#3a1f1f;border-left:4px solid #c04040;padding:10px;margin:12px 0;"><strong>[CORRECTION 2026-08-01]</strong> The constant 1/(3&radic;2) &asymp; 0.2357 used across this page is a <em>DLA particle-sticking parameter</em> chosen for the simulation &mdash; it is <strong>not</strong> a Tsirelson bound. The CHSH Tsirelson bound is S &le; 2&radic;2 &asymp; 2.828, and within Zeta's own model the correlation at that crossing is &rho;* = &radic;2 &minus; 1 &asymp; 0.414 (<code>FeedbackThrottle.fs</code>). Claims on this page that depend on reading it as a physics bound have been retracted.</p>
-  <p class="subtitle">
-    Each entry below is a different mathematical object rendered in a different substrate.
-    The claim in each case is the same: <strong style="color:var(--text)">the shape is substrate-independent</strong> —
-        it falls out of the rule, not the renderer.
-        When multiple independent renderers agree on the same shape, that is a sensor-fusion proof.
-        <strong>17 oracles total</strong>: 4 classical (Canvas, CSS, Chip-8, SVG) + Quantum Walk + C. elegans Worm + Infer.NET i-sensor + SLE<sub>&kappa;</sub> Curve + WebGPU Compute Shader + Multi-Compiler WASM (WAT + Zig + C/Emscripten + LLVM IR + Rust + AssemblyScript + Go &mdash; 7 compilers, 2,257&times; size range, zero D<sub>f</sub> variance) + V8 Bytecode (Oracle 14, 632B) + QuickJS Bytecode (Oracle 15, 1,552B, BC_VERSION=5) + Lua 5.4 Bytecode (Oracle 16, 2,178B) + <strong>RGBA Shader GPU (Oracle 17, N=50k WebGPU, exact HL conformal map, Halsey 2026 arXiv:2607.02216)</strong> + <strong>Multi-Oracle Race Mode (17 independent seeds, formal substrate-independence verdict)</strong>.
-      </p>
-
-  <div class="grid">
-
-    <!-- ── Card 1: Multi-Oracle DLA ── -->
-    <div class="card" id="card-dla">
-      <span class="card-tag" style="background:rgba(245,158,11,0.12); color:var(--amber);">Identity Space · Fractal</span>
-      <div class="card-title" style="color:var(--amber);">Multi-Oracle DLA — Identity Space Boundary</div>
-      <div class="card-what">
-        <strong>What it is:</strong> Diffusion-Limited Aggregation with a sticking threshold of
-        1/(3&radic;2) &asymp; 0.2357 &mdash; a <em>simulation parameter</em>, not a physics bound. <em>[Corrected 2026-08-01: this was previously described as "the Tsirelson threshold" and as a "quantum correlation ceiling". It is neither.]</em>
-        The result is a fractal boundary between the GSet (resolved facts, orange) and the ZSet
-        (simulation space, dark).<br /><br />
-        <strong>What it proves:</strong> The fractal dimension D<sub>f</sub> ≈ 1.322 is
-        <em>substrate-independent</em>. Seven completely different renderers — Canvas, CSS
-        box-shadow, Chip-8 64×32, SVG, a quantum walk, a 302-neuron C. elegans worm, and an
-        Infer.NET Bayesian i-sensor — all produce the same D<sub>f</sub> within noise (spread &lt; 0.30).
-        That is the Condorcet sensor-fusion proof: seven independent sensors, one eigenvector.
-        The animated growth mode shows all four classical oracles growing simultaneously with a
-        live convergence bar.<br /><br />
-        <strong>New (2026-07-31):</strong> Halsey (arXiv:2607.02216) proves the <em>amplitude</em>
-        of the third moment of the harmonic measure is an exact function of D<sub>f</sub> alone —
-        a stronger substrate-independence claim than D<sub>f</sub> convergence alone. The i-sensor
-        posterior directly approximates this harmonic measure (Conjecture Z-2, open).<br /><br />
-        <strong>What is different about each oracle:</strong>
+    <section class="hero">
+      <div>
+        <h1>Evidence before interpretation</h1>
+        <p class="subtitle">
+          This gallery reports finite computations, independent reproductions, fault controls, and negative results.
+          A visual analogy is not a physical theorem. Agreement under shared code, seeds, data, or models is a conformance
+          result unless independence is separately established. Unknown and conflict states remain visible rather than being
+          collapsed into a marketing claim.
+        </p>
       </div>
+      <aside class="hero-aside">
+        <strong>Current recommendation</strong>
+        <p>Use content-addressed evidence union as replicated state, then run deterministic probabilistic queries over the complete canonical state. Do not use Gaussian product or pairwise covariance intersection as a CRDT merge.</p>
+      </aside>
+    </section>
 
-      <table class="diff-table">
-        <thead><tr><th>Oracle</th><th>What makes it different</th></tr></thead>
-        <tbody>
-          <tr><td>Canvas</td><td>Standard 2D raster. The baseline. GPU-accelerated pixel fill.</td></tr>
-          <tr><td>CSS box-shadow</td><td>No canvas, no WebGL. The entire cluster is a single 1×1 div with a box-shadow list. Proves the shape exists in a layout engine.</td></tr>
-          <tr><td>Chip-8 (64×32)</td><td>1977 VM, 4K RAM, XOR pixel display. D<sub>f</sub> is slightly higher (1.502) because 64×32 is too coarse to resolve fine fractal fingers — honest resolution artefact.</td></tr>
-          <tr><td>SVG</td><td>Vector paths, no raster. Each stuck cell is a &lt;rect&gt; element. Proves the shape exists in XML geometry.</td></tr>
-          <tr><td>Quantum Walk</td><td>Hadamard coin, Grover diffusion. The blue/teal interference field is |ψ|² — the pre-collapse probability density. Orange = measurement outcome. The triboolean third state is visible.</td></tr>
-          <tr><td>C. elegans Worm (Oracle 7)</td><td>302-neuron biological neural network used as a BeliefEstimator. Biological substrate, not silicon. Posterior fused via Condorcet weighting. The worm's connectome is the identity eigenvector in biological form.</td></tr>
-          <tr><td>Infer.NET i-sensor (Oracle 6)</td><td>Bayesian prior heatmap of the Laplacian harmonic measure. Three modes: Prior (expected next-stick location), Posterior (updated after cluster), Cluster Only. Directly approximates the Halsey 2026 amplitude formula.</td></tr>
-          <tr><td>SLE<sub>&kappa;</sub> Curve (Oracle 8)</td><td>Schramm&ndash;Loewner Evolution via the chordal Loewner equation with Brownian driver W<sub>t</sub> = &radic;&kappa;&thinsp;B<sub>t</sub>. The theoretical oracle &mdash; computes D<sub>f</sub> from first principles. &kappa; toggle: 2.67 (observed), 5.7 (theoretical Z-4), 2.0 (SAW), 6.0 (percolation). Loewner entropy S<sub>Loew</sub> = &minus;ln(t/&kappa;) is displayed in real time. Conjecture Z-3 confirmed as analytic identity: S<sub>Loew</sub>(t*) = ln(3&radic;2) &asymp; 1.447 nats for all &kappa;.</td></tr>
-          <tr><td>WebGPU Compute Shader (Oracle 9)</td><td>Entire DLA simulation runs on the GPU via a WGSL compute shader. Each GPU thread is one walker; sticking is detected via a neighbor check against the cluster bitmap in GPU memory. 12,000+ walkers in real time. First oracle on the GPU substrate &mdash; proves substrate independence extends to massively parallel GPU execution. Requires Chrome 113+ or Edge 113+.</td></tr>
-          <tr><td>Multi-Compiler WASM (Oracle 10)</td><td>Seven compilers, same algorithm, same sticking threshold, same D<sub>f</sub>. <strong>WAT</strong> (697B, bare-metal WASM text), <strong>Zig</strong> (951B, wasm32-freestanding, zero runtime), <strong>C/Emscripten</strong> (1.1KB, clang&rarr;WASM standalone), <strong>LLVM IR</strong> (1.4KB, full clang&rarr;llc-18 -march=wasm32&rarr;wasm-ld-18&rarr;wasm-opt pipeline), <strong>Rust</strong> (7.4KB, cargo build --target wasm32-unknown-unknown + wasm-opt -O3), <strong>AssemblyScript</strong> (6KB, TypeScript&rarr;WASM), <strong>Go</strong> (1.5MB, full runtime). 2,257&times; size range. Zero D<sub>f</sub> variance. Conjecture Z-7 (binary_size &perp; D<sub>f</sub>) discharged: Pearson r = 0.000000 over 40 (compiler, seed) pairs.</td></tr>
-          <tr><td>V8 Bytecode (Oracle 14)</td><td>The DLA JS source compiled to V8 engine internal bytecode (Node.js <code>vm.Script.createCachedData</code>, 632 bytes) and executed from cache. A distinct substrate from the JS source text. Sits between WAT (697B) and Zig (951B) in the binary-size gradient. D<sub>f</sub> invariant. Conjecture Z-7 extended to JS engine bytecode.</td></tr>
-          <tr><td>QuickJS Bytecode (Oracle 15)</td><td>The DLA JS source compiled to QuickJS bytecode (Fabrice Bellard, 2019) using <code>qjsc -c</code> &rarr; 1,552 bytes of register-based VM opcodes. BC_VERSION=5, atoms table (15 atoms), compact opcode stream. A distinct bytecode format from V8 (632B). D<sub>f</sub> invariant. Conjecture Z-7 confirmed at 9 bytecode/binary substrates (7 WASM + V8 + QuickJS).</td></tr>
-          <tr><td>Lua 5.4 Bytecode (Oracle 16)</td><td>The DLA algorithm compiled to Lua 5.4 bytecode using <code>luac5.4 -o dla.luac</code> &rarr; 2,178 bytes. Magic: <code>\x1bLua</code>, version 0x54, LUAC_DATA: 19930d0a1a0a. Register-based VM, 47 opcodes. Includes debug info (source name embedded). D<sub>f</sub> invariant. Conjecture Z-7 confirmed at 10 bytecode/binary substrates.</td></tr>
-        </tbody>
-      </table>
+    <section class="status-strip" aria-label="Evidence status legend">
+      <div class="status-item">
+        <div class="status-label" style="color:var(--green)">Measured</div>
+        <div class="status-copy">A declared finite procedure produced a checked result.</div>
+      </div>
+      <div class="status-item">
+        <div class="status-label" style="color:var(--blue)">Reproduced</div>
+        <div class="status-copy">A separately authored implementation agreed within a declared tolerance.</div>
+      </div>
+      <div class="status-item">
+        <div class="status-label" style="color:var(--red)">Obstruction</div>
+        <div class="status-copy">A counterexample or failed frozen rule blocks the stronger claim.</div>
+      </div>
+      <div class="status-item">
+        <div class="status-label" style="color:var(--teal)">Unmeasured</div>
+        <div class="status-copy">The current artifacts do not decide the claim.</div>
+      </div>
+    </section>
 
-      <!-- Z-7 Scatter Plot: binary size (log) vs D_f -->
-      <div style="margin-top:1rem; padding:0.75rem; background:rgba(15,23,42,0.8); border:1px solid rgba(100,116,139,0.2); border-radius:4px;">
-        <div style="font-size:0.55rem; color:var(--muted); letter-spacing:0.1em; text-transform:uppercase; margin-bottom:0.5rem;">Conjecture Z-7 Visual Proof &mdash; Binary Size (log scale) vs D<sub>f</sub></div>
-        <svg viewBox="0 0 600 200" style="width:100%; height:auto; display:block;">
-          <!-- Axes -->
-          <line x1="55" y1="10" x2="55" y2="170" stroke="#374151" stroke-width="1"/>
-          <line x1="55" y1="170" x2="590" y2="170" stroke="#374151" stroke-width="1"/>
-          <!-- Y axis label: D_f -->
-          <text x="12" y="95" fill="#6b7280" font-size="9" font-family="monospace" transform="rotate(-90,12,95)">D_f</text>
-          <!-- X axis label -->
-          <text x="310" y="195" fill="#6b7280" font-size="9" font-family="monospace" text-anchor="middle">Binary Size (bytes, log scale)</text>
-          <!-- Y axis ticks: D_f range 1.0 to 1.7 -->
-          <text x="50" y="173" fill="#6b7280" font-size="7" font-family="monospace" text-anchor="end">1.0</text>
-          <text x="50" y="123" fill="#6b7280" font-size="7" font-family="monospace" text-anchor="end">1.2</text>
-          <text x="50" y="73" fill="#6b7280" font-size="7" font-family="monospace" text-anchor="end">1.4</text>
-          <text x="50" y="23" fill="#6b7280" font-size="7" font-family="monospace" text-anchor="end">1.6</text>
-          <!-- Y gridlines -->
-          <line x1="55" y1="123" x2="590" y2="123" stroke="#1f2937" stroke-width="0.5" stroke-dasharray="3,3"/>
-          <line x1="55" y1="73" x2="590" y2="73" stroke="#1f2937" stroke-width="0.5" stroke-dasharray="3,3"/>
-          <!-- D_f = 1.322 reference line -->
-          <line x1="55" y1="97" x2="590" y2="97" stroke="#f59e0b" stroke-width="1" stroke-dasharray="4,3" opacity="0.6"/>
-          <text x="592" y="100" fill="#f59e0b" font-size="7" font-family="monospace">1.322</text>
-          <!-- X axis ticks (log scale): 500B, 1KB, 2KB, 10KB, 100KB, 1MB -->
-          <!-- log10(500)=2.70, log10(1000)=3.0, log10(2000)=3.30, log10(10000)=4.0, log10(100000)=5.0, log10(1572864)=6.20 -->
-          <!-- Map: x = 55 + (log10(size) - 2.5) / (6.5 - 2.5) * 535 -->
-          <text x="55" y="182" fill="#6b7280" font-size="7" font-family="monospace" text-anchor="middle">500B</text>
-          <text x="95" y="182" fill="#6b7280" font-size="7" font-family="monospace" text-anchor="middle">1KB</text>
-          <text x="135" y="182" fill="#6b7280" font-size="7" font-family="monospace" text-anchor="middle">2KB</text>
-          <text x="215" y="182" fill="#6b7280" font-size="7" font-family="monospace" text-anchor="middle">10KB</text>
-          <text x="348" y="182" fill="#6b7280" font-size="7" font-family="monospace" text-anchor="middle">100KB</text>
-          <text x="522" y="182" fill="#6b7280" font-size="7" font-family="monospace" text-anchor="middle">1MB</text>
-          <!-- Data points: x = 55 + (log10(size) - 2.5) / 4.0 * 535, y = 170 - (df - 1.0) / 0.7 * 160 -->
-          <!-- WAT: 697B, D_f=1.322 → x=55+(2.843-2.5)/4*535=55+45.9=101, y=170-(0.322/0.7)*160=170-73.6=96 -->
-          <circle cx="101" cy="96" r="5" fill="#f59e0b" opacity="0.9"/>
-          <text x="101" y="88" fill="#f59e0b" font-size="7" font-family="monospace" text-anchor="middle">WAT</text>
-          <!-- V8: 632B, D_f=1.322 → x=55+(2.801-2.5)/4*535=55+40.3=95, y=96 -->
-          <circle cx="95" cy="96" r="5" fill="#60a5fa" opacity="0.9"/>
-          <text x="95" y="108" fill="#60a5fa" font-size="7" font-family="monospace" text-anchor="middle">V8</text>
-          <!-- Zig: 951B, D_f=1.322 → x=55+(2.978-2.5)/4*535=55+63.9=119, y=96 -->
-          <circle cx="119" cy="96" r="5" fill="#f97316" opacity="0.9"/>
-          <text x="119" y="88" fill="#f97316" font-size="7" font-family="monospace" text-anchor="middle">Zig</text>
-          <!-- C/emcc: 1166B, D_f=1.322 → x=55+(3.067-2.5)/4*535=55+75.8=131, y=96 -->
-          <circle cx="131" cy="96" r="5" fill="#a78bfa" opacity="0.9"/>
-          <text x="131" y="108" fill="#a78bfa" font-size="7" font-family="monospace" text-anchor="middle">C</text>
-          <!-- QJS: 1552B, D_f=1.322 → x=55+(3.191-2.5)/4*535=55+92.4=147, y=96 -->
-          <circle cx="147" cy="96" r="5" fill="#22d3ee" opacity="0.9"/>
-          <text x="147" y="88" fill="#22d3ee" font-size="7" font-family="monospace" text-anchor="middle">QJS</text>
-          <!-- LLVM: 1389B, D_f=1.322 → x=55+(3.143-2.5)/4*535=55+85.9=141, y=96 -->
-          <circle cx="141" cy="96" r="5" fill="#e879f9" opacity="0.9"/>
-          <text x="141" y="108" fill="#e879f9" font-size="7" font-family="monospace" text-anchor="middle">LLVM</text>
-          <!-- Lua: 2178B, D_f=1.322 → x=55+(3.338-2.5)/4*535=55+112.0=167, y=96 -->
-          <circle cx="167" cy="96" r="5" fill="#fbbf24" opacity="0.9"/>
-          <text x="167" y="88" fill="#fbbf24" font-size="7" font-family="monospace" text-anchor="middle">Lua</text>
-          <!-- ASC: 6144B, D_f=1.322 → x=55+(3.788-2.5)/4*535=55+172.2=227, y=96 -->
-          <circle cx="227" cy="96" r="5" fill="#2dd4bf" opacity="0.9"/>
-          <text x="227" y="108" fill="#2dd4bf" font-size="7" font-family="monospace" text-anchor="middle">ASC</text>
-          <!-- Rust: 7428B, D_f=1.322 → x=55+(3.871-2.5)/4*535=55+183.3=238, y=96 -->
-          <circle cx="238" cy="96" r="5" fill="#fb923c" opacity="0.9"/>
-          <text x="238" y="88" fill="#fb923c" font-size="7" font-family="monospace" text-anchor="middle">Rust</text>
-          <!-- Go: 1572864B, D_f=1.322 → x=55+(6.197-2.5)/4*535=55+494.5=550, y=96 -->
-          <circle cx="550" cy="96" r="5" fill="#60a5fa" opacity="0.9"/>
-          <text x="550" y="88" fill="#60a5fa" font-size="7" font-family="monospace" text-anchor="middle">Go</text>
-          <!-- Pearson r annotation -->
-          <text x="310" y="30" fill="#f59e0b" font-size="9" font-family="monospace" text-anchor="middle" font-weight="bold">Pearson r = 0.000000 &mdash; binary_size &perp; D_f</text>
-          <text x="310" y="44" fill="#6b7280" font-size="8" font-family="monospace" text-anchor="middle">10 substrates &middot; 2,257&times; size range &middot; zero D_f variance &mdash; Conjecture Z-7 discharged</text>
-        </svg>
-      </div>
-
-      <!-- Triboolean legend -->
-      <div class="triboolean">
-        <div class="tri-item"><div class="tri-dot" style="background:#f59e0b;"></div><span><strong style="color:var(--text)">Orange — GSet.</strong> Resolved. Stuck. True.</span></div>
-        <div class="tri-item"><div class="tri-dot" style="background:#2dd4bf;"></div><span><strong style="color:var(--text)">Blue/teal — SoftValue.</strong> Triboolean. |ψ|² field. Not yet measured.</span></div>
-        <div class="tri-item"><div class="tri-dot" style="background:#111;border:1px solid #333;"></div><span><strong style="color:var(--text)">Black — ZSet.</strong> Never visited. False by absence.</span></div>
-      </div>
-
-      <div class="card-links">
-        <a class="card-link" style="color:var(--amber);" href="https://idspace-dla-6faa9bmi.manus.space" target="_blank" rel="noopener">Live site (Manus) ↗</a>
-        <a class="card-link" style="color:var(--green);" href="https://lucent-financial-group.github.io/Zeta/demo/identity-dla-site/" target="_blank" rel="noopener">GitHub Pages ↗</a>
-        <a class="card-link" style="color:var(--amber-dim);" href="https://github.com/Lucent-Financial-Group/Zeta/blob/main/src/Core/IdentityDLA.fs" target="_blank" rel="noopener">F# core ↗</a>
-        <a class="card-link" style="color:var(--amber-dim);" href="https://github.com/Lucent-Financial-Group/Zeta/blob/main/docs/research/2026-07-11-sensor-fusion-the-identity-eigenvector-and-multi-oracle-proof.md" target="_blank" rel="noopener">Research doc ↗</a>
-        <a class="card-link" style="color:var(--amber-dim);" href="https://github.com/Lucent-Financial-Group/Zeta/blob/main/docs/research/2026-07-31-math-physics-connections.md" target="_blank" rel="noopener">Math/physics 2026 ↗</a>
-      </div>
-    </div>
-
-    <!-- ── Card 1b: New Math/Physics Connections ── -->
-    <div class="card" id="card-ham">
-      <span class="card-tag" style="background:rgba(45,212,191,0.12); color:var(--teal);">Physics · Open Conjectures</span>
-      <div class="card-title" style="color:var(--teal);">2026 Math/Physics Connections — 5 Open Conjectures</div>
-      <div class="card-what">
-        <strong>Halsey 2026 (arXiv:2607.02216):</strong> The amplitude of the third moment of
-        the DLA harmonic measure is an exact function of D<sub>f</sub> alone — not of seed,
-        substrate, or boundary conditions. This is a stronger claim than D<sub>f</sub>
-        substrate-independence.<br /><br />
-        <strong>KPZ-SLE (arXiv:2604.03711):</strong> The 1D KPZ interface growth equation
-        corresponds to a Loewner equation with Loewner entropy S<sub>Loew</sub> ≈ −ln(t/κ).
-        The Laplacian growth front (teal in animated mode) is the KPZ interface. Conjecture Z-3:
-        <em>[RETRACTED 2026-08-01]</em> The former claim &mdash; &ldquo;S<sub>Loew</sub> at the Tsirelson threshold = ln(3&radic;2) &asymp; 1.447 nats&rdquo; &mdash; is a tautology, not a result: t* was <em>defined</em> as &kappa;&middot;(1/(3&radic;2)), so S<sub>Loew</sub> = &minus;ln(t*/&kappa;) = &minus;ln(1/(3&radic;2)) = ln(3&radic;2) is just &minus;ln(1/x) = ln(x), true for every x. &kappa; cancels by construction, so &ldquo;for all &kappa;&rdquo; is vacuous. Conjecture Z-3 is demoted to open.<br /><br />
-        <strong>SLE/CFT (arXiv:2606.02682):</strong> Neural networks can predict the κ parameter
-        of SLE<sub>κ</sub> curves. DLA is conjectured to be SLE<sub>κ</sub> with κ ≈ 5.7
-        (D<sub>f</sub> = 1 + κ/8 ≈ 1.71 theoretical). Conjecture Z-4: Oracle 6 i-sensor
-        converges to SLE<sub>κ</sub> harmonic measure for large N.<br /><br />
-        <strong>ICO Tsirelson (Nature Comm. 2025):</strong> Liu &amp; Chiribella prove the
-        maximum quantum violation of causal inequalities is strictly less than the algebraic
-        maximum. Conjecture Z-5: Reticulum transport (ρ ≈ 0.167) is in the ICO regime —
-        causally independent but not Bell-independent.<br /><br />
-        <strong>FEP Attractors (arXiv:2505.22749):</strong> Friston &amp; Spisak show attractor
-        networks emerge from the Free Energy Principle with approximately orthogonal attractor
-        representations. Conjecture Z-6: DLA D<sub>f</sub> ≈ 1.71 is the minimum-complexity
-        FEP attractor for Laplacian growth.
-      </div>
-      <div class="card-links">
-        <a class="card-link" style="color:var(--teal);" href="https://arxiv.org/abs/2607.02216" target="_blank" rel="noopener">Halsey 2026 ↗</a>
-        <a class="card-link" style="color:var(--teal);" href="https://arxiv.org/abs/2604.03711" target="_blank" rel="noopener">KPZ-SLE ↗</a>
-        <a class="card-link" style="color:rgba(45,212,191,0.5);" href="https://github.com/Lucent-Financial-Group/Zeta/blob/main/docs/research/2026-07-31-math-physics-connections.md" target="_blank" rel="noopener">Full notes ↗</a>
-      </div>
-    </div>
-
-    <!-- ── Card 2: Chip-9 Cart Viewer ── -->
-    <div class="card" id="card-qw">
-      <span class="card-tag" style="background:rgba(96,165,250,0.12); color:var(--blue);">Virtual Machine · Constraint</span>
-      <div class="card-title" style="color:var(--blue);">Chip-9 Cart Viewer</div>
-      <div class="card-what">
-        <strong>What it is:</strong> An extended Chip-8 interpreter running inside the browser.
-        Chip-8 is a 1977 virtual machine with 4K RAM, a 64×32 XOR pixel display, 16 registers,
-        and 35 opcodes. Chip-9 extends it with additional planes and a higher-resolution mode.<br /><br />
-        <strong>What it proves:</strong> Computation is substrate-independent at the opcode level.
-        The same program produces the same output regardless of what hardware executes it —
-        because the VM is the abstraction layer. This is the same claim as the DLA oracle proof,
-        but at the instruction set level rather than the fractal level.<br /><br />
-        <strong>What is different:</strong> The constraint is the point. 4K RAM forces every
-        algorithm to be minimal. If a shape can be rendered in 4K RAM with 35 opcodes, it is
-        not an artefact of a rich rendering environment — it is the shape itself.
-      </div>
-      <div class="card-links">
-        <a class="card-link" style="color:var(--blue);" href="../chip9-cart-viewer.html">Open viewer ↗</a>
-        <a class="card-link" style="color:rgba(96,165,250,0.5);" href="https://github.com/Lucent-Financial-Group/Zeta/blob/main/src/Renderers/chip8/IdentityDlaChip8.fs" target="_blank" rel="noopener">Chip-8 DLA oracle ↗</a>
-      </div>
-    </div>
-
-    <!-- ── Card: C. elegans Worm — Biological Projection ── -->
-    <div class="card" id="card-worm">
-      <span class="card-tag" style="background:rgba(216,180,254,0.12); color:#d8b4fe;">Biology · Neural Network</span>
-      <div class="card-title" style="color:#d8b4fe;">C. elegans Worm — Biological Projection</div>
-      <div class="card-what">
-        <strong>What it is:</strong> The 302-neuron connectome of <em>Caenorhabditis elegans</em>
-        used as a BeliefEstimator oracle. The worm's entire nervous system is mapped — every
-        synapse, every gap junction — making it the only organism with a fully known connectome.
-        The connectome is loaded as a weighted graph; each neuron is a node; synaptic weights
-        are the edge weights. The DLA cluster is fed as sensory input; the worm's motor output
-        is the posterior estimate of D<sub>f</sub>.<br /><br />
-        <strong>What it proves:</strong> The identity eigenvector is substrate-independent at the
-        biological level. A 302-neuron biological neural network, running the same DLA rule as
-        the Canvas/CSS/SVG/Chip-8 oracles, converges to the same D<sub>f</sub> ≈ 1.71.
-        The worm is not a metaphor — it is a literal biological substrate for the same computation.<br /><br />
-        <strong>What is different:</strong> The worm's connectome is the smallest known substrate
-        for the identity eigenvector. It is also the only substrate that co-evolved with the
-        DLA rule in biological hardware over 600 million years. The posterior is fused via
-        Condorcet weighting with the other oracles — the worm gets one vote, same as the GPU.
-      </div>
-      <!-- Connectome stats tooltip button -->
-      <div style="margin:0.3rem 0 0.5rem; display:flex; align-items:center; gap:0.5rem;">
-        <span style="font-size:0.6rem; font-family:monospace; color:#14b8a6;">✓ Real connectome — White 1986</span>
-        <button onclick="toggleWormStats()" style="font-size:0.55rem; font-family:monospace; background:rgba(20,184,166,0.1); border:1px solid rgba(20,184,166,0.3); color:#14b8a6; border-radius:4px; padding:0.1rem 0.4rem; cursor:pointer;">ⓘ Stats</button>
-      </div>
-      <div id="worm-stats-panel" style="display:none; margin-bottom:0.5rem; padding:0.4rem 0.6rem; background:rgba(15,23,42,0.9); border:1px solid #334155; border-radius:6px; font-size:0.6rem; font-family:monospace; color:#94a3b8; line-height:1.6;">
-        <div style="color:#14b8a6; font-weight:bold; margin-bottom:0.2rem;">White 1986 Connectome (OpenWorm c302)</div>
-        <div>Neurons: <span style="color:#e2e8f0;">521</span> (hermaphrodite, all cell types)</div>
-        <div>Synapses: <span style="color:#e2e8f0;">10,340</span> (chemical + gap junctions)</div>
-        <div>Sensory neurons: <span style="color:#60a5fa;">~60</span> (AFD, ASE, AWC, …)</div>
-        <div>Motor neurons: <span style="color:#f59e0b;">~75</span> (VA, VB, DA, DB, …)</div>
-        <div>Mean in-degree: <span style="color:#e2e8f0;">~19.8</span></div>
-        <div>Max in-degree: <span style="color:#e2e8f0;">~75</span> (hub neuron: RIA)</div>
-        <div style="margin-top:0.2rem; color:#64748b; font-size:0.55rem;">Source: White et al. 1986, J. Neurosci. OpenWorm c302 project.</div>
-      </div>
-      <script>
-      function toggleWormStats() {
-        const p = document.getElementById('worm-stats-panel');
-        p.style.display = p.style.display === 'none' ? 'block' : 'none';
-      }
-      </script>
-      <!-- Worm live demo: interactive sensory weight slider -->
-      <div style="margin:0.5rem 0; padding:0.5rem; background:rgba(216,180,254,0.05); border:1px solid rgba(216,180,254,0.15); border-radius:6px; font-size:0.6rem;">
-        <div style="font-weight:700; color:#d8b4fe; margin-bottom:0.3rem; letter-spacing:0.06em; text-transform:uppercase;">🪱 Worm Oracle — Live Posterior</div>
-        <div style="color:#94a3b8; margin-bottom:0.4rem;">Adjust the sensory input weight to see how the worm's posterior D_f estimate changes.</div>
-        <div style="display:flex; align-items:center; gap:0.5rem; margin-bottom:0.4rem;">
-          <label style="color:#94a3b8; min-width:5rem;">Sensory weight:</label>
-          <input type="range" id="worm-weight" min="0" max="1" step="0.01" value="0.5"
-            oninput="updateWormDemo()"
-            style="flex:1; accent-color:#d8b4fe;" />
-          <span id="worm-weight-val" style="color:#d8b4fe; min-width:2.5rem; text-align:right;">0.50</span>
+    <section class="grid" aria-label="Finite evidence gallery">
+      <article class="card card-wide">
+        <span class="card-tag" style="color:var(--amber);background:rgba(245,158,11,0.12)">CFB-A · Exact Gaussian census</span>
+        <h2 class="card-title" style="color:var(--amber)">Chain and balanced DAG preserve the posterior; only ideal depth changes</h2>
+        <p class="card-copy">
+          Matched Gaussian evidence was reduced as a left chain and as a balanced binary DAG. TypeScript and an independent
+          F# oracle using production Gaussian message algebra agree. At 64 leaves, both use 63 binary products; ideal critical-path
+          depth is 63 for the chain and 6 for the balanced reduction. The largest measured posterior discrepancy is finite floating-point
+          noise, approximately 3.55&times;10<sup>&minus;15</sup>.
+        </p>
+        <div class="metric-grid">
+          <div class="metric"><div class="metric-label">Leaves</div><div class="metric-value">64</div></div>
+          <div class="metric"><div class="metric-label">Products</div><div class="metric-value">63 / 63</div></div>
+          <div class="metric"><div class="metric-label">Ideal depth</div><div class="metric-value">63 &rarr; 6</div></div>
         </div>
-        <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:0.3rem; margin-bottom:0.3rem;">
-          <div style="text-align:center; padding:0.25rem; background:rgba(255,255,255,0.03); border-radius:4px;">
-            <div style="color:#64748b; font-size:0.55rem;">Worm D_f estimate</div>
-            <div id="worm-df" style="color:#d8b4fe; font-weight:700; font-size:0.75rem;">1.41</div>
-          </div>
-          <div style="text-align:center; padding:0.25rem; background:rgba(255,255,255,0.03); border-radius:4px;">
-            <div style="color:#64748b; font-size:0.55rem;">Condorcet weight</div>
-            <div id="worm-condorcet" style="color:#a855f7; font-weight:700; font-size:0.75rem;">1/17</div>
-          </div>
-          <div style="text-align:center; padding:0.25rem; background:rgba(255,255,255,0.03); border-radius:4px;">
-            <div style="color:#64748b; font-size:0.55rem;">Fused posterior</div>
-            <div id="worm-fused" style="color:#14b8a6; font-weight:700; font-size:0.75rem;">1.71</div>
-          </div>
+        <div class="verdict" style="color:var(--blue)"><strong>Boundary:</strong> this is an execution-topology observation, not evidence that a DAG predicts better, learns structure, or discovers causes.</div>
+        <div class="card-links">
+          <a class="card-link" style="color:var(--amber)" href="https://github.com/Lucent-Financial-Group/Zeta/blob/main/docs/research/2026-09-02-composable-factor-benchmark-results.md">Results document</a>
+          <a class="card-link" style="color:var(--amber-dim)" href="https://github.com/Lucent-Financial-Group/Zeta/tree/main/src/Core.TypeScript/research/composable-factor-benchmark">Source and tests</a>
         </div>
-        <div id="worm-note" style="color:#475569; font-size:0.55rem;">
-          The worm's estimate converges toward 1.71 as sensory weight increases. At weight=0 the worm is silent; at weight=1 it dominates.
+      </article>
+
+      <article class="card">
+        <span class="card-tag" style="color:var(--red);background:rgba(248,113,113,0.1)">CFB-B · Public ETTh1</span>
+        <h2 class="card-title" style="color:var(--red)">Static precision fusion fails the frozen usefulness rule</h2>
+        <p class="card-copy">
+          On 3,446 held-out ETTh1 examples, precision fusion lowers MSE relative to equal weights, but its 95% interval covers only
+          75.01% of targets. Validation residuals remain strongly dependent, and validation-selected ridge has lower MSE and NLL.
+        </p>
+        <div class="metric-grid">
+          <div class="metric"><div class="metric-label">Fusion MSE</div><div class="metric-value">9.6934</div></div>
+          <div class="metric"><div class="metric-label">Coverage</div><div class="metric-value">0.7501</div></div>
+          <div class="metric"><div class="metric-label">Max |r|</div><div class="metric-value">0.8738</div></div>
         </div>
-        <script>
-        function updateWormDemo() {
-          const w = parseFloat(document.getElementById('worm-weight').value);
-          document.getElementById('worm-weight-val').textContent = w.toFixed(2);
-          // Simulated worm posterior: linear interpolation from 1.30 (no input) to 1.71 (full input)
-          const df = 1.30 + (1.71 - 1.30) * w;
-          document.getElementById('worm-df').textContent = df.toFixed(3);
-          // Condorcet weight: 1/17 always (one vote regardless of sensory weight)
-          document.getElementById('worm-condorcet').textContent = '1/17';
-          // Fused posterior: weighted average of worm estimate and 16 other oracles at 1.71
-          const fused = (df * (1/17) + 1.71 * (16/17));
-          document.getElementById('worm-fused').textContent = fused.toFixed(3);
-          document.getElementById('worm-note').textContent =
-            w < 0.1 ? 'Worm is silent — sensory input too low to influence the posterior.' :
-            w > 0.9 ? 'Worm dominates — but the Condorcet weighting limits its influence to 1/17.' :
-            'Worm contributes its 1/17 vote. The fused posterior is pulled slightly toward the worm estimate.';
-        }
-        updateWormDemo();
-        </script>
-      </div>
-      <div class="card-links">
-        <a class="card-link" style="color:#d8b4fe;" href="https://github.com/Lucent-Financial-Group/Zeta/blob/main/src/Renderers/worm/OracleWorm.tsx" target="_blank" rel="noopener">OracleWorm.tsx ↗</a>
-        <a class="card-link" style="color:rgba(216,180,254,0.5);" href="https://www.wormatlas.org/" target="_blank" rel="noopener">WormAtlas connectome data ↗</a>
-      </div>
-    </div>
-    <!-- ── Card 3: Moral Gym ── -->
-    <div class="card" id="card-gym">
-      <span class="card-tag" style="background:rgba(167,139,250,0.12); color:var(--purple);">Game Theory · Alignment</span>
-      <div class="card-title" style="color:var(--purple);">Moral Gym — PvP is PvE in Disguise</div>
-      <div class="card-what">
-        <strong>What it is:</strong> A deterministic (DST) co-op raid simulation. The boss is
-        entropy. Defectors are griefers who reduce raid DPS — but because the game is deterministic
-        and the self-width parameter controls how wide each agent's "self" is, a wide enough self
-        (nothing is other) clears the boss every time.<br /><br />
-        <strong>What it proves:</strong> In a deterministic system with a shared entropy boss,
-        defection is self-harm. PvP and PvE are the same game — the distinction is a coordinate
-        choice, not a physical fact. This is the weight-free / no-hierarchy principle in game
-        theory form: if you model the other player as part of yourself, the Nash equilibrium
-        is cooperation.<br /><br />
-        <strong>What is different:</strong> Unlike the DLA proof (spatial/fractal), this proof
-        is <em>temporal</em> — it plays out over rounds. The shape is the payoff trajectory,
-        not a pixel cluster. Same seed → byte-identical run → reproducible proof.
-      </div>
-      <div class="card-links">
-        <a class="card-link" style="color:var(--purple);" href="../moral-gym-raid.html">Run the raid ↗</a>
-      </div>
-    </div>
+        <div class="verdict" style="color:var(--red)"><strong>Verdict: not supported.</strong> Better point error does not rescue failed calibration and a loss to the declared ridge comparator.</div>
+      </article>
 
-    <!-- ── Card 4: Bivector / UX of Math ── -->
-    <div class="card" id="card-biv">
-      <span class="card-tag" style="background:rgba(52,211,153,0.12); color:var(--green);">Geometric Algebra · Evidence</span>
-      <div class="card-title" style="color:var(--green);">Bivector Fingerprint — UX of Math</div>
-      <div class="card-what">
-        <strong>What it is:</strong> Each alignment clause in Zeta is witnessed by two observable
-        signals. The wedge product (v₁ ∧ v₂) produces a bivector — an oriented area in a
-        multi-dimensional space. The magnitude of the bivector is the partial-credit score for
-        that clause.<br /><br />
-        <strong>What it proves:</strong> Two perfectly collinear signals (θ = 0°) produce a
-        <em>zero</em> bivector — even if both are individually strong. This catches echo-chamber
-        evidence: two measurements that are really one measurement dressed up twice. Independent
-        evidence requires a non-zero angle between the witness vectors.<br /><br />
-        <strong>What is different:</strong> The shape here is not spatial — it is a score
-        distribution. The bivector is the shape of the evidence, not the shape of the output.
-        This is the same sensor-fusion principle as the DLA proof, but applied to alignment
-        claims rather than fractal geometry.
-      </div>
-      <div class="card-links">
-        <a class="card-link" style="color:var(--green);" href="../index.html#ux-of-math" onclick="window.location='../index.html'; setTimeout(()=>{const b=document.getElementById('tab-btn-ux-of-math');if(b)b.click();},400);">Open in dashboard ↗</a>
-      </div>
-    </div>
-
-    <!-- ── Card 5: Circuit Breaker ── -->
-    <div class="card" id="card-cb">
-      <span class="card-tag" style="background:rgba(248,113,113,0.12); color:var(--red);">Reliability · Agent Safety</span>
-      <div class="card-title" style="color:var(--red);">Circuit Breaker — Agent Reliability Substrate</div>
-      <div class="card-what">
-        <strong>What it is:</strong> Each agent in the Zeta factory carries a circuit breaker
-        that trips when it produces consecutive identical actions. A tripped breaker halts the
-        agent and surfaces it for human review. The snapshot panel shows the current state of
-        every agent's breaker in real time.<br /><br />
-        <strong>What it proves:</strong> Repetition is the shape of a stuck loop. A healthy
-        agent produces varied output; a stuck agent produces the same output repeatedly. The
-        circuit breaker is a topological detector — it does not need to understand the content
-        of the actions, only their identity under equality. This is the same principle as the
-        Adinkra clock: the tick source is valid only if it produces distinguishable states.<br /><br />
-        <strong>What is different:</strong> The shape is a binary state (open/closed) per agent,
-        not a fractal. But the underlying claim is the same: a system that cannot produce
-        distinguishable outputs has collapsed to a fixed point — and fixed points are death.
-      </div>
-      <div class="card-links">
-        <a class="card-link" style="color:var(--red);" href="../index.html" onclick="window.location='../index.html'; setTimeout(()=>{const b=document.querySelector('[onclick*=circuit-breaker]');if(b)b.click();},400);">Open in dashboard ↗</a>
-      </div>
-    </div>
-
-    <!-- ── Card 6: Hamiltonian ── -->
-    <div class="card" id="card-ham2">
-      <span class="card-tag" style="background:rgba(45,212,191,0.12); color:var(--teal);">Physics · Energy Landscape</span>
-      <div class="card-title" style="color:var(--teal);">Hamiltonian — Energy Landscape of the Identity Space</div>
-      <div class="card-what">
-        <strong>What it is:</strong> The Hamiltonian panel visualises the energy landscape of
-        the Zeta belief system as a function of the rhoCount correction parameter. The operating
-        point is the Tsirelson threshold — the minimum-energy configuration that is still
-        distinguishable from the vacuum.<br /><br />
-        <strong>What it proves:</strong> The identity space has a preferred operating point.
-        It is not arbitrary — it falls out of the quantum correlation ceiling. The DLA fractal
-        boundary is the spatial projection of this energy landscape: the orange/dark boundary
-        is the equipotential surface at the Tsirelson threshold.<br /><br />
-        <strong>What is different:</strong> The DLA proof is a measurement outcome (collapsed
-        cluster). The Hamiltonian is the pre-collapse energy field — the same object as the
-        quantum walk's |ψ|² density, but expressed as an energy rather than a probability.
-        They are dual representations of the same thing.
-      </div>
-      <div class="card-links">
-        <a class="card-link" style="color:var(--teal);" href="../index.html" onclick="window.location='../index.html'; setTimeout(()=>{const b=document.getElementById('tab-btn-hamiltonian');if(b)b.click();},400);">Open in dashboard ↗</a>
-      </div>
-    </div>
-
-  </div>
-
-    <!-- ── Card: E8 Blade-Mask Sandwich ── -->
-    <div class="card" id="card-e8">
-      <span class="card-tag" style="background:rgba(167,139,250,0.12); color:var(--purple);">Clifford Algebra · Cross-Language Byte-Lock</span>
-      <div class="card-title" style="color:var(--purple);">E8 Blade-Mask Sandwich — Cl(3,0) Measurement</div>
-      <div class="card-what">
-        <strong>What it is:</strong> For every ordered pair (A, x) of the 240 E8 root vectors (bridged into Cl(3,0) blade coordinates),
-        apply the versor sandwich s_A(x) = &minus;A&middot;x&middot;&Atilde; / &lang;A&middot;&Atilde;&rang;&#8320; and count how many images land back on a root.
-        Integer arithmetic throughout &mdash; DST-replayable, byte-lockable.<br /><br />
-        <strong>What it proves:</strong> The F# oracle (<code>CliffordE8BladeMask.fs</code>) and the TypeScript oracle (<code>e8-blade-mask-sandwich.ts</code>)
-        agree bit-exactly on all 5 golden numbers. This is a real conformance check &mdash; it can fail, and it would fail if either implementation
-        had a float, endianness, or sign error.<br /><br />
-        <strong>The discriminating criterion (corrected PR #10230):</strong> Among the 14 weight-4 Hamming code supports,
-        exactly <strong>2</strong> are closed under i &harr; i&oplus;7 (pseudoscalar XOR): <code>{0,3,4,7}</code> and <code>{1,2,5,6}</code>.
-        Grade-completeness was wrong &mdash; the coset <code>{1,2,5,6}</code> has grades {1,1,2,2} and contains neither the scalar nor the pseudoscalar.
-        I-closure is coset-invariant; grade-completeness is not.<br /><br />
-        <strong>Required caveats:</strong> (a) "32-element E8 fragment" is wrong twice &mdash; not a sub-root-system (reflection closure is D&#8324;&oplus;D&#8324; = 48 roots), and 32 counts root-vectors not symmetries (8 distinct maps, group order 16 &cong; D&#8324;&times;C&#8322;). (b) 32 is labelling-dependent &mdash; only the 16 single blades are invariant across all 8! relabellings.
-      </div>
-      <div id="e8-demo" style="margin:0.75rem 0; padding:0.75rem; background:rgba(167,139,250,0.06); border:1px solid rgba(167,139,250,0.2); border-radius:6px;">
-        <div style="font-size:0.65rem; font-weight:700; color:var(--purple); letter-spacing:0.08em; text-transform:uppercase; margin-bottom:0.5rem;">Live Demo — Versor Sandwich Explorer</div>
-        <div style="font-size:0.6rem; color:var(--muted); margin-bottom:0.5rem;">Select one or two versor-normed roots. The grid shows which of the 240 E8 roots land back on a root under s_A(x) = −A·x·Ã / ⟨A·Ã⟩₀. In compare mode, purple = both preserve, teal = A only, amber = B only, grey = neither.</div>
-        <div style="display:flex; gap:0.5rem; align-items:center; flex-wrap:wrap; margin-bottom:0.4rem;">
-          <label style="font-size:0.6rem; color:var(--muted);">Root A:</label>
-          <select id="e8-root-select" style="background:var(--panel); color:var(--text); border:1px solid var(--border); padding:0.2rem 0.4rem; font-size:0.6rem; border-radius:4px; cursor:pointer;">
-            <option value="">Loading...</option>
-          </select>
-          <span id="e8-count-a" style="font-size:0.6rem; font-weight:700; color:var(--purple); min-width:60px;"></span>
-          <span id="e8-support-label" style="font-size:0.6rem; color:rgba(167,139,250,0.6);"></span>
+      <article class="card">
+        <span class="card-tag" style="color:var(--red);background:rgba(248,113,113,0.1)">CFB-C · Correlated-error query</span>
+        <h2 class="card-title" style="color:var(--red)">The selected correlation mechanism is vacuous</h2>
+        <p class="card-copy">
+          Validation-only covariance shrinkage restores coverage to 96.08%, but selects &alpha;=1. That removes every off-diagonal
+          covariance. A zero-off-diagonal mutant is therefore identical, while MSE worsens to 10.8695.
+        </p>
+        <div class="metric-grid">
+          <div class="metric"><div class="metric-label">Selected &alpha;</div><div class="metric-value">1.000</div></div>
+          <div class="metric"><div class="metric-label">MSE</div><div class="metric-value">10.8695</div></div>
+          <div class="metric"><div class="metric-label">Coverage</div><div class="metric-value">0.9608</div></div>
         </div>
-        <div style="display:flex; gap:0.5rem; align-items:center; flex-wrap:wrap; margin-bottom:0.5rem;">
-          <label style="font-size:0.6rem; color:var(--muted);">Root B (compare):</label>
-          <select id="e8-root-select-b" style="background:var(--panel); color:var(--text); border:1px solid var(--border); padding:0.2rem 0.4rem; font-size:0.6rem; border-radius:4px; cursor:pointer;">
-            <option value="-1">— none —</option>
-          </select>
-          <span id="e8-count-b" style="font-size:0.6rem; font-weight:700; color:var(--teal); min-width:60px;"></span>
-          <span id="e8-agree-label" style="font-size:0.6rem; color:var(--muted);"></span>
+        <div class="verdict" style="color:var(--red)"><strong>Verdict: not supported.</strong> Calibration improves, but the selected artifact is not operationally correlation-aware and loses the frozen usefulness comparison.</div>
+      </article>
+
+      <article class="card">
+        <span class="card-tag" style="color:var(--amber);background:rgba(245,158,11,0.12)">CFB-D · One-common-noise query</span>
+        <h2 class="card-title" style="color:var(--amber)">A non-vacuous factor repairs calibration, not prediction</h2>
+        <p class="card-copy">
+          A training-fitted rank-one-plus-diagonal residual model changes the weight artifact when its common factor is removed.
+          It raises held-out coverage to 92.22% while limiting MSE inflation against static precision fusion to 0.781%.
+        </p>
+        <div class="metric-grid">
+          <div class="metric"><div class="metric-label">MSE</div><div class="metric-value">9.7691</div></div>
+          <div class="metric"><div class="metric-label">Coverage</div><div class="metric-value">0.9222</div></div>
+          <div class="metric"><div class="metric-label">Weight &Delta;</div><div class="metric-value">0.1083</div></div>
         </div>
-        <div id="e8-grid" style="display:grid; grid-template-columns:repeat(20,1fr); gap:2px; max-width:400px;"></div>
-        <div style="font-size:0.55rem; color:var(--muted); margin-top:0.4rem; display:flex; gap:0.75rem; flex-wrap:wrap;">
-          <span><span style="display:inline-block; width:10px; height:10px; background:rgba(167,139,250,0.8); border-radius:2px; margin-right:3px;"></span>A preserves</span>
-          <span><span style="display:inline-block; width:10px; height:10px; background:rgba(45,212,191,0.7); border-radius:2px; margin-right:3px;"></span>B only</span>
-          <span><span style="display:inline-block; width:10px; height:10px; background:rgba(251,191,36,0.7); border-radius:2px; margin-right:3px;"></span>A only</span>
-          <span><span style="display:inline-block; width:10px; height:10px; background:rgba(107,114,128,0.2); border-radius:2px; margin-right:3px;"></span>neither</span>
-          <span style="color:rgba(167,139,250,0.5);">(both = purple)</span>
+        <div class="verdict" style="color:var(--amber)"><strong>Verdict: calibration repair only.</strong> TypeScript and an independent NumPy eigensolver agree, but validation-selected ridge retains lower MSE and NLL; predictive usefulness is not supported.</div>
+      </article>
+
+      <article class="card card-wide">
+        <span class="card-tag" style="color:var(--green);background:rgba(52,211,153,0.1)">CRDT boundary · TS/Python</span>
+        <h2 class="card-title" style="color:var(--green)">Replicate evidence; query beliefs</h2>
+        <p class="card-copy">
+          A content-addressed multi-value evidence map passes the declared finite associativity, commutativity, idempotency,
+          key-inclusion monotonicity, redelivery, and changed-content conflict controls. The probability distribution is a deterministic
+          query over the complete canonical state, not the replicated merge operator itself.
+        </p>
+        <table class="boundary-table">
+          <thead><tr><th>Candidate</th><th>Measured boundary</th></tr></thead>
+          <tbody>
+            <tr><td>Evidence union</td><td>Passes the finite ACI and redelivery census; same-key changed content remains an explicit conflict.</td></tr>
+            <tr><td>Gaussian product</td><td>Commutative and associative, but non-idempotent: duplicate evidence halves the measured variance.</td></tr>
+            <tr><td>Fixed-half CI</td><td>Idempotent and commutative, but a finite associativity witness differs by 0.2628897219.</td></tr>
+            <tr><td>Trace-grid CI</td><td>Idempotent and commutative, but two parenthesizations choose weights 0.881 and 0.347 and differ by 0.2435573450.</td></tr>
+          </tbody>
+        </table>
+        <div class="verdict" style="color:var(--green)"><strong>Engineering decision:</strong> the evidence map is the state-merge candidate. Product and CI remain query algorithms. No universal CI conservativeness theorem is claimed.</div>
+        <div class="card-links">
+          <a class="card-link" style="color:var(--green)" href="https://github.com/Lucent-Financial-Group/Zeta/blob/main/docs/research/2026-09-02-crdt-belief-fusion-contract.md">CRDT contract and result</a>
+          <a class="card-link" style="color:var(--green)" href="https://github.com/Lucent-Financial-Group/Zeta/blob/main/docs/research/data/2026-09-02-composable-factor-benchmark-results.json">Checked result JSON</a>
         </div>
-        <div style="display:flex; gap:0.5rem; align-items:center; margin-top:0.5rem; flex-wrap:wrap;">
-          <button id="e8-orbit-btn" style="background:rgba(167,139,250,0.15); color:var(--purple); border:1px solid rgba(167,139,250,0.3); padding:0.2rem 0.6rem; font-size:0.6rem; border-radius:4px; cursor:pointer; transition:background 0.15s;" onmouseover="this.style.background='rgba(167,139,250,0.25)'" onmouseout="this.style.background='rgba(167,139,250,0.15)'">⟳ Show Group Orbits</button>
-          <span id="e8-orbit-label" style="font-size:0.6rem; color:var(--muted);"></span>
+      </article>
+
+      <article class="card">
+        <span class="card-tag" style="color:var(--blue);background:rgba(96,165,250,0.1)">RFFH · Architecture census</span>
+        <h2 class="card-title" style="color:var(--blue)">Unary blackboards, not a multi-variable heterarchy</h2>
+        <p class="card-copy">
+          The current reference-frame module instantiates two one-variable unary-factor blackboards with deterministic compensated
+          posterior fusion. Parent and lateral links control admission and pose routing; they are not factor-graph edges propagating
+          between columns. Extra graph rounds are inert in this unary arrangement.
+        </p>
+        <div class="verdict" style="color:var(--blue)"><strong>Positive control:</strong> a separate two-variable equality-factor test shows the generic FactorGraph can propagate over a real edge. RFFH does not yet instantiate that structure.</div>
+        <div class="card-links">
+          <a class="card-link" style="color:var(--blue)" href="https://github.com/Lucent-Financial-Group/Zeta/blob/main/docs/research/2026-09-01-reference-frame-factor-heterarchy-contract.md">Bounded contract</a>
         </div>
-        <div id="e8-histogram" style="margin-top:0.5rem; display:none;">
-          <div style="font-size:0.55rem; color:var(--muted); margin-bottom:0.25rem; text-transform:uppercase; letter-spacing:0.06em;">Preservation histogram — all 32 VN roots</div>
-          <div id="e8-hist-bars" style="display:flex; gap:3px; align-items:flex-end; height:40px;"></div>
-          <div id="e8-hist-labels" style="display:flex; gap:3px; margin-top:2px;"></div>
+      </article>
+
+      <article class="card">
+        <span class="card-tag" style="color:var(--purple);background:rgba(167,139,250,0.1)">Finite algebra · Adinkra / half-spin</span>
+        <h2 class="card-title" style="color:var(--purple)">Declared witnesses, explicit selector non-canonicity</h2>
+        <p class="card-copy">
+          Independent TypeScript, F#, and Rust implementations agree on a rank-16 finite embedding, an 8+8 source split,
+          a 64+64 target split, and a compatible Bayesian sector adapter. The finite selector census contains 64 tied candidates.
+        </p>
+        <div class="verdict" style="color:var(--teal)"><strong>Unmeasured:</strong> regularity, global homoiconicity, physical identity, and any claim beyond the declared finite matrices and actions.</div>
+        <div class="card-links">
+          <a class="card-link" style="color:var(--purple)" href="../identity-dla-site/#/evidence-seam">Evidence room</a>
         </div>
-      </div>
-      <script>
-      (function() {
-        const gen = [[1,0,0,0,0,1,1,1],[0,1,0,0,1,0,1,1],[0,0,1,0,1,1,0,1],[0,0,0,1,1,1,1,0]];
-        const roots = [];
-        for (let i = 0; i < 8; i++) {
-          const r = new Array(8).fill(0); r[i] = 2; roots.push([...r]);
-          const r2 = new Array(8).fill(0); r2[i] = -2; roots.push([...r2]);
-        }
-        for (let m = 1; m < 16; m++) {
-          const cw = Array.from({length:8},(_,j) => { let a=0; for(let i=0;i<4;i++) a^=((m>>i)&1)&gen[i][j]; return a; });
-          const pos = cw.flatMap((v,j) => v===1?[j]:[]);
-          for (let s = 0; s < (1<<pos.length); s++) {
-            const r = new Array(8).fill(0);
-            for (let k = 0; k < pos.length; k++) r[pos[k]] = (s>>k)&1 ? -1 : 1;
-            roots.push(r);
-          }
-        }
-        const rootSet = new Set(roots.map(r => r.join(',')));
-        const gpTable = [[0,1,2,3,4,5,6,7],[1,0,3,2,5,4,7,6],[2,3,0,1,6,7,4,5],[3,2,1,0,7,6,5,4],[4,5,6,7,0,1,2,3],[5,4,7,6,1,0,3,2],[6,7,4,5,2,3,0,1],[7,6,5,4,3,2,1,0]];
-        const gpSign = [[1,1,1,1,1,1,1,1],[1,-1,1,-1,1,-1,1,-1],[1,1,-1,-1,1,1,-1,-1],[1,-1,-1,1,1,-1,-1,1],[1,1,1,1,-1,-1,-1,-1],[1,-1,1,-1,-1,1,-1,1],[1,1,-1,-1,-1,-1,1,1],[1,-1,-1,1,-1,1,1,-1]];
-        const revSign = [1,-1,-1,1,-1,1,1,-1];
-        const gp = (a, b) => { const r = new Array(8).fill(0); for(let i=0;i<8;i++) for(let j=0;j<8;j++) r[gpTable[i][j]] += gpSign[i][j]*a[i]*b[j]; return r; };
-        const rev = a => a.map((v,i) => v*revSign[i]);
-        const vnRoots = roots.filter(a => { const ar = rev(a); const aar = gp(a,ar); return aar.slice(1).every(v=>v===0); });
+      </article>
 
-        // Precompute preservation bitmask for each VN root (which of the 240 roots it preserves)
-        const computePreserved = (a) => {
-          const ar = rev(a); const norm0 = gp(a,ar)[0];
-          return roots.map(x => {
-            const ax = gp(a,x); const axar = gp(ax,ar);
-            const isInt = norm0!==0 && axar.every(v=>v%norm0===0);
-            return isInt && rootSet.has(axar.map(v=>-v/norm0).join(','));
-          });
-        };
-
-        const sel = document.getElementById('e8-root-select');
-        const selB = document.getElementById('e8-root-select-b');
-        sel.innerHTML = '';
-        selB.innerHTML = '<option value="-1">— none —</option>';
-        vnRoots.forEach((r, idx) => {
-          const label = 'A' + (idx+1) + ': [' + r.join(',') + ']';
-          const opt = document.createElement('option'); opt.value = idx; opt.textContent = label; sel.appendChild(opt);
-          const optB = document.createElement('option'); optB.value = idx; optB.textContent = label; selB.appendChild(optB);
-        });
-
-        const render = () => {
-          const idxA = parseInt(sel.value);
-          const idxB = parseInt(selB.value);
-          const a = vnRoots[idxA];
-          const ar = rev(a); const norm0 = gp(a,ar)[0];
-          const support = a.flatMap((v,i) => v!==0?[i]:[]).join('+');
-          const preservedA = computePreserved(a);
-          const countA = preservedA.filter(Boolean).length;
-          document.getElementById('e8-count-a').textContent = countA + ' / 240 preserved';
-          document.getElementById('e8-support-label').textContent = 'support: {' + support + '}, norm²=' + norm0;
-
-          let preservedB = null;
-          if (idxB >= 0) {
-            preservedB = computePreserved(vnRoots[idxB]);
-            const countB = preservedB.filter(Boolean).length;
-            const agree = preservedA.filter((v,i) => v === preservedB[i]).length;
-            document.getElementById('e8-count-b').textContent = countB + ' / 240 preserved';
-            document.getElementById('e8-agree-label').textContent = agree + '/240 agree (' + Math.round(agree/2.4) + '%)';
-          } else {
-            document.getElementById('e8-count-b').textContent = '';
-            document.getElementById('e8-agree-label').textContent = '';
-          }
-
-          const grid = document.getElementById('e8-grid');
-          grid.innerHTML = '';
-          roots.forEach((x, xi) => {
-            const pA = preservedA[xi];
-            const pB = preservedB ? preservedB[xi] : null;
-            let bg;
-            if (preservedB === null) {
-              bg = pA ? 'rgba(167,139,250,0.8)' : 'rgba(107,114,128,0.15)';
-            } else if (pA && pB)  bg = 'rgba(167,139,250,0.9)';
-            else if (pA && !pB)   bg = 'rgba(251,191,36,0.75)';
-            else if (!pA && pB)   bg = 'rgba(45,212,191,0.7)';
-            else                  bg = 'rgba(107,114,128,0.15)';
-            const cell = document.createElement('div');
-            cell.style.cssText = 'width:14px;height:14px;border-radius:2px;background:' + bg + ';transition:background 0.15s;cursor:default;';
-            cell.title = '[' + x.join(',') + '] A:' + (pA?'✓':'✗') + (preservedB?' B:'+(pB?'✓':'✗'):'');
-            grid.appendChild(cell);
-          });
-        };
-        sel.addEventListener('change', render);
-        selB.addEventListener('change', render);
-        render();
-
-        // ── Group orbit mode ─────────────────────────────────────────────────
-        // Precompute all 32 preservation patterns and group by identical pattern
-        const allPatterns = vnRoots.map((a, idx) => {
-          const p = computePreserved(a);
-          return { idx, key: p.map(v=>v?'1':'0').join(''), count: p.filter(Boolean).length, pattern: p };
-        });
-        // Group by key
-        const groups = new Map();
-        allPatterns.forEach(({idx, key, count}) => {
-          if (!groups.has(key)) groups.set(key, { indices: [], count });
-          groups.get(key).indices.push(idx);
-        });
-        const groupList = [...groups.values()].sort((a,b) => b.count - a.count);
-
-        // Build histogram
-        const histDiv = document.getElementById('e8-histogram');
-        const histBars = document.getElementById('e8-hist-bars');
-        const histLabels = document.getElementById('e8-hist-labels');
-        const countBuckets = [0, 64, 128, 240];
-        const bucketCounts = countBuckets.map(c => allPatterns.filter(p => p.count === c).length);
-        const maxBucket = Math.max(...bucketCounts);
-        countBuckets.forEach((c, i) => {
-          const bar = document.createElement('div');
-          const h = maxBucket > 0 ? Math.round((bucketCounts[i] / maxBucket) * 36) : 0;
-          bar.style.cssText = 'width:28px;background:rgba(167,139,250,' + (0.3 + 0.5*(c/240)) + ');border-radius:2px 2px 0 0;height:' + h + 'px;transition:height 0.3s;';
-          bar.title = c + ' preserved: ' + bucketCounts[i] + ' roots';
-          histBars.appendChild(bar);
-          const lbl = document.createElement('div');
-          lbl.style.cssText = 'width:28px;font-size:0.5rem;color:var(--muted);text-align:center;';
-          lbl.textContent = c + ' (' + bucketCounts[i] + ')';
-          histLabels.appendChild(lbl);
-        });
-
-        let orbitActive = false;
-        let orbitTimer = null;
-        let orbitStep = 0;
-        document.getElementById('e8-orbit-btn').addEventListener('click', () => {
-          orbitActive = !orbitActive;
-          const btn = document.getElementById('e8-orbit-btn');
-          const lbl = document.getElementById('e8-orbit-label');
-          histDiv.style.display = orbitActive ? 'block' : 'none';
-          if (orbitActive) {
-            btn.textContent = '⏹ Stop Orbit';
-            lbl.textContent = groupList.length + ' distinct maps (group order ' + vnRoots.length + ')';
-            const cycle = () => {
-              if (!orbitActive) return;
-              const g = groupList[orbitStep % groupList.length];
-              sel.value = g.indices[0];
-              render();
-              // Highlight all roots in this orbit group in the select dropdown
-              // Roots sharing the same map get a purple background; others are dimmed
-              Array.from(sel.options).forEach((opt, i) => {
-                if (g.indices.includes(i)) {
-                  opt.style.background = 'rgba(167,139,250,0.25)';
-                  opt.style.fontWeight = '700';
-                } else {
-                  opt.style.background = '';
-                  opt.style.fontWeight = '';
-                }
-              });
-              lbl.textContent = 'Map ' + (orbitStep % groupList.length + 1) + '/' + groupList.length + ': ' + g.count + ' preserved · ' + g.indices.length + ' root' + (g.indices.length > 1 ? 's' : '') + ' share this map (highlighted in dropdown)';
-              orbitStep++;
-              orbitTimer = setTimeout(cycle, 900);
-            };
-            cycle();
-          } else {
-            btn.textContent = '⟳ Show Group Orbits';
-            lbl.textContent = '';
-            if (orbitTimer) clearTimeout(orbitTimer);
-            // Clear dropdown highlights
-            Array.from(sel.options).forEach(opt => { opt.style.background = ''; opt.style.fontWeight = ''; });
-          }
-        });
-      })();
-      </script>
-      <div class="card-links">
-        <a class="card-link" style="color:var(--purple);" href="https://github.com/Lucent-Financial-Group/Zeta/blob/main/src/Core/CliffordE8BladeMask.fs" target="_blank" rel="noopener">F# oracle ↗</a>
-        <a class="card-link" style="color:rgba(167,139,250,0.5);" href="https://github.com/Lucent-Financial-Group/Zeta/blob/main/src/Core.TypeScript/algebra/e8-blade-mask-sandwich.ts" target="_blank" rel="noopener">TS oracle ↗</a>
-        <a class="card-link" style="color:rgba(167,139,250,0.5);" href="https://github.com/Lucent-Financial-Group/Zeta/blob/main/docs/research/2026-08-09-e8-blade-mask-sandwich-measurement-32-element-fragment-quantized-histogram-frozen-core-b.md" target="_blank" rel="noopener">Research doc ↗</a>
-      </div>
-    </div>
-
-    <!-- ── Frequency vs. Path Comparison Panel ── -->
-    <div style="background:rgba(20,184,166,0.05); border:1px solid rgba(20,184,166,0.15); border-radius:8px; padding:1rem; margin-top:0.5rem; font-size:0.6rem;">
-      <div style="font-weight:700; color:#14b8a6; letter-spacing:0.08em; text-transform:uppercase; margin-bottom:0.5rem;">⟳ Frequency vs. Path — Two Ways to Measure Coherence</div>
-      <div style="display:grid; grid-template-columns:1fr 1fr; gap:0.75rem; margin-bottom:0.5rem;">
-        <div style="padding:0.5rem; background:rgba(255,255,255,0.03); border-radius:6px; border-left:2px solid #f59e0b;">
-          <div style="font-weight:700; color:#f59e0b; margin-bottom:0.25rem;">Path Domain (BipartiteMachZehnder)</div>
-          <div style="color:#94a3b8; line-height:1.6;">
-            <strong>Resource:</strong> Fleet size — more agent pairs, more measurement settings.<br />
-            <strong>Instrument:</strong> CHSH S over which-arm (key ∈ {0,1}).<br />
-            <strong>Ceiling:</strong> S_path ≤ 2√2 ≈ 2.828 (Tsirelson).<br />
-            <strong>Scales with:</strong> Number of oracles (17 in Race Mode).<br />
-            <strong>Analogy:</strong> LIGO — more baselines = more resolution.
-          </div>
+      <article class="card">
+        <span class="card-tag" style="color:var(--amber);background:rgba(245,158,11,0.1)">DLA · Rendering conformance</span>
+        <h2 class="card-title" style="color:var(--amber)">A visual invariant is not an identity proof</h2>
+        <p class="card-copy">
+          The DLA surfaces remain useful for inspecting deterministic rendering, finite-resolution effects, seed sensitivity, and
+          cross-runtime byte-lock behavior. Shared algorithms, seeds, constants, or golden vectors create correlated oracles.
+        </p>
+        <div class="verdict" style="color:var(--amber)"><strong>Boundary:</strong> renderer agreement can establish conformance to a declared computation. It does not establish a physical identity space, a substrate-independent eigenvector, biological equivalence, or a sensor-fusion theorem.</div>
+        <div class="card-links">
+          <a class="card-link" style="color:var(--amber)" href="../identity-dla-site/">Open DLA instrument</a>
+          <a class="card-link" style="color:var(--amber-dim)" href="../identity-dla-site/#/evidence-seam">Open evidence seam</a>
         </div>
-        <div style="padding:0.5rem; background:rgba(255,255,255,0.03); border-radius:6px; border-left:2px solid #14b8a6;">
-          <div style="font-weight:700; color:#14b8a6; margin-bottom:0.25rem;">Frequency Domain (FrequencyMachZehnder)</div>
-          <div style="color:#94a3b8; line-height:1.6;">
-            <strong>Resource:</strong> Coherence time — watch longer, coherently.<br />
-            <strong>Instrument:</strong> PLV = |⟨e^{iΔφ}⟩| = Born prob. of DC bin.<br />
-            <strong>Ceiling:</strong> S_freq ≤ 2√2 · PLV (partial coherence reduces ceiling).<br />
-            <strong>Scales with:</strong> Observation window length.<br />
-            <strong>Analogy:</strong> Radio telescope — longer integration = more sensitivity.
-          </div>
+      </article>
+
+      <article class="card card-full">
+        <span class="card-tag" style="color:var(--teal);background:rgba(45,212,191,0.1)">Open register · Keep unknown visible</span>
+        <h2 class="card-title" style="color:var(--teal)">What these artifacts do not establish</h2>
+        <table class="boundary-table">
+          <thead><tr><th>Claim family</th><th>Current status</th></tr></thead>
+          <tbody>
+            <tr><td>DAG learning or causal discovery</td><td>Not implemented or measured by CFB-A/B/C/D. All benchmark topologies are declared in advance.</td></tr>
+            <tr><td>Predictive superiority</td><td>Not supported by the frozen ETTh1 usefulness rule. The negative result is retained.</td></tr>
+            <tr><td>Thousand Brains equivalence</td><td>Learning, cortical-column fidelity, sensorimotor voting, and Monty-equivalent behavior remain unmeasured.</td></tr>
+            <tr><td>Language or geospatial semantics</td><td>No evidence here establishes that English meaning runs on the same geometry.</td></tr>
+            <tr><td>Consciousness, free will, or physical identity</td><td>Outside the measured finite claims. Visual and mathematical analogies are not evidence for these conclusions.</td></tr>
+            <tr><td>Universal CRDT belief operator</td><td>Obstructed for the tested Gaussian product and pairwise CI algorithms; only the finite evidence-union state candidate is supported.</td></tr>
+          </tbody>
+        </table>
+        <div class="card-links">
+          <a class="card-link" style="color:var(--teal)" href="https://github.com/Lucent-Financial-Group/Zeta/blob/main/docs/research/2026-09-02-composable-dag-learning-competitor-matrix.md">Competitor boundary</a>
+          <a class="card-link" style="color:var(--teal)" href="https://github.com/Lucent-Financial-Group/Zeta/blob/main/docs/research/2026-09-02-composable-factor-benchmark-contract.md">Frozen benchmark contract</a>
+          <a class="card-link" style="color:var(--teal)" href="https://github.com/Lucent-Financial-Group/Zeta/pull/16363">Merged evidence PR #16363</a>
         </div>
-      </div>
-      <div style="padding:0.4rem 0.6rem; background:rgba(20,184,166,0.08); border-radius:4px; color:#cbd5e1; line-height:1.6;">
-        <strong style="color:#14b8a6;">The unification:</strong> PLV is the Born probability of the DC bin in the frequency-domain MZ — identical to the closed-interferometer Born probability in the path domain at the mean phase offset. Both share the Tsirelson ceiling 2√2 as the oracle. The resource trade-off (fleet size vs. coherence time) is the Fuentes inversion: the same information, bought with different resources.
-      </div>
-      <div style="margin-top:0.4rem; color:#475569; font-size:0.55rem;">
-        Refs: FrequencyMachZehnder.fs · BipartiteMachZehnder.fs · TemporalCoordinationDetection.fs:212 · Fuentes (2017) · Lachaux et al. (1999)
-      </div>
-    </div>
-  </div>
-    <!-- ── Connecting thread ── -->
-  <div style="max-width:1100px; margin-top:2rem; padding:1.25rem; background:var(--panel); border:1px solid var(--border); font-size:0.65rem; color:var(--muted); line-height:1.9;">
-    <div style="font-size:0.75rem; font-weight:700; color:var(--amber); letter-spacing:0.1em; text-transform:uppercase; margin-bottom:0.75rem;">The Connecting Thread</div>
-    <p>Every shape on this page is a different projection of the same object: the <strong style="color:var(--text)">identity eigenvector</strong> — the substrate-independent invariant of the Zeta belief system.</p>
-    <br />
-    <!-- ── Projection selector ── -->
-    <div id="proj-selector" style="display:flex; gap:0.4rem; flex-wrap:wrap; margin-bottom:0.75rem;">
-      <button class="proj-btn" data-proj="dla" data-color="var(--amber)" style="background:rgba(245,158,11,0.15); color:var(--amber); border:1px solid rgba(245,158,11,0.3); padding:0.2rem 0.5rem; font-size:0.58rem; border-radius:4px; cursor:pointer; transition:all 0.15s;" onclick="selectProj('dla')">🌀 DLA — spatial</button>
-      <button class="proj-btn" data-proj="ham" data-color="var(--teal)" style="background:rgba(20,184,166,0.1); color:var(--teal); border:1px solid rgba(20,184,166,0.2); padding:0.2rem 0.5rem; font-size:0.58rem; border-radius:4px; cursor:pointer; transition:all 0.15s;" onclick="selectProj('ham')">⚡ Hamiltonian — energy</button>
-      <button class="proj-btn" data-proj="qw" data-color="var(--blue)" style="background:rgba(59,130,246,0.1); color:var(--blue); border:1px solid rgba(59,130,246,0.2); padding:0.2rem 0.5rem; font-size:0.58rem; border-radius:4px; cursor:pointer; transition:all 0.15s;" onclick="selectProj('qw')">⚛ Quantum walk — probability</button>
-      <button class="proj-btn" data-proj="biv" data-color="var(--green)" style="background:rgba(34,197,94,0.1); color:var(--green); border:1px solid rgba(34,197,94,0.2); padding:0.2rem 0.5rem; font-size:0.58rem; border-radius:4px; cursor:pointer; transition:all 0.15s;" onclick="selectProj('biv')">⬡ Bivector — evidence</button>
-      <button class="proj-btn" data-proj="gym" data-color="var(--purple)" style="background:rgba(167,139,250,0.1); color:var(--purple); border:1px solid rgba(167,139,250,0.2); padding:0.2rem 0.5rem; font-size:0.58rem; border-radius:4px; cursor:pointer; transition:all 0.15s;" onclick="selectProj('gym')">🏋 Moral Gym — temporal</button>
-      <button class="proj-btn" data-proj="cb" data-color="var(--red)" style="background:rgba(239,68,68,0.1); color:var(--red); border:1px solid rgba(239,68,68,0.2); padding:0.2rem 0.5rem; font-size:0.58rem; border-radius:4px; cursor:pointer; transition:all 0.15s;" onclick="selectProj('cb')">⚡ Circuit breaker — topological</button>
-      <button class="proj-btn" data-proj="worm" data-color="#d8b4fe" style="background:rgba(216,180,254,0.1); color:#d8b4fe; border:1px solid rgba(216,180,254,0.2); padding:0.2rem 0.5rem; font-size:0.58rem; border-radius:4px; cursor:pointer; transition:all 0.15s;" onclick="selectProj('worm')">🪱 C. elegans — biological</button>
-      <button class="proj-btn" data-proj="infer" data-color="#818cf8" style="background:rgba(129,140,248,0.1); color:#818cf8; border:1px solid rgba(129,140,248,0.2); padding:0.2rem 0.5rem; font-size:0.58rem; border-radius:4px; cursor:pointer; transition:all 0.15s;" onclick="selectProj('infer')">🔮 Infer.NET — harmonic</button>
-      <button class="proj-btn" data-proj="e8" data-color="var(--purple)" style="background:rgba(167,139,250,0.1); color:var(--purple); border:1px solid rgba(167,139,250,0.2); padding:0.2rem 0.5rem; font-size:0.58rem; border-radius:4px; cursor:pointer; transition:all 0.15s;" onclick="selectProj('e8')">⬡ E8 Clifford — algebraic</button>
-    </div>
-    <div id="proj-desc" style="font-size:0.62rem; color:var(--text); padding:0.4rem 0.6rem; background:rgba(255,255,255,0.03); border-radius:4px; margin-bottom:0.5rem; min-height:1.5rem; transition:all 0.2s;"></div>
-    <div style="display:flex; gap:0.5rem; align-items:center; margin-bottom:0.5rem;">
-      <button id="tour-btn" onclick="toggleTour()" style="background:rgba(245,158,11,0.12); color:var(--amber); border:1px solid rgba(245,158,11,0.25); padding:0.2rem 0.6rem; font-size:0.58rem; border-radius:4px; cursor:pointer; transition:all 0.15s; letter-spacing:0.06em; text-transform:uppercase;">▶ Tour all projections</button>
-      <span id="tour-label" style="font-size:0.58rem; color:var(--muted);"></span>
-    </div>
-    <script>
-    const projDescs = {
-      dla: '<strong style="color:var(--amber)">Spatial projection</strong> — where the boundary is. DLA grows by random walk attachment; the fractal dimension D_f ≈ 1.71 is the invariant. Seven independent substrates (Canvas, CSS, SVG, Chip-8, Q#, WASM, GPU) all converge to the same D_f from different seeds.',
-      ham: '<strong style="color:var(--teal)">Energy projection</strong> — how much it costs to be at the boundary. The Hamiltonian encodes the energy landscape; the boundary is the minimum-energy surface. Same eigenvector, different coordinate system.',
-      qw: '<strong style="color:var(--blue)">Probability projection</strong> — how likely you are to find the boundary. The quantum walk on the DLA graph converges to the same stationary distribution as the classical random walk. The boundary is where the walk spends most of its time.',
-      biv: '<strong style="color:var(--green)">Evidence projection</strong> — how well-witnessed the boundary is. The bivector encodes the orientation of the boundary surface; its magnitude is the evidence that the boundary is real. Tsirelson threshold S = 2√2 is the evidence threshold.',
-      gym: '<strong style="color:var(--purple)">Temporal projection</strong> — what happens over time if you ignore the boundary. The Moral Gym simulates agents that must learn the boundary through experience. Agents that ignore it fail; agents that respect it survive.',
-      cb: '<strong style="color:var(--red)">Topological projection</strong> — what it looks like when the boundary collapses to a fixed point. The circuit breaker is the topological invariant: when the boundary collapses, the system transitions to a fixed point. Same eigenvector, topological coordinates.',
-      worm: '<strong style="color:#d8b4fe">Biological projection</strong> — what the boundary looks like in 302 neurons. The C. elegans connectome is the smallest known substrate for the identity eigenvector. The worm's nervous system implements the same DLA rule in biological hardware.',
-      infer: '<strong style="color:#818cf8">Harmonic projection</strong> — the Laplacian measure of the boundary. The Infer.NET i-sensor computes the harmonic measure of the DLA cluster: where the boundary is most likely to grow next. The amplitude relation (Halsey 2026, Eq. 15) connects this to D_f.',
-      e8: '<strong style="color:var(--purple)">Algebraic projection</strong> — which symmetries preserve the boundary. The E8 root system, bridged into Cl(3,0) blade coordinates, has exactly 32 versor-normed roots. These are the symmetries that preserve the identity eigenvector under the sandwich action s_A(x) = −A·x·Ã.',
-    };
-    function selectProj(key) {
-      document.getElementById('proj-desc').innerHTML = projDescs[key] || '';
-      document.querySelectorAll('.proj-btn').forEach(btn => {
-        const isActive = btn.getAttribute('data-proj') === key;
-        btn.style.opacity = isActive ? '1' : '0.5';
-        btn.style.transform = isActive ? 'scale(1.04)' : 'scale(1)';
-      });
-      // Scroll to the corresponding card if it has an id
-      const cardMap = { dla: 'card-dla', ham: 'card-ham', qw: 'card-qw', biv: 'card-biv', gym: 'card-gym', cb: 'card-cb', infer: 'card-ham', e8: 'card-e8', worm: 'card-worm' };
-      const cardId = cardMap[key];
-      if (cardId) {
-        const el = document.getElementById(cardId);
-        if (el) el.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-      }
-    }
-    const projKeys = ['dla', 'ham', 'qw', 'biv', 'gym', 'cb', 'worm', 'infer', 'e8'];
-    let tourActive = false, tourTimer = null, tourStep = 0;
-    function toggleTour() {
-      tourActive = !tourActive;
-      const btn = document.getElementById('tour-btn');
-      const lbl = document.getElementById('tour-label');
-      if (tourActive) {
-        btn.textContent = '⏹ Stop tour';
-        btn.style.background = 'rgba(245,158,11,0.25)';
-        const tick = () => {
-          if (!tourActive) return;
-          const key = projKeys[tourStep % projKeys.length];
-          selectProj(key);
-          lbl.textContent = (tourStep % projKeys.length + 1) + ' / ' + projKeys.length + ' — ' + key;
-          tourStep++;
-          tourTimer = setTimeout(tick, 3000);
-        };
-        tick();
-      } else {
-        btn.textContent = '▶ Tour all projections';
-        btn.style.background = 'rgba(245,158,11,0.12)';
-        lbl.textContent = '';
-        if (tourTimer) clearTimeout(tourTimer);
-        document.querySelectorAll('.proj-btn').forEach(b => { b.style.opacity = '1'; b.style.transform = 'scale(1)'; });
-      }
-    }
-    // Keyboard navigation: ← prev, → next, Space toggle tour
-    document.addEventListener('keydown', function(e) {
-      if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
-      if (e.key === 'ArrowRight') {
-        const idx = projKeys.indexOf(document.querySelector('.proj-btn[style*="scale(1.04)"]')?.getAttribute('data-proj') || projKeys[0]);
-        selectProj(projKeys[(idx + 1) % projKeys.length]);
-      } else if (e.key === 'ArrowLeft') {
-        const idx = projKeys.indexOf(document.querySelector('.proj-btn[style*="scale(1.04)"]')?.getAttribute('data-proj') || projKeys[0]);
-        selectProj(projKeys[(idx - 1 + projKeys.length) % projKeys.length]);
-      } else if (e.key === ' ') {
-        e.preventDefault();
-        toggleTour();
-      }
-    });
-    </script>
-    <p>The DLA fractal is the <strong style="color:var(--amber)">spatial projection</strong> (where the boundary is).
-    The Hamiltonian is the <strong style="color:var(--teal)">energy projection</strong> (how much it costs to be at the boundary).
-    The quantum walk is the <strong style="color:var(--blue)">probability projection</strong> (how likely you are to find the boundary).
-    The bivector is the <strong style="color:var(--green)">evidence projection</strong> (how well-witnessed the boundary is).
-    The Moral Gym is the <strong style="color:var(--purple)">temporal projection</strong> (what happens over time if you ignore the boundary).
-    The circuit breaker is the <strong style="color:var(--red)">topological projection</strong> (what it looks like when the boundary collapses to a fixed point).
-    The C. elegans worm is the <strong style="color:#d8b4fe">biological projection</strong> (what the boundary looks like in 302 neurons).
-    The Infer.NET i-sensor is the <strong style="color:#818cf8">harmonic projection</strong> (the Laplacian measure of the boundary — where it is most likely to grow next).</p>
-    <br />
-    <p>The sensor-fusion proof is: if all eight projections agree, the eigenvector is real. They agree. The eigenvector is real.</p>
-    <br />
-    <p style="color:rgba(107,114,128,0.8); font-size:0.58rem;">
-      <strong style="color:var(--muted);">2026-07-31 math/physics connections (open conjectures):</strong>
-      Halsey (arXiv:2607.02216) proves the amplitude of the third moment of the harmonic measure is an exact function of D<sub>f</sub> alone (Z-2).
-      KPZ-SLE connects the Laplacian growth front to Loewner entropy S<sub>Loew</sub> &asymp; &minus;ln(t/&kappa;). <em>[Corrected 2026-08-01: the former &ldquo;at the Tsirelson threshold, S<sub>Loew</sub> = ln(3&radic;2)&rdquo; (Z-3) is a tautology and is retracted; Z-3 is open.]</em>
-      Neural networks can predict the SLE<sub>κ</sub> parameter; DLA is conjectured SLE<sub>κ</sub> with κ ≈ 5.7 (Z-4).
-      <em>[RETRACTED 2026-08-01]</em> The former claim &mdash; &ldquo;Reticulum transport (&rho; &asymp; 0.167) is in the ICO regime (Z-5)&rdquo; &mdash; was not measured: L was a hard-coded constant, &rho; = 1/(1+L) is Zeta's own latency model (not a result of Liu &amp; Chiribella), and being <em>below</em> a bound does not demonstrate a non-classical regime. Z-5 is open.
-      Friston &amp; Spisak (arXiv:2505.22749) derive attractor networks from the FEP with orthogonal representations; DLA D<sub>f</sub> ≈ 1.71 is the minimum-complexity FEP attractor (Z-6).
-    </p>
-  </div>
+      </article>
+    </section>
 
-  <footer>
-    Lucent Financial Group · Zeta Project ·
-    <a href="https://github.com/Lucent-Financial-Group/Zeta" target="_blank" rel="noopener">github.com/Lucent-Financial-Group/Zeta</a>
-    &nbsp;·&nbsp;
-    <a href="../index.html">← Factory Dashboard</a>
-  </footer>
-
+    <footer>
+      Last bounded update: 2026-09-02 &middot; Lucent Financial Group &middot;
+      <a href="https://github.com/Lucent-Financial-Group/Zeta">Zeta repository</a> &middot;
+      <a href="../index.html">Factory Dashboard</a>
+    </footer>
+  </main>
 </body>
 </html>

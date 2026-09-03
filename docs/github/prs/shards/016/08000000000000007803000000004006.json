@@ -1,0 +1,12 @@
+{
+  "pr_number": 16390,
+  "archive_path": "docs/history/pr-reviews/PR-16390-feat-081m1hzptx7087g0r0013parbx-reorder-next-two-matching-writes.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-02T21:41:17.810Z",
+  "schema_version": "v1",
+  "commit_sha": "cddd1ebfeb27628779035d48c682f72d4095e9d5",
+  "title": "feat(081M1HZPTX7087G0R0013PARBX): reorder next two matching writes",
+  "state": "MERGED",
+  "merged_at": "2026-09-02T21:40:35Z",
+  "head_ref": "feat/zetafs-reorder-writes"
+}

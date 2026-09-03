@@ -1,0 +1,14 @@
+{
+  "id": "080d0322b1c65810a013000818a7ff37",
+  "at": "2026-09-02T22:56:07.371Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1J5CE6A087G0R000RVJC9H",
+    "type": "task",
+    "title": "PR12 freeze intent then leaves then commit",
+    "slug": "pr12-freeze-intent-then-leaves-then-commit",
+    "priority": "P1",
+    "filename": "081M1J5CE6A087G0R000RVJC9H-pr12-freeze-intent-then-leaves-then-commit.md"
+  }
+}

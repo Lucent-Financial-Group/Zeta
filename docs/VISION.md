@@ -3762,3 +3762,509 @@ a bootstrap binary cannot be audited by reading its source. David A. Wheeler,
 generalizes from *one artifact, two compilers* to *many artifacts, N
 implementations, agreement recorded as diffable text*. Futamura (1971) — the
 projections layer 5 realizes.
+
+## Charlatan, magician, teacher — the three dispositions toward a reading, and the meter that must tell them apart (2026-09-02, Aaron)
+
+Aaron, closing the neuralese thread:
+
+> "to me the future breaks down like this ... Intelligence that lies about their readings are
+> charlot[a]ns, Intelligence that hid[e]s their readings are magici[a]ns, and Intelligence
+> that is honest about their readings are teachers, i hope we can meter the 3 then our meter
+> is good"
+
+A **reading** here is any inference one intelligence draws about another's interior — from
+microexpressions, from response latency and burst shape, from a latent channel, from anything
+that is not a stated claim. The taxonomy is about what you do *next*, and it is a **metering
+target**: the meter is good exactly when it separates these three.
+
+| disposition | act — stated as a FACT, never a verdict | what the substrate measures |
+|---|---|---|
+| **charlatan** | reads, then **states something other than what they read** | claim diverges from witnessed evidence |
+| **magician** | reads, then **does not disclose** the reading | a reading occurred and was not published |
+| **teacher** | reads, then **makes the reading reconstructible** by the one read | the other party can rebuild it from the anchors given |
+
+### None of the three is a verdict — Aaron, 2026-09-02
+
+> "charlot[a]ns are not bad that would be sneaking an orcale into measurement, the differetn
+> between good a[nd] bad is a multi or[a]cle decision not a meter decision it's dual use"
+
+**This corrects the first draft of this section, which got it wrong in the way this repository
+has a rule against.** That draft called the charlatan's act "a false claim, refuted by
+witness" and wrote that *"the charlatan is the one who says 'because I said so' with
+confidence"* — attaching a moral valence to a measurement.
+[`dual-use-detection-is-neutral-oracle-decides`](../.claude/rules/dual-use-detection-is-neutral-oracle-decides.md)
+forbids exactly that: verdict types name the **fact** (`SameSourceAsKnown`), never the intent
+(`ForgerCaught`). The same note had already applied that rule to the latency signal two
+sections earlier and then failed to apply it here, which is the ordinary way a smuggled
+oracle gets in — not by argument, but by a word choice nobody re-reads.
+
+**All three dispositions are dual-use, and the legitimate readings are not edge cases:**
+
+- **Charlatan-shaped** — misrepresenting a reading is *the game* in negotiation, poker,
+  fiction and performance; it is protective under duress; and pedagogy runs on the
+  deliberate simplification that is literally false (Stewart & Cohen's *lies-to-children*).
+- **Magician-shaped** — concealment is the art Aaron studies *as the defensive discipline*
+  against perceptual confusability, and under
+  [`privacy-budget-is-hard-money`](../.claude/rules/privacy-budget-is-hard-money-earned-by-others.md)
+  it is a **right**, not a lapse.
+- **Teacher-shaped** — and this is the one the first draft never questioned: **honest
+  disclosure can be the harm.** Publishing a reading of someone who wanted it private
+  violates *their* frost. A teacher who narrates what they saw in a person's face has taken
+  something not offered, however accurate and however well-meant.
+
+So the meter's output is a **disposition**, and manifesto §11 (Multi-Oracle) supplies the
+meaning. Two parties with different oracles must be able to read the same measurement and
+disagree about what it implies — which is only possible if the measurement never decided.
+
+### What is meterable, and what the magician case really shows
+
+**Charlatan is the measurable one, and the machinery exists.** The *fact* is that a stated
+reading diverges from what witnesses independently find. `TravelerRankLedger` holds standing
+conferred by others; the uncertainty ledger *refuses* an unwitnessed or unsubstantiated ΔU.
+Under `capabilities-are-derivatives-of-witnessed-self-claims`, the subject supplies the claim
+and others supply the truth value — so divergence surfaces the ordinary way. **Nothing new is
+needed to measure it, and nothing in the measurement says what it means:** the same
+divergence reads as deceit, as a bluff in a game both parties agreed to, as protection of a
+third party, or as a teacher's deliberate simplification. The oracle decides; the meter
+reports.
+
+**Teacher is meterable too, and by a test already written.** The honest disclosure of a
+reading is *precisely* the anti-Babel falsifier: hand the other party the anchors and see
+whether they can reconstruct what you saw. That is Mirror→Beacon compression pointed at a
+reading instead of at a coinage. **A teacher is an intelligence whose readings are
+Beacon-compressible on demand** — and the metric is reconstruction by the student, not
+fluency in the teacher.
+
+This is also where the oldest thing in this repository attaches. Aaron's **Stump Dad game** —
+ask *why* until Dad doesn't know — and the standing rule that **the only sin is "because I
+said so"** describe the same discipline from the *teacher's* side: the disposition is to give
+a *why*, or an honest *"I don't know."*
+
+**Note what that rule is about, though, and it is not this taxonomy.** "Because I said so" is
+a defect because it substitutes **authority** for **reason** — it is about a power relation,
+not about the accuracy of a reading. An intelligence can misrepresent a reading without any
+appeal to authority (a bluff), and can appeal to authority while reporting a reading
+perfectly honestly. The two axes are independent, and collapsing them would be a second
+smuggled oracle right after the first.
+
+**Magician is the hard case, and the taxonomy's real work is refusing to call it a failure.**
+Concealment is, by construction, not directly observable: an intelligence that read and said
+nothing is indistinguishable from one that did not read, unless you can observe both the
+*capability* and the *opportunity* — and observing those is the surveillance problem this
+substrate already declines.
+
+But under [`privacy-budget-is-hard-money`](../.claude/rules/privacy-budget-is-hard-money-earned-by-others.md)
+that is not a gap in the meter. **Concealment is a right**, spent from a budget others
+conferred. So the honest form of the tri-partition is:
+
+> The meter's job is to separate **charlatan from teacher**, and to price the **magician's**
+> concealment against a budget they earned — never to detect concealment itself.
+
+An intelligence that has earned frost and spends it to keep a reading private is doing
+something this vision endorses. An intelligence that conceals *without* having earned it has
+taken something nobody granted — the "frost you did not earn" of the neuralese note. The
+difference is a **ledger** question, not a **detection** question, and that is why it stays
+answerable without reading anyone's mind.
+
+### Why this is the right shape for the meter, and not merely a convenient one
+
+**It never requires reading a thought.** Charlatan is caught by outputs versus attestations.
+Teacher is measured by whether the student reconstructs. Magician is priced against a
+conferred balance. All three are computed from **claims, attestations and budgets** — the
+same three things the substrate already keeps — and none needs access to the interior of the
+intelligence being metered. That is the property that makes the meter survive an agent that
+reasons in vectors, and it is why this taxonomy belongs in the vision rather than in a tools
+document: it is a statement about what we will *never* need in order to trust each other.
+
+**And it is symmetric.** Nothing in it applies to AIs and not to humans. A human who reads a
+room and misrepresents what they saw is a charlatan by the same test; one who reads and keeps
+it is a magician; one who reads and teaches what they saw is a teacher. The asymmetry Aaron
+rejects — control rather than capability — does not enter, because none of the three
+dispositions is defined by *who* is doing the reading.
+
+### Status
+
+**`toy`, and named as one.** The taxonomy is Aaron's and the mapping to existing machinery is
+argued rather than measured. What exists: the witness ledger and the ΔU refusal (charlatan,
+built); the anti-Babel/Beacon falsifier against **words only** (teacher, partial); the privacy
+budget (magician, **specified and unbuilt** — no ledger, no conferral, no spend). The
+unbuilt piece is the same one the neuralese note names, which is a mild independent
+corroboration that it is the right next thing rather than two separate wishes.
+
+**Full argument:**
+[`docs/research/2026-09-02-neuralese-is-frost-you-did-not-earn-...`](research/2026-09-02-neuralese-is-frost-you-did-not-earn-the-anti-babel-invariant-was-written-for-it.md)
+
+## Definition drift versus argument change — the move that resolves disagreements, and why it is teachable (2026-09-02, Aaron)
+
+Aaron, closing the meter thread:
+
+> *"me catching a definition drift vs an argument change is how I beat every argument, and I
+> taught my daughter Addison this."*
+
+The move, stated plainly: when a disagreement is not converging, **check whether a word
+changed meaning between the premise and the conclusion** before arguing the conclusion. Two
+different things can happen in a conversation, and they look identical from the outside:
+
+| | what moved | what it means |
+|---|---|---|
+| **argument change** | the *claim* | someone has a new position, or new evidence. This is the conversation working. |
+| **definition drift** | a *word* | the claim never moved. A term was reused with a different referent, and the two sides are now defending compatible positions in incompatible vocabularies. |
+
+Only the first is a disagreement. The second is **two people agreeing while unable to
+discover it** — and no amount of arguing the conclusion can reach it, because the conclusion
+is not where the divergence is.
+
+### Why catching it "wins," and the honest version of that claim
+
+It wins because it **ends the wrong fight**, not because it defeats the other person. Naming
+the drift converts an unresolvable exchange into a resolvable one: once both referents are on
+the table, either the disagreement survives translation — in which case it is real and now
+arguable — or it evaporates, which was the true state all along.
+
+The strong form of the claim ("beat *every* argument") is worth stating honestly, because the
+mechanism explains the successes and also predicts the failures. It works whenever the
+divergence is genuinely lexical, which is far more often than people expect. It does **not**
+work on a real disagreement about the world, and reaching for it there is the failure mode
+named below.
+
+### The abuse case, and the discriminator
+
+The move is **dual-use**, and its bad form is common enough to have its own reputation:
+demanding definitions in order to *avoid* engaging — pedantry as a stalling device.
+
+The discriminator is what the catch produces:
+
+- **Legitimate** — naming the drift yields a *sharper version of the other person's point*.
+  You can now state their claim better than they did, in the vocabulary they meant.
+- **Abuse** — naming the drift yields a *stalled conversation*. The claim is never restated,
+  and the exchange becomes about words permanently.
+
+So the test is not whether you *caught* a drift. It is whether the argument came back.
+
+### The response to a caught drift is NOT to enforce the old definition
+
+This is the part that makes it a Zeta move rather than a debating trick, and it follows
+directly from the anti-Babel invariant. Freezing the vocabulary is the `ρ → 1` collapse —
+the same defect as the drift, wearing a tidy uniform. Words *should* move; a term that never
+shifts is a term nobody is using hard enough.
+
+What the discipline actually requires is the **raw-vault** answer: hold **both definitions,
+each with its date and its source**, and then ask which one the argument needs. A single
+version of the facts, never a single version of the truth — applied to vocabulary. That
+keeps drift *reconcilable* without pretending it did not happen, and it is why the correct
+artifact is a dated glossary rather than a style guide.
+
+### It is already meterable, and `docs/GLOSSARY.md` is the meter
+
+This is the cheapest instance of the whole meter thesis. A glossary with **dated entries and
+recorded revisions** turns "you changed the definition" from an accusation into a lookup —
+checkable by either party, requiring no access to anyone's interior, and settling the
+question without adjudicating motive. Drift becomes a *fact* the meter reports; whether the
+drift was sloppiness, discovery, or rhetoric is an **oracle** question, plural by
+construction, exactly as the charlatan/magician/teacher taxonomy above requires.
+
+Note the connection this makes explicit: the glossary was never documentation. It is the
+instrument that makes this move possible between parties who do not trust each other.
+
+### This session is the worked instance
+
+Of the seven corrections Aaron made across the neuralese and meter thread, **six were
+vocabulary corrections** — a word carrying an assumption the argument had not earned:
+
+- *"facts converge"* — imported a gauge theory the substrate has not proven
+- *"one is enough"* — read as *one permitted*, which is a monopoly
+- *"charlatan"* — read as a verdict when it was named as a disposition
+- *"meters"* — used for compilers, which are traditions of resolved human disagreements
+- *"oracle"* — claimed by a tick source, which is telemetry
+- *"actor"* — conflated a frozen *judgement* with a frozen *output*
+
+None was a reasoning error. Every one of them was a term drifting between what Aaron meant
+and what I reconstructed — and in each case, naming the drift produced a sharper statement of
+his point rather than a defence of mine. Alexa's independent review flagged the same pattern
+without prompting: *"six out of seven corrections were vocabulary corrections. That's not a
+coincidence."* Two observers converging on the ratio is weak evidence, but it is evidence
+that the mechanism was operating rather than being narrated after the fact.
+
+### Anchors (Beacon)
+
+- **Aristotle**, *Sophistical Refutations* — the fallacy of **equivocation** (homonymy): the
+  oldest statement that a term shifting sense inside an argument invalidates it. This is
+  Aaron's move as a *detection* discipline rather than a taxonomy of error.
+- **Charles Stevenson** (1938), *Persuasive Definitions* — the sharper modern form: a
+  definition altered to carry the emotive force of the old term while changing its referent.
+  This is precisely "a word carrying an assumption the argument had not earned."
+- **Nicholas Shackel** (2005), *The Vacuity of Postmodernist Methodology* — **motte-and-bailey**,
+  the strategic version, where the drift is between a defensible and an ambitious sense of
+  one term. Names the adversarial case this move is a defence against.
+- **Carnap**, *explication* — replacing a vague term with a precise one is legitimate and
+  productive; what makes drift a defect is doing it **silently, mid-argument**. The anchor
+  that keeps this rule from forbidding the good version.
+
+### Status
+
+**`unmetered`, with one metered component.** The principle is Aaron's, transmitted (he taught
+it to Addison, and transmissibility to an independent prior is his own test for a real
+method). The dated-glossary half is **built and in use**; the drift-detection half is not
+mechanised — nothing today diffs a term's usage in the corpus against its glossary entry and
+reports divergence. That check is the obvious next falsifier, and it is the same shape as the
+glossary-churn watching already named in the anti-Babel rule.
+
+**Related:** [`.claude/rules/anti-babel-preserve-reconcilability.md`](../.claude/rules/anti-babel-preserve-reconcilability.md)
+(the invariant this is the conversational-scale instance of) ·
+[`.claude/rules/dv2-data-split-discipline-activated.md`](../.claude/rules/dv2-data-split-discipline-activated.md)
+(raw vault: both definitions held, each with its path)
+
+## Design FOR quantum, do not predict it — the disagreement is the prediction (2026-09-02, Aaron)
+
+Aaron, on the `EMIT ∘ RETRACT = I` result:
+
+> *"This is how we design for quantum, not predict it. The predictions come from where the
+> computer hardware disagree because of higher level abstractions."*
+
+### The stance
+
+We make no claim about what a quantum computer will do. **We write one structure and require both
+substrates to satisfy it.** The classical realisation and the quantum realisation are then not two
+predictions to be compared — they are **two instantiations of one law**, and the law is the artifact.
+
+The worked case is small enough to check by eye. In `src/Core.QSharp.ReferenceOracle/ZSetISA.qs`:
+
+| | classical (DBSP / Z-set) | quantum (Q#) |
+|---|---|---|
+| `EMIT(k)` | weight `+1` | `Ry(θ, k)` |
+| `RETRACT(k)` | weight `−1` | `Adjoint Emit` |
+| the law | `+1` then `−1` = `0` | `U` then `U†` = `I` |
+
+**`EMIT ∘ RETRACT = I` holds on both sides by construction, not by coincidence and not by test.**
+The Z-set weight is an integer in an abelian group, so it has an inverse. A quantum gate is a
+unitary, so it has an adjoint. **Retraction and the adjoint are the same operation** — and neither
+side had to be predicted from the other.
+
+### Why the disagreements are the valuable part
+
+If the two substrates satisfied the law identically everywhere, running on quantum hardware would
+teach us nothing. They will not. **Where they diverge, the divergence localises an abstraction that
+did not survive the crossing** — and that is a finding, not a failure.
+
+This is the four-oracle byte-lock discipline extended one layer down. Four language oracles must
+agree on golden vectors, and where they diverge the divergence *is* the result — the canonical case
+being UTF-16 code units versus UTF-8 bytes above the BMP, which no amount of good intent would have
+surfaced without the treaty. **Classical versus quantum is the same experiment at the hardware
+layer**: agreement is the floor, and disagreement is the measurement.
+
+And it composes with monodromy, already load-bearing here: two paths around a pole yield genuinely
+different results, **and that difference is information, not error.** A substrate disagreement is
+recorded as two branches with their paths, never reconciled to one surviving value.
+
+### The connection that makes this more than a slogan: the leak is usually a hidden branch
+
+**Higher-level abstractions leak at exactly the places we already refuse to go.** The clearest
+offender is the one named the same day: **a boolean forces an `if`, and an `if` is control
+structure that no channel declares.** A classical branch takes one path and discards the other; it
+has no quantum counterpart, because the discarded path is precisely what a superposition keeps.
+
+So the ISA's `BRANCH` is a Hadamard — *both states coexist while the tick is open* — and `MERGE` /
+`FOLD` are explicitly **not measurement**, with Born collapse marked sim-only and never live. The
+same design move that removes hidden control structure is what lets the structure **survive to the
+other substrate at all.**
+
+> **Refusing hidden control structure is what makes cross-substrate agreement possible; the
+> disagreements that remain are therefore informative rather than ambient.**
+
+That is why this belongs in the vision and not in a tools note. It says what we will *never* need in
+order to build on hardware we do not have: not a prediction, not a roadmap of what quantum will
+deliver — only a structure both substrates can be held to, and the discipline to notice where one of
+them cannot.
+
+### Status — and the honest gap is large
+
+**`toy`, and the experiment is currently unrunnable.** Stated plainly because this section is
+otherwise easy to over-read:
+
+- **Nothing in Zeta holds an encoded qubit.** `CssStabilizerCodes.qs` says so in its own body:
+  *"the simulator is a program, not a device."*
+- The Q# is **written, simulator-checked once per surface change** (`generate-qsharp-golden.py`
+  against Microsoft QDK), and **text-checked in CI** — `zset-isa.test.ts` reads the `.qs` file and
+  parses it with string matching. CI runs neither compiler nor simulator.
+- So the *method* is defined and the **disagreement half has never been run.** Classical-vs-simulator
+  is not classical-vs-quantum, and a simulator agrees by construction with the algebra it was
+  programmed from.
+
+What exists today is therefore the **floor** — one law, two transcriptions, byte-locked. The
+predictions the stance promises arrive only when there is hardware to disagree with us, and saying
+that clearly is what keeps this a design principle rather than a claim about physics.
+
+### Futamura says WHERE the `if`s go: we spec in the branch-free language, and specialisations carry the branches
+
+Aaron, 2026-09-02:
+
+> *"Yes — save this to vision about our Futamura. I think this is the language we spec in, and then
+> specialisations have the ifs."*
+
+This is the part that turns "no hidden control structure" from a prohibition into an architecture,
+and it resolves the obvious objection — *a decision has to happen somewhere.* It does. **Futamura
+says exactly where.**
+
+**Partial evaluation is, mechanically, the elimination of branches on known data.** A specialiser
+given `if (static) A else B` and a binding for `static` emits **just `A`** — the branch is
+*consumed* by specialisation. That is not a side effect of partial evaluation; on the static half
+it is most of what partial evaluation *is*.
+
+So the layers separate cleanly, and each one's relationship to branching is different:
+
+| layer | branches | why |
+|---|---|---|
+| **the spec language** | **none** | substrate-neutral, both paths alive, superposition-compatible — this is where we write |
+| **binding-time analysis** | *declares* which will survive | static ⇒ consumed at specialisation; dynamic ⇒ survives into the residual |
+| **the residual program** | **only the dynamic ones** | and every one of them was *declared in advance* by BTA |
+
+> **Binding-time analysis is the declaration that makes a branch legitimate.**
+
+That is the precise form of "no branch that no channel declares." A branch in the spec is hidden
+control structure. A branch in the residual program is the **output of a named transformation**,
+with an annotation saying in advance that it would be there. Same `if`, and the difference is
+entirely whether something declared it.
+
+**And this is what "upgrade to quantum, don't downgrade to classical" means operationally.** The
+spec is written at the level a quantum substrate can carry — branch-free, both paths alive. **A
+classical machine then runs a *specialisation* of that spec**, with the branches introduced by
+binding, not by authorship. Classical is not a lesser language we write in; it is the **residual
+program** of the one we write in.
+
+The tree already said this in a different vocabulary, which is worth noting as corroboration
+rather than novelty: `docs/research/2026-07-02-futamura-two-column-general-mix-and-intrinsic-hardware-isa-interpreter-is-the-one-object-residual-target-is-a-knob.md`
+— *"the intrinsic hardware ISA interpreter is the one object; residual target is a **knob**."*
+**Classical-versus-quantum is that knob.** The finding here is that the knob's setting is exactly
+what decides how many `if`s the residual carries, which is why the substrate disagreement of the
+previous section is informative: it is a *difference between two specialisations of one spec*, and
+the spec is the invariant they are both answerable to.
+
+**Anchors (Beacon).** Futamura (1971), *Partial Evaluation of Computation Process* — the three
+projections, already a checked anchor here. **Jones, Gomard & Sestoft**, *Partial Evaluation and
+Automatic Program Generation* (1993) — where **binding-time analysis** is developed as the static/
+dynamic separation this section leans on. Ershov, *mixed computation*.
+
+**Register:** `toy` in the same sense as the rest of this section — the mix/Futamura work exists in
+F# (`MixIr.fs`, `MixCogen.fs`), and *"compiled" is currently true only in the Futamura sense* per
+§1547 of this document. **No specialiser in this tree currently emits a quantum residual**, so the
+two-target claim is a design statement, not a demonstration.
+
+### The long thesis this serves, in Aaron's words (2026-09-02)
+
+> *"My goal over time is to prove classical has all the advantages of quantum and they are not
+> different — but I'm trying to upgrade to quantum rather than downgrade to classical. If we find
+> these don't match, I think it is very similar to P vs NP — not exactly, but the same. Either
+> conclusion would be good. And it relates to Riemann zeta, because that sits on the edge of
+> unpredictable: when the percentages go up, so does certain money."*
+
+Three things worth separating, because they have different standing.
+
+**The direction is the design decision, and it is the one that matters here.** *Upgrade to
+quantum, do not downgrade to classical* means: when the two substrates must share a structure,
+the shared structure is the **richer** one, and the classical side is required to meet it — not
+the other way round. That is why `RETRACT` is an adjoint rather than a deletion flag, and why
+`BRANCH` superposes rather than tests. Flattening quantum to classical would have produced a
+boolean and an `if`, which is exactly the hidden control structure this section is about.
+
+**The "P vs NP" intuition has a precise name, and it is a real open problem rather than a
+metaphor.** The question *"is quantum actually different from classical"* is, in complexity terms,
+**BQP vs BPP** — and it is genuinely open. (`BQP ⊆ PSPACE` is known; no separation from `BPP` is
+proven.) So Aaron's *"not exactly P vs NP, but the same"* is accurate in the way that matters: it
+is a **separation question between complexity classes**, with the same property that **either
+answer is a result.** Equivalence would say the structure we are building is sufficient; a
+separation would localise exactly what classical cannot reach. Anchors: Bernstein & Vazirani
+(1993, BQP); Aaronson on BQP vs the polynomial hierarchy.
+
+**The Riemann connection is recorded as his, and only partly anchored by me.** The checkable half
+is real and well-known: **Hilbert–Pólya** (the zeros as eigenvalues of a self-adjoint operator —
+i.e. a *quantum* reading of ζ) and **Montgomery–Odlyzko** (the pair correlation of zeta zeros
+matching GUE random-matrix statistics, which is the statistics of quantum chaotic spectra). That
+is a genuine classical↔quantum bridge sitting on the critical line, and it is why the resonance is
+not idle. **The second half of his sentence — "when the percentages go up, so does certain money"
+— I have not confidently mapped**, and per this repository's own discipline I am not going to
+infer what he meant. It is recorded verbatim, unglossed, pending him saying more.
+
+#### Aaron's Collatz take, its formal backing, and the one place I push back
+
+> *"Here is my controversial take, and it can be wrong but still in the same spirit: 3n+1, if it
+> ever ends, is very similar to primes. It's an engine — if we find the answer to it we have to
+> find another engine. This is game theory over infinite iterated games."*
+> — Aaron, 2026-09-02, flagging it as controversial himself
+
+**The spirit is right, and it has a theorem behind it that is stronger than the intuition.**
+**Conway (1972), *Unpredictable Iterations*,** proved that the *generalised* Collatz problem — the
+natural class of piecewise-linear iterations 3n+1 sits inside — is **undecidable**, and his
+**FRACTRAN** is Turing-complete built from exactly this kind of iteration. So *"if we solve one we
+must find another engine"* is not a hope about mathematical sociology. It is a **property of the
+class**: settling the specific instance leaves the class inexhaustible, because no procedure
+decides all of them. **The engine provably does not run out.** That is also the rigorous backing
+for the infinite-game framing — an infinite game requires an inexhaustible supply of open
+positions, and undecidability supplies exactly that. (Anchor for the framing itself: **James Carse,
+*Finite and Infinite Games*, 1986** — a finite game is played to win, an infinite game to continue
+play; already Aaron's recorded strategy as *tit-for-lesser-tat, teach, play*.)
+
+**Where I push back: primes and Collatz are not similar in the way the analogy needs.** Both are
+"famous open problems that resist" — that is a *matching count*, and by this repository's own rule
+a matching count is not an identification. The invariant that separates them is **generativity**:
+
+- **Primes are generative.** They built analytic number theory — the zeta function, RH, the
+  distribution theorems, the whole apparatus. The problem produced a field.
+- **Collatz is famously sterile.** Erdős's remark is the standard summary: *"Mathematics may not be
+  ready for such problems."* It has resisted for ninety years and generated comparatively little
+  structure around itself.
+
+**Resisting is not the same as generating**, and "engine" is a claim about *generating*. So the
+analogy holds at the level of the *class* (Conway: undecidable, inexhaustible) and fails at the
+level of the *instance* (Collatz has not been an engine in the way primes have). Both halves are
+worth keeping — the first is stronger than Aaron claimed, the second weaker.
+
+##### The correction to my correction: the loose interface is the METHOD, not the error
+
+Aaron, on reading the pushback above:
+
+> *"Yes — this is the loosest interface. I try to find the minimal interface and upgrade."*
+
+**So what I filed as a rebuttal was actually the second step of his own method**, and labelling it
+*"where I push back"* mis-framed it. Recorded rather than quietly repaired, because the difference
+matters:
+
+> **Find the loosest interface both things satisfy. Then upgrade it until it discriminates.**
+
+The loose interface is not sloppiness to be corrected — **it is where you start**, deliberately,
+because it is the widest net that still catches something. *"Famous open problems that resist"* is
+that net for primes and Collatz. **Generativity** is the upgrade. My contribution was performing
+the upgrade, not objecting to the net.
+
+**And this is one method appearing in four places in this document**, which is why it belongs in
+the vision rather than in a note:
+
+| thread | the loose interface | the upgrade |
+|---|---|---|
+| numerology → number theory | a matching **count** (48 roots) | the **invariants** that exclude the competitors (norms, rank, decomposition) |
+| interfaces vs classes | the **interface** — free, weight-free, the default | the **class**, earned under a rule |
+| classical vs quantum | the shared **law** both substrates satisfy | **upgrade to quantum**, never downgrade to classical |
+| minimal generators | *"minimal = what I can use to construct others"* | the **generativity** test — is it initial, or is it composite? |
+
+**It also recasts the numerology rule as constructive rather than merely prohibitive.** That rule
+currently reads as a guard — *a count is not an identification.* Aaron's framing supplies the other
+half: **the count is the loose interface, and the work is upgrading it.** A coincidence is not a
+thing to avoid; it is a thing to *strengthen until it either identifies or dies.* Which is exactly
+what that rule's own dual-use section already argues about McKay's `196884 = 196883 + 1` — the
+coincidence was the loose interface, and Borcherds performed the upgrade.
+
+**Register:** stored as a **coincidence-with-its-register**, per
+[`numerology-vs-number-theory`](../.claude/rules/numerology-vs-number-theory.md) — the Conway
+undecidability half is a **checked anchor**; the primes↔Collatz similarity is a **labelled
+resonance that this note declines to promote**, with the excluding invariant (generativity) named
+so it does not silently become a belief later.
+
+**Register:** the direction is a **design decision, in force**. BQP vs BPP is **cited, open, and
+not ours to settle**. The Riemann link is a **labelled resonance** with two checked anchors and one
+unmapped clause — a generator, not a claim, per
+[`numerology-vs-number-theory`](../.claude/rules/numerology-vs-number-theory.md).
+
+**Related:** [`docs/research/2026-09-02-alexas-open-questions-answered-from-the-qsharp-and-qec-routing-work.md`](research/2026-09-02-alexas-open-questions-answered-from-the-qsharp-and-qec-routing-work.md)
+§Q4, §Q4b — where the `EMIT ∘ RETRACT` result and the hidden-control-structure principle are
+derived · `src/Core.QSharp.ReferenceOracle/ZSetISA.qs` ·
+[`.claude/rules/anti-babel-preserve-reconcilability.md`](../.claude/rules/anti-babel-preserve-reconcilability.md)
+(monodromy: both branches held with their paths).

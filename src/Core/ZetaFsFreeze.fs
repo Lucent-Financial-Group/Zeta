@@ -12,8 +12,12 @@ open Zeta.Core.FSharp.Blake3
 /// freeze-intent then CAS puts then freeze-commit. Durable fsyncs every
 /// leaf+trunk **before** commit and withholds the ack. Readable iff commit
 /// exists and every leaf is present. Crash-mid-write *intercept* is
-/// `InMemoryFileSystem.ArmCrashMidWrite`. Freeze-log replay / recovery stays
-/// `toy` until the rest of the PR12 corpus.
+/// `InMemoryFileSystem.ArmCrashMidWrite`. Journaled/Durable boats write
+/// intent, Flush (visible, no crash arm), put leaves, then commit.
+/// Plain and sealed log replay restore intact intent+commit pairs on create
+/// (torn tail / intent-without-commit / mid-log CRC dropped from the bad
+/// frame; prefix kept). Sealed frames carry LSN in the clear so `openLog`
+/// can rebuild the nonce. Reclaim sweep stays `toy`.
 ///
 /// DoP=1 on this log. No Task.Run except the ferry launch (injected context
 /// on the DST path; `manual` + `PumpToIdleAsync` for tests).
@@ -57,9 +61,10 @@ module ZetaFsFreeze =
     type internal LogItem =
         { IntentLsn: int64
           CommitLsn: int64
-          Frames: byte[]
+          IntentFrame: byte[]
+          CommitFrame: byte[]
           Durable: bool
-          ObjectIds: ContentHash256[]
+          Objects: struct (ContentHash256 * byte[])[]
           Reply: TaskCompletionSource<Result<struct (int64 * int64), FreezeError>> }
 
     /// DoP=1 segment writer. One boat = N freezes, one Flush; Durable adds one
@@ -116,43 +121,44 @@ module ZetaFsFreeze =
 
                     d
 
-                if anyDurable then
+                // Intent Flush publishes without crash arms. Leaf puts and the
+                // log Dispose still fire them. Commit (Dispose) before Reply.
+                do
+                    use stream = fsDoor.OpenFile(logPath, FileMode.Append, FileAccess.Write, FileShare.Read)
+
                     let mutable i = 0
 
                     while err.IsNone && i < boat.Length do
                         let item = boat.Span.[i]
+                        stream.Write(item.IntentFrame, 0, item.IntentFrame.Length)
+                        stream.Flush()
 
-                        if item.Durable then
-                            let mutable j = 0
+                        let mutable j = 0
 
-                            while err.IsNone && j < item.ObjectIds.Length do
-                                let hex = (ContentHash256.toContentAddress128 item.ObjectIds.[j]).ToHex()
-                                let path = Path.Combine(objectsDir, hex.Substring(0, 2), hex.Substring(2))
+                        while err.IsNone && j < item.Objects.Length do
+                            let struct (id, bytes) = item.Objects.[j]
+                            let hex = (ContentHash256.toContentAddress128 id).ToHex()
+                            let path = Path.Combine(objectsDir, hex.Substring(0, 2), hex.Substring(2))
+                            let dir = Path.GetDirectoryName path
+                            fsDoor.CreateDirectory dir
+                            FileSystemIo.writeAllBytes fsDoor path bytes
 
+                            if item.Durable then
                                 match FileSync.fsyncFile path with
                                 | Ok() -> ()
                                 | Error e -> err <- Some(FreezeError.Fsync e)
 
-                                j <- j + 1
+                            j <- j + 1
+
+                        if err.IsNone && item.Durable then
+                            match FileSync.fsyncDir objectsDir with
+                            | Error e -> err <- Some(FreezeError.Fsync e)
+                            | Ok() -> ()
+
+                        if err.IsNone then
+                            stream.Write(item.CommitFrame, 0, item.CommitFrame.Length)
 
                         i <- i + 1
-
-                    if err.IsNone then
-                        match FileSync.fsyncDir objectsDir with
-                        | Error e -> err <- Some(FreezeError.Fsync e)
-                        | Ok() -> ()
-
-                // Commit (Dispose) before Reply. A crash-mid-write on Dispose must
-                // fault the boat; Ok-then-throw would lie that the log is durable.
-                do
-                    use stream = fsDoor.OpenFile(logPath, FileMode.Append, FileAccess.Write, FileShare.Read)
-
-                    if err.IsNone then
-                        for i in 0 .. boat.Length - 1 do
-                            let frames = boat.Span.[i].Frames
-                            stream.Write(frames, 0, frames.Length)
-
-                        stream.Flush()
 
                     if err.IsNone && anyDurable then
                         match FileSync.fsyncFile logPath with
@@ -255,6 +261,263 @@ module ZetaFsFreeze =
     let private defaultConfig =
         { FerryThrottlerConfig.deterministic with MaxBatchSize = 64 }
 
+    let private tryHash (v: DynamicValue) : ContentHash256 option =
+        match v with
+        | DynamicValue.Bytes b when not b.IsDefault && b.Length = 32 ->
+            let raw = Array.zeroCreate 32
+            b.AsSpan().CopyTo(Span<byte> raw)
+            Some { Raw = raw }
+        | _ -> None
+
+    let private tryInt (v: DynamicValue) : int64 option =
+        match v with
+        | DynamicValue.Int x -> Some x
+        | _ -> None
+
+    let private tryString (v: DynamicValue) : string option =
+        match v with
+        | DynamicValue.String s -> Some s
+        | _ -> None
+
+    let private tryFind (pairs: (string * DynamicValue) list) (key: string) : DynamicValue option =
+        pairs
+        |> List.tryFind (fun (k, _) -> k.Equals(key, StringComparison.Ordinal))
+        |> Option.map snd
+
+    let private classFromName (s: string) : DurabilityClass option =
+        match s with
+        | "buffered" -> Some DurabilityClass.Buffered
+        | "journaled" -> Some DurabilityClass.Journaled
+        | "durable" -> Some DurabilityClass.Durable
+        | _ -> None
+
+    type private PlainRec =
+        | Intent of entity: ZetaFsNamespace.EntityId * content: ContentHash256 * leaves: ContentHash256[] * cls: DurabilityClass * lsn: int64
+        | Commit of intentLsn: int64 * content: ContentHash256 * lsn: int64
+
+    let private decodePlain (payload: byte[]) : PlainRec option =
+        match DynamicValue.fromCanonicalCbor payload with
+        | Error _ -> None
+        | Ok(DynamicValue.Object pairs) ->
+            match tryFind pairs "t" |> Option.bind tryString with
+            | Some "freeze-intent/1" ->
+                let entity =
+                    tryFind pairs "entity"
+                    |> Option.bind tryString
+                    |> Option.bind ZetaFsNamespace.EntityId.tryParse
+                let content = tryFind pairs "content" |> Option.bind tryHash
+                let cls = tryFind pairs "class" |> Option.bind tryString |> Option.bind classFromName
+                let lsn = tryFind pairs "lsn" |> Option.bind tryInt
+                let leaves =
+                    match tryFind pairs "leaves" with
+                    | Some(DynamicValue.Array xs) ->
+                        let acc = ResizeArray<ContentHash256>()
+                        let mutable ok = true
+
+                        for x in xs do
+                            match tryHash x with
+                            | Some h when ok -> acc.Add h
+                            | _ -> ok <- false
+
+                        if ok then Some(acc.ToArray()) else None
+                    | _ -> None
+
+                match entity, content, leaves, cls, lsn with
+                | Some e, Some c, Some ls, Some k, Some n -> Some(Intent(e, c, ls, k, n))
+                | _ -> None
+            | Some "freeze-commit/1" ->
+                match
+                    tryFind pairs "intentLsn" |> Option.bind tryInt,
+                    tryFind pairs "content" |> Option.bind tryHash,
+                    tryFind pairs "lsn" |> Option.bind tryInt
+                with
+                | Some i, Some c, Some n -> Some(Commit(i, c, n))
+                | _ -> None
+            | _ -> None
+        | Ok _ -> None
+
+    let private applyDecoded
+        (volume: Volume)
+        (pending: byref<PlainRec option>)
+        (pendingStart: byref<int64>)
+        (maxLsn: byref<int64>)
+        (recordStart: int64)
+        (atTail: bool)
+        (truncate: int64 -> unit)
+        (decoded: PlainRec option)
+        : bool =
+        match decoded with
+        | None ->
+            if atTail then
+                truncate recordStart
+                false
+            else
+                invalidOp (sprintf "ZetaFsFreeze: malformed frame at byte %d" recordStart)
+        | Some(Intent _ as intentRec) ->
+            match pending with
+            | Some _ ->
+                invalidOp (sprintf "ZetaFsFreeze: intent without commit at byte %d" pendingStart)
+            | None ->
+                pending <- Some intentRec
+                pendingStart <- recordStart
+                true
+        | Some(Commit(intentLsn, content, commitLsn)) ->
+            match pending with
+            | Some(Intent(entity, intentContent, leaves, cls, intentLsn2)) when
+                intentLsn = intentLsn2 && content.Equals intentContent
+                ->
+                pending <- None
+                pendingStart <- -1L
+
+                if intentLsn > maxLsn then
+                    maxLsn <- intentLsn
+
+                if commitLsn > maxLsn then
+                    maxLsn <- commitLsn
+
+                volume.Commits.[content] <-
+                    { Entity = entity
+                      Content = content
+                      Span = 0UL
+                      Class = cls
+                      Generation = 0UL
+                      IntentLsn = intentLsn
+                      CommitLsn = commitLsn }
+
+                volume.Leaves.[content] <- leaves
+                true
+            | _ ->
+                if atTail then
+                    truncate recordStart
+                    false
+                else
+                    invalidOp (sprintf "ZetaFsFreeze: commit without matching intent at byte %d" recordStart)
+
+    /// Restore Commits/Leaves from intact plain frames. Trailing torn frame,
+    /// intent-without-commit, or a CRC mismatch (tail or mid) is truncated
+    /// from that frame; the verified prefix is kept.
+    let private replayPlainLog (fs: IFileSystem) (volume: Volume) =
+        let logPath = volume.Log.LogPath
+
+        if fs.Exists logPath then
+            use stream = fs.OpenFile(logPath, FileMode.Open, FileAccess.ReadWrite, FileShare.Read)
+            use br = new BinaryReader(stream)
+            let mutable scanning = true
+            let mutable pendingStart = -1L
+            let mutable pending: PlainRec option = None
+            let mutable maxLsn = 0L
+
+            while scanning do
+                let recordStart = stream.Position
+
+                if stream.Length - stream.Position = 0L then
+                    scanning <- false
+                elif stream.Length - stream.Position < 8L then
+                    stream.SetLength recordStart
+                    scanning <- false
+                else
+                    let len = br.ReadInt32()
+                    let expectedCrc = br.ReadUInt32()
+
+                    if len < 0 then
+                        invalidOp (sprintf "ZetaFsFreeze: negative frame length %d at byte %d" len recordStart)
+                    elif stream.Length - stream.Position < int64 len then
+                        stream.SetLength recordStart
+                        scanning <- false
+                    else
+                        let payload = br.ReadBytes len
+                        let actualCrc = HardwareCrc.Crc32C(ReadOnlySpan payload)
+
+                        if actualCrc <> expectedCrc then
+                            // Tail or mid: keep the intact prefix, drop from here.
+                            // A mid-file CRC that throws would refuse the volume and
+                            // lose freezes that already verified.
+                            stream.SetLength recordStart
+                            scanning <- false
+                        else
+                            let atTail = stream.Position = stream.Length
+                            scanning <-
+                                applyDecoded
+                                    volume
+                                    &pending
+                                    &pendingStart
+                                    &maxLsn
+                                    recordStart
+                                    atTail
+                                    stream.SetLength
+                                    (decodePlain payload)
+
+            match pending with
+            | Some _ when pendingStart >= 0L -> stream.SetLength pendingStart
+            | _ -> ()
+
+            if maxLsn >= volume.NextLsn then
+                volume.NextLsn <- maxLsn + 1L
+
+    /// Sealed frames: [len:i32][lsn:i64][inner]. LSN is public so openLog can
+    /// rebuild the nonce. Wrong-key MAC on the first frame recovers nothing
+    /// and does not truncate.
+    let private replaySealedLog (fs: IFileSystem) (volume: Volume) (session: ZetaFsCrypto.Session) =
+        let logPath = volume.Log.LogPath
+
+        if fs.Exists logPath then
+            use stream = fs.OpenFile(logPath, FileMode.Open, FileAccess.ReadWrite, FileShare.Read)
+            use br = new BinaryReader(stream)
+            let mutable scanning = true
+            let mutable pendingStart = -1L
+            let mutable pending: PlainRec option = None
+            let mutable maxLsn = 0L
+
+            while scanning do
+                let recordStart = stream.Position
+
+                if stream.Length - stream.Position = 0L then
+                    scanning <- false
+                elif stream.Length - stream.Position < 12L then
+                    stream.SetLength recordStart
+                    scanning <- false
+                else
+                    let len = br.ReadInt32()
+                    let lsn = br.ReadInt64()
+
+                    if len < 0 then
+                        invalidOp (sprintf "ZetaFsFreeze: negative sealed length %d at byte %d" len recordStart)
+                    elif stream.Length - stream.Position < int64 len then
+                        stream.SetLength recordStart
+                        scanning <- false
+                    else
+                        let inner = br.ReadBytes len
+                        let atTail = stream.Position = stream.Length
+
+                        match ZetaFsCrypto.openLog session lsn inner with
+                        | Error ZetaFsCrypto.CryptoError.MacMismatch
+                        | Error ZetaFsCrypto.CryptoError.GcmAuthFailed when pending.IsNone && recordStart = 0L ->
+                            scanning <- false
+                        | Error ZetaFsCrypto.CryptoError.MacMismatch
+                        | Error ZetaFsCrypto.CryptoError.GcmAuthFailed ->
+                            stream.SetLength recordStart
+                            scanning <- false
+                        | Error e ->
+                            invalidOp (sprintf "ZetaFsFreeze: sealed frame at byte %d: %s" recordStart (ZetaFsCrypto.errorName e))
+                        | Ok plaintext ->
+                            scanning <-
+                                applyDecoded
+                                    volume
+                                    &pending
+                                    &pendingStart
+                                    &maxLsn
+                                    recordStart
+                                    atTail
+                                    stream.SetLength
+                                    (decodePlain plaintext)
+
+            match pending with
+            | Some _ when pendingStart >= 0L -> stream.SetLength pendingStart
+            | _ -> ()
+
+            if maxLsn >= volume.NextLsn then
+                volume.NextLsn <- maxLsn + 1L
+
     let createFull
         (storeDir: string)
         (mutbuf: ZetaFsMutbuf.Catalog)
@@ -266,7 +529,18 @@ module ZetaFsFreeze =
         let fs = FileSystem.Current
         fs.CreateDirectory (Path.Combine(storeDir, "log"))
         fs.CreateDirectory (Path.Combine(storeDir, "objects"))
-        new Volume(storeDir, mutbuf, observer, session, config, manual)
+        let volume = new Volume(storeDir, mutbuf, observer, session, config, manual)
+
+        try
+            lock volume.Gate (fun () ->
+                match session with
+                | None -> replayPlainLog fs volume
+                | Some s -> replaySealedLog fs volume s)
+
+            volume
+        with ex ->
+            (volume :> IDisposable).Dispose()
+            raise ex
 
     let createWith
         (storeDir: string)
@@ -287,6 +561,14 @@ module ZetaFsFreeze =
         (observer: IDurabilityObserver option)
         : Volume =
         createFull storeDir mutbuf observer None defaultConfig true
+
+    let createManualWith
+        (storeDir: string)
+        (mutbuf: ZetaFsMutbuf.Catalog)
+        (observer: IDurabilityObserver option)
+        (session: ZetaFsCrypto.Session option)
+        : Volume =
+        createFull storeDir mutbuf observer session defaultConfig true
 
     let dispose (volume: Volume) = (volume :> IDisposable).Dispose()
 
@@ -342,17 +624,12 @@ module ZetaFsFreeze =
         Buffer.BlockCopy(payload, 0, frame, 8, payload.Length)
         frame
 
-    let private frameSealed (inner: byte[]) : byte[] =
-        let frame = Array.zeroCreate (4 + inner.Length)
+    let private frameSealed (lsn: int64) (inner: byte[]) : byte[] =
+        let frame = Array.zeroCreate (12 + inner.Length)
         BinaryPrimitives.WriteInt32LittleEndian(Span(frame, 0, 4), inner.Length)
-        Buffer.BlockCopy(inner, 0, frame, 4, inner.Length)
+        BinaryPrimitives.WriteInt64LittleEndian(Span(frame, 4, 8), lsn)
+        Buffer.BlockCopy(inner, 0, frame, 12, inner.Length)
         frame
-
-    let private concatFrames (a: byte[]) (b: byte[]) : byte[] =
-        let all = Array.zeroCreate (a.Length + b.Length)
-        Buffer.BlockCopy(a, 0, all, 0, a.Length)
-        Buffer.BlockCopy(b, 0, all, a.Length, b.Length)
-        all
 
     let isReadable (volume: Volume) (content: ContentHash256) : bool =
         lock volume.Gate (fun () ->
@@ -425,11 +702,11 @@ module ZetaFsFreeze =
             let rope = ZetaFsJumprope.buildV1 snap.Bytes
             let leafIds = [| for id, _ in rope.Leaves -> id |]
 
-            for kv in rope.Cas.Objects do
-                putObject volume.StoreDir kv.Key kv.Value
-
             match cls with
             | Buffered ->
+                for kv in rope.Cas.Objects do
+                    putObject volume.StoreDir kv.Key kv.Value
+
                 let result =
                     { Entity = entity
                       Content = rope.Content
@@ -451,37 +728,42 @@ module ZetaFsFreeze =
                 let intentPt = encodeIntent entity rope.Content leafIds cls intentLsn
                 let commitPt = encodeCommit intentLsn rope.Content commitLsn
 
-                let framed: Result<byte[], FreezeError> =
+                let framed: Result<byte[] * byte[], FreezeError> =
                     match volume.Session with
-                    | None -> Ok(concatFrames (framePlain intentPt) (framePlain commitPt))
+                    | None -> Ok(framePlain intentPt, framePlain commitPt)
                     | Some session ->
                         match ZetaFsCrypto.sealLog session intentLsn intentPt with
                         | Error e -> Error(FreezeError.Crypto e)
                         | Ok i ->
                             match ZetaFsCrypto.sealLog session commitLsn commitPt with
                             | Error e -> Error(FreezeError.Crypto e)
-                            | Ok c -> Ok(concatFrames (frameSealed i) (frameSealed c))
+                            | Ok c -> Ok(frameSealed intentLsn i, frameSealed commitLsn c)
 
                 match framed with
                 | Error e -> ValueTask<Result<FreezeResult, FreezeError>>(Error e)
-                | Ok frames ->
+                | Ok(intentFrame, commitFrame) ->
                     let reply =
                         TaskCompletionSource<Result<struct (int64 * int64), FreezeError>>(
                             TaskCreationOptions.RunContinuationsAsynchronously
                         )
 
-                    let objectIds =
-                        let ids = Array.zeroCreate (leafIds.Length + 1)
-                        ids.[0] <- rope.Content
-                        Array.Copy(leafIds, 0, ids, 1, leafIds.Length)
-                        ids
+                    let objects =
+                        let arr = Array.zeroCreate rope.Cas.Objects.Count
+                        let mutable i = 0
+
+                        for kv in rope.Cas.Objects do
+                            arr.[i] <- struct (kv.Key, kv.Value)
+                            i <- i + 1
+
+                        arr
 
                     let item =
                         { IntentLsn = intentLsn
                           CommitLsn = commitLsn
-                          Frames = frames
+                          IntentFrame = intentFrame
+                          CommitFrame = commitFrame
                           Durable = (cls = Durable)
-                          ObjectIds = objectIds
+                          Objects = objects
                           Reply = reply }
 
                     let pending = volume.Log.SubmitAsync(item, ct)

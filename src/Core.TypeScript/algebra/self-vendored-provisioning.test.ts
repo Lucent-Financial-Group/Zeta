@@ -16,6 +16,7 @@ import {
   describeSelfVendoredAssurance,
   nextStep,
   refuseSecretShapedFields,
+  refuseSmuggledSecretFields,
   type CeremonyState,
   type ProvisioningStep,
   type VendorRootCustody,
@@ -285,5 +286,53 @@ describe("what a self-vendored attestation is allowed to say", () => {
     expect(sentence.toLowerCase()).not.toContain("genuine");
     expect(sentence).toContain("no third party vouches");
     expect(sentence).toContain("not tampered with");
+  });
+});
+
+describe("the secret-shaped-field refusal is APPLIED at the ceremony boundary", () => {
+  // Before this, `refuseSecretShapedFields` was referenced only by its own definition and this
+  // file. It documented itself as guarding "the one path into this substrate" — `advance` — and
+  // `advance` never called it. The refusal was a test rather than a boundary.
+
+  test("advance REFUSES a request smuggling an undeclared key-material field", () => {
+    const state = open();
+    // Widened on purpose: excess-property checking only fires on a literal assigned straight to the
+    // annotated type. A parsed body, a spread, or an `as` all reach `advance` unchecked — and at
+    // runtime the types are gone entirely, which is the case this guard actually exists for.
+    const smuggled = { step: "device-fabricated", approver: "maintainer", udsSeed: "REAL-SECRET" } as object;
+    const result = advance(state, smuggled as Parameters<typeof advance>[1]);
+    expect(result.ok).toBe(false);
+    if (!result.ok) {
+      expect(result.why).toEqual({ refused: "field-name-looks-like-key-material", field: "udsSeed" });
+    }
+  });
+
+  test("REGRESSION GUARD: a legitimate udsCommitment is still accepted", () => {
+    // The reason the generic refusal could not simply be wired in. `KEY_MATERIAL_NAME_FRAGMENTS`
+    // contains "uds", so `refuseSecretShapedFields` refuses `udsCommitment` — the ceremony's own
+    // required input. Naive wiring would reject every legitimate UDS burn; this pins that it does
+    // not, and it is the test that fails first if someone "simplifies" the guard.
+    expect(refuseSecretShapedFields({ udsCommitment: "c" })).not.toBeNull(); // the generic form DOES refuse it
+    const state = runTo(open(), "uds-injected");
+    expect(state.completed).toContain("uds-injected");
+    expect(state.udsCommitment).toBe("commitment-a");
+  });
+
+  test("declared fields pass; undeclared key-material-shaped fields do not", () => {
+    expect(refuseSmuggledSecretFields({ step: "sealed", approver: "a", udsCommitment: "c" })).toBeNull();
+    expect(refuseSmuggledSecretFields({ step: "sealed", approver: "a", cdi: "x" })).toEqual({
+      refused: "field-name-looks-like-key-material",
+      field: "cdi",
+    });
+    for (const field of ["udsSeed", "ussValue", "secretBlob", "privateKeyPem", "mnemonicWords", "passphrase", "seedBytes"]) {
+      expect(refuseSmuggledSecretFields({ step: "sealed", approver: "a", [field]: "x" })).not.toBeNull();
+    }
+  });
+
+  test("HONEST CEILING: a secret in an innocently-named field still passes", () => {
+    // Recorded rather than implied. This is a check on NAMES; it does not prove a UDS never reached
+    // a log, a file, or the network. The module's stated residual gap stays open, and a test that
+    // pretended otherwise would be worse than no test.
+    expect(refuseSmuggledSecretFields({ step: "sealed", approver: "a", notes: "the actual UDS" })).toBeNull();
   });
 });

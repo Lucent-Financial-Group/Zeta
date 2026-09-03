@@ -1436,6 +1436,48 @@ jobs:
             echo "  ${line:-=== $app: NOT ASSERTED IN THIS SCOPE (roster had ${total} apps)}"
           done
 
+      # Run 33684309073 died waiting for hat-system (the NAME, wave -10) with
+      # only NotFound in the proof JSON. The wait is now ANY child, 180s, not
+      # the 2400s health budget. These dumps are why the next dispatch can speak:
+      # zeta-root-dev status, whether ANY child exists, repo-server clone
+      # errors, Cilium/CoreDNS pods, the kind LB-IPAM pool, LoadBalancer
+      # Services. `|| true`: a diagnostics step must never fail the job.
+      - name: Why App-of-Apps produced no children
+        if: always()
+        run: |
+          echo "=== zeta-root-dev ==="
+          kubectl -n argocd get application zeta-root-dev -o yaml || true
+          echo "=== applications ==="
+          kubectl -n argocd get applications.argoproj.io -o wide || true
+          echo "=== argocd pods ==="
+          kubectl -n argocd get pods -o wide || true
+          echo "=== repo-server logs ==="
+          kubectl -n argocd logs deploy/argocd-repo-server --tail=150 || true
+          echo "=== application-controller logs ==="
+          kubectl -n argocd logs statefulset/argocd-application-controller --tail=150 || true
+          echo "=== kube-system pods ==="
+          kubectl -n kube-system get pods -o wide || true
+          echo "=== cilium LB IPAM pool (kind alias zeta-lb-pool) ==="
+          kubectl get ciliumloadbalancerippools.cilium.io -o wide || true
+          echo "=== LoadBalancer Services ==="
+          kubectl get svc -A --field-selector spec.type=LoadBalancer || true
+          echo "=== CoreDNS Corefile (the github.com resolver) ==="
+          kubectl -n kube-system get configmap coredns -o jsonpath='{.data.Corefile}' || true
+          echo
+
+      - name: Name the drifting resources (per-Application, failures only)
+        if: always()
+        run: |
+          kubectl -n argocd get applications.argoproj.io -o json 2>/dev/null \
+            | jq -r '.items[]
+                | select((.status.sync.status != "Synced") or (.status.health.status != "Healthy"))
+                | "=== \(.metadata.name): sync=\(.status.sync.status // "?") health=\(.status.health.status // "?")",
+                  (.status.conditions // [] | .[] | "    condition \(.type): \(.message)"),
+                  (.status.resources // [] | .[]
+                     | select((.status != "Synced") or ((.health.status // "Healthy") != "Healthy"))
+                     | "    \(.kind)/\(.name): sync=\(.status // "-") health=\(.health.status // "-") \(.health.message // "")")' \
+            || true
+
       - name: Tear down kind cluster
         if: always()
         run: bun src/Core.TypeScript/cluster/dev-cluster/kind-down.ts --cluster-name zeta-ci-cilium-included

@@ -19,9 +19,11 @@ type IFileSystem =
     abstract GetFiles: path: string * searchPattern: string -> string[]
     abstract CreateDirectory: path: string -> unit
 
-/// Native-volume block door (PR1 sketch). Every op is an event.
-/// The polyfill adapter maps a host file through `IFileSystem`.
-/// A later device impl must not go through POSIX files.
+/// Native-volume block *primitive* (one LBA, one call). This is the device,
+/// not the IO program. Batch/single/multibatch dispatch is `BlockIoFerry`
+/// (Haskell `IO a` interpreted by `FerryThrottler`, including adjacent
+/// whole-block coalesce). The polyfill adapter maps a host file through
+/// `IFileSystem`. A later device impl must not go through POSIX files.
 type IBlockIo =
     abstract BlockSize: int
     abstract Read: lba: uint64 * dst: Memory<byte> -> int
@@ -143,7 +145,18 @@ type CrashMidWriteException(path: string, committedBytes: int, attemptedBytes: i
     member _.CommittedBytes = committedBytes
     member _.AttemptedBytes = attemptedBytes
 
+/// DST: reclaim Delete committed, then the process died. Extra garbage may
+/// remain; a live object must not be missing.
+[<Sealed>]
+type CrashMidSweepException(path: string) =
+    inherit IOException(sprintf "crash-mid-sweep at %s" path)
+    member _.Path = path
+
 /// A mock FileStream that commits its MemoryStream buffer to the InMemoryFileSystem registry upon disposal.
+/// `Flush` publishes the current buffer without firing crash/corrupt/reorder
+/// arms. Those arms stay on Dispose (`commitWrite`). A Flush that used
+/// `commitWrite` would let a later Dispose republish the full buffer and
+/// undo a tear.
 type SimulatedFileStream
     (
         path: string,
@@ -152,7 +165,8 @@ type SimulatedFileStream
         files: System.Collections.Concurrent.ConcurrentDictionary<string, byte[]>,
         checkFault: unit -> unit,
         applyLatency: unit -> unit,
-        commitWrite: string -> byte[] -> unit
+        commitWrite: string -> byte[] -> unit,
+        flushPublish: string -> byte[] -> unit
     ) =
     inherit MemoryStream()
     let mutable isDisposed = false
@@ -170,6 +184,24 @@ type SimulatedFileStream
         elif not exists && mode = FileMode.Open then
             raise (FileNotFoundException(path))
 
+    override this.Flush() =
+        if (not isDisposed) && access.HasFlag(FileAccess.Write) then
+            flushPublish path (this.ToArray())
+
+        base.Flush()
+
+    override this.FlushAsync(cancellationToken) =
+        if cancellationToken.IsCancellationRequested then
+            Task.FromCanceled cancellationToken
+        elif isDisposed then
+            Task.CompletedTask
+        else
+            try
+                this.Flush()
+                Task.CompletedTask
+            with ex ->
+                Task.FromException ex
+
     override this.Dispose(disposing) =
         if disposing && not isDisposed then
             isDisposed <- true
@@ -180,7 +212,8 @@ type SimulatedFileStream
         base.Dispose(disposing)
 
 /// An in-memory mock file system that supports simulating latency, read/write sector corruption exceptions,
-/// file creation/modification tracking, and one-shot crash-mid-write (D12 door).
+/// file creation/modification tracking, and one-shot crash-mid-write /
+/// corrupt-last-write / reorder (D12 door).
 type InMemoryFileSystem() =
     let files = System.Collections.Concurrent.ConcurrentDictionary<string, byte[]>()
     let mutable latencyMs = 0L
@@ -188,7 +221,21 @@ type InMemoryFileSystem() =
     let mutable errorRate = 0.0
     let mutable rngState = 12345L
     let mutable crashArm: (string * int) option = None
+    let mutable corruptArm: (string * int) option = None
+    let mutable reorderNeedle: string option = None
+    let mutable heldWrite: (string * byte[]) option = None
+    let mutable deleteCrashArm: string option = None
+    let commitOrder = ResizeArray<string>()
     let lockObj = obj ()
+
+    let corruptXor = 0xA5uy
+
+    let pathMatches (needle: string) (path: string) =
+        path.IndexOf(needle, StringComparison.Ordinal) >= 0
+
+    let publish (path: string) (bytes: byte[]) =
+        files.[path] <- bytes
+        commitOrder.Add path
 
     let splitMix () =
         rngState <- rngState + 0x9E3779B97F4A7C15L
@@ -207,18 +254,41 @@ type InMemoryFileSystem() =
         if latencyMs > 0L then
             lock lockObj (fun () -> virtualElapsedMs <- virtualElapsedMs + latencyMs)
 
+    let flushPublish (path: string) (bytes: byte[]) =
+        lock lockObj (fun () -> publish path bytes)
+
     let commitWrite (path: string) (bytes: byte[]) =
         lock lockObj (fun () ->
             match crashArm with
-            | Some(needle, afterBytes) when
-                path.IndexOf(needle, StringComparison.Ordinal) >= 0
-                && bytes.Length > afterBytes
-                ->
+            | Some(needle, afterBytes) when pathMatches needle path && bytes.Length > afterBytes ->
                 crashArm <- None
                 let prefix = Array.sub bytes 0 afterBytes
-                files.[path] <- prefix
+                publish path prefix
                 raise (CrashMidWriteException(path, afterBytes, bytes.Length))
-            | _ -> files.[path] <- bytes)
+            | _ ->
+                match corruptArm with
+                | Some(needle, lastBytes) when
+                    pathMatches needle path && bytes.Length > 0 && lastBytes > 0
+                    ->
+                    corruptArm <- None
+                    let copy = Array.copy bytes
+                    let n = min lastBytes copy.Length
+                    let start = copy.Length - n
+
+                    for i in start .. copy.Length - 1 do
+                        copy.[i] <- copy.[i] ^^^ corruptXor
+
+                    publish path copy
+                | _ ->
+                    match reorderNeedle, heldWrite with
+                    | Some needle, None when pathMatches needle path ->
+                        heldWrite <- Some(path, bytes)
+                    | Some needle, Some(heldPath, heldBytes) when pathMatches needle path ->
+                        reorderNeedle <- None
+                        heldWrite <- None
+                        publish path bytes
+                        publish heldPath heldBytes
+                    | _ -> publish path bytes)
 
     member _.Files = files
 
@@ -232,6 +302,39 @@ type InMemoryFileSystem() =
             invalidArg (nameof afterBytes) "afterBytes must be >= 0"
 
         lock lockObj (fun () -> crashArm <- Some(pathContains, afterBytes))
+
+    /// One-shot: next matching write Dispose XORs the last `lastBytes` with 0xA5
+    /// and commits. The write acks; recovery must not trust the tail.
+    member _.ArmCorruptLastWrite(pathContains: string, lastBytes: int) =
+        if String.IsNullOrEmpty pathContains then
+            invalidArg (nameof pathContains) "pathContains must be non-empty"
+
+        if lastBytes < 1 then
+            invalidArg (nameof lastBytes) "lastBytes must be >= 1"
+
+        lock lockObj (fun () -> corruptArm <- Some(pathContains, lastBytes))
+
+    /// One-shot: hold the first matching Dispose (file not yet visible), then
+    /// the second matching Dispose commits itself first and flushes the held
+    /// write. Flush-publish does not arm this door. Freeze writes intent
+    /// (Flush), then leaves (object Dispose), then commit (log Dispose).
+    member _.ArmReorderNextTwo(pathContains: string) =
+        if String.IsNullOrEmpty pathContains then
+            invalidArg (nameof pathContains) "pathContains must be non-empty"
+
+        lock lockObj (fun () ->
+            reorderNeedle <- Some pathContains
+            heldWrite <- None)
+
+    /// One-shot: next matching Delete removes the file then throws.
+    member _.ArmCrashOnDelete(pathContains: string) =
+        if String.IsNullOrEmpty pathContains then
+            invalidArg (nameof pathContains) "pathContains must be non-empty"
+
+        lock lockObj (fun () -> deleteCrashArm <- Some pathContains)
+
+    /// Paths in the order they became visible. Held writes are absent until flushed.
+    member _.CommitOrder = lock lockObj (fun () -> commitOrder.ToArray())
 
     /// Injected latency in virtual milliseconds. Never wall-clock sleep.
     member _.VirtualElapsedMs = lock lockObj (fun () -> virtualElapsedMs)
@@ -250,7 +353,18 @@ type InMemoryFileSystem() =
 
         member _.Delete(path) =
             checkFault()
+            let crash =
+                lock lockObj (fun () ->
+                    match deleteCrashArm with
+                    | Some needle when pathMatches needle path ->
+                        deleteCrashArm <- None
+                        true
+                    | _ -> false)
+
             files.TryRemove(path) |> ignore
+
+            if crash then
+                raise (CrashMidSweepException path)
 
         member _.Move(src, dest, _overwrite) =
             checkFault()
@@ -275,13 +389,13 @@ type InMemoryFileSystem() =
         }
 
         member _.OpenFile(path, mode, access, _share) =
-            new SimulatedFileStream(path, mode, access, files, checkFault, applyLatency, commitWrite) :> Stream
+            new SimulatedFileStream(path, mode, access, files, checkFault, applyLatency, commitWrite, flushPublish) :> Stream
 
         member _.OpenWrite(path, _fsync) =
-            new SimulatedFileStream(path, FileMode.Create, FileAccess.Write, files, checkFault, applyLatency, commitWrite) :> Stream
+            new SimulatedFileStream(path, FileMode.Create, FileAccess.Write, files, checkFault, applyLatency, commitWrite, flushPublish) :> Stream
 
         member _.OpenRead(path) =
-            new SimulatedFileStream(path, FileMode.Open, FileAccess.Read, files, checkFault, applyLatency, commitWrite) :> Stream
+            new SimulatedFileStream(path, FileMode.Open, FileAccess.Read, files, checkFault, applyLatency, commitWrite, flushPublish) :> Stream
 
         member _.GetFiles(path, searchPattern) =
             checkFault()
@@ -332,6 +446,87 @@ type FileSystemBlockIo(fs: IFileSystem, path: string, blockSize: int) =
         member _.Flush() =
             use stream = fs.OpenFile(path, FileMode.Open, FileAccess.ReadWrite, FileShare.Read)
             stream.Flush()
+
+/// DST block device: LBA → sparse blocks in memory. Not POSIX, not NVMe.
+/// Write is visible immediately. `ArmCrashMidWrite` tears the next Write
+/// that is longer than `afterBytes`. Crash recovery of a volume on this
+/// door stays `toy` until freeze/CAS speak `IBlockIo` instead of files.
+[<Sealed>]
+type SimulatedBlockIo(blockSize: int) =
+    do
+        if blockSize <= 0 || (blockSize &&& (blockSize - 1)) <> 0 then
+            invalidArg "blockSize" "block size must be a positive power of two"
+
+    let blocks = System.Collections.Concurrent.ConcurrentDictionary<uint64, byte[]>()
+    let lockObj = obj ()
+    let mutable crashArm: int option = None
+    let mutable writes = 0
+
+    let writeRange (startLba: uint64) (src: ReadOnlySpan<byte>) =
+        let mutable offset = 0
+
+        while offset < src.Length do
+            let lba = startLba + uint64 (offset / blockSize)
+            let within = offset % blockSize
+            let n = min (blockSize - within) (src.Length - offset)
+            let block = blocks.GetOrAdd(lba, fun _ -> Array.zeroCreate blockSize)
+            src.Slice(offset, n).CopyTo(Span(block, within, n))
+            offset <- offset + n
+
+    /// One-shot: next Write longer than `afterBytes` commits that prefix then throws.
+    member _.ArmCrashMidWrite(afterBytes: int) =
+        if afterBytes < 0 then
+            invalidArg (nameof afterBytes) "afterBytes must be >= 0"
+
+        lock lockObj (fun () -> crashArm <- Some afterBytes)
+
+    member _.Writes = lock lockObj (fun () -> writes)
+
+    interface IBlockIo with
+        member _.BlockSize = blockSize
+
+        member _.Read(lba, dst) =
+            if dst.Length = 0 then
+                0
+            else
+                let mutable copied = 0
+                let mutable offset = 0
+
+                while offset < dst.Length do
+                    let cur = lba + uint64 (offset / blockSize)
+                    let within = offset % blockSize
+                    let n = min (blockSize - within) (dst.Length - offset)
+
+                    match blocks.TryGetValue cur with
+                    | true, block -> Span(block, within, n).CopyTo(dst.Span.Slice(offset, n))
+                    | false, _ -> dst.Span.Slice(offset, n).Clear()
+
+                    copied <- copied + n
+
+                    offset <- offset + n
+
+                copied
+
+        member _.Write(lba, src) =
+            lock lockObj (fun () ->
+                writes <- writes + 1
+
+                match crashArm with
+                | Some afterBytes when src.Length > afterBytes ->
+                    crashArm <- None
+                    writeRange lba (src.Span.Slice(0, afterBytes))
+                    raise (
+                        CrashMidWriteException(
+                            "lba:"
+                            + lba.ToString(System.Globalization.CultureInfo.InvariantCulture),
+                            afterBytes,
+                            src.Length
+                        ))
+                | _ ->
+                    writeRange lba src.Span
+                    src.Length)
+
+        member _.Flush() = ()
 
 
 /// The global file system registry containing the active IFileSystem implementation.

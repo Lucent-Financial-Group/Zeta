@@ -1,0 +1,14 @@
+{
+  "id": "080d031ebfa55010a0130008c8e2dee5",
+  "at": "2026-09-02T20:38:12.394Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1HXFX58087G0R003MJ8SV2",
+    "type": "bug",
+    "title": "Rooms could run forever: the step budget was declared and enforced by nothing, and the tick runner had no deadline",
+    "slug": "rooms-could-run-forever-the-step-budget-was-declared-and-enf",
+    "priority": "P2",
+    "filename": "081M1HXFX58087G0R003MJ8SV2-rooms-could-run-forever-the-step-budget-was-declared-and-enf.md"
+  }
+}

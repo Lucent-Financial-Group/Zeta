@@ -35,10 +35,18 @@ to hit production without a traditional integration suite.
    go through a simulator interface.** ZetaFS PR1 routed `.zetafs`
    through `IFileSystem`; `ISimulatedFs` is still **flush-fail 5%
    only**. Crash-mid-write intercept landed on `InMemoryFileSystem`
-   (`ArmCrashMidWrite`); `ISimulatedFs` is still **flush-fail 5%
-   only**. Reorder / corrupt-last-write / freeze-log replay remain
-   first-product **PR12** and ZetaDB **D12**: the same door covers the
-   **database commit path and the filesystem freeze path**. Until
+   (`ArmCrashMidWrite`). Plain freeze-log replay restores intact
+   boats. Corrupt-last-write intercept landed (`ArmCorruptLastWrite`).
+   Reorder door landed (`ArmReorderNextTwo`). Journaled/Durable freeze
+   writes intent, Flush, puts leaves, then commit (`intent-before-leaf-flush`).
+   Sealed-log replay landed (LSN on the frame). Mid-log CRC/MAC mismatch
+   keeps the verified prefix and truncates from the bad frame.
+   Reclaim crash-mid-sweep intercept landed (`ArmCrashOnDelete`).
+   `IBlockIo` remains the device primitive; `BlockIoFerry` interprets
+   ops through `FerryThrottler` (single/single, batch/batch,
+   batch/multibatch, adjacent whole-block coalesce). `SimulatedBlockIo`
+   is the LBA DST door (not POSIX). Native NVMe remains
+   first-product **PR12** and ZetaDB **D12**. Until
    that corpus is green the honest word is `toy`, not crash-safe.
    ReFS-shaped resilience (allocate-on-write, pointer-not-copy) is
    the *why*; DST is how it is earned. `081M1HK4AQE087G0R002RRJXWE`.

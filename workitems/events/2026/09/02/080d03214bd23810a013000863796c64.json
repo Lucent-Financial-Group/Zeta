@@ -1,0 +1,14 @@
+{
+  "id": "080d03214bd23810a013000863796c64",
+  "at": "2026-09-02T22:07:15.015Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1J2JYJ7087G0R000JSCD3K",
+    "type": "task",
+    "title": "PR12: crash-mid-sweep on reclaim apply leaves extra garbage not missing live",
+    "slug": "pr12-crash-mid-sweep-on-reclaim-apply-leaves-extra-garbage-n",
+    "priority": "P1",
+    "filename": "081M1J2JYJ7087G0R000JSCD3K-pr12-crash-mid-sweep-on-reclaim-apply-leaves-extra-garbage-n.md"
+  }
+}
