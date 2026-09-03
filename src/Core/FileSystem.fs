@@ -1,6 +1,7 @@
 namespace Zeta.Core
 
 open System
+open System.Buffers.Binary
 open System.Collections.Generic
 open System.IO
 open System.Text
@@ -453,12 +454,18 @@ type FileSystemBlockIo(fs: IFileSystem, path: string, blockSize: int) =
 /// tears the next Write that is longer than `afterBytes`. Crash recovery of
 /// a volume on this door stays `toy` until freeze/CAS speak `IBlockIo`.
 [<Sealed>]
-type SimulatedBlockIo(blockSize: int) =
+type SimulatedBlockIo(blockSize: int, ?media: IReadOnlyDictionary<uint64, byte[]>) =
     do
         if blockSize <= 0 || (blockSize &&& (blockSize - 1)) <> 0 then
             invalidArg "blockSize" "block size must be a positive power of two"
 
     let blocks = System.Collections.Concurrent.ConcurrentDictionary<uint64, byte[]>()
+    do
+        match media with
+        | Some seed ->
+            for kv in seed do
+                blocks.[kv.Key] <- Array.copy kv.Value
+        | None -> ()
     let lockObj = obj ()
     let mutable crashArm: int option = None
     let mutable corruptArm: int option = None
@@ -513,6 +520,16 @@ type SimulatedBlockIo(blockSize: int) =
     member _.LogicalBytes
         with get () = lock lockObj (fun () -> logicalBytes)
         and set v = lock lockObj (fun () -> logicalBytes <- v)
+
+    /// Copy the media bytes onto a fresh device. Arms, LogicalBytes, and any
+    /// BlockCas index are not copied — those must reload from the superblock.
+    member _.CloneMedia() : SimulatedBlockIo =
+        let seed = Dictionary<uint64, byte[]>()
+
+        for kv in blocks do
+            seed.[kv.Key] <- Array.copy kv.Value
+
+        SimulatedBlockIo(blockSize, seed)
 
     interface IBlockIo with
         member _.BlockSize = blockSize
@@ -616,27 +633,147 @@ module BlockLog =
 
         p
 
-    let read (io: IBlockIo) (len: int64) : byte[] =
+    let readAt (io: IBlockIo) (pos: int64) (len: int64) : byte[] =
         if len <= 0L then
             Array.empty
+        elif pos < 0L then
+            invalidArg (nameof pos) "pos must be >= 0"
         else
+            let bs = io.BlockSize
             let dst = Array.zeroCreate (int len)
-            io.Read(0UL, Memory dst) |> ignore
+            let mutable off = 0
+            let mutable p = pos
+
+            while off < dst.Length do
+                let lba = uint64 (p / int64 bs)
+                let within = int (p % int64 bs)
+                let n = min (bs - within) (dst.Length - off)
+                let buf = Array.zeroCreate bs
+                io.Read(lba, Memory buf) |> ignore
+                Array.Copy(buf, within, dst, off, n)
+                off <- off + n
+                p <- p + int64 n
+
             dst
 
-/// Content-addressed objects on an `IBlockIo`. The index is DST instance
-/// state (same peel as freeze-log `LogicalBytes`). A real volume needs a
-/// superblock; that is not this type. Crash during `Put` leaves the index
-/// unchanged. Keys are ordinal hex strings.
+    let read (io: IBlockIo) (len: int64) : byte[] = readAt io 0L len
+
+    let origin (io: IBlockIo) = int64 io.BlockSize
+
+/// One-block superblock at LBA 0. Payload starts at `BlockLog.origin`.
+/// Log magic `ZFL1`, CAS magic `ZCA1`. Index must fit in one block.
+[<RequireQualifiedAccess>]
+module BlockSuper =
+    let logMagic = [| byte 'Z'; byte 'F'; byte 'L'; byte '1' |]
+    let casMagic = [| byte 'Z'; byte 'C'; byte 'A'; byte '1' |]
+
+    let writeLog (io: IBlockIo) (logical: int64) =
+        let buf = Array.zeroCreate io.BlockSize
+        Buffer.BlockCopy(logMagic, 0, buf, 0, 4)
+        BinaryPrimitives.WriteInt64LittleEndian(Span(buf, 4, 8), logical)
+        io.Write(0UL, System.ReadOnlyMemory<byte>.op_Implicit buf) |> ignore
+
+    let tryReadLog (io: IBlockIo) : int64 option =
+        let buf = Array.zeroCreate io.BlockSize
+        let n = io.Read(0UL, Memory buf)
+
+        if n < 12 then
+            None
+        elif buf.[0] = logMagic.[0] && buf.[1] = logMagic.[1] && buf.[2] = logMagic.[2] && buf.[3] = logMagic.[3] then
+            Some(BinaryPrimitives.ReadInt64LittleEndian(ReadOnlySpan(buf, 4, 8)))
+        else
+            None
+
+    let writeCas (io: IBlockIo) (entries: (string * int64 * int) array) =
+        let buf = Array.zeroCreate io.BlockSize
+        Buffer.BlockCopy(casMagic, 0, buf, 0, 4)
+        BinaryPrimitives.WriteInt32LittleEndian(Span(buf, 4, 4), entries.Length)
+        let mutable o = 8
+
+        for key, pos, len in entries do
+            let kb = Encoding.UTF8.GetBytes key
+
+            if o + 2 + kb.Length + 8 + 4 > buf.Length then
+                invalidOp "BlockCas index does not fit in one superblock"
+
+            BinaryPrimitives.WriteUInt16LittleEndian(Span(buf, o, 2), uint16 kb.Length)
+            o <- o + 2
+            Buffer.BlockCopy(kb, 0, buf, o, kb.Length)
+            o <- o + kb.Length
+            BinaryPrimitives.WriteInt64LittleEndian(Span(buf, o, 8), pos)
+            o <- o + 8
+            BinaryPrimitives.WriteInt32LittleEndian(Span(buf, o, 4), len)
+            o <- o + 4
+
+        io.Write(0UL, System.ReadOnlyMemory<byte>.op_Implicit buf) |> ignore
+
+    let tryReadCas (io: IBlockIo) : (string * int64 * int) array option =
+        let buf = Array.zeroCreate io.BlockSize
+        let n = io.Read(0UL, Memory buf)
+
+        if n < 8 then
+            None
+        elif buf.[0] = casMagic.[0] && buf.[1] = casMagic.[1] && buf.[2] = casMagic.[2] && buf.[3] = casMagic.[3] then
+            let count = BinaryPrimitives.ReadInt32LittleEndian(ReadOnlySpan(buf, 4, 4))
+
+            if count < 0 then
+                None
+            else
+                let acc = ResizeArray<_>(count)
+                let mutable o = 8
+                let mutable ok = true
+                let mutable i = 0
+
+                while ok && i < count do
+                    if o + 2 > buf.Length then
+                        ok <- false
+                    else
+                        let klen = int (BinaryPrimitives.ReadUInt16LittleEndian(ReadOnlySpan(buf, o, 2)))
+                        o <- o + 2
+
+                        if klen < 1 || o + klen + 12 > buf.Length then
+                            ok <- false
+                        else
+                            let key = Encoding.UTF8.GetString(buf, o, klen)
+                            o <- o + klen
+                            let pos = BinaryPrimitives.ReadInt64LittleEndian(ReadOnlySpan(buf, o, 8))
+                            o <- o + 8
+                            let len = BinaryPrimitives.ReadInt32LittleEndian(ReadOnlySpan(buf, o, 4))
+                            o <- o + 4
+                            acc.Add((key, pos, len))
+                            i <- i + 1
+
+                if ok then Some(acc.ToArray()) else None
+        else
+            None
+
+/// Content-addressed objects on an `IBlockIo`. Payload starts at LBA 1.
+/// LBA 0 holds a `ZCA1` index. Crash during `Put` leaves the index unchanged
+/// until the superblock Write returns. Keys are ordinal hex strings.
 [<Sealed>]
 type BlockCas(io: IBlockIo) =
     let index = Dictionary<string, struct (int64 * int)>(StringComparer.Ordinal)
     let lockObj = obj ()
-    let mutable pos = 0L
+    let origin = BlockLog.origin io
+    let mutable pos = origin
 
     do
         if io.BlockSize <= 0 then
             invalidArg (nameof io) "block size must be positive"
+
+        match BlockSuper.tryReadCas io with
+        | Some entries ->
+            let mutable endAt = origin
+
+            for key, start, len in entries do
+                index.[key] <- struct (start, len)
+                let e = start + int64 len
+
+                if e > endAt then
+                    endAt <- e
+
+            pos <- endAt
+        | None -> ()
 
     member _.Device = io
 
@@ -648,9 +785,8 @@ type BlockCas(io: IBlockIo) =
         else
             lock lockObj (fun () -> index.ContainsKey key)
 
-    /// Append `bytes` through `BlockLog`. Index updates only after the
-    /// device Write returns. A crash-mid-write therefore cannot publish a
-    /// name for a torn payload.
+    /// Append `bytes` through `BlockLog` after the superblock. Index and
+    /// superblock update only after the payload Write returns.
     member _.Put(key: string, bytes: byte[]) =
         if String.IsNullOrEmpty key then
             invalidArg (nameof key) "key must be non-empty"
@@ -664,7 +800,13 @@ type BlockCas(io: IBlockIo) =
                 BlockLog.append io start (System.ReadOnlyMemory<byte>.op_Implicit bytes)
 
             index.[key] <- struct (start, bytes.Length)
-            pos <- after)
+            pos <- after
+            let entries =
+                [| for kv in index ->
+                       let struct (s, n) = kv.Value
+                       kv.Key, s, n |]
+
+            BlockSuper.writeCas io entries)
 
 
 /// The global file system registry containing the active IFileSystem implementation.
