@@ -338,8 +338,12 @@ implementation would delete the evidence that the spec permitted the weak one.
 
 1. **Durable preservation.** §1 records SHAs; it does not make the objects permanent. If the
    maintainer wants the raw reports durable, copy them to `main` under `docs/derivations/` or
-   tag the three tips. **Unresolved, and a decision for Aaron — no branch should be deleted
-   until it is made.**
+   tag the three tips. ~~**Unresolved, and a decision for Aaron — no branch should be deleted until it is made.**~~
+   **RESOLVED 2026-09-03 by the remedy this row itself names.** The three tips are tagged on origin as
+   `archive/2026-09-03-branch-sweep/derivation-{a,b,c}/threshold-sig-verify`, and their SHAs match §1
+   (`06b7b32b05`, `9c527259bd`, `63cf97e93b`) byte-for-byte. Objects are permanent; the block is lifted.
+   Left as a struck line rather than deleted, because a row that reads as a live block after its own
+   condition is met is the failure this correction is about.
 2. ~~Nothing consumes the result.~~ **Closed — and it was the reason to check rather than
    assume.** An earlier draft of this section asserted that the run produced an amended spec
    and no shipped verifier. That was wrong: `src/Core/MultiSignatureVerification.fs` is on
