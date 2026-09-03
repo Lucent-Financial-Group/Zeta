@@ -1,11 +1,12 @@
 ---
 id: 081M1KDRJAA087G0R003S519DD
 type: task
-state: backlog
+state: done
 priority: P1
 slug: journaled-freeze-log-through-filesystemblockio-polyfill
 title: "Journaled freeze log through FileSystemBlockIo polyfill"
 created: 2026-09-03T10:40:00.000Z
+completed: 2026-09-03T11:02:36.470Z
 depends_on: ["081M1KBMT00087G0R003P71VYB"]
 composes_with: ["081M1KBMT00087G0R003P71VYB"]
 ---

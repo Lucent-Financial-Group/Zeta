@@ -1,0 +1,14 @@
+{
+  "id": "080d03377ab67010a01300087c05440a",
+  "at": "2026-09-03T11:02:36.494Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1KEYNPD087G0R000DX5MT7",
+    "type": "task",
+    "title": "Sealed freeze log through FileSystemBlockIo polyfill",
+    "slug": "sealed-freeze-log-through-filesystemblockio-polyfill",
+    "priority": "P1",
+    "filename": "081M1KEYNPD087G0R000DX5MT7-sealed-freeze-log-through-filesystemblockio-polyfill.md"
+  }
+}

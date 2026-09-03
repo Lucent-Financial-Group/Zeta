@@ -1029,3 +1029,83 @@ let ``Journaled freeze through FileSystemBlockIo polyfill is readable after reop
         finally
             FileSystem.Reset()
     }
+
+[<Fact>]
+let ``Sealed journaled freeze through FileSystemBlockIo is readable after reopen`` () : Task =
+    task {
+        ensureHasher ()
+        FileSystem.Register(InMemoryFileSystem())
+        let store = "/freeze-sealed-file-blocks"
+        let mutbuf = ZetaFsMutbuf.create store ZetaFsMutbuf.Coherence.Shared
+        let vault = Array.init 32 (fun i -> byte i)
+
+        match ZetaFsCrypto.sessionFromVaultKey 1u vault with
+        | Error e -> Assert.Fail(ZetaFsCrypto.errorName e)
+        | Ok session ->
+            let volume = ZetaFsFreeze.createManualWithSealedFileLog store mutbuf None session
+
+            try
+                let id = mintId ()
+                let h = ZetaFsMutbuf.openHandle volume.Mutbuf id
+                ZetaFsMutbuf.pwrite volume.Mutbuf h 0L [| 1uy; 2uy |] |> ignore
+                let pending = (freezeAsync volume id ZetaFsFreeze.Journaled).AsTask()
+                do! (ZetaFsFreeze.pumpLog volume CancellationToken.None).ConfigureAwait(false)
+                let! first = pending.ConfigureAwait(false)
+
+                match first with
+                | Error e -> Assert.Fail(ZetaFsFreeze.errorName e)
+                | Ok first ->
+                    let logBytes = FileSystem.Current.ReadAllBytes(Path.Combine(store, "log", "freeze"))
+                    let needle = Text.Encoding.UTF8.GetBytes "freeze-intent/1"
+                    Assert.Equal(-1, MemoryExtensions.IndexOf(ReadOnlySpan<byte> logBytes, ReadOnlySpan<byte> needle))
+                    ZetaFsFreeze.dispose volume
+                    let reopened = ZetaFsFreeze.createManualWithSealedFileLog store mutbuf None session
+
+                    try
+                        Assert.True(ZetaFsFreeze.isReadable reopened first.Content)
+                    finally
+                        ZetaFsFreeze.dispose reopened
+            finally
+                FileSystem.Reset()
+    }
+
+[<Fact>]
+let ``Sealed FileSystemBlockIo replay with the wrong vault key recovers nothing and does not truncate`` () : Task =
+    task {
+        ensureHasher ()
+        FileSystem.Register(InMemoryFileSystem())
+        let store = "/freeze-sealed-file-wrong-key"
+        let mutbuf = ZetaFsMutbuf.create store ZetaFsMutbuf.Coherence.Shared
+        let vault = Array.init 32 (fun i -> byte i)
+        let other = Array.init 32 (fun i -> byte (i + 1))
+
+        match ZetaFsCrypto.sessionFromVaultKey 1u vault, ZetaFsCrypto.sessionFromVaultKey 1u other with
+        | Error e, _ -> Assert.Fail(ZetaFsCrypto.errorName e)
+        | _, Error e -> Assert.Fail(ZetaFsCrypto.errorName e)
+        | Ok session, Ok otherSession ->
+            let volume = ZetaFsFreeze.createManualWithSealedFileLog store mutbuf None session
+
+            try
+                let id = mintId ()
+                let h = ZetaFsMutbuf.openHandle volume.Mutbuf id
+                ZetaFsMutbuf.pwrite volume.Mutbuf h 0L [| 9uy |] |> ignore
+                let pending = (freezeAsync volume id ZetaFsFreeze.Journaled).AsTask()
+                do! (ZetaFsFreeze.pumpLog volume CancellationToken.None).ConfigureAwait(false)
+                let! first = pending.ConfigureAwait(false)
+
+                match first with
+                | Error e -> Assert.Fail(ZetaFsFreeze.errorName e)
+                | Ok first ->
+                    let before = ZetaFsFreeze.logLogicalBytes volume
+                    ZetaFsFreeze.dispose volume
+                    let reopened =
+                        ZetaFsFreeze.createManualWithSealedFileLog store mutbuf None otherSession
+
+                    try
+                        Assert.False(ZetaFsFreeze.isReadable reopened first.Content)
+                        Assert.True((ZetaFsFreeze.logLogicalBytes reopened = before))
+                    finally
+                        ZetaFsFreeze.dispose reopened
+            finally
+                FileSystem.Reset()
+    }

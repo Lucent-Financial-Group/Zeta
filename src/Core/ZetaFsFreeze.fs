@@ -733,6 +733,22 @@ module ZetaFsFreeze =
         let io = FileSystemBlockIo(fs, path, 4096)
         createFull storeDir mutbuf observer None defaultConfig true (Some(HostFile io)) None
 
+    /// DST: sealed journaled freeze log through the `FileSystemBlockIo`
+    /// polyfill. Wrong-key MAC on the first frame recovers nothing and
+    /// does not truncate. `create` / `createManual` still speak a raw
+    /// frame stream.
+    let createManualWithSealedFileLog
+        (storeDir: string)
+        (mutbuf: ZetaFsMutbuf.Catalog)
+        (observer: IDurabilityObserver option)
+        (session: ZetaFsCrypto.Session)
+        : Volume =
+        let fs = FileSystem.Current
+        fs.CreateDirectory(Path.Combine(storeDir, "log"))
+        let path = Path.Combine(storeDir, "log", "freeze")
+        let io = FileSystemBlockIo(fs, path, 4096)
+        createFull storeDir mutbuf observer (Some session) defaultConfig true (Some(HostFile io)) None
+
     let dispose (volume: Volume) = (volume :> IDisposable).Dispose()
 
     let pumpLog (volume: Volume) (ct: CancellationToken) : Task =
