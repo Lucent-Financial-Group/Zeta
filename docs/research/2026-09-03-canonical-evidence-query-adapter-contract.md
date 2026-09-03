@@ -42,12 +42,48 @@ The implementation must pass the following finite controls before promotion:
 
 | Control | Falsifies the adapter if it fails |
 |---|---|
-| Six arrival permutations of three distinct evidence versions | Canonical query determinism |
+| Six arrival permutations of three distinct evidence versions | Canonical query **reporting** determinism — see the measurement below |
+| Six arrival permutations on a cancellation-sensitive catalogue | Canonical **numerical** determinism: the posterior itself |
 | Redelivery of an identical version | Exact-once by full fingerprint |
 | Same key, changed mean/covariance | Conflict retention and no posterior |
 | Changed uncertainty field | Fingerprint sensitivity and conflict retention |
 | Independently authored Python oracle | Formula or canonicalization drift |
 | Kahan-removal mutant | The numerical-control path is vacuous if it cannot be distinguished on a cancellation-sensitive finite catalogue |
+
+### What the first permutation row does and does not falsify (measured 2026-09-03)
+
+The six-permutation control is not vacuous — with `canonicalState` reduced to the identity it
+produces six distinct receipts and goes red. But every bit of that discriminating power comes from
+`orderedFingerprints`, which is metadata about the arrival list. On the same catalogue, with
+canonicalisation removed:
+
+| quantity | distinct values across the 6 permutations |
+| --- | --- |
+| receipts | 6 — the control fails, correctly |
+| **posteriors** | **1 — byte-identical** |
+
+The declared precisions (1, 0.25, 2/3) sum to the same float64 in every order, so the control pins
+canonical *reporting* and is silent about canonical *numerics*. The property this substrate
+actually needs is the second one: two agents that saw the same evidence in different orders must
+reach the same **conclusion**, not merely print the same provenance list.
+
+The second row closes that. Its catalogue uses precisions 1e16, 1, 1, where the unit terms vanish
+into the huge one unless they are summed with each other first:
+
+| canonicalisation | distinct posteriors |
+| --- | --- |
+| removed | **2** — `9.999999999999997e-17` and `1e-16` |
+| present | 1 |
+
+Two nodes, one evidence set, different conclusions.
+
+**And note what is not doing the work.** Kahan compensation was on in the divergent run. It buys
+accuracy; it does not buy associativity, because compensated summation is still a left fold. The
+load-bearing mechanism is the canonical order — the same content-addressed union that serves as the
+state merge — and the second row is what says so. Reading the first row as evidence for
+order-independent numerics would credit the wrong mechanism, which is the shape of defect the
+`MinimalBnn.update` finding already surfaced one layer down: an order-dependent fold hidden by a
+catalogue that could not expose it.
 
 The independent oracle must not import TypeScript results or reuse its canonical ordering implementation. Cross-language equality is evaluated within an explicitly declared numerical tolerance; exact byte equality across runtimes is not claimed.
 

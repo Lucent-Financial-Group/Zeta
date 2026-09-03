@@ -626,8 +626,18 @@ Do not re-lift `--scope included`. Next measured step is TCP to the
 **pod IP** (`10.143.0.44`) from hostNetwork: OPEN isolates ClusterIP
 translation; FAIL means hostNetwork cannot reach the overlay either.
 
-Sibling on the same run: `live kind included` failed (Otto
-`081M1FG1RCW`). `gate (required)` green.
+## Next dump — hostNetwork TCP pod IP (8081) + pod-network control
+
+live-k3d dump now probes:
+
+- TCP `spire-server-0` **pod IP:8081** from hostNetwork (agent API, not Service :443)
+- TCP kube-dns **endpoint** pod IP:53 from hostNetwork
+- the same four targets from a **pod-network** busybox (`hostNetwork: false`)
+
+OPEN on pod IP + FAIL on ClusterIP isolates kube-proxy-replacement
+translation. FAIL on both means overlay unreachable from hostNetwork.
+Do not treat OPEN/FAIL as measured until a dump with server Running +
+`bundle.crt` prints those lines. Do not invent Cilium values.
 
 ## The distinguishing test
 

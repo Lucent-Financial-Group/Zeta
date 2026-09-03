@@ -45,7 +45,10 @@ to hit production without a traditional integration suite.
    `IBlockIo` remains the device primitive; `BlockIoFerry` interprets
    ops through `FerryThrottler` (single/single, batch/batch,
    batch/multibatch, adjacent whole-block coalesce). `SimulatedBlockIo`
-   is the LBA DST door (not POSIX). Native NVMe remains
+   is the LBA DST door (not POSIX). DST `createManual` / `create`
+   ride `FileSystemBlockIo` for the log and for CAS objects. A
+   polyfill crash-mid-write, corrupt-last-write, or reorder of the
+   second freeze keeps the first. Native NVMe remains
    first-product **PR12** and ZetaDB **D12**. Until
    that corpus is green the honest word is `toy`, not crash-safe.
    ReFS-shaped resilience (allocate-on-write, pointer-not-copy) is

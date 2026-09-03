@@ -12,7 +12,7 @@ composes_with: []
 
 # Room-scoped credential proxy and default-deny egress policy
 
-`ROOMS_AS_DETERMINISTIC_SIMULATIONS.md` §1 says the room *"is the agent's isolation boundary: a
+`agentic-organization/docs/ROOMS_AS_DETERMINISTIC_SIMULATIONS.md` §1 says the room *"is the agent's isolation boundary: a
 bwrap sandbox plus a credential proxy bound to the agent's OAuth identity"*, and §8 says `observe.ts`
 is *"the only path from 'who + where' to 'may run this tool'"*. The org side declares the shape —
 `CredentialProxyPort`, `ToolGrant`, `SandboxSpec` on `agentic-organization/packages/application/src/room.ts`

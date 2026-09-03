@@ -1233,3 +1233,93 @@ let ``Polyfill crash-mid-write on the second freeze keeps the first`` () : Task 
         finally
             FileSystem.Reset()
     }
+
+[<Fact>]
+let ``Polyfill corrupt-last-write on the second freeze acks and keeps the first`` () : Task =
+    task {
+        ensureHasher ()
+        let mock = InMemoryFileSystem()
+        FileSystem.Register(mock)
+        let store = "/freeze-polyfill-corrupt-prefix"
+        let mutbuf = ZetaFsMutbuf.create store ZetaFsMutbuf.Coherence.Shared
+        let volume = ZetaFsFreeze.createManual store mutbuf None
+        let logNeedle = Path.Combine("log", "freeze")
+
+        try
+            let id1 = mintId ()
+            let h1 = ZetaFsMutbuf.openHandle volume.Mutbuf id1
+            ZetaFsMutbuf.pwrite volume.Mutbuf h1 0L [| 1uy |] |> ignore
+            let pending1 = (freezeAsync volume id1 ZetaFsFreeze.Journaled).AsTask()
+            do! (ZetaFsFreeze.pumpLog volume CancellationToken.None).ConfigureAwait(false)
+            let! first = pending1.ConfigureAwait(false)
+
+            match first with
+            | Error e -> Assert.Fail(ZetaFsFreeze.errorName e)
+            | Ok first ->
+                mock.ArmCorruptLastWrite(logNeedle, 8)
+                let id2 = mintId ()
+                let h2 = ZetaFsMutbuf.openHandle volume.Mutbuf id2
+                ZetaFsMutbuf.pwrite volume.Mutbuf h2 0L [| 2uy |] |> ignore
+                let pending2 = (freezeAsync volume id2 ZetaFsFreeze.Journaled).AsTask()
+                do! (ZetaFsFreeze.pumpLog volume CancellationToken.None).ConfigureAwait(false)
+                let! second = pending2.ConfigureAwait(false)
+
+                match second with
+                | Error e -> Assert.Fail(ZetaFsFreeze.errorName e)
+                | Ok _ ->
+                    Assert.True(ZetaFsFreeze.isReadable volume first.Content)
+                    ZetaFsFreeze.dispose volume
+                    let reopened = ZetaFsFreeze.createManual store mutbuf None
+
+                    try
+                        Assert.True(ZetaFsFreeze.isReadable reopened first.Content)
+                    finally
+                        ZetaFsFreeze.dispose reopened
+        finally
+            FileSystem.Reset()
+    }
+
+[<Fact>]
+let ``Polyfill reorder of the second freeze completes and keeps the first`` () : Task =
+    task {
+        ensureHasher ()
+        let mock = InMemoryFileSystem()
+        FileSystem.Register(mock)
+        let store = "/freeze-polyfill-reorder-prefix"
+        let mutbuf = ZetaFsMutbuf.create store ZetaFsMutbuf.Coherence.Shared
+        let volume = ZetaFsFreeze.createManual store mutbuf None
+        let logNeedle = Path.Combine("log", "freeze")
+
+        try
+            let id1 = mintId ()
+            let h1 = ZetaFsMutbuf.openHandle volume.Mutbuf id1
+            ZetaFsMutbuf.pwrite volume.Mutbuf h1 0L [| 1uy |] |> ignore
+            let pending1 = (freezeAsync volume id1 ZetaFsFreeze.Journaled).AsTask()
+            do! (ZetaFsFreeze.pumpLog volume CancellationToken.None).ConfigureAwait(false)
+            let! first = pending1.ConfigureAwait(false)
+
+            match first with
+            | Error e -> Assert.Fail(ZetaFsFreeze.errorName e)
+            | Ok first ->
+                mock.ArmReorderNextTwo logNeedle
+                let id2 = mintId ()
+                let h2 = ZetaFsMutbuf.openHandle volume.Mutbuf id2
+                ZetaFsMutbuf.pwrite volume.Mutbuf h2 0L [| 2uy |] |> ignore
+                let pending2 = (freezeAsync volume id2 ZetaFsFreeze.Journaled).AsTask()
+                do! (ZetaFsFreeze.pumpLog volume CancellationToken.None).ConfigureAwait(false)
+                let! second = pending2.ConfigureAwait(false)
+
+                match second with
+                | Error e -> Assert.Fail(ZetaFsFreeze.errorName e)
+                | Ok _ ->
+                    Assert.True(ZetaFsFreeze.isReadable volume first.Content)
+                    ZetaFsFreeze.dispose volume
+                    let reopened = ZetaFsFreeze.createManual store mutbuf None
+
+                    try
+                        Assert.True(ZetaFsFreeze.isReadable reopened first.Content)
+                    finally
+                        ZetaFsFreeze.dispose reopened
+        finally
+            FileSystem.Reset()
+    }
