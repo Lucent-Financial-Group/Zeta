@@ -307,6 +307,7 @@
     <Compile Include="WeaveFold.Tests.fs" />
     <Compile Include="PhysUI.Tests.fs" />
     <Compile Include="ControlScheme.Tests.fs" />
+    <Compile Include="GameEnvironment.Tests.fs" />
     <Compile Include="MetaControl.Tests.fs" />
     <Compile Include="CorrespondencePong.Tests.fs" />
     <Compile Include="ChipAudio.Tests.fs" />
