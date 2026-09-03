@@ -1,0 +1,14 @@
+{
+  "id": "080d033af262a010a0130008a7623f4f",
+  "at": "2026-09-03T13:03:48.308Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1KNWK2M087G0R003QAWKCX",
+    "type": "task",
+    "title": "FileSystemBlockIo WriteAt crash-arms the LBA span not the whole file",
+    "slug": "filesystemblockio-writeat-crash-arms-the-lba-span-not-the-wh",
+    "priority": "P1",
+    "filename": "081M1KNWK2M087G0R003QAWKCX-filesystemblockio-writeat-crash-arms-the-lba-span-not-the-wh.md"
+  }
+}

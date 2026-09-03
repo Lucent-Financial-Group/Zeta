@@ -62,7 +62,8 @@ let private cancelAfterReadFileSystem (inner: IFileSystem) (cancelled: Cancellat
         member _.OpenWrite(path, fsync) = inner.OpenWrite(path, fsync)
         member _.OpenRead path = inner.OpenRead path
         member _.GetFiles(path, searchPattern) = inner.GetFiles(path, searchPattern)
-        member _.CreateDirectory path = inner.CreateDirectory path }
+        member _.CreateDirectory path = inner.CreateDirectory path
+        member _.WriteAt(path, offset, src) = inner.WriteAt(path, offset, src) }
 
 [<Fact>]
 let ``IO1 a fully verified directory publishes one exact reader`` () =

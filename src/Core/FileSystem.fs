@@ -21,6 +21,10 @@ type IFileSystem =
     abstract OpenRead: path: string -> Stream
     abstract GetFiles: path: string * searchPattern: string -> string[]
     abstract CreateDirectory: path: string -> unit
+    /// Write `src` at `offset` without replacing the rest of the file.
+    /// Crash/corrupt/reorder arms on `InMemoryFileSystem` apply to `src`,
+    /// not to a whole-file Dispose buffer.
+    abstract WriteAt: path: string * offset: int64 * src: ReadOnlyMemory<byte> -> int
 
 /// Native-volume block *primitive* (one LBA, one call). This is the device,
 /// not the IO program. Batch/single/multibatch dispatch is `BlockIoFerry`
@@ -89,6 +93,22 @@ type PhysicalFileSystem() =
             new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read) :> Stream
         member _.GetFiles(path, searchPattern) = Directory.GetFiles(path, searchPattern)
         member _.CreateDirectory(path) = Directory.CreateDirectory(path) |> ignore
+
+        member _.WriteAt(path, offset, src) =
+            if offset < 0L then
+                invalidArg (nameof offset) "offset must be >= 0"
+
+            let dir = Path.GetDirectoryName path
+
+            if not (String.IsNullOrEmpty dir) then
+                Directory.CreateDirectory dir |> ignore
+
+            use stream =
+                new FileStream(path, FileMode.OpenOrCreate, FileAccess.Write, FileShare.Read, 4096, true)
+
+            stream.Seek(offset, SeekOrigin.Begin) |> ignore
+            stream.Write(src.Span)
+            src.Length
 
 /// Byte helpers over `IFileSystem`. Temp+rename so a crash cannot leave a
 /// half-written FORMAT / object / ref. Dispose the write stream *before*
@@ -228,6 +248,7 @@ type InMemoryFileSystem() =
     let mutable reorderNeedle: string option = None
     let mutable heldWrite: (string * byte[]) option = None
     let mutable deleteCrashArm: string option = None
+    let mutable heldRange: (string * int64 * byte[]) option = None
     let commitOrder = ResizeArray<string>()
     let lockObj = obj ()
 
@@ -239,6 +260,27 @@ type InMemoryFileSystem() =
     let publish (path: string) (bytes: byte[]) =
         files.[path] <- bytes
         commitOrder.Add path
+
+    let overlay (existing: byte[]) (offset: int64) (src: ReadOnlySpan<byte>) (take: int) =
+        if offset < 0L || offset > int64 Int32.MaxValue then
+            invalidArg (nameof offset) "offset must fit in a 32-bit file"
+
+        let off = int offset
+        let endAt = off + take
+        let buf = Array.zeroCreate (max existing.Length endAt)
+
+        if existing.Length > 0 then
+            Array.Copy(existing, buf, existing.Length)
+
+        if take > 0 then
+            src.Slice(0, take).CopyTo(Span(buf, off, take))
+
+        buf
+
+    let existingBytes (path: string) =
+        match files.TryGetValue path with
+        | true, b -> b
+        | false, _ -> Array.empty
 
     let splitMix () =
         rngState <- rngState + 0x9E3779B97F4A7C15L
@@ -327,7 +369,8 @@ type InMemoryFileSystem() =
 
         lock lockObj (fun () ->
             reorderNeedle <- Some pathContains
-            heldWrite <- None)
+            heldWrite <- None
+            heldRange <- None)
 
     /// One-shot: next matching Delete removes the file then throws.
     member _.ArmCrashOnDelete(pathContains: string) =
@@ -411,6 +454,68 @@ type InMemoryFileSystem() =
             checkFault()
             ()
 
+        member _.WriteAt(path, offset, src) =
+            if offset < 0L then
+                invalidArg (nameof offset) "offset must be >= 0"
+
+            checkFault()
+            applyLatency()
+            lock lockObj (fun () ->
+                let srcArr = src.ToArray()
+
+                match crashArm with
+                | Some(needle, afterBytes) when pathMatches needle path && srcArr.Length > afterBytes ->
+                    crashArm <- None
+                    let buf = overlay (existingBytes path) offset (ReadOnlySpan srcArr) afterBytes
+                    publish path buf
+                    raise (CrashMidWriteException(path, afterBytes, srcArr.Length))
+                | _ ->
+                    match corruptArm with
+                    | Some(needle, lastBytes) when
+                        pathMatches needle path && srcArr.Length > 0 && lastBytes > 0
+                        ->
+                        corruptArm <- None
+                        let copy = Array.copy srcArr
+                        let n = min lastBytes copy.Length
+                        let start = copy.Length - n
+
+                        for i in start .. copy.Length - 1 do
+                            copy.[i] <- copy.[i] ^^^ corruptXor
+
+                        let buf = overlay (existingBytes path) offset (ReadOnlySpan copy) copy.Length
+                        publish path buf
+                        srcArr.Length
+                    | _ ->
+                        match reorderNeedle, heldRange with
+                        | Some needle, None when pathMatches needle path ->
+                            heldRange <- Some(path, offset, srcArr)
+                            srcArr.Length
+                        | Some needle, Some(heldPath, heldOff, heldBytes) when pathMatches needle path ->
+                            reorderNeedle <- None
+                            heldRange <- None
+                            let buf2 =
+                                overlay (existingBytes path) offset (ReadOnlySpan srcArr) srcArr.Length
+
+                            publish path buf2
+
+                            let heldExisting =
+                                if heldPath = path then
+                                    buf2
+                                else
+                                    existingBytes heldPath
+
+                            let buf1 =
+                                overlay heldExisting heldOff (ReadOnlySpan heldBytes) heldBytes.Length
+
+                            publish heldPath buf1
+                            srcArr.Length
+                        | _ ->
+                            let buf =
+                                overlay (existingBytes path) offset (ReadOnlySpan srcArr) srcArr.Length
+
+                            publish path buf
+                            srcArr.Length)
+
 /// Polyfill `IBlockIo`: one host file, LBA * BlockSize offset, through `IFileSystem`.
 [<Sealed>]
 type FileSystemBlockIo(fs: IFileSystem, path: string, blockSize: int) =
@@ -447,13 +552,8 @@ type FileSystemBlockIo(fs: IFileSystem, path: string, blockSize: int) =
                 stream.Read(dst.Span.Slice(0, toRead))
 
         member _.Write(lba, src) =
-            use stream =
-                fs.OpenFile(path, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.Read)
-
             let offset = int64 lba * int64 blockSize
-            stream.Seek(offset, SeekOrigin.Begin) |> ignore
-            stream.Write(src.Span)
-            src.Length
+            fs.WriteAt(path, offset, src)
 
         member _.Flush() =
             use stream = fs.OpenFile(path, FileMode.Open, FileAccess.ReadWrite, FileShare.Read)
