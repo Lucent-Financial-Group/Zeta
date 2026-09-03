@@ -39,12 +39,15 @@ name: heartbeat-liveness
 
 on:
   schedule:
-    # TEMPORARILY DISABLED at the GitHub API level (workflow state `disabled_manually`,
-    # 2026-09-03). Not retired: the per-run storage growth (~100 MB/day across the heartbeat
-    # lanes) is being redesigned for space efficiency, with a heartbeat/telemetry repo split on
-    # the plan. The cron is left in place so re-enabling is one click and the tree does not
-    # describe a schedule that silently differs from the one GitHub runs. Existing parked
-    # `heartbeat/*` refs may still be flushed; no new ones are produced while this holds.
+    # TEMPORARILY DISABLED at the GitHub API level: workflow state `disabled_manually` since
+    # 2026-08-29 (REST `actions/workflows` updated_at). Recorded in-tree 2026-09-03. Disabled
+    # alongside the three heartbeat lanes during the storage-efficiency redesign -- but THIS
+    # LANE IS NOT A HEARTBEAT PRODUCER. It pushes `liveness/observations` (see below), the
+    # orphan ref that answers "is anyone still observing?". CONSEQUENCE WHILE DISABLED:
+    # `liveness-ledger.ts read` exits 1 indefinitely, which CLAUDE.md defines as the
+    # standing-by failure. That is a known, accepted cost of the pause, not an incident, and
+    # it is why this lane should be the FIRST re-enabled. Cron left in place for one-click
+    # re-enable.
     - cron: "*/15 * * * *"
   workflow_dispatch:
     inputs:

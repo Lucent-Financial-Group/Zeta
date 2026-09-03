@@ -18,4 +18,4 @@ and contributor docs, not telemetry or data."* This directory holds to that line
 
 | experiment | reports | account of record | archive tags |
 |---|---|---|---|
-| threshold-signature verification, N=3, 2026-08-27 | `derivation-{a,b,c}-report.md` | `docs/research/2026-08-27-n3-clean-room-threshold-sig-derivations-raw-vault-full-ambiguity-partition-and-branch-shas.md` | `archive/2026-09-03-branch-sweep/derivation-{a,b,c}/threshold-sig-verify` |
+| threshold-signature verification, N=3, 2026-08-27 | `derivation-{a,b,c}-report.md` | findings + amendments B1–B9: `docs/specs/threshold-signature-verification-combine.md`; the experiment's narrative and branch SHAs: `docs/research/2026-08-27-n3-clean-room-threshold-sig-derivations-raw-vault-full-ambiguity-partition-and-branch-shas.md` (which says of itself that it does not supersede the combine) | `archive/2026-09-03-branch-sweep/derivation-{a,b,c}/threshold-sig-verify` |
