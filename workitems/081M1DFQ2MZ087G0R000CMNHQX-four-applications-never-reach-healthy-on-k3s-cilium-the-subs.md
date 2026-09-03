@@ -414,6 +414,48 @@ coherent; strongest live lead is Kafka ingest
 Seaweedfs 4.33 was fail-open with zero identities; 4.45 made auth real;
 consumers already carry matching credentials, so that is not the break.
 
+## MEASURED 2026-09-03 — live-k3d smoke with vendored CRDs (run 33739778288)
+
+Job `100600115401` on SHA `d83e0b643` **succeeded**. This is the
+diagnostic, not a re-lift.
+
+**Gateway API CRDs present** (bring-up applied the vendored bundle;
+dump is not NONE):
+
+    gatewayclasses.gateway.networking.k8s.io
+    gateways.gateway.networking.k8s.io
+    grpcroutes.gateway.networking.k8s.io
+    httproutes.gateway.networking.k8s.io
+    referencegrants.gateway.networking.k8s.io
+
+**cert-manager cascade is broken.** Contrast 33429761222 (17
+CrashLoopBackOff restarts, no TLS):
+
+    cert-manager Application   Synced   Healthy
+    cert-manager-* pods        1/1 Running, RESTARTS=0
+    trust-manager pod         1/1 Running, RESTARTS=0
+    CertificateIssued         certificaterequest/trust-manager-1
+                              "Certificate fetched from issuer successfully"
+
+**The four at dump (smoke does not wait for them; NOT FOUND/Missing is
+honest at T+~60s of cert-manager):**
+
+    openziti-controller   OutOfSync   Missing
+    trust-manager         OutOfSync  Missing   (pod already 1/1 Running)
+    spire                 Synced      Progressing
+    vault                 Synced      Progressing   (vault-0 0/1 Running)
+
+**spire-agent is the remaining second class, live:** `spire-agent-fhvdt`
+0/1 Running, 2 restarts, hostNetwork IP `172.18.0.2`. Server + SPIFFE CSI
+2/2. `-l app=spire-agent` printed no logs (label miss); the restart count
+is the measurement. Do not invent a Cilium `routingMode` tweak. Do not
+re-lift `--scope included` because smoke went green.
+
+**Sibling on the same run:** `live kind included` failed
+`ApplicationUnhealthy` with `failure.detail` **only** `mimir`
+Unknown/Degraded. Otto `081M1FG1RCW`. This change did not leak onto
+kindnetd. `live kind Cilium CNI` succeeded. Probe stayed skipped.
+
 ## The distinguishing test
 
 For each of the four, the question is the same and it is answerable:

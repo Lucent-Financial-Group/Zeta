@@ -81,12 +81,12 @@ lane: a green claim about one step is not a claim about the next step, and a
 stale "never" is not a claim about the last dispatch.
 
 Do **not** re-dispatch restore to re-prove this. The remaining restore gap is
-metal `tty1` (hardware). Next software on this trajectory is k3d applying the
-vendored Gateway API CRDs metal first-boot applies (`aa-gateway-api-crds`),
-so `live-k3d` matches the substrate metal actually boots
-(`081M1DFQ2MZ087G0R000CMNHQX`) — not another ISO restore, and not another
-kind `--cni cilium` dispatch. That distinguishing cell already closed:
-kindnetd Healthy / kind+Cilium Healthy / k3d Degraded.
+metal `tty1` (hardware). Next software on this trajectory is the remaining
+k3s/k3d class on `081M1DFQ2MZ087G0R000CMNHQX`: spire-agent hostNetwork
+restarts. The Gateway API CRD gap is **measured closed** on live-k3d smoke
+[33739778288](https://github.com/Lucent-Financial-Group/Zeta/actions/runs/33739778288)
+(cert-manager Healthy, 0 restarts). Not another ISO restore, and not another
+kind `--cni cilium` dispatch.
 
 Next concrete action: **minimize metal** — S6 physical first-login +
 WiFi radio / Touch ID / TPM (human-gated). Software deepen landed:
@@ -199,10 +199,13 @@ scope on 2026-09-01 after four Applications would not reach Healthy there
 - kind+Cilium: Healthy
 - k3d (k3s+Cilium): Degraded / Progressing
 
-The k3d included dump (run 33429761222) is a cascade from **missing Gateway
+The k3d included dump (run 33429761222) was a cascade from **missing Gateway
 API CRDs** (cert-manager CrashLoop → trust-manager / openziti FailedMount),
-plus a **second** class (spire-agent hostNetwork DNS i/o timeout). Next
-software is k3d bring-up applying the vendored metal bundle. Do not re-lift
+plus a **second** class (spire-agent hostNetwork DNS i/o timeout).
+**MEASURED live-k3d smoke [33739778288](https://github.com/Lucent-Financial-Group/Zeta/actions/runs/33739778288)
+job `100600115401` (SHA `d83e0b643`): succeeded.** Vendored CRDs present;
+cert-manager Synced/Healthy, 0 restarts; cert-manager issued
+`trust-manager-1`. spire-agent still 0/1 with 2 restarts. Do not re-lift
 `--scope included`. Do not invent a Cilium values tweak. Do not re-dispatch
 the Cilium included probe.
 
@@ -433,7 +436,7 @@ bringup.
 **Software (closed, do not re-litigate):** non-interactive 6.95-picker
 (`--defer-all` #14852) and restore non-zero write (#15912, dispatch
 33126215487). Sibling dispatch steps already `if: always()`.
-**Next software:** ~~in-guest wrong-passphrase phase 2b + passphrase~~ **BOTH LANDED 2026-08-29 (`133a95b5de`) AND BOTH RAN on dispatch [33462406161](https://github.com/Lucent-Financial-Group/Zeta/actions/runs/33462406161) (2026-09-01) — do not rebuild, do not re-dispatch restore.** ~~kind `--cni cilium` so the included proof creates its own cluster~~ **THAT CELL CLOSED 2026-09-03** (kindnetd Healthy / kind+Cilium Healthy / k3d Degraded; weaviate asserted on kind+Cilium; #16419 squash `18367ea19`). Next software is k3d applying the vendored Gateway API CRDs metal first-boot applies (`aa-gateway-api-crds`) so `live-k3d` is not missing the file that keeps cert-manager from crash-looping (`081M1DFQ2MZ`). Do **not** re-lift k3d `--scope included`. Do **not** dispatch another Cilium included probe. Do **not** invent Cilium helm values. Otto takes mimir (`081M1FG1RCW`). Superseded text kept below for lineage:
+**Next software:** ~~in-guest wrong-passphrase phase 2b + passphrase~~ **BOTH LANDED 2026-08-29 (`133a95b5de`) AND BOTH RAN on dispatch [33462406161](https://github.com/Lucent-Financial-Group/Zeta/actions/runs/33462406161) (2026-09-01) — do not rebuild, do not re-dispatch restore.** ~~kind `--cni cilium` so the included proof creates its own cluster~~ **THAT CELL CLOSED 2026-09-03** (kindnetd Healthy / kind+Cilium Healthy / k3d Degraded; weaviate asserted on kind+Cilium; #16419 squash `18367ea19`). ~~k3d applying vendored Gateway API CRDs~~ **MEASURED live-k3d smoke [33739778288](https://github.com/Lucent-Financial-Group/Zeta/actions/runs/33739778288) job `100600115401`: CRDs present, cert-manager Healthy 0 restarts, trust-manager cert issued.** Remaining k3s/k3d class is spire-agent hostNetwork restarts (`081M1DFQ2MZ`). Do **not** re-lift k3d `--scope included`. Do **not** dispatch another Cilium included probe. Do **not** invent Cilium helm values. Otto takes mimir (`081M1FG1RCW`). Superseded text kept below for lineage:
 **Superseded:** in-guest wrong-passphrase phase 2b + passphrase
 hexagonal port (`passphrase-source.ts`) so a human can run the metal
 tty1 runbook without the software door being untested. Dispatch restore
