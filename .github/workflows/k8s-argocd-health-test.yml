@@ -1180,6 +1180,73 @@ jobs:
             echo "cilium-dbg service list FAILED (MEASURED 33754516236: container not found cilium-agent)"
             kubectl -n kube-system get ds,pods -l k8s-app=cilium -o wide || true
           fi
+          echo "=== hostNetwork TCP ClusterIP probe (081M1DFQ2MZ distinguisher) ==="
+          echo "TCP OPEN + DNS timeout => chart hostAliases is next software."
+          echo "TCP FAIL => not DNS-only; do not invent Cilium values; do not re-lift included."
+          SPIRE_IP="$(kubectl -n spire get svc spire-server -o jsonpath='{.spec.clusterIP}' 2>/dev/null || true)"
+          SPIRE_PORT="$(kubectl -n spire get svc spire-server -o jsonpath='{.spec.ports[0].port}' 2>/dev/null || true)"
+          echo "spire-server ClusterIP=${SPIRE_IP:-NONE}:${SPIRE_PORT:-NONE}"
+          NODE="$(kubectl get nodes -o jsonpath='{.items[0].metadata.name}' 2>/dev/null || true)"
+          echo "node=${NODE:-NONE}"
+          tcp_probe_from_node() {
+            local ip="$1" port="$2" label="$3"
+            echo "--- TCP ${label} ${ip:-NONE}:${port:-NONE} from k3d node (hostNetwork netns) ---"
+            if [ -z "$ip" ] || [ -z "$port" ]; then
+              echo "TCP ${label}: SKIP (no address)"
+              return 0
+            fi
+            if [ -z "$NODE" ] || ! docker exec "$NODE" true >/dev/null 2>&1; then
+              echo "TCP ${label}: NO_NODE"
+              return 1
+            fi
+            APPLETS=""
+            if APPLETS="$(docker exec "$NODE" /bin/busybox --list)"; then
+              if echo "$APPLETS" | tr ' ' '\n' | grep -qx nc; then
+                if docker exec "$NODE" /bin/busybox nc -z -w 3 "$ip" "$port"; then
+                  echo "TCP ${label}: OPEN"
+                else
+                  echo "TCP ${label}: FAIL"
+                fi
+                return 0
+              fi
+            else
+              echo "busybox --list failed on ${NODE} (not a TCP measurement)"
+            fi
+            if docker exec "$NODE" python3 -c "print('ok')" >/dev/null 2>&1; then
+              if docker exec "$NODE" python3 -c "import socket; socket.create_connection(('$ip', int('$port')), 3).close()"; then
+                echo "TCP ${label}: OPEN"
+              else
+                echo "TCP ${label}: FAIL"
+              fi
+              return 0
+            fi
+            echo "TCP ${label}: NO_TOOL (k3s node has neither busybox nc nor python3)"
+            return 1
+          }
+          NODE_TOOL=1
+          tcp_probe_from_node "${DNS_IP}" 53 kube-dns || NODE_TOOL=0
+          tcp_probe_from_node "${SPIRE_IP}" "${SPIRE_PORT}" spire-server || NODE_TOOL=0
+          echo "--- UDP nslookup spire-server.spire from k3d node via kube-dns ---"
+          if [ -n "$NODE" ] && [ -n "$DNS_IP" ]; then
+            docker exec "$NODE" /bin/busybox nslookup spire-server.spire "$DNS_IP" \
+              || echo "UDP DNS lookup: FAIL"
+          else
+            echo "UDP DNS lookup: SKIP"
+          fi
+          if [ "$NODE_TOOL" != "1" ]; then
+            echo "--- busybox hostNetwork fallback (hostNetwork: true) ---"
+            kubectl -n kube-system delete pod hostnet-tcp-probe --ignore-not-found --wait=true --timeout=20s || true
+            kubectl -n kube-system run hostnet-tcp-probe \
+              --image=busybox:1.36.1 \
+              --restart=Never \
+              --overrides='{"spec":{"hostNetwork":true,"dnsPolicy":"ClusterFirstWithHostNet","tolerations":[{"operator":"Exists"}]}}' \
+              --command -- /bin/sh -c "echo -n \"TCP kube-dns ${DNS_IP:-NONE}:53 \"; nc -z -w 3 \"${DNS_IP}\" 53 && echo OPEN || echo FAIL; echo -n \"TCP spire-server ${SPIRE_IP:-NONE}:${SPIRE_PORT:-NONE} \"; nc -z -w 3 \"${SPIRE_IP}\" \"${SPIRE_PORT}\" && echo OPEN || echo FAIL" \
+              || echo "kubectl run hostnet-tcp-probe FAILED"
+            kubectl -n kube-system wait --for=jsonpath='{.status.phase}'=Succeeded pod/hostnet-tcp-probe --timeout=60s \
+              || echo "hostnet-tcp-probe did not Succeed"
+            kubectl -n kube-system logs hostnet-tcp-probe || echo "logs hostnet-tcp-probe FAILED"
+            kubectl -n kube-system delete pod hostnet-tcp-probe --ignore-not-found --wait=false || true
+          fi
 
       - name: Print cluster diagnostics
         if: always()
