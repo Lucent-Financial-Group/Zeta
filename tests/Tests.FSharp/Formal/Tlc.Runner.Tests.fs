@@ -321,7 +321,36 @@ let private distinctStatesRegex =
 /// matter of taste: the jar banner, the exit code, the completion
 /// marker, the pinned error substring, and the pinned exhaustive state
 /// count all have to agree with the registry.
+/// Did the JVM fail before TLC ever ran?
+///
+/// The banner check below cannot tell "this jar is a different TLC" from "no TLC ran at all", and
+/// those call for opposite responses: the first is drift an operator must fix, the second is an
+/// environment fault that will pass on the next run.
+///
+/// Observed 2026-09-03, once in three full-suite runs: under the memory pressure of the whole F#
+/// suite the JVM could not start —
+///
+///     Error occurred during initialization of VM
+///     Could not reserve enough space for object heap
+///
+/// — and the test reported `TOOLCHAIN DRIFT … a different TLC is a different experiment`, sending a
+/// reader to hunt a jar mismatch that did not exist. Same class as `forge-diagnosis`: a failure
+/// whose KIND is misreported costs more than the failure.
+let private jvmNeverStarted (stdout: string) =
+    [ "Could not reserve enough space for object heap"
+      "Error occurred during initialization of VM"
+      "Unable to access jarfile"
+      "OutOfMemoryError" ]
+    |> List.exists (fun marker -> stdout.Contains(marker, StringComparison.Ordinal))
+
 let private judge (model: PinnedModel) (exitCode: int) (stdout: string) =
+    // Asked BEFORE the banner check, because a JVM that never started cannot print a banner and the
+    // absence would otherwise be read as evidence about the jar's version.
+    if jvmNeverStarted stdout then
+        failwithf
+            "TLC DID NOT RUN on %s — the JVM failed to start, so this says NOTHING about the model or the jar's version. NOT toolchain drift: retry, and if it persists give the runner more memory or lower TLC's heap.\nstdout head:\n%s"
+            model.Id (stdout.Substring(0, min 400 stdout.Length))
+
     if not (stdout.Contains(pinnedBanner, StringComparison.Ordinal)) then
         failwithf
             "TOOLCHAIN DRIFT on %s: the registry pins %s and this jar reports something else. A different TLC is a different experiment.\nstdout head:\n%s"
@@ -476,3 +505,53 @@ let ``models that cannot deadlock say so in the registry`` () =
     vacuous |> should contain "WagerSolvency"
     for model in allModels do
         [ "off-cfg"; "on-vacuous"; "on" ] |> should contain model.Deadlock
+
+
+// ── "TLC did not run" is not "TLC is the wrong version" ──────────────────────
+//
+// `judge`'s first question used to be the banner, and a missing banner was reported as TOOLCHAIN
+// DRIFT. But a JVM that never started cannot print a banner either, so one verdict covered two
+// causes that call for opposite responses: drift is an operator's job, a failed JVM is a retry.
+//
+// Observed once in three full-suite runs on 2026-09-03 — under the memory pressure of the whole F#
+// suite the JVM reported `Could not reserve enough space for object heap`, and the test announced
+// that the jar was a different TLC. A reader would have gone looking for a version mismatch that did
+// not exist. Same class as `forge-diagnosis`: a failure whose KIND is misreported costs more than
+// the failure.
+
+let private aModel =
+    { Id = "FixtureModel"
+      Module = "Fixture"
+      Config = "Fixture.cfg"
+      Expect = "valid"
+      ExpectDetail = ""
+      ExitCode = 0
+      Tier = "gate"
+      Deadlock = "on"
+      DistinctStates = None }
+
+[<Fact>]
+let ``a JVM that never started is reported as such, not as toolchain drift`` () =
+    let jvmDied =
+        "Error occurred during initialization of VM\nCould not reserve enough space for object heap\n"
+
+    let ex = Assert.Throws<Exception>(fun () -> judge aModel 1 jvmDied)
+
+    // The verdict must name what happened…
+    Assert.Contains("TLC DID NOT RUN", ex.Message)
+    // …and must NOT send the reader after a jar mismatch that does not exist.
+    Assert.DoesNotContain("TOOLCHAIN DRIFT", ex.Message)
+    // A run that did not happen says nothing about the model either way — the message says so, so
+    // the failure cannot be read as evidence about the specification.
+    Assert.Contains("NOTHING about the model", ex.Message)
+
+[<Fact>]
+let ``a jar reporting a different version IS toolchain drift`` () =
+    // The other half. A guard that called everything an environment fault would be as wrong as the
+    // one that called everything drift, and it would silently accept an unpinned checker.
+    let wrongJar = "TLC2 Version 1900.01.01.000000 (rev: deadbee)\nModel checking completed.\n"
+
+    let ex = Assert.Throws<Exception>(fun () -> judge aModel 0 wrongJar)
+
+    Assert.Contains("TOOLCHAIN DRIFT", ex.Message)
+    Assert.DoesNotContain("TLC DID NOT RUN", ex.Message)
