@@ -1,0 +1,14 @@
+{
+  "id": "080d0332ed6ce010a0130008f68e4de3",
+  "at": "2026-09-03T08:23:30.460Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1K5VBCT087G0R001ZTFH9R",
+    "type": "bug",
+    "title": "seven tests asserted a platform's path separator, not the property they were named for",
+    "slug": "seven-tests-asserted-a-platform-s-path-separator-not-the-pro",
+    "priority": "P2",
+    "filename": "081M1K5VBCT087G0R001ZTFH9R-seven-tests-asserted-a-platform-s-path-separator-not-the-pro.md"
+  }
+}

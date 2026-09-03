@@ -1,7 +1,7 @@
 import { describe, expect, test } from "bun:test";
 import { mkdtempSync, readFileSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
-import { join } from "node:path";
+import { basename, join } from "node:path";
 
 import {
   SHARD_ID_RE,
@@ -42,11 +42,15 @@ function withTempRoot<T>(fn: (root: string) => T): T {
 describe("tick-shards — the shard filename is a real ZetaId", () => {
   test("filename is a canonical 32-hex ZetaId under a YYYY/MM/DD directory", () => {
     const path = shardPathFor(FRAME, "root");
-    expect(path).toBe(`root/2026/07/08/${toHex(shardZetaId(FRAME))}.json`);
-    const stem = path
-      .split("/")
-      .pop()!
-      .replace(/\.json$/, "");
+    // `join`, not a POSIX literal — the code under test builds this with node's `path` module, so
+    // a hardcoded "/a/b" asserts the separator of whichever platform wrote the test rather than
+    // the path it is named for.
+    expect(path).toBe(join("root", "2026", "07", "08", `${toHex(shardZetaId(FRAME))}.json`));
+    // `basename`, not `split("/")`: the path this very test just asserted is built with node's
+    // `path` module, so on Windows the separator is a backslash and the split returns the WHOLE
+    // path as one element — the regex below then tested the directory prefix too and failed a
+    // filename that was correct.
+    const stem = basename(path, ".json");
     expect(SHARD_ID_RE.test(stem)).toBe(true);
     // The whole point of using the universal pointer system: it parses back out.
     expect(toHex(fromHex(stem))).toBe(stem);
