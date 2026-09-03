@@ -102,6 +102,16 @@ const SPECTRUM = [
     emphasis: true,
   },
   {
+    lane: "FVS-conditioned Gaussian query",
+    carrier: "4-layer declared loopy skip witness",
+    operators: "3 conditioned trees · 9 rounds · F#/Python",
+    defect: "—",
+    readout: "EXACT VIA FVS",
+    verdict: "finite loopy covariance corrected",
+    detail: "FVS [0,1] · variance L¹ correction 0.2271011127 · query only · non-Gaussian inference unmeasured",
+    tone: "var(--amber)",
+  },
+  {
     lane: "content-addressed evidence CRDT",
     carrier: "canonical multi-value evidence map",
     operators: "union state · deterministic queries · TS/Python",

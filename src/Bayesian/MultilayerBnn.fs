@@ -139,6 +139,9 @@ module MultilayerBnn =
     /// such rather than promoted to a posterior.
     type FactorGraphExactness =
         | ExactAcyclic
+        /// Exact Gaussian means and variances obtained by conditioning on a
+        /// declared feedback vertex set whose residual factor graph is a tree.
+        | ExactLoopyViaFvs of feedbackVertexCount: int
         | ConvergedLoopyMeansOnly
         | UnsettledAcyclic
         | UnsettledLoopy
@@ -153,6 +156,23 @@ module MultilayerBnn =
           Rounds: int
           Converged: bool
           Exactness: FactorGraphExactness }
+
+    /// How the feedback vertex set was selected from the declared factor topology.
+    type FeedbackVertexSelection =
+        | ExhaustiveMinimum
+        | GreedyDeclaredTopology
+
+    /// Read-only FVS-conditioned Gaussian query. Unlike `FactorGraphUpdate`, the
+    /// receipt names the selected feedback vertices and never implies that an
+    /// online evidence accumulator was canonicalized.
+    type FeedbackMessagePassingQuery =
+        { Network: Network
+          Marginals: Gaussian array
+          Rounds: int
+          Converged: bool
+          Exactness: FactorGraphExactness
+          FeedbackVertices: int list
+          Selection: FeedbackVertexSelection option }
 
     /// Exact dense marginal query for the finite declared linear-Gaussian
     /// multilayer model. This is a correctness fallback for at most 64 layers,
@@ -478,6 +498,62 @@ module MultilayerBnn =
                 (parents |> List.map (fun p -> p, toParent p)) @ [ child, toChild ]
                 |> Map.ofList }
 
+    /// Shift a proper Gaussian without changing its variance. A uniform message
+    /// remains uniform because an additive offset cannot turn absence of evidence
+    /// into information.
+    let private shiftProper (offset: float) (message: Gaussian) : Gaussian =
+        if message.Precision <= 0.0 then
+            Gaussian.One
+        else
+            Gaussian.ofMeanVariance (Gaussian.mean message + offset) (Gaussian.variance message)
+
+    /// A sum-link factor after some parent variables have been conditioned to
+    /// fixed feedback assignments. The residual factor is
+    /// `child = offset + sum(remaining parents) + noise`.
+    let private sumLinkFactorWithOffset
+        (noiseVariance: float)
+        (parents: int list)
+        (child: int)
+        (offset: float)
+        : Factor<Gaussian> =
+        { Neighbors = parents @ [ child ]
+          ComputeMessages =
+            fun incoming ->
+                let msg variable = incoming |> Map.tryFind variable |> Option.defaultValue Gaussian.One
+                let combine variables =
+                    match variables with
+                    | [] -> Gaussian.One
+                    | first :: rest -> rest |> List.fold (fun acc variable -> convolve acc (msg variable)) (msg first)
+                let toChild = combine parents |> throughChannel noiseVariance |> shiftProper offset
+                let toParent parent =
+                    let childWithoutOffset = msg child |> throughChannel noiseVariance |> shiftProper (-offset)
+                    removeFirst parent parents
+                    |> List.fold (fun acc other -> deconvolve acc (msg other)) childWithoutOffset
+                (parents |> List.map (fun parent -> parent, toParent parent)) @ [ child, toChild ]
+                |> Map.ofList }
+
+    /// A sum-link factor whose child was conditioned to a fixed value. For
+    /// `target = sum(parents) + noise`, this sends each retained parent its
+    /// conditional Gaussian message without introducing an artificial zero-
+    /// variance point message.
+    let private sumConstraintFactor
+        (noiseVariance: float)
+        (parents: int list)
+        (target: float)
+        : Factor<Gaussian> =
+        { Neighbors = parents
+          ComputeMessages =
+            fun incoming ->
+                let msg variable = incoming |> Map.tryFind variable |> Option.defaultValue Gaussian.One
+                parents
+                |> List.map (fun parent ->
+                    let baseMessage = Gaussian.ofMeanVariance target noiseVariance
+                    let toParent =
+                        removeFirst parent parents
+                        |> List.fold (fun acc other -> deconvolve acc (msg other)) baseMessage
+                    parent, toParent)
+                |> Map.ofList }
+
     /// Build the factor graph for a network: one prior factor per layer, and one
     /// sum-link factor per layer that has parents.
     ///
@@ -574,6 +650,184 @@ module MultilayerBnn =
                     else
                         representative.[variableRoot] <- factorRoot
         acyclic
+
+    /// Acyclicity of a finite bipartite graph represented by factor-neighbor
+    /// lists. `variableCount` deliberately remains the original layer count so
+    /// conditioned-away variables retain their stable declared identifiers.
+    let private areFactorNeighborhoodsAcyclic
+        (variableCount: int)
+        (neighborhoods: int list list)
+        : bool =
+        let representative = Array.init (variableCount + neighborhoods.Length) id
+        let rec find node =
+            if representative.[node] = node then
+                node
+            else
+                let root = find representative.[node]
+                representative.[node] <- root
+                root
+        let mutable acyclic = true
+        neighborhoods
+        |> List.iteri (fun factorIndex neighbors ->
+            let factorNode = variableCount + factorIndex
+            for variable in neighbors do
+                let variableRoot = find variable
+                let factorRoot = find factorNode
+                if variableRoot = factorRoot then
+                    acyclic <- false
+                else
+                    representative.[variableRoot] <- factorRoot)
+        acyclic
+
+    /// The residual variable neighbors of declared link factors after a proposed
+    /// feedback set is conditioned. Numerical cancellations in a realized
+    /// precision matrix never enter this topology calculation.
+    let private conditionedFactorNeighborhoods
+        (parentsByChild: int list array)
+        (feedbackVertices: Set<int>)
+        : int list list =
+        [ for child in 0 .. parentsByChild.Length - 1 do
+              let residual =
+                  (parentsByChild.[child] @ [ child ])
+                  |> List.filter (fun variable -> not (Set.contains variable feedbackVertices))
+              if not (List.isEmpty residual) then
+                  yield residual ]
+
+    let private tryFindFirstFeedbackSet
+        (variableCount: int)
+        (budget: int)
+        (isFeedbackSet: int list -> bool)
+        : int list option =
+        let rec firstCombination size start chosen =
+            if List.length chosen = size then
+                let candidate = List.rev chosen
+                if isFeedbackSet candidate then Some candidate else None
+            else
+                let remaining = size - List.length chosen
+                [ start .. variableCount - remaining ]
+                |> List.tryPick (fun candidate -> firstCombination size (candidate + 1) (candidate :: chosen))
+        [ 0 .. min budget variableCount ]
+        |> List.tryPick (fun size -> firstCombination size 0 [])
+
+    let private tryChooseFeedbackVertices
+        (budget: int)
+        (parentsByChild: int list array)
+        : Result<int list * FeedbackVertexSelection option, string> =
+        let variableCount = parentsByChild.Length
+        if budget < 0 then
+            Error "feedbackBudget must be non-negative"
+        else
+            let isFeedbackSet vertices =
+                vertices
+                |> Set.ofList
+                |> conditionedFactorNeighborhoods parentsByChild
+                |> areFactorNeighborhoodsAcyclic variableCount
+            if isFeedbackSet [] then
+                Ok([], None)
+            elif budget = 0 then
+                Error "feedback vertex set requires at least one vertex but feedbackBudget is 0"
+            elif variableCount <= 20 then
+                match tryFindFirstFeedbackSet variableCount budget isFeedbackSet with
+                | Some vertices -> Ok(vertices, Some ExhaustiveMinimum)
+                | None ->
+                    Error
+                        $"no feedback vertex set within feedbackBudget {budget} for {variableCount} declared layers"
+            else
+                let neighborhoods = conditionedFactorNeighborhoods parentsByChild Set.empty
+                let score candidate =
+                    neighborhoods
+                    |> List.sumBy (fun neighbors ->
+                        if List.contains candidate neighbors then List.length neighbors - 1 else 0)
+                let rec greedy chosen =
+                    if isFeedbackSet chosen then
+                        Ok(List.rev chosen, Some GreedyDeclaredTopology)
+                    elif List.length chosen >= budget then
+                        Error
+                            $"greedy feedback vertex selection exceeded feedbackBudget {budget} for {variableCount} declared layers"
+                    else
+                        let available = [ 0 .. variableCount - 1 ] |> List.filter (fun candidate -> not (List.contains candidate chosen))
+                        match available with
+                        | [] -> Error "greedy feedback vertex selection exhausted declared layers before making the residual acyclic"
+                        | _ ->
+                            let candidate = available |> List.maxBy (fun index -> score index, -index)
+                            greedy (candidate :: chosen)
+                greedy []
+
+    let private tryConditionedFactorGraph
+        (parentsByChild: int list array)
+        (assignments: Map<int, float>)
+        (net: Network)
+        : Result<FactorGraph<Gaussian>, string> =
+        let feedbackVertices = assignments |> Map.toSeq |> Seq.map fst |> Set.ofSeq
+        let n = net.Layers.Length
+        let graphWithPriors =
+            [ 0 .. n - 1 ]
+            |> List.filter (fun variable -> not (Set.contains variable feedbackVertices))
+            |> List.fold
+                (fun graph variable -> FactorGraph.addFactor variable (Factor.prior variable net.Layers.[variable].Posterior) graph)
+                (FactorGraph.empty Gaussian.algebra)
+        [ 0 .. n - 1 ]
+        |> List.fold
+            (fun graph child ->
+                match parentsByChild.[child] with
+                | [] -> graph
+                | parents ->
+                    let feedbackParentSum =
+                        parents
+                        |> List.choose (fun parent -> Map.tryFind parent assignments)
+                        |> List.sum
+                    let retainedParents =
+                        parents |> List.filter (fun parent -> not (Set.contains parent feedbackVertices))
+                    match Map.tryFind child assignments with
+                    | Some childValue when not (List.isEmpty retainedParents) ->
+                        let target = childValue - feedbackParentSum
+                        FactorGraph.addFactor
+                            (n + child)
+                            (sumConstraintFactor net.ObservationVariances.[child] retainedParents target)
+                            graph
+                    | Some _ -> graph
+                    | None when List.isEmpty retainedParents ->
+                        FactorGraph.addFactor
+                            (n + child)
+                            (Factor.prior child (Gaussian.ofMeanVariance feedbackParentSum net.ObservationVariances.[child]))
+                            graph
+                    | None ->
+                        FactorGraph.addFactor
+                            (n + child)
+                            (sumLinkFactorWithOffset net.ObservationVariances.[child] retainedParents child feedbackParentSum)
+                            graph)
+            graphWithPriors
+        |> Ok
+
+    let private tryRunConditionedTree
+        (tol: float)
+        (maxRounds: int)
+        (parentsByChild: int list array)
+        (assignments: Map<int, float>)
+        (net: Network)
+        : Result<Map<int, Gaussian> * int, string> =
+        tryConditionedFactorGraph parentsByChild assignments net
+        |> Result.bind (fun graph ->
+            let neighborhoods = graph.Factors |> Map.toList |> List.map (fun (_, factor) -> factor.Neighbors)
+            if not (areFactorNeighborhoodsAcyclic net.Layers.Length neighborhoods) then
+                Error "feedback conditioning left the declared factor graph cyclic"
+            else
+                let settled, rounds, converged = FactorGraph.runToFixpoint Gaussian.distance tol maxRounds graph
+                if not converged then
+                    Error $"feedback conditioned tree run did not converge in {rounds}/{maxRounds} rounds at tolerance {tol:R}"
+                else
+                    let marginals =
+                        [ 0 .. net.Layers.Length - 1 ]
+                        |> List.choose (fun variable ->
+                            if Map.containsKey variable assignments then None
+                            else
+                                let marginal = FactorGraph.marginal variable settled
+                                if Gaussian.isProper marginal then Some(variable, marginal) else None)
+                        |> Map.ofList
+                    if Map.count marginals <> net.Layers.Length - Map.count assignments then
+                        Error "feedback conditioned tree produced an improper retained-variable marginal"
+                    else
+                        Ok(marginals, rounds))
 
     let private validInferenceBudget (tol: float) (maxRounds: int) : Result<unit, string> =
         if not (System.Double.IsFinite tol) || tol < 0.0 then
@@ -866,6 +1120,132 @@ module MultilayerBnn =
                     result
                     |> Result.bind (fun previous -> tryUpdateExactDenseGaussian observation previous.Network))
                 initial
+
+    // -- Feedback-vertex-set conditioned Gaussian query ----------------------------
+    //
+    // This is a finite read-only correction for declared linear-Gaussian loopy
+    // graphs. It conditions a topology-derived feedback vertex set until the
+    // remaining FACTOR graph is acyclic, runs exact sum-product on that residual
+    // graph k+1 times, and solves only the k-by-k feedback block. It is not an
+    // online evidence update, a CRDT merge, generic loopy-BP variance correction,
+    // or a non-Gaussian algorithm.
+
+    let private matrixVectorProduct (matrix: float array array) (vector: float array) : float array =
+        Array.init matrix.Length (fun row ->
+            [ 0 .. vector.Length - 1 ]
+            |> List.sumBy (fun column -> matrix.[row].[column] * vector.[column]))
+
+    let private quadraticForm (vector: float array) (matrix: float array array) : float =
+        let transformed = matrixVectorProduct matrix vector
+        Array.map2 (fun left right -> left * right) vector transformed |> Array.sum
+
+    /// Query exact means and covariance diagonals by conditioning a finite feedback
+    /// vertex set. A caller who requires out-of-order evidence invariance must pass
+    /// a network constructed from a canonical evidence state; this function does not
+    /// retrospectively canonicalize `MinimalBnn`'s local arrival-order accumulator.
+    let tryQueryViaFeedbackMessagePassing
+        (tol: float)
+        (maxRounds: int)
+        (feedbackBudget: int)
+        (net: Network)
+        : Result<FeedbackMessagePassingQuery, string> =
+        validInferenceBudget tol maxRounds
+        |> Result.bind (fun () -> tryValidateExactDenseNetwork net)
+        |> Result.bind (fun parentsByChild ->
+            tryChooseFeedbackVertices feedbackBudget parentsByChild
+            |> Result.bind (fun (feedbackVertices, selection) ->
+                match feedbackVertices with
+                | [] ->
+                    tryQueryViaFactorGraph tol maxRounds true net
+                    |> Result.map (fun receipt ->
+                        { Network = receipt.Network
+                          Marginals = receipt.Marginals
+                          Rounds = receipt.Rounds
+                          Converged = receipt.Converged
+                          Exactness = receipt.Exactness
+                          FeedbackVertices = []
+                          Selection = selection })
+                | _ ->
+                    let zeroAssignments = feedbackVertices |> List.map (fun vertex -> vertex, 0.0) |> Map.ofList
+                    tryRunConditionedTree tol maxRounds parentsByChild zeroAssignments net
+                    |> Result.bind (fun (zeroMarginals, zeroRounds) ->
+                        let unitRuns =
+                            feedbackVertices
+                            |> List.fold
+                                (fun current vertex ->
+                                    current
+                                    |> Result.bind (fun completed ->
+                                        let assignment = zeroAssignments |> Map.add vertex 1.0
+                                        tryRunConditionedTree tol maxRounds parentsByChild assignment net
+                                        |> Result.map (fun run -> (vertex, run) :: completed)))
+                                (Ok [])
+                        unitRuns
+                        |> Result.bind (fun runs ->
+                            let orderedRuns = runs |> List.rev |> List.toArray
+                            let feedbackIndices = feedbackVertices |> List.toArray
+                            let feedbackCount = feedbackIndices.Length
+                            let layerCount = net.Layers.Length
+                            let feedbackSet = feedbackVertices |> Set.ofList
+                            let gains =
+                                Array.init layerCount (fun layer ->
+                                    Array.init feedbackCount (fun column ->
+                                        if Set.contains layer feedbackSet then
+                                            0.0
+                                        else
+                                            let baseline = zeroMarginals |> Map.find layer |> Gaussian.mean
+                                            let _, (unitMarginals, _) = orderedRuns.[column]
+                                            (unitMarginals |> Map.find layer |> Gaussian.mean) - baseline))
+                            let precision, information = compileJointPrecision parentsByChild net
+                            let feedbackPrecision =
+                                Array.init feedbackCount (fun row ->
+                                    Array.init feedbackCount (fun column ->
+                                        let feedbackRow = feedbackIndices.[row]
+                                        let feedbackColumn = feedbackIndices.[column]
+                                        let residualContribution =
+                                            [ 0 .. layerCount - 1 ]
+                                            |> List.sumBy (fun layer -> precision.[feedbackRow].[layer] * gains.[layer].[column])
+                                        precision.[feedbackRow].[feedbackColumn] + residualContribution))
+                            let feedbackInformation =
+                                Array.init feedbackCount (fun row ->
+                                    let feedbackRow = feedbackIndices.[row]
+                                    let baselineContribution =
+                                        [ 0 .. layerCount - 1 ]
+                                        |> List.sumBy (fun layer ->
+                                            match Map.tryFind layer zeroMarginals with
+                                            | Some marginal -> precision.[feedbackRow].[layer] * Gaussian.mean marginal
+                                            | None -> 0.0)
+                                    information.[feedbackRow] - baselineContribution)
+                            tryCholeskyPositiveDefinite feedbackPrecision
+                            |> Result.bind (fun () -> tryInvertDeterministic feedbackPrecision)
+                            |> Result.bind (fun feedbackCovariance ->
+                                let feedbackMeans = matrixVectorProduct feedbackCovariance feedbackInformation
+                                let feedbackPosition =
+                                    feedbackVertices
+                                    |> List.mapi (fun index vertex -> vertex, index)
+                                    |> Map.ofList
+                                let marginals =
+                                    Array.init layerCount (fun layer ->
+                                        match Map.tryFind layer feedbackPosition with
+                                        | Some position ->
+                                            Gaussian.ofMeanVariance feedbackMeans.[position] feedbackCovariance.[position].[position]
+                                        | None ->
+                                            let baseline = zeroMarginals |> Map.find layer
+                                            let gain = gains.[layer]
+                                            let mean = Gaussian.mean baseline + (Array.map2 (fun left right -> left * right) gain feedbackMeans |> Array.sum)
+                                            let variance = Gaussian.variance baseline + quadraticForm gain feedbackCovariance
+                                            Gaussian.ofMeanVariance mean variance)
+                                if marginals |> Array.exists (Gaussian.isProper >> not) then
+                                    Error "feedback correction produced an improper Gaussian marginal"
+                                else
+                                    let unitRounds = orderedRuns |> Array.sumBy (fun (_, (_, rounds)) -> rounds)
+                                    Ok
+                                        { Network = net
+                                          Marginals = marginals
+                                          Rounds = zeroRounds + unitRounds
+                                          Converged = true
+                                          Exactness = ExactLoopyViaFvs feedbackCount
+                                          FeedbackVertices = feedbackVertices
+                                          Selection = selection })))))
 
     // -- Combined forward+backward ---------------------------------------------------
 
