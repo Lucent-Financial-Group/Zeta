@@ -1622,6 +1622,133 @@ their content_ is unverified. Recorded so the debt is visible rather than implie
   is that the constraint be a property of the **world** (bandwidth, noise, a shared referent) rather than
   a decree from a **party**; "let it emerge and it will be legible" is contradicted by the literature.
 
+## Lexical semantics, language games, and semantic change — the linguistic-seed anchors (added 2026-09-03, shadow, per 081M1KC8460087G0R003F3SGJC)
+
+Anchors for Aaron's 2026-09-03 ask on the minimal linguistic seed over English, its encoding in
+the Clifford geometry, escalations modelled Bayesianly, and "each word 'fights' for its
+definition" — spec at
+`docs/research/2026-09-03-minimal-linguistic-seed-clifford-geometry-word-entities-etymology-spec-nsm-primes-are-the-seed-a-word-is-a-graded-region-drift-is-priced-not-forbidden.md`.
+**Register note:** the NSM 65-prime table, the Toki Pona counts, and Jäger (2010)'s finding were
+**checked at filing** (search-verified); authorship and venue of every other row were verified;
+the substantive readings of Ogden, Swadesh, Zipf, Horn and Sapir are standing knowledge of those
+works, not page-checked. Nine of these names were absent from this list before this section, two
+of them (Hawkins, Mikolov) despite `src/Bayesian/ThousandBrains.fs` and
+`docs/DECISIONS/2026-04-19-glossary-three-lane-model.md` already relying on them — the defect
+`anchor-to-human-prior-art` exists to catch.
+
+- **Anna Wierzbicka (1996) — _Semantics: Primes and Universals_ (OUP); Cliff Goddard & Anna
+  Wierzbicka (2014) — _Words and Meanings_ (OUP)** — the Natural Semantic Metalanguage: ~65
+  semantic primes selected by **non-circularity under reductive paraphrase**, each with universal
+  valency frames, so definitions are programs in a fixed lexicon and syntax. The recommended
+  English seed. **The honest half:** the exact list and its universality are a contested
+  forty-year program (14 primes in 1972, 60 in 2002, 65 now); the in-tree 2026-07-31 spine doc
+  already says "not settled fact," and the seed stays `toy` until the definability-coverage and
+  acquisition-age tests run. Recommended in-tree at
+  `docs/design/2026-08-13-factor-graph-soft-value-heterogeneous-bnn-linguistic-seed-bridge.md` §5.2.
+- **C. K. Ogden (1930) — _Basic English: A General Introduction with Rules and Grammar_** — 850
+  words chosen for translation and teaching coverage. **Why it is not the seed, stated because the
+  count tempts:** selection by coverage admits `government`, `insurance`, `committee` and allows
+  definitional cycles; nothing in the criterion forces irreducibility, so the list is not
+  generative. Absent from this tree before this row.
+- **Morris Swadesh (1952) — "Lexico-statistic dating of prehistoric ethnic contacts" (Proc. Am.
+  Phil. Soc. 96); (1955) — "Towards greater accuracy in lexicostatistic dating" (IJAL 21)** — the
+  100/207-item lists selected for **diachronic retention** (`I`, `two`, `louse`, `tree`). A probe
+  for lexical replacement, not a generator. **The caveat already ruled in-tree:** the phenomenon is
+  solid, glottochronology as a _dating_ method is contested — "cite the phenomenon, never the
+  clock" (`docs/research/2026-08-19-draft-the-distributed-identity-server-*.md:281`).
+- **Sonja Lang (2014) — _Toki Pona: The Language of Good_; (2021) — _Toki Pona Dictionary_** — a
+  constructed language of ~120 (2014) / 137 "essential" (2021) words, created 2001. **Why it is
+  excluded:** it is a whole language, not a subset _over English_, and **polysemy is a design
+  goal** (`moku` = eat / food) — the opposite of "meaning stays constant." Previously cited
+  in-tree only as the minimal-grammar comparison.
+- **Peter Gärdenfors (2000) — _Conceptual Spaces: The Geometry of Thought_ (MIT Press)** ⭐ —
+  meanings are **regions** in spaces of quality dimensions; natural concepts are **convex**
+  regions, so betweenness carries semantic content. The claim under "a word is a graded region"
+  and the sharpest testable core of Aaron's "English is geospatial" (Clifford brief Q5).
+  **The test that shows it can be run, and on which domain:** **Gerhard Jäger (2010) — "Natural
+  Color Categories Are Convex Sets"** (in _Language, Games, and Evolution_, LNCS 6207, Springer)
+  evaluated World Color Survey data and found basic colour categories convex in CIELab across all
+  surveyed languages — on a domain where the quality dimensions are _known_. The general case
+  (dimensions unknown) is exactly what Q5 asks and this list does not answer. **Any convexity test
+  must carry a disjunctive negative control** or it has measured nothing.
+- **Edward Sapir (1944) — "Grading: A Study in Semantics" (Philosophy of Science 11)** — grading
+  is logically prior to counting; every gradable predicate presupposes a scale. The oldest anchor
+  under the escalation model.
+- **Laurence R. Horn (1972) — _On the Semantic Properties of Logical Operators in English_ (UCLA
+  dissertation); Stephen C. Levinson (2000) — _Presumptive Meanings_ (MIT Press)** — **Horn
+  scales** `⟨warm, hot, scalding⟩`, `⟨some, most, all⟩`: ordered alternatives on one dimension,
+  where asserting the weaker term Q-implicates that the stronger does not hold. "Meaning stays
+  constant but heightened levels are correlated," said in 1972: one axis, an ordering of terms on
+  it. **Entailment check:** Horn scales are a _pragmatic_ object (what an assertion implicates);
+  the geometric reading (thresholds on a shared axis) is Kennedy & McNally's, below, not Horn's.
+- **Christopher Kennedy & Louise McNally (2005) — "Scale Structure, Degree Modification, and the
+  Semantics of Gradable Predicates" (Language 81(2))** — a gradable adjective is a measure
+  function to a scale plus a **standard of comparison** (a threshold); scales are open or closed
+  and degree modifiers select by scale type (`very` for relative standards, `completely` for
+  closed). The threshold-on-an-axis object the escalation model posits, and the reason the seed's
+  `VERY` / `MORE` are its motion operators.
+- **Daniel Lassiter & Noah D. Goodman (2017) — "Adjectival vagueness in a Bayesian model of
+  interpretation" (Synthese 194)** — the threshold is **uncertain** and inferred jointly with the
+  degree by a listener (RSA). The Bayesian half of the escalation model exists in the literature;
+  what the spec adds is the _shared scale parameters_ that make the levels correlated, and that
+  addition is `toy`.
+- **Gerard de Melo & Mohit Bansal (2013) — "Good, Great, Excellent: Global Inference of Semantic
+  Intensities" (TACL 1)** — a gold set of adjective intensity orderings inferred from corpus
+  patterns ("not just X but Y"). The held-out escalation test's ground truth and its mining
+  signal.
+- **Tomas Mikolov, Wen-tau Yih & Geoffrey Zweig (2013) — "Linguistic Regularities in Continuous
+  Space Word Representations" (NAACL)** — vector-offset regularities (`king − man + woman ≈
+  queen`): translation along a direction is _measurable_ in an embedding. **The limit that
+  matters here:** an offset is a direction, and Goodfire (2026) measured that concepts sit on
+  curved subspaces that directions tile without learning — so the offset is the flat-chart
+  approximation, never the object. Already relied on at
+  `docs/DECISIONS/2026-04-19-glossary-three-lane-model.md:355`; uncited here until this row.
+- **Luc Steels (1995) — "A Self-Organizing Spatial Vocabulary" (Artificial Life 2(3)); Andrea
+  Baronchelli, Maddalena Felici, Vittorio Loreto, Emanuele Caglioti & Luc Steels (2006) — "Sharp
+  transition towards shared vocabularies in multi-agent systems" (J. Stat. Mech. P06014)** ⭐ —
+  the **naming game**: agents with no central authority converge on a shared vocabulary;
+  convergence is proven, with a sharp transition and a memory peak scaling as `N^1.5`. **What
+  does NOT transfer, stated so it is not inherited by adjacency:** the proof is for a payoff of
+  _success on one naming episode_; the spec's game pays by _third-party attestation, ρ-discounted_,
+  a different game whose convergence is unproven and pre-registered as a simulation.
+- **Martin A. Nowak, Natalia L. Komarova & Partha Niyogi (2001) — "Evolution of universal grammar"
+  (Science 291)** — the **coherence threshold**: a shared language persists only while learning
+  fidelity exceeds a threshold `q_1`; below it the population fragments. **This is the anti-Babel
+  cliff as a theorem**, and the quantity the word game's first simulation measures. Distinct from
+  the Nowak & Sigmund rows above (reciprocity), which supply the reputation shape instead.
+- **George Kingsley Zipf (1949) — _Human Behavior and the Principle of Least Effort_
+  (Addison-Wesley)** — speaker economy pushes toward fewer, vaguer words; hearer economy toward
+  more, sharper ones; the power law is the equilibrium. Drift pressure has a direction _and_ a
+  counter-force. Previously in-tree only as a distribution name, never as the linguistic claim.
+- **William L. Hamilton, Jure Leskovec & Dan Jurafsky (2016) — "Diachronic Word Embeddings Reveal
+  Statistical Laws of Semantic Change" (ACL 2016)** ⭐ — two **measured** laws over two centuries
+  of English: **conformity** (frequent words change slower) and **innovation** (polysemous words
+  change faster). The two signs the word game must reproduce or be wrong. **Entailment check:**
+  the laws are correlational, measured on embeddings aligned across decades; they constrain a
+  model's predictions, they do not supply its mechanism.
+- **Jeff Hawkins (2021) — _A Thousand Brains_ (Basic Books); Hawkins, Lewis, Klukas, Purdy & Ahmad
+  (2019) — "A Framework for Intelligence and Cortical Function Based on Grid Cells in the
+  Neocortex" (Frontiers in Neural Circuits 12:121)** — cortical columns use grid- and place-cell
+  **reference frames** for all concepts, not only physical space; the named mechanism behind
+  Aaron's "english runs on the same geospatial wiring." **Register:** a hypothesis, held as such
+  in `docs/ZETA-CORE-TECHNOLOGY-FOR-MAX.md` §Geometry Thread; the one thing borrowed as a
+  constraint is that beliefs cannot be pooled across reference frames, already enforced in
+  `src/Bayesian/ThousandBrains.fs`. Relied on in code since 2026-05; uncited here until this row.
+- **Maximilian Nickel & Douwe Kiela (2017) — "Poincaré Embeddings for Learning Hierarchical
+  Representations" (NeurIPS 2017)** — WordNet hypernymy embeds in hyperbolic space with far lower
+  distortion than Euclidean at low dimension. **Consistent with**, not an identification of, the
+  in-tree finding that Fisher–Rao on the Gaussian family is hyperbolic (`Cl(2,1)`); two independent
+  lines, no shared measurement, and the invariant that would identify them is non-compactness of
+  the fitted isometry group, unmeasured for words.
+- **Victor Kuperman, Hans Stadthagen-Gonzalez & Marc Brysbaert (2012) — "Age-of-acquisition
+  ratings for 30,000 English words" (Behavior Research Methods 44)** — the norms that make the
+  "5-year-old" clause a number: the seed's exponents' AoA distribution against the lexicon's.
+  **What it cannot show:** early acquisition is consistent with primitiveness, never a proof of it.
+
+**Cross-reference:** `docs/research/2026-09-03-minimal-linguistic-seed-clifford-geometry-word-entities-etymology-spec-*.md`
+§1 (seed), §3 (escalations), §4 (the game); `docs/linguistic-seed/` (the formal seed these compose
+with); `src/Core/LinguisticSeed.fs` (the kernel seed — the metric half).
+
 ## Local-to-global obstruction — the databases ↔ Bell ↔ holonomy ↔ coordination anchors (added 2026-08-17, shadow)
 
 Found by the literature-scout run on Aaron's 2026-08-17 question ("is path-independence across CRDTs,
