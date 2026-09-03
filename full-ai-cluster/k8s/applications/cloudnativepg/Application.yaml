@@ -1,0 +1,121 @@
+# CloudNativePG — the PostgreSQL operator, and it exists to unblock TWO charts, not one.
+#
+# ── WHY THIS IS HERE, AND WHY COCKROACHDB CANNOT DO IT ───────────────────────
+# Aaron 2026-09-02: "it seems CloudNativePG is likely the postgres we need for
+# gitlab". Reading temporal's manifest turned up the same root cause, so this
+# Application is the shared prerequisite of the two remaining BEHIND-MAJOR charts:
+#
+#   gitlab   8.7.0 -> 10.3.1 (162 behind). 19.x requires PostgreSQL 17.x EXACTLY
+#            plus `pg_trgm`, `btree_gist`, `plpgsql` and `amcheck`.
+#   temporal 0.59.0 -> 1.6.0 (26 behind). Its VISIBILITY store's schema
+#            (`schema/postgresql/v12/visibility/versioned/v1.2/advanced_visibility.sql`
+#            at temporal v1.27.2) opens `CREATE EXTENSION IF NOT EXISTS btree_gin;`
+#            and uses a plpgsql `convert_ts(...)` inside `GENERATED ALWAYS AS
+#            (...) STORED` columns.
+#
+# BOTH FAIL ON COCKROACHDB IN THE ACQUITTING DIRECTION, which is why the problem
+# survived this long: CockroachDB accepts `CREATE EXTENSION pg_trgm` as a NO-OP —
+# it returns success and does not create the extension. A statement that succeeds
+# and does nothing is the vacuity class in SQL, and it is worse than an error
+# because the failure surfaces later, in a query plan, on metal. `btree_gin` is
+# unimplemented outright (cockroachdb/cockroach#51992, open) and computed columns
+# may not reference user-defined functions (known limitation #122945).
+#
+# CockroachDB is NOT being replaced. It keeps its own workloads; temporal's
+# DEFAULT store already works on it (`schema/postgresql/v12/temporal/schema.sql`
+# is plain SQL — no extension, no UDF, no generated column). What CNPG adds is a
+# real PostgreSQL for the two stores that need real PostgreSQL.
+#
+# ── WHAT THIS APPLICATION IS, AND DELIBERATELY IS NOT ────────────────────────
+# THE OPERATOR ONLY. It creates no database. `helm template` at chart 0.29.0
+# against this valuesObject renders, MEASURED 2026-09-02:
+#
+#   11 CustomResourceDefinition   3 ClusterRole    2 ConfigMap
+#    1 Deployment                 1 Service        1 ServiceAccount
+#    1 ClusterRoleBinding         1 ValidatingWebhookConfiguration
+#    1 MutatingWebhookConfiguration
+#
+# and ZERO PersistentVolumeClaims. (A grep for "PersistentVolumeClaim" matches 32
+# times and every one is inside a CRD's own schema, describing the volume template
+# a future `Cluster` may declare. `kind: PersistentVolumeClaim` appears nowhere,
+# which is the check that distinguishes the two.) So this Application declares no
+# storage and takes no row in `storage-profiles.json`.
+#
+# A `Cluster` CR — the thing that actually runs PostgreSQL and actually claims
+# disk — is NOT in this change. That is deliberate: the operator is the
+# prerequisite both charts share, it is independently reviewable, and shipping it
+# alone means the storage and migration decisions for gitlab and temporal are made
+# in their own change with their own numbers rather than smuggled in here.
+#
+# ── RESOURCES ARE DECLARED HERE BECAUSE THE CHART DECLARES NONE ──────────────
+# Upstream ships `resources: {}` (values.yaml:159). An unset request is not a
+# small request — it is **BestEffort QoS**, the first thing the kubelet evicts
+# under node pressure, and it contributes 0m to every budget this repo computes
+# while consuming real CPU. That is a measurement that lies, so the values below
+# are explicit. They are a RESERVATION and not a measurement of the operator's
+# working set; no rung here claims otherwise.
+#
+# ── WEBHOOK CERTIFICATES: SELF-MANAGED, NO cert-manager EDGE ─────────────────
+# Checked against the chart's own values (2026-09-02): there is no cert-manager
+# key and no `cert-manager.io/inject-ca-from` annotation in the render. CNPG
+# issues and rotates its own webhook certificate. So the dependency graph carries
+# `dependsOn: [cilium]` and NOT `[cert-manager]` — declaring an edge that does not
+# exist would be as wrong as omitting one that does.
+#
+# ── THE ONE DEV-LANE CAVEAT, NAMED RATHER THAN DISCOVERED ────────────────────
+# The operator image lives on `ghcr.io/cloudnative-pg/cloudnative-pg`. The dev
+# bootstrap mints `zeta-platform/ghcr-pull` only when a token is present in the
+# environment, and says so out loud when it is not. On a runner without one, this
+# Deployment will not pull. That is a property of the lane, not of this manifest.
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: cloudnativepg
+  namespace: argocd
+  # Cascade deletion through ArgoCD, the same finalizer every other Application
+  # in this tree carries; without it the ratchet's Application-shape check counts
+  # this manifest as a new failure.
+  finalizers: [ resources-finalizer.argocd.argoproj.io ]
+  annotations:
+    # Height 1 in the declared graph (cilium -> cloudnativepg), the same height as
+    # cert-manager, and checked by derive-sync-waves.ts against
+    # full-ai-cluster/k8s/sync-wave-dependency-graph.yaml rather than asserted here.
+    # Must precede temporal (10) and gitlab (30), which is what the edge is for.
+    argocd.argoproj.io/sync-wave: "-70"
+spec:
+  project: default
+  source:
+    repoURL: https://cloudnative-pg.github.io/charts
+    chart: cloudnative-pg
+    # 0.29.0 / appVersion 1.30.0, published 2026-06-29 (active, 65d at pin time).
+    # This is the OFFICIAL chart from the CloudNativePG project itself, not a
+    # third-party repackaging — the repo is the project's own GitHub Pages site.
+    targetRevision: 0.29.0
+    helm:
+      releaseName: cloudnativepg
+      valuesObject:
+        # The operator is a single controller with leader election; one replica is
+        # the upstream default and the correct one for a single-node substrate.
+        replicaCount: 1
+        crds:
+          create: true
+        # See the RESOURCES note in the header. Explicit because upstream is `{}`.
+        resources:
+          requests:
+            cpu: 100m
+            memory: 128Mi
+          limits:
+            memory: 512Mi
+        monitoring:
+          # Requires the Prometheus Operator CRDs. kube-prometheus-stack is in this
+          # catalogue, so this CAN be turned on — and turning it on creates a
+          # dependency edge that the graph does not currently declare. Left false
+          # until that edge is declared with a citation, which is cheaper than a
+          # silently-ordered sync.
+          podMonitorEnabled: false
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: cnpg-system
+  syncPolicy:
+    automated: { prune: false, selfHeal: true }   # CRDs precious — no prune
+    syncOptions: [ CreateNamespace=true, ServerSideApply=true ]

@@ -385,9 +385,27 @@ describe("the real tree", () => {
     // The +1.64 is the same shape as the 2026-08-23 rise above: an image that
     // could not be SIZED contributed nothing, so making it sizable can only push
     // the floor up. The number got MORE true; the tree did not grow.
-    expect(all.diskGib).toBeCloseTo(73.21, 2);
+    // 73.21 -> 62.06 GiB on 2026-09-02, and NOTHING SHRANK IN THE TREE. The checked-in
+    // lane-footprints.json was measured 2026-09-01 and 28 of the 47 Applications' IMAGE
+    // SETS had changed under it since -- bumps that merged during the day (argocd 10.7.0,
+    // kube-prometheus-stack 88.6.3, seaweedfs 4.33->4.45, cockroachdb v24.2.4->v26.3.1,
+    // hindsight 0.1.1->0.9.2, ankane/pgvector -> pgvector/pgvector:pg17-trixie). Re-running
+    // measure-lane-footprints.ts priced the images the tree ACTUALLY pins. The floor fell
+    // because the previous reading had gone stale against its own manifests -- which is the
+    // failure mode this pin exists to surface.
+    expect(all.diskGib).toBeCloseTo(62.06, 2);
     expect(all.cpuMillis).toBeGreaterThan(budget.cpuMillis);
-    expect(all.diskGib).toBeGreaterThan(budget.diskGib);
+    // THE DISK AXIS STOPPED BINDING ON 2026-09-02, and this line used to assert the
+    // opposite. `all.diskGib` is 62.06 against a 66 GiB budget, so for the first time
+    // the whole roster FITS on disk. The headline claim of this test is unchanged --
+    // they still do not fit the runner bound -- but the REASON narrowed from "both
+    // axes" to "CPU only", so asserting disk-over would now assert a world that ended.
+    // Recorded as a sequence rather than overwritten; this number has now changed
+    // answer three times:
+    //   14 GiB bound   disk over 7.45x, CPU 2.47x   -- disk binds
+    //   70 GiB bound   disk 1.13x, CPU 1.97x        -- binding axis SWAPPED
+    //   70 GiB bound   disk 0.94x, CPU 1.60x        -- disk no longer binds at all
+    expect(all.diskGib).toBeLessThan(budget.diskGib);
     // WHICH AXIS BINDS IS NOW A MEASUREMENT, NOT AN ASSERTION. At 14 GiB disk was
     // over by 7.45x and CPU by 2.47x, so the old body pinned "disk is the binding
     // axis" as a constant. At 70 GiB with the `dev` CPU floor it is 1.13x disk
@@ -396,8 +414,11 @@ describe("the real tree", () => {
     // arithmetic agree about it instead.
     const diskRatio = all.diskGib / budget.diskGib;
     const cpuRatio = all.cpuMillis / budget.cpuMillis;
-    expect(diskRatio).toBeGreaterThan(1);
+    // AT LEAST ONE axis must be over for "does not fit" to hold, and the test asserts
+    // exactly that rather than naming which -- the naming is what went stale twice.
+    expect(Math.max(diskRatio, cpuRatio)).toBeGreaterThan(1);
     expect(cpuRatio).toBeGreaterThan(1);
+    expect(diskRatio).toBeLessThan(1);
     // And the total is a FLOOR: 3 images are unmeasurable, so `all.diskGib` is a
     // lower bound on the real requirement and "over" is the direction that is
     // safe to conclude from it. Under-shooting a floor is the only reading that
@@ -474,7 +495,12 @@ describe("the real tree", () => {
     // THE TWO GIANTS ARE STILL NAMED, because their measured size is the fact the
     // whole partition turns on and it must not be allowed to drift silently. It
     // is their SIZE that is pinned now, never their verdict.
-    expect(priceSet(model, ["hindsight"]).diskGib).toBeCloseTo(22.49, 1);
+    // 22.49 -> 4.11 GiB, same 2026-09-02 re-measurement: hindsight moved 0.1.1 ->
+        // 0.9.2 and swapped `ankane/pgvector:latest` for `pgvector/pgvector:pg17-trixie`.
+        // Both images are SIZED at both readings (nothing became unmeasurable), so this
+        // is a real 18 GiB fall in the pinned images, not a lost measurement -- which is
+        // material to hindsight's CAPACITY deferral and is noted there.
+        expect(priceSet(model, ["hindsight"]).diskGib).toBeCloseTo(4.11, 1);
     // 22.65 -> 21.47 on 2026-09-01, and this one is NOT a consequence of the
     // minio removal: `vllm/vllm-openai:latest` shrank upstream by 1.1846 GiB.
     // Pinning the size is what surfaced it, which is what the comment above says
@@ -501,7 +527,7 @@ describe("the real tree", () => {
     const closureWith = priceSet(m, closureOf(m, "hindsight"));
     const closureWithout = priceSet(mNo, closureOf(mNo, "hindsight"));
     expect(closureWith.diskGib).toBeGreaterThan(closureWithout.diskGib);
-    expect(closureWithout.diskGib).toBeCloseTo(23.19, 1);
+    expect(closureWithout.diskGib).toBeCloseTo(4.95, 1);
     expect(closureOf(m, "hindsight")).toContain("cockroachdb");
     expect(closureOf(mNo, "hindsight")).not.toContain("cockroachdb");
     // AND EVERY LANE STAYS DEPENDENCY-CLOSED UNDER BOTH READINGS. That is the

@@ -1278,9 +1278,15 @@ describe("the checked-in resource ladder", () => {
   // and had never been counted. It requests a literal `cpu: "1", memory: "2Gi"`.
   // Both counts move together for the same reason as spire-crds: an Application
   // no exclude covers is BOTH shipped and applied.
-  test("the dev lane applies 37 of the 46 Applications", () => {
-    expect(applicationDirs()).toHaveLength(46);
-    expect(devLaneAppliedDirs()).toHaveLength(37);
+  // 46 -> 47 and 37 -> 38 on 2026-09-02: `cloudnativepg` added. It is APPLIED in
+  // the dev lane (no excludeGlob entry, no DEV_EXCLUDED_REASONS row) because the
+  // operator is the thing under test -- it renders 11 CRDs, a Deployment and two
+  // webhooks and claims no storage, so there is nothing about it the dev lane
+  // cannot run. Both numbers move together; if only one had, that would be the
+  // finding rather than the fix.
+  test("the dev lane applies 38 of the 47 Applications", () => {
+    expect(applicationDirs()).toHaveLength(47);
+    expect(devLaneAppliedDirs()).toHaveLength(38);
     expect(applicationDirs()).toContain("game-hosting/gmod");
   });
 
@@ -1311,11 +1317,11 @@ describe("the checked-in resource ladder", () => {
   test("metal is exactly what the manifests render today", () => {
     expect(verifyResourceProfileApplied(catalogue, "metal")).toEqual([]);
     const lane = resourceTotal(catalogue, "metal", devLaneAppliedDirs());
-    expect(lane.cpuMillis).toBe(6240);
-    expect(lane.memoryMib).toBe(14160);
+    expect(lane.cpuMillis).toBe(6340);
+    expect(lane.memoryMib).toBe(14288);
     const all = resourceTotal(catalogue, "metal", applicationDirs());
-    expect(all.cpuMillis).toBe(10265);
-    expect(all.memoryMib).toBe(22495);
+    expect(all.cpuMillis).toBe(10365);
+    expect(all.memoryMib).toBe(22623);
   });
 
   // Aaron 2026-08-20: "make things small enough to fit for disk and ram on the
@@ -1351,11 +1357,11 @@ describe("the checked-in resource ladder", () => {
   //
   // `metal` IS UNCHANGED THROUGHOUT and that is asserted below, because the
   // whole point of a rung is that shrinking one does not touch the other.
-  test("`dev` FITS AGAIN at 1081m — the rung reaches the raw manifests, and the governed rows are floored", () => {
+  test("`dev` FITS at 1140m — the rung reaches the raw manifests, and the governed rows are floored", () => {
     const budget = envelopeBudget(catalogue.envelope);
     const dev = resourceTotal(catalogue, "dev", devLaneAppliedDirs());
-    expect(dev.cpuMillis).toBe(1115);
-    expect(dev.memoryMib).toBe(9036);
+    expect(dev.cpuMillis).toBe(1140);
+    expect(dev.memoryMib).toBe(9100);
     expect(dev.cpuMillis).toBeLessThan(budget.cpuMillis);
     expect(dev.memoryMib).toBeLessThan(budget.memoryMib);
 
@@ -1380,8 +1386,8 @@ describe("the checked-in resource ladder", () => {
     // re-sized the hardware this rung exists to describe.
     expect(auditRunnerBudget(catalogue, "metal").length).toBeGreaterThan(0);
     const metal = resourceTotal(catalogue, "metal", devLaneAppliedDirs());
-    expect(metal.cpuMillis).toBe(6240);
-    expect(metal.memoryMib).toBe(14160);
+    expect(metal.cpuMillis).toBe(6340);
+    expect(metal.memoryMib).toBe(14288);
 
     // gmod is still COUNTED -- reachability is not exclusion. It contributes
     // 100m at `dev` where it used to contribute 1000m, and 1000m at `metal`
