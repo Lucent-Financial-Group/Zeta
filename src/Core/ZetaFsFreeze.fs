@@ -518,66 +518,84 @@ module ZetaFsFreeze =
     /// Sealed frames: [len:i32][lsn:i64][inner]. LSN is public so openLog can
     /// rebuild the nonce. Wrong-key MAC on the first frame recovers nothing
     /// and does not truncate.
-    let private replaySealedLog (fs: IFileSystem) (volume: Volume) (session: ZetaFsCrypto.Session) =
-        let logPath = volume.Log.LogPath
+    let private replaySealedFromStream (stream: Stream) (volume: Volume) (session: ZetaFsCrypto.Session) =
+        use br = new BinaryReader(stream, Text.Encoding.UTF8, leaveOpen = true)
+        let mutable scanning = true
+        let mutable pendingStart = -1L
+        let mutable pending: PlainRec option = None
+        let mutable maxLsn = 0L
 
-        if fs.Exists logPath then
-            use stream = fs.OpenFile(logPath, FileMode.Open, FileAccess.ReadWrite, FileShare.Read)
-            use br = new BinaryReader(stream)
-            let mutable scanning = true
-            let mutable pendingStart = -1L
-            let mutable pending: PlainRec option = None
-            let mutable maxLsn = 0L
+        while scanning do
+            let recordStart = stream.Position
 
-            while scanning do
-                let recordStart = stream.Position
+            if stream.Length - stream.Position = 0L then
+                scanning <- false
+            elif stream.Length - stream.Position < 12L then
+                stream.SetLength recordStart
+                scanning <- false
+            else
+                let len = br.ReadInt32()
+                let lsn = br.ReadInt64()
 
-                if stream.Length - stream.Position = 0L then
-                    scanning <- false
-                elif stream.Length - stream.Position < 12L then
+                if len < 0 then
+                    invalidOp (sprintf "ZetaFsFreeze: negative sealed length %d at byte %d" len recordStart)
+                elif stream.Length - stream.Position < int64 len then
                     stream.SetLength recordStart
                     scanning <- false
                 else
-                    let len = br.ReadInt32()
-                    let lsn = br.ReadInt64()
+                    let inner = br.ReadBytes len
+                    let atTail = stream.Position = stream.Length
 
-                    if len < 0 then
-                        invalidOp (sprintf "ZetaFsFreeze: negative sealed length %d at byte %d" len recordStart)
-                    elif stream.Length - stream.Position < int64 len then
+                    match ZetaFsCrypto.openLog session lsn inner with
+                    | Error ZetaFsCrypto.CryptoError.MacMismatch
+                    | Error ZetaFsCrypto.CryptoError.GcmAuthFailed when pending.IsNone && recordStart = 0L ->
+                        scanning <- false
+                    | Error ZetaFsCrypto.CryptoError.MacMismatch
+                    | Error ZetaFsCrypto.CryptoError.GcmAuthFailed ->
                         stream.SetLength recordStart
                         scanning <- false
-                    else
-                        let inner = br.ReadBytes len
-                        let atTail = stream.Position = stream.Length
+                    | Error e ->
+                        invalidOp (sprintf "ZetaFsFreeze: sealed frame at byte %d: %s" recordStart (ZetaFsCrypto.errorName e))
+                    | Ok plaintext ->
+                        scanning <-
+                            applyDecoded
+                                volume
+                                &pending
+                                &pendingStart
+                                &maxLsn
+                                recordStart
+                                atTail
+                                stream.SetLength
+                                (decodePlain plaintext)
 
-                        match ZetaFsCrypto.openLog session lsn inner with
-                        | Error ZetaFsCrypto.CryptoError.MacMismatch
-                        | Error ZetaFsCrypto.CryptoError.GcmAuthFailed when pending.IsNone && recordStart = 0L ->
-                            scanning <- false
-                        | Error ZetaFsCrypto.CryptoError.MacMismatch
-                        | Error ZetaFsCrypto.CryptoError.GcmAuthFailed ->
-                            stream.SetLength recordStart
-                            scanning <- false
-                        | Error e ->
-                            invalidOp (sprintf "ZetaFsFreeze: sealed frame at byte %d: %s" recordStart (ZetaFsCrypto.errorName e))
-                        | Ok plaintext ->
-                            scanning <-
-                                applyDecoded
-                                    volume
-                                    &pending
-                                    &pendingStart
-                                    &maxLsn
-                                    recordStart
-                                    atTail
-                                    stream.SetLength
-                                    (decodePlain plaintext)
+        match pending with
+        | Some _ when pendingStart >= 0L -> stream.SetLength pendingStart
+        | _ -> ()
 
-            match pending with
-            | Some _ when pendingStart >= 0L -> stream.SetLength pendingStart
-            | _ -> ()
+        if maxLsn >= volume.NextLsn then
+            volume.NextLsn <- maxLsn + 1L
 
-            if maxLsn >= volume.NextLsn then
-                volume.NextLsn <- maxLsn + 1L
+    let private replaySealedLog (fs: IFileSystem) (volume: Volume) (session: ZetaFsCrypto.Session) =
+        match volume.Log.BlockIo with
+        | Some io ->
+            let device = io :> IBlockIo
+
+            match BlockSuper.tryReadLog device with
+            | Some n -> io.LogicalBytes <- n
+            | None -> ()
+
+            if io.LogicalBytes > 0L then
+                let bytes = BlockLog.readAt device (BlockLog.origin device) io.LogicalBytes
+                use stream = new MemoryStream(bytes, 0, bytes.Length, writable = true, publiclyVisible = true)
+                replaySealedFromStream stream volume session
+                io.LogicalBytes <- stream.Length
+                BlockSuper.writeLog device io.LogicalBytes
+        | None ->
+            let logPath = volume.Log.LogPath
+
+            if fs.Exists logPath then
+                use stream = fs.OpenFile(logPath, FileMode.Open, FileAccess.ReadWrite, FileShare.Read)
+                replaySealedFromStream stream volume session
 
     let createFull
         (storeDir: string)
@@ -643,6 +661,18 @@ module ZetaFsFreeze =
         (blocks: SimulatedBlockIo)
         : Volume =
         createFull storeDir mutbuf observer None defaultConfig true (Some blocks) None
+
+    /// DST: sealed Journaled frames through `IBlockIo`. Same dual-slot
+    /// superblock as `createManualWithBlocks`. Wrong-key MAC on the first
+    /// frame recovers nothing and does not truncate.
+    let createManualWithSealedBlocks
+        (storeDir: string)
+        (mutbuf: ZetaFsMutbuf.Catalog)
+        (observer: IDurabilityObserver option)
+        (session: ZetaFsCrypto.Session)
+        (blocks: SimulatedBlockIo)
+        : Volume =
+        createFull storeDir mutbuf observer (Some session) defaultConfig true (Some blocks) None
 
     /// DST: log on one simulated disk, CAS objects on another. Two devices
     /// so a crash arm on objects cannot tear the log. LBA 0 and 1 on each

@@ -1,11 +1,12 @@
 ---
 id: 081M1K9D4Z0087G0R0002TFA8R
 type: task
-state: backlog
+state: done
 priority: P1
 slug: dual-checksummed-superblock-slots-on-lba-0-and-1
 title: "Dual checksummed superblock slots on LBA 0 and 1"
 created: 2026-09-03T09:25:39.424Z
+completed: 2026-09-03T10:04:02.847Z
 depends_on: ["081M1K8T36N087G0R0005YQGJW"]
 composes_with: ["081M1K8T36N087G0R0005YQGJW"]
 ---
