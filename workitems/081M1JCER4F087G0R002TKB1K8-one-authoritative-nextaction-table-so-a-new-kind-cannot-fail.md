@@ -25,8 +25,8 @@ failed open** on a kind they had never heard of:
 
 | surface | shape | consequence for a new kind |
 |---|---|---|
-| `room/hat-gate.ts` `isAuthorized` | `default: return true` | authorized at every hat level |
-| `room/room.ts` `isActionInScope` | trailing `return true` | in scope for every room |
+| `src/Core.TypeScript/observe/room/hat-gate.ts` `isAuthorized` | `default: return true` | authorized at every hat level |
+| `src/Core.TypeScript/observe/room/room.ts` `isActionInScope` | trailing `return true` | in scope for every room |
 | `grammar-16-render.ts` `leadSlot` | `default: return null` | silently slotless |
 | `grammar-16-render.ts` `FREE_MODE_KINDS` | a private const listing four kinds by hand | a fourth copy of the NCI roster |
 

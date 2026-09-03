@@ -1,11 +1,12 @@
 ---
 id: 081M1MFGNNC087G0R003SNN549
 type: bug
-state: backlog
+state: done
 priority: P2
 slug: repair-newly-landed-auto-vivify-references-to-canonical-sour
 title: "Repair newly landed auto-vivify references to canonical source paths"
 created: 2026-09-03T20:31:40.716Z
+completed: 2026-09-03T20:36:22Z
 depends_on: []
 composes_with: []
 ---
@@ -31,3 +32,16 @@ runtime-generated files as though they were tracked source pointers.
 - The auto-vivify resolver remains strict and unchanged.
 - `bun src/Core.TypeScript/backlog/auto-vivify.ts --check` and
   `bun run preflight:quick` pass.
+
+## Resolution
+
+Existing TypeScript references now use their tracked paths under
+`src/Core.TypeScript/` or `agentic-organization/`. Proposed source files are
+described as deliverables rather than live pointers, and the runtime promotion
+window is identified as generated data. The resolver remains unchanged.
+
+## Verification
+
+- `bun src/Core.TypeScript/backlog/auto-vivify.ts --check` - 774 files scanned,
+  zero dangling references.
+- `bun run preflight:quick` - all 16 executed checks passed.

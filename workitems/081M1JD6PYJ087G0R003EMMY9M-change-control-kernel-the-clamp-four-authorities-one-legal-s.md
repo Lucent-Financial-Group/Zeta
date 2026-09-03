@@ -42,7 +42,7 @@ gets a `request_changes` recorded as though it had chosen one. **The attempt dis
 was attempted. Nothing illegal executes either way — the difference is that the attempt becomes
 evidence, and it feeds the promotion gate directly:
 
-| in change control | in `enforcement/promotion-gate.ts` |
+| in change control | in `src/Core.TypeScript/enforcement/promotion-gate.ts` |
 |---|---|
 | an out-of-legal-set choice | a **selector rejection** |
 | an unowned or fabricated authority | a **control bypass** |
@@ -62,7 +62,7 @@ either knowing about the other's internals.
   than it was asked to is its own hazard.
 - An **unauthorized actor's choice is never evaluated**, not evaluated-then-rejected — a fabricated
   approval must not exist even briefly in a system that emits events.
-- **Quorum reuses `authorization/separation-of-duties.ts`**: distinct personas, proposer's own
+- **Quorum reuses `src/Core.TypeScript/authorization/separation-of-duties.ts`**: distinct personas, proposer's own
   approval discounted, plus an on-roster check. The rule lives in one place.
 - **`resubmit` restarts at stage 0.** Resuming where it bounced would carry approvals of a change
   that no longer exists.

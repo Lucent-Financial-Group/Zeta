@@ -20,7 +20,7 @@ composes_with: [081M0R2CGHQ087G0R001JE6KV4, 081M00TKDGG087G0R00271D93E]
 
 ## Scope — the first buildable slice, cheapest killer first
 
-1. **The seed as data.** `docs/linguistic-seed/english/seed.json`: the 65 NSM primes (Goddard & Wierzbicka 2014), categories, allolexes, valency frames — text, diffable. Pack-0 (NSM semantic molecules) as a second file, each molecule with its reductive paraphrase. Falsifier: loading pack-0 changes no seed-level coverage result (closure).
+1. **The seed as data.** Create `seed.json` under `docs/linguistic-seed/english/`: the 65 NSM primes (Goddard & Wierzbicka 2014), categories, allolexes, valency frames — text, diffable. Pack-0 (NSM semantic molecules) as a second file, each molecule with its reductive paraphrase. Falsifier: loading pack-0 changes no seed-level coverage result (closure).
 2. **Coverage leg of the reconstructibility meter** over `docs/GLOSSARY.md` + `docs/SEED-VOCABULARY.md`: fraction of each entry's first sentence expressible in seed ∪ packs ∪ previously-defined entries; acyclicity of the definability graph; the failing list. No threshold, no gate — it reports. Extends `src/Core.TypeScript/hygiene/glossary-adoption-cell.ts`.
 3. **Acquisition-age test** of the seed's exponents against the Kuperman, Stadthagen-Gonzalez & Brysbaert (2012) norms, reported beside the whole-lexicon distribution. A prime with AoA > 7 is flagged.
 4. **Ordered-probit likelihood** (cutpoints) beside `TravelerRankLedger`'s binary probit — the ordinal factor the Bayesian tree lacks.
