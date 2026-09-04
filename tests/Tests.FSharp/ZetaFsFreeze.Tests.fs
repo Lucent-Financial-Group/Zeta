@@ -161,7 +161,7 @@ let ``Durable freeze on a real directory fsyncs and is readable`` () : Task =
                 Assert.False(OperatingSystem.IsWindows())
                 Assert.True(ZetaFsFreeze.isReadable volume r.Content)
                 Assert.True(r.CommitLsn > 0L)
-                Assert.True(File.Exists(Path.Combine(store, "log", "freeze")))
+                Assert.True(File.Exists(ZetaFsPath.combine3 store "log" "freeze"))
                 Assert.True(ZetaFsFreeze.logBoatCount volume >= 1)
         finally
             ZetaFsFreeze.dispose volume
@@ -228,7 +228,7 @@ let ``sealed log does not leave freeze-intent ASCII in the clear`` () : Task =
                 | Error e -> Assert.Fail(ZetaFsFreeze.errorName e)
                 | Ok r ->
                     Assert.True(ZetaFsFreeze.isReadable v r.Content)
-                    let logBytes = FileSystem.Current.ReadAllBytes(Path.Combine("/freeze-enc", "log", "freeze"))
+                    let logBytes = FileSystem.Current.ReadAllBytes(ZetaFsPath.combine3 "/freeze-enc" "log" "freeze")
                     let needle = Text.Encoding.UTF8.GetBytes "freeze-intent/1"
                     Assert.Equal(-1, MemoryExtensions.IndexOf(ReadOnlySpan<byte> logBytes, ReadOnlySpan<byte> needle))
         finally
@@ -307,7 +307,7 @@ let ``sealed replay with the wrong vault key recovers nothing and leaves the log
                 match first with
                 | Error e -> Assert.Fail(ZetaFsFreeze.errorName e)
                 | Ok first ->
-                    let logPath = Path.Combine(store, "log", "freeze")
+                    let logPath = ZetaFsPath.combine3 store "log" "freeze"
                     let before = FileSystem.Current.ReadAllBytes logPath
                     ZetaFsFreeze.dispose v
                     volume <- None
@@ -387,7 +387,7 @@ let ``Journaled freeze crash-mid-write leaves a torn log and does not finish`` (
     task {
         ensureHasher ()
         let mock = InMemoryFileSystem()
-        let logNeedle = Path.Combine("log", "freeze")
+        let logNeedle = ZetaFsPath.combine2 "log" "freeze"
         mock.ArmCrashMidWrite(logNeedle, 8)
         FileSystem.Register(mock)
         let store = "/crash-mid-freeze"
@@ -407,7 +407,7 @@ let ``Journaled freeze crash-mid-write leaves a torn log and does not finish`` (
 
             Assert.Equal(8, ex.CommittedBytes)
             Assert.Equal(1, ZetaFsFreeze.logBoatCount volume)
-            let logPath = Path.Combine(store, "log", "freeze")
+            let logPath = ZetaFsPath.combine3 store "log" "freeze"
             Assert.True(FileSystem.Current.Exists logPath)
             Assert.Equal(8, FileSystem.Current.ReadAllBytes(logPath).Length)
         finally
@@ -455,8 +455,8 @@ let ``reopen after a torn second freeze keeps the first and drops the tail`` () 
         let store = "/freeze-replay-torn"
         let mutbuf = ZetaFsMutbuf.create store ZetaFsMutbuf.Coherence.Shared
         let volume = ZetaFsFreeze.createManualStream store mutbuf None
-        let logNeedle = Path.Combine("log", "freeze")
-        let logPath = Path.Combine(store, "log", "freeze")
+        let logNeedle = ZetaFsPath.combine2 "log" "freeze"
+        let logPath = ZetaFsPath.combine3 store "log" "freeze"
 
         try
             let id1 = mintId ()
@@ -502,7 +502,7 @@ let ``Journaled freeze that acks with a corrupt last write is not readable after
     task {
         ensureHasher ()
         let mock = InMemoryFileSystem()
-        let logNeedle = Path.Combine("log", "freeze")
+        let logNeedle = ZetaFsPath.combine2 "log" "freeze"
         mock.ArmCorruptLastWrite(logNeedle, 8)
         FileSystem.Register(mock)
         let store = "/corrupt-last-freeze"
@@ -542,7 +542,7 @@ let ``Journaled freeze crash during leaf put leaves extra garbage and is not rea
         let store = "/crash-intent-leaves"
         let mutbuf = ZetaFsMutbuf.create store ZetaFsMutbuf.Coherence.Shared
         let volume = ZetaFsFreeze.createManualStream store mutbuf None
-        let logPath = Path.Combine(store, "log", "freeze")
+        let logPath = ZetaFsPath.combine3 store "log" "freeze"
 
         try
             let id = mintId ()
@@ -582,7 +582,7 @@ let ``reopen after a mid-log CRC mismatch keeps the prefix and drops the suffix`
         let store = "/freeze-mid-crc"
         let mutbuf = ZetaFsMutbuf.create store ZetaFsMutbuf.Coherence.Shared
         let volume = ZetaFsFreeze.createManualStream store mutbuf None
-        let logPath = Path.Combine(store, "log", "freeze")
+        let logPath = ZetaFsPath.combine3 store "log" "freeze"
 
         try
             let id1 = mintId ()
@@ -639,7 +639,7 @@ let ``reopen after a mid-log sealed MAC mismatch keeps the prefix and drops the 
         let mutbuf = ZetaFsMutbuf.create store ZetaFsMutbuf.Coherence.Shared
         let vault = Array.init 32 (fun i -> byte i)
         let mutable volume: ZetaFsFreeze.Volume option = None
-        let logPath = Path.Combine(store, "log", "freeze")
+        let logPath = ZetaFsPath.combine3 store "log" "freeze"
 
         try
             match ZetaFsCrypto.sessionFromVaultKey 1u vault with
@@ -786,7 +786,7 @@ let ``Journaled freeze CAS objects on IBlockIo are readable and not POSIX files`
             | Ok first ->
                 Assert.True(ZetaFsFreeze.isReadable volume first.Content)
                 Assert.True(cas.Count > 0)
-                Assert.Equal(0, FileSystem.Current.GetFiles(Path.Combine(store, "objects"), "*").Length)
+                Assert.Equal(0, FileSystem.Current.GetFiles(ZetaFsPath.combine2 store "objects", "*").Length)
                 ZetaFsFreeze.dispose volume
                 let reopened = ZetaFsFreeze.createManualWithBlockStore store mutbuf None logDev cas
 
@@ -1029,7 +1029,7 @@ let ``Sealed journaled freeze CAS objects on IBlockIo reopen from cloned media``
                 | Error e -> Assert.Fail(ZetaFsFreeze.errorName e)
                 | Ok first ->
                     Assert.True(cas.Count > 0)
-                    Assert.Equal(0, FileSystem.Current.GetFiles(Path.Combine(store, "objects"), "*").Length)
+                    Assert.Equal(0, FileSystem.Current.GetFiles(ZetaFsPath.combine2 store "objects", "*").Length)
                     let logIo = logDev :> IBlockIo
                     let logBytes = BlockLog.readAt logIo (BlockLog.origin logIo) logDev.LogicalBytes
                     let needle = Text.Encoding.UTF8.GetBytes "freeze-intent/1"
@@ -1071,7 +1071,7 @@ let ``Journaled freeze through FileSystemBlockIo polyfill is readable after reop
             | Error e -> Assert.Fail(ZetaFsFreeze.errorName e)
             | Ok first ->
                 Assert.True(ZetaFsFreeze.isReadable volume first.Content)
-                Assert.True(FileSystem.Current.Exists(Path.Combine(store, "log", "freeze")))
+                Assert.True(FileSystem.Current.Exists(ZetaFsPath.combine3 store "log" "freeze"))
                 ZetaFsFreeze.dispose volume
                 let reopened = ZetaFsFreeze.createManualWithFileLog store mutbuf None
 
@@ -1108,7 +1108,7 @@ let ``Sealed journaled freeze through FileSystemBlockIo is readable after reopen
                 match first with
                 | Error e -> Assert.Fail(ZetaFsFreeze.errorName e)
                 | Ok first ->
-                    let logBytes = FileSystem.Current.ReadAllBytes(Path.Combine(store, "log", "freeze"))
+                    let logBytes = FileSystem.Current.ReadAllBytes(ZetaFsPath.combine3 store "log" "freeze")
                     let needle = Text.Encoding.UTF8.GetBytes "freeze-intent/1"
                     Assert.Equal(-1, MemoryExtensions.IndexOf(ReadOnlySpan<byte> logBytes, ReadOnlySpan<byte> needle))
                     ZetaFsFreeze.dispose volume
@@ -1184,8 +1184,8 @@ let ``Journaled freeze CAS objects through FileSystemBlockIo reopen and are not 
             | Error e -> Assert.Fail(ZetaFsFreeze.errorName e)
             | Ok first ->
                 Assert.True(ZetaFsFreeze.isReadable volume first.Content)
-                Assert.True(FileSystem.Current.Exists(Path.Combine(store, "cas")))
-                Assert.Equal(0, FileSystem.Current.GetFiles(Path.Combine(store, "objects"), "*").Length)
+                Assert.True(FileSystem.Current.Exists(ZetaFsPath.combine2 store "cas"))
+                Assert.Equal(0, FileSystem.Current.GetFiles(ZetaFsPath.combine2 store "objects", "*").Length)
                 ZetaFsFreeze.dispose volume
                 let reopened = ZetaFsFreeze.createManualWithFileBlockStore store mutbuf None
 
@@ -1224,9 +1224,9 @@ let ``Sealed journaled freeze CAS through FileSystemBlockIo reopen and are not P
                 | Error e -> Assert.Fail(ZetaFsFreeze.errorName e)
                 | Ok first ->
                     Assert.True(ZetaFsFreeze.isReadable volume first.Content)
-                    Assert.True(FileSystem.Current.Exists(Path.Combine(store, "cas")))
-                    Assert.Equal(0, FileSystem.Current.GetFiles(Path.Combine(store, "objects"), "*").Length)
-                    let logBytes = FileSystem.Current.ReadAllBytes(Path.Combine(store, "log", "freeze"))
+                    Assert.True(FileSystem.Current.Exists(ZetaFsPath.combine2 store "cas"))
+                    Assert.Equal(0, FileSystem.Current.GetFiles(ZetaFsPath.combine2 store "objects", "*").Length)
+                    let logBytes = FileSystem.Current.ReadAllBytes(ZetaFsPath.combine3 store "log" "freeze")
                     let needle = Text.Encoding.UTF8.GetBytes "freeze-intent/1"
                     Assert.Equal(-1, MemoryExtensions.IndexOf(ReadOnlySpan<byte> logBytes, ReadOnlySpan<byte> needle))
                     ZetaFsFreeze.dispose volume
@@ -1250,7 +1250,7 @@ let ``Polyfill crash-mid-write on the second freeze keeps the first`` () : Task 
         let store = "/freeze-polyfill-crash-prefix"
         let mutbuf = ZetaFsMutbuf.create store ZetaFsMutbuf.Coherence.Shared
         let volume = ZetaFsFreeze.createManual store mutbuf None
-        let logNeedle = Path.Combine("log", "freeze")
+        let logNeedle = ZetaFsPath.combine2 "log" "freeze"
 
         try
             let id1 = mintId ()
@@ -1294,7 +1294,7 @@ let ``Polyfill corrupt-last-write on the second freeze acks and keeps the first`
         let store = "/freeze-polyfill-corrupt-prefix"
         let mutbuf = ZetaFsMutbuf.create store ZetaFsMutbuf.Coherence.Shared
         let volume = ZetaFsFreeze.createManual store mutbuf None
-        let logNeedle = Path.Combine("log", "freeze")
+        let logNeedle = ZetaFsPath.combine2 "log" "freeze"
 
         try
             let id1 = mintId ()
@@ -1339,7 +1339,7 @@ let ``Polyfill reorder of the second freeze completes and keeps the first`` () :
         let store = "/freeze-polyfill-reorder-prefix"
         let mutbuf = ZetaFsMutbuf.create store ZetaFsMutbuf.Coherence.Shared
         let volume = ZetaFsFreeze.createManual store mutbuf None
-        let logNeedle = Path.Combine("log", "freeze")
+        let logNeedle = ZetaFsPath.combine2 "log" "freeze"
 
         try
             let id1 = mintId ()

@@ -138,8 +138,11 @@ let ``content object path is 256-bit fan-out, not a 128-bit truncation`` () =
     match ZetaFsCli.parse ("blake3:" + hex64) with
     | Ok(ZetaFsCli.Token.Content h) ->
         let path = ZetaFsCli.contentObjectPath "/store" h
-        let leaf = Path.GetFileName path
-        let slash = Path.DirectorySeparatorChar.ToString()
+        // The ZetaFS namespace joins with '/' on every host (see ZetaFsPath), so the
+        // leaf and the separator are host-independent -- asserting on the host's
+        // Path.DirectorySeparatorChar held this test red on Windows, where it is '\'.
+        let slash = string ZetaFsPath.Separator
+        let leaf = path.Substring(path.LastIndexOf ZetaFsPath.Separator + 1)
         Assert.Equal(hex64.Substring(2), leaf)
         Assert.Equal(62, leaf.Length)
         Assert.Contains(slash + "objects" + slash + hex64.Substring(0, 2) + slash, path, StringComparison.Ordinal)
