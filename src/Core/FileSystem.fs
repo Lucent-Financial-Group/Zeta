@@ -31,8 +31,16 @@ type IFileSystem =
 /// (Haskell `IO a` interpreted by `FerryThrottler`, including adjacent
 /// whole-block coalesce). The polyfill adapter maps a host file through
 /// `IFileSystem`. A later device impl must not go through POSIX files.
+///
+/// Geometry: `LbaCount` is NVMe Identify-shaped. 0 means unbounded
+/// (`SimulatedBlockIo` sparse DST). A native impl reports the namespace
+/// size. Signatures are synchronous (DST DoP=1). Native NVMe needs an
+/// async completion door (io_uring / SPDK) — wrapping these methods in
+/// Task.Run is not that door.
 type IBlockIo =
     abstract BlockSize: int
+    /// Number of addressable LBAs. 0 = unbounded (DST sparse).
+    abstract LbaCount: uint64
     abstract Read: lba: uint64 * dst: Memory<byte> -> int
     abstract Write: lba: uint64 * src: ReadOnlyMemory<byte> -> int
     abstract Flush: unit -> unit
@@ -622,6 +630,16 @@ type FileSystemBlockIo(fs: IFileSystem, path: string, blockSize: int) =
     interface IBlockIo with
         member _.BlockSize = blockSize
 
+        member _.LbaCount =
+            if not (fs.Exists path) then
+                0UL
+            else
+                use stream = fs.OpenFile(path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite)
+                if stream.Length <= 0L then
+                    0UL
+                else
+                    uint64 ((stream.Length + int64 blockSize - 1L) / int64 blockSize)
+
         member _.Read(lba, dst) =
             use stream = fs.OpenFile(path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite)
             let offset = int64 lba * int64 blockSize
@@ -735,6 +753,9 @@ type SimulatedBlockIo(blockSize: int, ?media: IReadOnlyDictionary<uint64, byte[]
 
     interface IBlockIo with
         member _.BlockSize = blockSize
+
+        /// Sparse DST: unbounded. Native NVMe reports the namespace size.
+        member _.LbaCount = 0UL
 
         member _.Read(lba, dst) =
             if dst.Length = 0 then

@@ -335,6 +335,24 @@ let ``FileSystemBlockIo constructor preserves an existing backing file`` () =
     Assert.Equal<byte>(initial, ifs.ReadAllBytes path)
 
 [<Fact>]
+let ``FileSystemBlockIo LbaCount is empty then spans a hole after a high LBA write`` () =
+    let mock = InMemoryFileSystem()
+    let path = "/vol/lba-count"
+    let io = FileSystemBlockIo(mock, path, 4096) :> IBlockIo
+    Assert.Equal(0UL, io.LbaCount)
+    let block = Array.create 4096 1uy
+    Assert.Equal(4096, io.Write(2UL, System.ReadOnlyMemory<byte>.op_Implicit block))
+    Assert.Equal(3UL, io.LbaCount)
+
+[<Fact>]
+let ``SimulatedBlockIo LbaCount is unbounded sparse DST`` () =
+    let io = SimulatedBlockIo(4096) :> IBlockIo
+    Assert.Equal(0UL, io.LbaCount)
+    let payload = [| 1uy; 2uy |]
+    Assert.Equal(2, io.Write(99UL, System.ReadOnlyMemory<byte>.op_Implicit payload))
+    Assert.Equal(0UL, io.LbaCount)
+
+[<Fact>]
 let ``FileSystemBlockIo rejects an invalid block size before creating the backing file`` () =
     let fs = InMemoryFileSystem()
     let ifs = fs :> IFileSystem
