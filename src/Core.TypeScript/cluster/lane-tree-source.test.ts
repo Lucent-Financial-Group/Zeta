@@ -1,7 +1,9 @@
-import { execFileSync } from "node:child_process";
-import { existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+import { execFile, execFileSync } from "node:child_process";
+import { existsSync, mkdirSync, mkdtempSync, readdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+import { createServer, type IncomingMessage, type ServerResponse } from "node:http";
 import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
+import { promisify } from "node:util";
 
 import { afterAll, describe, expect, test } from "bun:test";
 import { parseAllDocuments } from "yaml";
@@ -12,6 +14,7 @@ import {
   SERVED_SUBTREE,
   buildBareRepo,
   buildLaneTreeBundle,
+  isSmartHttpServiceQuery,
   laneTreeRepoUrl,
   renderLaneTreeManifests,
   rewriteSelfRepoUrls,
@@ -224,9 +227,25 @@ describe("buildBareRepo against a GitHub SHA", () => {
 describe("renderLaneTreeManifests", () => {
   const manifests = renderLaneTreeManifests("QUJD", "busybox:1.37.0");
 
-  test("every document parses and the four kinds are present", () => {
+  test("every document parses and the five kinds are present", () => {
     const kinds = parseAllDocuments(manifests).map((d) => (d.toJS({ maxAliasCount: -1 }) as { kind: string }).kind);
-    expect(kinds).toEqual(["Namespace", "ConfigMap", "Service", "Deployment"]);
+    expect(kinds).toEqual(["Namespace", "ConfigMap", "ConfigMap", "Service", "Deployment"]);
+  });
+
+  test("the server answers smart HTTP instead of using busybox httpd", () => {
+    // MEASURED 33824995558: httpd 200'd info/refs?service=git-upload-pack with the
+    // dumb refs body; go-git parsed pkt-line and died unexpected EOF. Zero children.
+    // 404 on that probe is also wrong: git 2.43 reports repository not found.
+    expect(manifests).toContain("command: [\"sh\", \"/serve/serve.sh\", \"listen\"]");
+    expect(manifests).not.toContain('["httpd"');
+    expect(manifests).not.toContain("httpd -f");
+    expect(manifests).toContain("application/x-git-upload-pack-advertisement");
+    expect(manifests).toContain("git-upload-pack");
+    expect(manifests).toContain("0008NAK");
+    expect(isSmartHttpServiceQuery("service=git-upload-pack")).toBe(true);
+    expect(isSmartHttpServiceQuery("service=git-receive-pack")).toBe(true);
+    expect(isSmartHttpServiceQuery("")).toBe(false);
+    expect(isSmartHttpServiceQuery("foo=bar")).toBe(false);
   });
 
   test("the readiness probe targets the repository index, not /", () => {
@@ -296,5 +315,181 @@ describe("the narrow repo-URL exception", () => {
     expect(manifests).toContain(`name: ${String(namespace)}`);
     expect(manifests).toContain(`port: ${url.port}`);
     expect(manifests).toContain(`path: ${url.pathname}/info/refs`);
+  });
+});
+
+/**
+ * Enough smart HTTP for a single-pack repo — the overlay contract.
+ * `httpdMode` is busybox httpd: 200 the dumb file on ?service= (go-git EOF).
+ */
+function pktLine(data: Buffer | string): Buffer {
+  const buf = Buffer.isBuffer(data) ? data : Buffer.from(data);
+  const hex = (buf.length + 4).toString(16).padStart(4, "0");
+  return Buffer.concat([Buffer.from(hex, "ascii"), buf]);
+}
+
+const execFileAsync = promisify(execFile);
+
+function serveTreeDir(
+  docRoot: string,
+  httpdMode: boolean,
+): { url: string; stop: () => void } {
+  const treeGit = join(docRoot, "tree.git");
+  const server = createServer((req: IncomingMessage, res: ServerResponse) => {
+    const host = req.headers.host ?? "127.0.0.1";
+    const url = new URL(req.url ?? "/", `http://${host}`);
+    const query = url.search.startsWith("?") ? url.search.slice(1) : url.search;
+    const reply = (status: number, body: Buffer | string, contentType: string): void => {
+      const buf = Buffer.isBuffer(body) ? body : Buffer.from(body);
+      res.writeHead(status, {
+        "Content-Type": contentType,
+        "Content-Length": String(buf.length),
+        Connection: "close",
+      });
+      res.end(buf);
+    };
+    if (url.pathname.includes("..")) {
+      reply(400, "bad path", "text/plain");
+      return;
+    }
+    if (httpdMode && req.method === "GET" && isSmartHttpServiceQuery(query)) {
+      // The rejected fix: git 2.43 treats this as "repository not found".
+      reply(404, "not found", "text/plain");
+      return;
+    }
+    if (!httpdMode && req.method === "GET" && isSmartHttpServiceQuery(query)) {
+      const refs = readFileSync(join(treeGit, "info/refs"), "utf8");
+      const sha = refs.split(/\s+/)[0] ?? "";
+      const banner = pktLine("# service=git-upload-pack\n");
+      const head = pktLine(Buffer.concat([Buffer.from(`${sha} HEAD\0symref=HEAD:refs/heads/main agent=zeta-lane-tree\n`)]));
+      const main = pktLine(`${sha} refs/heads/main\n`);
+      const body = Buffer.concat([banner, Buffer.from("0000"), head, main, Buffer.from("0000")]);
+      res.writeHead(200, {
+        "Content-Type": "application/x-git-upload-pack-advertisement",
+        "Cache-Control": "no-cache",
+        "Content-Length": String(body.length),
+        Connection: "close",
+      });
+      res.end(body);
+      return;
+    }
+    if (!httpdMode && req.method === "POST" && url.pathname === "/tree.git/git-upload-pack") {
+      const chunks: Buffer[] = [];
+      req.on("data", (chunk: Buffer) => {
+        chunks.push(chunk);
+      });
+      req.on("end", () => {
+        const packsDir = join(treeGit, "objects/pack");
+        const packName = readdirSync(packsDir).find((name) => name.endsWith(".pack"));
+        if (packName === undefined) {
+          reply(500, "no pack", "text/plain");
+          return;
+        }
+        const pack = readFileSync(join(packsDir, packName));
+        const body = Buffer.concat([pktLine("NAK\n"), pack]);
+        res.writeHead(200, {
+          "Content-Type": "application/x-git-upload-pack-result",
+          "Cache-Control": "no-cache",
+          "Content-Length": String(body.length),
+          Connection: "close",
+        });
+        res.end(body);
+      });
+      return;
+    }
+    const filePath = join(docRoot, url.pathname);
+    if (!existsSync(filePath)) {
+      reply(404, "not found", "text/plain");
+      return;
+    }
+    reply(200, readFileSync(filePath), "application/octet-stream");
+  });
+  server.keepAliveTimeout = 1;
+  server.listen(0, "127.0.0.1");
+  const address = server.address();
+  if (address === null || typeof address === "string") {
+    throw new Error("lane-tree HTTP test server did not bind a port");
+  }
+  return {
+    url: `http://127.0.0.1:${String(address.port)}/tree.git`,
+    stop: () => {
+      server.close();
+    },
+  };
+}
+
+function gitLsRemoteAsync(repoUrl: string): Promise<{ status: number; stdout: string; stderr: string }> {
+  return execFileAsync("git", ["-c", "http.followRedirects=false", "ls-remote", repoUrl], {
+    encoding: "utf8",
+    env: { ...process.env, GIT_TERMINAL_PROMPT: "0" },
+    timeout: 15_000,
+  })
+    .then((result) => ({ status: 0, stdout: result.stdout, stderr: result.stderr }))
+    .catch((error: { code?: number; stdout?: string; stderr?: string }) => ({
+      status: typeof error.code === "number" ? error.code : 1,
+      stdout: error.stdout ?? "",
+      stderr: error.stderr ?? "",
+    }));
+}
+
+describe("smart HTTP vs busybox httpd", () => {
+  const staging = join(work, "http-stage");
+  mkdirSync(join(staging, SERVED_SUBTREE), { recursive: true });
+  writeFileSync(join(staging, SERVED_SUBTREE, "a.yaml"), "kind: ConfigMap\n");
+  const repo = buildBareRepo(staging, join(work, "http.git"), "probe");
+  const docRoot = join(work, "http-doc");
+  mkdirSync(docRoot, { recursive: true });
+  execFileSync("cp", ["-a", repo.dir, join(docRoot, "tree.git")]);
+
+  test("the smart probe Content-Type is the git advertisement, not a dumb file", async () => {
+    // go-git (Argo CD LsRemote) requires this. Git CLI can fall back; go-git cannot.
+    const http = serveTreeDir(docRoot, false);
+    try {
+      const probe = await execFileAsync(
+        "curl",
+        ["-sS", "-D-", "-o", join(work, "adv-body"), `${http.url}/info/refs?service=git-upload-pack`],
+        { encoding: "utf8", timeout: 5000 },
+      );
+      expect(probe.stdout).toContain("application/x-git-upload-pack-advertisement");
+      const body = readFileSync(join(work, "adv-body"));
+      expect(body.subarray(0, 4).toString("ascii")).toMatch(/^[0-9a-f]{4}$/);
+      expect(body.toString("utf8")).toContain("# service=git-upload-pack");
+      expect(body.toString("utf8")).toContain("refs/heads/main");
+    } finally {
+      http.stop();
+    }
+  });
+
+  test("git ls-remote and clone see main over smart HTTP", async () => {
+    const http = serveTreeDir(docRoot, false);
+    try {
+      const listed = await gitLsRemoteAsync(http.url);
+      expect(listed.status).toBe(0);
+      expect(listed.stdout).toMatch(/refs\/heads\/main/);
+      const clone = join(work, "http-clone");
+      await execFileAsync("git", ["-c", "http.followRedirects=false", "clone", "--quiet", http.url, clone], {
+        env: { ...process.env, GIT_TERMINAL_PROMPT: "0" },
+        timeout: 15_000,
+      });
+      const branch = execFileSync("git", ["-C", clone, "rev-parse", "--abbrev-ref", "HEAD"], {
+        encoding: "utf8",
+      }).trim();
+      expect(branch).toBe("main");
+    } finally {
+      http.stop();
+    }
+  }, 20_000);
+
+  test("404 on the smart probe is repository-not-found, not a fallback", async () => {
+    // git 2.43: 404 on info/refs?service= is "not found". Do not "fix" go-git
+    // EOF by 404ing the probe.
+    const http = serveTreeDir(docRoot, true);
+    try {
+      const listed = await gitLsRemoteAsync(http.url);
+      expect(listed.status).not.toBe(0);
+      expect(`${listed.stdout}\n${listed.stderr}`).toMatch(/not found|returned error: 404/i);
+    } finally {
+      http.stop();
+    }
   });
 });

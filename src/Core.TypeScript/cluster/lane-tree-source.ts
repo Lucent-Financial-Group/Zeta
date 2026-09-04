@@ -71,21 +71,29 @@
  * -- THREE GIT SURFACES, NOT THREE VERSIONS OF ONE BINARY --------------------
  *   BUILDER  host `git` in `buildBareRepo`. GitHub `ubuntu-24.04` is 2.43.x
  *            (this checkout: 2.43.0). That is the only git that WRITES the tree.
- *   SERVER   none. `busybox:1.37.0` `httpd`. No git, no CGI, no credentials.
+ *   SERVER   none. `busybox:1.37.0` `nc` + `lane-tree-serve.sh`. No git binary,
+ *            no CGI, no credentials. Speaks just enough smart HTTP for the
+ *            single pack `buildBareRepo` already built (advertisement + NAK +
+ *            pack). busybox `httpd` is not used: it 200s `?service=` with the
+ *            dumb refs body, and go-git (Argo CD LsRemote) dies
+ *            `failed to list refs: unexpected EOF` (MEASURED 33824995558;
+ *            argoproj/argo-cd#17267). Git CLI falls back; go-git does not.
+ *            404ing the probe is also wrong: git 2.43 treats 404 as
+ *            "repository not found".
  *   CLIENT   Argo CD v3.5.2 repo-server (`quay.io/argoproj/argocd:v3.5.2`,
- *            chart `argo-cd` 10.7.0) clones with the distro `git` CLI from
- *            `ubuntu:26.04`, not go-git and not libgit2. That is the process
- *            that fetches this server.
+ *            chart `argo-cd` 10.7.0). LsRemote is go-git (smart HTTP only).
+ *            Fetch/clone after that is the distro `git` CLI.
  *
  * -- WHY THIS IS NOT A GITHUB PULL-THROUGH -----------------------------------
  * Same shape as GHCR not being a docker.io pull-through (081M1F1ZG0A). A
  * missing SHA cannot be fetched from GitHub by THIS server:
  *
- *   1. The pod is busybox httpd. Dumb HTTP serves files packed into the
- *      ConfigMap and nothing else. The TypeScript dumb-HTTP reader already
- *      exists (`docs/design/root-site-iris/site/gitpull.html`, browser-node
- *      adapter `git-dumb-http`): GET `/objects/ab/cd…` + inflate, same-origin
- *      so CORS never fires. That client talks to a GitHub *Pages* bare repo
+ *   1. The pod is busybox `nc` plus a smart-HTTP shim over the packed files.
+ *      It has no git binary, so it cannot fetch a missing SHA from GitHub. The
+ *      TypeScript dumb-HTTP reader already exists
+ *      (`docs/design/root-site-iris/site/gitpull.html`, browser-node adapter
+ *      `git-dumb-http`): GET `/objects/ab/cd…` + inflate, same-origin so CORS
+ *      never fires. That client talks to a GitHub *Pages* bare repo
  *      (`/repo.git/`), not to this pod. Putting it here is a different job.
  *   2. `git clone github.com/...` is smart HTTP (`git-upload-pack`). Pointing
  *      `objects/info/http-alternates` at the forge clone URL therefore 404s.
@@ -170,6 +178,22 @@ export const LANE_TREE_REPO_PATH = "tree.git";
  * `targetRevision: main`. Serve `main`; ask for `main`.
  */
 export const SERVED_GIT_REF = "main";
+
+/**
+ * Git (and go-git) probe smart HTTP with `GET info/refs?service=git-upload-pack`.
+ * A 200 here is treated as a pkt-line advertisement. Dumb-HTTP servers must 404
+ * (or 403) it so the client falls back to GET `info/refs`.
+ */
+export function isSmartHttpServiceQuery(query: string): boolean {
+  return /(?:^|&)service=/.test(query);
+}
+
+/** Indent a YAML `|` block so a sibling file can ride in a ConfigMap. */
+function yamlBlock(value: string, indent: number): string {
+  const pad = " ".repeat(indent);
+  const trimmed = value.endsWith("\n") ? value.slice(0, -1) : value;
+  return trimmed.split("\n").map((line) => `${pad}${line}`).join("\n");
+}
 
 /**
  * How a repoURL is recognised as pointing at THIS repository.
@@ -351,16 +375,21 @@ export function packBareRepo(bareDir: string): Buffer {
 }
 
 /**
- * The lane-only manifests: a ConfigMap carrying the packed repository, and a pod
- * that unpacks it once and serves the directory over HTTP.
+ * The lane-only manifests: a ConfigMap carrying the packed repository, a
+ * ConfigMap carrying the smart-HTTP script, and a pod that unpacks once and
+ * serves just enough smart HTTP for one pack.
  *
- * `busybox` supplies tar, gzip and `httpd` in one small public image, so the
- * server needs nothing built and nothing private. The unpack runs in an
- * initContainer so the serving container starts only after the tree is on disk --
- * otherwise the first clone can race the untar and fail with a 404 that looks like
- * a missing repository.
+ * `busybox` supplies tar, gzip and `nc` in one small public image, so the
+ * server needs nothing built and nothing private. busybox `httpd` is NOT used:
+ * it 200s `?service=` with a dumb body and go-git dies unexpected EOF
+ * (MEASURED 33824995558). 404ing that probe is also wrong (git 2.43: repo not
+ * found). The serve script answers smart HTTP for one pack.
+ * The unpack runs in an initContainer so the serving container starts only
+ * after the tree is on disk -- otherwise the first clone can race the untar
+ * and fail with a 404 that looks like a missing repository.
  */
 export function renderLaneTreeManifests(packedBase64: string, image: string): string {
+  const serveSh = readFileSync(join(import.meta.dir, "lane-tree-serve.sh"), "utf8");
   return `apiVersion: v1
 kind: Namespace
 metadata:
@@ -373,6 +402,15 @@ metadata:
   namespace: ${LANE_TREE_NAMESPACE}
 binaryData:
   tree.tar.gz: ${packedBase64}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: ${LANE_TREE_NAME}-serve
+  namespace: ${LANE_TREE_NAMESPACE}
+data:
+  serve.sh: |
+${yamlBlock(serveSh, 4)}
 ---
 apiVersion: v1
 kind: Service
@@ -415,17 +453,18 @@ spec:
               cpu: 10m
               memory: 32Mi
       containers:
-        - name: httpd
+        - name: serve
           image: ${image}
-          # -f keeps busybox httpd in the foreground so the container does not exit
-          # immediately and read as CrashLoopBackOff.
-          command: ["httpd", "-f", "-p", "${String(LANE_TREE_PORT)}", "-h", "/srv"]
+          # nc -e re-enters /serve/serve.sh per connection (stdin/stdout = socket).
+          # defaultMode 365 is 0555, so that exec has +x. sh listen is PID 1.
+          command: ["sh", "/serve/serve.sh", "listen"]
           ports:
             - containerPort: ${String(LANE_TREE_PORT)}
           readinessProbe:
             # Probes the repository's own info file, not "/" — a server that is up
             # while the tree is missing would otherwise read as ready and hand
-            # ArgoCD a 404 that looks like a bad repoURL.
+            # ArgoCD a 404 that looks like a bad repoURL. No query string: the
+            # smart-HTTP probe is a pkt-line advertisement, not the dumb file.
             httpGet:
               path: /${LANE_TREE_REPO_PATH}/info/refs
               port: ${String(LANE_TREE_PORT)}
@@ -434,6 +473,9 @@ spec:
           volumeMounts:
             - name: srv
               mountPath: /srv
+            - name: serve
+              mountPath: /serve
+              readOnly: true
           resources:
             requests:
               cpu: 10m
@@ -444,6 +486,10 @@ spec:
             name: ${LANE_TREE_NAME}
         - name: srv
           emptyDir: {}
+        - name: serve
+          configMap:
+            name: ${LANE_TREE_NAME}-serve
+            defaultMode: 365
 `;
 }
 

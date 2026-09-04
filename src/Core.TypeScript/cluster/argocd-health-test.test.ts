@@ -39,6 +39,8 @@ import {
   repoBackedChildNames,
   ROOT_DEV_APPLICATION_NAME,
   rootCatalogGitHostFailure,
+  rootCatalogRefsFailure,
+  isLaneTreeRefsListFailureText,
   parseApplicationName,
   parseArgs,
   parseK3dClusterName,
@@ -1061,6 +1063,43 @@ describe("081KSXN940008QG0R000SCP2H1 argocd-health-test planning", () => {
     ).toBeNull();
   });
 
+  test("catalog refs unexpected EOF is terminal and is not a helm-deps miss", () => {
+    // MEASURED 33824995558: serve-tree Applied, lane-tree Ready, then
+    // child-application-count=0/Count for 12+ minutes. Not missing ACE/helm
+    // charts — App-of-Apps never listed refs.
+    const failure = rootCatalogRefsFailure([
+      {
+        name: ROOT_DEV_APPLICATION_NAME,
+        syncStatus: "Unknown",
+        healthStatus: "Healthy",
+        message: "",
+        conditions: [
+          {
+            type: "ComparisonError",
+            message:
+              "Failed to load target state: failed to generate manifest for source 1 of 1: rpc error: code = Unknown desc = failed to list refs: unexpected EOF",
+          },
+        ],
+      },
+    ]);
+    expect(failure).not.toBeNull();
+    expect(isTerminalFailure(failure)).toBe(true);
+    expect(failure?.message).toContain("cannot list refs");
+    expect(isLaneTreeRefsListFailureText("failed to list refs: unexpected EOF")).toBe(true);
+    expect(isLaneTreeRefsListFailureText("failed to list refs: i/o timeout")).toBe(false);
+    expect(
+      rootCatalogRefsFailure([
+        {
+          name: ROOT_DEV_APPLICATION_NAME,
+          syncStatus: "Unknown",
+          healthStatus: "Healthy",
+          message: "",
+          conditions: [{ type: "ComparisonError", message: "helm chart not found" }],
+        },
+      ]),
+    ).toBeNull();
+  });
+
   test("health-wait progress names laggards instead of sitting silent for 2400s", () => {
     const line = formatHealthWaitProgress(120, [
       { name: "hat-system", ok: true, syncStatus: "Synced", healthStatus: "Healthy" },
@@ -1110,6 +1149,7 @@ describe("081KSXN940008QG0R000SCP2H1 argocd-health-test planning", () => {
       source.indexOf("async function runDriftRepairCheck"),
     );
     expect(waitBody).toContain("degradedHealthTerminalFailure(lastVerdicts)");
+    expect(waitBody).toContain("rootCatalogRefsFailure(snapshots)");
   });
 
   test("child-appear wait is capped below the health budget, and is ANY child not hat-system", () => {
@@ -1120,6 +1160,11 @@ describe("081KSXN940008QG0R000SCP2H1 argocd-health-test planning", () => {
     expect(REPO_BACKED_CHILD_APPEAR_TIMEOUT_SECONDS).toBeGreaterThan(60);
     const source = readFileSync(new URL("./argocd-health-test.ts", import.meta.url), "utf8");
     expect(source).not.toContain('get", "application", "hat-system"');
+    const childWait = source.slice(
+      source.indexOf("async function waitForRepoBackedChild"),
+      source.indexOf("function asRecord"),
+    );
+    expect(childWait).toContain("rootCatalogRefsFailure(snapshots)");
     expect(repoBackedChildNames([{ name: ROOT_DEV_APPLICATION_NAME, syncStatus: "", healthStatus: "", message: "" }])).toEqual(
       [],
     );

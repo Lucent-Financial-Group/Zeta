@@ -158,4 +158,17 @@ describe("every supported provider is exercised by a real CI lane", () => {
     expect(run).toContain("ip route get");
     expect(run).not.toMatch(/docker exec.*\|\s*(grep|rg)\s+-[^\n]*q/);
   });
+
+  test("live-k3d dump lists refs on the overlay git, not only github.com", () => {
+    // MEASURED 33824995558: getent github.com said nothing about the in-cluster
+    // tree ArgoCD actually clones. child-application-count=0 was unexpected EOF,
+    // not missing helm charts.
+    const dump = (jobs()["live-k3d"]!.steps ?? []).find((s) =>
+      (s.name ?? "").includes("Why ArgoCD could not COMPARE"),
+    );
+    const run = dump?.run ?? "";
+    expect(run.length).toBeGreaterThan(0);
+    expect(run).toContain("git ls-remote");
+    expect(run).toContain("zeta-lane-tree.zeta-lane-tree.svc.cluster.local");
+  });
 });

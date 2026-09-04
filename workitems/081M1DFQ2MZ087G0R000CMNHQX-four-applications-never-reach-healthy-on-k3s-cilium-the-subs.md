@@ -801,9 +801,28 @@ GitHub Pages already exists (`gitpull.html` / `git-dumb-http`); the
 forge clone URL is still smart HTTP. Wiring that reader into this
 pod is how we learn in-cluster git over time, and it must not
 satisfy a GitHub SHA with the un-overlaid tree. Three git surfaces:
-host `git` 2.43.x writes the pack; busybox 1.37.0 httpd has no git;
-Argo CD v3.5.2 repo-server (`argo-cd` 10.7.0) clones with Ubuntu
-26.04's `git` CLI.
+host `git` 2.43.x writes the pack; busybox 1.37.0 has no git (nc +
+`lane-tree-serve.sh` smart-HTTP shim, not httpd); Argo CD v3.5.2
+repo-server (`argo-cd` 10.7.0) lists refs with go-git (smart HTTP
+only) and fetches with Ubuntu 26.04's `git` CLI.
+
+**MEASURED live-kind-included + live-k3d 33824995558 (SHA `4e89a9600`):**
+asking for `main` closed the object-fetch hole. New hole: zero
+children, `argocd=Missing/Missing`, `cert-manager=Missing/Missing`,
+lane-tree pod `1/1 Running`. Root ComparisonError
+`failed to list refs: unexpected EOF`. This is **not** missing helm
+chart deps and **not** an ACE package-manager miss: App-of-Apps never
+listed refs, so no Application objects, so no helm pulls. Cause:
+Argo CD LsRemote is go-git, which does not speak dumb HTTP
+(argoproj/argo-cd#17267). busybox `httpd` 200s
+`GET /info/refs?service=git-upload-pack` with the dumb refs body;
+go-git parses pkt-line and EOFs. Git CLI falls back; go-git does not.
+404ing that probe is also wrong: git 2.43 treats 404 as "repository
+not found". Fix: a single-pack smart-HTTP shim (advertisement + NAK
++ the pack `buildBareRepo` already built). Still no git binary on
+the server. Fail-fast the ComparisonError instead of burning 900s on
+vault / 1200s on health. Keep `--disable=servicelb`. Do not invent
+helm values. Do not invent ACE chart-deps work from this dump.
 
 ## CI runner budgets (three existing ladders)
 

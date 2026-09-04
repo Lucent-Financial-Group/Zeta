@@ -1198,6 +1198,8 @@ jobs:
             echo "resolv.conf:"; cat /etc/resolv.conf 2>&1 | sed "s/^/  /"
             echo "getent hosts github.com:"; getent hosts github.com 2>&1 | sed "s/^/  /" || echo "  FAILED rc=$?"
             echo "getent hosts kubernetes.default (in-cluster):"; getent hosts kubernetes.default 2>&1 | sed "s/^/  /" || echo "  FAILED rc=$?"
+            echo "getent hosts zeta-lane-tree.zeta-lane-tree.svc.cluster.local:"; getent hosts zeta-lane-tree.zeta-lane-tree.svc.cluster.local 2>&1 | sed "s/^/  /" || echo "  FAILED rc=$?"
+            echo "git ls-remote overlay tree.git:"; git ls-remote http://zeta-lane-tree.zeta-lane-tree.svc.cluster.local:8080/tree.git 2>&1 | sed "s/^/  /" || echo "  FAILED rc=$?"
           ' || true
           echo "--- what does CoreDNS forward upstream to? (the k3d/docker 127.0.0.11 question) ---"
           kubectl -n kube-system get configmap coredns -o jsonpath='{.data.Corefile}' || true
@@ -1717,6 +1719,11 @@ jobs:
           kubectl get svc -A --field-selector spec.type=LoadBalancer || true
           echo "=== CoreDNS Corefile (the github.com resolver) ==="
           kubectl -n kube-system get configmap coredns -o jsonpath='{.data.Corefile}' || true
+          echo "=== overlay git ls-remote (MEASURED 33824995558: unexpected EOF, not helm deps) ==="
+          kubectl -n argocd exec deploy/argocd-repo-server -- sh -c '
+            echo "getent hosts zeta-lane-tree.zeta-lane-tree.svc.cluster.local:"; getent hosts zeta-lane-tree.zeta-lane-tree.svc.cluster.local 2>&1 | sed "s/^/  /" || echo "  FAILED rc=$?"
+            echo "git ls-remote overlay tree.git:"; git ls-remote http://zeta-lane-tree.zeta-lane-tree.svc.cluster.local:8080/tree.git 2>&1 | sed "s/^/  /" || echo "  FAILED rc=$?"
+          ' || true
           echo
 
       - name: Name the drifting resources (per-Application, failures only)
@@ -2005,6 +2012,11 @@ jobs:
           kubectl get nodes -o wide || true
           kubectl -n argocd get applications.argoproj.io -o wide || true
           kubectl get pods -A -o wide || true
+          echo "=== overlay git ls-remote (MEASURED 33824995558: unexpected EOF, not helm deps) ==="
+          kubectl -n argocd exec deploy/argocd-repo-server -- sh -c '
+            echo "getent hosts zeta-lane-tree.zeta-lane-tree.svc.cluster.local:"; getent hosts zeta-lane-tree.zeta-lane-tree.svc.cluster.local 2>&1 | sed "s/^/  /" || echo "  FAILED rc=$?"
+            echo "git ls-remote overlay tree.git:"; git ls-remote http://zeta-lane-tree.zeta-lane-tree.svc.cluster.local:8080/tree.git 2>&1 | sed "s/^/  /" || echo "  FAILED rc=$?"
+          ' || true
           kubectl -n arc-systems describe pods -l app.kubernetes.io/name=gha-rs-controller || true
           kubectl -n arc-systems logs -l app.kubernetes.io/name=gha-rs-controller --all-containers=true --prefix=true --tail=200 || true
           kubectl -n arc-systems logs -l app.kubernetes.io/name=gha-rs-controller --all-containers=true --prefix=true --previous=true --tail=200 || true

@@ -275,8 +275,9 @@ const REPO_ROOT = resolve(import.meta.dir, "../../..");
 /**
  * Image the lane-tree server runs. Pinned by DIGEST, not by tag: `busybox:1.37.0`
  * is a moving target on Docker Hub and the whole point of this pod is to be the
- * least surprising thing in the lane. busybox supplies tar, gzip and httpd in one
+ * least surprising thing in the lane. busybox supplies tar, gzip and nc in one
  * public ~4MB image, so the server needs nothing built and nothing private.
+ * busybox httpd is not used: it 200s `?service=` (MEASURED 33824995558).
  */
 const LANE_TREE_IMAGE = "busybox:1.37.0";
 const DEFAULT_K3D_CONFIG = "full-ai-cluster/dev-cluster/k3d-config.yaml";
@@ -2313,6 +2314,39 @@ export function rootCatalogGitHostFailure(snapshots: readonly ArgoApplicationSna
   };
 }
 
+/**
+ * Overlay git is up (readiness GET /info/refs succeeded) but the smart-HTTP
+ * probe was answered as dumb HTTP. MEASURED live-kind-included + live-k3d
+ * 33824995558: `failed to list refs: unexpected EOF`, child-application-count
+ * 0/Count, argocd=Missing. Waiting 900s for vault or 1200s for health cannot
+ * create Applications that were never listed. Same shape as
+ * `rootCatalogGitHostFailure`. This is NOT missing helm chart deps.
+ */
+const REFS_UNEXPECTED_EOF = /failed to list refs:\s*unexpected EOF/i;
+
+export function isLaneTreeRefsListFailureText(text: string): boolean {
+  return REFS_UNEXPECTED_EOF.test(text);
+}
+
+export function rootCatalogRefsFailure(snapshots: readonly ArgoApplicationSnapshot[]): Failure | null {
+  const root = snapshots.find((snapshot) => snapshot.name === ROOT_DEV_APPLICATION_NAME);
+  if (root === undefined) return null;
+  const hit = applicationConditionTexts(root).find(isLaneTreeRefsListFailureText);
+  if (hit === undefined) return null;
+  return {
+    kind: "ArgoCdTimeout",
+    message:
+      "zeta-root-dev cannot list refs on the catalog git (ComparisonError unexpected EOF); waiting will not produce children",
+    terminal: true,
+    detail: {
+      syncStatus: root.syncStatus,
+      healthStatus: root.healthStatus,
+      evidence: hit,
+      conditions: root.conditions ?? [],
+    },
+  };
+}
+
 export const HEALTH_WAIT_LAGGARD_LIMIT = 8;
 
 export function formatHealthWaitProgress(elapsedSec: number, verdicts: readonly ApplicationVerdict[]): string {
@@ -2526,6 +2560,8 @@ async function waitForRepoBackedChild(pollSeconds: number): Promise<Failure | nu
     if (isFailure(snapshots)) return snapshots;
     const catalogDns = rootCatalogGitHostFailure(snapshots);
     if (catalogDns !== null) return catalogDns;
+    const catalogRefs = rootCatalogRefsFailure(snapshots);
+    if (catalogRefs !== null) return catalogRefs;
     if (repoBackedChildNames(snapshots).length > 0) return null;
     return {
       kind: "ArgoCdTimeout",
@@ -2793,6 +2829,8 @@ async function waitForApplications(
     if (isFailure(snapshots)) return snapshots;
     const catalogDns = rootCatalogGitHostFailure(snapshots);
     if (catalogDns !== null) return catalogDns;
+    const catalogRefs = rootCatalogRefsFailure(snapshots);
+    if (catalogRefs !== null) return catalogRefs;
     lastVerdicts =
       plan.scope === "smoke"
         ? classifySmokeApplications(snapshots)
