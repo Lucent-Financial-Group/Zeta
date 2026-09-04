@@ -1,0 +1,17 @@
+{
+  "pr_number": 16539,
+  "archive_path": "docs/history/pr-reviews/PR-16539-feat-language-add-bounded-english-seed-lexical-coverage-audit.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7qLCSo",
+    "comment:PRRC_kwDOSF9kNM7qLCTA",
+    "thread:PRRT_kwDOSF9kNM6fFOX2",
+    "thread:PRRT_kwDOSF9kNM6fFOXo"
+  ],
+  "fetched_at": "2026-09-03T22:21:14.042Z",
+  "schema_version": "v1",
+  "commit_sha": "4237e5f6b174f291015b50fe65d02c345ed7db37",
+  "title": "feat(language): add bounded English-seed lexical coverage audit",
+  "state": "MERGED",
+  "merged_at": "2026-09-03T22:20:37Z",
+  "head_ref": "lumen/english-seed-coverage-contract"
+}
