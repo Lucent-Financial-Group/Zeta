@@ -16,6 +16,7 @@ import {
   stageLaneTree,
 } from "./lane-tree-source";
 import { applyResourceProfile, loadResourceCatalogue } from "./storage-profiles";
+import { LANE_TREE_REPO_URL, assertLaneTreeRepoUrl, isLaneTreeRepoUrl } from "./dev-cluster/lib";
 
 const REPO_ROOT = resolve(import.meta.dir, "../../..");
 const work = mkdtempSync(join(tmpdir(), "zeta-lane-tree-"));
@@ -197,5 +198,55 @@ describe("renderLaneTreeManifests", () => {
     // every Application at once.
     expect(manifests.match(/cpu: 10m/g)?.length).toBe(2);
     expect(manifests.match(/memory: 32Mi/g)?.length).toBe(2);
+  });
+});
+
+describe("the narrow repo-URL exception", () => {
+  test("THE DRIFT GUARD: the allowed literal and the generated URL are the same string", () => {
+    // Two constants, two files, one address. `dev-cluster/lib.ts` decides what the
+    // bootstrap will ACCEPT and `lane-tree-source.ts` decides what it will PRODUCE,
+    // and neither reads the other. If they drift, the bootstrap refuses the only URL
+    // anything generates — an exception with no subject — and the failure surfaces
+    // as a bring-up abort a long way from either definition.
+    expect(LANE_TREE_REPO_URL).toBe(laneTreeRepoUrl());
+  });
+
+  test("it is a LITERAL, not a pattern over in-cluster addresses", () => {
+    // A pattern like "any http:// on .svc.cluster.local" would accept every service
+    // in the cluster, including one an Application could stand up. ArgoCD clones what
+    // it is handed, so the set of acceptable URLs is the set of things that can serve
+    // this lane its manifests — and that set has one member.
+    for (const near of [
+      "http://zeta-lane-tree.zeta-lane-tree.svc.cluster.local:8080/other.git",
+      "http://evil.default.svc.cluster.local:8080/tree.git",
+      "https://zeta-lane-tree.zeta-lane-tree.svc.cluster.local:8080/tree.git",
+      "http://zeta-lane-tree.zeta-lane-tree.svc.cluster.local/tree.git",
+      "http://github.com/Lucent-Financial-Group/Zeta",
+    ]) {
+      expect(isLaneTreeRepoUrl(near)).toBe(false);
+    }
+    expect(isLaneTreeRepoUrl(LANE_TREE_REPO_URL)).toBe(true);
+  });
+
+  test("the assertion is reachable and names what it wanted", () => {
+    // `assertLaneTreeRepoUrl` calls `fail`, which exits — so the reachable check here
+    // is the predicate it is built from. An assertion whose refusal branch is never
+    // executed in test is a refusal nobody has seen work; this pins the branch
+    // condition, and the bring-up tests pin the throw on the neighbouring failure.
+    expect(typeof assertLaneTreeRepoUrl).toBe("function");
+    expect(isLaneTreeRepoUrl("")).toBe(false);
+  });
+
+  test("the manifests serve the address the guard allows", () => {
+    // Closes the loop: the Service name, namespace and port that the rendered
+    // manifests create must be the ones the URL resolves. A rename on either side
+    // gives ArgoCD an address nothing is listening on.
+    const url = new URL(LANE_TREE_REPO_URL);
+    const [service, namespace] = url.hostname.split(".");
+    const manifests = renderLaneTreeManifests("QUJD", "busybox:1.37.0");
+    expect(manifests).toContain(`name: ${String(service)}`);
+    expect(manifests).toContain(`name: ${String(namespace)}`);
+    expect(manifests).toContain(`port: ${url.port}`);
+    expect(manifests).toContain(`path: ${url.pathname}/info/refs`);
   });
 });

@@ -1611,6 +1611,7 @@ jobs:
             --git-ref "$ZETA_ARGOCD_GIT_REF" \
             --timeout-sec 2400 \
             --poll-sec 15 \
+            --serve-tree dev \
             --ephemeral-vault-init \
             | tee "$RUNNER_TEMP/cilium-included-proof.log"
 
@@ -1845,6 +1846,24 @@ jobs:
           ZETA_GHCR_PULL_TOKEN: ${{ github.token }}
           ZETA_ARGOCD_GIT_REF: ${{ github.event.pull_request.head.sha || github.sha }}
           ZETA_ARGOCD_GIT_REPO_URL: ${{ github.event.pull_request.head.repo.clone_url || 'https://github.com/Lucent-Financial-Group/Zeta' }}
+        # SERVES THE `dev` RUNG rather than syncing the committed `metal` one.
+        # Aaron 2026-09-03: "we don't have to test metal on our CI, metal is for our
+        # real hardware, dev is for testing on our github runners."
+        #
+        # The committed tree is `metal` -- 6390m of requests across the dev lane's 39
+        # apps against this runner's 4000m node -- so `mimir-kafka-0` and three
+        # hindsight pods take `Insufficient cpu` and never schedule (run
+        # 33790413535). `dev` is 1165m and fits. `--serve-tree dev` builds a copy of
+        # `full-ai-cluster/k8s` with that rung applied through the same
+        # `applyResourceProfile` the `--verify` path checks, serves it from an
+        # in-cluster read-only git server, and points the root Application there.
+        # Nothing is pushed, nothing leaves the runner, and the committed tree is
+        # untouched -- so the hardware box keeps the rung it needs.
+        #
+        # IT FAILS CLOSED. If the server never becomes Available the bring-up throws
+        # rather than falling back to GitHub: a silent fallback would sync `metal`,
+        # reproduce this exact failure, and say nothing about the override having
+        # been skipped.
         run: |
           # `pipefail` so the HARNESS's exit code -- not tee's -- is the job verdict.
           # Without it the tee would swallow every failure and re-create, in a subtler
@@ -1860,6 +1879,7 @@ jobs:
             --git-ref "$ZETA_ARGOCD_GIT_REF" \
             --timeout-sec 2400 \
             --poll-sec 15 \
+            --serve-tree dev \
             --ephemeral-vault-init \
             | tee "$RUNNER_TEMP/included-proof.log"
 
