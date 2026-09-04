@@ -1,0 +1,12 @@
+{
+  "pr_number": 16579,
+  "archive_path": "docs/history/pr-reviews/PR-16579-test-081m1parftk087g0r0008ptbmm-wal-door-shape-posix-record-vs-block-lba-pad.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-04T14:10:21.018Z",
+  "schema_version": "v1",
+  "commit_sha": "a9646be0ca986a084ca0912a41f129f1fb449fab",
+  "title": "test(081M1PARFTK087G0R0008PTBMM): WAL door shape POSIX record vs block LBA pad",
+  "state": "MERGED",
+  "merged_at": "2026-09-04T14:09:42Z",
+  "head_ref": "feat/zetafs-wal-door-shape"
+}
