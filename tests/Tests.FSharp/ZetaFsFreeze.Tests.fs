@@ -1419,3 +1419,46 @@ let ``Polyfill torn-sector on the second freeze acks and keeps the first`` () : 
         finally
             FileSystem.Reset()
     }
+
+[<Fact>]
+let ``POSIX freeze of the same ContentId does not rewrite object bits`` () : Task =
+    task {
+        ensureHasher ()
+        let mock = InMemoryFileSystem()
+        FileSystem.Register(mock)
+        let store = "/freeze-posix-skip"
+        let mutbuf = ZetaFsMutbuf.create store ZetaFsMutbuf.Coherence.Shared
+        let volume = ZetaFsFreeze.createManualStream store mutbuf None
+
+        try
+            let id = mintId ()
+            let h = ZetaFsMutbuf.openHandle volume.Mutbuf id
+            ZetaFsMutbuf.pwrite volume.Mutbuf h 0L [| 1uy; 2uy; 3uy |] |> ignore
+            let pending1 = (freezeAsync volume id ZetaFsFreeze.Journaled).AsTask()
+            do! (ZetaFsFreeze.pumpLog volume CancellationToken.None).ConfigureAwait(false)
+            let! first = pending1.ConfigureAwait(false)
+
+            match first with
+            | Error e -> Assert.Fail(ZetaFsFreeze.errorName e)
+            | Ok first ->
+                let objectWrites () =
+                    mock.CommitOrder
+                    |> Array.filter (fun p -> p.IndexOf("objects", StringComparison.Ordinal) >= 0)
+
+                let afterFirst = objectWrites().Length
+                Assert.True(afterFirst > 0)
+                let pending2 = (freezeAsync volume id ZetaFsFreeze.Journaled).AsTask()
+                do! (ZetaFsFreeze.pumpLog volume CancellationToken.None).ConfigureAwait(false)
+                let! second = pending2.ConfigureAwait(false)
+
+                match second with
+                | Error e -> Assert.Fail(ZetaFsFreeze.errorName e)
+                | Ok second ->
+                    Assert.Equal(first.Content.ToHex(), second.Content.ToHex())
+                    Assert.Equal(afterFirst, objectWrites().Length)
+                    Assert.True(ZetaFsFreeze.isReadable volume first.Content)
+                    Assert.True(ZetaFsFreeze.isReadable volume second.Content)
+        finally
+            ZetaFsFreeze.dispose volume
+            FileSystem.Reset()
+    }

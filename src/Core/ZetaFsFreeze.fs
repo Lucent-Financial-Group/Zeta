@@ -159,7 +159,9 @@ module ZetaFsFreeze =
                             let path = ZetaFsPath.combine3 objectsDir (hex.Substring(0, 2)) (hex.Substring(2))
                             let dir = ZetaFsPath.directoryName path
                             fsDoor.CreateDirectory dir
-                            FileSystemIo.writeAllBytes fsDoor path bytes
+
+                            if not (fsDoor.Exists path) then
+                                FileSystemIo.writeAllBytes fsDoor path bytes
 
                             if item.Durable then
                                 match FileSync.fsyncFile path with
@@ -823,9 +825,12 @@ module ZetaFsFreeze =
 
     let private putObject (storeDir: string) (id: ContentHash256) (bytes: byte[]) =
         let path = objectPath storeDir id
-        let dir = ZetaFsPath.directoryName path
-        FileSystem.Current.CreateDirectory dir
-        FileSystemIo.writeAllBytes FileSystem.Current path bytes
+        let fs = FileSystem.Current
+
+        if not (fs.Exists path) then
+            let dir = ZetaFsPath.directoryName path
+            fs.CreateDirectory dir
+            FileSystemIo.writeAllBytes fs path bytes
 
     let private objectKey (id: ContentHash256) =
         (ContentHash256.toContentAddress128 id).ToHex()
