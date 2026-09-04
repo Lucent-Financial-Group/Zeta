@@ -1523,6 +1523,17 @@ Each PR is independently reviewable and mergeable. Tests green or it does not la
 - **Depends on:** PR1, PR8, PR12
 - **Changes:** Where `stripe`/`mirror`/`single+parity` become real media. Boot remains Linux/unikernel only. MAP_SHARED mmap can land here.
 
+**What native NVMe needs (not claimed, not this PR):**
+
+1. **Same `IBlockIo` door, not POSIX files.** `FileSystemBlockIo` is the polyfill. A native impl talks to the namespace (io_uring NVMe, SPDK, unikernel block). Two files in `.zetafs` are not two disks (E9).
+2. **Geometry from Identify.** `BlockSize` + `LbaCount` (0 = unbounded DST). Native reports the namespace size; writes past it fail.
+3. **Async completions.** Today's `Read`/`Write`/`Flush` are synchronous (DST DoP=1). Native needs a yielding completion door. `Task.Run` wrapping the sync methods is not that door (`async-all-the-way`).
+4. **Flush = NVMe Flush / FUA**, not POSIX `fsync`.
+5. **Two devices** for log vs CAS (already the freeze `BlockCas` shape). Crash arm on leaves must not tear the log.
+6. **DST record/replay** of every device op. `SimulatedBlockIo` is the stand-in; native injects the same events. PR12 corpus stays `toy` until that replay is the native path too.
+7. **Linux/unikernel first.** Not Windows, not FSKit. Clean-room if looking at SPDK samples (spec crosses the wall, not expression).
+8. **PR12 green before calling crash-safe.** Superblock `ZFL2`/`ZCA2` already designed for LBA 0/1.
+
 ### PR16 (later) -- FSKit adapter
 
 - **Title:** `zetafs: FSKit mount after entitlement`
