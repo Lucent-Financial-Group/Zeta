@@ -153,6 +153,26 @@ describe("planHostCredDocuments", () => {
     const collected = collectRestoredFiles(home);
     expect(collected.files.map((f) => f.id)).toEqual(["gh-cli", "claude", "gemini", "codex"]);
   });
+
+  it("skips a projectable path that is a directory (EISDIR, not a prior exists/lstat)", () => {
+    const home = mkdtempSync(join(tmpdir(), "zeta-host-creds-dir-"));
+    mkdirSync(join(home, ".config", "gh", "hosts.yml"), { recursive: true });
+    const collected = collectRestoredFiles(home);
+    const gh = collected.skipped.find((s) => s.id === "gh-cli");
+    expect(gh).toEqual({ id: "gh-cli", reason: "source is a directory, not a file" });
+    expect(collected.files.map((f) => f.id)).not.toContain("gh-cli");
+  });
+
+  it("skips an unreadable projectable file from the read's errno, not a prior check", () => {
+    const home = fixtureHome();
+    const collected = collectRestoredFiles(home, (path) => {
+      if (path.endsWith("hosts.yml")) return { kind: "unreadable" };
+      return { kind: "bytes", bytes: Buffer.from("ok") };
+    });
+    const gh = collected.skipped.find((s) => s.id === "gh-cli");
+    expect(gh?.reason.startsWith("unreadable ")).toBe(true);
+    expect(collected.files.map((f) => f.id)).not.toContain("gh-cli");
+  });
 });
 
 describe("formatSummary never leaks credential bytes", () => {

@@ -30,7 +30,7 @@
 // Logs names, byte counts, and skip reasons. NEVER logs credential bytes.
 
 import { spawnSync } from "node:child_process";
-import { existsSync, lstatSync, readFileSync } from "node:fs";
+import { readFileSync } from "node:fs";
 import { basename, join } from "node:path";
 import { DEFAULT_MANIFEST, type CredentialEntry } from "./zeta-creds-manifest";
 
@@ -130,31 +130,33 @@ function labelsFor(id: string, persona: string | null): Record<string, string> {
   };
 }
 
+/**
+ * One syscall, one answer. An `existsSync` / `lstatSync` before the read is a
+ * check-then-use race (CWE-367 / `js/file-system-race` / this repo's
+ * `lint-check-then-use-file-races`): between the check and the use the path
+ * can be replaced, deleted, or turned into a directory, so the check's answer
+ * is already stale. A miss IS the ENOENT; a directory IS the EISDIR.
+ */
+export type FileReadOutcome =
+  | { readonly kind: "bytes"; readonly bytes: Buffer }
+  | { readonly kind: "missing" }
+  | { readonly kind: "directory" }
+  | { readonly kind: "unreadable" };
+
+export function readRestoredFile(path: string): FileReadOutcome {
+  try {
+    return { kind: "bytes", bytes: readFileSync(path) };
+  } catch (error) {
+    const code = (error as NodeJS.ErrnoException).code;
+    if (code === "ENOENT") return { kind: "missing" };
+    if (code === "EISDIR") return { kind: "directory" };
+    return { kind: "unreadable" };
+  }
+}
+
 export function collectRestoredFiles(
   home: string,
-  readFile: (path: string) => Buffer | null = (path) => {
-    if (!existsSync(path)) return null;
-    try {
-      if (!lstatSync(path).isFile()) return null;
-      return readFileSync(path);
-    } catch {
-      return null;
-    }
-  },
-  isFile: (path: string) => boolean = (path) => {
-    try {
-      return existsSync(path) && lstatSync(path).isFile();
-    } catch {
-      return false;
-    }
-  },
-  isDir: (path: string) => boolean = (path) => {
-    try {
-      return existsSync(path) && lstatSync(path).isDirectory();
-    } catch {
-      return false;
-    }
-  },
+  readFile: (path: string) => FileReadOutcome = readRestoredFile,
 ): { readonly files: readonly RestoredFile[]; readonly skipped: readonly Skip[] } {
   const files: RestoredFile[] = [];
   const skipped: Skip[] = [];
@@ -170,20 +172,20 @@ export function collectRestoredFiles(
       skipped.push({ id: entry.id, reason: "unclassified cred id (refusing to project)" });
       continue;
     }
-    if (isDir(path)) {
+    const outcome = readFile(path);
+    if (outcome.kind === "directory") {
       skipped.push({ id: entry.id, reason: "source is a directory, not a file" });
       continue;
     }
-    if (!isFile(path)) {
+    if (outcome.kind === "missing") {
       skipped.push({ id: entry.id, reason: `missing ${path}` });
       continue;
     }
-    const bytes = readFile(path);
-    if (bytes === null) {
+    if (outcome.kind === "unreadable") {
       skipped.push({ id: entry.id, reason: `unreadable ${path}` });
       continue;
     }
-    files.push({ id: entry.id, path, key: secretDataKey(path), bytes });
+    files.push({ id: entry.id, path, key: secretDataKey(path), bytes: outcome.bytes });
   }
 
   return { files, skipped };

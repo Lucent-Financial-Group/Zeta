@@ -59,6 +59,11 @@ ExternalSecret.
 
 Logs print names and byte counts, never values.
 
+Reads of restored files are one syscall: `readFileSync`, then classify
+the errno (`ENOENT` missing, `EISDIR` directory, else unreadable).
+`existsSync` / `lstatSync` before the read is a check-then-use race
+(CWE-367) and is refused by `lint-check-then-use-file-races`.
+
 ## Tests
 
 - `src/Core.TypeScript/installer/zeta-creds-to-k8s.test.ts`
