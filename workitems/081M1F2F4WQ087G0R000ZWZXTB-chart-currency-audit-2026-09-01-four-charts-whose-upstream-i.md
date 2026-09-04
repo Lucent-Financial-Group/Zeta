@@ -46,12 +46,14 @@ risk is that it resolves itself the hard way. Maintainer call.
 ## Progress 2026-09-04 — Cilium first-boot pin
 
 Application `targetRevision` is CURRENT `1.20.1` (#16287). Bootstrap
-`cilium-install.yaml` matched that pin on 2026-09-04: there is no live
-cluster, so first-boot may jump (Aaron: "we can be on latest from the
-start"). Cilium still forbids skip-minor on an in-place upgrade; the
-equality test in `cilium-kind-lane.test.ts` is the control. Remaining
-holes on this item: redis/`bitnamilegacy` (`081M1F1K5N5`) and hindsight
-`ankane/pgvector:latest`. Tempo already CURRENT 2.3.0.
+`cilium-install.yaml` matched that pin in #16570 squash `cb9b223df`:
+there is no live cluster, so first-boot may jump (Aaron: "we can be on
+latest from the start"). Cilium still forbids skip-minor on an in-place
+upgrade; the equality test in `cilium-kind-lane.test.ts` is the control.
+Redis already Valkey (#16292). Hindsight already `pgvector/pgvector:pg17-trixie`.
+Tempo already CURRENT 2.3.0. Remaining `081M1F1K5N5` outside deferred
+gitlab: hat-system `bitnamilegacy/kubectl:1.32.3` (shell-free rewrite,
+not a tag swap).
 
 ## Two upstream facts that change earlier recommendations
 
