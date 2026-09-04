@@ -1534,6 +1534,18 @@ Each PR is independently reviewable and mergeable. Tests green or it does not la
 7. **Linux/unikernel first.** Not Windows, not FSKit. Clean-room if looking at SPDK samples (spec crosses the wall, not expression).
 8. **PR12 green before calling crash-safe.** Superblock `ZFL2`/`ZCA2` already designed for LBA 0/1.
 
+**Test adapters that do not `nvme format` a physical drive:**
+
+| Adapter | What it is | When |
+|---|---|---|
+| `SimulatedBlockIo` (in-tree) | RAM LBAs. Optional `lbaCount` is Identify-shaped capacity; 0 = unbounded. Crash/corrupt/reorder/torn arms. | CI / DST. **This is the unit-test door.** |
+| QEMU `-device nvme` + file image | Real NVMe Identify/queues; backing is a raw file (`-drive file=nvm.img`). No physical SSD. | Later integration VM. Sibling pattern: `qemu-usb-storage.ts`. |
+| Linux `nvmet` + `nvme-loop` | Kernel presents `/dev/nvme0n1` over a file or ramdisk. Root, Linux-only, not DST. | Later host integration. |
+| SPDK malloc bdev | Userspace RAM namespace. Large dep; clean-room if we read SPDK samples. | Later userspace integration. |
+| NVMeVirt (FAST 2023) / FEMU (FAST 2018) | Kernel/QEMU RAM-backed NVMe. Research emulators. | Optional research lane, not CI. |
+
+Never `nvme format` (secure-erase) the host's real namespace for tests. Zeta `FORMAT` / `ZFL2` superblock is our volume identity, not the NVMe Format NVM admin command.
+
 ### PR16 (later) -- FSKit adapter
 
 - **Title:** `zetafs: FSKit mount after entitlement`

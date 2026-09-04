@@ -429,6 +429,48 @@ let ``SimulatedBlockIo LbaCount is unbounded sparse DST`` () =
     Assert.Equal(0UL, io.LbaCount)
 
 [<Fact>]
+let ``SimulatedBlockIo bounded RAM namespace rejects LBAs at and past LbaCount`` () =
+    let device = SimulatedBlockIo(4096, lbaCount = 4UL)
+    let io = device :> IBlockIo
+    Assert.Equal(4UL, io.LbaCount)
+    let block = Array.create 4096 1uy
+    Assert.Equal(4096, io.Write(3UL, System.ReadOnlyMemory<byte>.op_Implicit block))
+    Assert.Throws<IOException>(fun () ->
+        io.Write(4UL, System.ReadOnlyMemory<byte>.op_Implicit block) |> ignore)
+    |> ignore
+    Assert.Throws<IOException>(fun () ->
+        io.Read(4UL, System.Memory<byte>.op_Implicit (Array.zeroCreate 4096)) |> ignore)
+    |> ignore
+    let cloned = device.CloneMedia() :> IBlockIo
+    Assert.Equal(4UL, cloned.LbaCount)
+    Assert.Throws<IOException>(fun () ->
+        cloned.Write(4UL, System.ReadOnlyMemory<byte>.op_Implicit block) |> ignore)
+    |> ignore
+
+[<Fact>]
+let ``SimulatedBlockIo CloneMedia keeps RAM bound and drops unflushed volatile writes`` () =
+    let device = SimulatedBlockIo(4096, lbaCount = 4UL, volatileUntilFlush = true)
+    let io = device :> IBlockIo
+    Assert.Equal(4UL, io.LbaCount)
+    let payload = [| 9uy; 8uy; 7uy |]
+    Assert.Equal(3, io.Write(0UL, System.ReadOnlyMemory<byte>.op_Implicit payload))
+    let crashed = device.CloneMedia() :> IBlockIo
+    Assert.Equal(4UL, crashed.LbaCount)
+    let lost = Array.zeroCreate<byte> 3
+    Assert.Equal(3, crashed.Read(0UL, System.Memory<byte>.op_Implicit lost))
+    Assert.Equal(0uy, lost.[0])
+    Assert.Throws<IOException>(fun () ->
+        crashed.Write(4UL, System.ReadOnlyMemory<byte>.op_Implicit (Array.create 4096 1uy))
+        |> ignore)
+    |> ignore
+    io.Flush()
+    let durable = device.CloneMedia() :> IBlockIo
+    Assert.Equal(4UL, durable.LbaCount)
+    let kept = Array.zeroCreate<byte> 3
+    Assert.Equal(3, durable.Read(0UL, System.Memory<byte>.op_Implicit kept))
+    Assert.Equal<byte>(payload, kept)
+
+[<Fact>]
 let ``FileSystemBlockIo rejects an invalid block size before creating the backing file`` () =
     let fs = InMemoryFileSystem()
     let ifs = fs :> IFileSystem
