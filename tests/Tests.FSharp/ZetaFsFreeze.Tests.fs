@@ -1455,7 +1455,12 @@ let ``POSIX freeze of the same ContentId does not rewrite object bits`` () : Tas
                 | Error e -> Assert.Fail(ZetaFsFreeze.errorName e)
                 | Ok second ->
                     Assert.Equal(first.Content.ToHex(), second.Content.ToHex())
-                    Assert.Equal(afterFirst, objectWrites().Length)
+                    // Re-freezing the identical ContentId must add zero new object
+                    // writes: the second freeze is a no-op on object bits. Compare the
+                    // post-second-freeze count against the count captured after the
+                    // first freeze; the delta rides the claim so the check can fail.
+                    let afterSecond = objectWrites().Length
+                    Assert.Equal(0, afterSecond - afterFirst)
                     Assert.True(ZetaFsFreeze.isReadable volume first.Content)
                     Assert.True(ZetaFsFreeze.isReadable volume second.Content)
         finally
