@@ -1,0 +1,14 @@
+{
+  "id": "080d036e65e53810a0130008feb33bca",
+  "at": "2026-09-04T19:02:09.319Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1PWSF56087G0R000FDS3NY",
+    "type": "task",
+    "title": "Project USB-restored host credentials into Kubernetes Secrets for agent pods",
+    "slug": "project-usb-restored-host-credentials-into-kubernetes-secret",
+    "priority": "P2",
+    "filename": "081M1PWSF56087G0R000FDS3NY-project-usb-restored-host-credentials-into-kubernetes-secret.md"
+  }
+}
