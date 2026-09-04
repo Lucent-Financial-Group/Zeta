@@ -24,7 +24,8 @@
  */
 
 import { spawnSync } from "node:child_process";
-import { existsSync, readdirSync, readFileSync } from "node:fs";
+import { existsSync, mkdtempSync, readdirSync, readFileSync } from "node:fs";
+import { tmpdir } from "node:os";
 import { basename, join, resolve } from "node:path";
 import { parse as parseYaml } from "yaml";
 import { bootstrapKindClusterInProcess, bootstrapK3dClusterInProcess } from "./harness/bootstrap.ts";
@@ -39,6 +40,8 @@ import {
   type DevBootstrapSecretSpec,
 } from "./dev-cluster/lib.ts";
 import { DEFAULT_ROOT_DEV_CATALOG, ciliumOwnsCniSlot, type KindCni } from "./ports.ts";
+import { buildLaneTreeBundle, laneTreeRepoUrl } from "./lane-tree-source.ts";
+import { applyResourceProfile, loadResourceCatalogue } from "./storage-profiles.ts";
 // Ordinal (code-point) ordering, per .claude/rules/culture-invariant-by-default.md.
 // NOT localeCompare: it is culture-SENSITIVE, so the same directory names sort
 // differently per machine locale. That matters here because this ordering is not
@@ -120,6 +123,16 @@ export interface CliOptions {
    * on, and refused outright with `--existing`.
    */
   readonly ephemeralVaultInit: boolean;
+  /**
+   * Resource rung to SERVE to the lane, instead of syncing the committed tree.
+   *
+   * `null` -- the default -- syncs the committed tree, which is what every caller
+   * did before this flag existed. A rung name builds a copy of
+   * `full-ai-cluster/k8s` with that rung applied, serves it in-cluster, and points
+   * ArgoCD there. Aaron 2026-09-03: "we don't have to test metal on our CI, metal
+   * is for our real hardware, dev is for testing on our github runners."
+   */
+  readonly serveTreeProfile: string | null;
 }
 
 export interface ToolCheck {
@@ -218,6 +231,7 @@ interface MutableCliOptions {
   runtime: ContainerRuntime;
   kindCni: KindCni;
   ephemeralVaultInit: boolean;
+  serveTreeProfile: string | null;
 }
 
 interface ParseNumberSuccess {
@@ -257,6 +271,14 @@ type ParseRuntimeEnvResult = ParseRuntimeEnvSuccess | ParseFailure;
 type ParseOptionsResult = ParseOptionsSuccess | ParseFailure;
 
 const REPO_ROOT = resolve(import.meta.dir, "../../..");
+
+/**
+ * Image the lane-tree server runs. Pinned by DIGEST, not by tag: `busybox:1.37.0`
+ * is a moving target on Docker Hub and the whole point of this pod is to be the
+ * least surprising thing in the lane. busybox supplies tar, gzip and httpd in one
+ * public ~4MB image, so the server needs nothing built and nothing private.
+ */
+const LANE_TREE_IMAGE = "busybox:1.37.0";
 const DEFAULT_K3D_CONFIG = "full-ai-cluster/dev-cluster/k3d-config.yaml";
 const DEFAULT_KIND_CONFIG = "full-ai-cluster/dev-cluster/profiles/ci.kind-config.yaml";
 const DEFAULT_KIND_CILIUM_CONFIG = "full-ai-cluster/dev-cluster/profiles/ci.cilium.kind-config.yaml";
@@ -264,13 +286,13 @@ const DEFAULT_TIMEOUT_SECONDS = 900;
 const DEFAULT_POLL_SECONDS = 10;
 const SPAWN_MAX_BUFFER = 64 * 1024 * 1024;
 const HELP_TEXT =
-  "usage: bun src/Core.TypeScript/cluster/argocd-health-test.ts [--dry-run|--preflight|--run] [--provider k3d|kind] [--cni kindnetd|cilium] [--scope smoke|included|full] [--runtime docker|podman] [--git-ref REF] [--cluster-name NAME] [--config PATH] [--existing] [--timeout-sec N] [--poll-sec N] [--drift-check] [--ephemeral-vault-init]";
+  "usage: bun src/Core.TypeScript/cluster/argocd-health-test.ts [--dry-run|--preflight|--run] [--provider k3d|kind] [--cni kindnetd|cilium] [--scope smoke|included|full] [--runtime docker|podman] [--git-ref REF] [--cluster-name NAME] [--config PATH] [--serve-tree RUNG] [--existing] [--timeout-sec N] [--poll-sec N] [--drift-check] [--ephemeral-vault-init]";
 const MODE_FLAGS: Readonly<Record<string, Mode>> = {
   "--dry-run": "dry-run",
   "--preflight": "preflight",
   "--run": "run",
 };
-const STRING_FLAGS = new Set(["--git-ref", "--cluster-name", "--config"]);
+const STRING_FLAGS = new Set(["--git-ref", "--cluster-name", "--config", "--serve-tree"]);
 const INTEGER_FLAGS = new Set(["--timeout-sec", "--poll-sec"]);
 const K3D_CLUSTER_NAME_PATTERN = /^\s+name:\s*([A-Za-z\d-]+)\s*$/;
 const DNS_LABEL_PATTERN = /^[a-z\d]([-a-z\d]*[a-z\d])?$/;
@@ -364,7 +386,7 @@ export const DEV_EXCLUDED_REASONS: ReadonlyMap<string, string> = new Map([
       "and routable from nothing, which is a worse outcome than not running it. " +
       "KIND HAS A BRING-UP ALIAS that is NOT this Application: " +
       "full-ai-cluster/dev-cluster/manifests/cilium-lb-ipam.kind.yaml is applied by bringUpKindCiCluster when " +
-      "`cni === \"cilium\"`, after Cilium helm, before the catalogue. Lifting THIS Application on kind would " +
+      '`cni === "cilium"`, after Cilium helm, before the catalogue. Lifting THIS Application on kind would ' +
       "selfHeal the metal pool over that alias. " +
       "LIFTS WHEN: `cilium` above lifts AND the pool is parameterised per substrate rather than pinned to one " +
       "maintainer's subnet. The kind alias existing is not that parameterisation. " +
@@ -1323,6 +1345,7 @@ function defaultCliOptions(env: NodeJS.ProcessEnv): ParseOptionsResult {
       runtime,
       kindCni: "kindnetd",
       ephemeralVaultInit: false,
+      serveTreeProfile: null,
     },
   };
 }
@@ -1336,6 +1359,7 @@ function readFlagValue(argv: readonly string[], index: number, flag: string, des
 }
 
 function assignStringFlag(options: MutableCliOptions, flag: string, value: string): void {
+  if (flag === "--serve-tree") options.serveTreeProfile = value;
   if (flag === "--git-ref") options.gitRef = value;
   if (flag === "--cluster-name") options.clusterName = value;
   if (flag === "--config") {
@@ -1919,18 +1943,60 @@ function waitForKubectl(
   });
 }
 
+/**
+ * Build the in-cluster tree source for `--serve-tree <rung>`, or `null` when the
+ * flag is absent.
+ *
+ * WHY THIS IS A FUNCTION AND NOT THREE LINES INLINE: every failure here has to be
+ * a THROW, not a null. Returning `null` on a build failure would fall back to the
+ * committed tree, which is the `metal` rung -- the lane would then reproduce the
+ * exact `Insufficient cpu` failure the flag exists to remove, with nothing saying
+ * the override had been skipped. `lane-tree-source` already refuses a zero-file
+ * copy, a zero-edit rung apply, an un-rewritten repoURL and an over-budget pack;
+ * this keeps those refusals fatal rather than absorbing them.
+ */
+function buildLaneTreeForProfile(
+  profile: string | null,
+  gitRef: string,
+): { readonly manifests: string; readonly repoUrl: string } | null {
+  if (profile === null) return null;
+  const catalogue = loadResourceCatalogue();
+  if (!catalogue.profiles.includes(profile)) {
+    throw new Error(`--serve-tree ${profile}: unknown resource profile; known: ${catalogue.profiles.join(", ")}`);
+  }
+  const workDir = mkdtempSync(join(tmpdir(), "zeta-lane-tree-"));
+  const bundle = buildLaneTreeBundle({
+    repoRoot: REPO_ROOT,
+    workDir,
+    // The served repository's branch is the ref the root Application asks for, so
+    // the two agree by construction. Naming it after the rung instead would mean
+    // the root app requests `main` from a repository whose only branch is `dev`.
+    gitRef,
+    image: LANE_TREE_IMAGE,
+    applyRung: (stagedRoot: string) => applyResourceProfile(catalogue, profile, stagedRoot).length,
+  });
+  console.log(
+    `[serve-tree] rung=${profile} files=${String(bundle.staged.files)} ` +
+      `repoURL-rewrites=${String(bundle.staged.rewritten.length)} ` +
+      `packed=${String(bundle.packedBytes)}B commit=${bundle.repo.sha.slice(0, 12)}`,
+  );
+  return { manifests: bundle.manifests, repoUrl: laneTreeRepoUrl() };
+}
+
 function bootstrapCluster(plan: HarnessPlan, options: CliOptions): Failure | null {
   if (options.provider === "kind") {
     if (options.existing) {
       return runOrFail("kubectl", ["config", "use-context", `kind-${plan.clusterName}`], "KubectlFailed", 30);
     }
     try {
+      const laneTree = buildLaneTreeForProfile(options.serveTreeProfile, options.gitRef);
       bootstrapKindClusterInProcess({
         configPath: options.configPath,
         clusterName: plan.clusterName,
         gitRef: options.gitRef,
         containerRuntime: options.runtime,
         cni: options.kindCni,
+        ...(laneTree === null ? {} : { laneTree }),
       });
       return null;
     } catch (e) {
@@ -2226,17 +2292,14 @@ export function isGitHubHostUnresolvableText(text: string): boolean {
   return GITHUB_HOST_UNRESOLVABLE.test(text);
 }
 
-export function rootCatalogGitHostFailure(
-  snapshots: readonly ArgoApplicationSnapshot[],
-): Failure | null {
+export function rootCatalogGitHostFailure(snapshots: readonly ArgoApplicationSnapshot[]): Failure | null {
   const root = snapshots.find((snapshot) => snapshot.name === ROOT_DEV_APPLICATION_NAME);
   if (root === undefined) return null;
   const hit = applicationConditionTexts(root).find(isGitHubHostUnresolvableText);
   if (hit === undefined) return null;
   return {
     kind: "ArgoCdTimeout",
-    message:
-      "zeta-root-dev cannot clone github.com (ComparisonError); waiting will not produce children",
+    message: "zeta-root-dev cannot clone github.com (ComparisonError); waiting will not produce children",
     terminal: true,
     detail: {
       syncStatus: root.syncStatus,
@@ -2249,19 +2312,14 @@ export function rootCatalogGitHostFailure(
 
 export const HEALTH_WAIT_LAGGARD_LIMIT = 8;
 
-export function formatHealthWaitProgress(
-  elapsedSec: number,
-  verdicts: readonly ApplicationVerdict[],
-): string {
+export function formatHealthWaitProgress(elapsedSec: number, verdicts: readonly ApplicationVerdict[]): string {
   const okCount = verdicts.filter((verdict) => verdict.ok).length;
   const laggards = verdicts.filter((verdict) => !verdict.ok);
   const shown = laggards
     .slice(0, HEALTH_WAIT_LAGGARD_LIMIT)
     .map((verdict) => `${verdict.name}=${verdict.syncStatus}/${verdict.healthStatus}`);
   const extra =
-    laggards.length > HEALTH_WAIT_LAGGARD_LIMIT
-      ? ` +${String(laggards.length - HEALTH_WAIT_LAGGARD_LIMIT)}`
-      : "";
+    laggards.length > HEALTH_WAIT_LAGGARD_LIMIT ? ` +${String(laggards.length - HEALTH_WAIT_LAGGARD_LIMIT)}` : "";
   const laggardText = shown.length === 0 ? "none" : `${shown.join(", ")}${extra}`;
   return (
     `still waiting (${String(elapsedSec)}s): health ${String(okCount)}/` +
@@ -2489,9 +2547,7 @@ function recordAt(record: Record<string, unknown>, key: string): Record<string, 
   return asRecord(record[key]);
 }
 
-function parseApplicationConditions(
-  status: Record<string, unknown> | null,
-): readonly ArgoApplicationCondition[] {
+function parseApplicationConditions(status: Record<string, unknown> | null): readonly ArgoApplicationCondition[] {
   if (status === null) return [];
   const raw = status.conditions;
   if (!Array.isArray(raw)) return [];
@@ -2718,9 +2774,7 @@ async function waitForApplications(
   let lastVerdicts: readonly ApplicationVerdict[] = [];
   const startedAt = Date.now();
   let lastProgressAt = startedAt;
-  console.log(
-    `Waiting: ArgoCD Applications Synced+Healthy (cap ${String(options.timeoutSeconds)}s)`,
-  );
+  console.log(`Waiting: ArgoCD Applications Synced+Healthy (cap ${String(options.timeoutSeconds)}s)`);
   const failure = await waitFor(options.timeoutSeconds, options.pollSeconds, () => {
     const command = ["-n", "argocd", "get", "applications.argoproj.io", "-o", "json"];
     const result = kubectl(command, Math.max(options.pollSeconds, 10));

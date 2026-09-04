@@ -1,0 +1,12 @@
+{
+  "pr_number": 16544,
+  "archive_path": "docs/history/pr-reviews/PR-16544-feat-language-add-finite-lexical-correction-receipts.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-03T23:42:16.325Z",
+  "schema_version": "v1",
+  "commit_sha": "62d850195f935f3594103e55071b59dda885e41d",
+  "title": "feat(language): add finite lexical correction receipts",
+  "state": "MERGED",
+  "merged_at": "2026-09-03T23:41:39Z",
+  "head_ref": "lumen/english-seed-coverage-contract"
+}

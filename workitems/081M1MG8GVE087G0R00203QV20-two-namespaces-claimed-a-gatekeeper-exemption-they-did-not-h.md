@@ -28,9 +28,9 @@ Three namespace manifests carried that label. One was exempt.
 
 | namespace | manifest | in `exemptNamespaces`? |
 |---|---|---|
-| `zeta-platform` | `applications/platform/namespace.yaml` | yes |
-| `agent-memory` | `applications/agent-memory/namespace.yaml` | **no** |
-| `game-hosting` | `applications/game-hosting/gmod/namespace.yaml` | **no** |
+| `zeta-platform` | `full-ai-cluster/k8s/applications/platform/namespace.yaml` | yes |
+| `agent-memory` | `full-ai-cluster/k8s/applications/agent-memory/namespace.yaml` | **no** |
+| `game-hosting` | `full-ai-cluster/k8s/applications/game-hosting/gmod/namespace.yaml` | **no** |
 
 MEASURED on run 33790413535 (`main`, 2026-09-03), both non-exempt namespaces were denied on
 every sync attempt:
@@ -48,7 +48,8 @@ OutOfSync/Missing` is one of the two findings that failed the included Synced+He
 
 ## Why it survived
 
-The correspondence was asserted in a YAML **comment** — `agent-memory/namespace.yaml` said
+The correspondence was asserted in a YAML **comment** —
+`full-ai-cluster/k8s/applications/agent-memory/namespace.yaml` said
 "(matches open-policy-agent exemptions)" — and never read from the other side. It was false
 when it was written. Nothing in the repo compared the two files, so the claim could stay wrong
 until someone deployed it, and the failure then arrived as an ArgoCD sync error a long way from

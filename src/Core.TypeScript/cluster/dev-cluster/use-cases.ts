@@ -1,7 +1,15 @@
 import { randomBytes } from "node:crypto";
 import { writeFileSync } from "node:fs";
 import { join } from "node:path";
-import { ciliumK3dValues, ciliumKindValues, readCiliumValueSurfaces, renderValuesYaml, shippedCiliumChartVersion, CILIUM_CHART_REPO, GATEWAY_API_CRD_BUNDLE } from "../cilium-kind-lane.ts";
+import {
+  ciliumK3dValues,
+  ciliumKindValues,
+  readCiliumValueSurfaces,
+  renderValuesYaml,
+  shippedCiliumChartVersion,
+  CILIUM_CHART_REPO,
+  GATEWAY_API_CRD_BUNDLE,
+} from "../cilium-kind-lane.ts";
 import type { DevClusterPorts, KindCni } from "../ports.ts";
 import {
   buildDevAdminSecretManifest,
@@ -109,9 +117,7 @@ export function applyVendoredGatewayApiCrds(ports: DevClusterPorts): void {
  * profile, which must not put 127.0.0.1 on agents.
  */
 export function applyK3dControlPlaneHostsAlias(ports: DevClusterPorts, kubeApiHost: string): void {
-  console.log(
-    "Mapping control-plane -> 127.0.0.1 on the k3d server node (metal k3s-server.nix founder hosts) ...",
-  );
+  console.log("Mapping control-plane -> 127.0.0.1 on the k3d server node (metal k3s-server.nix founder hosts) ...");
   const script =
     "grep -qE '(^|[[:space:]])control-plane($|[[:space:]])' /etc/hosts || echo '127.0.0.1 control-plane' >> /etc/hosts";
   ports.process.run("docker", ["exec", kubeApiHost, "sh", "-c", script], { timeoutMs: 30_000 });
@@ -255,6 +261,21 @@ export interface KindCiBringUpOptions {
    */
   readonly cni?: KindCni;
   /**
+   * SERVE THE TREE THE LANE SHOULD SYNC, instead of the committed one.
+   *
+   * The committed tree is the `metal` resource rung, which is correct for the
+   * 16-core box it names and is 6390m of requests on the dev lane's 39 apps --
+   * against a 4000m runner node. When present, this carries the manifests for an
+   * in-cluster read-only git server (built by `lane-tree-source.ts`) plus the URL
+   * ArgoCD should clone instead of GitHub. The server is applied and waited on
+   * BEFORE the root Application, because a root app pointed at a server that is
+   * not yet answering fails its first sync and retries with backoff.
+   *
+   * Absent -- the default -- leaves every existing caller syncing `gitRepoUrl`
+   * exactly as before.
+   */
+  readonly laneTree?: { readonly manifests: string; readonly repoUrl: string };
+  /**
    * The environment the registry pull credential is sourced from.
    *
    * DECLARED rather than ambient (manifesto §13 noninterference): this value
@@ -324,7 +345,9 @@ export function bringUpKindCiCluster(ports: DevClusterPorts, options: KindCiBrin
     applyKindCiliumCoreDnsUpstreamOverride(ports);
   } else {
     controlPlane.waitForAllNodesReady(180);
-    console.log("Installing Gateway API CRDs (cert-manager enableGatewayAPI on kindnetd; k3d applies the vendored metal bundle) ...");
+    console.log(
+      "Installing Gateway API CRDs (cert-manager enableGatewayAPI on kindnetd; k3d applies the vendored metal bundle) ...",
+    );
     controlPlane.applyRemoteManifest(
       "https://github.com/kubernetes-sigs/gateway-api/releases/download/v1.2.0/standard-install.yaml",
       true,
@@ -367,7 +390,53 @@ export function bringUpKindCiCluster(ports: DevClusterPorts, options: KindCiBrin
   }
 
   controlPlane.waitForCrdEstablished("applications.argoproj.io", 120);
-  appCatalog.applyRootDevCatalog(options.gitRef, options.gitRepoUrl, "kind", cni);
+
+  // THE RESOURCE-RUNG OVERRIDE POINT. `applyRootDevCatalog` takes a repo URL and
+  // ArgoCD clones whatever it is handed, so serving a rung-applied copy of the
+  // tree is the whole mechanism -- no new concept, just a different repository.
+  //
+  // ORDERED BEFORE THE ROOT APPLICATION, and the wait is not optional: a root app
+  // pointed at a server that is not yet answering fails its first sync and then
+  // retries on ArgoCD's backoff, so the lane pays minutes for a race that a
+  // readiness wait removes entirely.
+  const rootRepoUrl = applyLaneTreeSource(ports, options.laneTree) ?? options.gitRepoUrl;
+  appCatalog.applyRootDevCatalog(options.gitRef, rootRepoUrl, "kind", cni);
+}
+
+/**
+ * Apply the in-cluster tree server and wait for it to answer, returning the URL
+ * the root Application should clone -- or `null` when no lane tree was supplied.
+ *
+ * FAILS LOUD RATHER THAN FALLING BACK. If the server never becomes Available the
+ * function throws instead of returning `null`, because the silent fallback is the
+ * dangerous outcome here: the lane would sync GitHub at the `metal` rung, report
+ * `Insufficient cpu` on four pods, and look exactly like the failure this
+ * mechanism exists to remove -- with nothing in the log saying the override had
+ * been skipped.
+ */
+function applyLaneTreeSource(
+  ports: DevClusterPorts,
+  laneTree: { readonly manifests: string; readonly repoUrl: string } | undefined,
+): string | null {
+  if (laneTree === undefined) return null;
+  const { controlPlane } = ports;
+  console.log(`Serving the lane tree in-cluster; ArgoCD will clone ${laneTree.repoUrl} ...`);
+  controlPlane.applyInlineManifest(laneTree.manifests);
+
+  // `condition=Available` on the Deployment, which the readiness probe gates on
+  // GET /tree.git/info/refs -- so this waits for the REPOSITORY to be servable,
+  // not merely for a pod to be running. A container that is up with an empty
+  // volume would satisfy the weaker condition and hand ArgoCD a 404 that reads
+  // like a bad repoURL.
+  const ready = controlPlane.waitForResource("deployment/zeta-lane-tree", "zeta-lane-tree", "condition=Available", 240);
+  if (!ready) {
+    throw new Error(
+      "lane tree server never became Available within 240s. NOT falling back to the committed tree: that would " +
+        "sync the `metal` rung onto a runner-sized node and reproduce the Insufficient-cpu failure this override " +
+        "exists to remove, with nothing in the log saying the override had been skipped.",
+    );
+  }
+  return laneTree.repoUrl;
 }
 
 /**
@@ -485,8 +554,12 @@ export function applyK3dCoreDnsUpstreamOverride(ports: DevClusterPorts): void {
   // draft called `controlPlane.restartDeployment?.(...)` -- a method that DOES
   // NOT EXIST on that interface, so the optional-call would have compiled, run,
   // and done NOTHING. A silent no-op inside the fix for a silent no-op.
-  ports.process.run("kubectl", ["-n", "kube-system", "rollout", "restart", "deployment/coredns"], { timeoutMs: 60_000 });
-  ports.process.run("kubectl", ["-n", "kube-system", "rollout", "status", "deployment/coredns", "--timeout=90s"], { timeoutMs: 120_000 });
+  ports.process.run("kubectl", ["-n", "kube-system", "rollout", "restart", "deployment/coredns"], {
+    timeoutMs: 60_000,
+  });
+  ports.process.run("kubectl", ["-n", "kube-system", "rollout", "status", "deployment/coredns", "--timeout=90s"], {
+    timeoutMs: 120_000,
+  });
 }
 
 /**
@@ -540,13 +613,21 @@ export function applyKindCiliumCoreDnsUpstreamOverride(ports: DevClusterPorts): 
   console.log(
     "Pointing kind+Cilium CoreDNS at 1.1.1.1/8.8.8.8 (MEASURED run 33695849211: repo-server Could not resolve host: github.com) ...",
   );
-  const get = ports.process.run("kubectl", ["-n", "kube-system", "get", "configmap", "coredns", "-o", "jsonpath={.data.Corefile}"], {
-    timeoutMs: 30_000,
-  });
+  const get = ports.process.run(
+    "kubectl",
+    ["-n", "kube-system", "get", "configmap", "coredns", "-o", "jsonpath={.data.Corefile}"],
+    {
+      timeoutMs: 30_000,
+    },
+  );
   const corefile = rewriteCorefileForwardToPublicResolvers(get.stdout);
   ports.controlPlane.mergePatch("configmap/coredns", "kube-system", JSON.stringify({ data: { Corefile: corefile } }));
-  ports.process.run("kubectl", ["-n", "kube-system", "rollout", "restart", "deployment/coredns"], { timeoutMs: 60_000 });
-  ports.process.run("kubectl", ["-n", "kube-system", "rollout", "status", "deployment/coredns", "--timeout=90s"], { timeoutMs: 120_000 });
+  ports.process.run("kubectl", ["-n", "kube-system", "rollout", "restart", "deployment/coredns"], {
+    timeoutMs: 60_000,
+  });
+  ports.process.run("kubectl", ["-n", "kube-system", "rollout", "status", "deployment/coredns", "--timeout=90s"], {
+    timeoutMs: 120_000,
+  });
 }
 
 export function bringUpK3dDevCluster(ports: DevClusterPorts, options: K3dDevBringUpOptions): void {
