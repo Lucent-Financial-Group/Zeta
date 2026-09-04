@@ -115,17 +115,62 @@ thing whether the producer is a sibling checkout or a pinned artifact — only t
 differs.* When the producer is checked out you get live incrementality; when it is not you
 get the pinned snapshot; and **the graph does not change shape between those two cases.**
 
-Its known failure mode should be recorded now rather than discovered: an overlay makes the
-build depend on *which repos happen to be present*, which is ambient state — precisely what
-hermeticity forbids. So the union must be **declared** (a manifest that says which repos
-participate and at what revision), never inferred from what is lying around on disk. A
-build that silently changes meaning because a sibling directory exists is the
-noninterference violation of §13 wearing a convenience.
+### The mechanism has a name, and Aaron has shipped it twice
+
+Aaron 2026-09-03, correcting the abstraction with the operational form:
+
+> at lexisnexius and itron i solved this with conditional refere[n]ces, source not cloned,
+> then you use the package instead. you only clone the source if you need to change it.
+
+**Conditional references.** That is the whole rule, and it is better than the type sketch in
+§6 because it says what to DO rather than what to model:
+
+| the producer is | the reference resolves to |
+| --- | --- |
+| checked out beside you | the **source** — live, incremental, both sides editable in one thought |
+| not checked out | the **package** — the pinned artifact |
+
+And the discipline that keeps it honest: **you clone the source only when you intend to
+change it.** A checkout is a statement of intent, not a convenience. That one sentence
+removes the sprawl these schemes usually acquire, where everyone ends up with everything
+cloned and nobody can say which references are live.
+
+**Human anchor (Beacon):** the maintainer's own practice at LexisNexis and Itron. In the
+.NET dialect that is the `ProjectReference` / `PackageReference` swap made conditional on
+whether the sibling project exists — the shape `Directory.Build.props` conventions reach for.
+First-hand expertise, and usable as such: the CONCEPT travels, the former employers' code
+does not
+([`cleanroom-two-team-separation`](../../.claude/rules/cleanroom-two-team-separation.md) —
+paid specs and hand-implementation give genuine expertise; the expression stays theirs).
+
+Note what this does to §3(a). The "versioned snapshot vs live co-development" dilemma is not
+resolved by picking a side — it is resolved by making the **reference kind a function of the
+checkout**, so a consumer never chooses and the graph never changes shape. That is precisely
+the property the table above says every overlay system buys, stated as a rule you can
+implement rather than as a family resemblance.
+
+### The failure mode, recorded before we hit it
+
+An overlay makes the build depend on *which repos happen to be present*, which is ambient
+state — precisely what hermeticity forbids. So the union must be **declared** (a manifest
+that says which repos participate and at what revision), never inferred from what is lying
+around on disk. A build that silently changes meaning because a sibling directory exists is
+the noninterference violation of §13 wearing a convenience.
+
+**Conditional references and the declared manifest are not in tension — the manifest is what
+makes the conditional honest.** "Source if cloned, package otherwise" is a *resolution rule*;
+the manifest is the *declaration of which repos may participate, and at what revision*. With
+both, cloning changes which of two DECLARED forms of the same dependency you get, and the
+build's meaning is unchanged. With the resolution rule alone, a stray directory changes what
+you build.
 
 ## 6. Why discriminated unions gate it
 
-Aaron names two gates: *"good multi repo workflows / discriminated unions"*. This section
-is **my reading of the second**, offered for correction rather than as his statement.
+Aaron names two gates: *"good multi repo workflows / discriminated unions"*. What follows was
+written as **my reading** of the second and offered for correction. It was **half right**, and
+the correction is the more interesting half — recorded below in the order it happened, because
+a reading that got partially corrected is more useful to the next reader than a tidy one that
+hides where the guess ended.
 
 A cross-repo dependency reference is not one thing. It is at least:
 
@@ -156,6 +201,37 @@ Two existing rules say the same thing from different directions:
   depend on the order the repos were visited. **The order-independence work already in
   flight is the same invariant, one layer up.**
 
+### The half the reading missed: the AGENT is a multi-repo client too
+
+Aaron 2026-09-03:
+
+> this is part of the reason[;] the other part is many AIs are not good at multi repo yet,
+> they try to lock into one repo and require restarting or updating the config in thier
+> harness to switch, this is one of the main reasons we have harney our custom harness
+
+The reading above is about the BUILD SYSTEM's model of a reference. This is about the
+**agent's** model, and it is the binding constraint today, because the agents are the ones
+doing the work.
+
+A harness that assumes one repository has, in effect, hardcoded `SameRepo` — the same
+collapse as §6's string, one layer out, at the tooling instead of the type. Its symptom is
+the one Aaron names: crossing a repo boundary costs a restart or a config edit, so a
+cross-repo change is **expensive in attention long before it is expensive in compute**. And
+that cost lands exactly where §7 says the bottleneck already is — on the union, not on the
+build.
+
+So the two gates are one gate seen from two sides:
+
+| layer | the collapse | the fix |
+| --- | --- | --- |
+| build graph | a reference is a string | a sum type, with `Unknown` still a case |
+| agent harness | a workspace is one repo | a workspace is the declared union |
+
+**Harney is the answer to the second, and its existence is why this is a plan rather than a
+wish.** A build system that can express a federation, driven by agents that cannot hold one
+in working memory, would be a graph nobody can act on. Which of the two arrives first is
+open; that neither is sufficient alone is not.
+
 ## 7. The other gate: multi-repo workflow
 
 Naming it as a gate is correct and it is the less glamorous half. Before the build system
@@ -182,8 +258,14 @@ impossible to *review* has moved the cost, not removed it.
 
 ## 9. Register
 
-**PLAN.** Sections 2 and 5 are checked (in-tree citations; named prior art). Section 3 is
-an argument. Section 6 is *a reading of Aaron's shorthand, not his statement*, and is the
-part most likely to be wrong. Nothing here is measured, so nothing here has shed `toy`.
+**PLAN.** Sections 2 and 5 are checked (in-tree citations; named prior art, plus the
+maintainer's own first-hand practice for conditional references). Section 3 is an argument.
+
+Section 6 was written as *a reading of Aaron's shorthand, not his statement*, and was
+**half right** — the type-level half stands; the harness half was missing entirely and is
+now recorded in his words. The flag was worth carrying: a guess that announces itself gets
+corrected, and this one did, within the hour.
+
+Nothing here is measured, so nothing here has shed `toy`.
 
 Work item: `081M1N2JPVE087G0R001SK41RA`.
