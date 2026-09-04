@@ -98,9 +98,9 @@ module ZetaFsFreeze =
             if config.MaxDegreeOfParallelism <> 1 then
                 invalidArg (nameof config) "FreezeLog writes one segment file; MaxDegreeOfParallelism must be 1."
 
-        let logDir = Path.Combine(storeDir, "log")
-        let logPath = Path.Combine(logDir, "freeze")
-        let objectsDir = Path.Combine(storeDir, "objects")
+        let logDir = ZetaFsPath.combine2 storeDir "log"
+        let logPath = ZetaFsPath.combine2 logDir "freeze"
+        let objectsDir = ZetaFsPath.combine2 storeDir "objects"
         let fsDoor = FileSystem.Current
         let mutable boats = 0
         let mutable lastBoat = 0
@@ -156,8 +156,8 @@ module ZetaFsFreeze =
                             if item.Durable then
                                 cas.Device.Flush()
                         | None ->
-                            let path = Path.Combine(objectsDir, hex.Substring(0, 2), hex.Substring(2))
-                            let dir = Path.GetDirectoryName path
+                            let path = ZetaFsPath.combine3 objectsDir (hex.Substring(0, 2)) (hex.Substring(2))
+                            let dir = ZetaFsPath.directoryName path
                             fsDoor.CreateDirectory dir
                             FileSystemIo.writeAllBytes fsDoor path bytes
 
@@ -309,12 +309,12 @@ module ZetaFsFreeze =
         interface IDisposable with
             member _.Dispose() = (log :> IDisposable).Dispose()
 
-    let private logDir (v: Volume) = Path.Combine(v.StoreDir, "log")
-    let private objectsDir (v: Volume) = Path.Combine(v.StoreDir, "objects")
+    let private logDir (v: Volume) = ZetaFsPath.combine2 v.StoreDir "log"
+    let private objectsDir (v: Volume) = ZetaFsPath.combine2 v.StoreDir "objects"
 
     let private objectPath (storeDir: string) (id: ContentHash256) =
         let hex = (ContentHash256.toContentAddress128 id).ToHex()
-        Path.Combine(storeDir, "objects", hex.Substring(0, 2), hex.Substring(2))
+        ZetaFsPath.combine4 storeDir "objects" (hex.Substring(0, 2)) (hex.Substring(2))
 
     let errorName (e: FreezeError) : string =
         match e with
@@ -629,8 +629,8 @@ module ZetaFsFreeze =
         (objectCas: BlockCas option)
         : Volume =
         let fs = FileSystem.Current
-        fs.CreateDirectory (Path.Combine(storeDir, "log"))
-        fs.CreateDirectory (Path.Combine(storeDir, "objects"))
+        fs.CreateDirectory (ZetaFsPath.combine2 storeDir "log")
+        fs.CreateDirectory (ZetaFsPath.combine2 storeDir "objects")
         let volume = new Volume(storeDir, mutbuf, observer, session, config, manual, blockIo, objectCas)
 
         try
@@ -652,8 +652,8 @@ module ZetaFsFreeze =
         (manual: bool)
         : Volume =
         let fs = FileSystem.Current
-        fs.CreateDirectory(Path.Combine(storeDir, "log"))
-        let path = Path.Combine(storeDir, "log", "freeze")
+        fs.CreateDirectory(ZetaFsPath.combine2 storeDir "log")
+        let path = ZetaFsPath.combine3 storeDir "log" "freeze"
         let io = FileSystemBlockIo(fs, path, 4096)
         createFull storeDir mutbuf observer session defaultConfig manual (Some(HostFile io)) None
 
@@ -665,9 +665,9 @@ module ZetaFsFreeze =
         (manual: bool)
         : Volume =
         let fs = FileSystem.Current
-        fs.CreateDirectory(Path.Combine(storeDir, "log"))
-        let logIo = FileSystemBlockIo(fs, Path.Combine(storeDir, "log", "freeze"), 4096)
-        let casIo = FileSystemBlockIo(fs, Path.Combine(storeDir, "cas"), 4096)
+        fs.CreateDirectory(ZetaFsPath.combine2 storeDir "log")
+        let logIo = FileSystemBlockIo(fs, ZetaFsPath.combine3 storeDir "log" "freeze", 4096)
+        let casIo = FileSystemBlockIo(fs, ZetaFsPath.combine2 storeDir "cas", 4096)
         let cas = BlockCas(casIo)
         createFull storeDir mutbuf observer session defaultConfig manual (Some(HostFile logIo)) (Some cas)
 
@@ -823,7 +823,7 @@ module ZetaFsFreeze =
 
     let private putObject (storeDir: string) (id: ContentHash256) (bytes: byte[]) =
         let path = objectPath storeDir id
-        let dir = Path.GetDirectoryName path
+        let dir = ZetaFsPath.directoryName path
         FileSystem.Current.CreateDirectory dir
         FileSystemIo.writeAllBytes FileSystem.Current path bytes
 

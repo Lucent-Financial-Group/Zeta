@@ -46,13 +46,13 @@ module ZetaFsMutbuf =
     let private keyOf (id: ZetaFsNamespace.EntityId) = ZetaFsNamespace.EntityId.format id
 
     let private slotPath (catalog: Catalog) (id: ZetaFsNamespace.EntityId) =
-        Path.Combine(catalog.StoreDir, DirName, keyOf id)
+        ZetaFsPath.combine3 catalog.StoreDir DirName (keyOf id)
 
-    let private dataPath catalog id = Path.Combine(slotPath catalog id, "data")
-    let private genPath catalog id = Path.Combine(slotPath catalog id, "gen")
+    let private dataPath catalog id = ZetaFsPath.combine2 (slotPath catalog id) "data"
+    let private genPath catalog id = ZetaFsPath.combine2 (slotPath catalog id) "gen"
 
     let create (storeDir: string) (coherence: Coherence) : Catalog =
-        FileSystem.Current.CreateDirectory (Path.Combine(storeDir, DirName))
+        FileSystem.Current.CreateDirectory (ZetaFsPath.combine2 storeDir DirName)
         { StoreDir = storeDir
           Coherence = coherence
           Slots = ConcurrentDictionary<string, Slot>(StringComparer.Ordinal) }

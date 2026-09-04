@@ -1,0 +1,14 @@
+{
+  "id": "080d03549dccd010a01300080ab45ffc",
+  "at": "2026-09-04T04:01:01.338Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1N97ECS087G0R003GCPEDZ",
+    "type": "task",
+    "title": "register the zetafs-virtual-path healer in run-tier0, which needs the runner widened to .fs",
+    "slug": "register-the-zetafs-virtual-path-healer-in-run-tier0-which-n",
+    "priority": "P2",
+    "filename": "081M1N97ECS087G0R003GCPEDZ-register-the-zetafs-virtual-path-healer-in-run-tier0-which-n.md"
+  }
+}
