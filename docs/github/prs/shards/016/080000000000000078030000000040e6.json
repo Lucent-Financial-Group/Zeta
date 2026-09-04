@@ -1,0 +1,12 @@
+{
+  "pr_number": 16614,
+  "archive_path": "docs/history/pr-reviews/PR-16614-feat-081m1q8ffxf087g0r003vfkpdn-freeze-reclaim-crash-resumes-via-journal.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-04T22:45:25.378Z",
+  "schema_version": "v1",
+  "commit_sha": "15eb5a4ffcfe5ef054246c881f9a7ec6e593ee1f",
+  "title": "feat(081M1Q8FFXF087G0R003VFKPDN): freeze reclaim crash resumes via journal",
+  "state": "MERGED",
+  "merged_at": "2026-09-04T22:44:43Z",
+  "head_ref": "feat/zetafs-freeze-reclaim-journal"
+}
