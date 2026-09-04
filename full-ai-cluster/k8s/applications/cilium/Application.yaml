@@ -20,6 +20,8 @@ spec:
     # 1.16.5 -> 1.20.1 on 2026-09-01. Rendered at BOTH versions with this
     # Application's own valuesObject; it loses only Endpoints/cilium-ingress. 1.16 reached EOL 2026-02-03 -- about seven
     # months with no security patches, on the CNI -- which is the reason to move.
+    # Bootstrap HelmChart `cilium-install.yaml` matches this pin as of 2026-09-04
+    # (no live cluster; first-boot may jump). Do not re-split once a cluster is running.
     targetRevision: 1.20.1
     helm:
       releaseName: cilium

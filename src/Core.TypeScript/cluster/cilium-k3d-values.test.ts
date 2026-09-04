@@ -122,7 +122,7 @@ describe("the k3d lane installs metal's Cilium configuration", () => {
     expect(code.match(/server\.service\.type=ClusterIP/g)?.length ?? 0).toBe(2);
   });
 
-  test("both helm installs read the Application pin — a restated 1.16.5 would desync ArgoCD adopt", () => {
+  test("both helm installs read the Application pin — a restated chart version would desync ArgoCD adopt", () => {
     const code = codeWithoutComments(readFileSync(USE_CASES, "utf8"));
     expect((code.match(/shippedCiliumChartVersion\(\)/g) ?? []).length).toBeGreaterThanOrEqual(2);
     expect(code).not.toMatch(/version:\s*"1\.16\.\d+"/);
