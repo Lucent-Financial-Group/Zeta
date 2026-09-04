@@ -41,7 +41,7 @@ import { statusSurfaceFrom } from "./agent-loop-bridge";
 import { appendRun, deliveryRate, readEvents } from "./org-store";
 import { foldOrganization } from "./org-fold";
 import { idlePortfolios, PortfolioKind, portfolioHistory, portfolioOf } from "./portfolio";
-import { emptyQueue } from "./work-market";
+import { emptyQueue, type WorkQueue } from "./work-market";
 import { IntakeKind, Severity, type ExternalEvent } from "./intake";
 import { RunOutcome } from "./qa";
 import { isLeafType, WorkType } from "./goal-cascade";
@@ -97,16 +97,55 @@ export interface AgentRunArgs {
  * does carry is the organization's WORK — the cascade, the calendar, the priorities and the gate
  * verdicts — which is what the menu is built from.
  */
+/**
+ * One queue holding every folded queue's shards, claims and approvals.
+ *
+ * The surface takes a single `WorkQueue`, and a log spanning several runs holds one per hat. Taking
+ * the first would drop the rest — so they are unioned, which is safe because a shard id is unique
+ * to its shard and a claim to its claim, making the merge a SET UNION and therefore idempotent:
+ * folding the same log twice yields the same queue.
+ *
+ * `revision` becomes the max rather than a fresh count, because a revision that went BACKWARDS
+ * would make an optimistic-concurrency check pass against a stale expectation.
+ *
+ * An empty fold gives an empty queue — the same value `resumedSurface` used to hardcode, now the
+ * answer for a log that genuinely holds no market rather than for every log.
+ */
+export function mergeQueues(queues: readonly WorkQueue[]): WorkQueue {
+  const first = queues[0];
+  if (first === undefined) return emptyQueue("resumed", "rmo_office");
+  return {
+    ...first,
+    queueId: "resumed",
+    revision: Math.max(...queues.map((q) => q.revision)),
+    shards: queues.flatMap((q) => q.shards),
+    claims: queues.flatMap((q) => q.claims),
+    approvals: queues.flatMap((q) => q.approvals),
+  };
+}
+
 export function resumedSurface(store: string, atMs: number): {
   readonly surface: LoopSurface;
   readonly folded: ReturnType<typeof foldOrganization>;
 } {
   const events = readEvents(store);
   const folded = foldOrganization(events);
+  // The queue and the QA history come from the LOG, not from an empty stand-in.
+  //
+  // What an empty queue cost: `statusSurfaceFrom` derives its candidates partly from shards and
+  // claims, so a resumed organization offered nothing to do and reported zero deployments — it read
+  // as an organization that had never worked rather than one that had been interrupted. And with no
+  // QA history a regression has no "before", so every regression came back as a feature that was
+  // never built.
+  //
+  // MANY queues fold out of a log that spans runs, one per hat that held one. They are merged into
+  // the surface's single queue rather than one being picked: choosing would silently hide the work
+  // of every other hat, and a resumed run that quietly drops half the market is the failure this
+  // whole boundary is about.
   const built = statusSurfaceFrom({
-    queue: emptyQueue("resumed", "rmo_office"),
+    queue: mergeQueues(folded.queues),
     gateEvaluations: folded.gateEvaluations,
-    qa: [],
+    qa: folded.qa,
     cascade: folded.cascade,
     priorities: folded.priorities,
     snapshotIso: new Date(atMs).toISOString(),

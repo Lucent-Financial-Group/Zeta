@@ -569,3 +569,45 @@ export {
 } from "./org-fold";
 
 export { main as runAgentMain, organizationSurface, resumedSurface, type AgentRunArgs } from "./run-agent";
+
+// ── The ports where the organization touches reality ────────────────────────
+// `Fidelity` and `fidelityOf` are the load-bearing pair: a run says which of its capabilities
+// actually reached something, and `replayable` is derived from the set rather than declared.
+export {
+  EMPTY_REGISTRY,
+  Fidelity,
+  fidelityOf,
+  Port,
+  providersFor,
+  register,
+  registerAll,
+  requireReplayable,
+  resolve,
+  resolveSet,
+  type AnyProvider,
+  type ChangeControlPort,
+  type ChangeHandle,
+  type FidelityReport,
+  type IntakeSource,
+  type PortResult,
+  type ProviderMeta,
+  type ProviderRegistry,
+  type ProviderSet,
+  type TestRunner,
+  type WorkExecutor,
+  type WorkOutcome,
+} from "./providers";
+export {
+  commandTestRunner,
+  commandWorkExecutor,
+  directoryIntake,
+  gitChangeControl,
+  inboxOrder,
+  MAX_CAPTURED_OUTPUT,
+  simulatedChangeControl,
+  simulatedIntake,
+  simulatedProviders,
+  simulatedTestRunner,
+  simulatedWorkExecutor,
+} from "./adapters";
+export { parseArgs as parseOrgArgs, providersFromArgs, type Args as OrgRunArgs } from "./run-org";

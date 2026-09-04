@@ -18,6 +18,14 @@
  *   bun src/Core.TypeScript/corporate/run-org.ts --cycle          (the delivery loop alone)
  *   bun src/Core.TypeScript/corporate/run-org.ts --admin          (also exercise the operator surface)
  *
+ * By default every port is SIMULATED, and the run says so. To make one of them real:
+ *   --inbox <dir>      read inbound events from a directory of JSON files
+ *   --work-cmd <exe> [--work-arg <a> ...]   perform each work item as <exe> <a...> <workId>
+ *   --test-cmd <exe> [--test-arg <a> ...]   run each test case as <exe> <a...> <testCaseId>
+ *   --git <dir> [--base <branch>]   open and merge real branches in <dir>
+ *
+ * Any of these makes the run UNREPLAYABLE, which the fidelity block prints without being asked.
+ *
  * Exit codes: 0 delivered · 1 not delivered · 2 the organization could not be built.
  */
 
@@ -40,6 +48,17 @@ import {
   traceHealth,
 } from "./org-status";
 import { IntakeKind, Severity, normalize, type ExternalEvent } from "./intake";
+import type { ProviderSet } from "./providers";
+import {
+  commandTestRunner,
+  commandWorkExecutor,
+  directoryIntake,
+  gitChangeControl,
+  simulatedChangeControl,
+  simulatedIntake,
+  simulatedTestRunner,
+  simulatedWorkExecutor,
+} from "./adapters";
 import { RunOutcome } from "./qa";
 import {
   approvePendingBinding,
@@ -101,7 +120,7 @@ const REPORTS: readonly ExternalEvent[] = [
   { source: "support", externalId: "S-9", kind: IntakeKind.Defect, title: "it is broken" },
 ];
 
-interface Args {
+export interface Args {
   readonly qaFails: boolean;
   readonly churn: boolean;
   readonly json: boolean;
@@ -109,16 +128,98 @@ interface Args {
   readonly admin: boolean;
   /** Where to persist the run's history. Absent means the run leaves no trace on disk. */
   readonly store: string | undefined;
+  /**
+   * Which adapter answers each port. Absent means the SIMULATED one — explicitly, and the run says
+   * so in its own output. Reaching reality is opt-in and visible at the command line.
+   */
+  readonly inbox: string | undefined;
+  readonly workCmd: string | undefined;
+  readonly testCmd: string | undefined;
+  /**
+   * Fixed leading arguments for those commands, in order. The work item's id (or the test case's)
+   * is APPENDED after them, so `--work-cmd bun --work-arg build.ts` runs `bun build.ts <workId>`.
+   * Supplied by the operator, never by a work item — see `providersFromArgs`.
+   */
+  readonly workArgs: readonly string[];
+  readonly testArgs: readonly string[];
+  readonly git: string | undefined;
+  readonly baseBranch: string;
+}
+
+/** The value after a flag, or undefined. A flag with nothing after it is the same as absent. */
+function valueAfter(argv: readonly string[], flag: string): string | undefined {
+  const i = argv.indexOf(flag);
+  return i >= 0 ? argv[i + 1] : undefined;
+}
+
+/**
+ * Every value after every occurrence of a repeatable flag, in the order given.
+ *
+ * Order is preserved because these become argv entries for a real process, where `--work-arg run
+ * --work-arg build` and its reverse are different commands. Taking only the last occurrence — the
+ * usual shortcut — would silently drop arguments a caller wrote down.
+ */
+function valuesAfter(argv: readonly string[], flag: string): readonly string[] {
+  const out: string[] = [];
+  for (let i = 0; i < argv.length; i++) {
+    const value = argv[i + 1];
+    if (argv[i] === flag && value !== undefined) out.push(value);
+  }
+  return out;
 }
 
 export function parseArgs(argv: readonly string[]): Args {
   return {
+    inbox: valueAfter(argv, "--inbox"),
+    workCmd: valueAfter(argv, "--work-cmd"),
+    testCmd: valueAfter(argv, "--test-cmd"),
+    workArgs: valuesAfter(argv, "--work-arg"),
+    testArgs: valuesAfter(argv, "--test-arg"),
+    git: valueAfter(argv, "--git"),
+    baseBranch: valueAfter(argv, "--base") ?? "main",
     qaFails: argv.includes("--qa-fails") || argv.includes("--churn"),
     churn: argv.includes("--churn"),
     json: argv.includes("--json"),
     store: ((i) => (i >= 0 ? argv[i + 1] : undefined))(argv.indexOf("--store")),
     cycleOnly: argv.includes("--cycle"),
     admin: argv.includes("--admin"),
+  };
+}
+
+/**
+ * Choose the adapter for every port from the flags.
+ *
+ * Note what this does NOT do: fall back. A flag naming a real adapter always produces that adapter,
+ * and a port with no flag always produces the simulated one — there is no case where asking for
+ * reality quietly yields a simulation, which is the failure `providers.ts` exists to prevent.
+ *
+ * The command adapters pass exactly ONE argument: the work item's id, or the test case's. Never the
+ * title, never anything a reporter typed. A work item arrives from intake, which with `--inbox` is a
+ * directory somebody else can write to; its text is untrusted input to this process.
+ */
+export function providersFromArgs(args: Args, events: readonly ExternalEvent[], qaFallback: RunOutcome): ProviderSet {
+  return {
+    intake: args.inbox === undefined ? simulatedIntake(events) : directoryIntake(args.inbox),
+    work:
+      args.workCmd === undefined
+        ? simulatedWorkExecutor(true)
+        : commandWorkExecutor({
+            command: args.workCmd,
+            argsFor: (node) => [...args.workArgs, node.workId],
+            cwd: args.git ?? process.cwd(),
+          }),
+    tests:
+      args.testCmd === undefined
+        ? simulatedTestRunner(new Map(), qaFallback)
+        : commandTestRunner({
+            command: args.testCmd,
+            argsFor: (tc) => [...args.testArgs, tc.testCaseId],
+            cwd: args.git ?? process.cwd(),
+          }),
+    change:
+      args.git === undefined
+        ? simulatedChangeControl()
+        : gitChangeControl({ cwd: args.git, baseBranch: args.baseBranch }),
   };
 }
 
@@ -173,6 +274,7 @@ export async function main(argv: readonly string[]): Promise<number> {
   }
 
   // ── The whole organization ────────────────────────────────────────────────
+  const providers = providersFromArgs(args, REPORTS, args.qaFails ? RunOutcome.Failed : RunOutcome.Passed);
   const report = await runOrgRuntime({
     chart,
     externalEvents: REPORTS,
@@ -187,6 +289,7 @@ export async function main(argv: readonly string[]): Promise<number> {
     leaseMs: 300_000,
     ...(args.qaFails ? { qaFallback: RunOutcome.Failed } : {}),
     ...(args.churn ? { churnThreshold: 2, maxGateAttempts: 5 } : {}),
+    providers,
     priorityInputsFor: (item) => ({
       executivePriority: 0.5,
       customerImpact: item.severity === Severity.Critical || item.severity === Severity.High ? 1 : 0.4,
@@ -208,6 +311,25 @@ export async function main(argv: readonly string[]): Promise<number> {
 
   console.log(`\n=== ${report.delivered ? "DELIVERED" : "NOT DELIVERED"} ===`);
   console.log(`levels engaged: ${report.levelsEngaged.join(" → ")}`);
+
+  // Printed on EVERY run, not only the interesting ones. A run that reached a shell and did not
+  // mention it is the claim this whole layer exists to make unsayable, and a block that only
+  // appeared when something was real would train a reader to skip it.
+  console.log(`\n--- fidelity ---`);
+  console.log(
+    `  DST-replayable: ${
+      report.fidelity.replayable ? "yes" : `no — ${report.fidelity.realPorts.join(", ")} touched something`
+    }`,
+  );
+  for (const port of report.fidelity.ports) {
+    console.log(`  ${port.port.padEnd(15)} ${port.name.padEnd(12)} ${port.fidelity.padEnd(10)} ${port.describes}`);
+  }
+  // What the port DID, printed next to what the organization decided. Under the simulated adapter
+  // the two always agree, and the line is worth its space for the runs where they do not.
+  console.log(
+    `  changes: ${String(report.changes.length)} projected, ${String(report.changesLanded.length)} landed` +
+      (report.changesLanded.length === 0 ? "" : ` (${report.changesLanded.join(", ")})`),
+  );
   console.log(`\n--- what happened ---`);
   report.events.forEach((e, i) => console.log(`  ${String(i + 1).padStart(2)}. ${e}`));
   if (report.refusals.length > 0) {

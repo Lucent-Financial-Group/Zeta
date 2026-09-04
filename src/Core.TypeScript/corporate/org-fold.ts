@@ -36,6 +36,8 @@ import type { OrgEvent } from "./org-event";
 import type { PriorityDecision } from "./prioritization";
 import type { GateEvaluation } from "./quality-gate";
 import type { Portfolio, PortfolioBook } from "./portfolio";
+import type { WorkQueue } from "./work-market";
+import type { QaCycleReport } from "./qa";
 
 /** The events that constitute state, in the order they happened. */
 export function factEvents(events: readonly OrgEvent[]): readonly OrgEvent[] {
@@ -189,9 +191,45 @@ export function foldRefusals(events: readonly OrgEvent[]): readonly string[] {
           out.push(`goal_associated with unknown portfolio '${fact.portfolioId}'`);
         }
         break;
+      case "queue_snapshot":
+        // A shard is work the organization committed to, so a queue holding shards for work the log
+        // never created is an accounting hole — the resumed run would offer items nothing explains.
+        for (const shard of fact.queue.shards) {
+          if (!known.has(shard.workId)) out.push(`queue '${fact.queue.queueId}' holds a shard for unknown work '${shard.workId}'`);
+        }
+        break;
       default:
         break;
     }
+  }
+  return out;
+}
+
+/**
+ * Every work MARKET the log has seen, latest snapshot per queue.
+ *
+ * LAST IN THE LOG wins, not the highest revision: a later run may open a fresh queue under the same
+ * id, whose revision restarts at 0, and a max-revision fold would resurrect the abandoned one.
+ */
+export function foldQueues(events: readonly OrgEvent[]): readonly WorkQueue[] {
+  const latest = new Map<string, WorkQueue>();
+  for (const event of factEvents(events)) {
+    if (event.fact?.kind === "queue_snapshot") latest.set(event.fact.queue.queueId, event.fact.queue);
+  }
+  return [...latest.values()];
+}
+
+/**
+ * The QA history, in the order it happened.
+ *
+ * ACCUMULATES rather than replacing. A regression is *this case passed before and fails now*, so a
+ * fold that kept only the latest cycle would destroy the evidence for every regression it could
+ * ever report — the history IS the mechanism, not a record of it.
+ */
+export function foldQaCycles(events: readonly OrgEvent[]): readonly QaCycleReport[] {
+  const out: QaCycleReport[] = [];
+  for (const event of factEvents(events)) {
+    if (event.fact?.kind === "qa_cycle") out.push(event.fact.report);
   }
   return out;
 }
@@ -282,6 +320,10 @@ export interface FoldedOrganization {
   readonly priorities: readonly PriorityDecision[];
   readonly gateEvaluations: readonly GateEvaluation[];
   readonly portfolios: PortfolioBook;
+  /** The work markets, one per queue — shards, claims and approvals, not an empty queue. */
+  readonly queues: readonly WorkQueue[];
+  /** Every QA cycle in order, so a resumed run can still tell a regression from a new failure. */
+  readonly qa: readonly QaCycleReport[];
   /** Empty when the log accounted for everything it referred to. */
   readonly refusals: readonly string[];
   /** How many events carried a fact. Zero means the log holds no state, only commentary. */
@@ -304,6 +346,8 @@ export function foldOrganization(events: readonly OrgEvent[]): FoldedOrganizatio
     priorities: foldPriorities(events),
     gateEvaluations: foldGateEvaluations(events),
     portfolios: foldPortfolioBook(events),
+    queues: foldQueues(events),
+    qa: foldQaCycles(events),
     refusals: foldRefusals(events),
     factCount: factEvents(events).length,
   };

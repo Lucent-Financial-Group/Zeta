@@ -28,6 +28,8 @@ import type { ScheduleBlockState, ScheduleBlockType } from "./work-schedule";
 import type { PriorityClass } from "./prioritization";
 import type { GateEvaluation } from "./quality-gate";
 import type { PortfolioKind } from "./portfolio";
+import type { WorkQueue } from "./work-market";
+import type { QaCycleReport } from "./qa";
 
 export const OrgEventKind = {
   IntakeReceived: "intake_received",
@@ -49,6 +51,8 @@ export const OrgEventKind = {
   ChurnDetected: "churn_detected",
   EscalationDecision: "escalation_decision",
   ChangeProjected: "change_projected",
+  /** The work market as it stood at the end of a run — see the `queue_snapshot` fact. */
+  QueueSnapshot: "queue_snapshot",
   Refusal: "refusal",
 } as const;
 
@@ -128,6 +132,29 @@ export type OrgFact =
     }
   /** A goal was said to be ABOUT a portfolio. An association, never a decomposition edge. */
   | { readonly kind: "goal_associated"; readonly goalId: string; readonly portfolioId: string }
+  /**
+   * The work MARKET at the end of a run: its shards, its claims, its approvals.
+   *
+   * A SNAPSHOT, and deliberately not a stream of `shard_claimed` / `claim_released` deltas. The
+   * queue's transitions are enforced by `work-market.ts` — fencing tokens, lease expiry, the
+   * self-approval refusal — and re-deriving them in the fold would be a SECOND implementation of
+   * that state machine, free to drift from the first while both look healthy. Carrying the queue's
+   * own value keeps one authority, and makes the round trip checkable: fold the log and the queue
+   * that comes back must equal the one the run ended with.
+   *
+   * Keyed by `queueId`, and the fold takes the LAST occurrence in the log rather than the highest
+   * revision — a later run opening a fresh queue under the same id starts at revision 0 again, and
+   * a max-revision fold would resurrect the older one.
+   */
+  | { readonly kind: "queue_snapshot"; readonly queue: WorkQueue }
+  /**
+   * One QA cycle: every run it made, the regressions it found, the defects it filed.
+   *
+   * ACCUMULATES across runs rather than replacing, which is the point of persisting it at all — a
+   * regression is *passed before, fails now*, and a store that kept only the latest cycle could
+   * never see the "before". This is the history that makes the distinction possible.
+   */
+  | { readonly kind: "qa_cycle"; readonly report: QaCycleReport }
   | {
       readonly kind: "meeting_planned";
       readonly meetingId: string;

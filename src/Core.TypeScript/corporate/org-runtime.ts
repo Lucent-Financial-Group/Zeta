@@ -89,6 +89,8 @@ import {
 import { bindWearerToLoop } from "./loop-policy";
 import { firstLegalChooser, preferChooser, type OrgChooser } from "./org-decision";
 import { reportsUpTo, type HatLevel, type OrgChart } from "./org-chart";
+import { fidelityOf, type ChangeHandle, type FidelityReport, type ProviderSet } from "./providers";
+import { simulatedChangeControl, simulatedIntake, simulatedTestRunner, simulatedWorkExecutor } from "./adapters";
 import { associateGoal, EMPTY_BOOK, openPortfolio, type PortfolioKind } from "./portfolio";
 import {
   batchesFromCascade,
@@ -107,7 +109,6 @@ import {
   type PriorityInputs,
 } from "./prioritization";
 import {
-  createPlannedExecutor,
   deriveTestCases,
   gateOutcomeFor,
   runQaCycle,
@@ -199,6 +200,15 @@ export interface OrgRuntimeDeps {
   /** What QA finds. Keyed by test-case id. Absent cases take `fallback`. */
   readonly qaPlan?: ReadonlyMap<string, RunOutcome>;
   readonly qaFallback?: RunOutcome;
+  /**
+   * The ports where this run touches reality — see `providers.ts`.
+   *
+   * Absent means the SIMULATED set, built from `externalEvents`, `qaPlan` and `qaFallback`: exactly
+   * what the register did before these ports existed. The default is a simulation and the report
+   * now says so, which is the difference between a run that shipped something and one that decided
+   * it had.
+   */
+  readonly providers?: ProviderSet;
   readonly gateChooser?: OrgChooser<GateOutcome>;
   readonly escalationChooser?: OrgChooser<EscalationAction>;
   readonly priorityChooser?: OrgChooser<PriorityClass>;
@@ -249,6 +259,14 @@ export interface OrgRuntimeReport {
     readonly projection: Projection;
     readonly disagreements: readonly string[];
   }[];
+  /**
+   * The work ids whose change the CHANGE-CONTROL PORT opened and merged for real.
+   *
+   * Distinct from `changes` on purpose: that is what the organization DECIDED, this is what a
+   * repository will agree to. Under the simulated adapter they coincide, and the distinction only
+   * pays when they do not — which is the case worth being able to see.
+   */
+  readonly changesLanded: readonly string[];
   readonly delivered: boolean;
   /**
    * What happened, as TYPED events — queryable by subject, by actor, and by LINE OF AUTHORITY.
@@ -274,6 +292,13 @@ export interface OrgRuntimeReport {
    * management work the run created for a hat and deliberately did not perform.
    */
   readonly reactor: ReactorReport;
+  /**
+   * Which adapter answered each port, and whether this run is replayable.
+   *
+   * DERIVED from the providers rather than declared. A run that reached a shell or a network and
+   * called itself deterministic is the claim `providers.ts` exists to make unsayable by accident.
+   */
+  readonly fidelity: FidelityReport;
 }
 
 const NEUTRAL_INPUTS: PriorityInputs = {
@@ -308,6 +333,16 @@ const LEVEL_ORDER: readonly HatLevel[] = [
  * that these modules compose.
  */
 export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeReport> {
+  // The ports, resolved ONCE. Defaulting here rather than at each call site means one place decides
+  // what this run is touching, and one place reports it.
+  const providers: ProviderSet = deps.providers ?? {
+    intake: simulatedIntake(deps.externalEvents),
+    work: simulatedWorkExecutor(true),
+    tests: simulatedTestRunner(deps.qaPlan ?? new Map(), deps.qaFallback ?? RunOutcome.Passed),
+    change: simulatedChangeControl(),
+  };
+  const fidelity = fidelityOf(providers);
+
   const trace: OrgEvent[] = [];
   const refusals: string[] = [];
 
@@ -330,7 +365,12 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
   const accepted: IntakeItem[] = [];
   const refusedIntake: IntakeRefusal[] = [];
   const seen = new Set<string>();
-  for (const raw of deps.externalEvents) {
+  // Inbound work comes through the PORT. A refusal is recorded and the run continues with nothing
+  // rather than crashing: an unreachable inbox is an organization with no new work, not a broken one.
+  const polled = await providers.intake.poll();
+  if (!polled.ok) refusals.push(`intake source '${providers.intake.meta.name}': ${polled.reason}`);
+  const inbound = polled.ok ? polled.value : [];
+  for (const raw of inbound) {
     const r = receive(raw, { itemId: deps.createId("in"), nowMs: deps.nowMs, seen });
     if (!r.ok) {
       refusedIntake.push(r.refusal);
@@ -399,6 +439,7 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
   });
 
   const empty = (): OrgRuntimeReport => ({
+    fidelity,
     // An empty run still gets a REAL reactor report over an empty organization, not a hand-written
     // stub: it quiesces immediately because there is nothing to do, which is the true answer and
     // the same one the loop would give. A fabricated `quiesced: true` would be indistinguishable
@@ -434,6 +475,7 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
     loopTicks: [],
     levelsEngaged: [...levels].sort((a, b) => LEVEL_ORDER.indexOf(a) - LEVEL_ORDER.indexOf(b)),
     changes: [],
+    changesLanded: [],
     delivered: false,
     trace,
     events: trace.map(render),
@@ -943,6 +985,15 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
 
   // ── 8 & 9. QA and the GATES ───────────────────────────────────────────────
   const qaReports: QaCycleReport[] = [];
+  /**
+   * The change opened for each task, kept so the same handle is the one merged later.
+   *
+   * Opened BEFORE the work runs, because `execute` is handed `{ branch }` and that context is a
+   * promise: a branch the executor is told to work on has to exist while it works. Opening at
+   * projection time instead — after the work — left every branch empty, which is a repository that
+   * agrees with the record about nothing except the names.
+   */
+  const openedChanges = new Map<string, ChangeHandle>();
   const allCases: TestCase[] = [];
   const gateRuns: { taskId: string; run: GateRunResult }[] = [];
   const gateEvaluations: GateEvaluation[] = [];
@@ -967,7 +1018,22 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
     const qa = await runQaCycle({
       cases,
       priorRuns: [],
-      executor: createPlannedExecutor(deps.qaPlan ?? new Map(), deps.qaFallback ?? RunOutcome.Passed),
+      // The QA cycle keeps its own `TestExecutor` shape; the PORT is what answers it. A refusal
+      // from the runner is a test that could not be run, which is not the same as a failing test —
+      // so it becomes `Errored` and carries the reason, rather than a quiet `Failed` that would
+      // blame the code for a missing binary.
+      executor: {
+        execute: async (testCase, ctx) => {
+          const r = await providers.tests.run(testCase, ctx);
+          if (!r.ok) {
+            return {
+              outcome: RunOutcome.Errored,
+              evidence: [{ kind: "trace" as const, ref: `runner-refused:${r.reason}` }],
+            };
+          }
+          return { outcome: r.value.outcome, evidence: r.evidence };
+        },
+      },
       branch: `work/${task.workId}`,
       qaHatId: "qa_engineer",
       createId: deps.createId,
@@ -984,6 +1050,10 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
       toState: qaVerdict.outcome,
       atMs: warmedAt,
       evidenceRefs: qa.runs.flatMap((r) => r.evidence.map((e) => e.ref)),
+      // The prose says how many passed; the FACT carries the runs. Without it a resumed run has no
+      // QA history at all, and `regressions` — which is *passed before, fails now* — has no
+      // "before" to compare against, so every regression would read as a feature that never worked.
+      fact: { kind: "qa_cycle", report: qa },
     });
 
     // THE GATE READS QA. Runtime validation is not a choice when there is evidence.
@@ -1080,6 +1150,35 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
     }
 
     if (!merged) continue;
+
+    // The change is opened FIRST, so the branch the executor is about to be handed exists.
+    const branch = `work/${task.workId}`;
+    const opened = await providers.change.open(task, { branch });
+    if (!opened.ok) {
+      refusals.push(`change control '${providers.change.meta.name}' could not open ${branch}: ${opened.reason}`);
+      continue;
+    }
+    openedChanges.set(task.workId, opened.value);
+
+    // THE WORK IS PERFORMED HERE — or, with the simulated executor, assumed. Either way it is the
+    // PORT that decides, so a task no longer completes merely by reaching this line.
+    const performed = await providers.work.execute(task, { branch });
+    if (!performed.ok) {
+      refusals.push(`work executor '${providers.work.meta.name}' on ${task.workId}: ${performed.reason}`);
+      continue;
+    }
+    if (!performed.value.succeeded) {
+      note({
+        kind: OrgEventKind.WorkItemTransition,
+        subjectId: task.workId,
+        actorHatId: task.assigneeHatId,
+        decision: `work did not succeed: ${performed.value.summary}`,
+        atMs: warmedAt,
+        evidenceRefs: performed.evidence.map((e) => e.ref),
+      });
+      continue;
+    }
+
     const closed = setState(cascade, task.workId, WorkState.Done);
     if (!closed.ok) refusals.push(`complete ${task.workId}: ${closed.reason}`);
     else {
@@ -1138,7 +1237,24 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
     }
   }
 
+  // ── The work MARKET, recorded so a resumed run inherits it ────────────────
+  // Emitted here rather than at each shard transition: `work-market.ts` owns those transitions, and
+  // a fold that replayed them would be a second copy of that state machine, free to drift. One
+  // snapshot, one authority, and a round trip that can be checked.
+  note({
+    kind: OrgEventKind.QueueSnapshot,
+    subjectId: queue.queueId,
+    actorHatId: queue.hatId,
+    decision:
+      `queue at revision ${String(queue.revision)}: ${String(queue.shards.length)} shard(s), ` +
+      `${String(queue.claims.length)} claim(s), ${String(queue.approvals.length)} approval(s)`,
+    atMs: warmedAt,
+    fact: { kind: "queue_snapshot", queue },
+  });
+
   // ── The work as a real CHANGE ─────────────────────────────────────────────
+  /** The changes the CHANGE-CONTROL PORT actually opened and merged — not the ones projected. */
+  const changesLanded: string[] = [];
   const changes = projectAll({
     cascade,
     queue,
@@ -1158,6 +1274,28 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
     // A disagreement between the organization and its change record is the one thing change control
     // exists to catch, so it is a refusal rather than a line in the log.
     for (const d of c.disagreements) refusals.push(`change control ${c.workId}: ${d}`);
+
+    // ...and then the CHANGE-CONTROL PORT makes the record true somewhere real.
+    //
+    // Without this the port would be decorative: `fidelityOf` would print `change_control … real`
+    // on a run where nothing ever branched, which is the exact misreading the whole layer exists to
+    // prevent — a report naming a capability that never ran. A projection that reached `Merged`
+    // therefore has to be openable and mergeable, and a refusal CONTRADICTS the claim rather than
+    // being logged beside it: `landed` is what the port did, never what the organization decided.
+    if (c.projection.state.tag !== "Merged") continue;
+    // The handle from when the work STARTED, not a fresh one. Re-opening here would branch off
+    // whatever the repository looks like now and merge something that never held the work.
+    const handle = openedChanges.get(c.workId);
+    if (handle === undefined) {
+      refusals.push(`change control ${c.workId}: projected as merged, but no change was ever opened for it`);
+      continue;
+    }
+    const landed = await providers.change.merge(handle);
+    if (!landed.ok) {
+      refusals.push(`change control '${providers.change.meta.name}' could not merge ${handle.branch}: ${landed.reason}`);
+      continue;
+    }
+    changesLanded.push(c.workId);
   }
 
   const delivered = isDelivered(cascade, goalId);
@@ -1213,11 +1351,13 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
     loopTicks,
     levelsEngaged: [...levels].sort((a, b) => LEVEL_ORDER.indexOf(a) - LEVEL_ORDER.indexOf(b)),
     changes,
+    changesLanded,
     delivered,
     trace,
     events: trace.map(render),
     refusals,
     reactor,
+    fidelity,
   };
 }
 

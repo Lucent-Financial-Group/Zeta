@@ -11,7 +11,9 @@
  */
 
 import { describe, expect, test } from "bun:test";
-import { factEvents, foldCalendar, foldCascade, foldGateEvaluations, foldOrganization, foldPortfolioBook, foldPriorities, foldRefusals } from "./org-fold";
+import { factEvents, foldCalendar, foldCascade, foldGateEvaluations, foldOrganization, foldPortfolioBook, foldPriorities, foldQaCycles, foldQueues, foldRefusals } from "./org-fold";
+import { ClaimState, ShardState, emptyQueue, type WorkQueue } from "./work-market";
+import { mergeQueues } from "./run-agent";
 import { PriorityClass } from "./prioritization";
 import { GateKind, GateOutcome } from "./quality-gate";
 import { PortfolioKind, portfolioHistory } from "./portfolio";
@@ -342,5 +344,125 @@ describe("THE PORTFOLIO BOOK FOLDS OUT OF THE LOG", () => {
   test("a run with NO portfolio emits none — one is never invented", async () => {
     const report = await runOrgRuntime(deps());
     expect(foldPortfolioBook(report.trace).portfolios).toEqual([]);
+  });
+});
+
+describe("THE QUEUE AND THE QA HISTORY FOLD OUT TOO — the resumed run is not empty", () => {
+  /** A queue with one shard, one claim and one approval, so the merge has something to lose. */
+  const queueWith = (queueId: string, workId: string, revision = 3): WorkQueue => ({
+    ...emptyQueue(queueId, "rmo_office"),
+    revision,
+    shards: [{ shardId: `${queueId}-s`, workId, state: ShardState.Merged, fencingToken: 1 }],
+    claims: [{
+      claimId: `${queueId}-c`, shardId: `${queueId}-s`, ownerAgentId: "agent-a", state: ClaimState.Completed,
+      claimedAtMs: 0, leaseExpiresMs: 10, heartbeatAtMs: 0, fencingToken: 1,
+    }],
+    approvals: [{ shardId: `${queueId}-s`, byAgentId: "agent-b", atMs: 5 }],
+  });
+
+  const snapshot = (queue: WorkQueue, atMs = 1_000) =>
+    ev({ id: `q-${queue.queueId}-${String(atMs)}`, atMs, kind: OrgEventKind.QueueSnapshot, subjectId: queue.queueId, fact: { kind: "queue_snapshot", queue } });
+
+  test("A REAL RUN'S QUEUE SURVIVES THE ROUND TRIP, shard for shard", async () => {
+    // This is the boundary: the log used to carry the cascade and the calendar and NOT the market,
+    // so a resumed organization had nothing to work on and reported zero deployments — an
+    // organization that had been interrupted looked exactly like one that had never run.
+    const report = await runOrgRuntime(deps());
+    const folded = foldOrganization(report.trace);
+
+    expect(folded.queues).toHaveLength(1);
+    expect(mergeQueues(folded.queues).shards).toEqual(report.queue.shards);
+    expect(mergeQueues(folded.queues).claims).toEqual(report.queue.claims);
+    expect(mergeQueues(folded.queues).approvals).toEqual(report.queue.approvals);
+    // And it is a real market, not an empty one that happens to match.
+    expect(report.queue.shards.length).toBeGreaterThan(0);
+    expect(folded.refusals).toEqual([]);
+  });
+
+  test("THE QA HISTORY SURVIVES — with its runs, which is what makes a regression knowable", async () => {
+    const report = await runOrgRuntime(deps());
+    const folded = foldOrganization(report.trace);
+    expect(folded.qa).toEqual(report.qa);
+    expect(folded.qa.flatMap((c) => c.runs).length).toBeGreaterThan(0);
+  });
+
+  test("QA cycles ACCUMULATE across runs rather than the latest replacing the rest", async () => {
+    // A regression is *passed before, fails now*. Keeping only the newest cycle would destroy the
+    // "before" for every regression the organization could ever report.
+    const first = await runOrgRuntime(deps());
+    const second = await runOrgRuntime(deps({ qaFallback: RunOutcome.Failed }));
+    const both = foldQaCycles([...first.trace, ...second.trace]);
+    expect(both.length).toBe(first.qa.length + second.qa.length);
+    expect(both.some((c) => c.failed > 0)).toBe(true);
+    expect(both.some((c) => c.passed > 0)).toBe(true);
+  });
+
+  test("LAST IN THE LOG WINS PER QUEUE — not the highest revision", () => {
+    // The trap: a later run opens a fresh queue under the same id and its revision restarts at 0.
+    // A max-revision fold would resurrect the abandoned queue and hand the resumed run work that
+    // was already retired.
+    const stale = queueWith("q1", "old-work", 9);
+    const fresh = { ...queueWith("q1", "new-work", 0), shards: [{ shardId: "fresh-s", workId: "new-work", state: ShardState.Ready, fencingToken: 1 }] };
+    // Later run, later instant — and note the revision runs BACKWARDS, 9 then 0, which is exactly
+    // the case a max-revision fold gets wrong.
+    const folded = foldQueues([snapshot(stale, 1_000), snapshot(fresh, 2_000)]);
+    expect(folded).toHaveLength(1);
+    expect(folded[0]?.shards.map((x) => x.workId)).toEqual(["new-work"]);
+    // Log ORDER does not decide it — `factEvents` sorts, so handing them over reversed is the same
+    // organization. A fold that trusted array order would disagree with itself after a merge.
+    expect(foldQueues([snapshot(fresh, 2_000), snapshot(stale, 1_000)])).toEqual(folded);
+  });
+
+  test("two snapshots in the SAME instant break the tie on id, not on arrival", () => {
+    // Deterministically, so the same log always folds to the same organization. Without a total
+    // order two machines could resume the same store into different markets.
+    const a = queueWith("q1", "w-a");
+    const b = { ...queueWith("q1", "w-b"), shards: [{ shardId: "b-s", workId: "w-b", state: ShardState.Ready, fencingToken: 1 }] };
+    const forward = foldQueues([ev({ id: "s-1", atMs: 5, fact: { kind: "queue_snapshot", queue: a } }), ev({ id: "s-2", atMs: 5, fact: { kind: "queue_snapshot", queue: b } })]);
+    const reversed = foldQueues([ev({ id: "s-2", atMs: 5, fact: { kind: "queue_snapshot", queue: b } }), ev({ id: "s-1", atMs: 5, fact: { kind: "queue_snapshot", queue: a } })]);
+    expect(forward).toEqual(reversed);
+    expect(forward[0]?.shards.map((x) => x.workId)).toEqual(["w-b"]);
+  });
+
+  test("DIFFERENT queues both survive — one per hat that held one", () => {
+    const folded = foldQueues([snapshot(queueWith("q1", "w1")), snapshot(queueWith("q2", "w2"))]);
+    expect(folded.map((q) => q.queueId).sort()).toEqual(["q1", "q2"]);
+  });
+
+  test("a snapshot holding a shard for work the log never created is REPORTED", () => {
+    // A resumed run would otherwise offer items nothing in its own history explains.
+    const refusals = foldRefusals([snapshot(queueWith("q1", "ghost-work"))]);
+    expect(refusals).toHaveLength(1);
+    expect(refusals[0]).toContain("ghost-work");
+  });
+});
+
+describe("mergeQueues — a union, because picking one would hide the others' work", () => {
+  const q = (id: string, shardId: string, revision: number): WorkQueue => ({
+    ...emptyQueue(id, "rmo_office"),
+    revision,
+    shards: [{ shardId, workId: `w-${shardId}`, state: ShardState.Ready, fencingToken: 1 }],
+    approvals: [{ shardId, byAgentId: "agent-b", atMs: 1 }],
+  });
+
+  test("every queue's shards and approvals arrive, and the revision is the MAX", () => {
+    // A revision that went BACKWARDS would let an optimistic-concurrency check pass against a
+    // stale expectation, which is the one thing the revision exists to prevent.
+    const merged = mergeQueues([q("a", "s1", 4), q("b", "s2", 7)]);
+    expect(merged.shards.map((s) => s.shardId).sort()).toEqual(["s1", "s2"]);
+    expect(merged.approvals).toHaveLength(2);
+    expect(merged.revision).toBe(7);
+  });
+
+  test("merging is IDEMPOTENT on a single queue, so folding a log twice is safe", () => {
+    const one = q("a", "s1", 4);
+    expect(mergeQueues([one]).shards).toEqual(one.shards);
+    expect(mergeQueues([mergeQueues([one])])).toEqual(mergeQueues([one]));
+  });
+
+  test("no queues gives an EMPTY one — the answer for a log with no market, not for every log", () => {
+    const empty = mergeQueues([]);
+    expect(empty.shards).toEqual([]);
+    expect(empty.revision).toBe(0);
   });
 });

@@ -10,8 +10,11 @@ import { afterEach, describe, expect, test } from "bun:test";
 import { mkdtempSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { main, organizationSurface, resumedSurface } from "./run-agent";
-import { deliveryRate, readRuns } from "./org-store";
+import { main, mergeQueues, organizationSurface, resumedSurface } from "./run-agent";
+import { appendRun, deliveryRate, readRuns } from "./org-store";
+import { ShardState } from "./work-market";
+import { OrgEventKind } from "./org-event";
+import type { QaCycleReport } from "./qa";
 import { currentState, readHistory } from "../workflow-engine/agent-loop/state-store";
 import { isNonCoercive } from "../workflow-engine/agent-loop/menu-generator";
 import { generateMenu } from "../workflow-engine/agent-loop/menu-generator";
@@ -221,6 +224,95 @@ describe("END TO END — pick real work, record it, resume", () => {
     ).toBe(0);
     const history = readHistory(second, "alexa");
     expect(history[0]?.state.tag).toBe("ExecutingWork");
+  });
+
+  test("THE RESUMED QUEUE AND QA HISTORY ARE NOT EMPTY — the interruption is what carries over", async () => {
+    // The boundary this closes. Before the market and the QA history were folded, a resumed
+    // organization inherited an empty queue and no test runs, so it read as an organization that
+    // had never worked rather than one that had been interrupted — and it reported zero deployments
+    // no matter how much had actually shipped.
+    const store = tempRoot();
+    await main([...argv(tempRoot(), AT, "--choose", "PickWork"), "--store", store]);
+    const { folded } = resumedSurface(store, AT_MS);
+    const market = mergeQueues(folded.queues);
+
+    expect(folded.queues.length).toBeGreaterThan(0);
+    expect(market.shards.length).toBeGreaterThan(0);
+    expect(market.claims.length).toBeGreaterThan(0);
+    // Real shards, pointing at work the same log created — not a market floating free of it.
+    for (const shard of market.shards) {
+      expect(folded.cascade.nodes.some((n) => n.workId === shard.workId)).toBe(true);
+    }
+    // The QA history is what makes a regression distinguishable from a feature that never worked,
+    // so it has to arrive with its RUNS, not merely as a count.
+    expect(folded.qa.length).toBeGreaterThan(0);
+    expect(folded.qa.flatMap((c) => c.runs).length).toBeGreaterThan(0);
+  });
+
+  test("A SECOND RUN INTO THE SAME STORE ADDS to the market rather than replacing it", async () => {
+    // Two interruptions are two histories. If the later snapshot replaced the earlier organization
+    // wholesale, resuming would silently discard everything the first run shipped.
+    const store = tempRoot();
+    await main([...argv(tempRoot(), AT, "--choose", "PickWork"), "--store", store]);
+    const one = resumedSurface(store, AT_MS);
+    await main([...argv(tempRoot(), "2026-09-03T11:00:00.000Z", "--choose", "PickWork"), "--store", store]);
+    const two = resumedSurface(store, AT_MS);
+
+    expect(two.folded.queues.length).toBeGreaterThan(one.folded.queues.length);
+    expect(mergeQueues(two.folded.queues).shards.length).toBeGreaterThan(mergeQueues(one.folded.queues).shards.length);
+    expect(two.folded.qa.length).toBeGreaterThan(one.folded.qa.length);
+    // Still one coherent organization: nothing went unaccounted for by growing.
+    expect(two.folded.refusals).toEqual([]);
+  });
+
+  test("A RESUMED RUN REPORTS ITS DEPLOYMENTS — the folded market is what DORA counts", async () => {
+    // The most legible symptom of the empty queue: `deploymentCount` is merged shards, so a resumed
+    // organization that inherited an empty market reported ZERO deployments however much it had
+    // shipped, and its lead time was unmeasurable.
+    const store = tempRoot();
+    await main([...argv(tempRoot(), AT, "--choose", "PickWork"), "--store", store]);
+    const { surface, folded } = resumedSurface(store, AT_MS);
+
+    const merged = mergeQueues(folded.queues).shards.filter((s) => s.state === ShardState.Merged);
+    expect(merged.length).toBeGreaterThan(0);
+    expect(surface.snapshot.currentDora.deploymentCount).toBe(merged.length);
+    // ...and lead time is a measurement rather than a gap, which it cannot be with no shards.
+    expect(surface.snapshot.currentDora.leadTimeMedianSeconds).not.toBeUndefined();
+  });
+
+  test("THE QA HISTORY IS WHAT KNOWS about a failure no gate recorded", async () => {
+    // Why the QA history has to survive on its own: gate verdicts and QA cycles usually name the
+    // same troubled items, so folding one covers for losing the other — until a case fails that no
+    // gate rejected, and then only the QA history has it. That is the run this checks.
+    const store = tempRoot();
+    await main([...argv(tempRoot(), AT, "--choose", "PickWork"), "--store", store]);
+    const before = resumedSurface(store, AT_MS);
+    const leaf = before.folded.cascade.nodes.find((n) => n.assigneeHatId !== undefined);
+    expect(leaf).toBeDefined();
+    if (leaf === undefined) return;
+
+    // A later QA cycle in which that item's feature failed. No gate verdict accompanies it.
+    const cycle: QaCycleReport = {
+      runs: [], regressions: [], failedFeatureIds: [leaf.workId], untestedIds: [], defects: [], passed: 0, failed: 1,
+    };
+    appendRun(
+      {
+        atMs: AT_MS + 60_000, delivered: false, levelsEngaged: [], refusals: [],
+        trace: [{
+          id: "qa-late", kind: OrgEventKind.TestRunRecorded, atMs: AT_MS + 60_000, subjectId: leaf.workId,
+          decision: "0/1 passed", supervisorChain: [], evidenceRefs: [],
+          fact: { kind: "qa_cycle", report: cycle },
+        }],
+      },
+      store,
+    );
+
+    const after = resumedSurface(store, AT_MS);
+    expect(after.folded.qa.length).toBe(before.folded.qa.length + 1);
+    // The surface CHANGED because of it: the item now carries more unresolved trouble against it,
+    // which is what raises it as somewhere a look pays.
+    const uncertaintyOf = (r: typeof after) => r.surface.candidates.find((c) => c.id === leaf.workId)?.uncertainty ?? 0;
+    expect(uncertaintyOf(after)).toBeGreaterThan(uncertaintyOf(before));
   });
 
   test("the resumed priorities and gate verdicts come back too", async () => {
