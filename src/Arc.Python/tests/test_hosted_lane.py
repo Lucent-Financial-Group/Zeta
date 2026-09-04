@@ -24,6 +24,7 @@ import numpy as np
 import pytest
 from arc_agi.wrapper import EnvironmentWrapper  # type: ignore[import-untyped]
 from arcengine import GameAction, GameState
+
 from zeta_arc.agent import PixelAgent
 from zeta_arc.click import MAX_COORD, SWEEP_STRIDES, ClickPolicy
 from zeta_arc.driver import advance, reset
