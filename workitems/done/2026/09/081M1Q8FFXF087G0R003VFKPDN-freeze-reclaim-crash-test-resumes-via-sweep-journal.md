@@ -1,11 +1,12 @@
 ---
 id: 081M1Q8FFXF087G0R003VFKPDN
 type: task
-state: backlog
+state: done
 priority: P1
 slug: freeze-reclaim-crash-test-resumes-via-sweep-journal
 title: "Freeze reclaim crash test resumes via sweep journal"
 created: 2026-09-04T22:26:25.327Z
+completed: 2026-09-04T22:45:11.280Z
 depends_on: []
 composes_with: []
 ---
