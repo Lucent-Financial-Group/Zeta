@@ -826,3 +826,168 @@ committed: 60471747b on org-implements-work (91 files) — not pushed
 
 One intermittent: a single observe test failed once and passed on three subsequent full runs; it is
 not in any file this pass touched and could not be reproduced.
+
+
+## Pass 9 — the ports: where the organization touches reality
+
+### The register orchestrated faithfully and performed nothing
+
+"Implementation" moved a state to `done`. QA outcomes came from a configured fallback. Gate verdicts
+were computed rather than earned. The inbound event was a hardcoded fixture. None of that is wrong —
+a simulation is a legitimate thing to have — but it was **indistinguishable from the real thing at
+every call site**, which is the failure `toy-is-free-metered-must-be-earned` names: unlabelled work
+reads as real by default.
+
+So this pass is not "add the real implementations". It is: make the boundary a declared, typed,
+labelled seam.
+
+### Fidelity is DERIVED, never declared
+
+Five ports — intake, work execution, test execution, review, change control. Every provider says
+whether it is `simulated` or `real`, and a `ProviderSet` derives one consequence: **a run that used a
+real provider is not DST-replayable.** `replayable` is computed from the set, so the sentence a
+caller would most like to write by accident — "deterministic" over a run that reached a shell — is
+unwritable.
+
+`resolve` **refuses** rather than falling back. A silent substitution would let a run configured for
+real work report work it never performed, with nothing in the output to show for it.
+
+### The ports are load-bearing, not decorative
+
+Work no longer completes by reaching a line. Change control opens the branch BEFORE the executor
+runs, because `execute` is handed `{ branch }` and that context was a promise the runtime was not
+keeping — opening afterwards left every branch empty.
+
+Same organization, same code, only the work command differing:
+
+```
+exits 0 -> DELIVERED, 2 changes projected, 2 landed, two --no-ff merges in a real repository
+exits 1 -> NOT DELIVERED, leaves stay open, "work did not succeed: ... exited 1"
+```
+
+### A resumed organization inherits its market and its QA history
+
+The log carried the cascade and the calendar and **not the work market**, so a resumed run started
+with an empty queue and no test runs: an organization that had been interrupted looked exactly like
+one that had never worked, and reported zero deployments however much had shipped.
+
+Two new `OrgFact`s close it. The queue is a **snapshot** rather than a stream of deltas on purpose —
+`work-market.ts` owns those transitions, and a fold that replayed them would be a second copy of that
+state machine, free to drift. QA cycles **accumulate**, because a regression is *passed before, fails
+now* and a fold keeping only the latest destroys every "before" it could report.
+
+### Defects found by running it
+
+- **A test wrote and COMMITTED into this repository.** `workdir ?? ""` makes `join` relative and
+  `spawnSync` inherit the process's own directory, so under the mutation that strips `workdir` from
+  the handle the worktree test operated on Zeta itself — two commits, since removed. The mutant was
+  killed correctly; the side effect on its way past was the defect. The helper now refuses instead of
+  defaulting, which is the discipline the adapters are built on.
+- **The mutation harness could strand a mutant.** `finally` does not run when a process is killed,
+  and one killed run left three mutants on disk across three files — the last found only because a
+  test asserted MTTR. It now parks a pristine sidecar before the first write, restores any it finds
+  at startup, and refuses a second concurrent runner. Falsified by planting a stranded mutant.
+- **An ordering guarantee that could not fail.** The inbox sort was unfalsifiable through the adapter
+  because filesystems already return entries alphabetically. Extracted as `inboxOrder`, which can be
+  handed a list backwards — and the discriminating pair had to be chosen with care: `A` vs `b` sorts
+  the same under both comparators, `Z` vs `a` does not.
+
+---
+
+## Pass 10 — the gates decided, the agent acting, and the last three ports shipped
+
+### Six of the seven gates could not fail
+
+Measured, over one run: 14 gate verdicts, 12 of them `approved (reviewed)` — a constant — and 2
+`runtime_validation approved (1/1 passed)`. `CustomerRfpReview`, `BrdApproval`,
+`ArchitectureApproval`, `ImplementationReview`, `FinalBusinessValidation` and `ReleaseReadiness` were
+rubber stamps, and `fidelityOf` reported four ports and said nothing about it. **A gate that cannot
+fail is the vacuity class standing exactly where the organization makes its quality claim** — and it
+was the failure the port layer exists to prevent, sitting one layer above where pass 9 fixed it.
+
+A fifth port. `autoApproveReview` changes no behaviour and now SAYS what it does; every verdict reads
+`auto-approved — nothing reviewed this` rather than the word "reviewed", which made a constant read
+as a judgement. Real adapters fail **closed**: `directoryReview` treats a missing verdict as
+blocking, because "nobody has looked at this yet" and "this was reviewed and approved" are two
+sentences an organization must never confuse.
+
+Runtime validation is **not** routed to the reviewer. Green tests are green tests, and letting an
+opinion outrank them would put the one earned verdict back on the same footing as the six that were
+not.
+
+### And then the override made that port decorative — measured, and removed
+
+`deps.gateChooser` had one caller and no production path, and once the review port existed it could
+do exactly one thing the port cannot: approve work whose TESTS FAILED. Its own test was named *"a
+caller-supplied gate chooser still cannot approve a failing QA run by itself"* and then asserted
+`delivered === true`.
+
+With a reviewer that rejected everything:
+
+```
+before: 12 calls, all REJECT -> delivered: true,  no refusal said so
+after:  12 calls, all REJECT -> delivered: false, 0 changes landed, 6 gates turned back
+```
+
+The seam and the design disagreed; the disagreement is settled in favour of the design. Both honest
+uses were already ports — `agentReview` for the six gates, `simulatedTestRunner` for runtime
+validation. What is gone is the ability to report `delivered` over red tests.
+
+### An agent may act, and may not judge its own action
+
+The fourth boundary — *the model chooses; it doesn't work* — closed at the seam rather than by
+widening the model's authority. `AgentAttempt` has a summary and artifacts and **no `succeeded`
+field**: an agent asked whether its own work succeeded has every incentive to say yes, no independent
+view of the tree, and, being the thing under test, cannot be the thing that judges.
+
+Measured against a real model before the tests were written. qwen2.5:0.5b, same item, same seed:
+
+```
+verifier exits 0 -> succeeded: true
+verifier exits 1 -> succeeded: false
+the model said, both times, byte-identically:
+  "you can implement a feature that prevents the application of a coupon twice"
+```
+
+### The remaining three ports got a command line
+
+`httpIntake`, `agentWorkExecutor` and `agentReview` were exported, tested and mutation-checked, and
+reachable from nothing but tests — unshipped by this file's own standard. `--tracker` (with
+`--tracker-map externalId=key --tracker-map title=fields.summary`), `--work-agent` + `--work-verify`,
+and `--review-model` close that. `gitWorktreeChangeControl` gives every change its own checkout, so
+`gitChangeControl`'s sequential-only limit is no longer a property held by an accident of the caller.
+
+### Defects found by running it
+
+- **The agent and the verifier judged different trees.** `commandProposal` ignored `ctx.workdir`, so
+  the agent wrote into the shared repository while the verifier looked in the worktree — every item
+  failed with the agent confidently reporting success. Found by the first end-to-end run, not by
+  reading, and it is the same "reaches the verifier but not the agent" gap as the worktree adapter's,
+  in the sibling written next to it.
+- **A test suite sized against a budget it nearly exhausted.** The pass-8 note above — *"a single
+  observe test failed once and passed on three subsequent full runs"* — was chased down this pass by
+  recreating the load it happened under. `gitCommitToMain > the undo does not touch a concurrent
+  uncommitted edit in another file` **timed out at 5000ms**, having taken 7360ms. A timeout, not an
+  assertion: the undo clobbered nothing. Those eight real-git tests take ~31s idle — ~3.9s each — so
+  they ran at ~78% of bun's default with nothing else on the machine. That is not a flaky test; it is
+  a budget that was never right. Now 30s, ~8x measured, and falsified by setting it to 1ms.
+
+### Verified
+
+```
+bun test corporate + workflow-engine                  1447 pass, 0 fail (1449 ran, 2 skipped)
+bun test observe                                      1630 pass, 0 fail
+tsc --noEmit                                             0 errors
+mutation: 13 matrices, 119/119 killed, 0 survivors, 0 stale anchors
+dotnet build -c Release                                  0 warnings, 0 errors
+dotnet test Zeta.sln (incl. the cross-language treaty) 6207 pass, 0 fail, 8 skipped
+  — the workflow treaty ran and passed; it is not among the skips, checked by name
+pushed: org-implements-work (F# untouched by this arc; every commit is TypeScript)
+```
+
+**One honest open item.** The observe suite failed once more, in a chained run that took 139s against
+a 25s baseline, and **it is not identified** — I captured only the tail, losing the name, which is the
+same mistake that cost the first occurrence a diagnosis. Five subsequent full runs under deliberate
+concurrent load, and a replay of the exact chained sequence, were all 1630/0. It may be the same
+timeout at a load level 30s does not cover, or a second load-sensitive test; there is no evidence to
+choose between those, so neither is claimed. **Next occurrence: capture the full output.**
