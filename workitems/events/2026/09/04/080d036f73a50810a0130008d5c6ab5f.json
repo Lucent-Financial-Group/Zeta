@@ -1,0 +1,14 @@
+{
+  "id": "080d036f73a50810a0130008d5c6ab5f",
+  "at": "2026-09-04T19:38:59.105Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1PYWX50087G0R001FS6YS3",
+    "type": "task",
+    "title": "IAsyncBlockIo completions without Task.Run",
+    "slug": "iasyncblockio-completions-without-task-run",
+    "priority": "P1",
+    "filename": "081M1PYWX50087G0R001FS6YS3-iasyncblockio-completions-without-task-run.md"
+  }
+}

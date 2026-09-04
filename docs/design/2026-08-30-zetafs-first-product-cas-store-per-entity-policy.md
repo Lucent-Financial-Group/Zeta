@@ -1527,7 +1527,7 @@ Each PR is independently reviewable and mergeable. Tests green or it does not la
 
 1. **Same `IBlockIo` door, not POSIX files.** `FileSystemBlockIo` is the polyfill. A native impl talks to the namespace (io_uring NVMe, SPDK, unikernel block). Two files in `.zetafs` are not two disks (E9).
 2. **Geometry from Identify.** `BlockSize` + `LbaCount` (0 = unbounded DST). Native reports the namespace size; writes past it fail.
-3. **Async completions.** Today's `Read`/`Write`/`Flush` are synchronous (DST DoP=1). Native needs a yielding completion door. `Task.Run` wrapping the sync methods is not that door (`async-all-the-way`).
+3. **Async completions.** Today's `IBlockIo` `Read`/`Write`/`Flush` are synchronous (DST DoP=1). `IAsyncBlockIo` is the yielding door: polyfill/sim complete synchronously (`IsCompletedSuccessfully`); native later uses io_uring/SPDK. `Task.Run` wrapping the sync methods is not that door (`async-all-the-way`).
 4. **Flush = NVMe Flush / FUA**, not POSIX `fsync`.
 5. **Two devices** for log vs CAS (already the freeze `BlockCas` shape). Crash arm on leaves must not tear the log.
 6. **DST record/replay** of every device op. `SimulatedBlockIo` is the stand-in; native injects the same events. PR12 corpus stays `toy` until that replay is the native path too.
