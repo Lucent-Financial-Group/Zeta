@@ -1,0 +1,12 @@
+{
+  "pr_number": 16590,
+  "archive_path": "docs/history/pr-reviews/PR-16590-feat-081m1pyparr087g0r001s855ja-add-keda-and-enumerate-the-resource-request-back.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-04T20:04:52.335Z",
+  "schema_version": "v1",
+  "commit_sha": "354337f375bee45cad5041de9ea14f876b5ec0df",
+  "title": "feat(081M1PYPARR087G0R001S855JA): add KEDA, and enumerate the resource-request backlog instead of quoting a count",
+  "state": "MERGED",
+  "merged_at": "2026-09-04T20:04:10Z",
+  "head_ref": "otto/resource-request-coverage-and-keda"
+}
