@@ -32,6 +32,7 @@ Beacon; blueprint = satellite / Mirror). The directory is an independent shippin
 - [`ace`](blueprints/ace.md) — Ace DLC package manager — list/install/verify content-addressed packages in ~/.ace store. Run via bun.
 - [`flash-cluster-iso`](blueprints/flash-cluster-iso.md) — Flash Zeta cluster installer ISO to USB from macOS via zflash + Touch ID; operator-only and agent-driven paths.
 - [`zflash-creds`](blueprints/zflash-creds.md) — Bake operator creds into the USB-bound encrypted blob via zflash --bake-cred (PLACEHOLDER — flag not yet implemented).
+- [`host-creds-k8s-secrets`](blueprints/host-creds-k8s-secrets.md) — Project USB-restored GitHub and AI-login files into Kubernetes Secrets for agent pods.
 - [`zflash-overview`](blueprints/zflash-overview.md) — zflash end-to-end overview + substrate-cluster map + canonical flash-USB-to-install runbook.
 - [`browser-extraction`](blueprints/browser-extraction.md) — "Browser content extraction via osascript + Chrome JS — authenticated sessions, no Playwright, macOS only."
 - [`chrome-lazy-load-chunked-extraction`](blueprints/chrome-lazy-load-chunked-extraction.md) — "Extract authenticated lazy-load / virtual-list chat UIs (DeepSeek, ChatGPT, Gemini) via chunked reverse-scroll."
