@@ -1,0 +1,12 @@
+{
+  "pr_number": 16589,
+  "archive_path": "docs/history/pr-reviews/PR-16589-feat-arc-render-action6-coordinate-forecast-in-arena.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-04T19:45:54.309Z",
+  "schema_version": "v1",
+  "commit_sha": "64b65db43157051074cb5ce537d864eccc60c3e2",
+  "title": "feat(arc): render ACTION6 coordinate forecast in arena",
+  "state": "MERGED",
+  "merged_at": "2026-09-04T19:45:15Z",
+  "head_ref": "claim/task-arc-rung-e-coordinate-heatmap"
+}

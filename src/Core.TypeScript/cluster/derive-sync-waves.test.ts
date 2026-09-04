@@ -82,10 +82,11 @@ describe("the live full-ai-cluster tree", () => {
     // of pinning it -- a new Application must be a VISIBLE edit here, because
     // an integer that silently keeps passing is how a lane stops asserting
     // what it claims to.
+    // 47 -> 48 on 2026-09-04: `keda` joined the tree (Aaron 2026-09-04).
     const manifests = listApplicationManifests();
-    expect(manifests.length).toBe(47);
-    expect(readShippedApplications().length).toBe(47);
-    expect(audit.derivedWaves.size).toBe(47);
+    expect(manifests.length).toBe(48);
+    expect(readShippedApplications().length).toBe(48);
+    expect(audit.derivedWaves.size).toBe(48);
   });
 
   test("the nine known disagreements are all registered WITH a reason", () => {
@@ -149,8 +150,9 @@ describe("the live full-ai-cluster tree", () => {
 
   test("the declaration parses as ace's own AppDependencyGraph kind", () => {
     const { spec, nodes } = readDeclaration();
+    // 47 -> 48 on 2026-09-04: `keda` joined the tree (Aaron 2026-09-04).
     expect(spec.kind).toBe("AppDependencyGraph");
-    expect(nodes.length).toBe(47);
+    expect(nodes.length).toBe(48);
     // The synthetic root `resolveGraph` injects must not collide with a chart.
     expect(nodes.some((n) => n.chart === spec.metadata.name)).toBe(false);
   });
@@ -172,7 +174,9 @@ function app(name: string, wave: number | null): ShippedApplication {
 const auditNoPending = (shipped: readonly ShippedApplication[], d: Declaration) =>
   auditInputs(shipped, d, new Map<string, string>());
 
-function declaration(nodes: readonly { chart: string; dependsOn?: string[]; citations?: Record<string, unknown> }[]): Declaration {
+function declaration(
+  nodes: readonly { chart: string; dependsOn?: string[]; citations?: Record<string, unknown> }[],
+): Declaration {
   return {
     spec: {
       apiVersion: "ace.zeta.io/v1",
@@ -197,7 +201,10 @@ describe("falsifiers", () => {
   test("a declared node that ships no Application is a FINDING", () => {
     const audit = auditNoPending(
       [CILIUM],
-      declaration([{ chart: "cilium", dependsOn: [] }, { chart: "imaginary", dependsOn: [] }]),
+      declaration([
+        { chart: "cilium", dependsOn: [] },
+        { chart: "imaginary", dependsOn: [] },
+      ]),
     );
     expect(audit.phantom).toEqual(["imaginary"]);
     expect(auditIsClean(audit)).toBe(false);
@@ -206,7 +213,10 @@ describe("falsifiers", () => {
   test("an Application with no sync-wave annotation is a FINDING", () => {
     const audit = auditNoPending(
       [CILIUM, app("bare", null)],
-      declaration([{ chart: "cilium", dependsOn: [] }, { chart: "bare", dependsOn: [] }]),
+      declaration([
+        { chart: "cilium", dependsOn: [] },
+        { chart: "bare", dependsOn: [] },
+      ]),
     );
     expect(audit.unannotated).toEqual(["bare"]);
     expect(auditIsClean(audit)).toBe(false);
@@ -217,7 +227,10 @@ describe("falsifiers", () => {
     // rounding it to something plausible would invent an order nobody wrote.
     const audit = auditNoPending(
       [CILIUM, app("fractional", null)],
-      declaration([{ chart: "cilium", dependsOn: [] }, { chart: "fractional", dependsOn: [] }]),
+      declaration([
+        { chart: "cilium", dependsOn: [] },
+        { chart: "fractional", dependsOn: [] },
+      ]),
     );
     expect(audit.unannotated).toEqual(["fractional"]);
   });
@@ -305,7 +318,10 @@ describe("falsifiers", () => {
   test("argocd is the ONE exemption from the CNI floor", () => {
     const audit = auditNoPending(
       [CILIUM, app("argocd", -90)],
-      declaration([{ chart: "cilium", dependsOn: [] }, { chart: "argocd", dependsOn: [] }]),
+      declaration([
+        { chart: "cilium", dependsOn: [] },
+        { chart: "argocd", dependsOn: [] },
+      ]),
     );
     expect(audit.cniFloorViolations).toEqual([]);
     expect(auditIsClean(audit)).toBe(true);

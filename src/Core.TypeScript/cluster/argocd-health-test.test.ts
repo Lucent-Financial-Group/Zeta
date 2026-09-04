@@ -1726,8 +1726,8 @@ describe("081M0JXXFV0087G0R00...: the four newly-visible non-storage defects", (
     for (const cited of [
       "[cite: resource-rung hindsight metal 1000]",
       "[cite: resource-rung hindsight dev 75]",
-      "[cite: lane-cpu metal 6390 over]",
-      "[cite: lane-cpu dev 1165 fits]",
+      "[cite: lane-cpu metal 6690 over]",
+      "[cite: lane-cpu dev 1240 fits]",
     ]) {
       expect(reason).toContain(cited);
     }

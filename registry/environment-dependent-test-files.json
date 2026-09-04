@@ -10,5 +10,11 @@
     "dependency": "a physical zeta-installer-*.iso in the invoking user's ~/Downloads, plus OS permission to read that folder",
     "reason": "MEASURED 2026-08-16 on the same fresh clone: this is the 5th failure, and it is an UNHANDLED ERROR at module scope rather than a test failure — readdirSync(~/Downloads) throws EPERM under macOS TCC, before test.skipIf can decide anything. Its verdict is a property of the host's file system and privacy settings, not of the code: on a runner ~/Downloads does not exist and the file skips, on a maintainer laptop it may run for real, and on a TCC-restricted laptop it takes the whole suite down. The scandir is made fail-soft in the same change so the answer is an attributed skip rather than a crash; the tier move is because a test gated on hardware the runner does not have belongs in the tier named for that.",
     "workitem": ""
+  },
+  {
+    "path": "src/Core.TypeScript/research/signed-probit-ep-cross-verify.test.ts",
+    "dependency": ".NET SDK 10.0.302 (global.json) and a built src/Bayesian/bin/Debug/net10.0/Zeta.Bayesian.dll",
+    "reason": "MEASURED 2026-09-04 in the deliberately JavaScript-first hermetic CI tier: this non-skipping wrapper invokes an independently authored Python exact-posterior oracle and an F# receipt runner. The hermetic runner has neither the repository workstation bootstrap nor the built Bayesian assembly, so its red result was an unambiguous missing-dependency report: FS0078 for Zeta.Bayesian.dll. The checker remains mandatory: it runs in test (TS environment-dependent), after the declared full toolchain install, and fails if the F# receipt, Python oracle, or label-mutation control disagree. Moving it changes WHERE the dependency is realized, never WHETHER the cross-language claim is checked.",
+    "workitem": ""
   }
 ]

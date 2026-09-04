@@ -163,6 +163,10 @@
     # tty1 interactive prompt is inappropriate (e.g., headless +
     # pre-staged `/run/zeta-creds-passphrase`).
     ./zeta-creds-restore.nix
+    # 081M1PWSF56087G0R000FDS3NY: host files → Kubernetes Secrets so agent
+    # pods can mount the GitHub / AI-login creds restore already wrote.
+    # Control-plane only (enable flip below). Not a Helm chart.
+    ./zeta-creds-to-k8s.nix
   ];
 
   # B-0852.4 default-on flip (operator pain point closure 2026-05-27).
@@ -172,6 +176,12 @@
     enable = lib.mkDefault true;
     passphraseMode = lib.mkDefault "interactive";
   };
+
+  # 081M1PWSF56087G0R000FDS3NY: project restored host creds into the API
+  # after k3s is up. Agents restore files for systemd vendor agents but
+  # do not hold the admin kubeconfig this unit needs. Per-host opt-out:
+  # `zeta.credsToK8s.enable = false;`
+  zeta.credsToK8s.enable = lib.mkDefault (config.services.k3s.role == "server");
 
   # B-0855.2: every node self-registers on first boot (opens a
   # maintainers/<gh-user>/cluster-nodes/<host> PR) once cred-restore has put gh

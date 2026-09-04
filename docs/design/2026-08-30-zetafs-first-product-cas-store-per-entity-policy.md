@@ -1527,12 +1527,24 @@ Each PR is independently reviewable and mergeable. Tests green or it does not la
 
 1. **Same `IBlockIo` door, not POSIX files.** `FileSystemBlockIo` is the polyfill. A native impl talks to the namespace (io_uring NVMe, SPDK, unikernel block). Two files in `.zetafs` are not two disks (E9).
 2. **Geometry from Identify.** `BlockSize` + `LbaCount` (0 = unbounded DST). Native reports the namespace size; writes past it fail.
-3. **Async completions.** Today's `Read`/`Write`/`Flush` are synchronous (DST DoP=1). Native needs a yielding completion door. `Task.Run` wrapping the sync methods is not that door (`async-all-the-way`).
+3. **Async completions.** Today's `IBlockIo` `Read`/`Write`/`Flush` are synchronous (DST DoP=1). `IAsyncBlockIo` is the yielding door: polyfill/sim complete synchronously (`IsCompletedSuccessfully`); native later uses io_uring/SPDK. `Task.Run` wrapping the sync methods is not that door (`async-all-the-way`).
 4. **Flush = NVMe Flush / FUA**, not POSIX `fsync`.
 5. **Two devices** for log vs CAS (already the freeze `BlockCas` shape). Crash arm on leaves must not tear the log.
 6. **DST record/replay** of every device op. `SimulatedBlockIo` is the stand-in; native injects the same events. PR12 corpus stays `toy` until that replay is the native path too.
 7. **Linux/unikernel first.** Not Windows, not FSKit. Clean-room if looking at SPDK samples (spec crosses the wall, not expression).
 8. **PR12 green before calling crash-safe.** Superblock `ZFL2`/`ZCA2` already designed for LBA 0/1.
+
+**Test adapters that do not `nvme format` a physical drive:**
+
+| Adapter | What it is | When |
+|---|---|---|
+| `SimulatedBlockIo` (in-tree) | RAM LBAs. Optional `lbaCount` is Identify-shaped capacity; 0 = unbounded. Crash/corrupt/reorder/torn arms. | CI / DST. **This is the unit-test door.** |
+| QEMU `-device nvme` + file image | Real NVMe Identify/queues; backing is a raw file (`-drive file=nvm.img`). No physical SSD. | Later integration VM. Sibling pattern: `qemu-usb-storage.ts`. |
+| Linux `nvmet` + `nvme-loop` | Kernel presents `/dev/nvme0n1` over a file or ramdisk. Root, Linux-only, not DST. | Later host integration. |
+| SPDK malloc bdev | Userspace RAM namespace. Large dep; clean-room if we read SPDK samples. | Later userspace integration. |
+| NVMeVirt (FAST 2023) / FEMU (FAST 2018) | Kernel/QEMU RAM-backed NVMe. Research emulators. | Optional research lane, not CI. |
+
+Never `nvme format` (secure-erase) the host's real namespace for tests. Zeta `FORMAT` / `ZFL2` superblock is our volume identity, not the NVMe Format NVM admin command.
 
 ### PR16 (later) -- FSKit adapter
 

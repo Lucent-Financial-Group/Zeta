@@ -476,11 +476,14 @@
     "the same lane from 2006m to 1081m on top of that. Both are true; only the first",
     "one lifted the entry."
   ],
-  "acknowledgedLaneBudgetShortfall": [],
-  "resourceProfiles": [
-    "dev",
-    "metal"
+  "acknowledgedLaneBudgetShortfall": [
+    {
+      "key": "dev memory 9356>9216",
+      "reason": "Adding KEDA (081M1N0VTN8087G0R0008VE34B / Aaron 2026-09-04) puts the dev lane 140Mi over a 9216Mi budget. THE BUDGET IS NOT WIDENED and the 140Mi is not hidden. Two things were tried first and rejected on the record. (1) Cutting gmod's dev memory, the single largest row at 2048Mi: its own claim already argues against exactly that -- 'a map's working set is real, memory is incompressible, and cutting this request would trade a Pending pod for an evicted one' -- and overturning a reasoned decision for my own convenience is not a measurement. Worth noting that the same claim says gmod 'does not schedule today only because its sync fails on gatekeeper's webhook -- a reprieve, not a fit', and that webhook failure was FIXED in 081M1MG8GVE087G0R00203QV20, so the reprieve is over and the 2048Mi is now real. (2) Squeezing KEDA to 16Mi per component, which fits with 4Mi to spare and would break on the next addition -- a number chosen to pass rather than to be right. THE 140Mi COMES OUT OF THE RESERVE, which is 6144Mi of a 15360Mi node, so this is 2.3% of headroom that exists precisely for pods that request nothing -- and KEDA, unlike 33 of the 54 Applications, declares what it needs.",
+      "liftsWhen": "LIFTS WHEN: the reserve is re-sized against measured usage rather than against a roster where 33 of 54 Applications request nothing. That re-sizing is FORCED by 081M1N0VTN8087G0R0008VE34B anyway: giving those 33 real requests moves their consumption from the reserve into the budget, and a 6144Mi reserve on a 15360Mi node was sized when almost nothing declared. Until then this row is the honest form of the gap."
+    }
   ],
+  "resourceProfiles": ["dev", "metal"],
   "runnerEnvelope": {
     "runner": "github-hosted ubuntu-24.04 standard",
     "cpuMillis": 4000,
@@ -625,6 +628,63 @@
       "memoryMib": {
         "dev": 128,
         "metal": 256
+      }
+    },
+    {
+      "id": "full-ai-cluster/keda/metricServer",
+      "dir": "keda",
+      "path": "full-ai-cluster/k8s/applications/keda/Application.yaml",
+      "docIndex": 0,
+      "requestsField": "spec.source.helm.valuesObject.resources.metricServer.requests",
+      "pods": 1,
+      "metalSource": "chart-default",
+      "evidence": "MEASURED 2026-09-04 by `helm template keda kedacore/keda --version 2.20.2` with this Application's own valuesObject: the values reach all three containers -- keda-operator, keda-operator-metrics-apiserver and keda-admission-webhooks each carry `requests: {cpu: 25m, memory: 64Mi}`. The coordinate is `resources.<component>`, NOT `<component>.resources` -- the spelling several neighbouring charts use, and which would have been inert here. `metal` reproduces the chart's own defaults (100m/100Mi per component), so applying `metal` is a no-op against upstream.",
+      "consequence": "The `external.metrics.k8s.io` APIService backend. An under-request here is the one worth being careful about: a registered APIService with no healthy backend makes `kubectl get --raw /apis/external.metrics.k8s.io` fail for EVERY consumer, not just KEDA's, so eviction here is felt cluster-wide rather than locally.",
+      "cpuMillis": {
+        "dev": 25,
+        "metal": 100
+      },
+      "memoryMib": {
+        "dev": 64,
+        "metal": 100
+      }
+    },
+    {
+      "id": "full-ai-cluster/keda/operator",
+      "dir": "keda",
+      "path": "full-ai-cluster/k8s/applications/keda/Application.yaml",
+      "docIndex": 0,
+      "requestsField": "spec.source.helm.valuesObject.resources.operator.requests",
+      "pods": 1,
+      "metalSource": "chart-default",
+      "evidence": "MEASURED 2026-09-04 by `helm template keda kedacore/keda --version 2.20.2` with this Application's own valuesObject: the values reach all three containers -- keda-operator, keda-operator-metrics-apiserver and keda-admission-webhooks each carry `requests: {cpu: 25m, memory: 64Mi}`. The coordinate is `resources.<component>`, NOT `<component>.resources` -- the spelling several neighbouring charts use, and which would have been inert here. `metal` reproduces the chart's own defaults (100m/100Mi per component), so applying `metal` is a no-op against upstream.",
+      "consequence": "The reconcile loop. Idle until a ScaledObject exists, and this cluster has none yet, so 25m is sized for that idle state. CPU is compressible -- 25m throttles a busy reconcile, it does not fail it. Memory is NOT floored below the chart's 100Mi... it is, to 64Mi, and the reason is that the operator's working set at zero ScaledObjects is small and the dev lane is the constraint; the metal rung keeps upstream's figure.",
+      "cpuMillis": {
+        "dev": 25,
+        "metal": 100
+      },
+      "memoryMib": {
+        "dev": 64,
+        "metal": 100
+      }
+    },
+    {
+      "id": "full-ai-cluster/keda/webhooks",
+      "dir": "keda",
+      "path": "full-ai-cluster/k8s/applications/keda/Application.yaml",
+      "docIndex": 0,
+      "requestsField": "spec.source.helm.valuesObject.resources.webhooks.requests",
+      "pods": 1,
+      "metalSource": "chart-default",
+      "evidence": "MEASURED 2026-09-04 by `helm template keda kedacore/keda --version 2.20.2` with this Application's own valuesObject: the values reach all three containers -- keda-operator, keda-operator-metrics-apiserver and keda-admission-webhooks each carry `requests: {cpu: 25m, memory: 64Mi}`. The coordinate is `resources.<component>`, NOT `<component>.resources` -- the spelling several neighbouring charts use, and which would have been inert here. `metal` reproduces the chart's own defaults (100m/100Mi per component), so applying `metal` is a no-op against upstream.",
+      "consequence": "Admission validation for ScaledObjects. Rejecting a bad ScaledObject is cheap and rare; the pod is idle otherwise.",
+      "cpuMillis": {
+        "dev": 25,
+        "metal": 100
+      },
+      "memoryMib": {
+        "dev": 64,
+        "metal": 100
       }
     },
     {
@@ -1343,12 +1403,7 @@
     "product decision wearing an arithmetic costume, and it is not this rung's to",
     "make."
   ],
-  "profiles": [
-    "minimal",
-    "standard",
-    "measured",
-    "large"
-  ],
+  "profiles": ["minimal", "standard", "measured", "large"],
   "$comment_claims": [
     "One row per `longhorn` PVC claim in the tree. The row's (path, storageClassField)",
     "pair is the SAME coordinate the readiness auditor's extractor produces, so the",

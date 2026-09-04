@@ -1,0 +1,14 @@
+{
+  "id": "080d036fe218d810a0130008146f6715",
+  "at": "2026-09-04T19:54:03.931Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1PZRGRV087G0R002VHTRVY",
+    "type": "task",
+    "title": "RAM namespace test adapter; name NVMe emulators that skip nvme format",
+    "slug": "ram-namespace-test-adapter-name-nvme-emulators-that-skip-nvm",
+    "priority": "P1",
+    "filename": "081M1PZRGRV087G0R002VHTRVY-ram-namespace-test-adapter-name-nvme-emulators-that-skip-nvm.md"
+  }
+}

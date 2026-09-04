@@ -311,6 +311,20 @@
               echo "$status" | tee "$out"
             '';
 
+          # Host→Secret projector wiring (081M1PWSF56087G0R000FDS3NY).
+          # NOT a VM test. Pins After=restore+k3s and the "does not
+          # requiredBy k3s" fail-open. The allowlist + leak lock lives in
+          # TypeScript and is what CI actually runs.
+          zeta-creds-to-k8s-model =
+            let
+              report = import ./nixos/tests/zeta-creds-to-k8s-eval-test.nix {
+                inherit (nixpkgs) lib;
+              };
+            in
+            pkgs.runCommand "zeta-creds-to-k8s-model" { inherit (report) status; } ''
+              echo "$status" | tee "$out"
+            '';
+
           # Properties of the FIRST-BOOT MANIFEST ROSTER -- the manifests
           # every other test in nixos/tests/ overrides away with mkForce, so
           # the declared boot sequence had no check of any kind.

@@ -3398,7 +3398,7 @@ jobs:
     # runs. A file silently dropped from this list becomes an "excluded from hermetic and run
     # by nothing" finding on the next PR.
     #
-    # COST. Two files, seconds of test time; the minutes are the shared install.sh bootstrap
+    # COST. Three files, seconds of test time; the minutes are the shared install.sh bootstrap
     # plus the uv sync that the hermetic tier no longer pays for.
     name: test (TS environment-dependent)
     timeout-minutes: 20
@@ -3472,6 +3472,13 @@ jobs:
       - name: Install npm devDependencies
         run: bun install --frozen-lockfile
 
+      - name: Build signed-probit F# receipt dependency
+        # The signed-probit wrapper intentionally runs the compiled F# query against an
+        # independently authored Python integral. The JavaScript-first tier does not
+        # realize this artifact; the full declared toolchain does. Build it explicitly
+        # here so a missing or non-compiling receipt is a named failure, not ambient state.
+        run: mise exec -- dotnet build src/Bayesian/Bayesian.fsproj --nologo --verbosity minimal
+
       - name: Tier manifest (which dependency each file below needs)
         run: bun src/Core.TypeScript/hygiene/environment-dependent-test-files.ts
 
@@ -3483,7 +3490,8 @@ jobs:
         run: |
           bun test \
             tests/cross-verification/_harness/cross-verify-ir.test.ts \
-            src/Core.TypeScript/zflash/esp-inject.test.ts
+            src/Core.TypeScript/zflash/esp-inject.test.ts \
+            src/Core.TypeScript/research/signed-probit-ep-cross-verify.test.ts
 
   # ═══════════════════════════════════════════════════════════════════
   # Full Verification Gate — 7-language oracle + cost + proofs

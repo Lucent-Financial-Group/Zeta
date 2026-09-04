@@ -300,7 +300,7 @@ describe("verifyProfileApplied", () => {
       // depends on podsFieldExcludesPrimary, so the message reports the raw
       // value it read and the pod count it wanted, separately.
       expect(findings.some((f) => /declares 5 at .*statefulset\.replicas/.test(f.problem))).toBe(true);
-      expect(findings.some((f) => f.problem.includes('says 3 pods'))).toBe(true);
+      expect(findings.some((f) => f.problem.includes("says 3 pods"))).toBe(true);
     } finally {
       fx.cleanup();
     }
@@ -1291,9 +1291,12 @@ describe("the checked-in resource ladder", () => {
   // measurement"). This is the first move where ONLY the applied count changed,
   // and that is correct here: the shipped count is about the tree and the applied
   // count is about the glob, and only the glob moved.
-  test("the dev lane applies 39 of the 47 Applications", () => {
-    expect(applicationDirs()).toHaveLength(47);
-    expect(devLaneAppliedDirs()).toHaveLength(39);
+  test("the dev lane applies 40 of the 48 Applications", () => {
+    // 47/39 -> 48/40 on 2026-09-04: `keda` joined the tree (Aaron: "i want to make
+    // sure we have KEDA"). It is NOT in the exclude glob, so it is applied.
+    expect(applicationDirs()).toHaveLength(48);
+    expect(devLaneAppliedDirs()).toHaveLength(40);
+    expect(devLaneAppliedDirs()).toContain("keda");
     expect(devLaneAppliedDirs()).toContain("agent-memory");
     expect(applicationDirs()).toContain("game-hosting/gmod");
   });
@@ -1328,11 +1331,16 @@ describe("the checked-in resource ladder", () => {
     // 6340m/14288Mi -> 6390m/14352Mi on 2026-09-03: `agent-memory` joined the dev
     // lane at its literal 50m/64Mi. The all-47 totals below did NOT move, because
     // agent-memory was always in the tree -- only the lane's membership changed.
-    expect(lane.cpuMillis).toBe(6390);
-    expect(lane.memoryMib).toBe(14352);
+    //
+    // 6390m/14352Mi -> 6690m/14652Mi on 2026-09-04: `keda` was ADDED to the tree,
+    // three components at the chart's own 100m/100Mi = +300m/+300Mi. Unlike the
+    // agent-memory move, the all-app totals DO move here, by the same amount, because
+    // this is a new Application rather than a membership change.
+    expect(lane.cpuMillis).toBe(6690);
+    expect(lane.memoryMib).toBe(14652);
     const all = resourceTotal(catalogue, "metal", applicationDirs());
-    expect(all.cpuMillis).toBe(10365);
-    expect(all.memoryMib).toBe(22623);
+    expect(all.cpuMillis).toBe(10665);
+    expect(all.memoryMib).toBe(22923);
   });
 
   // Aaron 2026-08-20: "make things small enough to fit for disk and ram on the
@@ -1368,28 +1376,41 @@ describe("the checked-in resource ladder", () => {
   //
   // `metal` IS UNCHANGED THROUGHOUT and that is asserted below, because the
   // whole point of a rung is that shrinking one does not touch the other.
-  test("`dev` FITS at 1165m — the rung reaches the raw manifests, and the governed rows are floored", () => {
+  // INVERSION THREE, 2026-09-04. `dev` no longer fits, on MEMORY, and the name says so
+  // for the same reason the previous two are still in it: a quietly-rewritten assertion
+  // erases the sequence, and the sequence is the finding. The 52Mi of spare recorded by
+  // inversion two is exactly why one Application was enough to tip it.
+  test("`dev` fits on CPU at 1240m and NO LONGER fits on memory at 9356Mi — the 52Mi of spare is gone", () => {
     const budget = envelopeBudget(catalogue.envelope);
     const dev = resourceTotal(catalogue, "dev", devLaneAppliedDirs());
     // 1140m/9100Mi -> 1165m/9164Mi on 2026-09-03: `agent-memory` joined the dev
     // lane; its governed row is floored to 25m at `dev` and keeps 64Mi at both
     // rungs. Memory spare is now 52Mi -- the tightest axis in this lane.
-    expect(dev.cpuMillis).toBe(1165);
-    expect(dev.memoryMib).toBe(9164);
+    //
+    // 1165m/9164Mi -> 1240m/9356Mi on 2026-09-04: `keda` joined, floored to 25m/64Mi
+    // per component x 3 = +75m/+192Mi. CPU still fits with 1260m spare. MEMORY DOES
+    // NOT: 9356 > 9216, over by 140Mi, and the 52Mi of spare recorded on the line
+    // above is exactly why -- this lane had no room for anything.
+    expect(dev.cpuMillis).toBe(1240);
+    expect(dev.memoryMib).toBe(9356);
     expect(dev.cpuMillis).toBeLessThan(budget.cpuMillis);
-    expect(dev.memoryMib).toBeLessThan(budget.memoryMib);
+    expect(dev.memoryMib).toBeGreaterThan(budget.memoryMib);
 
-    // THE REGISTER IS EMPTY, and it is empty because the arithmetic moved --
-    // not because anyone deleted a row they found inconvenient.
-    expect(catalogue.acknowledgedLaneBudgetShortfall).toEqual([]);
+    // THE REGISTER IS NON-EMPTY AGAIN, and it is non-empty because the arithmetic moved
+    // BACK -- not because anyone added a row to make a red run go green. It carries one
+    // key, and that key is the live shortfall rather than a spare one kept around.
+    expect(catalogue.acknowledgedLaneBudgetShortfall).toHaveLength(1);
+    expect(catalogue.acknowledgedLaneBudgetShortfall[0]?.key).toBe("dev memory 9356>9216");
     expect(auditRunnerBudget(catalogue, "dev")).toEqual([]);
 
-    // An acknowledgement re-added now would be STALE: it describes a shortfall
-    // that no longer exists, and outliving its defect is how a baseline becomes
-    // a lie. This is the falsifier for the deletion above.
+    // THE FALSIFIER SURVIVES THE INVERSION, which is the point of keeping it. A
+    // shortfall row whose arithmetic no longer holds must still be reported as
+    // OUTLIVED -- so the mechanism that made the previous acknowledgement stale is
+    // shown to be intact while a DIFFERENT acknowledgement is legitimately carried.
     const revived = {
       ...catalogue,
       acknowledgedLaneBudgetShortfall: [
+        ...catalogue.acknowledgedLaneBudgetShortfall,
         { key: "dev cpu 2906>2500", reason: "r".repeat(60), liftsWhen: "LIFTS WHEN: never" },
       ],
     };
@@ -1400,8 +1421,11 @@ describe("the checked-in resource ladder", () => {
     // re-sized the hardware this rung exists to describe.
     expect(auditRunnerBudget(catalogue, "metal").length).toBeGreaterThan(0);
     const metal = resourceTotal(catalogue, "metal", devLaneAppliedDirs());
-    expect(metal.cpuMillis).toBe(6390);
-    expect(metal.memoryMib).toBe(14352);
+    // +300m/+300Mi on 2026-09-04 from keda's three components at the chart's own
+    // defaults. `metal` moved because an APPLICATION was added, which is a different
+    // thing from a rung being re-cut -- the dev floors below are still rung-scoped.
+    expect(metal.cpuMillis).toBe(6690);
+    expect(metal.memoryMib).toBe(14652);
 
     // gmod is still COUNTED -- reachability is not exclusion. It contributes
     // 100m at `dev` where it used to contribute 1000m, and 1000m at `metal`
@@ -1596,7 +1620,12 @@ describe("podsFieldExcludesPrimary", () => {
     const fx = fixture(
       writeCatalogue(
         { "apps/db/Application.yaml": APP_YAML },
-        catalogueJson({ podsField: null, podsFieldExcludesPrimary: true, podsSource: "chart-default", podsEvidence: "x" }),
+        catalogueJson({
+          podsField: null,
+          podsFieldExcludesPrimary: true,
+          podsSource: "chart-default",
+          podsEvidence: "x",
+        }),
       ),
     );
     try {

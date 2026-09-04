@@ -345,12 +345,59 @@ let ``FileSystemBlockIo LbaCount is empty then spans a hole after a high LBA wri
     Assert.Equal(3UL, io.LbaCount)
 
 [<Fact>]
+let ``SimulatedBlockIo async door completes synchronously and round-trips`` () =
+    let device = SimulatedBlockIo(4096)
+    let io = device :> IAsyncBlockIo
+    let payload = [| 1uy; 2uy; 3uy |]
+    let write = io.WriteAsync(0UL, System.ReadOnlyMemory<byte>.op_Implicit payload, CancellationToken.None)
+    Assert.True(write.IsCompletedSuccessfully)
+    Assert.Equal(3, write.Result)
+    let dst = Array.zeroCreate<byte> 3
+    let read = io.ReadAsync(0UL, System.Memory<byte>.op_Implicit dst, CancellationToken.None)
+    Assert.True(read.IsCompletedSuccessfully)
+    Assert.Equal(3, read.Result)
+    Assert.Equal<byte>(payload, dst)
+    let flush = io.FlushAsync CancellationToken.None
+    Assert.True(flush.IsCompletedSuccessfully)
+
+[<Fact>]
+let ``FileSystemBlockIo async door cancel-before-write does not publish`` () =
+    let mock = InMemoryFileSystem()
+    let path = "/vol/async-cancel"
+    let io = FileSystemBlockIo(mock, path, 4096) :> IAsyncBlockIo
+    use cts = new CancellationTokenSource()
+    cts.Cancel()
+    let payload = Array.create 4096 7uy
+    let write = io.WriteAsync(0UL, System.ReadOnlyMemory<byte>.op_Implicit payload, cts.Token)
+    Assert.True(write.IsCanceled)
+    Assert.Equal(0UL, (FileSystemBlockIo(mock, path, 4096) :> IBlockIo).LbaCount)
+
+[<Fact>]
 let ``SimulatedBlockIo LbaCount is unbounded sparse DST`` () =
     let io = SimulatedBlockIo(4096) :> IBlockIo
     Assert.Equal(0UL, io.LbaCount)
     let payload = [| 1uy; 2uy |]
     Assert.Equal(2, io.Write(99UL, System.ReadOnlyMemory<byte>.op_Implicit payload))
     Assert.Equal(0UL, io.LbaCount)
+
+[<Fact>]
+let ``SimulatedBlockIo bounded RAM namespace rejects LBAs at and past LbaCount`` () =
+    let device = SimulatedBlockIo(4096, lbaCount = 4UL)
+    let io = device :> IBlockIo
+    Assert.Equal(4UL, io.LbaCount)
+    let block = Array.create 4096 1uy
+    Assert.Equal(4096, io.Write(3UL, System.ReadOnlyMemory<byte>.op_Implicit block))
+    Assert.Throws<IOException>(fun () ->
+        io.Write(4UL, System.ReadOnlyMemory<byte>.op_Implicit block) |> ignore)
+    |> ignore
+    Assert.Throws<IOException>(fun () ->
+        io.Read(4UL, System.Memory<byte>.op_Implicit (Array.zeroCreate 4096)) |> ignore)
+    |> ignore
+    let cloned = device.CloneMedia() :> IBlockIo
+    Assert.Equal(4UL, cloned.LbaCount)
+    Assert.Throws<IOException>(fun () ->
+        cloned.Write(4UL, System.ReadOnlyMemory<byte>.op_Implicit block) |> ignore)
+    |> ignore
 
 [<Fact>]
 let ``FileSystemBlockIo rejects an invalid block size before creating the backing file`` () =

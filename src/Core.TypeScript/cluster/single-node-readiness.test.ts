@@ -486,8 +486,20 @@ describe("collectMeasuredNodes / verifiedNodeCapacity", () => {
 });
 
 describe("findCapacityProvenance", () => {
-  const big: MeasuredNode = { path: "m/n.yaml", hostname: "big", devices: ["/dev/a 2048G"], totalGib: 2048, ...NO_COMPUTE };
-  const small: MeasuredNode = { path: "m/s.yaml", hostname: "small", devices: ["/dev/a 1047G"], totalGib: 1047, ...NO_COMPUTE };
+  const big: MeasuredNode = {
+    path: "m/n.yaml",
+    hostname: "big",
+    devices: ["/dev/a 2048G"],
+    totalGib: 2048,
+    ...NO_COMPUTE,
+  };
+  const small: MeasuredNode = {
+    path: "m/s.yaml",
+    hostname: "small",
+    devices: ["/dev/a 1047G"],
+    totalGib: 1047,
+    ...NO_COMPUTE,
+  };
   const blind: MeasuredNode = { path: "m/b.yaml", hostname: "blind", devices: [], totalGib: null, ...NO_COMPUTE };
 
   test("green when the catalogue fits inside measured hardware", () => {
@@ -575,7 +587,13 @@ describe("findCapacityProvenance", () => {
   test("RED: an acknowledged shortfall re-opens when a SMALLER node registers", () => {
     const key = "longhorn=1500GiB>>1047GiB@small";
     const ledger: Ledger = { ...LEDGER, acknowledgedCapacityShortfall: [key] };
-    const tiny: MeasuredNode = { path: "m/t.yaml", hostname: "tiny", devices: ["/dev/a 100G"], totalGib: 100, ...NO_COMPUTE };
+    const tiny: MeasuredNode = {
+      path: "m/t.yaml",
+      hostname: "tiny",
+      devices: ["/dev/a 100G"],
+      totalGib: 100,
+      ...NO_COMPUTE,
+    };
     expect(findCapacityProvenance([LONGHORN_CLAIM], ledger, [small, tiny])).toHaveLength(1);
   });
 
@@ -1334,14 +1352,10 @@ describe("findLedgerFigureDrift — the ledger's PROSE numbers are checked too",
         excludesPrimaryAt: readiness.excludesPrimaryCoordinates(loadCatalogue()),
       }),
     );
-    expect(
-      findLedgerFigureDrift(ledger, claims, loadCatalogue(), readiness.DEFAULT_LEDGER_PATH),
-    ).toEqual([]);
+    expect(findLedgerFigureDrift(ledger, claims, loadCatalogue(), readiness.DEFAULT_LEDGER_PATH)).toEqual([]);
     // And the check is NOT vacuous on the real file: it found figures to check.
     const known = new Set([...ledger.budgetedStorageClasses, "zeta-local-path"]);
-    expect(
-      quotedFigures(ledgerComments(readiness.DEFAULT_LEDGER_PATH), known).length,
-    ).toBeGreaterThanOrEqual(6);
+    expect(quotedFigures(ledgerComments(readiness.DEFAULT_LEDGER_PATH), known).length).toBeGreaterThanOrEqual(6);
   });
 });
 
@@ -1379,9 +1393,9 @@ describe("the hindsight manifest renders what it declares", () => {
     const text = readFileSync("full-ai-cluster/k8s/applications/hindsight/Application.yaml", "utf8");
     const obj = (
       (
-        (
-          (parseAllDocuments(text)[0]?.toJS() as Record<string, unknown>).spec as Record<string, unknown>
-        )["source"] as Record<string, unknown>
+        ((parseAllDocuments(text)[0]?.toJS() as Record<string, unknown>).spec as Record<string, unknown>)[
+          "source"
+        ] as Record<string, unknown>
       )["helm"] as Record<string, unknown>
     )["valuesObject"] as Record<string, unknown>;
     expect(obj["existingSecret"]).toBeUndefined();
@@ -1526,9 +1540,8 @@ describe("metalAppliedDirs — the metal cohort is read off the bootstrap root",
     // The nine directories the CI root excludes include gitlab, ollama, vllm
     // and longhorn — four of the largest reservations in the catalogue. This
     // is why the compute comparator is computed over the metal cohort.
-    const { loadResourceCatalogue, resourceTotal, metalAppliedDirs, devLaneAppliedDirs } = await import(
-      "./storage-profiles.ts"
-    );
+    const { loadResourceCatalogue, resourceTotal, metalAppliedDirs, devLaneAppliedDirs } =
+      await import("./storage-profiles.ts");
     const resources = loadResourceCatalogue();
     const metal = resourceTotal(resources, "metal", metalAppliedDirs() ?? []);
     const lane = resourceTotal(resources, "metal", devLaneAppliedDirs());
@@ -1675,7 +1688,11 @@ describe("findRungCoverage — the budgeted rung vs the committed rung", () => {
     // where ArgoCD's include glob has always reached, so `game-hosting/gmod` is in
     // the lane cohort now. The mutation below moves the CURRENT number by one
     // millicore, which is the property under test and is independent of its value.
-    const moved = live.acknowledgedRungBudgetGap.map((key) => key.replace("6390m", "6391m"));
+    // 6390m -> 6690m on 2026-09-04: `keda` was added, three components at the chart's
+    // own 100m each. The mutation still moves the CURRENT number by one millicore --
+    // the property under test is that a moved number stops suppressing, and it is
+    // independent of what the number is.
+    const moved = live.acknowledgedRungBudgetGap.map((key) => key.replace("6690m", "6691m"));
     expect(moved).not.toEqual(live.acknowledgedRungBudgetGap);
     expect(findRungCoverage({ ...live, acknowledgedRungBudgetGap: moved }, resources).length).toBe(1);
   });
@@ -1697,10 +1714,7 @@ describe("readLedger — activeResourceProfile is required", () => {
     const dir = mkdtempSync(join(tmpdir(), "zeta-ledger-rr-"));
     try {
       const path = join(dir, "budget.json");
-      writeFileSync(
-        path,
-        JSON.stringify({ activeStorageProfile: "measured", nodeDiskGib: 100, nodeCount: 1 }),
-      );
+      writeFileSync(path, JSON.stringify({ activeStorageProfile: "measured", nodeDiskGib: 100, nodeCount: 1 }));
       expect(() => readLedger(path, "/")).toThrow(/activeResourceProfile is required/);
     } finally {
       rmSync(dir, { recursive: true, force: true });
