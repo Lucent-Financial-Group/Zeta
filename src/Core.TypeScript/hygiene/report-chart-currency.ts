@@ -570,6 +570,122 @@ export function renderReport(rows: readonly CurrencyRow[], gitPathApps: readonly
 export interface BuiltReport {
   readonly markdown: string;
   readonly rows: readonly CurrencyRow[];
+  /**
+   * The snapshot instant the rows were measured against -- the OLDEST
+   * `fetchedAt` across every entry, so nothing here claims data fresher than
+   * its stalest input. `--drift` needs it: a currency verdict is only as good
+   * as the snapshot under it, and a clean report over a three-week-old
+   * snapshot is the vacuity case this mode exists to refuse.
+   */
+  readonly asOf: string;
+}
+
+/**
+ * How stale the committed snapshot may be before the currency answer itself is
+ * suspect. `chart-version-refresh.yml` runs weekly (Sundays 17:07 UTC), so 8
+ * days is one missed cadence plus a day of slack -- crossing it means at least
+ * one refresh did not land, not merely that one ran late.
+ */
+export const SNAPSHOT_STALE_AFTER_DAYS = 8;
+
+export type DriftSeverity = "error" | "warning";
+
+export interface CurrencyDrift {
+  readonly severity: DriftSeverity;
+  readonly kind: string;
+  readonly message: string;
+}
+
+/**
+ * The OFFLINE currency read, for the drift band on every PR.
+ *
+ * WHY THIS EXISTS, and it is worth stating because the pieces were all already
+ * here. `audit-chart-target-revisions.ts --refresh` measures upstream correctly
+ * and `report-chart-currency.ts --write` renders it correctly. Neither runs on a
+ * pull request: the workflow that calls them is weekly + `workflow_dispatch` +
+ * a self-test on changes to its own files, and it is outside the required set.
+ * So a chart going stale produced no signal on any PR, and the weekly signal was
+ * a red X on a non-required job plus an artifact that expires in 90 days.
+ *
+ * Aaron 2026-09-04: "i'd love a read check on CI for any chart that is out of
+ * date even if it's not blocking it can be in the drift checks ... i've asking
+ * you to update to the latest version of all our charts at least 20 times now
+ * and somehow we still have out of dates charts."
+ *
+ * NO NETWORK. Every input is a committed snapshot, which is what lets this run
+ * on every PR at zero cost and in the offline lane. The cost of that choice is
+ * stated rather than hidden: this reports what the SNAPSHOT knows, so a chart
+ * published after the last refresh is invisible here -- which is exactly why
+ * snapshot staleness is itself a finding below, and the LOUDEST one.
+ */
+export function findCurrencyDrift(
+  rows: readonly CurrencyRow[],
+  asOf: string,
+  now: Date = new Date(),
+): readonly CurrencyDrift[] {
+  const out: CurrencyDrift[] = [];
+
+  // STALENESS FIRST, and it is an error rather than a warning. A clean currency
+  // report over a snapshot nobody refreshed is a check that did not run wearing
+  // the shape of one that passed -- and it is the specific failure that let six
+  // charts drift behind while a weekly job reported on them.
+  const snapshotAgeDays = asOf === "" ? null : daysBetween(asOf, now.toISOString());
+  if (snapshotAgeDays === null) {
+    out.push({
+      severity: "error",
+      kind: "snapshot-undated",
+      message:
+        "the committed chart snapshot carries no usable fetchedAt, so its age cannot be established. " +
+        "Every currency verdict below is unfounded rather than clean.",
+    });
+  } else if (snapshotAgeDays >= SNAPSHOT_STALE_AFTER_DAYS) {
+    out.push({
+      severity: "error",
+      kind: "snapshot-stale",
+      message:
+        `the committed chart snapshot is ${String(snapshotAgeDays)} days old (>= ` +
+        `${String(SNAPSHOT_STALE_AFTER_DAYS)}), so at least one weekly refresh did not land. ` +
+        "Everything below is a FLOOR: a chart published since then cannot appear. " +
+        "Refresh with `bun src/Core.TypeScript/hygiene/audit-chart-target-revisions.ts --refresh` " +
+        "and commit the diff.",
+    });
+  }
+
+  for (const row of rows) {
+    // Verdicts that mean the pin is broken, not merely old.
+    if (row.verdict === "UNREACHABLE" || row.verdict === "PIN-UNPUBLISHED" || row.verdict === "PIN-UNPARSEABLE") {
+      out.push({
+        severity: "error",
+        kind: row.verdict,
+        message: `${row.app} (${row.chart}) pinned ${row.pinned}: ${row.verdict}. ${row.note}`.trim(),
+      });
+      continue;
+    }
+    if (row.verdict === "DORMANT") {
+      out.push({
+        severity: "warning",
+        kind: "DORMANT",
+        message:
+          `${row.app} (${row.chart}) pinned ${row.pinned}: upstream has published nothing for ` +
+          `${row.silentDays === null ? "an unknown number of" : String(row.silentDays)} days. ` +
+          "Dormant is a replace-or-retire decision, never a bump.",
+      });
+      continue;
+    }
+    if (row.behind !== null && row.behind > 0) {
+      out.push({
+        // A major bump is a migration and is called out separately, because
+        // "behind by 1 major" and "behind by 1 patch" are not the same errand.
+        severity: row.verdict === "BEHIND-MAJOR" ? "error" : "warning",
+        kind: row.verdict,
+        message:
+          `${row.app} (${row.chart}) is ${String(row.behind)} stable release(s) behind: ` +
+          `pinned ${row.pinned}, newest ${row.newestStable}` +
+          (row.verdict === "BEHIND-MAJOR" ? " -- MAJOR, treat as a migration rather than a bump." : "."),
+      });
+    }
+  }
+  return out;
 }
 
 export function buildReport(repoRoot = REPO_ROOT): BuiltReport {
@@ -586,18 +702,46 @@ export function buildReport(repoRoot = REPO_ROOT): BuiltReport {
   const gitPathApps = [...new Set(extraction.gitPaths.map((g) => g.appName))].sort((a, b) =>
     a < b ? -1 : a > b ? 1 : 0,
   );
-  return { markdown: renderReport(rows, gitPathApps, asOf), rows };
+  return { markdown: renderReport(rows, gitPathApps, asOf), rows, asOf };
 }
 
 function main(): void {
   const args = process.argv.slice(2);
-  const unknown = args.filter((a) => a !== "--write" && a !== "--check");
-  if (unknown.length > 0 || (args.includes("--write") && args.includes("--check"))) {
-    process.stderr.write("usage: report-chart-currency.ts [--write | --check]\n");
+  const modes = ["--write", "--check", "--drift"];
+  const unknown = args.filter((a) => !modes.includes(a));
+  if (unknown.length > 0 || args.filter((a) => modes.includes(a)).length > 1) {
+    process.stderr.write("usage: report-chart-currency.ts [--write | --check | --drift]\n");
     process.exit(2);
   }
 
-  const { markdown, rows } = buildReport();
+  const { markdown, rows, asOf } = buildReport();
+
+  // THE DRIFT BAND. Offline, non-blocking by where it is wired rather than by a
+  // flag in here, and LOUD: GitHub annotations so `drift (loud)` surfaces it on
+  // every PR instead of it living in a weekly job nobody opens.
+  if (args.includes("--drift")) {
+    const findings = findCurrencyDrift(rows, asOf);
+    if (findings.length === 0) {
+      process.stdout.write(
+        `chart currency: ${String(rows.length)} coordinate(s), none behind, snapshot asOf ${asOf}.\n`,
+      );
+      return;
+    }
+    for (const finding of findings) {
+      // ::error:: / ::warning:: are what make this visible in the PR's Files
+      // and Checks views rather than only in a log nobody scrolls.
+      process.stdout.write(`::${finding.severity} title=chart currency (${finding.kind})::${finding.message}\n`);
+    }
+    const errors = findings.filter((f) => f.severity === "error").length;
+    process.stderr.write(
+      `\nchart currency: ${String(findings.length)} finding(s) (${String(errors)} error, ` +
+        `${String(findings.length - errors)} warning) over ${String(rows.length)} coordinate(s), ` +
+        `snapshot asOf ${asOf}.\n` +
+        "BEING BEHIND DOES NOT BLOCK A MERGE. This is the drift band: it is red so it is seen, and it\n" +
+        "is outside the required set so it gates nobody. The full table is docs/CHART-CURRENCY.md.\n",
+    );
+    process.exit(1);
+  }
   const path = join(REPO_ROOT, REPORT_RELATIVE_PATH);
 
   if (args.includes("--write")) {

@@ -1,0 +1,14 @@
+{
+  "id": "080d037208369010a01300081b8e09b8",
+  "at": "2026-09-04T21:09:10.482Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1Q421PH087G0R003TG2TW5",
+    "type": "bug",
+    "title": "Chart currency ran weekly, went red by design, and never landed its snapshot",
+    "slug": "chart-currency-ran-weekly-went-red-by-design-and-never-lande",
+    "priority": "P2",
+    "filename": "081M1Q421PH087G0R003TG2TW5-chart-currency-ran-weekly-went-red-by-design-and-never-lande.md"
+  }
+}
