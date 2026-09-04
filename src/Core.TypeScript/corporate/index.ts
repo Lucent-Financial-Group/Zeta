@@ -602,6 +602,7 @@ export {
 } from "./providers";
 export {
   agentReview,
+  agentWorkExecutor,
   autoApproveReview,
   commandReview,
   commandTestRunner,
@@ -611,11 +612,13 @@ export {
   gitChangeControl,
   inboxOrder,
   MAX_CAPTURED_OUTPUT,
+  modelProposal,
   simulatedChangeControl,
   simulatedIntake,
   simulatedProviders,
   simulatedTestRunner,
   simulatedWorkExecutor,
+  type AgentAttempt,
 } from "./adapters";
 export { gateChooserFrom } from "./org-runtime";
 export { parseArgs as parseOrgArgs, providersFromArgs, type Args as OrgRunArgs } from "./run-org";

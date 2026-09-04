@@ -449,6 +449,125 @@ export function commandWorkExecutor(input: {
 }
 
 /**
+ * What an agent produced when handed a work item.
+ *
+ * THERE IS NO `succeeded` FIELD, and that absence is the entire design. An agent asked whether its
+ * own work succeeded is the least reliable witness available: it has every incentive to say yes,
+ * no independent view of the tree it just changed, and — being the thing under test — cannot be
+ * the thing that judges. So the type does not offer it the option.
+ *
+ * It reports what it DID (a summary, the artifacts it touched). Whether that worked is decided
+ * downstream by something the agent does not control.
+ */
+export interface AgentAttempt {
+  /** What the agent says it did. Carried into the trace as testimony, never as a verdict. */
+  readonly summary: string;
+  /** Paths, refs, ids it claims to have produced. Unverified at this point. */
+  readonly artifacts: readonly string[];
+}
+
+/**
+ * Work performed by an AGENT, judged by a VERIFIER the agent does not control.
+ *
+ * The fourth boundary, closed at the seam rather than by widening the model's authority. Until now
+ * a model's whole reach into this register was one clamped integer — it picked from a menu the code
+ * computed. This lets it *act*, and pairs that with the only discipline that makes acting safe:
+ *
+ *   THE AGENT PROPOSES. THE VERIFIER DECIDES. They are never the same party.
+ *
+ * `perform` runs the agent. `verify` is a command whose EXIT CODE is the sole source of
+ * `succeeded` — a build, a test run, a type-check. The agent's summary is recorded as testimony
+ * beside the verdict, so a run can show a confident claim next to a failing build and let the two
+ * disagree in the open.
+ *
+ * A verifier that could not run is a REFUSAL, not a failure: nothing was learned about the work,
+ * and reporting "the build is missing" as "the agent failed" blames the wrong party.
+ *
+ * Note what this does NOT do: give the agent a shell. Whatever `perform` can reach is decided by
+ * the caller who supplies it, and the verifier's command comes from the caller too — never from
+ * the work item, and never from anything the agent said.
+ */
+export function agentWorkExecutor(input: {
+  readonly perform: (node: CascadeNode, ctx: { readonly branch: string }) => Promise<AgentAttempt> | AgentAttempt;
+  readonly verify: {
+    readonly command: string;
+    readonly argsFor: (node: CascadeNode) => readonly string[];
+    readonly cwd: string;
+    readonly timeoutMs?: number;
+  };
+  readonly name?: string;
+}): WorkExecutor {
+  return {
+    meta: {
+      port: Port.WorkExecution,
+      name: input.name ?? "agent",
+      fidelity: Fidelity.Real,
+      describes: `an agent performs each item; '${input.verify.command}' decides whether it worked`,
+    },
+    execute: async (node, ctx): Promise<PortResult<WorkOutcome>> => {
+      let attempt: AgentAttempt;
+      try {
+        attempt = await input.perform(node, ctx);
+      } catch (err) {
+        // An agent that threw did not do the work. Letting the exception escape would take the
+        // organization down over one failed attempt.
+        return { ok: false, reason: `the agent failed on ${node.workId}: ${err instanceof Error ? err.message : String(err)}` };
+      }
+
+      const run = spawnSync(input.verify.command, [...input.verify.argsFor(node)], {
+        cwd: input.verify.cwd,
+        encoding: "utf-8",
+        timeout: input.verify.timeoutMs ?? 120_000,
+        shell: false,
+      });
+      if (run.error !== undefined) {
+        return { ok: false, reason: `the verifier '${input.verify.command}' could not run: ${run.error.message}` };
+      }
+
+      // THE VERIFIER DECIDES. `attempt` contributes evidence and prose and never touches this line.
+      const succeeded = run.status === 0;
+      return {
+        ok: true,
+        value: {
+          workId: node.workId,
+          succeeded,
+          artifacts: attempt.artifacts,
+          summary: `agent: ${attempt.summary} — verifier exited ${String(run.status)}`,
+        },
+        evidence: [
+          { kind: "trace", ref: `agent-said:${attempt.summary}` },
+          { kind: "trace", ref: `verify-exit:${String(run.status)}` },
+          { kind: "log", ref: capture("stdout", run.stdout ?? "") },
+        ],
+      };
+    },
+  };
+}
+
+/**
+ * Turn a text-completion model into a `perform` for the executor above.
+ *
+ * Honest about its own reach: a model that can only emit text cannot change a repository. What it
+ * produces here is a PROPOSAL, recorded as the attempt's summary, and the verifier then judges the
+ * tree as it actually stands. That is useful exactly where a proposal is the deliverable — a plan,
+ * a diagnosis, a chosen approach — and it is not a code-writing agent wearing a costume.
+ *
+ * A model that returns nothing is a REFUSAL rather than an empty proposal, because an empty summary
+ * beside a passing verifier would read as work that was done silently.
+ */
+export function modelProposal(
+  backend: { readonly name: string; complete(prompt: string, opts?: { readonly maxTokens?: number }): Promise<string> },
+  promptFor: (node: CascadeNode) => string,
+  maxTokens = 120,
+): (node: CascadeNode) => Promise<AgentAttempt> {
+  return async (node) => {
+    const said = (await backend.complete(promptFor(node), { maxTokens })).trim();
+    if (said === "") throw new Error(`${backend.name} returned nothing for ${node.workId}`);
+    return { summary: said, artifacts: [`proposal:${node.workId}`] };
+  };
+}
+
+/**
  * Tests run by a command, one invocation per case.
  *
  * Same rules as the work executor: no shell, arguments as an array, exit code decides. A non-zero
