@@ -78,12 +78,15 @@ main {
   padding: 2rem;
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+  align-content: start;
   gap: 2rem;
   overflow-y: auto;
 }
 
 /* Glassmorphic Panel */
 .stream-panel {
+  min-width: 0;
+  align-self: start;
   background: var(--bg-panel);
   border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 16px;
@@ -133,6 +136,130 @@ main {
   background-size: 100% 4px, 3px 100%;
   pointer-events: none;
   z-index: 2;
+}
+
+.arc-replay-panel {
+  min-width: 0;
+}
+
+.arc-replay-heading {
+  min-height: 48px;
+  padding: 0.75rem 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  border-bottom: 1px solid rgb(255 255 255 / 8%);
+}
+
+.arc-replay-title {
+  font-size: 0.95rem;
+  font-weight: 700;
+}
+
+.recorded-badge {
+  padding: 0.2rem 0.5rem;
+  color: #fbbf24;
+  border: 1px solid rgb(251 191 36 / 55%);
+  border-radius: 4px;
+  font-size: 0.7rem;
+  font-weight: 800;
+}
+
+.arc-screen-container {
+  flex: 0 0 auto;
+  aspect-ratio: 1;
+}
+
+.arc-screen-container canvas {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  filter: none;
+}
+
+.arc-replay-readout {
+  min-height: 42px;
+  padding: 0.65rem 1rem;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.5rem;
+  color: var(--text-muted);
+  font-size: 0.75rem;
+  border-top: 1px solid rgb(255 255 255 / 6%);
+  border-bottom: 1px solid rgb(255 255 255 / 6%);
+}
+
+.arc-replay-controls {
+  padding: 0.75rem 1rem;
+  display: grid;
+  grid-template-columns: auto auto auto minmax(120px, 1fr);
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.arc-replay-controls button {
+  min-height: 34px;
+  padding: 0.35rem 0.65rem;
+  color: var(--text-main);
+  background: rgb(255 255 255 / 6%);
+  border: 1px solid rgb(255 255 255 / 16%);
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.arc-replay-controls button:hover {
+  border-color: var(--accent-cyan);
+}
+
+.arc-replay-controls input {
+  width: 100%;
+}
+
+.arc-replay-provenance,
+.arc-replay-refusal {
+  padding: 0.75rem 1rem;
+  color: var(--text-muted);
+  font-size: 0.75rem;
+  line-height: 1.5;
+}
+
+@media (width <= 720px) {
+  header {
+    padding: 0.75rem;
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  header h1 {
+    width: 100%;
+    flex-wrap: wrap;
+  }
+
+  header > div {
+    width: 100%;
+    flex-wrap: wrap;
+  }
+
+  main {
+    width: 100%;
+    min-width: 0;
+    grid-template-columns: minmax(0, 1fr);
+    padding: 0.75rem;
+  }
+
+  .arc-replay-readout {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .arc-replay-controls {
+    grid-template-columns: repeat(3, auto);
+  }
+
+  .arc-replay-controls input {
+    grid-column: 1 / -1;
+  }
 }
 
 /* Xbox Controller Overlay */

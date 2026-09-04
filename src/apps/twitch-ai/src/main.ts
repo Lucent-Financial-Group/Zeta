@@ -39,6 +39,9 @@ if (purgedLegacyApiKey) {
 }
 
 import { Chip8TvPlayer } from "./components/Chip8TvPlayer";
+import { ArcReplayPlayer } from "./components/ArcReplayPlayer";
+import { parseArcRecording } from "./arc-replay";
+import recordedArcSession from "./recordings/arc-ztch-v1-session.json";
 import { StudyRunner } from "./study";
 import type { MainToWorkerMessage, WorkerToMainMessage } from "./protocol";
 
@@ -228,6 +231,18 @@ function startSwarmSimulation(): void {
   if (loading) loading.style.display = "none";
 
   const player = new Chip8TvPlayer("streams-container", agentId);
+  const arcRecording = parseArcRecording(recordedArcSession);
+  if (arcRecording.ok) {
+    const replay = new ArcReplayPlayer("streams-container", arcRecording.value);
+    window.addEventListener("beforeunload", () => {
+      replay.destroy();
+    });
+  } else {
+    const refusal = document.createElement("section");
+    refusal.className = "stream-panel arc-replay-refusal";
+    refusal.textContent = `ARC replay unavailable: ${arcRecording.error}`;
+    document.getElementById("streams-container")?.appendChild(refusal);
+  }
 
   // ROM Upload Logic
   const uploadBtn = document.getElementById("upload-btn");
@@ -315,10 +330,7 @@ function startSwarmSimulation(): void {
   // D6 (?study=1): the prediction falsifier — pauses at probe points, asks
   // "where next?", grades against the agent's actual displacement, and
   // counterbalances full/none/placebo/arrow-only conditions.
-  const study =
-    new URLSearchParams(window.location.search).get("study") === "1"
-      ? new StudyRunner(post, player)
-      : null;
+  const study = new URLSearchParams(window.location.search).get("study") === "1" ? new StudyRunner(post, player) : null;
 
   // Listen for frames from the worker (FRAME is currently the only variant;
   // the protocol union will grow with the attention overlay).
@@ -334,4 +346,3 @@ function startSwarmSimulation(): void {
 }
 
 startSwarmSimulation();
-
