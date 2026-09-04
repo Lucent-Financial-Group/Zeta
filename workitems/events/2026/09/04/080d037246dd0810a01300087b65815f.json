@@ -1,0 +1,14 @@
+{
+  "id": "080d037246dd0810a01300087b65815f",
+  "at": "2026-09-04T21:17:43.713Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1Q4HPX1087G0R000HTJGNF",
+    "type": "task",
+    "title": "ARC scene regime proto priors for color salience and motion",
+    "slug": "arc-scene-regime-proto-priors-for-color-salience-and-motion",
+    "priority": "P2",
+    "filename": "081M1Q4HPX1087G0R000HTJGNF-arc-scene-regime-proto-priors-for-color-salience-and-motion.md"
+  }
+}

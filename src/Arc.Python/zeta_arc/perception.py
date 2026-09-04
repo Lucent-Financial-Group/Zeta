@@ -38,14 +38,30 @@ class Component:
         return abs(self.cx - other.cx) + abs(self.cy - other.cy)
 
 
+@dataclass(frozen=True)
+class ComponentRegion:
+    """A component plus geometry used by temporal feature layers."""
+
+    component: Component
+    cells: frozenset[tuple[int, int]]
+    min_x: int
+    min_y: int
+    width: int
+    height: int
+    perimeter: int
+    shape: tuple[tuple[int, int], ...]
+
+
 def background_colour(grid: Grid) -> int:
     """The most common colour. Measured per frame, never assumed."""
     counts: Counter[int] = Counter(v for row in grid for v in row)
     return counts.most_common(1)[0][0]
 
 
-def components(grid: Grid, background: int | None = None) -> list[Component]:
-    """Four-connected same-colour blobs, background excluded.
+def component_regions(
+    grid: Grid, background: int | None = None
+) -> list[ComponentRegion]:
+    """Four-connected same-colour regions, background excluded.
 
     Deterministic: cells are visited in row-major order and the returned list
     is sorted by (colour, cy, cx), so the same grid always yields the same list
@@ -56,7 +72,7 @@ def components(grid: Grid, background: int | None = None) -> list[Component]:
     bg = background_colour(grid) if background is None else background
     height, width = len(grid), len(grid[0])
     seen = [[False] * width for _ in range(height)]
-    found: list[Component] = []
+    found: list[ComponentRegion] = []
 
     for y in range(height):
         for x in range(width):
@@ -81,14 +97,49 @@ def components(grid: Grid, background: int | None = None) -> list[Component]:
                         continue
                     seen[ny][nx] = True
                     queue.append((nx, ny))
+            min_x = min(cx for cx, _ in cells)
+            max_x = max(cx for cx, _ in cells)
+            min_y = min(cy for _, cy in cells)
+            max_y = max(cy for _, cy in cells)
+            cell_set = frozenset(cells)
+            component = Component(
+                colour=colour,
+                area=len(cells),
+                cx=sum(cx for cx, _ in cells) / len(cells),
+                cy=sum(cy for _, cy in cells) / len(cells),
+            )
             found.append(
-                Component(
-                    colour=colour,
-                    area=len(cells),
-                    cx=sum(c[0] for c in cells) / len(cells),
-                    cy=sum(c[1] for c in cells) / len(cells),
+                ComponentRegion(
+                    component=component,
+                    cells=cell_set,
+                    min_x=min_x,
+                    min_y=min_y,
+                    width=max_x - min_x + 1,
+                    height=max_y - min_y + 1,
+                    perimeter=sum(
+                        (nx, ny) not in cell_set
+                        for cx, cy in cells
+                        for nx, ny in (
+                            (cx + 1, cy),
+                            (cx - 1, cy),
+                            (cx, cy + 1),
+                            (cx, cy - 1),
+                        )
+                    ),
+                    shape=tuple(sorted((cx - min_x, cy - min_y) for cx, cy in cells)),
                 )
             )
 
-    found.sort(key=lambda c: (c.colour, c.cy, c.cx))
+    found.sort(
+        key=lambda region: (
+            region.component.colour,
+            region.component.cy,
+            region.component.cx,
+        )
+    )
     return found
+
+
+def components(grid: Grid, background: int | None = None) -> list[Component]:
+    """The compact component view used by the acting policies."""
+    return [region.component for region in component_regions(grid, background)]
