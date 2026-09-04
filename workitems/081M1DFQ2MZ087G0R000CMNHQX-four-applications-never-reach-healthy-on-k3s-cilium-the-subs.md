@@ -776,6 +776,16 @@ kind. Disk is a different existing ladder: `runnerEnvelope.freeDiskGib`
 `measured` because CI `zeta-local-path` is thin; shrinking PVCs in CI
 would not be a USB rehearsal. Do not invent a fourth budget.
 
+**MEASURED live-k3d + live-kind-included 33821540802 (SHA `bf6eabd1e`):**
+`--serve-tree` packed 411676B then `kubectl apply -f -` died
+`metadata.annotations: Too long: may not be more than 262144 bytes`.
+Client-side apply stores the whole ConfigMap YAML in
+`last-applied-configuration`. Delivery is now `--server-side
+--force-conflicts`, the same door the kubevirt CRD already takes.
+`--disable=servicelb` stays: metal `k3s-server.nix` turns off klipper
+so Cilium owns L4. That is not the ClusterIP hole; it is the metal
+match.
+
 ## CI runner budgets (three existing ladders)
 
 Do not invent a fourth. Do not shrink metal.

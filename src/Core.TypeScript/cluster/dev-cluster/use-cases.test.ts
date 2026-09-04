@@ -62,7 +62,7 @@ function fakePorts(log: string[], existingResources: readonly string[] = []): De
     waitForApiReady: () => log.push("api-ready"),
     applyRemoteManifest: (url) => log.push(`remote:${url}`),
     applyFileManifest: (path, ssa) => log.push(`file:${path}${ssa === true ? ":ssa" : ""}`),
-    applyInlineManifest: (yaml) => log.push(`inline-manifest:${yaml}`),
+    applyInlineManifest: (yaml, ssa) => log.push(`inline-manifest:${yaml}${ssa === true ? ":ssa" : ""}`),
     ensureNamespace: (ns) => log.push(`ns:${ns}`),
     resourceExists: (ref, ns) => {
       log.push(`exists?:${ref}@${ns ?? "-"}`);
@@ -857,6 +857,8 @@ describe("the lane-tree resource-rung override point", () => {
     expect(applyAt).toBeGreaterThanOrEqual(0);
     expect(waitAt).toBeGreaterThan(applyAt);
     expect(catalogAt).toBeGreaterThan(waitAt);
+    // MEASURED 33821540802: client-side apply died on last-applied 262144.
+    expect(log[applyAt]!.endsWith(":ssa")).toBe(true);
   });
 
   test("the wait is on Available, which the readiness probe gates on the repository index", () => {
@@ -930,6 +932,7 @@ describe("the lane-tree resource-rung override point", () => {
     expect(waitAt).toBeGreaterThan(applyAt);
     expect(catalogAt).toBeGreaterThan(waitAt);
     expect(log).toContain("wait:deployment/zeta-lane-tree@zeta-lane-tree:condition=Available");
+    expect(log[applyAt]!.endsWith(":ssa")).toBe(true);
   });
 
   test("k3d: NO SILENT FALLBACK — a server that never becomes Available throws", () => {

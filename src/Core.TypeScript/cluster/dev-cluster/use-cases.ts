@@ -429,7 +429,12 @@ function applyLaneTreeSource(
   if (laneTree === undefined) return null;
   const { controlPlane } = ports;
   console.log(`Serving the lane tree in-cluster; ArgoCD will clone ${laneTree.repoUrl} ...`);
-  controlPlane.applyInlineManifest(laneTree.manifests);
+  // SERVER-SIDE APPLY, not a nicety. MEASURED live-k3d and live-kind-included
+  // 33821540802: packed=411676B, `kubectl apply -f -` failed
+  // `metadata.annotations: Too long: may not be more than 262144 bytes`.
+  // Client-side apply stores the whole YAML in last-applied-configuration.
+  // `applyFileManifest` already takes this door for the kubevirt CRD.
+  controlPlane.applyInlineManifest(laneTree.manifests, true);
 
   // `condition=Available` on the Deployment, which the readiness probe gates on
   // GET /tree.git/info/refs -- so this waits for the REPOSITORY to be servable,

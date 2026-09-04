@@ -78,6 +78,13 @@
  * outgrows this delivery mechanism, which is a real possibility and should arrive
  * as a message rather than as an unexplained apply failure.
  *
+ * MEASURED 2026-09-04, live-k3d + live-kind-included 33821540802: packed=411676B
+ * (under MAX_TREE_BYTES), then `kubectl apply -f -` died
+ * `metadata.annotations: Too long: may not be more than 262144 bytes`. Client-side
+ * apply writes the whole YAML into last-applied-configuration. Delivery therefore
+ * uses `--server-side --force-conflicts` (see `applyLaneTreeSource`). The 700 KiB
+ * packed budget is still the etcd-object ceiling, not the annotation one.
+ *
  * -- WHAT THIS MODULE REFUSES ------------------------------------------------
  *   1. a staging copy with zero files                 -> the copy is broken; a
  *      served empty tree would make every Application vanish and read as a clean
