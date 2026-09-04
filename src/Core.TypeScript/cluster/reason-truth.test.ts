@@ -574,7 +574,7 @@ describe("resource-rung / lane-cpu are checked against the ladder, not the prose
   // cannot tell them apart and does not try -- it reports disagreement, and a
   // human decides which kind it was. That is the whole design.
   test("the lane totals and their fits/over verdicts both hold today", () => {
-    expect(checkCitation(only("[cite: lane-cpu metal 6390 over]"), EVIDENCE, subject("hindsight", ""))).toBe(null);
+    expect(checkCitation(only("[cite: lane-cpu metal 6690 over]"), EVIDENCE, subject("hindsight", ""))).toBe(null);
     // `dev` has now cited THREE different pairs, and the sequence is the point:
     //   `1906 fits` -> `2906 over`  (gmod was always applied, never counted)
     //   `2906 over` -> `2006 fits`  (the rung learned to reach raw manifests)
@@ -586,12 +586,17 @@ describe("resource-rung / lane-cpu are checked against the ladder, not the prose
     //                                  condition; +25m at the dev rung's floor.
     //                                  Nothing new in the tree -- one more of it
     //                                  is applied.)
+    //   `1165 fits` -> `1240 fits`  (2026-09-04: `keda` ADDED -- three components
+    //                                  at the dev rung's 25m floor, +75m. Aaron:
+    //                                  "i want to make sure we have KEDA". A NEW
+    //                                  Application this time, unlike the row above,
+    //                                  so the metal lane moved too.)
     //   `1056 fits` -> `1115 fits`  (2026-09-01: mimir kafka + the nfd prune Job
     //                                + alloy re-measured; three under-declarations,
     //                                no new pods -- see single-node-budget.json)
     // Neither transition was a number edited to agree with prose; both went red
     // HERE first, which is the entire job of this mechanism.
-    expect(checkCitation(only("[cite: lane-cpu dev 1165 fits]"), EVIDENCE, subject("hindsight", ""))).toBe(null);
+    expect(checkCitation(only("[cite: lane-cpu dev 1240 fits]"), EVIDENCE, subject("hindsight", ""))).toBe(null);
     // The two superseded pairs are still refused, so a revert of the prose
     // without a revert of the ladder cannot pass.
     expect(checkCitation(only("[cite: lane-cpu dev 2906 over]"), EVIDENCE, subject("hindsight", ""))?.rule).toBe(
@@ -607,18 +612,18 @@ describe("resource-rung / lane-cpu are checked against the ladder, not the prose
     // claim. A citation that got the number right and the verdict wrong would
     // otherwise read as fully checked, so the polarity is resolved against the
     // envelope's own budget rather than trusted.
-    const wrongWay = checkCitation(only("[cite: lane-cpu metal 6390 fits]"), EVIDENCE, subject("hindsight", ""));
+    const wrongWay = checkCitation(only("[cite: lane-cpu metal 6690 fits]"), EVIDENCE, subject("hindsight", ""));
     expect(wrongWay?.rule).toBe("cited-lane-verdict-disagrees");
     expect(wrongWay?.detail).toContain("does NOT fit");
     // The dev side now needs the OTHER polarity to be the wrong one, because
     // the lane fits: right number, wrong verdict.
-    const alsoWrong = checkCitation(only("[cite: lane-cpu dev 1165 over]"), EVIDENCE, subject("hindsight", ""));
+    const alsoWrong = checkCitation(only("[cite: lane-cpu dev 1240 over]"), EVIDENCE, subject("hindsight", ""));
     expect(alsoWrong?.rule).toBe("cited-lane-verdict-disagrees");
     expect(alsoWrong?.detail).toContain("FITS");
   });
 
   test("a verdict word outside the pair is refused rather than ignored", () => {
-    const verdict = checkCitation(only("[cite: lane-cpu dev 1165 tight]"), EVIDENCE, subject("hindsight", ""));
+    const verdict = checkCitation(only("[cite: lane-cpu dev 1240 tight]"), EVIDENCE, subject("hindsight", ""));
     expect(verdict?.rule).toBe("cited-lane-verdict-disagrees");
   });
 
@@ -682,6 +687,12 @@ describe("hindsight is the symptom, and the ladder still says so", () => {
     //                                            shipped left the dev excludeGlob on
     //                                            its own stated condition. 25m at the
     //                                            dev floor, 50m at metal (6390m).
+    //   2026-09-04  `keda` ADDED               1240m, 1260m of spare -- three
+    //                                            components at the dev rung's 25m
+    //                                            floor. The MEMORY axis went over
+    //                                            here (9356Mi vs 9216Mi); the CPU
+    //                                            axis, which this table tracks,
+    //                                            still fits.
     //   2026-09-01  `minio` removed            1115m, 1385m of spare -- the app's
     //               25m at `dev` left with it (upstream project ARCHIVED)
     //
@@ -689,9 +700,13 @@ describe("hindsight is the symptom, and the ladder still says so", () => {
     // render-side reader and FALSE of the applier, which has always addressed
     // an arbitrary manifest by path + docIndex + field.
     const laneAtDev = resourceTotal(catalogue, "dev", EVIDENCE.devLaneDirs);
-    expect(laneAtDev.cpuMillis).toBe(1165);
+    // 1165m/1335m spare -> 1240m/1260m spare on 2026-09-04: `keda`, three
+    // components at the dev rung's 25m floor. The CPU claim this test makes is
+    // unchanged in kind -- the lane still fits on CPU and hindsight's removal
+    // still would not have saved the metal rung.
+    expect(laneAtDev.cpuMillis).toBe(1240);
     expect(laneAtDev.cpuMillis).toBeLessThanOrEqual(budget.cpuMillis);
-    expect(budget.cpuMillis - laneAtDev.cpuMillis).toBe(1335);
+    expect(budget.cpuMillis - laneAtDev.cpuMillis).toBe(1260);
     // And gmod is still COUNTED, not excluded -- reachability is not removal.
     // It contributes 100m at `dev` where it contributed 1000m, and the `metal`
     // rung still carries the whole core.

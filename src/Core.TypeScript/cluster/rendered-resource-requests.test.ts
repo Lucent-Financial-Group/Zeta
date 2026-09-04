@@ -424,7 +424,10 @@ describe("eight mutations against the live validators", () => {
   const liveCatalogue = loadResourceCatalogue();
 
   function auditMutated(
-    mutate: (snapshot: RenderSnapshot, baseline: Baseline) => {
+    mutate: (
+      snapshot: RenderSnapshot,
+      baseline: Baseline,
+    ) => {
       snapshot: RenderSnapshot;
       baseline: Baseline;
     },
@@ -450,15 +453,11 @@ describe("eight mutations against the live validators", () => {
   // real work and it pushed this control past 5s on 2026-08-23. Raising the
   // budget is the honest fix; making the check snapshot-dependent to stay fast
   // would have made it miss the case it exists for.
-  test(
-    "CONTROL: the live snapshot and baseline audit exit 0",
-    () => {
-      const { result } = auditRenderedResourceRequests({});
-      expect(result.snapshot).not.toBeNull();
-      expect(auditExitCode(result)).toBe(0);
-    },
-    30_000,
-  );
+  test("CONTROL: the live snapshot and baseline audit exit 0", () => {
+    const { result } = auditRenderedResourceRequests({});
+    expect(result.snapshot).not.toBeNull();
+    expect(auditExitCode(result)).toBe(0);
+  }, 30_000);
 
   test("1 snapshot total bumped — declared-total-mismatch, exit 1", () => {
     const { exit, result } = auditMutated((snapshot, baseline) => ({
@@ -598,12 +597,19 @@ describe("eight mutations against the live validators", () => {
   // mutation now runs in the other direction: it re-adds an acknowledgement and
   // requires it to be convicted as STALE. A gate that accepts a debt entry for
   // a debt that no longer exists would let the next real one hide behind it.
-  test("7 the lane register is empty, and a revived acknowledgement is convicted STALE", () => {
-    expect(liveCatalogue.acknowledgedLaneBudgetShortfall).toEqual([]);
+  // 2026-09-04: THE REGISTER IS NON-EMPTY AGAIN, on the MEMORY axis, because `keda`
+  // joined a dev lane that had 52Mi of spare. The mutation is unchanged in kind and
+  // is now strictly sharper: it ADDS a second, stale entry beside the live one, so
+  // the assertion is no longer "an empty register rejects everything" but "a register
+  // carrying a REAL debt still convicts a dead one" — which is the property that
+  // stops the next genuine shortfall hiding behind an expired row.
+  test("7 the lane register carries the live shortfall, and a revived one is convicted STALE", () => {
+    expect(liveCatalogue.acknowledgedLaneBudgetShortfall.map((a) => a.key)).toEqual(["dev memory 9356>9216"]);
     expect(auditRunnerBudget(liveCatalogue, "dev")).toEqual([]);
     const revived = {
       ...liveCatalogue,
       acknowledgedLaneBudgetShortfall: [
+        ...liveCatalogue.acknowledgedLaneBudgetShortfall,
         { key: "dev cpu 2906>2500", reason: "r".repeat(60), liftsWhen: "LIFTS WHEN: never" },
       ],
     };
@@ -848,12 +854,7 @@ describe("unreachable git-path requests", () => {
         .filter((entry) => entry.replicas === 0)
         .map((entry) => entry.appId)
         .sort(),
-    ).toEqual([
-      "full-ai-cluster/hat-system",
-      "full-ai-cluster/orleans",
-      "full-ai-cluster/vllm",
-      "infra/orleans",
-    ]);
+    ).toEqual(["full-ai-cluster/hat-system", "full-ai-cluster/orleans", "full-ai-cluster/vllm", "infra/orleans"]);
     expect(
       open
         .filter((entry) => entry.replicas > 0)

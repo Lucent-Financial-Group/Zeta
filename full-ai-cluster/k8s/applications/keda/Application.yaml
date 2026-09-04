@@ -1,0 +1,82 @@
+# KEDA — event-driven autoscaling.
+#
+# Aaron 2026-09-04: "i want to make sure we have KEDA and as much of Dapr as we can."
+#
+# ── WHAT IT IS FOR HERE, AND WHY IT IS NOT REDUNDANT WITH THE HPA ──────────────
+# The built-in HorizontalPodAutoscaler scales on CPU and memory — resource metrics
+# a pod emits about itself. KEDA scales on the thing that actually predicts load in
+# an agent society: QUEUE DEPTH. A fleet whose work arrives as messages is idle at
+# 5% CPU with ten thousand items waiting, and an HPA reads that as "nothing to do".
+# The substrates that would feed it are already in this tree — `nats` (JetStream),
+# `mimir-kafka`, `redis` — so the scalers have subjects the day anyone wires one.
+#
+# KEDA does not replace the HPA; it CREATES one. A `ScaledObject` compiles down to an
+# HPA whose metrics come from a KEDA-provided external metrics API, which is why the
+# chart ships a `metrics-apiserver` (an APIService, cluster-scoped) alongside the
+# operator. That is also why it installs early: an APIService that is registered and
+# unbacked makes `kubectl get --raw /apis/external.metrics.k8s.io` fail for everyone,
+# so the operator wants to be up before anything asks.
+#
+# ── SHIPS WITH REQUESTS, DELIBERATELY ─────────────────────────────────────────
+# MEASURED 2026-09-04: 33 of the 54 rendered Applications request NOTHING, which
+# makes them BestEffort and worth zero to every budget
+# (081M1N0VTN8087G0R0008VE34B). A new Application that joined that set would be a
+# thirty-fourth, so this one declares requests from birth.
+#
+# The chart's own defaults are 100m/100Mi per component — three components, 300m/300Mi,
+# on a dev lane budgeted at 2500m/9216Mi where the whole roster currently fits in
+# 1165m. That is 12% of the lane's CPU budget for an operator that reconciles nothing
+# until a `ScaledObject` exists. So the dev rung is floored to 25m/64Mi per component
+# and `metal` keeps the chart's own numbers.
+#
+# CPU is compressible: 25m throttles a busy reconcile loop, it does not fail it.
+# Memory is NOT floored below the chart's figure on the incompressible axis for the
+# usual reason — an under-request there makes the pod the first eviction candidate,
+# and evicting the metrics apiserver breaks every HPA that depends on its API, not
+# just KEDA's own work.
+#
+# VERIFIED, not assumed: `helm template` at 2.20.2 with the values below puts
+# `requests: {cpu: 25m, memory: 64Mi}` on all three of `keda-operator`,
+# `keda-operator-metrics-apiserver` and `keda-admission-webhooks`. The coordinate is
+# `resources.<component>` — NOT `<component>.resources`, which is the spelling the
+# neighbouring charts use and would have been inert here.
+
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  annotations:
+    # Before the workloads that would declare a ScaledObject, after the CRD-bearing
+    # platform pieces. Same rung as `dapr`, which it composes with rather than competes.
+    argocd.argoproj.io/sync-wave: "0"
+  name: keda
+  namespace: argocd
+  finalizers: [ resources-finalizer.argocd.argoproj.io ]
+spec:
+  project: default
+  source:
+    repoURL: https://kedacore.github.io/charts
+    chart: keda
+    # 2.20.2 — newest stable at 2026-09-04, checked against the live repo index rather
+    # than a release note. Pinned exactly: an autoscaler that silently changes its
+    # scaling behaviour on a chart refresh is a production incident with no diff.
+    targetRevision: 2.20.2
+    helm:
+      releaseName: keda
+      valuesObject:
+        # THE COMMITTED TREE IS THE `metal` RUNG, so these are metal's numbers and they
+        # reproduce the chart's own defaults exactly -- applying `metal` here is a no-op
+        # against upstream. CI serves the `dev` rung instead (25m/64Mi per component) via
+        # `--serve-tree dev`, which rewrites a copy and never touches this file.
+        resources:
+          operator:
+            requests: { cpu: 100m, memory: 100Mi }
+          metricServer:
+            requests: { cpu: 100m, memory: 100Mi }
+          webhooks:
+            requests: { cpu: 100m, memory: 100Mi }
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: keda
+  syncPolicy:
+    automated: { prune: true, selfHeal: true }
+    syncOptions: [ CreateNamespace=true, ServerSideApply=true ]

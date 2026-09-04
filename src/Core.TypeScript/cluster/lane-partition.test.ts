@@ -397,7 +397,12 @@ describe("the real tree", () => {
     // `bitnamilegacy/kubectl:1.32.3` (111,998,161 B) for
     // `registry.k8s.io/kubectl:v1.32.3` (18,752,984 B). Measured, not
     // restated: 93,245,177 compressed x2.67 = 0.232 GiB unpacked.
-    expect(all.diskGib).toBeCloseTo(61.83, 2);
+    // 61.83 -> 62.30 GiB on 2026-09-04: `keda` joined the tree. Measured, not
+    // restated: 3 image(s), 188,163,369 B compressed x2.67 = 0.468 GiB
+    // unpacked. The floor RISING is the direction that means an Application was
+    // ADDED rather than an image going missing -- the distinction the notes above
+    // exist to keep, and it is checked here rather than assumed.
+    expect(all.diskGib).toBeCloseTo(62.3, 2);
     expect(all.cpuMillis).toBeGreaterThan(budget.cpuMillis);
     // THE DISK AXIS STOPPED BINDING ON 2026-09-02, and this line used to assert the
     // opposite. `all.diskGib` is 61.83 against a 66 GiB budget, so for the first time
@@ -500,11 +505,11 @@ describe("the real tree", () => {
     // whole partition turns on and it must not be allowed to drift silently. It
     // is their SIZE that is pinned now, never their verdict.
     // 22.49 -> 4.11 GiB, same 2026-09-02 re-measurement: hindsight moved 0.1.1 ->
-        // 0.9.2 and swapped `ankane/pgvector:latest` for `pgvector/pgvector:pg17-trixie`.
-        // Both images are SIZED at both readings (nothing became unmeasurable), so this
-        // is a real 18 GiB fall in the pinned images, not a lost measurement -- which is
-        // material to hindsight's CAPACITY deferral and is noted there.
-        expect(priceSet(model, ["hindsight"]).diskGib).toBeCloseTo(4.11, 1);
+    // 0.9.2 and swapped `ankane/pgvector:latest` for `pgvector/pgvector:pg17-trixie`.
+    // Both images are SIZED at both readings (nothing became unmeasurable), so this
+    // is a real 18 GiB fall in the pinned images, not a lost measurement -- which is
+    // material to hindsight's CAPACITY deferral and is noted there.
+    expect(priceSet(model, ["hindsight"]).diskGib).toBeCloseTo(4.11, 1);
     // 22.65 -> 21.47 on 2026-09-01, and this one is NOT a consequence of the
     // minio removal: `vllm/vllm-openai:latest` shrank upstream by 1.1846 GiB.
     // Pinning the size is what surfaced it, which is what the comment above says

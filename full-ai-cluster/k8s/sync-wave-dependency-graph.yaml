@@ -298,6 +298,22 @@ spec:
       dependsOn: []
       citations: {}
 
+    - chart: keda
+      # `dependsOn: []` is a REAL ANSWER here, not an unfilled field -- the file's own
+      # header records that absence is how twelve Applications went missing, so this is
+      # stated rather than omitted.
+      #
+      # KEDA installs its own CRDs (ScaledObject, ScaledJob, TriggerAuthentication) and
+      # registers an APIService for `external.metrics.k8s.io`. It reads from the event
+      # sources -- nats, mimir's kafka, redis -- but does not REQUIRE them to reconcile:
+      # a ScaledObject naming a source that is not up yet reports its own error and
+      # retries, which is a per-object wait rather than an ordering constraint on the
+      # operator. Declaring those as dependencies would make the operator wait on every
+      # substrate anyone might ever scale on, which is the wrong shape and would inflate
+      # its wave for nothing.
+      dependsOn: []
+      citations: {}
+
     - chart: forgejo
       dependsOn: []
       citations: {}
