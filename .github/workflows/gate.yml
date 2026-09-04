@@ -1335,6 +1335,37 @@ jobs:
         # all-disjoint and be a green check over an empty experiment.
         run: bun run hygiene:check-healer-oscillation
 
+      # DOES ANY ZetaFS MODULE BUILD ITS PATHS WITH THE HOST'S SEPARATOR?
+      #
+      # A ZetaFS module hands every path it builds to `FileSystem.Current`, which is an
+      # ABSTRACTION -- it may be the host filesystem and it may be `InMemoryFileSystem`,
+      # and the module cannot tell. Building that path with `System.IO.Path.Combine` makes
+      # it a function of the HOST (`\` on Windows, `/` elsewhere), so the namespace of a
+      # filesystem meant to be the substrate's own takes its shape from whichever machine
+      # ran the code -- ambient state in a namespace (§13), and a break of the DST property
+      # that identical inputs give identical outputs regardless of host.
+      #
+      # MEASURED 2026-09-04: 27 `Path.Combine` and 4 `Path.GetDirectoryName` across five
+      # modules. The observable symptom was ONE test, and it held both Windows lanes red in
+      # 35/59 and 33/59 executions (081M1N854ED087G0R002JP5V5N).
+      #
+      # THIS STEP IS THE DETECTOR ONLY -- it writes nothing. The healer beside it is
+      # certified against the harness laws (idempotence, closure, convergence) but is NOT
+      # registered in `run-tier0.ts`, because that runner reads .ts/.tsx/.js/.md/.yml and
+      # would have to be widened to `.fs`, changing the blast radius of five other healers
+      # over a language none of them was written against. Registration is a filed increment
+      # (081M1N97ECS087G0R003GCPEDZ), not something to slip in beside a fix.
+      #
+      # `Path.GetFullPath` is reported as a WARNING, never a failure: it is a different
+      # defect (ambient CWD, not ambient separator) and removing it changes behaviour for
+      # real-path callers, so failing on it would keep this check permanently red for a
+      # decision it is not allowed to make.
+      - name: Audit ZetaFS virtual-path construction
+        run: bun src/Core.TypeScript/hygiene/healers/zetafs-virtual-path.ts
+
+      - name: Run the ZetaFS virtual-path healer falsifiers
+        run: bun test src/Core.TypeScript/hygiene/healers/zetafs-virtual-path.test.ts
+
       - name: Ambient-credential-hoist guard
         id: cred_hoist
         # Refuses any tracked executable surface that puts a credential into a
