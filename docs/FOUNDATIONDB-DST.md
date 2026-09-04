@@ -53,7 +53,9 @@ to hit production without a traditional integration suite.
    acks; the rest of the LBA stays OLD. `GroupCommitDiskDeltaLog`
    defaults to the device door (`IBlockIo` / `ZGL2`); POSIX append
    (`useBlockIo = false`) remains for whole-file Dispose tests.
-   Recovery works on both doors. No bench compares them. Native NVMe remains
+   Recovery works on both doors. Shape fact (not a speed bench): POSIX
+   append grows the host file by the framed record; the device door
+   keeps logical payload short and pads the host file to LBAs. Native NVMe remains
    first-product **PR12** and ZetaDB **D12**. Until
    that corpus is green the honest word is `toy`, not crash-safe.
    ReFS-shaped resilience (allocate-on-write, pointer-not-copy) is

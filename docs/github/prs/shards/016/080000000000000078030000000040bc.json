@@ -1,0 +1,12 @@
+{
+  "pr_number": 16572,
+  "archive_path": "docs/history/pr-reviews/PR-16572-feat-081m1p61nwd087g0r003dn5xhy-posix-freeze-objects-skip-existing-contentid.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-04T13:21:54.526Z",
+  "schema_version": "v1",
+  "commit_sha": "0804bec3bfa4bab15022bdc524362bce1e0c37f9",
+  "title": "feat(081M1P61NWD087G0R003DN5XHY): POSIX freeze objects skip existing ContentId",
+  "state": "MERGED",
+  "merged_at": "2026-09-04T13:21:14Z",
+  "head_ref": "feat/zetafs-posix-cas-skip"
+}
