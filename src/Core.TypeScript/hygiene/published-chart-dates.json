@@ -5602,6 +5602,7 @@
     "https://prometheus-community.github.io/helm-charts|kube-prometheus-stack": {
       "source": "helm-index-created",
       "created": {
+        "89.2.2": "2026-09-04T20:08:46.314540395Z",
         "89.2.1": "2026-09-04T14:54:44.116269165Z",
         "89.2.0": "2026-09-04T03:28:15.548956058Z",
         "89.1.0": "2026-09-03T21:50:26.639563052Z",

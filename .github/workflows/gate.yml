@@ -1394,6 +1394,47 @@ jobs:
         # regression cannot report success the way `lint:markdown` did (#10712).
         run: bun run hygiene:no-decide-by-grep
 
+      - name: Chart currency (out-of-date dependencies are DRIFT, and they are read on every PR)
+        id: chart_currency
+        # Aaron 2026-09-04: "i'd love a read check on CI for any chart that is out of date
+        # even if it's not blocking it can be in the drift checks, for any deps actually,
+        # i've asking you to update to the latest version of all our charts at least 20
+        # times now and somehow we still have out of dates charts."
+        #
+        # HE IS RIGHT, AND THE MECHANISM -- NOT ANYONE'S MEMORY -- IS WHY. Measured
+        # 2026-09-04, and every part of it is checkable:
+        #
+        #   1. `chart-version-refresh.yml` measures upstream CORRECTLY. It is not broken.
+        #   2. It runs WEEKLY (Sun 17:07 UTC) + workflow_dispatch + a self-test on changes
+        #      to its own files. It does NOT run on an ordinary pull request, so a chart
+        #      going stale produced no signal where anyone was working.
+        #   3. It is outside the required set and goes red BY DESIGN ("red here is the
+        #      signal"). Its last 6 runs are all `failure`, the 2026-08-30 schedule
+        #      included -- which is the mechanism working, and is indistinguishable from
+        #      the mechanism being broken to anyone not opening it.
+        #   4. AND ITS OUTPUT NEVER LANDS. `git commit`, `git push` and
+        #      `create-pull-request` appear ZERO times in that workflow: the refreshed
+        #      snapshot is uploaded as a 90-day ARTIFACT and discarded. So
+        #      `published-chart-versions.json` on main only moves when a human or agent
+        #      runs `--refresh` by hand.
+        #
+        # That is the whole answer. Charts are also the ONE dependency class with no
+        # automatic landing path: dependabot.yml covers eight ecosystems (nuget,
+        # github-actions, bun, npm, cargo, gomod, uv, dotnet-sdk) and OPENS PRs for each,
+        # and Dependabot has no Helm ecosystem that can read an ArgoCD Application's pin.
+        #
+        # THIS STEP IS THE READ CHECK, and it is OFFLINE -- every input is a committed
+        # snapshot, so it costs no network and runs in this lane on every PR. The cost of
+        # that choice is stated rather than hidden: it reports what the SNAPSHOT knows.
+        # Which is why `snapshot-stale` is itself a finding and the LOUDEST one -- a clean
+        # currency report over a snapshot nobody refreshed is precisely the check that did
+        # not run wearing the shape of one that passed, and it is the exact failure above.
+        #
+        # DRIFT TIER, deliberately: this job is not in `gate (required)`'s needs, so a
+        # finding paints a red X here and blocks nobody. Being behind must never gate a
+        # merge -- it is a standing condition, not an error.
+        run: bun src/Core.TypeScript/hygiene/report-chart-currency.ts --drift
+
       - name: GraphQL-transport guard (REST is the default; GraphQL is the contested budget)
         id: graphql_transport
         # Refuses `gh pr view|list|checks` and `gh run view` in COMMITTED scripts,
@@ -1801,7 +1842,7 @@ jobs:
         # is strictly better than a step name. This step covers the other nineteen, which do not.
         if: failure()
         run: |
-          echo "::error title=lint (bash retirement + hygiene): which step failed::install-deps=${{ steps.install_deps.outcome }} bash-retirement=${{ steps.bash_retirement.outcome }} cred-hoist=${{ steps.cred_hoist.outcome }} decide-by-grep=${{ steps.decide_by_grep.outcome }} graphql=${{ steps.graphql_transport.outcome }} scan-floor=${{ steps.scan_floor.outcome }} ambient-time=${{ steps.ambient_time.outcome }} arity-equality=${{ steps.arity_equality.outcome }} arity-nonequality=${{ steps.arity_nonequality.outcome }} hook-script-paths=${{ steps.hook_script_paths.outcome }} linter-coverage=${{ steps.linter_coverage.outcome }} consent-signoff=${{ steps.consent_signoff.outcome }} collation=${{ steps.collation.outcome }} mise-parity=${{ steps.mise_parity.outcome }} hygiene-tests=${{ steps.hygiene_tests.outcome }} audit-tests=${{ steps.audit_tests.outcome }} hw-inventory=${{ steps.hw_inventory.outcome }} inventory-readmodel=${{ steps.inventory_readmodel.outcome }} book-index=${{ steps.book_index.outcome }} inventory-tests=${{ steps.inventory_tests.outcome }}"
+          echo "::error title=lint (bash retirement + hygiene): which step failed::install-deps=${{ steps.install_deps.outcome }} bash-retirement=${{ steps.bash_retirement.outcome }} cred-hoist=${{ steps.cred_hoist.outcome }} decide-by-grep=${{ steps.decide_by_grep.outcome }} chart-currency=${{ steps.chart_currency.outcome }} graphql=${{ steps.graphql_transport.outcome }} scan-floor=${{ steps.scan_floor.outcome }} ambient-time=${{ steps.ambient_time.outcome }} arity-equality=${{ steps.arity_equality.outcome }} arity-nonequality=${{ steps.arity_nonequality.outcome }} hook-script-paths=${{ steps.hook_script_paths.outcome }} linter-coverage=${{ steps.linter_coverage.outcome }} consent-signoff=${{ steps.consent_signoff.outcome }} collation=${{ steps.collation.outcome }} mise-parity=${{ steps.mise_parity.outcome }} hygiene-tests=${{ steps.hygiene_tests.outcome }} audit-tests=${{ steps.audit_tests.outcome }} hw-inventory=${{ steps.hw_inventory.outcome }} inventory-readmodel=${{ steps.inventory_readmodel.outcome }} book-index=${{ steps.book_index.outcome }} inventory-tests=${{ steps.inventory_tests.outcome }}"
           echo "[step-outcomes] a failing install means bun never provisioned; read that step's log."
           echo "[step-outcomes] arity-equality / arity-nonequality failures carry their own ::error annotations naming file and line."
 
