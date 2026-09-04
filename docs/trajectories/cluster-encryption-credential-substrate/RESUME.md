@@ -1,7 +1,7 @@
 # Trajectory - Cluster Encryption / Credential Substrate
 
 Status: active — first surfaced 2026-05-29 from substrate inventory (was tracked only as scattered backlog rows; never had a trajectory surface, which is why it was easy to lose at cold-boot)
-Last refreshed: 2026-09-04 (host→Secret #16587 landed; Lucent-SA-as-GitHub bootstrap designed on 081M1PYZRE5087G0R000HHG5HV)
+Last refreshed: 2026-09-04 (host→Secret #16587 landed; Lucent item is the SA-token store — human console login fetches it)
 Type: workstream (current-focus) — a trajectory the operator is *actively powering*. Many trajectories can be tracked; only a few are workstreams at once (finite-focus / WIP-bounded — a workstream is a trajectory under sustained thrust, and thrust budget is finite, so most trajectories coast). ("Trajectory" is the genus; "workstream" is the species: a trajectory under sustained thrust toward a deliverable, vs. emergent-posture trajectories like `anti-infection`, which self-describes as "not a workstream with a cadence." See [`factory-trajectory-surface`](../factory-trajectory-surface/RESUME.md) for the genus/species taxonomy.) One of the operator's three current cluster workstreams (encryption / usb-zflash / ts-workflow-engine).
 Eventual encoding (design-stage — the human maintainer 2026-05-23 genetic-ID substrate + Clifford/HKT): this trajectory's state is trackable as a 128-bit genetic-ID seed (discrete, reversible via parser-combinator ↔ generator-function) → Clifford-space path (continuous, eventual). Mirrors the three-lane I8-lattice / I9-manifold split.
 Current blocker: none operationally; the live design tension is interactive-login-vs-baked-in-keys-vs-CI-test (081KSGS9H0008QG0R003JNSVR5)
@@ -25,15 +25,14 @@ a tree; dual-key is the landed treaty; three live slots are allowed by
 but they are not an inventory fact. Vault unseal remains a **gated
 class** (no agent runs `operator init` / `unseal`). Lucent 1Password
 as unseal store is a design fork with a chicken-egg (token must already
-be on the host). That chicken-egg is the **same hop GitHub already
-takes**: persist a Lucent **service-account** token (`ops_…`) like
-`gh-cli`, project it into `zeta-host-creds`, feed the injector.
-Do **not** persist `op signin` / `OP_SESSION` (official: 30 minutes
-of inactivity). Tokens are not infinite: optional `--expires-in`,
-rotation overlap 1h / 3d, sign-in address change has a 30-day
-redirect. Relogin: SSH is break-glass; the product is an in-cluster
-Consent service plus a portal lease panel (TLS "expires in Nd"
-style) that warns **before** 401. Host→Secret projector landed as
+be on the host). That chicken-egg breaks when the long-lived token is
+a **Lucent 1Password item** (Save in 1Password on create/rotate; two
+or three slots for overlap) and Aaron's **console/app login**
+(biometric CLI app integration, not a 30-minute `op signin` session)
+reads it and hands the bytes to the projector. USB / k8s Secret are
+caches of the last fetch. Do **not** persist `OP_SESSION`. Relogin:
+SSH is break-glass; the product is Consent plus a portal lease panel
+that warns **before** 401. Host→Secret projector landed as
 PR #16587 (`081M1PWSF56087G0R000FDS3NY`).
 
 Persona trees present: otto, alexa, ani, amara. Missing trees: riven,
@@ -165,11 +164,10 @@ Vault ingest / ExternalSecret remains a later hop (ESO ClusterSecretStore
 is still commented). Physical USB flash stays operator-gated.
 
 This review (`081M1PYZRE5087G0R000HHG5HV`) is the pickup map for CA /
-unseal / 3-key / Lucent 1Password — findings only. Next slice named
-in the design doc: Lucent SA persist like `gh-cli` (manifest id +
-projector allowlist + injector-shaped Secret). Inventory lock test
-and 3-key ratification stay on the list. Do not persist tokens in
-the review PR.
+unseal / 3-key / Lucent 1Password — findings only. Next slice: fetch
+the Lucent item (2–3 token slots) via operator app login, project
+the current slot. Inventory lock test and 3-key ratification stay
+on the list. Do not persist tokens in the review PR.
 
 Then: audit 081KSKBP80008QG0R003AX2A69 / 081KSKBP80008QG0R003ETGS01 against the on-disk `full-ai-cluster/usb-nixos-installer/`
 to report real impl status, then drive the 081KSGS9H0008QG0R003JNSVR5 interactive-vs-baked-vs-CI
