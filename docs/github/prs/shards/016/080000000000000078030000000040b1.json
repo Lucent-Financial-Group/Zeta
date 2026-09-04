@@ -1,0 +1,12 @@
+{
+  "pr_number": 16561,
+  "archive_path": "docs/history/pr-reviews/PR-16561-docs-081m1dfq2mz-k3d-clusterip-routes-via-docker0-not-cilium-host.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-04T04:59:14.417Z",
+  "schema_version": "v1",
+  "commit_sha": "03de131a26bae2f53c90ac70cda7069bfcb3bf92",
+  "title": "docs(081M1DFQ2MZ): k3d ClusterIP routes via docker0, not cilium_host",
+  "state": "MERGED",
+  "merged_at": "2026-09-04T04:58:37Z",
+  "head_ref": "cursor/k3d-route-via-docker-27c5"
+}
