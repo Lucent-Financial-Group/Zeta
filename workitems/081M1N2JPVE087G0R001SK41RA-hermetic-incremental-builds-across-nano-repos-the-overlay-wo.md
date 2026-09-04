@@ -67,5 +67,17 @@ faster executor over them is an optimisation anyone may decline.
   escalates to FULL, matching the existing single-repo stance.
 - Prove the union of per-repo carves is **order-independent** — the same invariant the
   in-flight commutativity work is establishing one layer down.
+- **Conditional references**, per the maintainer's own practice at LexisNexis and Itron:
+  source when the producer is checked out, package when it is not, and you clone source only
+  when you intend to change it.
+- **Source Link (or `debuginfod`) is a prerequisite, not a nicety.** Without it, "I need to
+  step into it" is a permanent excuse to clone every producer, and the conditional-reference
+  discipline degrades into a preference nobody follows. Only *changing* a thing justifies a
+  clone; building, reading and full-symbol debugging must all work from the package.
+- **Emit the source-tree DELETE as an event, not just the clone.** `clone = +1`,
+  `delete = -1`, and the live-editor set is the Z-set fold — the same `revoke ≡ retract`
+  model already carved for config and secrets, and the same shape as `loop-registry.ts`'s
+  recorded exit. A fold that only ever sees `+1` reports a federation where everyone is
+  always editing everything, which is the state the discipline exists to prevent.
 
 Register: PLAN. Nothing here is measured; nothing has shed `toy`.

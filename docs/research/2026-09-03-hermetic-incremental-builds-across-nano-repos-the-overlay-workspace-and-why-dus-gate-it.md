@@ -135,6 +135,77 @@ change it.** A checkout is a statement of intent, not a convenience. That one se
 removes the sprawl these schemes usually acquire, where everyone ends up with everything
 cloned and nobody can say which references are live.
 
+#### Source Link is what makes that discipline survive contact with a debugger
+
+Aaron 2026-09-03:
+
+> source link is how you debug with full symbols like from dotnet when you don't checkout,
+> so checkout is 100% an editing concern not even a debugging concern
+
+**This is the load-bearing addition, because "I need to step into it" is the excuse that
+kills the rule.** Without an answer to debugging, every consumer eventually clones every
+producer for one afternoon of investigation and never deletes it — and the rule degrades
+into a preference nobody follows. Source Link removes the excuse rather than arguing with
+it: the PDB carries source-control metadata, so the debugger fetches the exact revision that
+built the artifact you are actually running. Full symbols, correct source, no checkout.
+
+So the taxonomy is sharper than "source vs package":
+
+| you want to | you need |
+| --- | --- |
+| build against it | the package |
+| read it | the package + Source Link |
+| **step through it with full symbols** | **the package + Source Link** |
+| **change it** | **the source** |
+
+**Only the last row justifies a clone.** That is what "100% an editing concern" means, and
+it is what makes the discipline enforceable instead of aspirational.
+
+**Anchor (Beacon):** Source Link — originally Cameron Taggart's `SourceLink`, adopted into
+the .NET SDK and specified by the .NET Foundation; the PDB records the repository URL and
+commit, and the debugger resolves sources from it. The general form is not .NET-specific and
+should be named so this does not read as a platform accident: **`debuginfod`** (elfutils) is
+the same idea for ELF/DWARF — a service that hands a debugger the exact source and symbols
+for a build id. Rust reaches it via `--remap-path-prefix` plus published sources; Go via the
+module proxy. The property, whatever the ecosystem, is *symbols and source are addressable
+from the artifact*, which is the same content-addressing move this repository already makes
+everywhere else.
+
+#### The delete is an event too, and that is what keeps the union truthful
+
+Aaron, continuing:
+
+> if done correctly you would even signal back when you want to stop editing by sending the
+> local delete of a source tree event to others
+
+This closes the loop, and it is the half these schemes normally leave open. A clone announces
+"I am editing this"; **nothing announces that you stopped.** The stale checkout is therefore
+the failure mode — a false "still editing" signal that persists indefinitely, which is
+exactly how a federation drifts back into everyone-has-everything.
+
+Making both edges events gives the obvious fold, and it is one this repository already runs
+everywhere else:
+
+```text
+clone  = +1        delete = -1        live editors = the Z-set fold over those events
+```
+
+Which is `grant`/`revoke` as a retraction, the model already carved for config and secrets
+(*"revoke ≡ Z-set retract"*): **topology emerges from events, never from a hand-authored map
+of who-has-what.** And it is `loop-registry.ts` in miniature — enrolment and a recorded,
+attributed EXIT, where "only you may deregister you" and an unexplained exit is
+indistinguishable from a fault. Same shape, applied to source trees instead of tick loops.
+
+Two consequences worth having on the page before anyone builds it:
+
+- **"Who is editing what" becomes DERIVED, not coordinated.** No lock, no registry to keep in
+  sync, no permission to ask — the fold over the event log is the answer, which is the
+  scale-free / lock-free discipline rather than an optimisation of it.
+- **The delete event is as load-bearing as the clone**, so a delete that fails to emit is a
+  defect and not merely untidy. A fold that only ever sees `+1` reports a federation where
+  everyone is always editing everything, which is the state the discipline exists to prevent
+  — the same shape as a heartbeat lane whose silence nobody notices.
+
 **Human anchor (Beacon):** the maintainer's own practice at LexisNexis and Itron. In the
 .NET dialect that is the `ProjectReference` / `PackageReference` swap made conditional on
 whether the sibling project exists — the shape `Directory.Build.props` conventions reach for.
