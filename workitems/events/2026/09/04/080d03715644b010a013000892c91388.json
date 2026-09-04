@@ -1,0 +1,14 @@
+{
+  "id": "080d03715644b010a013000892c91388",
+  "at": "2026-09-04T20:44:52.758Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1Q2NJ4P087G0R003DWXC37",
+    "type": "task",
+    "title": "SimulatedBlockIo DST record/replay of issued device ops",
+    "slug": "simulatedblockio-dst-record-replay-of-issued-device-ops",
+    "priority": "P1",
+    "filename": "081M1Q2NJ4P087G0R003DWXC37-simulatedblockio-dst-record-replay-of-issued-device-ops.md"
+  }
+}

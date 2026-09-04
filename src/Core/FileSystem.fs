@@ -45,6 +45,24 @@ type IBlockIo =
     abstract Write: lba: uint64 * src: ReadOnlyMemory<byte> -> int
     abstract Flush: unit -> unit
 
+/// Issued device ops for DST record/replay. Call order, completed ops only.
+/// Chaos arms (crash/corrupt/torn/reorder) are intercepts, not commands.
+/// Native NVMe is not claimed.
+[<RequireQualifiedAccess>]
+type BlockIoOp =
+    | Write of lba: uint64 * data: byte[]
+    | Flush
+
+/// Replay a recorded op log onto any `IBlockIo` (sim, polyfill, later native).
+[<RequireQualifiedAccess>]
+module BlockIoReplay =
+    let replay (ops: BlockIoOp[]) (io: IBlockIo) =
+        for op in ops do
+            match op with
+            | BlockIoOp.Write(lba, data) ->
+                io.Write(lba, System.ReadOnlyMemory<byte>.op_Implicit data) |> ignore
+            | BlockIoOp.Flush -> io.Flush()
+
 /// Yielding completion door for a later native NVMe impl (io_uring / SPDK).
 /// DST polyfill and `SimulatedBlockIo` complete synchronously
 /// (`IsCompletedSuccessfully`). Wrapping `IBlockIo` in `Task.Run` is not
@@ -728,6 +746,7 @@ type SimulatedBlockIo(blockSize: int, ?media: IReadOnlyDictionary<uint64, byte[]
     let mutable reorderArmed = false
     let mutable heldWrite: (uint64 * byte[]) option = None
     let commitOrder = ResizeArray<uint64>()
+    let recorded = ResizeArray<BlockIoOp>()
     let mutable writes = 0
     let mutable logicalBytes = 0L
     let corruptXor = 0xA5uy
@@ -826,14 +845,23 @@ type SimulatedBlockIo(blockSize: int, ?media: IReadOnlyDictionary<uint64, byte[]
 
     member _.CommitOrder = lock lockObj (fun () -> commitOrder.ToArray())
 
+    /// Issued completed Write/Flush ops in call order. Not copied by CloneMedia.
+    member _.RecordedOps = lock lockObj (fun () -> recorded.ToArray())
+
+    /// Replay issued ops onto `target`. Chaos intercepts are not in the log.
+    /// Copies the log, then replays without holding the sim lock.
+    member _.ReplayTo(target: IBlockIo) =
+        let ops = lock lockObj (fun () -> recorded.ToArray())
+        BlockIoReplay.replay ops target
+
     /// Logical payload length the caller maintains (log bytes, not padded blocks).
     member _.LogicalBytes
         with get () = lock lockObj (fun () -> logicalBytes)
         and set v = lock lockObj (fun () -> logicalBytes <- v)
 
     /// Copy durable media onto a fresh device. Volatile cache is dropped
-    /// (crash-before-Flush). Arms, LogicalBytes, and any BlockCas index
-    /// are not copied — those must reload from the superblock.
+    /// (crash-before-Flush). Arms, LogicalBytes, RecordedOps, and any
+    /// BlockCas index are not copied — those must reload from the superblock.
     member _.CloneMedia() : SimulatedBlockIo =
         let seed = Dictionary<uint64, byte[]>()
 
@@ -901,6 +929,7 @@ type SimulatedBlockIo(blockSize: int, ?media: IReadOnlyDictionary<uint64, byte[]
                             copy.[i] <- copy.[i] ^^^ corruptXor
 
                         publish lba copy
+                        recorded.Add(BlockIoOp.Write(lba, src.ToArray()))
                         src.Length
                     | _ ->
                         match tornArm with
@@ -908,29 +937,35 @@ type SimulatedBlockIo(blockSize: int, ?media: IReadOnlyDictionary<uint64, byte[]
                             tornArm <- None
                             writeRange lba (src.Span.Slice(0, sectorBytes))
                             commitOrder.Add lba
+                            recorded.Add(BlockIoOp.Write(lba, src.ToArray()))
                             src.Length
                         | _ ->
                         match reorderArmed, heldWrite with
                         | true, None ->
                             heldWrite <- Some(lba, src.ToArray())
+                            recorded.Add(BlockIoOp.Write(lba, src.ToArray()))
                             src.Length
                         | true, Some(heldLba, heldBytes) ->
                             reorderArmed <- false
                             heldWrite <- None
                             publish lba (src.ToArray())
                             publish heldLba heldBytes
+                            recorded.Add(BlockIoOp.Write(lba, src.ToArray()))
                             src.Length
                         | _ ->
                             publish lba (src.ToArray())
+                            recorded.Add(BlockIoOp.Write(lba, src.ToArray()))
                             src.Length)
 
         member _.Flush() =
-            if vol then
-                lock lockObj (fun () ->
+            lock lockObj (fun () ->
+                if vol then
                     for kv in cache do
                         blocks.[kv.Key] <- Array.copy kv.Value
 
-                    cache.Clear())
+                    cache.Clear()
+
+                recorded.Add BlockIoOp.Flush)
 
     interface IAsyncBlockIo with
         member this.BlockSize = (this :> IBlockIo).BlockSize
