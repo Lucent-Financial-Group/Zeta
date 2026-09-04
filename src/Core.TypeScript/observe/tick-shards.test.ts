@@ -1,5 +1,5 @@
 import { describe, expect, test } from "bun:test";
-import { mkdtempSync, readFileSync, rmSync } from "node:fs";
+import { existsSync, mkdtempSync, readdirSync, readFileSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { basename, join } from "node:path";
 
@@ -16,6 +16,9 @@ import {
 import { unpack } from "../zeta-id/zeta-id";
 import { fromHex, toHex } from "../zeta-id/encoding";
 import { Category, Chromosome, IdVersion } from "../zeta-id/types";
+
+/** The repo root, from this test file's own location — no cwd assumption. */
+const REPO_ROOT = join(import.meta.dir, "..", "..", "..");
 
 const FRAME: MetricsFrame = {
   t: "2026-07-08T20:17:26.288Z",
@@ -114,5 +117,55 @@ describe("tick-shards — store behaviour", () => {
       expect(rollup.provenance.shard_count).toBe(1);
       expect(rollup.provenance.derived_from).toBe("data/tick-shards/**/*.json");
     });
+  });
+});
+
+describe("the key sort is ORDINAL, and the change re-keyed nothing", () => {
+  // `canonicalJson` used `localeCompare(a, b, "en")` to order keys. That is culture-sensitive, and
+  // it decides the digest, which decides the shard's filename — so the same frame could land at
+  // different addresses on machines with different ICU data.
+  //
+  // Replacing it was safe only because the two orders agree on every key this frame has. That was
+  // measured across all 1675 shards on disk before the change; these tests keep it measured, so a
+  // new field whose name breaks the equivalence fails here instead of silently re-keying the store.
+
+  test("ordinal and locale order agree on EVERY MetricsFrame key", () => {
+    const keys = Object.keys(FRAME);
+    expect(keys.length).toBeGreaterThan(5);
+    const ordinal = [...keys].sort((a, b) => (a === b ? 0 : a < b ? -1 : 1));
+    const locale = [...keys].sort((a, b) => a.localeCompare(b, "en"));
+    expect(ordinal).toEqual(locale);
+  });
+
+  test("the sort really is ordinal — it is not just agreeing by accident", () => {
+    // A key set where the two DISAGREE: ordinal puts "B" (0x42) before "a" (0x61); locale does not.
+    // If `canonicalJson` were still locale-aware this would come back the other way round.
+    const mixed = canonicalJson({ a: 1, B: 2 } as unknown as MetricsFrame);
+    expect(mixed.indexOf('"B"')).toBeLessThan(mixed.indexOf('"a"'));
+    expect("a".localeCompare("B", "en")).toBeLessThan(0);
+  });
+
+  test("EVERY SHARD ON DISK still resolves to its own filename", () => {
+    // The migration check, kept as a check. A frame whose re-derived id no longer matches the name
+    // it is stored under is a shard the store can no longer find by content.
+    const root = join(REPO_ROOT, "data", "tick-shards");
+    if (!existsSync(root)) return;
+    const files: string[] = [];
+    const walk = (d: string): void => {
+      for (const e of readdirSync(d, { withFileTypes: true })) {
+        const f = join(d, e.name);
+        if (e.isDirectory()) walk(f);
+        else if (e.name.endsWith(".json")) files.push(f);
+      }
+    };
+    walk(root);
+    expect(files.length).toBeGreaterThan(100);
+    let mismatched = 0;
+    for (const file of files) {
+      const frame = JSON.parse(readFileSync(file, "utf-8")) as MetricsFrame;
+      const expected = basename(file, ".json");
+      if (toHex(shardZetaId(frame)) !== expected) mismatched += 1;
+    }
+    expect(mismatched).toBe(0);
   });
 });

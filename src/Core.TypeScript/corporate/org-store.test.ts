@@ -1,0 +1,239 @@
+/**
+ * org-store.test.ts — the organization's history, durable across process lifetimes.
+ *
+ * The point of storing the trace is that `org-event.ts`'s questions — what happened to this work,
+ * what did this line of authority decide — become answerable over MORE THAN ONE RUN. So the tests
+ * that matter run the real runtime twice and ask across both.
+ */
+
+import { afterEach, describe, expect, test } from "bun:test";
+import { mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+import { tmpdir } from "node:os";
+import { basename, join } from "node:path";
+import {
+  appendRun,
+  decidedUnder,
+  deliveryRate,
+  eventsFor,
+  mintRunId,
+  readEvents,
+  readRuns,
+} from "./org-store";
+import { agentsFromChart, runOrgRuntime, type OrgRuntimeDeps } from "./org-runtime";
+import { buildOrgChart } from "./org-chart";
+import { SEED_HATS } from "./org-seed";
+import { IntakeKind, Severity, type ExternalEvent } from "./intake";
+import { RunOutcome } from "./qa";
+import { OrgEventKind, type OrgEvent } from "./org-event";
+
+const roots: string[] = [];
+function tempRoot(): string {
+  const dir = mkdtempSync(join(tmpdir(), "org-store-"));
+  roots.push(dir);
+  return dir;
+}
+afterEach(() => {
+  while (roots.length > 0) {
+    const dir = roots.pop();
+    if (dir !== undefined) rmSync(dir, { recursive: true, force: true });
+  }
+});
+
+const chart = (() => {
+  const r = buildOrgChart(SEED_HATS);
+  if (!r.ok) throw new Error(r.reason);
+  return r.chart;
+})();
+
+const GOOD: ExternalEvent = {
+  source: "portal",
+  externalId: "T-1",
+  kind: IntakeKind.Defect,
+  severity: Severity.High,
+  title: "checkout double-charges",
+  reproduction: "twice",
+  evidenceRefs: ["log/1"],
+};
+
+function deps(over: Partial<OrgRuntimeDeps> = {}): OrgRuntimeDeps {
+  let n = 0;
+  return {
+    chart,
+    externalEvents: [GOOD],
+    agents: agentsFromChart(chart),
+    observations: [],
+    acceptingHatId: "cto",
+    resourceAuthorityHatId: "rmo_office",
+    priorityDeciderHatId: "cto",
+    createId: (p) => `${p}-${String(++n).padStart(3, "0")}`,
+    nowMs: 0,
+    workBlockMs: 3_600_000,
+    leaseMs: 300_000,
+    priorityInputsFor: () => ({
+      executivePriority: 0.5, customerImpact: 1, severity: 1, releaseRisk: 0.2,
+      blockedDownstreamCount: 2, dependencyFanOut: 1, queueAgeMs: 0, hatScarcity: 0,
+      budgetBurn: 0, estimatedEffort: 0.2,
+    }),
+    ...over,
+  };
+}
+
+const ev = (over: Partial<OrgEvent> = {}): OrgEvent => ({
+  id: "e1",
+  kind: OrgEventKind.Refusal,
+  atMs: 1_000,
+  subjectId: "w1",
+  decision: "d",
+  supervisorChain: [],
+  evidenceRefs: [],
+  ...over,
+});
+
+const runInput = (over: Partial<Parameters<typeof appendRun>[0]> = {}) => ({
+  atMs: 0,
+  delivered: true,
+  levelsEngaged: ["c_suite"],
+  refusals: [],
+  trace: [ev()],
+  ...over,
+});
+
+describe("THE RUN ID IS MINTED FROM CONTENT, never supplied", () => {
+  test("two runs that DID DIFFERENT THINGS get different ids", () => {
+    // The first cut let the caller pass `run-${nowMs}`, which is not unique when the clock is
+    // fixed — as it is in every deterministic run. Two different runs then shared an identity and
+    // the second silently vanished: the store reported 0/1 delivered after two runs.
+    const a = mintRunId({ atMs: 0, delivered: true, eventCount: 3, levelsEngaged: [], refusals: [] });
+    const b = mintRunId({ atMs: 0, delivered: false, eventCount: 3, levelsEngaged: [], refusals: [] });
+    expect(a).not.toBe(b);
+  });
+
+  test("the SAME run gets the same id — a replay is an upsert", () => {
+    const summary = { atMs: 0, delivered: true, eventCount: 3, levelsEngaged: ["cto"], refusals: [] };
+    expect(mintRunId(summary)).toBe(mintRunId(summary));
+  });
+
+  test("two genuinely different runs are BOTH kept in the history", () => {
+    const root = tempRoot();
+    appendRun(runInput({ delivered: true }), root);
+    appendRun(runInput({ delivered: false, trace: [ev({ id: "e2", atMs: 2_000 })] }), root);
+    expect(readRuns(root)).toHaveLength(2);
+    expect(deliveryRate(root)).toEqual({ runs: 2, delivered: 1 });
+  });
+
+  test("re-appending an identical run does NOT duplicate it", () => {
+    const root = tempRoot();
+    appendRun(runInput(), root);
+    appendRun(runInput(), root);
+    expect(readRuns(root)).toHaveLength(1);
+    expect(deliveryRate(root)).toEqual({ runs: 1, delivered: 1 });
+  });
+});
+
+describe("events", () => {
+  test("a missing store reads empty rather than throwing", () => {
+    const root = join(tempRoot(), "never-written");
+    expect(readEvents(root)).toEqual([]);
+    expect(readRuns(root)).toEqual([]);
+    expect(deliveryRate(root)).toEqual({ runs: 0, delivered: 0 });
+  });
+
+  test("ordering is by TIME even when the ids disagree with it", () => {
+    // Ids chosen to sort OPPOSITE to their times. With ids matching time order, sorting by id and
+    // sorting by time give the same answer and the test cannot tell them apart.
+    const root = tempRoot();
+    appendRun(
+      runInput({
+        trace: [ev({ id: "a", atMs: 3_000 }), ev({ id: "c", atMs: 1_000 }), ev({ id: "b", atMs: 2_000 })],
+      }),
+      root,
+    );
+    expect(readEvents(root).map((e) => e.id)).toEqual(["c", "b", "a"]);
+  });
+
+  test("the run summary counts the events it stored", () => {
+    const root = tempRoot();
+    appendRun(runInput({ trace: [ev({ id: "a" }), ev({ id: "b", atMs: 2_000 })] }), root);
+    expect(readRuns(root)[0]?.eventCount).toBe(2);
+  });
+
+  test("an event is stored under ITS OWN day, not the run's", () => {
+    // A run at midnight that emits an event after it must not file that event in yesterday.
+    const root = tempRoot();
+    const nextDay = Date.parse("2026-09-04T01:00:00.000Z");
+    const { eventPaths } = appendRun(
+      runInput({ atMs: Date.parse("2026-09-03T23:00:00.000Z"), trace: [ev({ atMs: nextDay })] }),
+      root,
+    );
+    expect(eventPaths[0]).toContain(join("2026", "09", "04"));
+  });
+
+  test("THE SAME EVENT AT TWO PATHS COUNTS ONCE — identity is the event's own id", () => {
+    // Writing it twice through `appendRun` lands it at the SAME content-derived path, so the file
+    // is simply overwritten and de-duplication is never exercised. A merged branch is the real
+    // case: the same event arriving at a second path.
+    const root = tempRoot();
+    const { eventPaths } = appendRun(runInput({ trace: [ev()] }), root);
+    const stray = join(root, "events", "2026", "09", "04");
+    mkdirSync(stray, { recursive: true });
+    writeFileSync(join(stray, basename(eventPaths[0]!)), readFileSync(eventPaths[0]!, "utf-8"));
+    expect(readEvents(root)).toHaveLength(1);
+  });
+
+  test("the same RUN at two paths counts once", () => {
+    const root = tempRoot();
+    const { runPath } = appendRun(runInput(), root);
+    const stray = join(root, "runs", "2026", "09", "04");
+    mkdirSync(stray, { recursive: true });
+    writeFileSync(join(stray, basename(runPath)), readFileSync(runPath, "utf-8"));
+    expect(readRuns(root)).toHaveLength(1);
+  });
+
+});
+
+describe("ACROSS RUNS — the questions the trace exists to answer", () => {
+  test("a real run's history survives the process that produced it", async () => {
+    const root = tempRoot();
+    const report = await runOrgRuntime(deps());
+    appendRun(
+      {
+        atMs: 0,
+        delivered: report.delivered,
+        levelsEngaged: report.levelsEngaged,
+        refusals: report.refusals,
+        trace: report.trace,
+      },
+      root,
+    );
+
+    // Read back with nothing but the root — no report object in hand.
+    const stored = readEvents(root);
+    expect(stored.length).toBe(report.trace.length);
+    expect(stored.length).toBeGreaterThan(20);
+
+    // "What happened to this work" and "what did this line decide", answered from disk.
+    const taskId = report.cascade.nodes.find((n) => n.assigneeHatId !== undefined)!.workId;
+    expect(eventsFor(root, taskId).length).toBeGreaterThan(3);
+    for (const e of eventsFor(root, taskId)) expect(e.subjectId).toBe(taskId);
+    expect(decidedUnder(root, "cto").length).toBeGreaterThan(0);
+    // The COO's line decided less than the CTO's — so this is a real query, not everything.
+    expect(decidedUnder(root, "coo").length).toBeLessThan(decidedUnder(root, "cto").length);
+  });
+
+  test("TWO runs accumulate into ONE history", async () => {
+    const root = tempRoot();
+    const ok = await runOrgRuntime(deps());
+    const bad = await runOrgRuntime(deps({ qaFallback: RunOutcome.Failed }));
+    appendRun({ atMs: 0, delivered: ok.delivered, levelsEngaged: ok.levelsEngaged, refusals: ok.refusals, trace: ok.trace }, root);
+    appendRun({ atMs: 1, delivered: bad.delivered, levelsEngaged: bad.levelsEngaged, refusals: bad.refusals, trace: bad.trace }, root);
+
+    expect(readRuns(root)).toHaveLength(2);
+    // One delivered, one did not — the simplest thing a history is for, and it was WRONG before
+    // the run id was content-derived.
+    expect(deliveryRate(root)).toEqual({ runs: 2, delivered: 1 });
+    // The runs are ordered oldest first.
+    expect(readRuns(root).map((r) => r.delivered)).toEqual([true, false]);
+    // And the combined event log holds more than either run alone.
+    expect(readEvents(root).length).toBeGreaterThan(Math.max(ok.trace.length, bad.trace.length));
+  });
+});

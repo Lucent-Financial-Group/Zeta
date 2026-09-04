@@ -427,6 +427,7 @@
     <Compile Include="SoftController.fs" />
     <Compile Include="ActionGrammar.fs" />
     <Compile Include="WorkflowEngine.fs" />
+    <Compile Include="MenuGenerator.fs" />
     <Compile Include="SoftDashboard.fs" />
     <Compile Include="SoftEmu.fs" />
     <Compile Include="AmplitudeEmu.fs" />

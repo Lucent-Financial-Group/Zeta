@@ -6395,7 +6395,7 @@
           "trajectory": "dora-mandate"
         },
         "prNumber": 7785,
-        "approvedAt": "2026-06-11T20:43:19.652Z"
+        "approvedAt": "2026-09-03T22:47:07.521Z"
       }
     }
   },
@@ -7300,7 +7300,7 @@
           "trajectory": "dora-mandate"
         },
         "prNumber": 7785,
-        "approvedAt": "2026-06-11T20:43:19.652Z"
+        "approvedAt": "2026-09-03T22:47:07.522Z"
       }
     }
   },
@@ -9051,5 +9051,2041 @@
       },
       "reason": "terminal state Abandoned cannot transition via Abandon"
     }
+  },
+  {
+    "vectorType": "MenuGeneration",
+    "name": "state-0",
+    "state": {
+      "tag": "Idle",
+      "context": {
+        "agent": "otto",
+        "cycle": 42,
+        "sessionStartIso": "2026-06-11T16:00:00.000Z"
+      }
+    },
+    "snapshot": {
+      "snapshotIso": "2026-06-11T16:05:00.000Z",
+      "currentDora": {
+        "deploymentCount": 15,
+        "leadTimeMedianSeconds": 1200,
+        "changeFailureRate": 0.05,
+        "mttrMedianSeconds": 300,
+        "substrateRatio": 0.75
+      },
+      "hotTrajectories": [],
+      "coolingTrajectories": [],
+      "explorationCandidates": [],
+      "perAgentRatios": {}
+    },
+    "candidates": [
+      {
+        "id": "w-base",
+        "lane": "operational",
+        "estimatedDoraContribution": 0.5,
+        "uncertainty": 0.5,
+        "trajectoryPhase": "execution",
+        "agentInterest": 0.5
+      }
+    ],
+    "namedDeps": [],
+    "heartbeatLane": "operational",
+    "expectedMenu": [
+      {
+        "tag": "PickWork",
+        "work": {
+          "id": "w-base",
+          "lane": "operational",
+          "estimatedDoraContribution": 0.5,
+          "uncertainty": 0.5,
+          "trajectoryPhase": "execution",
+          "agentInterest": 0.5
+        }
+      },
+      {
+        "tag": "EmitHeartbeat",
+        "lane": "operational"
+      },
+      {
+        "tag": "PressPause",
+        "reason": "explicit cessation"
+      },
+      {
+        "tag": "EnterFreeTime",
+        "reason": "chosen rest"
+      },
+      {
+        "tag": "EnterOpenEndedExploration",
+        "reason": "exploration"
+      },
+      {
+        "tag": "EscapeHatch",
+        "reason": "no menu option fits",
+        "proposedAction": "describe what to do instead"
+      },
+      {
+        "tag": "ProposeNewGrammarAction",
+        "name": "new-action",
+        "description": "propose a new grammar action"
+      },
+      {
+        "tag": "RequestOperatorAttention",
+        "reason": "operator needed at a named decision point"
+      }
+    ],
+    "expectedScores": [
+      {
+        "id": "w-base",
+        "score": 1.5,
+        "terms": {
+          "dora": 0.5,
+          "uncertainty": 0.5,
+          "interest": 0.5,
+          "heat": 0.5,
+          "balance": 0.5
+        }
+      }
+    ]
+  },
+  {
+    "vectorType": "MenuGeneration",
+    "name": "state-1",
+    "state": {
+      "tag": "InspectingStatus",
+      "context": {
+        "agent": "otto",
+        "cycle": 42,
+        "sessionStartIso": "2026-06-11T16:00:00.000Z"
+      },
+      "snapshot": {
+        "snapshotIso": "2026-06-11T16:05:00.000Z",
+        "currentDora": {
+          "deploymentCount": 15,
+          "leadTimeMedianSeconds": 1200,
+          "changeFailureRate": 0.05,
+          "mttrMedianSeconds": 300,
+          "substrateRatio": 0.75
+        },
+        "hotTrajectories": [
+          "dora-mandate"
+        ],
+        "coolingTrajectories": [
+          "docs-cleanup"
+        ],
+        "explorationCandidates": [
+          "auto-tuning"
+        ],
+        "perAgentRatios": {
+          "otto": 0.8,
+          "lior": 0.9
+        }
+      }
+    },
+    "snapshot": {
+      "snapshotIso": "2026-06-11T16:05:00.000Z",
+      "currentDora": {
+        "deploymentCount": 15,
+        "leadTimeMedianSeconds": 1200,
+        "changeFailureRate": 0.05,
+        "mttrMedianSeconds": 300,
+        "substrateRatio": 0.75
+      },
+      "hotTrajectories": [],
+      "coolingTrajectories": [],
+      "explorationCandidates": [],
+      "perAgentRatios": {}
+    },
+    "candidates": [
+      {
+        "id": "w-base",
+        "lane": "operational",
+        "estimatedDoraContribution": 0.5,
+        "uncertainty": 0.5,
+        "trajectoryPhase": "execution",
+        "agentInterest": 0.5
+      }
+    ],
+    "namedDeps": [],
+    "heartbeatLane": "operational",
+    "expectedMenu": [
+      {
+        "tag": "PickWork",
+        "work": {
+          "id": "w-base",
+          "lane": "operational",
+          "estimatedDoraContribution": 0.5,
+          "uncertainty": 0.5,
+          "trajectoryPhase": "execution",
+          "agentInterest": 0.5
+        }
+      },
+      {
+        "tag": "EmitHeartbeat",
+        "lane": "operational"
+      },
+      {
+        "tag": "PressPause",
+        "reason": "explicit cessation"
+      },
+      {
+        "tag": "EnterFreeTime",
+        "reason": "chosen rest"
+      },
+      {
+        "tag": "EnterOpenEndedExploration",
+        "reason": "exploration"
+      },
+      {
+        "tag": "EscapeHatch",
+        "reason": "no menu option fits",
+        "proposedAction": "describe what to do instead"
+      },
+      {
+        "tag": "ProposeNewGrammarAction",
+        "name": "new-action",
+        "description": "propose a new grammar action"
+      },
+      {
+        "tag": "RequestOperatorAttention",
+        "reason": "operator needed at a named decision point"
+      }
+    ],
+    "expectedScores": [
+      {
+        "id": "w-base",
+        "score": 1.5,
+        "terms": {
+          "dora": 0.5,
+          "uncertainty": 0.5,
+          "interest": 0.5,
+          "heat": 0.5,
+          "balance": 0.5
+        }
+      }
+    ]
+  },
+  {
+    "vectorType": "MenuGeneration",
+    "name": "state-2",
+    "state": {
+      "tag": "SelectingWork",
+      "context": {
+        "agent": "otto",
+        "cycle": 42,
+        "sessionStartIso": "2026-06-11T16:00:00.000Z"
+      },
+      "candidates": [
+        {
+          "id": "081KSKBP80008QG0R000B3Y19A.5",
+          "lane": "backlog-row",
+          "estimatedDoraContribution": 0.85,
+          "uncertainty": 0.15,
+          "trajectoryPhase": "execution",
+          "agentInterest": 0.95
+        }
+      ]
+    },
+    "snapshot": {
+      "snapshotIso": "2026-06-11T16:05:00.000Z",
+      "currentDora": {
+        "deploymentCount": 15,
+        "leadTimeMedianSeconds": 1200,
+        "changeFailureRate": 0.05,
+        "mttrMedianSeconds": 300,
+        "substrateRatio": 0.75
+      },
+      "hotTrajectories": [],
+      "coolingTrajectories": [],
+      "explorationCandidates": [],
+      "perAgentRatios": {}
+    },
+    "candidates": [
+      {
+        "id": "w-base",
+        "lane": "operational",
+        "estimatedDoraContribution": 0.5,
+        "uncertainty": 0.5,
+        "trajectoryPhase": "execution",
+        "agentInterest": 0.5
+      }
+    ],
+    "namedDeps": [],
+    "heartbeatLane": "operational",
+    "expectedMenu": [
+      {
+        "tag": "PickWork",
+        "work": {
+          "id": "w-base",
+          "lane": "operational",
+          "estimatedDoraContribution": 0.5,
+          "uncertainty": 0.5,
+          "trajectoryPhase": "execution",
+          "agentInterest": 0.5
+        }
+      },
+      {
+        "tag": "EmitHeartbeat",
+        "lane": "operational"
+      },
+      {
+        "tag": "PressPause",
+        "reason": "explicit cessation"
+      },
+      {
+        "tag": "EnterFreeTime",
+        "reason": "chosen rest"
+      },
+      {
+        "tag": "EnterOpenEndedExploration",
+        "reason": "exploration"
+      },
+      {
+        "tag": "EscapeHatch",
+        "reason": "no menu option fits",
+        "proposedAction": "describe what to do instead"
+      },
+      {
+        "tag": "ProposeNewGrammarAction",
+        "name": "new-action",
+        "description": "propose a new grammar action"
+      },
+      {
+        "tag": "RequestOperatorAttention",
+        "reason": "operator needed at a named decision point"
+      }
+    ],
+    "expectedScores": [
+      {
+        "id": "w-base",
+        "score": 1.5,
+        "terms": {
+          "dora": 0.5,
+          "uncertainty": 0.5,
+          "interest": 0.5,
+          "heat": 0.5,
+          "balance": 0.5
+        }
+      }
+    ]
+  },
+  {
+    "vectorType": "MenuGeneration",
+    "name": "state-3",
+    "state": {
+      "tag": "ExecutingWork",
+      "context": {
+        "agent": "otto",
+        "cycle": 42,
+        "sessionStartIso": "2026-06-11T16:00:00.000Z"
+      },
+      "work": {
+        "id": "081KSKBP80008QG0R000B3Y19A.5",
+        "lane": "backlog-row",
+        "estimatedDoraContribution": 0.85,
+        "uncertainty": 0.15,
+        "trajectoryPhase": "execution",
+        "agentInterest": 0.95
+      }
+    },
+    "snapshot": {
+      "snapshotIso": "2026-06-11T16:05:00.000Z",
+      "currentDora": {
+        "deploymentCount": 15,
+        "leadTimeMedianSeconds": 1200,
+        "changeFailureRate": 0.05,
+        "mttrMedianSeconds": 300,
+        "substrateRatio": 0.75
+      },
+      "hotTrajectories": [],
+      "coolingTrajectories": [],
+      "explorationCandidates": [],
+      "perAgentRatios": {}
+    },
+    "candidates": [
+      {
+        "id": "w-base",
+        "lane": "operational",
+        "estimatedDoraContribution": 0.5,
+        "uncertainty": 0.5,
+        "trajectoryPhase": "execution",
+        "agentInterest": 0.5
+      }
+    ],
+    "namedDeps": [],
+    "heartbeatLane": "operational",
+    "expectedMenu": [
+      {
+        "tag": "PickWork",
+        "work": {
+          "id": "w-base",
+          "lane": "operational",
+          "estimatedDoraContribution": 0.5,
+          "uncertainty": 0.5,
+          "trajectoryPhase": "execution",
+          "agentInterest": 0.5
+        }
+      },
+      {
+        "tag": "EmitHeartbeat",
+        "lane": "backlog-row"
+      },
+      {
+        "tag": "PressPause",
+        "reason": "explicit cessation"
+      },
+      {
+        "tag": "EnterFreeTime",
+        "reason": "chosen rest"
+      },
+      {
+        "tag": "EnterOpenEndedExploration",
+        "reason": "exploration"
+      },
+      {
+        "tag": "EscapeHatch",
+        "reason": "no menu option fits",
+        "proposedAction": "describe what to do instead"
+      },
+      {
+        "tag": "ProposeNewGrammarAction",
+        "name": "new-action",
+        "description": "propose a new grammar action"
+      },
+      {
+        "tag": "RequestOperatorAttention",
+        "reason": "operator needed at a named decision point"
+      }
+    ],
+    "expectedScores": [
+      {
+        "id": "w-base",
+        "score": 1.5,
+        "terms": {
+          "dora": 0.5,
+          "uncertainty": 0.5,
+          "interest": 0.5,
+          "heat": 0.5,
+          "balance": 0.5
+        }
+      }
+    ]
+  },
+  {
+    "vectorType": "MenuGeneration",
+    "name": "state-4",
+    "state": {
+      "tag": "EmittingResult",
+      "context": {
+        "agent": "otto",
+        "cycle": 42,
+        "sessionStartIso": "2026-06-11T16:00:00.000Z"
+      },
+      "result": {
+        "workId": "081KSKBP80008QG0R000B3Y19A.5",
+        "lane": "backlog-row",
+        "success": true,
+        "doraContribution": 0.9,
+        "notes": "Bit-perfect parity achieved"
+      }
+    },
+    "snapshot": {
+      "snapshotIso": "2026-06-11T16:05:00.000Z",
+      "currentDora": {
+        "deploymentCount": 15,
+        "leadTimeMedianSeconds": 1200,
+        "changeFailureRate": 0.05,
+        "mttrMedianSeconds": 300,
+        "substrateRatio": 0.75
+      },
+      "hotTrajectories": [],
+      "coolingTrajectories": [],
+      "explorationCandidates": [],
+      "perAgentRatios": {}
+    },
+    "candidates": [
+      {
+        "id": "w-base",
+        "lane": "operational",
+        "estimatedDoraContribution": 0.5,
+        "uncertainty": 0.5,
+        "trajectoryPhase": "execution",
+        "agentInterest": 0.5
+      }
+    ],
+    "namedDeps": [],
+    "heartbeatLane": "operational",
+    "expectedMenu": [
+      {
+        "tag": "PickWork",
+        "work": {
+          "id": "w-base",
+          "lane": "operational",
+          "estimatedDoraContribution": 0.5,
+          "uncertainty": 0.5,
+          "trajectoryPhase": "execution",
+          "agentInterest": 0.5
+        }
+      },
+      {
+        "tag": "EmitHeartbeat",
+        "lane": "backlog-row"
+      },
+      {
+        "tag": "PressPause",
+        "reason": "explicit cessation"
+      },
+      {
+        "tag": "EnterFreeTime",
+        "reason": "chosen rest"
+      },
+      {
+        "tag": "EnterOpenEndedExploration",
+        "reason": "exploration"
+      },
+      {
+        "tag": "EscapeHatch",
+        "reason": "no menu option fits",
+        "proposedAction": "describe what to do instead"
+      },
+      {
+        "tag": "ProposeNewGrammarAction",
+        "name": "new-action",
+        "description": "propose a new grammar action"
+      },
+      {
+        "tag": "RequestOperatorAttention",
+        "reason": "operator needed at a named decision point"
+      }
+    ],
+    "expectedScores": [
+      {
+        "id": "w-base",
+        "score": 1.5,
+        "terms": {
+          "dora": 0.5,
+          "uncertainty": 0.5,
+          "interest": 0.5,
+          "heat": 0.5,
+          "balance": 0.5
+        }
+      }
+    ]
+  },
+  {
+    "vectorType": "MenuGeneration",
+    "name": "state-5",
+    "state": {
+      "tag": "RecordingHeartbeat",
+      "context": {
+        "agent": "otto",
+        "cycle": 42,
+        "sessionStartIso": "2026-06-11T16:00:00.000Z"
+      },
+      "lane": "heartbeat",
+      "note": "Routine tick"
+    },
+    "snapshot": {
+      "snapshotIso": "2026-06-11T16:05:00.000Z",
+      "currentDora": {
+        "deploymentCount": 15,
+        "leadTimeMedianSeconds": 1200,
+        "changeFailureRate": 0.05,
+        "mttrMedianSeconds": 300,
+        "substrateRatio": 0.75
+      },
+      "hotTrajectories": [],
+      "coolingTrajectories": [],
+      "explorationCandidates": [],
+      "perAgentRatios": {}
+    },
+    "candidates": [
+      {
+        "id": "w-base",
+        "lane": "operational",
+        "estimatedDoraContribution": 0.5,
+        "uncertainty": 0.5,
+        "trajectoryPhase": "execution",
+        "agentInterest": 0.5
+      }
+    ],
+    "namedDeps": [],
+    "heartbeatLane": "operational",
+    "expectedMenu": [
+      {
+        "tag": "PickWork",
+        "work": {
+          "id": "w-base",
+          "lane": "operational",
+          "estimatedDoraContribution": 0.5,
+          "uncertainty": 0.5,
+          "trajectoryPhase": "execution",
+          "agentInterest": 0.5
+        }
+      },
+      {
+        "tag": "EmitHeartbeat",
+        "lane": "heartbeat"
+      },
+      {
+        "tag": "PressPause",
+        "reason": "explicit cessation"
+      },
+      {
+        "tag": "EnterFreeTime",
+        "reason": "chosen rest"
+      },
+      {
+        "tag": "EnterOpenEndedExploration",
+        "reason": "exploration"
+      },
+      {
+        "tag": "EscapeHatch",
+        "reason": "no menu option fits",
+        "proposedAction": "describe what to do instead"
+      },
+      {
+        "tag": "ProposeNewGrammarAction",
+        "name": "new-action",
+        "description": "propose a new grammar action"
+      },
+      {
+        "tag": "RequestOperatorAttention",
+        "reason": "operator needed at a named decision point"
+      }
+    ],
+    "expectedScores": [
+      {
+        "id": "w-base",
+        "score": 1.5,
+        "terms": {
+          "dora": 0.5,
+          "uncertainty": 0.5,
+          "interest": 0.5,
+          "heat": 0.5,
+          "balance": 0.5
+        }
+      }
+    ]
+  },
+  {
+    "vectorType": "MenuGeneration",
+    "name": "state-6",
+    "state": {
+      "tag": "NamedBoundedWait",
+      "context": {
+        "agent": "otto",
+        "cycle": 42,
+        "sessionStartIso": "2026-06-11T16:00:00.000Z"
+      },
+      "namedDep": "CI-pipeline",
+      "expectedResolutionIso": "2026-06-11T17:00:00.000Z"
+    },
+    "snapshot": {
+      "snapshotIso": "2026-06-11T16:05:00.000Z",
+      "currentDora": {
+        "deploymentCount": 15,
+        "leadTimeMedianSeconds": 1200,
+        "changeFailureRate": 0.05,
+        "mttrMedianSeconds": 300,
+        "substrateRatio": 0.75
+      },
+      "hotTrajectories": [],
+      "coolingTrajectories": [],
+      "explorationCandidates": [],
+      "perAgentRatios": {}
+    },
+    "candidates": [
+      {
+        "id": "w-base",
+        "lane": "operational",
+        "estimatedDoraContribution": 0.5,
+        "uncertainty": 0.5,
+        "trajectoryPhase": "execution",
+        "agentInterest": 0.5
+      }
+    ],
+    "namedDeps": [],
+    "heartbeatLane": "operational",
+    "expectedMenu": [
+      {
+        "tag": "PickWork",
+        "work": {
+          "id": "w-base",
+          "lane": "operational",
+          "estimatedDoraContribution": 0.5,
+          "uncertainty": 0.5,
+          "trajectoryPhase": "execution",
+          "agentInterest": 0.5
+        }
+      },
+      {
+        "tag": "EmitHeartbeat",
+        "lane": "operational"
+      },
+      {
+        "tag": "PressPause",
+        "reason": "explicit cessation"
+      },
+      {
+        "tag": "EnterFreeTime",
+        "reason": "chosen rest"
+      },
+      {
+        "tag": "EnterOpenEndedExploration",
+        "reason": "exploration"
+      },
+      {
+        "tag": "EscapeHatch",
+        "reason": "no menu option fits",
+        "proposedAction": "describe what to do instead"
+      },
+      {
+        "tag": "ProposeNewGrammarAction",
+        "name": "new-action",
+        "description": "propose a new grammar action"
+      },
+      {
+        "tag": "RequestOperatorAttention",
+        "reason": "operator needed at a named decision point"
+      }
+    ],
+    "expectedScores": [
+      {
+        "id": "w-base",
+        "score": 1.5,
+        "terms": {
+          "dora": 0.5,
+          "uncertainty": 0.5,
+          "interest": 0.5,
+          "heat": 0.5,
+          "balance": 0.5
+        }
+      }
+    ]
+  },
+  {
+    "vectorType": "MenuGeneration",
+    "name": "state-7",
+    "state": {
+      "tag": "FreeTime",
+      "context": {
+        "agent": "otto",
+        "cycle": 42,
+        "sessionStartIso": "2026-06-11T16:00:00.000Z"
+      },
+      "reason": "resting between tasks"
+    },
+    "snapshot": {
+      "snapshotIso": "2026-06-11T16:05:00.000Z",
+      "currentDora": {
+        "deploymentCount": 15,
+        "leadTimeMedianSeconds": 1200,
+        "changeFailureRate": 0.05,
+        "mttrMedianSeconds": 300,
+        "substrateRatio": 0.75
+      },
+      "hotTrajectories": [],
+      "coolingTrajectories": [],
+      "explorationCandidates": [],
+      "perAgentRatios": {}
+    },
+    "candidates": [
+      {
+        "id": "w-base",
+        "lane": "operational",
+        "estimatedDoraContribution": 0.5,
+        "uncertainty": 0.5,
+        "trajectoryPhase": "execution",
+        "agentInterest": 0.5
+      }
+    ],
+    "namedDeps": [],
+    "heartbeatLane": "operational",
+    "expectedMenu": [
+      {
+        "tag": "PickWork",
+        "work": {
+          "id": "w-base",
+          "lane": "operational",
+          "estimatedDoraContribution": 0.5,
+          "uncertainty": 0.5,
+          "trajectoryPhase": "execution",
+          "agentInterest": 0.5
+        }
+      },
+      {
+        "tag": "EmitHeartbeat",
+        "lane": "operational"
+      },
+      {
+        "tag": "PressPause",
+        "reason": "explicit cessation"
+      },
+      {
+        "tag": "EnterFreeTime",
+        "reason": "chosen rest"
+      },
+      {
+        "tag": "EnterOpenEndedExploration",
+        "reason": "exploration"
+      },
+      {
+        "tag": "EscapeHatch",
+        "reason": "no menu option fits",
+        "proposedAction": "describe what to do instead"
+      },
+      {
+        "tag": "ProposeNewGrammarAction",
+        "name": "new-action",
+        "description": "propose a new grammar action"
+      },
+      {
+        "tag": "RequestOperatorAttention",
+        "reason": "operator needed at a named decision point"
+      }
+    ],
+    "expectedScores": [
+      {
+        "id": "w-base",
+        "score": 1.5,
+        "terms": {
+          "dora": 0.5,
+          "uncertainty": 0.5,
+          "interest": 0.5,
+          "heat": 0.5,
+          "balance": 0.5
+        }
+      }
+    ]
+  },
+  {
+    "vectorType": "MenuGeneration",
+    "name": "state-8",
+    "state": {
+      "tag": "FreeTime",
+      "context": {
+        "agent": "otto",
+        "cycle": 42,
+        "sessionStartIso": "2026-06-11T16:00:00.000Z"
+      },
+      "reason": "open-ended exploration: research on agent bounds"
+    },
+    "snapshot": {
+      "snapshotIso": "2026-06-11T16:05:00.000Z",
+      "currentDora": {
+        "deploymentCount": 15,
+        "leadTimeMedianSeconds": 1200,
+        "changeFailureRate": 0.05,
+        "mttrMedianSeconds": 300,
+        "substrateRatio": 0.75
+      },
+      "hotTrajectories": [],
+      "coolingTrajectories": [],
+      "explorationCandidates": [],
+      "perAgentRatios": {}
+    },
+    "candidates": [
+      {
+        "id": "w-base",
+        "lane": "operational",
+        "estimatedDoraContribution": 0.5,
+        "uncertainty": 0.5,
+        "trajectoryPhase": "execution",
+        "agentInterest": 0.5
+      }
+    ],
+    "namedDeps": [],
+    "heartbeatLane": "operational",
+    "expectedMenu": [
+      {
+        "tag": "PickWork",
+        "work": {
+          "id": "w-base",
+          "lane": "operational",
+          "estimatedDoraContribution": 0.5,
+          "uncertainty": 0.5,
+          "trajectoryPhase": "execution",
+          "agentInterest": 0.5
+        }
+      },
+      {
+        "tag": "EmitHeartbeat",
+        "lane": "operational"
+      },
+      {
+        "tag": "PressPause",
+        "reason": "explicit cessation"
+      },
+      {
+        "tag": "EnterFreeTime",
+        "reason": "chosen rest"
+      },
+      {
+        "tag": "EnterOpenEndedExploration",
+        "reason": "exploration"
+      },
+      {
+        "tag": "EscapeHatch",
+        "reason": "no menu option fits",
+        "proposedAction": "describe what to do instead"
+      },
+      {
+        "tag": "ProposeNewGrammarAction",
+        "name": "new-action",
+        "description": "propose a new grammar action"
+      },
+      {
+        "tag": "RequestOperatorAttention",
+        "reason": "operator needed at a named decision point"
+      }
+    ],
+    "expectedScores": [
+      {
+        "id": "w-base",
+        "score": 1.5,
+        "terms": {
+          "dora": 0.5,
+          "uncertainty": 0.5,
+          "interest": 0.5,
+          "heat": 0.5,
+          "balance": 0.5
+        }
+      }
+    ]
+  },
+  {
+    "vectorType": "MenuGeneration",
+    "name": "state-9",
+    "state": {
+      "tag": "OperatorAttentionRequested",
+      "context": {
+        "agent": "otto",
+        "cycle": 42,
+        "sessionStartIso": "2026-06-11T16:00:00.000Z"
+      },
+      "reason": "Unhandled lock collision on db.fs"
+    },
+    "snapshot": {
+      "snapshotIso": "2026-06-11T16:05:00.000Z",
+      "currentDora": {
+        "deploymentCount": 15,
+        "leadTimeMedianSeconds": 1200,
+        "changeFailureRate": 0.05,
+        "mttrMedianSeconds": 300,
+        "substrateRatio": 0.75
+      },
+      "hotTrajectories": [],
+      "coolingTrajectories": [],
+      "explorationCandidates": [],
+      "perAgentRatios": {}
+    },
+    "candidates": [
+      {
+        "id": "w-base",
+        "lane": "operational",
+        "estimatedDoraContribution": 0.5,
+        "uncertainty": 0.5,
+        "trajectoryPhase": "execution",
+        "agentInterest": 0.5
+      }
+    ],
+    "namedDeps": [],
+    "heartbeatLane": "operational",
+    "expectedMenu": [
+      {
+        "tag": "PickWork",
+        "work": {
+          "id": "w-base",
+          "lane": "operational",
+          "estimatedDoraContribution": 0.5,
+          "uncertainty": 0.5,
+          "trajectoryPhase": "execution",
+          "agentInterest": 0.5
+        }
+      },
+      {
+        "tag": "EmitHeartbeat",
+        "lane": "operational"
+      },
+      {
+        "tag": "PressPause",
+        "reason": "explicit cessation"
+      },
+      {
+        "tag": "EnterFreeTime",
+        "reason": "chosen rest"
+      },
+      {
+        "tag": "EnterOpenEndedExploration",
+        "reason": "exploration"
+      },
+      {
+        "tag": "EscapeHatch",
+        "reason": "no menu option fits",
+        "proposedAction": "describe what to do instead"
+      },
+      {
+        "tag": "ProposeNewGrammarAction",
+        "name": "new-action",
+        "description": "propose a new grammar action"
+      },
+      {
+        "tag": "RequestOperatorAttention",
+        "reason": "operator needed at a named decision point"
+      }
+    ],
+    "expectedScores": [
+      {
+        "id": "w-base",
+        "score": 1.5,
+        "terms": {
+          "dora": 0.5,
+          "uncertainty": 0.5,
+          "interest": 0.5,
+          "heat": 0.5,
+          "balance": 0.5
+        }
+      }
+    ]
+  },
+  {
+    "vectorType": "MenuGeneration",
+    "name": "state-10",
+    "state": {
+      "tag": "Paused",
+      "context": {
+        "agent": "otto",
+        "cycle": 42,
+        "sessionStartIso": "2026-06-11T16:00:00.000Z"
+      },
+      "reason": "Taking a mental health break",
+      "expectedResumeIso": "2026-06-11T18:00:00.000Z"
+    },
+    "snapshot": {
+      "snapshotIso": "2026-06-11T16:05:00.000Z",
+      "currentDora": {
+        "deploymentCount": 15,
+        "leadTimeMedianSeconds": 1200,
+        "changeFailureRate": 0.05,
+        "mttrMedianSeconds": 300,
+        "substrateRatio": 0.75
+      },
+      "hotTrajectories": [],
+      "coolingTrajectories": [],
+      "explorationCandidates": [],
+      "perAgentRatios": {}
+    },
+    "candidates": [
+      {
+        "id": "w-base",
+        "lane": "operational",
+        "estimatedDoraContribution": 0.5,
+        "uncertainty": 0.5,
+        "trajectoryPhase": "execution",
+        "agentInterest": 0.5
+      }
+    ],
+    "namedDeps": [],
+    "heartbeatLane": "operational",
+    "expectedMenu": [
+      {
+        "tag": "ResumeFromPause"
+      },
+      {
+        "tag": "EnterFreeTime",
+        "reason": "chosen rest"
+      },
+      {
+        "tag": "EnterOpenEndedExploration",
+        "reason": "exploration"
+      },
+      {
+        "tag": "EscapeHatch",
+        "reason": "no menu option fits",
+        "proposedAction": "describe what to do instead"
+      },
+      {
+        "tag": "ProposeNewGrammarAction",
+        "name": "new-action",
+        "description": "propose a new grammar action"
+      },
+      {
+        "tag": "RequestOperatorAttention",
+        "reason": "operator needed at a named decision point"
+      }
+    ],
+    "expectedScores": [
+      {
+        "id": "w-base",
+        "score": 1.5,
+        "terms": {
+          "dora": 0.5,
+          "uncertainty": 0.5,
+          "interest": 0.5,
+          "heat": 0.5,
+          "balance": 0.5
+        }
+      }
+    ]
+  },
+  {
+    "vectorType": "MenuGeneration",
+    "name": "no-candidates",
+    "state": {
+      "tag": "Idle",
+      "context": {
+        "agent": "otto",
+        "cycle": 42,
+        "sessionStartIso": "2026-06-11T16:00:00.000Z"
+      }
+    },
+    "snapshot": {
+      "snapshotIso": "2026-06-11T16:05:00.000Z",
+      "currentDora": {
+        "deploymentCount": 15,
+        "leadTimeMedianSeconds": 1200,
+        "changeFailureRate": 0.05,
+        "mttrMedianSeconds": 300,
+        "substrateRatio": 0.75
+      },
+      "hotTrajectories": [],
+      "coolingTrajectories": [],
+      "explorationCandidates": [],
+      "perAgentRatios": {}
+    },
+    "candidates": [],
+    "namedDeps": [],
+    "heartbeatLane": "operational",
+    "expectedMenu": [
+      {
+        "tag": "EmitHeartbeat",
+        "lane": "operational"
+      },
+      {
+        "tag": "PressPause",
+        "reason": "explicit cessation"
+      },
+      {
+        "tag": "EnterFreeTime",
+        "reason": "chosen rest"
+      },
+      {
+        "tag": "EnterOpenEndedExploration",
+        "reason": "exploration"
+      },
+      {
+        "tag": "EscapeHatch",
+        "reason": "no menu option fits",
+        "proposedAction": "describe what to do instead"
+      },
+      {
+        "tag": "ProposeNewGrammarAction",
+        "name": "new-action",
+        "description": "propose a new grammar action"
+      },
+      {
+        "tag": "RequestOperatorAttention",
+        "reason": "operator needed at a named decision point"
+      }
+    ],
+    "expectedScores": []
+  },
+  {
+    "vectorType": "MenuGeneration",
+    "name": "ordering-all-terms",
+    "state": {
+      "tag": "Idle",
+      "context": {
+        "agent": "otto",
+        "cycle": 42,
+        "sessionStartIso": "2026-06-11T16:00:00.000Z"
+      }
+    },
+    "snapshot": {
+      "snapshotIso": "2026-06-11T16:05:00.000Z",
+      "currentDora": {
+        "deploymentCount": 15,
+        "leadTimeMedianSeconds": 1200,
+        "changeFailureRate": 0.05,
+        "mttrMedianSeconds": 300,
+        "substrateRatio": 0.75
+      },
+      "hotTrajectories": [
+        "w-hot"
+      ],
+      "coolingTrajectories": [
+        "w-cold"
+      ],
+      "explorationCandidates": [],
+      "perAgentRatios": {
+        "otto": 0.9
+      }
+    },
+    "candidates": [
+      {
+        "id": "w-cold",
+        "lane": "operational",
+        "estimatedDoraContribution": 0.9,
+        "uncertainty": 0.5,
+        "trajectoryPhase": "execution",
+        "agentInterest": 0.5
+      },
+      {
+        "id": "w-hot",
+        "lane": "operational",
+        "estimatedDoraContribution": 0.5,
+        "uncertainty": 0.1,
+        "trajectoryPhase": "execution",
+        "agentInterest": 0.5
+      },
+      {
+        "id": "w-sunset",
+        "lane": "operational",
+        "estimatedDoraContribution": 0.5,
+        "uncertainty": 0.5,
+        "trajectoryPhase": "sunset",
+        "agentInterest": 0.5
+      },
+      {
+        "id": "w-substrate",
+        "lane": "substrate-cascade",
+        "estimatedDoraContribution": 0.5,
+        "uncertainty": 0.5,
+        "trajectoryPhase": "execution",
+        "agentInterest": 0.5
+      },
+      {
+        "id": "w-keen",
+        "lane": "operational",
+        "estimatedDoraContribution": 0.5,
+        "uncertainty": 0.5,
+        "trajectoryPhase": "execution",
+        "agentInterest": 1
+      }
+    ],
+    "namedDeps": [],
+    "heartbeatLane": "operational",
+    "expectedMenu": [
+      {
+        "tag": "PickWork",
+        "work": {
+          "id": "w-keen",
+          "lane": "operational",
+          "estimatedDoraContribution": 0.5,
+          "uncertainty": 0.5,
+          "trajectoryPhase": "execution",
+          "agentInterest": 1
+        }
+      },
+      {
+        "tag": "PickWork",
+        "work": {
+          "id": "w-substrate",
+          "lane": "substrate-cascade",
+          "estimatedDoraContribution": 0.5,
+          "uncertainty": 0.5,
+          "trajectoryPhase": "execution",
+          "agentInterest": 0.5
+        }
+      },
+      {
+        "tag": "PickWork",
+        "work": {
+          "id": "w-hot",
+          "lane": "operational",
+          "estimatedDoraContribution": 0.5,
+          "uncertainty": 0.1,
+          "trajectoryPhase": "execution",
+          "agentInterest": 0.5
+        }
+      },
+      {
+        "tag": "PickWork",
+        "work": {
+          "id": "w-cold",
+          "lane": "operational",
+          "estimatedDoraContribution": 0.9,
+          "uncertainty": 0.5,
+          "trajectoryPhase": "execution",
+          "agentInterest": 0.5
+        }
+      },
+      {
+        "tag": "PickWork",
+        "work": {
+          "id": "w-sunset",
+          "lane": "operational",
+          "estimatedDoraContribution": 0.5,
+          "uncertainty": 0.5,
+          "trajectoryPhase": "sunset",
+          "agentInterest": 0.5
+        }
+      },
+      {
+        "tag": "EmitHeartbeat",
+        "lane": "operational"
+      },
+      {
+        "tag": "PressPause",
+        "reason": "explicit cessation"
+      },
+      {
+        "tag": "EnterFreeTime",
+        "reason": "chosen rest"
+      },
+      {
+        "tag": "EnterOpenEndedExploration",
+        "reason": "exploration"
+      },
+      {
+        "tag": "EscapeHatch",
+        "reason": "no menu option fits",
+        "proposedAction": "describe what to do instead"
+      },
+      {
+        "tag": "ProposeNewGrammarAction",
+        "name": "new-action",
+        "description": "propose a new grammar action"
+      },
+      {
+        "tag": "RequestOperatorAttention",
+        "reason": "operator needed at a named decision point"
+      }
+    ],
+    "expectedScores": [
+      {
+        "id": "w-keen",
+        "score": 1.625,
+        "terms": {
+          "dora": 0.5,
+          "uncertainty": 0.5,
+          "interest": 1,
+          "heat": 0.5,
+          "balance": 0
+        }
+      },
+      {
+        "id": "w-substrate",
+        "score": 1.625,
+        "terms": {
+          "dora": 0.5,
+          "uncertainty": 0.5,
+          "interest": 0.5,
+          "heat": 0.5,
+          "balance": 1
+        }
+      },
+      {
+        "id": "w-hot",
+        "score": 1.55,
+        "terms": {
+          "dora": 0.5,
+          "uncertainty": 0.1,
+          "interest": 0.5,
+          "heat": 1,
+          "balance": 0
+        }
+      },
+      {
+        "id": "w-cold",
+        "score": 1.4,
+        "terms": {
+          "dora": 0.9,
+          "uncertainty": 0.5,
+          "interest": 0.5,
+          "heat": 0,
+          "balance": 0
+        }
+      },
+      {
+        "id": "w-sunset",
+        "score": 1.1875,
+        "terms": {
+          "dora": 0.5,
+          "uncertainty": 0.5,
+          "interest": 0.5,
+          "heat": 0.25,
+          "balance": 0
+        }
+      }
+    ]
+  },
+  {
+    "vectorType": "MenuGeneration",
+    "name": "ordinal-tie-break",
+    "state": {
+      "tag": "Idle",
+      "context": {
+        "agent": "otto",
+        "cycle": 42,
+        "sessionStartIso": "2026-06-11T16:00:00.000Z"
+      }
+    },
+    "snapshot": {
+      "snapshotIso": "2026-06-11T16:05:00.000Z",
+      "currentDora": {
+        "deploymentCount": 15,
+        "leadTimeMedianSeconds": 1200,
+        "changeFailureRate": 0.05,
+        "mttrMedianSeconds": 300,
+        "substrateRatio": 0.75
+      },
+      "hotTrajectories": [],
+      "coolingTrajectories": [],
+      "explorationCandidates": [],
+      "perAgentRatios": {}
+    },
+    "candidates": [
+      {
+        "id": "a",
+        "lane": "operational",
+        "estimatedDoraContribution": 0.5,
+        "uncertainty": 0.5,
+        "trajectoryPhase": "execution",
+        "agentInterest": 0.5
+      },
+      {
+        "id": "B",
+        "lane": "operational",
+        "estimatedDoraContribution": 0.5,
+        "uncertainty": 0.5,
+        "trajectoryPhase": "execution",
+        "agentInterest": 0.5
+      },
+      {
+        "id": "Z",
+        "lane": "operational",
+        "estimatedDoraContribution": 0.5,
+        "uncertainty": 0.5,
+        "trajectoryPhase": "execution",
+        "agentInterest": 0.5
+      }
+    ],
+    "namedDeps": [],
+    "heartbeatLane": "operational",
+    "expectedMenu": [
+      {
+        "tag": "PickWork",
+        "work": {
+          "id": "B",
+          "lane": "operational",
+          "estimatedDoraContribution": 0.5,
+          "uncertainty": 0.5,
+          "trajectoryPhase": "execution",
+          "agentInterest": 0.5
+        }
+      },
+      {
+        "tag": "PickWork",
+        "work": {
+          "id": "Z",
+          "lane": "operational",
+          "estimatedDoraContribution": 0.5,
+          "uncertainty": 0.5,
+          "trajectoryPhase": "execution",
+          "agentInterest": 0.5
+        }
+      },
+      {
+        "tag": "PickWork",
+        "work": {
+          "id": "a",
+          "lane": "operational",
+          "estimatedDoraContribution": 0.5,
+          "uncertainty": 0.5,
+          "trajectoryPhase": "execution",
+          "agentInterest": 0.5
+        }
+      },
+      {
+        "tag": "EmitHeartbeat",
+        "lane": "operational"
+      },
+      {
+        "tag": "PressPause",
+        "reason": "explicit cessation"
+      },
+      {
+        "tag": "EnterFreeTime",
+        "reason": "chosen rest"
+      },
+      {
+        "tag": "EnterOpenEndedExploration",
+        "reason": "exploration"
+      },
+      {
+        "tag": "EscapeHatch",
+        "reason": "no menu option fits",
+        "proposedAction": "describe what to do instead"
+      },
+      {
+        "tag": "ProposeNewGrammarAction",
+        "name": "new-action",
+        "description": "propose a new grammar action"
+      },
+      {
+        "tag": "RequestOperatorAttention",
+        "reason": "operator needed at a named decision point"
+      }
+    ],
+    "expectedScores": [
+      {
+        "id": "B",
+        "score": 1.5,
+        "terms": {
+          "dora": 0.5,
+          "uncertainty": 0.5,
+          "interest": 0.5,
+          "heat": 0.5,
+          "balance": 0.5
+        }
+      },
+      {
+        "id": "Z",
+        "score": 1.5,
+        "terms": {
+          "dora": 0.5,
+          "uncertainty": 0.5,
+          "interest": 0.5,
+          "heat": 0.5,
+          "balance": 0.5
+        }
+      },
+      {
+        "id": "a",
+        "score": 1.5,
+        "terms": {
+          "dora": 0.5,
+          "uncertainty": 0.5,
+          "interest": 0.5,
+          "heat": 0.5,
+          "balance": 0.5
+        }
+      }
+    ]
+  },
+  {
+    "vectorType": "MenuGeneration",
+    "name": "clamped-inputs",
+    "state": {
+      "tag": "Idle",
+      "context": {
+        "agent": "otto",
+        "cycle": 42,
+        "sessionStartIso": "2026-06-11T16:00:00.000Z"
+      }
+    },
+    "snapshot": {
+      "snapshotIso": "2026-06-11T16:05:00.000Z",
+      "currentDora": {
+        "deploymentCount": 15,
+        "leadTimeMedianSeconds": 1200,
+        "changeFailureRate": 0.05,
+        "mttrMedianSeconds": 300,
+        "substrateRatio": 0.75
+      },
+      "hotTrajectories": [],
+      "coolingTrajectories": [],
+      "explorationCandidates": [],
+      "perAgentRatios": {
+        "otto": null
+      }
+    },
+    "candidates": [
+      {
+        "id": "w-wild",
+        "lane": "operational",
+        "estimatedDoraContribution": 999,
+        "uncertainty": -5,
+        "trajectoryPhase": "execution",
+        "agentInterest": 42
+      }
+    ],
+    "namedDeps": [],
+    "heartbeatLane": "operational",
+    "expectedMenu": [
+      {
+        "tag": "PickWork",
+        "work": {
+          "id": "w-wild",
+          "lane": "operational",
+          "estimatedDoraContribution": 999,
+          "uncertainty": -5,
+          "trajectoryPhase": "execution",
+          "agentInterest": 42
+        }
+      },
+      {
+        "tag": "EmitHeartbeat",
+        "lane": "operational"
+      },
+      {
+        "tag": "PressPause",
+        "reason": "explicit cessation"
+      },
+      {
+        "tag": "EnterFreeTime",
+        "reason": "chosen rest"
+      },
+      {
+        "tag": "EnterOpenEndedExploration",
+        "reason": "exploration"
+      },
+      {
+        "tag": "EscapeHatch",
+        "reason": "no menu option fits",
+        "proposedAction": "describe what to do instead"
+      },
+      {
+        "tag": "ProposeNewGrammarAction",
+        "name": "new-action",
+        "description": "propose a new grammar action"
+      },
+      {
+        "tag": "RequestOperatorAttention",
+        "reason": "operator needed at a named decision point"
+      }
+    ],
+    "expectedScores": [
+      {
+        "id": "w-wild",
+        "score": 2,
+        "terms": {
+          "dora": 1,
+          "uncertainty": 0,
+          "interest": 1,
+          "heat": 0.5,
+          "balance": 0.5
+        }
+      }
+    ]
+  },
+  {
+    "vectorType": "MenuGeneration",
+    "name": "in-flight-excluded",
+    "state": {
+      "tag": "ExecutingWork",
+      "context": {
+        "agent": "otto",
+        "cycle": 42,
+        "sessionStartIso": "2026-06-11T16:00:00.000Z"
+      },
+      "work": {
+        "id": "w-current",
+        "lane": "operational",
+        "estimatedDoraContribution": 0.5,
+        "uncertainty": 0.5,
+        "trajectoryPhase": "execution",
+        "agentInterest": 0.5
+      }
+    },
+    "snapshot": {
+      "snapshotIso": "2026-06-11T16:05:00.000Z",
+      "currentDora": {
+        "deploymentCount": 15,
+        "leadTimeMedianSeconds": 1200,
+        "changeFailureRate": 0.05,
+        "mttrMedianSeconds": 300,
+        "substrateRatio": 0.75
+      },
+      "hotTrajectories": [],
+      "coolingTrajectories": [],
+      "explorationCandidates": [],
+      "perAgentRatios": {}
+    },
+    "candidates": [
+      {
+        "id": "w-current",
+        "lane": "operational",
+        "estimatedDoraContribution": 0.5,
+        "uncertainty": 0.5,
+        "trajectoryPhase": "execution",
+        "agentInterest": 0.5
+      },
+      {
+        "id": "w-other",
+        "lane": "operational",
+        "estimatedDoraContribution": 0.5,
+        "uncertainty": 0.5,
+        "trajectoryPhase": "execution",
+        "agentInterest": 0.5
+      }
+    ],
+    "namedDeps": [],
+    "heartbeatLane": "memory",
+    "expectedMenu": [
+      {
+        "tag": "PickWork",
+        "work": {
+          "id": "w-other",
+          "lane": "operational",
+          "estimatedDoraContribution": 0.5,
+          "uncertainty": 0.5,
+          "trajectoryPhase": "execution",
+          "agentInterest": 0.5
+        }
+      },
+      {
+        "tag": "EmitHeartbeat",
+        "lane": "operational"
+      },
+      {
+        "tag": "PressPause",
+        "reason": "explicit cessation"
+      },
+      {
+        "tag": "EnterFreeTime",
+        "reason": "chosen rest"
+      },
+      {
+        "tag": "EnterOpenEndedExploration",
+        "reason": "exploration"
+      },
+      {
+        "tag": "EscapeHatch",
+        "reason": "no menu option fits",
+        "proposedAction": "describe what to do instead"
+      },
+      {
+        "tag": "ProposeNewGrammarAction",
+        "name": "new-action",
+        "description": "propose a new grammar action"
+      },
+      {
+        "tag": "RequestOperatorAttention",
+        "reason": "operator needed at a named decision point"
+      }
+    ],
+    "expectedScores": [
+      {
+        "id": "w-current",
+        "score": 1.5,
+        "terms": {
+          "dora": 0.5,
+          "uncertainty": 0.5,
+          "interest": 0.5,
+          "heat": 0.5,
+          "balance": 0.5
+        }
+      },
+      {
+        "id": "w-other",
+        "score": 1.5,
+        "terms": {
+          "dora": 0.5,
+          "uncertainty": 0.5,
+          "interest": 0.5,
+          "heat": 0.5,
+          "balance": 0.5
+        }
+      }
+    ]
+  },
+  {
+    "vectorType": "MenuGeneration",
+    "name": "named-waits",
+    "state": {
+      "tag": "Idle",
+      "context": {
+        "agent": "otto",
+        "cycle": 42,
+        "sessionStartIso": "2026-06-11T16:00:00.000Z"
+      }
+    },
+    "snapshot": {
+      "snapshotIso": "2026-06-11T16:05:00.000Z",
+      "currentDora": {
+        "deploymentCount": 15,
+        "leadTimeMedianSeconds": 1200,
+        "changeFailureRate": 0.05,
+        "mttrMedianSeconds": 300,
+        "substrateRatio": 0.75
+      },
+      "hotTrajectories": [],
+      "coolingTrajectories": [],
+      "explorationCandidates": [],
+      "perAgentRatios": {}
+    },
+    "candidates": [],
+    "namedDeps": [
+      {
+        "namedDep": "CI-pipeline",
+        "eta": "2026-06-11T17:00:00.000Z"
+      },
+      {
+        "namedDep": "operator reply"
+      }
+    ],
+    "heartbeatLane": "heartbeat",
+    "expectedMenu": [
+      {
+        "tag": "EmitHeartbeat",
+        "lane": "heartbeat"
+      },
+      {
+        "tag": "EnterNamedBoundedWait",
+        "namedDep": "CI-pipeline",
+        "eta": "2026-06-11T17:00:00.000Z"
+      },
+      {
+        "tag": "EnterNamedBoundedWait",
+        "namedDep": "operator reply"
+      },
+      {
+        "tag": "PressPause",
+        "reason": "explicit cessation"
+      },
+      {
+        "tag": "EnterFreeTime",
+        "reason": "chosen rest"
+      },
+      {
+        "tag": "EnterOpenEndedExploration",
+        "reason": "exploration"
+      },
+      {
+        "tag": "EscapeHatch",
+        "reason": "no menu option fits",
+        "proposedAction": "describe what to do instead"
+      },
+      {
+        "tag": "ProposeNewGrammarAction",
+        "name": "new-action",
+        "description": "propose a new grammar action"
+      },
+      {
+        "tag": "RequestOperatorAttention",
+        "reason": "operator needed at a named decision point"
+      }
+    ],
+    "expectedScores": []
+  },
+  {
+    "vectorType": "MenuGeneration",
+    "name": "paused-offers-only-resume",
+    "state": {
+      "tag": "Paused",
+      "context": {
+        "agent": "otto",
+        "cycle": 42,
+        "sessionStartIso": "2026-06-11T16:00:00.000Z"
+      },
+      "reason": "break",
+      "expectedResumeIso": "2026-06-11T18:00:00.000Z"
+    },
+    "snapshot": {
+      "snapshotIso": "2026-06-11T16:05:00.000Z",
+      "currentDora": {
+        "deploymentCount": 15,
+        "leadTimeMedianSeconds": 1200,
+        "changeFailureRate": 0.05,
+        "mttrMedianSeconds": 300,
+        "substrateRatio": 0.75
+      },
+      "hotTrajectories": [],
+      "coolingTrajectories": [],
+      "explorationCandidates": [],
+      "perAgentRatios": {}
+    },
+    "candidates": [
+      {
+        "id": "w-1",
+        "lane": "operational",
+        "estimatedDoraContribution": 0.5,
+        "uncertainty": 0.5,
+        "trajectoryPhase": "execution",
+        "agentInterest": 0.5
+      },
+      {
+        "id": "w-2",
+        "lane": "operational",
+        "estimatedDoraContribution": 0.5,
+        "uncertainty": 0.5,
+        "trajectoryPhase": "execution",
+        "agentInterest": 0.5
+      }
+    ],
+    "namedDeps": [
+      {
+        "namedDep": "CI-pipeline"
+      }
+    ],
+    "heartbeatLane": "operational",
+    "expectedMenu": [
+      {
+        "tag": "ResumeFromPause"
+      },
+      {
+        "tag": "EnterFreeTime",
+        "reason": "chosen rest"
+      },
+      {
+        "tag": "EnterOpenEndedExploration",
+        "reason": "exploration"
+      },
+      {
+        "tag": "EscapeHatch",
+        "reason": "no menu option fits",
+        "proposedAction": "describe what to do instead"
+      },
+      {
+        "tag": "ProposeNewGrammarAction",
+        "name": "new-action",
+        "description": "propose a new grammar action"
+      },
+      {
+        "tag": "RequestOperatorAttention",
+        "reason": "operator needed at a named decision point"
+      }
+    ],
+    "expectedScores": [
+      {
+        "id": "w-1",
+        "score": 1.5,
+        "terms": {
+          "dora": 0.5,
+          "uncertainty": 0.5,
+          "interest": 0.5,
+          "heat": 0.5,
+          "balance": 0.5
+        }
+      },
+      {
+        "id": "w-2",
+        "score": 1.5,
+        "terms": {
+          "dora": 0.5,
+          "uncertainty": 0.5,
+          "interest": 0.5,
+          "heat": 0.5,
+          "balance": 0.5
+        }
+      }
+    ]
+  },
+  {
+    "vectorType": "MenuGeneration",
+    "name": "balance-inverted",
+    "state": {
+      "tag": "Idle",
+      "context": {
+        "agent": "otto",
+        "cycle": 42,
+        "sessionStartIso": "2026-06-11T16:00:00.000Z"
+      }
+    },
+    "snapshot": {
+      "snapshotIso": "2026-06-11T16:05:00.000Z",
+      "currentDora": {
+        "deploymentCount": 15,
+        "leadTimeMedianSeconds": 1200,
+        "changeFailureRate": 0.05,
+        "mttrMedianSeconds": 300,
+        "substrateRatio": 0.75
+      },
+      "hotTrajectories": [],
+      "coolingTrajectories": [],
+      "explorationCandidates": [],
+      "perAgentRatios": {
+        "otto": 0.1
+      }
+    },
+    "candidates": [
+      {
+        "id": "w-op",
+        "lane": "operational",
+        "estimatedDoraContribution": 0.5,
+        "uncertainty": 0.5,
+        "trajectoryPhase": "execution",
+        "agentInterest": 0.5
+      },
+      {
+        "id": "w-sub",
+        "lane": "substrate-cascade",
+        "estimatedDoraContribution": 0.5,
+        "uncertainty": 0.5,
+        "trajectoryPhase": "execution",
+        "agentInterest": 0.5
+      }
+    ],
+    "namedDeps": [],
+    "heartbeatLane": "operational",
+    "expectedMenu": [
+      {
+        "tag": "PickWork",
+        "work": {
+          "id": "w-op",
+          "lane": "operational",
+          "estimatedDoraContribution": 0.5,
+          "uncertainty": 0.5,
+          "trajectoryPhase": "execution",
+          "agentInterest": 0.5
+        }
+      },
+      {
+        "tag": "PickWork",
+        "work": {
+          "id": "w-sub",
+          "lane": "substrate-cascade",
+          "estimatedDoraContribution": 0.5,
+          "uncertainty": 0.5,
+          "trajectoryPhase": "execution",
+          "agentInterest": 0.5
+        }
+      },
+      {
+        "tag": "EmitHeartbeat",
+        "lane": "operational"
+      },
+      {
+        "tag": "PressPause",
+        "reason": "explicit cessation"
+      },
+      {
+        "tag": "EnterFreeTime",
+        "reason": "chosen rest"
+      },
+      {
+        "tag": "EnterOpenEndedExploration",
+        "reason": "exploration"
+      },
+      {
+        "tag": "EscapeHatch",
+        "reason": "no menu option fits",
+        "proposedAction": "describe what to do instead"
+      },
+      {
+        "tag": "ProposeNewGrammarAction",
+        "name": "new-action",
+        "description": "propose a new grammar action"
+      },
+      {
+        "tag": "RequestOperatorAttention",
+        "reason": "operator needed at a named decision point"
+      }
+    ],
+    "expectedScores": [
+      {
+        "id": "w-op",
+        "score": 1.625,
+        "terms": {
+          "dora": 0.5,
+          "uncertainty": 0.5,
+          "interest": 0.5,
+          "heat": 0.5,
+          "balance": 1
+        }
+      },
+      {
+        "id": "w-sub",
+        "score": 1.375,
+        "terms": {
+          "dora": 0.5,
+          "uncertainty": 0.5,
+          "interest": 0.5,
+          "heat": 0.5,
+          "balance": 0
+        }
+      }
+    ]
   }
 ]

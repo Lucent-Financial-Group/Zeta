@@ -104,6 +104,16 @@ Composes with:
 
 ## Files
 
+- **`menu-generator.ts`** — `(status_surface, current_state) → MenuOption[]`; zero I/O. The function
+  this whole design defers to — `transition` is documented as "defensive" *because* the generator
+  offers only valid options, and for a long time no generator existed. Ported to F# as
+  `src/Core/MenuGenerator.fs` and byte-locked against it by `MenuGeneration` vectors in
+  `workflow-treaty-transcript.json` (menu ORDER, every score term, exact double equality).
+- **`menu-generator.test.ts`** — the three README properties as tests: never coercive, never noise,
+  ordered-never-gated
+- **`lane-parity.test.ts`** — compile-time falsifier that this file's `Lane` and
+  `dora-classify/classify.ts`'s are one taxonomy; the parity was stated here for a long time and
+  checked nowhere
 - **`state-machine.ts`** — DU types + pure transition functions (`transition`, `postResultTransition`, `cycleClose`); zero I/O
 - **`state-machine.test.ts`** — 21 unit tests (single transitions + integration cycles + invariant preservation)
 - **`work-lifecycle-state-machine.ts`** — backlog/claim/PR/review/merge lifecycle DU + pure transition functions; zero I/O
@@ -165,11 +175,14 @@ type MenuOption =
 
 ## v2 scope (deferred to follow-up sub-rows)
 
-- 081KSKBP80008QG0R000B3Y19A.5 cli.ts implementation — bun CLI shell that reads state from Git, generates menu via `menu-generator.ts`, accepts agent choice via stdin/argv, executes choice via `executor.ts`, appends new state to Git
+- 081KSKBP80008QG0R000B3Y19A.5 cli.ts implementation — bun CLI shell that reads state from Git, generates menu via `menu-generator.ts` (**landed**), accepts agent choice via stdin/argv, executes choice via `executor.ts`, appends new state to Git
 - 081KSNY2Z0008QG0R001K6HJ7Z + 081KSKBP80008QG0R000B3Y19A.3 — append-only state persistence + universal action grammar
 - 081KSKBP80008QG0R000B3Y19A.4 — F# 4-corner monad CE builder (canonical F# types in `src/Core.FSharp/WorkflowEngine/`)
 - 081KSKBP80008QG0R000B3Y19A.6-9 — Otto's 5 modifications wiring + tests
-- Cross-verify harness for TS ↔ F# round-trip
+- ~~Cross-verify harness for TS ↔ F# round-trip~~ — **landed**: `generate-workflow-transcript.ts`
+  emits the vectors, `WorkflowEngine.Tests.fs` replays them in F#, and
+  `workflow-treaty-transcript.test.ts` replays them in TS. Both sides tally PER TYPE, so a family of
+  vectors that stops being emitted fails loudly instead of quietly retiring its own lock.
 
 ## Per operator authorization
 

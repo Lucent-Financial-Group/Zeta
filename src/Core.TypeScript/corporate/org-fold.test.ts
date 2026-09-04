@@ -1,0 +1,346 @@
+/**
+ * org-fold.test.ts — the organization rebuilt from its own event log.
+ *
+ * The centrepiece is the ROUND TRIP: run the real runtime, fold its own trace, and assert the
+ * result equals the runtime's cascade and calendar node for node. That is what makes "the log is
+ * sufficient to rebuild the organization" a checkable claim — a fold that reproduces something
+ * simpler than what it folded is not a fold, it is a summary.
+ *
+ * It is also the test that fails when somebody adds a state-constituting emit and forgets its fact,
+ * which is the failure mode this whole approach is exposed to.
+ */
+
+import { describe, expect, test } from "bun:test";
+import { factEvents, foldCalendar, foldCascade, foldGateEvaluations, foldOrganization, foldPortfolioBook, foldPriorities, foldRefusals } from "./org-fold";
+import { PriorityClass } from "./prioritization";
+import { GateKind, GateOutcome } from "./quality-gate";
+import { PortfolioKind, portfolioHistory } from "./portfolio";
+import { agentsFromChart, runOrgRuntime, type OrgRuntimeDeps } from "./org-runtime";
+import { buildOrgChart } from "./org-chart";
+import { SEED_HATS } from "./org-seed";
+import { IntakeKind, Severity, type ExternalEvent } from "./intake";
+import { RunOutcome } from "./qa";
+import { WorkState, WorkType } from "./goal-cascade";
+import { ScheduleBlockState, ScheduleBlockType } from "./work-schedule";
+import { OrgEventKind, type OrgEvent } from "./org-event";
+
+const chart = (() => {
+  const r = buildOrgChart(SEED_HATS);
+  if (!r.ok) throw new Error(r.reason);
+  return r.chart;
+})();
+
+const GOOD: ExternalEvent = {
+  source: "portal",
+  externalId: "T-1",
+  kind: IntakeKind.Defect,
+  severity: Severity.High,
+  title: "checkout double-charges",
+  reproduction: "twice",
+  evidenceRefs: ["log/1"],
+};
+
+function deps(over: Partial<OrgRuntimeDeps> = {}): OrgRuntimeDeps {
+  let n = 0;
+  return {
+    chart,
+    externalEvents: [GOOD],
+    agents: agentsFromChart(chart),
+    observations: [],
+    acceptingHatId: "cto",
+    resourceAuthorityHatId: "rmo_office",
+    priorityDeciderHatId: "cto",
+    createId: (p) => `${p}-${String(++n).padStart(3, "0")}`,
+    nowMs: 0,
+    workBlockMs: 3_600_000,
+    leaseMs: 300_000,
+    priorityInputsFor: () => ({
+      executivePriority: 0.5, customerImpact: 1, severity: 1, releaseRisk: 0.2,
+      blockedDownstreamCount: 2, dependencyFanOut: 1, queueAgeMs: 0, hatScarcity: 0,
+      budgetBurn: 0, estimatedEffort: 0.2,
+    }),
+    ...over,
+  };
+}
+
+const byWorkId = <T extends { workId: string }>(xs: readonly T[]) =>
+  [...xs].sort((a, b) => (a.workId < b.workId ? -1 : 1));
+const byBlockId = <T extends { blockId: string }>(xs: readonly T[]) =>
+  [...xs].sort((a, b) => (a.blockId < b.blockId ? -1 : 1));
+
+const ev = (over: Partial<OrgEvent> = {}): OrgEvent => ({
+  id: "e1",
+  kind: OrgEventKind.WorkItemTransition,
+  atMs: 1_000,
+  subjectId: "w1",
+  decision: "d",
+  supervisorChain: [],
+  evidenceRefs: [],
+  ...over,
+});
+
+describe("THE ROUND TRIP — the log rebuilds what produced it", () => {
+  test("a DELIVERED run folds back to its own cascade and calendar, exactly", async () => {
+    const report = await runOrgRuntime(deps());
+    const folded = foldOrganization(report.trace);
+
+    expect(byWorkId(folded.cascade.nodes)).toEqual(byWorkId(report.cascade.nodes));
+    expect(byBlockId(folded.calendar.blocks)).toEqual(byBlockId(report.calendar.blocks));
+    // Nothing in the log went unaccounted for.
+    expect(folded.refusals).toEqual([]);
+    // And it is a real organization, not an empty one that happens to match.
+    expect(folded.cascade.nodes.length).toBeGreaterThan(3);
+    expect(folded.calendar.blocks.length).toBeGreaterThan(0);
+  });
+
+  test("a FAILING run folds back too — and to a different organization", async () => {
+    const ok = await runOrgRuntime(deps());
+    const bad = await runOrgRuntime(deps({ qaFallback: RunOutcome.Failed }));
+    const foldedBad = foldOrganization(bad.trace);
+
+    expect(byWorkId(foldedBad.cascade.nodes)).toEqual(byWorkId(bad.cascade.nodes));
+    expect(foldedBad.refusals).toEqual([]);
+    // The discriminating half: the two folds differ, so this is reading the log rather than
+    // reconstructing a fixture that happens to fit both.
+    const doneIn = (nodes: readonly { state: string }[]) => nodes.filter((n) => n.state === WorkState.Done).length;
+    expect(doneIn(foldedBad.cascade.nodes)).not.toBe(doneIn(foldOrganization(ok.trace).cascade.nodes));
+  });
+
+  test("the fold carries work TYPE, owner, parent and assignee — not just ids", async () => {
+    // The fields that were only ever in the prose. If any of them came back wrong the equality
+    // above would fail, but naming them here says what the log had to be carrying.
+    const report = await runOrgRuntime(deps());
+    const folded = foldCascade(report.trace);
+    const leaf = folded.nodes.find((n) => n.assigneeHatId !== undefined);
+    expect(leaf).toBeDefined();
+    expect(leaf?.workType).not.toBe(WorkType.Goal);
+    expect(leaf?.parentWorkId).toBeDefined();
+    expect(leaf?.ownerHatId).toBeDefined();
+
+    const goal = folded.nodes.find((n) => n.workType === WorkType.Goal);
+    expect(goal?.parentWorkId).toBeUndefined(); // a goal has no parent, and none was invented
+  });
+
+  test("MEETINGS come back as one block per attendee, sharing a meeting id", async () => {
+    const report = await runOrgRuntime(deps());
+    const meetings = foldCalendar(report.trace).blocks.filter((b) => b.blockType === ScheduleBlockType.Meeting);
+    expect(meetings.length).toBeGreaterThan(1);
+    // One fact, N legs: all the legs share one id, and each sits on a different hat's calendar.
+    expect(new Set(meetings.map((b) => b.meetingId)).size).toBe(1);
+    expect(new Set(meetings.map((b) => b.hatId)).size).toBe(meetings.length);
+  });
+});
+
+describe("the fold is idempotent, and its order is the log's", () => {
+  test("folding the same log twice gives the same organization", async () => {
+    const report = await runOrgRuntime(deps());
+    expect(foldCascade(report.trace)).toEqual(foldCascade(report.trace));
+  });
+
+  test("A DUPLICATED EVENT IS ONE EVENT — a merge must not multiply the organization", async () => {
+    const report = await runOrgRuntime(deps());
+    const doubled = [...report.trace, ...report.trace];
+    expect(byWorkId(foldCascade(doubled).nodes)).toEqual(byWorkId(foldCascade(report.trace).nodes));
+    expect(foldCalendar(doubled).blocks.length).toBe(foldCalendar(report.trace).blocks.length);
+  });
+
+  test("THE FIRST creation wins — a re-creation does not overwrite what is there", () => {
+    // A doubled IDENTICAL event proves nothing here: a map keyed by work id gives the same answer
+    // whether the guard exists or not. Two creations of the same id with DIFFERENT content are what
+    // separate first-wins from last-wins.
+    const events = [
+      ev({ id: "a", atMs: 1_000, fact: { kind: "work_created", workId: "w1", workType: WorkType.Task, title: "the real one", ownerHatId: "tech_lead" } }),
+      ev({ id: "b", atMs: 2_000, fact: { kind: "work_created", workId: "w1", workType: WorkType.Defect, title: "a later duplicate", ownerHatId: "qa_engineer" } }),
+    ];
+    const nodes = foldCascade(events).nodes;
+    expect(nodes).toHaveLength(1);
+    expect(nodes[0]?.title).toBe("the real one");
+    expect(nodes[0]?.workType).toBe(WorkType.Task);
+  });
+
+  test("the first BLOCK booking wins too", () => {
+    const events = [
+      ev({ id: "a", atMs: 1_000, fact: { kind: "block_planned", blockId: "b1", hatId: "tech_lead", blockType: ScheduleBlockType.PrioritizedWork, startMs: 0, endMs: 10 } }),
+      ev({ id: "b", atMs: 2_000, fact: { kind: "block_planned", blockId: "b1", hatId: "qa_engineer", blockType: ScheduleBlockType.Review, startMs: 99, endMs: 100 } }),
+    ];
+    const blocks = foldCalendar(events).blocks;
+    expect(blocks).toHaveLength(1);
+    expect(blocks[0]?.hatId).toBe("tech_lead");
+  });
+
+  test("SHUFFLED events fold to the same state — order comes from the log, not the reader", async () => {
+    const report = await runOrgRuntime(deps());
+    // Reversed: a fold that depended on file order would give a different organization here, which
+    // is exactly what would happen reading shards off two different filesystems.
+    const reversed = [...report.trace].reverse();
+    expect(byWorkId(foldCascade(reversed).nodes)).toEqual(byWorkId(foldCascade(report.trace).nodes));
+  });
+
+  test("only fact-carrying events are folded, in time order", () => {
+    const events = [
+      ev({ id: "c", atMs: 3_000, fact: { kind: "work_created", workId: "w3", workType: WorkType.Task, title: "c", ownerHatId: "tech_lead" } }),
+      ev({ id: "a", atMs: 1_000, fact: { kind: "work_created", workId: "w1", workType: WorkType.Task, title: "a", ownerHatId: "tech_lead" } }),
+      ev({ id: "no-fact", atMs: 2_000, kind: OrgEventKind.Refusal }),
+    ];
+    expect(factEvents(events).map((e) => e.id)).toEqual(["a", "c"]);
+  });
+});
+
+describe("priorities and gate verdicts", () => {
+  const priorityEvent = (id: string, atMs: number, cls: PriorityClass) =>
+    ev({ id, atMs, fact: { kind: "priority_decided", workId: "w1", priorityClass: cls, decidedByHatId: "cto", reason: "r", recommended: PriorityClass.Normal, reasonCodes: [] } });
+
+  test("THE LATEST priority wins — a re-prioritization is the organization changing its mind", () => {
+    const folded = foldPriorities([
+      priorityEvent("a", 1_000, PriorityClass.Defer),
+      priorityEvent("b", 2_000, PriorityClass.Expedite),
+    ]);
+    expect(folded).toHaveLength(1);
+    // Keeping the first would report a decision that has been superseded.
+    expect(folded[0]?.priorityClass).toBe(PriorityClass.Expedite);
+  });
+
+  test("EVERY gate verdict is kept — the churn signal IS the count", () => {
+    // Collapsing to the newest verdict per gate would erase exactly the history that makes churn
+    // visible, and `movement`/`deriveDora` both count rejections.
+    const rejection = (atMs: number) => ({
+      workId: "w1", gate: GateKind.ImplementationReview, outcome: GateOutcome.Rejected,
+      byHatId: "tech_lead", reason: "again", atMs,
+    });
+    const folded = foldGateEvaluations([
+      ev({ id: "a", atMs: 1_000, fact: { kind: "gates_evaluated", evaluations: [rejection(1_000)] } }),
+      ev({ id: "b", atMs: 2_000, fact: { kind: "gates_evaluated", evaluations: [rejection(2_000)] } }),
+    ]);
+    expect(folded).toHaveLength(2);
+  });
+
+  test("a DUPLICATED gate run does not double-count churn", () => {
+    // The other direction: a merge must not manufacture a rejection that never happened.
+    const one = ev({
+      id: "a", atMs: 1_000,
+      fact: { kind: "gates_evaluated", evaluations: [{ workId: "w1", gate: GateKind.ImplementationReview, outcome: GateOutcome.Rejected, byHatId: "tech_lead", reason: "r", atMs: 1_000 }] },
+    });
+    expect(foldGateEvaluations([one, one])).toHaveLength(1);
+  });
+
+  test("a real run's verdicts survive the fold", async () => {
+    const report = await runOrgRuntime(deps({ qaFallback: RunOutcome.Failed }));
+    expect(foldGateEvaluations(report.trace).length).toBeGreaterThan(0);
+    expect(foldPriorities(report.trace).length).toBeGreaterThan(0);
+  });
+});
+
+describe("an INCOMPLETE log says so", () => {
+  test("a change to work the log never created is refused, not invented", () => {
+    // Inventing a node to hang the change on would manufacture work nobody planned, and the fold
+    // would return a plausible organization with no sign anything was missing.
+    const orphaned = [ev({ fact: { kind: "work_assigned", workId: "never-created", assigneeHatId: "backend_implementer" } })];
+    expect(foldCascade(orphaned).nodes).toEqual([]);
+    expect(foldRefusals(orphaned)).toHaveLength(1);
+    expect(foldRefusals(orphaned)[0]).toContain("never-created");
+  });
+
+  test("a state change for unknown work, and a block state for an unknown block", () => {
+    const orphaned = [
+      ev({ id: "a", fact: { kind: "work_state", workId: "ghost", state: WorkState.Done } }),
+      ev({ id: "b", fact: { kind: "block_state", blockId: "ghost-blk", state: ScheduleBlockState.Missed } }),
+    ];
+    expect(foldRefusals(orphaned)).toHaveLength(2);
+    expect(foldCalendar(orphaned).blocks).toEqual([]);
+  });
+
+  test("a COMPLETE log refuses nothing — so the refusal list is not always populated", async () => {
+    const report = await runOrgRuntime(deps());
+    expect(foldRefusals(report.trace)).toEqual([]);
+  });
+});
+
+describe("an empty log", () => {
+  test("folds to an empty organization rather than throwing", () => {
+    const folded = foldOrganization([]);
+    expect(folded.cascade.nodes).toEqual([]);
+    expect(folded.calendar.blocks).toEqual([]);
+    expect(folded.factCount).toBe(0);
+    expect(folded.refusals).toEqual([]);
+  });
+
+  test("a log of pure COMMENTARY is distinguishable from a broken one", () => {
+    // `factCount: 0` with no refusals means the log holds events that decide nothing about state —
+    // real events, no facts. A broken log shows up as refusals instead.
+    const commentary = [ev({ kind: OrgEventKind.Refusal }), ev({ id: "e2", kind: OrgEventKind.ChurnDetected })];
+    const folded = foldOrganization(commentary);
+    expect(folded.factCount).toBe(0);
+    expect(folded.refusals).toEqual([]);
+  });
+});
+
+describe("THE PORTFOLIO BOOK FOLDS OUT OF THE LOG", () => {
+  const openedFact = (id: string, atMs: number) =>
+    ev({ id, atMs, fact: { kind: "portfolio_opened", portfolioId: "checkout", title: "Checkout", portfolioKind: PortfolioKind.Product, ownerHatId: "engineering_director" } });
+  const assocFact = (id: string, atMs: number, goalId: string, portfolioId = "checkout") =>
+    ev({ id, atMs, fact: { kind: "goal_associated", goalId, portfolioId } });
+
+  test("goals ACCUMULATE across runs — the reason the association is a fact", () => {
+    // Recomputing the book per invocation would give every run a portfolio with one goal in it,
+    // which is the same as not having one.
+    const book = foldPortfolioBook([
+      openedFact("a", 1_000),
+      assocFact("b", 2_000, "g1"),
+      assocFact("c", 3_000, "g2"),
+      assocFact("d", 4_000, "g3"),
+    ]);
+    expect(book.portfolios).toHaveLength(1);
+    expect(Object.keys(book.goalOf).sort()).toEqual(["g1", "g2", "g3"]);
+  });
+
+  test("a re-opened portfolio is ONE portfolio, and the FIRST open wins", () => {
+    // Identical re-opens prove nothing: a map keyed by id collapses them either way. A second open
+    // with DIFFERENT content is what separates first-wins from last-wins.
+    const book = foldPortfolioBook([
+      openedFact("a", 1_000),
+      ev({ id: "b", atMs: 2_000, fact: { kind: "portfolio_opened", portfolioId: "checkout", title: "Renamed", portfolioKind: PortfolioKind.Platform, ownerHatId: "cto" } }),
+    ]);
+    expect(book.portfolios).toHaveLength(1);
+    expect(book.portfolios[0]?.title).toBe("Checkout");
+    expect(book.portfolios[0]?.kind).toBe(PortfolioKind.Product);
+  });
+
+  test("the LAST association wins — a goal moving product is a re-org", () => {
+    const book = foldPortfolioBook([
+      openedFact("a", 1_000),
+      ev({ id: "b", atMs: 1_500, fact: { kind: "portfolio_opened", portfolioId: "payments", title: "Payments", portfolioKind: PortfolioKind.Platform, ownerHatId: "engineering_director" } }),
+      assocFact("c", 2_000, "g1", "checkout"),
+      assocFact("d", 3_000, "g1", "payments"),
+    ]);
+    expect(book.goalOf["g1"]).toBe("payments");
+  });
+
+  test("an association with a portfolio the log never opened is REFUSED, not invented", () => {
+    const orphan = [assocFact("a", 1_000, "g1", "never-opened")];
+    expect(foldPortfolioBook(orphan).goalOf).toEqual({});
+    expect(foldRefusals(orphan)[0]).toContain("never-opened");
+  });
+
+  test("a REAL run's portfolio survives the fold, and its history is answerable", async () => {
+    const report = await runOrgRuntime(
+      deps({ portfolio: { portfolioId: "checkout", title: "Checkout", kind: PortfolioKind.Product, ownerHatId: "engineering_director" } }),
+    );
+    const folded = foldOrganization(report.trace);
+    expect(folded.portfolios.portfolios).toHaveLength(1);
+    expect(folded.refusals).toEqual([]);
+
+    const goalId = report.cascade.nodes.find((n) => n.workType === WorkType.Goal)?.workId;
+    expect(goalId).toBeDefined();
+    expect(folded.portfolios.goalOf[goalId!]).toBe("checkout");
+
+    const history = portfolioHistory(folded.portfolios, folded.cascade, "checkout");
+    expect(history.goals).toBe(1);
+    expect(history.delivered).toBe(1);
+    expect(history.unknownGoals).toEqual([]);
+  });
+
+  test("a run with NO portfolio emits none — one is never invented", async () => {
+    const report = await runOrgRuntime(deps());
+    expect(foldPortfolioBook(report.trace).portfolios).toEqual([]);
+  });
+});

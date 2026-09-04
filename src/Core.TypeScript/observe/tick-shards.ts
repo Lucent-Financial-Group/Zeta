@@ -88,6 +88,7 @@ import { createHash } from "node:crypto";
 
 import { pack, type SimulationEnvironment } from "../zeta-id/zeta-id";
 import { toHex } from "../zeta-id/encoding";
+import { canonicalJson as sharedCanonicalJson } from "../shard-store/shard-store";
 import {
   Category,
   Chromosome,
@@ -186,12 +187,21 @@ export function shardPathFor(frame: MetricsFrame, root: string): string {
  * Key-sorted JSON so the digest — and therefore the shard path — is a pure function of
  * the frame's content and not of JS key-insertion order. Same discipline as the golden
  * vectors: the bytes must be reproducible across writers.
+ *
+ * DELEGATED to `shard-store/shard-store.ts`, which owns this convention for every store using it.
+ * Two things changed, and both were CHECKED before they were made:
+ *
+ *   - The key sort was `localeCompare(a, b, "en")` — culture-SENSITIVE, and forbidden in a
+ *     primitive by `.claude/rules/culture-invariant-by-default.md`. It decides the digest, which
+ *     decides the filename, so the same frame could land at different addresses on machines with
+ *     different ICU data.
+ *   - Changing it RE-KEYS NOTHING: all 1675 shards on disk were re-derived under both comparators
+ *     and zero changed id, because every `MetricsFrame` key is lowercase ASCII where the two orders
+ *     agree. The test pins that equivalence, so it stays a check rather than a measurement somebody
+ *     took once.
  */
 export function canonicalJson(frame: MetricsFrame): string {
-  const keys = Object.keys(frame).sort((a, b) => a.localeCompare(b, "en"));
-  const obj: Record<string, unknown> = {};
-  for (const k of keys) obj[k] = (frame as unknown as Record<string, unknown>)[k];
-  return JSON.stringify(obj, null, 2) + "\n";
+  return sharedCanonicalJson(frame);
 }
 
 /** Write one frame as its own shard. Idempotent: same frame ⇒ same path ⇒ same bytes. */
@@ -235,7 +245,14 @@ export function loadAllShards(root: string): readonly MetricsFrame[] {
   }
   return [...seen.values()].sort((a, b) => {
     const byTime = a.t.localeCompare(b.t, "en");
-    return byTime !== 0 ? byTime : canonicalJson(a).localeCompare(canonicalJson(b), "en");
+    if (byTime !== 0) return byTime;
+    // ORDINAL, not locale. This decides the order of two frames at the same instant, and a
+    // locale-aware comparison would order them differently on machines with different ICU
+    // data — the rollup is served as ONE file, so two writers would produce two different
+    // files from the same shard set.
+    const ca = canonicalJson(a);
+    const cb = canonicalJson(b);
+    return ca === cb ? 0 : ca < cb ? -1 : 1;
   });
 }
 

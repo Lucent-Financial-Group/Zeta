@@ -37,7 +37,16 @@ module WorkflowEngineTests =
         let mapProp = el.GetProperty(prop)
         let mutable m = Map.empty
         for entry in mapProp.EnumerateObject() do
-            m <- m.Add(entry.Name, entry.Value.GetDouble())
+            // JSON CANNOT CARRY NaN. `JSON.stringify` writes it as `null`, so a TypeScript value of
+            // NaN arrives here as a null token and `GetDouble` throws. Decoding null back to NaN is
+            // what makes the round-trip faithful — and it matters, because a non-finite ratio is
+            // exactly the input whose CLAMPING both implementations have to agree on. Dropping the
+            // vector instead would have left that agreement untested at the one value most likely
+            // to diverge.
+            let value =
+                if entry.Value.ValueKind = JsonValueKind.Null then Double.NaN
+                else entry.Value.GetDouble()
+            m <- m.Add(entry.Name, value)
         m
 
     let parseAgentContext (el: JsonElement) : AgentContext =
@@ -122,6 +131,12 @@ module WorkflowEngineTests =
         | "ResumeFromPause" -> ResumeFromPause (getOptString el "note")
         | _ -> failwithf "Unknown MenuOption tag: %s" tag
 
+    let parseNamedDepOffer (el: JsonElement) : MenuGenerator.NamedDependencyOffer =
+        {
+            NamedDep = getString el "namedDep"
+            Eta = getOptString el "eta"
+        }
+
     let parseBacklogRow (el: JsonElement) : BacklogRow =
         {
             Id = getString el "id"
@@ -192,6 +207,14 @@ module WorkflowEngineTests =
         use doc = JsonDocument.Parse(jsonStream)
         
         let mutable count = 0
+        // Tallied PER TYPE. A single total cannot notice that one family of vectors stopped being
+        // emitted: regenerate the transcript from a TS side that dropped the menu vectors and a
+        // `count > 0` check still passes, silently retiring the lock it was meant to hold.
+        let byType = System.Collections.Generic.Dictionary<string, int>()
+        let bump (t: string) =
+            byType[t] <- (match byType.TryGetValue t with
+                          | true, n -> n
+                          | _ -> 0) + 1
         for el in doc.RootElement.EnumerateArray() do
             let vectorType = getString el "vectorType"
             match vectorType with
@@ -201,6 +224,7 @@ module WorkflowEngineTests =
                 let expected = parseAgentState (el.GetProperty("expectedState"))
                 let actual = WorkflowEngine.transition initial option
                 Assert.Equal(expected, actual)
+                bump vectorType
                 count <- count + 1
 
             | "PostResultTransition" ->
@@ -209,6 +233,7 @@ module WorkflowEngineTests =
                 let expected = parseAgentState (el.GetProperty("expectedState"))
                 let actual = WorkflowEngine.postResultTransition initial result
                 Assert.Equal(expected, actual)
+                bump vectorType
                 count <- count + 1
 
             | "CycleClose" ->
@@ -216,6 +241,61 @@ module WorkflowEngineTests =
                 let expected = parseAgentState (el.GetProperty("expectedState"))
                 let actual = WorkflowEngine.cycleClose initial
                 Assert.Equal(expected, actual)
+                bump vectorType
+                count <- count + 1
+
+            | "MenuGeneration" ->
+                // THE MENU GENERATOR, LOCKED ACROSS LANGUAGES.
+                //
+                // Added after the rest of this transcript, because the generator was written in
+                // TypeScript first and was therefore the one part of the loop the treaty did not
+                // cover. A cross-language treaty with a hole in it reads as "the two agree" while
+                // the part most likely to drift goes unchecked.
+                let input : MenuGenerator.MenuInput =
+                    {
+                        State = parseAgentState (el.GetProperty("state"))
+                        Snapshot = parseStatusSnapshot (el.GetProperty("snapshot"))
+                        Candidates = getArray el "candidates" |> List.map parseWorkCandidate
+                        NamedDeps = getArray el "namedDeps" |> List.map parseNamedDepOffer
+                        HeartbeatLane = parseLane (el.GetProperty("heartbeatLane"))
+                    }
+                let expected = getArray el "expectedMenu" |> List.map parseMenuOption
+                let actual = MenuGenerator.generateMenu input
+
+                // Order is part of the contract, so the lists are compared as lists: a caller
+                // taking the first option must get the same option in both implementations.
+                Assert.Equal<MenuOption list>(expected, actual)
+
+                // Every menu, in every state, must leave a way out. Checked here as well as in the
+                // vectors so a transcript regenerated from a broken TS side cannot launder a
+                // coercive menu into the treaty.
+                let vectorName = getString el "name"
+                Assert.True(
+                    MenuGenerator.isNonCoercive actual,
+                    "menu for vector " + vectorName + " was coercive")
+
+                // Scores too: identical ordering can still hide a divergent score, and a score that
+                // drifts today is an ordering that drifts on the next input.
+                let expectedScores = getArray el "expectedScores"
+                let actualScores =
+                    MenuGenerator.rankCandidates input.Candidates input.Snapshot
+                        (match input.State with
+                         | Idle c | InspectingStatus (c, _) | SelectingWork (c, _)
+                         | ExecutingWork (c, _) | EmittingResult (c, _)
+                         | RecordingHeartbeat (c, _, _) | NamedBoundedWait (c, _, _)
+                         | FreeTime (c, _) | OperatorAttentionRequested (c, _)
+                         | Paused (c, _, _) -> c.Agent.ToJsonString())
+                Assert.Equal(expectedScores.Length, actualScores.Length)
+                for (expectedEl, actualScore) in List.zip expectedScores actualScores do
+                    Assert.Equal(getString expectedEl "id", actualScore.Candidate.Id)
+                    Assert.Equal(getDouble expectedEl "score", actualScore.Score)
+                    let terms = expectedEl.GetProperty("terms")
+                    Assert.Equal(getDouble terms "dora", actualScore.Terms.Dora)
+                    Assert.Equal(getDouble terms "uncertainty", actualScore.Terms.Uncertainty)
+                    Assert.Equal(getDouble terms "interest", actualScore.Terms.Interest)
+                    Assert.Equal(getDouble terms "heat", actualScore.Terms.Heat)
+                    Assert.Equal(getDouble terms "balance", actualScore.Terms.Balance)
+                bump vectorType
                 count <- count + 1
 
             | "WorkLifecycleTransition" ->
@@ -235,8 +315,22 @@ module WorkflowEngineTests =
                         Assert.Equal(expected, actual)
                 | _ ->
                     Assert.Equal(expected, actual)
+                bump vectorType
                 count <- count + 1
 
             | _ -> failwithf "Unknown vectorType: %s" vectorType
             
         Assert.True(count > 0, "No vectors were processed")
+
+        // EVERY family must still be present. Each of these locks a distinct part of the loop, and
+        // a transcript that stopped emitting one would otherwise pass while covering less.
+        for required in [ "AgentTransition"; "PostResultTransition"; "CycleClose"; "WorkLifecycleTransition"; "MenuGeneration" ] do
+            let present = match byType.TryGetValue required with
+                          | true, n -> n
+                          | _ -> 0
+            Assert.True(present > 0, "The treaty transcript contains no " + required + " vectors")
+
+        // And the per-type tallies must account for every vector in the file, so a type that is
+        // parsed but never asserted cannot hide in the total.
+        let tallied = byType.Values |> Seq.sum
+        Assert.Equal(count, tallied)
