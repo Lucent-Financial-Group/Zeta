@@ -899,6 +899,19 @@ export {
 // cycle without standing up a reputation store.
 export { createDemoOrgCycleRmoCandidateSource } from "./org-runtime-demo.ts";
 export {
+  CASCADE_RUNGS,
+  childrenOf,
+  decomposeGoal,
+  goalIsDelivered,
+  ownerForRung,
+  reportsUpTo,
+  supervisorChainOf,
+  type CascadeNode,
+  type CascadeRung,
+  type DecomposeGoalInput,
+  type DecomposeGoalResult,
+} from "./goal-cascade.ts";
+export {
   AuthorityScope,
   authorityScopeOf,
   authoritySubtree,

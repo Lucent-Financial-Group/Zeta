@@ -58,6 +58,20 @@ export type WorkItem = {
   externalRef?: string; // upstream id when source === external (de-dup + trace)
   severity?: WorkItemSeverity; // defect/incident severity
   updatedAt?: string;
+  /**
+   * The work item this one DECOMPOSES FROM — the edge that makes a company goal cascade.
+   *
+   * `WorkItemType.Goal` already existed, and so did `Initiative`/`Project` records, but nothing
+   * linked a goal to the tasks that deliver it: a Goal and a Task were siblings with no
+   * relationship, so the C-suite had the authority to accept goals (the `GoalIntake` tool bundle)
+   * and no way for one to reach a dev.
+   *
+   * Optional and additive, like the fields above it — an item with no parent is a root, which is
+   * what every existing caller creates.
+   */
+  parentWorkItemId?: string;
+  /** The hat accountable for THIS rung of the cascade. A goal is the C-suite's; its tasks are not. */
+  ownerHatId?: string;
 };
 
 export type WorkAnchorTarget = {
