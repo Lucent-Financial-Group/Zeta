@@ -6,6 +6,7 @@ import {
   type ArcRecordedObservation,
   type ArcRecording,
 } from "../arc-replay";
+import type { ArcCalibrationReport } from "../arc-calibration";
 
 const FRAME_INTERVAL_MS = 450;
 const ARC_DISPLAY_PALETTE = [
@@ -70,7 +71,7 @@ export class ArcReplayPlayer {
   private index = 0;
   private timer: number | null = null;
 
-  public constructor(containerId: string, recording: ArcRecording) {
+  public constructor(containerId: string, recording: ArcRecording, calibration?: ArcCalibrationReport) {
     this.recording = recording;
     const panel = document.createElement("section");
     panel.className = "stream-panel arc-replay-panel";
@@ -150,7 +151,20 @@ export class ArcReplayPlayer {
     provenance.textContent =
       "Offline committed replay. Red is the source-produced pre-action coordinate mass; cyan is the committed ACTION6 point. No key or network request.";
 
-    panel.append(heading, screen, readout, controls, provenance);
+    panel.append(heading, screen, readout, controls);
+    if (calibration !== undefined) {
+      const calibrationReadout = document.createElement("p");
+      calibrationReadout.className = "arc-calibration-readout mono";
+      calibrationReadout.dataset.verdict = calibration.verdict;
+      calibrationReadout.textContent =
+        `Measured ${calibration.verdict.toUpperCase()}: ` +
+        `ECE ${calibration.expectedCalibrationError.toFixed(3)}, ` +
+        `gate gap ${calibration.maximumGateCalibrationError.toFixed(3)}, ` +
+        `Brier ${calibration.brierScore.toFixed(3)}, ` +
+        `${String(calibration.commitCount)} committed / ${String(calibration.refusalCount)} refused.`;
+      panel.appendChild(calibrationReadout);
+    }
+    panel.appendChild(provenance);
     document.getElementById(containerId)?.appendChild(panel);
     this.render();
     this.startPlayback();

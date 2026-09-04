@@ -40,7 +40,9 @@ if (purgedLegacyApiKey) {
 
 import { Chip8TvPlayer } from "./components/Chip8TvPlayer";
 import { ArcReplayPlayer } from "./components/ArcReplayPlayer";
+import { parseArcCalibration } from "./arc-calibration";
 import { parseArcRecording } from "./arc-replay";
+import arcCoordinateCalibration from "./recordings/arc-coordinate-calibration.json";
 import recordedArcSession from "./recordings/arc-ztch-v1-session.json";
 import recordedArcClickSession from "./recordings/arc-zeta-click-target-session.json";
 import { StudyRunner } from "./study";
@@ -245,8 +247,13 @@ function startSwarmSimulation(): void {
     document.getElementById("streams-container")?.appendChild(refusal);
   }
   const arcClickRecording = parseArcRecording(recordedArcClickSession);
+  const arcCalibration = parseArcCalibration(arcCoordinateCalibration);
   if (arcClickRecording.ok) {
-    const replay = new ArcReplayPlayer("streams-container", arcClickRecording.value);
+    const replay = new ArcReplayPlayer(
+      "streams-container",
+      arcClickRecording.value,
+      arcCalibration.ok ? arcCalibration.value.report : undefined,
+    );
     window.addEventListener("beforeunload", () => {
       replay.destroy();
     });
@@ -254,6 +261,12 @@ function startSwarmSimulation(): void {
     const refusal = document.createElement("section");
     refusal.className = "stream-panel arc-replay-refusal";
     refusal.textContent = `ARC coordinate replay unavailable: ${arcClickRecording.error}`;
+    document.getElementById("streams-container")?.appendChild(refusal);
+  }
+  if (!arcCalibration.ok) {
+    const refusal = document.createElement("section");
+    refusal.className = "stream-panel arc-replay-refusal";
+    refusal.textContent = `ARC calibration unavailable: ${arcCalibration.error}`;
     document.getElementById("streams-container")?.appendChild(refusal);
   }
 

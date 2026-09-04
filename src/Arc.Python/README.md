@@ -51,7 +51,12 @@ doc's own warning, kept.
   engine commit.
 - `zeta_arc/click.py` — the object-centroid coordinate prior and deterministic
   coarse-to-fine fallback. Its forecast exposes normalized sparse mass without
-  consuming the point the policy will choose.
+  consuming the point the policy will choose; `decide` makes confidence-gated
+  refusal explicit and non-consuming.
+- `zeta_arc/calibration.py` — records displayed coordinate mass against real
+  commit/refusal decisions and reports binary Brier score plus ten-bin expected
+  calibration error. The checked-in corpus currently reports the deterministic
+  policy as `uncalibrated`; the browser recomputes that verdict independently.
 - `zeta_arc/recording.py` — deterministic browser artifacts for the directional
   and coordinate-action episodes.
 - `zeta_arc/driver.py` — **the seam**. The only file that knows the engine's

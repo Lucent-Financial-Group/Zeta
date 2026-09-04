@@ -35,6 +35,7 @@ that layer would sit on.
 from __future__ import annotations
 
 from dataclasses import dataclass, field
+from math import isfinite
 
 from zeta_arc.perception import Grid, components
 
@@ -67,6 +68,15 @@ class CoordinateForecast:
 
     masses: tuple[CoordinateMass, ...]
     selected: tuple[int, int]
+
+
+@dataclass(frozen=True)
+class CoordinateDecision:
+    """A forecast together with the policy-gated commit or typed refusal."""
+
+    forecast: CoordinateForecast
+    minimum_mass: float
+    committed: tuple[int, int] | None
 
 
 def _signature(grid: Grid) -> tuple[int, ...]:
@@ -212,3 +222,22 @@ class ClickPolicy:
             point = next(iter(self._targets(grid)), (0, 0))
         self.tried.add(point)
         return point
+
+    def decide(self, grid: Grid, minimum_mass: float) -> CoordinateDecision:
+        """Commit the selected point only when its displayed mass clears the gate.
+
+        Refusal does not consume a target. The effective threshold is clamped to
+        the probability interval so this boundary remains total for callers.
+        """
+        threshold = min(1.0, max(0.0, minimum_mass)) if isfinite(minimum_mass) else 1.0
+        forecast = self.forecast(grid)
+        selected_mass = next(
+            mass.probability
+            for mass in forecast.masses
+            if (mass.x, mass.y) == forecast.selected
+        )
+        if selected_mass < threshold:
+            return CoordinateDecision(forecast, threshold, None)
+
+        committed = self.choose(grid)
+        return CoordinateDecision(forecast, threshold, committed)

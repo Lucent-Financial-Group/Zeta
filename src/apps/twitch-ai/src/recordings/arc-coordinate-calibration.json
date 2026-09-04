@@ -1,0 +1,639 @@
+{
+  "calibrationVersion": 1,
+  "kind": "arc-coordinate-calibration",
+  "policy": "object-centroid-prior-v1",
+  "report": {
+    "brierScore": 0.277777777778,
+    "commitCount": 10,
+    "expectedCalibrationError": 0.166666666667,
+    "maximumGateCalibrationError": 0.666666666667,
+    "meanSelectedMass": 0.333333333333,
+    "observedSelectedRate": 0.5,
+    "refusalCount": 10,
+    "sampleCount": 20,
+    "tolerance": 0.05,
+    "verdict": "uncalibrated"
+  },
+  "samples": [
+    {
+      "masses": [
+        {
+          "probability": 0.3333333333333333,
+          "x": 10,
+          "y": 12
+        },
+        {
+          "probability": 0.3333333333333333,
+          "x": 44,
+          "y": 14
+        },
+        {
+          "probability": 0.3333333333333333,
+          "x": 28,
+          "y": 48
+        }
+      ],
+      "minimumMass": 0.0,
+      "outcome": {
+        "kind": "committed",
+        "levelsCompleted": 1,
+        "point": {
+          "x": 10,
+          "y": 12
+        }
+      },
+      "selected": {
+        "x": 10,
+        "y": 12
+      },
+      "tick": 0
+    },
+    {
+      "masses": [
+        {
+          "probability": 0.3333333333333333,
+          "x": 10,
+          "y": 12
+        },
+        {
+          "probability": 0.3333333333333333,
+          "x": 44,
+          "y": 14
+        },
+        {
+          "probability": 0.3333333333333333,
+          "x": 28,
+          "y": 48
+        }
+      ],
+      "minimumMass": 0.5,
+      "outcome": {
+        "kind": "refused",
+        "levelsCompleted": 0
+      },
+      "selected": {
+        "x": 10,
+        "y": 12
+      },
+      "tick": 1
+    },
+    {
+      "masses": [
+        {
+          "probability": 0.3333333333333333,
+          "x": 10,
+          "y": 12
+        },
+        {
+          "probability": 0.3333333333333333,
+          "x": 44,
+          "y": 14
+        },
+        {
+          "probability": 0.3333333333333333,
+          "x": 28,
+          "y": 48
+        }
+      ],
+      "minimumMass": 0.0,
+      "outcome": {
+        "kind": "committed",
+        "levelsCompleted": 1,
+        "point": {
+          "x": 10,
+          "y": 12
+        }
+      },
+      "selected": {
+        "x": 10,
+        "y": 12
+      },
+      "tick": 2
+    },
+    {
+      "masses": [
+        {
+          "probability": 0.3333333333333333,
+          "x": 10,
+          "y": 12
+        },
+        {
+          "probability": 0.3333333333333333,
+          "x": 44,
+          "y": 14
+        },
+        {
+          "probability": 0.3333333333333333,
+          "x": 28,
+          "y": 48
+        }
+      ],
+      "minimumMass": 0.5,
+      "outcome": {
+        "kind": "refused",
+        "levelsCompleted": 0
+      },
+      "selected": {
+        "x": 10,
+        "y": 12
+      },
+      "tick": 3
+    },
+    {
+      "masses": [
+        {
+          "probability": 0.3333333333333333,
+          "x": 10,
+          "y": 12
+        },
+        {
+          "probability": 0.3333333333333333,
+          "x": 44,
+          "y": 14
+        },
+        {
+          "probability": 0.3333333333333333,
+          "x": 28,
+          "y": 48
+        }
+      ],
+      "minimumMass": 0.0,
+      "outcome": {
+        "kind": "committed",
+        "levelsCompleted": 1,
+        "point": {
+          "x": 10,
+          "y": 12
+        }
+      },
+      "selected": {
+        "x": 10,
+        "y": 12
+      },
+      "tick": 4
+    },
+    {
+      "masses": [
+        {
+          "probability": 0.3333333333333333,
+          "x": 10,
+          "y": 12
+        },
+        {
+          "probability": 0.3333333333333333,
+          "x": 44,
+          "y": 14
+        },
+        {
+          "probability": 0.3333333333333333,
+          "x": 28,
+          "y": 48
+        }
+      ],
+      "minimumMass": 0.5,
+      "outcome": {
+        "kind": "refused",
+        "levelsCompleted": 0
+      },
+      "selected": {
+        "x": 10,
+        "y": 12
+      },
+      "tick": 5
+    },
+    {
+      "masses": [
+        {
+          "probability": 0.3333333333333333,
+          "x": 10,
+          "y": 12
+        },
+        {
+          "probability": 0.3333333333333333,
+          "x": 44,
+          "y": 14
+        },
+        {
+          "probability": 0.3333333333333333,
+          "x": 28,
+          "y": 48
+        }
+      ],
+      "minimumMass": 0.0,
+      "outcome": {
+        "kind": "committed",
+        "levelsCompleted": 1,
+        "point": {
+          "x": 10,
+          "y": 12
+        }
+      },
+      "selected": {
+        "x": 10,
+        "y": 12
+      },
+      "tick": 6
+    },
+    {
+      "masses": [
+        {
+          "probability": 0.3333333333333333,
+          "x": 10,
+          "y": 12
+        },
+        {
+          "probability": 0.3333333333333333,
+          "x": 44,
+          "y": 14
+        },
+        {
+          "probability": 0.3333333333333333,
+          "x": 28,
+          "y": 48
+        }
+      ],
+      "minimumMass": 0.5,
+      "outcome": {
+        "kind": "refused",
+        "levelsCompleted": 0
+      },
+      "selected": {
+        "x": 10,
+        "y": 12
+      },
+      "tick": 7
+    },
+    {
+      "masses": [
+        {
+          "probability": 0.3333333333333333,
+          "x": 10,
+          "y": 12
+        },
+        {
+          "probability": 0.3333333333333333,
+          "x": 44,
+          "y": 14
+        },
+        {
+          "probability": 0.3333333333333333,
+          "x": 28,
+          "y": 48
+        }
+      ],
+      "minimumMass": 0.0,
+      "outcome": {
+        "kind": "committed",
+        "levelsCompleted": 1,
+        "point": {
+          "x": 10,
+          "y": 12
+        }
+      },
+      "selected": {
+        "x": 10,
+        "y": 12
+      },
+      "tick": 8
+    },
+    {
+      "masses": [
+        {
+          "probability": 0.3333333333333333,
+          "x": 10,
+          "y": 12
+        },
+        {
+          "probability": 0.3333333333333333,
+          "x": 44,
+          "y": 14
+        },
+        {
+          "probability": 0.3333333333333333,
+          "x": 28,
+          "y": 48
+        }
+      ],
+      "minimumMass": 0.5,
+      "outcome": {
+        "kind": "refused",
+        "levelsCompleted": 0
+      },
+      "selected": {
+        "x": 10,
+        "y": 12
+      },
+      "tick": 9
+    },
+    {
+      "masses": [
+        {
+          "probability": 0.3333333333333333,
+          "x": 10,
+          "y": 12
+        },
+        {
+          "probability": 0.3333333333333333,
+          "x": 44,
+          "y": 14
+        },
+        {
+          "probability": 0.3333333333333333,
+          "x": 28,
+          "y": 48
+        }
+      ],
+      "minimumMass": 0.0,
+      "outcome": {
+        "kind": "committed",
+        "levelsCompleted": 1,
+        "point": {
+          "x": 10,
+          "y": 12
+        }
+      },
+      "selected": {
+        "x": 10,
+        "y": 12
+      },
+      "tick": 10
+    },
+    {
+      "masses": [
+        {
+          "probability": 0.3333333333333333,
+          "x": 10,
+          "y": 12
+        },
+        {
+          "probability": 0.3333333333333333,
+          "x": 44,
+          "y": 14
+        },
+        {
+          "probability": 0.3333333333333333,
+          "x": 28,
+          "y": 48
+        }
+      ],
+      "minimumMass": 0.5,
+      "outcome": {
+        "kind": "refused",
+        "levelsCompleted": 0
+      },
+      "selected": {
+        "x": 10,
+        "y": 12
+      },
+      "tick": 11
+    },
+    {
+      "masses": [
+        {
+          "probability": 0.3333333333333333,
+          "x": 10,
+          "y": 12
+        },
+        {
+          "probability": 0.3333333333333333,
+          "x": 44,
+          "y": 14
+        },
+        {
+          "probability": 0.3333333333333333,
+          "x": 28,
+          "y": 48
+        }
+      ],
+      "minimumMass": 0.0,
+      "outcome": {
+        "kind": "committed",
+        "levelsCompleted": 1,
+        "point": {
+          "x": 10,
+          "y": 12
+        }
+      },
+      "selected": {
+        "x": 10,
+        "y": 12
+      },
+      "tick": 12
+    },
+    {
+      "masses": [
+        {
+          "probability": 0.3333333333333333,
+          "x": 10,
+          "y": 12
+        },
+        {
+          "probability": 0.3333333333333333,
+          "x": 44,
+          "y": 14
+        },
+        {
+          "probability": 0.3333333333333333,
+          "x": 28,
+          "y": 48
+        }
+      ],
+      "minimumMass": 0.5,
+      "outcome": {
+        "kind": "refused",
+        "levelsCompleted": 0
+      },
+      "selected": {
+        "x": 10,
+        "y": 12
+      },
+      "tick": 13
+    },
+    {
+      "masses": [
+        {
+          "probability": 0.3333333333333333,
+          "x": 10,
+          "y": 12
+        },
+        {
+          "probability": 0.3333333333333333,
+          "x": 44,
+          "y": 14
+        },
+        {
+          "probability": 0.3333333333333333,
+          "x": 28,
+          "y": 48
+        }
+      ],
+      "minimumMass": 0.0,
+      "outcome": {
+        "kind": "committed",
+        "levelsCompleted": 1,
+        "point": {
+          "x": 10,
+          "y": 12
+        }
+      },
+      "selected": {
+        "x": 10,
+        "y": 12
+      },
+      "tick": 14
+    },
+    {
+      "masses": [
+        {
+          "probability": 0.3333333333333333,
+          "x": 10,
+          "y": 12
+        },
+        {
+          "probability": 0.3333333333333333,
+          "x": 44,
+          "y": 14
+        },
+        {
+          "probability": 0.3333333333333333,
+          "x": 28,
+          "y": 48
+        }
+      ],
+      "minimumMass": 0.5,
+      "outcome": {
+        "kind": "refused",
+        "levelsCompleted": 0
+      },
+      "selected": {
+        "x": 10,
+        "y": 12
+      },
+      "tick": 15
+    },
+    {
+      "masses": [
+        {
+          "probability": 0.3333333333333333,
+          "x": 10,
+          "y": 12
+        },
+        {
+          "probability": 0.3333333333333333,
+          "x": 44,
+          "y": 14
+        },
+        {
+          "probability": 0.3333333333333333,
+          "x": 28,
+          "y": 48
+        }
+      ],
+      "minimumMass": 0.0,
+      "outcome": {
+        "kind": "committed",
+        "levelsCompleted": 1,
+        "point": {
+          "x": 10,
+          "y": 12
+        }
+      },
+      "selected": {
+        "x": 10,
+        "y": 12
+      },
+      "tick": 16
+    },
+    {
+      "masses": [
+        {
+          "probability": 0.3333333333333333,
+          "x": 10,
+          "y": 12
+        },
+        {
+          "probability": 0.3333333333333333,
+          "x": 44,
+          "y": 14
+        },
+        {
+          "probability": 0.3333333333333333,
+          "x": 28,
+          "y": 48
+        }
+      ],
+      "minimumMass": 0.5,
+      "outcome": {
+        "kind": "refused",
+        "levelsCompleted": 0
+      },
+      "selected": {
+        "x": 10,
+        "y": 12
+      },
+      "tick": 17
+    },
+    {
+      "masses": [
+        {
+          "probability": 0.3333333333333333,
+          "x": 10,
+          "y": 12
+        },
+        {
+          "probability": 0.3333333333333333,
+          "x": 44,
+          "y": 14
+        },
+        {
+          "probability": 0.3333333333333333,
+          "x": 28,
+          "y": 48
+        }
+      ],
+      "minimumMass": 0.0,
+      "outcome": {
+        "kind": "committed",
+        "levelsCompleted": 1,
+        "point": {
+          "x": 10,
+          "y": 12
+        }
+      },
+      "selected": {
+        "x": 10,
+        "y": 12
+      },
+      "tick": 18
+    },
+    {
+      "masses": [
+        {
+          "probability": 0.3333333333333333,
+          "x": 10,
+          "y": 12
+        },
+        {
+          "probability": 0.3333333333333333,
+          "x": 44,
+          "y": 14
+        },
+        {
+          "probability": 0.3333333333333333,
+          "x": 28,
+          "y": 48
+        }
+      ],
+      "minimumMass": 0.5,
+      "outcome": {
+        "kind": "refused",
+        "levelsCompleted": 0
+      },
+      "selected": {
+        "x": 10,
+        "y": 12
+      },
+      "tick": 19
+    }
+  ]
+}

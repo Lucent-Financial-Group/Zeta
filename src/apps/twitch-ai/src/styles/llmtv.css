@@ -231,6 +231,18 @@ main {
   line-height: 1.5;
 }
 
+.arc-calibration-readout {
+  padding: 0.75rem 1rem 0;
+  color: #fca5a5;
+  font-size: 0.75rem;
+  font-weight: 700;
+  line-height: 1.5;
+}
+
+.arc-calibration-readout[data-verdict="calibrated"] {
+  color: #86efac;
+}
+
 @media (width <= 720px) {
   header {
     padding: 0.75rem;
