@@ -1,0 +1,14 @@
+{
+  "id": "080d03506f548810a01300080939b51d",
+  "at": "2026-09-04T01:34:52.049Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1N0VTMH087G0R001SKDMM0",
+    "type": "bug",
+    "title": "dapr scheduler renders 3 replicas and 48Gi of PVCs while the Application declares ha disabled",
+    "slug": "dapr-scheduler-renders-3-replicas-and-48gi-of-pvcs-while-the",
+    "priority": "P2",
+    "filename": "081M1N0VTMH087G0R001SKDMM0-dapr-scheduler-renders-3-replicas-and-48gi-of-pvcs-while-the.md"
+  }
+}

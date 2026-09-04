@@ -1,0 +1,14 @@
+{
+  "id": "080d03506f554810a0130008e85e793b",
+  "at": "2026-09-04T01:34:52.073Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1N0VTN8087G0R0008VE34B",
+    "type": "task",
+    "title": "every deployed workload must declare resource requests, and limits where they are known safe",
+    "slug": "every-deployed-workload-must-declare-resource-requests-and-l",
+    "priority": "P2",
+    "filename": "081M1N0VTN8087G0R0008VE34B-every-deployed-workload-must-declare-resource-requests-and-l.md"
+  }
+}
