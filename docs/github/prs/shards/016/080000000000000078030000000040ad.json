@@ -1,0 +1,12 @@
+{
+  "pr_number": 16557,
+  "archive_path": "docs/history/pr-reviews/PR-16557-fix-081m1n854ed087g0r002jp5v5n-the-in-memory-filesystem-keyed-paths-exactly-so-w.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-04T04:05:39.959Z",
+  "schema_version": "v1",
+  "commit_sha": "36b7664125bb156f42352d9dd2c6494cea47b32d",
+  "title": "fix(081M1N854ED087G0R002JP5V5N): the in-memory filesystem keyed paths exactly, so Windows split one file into two",
+  "state": "MERGED",
+  "merged_at": "2026-09-04T04:04:59Z",
+  "head_ref": "otto/windows-drift-inmemory-fs-path-identity"
+}
