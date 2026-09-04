@@ -42,6 +42,7 @@ import { Chip8TvPlayer } from "./components/Chip8TvPlayer";
 import { ArcReplayPlayer } from "./components/ArcReplayPlayer";
 import { parseArcRecording } from "./arc-replay";
 import recordedArcSession from "./recordings/arc-ztch-v1-session.json";
+import recordedArcClickSession from "./recordings/arc-zeta-click-target-session.json";
 import { StudyRunner } from "./study";
 import type { MainToWorkerMessage, WorkerToMainMessage } from "./protocol";
 
@@ -241,6 +242,18 @@ function startSwarmSimulation(): void {
     const refusal = document.createElement("section");
     refusal.className = "stream-panel arc-replay-refusal";
     refusal.textContent = `ARC replay unavailable: ${arcRecording.error}`;
+    document.getElementById("streams-container")?.appendChild(refusal);
+  }
+  const arcClickRecording = parseArcRecording(recordedArcClickSession);
+  if (arcClickRecording.ok) {
+    const replay = new ArcReplayPlayer("streams-container", arcClickRecording.value);
+    window.addEventListener("beforeunload", () => {
+      replay.destroy();
+    });
+  } else {
+    const refusal = document.createElement("section");
+    refusal.className = "stream-panel arc-replay-refusal";
+    refusal.textContent = `ARC coordinate replay unavailable: ${arcClickRecording.error}`;
     document.getElementById("streams-container")?.appendChild(refusal);
   }
 

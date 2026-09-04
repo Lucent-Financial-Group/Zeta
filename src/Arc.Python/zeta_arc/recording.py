@@ -20,14 +20,18 @@ from typing import Any
 
 from arcengine import FrameData, GameAction
 
+from zeta_arc.click import ClickPolicy, CoordinateForecast
 from zeta_arc.driver import advance, reset
 from zeta_arc.environments.chase import ZetaChase
+from zeta_arc.environments.click_target import ZetaClickTarget
 from zeta_arc.frames import grid_of, offered_actions
 from zeta_arc.rest import ENVELOPE_VERSION, ArcAction, ArcCommand, ArcEnvelope
 
 RECORDING_VERSION = 1
 RECORDED_GAME_ID = "ztch-v1"
 RECORDED_SESSION_ID = "ztch-v1-open-room-001"
+CLICK_GAME_ID = "zeta-click-target"
+CLICK_SESSION_ID = "zeta-click-target-001"
 
 # The level-zero shortest path. The final move crosses the level boundary, so
 # the artifact exercises both ordinary frame evolution and completion state.
@@ -43,12 +47,28 @@ class ArcRecordedStep:
 
     tick: int
     observation: ArcEnvelope
+    coordinate_forecast: CoordinateForecast | None = None
 
     def to_payload(self) -> dict[str, object]:
-        return {
+        payload: dict[str, object] = {
             "observation": json.loads(self.observation.to_json()),
             "tick": self.tick,
         }
+        if self.coordinate_forecast is not None:
+            selected_x, selected_y = self.coordinate_forecast.selected
+            payload["coordinateForecast"] = {
+                "action": ArcAction.ACTION6.value,
+                "masses": [
+                    {
+                        "probability": mass.probability,
+                        "x": mass.x,
+                        "y": mass.y,
+                    }
+                    for mass in self.coordinate_forecast.masses
+                ],
+                "selected": {"x": selected_x, "y": selected_y},
+            }
+        return payload
 
 
 @dataclass(frozen=True)
@@ -86,17 +106,27 @@ def _frame_hex(frame: FrameData) -> str:
     return "".join(format(cell, "x") for row in grid for cell in row)
 
 
-def _envelope(frame: FrameData, action: GameAction) -> ArcEnvelope:
+def _envelope(
+    frame: FrameData,
+    action: GameAction,
+    game_id: str = RECORDED_GAME_ID,
+    session_id: str = RECORDED_SESSION_ID,
+    point: tuple[int, int] | None = None,
+) -> ArcEnvelope:
     state: Any = frame.state
     state_name = str(getattr(state, "value", state))
     return ArcEnvelope(
         schema_version=ENVELOPE_VERSION,
-        game_id=RECORDED_GAME_ID,
-        guid=RECORDED_SESSION_ID,
+        game_id=game_id,
+        guid=session_id,
         levels_completed=int(frame.levels_completed),
         win_levels=int(frame.win_levels),
         state=state_name,
-        action=ArcCommand.simple(_arc_action(action)),
+        action=(
+            ArcCommand.at(point[0], point[1])
+            if point is not None
+            else ArcCommand.simple(_arc_action(action))
+        ),
         available_actions=tuple(_arc_action(item) for item in offered_actions(frame)),
         frames_hex=(_frame_hex(frame),),
     )
@@ -117,11 +147,61 @@ def record_default_session() -> ArcRecording:
     )
 
 
+def record_click_session() -> ArcRecording:
+    """Record one real pre-action coordinate field and its committed click."""
+    game = ZetaClickTarget(seed=0)
+    policy = ClickPolicy()
+    first = reset(game)
+    forecast = policy.forecast(grid_of(first))
+    selected = policy.choose(grid_of(first))
+    if selected != forecast.selected:
+        raise ValueError("click forecast and policy commit diverged")
+
+    second = advance(game, GameAction.ACTION6, x=selected[0], y=selected[1])
+    steps = (
+        ArcRecordedStep(
+            0,
+            _envelope(
+                first,
+                GameAction.RESET,
+                game_id=CLICK_GAME_ID,
+                session_id=CLICK_SESSION_ID,
+            ),
+            coordinate_forecast=forecast,
+        ),
+        ArcRecordedStep(
+            1,
+            _envelope(
+                second,
+                GameAction.ACTION6,
+                game_id=CLICK_GAME_ID,
+                session_id=CLICK_SESSION_ID,
+                point=selected,
+            ),
+        ),
+    )
+    return ArcRecording(
+        game_id=CLICK_GAME_ID,
+        session_id=CLICK_SESSION_ID,
+        title="ZetaClickTarget: ACTION6 coordinate field",
+        steps=steps,
+    )
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--output", type=Path, help="write canonical JSON to this path")
+    parser.add_argument(
+        "--session",
+        choices=("chase", "click"),
+        default="chase",
+        help="which source-owned session to record",
+    )
     args = parser.parse_args()
-    text = record_default_session().to_json()
+    recording = (
+        record_click_session() if args.session == "click" else record_default_session()
+    )
+    text = recording.to_json()
     if args.output is None:
         print(text, end="")
         return

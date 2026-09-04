@@ -52,6 +52,23 @@ MAX_COORD = 63
 SWEEP_STRIDES = (8, 4, 2, 1)
 
 
+@dataclass(frozen=True)
+class CoordinateMass:
+    """One sparse cell of a normalized coordinate-action distribution."""
+
+    x: int
+    y: int
+    probability: float
+
+
+@dataclass(frozen=True)
+class CoordinateForecast:
+    """The revisable field and the deterministic point it would commit."""
+
+    masses: tuple[CoordinateMass, ...]
+    selected: tuple[int, int]
+
+
 def _signature(grid: Grid) -> tuple[int, ...]:
     """A cheap, total identity for a frame, used only to ask "did it change".
 
@@ -75,6 +92,15 @@ class ClickPolicy:
     _last_signature: tuple[int, ...] | None = None
     _stride_index: int = 0
     _sweep_cursor: int = 0
+
+    def _sync_world(self, grid: Grid) -> None:
+        signature = _signature(grid)
+        if signature == self._last_signature:
+            return
+        self.tried.clear()
+        self._stride_index = 0
+        self._sweep_cursor = 0
+        self._last_signature = signature
 
     def _targets(self, grid: Grid) -> list[tuple[int, int]]:
         """Component centroids, in the deterministic order `components` returns.
@@ -113,6 +139,51 @@ class ClickPolicy:
             self._sweep_cursor = 0
         return None
 
+    def _peek_lattice(self, width: int, height: int) -> tuple[int, int] | None:
+        """Read the next lattice point without spending it."""
+        stride_index = self._stride_index
+        sweep_cursor = self._sweep_cursor
+        while stride_index < len(SWEEP_STRIDES):
+            stride = SWEEP_STRIDES[stride_index]
+            points = [
+                (x, y)
+                for y in range(0, min(height, MAX_COORD + 1), stride)
+                for x in range(0, min(width, MAX_COORD + 1), stride)
+            ]
+            while sweep_cursor < len(points):
+                point = points[sweep_cursor]
+                sweep_cursor += 1
+                if point not in self.tried:
+                    return point
+            stride_index += 1
+            sweep_cursor = 0
+        return None
+
+    def forecast(self, grid: Grid) -> CoordinateForecast:
+        """Expose the pre-action field without consuming the selected point.
+
+        Untried object centroids share the mass uniformly. Once no object is
+        left, the deterministic coarse-to-fine probe is honestly a point mass;
+        there is no hidden stochastic policy to draw wider than that.
+        """
+        self._sync_world(grid)
+        candidates = tuple(
+            dict.fromkeys(
+                target for target in self._targets(grid) if target not in self.tried
+            )
+        )
+        if candidates:
+            probability = 1.0 / len(candidates)
+            masses = tuple(CoordinateMass(x, y, probability) for x, y in candidates)
+            return CoordinateForecast(masses, candidates[0])
+
+        height = len(grid)
+        width = len(grid[0]) if height else 0
+        point = self._peek_lattice(width, height)
+        if point is None:
+            point = next(iter(self._targets(grid)), (0, 0))
+        return CoordinateForecast((CoordinateMass(point[0], point[1], 1.0),), point)
+
     def choose(self, grid: Grid) -> tuple[int, int]:
         """The next coordinate to click.
 
@@ -120,14 +191,7 @@ class ClickPolicy:
         declines to act still spends the tick, so "no idea" and "click (0,0)"
         cost the same and only one of them can learn anything.
         """
-        signature = _signature(grid)
-        if signature != self._last_signature:
-            # The world moved. Everything known about what does nothing was
-            # known about a world that is gone.
-            self.tried.clear()
-            self._stride_index = 0
-            self._sweep_cursor = 0
-            self._last_signature = signature
+        self._sync_world(grid)
 
         for target in self._targets(grid):
             if target not in self.tried:
