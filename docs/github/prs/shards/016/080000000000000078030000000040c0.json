@@ -1,0 +1,12 @@
+{
+  "pr_number": 16576,
+  "archive_path": "docs/history/pr-reviews/PR-16576-docs-usb-redis-and-hindsight-already-left-the-archive-pins.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-04T14:32:08.788Z",
+  "schema_version": "v1",
+  "commit_sha": "562542719fb21beca140e3f6e834eea1be97ea97",
+  "title": "docs(usb): redis and hindsight already left the archive pins",
+  "state": "MERGED",
+  "merged_at": "2026-09-04T14:31:28Z",
+  "head_ref": "cursor/usb-chart-holes-status-27c5"
+}
