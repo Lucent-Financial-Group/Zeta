@@ -2,6 +2,7 @@ namespace Zeta.Core
 
 open System
 open System.Collections.Generic
+open System.Text
 open Zeta.Core.FSharp.Blake3
 
 /// Budgeted reclaim ferry (K7 / PR10). Not `git gc`.
@@ -13,7 +14,9 @@ open Zeta.Core.FSharp.Blake3
 /// tick, never local wall-clock. Crash-mid-sweep intercept:
 /// `InMemoryFileSystem.ArmCrashOnDelete`. A partial tick leaves extra
 /// garbage, not a missing live object. A committed Journaled freeze stays
-/// readable across that crash (tested). Still `toy`: no sweep journal.
+/// readable across that crash (tested). Sweep journal slice:
+/// `applyWithJournal` records remaining paths and resumes after
+/// crash-mid-sweep. Still `toy`: not wired to the freeze reclaim ferry.
 ///
 /// DoP=1 on this ferry. No Task.Run.
 module ZetaFsReclaim =
@@ -165,5 +168,58 @@ module ZetaFsReclaim =
                 n <- n + 1
 
             i <- i + 1
+
+        n
+
+    let private formatJournal (rows: (ContentHash256 * string)[]) =
+        rows
+        |> Array.map (fun (id, path) -> hex id + " " + path)
+        |> String.concat "\n"
+
+    let private parseJournal (text: string) : (ContentHash256 * string)[] =
+        text.Replace("\r\n", "\n", StringComparison.Ordinal).Split([| '\n' |], StringSplitOptions.None)
+        |> Array.choose (fun line ->
+            if line.Length < 66 then
+                None
+            elif line.[64] <> ' ' then
+                None
+            else
+                Some(ContentHash256.ofHex (line.Substring(0, 64)), line.Substring(65)))
+
+    /// Journaled apply. Writes remaining (hex, path) lines before each
+    /// delete. A crash-mid-sweep leaves the journal; the next call with
+    /// this path resumes (empty `paths` still reads the journal).
+    /// Still `toy` — not the freeze reclaim ferry.
+    let applyWithJournal
+        (fs: IFileSystem)
+        (journalPath: string)
+        (paths: (ContentHash256 * string)[])
+        (budget: Budget)
+        : int =
+        let loaded =
+            if fs.Exists journalPath then
+                parseJournal (Encoding.UTF8.GetString(fs.ReadAllBytes journalPath))
+            else
+                paths
+
+        let mutable n = 0
+        let mutable i = 0
+
+        while i < loaded.Length && n < budget.Count do
+            let rest = Array.sub loaded i (loaded.Length - i)
+            FileSystemIo.writeAllText fs journalPath (formatJournal rest)
+            let _, path = loaded.[i]
+
+            if fs.Exists path then
+                fs.Delete path
+                n <- n + 1
+
+            i <- i + 1
+
+        if i >= loaded.Length then
+            if fs.Exists journalPath then
+                fs.Delete journalPath
+        else
+            FileSystemIo.writeAllText fs journalPath (formatJournal (Array.sub loaded i (loaded.Length - i)))
 
         n

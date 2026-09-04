@@ -154,3 +154,72 @@ let ``crash-mid-sweep deletes the matching path then leaves remaining garbage an
         Assert.True(fs.Exists live)
     finally
         FileSystem.Reset()
+
+[<Fact>]
+let ``applyWithJournal deletes then removes the journal`` () =
+    FileSystem.Register(InMemoryFileSystem())
+
+    try
+        let fs = FileSystem.Current
+        let root = "reclaim-journal"
+        let live = Path.Combine(root, "live")
+        let garbage = Path.Combine(root, "garbage")
+        let journal = Path.Combine(root, "sweep.journal")
+        fs.CreateDirectory root
+        FileSystemIo.writeAllBytes fs live [| 1uy |]
+        FileSystemIo.writeAllBytes fs garbage [| 2uy |]
+        let n =
+            ZetaFsReclaim.applyWithJournal
+                fs
+                journal
+                [| cid 9uy, garbage |]
+                { Bytes = 100UL; Count = 1 }
+
+        Assert.Equal(1, n)
+        Assert.False(fs.Exists garbage)
+        Assert.True(fs.Exists live)
+        Assert.False(fs.Exists journal)
+    finally
+        FileSystem.Reset()
+
+[<Fact>]
+let ``applyWithJournal resumes remaining deletes after crash-mid-sweep`` () =
+    let mock = InMemoryFileSystem()
+    FileSystem.Register(mock)
+
+    try
+        let fs = FileSystem.Current
+        let root = "reclaim-journal-crash"
+        let live = Path.Combine(root, "live")
+        let g1 = Path.Combine(root, "g1")
+        let g2 = Path.Combine(root, "g2")
+        let g3 = Path.Combine(root, "g3")
+        let journal = Path.Combine(root, "sweep.journal")
+        fs.CreateDirectory root
+        FileSystemIo.writeAllBytes fs live [| 1uy |]
+        FileSystemIo.writeAllBytes fs g1 [| 2uy |]
+        FileSystemIo.writeAllBytes fs g2 [| 3uy |]
+        FileSystemIo.writeAllBytes fs g3 [| 4uy |]
+        mock.ArmCrashOnDelete("g2")
+        Assert.Throws<CrashMidSweepException>(fun () ->
+            ZetaFsReclaim.applyWithJournal
+                fs
+                journal
+                [| cid 1uy, g1; cid 2uy, g2; cid 3uy, g3 |]
+                { Bytes = 100UL; Count = 10 }
+            |> ignore)
+        |> ignore
+        Assert.False(fs.Exists g1)
+        Assert.False(fs.Exists g2)
+        Assert.True(fs.Exists g3)
+        Assert.True(fs.Exists live)
+        Assert.True(fs.Exists journal)
+        let n =
+            ZetaFsReclaim.applyWithJournal fs journal [||] { Bytes = 100UL; Count = 10 }
+
+        Assert.Equal(1, n)
+        Assert.False(fs.Exists g3)
+        Assert.True(fs.Exists live)
+        Assert.False(fs.Exists journal)
+    finally
+        FileSystem.Reset()
