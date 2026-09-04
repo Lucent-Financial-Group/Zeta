@@ -62,14 +62,21 @@ fleet. It is named in research. It is **not** an inventory fact.
    shares) or the gated-class rule changes. Do not smuggle the
    second into a chart bump.
 
-3. **1Password-as-unseal has a chicken-egg.** The official
-   Kubernetes Secrets Injector still needs an
-   `OP_SERVICE_ACCOUNT_TOKEN` Kubernetes Secret created first
+3. **1Password-as-unseal has a chicken-egg, and it is the same
+   shape as GitHub CLI.** The official Kubernetes Secrets Injector
+   still needs an `OP_SERVICE_ACCOUNT_TOKEN` Kubernetes Secret
+   created first
    (`kubectl create secret generic op-service-account
    --from-literal=token=…`). The Lucent token lives in Keychain
    today (trajectory RESUME 2026-06-21), not in git, not in the ISO.
-   USB restore / operator-unlocked host remains the first hop. Do
-   not put a Lucent service-account token in the image.
+   That is **not** a reason to invent a second store. GitHub already
+   breaks this class of chicken-egg: `gh auth login` → USB blob →
+   projector → `zeta-host-cred-gh-cli` (PR
+   [#16587](https://github.com/Lucent-Financial-Group/Zeta/pull/16587)).
+   Lucent 1Password can take the same hop **if** what we persist is
+   a service-account token (`ops_…`), not an `op signin` session.
+   Design: [Bootstrap 1Password like GitHub](#bootstrap-1password-like-github).
+   Do not put a Lucent token in git or the ISO.
 
 ### P1 — coverage holes
 
@@ -208,7 +215,7 @@ second rotator.
 | TPM-seal | model exists, mode `"off"` | custody undecided |
 | Lucent 1Password → unseal shares | **not designed as a ceremony** | chicken-egg + gated-class |
 | ESO ClusterSecretStore → Vault | commented in the chart | needs an unsealed Vault |
-| 1Password Injector / Operator in-cluster | not in this tree | still needs a token Secret first |
+| 1Password Injector / Operator in-cluster | not in this tree | token Secret is the missing first hop |
 
 A Lucent-1Password unseal startup that does **not** break the
 gated-class rule would look like: human unlocks 1Password (or
@@ -218,37 +225,203 @@ approves MCP / Broker issuance) → unseal shares resolve into the
 pod hold the Lucent token **and** the unseal shares is a different
 product, and it needs an explicit HC / GOVERNANCE change.
 
+Putting the Lucent **service-account** token into `zeta-host-creds`
+solves the injector bootstrap. It does **not** authorize an agent
+to run `vault operator unseal`. Those stay separate.
+
+## Bootstrap 1Password like GitHub
+
+Aaron 2026-09-04: login to 1Password the way we login to GitHub,
+save the credential in the harness, pass it through to Kubernetes,
+use that to break the injector chicken-egg, refresh when it
+expires, and notify on a dashboard before it dies. Prefer an
+in-cluster relogin service over SSH; SSH is the blunt fallback.
+
+**Verdict.** Yes, for the Lucent **service-account** token
+(`ops_…`). No, for an `op signin` / `OP_SESSION` login. Official
+CLI sessions expire after **30 minutes of inactivity**
+([Sign in to 1Password CLI manually](https://developer.1password.com/docs/cli/sign-in-manually)).
+Headless / remote: service account or Connect. A 30-minute session
+cannot be the USB blob and cannot be the injector Secret.
+
+Fetched live 2026-09-04. Training data is stale; these pages win.
+
+### Same hop as GitHub, different bytes
+
+| Surface | GitHub today | 1Password that lasts |
+|---|---|---|
+| Human login | `gh auth login` | `bun tools/setup/op-token-setup.ts` (secure dialog → macOS Keychain service `zeta-op-service-account`) |
+| On-disk | `~/.config/gh/hosts.yml` (USB + projector) | **Gap.** Keychain only, macOS. Linux NixOS **refuses** and names the missing port (`libsecret` / `systemd-ask-password`, `081KVNRSGVR08QG0R003R3RNJX`). No USB manifest id. Not in `CLUSTER_PROJECTABLE_CRED_IDS`. |
+| Cluster | `zeta-host-cred-gh-cli` | Would be `zeta-host-cred-1password-lucent` → `OP_SERVICE_ACCOUNT_TOKEN` for the injector |
+| Cursor Cloud VM | `gh` / injected forge token | Same pattern as `ZETA_WORKFLOW_DISPATCH_TOKEN` (`docs/cloud-agent-workflow-dispatch-token.md`): a Cursor Secret, never `environment.json`, never git |
+
+The cluster analog of Keychain is the USB encrypted blob
+(`/boot/zeta-creds.enc`), not a file in the ISO. The projector
+already copies allowlisted restored files into Opaque Secrets. Add
+the Lucent id to the manifest and the allowlist; do not invent a
+second projector.
+
+Injector contract to match (do not rename away from upstream):
+
+- Secret name the injector examples use: `op-service-account`
+- Key: `token`
+- Env: `OP_SERVICE_ACCOUNT_TOKEN`
+- Cite: [Kubernetes Secrets Injector](https://developer.1password.com/docs/k8s/injector)
+
+Our projector names Secrets `zeta-host-cred-<id>`. The Lucent slice
+either aliases that name for the injector, or the injector
+deployment `secretKeyRef`s `zeta-host-cred-1password-lucent`. Alias
+is less surprising to anyone reading 1Password's docs.
+
+`classifyCredId("1password-personal")` is already pinned
+**unclassified** in `src/Core.TypeScript/installer/zeta-creds-to-k8s.test.ts`.
+Keep that pin forever. Service accounts **cannot** access
+Personal / Private / Employee vaults
+([Get started with Service Accounts](https://developer.1password.com/docs/service-accounts/get-started)).
+A Personal token on the cluster is a product change, not a
+classification slip.
+
+### What expiry actually is
+
+Service-account tokens are **not** 30-minute sessions.
+
+- Create: `op service-account create … --expires-in <duration>` is
+  **optional**. Unset means valid until rotated or revoked
+  ([Get started](https://developer.1password.com/docs/service-accounts/get-started)).
+- Rotate: new token, same permissions; old token can expire now,
+  in 1 hour, or in 3 days
+  ([Manage service accounts](https://developer.1password.com/docs/service-accounts/manage-service-accounts)).
+  That overlap window is the dual-key pattern we already ratified
+  for SSH. Use it.
+- Sign-in address change: tokens redirect for **30 days**, then
+  they must be rotated (same page).
+- `gh-cli` / `claude` / `gemini` / `codex` OAuth leases die too.
+  The factory already learned that an expired forge token looks
+  like a network blip if you stringify the error
+  (`src/Core.TypeScript/observe/forge-diagnosis.ts`). This is not
+  a 1Password-only problem.
+
+The projector today stores **bytes only**. There is no `expiresAt`
+sidecar. A dashboard cannot warn "expires in 4d" from a blob of
+`ops_…`. The Lucent persist slice must write a **non-secret**
+lease record next to the secret (issuedAt, expiresAt or
+`unknown`, lastRotatedAt, lastAuthFailureAt). The token never
+goes in that record.
+
+If `--expires-in` was omitted, `expiresAt` is `unknown` until
+1Password returns 401. The dashboard still shows the row: last
+success, last 401, "no stated expiry — rotate on a schedule
+anyway." Waiting for 401 is how we currently notice GitHub
+tokens. That is the failure mode to stop repeating.
+
+### Relogin: SSH works, an in-cluster Consent service is the product
+
+SSH into the box works today. `ssh-operator-pubkey` is **host-only**
+on USB on purpose: it is how the human reaches the node when
+everything else is sealed. Blunt. Keep it as the break-glass.
+
+The product Aaron asked for is an in-cluster service:
+
+1. A portal / Consent route (hexagonal `ConsentPort`, biometric
+   when the host has it) that asks the human to paste a **new**
+   `ops_…` token, or to complete a device-flow if 1Password ships
+   one we can use without putting the session on disk.
+2. The service writes the token the same way `op-token-setup.ts`
+   does at point of use (`withCredential` /
+   `src/Core.TypeScript/secrets/credential.ts` — never
+   `process.env`), then re-runs the projector so the Secret
+   updates. Overlap: keep the old Secret until the new token
+   authenticates once, matching 1Password's 1h / 3d expire-old
+   choice.
+3. Agents do not initiate the ceremony. They can **open the
+   ticket** (dashboard warn, page the operator). They cannot mint
+   or extend the token.
+
+Do not build a long-lived SSH helper that `cat`s a token into
+kubectl. The Consent service is the named port; SSH is the
+fallback when the portal is down.
+
+Cursor Cloud Agents are a third surface, not a substitute for
+metal: inject `OP_SERVICE_ACCOUNT_TOKEN` as a Cursor Secret the
+way `ZETA_WORKFLOW_DISPATCH_TOKEN` already is. That bootstraps
+this VM. It does not boot a USB node. Metal still needs the
+manifest id.
+
+### Dashboard: warn before expiry, not only after 401
+
+Portal `full-ai-cluster/portal/web/src/components/Dashboards.tsx`
+already paints TLS as "expires in Nd" with a warning under 21
+days. There is **no** credential-lease panel. Add one for every
+projectable host cred (`gh-cli`, `claude`, `gemini`, `codex`,
+and Lucent 1Password once it exists), fed from the lease sidecar,
+never from the secret bytes.
+
+Schedule:
+
+- Known `expiresAt`: warn at 7d, page at 48h, Consent ticket at
+  24h.
+- `unknown`: calendar reminder (90d default) plus any 401.
+- Rotation overlap in progress: show both "old expires" and
+  "new accepted" so the dual window is visible.
+
+Best case is the dashboard. SSH is how you recover when the
+dashboard cannot reach the human.
+
+### Gated class stays gated
+
+Injector bootstrap ≠ Vault unseal. An agent pod may mount the
+Lucent **service-account** Secret to resolve Lucent vault item
+references. It may not run `vault operator init` or
+`vault operator unseal`. Fetching unseal shares with that token
+into an unseal job is still a **human + biometric ceremony**,
+not a oneshot after k3s.
+
 ## What not to do in the next slice
 
 - Do not implement Vault helm, ESO ClusterSecretStore, or a live
   1Password injector in the same PR as this review.
+- Do not persist or project a Lucent token in this findings PR.
 - Do not steal Otto helm-chart currency.
 - Do not put Lucent or Personal tokens in git or the ISO.
 - Do not treat `keyring-public.json` fingerprints as a 3-key set.
 - Do not flash USB from this review.
+- Do not persist `op signin` / `OP_SESSION`. It dies in 30 minutes.
+- Do not flip `1password-personal` to projectable.
 
 ## Next slices (mint children when picking up; do not allocate `B-*`)
 
-1. **Inventory lock test** — a hygiene check that counts SSH lines /
+1. **Lucent SA persist like `gh-cli`** — close the Linux keystore
+   port enough to write a 0600 file (or libsecret), add a
+   `DEFAULT_MANIFEST` id, allowlist it in
+   `CLUSTER_PROJECTABLE_CRED_IDS`, project to
+   `zeta-host-creds` with an injector-shaped `token` key. Cursor
+   Secret is the Cloud-Agent hop, not the metal hop. Keep Personal
+   unclassified. **This PR does not do that work.**
+2. **Lease sidecar + portal notify + in-cluster relogin** — non-secret
+   `expiresAt` next to every projectable host cred; portal panel
+   in the TLS "expires in Nd" style; Consent service for paste /
+   device-flow; SSH remains break-glass. Warn before 401.
+3. **Inventory lock test** — a hygiene check that counts SSH lines /
    GPG files / keyring leaves per `maintainers/**` identity and
    fails if a named loop (otto, alexa, riven, vera, lior, ani,
    amara) or named human (aaron, …) is below the decided floor
    (2 until 3 is ratified, 3 after). Presence only; never read
    private material.
-2. **Ratify 3-key vs dual** — ADR addendum on the 2026-06-15
+4. **Ratify 3-key vs dual** — ADR addendum on the 2026-06-15
    decision: keep dual as the minimum invariant, require three
    live slots for decentralized verify, name the previous-honor
    bound. Wire `keyset.ts` tests to 1 active + 2 standby as the
    default `freshKeyringSet`.
-3. **Unseal ceremony runbook** — human-gated, biometric, Lucent
+5. **Unseal ceremony runbook** — human-gated, biometric, Lucent
    1Password as the **share store** (not the agent). Cite Credential
    Broker / MCP as the 2026 direction; USB passphrase stays the
-   cold-start for host files.
-4. **Fill missing persona trees** — riven / vera / lior public
+   cold-start for host files. Injector bootstrap from slice 1 is
+   a prerequisite, not a substitute.
+6. **Fill missing persona trees** — riven / vera / lior public
    material, Aaron `cluster-nodes` self-register (Step 6.9), only
    after the 3-key default exists so we do not mint a third
    generation of 1-key trees.
-5. **Vault ingest** — after the landed host→Secret projector and after
+7. **Vault ingest** — after the landed host→Secret projector and after
    unseal is a real ceremony, ESO ClusterSecretStore. Still not a Helm
    fight with Otto.
 
@@ -258,7 +431,13 @@ product, and it needs an explicit HC / GOVERNANCE change.
 - One-seed HD: `docs/research/2026-06-21-zeta-identity-crypto-substrate-one-seed-hd-keychain-dual-rotation-schema-evolvable-over-zsets-hexagonal.md`
 - 3-key rationale: `docs/research/2026-08-09-every-node-is-its-own-identity-provider-repo-as-cluster-hats-grant-claims-bounded-duration-aaron.md`
 - TPM / USB binding brief: `docs/design/2026-08-21-credential-binding-tpm-seal-or-usb-iserial-the-r8-decision-brief.md`
-- Host→Secret: `docs/design/2026-09-04-host-creds-as-k8s-secrets.md` (landed #16587)
+- Host→Secret: `docs/design/2026-09-04-host-creds-as-k8s-secrets.md` (landed [#16587](https://github.com/Lucent-Financial-Group/Zeta/pull/16587))
 - GOVERNANCE §36 / ALIGNMENT HC-9: humans cannot unilaterally wipe persona memory
 - Vault gated unseal: `full-ai-cluster/k8s/applications/vault/Application.yaml`
 - Keyset oracle: `tools/setup/persona-keys/keyset.ts`
+- Lucent SA capture: `tools/setup/op-token-setup.ts` (macOS Keychain only; Linux refuses)
+- Point-of-use read: `src/Core.TypeScript/secrets/credential.ts`
+- 1Password SA create / expiry: https://developer.1password.com/docs/service-accounts/get-started
+- 1Password SA rotate / 1h–3d overlap / 30-day address redirect: https://developer.1password.com/docs/service-accounts/manage-service-accounts
+- 1Password CLI session (30 min inactivity): https://developer.1password.com/docs/cli/sign-in-manually
+- 1Password Kubernetes injector: https://developer.1password.com/docs/k8s/injector

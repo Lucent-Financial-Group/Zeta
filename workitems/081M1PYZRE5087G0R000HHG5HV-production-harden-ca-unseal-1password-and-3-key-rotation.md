@@ -20,18 +20,26 @@ Review findings (not an implementation PR):
 > Git holds one pubkey per type per identity, a files-on-disk CA, and a
 > Vault that comes up sealed on purpose. Dual-key is the landed treaty;
 > three live keys is the hub-less ask. Lucent 1Password is a share store
-> for a human-gated unseal, not an agent-held token in the ISO.
+> for a human-gated unseal, not an agent-held token in the ISO. The
+> injector chicken-egg breaks the same way GitHub already does: persist
+> a Lucent service-account token (`ops_…`) on USB, project it, rotate
+> it with a lease sidecar and an in-cluster Consent relogin.
 
 ## Pickup order (mint children; do not allocate `B-*`)
 
-1. Inventory lock test (presence counts, never private material).
-2. ADR addendum: dual as minimum, three live slots as default, previous-honor bound.
-3. Unseal ceremony runbook (human + biometric; Lucent 1Password as share store).
-4. Fill missing persona trees (riven / vera / lior) and Aaron cluster-nodes after the 3-key default exists.
-5. Vault ingest / ESO after landed host→Secret (#16587) and after unseal is real.
+1. Lucent SA persist like `gh-cli` (manifest + allowlist + injector-shaped Secret). Linux keystore port is the gap; Cursor Secret is the Cloud-Agent hop only.
+2. Lease sidecar + portal expiry panel + in-cluster Consent relogin (SSH is break-glass). Warn before 401. Applies to `gh-cli` / AI logins too.
+3. Inventory lock test (presence counts, never private material).
+4. ADR addendum: dual as minimum, three live slots as default, previous-honor bound.
+5. Unseal ceremony runbook (human + biometric; Lucent 1Password as share store). Injector bootstrap is not unseal.
+6. Fill missing persona trees (riven / vera / lior) and Aaron cluster-nodes after the 3-key default exists.
+7. Vault ingest / ESO after landed host→Secret (PR #16587) and after unseal is real.
 
 ## Do not
 
 - Helm-fight Otto on Vault / chart currency.
 - Put Lucent or Personal tokens in git or the ISO.
+- Persist `op signin` / `OP_SESSION` (30-minute inactivity).
+- Flip `1password-personal` to projectable.
 - Flash USB from this item.
+- Implement persist / injector / portal panel in this findings PR.
