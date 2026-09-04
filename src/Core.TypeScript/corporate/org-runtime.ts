@@ -210,7 +210,27 @@ export interface OrgRuntimeDeps {
    * it had.
    */
   readonly providers?: ProviderSet;
-  readonly gateChooser?: OrgChooser<GateOutcome>;
+  /**
+   * There is deliberately NO `gateChooser` here any more.
+   *
+   * It existed to let a caller override every gate, and once the review port arrived it could do
+   * only one thing the port cannot: approve work whose TESTS FAILED. Its own test was named "a
+   * caller-supplied gate chooser still cannot approve a failing QA run by itself" and then asserted
+   * `delivered === true` — so the escape hatch was precisely the defect this register spent its last
+   * three passes removing, kept as a documented feature.
+   *
+   * Worse, while it was here it made the review port DECORATIVE: the runtime still called the
+   * reviewer for all six gates, discarded every verdict, and reported `review: real` as though one
+   * had decided. Measured before removal — 12 calls, 12 rejections, `delivered: true`, and not one
+   * refusal saying so.
+   *
+   * Both honest uses are already ports, so nothing was lost:
+   *   - a fixed verdict on the six reviewable gates -> `agentReview(() => ...)`
+   *   - a fixed runtime-validation outcome          -> `simulatedTestRunner(plan, outcome)`
+   *
+   * What is gone is the ability to say `delivered` over red tests, which was never a capability so
+   * much as a way to make the report lie.
+   */
   readonly escalationChooser?: OrgChooser<EscalationAction>;
   readonly priorityChooser?: OrgChooser<PriorityClass>;
   readonly maxGateAttempts?: number;
@@ -1089,7 +1109,9 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
       reviewed.set(gate, verdict.value);
     }
 
-    const chooser: OrgChooser<GateOutcome> = deps.gateChooser ?? gateChooserFrom(reviewed, qaVerdict);
+    // No caller override: the ports decide, and evidence decides runtime validation. See the note
+    // where `gateChooser` used to be declared for what was removed and why.
+    const chooser: OrgChooser<GateOutcome> = gateChooserFrom(reviewed, qaVerdict);
 
     let merged = false;
     for (let attempt = 1; attempt <= maxAttempts && !merged; attempt += 1) {

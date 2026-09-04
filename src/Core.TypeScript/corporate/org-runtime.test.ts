@@ -25,7 +25,6 @@ import { ShardState } from "./work-market";
 import { PriorityClass } from "./prioritization";
 import { AnchorState } from "./discussion-anchor";
 import { SignalTool } from "./supervisor-signal";
-import type { OrgChooser } from "./org-decision";
 
 const chart = (() => {
   const r = buildOrgChart(SEED_HATS);
@@ -386,18 +385,31 @@ describe("the readouts the RMO reads", () => {
 });
 
 describe("the gate consults QA rather than choosing", () => {
-  test("a caller-supplied gate chooser still cannot approve a failing QA run by itself", async () => {
-    // Supplying an approve-everything chooser overrides the QA-reading default, which is the
-    // caller's right — but the QA report still records the failure, so the two disagree visibly
-    // rather than the failure disappearing.
-    const approveAll: OrgChooser<GateOutcome> = (legal) => ({
-      index: legal.indexOf(GateOutcome.Approved),
-      reason: "forced",
-    });
-    const report = await runOrgRuntime(deps({ qaFallback: RunOutcome.Failed, gateChooser: approveAll }));
-    expect(report.delivered).toBe(true);
-    // …and the evidence of the disagreement survives.
+  test("FAILING TESTS CANNOT BE APPROVED — there is no caller override left to do it with", async () => {
+    // This test used to assert the opposite. It was called "a caller-supplied gate chooser still
+    // cannot approve a failing QA run by itself" and then asserted `delivered === true`, with the
+    // consolation that the QA report still recorded the failure somewhere. That is the shape this
+    // register spent three passes removing — a verdict computed rather than earned — preserved as a
+    // documented feature.
+    //
+    // `deps.gateChooser` is gone. Runtime validation reads the evidence, the other six gates read
+    // the review port, and neither answers to a caller who would rather ship.
+    const report = await runOrgRuntime(deps({ qaFallback: RunOutcome.Failed }));
+    expect(report.delivered).toBe(false);
+
+    // The failure is recorded, AND it is the thing that stopped delivery — not a note beside a
+    // green. Both halves matter: the old test had the first without the second.
     for (const q of report.qa) expect(q.failed).toBeGreaterThan(0);
+    const runtime = report.gateEvaluations.filter((g) => g.gate === GateKind.RuntimeValidation);
+    expect(runtime.length).toBeGreaterThan(0);
+    for (const g of runtime) expect(g.outcome).not.toBe(GateOutcome.Approved);
+  });
+
+  test("...and a PASSING run still delivers, so the guarantee above is not just a blanket refusal", async () => {
+    // Without this, the test above would pass equally well against a runtime that never delivers
+    // anything — the vacuity class wearing a safety guarantee.
+    const report = await runOrgRuntime(deps());
+    expect(report.delivered).toBe(true);
   });
 });
 
