@@ -1,11 +1,12 @@
 ---
 id: 081M1Q43PND087G0R001YK5DB3
 type: task
-state: backlog
+state: done
 priority: P1
 slug: replay-recorded-blockio-ops-onto-filesystemblockio-polyfill
 title: "Replay recorded BlockIo ops onto FileSystemBlockIo polyfill"
 created: 2026-09-04T21:10:04.717Z
+completed: 2026-09-04T21:35:34.550Z
 depends_on: []
 composes_with: []
 ---

@@ -913,6 +913,50 @@ let ``Journaled freeze CAS superblock reopens from cloned media without the in-m
     }
 
 [<Fact>]
+let ``Journaled freeze ReplayTo two FileSystemBlockIo devices stays readable`` () : Task =
+    task {
+        ensureHasher ()
+        FileSystem.Register(InMemoryFileSystem())
+        let store = "/freeze-replay-two-dev"
+        let mutbuf = ZetaFsMutbuf.create store ZetaFsMutbuf.Coherence.Shared
+        let logDev = SimulatedBlockIo(4096)
+        let objDev = SimulatedBlockIo(4096)
+        let cas = BlockCas(objDev)
+        let volume = ZetaFsFreeze.createManualWithBlockStore store mutbuf None logDev cas
+
+        try
+            let id = mintId ()
+            let h = ZetaFsMutbuf.openHandle volume.Mutbuf id
+            ZetaFsMutbuf.pwrite volume.Mutbuf h 0L [| 1uy; 2uy; 3uy |] |> ignore
+            let pending = (freezeAsync volume id ZetaFsFreeze.Journaled).AsTask()
+            do! (ZetaFsFreeze.pumpLog volume CancellationToken.None).ConfigureAwait(false)
+            let! first = pending.ConfigureAwait(false)
+
+            match first with
+            | Error e -> Assert.Fail(ZetaFsFreeze.errorName e)
+            | Ok first ->
+                Assert.True(cas.Count > 0)
+                Assert.True(logDev.RecordedOps.Length > 0)
+                Assert.True(objDev.RecordedOps.Length > 0)
+                ZetaFsFreeze.dispose volume
+                let fs = FileSystem.Current
+                let logPoly = FileSystemBlockIo(fs, ZetaFsPath.combine2 store "replay-log", 4096)
+                let objPoly = FileSystemBlockIo(fs, ZetaFsPath.combine2 store "replay-cas", 4096)
+                logDev.ReplayTo(logPoly :> IBlockIo)
+                objDev.ReplayTo(objPoly :> IBlockIo)
+                let cas2 = BlockCas(objPoly :> IBlockIo)
+                Assert.True(cas2.Count > 0)
+                let reopened = ZetaFsFreeze.createManualWithHostFileStore store mutbuf None logPoly cas2
+
+                try
+                    Assert.True(ZetaFsFreeze.isReadable reopened first.Content)
+                finally
+                    ZetaFsFreeze.dispose reopened
+        finally
+            FileSystem.Reset()
+    }
+
+[<Fact>]
 let ``Sealed journaled freeze through SimulatedBlockIo is readable after CloneMedia`` () : Task =
     task {
         ensureHasher ()

@@ -1,0 +1,14 @@
+{
+  "id": "080d0372c9957010a0130008f382726f",
+  "at": "2026-09-04T21:35:34.574Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1Q5JCND087G0R0031BGR0M",
+    "type": "task",
+    "title": "Replay freeze log and CAS onto two FileSystemBlockIo devices",
+    "slug": "replay-freeze-log-and-cas-onto-two-filesystemblockio-devices",
+    "priority": "P1",
+    "filename": "081M1Q5JCND087G0R0031BGR0M-replay-freeze-log-and-cas-onto-two-filesystemblockio-devices.md"
+  }
+}
