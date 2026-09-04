@@ -12,7 +12,8 @@ open Zeta.Core.FSharp.Blake3
 /// cycle-safe reachability. Pacer budget is freeze bytes since the last
 /// tick, never local wall-clock. Crash-mid-sweep intercept:
 /// `InMemoryFileSystem.ArmCrashOnDelete`. A partial tick leaves extra
-/// garbage, not a missing live object.
+/// garbage, not a missing live object. A committed Journaled freeze stays
+/// readable across that crash (tested). Still `toy`: no sweep journal.
 ///
 /// DoP=1 on this ferry. No Task.Run.
 module ZetaFsReclaim =
