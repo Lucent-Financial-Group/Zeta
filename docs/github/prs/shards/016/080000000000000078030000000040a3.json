@@ -1,0 +1,12 @@
+{
+  "pr_number": 16547,
+  "archive_path": "docs/history/pr-reviews/PR-16547-test-wset-classify-stable-source-owned-operation-surface.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-04T00:43:23.655Z",
+  "schema_version": "v1",
+  "commit_sha": "8eb43d9e5ce41cb943c9d6b8204cb1153fac6412",
+  "title": "test(wset): classify stable source-owned operation surface",
+  "state": "MERGED",
+  "merged_at": "2026-09-04T00:42:43Z",
+  "head_ref": "lumen/wset-operation-surface-repair"
+}

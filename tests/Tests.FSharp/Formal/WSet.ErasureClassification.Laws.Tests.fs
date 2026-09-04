@@ -3,6 +3,7 @@ module Zeta.Tests.Formal.WSetErasureClassificationLawsTests
 open System
 open System.Globalization
 open System.Reflection
+open System.Runtime.CompilerServices
 open FsUnit.Xunit
 open global.Xunit
 open Zeta.Core
@@ -198,23 +199,65 @@ let ``reversible operations erase exactly zero bits and erasing operations erase
             // failure rather than a skip, because "unmeasured" must never read as "costs nothing".
             failwith "a WSet operation swept by this pack declared itself Unmeasured"
 
-// ═══ 3. Drift guard — the table must cover the WHOLE public surface ═══
-// A meter nobody updates is the same defect one level out. Add a tenth public
-// operation to `WSet` and this fails until it is classified.
+// ═══ 3. Drift guard — the table must cover the stable public surface ═══
+//
+// The compiled F# module can contain public CLR helpers for local lambdas. They are
+// marked CompilerGenerated and are not source-owned WSet transformations. The stable
+// surface is therefore explicit: declared, public, static methods without that marker.
+// The separate fixed receipt below makes this filter non-vacuous: a newly declared
+// public WSet operation fails even if the profile catalogue changes with it. See
+// docs/research/2026-09-03-wset-stable-operation-surface-contract.md.
 
-[<Fact>]
-let ``the classification table covers exactly the public WSet operation surface`` () =
+let private stableWSetOperationNames (wsetModule: Type) =
+    wsetModule.GetMethods(BindingFlags.Public ||| BindingFlags.Static ||| BindingFlags.DeclaredOnly)
+    |> Array.filter (fun methodInfo -> not (methodInfo.IsDefined(typeof<CompilerGeneratedAttribute>, false)))
+    |> Array.map (fun methodInfo -> methodInfo.Name)
+    |> Array.distinct
+    |> Set.ofArray
+
+let private expectedStableWSetOperationSurface =
+    [ "apply"
+      "bornProb"
+      "consolidate"
+      "copy"
+      "discard"
+      "mapKeys"
+      "negate"
+      "plus"
+      "tensor" ]
+    |> Set.ofList
+
+let private compiledWSetModule () =
     // A concrete (non-abbreviation) type in Zeta.Core; `WSet<'K,'W>` is an alias for
     // a list, so `typeof<WSet<_,_>>` would resolve to FSharp.Core instead.
     let asm = typeof<FourCornerTrace.Traced<int, int, int64>>.Assembly
     let wsetModule = asm.GetType "Zeta.Core.WSet"
     wsetModule |> should not' (be null)
+    wsetModule
 
-    let reflected =
+[<Fact>]
+let ``the stable WSet operation surface matches the frozen source-owned receipt`` () =
+    let reflected = compiledWSetModule () |> stableWSetOperationNames
+    reflected |> should equal expectedStableWSetOperationSurface
+
+[<Fact>]
+let ``compiler generated helpers are excluded without excluding the declared bornProb operation`` () =
+    let wsetModule = compiledWSetModule ()
+
+    let compilerGenerated =
         wsetModule.GetMethods(BindingFlags.Public ||| BindingFlags.Static ||| BindingFlags.DeclaredOnly)
-        |> Array.map (fun mi -> mi.Name)
-        |> Array.distinct
-        |> Set.ofArray
+        |> Array.filter (fun methodInfo -> methodInfo.IsDefined(typeof<CompilerGeneratedAttribute>, false))
+
+    let stable = stableWSetOperationNames wsetModule
+
+    for methodInfo in compilerGenerated do
+        stable.Contains methodInfo.Name |> should equal false
+
+    stable.Contains "bornProb" |> should equal true
+
+[<Fact>]
+let ``the classification table covers exactly the stable public WSet operation surface`` () =
+    let reflected = compiledWSetModule () |> stableWSetOperationNames
 
     let declared =
         WSetHeat.allProfiles
