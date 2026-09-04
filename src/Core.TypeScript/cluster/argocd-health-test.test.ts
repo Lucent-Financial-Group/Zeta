@@ -31,6 +31,7 @@ import {
   mergeArgoCdTimeoutDiagnostics,
   parseApplicationList,
   formatHealthWaitProgress,
+  degradedHealthTerminalFailure,
   isGitHubHostUnresolvableText,
   isTerminalFailure,
   REPO_BACKED_CHILD_APPEAR_TIMEOUT_SECONDS,
@@ -38,6 +39,8 @@ import {
   repoBackedChildNames,
   ROOT_DEV_APPLICATION_NAME,
   rootCatalogGitHostFailure,
+  rootCatalogRefsFailure,
+  isLaneTreeRefsListFailureText,
   parseApplicationName,
   parseArgs,
   parseK3dClusterName,
@@ -198,6 +201,45 @@ describe("081KSXN940008QG0R000SCP2H1 argocd-health-test argument parsing", () =>
     expect(parsed.timeoutSeconds).toBe(60);
     expect(parsed.pollSeconds).toBe(5);
     expect(parsed.driftCheck).toBe(true);
+    expect(parsed.serveTreeProfile).toBeNull();
+  });
+
+  test("accepts --serve-tree on k3d so the runner overlay is not kind-only", () => {
+    const parsed = parseArgs(["--run", "--provider", "k3d", "--serve-tree", "dev"], {});
+    expect("kind" in parsed).toBe(false);
+    if ("kind" in parsed) throw new Error(parsed.message);
+    expect(parsed.provider).toBe("k3d");
+    expect(parsed.serveTreeProfile).toBe("dev");
+  });
+
+  test("k3d bootstrap is handed the --serve-tree bundle, not only kind", () => {
+    // parseArgs accepting the flag is not enough: until this wiring existed the
+    // k3d branch built no lane tree and sync'd metal. Delete `laneTree` from
+    // the bootstrapK3dClusterInProcess call and this goes red.
+    const src = readFileSync(new URL("./argocd-health-test.ts", import.meta.url), "utf8");
+    const idx = src.indexOf("bootstrapK3dClusterInProcess({");
+    expect(idx).toBeGreaterThan(0);
+    const window = src.slice(idx - 220, idx + 280);
+    expect(window).toContain("buildLaneTreeForProfile");
+    expect(window).toContain("laneTree");
+  });
+
+  test("the served tree's catalog ref is main, never the GitHub SHA", () => {
+    // MEASURED 33822942615: buildLaneTreeForProfile used to return the PR SHA
+    // as laneTree.gitRef; ArgoCD then fetched that SHA as an object.
+    const src = readFileSync(new URL("./argocd-health-test.ts", import.meta.url), "utf8");
+    const fn = src.slice(src.indexOf("function buildLaneTreeForProfile"), src.indexOf("function bootstrapCluster"));
+    expect(fn).toContain("gitRef: SERVED_GIT_REF");
+  });
+
+  test("--serve-tree skips the GitHub-SHA git-ref patch", () => {
+    const src = readFileSync(new URL("./argocd-health-test.ts", import.meta.url), "utf8");
+    const fn = src.slice(
+      src.indexOf("async function waitForArgoCd"),
+      src.indexOf("async function waitForRepoBackedChild"),
+    );
+    expect(fn).toContain("serveTreeProfile");
+    expect(fn.indexOf("serveTreeProfile")).toBeLessThan(fn.indexOf("patchGitBackedApplicationsToGitRef"));
   });
 
   test("switches kind runs to the CI kind profile by default", () => {
@@ -575,16 +617,7 @@ describe("081KSXN940008QG0R000SCP2H1 argocd-health-test manifest parsing", () =>
     // conclusion about the shadow set is wrong.
     expect(rootDevCatalogExcludedDirs("{alpha/**,beta/**}")).toEqual(new Set(["alpha", "beta"]));
     expect(rootDevCatalogExcludedDirs()).toEqual(
-      new Set([
-        "cilium",
-        "cilium-lb-ipam",
-        "gitlab",
-        "longhorn",
-        "ollama",
-        "platform",
-        "temporal",
-        "vllm",
-      ]),
+      new Set(["cilium", "cilium-lb-ipam", "gitlab", "longhorn", "ollama", "platform", "temporal", "vllm"]),
     );
   });
 
@@ -965,8 +998,7 @@ describe("081KSXN940008QG0R000SCP2H1 argocd-health-test planning", () => {
               conditions: [
                 {
                   type: "ComparisonError",
-                  message:
-                    "Failed to load target state: Could not resolve host: github.com",
+                  message: "Failed to load target state: Could not resolve host: github.com",
                 },
               ],
             },
@@ -1001,18 +1033,51 @@ describe("081KSXN940008QG0R000SCP2H1 argocd-health-test planning", () => {
     expect(failure).not.toBeNull();
     expect(isTerminalFailure(failure)).toBe(true);
     expect(failure?.message).toContain("cannot clone github.com");
-    expect(isGitHubHostUnresolvableText("lookup github.com on 10.96.0.10:53: no such host")).toBe(
-      true,
-    );
+    expect(isGitHubHostUnresolvableText("lookup github.com on 10.96.0.10:53: no such host")).toBe(true);
     expect(isGitHubHostUnresolvableText("ComparisonError: chart not found")).toBe(false);
     // CodeQL js/incomplete-url-substring-sanitization: `github.com` as a
     // substring of some other host or path is not a catalog DNS failure.
     expect(isGitHubHostUnresolvableText("https://notgithub.com.attacker/Zeta")).toBe(false);
-    expect(
-      isGitHubHostUnresolvableText("repoURL https://github.com/Lucent-Financial-Group/Zeta is fine"),
-    ).toBe(false);
+    expect(isGitHubHostUnresolvableText("repoURL https://github.com/Lucent-Financial-Group/Zeta is fine")).toBe(false);
     expect(
       rootCatalogGitHostFailure([
+        {
+          name: ROOT_DEV_APPLICATION_NAME,
+          syncStatus: "Unknown",
+          healthStatus: "Healthy",
+          message: "",
+          conditions: [{ type: "ComparisonError", message: "helm chart not found" }],
+        },
+      ]),
+    ).toBeNull();
+  });
+
+  test("catalog refs unexpected EOF is terminal and is not a helm-deps miss", () => {
+    // MEASURED 33824995558: serve-tree Applied, lane-tree Ready, then
+    // child-application-count=0/Count for 12+ minutes. Not missing ACE/helm
+    // charts — App-of-Apps never listed refs.
+    const failure = rootCatalogRefsFailure([
+      {
+        name: ROOT_DEV_APPLICATION_NAME,
+        syncStatus: "Unknown",
+        healthStatus: "Healthy",
+        message: "",
+        conditions: [
+          {
+            type: "ComparisonError",
+            message:
+              "Failed to load target state: failed to generate manifest for source 1 of 1: rpc error: code = Unknown desc = failed to list refs: unexpected EOF",
+          },
+        ],
+      },
+    ]);
+    expect(failure).not.toBeNull();
+    expect(isTerminalFailure(failure)).toBe(true);
+    expect(failure?.message).toContain("cannot list refs");
+    expect(isLaneTreeRefsListFailureText("failed to list refs: unexpected EOF")).toBe(true);
+    expect(isLaneTreeRefsListFailureText("failed to list refs: i/o timeout")).toBe(false);
+    expect(
+      rootCatalogRefsFailure([
         {
           name: ROOT_DEV_APPLICATION_NAME,
           syncStatus: "Unknown",
@@ -1035,6 +1100,56 @@ describe("081KSXN940008QG0R000SCP2H1 argocd-health-test planning", () => {
     );
   });
 
+  test("Degraded is a terminal health wait; Progressing and Missing are not", () => {
+    // MEASURED live-kind-included 33817974673: mimir Synced/Degraded at T+799s
+    // while agent-memory was still OutOfSync/Progressing. The wait kept the
+    // 2400s cap. Degraded cannot become Healthy by polling.
+    const mixed = degradedHealthTerminalFailure([
+      { name: "hat-system", ok: true, syncStatus: "Synced", healthStatus: "Healthy" },
+      { name: "agent-memory", ok: false, syncStatus: "OutOfSync", healthStatus: "Progressing" },
+      { name: "mimir", ok: false, syncStatus: "Synced", healthStatus: "Degraded" },
+    ]);
+    expect(isTerminalFailure(mixed)).toBe(true);
+    expect(mixed?.kind).toBe("ApplicationUnhealthy");
+    expect(mixed?.message).toContain("mimir=Synced/Degraded");
+    expect(mixed?.message).not.toContain("agent-memory");
+
+    expect(
+      degradedHealthTerminalFailure([
+        { name: "agent-memory", ok: false, syncStatus: "OutOfSync", healthStatus: "Progressing" },
+      ]),
+    ).toBeNull();
+    expect(
+      degradedHealthTerminalFailure([
+        { name: "agent-memory", ok: false, syncStatus: "Missing", healthStatus: "Missing" },
+      ]),
+    ).toBeNull();
+    expect(
+      degradedHealthTerminalFailure([{ name: "mimir", ok: true, syncStatus: "Synced", healthStatus: "Healthy" }]),
+    ).toBeNull();
+    // MEASURED live-kind-included 33830308187: overlay git worked; the wait
+    // aborted on openziti-controller OutOfSync/Degraded while the pod was
+    // still Init:0/1. That is rollout, not Synced/Degraded.
+    expect(
+      degradedHealthTerminalFailure([
+        { name: "openziti-controller", ok: false, syncStatus: "OutOfSync", healthStatus: "Degraded" },
+      ]),
+    ).toBeNull();
+    expect(
+      degradedHealthTerminalFailure([{ name: "mimir", ok: false, syncStatus: "Unknown", healthStatus: "Degraded" }]),
+    ).toBeNull();
+  });
+
+  test("the health wait calls the Degraded abort, not only defines it", () => {
+    const source = readFileSync(new URL("./argocd-health-test.ts", import.meta.url), "utf8");
+    const waitBody = source.slice(
+      source.indexOf("async function waitForApplications"),
+      source.indexOf("async function runDriftRepairCheck"),
+    );
+    expect(waitBody).toContain("degradedHealthTerminalFailure(lastVerdicts)");
+    expect(waitBody).toContain("rootCatalogRefsFailure(snapshots)");
+  });
+
   test("child-appear wait is capped below the health budget, and is ANY child not hat-system", () => {
     // Run 33684309073 spent 2400s on `kubectl get application hat-system`.
     // The cap must not be that budget. hat-system is wave -10 (the head);
@@ -1043,9 +1158,14 @@ describe("081KSXN940008QG0R000SCP2H1 argocd-health-test planning", () => {
     expect(REPO_BACKED_CHILD_APPEAR_TIMEOUT_SECONDS).toBeGreaterThan(60);
     const source = readFileSync(new URL("./argocd-health-test.ts", import.meta.url), "utf8");
     expect(source).not.toContain('get", "application", "hat-system"');
-    expect(repoBackedChildNames([{ name: ROOT_DEV_APPLICATION_NAME, syncStatus: "", healthStatus: "", message: "" }])).toEqual(
-      [],
+    const childWait = source.slice(
+      source.indexOf("async function waitForRepoBackedChild"),
+      source.indexOf("function asRecord"),
     );
+    expect(childWait).toContain("rootCatalogRefsFailure(snapshots)");
+    expect(
+      repoBackedChildNames([{ name: ROOT_DEV_APPLICATION_NAME, syncStatus: "", healthStatus: "", message: "" }]),
+    ).toEqual([]);
     expect(
       repoBackedChildNames([
         { name: ROOT_DEV_APPLICATION_NAME, syncStatus: "", healthStatus: "", message: "" },
@@ -1056,10 +1176,7 @@ describe("081KSXN940008QG0R000SCP2H1 argocd-health-test planning", () => {
   });
 
   test("kind --cni cilium plan names the LB pool assert", () => {
-    const parsed = parseArgs(
-      ["--dry-run", "--provider", "kind", "--cni", "cilium", "--scope", "included"],
-      {},
-    );
+    const parsed = parseArgs(["--dry-run", "--provider", "kind", "--cni", "cilium", "--scope", "included"], {});
     if ("kind" in parsed) throw new Error(parsed.message);
     const plan = buildPlan(parsed);
     if ("kind" in plan) throw new Error(plan.message);
@@ -1089,6 +1206,13 @@ describe("081KSXN940008QG0R000SCP2H1 argocd-health-test planning", () => {
         repoURL: "https://grafana.github.io/helm-charts",
         chart: "loki",
         targetRevision: "6.18.0",
+      }),
+    ).toBe(false);
+    expect(
+      isZetaGitDirectoryApplicationSource({
+        repoURL: "http://zeta-lane-tree.zeta-lane-tree.svc.cluster.local:8080/tree.git",
+        targetRevision: "main",
+        path: "full-ai-cluster/k8s/applications/hat-system",
       }),
     ).toBe(false);
   });

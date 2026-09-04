@@ -62,7 +62,7 @@ function fakePorts(log: string[], existingResources: readonly string[] = []): De
     waitForApiReady: () => log.push("api-ready"),
     applyRemoteManifest: (url) => log.push(`remote:${url}`),
     applyFileManifest: (path, ssa) => log.push(`file:${path}${ssa === true ? ":ssa" : ""}`),
-    applyInlineManifest: (yaml) => log.push(`inline-manifest:${yaml}`),
+    applyInlineManifest: (yaml, ssa) => log.push(`inline-manifest:${yaml}${ssa === true ? ":ssa" : ""}`),
     ensureNamespace: (ns) => log.push(`ns:${ns}`),
     resourceExists: (ref, ns) => {
       log.push(`exists?:${ref}@${ns ?? "-"}`);
@@ -260,6 +260,31 @@ describe("kind CI use case", () => {
     expect(local).toContain("--tls-san=control-plane");
     // agents: 2 — founder mapping on every node would make agents dial themselves.
     expect(local).not.toContain("hostAliases:");
+  });
+
+  /**
+   * Metal k3s-server.nix disables servicelb so Cilium owns L4. k3d
+   * copied traefik-off and left klipper on. MEASURED live-k3d
+   * 33800779819: svclb-cilium-ingress 2/2 Running, hostNetwork
+   * ClusterIP TCP FAIL, overlay pod IPs OPEN. Delete this flag
+   * from either profile and this goes red.
+   */
+  test("k3d profiles disable servicelb the same way metal k3s-server.nix does", () => {
+    const ci = readFileSync(
+      new URL("../../../../full-ai-cluster/dev-cluster/profiles/ci.k3d-config.yaml", import.meta.url),
+      "utf8",
+    );
+    const local = readFileSync(
+      new URL("../../../../full-ai-cluster/dev-cluster/k3d-config.yaml", import.meta.url),
+      "utf8",
+    );
+    const metal = readFileSync(
+      new URL("../../../../full-ai-cluster/nixos/modules/k3s-server.nix", import.meta.url),
+      "utf8",
+    );
+    expect(metal).toContain("--disable=servicelb");
+    expect(ci).toContain("--disable=servicelb");
+    expect(local).toContain("--disable=servicelb");
   });
 
   /**
@@ -818,6 +843,18 @@ describe("the lane-tree resource-rung override point", () => {
     expect(log).not.toContain(`catalog:main@${kindOptions.gitRepoUrl}`);
   });
 
+  test("a GitHub SHA on the PR does not become the served targetRevision", () => {
+    // MEASURED 33822942615: catalog asked for dc2e16e3e… from a repo whose
+    // only commit is a new hash. Default catalogRef is SERVED_GIT_REF even
+    // when laneTree.gitRef is omitted — forgetting that field must not fall
+    // back to the bring-up SHA.
+    const githubSha = "dc2e16e3e949d17ad76b77b7196d45202a46f9a1";
+    const log: string[] = [];
+    bringUpKindCiCluster(fakePorts(log), { ...kindOptions, gitRef: githubSha, laneTree });
+    expect(log).toContain(`catalog:main@${laneTree.repoUrl}`);
+    expect(log.some((line) => line.includes(`catalog:${githubSha}@`))).toBe(false);
+  });
+
   test("the server is applied and WAITED ON before the root Application", () => {
     // Ordering, not just presence. A root app pointed at a server that is not yet
     // answering fails its first sync and then retries on ArgoCD's backoff, so the
@@ -832,6 +869,8 @@ describe("the lane-tree resource-rung override point", () => {
     expect(applyAt).toBeGreaterThanOrEqual(0);
     expect(waitAt).toBeGreaterThan(applyAt);
     expect(catalogAt).toBeGreaterThan(waitAt);
+    // MEASURED 33821540802: client-side apply died on last-applied 262144.
+    expect(log[applyAt]!.endsWith(":ssa")).toBe(true);
   });
 
   test("the wait is on Available, which the readiness probe gates on the repository index", () => {
@@ -873,6 +912,72 @@ describe("the lane-tree resource-rung override point", () => {
     const log: string[] = [];
     bringUpKindCiCluster(fakePorts(log), kindOptions);
     expect(log).toContain(`catalog:main@${kindOptions.gitRepoUrl}`);
+    expect(log.some((line) => line.includes("zeta-lane-tree"))).toBe(false);
+  });
+
+  const k3dOptions = {
+    configPath: "full-ai-cluster/dev-cluster/profiles/ci.k3d-config.yaml",
+    clusterName: "zeta-ci",
+    agentCount: 0,
+    kubeApiHost: "k3d-zeta-ci-server-0",
+    gitRef: "main",
+    gitRepoUrl: "https://github.com/Lucent-Financial-Group/Zeta",
+  };
+
+  test("k3d: the root Application clones the LANE tree, not the committed one", () => {
+    // Delete laneTree from bringUpK3dDevCluster and this goes red: `--serve-tree`
+    // on the live-k3d job would parse and then drop, leaving metal (6390m) on a
+    // 4000m GitHub node.
+    const log: string[] = [];
+    bringUpK3dDevCluster(fakePorts(log), { ...k3dOptions, laneTree });
+    expect(log).toContain(`catalog:main@${laneTree.repoUrl}`);
+    expect(log).not.toContain(`catalog:main@${k3dOptions.gitRepoUrl}`);
+  });
+
+  test("k3d: a GitHub SHA on the PR does not become the served targetRevision", () => {
+    const githubSha = "dc2e16e3e949d17ad76b77b7196d45202a46f9a1";
+    const log: string[] = [];
+    bringUpK3dDevCluster(fakePorts(log), { ...k3dOptions, gitRef: githubSha, laneTree });
+    expect(log).toContain(`catalog:main@${laneTree.repoUrl}`);
+    expect(log.some((line) => line.includes(`catalog:${githubSha}@`))).toBe(false);
+  });
+
+  test("k3d: the server is applied and WAITED ON before the root Application", () => {
+    const log: string[] = [];
+    bringUpK3dDevCluster(fakePorts(log), { ...k3dOptions, laneTree });
+    const applyAt = log.findIndex((line) => line.startsWith("inline-manifest:") && line.includes("zeta-lane-tree"));
+    const waitAt = log.findIndex((line) => line.startsWith("wait:deployment/zeta-lane-tree"));
+    const catalogAt = log.findIndex((line) => line.startsWith("catalog:"));
+    expect(applyAt).toBeGreaterThanOrEqual(0);
+    expect(waitAt).toBeGreaterThan(applyAt);
+    expect(catalogAt).toBeGreaterThan(waitAt);
+    expect(log).toContain("wait:deployment/zeta-lane-tree@zeta-lane-tree:condition=Available");
+    expect(log[applyAt]!.endsWith(":ssa")).toBe(true);
+  });
+
+  test("k3d: NO SILENT FALLBACK — a server that never becomes Available throws", () => {
+    const log: string[] = [];
+    const ports = fakePorts(log);
+    const failing = {
+      ...ports,
+      controlPlane: {
+        ...ports.controlPlane,
+        waitForResource: (ref: string, ns: string | null, expr: string): boolean => {
+          log.push(`wait:${ref}@${ns ?? "-"}:${expr}`);
+          return false;
+        },
+      },
+    };
+    expect(() => {
+      bringUpK3dDevCluster(failing, { ...k3dOptions, laneTree });
+    }).toThrow(/never became Available/);
+    expect(log.some((line) => line.startsWith("catalog:"))).toBe(false);
+  });
+
+  test("k3d: WITHOUT the flag the committed tree is still what is synced", () => {
+    const log: string[] = [];
+    bringUpK3dDevCluster(fakePorts(log), k3dOptions);
+    expect(log).toContain(`catalog:main@${k3dOptions.gitRepoUrl}`);
     expect(log.some((line) => line.includes("zeta-lane-tree"))).toBe(false);
   });
 });

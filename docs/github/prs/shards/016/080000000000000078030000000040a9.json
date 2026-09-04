@@ -1,0 +1,12 @@
+{
+  "pr_number": 16553,
+  "archive_path": "docs/history/pr-reviews/PR-16553-docs-081m1n452kz087g0r0026w017z-upstream-acceptance-as-divergence-meter-escrow-a.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-04T02:54:44.003Z",
+  "schema_version": "v1",
+  "commit_sha": "e0fa15458c967cc2476ff196d1a258b44aa7790d",
+  "title": "docs(081M1N452KZ087G0R0026W017Z): upstream acceptance as divergence meter, escrow as exit, multi-oracle fork ratings",
+  "state": "MERGED",
+  "merged_at": "2026-09-04T02:54:00Z",
+  "head_ref": "otto/upstream-divergence-escrow-fork-oracles"
+}

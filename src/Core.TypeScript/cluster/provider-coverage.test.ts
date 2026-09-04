@@ -85,6 +85,15 @@ describe("every supported provider is exercised by a real CI lane", () => {
     expect(jobsDispatching("k3d")).toContain("live-k3d");
   });
 
+  test("live-k3d serves the dev resource rung, not the committed metal tree", () => {
+    // CPU/memory overlay. Without this flag the job applies 6390m of metal
+    // requests to a 4000m GitHub node. Kind included already passes it; k3d
+    // was the remaining consumer of the committed tree. Disk is a different
+    // ladder (`--check-envelope`); this assertion is the CPU/mem one.
+    const runs = (jobs()["live-k3d"]!.steps ?? []).map((s) => s.run ?? "").join("\n");
+    expect(runs).toContain("--serve-tree dev");
+  });
+
   test("the k3d lane tears its cluster down even when the assertion fails", () => {
     const teardown = (jobs()["live-k3d"]!.steps ?? []).find((s) => (s.run ?? "").includes("k3d-down.ts"));
     expect(teardown).toBeDefined();
@@ -109,9 +118,11 @@ describe("every supported provider is exercised by a real CI lane", () => {
    * `cilium-dbg` with `2>/dev/null | grep` also goes red: that dump
    * printed nothing and looked like KPR had no kube-dns.
    *
-   * The remaining included-class question is TCP to the **pod IP**
-   * from hostNetwork (ClusterIP FAIL is measured 33781233753). Delete
-   * `TCP spire-server-pod` or the pod-network control and this goes red.
+   * MEASURED 33814040666: cilium-dbg config get of those names
+   * returned Configuration does not exist except
+   * enable-host-legacy-routing=false. Next dump is ConfigMap
+   * cilium-config keys. Delete `get cm cilium-config` or `app=svclb`
+   * and this goes red.
    */
   test("live-k3d dump logs the spire-agent DaemonSet, not a label the chart does not set", () => {
     const dump = (jobs()["live-k3d"]!.steps ?? []).find((s) =>
@@ -137,6 +148,27 @@ describe("every supported provider is exercised by a real CI lane", () => {
     expect(run).toContain("pod-network control");
     expect(run).toContain("busybox nc");
     expect(run).toContain("hostNetwork: true");
+    expect(run).toContain("app=svclb");
+    expect(run).toContain("cilium-dbg status");
+    expect(run).toContain("CgroupnsMode");
+    expect(run).toContain("get cm cilium-config");
+    expect(run).toContain("bpf-lb-sock=");
+    expect(run).toContain("bpf-lb-external-clusterip=");
+    expect(run).toContain("KubeProxyReplacement Details");
+    expect(run).toContain("ip route get");
     expect(run).not.toMatch(/docker exec.*\|\s*(grep|rg)\s+-[^\n]*q/);
+  });
+
+  test("live-k3d dump lists refs on the overlay git, not only github.com", () => {
+    // MEASURED 33824995558: getent github.com said nothing about the in-cluster
+    // tree ArgoCD actually clones. child-application-count=0 was unexpected EOF,
+    // not missing helm charts.
+    const dump = (jobs()["live-k3d"]!.steps ?? []).find((s) =>
+      (s.name ?? "").includes("Why ArgoCD could not COMPARE"),
+    );
+    const run = dump?.run ?? "";
+    expect(run.length).toBeGreaterThan(0);
+    expect(run).toContain("git ls-remote");
+    expect(run).toContain("zeta-lane-tree.zeta-lane-tree.svc.cluster.local");
   });
 });
