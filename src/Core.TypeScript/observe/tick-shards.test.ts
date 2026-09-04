@@ -145,6 +145,26 @@ describe("the key sort is ORDINAL, and the change re-keyed nothing", () => {
     expect("a".localeCompare("B", "en")).toBeLessThan(0);
   });
 
+  /**
+   * The budget for the whole-store re-derivation.
+   *
+   * NOT because the work is slow — the entire file runs in ~440ms on an idle machine. It is because
+   * the work is 1675 file reads plus 1675 hashes, so its wall time is set by FILESYSTEM CONTENTION
+   * rather than by its own cost, and contention is the one thing a per-test default cannot know
+   * about. Measured at 23_630ms during a full-tree run with ten concurrent suites — a ~50x
+   * stretch — where bun's 5000ms default turned a healthy check into a red that said nothing about
+   * shards.
+   *
+   * This is the second test in this suite to be sized against that default and the first was a
+   * different shape: `event-sink-folder.git.test.ts` sat at ~78% of budget while IDLE. Both fail the
+   * same way and for the same reason — a check that goes red for reasons unrelated to what it tests
+   * teaches people to discount red.
+   *
+   * 60s is ~2.5x the worst contention actually observed. Deliberately not "disable the timeout":
+   * a walk that never returns must still be caught.
+   */
+  const WHOLE_STORE_BUDGET_MS = 60_000;
+
   test("EVERY SHARD ON DISK still resolves to its own filename", () => {
     // The migration check, kept as a check. A frame whose re-derived id no longer matches the name
     // it is stored under is a shard the store can no longer find by content.
@@ -167,5 +187,5 @@ describe("the key sort is ORDINAL, and the change re-keyed nothing", () => {
       if (toHex(shardZetaId(frame)) !== expected) mismatched += 1;
     }
     expect(mismatched).toBe(0);
-  });
+  }, WHOLE_STORE_BUDGET_MS);
 });

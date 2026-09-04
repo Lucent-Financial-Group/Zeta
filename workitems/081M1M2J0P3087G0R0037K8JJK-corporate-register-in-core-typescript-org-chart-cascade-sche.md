@@ -985,9 +985,34 @@ dotnet test Zeta.sln (incl. the cross-language treaty) 6207 pass, 0 fail, 8 skip
 pushed: org-implements-work (F# untouched by this arc; every commit is TypeScript)
 ```
 
-**One honest open item.** The observe suite failed once more, in a chained run that took 139s against
-a 25s baseline, and **it is not identified** — I captured only the tail, losing the name, which is the
-same mistake that cost the first occurrence a diagnosis. Five subsequent full runs under deliberate
-concurrent load, and a replay of the exact chained sequence, were all 1630/0. It may be the same
-timeout at a load level 30s does not cover, or a second load-sensitive test; there is no evidence to
-choose between those, so neither is claimed. **Next occurrence: capture the full output.**
+### The second load-sensitive test, found and closed
+
+The occurrence this pass first recorded as unidentified is now named. It was **not** the git test: it
+was a SECOND test of the same class, and it was lost twice only because both times the run was
+tail-captured. Caught on the next attempt by capturing everything:
+
+```
+src/Core.TypeScript/observe/tick-shards.test.ts:
+(fail) the key sort is ORDINAL, and the change re-keyed nothing
+       > EVERY SHARD ON DISK still resolves to its own filename [23630.63ms]
+  ^ this test timed out after 5000ms.
+```
+
+**A different cause from the git one, and the difference is the interesting part.** The git tests sat
+at ~78% of budget while IDLE, so any load tipped them. This one is *fast* at rest — the whole file
+runs in ~440ms — but it re-derives **1675 shards**: 1675 file reads plus 1675 hashes. Its wall time
+is set by filesystem CONTENTION rather than by its own cost, and contention is the one thing a
+per-test default cannot know about. Under ten concurrent suites it stretched ~50x, to 23.6s.
+
+Budget: 60s, ~2.5x the worst contention actually observed, and falsified by setting it to 1ms.
+Deliberately not "disable the timeout" — a walk that never returns must still be caught. Verified by
+re-running the full observe suite four times under the exact load that produced the failure: 1630/0
+each, at 43–53s.
+
+**And the class was swept, not just the instance.** Every observe test doing directory walks or
+process spawns was timed: apart from these two, no single test averages above ~130ms, which is ~38x
+headroom. No speculative budgets were added to tests that have never failed.
+
+**The lesson that cost the most is procedural, not technical.** Both diagnoses were lost to
+`| tail -n`, which drops the one line that names the failure. A suite run that might fail is captured
+whole, or its failure is anonymous.
