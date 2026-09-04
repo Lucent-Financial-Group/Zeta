@@ -3251,11 +3251,17 @@ jobs:
     # WHY NOT SPLIT ACROSS PARALLEL JOBS. Per-job fixed cost here is the install.sh bootstrap
     # plus `bun install` -- 1-2 minutes even on a cache hit -- against roughly 7 minutes of
     # actual test time. N jobs multiply the fixed cost for a wall-clock saving that does not
-    # pay. Revisit if the suite passes about 10 minutes.
+    # pay. Revisit if the suite passes about 10 minutes. MEASURED 2026-09-04: it has — wall
+    # clock is 18-20 minutes, of which ~19 minutes is the bun test step. Splitting is the
+    # next cost-shape, not this commit: a floor red from timeout-minutes is a budget miss,
+    # not a parallelism miss, and the tick-shard lint already taught the raise-first class
+    # (5 -> 12 when systematically near the ceiling).
     #
-    # COST. About 9 minutes per run (setup plus tests) on ubuntu-24.04 at the 1x multiplier;
-    # at roughly 250 gate runs per month that is on the order of 2,250 runner-minutes added.
-    # It buys execution of ~770 files and ~9,000 assertions that today execute nowhere.
+    # COST. About 19 minutes per run (setup plus tests) on ubuntu-24.04 at the 1x
+    # multiplier; at roughly 250 gate runs per month that is on the order of 4,750
+    # runner-minutes. It buys execution of ~770 files and ~9,000 assertions that otherwise
+    # execute nowhere. The previous "about 9 minutes" figure was the probation-era
+    # measurement; the suite outgrew it while the job cap stayed at 20.
     #
     # RUNS AND BLOCKS. The probation period produced the evidence the original split asked
     # for. PR #15352 merged with this job FAILURE beside a successful required rollup: a cold
@@ -3266,7 +3272,15 @@ jobs:
     # The environment-dependent tier remains non-blocking; only this dependency-closed,
     # reproducible behavior suite enters the floor.
     name: test (TS hermetic)
-    timeout-minutes: 20
+    # RAISED 20 -> 30 (2026-09-04). Same class as lint-tick-shard-relative-paths 5 -> 12:
+    # the job is not flaky, it is systematically near the ceiling. MEASURED on this PR:
+    #   33824995582 success 18m40s
+    #   33831375549 success 19m25s
+    #   33833532558 attempt 1 cancelled 20m17s — the bun test step itself ran 19m47s
+    #     then GitHub killed the job; gate (required) correctly read cancelled as FAIL.
+    # A 35-second margin on a 19-minute suite is not a budget. 30 minutes is the raise;
+    # splitting the suite is the follow-up if wall clock stays above 10 minutes.
+    timeout-minutes: 30
     runs-on: ubuntu-24.04
 
     steps:
