@@ -64,8 +64,8 @@ build a path in pieces without the result depending on where it split) and a **r
 between `join` and `directoryName` (a pair that disagreed would put a file in one place and
 create its parent in another).
 
-Guarded by `healers/zetafs-virtual-path.ts`, whose detector runs in CI and whose live-tree
-test asserts the tree starts **green**.
+Guarded by `src/Core.TypeScript/hygiene/healers/zetafs-virtual-path.ts`, whose detector runs
+in CI and whose live-tree test asserts the tree starts **green**.
 
 Children: 081M1N97ECS087G0R003GCPEDZ (register the healer in tier-0),
 081M1N97EDM087G0R000W35B5M (`Path.GetFullPath` is a separate ambient-CWD defect).
