@@ -1,0 +1,12 @@
+{
+  "pr_number": 16569,
+  "archive_path": "docs/history/pr-reviews/PR-16569-feat-arc-replay-recorded-session-in-browser-arena.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-04T13:03:02.949Z",
+  "schema_version": "v1",
+  "commit_sha": "ebc0d7740fffc5934e297ec6526ef0705164756c",
+  "title": "feat(arc): replay recorded session in browser arena",
+  "state": "MERGED",
+  "merged_at": "2026-09-04T13:02:27Z",
+  "head_ref": "claim/task-arc-rung-d-recorded-session-replay"
+}
