@@ -210,10 +210,14 @@ type GroupCommitDiskDeltaLog<'K when 'K : comparison>
     // FileSystem.Current (AsyncLocal does not survive every channel wake).
     let fsDoor = FileSystem.Current
     do fsDoor.CreateDirectory root
-    /// Opt-in `FileSystemBlockIo` + dual-slot `ZGL2` superblock. Default is
-    /// still the whole-file stream path so existing Dispose crash tests keep
-    /// their door. Crash/corrupt/reorder then tear the LBA, not the file.
-    let viaBlockIo = defaultArg useBlockIo false
+    /// Device door (`IBlockIo` / `FileSystemBlockIo` / `ZGL2`) vs POSIX
+    /// append door (`OpenFile(Append)` + Dispose). Both write the same framed
+    /// records — this is how WAL *bytes* hit disk, not event-streaming vs
+    /// materialized views. Recovery works on both. Default is the device
+    /// door so crash arms tear the LBA, matching freeze. Pass
+    /// `useBlockIo = false` for tests that still arm whole-file Dispose or
+    /// poke a `FileStream`. Unmetered: no bench compares the two doors.
+    let viaBlockIo = defaultArg useBlockIo true
 
     /// Roll threshold for the active segment. The default favours few large
     /// segments; tests (and the erasure law pack) dial it down to force rollover.

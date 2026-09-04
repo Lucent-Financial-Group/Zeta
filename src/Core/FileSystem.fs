@@ -22,8 +22,8 @@ type IFileSystem =
     abstract GetFiles: path: string * searchPattern: string -> string[]
     abstract CreateDirectory: path: string -> unit
     /// Write `src` at `offset` without replacing the rest of the file.
-    /// Crash/corrupt/reorder arms on `InMemoryFileSystem` apply to `src`,
-    /// not to a whole-file Dispose buffer.
+    /// Crash/corrupt/reorder/torn-sector arms on `InMemoryFileSystem` apply
+    /// to `src`, not to a whole-file Dispose buffer.
     abstract WriteAt: path: string * offset: int64 * src: ReadOnlyMemory<byte> -> int
 
 /// Native-volume block *primitive* (one LBA, one call). This is the device,
@@ -236,7 +236,7 @@ type SimulatedFileStream
 
 /// An in-memory mock file system that supports simulating latency, read/write sector corruption exceptions,
 /// file creation/modification tracking, and one-shot crash-mid-write /
-/// corrupt-last-write / reorder (D12 door).
+/// corrupt-last-write / reorder / torn-sector (D12 door).
 /// Canonicalise a path so that two spellings of the SAME file map to one key.
 ///
 /// WHY THIS EXISTS. This double keys a dictionary on the path string, and a
@@ -273,6 +273,7 @@ type InMemoryFileSystem() =
     let mutable reorderNeedle: string option = None
     let mutable heldWrite: (string * byte[]) option = None
     let mutable deleteCrashArm: string option = None
+    let mutable tornArm: (string * int) option = None
     let mutable heldRange: (string * int64 * byte[]) option = None
     let commitOrder = ResizeArray<string>()
     let lockObj = obj ()
@@ -355,6 +356,16 @@ type InMemoryFileSystem() =
 
                     publish path copy
                 | _ ->
+                    match tornArm with
+                    | Some(needle, sectorBytes) when
+                        pathMatches needle path && bytes.Length > sectorBytes
+                        ->
+                        tornArm <- None
+                        let buf =
+                            overlay (existingBytes path) 0L (ReadOnlySpan bytes) sectorBytes
+
+                        publish path buf
+                    | _ ->
                     match reorderNeedle, heldWrite with
                     | Some needle, None when pathMatches needle path ->
                         heldWrite <- Some(path, bytes)
@@ -405,6 +416,19 @@ type InMemoryFileSystem() =
             reorderNeedle <- Some pathContains
             heldWrite <- None
             heldRange <- None)
+
+    /// One-shot: next matching write longer than `sectorBytes` overlays only
+    /// that prefix of the NEW bytes; the rest of the range stays OLD. The
+    /// write acks. SQLite/PostgreSQL torn-page: a multi-sector write that
+    /// only some sectors persist.
+    member _.ArmTornSector(pathContains: string, sectorBytes: int) =
+        if String.IsNullOrEmpty pathContains then
+            invalidArg (nameof pathContains) "pathContains must be non-empty"
+
+        if sectorBytes < 1 then
+            invalidArg (nameof sectorBytes) "sectorBytes must be >= 1"
+
+        lock lockObj (fun () -> tornArm <- Some(pathContains, sectorBytes))
 
     /// One-shot: next matching Delete removes the file then throws.
     member _.ArmCrashOnDelete(pathContains: string) =
@@ -531,6 +555,17 @@ type InMemoryFileSystem() =
                         publish path buf
                         srcArr.Length
                     | _ ->
+                        match tornArm with
+                        | Some(needle, sectorBytes) when
+                            pathMatches needle path && srcArr.Length > sectorBytes
+                            ->
+                            tornArm <- None
+                            let buf =
+                                overlay (existingBytes path) offset (ReadOnlySpan srcArr) sectorBytes
+
+                            publish path buf
+                            srcArr.Length
+                        | _ ->
                         match reorderNeedle, heldRange with
                         | Some needle, None when pathMatches needle path ->
                             heldRange <- Some(path, offset, srcArr)
@@ -627,6 +662,7 @@ type SimulatedBlockIo(blockSize: int, ?media: IReadOnlyDictionary<uint64, byte[]
     let lockObj = obj ()
     let mutable crashArm: int option = None
     let mutable corruptArm: int option = None
+    let mutable tornArm: int option = None
     let mutable reorderArmed = false
     let mutable heldWrite: (uint64 * byte[]) option = None
     let commitOrder = ResizeArray<uint64>()
@@ -662,6 +698,14 @@ type SimulatedBlockIo(blockSize: int, ?media: IReadOnlyDictionary<uint64, byte[]
             invalidArg (nameof lastBytes) "lastBytes must be >= 1"
 
         lock lockObj (fun () -> corruptArm <- Some lastBytes)
+
+    /// One-shot: next Write longer than `sectorBytes` overlays only that
+    /// prefix of the NEW bytes; the rest of the LBA stays OLD. Acks.
+    member _.ArmTornSector(sectorBytes: int) =
+        if sectorBytes < 1 then
+            invalidArg (nameof sectorBytes) "sectorBytes must be >= 1"
+
+        lock lockObj (fun () -> tornArm <- Some sectorBytes)
 
     /// One-shot: hold the first Write (not visible), then the second Write
     /// commits itself first and flushes the held write.
@@ -744,6 +788,13 @@ type SimulatedBlockIo(blockSize: int, ?media: IReadOnlyDictionary<uint64, byte[]
                         publish lba copy
                         src.Length
                     | _ ->
+                        match tornArm with
+                        | Some sectorBytes when src.Length > sectorBytes ->
+                            tornArm <- None
+                            writeRange lba (src.Span.Slice(0, sectorBytes))
+                            commitOrder.Add lba
+                            src.Length
+                        | _ ->
                         match reorderArmed, heldWrite with
                         | true, None ->
                             heldWrite <- Some(lba, src.ToArray())
@@ -1021,21 +1072,24 @@ type BlockCas(io: IBlockIo) =
             invalidArg (nameof bytes) "bytes must not be null"
 
         lock lockObj (fun () ->
-            let start = pos
-            let after =
-                BlockLog.append io start (System.ReadOnlyMemory<byte>.op_Implicit bytes)
+            if index.ContainsKey key then
+                ()
+            else
+                let start = pos
+                let after =
+                    BlockLog.append io start (System.ReadOnlyMemory<byte>.op_Implicit bytes)
 
-            let snapshot = Dictionary(index, StringComparer.Ordinal)
-            snapshot.[key] <- struct (start, bytes.Length)
+                let snapshot = Dictionary(index, StringComparer.Ordinal)
+                snapshot.[key] <- struct (start, bytes.Length)
 
-            let entries =
-                [| for kv in snapshot ->
-                       let struct (s, n) = kv.Value
-                       kv.Key, s, n |]
+                let entries =
+                    [| for kv in snapshot ->
+                           let struct (s, n) = kv.Value
+                           kv.Key, s, n |]
 
-            BlockSuper.writeCas io entries
-            index.[key] <- struct (start, bytes.Length)
-            pos <- after)
+                BlockSuper.writeCas io entries
+                index.[key] <- struct (start, bytes.Length)
+                pos <- after)
 
 
 /// The global file system registry containing the active IFileSystem implementation.
