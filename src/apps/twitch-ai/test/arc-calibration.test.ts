@@ -61,6 +61,19 @@ describe("ARC coordinate calibration", () => {
     expect(parseArcCalibration(changed).ok).toBe(true);
   });
 
+  test("rejects tolerance inflation that would manufacture a favorable verdict", () => {
+    const changed = structuredClone(calibrationArtifact) as unknown as {
+      report: { tolerance: number; verdict: string };
+    };
+    changed.report.tolerance = 1;
+    changed.report.verdict = "calibrated";
+
+    expect(parseArcCalibration(changed)).toEqual({
+      ok: false,
+      error: "calibration.report.tolerance must be 0.05 for calibration v1",
+    });
+  });
+
   test("a calibrated refusal control passes and an all-commit mutant fails", () => {
     const calibrated = measureCoordinateCalibration(
       controlSamples([

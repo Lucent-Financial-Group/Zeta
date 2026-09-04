@@ -64,7 +64,7 @@ in the `toy` register. The policy was not changed to make the meter pass.
 
 - ARC Python suite: 149 passed.
 - Browser calibration and replay tests: 14 passed.
-- Calibrated control passes; an all-commit outcome mutant fails.
+- Calibrated control passes; all-commit, lying-verdict, and tolerance-inflation mutants fail.
 - Python-generated artifact is byte-identical to the checked-in corpus.
 - TypeScript independently reproduces every declared metric and rejects a favorable lying verdict.
 - Production Vite build passes.

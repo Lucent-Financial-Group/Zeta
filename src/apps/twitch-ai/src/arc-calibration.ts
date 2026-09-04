@@ -1,6 +1,7 @@
 import { ARC_FRAME_HEIGHT, ARC_FRAME_WIDTH, type ArcCoordinateMass, type ArcReplayResult } from "./arc-replay";
 
 const CALIBRATION_BINS = 10;
+const CALIBRATION_TOLERANCE = 0.05;
 const MASS_EPSILON = 1e-9;
 const MINIMUM_SAMPLE_COUNT = 20;
 
@@ -262,8 +263,8 @@ function parseDeclaredReport(value: unknown): ArcReplayResult<ArcCalibrationRepo
   ) {
     return refused("calibration.report counts must be non-negative integers");
   }
-  if (Number(value.tolerance) < 0 || Number(value.tolerance) > 1) {
-    return refused("calibration.report.tolerance must be in [0,1]");
+  if (!Object.is(value.tolerance, CALIBRATION_TOLERANCE)) {
+    return refused("calibration.report.tolerance must be 0.05 for calibration v1");
   }
   if (value.verdict !== "calibrated" && value.verdict !== "insufficient-data" && value.verdict !== "uncalibrated") {
     return refused("calibration.report.verdict is unknown");
