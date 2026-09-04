@@ -5,7 +5,11 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
-from zeta_arc.recording import RECORDED_ACTIONS, record_default_session
+from zeta_arc.recording import (
+    RECORDED_ACTIONS,
+    record_click_session,
+    record_default_session,
+)
 
 
 def _artifact_path() -> Path:
@@ -19,6 +23,10 @@ def _artifact_path() -> Path:
         / "recordings"
         / "arc-ztch-v1-session.json"
     )
+
+
+def _click_artifact_path() -> Path:
+    return _artifact_path().with_name("arc-zeta-click-target-session.json")
 
 
 def test_committed_replay_is_the_generated_session_byte_for_byte() -> None:
@@ -36,3 +44,23 @@ def test_replay_is_a_complete_real_level_transition() -> None:
     assert steps[0]["observation"]["action"] == {"id": "RESET"}
     assert steps[-1]["observation"]["levelsCompleted"] == 1
     assert all(len(step["observation"]["framesHex"][0]) == 64 * 64 for step in steps)
+
+
+def test_committed_click_replay_is_generated_byte_for_byte() -> None:
+    assert (
+        _click_artifact_path().read_text(encoding="utf-8")
+        == record_click_session().to_json()
+    )
+
+
+def test_click_forecast_is_bound_to_the_next_committed_action() -> None:
+    payload = json.loads(record_click_session().to_json())
+    before, after = payload["steps"]
+    forecast = before["coordinateForecast"]
+    masses = forecast["masses"]
+
+    assert sum(row["probability"] for row in masses) == 1.0
+    assert len(masses) == 3
+    assert forecast["selected"] == after["observation"]["action"]["point"]
+    assert after["observation"]["action"]["id"] == "ACTION6"
+    assert after["observation"]["levelsCompleted"] == 1

@@ -172,17 +172,24 @@ main {
 }
 
 .arc-screen-container canvas {
+  position: absolute;
+  inset: 0;
   width: 100%;
   height: 100%;
   object-fit: contain;
   filter: none;
 }
 
+.arc-screen-container .arc-coordinate-field {
+  z-index: 1;
+  pointer-events: none;
+}
+
 .arc-replay-readout {
   min-height: 42px;
   padding: 0.65rem 1rem;
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-columns: repeat(5, minmax(0, 1fr));
   gap: 0.5rem;
   color: var(--text-muted);
   font-size: 0.75rem;

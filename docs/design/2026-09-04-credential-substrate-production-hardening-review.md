@@ -20,7 +20,7 @@ flash USB, or install a 1Password injector.
 read, printed, copied, or decrypted. `op` and Keychain were not
 touched. 1Password pages were fetched on 2026-09-04.
 
-Sibling in flight: host files → Kubernetes Secrets is PR
+Sibling: host files → Kubernetes Secrets landed as PR
 [#16587](https://github.com/Lucent-Financial-Group/Zeta/pull/16587)
 (`081M1PWSF56087G0R000FDS3NY`). That is the first hop so agent pods
 do not wait on an unsealed Vault. This review does not block it.
@@ -203,7 +203,7 @@ second rotator.
 | Path | Status | Who unlocks |
 |---|---|---|
 | USB passphrase → host files | shipped (`zeta-creds-restore`) | operator at bringup |
-| Host files → k8s Secrets | PR #16587 (allowlisted harness logins only) | oneshot after restore + k3s |
+| Host files → k8s Secrets | landed (#16587; allowlisted harness logins) | oneshot after restore + k3s |
 | Vault `operator unseal` | designed, gated, not run by agents | human + biometric |
 | TPM-seal | model exists, mode `"off"` | custody undecided |
 | Lucent 1Password → unseal shares | **not designed as a ceremony** | chicken-egg + gated-class |
@@ -248,9 +248,9 @@ product, and it needs an explicit HC / GOVERNANCE change.
    material, Aaron `cluster-nodes` self-register (Step 6.9), only
    after the 3-key default exists so we do not mint a third
    generation of 1-key trees.
-5. **Vault ingest** — after #16587 and after unseal is a real
-   ceremony, ESO ClusterSecretStore. Still not a Helm fight with
-   Otto.
+5. **Vault ingest** — after the landed host→Secret projector and after
+   unseal is a real ceremony, ESO ClusterSecretStore. Still not a Helm
+   fight with Otto.
 
 ## Anchors
 
@@ -258,7 +258,7 @@ product, and it needs an explicit HC / GOVERNANCE change.
 - One-seed HD: `docs/research/2026-06-21-zeta-identity-crypto-substrate-one-seed-hd-keychain-dual-rotation-schema-evolvable-over-zsets-hexagonal.md`
 - 3-key rationale: `docs/research/2026-08-09-every-node-is-its-own-identity-provider-repo-as-cluster-hats-grant-claims-bounded-duration-aaron.md`
 - TPM / USB binding brief: `docs/design/2026-08-21-credential-binding-tpm-seal-or-usb-iserial-the-r8-decision-brief.md`
-- Host→Secret: `docs/design/2026-09-04-host-creds-as-k8s-secrets.md` (on #16587)
+- Host→Secret: `docs/design/2026-09-04-host-creds-as-k8s-secrets.md` (landed #16587)
 - GOVERNANCE §36 / ALIGNMENT HC-9: humans cannot unilaterally wipe persona memory
 - Vault gated unseal: `full-ai-cluster/k8s/applications/vault/Application.yaml`
 - Keyset oracle: `tools/setup/persona-keys/keyset.ts`

@@ -46,6 +46,14 @@ doc's own warning, kept.
   structure rather than turning a difficulty dial. Deliberately the same
   *shape* as `chip8/games/mutual-sim.ts` so the perception ladder we already
   have can be pointed at it later without inventing a second agent.
+- `zeta_arc/environments/click_target.py` — **ZetaClickTarget**, a small
+  source-owned ACTION6 environment used to bind the coordinate prior to a real
+  engine commit.
+- `zeta_arc/click.py` — the object-centroid coordinate prior and deterministic
+  coarse-to-fine fallback. Its forecast exposes normalized sparse mass without
+  consuming the point the policy will choose.
+- `zeta_arc/recording.py` — deterministic browser artifacts for the directional
+  and coordinate-action episodes.
 - `zeta_arc/driver.py` — **the seam**. The only file that knows the engine's
   names. Calls the engine's public loop rather than reimplementing it (see
   below).
