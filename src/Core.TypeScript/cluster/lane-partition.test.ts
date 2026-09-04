@@ -397,12 +397,14 @@ describe("the real tree", () => {
     // `bitnamilegacy/kubectl:1.32.3` (111,998,161 B) for
     // `registry.k8s.io/kubectl:v1.32.3` (18,752,984 B). Measured, not
     // restated: 93,245,177 compressed x2.67 = 0.232 GiB unpacked.
+    // 62.30 -> 65.12 GiB on 2026-09-04: `opensearch` joined -- the opensearch image
+    // is the single largest addition of the day at ~2.8 GiB. Measured, not
     // 61.83 -> 62.30 GiB on 2026-09-04: `keda` joined the tree. Measured, not
     // restated: 3 image(s), 188,163,369 B compressed x2.67 = 0.468 GiB
     // unpacked. The floor RISING is the direction that means an Application was
     // ADDED rather than an image going missing -- the distinction the notes above
     // exist to keep, and it is checked here rather than assumed.
-    expect(all.diskGib).toBeCloseTo(62.3, 2);
+    expect(all.diskGib).toBeCloseTo(65.12, 2);
     expect(all.cpuMillis).toBeGreaterThan(budget.cpuMillis);
     // THE DISK AXIS STOPPED BINDING ON 2026-09-02, and this line used to assert the
     // opposite. `all.diskGib` is 61.83 against a 66 GiB budget, so for the first time

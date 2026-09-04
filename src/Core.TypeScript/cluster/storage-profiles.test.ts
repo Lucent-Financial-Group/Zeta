@@ -1291,12 +1291,17 @@ describe("the checked-in resource ladder", () => {
   // measurement"). This is the first move where ONLY the applied count changed,
   // and that is correct here: the shipped count is about the tree and the applied
   // count is about the glob, and only the glob moved.
-  test("the dev lane applies 40 of the 48 Applications", () => {
+  test("the dev lane applies 41 of the 49 Applications", () => {
     // 47/39 -> 48/40 on 2026-09-04: `keda` joined the tree (Aaron: "i want to make
     // sure we have KEDA"). It is NOT in the exclude glob, so it is applied.
-    expect(applicationDirs()).toHaveLength(48);
-    expect(devLaneAppliedDirs()).toHaveLength(40);
+    // 48/40 -> 49/41 on 2026-09-04: `opensearch` joined (Aaron: "lets pull in open
+    // search"). Also NOT in the exclude glob, and DELIBERATELY so -- Aaron, same day:
+    // "we want to try to test on dev for all of these". A new Application that went
+    // straight into the dev-excluded set would be one more thing CI never applies.
+    expect(applicationDirs()).toHaveLength(49);
+    expect(devLaneAppliedDirs()).toHaveLength(41);
     expect(devLaneAppliedDirs()).toContain("keda");
+    expect(devLaneAppliedDirs()).toContain("opensearch");
     expect(devLaneAppliedDirs()).toContain("agent-memory");
     expect(applicationDirs()).toContain("game-hosting/gmod");
   });
@@ -1336,11 +1341,14 @@ describe("the checked-in resource ladder", () => {
     // three components at the chart's own 100m/100Mi = +300m/+300Mi. Unlike the
     // agent-memory move, the all-app totals DO move here, by the same amount, because
     // this is a new Application rather than a membership change.
-    expect(lane.cpuMillis).toBe(6690);
-    expect(lane.memoryMib).toBe(14652);
+    // 6690m/14652Mi -> 7690m/16700Mi on 2026-09-04: `opensearch` was ADDED, one
+    // StatefulSet pod at 1000m/2048Mi on the metal rung. Same shape as the keda move
+    // above -- a new Application, so the all-app totals move by the same amount.
+    expect(lane.cpuMillis).toBe(7690);
+    expect(lane.memoryMib).toBe(16700);
     const all = resourceTotal(catalogue, "metal", applicationDirs());
-    expect(all.cpuMillis).toBe(10665);
-    expect(all.memoryMib).toBe(22923);
+    expect(all.cpuMillis).toBe(11665);
+    expect(all.memoryMib).toBe(24971);
   });
 
   // Aaron 2026-08-20: "make things small enough to fit for disk and ram on the
@@ -1380,7 +1388,7 @@ describe("the checked-in resource ladder", () => {
   // for the same reason the previous two are still in it: a quietly-rewritten assertion
   // erases the sequence, and the sequence is the finding. The 52Mi of spare recorded by
   // inversion two is exactly why one Application was enough to tip it.
-  test("`dev` fits on CPU at 1240m and NO LONGER fits on memory at 9356Mi — the 52Mi of spare is gone", () => {
+  test("`dev` fits on CPU at 1490m and is over on memory at 10380Mi — the overage is 1164Mi", () => {
     const budget = envelopeBudget(catalogue.envelope);
     const dev = resourceTotal(catalogue, "dev", devLaneAppliedDirs());
     // 1140m/9100Mi -> 1165m/9164Mi on 2026-09-03: `agent-memory` joined the dev
@@ -1391,8 +1399,17 @@ describe("the checked-in resource ladder", () => {
     // per component x 3 = +75m/+192Mi. CPU still fits with 1260m spare. MEMORY DOES
     // NOT: 9356 > 9216, over by 140Mi, and the 52Mi of spare recorded on the line
     // above is exactly why -- this lane had no room for anything.
-    expect(dev.cpuMillis).toBe(1240);
-    expect(dev.memoryMib).toBe(9356);
+    //
+    // 1240m/9356Mi -> 1490m/10380Mi on 2026-09-04: `opensearch` joined at a dev rung of
+    // 250m/1024Mi. CPU still fits with 1010m spare. MEMORY IS NOW OVER BY 1164Mi, an
+    // eightfold widening of an overage that was 140Mi an hour earlier -- and the number
+    // is spelled out because it was briefly UNDERSTATED. OpenSearch was sized against
+    // `lane-partition.ts`, which reported 1482Mi of room in lane-1; that is the LANE
+    // PACKER's denominator, not this lane's applied set. Two different questions, two
+    // different answers, and reading one for the other is what made a 1164Mi overage
+    // look like it fit.
+    expect(dev.cpuMillis).toBe(1490);
+    expect(dev.memoryMib).toBe(10380);
     expect(dev.cpuMillis).toBeLessThan(budget.cpuMillis);
     expect(dev.memoryMib).toBeGreaterThan(budget.memoryMib);
 
@@ -1400,7 +1417,7 @@ describe("the checked-in resource ladder", () => {
     // BACK -- not because anyone added a row to make a red run go green. It carries one
     // key, and that key is the live shortfall rather than a spare one kept around.
     expect(catalogue.acknowledgedLaneBudgetShortfall).toHaveLength(1);
-    expect(catalogue.acknowledgedLaneBudgetShortfall[0]?.key).toBe("dev memory 9356>9216");
+    expect(catalogue.acknowledgedLaneBudgetShortfall[0]?.key).toBe("dev memory 10380>9216");
     expect(auditRunnerBudget(catalogue, "dev")).toEqual([]);
 
     // THE FALSIFIER SURVIVES THE INVERSION, which is the point of keeping it. A
@@ -1424,8 +1441,9 @@ describe("the checked-in resource ladder", () => {
     // +300m/+300Mi on 2026-09-04 from keda's three components at the chart's own
     // defaults. `metal` moved because an APPLICATION was added, which is a different
     // thing from a rung being re-cut -- the dev floors below are still rung-scoped.
-    expect(metal.cpuMillis).toBe(6690);
-    expect(metal.memoryMib).toBe(14652);
+    // +1000m/+2048Mi on 2026-09-04 from opensearch's single pod at the metal rung.
+    expect(metal.cpuMillis).toBe(7690);
+    expect(metal.memoryMib).toBe(16700);
 
     // gmod is still COUNTED -- reachability is not exclusion. It contributes
     // 100m at `dev` where it used to contribute 1000m, and 1000m at `metal`

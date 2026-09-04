@@ -1692,7 +1692,10 @@ describe("findRungCoverage — the budgeted rung vs the committed rung", () => {
     // own 100m each. The mutation still moves the CURRENT number by one millicore --
     // the property under test is that a moved number stops suppressing, and it is
     // independent of what the number is.
-    const moved = live.acknowledgedRungBudgetGap.map((key) => key.replace("6690m", "6691m"));
+    // 6690m -> 7690m on 2026-09-04: `opensearch` was added, one StatefulSet pod at the
+    // metal rung's 1000m (081M1Q1XHVV087G0R0034X846M). Same property, same mutation,
+    // fourth value -- which is the point of writing the sequence rather than the number.
+    const moved = live.acknowledgedRungBudgetGap.map((key) => key.replace("7690m", "7691m"));
     expect(moved).not.toEqual(live.acknowledgedRungBudgetGap);
     expect(findRungCoverage({ ...live, acknowledgedRungBudgetGap: moved }, resources).length).toBe(1);
   });

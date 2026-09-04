@@ -273,6 +273,16 @@
       "count": 1
     },
     {
+      "appId": "full-ai-cluster/opensearch",
+      "origin": "volumeClaimTemplate",
+      "name": "opensearch-cluster-master/opensearch-cluster-master",
+      "workload": "StatefulSet/opensearch-cluster-master",
+      "storageClassName": "zeta-local-path",
+      "size": "20Gi",
+      "gibibytes": 20,
+      "count": 1
+    },
+    {
       "appId": "full-ai-cluster/oz",
       "origin": "PersistentVolumeClaim",
       "name": "ziti-controller",
@@ -424,5 +434,5 @@
     }
   ],
   "unrenderable": [],
-  "appsDiscovered": 55
+  "appsDiscovered": 56
 }

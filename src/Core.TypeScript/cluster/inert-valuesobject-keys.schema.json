@@ -1,6 +1,6 @@
 {
   "measuredOn": "2026-09-04",
-  "appsDiscovered": 55,
+  "appsDiscovered": 56,
   "charts": {
     "code.forgejo.org/forgejo-helm|forgejo|17.1.5": {
       "literal": {
@@ -32661,6 +32661,235 @@
       "dynamic": [],
       "charts": ["<root>=gatekeeper@3.23.1"]
     },
+    "https://opensearch-project.github.io/helm-charts/|opensearch|3.8.0": {
+      "literal": {
+        "antiAffinity": {},
+        "antiAffinityTopologyKey": {},
+        "clusterName": {},
+        "config": {},
+        "customAntiAffinity": {},
+        "enableServiceLinks": {},
+        "envFrom": {},
+        "extraContainers": {},
+        "extraEnvs": {},
+        "extraInitContainers": {},
+        "extraObjects": {},
+        "extraVolumeMounts": {},
+        "extraVolumes": {},
+        "fsGroup": {},
+        "fullnameOverride": {},
+        "global": {},
+        "hostAliases": {},
+        "httpHostPort": {},
+        "httpPort": {},
+        "image": {
+          "pullPolicy": {},
+          "repository": {},
+          "tag": {}
+        },
+        "imagePullSecrets": {},
+        "ingress": {
+          "annotations": {},
+          "enabled": {},
+          "hosts": {},
+          "ingressClassName": {},
+          "ingressLabels": {},
+          "path": {},
+          "tls": {}
+        },
+        "initResources": {},
+        "keystore": {},
+        "labels": {},
+        "lifecycle": {},
+        "livenessProbe": {},
+        "majorVersion": {},
+        "masterService": {},
+        "masterTerminationFix": {},
+        "maxUnavailable": {},
+        "metricsPort": {},
+        "nameOverride": {},
+        "networkHost": {},
+        "networkPolicy": {
+          "create": {},
+          "http": {
+            "enabled": {}
+          }
+        },
+        "nodeAffinity": {},
+        "nodeGroup": {},
+        "nodeSelector": {},
+        "openSearchAnnotations": {},
+        "opensearchHome": {},
+        "opensearchJavaOpts": {},
+        "opensearchLifecycle": {},
+        "persistence": {
+          "accessModes": {},
+          "annotations": {},
+          "enableInitChown": {},
+          "enabled": {},
+          "image": {},
+          "imageTag": {},
+          "labels": {
+            "additionalLabels": {},
+            "enabled": {}
+          },
+          "size": {},
+          "storageClass": {}
+        },
+        "plugins": {
+          "enabled": {},
+          "installList": {},
+          "removeList": {}
+        },
+        "podAffinity": {},
+        "podAnnotations": {},
+        "podManagementPolicy": {},
+        "podSecurityContext": {},
+        "podSecurityPolicy": {
+          "create": {},
+          "name": {},
+          "spec": {}
+        },
+        "priorityClassName": {},
+        "protocol": {},
+        "rbac": {
+          "automountServiceAccountToken": {},
+          "create": {},
+          "serviceAccountAnnotations": {},
+          "serviceAccountName": {}
+        },
+        "readinessProbe": {},
+        "replicas": {},
+        "resources": {},
+        "roles": {},
+        "schedulerName": {},
+        "secretMounts": {},
+        "securityConfig": {
+          "actionGroupsSecret": {},
+          "config": {
+            "data": {},
+            "dataComplete": {},
+            "securityConfigSecret": {}
+          },
+          "configSecret": {},
+          "enabled": {},
+          "internalUsersSecret": {},
+          "path": {},
+          "rolesMappingSecret": {},
+          "rolesSecret": {},
+          "tenantsSecret": {}
+        },
+        "securityContext": {},
+        "service": {
+          "annotations": {},
+          "externalTrafficPolicy": {},
+          "headless": {
+            "annotations": {}
+          },
+          "httpPortName": {},
+          "ipFamilies": {},
+          "ipFamilyPolicy": {},
+          "labels": {},
+          "labelsHeadless": {},
+          "loadBalancerIP": {},
+          "loadBalancerSourceRanges": {},
+          "metricsPortName": {},
+          "nodePort": {},
+          "transportPortName": {},
+          "type": {}
+        },
+        "serviceMonitor": {
+          "basicAuth": {
+            "enabled": {},
+            "existingSecret": {},
+            "password": {},
+            "username": {}
+          },
+          "enabled": {},
+          "interval": {},
+          "labels": {},
+          "path": {},
+          "scheme": {},
+          "tlsConfig": {}
+        },
+        "sidecarResources": {},
+        "singleNode": {},
+        "startupProbe": {},
+        "sysctl": {
+          "enabled": {}
+        },
+        "sysctlInit": {
+          "enabled": {},
+          "image": {},
+          "imageTag": {}
+        },
+        "sysctlVmMaxMapCount": {},
+        "terminationGracePeriod": {},
+        "tolerations": {},
+        "topologySpreadConstraints": {},
+        "transportHostPort": {},
+        "transportPort": {},
+        "updateStrategy": {}
+      },
+      "open": [
+        "config",
+        "customAntiAffinity",
+        "envFrom",
+        "extraContainers",
+        "extraEnvs",
+        "extraInitContainers",
+        "extraObjects",
+        "extraVolumeMounts",
+        "extraVolumes",
+        "global",
+        "hostAliases",
+        "httpPort",
+        "imagePullSecrets",
+        "ingress.annotations",
+        "ingress.hosts",
+        "ingress.ingressLabels",
+        "ingress.path",
+        "ingress.tls",
+        "initResources",
+        "keystore",
+        "labels",
+        "lifecycle",
+        "livenessProbe",
+        "nodeAffinity",
+        "nodeSelector",
+        "openSearchAnnotations",
+        "opensearchLifecycle",
+        "persistence.accessModes",
+        "persistence.annotations",
+        "persistence.labels.additionalLabels",
+        "plugins.installList",
+        "plugins.removeList",
+        "podAffinity",
+        "podAnnotations",
+        "podSecurityContext",
+        "podSecurityPolicy.spec",
+        "rbac.serviceAccountAnnotations",
+        "readinessProbe",
+        "resources",
+        "roles",
+        "secretMounts",
+        "securityConfig.config.data",
+        "securityContext",
+        "service.annotations",
+        "service.headless.annotations",
+        "service.labels",
+        "service.labelsHeadless",
+        "service.loadBalancerSourceRanges",
+        "serviceMonitor.labels",
+        "serviceMonitor.tlsConfig",
+        "sidecarResources",
+        "startupProbe",
+        "tolerations",
+        "topologySpreadConstraints"
+      ],
+      "dynamic": [],
+      "charts": ["<root>=opensearch@3.8.0"]
+    },
     "https://otwld.github.io/ollama-helm/|ollama|1.79.0": {
       "literal": {
         "affinity": {},
@@ -40302,6 +40531,13 @@
       "targetRevision": "3.23.1",
       "repoURL": "https://open-policy-agent.github.io/gatekeeper/charts",
       "chartKey": "https://open-policy-agent.github.io/gatekeeper/charts|gatekeeper|3.23.1"
+    },
+    {
+      "appId": "full-ai-cluster/opensearch",
+      "chart": "opensearch",
+      "targetRevision": "3.8.0",
+      "repoURL": "https://opensearch-project.github.io/helm-charts/",
+      "chartKey": "https://opensearch-project.github.io/helm-charts/|opensearch|3.8.0"
     },
     {
       "appId": "full-ai-cluster/orleans",

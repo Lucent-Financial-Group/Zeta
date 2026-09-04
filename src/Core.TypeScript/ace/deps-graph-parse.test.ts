@@ -201,7 +201,11 @@ describe("081M0N90CHX087G0R0034C7NPT — ace agrees with the two tools that rout
     // 46 -> 47 on 2026-09-02: `cloudnativepg` added (cilium -> cloudnativepg),
     // the shared prerequisite of the gitlab and temporal bumps.
     // 47 -> 48 on 2026-09-04: `keda` added, `dependsOn: []` (Aaron 2026-09-04).
-    expect(graph.spec.dependsOn.length).toBe(48);
+    // 48 -> 49 on 2026-09-04: `opensearch` added, `dependsOn: []` (no consumer
+    // yet — temporal's visibility layer cannot point here until its chart's
+    // appVersion is >= 1.30.1; when that lifts the edge runs temporal ->
+    // opensearch, not the reverse).
+    expect(graph.spec.dependsOn.length).toBe(49);
   });
 
   test("ace, the yaml package, lane-partition and derive-sync-waves read the SAME nodes and edges", () => {
@@ -223,7 +227,8 @@ describe("081M0N90CHX087G0R0034C7NPT — ace agrees with the two tools that rout
     const viaDerive = flattenFromNodes(readDeclaration(REPO_ROOT).spec.spec.dependsOn);
 
     // 47 -> 48 on 2026-09-04: `keda` joined the tree (Aaron 2026-09-04).
-    expect(viaAce.nodes.length).toBe(48);
+    // 48 -> 49 on 2026-09-04: `opensearch` joined the tree, `dependsOn: []`.
+    expect(viaAce.nodes.length).toBe(49);
     expect(viaAce.edges.length).toBeGreaterThan(0);
 
     expect(viaAce).toEqual(viaYamlPkg);

@@ -604,7 +604,7 @@ describe("eight mutations against the live validators", () => {
   // carrying a REAL debt still convicts a dead one" — which is the property that
   // stops the next genuine shortfall hiding behind an expired row.
   test("7 the lane register carries the live shortfall, and a revived one is convicted STALE", () => {
-    expect(liveCatalogue.acknowledgedLaneBudgetShortfall.map((a) => a.key)).toEqual(["dev memory 9356>9216"]);
+    expect(liveCatalogue.acknowledgedLaneBudgetShortfall.map((a) => a.key)).toEqual(["dev memory 10380>9216"]);
     expect(auditRunnerBudget(liveCatalogue, "dev")).toEqual([]);
     const revived = {
       ...liveCatalogue,
