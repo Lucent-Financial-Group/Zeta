@@ -52,7 +52,7 @@ and is not sufficient for the backup half.
 Applications declare multi-replica topologies on a `nodeCount: 1` cluster:
 
 | app | |
-|---|---|
+| --- | --- |
 | `cockroachdb` | 3 Raft members |
 | `vault` | Raft HA |
 | `nats` | 3-node JetStream cluster |
@@ -87,6 +87,54 @@ it is:
    exist before any backup does, and its first run is the inventory.
 4. **The recovery path is tested, or it is a belief.** An untested restore is the storage
    form of a check that cannot fail — it looks like coverage and has never once run.
+
+## The intended long-term answer: ZetaFS/ZetaDB history policies
+
+Aaron 2026-09-03, responding to the replication-is-not-backup framing above:
+
+> our zetafs/db is hopefully going to help the backup vs replication, it's trying to make
+> these the same thing via history policies on the file system and strategic per folder/file
+> policies and history transversal via content based addressing/hasihing, similar to git and
+> merkel trees but with smart history policies and advanced garbage collection techniques
+
+**This is a real answer to a real half of the problem, and it is worth being precise about
+which half.** `ZetaDB` and `ZetaFS` are on the replacement roadmap
+(`docs/ZETA-ARCHITECTURE-UNIFIED.md` — content-addressed DAG-FS replacing CockroachDB, then
+the OS filesystem). Content-addressed history with a retention policy genuinely does collapse
+the distinction *for one class of failure*:
+
+| failure | replication | versioned history |
+| --- | --- | --- |
+| a node dies | **survives** | survives if a copy is elsewhere |
+| a bad write, a `DELETE`, a bad migration, `prune: true` | **replicates it faithfully** | **survives — the prior version is still addressable** |
+| the medium/site is lost | survives if replicas are elsewhere | **only if the history is elsewhere** |
+| the retention horizon passes | n/a | **does not survive — GC is the failure** |
+
+So the design collapses **logical corruption** recovery into the storage layer, which is the
+half that today has no answer at all and is exactly what the replication/backup distinction
+was pointing at. That is a genuine unification, not a rebrand.
+
+**Two things it does not collapse, and they should be written down now rather than discovered
+after the first restore:**
+
+1. **Off-site is still a separate axis.** History in the same failure domain as the data is
+   still one failure domain. Git's own model is the anchor here and it argues both ways: a
+   `git` repo is a Merkle DAG with full history, and it is still routine to push it somewhere
+   else, because history does not protect against the disk.
+2. **The GC policy becomes the recovery point, so it becomes safety-critical.** "Advanced
+   garbage collection" is the same knob as "retention", read from the other end — a policy
+   that reclaims aggressively is a policy that shortens how far back you can go. That makes
+   the per-folder/per-file policies Aaron names the load-bearing part, and it makes them the
+   thing that needs a falsifier: *a policy nobody has tested a restore against is the storage
+   form of a check that cannot fail.*
+
+Beacon: Merkle DAGs (Merkle 1979) via git's object model; the content-addressed-store lineage
+this repo already leans on (`ZetaId`, CAS through `IBlockIo`).
+
+**This does not change the sequencing above.** ZetaFS/ZetaDB is a replacement-roadmap item;
+CockroachDB, Vault and Longhorn are running now with zero backup machinery of any kind. The
+interim answer has to work on today's substrate, and the design above is what it should
+converge toward rather than a reason to defer.
 
 ## Depends on hardware
 

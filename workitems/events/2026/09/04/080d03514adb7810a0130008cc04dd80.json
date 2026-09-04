@@ -1,0 +1,14 @@
+{
+  "id": "080d03514adb7810a0130008cc04dd80",
+  "at": "2026-09-04T02:04:50.415Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1N2JPVE087G0R001SK41RA",
+    "type": "task",
+    "title": "hermetic incremental builds across nano-repos: the overlay workspace",
+    "slug": "hermetic-incremental-builds-across-nano-repos-the-overlay-wo",
+    "priority": "P2",
+    "filename": "081M1N2JPVE087G0R001SK41RA-hermetic-incremental-builds-across-nano-repos-the-overlay-wo.md"
+  }
+}
