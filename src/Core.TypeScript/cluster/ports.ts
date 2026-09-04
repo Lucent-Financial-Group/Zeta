@@ -58,10 +58,7 @@ export type KindCni = "kindnetd" | "cilium";
  * only when `--cni cilium` selected the no-default-CNI profile. An unknown
  * provider lifts nothing.
  */
-export function ciliumOwnsCniSlot(
-  provider: "kind" | "k3d" | null,
-  kindCni: KindCni = "kindnetd",
-): boolean {
+export function ciliumOwnsCniSlot(provider: "kind" | "k3d" | null, kindCni: KindCni = "kindnetd"): boolean {
   if (provider === "k3d") return true;
   return provider === "kind" && kindCni === "cilium";
 }
@@ -102,7 +99,24 @@ export interface ClusterControlPlane {
    * different thing. Defaults false: existing callers are unchanged.
    */
   applyFileManifest(path: string, serverSideApply?: boolean): void;
-  applyInlineManifest(yaml: string): void;
+  /**
+   * `serverSideApply` for the same reason `applyFileManifest` has it, and it was
+   * bought the same way -- by a live failure rather than by foresight.
+   *
+   * A CLIENT-side apply writes the whole object into the
+   * `kubectl.kubernetes.io/last-applied-configuration` annotation, and annotations
+   * are capped at 262144 bytes. MEASURED on run 33812126963: the lane-tree
+   * ConfigMap carries 411726 bytes of packed repository, which is ~549 KB once
+   * base64-encoded, and the apply was refused with
+   *
+   *     The ConfigMap "zeta-lane-tree" is invalid: metadata.annotations:
+   *     Too long: may not be more than 262144 bytes
+   *
+   * Server-side apply does not write that annotation at all, so the object is
+   * bounded only by the API server's own 1 MiB ConfigMap limit -- which the
+   * payload is comfortably under. Defaults false: existing callers are unchanged.
+   */
+  applyInlineManifest(yaml: string, serverSideApply?: boolean): void;
   ensureNamespace(name: string): void;
   /**
    * Is one named object present? Read-only, and the ONLY read on this port.
@@ -137,12 +151,7 @@ export interface ClusterControlPlane {
    * has to report each one; exiting on the first failure would report "CDI is
    * broken" as "the lane is broken" and hide whichever phase never ran.
    */
-  waitForResource(
-    resourceRef: string,
-    namespace: string | null,
-    forExpression: string,
-    timeoutSec: number,
-  ): boolean;
+  waitForResource(resourceRef: string, namespace: string | null, forExpression: string, timeoutSec: number): boolean;
 }
 
 export interface ChartInstallSpec {
@@ -175,12 +184,7 @@ export interface PackageDriver {
 
 /** Git-backed app-of-apps bootstrap for dev/CI. */
 export interface AppCatalogApplicator {
-  applyRootDevCatalog(
-    gitRef: string,
-    gitRepoUrl: string,
-    provider?: "kind" | "k3d" | null,
-    kindCni?: KindCni,
-  ): void;
+  applyRootDevCatalog(gitRef: string, gitRepoUrl: string, provider?: "kind" | "k3d" | null, kindCni?: KindCni): void;
 }
 
 export interface DevClusterPorts {
@@ -224,8 +228,7 @@ export const DEFAULT_ROOT_DEV_CATALOG: RootDevCatalogSpec = {
   gitRef: "main",
   gitRepoUrl: process.env.ZETA_ARGOCD_GIT_REPO_URL ?? "https://github.com/Lucent-Financial-Group/Zeta",
   applicationsPath: "full-ai-cluster/k8s/applications",
-  excludeGlob:
-    "{cilium/**,cilium-lb-ipam/**,longhorn/**,ollama/**,vllm/**,gitlab/**,temporal/**,platform/**}",
+  excludeGlob: "{cilium/**,cilium-lb-ipam/**,longhorn/**,ollama/**,vllm/**,gitlab/**,temporal/**,platform/**}",
 };
 
 /**
@@ -255,10 +258,7 @@ export const DEFAULT_ROOT_DEV_CATALOG: RootDevCatalogSpec = {
  * `null` (provider unknown) returns the glob unchanged — the conservative
  * default, identical to the behaviour before providers existed here.
  */
-export function rootDevCatalogExcludeGlobFor(
-  provider: "kind" | "k3d" | null,
-  kindCni: KindCni = "kindnetd",
-): string {
+export function rootDevCatalogExcludeGlobFor(provider: "kind" | "k3d" | null, kindCni: KindCni = "kindnetd"): string {
   if (!ciliumOwnsCniSlot(provider, kindCni)) return DEFAULT_ROOT_DEV_CATALOG.excludeGlob;
   // The substrate already handed the CNI slot to Cilium (k3d profile, or kind
   // `--cni cilium`), which is the condition `cilium`'s own LIFTS WHEN names.

@@ -62,7 +62,14 @@ function fakePorts(log: string[], existingResources: readonly string[] = []): De
     waitForApiReady: () => log.push("api-ready"),
     applyRemoteManifest: (url) => log.push(`remote:${url}`),
     applyFileManifest: (path, ssa) => log.push(`file:${path}${ssa === true ? ":ssa" : ""}`),
-    applyInlineManifest: (yaml) => log.push(`inline-manifest:${yaml}`),
+    applyInlineManifest: (yaml, ssa) => {
+      // Recorded as a SEPARATE entry rather than folded into the manifest line: the
+      // existing filters here match on the `inline-manifest:` prefix and one slices
+      // the yaml back out of it, so decorating that value would break readers that
+      // have nothing to do with apply mode.
+      log.push(`inline-apply:${ssa === true ? "server-side" : "client-side"}`);
+      log.push(`inline-manifest:${yaml}`);
+    },
     ensureNamespace: (ns) => log.push(`ns:${ns}`),
     resourceExists: (ref, ns) => {
       log.push(`exists?:${ref}@${ns ?? "-"}`);
@@ -832,6 +839,26 @@ describe("the lane-tree resource-rung override point", () => {
     expect(applyAt).toBeGreaterThanOrEqual(0);
     expect(waitAt).toBeGreaterThan(applyAt);
     expect(catalogAt).toBeGreaterThan(waitAt);
+  });
+
+  test("SERVER-SIDE APPLY: a client-side apply cannot carry this payload at all", () => {
+    // Bought by a live failure, not by foresight. A client-side apply writes the
+    // whole object into the `kubectl.kubernetes.io/last-applied-configuration`
+    // ANNOTATION, and annotations are capped at 262144 bytes. On run 33812126963 the
+    // packed tree was 411726 bytes -- ~549 KB base64-encoded -- and the apply was
+    // refused outright:
+    //
+    //   The ConfigMap "zeta-lane-tree" is invalid: metadata.annotations:
+    //   Too long: may not be more than 262144 bytes
+    //
+    // Server-side apply writes no such annotation, leaving only the API server's
+    // 1 MiB ConfigMap limit, which MAX_TREE_BYTES already sits under. This is the
+    // test that would have caught it before a 40-minute lane run did.
+    const log: string[] = [];
+    bringUpKindCiCluster(fakePorts(log), { ...kindOptions, laneTree });
+    const treeAt = log.findIndex((line) => line.startsWith("inline-manifest:") && line.includes("zeta-lane-tree"));
+    expect(treeAt).toBeGreaterThan(0);
+    expect(log[treeAt - 1]).toBe("inline-apply:server-side");
   });
 
   test("the wait is on Available, which the readiness probe gates on the repository index", () => {

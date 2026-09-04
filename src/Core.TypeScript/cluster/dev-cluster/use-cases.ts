@@ -421,7 +421,13 @@ function applyLaneTreeSource(
   if (laneTree === undefined) return null;
   const { controlPlane } = ports;
   console.log(`Serving the lane tree in-cluster; ArgoCD will clone ${laneTree.repoUrl} ...`);
-  controlPlane.applyInlineManifest(laneTree.manifests);
+  // SERVER-SIDE, and it is not optional here. A client-side apply writes the whole
+  // object into the `last-applied-configuration` ANNOTATION, which is capped at
+  // 262144 bytes; the packed tree is ~549 KB base64-encoded and run 33812126963
+  // was refused with "metadata.annotations: Too long". Server-side apply writes no
+  // such annotation, leaving only the API server's 1 MiB ConfigMap limit, which
+  // `MAX_TREE_BYTES` already sits under.
+  controlPlane.applyInlineManifest(laneTree.manifests, true);
 
   // `condition=Available` on the Deployment, which the readiness probe gates on
   // GET /tree.git/info/refs -- so this waits for the REPOSITORY to be servable,

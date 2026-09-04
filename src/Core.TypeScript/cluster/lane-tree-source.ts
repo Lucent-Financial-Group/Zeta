@@ -98,12 +98,20 @@ import { join, resolve } from "node:path";
 /**
  * Largest packed tree this delivery mechanism accepts, in bytes.
  *
- * A ConfigMap is bounded by etcd's ~1.5 MiB object limit, and the manifest carries
- * the payload base64-encoded (4 bytes per 3), plus the rest of the object. 700 KiB
- * packed is ~933 KiB encoded, which leaves real headroom under that ceiling while
- * being more than twice the measured 367 KiB. Chosen to fire well before the
- * cluster does, because a refusal here names the cause and an etcd rejection in a
- * lane does not.
+ * A ConfigMap is bounded by the API server's 1 MiB data limit, and the manifest
+ * carries the payload base64-encoded (4 bytes per 3). 700 KiB packed is ~933 KiB
+ * encoded, which leaves headroom under that ceiling while being more than twice
+ * the measured 367 KiB. Chosen to fire well before the cluster does, because a
+ * refusal here names the cause and an API rejection in a lane does not.
+ *
+ * THE OTHER CEILING, AND WHY IT NO LONGER BINDS. A CLIENT-side `kubectl apply`
+ * writes the entire object into the `kubectl.kubernetes.io/last-applied-configuration`
+ * annotation, and annotations are capped at 262144 bytes -- far below this budget.
+ * MEASURED on run 33812126963: a 411726-byte packed tree was refused with
+ * `The ConfigMap "zeta-lane-tree" is invalid: metadata.annotations: Too long`.
+ * The lane applies these manifests SERVER-side, which writes no such annotation.
+ * That is a property of how the caller applies them, not of this file, so it is
+ * pinned by a falsifier in `use-cases.test.ts` rather than assumed here.
  */
 export const MAX_TREE_BYTES = 700 * 1024;
 
