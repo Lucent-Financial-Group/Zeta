@@ -1,0 +1,14 @@
+{
+  "id": "080d03743dfd7810a0130008c01834d9",
+  "at": "2026-09-04T22:26:25.327Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1Q8FFXF087G0R003VFKPDN",
+    "type": "task",
+    "title": "Freeze reclaim crash test resumes via sweep journal",
+    "slug": "freeze-reclaim-crash-test-resumes-via-sweep-journal",
+    "priority": "P1",
+    "filename": "081M1Q8FFXF087G0R003VFKPDN-freeze-reclaim-crash-test-resumes-via-sweep-journal.md"
+  }
+}
