@@ -838,6 +838,26 @@ Parallel compares also `dial tcp 10.96.98.57:8080: connect: connection
 refused` — `nc -l` is one connection at a time. Keep
 `--disable=servicelb`. Do not invent helm values.
 
+**MEASURED live-k3d 33836543665 job `100910668481` (merge of #16533,
+SHA `c49779348`):** `ip route get 10.43.0.10` from the k3d node is
+
+    10.43.0.10 via 172.18.0.1 dev eth0 src 172.18.0.2
+
+Not via `cilium_host`. `cilium_host` exists (if5). kube-dns ClusterIP
+leaves through the Docker bridge gateway. hostNetwork ClusterIP TCP
+FAIL / overlay pod IP OPEN / pod-network all OPEN is unchanged.
+`bpf-lb-sock=false`, Socket LB Coverage Hostns-only, `app=svclb`
+empty. Agent still `lookup spire-server.spire on 10.43.0.10:53: i/o
+timeout` with server 2/2 and `bundle.crt` present.
+
+That is a **k3d-in-docker route**, not a NixOS k3s first-boot fact.
+Metal has no `172.18.0.1`. Do not invent `socketLB` to paper over
+docker0. Do not re-lift `--scope included`. Confirmation on hardware
+is `ip route get 10.43.0.10` after USB boot (expect local via
+`cilium_host` / service CIDR, not a docker gateway). Next software
+on the USB trajectory is chart currency (`081M1F2F4WQ`, seaweedfs
+4.40+ first), not another k3d datapath tweak.
+
 ## CI runner budgets (three existing ladders)
 
 Do not invent a fourth. Do not shrink metal.
