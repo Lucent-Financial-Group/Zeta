@@ -23,6 +23,8 @@
  *   --work-cmd <exe> [--work-arg <a> ...]   perform each work item as <exe> <a...> <workId>
  *   --test-cmd <exe> [--test-arg <a> ...]   run each test case as <exe> <a...> <testCaseId>
  *   --git <dir> [--base <branch>]   open and merge real branches in <dir>
+ *   --review-queue <dir>            gates decided by verdicts filed under <dir>/<workId>/<gate>.json
+ *   --review-cmd <exe> [--review-arg <a> ...]   gates decided by <exe> <a...> <gate> <workId>
  *
  * Any of these makes the run UNREPLAYABLE, which the fidelity block prints without being asked.
  *
@@ -50,9 +52,12 @@ import {
 import { IntakeKind, Severity, normalize, type ExternalEvent } from "./intake";
 import type { ProviderSet } from "./providers";
 import {
+  autoApproveReview,
+  commandReview,
   commandTestRunner,
   commandWorkExecutor,
   directoryIntake,
+  directoryReview,
   gitChangeControl,
   simulatedChangeControl,
   simulatedIntake,
@@ -142,6 +147,15 @@ export interface Args {
    */
   readonly workArgs: readonly string[];
   readonly testArgs: readonly string[];
+  /**
+   * Who decides the six gates that are not runtime validation.
+   *
+   * Absent means AUTO-APPROVE, which is what the register always did — six of seven gates could not
+   * fail — and which the fidelity block now prints rather than leaving implied.
+   */
+  readonly reviewQueue: string | undefined;
+  readonly reviewCmd: string | undefined;
+  readonly reviewArgs: readonly string[];
   readonly git: string | undefined;
   readonly baseBranch: string;
 }
@@ -175,6 +189,9 @@ export function parseArgs(argv: readonly string[]): Args {
     testCmd: valueAfter(argv, "--test-cmd"),
     workArgs: valuesAfter(argv, "--work-arg"),
     testArgs: valuesAfter(argv, "--test-arg"),
+    reviewQueue: valueAfter(argv, "--review-queue"),
+    reviewCmd: valueAfter(argv, "--review-cmd"),
+    reviewArgs: valuesAfter(argv, "--review-arg"),
     git: valueAfter(argv, "--git"),
     baseBranch: valueAfter(argv, "--base") ?? "main",
     qaFails: argv.includes("--qa-fails") || argv.includes("--churn"),
@@ -216,6 +233,17 @@ export function providersFromArgs(args: Args, events: readonly ExternalEvent[], 
             argsFor: (tc) => [...args.testArgs, tc.testCaseId],
             cwd: args.git ?? process.cwd(),
           }),
+    review:
+      args.reviewQueue !== undefined
+        ? directoryReview(args.reviewQueue)
+        : args.reviewCmd !== undefined
+          ? commandReview({
+              command: args.reviewCmd,
+              // The gate and the work id, in that order, after any fixed arguments. Never a title.
+              argsFor: (request) => [...args.reviewArgs, request.gate, request.workId],
+              cwd: args.git ?? process.cwd(),
+            })
+          : autoApproveReview(),
     change:
       args.git === undefined
         ? simulatedChangeControl()

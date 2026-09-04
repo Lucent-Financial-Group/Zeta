@@ -109,9 +109,15 @@ describe("the simulated family — the previous behaviour, now labelled", () => 
     expect(change.meta.describes).toContain("touches no repository");
   });
 
-  test("the simulated set covers all four ports, each one simulated", () => {
+  test("the simulated set covers all FIVE ports, each one simulated", () => {
     const set = simulatedProviders({ events: [EVENT], workSucceeds: true, testFallback: RunOutcome.Passed });
-    expect(set.map((p) => p.meta.port)).toEqual([Port.Intake, Port.WorkExecution, Port.TestExecution, Port.ChangeControl]);
+    expect(set.map((p) => p.meta.port)).toEqual([
+      Port.Intake,
+      Port.WorkExecution,
+      Port.TestExecution,
+      Port.Review,
+      Port.ChangeControl,
+    ]);
     for (const p of set) expect(p.meta.fidelity).toBe(Fidelity.Simulated);
   });
 });

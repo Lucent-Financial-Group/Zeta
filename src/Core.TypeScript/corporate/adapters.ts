@@ -33,7 +33,20 @@ import { spawnSync } from "node:child_process";
 import { existsSync, readdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 
-import { Fidelity, Port, type ChangeControlPort, type IntakeSource, type PortResult, type TestRunner, type WorkExecutor, type WorkOutcome } from "./providers";
+import {
+  Fidelity,
+  Port,
+  type ChangeControlPort,
+  type IntakeSource,
+  type PortResult,
+  type ReviewPort,
+  type ReviewRequest,
+  type ReviewVerdict,
+  type TestRunner,
+  type WorkExecutor,
+  type WorkOutcome,
+} from "./providers";
+import { GateOutcome } from "./quality-gate";
 import { RunOutcome, type TestCase } from "./qa";
 import type { ExternalEvent } from "./intake";
 import type { CascadeNode } from "./goal-cascade";
@@ -101,6 +114,171 @@ export function simulatedTestRunner(
         value: { outcome },
         evidence: [{ kind: "trace", ref: `planned:${testCase.testCaseId}:${outcome}` }],
       };
+    },
+  };
+}
+
+/**
+ * A gate that approves because nothing stopped it.
+ *
+ * EXACTLY the behaviour the register already had, and the reason this port exists. Six of the seven
+ * gates returned `Approved` with the reason "reviewed" — a constant — and nothing said so: the run
+ * reported four honest adapters and rubber-stamped its own architecture review in silence.
+ *
+ * Nothing about that behaviour changes here. What changes is that `describes` now says it, so a run
+ * that stamps its own homework says it is doing that.
+ */
+export function autoApproveReview(name = "auto-approve"): ReviewPort {
+  return {
+    meta: {
+      port: Port.Review,
+      name,
+      fidelity: Fidelity.Simulated,
+      describes: "approves every gate it is asked about; reads no evidence and consults nobody",
+    },
+    review: async (request) => ({
+      ok: true,
+      value: { outcome: GateOutcome.Approved, reason: "auto-approved — nothing reviewed this" },
+      evidence: [{ kind: "trace", ref: `auto-approved:${request.gate}:${request.workId}` }],
+    }),
+  };
+}
+
+/**
+ * A gate decided by a queue of filed verdicts — the human-review shape.
+ *
+ * Reads `<dir>/<workId>/<gate>.json` as `{ outcome, reason }`.
+ *
+ * A MISSING VERDICT IS A REFUSAL, never an approval. That is the whole difference between a review
+ * queue and a rubber stamp: "nobody has looked at this yet" must block, and the tempting shortcut —
+ * treat absence as consent so the pipeline keeps moving — turns the queue into the thing it
+ * replaced. An unreadable or malformed file is refused BY PATH for the same reason `directoryIntake`
+ * refuses one: a broken verdict and no verdict must not look alike.
+ */
+export function directoryReview(dir: string, name = "queue"): ReviewPort {
+  return {
+    meta: {
+      port: Port.Review,
+      name,
+      fidelity: Fidelity.Real,
+      describes: `reads filed gate verdicts from ${dir}; an unreviewed gate blocks`,
+    },
+    review: async (request) => {
+      const path = join(dir, request.workId, `${request.gate}.json`);
+      if (!existsSync(path)) {
+        return { ok: false, reason: `no verdict filed for '${request.gate}' on ${request.workId} (expected ${path})` };
+      }
+      let parsed: unknown;
+      try {
+        parsed = JSON.parse(readFileSync(path, "utf-8"));
+      } catch (err) {
+        return { ok: false, reason: `${path} is not valid JSON: ${err instanceof Error ? err.message : String(err)}` };
+      }
+      const shaped = parsed as Partial<ReviewVerdict>;
+      if (typeof shaped.outcome !== "string" || !GATE_OUTCOMES.includes(shaped.outcome as GateOutcome)) {
+        return { ok: false, reason: `${path} has no recognised outcome (have: ${GATE_OUTCOMES.join(", ")})` };
+      }
+      if (typeof shaped.reason !== "string" || shaped.reason.trim() === "") {
+        // A verdict with no reason is a vote, not a review — and the gate record would carry a bare
+        // word that nobody downstream can act on.
+        return { ok: false, reason: `${path} has no reason; a verdict without one is not a review` };
+      }
+      return {
+        ok: true,
+        value: { outcome: shaped.outcome as GateOutcome, reason: shaped.reason },
+        evidence: [{ kind: "document", ref: path }],
+      };
+    },
+  };
+}
+
+/**
+ * A gate decided by running an external check.
+ *
+ * Same rules as the other command adapters: no shell, arguments as an array, and the EXIT CODE
+ * decides — 0 approves, non-zero rejects. A check that could not run is a REFUSAL rather than a
+ * rejection, because "the linter is missing" is not a finding about the code.
+ */
+export function commandReview(input: {
+  readonly command: string;
+  readonly argsFor: (request: ReviewRequest) => readonly string[];
+  readonly cwd: string;
+  readonly timeoutMs?: number;
+  readonly name?: string;
+}): ReviewPort {
+  return {
+    meta: {
+      port: Port.Review,
+      name: input.name ?? "command",
+      fidelity: Fidelity.Real,
+      describes: `runs '${input.command}' per gate in ${input.cwd}; its exit code is the verdict`,
+    },
+    review: async (request) => {
+      const run = spawnSync(input.command, [...input.argsFor(request)], {
+        cwd: input.cwd,
+        encoding: "utf-8",
+        timeout: input.timeoutMs ?? 120_000,
+        shell: false,
+      });
+      if (run.error !== undefined) {
+        return { ok: false, reason: `'${input.command}' could not run: ${run.error.message}` };
+      }
+      const approved = run.status === 0;
+      const said = (run.stdout ?? "").trim();
+      return {
+        ok: true,
+        value: {
+          outcome: approved ? GateOutcome.Approved : GateOutcome.Rejected,
+          reason: said === "" ? `${input.command} exited ${String(run.status)}` : capture("said", said),
+        },
+        evidence: [
+          { kind: "trace", ref: `exit:${String(run.status)}` },
+          { kind: "log", ref: capture("stdout", run.stdout ?? "") },
+        ],
+      };
+    },
+  };
+}
+
+/**
+ * A gate decided by an agent — a model, or anything else that judges outside this process.
+ *
+ * LABELLED REAL, deliberately, even though the function handed in might be pure. An adapter that
+ * delegates to caller-supplied judgement cannot know whether that judgement is deterministic, and
+ * the two possible mistakes are not symmetric: calling a model `simulated` would let a run report
+ * itself replayable while a network decided its gates, whereas calling a pure function `real` only
+ * costs an unnecessary "not replayable". Conservative in the direction that cannot mislead.
+ *
+ * The judgement is CLAMPED to the outcomes a gate actually admits — same discipline as the menu:
+ * the code computes the legal set, the agent picks within it.
+ */
+export function agentReview(
+  judge: (request: ReviewRequest) => Promise<ReviewVerdict> | ReviewVerdict,
+  name = "agent",
+): ReviewPort {
+  return {
+    meta: {
+      port: Port.Review,
+      name,
+      fidelity: Fidelity.Real,
+      describes: "a judgement made outside this process decides each gate",
+    },
+    review: async (request) => {
+      let verdict: ReviewVerdict;
+      try {
+        verdict = await judge(request);
+      } catch (err) {
+        // A reviewer that threw did not approve. Letting the exception escape would take the whole
+        // organization down over one opinion.
+        return { ok: false, reason: `the reviewer failed on '${request.gate}': ${err instanceof Error ? err.message : String(err)}` };
+      }
+      if (!GATE_OUTCOMES.includes(verdict.outcome)) {
+        return { ok: false, reason: `the reviewer returned '${String(verdict.outcome)}', which is not a gate outcome` };
+      }
+      if (verdict.reason.trim() === "") {
+        return { ok: false, reason: `the reviewer gave no reason for '${request.gate}'` };
+      }
+      return { ok: true, value: verdict, evidence: [{ kind: "trace", ref: `agent:${request.gate}:${verdict.outcome}` }] };
     },
   };
 }
@@ -192,6 +370,15 @@ export function directoryIntake(dir: string, name = "directory"): IntakeSource {
     },
   };
 }
+
+/**
+ * Every outcome a gate may carry, derived from the enum rather than retyped.
+ *
+ * A hand-written copy would drift the moment an outcome is added: the new one would be refused at
+ * the boundary while working everywhere else, which reads as a broken reviewer rather than a stale
+ * list.
+ */
+const GATE_OUTCOMES: readonly GateOutcome[] = Object.values(GateOutcome);
 
 /** How much of a command's output is kept as evidence before it is truncated. */
 export const MAX_CAPTURED_OUTPUT = 4_000;
@@ -368,6 +555,7 @@ export function simulatedProviders(input: {
     simulatedIntake(input.events),
     simulatedWorkExecutor(input.workSucceeds),
     simulatedTestRunner(input.testPlan ?? new Map(), input.testFallback),
+    autoApproveReview(),
     simulatedChangeControl(),
   ] as const;
 }

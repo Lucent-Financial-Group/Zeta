@@ -38,6 +38,9 @@ describe("argument parsing", () => {
       // becomes an adapter, so the default is a decision made in one visible place.
       inbox: undefined, workCmd: undefined, testCmd: undefined, git: undefined, baseBranch: "main",
       workArgs: [], testArgs: [],
+      // Every gate unreviewed means AUTO-APPROVE — the register's own long-standing behaviour,
+      // which is now an adapter that says so rather than a constant nobody could see.
+      reviewQueue: undefined, reviewCmd: undefined, reviewArgs: [],
     });
     expect(parseArgs(["--store", "/tmp/x"]).store).toBe("/tmp/x");
   });

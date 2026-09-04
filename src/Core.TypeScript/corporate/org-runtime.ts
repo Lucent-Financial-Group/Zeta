@@ -89,8 +89,8 @@ import {
 import { bindWearerToLoop } from "./loop-policy";
 import { firstLegalChooser, preferChooser, type OrgChooser } from "./org-decision";
 import { reportsUpTo, type HatLevel, type OrgChart } from "./org-chart";
-import { fidelityOf, type ChangeHandle, type FidelityReport, type ProviderSet } from "./providers";
-import { simulatedChangeControl, simulatedIntake, simulatedTestRunner, simulatedWorkExecutor } from "./adapters";
+import { fidelityOf, type ChangeHandle, type FidelityReport, type ProviderSet, type ReviewVerdict } from "./providers";
+import { autoApproveReview, simulatedChangeControl, simulatedIntake, simulatedTestRunner, simulatedWorkExecutor } from "./adapters";
 import { associateGoal, EMPTY_BOOK, openPortfolio, type PortfolioKind } from "./portfolio";
 import {
   batchesFromCascade,
@@ -120,6 +120,7 @@ import {
   GateKind,
   GateOutcome,
   gateOwners,
+  ORDERED_GATES,
   runGateChain,
   type GateEvaluation,
   type GateRunResult,
@@ -339,6 +340,7 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
     intake: simulatedIntake(deps.externalEvents),
     work: simulatedWorkExecutor(true),
     tests: simulatedTestRunner(deps.qaPlan ?? new Map(), deps.qaFallback ?? RunOutcome.Passed),
+    review: autoApproveReview(),
     change: simulatedChangeControl(),
   };
   const fidelity = fidelityOf(providers);
@@ -1056,18 +1058,38 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
       fact: { kind: "qa_cycle", report: qa },
     });
 
-    // THE GATE READS QA. Runtime validation is not a choice when there is evidence.
-    const chooser: OrgChooser<GateOutcome> =
-      deps.gateChooser ??
-      ((legal, ctx) => {
-        if (ctx.includes(GateKind.RuntimeValidation)) {
-          const i = legal.indexOf(qaVerdict.outcome);
-          return i < 0
-            ? { index: legal.indexOf(GateOutcome.Rejected), reason: qaVerdict.reason }
-            : { index: i, reason: qaVerdict.reason };
-        }
-        return { index: legal.indexOf(GateOutcome.Approved), reason: "reviewed" };
+    // ── WHO DECIDES EACH GATE ─────────────────────────────────────────────
+    // Runtime validation is decided by the EVIDENCE and is not the reviewer's to overrule: green
+    // tests are green tests, and letting an opinion outrank them would put the one earned verdict
+    // back on the same footing as the six that were not.
+    //
+    // Every other gate goes to the REVIEW PORT. Until it existed they all returned `Approved` with
+    // the reason "reviewed" — a constant, so six of seven gates could not fail — and `fidelityOf`
+    // reported four ports and said nothing about it.
+    //
+    // The verdicts are fetched BEFORE the chain runs because `OrgChooser` is synchronous by design
+    // (the menu discipline: code computes the legal set, an agent picks within it, index clamped).
+    // Pre-resolving keeps that shape rather than making every chooser in the register async.
+    const reviewed = new Map<GateKind, ReviewVerdict>();
+    for (const gate of ORDERED_GATES) {
+      if (gate === GateKind.RuntimeValidation) continue;
+      const verdict = await providers.review.review({
+        gate,
+        workId: task.workId,
+        evidence: qa.runs.flatMap((r) => r.evidence),
       });
+      if (!verdict.ok) {
+        // A REVIEW THAT COULD NOT BE OBTAINED IS NOT AN APPROVAL. Failing closed is the only safe
+        // direction: "nobody was available to review this" and "this was reviewed and approved"
+        // are the two sentences an organization must never confuse.
+        refusals.push(`review '${providers.review.meta.name}' on ${gate} for ${task.workId}: ${verdict.reason}`);
+        reviewed.set(gate, { outcome: GateOutcome.Rejected, reason: `not reviewed: ${verdict.reason}` });
+        continue;
+      }
+      reviewed.set(gate, verdict.value);
+    }
+
+    const chooser: OrgChooser<GateOutcome> = deps.gateChooser ?? gateChooserFrom(reviewed, qaVerdict);
 
     let merged = false;
     for (let attempt = 1; attempt <= maxAttempts && !merged; attempt += 1) {
@@ -1362,6 +1384,46 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
 }
 
 /** Everyone who could be staffed, one agent per individual-contributor hat. */
+/**
+ * The chooser the gate chain consults: QA for runtime validation, the review port for the rest.
+ *
+ * EXTRACTED AND EXPORTED so every branch can be falsified. Inline, the "nobody answered" branch was
+ * unreachable — the runtime populates a verdict for every non-runtime gate and returns early for
+ * the runtime one — so it was a guard that could not fire, which is the vacuity class wearing a
+ * safety belt. As a function over a map it can be handed a map with a hole in it.
+ *
+ * Every unknown case FAILS CLOSED. Approving where no verdict exists would reintroduce the rubber
+ * stamp this port was built to remove, through the back door.
+ */
+export function gateChooserFrom(
+  reviewed: ReadonlyMap<GateKind, ReviewVerdict>,
+  qaVerdict: { readonly outcome: GateOutcome; readonly reason: string },
+): OrgChooser<GateOutcome> {
+  return (legal, ctx) => {
+    // Runtime validation is decided by the EVIDENCE and is not the reviewer's to overrule: green
+    // tests are green tests, and letting an opinion outrank them would put the one earned verdict
+    // back on the same footing as the six that were not.
+    if (ctx.includes(GateKind.RuntimeValidation)) {
+      const i = legal.indexOf(qaVerdict.outcome);
+      return i < 0
+        ? { index: legal.indexOf(GateOutcome.Rejected), reason: qaVerdict.reason }
+        : { index: i, reason: qaVerdict.reason };
+    }
+    const gate = ORDERED_GATES.find((g) => ctx.includes(g));
+    const verdict = gate === undefined ? undefined : reviewed.get(gate);
+    if (verdict === undefined) {
+      return { index: legal.indexOf(GateOutcome.Rejected), reason: `no reviewer answered for '${ctx}'` };
+    }
+    // The verdict is CLAMPED to what this hat may actually say — the same discipline as the menu:
+    // code computes the legal set, the judgement picks within it. A reviewer asking for an outcome
+    // its hat does not hold blocks rather than being silently upgraded to one that fits.
+    const i = legal.indexOf(verdict.outcome);
+    return i < 0
+      ? { index: legal.indexOf(GateOutcome.Rejected), reason: `'${verdict.outcome}' is not open to this hat: ${verdict.reason}` }
+      : { index: i, reason: verdict.reason };
+  };
+}
+
 export function agentsFromChart(chart: OrgChart, prefix = "agent"): readonly OrgAgent[] {
   return chart.hats
     .filter((h) => h.level === "individual_contributor")

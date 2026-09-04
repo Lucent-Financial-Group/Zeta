@@ -40,6 +40,7 @@
 import type { ExternalEvent } from "./intake";
 import type { CascadeNode } from "./goal-cascade";
 import type { RunOutcome, TestCase } from "./qa";
+import type { GateKind, GateOutcome } from "./quality-gate";
 import type { EvidenceRef } from "./discussion-anchor";
 
 /** Whether a provider actually touches anything outside this process. */
@@ -60,6 +61,16 @@ export const Port = {
   WorkExecution: "work_execution",
   /** What runs the tests. */
   TestExecution: "test_execution",
+  /**
+   * Who decides a quality gate.
+   *
+   * The last port added, and the one whose absence was loudest. Six of the seven gates returned
+   * `Approved` with the reason "reviewed" — a constant — while `fidelityOf` reported four ports and
+   * said nothing about it. So a run printed `DST-replayable: yes`, named four honest adapters, and
+   * rubber-stamped its own architecture review in silence. That is exactly the failure this whole
+   * layer exists to prevent, sitting one layer above where it was fixed.
+   */
+  Review: "review",
   /** What opens, reviews and merges a change. */
   ChangeControl: "change_control",
 } as const;
@@ -111,6 +122,38 @@ export interface TestRunner {
   ): Promise<PortResult<{ readonly outcome: RunOutcome }>>;
 }
 
+/** What a reviewer is asked to judge. */
+export interface ReviewRequest {
+  readonly gate: GateKind;
+  readonly workId: string;
+  /**
+   * What the organization already knows about this work — QA runs, traces, documents.
+   *
+   * Supplied so a reviewer can judge from evidence rather than from a title. A reviewer that
+   * ignores it is making a weaker judgement, and that is its business; a runtime that withheld it
+   * would be forcing one.
+   */
+  readonly evidence: readonly EvidenceRef[];
+}
+
+export interface ReviewVerdict {
+  readonly outcome: GateOutcome;
+  /** Why. Carried into the `GateEvaluation`, so a verdict is never a bare word. */
+  readonly reason: string;
+}
+
+/**
+ * Who decides a gate.
+ *
+ * A refusal is NOT an approval, and the runtime must treat it as blocking. "Nobody was available to
+ * review this" and "this was reviewed and approved" are the two sentences an organization must
+ * never confuse, and the failing-closed direction is the only safe default.
+ */
+export interface ReviewPort {
+  readonly meta: ProviderMeta;
+  review(request: ReviewRequest): Promise<PortResult<ReviewVerdict>>;
+}
+
 /** The change a piece of work becomes. Mirrors the lifecycle `change-control.ts` already models. */
 export interface ChangeHandle {
   readonly changeId: string;
@@ -124,7 +167,7 @@ export interface ChangeControlPort {
   merge(handle: ChangeHandle): Promise<PortResult<ChangeHandle>>;
 }
 
-export type AnyProvider = IntakeSource | WorkExecutor | TestRunner | ChangeControlPort;
+export type AnyProvider = IntakeSource | WorkExecutor | TestRunner | ReviewPort | ChangeControlPort;
 
 // ─── The registry ───────────────────────────────────────────────────────────
 
@@ -202,6 +245,7 @@ export interface ProviderSet {
   readonly intake: IntakeSource;
   readonly work: WorkExecutor;
   readonly tests: TestRunner;
+  readonly review: ReviewPort;
   readonly change: ChangeControlPort;
 }
 
@@ -212,7 +256,13 @@ export type ProviderSetResult =
 /** Resolve a whole set by name. The first refusal wins — a partly-resolved set is not a set. */
 export function resolveSet(
   registry: ProviderRegistry,
-  names: { readonly intake: string; readonly work: string; readonly tests: string; readonly change: string },
+  names: {
+    readonly intake: string;
+    readonly work: string;
+    readonly tests: string;
+    readonly review: string;
+    readonly change: string;
+  },
 ): ProviderSetResult {
   const intake = resolve<IntakeSource>(registry, Port.Intake, names.intake);
   if (!intake.ok) return intake;
@@ -220,11 +270,19 @@ export function resolveSet(
   if (!work.ok) return work;
   const tests = resolve<TestRunner>(registry, Port.TestExecution, names.tests);
   if (!tests.ok) return tests;
+  const review = resolve<ReviewPort>(registry, Port.Review, names.review);
+  if (!review.ok) return review;
   const change = resolve<ChangeControlPort>(registry, Port.ChangeControl, names.change);
   if (!change.ok) return change;
   return {
     ok: true,
-    set: { intake: intake.provider, work: work.provider, tests: tests.provider, change: change.provider },
+    set: {
+      intake: intake.provider,
+      work: work.provider,
+      tests: tests.provider,
+      review: review.provider,
+      change: change.provider,
+    },
   };
 }
 
@@ -245,7 +303,7 @@ export interface FidelityReport {
  * impossible to state by accident.
  */
 export function fidelityOf(set: ProviderSet): FidelityReport {
-  const ports = [set.intake.meta, set.work.meta, set.tests.meta, set.change.meta];
+  const ports = [set.intake.meta, set.work.meta, set.tests.meta, set.review.meta, set.change.meta];
   const realPorts = ports.filter((m) => m.fidelity === Fidelity.Real).map((m) => m.port);
   return { ports, replayable: realPorts.length === 0, realPorts };
 }

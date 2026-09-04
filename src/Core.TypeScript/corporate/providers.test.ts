@@ -26,6 +26,7 @@ import {
   type WorkExecutor,
 } from "./providers";
 import {
+  autoApproveReview,
   simulatedChangeControl,
   simulatedIntake,
   simulatedTestRunner,
@@ -48,6 +49,7 @@ const simulatedSet = (): ProviderSet => ({
   intake: simulatedIntake([EVENT]),
   work: simulatedWorkExecutor(true),
   tests: simulatedTestRunner(new Map(), RunOutcome.Passed),
+  review: autoApproveReview(),
   change: simulatedChangeControl(),
 });
 
@@ -141,6 +143,7 @@ describe("resolving a whole set", () => {
       simulatedIntake([EVENT], "fixture"),
       simulatedWorkExecutor(true, "assumed"),
       simulatedTestRunner(new Map(), RunOutcome.Passed, "planned"),
+      autoApproveReview("auto-approve"),
       simulatedChangeControl("in-memory"),
     ]);
     if (!r.ok) throw new Error(r.reason);
@@ -148,12 +151,12 @@ describe("resolving a whole set", () => {
   };
 
   test("names resolve to a complete set", () => {
-    const set = resolveSet(full(), { intake: "fixture", work: "assumed", tests: "planned", change: "in-memory" });
+    const set = resolveSet(full(), { intake: "fixture", work: "assumed", tests: "planned", review: "auto-approve", change: "in-memory" });
     expect(set.ok).toBe(true);
   });
 
   test("ONE missing name refuses the whole set — a partly-resolved set is not a set", () => {
-    const set = resolveSet(full(), { intake: "fixture", work: "assumed", tests: "planned", change: "github" });
+    const set = resolveSet(full(), { intake: "fixture", work: "assumed", tests: "planned", review: "auto-approve", change: "github" });
     expect(set.ok).toBe(false);
     if (!set.ok) expect(set.reason).toContain("github");
   });
@@ -164,7 +167,7 @@ describe("FIDELITY IS DERIVED, NEVER DECLARED", () => {
     const report = fidelityOf(simulatedSet());
     expect(report.replayable).toBe(true);
     expect(report.realPorts).toEqual([]);
-    expect(report.ports).toHaveLength(4);
+    expect(report.ports).toHaveLength(5);
     for (const p of report.ports) expect(p.describes.length).toBeGreaterThan(5);
   });
 
@@ -184,6 +187,6 @@ describe("FIDELITY IS DERIVED, NEVER DECLARED", () => {
 
   test("every port appears in the report — a set cannot hide one", () => {
     const ports = fidelityOf(simulatedSet()).ports.map((p) => p.port).sort();
-    expect(ports).toEqual([Port.ChangeControl, Port.Intake, Port.TestExecution, Port.WorkExecution].sort());
+    expect(ports).toEqual([Port.ChangeControl, Port.Intake, Port.Review, Port.TestExecution, Port.WorkExecution].sort());
   });
 });

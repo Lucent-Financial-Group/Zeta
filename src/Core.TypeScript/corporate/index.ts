@@ -593,14 +593,21 @@ export {
   type ProviderMeta,
   type ProviderRegistry,
   type ProviderSet,
+  type ReviewPort,
+  type ReviewRequest,
+  type ReviewVerdict,
   type TestRunner,
   type WorkExecutor,
   type WorkOutcome,
 } from "./providers";
 export {
+  agentReview,
+  autoApproveReview,
+  commandReview,
   commandTestRunner,
   commandWorkExecutor,
   directoryIntake,
+  directoryReview,
   gitChangeControl,
   inboxOrder,
   MAX_CAPTURED_OUTPUT,
@@ -610,4 +617,5 @@ export {
   simulatedTestRunner,
   simulatedWorkExecutor,
 } from "./adapters";
+export { gateChooserFrom } from "./org-runtime";
 export { parseArgs as parseOrgArgs, providersFromArgs, type Args as OrgRunArgs } from "./run-org";
