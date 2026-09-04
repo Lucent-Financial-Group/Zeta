@@ -489,11 +489,17 @@ let ``BlockCas Put of an existing key does not rewrite bits`` () =
     let device = SimulatedBlockIo(4096)
     let cas = BlockCas(device)
     cas.Put("aa", [| 1uy; 2uy; 3uy |])
-    let writes = device.Writes
+    let writesAfterFirstPut = device.Writes
+    // The first Put must have driven at least the payload append and the
+    // superblock publish, so the count is strictly positive. Asserting this
+    // keeps the idempotency claim below riding on a check that can fail
+    // rather than a vacuous self-comparison.
+    Assert.True(writesAfterFirstPut > 0, "first Put must issue block writes")
     Assert.Equal(1, cas.Count)
     cas.Put("aa", [| 1uy; 2uy; 3uy |])
     Assert.Equal(1, cas.Count)
-    Assert.Equal(writes, device.Writes)
+    // The idempotent re-Put of an identical key must add exactly zero writes.
+    Assert.Equal(0, device.Writes - writesAfterFirstPut)
 
 [<Fact>]
 let ``BlockSuper log dual slot keeps previous logical after crash-mid-write`` () =
