@@ -1462,3 +1462,55 @@ let ``POSIX freeze of the same ContentId does not rewrite object bits`` () : Tas
             ZetaFsFreeze.dispose volume
             FileSystem.Reset()
     }
+
+[<Fact>]
+let ``reclaim crash-mid-sweep of extra garbage keeps a committed freeze readable`` () : Task =
+    task {
+        ensureHasher ()
+        let mock = InMemoryFileSystem()
+        FileSystem.Register(mock)
+        let store = "/freeze-reclaim-crash"
+        let mutbuf = ZetaFsMutbuf.create store ZetaFsMutbuf.Coherence.Shared
+        let volume = ZetaFsFreeze.createManualStream store mutbuf None
+        let dummy (n: byte) : ContentHash256 =
+            { Raw = Array.init 32 (fun i -> if i = 0 then n else 0uy) }
+
+        try
+            let id = mintId ()
+            let h = ZetaFsMutbuf.openHandle volume.Mutbuf id
+            ZetaFsMutbuf.pwrite volume.Mutbuf h 0L [| 1uy; 2uy; 3uy |] |> ignore
+            let pending = (freezeAsync volume id ZetaFsFreeze.Journaled).AsTask()
+            do! (ZetaFsFreeze.pumpLog volume CancellationToken.None).ConfigureAwait(false)
+            let! first = pending.ConfigureAwait(false)
+
+            match first with
+            | Error e -> Assert.Fail(ZetaFsFreeze.errorName e)
+            | Ok first ->
+                let live =
+                    FileSystem.Current.GetFiles(ZetaFsPath.combine2 store "objects", "*")
+
+                Assert.True(live.Length > 0)
+                let g1 = ZetaFsPath.combine2 store "g1"
+                let g2 = ZetaFsPath.combine2 store "g2"
+                FileSystemIo.writeAllBytes FileSystem.Current g1 [| 9uy |]
+                FileSystemIo.writeAllBytes FileSystem.Current g2 [| 8uy |]
+                mock.ArmCrashOnDelete "g1"
+                let ex =
+                    Assert.Throws<CrashMidSweepException>(fun () ->
+                        ZetaFsReclaim.apply
+                            FileSystem.Current
+                            [| dummy 1uy, g1; dummy 2uy, g2 |]
+                            { Bytes = 100UL; Count = 10 }
+                        |> ignore)
+
+                Assert.Equal(g1, ex.Path)
+                Assert.False(FileSystem.Current.Exists g1)
+                Assert.True(FileSystem.Current.Exists g2)
+                Assert.True(ZetaFsFreeze.isReadable volume first.Content)
+
+                for p in live do
+                    Assert.True(FileSystem.Current.Exists p)
+        finally
+            ZetaFsFreeze.dispose volume
+            FileSystem.Reset()
+    }
