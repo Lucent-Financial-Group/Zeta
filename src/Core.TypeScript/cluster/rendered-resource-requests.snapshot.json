@@ -74,7 +74,9 @@
               "memoryMib": 64
             }
           ],
-          "overlaid": ["full-ai-cluster/agent-memory/memory-keeper"]
+          "overlaid": [
+            "full-ai-cluster/agent-memory/memory-keeper"
+          ]
         },
         {
           "appId": "full-ai-cluster/alloy",
@@ -104,7 +106,9 @@
               "memoryMib": 64
             }
           ],
-          "overlaid": ["full-ai-cluster/arc-controller/manager"]
+          "overlaid": [
+            "full-ai-cluster/arc-controller/manager"
+          ]
         },
         {
           "appId": "full-ai-cluster/arc-runner-set",
@@ -315,7 +319,9 @@
               "memoryMib": 64
             }
           ],
-          "overlaid": ["full-ai-cluster/cloudnativepg/manager"]
+          "overlaid": [
+            "full-ai-cluster/cloudnativepg/manager"
+          ]
         },
         {
           "appId": "full-ai-cluster/cockroachdb",
@@ -464,7 +470,9 @@
               "memoryMib": 2048
             }
           ],
-          "overlaid": ["full-ai-cluster/game-hosting/gmod/server"]
+          "overlaid": [
+            "full-ai-cluster/game-hosting/gmod/server"
+          ]
         },
         {
           "appId": "full-ai-cluster/gitlab",
@@ -1116,7 +1124,10 @@
               "memoryMib": 96
             }
           ],
-          "overlaid": ["full-ai-cluster/platform/controller", "full-ai-cluster/platform/portal"]
+          "overlaid": [
+            "full-ai-cluster/platform/controller",
+            "full-ai-cluster/platform/portal"
+          ]
         },
         {
           "appId": "full-ai-cluster/qwen-coder",
@@ -1139,7 +1150,9 @@
               "memoryMib": 64
             }
           ],
-          "overlaid": ["full-ai-cluster/redis"]
+          "overlaid": [
+            "full-ai-cluster/redis"
+          ]
         },
         {
           "appId": "full-ai-cluster/sealed-secrets",
@@ -1175,7 +1188,9 @@
               "memoryMib": 0
             }
           ],
-          "overlaid": ["full-ai-cluster/seaweedfs/all-in-one"]
+          "overlaid": [
+            "full-ai-cluster/seaweedfs/all-in-one"
+          ]
         },
         {
           "appId": "full-ai-cluster/spire",
@@ -1624,7 +1639,9 @@
               "memoryMib": 64
             }
           ],
-          "overlaid": ["full-ai-cluster/agent-memory/memory-keeper"]
+          "overlaid": [
+            "full-ai-cluster/agent-memory/memory-keeper"
+          ]
         },
         {
           "appId": "full-ai-cluster/alloy",
@@ -1654,7 +1671,9 @@
               "memoryMib": 128
             }
           ],
-          "overlaid": ["full-ai-cluster/arc-controller/manager"]
+          "overlaid": [
+            "full-ai-cluster/arc-controller/manager"
+          ]
         },
         {
           "appId": "full-ai-cluster/arc-runner-set",
@@ -1865,7 +1884,9 @@
               "memoryMib": 128
             }
           ],
-          "overlaid": ["full-ai-cluster/cloudnativepg/manager"]
+          "overlaid": [
+            "full-ai-cluster/cloudnativepg/manager"
+          ]
         },
         {
           "appId": "full-ai-cluster/cockroachdb",
@@ -2014,7 +2035,9 @@
               "memoryMib": 2048
             }
           ],
-          "overlaid": ["full-ai-cluster/game-hosting/gmod/server"]
+          "overlaid": [
+            "full-ai-cluster/game-hosting/gmod/server"
+          ]
         },
         {
           "appId": "full-ai-cluster/gitlab",
@@ -2666,7 +2689,10 @@
               "memoryMib": 96
             }
           ],
-          "overlaid": ["full-ai-cluster/platform/controller", "full-ai-cluster/platform/portal"]
+          "overlaid": [
+            "full-ai-cluster/platform/controller",
+            "full-ai-cluster/platform/portal"
+          ]
         },
         {
           "appId": "full-ai-cluster/qwen-coder",
@@ -2689,7 +2715,9 @@
               "memoryMib": 128
             }
           ],
-          "overlaid": ["full-ai-cluster/redis"]
+          "overlaid": [
+            "full-ai-cluster/redis"
+          ]
         },
         {
           "appId": "full-ai-cluster/sealed-secrets",
@@ -2725,7 +2753,9 @@
               "memoryMib": 0
             }
           ],
-          "overlaid": ["full-ai-cluster/seaweedfs/all-in-one"]
+          "overlaid": [
+            "full-ai-cluster/seaweedfs/all-in-one"
+          ]
         },
         {
           "appId": "full-ai-cluster/spire",

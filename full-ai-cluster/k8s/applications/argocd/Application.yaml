@@ -35,7 +35,13 @@ spec:
     # commit as the bootstrap pin for exactly the reason above. The render
     # evidence lives beside that pin rather than being restated here, so there is
     # one copy of it to go stale.
-    targetRevision: 10.7.0
+    # 10.7.0 -> 10.7.2 on 2026-09-04: a PURE CHART bump -- appVersion is v3.5.2 at both,
+    # checked against the live repo index, so ArgoCD itself does not move. All FOUR pin sites
+    # move together (this Application, k8s/bootstrap/argocd-install.yaml, and the kind and k3d
+    # bootstraps in dev-cluster/use-cases.ts) because 2026-09-03 made them EQUAL on purpose: a
+    # bootstrap behind the self-managed Application means a mid-run self-upgrade, which is
+    # exactly the failure that cached the seaweedfs manifest error.
+    targetRevision: 10.7.2
     helm:
       releaseName: argocd
       valuesObject:

@@ -909,7 +909,7 @@
       "dynamic": [],
       "charts": ["<root>=hindsight@0.9.2"]
     },
-    "https://argoproj.github.io/argo-helm|argo-cd|10.7.0": {
+    "https://argoproj.github.io/argo-helm|argo-cd|10.7.2": {
       "literal": {
         "apiVersionOverrides": {},
         "applicationSet": {
@@ -3398,7 +3398,7 @@
         "server.vpa.startupBoost"
       ],
       "dynamic": [],
-      "charts": ["<root>=argo-cd@10.7.0", "redis-ha=redis-ha@4.38.0"]
+      "charts": ["<root>=argo-cd@10.7.2", "redis-ha=redis-ha@4.38.0"]
     },
     "https://argoproj.github.io/argo-helm|argo-rollouts|2.39.5": {
       "literal": {
@@ -21081,7 +21081,7 @@
         "prometheus=prometheus@25.22.0"
       ]
     },
-    "https://grafana-community.github.io/helm-charts|loki|18.11.7": {
+    "https://grafana-community.github.io/helm-charts|loki|18.12.1": {
       "literal": {
         "annotations": {},
         "backend": {
@@ -25145,7 +25145,7 @@
       ],
       "dynamic": [],
       "charts": [
-        "<root>=loki@18.11.7",
+        "<root>=loki@18.12.1",
         "minio=minio@5.4.0",
         "rollout_operator.crds=crds@0.1.0",
         "rollout_operator=rollout-operator@0.51.1"
@@ -40099,9 +40099,9 @@
     {
       "appId": "full-ai-cluster/argocd",
       "chart": "argo-cd",
-      "targetRevision": "10.7.0",
+      "targetRevision": "10.7.2",
       "repoURL": "https://argoproj.github.io/argo-helm",
-      "chartKey": "https://argoproj.github.io/argo-helm|argo-cd|10.7.0"
+      "chartKey": "https://argoproj.github.io/argo-helm|argo-cd|10.7.2"
     },
     {
       "appId": "full-ai-cluster/cdi",
@@ -40257,9 +40257,9 @@
     {
       "appId": "full-ai-cluster/loki",
       "chart": "loki",
-      "targetRevision": "18.11.7",
+      "targetRevision": "18.12.1",
       "repoURL": "https://grafana-community.github.io/helm-charts",
-      "chartKey": "https://grafana-community.github.io/helm-charts|loki|18.11.7"
+      "chartKey": "https://grafana-community.github.io/helm-charts|loki|18.12.1"
     },
     {
       "appId": "full-ai-cluster/longhorn",

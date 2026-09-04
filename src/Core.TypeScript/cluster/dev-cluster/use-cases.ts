@@ -397,7 +397,13 @@ export function bringUpKindCiCluster(ports: DevClusterPorts, options: KindCiBrin
       // 2026-09-01; this kind-lane pin was the one left behind. Pinned to 10.7.0 to
       // EQUAL the self-managed Application, so bootstrap and self-management agree and
       // no mid-run upgrade happens at all.
-      version: "10.7.0",
+      // 10.7.0 -> 10.7.2 on 2026-09-04: a PURE CHART bump -- appVersion is v3.5.2 at both, checked
+      // against the live repo index, so ArgoCD itself does not move. All FOUR pin sites move
+      // together (this Application, k8s/bootstrap/argocd-install.yaml, and the kind and k3d
+      // bootstraps in dev-cluster/use-cases.ts) because 2026-09-03 made them EQUAL on purpose: a
+      // bootstrap behind the self-managed Application means a mid-run self-upgrade, which is exactly
+      // the failure that cached the seaweedfs manifest error.
+      version: "10.7.2",
       namespace: "argocd",
       setValues: ["server.service.type=ClusterIP"],
       wait: true,
@@ -754,7 +760,13 @@ export function bringUpK3dDevCluster(ports: DevClusterPorts, options: K3dDevBrin
       // 7.7.10 -> 10.7.0 on 2026-09-03 -- same reason and same measurement as the
       // default-profile install above (Helm-4-only `fromToml` in seaweedfs; cached
       // repo-server error survives the self-upgrade). Kept equal to the Application.
-      version: "10.7.0",
+      // 10.7.0 -> 10.7.2 on 2026-09-04: a PURE CHART bump -- appVersion is v3.5.2 at both, checked
+      // against the live repo index, so ArgoCD itself does not move. All FOUR pin sites move
+      // together (this Application, k8s/bootstrap/argocd-install.yaml, and the kind and k3d
+      // bootstraps in dev-cluster/use-cases.ts) because 2026-09-03 made them EQUAL on purpose: a
+      // bootstrap behind the self-managed Application means a mid-run self-upgrade, which is exactly
+      // the failure that cached the seaweedfs manifest error.
+      version: "10.7.2",
       namespace: "argocd",
       // ClusterIP, NOT LoadBalancer -- and this line is downstream of installing
       // the shipped Cilium surface above.
