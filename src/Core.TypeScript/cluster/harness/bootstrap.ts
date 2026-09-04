@@ -27,7 +27,7 @@ export interface KindBootstrapOptions {
    * Serve a rung-applied copy of the tree in-cluster and point ArgoCD at it.
    * See `KindCiBringUpOptions.laneTree`; absent leaves the committed tree in use.
    */
-  readonly laneTree?: { readonly manifests: string; readonly repoUrl: string };
+  readonly laneTree?: { readonly manifests: string; readonly repoUrl: string; readonly gitRef?: string };
 }
 
 export function bootstrapKindClusterInProcess(options: KindBootstrapOptions): void {
@@ -68,7 +68,7 @@ export interface K3dBootstrapOptions {
    * Same field as `KindBootstrapOptions.laneTree`; absent leaves the committed
    * tree in use.
    */
-  readonly laneTree?: { readonly manifests: string; readonly repoUrl: string };
+  readonly laneTree?: { readonly manifests: string; readonly repoUrl: string; readonly gitRef?: string };
 }
 
 export function bootstrapK3dClusterInProcess(options: K3dBootstrapOptions): void {

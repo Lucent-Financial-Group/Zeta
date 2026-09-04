@@ -8,7 +8,9 @@ import { parseAllDocuments } from "yaml";
 
 import {
   MAX_TREE_BYTES,
+  SERVED_GIT_REF,
   SERVED_SUBTREE,
+  buildBareRepo,
   buildLaneTreeBundle,
   laneTreeRepoUrl,
   renderLaneTreeManifests,
@@ -147,6 +149,29 @@ describe("the full bundle, built against the live tree", () => {
     expect(existsSync(join(bundle.repo.dir, "objects/info/packs"))).toBe(true);
   });
 
+  test("the served branch is always main, even when gitRef is a provenance label", () => {
+    // gitRef: "lane" above is the COMMIT MESSAGE. ArgoCD clones refs/heads/main.
+    const refs = readFileSync(join(bundle.repo.dir, "info/refs"), "utf8");
+    expect(refs).toMatch(/refs\/heads\/main(?:\s|$)/);
+    expect(refs).not.toContain("refs/heads/lane");
+    const subject = execFileSync("git", ["-C", bundle.repo.dir, "log", "-1", "--format=%s"], {
+      encoding: "utf8",
+    }).trim();
+    expect(subject).toBe("lane tree (lane)");
+    expect(SERVED_GIT_REF).toBe("main");
+  });
+
+  test("there is no GitHub http-alternates — a missing SHA is a miss, not a metal fetch", () => {
+    // gitpull.html already reads git objects over dumb HTTP from GitHub Pages
+    // (`/repo.git/objects/…`) to dodge CORS. That is a real client. THIS pack
+    // still must not list an alternate: serving the GitHub SHA would return
+    // the committed metal tree, the silent fallback the overlay exists to
+    // refuse. A future in-cluster object-cache is that client in this pod,
+    // and it lands with its own falsifier, not by writing this file.
+    expect(existsSync(join(bundle.repo.dir, "objects/info/http-alternates"))).toBe(false);
+    expect(existsSync(join(bundle.repo.dir, "objects/info/alternates"))).toBe(false);
+  });
+
   test("the packed tree fits the ConfigMap budget, with the measurement printed", () => {
     console.log(
       `[lane-tree] packed ${String(bundle.packedBytes)} bytes of ${String(MAX_TREE_BYTES)} ` +
@@ -170,6 +195,29 @@ describe("the full bundle, built against the live tree", () => {
         applyRung: () => 0,
       }),
     ).toThrow(/produced 0 edits/);
+  });
+});
+
+describe("buildBareRepo against a GitHub SHA", () => {
+  test("the GitHub SHA is not a fetchable object of the served repo", () => {
+    // MEASURED 33822942615: ArgoCD treated the 40-hex PR SHA as an object,
+    // `git fetch origin dc2e16e3e…`, then `Unable to find` / `Cannot obtain
+    // needed object`. The served commit is a NEW hash. This is that miss,
+    // asserted without packing the live tree.
+    const githubSha = "dc2e16e3e949d17ad76b77b7196d45202a46f9a1";
+    const staging = join(work, "sha-stage");
+    mkdirSync(join(staging, SERVED_SUBTREE), { recursive: true });
+    writeFileSync(join(staging, SERVED_SUBTREE, "a.yaml"), "kind: ConfigMap\n");
+    const repo = buildBareRepo(staging, join(work, "sha.git"), githubSha);
+    const refs = readFileSync(join(repo.dir, "info/refs"), "utf8");
+    expect(refs).toContain(`refs/heads/${SERVED_GIT_REF}`);
+    expect(refs).not.toContain(githubSha);
+    expect(repo.sha).not.toBe(githubSha);
+    expect(() =>
+      execFileSync("git", ["-C", repo.dir, "cat-file", "-e", githubSha], {
+        stdio: ["ignore", "pipe", "pipe"],
+      }),
+    ).toThrow();
   });
 });
 

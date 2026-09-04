@@ -786,6 +786,25 @@ Client-side apply stores the whole ConfigMap YAML in
 so Cilium owns L4. That is not the ClusterIP hole; it is the metal
 match.
 
+**MEASURED live-k3d + live-kind-included 33822942615 (SHA `dc2e16e3e`):**
+SSA applied. ArgoCD then failed
+`Failed to checkout revision dc2e16e3e…` /
+`Unable to find dc2e16e3e… under http://zeta-lane-tree…/tree.git` /
+`Cannot obtain needed object`. The served repo is a fresh `git init`
+whose commit SHA is new. ArgoCD treats a 40-hex `targetRevision` as
+an OBJECT, not a branch. Child Applications already said
+`targetRevision: main`. Catalog now asks for `main`. A GitHub SHA
+passthrough would return the committed metal tree — the silent
+fallback `--serve-tree` exists to refuse. Same shape as GHCR not
+being a docker.io pull-through (081M1F1ZG0A). Dumb HTTP against
+GitHub Pages already exists (`gitpull.html` / `git-dumb-http`); the
+forge clone URL is still smart HTTP. Wiring that reader into this
+pod is how we learn in-cluster git over time, and it must not
+satisfy a GitHub SHA with the un-overlaid tree. Three git surfaces:
+host `git` 2.43.x writes the pack; busybox 1.37.0 httpd has no git;
+Argo CD v3.5.2 repo-server (`argo-cd` 10.7.0) clones with Ubuntu
+26.04's `git` CLI.
+
 ## CI runner budgets (three existing ladders)
 
 Do not invent a fourth. Do not shrink metal.

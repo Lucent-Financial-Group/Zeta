@@ -222,6 +222,21 @@ describe("081KSXN940008QG0R000SCP2H1 argocd-health-test argument parsing", () =>
     expect(window).toContain("laneTree");
   });
 
+  test("the served tree's catalog ref is main, never the GitHub SHA", () => {
+    // MEASURED 33822942615: buildLaneTreeForProfile used to return the PR SHA
+    // as laneTree.gitRef; ArgoCD then fetched that SHA as an object.
+    const src = readFileSync(new URL("./argocd-health-test.ts", import.meta.url), "utf8");
+    const fn = src.slice(src.indexOf("function buildLaneTreeForProfile"), src.indexOf("function bootstrapCluster"));
+    expect(fn).toContain("gitRef: SERVED_GIT_REF");
+  });
+
+  test("--serve-tree skips the GitHub-SHA git-ref patch", () => {
+    const src = readFileSync(new URL("./argocd-health-test.ts", import.meta.url), "utf8");
+    const fn = src.slice(src.indexOf("async function waitForArgoCd"), src.indexOf("async function waitForRepoBackedChild"));
+    expect(fn).toContain("serveTreeProfile");
+    expect(fn.indexOf("serveTreeProfile")).toBeLessThan(fn.indexOf("patchGitBackedApplicationsToGitRef"));
+  });
+
   test("switches kind runs to the CI kind profile by default", () => {
     const parsed = parseArgs(["--run", "--provider", "kind"], {});
     expect("kind" in parsed).toBe(false);
@@ -1151,6 +1166,13 @@ describe("081KSXN940008QG0R000SCP2H1 argocd-health-test planning", () => {
         repoURL: "https://grafana.github.io/helm-charts",
         chart: "loki",
         targetRevision: "6.18.0",
+      }),
+    ).toBe(false);
+    expect(
+      isZetaGitDirectoryApplicationSource({
+        repoURL: "http://zeta-lane-tree.zeta-lane-tree.svc.cluster.local:8080/tree.git",
+        targetRevision: "main",
+        path: "full-ai-cluster/k8s/applications/hat-system",
       }),
     ).toBe(false);
   });

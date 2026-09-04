@@ -40,7 +40,7 @@ import {
   type DevBootstrapSecretSpec,
 } from "./dev-cluster/lib.ts";
 import { DEFAULT_ROOT_DEV_CATALOG, ciliumOwnsCniSlot, type KindCni } from "./ports.ts";
-import { buildLaneTreeBundle, laneTreeRepoUrl } from "./lane-tree-source.ts";
+import { buildLaneTreeBundle, laneTreeRepoUrl, SERVED_GIT_REF } from "./lane-tree-source.ts";
 import { applyResourceProfile, loadResourceCatalogue } from "./storage-profiles.ts";
 // Ordinal (code-point) ordering, per .claude/rules/culture-invariant-by-default.md.
 // NOT localeCompare: it is culture-SENSITIVE, so the same directory names sort
@@ -1958,7 +1958,7 @@ function waitForKubectl(
 function buildLaneTreeForProfile(
   profile: string | null,
   gitRef: string,
-): { readonly manifests: string; readonly repoUrl: string } | null {
+): { readonly manifests: string; readonly repoUrl: string; readonly gitRef: string } | null {
   if (profile === null) return null;
   const catalogue = loadResourceCatalogue();
   if (!catalogue.profiles.includes(profile)) {
@@ -1968,9 +1968,9 @@ function buildLaneTreeForProfile(
   const bundle = buildLaneTreeBundle({
     repoRoot: REPO_ROOT,
     workDir,
-    // The served repository's branch is the ref the root Application asks for, so
-    // the two agree by construction. Naming it after the rung instead would mean
-    // the root app requests `main` from a repository whose only branch is `dev`.
+    // Provenance only (commit message). The served BRANCH is always
+    // SERVED_GIT_REF (`main`). Naming it after a GitHub SHA made ArgoCD fetch
+    // that SHA as an object the served repo does not contain (33822942615).
     gitRef,
     image: LANE_TREE_IMAGE,
     applyRung: (stagedRoot: string) => applyResourceProfile(catalogue, profile, stagedRoot).length,
@@ -1978,9 +1978,10 @@ function buildLaneTreeForProfile(
   console.log(
     `[serve-tree] rung=${profile} files=${String(bundle.staged.files)} ` +
       `repoURL-rewrites=${String(bundle.staged.rewritten.length)} ` +
-      `packed=${String(bundle.packedBytes)}B commit=${bundle.repo.sha.slice(0, 12)}`,
+      `packed=${String(bundle.packedBytes)}B commit=${bundle.repo.sha.slice(0, 12)} ` +
+      `targetRevision=${SERVED_GIT_REF}`,
   );
-  return { manifests: bundle.manifests, repoUrl: laneTreeRepoUrl() };
+  return { manifests: bundle.manifests, repoUrl: laneTreeRepoUrl(), gitRef: SERVED_GIT_REF };
 }
 
 function bootstrapCluster(plan: HarnessPlan, options: CliOptions): Failure | null {
@@ -2486,6 +2487,11 @@ async function waitForArgoCd(plan: HarnessPlan, options: CliOptions): Promise<Fa
   );
   if (rootFailure !== null) return rootFailure;
 
+  // `--serve-tree` already pointed every rewritten Application at SERVED_GIT_REF
+  // (`main`) on a repo whose only branch is `main`. Patching those to the GitHub
+  // SHA is 33822942615: ArgoCD fetches the SHA as an object the served repo does
+  // not contain. GitHub-hosted PR trees still take the patch below.
+  if (options.serveTreeProfile !== null) return null;
   if (plan.gitRef === "main") return null;
 
   const childFailure = await waitForRepoBackedChild(poll);

@@ -68,6 +68,40 @@
  * some hardened git builds, and a transport that might be refused is a transport
  * this lane should not depend on.
  *
+ * -- THREE GIT SURFACES, NOT THREE VERSIONS OF ONE BINARY --------------------
+ *   BUILDER  host `git` in `buildBareRepo`. GitHub `ubuntu-24.04` is 2.43.x
+ *            (this checkout: 2.43.0). That is the only git that WRITES the tree.
+ *   SERVER   none. `busybox:1.37.0` `httpd`. No git, no CGI, no credentials.
+ *   CLIENT   Argo CD v3.5.2 repo-server (`quay.io/argoproj/argocd:v3.5.2`,
+ *            chart `argo-cd` 10.7.0) clones with the distro `git` CLI from
+ *            `ubuntu:26.04`, not go-git and not libgit2. That is the process
+ *            that fetches this server.
+ *
+ * -- WHY THIS IS NOT A GITHUB PULL-THROUGH -----------------------------------
+ * Same shape as GHCR not being a docker.io pull-through (081M1F1ZG0A). A
+ * missing SHA cannot be fetched from GitHub by THIS server:
+ *
+ *   1. The pod is busybox httpd. Dumb HTTP serves files packed into the
+ *      ConfigMap and nothing else. The TypeScript dumb-HTTP reader already
+ *      exists (`docs/design/root-site-iris/site/gitpull.html`, browser-node
+ *      adapter `git-dumb-http`): GET `/objects/ab/cd…` + inflate, same-origin
+ *      so CORS never fires. That client talks to a GitHub *Pages* bare repo
+ *      (`/repo.git/`), not to this pod. Putting it here is a different job.
+ *   2. `git clone github.com/...` is smart HTTP (`git-upload-pack`). Pointing
+ *      `objects/info/http-alternates` at the forge clone URL therefore 404s.
+ *      Pointing it at a Pages-hosted `/repo.git/` is the gitpull.html shape
+ *      and could serve missing *blobs*. The miss on 33822942615 was the
+ *      GitHub COMMIT object itself, which Pages does not rewrite into the
+ *      overlay commit.
+ *   3. Fetching the GitHub SHA would return the COMMITTED metal tree. That is
+ *      the silent fallback this override exists to refuse. MEASURED
+ *      33822942615: ArgoCD asked for `dc2e16e3e…` as an OBJECT; the served
+ *      commit is a NEW hash. Serve `main`; ask for `main`.
+ *
+ * A future object-cache (gitpull.html's `loadObject`, in-cluster) is welcome
+ * and is how we will learn to work with in-cluster git. It still must not
+ * satisfy a GitHub SHA with the un-overlaid tree.
+ *
  * -- WHY THE TREE TRAVELS AS A ConfigMap -------------------------------------
  * MEASURED 2026-09-03: `full-ai-cluster/k8s` is 367 KiB gzipped, `applications/`
  * alone 214 KiB. That fits one ConfigMap with room to spare, so the tree can be
@@ -122,6 +156,20 @@ export const LANE_TREE_NAMESPACE = "zeta-lane-tree";
 export const LANE_TREE_NAME = "zeta-lane-tree";
 export const LANE_TREE_PORT = 8080;
 export const LANE_TREE_REPO_PATH = "tree.git";
+
+/**
+ * Branch the served repository actually has, and therefore the only
+ * `targetRevision` ArgoCD may request from it.
+ *
+ * MEASURED live-k3d + live-kind-included 33822942615: the served repo was
+ * initialised with `--initial-branch <GitHub SHA>` and the root Application
+ * asked for that SHA. ArgoCD treats a 40-hex `targetRevision` as an OBJECT,
+ * not a branch: `git fetch origin dc2e16e3e…` then
+ * `Unable to find dc2e16e3e…` / `Cannot obtain needed object`. The commit in
+ * the served repo is a NEW hash. Child Applications already say
+ * `targetRevision: main`. Serve `main`; ask for `main`.
+ */
+export const SERVED_GIT_REF = "main";
 
 /**
  * How a repoURL is recognised as pointing at THIS repository.
@@ -251,7 +299,7 @@ export function buildBareRepo(stagingRoot: string, bareDir: string, gitRef: stri
   const git = (cwd: string, ...args: readonly string[]): string =>
     execFileSync("git", args, { cwd, encoding: "utf8", stdio: ["ignore", "pipe", "pipe"] }).trim();
 
-  git(stagingRoot, "init", "--quiet", "--initial-branch", gitRef);
+  git(stagingRoot, "init", "--quiet", "--initial-branch", SERVED_GIT_REF);
   // Identity is set on the repository, never globally: this runs on a shared
   // runner and on developer machines, and a tool that edits a user's global git
   // config to do its own job is reaching outside its declared channel.

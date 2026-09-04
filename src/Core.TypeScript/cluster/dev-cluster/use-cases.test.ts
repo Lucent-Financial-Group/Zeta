@@ -843,6 +843,18 @@ describe("the lane-tree resource-rung override point", () => {
     expect(log).not.toContain(`catalog:main@${kindOptions.gitRepoUrl}`);
   });
 
+  test("a GitHub SHA on the PR does not become the served targetRevision", () => {
+    // MEASURED 33822942615: catalog asked for dc2e16e3e… from a repo whose
+    // only commit is a new hash. Default catalogRef is SERVED_GIT_REF even
+    // when laneTree.gitRef is omitted — forgetting that field must not fall
+    // back to the bring-up SHA.
+    const githubSha = "dc2e16e3e949d17ad76b77b7196d45202a46f9a1";
+    const log: string[] = [];
+    bringUpKindCiCluster(fakePorts(log), { ...kindOptions, gitRef: githubSha, laneTree });
+    expect(log).toContain(`catalog:main@${laneTree.repoUrl}`);
+    expect(log.some((line) => line.includes(`catalog:${githubSha}@`))).toBe(false);
+  });
+
   test("the server is applied and WAITED ON before the root Application", () => {
     // Ordering, not just presence. A root app pointed at a server that is not yet
     // answering fails its first sync and then retries on ArgoCD's backoff, so the
@@ -920,6 +932,14 @@ describe("the lane-tree resource-rung override point", () => {
     bringUpK3dDevCluster(fakePorts(log), { ...k3dOptions, laneTree });
     expect(log).toContain(`catalog:main@${laneTree.repoUrl}`);
     expect(log).not.toContain(`catalog:main@${k3dOptions.gitRepoUrl}`);
+  });
+
+  test("k3d: a GitHub SHA on the PR does not become the served targetRevision", () => {
+    const githubSha = "dc2e16e3e949d17ad76b77b7196d45202a46f9a1";
+    const log: string[] = [];
+    bringUpK3dDevCluster(fakePorts(log), { ...k3dOptions, gitRef: githubSha, laneTree });
+    expect(log).toContain(`catalog:main@${laneTree.repoUrl}`);
+    expect(log.some((line) => line.includes(`catalog:${githubSha}@`))).toBe(false);
   });
 
   test("k3d: the server is applied and WAITED ON before the root Application", () => {
