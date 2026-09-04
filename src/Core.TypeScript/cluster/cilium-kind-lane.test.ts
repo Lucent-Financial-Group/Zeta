@@ -8,7 +8,7 @@
 
 import { describe, expect, test } from "bun:test";
 import {
-  CILIUM_1_16_REQUIRED_GATEWAY_API_CRDS,
+  CILIUM_PINNED_REQUIRED_GATEWAY_API_CRDS,
   IFNAME_MAX_LENGTH,
   CILIUM_SURFACE_DELTA_REASONS,
   GATEWAY_API_CRD_GAP_REASONS,
@@ -135,16 +135,15 @@ describe("shippedCiliumChartVersion — helm install must match the Application 
     });
   });
 
-  test("bootstrap HelmChart is a different pin — first-boot, not adopt", async () => {
+  test("bootstrap HelmChart matches the Application pin — first-boot is current, not an EOL hop", async () => {
     const version = shippedCiliumChartVersion();
     const bootstrap = await Bun.file("full-ai-cluster/k8s/bootstrap/cilium-install.yaml").text();
     const match = bootstrap.match(/^\s*version:\s*([0-9][0-9.]*)\s*$/m);
     expect(match?.[1]).toMatch(/^\d+\.\d+\.\d+$/);
-    // Documented split, not a bug in this function: Application is 1.20.1
-    // (adopt), bootstrap is 1.16.5 (metal first-boot). A test that required
-    // equality would force either a skip-minor bump of first-boot or a
-    // helm-install of 1.16.5 that ArgoCD then upgrades mid-proof.
-    expect(match?.[1]).not.toBe(version);
+    // No live cluster exists, so first-boot may jump (Aaron 2026-09-04).
+    // Cilium still forbids skip-minor on an in-place upgrade; splitting these
+    // pins again would make the first ArgoCD sync a chart upgrade mid-proof.
+    expect(match?.[1]).toBe(version);
   });
 });
 
@@ -222,14 +221,23 @@ describe("surface roster + drift", () => {
 });
 
 describe("Gateway API CRD coverage", () => {
-  test("TLSRoute is in Cilium 1.16's required list", () => {
-    expect(CILIUM_1_16_REQUIRED_GATEWAY_API_CRDS).toContain("tlsroutes.gateway.networking.k8s.io");
+  test("TLSRoute and BackendTLSPolicy are in the pinned chart's required list", () => {
+    expect(CILIUM_PINNED_REQUIRED_GATEWAY_API_CRDS).toContain("tlsroutes.gateway.networking.k8s.io");
+    expect(CILIUM_PINNED_REQUIRED_GATEWAY_API_CRDS).toContain(
+      "backendtlspolicies.gateway.networking.k8s.io",
+    );
   });
 
-  test("the vendored bundle is missing exactly TLSRoute, and that gap is registered", () => {
+  test("the vendored bundle is missing TLSRoute and BackendTLSPolicy, and both gaps are registered", () => {
     const coverage = gatewayApiCrdCoverage();
-    expect(coverage.missing).toEqual(["tlsroutes.gateway.networking.k8s.io"]);
+    expect(coverage.missing).toEqual([
+      "tlsroutes.gateway.networking.k8s.io",
+      "backendtlspolicies.gateway.networking.k8s.io",
+    ]);
     expect(GATEWAY_API_CRD_GAP_REASONS.has("tlsroutes.gateway.networking.k8s.io")).toBe(true);
+    expect(GATEWAY_API_CRD_GAP_REASONS.has("backendtlspolicies.gateway.networking.k8s.io")).toBe(
+      true,
+    );
   });
 
   test("the audit is green on the live tree in both directions", () => {

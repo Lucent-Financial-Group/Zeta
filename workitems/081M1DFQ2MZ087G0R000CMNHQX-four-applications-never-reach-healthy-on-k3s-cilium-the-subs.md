@@ -29,10 +29,11 @@ composes_with: []
 - Do not re-lift k3d `--scope included`. The lift condition is these four
   understood, not another green smoke.
 - Cilium helm-install follows the Application `targetRevision` (currently
-  `1.20.1`, via `shippedCiliumChartVersion()`). Do not bump
-  `cilium-install.yaml` (still `1.16.5`, metal first-boot) in this item:
-  Cilium forbids skipping minors on an in-place upgrade, and matching the two
-  pins is a different job.
+  `1.20.1`, via `shippedCiliumChartVersion()`). The bootstrap HelmChart
+  matched that pin on 2026-09-04: there is no live cluster, so first-boot
+  may jump (Cilium still forbids skip-minor on an in-place upgrade). Aaron
+  2026-09-04: "we don't have any live clusters yet so we can be on latest
+  from the start." Do not invent helm values in this item.
 
 ## What was measured
 

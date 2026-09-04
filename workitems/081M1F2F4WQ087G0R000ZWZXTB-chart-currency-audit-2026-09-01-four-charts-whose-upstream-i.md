@@ -43,6 +43,16 @@ Four charts prove it again, and **two of them are at or near the newest version*
 The chart's stated purpose and its actual behaviour disagree. Nothing breaks today; the
 risk is that it resolves itself the hard way. Maintainer call.
 
+## Progress 2026-09-04 — Cilium first-boot pin
+
+Application `targetRevision` is CURRENT `1.20.1` (#16287). Bootstrap
+`cilium-install.yaml` matched that pin on 2026-09-04: there is no live
+cluster, so first-boot may jump (Aaron: "we can be on latest from the
+start"). Cilium still forbids skip-minor on an in-place upgrade; the
+equality test in `cilium-kind-lane.test.ts` is the control. Remaining
+holes on this item: redis/`bitnamilegacy` (`081M1F1K5N5`) and hindsight
+`ankane/pgvector:latest`. Tempo already CURRENT 2.3.0.
+
 ## Two upstream facts that change earlier recommendations
 
 1. **Redis is back under AGPLv3** (Redis 8.0, May 2025). The licence change that created

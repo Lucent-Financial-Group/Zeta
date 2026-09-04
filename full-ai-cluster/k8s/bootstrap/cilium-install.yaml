@@ -7,6 +7,11 @@
 # After cluster is up, the ArgoCD Cilium Application at
 # k8s/applications/cilium/Application.yaml adopts the running
 # install and reconciles ongoing changes.
+#
+# version MUST equal that Application's targetRevision. There is no live
+# cluster yet, so first-boot may jump to current (1.20.1 as of 2026-09-04).
+# Cilium still forbids skipping minors on an in-place upgrade; do not
+# re-split these pins once a cluster is running.
 
 apiVersion: helm.cattle.io/v1
 kind: HelmChart
@@ -16,7 +21,7 @@ metadata:
 spec:
   chart: cilium
   repo: https://helm.cilium.io
-  version: 1.16.5
+  version: 1.20.1
   targetNamespace: kube-system
   # bootstrap: install BEFORE the cluster has a CNI. K3S's helm-controller
   # runs bootstrap charts' install Job with the tolerations + host

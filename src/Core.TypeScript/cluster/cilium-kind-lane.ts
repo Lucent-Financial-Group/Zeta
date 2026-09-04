@@ -66,9 +66,11 @@ export const CILIUM_CHART_REPO = "https://helm.cilium.io";
  *
  * Read, not restated: helm-installing a different version than `targetRevision`
  * makes the first ArgoCD sync a chart upgrade in the middle of the health
- * proof. The bootstrap HelmChart (`cilium-install.yaml`) is a different pin on
- * purpose today: it is metal first-boot (still 1.16.5). Matching the two is a
- * different job — Cilium forbids skipping minors on an in-place upgrade.
+ * proof. The bootstrap HelmChart (`cilium-install.yaml`) must match this pin
+ * while there is no live cluster — first-boot may jump (Aaron 2026-09-04).
+ * Cilium still forbids skipping minors on an in-place upgrade; the equality
+ * test in `cilium-kind-lane.test.ts` is the control that keeps first-boot and
+ * adopt from drifting apart again.
  */
 export function shippedCiliumChartVersion(repoRoot = REPO_ROOT): string {
   const path = join(repoRoot, "full-ai-cluster/k8s/applications/cilium/Application.yaml");
@@ -90,21 +92,24 @@ export const CILIUM_WIREGUARD_PREFLIGHT_NIX = "full-ai-cluster/nixos/modules/cil
 export const IFNAME_MAX_LENGTH = 15;
 
 /**
- * Gateway API CRDs Cilium 1.16.5 REQUIRES before it will start its Gateway API
- * controller, transcribed from the pinned release's own source:
- * `operator/pkg/gateway-api/cell.go` at tag v1.16.5, `var requiredGVK`.
+ * Gateway API CRDs the pinned Cilium chart REQUIRES before it will start its
+ * Gateway API controller, transcribed from the pinned release's own source:
+ * `operator/pkg/gateway-api/helpers/schemes.go` at tag v1.20.1,
+ * `var RequiredGVKs`. Kind constants there are already the plural resource
+ * names (`tlsroutes`, `backendtlspolicies`, …).
  *
- * The last entry is the one that matters here: `tlsroutes` is in the Gateway
- * API EXPERIMENTAL channel, and the bundle this repo vendors is the STANDARD
- * channel, which does not contain it.
+ * Two entries are missing from the vendored v1.2.1 STANDARD bundle:
+ * `tlsroutes` (experimental / TLSRoute v1 migration) and
+ * `backendtlspolicies` (added to RequiredGVKs after 1.16).
  */
-export const CILIUM_1_16_REQUIRED_GATEWAY_API_CRDS: readonly string[] = [
+export const CILIUM_PINNED_REQUIRED_GATEWAY_API_CRDS: readonly string[] = [
   "gatewayclasses.gateway.networking.k8s.io",
   "gateways.gateway.networking.k8s.io",
   "httproutes.gateway.networking.k8s.io",
   "grpcroutes.gateway.networking.k8s.io",
-  "referencegrants.gateway.networking.k8s.io",
   "tlsroutes.gateway.networking.k8s.io",
+  "referencegrants.gateway.networking.k8s.io",
+  "backendtlspolicies.gateway.networking.k8s.io",
 ];
 
 export type Json = null | boolean | number | string | Json[] | { [k: string]: Json };
@@ -290,14 +295,14 @@ export const CILIUM_SURFACE_DELTA_REASONS: ReadonlyMap<string, string> = new Map
   [
     "authentication.mutual.spire.enabled",
     "Explicit false on the ArgoCD surface, unset on the bootstrap surface. NO EFFECTIVE DIFFERENCE: the " +
-      "pinned chart's own default is false (cilium 1.16.5, install/kubernetes/cilium/values.yaml, " +
+      "pinned chart's own default is false (cilium 1.20.1, install/kubernetes/cilium/values.yaml, " +
       "`spire: enabled: false`). Recorded rather than deleted because the Application's comment beside it " +
       "says to flip it once SPIRE is up -- the day someone flips it on one surface only, this goes red.",
   ],
   [
     "hubble.metrics.serviceMonitor.enabled",
     "Explicit false on the ArgoCD surface, unset on the bootstrap surface. NO EFFECTIVE DIFFERENCE: the " +
-      "pinned chart's own default is false (cilium 1.16.5 values.yaml, hubble.metrics.serviceMonitor.enabled). " +
+      "pinned chart's own default is false (cilium 1.20.1 values.yaml, hubble.metrics.serviceMonitor.enabled). " +
       "Same placeholder shape as the SPIRE entry -- its comment says `enabled once kube-prometheus-stack " +
       "lands`, and that flip has to move both surfaces or neither.",
   ],
@@ -471,16 +476,18 @@ export interface GatewayApiCrdCoverage {
 }
 
 /**
- * Compare the CRDs Cilium 1.16.5 requires against the bundle this repo vendors.
+ * Compare the CRDs the pinned Cilium chart requires against the bundle this
+ * repo vendors.
  *
  * WHY IT MATTERS AND WHY NOBODY NOTICED. Both shipped Cilium surfaces set
  * `gatewayAPI.enabled: true`. `full-ai-cluster/k8s/bootstrap/gateway-api-crds.yaml`
- * is the Gateway API v1.2.1 STANDARD channel — five CRDs, no `TLSRoute`.
- * Cilium 1.16.5's `initGatewayAPIController` calls `checkRequiredCRDs`, and on
- * failure it logs `"Required GatewayAPI resources are not found, please refer
- * to docs for installation instructions"` and **`return nil`** — the operator
- * does not crash, the Deployment stays Ready, and ArgoCD reports the
- * Application Healthy. The Gateway API controller simply never starts.
+ * is the Gateway API v1.2.1 STANDARD channel — five CRDs, no `TLSRoute`, no
+ * `BackendTLSPolicy`. Cilium 1.20.1's `discoverCRDsWithRetry` calls `checkCRDs`
+ * against `helpers.RequiredGVKs`, and on a permanent miss it logs `"Required
+ * GatewayAPI resources are not found, please refer to docs for installation
+ * instructions"` and returns `Enabled: false` — the operator does not crash,
+ * the Deployment stays Ready, and ArgoCD reports the Application Healthy. The
+ * Gateway API controller simply never starts.
  *
  * That is the local shape of "a check that did not run must never look like a
  * check that passed", applied to a FEATURE rather than a check.
@@ -502,8 +509,8 @@ export function gatewayApiCrdCoverage(repoRoot = REPO_ROOT): GatewayApiCrdCovera
       .filter((name) => name.length > 0),
   );
   return {
-    present: CILIUM_1_16_REQUIRED_GATEWAY_API_CRDS.filter((crd) => declared.has(crd)),
-    missing: CILIUM_1_16_REQUIRED_GATEWAY_API_CRDS.filter((crd) => !declared.has(crd)),
+    present: CILIUM_PINNED_REQUIRED_GATEWAY_API_CRDS.filter((crd) => declared.has(crd)),
+    missing: CILIUM_PINNED_REQUIRED_GATEWAY_API_CRDS.filter((crd) => !declared.has(crd)),
   };
 }
 
@@ -519,13 +526,24 @@ export function gatewayApiCrdCoverage(repoRoot = REPO_ROOT): GatewayApiCrdCovera
 export const GATEWAY_API_CRD_GAP_REASONS: ReadonlyMap<string, string> = new Map([
   [
     "tlsroutes.gateway.networking.k8s.io",
-    "TLSRoute is in the Gateway API EXPERIMENTAL channel; the vendored bundle is v1.2.1 STANDARD. " +
-      "Cilium 1.16.5 lists it in operator/pkg/gateway-api/cell.go `requiredGVK`, so with it absent " +
-      "`checkRequiredCRDs` fails, `initGatewayAPIController` logs and returns nil, and the Gateway API " +
-      "controller never starts -- silently, with the operator Ready and the Application Healthy. " +
-      "LIFTS WHEN: the experimental TLSRoute CRD is added to " +
-      "full-ai-cluster/k8s/bootstrap/gateway-api-crds.yaml, or gatewayAPI.enabled is set false on both " +
-      "Cilium value surfaces. Either resolves it; leaving both as they are does not.",
+    "TLSRoute is in the Gateway API EXPERIMENTAL channel (v1 as of Gateway API " +
+      "v1.6.1); the vendored bundle is v1.2.1 STANDARD. Cilium 1.20.1 lists it in " +
+      "operator/pkg/gateway-api/helpers/schemes.go `RequiredGVKs`, so with it absent " +
+      "`checkCRDs` fails, `discoverCRDsWithRetry` logs and returns Enabled: false, and " +
+      "the Gateway API controller never starts -- silently, with the operator Ready and " +
+      "the Application Healthy. LIFTS WHEN: a Gateway API bundle that includes TLSRoute " +
+      "v1 is added to full-ai-cluster/k8s/bootstrap/gateway-api-crds.yaml, or " +
+      "gatewayAPI.enabled is set false on both Cilium value surfaces. Either resolves " +
+      "it; leaving both as they are does not.",
+  ],
+  [
+    "backendtlspolicies.gateway.networking.k8s.io",
+    "BackendTLSPolicy joined Cilium RequiredGVKs after 1.16 (schemes.go at tag " +
+      "v1.20.1). The vendored Gateway API v1.2.1 STANDARD bundle does not include it. " +
+      "Same silent-disable as TLSRoute: checkCRDs fails, operator Ready, Application " +
+      "Healthy, controller never starts. LIFTS WHEN: the CRD is vendored into " +
+      "full-ai-cluster/k8s/bootstrap/gateway-api-crds.yaml, or gatewayAPI.enabled is " +
+      "set false on both Cilium value surfaces. Not a drive-by vendor of v1.6.1.",
   ],
 ]);
 
@@ -635,9 +653,11 @@ export function ciliumKindValues(shipped: Readonly<Record<string, Json>>, cluste
  *
  * VERSION SKEW IS NOT THE CAUSE, and the control is why that is knowable.
  * Cilium 1.16 documents support for Kubernetes 1.27-1.30 and this profile pins
- * k3s v1.36.1, which looks conclusive. But the kind lane runs the identical
- * Cilium 1.16.5 on Kubernetes v1.35.0 and reports every node Ready. Same chart,
- * same skew, healthy. The values were the only remaining difference.
+ * k3s v1.36.1, which looks conclusive. But the kind lane helm-installs the
+ * same `shippedCiliumChartVersion()` pin (1.16.5 at the 2026-08 measurement
+ * that closed this, 1.20.1 now) on Kubernetes v1.35.0 and reports every node
+ * Ready. Same chart, same skew, healthy. The values were the only remaining
+ * difference.
  *
  * ZERO EXTRA DELTAS, deliberately. The single-node k3d profile has `agents: 0`,
  * and the previous code lowered `operator.replicas` to 1 and disabled Hubble
@@ -725,7 +745,7 @@ function reportPlan(options: PlanOptions, repoRoot = REPO_ROOT): number {
   const gatewayGap = auditGatewayApiCrdGap(repoRoot);
   const coverage = gatewayApiCrdCoverage(repoRoot);
   console.log(
-    `\nGateway API CRDs Cilium 1.16.5 requires: ${coverage.present.length}/${CILIUM_1_16_REQUIRED_GATEWAY_API_CRDS.length} vendored.`,
+    `\nGateway API CRDs the pinned Cilium chart requires: ${coverage.present.length}/${CILIUM_PINNED_REQUIRED_GATEWAY_API_CRDS.length} vendored.`,
   );
   for (const crd of gatewayGap.unexplained) {
     failures++;
