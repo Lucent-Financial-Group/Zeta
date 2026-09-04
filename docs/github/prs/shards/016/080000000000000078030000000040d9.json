@@ -1,0 +1,12 @@
+{
+  "pr_number": 16601,
+  "archive_path": "docs/history/pr-reviews/PR-16601-feat-arc-falsify-coordinate-display-calibration.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-04T21:03:46.866Z",
+  "schema_version": "v1",
+  "commit_sha": "c8ef15a51f116b4cb00009e49399ede87e65400e",
+  "title": "feat(arc): falsify coordinate display calibration",
+  "state": "MERGED",
+  "merged_at": "2026-09-04T21:03:09Z",
+  "head_ref": "claim/task-arc-rung-f-calibration-falsifier"
+}
