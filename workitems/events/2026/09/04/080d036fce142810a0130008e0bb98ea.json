@@ -1,0 +1,14 @@
+{
+  "id": "080d036fce142810a0130008e0bb98ea",
+  "at": "2026-09-04T19:51:19.941Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1PZKGM4087G0R000Z4VC1Y",
+    "type": "task",
+    "title": "tempo stores traces on a local PVC while loki and mimir use object storage",
+    "slug": "tempo-stores-traces-on-a-local-pvc-while-loki-and-mimir-use",
+    "priority": "P2",
+    "filename": "081M1PZKGM4087G0R000Z4VC1Y-tempo-stores-traces-on-a-local-pvc-while-loki-and-mimir-use.md"
+  }
+}
