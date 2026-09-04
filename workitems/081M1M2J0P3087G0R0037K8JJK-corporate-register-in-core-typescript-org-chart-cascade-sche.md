@@ -733,3 +733,96 @@ mutation: 12 matrices, 204/204 killed
 orphans:  509 / 509 exported symbols referenced in production
 live:     a real local model drove three cycles, resuming from disk each time
 ```
+
+---
+
+## Pass 8 — the halves joined, and the organization made resumable
+
+### 1. The two halves now meet
+
+`agent-loop/cli.ts` had persistence and a participant and always ran against `emptySurface` with no
+candidates — the model that drove three cycles was choosing over an organization with no work in it.
+`corporate/run-org.ts` had a real surface and neither persistence nor a participant. Both halves were
+tested and mutation-checked; neither was connected to the other.
+
+The core now offers `MainDeps.surface`; the register fills it (`corporate/run-agent.ts`). The loop
+still does not know an organization exists — the boundary test still passes. A local model picks REAL
+work off a REAL run, records it, and resumes from disk.
+
+Found on the way: the CLI path **silently abandoned in-flight work** while the bridge already
+reported it — the same churn visible through one entry point and invisible through the other, and the
+CLI is the one with a model and a store behind it.
+
+### 2. The organization resumes
+
+The trace could not support a fold as it stood, and the diagnosis is the interesting part:
+`decision` is PROSE — *"owns defect 'implement the coupon fix'"* — with the work type inside the
+sentence and the parent not in it at all. **`OrgEvent` was an audit trail, not an event-sourcing
+log**: it answers what happened, who decided, and under what authority, and it could not answer what
+IS.
+
+State-constituting events now carry a typed `OrgFact` beside the sentence, and `org-fold.ts` rebuilds
+the cascade, calendar, priorities, gate verdicts and portfolio book from the log alone. The falsifier
+is the round trip — run the runtime, fold its OWN trace, assert equality node for node — which is
+what makes "the log is sufficient" checkable rather than hopeful, and what fails when somebody adds
+an emit and forgets its fact.
+
+A second process now rebuilds 5 work items and 6 blocks from 17 stored facts and hands them to an
+agent, with no runtime run.
+
+### 3. The tick-shards migration — measured before it was made
+
+`canonicalJson` sorted keys with `localeCompare(a, b, "en")`: culture-sensitive, forbidden in a
+primitive, and it decides the digest that decides the filename. All **1675 shards on disk were
+re-derived under both comparators and ZERO changed id**, because every `MetricsFrame` key is
+lowercase ASCII where the two orders agree. The test now re-derives every shard against its own
+filename, so the equivalence stays a check rather than a measurement somebody took once. A second
+`localeCompare` in the frame ordering — which decides what a served rollup file contains — went with
+it.
+
+### 4. The long-lived container — a missing concept, not an inverted pair
+
+The reference nests `Goal -> Project -> Initiative` and defines a Project as a *"long-lived product,
+platform, repo family"*. A long-lived product cannot be the child of a single goal: goals are
+delivered while the product persists across all of them. That arrow is an ASSOCIATION and this
+cascade models decomposition only — so the divergence was never an ordering, it was a container that
+outlives goals.
+
+`portfolio.ts` is that container. It is **never delivered** — retirement is a deliberate act with a
+reason, refused while its goals are live — and it accumulates goals ACROSS runs, which is the
+question a cascade cannot answer because each goal is its own tree. Demonstrated: 1/1 -> 2/2 -> 3/3
+across three stored runs.
+
+### Defects found by running it
+
+- **The RMO seniority test was INVERTED.** `LEVEL_RANK` is lower-is-more-senior, so `>= manager`
+  admitted every level BELOW manager and locked the directors out — a lead could authorize its own
+  headcount, the exact thing the vote exists to prevent.
+- **The org store gave two different runs the same id.** `run-${nowMs}` is not unique when the clock
+  is fixed, as it is in every deterministic run: it reported **0/1 delivered after two runs**, one of
+  which had delivered.
+- **`createId` was run-local**, so two runs sharing a store collided their work ids and the fold
+  merged them into one organization.
+- **`AgentContext.cycle` sat at 0 forever** while the record beside it counted properly.
+- **`readShards` parsed any `.json`** in the tree as a record.
+- **`dateSegments` used local/UTC getter pairs** — invisible under `bun test`, which pins `TZ=UTC`,
+  and wrong only on a contributor's machine. Rewritten on `toISOString` so the mistake is unwritable.
+- **The portfolio facts bypassed `openPortfolio`**, so its seniority rule could never fire — a rule
+  that exists and never runs.
+- Three RMO tests and several fold tests **passed for the wrong reason** (a single vote never reaches
+  quorum; an identical duplicate cannot discriminate a Map).
+
+### Verified
+
+```
+bun test corporate + workflow-engine + shard-store + dora-classify   1353 pass, 0 fail
+bun test observe                                                     1627 pass, 0 fail
+dotnet test WorkflowEngineTests (cross-language treaty)               passed
+tsc --noEmit                                                          0 errors
+mutation: 15 matrices, 250/250 killed
+orphans:  539 / 539 exported symbols referenced in production
+committed: 60471747b on org-implements-work (91 files) — not pushed
+```
+
+One intermittent: a single observe test failed once and passed on three subsequent full runs; it is
+not in any file this pass touched and could not be reproduced.
