@@ -752,6 +752,26 @@ from the k3d node (is 10.43.0.0/16 local via `cilium_host` or via
 docker `eth0`?). Do not invent Cilium helm values. Do not re-lift
 included. Otto keeps mimir.
 
+## CI is a USB / metal first-boot rehearsal
+
+The point of the k3d lane is not "green on GitHub". It is whether the
+same k3s + Cilium + SPIRE stack will come up on USB boot of real
+hardware. A CI-only datapath (invented Cilium helm, hostAliases to
+ClusterIP, a SPIRE chart fork) would make the runner look healthy and
+leave first-boot broken.
+
+`--serve-tree dev` (#16543) is a **runner CPU overlay only**. GitHub
+nodes are 4000m; metal is a 16-core box. The metal rung stays in git
+for USB/hardware. Datapath values, k3s flags, and SPIRE stay the
+shipped metal surface. The only k3d deltas that have paid rent are
+flags metal already passes (`--disable=servicelb`, `--tls-san`,
+founder `/etc/hosts`) plus `k8sServiceHost` name resolution.
+
+kind+Cilium Healthy on the same helm values means Cilium-as-CNI is
+not the USB-boot hole. k3d still FAIL on hostNetwork ClusterIP is
+the remaining k3s-in-docker class that metal first-boot can still
+hit if host-ns socket-LB is similarly dark on NixOS k3s.
+
 ## The distinguishing test
 
 For each of the four, the question is the same and it is answerable:
