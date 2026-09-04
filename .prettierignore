@@ -53,6 +53,7 @@ docs/CHART-CURRENCY.md
 # arrays differently from Python's canonical encoder, so the generator owns the
 # checked-in bytes just as it does for the machine-written stores above.
 src/apps/twitch-ai/src/recordings/arc-ztch-v1-session.json
+src/apps/twitch-ai/src/recordings/arc-zeta-click-target-session.json
 
 # VERBATIM COPIES OF GIT HISTORY. The four pre-fix `Application.yaml` files under
 # `testdata/inert-valuesobject-history/` are byte-for-byte `git show <sha>:<path>`

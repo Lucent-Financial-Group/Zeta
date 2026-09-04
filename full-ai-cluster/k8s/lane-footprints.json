@@ -112,6 +112,11 @@
       "ghcr.io/vectorize-io/hindsight-control-plane:0.9.2",
       "pgvector/pgvector:pg17-trixie"
     ],
+    "full-ai-cluster/keda": [
+      "ghcr.io/kedacore/keda-admission-webhooks:2.20.2",
+      "ghcr.io/kedacore/keda-metrics-apiserver:2.20.2",
+      "ghcr.io/kedacore/keda:2.20.2"
+    ],
     "full-ai-cluster/kube-prometheus-stack": [
       "docker.io/grafana/grafana:13.2.0",
       "docker.io/library/busybox:1.38.0",
@@ -436,6 +441,15 @@
     },
     "ghcr.io/juanfont/headscale:v0.25.0": {
       "compressedBytes": 30922340
+    },
+    "ghcr.io/kedacore/keda-admission-webhooks:2.20.2": {
+      "compressedBytes": 30879229
+    },
+    "ghcr.io/kedacore/keda-metrics-apiserver:2.20.2": {
+      "compressedBytes": 65873353
+    },
+    "ghcr.io/kedacore/keda:2.20.2": {
+      "compressedBytes": 91410787
     },
     "ghcr.io/lucent-financial-group/hat-system-operator:placeholder": {
       "compressedBytes": null,

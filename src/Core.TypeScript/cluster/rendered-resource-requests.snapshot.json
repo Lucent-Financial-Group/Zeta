@@ -24,6 +24,7 @@
     "full-ai-cluster/headlamp",
     "full-ai-cluster/headscale",
     "full-ai-cluster/hindsight",
+    "full-ai-cluster/keda",
     "full-ai-cluster/kube-prometheus-stack",
     "full-ai-cluster/kubevirt",
     "full-ai-cluster/loki",
@@ -664,6 +665,37 @@
             "full-ai-cluster/hindsight/api",
             "full-ai-cluster/hindsight/control-plane",
             "full-ai-cluster/hindsight/postgresql"
+          ]
+        },
+        {
+          "appId": "full-ai-cluster/keda",
+          "cpuMillis": 75,
+          "memoryMib": 192,
+          "pods": 3,
+          "workloads": [
+            {
+              "workload": "Deployment/keda-admission-webhooks",
+              "replicas": 1,
+              "cpuMillis": 25,
+              "memoryMib": 64
+            },
+            {
+              "workload": "Deployment/keda-operator",
+              "replicas": 1,
+              "cpuMillis": 25,
+              "memoryMib": 64
+            },
+            {
+              "workload": "Deployment/keda-operator-metrics-apiserver",
+              "replicas": 1,
+              "cpuMillis": 25,
+              "memoryMib": 64
+            }
+          ],
+          "overlaid": [
+            "full-ai-cluster/keda/metricServer",
+            "full-ai-cluster/keda/operator",
+            "full-ai-cluster/keda/webhooks"
           ]
         },
         {
@@ -2198,6 +2230,37 @@
             "full-ai-cluster/hindsight/api",
             "full-ai-cluster/hindsight/control-plane",
             "full-ai-cluster/hindsight/postgresql"
+          ]
+        },
+        {
+          "appId": "full-ai-cluster/keda",
+          "cpuMillis": 300,
+          "memoryMib": 300,
+          "pods": 3,
+          "workloads": [
+            {
+              "workload": "Deployment/keda-admission-webhooks",
+              "replicas": 1,
+              "cpuMillis": 100,
+              "memoryMib": 100
+            },
+            {
+              "workload": "Deployment/keda-operator",
+              "replicas": 1,
+              "cpuMillis": 100,
+              "memoryMib": 100
+            },
+            {
+              "workload": "Deployment/keda-operator-metrics-apiserver",
+              "replicas": 1,
+              "cpuMillis": 100,
+              "memoryMib": 100
+            }
+          ],
+          "overlaid": [
+            "full-ai-cluster/keda/metricServer",
+            "full-ai-cluster/keda/operator",
+            "full-ai-cluster/keda/webhooks"
           ]
         },
         {

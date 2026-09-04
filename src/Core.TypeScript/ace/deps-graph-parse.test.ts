@@ -183,9 +183,7 @@ interface FlatGraph {
   edges: string[];
 }
 
-function flattenFromNodes(
-  declared: ReadonlyArray<{ chart?: string; dependsOn?: readonly string[] }>,
-): FlatGraph {
+function flattenFromNodes(declared: ReadonlyArray<{ chart?: string; dependsOn?: readonly string[] }>): FlatGraph {
   const nodes = declared.map((n) => n.chart ?? "").filter((n) => n !== "");
   const edges: string[] = [];
   for (const n of declared) {
@@ -202,7 +200,8 @@ describe("081M0N90CHX087G0R0034C7NPT — ace agrees with the two tools that rout
     // (upstream project ARCHIVED; seaweedfs, already in the tree, is the store).
     // 46 -> 47 on 2026-09-02: `cloudnativepg` added (cilium -> cloudnativepg),
     // the shared prerequisite of the gitlab and temporal bumps.
-    expect(graph.spec.dependsOn.length).toBe(47);
+    // 47 -> 48 on 2026-09-04: `keda` added, `dependsOn: []` (Aaron 2026-09-04).
+    expect(graph.spec.dependsOn.length).toBe(48);
   });
 
   test("ace, the yaml package, lane-partition and derive-sync-waves read the SAME nodes and edges", () => {
@@ -223,7 +222,8 @@ describe("081M0N90CHX087G0R0034C7NPT — ace agrees with the two tools that rout
 
     const viaDerive = flattenFromNodes(readDeclaration(REPO_ROOT).spec.spec.dependsOn);
 
-    expect(viaAce.nodes.length).toBe(47);
+    // 47 -> 48 on 2026-09-04: `keda` joined the tree (Aaron 2026-09-04).
+    expect(viaAce.nodes.length).toBe(48);
     expect(viaAce.edges.length).toBeGreaterThan(0);
 
     expect(viaAce).toEqual(viaYamlPkg);

@@ -20,9 +20,22 @@ export interface ArcRecordedObservation {
   readonly winLevels: number;
 }
 
+export interface ArcCoordinateMass {
+  readonly probability: number;
+  readonly x: number;
+  readonly y: number;
+}
+
+export interface ArcCoordinateForecast {
+  readonly action: "ACTION6";
+  readonly masses: readonly ArcCoordinateMass[];
+  readonly selected: { readonly x: number; readonly y: number };
+}
+
 export interface ArcRecordedStep {
   readonly tick: number;
   readonly observation: ArcRecordedObservation;
+  readonly coordinateForecast?: ArcCoordinateForecast;
 }
 
 export interface ArcRecording {
@@ -50,6 +63,7 @@ const ACTION_IDS: ReadonlySet<string> = new Set([
 ]);
 const STATES: ReadonlySet<string> = new Set(["NOT_PLAYED", "NOT_FINISHED", "WIN", "GAME_OVER"]);
 const FRAME_PATTERN = /^[0-9a-f]{4096}$/;
+const MASS_EPSILON = 1e-9;
 
 function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === "object" && value !== null && !Array.isArray(value);
@@ -57,6 +71,21 @@ function isRecord(value: unknown): value is Record<string, unknown> {
 
 function refused<T>(error: string): ArcReplayResult<T> {
   return { ok: false, error };
+}
+
+function parsePoint(value: unknown, path: string): ArcReplayResult<{ readonly x: number; readonly y: number }> {
+  if (
+    !isRecord(value) ||
+    !Number.isInteger(value.x) ||
+    !Number.isInteger(value.y) ||
+    Number(value.x) < 0 ||
+    Number(value.x) >= ARC_FRAME_WIDTH ||
+    Number(value.y) < 0 ||
+    Number(value.y) >= ARC_FRAME_HEIGHT
+  ) {
+    return refused(`${path} must be a coordinate in the 64x64 frame`);
+  }
+  return { ok: true, value: { x: Number(value.x), y: Number(value.y) } };
 }
 
 function parseAction(value: unknown, path: string): ArcReplayResult<ArcRecordedObservation["action"]> {
@@ -67,22 +96,105 @@ function parseAction(value: unknown, path: string): ArcReplayResult<ArcRecordedO
     if (value.id === "ACTION6") return refused(`${path}.point is required for ACTION6`);
     return { ok: true, value: { id: value.id as ArcActionId } };
   }
-  if (
-    value.id !== "ACTION6" ||
-    !isRecord(value.point) ||
-    !Number.isInteger(value.point.x) ||
-    !Number.isInteger(value.point.y) ||
-    Number(value.point.x) < 0 ||
-    Number(value.point.x) >= ARC_FRAME_WIDTH ||
-    Number(value.point.y) < 0 ||
-    Number(value.point.y) >= ARC_FRAME_HEIGHT
-  ) {
+  if (value.id !== "ACTION6") {
     return refused(`${path}.point must be an ACTION6 coordinate in the 64x64 frame`);
   }
+  const point = parsePoint(value.point, `${path}.point`);
+  if (!point.ok) return refused(`${path}.point must be an ACTION6 coordinate in the 64x64 frame`);
   return {
     ok: true,
-    value: { id: "ACTION6", point: { x: Number(value.point.x), y: Number(value.point.y) } },
+    value: { id: "ACTION6", point: point.value },
   };
+}
+
+function parseCoordinateForecast(value: unknown, path: string): ArcReplayResult<ArcCoordinateForecast> {
+  if (!isRecord(value) || value.action !== "ACTION6") {
+    return refused(`${path}.action must be ACTION6`);
+  }
+  if (!Array.isArray(value.masses) || value.masses.length === 0 || value.masses.length > 4096) {
+    return refused(`${path}.masses must contain 1..4096 coordinate masses`);
+  }
+
+  const candidates = value.masses as unknown[];
+  const masses: ArcCoordinateMass[] = [];
+  const coordinates = new Set<string>();
+  let total = 0;
+  for (let index = 0; index < candidates.length; index++) {
+    const candidate = candidates[index];
+    const massPath = `${path}.masses[${String(index)}]`;
+    if (!isRecord(candidate)) return refused(`${massPath} must be an object`);
+    const point = parsePoint(candidate, massPath);
+    if (!point.ok) return point;
+    if (
+      typeof candidate.probability !== "number" ||
+      !Number.isFinite(candidate.probability) ||
+      candidate.probability <= 0 ||
+      candidate.probability > 1
+    ) {
+      return refused(`${massPath}.probability must be finite and in (0,1]`);
+    }
+    const key = `${String(point.value.x)},${String(point.value.y)}`;
+    if (coordinates.has(key)) return refused(`${path}.masses contains duplicate coordinate ${key}`);
+    coordinates.add(key);
+    total += candidate.probability;
+    masses.push({ ...point.value, probability: candidate.probability });
+  }
+  if (Math.abs(total - 1) > MASS_EPSILON) {
+    return refused(`${path}.masses probabilities must sum to 1`);
+  }
+
+  const selected = parsePoint(value.selected, `${path}.selected`);
+  if (!selected.ok) return selected;
+  const selectedMass = masses.find((mass) => mass.x === selected.value.x && mass.y === selected.value.y);
+  if (selectedMass === undefined) return refused(`${path}.selected must name a coordinate with probability mass`);
+  const maximum = Math.max(...masses.map((mass) => mass.probability));
+  if (Math.abs(selectedMass.probability - maximum) > MASS_EPSILON) {
+    return refused(`${path}.selected must name a maximum-mass coordinate`);
+  }
+
+  return { ok: true, value: { action: "ACTION6", masses, selected: selected.value } };
+}
+
+function parseSteps(value: unknown, gameId: string): ArcReplayResult<readonly ArcRecordedStep[]> {
+  if (!Array.isArray(value) || value.length === 0) {
+    return refused("recording.steps must be a non-empty array");
+  }
+
+  const candidates = value as unknown[];
+  const steps: ArcRecordedStep[] = [];
+  for (let index = 0; index < candidates.length; index++) {
+    const candidate = candidates[index];
+    const path = `recording.steps[${String(index)}]`;
+    if (!isRecord(candidate) || candidate.tick !== index) {
+      return refused(`${path}.tick must be the contiguous replay index`);
+    }
+    const observation = parseObservation(candidate.observation, `${path}.observation`, gameId);
+    if (!observation.ok) return observation;
+    if (candidate.coordinateForecast === undefined) {
+      steps.push({ tick: index, observation: observation.value });
+      continue;
+    }
+    const coordinateForecast = parseCoordinateForecast(candidate.coordinateForecast, `${path}.coordinateForecast`);
+    if (!coordinateForecast.ok) return coordinateForecast;
+    steps.push({ tick: index, observation: observation.value, coordinateForecast: coordinateForecast.value });
+  }
+  return { ok: true, value: steps };
+}
+
+function validateForecastBindings(steps: readonly ArcRecordedStep[]): ArcReplayResult<true> {
+  for (let index = 0; index < steps.length; index++) {
+    const forecast = steps[index]?.coordinateForecast;
+    if (forecast === undefined) continue;
+    const nextAction = steps[index + 1]?.observation.action;
+    if (
+      nextAction?.id !== "ACTION6" ||
+      nextAction.point?.x !== forecast.selected.x ||
+      nextAction.point.y !== forecast.selected.y
+    ) {
+      return refused(`recording.steps[${String(index)}].coordinateForecast must select the next ACTION6 commit`);
+    }
+  }
+  return { ok: true, value: true };
 }
 
 function parseObservation(value: unknown, path: string, gameId: string): ArcReplayResult<ArcRecordedObservation> {
@@ -149,22 +261,10 @@ export function parseArcRecording(value: unknown): ArcReplayResult<ArcRecording>
   if (typeof value.title !== "string" || value.title.length === 0) {
     return refused("recording.title must be a non-empty string");
   }
-  if (!Array.isArray(value.steps) || value.steps.length === 0) {
-    return refused("recording.steps must be a non-empty array");
-  }
-
-  const candidates = value.steps as unknown[];
-  const steps: ArcRecordedStep[] = [];
-  for (let index = 0; index < candidates.length; index++) {
-    const candidate = candidates[index];
-    const path = `recording.steps[${String(index)}]`;
-    if (!isRecord(candidate) || candidate.tick !== index) {
-      return refused(`${path}.tick must be the contiguous replay index`);
-    }
-    const observation = parseObservation(candidate.observation, `${path}.observation`, value.gameId);
-    if (!observation.ok) return observation;
-    steps.push({ tick: index, observation: observation.value });
-  }
+  const steps = parseSteps(value.steps, value.gameId);
+  if (!steps.ok) return steps;
+  const binding = validateForecastBindings(steps.value);
+  if (!binding.ok) return binding;
 
   return {
     ok: true,
@@ -174,7 +274,7 @@ export function parseArcRecording(value: unknown): ArcReplayResult<ArcRecording>
       recordingVersion: 1,
       sessionId: value.sessionId,
       source: "zeta-authored-local-environment",
-      steps,
+      steps: steps.value,
       title: value.title,
     },
   };

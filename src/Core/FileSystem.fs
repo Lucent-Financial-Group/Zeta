@@ -45,6 +45,17 @@ type IBlockIo =
     abstract Write: lba: uint64 * src: ReadOnlyMemory<byte> -> int
     abstract Flush: unit -> unit
 
+/// Yielding completion door for a later native NVMe impl (io_uring / SPDK).
+/// DST polyfill and `SimulatedBlockIo` complete synchronously
+/// (`IsCompletedSuccessfully`). Wrapping `IBlockIo` in `Task.Run` is not
+/// this interface.
+type IAsyncBlockIo =
+    abstract BlockSize: int
+    abstract LbaCount: uint64
+    abstract ReadAsync: lba: uint64 * dst: Memory<byte> * ct: CancellationToken -> ValueTask<int>
+    abstract WriteAsync: lba: uint64 * src: ReadOnlyMemory<byte> * ct: CancellationToken -> ValueTask<int>
+    abstract FlushAsync: ct: CancellationToken -> ValueTask
+
 module private PhysicalFileSystemLimits =
     let maxReadAllBytes = 256L * 1024L * 1024L
 
@@ -660,6 +671,29 @@ type FileSystemBlockIo(fs: IFileSystem, path: string, blockSize: int) =
             use stream = fs.OpenFile(path, FileMode.Open, FileAccess.ReadWrite, FileShare.Read)
             stream.Flush()
 
+    interface IAsyncBlockIo with
+        member this.BlockSize = (this :> IBlockIo).BlockSize
+        member this.LbaCount = (this :> IBlockIo).LbaCount
+
+        member this.ReadAsync(lba, dst, ct) =
+            if ct.IsCancellationRequested then
+                ValueTask<int>(Task.FromCanceled<int> ct)
+            else
+                ValueTask<int>((this :> IBlockIo).Read(lba, dst))
+
+        member this.WriteAsync(lba, src, ct) =
+            if ct.IsCancellationRequested then
+                ValueTask<int>(Task.FromCanceled<int> ct)
+            else
+                ValueTask<int>((this :> IBlockIo).Write(lba, src))
+
+        member this.FlushAsync(ct) =
+            if ct.IsCancellationRequested then
+                ValueTask(Task.FromCanceled ct)
+            else
+                (this :> IBlockIo).Flush()
+                ValueTask()
+
 /// DST block device: LBA → sparse blocks in memory. Not POSIX, not NVMe.
 /// Write is visible immediately unless reorder holds it. `ArmCrashMidWrite`
 /// tears the next Write that is longer than `afterBytes`. Crash recovery of
@@ -831,6 +865,28 @@ type SimulatedBlockIo(blockSize: int, ?media: IReadOnlyDictionary<uint64, byte[]
                             src.Length)
 
         member _.Flush() = ()
+
+    interface IAsyncBlockIo with
+        member this.BlockSize = (this :> IBlockIo).BlockSize
+        member this.LbaCount = (this :> IBlockIo).LbaCount
+
+        member this.ReadAsync(lba, dst, ct) =
+            if ct.IsCancellationRequested then
+                ValueTask<int>(Task.FromCanceled<int> ct)
+            else
+                ValueTask<int>((this :> IBlockIo).Read(lba, dst))
+
+        member this.WriteAsync(lba, src, ct) =
+            if ct.IsCancellationRequested then
+                ValueTask<int>(Task.FromCanceled<int> ct)
+            else
+                ValueTask<int>((this :> IBlockIo).Write(lba, src))
+
+        member this.FlushAsync(ct) =
+            if ct.IsCancellationRequested then
+                ValueTask(Task.FromCanceled ct)
+            else
+                ValueTask()
 
 /// Append/read a byte stream on `IBlockIo` with tail-block read-modify-write.
 /// Position is a byte offset. Does not pad the logical length to a block.

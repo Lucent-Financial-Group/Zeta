@@ -1,7 +1,7 @@
 # Trajectory - Cluster Encryption / Credential Substrate
 
 Status: active — first surfaced 2026-05-29 from substrate inventory (was tracked only as scattered backlog rows; never had a trajectory surface, which is why it was easy to lose at cold-boot)
-Last refreshed: 2026-06-21 (credential-presence spot-check 2026-08-16 — see the box below)
+Last refreshed: 2026-09-04 (host→Secret projector 081M1PWSF56087G0R000FDS3NY)
 Type: workstream (current-focus) — a trajectory the operator is *actively powering*. Many trajectories can be tracked; only a few are workstreams at once (finite-focus / WIP-bounded — a workstream is a trajectory under sustained thrust, and thrust budget is finite, so most trajectories coast). ("Trajectory" is the genus; "workstream" is the species: a trajectory under sustained thrust toward a deliverable, vs. emergent-posture trajectories like `anti-infection`, which self-describes as "not a workstream with a cadence." See [`factory-trajectory-surface`](../factory-trajectory-surface/RESUME.md) for the genus/species taxonomy.) One of the operator's three current cluster workstreams (encryption / usb-zflash / ts-workflow-engine).
 Eventual encoding (design-stage — the human maintainer 2026-05-23 genetic-ID substrate + Clifford/HKT): this trajectory's state is trackable as a 128-bit genetic-ID seed (discrete, reversible via parser-combinator ↔ generator-function) → Clifford-space path (continuous, eventual). Mirrors the three-lane I8-lattice / I9-manifold split.
 Current blocker: none operationally; the live design tension is interactive-login-vs-baked-in-keys-vs-CI-test (081KSGS9H0008QG0R003JNSVR5)
@@ -124,6 +124,13 @@ exercise a full install without that discipline leaking a real credential
 
 ## Current Next Action
 
-Audit 081KSKBP80008QG0R003AX2A69 / 081KSKBP80008QG0R003ETGS01 against the on-disk `full-ai-cluster/usb-nixos-installer/`
+Host→Secret projector (081M1PWSF56087G0R000FDS3NY) is the first hop:
+USB-restored GitHub / AI-login files become Opaque Secrets in
+`zeta-host-creds` for future agent pods. Design:
+[`docs/design/2026-09-04-host-creds-as-k8s-secrets.md`](../../design/2026-09-04-host-creds-as-k8s-secrets.md).
+Vault ingest / ExternalSecret remains a later hop (ESO ClusterSecretStore
+is still commented). Physical USB flash stays operator-gated.
+
+Then: audit 081KSKBP80008QG0R003AX2A69 / 081KSKBP80008QG0R003ETGS01 against the on-disk `full-ai-cluster/usb-nixos-installer/`
 to report real impl status, then drive the 081KSGS9H0008QG0R003JNSVR5 interactive-vs-baked-vs-CI
 resolution. Operator's call on priority vs the sibling workstreams.
