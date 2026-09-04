@@ -1,11 +1,12 @@
 ---
 id: 081KYZPQS8708QG0R00394FR74
 type: task
-state: backlog
+state: done
 priority: P1
 slug: alexa-wire-the-vault-state-bridge-cli-into-the-heartbeat-tic
 title: "Alexa: wire the vault-state-bridge CLI into the heartbeat tick + decide the dead eventsByAgent plumbing"
 created: 2026-08-01T22:22:27.079Z
+completed: 2026-09-04T17:06:19.874Z
 depends_on: []
 composes_with: []
 ---
