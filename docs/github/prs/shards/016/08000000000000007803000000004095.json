@@ -1,0 +1,12 @@
+{
+  "pr_number": 16533,
+  "archive_path": "docs/history/pr-reviews/PR-16533-fix-cluster-disable-k3s-servicelb-on-k3d-to-match-metal.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-04T04:22:56.652Z",
+  "schema_version": "v1",
+  "commit_sha": "c49779348166898f4540a187ba046bcd7301af08",
+  "title": "fix(cluster): disable k3s servicelb on k3d to match metal",
+  "state": "MERGED",
+  "merged_at": "2026-09-04T04:22:04Z",
+  "head_ref": "cursor/k3d-disable-servicelb-27c5"
+}
