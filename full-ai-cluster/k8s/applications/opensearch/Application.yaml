@@ -1,0 +1,143 @@
+# OpenSearch — the search index, and the store Temporal's Visibility layer wants.
+#
+# Aaron 2026-09-04: "lets pull in open search, i've been discussing with google".
+#
+# ── WHY IT IS HERE, AND THE ONE THING IT CANNOT DO YET ────────────────────────
+# Two jobs, and only the first is available on the day this lands.
+#
+#   1. AN APPLICATION-LEVEL SEARCH INDEX. The tree has no general text index. It
+#      has `weaviate`, which is a VECTOR database with a BM25 mode -- good for
+#      semantic retrieval, and not a substitute for structured filtered search.
+#      OpenSearch is the missing half.
+#
+#   2. TEMPORAL'S VISIBILITY STORE -- BLOCKED, and the block is version-shaped.
+#      Temporal today runs BOTH its default store and its visibility store on
+#      CockroachDB. Temporal's own guidance is that the second of those is a
+#      mistake at volume: complex filtering, custom search attributes and sorting
+#      on a SQL visibility store contend with the core persistence workload on the
+#      same database. The documented fix is to leave `default` on SQL and route
+#      `visibility` to Elasticsearch or OpenSearch.
+#
+#      WE CANNOT DO THAT YET, and the reason is measured, not guessed. Temporal's
+#      self-hosted visibility documentation states the support floor verbatim:
+#
+#          "OpenSearch 2+ with Temporal Server v1.30.1 and later"
+#
+#      Our `temporal` Application pins chart 0.59.0, whose appVersion is 1.27.2 --
+#      BELOW that floor. So wiring visibility here would configure a store the
+#      running server does not support. The chart bump that clears it (0.59.0 ->
+#      1.6.0, appVersion 1.31.2) is a MIGRATION, not a bump: `sql.driver` is
+#      renamed `sql.pluginName`, five bundled subcharts are removed upstream, and
+#      the schema job runs versioned SQL migrations against CockroachDB that do
+#      not roll back cleanly.
+#
+#      LIFTS WHEN: temporal is on a chart whose appVersion is >= 1.30.1, and the
+#      visibility datastore is pointed at this Service. Until then this cluster is
+#      an index with no Temporal consumer, which is a real capability on its own
+#      and is NOT pretending to be the other one.
+#
+# ── VERSION ───────────────────────────────────────────────────────────────────
+# 3.8.0, read from the LIVE repo index (`helm search repo opensearch --versions`)
+# on 2026-09-04, not from a release note and not from recall. Chart version and
+# appVersion are both 3.8.0.
+#
+# NOT bitnami/opensearch, which the same index offers at chart 2.0.10 / app 3.2.0.
+# This tree is moving OFF bitnami charts, and the upstream OpenSearch project
+# publishes its own; taking the vendor-neutral one avoids inheriting a
+# repackaging we would later have to migrate away from.
+#
+# `2+` covers 3.8.0 on its face. Stated as the honest limit it is: Temporal
+# documents a floor, not a tested ceiling, so 3.x is *permitted* by that sentence
+# rather than *witnessed* by it. The first thing the visibility wiring must do,
+# when it is unblocked, is prove the index round-trips -- not assume it.
+#
+# ── SIZED FOR ONE NODE, DELIBERATELY, AND SAID OUT LOUD ───────────────────────
+# The chart defaults to `replicas: 3`, each requesting 1000m -- 3000m against a
+# dev lane budgeted at 2500m total. `singleNode: true` with one replica is what
+# fits, and it is what this ships.
+#
+# IT IS IN THE DEV LANE, and that is a correction. The first draft of this file
+# excluded it from dev on the belief that the lane had no memory left. MEASURED
+# instead, with `lane-partition.ts`: lane-1 is 1200m / 7734Mi across 42 apps
+# against 2500m / 9216Mi -- 1300m and 1482Mi FREE. The belief was stale by about
+# ten days; the 25m `cpuMillis.dev` floor applied on 2026-08-23 is what freed it.
+# Aaron 2026-09-04: "what does dev excluded mean, we want to try to test on dev
+# for all of these." A dev-excluded Application is never APPLIED in CI at all --
+# not merely unasserted -- so nothing ever proves it comes up. At 250m / 1024Mi
+# the dev rung fits with room, so there is no reason to buy that hole here.
+#
+# THE COST IS REAL AND IS NOT HIDDEN: one node means no shard replication, so
+# this is NOT highly available and an index loss is a restore, not a failover.
+# That is acceptable for an index whose contents are DERIVED (re-indexable from
+# the source of truth) and would not be acceptable for a store of record.
+#
+# LIFTS WHEN: the metal hardware Aaron is testing next has the headroom for three
+# nodes; raise `replicas` to 3 and drop `singleNode` on the metal rung then.
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  annotations:
+    # After storage (longhorn) and the CNI, before anything that would query it.
+    # Temporal is wave "10"; an index its consumer might one day need should be
+    # up first, even though nothing consumes it today.
+    argocd.argoproj.io/sync-wave: "5"
+  name: opensearch
+  namespace: argocd
+  finalizers: [ resources-finalizer.argocd.argoproj.io ]
+spec:
+  project: default
+  source:
+    repoURL: https://opensearch-project.github.io/helm-charts/
+    chart: opensearch
+    targetRevision: 3.8.0
+    helm:
+      releaseName: opensearch
+      valuesObject:
+        # ONE NODE. `singleNode` also flips the discovery configuration to
+        # single-node mode; setting `replicas: 1` alone would leave a node
+        # waiting to form a quorum with two peers that never arrive.
+        singleNode: true
+        replicas: 1
+
+        # THE COMMITTED TREE IS THE `metal` RUNG; CI serves `dev` (250m/1024Mi)
+        # by rewriting a copy via `--serve-tree dev`, never this file.
+        #
+        # 1000m/2Gi is the chart's own CPU default paired with a memory request
+        # that actually covers the JVM. The chart's default memory request is
+        # 100Mi against `opensearchJavaOpts: -Xmx512M -Xms512M`: a heap five times
+        # the request, which makes the pod a first-choice eviction target the
+        # moment the node is under pressure. Memory is the incompressible axis,
+        # so the request is set above the heap rather than at the chart's figure.
+        resources:
+          requests:
+            # `1` and `2048Mi`, not `1000m` and `2Gi`. Same quantities; these are
+            # the CANONICAL spellings `verifyResourceProfileApplied` compares
+            # against, and the rung check reads the literal text rather than
+            # parsing the quantity. Equivalent-but-differently-spelled values
+            # read as rung drift.
+            cpu: 1
+            memory: 2048Mi
+        # 512M heap at BOTH rungs, which is the number that makes the memory
+        # request honest on each. The dev rung requests 1024Mi, so a 1G heap would
+        # sit AT the request and make the pod the first thing evicted under
+        # pressure -- the same defect as the chart's own 100Mi-request/512M-heap
+        # default, just moved. 512M is under both rungs' requests with room for
+        # the JVM's non-heap overhead, and a derived index at this scale does not
+        # need more.
+        opensearchJavaOpts: "-Xmx512M -Xms512M"
+
+        persistence:
+          enabled: true
+          size: 20Gi
+          # zeta-local-path, NOT longhorn. A derived index does not earn a
+          # replicated volume while 1,168 GiB of longhorn PVCs in this tree have
+          # no backup target configured at all (081M1Q0WR89087G0R0036G0T0B) --
+          # spending replication on the one store that can be rebuilt from source
+          # would be the wrong allocation of the storage we have.
+          storageClass: zeta-local-path
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: opensearch
+  syncPolicy:
+    automated: { prune: false, selfHeal: true }
+    syncOptions: [ CreateNamespace=true, ServerSideApply=true ]

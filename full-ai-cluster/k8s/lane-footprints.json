@@ -166,6 +166,10 @@
       "openpolicyagent/gatekeeper-crds:v3.23.1",
       "openpolicyagent/gatekeeper:v3.23.1"
     ],
+    "full-ai-cluster/opensearch": [
+      "busybox:latest",
+      "opensearchproject/opensearch:3.8.0"
+    ],
     "full-ai-cluster/orleans": [
       "ghcr.io/lucent-financial-group/zeta-orleans-silo:latest"
     ],
@@ -523,6 +527,9 @@
     },
     "openpolicyagent/gatekeeper:v3.23.1": {
       "compressedBytes": 47759377
+    },
+    "opensearchproject/opensearch:3.8.0": {
+      "compressedBytes": 1136677506
     },
     "pgvector/pgvector:pg17-trixie": {
       "compressedBytes": 162878530

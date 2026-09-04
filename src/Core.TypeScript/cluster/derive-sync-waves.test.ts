@@ -84,9 +84,9 @@ describe("the live full-ai-cluster tree", () => {
     // what it claims to.
     // 47 -> 48 on 2026-09-04: `keda` joined the tree (Aaron 2026-09-04).
     const manifests = listApplicationManifests();
-    expect(manifests.length).toBe(48);
-    expect(readShippedApplications().length).toBe(48);
-    expect(audit.derivedWaves.size).toBe(48);
+    expect(manifests.length).toBe(49); // 48 -> 49 on 2026-09-04: opensearch joined
+    expect(readShippedApplications().length).toBe(49);
+    expect(audit.derivedWaves.size).toBe(49);
   });
 
   test("the nine known disagreements are all registered WITH a reason", () => {
@@ -152,7 +152,7 @@ describe("the live full-ai-cluster tree", () => {
     const { spec, nodes } = readDeclaration();
     // 47 -> 48 on 2026-09-04: `keda` joined the tree (Aaron 2026-09-04).
     expect(spec.kind).toBe("AppDependencyGraph");
-    expect(nodes.length).toBe(48);
+    expect(nodes.length).toBe(49); // 48 -> 49 on 2026-09-04: opensearch joined
     // The synthetic root `resolveGraph` injects must not collide with a chart.
     expect(nodes.some((n) => n.chart === spec.metadata.name)).toBe(false);
   });

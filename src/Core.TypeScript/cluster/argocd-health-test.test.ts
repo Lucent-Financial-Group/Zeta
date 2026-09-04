@@ -1726,8 +1726,12 @@ describe("081M0JXXFV0087G0R00...: the four newly-visible non-storage defects", (
     for (const cited of [
       "[cite: resource-rung hindsight metal 1000]",
       "[cite: resource-rung hindsight dev 75]",
-      "[cite: lane-cpu metal 6690 over]",
-      "[cite: lane-cpu dev 1240 fits]",
+      // 6690 -> 7690 and 1240 -> 1490 on 2026-09-04: `opensearch` joined the dev lane
+      // (1000m at metal, 250m at dev). The citations move with the ladder because
+      // that is what they are for -- prose that did not follow is the drift
+      // `reason-truth.ts` catches, and it caught exactly this pair today.
+      "[cite: lane-cpu metal 7690 over]",
+      "[cite: lane-cpu dev 1490 fits]",
     ]) {
       expect(reason).toContain(cited);
     }

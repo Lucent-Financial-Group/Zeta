@@ -1,0 +1,14 @@
+{
+  "id": "080d0370f63bd810a0130008a4f8b3b5",
+  "at": "2026-09-04T20:31:46.043Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1Q1XHVV087G0R0034X846M",
+    "type": "task",
+    "title": "OpenSearch as the search index and Temporal visibility store (blocked on temporal server 1.30.1)",
+    "slug": "opensearch-as-the-search-index-and-temporal-visibility-store",
+    "priority": "P2",
+    "filename": "081M1Q1XHVV087G0R0034X846M-opensearch-as-the-search-index-and-temporal-visibility-store.md"
+  }
+}

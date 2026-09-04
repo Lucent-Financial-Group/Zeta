@@ -34,6 +34,7 @@
     "full-ai-cluster/node-feature-discovery",
     "full-ai-cluster/ollama",
     "full-ai-cluster/open-policy-agent",
+    "full-ai-cluster/opensearch",
     "full-ai-cluster/orleans",
     "full-ai-cluster/oz",
     "full-ai-cluster/platform",
@@ -1073,6 +1074,23 @@
           "overlaid": [
             "full-ai-cluster/open-policy-agent/audit",
             "full-ai-cluster/open-policy-agent/controller-manager"
+          ]
+        },
+        {
+          "appId": "full-ai-cluster/opensearch",
+          "cpuMillis": 250,
+          "memoryMib": 1024,
+          "pods": 1,
+          "workloads": [
+            {
+              "workload": "StatefulSet/opensearch-cluster-master",
+              "replicas": 1,
+              "cpuMillis": 250,
+              "memoryMib": 1024
+            }
+          ],
+          "overlaid": [
+            "full-ai-cluster/opensearch"
           ]
         },
         {
@@ -2638,6 +2656,23 @@
           "overlaid": [
             "full-ai-cluster/open-policy-agent/audit",
             "full-ai-cluster/open-policy-agent/controller-manager"
+          ]
+        },
+        {
+          "appId": "full-ai-cluster/opensearch",
+          "cpuMillis": 1000,
+          "memoryMib": 2048,
+          "pods": 1,
+          "workloads": [
+            {
+              "workload": "StatefulSet/opensearch-cluster-master",
+              "replicas": 1,
+              "cpuMillis": 1000,
+              "memoryMib": 2048
+            }
+          ],
+          "overlaid": [
+            "full-ai-cluster/opensearch"
           ]
         },
         {
