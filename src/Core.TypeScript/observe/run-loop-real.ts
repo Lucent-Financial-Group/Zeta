@@ -24,6 +24,10 @@
  *   --repo-root <p>       Repo root for backlog reader (default: process.cwd())
  *   --participant <spec>  Chooser: "oracle" | "local-llm" | "local-llm:<model>" | "cloud:<persona>"
  *                         (default: ZETA_PARTICIPANT env or "oracle")
+ *   --hat <level>         Wear a hat for this tick, gating the menu by its authority:
+ *                         executive_board | c_suite | director | manager | lead |
+ *                         individual_contributor. (default: ZETA_HAT env, else SOVEREIGN — no hat,
+ *                         no restriction.) An unknown level is REFUSED, never silently sovereign.
  */
 
 import { loadWorld } from "./load-world";
@@ -46,8 +50,9 @@ import { codegenExecuteItem } from "./codegen-executor";
 import { realWorkspacePort, type WorkspacePort } from "./workspace-port";
 import type { DoItemOptions } from "./do-item";
 import { oracleParticipant, localLlmParticipant, cloudPersonaParticipant, type Participant } from "./participant";
-import { buildMenu, actionLabel } from "./observe";
+import { buildMenu, actionLabel, type NextAction } from "./observe";
 import { tickRooms, type Room } from "./room";
+import { authorityForLevel, hatFilter, SOVEREIGN, type HatAuthority, type HatLevel } from "./room/hat-gate";
 import type { ChooserResult } from "./chooser";
 
 import { recordReasoning, formatReasoning, type TickReasoning } from "./tick-reasoning";
@@ -69,6 +74,28 @@ interface CliArgs {
   repoRoot: string;
   dryRun: boolean;
   participant: string; // "oracle" | "local-llm" | "local-llm:<model>" | "cloud:<persona>"
+  /** Absent = sovereign: no hat, no restriction. */
+  hat: HatLevel | undefined;
+}
+
+const HAT_LEVELS: readonly HatLevel[] = [
+  "executive_board",
+  "c_suite",
+  "director",
+  "manager",
+  "lead",
+  "individual_contributor",
+];
+
+/**
+ * Parse a hat level, or REFUSE.
+ *
+ * `undefined` for an unrecognised value would silently promote a typo to sovereign — the most
+ * permissive setting — so `--hat mangaer` would run unrestricted while reading as governed. The
+ * caller treats `null` as fatal.
+ */
+export function parseHatLevel(raw: string): HatLevel | null {
+  return (HAT_LEVELS as readonly string[]).includes(raw) ? (raw as HatLevel) : null;
 }
 
 function parseArgs(argv: string[]): CliArgs {
@@ -78,7 +105,14 @@ function parseArgs(argv: string[]): CliArgs {
     repoRoot: process.cwd(),
     dryRun: false,
     participant: process.env.ZETA_PARTICIPANT ?? "oracle",
+    hat: undefined,
   };
+  const envHat = process.env["ZETA_HAT"];
+  if (envHat !== undefined && envHat !== "") {
+    const parsed = parseHatLevel(envHat);
+    if (parsed === null) throw new Error(`ZETA_HAT: unknown hat level ${JSON.stringify(envHat)}`);
+    args.hat = parsed;
+  }
   for (let i = 0; i < argv.length; i++) {
     const arg = argv[i];
     if (arg === "--by" && argv[i + 1]) {
@@ -91,6 +125,11 @@ function parseArgs(argv: string[]): CliArgs {
       args.dryRun = true;
     } else if (arg === "--participant" && argv[i + 1]) {
       args.participant = argv[++i]!;
+    } else if (arg === "--hat" && argv[i + 1]) {
+      const raw = argv[++i]!;
+      const parsed = parseHatLevel(raw);
+      if (parsed === null) throw new Error(`--hat: unknown hat level ${JSON.stringify(raw)}`);
+      args.hat = parsed;
     }
   }
   return args;
@@ -121,6 +160,13 @@ function resolveParticipant(spec: string): Participant {
   return oracleParticipant();
 }
 
+/**
+ * Marker for the refusal above. Exported so a test can assert the loop REFUSED rather than merely
+ * failed — "it threw" and "it declined to act because the gate emptied the menu" are different
+ * facts, and a test that cannot tell them apart would pass on a crash.
+ */
+export const GATE_REFUSED_ALL = "gate-refused-all";
+
 /** What the loop needs to build its room. Extracted so the WIRING itself is testable. */
 export interface LoopRoomDeps {
   readonly by: string;
@@ -131,6 +177,29 @@ export interface LoopRoomDeps {
   readonly deadlineMs: number;
   /** Hands the raw choose result back so the caller can record reasoning. */
   readonly onChoose: (r: { index: number; raw: string; fallback: boolean }) => void;
+  /**
+   * The hat this tick is worn under. Absent = `SOVEREIGN`, which restricts nothing — so every
+   * existing caller keeps today's behaviour exactly.
+   *
+   * This field is the whole reason `hat-gate.ts` is no longer decoration. Before it, `hatFilter`
+   * had ZERO non-test callers in the tree: the corporate hierarchy was fully modelled, fully
+   * tested, and consulted by nothing, so an individual contributor and the executive board were
+   * handed the same menu and the levels were a label on a chart.
+   */
+  readonly authority?: HatAuthority;
+  /**
+   * An additional menu narrowing, applied AFTER the hat gate.
+   *
+   * This is the seam the corporate register composes through — a schedule that says this hat is in
+   * a meeting right now narrows what it should be picking, and that is register policy rather than
+   * a property of the machine. Typed over `NextAction` alone so the core carries no organizational
+   * vocabulary: the direction of dependency is register → core, never the reverse, and
+   * `corporate/register-boundary.test.ts` fails the build if it inverts.
+   *
+   * Like the hat gate, it may only REMOVE. A policy that could add actions would be able to put an
+   * option in front of the chooser that `buildMenu` never derived from the world.
+   */
+  readonly menuPolicy?: (menu: readonly NextAction[]) => readonly NextAction[];
 }
 
 /**
@@ -161,7 +230,24 @@ export function createLoopRoom(deps: LoopRoomDeps): Room {
     seamMode: deps.dryRun ? "mock" : "real",
     budget: { maxSteps: 1, maxTickMs: deps.deadlineMs },
     tick: async (scopedWorld): Promise<ChooserResult> => {
-      const scopedMenu = buildMenu(scopedWorld);
+      const fullMenu = buildMenu(scopedWorld);
+
+      // THE GATE, in the order the hat-gate module documents: buildMenu → hatFilter → choose.
+      // Absent authority is SOVEREIGN, which removes nothing, so an unhatted tick is unchanged.
+      const gated = hatFilter(fullMenu, deps.authority ?? SOVEREIGN);
+      // Then the register's own narrowing, if one was supplied.
+      const scopedMenu = deps.menuPolicy === undefined ? gated : deps.menuPolicy(gated);
+
+      if (scopedMenu.length === 0) {
+        // The gate removed everything. Refuse rather than reach past it: falling back to the
+        // UNGATED menu here would make the filter advisory — the one shape that turns an authority
+        // model into a comment, since the fallback fires exactly when the gate had something to say.
+        deps.onChoose({ index: -1, raw: GATE_REFUSED_ALL, fallback: true });
+        throw new Error(
+          `${GATE_REFUSED_ALL}: the hat gate left no action from ${fullMenu.length} candidate(s) — refusing to act`,
+        );
+      }
+
       let chosen: { index: number; raw: string; fallback: boolean };
       try {
         chosen = await deps.participant.choose(scopedWorld, scopedMenu);
@@ -169,6 +255,9 @@ export function createLoopRoom(deps: LoopRoomDeps): Room {
         chosen = { index: 0, raw: "choose-threw", fallback: true };
       }
       deps.onChoose(chosen);
+      // Indexed against the FILTERED menu — the same array the participant was shown. Indexing the
+      // unfiltered one here would let a chooser's index land on an action the hat may not perform,
+      // which is the gate defeating itself by off-by-one.
       const picked = scopedMenu[chosen.index] ?? scopedMenu[0]!;
       return { action: picked, tier: "oracle", confidence: chosen.fallback ? 0 : 1 };
     },
@@ -310,9 +399,30 @@ async function main(): Promise<number> {
     onChoose: (r) => {
       chooseResult = r;
     },
+    // The hat gate, now actually consulted. Absent `--hat` is SOVEREIGN and changes nothing.
+    ...(args.hat === undefined ? {} : { authority: authorityForLevel(args.hat) }),
   });
 
-  const [roomTick] = await tickRooms([loopRoom], observeWorld);
+  if (args.hat !== undefined) {
+    console.log(`[hat] wearing ${args.hat} — the menu is gated by its authority`);
+  }
+
+  // A gate that empties the menu THROWS from the tick, and a throw inside `tickRooms` rejects the
+  // whole call. That is caught here rather than left to crash the process, because "the hat had
+  // nothing it was allowed to do" is a governed outcome the loop should report and exit cleanly on
+  // — not a stack trace that reads like a bug in the runner.
+  let ticks: readonly Awaited<ReturnType<typeof tickRooms>>[number][];
+  try {
+    ticks = await tickRooms([loopRoom], observeWorld);
+  } catch (err) {
+    const message = err instanceof Error ? err.message : String(err);
+    if (message.startsWith(GATE_REFUSED_ALL)) {
+      console.error(`[hat] ${message}`);
+      return 1;
+    }
+    throw err;
+  }
+  const [roomTick] = ticks;
   if (roomTick === undefined) {
     console.error("[room] the runner returned no result for the loop room — refusing to act");
     return 1;
