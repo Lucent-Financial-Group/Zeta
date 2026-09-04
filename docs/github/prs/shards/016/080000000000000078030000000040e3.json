@@ -1,0 +1,12 @@
+{
+  "pr_number": 16611,
+  "archive_path": "docs/history/pr-reviews/PR-16611-feat-081m1q5jcnd087g0r0031bgr0m-replay-freeze-log-cas-onto-two-polyfills.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-04T22:01:12.254Z",
+  "schema_version": "v1",
+  "commit_sha": "a76467a138120c1a0e4decd8491b408c296d3cd2",
+  "title": "feat(081M1Q5JCND087G0R0031BGR0M): replay freeze log+CAS onto two polyfills",
+  "state": "MERGED",
+  "merged_at": "2026-09-04T22:00:37Z",
+  "head_ref": "feat/zetafs-two-device-replay"
+}

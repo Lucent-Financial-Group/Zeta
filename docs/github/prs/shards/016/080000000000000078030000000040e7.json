@@ -1,0 +1,12 @@
+{
+  "pr_number": 16615,
+  "archive_path": "docs/history/pr-reviews/PR-16615-chore-workitems-complete-081m1q8ffxf-freeze-reclaim-journal-composition.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-04T23:04:29.761Z",
+  "schema_version": "v1",
+  "commit_sha": "f3244a63f3994e8e957024d6ac6ac833b37893cb",
+  "title": "chore(workitems): complete 081M1Q8FFXF freeze reclaim journal composition",
+  "state": "MERGED",
+  "merged_at": "2026-09-04T23:03:55Z",
+  "head_ref": "chore/complete-081M1Q8FFXF"
+}
