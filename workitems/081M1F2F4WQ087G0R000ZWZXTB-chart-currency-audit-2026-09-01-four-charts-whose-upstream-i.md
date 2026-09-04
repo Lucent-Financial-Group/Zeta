@@ -46,9 +46,9 @@ risk is that it resolves itself the hard way. Maintainer call.
 ## Progress 2026-09-04 — Cilium first-boot pin
 
 Application `targetRevision` is CURRENT `1.20.1` (#16287). Bootstrap
-`cilium-install.yaml` matched that pin on 2026-09-04: there is no live
-cluster, so first-boot may jump (Aaron: "we can be on latest from the
-start"). Cilium still forbids skip-minor on an in-place upgrade; the
+`cilium-install.yaml` matched that pin on 2026-09-04 (#16570 squash
+`cb9b223df`): there is no live cluster, so first-boot may jump (Aaron:
+"we can be on latest from the start"). Cilium still forbids skip-minor on an in-place upgrade; the
 equality test in `cilium-kind-lane.test.ts` is the control. Redis already
 Valkey (#16292). Hindsight already `pgvector/pgvector:pg17-trixie`.
 hat-system wait Job is `registry.k8s.io/kubectl:v1.32.3` (shell-free).
