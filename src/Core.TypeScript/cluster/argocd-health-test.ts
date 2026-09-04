@@ -2269,6 +2269,40 @@ export function formatHealthWaitProgress(
   );
 }
 
+/**
+ * ArgoCD `Degraded` is a terminal health class. Progressing and Missing can
+ * still become Healthy if we wait. Degraded means the workload already failed
+ * its probes; the remaining `--timeout-sec` (2400s in CI) cannot heal it.
+ *
+ * MEASURED live-kind-included 33817974673 on PR #16533: at T+799s the wait
+ * printed `mimir=Synced/Degraded` (Otto's `081M1FG1RCW`, seaweedfs auth) and
+ * `agent-memory=OutOfSync/Progressing`, then kept polling through T+1044s+
+ * toward the 2400s cap. `gate (required)` was already green. The job looked
+ * stuck because this failure was not marked `terminal`. Same shape as
+ * `rootCatalogGitHostFailure`: waiting cannot produce children / health.
+ *
+ * Progressing-only laggards still wait. Missing still waits (apps appear).
+ * This does not repair mimir and does not re-defer agent-memory.
+ */
+export function degradedHealthTerminalFailure(
+  verdicts: readonly ApplicationVerdict[],
+): Failure | null {
+  const degraded = verdicts.filter(
+    (verdict) => !verdict.ok && verdict.healthStatus === "Degraded",
+  );
+  if (degraded.length === 0) return null;
+  const names = degraded
+    .map((verdict) => `${verdict.name}=${verdict.syncStatus}/${verdict.healthStatus}`)
+    .join(", ");
+  return {
+    kind: "ApplicationUnhealthy",
+    message:
+      `asserted Application is Degraded (${names}); waiting the remaining health budget cannot heal it`,
+    terminal: true,
+    detail: degraded,
+  };
+}
+
 export const REPO_BACKED_CHILD_WAIT_DIAGNOSTIC_COMMANDS: readonly {
   readonly label: string;
   readonly args: readonly string[];
@@ -2704,6 +2738,8 @@ async function waitForApplications(
           ? classifyApplications(plan.expectedApplications, snapshots)
           : classifyApplications(plan.expectedApplications, snapshots);
     if (lastVerdicts.every((verdict) => verdict.ok)) return null;
+    const degraded = degradedHealthTerminalFailure(lastVerdicts);
+    if (degraded !== null) return degraded;
     const now = Date.now();
     if (now - lastProgressAt >= 60_000) {
       const elapsedSec = Math.floor((now - startedAt) / 1000);

@@ -31,6 +31,7 @@ import {
   mergeArgoCdTimeoutDiagnostics,
   parseApplicationList,
   formatHealthWaitProgress,
+  degradedHealthTerminalFailure,
   isGitHubHostUnresolvableText,
   isTerminalFailure,
   REPO_BACKED_CHILD_APPEAR_TIMEOUT_SECONDS,
@@ -1033,6 +1034,46 @@ describe("081KSXN940008QG0R000SCP2H1 argocd-health-test planning", () => {
     expect(line).toBe(
       "still waiting (120s): health 1/3 ok; laggards: vault=Unknown/Progressing, mimir=Unknown/Degraded",
     );
+  });
+
+  test("Degraded is a terminal health wait; Progressing and Missing are not", () => {
+    // MEASURED live-kind-included 33817974673: mimir Synced/Degraded at T+799s
+    // while agent-memory was still OutOfSync/Progressing. The wait kept the
+    // 2400s cap. Degraded cannot become Healthy by polling.
+    const mixed = degradedHealthTerminalFailure([
+      { name: "hat-system", ok: true, syncStatus: "Synced", healthStatus: "Healthy" },
+      { name: "agent-memory", ok: false, syncStatus: "OutOfSync", healthStatus: "Progressing" },
+      { name: "mimir", ok: false, syncStatus: "Synced", healthStatus: "Degraded" },
+    ]);
+    expect(isTerminalFailure(mixed)).toBe(true);
+    expect(mixed?.kind).toBe("ApplicationUnhealthy");
+    expect(mixed?.message).toContain("mimir=Synced/Degraded");
+    expect(mixed?.message).not.toContain("agent-memory");
+
+    expect(
+      degradedHealthTerminalFailure([
+        { name: "agent-memory", ok: false, syncStatus: "OutOfSync", healthStatus: "Progressing" },
+      ]),
+    ).toBeNull();
+    expect(
+      degradedHealthTerminalFailure([
+        { name: "agent-memory", ok: false, syncStatus: "Missing", healthStatus: "Missing" },
+      ]),
+    ).toBeNull();
+    expect(
+      degradedHealthTerminalFailure([
+        { name: "mimir", ok: true, syncStatus: "Synced", healthStatus: "Healthy" },
+      ]),
+    ).toBeNull();
+  });
+
+  test("the health wait calls the Degraded abort, not only defines it", () => {
+    const source = readFileSync(new URL("./argocd-health-test.ts", import.meta.url), "utf8");
+    const waitBody = source.slice(
+      source.indexOf("async function waitForApplications"),
+      source.indexOf("async function runDriftRepairCheck"),
+    );
+    expect(waitBody).toContain("degradedHealthTerminalFailure(lastVerdicts)");
   });
 
   test("child-appear wait is capped below the health budget, and is ANY child not hat-system", () => {

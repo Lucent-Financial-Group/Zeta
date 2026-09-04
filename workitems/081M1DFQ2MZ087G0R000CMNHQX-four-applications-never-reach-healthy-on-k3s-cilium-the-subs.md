@@ -719,13 +719,38 @@ from ConfigMap `cilium-config` (what the agent actually runs) and
 `cilium-dbg status --verbose` KubeProxyReplacement Details (Socket LB
 coverage). Still a read. Do not invent helm values.
 
-## Next dump — cilium-config ConfigMap + verbose KPR details
+## MEASURED 2026-09-03 — live-k3d 33817974673: ConfigMap bpf-lb-sock=false, ClusterIP still FAIL
 
-live-k3d dump now prints ConfigMap `cilium-config` keys
-(`bpf-lb-sock`, `bpf-lb-sock-hostns-only`, `bpf-lb-external-clusterip`)
-and `cilium-dbg status --verbose` KubeProxyReplacement Details.
-Do not treat those as measured until a dump with empty `app=svclb` +
-ClusterIP FAIL prints the values. Do not invent Cilium helm values.
+Job `100854900709` on SHA `f93babb9a`
+[run 33817974673](https://github.com/Lucent-Financial-Group/Zeta/actions/runs/33817974673)
+**succeeded** at smoke. `gate (required)` green. The job the human
+saw hanging is **`live kind included`** (kindnetd), not this dump:
+`mimir=Synced/Degraded` + `agent-memory=OutOfSync/Progressing` toward
+the 2400s cap. That is Otto `081M1FG1RCW` (mimir / seaweedfs auth),
+not this item. Fail-fast the health wait on Degraded so that job
+stops looking stuck.
+
+| Signal | Value |
+|---|---|
+| `app=svclb` | No resources found |
+| ConfigMap `bpf-lb-sock` | **false** |
+| ConfigMap `bpf-lb-sock-hostns-only` | **true** |
+| ConfigMap `bpf-lb-external-clusterip` | **false** |
+| ConfigMap `kube-proxy-replacement` | true |
+| verbose Socket LB | Enabled, Coverage **Hostns-only** |
+| hostNetwork ClusterIP | **FAIL** (TCP + UDP DNS timeout) |
+| hostNetwork overlay pod IPs | **OPEN** |
+| pod-network ClusterIP | **OPEN** |
+| the four (smoke) | openziti OutOfSync/Missing; trust-manager Synced/Healthy; spire Synced/Progressing; vault Synced/Progressing |
+
+`bpf-lb-sock=false` with KPR True is per-packet LB in the pod netns
+(OPEN) and no working host-ns ClusterIP translation (FAIL). Verbose
+"Socket LB Enabled / Hostns-only" is the coverage claim; TCP still
+FAIL. Setting helm `socketLB` / `bpf.lbExternalClusterIP` is still
+inventing. Next software is `ip route get` of the kube-dns ClusterIP
+from the k3d node (is 10.43.0.0/16 local via `cilium_host` or via
+docker `eth0`?). Do not invent Cilium helm values. Do not re-lift
+included. Otto keeps mimir.
 
 ## The distinguishing test
 

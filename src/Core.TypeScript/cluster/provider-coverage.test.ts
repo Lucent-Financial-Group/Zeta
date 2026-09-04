@@ -146,6 +146,7 @@ describe("every supported provider is exercised by a real CI lane", () => {
     expect(run).toContain("bpf-lb-sock=");
     expect(run).toContain("bpf-lb-external-clusterip=");
     expect(run).toContain("KubeProxyReplacement Details");
+    expect(run).toContain("ip route get");
     expect(run).not.toMatch(/docker exec.*\|\s*(grep|rg)\s+-[^\n]*q/);
   });
 });
