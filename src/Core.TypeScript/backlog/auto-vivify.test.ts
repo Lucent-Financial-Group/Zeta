@@ -33,6 +33,29 @@ test("extractPointers ignores absolute filesystem paths (node runtime paths, not
   expect(cleans).toContain("db/routing/README.md");
 });
 
+test("extractPointers does not double-count a backtick filename that is a markdown-link label", () => {
+  // A workitem cites a design doc as ``[`foo.md`](../docs/research/foo.md)``. The markdown
+  // link target is authoritative; the backtick label filename on its own would resolve to a
+  // different (nonexistent) directory and register as a phantom dangling reference.
+  const text =
+    "Design: [`2026-09-03-oracles.md`](../docs/research/2026-09-03-oracles.md) is the source.";
+
+  const ptrs = extractPointers(text);
+  const backtickCleans = ptrs.filter((p) => p.kind === "backtick").map((p) => p.clean);
+  const mdlinkCleans = ptrs.filter((p) => p.kind === "mdlink").map((p) => p.clean);
+
+  // The bare label filename must NOT appear as an independent backtick pointer.
+  expect(backtickCleans).not.toContain("2026-09-03-oracles.md");
+  // The authoritative markdown-link target IS captured.
+  expect(mdlinkCleans).toContain("../docs/research/2026-09-03-oracles.md");
+});
+
+test("extractPointers still captures a standalone backtick path outside any link label", () => {
+  const text = "The healer lives at `src/Core.TypeScript/hygiene/healers/zetafs-virtual-path.ts` today.";
+  const cleans = extractPointers(text).map((p) => p.clean);
+  expect(cleans).toContain("src/Core.TypeScript/hygiene/healers/zetafs-virtual-path.ts");
+});
+
 test("extractPointers separates QEC parameter notation from ordinary wikilinks", () => {
   const text = "The [[16,6,4]] code composes with [[same/grey-gray]] and [[grey]].";
   const cleans = extractPointers(text).map((pointer) => pointer.clean);

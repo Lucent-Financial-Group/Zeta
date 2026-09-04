@@ -104,10 +104,31 @@ export function extractPointers(text: string): DanglingPointer[] {
     // filesystem (e.g. `/run/current-system/sw/lib/pkcs11/...` on a NixOS
     // cluster node), never a pointer into this repo — so it is not a
     // vivifiable reference and reporting it as dangling is a false positive.
+    // A backtick filename that sits INSIDE a markdown-link label -- e.g.
+    // ``[`foo.md`](../docs/research/foo.md)`` -- is not an independent pointer:
+    // the link's target (captured by rule 2 above) is the authoritative
+    // reference, and it may point somewhere the bare label filename does not
+    // resolve on its own (a different directory). Emitting the label as its own
+    // backtick pointer produces a phantom dangling reference even though the
+    // real link target exists. Collect the label spans first so we can skip
+    // backticks that fall within them.
+    const labelSpans: Array<[number, number]> = [];
+    for (const m of line.matchAll(/\[([^\]]*)\]\(([^)]+)\)/g)) {
+      const start = m.index!;
+      const labelStart = start + 1; // just past the "["
+      const labelEnd = labelStart + m[1]!.length; // just before the "]"
+      labelSpans.push([labelStart, labelEnd]);
+    }
+
     const backticks = line.matchAll(/`([a-zA-Z0-9_./-]+\.[a-z]{2,4})`/g);
     for (const m of backticks) {
       const target = m[1]!.trim();
       if (target.startsWith("/")) {
+        continue;
+      }
+      const matchStart = m.index!;
+      const insideLabel = labelSpans.some(([s, e]) => matchStart >= s && matchStart < e);
+      if (insideLabel) {
         continue;
       }
       if (target.includes("/") || target.endsWith(".md")) {
