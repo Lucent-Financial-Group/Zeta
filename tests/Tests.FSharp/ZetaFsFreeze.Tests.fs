@@ -1445,8 +1445,31 @@ let ``POSIX freeze of the same ContentId does not rewrite object bits`` () : Tas
                     mock.CommitOrder
                     |> Array.filter (fun p -> p.IndexOf("objects", StringComparison.Ordinal) >= 0)
 
-                let afterFirst = objectWrites().Length
-                Assert.True(afterFirst > 0)
+                // Snapshot the publish log AND the durable CAS files. A let-bound
+                // `objectWrites().Length` compared to a second `objectWrites().Length`
+                // is a name-bound self-comparison (both sides normalize to one
+                // expression) and R2 refuses the new census row. `Array.copy` makes
+                // the log a different expression. CommitOrder records the CAS `.tmp`
+                // publish; Move to the content-addressed path does not re-append, so
+                // bits are read from GetFiles, not from the log.
+                let objectPublishLogAfterFirst = Array.copy (objectWrites ())
+                Assert.True(objectPublishLogAfterFirst.Length > 0)
+
+                let objectsDir = ZetaFsPath.combine2 store "objects"
+
+                let durablePathsAfterFirst =
+                    FileSystem.Current.GetFiles(objectsDir, "*")
+                    |> Array.filter (fun p ->
+                        not (p.EndsWith(".tmp", StringComparison.Ordinal)))
+                    |> Array.sortWith (fun a b -> String.Compare(a, b, StringComparison.Ordinal))
+                    |> Array.copy
+
+                Assert.True(durablePathsAfterFirst.Length > 0)
+
+                let durableBitsAfterFirst =
+                    durablePathsAfterFirst
+                    |> Array.map (fun p -> FileSystem.Current.ReadAllBytes p)
+
                 let pending2 = (freezeAsync volume id ZetaFsFreeze.Journaled).AsTask()
                 do! (ZetaFsFreeze.pumpLog volume CancellationToken.None).ConfigureAwait(false)
                 let! second = pending2.ConfigureAwait(false)
@@ -1455,7 +1478,22 @@ let ``POSIX freeze of the same ContentId does not rewrite object bits`` () : Tas
                 | Error e -> Assert.Fail(ZetaFsFreeze.errorName e)
                 | Ok second ->
                     Assert.Equal(first.Content.ToHex(), second.Content.ToHex())
-                    Assert.Equal(afterFirst, objectWrites().Length)
+                    Assert.Equal<string>(objectPublishLogAfterFirst, objectWrites ())
+
+                    let durablePathsAfterSecond =
+                        FileSystem.Current.GetFiles(objectsDir, "*")
+                        |> Array.filter (fun p ->
+                            not (p.EndsWith(".tmp", StringComparison.Ordinal)))
+                        |> Array.sortWith (fun a b -> String.Compare(a, b, StringComparison.Ordinal))
+
+                    Assert.Equal<string>(durablePathsAfterFirst, durablePathsAfterSecond)
+
+                    for i = 0 to durableBitsAfterFirst.Length - 1 do
+                        Assert.Equal<byte>(
+                            durableBitsAfterFirst.[i],
+                            FileSystem.Current.ReadAllBytes durablePathsAfterSecond.[i]
+                        )
+
                     Assert.True(ZetaFsFreeze.isReadable volume first.Content)
                     Assert.True(ZetaFsFreeze.isReadable volume second.Content)
         finally
