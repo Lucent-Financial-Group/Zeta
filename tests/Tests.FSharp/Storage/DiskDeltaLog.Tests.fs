@@ -653,3 +653,48 @@ let ``group-commit default door torn-sector of the second append acks and keeps 
         finally
             FileSystem.Reset()
     }
+
+[<Fact>]
+let ``POSIX append grows the host file by the framed record, not a 4K RMW`` () : Task =
+    task {
+        let mock = InMemoryFileSystem()
+        FileSystem.Register(mock)
+        let dir = DeterministicTestPath.nextDir "gcdl-posix-record-grow"
+        try
+            let codec = CborEntryCodec<int>(keyEnc, keyDec)
+            use log = new GroupCommitDiskDeltaLog<int>(dir, codec, useBlockIo = false)
+            let dlog = log :> IDeltaLog<int>
+            let! seq1 = dlog.AppendAsync(ZSet.ofKeys [ 1 ], empty, ct).AsTask().ConfigureAwait(false)
+            Assert.Equal(1L, seq1)
+            let segmentPath = Path.Combine(Path.GetFullPath dir, "delta-00000000000000000001.segment")
+            let len = FileSystem.Current.ReadAllBytes(segmentPath).Length
+            Assert.True(len > 8)
+            Assert.True(len < 4096)
+        finally
+            FileSystem.Reset()
+    }
+
+[<Fact>]
+let ``device door keeps logical payload short and pads the host file to LBAs`` () : Task =
+    task {
+        let mock = InMemoryFileSystem()
+        FileSystem.Register(mock)
+        let dir = DeterministicTestPath.nextDir "gcdl-block-lba-pad"
+        try
+            let codec = CborEntryCodec<int>(keyEnc, keyDec)
+            use log = new GroupCommitDiskDeltaLog<int>(dir, codec)
+            let dlog = log :> IDeltaLog<int>
+            let! seq1 = dlog.AppendAsync(ZSet.ofKeys [ 1 ], empty, ct).AsTask().ConfigureAwait(false)
+            Assert.Equal(1L, seq1)
+            let segmentPath = Path.Combine(Path.GetFullPath dir, "delta-00000000000000000001.segment")
+            let host = FileSystem.Current.ReadAllBytes segmentPath
+            let io = FileSystemBlockIo(FileSystem.Current, segmentPath, 4096)
+            match BlockSuper.tryReadGroup (io :> IBlockIo) with
+            | None -> Assert.Fail("expected ZGL2 logical length")
+            | Some logical ->
+                Assert.True(logical > 8L)
+                Assert.True(logical < 4096L)
+                Assert.True(int64 host.Length >= BlockLog.origin (io :> IBlockIo) + logical)
+        finally
+            FileSystem.Reset()
+    }
