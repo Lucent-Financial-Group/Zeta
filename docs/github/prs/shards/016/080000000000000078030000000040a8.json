@@ -1,0 +1,12 @@
+{
+  "pr_number": 16552,
+  "archive_path": "docs/history/pr-reviews/PR-16552-docs-081m1n2jpve087g0r001sk41ra-hermetic-provenance-the-nano-repo-build-plan.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-04T02:45:40.802Z",
+  "schema_version": "v1",
+  "commit_sha": "a4e90a6b4b26675d1e9751bc8cfcb0544e059505",
+  "title": "docs(081M1N2JPVE087G0R001SK41RA): hermetic provenance + the nano-repo build plan",
+  "state": "MERGED",
+  "merged_at": "2026-09-04T02:45:03Z",
+  "head_ref": "otto/hermetic-provenance-and-multirepo-plan"
+}
