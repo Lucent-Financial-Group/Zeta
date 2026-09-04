@@ -17,6 +17,7 @@
     <Compile Include="MessageBatch.Tests.fs" />
     <Compile Include="Bp.Tests.fs" />
     <Compile Include="Ep.Tests.fs" />
+    <Compile Include="SignedProbitEp.Tests.fs" />
     <Compile Include="SoftMode.Tests.fs" />
     <Compile Include="Attested.Tests.fs" />
     <Compile Include="HeavyTailFold.Tests.fs" />

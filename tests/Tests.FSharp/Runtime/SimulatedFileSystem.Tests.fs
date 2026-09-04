@@ -381,6 +381,25 @@ let ``SimulatedBlockIo LbaCount is unbounded sparse DST`` () =
     Assert.Equal(0UL, io.LbaCount)
 
 [<Fact>]
+let ``SimulatedBlockIo bounded RAM namespace rejects LBAs at and past LbaCount`` () =
+    let device = SimulatedBlockIo(4096, lbaCount = 4UL)
+    let io = device :> IBlockIo
+    Assert.Equal(4UL, io.LbaCount)
+    let block = Array.create 4096 1uy
+    Assert.Equal(4096, io.Write(3UL, System.ReadOnlyMemory<byte>.op_Implicit block))
+    Assert.Throws<IOException>(fun () ->
+        io.Write(4UL, System.ReadOnlyMemory<byte>.op_Implicit block) |> ignore)
+    |> ignore
+    Assert.Throws<IOException>(fun () ->
+        io.Read(4UL, System.Memory<byte>.op_Implicit (Array.zeroCreate 4096)) |> ignore)
+    |> ignore
+    let cloned = device.CloneMedia() :> IBlockIo
+    Assert.Equal(4UL, cloned.LbaCount)
+    Assert.Throws<IOException>(fun () ->
+        cloned.Write(4UL, System.ReadOnlyMemory<byte>.op_Implicit block) |> ignore)
+    |> ignore
+
+[<Fact>]
 let ``FileSystemBlockIo rejects an invalid block size before creating the backing file`` () =
     let fs = InMemoryFileSystem()
     let ifs = fs :> IFileSystem

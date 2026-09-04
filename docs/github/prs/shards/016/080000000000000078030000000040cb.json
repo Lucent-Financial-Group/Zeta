@@ -1,0 +1,15 @@
+{
+  "pr_number": 16587,
+  "archive_path": "docs/history/pr-reviews/PR-16587-feat-creds-project-usb-restored-host-logins-into-kubernetes-secrets.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7qrcht",
+    "thread:PRRT_kwDOSF9kNM6favvq"
+  ],
+  "fetched_at": "2026-09-04T20:02:14.286Z",
+  "schema_version": "v1",
+  "commit_sha": "12ead2f88cc1ea965afa35cb61bf486e71a2aef5",
+  "title": "feat(creds): project USB-restored host logins into Kubernetes Secrets",
+  "state": "MERGED",
+  "merged_at": "2026-09-04T20:01:36Z",
+  "head_ref": "cursor/host-creds-k8s-secret-27c5"
+}

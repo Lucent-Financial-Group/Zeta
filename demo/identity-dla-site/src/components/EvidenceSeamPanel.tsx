@@ -153,6 +153,17 @@ const SPECTRUM = [
     tone: "var(--amber)",
   },
   {
+    lane: "finite signed-probit EP query",
+    carrier: "UCI ordered slice · 32,950 train → 8,238 held out",
+    operators: "canonical source order · F#/Python exact 1-D oracle · label mutant",
+    defect: "—",
+    readout: "APPROXIMATE EP",
+    verdict: "maximum 1-D variance error 1.4804e−5",
+    detail: "Brier Δ −0.0000672 · mean NLPD Δ −0.0002570 versus Beta(1,1) global rate · three housing categories retained · no generic non-Gaussian or decision claim",
+    tone: "var(--amber)",
+    emphasis: true,
+  },
+  {
     lane: "composable factor benchmark",
     carrier: "64 Gaussian leaves · ETTh1 n=3,446",
     operators: "CFB-A F#/TS · CFB-B/C/D TS/Python",
