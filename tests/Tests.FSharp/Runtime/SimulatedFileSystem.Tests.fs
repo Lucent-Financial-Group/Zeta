@@ -386,6 +386,21 @@ let ``FileSystemBlockIo corrupt-last-write flips the new LBA and keeps the previ
     Assert.Equal(second.[4095] ^^^ 0xA5uy, got1.[4095])
 
 [<Fact>]
+let ``FileSystemBlockIo torn-sector keeps the old tail of the LBA and acks`` () =
+    let mock = InMemoryFileSystem()
+    let path = "/vol/lba-torn"
+    let io = FileSystemBlockIo(mock, path, 4096) :> IBlockIo
+    let first = Array.create 4096 1uy
+    let second = Array.create 4096 2uy
+    Assert.Equal(4096, io.Write(0UL, System.ReadOnlyMemory<byte>.op_Implicit first))
+    mock.ArmTornSector(path, 512)
+    Assert.Equal(4096, io.Write(0UL, System.ReadOnlyMemory<byte>.op_Implicit second))
+    let got = Array.zeroCreate<byte> 4096
+    Assert.Equal(4096, io.Read(0UL, System.Memory<byte>.op_Implicit got))
+    Assert.Equal<byte>(Array.create 512 2uy, Array.sub got 0 512)
+    Assert.Equal<byte>(Array.create 3584 1uy, Array.sub got 512 3584)
+
+[<Fact>]
 let ``SimulatedBlockIo reads back a write without IFileSystem`` () =
     let io = SimulatedBlockIo(4096) :> IBlockIo
     Assert.Equal(4096, io.BlockSize)
@@ -454,6 +469,37 @@ let ``SimulatedBlockIo reorder holds the first write until the second commits`` 
     Assert.Equal<byte>(a, gotA)
     Assert.Equal<byte>(b, gotB)
     Assert.Equal<uint64>([| 1UL; 0UL |], device.CommitOrder)
+
+[<Fact>]
+let ``SimulatedBlockIo torn-sector keeps the old tail of the LBA and acks`` () =
+    let device = SimulatedBlockIo(4096)
+    let io = device :> IBlockIo
+    let first = Array.create 4096 1uy
+    let second = Array.create 4096 2uy
+    Assert.Equal(4096, io.Write(0UL, System.ReadOnlyMemory<byte>.op_Implicit first))
+    device.ArmTornSector(512)
+    Assert.Equal(4096, io.Write(0UL, System.ReadOnlyMemory<byte>.op_Implicit second))
+    let got = Array.zeroCreate<byte> 4096
+    Assert.Equal(4096, io.Read(0UL, System.Memory<byte>.op_Implicit got))
+    Assert.Equal<byte>(Array.create 512 2uy, Array.sub got 0 512)
+    Assert.Equal<byte>(Array.create 3584 1uy, Array.sub got 512 3584)
+
+[<Fact>]
+let ``BlockCas Put of an existing key does not rewrite bits`` () =
+    let device = SimulatedBlockIo(4096)
+    let cas = BlockCas(device)
+    cas.Put("aa", [| 1uy; 2uy; 3uy |])
+    let writesAfterFirstPut = device.Writes
+    // The first Put must have driven at least the payload append and the
+    // superblock publish, so the count is strictly positive. Asserting this
+    // keeps the idempotency claim below riding on a check that can fail
+    // rather than a vacuous self-comparison.
+    Assert.True(writesAfterFirstPut > 0, "first Put must issue block writes")
+    Assert.Equal(1, cas.Count)
+    cas.Put("aa", [| 1uy; 2uy; 3uy |])
+    Assert.Equal(1, cas.Count)
+    // The idempotent re-Put of an identical key must add exactly zero writes.
+    Assert.Equal(0, device.Writes - writesAfterFirstPut)
 
 [<Fact>]
 let ``BlockSuper log dual slot keeps previous logical after crash-mid-write`` () =

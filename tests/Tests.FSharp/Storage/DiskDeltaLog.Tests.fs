@@ -170,7 +170,7 @@ let ``group-commit crash-mid-write through IFileSystem tears the tail and a fres
         let dir = DeterministicTestPath.nextDir "gcdl-crash-mid"
         try
             let codec = CborEntryCodec<int>(keyEnc, keyDec)
-            let log1 = new GroupCommitDiskDeltaLog<int>(dir, codec)
+            let log1 = new GroupCommitDiskDeltaLog<int>(dir, codec, useBlockIo = false)
             let mutable committedLen = 0
             try
                 let dlog1 = log1 :> IDeltaLog<int>
@@ -191,7 +191,7 @@ let ``group-commit crash-mid-write through IFileSystem tears the tail and a fres
             finally
                 (log1 :> IDisposable).Dispose()
 
-            use log2 = new GroupCommitDiskDeltaLog<int>(dir, codec)
+            use log2 = new GroupCommitDiskDeltaLog<int>(dir, codec, useBlockIo = false)
             let dlog2 = log2 :> IDeltaLog<int>
             Assert.Equal(1L, dlog2.HighWater)
             let! replayed = dlog2.ReplayAsync(0L, ct).AsTask().ConfigureAwait(false)
@@ -213,7 +213,7 @@ let ``group-commit corrupt-last-write through IFileSystem acks then a fresh inst
         try
             let codec = CborEntryCodec<int>(keyEnc, keyDec)
             mock.ArmCorruptLastWrite(".segment", 8)
-            let log1 = new GroupCommitDiskDeltaLog<int>(dir, codec)
+            let log1 = new GroupCommitDiskDeltaLog<int>(dir, codec, useBlockIo = false)
             try
                 let dlog1 = log1 :> IDeltaLog<int>
                 let! seq1 = dlog1.AppendAsync(ZSet.ofKeys [ 1 ], empty, ct).AsTask().ConfigureAwait(false)
@@ -221,7 +221,7 @@ let ``group-commit corrupt-last-write through IFileSystem acks then a fresh inst
             finally
                 (log1 :> IDisposable).Dispose()
 
-            use log2 = new GroupCommitDiskDeltaLog<int>(dir, codec)
+            use log2 = new GroupCommitDiskDeltaLog<int>(dir, codec, useBlockIo = false)
             let dlog2 = log2 :> IDeltaLog<int>
             Assert.Equal(0L, dlog2.HighWater)
             let! replayed = dlog2.ReplayAsync(0L, ct).AsTask().ConfigureAwait(false)
@@ -234,7 +234,7 @@ let ``group-commit corrupt-last-write through IFileSystem acks then a fresh inst
 [<Fact>]
 let ``group-commit segment log truncates torn trailing record on recovery`` () =
     withDir "gcdl-torn" (fun dir ->
-        (use log = new GroupCommitDiskDeltaLog<int>(dir, CborEntryCodec<int>(keyEnc, keyDec))
+        (use log = new GroupCommitDiskDeltaLog<int>(dir, CborEntryCodec<int>(keyEnc, keyDec), useBlockIo = false)
          let dlog = log :> IDeltaLog<int>
          dlog.AppendAsync(ZSet.ofKeys [ 1 ], empty, ct).AsTask().Wait()
          dlog.AppendAsync(ZSet.ofKeys [ 2 ], empty, ct).AsTask().Wait())
@@ -249,7 +249,7 @@ let ``group-commit segment log truncates torn trailing record on recovery`` () =
          fs.Write([| 0x7uy; 0x8uy; 0x9uy |], 0, 3)
          fs.Flush())
         FileInfo(segment).Length |> should equal (before + 3L)
-        use recovered = new GroupCommitDiskDeltaLog<int>(dir, CborEntryCodec<int>(keyEnc, keyDec))
+        use recovered = new GroupCommitDiskDeltaLog<int>(dir, CborEntryCodec<int>(keyEnc, keyDec), useBlockIo = false)
         let dlog = recovered :> IDeltaLog<int>
         dlog.HighWater |> should equal 2L
         dlog.ReplayAsync(0L, ct).AsTask().Result |> Array.map _.Seq |> should equal [| 1L; 2L |]
@@ -484,7 +484,7 @@ let ``a pre-rollover delta.segment is honoured as the FIRST segment — in-place
 [<Fact>]
 let ``an anomaly inside a SEALED segment is CORRUPTION — loud, never truncated`` () =
     withDir "gcdl-sealed-corrupt" (fun dir ->
-        (use log = new GroupCommitDiskDeltaLog<int>(dir, FixedBytesEntryCodec 100, oneRecordBoats, maxSegmentBytes = 150L)
+        (use log = new GroupCommitDiskDeltaLog<int>(dir, FixedBytesEntryCodec 100, oneRecordBoats, maxSegmentBytes = 150L, useBlockIo = false)
          let dlog = log :> IDeltaLog<int>
          for i in 1 .. 6 do dlog.AppendAsync(ZSet.ofKeys [ i ], empty, ct).AsTask().Wait())
         let segs = Directory.GetFiles(dir, "delta-*.segment") |> Array.sort
@@ -494,7 +494,7 @@ let ``an anomaly inside a SEALED segment is CORRUPTION — loud, never truncated
         (use fs = new FileStream(segs.[0], FileMode.Append, FileAccess.Write, FileShare.Read)
          fs.Write([| 0xDEuy; 0xADuy; 0xBEuy |], 0, 3))
         let lengthBefore = FileInfo(segs.[0]).Length
-        (fun () -> new GroupCommitDiskDeltaLog<int>(dir, FixedBytesEntryCodec 100, oneRecordBoats, maxSegmentBytes = 150L) |> ignore)
+        (fun () -> new GroupCommitDiskDeltaLog<int>(dir, FixedBytesEntryCodec 100, oneRecordBoats, maxSegmentBytes = 150L, useBlockIo = false) |> ignore)
         |> should throw typeof<System.InvalidOperationException>
         // ...and the loud path did NOT quietly truncate the sealed file on its way out.
         FileInfo(segs.[0]).Length |> should equal lengthBefore)
@@ -618,6 +618,34 @@ let ``group-commit FileSystemBlockIo reorder of the second append completes and 
                 (log1 :> IDisposable).Dispose()
 
             use log2 = new GroupCommitDiskDeltaLog<int>(dir, codec, useBlockIo = true)
+            let dlog2 = log2 :> IDeltaLog<int>
+            Assert.True(dlog2.HighWater >= 1L)
+            let! replayed = dlog2.ReplayAsync(0L, ct).AsTask().ConfigureAwait(false)
+            Assert.Equal(1L, replayed.[0].Seq)
+        finally
+            FileSystem.Reset()
+    }
+
+[<Fact>]
+let ``group-commit default door torn-sector of the second append acks and keeps the first`` () : Task =
+    task {
+        let mock = InMemoryFileSystem()
+        FileSystem.Register(mock)
+        let dir = DeterministicTestPath.nextDir "gcdl-blockio-torn-prefix"
+        try
+            let codec = CborEntryCodec<int>(keyEnc, keyDec)
+            let log1 = new GroupCommitDiskDeltaLog<int>(dir, codec)
+            try
+                let dlog1 = log1 :> IDeltaLog<int>
+                let! seq1 = dlog1.AppendAsync(ZSet.ofKeys [ 1 ], empty, ct).AsTask().ConfigureAwait(false)
+                Assert.Equal(1L, seq1)
+                mock.ArmTornSector(".segment", 512)
+                let! seq2 = dlog1.AppendAsync(ZSet.ofKeys [ 2 ], empty, ct).AsTask().ConfigureAwait(false)
+                Assert.Equal(2L, seq2)
+            finally
+                (log1 :> IDisposable).Dispose()
+
+            use log2 = new GroupCommitDiskDeltaLog<int>(dir, codec)
             let dlog2 = log2 :> IDeltaLog<int>
             Assert.True(dlog2.HighWater >= 1L)
             let! replayed = dlog2.ReplayAsync(0L, ct).AsTask().ConfigureAwait(false)

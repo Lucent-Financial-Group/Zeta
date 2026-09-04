@@ -48,9 +48,12 @@ to hit production without a traditional integration suite.
    is the LBA DST door (not POSIX). DST `createManual` / `create`
    ride `FileSystemBlockIo` for the log and for CAS objects. A
    polyfill crash-mid-write, corrupt-last-write, or reorder of the
-   second freeze keeps the first. `GroupCommitDiskDeltaLog` can
-   append through `FileSystemBlockIo` (`useBlockIo`; `ZGL2`
-   superblock); the stream path stays the default. Native NVMe remains
+   second freeze keeps the first. Torn-sector intercept
+   (`ArmTornSector`) overlays a 512-byte prefix of the NEW write and
+   acks; the rest of the LBA stays OLD. `GroupCommitDiskDeltaLog`
+   defaults to the device door (`IBlockIo` / `ZGL2`); POSIX append
+   (`useBlockIo = false`) remains for whole-file Dispose tests.
+   Recovery works on both doors. No bench compares them. Native NVMe remains
    first-product **PR12** and ZetaDB **D12**. Until
    that corpus is green the honest word is `toy`, not crash-safe.
    ReFS-shaped resilience (allocate-on-write, pointer-not-copy) is
