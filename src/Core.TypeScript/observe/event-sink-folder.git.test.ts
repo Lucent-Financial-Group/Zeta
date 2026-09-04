@@ -136,6 +136,24 @@ afterEach(() => {
   rmSync(root, { recursive: true, force: true });
 });
 
+/**
+ * The per-test budget for the real-git cases.
+ *
+ * MEASURED, not guessed: these eight tests take ~31s on an IDLE machine — around 3.9s each — because
+ * every one of them clones a repository, fetches, pushes against a rejecting pre-receive hook, and
+ * rebases with an autostash. Bun's default is 5000ms, so on a quiet box they already run at roughly
+ * 78% of it, and any concurrent load at all tips one over.
+ *
+ * That produced a genuine false red: `the undo does not touch a concurrent uncommitted edit in
+ * another file` timed out at 7360ms during a full-suite run while other suites were running. Nothing
+ * was wrong with the undo — the test never reached its assertions. A check that fails for reasons
+ * unrelated to what it tests is worse than no check, because it teaches people to discount red.
+ *
+ * 30s is ~8x the measured cost: generous enough that only a real hang trips it, tight enough that a
+ * hang is still caught rather than waited on forever.
+ */
+const REAL_GIT_BUDGET_MS = 30_000;
+
 describe("gitCommitToMain — against a real repository", () => {
   it("commits the event and pushes it to origin/main", () => {
     const rel = writeEvent("first");
@@ -146,7 +164,7 @@ describe("gitCommitToMain — against a real repository", () => {
     // The assertion that matters: the event is on the REMOTE, not merely committed locally.
     expect(filesOnOrigin()).toContain(rel);
     expect(git(origin, "show", `main:${rel}`)).toBe("{}");
-  });
+  }, REAL_GIT_BUDGET_MS);
 
   it("stamps the envelope into the commit message", () => {
     const rel = writeEvent("second");
@@ -157,7 +175,7 @@ describe("gitCommitToMain — against a real repository", () => {
     expect(msg).toContain(rel);
     // The sovereign transport names itself, so a reader of `git log` can tell how it arrived.
     expect(msg).toContain("folder-direct-to-main");
-  });
+  }, REAL_GIT_BUDGET_MS);
 
   it("a re-append of an already-landed event is an idempotent ok, not a second commit", () => {
     // G-Set semantics: appending the same event twice must not fail and must not grow history.
@@ -169,7 +187,7 @@ describe("gitCommitToMain — against a real repository", () => {
 
     expect(gitCommitToMain(rel, envelope("third")).ok).toBe(true);
     expect(git(origin, "rev-parse", "main")).toBe(after);
-  });
+  }, REAL_GIT_BUDGET_MS);
 
   it("REFUSES to run off a main checkout, and pushes nothing", () => {
     const before = git(origin, "rev-parse", "main");
@@ -185,7 +203,7 @@ describe("gitCommitToMain — against a real repository", () => {
     expect(outcome.ok).toBe(false);
     if (!outcome.ok) expect(outcome.reason).toContain("main checkout");
     expect(git(origin, "rev-parse", "main")).toBe(before);
-  });
+  }, REAL_GIT_BUDGET_MS);
 
   it("lands the event anyway when a peer advanced origin/main first", () => {
     // Peer contention, the case `pushWithRebaseRetry` exists for. Disjoint files, so the rebase
@@ -206,7 +224,7 @@ describe("gitCommitToMain — against a real repository", () => {
     const files = filesOnOrigin();
     expect(files).toContain(rel);
     expect(files).toContain("events/peer.json");
-  });
+  }, REAL_GIT_BUDGET_MS);
 
   it("undoes its local commit when the push cannot land, leaving no residue", () => {
     const headBefore = git(work, "rev-parse", "HEAD");
@@ -220,7 +238,7 @@ describe("gitCommitToMain — against a real repository", () => {
     // The local commit must be gone — a commit that only exists here is the residue the reason
     // string promises was cleaned up.
     expect(git(work, "rev-parse", "HEAD")).toBe(headBefore);
-  });
+  }, REAL_GIT_BUDGET_MS);
 
   it("the undo does not touch a concurrent uncommitted edit in another file", () => {
     // THE CLAIM UNDER TEST, verbatim from the source: a `reset --hard` "would wipe an agent's
@@ -245,7 +263,7 @@ describe("gitCommitToMain — against a real repository", () => {
     // `lint-check-then-use-file-races` refuses, and it buys nothing here — a missing file makes the
     // read throw, which fails this test just as loudly and with a better message.
     expect(readFileSync(untracked, "utf-8")).toBe("untracked work in progress\n");
-  });
+  }, REAL_GIT_BUDGET_MS);
 
   it("leaves the index clean after a failed push, so the next rebase is not blocked", () => {
     // The failure mode the source comment names: a staged-add of a file that is later removed
@@ -260,5 +278,5 @@ describe("gitCommitToMain — against a real repository", () => {
     // the ok:false return — but the INDEX must carry nothing of ours.
     const staged = git(work, "diff", "--cached", "--name-only");
     expect(staged.split("\n").filter((l) => l.length > 0)).not.toContain(rel);
-  });
+  }, REAL_GIT_BUDGET_MS);
 });
