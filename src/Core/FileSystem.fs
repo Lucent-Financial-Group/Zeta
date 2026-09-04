@@ -695,16 +695,21 @@ type FileSystemBlockIo(fs: IFileSystem, path: string, blockSize: int) =
                 ValueTask()
 
 /// DST block device: LBA → sparse blocks in memory. Not POSIX, not NVMe.
-/// Write is visible immediately unless reorder holds it. `ArmCrashMidWrite`
-/// tears the next Write that is longer than `afterBytes`. Crash recovery of
-/// a volume on this door stays `toy` until freeze/CAS speak `IBlockIo`.
+/// Default: Write is durable immediately (POSIX-like RAM).
+/// `volatileUntilFlush = true` is the NVMe Flush/FUA DST: Write is visible
+/// on this instance; `CloneMedia` (crash) keeps only Flush'd media.
+/// `ArmCrashMidWrite` tears the next Write that is longer than `afterBytes`.
+/// Crash recovery of a volume on this door stays `toy` until freeze/CAS
+/// speak `IBlockIo`. Native NVMe Flush/FUA is not claimed.
 [<Sealed>]
-type SimulatedBlockIo(blockSize: int, ?media: IReadOnlyDictionary<uint64, byte[]>) =
+type SimulatedBlockIo(blockSize: int, ?media: IReadOnlyDictionary<uint64, byte[]>, ?volatileUntilFlush: bool) =
     do
         if blockSize <= 0 || (blockSize &&& (blockSize - 1)) <> 0 then
             invalidArg "blockSize" "block size must be a positive power of two"
 
+    let vol = defaultArg volatileUntilFlush false
     let blocks = System.Collections.Concurrent.ConcurrentDictionary<uint64, byte[]>()
+    let cache = System.Collections.Concurrent.ConcurrentDictionary<uint64, byte[]>()
     do
         match media with
         | Some seed ->
@@ -729,9 +734,34 @@ type SimulatedBlockIo(blockSize: int, ?media: IReadOnlyDictionary<uint64, byte[]
             let lba = startLba + uint64 (offset / blockSize)
             let within = offset % blockSize
             let n = min (blockSize - within) (src.Length - offset)
-            let block = blocks.GetOrAdd(lba, fun _ -> Array.zeroCreate blockSize)
+
+            let block =
+                if vol then
+                    cache.GetOrAdd(
+                        lba,
+                        fun key ->
+                            match blocks.TryGetValue key with
+                            | true, durable -> Array.copy durable
+                            | false, _ -> Array.zeroCreate blockSize
+                    )
+                else
+                    blocks.GetOrAdd(lba, fun _ -> Array.zeroCreate blockSize)
+
             src.Slice(offset, n).CopyTo(Span(block, within, n))
             offset <- offset + n
+
+    let tryGetVisible (lba: uint64) =
+        if vol then
+            match cache.TryGetValue lba with
+            | true, cached -> Some cached
+            | false, _ ->
+                match blocks.TryGetValue lba with
+                | true, durable -> Some durable
+                | false, _ -> None
+        else
+            match blocks.TryGetValue lba with
+            | true, durable -> Some durable
+            | false, _ -> None
 
     let publish (startLba: uint64) (bytes: byte[]) =
         writeRange startLba (ReadOnlySpan bytes)
@@ -775,15 +805,16 @@ type SimulatedBlockIo(blockSize: int, ?media: IReadOnlyDictionary<uint64, byte[]
         with get () = lock lockObj (fun () -> logicalBytes)
         and set v = lock lockObj (fun () -> logicalBytes <- v)
 
-    /// Copy the media bytes onto a fresh device. Arms, LogicalBytes, and any
-    /// BlockCas index are not copied — those must reload from the superblock.
+    /// Copy durable media onto a fresh device. Volatile cache is dropped
+    /// (crash-before-Flush). Arms, LogicalBytes, and any BlockCas index
+    /// are not copied — those must reload from the superblock.
     member _.CloneMedia() : SimulatedBlockIo =
         let seed = Dictionary<uint64, byte[]>()
 
         for kv in blocks do
             seed.[kv.Key] <- Array.copy kv.Value
 
-        SimulatedBlockIo(blockSize, seed)
+        SimulatedBlockIo(blockSize, seed, volatileUntilFlush = vol)
 
     interface IBlockIo with
         member _.BlockSize = blockSize
@@ -803,9 +834,9 @@ type SimulatedBlockIo(blockSize: int, ?media: IReadOnlyDictionary<uint64, byte[]
                     let within = offset % blockSize
                     let n = min (blockSize - within) (dst.Length - offset)
 
-                    match blocks.TryGetValue cur with
-                    | true, block -> Span(block, within, n).CopyTo(dst.Span.Slice(offset, n))
-                    | false, _ -> dst.Span.Slice(offset, n).Clear()
+                    match tryGetVisible cur with
+                    | Some block -> Span(block, within, n).CopyTo(dst.Span.Slice(offset, n))
+                    | None -> dst.Span.Slice(offset, n).Clear()
 
                     copied <- copied + n
 
@@ -864,7 +895,13 @@ type SimulatedBlockIo(blockSize: int, ?media: IReadOnlyDictionary<uint64, byte[]
                             publish lba (src.ToArray())
                             src.Length)
 
-        member _.Flush() = ()
+        member _.Flush() =
+            if vol then
+                lock lockObj (fun () ->
+                    for kv in cache do
+                        blocks.[kv.Key] <- Array.copy kv.Value
+
+                    cache.Clear())
 
     interface IAsyncBlockIo with
         member this.BlockSize = (this :> IBlockIo).BlockSize
@@ -886,6 +923,7 @@ type SimulatedBlockIo(blockSize: int, ?media: IReadOnlyDictionary<uint64, byte[]
             if ct.IsCancellationRequested then
                 ValueTask(Task.FromCanceled ct)
             else
+                (this :> IBlockIo).Flush()
                 ValueTask()
 
 /// Append/read a byte stream on `IBlockIo` with tail-block read-modify-write.
