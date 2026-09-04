@@ -45,7 +45,7 @@ script recovers with `brew link --overwrite binaryen`. The install succeeds, the
 0, the job is green.
 
 **The residue is the annotation.** Homebrew's `ofail` emits a GitHub Actions error
-annotation when `GITHUB_ACTIONS` is set — `Library/Homebrew/utils/output.rb` `onoe` →
+annotation when `GITHUB_ACTIONS` is set — [`Library/Homebrew/utils/output.rb`](https://github.com/Homebrew/brew/blob/master/Library/Homebrew/utils/output.rb) `onoe` →
 `GitHub::Actions.puts_annotation_if_env_set!`, gated on
 `env_set?` = `ENV.fetch("GITHUB_ACTIONS", false).present?`. So a failure we intended to
 recover from leaves a permanent `failure` annotation on a green job.

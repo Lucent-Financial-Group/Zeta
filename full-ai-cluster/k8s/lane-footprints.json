@@ -97,8 +97,8 @@
       "registry.gitlab.com/gitlab-org/gitlab-runner:alpine-v17.6.0"
     ],
     "full-ai-cluster/hat-system": [
-      "bitnamilegacy/kubectl:1.32.3",
-      "ghcr.io/lucent-financial-group/hat-system-operator:placeholder"
+      "ghcr.io/lucent-financial-group/hat-system-operator:placeholder",
+      "registry.k8s.io/kubectl:v1.32.3"
     ],
     "full-ai-cluster/headlamp": [
       "ghcr.io/headlamp-k8s/headlamp:v0.45.0"
@@ -271,9 +271,6 @@
     },
     "atmoz/sftp:alpine": {
       "compressedBytes": 9381917
-    },
-    "bitnamilegacy/kubectl:1.32.3": {
-      "compressedBytes": 111998161
     },
     "busybox": {
       "compressedBytes": 2226786
@@ -650,6 +647,9 @@
     },
     "registry.k8s.io/kube-state-metrics/kube-state-metrics:v2.20.0": {
       "compressedBytes": 19256935
+    },
+    "registry.k8s.io/kubectl:v1.32.3": {
+      "compressedBytes": 18752984
     },
     "registry.k8s.io/nfd/node-feature-discovery:v0.19.0": {
       "compressedBytes": 85408598
