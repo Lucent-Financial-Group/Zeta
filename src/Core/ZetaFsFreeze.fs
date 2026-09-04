@@ -755,6 +755,18 @@ module ZetaFsFreeze =
         : Volume =
         createFull storeDir mutbuf observer None defaultConfig true (Some(Simulated logBlocks)) (Some objectCas)
 
+    /// DST inject: log is an already-populated `FileSystemBlockIo` polyfill
+    /// (e.g. `SimulatedBlockIo.ReplayTo`). CAS is a `BlockCas` on a second
+    /// polyfill. Native two-namespace is not claimed.
+    let createManualWithHostFileStore
+        (storeDir: string)
+        (mutbuf: ZetaFsMutbuf.Catalog)
+        (observer: IDurabilityObserver option)
+        (logFile: FileSystemBlockIo)
+        (objectCas: BlockCas)
+        : Volume =
+        createFull storeDir mutbuf observer None defaultConfig true (Some(HostFile logFile)) (Some objectCas)
+
     /// DST: sealed Journaled log on one disk, CAS objects on another.
     let createManualWithSealedBlockStore
         (storeDir: string)
