@@ -1,0 +1,12 @@
+{
+  "pr_number": 16595,
+  "archive_path": "docs/history/pr-reviews/PR-16595-feat-081m1pzrgrv087g0r002vhtrvy-ram-namespace-adapter-name-nvme-emulators.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-04T20:17:07.461Z",
+  "schema_version": "v1",
+  "commit_sha": "4b44804ebbc888246997650c5cea950d9aa6c100",
+  "title": "feat(081M1PZRGRV087G0R002VHTRVY): RAM namespace adapter; name NVMe emulators",
+  "state": "MERGED",
+  "merged_at": "2026-09-04T20:16:27Z",
+  "head_ref": "feat/zetafs-ram-namespace-emulator"
+}

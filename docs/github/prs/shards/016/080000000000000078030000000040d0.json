@@ -1,0 +1,12 @@
+{
+  "pr_number": 16592,
+  "archive_path": "docs/history/pr-reviews/PR-16592-feat-081m1pywx50087g0r001fs6ys3-iasyncblockio-completions-without-task-run.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-04T20:02:40.135Z",
+  "schema_version": "v1",
+  "commit_sha": "5c42c8cf90e43392451cf8faa36ec3e8ccd9690f",
+  "title": "feat(081M1PYWX50087G0R001FS6YS3): IAsyncBlockIo completions without Task.Run",
+  "state": "MERGED",
+  "merged_at": "2026-09-04T20:01:56Z",
+  "head_ref": "feat/zetafs-iasyncblockio"
+}
