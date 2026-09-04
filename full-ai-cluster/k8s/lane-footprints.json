@@ -1,5 +1,5 @@
 {
-  "measuredOn": "2026-09-03",
+  "measuredOn": "2026-09-04",
   "compressionRatio": 2.67,
   "imagesByApp": {
     "full-ai-cluster/agent-memory": [
@@ -129,9 +129,9 @@
     "full-ai-cluster/loki": [
       "docker.io/grafana/loki-canary:3.7.7",
       "docker.io/grafana/loki:3.7.7",
-      "docker.io/kiwigrid/k8s-sidecar:2.10.3",
+      "docker.io/kiwigrid/k8s-sidecar:2.11.2",
       "docker.io/nginxinc/nginx-unprivileged:1.31-alpine",
-      "ghcr.io/jkroepke/access-log-exporter:0.4.12"
+      "ghcr.io/jkroepke/access-log-exporter:0.4.13"
     ],
     "full-ai-cluster/longhorn": [
       "docker.io/longhornio/longhorn-manager:v1.12.1",
@@ -347,8 +347,8 @@
     "docker.io/grafana/tempo:2.10.8": {
       "compressedBytes": 37426981
     },
-    "docker.io/kiwigrid/k8s-sidecar:2.10.3": {
-      "compressedBytes": 30405049
+    "docker.io/kiwigrid/k8s-sidecar:2.11.2": {
+      "compressedBytes": 30419869
     },
     "docker.io/library/busybox:1.38.0": {
       "compressedBytes": 2226786
@@ -375,7 +375,7 @@
       "compressedBytes": 84940612
     },
     "docker.io/valkey/valkey:9.1.2": {
-      "compressedBytes": 47343586
+      "compressedBytes": 47699411
     },
     "docker:dind": {
       "compressedBytes": 147302479
@@ -428,8 +428,8 @@
     "ghcr.io/ich777/steamcmd:unturned": {
       "compressedBytes": 44600518
     },
-    "ghcr.io/jkroepke/access-log-exporter:0.4.12": {
-      "compressedBytes": 4813608
+    "ghcr.io/jkroepke/access-log-exporter:0.4.13": {
+      "compressedBytes": 4819049
     },
     "ghcr.io/jkroepke/kube-webhook-certgen:1.8.8": {
       "compressedBytes": 9453826
