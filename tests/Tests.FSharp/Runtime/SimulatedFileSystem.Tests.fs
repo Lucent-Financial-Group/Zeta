@@ -361,6 +361,54 @@ let ``SimulatedBlockIo async door completes synchronously and round-trips`` () =
     Assert.True(flush.IsCompletedSuccessfully)
 
 [<Fact>]
+let ``SimulatedBlockIo default write is durable without Flush`` () =
+    let device = SimulatedBlockIo(4096)
+    let io = device :> IBlockIo
+    let payload = [| 9uy; 8uy; 7uy |]
+    Assert.Equal(3, io.Write(0UL, System.ReadOnlyMemory<byte>.op_Implicit payload))
+    let cloned = device.CloneMedia() :> IBlockIo
+    let dst = Array.zeroCreate<byte> 3
+    Assert.Equal(3, cloned.Read(0UL, System.Memory<byte>.op_Implicit dst))
+    Assert.Equal<byte>(payload, dst)
+
+[<Fact>]
+let ``SimulatedBlockIo volatileUntilFlush write is visible then lost on CloneMedia until Flush`` () =
+    let device = SimulatedBlockIo(4096, volatileUntilFlush = true)
+    let io = device :> IBlockIo
+    let payload = [| 9uy; 8uy; 7uy |]
+    Assert.Equal(3, io.Write(0UL, System.ReadOnlyMemory<byte>.op_Implicit payload))
+    let seen = Array.zeroCreate<byte> 3
+    Assert.Equal(3, io.Read(0UL, System.Memory<byte>.op_Implicit seen))
+    Assert.Equal<byte>(payload, seen)
+    let crashed = device.CloneMedia() :> IBlockIo
+    let lost = Array.zeroCreate<byte> 3
+    Assert.Equal(3, crashed.Read(0UL, System.Memory<byte>.op_Implicit lost))
+    Assert.Equal(0uy, lost.[0])
+    Assert.Equal(0uy, lost.[1])
+    Assert.Equal(0uy, lost.[2])
+    io.Flush()
+    let durable = device.CloneMedia() :> IBlockIo
+    let kept = Array.zeroCreate<byte> 3
+    Assert.Equal(3, durable.Read(0UL, System.Memory<byte>.op_Implicit kept))
+    Assert.Equal<byte>(payload, kept)
+
+[<Fact>]
+let ``SimulatedBlockIo volatileUntilFlush FlushAsync persists for CloneMedia`` () =
+    let device = SimulatedBlockIo(4096, volatileUntilFlush = true)
+    let io = device :> IAsyncBlockIo
+    let payload = [| 4uy; 5uy; 6uy |]
+    let write =
+        io.WriteAsync(0UL, System.ReadOnlyMemory<byte>.op_Implicit payload, CancellationToken.None)
+
+    Assert.True(write.IsCompletedSuccessfully)
+    let flush = io.FlushAsync CancellationToken.None
+    Assert.True(flush.IsCompletedSuccessfully)
+    let durable = device.CloneMedia() :> IBlockIo
+    let kept = Array.zeroCreate<byte> 3
+    Assert.Equal(3, durable.Read(0UL, System.Memory<byte>.op_Implicit kept))
+    Assert.Equal<byte>(payload, kept)
+
+[<Fact>]
 let ``FileSystemBlockIo async door cancel-before-write does not publish`` () =
     let mock = InMemoryFileSystem()
     let path = "/vol/async-cancel"
@@ -398,6 +446,29 @@ let ``SimulatedBlockIo bounded RAM namespace rejects LBAs at and past LbaCount``
     Assert.Throws<IOException>(fun () ->
         cloned.Write(4UL, System.ReadOnlyMemory<byte>.op_Implicit block) |> ignore)
     |> ignore
+
+[<Fact>]
+let ``SimulatedBlockIo CloneMedia keeps RAM bound and drops unflushed volatile writes`` () =
+    let device = SimulatedBlockIo(4096, lbaCount = 4UL, volatileUntilFlush = true)
+    let io = device :> IBlockIo
+    Assert.Equal(4UL, io.LbaCount)
+    let payload = [| 9uy; 8uy; 7uy |]
+    Assert.Equal(3, io.Write(0UL, System.ReadOnlyMemory<byte>.op_Implicit payload))
+    let crashed = device.CloneMedia() :> IBlockIo
+    Assert.Equal(4UL, crashed.LbaCount)
+    let lost = Array.zeroCreate<byte> 3
+    Assert.Equal(3, crashed.Read(0UL, System.Memory<byte>.op_Implicit lost))
+    Assert.Equal(0uy, lost.[0])
+    Assert.Throws<IOException>(fun () ->
+        crashed.Write(4UL, System.ReadOnlyMemory<byte>.op_Implicit (Array.create 4096 1uy))
+        |> ignore)
+    |> ignore
+    io.Flush()
+    let durable = device.CloneMedia() :> IBlockIo
+    Assert.Equal(4UL, durable.LbaCount)
+    let kept = Array.zeroCreate<byte> 3
+    Assert.Equal(3, durable.Read(0UL, System.Memory<byte>.op_Implicit kept))
+    Assert.Equal<byte>(payload, kept)
 
 [<Fact>]
 let ``FileSystemBlockIo rejects an invalid block size before creating the backing file`` () =
