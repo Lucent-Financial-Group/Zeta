@@ -30,6 +30,8 @@ import {
   countBehind,
   daysBetween,
   DORMANT_AFTER_DAYS,
+  findCurrencyDrift,
+  SNAPSHOT_STALE_AFTER_DAYS,
   newestStableVersion,
   QUIET_AFTER_DAYS,
   renderReport,
@@ -300,5 +302,106 @@ describe("the dates snapshot", () => {
     writeFileSync(path, serializeChartDates({ k: dates({ "1.0.0": "2026-01-01T00:00:00Z" }) }));
     expect(writeChartDatesIfChanged({ k: dates({ "1.0.0": "2026-02-02T00:00:00Z" }) }, path)).toBe(true);
     expect(readFileSync(path, "utf8")).toContain("2026-02-02");
+  });
+});
+
+
+describe("findCurrencyDrift — the offline drift band that runs on every PR", () => {
+  const row = (over: Partial<CurrencyRow>): CurrencyRow => ({
+    app: "demo",
+    chart: "demo",
+    repoURL: "https://example.invalid",
+    manifest: "full-ai-cluster/k8s/applications/demo/Application.yaml",
+    pinned: "1.0.0",
+    pinnedPublishedAt: "2026-08-01T00:00:00Z",
+    newestStable: "1.0.0",
+    newestPublishedAt: "2026-08-01T00:00:00Z",
+    behind: 0,
+    bump: "none",
+    activity: "active",
+    silentDays: 3,
+    verdict: "CURRENT",
+    unorderableVersions: 0,
+    note: "",
+    ...over,
+  });
+  const FRESH = "2026-09-04T00:00:00Z";
+  const NOW = new Date("2026-09-04T12:00:00Z");
+
+  test("a current tree over a fresh snapshot reports nothing", () => {
+    expect(findCurrencyDrift([row({})], FRESH, NOW)).toEqual([]);
+  });
+
+  /**
+   * THE FALSIFIER THAT MATTERS MOST, and the one the whole mode exists for.
+   *
+   * Every row can be CURRENT and the answer still be worthless, because the
+   * rows are read out of a committed snapshot: if nothing refreshed it, "none
+   * behind" describes the snapshot rather than the world. That is the exact
+   * shape that let six charts drift while a weekly job reported on them, and a
+   * drift check that could be satisfied by an old snapshot would reproduce it.
+   *
+   * So: clean rows + stale snapshot MUST still be a finding, and an error.
+   */
+  test("clean rows over a STALE snapshot is still an error — currency is only as good as its snapshot", () => {
+    const stale = "2026-08-01T00:00:00Z"; // 34 days before NOW
+    const found = findCurrencyDrift([row({})], stale, NOW);
+    expect(found).toHaveLength(1);
+    expect(found[0]?.kind).toBe("snapshot-stale");
+    expect(found[0]?.severity).toBe("error");
+    // And it says the numbers under it are a floor, not a verdict.
+    expect(found[0]?.message).toContain("FLOOR");
+  });
+
+  test("the staleness threshold is one missed weekly cadence, not an arbitrary number", () => {
+    const justInside = new Date(Date.parse(FRESH) + (SNAPSHOT_STALE_AFTER_DAYS - 1) * 86400000);
+    const justOutside = new Date(Date.parse(FRESH) + SNAPSHOT_STALE_AFTER_DAYS * 86400000);
+    expect(findCurrencyDrift([row({})], FRESH, justInside)).toEqual([]);
+    expect(findCurrencyDrift([row({})], FRESH, justOutside).map((f) => f.kind)).toEqual(["snapshot-stale"]);
+  });
+
+  test("an undated snapshot is refused, never treated as fresh", () => {
+    const found = findCurrencyDrift([row({})], "", NOW);
+    expect(found.map((f) => f.kind)).toEqual(["snapshot-undated"]);
+    expect(found[0]?.severity).toBe("error");
+  });
+
+  test("a major bump is an ERROR and a minor one a WARNING — they are different errands", () => {
+    const major = findCurrencyDrift(
+      [row({ behind: 26, verdict: "BEHIND-MAJOR", newestStable: "2.0.0" })],
+      FRESH,
+      NOW,
+    );
+    expect(major[0]?.severity).toBe("error");
+    expect(major[0]?.message).toContain("migration rather than a bump");
+
+    const minor = findCurrencyDrift([row({ behind: 16, verdict: "BEHIND", newestStable: "1.16.0" })], FRESH, NOW);
+    expect(minor[0]?.severity).toBe("warning");
+  });
+
+  test("a broken pin outranks being behind — UNREACHABLE is an error and is not reported as a bump", () => {
+    const found = findCurrencyDrift(
+      [row({ verdict: "UNREACHABLE", behind: 5, note: "registry refused" })],
+      FRESH,
+      NOW,
+    );
+    expect(found).toHaveLength(1);
+    expect(found[0]?.kind).toBe("UNREACHABLE");
+    expect(found[0]?.severity).toBe("error");
+  });
+
+  test("DORMANT is a warning and says replace-or-retire, because bumping it is not the remedy", () => {
+    const found = findCurrencyDrift([row({ verdict: "DORMANT", silentDays: 562 })], FRESH, NOW);
+    expect(found[0]?.severity).toBe("warning");
+    expect(found[0]?.message).toContain("replace-or-retire");
+  });
+
+  test("behind: null is NOT reported as current — an uncomputable count is not a zero", () => {
+    // countBehind returns null when the pin cannot be ordered against upstream.
+    // Reading that as "0 behind" would be the same conflation the four-register
+    // discipline forbids: unknown is not a pass.
+    expect(findCurrencyDrift([row({ behind: null, verdict: "CURRENT" })], FRESH, NOW)).toEqual([]);
+    const unparseable = findCurrencyDrift([row({ behind: null, verdict: "PIN-UNPARSEABLE" })], FRESH, NOW);
+    expect(unparseable[0]?.severity).toBe("error");
   });
 });

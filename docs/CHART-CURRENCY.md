@@ -2,7 +2,7 @@
 
 <!-- GENERATED FILE. Do not hand-edit: `bun src/Core.TypeScript/hygiene/report-chart-currency.ts --write` overwrites it. -->
 
-**As of:** 2026-09-04T19:06:26Z — the instant `published-chart-versions.json` was last refreshed. Every age below is measured against that instant, not against the moment you are reading this, so this file is byte-reproducible from committed data.
+**As of:** 2026-09-04T21:03:30Z — the instant `published-chart-versions.json` was last refreshed. Every age below is measured against that instant, not against the moment you are reading this, so this file is byte-reproducible from committed data.
 
 **This is a report, never a gate.** Being behind is a standing condition, not a regression: 4 of 37 pins are behind upstream right now. A CI check on that would be red from birth and learned-to-ignore within a week. The blocking question — *does this pin resolve at all?* — is a different one and is answered on every PR by `src/Core.TypeScript/hygiene/audit-chart-target-revisions.ts`.
 
@@ -30,7 +30,7 @@
 | `DORMANT` | `headscale` | `headscale` | `0.16.0` | 2025-02-19 | `0.16.0` | 2025-02-19 | 0 | -- | **DORMANT** 562d |
 | `BEHIND-MAJOR` | `gitlab` | `gitlab` | `8.7.0` | 2024-12-19 | `10.3.1` | 2026-08-26 | 162 | **MAJOR** | active 9d |
 | `BEHIND-MAJOR` | `temporal` | `temporal` | `0.59.0` | 2025-03-28 | `1.6.0` | 2026-07-13 | 26 | **MAJOR** | active 53d |
-| `BEHIND-MAJOR` | `kube-prometheus-stack` | `kube-prometheus-stack` | `88.6.3` | 2026-09-02 | `89.2.1` | 2026-09-04 | 6 | **MAJOR** | active 0d |
+| `BEHIND-MAJOR` | `kube-prometheus-stack` | `kube-prometheus-stack` | `88.6.3` | 2026-09-02 | `89.2.2` | 2026-09-04 | 7 | **MAJOR** | active 0d |
 | `BEHIND` | `spire` | `spire` | `0.24.2` | 2025-02-27 | `0.30.1` | 2026-08-23 | 16 | minor (0.x) | active 12d |
 | `CURRENT` | `alloy` | `alloy` | `1.12.1` | 2026-08-27 | `1.12.1` | 2026-08-27 | 0 | -- | active 8d |
 | `CURRENT` | `arc-controller` | `gha-runner-scale-set-controller` | `0.14.2` | ? | `0.14.2` | ? | 0 | -- | unknown |

@@ -62,21 +62,14 @@ fleet. It is named in research. It is **not** an inventory fact.
    shares) or the gated-class rule changes. Do not smuggle the
    second into a chart bump.
 
-3. **1Password-as-unseal has a chicken-egg, and it is the same
-   shape as GitHub CLI.** The official Kubernetes Secrets Injector
-   still needs an `OP_SERVICE_ACCOUNT_TOKEN` Kubernetes Secret
-   created first
-   (`kubectl create secret generic op-service-account
-   --from-literal=token=…`). The Lucent token lives in Keychain
-   today (trajectory RESUME 2026-06-21), not in git, not in the ISO.
-   That is **not** a reason to invent a second store. GitHub already
-   breaks this class of chicken-egg: `gh auth login` → USB blob →
-   projector → `zeta-host-cred-gh-cli` (PR
-   [#16587](https://github.com/Lucent-Financial-Group/Zeta/pull/16587)).
-   Lucent 1Password can take the same hop **if** what we persist is
-   a service-account token (`ops_…`), not an `op signin` session.
-   Design: [Bootstrap 1Password like GitHub](#bootstrap-1password-like-github).
-   Do not put a Lucent token in git or the ISO.
+3. **1Password-as-unseal has a chicken-egg, and the human console
+   login is the break.** The injector still needs an
+   `OP_SERVICE_ACCOUNT_TOKEN` Secret first. That token must not
+   live in git or the ISO. It **does** live as a 1Password **item**
+   (official create/rotate: "Save in 1Password" immediately). Aaron's
+   console/app login reads that item and hands the bytes to the
+   projector. A 30-minute `op signin` session is not that login.
+   Design: [The token is a Lucent item](#the-token-is-a-lucent-item).
 
 ### P1 — coverage holes
 
@@ -237,29 +230,108 @@ use that to break the injector chicken-egg, refresh when it
 expires, and notify on a dashboard before it dies. Prefer an
 in-cluster relogin service over SSH; SSH is the blunt fallback.
 
-**Verdict.** Yes, for the Lucent **service-account** token
-(`ops_…`). No, for an `op signin` / `OP_SESSION` login. Official
-CLI sessions expire after **30 minutes of inactivity**
-([Sign in to 1Password CLI manually](https://developer.1password.com/docs/cli/sign-in-manually)).
-Headless / remote: service account or Connect. A 30-minute session
-cannot be the USB blob and cannot be the injector Secret.
+**Verdict.** Yes, for a Lucent **service-account** token (`ops_…`)
+stored as a **1Password item**, fetched by Aaron's console/app
+login, then projected into Kubernetes. No, for parking an
+`op signin` / `OP_SESSION` on USB. Official CLI sessions expire
+after **30 minutes of inactivity**
+([Sign in manually](https://developer.1password.com/docs/cli/sign-in-manually)).
+A 30-minute session cannot be the blob and cannot be the injector
+Secret. The item can. Two or three tokens in that item (or three
+items) are the rotation set.
 
 Fetched live 2026-09-04. Training data is stale; these pages win.
+
+### The token is a Lucent item
+
+Aaron 2026-09-04 follow-up: keep a secret **in** 1Password that
+**is** the long-term token — or two or three of them for rotation.
+Console login then retrieves the token the cluster actually needs.
+That is the chicken-egg break. It is also what 1Password already
+tells you to do.
+
+On create and on every rotate, the wizard shows the token **once**
+and offers **Save in 1Password**
+([Get started](https://developer.1password.com/docs/service-accounts/get-started),
+[Manage service accounts](https://developer.1password.com/docs/service-accounts/manage-service-accounts)).
+The item is the source of truth. Keychain / USB / the Kubernetes
+Secret are caches of the last fetch, not a second original.
+
+Three hops, in order:
+
+1. **Human console login** — 1Password desktop app, biometric /
+   system unlock, CLI **app integration**
+   ([Use the desktop app to sign in](https://developer.1password.com/docs/cli/app-integration)).
+   Fingerprint, Face, Apple Watch, Windows Hello, or the device
+   password. Linux: 1Password for Linux + PolKit. This is **not**
+   `eval "$(op signin)"`. App integration does not write a 30-minute
+   `OP_SESSION` you can copy onto USB.
+2. **Read the Lucent item** — `op read op://Lucent/<item>/token`
+   (or `previous` / `current` / `next`). The human can see the
+   item. A service account still cannot see Personal / Private /
+   Employee vaults, so the item lives in Lucent.
+3. **Hand the bytes to the cluster** — projector → injector-shaped
+   Secret (`token` / `OP_SERVICE_ACCOUNT_TOKEN`). After that, the
+   node is headless. It does not need the 1Password app until the
+   next rotation. USB holds the last-fetched copy so a reboot does
+   not wait on a human at the console.
+
+Chicken-egg, closed: the injector needs a token Secret; the token
+Secret is a copy of a Lucent item; the human who can unlock the
+1Password app can always produce that copy. Nothing in git, nothing
+in the ISO.
+
+`op-token-setup.ts` (Keychain paste) stays a **fallback** for a
+host that has no desktop app — not the source of truth. NixOS
+metal without a GUI still uses Consent paste / SSH break-glass,
+fed from the same item the operator just opened on the laptop.
+
+### Two or three tokens, not one
+
+Official rotate on **one** service account gives **two** live
+tokens: new token now, old token expires immediately / in 1 hour /
+in 3 days, and you Save the new value back into 1Password. That is
+the dual-key overlap we already ratified. Use it as the minimum.
+
+Three live slots (previous / current / next) is the hub-less ask.
+1Password will not give three overlapping tokens on one SA — rotate
+is two at a time. Three slots means **three items** (or one item
+with three concealed fields) backed by **three service accounts**
+created with the same Lucent vault permissions (permissions are
+immutable after create, so you mint the set together). Name them
+in the item, not in git:
+
+| Slot | What it is for |
+|---|---|
+| previous | cluster copy that has not been replaced yet still works |
+| current | what the projector writes now |
+| next | published in Lucent before cutover, so rotate needs no surprise |
+
+The dashboard lease panel watches which slot the cluster is on and
+when `previous` should drop — same overlap-window primitive as
+SSH / schema evolution. Do not invent a second rotator.
+
+Do not put the three `ops_…` values in the ISO "so we have a
+backup." The Lucent item **is** the backup. The human console
+login is how you reach it.
 
 ### Same hop as GitHub, different bytes
 
 | Surface | GitHub today | 1Password that lasts |
 |---|---|---|
-| Human login | `gh auth login` | `bun tools/setup/op-token-setup.ts` (secure dialog → macOS Keychain service `zeta-op-service-account`) |
-| On-disk | `~/.config/gh/hosts.yml` (USB + projector) | **Gap.** Keychain only, macOS. Linux NixOS **refuses** and names the missing port (`libsecret` / `systemd-ask-password`, `081KVNRSGVR08QG0R003R3RNJX`). No USB manifest id. Not in `CLUSTER_PROJECTABLE_CRED_IDS`. |
-| Cluster | `zeta-host-cred-gh-cli` | Would be `zeta-host-cred-1password-lucent` → `OP_SERVICE_ACCOUNT_TOKEN` for the injector |
-| Cursor Cloud VM | `gh` / injected forge token | Same pattern as `ZETA_WORKFLOW_DISPATCH_TOKEN` (`docs/cloud-agent-workflow-dispatch-token.md`): a Cursor Secret, never `environment.json`, never git |
+| Human login | `gh auth login` | 1Password **app** + CLI app integration (biometric). Not `op signin`. |
+| Source of truth | `~/.config/gh/hosts.yml` | Lucent vault **item** (Save in 1Password on create/rotate). 2–3 tokens for overlap. |
+| Cache | USB blob → projector | Last-fetched `ops_…` on USB / `zeta-host-creds` so the node can reboot headless |
+| Fallback without the app | n/a | `op-token-setup.ts` paste, or in-cluster Consent. Linux NixOS still has no Keychain port. |
+| Cluster | `zeta-host-cred-gh-cli` | Injector-shaped Secret from the fetched item |
+| Cursor Cloud VM | `gh` / injected forge token | Cursor Secret is a cache of the same item, never `environment.json`, never git |
 
-The cluster analog of Keychain is the USB encrypted blob
-(`/boot/zeta-creds.enc`), not a file in the ISO. The projector
-already copies allowlisted restored files into Opaque Secrets. Add
-the Lucent id to the manifest and the allowlist; do not invent a
-second projector.
+USB (`/boot/zeta-creds.enc`) is the **cache** of the last fetch, not
+a file in the ISO and not a second original. The projector already
+copies allowlisted restored files into Opaque Secrets. Add a Lucent
+id to the manifest and the allowlist for that cache; do not invent
+a second projector. The fetch itself is the app-integration read of
+the Lucent item.
 
 Injector contract to match (do not rename away from upstream):
 
@@ -386,16 +458,16 @@ not a oneshot after k3s.
 - Do not treat `keyring-public.json` fingerprints as a 3-key set.
 - Do not flash USB from this review.
 - Do not persist `op signin` / `OP_SESSION`. It dies in 30 minutes.
+- Do not treat Keychain / USB as the original. The Lucent item is.
 - Do not flip `1password-personal` to projectable.
 
 ## Next slices (mint children when picking up; do not allocate `B-*`)
 
-1. **Lucent SA persist like `gh-cli`** — close the Linux keystore
-   port enough to write a 0600 file (or libsecret), add a
-   `DEFAULT_MANIFEST` id, allowlist it in
-   `CLUSTER_PROJECTABLE_CRED_IDS`, project to
-   `zeta-host-creds` with an injector-shaped `token` key. Cursor
-   Secret is the Cloud-Agent hop, not the metal hop. Keep Personal
+1. **Fetch Lucent item → project** — operator app-integration
+   (or Consent paste) reads `op://Lucent/<item>/{previous,current,next}`,
+   writes the current slot into the projector allowlist as an
+   injector-shaped `token` key. USB/Keychain are caches. Mint the
+   2–3 SA items in Lucent first (human, biometric). Keep Personal
    unclassified. **This PR does not do that work.**
 2. **Lease sidecar + portal notify + in-cluster relogin** — non-secret
    `expiresAt` next to every projectable host cred; portal panel
@@ -440,4 +512,5 @@ not a oneshot after k3s.
 - 1Password SA create / expiry: https://developer.1password.com/docs/service-accounts/get-started
 - 1Password SA rotate / 1h–3d overlap / 30-day address redirect: https://developer.1password.com/docs/service-accounts/manage-service-accounts
 - 1Password CLI session (30 min inactivity): https://developer.1password.com/docs/cli/sign-in-manually
+- 1Password CLI app integration (console/biometric login): https://developer.1password.com/docs/cli/app-integration
 - 1Password Kubernetes injector: https://developer.1password.com/docs/k8s/injector

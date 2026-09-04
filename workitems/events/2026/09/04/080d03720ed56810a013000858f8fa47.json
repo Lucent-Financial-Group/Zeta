@@ -1,0 +1,14 @@
+{
+  "id": "080d03720ed56810a013000858f8fa47",
+  "at": "2026-09-04T21:10:04.717Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1Q43PND087G0R001YK5DB3",
+    "type": "task",
+    "title": "Replay recorded BlockIo ops onto FileSystemBlockIo polyfill",
+    "slug": "replay-recorded-blockio-ops-onto-filesystemblockio-polyfill",
+    "priority": "P1",
+    "filename": "081M1Q43PND087G0R001YK5DB3-replay-recorded-blockio-ops-onto-filesystemblockio-polyfill.md"
+  }
+}
