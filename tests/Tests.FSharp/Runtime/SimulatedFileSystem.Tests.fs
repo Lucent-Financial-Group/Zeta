@@ -443,6 +443,21 @@ let ``SimulatedBlockIo ReplayTo round-trips issued writes onto a fresh device`` 
     Assert.Equal<byte>(payload, got)
 
 [<Fact>]
+let ``SimulatedBlockIo ReplayTo round-trips issued writes onto FileSystemBlockIo`` () =
+    let source = SimulatedBlockIo(4096)
+    let io = source :> IBlockIo
+    let payload = [| 4uy; 5uy; 6uy |]
+    Assert.Equal(3, io.Write(1UL, System.ReadOnlyMemory<byte>.op_Implicit payload))
+    io.Flush()
+    let fs = InMemoryFileSystem()
+    let path = "/vol/replay-polyfill"
+    let target = FileSystemBlockIo(fs, path, 4096) :> IBlockIo
+    source.ReplayTo target
+    let got = Array.zeroCreate<byte> 3
+    Assert.Equal(3, target.Read(1UL, System.Memory<byte>.op_Implicit got))
+    Assert.Equal<byte>(payload, got)
+
+[<Fact>]
 let ``SimulatedBlockIo crash-mid-write is not recorded as a completed op`` () =
     let device = SimulatedBlockIo(4096)
     let io = device :> IBlockIo

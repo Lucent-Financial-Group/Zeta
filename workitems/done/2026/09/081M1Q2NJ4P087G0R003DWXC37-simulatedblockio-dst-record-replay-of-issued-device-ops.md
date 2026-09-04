@@ -1,11 +1,12 @@
 ---
 id: 081M1Q2NJ4P087G0R003DWXC37
 type: task
-state: backlog
+state: done
 priority: P1
 slug: simulatedblockio-dst-record-replay-of-issued-device-ops
 title: "SimulatedBlockIo DST record/replay of issued device ops"
 created: 2026-09-04T20:44:52.758Z
+completed: 2026-09-04T21:10:04.692Z
 depends_on: []
 composes_with: []
 ---
