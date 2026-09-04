@@ -237,6 +237,31 @@ type SimulatedFileStream
 /// An in-memory mock file system that supports simulating latency, read/write sector corruption exceptions,
 /// file creation/modification tracking, and one-shot crash-mid-write /
 /// corrupt-last-write / reorder (D12 door).
+/// Canonicalise a path so that two spellings of the SAME file map to one key.
+///
+/// WHY THIS EXISTS. This double keys a dictionary on the path string, and a
+/// dictionary is exact where a filesystem is not. On Windows `\` and `/` are BOTH
+/// directory separators -- `Path.DirectorySeparatorChar` is `\` and
+/// `AltDirectorySeparatorChar` is `/` -- so `/store/cas` and `/store\cas` name the
+/// same file to Win32 and named two different entries here. That is a double that
+/// disagrees with the thing it doubles, which is worse than no double: the test it
+/// breaks is testing the mock, not the code.
+///
+/// MEASURED: `Zeta.Tests.ZetaFsFreezeTests."Journaled freeze ContentId matches the
+/// mutbuf snapshot, not a later pwrite"` line 60 asserted `Exists "/freeze-mem/cas"`
+/// while `ZetaFsFreeze.fs:670` created the file with `Path.Combine(storeDir, "cas")`
+/// -- `/freeze-mem\cas` on Windows. Red on `windows-2025` (35/59 runs) and
+/// `windows-11-arm` (33/59), green on every Unix runner, and it was the ONLY
+/// failure on either lane.
+///
+/// PLATFORM-CONDITIONAL, AND THAT IS NOT A DETAIL. On Unix `\` is a LEGAL FILENAME
+/// CHARACTER, so folding it to `/` there would merge two genuinely different files
+/// and invent a collision the real filesystem does not have. The fold is therefore
+/// applied only where the platform actually treats both as separators.
+module private InMemoryPathKey =
+    let normalize (path: string) : string =
+        if Path.DirectorySeparatorChar = '\\' then path.Replace('\\', '/') else path
+
 type InMemoryFileSystem() =
     let files = System.Collections.Concurrent.ConcurrentDictionary<string, byte[]>()
     let mutable latencyMs = 0L
@@ -257,7 +282,12 @@ type InMemoryFileSystem() =
     let pathMatches (needle: string) (path: string) =
         path.IndexOf(needle, StringComparison.Ordinal) >= 0
 
+    // `publish` and `existingBytes` normalise too, even though every current caller
+    // already hands them a canonical key. `InMemoryPathKey.normalize` is idempotent, so the second
+    // application costs nothing -- and requiring each caller to remember is the same
+    // shape as an include-list: correct until someone adds a call site.
     let publish (path: string) (bytes: byte[]) =
+        let path = InMemoryPathKey.normalize path
         files.[path] <- bytes
         commitOrder.Add path
 
@@ -278,7 +308,7 @@ type InMemoryFileSystem() =
         buf
 
     let existingBytes (path: string) =
-        match files.TryGetValue path with
+        match files.TryGetValue(InMemoryPathKey.normalize path) with
         | true, b -> b
         | false, _ -> Array.empty
 
@@ -334,6 +364,10 @@ type InMemoryFileSystem() =
                         publish path bytes
                         publish heldPath heldBytes
                     | _ -> publish path bytes)
+
+    /// Exposed so the platform branch above is falsifiable on its own, rather than only
+    /// through a filesystem operation that happens to depend on it.
+    static member NormalizeKey(path: string) = InMemoryPathKey.normalize path
 
     member _.Files = files
 
@@ -395,7 +429,7 @@ type InMemoryFileSystem() =
     interface IFileSystem with
         member _.Exists(path) =
             checkFault()
-            files.ContainsKey(path)
+            files.ContainsKey(InMemoryPathKey.normalize path)
 
         member _.Delete(path) =
             checkFault()
@@ -407,21 +441,21 @@ type InMemoryFileSystem() =
                         true
                     | _ -> false)
 
-            files.TryRemove(path) |> ignore
+            files.TryRemove(InMemoryPathKey.normalize path) |> ignore
 
             if crash then
                 raise (CrashMidSweepException path)
 
         member _.Move(src, dest, _overwrite) =
             checkFault()
-            match files.TryRemove(src) with
-            | true, bytes -> files.[dest] <- bytes
+            match files.TryRemove(InMemoryPathKey.normalize src) with
+            | true, bytes -> files.[InMemoryPathKey.normalize dest] <- bytes
             | false, _ -> raise (FileNotFoundException(src))
 
         member _.ReadAllBytes(path) =
             checkFault()
             applyLatency()
-            match files.TryGetValue(path) with
+            match files.TryGetValue(InMemoryPathKey.normalize path) with
             | true, bytes -> bytes
             | false, _ -> raise (FileNotFoundException(path))
 
@@ -429,25 +463,29 @@ type InMemoryFileSystem() =
             ct.ThrowIfCancellationRequested()
             checkFault()
             applyLatency()
-            match files.TryGetValue(path) with
+            match files.TryGetValue(InMemoryPathKey.normalize path) with
             | true, bytes -> return bytes
             | false, _ -> return raise (FileNotFoundException(path))
         }
 
         member _.OpenFile(path, mode, access, _share) =
-            new SimulatedFileStream(path, mode, access, files, checkFault, applyLatency, commitWrite, flushPublish) :> Stream
+            new SimulatedFileStream(InMemoryPathKey.normalize path, mode, access, files, checkFault, applyLatency, commitWrite, flushPublish) :> Stream
 
         member _.OpenWrite(path, _fsync) =
-            new SimulatedFileStream(path, FileMode.Create, FileAccess.Write, files, checkFault, applyLatency, commitWrite, flushPublish) :> Stream
+            new SimulatedFileStream(InMemoryPathKey.normalize path, FileMode.Create, FileAccess.Write, files, checkFault, applyLatency, commitWrite, flushPublish) :> Stream
 
         member _.OpenRead(path) =
-            new SimulatedFileStream(path, FileMode.Open, FileAccess.Read, files, checkFault, applyLatency, commitWrite, flushPublish) :> Stream
+            new SimulatedFileStream(InMemoryPathKey.normalize path, FileMode.Open, FileAccess.Read, files, checkFault, applyLatency, commitWrite, flushPublish) :> Stream
 
         member _.GetFiles(path, searchPattern) =
             checkFault()
             let suffix = searchPattern.Replace("*", "")
+            // The PREFIX is normalised as well as the stored keys. Normalising only one
+            // side would leave `GetFiles "/a/b"` blind to entries this same double keyed
+            // as `/a\b`, which is the defect one layer along rather than fixed.
+            let prefix = InMemoryPathKey.normalize path
             files.Keys
-            |> Seq.filter (fun k -> k.StartsWith(path) && k.EndsWith(suffix))
+            |> Seq.filter (fun k -> k.StartsWith(prefix, StringComparison.Ordinal) && k.EndsWith(suffix, StringComparison.Ordinal))
             |> Seq.toArray
 
         member _.CreateDirectory(_path) =
@@ -457,6 +495,13 @@ type InMemoryFileSystem() =
         member _.WriteAt(path, offset, src) =
             if offset < 0L then
                 invalidArg (nameof offset) "offset must be >= 0"
+
+            // Shadowed once at the top rather than at each of the eight uses below --
+            // `publish`, `existingBytes`, the crash/corrupt/reorder arms and the return
+            // path all key or match on it, and normalising some of them would be worse
+            // than normalising none: a write published under one spelling and armed under
+            // another is a fault the double would report in the wrong place.
+            let path = InMemoryPathKey.normalize path
 
             checkFault()
             applyLatency()

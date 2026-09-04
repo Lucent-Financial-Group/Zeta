@@ -156,6 +156,7 @@
     <Compile Include="ZetaFsPlacement.Tests.fs" />
     <Compile Include="ZetaFsMutbuf.Tests.fs" />
     <Compile Include="ZetaFsJumprope.Tests.fs" />
+    <Compile Include="InMemoryFileSystemPathIdentity.Tests.fs" />
     <Compile Include="ZetaFsFreeze.Tests.fs" />
     <Compile Include="ZetaFsCrypto.Tests.fs" />
     <Compile Include="ZetaFsReclaim.Tests.fs" />
