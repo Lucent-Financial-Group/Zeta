@@ -23,8 +23,8 @@
       "namespace": "loki",
       "chart": "loki",
       "repoURL": "https://grafana-community.github.io/helm-charts",
-      "version": "18.11.7",
-      "valuesHash": "sha256:f53b0c5fb65f4a77d42f1be8d562680a7cd6c5741621f61c71cf1524eaf21139",
+      "version": "18.12.1",
+      "valuesHash": "sha256:5767fcd40eedbcfe5b1d24eda98cca286c8a3069dd8752207c040c27b26cb5fa",
       "services": {
         "loki-query-scheduler-discovery": [
           3100,
