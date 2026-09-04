@@ -699,10 +699,14 @@ type FileSystemBlockIo(fs: IFileSystem, path: string, blockSize: int) =
 /// tears the next Write that is longer than `afterBytes`. Crash recovery of
 /// a volume on this door stays `toy` until freeze/CAS speak `IBlockIo`.
 [<Sealed>]
-type SimulatedBlockIo(blockSize: int, ?media: IReadOnlyDictionary<uint64, byte[]>) =
+type SimulatedBlockIo(blockSize: int, ?media: IReadOnlyDictionary<uint64, byte[]>, ?lbaCount: uint64) =
     do
         if blockSize <= 0 || (blockSize &&& (blockSize - 1)) <> 0 then
             invalidArg "blockSize" "block size must be a positive power of two"
+
+    /// 0 = unbounded sparse DST. A positive count is Identify-shaped
+    /// namespace size (RAM test adapter; not a real NVMe format).
+    let capacity = defaultArg lbaCount 0UL
 
     let blocks = System.Collections.Concurrent.ConcurrentDictionary<uint64, byte[]>()
     do
@@ -736,6 +740,27 @@ type SimulatedBlockIo(blockSize: int, ?media: IReadOnlyDictionary<uint64, byte[]
     let publish (startLba: uint64) (bytes: byte[]) =
         writeRange startLba (ReadOnlySpan bytes)
         commitOrder.Add startLba
+
+    let lastLba (start: uint64) (len: int) =
+        if len <= 0 then
+            start
+        else
+            start + uint64 ((len + blockSize - 1) / blockSize) - 1UL
+
+    let ensureInRange (start: uint64) (len: int) =
+        if capacity > 0UL then
+            let last = lastLba start len
+
+            if start >= capacity || last >= capacity then
+                raise (
+                    IOException(
+                        sprintf
+                            "LBA out of range (start=%s last=%s LbaCount=%s)"
+                            (start.ToString System.Globalization.CultureInfo.InvariantCulture)
+                            (last.ToString System.Globalization.CultureInfo.InvariantCulture)
+                            (capacity.ToString System.Globalization.CultureInfo.InvariantCulture)
+                    )
+                )
 
     /// One-shot: next Write longer than `afterBytes` commits that prefix then throws.
     member _.ArmCrashMidWrite(afterBytes: int) =
@@ -783,15 +808,17 @@ type SimulatedBlockIo(blockSize: int, ?media: IReadOnlyDictionary<uint64, byte[]
         for kv in blocks do
             seed.[kv.Key] <- Array.copy kv.Value
 
-        SimulatedBlockIo(blockSize, seed)
+        SimulatedBlockIo(blockSize, seed, capacity)
 
     interface IBlockIo with
         member _.BlockSize = blockSize
 
-        /// Sparse DST: unbounded. Native NVMe reports the namespace size.
-        member _.LbaCount = 0UL
+        /// 0 = unbounded sparse DST. Positive = RAM namespace size.
+        member _.LbaCount = capacity
 
         member _.Read(lba, dst) =
+            ensureInRange lba dst.Length
+
             if dst.Length = 0 then
                 0
             else
@@ -815,6 +842,7 @@ type SimulatedBlockIo(blockSize: int, ?media: IReadOnlyDictionary<uint64, byte[]
 
         member _.Write(lba, src) =
             lock lockObj (fun () ->
+                ensureInRange lba src.Length
                 writes <- writes + 1
 
                 match crashArm with
