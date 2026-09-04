@@ -244,6 +244,8 @@ describe("renderLaneTreeManifests", () => {
     expect(manifests).toContain("git-upload-pack");
     expect(manifests).toContain("0008NAK");
     expect(LANE_TREE_SERVE_SH).toContain("0008NAK");
+    expect(LANE_TREE_SERVE_SH).toContain("tcpsvd");
+    expect(manifests).toContain("replicas: 4");
     expect(LANE_TREE_SERVE_SH).not.toContain("[ ! -f");
     expect(existsSync(join(import.meta.dir, "lane-tree-serve.sh"))).toBe(false);
     expect(isSmartHttpServiceQuery("service=git-upload-pack")).toBe(true);

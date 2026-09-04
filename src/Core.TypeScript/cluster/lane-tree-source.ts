@@ -435,7 +435,7 @@ metadata:
   name: ${LANE_TREE_NAME}
   namespace: ${LANE_TREE_NAMESPACE}
 spec:
-  replicas: 1
+  replicas: 4
   selector:
     matchLabels:
       app: ${LANE_TREE_NAME}
@@ -460,7 +460,10 @@ spec:
       containers:
         - name: serve
           image: ${image}
-          # nc -e re-enters /serve/serve.sh per connection (stdin/stdout = socket).
+          # listen: tcpsvd forks per connection when the applet exists; else
+          # nc -l is one-at-a-time. replicas: 4 covers the nc fallback.
+          # MEASURED live-kind-included 33830308187: ls-remote succeeded, then
+          # parallel compares hit connect: connection refused on 10.96.98.57:8080.
           # defaultMode 365 is 0555, so that exec has +x. sh listen is PID 1.
           command: ["sh", "/serve/serve.sh", "listen"]
           ports:

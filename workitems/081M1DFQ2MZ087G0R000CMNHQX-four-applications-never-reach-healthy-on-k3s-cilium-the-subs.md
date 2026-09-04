@@ -825,6 +825,19 @@ the server. Fail-fast the ComparisonError instead of burning 900s on
 vault / 1200s on health. Keep `--disable=servicelb`. Do not invent
 helm values. Do not invent ACE chart-deps work from this dump.
 
+**MEASURED live-kind-included + live-k3d 33830308187 (SHA `def4f2fdd`):**
+the smart-HTTP overlay listed refs. live-k3d smoke `--serve-tree dev`
+was **green**: `child-application-count=16`, repo-server `git ls-remote`
+returned `9051f82306ef… HEAD` / `refs/heads/main`. live-kind-included
+also listed refs (mimir PVCs provisioning, children present) then
+aborted on `openziti-controller=OutOfSync/Degraded` while the ziti
+pod was still `Init:0/1`. That is not missing helm and not the
+unexpected-EOF hole. Degraded fail-fast is **Synced/Degraded** only
+(Otto's mimir case). OutOfSync/Degraded during Init is rollout.
+Parallel compares also `dial tcp 10.96.98.57:8080: connect: connection
+refused` — `nc -l` is one connection at a time. Keep
+`--disable=servicelb`. Do not invent helm values.
+
 ## CI runner budgets (three existing ladders)
 
 Do not invent a fourth. Do not shrink metal.

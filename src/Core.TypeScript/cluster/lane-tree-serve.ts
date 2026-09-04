@@ -19,8 +19,10 @@
  * `buildBareRepo` already built. One branch, one pack, no thin-pack, no
  * side-band -- the clone git 2.43.0 accepted against this protocol.
  *
- * argv: "listen" binds and loops; nc -e re-enters with no args to handle
- * one request on stdin/stdout.
+ * argv: "listen" binds and loops; nc -e / tcpsvd re-enters with no args to
+ * handle one request on stdin/stdout. `nc -l` is one connection at a time
+ * (MEASURED 33830308187: parallel compares connection-refused). Prefer
+ * tcpsvd when the applet exists; Deployment replicas cover the fallback.
  *
  * Reads are the operation, not a follow-up to `[ -f ]`. A missing file is
  * whatever `wc`/`cat` return, not a TOCTOU window.
@@ -32,6 +34,9 @@ export const LANE_TREE_SERVE_SH =
     "ROOT=/srv/tree.git",
     "",
     'if [ "$1" = "listen" ]; then',
+    "  if command -v tcpsvd >/dev/null 2>&1; then",
+    '    exec tcpsvd -E 0.0.0.0 "$PORT" "$0"',
+    "  fi",
     "  while true; do",
     '    nc -l -p "$PORT" -e "$0" || true',
     "  done",

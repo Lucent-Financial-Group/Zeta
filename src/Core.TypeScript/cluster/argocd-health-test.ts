@@ -2365,9 +2365,10 @@ export function formatHealthWaitProgress(elapsedSec: number, verdicts: readonly 
 }
 
 /**
- * ArgoCD `Degraded` is a terminal health class. Progressing and Missing can
- * still become Healthy if we wait. Degraded means the workload already failed
- * its probes; the remaining `--timeout-sec` (2400s in CI) cannot heal it.
+ * ArgoCD `Synced/Degraded` is a terminal health class. Progressing and
+ * Missing can still become Healthy if we wait. Once an Application has
+ * compared cleanly AND reports Degraded, the workload already failed its
+ * probes; the remaining `--timeout-sec` (2400s in CI) cannot heal it.
  *
  * MEASURED live-kind-included 33817974673 on PR #16533: at T+799s the wait
  * printed `mimir=Synced/Degraded` (Otto's `081M1FG1RCW`, seaweedfs auth) and
@@ -2376,23 +2377,26 @@ export function formatHealthWaitProgress(elapsedSec: number, verdicts: readonly 
  * stuck because this failure was not marked `terminal`. Same shape as
  * `rootCatalogGitHostFailure`: waiting cannot produce children / health.
  *
+ * MEASURED live-kind-included 33830308187 on PR #16533: overlay git listed
+ * refs (children appeared; live-k3d smoke on the same SHA was green). The
+ * wait then aborted on `openziti-controller=OutOfSync/Degraded` while the
+ * ziti pod was still `Init:0/1` / `PodInitializing`. Events after the abort
+ * went Degraded -> Progressing -> Synced. OutOfSync/Degraded is rollout,
+ * not a finished failed sync. Only Synced/Degraded is terminal.
+ *
  * Progressing-only laggards still wait. Missing still waits (apps appear).
- * This does not repair mimir and does not re-defer agent-memory.
+ * OutOfSync/Degraded still waits. This does not repair mimir and does not
+ * re-defer agent-memory.
  */
-export function degradedHealthTerminalFailure(
-  verdicts: readonly ApplicationVerdict[],
-): Failure | null {
+export function degradedHealthTerminalFailure(verdicts: readonly ApplicationVerdict[]): Failure | null {
   const degraded = verdicts.filter(
-    (verdict) => !verdict.ok && verdict.healthStatus === "Degraded",
+    (verdict) => !verdict.ok && verdict.healthStatus === "Degraded" && verdict.syncStatus === "Synced",
   );
   if (degraded.length === 0) return null;
-  const names = degraded
-    .map((verdict) => `${verdict.name}=${verdict.syncStatus}/${verdict.healthStatus}`)
-    .join(", ");
+  const names = degraded.map((verdict) => `${verdict.name}=${verdict.syncStatus}/${verdict.healthStatus}`).join(", ");
   return {
     kind: "ApplicationUnhealthy",
-    message:
-      `asserted Application is Degraded (${names}); waiting the remaining health budget cannot heal it`,
+    message: `asserted Application is Degraded (${names}); waiting the remaining health budget cannot heal it`,
     terminal: true,
     detail: degraded,
   };

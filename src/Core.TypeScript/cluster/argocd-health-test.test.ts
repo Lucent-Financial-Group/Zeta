@@ -234,7 +234,10 @@ describe("081KSXN940008QG0R000SCP2H1 argocd-health-test argument parsing", () =>
 
   test("--serve-tree skips the GitHub-SHA git-ref patch", () => {
     const src = readFileSync(new URL("./argocd-health-test.ts", import.meta.url), "utf8");
-    const fn = src.slice(src.indexOf("async function waitForArgoCd"), src.indexOf("async function waitForRepoBackedChild"));
+    const fn = src.slice(
+      src.indexOf("async function waitForArgoCd"),
+      src.indexOf("async function waitForRepoBackedChild"),
+    );
     expect(fn).toContain("serveTreeProfile");
     expect(fn.indexOf("serveTreeProfile")).toBeLessThan(fn.indexOf("patchGitBackedApplicationsToGitRef"));
   });
@@ -614,16 +617,7 @@ describe("081KSXN940008QG0R000SCP2H1 argocd-health-test manifest parsing", () =>
     // conclusion about the shadow set is wrong.
     expect(rootDevCatalogExcludedDirs("{alpha/**,beta/**}")).toEqual(new Set(["alpha", "beta"]));
     expect(rootDevCatalogExcludedDirs()).toEqual(
-      new Set([
-        "cilium",
-        "cilium-lb-ipam",
-        "gitlab",
-        "longhorn",
-        "ollama",
-        "platform",
-        "temporal",
-        "vllm",
-      ]),
+      new Set(["cilium", "cilium-lb-ipam", "gitlab", "longhorn", "ollama", "platform", "temporal", "vllm"]),
     );
   });
 
@@ -1004,8 +998,7 @@ describe("081KSXN940008QG0R000SCP2H1 argocd-health-test planning", () => {
               conditions: [
                 {
                   type: "ComparisonError",
-                  message:
-                    "Failed to load target state: Could not resolve host: github.com",
+                  message: "Failed to load target state: Could not resolve host: github.com",
                 },
               ],
             },
@@ -1040,16 +1033,12 @@ describe("081KSXN940008QG0R000SCP2H1 argocd-health-test planning", () => {
     expect(failure).not.toBeNull();
     expect(isTerminalFailure(failure)).toBe(true);
     expect(failure?.message).toContain("cannot clone github.com");
-    expect(isGitHubHostUnresolvableText("lookup github.com on 10.96.0.10:53: no such host")).toBe(
-      true,
-    );
+    expect(isGitHubHostUnresolvableText("lookup github.com on 10.96.0.10:53: no such host")).toBe(true);
     expect(isGitHubHostUnresolvableText("ComparisonError: chart not found")).toBe(false);
     // CodeQL js/incomplete-url-substring-sanitization: `github.com` as a
     // substring of some other host or path is not a catalog DNS failure.
     expect(isGitHubHostUnresolvableText("https://notgithub.com.attacker/Zeta")).toBe(false);
-    expect(
-      isGitHubHostUnresolvableText("repoURL https://github.com/Lucent-Financial-Group/Zeta is fine"),
-    ).toBe(false);
+    expect(isGitHubHostUnresolvableText("repoURL https://github.com/Lucent-Financial-Group/Zeta is fine")).toBe(false);
     expect(
       rootCatalogGitHostFailure([
         {
@@ -1136,9 +1125,18 @@ describe("081KSXN940008QG0R000SCP2H1 argocd-health-test planning", () => {
       ]),
     ).toBeNull();
     expect(
+      degradedHealthTerminalFailure([{ name: "mimir", ok: true, syncStatus: "Synced", healthStatus: "Healthy" }]),
+    ).toBeNull();
+    // MEASURED live-kind-included 33830308187: overlay git worked; the wait
+    // aborted on openziti-controller OutOfSync/Degraded while the pod was
+    // still Init:0/1. That is rollout, not Synced/Degraded.
+    expect(
       degradedHealthTerminalFailure([
-        { name: "mimir", ok: true, syncStatus: "Synced", healthStatus: "Healthy" },
+        { name: "openziti-controller", ok: false, syncStatus: "OutOfSync", healthStatus: "Degraded" },
       ]),
+    ).toBeNull();
+    expect(
+      degradedHealthTerminalFailure([{ name: "mimir", ok: false, syncStatus: "Unknown", healthStatus: "Degraded" }]),
     ).toBeNull();
   });
 
@@ -1165,9 +1163,9 @@ describe("081KSXN940008QG0R000SCP2H1 argocd-health-test planning", () => {
       source.indexOf("function asRecord"),
     );
     expect(childWait).toContain("rootCatalogRefsFailure(snapshots)");
-    expect(repoBackedChildNames([{ name: ROOT_DEV_APPLICATION_NAME, syncStatus: "", healthStatus: "", message: "" }])).toEqual(
-      [],
-    );
+    expect(
+      repoBackedChildNames([{ name: ROOT_DEV_APPLICATION_NAME, syncStatus: "", healthStatus: "", message: "" }]),
+    ).toEqual([]);
     expect(
       repoBackedChildNames([
         { name: ROOT_DEV_APPLICATION_NAME, syncStatus: "", healthStatus: "", message: "" },
@@ -1178,10 +1176,7 @@ describe("081KSXN940008QG0R000SCP2H1 argocd-health-test planning", () => {
   });
 
   test("kind --cni cilium plan names the LB pool assert", () => {
-    const parsed = parseArgs(
-      ["--dry-run", "--provider", "kind", "--cni", "cilium", "--scope", "included"],
-      {},
-    );
+    const parsed = parseArgs(["--dry-run", "--provider", "kind", "--cni", "cilium", "--scope", "included"], {});
     if ("kind" in parsed) throw new Error(parsed.message);
     const plan = buildPlan(parsed);
     if ("kind" in plan) throw new Error(plan.message);
