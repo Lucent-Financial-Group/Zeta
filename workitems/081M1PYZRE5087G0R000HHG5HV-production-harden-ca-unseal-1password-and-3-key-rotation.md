@@ -21,13 +21,13 @@ Review findings (not an implementation PR):
 > Vault that comes up sealed on purpose. Dual-key is the landed treaty;
 > three live keys is the hub-less ask. Lucent 1Password is a share store
 > for a human-gated unseal, not an agent-held token in the ISO. The
-> injector chicken-egg breaks the same way GitHub already does: persist
-> a Lucent service-account token (`ops_…`) on USB, project it, rotate
-> it with a lease sidecar and an in-cluster Consent relogin.
+> injector chicken-egg breaks when the long-lived `ops_…` is a Lucent
+> **item** (2–3 slots) and the human console/app login fetches it;
+> USB / k8s are caches. Do not persist `OP_SESSION`.
 
 ## Pickup order (mint children; do not allocate `B-*`)
 
-1. Lucent SA persist like `gh-cli` (manifest + allowlist + injector-shaped Secret). Linux keystore port is the gap; Cursor Secret is the Cloud-Agent hop only.
+1. Fetch Lucent item → project current slot (app integration or Consent paste). Mint 2–3 SA items in Lucent first. USB/Keychain are caches. Cursor Secret is Cloud-Agent cache only.
 2. Lease sidecar + portal expiry panel + in-cluster Consent relogin (SSH is break-glass). Warn before 401. Applies to `gh-cli` / AI logins too.
 3. Inventory lock test (presence counts, never private material).
 4. ADR addendum: dual as minimum, three live slots as default, previous-honor bound.
@@ -40,6 +40,7 @@ Review findings (not an implementation PR):
 - Helm-fight Otto on Vault / chart currency.
 - Put Lucent or Personal tokens in git or the ISO.
 - Persist `op signin` / `OP_SESSION` (30-minute inactivity).
+- Treat Keychain / USB as the original. The Lucent item is.
 - Flip `1password-personal` to projectable.
 - Flash USB from this item.
 - Implement persist / injector / portal panel in this findings PR.
