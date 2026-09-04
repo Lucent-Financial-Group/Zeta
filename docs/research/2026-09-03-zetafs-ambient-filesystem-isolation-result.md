@@ -1,9 +1,11 @@
 # ZetaFs Ambient File-System Collection Isolation Result
 
-> **Status:** **Test-isolation hypothesis implemented; root cause unproven.** The
-> Journaled-freeze snapshot assertion failed on Windows 2025 and Windows 11 ARM,
-> but it did not reproduce in local isolated execution. No production
-> `ZetaFsFreeze`, snapshot, durability, or content-hash behavior was changed.
+> **Status:** **Test-isolation hypothesis falsified for the original Windows
+> reproduction; production root cause unproven.** The Journaled-freeze snapshot
+> assertion failed on Windows 2025 and Windows 11 ARM both before and after the
+> collection change, while it did not reproduce in local isolated execution. No
+> production `ZetaFsFreeze`, snapshot, durability, or content-hash behavior was
+> changed.
 
 ## Scope
 
@@ -43,13 +45,28 @@ it does not serialize unrelated tests or alter production storage code.
 | Repeated normal-scheduling runs | 12 / 12 pass | No local regression or reproduced failure |
 | Production storage delta | 0 files | This is isolation, not a storage implementation claim |
 
-## Remaining Falsifiers
+## Post-Merge Windows Falsification
 
-The collection is a hypothesis control, not a causal proof. It is rejected if
-the same Windows assertion persists with the collection, if collection
-annotation changes discovered tests, or if a deliberate interleaved two-provider
-test fails within one logical execution context. Any such result requires a
-separate production-level snapshot or execution-context investigation.
+The exact merged collection change was rerun in protected main gate
+`33819376817` at merge commit `2307bb02ea0ecf0c677d9a67f05ba7291a51282c`.
+Both `build-and-test (windows-11-arm)` and `build-and-test (windows-2025)`
+failed the same `Journaled freeze ContentId matches the mutbuf snapshot, not a
+later pwrite` assertion at `ZetaFsFreeze.Tests.fs:60` with `Expected: True` and
+`Actual: False`.
+
+The non-parallel collection therefore does **not** explain or repair that
+Windows reproduction. It may still be an appropriate test-host hygiene control,
+but it is rejected as the sufficient cause of the snapshot failure. No inference
+about the underlying storage root cause follows from this negative result.
+
+## Remaining Investigation Boundary
+
+The next investigation must keep the snapshot-versus-later-`pwrite` assertion
+unchanged and obtain a reproducible trace at the storage or execution-context
+boundary. Plausible lanes include the journaled snapshot transaction, mutbuf
+ownership/copy timing, Windows-specific asynchronous scheduling, and the
+file-system provider path. None is selected by the current evidence, so no
+production repair is authorized from this document alone.
 
 ## References
 
