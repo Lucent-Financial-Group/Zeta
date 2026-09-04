@@ -1,0 +1,12 @@
+{
+  "pr_number": 16597,
+  "archive_path": "docs/history/pr-reviews/PR-16597-feat-081m1q0azgj087g0r00186f3qa-qemu-file-image-nvme-argv-refuse-host-ns.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-04T20:28:13.641Z",
+  "schema_version": "v1",
+  "commit_sha": "902432ea43d55515d03ba676c87da582c0786eaa",
+  "title": "feat(081M1Q0AZGJ087G0R00186F3QA): QEMU file-image NVMe argv; refuse host ns",
+  "state": "MERGED",
+  "merged_at": "2026-09-04T20:27:37Z",
+  "head_ref": "feat/zetafs-qemu-nvme-file-image"
+}
