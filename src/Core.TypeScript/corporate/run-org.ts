@@ -23,6 +23,7 @@
  *   --work-cmd <exe> [--work-arg <a> ...]   perform each work item as <exe> <a...> <workId>
  *   --test-cmd <exe> [--test-arg <a> ...]   run each test case as <exe> <a...> <testCaseId>
  *   --git <dir> [--base <branch>]   open and merge real branches in <dir>
+ *   --worktrees <dir>               give every change its own checkout under <dir> (concurrency-safe)
  *   --review-queue <dir>            gates decided by verdicts filed under <dir>/<workId>/<gate>.json
  *   --review-cmd <exe> [--review-arg <a> ...]   gates decided by <exe> <a...> <gate> <workId>
  *
@@ -59,6 +60,7 @@ import {
   directoryIntake,
   directoryReview,
   gitChangeControl,
+  gitWorktreeChangeControl,
   simulatedChangeControl,
   simulatedIntake,
   simulatedTestRunner,
@@ -158,6 +160,12 @@ export interface Args {
   readonly reviewArgs: readonly string[];
   readonly git: string | undefined;
   readonly baseBranch: string;
+  /**
+   * Where per-change worktrees live. Absent means the SHARED checkout, which moves HEAD and is
+   * therefore sequential-only — correct today, and a limit held by the caller rather than by the
+   * adapter. Supplying this makes each change its own directory.
+   */
+  readonly worktrees: string | undefined;
 }
 
 /** The value after a flag, or undefined. A flag with nothing after it is the same as absent. */
@@ -194,6 +202,7 @@ export function parseArgs(argv: readonly string[]): Args {
     reviewArgs: valuesAfter(argv, "--review-arg"),
     git: valueAfter(argv, "--git"),
     baseBranch: valueAfter(argv, "--base") ?? "main",
+    worktrees: valueAfter(argv, "--worktrees"),
     qaFails: argv.includes("--qa-fails") || argv.includes("--churn"),
     churn: argv.includes("--churn"),
     json: argv.includes("--json"),
@@ -247,7 +256,9 @@ export function providersFromArgs(args: Args, events: readonly ExternalEvent[], 
     change:
       args.git === undefined
         ? simulatedChangeControl()
-        : gitChangeControl({ cwd: args.git, baseBranch: args.baseBranch }),
+        : args.worktrees === undefined
+          ? gitChangeControl({ cwd: args.git, baseBranch: args.baseBranch })
+          : gitWorktreeChangeControl({ cwd: args.git, baseBranch: args.baseBranch, worktreeRoot: args.worktrees }),
   };
 }
 

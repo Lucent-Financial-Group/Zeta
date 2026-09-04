@@ -41,6 +41,7 @@ describe("argument parsing", () => {
       // Every gate unreviewed means AUTO-APPROVE — the register's own long-standing behaviour,
       // which is now an adapter that says so rather than a constant nobody could see.
       reviewQueue: undefined, reviewCmd: undefined, reviewArgs: [],
+      worktrees: undefined,
     });
     expect(parseArgs(["--store", "/tmp/x"]).store).toBe("/tmp/x");
   });

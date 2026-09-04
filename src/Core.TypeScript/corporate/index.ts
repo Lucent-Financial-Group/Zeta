@@ -596,6 +596,7 @@ export {
   type ReviewPort,
   type ReviewRequest,
   type ReviewVerdict,
+  type WorkContext,
   type TestRunner,
   type WorkExecutor,
   type WorkOutcome,
@@ -610,6 +611,8 @@ export {
   directoryIntake,
   directoryReview,
   gitChangeControl,
+  gitWorktreeChangeControl,
+  httpIntake,
   inboxOrder,
   MAX_CAPTURED_OUTPUT,
   modelProposal,
@@ -618,6 +621,7 @@ export {
   simulatedProviders,
   simulatedTestRunner,
   simulatedWorkExecutor,
+  worktreeDirName,
   type AgentAttempt,
 } from "./adapters";
 export { gateChooserFrom } from "./org-runtime";

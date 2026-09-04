@@ -109,9 +109,16 @@ export interface WorkOutcome {
   readonly summary: string;
 }
 
+/** Where and on what a work item is to be performed. */
+export interface WorkContext {
+  readonly branch: string;
+  /** The change's own checkout, when change control opened one. See `ChangeHandle.workdir`. */
+  readonly workdir?: string;
+}
+
 export interface WorkExecutor {
   readonly meta: ProviderMeta;
-  execute(node: CascadeNode, ctx: { readonly branch: string }): Promise<PortResult<WorkOutcome>>;
+  execute(node: CascadeNode, ctx: WorkContext): Promise<PortResult<WorkOutcome>>;
 }
 
 export interface TestRunner {
@@ -159,6 +166,15 @@ export interface ChangeHandle {
   readonly changeId: string;
   readonly branch: string;
   readonly url?: string;
+  /**
+   * Where this change's work should happen, when it has a place of its own.
+   *
+   * Absent means "wherever the executor was configured to run" — the single shared checkout, which
+   * is correct while the runtime is sequential. A worktree-per-change adapter fills it in, and that
+   * is what makes the isolation LOAD-BEARING rather than decorative: a worktree nothing works
+   * inside is a directory the run pays for and never uses.
+   */
+  readonly workdir?: string;
 }
 
 export interface ChangeControlPort {

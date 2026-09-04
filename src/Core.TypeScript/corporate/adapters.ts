@@ -380,6 +380,92 @@ export function directoryIntake(dir: string, name = "directory"): IntakeSource {
  */
 const GATE_OUTCOMES: readonly GateOutcome[] = Object.values(GateOutcome);
 
+/**
+ * Inbound events fetched over HTTP — the Jira/portal shape.
+ *
+ * The connector the register never had. Note what is NOT here: no Jira-specific field names, no
+ * knowledge of any one tracker's schema. A tracker differs from every other tracker in exactly one
+ * place — how its JSON maps onto an `ExternalEvent` — so that is the only thing a caller supplies.
+ * Adding Jira, or a portal, or a spreadsheet export, is a `mapper` function; it is not a redesign.
+ *
+ * ── EVERY FAILURE IS A REFUSAL, AND NAMES WHICH ITEM ─────────────────────────
+ * A non-2xx response, an unparseable body, a payload that is not a list, a mapper that rejects one
+ * item: all refusals, and the item-level one says WHICH index and id. Dropping a bad ticket would
+ * make it indistinguishable from no ticket, and the queue would be quietly short — the same defect
+ * `directoryIntake` refuses by path.
+ *
+ * An EMPTY list is a normal poll, not an error. A quiet morning is not an outage.
+ *
+ * `fetchImpl` is injectable so the refusals can be exercised without a network, and the tests still
+ * run the happy path against a real listening server — a mocked-only connector proves nothing about
+ * whether it can reach anything.
+ */
+export function httpIntake(input: {
+  readonly url: string;
+  /** Where the array of items lives in the response. Absent means the body IS the array. */
+  readonly itemsAt?: (body: unknown) => unknown;
+  /**
+   * One item to one event. THROW to refuse it.
+   *
+   * No index parameter: the poll already names WHICH item failed in its refusal, so a second copy
+   * of that position here would be a parameter no mapper needs — and one nothing could exercise,
+   * which is how a signature grows something unfalsifiable.
+   */
+  readonly mapper: (item: unknown) => ExternalEvent;
+  readonly headers?: Readonly<Record<string, string>>;
+  readonly timeoutMs?: number;
+  readonly name?: string;
+  readonly fetchImpl?: typeof fetch;
+}): IntakeSource {
+  return {
+    meta: {
+      port: Port.Intake,
+      name: input.name ?? "http",
+      fidelity: Fidelity.Real,
+      describes: `fetches inbound events from ${input.url}`,
+    },
+    poll: async () => {
+      const doFetch = input.fetchImpl ?? fetch;
+      const controller = new AbortController();
+      const timer = setTimeout(() => controller.abort(), input.timeoutMs ?? 30_000);
+      let body: unknown;
+      try {
+        const res = await doFetch(input.url, {
+          headers: { accept: "application/json", ...input.headers },
+          signal: controller.signal,
+        });
+        if (!res.ok) {
+          // The status, not a generic "could not fetch": a 401 and a 503 need different actions,
+          // and an operator reading the refusal is the one who has to take them.
+          return { ok: false, reason: `${input.url} answered HTTP ${String(res.status)}` };
+        }
+        body = await res.json();
+      } catch (err) {
+        return { ok: false, reason: `${input.url} could not be read: ${err instanceof Error ? err.message : String(err)}` };
+      } finally {
+        clearTimeout(timer);
+      }
+
+      const items = input.itemsAt === undefined ? body : input.itemsAt(body);
+      if (!Array.isArray(items)) {
+        return { ok: false, reason: `${input.url} did not return a list of items` };
+      }
+      const events: ExternalEvent[] = [];
+      for (let i = 0; i < items.length; i++) {
+        try {
+          events.push(input.mapper(items[i]));
+        } catch (err) {
+          return {
+            ok: false,
+            reason: `${input.url} item ${String(i)} could not be read: ${err instanceof Error ? err.message : String(err)}`,
+          };
+        }
+      }
+      return { ok: true, value: events, evidence: [{ kind: "document", ref: `${input.url}#${String(events.length)}` }] };
+    },
+  };
+}
+
 /** How much of a command's output is kept as evidence before it is truncated. */
 export const MAX_CAPTURED_OUTPUT = 4_000;
 
@@ -415,10 +501,12 @@ export function commandWorkExecutor(input: {
       fidelity: Fidelity.Real,
       describes: `runs '${input.command}' in ${input.cwd}`,
     },
-    execute: async (node): Promise<PortResult<WorkOutcome>> => {
+    execute: async (node, ctx): Promise<PortResult<WorkOutcome>> => {
       const args = [...input.argsFor(node)];
       const run = spawnSync(input.command, args, {
-        cwd: input.cwd,
+        // The change's own checkout when it has one, else the configured directory. This is what
+        // lets a worktree-per-change adapter actually isolate the work rather than merely name it.
+        cwd: ctx.workdir ?? input.cwd,
         encoding: "utf-8",
         timeout: input.timeoutMs ?? 120_000,
         // No shell. The whole safety argument above depends on this line.
@@ -515,7 +603,7 @@ export function agentWorkExecutor(input: {
       }
 
       const run = spawnSync(input.verify.command, [...input.verify.argsFor(node)], {
-        cwd: input.verify.cwd,
+        cwd: ctx.workdir ?? input.verify.cwd,
         encoding: "utf-8",
         timeout: input.verify.timeoutMs ?? 120_000,
         shell: false,
@@ -652,6 +740,89 @@ export function gitChangeControl(input: {
       if (merged.error !== undefined) return { ok: false, reason: `git could not run: ${merged.error.message}` };
       if (merged.status !== 0) {
         return { ok: false, reason: `merge of ${handle.branch} refused: ${(merged.stderr ?? "").trim()}` };
+      }
+      return { ok: true, value: handle, evidence: [{ kind: "trace", ref: `merged:${handle.branch}` }] };
+    },
+  };
+}
+
+/**
+ * A filesystem-safe directory name for a branch.
+ *
+ * `work/task-1` would otherwise nest a directory under `work/`, which quietly makes two changes
+ * whose branches share a prefix into siblings inside one parent — and on Windows the slash is not
+ * a legal name at all. Ordinal replacement, no locale involved.
+ */
+export function worktreeDirName(branch: string): string {
+  return branch.replace(/[^A-Za-z0-9._-]/g, "-");
+}
+
+/**
+ * Changes as real git branches, each in ITS OWN WORKTREE.
+ *
+ * `gitChangeControl` is correct and sequential-only: `checkout -b` moves the shared HEAD, so two
+ * changes open at once in one repository would fight over which branch is checked out and whose
+ * files are on disk. Today's runtime is sequential so nothing breaks — but "nothing breaks because
+ * nobody has tried it concurrently yet" is a property held by an accident of the caller rather
+ * than by the adapter, and that is the kind of limit that stops being true silently.
+ *
+ * A worktree gives each change its own directory and its own HEAD. The shared repository's checked
+ * out branch never moves, so `open` is safe to call while another change is still in flight.
+ *
+ * `merge` merges into the base branch IN THE MAIN REPOSITORY and then removes the worktree —
+ * `--no-ff`, for the same reason as the sibling adapter: a fast-forward leaves no record that a
+ * change existed. Removal is part of merging rather than a separate cleanup step, because a
+ * worktree left behind holds a lock on its branch and the next run's `open` would refuse.
+ */
+export function gitWorktreeChangeControl(input: {
+  readonly cwd: string;
+  readonly baseBranch: string;
+  /** Where the per-change checkouts live. One directory per branch. */
+  readonly worktreeRoot: string;
+  readonly name?: string;
+}): ChangeControlPort {
+  const git = (args: readonly string[], at = input.cwd) =>
+    spawnSync("git", [...args], { cwd: at, encoding: "utf-8", shell: false });
+  return {
+    meta: {
+      port: Port.ChangeControl,
+      name: input.name ?? "git-worktree",
+      fidelity: Fidelity.Real,
+      describes: `one worktree per change under ${input.worktreeRoot}, branched from ${input.baseBranch}`,
+    },
+    open: async (node, ctx) => {
+      const workdir = join(input.worktreeRoot, worktreeDirName(ctx.branch));
+      const made = git(["worktree", "add", "-b", ctx.branch, workdir, input.baseBranch]);
+      if (made.error !== undefined) return { ok: false, reason: `git could not run: ${made.error.message}` };
+      if (made.status !== 0) {
+        return { ok: false, reason: `could not open a worktree for ${ctx.branch}: ${(made.stderr ?? "").trim()}` };
+      }
+      return {
+        ok: true,
+        value: { changeId: `${ctx.branch}@${node.workId}`, branch: ctx.branch, workdir },
+        evidence: [{ kind: "trace", ref: `worktree:${workdir}` }],
+      };
+    },
+    merge: async (handle) => {
+      const merged = git(["merge", "--no-ff", "-m", `merge ${handle.changeId}`, handle.branch]);
+      if (merged.error !== undefined) return { ok: false, reason: `git could not run: ${merged.error.message}` };
+      if (merged.status !== 0) {
+        return { ok: false, reason: `merge of ${handle.branch} refused: ${(merged.stderr ?? "").trim()}` };
+      }
+      // Only after the merge SUCCEEDED. Removing it first would destroy the work if the merge then
+      // refused, and the branch would be the only copy of something nobody could look at.
+      const removed = git(["worktree", "remove", "--force", handle.workdir ?? worktreeDirName(handle.branch)]);
+      if (removed.status !== 0) {
+        // The change LANDED; the tidy-up did not. Reporting this as a failed merge would be a
+        // second lie in the opposite direction, so it succeeds and says what is still on disk.
+        return {
+          ok: true,
+          value: handle,
+          evidence: [
+            { kind: "trace", ref: `merged:${handle.branch}` },
+            { kind: "trace", ref: `worktree-left-behind:${(removed.stderr ?? "").trim()}` },
+          ],
+        };
       }
       return { ok: true, value: handle, evidence: [{ kind: "trace", ref: `merged:${handle.branch}` }] };
     },

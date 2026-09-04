@@ -1184,7 +1184,13 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
 
     // THE WORK IS PERFORMED HERE — or, with the simulated executor, assumed. Either way it is the
     // PORT that decides, so a task no longer completes merely by reaching this line.
-    const performed = await providers.work.execute(task, { branch });
+    //
+    // The change's own checkout is handed over when it has one, which is what makes a
+    // worktree-per-change adapter isolate the work rather than merely name a branch for it.
+    const performed = await providers.work.execute(task, {
+      branch,
+      ...(opened.value.workdir === undefined ? {} : { workdir: opened.value.workdir }),
+    });
     if (!performed.ok) {
       refusals.push(`work executor '${providers.work.meta.name}' on ${task.workId}: ${performed.reason}`);
       continue;
