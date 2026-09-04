@@ -1,11 +1,12 @@
 # ZetaFs Ambient File-System Collection Isolation Result
 
 > **Status:** **Test-isolation hypothesis falsified for the original Windows
-> reproduction; production root cause unproven.** The Journaled-freeze snapshot
-> assertion failed on Windows 2025 and Windows 11 ARM both before and after the
-> collection change, while it did not reproduce in local isolated execution. No
-> production `ZetaFsFreeze`, snapshot, durability, or content-hash behavior was
-> changed.
+> reproduction; production root cause unproven.** The test named for the
+> Journaled-freeze snapshot contract failed on Windows 2025 and Windows 11 ARM
+> both before and after the collection change, while it did not reproduce in
+> local isolated execution. The observed failing predicate is the Journaled CAS
+> directory existence check, not a `ContentId` comparison. No production
+> `ZetaFsFreeze`, snapshot, durability, or content-hash behavior was changed.
 
 ## Scope
 
@@ -41,32 +42,54 @@ it does not serialize unrelated tests or alter production storage code.
 
 | Control | Result | Interpretation |
 |---|---:|---|
-| ZetaFs-family F# tests | 140 / 140 pass | Collection compiles and preserves local behavior |
+| ZetaFs-family F# tests | 141 / 141 pass | Collection and corrected CAS-visibility controls preserve local behavior |
 | Repeated normal-scheduling runs | 12 / 12 pass | No local regression or reproduced failure |
 | Production storage delta | 0 files | This is isolation, not a storage implementation claim |
+
+## Corrected Local CAS Matrix
+
+The test-only trace added after the Windows source-line audit observes the
+captured `InMemoryFileSystem` instance, rather than inspecting only the ambient
+property. Locally, the default `ZetaFsFreeze.create` profile has a visible
+`/freeze-mem/cas` path immediately after construction and retains both the same
+provider and the CAS path before and after each of the two Journaled freezes.
+The `createManualStream` control does not create that path, as expected for the
+non-`BlockCas` profile.
+
+An inverted test-only CAS expectation fails the targeted default-profile test
+(`1 / 1` failed), then the original expectation restores and the 141-test ZetaFs
+family passes. This proves the receipt observes the declared default profile;
+it does not reproduce or explain the Windows result. The frozen control contract
+is `2026-09-04-zetafs-windows-cas-directory-control-contract.md`.
 
 ## Post-Merge Windows Falsification
 
 The exact merged collection change was rerun in protected main gate
 `33819376817` at merge commit `2307bb02ea0ecf0c677d9a67f05ba7291a51282c`.
 Both `build-and-test (windows-11-arm)` and `build-and-test (windows-2025)`
-failed the same `Journaled freeze ContentId matches the mutbuf snapshot, not a
-later pwrite` assertion at `ZetaFsFreeze.Tests.fs:60` with `Expected: True` and
-`Actual: False`.
+failed the test named `Journaled freeze ContentId matches the mutbuf snapshot,
+not a later pwrite` at `ZetaFsFreeze.Tests.fs:60` with `Expected: True` and
+`Actual: False`. At that merge commit, line 60 is exactly
+`Assert.True(FileSystem.Current.Exists "/freeze-mem/cas")`; it follows the
+content inequality, generation, and readability assertions. The run therefore
+does not establish a snapshot-versus-later-`pwrite` mismatch.
 
 The non-parallel collection therefore does **not** explain or repair that
-Windows reproduction. It may still be an appropriate test-host hygiene control,
-but it is rejected as the sufficient cause of the snapshot failure. No inference
-about the underlying storage root cause follows from this negative result.
+Windows CAS-directory reproduction. It may still be an appropriate test-host
+hygiene control, but it is rejected as the sufficient cause of that failure. No
+inference about a snapshot-content race or another underlying storage cause
+follows from this negative result.
 
 ## Remaining Investigation Boundary
 
-The next investigation must keep the snapshot-versus-later-`pwrite` assertion
-unchanged and obtain a reproducible trace at the storage or execution-context
-boundary. Plausible lanes include the journaled snapshot transaction, mutbuf
-ownership/copy timing, Windows-specific asynchronous scheduling, and the
-file-system provider path. None is selected by the current evidence, so no
-production repair is authorized from this document alone.
+The next investigation must keep every existing assertion unchanged and add a
+test-only matrix that separately traces Journaled CAS-directory creation and
+pre-/post-`pwrite` content identities. Plausible lanes include the `BlockCas`
+or directory-creation path, in-memory file-system state, Windows-specific
+asynchronous scheduling, and provider ownership. A content snapshot race is a
+separate untested lane, not an established diagnosis. None is selected by the
+current evidence, so no production repair is authorized from this document
+alone.
 
 ## References
 

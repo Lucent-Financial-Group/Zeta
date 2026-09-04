@@ -30,28 +30,52 @@ let private tempStore () =
 let private freezeAsync (volume: ZetaFsFreeze.Volume) id cls =
     ZetaFsFreeze.freezeAsync volume id cls CancellationToken.None
 
+let private assertJournaledCasTrace (stage: string) (fs: InMemoryFileSystem) =
+    let captured = fs :> IFileSystem
+
+    Assert.True(
+        Object.ReferenceEquals(captured, FileSystem.Current),
+        sprintf "ZetaFs CAS trace: provider-changed at %s" stage
+    )
+
+    Assert.True(
+        fs.Files.ContainsKey "/freeze-mem/cas",
+        sprintf "ZetaFs CAS trace: missing-at-%s on the captured provider" stage
+    )
+
+    Assert.True(
+        FileSystem.Current.Exists "/freeze-mem/cas",
+        sprintf "ZetaFs CAS trace: missing-at-%s through FileSystem.Current" stage
+    )
+
 [<Fact>]
 let ``Journaled freeze ContentId matches the mutbuf snapshot, not a later pwrite`` () : Task =
     task {
         ensureHasher ()
-        FileSystem.Register(InMemoryFileSystem())
+        let fs = InMemoryFileSystem()
+        FileSystem.Register fs
         let volume = ZetaFsFreeze.create "/freeze-mem" (ZetaFsMutbuf.create "/freeze-mem" ZetaFsMutbuf.Coherence.Shared) None
 
         try
+            assertJournaledCasTrace "after-create" fs
             let id = mintId ()
             let h = ZetaFsMutbuf.openHandle volume.Mutbuf id
             ZetaFsMutbuf.pwrite volume.Mutbuf h 0L [| 1uy; 2uy; 3uy |] |> ignore
+            assertJournaledCasTrace "before-first-freeze" fs
             let! first = (freezeAsync volume id ZetaFsFreeze.Journaled).AsTask().ConfigureAwait(false)
 
             match first with
             | Error e -> Assert.Fail(ZetaFsFreeze.errorName e)
             | Ok first ->
+                assertJournaledCasTrace "after-first-freeze" fs
                 ZetaFsMutbuf.pwrite volume.Mutbuf h 0L [| 9uy; 9uy; 9uy |] |> ignore
+                assertJournaledCasTrace "before-second-freeze" fs
                 let! second = (freezeAsync volume id ZetaFsFreeze.Journaled).AsTask().ConfigureAwait(false)
 
                 match second with
                 | Error e -> Assert.Fail(ZetaFsFreeze.errorName e)
                 | Ok second ->
+                    assertJournaledCasTrace "after-second-freeze" fs
                     Assert.NotEqual<string>(first.Content.ToHex(), second.Content.ToHex())
                     Assert.Equal(0UL, first.Generation)
                     Assert.Equal(1UL, second.Generation)
@@ -63,6 +87,32 @@ let ``Journaled freeze ContentId matches the mutbuf snapshot, not a later pwrite
             ZetaFsFreeze.dispose volume
             FileSystem.Reset()
     }
+
+[<Fact>]
+let ``Journaled block CAS path is specific to the default profile, not the stream control`` () =
+    ensureHasher ()
+    let fs = InMemoryFileSystem()
+    FileSystem.Register fs
+
+    try
+        let defaultVolume =
+            ZetaFsFreeze.create "/freeze-mem" (ZetaFsMutbuf.create "/freeze-mem" ZetaFsMutbuf.Coherence.Shared) None
+
+        try
+            assertJournaledCasTrace "default-profile-create" fs
+        finally
+            ZetaFsFreeze.dispose defaultVolume
+
+        let streamVolume =
+            ZetaFsFreeze.createManualStream "/freeze-stream" (ZetaFsMutbuf.create "/freeze-stream" ZetaFsMutbuf.Coherence.Shared) None
+
+        try
+            Assert.True(Object.ReferenceEquals((fs :> IFileSystem), FileSystem.Current), "ZetaFs CAS trace: provider-changed at stream-control-create")
+            Assert.False(fs.Files.ContainsKey "/freeze-stream/cas", "ZetaFs CAS trace: stream control unexpectedly created a BlockCas path")
+        finally
+            ZetaFsFreeze.dispose streamVolume
+    finally
+        FileSystem.Reset()
 
 [<Fact>]
 let ``Buffered freeze is not POSIX-readable (no freeze-commit)`` () : Task =
