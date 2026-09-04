@@ -85,6 +85,15 @@ describe("every supported provider is exercised by a real CI lane", () => {
     expect(jobsDispatching("k3d")).toContain("live-k3d");
   });
 
+  test("live-k3d serves the dev resource rung, not the committed metal tree", () => {
+    // CPU/memory overlay. Without this flag the job applies 6390m of metal
+    // requests to a 4000m GitHub node. Kind included already passes it; k3d
+    // was the remaining consumer of the committed tree. Disk is a different
+    // ladder (`--check-envelope`); this assertion is the CPU/mem one.
+    const runs = (jobs()["live-k3d"]!.steps ?? []).map((s) => s.run ?? "").join("\n");
+    expect(runs).toContain("--serve-tree dev");
+  });
+
   test("the k3d lane tears its cluster down even when the assertion fails", () => {
     const teardown = (jobs()["live-k3d"]!.steps ?? []).find((s) => (s.run ?? "").includes("k3d-down.ts"));
     expect(teardown).toBeDefined();

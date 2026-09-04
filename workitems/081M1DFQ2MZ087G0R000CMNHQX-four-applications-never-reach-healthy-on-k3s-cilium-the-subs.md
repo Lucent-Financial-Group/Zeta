@@ -760,12 +760,42 @@ hardware. A CI-only datapath (invented Cilium helm, hostAliases to
 ClusterIP, a SPIRE chart fork) would make the runner look healthy and
 leave first-boot broken.
 
-`--serve-tree dev` (#16543) is a **runner CPU overlay only**. GitHub
+`--serve-tree dev` is a **runner CPU/memory overlay only**. GitHub
 nodes are 4000m; metal is a 16-core box. The metal rung stays in git
 for USB/hardware. Datapath values, k3s flags, and SPIRE stay the
 shipped metal surface. The only k3d deltas that have paid rent are
 flags metal already passes (`--disable=servicelb`, `--tls-san`,
 founder `/etc/hosts`) plus `k8sServiceHost` name resolution.
+
+Kind included already passed `--serve-tree dev` (#16543). k3d live
+parsed no such flag and `bootstrapK3dClusterInProcess` dropped the
+bundle even if one had been passed, so the k3d job kept applying
+metal (6390m) onto the 4000m runner. That wiring is now the same as
+kind. Disk is a different existing ladder: `runnerEnvelope.freeDiskGib`
+= 70, checked by `--check-envelope`. PVC sizes stay at metal
+`measured` because CI `zeta-local-path` is thin; shrinking PVCs in CI
+would not be a USB rehearsal. Do not invent a fourth budget.
+
+## CI runner budgets (three existing ladders)
+
+Do not invent a fourth. Do not shrink metal.
+
+| Axis | Ladder | CI overlay | Metal (git) |
+| --- | --- | --- | --- |
+| CPU / memory requests | `dev` vs `metal` in `storage-profiles.json` | `--serve-tree dev` on kind included and k3d live | `activeResourceProfile: metal` |
+| PVC capacity | `minimal` / `standard` / `measured` / `large` | none (CI `zeta-local-path` is thin) | `activeStorageProfile: measured` |
+| Runner disk | `runnerEnvelope.freeDiskGib: 70` | `--check-envelope` on live jobs | hardware `nodeDiskGib` |
+
+Envelope (hosted `ubuntu-24.04`): 4000m CPU, 15360Mi RAM, 70 GiB disk;
+reserved 1500m / 6144Mi / 4 GiB; margin 0.85 → budget **2500m / 9216Mi /
+~56 GiB**. `storage-profiles.ts --resource-profile <rung> --budget`:
+
+- `dev` lane (~39 apps): 1165m / 9164Mi — **FITS** (memory 52Mi from the ceiling)
+- `metal` lane: 6390m / 14352Mi — does not fit a runner
+
+The committed manifests stay `metal`. `--resource-profile metal --check`
+is green; `dev --check` drifts. That is why `--serve-tree` exists
+instead of rewriting git.
 
 kind+Cilium Healthy on the same helm values means Cilium-as-CNI is
 not the USB-boot hole. k3d still FAIL on hostNetwork ClusterIP is

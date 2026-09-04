@@ -63,6 +63,12 @@ export interface K3dBootstrapOptions {
   readonly configPath: string;
   readonly gitRef: string;
   readonly gitRepoUrl?: string;
+  /**
+   * Serve a rung-applied copy of the tree in-cluster and point ArgoCD at it.
+   * Same field as `KindBootstrapOptions.laneTree`; absent leaves the committed
+   * tree in use.
+   */
+  readonly laneTree?: { readonly manifests: string; readonly repoUrl: string };
 }
 
 export function bootstrapK3dClusterInProcess(options: K3dBootstrapOptions): void {
@@ -74,6 +80,7 @@ export function bootstrapK3dClusterInProcess(options: K3dBootstrapOptions): void
   assertSafeGitRef(options.gitRef);
   const gitRepoUrl = options.gitRepoUrl ?? DEFAULT_GIT_REPO_URL;
   assertGitHubRepoUrl(gitRepoUrl);
+  if (options.laneTree !== undefined) assertLaneTreeRepoUrl(options.laneTree.repoUrl);
   const ports = liveDevClusterPorts({ clusterShape: "k3d-in-docker" });
   assertK3dDevStackReady(ports);
   bringUpK3dDevCluster(ports, {
@@ -83,6 +90,7 @@ export function bootstrapK3dClusterInProcess(options: K3dBootstrapOptions): void
     kubeApiHost,
     gitRef: options.gitRef,
     gitRepoUrl,
+    ...(options.laneTree === undefined ? {} : { laneTree: options.laneTree }),
   });
 }
 

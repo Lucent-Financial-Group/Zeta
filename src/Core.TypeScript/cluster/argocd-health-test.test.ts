@@ -199,6 +199,27 @@ describe("081KSXN940008QG0R000SCP2H1 argocd-health-test argument parsing", () =>
     expect(parsed.timeoutSeconds).toBe(60);
     expect(parsed.pollSeconds).toBe(5);
     expect(parsed.driftCheck).toBe(true);
+    expect(parsed.serveTreeProfile).toBeNull();
+  });
+
+  test("accepts --serve-tree on k3d so the runner overlay is not kind-only", () => {
+    const parsed = parseArgs(["--run", "--provider", "k3d", "--serve-tree", "dev"], {});
+    expect("kind" in parsed).toBe(false);
+    if ("kind" in parsed) throw new Error(parsed.message);
+    expect(parsed.provider).toBe("k3d");
+    expect(parsed.serveTreeProfile).toBe("dev");
+  });
+
+  test("k3d bootstrap is handed the --serve-tree bundle, not only kind", () => {
+    // parseArgs accepting the flag is not enough: until this wiring existed the
+    // k3d branch built no lane tree and sync'd metal. Delete `laneTree` from
+    // the bootstrapK3dClusterInProcess call and this goes red.
+    const src = readFileSync(new URL("./argocd-health-test.ts", import.meta.url), "utf8");
+    const idx = src.indexOf("bootstrapK3dClusterInProcess({");
+    expect(idx).toBeGreaterThan(0);
+    const window = src.slice(idx - 220, idx + 280);
+    expect(window).toContain("buildLaneTreeForProfile");
+    expect(window).toContain("laneTree");
   });
 
   test("switches kind runs to the CI kind profile by default", () => {

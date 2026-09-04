@@ -1113,6 +1113,14 @@ jobs:
         env:
           ZETA_ARGOCD_GIT_REF: ${{ github.event.pull_request.head.sha || github.sha }}
           ZETA_ARGOCD_GIT_REPO_URL: ${{ github.event.pull_request.head.repo.clone_url || 'https://github.com/Lucent-Financial-Group/Zeta' }}
+        # CPU/MEMORY OVERLAY, same mechanism as live-kind-included. The committed
+        # tree is `metal` (6390m on a 4000m GitHub node). `--serve-tree dev` is
+        # 1165m / 9164Mi and fits the runner budget (2500m / 9216Mi). Metal stays
+        # in git for USB/hardware. Disk is a different ladder: this job already
+        # runs `--check-envelope` (70 GiB). PVC sizes stay at the metal storage
+        # profile because CI `zeta-local-path` is thin and shrinking PVCs would
+        # not be a USB rehearsal. Do not invent a fourth budget. Do not shrink
+        # metal.
         run: |
           bun src/Core.TypeScript/cluster/argocd-health-test.ts \
             --run \
@@ -1123,7 +1131,8 @@ jobs:
             --cluster-name zeta-ci \
             --git-ref "$ZETA_ARGOCD_GIT_REF" \
             --timeout-sec 1200 \
-            --poll-sec 10
+            --poll-sec 10 \
+            --serve-tree dev
 
       - name: Which CNI actually owns the cluster (the reason this job exists)
         # The profile CLAIMS flannel and kube-proxy are off and Cilium owns the

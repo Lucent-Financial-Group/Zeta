@@ -298,6 +298,14 @@ export interface K3dDevBringUpOptions {
   readonly gitRef: string;
   readonly gitRepoUrl: string;
   /**
+   * Same override as `KindCiBringUpOptions.laneTree`. Absent leaves the
+   * committed `metal` tree. GitHub-hosted runners are 4000m; the metal rung is
+   * 6390m on the dev lane. `--serve-tree dev` is the runner CPU/memory overlay;
+   * metal stays in git for USB/hardware. Disk is a different ladder
+   * (`runnerEnvelope` + storage profiles) and is not rewritten here.
+   */
+  readonly laneTree?: { readonly manifests: string; readonly repoUrl: string };
+  /**
    * The environment the registry pull credential is sourced from.
    *
    * DECLARED rather than ambient (manifesto §13 noninterference): this value
@@ -751,10 +759,15 @@ export function bringUpK3dDevCluster(ports: DevClusterPorts, options: K3dDevBrin
   applyDevBootstrapSecrets(ports);
   applyDevRegistryPullSecret(ports, options.env ?? process.env);
 
+  // SAME OVERRIDE POINT AS KIND. Without this, `--serve-tree dev` on the k3d
+  // job is a flag the harness parses and then drops: k3d would keep syncing
+  // the committed `metal` rung onto a 4000m runner. Metal stays in git.
+  const rootRepoUrl = applyLaneTreeSource(ports, options.laneTree) ?? options.gitRepoUrl;
+
   // PROVIDER PASSED. Without it the catalogue keeps the static exclude glob
   // while the harness asserts the k3d-lifted roster -- asserted-but-unapplied,
   // which hangs for the full timeout and blames the Application.
-  appCatalog.applyRootDevCatalog(options.gitRef, options.gitRepoUrl, "k3d");
+  appCatalog.applyRootDevCatalog(options.gitRef, rootRepoUrl, "k3d");
 }
 
 export function tearDownK3dDevCluster(ports: DevClusterPorts, clusterName: string): void {

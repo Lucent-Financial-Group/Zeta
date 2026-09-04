@@ -900,4 +900,61 @@ describe("the lane-tree resource-rung override point", () => {
     expect(log).toContain(`catalog:main@${kindOptions.gitRepoUrl}`);
     expect(log.some((line) => line.includes("zeta-lane-tree"))).toBe(false);
   });
+
+  const k3dOptions = {
+    configPath: "full-ai-cluster/dev-cluster/profiles/ci.k3d-config.yaml",
+    clusterName: "zeta-ci",
+    agentCount: 0,
+    kubeApiHost: "k3d-zeta-ci-server-0",
+    gitRef: "main",
+    gitRepoUrl: "https://github.com/Lucent-Financial-Group/Zeta",
+  };
+
+  test("k3d: the root Application clones the LANE tree, not the committed one", () => {
+    // Delete laneTree from bringUpK3dDevCluster and this goes red: `--serve-tree`
+    // on the live-k3d job would parse and then drop, leaving metal (6390m) on a
+    // 4000m GitHub node.
+    const log: string[] = [];
+    bringUpK3dDevCluster(fakePorts(log), { ...k3dOptions, laneTree });
+    expect(log).toContain(`catalog:main@${laneTree.repoUrl}`);
+    expect(log).not.toContain(`catalog:main@${k3dOptions.gitRepoUrl}`);
+  });
+
+  test("k3d: the server is applied and WAITED ON before the root Application", () => {
+    const log: string[] = [];
+    bringUpK3dDevCluster(fakePorts(log), { ...k3dOptions, laneTree });
+    const applyAt = log.findIndex((line) => line.startsWith("inline-manifest:") && line.includes("zeta-lane-tree"));
+    const waitAt = log.findIndex((line) => line.startsWith("wait:deployment/zeta-lane-tree"));
+    const catalogAt = log.findIndex((line) => line.startsWith("catalog:"));
+    expect(applyAt).toBeGreaterThanOrEqual(0);
+    expect(waitAt).toBeGreaterThan(applyAt);
+    expect(catalogAt).toBeGreaterThan(waitAt);
+    expect(log).toContain("wait:deployment/zeta-lane-tree@zeta-lane-tree:condition=Available");
+  });
+
+  test("k3d: NO SILENT FALLBACK — a server that never becomes Available throws", () => {
+    const log: string[] = [];
+    const ports = fakePorts(log);
+    const failing = {
+      ...ports,
+      controlPlane: {
+        ...ports.controlPlane,
+        waitForResource: (ref: string, ns: string | null, expr: string): boolean => {
+          log.push(`wait:${ref}@${ns ?? "-"}:${expr}`);
+          return false;
+        },
+      },
+    };
+    expect(() => {
+      bringUpK3dDevCluster(failing, { ...k3dOptions, laneTree });
+    }).toThrow(/never became Available/);
+    expect(log.some((line) => line.startsWith("catalog:"))).toBe(false);
+  });
+
+  test("k3d: WITHOUT the flag the committed tree is still what is synced", () => {
+    const log: string[] = [];
+    bringUpK3dDevCluster(fakePorts(log), k3dOptions);
+    expect(log).toContain(`catalog:main@${k3dOptions.gitRepoUrl}`);
+    expect(log.some((line) => line.includes("zeta-lane-tree"))).toBe(false);
+  });
 });

@@ -2012,9 +2012,11 @@ function bootstrapCluster(plan: HarnessPlan, options: CliOptions): Failure | nul
     return runOrFail("kubectl", ["config", "use-context", `k3d-${plan.clusterName}`], "KubectlFailed", 30);
   }
   try {
+    const laneTree = buildLaneTreeForProfile(options.serveTreeProfile, options.gitRef);
     bootstrapK3dClusterInProcess({
       configPath: options.configPath,
       gitRef: options.gitRef,
+      ...(laneTree === null ? {} : { laneTree }),
     });
     return null;
   } catch (e) {
