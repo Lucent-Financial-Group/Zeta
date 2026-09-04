@@ -19,21 +19,22 @@ Review findings (not an implementation PR):
 
 > Git holds one pubkey per type per identity, a files-on-disk CA, and a
 > Vault that comes up sealed on purpose. Dual-key is the landed treaty;
-> three live keys is the hub-less ask. Lucent 1Password is a share store
-> for a human-gated unseal, not an agent-held token in the ISO. The
+> three live keys is the hub-less ask. Init stays gated. Post-init unseal
+> is a Google-shaped extraContainer that fetches Shamir shares from
+> Lucent at unseal time — not ESO-into-etcd, not threshold 1. The
 > injector chicken-egg breaks when the long-lived `ops_…` is a Lucent
-> **item** (2–3 slots) and the human console/app login fetches it;
+> **item** (2–3 slots) and metal first-boot login fetches it;
 > USB / k8s are caches. Do not persist `OP_SESSION`.
 
 ## Pickup order (mint children; do not allocate `B-*`)
 
-1. Fetch Lucent item → project current slot (app integration or Consent paste). Mint 2–3 SA items in Lucent first. USB/Keychain are caches. Cursor Secret is Cloud-Agent cache only.
-2. Lease sidecar + portal expiry panel + in-cluster Consent relogin (SSH is break-glass). Warn before 401. Applies to `gh-cli` / AI logins too.
-3. Inventory lock test (presence counts, never private material).
-4. ADR addendum: dual as minimum, three live slots as default, previous-honor bound.
-5. Unseal ceremony runbook (human + biometric; Lucent 1Password as share store). Injector bootstrap is not unseal.
+1. Fetch Lucent item → project current slot (metal `tty1` login, then Lucent). Mint 2–3 SA items in Lucent first. USB/Keychain are caches. Cursor Secret is Cloud-Agent cache only.
+2. Unsealer extraContainer (close to Google, rewritten): `valuesObject` only; fetch-at-unseal from Lucent; threshold-many keys; cannot init; amend `TOPOLOGY.md` §5 in the same commit. Not ESO-into-etcd for shares. Not HA joiners until three-node.
+3. Lease sidecar + portal expiry panel + in-cluster Consent relogin (SSH is break-glass). Warn before 401. Applies to `gh-cli` / AI logins too.
+4. Inventory lock test (presence counts, never private material).
+5. ADR addendum: dual as minimum, three live slots as default, previous-honor bound.
 6. Fill missing persona trees (riven / vera / lior) and Aaron cluster-nodes after the 3-key default exists.
-7. Vault ingest / ESO after landed host→Secret (PR #16587) and after unseal is real.
+7. Vault ingest / ESO for **app** secrets after the unsealer is real. Still not the Shamir-share copy path.
 
 ## Do not
 
@@ -43,4 +44,6 @@ Review findings (not an implementation PR):
 - Treat Keychain / USB as the original. The Lucent item is.
 - Flip `1password-personal` to projectable.
 - Flash USB from this item.
-- Implement persist / injector / portal panel in this findings PR.
+- Implement persist / injector / portal panel / Vault extraContainers in this findings PR.
+- Copy Shamir unseal shares into a Kubernetes Secret / etcd via ESO.
+- Rekey Vault to a threshold of 1.
