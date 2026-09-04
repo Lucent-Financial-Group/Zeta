@@ -42,6 +42,11 @@ describe("argument parsing", () => {
       // which is now an adapter that says so rather than a constant nobody could see.
       reviewQueue: undefined, reviewCmd: undefined, reviewArgs: [],
       worktrees: undefined,
+      // The three ports that had no command-line path until now. Absent still means simulated, and
+      // the fidelity block still says so — reaching a tracker, an agent or a model is opt-in.
+      reviewModel: undefined, tracker: undefined, trackerItems: undefined,
+      trackerHeaders: [], trackerMap: [], trackerSource: "tracker",
+      workAgent: undefined, workAgentArgs: [], workVerify: undefined, workVerifyArgs: [],
     });
     expect(parseArgs(["--store", "/tmp/x"]).store).toBe("/tmp/x");
   });

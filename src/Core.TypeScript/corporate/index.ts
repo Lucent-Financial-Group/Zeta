@@ -605,6 +605,7 @@ export {
   agentReview,
   agentWorkExecutor,
   autoApproveReview,
+  commandProposal,
   commandReview,
   commandTestRunner,
   commandWorkExecutor,
@@ -616,6 +617,7 @@ export {
   inboxOrder,
   MAX_CAPTURED_OUTPUT,
   modelProposal,
+  modelReview,
   simulatedChangeControl,
   simulatedIntake,
   simulatedProviders,
@@ -625,4 +627,11 @@ export {
   type AgentAttempt,
 } from "./adapters";
 export { gateChooserFrom } from "./org-runtime";
-export { parseArgs as parseOrgArgs, providersFromArgs, type Args as OrgRunArgs } from "./run-org";
+export {
+  atPath,
+  headersFrom,
+  parseArgs as parseOrgArgs,
+  providersFromArgs,
+  trackerMapper,
+  type Args as OrgRunArgs,
+} from "./run-org";

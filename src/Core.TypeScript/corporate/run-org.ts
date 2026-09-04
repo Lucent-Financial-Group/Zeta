@@ -26,6 +26,14 @@
  *   --worktrees <dir>               give every change its own checkout under <dir> (concurrency-safe)
  *   --review-queue <dir>            gates decided by verdicts filed under <dir>/<workId>/<gate>.json
  *   --review-cmd <exe> [--review-arg <a> ...]   gates decided by <exe> <a...> <gate> <workId>
+ *   --review-model <model>          gates judged by a local model; an unclear answer is REFUSED
+ *   --tracker <url> [--tracker-items <path>] [--tracker-map <field>=<path> ...]
+ *                                   [--tracker-header <k:v> ...] [--tracker-source <name>]
+ *                                   inbound work fetched from a real tracker, e.g. for Jira:
+ *                                     --tracker-items issues --tracker-map externalId=key
+ *                                     --tracker-map title=fields.summary
+ *   --work-agent <exe> --work-verify <exe>   an agent performs each item and a DIFFERENT command
+ *                                   decides whether it worked; the agent never votes on itself
  *
  * Any of these makes the run UNREPLAYABLE, which the fidelity block prints without being asked.
  *
@@ -53,7 +61,9 @@ import {
 import { IntakeKind, Severity, normalize, type ExternalEvent } from "./intake";
 import type { ProviderSet } from "./providers";
 import {
+  agentWorkExecutor,
   autoApproveReview,
+  commandProposal,
   commandReview,
   commandTestRunner,
   commandWorkExecutor,
@@ -61,12 +71,15 @@ import {
   directoryReview,
   gitChangeControl,
   gitWorktreeChangeControl,
+  httpIntake,
+  modelReview,
   simulatedChangeControl,
   simulatedIntake,
   simulatedTestRunner,
   simulatedWorkExecutor,
 } from "./adapters";
 import { RunOutcome } from "./qa";
+import { ollamaBackend } from "../accelerator/local-llm.ts";
 import {
   approvePendingBinding,
   beat,
@@ -158,6 +171,19 @@ export interface Args {
   readonly reviewQueue: string | undefined;
   readonly reviewCmd: string | undefined;
   readonly reviewArgs: readonly string[];
+  /** A model judges the six reviewable gates. Its unparseable answers are refused, never defaulted. */
+  readonly reviewModel: string | undefined;
+  /** A tracker endpoint, and how to find the events inside its response. */
+  readonly tracker: string | undefined;
+  readonly trackerItems: string | undefined;
+  readonly trackerHeaders: readonly string[];
+  readonly trackerMap: readonly string[];
+  readonly trackerSource: string;
+  /** An agent performs the work; a separate command decides whether it worked. */
+  readonly workAgent: string | undefined;
+  readonly workAgentArgs: readonly string[];
+  readonly workVerify: string | undefined;
+  readonly workVerifyArgs: readonly string[];
   readonly git: string | undefined;
   readonly baseBranch: string;
   /**
@@ -200,6 +226,16 @@ export function parseArgs(argv: readonly string[]): Args {
     reviewQueue: valueAfter(argv, "--review-queue"),
     reviewCmd: valueAfter(argv, "--review-cmd"),
     reviewArgs: valuesAfter(argv, "--review-arg"),
+    reviewModel: valueAfter(argv, "--review-model"),
+    tracker: valueAfter(argv, "--tracker"),
+    trackerItems: valueAfter(argv, "--tracker-items"),
+    trackerHeaders: valuesAfter(argv, "--tracker-header"),
+    trackerMap: valuesAfter(argv, "--tracker-map"),
+    trackerSource: valueAfter(argv, "--tracker-source") ?? "tracker",
+    workAgent: valueAfter(argv, "--work-agent"),
+    workAgentArgs: valuesAfter(argv, "--work-agent-arg"),
+    workVerify: valueAfter(argv, "--work-verify"),
+    workVerifyArgs: valuesAfter(argv, "--work-verify-arg"),
     git: valueAfter(argv, "--git"),
     baseBranch: valueAfter(argv, "--base") ?? "main",
     worktrees: valueAfter(argv, "--worktrees"),
@@ -209,6 +245,76 @@ export function parseArgs(argv: readonly string[]): Args {
     store: ((i) => (i >= 0 ? argv[i + 1] : undefined))(argv.indexOf("--store")),
     cycleOnly: argv.includes("--cycle"),
     admin: argv.includes("--admin"),
+  };
+}
+
+/** `a.b.c` into a nested object. Returns undefined at the first missing hop rather than throwing. */
+export function atPath(body: unknown, path: string): unknown {
+  let cursor: unknown = body;
+  for (const hop of path.split(".")) {
+    if (typeof cursor !== "object" || cursor === null) return undefined;
+    cursor = (cursor as Record<string, unknown>)[hop];
+  }
+  return cursor;
+}
+
+/** `k:v` pairs into headers. A pair with no colon is IGNORED rather than becoming a header named "". */
+export function headersFrom(pairs: readonly string[]): Record<string, string> {
+  const out: Record<string, string> = {};
+  for (const pair of pairs) {
+    const at = pair.indexOf(":");
+    if (at <= 0) continue;
+    out[pair.slice(0, at).trim()] = pair.slice(at + 1).trim();
+  }
+  return out;
+}
+
+/**
+ * `--tracker-map field=path` pairs into an `ExternalEvent` mapper.
+ *
+ * This is what makes a real tracker reachable from a command line rather than only from code. Jira's
+ * search response, for instance:
+ *
+ *   --tracker-items issues --tracker-map externalId=key --tracker-map title=fields.summary
+ *
+ * It REFUSES rather than guessing. An item with no `externalId` or no `title` throws, naming the
+ * field and the path that was tried, and `httpIntake` turns that into a refusal carrying the item's
+ * index. Substituting a placeholder id would put an unidentifiable ticket into the queue, which is
+ * worse than not accepting it: nobody could ever match it back to the tracker.
+ */
+export function trackerMapper(source: string, pairs: readonly string[]): (item: unknown) => ExternalEvent {
+  const paths = new Map<string, string>();
+  for (const pair of pairs) {
+    const at = pair.indexOf("=");
+    if (at <= 0) continue;
+    paths.set(pair.slice(0, at).trim(), pair.slice(at + 1).trim());
+  }
+  const read = (item: unknown, field: string, fallback: string): string | undefined => {
+    const path = paths.get(field) ?? fallback;
+    const value = atPath(item, path);
+    return typeof value === "string" ? value : undefined;
+  };
+  return (item) => {
+    const externalId = read(item, "externalId", "externalId");
+    const title = read(item, "title", "title");
+    if (externalId === undefined) {
+      throw new Error(`no externalId at '${paths.get("externalId") ?? "externalId"}'`);
+    }
+    if (title === undefined) throw new Error(`${externalId} has no title at '${paths.get("title") ?? "title"}'`);
+    const severity = read(item, "severity", "severity");
+    return {
+      source,
+      externalId,
+      title,
+      kind: IntakeKind.Defect,
+      // An unrecognised severity becomes `Low` rather than being invented upward: over-stating
+      // urgency from a field nobody mapped would let the tracker's noise set this org's priorities.
+      severity: severity === Severity.Critical || severity === Severity.High || severity === Severity.Medium
+        ? severity
+        : Severity.Low,
+      reproduction: read(item, "reproduction", "reproduction") ?? "",
+      evidenceRefs: [`${source}/${externalId}`],
+    };
   };
 }
 
@@ -225,11 +331,37 @@ export function parseArgs(argv: readonly string[]): Args {
  */
 export function providersFromArgs(args: Args, events: readonly ExternalEvent[], qaFallback: RunOutcome): ProviderSet {
   return {
-    intake: args.inbox === undefined ? simulatedIntake(events) : directoryIntake(args.inbox),
+    intake:
+      args.tracker !== undefined
+        ? httpIntake({
+            url: args.tracker,
+            ...(args.trackerItems === undefined ? {} : { itemsAt: (body) => atPath(body, args.trackerItems ?? "") }),
+            mapper: trackerMapper(args.trackerSource, args.trackerMap),
+            headers: headersFrom(args.trackerHeaders),
+          })
+        : args.inbox === undefined
+          ? simulatedIntake(events)
+          : directoryIntake(args.inbox),
     work:
-      args.workCmd === undefined
-        ? simulatedWorkExecutor(true)
-        : commandWorkExecutor({
+      args.workAgent !== undefined && args.workVerify !== undefined
+        ? agentWorkExecutor({
+            // The agent proposes: whatever it prints is testimony, never a verdict.
+            perform: commandProposal({
+              command: args.workAgent,
+              argsFor: (node) => [...args.workAgentArgs, node.workId],
+              cwd: args.git ?? process.cwd(),
+            }),
+            // The verifier decides. A different command on purpose — the same one would be the
+            // agent marking its own homework, which is the whole thing this port refuses.
+            verify: {
+              command: args.workVerify,
+              argsFor: (node) => [...args.workVerifyArgs, node.workId],
+              cwd: args.git ?? process.cwd(),
+            },
+          })
+        : args.workCmd === undefined
+          ? simulatedWorkExecutor(true)
+          : commandWorkExecutor({
             command: args.workCmd,
             argsFor: (node) => [...args.workArgs, node.workId],
             cwd: args.git ?? process.cwd(),
@@ -243,9 +375,19 @@ export function providersFromArgs(args: Args, events: readonly ExternalEvent[], 
             cwd: args.git ?? process.cwd(),
           }),
     review:
-      args.reviewQueue !== undefined
-        ? directoryReview(args.reviewQueue)
-        : args.reviewCmd !== undefined
+      args.reviewModel !== undefined
+        ? modelReview(
+            ollamaBackend({ model: args.reviewModel, seed: 42 }),
+            (request) =>
+              `You are reviewing the '${request.gate}' gate for work item ${request.workId}.
+` +
+              `Evidence: ${request.evidence.map((e) => e.ref).join("; ") || "none"}
+` +
+              `Answer with exactly one word, either approve or reject.`,
+          )
+        : args.reviewQueue !== undefined
+          ? directoryReview(args.reviewQueue)
+          : args.reviewCmd !== undefined
           ? commandReview({
               command: args.reviewCmd,
               // The gate and the work id, in that order, after any fixed arguments. Never a title.

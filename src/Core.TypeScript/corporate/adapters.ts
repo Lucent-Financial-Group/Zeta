@@ -43,6 +43,7 @@ import {
   type ReviewRequest,
   type ReviewVerdict,
   type TestRunner,
+  type WorkContext,
   type WorkExecutor,
   type WorkOutcome,
 } from "./providers";
@@ -652,6 +653,96 @@ export function modelProposal(
     const said = (await backend.complete(promptFor(node), { maxTokens })).trim();
     if (said === "") throw new Error(`${backend.name} returned nothing for ${node.workId}`);
     return { summary: said, artifacts: [`proposal:${node.workId}`] };
+  };
+}
+
+/**
+ * An agent that is a COMMAND: whatever it prints is its proposal.
+ *
+ * The `perform` half of `agentWorkExecutor` in the shape an operator can reach from a command line
+ * — a script, a coding agent, anything that writes to stdout. It still cannot vote on itself: the
+ * verifier decides, and this side only ever produces testimony.
+ *
+ * A non-zero exit THROWS, which the executor turns into a refusal. An agent that failed to run is
+ * not an agent that produced an empty proposal, and the difference has to survive: the second reads
+ * as work quietly done.
+ *
+ * IT RUNS IN `ctx.workdir` WHEN THERE IS ONE, exactly as the verifier does. The first version of
+ * this adapter ignored the context and ran in a fixed directory, and the very first end-to-end run
+ * caught it: the agent wrote its file into the shared repository while the verifier looked in the
+ * change's worktree, so every item failed with the agent confidently reporting success. The two
+ * halves must judge the SAME tree or the verdict is about nothing.
+ */
+export function commandProposal(input: {
+  readonly command: string;
+  readonly argsFor: (node: CascadeNode) => readonly string[];
+  readonly cwd: string;
+  readonly timeoutMs?: number;
+}): (node: CascadeNode, ctx: WorkContext) => AgentAttempt {
+  return (node, ctx) => {
+    const run = spawnSync(input.command, [...input.argsFor(node)], {
+      cwd: ctx.workdir ?? input.cwd,
+      encoding: "utf-8",
+      timeout: input.timeoutMs ?? 120_000,
+      shell: false,
+    });
+    if (run.error !== undefined) throw new Error(`'${input.command}' could not run: ${run.error.message}`);
+    if (run.status !== 0) {
+      throw new Error(`'${input.command}' exited ${String(run.status)}: ${(run.stderr ?? "").trim()}`);
+    }
+    const said = (run.stdout ?? "").trim();
+    if (said === "") throw new Error(`'${input.command}' produced no proposal for ${node.workId}`);
+    return { summary: capture("said", said), artifacts: [...input.argsFor(node)] };
+  };
+}
+
+/**
+ * A gate judged by a MODEL.
+ *
+ * The judgement is clamped the same way the menu is: the model is asked for one of two words, and
+ * anything else is a REFUSAL rather than a default. That refusal direction is the whole design —
+ * defaulting an unparseable answer to `Approved` would make a confused model the fastest path to
+ * shipping, and defaulting it to `Rejected` would let a flaky endpoint silently halt an
+ * organization while looking like a quality signal. Neither is a verdict, so neither is returned.
+ *
+ * Labelled REAL: it reaches a model, so the run is not replayable.
+ */
+export function modelReview(
+  backend: { readonly name: string; complete(prompt: string, opts?: { readonly maxTokens?: number }): Promise<string> },
+  promptFor: (request: ReviewRequest) => string,
+  name = "model",
+): ReviewPort {
+  return {
+    meta: {
+      port: Port.Review,
+      name,
+      fidelity: Fidelity.Real,
+      describes: `${backend.name} judges each gate; an unparseable answer is refused, never defaulted`,
+    },
+    review: async (request) => {
+      let said: string;
+      try {
+        said = (await backend.complete(promptFor(request), { maxTokens: 24 })).trim();
+      } catch (err) {
+        return { ok: false, reason: `${backend.name} failed on '${request.gate}': ${err instanceof Error ? err.message : String(err)}` };
+      }
+      // Ordinal lowercase — a locale-sensitive fold would decide gates differently per machine.
+      const word = said.toLowerCase();
+      const approves = word.includes("approve");
+      const rejects = word.includes("reject");
+      if (approves === rejects) {
+        // Both or neither. "approve" and "reject" in one answer is not a verdict either.
+        return { ok: false, reason: `${backend.name} gave no clear verdict on '${request.gate}': ${capture("said", said)}` };
+      }
+      return {
+        ok: true,
+        value: {
+          outcome: approves ? GateOutcome.Approved : GateOutcome.Rejected,
+          reason: capture(`${backend.name} said`, said),
+        },
+        evidence: [{ kind: "trace", ref: `model:${request.gate}:${approves ? "approved" : "rejected"}` }],
+      };
+    },
   };
 }
 
