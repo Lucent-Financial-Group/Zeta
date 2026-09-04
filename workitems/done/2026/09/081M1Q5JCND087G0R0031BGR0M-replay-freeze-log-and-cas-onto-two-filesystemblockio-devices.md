@@ -1,11 +1,12 @@
 ---
 id: 081M1Q5JCND087G0R0031BGR0M
 type: task
-state: backlog
+state: done
 priority: P1
 slug: replay-freeze-log-and-cas-onto-two-filesystemblockio-devices
 title: "Replay freeze log and CAS onto two FileSystemBlockIo devices"
 created: 2026-09-04T21:35:34.573Z
+completed: 2026-09-04T22:02:59.459Z
 depends_on: []
 composes_with: []
 ---
