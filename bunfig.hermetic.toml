@@ -129,6 +129,7 @@ pathIgnorePatterns = [
   "tests/cross-verification/_harness/cross-verify-ir.test.ts",
   "src/Core.TypeScript/zflash/esp-inject.test.ts",
   "src/Core.TypeScript/research/signed-probit-ep-cross-verify.test.ts",
+  "src/Core.TypeScript/research/lexical-geometric-receipt-cross-verify.test.ts",
 ]
 coveragePathIgnorePatterns = [
   "**/BenchmarkDotNet.Artifacts/**",
