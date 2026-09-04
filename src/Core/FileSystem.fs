@@ -573,7 +573,10 @@ type FileSystemBlockIo(fs: IFileSystem, path: string, blockSize: int) =
 
         if not (fs.Exists path) then
             use stream = fs.OpenWrite(path, false)
-            ()
+            // Creation must be visible before the constructor returns. InMemory
+            // providers publish on Flush; relying on Dispose alone leaves an
+            // armed reorder path able to hide the empty backing file.
+            stream.Flush()
 
     member _.Path = path
 
