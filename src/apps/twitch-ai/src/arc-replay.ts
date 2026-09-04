@@ -63,7 +63,10 @@ function parseAction(value: unknown, path: string): ArcReplayResult<ArcRecordedO
   if (!isRecord(value) || typeof value.id !== "string" || !ACTION_IDS.has(value.id)) {
     return refused(`${path}.id is not a known ARC action`);
   }
-  if (value.point === undefined) return { ok: true, value: { id: value.id as ArcActionId } };
+  if (value.point === undefined) {
+    if (value.id === "ACTION6") return refused(`${path}.point is required for ACTION6`);
+    return { ok: true, value: { id: value.id as ArcActionId } };
+  }
   if (
     value.id !== "ACTION6" ||
     !isRecord(value.point) ||

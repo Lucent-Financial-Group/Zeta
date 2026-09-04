@@ -42,7 +42,7 @@ stays in the local dev lane; the public page shows a true replay and labels it `
 
 - `uv run --project src/Arc.Python pytest src/Arc.Python/tests -q` - 140 passed.
 - `uv run --project src/Arc.Python ruff check src/Arc.Python` - clean.
-- `bun test src/apps/twitch-ai/test/arc-replay.test.ts` - 3 passed.
+- `bun test src/apps/twitch-ai/test/arc-replay.test.ts` - 4 passed.
 - `bun run typecheck` and `bun run build` in `src/apps/twitch-ai` - clean.
 - `bun run preflight` - all 18 repository checks passed, including Release build and tests.
 - Playwright at 1440x1000 and 390x844 - no page errors, no horizontal overflow, controls advance the

@@ -37,4 +37,18 @@ describe("committed ARC session replay", () => {
       error: "recording.steps[0].observation.framesHex must contain lowercase 64x64 palette frames",
     });
   });
+
+  test("refuses a coordinate action without its coordinate", () => {
+    const changed = structuredClone(recordedSession) as unknown as {
+      steps: { observation: { action: { id: string } } }[];
+    };
+    const first = changed.steps[0];
+    if (first === undefined) throw new Error("recorded session has no first step");
+    first.observation.action.id = "ACTION6";
+
+    expect(parseArcRecording(changed)).toEqual({
+      ok: false,
+      error: "recording.steps[0].observation.action.point is required for ACTION6",
+    });
+  });
 });
