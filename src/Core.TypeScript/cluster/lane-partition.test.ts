@@ -393,10 +393,14 @@ describe("the real tree", () => {
     // measure-lane-footprints.ts priced the images the tree ACTUALLY pins. The floor fell
     // because the previous reading had gone stale against its own manifests -- which is the
     // failure mode this pin exists to surface.
-    expect(all.diskGib).toBeCloseTo(62.06, 2);
+    // 62.06 -> 61.83 GiB on 2026-09-04: hat-system wait Job left
+    // `bitnamilegacy/kubectl:1.32.3` (111,998,161 B) for
+    // `registry.k8s.io/kubectl:v1.32.3` (18,752,984 B). Measured, not
+    // restated: 93,245,177 compressed x2.67 = 0.232 GiB unpacked.
+    expect(all.diskGib).toBeCloseTo(61.83, 2);
     expect(all.cpuMillis).toBeGreaterThan(budget.cpuMillis);
     // THE DISK AXIS STOPPED BINDING ON 2026-09-02, and this line used to assert the
-    // opposite. `all.diskGib` is 62.06 against a 66 GiB budget, so for the first time
+    // opposite. `all.diskGib` is 61.83 against a 66 GiB budget, so for the first time
     // the whole roster FITS on disk. The headline claim of this test is unchanged --
     // they still do not fit the runner bound -- but the REASON narrowed from "both
     // axes" to "CPU only", so asserting disk-over would now assert a world that ended.

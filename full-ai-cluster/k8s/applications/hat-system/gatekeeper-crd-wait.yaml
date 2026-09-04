@@ -3,6 +3,13 @@
 #
 # Without this, cold-start sync fails with "could not find
 # constraints.gatekeeper.sh/HatWarmup" even when sync-waves are set.
+#
+# CRD names are `{ConstraintTemplate.metadata.name}.constraints.gatekeeper.sh`
+# -- Gatekeeper uses the template name as the CRD plural, not Kubernetes
+# kind-pluralisation. HatMaxNew / HatNoCycle are the footgun: guessing
+# `hatmaxnews` / `hatnocycles` waits on objects that never exist. The Job
+# lists are derived from policies/*.yaml; gatekeeper-crd-wait.test.ts
+# refuses drift.
 
 apiVersion: v1
 kind: ServiceAccount
@@ -79,34 +86,21 @@ spec:
       volumes:
         - name: kubecache
           emptyDir: {}
-      containers:
-        - name: wait
-          # WAS `bitnami/kubectl:1.32.3`, WHICH IS A 404 -- A LIVE BUG, NOT ONLY
-          # A MEASUREMENT ONE. Bitnami withdrew its free versioned tags from
-          # Docker Hub; `docker.io/bitnami/kubectl` still answers `tags/list` but
-          # every entry is `latest`, `latest-metadata`, or a cosign
-          # `sha256-...`/`.sig`/`.att` artifact. So this Job's only container
-          # could not be pulled, and the Job that gates every hat
-          # ConstraintTemplate would have sat in ImagePullBackOff. Measured
-          # 2026-08-23: HTTP 404 for the tag, and `bitnamilegacy/kubectl:1.32.3`
-          # -- the archive Bitnami moved the free catalogue to, same tag --
-          # resolves at 111,998,161 compressed bytes.
-          #
-          # `registry.k8s.io/kubectl:v1.32.3` WAS THE OBVIOUS BETTER PIN AND IS
-          # NOT USABLE HERE, checked rather than assumed. It resolves (18,750,205
-          # bytes, 6x smaller, upstream-maintained rather than a frozen archive),
-          # but its config blob reads `ENTRYPOINT ["/bin/kubectl"]` on the
-          # distroless `go-runner` base -- there is no shell in it. The script
-          # below is `/bin/bash -ec` with arrays, `seq` and `pipefail`, so that
-          # image would trade a pull failure for an exec failure. Moving to it
-          # means rewriting this Job as a shell-free wait, which is a real
-          # improvement and a separate change.
-          image: bitnamilegacy/kubectl:1.32.3
+      # WAS `bitnami/kubectl:1.32.3` (HTTP 404 after Bitnami withdrew free
+      # versioned tags) then `bitnamilegacy/kubectl:1.32.3` (frozen archive).
+      # `registry.k8s.io/kubectl:v1.32.3` is distroless: ENTRYPOINT
+      # ["/bin/kubectl"], no shell. The wait is therefore three sequential
+      # `kubectl wait` invocations (init, init, container) -- not `/bin/bash`.
+      # `--for=create` landed in kubectl 1.32, which is why this pin stays
+      # at v1.32.3 rather than floating.
+      initContainers:
+        - name: wait-templates
+          image: registry.k8s.io/kubectl:v1.32.3
           securityContext:
             allowPrivilegeEscalation: false
             readOnlyRootFilesystem: true
             capabilities:
-              drop: [ ALL ]
+              drop: [ALL]
           env:
             - name: HOME
               value: /tmp/kubecache
@@ -115,33 +109,70 @@ spec:
           volumeMounts:
             - name: kubecache
               mountPath: /tmp/kubecache
-          command:
-            - /bin/bash
-            - -ec
-            - |
-              set -o pipefail
-              KINDS=(HatCooldown HatMaxBindings HatConflict HatQuorum HatWarmup HatMaxNew HatNoCycle)
-              TEMPLATES=(hatcooldown hatmaxbindings hatconflict hatquorum hatwarmup hatmaxnew hatnocycle)
-              echo "waiting for hat ConstraintTemplates to exist..."
-              for t in "${TEMPLATES[@]}"; do
-                for i in $(seq 1 150); do
-                  if kubectl get constrainttemplate "$t" >/dev/null 2>&1; then
-                    echo "  constrainttemplate/$t present"
-                    break
-                  fi
-                  sleep 2
-                done
-              done
-              echo "waiting for hat constraint CRDs (Established)..."
-              for kind in "${KINDS[@]}"; do
-                for i in $(seq 1 150); do
-                  name="$(kubectl get crd -o jsonpath="{range .items[?(@.spec.names.kind=='${kind}')]}{.metadata.name}{end}")"
-                  if [ -n "$name" ]; then
-                    kubectl wait --for=condition=Established "crd/${name}" --timeout=120s
-                    echo "  ${kind} -> ${name}"
-                    break
-                  fi
-                  sleep 2
-                done
-              done
-              echo "all hat Gatekeeper constraint CRDs ready"
+          command: ["/bin/kubectl"]
+          args:
+            - wait
+            - --for=create
+            - --timeout=300s
+            - constrainttemplate/hatcooldown
+            - constrainttemplate/hatmaxbindings
+            - constrainttemplate/hatconflict
+            - constrainttemplate/hatquorum
+            - constrainttemplate/hatwarmup
+            - constrainttemplate/hatmaxnew
+            - constrainttemplate/hatnocycle
+        - name: wait-crd-create
+          image: registry.k8s.io/kubectl:v1.32.3
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop: [ALL]
+          env:
+            - name: HOME
+              value: /tmp/kubecache
+            - name: KUBECACHEDIR
+              value: /tmp/kubecache/.kube/cache
+          volumeMounts:
+            - name: kubecache
+              mountPath: /tmp/kubecache
+          command: ["/bin/kubectl"]
+          args:
+            - wait
+            - --for=create
+            - --timeout=300s
+            - crd/hatcooldown.constraints.gatekeeper.sh
+            - crd/hatmaxbindings.constraints.gatekeeper.sh
+            - crd/hatconflict.constraints.gatekeeper.sh
+            - crd/hatquorum.constraints.gatekeeper.sh
+            - crd/hatwarmup.constraints.gatekeeper.sh
+            - crd/hatmaxnew.constraints.gatekeeper.sh
+            - crd/hatnocycle.constraints.gatekeeper.sh
+      containers:
+        - name: wait
+          image: registry.k8s.io/kubectl:v1.32.3
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop: [ALL]
+          env:
+            - name: HOME
+              value: /tmp/kubecache
+            - name: KUBECACHEDIR
+              value: /tmp/kubecache/.kube/cache
+          volumeMounts:
+            - name: kubecache
+              mountPath: /tmp/kubecache
+          command: ["/bin/kubectl"]
+          args:
+            - wait
+            - --for=condition=Established
+            - --timeout=300s
+            - crd/hatcooldown.constraints.gatekeeper.sh
+            - crd/hatmaxbindings.constraints.gatekeeper.sh
+            - crd/hatconflict.constraints.gatekeeper.sh
+            - crd/hatquorum.constraints.gatekeeper.sh
+            - crd/hatwarmup.constraints.gatekeeper.sh
+            - crd/hatmaxnew.constraints.gatekeeper.sh
+            - crd/hatnocycle.constraints.gatekeeper.sh

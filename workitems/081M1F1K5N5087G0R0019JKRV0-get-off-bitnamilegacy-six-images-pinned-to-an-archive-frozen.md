@@ -33,14 +33,22 @@ fixes, and Bitnami reserves the right to remove it.
 
 | Application | images | note |
 |---|---|---|
-| `redis` | `bitnamilegacy/redis:7.4.1-debian-12-r2` | **blocks Orleans** — see below |
+| `redis` | ~~`bitnamilegacy/redis:7.4.1-debian-12-r2`~~ | **LEFT 2026-09-02** — Valkey project chart `valkey-io/valkey-helm` 0.12.0, image `valkey/valkey` (#16292). Orleans endpoint moved in the same commit. |
 | `gitlab` | `postgresql:14.8.0`, `postgres-exporter:0.12.0-…-r86`, `redis:6.2.16-…-r1`, `redis-exporter:1.46.0-…-r8` | gitlab is deferred for other reasons already |
-| `hat-system` | `bitnamilegacy/kubectl:1.32.3` | a wait-for-CRD init container; trivially swappable |
+| `hat-system` | ~~`bitnamilegacy/kubectl:1.32.3`~~ | **LEFT** — wait Job rewritten onto `registry.k8s.io/kubectl:v1.32.3` (shell-free `kubectl wait`; not a tag swap). |
 
 **`sealed-secrets` is NOT affected.** It runs `bitnami/sealed-secrets-controller:0.39.1`,
 which is a Bitnami *product* rather than a packaged-app-catalogue image — it still
 publishes versioned tags and was updated 2026-08-20. Checked rather than assumed, because
 "it says bitnami" would have swept it in wrongly.
+
+## Progress 2026-09-04
+
+Redis/Orleans path closed by #16292 (`valkey-io/valkey-helm` 0.12.0,
+`valkey/valkey`). hat-system wait Job rewritten onto
+`registry.k8s.io/kubectl:v1.32.3` (shell-free `kubectl wait`; CRD names
+derived from ConstraintTemplates, not guessed plurals). Remaining
+outside deferred gitlab: none.
 
 ## Why this is urgent NOW and was defensible before
 
@@ -82,7 +90,7 @@ non-Bitnami chart. Both avoid a paid subscription; both need a chart that is not
 since the Bitnami chart asserts its own image paths (`allowInsecureImages` exists precisely
 because of that assertion).
 
-`hat-system`'s kubectl is independent and much smaller — any maintained kubectl image closes it.
+`hat-system`'s kubectl is independent and much smaller — any maintained kubectl image closes it. Closed: the wait Job is `registry.k8s.io/kubectl:v1.32.3` with no shell.
 
 `gitlab` should be left alone until its own deferral lifts. Note its bundled chart *also*
 pulls `minio/minio:RELEASE.2017-12-28` and `minio/mc:RELEASE.2018-07-13` — nine years old —
