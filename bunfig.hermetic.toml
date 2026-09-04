@@ -1,5 +1,32 @@
 # bunfig.hermetic.toml — the HERMETIC TIER of the TypeScript suite.
 #
+# WHERE THE WORD COMES FROM, AND HOW MUCH OF IT WE ACTUALLY CLAIM.
+#
+# "Hermetic" is BORROWED, not coined here, and the borrowing was never written down — this
+# paragraph is the anchor `.claude/rules/anchor-to-human-prior-art.md` asks for.
+#
+# In software it is Google's term of art, from Blaze and then Bazel, and it is now standard
+# across that family (Buck, Pants; the Nix world uses it more or less interchangeably with
+# "pure"). Bazel's definition: a build is hermetic when it is INSENSITIVE TO THE STATE OF THE
+# MACHINE — same inputs, same outputs, nothing ambient able to influence the result. The point
+# was never speed. It was that a failure should MEAN something: if a build can go red because
+# of your laptop, a red build has stopped being information. That is exactly the argument the
+# measurement below makes, arrived at independently and then given its proper name.
+#
+# The older sense is the metaphor the software one keeps. A HERMETIC SEAL is an airtight one,
+# named for Hermes Trismegistus — the Greek Hermes fused with the Egyptian Thoth, patron
+# figure of alchemy — because alchemists were credited with fusing a glass vessel shut so that
+# nothing could get in or out. A hermetic build is that vessel: sealed against its environment.
+#
+# AND THE CAVEAT, because the name promises more than this file delivers. Bazel's hermeticity
+# is STRONGER than ours: it sandboxes each action, hash-pins every input, and can cut network
+# access per action. Ours is hermetic in the INPUTS sense only — a declared baseline of
+# `./tools/setup/install.sh` + `bun install --frozen-lockfile`, plus pinned Bun and pinned SMT
+# binaries in CI. The tests are NOT individually sandboxed and nothing here stops one reaching
+# the network if it wants to. So: sealed against the host's CONFIGURATION, not against
+# everything. Read the name as the stronger guarantee and you will trust this tier with
+# properties it does not have.
+#
 # WHAT THIS FILE BUYS. `bun --config=bunfig.hermetic.toml test` is red when the checked-out
 # source or its declared toolchain baseline is broken. Not if you have never run `uv sync`.
 # Not if you have no .NET SDK. Not if macOS refuses your process access to ~/Downloads. The
