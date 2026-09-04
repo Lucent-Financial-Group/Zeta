@@ -306,6 +306,43 @@ let ``FileSystemBlockIo reads back a block written through IFileSystem`` () =
     Assert.Equal<byte>(payload, dst)
 
 [<Fact>]
+let ``FileSystemBlockIo constructor publishes a missing zero-length backing file`` () =
+    let fs = InMemoryFileSystem()
+    let ifs = fs :> IFileSystem
+    let path = "/vol/empty-blocks"
+    FileSystemBlockIo(ifs, path, 4096) |> ignore
+    Assert.True(ifs.Exists path)
+    Assert.Empty(ifs.ReadAllBytes path)
+
+[<Fact>]
+let ``FileSystemBlockIo constructor publishes before a reorder-arm dispose can hide the backing file`` () =
+    let fs = InMemoryFileSystem()
+    let ifs = fs :> IFileSystem
+    let path = "/vol/reordered-empty-blocks"
+    fs.ArmReorderNextTwo path
+    FileSystemBlockIo(ifs, path, 4096) |> ignore
+    Assert.True(ifs.Exists path)
+    Assert.Empty(ifs.ReadAllBytes path)
+
+[<Fact>]
+let ``FileSystemBlockIo constructor preserves an existing backing file`` () =
+    let fs = InMemoryFileSystem()
+    let ifs = fs :> IFileSystem
+    let path = "/vol/existing-blocks"
+    let initial = [| 5uy; 8uy; 13uy |]
+    ifs.WriteAt(path, 0L, System.ReadOnlyMemory<byte>.op_Implicit initial) |> ignore
+    FileSystemBlockIo(ifs, path, 4096) |> ignore
+    Assert.Equal<byte>(initial, ifs.ReadAllBytes path)
+
+[<Fact>]
+let ``FileSystemBlockIo rejects an invalid block size before creating the backing file`` () =
+    let fs = InMemoryFileSystem()
+    let ifs = fs :> IFileSystem
+    let path = "/vol/invalid-block-size"
+    Assert.Throws<ArgumentException>(fun () -> FileSystemBlockIo(ifs, path, 3) |> ignore) |> ignore
+    Assert.False(ifs.Exists path)
+
+[<Fact>]
 let ``FileSystemBlockIo crash-mid-write tears the LBA and keeps the previous one`` () =
     let mock = InMemoryFileSystem()
     let path = "/vol/lba-crash"

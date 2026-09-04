@@ -80,6 +80,22 @@ hygiene control, but it is rejected as the sufficient cause of that failure. No
 inference about a snapshot-content race or another underlying storage cause
 follows from this negative result.
 
+## Cross-Platform Constructor Trace
+
+PR #16555 added stage-specific checks against the test's captured
+`InMemoryFileSystem` instance. Its post-merge main gate for
+`9cfa93dd2e59e09f7ed710d1a284555bdf6b9e74` failed identically on Windows 2025
+and Windows 11 ARM with `ZetaFs CAS trace: missing-at-after-create on the
+captured provider`. The stage precedes both Journaled freezes. The evidence
+therefore rejects both ambient-provider replacement and a freeze-time
+snapshot-content diagnosis for this reproduction; it localizes the current
+boundary to the `FileSystemBlockIo` backing-file constructor path.
+
+This is still a finite provider-contract result, not a claim about Windows file
+systems generally. The separately frozen follow-on changes only missing-path
+constructor publication and must rerun the same two Windows controls before it
+can be described as a repair.
+
 ## Remaining Investigation Boundary
 
 The next investigation must keep every existing assertion unchanged and add a
