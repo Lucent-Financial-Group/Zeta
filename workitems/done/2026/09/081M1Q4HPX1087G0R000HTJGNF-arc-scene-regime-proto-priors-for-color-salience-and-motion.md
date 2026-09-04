@@ -1,7 +1,7 @@
 ---
 id: 081M1Q4HPX1087G0R000HTJGNF
 type: task
-state: backlog
+state: done
 priority: P2
 slug: arc-scene-regime-proto-priors-for-color-salience-and-motion
 title: "ARC scene regime proto priors for color salience and motion"
@@ -45,3 +45,22 @@ would merely memorize levels and fail the one-shot objective.
   coordinates or palette values.
 - No ARC engine internals, external model, clock, or random source enters the
   feature path.
+
+## Result
+
+Implemented in `src/Arc.Python/zeta_arc/scene_priors.py` with 16 focused
+falsifiers and a generator-owned benchmark artifact. The feature boundary now
+separates:
+
+- palette regime from translation-invariant structure and coarse 4x4 place;
+- color occupancy and object-edge density;
+- pixel change density, translation, recoloring, shape change, split/merge,
+  appearance/disappearance, and background recoloring;
+- transferable structural evidence from within-game, palette-scoped Beta
+  outcome evidence.
+
+The controlled next-mover task measures 40/40 for the proto prior versus 20/40
+for the object-centroid control under persistent motion. Its required
+counterexample measures 0/8 versus 4/8 when the mover switches. Therefore the
+feature layer is complete, while promotion into the acting policy is explicitly
+not earned by this slice. No hosted ARC score was measured.

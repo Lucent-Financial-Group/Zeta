@@ -57,6 +57,15 @@ doc's own warning, kept.
   commit/refusal decisions and reports binary Brier score plus ten-bin expected
   calibration error. The checked-in corpus currently reports the deterministic
   policy as `uncalibrated`; the browser recomputes that verdict independently.
+- `zeta_arc/scene_priors.py` — grid-only proto-senses for palette regimes,
+  coarse place fingerprints, occupancy, object boundaries, recoloring, shape
+  change, split/merge, appearance/disappearance, and constant-velocity motion.
+  It emits normalized coordinate candidates plus immutable Beta outcome
+  evidence scoped by game fingerprint and palette regime.
+- `zeta_arc/scene_prior_benchmark.py` — generated next-mover localization
+  evidence over palette relabelings and geometric symmetries. It carries the
+  sudden-mover-switch counterexample in the same artifact as the supported
+  temporal-persistence case.
 - `zeta_arc/recording.py` — deterministic browser artifacts for the directional
   and coordinate-action episodes.
 - `zeta_arc/driver.py` — **the seam**. The only file that knows the engine's
@@ -98,6 +107,15 @@ The greedy agent plays level 0 **perfectly** (10 actions, optimal 10, score
 1.0) and is then honestly defeated by level 1's wall, because it has no wall
 model. A benchmark that could not separate it from a random walk would be a
 decoration; this one does, and it does not flatter the agent it scores.
+
+The scene prior has a separate controlled measurement. On 40 ZetaChase frame
+triples transformed by palette relabeling and board symmetries, it localizes a
+persistent next mover in 40/40 cases versus 20/40 for the object-centroid
+control. On eight deliberately switched-mover cases it scores 0/8 versus 4/8
+for the control. The generated artifact states both results and explicitly
+labels them synthetic rather than an ARC leaderboard score. This establishes a
+narrow temporal-persistence feature and its failure boundary; it does not earn
+promotion to the acting policy.
 
 ## One mistake worth keeping
 
