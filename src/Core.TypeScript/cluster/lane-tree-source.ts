@@ -71,7 +71,8 @@
  * -- THREE GIT SURFACES, NOT THREE VERSIONS OF ONE BINARY --------------------
  *   BUILDER  host `git` in `buildBareRepo`. GitHub `ubuntu-24.04` is 2.43.x
  *            (this checkout: 2.43.0). That is the only git that WRITES the tree.
- *   SERVER   none. `busybox:1.37.0` `nc` + `lane-tree-serve.sh`. No git binary,
+ *   SERVER   none. `busybox:1.37.0` `nc` + `LANE_TREE_SERVE_SH` (ash payload
+ *            in a ConfigMap; the checkout must not grow a `.sh` entrypoint). No git binary,
  *            no CGI, no credentials. Speaks just enough smart HTTP for the
  *            single pack `buildBareRepo` already built (advertisement + NAK +
  *            pack). busybox `httpd` is not used: it 200s `?service=` with the
@@ -144,6 +145,8 @@ import { execFileSync } from "node:child_process";
 import { cpSync, mkdirSync, readdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { join, resolve } from "node:path";
 
+import { LANE_TREE_SERVE_SH } from "./lane-tree-serve";
+
 /**
  * Largest packed tree this delivery mechanism accepts, in bytes.
  *
@@ -188,11 +191,14 @@ export function isSmartHttpServiceQuery(query: string): boolean {
   return /(?:^|&)service=/.test(query);
 }
 
-/** Indent a YAML `|` block so a sibling file can ride in a ConfigMap. */
+/** Indent a YAML `|` block so the serve script can ride in a ConfigMap. */
 function yamlBlock(value: string, indent: number): string {
   const pad = " ".repeat(indent);
   const trimmed = value.endsWith("\n") ? value.slice(0, -1) : value;
-  return trimmed.split("\n").map((line) => `${pad}${line}`).join("\n");
+  return trimmed
+    .split("\n")
+    .map((line) => `${pad}${line}`)
+    .join("\n");
 }
 
 /**
@@ -389,7 +395,6 @@ export function packBareRepo(bareDir: string): Buffer {
  * and fail with a 404 that looks like a missing repository.
  */
 export function renderLaneTreeManifests(packedBase64: string, image: string): string {
-  const serveSh = readFileSync(join(import.meta.dir, "lane-tree-serve.sh"), "utf8");
   return `apiVersion: v1
 kind: Namespace
 metadata:
@@ -410,7 +415,7 @@ metadata:
   namespace: ${LANE_TREE_NAMESPACE}
 data:
   serve.sh: |
-${yamlBlock(serveSh, 4)}
+${yamlBlock(LANE_TREE_SERVE_SH, 4)}
 ---
 apiVersion: v1
 kind: Service

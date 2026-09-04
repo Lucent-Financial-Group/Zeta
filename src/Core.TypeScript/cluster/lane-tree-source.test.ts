@@ -20,6 +20,7 @@ import {
   rewriteSelfRepoUrls,
   stageLaneTree,
 } from "./lane-tree-source";
+import { LANE_TREE_SERVE_SH } from "./lane-tree-serve";
 import { applyResourceProfile, loadResourceCatalogue } from "./storage-profiles";
 import { LANE_TREE_REPO_URL, assertLaneTreeRepoUrl, isLaneTreeRepoUrl } from "./dev-cluster/lib";
 
@@ -236,12 +237,15 @@ describe("renderLaneTreeManifests", () => {
     // MEASURED 33824995558: httpd 200'd info/refs?service=git-upload-pack with the
     // dumb refs body; go-git parsed pkt-line and died unexpected EOF. Zero children.
     // 404 on that probe is also wrong: git 2.43 reports repository not found.
-    expect(manifests).toContain("command: [\"sh\", \"/serve/serve.sh\", \"listen\"]");
+    expect(manifests).toContain('command: ["sh", "/serve/serve.sh", "listen"]');
     expect(manifests).not.toContain('["httpd"');
     expect(manifests).not.toContain("httpd -f");
     expect(manifests).toContain("application/x-git-upload-pack-advertisement");
     expect(manifests).toContain("git-upload-pack");
     expect(manifests).toContain("0008NAK");
+    expect(LANE_TREE_SERVE_SH).toContain("0008NAK");
+    expect(LANE_TREE_SERVE_SH).not.toContain("[ ! -f");
+    expect(existsSync(join(import.meta.dir, "lane-tree-serve.sh"))).toBe(false);
     expect(isSmartHttpServiceQuery("service=git-upload-pack")).toBe(true);
     expect(isSmartHttpServiceQuery("service=git-receive-pack")).toBe(true);
     expect(isSmartHttpServiceQuery("")).toBe(false);
@@ -330,10 +334,7 @@ function pktLine(data: Buffer | string): Buffer {
 
 const execFileAsync = promisify(execFile);
 
-function serveTreeDir(
-  docRoot: string,
-  httpdMode: boolean,
-): { url: string; stop: () => void } {
+function serveTreeDir(docRoot: string, httpdMode: boolean): { url: string; stop: () => void } {
   const treeGit = join(docRoot, "tree.git");
   const server = createServer((req: IncomingMessage, res: ServerResponse) => {
     const host = req.headers.host ?? "127.0.0.1";
@@ -361,7 +362,9 @@ function serveTreeDir(
       const refs = readFileSync(join(treeGit, "info/refs"), "utf8");
       const sha = refs.split(/\s+/)[0] ?? "";
       const banner = pktLine("# service=git-upload-pack\n");
-      const head = pktLine(Buffer.concat([Buffer.from(`${sha} HEAD\0symref=HEAD:refs/heads/main agent=zeta-lane-tree\n`)]));
+      const head = pktLine(
+        Buffer.concat([Buffer.from(`${sha} HEAD\0symref=HEAD:refs/heads/main agent=zeta-lane-tree\n`)]),
+      );
       const main = pktLine(`${sha} refs/heads/main\n`);
       const body = Buffer.concat([banner, Buffer.from("0000"), head, main, Buffer.from("0000")]);
       res.writeHead(200, {
@@ -380,12 +383,24 @@ function serveTreeDir(
       });
       req.on("end", () => {
         const packsDir = join(treeGit, "objects/pack");
-        const packName = readdirSync(packsDir).find((name) => name.endsWith(".pack"));
-        if (packName === undefined) {
+        const packEnt = readdirSync(packsDir, { withFileTypes: true }).find(
+          (entry) => entry.isFile() && entry.name.endsWith(".pack"),
+        );
+        if (packEnt === undefined) {
           reply(500, "no pack", "text/plain");
           return;
         }
-        const pack = readFileSync(join(packsDir, packName));
+        let pack: Buffer;
+        try {
+          pack = readFileSync(join(packsDir, packEnt.name));
+        } catch (error) {
+          const code = (error as NodeJS.ErrnoException).code;
+          if (code === "ENOENT" || code === "ENOTDIR") {
+            reply(500, "no pack", "text/plain");
+            return;
+          }
+          throw error;
+        }
         const body = Buffer.concat([pktLine("NAK\n"), pack]);
         res.writeHead(200, {
           "Content-Type": "application/x-git-upload-pack-result",
@@ -398,11 +413,18 @@ function serveTreeDir(
       return;
     }
     const filePath = join(docRoot, url.pathname);
-    if (!existsSync(filePath)) {
-      reply(404, "not found", "text/plain");
-      return;
+    let body: Buffer;
+    try {
+      body = readFileSync(filePath);
+    } catch (error) {
+      const code = (error as NodeJS.ErrnoException).code;
+      if (code === "ENOENT" || code === "ENOTDIR" || code === "EISDIR") {
+        reply(404, "not found", "text/plain");
+        return;
+      }
+      throw error;
     }
-    reply(200, readFileSync(filePath), "application/octet-stream");
+    reply(200, body, "application/octet-stream");
   });
   server.keepAliveTimeout = 1;
   server.listen(0, "127.0.0.1");

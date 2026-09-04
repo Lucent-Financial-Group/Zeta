@@ -802,7 +802,8 @@ forge clone URL is still smart HTTP. Wiring that reader into this
 pod is how we learn in-cluster git over time, and it must not
 satisfy a GitHub SHA with the un-overlaid tree. Three git surfaces:
 host `git` 2.43.x writes the pack; busybox 1.37.0 has no git (nc +
-`lane-tree-serve.sh` smart-HTTP shim, not httpd); Argo CD v3.5.2
+`LANE_TREE_SERVE_SH` ash payload in a ConfigMap, not a repo `.sh`
+and not httpd); Argo CD v3.5.2
 repo-server (`argo-cd` 10.7.0) lists refs with go-git (smart HTTP
 only) and fetches with Ubuntu 26.04's `git` CLI.
 
