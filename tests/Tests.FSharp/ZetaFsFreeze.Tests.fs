@@ -1541,13 +1541,15 @@ let ``reclaim crash-mid-sweep of extra garbage keeps a committed freeze readable
                 Assert.True(live.Length > 0)
                 let g1 = ZetaFsPath.combine2 store "g1"
                 let g2 = ZetaFsPath.combine2 store "g2"
+                let journal = ZetaFsPath.combine2 store "sweep.journal"
                 FileSystemIo.writeAllBytes FileSystem.Current g1 [| 9uy |]
                 FileSystemIo.writeAllBytes FileSystem.Current g2 [| 8uy |]
                 mock.ArmCrashOnDelete "g1"
                 let ex =
                     Assert.Throws<CrashMidSweepException>(fun () ->
-                        ZetaFsReclaim.apply
+                        ZetaFsReclaim.applyWithJournal
                             FileSystem.Current
+                            journal
                             [| dummy 1uy, g1; dummy 2uy, g2 |]
                             { Bytes = 100UL; Count = 10 }
                         |> ignore)
@@ -1555,6 +1557,18 @@ let ``reclaim crash-mid-sweep of extra garbage keeps a committed freeze readable
                 Assert.Equal(g1, ex.Path)
                 Assert.False(FileSystem.Current.Exists g1)
                 Assert.True(FileSystem.Current.Exists g2)
+                Assert.True(FileSystem.Current.Exists journal)
+                Assert.True(ZetaFsFreeze.isReadable volume first.Content)
+                let n =
+                    ZetaFsReclaim.applyWithJournal
+                        FileSystem.Current
+                        journal
+                        [||]
+                        { Bytes = 100UL; Count = 10 }
+
+                Assert.Equal(1, n)
+                Assert.False(FileSystem.Current.Exists g2)
+                Assert.False(FileSystem.Current.Exists journal)
                 Assert.True(ZetaFsFreeze.isReadable volume first.Content)
 
                 for p in live do

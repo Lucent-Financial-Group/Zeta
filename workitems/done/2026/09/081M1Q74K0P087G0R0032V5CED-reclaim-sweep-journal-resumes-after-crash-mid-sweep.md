@@ -1,11 +1,12 @@
 ---
 id: 081M1Q74K0P087G0R0032V5CED
 type: task
-state: backlog
+state: done
 priority: P1
 slug: reclaim-sweep-journal-resumes-after-crash-mid-sweep
 title: "Reclaim sweep journal resumes after crash-mid-sweep"
 created: 2026-09-04T22:02:59.478Z
+completed: 2026-09-04T22:26:25.305Z
 depends_on: []
 composes_with: []
 ---
