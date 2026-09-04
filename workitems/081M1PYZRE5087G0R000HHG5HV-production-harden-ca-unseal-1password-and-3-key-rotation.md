@@ -28,7 +28,7 @@ Review findings (not an implementation PR):
 2. ADR addendum: dual as minimum, three live slots as default, previous-honor bound.
 3. Unseal ceremony runbook (human + biometric; Lucent 1Password as share store).
 4. Fill missing persona trees (riven / vera / lior) and Aaron cluster-nodes after the 3-key default exists.
-5. Vault ingest / ESO after host→Secret (#16587) and after unseal is real.
+5. Vault ingest / ESO after landed host→Secret (#16587) and after unseal is real.
 
 ## Do not
 
