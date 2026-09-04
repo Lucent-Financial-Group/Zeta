@@ -1,11 +1,12 @@
 ---
 id: 081M1Q0N6SP087G0R0032HSAE7
 type: task
-state: backlog
+state: done
 priority: P1
 slug: simulatedblockio-volatileuntilflush-dst-for-nvme-flush-fua
 title: "SimulatedBlockIo volatileUntilFlush DST for NVMe Flush/FUA"
 created: 2026-09-04T20:09:43.990Z
+completed: 2026-09-04T20:44:52.733Z
 depends_on: []
 composes_with: []
 ---

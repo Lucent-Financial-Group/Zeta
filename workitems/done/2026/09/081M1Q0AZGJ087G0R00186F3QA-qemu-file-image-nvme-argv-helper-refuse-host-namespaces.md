@@ -1,11 +1,12 @@
 ---
 id: 081M1Q0AZGJ087G0R00186F3QA
 type: task
-state: backlog
+state: done
 priority: P1
 slug: qemu-file-image-nvme-argv-helper-refuse-host-namespaces
 title: "QEMU file-image NVMe argv helper; refuse host namespaces"
 created: 2026-09-04T20:04:08.850Z
+completed: 2026-09-04T20:44:52.706Z
 depends_on: []
 composes_with: []
 ---

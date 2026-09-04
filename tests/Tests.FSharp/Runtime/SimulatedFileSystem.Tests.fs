@@ -409,6 +409,58 @@ let ``SimulatedBlockIo volatileUntilFlush FlushAsync persists for CloneMedia`` (
     Assert.Equal<byte>(payload, kept)
 
 [<Fact>]
+let ``SimulatedBlockIo records completed Write then Flush in call order`` () =
+    let device = SimulatedBlockIo(4096)
+    let io = device :> IBlockIo
+    let payload = [| 9uy; 8uy; 7uy |]
+    Assert.Equal(3, io.Write(0UL, System.ReadOnlyMemory<byte>.op_Implicit payload))
+    io.Flush()
+    let ops = device.RecordedOps
+    Assert.Equal(2, ops.Length)
+
+    match Array.get ops 0 with
+    | BlockIoOp.Write(lba, data) ->
+        Assert.Equal(0UL, lba)
+        Assert.Equal<byte>(payload, data)
+    | BlockIoOp.Flush -> Assert.Fail("first recorded op must be Write")
+
+    match Array.get ops 1 with
+    | BlockIoOp.Flush -> ()
+    | BlockIoOp.Write _ -> Assert.Fail("second recorded op must be Flush")
+
+[<Fact>]
+let ``SimulatedBlockIo ReplayTo round-trips issued writes onto a fresh device`` () =
+    let source = SimulatedBlockIo(4096)
+    let io = source :> IBlockIo
+    let payload = [| 4uy; 5uy; 6uy |]
+    Assert.Equal(3, io.Write(1UL, System.ReadOnlyMemory<byte>.op_Implicit payload))
+    io.Flush()
+    let targetDevice = SimulatedBlockIo(4096)
+    let target = targetDevice :> IBlockIo
+    source.ReplayTo target
+    let got = Array.zeroCreate<byte> 3
+    Assert.Equal(3, target.Read(1UL, System.Memory<byte>.op_Implicit got))
+    Assert.Equal<byte>(payload, got)
+
+[<Fact>]
+let ``SimulatedBlockIo crash-mid-write is not recorded as a completed op`` () =
+    let device = SimulatedBlockIo(4096)
+    let io = device :> IBlockIo
+    device.ArmCrashMidWrite(8)
+    let payload = Array.init 100 (fun i -> byte i)
+    Assert.Throws<CrashMidWriteException>(fun () ->
+        io.Write(0UL, System.ReadOnlyMemory<byte>.op_Implicit payload) |> ignore)
+    |> ignore
+    Assert.Equal(0, device.RecordedOps.Length)
+    io.Flush()
+    let ops = device.RecordedOps
+    Assert.Equal(1, ops.Length)
+
+    match Array.get ops 0 with
+    | BlockIoOp.Flush -> ()
+    | BlockIoOp.Write _ -> Assert.Fail("crash-mid-write must not appear as Write")
+
+[<Fact>]
 let ``FileSystemBlockIo async door cancel-before-write does not publish`` () =
     let mock = InMemoryFileSystem()
     let path = "/vol/async-cancel"
