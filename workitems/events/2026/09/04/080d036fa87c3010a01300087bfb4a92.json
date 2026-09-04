@@ -1,0 +1,14 @@
+{
+  "id": "080d036fa87c3010a01300087bfb4a92",
+  "at": "2026-09-04T19:46:11.974Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1PZA3W6087G0R003DJ5RDD",
+    "type": "task",
+    "title": "headscale is DORMANT with no upgrade path: replace or retire",
+    "slug": "headscale-is-dormant-with-no-upgrade-path-replace-or-retire",
+    "priority": "P2",
+    "filename": "081M1PZA3W6087G0R003DJ5RDD-headscale-is-dormant-with-no-upgrade-path-replace-or-retire.md"
+  }
+}

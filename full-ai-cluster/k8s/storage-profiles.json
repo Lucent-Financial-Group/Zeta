@@ -1270,7 +1270,7 @@
       "dir": "sealed-secrets",
       "cpuMillis": 0,
       "memoryMib": 0,
-      "evidence": "sealed-secrets 2.16.2 rendered 2026-08-21: chart default resources are unset. (Pulled from the GitHub release tarball; https://bitnami-labs.github.io/sealed-secrets now 404s for index.yaml, so the pinned repoURL is stale even though the chart itself resolves.)"
+      "evidence": "sealed-secrets 2.16.2 rendered 2026-08-21: chart default resources are unset. (Pulled from the GitHub release tarball. The note here used to say the pinned repoURL was stale because https://bitnami-labs.github.io/sealed-secrets 404s -- that URL still 404s, RE-CHECKED 2026-09-04, but the Application no longer uses it: the repoURL was corrected to https://bitnami.github.io/sealed-secrets on 2026-08-21 and that index.yaml answers 200. The stale claim was in this evidence string, not in the manifest.)"
     },
     {
       "dir": "spire",
