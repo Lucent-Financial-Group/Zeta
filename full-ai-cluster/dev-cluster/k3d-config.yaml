@@ -6,7 +6,7 @@
 #
 #   - K3S server with the same CNI-takeover flags as prod
 #     (--flannel-backend=none --disable-kube-proxy
-#      --disable-network-policy --disable=traefik)
+#      --disable-network-policy --disable=servicelb --disable=traefik)
 #   - Two agents so multi-node behavior (Longhorn replicas,
 #     ArgoCD reconciliation, NFD daemonsets) is observable
 #   - A local registry so dev container images don't round-trip
@@ -81,6 +81,10 @@ options:
       - arg: --disable-kube-proxy
         nodeFilters: [server:*]
       - arg: --disable-network-policy
+        nodeFilters: [server:*]
+      # Metal k3s-server.nix. k3d skipped this; klipper svclb then
+      # owns host ports 80/443 for Cilium ingress LoadBalancer.
+      - arg: --disable=servicelb
         nodeFilters: [server:*]
       # Skip the bundled HelmChart-Traefik install; ArgoCD ships
       # its own ingress story (we use Cilium Gateway API in prod).

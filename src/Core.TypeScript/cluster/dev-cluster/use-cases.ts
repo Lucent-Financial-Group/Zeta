@@ -22,6 +22,7 @@ import {
   resolveRegistryToken,
   REPO_ROOT,
 } from "./lib.ts";
+import { SERVED_GIT_REF } from "../lane-tree-source.ts";
 
 /**
  * Apply the dev/CI alias StorageClasses, BEFORE the app-of-apps root syncs.
@@ -271,10 +272,16 @@ export interface KindCiBringUpOptions {
    * BEFORE the root Application, because a root app pointed at a server that is
    * not yet answering fails its first sync and retries with backoff.
    *
+   * `gitRef` is the revision ArgoCD must request FROM THAT SERVER. It is not the
+   * GitHub SHA: a 40-hex targetRevision is fetched as an object, and the served
+   * commit is a new hash (MEASURED 33822942615). Absent defaults to the bring-up
+   * `gitRef`, which is correct only when that value is also a branch the served
+   * repo has (local `main`). The harness always sets this to `SERVED_GIT_REF`.
+   *
    * Absent -- the default -- leaves every existing caller syncing `gitRepoUrl`
    * exactly as before.
    */
-  readonly laneTree?: { readonly manifests: string; readonly repoUrl: string };
+  readonly laneTree?: { readonly manifests: string; readonly repoUrl: string; readonly gitRef?: string };
   /**
    * The environment the registry pull credential is sourced from.
    *
@@ -297,6 +304,14 @@ export interface K3dDevBringUpOptions {
   readonly kubeApiHost: string;
   readonly gitRef: string;
   readonly gitRepoUrl: string;
+  /**
+   * Same override as `KindCiBringUpOptions.laneTree`. Absent leaves the
+   * committed `metal` tree. GitHub-hosted runners are 4000m; the metal rung is
+   * 6390m on the dev lane. `--serve-tree dev` is the runner CPU/memory overlay;
+   * metal stays in git for USB/hardware. Disk is a different ladder
+   * (`runnerEnvelope` + storage profiles) and is not rewritten here.
+   */
+  readonly laneTree?: { readonly manifests: string; readonly repoUrl: string; readonly gitRef?: string };
   /**
    * The environment the registry pull credential is sourced from.
    *
@@ -400,7 +415,25 @@ export function bringUpKindCiCluster(ports: DevClusterPorts, options: KindCiBrin
   // retries on ArgoCD's backoff, so the lane pays minutes for a race that a
   // readiness wait removes entirely.
   const rootRepoUrl = applyLaneTreeSource(ports, options.laneTree) ?? options.gitRepoUrl;
-  appCatalog.applyRootDevCatalog(options.gitRef, rootRepoUrl, "kind", cni);
+  const catalogRef = laneTreeCatalogRef(options.laneTree, options.gitRef);
+  appCatalog.applyRootDevCatalog(catalogRef, rootRepoUrl, "kind", cni);
+}
+
+/**
+ * Revision the root Application asks the in-cluster server for.
+ *
+ * When the lane tree is present, default to `SERVED_GIT_REF` (`main`) even if
+ * the caller forgot `laneTree.gitRef`. Falling back to the bring-up `gitRef`
+ * is how 33822942615 pointed ArgoCD at a GitHub SHA the served repo does not
+ * contain. Absent a lane tree, the bring-up ref is still what GitHub-hosted
+ * catalogs need on a PR.
+ */
+function laneTreeCatalogRef(
+  laneTree: { readonly gitRef?: string } | undefined,
+  bringUpRef: string,
+): string {
+  if (laneTree === undefined) return bringUpRef;
+  return laneTree.gitRef ?? SERVED_GIT_REF;
 }
 
 /**
@@ -421,7 +454,12 @@ function applyLaneTreeSource(
   if (laneTree === undefined) return null;
   const { controlPlane } = ports;
   console.log(`Serving the lane tree in-cluster; ArgoCD will clone ${laneTree.repoUrl} ...`);
-  controlPlane.applyInlineManifest(laneTree.manifests);
+  // SERVER-SIDE APPLY, not a nicety. MEASURED live-k3d and live-kind-included
+  // 33821540802: packed=411676B, `kubectl apply -f -` failed
+  // `metadata.annotations: Too long: may not be more than 262144 bytes`.
+  // Client-side apply stores the whole YAML in last-applied-configuration.
+  // `applyFileManifest` already takes this door for the kubevirt CRD.
+  controlPlane.applyInlineManifest(laneTree.manifests, true);
 
   // `condition=Available` on the Deployment, which the readiness probe gates on
   // GET /tree.git/info/refs -- so this waits for the REPOSITORY to be servable,
@@ -751,10 +789,16 @@ export function bringUpK3dDevCluster(ports: DevClusterPorts, options: K3dDevBrin
   applyDevBootstrapSecrets(ports);
   applyDevRegistryPullSecret(ports, options.env ?? process.env);
 
+  // SAME OVERRIDE POINT AS KIND. Without this, `--serve-tree dev` on the k3d
+  // job is a flag the harness parses and then drops: k3d would keep syncing
+  // the committed `metal` rung onto a 4000m runner. Metal stays in git.
+  const rootRepoUrl = applyLaneTreeSource(ports, options.laneTree) ?? options.gitRepoUrl;
+  const catalogRef = laneTreeCatalogRef(options.laneTree, options.gitRef);
+
   // PROVIDER PASSED. Without it the catalogue keeps the static exclude glob
   // while the harness asserts the k3d-lifted roster -- asserted-but-unapplied,
   // which hangs for the full timeout and blames the Application.
-  appCatalog.applyRootDevCatalog(options.gitRef, options.gitRepoUrl, "k3d");
+  appCatalog.applyRootDevCatalog(catalogRef, rootRepoUrl, "k3d");
 }
 
 export function tearDownK3dDevCluster(ports: DevClusterPorts, clusterName: string): void {

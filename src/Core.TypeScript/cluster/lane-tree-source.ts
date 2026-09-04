@@ -68,6 +68,49 @@
  * some hardened git builds, and a transport that might be refused is a transport
  * this lane should not depend on.
  *
+ * -- THREE GIT SURFACES, NOT THREE VERSIONS OF ONE BINARY --------------------
+ *   BUILDER  host `git` in `buildBareRepo`. GitHub `ubuntu-24.04` is 2.43.x
+ *            (this checkout: 2.43.0). That is the only git that WRITES the tree.
+ *   SERVER   none. `busybox:1.37.0` `nc` + `LANE_TREE_SERVE_SH` (ash payload
+ *            in a ConfigMap; the checkout must not grow a `.sh` entrypoint). No git binary,
+ *            no CGI, no credentials. Speaks just enough smart HTTP for the
+ *            single pack `buildBareRepo` already built (advertisement + NAK +
+ *            pack). busybox `httpd` is not used: it 200s `?service=` with the
+ *            dumb refs body, and go-git (Argo CD LsRemote) dies
+ *            `failed to list refs: unexpected EOF` (MEASURED 33824995558;
+ *            argoproj/argo-cd#17267). Git CLI falls back; go-git does not.
+ *            404ing the probe is also wrong: git 2.43 treats 404 as
+ *            "repository not found".
+ *   CLIENT   Argo CD v3.5.2 repo-server (`quay.io/argoproj/argocd:v3.5.2`,
+ *            chart `argo-cd` 10.7.0). LsRemote is go-git (smart HTTP only).
+ *            Fetch/clone after that is the distro `git` CLI.
+ *
+ * -- WHY THIS IS NOT A GITHUB PULL-THROUGH -----------------------------------
+ * Same shape as GHCR not being a docker.io pull-through (081M1F1ZG0A). A
+ * missing SHA cannot be fetched from GitHub by THIS server:
+ *
+ *   1. The pod is busybox `nc` plus a smart-HTTP shim over the packed files.
+ *      It has no git binary, so it cannot fetch a missing SHA from GitHub. The
+ *      TypeScript dumb-HTTP reader already exists
+ *      (`docs/design/root-site-iris/site/gitpull.html`, browser-node adapter
+ *      `git-dumb-http`): GET `/objects/ab/cd…` + inflate, same-origin so CORS
+ *      never fires. That client talks to a GitHub *Pages* bare repo
+ *      (`/repo.git/`), not to this pod. Putting it here is a different job.
+ *   2. `git clone github.com/...` is smart HTTP (`git-upload-pack`). Pointing
+ *      `objects/info/http-alternates` at the forge clone URL therefore 404s.
+ *      Pointing it at a Pages-hosted `/repo.git/` is the gitpull.html shape
+ *      and could serve missing *blobs*. The miss on 33822942615 was the
+ *      GitHub COMMIT object itself, which Pages does not rewrite into the
+ *      overlay commit.
+ *   3. Fetching the GitHub SHA would return the COMMITTED metal tree. That is
+ *      the silent fallback this override exists to refuse. MEASURED
+ *      33822942615: ArgoCD asked for `dc2e16e3e…` as an OBJECT; the served
+ *      commit is a NEW hash. Serve `main`; ask for `main`.
+ *
+ * A future object-cache (gitpull.html's `loadObject`, in-cluster) is welcome
+ * and is how we will learn to work with in-cluster git. It still must not
+ * satisfy a GitHub SHA with the un-overlaid tree.
+ *
  * -- WHY THE TREE TRAVELS AS A ConfigMap -------------------------------------
  * MEASURED 2026-09-03: `full-ai-cluster/k8s` is 367 KiB gzipped, `applications/`
  * alone 214 KiB. That fits one ConfigMap with room to spare, so the tree can be
@@ -77,6 +120,13 @@
  * lane, and the refusal is a falsifier: it is what will fire the day the tree
  * outgrows this delivery mechanism, which is a real possibility and should arrive
  * as a message rather than as an unexplained apply failure.
+ *
+ * MEASURED 2026-09-04, live-k3d + live-kind-included 33821540802: packed=411676B
+ * (under MAX_TREE_BYTES), then `kubectl apply -f -` died
+ * `metadata.annotations: Too long: may not be more than 262144 bytes`. Client-side
+ * apply writes the whole YAML into last-applied-configuration. Delivery therefore
+ * uses `--server-side --force-conflicts` (see `applyLaneTreeSource`). The 700 KiB
+ * packed budget is still the etcd-object ceiling, not the annotation one.
  *
  * -- WHAT THIS MODULE REFUSES ------------------------------------------------
  *   1. a staging copy with zero files                 -> the copy is broken; a
@@ -94,6 +144,8 @@
 import { execFileSync } from "node:child_process";
 import { cpSync, mkdirSync, readdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { join, resolve } from "node:path";
+
+import { LANE_TREE_SERVE_SH } from "./lane-tree-serve";
 
 /**
  * Largest packed tree this delivery mechanism accepts, in bytes.
@@ -115,6 +167,39 @@ export const LANE_TREE_NAMESPACE = "zeta-lane-tree";
 export const LANE_TREE_NAME = "zeta-lane-tree";
 export const LANE_TREE_PORT = 8080;
 export const LANE_TREE_REPO_PATH = "tree.git";
+
+/**
+ * Branch the served repository actually has, and therefore the only
+ * `targetRevision` ArgoCD may request from it.
+ *
+ * MEASURED live-k3d + live-kind-included 33822942615: the served repo was
+ * initialised with `--initial-branch <GitHub SHA>` and the root Application
+ * asked for that SHA. ArgoCD treats a 40-hex `targetRevision` as an OBJECT,
+ * not a branch: `git fetch origin dc2e16e3e…` then
+ * `Unable to find dc2e16e3e…` / `Cannot obtain needed object`. The commit in
+ * the served repo is a NEW hash. Child Applications already say
+ * `targetRevision: main`. Serve `main`; ask for `main`.
+ */
+export const SERVED_GIT_REF = "main";
+
+/**
+ * Git (and go-git) probe smart HTTP with `GET info/refs?service=git-upload-pack`.
+ * A 200 here is treated as a pkt-line advertisement. Dumb-HTTP servers must 404
+ * (or 403) it so the client falls back to GET `info/refs`.
+ */
+export function isSmartHttpServiceQuery(query: string): boolean {
+  return /(?:^|&)service=/.test(query);
+}
+
+/** Indent a YAML `|` block so the serve script can ride in a ConfigMap. */
+function yamlBlock(value: string, indent: number): string {
+  const pad = " ".repeat(indent);
+  const trimmed = value.endsWith("\n") ? value.slice(0, -1) : value;
+  return trimmed
+    .split("\n")
+    .map((line) => `${pad}${line}`)
+    .join("\n");
+}
 
 /**
  * How a repoURL is recognised as pointing at THIS repository.
@@ -244,7 +329,7 @@ export function buildBareRepo(stagingRoot: string, bareDir: string, gitRef: stri
   const git = (cwd: string, ...args: readonly string[]): string =>
     execFileSync("git", args, { cwd, encoding: "utf8", stdio: ["ignore", "pipe", "pipe"] }).trim();
 
-  git(stagingRoot, "init", "--quiet", "--initial-branch", gitRef);
+  git(stagingRoot, "init", "--quiet", "--initial-branch", SERVED_GIT_REF);
   // Identity is set on the repository, never globally: this runs on a shared
   // runner and on developer machines, and a tool that edits a user's global git
   // config to do its own job is reaching outside its declared channel.
@@ -296,14 +381,18 @@ export function packBareRepo(bareDir: string): Buffer {
 }
 
 /**
- * The lane-only manifests: a ConfigMap carrying the packed repository, and a pod
- * that unpacks it once and serves the directory over HTTP.
+ * The lane-only manifests: a ConfigMap carrying the packed repository, a
+ * ConfigMap carrying the smart-HTTP script, and a pod that unpacks once and
+ * serves just enough smart HTTP for one pack.
  *
- * `busybox` supplies tar, gzip and `httpd` in one small public image, so the
- * server needs nothing built and nothing private. The unpack runs in an
- * initContainer so the serving container starts only after the tree is on disk --
- * otherwise the first clone can race the untar and fail with a 404 that looks like
- * a missing repository.
+ * `busybox` supplies tar, gzip and `nc` in one small public image, so the
+ * server needs nothing built and nothing private. busybox `httpd` is NOT used:
+ * it 200s `?service=` with a dumb body and go-git dies unexpected EOF
+ * (MEASURED 33824995558). 404ing that probe is also wrong (git 2.43: repo not
+ * found). The serve script answers smart HTTP for one pack.
+ * The unpack runs in an initContainer so the serving container starts only
+ * after the tree is on disk -- otherwise the first clone can race the untar
+ * and fail with a 404 that looks like a missing repository.
  */
 export function renderLaneTreeManifests(packedBase64: string, image: string): string {
   return `apiVersion: v1
@@ -318,6 +407,15 @@ metadata:
   namespace: ${LANE_TREE_NAMESPACE}
 binaryData:
   tree.tar.gz: ${packedBase64}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: ${LANE_TREE_NAME}-serve
+  namespace: ${LANE_TREE_NAMESPACE}
+data:
+  serve.sh: |
+${yamlBlock(LANE_TREE_SERVE_SH, 4)}
 ---
 apiVersion: v1
 kind: Service
@@ -337,7 +435,7 @@ metadata:
   name: ${LANE_TREE_NAME}
   namespace: ${LANE_TREE_NAMESPACE}
 spec:
-  replicas: 1
+  replicas: 4
   selector:
     matchLabels:
       app: ${LANE_TREE_NAME}
@@ -360,17 +458,21 @@ spec:
               cpu: 10m
               memory: 32Mi
       containers:
-        - name: httpd
+        - name: serve
           image: ${image}
-          # -f keeps busybox httpd in the foreground so the container does not exit
-          # immediately and read as CrashLoopBackOff.
-          command: ["httpd", "-f", "-p", "${String(LANE_TREE_PORT)}", "-h", "/srv"]
+          # listen: tcpsvd forks per connection when the applet exists; else
+          # nc -l is one-at-a-time. replicas: 4 covers the nc fallback.
+          # MEASURED live-kind-included 33830308187: ls-remote succeeded, then
+          # parallel compares hit connect: connection refused on 10.96.98.57:8080.
+          # defaultMode 365 is 0555, so that exec has +x. sh listen is PID 1.
+          command: ["sh", "/serve/serve.sh", "listen"]
           ports:
             - containerPort: ${String(LANE_TREE_PORT)}
           readinessProbe:
             # Probes the repository's own info file, not "/" — a server that is up
             # while the tree is missing would otherwise read as ready and hand
-            # ArgoCD a 404 that looks like a bad repoURL.
+            # ArgoCD a 404 that looks like a bad repoURL. No query string: the
+            # smart-HTTP probe is a pkt-line advertisement, not the dumb file.
             httpGet:
               path: /${LANE_TREE_REPO_PATH}/info/refs
               port: ${String(LANE_TREE_PORT)}
@@ -379,6 +481,9 @@ spec:
           volumeMounts:
             - name: srv
               mountPath: /srv
+            - name: serve
+              mountPath: /serve
+              readOnly: true
           resources:
             requests:
               cpu: 10m
@@ -389,6 +494,10 @@ spec:
             name: ${LANE_TREE_NAME}
         - name: srv
           emptyDir: {}
+        - name: serve
+          configMap:
+            name: ${LANE_TREE_NAME}-serve
+            defaultMode: 365
 `;
 }
 

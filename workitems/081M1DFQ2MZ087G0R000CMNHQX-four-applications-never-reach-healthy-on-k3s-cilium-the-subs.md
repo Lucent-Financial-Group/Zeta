@@ -626,18 +626,243 @@ Do not re-lift `--scope included`. Next measured step is TCP to the
 **pod IP** (`10.143.0.44`) from hostNetwork: OPEN isolates ClusterIP
 translation; FAIL means hostNetwork cannot reach the overlay either.
 
-## Next dump — hostNetwork TCP pod IP (8081) + pod-network control
+## MEASURED 2026-09-03 — live-k3d 33800779819: hostNetwork ClusterIP FAIL, pod IP OPEN (PR #16526)
 
-live-k3d dump now probes:
+Job `100800757935` on SHA `711ce22ee`
+[run 33800779819](https://github.com/Lucent-Financial-Group/Zeta/actions/runs/33800779819)
+**succeeded** at smoke. Server 2/2 Running, `bundle.crt` present,
+Cilium service list had ClusterIP backends **active**. This is the
+pod-IP distinguisher, not a startup-race dump.
 
-- TCP `spire-server-0` **pod IP:8081** from hostNetwork (agent API, not Service :443)
-- TCP kube-dns **endpoint** pod IP:53 from hostNetwork
-- the same four targets from a **pod-network** busybox (`hostNetwork: false`)
+| Netns | kube-dns ClusterIP `:53` | kube-dns pod `:53` | spire-server ClusterIP `:443` | spire-server pod `:8081` |
+|---|---|---|---|---|
+| hostNetwork | **FAIL** | **OPEN** | **FAIL** | **OPEN** |
+| pod-network | **OPEN** | **OPEN** | **OPEN** | **OPEN** |
 
-OPEN on pod IP + FAIL on ClusterIP isolates kube-proxy-replacement
-translation. FAIL on both means overlay unreachable from hostNetwork.
-Do not treat OPEN/FAIL as measured until a dump with server Running +
-`bundle.crt` prints those lines. Do not invent Cilium values.
+| Signal | Value |
+|---|---|
+| cert-manager | 1/1 Running, RESTARTS=0 |
+| spire-server-0 | 2/2 Running, pod IP `10.143.0.70` |
+| PVC | Bound |
+| spire-bundle | `bundle.crt` present |
+| cilium-dbg kube-dns | `10.43.0.10:53` → `10.143.0.147:53` (active) |
+| cilium-dbg spire-server | `10.43.130.76:443` → `10.143.0.70:8081` (active) |
+| klipper | `svclb-cilium-ingress` 2/2 Running; `svclb-weaviate` Pending |
+
+Overlay from hostNetwork works. ClusterIP translation from hostNetwork
+does not. Pod-network ClusterIP works. kind+Cilium is Healthy on the
+**same** shipped helm values (only `k8sServiceHost` differs). Metal
+`k3s-server.nix` passes `--disable=servicelb`; k3d did not, and the
+dump shows klipper running.
+
+**hostAliases to ClusterIP stays closed.** **Do not invent Cilium
+values** (`socketLB`, `routingMode`, chart bumps). Next software was
+the metal k3s flag k3d skipped: `--disable=servicelb`. MEASURED
+33804533591: klipper gone, ClusterIP still FAIL.
+
+## MEASURED 2026-09-03 — live-k3d 33804533591: svclb gone, ClusterIP still FAIL (PR #16533)
+
+Job `100812620217` on SHA `c350832fd`
+[run 33804533591](https://github.com/Lucent-Financial-Group/Zeta/actions/runs/33804533591)
+**succeeded** at smoke after `--disable=servicelb`. Server 2/2,
+`bundle.crt` present.
+
+| Signal | Value |
+|---|---|
+| `app=svclb` | **No resources found** (klipper gone) |
+| hostNetwork kube-dns ClusterIP `:53` | **FAIL** |
+| hostNetwork kube-dns pod `:53` | **OPEN** |
+| hostNetwork spire-server ClusterIP `:443` | **FAIL** |
+| hostNetwork spire-server pod `:8081` | **OPEN** |
+| pod-network all four | **OPEN** |
+| spire-agent | `lookup spire-server.spire on 10.43.0.10:53: dial udp 10.43.0.10:53: i/o timeout` |
+
+**Klipper is not the ClusterIP translator.** Keep `--disable=servicelb`
+(metal match). Do not invent Cilium values. Do not re-lift included.
+MEASURED 33809535624: cgroupns already private; KPR True; ClusterIP
+still FAIL.
+
+## MEASURED 2026-09-03 — live-k3d 33809535624: cgroupns already private, ClusterIP still FAIL
+
+Job `100828865623` on SHA `6fc9e33f2`
+[run 33809535624](https://github.com/Lucent-Financial-Group/Zeta/actions/runs/33809535624)
+**succeeded** at smoke. `gate (required)` green. `lint (actionlint)` green.
+
+| Signal | Value |
+|---|---|
+| `app=svclb` | No resources found |
+| Docker `CgroupnsMode` | **private** (Privileged=true) |
+| `KubeProxyReplacement` | True, Direct Routing on eth0 `172.18.0.2` |
+| Routing | Network: Native, **Host: BPF** |
+| Cluster health | node 1/1, **endpoints 0/1** |
+| hostNetwork ClusterIP | **FAIL** (TCP + UDP DNS timeout) |
+| hostNetwork overlay pod IPs | **OPEN** |
+| pod-network ClusterIP | **OPEN** |
+
+**Cgroup namespace is not the hole.** k3d already uses private cgroupns, which is what Cilium's kind Socket-LB docs require. Non-verbose `cilium-dbg status` has no Socket LB coverage line. MEASURED 33814040666: `cilium-dbg config get` of guessed names is not the API.
+
+`live kind included` red is Otto mimir (`081M1FG1RCW`), not this item.
+
+## MEASURED 2026-09-03 — live-k3d 33814040666: config get names do not exist
+
+Job `100842821668` on SHA `1fa71680a`
+[run 33814040666](https://github.com/Lucent-Financial-Group/Zeta/actions/runs/33814040666)
+**succeeded** at smoke. `gate (required)` green.
+
+`cilium-dbg config get` returned `Error: Configuration does not exist`
+for `enable-socket-lb`, `bpf-lb-sock`, `bpf-lb-sock-hostns-only`,
+`bpf-lb-external-clusterip`. The one key that exists:
+`enable-host-legacy-routing=false` (matches Host BPF).
+
+ClusterIP from hostNetwork still FAIL. Next dump reads those keys
+from ConfigMap `cilium-config` (what the agent actually runs) and
+`cilium-dbg status --verbose` KubeProxyReplacement Details (Socket LB
+coverage). Still a read. Do not invent helm values.
+
+## MEASURED 2026-09-03 — live-k3d 33817974673: ConfigMap bpf-lb-sock=false, ClusterIP still FAIL
+
+Job `100854900709` on SHA `f93babb9a`
+[run 33817974673](https://github.com/Lucent-Financial-Group/Zeta/actions/runs/33817974673)
+**succeeded** at smoke. `gate (required)` green. The job the human
+saw hanging is **`live kind included`** (kindnetd), not this dump:
+`mimir=Synced/Degraded` + `agent-memory=OutOfSync/Progressing` toward
+the 2400s cap. That is Otto `081M1FG1RCW` (mimir / seaweedfs auth),
+not this item. Fail-fast the health wait on Degraded so that job
+stops looking stuck.
+
+| Signal | Value |
+|---|---|
+| `app=svclb` | No resources found |
+| ConfigMap `bpf-lb-sock` | **false** |
+| ConfigMap `bpf-lb-sock-hostns-only` | **true** |
+| ConfigMap `bpf-lb-external-clusterip` | **false** |
+| ConfigMap `kube-proxy-replacement` | true |
+| verbose Socket LB | Enabled, Coverage **Hostns-only** |
+| hostNetwork ClusterIP | **FAIL** (TCP + UDP DNS timeout) |
+| hostNetwork overlay pod IPs | **OPEN** |
+| pod-network ClusterIP | **OPEN** |
+| the four (smoke) | openziti OutOfSync/Missing; trust-manager Synced/Healthy; spire Synced/Progressing; vault Synced/Progressing |
+
+`bpf-lb-sock=false` with KPR True is per-packet LB in the pod netns
+(OPEN) and no working host-ns ClusterIP translation (FAIL). Verbose
+"Socket LB Enabled / Hostns-only" is the coverage claim; TCP still
+FAIL. Setting helm `socketLB` / `bpf.lbExternalClusterIP` is still
+inventing. Next software is `ip route get` of the kube-dns ClusterIP
+from the k3d node (is 10.43.0.0/16 local via `cilium_host` or via
+docker `eth0`?). Do not invent Cilium helm values. Do not re-lift
+included. Otto keeps mimir.
+
+## CI is a USB / metal first-boot rehearsal
+
+The point of the k3d lane is not "green on GitHub". It is whether the
+same k3s + Cilium + SPIRE stack will come up on USB boot of real
+hardware. A CI-only datapath (invented Cilium helm, hostAliases to
+ClusterIP, a SPIRE chart fork) would make the runner look healthy and
+leave first-boot broken.
+
+`--serve-tree dev` is a **runner CPU/memory overlay only**. GitHub
+nodes are 4000m; metal is a 16-core box. The metal rung stays in git
+for USB/hardware. Datapath values, k3s flags, and SPIRE stay the
+shipped metal surface. The only k3d deltas that have paid rent are
+flags metal already passes (`--disable=servicelb`, `--tls-san`,
+founder `/etc/hosts`) plus `k8sServiceHost` name resolution.
+
+Kind included already passed `--serve-tree dev` (#16543). k3d live
+parsed no such flag and `bootstrapK3dClusterInProcess` dropped the
+bundle even if one had been passed, so the k3d job kept applying
+metal (6390m) onto the 4000m runner. That wiring is now the same as
+kind. Disk is a different existing ladder: `runnerEnvelope.freeDiskGib`
+= 70, checked by `--check-envelope`. PVC sizes stay at metal
+`measured` because CI `zeta-local-path` is thin; shrinking PVCs in CI
+would not be a USB rehearsal. Do not invent a fourth budget.
+
+**MEASURED live-k3d + live-kind-included 33821540802 (SHA `bf6eabd1e`):**
+`--serve-tree` packed 411676B then `kubectl apply -f -` died
+`metadata.annotations: Too long: may not be more than 262144 bytes`.
+Client-side apply stores the whole ConfigMap YAML in
+`last-applied-configuration`. Delivery is now `--server-side
+--force-conflicts`, the same door the kubevirt CRD already takes.
+`--disable=servicelb` stays: metal `k3s-server.nix` turns off klipper
+so Cilium owns L4. That is not the ClusterIP hole; it is the metal
+match.
+
+**MEASURED live-k3d + live-kind-included 33822942615 (SHA `dc2e16e3e`):**
+SSA applied. ArgoCD then failed
+`Failed to checkout revision dc2e16e3e…` /
+`Unable to find dc2e16e3e… under http://zeta-lane-tree…/tree.git` /
+`Cannot obtain needed object`. The served repo is a fresh `git init`
+whose commit SHA is new. ArgoCD treats a 40-hex `targetRevision` as
+an OBJECT, not a branch. Child Applications already said
+`targetRevision: main`. Catalog now asks for `main`. A GitHub SHA
+passthrough would return the committed metal tree — the silent
+fallback `--serve-tree` exists to refuse. Same shape as GHCR not
+being a docker.io pull-through (081M1F1ZG0A). Dumb HTTP against
+GitHub Pages already exists (`gitpull.html` / `git-dumb-http`); the
+forge clone URL is still smart HTTP. Wiring that reader into this
+pod is how we learn in-cluster git over time, and it must not
+satisfy a GitHub SHA with the un-overlaid tree. Three git surfaces:
+host `git` 2.43.x writes the pack; busybox 1.37.0 has no git (nc +
+`LANE_TREE_SERVE_SH` ash payload in a ConfigMap, not a repo `.sh`
+and not httpd); Argo CD v3.5.2
+repo-server (`argo-cd` 10.7.0) lists refs with go-git (smart HTTP
+only) and fetches with Ubuntu 26.04's `git` CLI.
+
+**MEASURED live-kind-included + live-k3d 33824995558 (SHA `4e89a9600`):**
+asking for `main` closed the object-fetch hole. New hole: zero
+children, `argocd=Missing/Missing`, `cert-manager=Missing/Missing`,
+lane-tree pod `1/1 Running`. Root ComparisonError
+`failed to list refs: unexpected EOF`. This is **not** missing helm
+chart deps and **not** an ACE package-manager miss: App-of-Apps never
+listed refs, so no Application objects, so no helm pulls. Cause:
+Argo CD LsRemote is go-git, which does not speak dumb HTTP
+(argoproj/argo-cd#17267). busybox `httpd` 200s
+`GET /info/refs?service=git-upload-pack` with the dumb refs body;
+go-git parses pkt-line and EOFs. Git CLI falls back; go-git does not.
+404ing that probe is also wrong: git 2.43 treats 404 as "repository
+not found". Fix: a single-pack smart-HTTP shim (advertisement + NAK
++ the pack `buildBareRepo` already built). Still no git binary on
+the server. Fail-fast the ComparisonError instead of burning 900s on
+vault / 1200s on health. Keep `--disable=servicelb`. Do not invent
+helm values. Do not invent ACE chart-deps work from this dump.
+
+**MEASURED live-kind-included + live-k3d 33830308187 (SHA `def4f2fdd`):**
+the smart-HTTP overlay listed refs. live-k3d smoke `--serve-tree dev`
+was **green**: `child-application-count=16`, repo-server `git ls-remote`
+returned `9051f82306ef… HEAD` / `refs/heads/main`. live-kind-included
+also listed refs (mimir PVCs provisioning, children present) then
+aborted on `openziti-controller=OutOfSync/Degraded` while the ziti
+pod was still `Init:0/1`. That is not missing helm and not the
+unexpected-EOF hole. Degraded fail-fast is **Synced/Degraded** only
+(Otto's mimir case). OutOfSync/Degraded during Init is rollout.
+Parallel compares also `dial tcp 10.96.98.57:8080: connect: connection
+refused` — `nc -l` is one connection at a time. Keep
+`--disable=servicelb`. Do not invent helm values.
+
+## CI runner budgets (three existing ladders)
+
+Do not invent a fourth. Do not shrink metal.
+
+| Axis | Ladder | CI overlay | Metal (git) |
+| --- | --- | --- | --- |
+| CPU / memory requests | `dev` vs `metal` in `storage-profiles.json` | `--serve-tree dev` on kind included and k3d live | `activeResourceProfile: metal` |
+| PVC capacity | `minimal` / `standard` / `measured` / `large` | none (CI `zeta-local-path` is thin) | `activeStorageProfile: measured` |
+| Runner disk | `runnerEnvelope.freeDiskGib: 70` | `--check-envelope` on live jobs | hardware `nodeDiskGib` |
+
+Envelope (hosted `ubuntu-24.04`): 4000m CPU, 15360Mi RAM, 70 GiB disk;
+reserved 1500m / 6144Mi / 4 GiB; margin 0.85 → budget **2500m / 9216Mi /
+~56 GiB**. `storage-profiles.ts --resource-profile <rung> --budget`:
+
+- `dev` lane (~39 apps): 1165m / 9164Mi — **FITS** (memory 52Mi from the ceiling)
+- `metal` lane: 6390m / 14352Mi — does not fit a runner
+
+The committed manifests stay `metal`. `--resource-profile metal --check`
+is green; `dev --check` drifts. That is why `--serve-tree` exists
+instead of rewriting git.
+
+kind+Cilium Healthy on the same helm values means Cilium-as-CNI is
+not the USB-boot hole. k3d still FAIL on hostNetwork ClusterIP is
+the remaining k3s-in-docker class that metal first-boot can still
+hit if host-ns socket-LB is similarly dark on NixOS k3s.
 
 ## The distinguishing test
 

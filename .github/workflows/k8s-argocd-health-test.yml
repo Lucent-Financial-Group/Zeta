@@ -1113,6 +1113,14 @@ jobs:
         env:
           ZETA_ARGOCD_GIT_REF: ${{ github.event.pull_request.head.sha || github.sha }}
           ZETA_ARGOCD_GIT_REPO_URL: ${{ github.event.pull_request.head.repo.clone_url || 'https://github.com/Lucent-Financial-Group/Zeta' }}
+        # CPU/MEMORY OVERLAY, same mechanism as live-kind-included. The committed
+        # tree is `metal` (6390m on a 4000m GitHub node). `--serve-tree dev` is
+        # 1165m / 9164Mi and fits the runner budget (2500m / 9216Mi). Metal stays
+        # in git for USB/hardware. Disk is a different ladder: this job already
+        # runs `--check-envelope` (70 GiB). PVC sizes stay at the metal storage
+        # profile because CI `zeta-local-path` is thin and shrinking PVCs would
+        # not be a USB rehearsal. Do not invent a fourth budget. Do not shrink
+        # metal.
         run: |
           bun src/Core.TypeScript/cluster/argocd-health-test.ts \
             --run \
@@ -1123,7 +1131,8 @@ jobs:
             --cluster-name zeta-ci \
             --git-ref "$ZETA_ARGOCD_GIT_REF" \
             --timeout-sec 1200 \
-            --poll-sec 10
+            --poll-sec 10 \
+            --serve-tree dev
 
       - name: Which CNI actually owns the cluster (the reason this job exists)
         # The profile CLAIMS flannel and kube-proxy are off and Cilium owns the
@@ -1189,6 +1198,8 @@ jobs:
             echo "resolv.conf:"; cat /etc/resolv.conf 2>&1 | sed "s/^/  /"
             echo "getent hosts github.com:"; getent hosts github.com 2>&1 | sed "s/^/  /" || echo "  FAILED rc=$?"
             echo "getent hosts kubernetes.default (in-cluster):"; getent hosts kubernetes.default 2>&1 | sed "s/^/  /" || echo "  FAILED rc=$?"
+            echo "getent hosts zeta-lane-tree.zeta-lane-tree.svc.cluster.local:"; getent hosts zeta-lane-tree.zeta-lane-tree.svc.cluster.local 2>&1 | sed "s/^/  /" || echo "  FAILED rc=$?"
+            echo "git ls-remote overlay tree.git:"; git ls-remote http://zeta-lane-tree.zeta-lane-tree.svc.cluster.local:8080/tree.git 2>&1 | sed "s/^/  /" || echo "  FAILED rc=$?"
           ' || true
           echo "--- what does CoreDNS forward upstream to? (the k3d/docker 127.0.0.11 question) ---"
           kubectl -n kube-system get configmap coredns -o jsonpath='{.data.Corefile}' || true
@@ -1258,9 +1269,11 @@ jobs:
             kubectl -n kube-system get ds,pods -l k8s-app=cilium -o wide || true
           fi
           echo "=== hostNetwork TCP ClusterIP + pod-IP probe (081M1DFQ2MZ distinguisher) ==="
-          echo "MEASURED 33781233753: ClusterIP TCP FAIL after bundle.crt. hostAliases to ClusterIP is closed."
-          echo "Pod-IP OPEN isolates ClusterIP translation. Pod-IP FAIL means overlay unreachable from hostNetwork."
-          echo "Do not invent Cilium values. Do not re-lift included."
+          echo "MEASURED 33804533591: --disable=servicelb emptied app=svclb; hostNetwork ClusterIP still FAIL, pod IP OPEN."
+          echo "Agent lookup spire-server.spire on 10.43.0.10:53 i/o timeout with bundle.crt present."
+          echo "Klipper is not the translator. Do not invent Cilium values. Do not re-lift included."
+          echo "--- klipper svclb (MEASURED 33804533591: No resources found) ---"
+          kubectl get ds,pods -A -l app=svclb -o wide || true
           SPIRE_IP="$(kubectl -n spire get svc spire-server -o jsonpath='{.spec.clusterIP}' 2>/dev/null || true)"
           SPIRE_PORT="$(kubectl -n spire get svc spire-server -o jsonpath='{.spec.ports[0].port}' 2>/dev/null || true)"
           SPIRE_POD_IP="$(kubectl -n spire get pod spire-server-0 -o jsonpath='{.status.podIP}' 2>/dev/null || true)"
@@ -1269,6 +1282,34 @@ jobs:
           echo "kube-dns endpoint podIP=${DNS_EP_IP:-NONE}:53"
           NODE="$(kubectl get nodes -o jsonpath='{.items[0].metadata.name}' 2>/dev/null || true)"
           echo "node=${NODE:-NONE}"
+          echo "--- cilium-dbg status (Socket LB / KubeProxyReplacement; do not invent helm values) ---"
+          kubectl -n kube-system exec ds/cilium -c cilium-agent -- cilium-dbg status \
+            || echo "cilium-dbg status FAILED"
+          echo "--- cilium-config ConfigMap socket-LB keys (read, do not set) ---"
+          echo "MEASURED 33814040666: cilium-dbg config get names 404; enable-host-legacy-routing=false."
+          echo "MEASURED 33817974673: bpf-lb-sock=false bpf-lb-sock-hostns-only=true bpf-lb-external-clusterip=false kube-proxy-replacement=true; verbose Socket LB Enabled Coverage Hostns-only; hostNetwork ClusterIP still FAIL."
+          kubectl -n kube-system get cm cilium-config -o jsonpath='bpf-lb-sock={.data.bpf-lb-sock} bpf-lb-sock-hostns-only={.data.bpf-lb-sock-hostns-only} bpf-lb-external-clusterip={.data.bpf-lb-external-clusterip} enable-host-reachable-services={.data.enable-host-reachable-services} kube-proxy-replacement={.data.kube-proxy-replacement} enable-host-legacy-routing={.data.enable-host-legacy-routing}{"\n"}' \
+            || echo "cilium-config ConfigMap FAILED"
+          echo "--- cilium-dbg status --verbose KubeProxyReplacement Details ---"
+          kubectl -n kube-system exec ds/cilium -c cilium-agent -- cilium-dbg status --verbose \
+            | awk '/KubeProxyReplacement Details/,/^$/' \
+            || echo "verbose KPR details FAILED"
+          echo "--- host route to kube-dns ClusterIP (next distinguisher; not a helm value) ---"
+          if [ -n "$NODE" ] && [ -n "$DNS_IP" ]; then
+            docker exec "$NODE" ip route get "$DNS_IP" || echo "ip route get FAILED"
+            docker exec "$NODE" ip -o link || echo "ip link FAILED"
+          else
+            echo "ip route get: SKIP"
+          fi
+          echo "--- k3d node cgroupns (MEASURED 33809535624: private, not the hole) ---"
+          if [ -n "$NODE" ]; then
+            docker inspect "$NODE" --format 'CgroupnsMode={{.HostConfig.CgroupnsMode}} Privileged={{.HostConfig.Privileged}}' \
+              || echo "docker inspect FAILED"
+            echo "host /proc/1/ns/cgroup=$(readlink /proc/1/ns/cgroup 2>/dev/null || echo NONE)"
+            echo "node /proc/1/ns/cgroup=$(docker exec "$NODE" readlink /proc/1/ns/cgroup 2>/dev/null || echo NONE)"
+          else
+            echo "cgroupns: NO_NODE"
+          fi
           tcp_probe_from_node() {
             local ip="$1" port="$2" label="$3"
             echo "--- TCP ${label} ${ip:-NONE}:${port:-NONE} from k3d node (hostNetwork netns) ---"
@@ -1678,6 +1719,11 @@ jobs:
           kubectl get svc -A --field-selector spec.type=LoadBalancer || true
           echo "=== CoreDNS Corefile (the github.com resolver) ==="
           kubectl -n kube-system get configmap coredns -o jsonpath='{.data.Corefile}' || true
+          echo "=== overlay git ls-remote (MEASURED 33824995558: unexpected EOF, not helm deps) ==="
+          kubectl -n argocd exec deploy/argocd-repo-server -- sh -c '
+            echo "getent hosts zeta-lane-tree.zeta-lane-tree.svc.cluster.local:"; getent hosts zeta-lane-tree.zeta-lane-tree.svc.cluster.local 2>&1 | sed "s/^/  /" || echo "  FAILED rc=$?"
+            echo "git ls-remote overlay tree.git:"; git ls-remote http://zeta-lane-tree.zeta-lane-tree.svc.cluster.local:8080/tree.git 2>&1 | sed "s/^/  /" || echo "  FAILED rc=$?"
+          ' || true
           echo
 
       - name: Name the drifting resources (per-Application, failures only)
@@ -1966,6 +2012,11 @@ jobs:
           kubectl get nodes -o wide || true
           kubectl -n argocd get applications.argoproj.io -o wide || true
           kubectl get pods -A -o wide || true
+          echo "=== overlay git ls-remote (MEASURED 33824995558: unexpected EOF, not helm deps) ==="
+          kubectl -n argocd exec deploy/argocd-repo-server -- sh -c '
+            echo "getent hosts zeta-lane-tree.zeta-lane-tree.svc.cluster.local:"; getent hosts zeta-lane-tree.zeta-lane-tree.svc.cluster.local 2>&1 | sed "s/^/  /" || echo "  FAILED rc=$?"
+            echo "git ls-remote overlay tree.git:"; git ls-remote http://zeta-lane-tree.zeta-lane-tree.svc.cluster.local:8080/tree.git 2>&1 | sed "s/^/  /" || echo "  FAILED rc=$?"
+          ' || true
           kubectl -n arc-systems describe pods -l app.kubernetes.io/name=gha-rs-controller || true
           kubectl -n arc-systems logs -l app.kubernetes.io/name=gha-rs-controller --all-containers=true --prefix=true --tail=200 || true
           kubectl -n arc-systems logs -l app.kubernetes.io/name=gha-rs-controller --all-containers=true --prefix=true --previous=true --tail=200 || true

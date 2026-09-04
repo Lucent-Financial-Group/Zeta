@@ -102,7 +102,17 @@ export interface ClusterControlPlane {
    * different thing. Defaults false: existing callers are unchanged.
    */
   applyFileManifest(path: string, serverSideApply?: boolean): void;
-  applyInlineManifest(yaml: string): void;
+  /**
+   * Same `serverSideApply` door as `applyFileManifest`. Defaults false.
+   *
+   * MEASURED live-k3d / live-kind-included 33821540802: `--serve-tree dev`
+   * packed the k8s tree at 411676 bytes; `kubectl apply -f -` (client-side)
+   * wrote that YAML into `last-applied-configuration` and died
+   * `metadata.annotations: Too long: may not be more than 262144 bytes`.
+   * The lane-tree ConfigMap is over that ceiling; it must be applied
+   * server-side, the same way the kubevirt CRD already is.
+   */
+  applyInlineManifest(yaml: string, serverSideApply?: boolean): void;
   ensureNamespace(name: string): void;
   /**
    * Is one named object present? Read-only, and the ONLY read on this port.
