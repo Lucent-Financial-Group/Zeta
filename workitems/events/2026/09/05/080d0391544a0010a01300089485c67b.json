@@ -1,0 +1,14 @@
+{
+  "id": "080d0391544a0010a01300089485c67b",
+  "at": "2026-09-05T15:23:05.408Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1S2N2A0087G0R003FJ60D3",
+    "type": "task",
+    "title": "Persist orphan catalog across volume reopen",
+    "slug": "persist-orphan-catalog-across-volume-reopen",
+    "priority": "P2",
+    "filename": "081M1S2N2A0087G0R003FJ60D3-persist-orphan-catalog-across-volume-reopen.md"
+  }
+}
