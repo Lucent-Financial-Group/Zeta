@@ -1,9 +1,20 @@
 /**
  * cli-adapters.test.ts — the three ports that had no command line, and the mapping that gives them one.
  *
- * `httpIntake`, `agentWorkExecutor` and `agentReview` were exported, tested and mutation-checked, and
+ * `httpIntake`, `agentWorkExecutor` and `modelReview` were exported, tested and mutation-checked, and
  * reachable from nothing but tests. `run-org.ts` exists because of exactly that, in its own words:
  * *"an entry point nothing outside a test suite invokes is a library nobody has shipped."*
+ *
+ * THIS SENTENCE SAID `agentReview` UNTIL 2026-09-04 AND WAS FALSE. The adapter actually given a
+ * command line was `modelReview`; `run-org.ts` has never referenced `agentReview`. A file that
+ * claims to have closed a gap it did not close is worse than one that never mentioned it, because
+ * the claim is what stops anyone checking — so it is corrected here rather than quietly widened.
+ *
+ * `agentReview` takes a JUDGE FUNCTION, and a function cannot come from argv. It is an embedder
+ * seam, exercised in `review-adapters.test.ts`, and its CLI-expressible siblings are the three that
+ * do have flags: `directoryReview` (--review-queue), `commandReview` (--review-cmd) and
+ * `modelReview` (--review-model). Inventing a fourth flag that spawned a process would be
+ * `commandReview` under another name.
  *
  * The interesting half is `trackerMapper`, because it is where a real tracker's schema meets this
  * register's, and where the temptation to GUESS lives. It refuses instead.

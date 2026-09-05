@@ -17,7 +17,7 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { spawnSync } from "node:child_process";
 
-import { agentWorkExecutor, commandWorkExecutor, gitChangeControl, gitWorktreeChangeControl, worktreeDirName } from "./adapters";
+import { agentWorkExecutor, commandWorkExecutor, commitsAhead, gitChangeControl, gitWorktreeChangeControl, worktreeDirName } from "./adapters";
 import { Fidelity } from "./providers";
 import { WorkState, WorkType, type CascadeNode } from "./goal-cascade";
 
@@ -273,5 +273,152 @@ describe("THE CHANGE'S CHECKOUT REACHES THE WORK — otherwise the worktree is d
 
     const inRepo = await port.execute(node("task-1"), { branch: "work/task-1" });
     expect(inRepo.ok && inRepo.value.succeeded).toBe(false);
+  });
+});
+
+describe("A MERGE THAT MOVES NOTHING IS NOT A MERGE", async () => {
+  test("an EMPTY branch is refused — `git merge --no-ff` exits 0 on it, which read as success", async () => {
+    // The defect, measured: `git merge --no-ff <branch>` where the branch points at the same commit
+    // as HEAD prints "Already up to date." and returns 0. Both git adapters read that zero as a
+    // merge and returned `merged:<branch>` as evidence, so a run whose work produced no commit
+    // reported real delivery over a repository nothing had happened in.
+    //
+    // Every other test in this file COMMITS inside the change before merging, which is why the case
+    // was never constructed and why 12 of 12 mutants passed over a branch no test reached.
+    const { cwd, worktreeRoot } = repo("empty");
+    const port = gitWorktreeChangeControl({ cwd, baseBranch: "main", worktreeRoot });
+    const opened = await port.open(node("task-1"), { branch: "work/task-1" });
+    expect(opened.ok).toBe(true);
+    if (!opened.ok) return;
+
+    // Nothing is committed. The worktree exists and the branch exists; the change does not.
+    const landed = await port.merge(opened.value);
+    expect(landed.ok).toBe(false);
+    if (landed.ok) return;
+    expect(landed.reason).toContain("no commits");
+    expect(landed.reason).toContain("a merge that moves nothing is not a merge");
+
+    // ...and `main` is where it was, which is the fact the old `ok: true` was denying.
+    const log = spawnSync("git", ["log", "--oneline"], { cwd, encoding: "utf-8" });
+    expect((log.stdout ?? "").trim().split("\n")).toHaveLength(1);
+  });
+
+  test("A FILE IN THE WORKTREE IS NOT A COMMIT — uncommitted work is still refused", async () => {
+    // The tempting fix is for change control to `git add -A` on the performer's behalf. It is not
+    // taken: that would sweep whatever else is lying in the tree into a commit nobody wrote.
+    const { cwd, worktreeRoot } = repo("dirty");
+    const port = gitWorktreeChangeControl({ cwd, baseBranch: "main", worktreeRoot });
+    const opened = await port.open(node("task-2"), { branch: "work/task-2" });
+    expect(opened.ok).toBe(true);
+    if (!opened.ok) return;
+    writeFileSync(join(checkoutOf(opened.value), "note.txt"), "the agent wrote this\n");
+
+    const landed = await port.merge(opened.value);
+    expect(landed.ok).toBe(false);
+  });
+
+  test("and the refusal is FALSIFIABLE: one commit is enough to make the same merge succeed", async () => {
+    // Without this the check above could be a merge that never works, which is the opposite defect.
+    const { cwd, worktreeRoot } = repo("committed");
+    const port = gitWorktreeChangeControl({ cwd, baseBranch: "main", worktreeRoot });
+    const opened = await port.open(node("task-3"), { branch: "work/task-3" });
+    expect(opened.ok).toBe(true);
+    if (!opened.ok) return;
+    commitIn(checkoutOf(opened.value), "note.txt", "committed\n");
+
+    const landed = await port.merge(opened.value);
+    expect(landed.ok).toBe(true);
+    const log = spawnSync("git", ["log", "--oneline"], { cwd, encoding: "utf-8" });
+    expect((log.stdout ?? "").trim().split("\n").length).toBeGreaterThan(1);
+  });
+});
+
+describe("the SHARED-CHECKOUT adapter refuses the same way, and unknown is not zero", async () => {
+  test("gitChangeControl also refuses an empty branch — both adapters, one rule", async () => {
+    // The worktree variant had a test and this one did not, so the mutation matrix killed the
+    // mutant on one branch and survived on the other. Two adapters implementing one rule need two
+    // falsifiers, or half the rule is enforced by nothing.
+    const { cwd } = repo("shared-empty");
+    const port = gitChangeControl({ cwd, baseBranch: "main" });
+    const opened = await port.open(node("task-1"), { branch: "work/task-1" });
+    expect(opened.ok).toBe(true);
+    if (!opened.ok) return;
+    const landed = await port.merge(opened.value);
+    expect(landed.ok).toBe(false);
+    if (landed.ok) return;
+    expect(landed.reason).toContain("nothing to merge");
+  });
+
+  test("A COUNT GIT CANNOT ANSWER IS UNKNOWN, and unknown refuses rather than guessing", async () => {
+    // `rev-list --count HEAD..<branch>` on a branch that does not exist exits non-zero. Reading
+    // that as 0 would refuse a real merge; reading it as 1 would permit an empty one. Both mutants
+    // survived until this test existed, because no test ever made git fail to answer.
+    const { cwd, worktreeRoot } = repo("unknown");
+    const port = gitWorktreeChangeControl({ cwd, baseBranch: "main", worktreeRoot });
+    const landed = await port.merge({ changeId: "c", branch: "work/never-created" });
+    expect(landed.ok).toBe(false);
+    if (landed.ok) return;
+    // The wording matters: "could not tell" is a different statement from "there is nothing there".
+    expect(landed.reason).toContain("could not tell");
+  });
+});
+
+describe("commitsAhead: every way of not knowing answers UNKNOWN", () => {
+  test("a normal count is returned as a number", () => {
+    // Trailing whitespace is what git actually prints, and `.trim()` is what handles it.
+    expect(commitsAhead(() => ({ status: 0, stdout: "3\n" }), "b")).toBe(3);
+    expect(commitsAhead(() => ({ status: 0, stdout: "0\n" }), "b")).toBe(0);
+  });
+
+  test("GIT FAILING is unknown, not zero", () => {
+    expect(commitsAhead(() => ({ status: 128, stdout: "" }), "b")).toBeUndefined();
+  });
+
+  test("AND AN UNPARSEABLE ANSWER IS ALSO UNKNOWN — the path no adapter call can reach", () => {
+    // This is why the function takes its runner as a parameter. Through `gitWorktreeChangeControl`
+    // there is no way to make git exit 0 and print something that is not a number, so the guard was
+    // unreachable defensive code and a mutant turning it into `? 1 :` survived — a mutant that
+    // would have let an EMPTY branch merge whenever git answered strangely.
+    expect(commitsAhead(() => ({ status: 0, stdout: "not a number" }), "b")).toBeUndefined();
+    expect(commitsAhead(() => ({ status: 0, stdout: "" }), "b")).toBeUndefined();
+    // ...and 1 in particular, because that is the value the surviving mutant chose.
+    expect(commitsAhead(() => ({ status: 0, stdout: "nonsense" }), "b")).not.toBe(1);
+  });
+});
+
+describe("a merge git REFUSES is still a refusal — the conflict path", () => {
+  test("gitChangeControl reports a real merge conflict rather than 'merged'", async () => {
+    // COVERAGE THIS BRANCH LOST AND GOT BACK. Before the empty-branch guard, the test that reached
+    // `if (merged.status !== 0)` did so with a branch that had nothing on it — and once "nothing to
+    // merge" became its own refusal, the git-level failure was reached by no test at all. The
+    // mutant that deleted the conflict refusal then survived: an adapter that would have reported
+    // `merged:` over a conflicted tree.
+    //
+    // So the case is constructed properly here: two branches that genuinely disagree about one file.
+    const { cwd } = repo("conflict");
+    const git = (...args: string[]) => spawnSync("git", args, { cwd, encoding: "utf-8" });
+
+    // main gains a line...
+    writeFileSync(join(cwd, "shared.txt"), "from main\n");
+    git("add", "shared.txt");
+    git("-c", "user.email=t@example.invalid", "-c", "user.name=T", "commit", "-m", "main writes");
+
+    // ...and a branch off the ORIGINAL commit writes the same file differently.
+    git("checkout", "-b", "work/clash", "HEAD~1");
+    writeFileSync(join(cwd, "shared.txt"), "from the branch\n");
+    git("add", "shared.txt");
+    git("-c", "user.email=t@example.invalid", "-c", "user.name=T", "commit", "-m", "branch writes");
+    git("checkout", "main");
+
+    const port = gitChangeControl({ cwd, baseBranch: "main" });
+    const landed = await port.merge({ changeId: "c", branch: "work/clash" });
+    expect(landed.ok).toBe(false);
+    if (landed.ok) return;
+    expect(landed.reason).toContain("refused");
+    // And NOT the empty-branch reason: the branch has a commit, so this is git saying no.
+    expect(landed.reason).not.toContain("no commits");
+
+    // The conflict is left for a human; the adapter does not pretend it landed.
+    git("merge", "--abort");
   });
 });

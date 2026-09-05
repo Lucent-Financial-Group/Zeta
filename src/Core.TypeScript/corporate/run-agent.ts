@@ -36,12 +36,13 @@
 
 import { buildOrgChart } from "./org-chart";
 import { SEED_HATS } from "./org-seed";
-import { agentsFromChart, runOrgRuntime, type OrgRuntimeDeps } from "./org-runtime";
+import { agentsFromChart, runOrgRuntime, type OrgRuntimeDeps, type OrgRuntimeReport } from "./org-runtime";
 import { statusSurfaceFrom } from "./agent-loop-bridge";
 import { appendRun, deliveryRate, readEvents } from "./org-store";
 import { everyRunWasSimulated, foldOrganization } from "./org-fold";
 import { idlePortfolios, PortfolioKind, portfolioHistory, portfolioOf } from "./portfolio";
 import { emptyQueue, type WorkQueue } from "./work-market";
+import { argRefusals, parseArgs, providersFromArgs, type Args } from "./run-org";
 import { IntakeKind, Severity, type ExternalEvent } from "./intake";
 import { RunOutcome } from "./qa";
 import { isLeafType, WorkType } from "./goal-cascade";
@@ -86,6 +87,24 @@ export interface AgentRunArgs {
   readonly resume: boolean;
   /** Where the organization's own history goes. Absent means the run is not persisted. */
   readonly store?: string;
+  /**
+   * WHICH ADAPTER ANSWERS EACH PORT — the same flags `run-org.ts` takes, parsed by the same code.
+   *
+   * THE BOUNDARY THIS CLOSES, measured before it existed:
+   *
+   *     bun run-agent.ts --agent alexa --at ... --store S
+   *       deliveryRate = {"runs":1,"delivered":1,"deliveredForReal":0,"deliveredSimulated":1,...}
+   *       run: delivered=true replayable=true realPorts=[]
+   *
+   * and NO flag could change that number. The two CLIs each held half of the end-to-end claim:
+   * `run-org.ts` reaches real repositories and has nothing choosing; this one has a model choosing
+   * real work off a real cascade and could only ever record runs that performed nothing. The
+   * choosing was real in one and the doing was real in the other, and no single invocation had
+   * both — which is the thing "end to end" was supposed to mean.
+   *
+   * Absent means every port simulated, exactly as before, and the run says so in its own output.
+   */
+  readonly ports?: Args;
 }
 
 /** Run the organization and turn it into the surface the loop looks at. */
@@ -164,22 +183,27 @@ export async function organizationSurface(args: AgentRunArgs): Promise<{
   readonly candidates: number;
   readonly unmeasured: readonly string[];
   readonly trace: readonly OrgEvent[];
+  /** What this run COULD do, derived from the adapters it was given. Never declared. */
+  readonly fidelity: OrgRuntimeReport["fidelity"];
 }> {
   const chart = buildOrgChart(SEED_HATS);
   if (!chart.ok) throw new Error(chart.reason);
 
   let n = 0;
+  // Hoisted, because the intake ADAPTER needs the same list the runtime does. `simulatedIntake`
+  // replays exactly these; a real `--inbox` or `--tracker` ignores them and reaches for its own.
+  const events: readonly ExternalEvent[] = [
+    {
+      ...DEFECT,
+      // A different inbound ticket per run: the same product receives many reports over time, and
+      // reusing one external id would make every run the same ticket arriving again.
+      externalId: `T-${String(args.atMs)}`,
+      ...(args.incident ? { kind: IntakeKind.Incident, title: "checkout is down" } : {}),
+    },
+  ];
   const deps: OrgRuntimeDeps = {
     chart: chart.chart,
-    externalEvents: [
-      {
-        ...DEFECT,
-        // A different inbound ticket per run: the same product receives many reports over time, and
-        // reusing one external id would make every run the same ticket arriving again.
-        externalId: `T-${String(args.atMs)}`,
-        ...(args.incident ? { kind: IntakeKind.Incident, title: "checkout is down" } : {}),
-      },
-    ],
+    externalEvents: events,
     agents: agentsFromChart(chart.chart),
     observations: [],
     acceptingHatId: "cto",
@@ -199,6 +223,18 @@ export async function organizationSurface(args: AgentRunArgs): Promise<{
       budgetBurn: 0, estimatedEffort: 0.2,
     }),
     ...(args.qaFails ? { qaFallback: RunOutcome.Failed } : {}),
+    // Built from the SAME function `run-org.ts` uses. A second mapping from flags to adapters would
+    // be a second set of defaults to drift, and the one thing both CLIs must agree on is what
+    // "unspecified" means — because that is the answer that decides whether a run touched anything.
+    ...(args.ports === undefined
+      ? {}
+      : {
+          providers: providersFromArgs(
+            args.ports,
+            events,
+            args.qaFails ? RunOutcome.Failed : RunOutcome.Passed,
+          ),
+        }),
     // The goal is about a long-lived product. Emitted as facts, so with `--store` the portfolio
     // accumulates goals across runs — which is the only thing a container buys that a per-run value
     // does not.
@@ -246,6 +282,7 @@ export async function organizationSurface(args: AgentRunArgs): Promise<{
     /** Carried out so a caller can see WHICH fields the run could not measure, not just the numbers. */
     unmeasured: built.dora.unmeasured.map((u) => u.field),
     trace: report.trace,
+    fidelity: report.fidelity,
   };
 }
 
@@ -261,12 +298,23 @@ export async function main(argv: readonly string[]): Promise<number> {
     console.error("refused: --at <iso8601> is required — neither the organization nor the loop reads a clock");
     return 1;
   }
+  // The SAME parser `run-org.ts` uses, over the SAME argv. An agent run and an organization run
+  // that were given identical port flags must reach identical adapters, and the only way to be sure
+  // of that is for there to be one place that decides.
+  const ports = parseArgs(argv);
+  const refusals = argRefusals(ports);
+  if (refusals.length > 0) {
+    for (const reason of refusals) console.error(`refused: ${reason}`);
+    return 2;
+  }
+
   const args: AgentRunArgs = {
     atMs: Date.parse(at),
     qaFails: argv.includes("--qa-fails"),
     incident: argv.includes("--incident"),
     resume: argv.includes("--resume"),
     ...(flagValue(argv, "--store") === undefined ? {} : { store: flagValue(argv, "--store")! }),
+    ports,
   };
 
   // `--history` asks the loop about the agent, not the organization: no run is needed to answer it,
@@ -310,6 +358,13 @@ export async function main(argv: readonly string[]): Promise<number> {
       `${org.candidates} candidate(s) on the surface, ` +
       `dora ${org.unmeasured.length === 0 ? "FULLY MEASURED" : `unmeasured: ${org.unmeasured.join(", ")}`}` +
       (args.store === undefined ? "" : `, history ${JSON.stringify(deliveryRate(args.store))}`),
+  );
+  // BESIDE the verdict, not under it. "DELIVERED" reads identically whether the work reached a
+  // repository or reached nothing, and this is the only line that tells the two apart.
+  console.log(
+    `  DST-replayable: ${
+      org.fidelity.replayable ? "yes — every port simulated; this run performed nothing" : `no — ${org.fidelity.realPorts.join(", ")} touched something`
+    }`,
   );
 
   // What the PORTFOLIO has seen — across every stored run, which is the question a single run

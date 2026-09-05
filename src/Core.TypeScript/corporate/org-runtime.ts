@@ -1319,6 +1319,8 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
   // ── The work as a real CHANGE ─────────────────────────────────────────────
   /** The changes the CHANGE-CONTROL PORT actually opened and merged — not the ones projected. */
   const changesLanded: string[] = [];
+  /** Projected as merged, and the port said no. The organization and the repository disagree. */
+  const changesUnlanded: string[] = [];
   const changes = projectAll({
     cascade,
     queue,
@@ -1357,12 +1359,24 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
     const landed = await providers.change.merge(handle);
     if (!landed.ok) {
       refusals.push(`change control '${providers.change.meta.name}' could not merge ${handle.branch}: ${landed.reason}`);
+      changesUnlanded.push(c.workId);
       continue;
     }
     changesLanded.push(c.workId);
   }
 
-  const delivered = isDelivered(cascade, goalId);
+  // A GOAL IS NOT DELIVERED WHILE A CHANGE THE ORGANIZATION PROJECTED AS MERGED DID NOT MERGE.
+  //
+  // The paragraph above says a refusal "CONTRADICTS the claim rather than being logged beside it",
+  // and until this line it did not: `delivered` was `isDelivered(cascade, goalId)` alone, so the
+  // refusal went into a list nothing read and the run still printed `goal DELIVERED`. Measured on
+  // the first real end-to-end agent run — both merges refused, `delivered: true`, and
+  // `deliveryRate.deliveredForReal` counted it as shipped.
+  //
+  // Narrow on purpose. It can only bite where the change record and the repository DISAGREE, which
+  // a simulated change control never does, so no simulated run changes meaning. What it removes is
+  // the ability to say DELIVERED over a repository in which nothing landed.
+  const delivered = isDelivered(cascade, goalId) && changesUnlanded.length === 0;
   note({
     kind: OrgEventKind.WorkItemTransition,
     subjectId: goalId,

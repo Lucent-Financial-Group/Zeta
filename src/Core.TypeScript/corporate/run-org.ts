@@ -64,6 +64,7 @@ import {
   agentWorkExecutor,
   autoApproveReview,
   commandProposal,
+  modelProposal,
   commandReview,
   commandTestRunner,
   commandWorkExecutor,
@@ -181,6 +182,13 @@ export interface Args {
   readonly trackerSource: string;
   /** An agent performs the work; a separate command decides whether it worked. */
   readonly workAgent: string | undefined;
+  /**
+   * A MODEL performs the work, in the same split as `--work-agent`: it proposes, the verifier
+   * decides. Its proposal is prose, so a verifier that checks for a file will refuse it — which is
+   * the correct outcome and not a defect. The register's job is to record that a model was asked and
+   * that the check said no, rather than to accept testimony as work.
+   */
+  readonly workModel: string | undefined;
   readonly workAgentArgs: readonly string[];
   readonly workVerify: string | undefined;
   readonly workVerifyArgs: readonly string[];
@@ -233,6 +241,7 @@ export function parseArgs(argv: readonly string[]): Args {
     trackerMap: valuesAfter(argv, "--tracker-map"),
     trackerSource: valueAfter(argv, "--tracker-source") ?? "tracker",
     workAgent: valueAfter(argv, "--work-agent"),
+    workModel: valueAfter(argv, "--work-model"),
     workAgentArgs: valuesAfter(argv, "--work-agent-arg"),
     workVerify: valueAfter(argv, "--work-verify"),
     workVerifyArgs: valuesAfter(argv, "--work-verify-arg"),
@@ -329,6 +338,38 @@ export function trackerMapper(source: string, pairs: readonly string[]): (item: 
  * title, never anything a reporter typed. A work item arrives from intake, which with `--inbox` is a
  * directory somebody else can write to; its text is untrusted input to this process.
  */
+/**
+ * What the flags ask for but cannot be given, said out loud instead of quietly downgraded.
+ *
+ * THE DEFECT THIS CLOSES. `--work-agent claude` with no `--work-verify` fell through every branch to
+ * `simulatedWorkExecutor(true)` — an executor that reports success without doing anything. An
+ * operator who asked for a real agent and forgot the verifier got a run that said every item
+ * succeeded, and the only sign was one line in the fidelity block reading `simulated`. That is the
+ * fallback this port layer exists to refuse, arriving through the argument parser instead of through
+ * the registry.
+ *
+ * Stated as REASONS rather than a boolean, because "your flags are wrong" is not actionable and the
+ * caller has to be told which half is missing.
+ */
+export function argRefusals(args: Args): readonly string[] {
+  const out: string[] = [];
+  if (args.workAgent !== undefined && args.workVerify !== undefined && args.workModel !== undefined) {
+    out.push("--work-agent and --work-model both name a performer; supply one, because the run can only have done the work one way");
+  }
+  for (const [flag, value] of [["--work-agent", args.workAgent], ["--work-model", args.workModel]] as const) {
+    if (value !== undefined && args.workVerify === undefined) {
+      // NOT a default. The performer only ever produces testimony; without a verifier there is
+      // nothing to turn testimony into an outcome, and the honest answer is that this run cannot be
+      // configured — never that it silently becomes a simulation that reports success.
+      out.push(`${flag} needs --work-verify — the performer only gives testimony, and something else has to decide whether it worked`);
+    }
+  }
+  if (args.workVerify !== undefined && args.workAgent === undefined && args.workModel === undefined) {
+    out.push("--work-verify was given with nothing to verify: add --work-agent or --work-model");
+  }
+  return out;
+}
+
 export function providersFromArgs(args: Args, events: readonly ExternalEvent[], qaFallback: RunOutcome): ProviderSet {
   return {
     intake:
@@ -343,7 +384,24 @@ export function providersFromArgs(args: Args, events: readonly ExternalEvent[], 
           ? simulatedIntake(events)
           : directoryIntake(args.inbox),
     work:
-      args.workAgent !== undefined && args.workVerify !== undefined
+      args.workModel !== undefined && args.workVerify !== undefined
+        ? agentWorkExecutor({
+            // A model proposes. Same split, same refusal to let the proposer judge itself.
+            perform: modelProposal(
+              ollamaBackend({ model: args.workModel, seed: 42 }),
+              (node) =>
+                `You are implementing work item ${node.workId}: ${node.title}.
+` +
+                `Describe, in one or two sentences, the change you would make. Do not write code.`,
+            ),
+            verify: {
+              command: args.workVerify,
+              argsFor: (node) => [...args.workVerifyArgs, node.workId],
+              cwd: args.git ?? process.cwd(),
+            },
+            name: "model",
+          })
+      : args.workAgent !== undefined && args.workVerify !== undefined
         ? agentWorkExecutor({
             // The agent proposes: whatever it prints is testimony, never a verdict.
             perform: commandProposal({
@@ -406,6 +464,14 @@ export function providersFromArgs(args: Args, events: readonly ExternalEvent[], 
 
 export async function main(argv: readonly string[]): Promise<number> {
   const args = parseArgs(argv);
+
+  // Before the organization is built, because a misconfigured run that reaches the cascade has
+  // already printed a page of output an operator will read as progress.
+  const refusals = argRefusals(args);
+  if (refusals.length > 0) {
+    for (const reason of refusals) console.error(`refused: ${reason}`);
+    return 2;
+  }
 
   const built = buildOrgChart(SEED_HATS);
   if (!built.ok) {

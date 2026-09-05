@@ -800,6 +800,39 @@ export function commandTestRunner(input: {
  * MERGE IS `--no-ff` ON PURPOSE: a fast-forward leaves no record that a change existed, and this
  * port's whole job is that the record and the repository agree.
  */
+/**
+ * How many commits `branch` has that `HEAD` does not.
+ *
+ * THE DEFECT THIS EXISTS FOR. `git merge --no-ff <branch>` where the branch points at the same
+ * commit as HEAD prints "Already up to date." and **exits 0** — measured, not assumed. Both git
+ * adapters read that zero as a merge and returned `merged:<branch>` as evidence. So a run whose
+ * work produced no commit reported real delivery over a repository nothing had happened in, and
+ * `deliveryRate.deliveredForReal` counted it.
+ *
+ * That is the vacuity class in the one adapter whose entire purpose is to touch something real: a
+ * check that cannot fail, wearing the word "merged". Every unit test committed inside the change
+ * before merging, so the empty case was never constructed and 12 of 12 mutants passed over a branch
+ * no test reached.
+ *
+ * EXPORTED so both of its unknown paths are reachable. Through an adapter only one of them is:
+ * a branch that does not exist makes `rev-list` exit non-zero, and no adapter call can make git exit
+ * 0 with an unparseable count. The second guard would then be unreachable defensive code — which
+ * is the vacuity class, and the reason this takes its runner as a parameter rather than closing
+ * over `spawnSync`.
+ *
+ * Returns `undefined` when git could not answer, which is NOT zero — an unanswerable question must
+ * not read as "nothing to merge".
+ */
+export function commitsAhead(
+  run: (args: readonly string[]) => { readonly status: number | null; readonly stdout?: string },
+  branch: string,
+): number | undefined {
+  const counted = run(["rev-list", "--count", `HEAD..${branch}`]);
+  if (counted.status !== 0) return undefined;
+  const n = Number.parseInt((counted.stdout ?? "").trim(), 10);
+  return Number.isNaN(n) ? undefined : n;
+}
+
 export function gitChangeControl(input: {
   readonly cwd: string;
   readonly baseBranch: string;
@@ -827,6 +860,11 @@ export function gitChangeControl(input: {
     merge: async (handle) => {
       const back = git(["checkout", input.baseBranch]);
       if (back.status !== 0) return { ok: false, reason: `could not return to ${input.baseBranch}: ${(back.stderr ?? "").trim()}` };
+      const ahead = commitsAhead(git, handle.branch);
+      if (ahead === undefined) return { ok: false, reason: `could not tell whether ${handle.branch} has anything to merge` };
+      if (ahead === 0) {
+        return { ok: false, reason: `${handle.branch} has no commits: there is nothing to merge, and a merge that moves nothing is not a merge` };
+      }
       const merged = git(["merge", "--no-ff", "-m", `merge ${handle.changeId}`, handle.branch]);
       if (merged.error !== undefined) return { ok: false, reason: `git could not run: ${merged.error.message}` };
       if (merged.status !== 0) {
@@ -895,6 +933,15 @@ export function gitWorktreeChangeControl(input: {
       };
     },
     merge: async (handle) => {
+      // BEFORE the merge, because afterwards the answer is always zero and the question is lost.
+      const ahead = commitsAhead(git, handle.branch);
+      if (ahead === undefined) return { ok: false, reason: `could not tell whether ${handle.branch} has anything to merge` };
+      if (ahead === 0) {
+        // The worktree may well hold files — the work ran. Uncommitted files are not a change, and
+        // this adapter does not commit on the performer's behalf: doing so would put whatever else
+        // is lying in that tree into a commit nobody wrote.
+        return { ok: false, reason: `${handle.branch} has no commits: the work left nothing committed, and a merge that moves nothing is not a merge` };
+      }
       const merged = git(["merge", "--no-ff", "-m", `merge ${handle.changeId}`, handle.branch]);
       if (merged.error !== undefined) return { ok: false, reason: `git could not run: ${merged.error.message}` };
       if (merged.status !== 0) {

@@ -20,7 +20,7 @@ import { IntakeKind, Severity, type ExternalEvent } from "./intake";
 import { GateKind, GateOutcome } from "./quality-gate";
 import { RunOutcome } from "./qa";
 import { agentReview, autoApproveReview, simulatedChangeControl, simulatedIntake, simulatedTestRunner, simulatedWorkExecutor } from "./adapters";
-import { Port, type ProviderSet, type ReviewPort, type ReviewVerdict } from "./providers";
+import { Fidelity, Port, type ProviderSet, type ReviewPort, type ReviewVerdict } from "./providers";
 
 const chart = (() => {
   const r = buildOrgChart(SEED_HATS);
@@ -289,5 +289,54 @@ describe("gateChooserFrom — every branch, including the one the runtime cannot
     expect(LEGAL[picked.index]).toBe(GateOutcome.Rejected);
     expect(picked.reason).toContain("not open to this hat");
     expect(picked.reason).toContain("not applicable");
+  });
+});
+
+describe("A REFUSED MERGE CONTRADICTS THE CLAIM, rather than being logged beside it", () => {
+  /** Change control that opens fine and then refuses to land anything. */
+  const refusingChange = (): ProviderSet["change"] => ({
+    meta: {
+      port: Port.ChangeControl,
+      name: "refuses-to-merge",
+      fidelity: Fidelity.Real,
+      describes: "opens changes and refuses every merge",
+    },
+    open: async (node, ctx) => ({
+      ok: true,
+      value: { changeId: `c-${node.workId}`, branch: ctx.branch },
+      evidence: [],
+    }),
+    merge: async () => ({ ok: false, reason: "the branch has no commits" }),
+  });
+
+  test("the goal is NOT DELIVERED when a change projected as merged did not merge", async () => {
+    // The runtime's own comment beside this call has always said a refusal CONTRADICTS the claim.
+    // Until 2026-09-04 it did not: `delivered` was the cascade's state alone, so the refusal went
+    // into a list nothing read and the run still reported `goal DELIVERED`.
+    //
+    // Measured on the first real end-to-end agent run — both merges refused, `delivered: true`,
+    // and `deliveryRate.deliveredForReal` counted the run as shipped.
+    const report = await runOrgRuntime(
+      deps({ providers: { ...providersWith(autoApproveReview()), change: refusingChange() } }),
+    );
+    expect(report.delivered).toBe(false);
+    expect(report.refusals.some((r) => r.includes("could not merge"))).toBe(true);
+  });
+
+  test("...and the SAME organization with a change control that lands delivers", async () => {
+    // Without this the assertion above could be satisfied by an organization that never delivers,
+    // which would be the opposite defect and just as invisible.
+    const report = await runOrgRuntime(deps({ providers: providersWith(autoApproveReview()) }));
+    expect(report.delivered).toBe(true);
+  });
+
+  test("the fidelity report still names change control REAL — refusing is doing something", async () => {
+    // A port that reached a repository and was told no is not a simulated port. Conflating them
+    // would make `realPorts` mean "succeeded" instead of "touched", which is a different claim.
+    const report = await runOrgRuntime(
+      deps({ providers: { ...providersWith(autoApproveReview()), change: refusingChange() } }),
+    );
+    expect(report.fidelity.replayable).toBe(false);
+    expect(report.fidelity.realPorts).toContain(Port.ChangeControl);
   });
 });
