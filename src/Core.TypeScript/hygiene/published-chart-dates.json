@@ -7,11 +7,6 @@
       "unavailable": "OCI registries expose tags, not publish timestamps: /v2/<repo>/tags/list carries no `created` field, and reading one would cost a manifest fetch per tag. Publish dates for this coordinate are UNAVAILABLE, which is not the same fact as `published recently`.",
       "created": {}
     },
-    "codeberg.org/wrenix/helm-charts|headscale": {
-      "source": "unavailable",
-      "unavailable": "OCI registries expose tags, not publish timestamps: /v2/<repo>/tags/list carries no `created` field, and reading one would cost a manifest fetch per tag. Publish dates for this coordinate are UNAVAILABLE, which is not the same fact as `published recently`.",
-      "created": {}
-    },
     "ghcr.io/actions/actions-runner-controller-charts|gha-runner-scale-set": {
       "source": "unavailable",
       "unavailable": "OCI registries expose tags, not publish timestamps: /v2/<repo>/tags/list carries no `created` field, and reading one would cost a manifest fetch per tag. Publish dates for this coordinate are UNAVAILABLE, which is not the same fact as `published recently`.",
