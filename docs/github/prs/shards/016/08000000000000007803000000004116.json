@@ -1,0 +1,12 @@
+{
+  "pr_number": 16662,
+  "archive_path": "docs/history/pr-reviews/PR-16662-fix-081m1ryf7yf087g0r003ftcz5k-the-live-run-refuted-opensearch-deferred-on-the-m.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-05T14:32:03.789Z",
+  "schema_version": "v1",
+  "commit_sha": "4ef14c4c293721bd0c3d714d7c2d6a50096bb23e",
+  "title": "fix(081M1RYF7YF087G0R003FTCZ5K): the live run refuted OpenSearch — deferred on the measurement, plus the blank-slate Gemini ferry fact-checked",
+  "state": "MERGED",
+  "merged_at": "2026-09-05T14:31:21Z",
+  "head_ref": "otto/opensearch-defer-on-live-measurement"
+}

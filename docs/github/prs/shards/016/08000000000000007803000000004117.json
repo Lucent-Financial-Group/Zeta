@@ -1,0 +1,12 @@
+{
+  "pr_number": 16663,
+  "archive_path": "docs/history/pr-reviews/PR-16663-feat-081m1ryt4qf087g0r000hwg25g-orphan-catalog-keeps-full-content-ids.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-05T14:40:30.542Z",
+  "schema_version": "v1",
+  "commit_sha": "5819347c52751f03117a452fb0ea2bb08298c469",
+  "title": "feat(081M1RYT4QF087G0R000HWG25G): orphan catalog keeps full content ids",
+  "state": "MERGED",
+  "merged_at": "2026-09-05T14:39:12Z",
+  "head_ref": "feat/zetafs-orphan-catalog-reticulum-first"
+}
