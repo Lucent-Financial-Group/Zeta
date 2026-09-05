@@ -37,7 +37,7 @@
 // Usage:  bun src/Core.TypeScript/hygiene/lint-orphaned-doc-comments.ts <dir|file> [...]
 // Exit:   0 clean · 1 orphan(s) found · 2 nothing was scanned (a check that checked nothing).
 
-import { readdirSync, readFileSync, statSync } from "node:fs";
+import { readdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 
 export interface OrphanedDoc {
@@ -120,11 +120,30 @@ export function orphanedDocsIn(file: string, source: string): readonly OrphanedD
   return out;
 }
 
+/**
+ * Every `.ts` file under `path`, which may itself be a file.
+ *
+ * ONE SYSCALL, NOT TWO. The first draft asked `statSync(path).isDirectory()` and then called
+ * `readdirSync(path)` — a check-then-use race (TOCTOU, CWE-367), caught in CI by
+ * `lint-check-then-use-file-races.ts` on this lint's own first run. Between the two calls the path
+ * can be created, deleted or replaced, so the answer the check returned is already stale when the
+ * use runs: the check reads as defensive and prevents nothing.
+ *
+ * So the directory read is ATTEMPTED and its failure interpreted. `ENOTDIR` means it was a file all
+ * along, which is a legitimate argument here; anything else is a real error and is rethrown rather
+ * than swallowed into an empty list, because a lint that silently scans nothing reports a pass.
+ */
 function tsFilesUnder(path: string): readonly string[] {
-  const stat = statSync(path);
-  if (!stat.isDirectory()) return path.endsWith(".ts") ? [path] : [];
+  let entries;
+  try {
+    entries = readdirSync(path, { withFileTypes: true });
+  } catch (err) {
+    const code = (err as NodeJS.ErrnoException).code;
+    if (code === "ENOTDIR") return path.endsWith(".ts") ? [path] : [];
+    throw err;
+  }
   const out: string[] = [];
-  for (const entry of readdirSync(path, { withFileTypes: true })) {
+  for (const entry of entries) {
     if (entry.name === "node_modules" || entry.name.startsWith(".")) continue;
     out.push(...tsFilesUnder(join(path, entry.name)));
   }
