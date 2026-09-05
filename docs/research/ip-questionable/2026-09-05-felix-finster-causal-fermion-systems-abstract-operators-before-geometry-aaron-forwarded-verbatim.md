@@ -410,6 +410,96 @@ the exactness question, the "does coordinated retraction always widen or only
 sometimes" question, and the `MAX_MULTIPLICITY = 1024` clamp's effect on
 order-independence are **routed to the math team rather than asserted here**.
 
+## Chirality — Finster ASSUMES it; Aaron says ours falls out. The distinction that decides it.
+
+Aaron, 2026-09-05, forwarding the chirality and baryogenesis segment:
+
+> *"we have chirality via first principles and Clifford algebra, maybe braided monoidal category
+> theory too but i don't think — i think it comes from Clifford lol. this is interesting from this
+> talk; when i saw our chirality from first principles i was very surprised."*
+
+**Finster is unusually direct that this is an input, and the interviewer pins him on it:**
+
+> **Interviewer:** *"So you don't derive chirality. You have to assume it — once you assume it,
+> you get the standard model gauge group?"*
+> **Finster:** *"Yes. So, some of chirality is built into the vacuum … as soon as you work with
+> Dirac spinors, there's this left and right component, you can write it as a pair of Weyl
+> spinors, and you have chirality right away."*
+
+and on what specifically must be imposed:
+
+> *"we need to assume — this is really an input, there's no explanation for that right now — that
+> this neutrino sector breaks the chiral symmetry … there must be some left-right asymmetry. And
+> only if this is imposed, then we get the correct gauge groups of the standard model and the
+> correct couplings and the mixing matrices."*
+
+### TWO things are called "chirality", and only one of them is a result
+
+This is the whole question, and it is where the claim will live or die:
+
+| | what it is | Finster's status |
+|---|---|---|
+| **(i) the SPLIT** | two eigenspaces exist. In a Clifford algebra the pseudoscalar `ω = e₁e₂…eₙ` decomposes the module into ±1 eigenspaces when it is central and squares to +1 | **He gets this for free too** — *"you have chirality right away"* |
+| **(ii) the ASYMMETRY** | why one handedness is *preferred* — why the physics is not symmetric under exchanging the eigenspaces | **This is what he assumes.** *"there's no explanation for that right now"* |
+
+**So deriving (i) is not a result that distinguishes us from CFS.** Finster explicitly concedes
+(i) in the same breath. A construction that produces the ±1 eigenspaces of a volume element and
+presents that as "chirality from first principles" has re-derived the thing he already had, and
+the surprise would be misplaced.
+
+Deriving (ii) — or proving it *cannot* be derived, or showing our construction **forces** it —
+would be a genuine result and a genuine difference.
+
+### The specific way this claim usually fails, and why it must be checked rather than argued
+
+In any concrete Clifford construction, handedness enters through **choices**: the order of the
+generators, the sign convention on the pseudoscalar, which eigenvalue gets labelled `+`. If the
+"derived" chirality inherits its handedness from a generator ordering fixed by hand upstream,
+then chirality was **assumed exactly as Finster assumes it** — just earlier in the pipeline and
+less visibly, which is worse rather than better, because it looks derived.
+
+The same trap has a second door: the adinkra's **dashing convention**. Dashed edges carry signs,
+and an orientation chosen there would propagate into anything downstream that looks like
+handedness.
+
+And a third, which cuts against Aaron's own guess: **a braided monoidal category is already a
+chirality-like structure** — the braiding `c_{A,B}` has over- and under-crossings and
+`c_{B,A} ∘ c_{A,B} ≠ id` in general, with the symmetric case being the degenerate one. So if
+handedness is present there too, "I think it comes from Clifford" would be wrong in the
+*interesting* direction: two independent sources rather than one.
+
+**Routed to the math team** with those three doors named explicitly, and with the instruction to
+report a (i)-dressed-as-(ii) finding plainly if that is what it is. Verdict pending; nothing is
+claimed here.
+
+### Baryogenesis, recorded without a mapping
+
+Finster's mechanism: start from a completely filled Dirac sea; as the universe evolves
+(inflation, structure formation) **fewer states are needed to form the sea**, so states are left
+over and occupy positive-energy solutions — that surplus is the matter we observe. It requires
+corrections to the Dirac equation derived from the causal action principle, *"because the Dirac
+equation allows for pair creation, but it does not allow for the creation of particles without
+antiparticles."* With Claudio Paganini and Marco Fandan-Belzerano; claimed compatible with the
+Sakharov conditions; the quantitative rate is not yet computed because the early-universe metric
+is unknown.
+
+**No mapping is offered here.** There is a superficial rhyme with our `+1`/`−1` retraction ledger
+— a surplus of un-annihilated emissions is precisely an **open history** in the sense
+`docs/research/2026-08-13-zset-as-reflection-cpt-*.md` already defines (fold the Z-set, check for
+zero; an open history carries unanswered emissions). But "matter exists because the books do not
+balance" is a coincidence of shape, not a mechanism, and under
+`.claude/rules/numerology-vs-number-theory.md` it is a **generator, not a conclusion**. Recorded
+as a coincidence, labelled as one, and not promoted.
+
+### The honest note on Finster's own remaining parameters
+
+Worth recording because it tempers the "one parameter" framing: the causal action has one free
+parameter `κ`, but the *theory* does not. He lists three Dirac-sea masses, three neutrino masses,
+and — *"in fact, quite many"* — regularization parameters, because *"we don't know how spacetime
+looks like on the Planck scale. This is the basic shortcoming here."* His own summary of what
+would move the field is a **usability** problem, not a correctness one: *"I should develop it to a
+point where I can say, look, similar to Feynman rules, this is how to compute things."*
+
 ## Register
 
 Everything above is **his** claim, reported. Causal fermion systems is a live
