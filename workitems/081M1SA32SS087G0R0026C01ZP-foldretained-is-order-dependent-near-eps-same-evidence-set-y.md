@@ -249,3 +249,54 @@ Aaron's "on purpose" case — where a silent 4.5-second stall is not.
 4. Meter the fold and refuse loudly past the bound.
 
 Steps 1-2 make it correct. Steps 3-4 make it safe to expose. Still needs Aaron's call before code.
+
+---
+
+## UNRELATED FINDING, recorded here only because it was caught in the same session: headscale
+
+Not part of this work item. Filed as a note so the measurements are not lost; belongs with the
+headscale work.
+
+**I over-claimed a pattern and am correcting it.** I said *"every bare-host OCI chart in the repo
+is excluded from the proof that would validate the form"* and framed it as suspicious. The
+exclusion is real; **the implied causation is not.** The three deferral reasons have nothing to do
+with OCI:
+
+| app | actual deferral reason |
+|---|---|
+| `arc-runner-set` | needs a GitHub App credential + a live runner registration CI has no secret to bind |
+| `forgejo` | standby half of an either/or Git-host pair; ships manual-sync BY DESIGN |
+| `hindsight` | *"the one whose blockers this lane cannot reach"* |
+
+So it is a **coincidence** that no OCI chart is asserted, not concealment — a co-occurrence read
+as structure, which is the error `.claude/rules/numerology-vs-number-theory.md` exists to catch,
+committed by me one day after writing about that rule.
+
+**The narrower claim survives and is the useful one:** the bare-host OCI `repoURL` form has never
+been exercised by the dev included-proof, and headscale is the first app to actually assert it.
+
+**What was ruled OUT by measurement, not by argument:**
+
+- **Chart resolution** — `helm pull oci://codeberg.org/wrenix/helm-charts/headscale --version 1.0.19`
+  succeeds and returns a digest. The coordinate is good.
+- **Rendering** — the chart renders **12 resources** against our exact `valuesObject`.
+- **Inert values** — the failure class headscale hit *before* (2026-08-22: the whole `config:`
+  block inert because the chart had no such key, so `server_url` reached the container from no
+  source). Ruled out: `headscale.zeta.local` **survives the render**, the chart's own values.yaml
+  declares `headscale:` / `config:` / `certmanager:` / `persistence:`, and
+  `inert-valuesobject-keys.ts` does not flag headscale.
+- **Storage class** — `longhorn` is used by 10 other apps and the dev alias has shipped since
+  2026-08-21.
+- **A non-OCI escape** — wrenix's classic Helm index is **empty** (`entries: {}`), so OCI is the
+  only route to this chart.
+
+**What remains:** ArgoCD-side source resolution for a bare-host OCI Helm `repoURL` with no
+repository registration anywhere in the tree (ArgoCD v3.5.2). The repo's own tooling builds
+`oci://${source.repoURL}/${source.chart}`, so bare-host is the LOCAL convention and the local
+tools are right; ArgoCD may want the scheme, or a registration, or neither. **Not established** —
+and worth noting the cheap-looking fix (add `oci://`) is what the local renderer previously choked
+on, so the two consumers disagree and that disagreement is itself the thing to resolve.
+
+**Ten applications already deploy with no chart at all** — `agent-memory`, `cdi`,
+`cilium-lb-ipam`, `deepseek-coder`, `hat-system`, `kubevirt`, `orleans`, `platform`, `qwen-coder`,
+`vllm` — so raw manifests are well-precedented here and would remove the OCI dependency entirely.
