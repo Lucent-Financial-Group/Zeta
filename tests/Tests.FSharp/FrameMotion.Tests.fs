@@ -39,7 +39,7 @@ let ``source-owned CHIP8 cart renders a moving pixel without exposing registers 
 [<InlineData("reverse")>]
 [<InlineData("fast")>]
 [<InlineData("fast-reverse")>]
-let ``one-step motion beats current-position control on held-out direction and speed`` variant =
+let ``one-step motion beats current-position control across direction and speed variants`` variant =
     let fixture =
         match variant with
         | "forward" -> CartFixtures.motionDotForward

@@ -24,8 +24,8 @@ configuration.
 
 Run source-owned CHIP-8 motion carts through the existing immutable emulator and
 `GameEnvironment.Frame`. Compare a current-position control with a one-step
-constant-velocity predictor. Train only on an explicit prefix and evaluate on a
-disjoint suffix plus held-out direction and speed variants.
+constant-velocity predictor. Initialize velocity from an explicit prefix and
+evaluate unseen next-frame labels across direction and speed variants.
 
 ## Acceptance
 
@@ -33,7 +33,7 @@ disjoint suffix plus held-out direction and speed variants.
 - Both policies receive only row-major palette frames; neither sees emulator
   registers, program counter, cart identity, or expected coordinates.
 - Exact next-position accuracy is reported under equal observation budgets.
-- Held-out reverse-direction and changed-speed carts prevent a hard-coded
+- Reverse-direction and changed-speed carts prevent a hard-coded
   rightward or unit-step predictor from passing.
 - The projected policy beats the current-position control on every moving
   variant or the result is recorded as negative.
