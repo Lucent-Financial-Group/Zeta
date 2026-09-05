@@ -41,7 +41,7 @@ spec:
     # bootstraps in dev-cluster/use-cases.ts) because 2026-09-03 made them EQUAL on purpose: a
     # bootstrap behind the self-managed Application means a mid-run self-upgrade, which is
     # exactly the failure that cached the seaweedfs manifest error.
-    targetRevision: 10.7.2
+    targetRevision: 10.8.0
     helm:
       releaseName: argocd
       valuesObject:

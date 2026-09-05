@@ -1,5 +1,5 @@
 {
-  "measuredOn": "2026-09-04",
+  "measuredOn": "2026-09-05",
   "appsDiscovered": 56,
   "charts": {
     "code.forgejo.org/forgejo-helm|forgejo|17.1.5": {
@@ -909,7 +909,7 @@
       "dynamic": [],
       "charts": ["<root>=hindsight@0.9.2"]
     },
-    "https://argoproj.github.io/argo-helm|argo-cd|10.7.2": {
+    "https://argoproj.github.io/argo-helm|argo-cd|10.8.0": {
       "literal": {
         "apiVersionOverrides": {},
         "applicationSet": {
@@ -1381,6 +1381,15 @@
           },
           "imagePullSecrets": {},
           "initContainers": {},
+          "livenessProbe": {
+            "enabled": {},
+            "failureThreshold": {},
+            "httpPath": {},
+            "initialDelaySeconds": {},
+            "periodSeconds": {},
+            "successThreshold": {},
+            "timeoutSeconds": {}
+          },
           "metrics": {
             "applicationLabels": {
               "enabled": {},
@@ -3398,7 +3407,7 @@
         "server.vpa.startupBoost"
       ],
       "dynamic": [],
-      "charts": ["<root>=argo-cd@10.7.2", "redis-ha=redis-ha@4.38.0"]
+      "charts": ["<root>=argo-cd@10.8.0", "redis-ha=redis-ha@4.38.0"]
     },
     "https://argoproj.github.io/argo-helm|argo-rollouts|2.39.5": {
       "literal": {
@@ -4394,7 +4403,7 @@
       "dynamic": [],
       "charts": ["<root>=argo-workflows@0.42.5"]
     },
-    "https://argoproj.github.io/argo-helm|argo-workflows|2.0.3": {
+    "https://argoproj.github.io/argo-helm|argo-workflows|2.0.4": {
       "literal": {
         "apiVersionOverrides": {
           "autoscaling": {},
@@ -4922,7 +4931,7 @@
         "workflow.serviceAccount.pullSecrets"
       ],
       "dynamic": [],
-      "charts": ["<root>=argo-workflows@2.0.3"]
+      "charts": ["<root>=argo-workflows@2.0.4"]
     },
     "https://bitnami.github.io/sealed-secrets|sealed-secrets|2.19.3": {
       "literal": {
@@ -40321,16 +40330,16 @@
     {
       "appId": "full-ai-cluster/argo-workflows",
       "chart": "argo-workflows",
-      "targetRevision": "2.0.3",
+      "targetRevision": "2.0.4",
       "repoURL": "https://argoproj.github.io/argo-helm",
-      "chartKey": "https://argoproj.github.io/argo-helm|argo-workflows|2.0.3"
+      "chartKey": "https://argoproj.github.io/argo-helm|argo-workflows|2.0.4"
     },
     {
       "appId": "full-ai-cluster/argocd",
       "chart": "argo-cd",
-      "targetRevision": "10.7.2",
+      "targetRevision": "10.8.0",
       "repoURL": "https://argoproj.github.io/argo-helm",
-      "chartKey": "https://argoproj.github.io/argo-helm|argo-cd|10.7.2"
+      "chartKey": "https://argoproj.github.io/argo-helm|argo-cd|10.8.0"
     },
     {
       "appId": "full-ai-cluster/cdi",

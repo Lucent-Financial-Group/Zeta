@@ -403,7 +403,7 @@ export function bringUpKindCiCluster(ports: DevClusterPorts, options: KindCiBrin
       // bootstraps in dev-cluster/use-cases.ts) because 2026-09-03 made them EQUAL on purpose: a
       // bootstrap behind the self-managed Application means a mid-run self-upgrade, which is exactly
       // the failure that cached the seaweedfs manifest error.
-      version: "10.7.2",
+      version: "10.8.0",
       namespace: "argocd",
       setValues: ["server.service.type=ClusterIP"],
       wait: true,
@@ -766,7 +766,7 @@ export function bringUpK3dDevCluster(ports: DevClusterPorts, options: K3dDevBrin
       // bootstraps in dev-cluster/use-cases.ts) because 2026-09-03 made them EQUAL on purpose: a
       // bootstrap behind the self-managed Application means a mid-run self-upgrade, which is exactly
       // the failure that cached the seaweedfs manifest error.
-      version: "10.7.2",
+      version: "10.8.0",
       namespace: "argocd",
       // ClusterIP, NOT LoadBalancer -- and this line is downstream of installing
       // the shipped Cilium surface above.
