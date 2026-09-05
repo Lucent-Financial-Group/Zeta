@@ -86,6 +86,48 @@ repo is one:
 Thirty years from first idea to *"now I can say … this theory really gives in
 certain limiting cases the well-established physical theories back."*
 
+## The closest match is one we already built — and Aaron named it
+
+Aaron 2026-09-05, on this record's first draft:
+
+> *"take a look at our natural bo[s]ons and fermions that fall out of one of our
+> ad[i]nkra formulations this is very similar, letting the math drive first
+> before spacetime."*
+
+He is right, and it is a sharper parallel than the method-level table above.
+**An adinkra's bosons and fermions are not modelled — they are the two vertex
+classes the graph has by construction.** White nodes commute; black nodes
+anticommute; the coloured edges between them are the supersymmetry
+transformations. Nobody puts a particle content in; the bipartition IS the
+object.
+
+The repo already made that identification, on 2026-06-12, in Aaron's own words:
+
+> *"adenkras are homoiconic on what acts and what remains they are the atom"*
+> — `docs/research/2026-06-12-ferry-18-adinkras-are-homoiconic-on-what-acts-and-what-remains-they-are-the-atom-the-braid-overlays.md`
+
+So the correspondence runs:
+
+| adinkra | this repo's vocabulary | Finster |
+|---|---|---|
+| bosonic (white) vertex | **what remains** — μένω, the hub, the identity | the abstract operator / spin space at a point |
+| fermionic (black) vertex | **what acts** — the event, the satellite | the wave function evaluated there |
+| coloured edge | the transformation between them | the causal action's variational relation |
+| the graph | the atom — structure before any embedding | spacetime as a web of correlations |
+
+**And the shared move is the one Aaron names: let the math run first.** Finster
+refuses a metric and derives causal structure; an adinkra refuses an embedding
+and still carries the boson/fermion split, because the split is *graph-theoretic*
+rather than geometric. In both, the particle-like distinction is upstream of the
+spacetime it is usually described in.
+
+**The honest boundary, unchanged.** Adinkras are Gates' construction and their
+bosons/fermions are the supersymmetry-algebra ones; Finster's arrive from a
+Dirac-sea variational principle. That these two independently put the
+what-remains / what-acts split *before* geometry is a structural rhyme worth
+recording and is not a claim that they are the same object. `AdinkraCode.fs` and
+`BitAdinkra.fs` are where ours lives; nothing there asserts a physics result.
+
 ## Register
 
 Everything above is **his** claim, reported. Causal fermion systems is a live
