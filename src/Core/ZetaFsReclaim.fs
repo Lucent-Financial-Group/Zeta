@@ -18,8 +18,8 @@ open Zeta.Core.FSharp.Blake3
 /// `applyWithJournal` records remaining paths and resumes after
 /// crash-mid-sweep. Freeze volume door: `ZetaFsFreeze.reclaimSweep`.
 /// Tick: `ZetaFsFreeze.reclaimTick`. Boat: `reclaimAsync` + `pumpReclaim`
-/// (DoP=1 FerryThrottler, not the freeze WAL boat). Still `toy`: not
-/// auto-ticked after freeze.
+/// (DoP=1 FerryThrottler, not the freeze WAL boat). Metered pacer:
+/// `ZetaFsFreeze.reclaimTickMetered`. Still `toy`: not auto-ticked after freeze.
 ///
 /// DoP=1 on this ferry. No Task.Run.
 module ZetaFsReclaim =

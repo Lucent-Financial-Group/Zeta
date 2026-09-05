@@ -1,0 +1,14 @@
+{
+  "id": "080d037c302c7010a0130008c3da2954",
+  "at": "2026-09-05T03:04:09.358Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1QRC1CD087G0R001EGSFV9",
+    "type": "task",
+    "title": "Volume meters freeze bytes for reclaim pacer",
+    "slug": "volume-meters-freeze-bytes-for-reclaim-pacer",
+    "priority": "P2",
+    "filename": "081M1QRC1CD087G0R001EGSFV9-volume-meters-freeze-bytes-for-reclaim-pacer.md"
+  }
+}
