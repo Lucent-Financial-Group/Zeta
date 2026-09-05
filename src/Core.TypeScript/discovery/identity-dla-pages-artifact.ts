@@ -5,12 +5,18 @@ import { GO_PAGES_ASSET, GO_PAGES_BRIDGE, PAGES_WASM_ASSETS } from "./identity-d
 const WASM_MAGIC = [0x00, 0x61, 0x73, 0x6d] as const;
 const CURRENT_PROPOSAL_MARKER = "authorize this device";
 const RETIRED_PROPOSAL_MARKER = "GitHub's own issue form authenticates";
+const RECEIPT_DETAIL_ROUTE = "evidence-seam/receipt/";
+const RECEIPT_DETAIL_MARKER = "COPY RECEIPT ID";
+const SOURCE_MANIFEST_ROUTE = "evidence-seam/sources";
+const SOURCE_MANIFEST_MARKER = "SOURCE MANIFEST";
 
 export type PagesArtifactEvidence = Readonly<{
   readonly entryAsset: string;
   readonly authorizationAsset: string;
   readonly evidenceRouteAsset: string;
   readonly evidenceReaderAsset: string;
+  readonly receiptDetailAsset: string;
+  readonly sourceManifestAsset: string;
   readonly proposalMarker: typeof CURRENT_PROPOSAL_MARKER;
   readonly wasmAssets: readonly string[];
   /**
@@ -55,6 +61,24 @@ export function verifyPagesArtifact(artifactRoot: string): PagesArtifactEvidence
   if (!evidenceReaderAsset) {
     throw new Error("teaching error: Pages artifact omits the durable room-evidence reader");
   }
+  if (!scripts.some(script => script.body.includes(RECEIPT_DETAIL_ROUTE))) {
+    throw new Error("teaching error: Pages artifact omits the receipt-detail route");
+  }
+  const receiptDetailAsset = scripts.find(
+    script => script.asset.startsWith("EvidenceReceiptDetailPage-") && script.body.includes(RECEIPT_DETAIL_MARKER),
+  )?.asset;
+  if (!receiptDetailAsset) {
+    throw new Error("teaching error: Pages artifact omits the receipt-detail page");
+  }
+  if (!scripts.some(script => script.body.includes(SOURCE_MANIFEST_ROUTE))) {
+    throw new Error("teaching error: Pages artifact omits the source-manifest route");
+  }
+  const sourceManifestAsset = scripts.find(
+    script => script.asset.startsWith("EvidenceSourceManifestPage-") && script.body.includes(SOURCE_MANIFEST_MARKER),
+  )?.asset;
+  if (!sourceManifestAsset) {
+    throw new Error("teaching error: Pages artifact omits the source-manifest page");
+  }
   if (scripts.some(script => script.body.includes(RETIRED_PROPOSAL_MARKER))) {
     throw new Error("teaching error: Pages artifact still contains the retired GitHub issue-form proposal transport");
   }
@@ -73,6 +97,8 @@ export function verifyPagesArtifact(artifactRoot: string): PagesArtifactEvidence
     authorizationAsset,
     evidenceRouteAsset,
     evidenceReaderAsset,
+    receiptDetailAsset,
+    sourceManifestAsset,
     proposalMarker: CURRENT_PROPOSAL_MARKER,
     wasmAssets: [
       ...PAGES_WASM_ASSETS.map(asset => asset.published),

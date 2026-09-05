@@ -11,7 +11,9 @@ function fixture(
   options: {
     readonly currentMarker?: boolean;
     readonly evidenceRoom?: boolean;
+    readonly receiptDetail?: boolean;
     readonly retiredMarker?: boolean;
+    readonly sourceManifest?: boolean;
     readonly validWasm?: boolean;
   } = {},
 ): string {
@@ -19,7 +21,10 @@ function fixture(
   roots.push(root);
   mkdirSync(join(root, "assets"), { recursive: true });
   writeFileSync(join(root, "index.html"), '<script type="module" src="/assets/index-fixture.js"></script>');
-  writeFileSync(join(root, "assets", "index-fixture.js"), "import('./PasskeyProposalPanel-fixture.js') evidence-seam");
+  writeFileSync(
+    join(root, "assets", "index-fixture.js"),
+    `import('./PasskeyProposalPanel-fixture.js') evidence-seam ${options.receiptDetail === false ? "" : "evidence-seam/receipt/"} ${options.sourceManifest === false ? "" : "evidence-seam/sources"}`,
+  );
   writeFileSync(
     join(root, "assets", "PasskeyProposalPanel-fixture.js"),
     `${options.currentMarker === false ? "" : "authorize this device"}${options.retiredMarker ? " GitHub's own issue form authenticates" : ""}`,
@@ -27,6 +32,14 @@ function fixture(
   writeFileSync(
     join(root, "assets", "EvidenceRoomPage-fixture.js"),
     options.evidenceRoom === false ? "missing reader" : "evidence-seam docs/room-evidence/index.json",
+  );
+  writeFileSync(
+    join(root, "assets", "EvidenceReceiptDetailPage-fixture.js"),
+    options.receiptDetail === false ? "missing receipt page" : "COPY RECEIPT ID",
+  );
+  writeFileSync(
+    join(root, "assets", "EvidenceSourceManifestPage-fixture.js"),
+    options.sourceManifest === false ? "missing source manifest" : "SOURCE MANIFEST",
   );
   for (const asset of PAGES_WASM_ASSETS) {
     const target = join(root, asset.published);
@@ -47,6 +60,8 @@ describe("identity-dla Pages artifact verification", () => {
     expect(evidence.authorizationAsset).toBe("PasskeyProposalPanel-fixture.js");
     expect(evidence.evidenceRouteAsset).toBe("index-fixture.js");
     expect(evidence.evidenceReaderAsset).toBe("EvidenceRoomPage-fixture.js");
+    expect(evidence.receiptDetailAsset).toBe("EvidenceReceiptDetailPage-fixture.js");
+    expect(evidence.sourceManifestAsset).toBe("EvidenceSourceManifestPage-fixture.js");
     expect(evidence.wasmAssets).toHaveLength(6);
   });
 
@@ -64,5 +79,13 @@ describe("identity-dla Pages artifact verification", () => {
 
   test("FAULT INJECTION: rejects a bundle that omitted the durable room-evidence reader", () => {
     expect(() => verifyPagesArtifact(fixture({ evidenceRoom: false }))).toThrow("durable room-evidence reader");
+  });
+
+  test("FAULT INJECTION: rejects a bundle that omitted the receipt-detail lazy page", () => {
+    expect(() => verifyPagesArtifact(fixture({ receiptDetail: false }))).toThrow("receipt-detail");
+  });
+
+  test("FAULT INJECTION: rejects a bundle that omitted the source-manifest lazy page", () => {
+    expect(() => verifyPagesArtifact(fixture({ sourceManifest: false }))).toThrow("source-manifest");
   });
 });
