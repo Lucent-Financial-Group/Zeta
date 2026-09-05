@@ -38,6 +38,8 @@ HELD_OUT_START = (0, 4)
 GOAL = (4, 0)
 NONTERMINAL_REWARD_PPM = -40_000
 TERMINAL_REWARD_PPM = 2_000_000
+TRAINING_EPISODES = 1_000
+EPISODE_ACTION_CAP = 250
 
 Position = tuple[int, int]
 StateAction = tuple[Position, str]
@@ -242,6 +244,8 @@ def run(
     draws = 0
     time = 0
     visited_states: set[Position] = set()
+    training_goal_episodes = 0
+    training_return = 0
     novelty_sum = 0.0
     novelty_count = 0
     training_trace: list[str] = []
@@ -260,6 +264,7 @@ def run(
             novelty_sum += 1.0 / math.sqrt(1.0 + count_before)
             novelty_count += 1
             next_position, reward, reached_goal = _transition(position, action)
+            training_return += reward
             bootstrap = 0.0 if reached_goal else _max_next_q(q_values, next_position)
             alpha = 0.05 / math.sqrt(max(1, time + 1))
             q_values[key] = _q_value(q_values, key) + alpha * (
@@ -283,6 +288,8 @@ def run(
             position = next_position
             visited_states.add(position)
             terminal = reached_goal
+            if reached_goal:
+                training_goal_episodes += 1
 
     q_before_evaluation = _q_digest(q_values)
     position = HELD_OUT_START
@@ -312,6 +319,8 @@ def run(
         "seed": seed,
         "heldOutReturnPpm": held_out_return,
         "heldOutActions": evaluation_actions,
+        "trainingGoalEpisodes": training_goal_episodes,
+        "trainingReturnPpm": training_return,
         "trainingUniqueStates": len(visited_states),
         "trainingUniqueStateActions": len(counts),
         "meanPreIncrementNovelty": novelty_sum / novelty_count

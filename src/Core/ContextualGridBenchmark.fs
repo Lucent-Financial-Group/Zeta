@@ -60,6 +60,8 @@ module ContextualGridBenchmark =
           Seed: uint64
           HeldOutReturnPpm: int
           HeldOutActions: string list
+          TrainingGoalEpisodes: int
+          TrainingReturnPpm: int64
           TrainingUniqueStates: int
           TrainingUniqueStateActions: int
           MeanPreIncrementNovelty: float
@@ -191,6 +193,30 @@ module ContextualGridBenchmark =
 
     let private maxNextQ q position = actions |> List.map (fun action -> qValue q (position, action)) |> List.max
 
+    /// Computes the finite-horizon, undiscounted held-out return directly from
+    /// the declared transition/reward table. It does not inspect a learned Q
+    /// table and therefore remains an external denominator for suboptimality.
+    let optimalHeldOutReturn actionCap =
+        if actionCap < 0 then invalidArg "actionCap" "actionCap must be non-negative"
+        let positions =
+            [ for y in 0 .. 4 do
+                  for x in 0 .. 4 do
+                      yield { X = x; Y = y } ]
+        let mutable previous = positions |> List.map (fun position -> position, 0) |> Map.ofList
+        for _ in 1 .. actionCap do
+            previous <-
+                positions
+                |> List.map (fun position ->
+                    let best =
+                        actions
+                        |> List.map (fun action ->
+                            let next, reward, terminal = transition position action
+                            reward + if terminal then 0 else Map.find next previous)
+                        |> List.max
+                    position, best)
+                |> Map.ofList
+        Map.find heldOutStart previous
+
     let private floatBits (value: float) =
         BitConverter.DoubleToInt64Bits value
         |> uint64
@@ -236,6 +262,8 @@ module ContextualGridBenchmark =
             let mutable stream = { State = seed; Draws = 0 }
             let mutable time = 0
             let mutable visitedStates = Set.empty
+            let mutable trainingGoalEpisodes = 0
+            let mutable trainingReturn = 0L
             let mutable noveltySum = 0.0
             let mutable noveltyCount = 0
             let mutable trainingTraceRev: string list = []
@@ -254,6 +282,7 @@ module ContextualGridBenchmark =
                     noveltySum <- noveltySum + 1.0 / sqrt (1.0 + float countBefore)
                     noveltyCount <- noveltyCount + 1
                     let nextPosition, reward, reachedGoal = transition position action
+                    trainingReturn <- trainingReturn + int64 reward
                     let bootstrap = if reachedGoal then 0.0 else maxNextQ q nextPosition
                     let alpha = 0.05 / sqrt (float (max 1 (time + 1)))
                     let updated = qValue q key + alpha * (float reward + 0.9 * bootstrap - qValue q key)
@@ -265,6 +294,7 @@ module ContextualGridBenchmark =
                     position <- nextPosition
                     visitedStates <- Set.add position visitedStates
                     terminal <- reachedGoal
+                    if reachedGoal then trainingGoalEpisodes <- trainingGoalEpisodes + 1
 
             let qBeforeEvaluation = qDigest q
             let mutable evaluationPosition = heldOutStart
@@ -293,6 +323,8 @@ module ContextualGridBenchmark =
                   Seed = seed
                   HeldOutReturnPpm = heldOutReturn
                   HeldOutActions = List.rev evaluationActionsRev
+                  TrainingGoalEpisodes = trainingGoalEpisodes
+                  TrainingReturnPpm = trainingReturn
                   TrainingUniqueStates = visitedStates.Count
                   TrainingUniqueStateActions = counts |> Map.count
                   MeanPreIncrementNovelty = if noveltyCount = 0 then 0.0 else noveltySum / float noveltyCount
