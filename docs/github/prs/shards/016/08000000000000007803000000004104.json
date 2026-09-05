@@ -1,0 +1,12 @@
+{
+  "pr_number": 16644,
+  "archive_path": "docs/history/pr-reviews/PR-16644-deps-bump-pnpm-from-10-34-5-to-11-25-0-in-demo-identity-dla-site.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-05T07:40:42.261Z",
+  "schema_version": "v1",
+  "commit_sha": "0574bbe2967e139a08267217a3fea4543ca4e66c",
+  "title": "deps: bump pnpm from 10.34.5 to 11.25.0 in /demo/identity-dla-site",
+  "state": "MERGED",
+  "merged_at": "2026-09-05T07:40:08Z",
+  "head_ref": "dependabot/npm_and_yarn/demo/identity-dla-site/pnpm-11.25.0"
+}
