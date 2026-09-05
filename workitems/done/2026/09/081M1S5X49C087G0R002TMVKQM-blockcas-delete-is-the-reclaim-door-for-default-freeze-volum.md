@@ -1,11 +1,12 @@
 ---
 id: 081M1S5X49C087G0R002TMVKQM
 type: task
-state: in-progress
+state: done
 priority: P2
 slug: blockcas-delete-is-the-reclaim-door-for-default-freeze-volum
 title: "BlockCas delete is the reclaim door for default freeze volumes"
 created: 2026-09-05T16:19:55.311Z
+completed: 2026-09-05T17:08:56.890Z
 depends_on:
   - 081M1S440QQ087G0R00218K9AM
 composes_with: []
