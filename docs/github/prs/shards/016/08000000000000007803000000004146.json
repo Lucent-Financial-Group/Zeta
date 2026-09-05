@@ -1,0 +1,12 @@
+{
+  "pr_number": 16710,
+  "archive_path": "docs/history/pr-reviews/PR-16710-test-081m1spnvhb087g0r003s79w9k-xor-of-blockcas-stays-unread-after-clonemedia.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-05T21:34:15.883Z",
+  "schema_version": "v1",
+  "commit_sha": "14a6fe60a5ca0bbefc562ca0fa6d715196e37e9f",
+  "title": "test(081M1SPNVHB087G0R003S79W9K): XOR of BlockCas stays unread after CloneMedia",
+  "state": "MERGED",
+  "merged_at": "2026-09-05T21:33:43Z",
+  "head_ref": "feat/zetafs-blockcas-xor-reopen"
+}
