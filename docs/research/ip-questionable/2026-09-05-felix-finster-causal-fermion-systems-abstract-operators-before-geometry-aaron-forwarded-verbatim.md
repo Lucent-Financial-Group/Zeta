@@ -500,6 +500,68 @@ looks like on the Planck scale. This is the basic shortcoming here."* His own su
 would move the field is a **usability** problem, not a correctness one: *"I should develop it to a
 point where I can say, look, similar to Feynman rules, this is how to compute things."*
 
+### THE VERDICT, and Aaron's narrowing — which makes the claim defensible rather than refuted
+
+**Math team, 2026-09-05: Zeta derives the SPLIT, not the ASYMMETRY.** `CliffordPeriodicity.fs:186-198`
+derives `Cl⁰(0,16) ≅ Cl(0,15)` split-real ⇒ `M₁₂₈(ℝ) ⊕ M₁₂₈(ℝ)` — correct Atiyah–Bott–Shapiro
+mod-8 arithmetic, and **the file already carried the right register**: *"Not ours and not new —
+which is the point: it is checkable"* (`:207-208`), and `:249-252` states outright *"Chirality is
+therefore not a property spacetime has on its own… Stated as arithmetic, not as physics."* Every
+split in the repo is exactly balanced — 128/128, 64/64, 8/8 — and no claim of a preferred
+handedness exists anywhere.
+
+**The repo had already predicted this exact failure mode.**
+`docs/research/2026-08-27-no-theory-of-everything-inside-e8-*.md:280-294` names it: *"chirality
+means two different things… a Mirror-register word collision… the most likely way for someone to
+round a bounded result up."* `docs/PRIOR-ART-LIST.md:1465-1510` records the ladder to physical
+handedness as broken at two joints, one by 4–7 orders of magnitude.
+
+**And then Aaron narrowed the claim to exactly what was derived**, which is the move that matters:
+
+> *"yes — I'm not trying to explain the why-asymmetry yet. I'm just trying to model DNA and
+> handedness in Clifford algebra, not explain why yet. I still don't know."*
+
+So the question the review answered — *does Zeta derive anything about chirality that CFS does
+not?* — was not the question he was asking. He is working **deliberately inside (i)**: a *model*
+of handedness, not an *explanation* of its preference. Under that scope the finding is not a
+refutation; it is a confirmation that the model is on the standard, checkable footing and has not
+quietly claimed more. The register was already right in the code, and it is right in his head.
+
+What remains true and worth keeping: **a surprise at (i) is a surprise at standard Clifford
+theory**, which is also CFS's starting point — so it is not a differentiator, and should not be
+carried into any outward-facing comparison as one.
+
+**On braiding, he declines to defend the position:**
+
+> *"'I don't think it comes from braiding' — I'd be happy to be wrong on this one, it's just not
+> memory-resident in my mind. I'd be happy to be corrected here."*
+
+He is wrong, mildly, and the correction is welcome rather than costly. `src/Core/MenoBraided.fs:14-24`
+is a **genuine non-symmetric braiding** — a conjugation rack with `R² ≠ id`, realizing Artin's
+`σᵢ` faithfully — and it is **independent of the Clifford tower**. So two-sidedness has two
+sources here, not one. It is still class (i): `B_n` admits the mirror automorphism
+`σᵢ ↦ σᵢ⁻¹`, so neither crossing is preferred either. Two independent (i)-sources is a stronger
+position than one, and neither reaches (ii).
+
+### The Planck-scale shortcoming is OUR question, in our own domain
+
+Finster's stated basic shortcoming — *"we don't know how spacetime looks like on the Planck
+scale"*, which is why his regularization carries *"in fact, quite many"* free parameters — Aaron
+maps directly onto the problem he is actually solving:
+
+> *"for computer science, and our decentralized identity for agents/travelers, is who in computer
+> science — the physics of computers — I'm trying to solve. Not all of physics."*
+
+This is the same scope discipline as the CPT-is-a-rhyme note above, applied to the *open problem*
+rather than to the vocabulary. The analogue is exact in structure and modest in claim: **a
+substrate has a minimal scale below which its continuum description stops holding**, and what
+lives below it is not yet known — which is precisely Aaron's earlier note that *"the walls in
+reservoir computing are the inside of the Planck length."* Finster pays for that ignorance in
+regularization parameters; we would pay for it in whatever the substrate's own below-the-scale
+structure turns out to be. Neither the mapping nor the below-scale structure is established;
+what is recorded is that **the shortcoming has the same shape in both domains**, and that ours is
+the one we are on the hook for.
+
 ## Register
 
 Everything above is **his** claim, reported. Causal fermion systems is a live
