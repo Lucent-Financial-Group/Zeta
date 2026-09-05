@@ -18,7 +18,8 @@ open Zeta.Core.FSharp.Blake3
 /// (torn tail / intent-without-commit / mid-log CRC dropped from the bad
 /// frame; prefix kept). Sealed frames carry LSN in the clear so `openLog`
 /// can rebuild the nonce. Reclaim volume door is `reclaimSweep` (journal
-/// under `StoreDir`). Still `toy`: not on the freeze boat / not auto-ticked.
+/// under `StoreDir`). `reclaimTick` composes pacer + propose + sweep.
+/// Still `toy`: not a FerryThrottler boat / not auto-ticked after freeze.
 ///
 /// DoP=1 on this log. No Task.Run except the ferry launch (injected context
 /// on the DST path; `manual` + `PumpToIdleAsync` for tests).
@@ -834,6 +835,21 @@ module ZetaFsFreeze =
         (budget: ZetaFsReclaim.Budget)
         : int =
         ZetaFsReclaim.applyWithJournal fs (sweepJournalPath volume) paths budget
+
+    /// One reclaim tick: pacer from freeze bytes (not wall-clock), propose
+    /// unpinned objects, sweep through the volume journal. Still `toy`:
+    /// not enqueued on a FerryThrottler and not called from freezeAsync.
+    let reclaimTick
+        (volume: Volume)
+        (fs: IFileSystem)
+        (roots: ZetaFsReclaim.Roots)
+        (objects: ZetaFsReclaim.Object[])
+        (freezeBytesSinceLastTick: uint64)
+        : int =
+        let budget = ZetaFsReclaim.pacer freezeBytesSinceLastTick
+        let ids = ZetaFsReclaim.propose roots objects budget
+        let paths = ids |> Array.map (fun id -> id, objectPath volume.StoreDir id)
+        reclaimSweep volume fs paths budget
 
     let pumpLog (volume: Volume) (ct: CancellationToken) : Task =
         volume.Log.PumpToIdleAsync(ct)
