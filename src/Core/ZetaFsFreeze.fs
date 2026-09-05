@@ -1196,7 +1196,18 @@ module ZetaFsFreeze =
         let orphans = orphanObjects volume
 
         if orphans.Length > 0 then
-            reclaimAsyncMetered volume ZetaFsReclaim.emptyRoots orphans ct |> ignore
+            let mutable sum = 0UL
+            let mutable i = 0
+
+            while i < orphans.Length do
+                sum <- sum + orphans.[i].Size
+                i <- i + 1
+
+            // Freeze span can be smaller than jumprope node encodings of the
+            // previous generation. pacer(span) would skip those objects and
+            // leave the dropped ContentId readable.
+            let bytes = max (takeFreezeBytes volume) sum
+            reclaimAsync volume ZetaFsReclaim.emptyRoots orphans bytes ct |> ignore
 
     let private afterFreeze
         (volume: Volume)
