@@ -29,7 +29,7 @@ Review findings (not an implementation PR):
 ## Pickup order (mint children; do not allocate `B-*`)
 
 1. Fetch Lucent item → project current slot (metal `tty1` login, then Lucent). Mint 2–3 SA items in Lucent first. USB/Keychain are caches. Cursor Secret is Cloud-Agent cache only.
-2. Unsealer extraContainer (close to Google, rewritten): `valuesObject` only; fetch-at-unseal from Lucent; threshold-many keys; cannot init; amend `TOPOLOGY.md` §5 in the same commit. Not ESO-into-etcd for shares. Not HA joiners until three-node.
+2. Unsealer extraContainer (close to Google, rewritten): `valuesObject` only; fetch-at-unseal from Lucent; threshold-many keys; cannot init; amend `full-ai-cluster/k8s/applications/vault/TOPOLOGY.md` §5 in the same commit. Not ESO-into-etcd for shares. Not HA joiners until three-node.
 3. Lease sidecar + portal expiry panel + in-cluster Consent relogin (SSH is break-glass). Warn before 401. Applies to `gh-cli` / AI logins too.
 4. Inventory lock test (presence counts, never private material).
 5. ADR addendum: dual as minimum, three live slots as default, previous-honor bound.

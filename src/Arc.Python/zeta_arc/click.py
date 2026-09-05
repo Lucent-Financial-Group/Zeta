@@ -34,8 +34,10 @@ that layer would sit on.
 
 from __future__ import annotations
 
+from abc import abstractmethod
 from dataclasses import dataclass, field
 from math import isfinite
+from typing import Protocol
 
 from zeta_arc.perception import Grid, components
 
@@ -79,6 +81,18 @@ class CoordinateDecision:
     committed: tuple[int, int] | None
 
 
+class CoordinatePolicy(Protocol):
+    """Hexagonal coordinate-action port used by the layer router."""
+
+    @abstractmethod
+    def observe(self, grid: Grid) -> None:
+        """Accept the frame produced by the previous coordinate action."""
+
+    @abstractmethod
+    def choose(self, grid: Grid) -> tuple[int, int]:
+        """Choose one coordinate from the current grid."""
+
+
 def _signature(grid: Grid) -> tuple[int, ...]:
     """A cheap, total identity for a frame, used only to ask "did it change".
 
@@ -102,6 +116,10 @@ class ClickPolicy:
     _last_signature: tuple[int, ...] | None = None
     _stride_index: int = 0
     _sweep_cursor: int = 0
+
+    def observe(self, grid: Grid) -> None:
+        """Accept the post-action frame; this policy only tracks world identity."""
+        self._sync_world(grid)
 
     def _sync_world(self, grid: Grid) -> None:
         signature = _signature(grid)
