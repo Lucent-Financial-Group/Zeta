@@ -236,3 +236,89 @@ the idea is findable, explicitly not as a description of shipped behaviour.
 - `docs/SEED-VOCABULARY.md` — NCI, diversity floor
 - Landauer (1961) · Bennett (1973) · Fredkin & Toffoli (1982) · Feynman, *Lectures on Computation* — the physics-of-computation anchors the "CPT" rhyme points at
 - `.claude/rules/only-the-irreducible-is-primitive-generate-the-rest.md` — the generator IS the ECC
+
+## 7. Boson/fermion as the consensus-vs-fork type — and Pauli exclusion as a NATURAL bound
+
+Aaron, 2026-09-05, on the DoS bounds:
+
+> *"we may be able to use our bos[on]ian / fermion split in our ad[i]nkras to model consensus and
+> slowdown vs expl[i]cit forks — some forks are even sanct[i]oned via time accelerated branches."*
+>
+> and, connecting it to the attack: *"this DDOS is very tightly related to our homoclinical
+> tangle in our other code around forgery ... this is why it needs consensus — without it you can
+> get stuck yourself when mapping a chaotic adversary who is trying to overload your uncertainty
+> to make you stop processing, or take up your entire CPU budget."*
+
+**The mapping is tight, and it is not decorative — it comes from exchange statistics, which is
+exactly a statement about what happens when you swap two things.**
+
+| | exchange behaviour | what it models here |
+|---|---|---|
+| **bosonic** (white vertices) | **symmetric** — swapping changes nothing; any number may occupy one state | **consensus.** The commutative fold: order-independent accumulation, contributions pile up, everyone converges on the same posterior |
+| **fermionic** (black vertices) | **antisymmetric** — swapping introduces a **sign**; two may not occupy the same state | **explicit fork.** Order-dependence that is *recorded* rather than erased — the sign says which path was taken |
+
+**The fermionic case is monodromy, which this repo already treats as information rather than
+error.** `anti-babel-preserve-reconcilability.md`: *"two paths around a pole yield genuinely
+different results, and that difference is information, not error … reintegration means both
+branches held, each with its path recorded."* An anticommuting channel is precisely a channel
+where the order of traversal is retained in the result. So the split gives a **type-level**
+distinction between the two kinds of order-dependence that this whole thread has been separating
+by hand:
+
+- order-dependence that is a **defect** (the `EPS` threshold — the fold should have commuted and
+  did not) → belongs on a bosonic channel, and must be fixed, which is what
+  `081M1SA32SS087G0R0026C01ZP` did;
+- order-dependence that is **structure** (genuinely divergent branches) → belongs on a fermionic
+  channel, where the sign carries the path and the fork is *declared by construction*.
+
+Today those two are told apart by a human reading the code. Typed, they could not be confused.
+
+### The sharpest part: Pauli exclusion is a bound nobody has to legislate
+
+The fix committed above bounds the DoS with **treaty constants** — `MAX_EVIDENCE_COUNT = 4096`,
+`MAX_FOLD_WORK = 65536`. Those numbers are *decreed*. They work, they are inspectable, and every
+node must agree on them or refuse on different inputs — which is why they are marked as treaty
+values. But nothing about the mathematics chooses `4096`.
+
+**A fermionic channel does not need the decree.** Exclusion *is* the bound: identical
+contributions cannot co-occupy a state, so unbounded pile-up in one state is impossible by
+construction rather than by ceiling. That is the exact shape of the attack — *"overload your
+uncertainty … take up your entire CPU budget"* is unbounded accumulation, and unbounded
+accumulation is a **bosonic** phenomenon.
+
+Stated as the design question worth testing: **can the evidence channel be made fermionic in the
+place where an adversary supplies the evidence, so the anti-DoS property is structural instead of
+legislated?** A structural bound cannot drift out of treaty with a peer, which is the failure mode
+the decreed constants carry.
+
+### Why the homoclinic-tangle connection is exact, not a rhyme
+
+`src/Core/TangleNavigator.fs` already classifies orbits on a 2×2 of *(churning?) × (escaped?)*,
+and names the bad cell:
+
+> **`Trapped`** — *"λ > tol, confined: paying the full price of chaos and going nowhere."*
+
+That is the DoS state, precisely. A chaotic adversary is not trying to make you compute a wrong
+answer; it is trying to hold you in `Trapped` — maximum work, zero progress. And the module's
+governing correction (Aaron, 2026-08-15) is the same sentence as this section's:
+
+> *"the thing to avoid is **getting stuck**, not the chaotic regime itself — chaos is navigable."*
+
+So the answer to a chaotic adversary is not to refuse chaotic input; it is to **bound the work
+and keep moving**, which is what a refusal-that-names-its-bound buys. Consensus is what makes that
+survivable: alone, you cannot tell "this is genuinely hard" from "I am being held"; with peers,
+the bound is shared and the refusal is legible to everyone at once.
+
+### Time-accelerated branches — sanctioned forks
+
+Recorded as stated, with its consequence. A branch permitted to run **ahead in phase** is a fork
+that is *sanctioned* rather than accidental, and it composes with the two-orders rule
+(`local-time-never-enters-the-shared-fold.md`): the acceleration is an index on the branch's own
+worldline, never a global clock, so a fast branch is not "in the future" — it is further along
+its own phase. Nothing here is built.
+
+**Register: `toy`.** Aaron's *"we may be able to"* is the honest strength. The exchange-statistics
+mapping is argued above and the two ToyBosonFermion modules (`src/Bayesian/ToyBosonFermionBnn.fs`,
+`ToyBosonFermionGenerator.fs`) are correctly `toy`-prefixed already. No fermionic evidence channel
+exists, no measurement supports the anti-DoS claim, and the Pauli-as-natural-bound argument is a
+structural analogy that has not been cashed out in code.
