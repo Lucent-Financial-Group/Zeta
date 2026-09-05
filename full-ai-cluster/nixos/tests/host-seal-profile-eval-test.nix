@@ -110,6 +110,10 @@ let
     (check "developer enables fprintd service, not sudo PAM" (
       developer.services.fprintd.enable == true && developer.security == { }
     ))
+    (check "udev extraRules is a string, not an mkIf set" (
+      builtins.isString developer.services.udev.extraRules
+      && builtins.isString prod.services.udev.extraRules
+    ))
     (check "developer YubiHSM udev names VID 1050 PID 0030" (
       lib.hasInfix "1050" developer.services.udev.extraRules
       && lib.hasInfix "0030" developer.services.udev.extraRules

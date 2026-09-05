@@ -50,11 +50,16 @@ in
     };
   };
 
+  # Do not nest `mkIf` on option *values*. `services.udev.extraRules` is
+  # `types.lines` (Alexa/Kiro, c607579): an mkIf set cannot coerce to a
+  # string. Bool options under a stub `attrsOf unspecified` (the eval test,
+  # and `nix flake check`) keep the mkIf set too, so `enable == true` fails.
+  # Outer `mkIf` on the whole attrset is how `tpm2-seal-prereqs.nix` does it.
   config = lib.mkMerge [
     { zeta.hostSeal.plan = plan; }
 
     (mkIf (cfg.boxRole != "undeclared") {
-      services.pcscd.enable = mkIf plan.enablePcscd true;
+      services.pcscd.enable = true;
 
       services.udev.extraRules = lib.optionalString plan.enableYubiHsmUdev ''
         # YubiHSM 2 (USB VID 1050 PID 0030). Group `tss` so the same
@@ -62,9 +67,6 @@ in
         # MODE 0660 — connector talks; world cannot.
         SUBSYSTEM=="usb", ATTR{idVendor}=="1050", ATTR{idProduct}=="0030", GROUP="tss", MODE="0660"
       '';
-
-      # Fingerprint *daemon*, not sudo PAM. Developer only.
-      services.fprintd.enable = mkIf plan.enableBiometricUserspace true;
 
       environment.systemPackages =
         lib.optionals plan.enablePcscd [
@@ -77,6 +79,12 @@ in
         ++ lib.optionals plan.enableBiometricUserspace [
           pkgs.fprintd
         ];
+    })
+
+    # Fingerprint *daemon*, not sudo PAM. Developer only. Own mkIf so
+    # prod-metal does not even get a `services.fprintd` attr.
+    (mkIf plan.enableBiometricUserspace {
+      services.fprintd.enable = true;
     })
   ];
 }

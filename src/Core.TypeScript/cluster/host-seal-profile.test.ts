@@ -184,7 +184,9 @@ describe("NixOS host-seal files (CI-executed twin — flake check is not in CI)"
     const common = read("full-ai-cluster/nixos/modules/common.nix");
     const flake = read("full-ai-cluster/flake.nix");
     expect(profile).toContain('default = "undeclared"');
+    expect(profile).toContain("lib.optionalString plan.enableYubiHsmUdev");
     expect(profile).not.toMatch(/security\.pam\.u2f\.enable\s*=/);
+    expect(profile).not.toMatch(/services\.pcscd\.enable\s*=\s*mkIf/);
     expect(common).toContain("./host-seal-profile.nix");
     expect(flake).toContain("host-seal-profile-model");
   });
