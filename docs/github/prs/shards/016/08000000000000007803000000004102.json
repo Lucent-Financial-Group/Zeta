@@ -1,0 +1,12 @@
+{
+  "pr_number": 16642,
+  "archive_path": "docs/history/pr-reviews/PR-16642-deps-bump-typescript-from-5-6-3-to-7-0-2-in-demo-identity-dla-site.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-05T08:28:59.618Z",
+  "schema_version": "v1",
+  "commit_sha": "b813ddbbeb54fbff847ac4c1ab002f9927ef6b0a",
+  "title": "deps: bump typescript from 5.6.3 to 7.0.2 in /demo/identity-dla-site",
+  "state": "MERGED",
+  "merged_at": "2026-09-05T08:28:21Z",
+  "head_ref": "dependabot/npm_and_yarn/demo/identity-dla-site/typescript-7.0.2"
+}
