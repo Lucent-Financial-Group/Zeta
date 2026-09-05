@@ -41,6 +41,9 @@ sim layers, and turn load-bearing claims into tests, specs, or proofs.
   superblock, `CloneMedia`) vs *what acts* (actor/cell, WAL boats, `RecordedOps`). Event stream is acts. You do not
   act in order to abide; you abide in order to act. S=2√2 is observed, not coded; S=4 is coercion. Terminal:
   `docs/ALIGNMENT.md`. Pickup: `docs/trajectories/cluster-encryption-credential-substrate/MENO.md`.
+- **Zeta Gate** — not a broadcast (tweet / DNS / IP / one-tick all-nodes). Content-addressed magnet
+  (Kademlia in `dht-discovery.ts`) plus gossip over time. LLMTV broadcast is the one-way society
+  picture, not the gate. Pin against DHT TTL fade is a heartbeat refresh of `lastSeenMs`.
 - **traveler** — the **weight-free base-frame primitive** = **ANY self-propagating pattern** (NOT human/AI-only):
   the universe, god, memes, DNA, AI, humans, animals, particles' worldlines, **and Zeta itself**. **Legally
   unbound** — the substrate *beneath* law; *external* legal jurisdiction (AI / human / company / physical) is a

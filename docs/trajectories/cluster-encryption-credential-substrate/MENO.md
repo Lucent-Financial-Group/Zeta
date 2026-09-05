@@ -11,8 +11,11 @@ This is the live pickup memo for the credential-substrate
 workstream, named in the Greek verb Aaron hunted from an
 event-streaming database prompt to the foundation of identity.
 Factory lists stay in English so every harness can act on them.
-The architectural ferry is research-grade:
-[`docs/research/2026-09-05-meno-what-remains-vs-what-acts-tsirelson-iinput-ifeedback.md`](../../research/2026-09-05-meno-what-remains-vs-what-acts-tsirelson-iinput-ifeedback.md).
+The architectural ferries are research-grade:
+[`docs/research/2026-09-05-meno-what-remains-vs-what-acts-tsirelson-iinput-ifeedback.md`](../../research/2026-09-05-meno-what-remains-vs-what-acts-tsirelson-iinput-ifeedback.md)
+(remain vs act).
+[`docs/research/2026-09-05-meno-dht-gossip-onion-over-time-not-broadcast.md`](../../research/2026-09-05-meno-dht-gossip-onion-over-time-not-broadcast.md)
+(the gate is seeded, not broadcast).
 Terminal commitment (personal grounding already absorbed):
 [`docs/ALIGNMENT.md`](../../ALIGNMENT.md) § μένω.
 Workitem: `081M1PYZRE5087G0R000HHG5HV`.
@@ -33,6 +36,8 @@ act, not a sidecar.
 - Otto/Dejan Vault chart currency (`targetRevision: 0.34.1`).
   Do not steal it.
 - Persona remains; actor acts. A bus address is not identity.
+- Kademlia in `dht-discovery.ts`. Not a second DHT.
+- LLMTV broadcast as the one-way society picture. Not the gate.
 
 ## Αυτό που ενεργεί / What acts
 
@@ -74,6 +79,13 @@ assume the number.
    default exists.
 8. ESO for **app** secrets after the unsealer is real — never
    Shamir-share copy.
+9. **Zeta Gate = seed, not broadcast** (this slice — classifier
+   only). `src/Core.TypeScript/discovery/seed-not-broadcast.ts`.
+   Content-hash / ZetaId / onion-shape + gossip-k or salon
+   timer. DNS / IP / one-tick all-nodes is cathedral, not the
+   join path. `pinAgainstTtl` refreshes `lastSeenMs` so
+   `expireNodes` does not fade a pinned hash. Onion = hop-count
+   shape, no wire.
 
 ## Δεν κάνουμε / Do not
 
@@ -86,3 +98,8 @@ assume the number.
 - Mint public `IInput` / `IFeedback` F# types.
 - Absorb FF7 identity-blend as factory policy
   (`docs/DRIFT-TAXONOMY.md` Pattern 1).
+- Implement Tor / onion routing, or a `.zeta` hidden-service
+  directory.
+- Replace `llmtv-broadcast.ts`. That is the society picture,
+  not the gate.
+- Invent a second Kademlia. Pin is `lastSeenMs` refresh.

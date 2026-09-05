@@ -1,7 +1,7 @@
 # Trajectory - Cluster Encryption / Credential Substrate
 
 Status: active — first surfaced 2026-05-29 from substrate inventory (was tracked only as scattered backlog rows; never had a trajectory surface, which is why it was easy to lose at cold-boot)
-Last refreshed: 2026-09-05 (μένω names remaining vs acting on this trajectory; TypeScript unsealer decision loop can land without Helm)
+Last refreshed: 2026-09-05 (μένω remain vs act; unsealer loop; Zeta Gate is seed/DHT/gossip over time, not a broadcast)
 Type: workstream (current-focus) — a trajectory the operator is *actively powering*. Many trajectories can be tracked; only a few are workstreams at once (finite-focus / WIP-bounded — a workstream is a trajectory under sustained thrust, and thrust budget is finite, so most trajectories coast). ("Trajectory" is the genus; "workstream" is the species: a trajectory under sustained thrust toward a deliverable, vs. emergent-posture trajectories like `anti-infection`, which self-describes as "not a workstream with a cadence." See [`factory-trajectory-surface`](../factory-trajectory-surface/RESUME.md) for the genus/species taxonomy.) One of the operator's three current cluster workstreams (encryption / usb-zflash / ts-workflow-engine).
 Eventual encoding (design-stage — the human maintainer 2026-05-23 genetic-ID substrate + Clifford/HKT): this trajectory's state is trackable as a 128-bit genetic-ID seed (discrete, reversible via parser-combinator ↔ generator-function) → Clifford-space path (continuous, eventual). Mirrors the three-lane I8-lattice / I9-manifold split.
 Current blocker: none operationally; the live design tension is interactive-login-vs-baked-in-keys-vs-CI-test (081KSGS9H0008QG0R003JNSVR5)
@@ -29,6 +29,15 @@ This slice's code: `src/Core.TypeScript/cluster/vault-unsealer.ts`
 — HTTP 200/503/501/000 decision loop. Lucent mint still
 human-blocked. extraContainer + `TOPOLOGY.md` §5 still wait
 for the sidecar commit.
+
+Continuation (same day): the gate is **seeded, not broadcast**.
+DHT / gossip over time / onion-shape — not a tweet, not DNS.
+Classifier: `src/Core.TypeScript/discovery/seed-not-broadcast.ts`.
+Research:
+[`docs/research/2026-09-05-meno-dht-gossip-onion-over-time-not-broadcast.md`](../../research/2026-09-05-meno-dht-gossip-onion-over-time-not-broadcast.md).
+Kademlia already in `dht-discovery.ts`. Pin against TTL fade is
+`lastSeenMs` refresh. LLMTV broadcast stays (society picture).
+Onion is hop-count shape, not a Tor stack. Pattern 1 refused.
 
 ## 2026-09-04 — production-hardening review (Riven)
 

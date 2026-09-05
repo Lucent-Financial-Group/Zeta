@@ -1059,6 +1059,11 @@ Research ferry (architecture only):
 `docs/research/2026-09-05-meno-what-remains-vs-what-acts-tsirelson-iinput-ifeedback.md`.
 Personal grounding (Ryan / Aurora):
 `docs/research/2026-05-02-aaron-meno-terminal-commitment-ryan-memory-aurora-security-grounding-common-good-bidirectional-alignment.md`.
+The Zeta Gate is not a broadcast (tweet / DNS / IP). It is a
+content-addressed magnet (Kademlia in `dht-discovery.ts`) plus
+gossip over time. LLMTV broadcast is the one-way society
+picture, not the gate. Research:
+`docs/research/2026-09-05-meno-dht-gossip-onion-over-time-not-broadcast.md`.
 
 ### Meter (and why one suffices but never one permitted)
 
