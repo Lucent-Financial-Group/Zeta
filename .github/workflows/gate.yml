@@ -1433,6 +1433,12 @@ jobs:
         # DRIFT TIER, deliberately: this job is not in `gate (required)`'s needs, so a
         # finding paints a red X here and blocks nobody. Being behind must never gate a
         # merge -- it is a standing condition, not an error.
+        #
+        # STEP-LEVEL continue-on-error: without it, `--drift` exit 1 fails THIS
+        # job and skips every later step (graphql, hygiene unit tests, inventory).
+        # Measured on PR #16680: chart-currency=failure, everything after skipped.
+        # Annotations stay loud. The job can still finish its floor.
+        continue-on-error: true
         run: bun src/Core.TypeScript/hygiene/report-chart-currency.ts --drift
 
       - name: GraphQL-transport guard (REST is the default; GraphQL is the contested budget)

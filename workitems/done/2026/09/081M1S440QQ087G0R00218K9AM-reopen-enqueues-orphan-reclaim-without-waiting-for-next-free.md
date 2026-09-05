@@ -1,11 +1,12 @@
 ---
 id: 081M1S440QQ087G0R00218K9AM
 type: task
-state: in-progress
+state: done
 priority: P2
 slug: reopen-enqueues-orphan-reclaim-without-waiting-for-next-free
 title: "Reopen enqueues orphan reclaim without waiting for next freeze"
 created: 2026-09-05T15:48:43.895Z
+completed: 2026-09-05T16:19:55.226Z
 depends_on: []
 composes_with:
   - 081M1S2N2A0087G0R003FJ60D3

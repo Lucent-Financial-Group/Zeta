@@ -1,0 +1,14 @@
+{
+  "id": "080d0392f4897810a0130008e9711253",
+  "at": "2026-09-05T16:19:55.311Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1S5X49C087G0R002TMVKQM",
+    "type": "task",
+    "title": "BlockCas delete is the reclaim door for default freeze volumes",
+    "slug": "blockcas-delete-is-the-reclaim-door-for-default-freeze-volum",
+    "priority": "P2",
+    "filename": "081M1S5X49C087G0R002TMVKQM-blockcas-delete-is-the-reclaim-door-for-default-freeze-volum.md"
+  }
+}
