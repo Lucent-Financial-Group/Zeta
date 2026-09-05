@@ -1,0 +1,12 @@
+{
+  "pr_number": 16629,
+  "archive_path": "docs/history/pr-reviews/PR-16629-feat-081m1qnn0g5087g0r0003vxysk-freeze-reclaimtick-composes-pacer.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-05T02:39:29.383Z",
+  "schema_version": "v1",
+  "commit_sha": "15438518293fc20917d90e873f3784cf8c81d2a9",
+  "title": "feat(081M1QNN0G5087G0R0003VXYSK): freeze reclaimTick composes pacer",
+  "state": "MERGED",
+  "merged_at": "2026-09-05T02:38:46Z",
+  "head_ref": "feat/zetafs-freeze-reclaim-tick"
+}

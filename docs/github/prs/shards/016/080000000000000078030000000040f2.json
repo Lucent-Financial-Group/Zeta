@@ -1,0 +1,12 @@
+{
+  "pr_number": 16626,
+  "archive_path": "docs/history/pr-reviews/PR-16626-feat-081m1qk58zq087g0r000z73gh0-freeze-reclaimsweep-owns-the-journal.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-05T02:15:00.040Z",
+  "schema_version": "v1",
+  "commit_sha": "77b91cdc8db30e997e8f4c2115e5ec464ac42b45",
+  "title": "feat(081M1QK58ZQ087G0R000Z73GH0): freeze reclaimSweep owns the journal",
+  "state": "MERGED",
+  "merged_at": "2026-09-05T02:14:22Z",
+  "head_ref": "feat/zetafs-freeze-reclaim-sweep-door"
+}
