@@ -1,0 +1,14 @@
+{
+  "id": "080d03969286a810a01300080422646c",
+  "at": "2026-09-05T18:26:21.013Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1SD4M6M087G0R0039MBB6D",
+    "type": "task",
+    "title": "ARC hosted three-arm coordinate policy comparison",
+    "slug": "arc-hosted-three-arm-coordinate-policy-comparison",
+    "priority": "P2",
+    "filename": "081M1SD4M6M087G0R0039MBB6D-arc-hosted-three-arm-coordinate-policy-comparison.md"
+  }
+}
