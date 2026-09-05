@@ -148,6 +148,7 @@ describe("heartbeatRepoRelPath", () => {
     const p = heartbeatRepoRelPath("otto", ts, "abc123");
     expect(p).toBe("docs/agent-heartbeats/otto/2026/05/27/abc123.md");
     expect(p.includes("\\")).toBe(false);
+    expect(p.startsWith("http")).toBe(false);
   });
 });
 
@@ -175,6 +176,13 @@ describe("zetaIdToHex", () => {
     expect(hex).toHaveLength(32);
     expect(hex.endsWith("deadbeef")).toBe(true);
     expect(hex.startsWith("8")).toBe(true);
+  });
+
+  it("is a 32-hex magnet, not a host:port broadcast", () => {
+    const hex = zetaIdToHex(0xdeadbeefn);
+    expect(hex).toMatch(/^[0-9a-f]{32}$/);
+    expect(hex.includes(".")).toBe(false);
+    expect(hex.includes(":")).toBe(false);
   });
 });
 

@@ -1,0 +1,14 @@
+{
+  "id": "080d0378dbc8e010a0130008c5efd29b",
+  "at": "2026-09-05T01:07:46.588Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1QHPY8V087G0R003FFJKPK",
+    "type": "task",
+    "title": "Heartbeat is DHT pin not broadcast; gossip over time",
+    "slug": "heartbeat-is-dht-pin-not-broadcast-gossip-over-time",
+    "priority": "P1",
+    "filename": "081M1QHPY8V087G0R003FFJKPK-heartbeat-is-dht-pin-not-broadcast-gossip-over-time.md"
+  }
+}

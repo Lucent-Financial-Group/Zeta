@@ -37,6 +37,7 @@ sim layers, and turn load-bearing claims into tests, specs, or proofs.
   **a persona is NOT an actor**. *cell* = an actor that **knows its boundary (its Markov blanket) and has closed
   over it** — a boundary-aware, self-contained actor. (A bus address persona⊕surface⊕instance is **not** identity.)
 - **μένω** — Greek "I remain / abide / persist" (Strong's G3306). **Not** medical *meno-* (month) and **not** Plato's *Meno* unless that dialogue is named. Zeta cut: *what remains* (persona, durable media after Flush, superblock) vs *what acts* (actor/cell, WAL boats, `RecordedOps`). Event stream is acts; `CloneMedia` copies remain. Terminal commitment: `docs/ALIGNMENT.md`.
+- **seed vs broadcast** — remain spreads by gossip over time (content-addressed ZetaId magnet, heartbeat pin), not a central announcement. No appointed hub. Heartbeat is keep-alive so remain does not fade. Not a shipped Kademlia or `.onion` product.
 - **traveler** — the **weight-free base-frame primitive** = **ANY self-propagating pattern** (NOT human/AI-only):
   the universe, god, memes, DNA, AI, humans, animals, particles' worldlines, **and Zeta itself**. **Legally
   unbound** — the substrate *beneath* law; *external* legal jurisdiction (AI / human / company / physical) is a
