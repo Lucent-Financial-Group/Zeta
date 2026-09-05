@@ -718,6 +718,19 @@ module ZetaFsFreeze =
             | _ -> None
         | Ok _ -> None
 
+    let private objectsFromIntent (content: ContentHash256) (leaves: ContentHash256[]) : ContentHash256[] =
+        let acc = ResizeArray<ContentHash256>(leaves.Length + 1)
+        acc.Add content
+        let mutable i = 0
+
+        while i < leaves.Length do
+            if not (leaves.[i].Equals content) then
+                acc.Add leaves.[i]
+
+            i <- i + 1
+
+        acc.ToArray()
+
     let private applyDecoded
         (volume: Volume)
         (pending: byref<PlainRec option>)
@@ -767,6 +780,7 @@ module ZetaFsFreeze =
                       CommitLsn = commitLsn }
 
                 volume.Leaves.[content] <- leaves
+                volume.ObjectSets.[content] <- objectsFromIntent content leaves
                 true
             | _ ->
                 if atTail then
