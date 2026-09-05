@@ -1,0 +1,14 @@
+{
+  "id": "080d039c9de74810a0130008c2d89ef4",
+  "at": "2026-09-05T21:57:37.129Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1SS7F78087G0R001Q9KBP5",
+    "type": "task",
+    "title": "Dual-slot known.pins catalog with CRC generations",
+    "slug": "dual-slot-known-pins-catalog-with-crc-generations",
+    "priority": "P2",
+    "filename": "081M1SS7F78087G0R001Q9KBP5-dual-slot-known-pins-catalog-with-crc-generations.md"
+  }
+}

@@ -2728,6 +2728,38 @@ let ``crash mid-write of known.pins keeps the prior freeze readable`` () : Task 
     }
 
 [<Fact>]
+let ``torn higher catalog slot loads the previous history policy`` () : Task =
+    task {
+        ensureHasher ()
+        let mock = InMemoryFileSystem()
+        FileSystem.Register(mock)
+        let store = "/dual-slot-catalog"
+        let mutbuf = ZetaFsMutbuf.create store ZetaFsMutbuf.Coherence.Shared
+        let volume1 = ZetaFsFreeze.createManual store mutbuf None
+
+        try
+            volume1.History <- ZetaFsPolicy.HistoryPolicy.KeepNone
+            volume1.History <- ZetaFsPolicy.HistoryPolicy.KeepAll
+            let higher = ZetaFsPath.combine2 store "known.pins.0"
+            Assert.True(FileSystem.Current.Exists higher)
+            let bytes = FileSystem.Current.ReadAllBytes higher
+            Assert.True(bytes.Length > 0)
+            bytes.[bytes.Length - 1] <- bytes.[bytes.Length - 1] ^^^ 0xA5uy
+            FileSystemIo.writeAllBytes FileSystem.Current higher bytes
+        finally
+            ZetaFsFreeze.dispose volume1
+
+        let volume2 = ZetaFsFreeze.createManual store mutbuf None
+        try
+            match volume2.History with
+            | ZetaFsPolicy.HistoryPolicy.KeepNone -> ()
+            | other -> Assert.Fail(sprintf "expected KeepNone from slot 1, got %A" other)
+        finally
+            ZetaFsFreeze.dispose volume2
+            FileSystem.Reset()
+    }
+
+[<Fact>]
 let ``rolling 1 third freeze must not revive the first generation`` () : Task =
     task {
         ensureHasher ()
