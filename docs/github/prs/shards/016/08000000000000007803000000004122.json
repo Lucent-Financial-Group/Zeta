@@ -1,0 +1,12 @@
+{
+  "pr_number": 16674,
+  "archive_path": "docs/history/pr-reviews/PR-16674-feat-081m1s440qq087g0r00218k9am-reopen-enqueues-leftover-orphan-reclaim.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-05T16:16:06.582Z",
+  "schema_version": "v1",
+  "commit_sha": "6a08ec532bb6324bf36537cf079c41f17ceb6709",
+  "title": "feat(081M1S440QQ087G0R00218K9AM): reopen enqueues leftover orphan reclaim",
+  "state": "MERGED",
+  "merged_at": "2026-09-05T16:15:26Z",
+  "head_ref": "feat/zetafs-reopen-orphan-reclaim"
+}
