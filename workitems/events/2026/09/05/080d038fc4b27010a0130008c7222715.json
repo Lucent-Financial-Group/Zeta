@@ -1,0 +1,14 @@
+{
+  "id": "080d038fc4b27010a0130008c7222715",
+  "at": "2026-09-05T14:28:31.950Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1RZH5JD087G0R0008V63WQ",
+    "type": "task",
+    "title": "ARC hosted sweep compares coordinate policies with one explicit dispatch",
+    "slug": "arc-hosted-sweep-compares-coordinate-policies-with-one-expli",
+    "priority": "P2",
+    "filename": "081M1RZH5JD087G0R0008V63WQ-arc-hosted-sweep-compares-coordinate-policies-with-one-expli.md"
+  }
+}
