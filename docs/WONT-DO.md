@@ -477,8 +477,25 @@ executor layering as a package
   algebra already distinguishes `Op`, `Stream`, `Circuit`; IL-emit
   operator fusion (P1) is the "physical plan" equivalent for this
   model.
-- **Boundary:** PRODUCT IDENTITY — there is no SQL compiler to layer these stages onto; the DBSP algebra already carries Op/Stream/Circuit.
-- **Renewal token:** a SQL surface is adopted as a supported input language. See the shared boundary note below.
+- **Boundary:** CORRECTED 2026-09-05, and the correction matters more
+  than the original. I first wrote this boundary as "there is no
+  compiler to layer these stages onto" — which reads as refusing the
+  PIPELINE. Aaron: *"this is the most thing we are trying to make
+  distributed and reliable over time."* The stages are not refused;
+  **they are the active work.** `ZetaIrV1`–`V4`, `ZetaIrNormalizer`,
+  `ZetaIrCanonicalizer` and `ZetaIrEval` are that pipeline, and the
+  entry's own text already said so — *"IL-emit operator fusion (P1) is
+  the 'physical plan' equivalent for this model."* The real boundary
+  is **TOPOLOGY AND INPUT LANGUAGE**: what is refused is the DuckDB
+  SHAPE — a single-node, SQL-first compiler — not parse/bind/plan/
+  optimize/emit, which Zeta is building distributed over the DBSP
+  algebra.
+- **Renewal token:** the entry is scoped to the DuckDB shape, so what
+  would move it is a SQL surface being adopted as a supported input
+  language. **The distributed pipeline needs no renewal token because
+  it was never refused** — and an unexpiring entry that reads as
+  refusing it is precisely the hazard this pass exists to find. See
+  the shared boundary note below, and the note on THIS entry in it.
 - **Revisit when:** Never in this framing. The analogue here is
   the verified query-optimisation research direction (Lean 4
   rewrite-commute proof, ROADMAP research gap #4).
@@ -771,6 +788,20 @@ boundary already carries its condition: **the boundary moving IS the renewal tok
 converts `Revisit: never` into something arguable **without anyone changing their mind** — which is
 the point. These are not weakened refusals; they are refusals you can now attack specifically,
 which is what makes them safe to hold firmly.
+
+**Note on the entry this pass nearly mis-scoped — and what it demonstrates.** Within minutes of
+the boundaries being written, Aaron read the `DuckDB-style parser / binder / logical / optimizer /
+physical` row and said: *"this is the most thing we are trying to make distributed and reliable
+over time."* My first boundary for it ("there is no compiler to layer these stages onto") would
+have canonised a refusal of **the active work** — the ZetaIr pipeline — under an entry that was
+only ever refusing the *DuckDB shape*, single-node and SQL-first.
+
+That is the hazard in miniature, and it argues for this whole pass rather than against it. The
+entry had sat unexpiring since 2026-04-17 and nobody misread it, because nobody read it — the
+`Why not` prose was narrow enough to be correct and vague enough to be inert. **Naming the boundary
+is what made it legible enough to be wrong out loud**, and therefore legible enough to be
+corrected. An unexpiring refusal does not have to be *acted on* to do damage; it only has to be
+inherited by someone with less context than its author.
 
 **Note on the one that is different.** `A proof / evidence threshold for breaking earned frost` is
 not refused on a boundary that could move in its favour — it is refused because *the mechanism
