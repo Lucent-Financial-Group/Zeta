@@ -1,0 +1,12 @@
+{
+  "pr_number": 16622,
+  "archive_path": "docs/history/pr-reviews/PR-16622-docs-081m1qf4hzr087g0r0034wmv0w-correct-my-own-overclaim-about-and-ferry-the-arc.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-05T01:43:28.591Z",
+  "schema_version": "v1",
+  "commit_sha": "6233d04225f1460456acb4033cb915651cbfcb86",
+  "title": "docs(081M1QF4HZR087G0R0034WMV0W): correct my own overclaim about μένω, and ferry the Architect/Father thread",
+  "state": "MERGED",
+  "merged_at": "2026-09-05T01:42:51Z",
+  "head_ref": "otto/meno-link-correction"
+}
