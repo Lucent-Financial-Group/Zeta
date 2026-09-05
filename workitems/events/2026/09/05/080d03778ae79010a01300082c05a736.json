@@ -1,0 +1,14 @@
+{
+  "id": "080d03778ae79010a01300082c05a736",
+  "at": "2026-09-05T00:21:46.866Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1QF2Q7H087G0R0014FXKSJ",
+    "type": "task",
+    "title": "μένω remain vs act on IBlockIo CloneMedia vs RecordedOps",
+    "slug": "remain-vs-act-on-iblockio-clonemedia-vs-recordedops",
+    "priority": "P1",
+    "filename": "081M1QF2Q7H087G0R0014FXKSJ-remain-vs-act-on-iblockio-clonemedia-vs-recordedops.md"
+  }
+}

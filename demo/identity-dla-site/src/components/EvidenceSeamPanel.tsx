@@ -153,6 +153,17 @@ const SPECTRUM = [
     tone: "var(--amber)",
   },
   {
+    lane: "user-declared lexical geometry",
+    carrier: "v1 calibration receipt · non-personal fixture",
+    operators: "Cl3/CGA projection · F#/Python · 8+2 controls",
+    defect: "—",
+    readout: "INPUT ONLY",
+    verdict: "unknowns and conflicts remain visible",
+    detail: "user-declared color + unit-cube vector → SPD frame observation · canonical calibration order and coordinate mutation checked · no semantic, cortical, or learning result · gSCAN is planned, not measured",
+    tone: "var(--amber)",
+    emphasis: true,
+  },
+  {
     lane: "finite signed-probit EP query",
     carrier: "UCI ordered slice · 32,950 train → 8,238 held out",
     operators: "canonical source order · F#/Python exact 1-D oracle · label mutant",

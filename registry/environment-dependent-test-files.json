@@ -16,5 +16,11 @@
     "dependency": ".NET SDK 10.0.302 (global.json) and a built src/Bayesian/bin/Debug/net10.0/Zeta.Bayesian.dll",
     "reason": "MEASURED 2026-09-04 in the deliberately JavaScript-first hermetic CI tier: this non-skipping wrapper invokes an independently authored Python exact-posterior oracle and an F# receipt runner. The hermetic runner has neither the repository workstation bootstrap nor the built Bayesian assembly, so its red result was an unambiguous missing-dependency report: FS0078 for Zeta.Bayesian.dll. The checker remains mandatory: it runs in test (TS environment-dependent), after the declared full toolchain install, and fails if the F# receipt, Python oracle, or label-mutation control disagree. Moving it changes WHERE the dependency is realized, never WHETHER the cross-language claim is checked.",
     "workitem": ""
+  },
+  {
+    "path": "src/Core.TypeScript/research/lexical-geometric-receipt-cross-verify.test.ts",
+    "dependency": ".NET SDK 10.0.302 (global.json), Python 3, and a built src/Core/bin/Debug/net10.0/Zeta.Core.dll",
+    "reason": "The non-skipping wrapper compares a finite F# lexical-geometric receipt with an independently authored Python SHA-256 oracle. It requires the Core receipt assembly and runtimes deliberately absent from the JavaScript-only hermetic tier. The wrapper remains mandatory in test (TS environment-dependent), where the full declared install runs and the Bayesian build realizes the Core dependency; an F# receipt, Python oracle, canonical-order control, visible correction-conflict control, or coordinate-mutation disagreement remains red.",
+    "workitem": ""
   }
 ]
