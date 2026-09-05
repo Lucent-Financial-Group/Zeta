@@ -2,9 +2,9 @@
 
 <!-- GENERATED FILE. Do not hand-edit: `bun src/Core.TypeScript/hygiene/report-chart-currency.ts --write` overwrites it. -->
 
-**As of:** 2026-09-05T16:09:37Z — the instant `published-chart-versions.json` was last refreshed. Every age below is measured against that instant, not against the moment you are reading this, so this file is byte-reproducible from committed data.
+**As of:** 2026-09-05T16:31:37Z — the instant `published-chart-versions.json` was last refreshed. Every age below is measured against that instant, not against the moment you are reading this, so this file is byte-reproducible from committed data.
 
-**This is a report, never a gate.** Being behind is a standing condition, not a regression: 4 of 39 pins are behind upstream right now. A CI check on that would be red from birth and learned-to-ignore within a week. The blocking question — *does this pin resolve at all?* — is a different one and is answered on every PR by `src/Core.TypeScript/hygiene/audit-chart-target-revisions.ts`.
+**This is a report, never a gate.** Being behind is a standing condition, not a regression: 4 of 38 pins are behind upstream right now. A CI check on that would be red from birth and learned-to-ignore within a week. The blocking question — *does this pin resolve at all?* — is a different one and is answered on every PR by `src/Core.TypeScript/hygiene/audit-chart-target-revisions.ts`.
 
 **Behind is not unmaintained.** A pure versions-behind metric reports the most dangerous dependency in this tree as the healthiest one, which is exactly what happened with `minio`: it is the only pin that is not behind, and only because upstream archived the repository. So the gap and upstream's publishing record are two separate columns, and a chart nobody has published in over a year reads `DORMANT`, not `CURRENT`.
 
@@ -12,11 +12,11 @@
 
 | | count |
 |---|---|
-| chart coordinates under `full-ai-cluster/k8s/applications` | 39 |
+| chart coordinates under `full-ai-cluster/k8s/applications` | 38 |
 | behind upstream | 4 |
 | …of those, crossing a **major** boundary | 3 |
 | …of those, a `0.x` minor (breaking by semver convention) | 1 |
-| at the newest version and upstream still active | 35 |
+| at the newest version and upstream still active | 34 |
 | **`DORMANT`** — at the newest version because upstream stopped publishing | 0 |
 | upstream silent for over a year (any gap) | 0 |
 | **`UNREACHABLE`** — the refresh could not reach the repository | 0 |
@@ -64,7 +64,6 @@
 | `CURRENT` | `spire-crds` | `spire-crds` | `0.6.1` | 2026-08-23 | `0.6.1` | 2026-08-23 | 0 | -- | active 13d |
 | `CURRENT` | `tempo` | `tempo` | `2.3.0` | 2026-08-25 | `2.3.0` | 2026-08-25 | 0 | -- | active 11d |
 | `CURRENT` | `trust-manager` | `trust-manager` | `v0.24.0` | 2026-07-01 | `v0.24.0` | 2026-07-01 | 0 | -- | active 66d |
-| `CURRENT` | `vault` | `vault` | `0.34.1` | 2026-08-13 | `0.34.1` | 2026-08-13 | 0 | -- | active 23d |
 | `CURRENT` | `weaviate` | `weaviate` | `17.8.3` | 2026-07-01 | `17.8.3` | 2026-07-01 | 0 | -- | active 66d |
 
 ## Rows that carry a caveat
