@@ -265,6 +265,7 @@
     <Compile Include="SalonPack.Tests.fs" />
     <Compile Include="ConformalGA.Tests.fs" />
     <Compile Include="LinguisticSeedPsd.Tests.fs" />
+    <Compile Include="LexicalGeometricReceipt.Tests.fs" />
     <Compile Include="Chip8Arcade.Tests.fs" />
     <Compile Include="Chip8Citizen.Tests.fs" />
     <Compile Include="SwarmBoard.Tests.fs" />

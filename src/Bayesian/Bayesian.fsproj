@@ -20,6 +20,7 @@
     <Compile Include="FactorGraph.fs" />
     <Compile Include="AdinkraEquivariantFactorLayer.fs" />
     <Compile Include="ReferenceFrameFactorHeterarchy.fs" />
+    <Compile Include="LexicalGeometricBayesianAdapter.fs" />
     <Compile Include="Ep.fs" />
     <Compile Include="SignedProbitEp.fs" />
     <Compile Include="BayesianAggregate.fs" />

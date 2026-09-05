@@ -529,6 +529,7 @@
     <Compile Include="SoftTie.fs" />
     <Compile Include="LinguisticSeed.fs" />
     <Compile Include="ConformalGA.fs" />
+    <Compile Include="LexicalGeometricReceipt.fs" />
     <Compile Include="Salon.fs" />
     <Compile Include="GameCatalog.fs" />
     <Compile Include="RomDat.fs" />
