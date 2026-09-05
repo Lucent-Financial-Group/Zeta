@@ -186,10 +186,32 @@ module ZetaFsFreeze =
                             let dir = ZetaFsPath.directoryName path
                             fsDoor.CreateDirectory dir
 
-                            if not (fsDoor.Exists path) then
-                                FileSystemIo.writeAllBytes fsDoor path bytes
+                            try
+                                if not (fsDoor.Exists path) then
+                                    FileSystemIo.writeAllBytes fsDoor path bytes
 
-                            known.[id] <- uint64 bytes.Length
+                                known.[id] <- uint64 bytes.Length
+                            with
+                            | :? CrashMidWriteException as ex ->
+                                let tmp = path + ".tmp"
+                                let leftover =
+                                    if fsDoor.Exists path then
+                                        path
+                                    elif fsDoor.Exists tmp then
+                                        tmp
+                                    else
+                                        null
+
+                                if leftover <> null then
+                                    if leftover <> path then
+                                        fsDoor.Move(leftover, path, true)
+
+                                    let n = fsDoor.ReadAllBytes(path).Length
+
+                                    if n > 0 then
+                                        known.[id] <- uint64 n
+
+                                raise ex
 
                             if item.Durable then
                                 match FileSync.fsyncFile path with

@@ -1,0 +1,14 @@
+{
+  "id": "080d0390aad0c010a013000803e953ec",
+  "at": "2026-09-05T14:59:57.080Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1S1APGQ087G0R000F77JAH",
+    "type": "task",
+    "title": "Crash leftover CAS object is an orphan the next freeze reclaims",
+    "slug": "crash-leftover-cas-object-is-an-orphan-the-next-freeze-recla",
+    "priority": "P2",
+    "filename": "081M1S1APGQ087G0R000F77JAH-crash-leftover-cas-object-is-an-orphan-the-next-freeze-recla.md"
+  }
+}
