@@ -1016,3 +1016,142 @@ headroom. No speculative budgets were added to tests that have never failed.
 **The lesson that cost the most is procedural, not technical.** Both diagnoses were lost to
 `| tail -n`, which drops the one line that names the failure. A suite run that might fail is captured
 whole, or its failure is anonymous.
+
+
+## Pass 11 — three places the register still spoke in a voice it had not earned
+
+Every pass before this one closed a boundary between the register and reality. This one closes the
+three remaining places where the register **described** a run in terms the run had not earned — the
+same defect three times, at three different distances from the work: in memory, in prose, and on
+disk. The pattern is worth naming because it is the one that keeps recurring: **a disclosure that
+does not change when its inputs change discloses nothing.**
+
+### The pure cycle said DELIVERED and could not say what decided it
+
+`runOrgCycle` is deliberately a function of its inputs — no clock, no randomness, no I/O. That is a
+feature and it is not the defect. The defect was the SILENCE beside it. Measured before the fix:
+**14 of 14 gate verdicts approved** (runtime validation included), with no field anywhere in the
+report from which a reader could learn it, while `run-org.ts --cycle` printed `task-004 passed the
+gates` and `goal DELIVERED` in **exactly the same voice** as the run that reaches a real repository.
+
+`cycleFidelity(deps)` now derives what answered each of the four decisions — gate, escalation,
+staffing, work outcome — and renders the summary from that table rather than beside it:
+
+```
+this cycle PERFORMED NOTHING and reached nothing: 2 of 4 decisions came from the caller
+```
+
+Two properties were the point, and both are mutation-checked:
+
+- **It is a measurement, not a label.** Supplying a `gateChooser` moves exactly one row to `caller`
+  and leaves the escalation row a `preference`. A block that read the same whatever the caller
+  supplied would be the vacuity class wearing a disclosure.
+- **The early return carries it too.** `runOrgCycle` returns early when the goal is not accepted, and
+  that return builds its report by hand — precisely where a new field goes missing with nothing
+  noticing. Both paths are asserted.
+
+Deliberately **no** `replayable: true` field: a flag typed as the literal `true` is the vacuity class
+in its purest form, and this register has already shipped one.
+
+### The direction was reversed and the record said the opposite
+
+The maintainer's *"typescript is what we want to turn into the canonical"* sits four passes after
+this item's own `## Pass 6 — the F# engine as main`. A reader arriving at either alone draws the
+wrong conclusion, so the reconciliation is written down rather than left to be re-derived:
+`docs/DECISIONS/2026-09-04-typescript-is-the-canonical-implementation-and-what-that-does-not-license.md`.
+
+The two statements do not conflict. Pass 6 deferred to the implementation that **had already thought
+a problem through** (named bounded wait, a real unpause transition, a menu that is not coercive).
+Deferring to a better answer is not appointing a source of truth, and conflating them is how a good
+decision becomes an appointed hub — `itron-hub-patent-boundary-p2p-is-the-upgrade.md` draws exactly
+that line, and the discriminator is **exit, not degree**.
+
+The direction was cheap to state because it was already the operating reality: the treaty transcript
+lives in the TS tree, `generate-workflow-transcript.ts` writes its 283 vectors, and
+`WorkflowEngine.Tests.fs` replays them. TS-first, F#-follows, treaty makes it checkable.
+
+What it does **not** license is the useful half — three things, argued, two of them checkable today:
+
+1. **Not a treaty with a hole.** Canonical-TS makes holes more tempting, not less: if TS is the
+   source of truth, the reflex is that F# conformance is optional. A single implementation cannot be
+   falsified — nothing exists to disagree with it.
+2. **Not "TS-only is a gap" by default.** The distinction that matters is **adapter vs rule**.
+   `directoryIntake` and `gitWorktreeChangeControl` are adapters and each host should differ;
+   `fidelityOf` is a **rule** and would need vectors the day a second implementation appears.
+3. **Not a private format.** A persisted format read by one program is an internal detail; read by
+   **two** it is a wire format. The moment a second implementation reads the org event log, the
+   `OrgFact` shapes join the treaty — said out loud so that transition cannot happen silently.
+
+### Fidelity died at the disk boundary — and the store was losing events
+
+`fidelityOf` told a **live** run whether it had touched anything. Nothing wrote it down. Measured: a
+store built from real commands and real `--no-ff` merges resumed **identically** to one built from a
+pure simulation — same run count, same `delivered: true`, same facts, same work items. That is the
+failure the port layer exists to prevent, displaced in time and strictly worse: after the fact it is
+not recoverable even in principle, because the evidence was never written.
+
+Same shape as the three before it — a fact (`run_fidelity`), a fold (`foldRunFidelity` +
+`everyRunWasSimulated`), and the CLI printing it — with the standing discipline that it is derived
+from the ProviderSet rather than declared:
+
+```
+simulated  deliveryRate={"runs":1,"delivered":1,"deliveredForReal":0,
+                         "deliveredSimulated":1,"deliveredUnknownFidelity":0}
+           recorded runs=1  allSimulated=true   realPorts=[]
+real       deliveryRate={"runs":1,"delivered":1,"deliveredForReal":1,
+                         "deliveredSimulated":0,"deliveredUnknownFidelity":0}
+           recorded runs=1  allSimulated=false  realPorts=[work_execution,change_control]
+```
+
+**UNKNOWN is a third answer, not a default.** Runs predating the fact carry no fidelity, and reading
+that silence as "nothing was real" would invent a fact about history nobody observed — the same
+refusal `directoryReview` makes when no verdict was filed. So `RunRecord.replayable` is optional,
+absence is reported as `deliveredUnknownFidelity`, and **no field is written** for a run that has
+none: a defaulted `false` would assert something unmeasured *and* change the run's minted id.
+`everyRunWasSimulated([])` answers `false` for the same reason.
+
+### The defect this uncovered was older and quieter than the one being fixed
+
+A new test asserted two fidelity reports and got one. The cause was not in the new code.
+
+`identifyEvent` deduped by the **writer's** `event.id` rather than by content. Two genuinely
+different events that happened to share an id landed at different paths, were **both written**, and
+then one was **dropped on read**. `run-org.ts --store S` run twice with different flags — which
+mints the same ids every invocation — left:
+
+```
+78 event files on disk, 58 returned by readEvents   (20 events lost, nothing anywhere saying so)
+```
+
+Identity is now the content address: **78/78**. The original intent survives — byte-identical copies
+still collapse, so a re-run or a merged branch does not duplicate history — and what no longer
+collapses is two events that merely share a name. A third test asserts the reader's count equals the
+file count, so "two files" and "two events" are one statement rather than two that can disagree.
+
+**This is the fourth defect in this arc found by running the thing rather than reading it**, and the
+count is now itself the finding: `commandProposal` ignoring `ctx.workdir`, `gateChooser` making the
+review port decorative, the two load-sensitive observe tests, and now twenty silently unreadable
+events. None was visible in review; all four were visible on the first real run.
+
+### Falsifiers
+
+Green proves nothing until mutated. 13 new mutants; the two that survived the first pass were real
+holes and are named because they are the more useful half of the exercise:
+
+| survivor | what it would have allowed |
+|---|---|
+| the delivered buckets counted **all** runs | a refused run inflating the only number that says how much of the history shipped — and silently, since the buckets still summed against each other |
+| the event's `decision` **prose** was unchecked | the log reading `performed nothing` over a run that merged to a real branch — the same defect relocated from the field to the sentence a human actually reads |
+
+Both closed, then 13/13. The `identifyEvent` fix carries its own mutant (`return event.id`), which
+now goes red across three suites.
+
+### State at the end of pass 11
+
+```
+bun test src/Core.TypeScript/corporate/            996 pass, 0 fail  (42 files)
+tsc --noEmit                                         0 errors
+mutation: 18 matrices, 140/140 killed, 0 survivors, 0 stale anchors
+commits: a4c6e1ceb (cycle fidelity)  7cc97c107 (the decision)  3cc8afbc1 (fidelity on disk)
+         13 files, +861 / -14
+```
