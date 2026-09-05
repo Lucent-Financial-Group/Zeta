@@ -74,8 +74,24 @@ const APPLICATIONS_DIR = "full-ai-cluster/k8s/applications";
  * So the rule is the SHAPE of the key, not a fixed vocabulary: anything ending
  * in `existingSecret` or in `secretName` (either case) is a promise that some
  * other actor creates that object.
+ *
+ * WIDENED A SECOND TIME, 2026-09-05, and by the same failure mode the paragraph
+ * above describes -- which is the argument for the shape rule rather than a
+ * refutation of it. `opensearch` references its minted admin credential through
+ * `extraEnvs[].valueFrom.secretKeyRef.name`, which is the STANDARD Kubernetes
+ * way to name a Secret and is arguably more common than either spelling above.
+ * The audit did not recognise it, so a genuinely-referenced credential read as
+ * "a minted Secret nobody names".
+ *
+ * `secretKeyRef.name` is matched by its PARENT, not by the key `name` alone: a
+ * bare `name:` means a hundred things in a values file, and matching it would
+ * convict half the tree. The same applies to `secretRef` (used by `envFrom`),
+ * so both are recognised only in that position.
  */
 const SECRET_NAME_KEY = /(^|\.)[A-Za-z]*([Ee]xistingSecret|[Ss]ecretName)$/;
+
+/** `...secretKeyRef.name` / `...secretRef.name` — the standard env-var forms. */
+const SECRET_REF_NAME_KEY = /(^|\.)(secretKeyRef|secretRef)(\.[0-9]+)?\.name$/;
 
 export interface SecretReference {
   /** Application directory — the name an operator sees. */
@@ -149,7 +165,7 @@ export function collectSecretReferences(repoRoot = REPO_ROOT): readonly SecretRe
       const values = helm?.valuesObject;
       if (values === undefined) continue;
       for (const [field, leaf] of leaves(values)) {
-        if (!SECRET_NAME_KEY.test(field)) continue;
+        if (!SECRET_NAME_KEY.test(field) && !SECRET_REF_NAME_KEY.test(field)) continue;
         if (typeof leaf !== "string" || leaf.trim() === "") continue;
         out.push({ app: entry.name, manifest, field, secretName: leaf });
       }
