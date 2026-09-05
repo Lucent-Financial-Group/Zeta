@@ -1,0 +1,12 @@
+{
+  "pr_number": 16669,
+  "archive_path": "docs/history/pr-reviews/PR-16669-fix-081m1ryf7yf087g0r003ftcz5k-recover-two-commits-auto-merge-left-behind-the-op.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-05T15:29:31.633Z",
+  "schema_version": "v1",
+  "commit_sha": "597d6ce05c83f05865dead47ccbf8885a771901f",
+  "title": "fix(081M1RYF7YF087G0R003FTCZ5K): recover two commits auto-merge left behind — the OpenSearch fix and the minted credential",
+  "state": "MERGED",
+  "merged_at": "2026-09-05T15:28:56Z",
+  "head_ref": "otto/recover-opensearch-fix"
+}

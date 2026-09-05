@@ -1,0 +1,12 @@
+{
+  "pr_number": 16668,
+  "archive_path": "docs/history/pr-reviews/PR-16668-feat-081m1s1apgq087g0r000f77jah-crash-leftover-cas-is-an-orphan.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-05T15:23:02.848Z",
+  "schema_version": "v1",
+  "commit_sha": "b08273bde2f8fd655b956d5d2b679909c49e3bd2",
+  "title": "feat(081M1S1APGQ087G0R000F77JAH): crash leftover CAS is an orphan",
+  "state": "MERGED",
+  "merged_at": "2026-09-05T15:22:19Z",
+  "head_ref": "feat/zetafs-crash-orphan-autotick"
+}

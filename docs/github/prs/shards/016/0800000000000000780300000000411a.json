@@ -1,0 +1,12 @@
+{
+  "pr_number": 16666,
+  "archive_path": "docs/history/pr-reviews/PR-16666-feat-081m1s06g1v087g0r0033nxedz-enqueue-orphan-reclaim-after-freeze.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-05T14:59:18.024Z",
+  "schema_version": "v1",
+  "commit_sha": "eaf1a371f0ad375f2b39da1e2e4599952bbc15ef",
+  "title": "feat(081M1S06G1V087G0R0033NXEDZ): enqueue orphan reclaim after freeze",
+  "state": "MERGED",
+  "merged_at": "2026-09-05T14:58:39Z",
+  "head_ref": "feat/zetafs-reclaim-autotick-orphans"
+}
