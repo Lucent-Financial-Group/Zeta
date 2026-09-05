@@ -2,11 +2,14 @@
 /**
  * src/Core.TypeScript/cluster/vault-unsealer.ts
  *
- * THE POST-INIT HALF of the metal Vault ceremony -- the decision loop that
+ * THE POST-INIT HALF of the metal / kind ceremony -- the decision loop that
  * may unseal and may never init. Sibling of `ephemeral-vault-init.ts`, which
  * is the disposable-cluster path that mints material and throws it away.
- * This module is the going-for unsealer for a cluster that already exists:
- * a human has inited, saved Shamir shares into Lucent, and proved them once.
+ * The secret store is **OpenBao** (Vault Application is gone). This module
+ * keeps the Shamir HTTP loop for kind/CI until an emulator job (SoftHSM2 /
+ * swtpm) inits without Shamir. PKCS#11 auto-unseal on metal replaces
+ * TOPOLOGY.md §5; it does not delete this classifier. See
+ * `seal-emulator-rung.ts`. SoftHSM green is not YubiHSM green.
  *
  * Nothing here talks to Helm. The extraContainer + TOPOLOGY.md §5 recast
  * land in the same later commit as the sidecar. This file is the payload
@@ -30,6 +33,7 @@
  * runs WITH THE MATERIAL STILL IN HAND, same discipline as ephemeral init.
  *
  * Not HashiCorp auto-unseal (KMS wrap of the root key). Shamir unseal loop.
+ * OpenBao PKCS#11 auto-unseal is the metal replacement, classified elsewhere.
  */
 
 import { scanForKeyMaterial, type LeakScan } from "./ephemeral-vault-init.ts";

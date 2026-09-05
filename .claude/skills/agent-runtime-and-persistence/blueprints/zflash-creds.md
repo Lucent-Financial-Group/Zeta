@@ -45,7 +45,19 @@ bun full-ai-cluster/tools/zflash.ts --agent \
 - `file:<path>` — read from file (expand `~`)
 - `keychain:<account>` — read from macOS Keychain (per `security find-generic-password`)
 - `prompt:<label>` — prompt operator interactively (one paste; not echoed)
-- `vault:<path>` — read from HashiCorp Vault if configured
+- `openbao:<path>` — read from OpenBao if configured (was `vault:`; HashiCorp
+  Vault Application is gone)
+
+HSM-talk companions (repair stick, Aaron 2026-09-05) are **not** CLI creds
+and are **not** PIN bytes. When `--bake-cred` grows them they are:
+
+- `pkcs11-module-path` / `connector-config` / `authkey-reference` /
+  `domain-map` / `openbao-seal-env-pointer`
+
+Forbidden as originals on the stick: PIN plaintext, Shamir shares,
+`OP_SESSION`, a brand HSM type in the ZetaFS volume. Classifier:
+`src/Core.TypeScript/cluster/seal-emulator-rung.ts`. SoftHSM2 in CI
+does not replace this metal companion set.
 
 Operator chooses per-cred source based on operational convenience + security posture.
 

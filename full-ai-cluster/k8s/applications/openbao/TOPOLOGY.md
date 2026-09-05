@@ -28,6 +28,12 @@
 > HSM-backed unseal on the new hardware), and it replaces the ceremony rather
 > than amending it. Read section 5 as the record of what was, not as the
 > instruction for what to do.
+>
+> **CI emulator rung (2026-09-05):** SoftHSM2 / swtpm can witness the PKCS#11
+> *wiring* in CI. They cannot witness YubiHSM domains, USB, or this board's
+> firmware PCRs. `seal "pkcs11"` stays out of this Application until a module
+> exists in the image in the same commit.
+> [`seal-emulator-rung.ts`](../../../../src/Core.TypeScript/cluster/seal-emulator-rung.ts).
 
 Companion to `Application.yaml`. That file declares
 `cluster.zeta.io/topology: single-node`; this file records the delta to

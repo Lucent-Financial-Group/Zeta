@@ -1,7 +1,7 @@
 # Trajectory - Cluster Encryption / Credential Substrate
 
 Status: active — first surfaced 2026-05-29 from substrate inventory (was tracked only as scattered backlog rows; never had a trajectory surface, which is why it was easy to lose at cold-boot)
-Last refreshed: 2026-09-05 (μένω remain vs act; unsealer loop; seed vs broadcast classifier; join-hash recast as framework, hole-punch after discovery)
+Last refreshed: 2026-09-05 (μένω remain vs act; unsealer loop; seed vs broadcast classifier; join-hash recast as framework, hole-punch after discovery; OpenBao green; CI emulator rung SoftHSM/swtpm ≠ metal)
 Type: workstream (current-focus) — a trajectory the operator is *actively powering*. Many trajectories can be tracked; only a few are workstreams at once (finite-focus / WIP-bounded — a workstream is a trajectory under sustained thrust, and thrust budget is finite, so most trajectories coast). ("Trajectory" is the genus; "workstream" is the species: a trajectory under sustained thrust toward a deliverable, vs. emergent-posture trajectories like `anti-infection`, which self-describes as "not a workstream with a cadence." See [`factory-trajectory-surface`](../factory-trajectory-surface/RESUME.md) for the genus/species taxonomy.) One of the operator's three current cluster workstreams (encryption / usb-zflash / ts-workflow-engine).
 Eventual encoding (design-stage — the human maintainer 2026-05-23 genetic-ID substrate + Clifford/HKT): this trajectory's state is trackable as a 128-bit genetic-ID seed (discrete, reversible via parser-combinator ↔ generator-function) → Clifford-space path (continuous, eventual). Mirrors the three-lane I8-lattice / I9-manifold split.
 Current blocker: none operationally; the live design tension is interactive-login-vs-baked-in-keys-vs-CI-test (081KSGS9H0008QG0R003JNSVR5)
@@ -50,6 +50,24 @@ enough; inbound is how anyone exits being a relay; STUN/TURN
 in the method set), then simulated DNS. [`docs/PRODUCT-LANES.md`](../../PRODUCT-LANES.md).
 Research:
 [`docs/research/2026-09-05-join-hash-is-framework-hole-punch-after-discovery.md`](../../research/2026-09-05-join-hash-is-framework-hole-punch-after-discovery.md).
+
+## 2026-09-05 — OpenBao is green; CI emulators witness wiring, not metal (Riven)
+
+Otto swapped Vault for OpenBao (081M1S6D1M5087G0R000N11GND).
+Verified by **presence**, not silence: `openbao` is not in
+`DEV_INCLUDED_PROOF_DEFERRED_DIRS` and is asserted
+Synced+Healthy. Auto-unseal handoff is unblocked. TOPOLOGY.md
+§5 (human Shamir ceremony) is **history** on metal once PKCS#11
+is real; keep `vault-unsealer.ts` for kind/CI until an emulator
+job inits without Shamir.
+
+Aaron: push HSM and TPM into CI with emulators; USB repair must
+keep HSM-talk. Classifier:
+`src/Core.TypeScript/cluster/seal-emulator-rung.ts`. Research:
+[`docs/research/2026-09-05-ci-emulator-rung-softhsm-swtpm-witness-wiring-not-metal.md`](../../research/2026-09-05-ci-emulator-rung-softhsm-swtpm-witness-wiring-not-metal.md).
+Workitem: `081M1SD6GZ8087G0R001TNHN19`. SoftHSM2 / swtpm are the
+wiring rung. YubiHSM domains, USB, this board's PCRs stay metal.
+Do not commit `seal "pkcs11"` until a module is in the image.
 
 ## 2026-09-04 — production-hardening review (Riven)
 

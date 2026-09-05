@@ -16,6 +16,8 @@ The architectural ferries are research-grade:
 (remain vs act).
 [`docs/research/2026-09-05-meno-dht-gossip-onion-over-time-not-broadcast.md`](../../research/2026-09-05-meno-dht-gossip-onion-over-time-not-broadcast.md)
 (the gate is seeded, not broadcast).
+[`docs/research/2026-09-05-ci-emulator-rung-softhsm-swtpm-witness-wiring-not-metal.md`](../../research/2026-09-05-ci-emulator-rung-softhsm-swtpm-witness-wiring-not-metal.md)
+(SoftHSM2 / swtpm witness wiring, not metal).
 Terminal commitment (personal grounding already absorbed):
 [`docs/ALIGNMENT.md`](../../ALIGNMENT.md) § μένω.
 Workitem: `081M1PYZRE5087G0R000HHG5HV`.
@@ -26,15 +28,21 @@ Resume: [`RESUME.md`](RESUME.md).
 These do not move in this slice. Changing them is a gated-class
 act, not a sidecar.
 
-- Vault `operator init` — human, biometric, witness. Forever.
-- First unseal after init — proves the shares. Still gated.
+- OpenBao `operator init` — human, biometric, witness. Forever.
+  (Vault Application is gone on `main`; the store is OpenBao.)
+- First unseal after init — proves the shares **or** the
+  PKCS#11 wrap key. Still gated. OpenBao will not mint wrap
+  keys; a human creates them in the token first.
 - Dual-key treaty (active + ≥1 standby). Three live slots are
   the hub-less ask, not an inventory fact.
 - Lucent **item** as the source of truth for SA tokens and,
-  later, Shamir shares. USB / Keychain / k8s Secret are caches.
-- Shamir N-of-M. Threshold 1 is coercion (S=4).
-- Otto/Dejan Vault chart currency (`targetRevision: 0.34.1`).
-  Do not steal it.
+  later, Shamir shares / HSM authkey references. USB /
+  Keychain / k8s Secret are caches.
+- Shamir N-of-M on kind/CI until an emulator job inits without
+  it. Threshold 1 is coercion (S=4).
+- Otto/Dejan OpenBao chart (`openbao` 0.29.4 / appVersion
+  v2.6.2). Do not steal it. Do not copy `seal "pkcs11"` onto
+  HashiCorp Vault.
 - Persona remains; actor acts. A bus address is not identity.
 - Kademlia in `dht-discovery.ts`. Not a second DHT.
 - LLMTV broadcast as the one-way society picture. Not the gate.
@@ -64,41 +72,50 @@ assume the number.
    in Lucent. Metal `tty1` login retrieves
    `op://Lucent/<item>/{previous,current,next}`. This VM cannot
    mint items or talk to live 1Password.
-2. **TypeScript unsealer decision loop** (this slice — no Helm).
-   `src/Core.TypeScript/cluster/vault-unsealer.ts`. Classify
-   health: 200 sleep / 503 fetch-this-tick / 501 refuse-init /
-   curl 000 miss (not a seal). Threshold-many distinct keys.
-   Shares never written to disk, env, or etcd. Cannot init.
-3. **extraContainer + `TOPOLOGY.md` §5** — later, **same commit
-   as the sidecar**. Amend "Do not automate step 5 against Vault
-   CE" in that commit. `valuesObject` only. Do not fork the chart.
-4. Lease sidecar / portal / Consent (SSH is break-glass).
-5. Inventory lock test (presence counts, never private material).
-6. ADR: dual as minimum, three live slots as default.
-7. Missing persona trees (riven / vera / lior) after the 3-key
+2. **TypeScript unsealer decision loop** (landed — Shamir path
+   for kind/CI). `src/Core.TypeScript/cluster/vault-unsealer.ts`.
+   Classify health: 200 sleep / 503 fetch-this-tick / 501
+   refuse-init / curl 000 miss (not a seal). Keep until an
+   emulator job inits OpenBao without Shamir. Cannot init.
+3. **CI emulator rung** (this slice — classifier, not the job).
+   `src/Core.TypeScript/cluster/seal-emulator-rung.ts`.
+   SoftHSM2 / swtpm witness wiring. YubiHSM domains, USB, and
+   this board's PCRs stay metal. Do not put `seal "pkcs11"` in
+   Application.yaml until a module is in the image in the same
+   commit (`081M1SD6GZ8087G0R001TNHN19`). TOPOLOGY.md §5 is
+   **history** on metal once PKCS#11 auto-unseal is real.
+4. **USB repair HSM-talk** — companions on the stick (module
+   path, connector config, authkey *reference*, domain map,
+   OpenBao env pointer). Not PIN-as-original, not Shamir copy,
+   not `OP_SESSION`, not a brand type in the volume.
+5. extraContainer sidecar — later, **same commit as the
+   sidecar**, and only for the Shamir kind path until the
+   emulator job replaces it. `valuesObject` only. Do not fork
+   the chart.
+6. Lease sidecar / portal / Consent (SSH is break-glass).
+7. Inventory lock test (presence counts, never private material).
+8. ADR: dual as minimum, three live slots as default.
+9. Missing persona trees (riven / vera / lior) after the 3-key
    default exists.
-8. ESO for **app** secrets after the unsealer is real — never
-   Shamir-share copy.
-9. **seed vs broadcast** (this slice — classifier only, not a
-   public gate product). `src/Core.TypeScript/discovery/seed-not-broadcast.ts`.
-   Content-hash / ZetaId / onion-shape + gossip-k or salon
-   timer. DNS / IP / one-tick all-nodes is cathedral, not the
-   join path. `pinAgainstTtl` refreshes `lastSeenMs` so
-   `expireNodes` does not fade a pinned hash. Onion = hop-count
-   shape, no wire. Heartbeat filename pin landed on main
-   (#16623). Join-hash is **framework** (many protocols
-   consume it; ZetaDB federation is a caller), indexed at
-   `docs/PRODUCT-LANES.md`, not in SEED
-   (`081M1RZ70FF087G0R0035580EZ`, `081M1S0K0R0087G0R001T4R8JH`).
+10. ESO for **app** secrets after the unsealer is real — never
+    Shamir-share copy.
+11. **seed vs broadcast** (classifier landed). Join-hash is
+    **framework**, indexed at `docs/PRODUCT-LANES.md`, not in
+    SEED (`081M1RZ70FF087G0R0035580EZ`,
+    `081M1S0K0R0087G0R001T4R8JH`).
 
 ## Δεν κάνουμε / Do not
 
-- Helm-fight Otto on Vault / chart currency.
+- Helm-fight Otto on OpenBao / chart currency.
 - Persist `OP_SESSION` / `op signin`.
 - Treat Keychain / USB as the original.
-- Rekey Vault to threshold 1.
+- Rekey OpenBao to threshold 1.
 - Copy Shamir shares into a Kubernetes Secret via ESO.
-- Call this HashiCorp auto-unseal.
+- Call SoftHSM green "YubiHSM green", or swtpm green "this
+  board's TPM green."
+- Commit `seal "pkcs11"` without a module in the image.
+- Appoint `yubi-hsm-mock` as the device.
+- Call the Shamir sidecar HashiCorp auto-unseal.
 - Mint public `IInput` / `IFeedback` F# types.
 - Absorb FF7 identity-blend as factory policy
   (`docs/DRIFT-TAXONOMY.md` Pattern 1).

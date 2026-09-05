@@ -19,33 +19,28 @@
 # key is in a shell variable".
 #
 # ── WHAT THIS APPLICATION IS AND IS NOT ───────────────────────────────────────
-# STEP ONE OF TWO, deliberately. This adds OpenBao beside Vault; it does NOT
-# delete Vault. You do not remove the incumbent secret store before its
-# replacement has been observed Healthy on a real cluster — that is the same
-# discipline this tree applies to every deferral, applied to the component whose
-# failure mode is "nobody can decrypt anything".
-#
-# WHAT STILL POINTS AT VAULT, measured rather than assumed: `external-secrets`,
-# `hindsight` and `spire` mention Vault only in PROSE — no live wiring. The real
-# coupling is `src/Core.TypeScript/cluster/ephemeral-vault-init.ts` (673 lines,
-# plus a 456-line test), the `vault -> cert-manager` edge in the sync-wave graph,
-# and the `--ephemeral-vault-init` CI flag. Step two migrates that module (the
-# APIs are compatible — OpenBao is a fork, same paths, `bao` where the CLI was
-# `vault`) and then removes Vault.
+# Vault Application.yaml is GONE. This file is the secret store. What still
+# carries Vault *names* (not a second store) is step two: ephemeral-vault-init.ts,
+# the `vault -> cert-manager` / `spire -> openbao` sync-wave edge, and the
+# `--ephemeral-vault-init` flag. APIs are compatible (`bao` where the CLI was
+# `vault`). Do not resurrect HashiCorp's chart to get PKCS#11 — that stanza is
+# Enterprise-gated there and free here.
 #
 # ── NO PKCS#11 SEAL HERE YET, AND THAT IS THE HONEST PART ─────────────────────
-# A GitHub runner has no HSM and no TPM. Turning on `seal "pkcs11"` in the
-# committed tree would render a config that cannot initialise anywhere CI can
-# reach, which is a check that cannot pass rather than a security improvement.
+# A GitHub runner has no HSM and no TPM. The HSM-enabled image can load PKCS#11
+# and ships no module (no softhsm, no tpm2-pkcs11). Turning on `seal "pkcs11"`
+# in this file without a module in the same commit is a check that cannot pass.
+# CI emulator rung (SoftHSM2 / swtpm) is classified in
+# `src/Core.TypeScript/cluster/seal-emulator-rung.ts` and is a follow-on job,
+# not this Application. SoftHSM green is not YubiHSM green.
 #
 # The chart CAN express it — `server.volumes` / `server.volumeMounts` mount the
-# device, `server.extraEnvironmentVars` carries the PIN reference, and the `seal`
-# block goes in the raft `config` below beside the listener (the chart's own
-# `gcpckms` example shows the shape). So the metal rung grows a `seal "pkcs11"`
-# stanza and a device mount when the hardware wiring is done, and the TPM path —
-# which Aaron notes is on ALMOST ALL machines where the HSM is only on most — is
-# the broader one worth designing for, because a seal available on every node is
-# worth more than a stronger one available on some.
+# device, `server.extraEnvironmentVars` carries the PIN *reference*, and the
+# `seal` block goes in the raft `config` below beside the listener (the chart's
+# own `gcpckms` example shows the shape). Metal grows the stanza when the
+# hardware wiring is done. TPM is the floor (almost all machines); HSM is the
+# stronger path where present. A TPM-backed seal MUST pin CKM_RSA_PKCS_OAEP;
+# tpm2-pkcs11 has no AES-GCM.
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
