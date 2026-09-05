@@ -20,7 +20,7 @@ namespace Zeta.Core
 /// 3. **`SoftValue.widen`** — uniform-share floor. Every candidate keeps mass;
 ///    optionality is restored, never destroyed. **Non-erasing of support.**
 ///    State-dependent, does not commute with `observe` — local / fold-boundary
-///    only. The commutative twin is `foldRetained` (retract the evidence SET).
+///    only. The commutative twin is `foldRetainedBounded` (retract the evidence SET).
 ///
 /// Inverse-free corners (Boolean, tropical, EP/ADF re-normalise) do not get
 /// reading (2). They can still widen.
