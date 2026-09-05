@@ -478,8 +478,8 @@
   ],
   "acknowledgedLaneBudgetShortfall": [
     {
-      "key": "dev memory 10508>9216",
-      "reason": "THREE Applications now sit on this shortfall. KEDA first put the dev lane 140Mi over a 9216Mi budget (081M1N0VTN8087G0R0008VE34B); OPENSEARCH took it to 10380Mi (081M1Q1XHVV087G0R0034X846M); OPENBAO -- the Vault replacement, 128Mi at dev -- takes it to 10508Mi, over by 1292Mi. REMOVING VAULT DID NOT PAY IT, and I briefly recorded that it had. Vault's requests were UNGOVERNED (no resourceClaim row), so deleting the Application removed nothing from a total built out of governed rows. I recomputed the lane by hand, got 7436Mi, and wrote both a register-empty and a test asserting the lane fit. The catalogue's own `devLaneAppliedDirs()` says 10508Mi. The tool's reading is the authority over my arithmetic, and the error is written here because 'the debt was paid' is exactly the claim a stale acknowledgement makes. THE BUDGET IS NOT WIDENED. OpenBao's dev rung is 25m/128Mi -- 128Mi rather than the 64Mi floor most rows take, because it holds its unsealed keyring in memory and is designed not to swap it; an under-request makes the one pod holding every decryptable secret the first eviction candidate. LIFTS WHEN: the dev lane's memory is re-budgeted against a measured runner rather than the 9216Mi floor, or the ungoverned rows are governed so the total reflects what actually schedules.",
+      "key": "dev memory 10636>9216",
+      "reason": "THREE Applications now sit on this shortfall. KEDA first put the dev lane 140Mi over a 9216Mi budget (081M1N0VTN8087G0R0008VE34B); OPENSEARCH took it to 10380Mi (081M1Q1XHVV087G0R0034X846M); OPENBAO -- the Vault replacement, 128Mi at dev -- takes it to 10508Mi, over by 1292Mi. REMOVING VAULT DID NOT PAY IT, and I briefly recorded that it had. Vault's requests were UNGOVERNED (no resourceClaim row), so deleting the Application removed nothing from a total built out of governed rows. I recomputed the lane by hand, got 7436Mi, and wrote both a register-empty and a test asserting the lane fit. The catalogue's own `devLaneAppliedDirs()` says 10508Mi. The tool's reading is the authority over my arithmetic, and the error is written here because 'the debt was paid' is exactly the claim a stale acknowledgement makes. THE BUDGET IS NOT WIDENED. OpenBao's dev rung is 25m/128Mi -- 128Mi rather than the 64Mi floor most rows take, because it holds its unsealed keyring in memory and is designed not to swap it; an under-request makes the one pod holding every decryptable secret the first eviction candidate. LIFTS WHEN: the dev lane's memory is re-budgeted against a measured runner rather than the 9216Mi floor, or the ungoverned rows are governed so the total reflects what actually schedules. Moved 10508->10636 on 2026-09-05: headscale left Helm for raw manifests and became GOVERNED at 128Mi, having been an ungovernedRequests row at 0/0 while its chart left resources unset. The lane did not get hungrier; the appetite became visible.",
       "liftsWhen": "LIFTS WHEN: the dev lane memory budget is re-measured against a real runner rather than the 9216Mi floor, or the ungoverned request rows are governed so the total reflects what actually schedules."
     }
   ],
@@ -1202,6 +1202,25 @@
         "dev": 64,
         "metal": 128
       }
+    },
+    {
+      "id": "full-ai-cluster/headscale/headscale",
+      "dir": "headscale",
+      "path": "full-ai-cluster/k8s/applications/headscale/statefulset.yaml",
+      "docIndex": 0,
+      "requestsField": "spec.template.spec.containers[0].resources.requests",
+      "pods": 1,
+      "metalSource": "manifest",
+      "evidence": "IN-REPO MANIFEST WE OWN, written 2026-09-05 when this Application left Helm for a raw git path (081M1HH1ERN087G0R00309EG9D). Before that headscale sat in `ungovernedRequests` at 0/0 with the honest note that the chart left resources unset -- so no rung priced it and nothing could. The literal here is 100m / 128Mi on container `headscale` in statefulset.yaml, and `metal` reproduces it exactly, so `--resource-profile metal --verify` stays clean.",
+      "consequence": "A single-replica control plane holding the tailnet's route table in sqlite. CPU is compressible, so the dev rung's 50m throttles a busy headscale rather than failing it. MEMORY IS UNCHANGED ACROSS RUNGS on purpose: memory is the incompressible axis, and under-requesting it makes this pod the first eviction candidate under node pressure -- evicting the control plane to save 64Mi trades a bounded slowdown for a tailnet-wide outage.",
+      "cpuMillis": {
+        "dev": 50,
+        "metal": 100
+      },
+      "memoryMib": {
+        "dev": 128,
+        "metal": 128
+      }
     }
   ],
   "ungovernedRequests": [
@@ -1306,12 +1325,6 @@
       "cpuMillis": 0,
       "memoryMib": 0,
       "evidence": "headlamp 0.30.1 rendered 2026-08-21: chart default resources are unset."
-    },
-    {
-      "dir": "headscale",
-      "cpuMillis": 0,
-      "memoryMib": 0,
-      "evidence": "headscale 0.4.0 rendered from chart defaults 2026-08-21: resources unset. Rendering with this Application's valuesObject fails (`accessMode is required for PVC headscale-data`), which is a separate pre-existing defect, not a measurement problem -- the chart's resources are unset either way."
     },
     {
       "dir": "kube-prometheus-stack",
@@ -1606,19 +1619,19 @@
       }
     },
     {
-      "id": "full-ai-cluster/headscale/config",
-      "path": "full-ai-cluster/k8s/applications/headscale/Application.yaml",
+      "id": "full-ai-cluster/headscale/data",
+      "path": "full-ai-cluster/k8s/applications/headscale/statefulset.yaml",
       "docIndex": 0,
-      "storageClassField": "spec.source.helm.valuesObject.persistence.storageClass",
-      "sizeField": "spec.source.helm.valuesObject.persistence.size",
+      "storageClassField": "spec.volumeClaimTemplates[0].spec.storageClassName",
+      "sizeField": "spec.volumeClaimTemplates[0].spec.resources.requests.storage",
       "podsField": null,
       "podsSource": "singleton",
       "podsEvidence": "headscale runs one pod against a sqlite node database.",
       "scheduledAtBringUp": true,
       "bringUpNote": "automated sync",
-      "consequence": "Headscale's node/route/preauth-key database. The chart moved home 2026-09-05 (charts.gabe565.com -> wrenix/helm-charts, 081M1HH1ERN087G0R00309EG9D) and the values surface flattened with it: `persistence.config.*` became `persistence.*`, and the rendered PVC is named `headscale` rather than `headscale-config`. Shrinking this below the working set does not make headscale smaller -- it fills, and a control plane that cannot write a route table stops admitting nodes rather than degrading.",
+      "consequence": "Headscale's node/route/preauth-key database, AND now its self-generated noise/DERP/WireGuard private keys, which the chart used to write into a Secret via a generator Job. Both live on this volume, so losing it is not just a lost route table -- the control plane loses its own identity and every node re-registers. The chart was dropped 2026-09-05 (081M1HH1ERN087G0R00309EG9D): gabe565 went DORMANT at 563 days, and the wrenix repoint rendered correctly but never synced on an unproven bare-host OCI repoURL. The coordinates above therefore address OUR StatefulSet's volumeClaimTemplate rather than a chart's values surface. Shrinking this below the working set does not make headscale smaller -- it fills, and a control plane that cannot write a route table stops admitting nodes rather than degrading.",
       "renderedApp": "full-ai-cluster/headscale",
-      "renderedPvcPattern": "^headscale$",
+      "renderedPvcPattern": "^data/headscale$",
       "sizes": {
         "minimal": "2Gi",
         "standard": "3Gi",

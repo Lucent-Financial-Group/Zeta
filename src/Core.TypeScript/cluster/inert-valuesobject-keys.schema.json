@@ -375,154 +375,6 @@
       "dynamic": ["httpRoute.hostnames", "ingress.hosts"],
       "charts": ["<root>=common@2.41.0", "<root>=forgejo@17.1.5"]
     },
-    "codeberg.org/wrenix/helm-charts|headscale|1.0.19": {
-      "literal": {
-        "affinity": {},
-        "autoscaling": {
-          "enabled": {},
-          "maxReplicas": {},
-          "minReplicas": {},
-          "targetCPUUtilizationPercentage": {},
-          "targetMemoryUtilizationPercentage": {}
-        },
-        "fullnameOverride": {},
-        "headscale": {
-          "certmanager": {
-            "dnsNames": {},
-            "enabled": {},
-            "issuerRef": {}
-          },
-          "config": {},
-          "keys": {
-            "create": {},
-            "existingSecret": {}
-          }
-        },
-        "image": {
-          "pullPolicy": {},
-          "registry": {},
-          "repository": {},
-          "tag": {}
-        },
-        "imagePullSecrets": {},
-        "ingress": {
-          "annotations": {},
-          "className": {},
-          "enabled": {},
-          "hosts": {},
-          "tls": {}
-        },
-        "job": {
-          "image": {
-            "pullPolicy": {},
-            "registry": {},
-            "repository": {},
-            "tag": {}
-          }
-        },
-        "nameOverride": {},
-        "networkPolicy": {
-          "egress": {
-            "enabled": {},
-            "extra": {}
-          },
-          "enabled": {},
-          "ingress": {
-            "derp": {},
-            "grpc": {},
-            "http": {},
-            "metrics": {}
-          }
-        },
-        "nodeSelector": {},
-        "persistence": {
-          "accessMode": {},
-          "annotations": {},
-          "enabled": {},
-          "existingClaim": {},
-          "hostPath": {},
-          "size": {},
-          "storageClass": {}
-        },
-        "podAnnotations": {},
-        "podLabels": {},
-        "podSecurityContext": {},
-        "prometheus": {
-          "rules": {
-            "additionalRules": {},
-            "defaults": {
-              "enabled": {},
-              "filter": {},
-              "lastUpdates": {}
-            },
-            "enabled": {},
-            "labels": {}
-          },
-          "servicemonitor": {
-            "enabled": {},
-            "labels": {}
-          }
-        },
-        "replicaCount": {},
-        "resources": {},
-        "securityContext": {},
-        "service": {
-          "annotations": {},
-          "derp": {
-            "annotations": {},
-            "port": {},
-            "type": {}
-          },
-          "ipFamilies": {},
-          "ipFamilyPolicy": {},
-          "port": {
-            "grpc": {},
-            "http": {},
-            "metrics": {}
-          },
-          "type": {}
-        },
-        "serviceAccount": {
-          "annotations": {},
-          "create": {},
-          "name": {}
-        },
-        "tolerations": {}
-      },
-      "open": [
-        "affinity",
-        "global",
-        "headscale.certmanager.dnsNames",
-        "headscale.certmanager.issuerRef",
-        "headscale.config",
-        "imagePullSecrets",
-        "ingress.annotations",
-        "ingress.hosts",
-        "ingress.tls",
-        "networkPolicy.egress.extra",
-        "networkPolicy.ingress.derp",
-        "networkPolicy.ingress.grpc",
-        "networkPolicy.ingress.http",
-        "networkPolicy.ingress.metrics",
-        "nodeSelector",
-        "persistence.annotations",
-        "podAnnotations",
-        "podLabels",
-        "podSecurityContext",
-        "prometheus.rules.additionalRules",
-        "prometheus.rules.defaults.lastUpdates",
-        "prometheus.rules.labels",
-        "prometheus.servicemonitor.labels",
-        "resources",
-        "securityContext",
-        "service.ipFamilies",
-        "service.port.http",
-        "serviceAccount.annotations",
-        "tolerations"
-      ],
-      "dynamic": [],
-      "charts": ["<root>=headscale@1.0.19"]
-    },
     "ghcr.io/actions/actions-runner-controller-charts|gha-runner-scale-set-controller|0.14.2": {
       "literal": {
         "affinity": {},
@@ -39576,10 +39428,13 @@
     },
     {
       "appId": "full-ai-cluster/headscale",
-      "chart": "headscale",
-      "targetRevision": "1.0.19",
-      "repoURL": "codeberg.org/wrenix/helm-charts",
-      "chartKey": "codeberg.org/wrenix/helm-charts|headscale|1.0.19"
+      "chart": "",
+      "targetRevision": "main",
+      "repoURL": "https://github.com/Lucent-Financial-Group/Zeta",
+      "unavailable": {
+        "reason": "no-chart-yaml",
+        "detail": "full-ai-cluster/k8s/applications/headscale is a git-path source with no Chart.yaml — nothing declares a schema"
+      }
     },
     {
       "appId": "full-ai-cluster/hindsight",
