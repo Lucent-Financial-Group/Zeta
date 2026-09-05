@@ -1,0 +1,14 @@
+{
+  "id": "080d03960d4da010a0130008a6bd5da6",
+  "at": "2026-09-05T18:08:09.652Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1SC3ADK087G0R001M8YKBS",
+    "type": "task",
+    "title": "KeepNone unpin survives volume reopen without a pump",
+    "slug": "keepnone-unpin-survives-volume-reopen-without-a-pump",
+    "priority": "P2",
+    "filename": "081M1SC3ADK087G0R001M8YKBS-keepnone-unpin-survives-volume-reopen-without-a-pump.md"
+  }
+}
