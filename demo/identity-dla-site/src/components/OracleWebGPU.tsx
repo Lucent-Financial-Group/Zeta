@@ -15,60 +15,9 @@
  */
 import { useEffect, useRef, useState, useCallback } from "react";
 
-// WebGPU type augmentation
-declare global {
-  interface Navigator {
-    gpu?: {
-      requestAdapter(): Promise<GPUAdapter | null>;
-    };
-  }
-  interface GPUAdapter {
-    requestDevice(): Promise<GPUDevice>;
-  }
-  interface GPUDevice {
-    createBuffer(desc: GPUBufferDescriptor): GPUBuffer;
-    createBindGroupLayout(desc: GPUBindGroupLayoutDescriptor): GPUBindGroupLayout;
-    createBindGroup(desc: GPUBindGroupDescriptor): GPUBindGroup;
-    createComputePipeline(desc: GPUComputePipelineDescriptor): GPUComputePipeline;
-    createCommandEncoder(): GPUCommandEncoder;
-    createShaderModule(desc: GPUShaderModuleDescriptor): GPUShaderModule;
-    queue: GPUQueue;
-    destroy(): void;
-  }
-  interface GPUBuffer {
-    getMappedRange(): ArrayBuffer;
-    mapAsync(mode: number): Promise<void>;
-    unmap(): void;
-    destroy(): void;
-  }
-  interface GPUQueue {
-    submit(cmds: GPUCommandBuffer[]): void;
-    writeBuffer(buf: GPUBuffer, offset: number, data: ArrayBuffer | ArrayBufferView): void;
-  }
-  interface GPUCommandEncoder {
-    beginComputePass(): GPUComputePassEncoder;
-    copyBufferToBuffer(src: GPUBuffer, srcOffset: number, dst: GPUBuffer, dstOffset: number, size: number): void;
-    finish(): GPUCommandBuffer;
-  }
-  interface GPUComputePassEncoder {
-    setPipeline(p: GPUComputePipeline): void;
-    setBindGroup(index: number, bg: GPUBindGroup): void;
-    dispatchWorkgroups(x: number, y?: number, z?: number): void;
-    end(): void;
-  }
-  type GPUCommandBuffer = object;
-  type GPUComputePipeline = object;
-  type GPUBindGroupLayout = object;
-  type GPUBindGroup = object;
-  type GPUShaderModule = object;
-  interface GPUBufferDescriptor { size: number; usage: number; mappedAtCreation?: boolean; }
-  interface GPUBindGroupLayoutDescriptor { entries: GPUBindGroupLayoutEntry[]; }
-  interface GPUBindGroupLayoutEntry { binding: number; visibility: number; buffer: { type: string }; }
-  interface GPUBindGroupDescriptor { layout: GPUBindGroupLayout; entries: GPUBindGroupEntry[]; }
-  interface GPUBindGroupEntry { binding: number; resource: { buffer: GPUBuffer }; }
-  interface GPUComputePipelineDescriptor { layout: "auto"; compute: { module: GPUShaderModule; entryPoint: string }; }
-  interface GPUShaderModuleDescriptor { code: string; }
-}
+// WebGPU types are provided by TypeScript's built-in DOM lib (lib.dom.d.ts)
+// as of TS 7. The former hand-rolled `declare global` augmentation has been
+// removed to avoid duplicate-identifier / incompatible-declaration conflicts.
 
 // Grid dimensions for the GPU simulation
 const GRID = 256;
