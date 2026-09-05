@@ -1,0 +1,14 @@
+{
+  "id": "080d039c00ecd010a0130008fcc05034",
+  "at": "2026-09-05T21:36:11.162Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1SR07CT087G0R000ZYD0W2",
+    "type": "task",
+    "title": "Crash mid-write of known.pins keeps the prior catalog",
+    "slug": "crash-mid-write-of-known-pins-keeps-the-prior-catalog",
+    "priority": "P2",
+    "filename": "081M1SR07CT087G0R000ZYD0W2-crash-mid-write-of-known-pins-keeps-the-prior-catalog.md"
+  }
+}
