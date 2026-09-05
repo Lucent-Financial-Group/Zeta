@@ -289,6 +289,45 @@ but the general claim — *every* meter here attaches uncertainty — is not aud
 No check enumerates the measurement surfaces and asks which ones emit a bare
 number. That is a nameable gap rather than a satisfied requirement.
 
+### Plural truth is BOUNDED, not relativism — the ECC and the latency are the bounds
+
+Aaron, closing the thread:
+
+> *"their truth is bound by our Adinkra ECC and latency, but each traveler gets
+> their own truth at their current timestep — this is what I imagine the Egg
+> short story is saying."*
+
+This is the guard the previous section needed. "Each individual comes up with
+their own truth" read alone is indistinguishable from *anything goes*, which
+would make the raw vault worthless — a record from which any conclusion follows
+constrains nothing. Aaron names **two bounds**, and both are already mechanisms
+here rather than sentiments:
+
+| bound | what it forbids | where it lives |
+|---|---|---|
+| **the Adinkra ECC** | a truth outside the code's admissible set. Regenerating from the irreducible generator **is** the correction, so drift past the code distance is detected and repaired, not tolerated | `only-the-irreducible-is-primitive-generate-the-rest.md` — *"the generator IS the ECC"*; Gates' doubly-even self-dual codes |
+| **latency** | a truth built from evidence that has not reached you. You are bounded by your own light cone; a measurement is out of date the moment it is taken | `local-time-never-enters-the-shared-fold.md`; the Reticulum note filed alongside this one |
+
+So the structure is: **one set of facts, a code that bounds which readings are
+admissible, and a per-traveler index that says which of those readings is yours
+right now.** That is neither one mandatory truth nor unbounded relativism — it is
+a *fiber* over the fact set, and the ECC is what keeps the fibers from separating
+into Babel.
+
+**"At their current timestep" is the load-bearing qualifier.** The truth is
+indexed by the traveler's own position on their worldline, not by a global now —
+which is exactly the two-orders rule: local time steers local behaviour, the
+shared fold sees only agreed phase. A traveler's truth changing at the next
+timestep is not a contradiction; it is the same traveler further along.
+
+**On the Egg** (Andy Weir, 2009): the story is already registered in this repo as
+**Aaron's oracle, labelled as such** — recorded that way in
+`numerology-vs-number-theory.md`, which lists it under connections that are
+"explicitly Aaron's oracle, labelled as such, not asserted." The reading offered
+here is his: one substrate living every life in sequence, each life holding its
+own complete truth at its own timestep, with all of them true of the same facts.
+Kept in the register it was filed in — an oracle, not a result.
+
 ## Register
 
 Everything above is **his** claim, reported. Causal fermion systems is a live
