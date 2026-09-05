@@ -270,7 +270,8 @@ So the two halves are one requirement:
 | **oracle side** | plural truths are *derivable* from that record, because the uncertainty is what different priors have to work on |
 
 And it explains why `measure` writes to `db/uncertainty/` rather than to a
-results table: the ledger's unit is a **ΔU** — an uncertainty *reduction* — and
+results table: the ledger's unit is a **ΔU** — a *signed* uncertainty change (see
+the correction below; I first wrote "reduction", which is wrong) — and
 the register is deliberately **ordinal + witnessed**, never an invented cardinal
 (`every-bug-has-economic-value.md`). Unwitnessed or unsubstantiated is *refused*.
 That refusal is the meter declining to fabricate precision it does not have,
@@ -327,6 +328,87 @@ timestep is not a contradiction; it is the same traveler further along.
 here is his: one substrate living every life in sequence, each life holding its
 own complete truth at its own timestep, with all of them true of the same facts.
 Kept in the register it was filed in — an oracle, not a result.
+
+### CORRECTION — ΔU is SIGNED, and coordinated retraction can WIDEN
+
+Aaron, 2026-09-05:
+
+> *"we have a spec[i]al case that allows for several coord[i]nated −1 retractions
+> to expand into a widening of uncertan[t]y but still be commut[at]ive, this was
+> some hard math we had to do ... that −1 retractions can have a spe[c]ial case to
+> allow for −1 widening of uncertan[t]y."*
+
+**I wrote that the ledger's unit is an uncertainty *reduction*. That is false,
+and it makes the widening he is describing look impossible by construction.**
+The verb has admitted a widening since it was written:
+
+```
+export type DeltaUSign = "reduced" | "increased" | "unchanged";
+//  reduced: "ΔU > 0"   increased: "ΔU < 0"   unchanged
+```
+— `src/Core.TypeScript/ledger/measure.ts:54-58`
+
+So the register is a **three-valued ordinal**, not a magnitude and not a
+one-directional one. `increased` is the widening entry, and it is held to the
+same bar as any other: a `--because` and a `--witness`, or it is refused.
+
+**Honest status of that branch: implemented, typed, and never once used.** All
+**9** entries in `db/uncertainty/` carry `ΔU > 0`; **zero** carry `ΔU < 0` (a
+tenth file is the README, and counting it as an entry would have been the same
+sloppiness this section exists to correct). The
+widening path is real in the verb and unexercised in the ledger — which is worth
+saying out loud, because "the schema supports it" is exactly the shape of a
+claim that has never been tested against reality.
+
+### Where the hard math actually is — and it is NOT the ledger
+
+The ledger just records a sign. The mathematics Aaron is pointing at is one
+layer down, in `src/Core/SoftValue.fs`, and the repo has already done the work of
+separating the commutative case from the non-commutative one. There are **two**
+ways to re-open a posterior and they are not interchangeable:
+
+| | operator | commutes with `observe`? |
+|---|---|---|
+| **(A) widen the BELIEF** | `SoftValue.widen` — uniform-share floor, *"everything I know is less reliable now"*, no culprit named | **NO.** State-dependent: it reads the belief it transforms. Local / fold-boundary only, and pinned as a **negative test** so that if it ever starts commuting the shipped doc is known to be false |
+| **(B) retract the EVIDENCE** | `SoftValue.foldRetained` — a `RetentionSchedule : Phase -> Phase -> int` gives each observation a multiplicity (`0` = full retraction), and the posterior is a fold over what survives | **YES, by construction** — the result is a function of the evidence SET and the phases carried in it, never of arrival order |
+
+**(B) is Aaron's "several coordinated −1 retractions".** The coordination is the
+schedule: it retracts a *whole set at once* as a pure function of carried phase,
+rather than applying individual retractions whose order could matter. That is
+precisely what buys commutativity — and the multiplicity *is* the evidence's
+Z-set weight, so lowering it **is** a retraction in the ordinary sense, with `0`
+as the full `−1`.
+
+`src/Core/RetractionReading.fs` catalogues the three readings and marks their
+thermodynamic class (Landauer 1961 / Bennett 1973): `neg` alone is a self-inverse
+bijection and Bennett-free; full `z + (−z)` **erases** the view at annihilation;
+widening is **non-erasing of support** — every candidate keeps mass, so
+optionality is restored rather than destroyed. Same recognition, three
+observations, and the observation decides the class — `dual-use-detection` applied
+to retraction itself.
+
+**The falsifier is non-vacuous, which is the part that makes this credible.**
+`tests/Tests.FSharp/SoftValueWidening.Tests.fs` runs 200 deterministic
+reorderings (seeded `Random(4)` — the common seed) and then carries a **mutant
+arm**: retention keyed on *arrival position* instead of carried phase, folded by
+hand *"because the shipped API makes this un-expressible, which is the design"*.
+The mutant fails the test, so the test can fail. That is also the
+`local-time-never-enters-the-shared-fold` rule catching its own violation.
+
+**The one thing I could not settle, and why it went to the math team.** The
+commutativity comparison is `approx` — a **float tolerance**, not exact equality.
+Float multiplication is not associative, so approximate agreement under
+reordering is expected either way, and the test as written cannot distinguish
+*"exactly commutative in ℚ, with float rounding on top"* from *"commutative only
+to within a tolerance that could grow"*. The design clearly intended the former —
+tempering (`p^β`) was **rejected as the primitive** precisely because *"p^β is
+irrational for rational p, so it cannot ride the exact-ℚ `RationalRing` weights
+and would put floats in the byte-lock lineage"* — and `SoftValue` is confined to
+local float with a named lossy projection at the wire boundary
+(`WireWeight<float>` deliberately does not exist). But intent is not proof, so
+the exactness question, the "does coordinated retraction always widen or only
+sometimes" question, and the `MAX_MULTIPLICITY = 1024` clamp's effect on
+order-independence are **routed to the math team rather than asserted here**.
 
 ## Register
 
