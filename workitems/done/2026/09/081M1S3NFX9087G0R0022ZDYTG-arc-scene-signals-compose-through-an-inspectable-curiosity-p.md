@@ -1,7 +1,7 @@
 ---
 id: 081M1S3NFX9087G0R0022ZDYTG
 type: task
-state: active
+state: done
 priority: P2
 slug: arc-scene-signals-compose-through-an-inspectable-curiosity-p
 title: "ARC scene signals compose through an inspectable curiosity policy"
@@ -32,3 +32,17 @@ Acceptance:
 - tests demonstrate channel ablation changes ranking only when the removed
   channel carried discriminating evidence;
 - no external ML or numeric dependency is added.
+
+Completion evidence:
+
+- `CuriositySignal` gives all six inputs stable source-owned identities;
+- `CuriosityComposition` evaluates named positive-weight structural and
+  learned terms and preserves every raw and weighted contribution;
+- `DEFAULT_CURIOSITY` reproduces the previous scoring formula exactly;
+- invalid compositions and values return `CuriosityFeedback` values;
+- ablation tests distinguish temporal evidence from nondiscriminating edge
+  evidence without changing the forecaster implementation;
+- `bun src/Core.TypeScript/lint/lint-python.ts` passed;
+- `uv run --project src/Arc.Python pytest -q src/Arc.Python/tests` passed with
+  187 tests;
+- `bun run preflight` passed all 18 checks.
