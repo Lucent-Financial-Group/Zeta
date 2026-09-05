@@ -1,0 +1,12 @@
+{
+  "pr_number": 16696,
+  "archive_path": "docs/history/pr-reviews/PR-16696-feat-cluster-headscale-leaves-helm-for-raw-manifests-fix-a-commutativity-defect-.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-05T22:43:51.664Z",
+  "schema_version": "v1",
+  "commit_sha": "1ca1abe6bfd871320bca7dc8c3b77a82383189e4",
+  "title": "feat(cluster): headscale leaves Helm for raw manifests; fix a commutativity defect in foldRetained",
+  "state": "MERGED",
+  "merged_at": "2026-09-05T22:42:56Z",
+  "head_ref": "otto/nci-and-headscale-raw-manifests"
+}
