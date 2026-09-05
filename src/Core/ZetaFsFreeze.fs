@@ -1301,10 +1301,22 @@ module ZetaFsFreeze =
         volume.LivePins.Add id |> ignore
         persistCatalog volume.StoreDir volume.KnownObjects volume.LivePins volume.History
 
-    let private objectExists (volume: Volume) (id: ContentHash256) : bool =
+    let private tryReadObject (volume: Volume) (id: ContentHash256) : byte[] option =
         match volume.Log.ObjectCas with
-        | Some cas -> cas.Exists(objectKey id)
-        | None -> FileSystem.Current.Exists(objectPath volume.StoreDir id)
+        | Some cas -> cas.TryGet(objectKey id)
+        | None ->
+            let path = objectPath volume.StoreDir id
+            let fs = FileSystem.Current
+
+            if fs.Exists path then
+                Some(fs.ReadAllBytes path)
+            else
+                None
+
+    let private objectMatches (volume: Volume) (id: ContentHash256) : bool =
+        match tryReadObject volume id with
+        | None -> false
+        | Some bytes -> (ContentHash256.ofBytes bytes).Equals(id)
 
     let private className (c: DurabilityClass) =
         match c with
@@ -1361,8 +1373,13 @@ module ZetaFsFreeze =
                     let mutable ok = true
                     let mutable i = 0
 
-                    while ok && i < leaves.Length do
-                        if not (objectExists volume leaves.[i]) then
+                    let ids =
+                        match volume.ObjectSets.TryGetValue content with
+                        | true, xs when xs.Length > 0 -> xs
+                        | _ -> leaves
+
+                    while ok && i < ids.Length do
+                        if not (objectMatches volume ids.[i]) then
                             ok <- false
 
                         i <- i + 1

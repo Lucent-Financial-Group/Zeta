@@ -2507,6 +2507,65 @@ let ``bad memory on the second freeze Write keeps the first`` () : Task =
     }
 
 [<Fact>]
+let ``XOR of a later freeze object is not readable; the prior freeze still is`` () : Task =
+    task {
+        ensureHasher ()
+        let mock = InMemoryFileSystem()
+        FileSystem.Register(mock)
+        let store = "/hash-verify-xor-b"
+        let mutbuf = ZetaFsMutbuf.create store ZetaFsMutbuf.Coherence.Shared
+        let volume = ZetaFsFreeze.createManualStream store mutbuf None
+
+        try
+            let id = mintId ()
+            let h = ZetaFsMutbuf.openHandle volume.Mutbuf id
+            ZetaFsMutbuf.pwrite volume.Mutbuf h 0L [| 1uy; 2uy; 3uy |] |> ignore
+            let pendingA = (freezeAsync volume id ZetaFsFreeze.Journaled).AsTask()
+            do! (ZetaFsFreeze.pumpLog volume CancellationToken.None).ConfigureAwait(false)
+            let! first = pendingA.ConfigureAwait(false)
+            match first with
+            | Error e -> Assert.Fail(ZetaFsFreeze.errorName e)
+            | Ok first ->
+                let objectsDir = ZetaFsPath.combine2 store "objects"
+                let afterA =
+                    FileSystem.Current.GetFiles(objectsDir, "*")
+                    |> Array.filter (fun p -> not (p.EndsWith(".tmp", StringComparison.Ordinal)))
+                    |> Set.ofArray
+                ZetaFsMutbuf.truncate volume.Mutbuf h 0L |> ignore
+                ZetaFsMutbuf.pwrite volume.Mutbuf h 0L [| 9uy; 8uy; 7uy |] |> ignore
+                let pendingB = (freezeAsync volume id ZetaFsFreeze.Journaled).AsTask()
+                do! (ZetaFsFreeze.pumpLog volume CancellationToken.None).ConfigureAwait(false)
+                let! second = pendingB.ConfigureAwait(false)
+                match second with
+                | Error e -> Assert.Fail(ZetaFsFreeze.errorName e)
+                | Ok second ->
+                    let afterB =
+                        FileSystem.Current.GetFiles(objectsDir, "*")
+                        |> Array.filter (fun p -> not (p.EndsWith(".tmp", StringComparison.Ordinal)))
+                    let news =
+                        afterB
+                        |> Array.filter (fun p -> not (Set.contains p afterA))
+                    Assert.True(news.Length > 0)
+                    let mutable i = 0
+
+                    while i < news.Length do
+                        let path = news.[i]
+                        let bytes = FileSystem.Current.ReadAllBytes path
+
+                        if bytes.Length > 0 then
+                            bytes.[bytes.Length - 1] <- bytes.[bytes.Length - 1] ^^^ 0xA5uy
+                            FileSystemIo.writeAllBytes FileSystem.Current path bytes
+
+                        i <- i + 1
+
+                    Assert.False(ZetaFsFreeze.isReadable volume second.Content)
+                    Assert.True(ZetaFsFreeze.isReadable volume first.Content)
+        finally
+            ZetaFsFreeze.dispose volume
+            FileSystem.Reset()
+    }
+
+[<Fact>]
 let ``rolling 1 third freeze must not revive the first generation`` () : Task =
     task {
         ensureHasher ()
