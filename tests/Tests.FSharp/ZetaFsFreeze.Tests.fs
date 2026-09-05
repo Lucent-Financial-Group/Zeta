@@ -2646,6 +2646,47 @@ let ``XOR of BlockCas payload is not readable`` () : Task =
     }
 
 [<Fact>]
+let ``XOR of BlockCas payload stays unread after CloneMedia reopen`` () : Task =
+    task {
+        ensureHasher ()
+        FileSystem.Register(InMemoryFileSystem())
+        let store = "/hash-verify-blockcas-xor-reopen"
+        let mutbuf = ZetaFsMutbuf.create store ZetaFsMutbuf.Coherence.Shared
+        let logDev = SimulatedBlockIo(4096)
+        let objDev = SimulatedBlockIo(4096)
+        let cas = BlockCas(objDev)
+        let mutable firstContent = Unchecked.defaultof<ContentHash256>
+        let volume1 = ZetaFsFreeze.createManualWithBlockStore store mutbuf None logDev cas
+
+        try
+            let id = mintId ()
+            let h = ZetaFsMutbuf.openHandle volume1.Mutbuf id
+            ZetaFsMutbuf.pwrite volume1.Mutbuf h 0L [| 1uy; 2uy; 3uy |] |> ignore
+            let pending = (freezeAsync volume1 id ZetaFsFreeze.Journaled).AsTask()
+            do! (ZetaFsFreeze.pumpLog volume1 CancellationToken.None).ConfigureAwait(false)
+            let! first = pending.ConfigureAwait(false)
+            match first with
+            | Error e -> Assert.Fail(ZetaFsFreeze.errorName e)
+            | Ok ok ->
+                firstContent <- ok.Content
+                Assert.True(ZetaFsFreeze.isReadable volume1 firstContent)
+                Assert.True(cas.XorLastPayloadByteAll() > 0)
+                Assert.False(ZetaFsFreeze.isReadable volume1 firstContent)
+        finally
+            ZetaFsFreeze.dispose volume1
+
+        let logClone = logDev.CloneMedia()
+        let objClone = objDev.CloneMedia()
+        let cas2 = BlockCas(objClone)
+        let volume2 = ZetaFsFreeze.createManualWithBlockStore store mutbuf None logClone cas2
+        try
+            Assert.False(ZetaFsFreeze.isReadable volume2 firstContent)
+        finally
+            ZetaFsFreeze.dispose volume2
+            FileSystem.Reset()
+    }
+
+[<Fact>]
 let ``rolling 1 third freeze must not revive the first generation`` () : Task =
     task {
         ensureHasher ()
