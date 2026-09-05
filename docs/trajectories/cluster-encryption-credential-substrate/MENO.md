@@ -79,13 +79,14 @@ assume the number.
    default exists.
 8. ESO for **app** secrets after the unsealer is real — never
    Shamir-share copy.
-9. **Zeta Gate = seed, not broadcast** (this slice — classifier
-   only). `src/Core.TypeScript/discovery/seed-not-broadcast.ts`.
+9. **seed vs broadcast** (this slice — classifier only, not a
+   public gate product). `src/Core.TypeScript/discovery/seed-not-broadcast.ts`.
    Content-hash / ZetaId / onion-shape + gossip-k or salon
    timer. DNS / IP / one-tick all-nodes is cathedral, not the
    join path. `pinAgainstTtl` refreshes `lastSeenMs` so
    `expireNodes` does not fade a pinned hash. Onion = hop-count
-   shape, no wire.
+   shape, no wire. Heartbeat filename pin landed on main
+   (#16623).
 
 ## Δεν κάνουμε / Do not
 
@@ -101,5 +102,8 @@ assume the number.
 - Implement Tor / onion routing, or a `.zeta` hidden-service
   directory.
 - Replace `llmtv-broadcast.ts`. That is the society picture,
-  not the gate.
-- Invent a second Kademlia. Pin is `lastSeenMs` refresh.
+  not the join path.
+- Invent a second DHT. Pin is `lastSeenMs` refresh plus the
+  heartbeat filename magnet already on main (#16623).
+- Name a public "Zeta Gate" product in SEED. Kernel name is
+  **seed vs broadcast**.

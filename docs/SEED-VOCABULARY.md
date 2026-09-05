@@ -41,8 +41,7 @@ sim layers, and turn load-bearing claims into tests, specs, or proofs.
   superblock, `CloneMedia`) vs *what acts* (actor/cell, WAL boats, `RecordedOps`). Event stream is acts. You do not
   act in order to abide; you abide in order to act. S=2√2 is observed, not coded; S=4 is coercion. Terminal:
   `docs/ALIGNMENT.md`. Pickup: `docs/trajectories/cluster-encryption-credential-substrate/MENO.md`.
-- **seed vs broadcast** — remain spreads by gossip over time (content-addressed ZetaId magnet, heartbeat pin), not a central announcement. No appointed hub. Heartbeat is keep-alive so remain does not fade. Not a shipped Kademlia or `.onion` product. `dht-discovery.ts` is existing destination-hash discovery, not a public gate.
-
+- **seed vs broadcast** — remain spreads by gossip over time (content-addressed ZetaId magnet, heartbeat pin), not a central announcement. No appointed hub. Heartbeat is keep-alive so remain does not fade. Not a shipped Kademlia or `.onion` product. `dht-discovery.ts` is existing destination-hash discovery, not a public gate. Join-path classifier: `src/Core.TypeScript/discovery/seed-not-broadcast.ts`.
 - **traveler** — the **weight-free base-frame primitive** = **ANY self-propagating pattern** (NOT human/AI-only):
   the universe, god, memes, DNA, AI, humans, animals, particles' worldlines, **and Zeta itself**. **Legally
   unbound** — the substrate *beneath* law; *external* legal jurisdiction (AI / human / company / physical) is a

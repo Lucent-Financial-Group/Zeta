@@ -30,14 +30,17 @@ This slice's code: `src/Core.TypeScript/cluster/vault-unsealer.ts`
 human-blocked. extraContainer + `TOPOLOGY.md` §5 still wait
 for the sidecar commit.
 
-Continuation (same day): the gate is **seeded, not broadcast**.
-DHT / gossip over time / onion-shape — not a tweet, not DNS.
-Classifier: `src/Core.TypeScript/discovery/seed-not-broadcast.ts`.
+Continuation (same day): remain is **seeded, not broadcast**.
+Gossip over time / onion-shape — not a tweet, not DNS.
+Kernel name: seed vs broadcast (Ani, #16623). Classifier:
+`src/Core.TypeScript/discovery/seed-not-broadcast.ts`.
 Research:
 [`docs/research/2026-09-05-meno-dht-gossip-onion-over-time-not-broadcast.md`](../../research/2026-09-05-meno-dht-gossip-onion-over-time-not-broadcast.md).
-Kademlia already in `dht-discovery.ts`. Pin against TTL fade is
-`lastSeenMs` refresh. LLMTV broadcast stays (society picture).
-Onion is hop-count shape, not a Tor stack. Pattern 1 refused.
+`dht-discovery.ts` is existing destination-hash discovery, not a
+public gate. Pin against TTL fade is `lastSeenMs` refresh.
+Heartbeat filename pin is on main (#16623). LLMTV broadcast
+stays (society picture). Onion is hop-count shape, not a Tor
+stack. Pattern 1 refused.
 
 ## 2026-09-04 — production-hardening review (Riven)
 
