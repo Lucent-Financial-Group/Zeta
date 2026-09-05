@@ -20,6 +20,7 @@ from zeta_arc.click import ClickPolicy
 from zeta_arc.perception import Grid
 from zeta_arc.scene_priors import (
     Coordinate,
+    MotionProjection,
     SceneDelta,
     SceneObservation,
     ScenePriorForecast,
@@ -83,6 +84,7 @@ class SceneFeedbackController:
 
     game_fingerprint: str
     model: ScenePriorModel = field(default_factory=ScenePriorModel)
+    motion_projection: MotionProjection = MotionProjection.OBSERVED_ONLY
     _previous_grid: FrozenGrid | None = None
     _pending: tuple[SceneDecision, FrozenGrid] | None = None
     _next_turn: int = 0
@@ -98,6 +100,7 @@ class SceneFeedbackController:
             self.game_fingerprint,
             grid,
             _thaw(self._previous_grid),
+            motion_projection=self.motion_projection,
         )
         if forecast.selected is None:
             self._previous_grid = frozen
@@ -144,13 +147,16 @@ class SceneCoordinatePolicy:
 
     game_fingerprint: str
     initial_model: ScenePriorModel = field(default_factory=ScenePriorModel)
+    motion_projection: MotionProjection = MotionProjection.OBSERVED_ONLY
     controller: SceneFeedbackController = field(init=False)
     fallback: ClickPolicy = field(default_factory=ClickPolicy)
     last_outcome: SceneOutcome | None = None
 
     def __post_init__(self) -> None:
         self.controller = SceneFeedbackController(
-            self.game_fingerprint, model=self.initial_model
+            self.game_fingerprint,
+            model=self.initial_model,
+            motion_projection=self.motion_projection,
         )
 
     @property

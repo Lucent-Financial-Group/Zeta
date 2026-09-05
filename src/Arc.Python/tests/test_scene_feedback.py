@@ -9,6 +9,7 @@ from arcengine import GameAction
 from zeta_arc.layered import CLICK, LayeredAgent
 from zeta_arc.scene_feedback import SceneCoordinatePolicy, SceneFeedbackController
 from zeta_arc.scene_feedback_benchmark import benchmark_json, benchmark_payload
+from zeta_arc.scene_priors import MotionProjection
 
 
 def _objects() -> list[list[int]]:
@@ -36,6 +37,22 @@ def test_pending_decision_cannot_be_overwritten_before_feedback() -> None:
     assert first.feedback is None
     assert second.decision is None
     assert second.feedback == "outcome-pending"
+
+
+def test_controller_can_choose_the_existing_one_step_motion_forecast() -> None:
+    previous = [[0] * 8 for _ in range(8)]
+    current = [[0] * 8 for _ in range(8)]
+    previous[2][1] = 9
+    current[2][2] = 9
+    controller = SceneFeedbackController(
+        "game", motion_projection=MotionProjection.ONE_STEP_AHEAD
+    )
+
+    assert controller.observe(previous).feedback == "no-pending-decision"
+    decision = controller.decide(current).decision
+
+    assert decision is not None
+    assert decision.selected == (3, 2)
 
 
 def test_outcome_integrates_both_colour_and_shape_evidence() -> None:

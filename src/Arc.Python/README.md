@@ -65,7 +65,9 @@ doc's own warning, kept.
   evidence is scoped by game and survives translation and recoloring. Its six
   candidate signals compose through named positive-weight terms; every raw and
   weighted contribution remains inspectable, and the default composition
-  reproduces the original ranking formula exactly.
+  reproduces the original ranking formula exactly. An explicit motion
+  projection policy can relocate moving candidates to their bounded one-step
+  constant-velocity prediction; observed-only remains the default.
 - `zeta_arc/scene_feedback.py` — the experimental coordinate-policy adapter.
   Persistent evidence is kept separate from bounded per-turn decision/outcome
   receipts, and terminal frames can credit the action without requiring a

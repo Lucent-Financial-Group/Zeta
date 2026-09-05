@@ -10,10 +10,12 @@ from zeta_arc.scene_prior_benchmark import benchmark_json, benchmark_payload
 from zeta_arc.scene_priors import (
     DEFAULT_CURIOSITY,
     CandidateSignals,
+    CandidateSource,
     CuriosityComposition,
     CuriosityFeedback,
     CuriositySignal,
     CuriosityTerm,
+    MotionProjection,
     ScenePriorModel,
     compare_scenes,
     forecast_scene,
@@ -72,6 +74,73 @@ def test_translation_is_not_misreported_as_shape_change() -> None:
     assert "shape-changed" not in {event.kind for event in delta.events}
     assert delta.motions[0].velocity == (2.0, 1.0)
     assert delta.motions[0].predicted == (5.5, 3.5)
+
+
+def test_one_step_projection_relocates_a_moving_candidate() -> None:
+    previous = _grid((9, 1, 2, 1, 1))
+    current = _grid((9, 2, 2, 1, 1))
+
+    observed = forecast_scene(ScenePriorModel(), "game", current, previous)
+    explicit_observed = forecast_scene(
+        ScenePriorModel(),
+        "game",
+        current,
+        previous,
+        motion_projection=MotionProjection.OBSERVED_ONLY,
+    )
+    projected = forecast_scene(
+        ScenePriorModel(),
+        "game",
+        current,
+        previous,
+        motion_projection=MotionProjection.ONE_STEP_AHEAD,
+    )
+
+    assert observed == explicit_observed
+    assert observed.selected == (2, 2)
+    assert projected.selected == (3, 2)
+    location = projected.candidates[0].locations[0]
+    assert location.source is CandidateSource.PREDICTED
+    assert location.observed == (2.0, 2.0)
+    assert location.projected == (3.0, 2.0)
+    assert location.velocity == (1.0, 0.0)
+    assert location.action == (3, 2)
+
+
+def test_one_step_projection_stays_inside_the_rendered_frame() -> None:
+    previous = _grid((9, 6, 2, 1, 1))
+    current = _grid((9, 7, 2, 1, 1))
+
+    forecast = forecast_scene(
+        ScenePriorModel(),
+        "game",
+        current,
+        previous,
+        motion_projection=MotionProjection.ONE_STEP_AHEAD,
+    )
+
+    assert forecast.selected == (7, 2)
+    location = forecast.candidates[0].locations[0]
+    assert location.projected == (8.0, 2.0)
+    assert location.action == (7, 2)
+
+
+def test_one_step_projection_keeps_static_candidates_observed() -> None:
+    grid = _grid((9, 4, 3, 1, 1))
+
+    forecast = forecast_scene(
+        ScenePriorModel(),
+        "game",
+        grid,
+        grid,
+        motion_projection=MotionProjection.ONE_STEP_AHEAD,
+    )
+
+    assert forecast.selected == (4, 3)
+    location = forecast.candidates[0].locations[0]
+    assert location.source is CandidateSource.OBSERVED
+    assert location.projected is None
+    assert location.velocity is None
 
 
 def test_recolouring_is_distinct_from_translation_and_shape_change() -> None:
