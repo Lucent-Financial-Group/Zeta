@@ -1262,3 +1262,105 @@ markdownlint, scoped to the branch diff             0 findings
 mutation: 22 matrices, 160/160 killed, 0 survivors, 0 stale anchors
 commit: aa4ace959
 ```
+
+## Pass 13 — the disclosure asked about itself
+
+Pass 12 closed the fifth boundary because the pass-11 disclosure said something nobody had asked
+it. This pass exists for the same reason, one turn later: asked what its own `realPorts` field was
+measuring, the answer was *the configuration*, and the sentence beside it said *"touched
+something"*. Two defects, and the first hid the second.
+
+### A. The fact was missing on every early return
+
+`runOrgRuntime` has three `return empty()` paths — nothing workable, no matching item, goal not
+accepted — and the emission sat past all of them. `empty()` carried `fidelity` in the **returned**
+report, so a live caller was fine and the store was not:
+
+```
+the RUN RECORD says : {"replayable":true,"realPorts":[]}
+the EVENT LOG says  : []
+they disagree       : true
+```
+
+Two records of one fact in one store. `everyRunWasSimulated` and `run-agent --resume` both read the
+**log**, so a resumed organization printed *"no run recorded its fidelity — UNKNOWN, not
+simulated"* about a run whose fidelity was sitting in the same store.
+
+Same shape as the `identifyEvent` loss in pass 11 — two views of one store, one silently short.
+And the same early-return hole that pass closed for `runOrgCycle`, in its own words: *"AND SO DOES
+THE EARLY RETURN — the path that never reaches a goal."* Its sibling was never checked.
+
+### B. "Touched something" was not what the field measured
+
+`fidelityOf` reads the ProviderSet's **labels**. Measured: a run with a real review port and no
+workable goal reported `realPorts: ["review"]` with **zero gate evaluations** — the reviewer was
+configured, not called.
+
+A run now reports three things, all derived:
+
+| | |
+|---|---|
+| `reached` | real **and** called — the only set "reached" can honestly name |
+| `configuredNotCalled` | real and never called — its own answer, folded into neither of the others |
+| `replayable` | configuration-derived, **unchanged**, deliberately conservative |
+
+`replayable` stays a property of the **set**. A set holding a real adapter cannot be promised to
+replay whether or not this particular run got that far, and answering otherwise is a promise the
+next run breaks. Only the sentence overreached, so only the sentence changed.
+
+The narrowing is honest in both directions: the never-reached case does **not** fall back to
+"performed nothing", because the run is still un-replayable — the same set run again would reach.
+
+### One recorder, one wording
+
+Invocation is recorded by a single wrapper rather than by fourteen adapters counting themselves.
+Fourteen places to be right about, three of which would quietly not be; here there is one, and
+`invoked()` is the only way to learn the answer, so it cannot drift from what ran. The wrapper
+passes each adapter's own `meta` through untouched, so `fidelityOf` over the wrapped set is
+identical to `fidelityOf` over the raw one — with a falsifier for exactly that, since if wrapping
+altered the metadata every label in the system would be one indirection from true.
+
+`fidelityLine` is now the one wording. The emitted fact and both CLI prints had **independently**
+said "touched something" about a field measuring configuration, which is how it drifted at all:
+three copies is three chances to say what the report cannot support.
+
+### Measured after
+
+```
+A.  the RUN RECORD says : {"replayable":false,"realPorts":["review"]}
+    the EVENT LOG says  : [{"replayable":false,"realPorts":["review"]}]
+    they disagree       : false
+
+B.  reached=[]  configuredNotCalled=["review"]  replayable=false (still conservative)
+    "no real port was called; configured real and never reached: review"
+
+...and the happy path, end to end against a real repository:
+    "these port(s) reached something real: change_control, work_execution"
+    invoked=["change_control","intake","review","test_execution","work_execution"]
+```
+
+### Falsifiers
+
+17 new mutants across two matrices. Two problems on the first pass, both real: a stale anchor on
+the mixed sentence (reached one port, skipped another), and **a mutant that stopped recording the
+review port survived** — the recorder's own tests covered intake and change control, and nothing
+asserted what a full run's `invoked` contained. All five ports are now named in both a unit test
+and an end-to-end one, because five wrappers is five chances to miss one.
+
+Four anchors in earlier matrices went stale against these edits and were refreshed rather than
+accepted. The three in `mut-runtimefid` moved into `noteFidelity` and were re-pointed so they stay
+distinct from the new matrix rather than becoming duplicates of it.
+
+**And a tautology of my own**, written into the new test file: `expect(x).toBe(cond ? x : x)` — a
+check that cannot fail, in a file about checks that cannot fail. Replaced with the assertion it was
+pretending to be.
+
+### State at the end of pass 13
+
+```
+bun test src/Core.TypeScript/corporate/         1045 pass, 0 fail  (44 files)
+bun test src/Core.TypeScript/observe/           1630 pass, 0 fail  (111 files)
+tsc --noEmit                                       0 errors
+mutation: 24 matrices, 177/177 killed, 0 survivors, 0 stale anchors
+commit: 607c2804c
+```
