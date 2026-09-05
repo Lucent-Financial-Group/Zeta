@@ -105,7 +105,7 @@ Composes with:
 ## Files
 
 - **`menu-generator.ts`** — `(status_surface, current_state) → MenuOption[]`; zero I/O. The function
-  this whole design defers to — `transition` is documented as "defensive" *because* the generator
+  this whole design defers to — `transition` is documented as "defensive" _because_ the generator
   offers only valid options, and for a long time no generator existed. Ported to F# as
   `src/Core/MenuGenerator.fs` and byte-locked against it by `MenuGeneration` vectors in
   `workflow-treaty-transcript.json` (menu ORDER, every score term, exact double equality).
