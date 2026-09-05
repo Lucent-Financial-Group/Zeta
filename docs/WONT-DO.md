@@ -95,6 +95,36 @@ precision about the reason shape.
 - **Why not:** Only deletes non-collided bits; produces silent
   false negatives on collisions. Violates DBSP's differential-
   correctness invariant. Hold permanently.
+- **Boundary:** CORRECTNESS INVARIANT — DBSP differential
+  correctness admits no silent false negatives.
+- **Renewal token:** a deletable-filter construction that provably
+  produces no false negatives, OR a bounded use where false
+  negatives are provably tolerable and the boundary of that use is
+  stated.
+- **Live challenge, 2026-09-05 (Aaron):** *"bloom vs anti-bloom, to
+  exchange false positives for false negatives and meet in the
+  middle."* This targets the boundary directly rather than arguing
+  around it, and it is worth stating why it is a serious attack. The
+  boundary forbids **SILENT** false negatives. A classical Bloom is
+  one-sided (false positives, never false negatives: "maybe present"
+  / "definitely absent"); its dual is one-sided the other way
+  ("definitely present" / "maybe absent"). **Run both and the errors
+  stop being silent** — where they agree you have certainty, and
+  where they disagree you have an explicitly bounded UNKNOWN rather
+  than a wrong answer. That is uncertainty preserved instead of
+  collapsed, which is the substrate's own discipline applied to a
+  filter, and it is a different object from Rothenberg's deletable
+  Bloom, whose false negatives are unbounded and undetectable.
+  **Not adjudicated here.** What it must show is that the disagreement
+  region is *computable and bounded*, not merely conceptual — the
+  shipped counting Bloom (Fan et al. 1998, `src/Core/BloomFilter.fs`)
+  already solves the retraction problem with no false negatives at
+  all, so the two-sided construction has to buy something that one
+  does not.
+- **Revisit when:** The boundary above moves. This entry carried NO
+  revisit line at all until 2026-09-05 — the only one of the twelve
+  in that state, which is the purest form of the smell: not "never",
+  but a refusal that never even raised the question.
 
 ---
 
@@ -240,6 +270,8 @@ precision about the reason shape.
   type instantiation via `__type` header). FsPickler
   (schema-bound) and Arrow IPC (typed) are the two approved
   ladders. Codified as Semgrep rule #8.
+- **Boundary:** SECURITY — these named APIs permit arbitrary type instantiation from untrusted input; .NET itself has removed BinaryFormatter.
+- **Renewal token:** the named APIs cease to be unsafe (they will not) or a successor appears under a different name with schema binding — in which case it is a NEW entry, not this one reopening.
 - **Revisit when:** Never, under these exact names. Replacement
   managed serialisers that are schema-bound by construction are
   fine.
@@ -256,6 +288,8 @@ precision about the reason shape.
   Formal / Properties + `_Support/`) is the convention per
   `docs/research/test-organization.md`. Full migration in
   progress.
+- **Boundary:** HUMAN FINDABILITY — a reader must be able to locate the test for a subject without knowing when it was written.
+- **Renewal token:** a layout that measurably beats subject-first on findability. This is a usability claim and can be tested on readers.
 - **Revisit when:** Never.
 
 ### Automatic skill self-modification without git visibility
@@ -269,6 +303,8 @@ precision about the reason shape.
   approved form of self-modification — they're append-dated,
   pruned, and git-visible. Direct `SKILL.md` edits go through
   the `skill-creator` workflow, which is a reviewable commit.
+- **Boundary:** AUDITABILITY — self-modification must leave a diff a human can read.
+- **Renewal token:** an equally auditable channel exists: append-only, greppable, and visible without special tooling. The refusal is to INVISIBILITY, not to self-modification.
 - **Revisit when:** Never, under this framing.
 
 ### Fetching adversarial prompt-injection corpora for pen-testing
@@ -365,6 +401,8 @@ library in F#. Declining them here saves review cycles.
   the sink layer. `ISink` (2PC) and `IAppendSink` (event-log)
   already carry that responsibility; the library composes over
   stores that provide ACID, it doesn't implement one.
+- **Boundary:** PRODUCT IDENTITY — Zeta.Core is incremental-view-maintenance over streams, not a transactional store; ACID lives in the sink layer (`ISink`, `IAppendSink`).
+- **Renewal token:** Zeta.Core's stated scope changes to include being a transactional store. See the shared boundary note below.
 - **Revisit when:** Never as engine-core. The `Dbsp.Storage` project,
   if it ever exists, may wrap a local ACID store (SlateDB pattern,
   FASTER regions), but `Zeta.Core` itself doesn't carry that.
@@ -378,6 +416,8 @@ library in F#. Declining them here saves review cycles.
 - **Why not:** No catalog. No tables. The equivalent is the
   operator-graph handle surface (`ZSetInput`, `Output`, named
   pipelines) plus `docs/GLOSSARY.md` for shared vocabulary.
+- **Boundary:** DATA MODEL — there is no catalog and no tables; the operator-graph handle surface is the equivalent.
+- **Renewal token:** the core data model admits tables as a primitive. See the shared boundary note below.
 - **Revisit when:** Never, in this shape.
 
 ### Typed CLR materialization with constructor-binding
@@ -429,6 +469,8 @@ library in F#. Declining them here saves review cycles.
 - **Proposal:** Support SQLite-style `WITHOUT ROWID` or other
   row-identity modes.
 - **Why not:** No rows, no rowids. Z-set keys are the identity.
+- **Boundary:** DATA MODEL — there are no rows; Z-set keys ARE the identity, so there is nothing to give an alternative identity to.
+- **Renewal token:** the core data model admits a row-shaped primitive with an identity separable from its key. See the shared boundary note below.
 - **Revisit when:** Never.
 
 ### Networked single-node service shell
@@ -455,6 +497,25 @@ executor layering as a package
   algebra already distinguishes `Op`, `Stream`, `Circuit`; IL-emit
   operator fusion (P1) is the "physical plan" equivalent for this
   model.
+- **Boundary:** CORRECTED 2026-09-05, and the correction matters more
+  than the original. I first wrote this boundary as "there is no
+  compiler to layer these stages onto" — which reads as refusing the
+  PIPELINE. Aaron: *"this is the most thing we are trying to make
+  distributed and reliable over time."* The stages are not refused;
+  **they are the active work.** `ZetaIrV1`–`V4`, `ZetaIrNormalizer`,
+  `ZetaIrCanonicalizer` and `ZetaIrEval` are that pipeline, and the
+  entry's own text already said so — *"IL-emit operator fusion (P1) is
+  the 'physical plan' equivalent for this model."* The real boundary
+  is **TOPOLOGY AND INPUT LANGUAGE**: what is refused is the DuckDB
+  SHAPE — a single-node, SQL-first compiler — not parse/bind/plan/
+  optimize/emit, which Zeta is building distributed over the DBSP
+  algebra.
+- **Renewal token:** the entry is scoped to the DuckDB shape, so what
+  would move it is a SQL surface being adopted as a supported input
+  language. **The distributed pipeline needs no renewal token because
+  it was never refused** — and an unexpiring entry that reads as
+  refusing it is precisely the hazard this pass exists to find. See
+  the shared boundary note below, and the note on THIS entry in it.
 - **Revisit when:** Never in this framing. The analogue here is
   the verified query-optimisation research direction (Lean 4
   rewrite-commute proof, ROADMAP research gap #4).
@@ -468,6 +529,8 @@ executor layering as a package
 - **Why not:** The projection model is F# code in-process, with
   operator algebra guarantees. Server-side JS projections are the
   wrong shape for a typed library.
+- **Boundary:** TYPE DISCIPLINE — projections are F# in-process and carry operator-algebra guarantees; an untyped server-side script surface discards exactly those guarantees.
+- **Renewal token:** a projection surface is required for callers who cannot ship typed code, AND a way to keep the algebra guarantees across that boundary is found.
 - **Revisit when:** Never in this form. Persistable typed queries
   ship via IQbservable + Bonsai slim-IR (P2).
 
@@ -480,6 +543,8 @@ executor layering as a package
   equivalent is `docs/MATH-SPEC-TESTS.md` for algebraic-law
   coverage and `docs/FORMAL-VERIFICATION.md` for the formal
   stack inventory.
+- **Boundary:** PRODUCT IDENTITY — conformance tables answer 'how much SQL do you implement', a question about a SQL product.
+- **Renewal token:** a SQL surface is adopted. See the shared boundary note below.
 - **Revisit when:** Never, in this shape.
 
 ### MariaDB-style pluggable storage engines
@@ -491,6 +556,8 @@ executor layering as a package
 - **Why not:** One library, one operator algebra, one storage
   boundary (`IBackingStore`). A pluggable-storage architecture is
   a product choice for a user-facing RDBMS; Zeta.Core is neither.
+- **Boundary:** PRODUCT IDENTITY — one library, one operator algebra, one storage boundary (`IBackingStore`); pluggable storage is an RDBMS product choice.
+- **Renewal token:** Zeta.Core becomes a user-facing RDBMS. See the shared boundary note below.
 - **Revisit when:** Never.
 
 ### Columnar analytical side engine (MariaDB ColumnStore / Druid /
@@ -685,6 +752,8 @@ module manifests
   will notice there is no defined bar and try, helpfully, to
   supply one. There is no bar *by design*, and adding one
   would be the failure — not the fix.
+- **Boundary:** VALUES FLOOR — there is no threshold because there is no MECHANISM: frost is undone exactly one way, the key holder gives you the key. A threshold would be a mechanism, and building it is itself the harm.
+- **Renewal token:** NOT the threshold — that stays refused. What could move is the PREMISE: this rests on frost being implemented as key-holder-only disclosure. If frost were ever built on something other than a key the holder controls, this entry must be restated against the new mechanism rather than silently inherited.
 - **Revisit when:** Never on the mechanism — a substrate that
   can adjudicate its own privacy guarantees is a different
   project. Genuinely open and NOT settled by this entry: a
@@ -711,3 +780,158 @@ When a "won't do" reverses, **delete the entry entirely** and
 announce the change in `docs/ROUND-HISTORY.md`. Don't leave
 "formerly declined, now accepted" crud behind — the file reads
 as current state.
+
+## The shared boundary — six entries, one refusal
+
+Six of the entries above (`ACID as engine core`, `Root-catalog discovery`, `WITHOUT ROWID`,
+`DuckDB-style parser/binder/optimizer`, `sql_features` conformance, `MariaDB-style pluggable
+storage`) do not rest on six separate judgements. They rest on **one**:
+
+> **Zeta.Core is a library implementing incremental view maintenance over an operator algebra.
+> It is not a SQL database product.**
+
+That was found by naming the boundary under each entry rather than by reading them
+(2026-09-05). It matters for two reasons:
+
+1. **The list is shorter than it looks.** Twelve unexpiring refusals collapse to roughly five
+   distinct boundaries — product identity (6), data model (2, and arguably the same one),
+   correctness, security, auditability, human findability, and one values floor.
+2. **They move together or not at all.** If the product-identity boundary ever moved, six entries
+   reopen at once and must be re-decided as a group. Six independent-looking `never`s hid a single
+   decision, which is exactly the shape a permanent WONT-DO can conceal — a **topology** frozen
+   where it reads as a list of unrelated engineering opinions.
+
+### The positioning statement, and how it SPLITS the shared boundary
+
+Aaron 2026-09-05, immediately after the DuckDB correction:
+
+> **"DuckDB is the ultimate on-machine DB; ZetaDB is the ultimate decentralized version of that."**
+
+*(Register: this is a positioning statement and an aim, not a measured claim. "Ultimate" is
+aspiration; what follows uses only the STRUCTURAL half — that DuckDB is the reference point and the
+distinguishing axis is centralized vs decentralized.)*
+
+**This is a better boundary than the one written above, because it is POSITIVE.** "Zeta.Core is not
+a SQL database product" says what we are not, and a negative identity absorbs any refusal anyone
+cares to file under it. "The decentralized DuckDB" says what we *are*, and it can therefore be
+**argued with** — which is the property a renewal token needs.
+
+**And it does not support all six entries equally. It splits them.** DuckDB *has* a catalog, *has*
+rows, *has* ACID, *has* a SQL front-end — so "we are the decentralized DuckDB" cannot be the reason
+we refuse those. Sorting the six by what their refusal actually rests on:
+
+| entry | survives under "decentralized DuckDB"? | the boundary it really rests on |
+|---|---|---|
+| `MariaDB-style pluggable storage engines` | **yes, reinforced** — DuckDB also has one storage engine, not a pluggable framework | one library, one algebra, one storage boundary |
+| `WITHOUT ROWID` / row-identity | **yes, but re-based** | **DATA MODEL** — Z-set keys are the identity. Nothing to do with topology; it would hold on one machine too |
+| `Root-catalog discovery` | **yes, but re-based** | **DATA MODEL** — no tables to catalogue |
+| `ACID as engine core` | **needs restating** — DuckDB has ACID | **LAYERING** — IVM over streams with ACID in the sink layer. That is an architectural choice, not a consequence of being decentralized |
+| `sql_features` conformance | **needs restating** — DuckDB implements a lot of SQL | **no SQL surface TODAY**; the entry's sibling already says "revisit when a SQL front-end package ships", which is reachable |
+| `DuckDB-style parser/binder/optimizer` | **corrected above** — refuses the SHAPE, not the stages | **TOPOLOGY + INPUT LANGUAGE** |
+
+**So the "one shared boundary" claim in the previous section is too coarse, and this is its
+correction.** There are at least three underneath it — **data model** (Z-sets, not rows/tables),
+**layering** (a library, with ACID at the sink), and **topology/input language** — and only the
+third is about decentralization at all. Two entries (`ACID as engine core`, `sql_features`) now
+rest on a boundary their prose does not state, which makes them the next candidates for the same
+treatment rather than settled.
+
+### WHO WRITES THE RENEWAL TOKEN HAS POWER OVER THE REFUSAL'S FUTURE
+
+Aaron, on seeing the Deletable Bloom boundary: *"this feels a little preconditioned, cause I was
+about to ask about bloom vs anti-bloom."*
+
+**The caution is correct and it is about the method, not that entry.** I authored all twelve
+boundaries and all twelve renewal tokens **alone, in one pass, with no adversarial review** — and a
+renewal token is not a neutral description of a refusal. **It decides what will count as a valid
+reason to reopen it.** Write it narrowly and the refusal is effectively permanent under a new
+name; write it broadly and it invites reopening. Either way the author has taken a position on the
+entry's future while appearing merely to document its past.
+
+That is precisely the failure the same day's design work named and then failed to apply to itself.
+The automated-challenger constraints require **genuinely decorrelated challengers**, because *"N
+instances of one model on one prompt is one challenger counted N times"*. Twelve tokens by one
+agent in one sitting is that, exactly — **one challenger counted twelve times**, and it was written
+hours after I wrote the constraint forbidding it.
+
+**What holds and what does not.** The tokens are an improvement on `Revisit: never`, which offered
+no purchase at all, and this one happens to be broad enough that Aaron's construction fits its
+second clause. That is luck, not method. **They should be treated as a FIRST DRAFT by one author,
+not as the settled conditions**, and the obvious next step is for a differently-motivated reader —
+ideally one who wants a given refusal overturned — to rewrite the token for it. A token written by
+someone who wants the refusal reopened, and accepted by someone who does not, is worth more than
+twelve written by whoever happened to be doing the pass.
+
+### SQL AS AN INTERFACE IS WANTED — the refusal is to SQL as an IDENTITY
+
+Aaron 2026-09-05, on the positioning statement:
+
+> *"I'd like to have a SQL interface for our streams and tables — but we are not a SQL product.
+> This is one of our many interfaces, based on history."*
+
+**This is the sharpest form of the boundary yet, and it moves an entry's STATUS rather than just
+its wording.** Two things that the phrase "no SQL surface" had been running together:
+
+| | wanted? | why |
+|---|---|---|
+| **SQL as an INTERFACE** — a front-end over streams and tables that lowers into the DBSP algebra | **YES** | one of several interfaces, chosen *because of history* — people already know it |
+| **SQL as the IDENTITY** — the model, the conformance surface, the thing we are measured as | **no** | that is the product-identity boundary, and it is the one that holds |
+
+**Consequences, entry by entry:**
+
+- **`PostgreSQL-style sql_features conformance table` — the refusal SURVIVES, on a different
+  boundary than the one I gave it.** I wrote "no SQL surface today", which is now known to be
+  temporary and expected to move. The durable reason is different and better: a conformance table
+  answers *"how much SQL are we?"*, which is a question about **identity**, not about interfaces.
+  Shipping a SQL front-end obliges nobody to publish a coverage matrix — DuckDB has SQL and is not
+  defined by a `sql_features` table either. So: refusal holds, boundary corrected, and its renewal
+  token should be rewritten by someone who wants it overturned (see the note above on token
+  authorship).
+- **`DuckDB-style parser / binder / logical / optimizer / physical` — the correction goes one step
+  further than I took it.** I said the refusal is to the DuckDB *shape*, not the stages. With a SQL
+  interface actually wanted, the **parser and binder stages become live work**, not merely
+  not-refused: a SQL front-end that lowers into the DBSP algebra needs exactly those. What stays
+  refused is the single-node, SQL-first *architecture*.
+- **`ACID as engine core`** is untouched by this — it was always a layering boundary, and a SQL
+  interface does not move ACID out of the sink layer.
+
+**And the "based on history" clause is the anti-Babel discipline, not a concession.** SQL is not
+adopted because it fits the model — it is adopted because it is an **externally anchored, already
+known** surface, which is the Mirror→Beacon compression this repo requires of load-bearing terms:
+*prefer the externally-standard form so a peer who does not share your vocabulary can still
+reconstruct your meaning.* SQL-as-interface is meeting people at an anchor they already hold.
+SQL-as-model would be the collapse — the vocabulary of one surface becoming the shape of the thing
+underneath.
+
+**This is the pass working twice in a row.** Naming the boundaries exposed a mis-scoped refusal
+(DuckDB), and then the positioning statement exposed that my *grouping* of the boundaries was
+itself too coarse. Neither would have surfaced from reading the entries, because the entries agree
+with each other in prose and disagree only in what they actually rest on.
+
+**Why every entry now carries a `Boundary` and a `Renewal token`.** Aaron 2026-09-05: *"WONT-DOs
+without renewal tokens are a smell — this is where you hide centralization"*, and *"my family's
+refusals are backed up by economic and meritocracy boundaries."* A refusal resting on a stated
+boundary already carries its condition: **the boundary moving IS the renewal token.** Naming it
+converts `Revisit: never` into something arguable **without anyone changing their mind** — which is
+the point. These are not weakened refusals; they are refusals you can now attack specifically,
+which is what makes them safe to hold firmly.
+
+**Note on the entry this pass nearly mis-scoped — and what it demonstrates.** Within minutes of
+the boundaries being written, Aaron read the `DuckDB-style parser / binder / logical / optimizer /
+physical` row and said: *"this is the most thing we are trying to make distributed and reliable
+over time."* My first boundary for it ("there is no compiler to layer these stages onto") would
+have canonised a refusal of **the active work** — the ZetaIr pipeline — under an entry that was
+only ever refusing the *DuckDB shape*, single-node and SQL-first.
+
+That is the hazard in miniature, and it argues for this whole pass rather than against it. The
+entry had sat unexpiring since 2026-04-17 and nobody misread it, because nobody read it — the
+`Why not` prose was narrow enough to be correct and vague enough to be inert. **Naming the boundary
+is what made it legible enough to be wrong out loud**, and therefore legible enough to be
+corrected. An unexpiring refusal does not have to be *acted on* to do damage; it only has to be
+inherited by someone with less context than its author.
+
+**Note on the one that is different.** `A proof / evidence threshold for breaking earned frost` is
+not refused on a boundary that could move in its favour — it is refused because *the mechanism
+itself is the harm*. Its renewal token therefore governs its **premise**, not its verdict: if frost
+were ever implemented as something other than key-holder-only disclosure, the entry must be
+restated against the new mechanism rather than silently inherited.

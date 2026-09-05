@@ -1733,8 +1733,8 @@ describe("081M0JXXFV0087G0R00...: the four newly-visible non-storage defects", (
       // (1000m at metal, 250m at dev). The citations move with the ladder because
       // that is what they are for -- prose that did not follow is the drift
       // `reason-truth.ts` catches, and it caught exactly this pair today.
-      "[cite: lane-cpu metal 7790 over]",
-      "[cite: lane-cpu dev 1515 fits]",
+      "[cite: lane-cpu metal 7890 over]",
+      "[cite: lane-cpu dev 1565 fits]",
     ]) {
       expect(reason).toContain(cited);
     }

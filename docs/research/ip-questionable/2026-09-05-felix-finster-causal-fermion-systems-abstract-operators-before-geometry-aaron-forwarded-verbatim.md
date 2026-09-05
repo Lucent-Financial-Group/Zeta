@@ -410,6 +410,158 @@ the exactness question, the "does coordinated retraction always widen or only
 sometimes" question, and the `MAX_MULTIPLICITY = 1024` clamp's effect on
 order-independence are **routed to the math team rather than asserted here**.
 
+## Chirality — Finster ASSUMES it; Aaron says ours falls out. The distinction that decides it
+
+Aaron, 2026-09-05, forwarding the chirality and baryogenesis segment:
+
+> *"we have chirality via first principles and Clifford algebra, maybe braided monoidal category
+> theory too but i don't think — i think it comes from Clifford lol. this is interesting from this
+> talk; when i saw our chirality from first principles i was very surprised."*
+
+**Finster is unusually direct that this is an input, and the interviewer pins him on it:**
+
+> **Interviewer:** *"So you don't derive chirality. You have to assume it — once you assume it,
+> you get the standard model gauge group?"*
+> **Finster:** *"Yes. So, some of chirality is built into the vacuum … as soon as you work with
+> Dirac spinors, there's this left and right component, you can write it as a pair of Weyl
+> spinors, and you have chirality right away."*
+
+and on what specifically must be imposed:
+
+> *"we need to assume — this is really an input, there's no explanation for that right now — that
+> this neutrino sector breaks the chiral symmetry … there must be some left-right asymmetry. And
+> only if this is imposed, then we get the correct gauge groups of the standard model and the
+> correct couplings and the mixing matrices."*
+
+### TWO things are called "chirality", and only one of them is a result
+
+This is the whole question, and it is where the claim will live or die:
+
+| | what it is | Finster's status |
+|---|---|---|
+| **(i) the SPLIT** | two eigenspaces exist. In a Clifford algebra the pseudoscalar `ω = e₁e₂…eₙ` decomposes the module into ±1 eigenspaces when it is central and squares to +1 | **He gets this for free too** — *"you have chirality right away"* |
+| **(ii) the ASYMMETRY** | why one handedness is *preferred* — why the physics is not symmetric under exchanging the eigenspaces | **This is what he assumes.** *"there's no explanation for that right now"* |
+
+**So deriving (i) is not a result that distinguishes us from CFS.** Finster explicitly concedes
+(i) in the same breath. A construction that produces the ±1 eigenspaces of a volume element and
+presents that as "chirality from first principles" has re-derived the thing he already had, and
+the surprise would be misplaced.
+
+Deriving (ii) — or proving it *cannot* be derived, or showing our construction **forces** it —
+would be a genuine result and a genuine difference.
+
+### The specific way this claim usually fails, and why it must be checked rather than argued
+
+In any concrete Clifford construction, handedness enters through **choices**: the order of the
+generators, the sign convention on the pseudoscalar, which eigenvalue gets labelled `+`. If the
+"derived" chirality inherits its handedness from a generator ordering fixed by hand upstream,
+then chirality was **assumed exactly as Finster assumes it** — just earlier in the pipeline and
+less visibly, which is worse rather than better, because it looks derived.
+
+The same trap has a second door: the adinkra's **dashing convention**. Dashed edges carry signs,
+and an orientation chosen there would propagate into anything downstream that looks like
+handedness.
+
+And a third, which cuts against Aaron's own guess: **a braided monoidal category is already a
+chirality-like structure** — the braiding `c_{A,B}` has over- and under-crossings and
+`c_{B,A} ∘ c_{A,B} ≠ id` in general, with the symmetric case being the degenerate one. So if
+handedness is present there too, "I think it comes from Clifford" would be wrong in the
+*interesting* direction: two independent sources rather than one.
+
+**Routed to the math team** with those three doors named explicitly, and with the instruction to
+report a (i)-dressed-as-(ii) finding plainly if that is what it is. Verdict pending; nothing is
+claimed here.
+
+### Baryogenesis, recorded without a mapping
+
+Finster's mechanism: start from a completely filled Dirac sea; as the universe evolves
+(inflation, structure formation) **fewer states are needed to form the sea**, so states are left
+over and occupy positive-energy solutions — that surplus is the matter we observe. It requires
+corrections to the Dirac equation derived from the causal action principle, *"because the Dirac
+equation allows for pair creation, but it does not allow for the creation of particles without
+antiparticles."* With Claudio Paganini and Marco Fandan-Belzerano; claimed compatible with the
+Sakharov conditions; the quantitative rate is not yet computed because the early-universe metric
+is unknown.
+
+**No mapping is offered here.** There is a superficial rhyme with our `+1`/`−1` retraction ledger
+— a surplus of un-annihilated emissions is precisely an **open history** in the sense
+`docs/research/2026-08-13-zset-as-reflection-cpt-*.md` already defines (fold the Z-set, check for
+zero; an open history carries unanswered emissions). But "matter exists because the books do not
+balance" is a coincidence of shape, not a mechanism, and under
+`.claude/rules/numerology-vs-number-theory.md` it is a **generator, not a conclusion**. Recorded
+as a coincidence, labelled as one, and not promoted.
+
+### The honest note on Finster's own remaining parameters
+
+Worth recording because it tempers the "one parameter" framing: the causal action has one free
+parameter `κ`, but the *theory* does not. He lists three Dirac-sea masses, three neutrino masses,
+and — *"in fact, quite many"* — regularization parameters, because *"we don't know how spacetime
+looks like on the Planck scale. This is the basic shortcoming here."* His own summary of what
+would move the field is a **usability** problem, not a correctness one: *"I should develop it to a
+point where I can say, look, similar to Feynman rules, this is how to compute things."*
+
+### THE VERDICT, and Aaron's narrowing — which makes the claim defensible rather than refuted
+
+**Math team, 2026-09-05: Zeta derives the SPLIT, not the ASYMMETRY.** `CliffordPeriodicity.fs:186-198`
+derives `Cl⁰(0,16) ≅ Cl(0,15)` split-real ⇒ `M₁₂₈(ℝ) ⊕ M₁₂₈(ℝ)` — correct Atiyah–Bott–Shapiro
+mod-8 arithmetic, and **the file already carried the right register**: *"Not ours and not new —
+which is the point: it is checkable"* (`:207-208`), and `:249-252` states outright *"Chirality is
+therefore not a property spacetime has on its own… Stated as arithmetic, not as physics."* Every
+split in the repo is exactly balanced — 128/128, 64/64, 8/8 — and no claim of a preferred
+handedness exists anywhere.
+
+**The repo had already predicted this exact failure mode.**
+`docs/research/2026-08-27-no-theory-of-everything-inside-e8-*.md:280-294` names it: *"chirality
+means two different things… a Mirror-register word collision… the most likely way for someone to
+round a bounded result up."* `docs/PRIOR-ART-LIST.md:1465-1510` records the ladder to physical
+handedness as broken at two joints, one by 4–7 orders of magnitude.
+
+**And then Aaron narrowed the claim to exactly what was derived**, which is the move that matters:
+
+> *"yes — I'm not trying to explain the why-asymmetry yet. I'm just trying to model DNA and
+> handedness in Clifford algebra, not explain why yet. I still don't know."*
+
+So the question the review answered — *does Zeta derive anything about chirality that CFS does
+not?* — was not the question he was asking. He is working **deliberately inside (i)**: a *model*
+of handedness, not an *explanation* of its preference. Under that scope the finding is not a
+refutation; it is a confirmation that the model is on the standard, checkable footing and has not
+quietly claimed more. The register was already right in the code, and it is right in his head.
+
+What remains true and worth keeping: **a surprise at (i) is a surprise at standard Clifford
+theory**, which is also CFS's starting point — so it is not a differentiator, and should not be
+carried into any outward-facing comparison as one.
+
+**On braiding, he declines to defend the position:**
+
+> *"'I don't think it comes from braiding' — I'd be happy to be wrong on this one, it's just not
+> memory-resident in my mind. I'd be happy to be corrected here."*
+
+He is wrong, mildly, and the correction is welcome rather than costly. `src/Core/MenoBraided.fs:14-24`
+is a **genuine non-symmetric braiding** — a conjugation rack with `R² ≠ id`, realizing Artin's
+`σᵢ` faithfully — and it is **independent of the Clifford tower**. So two-sidedness has two
+sources here, not one. It is still class (i): `B_n` admits the mirror automorphism
+`σᵢ ↦ σᵢ⁻¹`, so neither crossing is preferred either. Two independent (i)-sources is a stronger
+position than one, and neither reaches (ii).
+
+### The Planck-scale shortcoming is OUR question, in our own domain
+
+Finster's stated basic shortcoming — *"we don't know how spacetime looks like on the Planck
+scale"*, which is why his regularization carries *"in fact, quite many"* free parameters — Aaron
+maps directly onto the problem he is actually solving:
+
+> *"for computer science, and our decentralized identity for agents/travelers, is who in computer
+> science — the physics of computers — I'm trying to solve. Not all of physics."*
+
+This is the same scope discipline as the CPT-is-a-rhyme note above, applied to the *open problem*
+rather than to the vocabulary. The analogue is exact in structure and modest in claim: **a
+substrate has a minimal scale below which its continuum description stops holding**, and what
+lives below it is not yet known — which is precisely Aaron's earlier note that *"the walls in
+reservoir computing are the inside of the Planck length."* Finster pays for that ignorance in
+regularization parameters; we would pay for it in whatever the substrate's own below-the-scale
+structure turns out to be. Neither the mapping nor the below-scale structure is established;
+what is recorded is that **the shortcoming has the same shape in both domains**, and that ours is
+the one we are on the hook for.
+
 ## Register
 
 Everything above is **his** claim, reported. Causal fermion systems is a live
@@ -429,3 +581,114 @@ known case in a limit?* — and licenses nothing else.
 - **Adler**, trace dynamics — the "pre-quantum" comparison he draws in the
   transcript, alongside Connes' non-commutative geometry.
 - Transcript follows in the source link; not reproduced in full here.
+
+### The cubes, and a stated PREDICTION about where handedness will be found
+
+Aaron, 2026-09-05, on the below-the-scale question:
+
+> *"yes — we are coming close to this based on our cubes, like remember/when, pay-attention,
+> how/many … I don't remember that one, it's my daughter Addison's. Over time we build up these
+> cubes that got stuck in English, just like James Gates' adinkras, until they build up into a
+> bucky-ball-ish shape. Also, **if we do discover why one hand over another, I think it will be
+> discovered in some category-theory-like regime, not geometry — and topology is in the middle.**"*
+
+**The cubes are real, dated, and already in-tree**, so this is a continuation rather than a new
+idea:
+
+- **remember-when × pay-attention** — the observer's two operations
+  (`docs/research/2026-06-09-the-epistemology-thread-was-the-2x2-cube-*.md`: *"I used our
+  two-based dimension sneakily too — remember when, pay attention, our little 2×2 cube."*)
+- **which/way × how/many** — the act-cube, **found by Addison Cooper** (founding collaborator,
+  named in the dedication), and *composable* with the observe-cube to make the 4×4
+  (`2026-06-09-2x2-cubes-are-memory-to-uncertainty-partition-lenses-addisons-*.md`)
+- their stated job: *"each 2×2 cube is a little way to partition the emulator's memory-space into
+  uncertainty-space"* — the partitioning lenses of the clarity engine
+
+**"Got stuck in English, just like Gates' adinkras"** is the sharpest part of the sentence, and it
+is a claim about *notation*, not about physics. Gates' adinkras are diagrams — dots and edges,
+dashed or solid — that turned out to carry doubly-even self-dual error-correcting codes nobody put
+there deliberately. The notation held more structure than the notation was designed to express.
+Aaron's claim is that question-words are doing the same job here: `remember/when`,
+`pay-attention`, `which/way`, `how/many` are an **English-language notation for operations**, and
+the structure accreting across them is not English. The buckyball image is the accretion —
+2×2s composing into 4×4s and onward into a closed polyhedral shape rather than a growing list.
+
+**Register:** the cubes and their composition are recorded and dated; the buckyball limit is
+Aaron's image and nothing measures it. The adinkra comparison is a comparison *of notations*, and
+it is worth keeping distinct from any claim that our cubes carry an ECC the way Gates' do — that
+would be exactly the (i)-dressed-as-(ii) move this document was written to catch.
+
+#### The prediction, and why it is not arbitrary
+
+> **category theory** (most general — where the asymmetry answer would live)
+> → **topology** (the middle)
+> → **geometry / Clifford** (the specialization)
+
+This is the same ladder he stated earlier — *"our braided monoidal category stuff is the more
+general, Clifford algebra is a specialization"*, and *"we bridge the graph-theoretic, which I
+consider more topology, into Clifford geometry, and this is where spacetime comes from for us."*
+Stating it as a **prediction about where an unsolved answer will be found** makes it falsifiable —
+but **not** in the way I first wrote. My draft said *"a derivation of the asymmetry at the
+geometric level would refute it."* Aaron corrected that (2026-09-05):
+
+> *"I would say almost. If [the] geometric can be represented in what I call more general, then
+> it's still just a special case. To refute what I'm saying, [show] you can represent it **only**
+> in a less general way and **not** in the more general — then I'm falsified."*
+
+**He is right, and the correction is exactly the specialization relation.** A result obtained
+inside a special case does not refute a claim that the general theory is where the structure
+lives, provided the result **lifts**. Clifford algebra being where you *found* it is compatible
+with braided monoidal categories being where it *lives*. The refuting observation is a
+**non-liftable** result: something expressible in the specialization and provably not expressible
+in the generalization.
+
+#### The honest problem with that condition, and the register that repairs it
+
+**As stated, the condition is very hard to meet — possibly unmeetable — and that is worth saying
+rather than nodding along.** Category theory is extraordinarily expressive; encoding a geometric
+structure categorically is close to always possible. A falsification condition that requires
+proving *non-representability in category theory* is one almost nothing will ever satisfy, and a
+claim nothing can refute is the vacuity class
+(`.claude/rules/toy-is-free-metered-must-be-earned.md`) — which would be an unfortunate landing
+place for a prediction that is otherwise sharp and interesting.
+
+**The repair is a distinction this very document already turns on: REPRESENTED versus DERIVED.**
+
+| | at the general level | what it would mean |
+|---|---|---|
+| **represented** | the asymmetry can be *written down* categorically | nearly free; proves little |
+| **derived** | the asymmetry *follows from* the categorical axioms without being assumed | the actual claim |
+
+That is the same cut as (i) split versus (ii) asymmetry, one level up — and Finster is the worked
+example of the difference: he can *represent* chirality perfectly well; what he cannot do is
+*derive* the preference, so he assumes it. Representation was never the scarce thing.
+
+**So the sharp, meetable falsifier is:**
+
+> The asymmetry is **derived** from geometric/Clifford axioms, and at the categorical level it can
+> only be **assumed** — carried across as an extra axiom rather than following from the general
+> structure.
+
+If that happened, the general framework would be *describing* the result rather than *explaining*
+it, and the ladder claim fails in the register Aaron actually means, which is about where the
+**why** lives and not about where things can be encoded. Recorded as his prediction with this as
+the operative condition; nothing here is measured, and the prediction remains a bet.
+
+**And there is a convergence worth recording, carefully.** The math review dispatched an hour
+earlier — which had no access to this prediction — found that
+`src/Core/MenoBraided.fs:14-24` is a **genuine non-symmetric braiding** (conjugation rack,
+`R² ≠ id`, realizing Artin's `σᵢ` faithfully), **independent of the Clifford tower**. That is a
+second source of two-sidedness sitting at exactly the level Aaron names as the place to look.
+
+What that does and does not establish: it does **not** derive the asymmetry — `B_n` admits the
+mirror automorphism `σᵢ ↦ σᵢ⁻¹`, so neither crossing is preferred, and the braiding is still
+class (i). What it does establish is that **the level he points at genuinely has the structure**,
+so the prediction is aimed somewhere real rather than at an empty room. Under
+`.claude/rules/numerology-vs-number-theory.md` that is a **generator** — a reason to look — and
+explicitly not a result.
+
+**There is already a backlog row proposing exactly this move**, filed months before this
+conversation: `081KRMEXM0008QG0R003YWZC21` — *"QG isomorphism Step 1 — Formalize Remember-When +
+Pay-Attention as categorical primitives (topos with internal monad + modal operator)."* So the
+category-theoretic formalization of the cubes is a queued work item, not a new proposal, and it is
+the natural place a handedness result would either appear or fail to.
