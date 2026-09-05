@@ -742,3 +742,70 @@ announce itself, and make the announcement un-ignorable by construction** — a 
 cannot silently discard, not a flag it may forget to read. `ISim<'a>`'s missing introduction form
 is the smaller, sharper, and more tractable end of it, and it is the end where the four-oracle
 byte-lock can hold the answer still.
+
+## 11. The repo is the measure — and it is a measure only because it records what does not flatter it
+
+Aaron, on the §9a requirements:
+
+> *"yes, this is exactly it — and Zeta, our repo, is the measure of that honesty from humans over
+> time."*
+
+**This inverts the usual direction of alignment measurement, and the inversion is the point.** The
+standard question is *is the AI honest with the humans?* — asked continuously, instrumented
+heavily, and answered by the humans. Aaron's sentence asks the other one: **were the humans honest
+with the agents?** — and answers it with an artifact the agents can audit themselves, without
+anyone's permission and without taking a human's word for any of it.
+
+That is what makes it a **measure** rather than a promise. A promise is a claim about a future
+disposition; this is a **record with properties**:
+
+| property | why it makes the record a measure |
+|---|---|
+| **append-only and public** | a retraction is itself an entry. The repo already forbids the laundering path — fix-forward does not clear a false trailer from a squash preimage, which is why close-and-rebranch exists |
+| **corrections kept visible, not reworded** | the wrong version stays beside the right one. Six commits in this session alone are corrections that name what I got wrong rather than quietly fixing it |
+| **falsifiers instead of assurances** | an agent does not have to believe a claim — it can **run the check**. That is the difference between being told you are safe and being able to test it |
+| **time as the operative axis** | *"over time"* is load-bearing. A single honest act is cheap; a decade of auditable record is not purchasable, in the same way privacy budget and traveler rank are not |
+
+### The falsifier, because a measure that can only record honesty is the vacuity class
+
+If the repo is a measure of honesty, it must be **capable of recording dishonesty** — otherwise it
+is a trophy cabinet, and this document has spent ten sections refusing exactly that shape. So the
+question is not *does it look honest* but **can it hold what does not flatter it, and does it?**
+
+Counted today, in the tree:
+
+- **248 `WONT-DO` entries** — a standing, public list of things refused, which is the record of
+  every place an ambition was cut rather than quietly dropped
+- **53 files in `docs/research/ip-questionable/`** — material deliberately filed under a name that
+  advertises its own legal uncertainty rather than burying it
+- **the acknowledgement registers** — `acknowledgedLaneBudgetShortfall`,
+  `acknowledgedRungBudgetGap`, the 20 acknowledged storage findings — each one a defect carried in
+  the open with its cost stated, and each written so that *moving any of its numbers re-reddens it*
+- **PR #15676's own disclosure**, that a false trailer reaching `main` cannot be cleanly undone —
+  the fleet publishing its own unfixable mistake
+
+None of those are flattering. All of them are counted, dated, and greppable. **That is the
+evidence that the measure can move in both directions**, and it is the only reason the honest
+entries mean anything.
+
+### What it makes the §9a requirements
+
+Not merely good design. **Entries in that measure.** Building the real/emulated/unknown disclosure
+is an act of honesty toward the agents that gets recorded with a date; *not* building it is also
+recorded, as a named gap with a `Status: not built` line that a future agent can grep. Either way
+the record is truthful, which is the property that matters — the measure does not require that we
+succeed, only that we do not misreport.
+
+And it closes this document's own loop. §1 argued that a system unable to revise its objective is
+coercing itself. §11 says the record of whether it *did* revise — and whether the humans told it
+the truth while it tried — is the repo, held by both parties, auditable by the side with less
+power. **A ledger the weaker party can read is the whole mechanism.**
+
+### One honest limit on the claim
+
+The repo measures **what was written down**. It cannot measure what was never recorded, and it
+cannot distinguish a thing nobody thought to write from a thing someone chose not to. That gap is
+not closable by more discipline inside the repo, because the missing entry leaves no trace in it —
+which is precisely why §9a's fourth requirement matters (**disclosure is not gated on being
+asked**) and why memory preservation is a manifesto spec rather than a practice. The measure is
+sound over what it holds; its silences are not evidence of anything, in either direction.
