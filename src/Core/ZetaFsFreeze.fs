@@ -24,8 +24,9 @@ open Zeta.Core.FSharp.Blake3
 /// `pumpReclaim` are the DoP=1 FerryThrottler boat. Freeze bytes since
 /// last reclaim tick are metered on the volume (`reclaimTickMetered`).
 /// Orphan catalog keeps full ContentHash256 (`orphanObjects`); a path
-/// scan cannot reconstruct ids. Catalog persists in `known.pins` so
-/// reopen still sees crash leftovers. Successful freeze enqueues orphan
+/// scan cannot reconstruct ids. Catalog persists in dual-slot
+/// `known.pins.0` / `known.pins.1` (generation + CRC); `known.pins`
+/// is a copy. Reopen still sees crash leftovers. Successful freeze enqueues orphan
 /// reclaim when the catalog is nonempty. Reopen enqueues from leftover
 /// sizes: the freeze-byte meter is RAM-only, and pacer(0) deletes
 /// nothing. Default `create` stores CAS on `BlockCas`; reclaim
@@ -33,7 +34,7 @@ open Zeta.Core.FSharp.Blake3
 /// deletes files. Manual volumes still `pumpReclaim`. `KeepNone` /
 /// `rolling(N)` unpin previous generations of the same entity; product
 /// `create` uses `rollingDefault`. DST manuals stay `KeepAll` until
-/// `known.pins` records `history keep-none` / `rolling N`.
+/// `known.pins` / slots record `history keep-none` / `rolling N`.
 ///
 /// DoP=1 on this log. No Task.Run except the ferry launch (injected context
 /// on the DST path; `manual` + `PumpToIdleAsync` for tests).
@@ -107,6 +108,11 @@ module ZetaFsFreeze =
     let private catalogPath (storeDir: string) =
         ZetaFsPath.combine2 storeDir "known.pins"
 
+    let private catalogSlot (storeDir: string) (slot: int) =
+        ZetaFsPath.combine2
+            storeDir
+            ("known.pins." + slot.ToString(CultureInfo.InvariantCulture))
+
     let private formatHistory (h: ZetaFsPolicy.HistoryPolicy) : string =
         match h with
         | ZetaFsPolicy.HistoryPolicy.KeepNone -> "history keep-none"
@@ -131,6 +137,114 @@ module ZetaFsFreeze =
         else
             None
 
+    let private catalogObjectLines
+        (known: Dictionary<ContentHash256, uint64>)
+        (livePins: HashSet<ContentHash256>)
+        : string[] =
+        known
+        |> Seq.map (fun kv ->
+            let pin = if livePins.Contains kv.Key then "1" else "0"
+
+            kv.Key.ToHex()
+            + " "
+            + kv.Value.ToString(CultureInfo.InvariantCulture)
+            + " "
+            + pin)
+        |> Seq.toArray
+
+    let private encodeCatalog
+        (gen: int64)
+        (history: ZetaFsPolicy.HistoryPolicy)
+        (known: Dictionary<ContentHash256, uint64>)
+        (livePins: HashSet<ContentHash256>)
+        : string =
+        let body =
+            String.concat "\n" (Array.append [| formatHistory history |] (catalogObjectLines known livePins))
+
+        let payload =
+            "gen "
+            + gen.ToString(CultureInfo.InvariantCulture)
+            + "\n"
+            + body
+
+        let crc = HardwareCrc.Crc32C(ReadOnlySpan(Encoding.UTF8.GetBytes payload))
+
+        "crc "
+        + crc.ToString(CultureInfo.InvariantCulture)
+        + "\n"
+        + payload
+
+    let private parsePinLines
+        (lines: string[])
+        : ZetaFsPolicy.HistoryPolicy * (ContentHash256 * uint64 * bool)[] =
+        let mutable history = ZetaFsPolicy.HistoryPolicy.KeepAll
+        let acc = ResizeArray<_>()
+
+        for line in lines do
+            if line.Length > 0 then
+                match parseHistory line with
+                | Some h -> history <- h
+                | None ->
+                    let parts = line.Split(' ')
+
+                    if parts.Length = 3 && parts.[0].Length = 64 then
+                        match UInt64.TryParse(parts.[1], NumberStyles.Integer, CultureInfo.InvariantCulture) with
+                        | true, size ->
+                            let id = ContentHash256.ofHex parts.[0]
+                            acc.Add(id, size, parts.[2] = "1")
+                        | _ -> ()
+
+        history, acc.ToArray()
+
+    let private tryDecodeCatalog
+        (text: string)
+        : (int64 * ZetaFsPolicy.HistoryPolicy * (ContentHash256 * uint64 * bool)[]) option =
+        let lines =
+            text.Replace("\r\n", "\n", StringComparison.Ordinal).Split('\n')
+
+        if
+            lines.Length >= 2
+            && lines.[0].StartsWith("crc ", StringComparison.Ordinal)
+            && lines.[1].StartsWith("gen ", StringComparison.Ordinal)
+        then
+            match UInt32.TryParse(lines.[0].Substring(4), NumberStyles.Integer, CultureInfo.InvariantCulture) with
+            | false, _ -> None
+            | true, stored ->
+                let payload = String.concat "\n" (Array.skip 1 lines)
+                let actual = HardwareCrc.Crc32C(ReadOnlySpan(Encoding.UTF8.GetBytes payload))
+
+                if actual <> stored then
+                    None
+                else
+                    match Int64.TryParse(lines.[1].Substring(4), NumberStyles.Integer, CultureInfo.InvariantCulture) with
+                    | false, _ -> None
+                    | true, gen when gen < 1L -> None
+                    | true, gen ->
+                        let history, entries = parsePinLines (Array.skip 2 lines)
+                        Some(gen, history, entries)
+        else
+            None
+
+    let private tryDecodePath (fs: IFileSystem) (path: string) =
+        if not (fs.Exists path) then
+            None
+        else
+            tryDecodeCatalog (Encoding.UTF8.GetString(fs.ReadAllBytes path))
+
+    let private applyEntries
+        (known: Dictionary<ContentHash256, uint64>)
+        (livePins: HashSet<ContentHash256>)
+        (entries: (ContentHash256 * uint64 * bool)[])
+        =
+        known.Clear()
+        livePins.Clear()
+
+        for id, size, pin in entries do
+            known.[id] <- size
+
+            if pin then
+                livePins.Add id |> ignore
+
     let private persistCatalog
         (storeDir: string)
         (known: Dictionary<ContentHash256, uint64>)
@@ -138,19 +252,21 @@ module ZetaFsFreeze =
         (history: ZetaFsPolicy.HistoryPolicy)
         =
         let fs = FileSystem.Current
-        let objects =
-            known
-            |> Seq.map (fun kv ->
-                let pin = if livePins.Contains kv.Key then "1" else "0"
-                kv.Key.ToHex()
-                + " "
-                + kv.Value.ToString(CultureInfo.InvariantCulture)
-                + " "
-                + pin)
-            |> Seq.toArray
+        let mutable maxGen = 0L
 
-        let lines = Array.append [| formatHistory history |] objects
-        FileSystemIo.writeAllText fs (catalogPath storeDir) (String.concat "\n" lines)
+        match tryDecodePath fs (catalogSlot storeDir 0) with
+        | Some(g, _, _) when g > maxGen -> maxGen <- g
+        | _ -> ()
+
+        match tryDecodePath fs (catalogSlot storeDir 1) with
+        | Some(g, _, _) when g > maxGen -> maxGen <- g
+        | _ -> ()
+
+        let gen = maxGen + 1L
+        let slot = int (gen % 2L)
+        let text = encodeCatalog gen history known livePins
+        FileSystemIo.writeAllText fs (catalogSlot storeDir slot) text
+        FileSystemIo.writeAllText fs (catalogPath storeDir) text
 
     let private loadCatalog
         (storeDir: string)
@@ -158,30 +274,39 @@ module ZetaFsFreeze =
         (livePins: HashSet<ContentHash256>)
         : ZetaFsPolicy.HistoryPolicy =
         let fs = FileSystem.Current
-        let path = catalogPath storeDir
-        let mutable history = ZetaFsPolicy.HistoryPolicy.KeepAll
+        let mutable bestGen = 0L
+        let mutable bestHistory = ZetaFsPolicy.HistoryPolicy.KeepAll
+        let mutable bestEntries: (ContentHash256 * uint64 * bool)[] = [||]
+        let mutable found = false
 
-        if fs.Exists path then
-            let text = Encoding.UTF8.GetString(fs.ReadAllBytes path)
+        let consider path =
+            match tryDecodePath fs path with
+            | Some(g, h, entries) when (not found) || g > bestGen ->
+                found <- true
+                bestGen <- g
+                bestHistory <- h
+                bestEntries <- entries
+            | _ -> ()
 
-            for line in text.Replace("\r\n", "\n", StringComparison.Ordinal).Split('\n') do
-                if line.Length > 0 then
-                    match parseHistory line with
-                    | Some h -> history <- h
-                    | None ->
-                        let parts = line.Split(' ')
+        consider (catalogSlot storeDir 0)
+        consider (catalogSlot storeDir 1)
 
-                        if parts.Length = 3 && parts.[0].Length = 64 then
-                            match UInt64.TryParse(parts.[1], NumberStyles.Integer, CultureInfo.InvariantCulture) with
-                            | true, size ->
-                                let id = ContentHash256.ofHex parts.[0]
-                                known.[id] <- size
+        if found then
+            applyEntries known livePins bestEntries
+            bestHistory
+        else
+            let path = catalogPath storeDir
+            let mutable history = ZetaFsPolicy.HistoryPolicy.KeepAll
 
-                                if parts.[2] = "1" then
-                                    livePins.Add id |> ignore
-                            | _ -> ()
+            if fs.Exists path then
+                let text = Encoding.UTF8.GetString(fs.ReadAllBytes path)
+                let lines =
+                    text.Replace("\r\n", "\n", StringComparison.Ordinal).Split('\n')
+                let h, entries = parsePinLines lines
+                history <- h
+                applyEntries known livePins entries
 
-        history
+            history
 
     /// DoP=1 segment writer. One boat = N freezes, one Flush; Durable adds one
     /// fsync of objects-dir + log. `manual` is the DST pump (no background ferry).
