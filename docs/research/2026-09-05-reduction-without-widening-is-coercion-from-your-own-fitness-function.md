@@ -774,8 +774,10 @@ question is not *does it look honest* but **can it hold what does not flatter it
 
 Counted today, in the tree:
 
-- **248 `WONT-DO` entries** — a standing, public list of things refused, which is the record of
-  every place an ambition was cut rather than quietly dropped
+- **~45 `WONT-DO` entries** — a standing, public list of refusals. **I first wrote 248 here and it
+  was wrong by 5.5x**: my grep counted `##` headings and `-` bullets rather than entries. The real
+  count is 32 `Rejected` + 9 `Declined` + 2 `Superseded` + 2 `Deprecated`. See the correction
+  immediately below, which is the more important half
 - **53 files in `docs/research/ip-questionable/`** — material deliberately filed under a name that
   advertises its own legal uncertainty rather than burying it
 - **the acknowledgement registers** — `acknowledgedLaneBudgetShortfall`,
@@ -787,6 +789,76 @@ Counted today, in the tree:
 None of those are flattering. All of them are counted, dated, and greppable. **That is the
 evidence that the measure can move in both directions**, and it is the only reason the honest
 entries mean anything.
+
+### CORRECTION — a WONT-DO without a renewal token is a smell, and I cited the count as a virtue
+
+Aaron, on reading the list above:
+
+> *"WONT-DOs without renewal tokens are a smell. This is where you hide centralization — without
+> that."*
+
+**He is right, and my citation was doing the opposite of what I claimed for it.** I offered the
+WONT-DO list as evidence of honesty on the strength of its *size*. Size is not the property that
+makes a refusal honest; **revisitability** is. A refusal that never has to be re-justified is a
+decision that has stopped being a decision — and this repo already classifies that shape as
+dangerous: a **permanent WONT-DO is a GATED CLASS** requiring fresh human authorization
+(`.claude/rules/gated-action-find-the-third-path.md`), sitting alongside force-push and
+non-reversible actions.
+
+**Two errors, and the second is the substantive one.**
+
+**(1) The count was wrong by 5.5x.** 248 was my grep matching headings and bullets. Measured
+properly: **45 status-bearing entries**, 44 carrying a `Revisit criteria` line.
+
+**(2) A quarter of them have no reachable renewal.** Bucketing the 44 revisit criteria by whether
+the stated condition can actually occur:
+
+| revisit criterion | count |
+|---|---|
+| **reachable** — names an event that could happen (evidence arrives, hardware matures, scope extends) | **29** |
+| **"never" / "only if the underlying constraint moves"** | **11** |
+| entry with no revisit line at all | **1** |
+
+So **12 of 45 refusals carry no renewal token**, and the file's own schema documentation blesses
+it: *"`Rejected` … Revisit-when is typically 'never' or 'only if the underlying constraint moves'."*
+
+### Why this is specifically where CENTRALIZATION hides, and not just staleness
+
+A stale entry is merely wrong and gets noticed when someone trips on it. Aaron's claim is sharper
+and it is structural:
+
+> A permanent WONT-DO can encode a **topology** — *we will not support N of these*, *we will not
+> federate that*, *there is one X* — and once it is unexpiring, **the structural choice never
+> comes up for review again.** The centralization is not in any component; it is in the refusal to
+> reconsider having only one.
+
+That is manifesto **§3 weight-free** violated by a document rather than by code: *no
+permanent/irreversible authority*, because permanence creates capture. A never-revisited "no" holds
+exactly the authority §3 forbids, and holds it in the one place nobody thinks to audit, because a
+WONT-DO file *looks* like a record of humility.
+
+It is also **§1 of this very document**, applied to the repo instead of to a ledger: a system that
+cannot revise its own objective is coercing itself. **A `Rejected: never` entry is a frozen
+objective with a date on it.** And under the vocabulary in
+[`dual-use-detection`](../../.claude/rules/dual-use-detection-is-neutral-oracle-decides.md), it is
+**judgement crystallised** — which makes that part of the system an *actor* rather than an *agent*.
+For a meter, freezing is the qualification. For a *society's* stated refusals, it is the mark of a
+thing that has stopped being able to change from within.
+
+### What the correction leaves standing
+
+The falsifier argument in §11 survives, on the other three legs — the `ip-questionable` filing,
+the acknowledgement registers (each written so that moving a number re-reddens it), and PR #15676's
+self-disclosure. Those are unexpiring in a different sense: they *cost* something continuously, and
+a carried defect that keeps re-reddening is the opposite of a frozen refusal.
+
+**What the WONT-DO list actually measures, honestly stated:** 29 refusals that can be reopened by
+an event, and **12 that currently cannot be reopened by anything** — the second number being the
+one to watch, and the one my original sentence hid inside a bigger, wronger one.
+
+**Nameable follow-up, not done here:** every `never` entry should either acquire a reachable
+condition or be re-authorized as a gated act with a date, so that "we still refuse this" is a
+statement someone made *recently* rather than one nobody has had to make since it was written.
 
 ### What it makes the §9a requirements
 
