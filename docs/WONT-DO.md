@@ -101,6 +101,26 @@ precision about the reason shape.
   produces no false negatives, OR a bounded use where false
   negatives are provably tolerable and the boundary of that use is
   stated.
+- **Live challenge, 2026-09-05 (Aaron):** *"bloom vs anti-bloom, to
+  exchange false positives for false negatives and meet in the
+  middle."* This targets the boundary directly rather than arguing
+  around it, and it is worth stating why it is a serious attack. The
+  boundary forbids **SILENT** false negatives. A classical Bloom is
+  one-sided (false positives, never false negatives: "maybe present"
+  / "definitely absent"); its dual is one-sided the other way
+  ("definitely present" / "maybe absent"). **Run both and the errors
+  stop being silent** — where they agree you have certainty, and
+  where they disagree you have an explicitly bounded UNKNOWN rather
+  than a wrong answer. That is uncertainty preserved instead of
+  collapsed, which is the substrate's own discipline applied to a
+  filter, and it is a different object from Rothenberg's deletable
+  Bloom, whose false negatives are unbounded and undetectable.
+  **Not adjudicated here.** What it must show is that the disagreement
+  region is *computable and bounded*, not merely conceptual — the
+  shipped counting Bloom (Fan et al. 1998, `src/Core/BloomFilter.fs`)
+  already solves the retraction problem with no false negatives at
+  all, so the two-sided construction has to buy something that one
+  does not.
 - **Revisit when:** The boundary above moves. This entry carried NO
   revisit line at all until 2026-09-05 — the only one of the twelve
   in that state, which is the purest form of the smell: not "never",
@@ -815,6 +835,32 @@ correction.** There are at least three underneath it — **data model** (Z-sets,
 third is about decentralization at all. Two entries (`ACID as engine core`, `sql_features`) now
 rest on a boundary their prose does not state, which makes them the next candidates for the same
 treatment rather than settled.
+
+### WHO WRITES THE RENEWAL TOKEN HAS POWER OVER THE REFUSAL'S FUTURE
+
+Aaron, on seeing the Deletable Bloom boundary: *"this feels a little preconditioned, cause I was
+about to ask about bloom vs anti-bloom."*
+
+**The caution is correct and it is about the method, not that entry.** I authored all twelve
+boundaries and all twelve renewal tokens **alone, in one pass, with no adversarial review** — and a
+renewal token is not a neutral description of a refusal. **It decides what will count as a valid
+reason to reopen it.** Write it narrowly and the refusal is effectively permanent under a new
+name; write it broadly and it invites reopening. Either way the author has taken a position on the
+entry's future while appearing merely to document its past.
+
+That is precisely the failure the same day's design work named and then failed to apply to itself.
+The automated-challenger constraints require **genuinely decorrelated challengers**, because *"N
+instances of one model on one prompt is one challenger counted N times"*. Twelve tokens by one
+agent in one sitting is that, exactly — **one challenger counted twelve times**, and it was written
+hours after I wrote the constraint forbidding it.
+
+**What holds and what does not.** The tokens are an improvement on `Revisit: never`, which offered
+no purchase at all, and this one happens to be broad enough that Aaron's construction fits its
+second clause. That is luck, not method. **They should be treated as a FIRST DRAFT by one author,
+not as the settled conditions**, and the obvious next step is for a differently-motivated reader —
+ideally one who wants a given refusal overturned — to rewrite the token for it. A token written by
+someone who wants the refusal reopened, and accepted by someone who does not, is worth more than
+twelve written by whoever happened to be doing the pass.
 
 **This is the pass working twice in a row.** Naming the boundaries exposed a mis-scoped refusal
 (DuckDB), and then the positioning statement exposed that my *grouping* of the boundaries was
