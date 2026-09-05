@@ -226,8 +226,8 @@ collation tables"*. Its sentence applies verbatim here:
 
 A precision bound is a shared calibration that must be agreed **in advance** and be
 **inspectable** — which is exactly the good-meter test in
-`dual-use-detection-is-neutral-oracle-decides.md` (*anyone can inspect it and agree to the
-rules*). Agreeing the bound after seeing the numbers would be picking the winner.
+`.claude/rules/dual-use-detection-is-neutral-oracle-decides.md` (*anyone can inspect it and
+agree to the rules*). Agreeing the bound after seeing the numbers would be picking the winner.
 
 **Any truncation must round ONCE, on the order-invariant product.** Rounding per step is a
 prefix-dependent operation and reintroduces the original defect in a new costume. Rounding the
