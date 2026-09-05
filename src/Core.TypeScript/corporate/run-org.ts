@@ -450,6 +450,15 @@ export async function main(argv: readonly string[]): Promise<number> {
     else {
       report.events.forEach((e, i) => console.log(`  ${String(i + 1).padStart(2)}. ${e}`));
       report.refusals.forEach((r) => console.log(`   ! ${r}`));
+      // BEFORE the verdict, not after. This path prints "passed the gates" and "DELIVERED" in the
+      // same voice as the run that reaches a real repository, and until this line a reader had
+      // nothing to tell them apart. A label under the conclusion is a label people have already
+      // stopped reading.
+      console.log(`\n--- fidelity ---`);
+      console.log(`  ${report.fidelity.summary}`);
+      for (const d of report.fidelity.decisions) {
+        console.log(`  ${d.decision.padEnd(13)} ${d.from.padEnd(11)} ${d.detail}`);
+      }
     }
     return report.delivered ? 0 : 1;
   }

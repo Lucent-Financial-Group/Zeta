@@ -149,7 +149,10 @@ export {
 
 export {
   firstContributorUnder,
+  cycleFidelity,
   runOrgCycle,
+  type CycleDecisionSource,
+  type CycleFidelity,
   type OrgCycleDeps,
   type OrgCyclePlan,
   type OrgCycleReport,

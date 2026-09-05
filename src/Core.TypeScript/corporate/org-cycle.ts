@@ -115,9 +115,75 @@ export interface OrgCycleDeps {
   readonly escalationChooser?: OrgChooser<EscalationAction>;
 }
 
+/** One decision the cycle made, and where the answer actually came from. */
+export interface CycleDecisionSource {
+  readonly decision: "gate" | "escalation" | "staffing" | "work_outcome";
+  /**
+   * `caller` — a function the caller supplied answered it.
+   * `preference` — nobody supplied one, so a stated default answered it.
+   */
+  readonly from: "caller" | "preference";
+  readonly detail: string;
+}
+
+/**
+ * What this cycle's answers were made of.
+ *
+ * ── WHY A PURE PATH STILL NEEDS THIS ─────────────────────────────────────────
+ * `runOrgCycle` is deliberately a function of its inputs — no clock, no randomness, no I/O — and
+ * that is a feature, not a gap. It performs no work and reaches nothing, by design.
+ *
+ * The problem was never the behaviour. It was the SILENCE. `runOrgRuntime` gained a fidelity block
+ * that names its five adapters, so a reader can tell a run that shipped something from one that
+ * decided it had. This path had no equivalent, and `run-org.ts --cycle` printed "task-004 passed the
+ * gates" and "goal DELIVERED" in exactly the same voice as the real path. Measured before this
+ * existed: 14 of 14 gate verdicts approved — runtime validation included — and no field anywhere in
+ * the report from which a reader could learn that.
+ *
+ * ── DERIVED, NOT DECLARED ────────────────────────────────────────────────────
+ * Every entry is computed from which deps were actually supplied, so supplying a chooser CHANGES the
+ * report. There is deliberately no `replayable: true` field: a flag whose type is the literal `true`
+ * is the vacuity class this repo has already caught once, and it would be exactly that here.
+ */
+export interface CycleFidelity {
+  readonly decisions: readonly CycleDecisionSource[];
+  /** One line for an operator, rendered from `decisions` rather than written alongside them. */
+  readonly summary: string;
+}
+
+/** What answered each decision, from the deps alone. Supplying a chooser changes what this says. */
+export function cycleFidelity(deps: OrgCycleDeps): CycleFidelity {
+  const decisions: readonly CycleDecisionSource[] = [
+    deps.gateChooser === undefined
+      ? { decision: "gate", from: "preference", detail: "every gate takes 'approved' where it is legal" }
+      : { decision: "gate", from: "caller", detail: "a caller-supplied chooser decides each gate" },
+    deps.escalationChooser === undefined
+      ? { decision: "escalation", from: "preference", detail: "the first legal action is taken" }
+      : { decision: "escalation", from: "caller", detail: "a caller-supplied chooser picks the action" },
+    // These two have no default at all — the caller must supply them — so they are always `caller`.
+    // Listed anyway: a reader asking "did the organization decide this?" needs the answer for every
+    // decision, and an omitted row reads as "not applicable" rather than "somebody else answered".
+    { decision: "staffing", from: "caller", detail: "`contributorFor` names the assignee" },
+    { decision: "work_outcome", from: "caller", detail: "`outcomeFor` says whether the work succeeded" },
+  ];
+  const byCaller = decisions.filter((d) => d.from === "caller").length;
+  return {
+    decisions,
+    summary:
+      `this cycle PERFORMED NOTHING and reached nothing: ${String(byCaller)} of ${String(decisions.length)} ` +
+      `decisions came from the caller, the rest from a stated preference`,
+  };
+}
+
 export interface OrgCycleReport {
   readonly goalWorkId: string;
   readonly delivered: boolean;
+  /**
+   * Where this cycle's answers came from. Derived from the deps — see `cycleFidelity`.
+   *
+   * Present so `delivered: true` can never be read as a claim that an organization did something.
+   */
+  readonly fidelity: CycleFidelity;
   /** Every level that actually took an action this cycle, senior first. */
   readonly levelsEngaged: readonly HatLevel[];
   readonly cascade: Cascade;
@@ -194,6 +260,7 @@ export function runOrgCycle(deps: OrgCycleDeps): OrgCycleReport {
     return {
       goalWorkId: goalId,
       delivered: false,
+      fidelity: cycleFidelity(deps),
       levelsEngaged: [],
       cascade,
       calendar,
@@ -539,6 +606,9 @@ export function runOrgCycle(deps: OrgCycleDeps): OrgCycleReport {
   return {
     goalWorkId: goalId,
     delivered,
+    // Reported on EVERY cycle, delivered or not. A label that only appeared on the interesting runs
+    // would train a reader to skip it — the same reason the runtime prints its fidelity block always.
+    fidelity: cycleFidelity(deps),
     levelsEngaged: [...levels].sort(
       (a, b) => LEVEL_ORDER.indexOf(a) - LEVEL_ORDER.indexOf(b),
     ),
