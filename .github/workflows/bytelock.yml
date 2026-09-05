@@ -107,15 +107,20 @@ jobs:
           - os: ubuntu-24.04-arm
             min_substrates: "9"
             required_substrates: "WAT,LLVM/C,Emscripten,Rust,AssemblyScript,Zig,JS (V8),Lua 5.4,Go"
-          # macOS is 8, not 9, and the missing one is NAMED rather than absorbed into
-          # a lower number: `lua5.4` is not on the runner. Homebrew's `lua` formula
-          # installs 5.5 as `lua`, and the substrate shells out to `lua5.4` by name.
-          # The brew step now also tries `lua@5.4`; if that lands, this leg measures 9
-          # and THIS FLOOR MUST RISE TO MATCH -- it is set to the value observed
-          # today, not to the value hoped for tomorrow.
+          # macOS reached 9 on run 33992105626 and this floor rose to match, in the
+          # same session that set it to 8 -- which is the discipline working rather
+          # than a correction. The 8 was the value OBSERVED at the time: `lua5.4` was
+          # absent because Homebrew's `lua` formula installs 5.5 as `lua` while the
+          # substrate shells out to `lua5.4` by name. The brew step was changed to
+          # install `lua@5.4` specifically and put it on PATH; the next run measured
+          # 9, and the comment here promised "THIS FLOOR MUST RISE TO MATCH".
+          #
+          # All three legs now execute the same nine substrates, which is what makes
+          # the cross-processor comparison maximally wide: 36 shared (substrate, seed)
+          # pairs rather than a subset limited by the weakest toolchain.
           - os: macos-26
-            min_substrates: "8"
-            required_substrates: "WAT,LLVM/C,Emscripten,Rust,AssemblyScript,Zig,JS (V8),Go"
+            min_substrates: "9"
+            required_substrates: "WAT,LLVM/C,Emscripten,Rust,AssemblyScript,Zig,JS (V8),Lua 5.4,Go"
 
     steps:
       - name: Checkout

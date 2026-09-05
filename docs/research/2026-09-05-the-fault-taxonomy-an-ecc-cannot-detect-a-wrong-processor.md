@@ -154,7 +154,7 @@ green, and this is the measurement rather than the headline:
 |---|---|---|
 | `ubuntu-24.04` | **9** | -- |
 | `ubuntu-24.04-arm` | **9** | -- |
-| `macos-26` | **8** | `Lua 5.4` |
+| `macos-26` | **8**, then **9** | `Lua 5.4`, then supplied -- see below |
 
 **Cross-processor comparison: 36 shared (substrate, seed) pairs, 0 disagreements, across 3
 machines and 2 instruction-set architectures.** That is the first time this substrate has been
@@ -178,7 +178,16 @@ class"* to *"we look, and here is how many places we looked."*
    `lua`, and the substrate shells out to `lua5.4` by name. Named rather than absorbed into a
    smaller number, and the brew step now attempts `lua@5.4` specifically.
 
-The floors were raised to 9/9/8 from this measurement, keeping the promise the placeholder made.
+The floors were raised to 9/9/8 from this measurement, keeping the promise the placeholder made --
+and then **macOS reached 9 on the very next run** (33992105626) once the brew step installed
+`lua@5.4` specifically, so that floor rose to 9 too, in the same session, because the comment
+setting it to 8 had promised exactly that. **All three legs now execute the same nine substrates**,
+which is what makes the comparison maximally wide: 36 shared pairs rather than a subset limited by
+the weakest toolchain.
+
+The sequence is worth keeping as a worked example of the discipline: set the floor to what was
+OBSERVED (8), state the condition under which it must rise, supply the missing toolchain, measure
+again (9), raise it. At no point was a number written down that had not been read off a run.
 
 **Register: `toy`, and now with a measured reason rather than a hedge.** The taxonomy is Aaron's and
 is sound; the mechanism table above is argued from what each fault corrupts; the claim that the
