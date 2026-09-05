@@ -10,7 +10,7 @@
 > |---|---|---|
 > | **belief** | a threshold forces a posterior to contradiction | `foldRetainedBounded`, `eps = 0`, empty-support-only refusal (`081M1SA32SS087G0R0026C01ZP`) |
 > | **objective** | a reduce-only ledger cannot revise its own fitness function | the widening entry, `ΔU < 0` (§1) |
-> | **role** | a guardian discards survivors to make a merge cheap | mutual ranking — the survivors rate the guardian (§8) |
+> | **hat** | a guardian discards survivors to make a merge cheap | mutual ranking — the survivors rate the guardian (§8) |
 > | **person** | legibility demanded of a frosted region | earned frost is inviolable; the spend declares, the content is not owed (§8) |
 >
 > Companion records: the Finster thread
@@ -406,7 +406,7 @@ confer standing on you. Here it is a **loop with an asymmetry of position** — 
 the *power* (it decides what survives the merge) and the inhabitant holds the *judgement* (it
 decides whether the guardian deserved it). Neither side can complete the circuit alone, which is
 precisely what makes the guardian's power non-coercive: **a guardian that discards survivors to
-make the merge easy is rated by the survivors it discarded.** That is the NCI applied to a role
+make the merge easy is rated by the survivors it discarded.** That is the NCI applied to a hat
 rather than to a belief — anti-collapse enforced by who gets to score.
 
 And it is Sybil-resistant for the reason already established: standing is socially conferred
@@ -493,7 +493,7 @@ has to appear in the record as a decision, which is exactly the property the com
 at the mechanical level: `Refused` names its bound, so the divergence is legible instead of
 arriving as a stall. Same discipline, one scale up.
 
-**Status: design intent, nothing built.** No guardian role, no accelerated branches, no merge
+**Status: design intent, nothing built.** No guardian hat, no accelerated branches, no merge
 protocol, no ranking channel from inside a branch. `TravelerRankLedger` exists and is the natural
 carrier for the ranking half. The order-invariance limit above **is** established — it follows
 from the fix committed in `081M1SA32SS087G0R0026C01ZP` and is the reason the merge cannot be
