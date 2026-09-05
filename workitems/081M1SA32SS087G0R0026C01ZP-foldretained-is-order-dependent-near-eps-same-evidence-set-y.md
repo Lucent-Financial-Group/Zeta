@@ -96,3 +96,71 @@ candidate is dropped permanently (`build`'s `w > 0.0` filter, `:72`) — is alre
 `081M0R5R1JN087G0R0031FT1C2`, but framed as *determinism across oracles*. The
 order-dependence-within-one-oracle form above is the sharper statement of the same underlying
 dynamic-range problem.
+
+## DIAGNOSIS SETTLED — it is NOT rounding error, and that makes the fix clearer
+
+Aaron asked the decisive question: *"is th[is] because of rounding errors? if so we can beef this
+up with like bigint/bigfloat. if not, then near the floor we will need to create forced consensus
+and delay to enforce order, or choose to exit and fork — we don't want acci[dent]al forks, just
+ones on purpose."*
+
+**Answered by re-running the counterexample in exact rational arithmetic (`Fraction`), seed 4:**
+
+```
+EXACT Q, eps=1e-12   L1 then L2: Some [0.98564, 0.01436]
+EXACT Q, eps=1e-12   L2 then L1: None (refused, total = 1.773e-13)     <-- still diverges
+
+EXACT Q, eps=0       L1 then L2: Some [0.9856369941, 0.0143630059]
+EXACT Q, eps=0       L2 then L1: Some [0.9856369941, 0.0143630059]     <-- identical
+```
+
+and generalised with a randomised property check over permutations of whole evidence sets
+(2-4 candidates, 2-5 observations, dynamic range to 1e-18, 15% exact-zero likelihoods so genuine
+refutations are covered), **all in exact ℚ**:
+
+| threshold | evidence sets where some permutation disagreed |
+|---|---|
+| `eps = 1e-12` | **103 / 400** |
+| `eps = 0` | **0 / 400** |
+
+**So: no rounding is involved. The THRESHOLD is the defect.** The quantity being thresholded —
+the posterior-weighted likelihood mean — is prefix-dependent *as mathematics*, so comparing it
+against any strictly positive constant is an order-dependent test no matter how many bits it is
+computed in. bigfloat with the same `EPS` would fail identically.
+
+**But Aaron's bigint/bigfloat instinct is still the right fix, by a different mechanism.** At
+`eps = 0` the predicate becomes *"is the current support empty"*, and that IS order-invariant:
+the final support is the **intersection** over all evidence, intersection is commutative, and
+supports shrink monotonically toward it — so no prefix can be empty unless the intersection is.
+The reason `EPS` is nonzero in the first place is **float underflow**: with `float64`,
+`p_i · L(i)` can reach `0.0` and silently drop a candidate. So exactness does not fix the
+rounding (there is none) — **it removes the need for the guard that is causing the problem.**
+
+### Consequence for the four candidate fixes above
+
+Option 1 (test the predicate on the order-invariant support) and option 2 (exact/extended range)
+are **not alternatives — they are the same fix and they need each other**: setting `eps = 0` is
+only safe in a representation that cannot underflow to zero spuriously. The repo already has the
+exact side of this (`RationalRing`, and the four-oracle byte-lock discipline that made
+tempering's `p^β` unacceptable *precisely because it is irrational for rational p*).
+
+Options 3 and 4 are now clearly inferior: they relocate the discontinuity rather than removing it.
+
+**Cost to weigh before choosing:** exact ℚ denominators grow with fold length, which is the
+ordinary reason posteriors are kept in floats or logs. Log-space *extends* the range (the corner
+becomes unreachable at ~1e-308 rather than 1e-12) but does **not** remove the discontinuity —
+"unreachable in practice" is the class of claim this repo refuses, so it is a mitigation, not a
+fix.
+
+### Aaron's fallback is not needed — but his REQUIREMENT names what is wrong today
+
+Forced consensus with delay, or a deliberate exit-and-fork, would be the answer if the divergence
+were irreducible. It is not. What his sentence does supply is the correct statement of the
+current defect:
+
+> *"we don't want accidental forks, just ones on purpose."*
+
+Today, near the floor, two nodes with the same evidence **fork accidentally and silently** — one
+holds a belief, the other reports contradiction, and nothing signals that they disagree. Even
+under a mitigation rather than a fix, the divergence must become **detectable**, because an
+undetected fork is strictly worse than a declared one.
