@@ -14,6 +14,8 @@
 // Per operator 2026-05-27 follow-up: heartbeats can go in a folder OR
 // branch that skips CI + branch protection. This writer targets the
 // FOLDER convention (docs/agent-heartbeats/<persona>/YYYY/MM/DD/<zetaid>.md).
+// The ZetaId filename is a content-addressed magnet (remain's pin), not a
+// DNS/host:port broadcast. Heartbeat is keep-alive so remain does not fade.
 // Operator-side branch-protection path-exclusion is required to allow
 // direct-to-main push without PR gating; see README at folder root for
 // the alternative branch-based pattern.

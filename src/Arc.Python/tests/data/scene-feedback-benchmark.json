@@ -1,0 +1,124 @@
+{
+  "caseDigest": "94ad4a2d621c2adf2cc8759e1e3d5b4560f4931949b54bf6a715f2bb2f0debd3",
+  "cohorts": {
+    "stableColor": {
+      "control": {
+        "actionsPerEpisode": [
+          2,
+          2,
+          2,
+          2,
+          2,
+          2
+        ],
+        "meanActions": 2.0,
+        "solved": 6,
+        "totalActions": 12
+      },
+      "sceneFeedback": {
+        "actionsPerEpisode": [
+          2,
+          1,
+          1,
+          1,
+          1,
+          1
+        ],
+        "meanActions": 1.1666666666666667,
+        "solved": 6,
+        "totalActions": 7
+      }
+    },
+    "stableShapeAcrossPalettes": {
+      "control": {
+        "actionsPerEpisode": [
+          3,
+          1,
+          3,
+          2,
+          2,
+          1
+        ],
+        "meanActions": 2.0,
+        "solved": 6,
+        "totalActions": 12
+      },
+      "sceneFeedback": {
+        "actionsPerEpisode": [
+          3,
+          1,
+          1,
+          1,
+          1,
+          1
+        ],
+        "meanActions": 1.3333333333333333,
+        "solved": 6,
+        "totalActions": 8
+      }
+    },
+    "switchedColor": {
+      "control": {
+        "actionsPerEpisode": [
+          2,
+          2,
+          2,
+          3,
+          3,
+          3
+        ],
+        "meanActions": 2.5,
+        "solved": 6,
+        "totalActions": 15
+      },
+      "sceneFeedback": {
+        "actionsPerEpisode": [
+          2,
+          1,
+          1,
+          5,
+          1,
+          1
+        ],
+        "meanActions": 1.8333333333333333,
+        "solved": 6,
+        "totalActions": 11
+      }
+    },
+    "switchedShape": {
+      "control": {
+        "actionsPerEpisode": [
+          3,
+          1,
+          3,
+          1,
+          3,
+          2
+        ],
+        "meanActions": 2.1666666666666665,
+        "solved": 6,
+        "totalActions": 13
+      },
+      "sceneFeedback": {
+        "actionsPerEpisode": [
+          3,
+          1,
+          1,
+          3,
+          2,
+          1
+        ],
+        "meanActions": 1.8333333333333333,
+        "solved": 6,
+        "totalActions": 11
+      }
+    }
+  },
+  "kind": "arc-scene-feedback-v1",
+  "limits": [
+    "synthetic source-owned environments only",
+    "not an ARC leaderboard score",
+    "feature switches intentionally measure stale-prior adaptation cost",
+    "existing hosted policy remains the control and is not replaced"
+  ]
+}
