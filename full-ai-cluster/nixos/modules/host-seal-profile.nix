@@ -56,7 +56,7 @@ in
     (mkIf (cfg.boxRole != "undeclared") {
       services.pcscd.enable = mkIf plan.enablePcscd true;
 
-      services.udev.extraRules = mkIf plan.enableYubiHsmUdev ''
+      services.udev.extraRules = lib.optionalString plan.enableYubiHsmUdev ''
         # YubiHSM 2 (USB VID 1050 PID 0030). Group `tss` so the same
         # account that talks to the firmware TPM can talk to the USB HSM.
         # MODE 0660 — connector talks; world cannot.
