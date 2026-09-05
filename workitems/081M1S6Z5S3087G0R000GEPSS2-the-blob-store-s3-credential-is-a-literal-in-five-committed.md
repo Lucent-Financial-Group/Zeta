@@ -20,13 +20,13 @@ composes_with: []
 
 `zeta-blob-store-dev-secret` is the S3 secret key for the in-cluster blob store,
 and it is a PLAINTEXT LITERAL in five committed YAML files plus five more
-mentions in `BLOB-STORE-CONTRACT.md`:
+mentions in `full-ai-cluster/k8s/object-store/BLOB-STORE-CONTRACT.md`:
 
 | file | occurrences |
 |---|---|
-| `applications/seaweedfs/Application.yaml` | 1 (the producer) |
-| `applications/loki/Application.yaml` | 1 (consumer) |
-| `applications/mimir/Application.yaml` | 3 (tsdb, ruler, alertmanager) |
+| `full-ai-cluster/k8s/applications/seaweedfs/Application.yaml` | 1 (the producer) |
+| `full-ai-cluster/k8s/applications/loki/Application.yaml` | 1 (consumer) |
+| `full-ai-cluster/k8s/applications/mimir/Application.yaml` | 3 (tsdb, ruler, alertmanager) |
 
 It is *named* dev, but loki and mimir authenticate with it for real, and the
 committed tree is the **metal** rung. In a PUBLIC repository that is a shared

@@ -18,7 +18,7 @@ composes_with: []
 
 ## Measured on origin/main (1dd875f7de)
 
-`full-ai-cluster/k8s/applications/vault/Application.yaml`:
+The then-current Vault Application at commit `1dd875f7de` rendered:
 
     :137   storage "raft" { path = "/vault/data" }
     :140   dataStorage:
@@ -29,7 +29,9 @@ composes_with: []
 The HCL states its path EXPLICITLY. `dataStorage` states no `mountPath` at all,
 so the volume lands wherever the chart defaults it. The two agree today only
 because the vault-helm default happens to be the same string the HCL names.
-**Nothing in the tree compares them.**
+**Nothing in the tree compares them.** The current successor is
+`full-ai-cluster/k8s/applications/openbao/Application.yaml`; the historical path
+was removed during that migration.
 
 ## Why the failure is worse than a crash
 
@@ -72,4 +74,3 @@ Two candidate shapes, neither built:
 * `src/Core.TypeScript/hygiene/audit-vault-topology-coherence.ts` -- where such a
   rule would live; note it greps HCL only, so an env-var-configured seal or path
   would be invisible to it.
-

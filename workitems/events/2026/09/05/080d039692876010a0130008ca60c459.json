@@ -1,0 +1,14 @@
+{
+  "id": "080d039692876010a0130008ca60c459",
+  "at": "2026-09-05T18:26:21.036Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1SD4M7B087G0R000DS5N5N",
+    "type": "task",
+    "title": "ARC anti-leakage and resource efficiency contract",
+    "slug": "arc-anti-leakage-and-resource-efficiency-contract",
+    "priority": "P2",
+    "filename": "081M1SD4M7B087G0R000DS5N5N-arc-anti-leakage-and-resource-efficiency-contract.md"
+  }
+}

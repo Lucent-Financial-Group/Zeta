@@ -45,7 +45,7 @@ on:
   workflow_dispatch:
     inputs:
       compare_hosted_coordinate_policies:
-        description: Run centroid and scene-feedback against one roster snapshot
+        description: Run centroid, observed, and predictive policies on one roster
         required: false
         default: false
         type: boolean
@@ -374,10 +374,13 @@ jobs:
                       "See the per-environment errors above."
                   )
 
-          if payload.get("experiment") == "hosted-coordinate-policy-comparison-v1":
-              report("centroid", payload["centroid"])
-              report("scene-feedback", payload["scene_feedback"])
-              print(f"scene-feedback-minus-centroid: {payload['delta']}")
+          if payload.get("experiment") == "hosted-coordinate-policy-comparison-v2":
+              for name, arm in payload["arms"].items():
+                  report(name, arm["report"])
+                  print(f"  runtime-sample: {arm['runtime_sample']}")
+                  print(f"  policy-resource: {arm['report']['policy_resource']}")
+              for name, delta in payload["comparisons"].items():
+                  print(f"{name}: {delta}")
           else:
               report(payload["coordinate_policy"], payload)
           PY

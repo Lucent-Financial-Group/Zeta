@@ -93,8 +93,6 @@ def test_terminal_frame_credits_scene_policy_through_layer_port() -> None:
 
     agent.observe(_Frame([[0] * 8 for _ in range(8)], completed=1))
 
-    assert policy.last_outcome is not None
-    assert policy.last_outcome.world_changed is True
     assert policy.controller.model.evidence
     assert agent.beliefs[CLICK].mu > 0.0
 

@@ -150,7 +150,6 @@ class SceneCoordinatePolicy:
     motion_projection: MotionProjection = MotionProjection.OBSERVED_ONLY
     controller: SceneFeedbackController = field(init=False)
     fallback: ClickPolicy = field(default_factory=ClickPolicy)
-    last_outcome: SceneOutcome | None = None
 
     def __post_init__(self) -> None:
         self.controller = SceneFeedbackController(
@@ -164,9 +163,7 @@ class SceneCoordinatePolicy:
         return self.controller.model
 
     def observe(self, grid: Grid) -> None:
-        result = self.controller.observe(grid)
-        self.last_outcome = result.outcome
-        self.fallback.observe(grid)
+        self.controller.observe(grid)
 
     def choose(self, grid: Grid) -> Coordinate:
         result = self.controller.decide(grid)

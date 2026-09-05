@@ -16,16 +16,16 @@ literal `"OFFLINE"` regardless of anything, which is a claim no test could
 falsify. A key that is present but unreachable degrades to a scored offline
 episode and says so; absence must DEGRADE, never fail.
 
-THE SCORE, and what it is not. ARC's level formula (design doc §6) is
+THE SCORE, and what it is not. ARC's current level formula is
 
-    S(level) = min(1.0, h/a)**2
+    S(level) = min(1.15, (h/a)**2)
 
 with `a` the agent's action count and `h` a reference count. ARC uses the
-SECOND-BEST HUMAN for `h`. Offline we have no humans, so `h` here is the
+upper-median first-run human for `h`. Offline we have no humans, so `h` here is the
 OPTIMAL path length computed by breadth-first search over the level's own
 geometry. That substitution is stated rather than hidden: it makes this an
-efficiency-against-perfect-play number, strictly harsher than ARC's, and
-**not comparable to a leaderboard figure**.
+efficiency-against-perfect-play number and **not comparable to a leaderboard
+figure**.
 """
 
 from __future__ import annotations
@@ -61,6 +61,7 @@ from zeta_arc.hosted import (
     HostedCoordinatePolicy,
     compare_coordinate_policies,
     play_roster,
+    score_level,
 )
 
 #: Fixed action order, so a "random" agent is reproducible from its seed.
@@ -290,7 +291,7 @@ def play(
                     "actions": actions,
                     "optimal": best,
                     "solved": True,
-                    "score": min(1.0, best / actions) ** 2,
+                    "score": score_level(actions, best),
                 }
             )
             if game.level_index == level_index:
@@ -298,9 +299,11 @@ def play(
             level_index = game.level_index
             actions = 0
 
-    # ARC environment score: level-weighted mean, E = sum(l * S_l) / (n(n+1)/2)
+    # ARC environment score: weighted mean capped by weighted completion.
+    denominator = total_levels * (total_levels + 1) / 2
     weighted = sum((entry["level"] + 1) * entry["score"] for entry in levels)
-    environment_score = weighted / (total_levels * (total_levels + 1) / 2)
+    completed = sum(entry["level"] + 1 for entry in levels if entry["solved"])
+    environment_score = min(weighted / denominator, completed / denominator)
 
     return {
         "agent": agent,
@@ -386,7 +389,10 @@ def main() -> None:
     hosted_mode.add_argument(
         "--compare-hosted-coordinate-policies",
         action="store_true",
-        help="run centroid and scene-feedback against the same hosted roster and seed",
+        help=(
+            "run centroid, observed scene feedback, and one-step predictive scene "
+            "feedback against the same hosted roster and seed"
+        ),
     )
     parser.add_argument(
         "--max-environments",
@@ -410,8 +416,8 @@ def main() -> None:
         choices=tuple(policy.value for policy in HostedCoordinatePolicy),
         default=HostedCoordinatePolicy.CENTROID.value,
         help=(
-            "coordinate policy for --play-hosted; scene-feedback is experimental "
-            "and centroid remains the default"
+            "coordinate policy for --play-hosted; scene-feedback policies are "
+            "experimental and centroid remains the default"
         ),
     )
     args = parser.parse_args()
