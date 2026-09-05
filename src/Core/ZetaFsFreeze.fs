@@ -21,7 +21,8 @@ open Zeta.Core.FSharp.Blake3
 /// under `StoreDir`). `reclaimTick` is the sync core. `reclaimAsync` +
 /// `pumpReclaim` are the DoP=1 FerryThrottler boat. Freeze bytes since
 /// last reclaim tick are metered on the volume (`reclaimTickMetered`).
-/// Still `toy`: not auto-ticked after freeze.
+/// Orphan catalog keeps full ContentHash256 (`orphanObjects`); a path
+/// scan cannot reconstruct ids. Still `toy`: not auto-ticked after freeze.
 ///
 /// DoP=1 on this log. No Task.Run except the ferry launch (injected context
 /// on the DST path; `manual` + `PumpToIdleAsync` for tests).
@@ -96,7 +97,15 @@ module ZetaFsFreeze =
     /// fsync of objects-dir + log. `manual` is the DST pump (no background ferry).
     [<Sealed>]
     type internal FreezeLog
-        (storeDir: string, config: FerryThrottlerConfig, manual: bool, blockIo: FreezeBlockIo option, objectCas: BlockCas option) =
+        (
+            storeDir: string,
+            config: FerryThrottlerConfig,
+            manual: bool,
+            blockIo: FreezeBlockIo option,
+            objectCas: BlockCas option,
+            known: Dictionary<ContentHash256, uint64>,
+            livePins: HashSet<ContentHash256>
+        ) =
 
         do
             if config.MaxDegreeOfParallelism <> 1 then
@@ -111,6 +120,16 @@ module ZetaFsFreeze =
 
         let processBatch (boat: ReadOnlyMemory<LogItem>) (ct: CancellationToken) : Task =
             let succeed (err: FreezeError option) =
+                if err.IsNone then
+                    for i in 0 .. boat.Length - 1 do
+                        let it = boat.Span.[i]
+                        let mutable j = 0
+
+                        while j < it.Objects.Length do
+                            let struct (id, _) = it.Objects.[j]
+                            livePins.Add id |> ignore
+                            j <- j + 1
+
                 for i in 0 .. boat.Length - 1 do
                     let it = boat.Span.[i]
                     let outcome =
@@ -156,6 +175,7 @@ module ZetaFsFreeze =
                         match objectCas with
                         | Some cas ->
                             cas.Put(hex, bytes)
+                            known.[id] <- uint64 bytes.Length
 
                             if item.Durable then
                                 cas.Device.Flush()
@@ -166,6 +186,8 @@ module ZetaFsFreeze =
 
                             if not (fsDoor.Exists path) then
                                 FileSystemIo.writeAllBytes fsDoor path bytes
+
+                            known.[id] <- uint64 bytes.Length
 
                             if item.Durable then
                                 match FileSync.fsyncFile path with
@@ -370,7 +392,9 @@ module ZetaFsFreeze =
         let leaves = Dictionary<ContentHash256, ContentHash256[]>()
         let mutable nextLsn = 1L
         let mutable freezeBytesSinceReclaim = 0UL
-        let log = new FreezeLog(storeDir, config, manual, blockIo, objectCas)
+        let known = Dictionary<ContentHash256, uint64>()
+        let livePins = HashSet<ContentHash256>()
+        let log = new FreezeLog(storeDir, config, manual, blockIo, objectCas, known, livePins)
         let reclaim = new ReclaimFerry(storeDir, config, manual)
 
         member _.StoreDir = storeDir
@@ -388,6 +412,8 @@ module ZetaFsFreeze =
         member internal _.FreezeBytesSinceReclaim
             with get () = freezeBytesSinceReclaim
             and set v = freezeBytesSinceReclaim <- v
+        member internal _.KnownObjects = known
+        member internal _.LivePins = livePins
 
         interface IDisposable with
             member _.Dispose() =
@@ -963,6 +989,25 @@ module ZetaFsFreeze =
 
     let freezeBytesSinceReclaim (volume: Volume) = volume.FreezeBytesSinceReclaim
 
+    /// DST / crash leftover: record a CAS object the volume wrote. Full
+    /// ContentHash256, not the 128-bit path. Disk scan cannot reconstruct this.
+    let noteKnownObject (volume: Volume) (id: ContentHash256) (size: uint64) =
+        lock volume.Gate (fun () -> volume.KnownObjects.[id] <- size)
+
+    /// Objects the volume wrote that no live freeze still pins. Keeps full
+    /// ids so reclaim can propose them. Empty until something is unpinned
+    /// or noted without a Leaves entry.
+    let orphanObjects (volume: Volume) : ZetaFsReclaim.Object[] =
+        lock volume.Gate (fun () ->
+            [| for kv in volume.KnownObjects do
+                   if not (volume.LivePins.Contains kv.Key) then
+                       let path = objectPath volume.StoreDir kv.Key
+
+                       if FileSystem.Current.Exists path then
+                           { Id = kv.Key
+                             Size = kv.Value
+                             Refs = [||] } |])
+
     let private takeFreezeBytes (volume: Volume) =
         lock volume.Gate (fun () ->
             let n = volume.FreezeBytesSinceReclaim
@@ -1006,14 +1051,17 @@ module ZetaFsFreeze =
             else
                 0L
 
-    let private putObject (storeDir: string) (id: ContentHash256) (bytes: byte[]) =
-        let path = objectPath storeDir id
+    let private putObject (volume: Volume) (id: ContentHash256) (bytes: byte[]) =
+        let path = objectPath volume.StoreDir id
         let fs = FileSystem.Current
 
         if not (fs.Exists path) then
             let dir = ZetaFsPath.directoryName path
             fs.CreateDirectory dir
             FileSystemIo.writeAllBytes fs path bytes
+
+        volume.KnownObjects.[id] <- uint64 bytes.Length
+        volume.LivePins.Add id |> ignore
 
     let private objectKey (id: ContentHash256) =
         (ContentHash256.toContentAddress128 id).ToHex()
@@ -1147,7 +1195,7 @@ module ZetaFsFreeze =
             match cls with
             | Buffered ->
                 for kv in rope.Cas.Objects do
-                    putObject volume.StoreDir kv.Key kv.Value
+                    putObject volume kv.Key kv.Value
 
                 let result =
                     { Entity = entity
