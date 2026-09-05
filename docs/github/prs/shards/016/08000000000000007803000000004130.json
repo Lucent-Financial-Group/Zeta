@@ -1,0 +1,12 @@
+{
+  "pr_number": 16688,
+  "archive_path": "docs/history/pr-reviews/PR-16688-feat-research-add-bounded-contextual-grid-conformance-harness.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-05T18:58:39.084Z",
+  "schema_version": "v1",
+  "commit_sha": "4fb660331551c1418727c64f64558ebd04c408dc",
+  "title": "feat(research): add bounded contextual-grid conformance harness",
+  "state": "MERGED",
+  "merged_at": "2026-09-05T18:58:04Z",
+  "head_ref": "lumen/contextual-grid-benchmark-v1"
+}
