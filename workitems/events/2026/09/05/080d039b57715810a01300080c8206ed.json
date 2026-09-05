@@ -1,0 +1,14 @@
+{
+  "id": "080d039b57715810a01300080c8206ed",
+  "at": "2026-09-05T21:13:02.763Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1SPNVHB087G0R003S79W9K",
+    "type": "task",
+    "title": "XOR of BlockCas payload stays unread after CloneMedia reopen",
+    "slug": "xor-of-blockcas-payload-stays-unread-after-clonemedia-reopen",
+    "priority": "P2",
+    "filename": "081M1SPNVHB087G0R003S79W9K-xor-of-blockcas-payload-stays-unread-after-clonemedia-reopen.md"
+  }
+}
