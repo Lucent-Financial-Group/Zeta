@@ -1,0 +1,12 @@
+{
+  "pr_number": 16677,
+  "archive_path": "docs/history/pr-reviews/PR-16677-feat-arc-compose-scene-curiosity-signals.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-05T16:53:55.548Z",
+  "schema_version": "v1",
+  "commit_sha": "1600da038ccd58f4aae47fce550e31598b9c55cc",
+  "title": "feat(arc): compose scene curiosity signals",
+  "state": "MERGED",
+  "merged_at": "2026-09-05T16:53:16Z",
+  "head_ref": "codex/arc-curiosity-composition"
+}
