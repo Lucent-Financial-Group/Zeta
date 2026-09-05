@@ -17,7 +17,8 @@ open Zeta.Core.FSharp.Blake3
 /// Plain and sealed log replay restore intact intent+commit pairs on create
 /// (torn tail / intent-without-commit / mid-log CRC dropped from the bad
 /// frame; prefix kept). Sealed frames carry LSN in the clear so `openLog`
-/// can rebuild the nonce. Reclaim sweep stays `toy`.
+/// can rebuild the nonce. Reclaim volume door is `reclaimSweep` (journal
+/// under `StoreDir`). Still `toy`: not on the freeze boat / not auto-ticked.
 ///
 /// DoP=1 on this log. No Task.Run except the ferry launch (injected context
 /// on the DST path; `manual` + `PumpToIdleAsync` for tests).
@@ -818,6 +819,21 @@ module ZetaFsFreeze =
         hostFileStore storeDir mutbuf observer (Some session) true
 
     let dispose (volume: Volume) = (volume :> IDisposable).Dispose()
+
+    /// Journal for a crash-mid-sweep. Owned by the volume, not invented by
+    /// the caller. `reclaimSweep` is the only apply door that uses it.
+    let sweepJournalPath (volume: Volume) =
+        ZetaFsPath.combine2 volume.StoreDir "sweep.journal"
+
+    /// Journaled reclaim through the freeze volume. Still `toy`: this is
+    /// the volume door, not a freeze-boat tick.
+    let reclaimSweep
+        (volume: Volume)
+        (fs: IFileSystem)
+        (paths: (ContentHash256 * string)[])
+        (budget: ZetaFsReclaim.Budget)
+        : int =
+        ZetaFsReclaim.applyWithJournal fs (sweepJournalPath volume) paths budget
 
     let pumpLog (volume: Volume) (ct: CancellationToken) : Task =
         volume.Log.PumpToIdleAsync(ct)
