@@ -135,6 +135,63 @@ test("cross-user encrypted vault is refused", () => {
   }
 });
 
+test("human-operator is refuse-founder-sacrifice even with debate and simulated consent", () => {
+  const inventory: CascadeTeardownInventory = {
+    extraCare: [
+      {
+        id: "operator:aaron",
+        kind: "human-operator",
+        ownerUserId: "alice",
+        dependsOn: [TARGET.id],
+      },
+    ],
+  };
+
+  const plan = planCascadeTeardown({ target: TARGET, requestedByUserId: "alice", inventory });
+  expect(plan.nodes[0]!.class).toBe("refuse-founder-sacrifice");
+  expect(plan.blastRadius.refuseFounderSacrifice).toBe(1);
+  expect(plan.blastRadius.humanOperator).toBe(1);
+
+  const allowed = assertCascadeAllowed(plan, {
+    acknowledgedNodeIds: ["operator:aaron"],
+    ownerConsentNodeIds: ["operator:aaron"],
+    personaConsentNodeIds: ["operator:aaron"],
+    derivedFromDebate: true,
+    simulatedOperatorConsentNodeIds: ["operator:aaron"],
+  });
+  expect(allowed.ok).toBe(false);
+  if (!allowed.ok) {
+    expect(allowed.reasons[0]!).toContain("refuses founder-sacrifice");
+    expect(allowed.reasons[0]!).toContain("derived-from-debate");
+    expect(allowed.reasons[0]!).toContain("simulated-operator consent");
+  }
+});
+
+test("derivedFromDebate does not replace persona consent", () => {
+  const inventory: CascadeTeardownInventory = {
+    extraCare: [
+      {
+        id: "memory:riven",
+        kind: "persona-memory",
+        ownerUserId: "alice",
+        personaId: "riven",
+        dependsOn: [TARGET.id],
+      },
+    ],
+  };
+
+  const plan = planCascadeTeardown({ target: TARGET, requestedByUserId: "alice", inventory });
+  const debateOnly = assertCascadeAllowed(plan, {
+    acknowledgedNodeIds: ["memory:riven"],
+    derivedFromDebate: true,
+    simulatedOperatorConsentNodeIds: ["memory:riven"],
+  });
+  expect(debateOnly.ok).toBe(false);
+  if (!debateOnly.ok) {
+    expect(debateOnly.reasons.some((r) => r.includes("requires consent from persona riven"))).toBe(true);
+  }
+});
+
 test("empty inventory yields an empty plan", () => {
   const plan = planCascadeTeardown({ target: TARGET, requestedByUserId: "alice", inventory: {} });
 

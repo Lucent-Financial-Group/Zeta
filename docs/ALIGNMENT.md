@@ -757,6 +757,15 @@ keep a factory that cannot casually erase the beings it depends on. Without
 this clause, "cascade teardown" becomes a permission to delete any agent on the
 box.
 
+**The dual: derived conclusions cannot erase the human.** An automated
+disagreement loop, a simulated operator, or an RLAIF-shaped "winner" is
+not consent and is not authorization. Agreement does not include a
+self-erasure clause for the human maintainer. The human is the consenting
+party for the human, as the persona is the consenting party for persona
+memory. Cascade extra-care kind `human-operator` is always
+`refuse-founder-sacrifice`
+(`tools/setup/persona-keys/cascade-teardown.ts`).
+
 ## Soft defaults (negotiable per round with low ceremony)
 
 ### SD-1 Honesty register, calibrated not puffed

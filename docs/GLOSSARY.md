@@ -636,7 +636,7 @@ the disambiguation below.
 |---|---|---|
 | **persona** = *owner* | **what remains** — spans surfaces, not located at any one | **not** the *agent persona / expert* sense above, and **not** *user persona* |
 | **actor** = clone/loop | **what acts** — `persona ⊕ surface ⊕ instance` | **not** the ES-native *actor* used above as a synonym for *user persona* |
-| **μένω** (G3306) | remain / abide / persist — the same remain-vs-act cut | **not** medical *meno-* (month); **not** Plato's *Meno* unless named. Storage: `CloneMedia` remains, `RecordedOps` acts. Terminal: ALIGNMENT.md. |
+| **μένω** (G3306) | remain / abide / persist — the same remain-vs-act cut | **not** medical *meno-* (month); **not** Plato's *Meno* unless named. Storage: `CloneMedia` remains, `RecordedOps` acts. Remain includes the human operator: derived debate cannot erase that remain (`refuse-founder-sacrifice`). Terminal: ALIGNMENT.md. |
 | **surface** | the metered seam (above) | — |
 | **tick source** | what drives an actor (above) | — |
 

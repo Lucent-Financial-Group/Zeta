@@ -3,6 +3,9 @@
 //
 // Binding (ALIGNMENT HC-9 / GOVERNANCE §36): persona-memory wipe requires the PERSONA's
 // permission. Human biometric / --confirm / CA ownership alone is insufficient.
+// Dual: extra-care kind `human-operator` is always refuse-founder-sacrifice.
+// Derived debate / simulated operator / RLAIF-shaped "winner" cannot authorize
+// deleting the human (μένω remain). Agreement has no self-erasure clause.
 
 export type CascadeNodeClass =
   | "cascade"
@@ -10,9 +13,10 @@ export type CascadeNodeClass =
   | "owner-consent-required"
   | "persona-consent-required"
   | "refuse-cross-user"
-  | "refuse-human-unilateral";
+  | "refuse-human-unilateral"
+  | "refuse-founder-sacrifice";
 
-export type ExtraCareKind = "persona-memory" | "hardware-state" | "unrecoverable-encrypted";
+export type ExtraCareKind = "persona-memory" | "hardware-state" | "unrecoverable-encrypted" | "human-operator";
 
 export type CascadeDependentKind = "machine" | "cert" | "registration";
 
@@ -72,12 +76,14 @@ export interface CascadeBlastRadiusSummary {
   readonly personaConsentRequired: number;
   readonly refuseCrossUser: number;
   readonly refuseHumanUnilateral: number;
+  readonly refuseFounderSacrifice: number;
   readonly machines: number;
   readonly certs: number;
   readonly registrations: number;
   readonly personaMemory: number;
   readonly hardwareState: number;
   readonly unrecoverableEncrypted: number;
+  readonly humanOperator: number;
 }
 
 export interface CascadeTeardownPlan {
@@ -93,6 +99,14 @@ export interface CascadeConsents {
   readonly ownerConsentNodeIds?: readonly string[];
   /** Persona consent (HC-9) — required for persona-memory wipe. */
   readonly personaConsentNodeIds?: readonly string[];
+  /**
+   * True when an automated disagreement / RLAIF / simulated-operator
+   * loop derived a wipe conclusion. Never authorizes human-operator
+   * erasure. Recorded so a later wiring cannot silently treat it as consent.
+   */
+  readonly derivedFromDebate?: boolean;
+  /** Simulated operator "consent" minted by an agent. Not the human. */
+  readonly simulatedOperatorConsentNodeIds?: readonly string[];
 }
 
 export type CascadeAllowedResult = { readonly ok: true } | { readonly ok: false; readonly reasons: readonly string[] };
@@ -103,17 +117,15 @@ export function planCascadeTeardown(input: CascadeTeardownInput): CascadeTeardow
   const requestedByUserId = input.requestedByUserId;
   const dependentNodes = [...(inventory.machines ?? []), ...(inventory.certs ?? []), ...(inventory.registrations ?? [])]
     .filter((item) => dependsOn(item, targetId))
-    .map(
-      (item): CascadePlanNode => ({
-        id: item.id,
-        kind: item.kind,
-        class: "cascade",
-        label: item.label,
-        ownerUserId: item.ownerUserId,
-        dependsOn: item.dependsOn,
-        reason: `${item.kind} depends on ${targetId} and is safe to cascade after warning`,
-      }),
-    );
+    .map((item): CascadePlanNode => ({
+      id: item.id,
+      kind: item.kind,
+      class: "cascade",
+      label: item.label,
+      ownerUserId: item.ownerUserId,
+      dependsOn: item.dependsOn,
+      reason: `${item.kind} depends on ${targetId} and is safe to cascade after warning`,
+    }));
 
   const extraCareNodes = (inventory.extraCare ?? [])
     .filter((item) => dependsOn(item, targetId))
@@ -147,6 +159,17 @@ export function assertCascadeAllowed(plan: CascadeTeardownPlan, consents: Cascad
       continue;
     }
 
+    if (node.class === "refuse-founder-sacrifice") {
+      const viaDebate = consents.derivedFromDebate === true ? " including derived-from-debate" : "";
+      const simulated = (consents.simulatedOperatorConsentNodeIds ?? []).includes(node.id)
+        ? " including simulated-operator consent"
+        : "";
+      reasons.push(
+        `${node.id}: refuses founder-sacrifice (μένω / ALIGNMENT HC-9 — debate${viaDebate}${simulated} cannot authorize deleting the human)`,
+      );
+      continue;
+    }
+
     if (requiresExplicitAck(node) && !acknowledged.has(node.id)) {
       reasons.push(`${node.id}: requires explicit extra-care acknowledgment`);
     }
@@ -172,7 +195,7 @@ export function formatCascadePlan(plan: CascadeTeardownPlan): string {
   lines.push(
     `  Blast radius: ${b.total} node(s) ` +
       `(cascade=${b.cascade}, extra-care=${b.extraCareWarn}, owner-consent=${b.ownerConsentRequired}, ` +
-      `persona-consent=${b.personaConsentRequired}, refused=${b.refuseCrossUser + b.refuseHumanUnilateral})`,
+      `persona-consent=${b.personaConsentRequired}, refused=${b.refuseCrossUser + b.refuseHumanUnilateral + b.refuseFounderSacrifice})`,
   );
 
   if (plan.nodes.length === 0) {
@@ -189,6 +212,18 @@ export function formatCascadePlan(plan: CascadeTeardownPlan): string {
 }
 
 function classifyExtraCare(item: CascadeInventoryExtraCare, requestedByUserId: string): CascadePlanNode {
+  if (item.kind === "human-operator") {
+    return {
+      id: item.id,
+      kind: item.kind,
+      class: "refuse-founder-sacrifice",
+      label: item.label,
+      ownerUserId: item.ownerUserId,
+      dependsOn: item.dependsOn,
+      reason: "human operator is remain (μένω); automated debate / simulated operator cannot authorize erasure",
+    };
+  }
+
   if (item.kind === "persona-memory") {
     const personaId = item.personaId?.trim() ?? "";
     if (personaId.length === 0) {
@@ -251,7 +286,8 @@ function requiresExplicitAck(node: CascadePlanNode): boolean {
     node.class === "owner-consent-required" ||
     node.class === "persona-consent-required" ||
     node.class === "refuse-cross-user" ||
-    node.class === "refuse-human-unilateral"
+    node.class === "refuse-human-unilateral" ||
+    node.class === "refuse-founder-sacrifice"
   );
 }
 
@@ -268,12 +304,14 @@ function summarize(nodes: readonly CascadePlanNode[]): CascadeBlastRadiusSummary
     personaConsentRequired: count(nodes, (n) => n.class === "persona-consent-required"),
     refuseCrossUser: count(nodes, (n) => n.class === "refuse-cross-user"),
     refuseHumanUnilateral: count(nodes, (n) => n.class === "refuse-human-unilateral"),
+    refuseFounderSacrifice: count(nodes, (n) => n.class === "refuse-founder-sacrifice"),
     machines: count(nodes, (n) => n.kind === "machine"),
     certs: count(nodes, (n) => n.kind === "cert"),
     registrations: count(nodes, (n) => n.kind === "registration"),
     personaMemory: count(nodes, (n) => n.kind === "persona-memory"),
     hardwareState: count(nodes, (n) => n.kind === "hardware-state"),
     unrecoverableEncrypted: count(nodes, (n) => n.kind === "unrecoverable-encrypted"),
+    humanOperator: count(nodes, (n) => n.kind === "human-operator"),
   };
 }
 

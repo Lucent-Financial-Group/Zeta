@@ -542,6 +542,8 @@ test("CASCADE TEARDOWN GAP CLOSED: planner and consent gate exist (cascade-teard
   expect(src).toContain("refuse-cross-user");
   expect(src).toContain("persona-consent-required");
   expect(src).toContain("refuse-human-unilateral");
+  expect(src).toContain("refuse-founder-sacrifice");
+  expect(src).toContain("human-operator");
 });
 
 test("DUMMY PERSONA WIPE GAP CLOSED: live wipe harness only allows empty dummy-* (never real personas)", () => {
