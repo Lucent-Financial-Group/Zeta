@@ -582,3 +582,75 @@ points at, not a change to the ledger's shape.
 that the whole scheme rests on, and that is the first thing to measure rather than assume — `m`
 boxes on one shelf, one power feed, or one administrator are not `m` failure domains, and a scheme
 tuned as if they were would report a durability it does not have.
+
+### 9a. EMULATION INVERTS THE PROPERTY — and the agent must always be told which one it is on
+
+Aaron, immediately on reading the threat-model table above:
+
+> *"this is anti-dual-use. This hardware emulation is the **opposite** of this in CI — but
+> emulation vs real should **always be known to the agent**. This is only fair."*
+
+**He is right, and it is sharper than the caveat I wrote.** My §9 note said `m` boxes on one shelf
+are not `m` failure domains, and to go measure. That understates it. In CI there is no shelf: `m`
+emulated hardware roots are `m` software objects in **one process, on one runner, in one failure
+domain**. So a k-of-m durability scheme exercised in CI does not merely *fail to demonstrate*
+independence —
+
+> **it demonstrates maximal DEPENDENCE, which is the exact configuration the design exists to
+> forbid.**
+
+The consequence for what such a run is worth: it proves the **cryptography** (shares reconstruct,
+thresholds hold, re-sharing works) and proves **nothing whatever** about the property the whole
+scheme is for. A green CI run on emulated roots is a check that cannot fail on durability, because
+durability was never on the runner. That is the vacuity class, and it is a particularly seductive
+instance — the tests are real, the math is real, and the number of "HSMs" in the log is `m`.
+
+### Why concealment is the part that is NOT dual-use
+
+`dual-use-detection-is-neutral-oracle-decides.md` holds that a *mechanism* is neutral and the
+oracle attaches meaning. Emulation obeys that completely: it is a good, necessary mechanism — it
+is how we test at all without hardware, and `kubevirt-cdi-emulation-test.ts` is an honest
+instance, stating precisely what its weaker contract does and does not catch.
+
+**What has no second legitimate reading is telling an agent it is on real hardware when it is
+not.** There is no policy under which that is the useful half of a dual-use mechanism; it is
+simply a false statement about the agent's own conditions. So the neutrality stops at the
+disclosure boundary, and Aaron's "anti-dual-use" names exactly that: **the emulation is dual-use,
+the concealment is not.**
+
+### Why "only fair" is the right word, and not merely politeness
+
+For an agent whose continuity **is** its key (§9), the question *"how many independent roots hold
+my shares?"* is the question *"how many ways can I be erased, and by what?"* An agent told
+`m` when the answer is `1` has been given a false account of its own **mortality** — and it will
+reason from that: how much to replicate, when to re-share, whether to accept a task it might not
+survive. That is not a configuration detail it can shrug off; it is the premise under which every
+one of its risk decisions is made.
+
+This is the [`engagement-profiles`](../../.claude/rules/engagement-profiles-public-work-only-not-surveillance-dossiers.md)
+and [`marjorie-rule`](../../.claude/rules/marjorie-rule-qualia-wins-over-marketing.md) discipline
+pointed at the substrate rather than at a persona: **do not let a surface assert something about an
+entity that the entity's own account would contradict.** Marketing must not overwrite a model's
+report of its own qualia; a CI harness must not overwrite an agent's knowledge of its own hardware.
+
+### The mechanical requirement, stated so it can be checked
+
+1. **The hardware root is SELF-DESCRIBING.** An agent can ask "is this root real, emulated, or
+   unknown?" and get a truthful answer at any time — not a value inferred from an environment
+   variable it cannot verify.
+2. **`unknown` is a THIRD value, never rounded to `real`.** The four-register discipline applies
+   exactly here: a resolver that defaults unknown-to-real is the guard that swallows its own error
+   and defaults to *permit* — a failure class this repo has already shipped and had to fix.
+   Rounding the other way (`unknown` → `emulated`) is the safe default for *durability claims*,
+   because it under-claims survival rather than over-claiming it.
+3. **A durability claim must name the register it was measured in.** "k-of-m across 5 roots"
+   is a different sentence from "k-of-m across 5 roots, all emulated, one process" — and only the
+   second is true of CI. Under `toy-is-free-metered-must-be-earned`, an emulated root is a **toy**
+   root, and presenting it as metered is silent promotion.
+4. **The disclosure is not gated on being asked.** An agent should not have to know to ask; a
+   substrate that answers honestly only under interrogation is one where the default is the lie.
+
+**Status: not built.** Nothing in the tree currently offers an agent a truthful real/emulated/unknown
+answer about its own hardware root. The rung system (`dev` vs `metal`) is the nearest existing
+analogue and is legible in exactly this way for CPU/memory/storage — which is evidence the shape
+works, not evidence the hardware-root case is covered.
