@@ -30,7 +30,9 @@ open Zeta.Core.FSharp.Blake3
 /// sizes: the freeze-byte meter is RAM-only, and pacer(0) deletes
 /// nothing. Default `create` stores CAS on `BlockCas`; reclaim
 /// unpublishes those keys (`Delete`). POSIX `createManualStream` still
-/// deletes files. Manual volumes still `pumpReclaim`.
+/// deletes files. Manual volumes still `pumpReclaim`. `KeepNone` /
+/// `rolling(N)` unpin previous generations of the same entity; product
+/// `create` uses `rollingDefault`. DST manuals stay `KeepAll`.
 ///
 /// DoP=1 on this log. No Task.Run except the ferry launch (injected context
 /// on the DST path; `manual` + `PumpToIdleAsync` for tests).
@@ -517,6 +519,8 @@ module ZetaFsFreeze =
         let mutable freezeBytesSinceReclaim = 0UL
         let known = Dictionary<ContentHash256, uint64>()
         let livePins = HashSet<ContentHash256>()
+        let objectSets = Dictionary<ContentHash256, ContentHash256[]>()
+        let mutable history = ZetaFsPolicy.HistoryPolicy.KeepAll
         do loadCatalog storeDir known livePins
         let log = new FreezeLog(storeDir, config, manual, blockIo, objectCas, known, livePins)
         let reclaim = new ReclaimFerry(storeDir, config, manual, objectCas)
@@ -562,6 +566,10 @@ module ZetaFsFreeze =
             and set v = freezeBytesSinceReclaim <- v
         member internal _.KnownObjects = known
         member internal _.LivePins = livePins
+        member internal _.ObjectSets = objectSets
+        member _.History
+            with get () = history
+            and set v = history <- v
 
         interface IDisposable with
             member _.Dispose() =
@@ -932,10 +940,13 @@ module ZetaFsFreeze =
         (observer: IDurabilityObserver option)
         (session: ZetaFsCrypto.Session option)
         : Volume =
-        hostFileStore storeDir mutbuf observer session false
+        let volume = hostFileStore storeDir mutbuf observer session false
+        volume.History <- ZetaFsPolicy.rollingDefault
+        volume
 
     /// Unencrypted control (FORMAT enc=off). The default first-product profile.
     /// Journaled log and CAS objects ride `FileSystemBlockIo`.
+    /// History is `rollingDefault` (N=32). DST `createManual*` stays KeepAll.
     let create (storeDir: string) (mutbuf: ZetaFsMutbuf.Catalog) (observer: IDurabilityObserver option) : Volume =
         createWith storeDir mutbuf observer None
 
@@ -1301,6 +1312,63 @@ module ZetaFsFreeze =
 
         result
 
+    let private keepCount (h: ZetaFsPolicy.HistoryPolicy) : int option =
+        match h with
+        | ZetaFsPolicy.HistoryPolicy.KeepAll
+        | ZetaFsPolicy.HistoryPolicy.Regen _ -> None
+        | ZetaFsPolicy.HistoryPolicy.KeepNone -> Some 1
+        | ZetaFsPolicy.HistoryPolicy.Rolling(Some n, _, _) when n < 1 -> Some 1
+        | ZetaFsPolicy.HistoryPolicy.Rolling(Some n, _, _) -> Some n
+        | ZetaFsPolicy.HistoryPolicy.Rolling(None, _, _) -> None
+
+    let private objectsNamed (volume: Volume) (content: ContentHash256) : ContentHash256[] =
+        match volume.ObjectSets.TryGetValue content with
+        | true, ids -> ids
+        | false, _ ->
+            match volume.Leaves.TryGetValue content with
+            | true, ids -> ids
+            | false, _ -> [||]
+
+    /// Unpin objects that no kept generation of this entity still names.
+    /// KeepAll / Regen leave pins. Shared Jumprope chunks stay.
+    let private applyRetention
+        (volume: Volume)
+        (entity: ZetaFsNamespace.EntityId)
+        (content: ContentHash256)
+        (objectIds: ContentHash256[])
+        =
+        volume.ObjectSets.[content] <- objectIds
+
+        for id in objectIds do
+            volume.LivePins.Add id |> ignore
+
+        match keepCount volume.History with
+        | None -> persistCatalog volume.StoreDir volume.KnownObjects volume.LivePins
+        | Some n ->
+            let mine =
+                volume.Commits.Values
+                |> Seq.filter (fun r -> r.Entity = entity)
+                |> Seq.sortBy (fun r -> r.CommitLsn)
+                |> Seq.toArray
+
+            let dropCount = mine.Length - n
+
+            if dropCount <= 0 then
+                persistCatalog volume.StoreDir volume.KnownObjects volume.LivePins
+            else
+                let kept = HashSet<ContentHash256>()
+
+                for i in dropCount .. mine.Length - 1 do
+                    for id in objectsNamed volume mine.[i].Content do
+                        kept.Add id |> ignore
+
+                for i in 0 .. dropCount - 1 do
+                    for id in objectsNamed volume mine.[i].Content do
+                        if not (kept.Contains id) then
+                            volume.LivePins.Remove id |> ignore
+
+                persistCatalog volume.StoreDir volume.KnownObjects volume.LivePins
+
     let private finish
         (volume: Volume)
         (entity: ZetaFsNamespace.EntityId)
@@ -1309,6 +1377,7 @@ module ZetaFsFreeze =
         (cls: DurabilityClass)
         (generation: uint64)
         (leafIds: ContentHash256[])
+        (objectIds: ContentHash256[])
         (intentLsn: int64)
         (commitLsn: int64)
         : Result<FreezeResult, FreezeError> =
@@ -1323,7 +1392,8 @@ module ZetaFsFreeze =
 
         lock volume.Gate (fun () ->
             volume.Commits.[content] <- result
-            volume.Leaves.[content] <- leafIds)
+            volume.Leaves.[content] <- leafIds
+            applyRetention volume entity content objectIds)
 
         match cls, volume.Observer with
         | Durable, Some o -> o.OnDurable result |> Result.map (fun () -> noteFreeze volume span result)
@@ -1352,6 +1422,7 @@ module ZetaFsFreeze =
             let snap = ZetaFsMutbuf.snapshot volume.Mutbuf entity
             let rope = ZetaFsJumprope.buildV1 snap.Bytes
             let leafIds = [| for id, _ in rope.Leaves -> id |]
+            let objectIds = [| for kv in rope.Cas.Objects -> kv.Key |]
 
             match cls with
             | Buffered ->
@@ -1429,7 +1500,7 @@ module ZetaFsFreeze =
                                 afterFreeze
                                     volume
                                     ct
-                                    (finish volume entity rope.Content rope.Span cls snap.Generation leafIds i c)
+                                    (finish volume entity rope.Content rope.Span cls snap.Generation leafIds objectIds i c)
                             )
                     else
                         let work =
@@ -1451,6 +1522,7 @@ module ZetaFsFreeze =
                                                 cls
                                                 snap.Generation
                                                 leafIds
+                                                objectIds
                                                 i
                                                 c)
                             }

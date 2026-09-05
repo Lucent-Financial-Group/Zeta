@@ -1,0 +1,14 @@
+{
+  "id": "080d0394725d3810a0130008cebdfadb",
+  "at": "2026-09-05T17:12:03.239Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1S8WJX7087G0R000WGTPW8",
+    "type": "task",
+    "title": "KeepNone and rolling(N) unpin previous freeze objects",
+    "slug": "keepnone-and-rolling-n-unpin-previous-freeze-objects",
+    "priority": "P2",
+    "filename": "081M1S8WJX7087G0R000WGTPW8-keepnone-and-rolling-n-unpin-previous-freeze-objects.md"
+  }
+}
