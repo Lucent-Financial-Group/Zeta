@@ -6,7 +6,7 @@
  * Evidence values mirror merged Zeta PRs #15638, #15660, #15669, #15680,
  * #16363, and the bounded Pages correction in #16385.
  */
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 
 type EvidenceSign = "assertion +1" | "retraction −1";
 type Alteration = "none" | "uncertainty" | "spectrum" | "signature";
@@ -36,7 +36,52 @@ const WEIGHT_FOUR_SUPPORTS = new Set(
 
 const DEFAULT_AMBIGUOUS_MASK = Array.from(WEIGHT_FOUR_SUPPORTS)[0] ?? 225;
 
-const SPECTRUM = [
+export const EVIDENCE_SOURCE_COMMIT = "d4bff3e6ce64e8421b93e1f4312011822b72f384";
+const EVIDENCE_SOURCE_ROOT = `https://github.com/Lucent-Financial-Group/Zeta/blob/${EVIDENCE_SOURCE_COMMIT}/`;
+const EVIDENCE_SOURCE_BLOBS: Readonly<Record<string, string>> = {
+  "docs/research/2026-08-26-adinkra-representation-defect-spectrum-contract.md": "25f6baaeabfcbf4ae93f215869fb49ba9640a170",
+  "docs/research/2026-08-31-finite-half-spin-bracket-jacobi-census-contract.md": "64634a4e41508b883811c2feca0742c0af0470ae",
+  "docs/research/2026-09-01-finite-adinkra-half-spin-intertwiner-contract.md": "af5b963cecf31b1ad463c2505cb9670ec241e36e",
+  "docs/research/2026-09-01-reference-frame-factor-heterarchy-contract.md": "28b519610ba01a08256ca04f615a9ecc15eb6beb",
+  "docs/research/2026-09-02-composable-factor-benchmark-results.md": "e6fb82d610636886f9d3eb072fb14f5ee1b9b987",
+  "docs/research/2026-09-02-crdt-belief-fusion-contract.md": "4ce94c56c9f29721f490edd64c9496b3d8c57ada",
+  "docs/research/2026-09-03-bayesian-english-interface-inventory-and-seed-coverage-contract.md": "a5b25444cd7ea36f830da86080df9d193b7f009a",
+  "docs/research/2026-09-03-canonical-evidence-query-adapter-contract.md": "e4f259a67fca681a1c8734bf763cdc9cbd6d780c",
+  "docs/research/2026-09-03-fvs-feedback-query-implementation-contract.md": "775481c7348f1dec2893a8350031d0c2f6bb8ad0",
+  "docs/research/2026-09-03-lexical-correction-receipt-contract.md": "fc4d9adce9a29489ef2d49c92395d8dbd283a66e",
+  "docs/research/2026-09-03-multilayer-exact-gaussian-query-contract.md": "7af0574113410dd5f4f364e27b6eac406ca58f84",
+  "docs/research/2026-09-04-signed-probit-ep-benchmark-contract.md": "b444c5850e85a4b8810b03f3700911dc2323ea44",
+  "docs/research/2026-09-04-user-declared-lexical-geometric-input-contract.md": "dc0b5a72463680c391278d4fc5e672f17abb1ed7",
+};
+
+const SPECTRUM_PROVENANCE: Readonly<Record<string, { id: string; sourcePath: string }>> = {
+  "uncoded cube": { id: "uncoded-cube", sourcePath: "docs/research/2026-08-26-adinkra-representation-defect-spectrum-contract.md" },
+  "coded [8,4,4] quotient": { id: "coded-844-quotient", sourcePath: "docs/research/2026-08-26-adinkra-representation-defect-spectrum-contract.md" },
+  "four-colour residue": { id: "four-colour-residue", sourcePath: "docs/research/2026-08-26-adinkra-representation-defect-spectrum-contract.md" },
+  "bivector + half-spinor": { id: "bivector-half-spinor", sourcePath: "docs/research/2026-08-31-finite-half-spin-bracket-jacobi-census-contract.md" },
+  "coded → half-spin module": { id: "coded-half-spin-module", sourcePath: "docs/research/2026-09-01-finite-adinkra-half-spin-intertwiner-contract.md" },
+  "reference-frame unary blackboards": { id: "reference-frame-unary-blackboards", sourcePath: "docs/research/2026-09-01-reference-frame-factor-heterarchy-contract.md" },
+  "exact dense Gaussian query": { id: "exact-dense-gaussian-query", sourcePath: "docs/research/2026-09-03-multilayer-exact-gaussian-query-contract.md" },
+  "FVS-conditioned Gaussian query": { id: "fvs-conditioned-gaussian-query", sourcePath: "docs/research/2026-09-03-fvs-feedback-query-implementation-contract.md" },
+  "content-addressed evidence CRDT": { id: "content-addressed-evidence-crdt", sourcePath: "docs/research/2026-09-02-crdt-belief-fusion-contract.md" },
+  "canonical evidence query": { id: "canonical-evidence-query", sourcePath: "docs/research/2026-09-03-canonical-evidence-query-adapter-contract.md" },
+  "candidate English-seed audit": { id: "candidate-english-seed-audit", sourcePath: "docs/research/2026-09-03-bayesian-english-interface-inventory-and-seed-coverage-contract.md" },
+  "lexical correction receipts": { id: "lexical-correction-receipts", sourcePath: "docs/research/2026-09-03-lexical-correction-receipt-contract.md" },
+  "user-declared lexical geometry": { id: "user-declared-lexical-geometry", sourcePath: "docs/research/2026-09-04-user-declared-lexical-geometric-input-contract.md" },
+  "finite signed-probit EP query": { id: "finite-signed-probit-ep-query", sourcePath: "docs/research/2026-09-04-signed-probit-ep-benchmark-contract.md" },
+  "composable factor benchmark": { id: "composable-factor-benchmark", sourcePath: "docs/research/2026-09-02-composable-factor-benchmark-results.md" },
+  "one-common-noise query": { id: "one-common-noise-query", sourcePath: "docs/research/2026-09-02-composable-factor-benchmark-results.md" },
+};
+
+export function evidenceSourceUrl(sourcePath: string | undefined): string | undefined {
+  return sourcePath === undefined ? undefined : `${EVIDENCE_SOURCE_ROOT}${sourcePath}`;
+}
+
+export function evidenceSourceBlob(sourcePath: string | undefined): string | undefined {
+  return sourcePath === undefined ? undefined : EVIDENCE_SOURCE_BLOBS[sourcePath];
+}
+
+const SPECTRUM_BASE = [
   {
     lane: "uncoded cube",
     carrier: "256",
@@ -197,6 +242,11 @@ const SPECTRUM = [
   },
 ] as const;
 
+export const SPECTRUM = SPECTRUM_BASE.map((row) => {
+  const provenance = SPECTRUM_PROVENANCE[row.lane];
+  return { ...row, id: provenance?.id ?? `not-declared-${row.lane}`, sourcePath: provenance?.sourcePath };
+});
+
 const controlStyle = {
   width: "100%",
   border: 0,
@@ -321,6 +371,26 @@ export default function EvidenceSeamPanel() {
   const [alteration, setAlteration] = useState<Alteration>("none");
   const [causal, setCausal] = useState<CausalScenario>("settled");
   const [genesis, setGenesis] = useState<GenesisScenario>("witnessed");
+  const [spectrumFilter, setSpectrumFilter] = useState("");
+  const spectrumFilterInputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    const focusLiteralFilter = (event: KeyboardEvent) => {
+      const target = event.target;
+      const ownsTyping = target instanceof HTMLInputElement || target instanceof HTMLTextAreaElement || target instanceof HTMLSelectElement || (target instanceof HTMLElement && target.isContentEditable);
+      if (event.key !== "/" || event.metaKey || event.ctrlKey || event.altKey || ownsTyping) return;
+      event.preventDefault();
+      spectrumFilterInputRef.current?.focus();
+    };
+    window.addEventListener("keydown", focusLiteralFilter);
+    return () => window.removeEventListener("keydown", focusLiteralFilter);
+  }, []);
+
+  const visibleSpectrum = useMemo(() => {
+    const normalized = spectrumFilter.trim().toLowerCase();
+    if (normalized === "") return SPECTRUM;
+    return SPECTRUM.filter((row) => [row.lane, row.carrier, row.operators, row.verdict, "readout" in row ? row.readout : "", "detail" in row ? row.detail : ""].join("\u0000").toLowerCase().includes(normalized));
+  }, [spectrumFilter]);
 
   const mask = useMemo(() => {
     if (erasedCount === 4 && ambiguousFour) return DEFAULT_AMBIGUOUS_MASK;
@@ -496,8 +566,14 @@ export default function EvidenceSeamPanel() {
             mutation gate: ambiguity · CRC · duplicate · length<br />4 / 4 deliberate weakenings killed
           </div>
         </div>
-        <div className="evidence-spectrum-grid" style={{ position: "relative", zIndex: 1, display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))", gap: "0.8rem" }}>
-          {SPECTRUM.map((row) => (
+        <div style={{ position: "relative", zIndex: 1, alignItems: "end", display: "grid", gap: "0.55rem 1rem", gridTemplateColumns: "minmax(0, 1fr) auto", marginBottom: "0.9rem", maxWidth: 680 }}>
+          <label style={{ color: "var(--muted-foreground)", fontSize: "0.48rem", letterSpacing: "0.1em" }}>LOCAL LITERAL CATALOG FILTER · PRESS /
+            <input ref={spectrumFilterInputRef} aria-describedby="pages-spectrum-filter-status" value={spectrumFilter} onChange={(event) => setSpectrumFilter(event.target.value)} placeholder="lane · carrier · operator · verdict" style={{ ...controlStyle, color: "var(--foreground)", letterSpacing: "normal", marginTop: "0.35rem", textTransform: "none" }} />
+          </label>
+          <span id="pages-spectrum-filter-status" aria-live="polite" style={{ color: visibleSpectrum.length === 0 ? "var(--teal)" : "var(--muted-foreground)", fontSize: "0.46rem", letterSpacing: "0.08em", textAlign: "right" }}>{visibleSpectrum.length} / {SPECTRUM.length} DECLARED · LOCAL ONLY</span>
+        </div>
+        {visibleSpectrum.length === 0 ? <div style={{ borderLeft: "3px solid var(--teal)", color: "var(--teal)", fontSize: "0.55rem", letterSpacing: "0.1em", padding: "0.65rem 0.8rem", position: "relative", zIndex: 1 }}>NO DECLARED RECEIPT MATCHES THIS LOCAL LITERAL FILTER</div> : <div className="evidence-spectrum-grid" style={{ position: "relative", zIndex: 1, display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))", gap: "0.8rem" }}>
+          {visibleSpectrum.map((row) => (
             <div key={row.lane} style={{ gridColumn: "emphasis" in row ? "span 2" : undefined, border: 0, borderTop: `${"emphasis" in row ? 4 : 1}px solid ${row.tone}`, borderLeft: "1px solid color-mix(in srgb, var(--amber) 24%, transparent)", padding: "emphasis" in row ? "1rem 1.1rem 1.15rem" : "0.7rem", background: "emphasis" in row ? "linear-gradient(128deg, oklch(0.16 0.052 55 / 0.66), oklch(0.058 0.008 265) 66%)" : "oklch(0.052 0.008 265 / 0.78)", boxShadow: "emphasis" in row ? "inset 4px 0 0 color-mix(in srgb, var(--amber) 58%, transparent)" : "none" }}>
               <div style={{ color: "var(--muted-foreground)", fontSize: "0.6rem", fontWeight: 800, minHeight: "2.2em" }}>{row.lane}</div>
               <div style={{ color: "readout" in row ? "var(--amber)" : row.defect === "—" ? "var(--muted-foreground)" : row.tone, fontSize: "emphasis" in row ? "clamp(2rem, 5vw, 3.8rem)" : "clamp(1.45rem, 3vw, 2.2rem)", fontWeight: 900, letterSpacing: "-0.075em", margin: "0.25rem 0 0.6rem", lineHeight: 0.9 }}>{"readout" in row ? row.readout : `δ ${row.defect}`}</div>
@@ -509,9 +585,10 @@ export default function EvidenceSeamPanel() {
                 {row.verdict}
               </div>
               {"detail" in row ? <div style={{ marginTop: "0.35rem", fontSize: "0.48rem", color: "var(--muted-foreground)" }}>{row.detail}</div> : null}
+              <a href={`#/evidence-seam/receipt/${row.id}`} style={{ color: "var(--amber-dim)", display: "inline-block", fontSize: "0.43rem", fontWeight: 800, letterSpacing: "0.09em", marginTop: "0.55rem", textDecoration: "none" }}>OPEN FINITE RECEIPT →</a>
             </div>
           ))}
-        </div>
+        </div>}
       </div>
     </section>
   );

@@ -1458,6 +1458,11 @@ jobs:
         # about?" The 19 seconds WAS the signal -- a job that dies that fast died early,
         # and I had been reading the red as "my check, as designed" without re-reading
         # what it cost.
+        #
+        # CONVERGED INDEPENDENTLY: `main` landed the same flag via PR #16680 with its own
+        # measurement ("chart-currency=failure, everything after skipped"). Two agents
+        # reached the same fix from the same evidence, which is the cross-check working;
+        # this comment is kept because it carries the cost accounting and the catch.
         continue-on-error: true
         run: bun src/Core.TypeScript/hygiene/report-chart-currency.ts --drift
 

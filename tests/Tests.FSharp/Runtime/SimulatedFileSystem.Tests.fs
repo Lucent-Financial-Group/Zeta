@@ -719,6 +719,24 @@ let ``BlockCas Put of an existing key does not rewrite bits`` () =
     Assert.Equal(0, device.Writes - writesAfterFirstPut)
 
 [<Fact>]
+let ``BlockCas Delete unpublishes a key and CloneMedia agrees`` () =
+    let device = SimulatedBlockIo(4096)
+    let cas = BlockCas(device)
+    cas.Put("aa", [| 1uy; 2uy; 3uy |])
+    Assert.True(cas.Exists "aa")
+    Assert.Equal(1, cas.Count)
+    Assert.True(cas.Delete "aa")
+    Assert.False(cas.Exists "aa")
+    Assert.Equal(0, cas.Count)
+    Assert.False(cas.Delete "aa")
+    let cloned = BlockCas(device.CloneMedia())
+    Assert.False(cloned.Exists "aa")
+    Assert.Equal(0, cloned.Count)
+    cas.Put("aa", [| 9uy |])
+    Assert.True(cas.Exists "aa")
+    Assert.Equal(1, cas.Count)
+
+[<Fact>]
 let ``BlockSuper log dual slot keeps previous logical after crash-mid-write`` () =
     let device = SimulatedBlockIo(4096)
     let io = device :> IBlockIo

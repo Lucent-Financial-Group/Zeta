@@ -1273,6 +1273,29 @@ type BlockCas(io: IBlockIo) =
                 index.[key] <- struct (start, bytes.Length)
                 pos <- after)
 
+    /// Unpublish `key`. Superblock first, then RAM, so a torn slot keeps
+    /// the previous generation (the name still exists). Payload bytes stay
+    /// on the log until a later compaction. Missing key is a no-op.
+    member _.Delete(key: string) : bool =
+        if isNull key then
+            false
+        else
+            lock lockObj (fun () ->
+                if not (index.ContainsKey key) then
+                    false
+                else
+                    let snapshot = Dictionary(index, StringComparer.Ordinal)
+                    snapshot.Remove key |> ignore
+
+                    let entries =
+                        [| for kv in snapshot ->
+                               let struct (s, n) = kv.Value
+                               kv.Key, s, n |]
+
+                    BlockSuper.writeCas io entries
+                    index.Remove key |> ignore
+                    true)
+
 
 /// The global file system registry containing the active IFileSystem implementation.
 [<AbstractClass; Sealed>]
