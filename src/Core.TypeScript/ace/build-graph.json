@@ -3562,7 +3562,8 @@
       ],
       "dependsOn": [],
       "legs": [
-        "bytelock/bytelock"
+        "bytelock/bytelock",
+        "bytelock/cross-processor"
       ],
       "origin": "declared",
       "requiredQuorum": {
