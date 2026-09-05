@@ -37,7 +37,7 @@ from typing import Any
 from arcengine import GameAction
 
 from zeta_arc.agent import ACTION_VECTORS, PixelAgent
-from zeta_arc.click import ClickPolicy
+from zeta_arc.click import ClickPolicy, CoordinatePolicy
 from zeta_arc.dynamics import (
     Belief,
     age,
@@ -84,7 +84,7 @@ class LayeredAgent:
     """Routes each frame to whichever lower layer the world is answering."""
 
     pixel: PixelAgent = field(default_factory=PixelAgent)
-    click: ClickPolicy = field(default_factory=ClickPolicy)
+    click: CoordinatePolicy = field(default_factory=ClickPolicy)
     beliefs: dict[str, Belief] = field(default_factory=dict)
     _held: str | None = None
     _last_layer: str | None = None
@@ -123,12 +123,19 @@ class LayeredAgent:
         for name in self.beliefs:
             self.beliefs[name] = age(self.beliefs[name], LAYER_TAU, 1.0)
         changed = grid != self._last_grid
+        if self._last_layer == CLICK:
+            self.click.observe(grid)
         prior = self.beliefs.get(
             self._last_layer, Belief(mu=0.0, sigma2=LAYER_PRIOR_SIGMA2)
         )
         self.beliefs[self._last_layer] = observe(
             prior, 1.0 if changed else -1.0, LAYER_OBS_SIGMA2
         )
+        self._last_layer = None
+
+    def observe(self, frame: Any) -> None:
+        """Credit the pending action, including a terminal frame with no next act."""
+        self._credit_last_layer(grid_of(frame))
 
     def _elect(self, candidates: list[str]) -> str:
         """Pick a layer: unexplored first, then argmax of the conservative score.

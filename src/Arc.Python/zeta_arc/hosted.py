@@ -242,6 +242,7 @@ def play_environment(
             terminated = "step-failed"
             break
 
+        agent.observe(frame)
         probe.observe(grid_of(frame))
         completed = int(getattr(frame, "levels_completed", 0) or 0)
         state = getattr(frame, "state", None)

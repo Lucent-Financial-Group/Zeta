@@ -175,7 +175,7 @@ def test_palette_relabeling_preserves_untrained_structural_probabilities() -> No
     )
 
 
-def test_outcome_evidence_is_game_and_palette_scoped_and_immutable() -> None:
+def test_colour_and_shape_evidence_have_distinct_scopes_and_are_immutable() -> None:
     grid = _grid((3, 1, 1, 1, 1), (8, 6, 6, 1, 1))
     empty = ScenePriorModel()
     initial = forecast_scene(empty, "game-a", grid)
@@ -197,14 +197,20 @@ def test_outcome_evidence_is_game_and_palette_scoped_and_immutable() -> None:
     )
 
     assert empty.evidence == ()
-    assert (
-        next(
-            c for c in same_game.candidates if c.colours == (3,)
-        ).signals.learned_change_rate
-        > 0.5
+    same = next(c for c in same_game.candidates if c.colours == (3,)).signals
+    recoloured = next(
+        c for c in changed_palette.candidates if c.colours == (4,)
+    ).signals
+
+    assert same.learned_colour_change_rate > 0.5
+    assert same.learned_shape_change_rate > 0.5
+    assert all(
+        c.signals.learned_colour_change_rate == 0.5
+        and c.signals.learned_shape_change_rate == 0.5
+        for c in other_game.candidates
     )
-    assert all(c.signals.learned_change_rate == 0.5 for c in other_game.candidates)
-    assert all(c.signals.learned_change_rate == 0.5 for c in changed_palette.candidates)
+    assert recoloured.learned_colour_change_rate == 0.5
+    assert recoloured.learned_shape_change_rate > 0.5
 
 
 def test_unknown_coordinate_does_not_spend_or_invent_evidence() -> None:

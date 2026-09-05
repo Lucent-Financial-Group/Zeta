@@ -112,7 +112,7 @@ class SceneDelta:
 
 @dataclass(frozen=True)
 class OutcomeEvidence:
-    """A Beta(1,1) posterior over whether probing a color changed the world."""
+    """A Beta(1,1) posterior over whether probing a feature changed the world."""
 
     changed: int = 0
     unchanged: int = 0
@@ -127,35 +127,75 @@ class OutcomeEvidence:
         return OutcomeEvidence(self.changed, self.unchanged + 1)
 
 
-EvidenceRow = tuple[str, str, int, OutcomeEvidence]
+EvidenceRow = tuple[str, str, str, OutcomeEvidence]
 
 
 @dataclass(frozen=True)
 class ScenePriorModel:
-    """Immutable within-game evidence, scoped by game and palette regime."""
+    """Immutable evidence for persistent color and shape identities.
+
+    Color meaning is local to one game's palette regime. Shape meaning is local
+    to the game but survives recoloring and translation. Keeping those keys
+    separate prevents a palette change from deleting structural evidence while
+    also preventing a color learned in one palette from leaking into another.
+    """
 
     evidence: tuple[EvidenceRow, ...] = ()
 
-    def lookup(
-        self, game_fingerprint: str, palette_fingerprint: str, colour: int
-    ) -> OutcomeEvidence:
-        key = (game_fingerprint, palette_fingerprint, colour)
+    def _lookup(self, game_fingerprint: str, kind: str, value: str) -> OutcomeEvidence:
+        key = (game_fingerprint, kind, value)
         return next(
             (row[3] for row in self.evidence if row[:3] == key), OutcomeEvidence()
         )
 
-    def observe(
+    def _observe(
+        self,
+        game_fingerprint: str,
+        kind: str,
+        value: str,
+        world_changed: bool,
+    ) -> ScenePriorModel:
+        key = (game_fingerprint, kind, value)
+        rows = {row[:3]: row[3] for row in self.evidence}
+        rows[key] = rows.get(key, OutcomeEvidence()).observe(world_changed)
+        return ScenePriorModel(
+            tuple((*row_key, evidence) for row_key, evidence in sorted(rows.items()))
+        )
+
+    def lookup_colour(
+        self, game_fingerprint: str, palette_fingerprint: str, colour: int
+    ) -> OutcomeEvidence:
+        return self._lookup(
+            game_fingerprint, f"colour:{palette_fingerprint}", str(colour)
+        )
+
+    def observe_colour(
         self,
         game_fingerprint: str,
         palette_fingerprint: str,
         colour: int,
         world_changed: bool,
     ) -> ScenePriorModel:
-        key = (game_fingerprint, palette_fingerprint, colour)
-        rows = {row[:3]: row[3] for row in self.evidence}
-        rows[key] = rows.get(key, OutcomeEvidence()).observe(world_changed)
-        return ScenePriorModel(
-            tuple((*row_key, evidence) for row_key, evidence in sorted(rows.items()))
+        return self._observe(
+            game_fingerprint,
+            f"colour:{palette_fingerprint}",
+            str(colour),
+            world_changed,
+        )
+
+    def lookup_shape(
+        self, game_fingerprint: str, shape_fingerprint: str
+    ) -> OutcomeEvidence:
+        return self._lookup(game_fingerprint, "shape", shape_fingerprint)
+
+    def observe_shape(
+        self,
+        game_fingerprint: str,
+        shape_fingerprint: str,
+        world_changed: bool,
+    ) -> ScenePriorModel:
+        return self._observe(
+            game_fingerprint, "shape", shape_fingerprint, world_changed
         )
 
 
@@ -167,7 +207,8 @@ class CandidateSignals:
     edge_density: float
     change_density: float
     motion: float
-    learned_change_rate: float
+    learned_colour_change_rate: float
+    learned_shape_change_rate: float
 
 
 @dataclass(frozen=True)
@@ -177,6 +218,7 @@ class SceneCandidate:
     x: int
     y: int
     colours: tuple[int, ...]
+    shape_fingerprints: tuple[str, ...]
     score: float
     probability: float
     signals: CandidateSignals
@@ -195,6 +237,10 @@ class ScenePriorForecast:
 def _digest(value: object) -> str:
     encoded = json.dumps(value, separators=(",", ":"), sort_keys=True).encode("utf-8")
     return hashlib.sha256(encoded).hexdigest()
+
+
+def _shape_fingerprint(shape: tuple[Coordinate, ...]) -> str:
+    return _digest(shape)
 
 
 def _place_signature(grid: Grid, bins: int = 4) -> list[object]:
@@ -550,6 +596,7 @@ def forecast_scene(
     scores: dict[Coordinate, float] = {}
     signal_rows: dict[Coordinate, list[CandidateSignals]] = {}
     colours_by_point: dict[Coordinate, set[int]] = {}
+    shapes_by_point: dict[Coordinate, set[str]] = {}
     occupancy_by_colour = {
         sense.colour: sense.occupancy for sense in observation.colours
     }
@@ -562,17 +609,25 @@ def forecast_scene(
         object_key = (item.colour, (item.cx, item.cy))
         activity = _object_change_density(item, previous_grid, grid)
         motion_signal = motion_by_object.get(object_key, 0.0)
-        learned = model.lookup(
+        shape_fingerprint = _shape_fingerprint(item.shape)
+        learned_colour = model.lookup_colour(
             game_fingerprint, observation.palette_fingerprint, item.colour
         ).mean
+        learned_shape = model.lookup_shape(game_fingerprint, shape_fingerprint).mean
         signals = CandidateSignals(
-            rarity, item.edge_density, activity, motion_signal, learned
+            rarity,
+            item.edge_density,
+            activity,
+            motion_signal,
+            learned_colour,
+            learned_shape,
         )
         structural_score = 1.0 + rarity + item.edge_density + activity + motion_signal
-        score = structural_score * learned
+        score = structural_score * (learned_colour + learned_shape)
         scores[point] = scores.get(point, 0.0) + score
         signal_rows.setdefault(point, []).append(signals)
         colours_by_point.setdefault(point, set()).add(item.colour)
+        shapes_by_point.setdefault(point, set()).add(shape_fingerprint)
 
     denominator = sum(scores.values())
     candidates: list[SceneCandidate] = []
@@ -583,7 +638,11 @@ def forecast_scene(
             edge_density=sum(row.edge_density for row in rows) / len(rows),
             change_density=sum(row.change_density for row in rows) / len(rows),
             motion=sum(row.motion for row in rows) / len(rows),
-            learned_change_rate=sum(row.learned_change_rate for row in rows)
+            learned_colour_change_rate=sum(
+                row.learned_colour_change_rate for row in rows
+            )
+            / len(rows),
+            learned_shape_change_rate=sum(row.learned_shape_change_rate for row in rows)
             / len(rows),
         )
         candidates.append(
@@ -591,6 +650,7 @@ def forecast_scene(
                 x=point[0],
                 y=point[1],
                 colours=tuple(sorted(colours_by_point[point])),
+                shape_fingerprints=tuple(sorted(shapes_by_point[point])),
                 score=scores[point],
                 probability=scores[point] / denominator,
                 signals=signals,
@@ -623,10 +683,14 @@ def observe_forecast_outcome(
         return model
     updated = model
     for colour in candidate.colours:
-        updated = updated.observe(
+        updated = updated.observe_colour(
             game_fingerprint,
             forecast.observation.palette_fingerprint,
             colour,
             world_changed,
+        )
+    for shape_fingerprint in candidate.shape_fingerprints:
+        updated = updated.observe_shape(
+            game_fingerprint, shape_fingerprint, world_changed
         )
     return updated

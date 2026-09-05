@@ -56,6 +56,7 @@ src/apps/twitch-ai/src/recordings/arc-ztch-v1-session.json
 src/apps/twitch-ai/src/recordings/arc-zeta-click-target-session.json
 src/apps/twitch-ai/src/recordings/arc-coordinate-calibration.json
 src/Arc.Python/tests/data/scene-prior-benchmark.json
+src/Arc.Python/tests/data/scene-feedback-benchmark.json
 
 # VERBATIM COPIES OF GIT HISTORY. The four pre-fix `Application.yaml` files under
 # `testdata/inert-valuesobject-history/` are byte-for-byte `git show <sha>:<path>`
