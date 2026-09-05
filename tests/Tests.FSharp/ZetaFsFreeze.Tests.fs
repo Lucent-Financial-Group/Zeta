@@ -2566,6 +2566,56 @@ let ``XOR of a later freeze object is not readable; the prior freeze still is`` 
     }
 
 [<Fact>]
+let ``XOR after reopen is not readable`` () : Task =
+    task {
+        ensureHasher ()
+        let mock = InMemoryFileSystem()
+        FileSystem.Register(mock)
+        let store = "/hash-verify-reopen-xor"
+        let mutbuf = ZetaFsMutbuf.create store ZetaFsMutbuf.Coherence.Shared
+        let mutable firstContent = Unchecked.defaultof<ContentHash256>
+        let volume1 = ZetaFsFreeze.createManualStream store mutbuf None
+
+        try
+            let id = mintId ()
+            let h = ZetaFsMutbuf.openHandle volume1.Mutbuf id
+            ZetaFsMutbuf.pwrite volume1.Mutbuf h 0L [| 1uy; 2uy; 3uy |] |> ignore
+            let pending = (freezeAsync volume1 id ZetaFsFreeze.Journaled).AsTask()
+            do! (ZetaFsFreeze.pumpLog volume1 CancellationToken.None).ConfigureAwait(false)
+            let! first = pending.ConfigureAwait(false)
+            match first with
+            | Error e -> Assert.Fail(ZetaFsFreeze.errorName e)
+            | Ok ok -> firstContent <- ok.Content
+        finally
+            ZetaFsFreeze.dispose volume1
+
+        let volume2 = ZetaFsFreeze.createManualStream store mutbuf None
+        try
+            Assert.True(ZetaFsFreeze.isReadable volume2 firstContent)
+            let objectsDir = ZetaFsPath.combine2 store "objects"
+            let files =
+                FileSystem.Current.GetFiles(objectsDir, "*")
+                |> Array.filter (fun p -> not (p.EndsWith(".tmp", StringComparison.Ordinal)))
+            Assert.True(files.Length > 0)
+            let mutable i = 0
+
+            while i < files.Length do
+                let path = files.[i]
+                let bytes = FileSystem.Current.ReadAllBytes path
+
+                if bytes.Length > 0 then
+                    bytes.[bytes.Length - 1] <- bytes.[bytes.Length - 1] ^^^ 0xA5uy
+                    FileSystemIo.writeAllBytes FileSystem.Current path bytes
+
+                i <- i + 1
+
+            Assert.False(ZetaFsFreeze.isReadable volume2 firstContent)
+        finally
+            ZetaFsFreeze.dispose volume2
+            FileSystem.Reset()
+    }
+
+[<Fact>]
 let ``rolling 1 third freeze must not revive the first generation`` () : Task =
     task {
         ensureHasher ()
