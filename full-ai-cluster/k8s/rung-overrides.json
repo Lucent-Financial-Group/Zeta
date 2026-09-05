@@ -32,12 +32,31 @@
       "set": {
         "spec.source.helm.valuesObject.replicaCount": 1,
         "spec.source.helm.valuesObject.ollama.gpu.enabled": false,
-        "spec.source.helm.valuesObject.resources.requests": { "cpu": "250m", "memory": "512Mi" },
-        "spec.source.helm.valuesObject.resources.limits": { "cpu": "1", "memory": "2Gi" }
+        "spec.source.helm.valuesObject.resources.requests": {
+          "cpu": "250m",
+          "memory": "512Mi"
+        },
+        "spec.source.helm.valuesObject.resources.limits": {
+          "cpu": "1",
+          "memory": "2Gi"
+        }
       },
       "remove": [
         "spec.source.helm.valuesObject.nodeSelector"
       ]
+    },
+    {
+      "id": "opensearch/no-security-plugin-dev",
+      "path": "full-ai-cluster/k8s/applications/opensearch/Application.yaml",
+      "docIndex": 0,
+      "rung": "dev",
+      "reason": "OPENSEARCH REFUSES TO BOOT WITH THE SECURITY PLUGIN ON AND NO ADMIN PASSWORD, and that is why the live lane reported OutOfSync/Progressing on run 33936923932. FOUND BY READING UPSTREAM'S OWN CI, which is the cheapest possible source of truth: opensearch-project/helm-charts runs `helm/kind-action` + `ct install` on ubuntu-latest, so this chart IS expected to install on a GitHub runner -- and ALL THREE of its `charts/opensearch/ci/*-values.yaml` files set `OPENSEARCH_INITIAL_ADMIN_PASSWORD`. The stock `values.yaml` has that line COMMENTED OUT (line 110) while shipping `securityConfig.enabled: true` and `protocol: https`, so a chart taken at its defaults cannot start. THE DEV FIX IS TO TURN SECURITY OFF, NOT TO COMMIT A PASSWORD: this repository is PUBLIC, and a literal admin credential in a values file is a credential in git forever. A smoke-test index needs no TLS and no user database. `metal` keeps `securityConfig.enabled: true` and https untouched, where the password belongs in a minted Secret beside the Grafana admin one.",
+      "liftsWhen": "the dev lane mints an OpenSearch admin Secret the way `applyDevBootstrapSecrets` already mints Grafana's, at which point dev can run the same security posture as metal and this entry is deleted.",
+      "set": {
+        "spec.source.helm.valuesObject.securityConfig.enabled": false,
+        "spec.source.helm.valuesObject.protocol": "http"
+      },
+      "remove": []
     }
   ]
 }

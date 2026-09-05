@@ -86,7 +86,7 @@ export function declaresZeroReplicas(yaml: string): readonly string[] {
 }
 
 /** Directories under the applications root holding an Application.yaml, depth 1 and 2. */
-function applicationDirs(appsDir: string): readonly string[] {
+export function discoverApplicationDirs(appsDir: string): readonly string[] {
   const subdirs = (at: string): readonly string[] =>
     readdirSync(at, { withFileTypes: true })
       .filter((e) => e.isDirectory())
@@ -116,7 +116,7 @@ export function findZeroPodApplications(repoRoot = REPO_ROOT): readonly ZeroPodF
   const appsDir = join(repoRoot, APPS_RELATIVE);
   const findings: ZeroPodFinding[] = [];
 
-  for (const dir of applicationDirs(appsDir)) {
+  for (const dir of discoverApplicationDirs(appsDir)) {
     const here = join(appsDir, dir);
     const declarations: string[] = [];
     for (const entry of readdirSync(here, { withFileTypes: true })) {
