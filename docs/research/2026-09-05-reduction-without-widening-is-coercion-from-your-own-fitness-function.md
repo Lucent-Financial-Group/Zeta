@@ -893,14 +893,66 @@ has to *decide*, which is the part only they may do anyway.
    collapse [`anti-babel`](../../.claude/rules/anti-babel-preserve-reconcilability.md) already
    names. "Multiple reinforcements" has to mean different models, different framings, different
    evidence, or the plurality is decorative.
-2. **A challenger that never concedes is worthless.** If it argues against every `never`
-   regardless, its output carries no information — the vacuity class wearing an adversarial hat.
-   **The measure of a good challenger is that it sometimes reports "this one still holds",** and
-   that number is checkable.
+2. **A challenger must be CALIBRATED — not required to concede often.** *(Corrected below; my
+   first version said the measure is that it "sometimes concedes", which is wrong and would
+   exclude the best challengers.)* The defect is a challenger nothing can check, and the fix is a
+   calibration record, not a quota.
 3. **It produces ARGUMENTS, never decisions.** Lifting a permanent WONT-DO is a gated class; the
    agents may propose and may not authorize (`no-directives`: source is not authorization, and the
    shadow inherits authority, never extends it). The mechanism removes the human's obligation to
    *remember*, not their authority to *refuse again*.
+
+#### CORRECTION to constraint 2 — the measure is CALIBRATION, not concession rate
+
+I wrote that *"the measure of a good challenger is that it sometimes reports 'this one still
+holds'"*. Aaron:
+
+> *"there are some who only concede like 0.00000000000000000000000000001 percent of the time, and
+> we don't want to exclude those — that's me and all my children. But we have **test rates** to
+> prove our 99-nth percentile."*
+
+**He is right, and the error is a real statistical one rather than a wording slip.** I conflated
+two different quantities:
+
+| quantity | what it is | what it tells you |
+|---|---|---|
+| **concession rate** | how often the challenger says "this refusal still holds" | **nothing on its own** — it is only interpretable against the base rate of how many refusals *actually* should be reopened, which nobody knows |
+| **calibration** | whether its verdicts track the truth on cases where the truth is known | **the thing we actually want** |
+
+If it happens to be true that almost every unexpiring `never` deserves reopening, then a challenger
+conceding one time in `10²⁹` is **behaving correctly**, and my rule would have thrown it out for
+being right. A rate-based filter is a claim about the world's base rate smuggled in as a quality
+metric.
+
+**And the filter is selectively wrong in the worst direction.** It removes the *highest-conviction*
+challengers — the ones who almost never fold — which is exactly the population that produces the
+arguments a settled refusal needs. It is also an **anti-diversity filter**, and therefore the NCI
+violated by the very mechanism built to protect it: it collapses a plural challenger population
+toward the moderate middle, which is `ρ → 1` wearing a fairness rule.
+
+**The correct measure is the one Aaron names: TEST RATES on cases with known answers.** Run the
+challenger against a set where the right verdict is already established and measure its accuracy at
+the tail — the 99-nth percentile. That distinguishes the two failure modes the concession rate
+cannot tell apart:
+
+- a challenger that never concedes because it is a **broken yes-machine** — it fails the
+  calibration set;
+- a challenger that never concedes because it is **usually right** — it passes, and its rarity of
+  concession is then evidence about the world rather than about the challenger.
+
+**So the restated constraint:** the defect was never the rate. It was **a challenger nothing can
+check**. Requiring concessions was my proxy for checkability, and a calibration record is the real
+thing — it works for a challenger that concedes half the time and equally for one that has conceded
+once in its life.
+
+**Honest limit, which is where the work is:** this needs a calibration set with **known** answers,
+and for "should this refusal be reopened?" there is no such set sitting around — the ground truth is
+partly a judgement and partly only visible in hindsight. Two tractable substitutes, both
+approximations and labelled as such: **retrospective** scoring against refusals that were *later*
+reopened for independent reasons (real ground truth, small n, and only available after the fact),
+and **seeded** cases — refusals with a deliberately planted stale premise, where the right verdict
+is known by construction. The second is the mutation-testing pattern this repo already uses on its
+own falsifiers, pointed at a judge instead of at a test.
 
 **Status: not built.** The pieces exist — adversarial reviewer personas, the gated-class discipline,
 and a dated list of 12 refusals with no reachable condition — but nothing schedules the challenge
