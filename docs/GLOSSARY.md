@@ -1059,13 +1059,35 @@ Research ferry (architecture only):
 `docs/research/2026-09-05-meno-what-remains-vs-what-acts-tsirelson-iinput-ifeedback.md`.
 Personal grounding (Ryan / Aurora):
 `docs/research/2026-05-02-aaron-meno-terminal-commitment-ryan-memory-aurora-security-grounding-common-good-bidirectional-alignment.md`.
-Remain spreads by **seed vs broadcast**, not a public "Zeta Gate"
-product: content-addressed magnet plus gossip over time.
+Remain spreads by **seed vs broadcast** (kernel; not a SEED
+product name): content-addressed magnet plus gossip over time.
+The join/pin **product candidate** (working label Zeta Gate) is
+indexed at `docs/PRODUCT-LANES.md` and is not an HTTP gateway.
 `dht-discovery.ts` is existing destination-hash discovery, not a
 hidden-service / `.onion` product. Keep-alive is heartbeat-via-commit.
 LLMTV broadcast is the one-way society picture, not a locator.
 Research:
 `docs/research/2026-09-05-meno-dht-gossip-onion-over-time-not-broadcast.md`.
+
+### Zeta Gate (working label)
+
+**Plain:** A candidate *product* for joining a mesh without
+DNS or IP: you already have a hash or ZetaId; the client
+classifies it, gossips to k peers over time, and pins so
+remain does not fade. Not a reverse-proxy HTTP gateway.
+
+**Technical:** Product vs framework cut (Aaron 2026-08-27):
+products are sold (or services on them); frameworks are used
+by products. Kernel name stays **seed vs broadcast** in
+`docs/SEED-VOCABULARY.md` — do not put this working label in
+SEED. Classifier already in-tree:
+`src/Core.TypeScript/discovery/seed-not-broadcast.ts`. Bundle
+join with pin/heartbeat; kill `.onion` / `.zeta` hidden-service
+for v1. Naming collisions: CI `gate (required)`, Vault init
+gated, IPFS-style gateway. Public slug is naming-expert +
+Ilyana + Aaron. Index: `docs/PRODUCT-LANES.md`. Research:
+`docs/research/2026-09-05-zeta-gate-product-lane-join-pin-not-gateway.md`.
+Workitem `081M1RZ70FF087G0R0035580EZ`.
 
 ### Meter (and why one suffices but never one permitted)
 
