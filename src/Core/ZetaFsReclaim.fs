@@ -17,8 +17,9 @@ open Zeta.Core.FSharp.Blake3
 /// readable across that crash (tested). Sweep journal slice:
 /// `applyWithJournal` records remaining paths and resumes after
 /// crash-mid-sweep. Freeze volume door: `ZetaFsFreeze.reclaimSweep`.
-/// Tick: `ZetaFsFreeze.reclaimTick` (pacer + propose + sweep). Still `toy`:
-/// not a FerryThrottler boat / not auto-ticked after freeze.
+/// Tick: `ZetaFsFreeze.reclaimTick`. Boat: `reclaimAsync` + `pumpReclaim`
+/// (DoP=1 FerryThrottler, not the freeze WAL boat). Still `toy`: not
+/// auto-ticked after freeze.
 ///
 /// DoP=1 on this ferry. No Task.Run.
 module ZetaFsReclaim =
@@ -192,7 +193,7 @@ module ZetaFsReclaim =
     /// delete. A crash-mid-sweep leaves the journal; the next call with
     /// this path resumes (empty `paths` still reads the journal).
     /// Freeze volume door is `ZetaFsFreeze.reclaimSweep`. Tick is
-    /// `ZetaFsFreeze.reclaimTick`. Still `toy`: not a FerryThrottler boat.
+    /// `ZetaFsFreeze.reclaimTick`. Boat is `reclaimAsync` + `pumpReclaim`.
     let applyWithJournal
         (fs: IFileSystem)
         (journalPath: string)
