@@ -3,7 +3,9 @@ namespace Zeta.Core
 open System
 open System.Buffers.Binary
 open System.Collections.Generic
+open System.Globalization
 open System.IO
+open System.Text
 open System.Threading
 open System.Threading.Tasks
 open Zeta.Core.FSharp.Blake3
@@ -22,9 +24,9 @@ open Zeta.Core.FSharp.Blake3
 /// `pumpReclaim` are the DoP=1 FerryThrottler boat. Freeze bytes since
 /// last reclaim tick are metered on the volume (`reclaimTickMetered`).
 /// Orphan catalog keeps full ContentHash256 (`orphanObjects`); a path
-/// scan cannot reconstruct ids. Successful freeze enqueues orphan reclaim
-/// on the reclaim ferry when the catalog is nonempty (not vacuous empty
-/// ticks). Manual volumes still `pumpReclaim`.
+/// scan cannot reconstruct ids. Catalog persists in `known.pins` so
+/// reopen still sees crash leftovers. Successful freeze enqueues orphan
+/// reclaim when the catalog is nonempty. Manual volumes still `pumpReclaim`.
 ///
 /// DoP=1 on this log. No Task.Run except the ferry launch (injected context
 /// on the DST path; `manual` + `PumpToIdleAsync` for tests).
@@ -95,6 +97,53 @@ module ZetaFsFreeze =
                 | Simulated io -> io.LogicalBytes <- v
                 | HostFile io -> io.LogicalBytes <- v
 
+    let private catalogPath (storeDir: string) =
+        ZetaFsPath.combine2 storeDir "known.pins"
+
+    let private persistCatalog
+        (storeDir: string)
+        (known: Dictionary<ContentHash256, uint64>)
+        (livePins: HashSet<ContentHash256>)
+        =
+        let fs = FileSystem.Current
+        let lines =
+            known
+            |> Seq.map (fun kv ->
+                let pin = if livePins.Contains kv.Key then "1" else "0"
+                kv.Key.ToHex()
+                + " "
+                + kv.Value.ToString(CultureInfo.InvariantCulture)
+                + " "
+                + pin)
+            |> Seq.toArray
+
+        FileSystemIo.writeAllText fs (catalogPath storeDir) (String.concat "\n" lines)
+
+    let private loadCatalog
+        (storeDir: string)
+        (known: Dictionary<ContentHash256, uint64>)
+        (livePins: HashSet<ContentHash256>)
+        =
+        let fs = FileSystem.Current
+        let path = catalogPath storeDir
+
+        if fs.Exists path then
+            let text = Encoding.UTF8.GetString(fs.ReadAllBytes path)
+
+            for line in text.Replace("\r\n", "\n", StringComparison.Ordinal).Split('\n') do
+                if line.Length > 0 then
+                    let parts = line.Split(' ')
+
+                    if parts.Length = 3 && parts.[0].Length = 64 then
+                        match UInt64.TryParse(parts.[1], NumberStyles.Integer, CultureInfo.InvariantCulture) with
+                        | true, size ->
+                            let id = ContentHash256.ofHex parts.[0]
+                            known.[id] <- size
+
+                            if parts.[2] = "1" then
+                                livePins.Add id |> ignore
+                        | _ -> ()
+
     /// DoP=1 segment writer. One boat = N freezes, one Flush; Durable adds one
     /// fsync of objects-dir + log. `manual` is the DST pump (no background ferry).
     [<Sealed>]
@@ -141,6 +190,7 @@ module ZetaFsFreeze =
 
                     it.Reply.TrySetResult outcome |> ignore
 
+                persistCatalog storeDir known livePins
                 Task.CompletedTask
 
             let fail (ex: exn) =
@@ -210,6 +260,7 @@ module ZetaFsFreeze =
 
                                     if n > 0 then
                                         known.[id] <- uint64 n
+                                        persistCatalog storeDir known livePins
 
                                 raise ex
 
@@ -418,6 +469,7 @@ module ZetaFsFreeze =
         let mutable freezeBytesSinceReclaim = 0UL
         let known = Dictionary<ContentHash256, uint64>()
         let livePins = HashSet<ContentHash256>()
+        do loadCatalog storeDir known livePins
         let log = new FreezeLog(storeDir, config, manual, blockIo, objectCas, known, livePins)
         let reclaim = new ReclaimFerry(storeDir, config, manual)
 
@@ -1016,7 +1068,9 @@ module ZetaFsFreeze =
     /// DST / crash leftover: record a CAS object the volume wrote. Full
     /// ContentHash256, not the 128-bit path. Disk scan cannot reconstruct this.
     let noteKnownObject (volume: Volume) (id: ContentHash256) (size: uint64) =
-        lock volume.Gate (fun () -> volume.KnownObjects.[id] <- size)
+        lock volume.Gate (fun () ->
+            volume.KnownObjects.[id] <- size
+            persistCatalog volume.StoreDir volume.KnownObjects volume.LivePins)
 
     /// Objects the volume wrote that no live freeze still pins. Keeps full
     /// ids so reclaim can propose them. Empty until something is unpinned
@@ -1105,6 +1159,7 @@ module ZetaFsFreeze =
 
         volume.KnownObjects.[id] <- uint64 bytes.Length
         volume.LivePins.Add id |> ignore
+        persistCatalog volume.StoreDir volume.KnownObjects volume.LivePins
 
     let private objectKey (id: ContentHash256) =
         (ContentHash256.toContentAddress128 id).ToHex()
