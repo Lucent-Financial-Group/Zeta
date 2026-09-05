@@ -1082,8 +1082,11 @@ a caller, not a Gate SKU). Kernel name stays **seed vs
 broadcast** in `docs/SEED-VOCABULARY.md`. Classifier:
 `src/Core.TypeScript/discovery/seed-not-broadcast.ts`. After
 discovery: reverse UDP/TCP hole punch (WebSockets on
-outgoing 443, no STUN/TURN) — decentralized version of
-US 10,834,144; do not reintroduce a hub. Then simulated DNS
+outgoing 443 are enough that inbound is **not** required;
+anyone may open inbound to go direct and stop being a
+relay; STUN/TURN is in the method set) — decentralized
+version of US 10,834,144; do not reintroduce a hub. Then
+simulated DNS
 for cross-site names. Many protocols (Reticulum likely;
 HTTP and WebSockets among them), not one lock-in. Index:
 `docs/PRODUCT-LANES.md`. Research:

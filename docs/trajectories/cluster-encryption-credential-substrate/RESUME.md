@@ -45,8 +45,9 @@ stack. Pattern 1 refused. Founder-sacrifice refused on main
 Product-lane catalog (the human maintainer 2026-09-05): working label
 **Zeta Gate** is the join/pin *framework* many protocols
 consume — not a sold product, not a SEED rename, not an HTTP
-gateway. After discovery: hole punch (WS/443, no STUN), then
-simulated DNS. [`docs/PRODUCT-LANES.md`](../../PRODUCT-LANES.md).
+gateway. After discovery: hole punch (outbound-only is
+enough; inbound is how anyone exits being a relay; STUN/TURN
+in the method set), then simulated DNS. [`docs/PRODUCT-LANES.md`](../../PRODUCT-LANES.md).
 Research:
 [`docs/research/2026-09-05-join-hash-is-framework-hole-punch-after-discovery.md`](../../research/2026-09-05-join-hash-is-framework-hole-punch-after-discovery.md).
 

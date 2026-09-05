@@ -19,10 +19,12 @@ composes_with: ["081M1RZ70FF087G0R0035580EZ", "081KQZVQW0008QG0R001CQPQ0E", "081
 Aaron 2026-09-05: join-hash is framework (many protocols will
 use it). ZetaDB federation likely over Reticulum, but HTTP
 and WebSockets are in the set. After discovery: reverse
-UDP/TCP hole punch (WS outgoing 443, no STUN/TURN) — the
-decentralized version of US 10,834,144. Few inbound nodes
-punch two others into direct. Also simulate DNS for
-cross-site names.
+UDP/TCP hole punch (WS outgoing 443 is enough that a node
+runner does not have to open inbound). Anyone may open
+inbound to do direct routing and stop being a relay hub.
+STUN/TURN is in the method set, not an appointed addressing
+authority. The decentralized version of US 10,834,144.
+Simulated DNS for cross-site names.
 
 Docs this slice: `docs/PRODUCT-LANES.md` +
 `docs/research/2026-09-05-join-hash-is-framework-hole-punch-after-discovery.md`.

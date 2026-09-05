@@ -33,7 +33,8 @@ idea.
    designer + the human maintainer. Working labels are fine
    here.
 6. Record kill criteria. A lane that is an HTTP gateway, a
-   SEED rename, an appointed hub, a myth overlay, or a
+   SEED rename, an appointed hub, an appointed STUN as
+   addressing authority, a myth overlay, or a
    single-protocol lock-in is not added.
 
 New bets start as `docs/research/` absorbs and a ZetaId
@@ -80,13 +81,14 @@ Gate stays optional and collision-heavy (CI `gate
 **Sequence after join (research, not shipped here):**
 
 1. Discover via join-hash / pin.
-2. Reverse UDP/TCP hole punch. WebSockets: outgoing 443, no
-   STUN/TURN. Decentralized version of US 10,834,144 (hub
-   stayed at Itron; peer-to-peer is the upgrade). Cite
-   `multiplexed-duplex-transport.ts` and
-   `081KQZVQW0008QG0R001CQPQ0E`. Few nodes need inbound;
-   those punch two others into **direct** so they stop
-   relaying.
+2. Reverse UDP/TCP hole punch. Default is **outbound
+   only** — a node runner does not have to open inbound
+   (WebSockets on 443 are enough). Anyone may open inbound
+   to do **direct** routing and stop being a relay hub.
+   STUN/TURN is in the method set, not an appointed
+   addressing authority. Decentralized version of
+   US 10,834,144. Cite `multiplexed-duplex-transport.ts` and
+   `081KQZVQW0008QG0R001CQPQ0E`.
 3. Simulated DNS for multi-machine cross-site names. A
    DNS-shaped adapter over the mesh, not a public nameserver.
 
@@ -98,8 +100,9 @@ HTTP and WebSockets are in the set.
 `websocket` / `git` / `broadcast` as adapter categories, not
 shipped sockets.
 
-**Kill:** appointed hub; single-protocol lock-in; HTTP
-reverse proxy as the join; Tor wire. Research:
+**Kill:** appointed hub; appointed STUN as addressing
+authority; single-protocol or single-punch-method lock-in;
+HTTP reverse proxy as the join; Tor wire. Research:
 [`docs/research/2026-09-05-join-hash-is-framework-hole-punch-after-discovery.md`](research/2026-09-05-join-hash-is-framework-hole-punch-after-discovery.md).
 
 ## Pointers
