@@ -179,6 +179,116 @@ for is the useful part.
 the base is a structural rhyme. Nothing here claims Zeta's Clifford layer is
 Finster's continuum limit, and no count should be matched to one.
 
+## The measurement problem is the one where our answer is already NAMED
+
+Aaron 2026-09-05, on Finster's measurement-problem section:
+
+> *"this measurement issue he talks about is why we have zsets and uncertan[t]y
+> preservation ... this is how we try to solve the measurement problem, we never
+> actually fully me[a]sure, we simulate the measurement since we are trying to
+> never collapse the wave, we can make it very very accurate a[nd] localized to
+> maxim[um] extent but we try to never collapse this is our NCI."*
+
+**This is the tightest correspondence in the whole thread, and it is not a
+metaphor — the repo's word for it is already `collapse`.**
+
+`docs/SEED-VOCABULARY.md` defines the NCI without any reference to physics:
+
+> **NCI / the repelling force** — the Non-Coercion-Invariant: **the anti-collapse
+> force that keeps identities distinct** (alignment = a *repulsion that preserves
+> plurality*, never an attractive/coercive force → monoculture/D⁰).
+
+and its measure:
+
+> **diversity floor** — coercion collapses diversity → 1 (= D⁰ heat-death);
+> private state preserves it; floor `≥ 2` is the alignment result.
+
+So the thing Copenhagen adds as a postulate — *the state vector ends up in an
+eigenstate* — is the thing this substrate is built to REFUSE, one domain over.
+Finster's objection is exactly the shape of the NCI's: *"when you do a
+measurement, something happens which cannot be explained within the theory."*
+
+### Where the refusal is actually implemented
+
+| the collapse | what the repo does instead |
+|---|---|
+| the state reduces to an eigenvalue | **Z-set retraction is CORRECTION, not deletion** — `+1` then `−1`; the prior fact stays in the log (`dv2-data-split-discipline-activated.md`) |
+| one surviving value | **raw vault: a single version of the FACTS, never of the TRUTH**; a merge producing one value has collapsed, not merged |
+| divergent branches reconverge | **reintegration is not reconvergence** — both branches held, each with its path recorded (`anti-babel`) |
+| the observer forces the outcome | the meter reports raw value and **never judges**; plural oracles do (`dual-use-detection`) |
+
+Every one of those is the same refusal wearing a different hat, and none of them
+was written with quantum mechanics in mind. That is what makes the
+correspondence worth recording rather than decorative: they were arrived at
+independently and they all say *do not destroy the alternatives*.
+
+### And the honest gap — the non-collapse half is the UNBUILT one
+
+Aaron's sentence is *"we simulate the measurement"*, and the repo has exactly
+that verb pair — but only one side ships:
+
+- `measure` — **shipped**. `src/Core.TypeScript/ledger/measure.ts` commits a ΔU
+  to the uncertainty ledger, keyed and idempotent. This is the *collapsing* half:
+  it writes a value down.
+- `sim` — **does not compose**. `clis/Verbs.fs` records it plainly:
+  *"`IMeaVerb.Mea` consumes `ISim<'a>`; no member returns an `ISim<'a>`"* — there
+  is no introduction form, so the documented pipe does not typecheck.
+  `every-bug-has-economic-value.md` says the same: *"`sim`, the ephemeral half, is
+  a compiled stub … `measure` is the shipped half."*
+
+So the substrate currently ships the half that collapses and stubs the half that
+does not. That is worth stating flatly next to a claim that non-collapse is the
+answer: **the philosophy is carved, the mechanism is a stub, and the gap is in
+the direction that matters.** `src/Core/SimVerb.fs` exists; what is missing is
+the introduction form that would let a simulated measurement be consumed without
+being committed.
+
+Register: the mapping is structural and the repo's own vocabulary supplies the
+word. It is not a claim that the NCI solves the physical measurement problem, and
+Finster's own answer — a stochastic background plus a non-linear term, yielding a
+CSL-like collapse model — is a different construction doing a different job.
+
+### The precondition: a fact is a value WITH ITS UNCERTAINTY, or the raw vault is a lie
+
+Aaron, immediately after, supplying the condition the table above quietly assumed:
+
+> *"yes — as long as we can trust our meter to produc[e] facts with uncertan[t]y
+> attached, then each indiv[i]dual can come up with [t]heir own truth."*
+
+**This is the load-bearing clause, and without it "one version of the facts,
+many truths" does not work.** A meter that reports a bare point value has
+*already collapsed* — it discarded the spread before anyone downstream got to
+judge. Two readers then inherit a number with no room to disagree honestly: they
+can only disagree about *interpretation*, never about *how much the measurement
+constrains*. That is a single version of the truth arriving in a fact's clothing.
+
+So the two halves are one requirement:
+
+| | what it demands |
+|---|---|
+| **meter side** | emit **value + uncertainty**, never a point. Collapsing the spread at the instrument is the measurement problem, one layer down |
+| **oracle side** | plural truths are *derivable* from that record, because the uncertainty is what different priors have to work on |
+
+And it explains why `measure` writes to `db/uncertainty/` rather than to a
+results table: the ledger's unit is a **ΔU** — an uncertainty *reduction* — and
+the register is deliberately **ordinal + witnessed**, never an invented cardinal
+(`every-bug-has-economic-value.md`). Unwitnessed or unsubstantiated is *refused*.
+That refusal is the meter declining to fabricate precision it does not have,
+which is exactly the discipline this clause names.
+
+It also gives the good-meter test from `dual-use-detection` a sharper failure
+mode. That rule says a good meter is one **anyone can inspect and agree to the
+rules of**. Aaron's clause adds: a meter that reports without uncertainty cannot
+be checked for over-confidence at all — nothing in its output says how far it
+should be trusted, so agreeing to its rules buys you nothing. **A point estimate
+is unfalsifiable in the same way a check that cannot fail is.**
+
+Honest status of the substrate against its own precondition: the ledger's
+ordinal-and-witnessed discipline is shipped and its refusals are the falsifiers,
+but the general claim — *every* meter here attaches uncertainty — is not audited.
+No check enumerates the measurement surfaces and asks which ones emit a bare
+number. That is a nameable gap rather than a satisfied requirement.
+
 ## Register
 
 Everything above is **his** claim, reported. Causal fermion systems is a live
