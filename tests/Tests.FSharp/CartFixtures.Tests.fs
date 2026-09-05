@@ -39,3 +39,26 @@ let ``CHIP9 white-dot cart can light all color planes`` () =
     Assert.Equal(7uy, final.Plane)
     Assert.True(Chip8Cow.pixel 0 0 final)
     Assert.Equal(7uy, Chip8Cow.colorAt 0 0 final)
+
+[<Fact>]
+let ``motion-dot cart is an inspectable four-instruction frame loop`` () =
+    match CartFixtures.motionDotRom 4 8 2 with
+    | Error feedback -> failwith feedback
+    | Ok rom ->
+        Assert.Equal<byte[]>(
+            [| 0x60uy; 0x04uy
+               0x61uy; 0x08uy
+               0xA2uy; 0x0Euy
+               0x00uy; 0xE0uy
+               0xD0uy; 0x11uy
+               0x70uy; 0x02uy
+               0x12uy; 0x06uy
+               0x80uy |],
+            rom
+        )
+
+[<Fact>]
+let ``motion-dot cart rejects invalid coordinates and zero velocity as values`` () =
+    Assert.Equal(Error "motion-dot start X must be inside the CHIP-8 display", CartFixtures.motionDotRom -1 8 1)
+    Assert.Equal(Error "motion-dot Y must be inside the CHIP-8 display", CartFixtures.motionDotRom 4 32 1)
+    Assert.Equal(Error "motion-dot delta must be in -8..-1 or 1..8", CartFixtures.motionDotRom 4 8 0)

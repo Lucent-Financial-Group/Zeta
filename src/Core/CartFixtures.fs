@@ -74,6 +74,31 @@ module CartFixtures =
               Ticks = ticks
               Recording = { Crossings = Map.empty } } }
 
+    let private motionDotBytes startX y delta =
+        assemble
+            [ ldV 0 startX
+              ldV 1 y
+              ldI 0x20E
+              cls
+              draw 0 1 1
+              addV 0 delta
+              jp 0x206
+              [| 0x80uy |] ]
+
+    /// A one-pixel motion cart used to test visual prediction without a
+    /// downloaded ROM. After three setup instructions, each four-instruction
+    /// frame clears, draws at the current coordinate, advances X by `delta`,
+    /// and loops. Evaluation windows stay away from the CHIP-8 wrap boundary.
+    let motionDotRom (startX: int) (y: int) (delta: int) : Result<byte[], string> =
+        if startX < 0 || startX >= Chip8.DisplayW then
+            Error "motion-dot start X must be inside the CHIP-8 display"
+        elif y < 0 || y >= Chip8.DisplayH then
+            Error "motion-dot Y must be inside the CHIP-8 display"
+        elif delta = 0 || delta < -8 || delta > 8 then
+            Error "motion-dot delta must be in -8..-1 or 1..8"
+        else
+            Ok(motionDotBytes startX y delta)
+
     /// A deterministic loop. Under a small soft tank this starves before the
     /// requested lookahead depth, so it is useful as the "less knowable" child.
     let loopRom: byte[] =
@@ -113,6 +138,18 @@ module CartFixtures =
     let chip9WhiteDot: Fixture =
         cartWith Dialect.Chip9 Chip9Capabilities.chip9ColorUnthrottled "fixture-chip9-white-dot" (colorDotRom 7) 3 1
 
+    let motionDotForward: Fixture =
+        cartWith Dialect.Chip8 Chip9Capabilities.chip8Default "fixture-motion-dot-forward" (motionDotBytes 4 8 1) 4 1
+
+    let motionDotReverse: Fixture =
+        cartWith Dialect.Chip8 Chip9Capabilities.chip8Default "fixture-motion-dot-reverse" (motionDotBytes 24 8 -1) 4 1
+
+    let motionDotFast: Fixture =
+        cartWith Dialect.Chip8 Chip9Capabilities.chip8Default "fixture-motion-dot-fast" (motionDotBytes 4 8 2) 4 1
+
+    let motionDotFastReverse: Fixture =
+        cartWith Dialect.Chip8 Chip9Capabilities.chip8Default "fixture-motion-dot-fast-reverse" (motionDotBytes 28 8 -2) 4 1
+
     let cart (fixture: Fixture) : Cart.Cart = fixture.Cart
 
     let classicChildren: Cart.Cart list =
@@ -120,3 +157,9 @@ module CartFixtures =
 
     let chip9Children: Cart.Cart list =
         [ cart chip9GreenDot; cart chip9WhiteDot ]
+
+    let motionChildren: Cart.Cart list =
+        [ cart motionDotForward
+          cart motionDotReverse
+          cart motionDotFast
+          cart motionDotFastReverse ]

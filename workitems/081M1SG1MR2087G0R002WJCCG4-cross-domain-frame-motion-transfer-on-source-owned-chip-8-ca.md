@@ -38,3 +38,27 @@ disjoint suffix plus held-out direction and speed variants.
   variant or the result is recorded as negative.
 - Retained policy state is fixed-size and reported separately from runtime
   samples; no ARC generalization claim is made.
+
+## Result
+
+Implemented four source-owned CHIP-8 carts spanning positive and negative
+motion at one- and two-pixel speeds. The predictor receives only rendered
+`GameEnvironment.Frame` values. Across six disjoint next-frame labels per cart,
+the current-position control scored 0/6 and the one-step projection scored 6/6
+on every cart. The result therefore rejects hard-coded positive direction and
+unit-speed explanations.
+
+The predictor retains at most two centroids plus dimensions and a saturating
+observation count: seven logical 32-bit values, or 28 logical bytes. That is
+schema-level accounting, not CLR object size, heap usage, process RSS, or a CPU
+benchmark. Frame processing is linear in frame cells plus palette size.
+
+This is evidence that the motion feature and frame contract are not tied to
+ARC inputs. It is not evidence of ARC task generalization: all four carts share
+one small constant-velocity program family, foreground extraction assumes a
+dominant background, and the estimator tracks one aggregate centroid rather
+than multiple objects, shape changes, occlusion, or acceleration.
+
+Verification: 16 focused F# tests passed, including malformed-frame feedback,
+out-of-frame projection feedback, palette-label changes, and observation-count
+saturation.
