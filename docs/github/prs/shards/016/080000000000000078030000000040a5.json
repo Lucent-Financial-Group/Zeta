@@ -1,0 +1,12 @@
+{
+  "pr_number": 16549,
+  "archive_path": "docs/history/pr-reviews/PR-16549-docs-zetafs-record-failed-windows-isolation-rerun.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-04T01:19:05.455Z",
+  "schema_version": "v1",
+  "commit_sha": "6ea8a27656a1e439cee5c135567ecd087145d736",
+  "title": "docs(zetafs): record failed Windows isolation rerun",
+  "state": "MERGED",
+  "merged_at": "2026-09-04T01:18:28Z",
+  "head_ref": "lumen/zetafs-isolation-falsification"
+}

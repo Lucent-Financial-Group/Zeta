@@ -37,7 +37,7 @@ while every unit test stays green.
 
 ## What this buys, and what it does not
 
-These assert on the **source**, the way `ci/manifest-symmetry.test.ts` already does. Stated in the
+These assert on the **source**, the way `src/Core.TypeScript/ci/manifest-symmetry.test.ts` already does. Stated in the
 module header so nobody mistakes it for a behavioural test:
 
 - it **cannot** tell whether the wiring is correct, only that it is present;

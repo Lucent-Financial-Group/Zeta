@@ -1,0 +1,14 @@
+{
+  "id": "080d0347c2b56810a01300086752e499",
+  "at": "2026-09-03T20:31:40.717Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1MFGNNC087G0R003SNN549",
+    "type": "bug",
+    "title": "Repair newly landed auto-vivify references to canonical source paths",
+    "slug": "repair-newly-landed-auto-vivify-references-to-canonical-sour",
+    "priority": "P2",
+    "filename": "081M1MFGNNC087G0R003SNN549-repair-newly-landed-auto-vivify-references-to-canonical-sour.md"
+  }
+}

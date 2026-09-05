@@ -1,0 +1,14 @@
+{
+  "id": "080d0354148e7010a0130008b360e8b7",
+  "at": "2026-09-04T03:42:17.038Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1N854ED087G0R002JP5V5N",
+    "type": "bug",
+    "title": "InMemoryFileSystem keyed paths exactly, so Windows separators split one file into two entries",
+    "slug": "inmemoryfilesystem-keyed-paths-exactly-so-windows-separators",
+    "priority": "P2",
+    "filename": "081M1N854ED087G0R002JP5V5N-inmemoryfilesystem-keyed-paths-exactly-so-windows-separators.md"
+  }
+}

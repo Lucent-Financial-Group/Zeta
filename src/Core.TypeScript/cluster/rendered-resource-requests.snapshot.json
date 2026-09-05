@@ -1,5 +1,5 @@
 {
-  "measuredOn": "2026-09-02",
+  "measuredOn": "2026-09-04",
   "appsDiscovered": [
     "full-ai-cluster/agent-memory",
     "full-ai-cluster/alloy",
@@ -24,6 +24,7 @@
     "full-ai-cluster/headlamp",
     "full-ai-cluster/headscale",
     "full-ai-cluster/hindsight",
+    "full-ai-cluster/keda",
     "full-ai-cluster/kube-prometheus-stack",
     "full-ai-cluster/kubevirt",
     "full-ai-cluster/loki",
@@ -33,6 +34,7 @@
     "full-ai-cluster/node-feature-discovery",
     "full-ai-cluster/ollama",
     "full-ai-cluster/open-policy-agent",
+    "full-ai-cluster/opensearch",
     "full-ai-cluster/orleans",
     "full-ai-cluster/oz",
     "full-ai-cluster/platform",
@@ -667,6 +669,37 @@
           ]
         },
         {
+          "appId": "full-ai-cluster/keda",
+          "cpuMillis": 75,
+          "memoryMib": 192,
+          "pods": 3,
+          "workloads": [
+            {
+              "workload": "Deployment/keda-admission-webhooks",
+              "replicas": 1,
+              "cpuMillis": 25,
+              "memoryMib": 64
+            },
+            {
+              "workload": "Deployment/keda-operator",
+              "replicas": 1,
+              "cpuMillis": 25,
+              "memoryMib": 64
+            },
+            {
+              "workload": "Deployment/keda-operator-metrics-apiserver",
+              "replicas": 1,
+              "cpuMillis": 25,
+              "memoryMib": 64
+            }
+          ],
+          "overlaid": [
+            "full-ai-cluster/keda/metricServer",
+            "full-ai-cluster/keda/operator",
+            "full-ai-cluster/keda/webhooks"
+          ]
+        },
+        {
           "appId": "full-ai-cluster/kube-prometheus-stack",
           "cpuMillis": 0,
           "memoryMib": 0,
@@ -1041,6 +1074,23 @@
           "overlaid": [
             "full-ai-cluster/open-policy-agent/audit",
             "full-ai-cluster/open-policy-agent/controller-manager"
+          ]
+        },
+        {
+          "appId": "full-ai-cluster/opensearch",
+          "cpuMillis": 250,
+          "memoryMib": 1024,
+          "pods": 1,
+          "workloads": [
+            {
+              "workload": "StatefulSet/opensearch-cluster-master",
+              "replicas": 1,
+              "cpuMillis": 250,
+              "memoryMib": 1024
+            }
+          ],
+          "overlaid": [
+            "full-ai-cluster/opensearch"
           ]
         },
         {
@@ -2201,6 +2251,37 @@
           ]
         },
         {
+          "appId": "full-ai-cluster/keda",
+          "cpuMillis": 300,
+          "memoryMib": 300,
+          "pods": 3,
+          "workloads": [
+            {
+              "workload": "Deployment/keda-admission-webhooks",
+              "replicas": 1,
+              "cpuMillis": 100,
+              "memoryMib": 100
+            },
+            {
+              "workload": "Deployment/keda-operator",
+              "replicas": 1,
+              "cpuMillis": 100,
+              "memoryMib": 100
+            },
+            {
+              "workload": "Deployment/keda-operator-metrics-apiserver",
+              "replicas": 1,
+              "cpuMillis": 100,
+              "memoryMib": 100
+            }
+          ],
+          "overlaid": [
+            "full-ai-cluster/keda/metricServer",
+            "full-ai-cluster/keda/operator",
+            "full-ai-cluster/keda/webhooks"
+          ]
+        },
+        {
           "appId": "full-ai-cluster/kube-prometheus-stack",
           "cpuMillis": 0,
           "memoryMib": 0,
@@ -2575,6 +2656,23 @@
           "overlaid": [
             "full-ai-cluster/open-policy-agent/audit",
             "full-ai-cluster/open-policy-agent/controller-manager"
+          ]
+        },
+        {
+          "appId": "full-ai-cluster/opensearch",
+          "cpuMillis": 1000,
+          "memoryMib": 2048,
+          "pods": 1,
+          "workloads": [
+            {
+              "workload": "StatefulSet/opensearch-cluster-master",
+              "replicas": 1,
+              "cpuMillis": 1000,
+              "memoryMib": 2048
+            }
+          ],
+          "overlaid": [
+            "full-ai-cluster/opensearch"
           ]
         },
         {

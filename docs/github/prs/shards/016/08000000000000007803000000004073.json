@@ -1,0 +1,12 @@
+{
+  "pr_number": 16499,
+  "archive_path": "docs/history/pr-reviews/PR-16499-feat-bayesian-add-canonical-crdt-evidence-query-adapter.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-03T11:47:14.427Z",
+  "schema_version": "v1",
+  "commit_sha": "a0548e59714b8cb3de0c953c12649d994ebea87c",
+  "title": "feat(bayesian): add canonical CRDT evidence query adapter",
+  "state": "MERGED",
+  "merged_at": "2026-09-03T11:46:29Z",
+  "head_ref": "lumen/rffh-exact-dense-arity-followup"
+}

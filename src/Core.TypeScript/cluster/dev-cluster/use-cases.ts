@@ -1,7 +1,15 @@
 import { randomBytes } from "node:crypto";
 import { writeFileSync } from "node:fs";
 import { join } from "node:path";
-import { ciliumK3dValues, ciliumKindValues, readCiliumValueSurfaces, renderValuesYaml, shippedCiliumChartVersion, CILIUM_CHART_REPO, GATEWAY_API_CRD_BUNDLE } from "../cilium-kind-lane.ts";
+import {
+  ciliumK3dValues,
+  ciliumKindValues,
+  readCiliumValueSurfaces,
+  renderValuesYaml,
+  shippedCiliumChartVersion,
+  CILIUM_CHART_REPO,
+  GATEWAY_API_CRD_BUNDLE,
+} from "../cilium-kind-lane.ts";
 import type { DevClusterPorts, KindCni } from "../ports.ts";
 import {
   buildDevAdminSecretManifest,
@@ -14,6 +22,7 @@ import {
   resolveRegistryToken,
   REPO_ROOT,
 } from "./lib.ts";
+import { SERVED_GIT_REF } from "../lane-tree-source.ts";
 
 /**
  * Apply the dev/CI alias StorageClasses, BEFORE the app-of-apps root syncs.
@@ -64,6 +73,55 @@ export function applyDevCiliumLbKindAlias(ports: DevClusterPorts): void {
     ports.controlPlane.waitForCrdEstablished(crd, 120);
   }
   ports.controlPlane.applyFileManifest(devCiliumLbKindManifestPath());
+}
+
+/**
+ * Apply the vendored Gateway API CRD bundle metal first-boot applies as
+ * `aa-gateway-api-crds`. Cilium does NOT ship these. cert-manager with
+ * `enableGatewayAPI: true` crash-loops without them:
+ *
+ *     the Gateway API CRDs do not seem to be present, but
+ *     ExperimentalGatewayAPISupport is set to true
+ *
+ * MEASURED k3d included lift run 33429761222 (job 99614682092): cert-manager
+ * controller CrashLoopBackOff (17 restarts) on that line; trust-manager then
+ * FailedMount on `trust-manager-tls`; openziti Init FailedMount on missing
+ * ziti identity secrets. Kind `--cni cilium` already applies this file.
+ * k3d skipped it. Kindnetd still uses the GitHub remote.
+ *
+ * BEFORE Cilium helm and BEFORE the catalogue. Metal's `aa-` prefix is the
+ * same ordering intent. Shared by kind `--cni cilium` and k3d so the two
+ * Cilium lanes cannot drift on which file they apply.
+ */
+export function applyVendoredGatewayApiCrds(ports: DevClusterPorts): void {
+  console.log("Applying the VENDORED Gateway API CRD bundle (the same file first boot applies on metal) ...");
+  ports.controlPlane.applyFileManifest(join(REPO_ROOT, GATEWAY_API_CRD_BUNDLE));
+}
+
+/**
+ * Map `control-plane` to 127.0.0.1 on the k3d SERVER node.
+ *
+ * Metal `k3s-server.nix` does this on the founder (`networking.hosts."127.0.0.1"
+ * = [ "control-plane" ]`) so Cilium can reach the API at the Application's
+ * `k8sServiceHost: control-plane`. k3d skipped it. Helm install deltas that
+ * host to the Docker DNS name; ArgoCD's cilium Application (included on k3d)
+ * then wants the metal name back. Without this mapping the agent cannot dial
+ * the API after that adopt.
+ *
+ * SERVER ONLY. The same mapping on an agent is the joining-node defect
+ * k3s-server.nix refuses: control-plane would resolve to the agent itself.
+ * `kubeApiHost` is `k3d-<cluster>-server-0`, the founder container.
+ *
+ * Idempotent: second bring-up against an existing cluster must not duplicate
+ * the line. YAML `hostAliases` on the CI profile (agents: 0) is the create-time
+ * twin; this call covers the existing-cluster path and the three-node local
+ * profile, which must not put 127.0.0.1 on agents.
+ */
+export function applyK3dControlPlaneHostsAlias(ports: DevClusterPorts, kubeApiHost: string): void {
+  console.log("Mapping control-plane -> 127.0.0.1 on the k3d server node (metal k3s-server.nix founder hosts) ...");
+  const script =
+    "grep -qE '(^|[[:space:]])control-plane($|[[:space:]])' /etc/hosts || echo '127.0.0.1 control-plane' >> /etc/hosts";
+  ports.process.run("docker", ["exec", kubeApiHost, "sh", "-c", script], { timeoutMs: 30_000 });
 }
 
 /**
@@ -204,6 +262,27 @@ export interface KindCiBringUpOptions {
    */
   readonly cni?: KindCni;
   /**
+   * SERVE THE TREE THE LANE SHOULD SYNC, instead of the committed one.
+   *
+   * The committed tree is the `metal` resource rung, which is correct for the
+   * 16-core box it names and is 6390m of requests on the dev lane's 39 apps --
+   * against a 4000m runner node. When present, this carries the manifests for an
+   * in-cluster read-only git server (built by `lane-tree-source.ts`) plus the URL
+   * ArgoCD should clone instead of GitHub. The server is applied and waited on
+   * BEFORE the root Application, because a root app pointed at a server that is
+   * not yet answering fails its first sync and retries with backoff.
+   *
+   * `gitRef` is the revision ArgoCD must request FROM THAT SERVER. It is not the
+   * GitHub SHA: a 40-hex targetRevision is fetched as an object, and the served
+   * commit is a new hash (MEASURED 33822942615). Absent defaults to the bring-up
+   * `gitRef`, which is correct only when that value is also a branch the served
+   * repo has (local `main`). The harness always sets this to `SERVED_GIT_REF`.
+   *
+   * Absent -- the default -- leaves every existing caller syncing `gitRepoUrl`
+   * exactly as before.
+   */
+  readonly laneTree?: { readonly manifests: string; readonly repoUrl: string; readonly gitRef?: string };
+  /**
    * The environment the registry pull credential is sourced from.
    *
    * DECLARED rather than ambient (manifesto §13 noninterference): this value
@@ -225,6 +304,14 @@ export interface K3dDevBringUpOptions {
   readonly kubeApiHost: string;
   readonly gitRef: string;
   readonly gitRepoUrl: string;
+  /**
+   * Same override as `KindCiBringUpOptions.laneTree`. Absent leaves the
+   * committed `metal` tree. GitHub-hosted runners are 4000m; the metal rung is
+   * 6390m on the dev lane. `--serve-tree dev` is the runner CPU/memory overlay;
+   * metal stays in git for USB/hardware. Disk is a different ladder
+   * (`runnerEnvelope` + storage profiles) and is not rewritten here.
+   */
+  readonly laneTree?: { readonly manifests: string; readonly repoUrl: string; readonly gitRef?: string };
   /**
    * The environment the registry pull credential is sourced from.
    *
@@ -266,15 +353,16 @@ export function bringUpKindCiCluster(ports: DevClusterPorts, options: KindCiBrin
   if (cni === "cilium") {
     console.log("Waiting for Kubernetes API readiness (nodes stay NotReady until Cilium is the CNI) ...");
     controlPlane.waitForApiReady(60, 3000);
-    console.log("Applying the VENDORED Gateway API CRD bundle (the same file first boot applies on metal) ...");
-    controlPlane.applyFileManifest(join(REPO_ROOT, GATEWAY_API_CRD_BUNDLE));
+    applyVendoredGatewayApiCrds(ports);
     installShippedCiliumOnKind(ports, options.clusterName);
     controlPlane.waitForAllNodesReady(180);
     applyDevCiliumLbKindAlias(ports);
     applyKindCiliumCoreDnsUpstreamOverride(ports);
   } else {
     controlPlane.waitForAllNodesReady(180);
-    console.log("Installing Gateway API CRDs (cert-manager enableGatewayAPI on kind/k3d) ...");
+    console.log(
+      "Installing Gateway API CRDs (cert-manager enableGatewayAPI on kindnetd; k3d applies the vendored metal bundle) ...",
+    );
     controlPlane.applyRemoteManifest(
       "https://github.com/kubernetes-sigs/gateway-api/releases/download/v1.2.0/standard-install.yaml",
       true,
@@ -309,7 +397,13 @@ export function bringUpKindCiCluster(ports: DevClusterPorts, options: KindCiBrin
       // 2026-09-01; this kind-lane pin was the one left behind. Pinned to 10.7.0 to
       // EQUAL the self-managed Application, so bootstrap and self-management agree and
       // no mid-run upgrade happens at all.
-      version: "10.7.0",
+      // 10.7.0 -> 10.7.2 on 2026-09-04: a PURE CHART bump -- appVersion is v3.5.2 at both, checked
+      // against the live repo index, so ArgoCD itself does not move. All FOUR pin sites move
+      // together (this Application, k8s/bootstrap/argocd-install.yaml, and the kind and k3d
+      // bootstraps in dev-cluster/use-cases.ts) because 2026-09-03 made them EQUAL on purpose: a
+      // bootstrap behind the self-managed Application means a mid-run self-upgrade, which is exactly
+      // the failure that cached the seaweedfs manifest error.
+      version: "10.7.2",
       namespace: "argocd",
       setValues: ["server.service.type=ClusterIP"],
       wait: true,
@@ -317,7 +411,76 @@ export function bringUpKindCiCluster(ports: DevClusterPorts, options: KindCiBrin
   }
 
   controlPlane.waitForCrdEstablished("applications.argoproj.io", 120);
-  appCatalog.applyRootDevCatalog(options.gitRef, options.gitRepoUrl, "kind", cni);
+
+  // THE RESOURCE-RUNG OVERRIDE POINT. `applyRootDevCatalog` takes a repo URL and
+  // ArgoCD clones whatever it is handed, so serving a rung-applied copy of the
+  // tree is the whole mechanism -- no new concept, just a different repository.
+  //
+  // ORDERED BEFORE THE ROOT APPLICATION, and the wait is not optional: a root app
+  // pointed at a server that is not yet answering fails its first sync and then
+  // retries on ArgoCD's backoff, so the lane pays minutes for a race that a
+  // readiness wait removes entirely.
+  const rootRepoUrl = applyLaneTreeSource(ports, options.laneTree) ?? options.gitRepoUrl;
+  const catalogRef = laneTreeCatalogRef(options.laneTree, options.gitRef);
+  appCatalog.applyRootDevCatalog(catalogRef, rootRepoUrl, "kind", cni);
+}
+
+/**
+ * Revision the root Application asks the in-cluster server for.
+ *
+ * When the lane tree is present, default to `SERVED_GIT_REF` (`main`) even if
+ * the caller forgot `laneTree.gitRef`. Falling back to the bring-up `gitRef`
+ * is how 33822942615 pointed ArgoCD at a GitHub SHA the served repo does not
+ * contain. Absent a lane tree, the bring-up ref is still what GitHub-hosted
+ * catalogs need on a PR.
+ */
+function laneTreeCatalogRef(
+  laneTree: { readonly gitRef?: string } | undefined,
+  bringUpRef: string,
+): string {
+  if (laneTree === undefined) return bringUpRef;
+  return laneTree.gitRef ?? SERVED_GIT_REF;
+}
+
+/**
+ * Apply the in-cluster tree server and wait for it to answer, returning the URL
+ * the root Application should clone -- or `null` when no lane tree was supplied.
+ *
+ * FAILS LOUD RATHER THAN FALLING BACK. If the server never becomes Available the
+ * function throws instead of returning `null`, because the silent fallback is the
+ * dangerous outcome here: the lane would sync GitHub at the `metal` rung, report
+ * `Insufficient cpu` on four pods, and look exactly like the failure this
+ * mechanism exists to remove -- with nothing in the log saying the override had
+ * been skipped.
+ */
+function applyLaneTreeSource(
+  ports: DevClusterPorts,
+  laneTree: { readonly manifests: string; readonly repoUrl: string } | undefined,
+): string | null {
+  if (laneTree === undefined) return null;
+  const { controlPlane } = ports;
+  console.log(`Serving the lane tree in-cluster; ArgoCD will clone ${laneTree.repoUrl} ...`);
+  // SERVER-SIDE APPLY, not a nicety. MEASURED live-k3d and live-kind-included
+  // 33821540802: packed=411676B, `kubectl apply -f -` failed
+  // `metadata.annotations: Too long: may not be more than 262144 bytes`.
+  // Client-side apply stores the whole YAML in last-applied-configuration.
+  // `applyFileManifest` already takes this door for the kubevirt CRD.
+  controlPlane.applyInlineManifest(laneTree.manifests, true);
+
+  // `condition=Available` on the Deployment, which the readiness probe gates on
+  // GET /tree.git/info/refs -- so this waits for the REPOSITORY to be servable,
+  // not merely for a pod to be running. A container that is up with an empty
+  // volume would satisfy the weaker condition and hand ArgoCD a 404 that reads
+  // like a bad repoURL.
+  const ready = controlPlane.waitForResource("deployment/zeta-lane-tree", "zeta-lane-tree", "condition=Available", 240);
+  if (!ready) {
+    throw new Error(
+      "lane tree server never became Available within 240s. NOT falling back to the committed tree: that would " +
+        "sync the `metal` rung onto a runner-sized node and reproduce the Insufficient-cpu failure this override " +
+        "exists to remove, with nothing in the log saying the override had been skipped.",
+    );
+  }
+  return laneTree.repoUrl;
 }
 
 /**
@@ -435,8 +598,12 @@ export function applyK3dCoreDnsUpstreamOverride(ports: DevClusterPorts): void {
   // draft called `controlPlane.restartDeployment?.(...)` -- a method that DOES
   // NOT EXIST on that interface, so the optional-call would have compiled, run,
   // and done NOTHING. A silent no-op inside the fix for a silent no-op.
-  ports.process.run("kubectl", ["-n", "kube-system", "rollout", "restart", "deployment/coredns"], { timeoutMs: 60_000 });
-  ports.process.run("kubectl", ["-n", "kube-system", "rollout", "status", "deployment/coredns", "--timeout=90s"], { timeoutMs: 120_000 });
+  ports.process.run("kubectl", ["-n", "kube-system", "rollout", "restart", "deployment/coredns"], {
+    timeoutMs: 60_000,
+  });
+  ports.process.run("kubectl", ["-n", "kube-system", "rollout", "status", "deployment/coredns", "--timeout=90s"], {
+    timeoutMs: 120_000,
+  });
 }
 
 /**
@@ -490,13 +657,21 @@ export function applyKindCiliumCoreDnsUpstreamOverride(ports: DevClusterPorts): 
   console.log(
     "Pointing kind+Cilium CoreDNS at 1.1.1.1/8.8.8.8 (MEASURED run 33695849211: repo-server Could not resolve host: github.com) ...",
   );
-  const get = ports.process.run("kubectl", ["-n", "kube-system", "get", "configmap", "coredns", "-o", "jsonpath={.data.Corefile}"], {
-    timeoutMs: 30_000,
-  });
+  const get = ports.process.run(
+    "kubectl",
+    ["-n", "kube-system", "get", "configmap", "coredns", "-o", "jsonpath={.data.Corefile}"],
+    {
+      timeoutMs: 30_000,
+    },
+  );
   const corefile = rewriteCorefileForwardToPublicResolvers(get.stdout);
   ports.controlPlane.mergePatch("configmap/coredns", "kube-system", JSON.stringify({ data: { Corefile: corefile } }));
-  ports.process.run("kubectl", ["-n", "kube-system", "rollout", "restart", "deployment/coredns"], { timeoutMs: 60_000 });
-  ports.process.run("kubectl", ["-n", "kube-system", "rollout", "status", "deployment/coredns", "--timeout=90s"], { timeoutMs: 120_000 });
+  ports.process.run("kubectl", ["-n", "kube-system", "rollout", "restart", "deployment/coredns"], {
+    timeoutMs: 60_000,
+  });
+  ports.process.run("kubectl", ["-n", "kube-system", "rollout", "status", "deployment/coredns", "--timeout=90s"], {
+    timeoutMs: 120_000,
+  });
 }
 
 export function bringUpK3dDevCluster(ports: DevClusterPorts, options: K3dDevBringUpOptions): void {
@@ -518,6 +693,8 @@ export function bringUpK3dDevCluster(ports: DevClusterPorts, options: K3dDevBrin
   controlPlane.waitForApiReady(60, 3000);
 
   applyK3dCoreDnsUpstreamOverride(ports);
+  applyVendoredGatewayApiCrds(ports);
+  applyK3dControlPlaneHostsAlias(ports, options.kubeApiHost);
 
   if (!packages.releaseInstalled("kube-system", "cilium")) {
     // INSTALL THE SHIPPED VALUE SURFACE, never a hand-written --set list.
@@ -565,6 +742,13 @@ export function bringUpK3dDevCluster(ports: DevClusterPorts, options: K3dDevBrin
     });
   }
 
+  // kind --cni cilium waits here. k3d create is waitForReady: false because
+  // there is no CNI yet. Helm --wait is Cilium pods, not node Ready. MEASURED
+  // live-k3d smoke 33754516236: kube-dns already had a cluster-pool IP, then
+  // new pods stayed ContainerCreating and cilium-agent was missing at dump.
+  console.log("Waiting for nodes Ready now that Cilium is the CNI ...");
+  controlPlane.waitForAllNodesReady(180);
+
   if (!packages.releaseInstalled("argocd", "argocd")) {
     console.log("Installing ArgoCD ...");
     controlPlane.ensureNamespace("argocd");
@@ -576,7 +760,13 @@ export function bringUpK3dDevCluster(ports: DevClusterPorts, options: K3dDevBrin
       // 7.7.10 -> 10.7.0 on 2026-09-03 -- same reason and same measurement as the
       // default-profile install above (Helm-4-only `fromToml` in seaweedfs; cached
       // repo-server error survives the self-upgrade). Kept equal to the Application.
-      version: "10.7.0",
+      // 10.7.0 -> 10.7.2 on 2026-09-04: a PURE CHART bump -- appVersion is v3.5.2 at both, checked
+      // against the live repo index, so ArgoCD itself does not move. All FOUR pin sites move
+      // together (this Application, k8s/bootstrap/argocd-install.yaml, and the kind and k3d
+      // bootstraps in dev-cluster/use-cases.ts) because 2026-09-03 made them EQUAL on purpose: a
+      // bootstrap behind the self-managed Application means a mid-run self-upgrade, which is exactly
+      // the failure that cached the seaweedfs manifest error.
+      version: "10.7.2",
       namespace: "argocd",
       // ClusterIP, NOT LoadBalancer -- and this line is downstream of installing
       // the shipped Cilium surface above.
@@ -611,10 +801,16 @@ export function bringUpK3dDevCluster(ports: DevClusterPorts, options: K3dDevBrin
   applyDevBootstrapSecrets(ports);
   applyDevRegistryPullSecret(ports, options.env ?? process.env);
 
+  // SAME OVERRIDE POINT AS KIND. Without this, `--serve-tree dev` on the k3d
+  // job is a flag the harness parses and then drops: k3d would keep syncing
+  // the committed `metal` rung onto a 4000m runner. Metal stays in git.
+  const rootRepoUrl = applyLaneTreeSource(ports, options.laneTree) ?? options.gitRepoUrl;
+  const catalogRef = laneTreeCatalogRef(options.laneTree, options.gitRef);
+
   // PROVIDER PASSED. Without it the catalogue keeps the static exclude glob
   // while the harness asserts the k3d-lifted roster -- asserted-but-unapplied,
   // which hangs for the full timeout and blames the Application.
-  appCatalog.applyRootDevCatalog(options.gitRef, options.gitRepoUrl, "k3d");
+  appCatalog.applyRootDevCatalog(catalogRef, rootRepoUrl, "k3d");
 }
 
 export function tearDownK3dDevCluster(ports: DevClusterPorts, clusterName: string): void {

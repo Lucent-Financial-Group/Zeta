@@ -4,5 +4,18 @@ metadata:
   name: game-hosting
   labels:
     app.kubernetes.io/part-of: zeta-game-hosting
-    # gatekeeper-exempt so a policy outage can't block game workloads
-    admission.gatekeeper.sh/ignore: "true"
+    # NO GATEKEEPER IGNORE LABEL -- removed 2026-09-03 for the same reason as
+    # `applications/agent-memory/namespace.yaml`, and measured in the same run.
+    # `game-hosting` was never in the Gatekeeper Application's `exemptNamespaces`,
+    # so `check-ignore-label` denied this Namespace on every sync and
+    # `application/gmod` sat OutOfSync/Missing alongside `agent-memory` on run
+    # 33790413535.
+    #
+    # The stated reason ("a policy outage can't block game workloads") is already
+    # served by `validatingWebhookFailurePolicy: Ignore` on that same Application,
+    # which admits cluster-wide when the engine is unreachable. And no
+    # ConstraintTemplate in this tree targets a namespace's workload kinds -- all
+    # seven match `society.zeta.io` Hat/HatBinding -- so the label exempted this
+    # namespace from nothing while making it unappliable.
+    #
+    # Checked by `src/Core.TypeScript/cluster/gatekeeper-ignore-label.ts`.

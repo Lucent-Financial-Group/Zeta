@@ -1,0 +1,12 @@
+{
+  "pr_number": 16488,
+  "archive_path": "docs/history/pr-reviews/PR-16488-feat-core-revive-the-four-core-increments-stranded-on-otto-agent-sovereign-keys-.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-03T11:56:48.698Z",
+  "schema_version": "v1",
+  "commit_sha": "472e445878bcea48341114fd75cc6910245f89a0",
+  "title": "feat(Core): revive the four Core increments stranded on otto/agent-sovereign-keys-proposal (ZPlan · SchemaLogCodec · DurabilityTier · segment rollover · WSet rung split + Lean comonoid cert)",
+  "state": "MERGED",
+  "merged_at": "2026-09-03T11:56:11Z",
+  "head_ref": "shadow/revive-sovereign-keys-core-increments"
+}

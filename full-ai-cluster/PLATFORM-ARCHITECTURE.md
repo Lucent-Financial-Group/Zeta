@@ -47,7 +47,7 @@ This is the inventory every section below builds on. Nothing here is new.
 | Concern | We already run | Used by |
 |---|---|---|
 | Orchestration | **k3s** (single CP today; multi-node wired-but-TODO) | everything |
-| CNI / networking | **Cilium** 1.16.5 — kube-proxy replacement, **Gateway API**, ingress, Hubble, **LB-IPAM capable** | all traffic |
+| CNI / networking | **Cilium** 1.20.1 — kube-proxy replacement, **Gateway API**, ingress, Hubble, **LB-IPAM capable** | all traffic |
 | Storage | **Longhorn** (distributed block; RWO + RWX-over-NFS) | all stateful: game saves, VM disks, DB data, agent memory |
 | GitOps | **ArgoCD** (app-of-apps), Argo Rollouts, Argo Workflows | platform reconciliation |
 | Databases | **CockroachDB** (distributed SQL), **Redis**, **NATS**, **Weaviate** (vector) | apps, DBaaS |

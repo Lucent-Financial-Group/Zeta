@@ -1,0 +1,40 @@
+{
+  "schemaVersion": 1,
+  "contract": "docs/research/2026-09-03-canonical-evidence-query-adapter-contract.md",
+  "algorithm": "canonical-kahan-gaussian-product/v1",
+  "stateMerge": "content-addressed multi-value evidence union",
+  "query": {
+    "status": "Ready",
+    "orderedFingerprints": [
+      "a\u00000|0|1|0|0|4",
+      "b\u00001|0|4|0|0|1",
+      "c\u00000|1|2|1|1|2"
+    ],
+    "evidenceCount": 3,
+    "absorption": "ExactOnceByFingerprint",
+    "posterior": {
+      "mean": [0.01754385964912282, 0.3508771929824561],
+      "covariance": [
+        [0.5380116959064327, 0.09356725146198831],
+        [0.09356725146198831, 0.5380116959064327]
+      ]
+    }
+  },
+  "finiteControls": {
+    "arrivalPermutations": 6,
+    "permutationReceiptsIdentical": true,
+    "redeliveryReceiptsIdentical": true,
+    "changedMeanConflict": true,
+    "changedUncertaintyConflict": true,
+    "kahanCancellationVariance00": 9.999999999999997e-17,
+    "naiveCancellationVariance00": 1e-16,
+    "naiveAccumulationMutantDetected": true
+  },
+  "independentVerification": {
+    "implementation": "separately authored Python 3 oracle",
+    "oracleOrderingScope": "declared ASCII finite test keys only",
+    "comparator": "strict TypeScript runtime schema and numeric comparator",
+    "lawGroups": 5
+  },
+  "verdict": "canonical-conflict-free-evidence-query-supported-as-query-only"
+}

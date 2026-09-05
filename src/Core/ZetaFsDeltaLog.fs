@@ -34,9 +34,9 @@ type ZetaFsDeltaLog<'K when 'K : comparison>
     (dir: string, entryCodec: IEntryCodec<'K>, ?hasher: IContentHasher, ?env: ISimulationEnvironment) =
 
     let root = Path.GetFullPath dir
-    let objectsDir = Path.Combine(root, "objects")
-    let refsDir = Path.Combine(root, "refs", "heads")
-    let headFile = Path.Combine(root, "HEAD")
+    let objectsDir = ZetaFsPath.combine2 root "objects"
+    let refsDir = ZetaFsPath.combine3 root "refs" "heads"
+    let headFile = ZetaFsPath.combine2 root "HEAD"
     let gate = obj ()
     let maxObjectBytes = 64L * 1024L * 1024L
     let maxRefBytes = 4096L
@@ -81,7 +81,7 @@ type ZetaFsDeltaLog<'K when 'K : comparison>
         let hex = h.ToHex()
         let sub = hex.Substring(0, 2)
         let name = hex.Substring(2)
-        Path.Combine(objectsDir, sub, name)
+        ZetaFsPath.combine3 objectsDir sub name
 
     let tryReadBytesCapped (maxBytes: int64) (path: string) : byte[] option =
         FileSystemIo.tryReadBytesCapped FileSystem.Current maxBytes path
@@ -93,7 +93,7 @@ type ZetaFsDeltaLog<'K when 'K : comparison>
     let writeObject (bytes: byte[]) : MerkleHash =
         let h = hashFunc bytes
         let path = objectPath h
-        let parent = Path.GetDirectoryName path
+        let parent = ZetaFsPath.directoryName path
         FileSystem.Current.CreateDirectory parent
         if not (FileSystem.Current.Exists path) then
             FileSystemIo.writeAllBytes FileSystem.Current path bytes
@@ -181,7 +181,7 @@ type ZetaFsDeltaLog<'K when 'K : comparison>
                 refName.Substring(11)
             else
                 refName
-        Path.Combine(refsDir, cleanRef)
+        ZetaFsPath.combine2 refsDir cleanRef
 
     let readRef (refName: string) : MerkleHash option =
         let path = getRefPath refName
@@ -193,7 +193,7 @@ type ZetaFsDeltaLog<'K when 'K : comparison>
 
     let writeRef (refName: string) (h: MerkleHash) =
         let path = getRefPath refName
-        let parent = Path.GetDirectoryName path
+        let parent = ZetaFsPath.directoryName path
         FileSystem.Current.CreateDirectory parent
         FileSystemIo.writeAllText FileSystem.Current path (h.ToHex())
 

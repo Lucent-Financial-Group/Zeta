@@ -1,5 +1,5 @@
 {
-  "measuredOn": "2026-09-02",
+  "measuredOn": "2026-09-04",
   "compressionRatio": 2.67,
   "imagesByApp": {
     "full-ai-cluster/agent-memory": [
@@ -97,8 +97,8 @@
       "registry.gitlab.com/gitlab-org/gitlab-runner:alpine-v17.6.0"
     ],
     "full-ai-cluster/hat-system": [
-      "bitnamilegacy/kubectl:1.32.3",
-      "ghcr.io/lucent-financial-group/hat-system-operator:placeholder"
+      "ghcr.io/lucent-financial-group/hat-system-operator:placeholder",
+      "registry.k8s.io/kubectl:v1.32.3"
     ],
     "full-ai-cluster/headlamp": [
       "ghcr.io/headlamp-k8s/headlamp:v0.45.0"
@@ -111,6 +111,11 @@
       "ghcr.io/vectorize-io/hindsight-api:0.9.2",
       "ghcr.io/vectorize-io/hindsight-control-plane:0.9.2",
       "pgvector/pgvector:pg17-trixie"
+    ],
+    "full-ai-cluster/keda": [
+      "ghcr.io/kedacore/keda-admission-webhooks:2.20.2",
+      "ghcr.io/kedacore/keda-metrics-apiserver:2.20.2",
+      "ghcr.io/kedacore/keda:2.20.2"
     ],
     "full-ai-cluster/kube-prometheus-stack": [
       "docker.io/grafana/grafana:13.2.0",
@@ -129,9 +134,9 @@
     "full-ai-cluster/loki": [
       "docker.io/grafana/loki-canary:3.7.7",
       "docker.io/grafana/loki:3.7.7",
-      "docker.io/kiwigrid/k8s-sidecar:2.10.3",
+      "docker.io/kiwigrid/k8s-sidecar:2.11.2",
       "docker.io/nginxinc/nginx-unprivileged:1.31-alpine",
-      "ghcr.io/jkroepke/access-log-exporter:0.4.12"
+      "ghcr.io/jkroepke/access-log-exporter:0.4.13"
     ],
     "full-ai-cluster/longhorn": [
       "docker.io/longhornio/longhorn-manager:v1.12.1",
@@ -160,6 +165,10 @@
       "curlimages/curl:8.20.0",
       "openpolicyagent/gatekeeper-crds:v3.23.1",
       "openpolicyagent/gatekeeper:v3.23.1"
+    ],
+    "full-ai-cluster/opensearch": [
+      "busybox:latest",
+      "opensearchproject/opensearch:3.8.0"
     ],
     "full-ai-cluster/orleans": [
       "ghcr.io/lucent-financial-group/zeta-orleans-silo:latest"
@@ -272,9 +281,6 @@
     "atmoz/sftp:alpine": {
       "compressedBytes": 9381917
     },
-    "bitnamilegacy/kubectl:1.32.3": {
-      "compressedBytes": 111998161
-    },
     "busybox": {
       "compressedBytes": 2226786
     },
@@ -350,8 +356,8 @@
     "docker.io/grafana/tempo:2.10.8": {
       "compressedBytes": 37426981
     },
-    "docker.io/kiwigrid/k8s-sidecar:2.10.3": {
-      "compressedBytes": 30405049
+    "docker.io/kiwigrid/k8s-sidecar:2.11.2": {
+      "compressedBytes": 30419869
     },
     "docker.io/library/busybox:1.38.0": {
       "compressedBytes": 2226786
@@ -378,7 +384,7 @@
       "compressedBytes": 84940612
     },
     "docker.io/valkey/valkey:9.1.2": {
-      "compressedBytes": 47343586
+      "compressedBytes": 47699411
     },
     "docker:dind": {
       "compressedBytes": 147302479
@@ -431,14 +437,23 @@
     "ghcr.io/ich777/steamcmd:unturned": {
       "compressedBytes": 44600518
     },
-    "ghcr.io/jkroepke/access-log-exporter:0.4.12": {
-      "compressedBytes": 4813608
+    "ghcr.io/jkroepke/access-log-exporter:0.4.13": {
+      "compressedBytes": 4819049
     },
     "ghcr.io/jkroepke/kube-webhook-certgen:1.8.8": {
       "compressedBytes": 9453826
     },
     "ghcr.io/juanfont/headscale:v0.25.0": {
       "compressedBytes": 30922340
+    },
+    "ghcr.io/kedacore/keda-admission-webhooks:2.20.2": {
+      "compressedBytes": 30879229
+    },
+    "ghcr.io/kedacore/keda-metrics-apiserver:2.20.2": {
+      "compressedBytes": 65873353
+    },
+    "ghcr.io/kedacore/keda:2.20.2": {
+      "compressedBytes": 91410787
     },
     "ghcr.io/lucent-financial-group/hat-system-operator:placeholder": {
       "compressedBytes": null,
@@ -512,6 +527,9 @@
     },
     "openpolicyagent/gatekeeper:v3.23.1": {
       "compressedBytes": 47759377
+    },
+    "opensearchproject/opensearch:3.8.0": {
+      "compressedBytes": 1136677506
     },
     "pgvector/pgvector:pg17-trixie": {
       "compressedBytes": 162878530
@@ -650,6 +668,9 @@
     },
     "registry.k8s.io/kube-state-metrics/kube-state-metrics:v2.20.0": {
       "compressedBytes": 19256935
+    },
+    "registry.k8s.io/kubectl:v1.32.3": {
+      "compressedBytes": 18752984
     },
     "registry.k8s.io/nfd/node-feature-discovery:v0.19.0": {
       "compressedBytes": 85408598

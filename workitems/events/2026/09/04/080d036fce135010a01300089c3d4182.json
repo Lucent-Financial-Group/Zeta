@@ -1,0 +1,14 @@
+{
+  "id": "080d036fce135010a01300089c3d4182",
+  "at": "2026-09-04T19:51:19.914Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1PZKGK9087G0R001E7A0QG",
+    "type": "task",
+    "title": "exercise Weaviate BM25 and hybrid search before anyone plans on it",
+    "slug": "exercise-weaviate-bm25-and-hybrid-search-before-anyone-plans",
+    "priority": "P2",
+    "filename": "081M1PZKGK9087G0R001E7A0QG-exercise-weaviate-bm25-and-hybrid-search-before-anyone-plans.md"
+  }
+}

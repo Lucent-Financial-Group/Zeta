@@ -43,3 +43,36 @@ STILL OPEN: only `int64` + `string` registered (float/bool/bytes/array/object un
 absence is a tested loud error; extending is additive); typed operator IR / plan node; Roslyn-generated
 C# specialisations (§4's C# half — belongs to the weight axis); §7's benchmark gate (path 1 is the cold
 path by construction — no perf claim is made); canon is a `string` not bytes.
+
+## STATUS — increment 2 LANDED (2026-09-03): the typed operator IR / plan node. Work-item stays OPEN
+
+(revived 2026-09-03 by shadow from `otto/agent-sovereign-keys-proposal` — tag
+`archive/2026-09-03-branch-sweep/otto/agent-sovereign-keys-proposal`, commits authored by
+desktop-Otto 2026-08-13; PR #10511 landed only that branch's research doc and left the code
+"for its author to land"; the author stopped running. Aaron overruled two reviewers' advice
+not to revive. Re-applied onto current main one increment at a time, not rebased.)
+
+Shipped: `src/Core/ZPlan.fs` — the typed plan IR over `ZSet<ZAtom>` ("the plan
+names an operator, the rows name their types, and the dictionary joins them" —
+now joined TWICE, deliberately): a deliberately **Z-linear** grammar
+(`Source`/`Dispatch`/`FilterType`/`Sum`/`Negate` — nonlinear nodes absent until
+their integration story is stated, so plans-as-deltas stays a theorem);
+`inferTypes`/`validate` = the plan-time TYPE-FLOW analysis (every `Dispatch`
+node checked against the registry for every tag that can reach it — a plan that
+could meet an unroutable row is rejected as a PLAN, all failures listed);
+`run` = the all-or-nothing evaluator (errors from BOTH `Sum` branches surface
+together); `validateAgainstLogs` = the SchemaLog bridge (a source's tag set is
+the FOLD of its schema log — a migration event flips the plan gate with no code
+change; the falsifier proves add→reject→revoke→accept). 15 tests incl. FsCheck
+over random plan TREES: whole-plan Z-linearity `run p (a+b) = run p a + run p b`,
+retraction-rides-through, flow-analysis soundness (output tags ⊆ inferred tags).
+Applied to current main unchanged: the `ZAtom.fs` surface it consumes
+(`ZAtomRegistry.tryFind`, `IZAtomType.TryOperator`/`OperatorNames`,
+`ZAtomDispatch.mapValues`, `ZDispatchError`) had not moved.
+
+STILL OPEN: registry beyond int64/string (additive, deliberately unregistered);
+canon `string` → bytes; Roslyn C# per-ring generator (GATED per Aaron 2026-07-02:
+first non-test consumer or NuGet publish — gate respected, not built); nonlinear
+plan nodes (distinct/join) with their integration story; plan serialisation
+(a stored proc as data needs a wire form — sequence after SchemaLogCodec's
+pattern proves out).

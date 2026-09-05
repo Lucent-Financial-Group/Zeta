@@ -1,0 +1,12 @@
+{
+  "pr_number": 16613,
+  "archive_path": "docs/history/pr-reviews/PR-16613-feat-081m1q74k0p087g0r0032v5ced-reclaim-sweep-journal-resumes-after-crash.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-04T22:26:15.825Z",
+  "schema_version": "v1",
+  "commit_sha": "f3c65f53661dece3eca211bdc55de6959fb10793",
+  "title": "feat(081M1Q74K0P087G0R0032V5CED): reclaim sweep journal resumes after crash",
+  "state": "MERGED",
+  "merged_at": "2026-09-04T22:25:39Z",
+  "head_ref": "feat/zetafs-reclaim-sweep-journal"
+}

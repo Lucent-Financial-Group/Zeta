@@ -617,7 +617,8 @@ describe("the live catalogue against the measured render", () => {
     // charts already merged on main: dapr's scheduler 1Gi x1 -> 16Gi x3 (+47)
     // and mimir 6.2.0's bundled Kafka (+5). The disk was rendered the moment
     // those bumps landed; only the measurement was stale.
-    expect(totals.get("zeta-local-path")).toBe(301);
+    // 301 -> 321 GiB on 2026-09-04: opensearch added a 20Gi PVC on zeta-local-path.
+    expect(totals.get("zeta-local-path")).toBe(321);
   });
 
   // WAS "the two live inert-values defects are still exactly two apps". Both

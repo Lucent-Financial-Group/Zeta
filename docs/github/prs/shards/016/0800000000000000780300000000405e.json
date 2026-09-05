@@ -1,0 +1,12 @@
+{
+  "pr_number": 16478,
+  "archive_path": "docs/history/pr-reviews/PR-16478-fix-docs-three-stale-branch-claims-two-false-on-main-one-block-already-satisfied.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-03T09:55:41.693Z",
+  "schema_version": "v1",
+  "commit_sha": "ef3154440fa4249a4fe38b5481c6f9e3cb996614",
+  "title": "fix(docs): three stale branch claims — two FALSE on main, one block already satisfied",
+  "state": "MERGED",
+  "merged_at": "2026-09-03T09:55:06Z",
+  "head_ref": "shadow/retire-three-stale-branch-claims"
+}

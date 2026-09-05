@@ -14,7 +14,11 @@ spec:
   source:
     repoURL: https://grafana-community.github.io/helm-charts
     chart: loki
-    targetRevision: 18.11.7
+    # 18.11.7 -> 18.12.1 on 2026-09-04: a PURE CHART bump -- appVersion is 3.7.7 at both,
+    # checked against the live index of grafana-community (NOT grafana: that repo's `loki` is
+    # Grafana Enterprise Logs on a 7.x series, a different chart entirely, and comparing
+    # against it would have read as 11 major versions ahead).
+    targetRevision: 18.12.1
     helm:
       releaseName: loki
       valuesObject:

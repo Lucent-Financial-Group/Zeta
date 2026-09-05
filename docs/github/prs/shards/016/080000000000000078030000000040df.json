@@ -1,0 +1,12 @@
+{
+  "pr_number": 16607,
+  "archive_path": "docs/history/pr-reviews/PR-16607-fix-081m1q421ph087g0r003tg2tw5-chart-currency-is-read-on-every-pr-now-and-a-stal.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-04T21:30:11.731Z",
+  "schema_version": "v1",
+  "commit_sha": "dbb8dca131b5e240f7eb9e5aeab41dfd89396288",
+  "title": "fix(081M1Q421PH087G0R003TG2TW5): chart currency is read on EVERY PR now, and a stale snapshot is the loudest finding",
+  "state": "MERGED",
+  "merged_at": "2026-09-04T21:29:35Z",
+  "head_ref": "otto/chart-currency-in-drift-band"
+}

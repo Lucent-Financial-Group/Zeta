@@ -75,6 +75,27 @@ let denseLoopy =
 let loopyOnDenseEvidence =
     MultilayerBnn.tryInferViaFactorGraph 1e-13 1000 true [] denseLoopy.Network
     |> unwrap
+let fvsLoopy =
+    MultilayerBnn.tryQueryViaFeedbackMessagePassing 1e-13 1000 2 denseLoopy.Network
+    |> unwrap
+let fvsReplay =
+    MultilayerBnn.tryQueryViaFeedbackMessagePassing 1e-13 1000 2 denseLoopy.Network
+    |> unwrap
+let fvsReplayBitInvariant =
+    Array.forall2
+        (fun left right ->
+            bits left.Precision = bits right.Precision
+            && bits left.PrecisionMean = bits right.PrecisionMean)
+        fvsLoopy.Marginals
+        fvsReplay.Marginals
+let fvsBudgetError =
+    match MultilayerBnn.tryQueryViaFeedbackMessagePassing 1e-13 1000 1 denseLoopy.Network with
+    | Ok _ -> "unexpected-ok"
+    | Error message -> message
+let fvsCappedTreeError =
+    match MultilayerBnn.tryQueryViaFeedbackMessagePassing 0.0 1 2 denseLoopy.Network with
+    | Ok _ -> "unexpected-ok"
+    | Error message -> message
 
 let malformedError =
     let malformed =
@@ -96,6 +117,16 @@ let report =
        exactDenseLoopyVariances = denseLoopy.Marginals |> Array.map Gaussian.variance
        loopyOnDenseEvidenceMeans = loopyOnDenseEvidence.Marginals |> Array.map Gaussian.mean
        loopyOnDenseEvidenceVariances = loopyOnDenseEvidence.Marginals |> Array.map Gaussian.variance
+       fvsLoopyMeans = fvsLoopy.Marginals |> Array.map Gaussian.mean
+       fvsLoopyVariances = fvsLoopy.Marginals |> Array.map Gaussian.variance
+       fvsExactness = string fvsLoopy.Exactness
+       fvsFeedbackVertices = fvsLoopy.FeedbackVertices |> List.toArray
+       fvsSelection = fvsLoopy.Selection |> Option.map string
+       fvsRounds = fvsLoopy.Rounds
+       fvsConverged = fvsLoopy.Converged
+       fvsReplayBitInvariant = fvsReplayBitInvariant
+       fvsBudgetError = fvsBudgetError
+       fvsCappedTreeError = fvsCappedTreeError
        exactDenseLayerCount = denseSequential.LayerCount
        exactDenseAbsorbedObservationCount = denseSequential.AbsorbedObservationCount
        exactDenseReplayBitInvariant = denseReplayBitInvariant

@@ -16,6 +16,7 @@
     <Compile Include="_Support/CartelInjector.fs" />
     <Compile Include="_Support/SerializerLegs.fs" />
     <Compile Include="_Support/PerfObservation.fs" />
+    <Compile Include="_Support/ZetaFsAmbientFileSystemCollection.fs" />
 
     <!-- Algebra/ -->
     <Compile Include="Detour.Tests.fs" />
@@ -31,6 +32,8 @@
     <Compile Include="Algebra/ZSetW.Tests.fs" />
     <Compile Include="Algebra/SchemaZ.Tests.fs" />
     <Compile Include="Algebra/ZAtom.Tests.fs" />
+    <Compile Include="Algebra/ZPlan.Tests.fs" />
+    <Compile Include="Algebra/SchemaLogCodec.Tests.fs" />
     <Compile Include="Algebra/TropicalPaths.Tests.fs" />
     <Compile Include="Algebra/RationalRing.Tests.fs" />
     <Compile Include="Algebra/Provenance.Tests.fs" />
@@ -153,6 +156,8 @@
     <Compile Include="ZetaFsPlacement.Tests.fs" />
     <Compile Include="ZetaFsMutbuf.Tests.fs" />
     <Compile Include="ZetaFsJumprope.Tests.fs" />
+    <Compile Include="ZetaFsPath.Tests.fs" />
+    <Compile Include="InMemoryFileSystemPathIdentity.Tests.fs" />
     <Compile Include="ZetaFsFreeze.Tests.fs" />
     <Compile Include="ZetaFsCrypto.Tests.fs" />
     <Compile Include="ZetaFsReclaim.Tests.fs" />
@@ -260,6 +265,7 @@
     <Compile Include="SalonPack.Tests.fs" />
     <Compile Include="ConformalGA.Tests.fs" />
     <Compile Include="LinguisticSeedPsd.Tests.fs" />
+    <Compile Include="LexicalGeometricReceipt.Tests.fs" />
     <Compile Include="Chip8Arcade.Tests.fs" />
     <Compile Include="Chip8Citizen.Tests.fs" />
     <Compile Include="SwarmBoard.Tests.fs" />
@@ -305,6 +311,7 @@
     <Compile Include="WeaveFold.Tests.fs" />
     <Compile Include="PhysUI.Tests.fs" />
     <Compile Include="ControlScheme.Tests.fs" />
+    <Compile Include="GameEnvironment.Tests.fs" />
     <Compile Include="MetaControl.Tests.fs" />
     <Compile Include="CorrespondencePong.Tests.fs" />
     <Compile Include="ChipAudio.Tests.fs" />
@@ -594,6 +601,7 @@
     <Compile Include="Storage/DeltaLog.Tests.fs" />
     <Compile Include="Storage/DeltaCodec.Tests.fs" />
     <Compile Include="Storage/DiskDeltaLog.Tests.fs" />
+    <Compile Include="Storage/DurabilityTier.Tests.fs" />
     <Compile Include="Storage/RecoverableSpine.Tests.fs" />
     <Compile Include="Storage/DurableSaga.Tests.fs" />
     <Compile Include="Storage/DurabilitySim.Tests.fs" />

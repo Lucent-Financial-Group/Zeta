@@ -206,7 +206,7 @@ wave `-10` on `Application.yaml` itself):
 |------|-----------|
 | 0 | society.zeta.io CRDs, namespace, seed hats, operator Deployment |
 | 1 | ConstraintTemplates (`templates.gatekeeper.sh`) |
-| 2 | Sync hook Job `wait-gatekeeper-hat-constraint-crds` — polls until Gatekeeper registers constraint CRDs |
+| 2 | Sync hook Job `wait-gatekeeper-hat-constraint-crds` — `kubectl wait` until Gatekeeper registers constraint CRDs |
 | 3 | Constraints (`constraints.gatekeeper.sh`) |
 
 ArgoCD sync-waves alone are insufficient on a cold cluster: Gatekeeper

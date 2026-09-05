@@ -1,0 +1,12 @@
+{
+  "pr_number": 16594,
+  "archive_path": "docs/history/pr-reviews/PR-16594-docs-081m1pza3tf087g0r002vkm8rj-the-k8s-inventory-bitnamilegacy-is-one-chart-and.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-04T20:46:56.808Z",
+  "schema_version": "v1",
+  "commit_sha": "54529c91cf0726291c079520cdf45a51d891d935",
+  "title": "docs(081M1PZA3TF087G0R002VKM8RJ): the k8s inventory — bitnamilegacy is one chart, and eight Applications CI never tests",
+  "state": "MERGED",
+  "merged_at": "2026-09-04T20:46:17Z",
+  "head_ref": "otto/chart-legacy-audit"
+}

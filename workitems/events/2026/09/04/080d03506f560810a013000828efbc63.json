@@ -1,0 +1,14 @@
+{
+  "id": "080d03506f560810a013000828efbc63",
+  "at": "2026-09-04T01:34:52.097Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1N0VTP0087G0R0034E7Y0G",
+    "type": "task",
+    "title": "HA and backups for everything not already replicated somewhere else",
+    "slug": "ha-and-backups-for-everything-not-already-replicated-somewhe",
+    "priority": "P2",
+    "filename": "081M1N0VTP0087G0R0034E7Y0G-ha-and-backups-for-everything-not-already-replicated-somewhe.md"
+  }
+}

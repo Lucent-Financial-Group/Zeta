@@ -1,0 +1,12 @@
+{
+  "pr_number": 16610,
+  "archive_path": "docs/history/pr-reviews/PR-16610-docs-creds-recast-post-init-vault-unseal-as-lucent-extracontainer.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-04T22:29:06.767Z",
+  "schema_version": "v1",
+  "commit_sha": "7d875561263c5afd1a14652ae8dec7603f82dc93",
+  "title": "docs(creds): recast post-init Vault unseal as Lucent extraContainer",
+  "state": "MERGED",
+  "merged_at": "2026-09-04T22:28:28Z",
+  "head_ref": "cursor/google-unseal-review-27c5"
+}

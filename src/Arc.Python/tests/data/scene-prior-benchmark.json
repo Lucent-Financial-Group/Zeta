@@ -1,0 +1,23 @@
+{
+  "caseDigest": "ed83e2d4b716a159e4fe492e4cbf9d494aad505e273881f8498afd5da6e6720e",
+  "kind": "arc-scene-prior-next-mover-v1",
+  "limits": [
+    "synthetic source-owned environments only",
+    "not an ARC leaderboard score",
+    "temporal persistence is expected to fail when the next mover switches"
+  ],
+  "persistentMover": {
+    "caseCount": 40,
+    "controlCorrect": 20,
+    "controlTop1Accuracy": 0.5,
+    "protoCorrect": 40,
+    "protoTop1Accuracy": 1.0
+  },
+  "switchedMover": {
+    "caseCount": 8,
+    "controlCorrect": 4,
+    "controlTop1Accuracy": 0.5,
+    "protoCorrect": 0,
+    "protoTop1Accuracy": 0.0
+  }
+}

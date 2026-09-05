@@ -57,11 +57,8 @@ chart telling us the same thing in its own voice.
   four pins with them. `full-ai-cluster/k8s/applications/forgejo/Application.yaml` already
   took the equivalent decision for itself and recorded it.
 - **kubectl** (`full-ai-cluster/k8s/applications/hat-system/gatekeeper-crd-wait.yaml`) —
-  `registry.k8s.io/kubectl:v1.32.3`
-  is upstream-maintained and 18,750,205 bytes against Bitnami's 111,998,161, but its config
-  reads `ENTRYPOINT ["/bin/kubectl"]` on the distroless `go-runner` base: **no shell.** The
-  Job's `/bin/bash -ec` script has to be rewritten shell-free first. That rewrite is the
-  cheapest of the three and probably the one to do first.
+  rewritten onto `registry.k8s.io/kubectl:v1.32.3` as a shell-free `kubectl wait`
+  (three sequential waits: ConstraintTemplates exist, CRDs exist, CRDs Established).
 
 ## Done when
 

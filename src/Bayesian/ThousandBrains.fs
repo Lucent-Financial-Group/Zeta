@@ -3,23 +3,26 @@ namespace Zeta.Bayesian
 open System
 open Zeta.Core
 
-/// **`ThousandBrains` — Writer-Actor-Routing Model.**
+/// **`ThousandBrains` — finite multi-observer prototype.**
 ///
-/// Implements the Thousand Brains theory of intelligence (Hawkins) using Zeta's 
-/// Bayesian primitives. 
+/// This module provides scalar and frame-tagged Gaussian observer records plus an
+/// explicit weighted query. It is inspired by selected computational interfaces
+/// proposed in Thousand Brains material—partial observations, reference frames, and
+/// lateral agreement—but it does **not** implement cortical columns, sensorimotor
+/// learning, object models, human cognition, or intelligence.
 ///
-/// The core idea: intelligence is not a single hierarchical model, but thousands of 
-/// independent "columns" (agents/models) that observe the world, maintain their own 
-/// beliefs, and vote on the identity of objects.
+/// The correspondence is deliberately partial:
+/// 1. `Column` and `SpatialColumn` are software records, not biological columns.
+/// 2. `computeConsensus` and `spatialConsensus` are deterministic weighted-Gaussian
+///    queries, not EP, neural signaling, or replicated CRDT state merges.
+/// 3. Frame tags refuse a mixed-frame pool; they do not derive object-relative
+///    locations, movement, orientation, or spatial meaning.
+/// 4. `InformationValue` supplies an existing numeric query weight only; it is not a
+///    measured learning currency or a biological mechanism.
 ///
-/// In Zeta, this maps perfectly to the `LocalConsensus` and `InformationValue` primitives:
-/// 1. **Columns** are independent Gaussian priors (discrete-ticking observers).
-/// 2. **Voting** is lateral EP message passing between columns.
-/// 3. **Consensus** is the joint posterior exceeding a precision threshold.
-/// 4. **Currency** is Information Value (IV) — columns weight their votes by how much IV they gained.
-///
-/// This architecture recovers the continuous information lost by individual discrete
-/// ticks (the -1/12 Zeta regularization penalty) through decorrelated lateral consensus.
+/// The exposed operations retain finite numerical tests. A separate capability matrix
+/// records the absent movement-conditioned prediction, object learning, and transfer
+/// interfaces; no regularization or information-recovery claim is made here.
 [<RequireQualifiedAccess>]
 module ThousandBrains =
 
@@ -97,13 +100,12 @@ module ThousandBrains =
         else
             LocalConsensus.Undecided jointPosterior
 
-    // -- Spatial columns: belief about a LOCATION IN A FRAME ------------------------
+    // -- Frame-tagged spatial records ------------------------------------------------
     //
-    // WHAT THE SCALAR COLUMNS ABOVE ARE MISSING. In the Thousand Brains theory a
-    // cortical column's job is to believe about a location in a REFERENCE FRAME
-    // ATTACHED TO AN OBJECT (Hawkins, Lewis, Klukas, Purdy & Ahmad 2019). The
-    // frame is the load-bearing part; a column believing about a bare number has
-    // the voting structure and none of the theory.
+    // A scalar Gaussian does not retain a coordinate frame. These records make a
+    // caller-supplied frame tag explicit and refuse pool operations across different
+    // tags. They do not model a cortical location signal, establish a frame attached
+    // to an object, or reproduce the cited theory's sensorimotor mechanisms.
     //
     // ADDED ALONGSIDE rather than replacing `Column`: four modules and two test
     // files consume the scalar type, and the scalar case has to keep behaving
@@ -211,4 +213,3 @@ module ThousandBrains =
                             votes |> List.sumBy (fun v -> v.Belief.Axes.[a].PrecisionMean * v.Weight)
                           Precision = votes |> List.sumBy (fun v -> v.Belief.Axes.[a].Precision * v.Weight) })
                 Ok { Frame = frame; Axes = axes }
-

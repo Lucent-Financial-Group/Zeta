@@ -1092,3 +1092,67 @@ let ``MLBNN-48: exact dense query refuses the declared over-cap dimension`` () =
     match MultilayerBnn.tryQueryExactDenseGaussian net with
     | Ok _ -> failwith "exact dense query accepted more than 64 layers"
     | Error message -> Assert.Contains("at most 64 layers, got 65", message)
+
+// ── Feedback-vertex-set conditioned Gaussian query ─────────────────────────
+
+[<Fact>]
+let ``MLBNN-49: FVS-conditioned query exactly corrects the known loopy covariance gap`` () =
+    let depth = 4
+    let priors = Array.init depth (fun _ -> Gaussian.ofMeanVariance 0.0 1.0)
+    let variances = Array.create depth 1.0
+    let topology = MultilayerBnn.SkipConnections [ (0, 2); (0, 3); (1, 3) ]
+    let net = MultilayerBnn.tryCreate priors variances topology |> unwrap
+    let updated = MultilayerBnn.tryInferViaFactorGraph 1e-13 1000 true [ 5.0; 5.0; 5.0; 5.0 ] net |> unwrap
+    let fvs = MultilayerBnn.tryQueryViaFeedbackMessagePassing 1e-13 1000 2 updated.Network |> unwrap
+    let priorTau = Array.init depth (fun i -> updated.Network.Layers.[i].Posterior.Precision)
+    let priorNu = Array.init depth (fun i -> updated.Network.Layers.[i].Posterior.PrecisionMean)
+    let expectedMeans, expectedVariances = exactDagMarginals priorTau priorNu variances (MultilayerBnn.parentsOf topology)
+
+    Assert.Equal(MultilayerBnn.ExactLoopyViaFvs 2, fvs.Exactness)
+    Assert.Equal<int list>([ 0; 1 ], fvs.FeedbackVertices)
+    Assert.Equal(Some MultilayerBnn.ExhaustiveMinimum, fvs.Selection)
+    Assert.True(fvs.Converged)
+    Assert.True(fvs.Rounds > 0)
+    for i in 0 .. depth - 1 do
+        Assert.True(
+            abs (Gaussian.mean fvs.Marginals.[i] - expectedMeans.[i]) < 1e-10,
+            sprintf "layer %d FVS mean %.17g != independent dense %.17g" i (Gaussian.mean fvs.Marginals.[i]) expectedMeans.[i])
+        Assert.True(
+            abs (Gaussian.variance fvs.Marginals.[i] - expectedVariances.[i]) < 1e-10,
+            sprintf "layer %d FVS variance %.17g != independent dense %.17g" i (Gaussian.variance fvs.Marginals.[i]) expectedVariances.[i])
+
+[<Fact>]
+let ``MLBNN-50: FVS query reduces to the current exact tree result without a correction pass`` () =
+    let net = MultilayerBnn.tryCreateUniform 4 prior 0.75 |> unwrap
+    let updated = MultilayerBnn.tryInferViaFactorGraph 1e-13 100 true [ -1.0; 2.0; 3.0 ] net |> unwrap
+    let directMarginals, directRounds, directConverged =
+        MultilayerBnn.tryMarginalsViaFactorGraph 1e-13 100 updated.Network |> unwrap
+    let fvs = MultilayerBnn.tryQueryViaFeedbackMessagePassing 1e-13 100 0 updated.Network |> unwrap
+
+    Assert.Equal(MultilayerBnn.ExactAcyclic, fvs.Exactness)
+    Assert.Empty(fvs.FeedbackVertices)
+    Assert.Equal(None, fvs.Selection)
+    Assert.True(directConverged)
+    Assert.Equal(directRounds, fvs.Rounds)
+    for i in 0 .. fvs.Marginals.Length - 1 do
+        Assert.Equal(bits directMarginals.[i].Precision, bits fvs.Marginals.[i].Precision)
+        Assert.Equal(bits directMarginals.[i].PrecisionMean, bits fvs.Marginals.[i].PrecisionMean)
+
+[<Fact>]
+let ``MLBNN-51: FVS query refuses an insufficient feedback budget`` () =
+    let depth = 6
+    let topology =
+        MultilayerBnn.Dag(
+            Array.init depth (fun child -> if child = 0 then [] else [ 0 .. child - 1 ]))
+    let net = MultilayerBnn.tryCreate (Array.create depth prior) (Array.create depth 1.0) topology |> unwrap
+    match MultilayerBnn.tryQueryViaFeedbackMessagePassing 1e-13 100 3 net with
+    | Ok _ -> failwith "FVS query silently accepted an insufficient feedback budget"
+    | Error message -> Assert.Contains("feedbackBudget 3", message)
+
+[<Fact>]
+let ``MLBNN-52: FVS query refuses a capped conditioned tree run`` () =
+    let topology = MultilayerBnn.SkipConnections [ (0, 2); (0, 3); (1, 3) ]
+    let net = MultilayerBnn.tryCreate (Array.create 4 prior) (Array.create 4 1.0) topology |> unwrap
+    match MultilayerBnn.tryQueryViaFeedbackMessagePassing 0.0 1 2 net with
+    | Ok _ -> failwith "FVS query silently returned a capped conditioned tree iterate"
+    | Error message -> Assert.Contains("feedback conditioned tree run did not converge", message)

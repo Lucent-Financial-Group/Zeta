@@ -85,6 +85,15 @@ describe("every supported provider is exercised by a real CI lane", () => {
     expect(jobsDispatching("k3d")).toContain("live-k3d");
   });
 
+  test("live-k3d serves the dev resource rung, not the committed metal tree", () => {
+    // CPU/memory overlay. Without this flag the job applies 6390m of metal
+    // requests to a 4000m GitHub node. Kind included already passes it; k3d
+    // was the remaining consumer of the committed tree. Disk is a different
+    // ladder (`--check-envelope`); this assertion is the CPU/mem one.
+    const runs = (jobs()["live-k3d"]!.steps ?? []).map((s) => s.run ?? "").join("\n");
+    expect(runs).toContain("--serve-tree dev");
+  });
+
   test("the k3d lane tears its cluster down even when the assertion fails", () => {
     const teardown = (jobs()["live-k3d"]!.steps ?? []).find((s) => (s.run ?? "").includes("k3d-down.ts"));
     expect(teardown).toBeDefined();
@@ -93,5 +102,73 @@ describe("every supported provider is exercised by a real CI lane", () => {
   test("the k3d lane uses the committed k3d profile, not an inline cluster definition", () => {
     const runs = (jobs()["live-k3d"]!.steps ?? []).map((s) => s.run ?? "").join("\n");
     expect(runs).toContain("full-ai-cluster/dev-cluster/profiles/ci.k3d-config.yaml");
+  });
+
+  /**
+   * 081M1DFQ2MZ — remaining second class after Gateway API CRDs landed.
+   *
+   * spire-agent 0.24.2 hardcodes `hostNetwork: true` and
+   * `dnsPolicy: ClusterFirstWithHostNet`. Selector labels are
+   * `app.kubernetes.io/name=spire-agent` / `app.kubernetes.io/instance`.
+   * MEASURED live-k3d smoke 33739778288: `-l app=spire-agent` printed no
+   * logs while the pod was 0/1 with 2 restarts. MEASURED 33751425785:
+   * the real selector is `app.kubernetes.io/name=agent`; DaemonSet
+   * name is `spire-agent`. Delete `logs daemonset/spire-agent` or
+   * restore `logs -l app=spire-agent` and this goes red. Swallowing
+   * `cilium-dbg` with `2>/dev/null | grep` also goes red: that dump
+   * printed nothing and looked like KPR had no kube-dns.
+   *
+   * MEASURED 33814040666: cilium-dbg config get of those names
+   * returned Configuration does not exist except
+   * enable-host-legacy-routing=false. Next dump is ConfigMap
+   * cilium-config keys. Delete `get cm cilium-config` or `app=svclb`
+   * and this goes red.
+   */
+  test("live-k3d dump logs the spire-agent DaemonSet, not a label the chart does not set", () => {
+    const dump = (jobs()["live-k3d"]!.steps ?? []).find((s) =>
+      (s.name ?? "").includes("Gateway API CRDs and the four"),
+    );
+    const run = dump?.run ?? "";
+    expect(run.length).toBeGreaterThan(0);
+    expect(run).toContain("logs daemonset/spire-agent");
+    expect(run).toContain("--previous");
+    expect(run).not.toMatch(/logs\s+-l\s+app=spire-agent/);
+    expect(run).toContain("k8s-app=kube-dns");
+    expect(run).toContain("cilium-dbg service list");
+    expect(run).toContain("get pvc,cm");
+    expect(run).toContain("get cm spire-bundle");
+    expect(run.includes("cilium-dbg service list 2>/dev/null")).toBe(false);
+    expect(run).toContain("k8s-app=cilium");
+    expect(run).toContain("hostNetwork TCP ClusterIP");
+    expect(run).toContain("TCP kube-dns");
+    expect(run).toContain("TCP spire-server");
+    expect(run).toContain("TCP spire-server-pod");
+    expect(run).toContain("TCP kube-dns-pod");
+    expect(run).toContain("8081");
+    expect(run).toContain("pod-network control");
+    expect(run).toContain("busybox nc");
+    expect(run).toContain("hostNetwork: true");
+    expect(run).toContain("app=svclb");
+    expect(run).toContain("cilium-dbg status");
+    expect(run).toContain("CgroupnsMode");
+    expect(run).toContain("get cm cilium-config");
+    expect(run).toContain("bpf-lb-sock=");
+    expect(run).toContain("bpf-lb-external-clusterip=");
+    expect(run).toContain("KubeProxyReplacement Details");
+    expect(run).toContain("ip route get");
+    expect(run).not.toMatch(/docker exec.*\|\s*(grep|rg)\s+-[^\n]*q/);
+  });
+
+  test("live-k3d dump lists refs on the overlay git, not only github.com", () => {
+    // MEASURED 33824995558: getent github.com said nothing about the in-cluster
+    // tree ArgoCD actually clones. child-application-count=0 was unexpected EOF,
+    // not missing helm charts.
+    const dump = (jobs()["live-k3d"]!.steps ?? []).find((s) =>
+      (s.name ?? "").includes("Why ArgoCD could not COMPARE"),
+    );
+    const run = dump?.run ?? "";
+    expect(run.length).toBeGreaterThan(0);
+    expect(run).toContain("git ls-remote");
+    expect(run).toContain("zeta-lane-tree.zeta-lane-tree.svc.cluster.local");
   });
 });

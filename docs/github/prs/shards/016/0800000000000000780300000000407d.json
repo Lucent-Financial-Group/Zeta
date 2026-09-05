@@ -1,0 +1,12 @@
+{
+  "pr_number": 16509,
+  "archive_path": "docs/history/pr-reviews/PR-16509-feat-081m1knwk2m087g0r003qawkcx-writeat-crash-arms-the-lba-span.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-03T13:24:36.135Z",
+  "schema_version": "v1",
+  "commit_sha": "0d05c52a00346d279b70da95eb578203821a51b2",
+  "title": "feat(081M1KNWK2M087G0R003QAWKCX): WriteAt crash-arms the LBA span",
+  "state": "MERGED",
+  "merged_at": "2026-09-03T13:23:19Z",
+  "head_ref": "feat/zetafs-filesystemblockio-writeat"
+}

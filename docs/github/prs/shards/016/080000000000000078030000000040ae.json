@@ -1,0 +1,12 @@
+{
+  "pr_number": 16558,
+  "archive_path": "docs/history/pr-reviews/PR-16558-fix-081m1n854ed087g0r002jp5v5n-zetafs-gets-its-own-path-algebra-and-a-healer-tra.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-04T04:59:05.668Z",
+  "schema_version": "v1",
+  "commit_sha": "c2e65e40b9d3ac1b0bd3b8e025f9a9301d9e23f7",
+  "title": "fix(081M1N854ED087G0R002JP5V5N): ZetaFS gets its own path algebra, and a healer track for the class",
+  "state": "MERGED",
+  "merged_at": "2026-09-04T04:58:20Z",
+  "head_ref": "otto/zetafs-virtual-path-join"
+}

@@ -22,8 +22,12 @@ import {
 const NOW = new Date("2026-08-27T01:00:00Z");
 
 function verdict(partial: Partial<FleetLivenessVerdict>): FleetLivenessVerdict {
+  // `state` defaults from `alive` so the pre-existing cases below keep meaning what they meant;
+  // the paused cases pass it explicitly, because paused is the one state `alive` cannot express.
+  const alive = partial.alive ?? true;
   return {
-    alive: true,
+    alive,
+    state: alive ? "alive" : "stale",
     summary: "fleet alive",
     sources: [],
     consideredObservations: 1,
@@ -61,14 +65,34 @@ describe("classifyOutcome", () => {
 
   it("reports alive only when every source is fresh", () => {
     expect(
-      classifyOutcome(
-        verdict({ alive: true, sources: [{ source: "a", lastAt: "x", ageMinutes: 5, fresh: true }] }),
-      ),
+      classifyOutcome(verdict({ alive: true, sources: [{ source: "a", lastAt: "x", ageMinutes: 5, fresh: true }] })),
     ).toBe("alive");
   });
 
   it("reports not-alive when the fleet verdict is negative", () => {
     expect(classifyOutcome(verdict({ alive: false }))).toBe("not-alive");
+  });
+
+  it("records a PAUSED verdict as paused, never as an outage", () => {
+    // `paused` also carries `alive: false`, so an implementation that checks `alive` first writes
+    // `not-alive` into the durable record — an outage claim about a lane somebody switched off on
+    // purpose. The ledger is the surface a human reads months later; a wrong label there outlives
+    // the run that produced it.
+    const paused = verdict({ alive: false, state: "paused", summary: "lane PAUSED - subject disabled_manually" });
+    expect(classifyOutcome(paused)).toBe("paused");
+  });
+
+  it("keeps a degraded-but-alive fleet out of the paused bucket", () => {
+    // Guards the reverse mistake: `state` is read, not inferred from "does any source look off".
+    const degradedAlive = verdict({
+      alive: true,
+      state: "alive",
+      sources: [
+        { source: "a", lastAt: "2026-08-27T00:55:00Z", ageMinutes: 5, fresh: true },
+        { source: "b", lastAt: "2026-08-26T20:00:00Z", ageMinutes: 300, fresh: false },
+      ],
+    });
+    expect(classifyOutcome(degradedAlive)).toBe("degraded");
   });
 });
 
@@ -95,9 +119,9 @@ describe("buildObservation", () => {
     expect(() => buildObservation({ now: NOW, observer: "obs", thresholdMinutes: 60 })).toThrow(
       /needs either a verdict or a non-empty blindReason/,
     );
-    expect(() =>
-      buildObservation({ now: NOW, observer: "obs", thresholdMinutes: 60, blindReason: "   " }),
-    ).toThrow(/needs either a verdict or a non-empty blindReason/);
+    expect(() => buildObservation({ now: NOW, observer: "obs", thresholdMinutes: 60, blindReason: "   " })).toThrow(
+      /needs either a verdict or a non-empty blindReason/,
+    );
   });
 
   it("refuses a record that claims both a verdict and blindness", () => {
@@ -113,7 +137,9 @@ describe("buildObservation", () => {
   });
 
   it("never invents a run id", () => {
-    expect(buildObservation({ now: NOW, observer: "obs", thresholdMinutes: 60, verdict: verdict({}) }).observerRunId).toBeNull();
+    expect(
+      buildObservation({ now: NOW, observer: "obs", thresholdMinutes: 60, verdict: verdict({}) }).observerRunId,
+    ).toBeNull();
   });
 });
 
@@ -366,7 +392,13 @@ describe("commitLedger", () => {
 
 describe("isNonFastForward", () => {
   it("matches git's own rejection wording", () => {
-    expect(isNonFastForward({ status: 1, stdout: "", stderr: "hint: Updates were rejected because the remote contains work" })).toBe(true);
+    expect(
+      isNonFastForward({
+        status: 1,
+        stdout: "",
+        stderr: "hint: Updates were rejected because the remote contains work",
+      }),
+    ).toBe(true);
     expect(isNonFastForward({ status: 1, stdout: "", stderr: "! [rejected] (fetch first)" })).toBe(true);
   });
 

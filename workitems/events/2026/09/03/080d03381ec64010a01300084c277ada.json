@@ -1,0 +1,14 @@
+{
+  "id": "080d03381ec64010a01300084c277ada",
+  "at": "2026-09-03T11:25:00.488Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1KG7P68087G0R001MFQXZP",
+    "type": "task",
+    "title": "Freeze CAS objects through FileSystemBlockIo polyfill",
+    "slug": "freeze-cas-objects-through-filesystemblockio-polyfill",
+    "priority": "P1",
+    "filename": "081M1KG7P68087G0R001MFQXZP-freeze-cas-objects-through-filesystemblockio-polyfill.md"
+  }
+}

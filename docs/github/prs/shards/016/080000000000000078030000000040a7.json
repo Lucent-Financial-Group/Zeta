@@ -1,0 +1,12 @@
+{
+  "pr_number": 16551,
+  "archive_path": "docs/history/pr-reviews/PR-16551-docs-workitems-resource-requests-ha-and-backups-four-items-filed-from-measuremen.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-04T01:56:44.913Z",
+  "schema_version": "v1",
+  "commit_sha": "098d045ce907942414f6d253a21c0d7de101b36a",
+  "title": "docs(workitems): resource requests, HA and backups — four items, filed from measurement",
+  "state": "MERGED",
+  "merged_at": "2026-09-04T01:56:10Z",
+  "head_ref": "otto/file-resource-and-ha-workitems"
+}

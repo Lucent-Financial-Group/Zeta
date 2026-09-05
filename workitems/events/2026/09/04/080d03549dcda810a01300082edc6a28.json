@@ -1,0 +1,14 @@
+{
+  "id": "080d03549dcda810a01300082edc6a28",
+  "at": "2026-09-04T04:01:01.365Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1N97EDM087G0R000W35B5M",
+    "type": "bug",
+    "title": "ZetaFsDeltaLog resolves its root with Path.GetFullPath, which is ambient CWD",
+    "slug": "zetafsdeltalog-resolves-its-root-with-path-getfullpath-which",
+    "priority": "P2",
+    "filename": "081M1N97EDM087G0R000W35B5M-zetafsdeltalog-resolves-its-root-with-path-getfullpath-which.md"
+  }
+}

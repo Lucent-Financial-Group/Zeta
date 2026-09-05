@@ -45,7 +45,17 @@ to hit production without a traditional integration suite.
    `IBlockIo` remains the device primitive; `BlockIoFerry` interprets
    ops through `FerryThrottler` (single/single, batch/batch,
    batch/multibatch, adjacent whole-block coalesce). `SimulatedBlockIo`
-   is the LBA DST door (not POSIX). Native NVMe remains
+   is the LBA DST door (not POSIX). DST `createManual` / `create`
+   ride `FileSystemBlockIo` for the log and for CAS objects. A
+   polyfill crash-mid-write, corrupt-last-write, or reorder of the
+   second freeze keeps the first. Torn-sector intercept
+   (`ArmTornSector`) overlays a 512-byte prefix of the NEW write and
+   acks; the rest of the LBA stays OLD. `GroupCommitDiskDeltaLog`
+   defaults to the device door (`IBlockIo` / `ZGL2`); POSIX append
+   (`useBlockIo = false`) remains for whole-file Dispose tests.
+   Recovery works on both doors. Shape fact (not a speed bench): POSIX
+   append grows the host file by the framed record; the device door
+   keeps logical payload short and pads the host file to LBAs. Native NVMe remains
    first-product **PR12** and ZetaDB **D12**. Until
    that corpus is green the honest word is `toy`, not crash-safe.
    ReFS-shaped resilience (allocate-on-write, pointer-not-copy) is

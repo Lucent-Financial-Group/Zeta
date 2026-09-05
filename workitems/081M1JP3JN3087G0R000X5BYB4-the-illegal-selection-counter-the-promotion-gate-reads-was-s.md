@@ -12,7 +12,7 @@ composes_with: []
 
 # The illegal-selection counter the promotion gate reads was structurally always zero
 
-`enforcement/promotion-gate.ts` refuses to promote a lane whose shadow window shows **any** illegal
+`src/Core.TypeScript/enforcement/promotion-gate.ts` refuses to promote a lane whose shadow window shows **any** illegal
 slot selection. That counter could never be anything but zero, for three independent reasons:
 
 1. **`observeWithParticipant` discarded the `ChooseResult`.** It returned only the `NextAction`, so
@@ -46,7 +46,7 @@ The promotion gate shipped with the honest admission that nothing produced a `Pr
 every lane resolved to `insufficient_soak` forever. **A gate that can only refuse is half a control:
 it is safe, it can never be satisfied, and eventually someone routes around it.**
 
-`observe/promotion-soak.ts` is the other half. It runs a participant over N rounds of the seven
+`src/Core.TypeScript/observe/promotion-soak.ts` is the other half. It runs a participant over N rounds of the seven
 built-in scenarios, counts what the gate reads, and writes the window. Soak hours come from the
 clock, not the tick count — a soak measured in ticks is not a soak measured in hours. The
 primary-mode counters are written as **zero because a shadow soak dispatched nothing**, which is the
@@ -70,7 +70,7 @@ merely safe.
 
 ## An observation I could NOT reproduce, recorded as a coincidence rather than a finding
 
-`accelerator/local-llm.ts` asserts the local model is deterministic at temperature 0 with a fixed
+`src/Core.TypeScript/accelerator/local-llm.ts` asserts the local model is deterministic at temperature 0 with a fixed
 seed, and proposes it as a real DST fixture. One early soak round disagreed with later rounds on the
 `ferry` scenario. Every controlled follow-up said the claim holds: 10 identical requests → 1 distinct
 answer; 3 in isolation and 3 inside full rounds → identical; 3 runs across two model unloads →

@@ -43,6 +43,7 @@ pkgs.testers.nixosTest {
     # depend on them. The REAL control-plane values are asserted by
     # longhorn-common-default-disk-eval-test.nix.
     zeta.credsRestore.enable = false;
+    zeta.credsToK8s.enable = false;
     zeta.selfRegister.enable = false;
     zeta.firstSession.enable = false;
 

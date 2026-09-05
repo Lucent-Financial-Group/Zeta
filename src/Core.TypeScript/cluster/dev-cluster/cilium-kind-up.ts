@@ -231,11 +231,12 @@ function checkWireguardDevice(runner: ProcessRunner): Check {
 /**
  * The Gateway API verdict, checked in BOTH directions against the registry.
  *
- * Cilium 1.16.5 requires a TLSRoute CRD this repo does not vendor, and on that
- * failure `initGatewayAPIController` logs and returns nil -- the operator stays
- * Ready and the controller never starts. So the EXPECTED state today is: the
- * refusal line is in the operator log, and the `cilium` GatewayClass never gets
- * an Accepted condition. Either half moving is a real change and goes red.
+ * The pinned Cilium chart (1.20.1) requires TLSRoute and BackendTLSPolicy CRDs
+ * this repo does not vendor, and on that failure `discoverCRDsWithRetry` logs
+ * and returns Enabled: false -- the operator stays Ready and the controller
+ * never starts. So the EXPECTED state today is: the refusal line is in the
+ * operator log, and the `cilium` GatewayClass never gets an Accepted
+ * condition. Either half moving is a real change and goes red.
  *
  * Reading BOTH is deliberate. The GatewayClass condition alone would be an
  * absence, and an absence can also mean "not yet"; the log line is POSITIVE

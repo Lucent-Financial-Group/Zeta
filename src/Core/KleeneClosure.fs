@@ -17,6 +17,17 @@ open System.Collections.Generic
 /// The boolean Kleene algebra `(∨, ∧)` — reachability / transitive-closure
 /// weights. Idempotent addition ⇒ NO additive inverse (not `IRing`); its
 /// Kleene star is `One` (true): a node reaches itself in zero steps.
+///
+/// Also the **Rel corner** of the WSet hexagon (081KYXE4W8808QG0R0011X8S70): a
+/// `WSet<'K, bool>` over this semiring is a SUBSET of 'K (weight = membership),
+/// `WSet.apply` is relational composition and `WSet.tensor` the relational
+/// product (Aji–McEliece 2000's Boolean instantiation). It is the one Boolean
+/// `ISemiring<bool>` in Core on purpose — a second `(∨, ∧)` type would be a
+/// duplicate, not a corner. Semiring ONLY: `true ∨ x = false` has no solution,
+/// so `WSet.negate` / `FourCornerTrace` (`#IRing`) are compiler-refused here;
+/// correcting a Boolean belief is re-derivation, not un-emission. GF(2) — Bool
+/// with XOR — IS a ring, but a different structure (parity-of-paths, not
+/// reachability); do not conflate. Law pack: WSet.Comonoid.Laws.Tests.fs §2c.
 [<Struct>]
 type BooleanKleene =
     interface ISemiring<bool> with

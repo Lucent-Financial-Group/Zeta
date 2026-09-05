@@ -1,0 +1,12 @@
+{
+  "pr_number": 16586,
+  "archive_path": "docs/history/pr-reviews/PR-16586-feat-bayesian-add-bounded-signed-probit-ep-receipt.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-04T20:19:58.088Z",
+  "schema_version": "v1",
+  "commit_sha": "b3ebe494697894116d1f9da1c2c15b39ffc88761",
+  "title": "feat(bayesian): add bounded signed-probit EP receipt",
+  "state": "MERGED",
+  "merged_at": "2026-09-04T20:19:18Z",
+  "head_ref": "lumen/signed-probit-ep-benchmark"
+}

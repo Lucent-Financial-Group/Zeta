@@ -1,0 +1,12 @@
+{
+  "pr_number": 16482,
+  "archive_path": "docs/history/pr-reviews/PR-16482-feat-bayesian-harden-factor-identity-and-add-exact-dense-covariance-query.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-03T10:05:17.998Z",
+  "schema_version": "v1",
+  "commit_sha": "382a9e213b792fc17d4b502eb43b6acd4ce5f275",
+  "title": "feat(bayesian): harden factor identity and add exact dense covariance query",
+  "state": "MERGED",
+  "merged_at": "2026-09-03T10:04:39Z",
+  "head_ref": "lumen/rffh-id-exact-dense-query"
+}

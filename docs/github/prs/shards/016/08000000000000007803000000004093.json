@@ -1,0 +1,12 @@
+{
+  "pr_number": 16531,
+  "archive_path": "docs/history/pr-reviews/PR-16531-fix-backlog-repair-canonical-source-references.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-03T20:58:55.180Z",
+  "schema_version": "v1",
+  "commit_sha": "dc04ddabc652ac00ee9e7d84aa6265ce92fd3904",
+  "title": "fix(backlog): repair canonical source references",
+  "state": "MERGED",
+  "merged_at": "2026-09-03T20:58:17Z",
+  "head_ref": "claim/task-auto-vivify-canonical-references"
+}

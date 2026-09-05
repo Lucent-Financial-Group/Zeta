@@ -37,7 +37,7 @@ Two steps destroyed all of it:
 
 ## Why it matters beyond the log line
 
-`forge-host/result.ts` already classifies every kind — `rate-limited` / `network` retryable;
+`src/Core.TypeScript/forge-host/result.ts` already classifies every kind — `rate-limited` / `network` retryable;
 `auth-failure` / `permission-denied` / `not-supported` / `not-found` / `parse-failure` / `internal`
 not — and every adapter sets `retryable`. **Nothing in `observe/` ever read it.** A field that exists
 to be acted on and is read by nobody is the dead-control shape this repo keeps finding.
@@ -47,12 +47,12 @@ retried the expired token on every tick forever while the operator was never tol
 
 ## The fix
 
-- `observe/forge-diagnosis.ts` — `describeForgeError` (kind + message + whether waiting helps) and
+- `src/Core.TypeScript/observe/forge-diagnosis.ts` — `describeForgeError` (kind + message + whether waiting helps) and
   `forgeFailureDisposition` (`retry-next-tick` | `operator-must-act`). It does **not** re-classify:
   it reads `retryable`, because a second classifier here would be a competing opinion that diverges
-  from `forge-host/result.ts` the first time either is edited. A test pins that.
-- `observe/world-infra.ts` — the failure is typed `ForgeError`, not `unknown`.
-- `observe/run-loop-real.ts` — prints the real diagnosis, and says separately and loudly when a
+  from `src/Core.TypeScript/forge-host/result.ts` the first time either is edited. A test pins that.
+- `src/Core.TypeScript/observe/world-infra.ts` — the failure is typed `ForgeError`, not `unknown`.
+- `src/Core.TypeScript/observe/run-loop-real.ts` — prints the real diagnosis, and says separately and loudly when a
   failure **will not clear on its own**.
 - `describeError(unknown)` — the repo-wide `e instanceof Error ? e.message : String(e)` idiom is
   right for an `Error` and a string and loses everything for a plain object. This keeps the good

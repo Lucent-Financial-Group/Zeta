@@ -1335,6 +1335,37 @@ jobs:
         # all-disjoint and be a green check over an empty experiment.
         run: bun run hygiene:check-healer-oscillation
 
+      # DOES ANY ZetaFS MODULE BUILD ITS PATHS WITH THE HOST'S SEPARATOR?
+      #
+      # A ZetaFS module hands every path it builds to `FileSystem.Current`, which is an
+      # ABSTRACTION -- it may be the host filesystem and it may be `InMemoryFileSystem`,
+      # and the module cannot tell. Building that path with `System.IO.Path.Combine` makes
+      # it a function of the HOST (`\` on Windows, `/` elsewhere), so the namespace of a
+      # filesystem meant to be the substrate's own takes its shape from whichever machine
+      # ran the code -- ambient state in a namespace (§13), and a break of the DST property
+      # that identical inputs give identical outputs regardless of host.
+      #
+      # MEASURED 2026-09-04: 27 `Path.Combine` and 4 `Path.GetDirectoryName` across five
+      # modules. The observable symptom was ONE test, and it held both Windows lanes red in
+      # 35/59 and 33/59 executions (081M1N854ED087G0R002JP5V5N).
+      #
+      # THIS STEP IS THE DETECTOR ONLY -- it writes nothing. The healer beside it is
+      # certified against the harness laws (idempotence, closure, convergence) but is NOT
+      # registered in `run-tier0.ts`, because that runner reads .ts/.tsx/.js/.md/.yml and
+      # would have to be widened to `.fs`, changing the blast radius of five other healers
+      # over a language none of them was written against. Registration is a filed increment
+      # (081M1N97ECS087G0R003GCPEDZ), not something to slip in beside a fix.
+      #
+      # `Path.GetFullPath` is reported as a WARNING, never a failure: it is a different
+      # defect (ambient CWD, not ambient separator) and removing it changes behaviour for
+      # real-path callers, so failing on it would keep this check permanently red for a
+      # decision it is not allowed to make.
+      - name: Audit ZetaFS virtual-path construction
+        run: bun src/Core.TypeScript/hygiene/healers/zetafs-virtual-path.ts
+
+      - name: Run the ZetaFS virtual-path healer falsifiers
+        run: bun test src/Core.TypeScript/hygiene/healers/zetafs-virtual-path.test.ts
+
       - name: Ambient-credential-hoist guard
         id: cred_hoist
         # Refuses any tracked executable surface that puts a credential into a
@@ -1362,6 +1393,47 @@ jobs:
         # Exits 2 if it scans fewer workflows than its floor, so a scope
         # regression cannot report success the way `lint:markdown` did (#10712).
         run: bun run hygiene:no-decide-by-grep
+
+      - name: Chart currency (out-of-date dependencies are DRIFT, and they are read on every PR)
+        id: chart_currency
+        # Aaron 2026-09-04: "i'd love a read check on CI for any chart that is out of date
+        # even if it's not blocking it can be in the drift checks, for any deps actually,
+        # i've asking you to update to the latest version of all our charts at least 20
+        # times now and somehow we still have out of dates charts."
+        #
+        # HE IS RIGHT, AND THE MECHANISM -- NOT ANYONE'S MEMORY -- IS WHY. Measured
+        # 2026-09-04, and every part of it is checkable:
+        #
+        #   1. `chart-version-refresh.yml` measures upstream CORRECTLY. It is not broken.
+        #   2. It runs WEEKLY (Sun 17:07 UTC) + workflow_dispatch + a self-test on changes
+        #      to its own files. It does NOT run on an ordinary pull request, so a chart
+        #      going stale produced no signal where anyone was working.
+        #   3. It is outside the required set and goes red BY DESIGN ("red here is the
+        #      signal"). Its last 6 runs are all `failure`, the 2026-08-30 schedule
+        #      included -- which is the mechanism working, and is indistinguishable from
+        #      the mechanism being broken to anyone not opening it.
+        #   4. AND ITS OUTPUT NEVER LANDS. `git commit`, `git push` and
+        #      `create-pull-request` appear ZERO times in that workflow: the refreshed
+        #      snapshot is uploaded as a 90-day ARTIFACT and discarded. So
+        #      `published-chart-versions.json` on main only moves when a human or agent
+        #      runs `--refresh` by hand.
+        #
+        # That is the whole answer. Charts are also the ONE dependency class with no
+        # automatic landing path: dependabot.yml covers eight ecosystems (nuget,
+        # github-actions, bun, npm, cargo, gomod, uv, dotnet-sdk) and OPENS PRs for each,
+        # and Dependabot has no Helm ecosystem that can read an ArgoCD Application's pin.
+        #
+        # THIS STEP IS THE READ CHECK, and it is OFFLINE -- every input is a committed
+        # snapshot, so it costs no network and runs in this lane on every PR. The cost of
+        # that choice is stated rather than hidden: it reports what the SNAPSHOT knows.
+        # Which is why `snapshot-stale` is itself a finding and the LOUDEST one -- a clean
+        # currency report over a snapshot nobody refreshed is precisely the check that did
+        # not run wearing the shape of one that passed, and it is the exact failure above.
+        #
+        # DRIFT TIER, deliberately: this job is not in `gate (required)`'s needs, so a
+        # finding paints a red X here and blocks nobody. Being behind must never gate a
+        # merge -- it is a standing condition, not an error.
+        run: bun src/Core.TypeScript/hygiene/report-chart-currency.ts --drift
 
       - name: GraphQL-transport guard (REST is the default; GraphQL is the contested budget)
         id: graphql_transport
@@ -1770,7 +1842,7 @@ jobs:
         # is strictly better than a step name. This step covers the other nineteen, which do not.
         if: failure()
         run: |
-          echo "::error title=lint (bash retirement + hygiene): which step failed::install-deps=${{ steps.install_deps.outcome }} bash-retirement=${{ steps.bash_retirement.outcome }} cred-hoist=${{ steps.cred_hoist.outcome }} decide-by-grep=${{ steps.decide_by_grep.outcome }} graphql=${{ steps.graphql_transport.outcome }} scan-floor=${{ steps.scan_floor.outcome }} ambient-time=${{ steps.ambient_time.outcome }} arity-equality=${{ steps.arity_equality.outcome }} arity-nonequality=${{ steps.arity_nonequality.outcome }} hook-script-paths=${{ steps.hook_script_paths.outcome }} linter-coverage=${{ steps.linter_coverage.outcome }} consent-signoff=${{ steps.consent_signoff.outcome }} collation=${{ steps.collation.outcome }} mise-parity=${{ steps.mise_parity.outcome }} hygiene-tests=${{ steps.hygiene_tests.outcome }} audit-tests=${{ steps.audit_tests.outcome }} hw-inventory=${{ steps.hw_inventory.outcome }} inventory-readmodel=${{ steps.inventory_readmodel.outcome }} book-index=${{ steps.book_index.outcome }} inventory-tests=${{ steps.inventory_tests.outcome }}"
+          echo "::error title=lint (bash retirement + hygiene): which step failed::install-deps=${{ steps.install_deps.outcome }} bash-retirement=${{ steps.bash_retirement.outcome }} cred-hoist=${{ steps.cred_hoist.outcome }} decide-by-grep=${{ steps.decide_by_grep.outcome }} chart-currency=${{ steps.chart_currency.outcome }} graphql=${{ steps.graphql_transport.outcome }} scan-floor=${{ steps.scan_floor.outcome }} ambient-time=${{ steps.ambient_time.outcome }} arity-equality=${{ steps.arity_equality.outcome }} arity-nonequality=${{ steps.arity_nonequality.outcome }} hook-script-paths=${{ steps.hook_script_paths.outcome }} linter-coverage=${{ steps.linter_coverage.outcome }} consent-signoff=${{ steps.consent_signoff.outcome }} collation=${{ steps.collation.outcome }} mise-parity=${{ steps.mise_parity.outcome }} hygiene-tests=${{ steps.hygiene_tests.outcome }} audit-tests=${{ steps.audit_tests.outcome }} hw-inventory=${{ steps.hw_inventory.outcome }} inventory-readmodel=${{ steps.inventory_readmodel.outcome }} book-index=${{ steps.book_index.outcome }} inventory-tests=${{ steps.inventory_tests.outcome }}"
           echo "[step-outcomes] a failing install means bun never provisioned; read that step's log."
           echo "[step-outcomes] arity-equality / arity-nonequality failures carry their own ::error annotations naming file and line."
 
@@ -3251,11 +3323,17 @@ jobs:
     # WHY NOT SPLIT ACROSS PARALLEL JOBS. Per-job fixed cost here is the install.sh bootstrap
     # plus `bun install` -- 1-2 minutes even on a cache hit -- against roughly 7 minutes of
     # actual test time. N jobs multiply the fixed cost for a wall-clock saving that does not
-    # pay. Revisit if the suite passes about 10 minutes.
+    # pay. Revisit if the suite passes about 10 minutes. MEASURED 2026-09-04: it has — wall
+    # clock is 18-20 minutes, of which ~19 minutes is the bun test step. Splitting is the
+    # next cost-shape, not this commit: a floor red from timeout-minutes is a budget miss,
+    # not a parallelism miss, and the tick-shard lint already taught the raise-first class
+    # (5 -> 12 when systematically near the ceiling).
     #
-    # COST. About 9 minutes per run (setup plus tests) on ubuntu-24.04 at the 1x multiplier;
-    # at roughly 250 gate runs per month that is on the order of 2,250 runner-minutes added.
-    # It buys execution of ~770 files and ~9,000 assertions that today execute nowhere.
+    # COST. About 19 minutes per run (setup plus tests) on ubuntu-24.04 at the 1x
+    # multiplier; at roughly 250 gate runs per month that is on the order of 4,750
+    # runner-minutes. It buys execution of ~770 files and ~9,000 assertions that otherwise
+    # execute nowhere. The previous "about 9 minutes" figure was the probation-era
+    # measurement; the suite outgrew it while the job cap stayed at 20.
     #
     # RUNS AND BLOCKS. The probation period produced the evidence the original split asked
     # for. PR #15352 merged with this job FAILURE beside a successful required rollup: a cold
@@ -3266,7 +3344,15 @@ jobs:
     # The environment-dependent tier remains non-blocking; only this dependency-closed,
     # reproducible behavior suite enters the floor.
     name: test (TS hermetic)
-    timeout-minutes: 20
+    # RAISED 20 -> 30 (2026-09-04). Same class as lint-tick-shard-relative-paths 5 -> 12:
+    # the job is not flaky, it is systematically near the ceiling. MEASURED on this PR:
+    #   33824995582 success 18m40s
+    #   33831375549 success 19m25s
+    #   33833532558 attempt 1 cancelled 20m17s — the bun test step itself ran 19m47s
+    #     then GitHub killed the job; gate (required) correctly read cancelled as FAIL.
+    # A 35-second margin on a 19-minute suite is not a budget. 30 minutes is the raise;
+    # splitting the suite is the follow-up if wall clock stays above 10 minutes.
+    timeout-minutes: 30
     runs-on: ubuntu-24.04
 
     steps:
@@ -3353,7 +3439,7 @@ jobs:
     # runs. A file silently dropped from this list becomes an "excluded from hermetic and run
     # by nothing" finding on the next PR.
     #
-    # COST. Two files, seconds of test time; the minutes are the shared install.sh bootstrap
+    # COST. Three files, seconds of test time; the minutes are the shared install.sh bootstrap
     # plus the uv sync that the hermetic tier no longer pays for.
     name: test (TS environment-dependent)
     timeout-minutes: 20
@@ -3427,6 +3513,13 @@ jobs:
       - name: Install npm devDependencies
         run: bun install --frozen-lockfile
 
+      - name: Build signed-probit F# receipt dependency
+        # The signed-probit wrapper intentionally runs the compiled F# query against an
+        # independently authored Python integral. The JavaScript-first tier does not
+        # realize this artifact; the full declared toolchain does. Build it explicitly
+        # here so a missing or non-compiling receipt is a named failure, not ambient state.
+        run: mise exec -- dotnet build src/Bayesian/Bayesian.fsproj --nologo --verbosity minimal
+
       - name: Tier manifest (which dependency each file below needs)
         run: bun src/Core.TypeScript/hygiene/environment-dependent-test-files.ts
 
@@ -3438,7 +3531,9 @@ jobs:
         run: |
           bun test \
             tests/cross-verification/_harness/cross-verify-ir.test.ts \
-            src/Core.TypeScript/zflash/esp-inject.test.ts
+            src/Core.TypeScript/zflash/esp-inject.test.ts \
+            src/Core.TypeScript/research/signed-probit-ep-cross-verify.test.ts \
+            src/Core.TypeScript/research/lexical-geometric-receipt-cross-verify.test.ts
 
   # ═══════════════════════════════════════════════════════════════════
   # Full Verification Gate — 7-language oracle + cost + proofs

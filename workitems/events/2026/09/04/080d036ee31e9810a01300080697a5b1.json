@@ -1,0 +1,14 @@
+{
+  "id": "080d036ee31e9810a01300080697a5b1",
+  "at": "2026-09-04T19:19:15.155Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1PXRRYE087G0R0039VEKC0",
+    "type": "task",
+    "title": "IBlockIo LbaCount geometry; name native NVMe gaps",
+    "slug": "iblockio-lbacount-geometry-name-native-nvme-gaps",
+    "priority": "P1",
+    "filename": "081M1PXRRYE087G0R0039VEKC0-iblockio-lbacount-geometry-name-native-nvme-gaps.md"
+  }
+}

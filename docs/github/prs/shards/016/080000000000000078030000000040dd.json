@@ -1,0 +1,12 @@
+{
+  "pr_number": 16605,
+  "archive_path": "docs/history/pr-reviews/PR-16605-docs-creds-lucent-item-is-the-sa-token-store.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-04T21:30:02.219Z",
+  "schema_version": "v1",
+  "commit_sha": "00da680cf0bbf7b0831cc3d3e3edd2db9e5d9bea",
+  "title": "docs(creds): Lucent item is the SA-token store",
+  "state": "MERGED",
+  "merged_at": "2026-09-04T21:29:30Z",
+  "head_ref": "cursor/op-item-token-store-27c5"
+}

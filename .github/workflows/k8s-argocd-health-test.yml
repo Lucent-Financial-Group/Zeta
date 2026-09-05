@@ -149,6 +149,10 @@ on:
       - "src/Core.TypeScript/cluster/inert-valuesobject-keys.schema.json"
       - "src/Core.TypeScript/cluster/reason-truth.ts"
       - "src/Core.TypeScript/cluster/reason-truth.test.ts"
+      - "src/Core.TypeScript/cluster/gatekeeper-ignore-label.ts"
+      - "src/Core.TypeScript/cluster/gatekeeper-ignore-label.test.ts"
+      - "src/Core.TypeScript/cluster/lane-tree-source.ts"
+      - "src/Core.TypeScript/cluster/lane-tree-source.test.ts"
       - "docs/backlog/P1/081KSXN940008QG0R000SCP2H1-kubernetes-argocd-kind-k3d-integration-health-tests-separate.md"
       - ".github/workflows/k8s-argocd-health-test.yml"
       - ".mise.toml"
@@ -256,6 +260,10 @@ on:
       - "src/Core.TypeScript/cluster/inert-valuesobject-keys.schema.json"
       - "src/Core.TypeScript/cluster/reason-truth.ts"
       - "src/Core.TypeScript/cluster/reason-truth.test.ts"
+      - "src/Core.TypeScript/cluster/gatekeeper-ignore-label.ts"
+      - "src/Core.TypeScript/cluster/gatekeeper-ignore-label.test.ts"
+      - "src/Core.TypeScript/cluster/lane-tree-source.ts"
+      - "src/Core.TypeScript/cluster/lane-tree-source.test.ts"
       - "docs/backlog/P1/081KSXN940008QG0R000SCP2H1-kubernetes-argocd-kind-k3d-integration-health-tests-separate.md"
       - ".github/workflows/k8s-argocd-health-test.yml"
       - ".mise.toml"
@@ -426,6 +434,75 @@ jobs:
 
       - name: Run app-of-apps discovery unit tests
         run: bun test src/Core.TypeScript/cluster/app-of-apps-discovery.test.ts
+
+      # DOES EVERY NAMESPACE THAT CLAIMS A GATEKEEPER EXEMPTION ACTUALLY HAVE ONE?
+      #
+      # Gatekeeper ships its own validating webhook, `check-ignore-label`, which
+      # refuses the label `admission.gatekeeper.sh/ignore` on any namespace outside
+      # the controller's exempt set. It is not one of our ConstraintTemplates and no
+      # Constraint can switch it off -- it guards the exemption mechanism itself, so
+      # a workload cannot exempt itself from policy by labelling its own namespace.
+      #
+      # Three namespaces in this tree carried that label and only one was exempt.
+      # MEASURED on run 33790413535 (main, 2026-09-03), the other two were denied on
+      # every sync attempt:
+      #
+      #   application/agent-memory  ... the namespace failed to apply, reason:
+      #     admission webhook "check-ignore-label.gatekeeper.sh" denied the request:
+      #     Only exempt namespace can have the admission.gatekeeper.sh/ignore label
+      #     (retried 5 times).
+      #   application/gmod          ... identical ...
+      #
+      # The Namespace never applies, so the Application never syncs, so it reads
+      # OutOfSync/Missing forever -- and `agent-memory is OutOfSync/Missing` is one
+      # of the two findings that failed the included proof below.
+      #
+      # WHY IT SURVIVED: the correspondence was asserted in a YAML COMMENT
+      # ("matches open-policy-agent exemptions") and never read from the other side.
+      # It was false when it was written. This step is that comment made mechanical,
+      # and it reproduces the whole failure offline in about a second.
+      #
+      # It is a SEPARATE step from the test file below on purpose: the audit reads
+      # the live tree and is what goes red when someone adds a labelled namespace;
+      # the tests pin the refusals that keep the audit from being vacuous -- an
+      # unreadable exempt list reported rather than defaulted in either direction, an
+      # empty list distinguished from an unreadable one, and a zero-namespace walk
+      # treated as an alarm rather than a pass.
+      - name: Audit gatekeeper ignore-label exemptions
+        run: bun src/Core.TypeScript/cluster/gatekeeper-ignore-label.ts
+
+      - name: Run gatekeeper ignore-label falsifiers
+        run: bun test src/Core.TypeScript/cluster/gatekeeper-ignore-label.test.ts
+      # THE RESOURCE-RUNG OVERRIDE POINT, verified offline.
+      #
+      # `argocd-health-test.ts` already names the blocker this addresses: "One
+      # committed tree, two substrates, no override point." `--resource-profile dev
+      # --apply` rewrites the WORKING tree while ArgoCD syncs the COMMITTED tree at
+      # `--git-ref`, so the dev rung has never been able to reach this lane, and the
+      # lane applies `metal` -- 6390m of requests to a 4000m node. MEASURED on run
+      # 33790413535: mimir-kafka-0 and three hindsight pods Pending on
+      # `Insufficient cpu`, mimir Degraded, the included proof red.
+      #
+      # `lane-tree-source.ts` builds the tree the lane should sync: a staged copy of
+      # `full-ai-cluster/k8s` with the rung applied through the SAME
+      # `applyResourceProfile` the `--verify` path checks, self-referencing repoURLs
+      # pointed at an in-cluster server, committed to a bare repository and packed
+      # into a ConfigMap. Nothing is pushed and nothing leaves the runner, which is
+      # what keeps it off the repository-growth budget and makes it work for a fork.
+      #
+      # THIS STEP IS THE VERIFICATION, and it is genuinely end-to-end despite being
+      # offline: the test CLONES the bare repository it just built and reads
+      # mimir's kafka request out of the clone, asserting 25m (dev) rather than
+      # 1000m (metal, the value that could not be scheduled). Mutation-checked
+      # 2026-09-03 -- applying the rung AFTER the commit, a plausible ordering bug,
+      # turns exactly that assertion red.
+      #
+      # The measurement it prints is worth reading on every run: the packed tree is
+      # 419,840 bytes against a 716,800-byte budget (58.6%). The refusal above that
+      # budget is deliberate -- the day this tree outgrows ConfigMap delivery should
+      # arrive as a named message here, not as an etcd rejection inside a live lane.
+      - name: Run lane-tree source falsifiers (the resource-rung override point)
+        run: bun test src/Core.TypeScript/cluster/lane-tree-source.test.ts
 
       # SYNC-WAVE DERIVATION. The App-of-Apps bring-up order is DERIVED from
       # full-ai-cluster/k8s/sync-wave-dependency-graph.yaml by ace's own engine
@@ -1036,6 +1113,14 @@ jobs:
         env:
           ZETA_ARGOCD_GIT_REF: ${{ github.event.pull_request.head.sha || github.sha }}
           ZETA_ARGOCD_GIT_REPO_URL: ${{ github.event.pull_request.head.repo.clone_url || 'https://github.com/Lucent-Financial-Group/Zeta' }}
+        # CPU/MEMORY OVERLAY, same mechanism as live-kind-included. The committed
+        # tree is `metal` (6390m on a 4000m GitHub node). `--serve-tree dev` is
+        # 1165m / 9164Mi and fits the runner budget (2500m / 9216Mi). Metal stays
+        # in git for USB/hardware. Disk is a different ladder: this job already
+        # runs `--check-envelope` (70 GiB). PVC sizes stay at the metal storage
+        # profile because CI `zeta-local-path` is thin and shrinking PVCs would
+        # not be a USB rehearsal. Do not invent a fourth budget. Do not shrink
+        # metal.
         run: |
           bun src/Core.TypeScript/cluster/argocd-health-test.ts \
             --run \
@@ -1046,7 +1131,8 @@ jobs:
             --cluster-name zeta-ci \
             --git-ref "$ZETA_ARGOCD_GIT_REF" \
             --timeout-sec 1200 \
-            --poll-sec 10
+            --poll-sec 10 \
+            --serve-tree dev
 
       - name: Which CNI actually owns the cluster (the reason this job exists)
         # The profile CLAIMS flannel and kube-proxy are off and Cilium owns the
@@ -1112,6 +1198,8 @@ jobs:
             echo "resolv.conf:"; cat /etc/resolv.conf 2>&1 | sed "s/^/  /"
             echo "getent hosts github.com:"; getent hosts github.com 2>&1 | sed "s/^/  /" || echo "  FAILED rc=$?"
             echo "getent hosts kubernetes.default (in-cluster):"; getent hosts kubernetes.default 2>&1 | sed "s/^/  /" || echo "  FAILED rc=$?"
+            echo "getent hosts zeta-lane-tree.zeta-lane-tree.svc.cluster.local:"; getent hosts zeta-lane-tree.zeta-lane-tree.svc.cluster.local 2>&1 | sed "s/^/  /" || echo "  FAILED rc=$?"
+            echo "git ls-remote overlay tree.git:"; git ls-remote http://zeta-lane-tree.zeta-lane-tree.svc.cluster.local:8080/tree.git 2>&1 | sed "s/^/  /" || echo "  FAILED rc=$?"
           ' || true
           echo "--- what does CoreDNS forward upstream to? (the k3d/docker 127.0.0.11 question) ---"
           kubectl -n kube-system get configmap coredns -o jsonpath='{.data.Corefile}' || true
@@ -1128,6 +1216,175 @@ jobs:
                 echo "=== $ns/$pod (waiting reasons + restart counts)"
                 kubectl -n "$ns" logs "$pod" --all-containers=true --prefix=true --previous=true --tail=100 || true
               done || true
+
+      - name: Gateway API CRDs and the four (k3s-vs-k3d dump, not a re-lift)
+        # MEASURED run 33429761222: cert-manager CrashLoopBackOff
+        # "the Gateway API CRDs do not seem to be present, but ExperimentalGatewayAPISupport is set to true".
+        # Metal applies full-ai-cluster/k8s/bootstrap/gateway-api-crds.yaml first
+        # (`aa-gateway-api-crds`). Kind --cni cilium applies the same file. k3d
+        # bring-up used to skip it. This dump is diagnostic: smoke does not
+        # assert the four, so NOT FOUND is honest. Do not re-lift --scope included.
+        if: always()
+        run: |
+          echo "=== Gateway API CRDs (metal first-boot aa-gateway-api-crds) ==="
+          kubectl get crd -o name 2>/dev/null | grep -E 'gateway\.networking' || echo "NONE"
+          echo "=== cert-manager pods (CrashLoop here is the CRD-absent cascade) ==="
+          kubectl -n cert-manager get pods -o wide || true
+          echo "=== the four (NOT FOUND on smoke is honest) ==="
+          for app in openziti-controller trust-manager spire vault; do
+            line="$(kubectl -n argocd get application "$app" \
+              -o jsonpath='=== {.metadata.name}: sync={.status.sync.status} health={.status.health.status}' \
+              2>/dev/null || true)"
+            if [ -z "$line" ] || [ "$line" = "=== : sync= health=" ]; then
+              echo "  === $app: NOT FOUND IN CLUSTER"
+            else
+              echo "  $line"
+            fi
+          done
+          echo "=== spire-agent (second k3s/k3d class: hostNetwork DNS i/o timeout; not Gateway API) ==="
+          echo "--- DaemonSets + pods (chart 0.24.2 hardcodes hostNetwork + ClusterFirstWithHostNet) ---"
+          kubectl -n spire get daemonset,pods -o wide || true
+          kubectl -n spire get pods -o custom-columns=NAME:.metadata.name,HOSTNET:.spec.hostNetwork,DNSPOL:.spec.dnsPolicy,LABELS:.metadata.labels --no-headers || true
+          echo "--- kube-dns ClusterIP (the 10.43.0.10 the agent dials) ---"
+          kubectl -n kube-system get svc -l k8s-app=kube-dns -o wide || true
+          kubectl -n kube-system get ep kube-dns -o wide || true
+          echo "--- logs from DaemonSet/spire-agent ---"
+          # Selector is app.kubernetes.io/name=agent (MEASURED 33751425785),
+          # not app=spire-agent. DaemonSet name is still spire-agent.
+          kubectl -n spire logs daemonset/spire-agent --tail=80 --prefix=true || true
+          kubectl -n spire logs daemonset/spire-agent --previous --tail=80 --prefix=true || true
+          echo "--- spire PVC + ConfigMaps (server writes bundle.crt at runtime) ---"
+          # MEASURED 33751425785 job 100636645454: agent CrashLoop was
+          # "could not parse trust bundle: open /run/spire/bundle/bundle.crt"
+          # because spire-server-0 was Pending on rancher.io/local-path, not
+          # the included-class DNS timeout. Do not collapse the two.
+          kubectl -n spire get pvc,cm -o wide || true
+          echo "--- spire-bundle keys (MEASURED 33754516236: DATA 0, no bundle.crt) ---"
+          kubectl -n spire get cm spire-bundle -o jsonpath='data={.data}{"\n"}' || true
+          echo "--- cilium-dbg service list (do not swallow exec failure) ---"
+          DNS_IP="$(kubectl -n kube-system get svc kube-dns -o jsonpath='{.spec.clusterIP}' 2>/dev/null || true)"
+          echo "kube-dns ClusterIP=${DNS_IP:-NONE}"
+          if ! kubectl -n kube-system exec ds/cilium -c cilium-agent -- cilium-dbg service list; then
+            echo "cilium-dbg service list FAILED (MEASURED 33754516236: container not found cilium-agent)"
+            kubectl -n kube-system get ds,pods -l k8s-app=cilium -o wide || true
+          fi
+          echo "=== hostNetwork TCP ClusterIP + pod-IP probe (081M1DFQ2MZ distinguisher) ==="
+          echo "MEASURED 33804533591: --disable=servicelb emptied app=svclb; hostNetwork ClusterIP still FAIL, pod IP OPEN."
+          echo "Agent lookup spire-server.spire on 10.43.0.10:53 i/o timeout with bundle.crt present."
+          echo "Klipper is not the translator. Do not invent Cilium values. Do not re-lift included."
+          echo "--- klipper svclb (MEASURED 33804533591: No resources found) ---"
+          kubectl get ds,pods -A -l app=svclb -o wide || true
+          SPIRE_IP="$(kubectl -n spire get svc spire-server -o jsonpath='{.spec.clusterIP}' 2>/dev/null || true)"
+          SPIRE_PORT="$(kubectl -n spire get svc spire-server -o jsonpath='{.spec.ports[0].port}' 2>/dev/null || true)"
+          SPIRE_POD_IP="$(kubectl -n spire get pod spire-server-0 -o jsonpath='{.status.podIP}' 2>/dev/null || true)"
+          DNS_EP_IP="$(kubectl -n kube-system get ep kube-dns -o jsonpath='{.subsets[0].addresses[0].ip}' 2>/dev/null || true)"
+          echo "spire-server ClusterIP=${SPIRE_IP:-NONE}:${SPIRE_PORT:-NONE} podIP=${SPIRE_POD_IP:-NONE}:8081"
+          echo "kube-dns endpoint podIP=${DNS_EP_IP:-NONE}:53"
+          NODE="$(kubectl get nodes -o jsonpath='{.items[0].metadata.name}' 2>/dev/null || true)"
+          echo "node=${NODE:-NONE}"
+          echo "--- cilium-dbg status (Socket LB / KubeProxyReplacement; do not invent helm values) ---"
+          kubectl -n kube-system exec ds/cilium -c cilium-agent -- cilium-dbg status \
+            || echo "cilium-dbg status FAILED"
+          echo "--- cilium-config ConfigMap socket-LB keys (read, do not set) ---"
+          echo "MEASURED 33814040666: cilium-dbg config get names 404; enable-host-legacy-routing=false."
+          echo "MEASURED 33817974673: bpf-lb-sock=false bpf-lb-sock-hostns-only=true bpf-lb-external-clusterip=false kube-proxy-replacement=true; verbose Socket LB Enabled Coverage Hostns-only; hostNetwork ClusterIP still FAIL."
+          kubectl -n kube-system get cm cilium-config -o jsonpath='bpf-lb-sock={.data.bpf-lb-sock} bpf-lb-sock-hostns-only={.data.bpf-lb-sock-hostns-only} bpf-lb-external-clusterip={.data.bpf-lb-external-clusterip} enable-host-reachable-services={.data.enable-host-reachable-services} kube-proxy-replacement={.data.kube-proxy-replacement} enable-host-legacy-routing={.data.enable-host-legacy-routing}{"\n"}' \
+            || echo "cilium-config ConfigMap FAILED"
+          echo "--- cilium-dbg status --verbose KubeProxyReplacement Details ---"
+          kubectl -n kube-system exec ds/cilium -c cilium-agent -- cilium-dbg status --verbose \
+            | awk '/KubeProxyReplacement Details/,/^$/' \
+            || echo "verbose KPR details FAILED"
+          echo "--- host route to kube-dns ClusterIP (next distinguisher; not a helm value) ---"
+          if [ -n "$NODE" ] && [ -n "$DNS_IP" ]; then
+            docker exec "$NODE" ip route get "$DNS_IP" || echo "ip route get FAILED"
+            docker exec "$NODE" ip -o link || echo "ip link FAILED"
+          else
+            echo "ip route get: SKIP"
+          fi
+          echo "--- k3d node cgroupns (MEASURED 33809535624: private, not the hole) ---"
+          if [ -n "$NODE" ]; then
+            docker inspect "$NODE" --format 'CgroupnsMode={{.HostConfig.CgroupnsMode}} Privileged={{.HostConfig.Privileged}}' \
+              || echo "docker inspect FAILED"
+            echo "host /proc/1/ns/cgroup=$(readlink /proc/1/ns/cgroup 2>/dev/null || echo NONE)"
+            echo "node /proc/1/ns/cgroup=$(docker exec "$NODE" readlink /proc/1/ns/cgroup 2>/dev/null || echo NONE)"
+          else
+            echo "cgroupns: NO_NODE"
+          fi
+          tcp_probe_from_node() {
+            local ip="$1" port="$2" label="$3"
+            echo "--- TCP ${label} ${ip:-NONE}:${port:-NONE} from k3d node (hostNetwork netns) ---"
+            if [ -z "$ip" ] || [ -z "$port" ]; then
+              echo "TCP ${label}: SKIP (no address)"
+              return 0
+            fi
+            if [ -z "$NODE" ] || ! docker exec "$NODE" true >/dev/null 2>&1; then
+              echo "TCP ${label}: NO_NODE"
+              return 1
+            fi
+            APPLETS=""
+            if APPLETS="$(docker exec "$NODE" /bin/busybox --list)"; then
+              if echo "$APPLETS" | tr ' ' '\n' | grep -qx nc; then
+                if docker exec "$NODE" /bin/busybox nc -z -w 3 "$ip" "$port"; then
+                  echo "TCP ${label}: OPEN"
+                else
+                  echo "TCP ${label}: FAIL"
+                fi
+                return 0
+              fi
+            else
+              echo "busybox --list failed on ${NODE} (not a TCP measurement)"
+            fi
+            if docker exec "$NODE" python3 -c "print('ok')" >/dev/null 2>&1; then
+              if docker exec "$NODE" python3 -c "import socket; socket.create_connection(('$ip', int('$port')), 3).close()"; then
+                echo "TCP ${label}: OPEN"
+              else
+                echo "TCP ${label}: FAIL"
+              fi
+              return 0
+            fi
+            echo "TCP ${label}: NO_TOOL (k3s node has neither busybox nc nor python3)"
+            return 1
+          }
+          NODE_TOOL=1
+          tcp_probe_from_node "${DNS_IP}" 53 kube-dns || NODE_TOOL=0
+          tcp_probe_from_node "${SPIRE_IP}" "${SPIRE_PORT}" spire-server || NODE_TOOL=0
+          tcp_probe_from_node "${SPIRE_POD_IP}" 8081 spire-server-pod || NODE_TOOL=0
+          tcp_probe_from_node "${DNS_EP_IP}" 53 kube-dns-pod || NODE_TOOL=0
+          echo "--- UDP nslookup spire-server.spire from k3d node via kube-dns ---"
+          if [ -n "$NODE" ] && [ -n "$DNS_IP" ]; then
+            docker exec "$NODE" /bin/busybox nslookup spire-server.spire "$DNS_IP" \
+              || echo "UDP DNS lookup: FAIL"
+          else
+            echo "UDP DNS lookup: SKIP"
+          fi
+          PROBE_SH="echo -n \"TCP kube-dns ${DNS_IP:-NONE}:53 \"; nc -z -w 3 \"${DNS_IP}\" 53 && echo OPEN || echo FAIL; echo -n \"TCP kube-dns-pod ${DNS_EP_IP:-NONE}:53 \"; nc -z -w 3 \"${DNS_EP_IP}\" 53 && echo OPEN || echo FAIL; echo -n \"TCP spire-server ${SPIRE_IP:-NONE}:${SPIRE_PORT:-NONE} \"; nc -z -w 3 \"${SPIRE_IP}\" \"${SPIRE_PORT}\" && echo OPEN || echo FAIL; echo -n \"TCP spire-server-pod ${SPIRE_POD_IP:-NONE}:8081 \"; nc -z -w 3 \"${SPIRE_POD_IP}\" 8081 && echo OPEN || echo FAIL"
+          run_busybox_tcp() {
+            local pod="$1" hostnet="$2"
+            echo "--- busybox ${pod} (hostNetwork: ${hostnet}) ---"
+            local overrides
+            if [ "$hostnet" = "true" ]; then
+              overrides='{"spec":{"hostNetwork":true,"dnsPolicy":"ClusterFirstWithHostNet","tolerations":[{"operator":"Exists"}]}}'
+            else
+              overrides='{"spec":{"hostNetwork":false,"dnsPolicy":"ClusterFirst","tolerations":[{"operator":"Exists"}]}}'
+            fi
+            kubectl -n kube-system delete pod "$pod" --ignore-not-found --wait=true --timeout=20s || true
+            kubectl -n kube-system run "$pod" \
+              --image=busybox:1.36.1 \
+              --restart=Never \
+              --overrides="$overrides" \
+              --command -- /bin/sh -c "$PROBE_SH" \
+              || echo "kubectl run ${pod} FAILED"
+            kubectl -n kube-system wait --for=jsonpath='{.status.phase}'=Succeeded pod/"$pod" --timeout=60s \
+              || echo "${pod} did not Succeed"
+            kubectl -n kube-system logs "$pod" || echo "logs ${pod} FAILED"
+            kubectl -n kube-system delete pod "$pod" --ignore-not-found --wait=false || true
+          }
+          echo "--- busybox hostNetwork fallback (hostNetwork: true) ---"
+          if [ "$NODE_TOOL" != "1" ]; then
+            run_busybox_tcp hostnet-tcp-probe true
+          fi
+          echo "--- pod-network control (hostNetwork: false); docker exec cannot do this ---"
+          run_busybox_tcp podnet-tcp-probe false
 
       - name: Print cluster diagnostics
         if: always()
@@ -1395,6 +1652,7 @@ jobs:
             --git-ref "$ZETA_ARGOCD_GIT_REF" \
             --timeout-sec 2400 \
             --poll-sec 15 \
+            --serve-tree dev \
             --ephemeral-vault-init \
             | tee "$RUNNER_TEMP/cilium-included-proof.log"
 
@@ -1461,6 +1719,11 @@ jobs:
           kubectl get svc -A --field-selector spec.type=LoadBalancer || true
           echo "=== CoreDNS Corefile (the github.com resolver) ==="
           kubectl -n kube-system get configmap coredns -o jsonpath='{.data.Corefile}' || true
+          echo "=== overlay git ls-remote (MEASURED 33824995558: unexpected EOF, not helm deps) ==="
+          kubectl -n argocd exec deploy/argocd-repo-server -- sh -c '
+            echo "getent hosts zeta-lane-tree.zeta-lane-tree.svc.cluster.local:"; getent hosts zeta-lane-tree.zeta-lane-tree.svc.cluster.local 2>&1 | sed "s/^/  /" || echo "  FAILED rc=$?"
+            echo "git ls-remote overlay tree.git:"; git ls-remote http://zeta-lane-tree.zeta-lane-tree.svc.cluster.local:8080/tree.git 2>&1 | sed "s/^/  /" || echo "  FAILED rc=$?"
+          ' || true
           echo
 
       - name: Name the drifting resources (per-Application, failures only)
@@ -1629,6 +1892,24 @@ jobs:
           ZETA_GHCR_PULL_TOKEN: ${{ github.token }}
           ZETA_ARGOCD_GIT_REF: ${{ github.event.pull_request.head.sha || github.sha }}
           ZETA_ARGOCD_GIT_REPO_URL: ${{ github.event.pull_request.head.repo.clone_url || 'https://github.com/Lucent-Financial-Group/Zeta' }}
+        # SERVES THE `dev` RUNG rather than syncing the committed `metal` one.
+        # Aaron 2026-09-03: "we don't have to test metal on our CI, metal is for our
+        # real hardware, dev is for testing on our github runners."
+        #
+        # The committed tree is `metal` -- 6390m of requests across the dev lane's 39
+        # apps against this runner's 4000m node -- so `mimir-kafka-0` and three
+        # hindsight pods take `Insufficient cpu` and never schedule (run
+        # 33790413535). `dev` is 1165m and fits. `--serve-tree dev` builds a copy of
+        # `full-ai-cluster/k8s` with that rung applied through the same
+        # `applyResourceProfile` the `--verify` path checks, serves it from an
+        # in-cluster read-only git server, and points the root Application there.
+        # Nothing is pushed, nothing leaves the runner, and the committed tree is
+        # untouched -- so the hardware box keeps the rung it needs.
+        #
+        # IT FAILS CLOSED. If the server never becomes Available the bring-up throws
+        # rather than falling back to GitHub: a silent fallback would sync `metal`,
+        # reproduce this exact failure, and say nothing about the override having
+        # been skipped.
         run: |
           # `pipefail` so the HARNESS's exit code -- not tee's -- is the job verdict.
           # Without it the tee would swallow every failure and re-create, in a subtler
@@ -1644,6 +1925,7 @@ jobs:
             --git-ref "$ZETA_ARGOCD_GIT_REF" \
             --timeout-sec 2400 \
             --poll-sec 15 \
+            --serve-tree dev \
             --ephemeral-vault-init \
             | tee "$RUNNER_TEMP/included-proof.log"
 
@@ -1730,6 +2012,11 @@ jobs:
           kubectl get nodes -o wide || true
           kubectl -n argocd get applications.argoproj.io -o wide || true
           kubectl get pods -A -o wide || true
+          echo "=== overlay git ls-remote (MEASURED 33824995558: unexpected EOF, not helm deps) ==="
+          kubectl -n argocd exec deploy/argocd-repo-server -- sh -c '
+            echo "getent hosts zeta-lane-tree.zeta-lane-tree.svc.cluster.local:"; getent hosts zeta-lane-tree.zeta-lane-tree.svc.cluster.local 2>&1 | sed "s/^/  /" || echo "  FAILED rc=$?"
+            echo "git ls-remote overlay tree.git:"; git ls-remote http://zeta-lane-tree.zeta-lane-tree.svc.cluster.local:8080/tree.git 2>&1 | sed "s/^/  /" || echo "  FAILED rc=$?"
+          ' || true
           kubectl -n arc-systems describe pods -l app.kubernetes.io/name=gha-rs-controller || true
           kubectl -n arc-systems logs -l app.kubernetes.io/name=gha-rs-controller --all-containers=true --prefix=true --tail=200 || true
           kubectl -n arc-systems logs -l app.kubernetes.io/name=gha-rs-controller --all-containers=true --prefix=true --previous=true --tail=200 || true

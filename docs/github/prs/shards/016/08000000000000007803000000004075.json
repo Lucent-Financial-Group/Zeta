@@ -1,0 +1,12 @@
+{
+  "pr_number": 16501,
+  "archive_path": "docs/history/pr-reviews/PR-16501-fix-cluster-log-the-spire-agent-daemonset-on-live-k3d-dump.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-03T12:15:17.656Z",
+  "schema_version": "v1",
+  "commit_sha": "676b3d8583e417394cfdf6f2cc9ffc441514adb7",
+  "title": "fix(cluster): log the spire-agent DaemonSet on live-k3d dump",
+  "state": "MERGED",
+  "merged_at": "2026-09-03T12:14:40Z",
+  "head_ref": "cursor/k3d-spire-agent-dump-27c5"
+}

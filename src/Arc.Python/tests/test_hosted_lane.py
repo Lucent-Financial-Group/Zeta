@@ -192,6 +192,46 @@ def test_click_is_deterministic_for_dst_replay() -> None:
     assert runs[0] == runs[1] and a
 
 
+def test_click_forecast_is_normalized_and_does_not_spend_its_selection() -> None:
+    """Looking at the field must not change which point the policy will take."""
+    policy = ClickPolicy()
+    grid = _two_object_grid()
+
+    first = policy.forecast(grid)
+    second = policy.forecast(grid)
+
+    assert first == second
+    assert sum(mass.probability for mass in first.masses) == pytest.approx(1.0)
+    assert len({(mass.x, mass.y) for mass in first.masses}) == len(first.masses)
+    assert policy.choose(grid) == first.selected
+
+
+def test_click_forecast_becomes_a_point_mass_on_the_lattice_fallback() -> None:
+    """The fallback is deterministic, so drawing wider mass would be a lie."""
+    policy = ClickPolicy()
+    blank = [[0] * 16 for _ in range(16)]
+
+    forecast = policy.forecast(blank)
+
+    assert len(forecast.masses) == 1
+    assert forecast.masses[0].probability == 1.0
+    assert policy.choose(blank) == forecast.selected
+
+
+def test_click_forecast_merges_components_with_the_same_rounded_centroid() -> None:
+    """Nested objects can name one cell; the field must carry one mass there."""
+    policy = ClickPolicy()
+    grid = [[0] * 5 for _ in range(5)]
+    for x, y in ((1, 1), (2, 1), (3, 1), (1, 2), (3, 2), (1, 3), (2, 3), (3, 3)):
+        grid[y][x] = 7
+    grid[2][2] = 8
+
+    forecast = policy.forecast(grid)
+
+    assert [(mass.x, mass.y) for mass in forecast.masses] == [(2, 2)]
+    assert forecast.masses[0].probability == 1.0
+
+
 def test_click_coordinates_stay_inside_the_engines_validated_range() -> None:
     """`ComplexAction` validates `0 <= x,y <= 63`; a violation is a mid-episode crash."""
     policy = ClickPolicy()

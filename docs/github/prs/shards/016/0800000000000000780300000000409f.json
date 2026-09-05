@@ -1,0 +1,12 @@
+{
+  "pr_number": 16543,
+  "archive_path": "docs/history/pr-reviews/PR-16543-feat-081m1mgvswk087g0r001eq0yqn-serve-tree-dev-so-ci-stops-applying-the-metal-ru.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-04T00:01:38.104Z",
+  "schema_version": "v1",
+  "commit_sha": "cd70fe2bd36fcb23d9d289fab1e603fac5190982",
+  "title": "feat(081M1MGVSWK087G0R001EQ0YQN): --serve-tree dev, so CI stops applying the metal rung",
+  "state": "MERGED",
+  "merged_at": "2026-09-04T00:00:58Z",
+  "head_ref": "otto/serve-tree-dev-rung-v2"
+}

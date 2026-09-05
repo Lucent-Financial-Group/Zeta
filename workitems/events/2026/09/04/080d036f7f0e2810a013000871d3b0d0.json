@@ -1,0 +1,14 @@
+{
+  "id": "080d036f7f0e2810a013000871d3b0d0",
+  "at": "2026-09-04T19:40:32.581Z",
+  "by": "riven-cursor",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1PYZRE5087G0R000HHG5HV",
+    "type": "task",
+    "title": "Production-harden CA, unseal, 1Password, and 3-key rotation",
+    "slug": "production-harden-ca-unseal-1password-and-3-key-rotation",
+    "priority": "P1",
+    "filename": "081M1PYZRE5087G0R000HHG5HV-production-harden-ca-unseal-1password-and-3-key-rotation.md"
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 16612,
+  "archive_path": "docs/history/pr-reviews/PR-16612-feat-arc-add-scene-regime-proto-priors.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-04T22:06:30.527Z",
+  "schema_version": "v1",
+  "commit_sha": "938030c5a7237986ceba53ddfe6b78913a6d56bf",
+  "title": "feat(arc): add scene-regime proto priors",
+  "state": "MERGED",
+  "merged_at": "2026-09-04T22:05:51Z",
+  "head_ref": "claim/task-arc-scene-regime-proto-priors"
+}

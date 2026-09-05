@@ -1,0 +1,12 @@
+{
+  "pr_number": 16502,
+  "archive_path": "docs/history/pr-reviews/PR-16502-feat-081m1khjb60087g0r0016g69kv-sealed-freeze-cas-through-filesystemblockio.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-03T12:12:15.724Z",
+  "schema_version": "v1",
+  "commit_sha": "522193c7b58550f2ee00c7145b14f14d87ca6af0",
+  "title": "feat(081M1KHJB60087G0R0016G69KV): sealed freeze CAS through FileSystemBlockIo",
+  "state": "MERGED",
+  "merged_at": "2026-09-03T12:11:39Z",
+  "head_ref": "feat/zetafs-sealed-file-cas"
+}

@@ -1,0 +1,14 @@
+{
+  "id": "080d037073085010a013000803a661a9",
+  "at": "2026-09-04T20:13:51.242Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1Q0WR89087G0R0036G0T0B",
+    "type": "task",
+    "title": "Backend-store and chart-test readiness v0: helm tests ArgoCD discards, and a backups bucket with no writer",
+    "slug": "backend-store-and-chart-test-readiness-v0-helm-tests-argocd",
+    "priority": "P2",
+    "filename": "081M1Q0WR89087G0R0036G0T0B-backend-store-and-chart-test-readiness-v0-helm-tests-argocd.md"
+  }
+}

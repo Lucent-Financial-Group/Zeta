@@ -1,0 +1,12 @@
+{
+  "pr_number": 16575,
+  "archive_path": "docs/history/pr-reviews/PR-16575-test-081m1p9bren087g0r000k7d38c-reclaim-crash-keeps-a-committed-freeze-readable.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-04T13:47:11.573Z",
+  "schema_version": "v1",
+  "commit_sha": "a2f62c8bfbbcd81138176546074e766aef6daa7c",
+  "title": "test(081M1P9BREN087G0R000K7D38C): reclaim crash keeps a committed freeze readable",
+  "state": "MERGED",
+  "merged_at": "2026-09-04T13:46:36Z",
+  "head_ref": "feat/zetafs-reclaim-crash-keeps-freeze"
+}

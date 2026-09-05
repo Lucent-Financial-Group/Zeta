@@ -1,0 +1,12 @@
+{
+  "pr_number": 16582,
+  "archive_path": "docs/history/pr-reviews/PR-16582-chore-workitems-complete-081kyzpqs8-vault-bridge-heartbeat-wiring-landed.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-04T17:51:03.575Z",
+  "schema_version": "v1",
+  "commit_sha": "d805c6ed67916bc13a748bc6c8a2ea76269ae4e4",
+  "title": "chore(workitems): complete 081KYZPQS8 — vault-bridge heartbeat wiring landed",
+  "state": "MERGED",
+  "merged_at": "2026-09-04T17:50:29Z",
+  "head_ref": "alexa/complete-081KYZPQS8-vault-bridge-heartbeat-wiring-20260904T170709Z"
+}

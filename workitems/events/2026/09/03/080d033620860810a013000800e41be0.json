@@ -1,0 +1,14 @@
+{
+  "id": "080d033620860810a013000800e41be0",
+  "at": "2026-09-03T10:15:20.513Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1KC8460087G0R003F3SGJC",
+    "type": "task",
+    "title": "Linguistic seed v0: NSM-prime seed vocabulary, Bayesian escalation ladder, and a drift-reconstructibility meter over GLOSSARY.md",
+    "slug": "linguistic-seed-v0-nsm-prime-seed-vocabulary-bayesian-escala",
+    "priority": "P2",
+    "filename": "081M1KC8460087G0R003F3SGJC-linguistic-seed-v0-nsm-prime-seed-vocabulary-bayesian-escala.md"
+  }
+}

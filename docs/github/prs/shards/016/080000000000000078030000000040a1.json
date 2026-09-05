@@ -1,0 +1,12 @@
+{
+  "pr_number": 16545,
+  "archive_path": "docs/history/pr-reviews/PR-16545-test-zetafs-isolate-ambient-filesystem-test-collection.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-03T23:52:03.134Z",
+  "schema_version": "v1",
+  "commit_sha": "2307bb02ea0ecf0c677d9a67f05ba7291a51282c",
+  "title": "test(zetafs): isolate ambient filesystem test collection",
+  "state": "MERGED",
+  "merged_at": "2026-09-03T23:51:24Z",
+  "head_ref": "lumen/zetafs-snapshot-isolation"
+}

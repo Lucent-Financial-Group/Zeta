@@ -1,0 +1,12 @@
+{
+  "pr_number": 16486,
+  "archive_path": "docs/history/pr-reviews/PR-16486-feat-081m1kafqj5087g0r003a6hkey-sealed-freeze-log-through-iblockio.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-03T10:19:45.278Z",
+  "schema_version": "v1",
+  "commit_sha": "10c981535e08a55776d6974b0d8c512d92f63712",
+  "title": "feat(081M1KAFQJ5087G0R003A6HKEY): sealed freeze log through IBlockIo",
+  "state": "MERGED",
+  "merged_at": "2026-09-03T10:19:09Z",
+  "head_ref": "feat/zetafs-block-sealed-log"
+}

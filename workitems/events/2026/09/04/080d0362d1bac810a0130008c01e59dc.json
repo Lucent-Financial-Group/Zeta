@@ -1,0 +1,14 @@
+{
+  "id": "080d0362d1bac810a0130008c01e59dc",
+  "at": "2026-09-04T12:17:26.873Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1P5MDTQ087G0R002NKTWXE",
+    "type": "bug",
+    "title": "a handled brew link conflict left a failure annotation on a green macOS job",
+    "slug": "a-handled-brew-link-conflict-left-a-failure-annotation-on-a",
+    "priority": "P2",
+    "filename": "081M1P5MDTQ087G0R002NKTWXE-a-handled-brew-link-conflict-left-a-failure-annotation-on-a.md"
+  }
+}

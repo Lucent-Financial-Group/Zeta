@@ -1,0 +1,12 @@
+{
+  "pr_number": 16568,
+  "archive_path": "docs/history/pr-reviews/PR-16568-feat-081m1p5db07087g0r000gcakh8-torn-sector-intercept-groupcommit-defaults-to-ib.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-04T13:01:52.927Z",
+  "schema_version": "v1",
+  "commit_sha": "3313973b7ef81943ce6fce854486c63aa19dcc20",
+  "title": "feat(081M1P5DB07087G0R000GCAKH8): torn-sector intercept; GroupCommit defaults to IBlockIo",
+  "state": "MERGED",
+  "merged_at": "2026-09-04T13:01:17Z",
+  "head_ref": "feat/zetafs-torn-sector-and-blockio-default"
+}

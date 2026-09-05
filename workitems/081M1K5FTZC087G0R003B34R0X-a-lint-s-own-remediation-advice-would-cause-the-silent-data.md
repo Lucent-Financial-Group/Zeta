@@ -40,7 +40,7 @@ GET /pulls/{number}                ->  mergeable_state "unknown", mergeable null
 
 ## Why it matters, concretely
 
-This is not hypothetical. `observe/world-infra.ts` calls
+This is not hypothetical. `src/Core.TypeScript/observe/world-infra.ts` calls
 
 ```
 gh pr list --json number,title,mergeStateStatus

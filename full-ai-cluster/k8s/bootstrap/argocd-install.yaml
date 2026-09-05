@@ -36,7 +36,13 @@ spec:
   # no wave -90 self-upgrade happens mid-bring-up. The kind lane's bootstrap
   # (dev-cluster/use-cases.ts) moved from 7.7.10 (v2.13.2, Helm 3) the same day --
   # that one was the seaweedfs `fromToml` cached-render failure.
-  version: 10.7.0
+  # 10.7.0 -> 10.7.2 on 2026-09-04: a PURE CHART bump -- appVersion is v3.5.2 at both,
+  # checked against the live repo index, so ArgoCD itself does not move. All FOUR pin sites
+  # move together (this Application, k8s/bootstrap/argocd-install.yaml, and the kind and k3d
+  # bootstraps in dev-cluster/use-cases.ts) because 2026-09-03 made them EQUAL on purpose: a
+  # bootstrap behind the self-managed Application means a mid-run self-upgrade, which is
+  # exactly the failure that cached the seaweedfs manifest error.
+  version: 10.7.2
   targetNamespace: argocd
   createNamespace: false   # argocd-namespace.yaml creates it explicitly
   valuesContent: |-

@@ -1,0 +1,14 @@
+{
+  "id": "080d03506f53c010a0130008fce0f37b",
+  "at": "2026-09-04T01:34:52.024Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1N0VTKQ087G0R000ZXQZSA",
+    "type": "bug",
+    "title": "dapr control plane has no cpu or memory requests so all five pods are BestEffort",
+    "slug": "dapr-control-plane-has-no-cpu-or-memory-requests-so-all-five",
+    "priority": "P2",
+    "filename": "081M1N0VTKQ087G0R000ZXQZSA-dapr-control-plane-has-no-cpu-or-memory-requests-so-all-five.md"
+  }
+}

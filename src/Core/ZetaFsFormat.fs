@@ -329,7 +329,7 @@ module ZetaFsFormat =
             sb.ToString()
 
     let tryRead (fs: IFileSystem) (storeDir: string) : Result<Manifest, FormatError> =
-        let path = Path.Combine(storeDir, FileName)
+        let path = ZetaFsPath.combine2 storeDir FileName
 
         if not (fs.Exists path) then
             Ok v1Implicit
@@ -355,5 +355,5 @@ module ZetaFsFormat =
         match m.Major with
         | Major.V1Implicit -> ()
         | Major.V2 ->
-            let path = Path.Combine(storeDir, FileName)
+            let path = ZetaFsPath.combine2 storeDir FileName
             FileSystemIo.writeAllText fs path (render m)

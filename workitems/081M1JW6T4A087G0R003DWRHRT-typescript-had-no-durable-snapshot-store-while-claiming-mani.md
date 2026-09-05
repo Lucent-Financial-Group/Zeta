@@ -30,7 +30,7 @@ than the mechanism.
 
 ## The mechanism
 
-`durability/disk-snapshot-store.ts`. Three things must agree with the F# exactly, and each fails in
+`src/Core.TypeScript/durability/disk-snapshot-store.ts`. Three things must agree with the F# exactly, and each fails in
 a different quiet way:
 
 | | why it matters |

@@ -1,0 +1,14 @@
+{
+  "id": "080d0354cdc2b010a013000879e1fab6",
+  "at": "2026-09-04T04:07:34.230Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1N9KE2N087G0R002Q977ZK",
+    "type": "bug",
+    "title": "ZetaFS built its virtual paths with the host separator, so the namespace changed shape per machine",
+    "slug": "zetafs-built-its-virtual-paths-with-the-host-separator-so-th",
+    "priority": "P2",
+    "filename": "081M1N9KE2N087G0R002Q977ZK-zetafs-built-its-virtual-paths-with-the-host-separator-so-th.md"
+  }
+}

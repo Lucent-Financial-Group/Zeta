@@ -1,0 +1,14 @@
+{
+  "id": "080d036561fa9810a0130008b8d616c7",
+  "at": "2026-09-04T13:47:02.867Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1PARFTK087G0R0008PTBMM",
+    "type": "task",
+    "title": "WAL door shape: POSIX record grow vs block LBA pad",
+    "slug": "wal-door-shape-posix-record-grow-vs-block-lba-pad",
+    "priority": "P1",
+    "filename": "081M1PARFTK087G0R0008PTBMM-wal-door-shape-posix-record-grow-vs-block-lba-pad.md"
+  }
+}

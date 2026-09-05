@@ -1,0 +1,12 @@
+{
+  "pr_number": 16493,
+  "archive_path": "docs/history/pr-reviews/PR-16493-research-bayesian-loopy-variance-correction-spec-fvs-feedback-message-passing-ov.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-03T11:31:23.339Z",
+  "schema_version": "v1",
+  "commit_sha": "a7cb2f3b711ef5d47f41b8e15d540987fe831e34",
+  "title": "research(bayesian): loopy variance correction spec — FVS feedback message passing over the factor graph",
+  "state": "MERGED",
+  "merged_at": "2026-09-03T11:30:46Z",
+  "head_ref": "fable/loopy-variance-correction-spec"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 16541,
+  "archive_path": "docs/history/pr-reviews/PR-16541-fix-ci-a-backtick-in-a-single-quoted-printf-took-lint-actionlint-red-on-main.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-03T21:32:22.439Z",
+  "schema_version": "v1",
+  "commit_sha": "7c531b0bfb2a6730be8c1ec48d231f888cf1a268",
+  "title": "fix(ci): a backtick in a single-quoted printf took lint (actionlint) red on main",
+  "state": "MERGED",
+  "merged_at": "2026-09-03T21:31:44Z",
+  "head_ref": "otto/heartbeat-liveness-sc2016"
+}

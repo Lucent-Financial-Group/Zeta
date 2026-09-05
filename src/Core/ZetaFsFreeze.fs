@@ -67,19 +67,40 @@ module ZetaFsFreeze =
           Objects: struct (ContentHash256 * byte[])[]
           Reply: TaskCompletionSource<Result<struct (int64 * int64), FreezeError>> }
 
+    /// Log device for freeze frames. `Simulated` is the LBA DST door.
+    /// `HostFile` is the `FileSystemBlockIo` polyfill (`create` / `createManual`).
+    type FreezeBlockIo =
+        | Simulated of SimulatedBlockIo
+        | HostFile of FileSystemBlockIo
+
+        member this.Device =
+            match this with
+            | Simulated io -> io :> IBlockIo
+            | HostFile io -> io :> IBlockIo
+
+        member this.LogicalBytes
+            with get () =
+                match this with
+                | Simulated io -> io.LogicalBytes
+                | HostFile io -> io.LogicalBytes
+            and set v =
+                match this with
+                | Simulated io -> io.LogicalBytes <- v
+                | HostFile io -> io.LogicalBytes <- v
+
     /// DoP=1 segment writer. One boat = N freezes, one Flush; Durable adds one
     /// fsync of objects-dir + log. `manual` is the DST pump (no background ferry).
     [<Sealed>]
     type internal FreezeLog
-        (storeDir: string, config: FerryThrottlerConfig, manual: bool, blockIo: SimulatedBlockIo option, objectCas: BlockCas option) =
+        (storeDir: string, config: FerryThrottlerConfig, manual: bool, blockIo: FreezeBlockIo option, objectCas: BlockCas option) =
 
         do
             if config.MaxDegreeOfParallelism <> 1 then
                 invalidArg (nameof config) "FreezeLog writes one segment file; MaxDegreeOfParallelism must be 1."
 
-        let logDir = Path.Combine(storeDir, "log")
-        let logPath = Path.Combine(logDir, "freeze")
-        let objectsDir = Path.Combine(storeDir, "objects")
+        let logDir = ZetaFsPath.combine2 storeDir "log"
+        let logPath = ZetaFsPath.combine2 logDir "freeze"
+        let objectsDir = ZetaFsPath.combine2 storeDir "objects"
         let fsDoor = FileSystem.Current
         let mutable boats = 0
         let mutable lastBoat = 0
@@ -135,10 +156,12 @@ module ZetaFsFreeze =
                             if item.Durable then
                                 cas.Device.Flush()
                         | None ->
-                            let path = Path.Combine(objectsDir, hex.Substring(0, 2), hex.Substring(2))
-                            let dir = Path.GetDirectoryName path
+                            let path = ZetaFsPath.combine3 objectsDir (hex.Substring(0, 2)) (hex.Substring(2))
+                            let dir = ZetaFsPath.directoryName path
                             fsDoor.CreateDirectory dir
-                            FileSystemIo.writeAllBytes fsDoor path bytes
+
+                            if not (fsDoor.Exists path) then
+                                FileSystemIo.writeAllBytes fsDoor path bytes
 
                             if item.Durable then
                                 match FileSync.fsyncFile path with
@@ -155,9 +178,9 @@ module ZetaFsFreeze =
                 // Intent Flush publishes without crash arms on the file door.
                 // On IBlockIo, Flush is the barrier; crash arms fire on Write.
                 match blockIo with
-                | Some io ->
+                | Some door ->
                     let mutable i = 0
-                    let device = io :> IBlockIo
+                    let device = door.Device
                     let origin = BlockLog.origin device
 
                     while err.IsNone && i < boat.Length do
@@ -165,11 +188,11 @@ module ZetaFsFreeze =
                         let afterIntent =
                             BlockLog.append
                                 device
-                                (origin + io.LogicalBytes)
+                                (origin + door.LogicalBytes)
                                 (System.ReadOnlyMemory<byte>.op_Implicit item.IntentFrame)
 
-                        io.LogicalBytes <- afterIntent - origin
-                        BlockSuper.writeLog device io.LogicalBytes
+                        door.LogicalBytes <- afterIntent - origin
+                        BlockSuper.writeLog device door.LogicalBytes
                         device.Flush()
                         putLeaves item
 
@@ -177,11 +200,11 @@ module ZetaFsFreeze =
                             let afterCommit =
                                 BlockLog.append
                                     device
-                                    (origin + io.LogicalBytes)
+                                    (origin + door.LogicalBytes)
                                     (System.ReadOnlyMemory<byte>.op_Implicit item.CommitFrame)
 
-                            io.LogicalBytes <- afterCommit - origin
-                            BlockSuper.writeLog device io.LogicalBytes
+                            door.LogicalBytes <- afterCommit - origin
+                            BlockSuper.writeLog device door.LogicalBytes
                             device.Flush()
 
                         i <- i + 1
@@ -264,7 +287,7 @@ module ZetaFsFreeze =
             session: ZetaFsCrypto.Session option,
             config: FerryThrottlerConfig,
             manual: bool,
-            blockIo: SimulatedBlockIo option,
+            blockIo: FreezeBlockIo option,
             objectCas: BlockCas option
         ) =
         let gate = obj ()
@@ -288,12 +311,12 @@ module ZetaFsFreeze =
         interface IDisposable with
             member _.Dispose() = (log :> IDisposable).Dispose()
 
-    let private logDir (v: Volume) = Path.Combine(v.StoreDir, "log")
-    let private objectsDir (v: Volume) = Path.Combine(v.StoreDir, "objects")
+    let private logDir (v: Volume) = ZetaFsPath.combine2 v.StoreDir "log"
+    let private objectsDir (v: Volume) = ZetaFsPath.combine2 v.StoreDir "objects"
 
     let private objectPath (storeDir: string) (id: ContentHash256) =
         let hex = (ContentHash256.toContentAddress128 id).ToHex()
-        Path.Combine(storeDir, "objects", hex.Substring(0, 2), hex.Substring(2))
+        ZetaFsPath.combine4 storeDir "objects" (hex.Substring(0, 2)) (hex.Substring(2))
 
     let errorName (e: FreezeError) : string =
         match e with
@@ -495,19 +518,19 @@ module ZetaFsFreeze =
 
     let private replayPlainLog (fs: IFileSystem) (volume: Volume) =
         match volume.Log.BlockIo with
-        | Some io ->
-            let device = io :> IBlockIo
+        | Some door ->
+            let device = door.Device
 
             match BlockSuper.tryReadLog device with
-            | Some n -> io.LogicalBytes <- n
+            | Some n -> door.LogicalBytes <- n
             | None -> ()
 
-            if io.LogicalBytes > 0L then
-                let bytes = BlockLog.readAt device (BlockLog.origin device) io.LogicalBytes
+            if door.LogicalBytes > 0L then
+                let bytes = BlockLog.readAt device (BlockLog.origin device) door.LogicalBytes
                 use stream = new MemoryStream(bytes, 0, bytes.Length, writable = true, publiclyVisible = true)
                 replayPlainFromStream stream volume
-                io.LogicalBytes <- stream.Length
-                BlockSuper.writeLog device io.LogicalBytes
+                door.LogicalBytes <- stream.Length
+                BlockSuper.writeLog device door.LogicalBytes
         | None ->
             let logPath = volume.Log.LogPath
 
@@ -577,19 +600,19 @@ module ZetaFsFreeze =
 
     let private replaySealedLog (fs: IFileSystem) (volume: Volume) (session: ZetaFsCrypto.Session) =
         match volume.Log.BlockIo with
-        | Some io ->
-            let device = io :> IBlockIo
+        | Some door ->
+            let device = door.Device
 
             match BlockSuper.tryReadLog device with
-            | Some n -> io.LogicalBytes <- n
+            | Some n -> door.LogicalBytes <- n
             | None -> ()
 
-            if io.LogicalBytes > 0L then
-                let bytes = BlockLog.readAt device (BlockLog.origin device) io.LogicalBytes
+            if door.LogicalBytes > 0L then
+                let bytes = BlockLog.readAt device (BlockLog.origin device) door.LogicalBytes
                 use stream = new MemoryStream(bytes, 0, bytes.Length, writable = true, publiclyVisible = true)
                 replaySealedFromStream stream volume session
-                io.LogicalBytes <- stream.Length
-                BlockSuper.writeLog device io.LogicalBytes
+                door.LogicalBytes <- stream.Length
+                BlockSuper.writeLog device door.LogicalBytes
         | None ->
             let logPath = volume.Log.LogPath
 
@@ -604,12 +627,12 @@ module ZetaFsFreeze =
         (session: ZetaFsCrypto.Session option)
         (config: FerryThrottlerConfig)
         (manual: bool)
-        (blockIo: SimulatedBlockIo option)
+        (blockIo: FreezeBlockIo option)
         (objectCas: BlockCas option)
         : Volume =
         let fs = FileSystem.Current
-        fs.CreateDirectory (Path.Combine(storeDir, "log"))
-        fs.CreateDirectory (Path.Combine(storeDir, "objects"))
+        fs.CreateDirectory (ZetaFsPath.combine2 storeDir "log")
+        fs.CreateDirectory (ZetaFsPath.combine2 storeDir "objects")
         let volume = new Volume(storeDir, mutbuf, observer, session, config, manual, blockIo, objectCas)
 
         try
@@ -623,25 +646,71 @@ module ZetaFsFreeze =
             (volume :> IDisposable).Dispose()
             raise ex
 
+    let private hostFileLog
+        (storeDir: string)
+        (mutbuf: ZetaFsMutbuf.Catalog)
+        (observer: IDurabilityObserver option)
+        (session: ZetaFsCrypto.Session option)
+        (manual: bool)
+        : Volume =
+        let fs = FileSystem.Current
+        fs.CreateDirectory(ZetaFsPath.combine2 storeDir "log")
+        let path = ZetaFsPath.combine3 storeDir "log" "freeze"
+        let io = FileSystemBlockIo(fs, path, 4096)
+        createFull storeDir mutbuf observer session defaultConfig manual (Some(HostFile io)) None
+
+    let private hostFileStore
+        (storeDir: string)
+        (mutbuf: ZetaFsMutbuf.Catalog)
+        (observer: IDurabilityObserver option)
+        (session: ZetaFsCrypto.Session option)
+        (manual: bool)
+        : Volume =
+        let fs = FileSystem.Current
+        fs.CreateDirectory(ZetaFsPath.combine2 storeDir "log")
+        let logIo = FileSystemBlockIo(fs, ZetaFsPath.combine3 storeDir "log" "freeze", 4096)
+        let casIo = FileSystemBlockIo(fs, ZetaFsPath.combine2 storeDir "cas", 4096)
+        let cas = BlockCas(casIo)
+        createFull storeDir mutbuf observer session defaultConfig manual (Some(HostFile logIo)) (Some cas)
+
     let createWith
         (storeDir: string)
         (mutbuf: ZetaFsMutbuf.Catalog)
         (observer: IDurabilityObserver option)
         (session: ZetaFsCrypto.Session option)
         : Volume =
-        createFull storeDir mutbuf observer session defaultConfig false None None
+        hostFileStore storeDir mutbuf observer session false
 
     /// Unencrypted control (FORMAT enc=off). The default first-product profile.
+    /// Journaled log and CAS objects ride `FileSystemBlockIo`.
     let create (storeDir: string) (mutbuf: ZetaFsMutbuf.Catalog) (observer: IDurabilityObserver option) : Volume =
         createWith storeDir mutbuf observer None
 
-    /// DST / test: no background ferry. Caller drives with `pumpLog`.
-    let createManual
+    /// DST: raw frame stream on `IFileSystem` (no superblock). Tests that
+    /// poke log bytes or arm whole-file Dispose still use this.
+    let createManualStream
         (storeDir: string)
         (mutbuf: ZetaFsMutbuf.Catalog)
         (observer: IDurabilityObserver option)
         : Volume =
         createFull storeDir mutbuf observer None defaultConfig true None None
+
+    let createManualWithStream
+        (storeDir: string)
+        (mutbuf: ZetaFsMutbuf.Catalog)
+        (observer: IDurabilityObserver option)
+        (session: ZetaFsCrypto.Session option)
+        : Volume =
+        createFull storeDir mutbuf observer session defaultConfig true None None
+
+    /// DST / test: no background ferry. Caller drives with `pumpLog`.
+    /// Journaled log and CAS objects ride `FileSystemBlockIo`.
+    let createManual
+        (storeDir: string)
+        (mutbuf: ZetaFsMutbuf.Catalog)
+        (observer: IDurabilityObserver option)
+        : Volume =
+        hostFileStore storeDir mutbuf observer None true
 
     let createManualWith
         (storeDir: string)
@@ -649,7 +718,7 @@ module ZetaFsFreeze =
         (observer: IDurabilityObserver option)
         (session: ZetaFsCrypto.Session option)
         : Volume =
-        createFull storeDir mutbuf observer session defaultConfig true None None
+        hostFileStore storeDir mutbuf observer session true
 
     /// DST: Journaled log frames go through `IBlockIo` (RMW on the tail block).
     /// Objects still speak files unless `createManualWithBlockStore` is used.
@@ -660,7 +729,7 @@ module ZetaFsFreeze =
         (observer: IDurabilityObserver option)
         (blocks: SimulatedBlockIo)
         : Volume =
-        createFull storeDir mutbuf observer None defaultConfig true (Some blocks) None
+        createFull storeDir mutbuf observer None defaultConfig true (Some(Simulated blocks)) None
 
     /// DST: sealed Journaled frames through `IBlockIo`. Same dual-slot
     /// superblock as `createManualWithBlocks`. Wrong-key MAC on the first
@@ -672,7 +741,7 @@ module ZetaFsFreeze =
         (session: ZetaFsCrypto.Session)
         (blocks: SimulatedBlockIo)
         : Volume =
-        createFull storeDir mutbuf observer (Some session) defaultConfig true (Some blocks) None
+        createFull storeDir mutbuf observer (Some session) defaultConfig true (Some(Simulated blocks)) None
 
     /// DST: log on one simulated disk, CAS objects on another. Two devices
     /// so a crash arm on objects cannot tear the log. LBA 0 and 1 on each
@@ -684,7 +753,19 @@ module ZetaFsFreeze =
         (logBlocks: SimulatedBlockIo)
         (objectCas: BlockCas)
         : Volume =
-        createFull storeDir mutbuf observer None defaultConfig true (Some logBlocks) (Some objectCas)
+        createFull storeDir mutbuf observer None defaultConfig true (Some(Simulated logBlocks)) (Some objectCas)
+
+    /// DST inject: log is an already-populated `FileSystemBlockIo` polyfill
+    /// (e.g. `SimulatedBlockIo.ReplayTo`). CAS is a `BlockCas` on a second
+    /// polyfill. Native two-namespace is not claimed.
+    let createManualWithHostFileStore
+        (storeDir: string)
+        (mutbuf: ZetaFsMutbuf.Catalog)
+        (observer: IDurabilityObserver option)
+        (logFile: FileSystemBlockIo)
+        (objectCas: BlockCas)
+        : Volume =
+        createFull storeDir mutbuf observer None defaultConfig true (Some(HostFile logFile)) (Some objectCas)
 
     /// DST: sealed Journaled log on one disk, CAS objects on another.
     let createManualWithSealedBlockStore
@@ -695,7 +776,46 @@ module ZetaFsFreeze =
         (logBlocks: SimulatedBlockIo)
         (objectCas: BlockCas)
         : Volume =
-        createFull storeDir mutbuf observer (Some session) defaultConfig true (Some logBlocks) (Some objectCas)
+        createFull storeDir mutbuf observer (Some session) defaultConfig true (Some(Simulated logBlocks)) (Some objectCas)
+
+    /// DST: journaled freeze log through the `FileSystemBlockIo` polyfill
+    /// (one host file, LBA offsets). Same door as `createManual`.
+    let createManualWithFileLog
+        (storeDir: string)
+        (mutbuf: ZetaFsMutbuf.Catalog)
+        (observer: IDurabilityObserver option)
+        : Volume =
+        hostFileLog storeDir mutbuf observer None true
+
+    /// DST: sealed journaled freeze log through the `FileSystemBlockIo`
+    /// polyfill. Wrong-key MAC on the first frame recovers nothing and
+    /// does not truncate. Same door as `createManualWith`.
+    let createManualWithSealedFileLog
+        (storeDir: string)
+        (mutbuf: ZetaFsMutbuf.Catalog)
+        (observer: IDurabilityObserver option)
+        (session: ZetaFsCrypto.Session)
+        : Volume =
+        hostFileLog storeDir mutbuf observer (Some session) true
+
+    /// DST: journaled log on one host-file polyfill, CAS objects on another.
+    /// Same door as `createManual`.
+    let createManualWithFileBlockStore
+        (storeDir: string)
+        (mutbuf: ZetaFsMutbuf.Catalog)
+        (observer: IDurabilityObserver option)
+        : Volume =
+        hostFileStore storeDir mutbuf observer None true
+
+    /// DST: sealed journaled log on one host-file polyfill, CAS objects on
+    /// another. Same door as `createManualWith`.
+    let createManualWithSealedFileBlockStore
+        (storeDir: string)
+        (mutbuf: ZetaFsMutbuf.Catalog)
+        (observer: IDurabilityObserver option)
+        (session: ZetaFsCrypto.Session)
+        : Volume =
+        hostFileStore storeDir mutbuf observer (Some session) true
 
     let dispose (volume: Volume) = (volume :> IDisposable).Dispose()
 
@@ -707,7 +827,7 @@ module ZetaFsFreeze =
 
     let logLogicalBytes (volume: Volume) =
         match volume.Log.BlockIo with
-        | Some io -> io.LogicalBytes
+        | Some door -> door.LogicalBytes
         | None ->
             let path = volume.Log.LogPath
             if FileSystem.Current.Exists path then
@@ -717,9 +837,12 @@ module ZetaFsFreeze =
 
     let private putObject (storeDir: string) (id: ContentHash256) (bytes: byte[]) =
         let path = objectPath storeDir id
-        let dir = Path.GetDirectoryName path
-        FileSystem.Current.CreateDirectory dir
-        FileSystemIo.writeAllBytes FileSystem.Current path bytes
+        let fs = FileSystem.Current
+
+        if not (fs.Exists path) then
+            let dir = ZetaFsPath.directoryName path
+            fs.CreateDirectory dir
+            FileSystemIo.writeAllBytes fs path bytes
 
     let private objectKey (id: ContentHash256) =
         (ContentHash256.toContentAddress128 id).ToHex()

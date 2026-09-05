@@ -1,0 +1,12 @@
+{
+  "pr_number": 16492,
+  "archive_path": "docs/history/pr-reviews/PR-16492-feat-081m1kbmt00087g0r003p71vyb-sealed-freeze-cas-through-iblockio.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-03T10:39:38.609Z",
+  "schema_version": "v1",
+  "commit_sha": "1ba3703e97efe00e479e881c4cd7652132ce46a5",
+  "title": "feat(081M1KBMT00087G0R003P71VYB): sealed freeze CAS through IBlockIo",
+  "state": "MERGED",
+  "merged_at": "2026-09-03T10:39:00Z",
+  "head_ref": "feat/zetafs-block-sealed-cas"
+}

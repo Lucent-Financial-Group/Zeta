@@ -49,7 +49,7 @@ Bash PATH on the machine this was found on, so the trigger is not exotic.
 
 ## The fix
 
-`observe/merge-receipt.ts`:
+`src/Core.TypeScript/observe/merge-receipt.ts`:
 
 - `lifecycleFromGateState` **walks the real machine** — `PrOpen` →`RequestReview`→ `InReview`, then
   either `ReceiveRevisionRequest` (threads outstanding) or `ResolveAllThreads` (→ `Approved`). It
@@ -65,7 +65,7 @@ not merely disconnected** — leaving a working gate-bypass unreachable is one e
 re-wired, which is the dead-control shape this repo keeps finding. An offline merge path can be
 rebuilt if wanted, with a receipt like every other merge.
 
-`run-loop-real.ts` builds the reader from the `ForgeHost` it already resolved, and leaves it
+`src/Core.TypeScript/observe/run-loop-real.ts` builds the reader from the `ForgeHost` it already resolved, and leaves it
 **undefined when no forge resolved** — which `authorizeMerge` treats as a refusal.
 
 ## Falsifiers

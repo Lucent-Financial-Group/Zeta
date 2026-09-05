@@ -1,0 +1,14 @@
+{
+  "id": "080d0377923fc010a01300087c5c7640",
+  "at": "2026-09-05T00:22:47.032Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1QF4HZR087G0R0034WMV0W",
+    "type": "bug",
+    "title": "Four Applications reach Healthy with zero pods: what remains is asserted, what acts is never checked",
+    "slug": "four-applications-reach-healthy-with-zero-pods-what-remains",
+    "priority": "P2",
+    "filename": "081M1QF4HZR087G0R0034WMV0W-four-applications-reach-healthy-with-zero-pods-what-remains.md"
+  }
+}

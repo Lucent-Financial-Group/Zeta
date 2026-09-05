@@ -1,0 +1,33 @@
+{
+  "algorithm": "declared-lexical-correction-receipts/v1",
+  "scope": "finite declared receipt integrity controls only; no semantic interpretation, word-sense inference, or language generation",
+  "normalReceipt": {
+    "status": "Ready",
+    "receiptCount": 3,
+    "conflictSurfaceCount": 0
+  },
+  "deliveryControl": {
+    "inputPermutationCount": 6,
+    "canonicalReceiptCount": 1,
+    "unsortedReceiptOrderCount": 6,
+    "conclusion": "content-ID ordering is load-bearing for deterministic materialized receipt order"
+  },
+  "conflictControl": {
+    "status": "Conflict",
+    "receiptCount": 3,
+    "conflictSurfaces": [
+      "colour"
+    ],
+    "automaticWinner": false
+  },
+  "versionControl": {
+    "versionedContentIdsDistinct": true,
+    "omittedVersionMutationCollapses": true
+  },
+  "independentOracle": {
+    "implementation": "separately authored Python NFKC tokenizer and UTF-8-length-prefixed fingerprint",
+    "normalReceiptAgreement": true,
+    "canonicalOrderMutationDetected": true,
+    "omittedVersionMutationDetected": true
+  }
+}

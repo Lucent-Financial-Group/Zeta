@@ -1,0 +1,12 @@
+{
+  "pr_number": 16580,
+  "archive_path": "docs/history/pr-reviews/PR-16580-fix-tests-strengthen-zetafsfreeze-idempotence-assert-so-check-arity-r2-clears.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-04T14:13:56.824Z",
+  "schema_version": "v1",
+  "commit_sha": "84e403cee30e4bd4443d9178943c39b62bd84c37",
+  "title": "fix(tests): strengthen ZetaFsFreeze idempotence assert so check-arity R2 clears",
+  "state": "MERGED",
+  "merged_at": "2026-09-04T14:13:22Z",
+  "head_ref": "alexa/fix-checkarity-zetafsfreeze-selfcompare-20260904T135239Z"
+}

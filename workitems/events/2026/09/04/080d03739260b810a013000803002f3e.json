@@ -1,0 +1,14 @@
+{
+  "id": "080d03739260b810a013000803002f3e",
+  "at": "2026-09-04T22:02:59.479Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1Q74K0P087G0R0032V5CED",
+    "type": "task",
+    "title": "Reclaim sweep journal resumes after crash-mid-sweep",
+    "slug": "reclaim-sweep-journal-resumes-after-crash-mid-sweep",
+    "priority": "P1",
+    "filename": "081M1Q74K0P087G0R0032V5CED-reclaim-sweep-journal-resumes-after-crash-mid-sweep.md"
+  }
+}

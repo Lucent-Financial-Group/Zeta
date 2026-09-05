@@ -259,6 +259,9 @@ describe("ace produces byte-identical output under bun and under node", () => {
   ];
 
   for (const scenario of scenarios) {
+    // 15s: each case spawns bun + node. Under hermetic CI this file runs after
+    // ~18 min of suite load; the default 5s cap timed out `help` at 5352ms on
+    // PR #16593 (21043 pass / 1 fail). Budget is the spawn, not the assertions.
     test(`${scenario.name} — stdout identical, same exit code`, () => {
       const node = nodeBin();
       const sandbox = mkdtempSync(join(tmpdir(), "ace-parity-"));
@@ -273,7 +276,7 @@ describe("ace produces byte-identical output under bun and under node", () => {
       } finally {
         rmSync(sandbox, { recursive: true, force: true });
       }
-    });
+    }, 15_000);
   }
 
   test("the parity comparison is not vacuous — a real transcript was compared", () => {
@@ -291,7 +294,7 @@ describe("ace produces byte-identical output under bun and under node", () => {
     } finally {
       rmSync(sandbox, { recursive: true, force: true });
     }
-  });
+  }, 15_000);
 });
 
 // ------------------------------------------------------- the ONE measured divergence

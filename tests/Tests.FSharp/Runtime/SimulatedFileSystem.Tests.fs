@@ -1,3 +1,4 @@
+[<global.Xunit.Collection("ZetaFsAmbientFileSystem")>]
 module Zeta.Tests.Runtime.SimulatedFileSystemTests
 
 open System
@@ -305,6 +306,318 @@ let ``FileSystemBlockIo reads back a block written through IFileSystem`` () =
     Assert.Equal<byte>(payload, dst)
 
 [<Fact>]
+let ``FileSystemBlockIo constructor publishes a missing zero-length backing file`` () =
+    let fs = InMemoryFileSystem()
+    let ifs = fs :> IFileSystem
+    let path = "/vol/empty-blocks"
+    FileSystemBlockIo(ifs, path, 4096) |> ignore
+    Assert.True(ifs.Exists path)
+    Assert.Empty(ifs.ReadAllBytes path)
+
+[<Fact>]
+let ``FileSystemBlockIo constructor publishes before a reorder-arm dispose can hide the backing file`` () =
+    let fs = InMemoryFileSystem()
+    let ifs = fs :> IFileSystem
+    let path = "/vol/reordered-empty-blocks"
+    fs.ArmReorderNextTwo path
+    FileSystemBlockIo(ifs, path, 4096) |> ignore
+    Assert.True(ifs.Exists path)
+    Assert.Empty(ifs.ReadAllBytes path)
+
+[<Fact>]
+let ``FileSystemBlockIo constructor preserves an existing backing file`` () =
+    let fs = InMemoryFileSystem()
+    let ifs = fs :> IFileSystem
+    let path = "/vol/existing-blocks"
+    let initial = [| 5uy; 8uy; 13uy |]
+    ifs.WriteAt(path, 0L, System.ReadOnlyMemory<byte>.op_Implicit initial) |> ignore
+    FileSystemBlockIo(ifs, path, 4096) |> ignore
+    Assert.Equal<byte>(initial, ifs.ReadAllBytes path)
+
+[<Fact>]
+let ``FileSystemBlockIo LbaCount is empty then spans a hole after a high LBA write`` () =
+    let mock = InMemoryFileSystem()
+    let path = "/vol/lba-count"
+    let io = FileSystemBlockIo(mock, path, 4096) :> IBlockIo
+    Assert.Equal(0UL, io.LbaCount)
+    let block = Array.create 4096 1uy
+    Assert.Equal(4096, io.Write(2UL, System.ReadOnlyMemory<byte>.op_Implicit block))
+    Assert.Equal(3UL, io.LbaCount)
+
+[<Fact>]
+let ``SimulatedBlockIo async door completes synchronously and round-trips`` () =
+    let device = SimulatedBlockIo(4096)
+    let io = device :> IAsyncBlockIo
+    let payload = [| 1uy; 2uy; 3uy |]
+    let write = io.WriteAsync(0UL, System.ReadOnlyMemory<byte>.op_Implicit payload, CancellationToken.None)
+    Assert.True(write.IsCompletedSuccessfully)
+    Assert.Equal(3, write.Result)
+    let dst = Array.zeroCreate<byte> 3
+    let read = io.ReadAsync(0UL, System.Memory<byte>.op_Implicit dst, CancellationToken.None)
+    Assert.True(read.IsCompletedSuccessfully)
+    Assert.Equal(3, read.Result)
+    Assert.Equal<byte>(payload, dst)
+    let flush = io.FlushAsync CancellationToken.None
+    Assert.True(flush.IsCompletedSuccessfully)
+
+[<Fact>]
+let ``SimulatedBlockIo default write is durable without Flush`` () =
+    let device = SimulatedBlockIo(4096)
+    let io = device :> IBlockIo
+    let payload = [| 9uy; 8uy; 7uy |]
+    Assert.Equal(3, io.Write(0UL, System.ReadOnlyMemory<byte>.op_Implicit payload))
+    let cloned = device.CloneMedia() :> IBlockIo
+    let dst = Array.zeroCreate<byte> 3
+    Assert.Equal(3, cloned.Read(0UL, System.Memory<byte>.op_Implicit dst))
+    Assert.Equal<byte>(payload, dst)
+
+[<Fact>]
+let ``SimulatedBlockIo volatileUntilFlush write is visible then lost on CloneMedia until Flush`` () =
+    let device = SimulatedBlockIo(4096, volatileUntilFlush = true)
+    let io = device :> IBlockIo
+    let payload = [| 9uy; 8uy; 7uy |]
+    Assert.Equal(3, io.Write(0UL, System.ReadOnlyMemory<byte>.op_Implicit payload))
+    let seen = Array.zeroCreate<byte> 3
+    Assert.Equal(3, io.Read(0UL, System.Memory<byte>.op_Implicit seen))
+    Assert.Equal<byte>(payload, seen)
+    let crashed = device.CloneMedia() :> IBlockIo
+    let lost = Array.zeroCreate<byte> 3
+    Assert.Equal(3, crashed.Read(0UL, System.Memory<byte>.op_Implicit lost))
+    Assert.Equal(0uy, lost.[0])
+    Assert.Equal(0uy, lost.[1])
+    Assert.Equal(0uy, lost.[2])
+    io.Flush()
+    let durable = device.CloneMedia() :> IBlockIo
+    let kept = Array.zeroCreate<byte> 3
+    Assert.Equal(3, durable.Read(0UL, System.Memory<byte>.op_Implicit kept))
+    Assert.Equal<byte>(payload, kept)
+
+[<Fact>]
+let ``SimulatedBlockIo volatileUntilFlush FlushAsync persists for CloneMedia`` () =
+    let device = SimulatedBlockIo(4096, volatileUntilFlush = true)
+    let io = device :> IAsyncBlockIo
+    let payload = [| 4uy; 5uy; 6uy |]
+    let write =
+        io.WriteAsync(0UL, System.ReadOnlyMemory<byte>.op_Implicit payload, CancellationToken.None)
+
+    Assert.True(write.IsCompletedSuccessfully)
+    let flush = io.FlushAsync CancellationToken.None
+    Assert.True(flush.IsCompletedSuccessfully)
+    let durable = device.CloneMedia() :> IBlockIo
+    let kept = Array.zeroCreate<byte> 3
+    Assert.Equal(3, durable.Read(0UL, System.Memory<byte>.op_Implicit kept))
+    Assert.Equal<byte>(payload, kept)
+
+[<Fact>]
+let ``SimulatedBlockIo records completed Write then Flush in call order`` () =
+    let device = SimulatedBlockIo(4096)
+    let io = device :> IBlockIo
+    let payload = [| 9uy; 8uy; 7uy |]
+    Assert.Equal(3, io.Write(0UL, System.ReadOnlyMemory<byte>.op_Implicit payload))
+    io.Flush()
+    let ops = device.RecordedOps
+    Assert.Equal(2, ops.Length)
+
+    match Array.get ops 0 with
+    | BlockIoOp.Write(lba, data) ->
+        Assert.Equal(0UL, lba)
+        Assert.Equal<byte>(payload, data)
+    | BlockIoOp.Flush -> Assert.Fail("first recorded op must be Write")
+
+    match Array.get ops 1 with
+    | BlockIoOp.Flush -> ()
+    | BlockIoOp.Write _ -> Assert.Fail("second recorded op must be Flush")
+
+[<Fact>]
+let ``SimulatedBlockIo CloneMedia is remain: RecordedOps acts are not copied`` () =
+    let device = SimulatedBlockIo(4096)
+    let io = device :> IBlockIo
+    let payload = [| 1uy; 2uy; 3uy |]
+    Assert.Equal(3, io.Write(0UL, System.ReadOnlyMemory<byte>.op_Implicit payload))
+    io.Flush()
+    Assert.True(device.RecordedOps.Length > 0)
+    let cloned = device.CloneMedia()
+    Assert.Equal(0, cloned.RecordedOps.Length)
+    let got = Array.zeroCreate<byte> 3
+    Assert.Equal(3, (cloned :> IBlockIo).Read(0UL, System.Memory<byte>.op_Implicit got))
+    Assert.Equal<byte>(payload, got)
+
+[<Fact>]
+let ``SimulatedBlockIo ReplayTo round-trips issued writes onto a fresh device`` () =
+    let source = SimulatedBlockIo(4096)
+    let io = source :> IBlockIo
+    let payload = [| 4uy; 5uy; 6uy |]
+    Assert.Equal(3, io.Write(1UL, System.ReadOnlyMemory<byte>.op_Implicit payload))
+    io.Flush()
+    let targetDevice = SimulatedBlockIo(4096)
+    let target = targetDevice :> IBlockIo
+    source.ReplayTo target
+    let got = Array.zeroCreate<byte> 3
+    Assert.Equal(3, target.Read(1UL, System.Memory<byte>.op_Implicit got))
+    Assert.Equal<byte>(payload, got)
+
+[<Fact>]
+let ``SimulatedBlockIo ReplayTo round-trips issued writes onto FileSystemBlockIo`` () =
+    let source = SimulatedBlockIo(4096)
+    let io = source :> IBlockIo
+    let payload = [| 4uy; 5uy; 6uy |]
+    Assert.Equal(3, io.Write(1UL, System.ReadOnlyMemory<byte>.op_Implicit payload))
+    io.Flush()
+    let fs = InMemoryFileSystem()
+    let path = "/vol/replay-polyfill"
+    let target = FileSystemBlockIo(fs, path, 4096) :> IBlockIo
+    source.ReplayTo target
+    let got = Array.zeroCreate<byte> 3
+    Assert.Equal(3, target.Read(1UL, System.Memory<byte>.op_Implicit got))
+    Assert.Equal<byte>(payload, got)
+
+[<Fact>]
+let ``SimulatedBlockIo crash-mid-write is not recorded as a completed op`` () =
+    let device = SimulatedBlockIo(4096)
+    let io = device :> IBlockIo
+    device.ArmCrashMidWrite(8)
+    let payload = Array.init 100 (fun i -> byte i)
+    Assert.Throws<CrashMidWriteException>(fun () ->
+        io.Write(0UL, System.ReadOnlyMemory<byte>.op_Implicit payload) |> ignore)
+    |> ignore
+    Assert.Equal(0, device.RecordedOps.Length)
+    io.Flush()
+    let ops = device.RecordedOps
+    Assert.Equal(1, ops.Length)
+
+    match Array.get ops 0 with
+    | BlockIoOp.Flush -> ()
+    | BlockIoOp.Write _ -> Assert.Fail("crash-mid-write must not appear as Write")
+
+[<Fact>]
+let ``FileSystemBlockIo async door cancel-before-write does not publish`` () =
+    let mock = InMemoryFileSystem()
+    let path = "/vol/async-cancel"
+    let io = FileSystemBlockIo(mock, path, 4096) :> IAsyncBlockIo
+    use cts = new CancellationTokenSource()
+    cts.Cancel()
+    let payload = Array.create 4096 7uy
+    let write = io.WriteAsync(0UL, System.ReadOnlyMemory<byte>.op_Implicit payload, cts.Token)
+    Assert.True(write.IsCanceled)
+    Assert.Equal(0UL, (FileSystemBlockIo(mock, path, 4096) :> IBlockIo).LbaCount)
+
+[<Fact>]
+let ``SimulatedBlockIo LbaCount is unbounded sparse DST`` () =
+    let io = SimulatedBlockIo(4096) :> IBlockIo
+    Assert.Equal(0UL, io.LbaCount)
+    let payload = [| 1uy; 2uy |]
+    Assert.Equal(2, io.Write(99UL, System.ReadOnlyMemory<byte>.op_Implicit payload))
+    Assert.Equal(0UL, io.LbaCount)
+
+[<Fact>]
+let ``SimulatedBlockIo bounded RAM namespace rejects LBAs at and past LbaCount`` () =
+    let device = SimulatedBlockIo(4096, lbaCount = 4UL)
+    let io = device :> IBlockIo
+    Assert.Equal(4UL, io.LbaCount)
+    let block = Array.create 4096 1uy
+    Assert.Equal(4096, io.Write(3UL, System.ReadOnlyMemory<byte>.op_Implicit block))
+    Assert.Throws<IOException>(fun () ->
+        io.Write(4UL, System.ReadOnlyMemory<byte>.op_Implicit block) |> ignore)
+    |> ignore
+    Assert.Throws<IOException>(fun () ->
+        io.Read(4UL, System.Memory<byte>.op_Implicit (Array.zeroCreate 4096)) |> ignore)
+    |> ignore
+    let cloned = device.CloneMedia() :> IBlockIo
+    Assert.Equal(4UL, cloned.LbaCount)
+    Assert.Throws<IOException>(fun () ->
+        cloned.Write(4UL, System.ReadOnlyMemory<byte>.op_Implicit block) |> ignore)
+    |> ignore
+
+[<Fact>]
+let ``SimulatedBlockIo CloneMedia keeps RAM bound and drops unflushed volatile writes`` () =
+    let device = SimulatedBlockIo(4096, lbaCount = 4UL, volatileUntilFlush = true)
+    let io = device :> IBlockIo
+    Assert.Equal(4UL, io.LbaCount)
+    let payload = [| 9uy; 8uy; 7uy |]
+    Assert.Equal(3, io.Write(0UL, System.ReadOnlyMemory<byte>.op_Implicit payload))
+    let crashed = device.CloneMedia() :> IBlockIo
+    Assert.Equal(4UL, crashed.LbaCount)
+    let lost = Array.zeroCreate<byte> 3
+    Assert.Equal(3, crashed.Read(0UL, System.Memory<byte>.op_Implicit lost))
+    Assert.Equal(0uy, lost.[0])
+    Assert.Throws<IOException>(fun () ->
+        crashed.Write(4UL, System.ReadOnlyMemory<byte>.op_Implicit (Array.create 4096 1uy))
+        |> ignore)
+    |> ignore
+    io.Flush()
+    let durable = device.CloneMedia() :> IBlockIo
+    Assert.Equal(4UL, durable.LbaCount)
+    let kept = Array.zeroCreate<byte> 3
+    Assert.Equal(3, durable.Read(0UL, System.Memory<byte>.op_Implicit kept))
+    Assert.Equal<byte>(payload, kept)
+
+[<Fact>]
+let ``FileSystemBlockIo rejects an invalid block size before creating the backing file`` () =
+    let fs = InMemoryFileSystem()
+    let ifs = fs :> IFileSystem
+    let path = "/vol/invalid-block-size"
+    Assert.Throws<ArgumentException>(fun () -> FileSystemBlockIo(ifs, path, 3) |> ignore) |> ignore
+    Assert.False(ifs.Exists path)
+
+[<Fact>]
+let ``FileSystemBlockIo crash-mid-write tears the LBA and keeps the previous one`` () =
+    let mock = InMemoryFileSystem()
+    let path = "/vol/lba-crash"
+    let io = FileSystemBlockIo(mock, path, 4096) :> IBlockIo
+    let first = Array.create 4096 1uy
+    let second = Array.create 4096 2uy
+    Assert.Equal(4096, io.Write(0UL, System.ReadOnlyMemory<byte>.op_Implicit first))
+    mock.ArmCrashMidWrite(path, 8)
+    let ex =
+        Assert.Throws<CrashMidWriteException>(fun () ->
+            io.Write(1UL, System.ReadOnlyMemory<byte>.op_Implicit second)
+            |> ignore)
+
+    Assert.Equal(8, ex.CommittedBytes)
+    Assert.Equal(4096, ex.AttemptedBytes)
+    let got0 = Array.zeroCreate<byte> 4096
+    Assert.Equal(4096, io.Read(0UL, System.Memory<byte>.op_Implicit got0))
+    Assert.Equal<byte>(first, got0)
+    let got1 = Array.zeroCreate<byte> 4096
+    Assert.Equal(8, io.Read(1UL, System.Memory<byte>.op_Implicit got1))
+    Assert.Equal<byte>(Array.sub second 0 8, Array.sub got1 0 8)
+
+[<Fact>]
+let ``FileSystemBlockIo corrupt-last-write flips the new LBA and keeps the previous one`` () =
+    let mock = InMemoryFileSystem()
+    let path = "/vol/lba-corrupt"
+    let io = FileSystemBlockIo(mock, path, 4096) :> IBlockIo
+    let first = Array.create 4096 1uy
+    let second = Array.init 4096 (fun i -> byte (i % 250))
+    Assert.Equal(4096, io.Write(0UL, System.ReadOnlyMemory<byte>.op_Implicit first))
+    mock.ArmCorruptLastWrite(path, 8)
+    Assert.Equal(4096, io.Write(1UL, System.ReadOnlyMemory<byte>.op_Implicit second))
+    let got0 = Array.zeroCreate<byte> 4096
+    Assert.Equal(4096, io.Read(0UL, System.Memory<byte>.op_Implicit got0))
+    Assert.Equal<byte>(first, got0)
+    let got1 = Array.zeroCreate<byte> 4096
+    Assert.Equal(4096, io.Read(1UL, System.Memory<byte>.op_Implicit got1))
+    Assert.Equal(second.[0], got1.[0])
+    Assert.Equal(second.[4087], got1.[4087])
+    Assert.Equal(second.[4088] ^^^ 0xA5uy, got1.[4088])
+    Assert.Equal(second.[4095] ^^^ 0xA5uy, got1.[4095])
+
+[<Fact>]
+let ``FileSystemBlockIo torn-sector keeps the old tail of the LBA and acks`` () =
+    let mock = InMemoryFileSystem()
+    let path = "/vol/lba-torn"
+    let io = FileSystemBlockIo(mock, path, 4096) :> IBlockIo
+    let first = Array.create 4096 1uy
+    let second = Array.create 4096 2uy
+    Assert.Equal(4096, io.Write(0UL, System.ReadOnlyMemory<byte>.op_Implicit first))
+    mock.ArmTornSector(path, 512)
+    Assert.Equal(4096, io.Write(0UL, System.ReadOnlyMemory<byte>.op_Implicit second))
+    let got = Array.zeroCreate<byte> 4096
+    Assert.Equal(4096, io.Read(0UL, System.Memory<byte>.op_Implicit got))
+    Assert.Equal<byte>(Array.create 512 2uy, Array.sub got 0 512)
+    Assert.Equal<byte>(Array.create 3584 1uy, Array.sub got 512 3584)
+
+[<Fact>]
 let ``SimulatedBlockIo reads back a write without IFileSystem`` () =
     let io = SimulatedBlockIo(4096) :> IBlockIo
     Assert.Equal(4096, io.BlockSize)
@@ -373,6 +686,37 @@ let ``SimulatedBlockIo reorder holds the first write until the second commits`` 
     Assert.Equal<byte>(a, gotA)
     Assert.Equal<byte>(b, gotB)
     Assert.Equal<uint64>([| 1UL; 0UL |], device.CommitOrder)
+
+[<Fact>]
+let ``SimulatedBlockIo torn-sector keeps the old tail of the LBA and acks`` () =
+    let device = SimulatedBlockIo(4096)
+    let io = device :> IBlockIo
+    let first = Array.create 4096 1uy
+    let second = Array.create 4096 2uy
+    Assert.Equal(4096, io.Write(0UL, System.ReadOnlyMemory<byte>.op_Implicit first))
+    device.ArmTornSector(512)
+    Assert.Equal(4096, io.Write(0UL, System.ReadOnlyMemory<byte>.op_Implicit second))
+    let got = Array.zeroCreate<byte> 4096
+    Assert.Equal(4096, io.Read(0UL, System.Memory<byte>.op_Implicit got))
+    Assert.Equal<byte>(Array.create 512 2uy, Array.sub got 0 512)
+    Assert.Equal<byte>(Array.create 3584 1uy, Array.sub got 512 3584)
+
+[<Fact>]
+let ``BlockCas Put of an existing key does not rewrite bits`` () =
+    let device = SimulatedBlockIo(4096)
+    let cas = BlockCas(device)
+    cas.Put("aa", [| 1uy; 2uy; 3uy |])
+    let writesAfterFirstPut = device.Writes
+    // The first Put must have driven at least the payload append and the
+    // superblock publish, so the count is strictly positive. Asserting this
+    // keeps the idempotency claim below riding on a check that can fail
+    // rather than a vacuous self-comparison.
+    Assert.True(writesAfterFirstPut > 0, "first Put must issue block writes")
+    Assert.Equal(1, cas.Count)
+    cas.Put("aa", [| 1uy; 2uy; 3uy |])
+    Assert.Equal(1, cas.Count)
+    // The idempotent re-Put of an identical key must add exactly zero writes.
+    Assert.Equal(0, device.Writes - writesAfterFirstPut)
 
 [<Fact>]
 let ``BlockSuper log dual slot keeps previous logical after crash-mid-write`` () =

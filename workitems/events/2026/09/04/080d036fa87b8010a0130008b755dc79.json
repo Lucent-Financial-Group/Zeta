@@ -1,0 +1,14 @@
+{
+  "id": "080d036fa87b8010a0130008b755dc79",
+  "at": "2026-09-04T19:46:11.952Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1PZA3VF087G0R003W8FWMS",
+    "type": "task",
+    "title": "temporal 0.59.0 to 1.6.x deletes the bundled subcharts we already refuse to use",
+    "slug": "temporal-0-59-0-to-1-6-x-deletes-the-bundled-subcharts-we-al",
+    "priority": "P2",
+    "filename": "081M1PZA3VF087G0R003W8FWMS-temporal-0-59-0-to-1-6-x-deletes-the-bundled-subcharts-we-al.md"
+  }
+}

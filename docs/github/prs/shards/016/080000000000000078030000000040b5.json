@@ -1,0 +1,12 @@
+{
+  "pr_number": 16565,
+  "archive_path": "docs/history/pr-reviews/PR-16565-test-zetafs-use-zetafspath-algebra-instead-of-system-io-path-in-zetafs-tests.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-04T09:27:24.953Z",
+  "schema_version": "v1",
+  "commit_sha": "3e2b2fae5e57b0002dcd8b3c350f01af1290a600",
+  "title": "test(zetafs): use ZetaFsPath algebra instead of System.IO.Path in ZetaFS tests",
+  "state": "MERGED",
+  "merged_at": "2026-09-04T09:26:46Z",
+  "head_ref": "alexa/zetafs-tests-host-independent-paths-20260904T084917Z"
+}

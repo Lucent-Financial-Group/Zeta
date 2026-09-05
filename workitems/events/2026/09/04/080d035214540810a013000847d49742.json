@@ -1,0 +1,14 @@
+{
+  "id": "080d035214540810a013000847d49742",
+  "at": "2026-09-04T02:32:20.865Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1N452KZ087G0R0026W017Z",
+    "type": "task",
+    "title": "upstream PR acceptance per change class is the divergence meter",
+    "slug": "upstream-pr-acceptance-per-change-class-is-the-divergence-me",
+    "priority": "P2",
+    "filename": "081M1N452KZ087G0R0026W017Z-upstream-pr-acceptance-per-change-class-is-the-divergence-me.md"
+  }
+}

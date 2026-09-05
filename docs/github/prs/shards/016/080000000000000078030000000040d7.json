@@ -1,0 +1,12 @@
+{
+  "pr_number": 16599,
+  "archive_path": "docs/history/pr-reviews/PR-16599-docs-081m1q0wr89087g0r0036g0t0b-ten-chart-tests-exist-argocd-discards-all-ten-an.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-04T20:37:10.467Z",
+  "schema_version": "v1",
+  "commit_sha": "30bce096fa77f300940c090863b9b2d8b2d24dbb",
+  "title": "docs(081M1Q0WR89087G0R0036G0T0B): ten chart tests exist, ArgoCD discards all ten, and zeta-backups has no writer",
+  "state": "MERGED",
+  "merged_at": "2026-09-04T20:36:26Z",
+  "head_ref": "otto/backend-store-readiness-v0"
+}

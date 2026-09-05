@@ -57,7 +57,7 @@ Two more, on the executor side:
 `run-loop-real.ts` evaluates the gate each tick and passes `executorForMode(gate.mode, executor)` to
 `execute()`. Shadow **discards** the real executor rather than wrapping it — a shadow executor
 holding a reference to the real one is one refactor away from calling it. Window path overridable
-via `ZETA_PROMOTION_WINDOW`; default `db/promotion/window.json`.
+via `ZETA_PROMOTION_WINDOW`; the runtime-generated default is db/promotion/window.json.
 
 ## Honest scope
 

@@ -1,0 +1,14 @@
+{
+  "id": "080d036f5958c810a01300087baeb051",
+  "at": "2026-09-04T19:35:23.673Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1PYPARR087G0R001S855JA",
+    "type": "task",
+    "title": "add KEDA, and enumerate the resource-request backlog instead of quoting a count",
+    "slug": "add-keda-and-enumerate-the-resource-request-backlog-instead",
+    "priority": "P2",
+    "filename": "081M1PYPARR087G0R001S855JA-add-keda-and-enumerate-the-resource-request-backlog-instead.md"
+  }
+}

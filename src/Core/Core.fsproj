@@ -146,6 +146,9 @@
     <Compile Include="SchemaEvolution.fs" />
     <Compile Include="SchemaZ.fs" />
     <Compile Include="ZAtom.fs" />
+    <Compile Include="ZPlan.fs" />
+    <Compile Include="SchemaLogCodec.fs" />
+    <Compile Include="DurabilityTier.fs" />
     <Compile Include="SchemaRegistry.fs" />
     <Compile Include="EvolutionWindow.fs" />
     <Compile Include="Protobuf.fs" />
@@ -194,6 +197,7 @@
     <Compile Include="ContentStore.fs" />
     <Compile Include="CasStore.fs" />
     <Compile Include="DagFs.fs" />
+    <Compile Include="ZetaFsPath.fs" />
     <Compile Include="ZetaFs.fs" />
     <Compile Include="ZetaFsNamespace.fs" />
     <Compile Include="ZetaFsPolicy.fs" />
@@ -511,6 +515,7 @@
     <Compile Include="ShapeAcceptance.fs" />
     <Compile Include="PhysUI.fs" />
     <Compile Include="ControlScheme.fs" />
+    <Compile Include="GameEnvironment.fs" />
     <Compile Include="MetaControl.fs" />
     <Compile Include="CorrespondencePong.fs" />
     <Compile Include="ChipAudio.fs" />
@@ -525,6 +530,7 @@
     <Compile Include="SoftTie.fs" />
     <Compile Include="LinguisticSeed.fs" />
     <Compile Include="ConformalGA.fs" />
+    <Compile Include="LexicalGeometricReceipt.fs" />
     <Compile Include="Salon.fs" />
     <Compile Include="GameCatalog.fs" />
     <Compile Include="RomDat.fs" />

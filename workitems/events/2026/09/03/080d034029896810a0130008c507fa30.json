@@ -1,0 +1,14 @@
+{
+  "id": "080d034029896810a0130008c507fa30",
+  "at": "2026-09-03T16:06:05.869Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1M0AC9D087G0R003X7STF4",
+    "type": "task",
+    "title": "create rides FileSystemBlockIo",
+    "slug": "create-rides-filesystemblockio",
+    "priority": "P1",
+    "filename": "081M1M0AC9D087G0R003X7STF4-create-rides-filesystemblockio.md"
+  }
+}

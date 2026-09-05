@@ -1,7 +1,7 @@
 # Trajectory - USB / zflash Installer
 
 Status: active — shipped + iterating; first surfaced as a trajectory 2026-05-29 from substrate inventory (the flashing mechanism works on `origin/main`; this surface was missing, so the workstream lived head-only)
-Last refreshed: 2026-09-02
+Last refreshed: 2026-09-04
 Type: workstream (current-focus) — a trajectory the operator is _actively powering_. Many trajectories can be tracked; only a few are workstreams at once (finite-focus / WIP-bounded — a workstream is a trajectory under sustained thrust, and thrust budget is finite, so most trajectories coast). (Genus = "trajectory"; "workstream" is the species: a trajectory under sustained thrust toward a deliverable, vs. emergent-posture trajectories like `anti-infection`. See [`factory-trajectory-surface`](../factory-trajectory-surface/RESUME.md) for the genus/species taxonomy.) One of the operator's three current cluster workstreams (encryption / usb-zflash / ts-workflow-engine).
 Eventual encoding (design-stage — the human maintainer 2026-05-23 genetic-ID substrate + Clifford/HKT): this trajectory's state is trackable as a 128-bit genetic-ID seed (discrete, reversible via parser-combinator ↔ generator-function) → Clifford-space path (continuous, eventual). Mirrors the three-lane I8-lattice / I9-manifold split.
 Current blocker: hardware — metal S6 first-login + WiFi radio / Touch ID / TPM
@@ -81,9 +81,12 @@ lane: a green claim about one step is not a claim about the next step, and a
 stale "never" is not a claim about the last dispatch.
 
 Do **not** re-dispatch restore to re-prove this. The remaining restore gap is
-metal `tty1` (hardware). Next software on this trajectory is the kind+Cilium
-CNI mode so `live-kind-cilium-included` can create its own cluster
-(`081M1DFQ2MZ087G0R000CMNHQX`) — not another ISO restore.
+metal `tty1` (hardware). Next software on this trajectory is the remaining
+k3s/k3d class on `081M1DFQ2MZ087G0R000CMNHQX`: spire-agent hostNetwork
+restarts. The Gateway API CRD gap is **measured closed** on live-k3d smoke
+[33739778288](https://github.com/Lucent-Financial-Group/Zeta/actions/runs/33739778288)
+(cert-manager Healthy, 0 restarts). Not another ISO restore, and not another
+kind `--cni cilium` dispatch.
 
 Next concrete action: **minimize metal** — S6 physical first-login +
 WiFi radio / Touch ID / TPM (human-gated). Software deepen landed:
@@ -185,13 +188,32 @@ Never asserted anywhere — the nine standing `excludeGlob` deferrals: `cilium`,
 `agent-memory`, `platform`.
 
 **THE SUBSTRATE GAP, which is the single biggest metal risk.** Metal runs
-**k3s + Cilium**. The 18 healthy charts are proven on **kind + kindnetd**. The lane
-that tests metal's actual configuration at chart depth is `live-k3d`, and it was
-reverted to `smoke` scope on 2026-09-01 after four Applications would not reach
-Healthy there (`081M1DFQ2MZ087G0R000CMNHQX`). Four probe attempts to separate
-"Cilium's fault" from "k3s's fault" produced **zero data** — see that work-item;
-`--existing` is not a supported path for the `included` proof and the exit is to
-give the kind provider a Cilium-CNI mode.
+**k3s + Cilium**. The 18 healthy charts are proven on **kind + kindnetd**.
+Kind `--cni cilium` included (dispatch 33701456828) now reports the four
+Healthy too — Cilium is not the cause. The lane that tests metal's actual
+configuration at chart depth is `live-k3d`, and it was reverted to `smoke`
+scope on 2026-09-01 after four Applications would not reach Healthy there
+(`081M1DFQ2MZ087G0R000CMNHQX`). Distinguishing table:
+
+- kindnetd: Healthy
+- kind+Cilium: Healthy
+- k3d (k3s+Cilium): Degraded / Progressing
+
+The k3d included dump (run 33429761222) was a cascade from **missing Gateway
+API CRDs** (cert-manager CrashLoop → trust-manager / openziti FailedMount),
+plus a **second** class (spire-agent hostNetwork DNS i/o timeout).
+**MEASURED live-k3d smoke [33739778288](https://github.com/Lucent-Financial-Group/Zeta/actions/runs/33739778288)
+job `100600115401` (SHA `d83e0b643`): succeeded.** Vendored CRDs present;
+cert-manager Synced/Healthy, 0 restarts; cert-manager issued
+`trust-manager-1`. spire-agent still 0/1 with 2 restarts. The dump's
+`-l app=spire-agent` printed no logs: chart 0.24.2 selector is
+`app.kubernetes.io/name=spire-agent`, and hostNetwork/dnsPolicy are
+hardcoded. Dump now targets `daemonset/spire-agent`. Do not re-lift
+`--scope included`. Do not invent a Cilium values tweak. Do not re-dispatch
+the Cilium included probe. live-k3d smoke [33754516236](https://github.com/Lucent-Financial-Group/Zeta/actions/runs/33754516236)
+job `100646643214`: `configmap/spire-bundle` is DATA 0. Crash is
+missing `bundle.crt` because the server is Pending on local-path, not
+the included-class DNS timeout.
 
 **Expect chart-level surprises on metal.** Boot and join are proven; what runs on
 top of them is proven on a different substrate.
@@ -420,7 +442,7 @@ bringup.
 **Software (closed, do not re-litigate):** non-interactive 6.95-picker
 (`--defer-all` #14852) and restore non-zero write (#15912, dispatch
 33126215487). Sibling dispatch steps already `if: always()`.
-**Next software:** ~~in-guest wrong-passphrase phase 2b + passphrase~~ **BOTH LANDED 2026-08-29 (`133a95b5de`) AND BOTH RAN on dispatch [33462406161](https://github.com/Lucent-Financial-Group/Zeta/actions/runs/33462406161) (2026-09-01) — do not rebuild, do not re-dispatch restore.** Next software is kind `--cni cilium` so the included proof creates its own cluster (`081M1DFQ2MZ`). **The mode exists in this branch** (`argocd-health-test.ts --cni cilium`, job `live-kind-cilium-included` no longer uses `--existing`). It still needs a dispatch to produce per-app verdicts — code landing is not the distinguishing test. Superseded text kept below for lineage:
+**Next software:** ~~in-guest wrong-passphrase phase 2b + passphrase~~ **BOTH LANDED 2026-08-29 (`133a95b5de`) AND BOTH RAN on dispatch [33462406161](https://github.com/Lucent-Financial-Group/Zeta/actions/runs/33462406161) (2026-09-01) — do not rebuild, do not re-dispatch restore.** ~~kind `--cni cilium` so the included proof creates its own cluster~~ **THAT CELL CLOSED 2026-09-03** (kindnetd Healthy / kind+Cilium Healthy / k3d Degraded; weaviate asserted on kind+Cilium; #16419 squash `18367ea19`). ~~k3d applying vendored Gateway API CRDs~~ **MEASURED live-k3d smoke [33739778288](https://github.com/Lucent-Financial-Group/Zeta/actions/runs/33739778288) job `100600115401`: CRDs present, cert-manager Healthy 0 restarts, trust-manager cert issued.** ~~k3d metal `control-plane` hosts + SAN + nodes Ready~~ **#16508 squash `183322698`**. ~~hostAliases to ClusterIP~~ **MEASURED live-k3d [33781233753](https://github.com/Lucent-Financial-Group/Zeta/actions/runs/33781233753) job `100736414774`: server Running, `bundle.crt` present, busybox hostNetwork `TCP kube-dns 10.43.0.10:53 FAIL`.** ~~TCP pod IP distinguisher~~ **MEASURED live-k3d [33800779819](https://github.com/Lucent-Financial-Group/Zeta/actions/runs/33800779819) job `100800757935`: hostNetwork ClusterIP FAIL + overlay pod IP OPEN; pod-network both OPEN; Cilium backends active; klipper `svclb-cilium-ingress` Running.** ~~metal `--disable=servicelb` on k3d~~ **MEASURED live-k3d [33804533591](https://github.com/Lucent-Financial-Group/Zeta/actions/runs/33804533591) job `100812620217`: `app=svclb` empty, hostNetwork ClusterIP still FAIL, agent DNS i/o timeout with `bundle.crt` present.** ~~cgroupns / non-verbose Socket LB status~~ **MEASURED live-k3d [33809535624](https://github.com/Lucent-Financial-Group/Zeta/actions/runs/33809535624) job `100828865623`: `CgroupnsMode=private`, `KubeProxyReplacement` True, Host BPF, Cluster health endpoints 0/1, ClusterIP still FAIL.** ~~`cilium-dbg config get` socket-LB knobs~~ **MEASURED live-k3d [33814040666](https://github.com/Lucent-Financial-Group/Zeta/actions/runs/33814040666) job `100842821668`: those names return Configuration does not exist; `enable-host-legacy-routing=false`.** ~~ConfigMap `cilium-config` socket-LB keys~~ **MEASURED live-k3d [33817974673](https://github.com/Lucent-Financial-Group/Zeta/actions/runs/33817974673) job `100854900709`: `bpf-lb-sock=false` `bpf-lb-sock-hostns-only=true` `bpf-lb-external-clusterip=false`; verbose Socket LB Enabled / Hostns-only; hostNetwork ClusterIP still FAIL.** ~~host-ns ClusterIP `ip route get`~~ **MEASURED live-k3d [33836543665](https://github.com/Lucent-Financial-Group/Zeta/actions/runs/33836543665) job `100910668481` (merge of #16533):** `10.43.0.10 via 172.18.0.1 dev eth0` — Docker bridge, not `cilium_host`. k3d-in-docker class. Do not invent helm. Do not re-lift included. Metal confirmation is `ip route get 10.43.0.10` after USB boot. ~~metal first-boot Cilium HelmChart still 1.16.5 EOL~~ **FIRST-BOOT PIN MATCHES APPLICATION 1.20.1 (2026-09-04)** — no live cluster, skip-minor hop allowed on fresh install; Cilium still forbids skip-minor in-place. Redis already Valkey (#16292). Hindsight already `pgvector/pgvector:pg17-trixie`. hat-system wait Job rewritten onto `registry.k8s.io/kubectl:v1.32.3` (shell-free; not a tag swap). Remaining `081M1F1K5N5` outside deferred gitlab: none. seaweedfs 4.45 CVE already merged (#16279). **Next software:** named `zflash` of the already-plugged stick. S6 first-login + WiFi + Touch ID/TPM stay human-gated. Do not re-dispatch restore. `--serve-tree` packed 411676B then client-side apply died on the 262144 last-applied annotation (live-k3d + live-kind-included 33821540802); delivery is now server-side apply. **MEASURED 33822942615:** ArgoCD then failed to checkout the GitHub SHA from the in-cluster dumb-HTTP repo (served commit is a new hash; 40-hex `targetRevision` is an object fetch). Catalog asks for `main`. **MEASURED 33824995558:** `main` closed that; new hole is `failed to list refs: unexpected EOF` because busybox httpd 200s `?service=git-upload-pack`. Not missing helm/ACE chart deps (zero children means no helm pulls). Smart-HTTP shim (advertisement + NAK + pack) because Argo CD LsRemote is go-git (dumb HTTP = unexpected EOF; 404 = repo not found). Fail-fast the ComparisonError. A GitHub SHA passthrough would return the committed metal tree — refuse that the same way GHCR is not a docker pull-through. Dumb HTTP against GitHub Pages already exists (`gitpull.html`); putting that reader in this pod is later, and must not serve the un-overlaid SHA. `--disable=servicelb` stays (metal klipper off, Cilium owns L4). The kind-included hang on this PR is mimir Synced/Degraded (Otto `081M1FG1RCW`) + agent-memory Progressing; health wait now fail-fasts on Degraded so it does not burn 2400s. Do **not** land hostAliases to ClusterIP. Do **not** re-lift k3d `--scope included`. Do **not** dispatch another Cilium included probe. Do **not** invent Cilium helm values. Otto takes mimir (`081M1FG1RCW`). CI on k3d is a USB/metal first-boot rehearsal, not a second product: `--serve-tree dev` is now wired on k3d live as well as kind included (runner CPU/memory only; PVC sizes and datapath stay the shipped metal surface). Three existing ladders, no fourth: resource rungs, storage profiles, runner disk envelope. Superseded text kept below for lineage:
 **Superseded:** in-guest wrong-passphrase phase 2b + passphrase
 hexagonal port (`passphrase-source.ts`) so a human can run the metal
 tty1 runbook without the software door being untested. Dispatch restore

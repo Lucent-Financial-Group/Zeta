@@ -16,7 +16,7 @@ describe("multilayer BNN online factor-graph update cross-verification", () => {
     expect(child.error).toBeUndefined();
     expect(child.status, child.stderr || child.stdout).toBe(0);
     expect(child.stdout).toContain(
-      "multilayer-bnn-online-update cross-verify: 9 cross-oracle comparisons, 12 production-only receipt controls, 3 mutation controls",
+      "multilayer-bnn-online-update cross-verify: 11 cross-oracle comparisons, 19 production-only receipt controls, 3 mutation controls",
     );
     expect(child.stdout).toContain("coupling-sign disagreements=means:4,variances:0");
     expect(child.stdout).toContain("channel-variance disagreements=means:4,variances:4");

@@ -1,0 +1,12 @@
+{
+  "pr_number": 16555,
+  "archive_path": "docs/history/pr-reviews/PR-16555-test-zetafs-trace-journaled-cas-visibility.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-04T03:38:50.340Z",
+  "schema_version": "v1",
+  "commit_sha": "9cfa93dd2e59e09f7ed710d1a284555bdf6b9e74",
+  "title": "test(zetafs): trace journaled CAS visibility",
+  "state": "MERGED",
+  "merged_at": "2026-09-04T03:38:15Z",
+  "head_ref": "lumen/zetafs-assertion-scope-correction"
+}

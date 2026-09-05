@@ -1,0 +1,12 @@
+{
+  "pr_number": 16477,
+  "archive_path": "docs/history/pr-reviews/PR-16477-fix-cluster-apply-metal-gateway-api-crds-on-k3d-bring-up.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-03T11:37:02.749Z",
+  "schema_version": "v1",
+  "commit_sha": "819dea212903b2bbefd23fa47893b79f7d876193",
+  "title": "fix(cluster): apply metal Gateway API CRDs on k3d bring-up",
+  "state": "MERGED",
+  "merged_at": "2026-09-03T11:36:16Z",
+  "head_ref": "cursor/k3d-gateway-api-crds-27c5"
+}

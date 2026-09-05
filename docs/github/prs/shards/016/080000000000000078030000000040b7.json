@@ -1,0 +1,12 @@
+{
+  "pr_number": 16567,
+  "archive_path": "docs/history/pr-reviews/PR-16567-fix-081m1p5mdtq087g0r002nktwxe-a-handled-brew-link-conflict-left-a-failure-annot.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-04T12:39:15.152Z",
+  "schema_version": "v1",
+  "commit_sha": "e43de0ad19865201910fe36ae04cb4e1300cb4fd",
+  "title": "fix(081M1P5MDTQ087G0R002NKTWXE): a handled brew link conflict left a failure annotation on a green job",
+  "state": "MERGED",
+  "merged_at": "2026-09-04T12:38:34Z",
+  "head_ref": "otto/brew-link-swallowed-annotation"
+}

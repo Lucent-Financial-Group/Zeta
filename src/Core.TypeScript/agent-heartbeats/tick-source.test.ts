@@ -11,7 +11,12 @@ import {
 } from "./tick-source";
 import { parseArgs, toConfig, defaultRuntimeLabel } from "./local-tick";
 import { parseTickLog, readTrailer, UNATTRIBUTED_SOURCE } from "./lane-tick-evidence";
-import { assessFleetLiveness, runsToObservations } from "./heartbeat-liveness";
+import {
+  assessFleetLiveness,
+  parseSubjectWorkflowState,
+  runsToObservations,
+  subjectIsUnenrolled,
+} from "./heartbeat-liveness";
 
 const NOW = new Date("2026-08-25T17:00:00.000Z");
 
@@ -257,6 +262,136 @@ describe("fleet liveness", () => {
     expect(verdict.sources.find((s) => s.source === "github-actions/x")?.fresh).toBe(false);
   });
 
+  // -------------------------------------------------------------------------------------------
+  // ENROLLMENT: is the watched subject even switched on?
+  //
+  // Added 2026-09-03 after the watchdog spent seventeen hours reporting a deliberately disabled
+  // lane as an outage: 35 of 35 runs red, 68 comments on one tracking issue. Every statement it
+  // made was true and none of them was news.
+  //
+  // These tests exist to keep the CURE from being worse than the disease. A pause branch is a
+  // silence branch, and a silence branch in a monitor is the vacuity class one refactor away. So
+  // each test below pins a specific way the branch could go wrong, and the three that matter most
+  // are marked: they are the ones that fail under the most tempting wrong implementations.
+  // -------------------------------------------------------------------------------------------
+
+  test("PAUSED, not dead, when nothing ticked and the subject workflow is disabled", () => {
+    const verdict = assessFleetLiveness(
+      [{ source: "github-actions/agent-heartbeat.yml", at: "2026-08-25T10:00:00.000Z" }],
+      NOW,
+      60,
+      "disabled_manually",
+    );
+    expect(verdict.state).toBe("paused");
+    expect(verdict.alive).toBe(false);
+    expect(verdict.summary).toContain("PAUSED");
+    // The silent sources are NAMED rather than dropped: with the subject off, nothing here can
+    // tell a paused source from a dead one, and the summary has to say so instead of choosing.
+    expect(verdict.summary).toContain("github-actions/agent-heartbeat.yml");
+    expect(verdict.summary).toContain("cannot be told apart");
+  });
+
+  test("MUTATION GUARD 1 — freshness beats enrollment: a fresh source is ALIVE even with the subject disabled", () => {
+    // The tempting wrong implementation checks `unenrolled` first and returns `paused` before
+    // looking at the observations. It would then swallow a real tick from a non-Actions substrate
+    // for as long as the Actions workflow stayed off — the pause branch hiding evidence, which is
+    // the one thing it must never be able to do.
+    const verdict = assessFleetLiveness(
+      [
+        { source: "github-actions/agent-heartbeat.yml", at: "2026-08-25T10:00:00.000Z" },
+        { source: "launchd/host-a", at: "2026-08-25T16:55:00.000Z" },
+      ],
+      NOW,
+      60,
+      "disabled_manually",
+    );
+    expect(verdict.state).toBe("alive");
+    expect(verdict.alive).toBe(true);
+  });
+
+  test("MUTATION GUARD 2 — an ENROLLED subject still alarms; the alarm path is untouched", () => {
+    const verdict = assessFleetLiveness(
+      [{ source: "github-actions/agent-heartbeat.yml", at: "2026-08-25T10:00:00.000Z" }],
+      NOW,
+      60,
+      "active",
+    );
+    expect(verdict.state).toBe("stale");
+    expect(verdict.alive).toBe(false);
+    expect(verdict.summary).toContain("NO TICK FROM ANY SOURCE");
+  });
+
+  test("MUTATION GUARD 3 — an UNRECOGNISED state fails CLOSED, it does not silence the alarm", () => {
+    // `subjectIsUnenrolled(state) === state !== "active"` is the natural-looking simplification,
+    // and it is a back door: a typo, a truncated response, or a state GitHub invents next year
+    // would all read as "disabled" and mute the watchdog permanently. Unknown must mean enrolled.
+    const verdict = assessFleetLiveness(
+      [{ source: "github-actions/agent-heartbeat.yml", at: "2026-08-25T10:00:00.000Z" }],
+      NOW,
+      60,
+      parseSubjectWorkflowState("disabled_by_something_new"),
+    );
+    expect(verdict.state).toBe("stale");
+    expect(verdict.alive).toBe(false);
+  });
+
+  test("no state supplied at all reproduces the pre-enrollment behaviour exactly", () => {
+    const observations = [{ source: "github-actions/agent-heartbeat.yml", at: "2026-08-25T10:00:00.000Z" }];
+    const withoutState = assessFleetLiveness(observations, NOW, 60);
+    const withUndefined = assessFleetLiveness(observations, NOW, 60, undefined);
+    expect(withoutState.state).toBe("stale");
+    expect(withoutState.summary).toBe(withUndefined.summary);
+  });
+
+  test("zero observations is PAUSED under a disabled subject and an ALARM otherwise", () => {
+    // Zero rows is normally an alarm because the cause is unknown — a bad filter and a lost
+    // permission look the same as a stopped lane. When the caller has just read the subject's
+    // state from the same API, that read is itself the proof the permission is intact, so zero
+    // rows from a confirmed-off workflow is arithmetic rather than blindness.
+    expect(assessFleetLiveness([], NOW, 60, "disabled_manually").state).toBe("paused");
+    expect(assessFleetLiveness([], NOW, 60, "active").state).toBe("stale");
+    expect(assessFleetLiveness([], NOW, 60).state).toBe("stale");
+  });
+
+  test("a WATCHDOG FAULT stays loud even under a disabled subject", () => {
+    // Evidence that exists and cannot be parsed is this module's own bug. Routing it through the
+    // pause branch would mean the one state in which nobody is checking the parser is also the
+    // state in which its failure is silent.
+    const verdict = assessFleetLiveness([{ source: "x", at: "not-a-timestamp" }], NOW, 60, "disabled_manually");
+    expect(verdict.state).toBe("stale");
+    expect(verdict.summary).toContain("watchdog fault");
+  });
+
+  test("`alive` and `state` never disagree", () => {
+    // `alive` is kept for the existing callers; `state` is what new ones read. A refactor that
+    // sets one without the other would let two surfaces report different things about one run.
+    const cases = [
+      assessFleetLiveness([{ source: "a", at: "2026-08-25T16:55:00.000Z" }], NOW, 60, "active"),
+      assessFleetLiveness([{ source: "a", at: "2026-08-25T10:00:00.000Z" }], NOW, 60, "active"),
+      assessFleetLiveness([{ source: "a", at: "2026-08-25T10:00:00.000Z" }], NOW, 60, "disabled_manually"),
+      assessFleetLiveness([], NOW, 60, "disabled_manually"),
+      assessFleetLiveness([{ source: "x", at: "nope" }], NOW, 60, "active"),
+    ];
+    for (const verdict of cases) expect(verdict.alive).toBe(verdict.state === "alive");
+  });
+
+  test("every documented disabled state is treated as unenrolled, and `active` is not", () => {
+    expect(subjectIsUnenrolled("disabled_manually")).toBe(true);
+    expect(subjectIsUnenrolled("disabled_inactivity")).toBe(true);
+    expect(subjectIsUnenrolled("disabled_fork")).toBe(true);
+    expect(subjectIsUnenrolled("active")).toBe(false);
+    expect(subjectIsUnenrolled(undefined)).toBe(false);
+  });
+
+  test("parseSubjectWorkflowState accepts only the documented vocabulary", () => {
+    expect(parseSubjectWorkflowState("active")).toBe("active");
+    expect(parseSubjectWorkflowState("  disabled_manually\n")).toBe("disabled_manually");
+    expect(parseSubjectWorkflowState("disabled")).toBeUndefined();
+    expect(parseSubjectWorkflowState("")).toBeUndefined();
+    expect(parseSubjectWorkflowState(null)).toBeUndefined();
+    expect(parseSubjectWorkflowState(42)).toBeUndefined();
+  });
+
   test("a future-dated tick is clamped, not treated as infinitely recent", () => {
     // A negative age sails under every threshold and silences the alarm permanently.
     const verdict = assessFleetLiveness([{ source: "skewed", at: "2026-08-26T00:00:00.000Z" }], NOW, 60);
@@ -305,7 +440,6 @@ describe("local-tick CLI", () => {
       "local-llm:llama3.2:1b",
     ]);
   });
-
 
   test("a dry run forwards --dry-run INTO the tick body", () => {
     // The bug this pins: `runTick`'s dryRun branch only skips the LANE push (STEP 4), but the

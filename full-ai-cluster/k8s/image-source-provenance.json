@@ -136,18 +136,6 @@
       "resolvedAt": "2026-08-23"
     },
     {
-      "repository": "registry-1.docker.io/bitnamilegacy/kubectl",
-      "tags": {
-        "1.32.3": 200
-      },
-      "artifact": "public",
-      "sourceRepo": "bitnami/containers",
-      "sourceEvidence": "oci-label",
-      "sourceVisibility": "unknown",
-      "packagePresence": "not-ghcr",
-      "resolvedAt": "2026-08-23"
-    },
-    {
       "repository": "registry-1.docker.io/cm2network/steamcmd",
       "tags": {
         "root": 200
@@ -338,6 +326,18 @@
       "sourceVisibility": "unknown",
       "packagePresence": "not-ghcr",
       "resolvedAt": "2026-08-23"
+    },
+    {
+      "repository": "registry.k8s.io/kubectl",
+      "tags": {
+        "v1.32.3": 200
+      },
+      "artifact": "public",
+      "sourceRepo": null,
+      "sourceEvidence": "none",
+      "sourceVisibility": "unknown",
+      "packagePresence": "not-ghcr",
+      "resolvedAt": "2026-09-04"
     }
   ]
 }

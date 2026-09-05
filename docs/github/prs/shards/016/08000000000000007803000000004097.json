@@ -1,0 +1,12 @@
+{
+  "pr_number": 16535,
+  "archive_path": "docs/history/pr-reviews/PR-16535-feat-081m1mgvswk087g0r001eq0yqn-the-resource-rung-override-point-verified-offlin.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-03T21:45:58.915Z",
+  "schema_version": "v1",
+  "commit_sha": "9f7ebf05ca31add2e39a8d684d38e15f59229176",
+  "title": "feat(081M1MGVSWK087G0R001EQ0YQN): the resource-rung override point, verified offline",
+  "state": "MERGED",
+  "merged_at": "2026-09-03T21:45:26Z",
+  "head_ref": "otto/lane-tree-source-dev-rung"
+}

@@ -118,10 +118,10 @@ module ZetaFsCli =
     /// 128-bit MerkleHash layout. Truncating ContentId is never a lookup.
     let contentObjectPath (storeDir: string) (h: ContentHash256) : string =
         let hex = h.ToHex()
-        Path.Combine(storeDir, "objects", hex.Substring(0, 2), hex.Substring(2))
+        ZetaFsPath.combine4 storeDir "objects" (hex.Substring(0, 2)) (hex.Substring(2))
 
     let entityDataPath (storeDir: string) (id: ZetaFsNamespace.EntityId) : string =
-        Path.Combine(storeDir, ZetaFsMutbuf.DirName, ZetaFsNamespace.EntityId.format id, "data")
+        ZetaFsPath.combine4 storeDir ZetaFsMutbuf.DirName (ZetaFsNamespace.EntityId.format id) "data"
 
     type Identify =
         { Kind: Token

@@ -24,7 +24,8 @@
  */
 
 import { spawnSync } from "node:child_process";
-import { existsSync, readdirSync, readFileSync } from "node:fs";
+import { existsSync, mkdtempSync, readdirSync, readFileSync } from "node:fs";
+import { tmpdir } from "node:os";
 import { basename, join, resolve } from "node:path";
 import { parse as parseYaml } from "yaml";
 import { bootstrapKindClusterInProcess, bootstrapK3dClusterInProcess } from "./harness/bootstrap.ts";
@@ -39,6 +40,8 @@ import {
   type DevBootstrapSecretSpec,
 } from "./dev-cluster/lib.ts";
 import { DEFAULT_ROOT_DEV_CATALOG, ciliumOwnsCniSlot, type KindCni } from "./ports.ts";
+import { buildLaneTreeBundle, laneTreeRepoUrl, SERVED_GIT_REF } from "./lane-tree-source.ts";
+import { applyResourceProfile, loadResourceCatalogue } from "./storage-profiles.ts";
 // Ordinal (code-point) ordering, per .claude/rules/culture-invariant-by-default.md.
 // NOT localeCompare: it is culture-SENSITIVE, so the same directory names sort
 // differently per machine locale. That matters here because this ordering is not
@@ -120,6 +123,16 @@ export interface CliOptions {
    * on, and refused outright with `--existing`.
    */
   readonly ephemeralVaultInit: boolean;
+  /**
+   * Resource rung to SERVE to the lane, instead of syncing the committed tree.
+   *
+   * `null` -- the default -- syncs the committed tree, which is what every caller
+   * did before this flag existed. A rung name builds a copy of
+   * `full-ai-cluster/k8s` with that rung applied, serves it in-cluster, and points
+   * ArgoCD there. Aaron 2026-09-03: "we don't have to test metal on our CI, metal
+   * is for our real hardware, dev is for testing on our github runners."
+   */
+  readonly serveTreeProfile: string | null;
 }
 
 export interface ToolCheck {
@@ -218,6 +231,7 @@ interface MutableCliOptions {
   runtime: ContainerRuntime;
   kindCni: KindCni;
   ephemeralVaultInit: boolean;
+  serveTreeProfile: string | null;
 }
 
 interface ParseNumberSuccess {
@@ -257,6 +271,15 @@ type ParseRuntimeEnvResult = ParseRuntimeEnvSuccess | ParseFailure;
 type ParseOptionsResult = ParseOptionsSuccess | ParseFailure;
 
 const REPO_ROOT = resolve(import.meta.dir, "../../..");
+
+/**
+ * Image the lane-tree server runs. Pinned by DIGEST, not by tag: `busybox:1.37.0`
+ * is a moving target on Docker Hub and the whole point of this pod is to be the
+ * least surprising thing in the lane. busybox supplies tar, gzip and nc in one
+ * public ~4MB image, so the server needs nothing built and nothing private.
+ * busybox httpd is not used: it 200s `?service=` (MEASURED 33824995558).
+ */
+const LANE_TREE_IMAGE = "busybox:1.37.0";
 const DEFAULT_K3D_CONFIG = "full-ai-cluster/dev-cluster/k3d-config.yaml";
 const DEFAULT_KIND_CONFIG = "full-ai-cluster/dev-cluster/profiles/ci.kind-config.yaml";
 const DEFAULT_KIND_CILIUM_CONFIG = "full-ai-cluster/dev-cluster/profiles/ci.cilium.kind-config.yaml";
@@ -264,13 +287,13 @@ const DEFAULT_TIMEOUT_SECONDS = 900;
 const DEFAULT_POLL_SECONDS = 10;
 const SPAWN_MAX_BUFFER = 64 * 1024 * 1024;
 const HELP_TEXT =
-  "usage: bun src/Core.TypeScript/cluster/argocd-health-test.ts [--dry-run|--preflight|--run] [--provider k3d|kind] [--cni kindnetd|cilium] [--scope smoke|included|full] [--runtime docker|podman] [--git-ref REF] [--cluster-name NAME] [--config PATH] [--existing] [--timeout-sec N] [--poll-sec N] [--drift-check] [--ephemeral-vault-init]";
+  "usage: bun src/Core.TypeScript/cluster/argocd-health-test.ts [--dry-run|--preflight|--run] [--provider k3d|kind] [--cni kindnetd|cilium] [--scope smoke|included|full] [--runtime docker|podman] [--git-ref REF] [--cluster-name NAME] [--config PATH] [--serve-tree RUNG] [--existing] [--timeout-sec N] [--poll-sec N] [--drift-check] [--ephemeral-vault-init]";
 const MODE_FLAGS: Readonly<Record<string, Mode>> = {
   "--dry-run": "dry-run",
   "--preflight": "preflight",
   "--run": "run",
 };
-const STRING_FLAGS = new Set(["--git-ref", "--cluster-name", "--config"]);
+const STRING_FLAGS = new Set(["--git-ref", "--cluster-name", "--config", "--serve-tree"]);
 const INTEGER_FLAGS = new Set(["--timeout-sec", "--poll-sec"]);
 const K3D_CLUSTER_NAME_PATTERN = /^\s+name:\s*([A-Za-z\d-]+)\s*$/;
 const DNS_LABEL_PATTERN = /^[a-z\d]([-a-z\d]*[a-z\d])?$/;
@@ -316,24 +339,31 @@ const SMOKE_MIN_APPLICATIONS = 20;
 export const PLATFORM_APP_DIR = "platform";
 
 export const DEV_EXCLUDED_REASONS: ReadonlyMap<string, string> = new Map([
-  [
-    "agent-memory",
-    "HELD BY THE GLOB, NOT BY A MEASUREMENT -- and that distinction is the honest part of this entry. It " +
-      "went into `excludeGlob` because statefulset.yaml:71-83 asks RWO/8Gi on `storageClassName: longhorn`, " +
-      "and at the time nothing in the dev lane answered to that name. `dev-cluster/manifests/longhorn.yaml` " +
-      "now does, and RWO/8Gi is exactly what `rancher.io/local-path` behind that alias serves -- the same " +
-      "condition that un-deferred ten other Applications on 2026-08-21. So the recorded blocker is very " +
-      "likely spent, and NOBODY HAS MEASURED IT, because the glob keeps this Application off every CI " +
-      "cluster and an app that never syncs never produces a verdict to read. " +
-      "LIFTS WHEN: `agent-memory/**` is dropped from `DEFAULT_ROOT_DEV_CATALOG.excludeGlob` and one included " +
-      "run reports its actual verdict -- pass or fail, either is information; the current state is neither. " +
-      "ANCHORS, CHECKED BY `reason-truth.ts`: each names an artifact this tree holds, so a claim that outlives its artifact goes red instead of reading on. " +
-      "[cite: path statefulset.yaml:83] " +
-      "[cite: path full-ai-cluster/dev-cluster/manifests/longhorn.yaml] " +
-      "[cite: pvc-class full-ai-cluster/agent-memory longhorn] " +
-      "[cite: pvc-total full-ai-cluster/agent-memory 8] " +
-      "[cite: glob-defers agent-memory] ",
-  ],
+  // `agent-memory` is NOT here. It LEFT this map on 2026-09-03, and the entry is
+  // recorded as closed rather than the lines silently deleted.
+  //
+  //   WAS: "HELD BY THE GLOB, NOT BY A MEASUREMENT". It went into `excludeGlob`
+  //   because statefulset.yaml:71-83 asks RWO/8Gi on `storageClassName: longhorn`
+  //   and at the time nothing in the dev lane answered to that name. Its own text
+  //   said the blocker was "very likely spent" once
+  //   `dev-cluster/manifests/longhorn.yaml` shipped (2026-08-21 -- the same
+  //   condition that un-deferred ten other Applications that day), and that
+  //   NOBODY HAD MEASURED IT, because the glob kept the Application off every CI
+  //   cluster and an app that never syncs never produces a verdict to read.
+  //
+  //   LIFTED ON ITS OWN STATED CONDITION, verbatim: "`agent-memory/**` is dropped
+  //   from `DEFAULT_ROOT_DEV_CATALOG.excludeGlob` and one included run reports its
+  //   actual verdict -- pass or fail, either is information; the current state is
+  //   neither." The first half is this change. The second half is the NEXT
+  //   included run, which this change cannot contain: it is a MEASUREMENT, not a
+  //   repair -- nothing about the Application was fixed, because nothing was known
+  //   to be broken. If that run goes red the deferral comes back with a real
+  //   reason attached, which is strictly more than it had.
+  //
+  //   Checked before lifting: RWO (not RWX, so `yamlTreeRequestsReadWriteMany`
+  //   does not catch it), 8Gi on the `longhorn` alias, `busybox:1.36`, one
+  //   replica, 50m/64Mi requested at the rung the tree carries. No registry
+  //   credential, no GPU. Its dev-lane cost is in the lane totals below.
   [
     "cilium",
     "The CNI itself. The default kind profile brings up kind's own CNI (kindnetd) BEFORE ArgoCD exists -- " +
@@ -357,7 +387,7 @@ export const DEV_EXCLUDED_REASONS: ReadonlyMap<string, string> = new Map([
       "and routable from nothing, which is a worse outcome than not running it. " +
       "KIND HAS A BRING-UP ALIAS that is NOT this Application: " +
       "full-ai-cluster/dev-cluster/manifests/cilium-lb-ipam.kind.yaml is applied by bringUpKindCiCluster when " +
-      "`cni === \"cilium\"`, after Cilium helm, before the catalogue. Lifting THIS Application on kind would " +
+      '`cni === "cilium"`, after Cilium helm, before the catalogue. Lifting THIS Application on kind would ' +
       "selfHeal the metal pool over that alias. " +
       "LIFTS WHEN: `cilium` above lifts AND the pool is parameterised per substrate rather than pinned to one " +
       "maintainer's subnet. The kind alias existing is not that parameterisation. " +
@@ -655,11 +685,19 @@ export function auditDevExclusionReasons(
  * instead of one -- see APPLIED_BUT_UNASSERTED_REASONS.
  */
 const DEV_INCLUDED_PROOF_DEFERRED_DIRS = new Set([
-  // volumeClaimTemplates pin `storageClassName: longhorn`, which is excluded
-  // above, so the PVC never binds. Independently caught by the longhorn rule
-  // in isExcludedFromIncludedProof -- this entry is redundant, and kept only so
-  // the deferral stays legible next to its siblings.
-  "agent-memory",
+  // `agent-memory` is NOT here. It LEFT this set on 2026-09-03 together with its
+  // DEV_EXCLUDED_REASONS entry, and the comment it carried was WRONG WHEN READ.
+  //
+  //   It claimed the entry was "redundant ... independently caught by the
+  //   longhorn rule in isExcludedFromIncludedProof". That rule sits BEHIND
+  //   `if (aliasDeclared) return false;`, and `devLonghornStorageClassAliasDeclared()`
+  //   has returned true since `dev-cluster/manifests/longhorn.yaml` shipped on
+  //   2026-08-21 -- so for the whole interval the longhorn rule was unreachable
+  //   for this dir and caught nothing. Two entries claiming to back each other
+  //   up while one was inert is exactly the shape a redundant-looking check hides
+  //   in, which is why the stale claim is written down rather than the line just
+  //   deleted. The mechanism itself is correct (rule 4 is MEANT to be dormant
+  //   while the alias is declared); the prose that leaned on it was not.
   // Needs a GitHub App credential + a live runner registration that CI has no
   // secret to bind. Listed EXPLICITLY even though `requestsReadWriteMany` below
   // also excludes it: that rule is about storage and this reason is not, so if
@@ -952,7 +990,7 @@ export const APPLIED_BUT_UNASSERTED_REASONS: ReadonlyMap<string, string> = new M
     "hindsight",
     "THREE independent blockers, established 2026-08-21 by rendering hindsight 0.3.0 against this Application's own valuesObject; any ONE of them defers it. " +
       "(1) CAPACITY -- AND HINDSIGHT IS THE SYMPTOM, NOT THE CAUSE. MEASURED run 32519516070: hindsight-postgresql-0 never scheduled -- FailedScheduling `0/1 nodes are available: 1 Insufficient cpu` -- so hindsight-api and hindsight-control-plane CrashLoopBackOff waiting on a database with nowhere to run. Its three requests are 500m (api) + 250m (control-plane) + 250m (postgresql), re-rendered 2026-08-22 from chart 0.3.0 against this Application's own valuesObject; every one is a CHART DEFAULT (`metalSource: chart-default` on all three rows), so no number here is a measurement of hindsight's working set and neither rung claims to be -- both are reservations. " +
-      "THE ARITHMETIC THAT SAYS `SYMPTOM`, and it is why the deferral does not lift by shrinking this app: the dev lane APPLIES 38 Applications totalling 5231m at the rung the tree ships, against a 2500m budget (4000m runner less 1500m reserved). Hindsight is 1000m of that. Take hindsight to ZERO and the lane is still 4231m -- over by 1731m. Take hindsight alone to its `dev` rung (400m) and the lane is 4631m. Take the WHOLE lane to `dev` and it is 1081m, which FITS with 1419m of spare. THAT IS THE THIRD ANSWER THIS SENTENCE HAS CARRIED and the earlier two are kept rather than overwritten: 1906m fits, then 2906m over by 406m (gmod became visible), then 2006m fits (the rung learned to reach raw in-repo manifests), and now 1081m -- because 18 governed `cpuMillis.dev` rows were floored at 25m on 2026-08-23 (-1250m across all 47; -925m inside this lane), which is Aaron's observation that CPU is compressible taken at the rung where it is true. So the only cut that closes this is lane-wide -- and lane-wide is SUFFICIENT again, which is the second change of answer this sentence has carried and is written as a sequence rather than as a replacement: it closed at 1906m, then did NOT close at 2906m, and now closes at 2006m. mimir, at 1610m, is the larger single reservation. WHY IT MOVED TWICE: every number in that paragraph rose by 1000m on 2026-08-22 and nothing grew -- applicationDirs() enumerated depth 1, ArgoCD's include glob is not path-segment bounded (established against a LIVE cluster in app-of-apps-discovery.ts), and `game-hosting/gmod` -- an in-repo StatefulSet whose manifest carries a literal cpu 1 / memory 2Gi -- had been applied by this root since it was written and counted by nothing. This catalogue asserted in writing that it contributes 0m / 0Mi. It was then recorded here that `NO RUNG REACHES IT: it is a git-path source with no valuesObject, so `--resource-profile dev --apply` cannot touch it`. THE FIRST CLAUSE WAS TRUE AND THE SECOND WAS FALSE: `applyResourceProfile` writes a dotted path into an arbitrary manifest and always could reach statefulset.yaml; only the render-side reader demanded a valuesObject coordinate. Since 2026-08-23 three git-path Applications we own (1150m in total) are governed rows addressing their own manifests, gmod is 100m at `dev` and the unchanged 1000m at `metal`, and the lane closes. gmod did not schedule TODAY because its sync fails on gatekeeper's webhook -- a reprieve of the same shape as the one in the next paragraph, one resource type over -- and it was priced and governed rather than waited out. " +
+      "THE ARITHMETIC THAT SAYS `SYMPTOM`, and it is why the deferral does not lift by shrinking this app: the dev lane APPLIES 38 Applications totalling 5231m at the rung the tree ships, against a 2500m budget (4000m runner less 1500m reserved). Hindsight is 1000m of that. Take hindsight to ZERO and the lane is still 4231m -- over by 1731m. Take hindsight alone to its `dev` rung (400m) and the lane is 4631m. Take the WHOLE lane to `dev` and it is 1081m, which FITS with 1419m of spare. THAT IS THE THIRD ANSWER THIS SENTENCE HAS CARRIED and the earlier two are kept rather than overwritten: 1906m fits, then 2906m over by 406m (gmod became visible), then 2006m fits (the rung learned to reach raw in-repo manifests), and now 1081m -- because 18 governed `cpuMillis.dev` rows were floored at 25m on 2026-08-23 (-1250m across all 47; -925m inside this lane), which is Aaron's observation that CPU is compressible taken at the rung where it is true. So the only cut that closes this is lane-wide -- and lane-wide is SUFFICIENT again, which is the second change of answer this sentence has carried and is written as a sequence rather than as a replacement: it closed at 1906m, then did NOT close at 2906m, and now closes at 2006m. mimir, at 1610m, is the larger single reservation. WHY IT MOVED TWICE: every number in that paragraph rose by 1000m on 2026-08-22 and nothing grew -- applicationDirs() enumerated depth 1, ArgoCD's include glob is not path-segment bounded (established against a LIVE cluster in app-of-apps-discovery.ts), and `game-hosting/gmod` -- an in-repo StatefulSet whose manifest carries a literal cpu 1 / memory 2Gi -- had been applied by this root since it was written and counted by nothing. This catalogue asserted in writing that it contributes 0m / 0Mi. It was then recorded here that `NO RUNG REACHES IT: it is a git-path source with no valuesObject, so `--resource-profile dev --apply` cannot touch it`. THE FIRST CLAUSE WAS TRUE AND THE SECOND WAS FALSE: `applyResourceProfile` writes a dotted path into an arbitrary manifest and always could reach statefulset.yaml; only the render-side reader demanded a valuesObject coordinate. Since 2026-08-23 three git-path Applications we own (1150m in total) are governed rows addressing their own manifests, gmod is 100m at `dev` and the unchanged 1000m at `metal`, and the lane closes. gmod did not schedule TODAY because its sync fails on gatekeeper's webhook -- a reprieve of the same shape as the one in the next paragraph, one resource type over -- and it was priced and governed rather than waited out. THE FOURTH ANSWER, 2026-09-03, and the three before it are kept: the lane is 39 Applications now, 6390m at the rung the tree ships and 1165m at `dev` (1335m of spare), because `agent-memory` LIFTED from the dev root's excludeGlob on its own recorded condition -- held by the glob, not by a measurement -- and brought 50m at `metal` / 25m at the `dev` floor with it. Between the third answer and this one the citations below moved 1081m -> 1056m -> 1115m -> 1140m without this sentence following (minio removed; mimir kafka + the nfd prune Job + alloy re-measured; cloudnativepg added), which is the drift the citations exist to catch and the prose did not. Nothing in this paragraph's argument changes: hindsight to ZERO still leaves 5390m, over by 2890m; lane-wide `dev` still closes it. " +
       "AND THE LANE HAS BEEN OVER-COMMITTED SINCE THE LONGHORN ALIAS LANDED, which storage-profiles.json predicted in writing: `the only reason that has not bitten is that 14 of them hang Missing on a longhorn StorageClass the dev catalog excludes, so they never schedule a pod. That is a reprieve, not a fit, and it evaporates the moment the StorageClass exists.` The dev lane now applies a `longhorn` StorageClass over rancher.io/local-path, so it has evaporated, and hindsight-postgresql-0 is the first pod to be handed the bill. " +
       "THE TWO SUBSTRATES ARE NOT CLOSE, which is why a fix for one is wrong for the other: the runner is 4000m (envelope, and `--measure-runner` convicts a smaller machine, so it is checked rather than trusted), while the checked-in ClusterNode registrations measure 16 cores (maintainers/Addisons820/cluster-nodes/node-ad1efd, node-b1e1b5) and 22 cores (maintainers/maximdolphin/cluster-nodes/node-5b2dfa, node-f82aa6). ~4x. The whole 47-app catalogue at `metal` is 9256m, which does not fit one runner and fits one 16-core box comfortably. THAT SECOND HALF IS CHECKED NOW, and it was not when this reason was first written: `compute-provenance` in single-node-readiness.ts compares the ACTIVE resource rung's total over the metal cohort against `spec.hardware.cores` and `spec.hardware.memory` on the smallest registered node, the same one-way way `capacity-provenance` compares the storage ladder against `spec.hardware.storage`. It REFUSES when no registration carries both. Green today -- 9256m against 16000m raw -- and the arithmetic is printed on every auditor run rather than only when it fails. Two units traps were found building it and are recorded at the parser: `cores` is `nproc`, i.e. LOGICAL CPUs (22 on a 16-core Ultra 9 185H), and `memory` is captured with `free -h --si`, i.e. DECIMAL, so `66G` is 62942Mi and not 67584Mi -- reading it as binary would have inflated the bound, which is the acquitting direction. " +
       "(2) THE `dev` RESOURCE RUNG CANNOT REACH THIS LANE, which is the part that looked like the fix and is not. `storage-profiles.ts --resource-profile dev --apply` rewrites the WORKING TREE; ArgoCD syncs the COMMITTED tree at `--git-ref`, and `bootstrap/root-application.yaml` points the METAL cluster at the same `main`/`full-ai-cluster/k8s/applications` path. One committed tree, two substrates, no override point -- so lowering these numbers lowers them for the 16-core box too, where the cost of an under-request is a pod evictable under node pressure rather than one refused a node. That trade is a maintainer call, not a CI convenience. " +
@@ -967,8 +1005,8 @@ export const APPLIED_BUT_UNASSERTED_REASONS: ReadonlyMap<string, string> = new M
       "[cite: chart-pin full-ai-cluster/hindsight hindsight 0.9.2] " +
       "[cite: resource-rung hindsight metal 1000] " +
       "[cite: resource-rung hindsight dev 75] " +
-      "[cite: lane-cpu metal 6340 over] " +
-      "[cite: lane-cpu dev 1140 fits] " +
+      "[cite: lane-cpu metal 7690 over] " +
+      "[cite: lane-cpu dev 1490 fits] " +
       "[cite: workflow-job k8s-argocd-health-test.yml dry-run] " +
       "[cite: path full-ai-cluster/k8s/bootstrap/root-application.yaml] " +
       "[cite: path maintainers/Addisons820/cluster-nodes/node-ad1efd/node.yaml] " +
@@ -1308,6 +1346,7 @@ function defaultCliOptions(env: NodeJS.ProcessEnv): ParseOptionsResult {
       runtime,
       kindCni: "kindnetd",
       ephemeralVaultInit: false,
+      serveTreeProfile: null,
     },
   };
 }
@@ -1321,6 +1360,7 @@ function readFlagValue(argv: readonly string[], index: number, flag: string, des
 }
 
 function assignStringFlag(options: MutableCliOptions, flag: string, value: string): void {
+  if (flag === "--serve-tree") options.serveTreeProfile = value;
   if (flag === "--git-ref") options.gitRef = value;
   if (flag === "--cluster-name") options.clusterName = value;
   if (flag === "--config") {
@@ -1904,18 +1944,61 @@ function waitForKubectl(
   });
 }
 
+/**
+ * Build the in-cluster tree source for `--serve-tree <rung>`, or `null` when the
+ * flag is absent.
+ *
+ * WHY THIS IS A FUNCTION AND NOT THREE LINES INLINE: every failure here has to be
+ * a THROW, not a null. Returning `null` on a build failure would fall back to the
+ * committed tree, which is the `metal` rung -- the lane would then reproduce the
+ * exact `Insufficient cpu` failure the flag exists to remove, with nothing saying
+ * the override had been skipped. `lane-tree-source` already refuses a zero-file
+ * copy, a zero-edit rung apply, an un-rewritten repoURL and an over-budget pack;
+ * this keeps those refusals fatal rather than absorbing them.
+ */
+function buildLaneTreeForProfile(
+  profile: string | null,
+  gitRef: string,
+): { readonly manifests: string; readonly repoUrl: string; readonly gitRef: string } | null {
+  if (profile === null) return null;
+  const catalogue = loadResourceCatalogue();
+  if (!catalogue.profiles.includes(profile)) {
+    throw new Error(`--serve-tree ${profile}: unknown resource profile; known: ${catalogue.profiles.join(", ")}`);
+  }
+  const workDir = mkdtempSync(join(tmpdir(), "zeta-lane-tree-"));
+  const bundle = buildLaneTreeBundle({
+    repoRoot: REPO_ROOT,
+    workDir,
+    // Provenance only (commit message). The served BRANCH is always
+    // SERVED_GIT_REF (`main`). Naming it after a GitHub SHA made ArgoCD fetch
+    // that SHA as an object the served repo does not contain (33822942615).
+    gitRef,
+    image: LANE_TREE_IMAGE,
+    applyRung: (stagedRoot: string) => applyResourceProfile(catalogue, profile, stagedRoot).length,
+  });
+  console.log(
+    `[serve-tree] rung=${profile} files=${String(bundle.staged.files)} ` +
+      `repoURL-rewrites=${String(bundle.staged.rewritten.length)} ` +
+      `packed=${String(bundle.packedBytes)}B commit=${bundle.repo.sha.slice(0, 12)} ` +
+      `targetRevision=${SERVED_GIT_REF}`,
+  );
+  return { manifests: bundle.manifests, repoUrl: laneTreeRepoUrl(), gitRef: SERVED_GIT_REF };
+}
+
 function bootstrapCluster(plan: HarnessPlan, options: CliOptions): Failure | null {
   if (options.provider === "kind") {
     if (options.existing) {
       return runOrFail("kubectl", ["config", "use-context", `kind-${plan.clusterName}`], "KubectlFailed", 30);
     }
     try {
+      const laneTree = buildLaneTreeForProfile(options.serveTreeProfile, options.gitRef);
       bootstrapKindClusterInProcess({
         configPath: options.configPath,
         clusterName: plan.clusterName,
         gitRef: options.gitRef,
         containerRuntime: options.runtime,
         cni: options.kindCni,
+        ...(laneTree === null ? {} : { laneTree }),
       });
       return null;
     } catch (e) {
@@ -1931,9 +2014,11 @@ function bootstrapCluster(plan: HarnessPlan, options: CliOptions): Failure | nul
     return runOrFail("kubectl", ["config", "use-context", `k3d-${plan.clusterName}`], "KubectlFailed", 30);
   }
   try {
+    const laneTree = buildLaneTreeForProfile(options.serveTreeProfile, options.gitRef);
     bootstrapK3dClusterInProcess({
       configPath: options.configPath,
       gitRef: options.gitRef,
+      ...(laneTree === null ? {} : { laneTree }),
     });
     return null;
   } catch (e) {
@@ -2211,17 +2296,47 @@ export function isGitHubHostUnresolvableText(text: string): boolean {
   return GITHUB_HOST_UNRESOLVABLE.test(text);
 }
 
-export function rootCatalogGitHostFailure(
-  snapshots: readonly ArgoApplicationSnapshot[],
-): Failure | null {
+export function rootCatalogGitHostFailure(snapshots: readonly ArgoApplicationSnapshot[]): Failure | null {
   const root = snapshots.find((snapshot) => snapshot.name === ROOT_DEV_APPLICATION_NAME);
   if (root === undefined) return null;
   const hit = applicationConditionTexts(root).find(isGitHubHostUnresolvableText);
   if (hit === undefined) return null;
   return {
     kind: "ArgoCdTimeout",
+    message: "zeta-root-dev cannot clone github.com (ComparisonError); waiting will not produce children",
+    terminal: true,
+    detail: {
+      syncStatus: root.syncStatus,
+      healthStatus: root.healthStatus,
+      evidence: hit,
+      conditions: root.conditions ?? [],
+    },
+  };
+}
+
+/**
+ * Overlay git is up (readiness GET /info/refs succeeded) but the smart-HTTP
+ * probe was answered as dumb HTTP. MEASURED live-kind-included + live-k3d
+ * 33824995558: `failed to list refs: unexpected EOF`, child-application-count
+ * 0/Count, argocd=Missing. Waiting 900s for vault or 1200s for health cannot
+ * create Applications that were never listed. Same shape as
+ * `rootCatalogGitHostFailure`. This is NOT missing helm chart deps.
+ */
+const REFS_UNEXPECTED_EOF = /failed to list refs:\s*unexpected EOF/i;
+
+export function isLaneTreeRefsListFailureText(text: string): boolean {
+  return REFS_UNEXPECTED_EOF.test(text);
+}
+
+export function rootCatalogRefsFailure(snapshots: readonly ArgoApplicationSnapshot[]): Failure | null {
+  const root = snapshots.find((snapshot) => snapshot.name === ROOT_DEV_APPLICATION_NAME);
+  if (root === undefined) return null;
+  const hit = applicationConditionTexts(root).find(isLaneTreeRefsListFailureText);
+  if (hit === undefined) return null;
+  return {
+    kind: "ArgoCdTimeout",
     message:
-      "zeta-root-dev cannot clone github.com (ComparisonError); waiting will not produce children",
+      "zeta-root-dev cannot list refs on the catalog git (ComparisonError unexpected EOF); waiting will not produce children",
     terminal: true,
     detail: {
       syncStatus: root.syncStatus,
@@ -2234,24 +2349,57 @@ export function rootCatalogGitHostFailure(
 
 export const HEALTH_WAIT_LAGGARD_LIMIT = 8;
 
-export function formatHealthWaitProgress(
-  elapsedSec: number,
-  verdicts: readonly ApplicationVerdict[],
-): string {
+export function formatHealthWaitProgress(elapsedSec: number, verdicts: readonly ApplicationVerdict[]): string {
   const okCount = verdicts.filter((verdict) => verdict.ok).length;
   const laggards = verdicts.filter((verdict) => !verdict.ok);
   const shown = laggards
     .slice(0, HEALTH_WAIT_LAGGARD_LIMIT)
     .map((verdict) => `${verdict.name}=${verdict.syncStatus}/${verdict.healthStatus}`);
   const extra =
-    laggards.length > HEALTH_WAIT_LAGGARD_LIMIT
-      ? ` +${String(laggards.length - HEALTH_WAIT_LAGGARD_LIMIT)}`
-      : "";
+    laggards.length > HEALTH_WAIT_LAGGARD_LIMIT ? ` +${String(laggards.length - HEALTH_WAIT_LAGGARD_LIMIT)}` : "";
   const laggardText = shown.length === 0 ? "none" : `${shown.join(", ")}${extra}`;
   return (
     `still waiting (${String(elapsedSec)}s): health ${String(okCount)}/` +
     `${String(verdicts.length)} ok; laggards: ${laggardText}`
   );
+}
+
+/**
+ * ArgoCD `Synced/Degraded` is a terminal health class. Progressing and
+ * Missing can still become Healthy if we wait. Once an Application has
+ * compared cleanly AND reports Degraded, the workload already failed its
+ * probes; the remaining `--timeout-sec` (2400s in CI) cannot heal it.
+ *
+ * MEASURED live-kind-included 33817974673 on PR #16533: at T+799s the wait
+ * printed `mimir=Synced/Degraded` (Otto's `081M1FG1RCW`, seaweedfs auth) and
+ * `agent-memory=OutOfSync/Progressing`, then kept polling through T+1044s+
+ * toward the 2400s cap. `gate (required)` was already green. The job looked
+ * stuck because this failure was not marked `terminal`. Same shape as
+ * `rootCatalogGitHostFailure`: waiting cannot produce children / health.
+ *
+ * MEASURED live-kind-included 33830308187 on PR #16533: overlay git listed
+ * refs (children appeared; live-k3d smoke on the same SHA was green). The
+ * wait then aborted on `openziti-controller=OutOfSync/Degraded` while the
+ * ziti pod was still `Init:0/1` / `PodInitializing`. Events after the abort
+ * went Degraded -> Progressing -> Synced. OutOfSync/Degraded is rollout,
+ * not a finished failed sync. Only Synced/Degraded is terminal.
+ *
+ * Progressing-only laggards still wait. Missing still waits (apps appear).
+ * OutOfSync/Degraded still waits. This does not repair mimir and does not
+ * re-defer agent-memory.
+ */
+export function degradedHealthTerminalFailure(verdicts: readonly ApplicationVerdict[]): Failure | null {
+  const degraded = verdicts.filter(
+    (verdict) => !verdict.ok && verdict.healthStatus === "Degraded" && verdict.syncStatus === "Synced",
+  );
+  if (degraded.length === 0) return null;
+  const names = degraded.map((verdict) => `${verdict.name}=${verdict.syncStatus}/${verdict.healthStatus}`).join(", ");
+  return {
+    kind: "ApplicationUnhealthy",
+    message: `asserted Application is Degraded (${names}); waiting the remaining health budget cannot heal it`,
+    terminal: true,
+    detail: degraded,
+  };
 }
 
 export const REPO_BACKED_CHILD_WAIT_DIAGNOSTIC_COMMANDS: readonly {
@@ -2377,6 +2525,11 @@ async function waitForArgoCd(plan: HarnessPlan, options: CliOptions): Promise<Fa
   );
   if (rootFailure !== null) return rootFailure;
 
+  // `--serve-tree` already pointed every rewritten Application at SERVED_GIT_REF
+  // (`main`) on a repo whose only branch is `main`. Patching those to the GitHub
+  // SHA is 33822942615: ArgoCD fetches the SHA as an object the served repo does
+  // not contain. GitHub-hosted PR trees still take the patch below.
+  if (options.serveTreeProfile !== null) return null;
   if (plan.gitRef === "main") return null;
 
   const childFailure = await waitForRepoBackedChild(poll);
@@ -2411,6 +2564,8 @@ async function waitForRepoBackedChild(pollSeconds: number): Promise<Failure | nu
     if (isFailure(snapshots)) return snapshots;
     const catalogDns = rootCatalogGitHostFailure(snapshots);
     if (catalogDns !== null) return catalogDns;
+    const catalogRefs = rootCatalogRefsFailure(snapshots);
+    if (catalogRefs !== null) return catalogRefs;
     if (repoBackedChildNames(snapshots).length > 0) return null;
     return {
       kind: "ArgoCdTimeout",
@@ -2440,9 +2595,7 @@ function recordAt(record: Record<string, unknown>, key: string): Record<string, 
   return asRecord(record[key]);
 }
 
-function parseApplicationConditions(
-  status: Record<string, unknown> | null,
-): readonly ArgoApplicationCondition[] {
+function parseApplicationConditions(status: Record<string, unknown> | null): readonly ArgoApplicationCondition[] {
   if (status === null) return [];
   const raw = status.conditions;
   if (!Array.isArray(raw)) return [];
@@ -2669,9 +2822,7 @@ async function waitForApplications(
   let lastVerdicts: readonly ApplicationVerdict[] = [];
   const startedAt = Date.now();
   let lastProgressAt = startedAt;
-  console.log(
-    `Waiting: ArgoCD Applications Synced+Healthy (cap ${String(options.timeoutSeconds)}s)`,
-  );
+  console.log(`Waiting: ArgoCD Applications Synced+Healthy (cap ${String(options.timeoutSeconds)}s)`);
   const failure = await waitFor(options.timeoutSeconds, options.pollSeconds, () => {
     const command = ["-n", "argocd", "get", "applications.argoproj.io", "-o", "json"];
     const result = kubectl(command, Math.max(options.pollSeconds, 10));
@@ -2682,6 +2833,8 @@ async function waitForApplications(
     if (isFailure(snapshots)) return snapshots;
     const catalogDns = rootCatalogGitHostFailure(snapshots);
     if (catalogDns !== null) return catalogDns;
+    const catalogRefs = rootCatalogRefsFailure(snapshots);
+    if (catalogRefs !== null) return catalogRefs;
     lastVerdicts =
       plan.scope === "smoke"
         ? classifySmokeApplications(snapshots)
@@ -2689,6 +2842,8 @@ async function waitForApplications(
           ? classifyApplications(plan.expectedApplications, snapshots)
           : classifyApplications(plan.expectedApplications, snapshots);
     if (lastVerdicts.every((verdict) => verdict.ok)) return null;
+    const degraded = degradedHealthTerminalFailure(lastVerdicts);
+    if (degraded !== null) return degraded;
     const now = Date.now();
     if (now - lastProgressAt >= 60_000) {
       const elapsedSec = Math.floor((now - startedAt) / 1000);

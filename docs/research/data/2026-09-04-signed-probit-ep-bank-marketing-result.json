@@ -1,0 +1,69 @@
+{
+  "schemaVersion": 1,
+  "status": "Compared",
+  "modelStatus": "ApproximateUnaryEP",
+  "source": {
+    "dataset": "UCI Bank Marketing bank-additional-full.csv",
+    "license": "CC BY 4.0",
+    "csvSha256": "74ADFC578BF77A7FF4BB1BA4A9F8709D9E3C6907342959C2C8416847E0AFB4D8",
+    "canonicalInputFingerprint": "488C65230DDEAB54A41BB0B6DF7DF1634C50D39E8CDF6859CB0163CD4D92302A"
+  },
+  "split": {
+    "trainingRows": 32950,
+    "heldOutRows": 8238,
+    "kind": "fixedSourceOrder",
+    "admittedColumns": ["sourceRow", "housing", "y"],
+    "excludedColumns": ["duration", "allOtherColumns"]
+  },
+  "baseline": {
+    "kind": "trainingOnlyBeta11PosteriorPredictiveMean",
+    "probability": 0.06375940762320952,
+    "brier": 0.2730749985588989,
+    "negativeLogPredictiveDensity": 0.8942828393622091
+  },
+  "approximateUnaryEp": {
+    "brier": 0.2730078098667038,
+    "negativeLogPredictiveDensity": 0.8940258064925494,
+    "brierDeltaEpMinusBaseline": -0.00006718869219507484,
+    "negativeLogPredictiveDensityDeltaEpMinusBaseline": -0.0002570328696597235
+  },
+  "exactOneDimensionalIntegralComparison": {
+    "method": "independentPythonStandardLibraryErfCdfSimpsonIntegration",
+    "maximumAbsoluteMeanError": 0.000004571421485355387,
+    "maximumAbsoluteVarianceError": 0.000014803822464624916,
+    "maximumAbsolutePredictiveError": 0.00000006258675706860561,
+    "groups": [
+      {
+        "group": "housing-no",
+        "count": 15191,
+        "successes": 929,
+        "absoluteMeanError": 0.00000012646889535616879,
+        "absoluteVarianceError": 0.000000029276109799706174,
+        "absolutePredictiveError": 0.0000000002282878122650267
+      },
+      {
+        "group": "housing-yes",
+        "count": 16978,
+        "successes": 1130,
+        "absoluteMeanError": 0.0000002198735671310459,
+        "absoluteVarianceError": 0.000000019395384169497605,
+        "absolutePredictiveError": 0.00000000014813940352187416
+      },
+      {
+        "group": "housing-unknown",
+        "count": 781,
+        "successes": 41,
+        "absoluteMeanError": 0.000004571421485355387,
+        "absoluteVarianceError": 0.000014803822464624916,
+        "absolutePredictiveError": 0.00000006258675706860561
+      }
+    ]
+  },
+  "nonClaims": [
+    "No generic non-Gaussian inference claim",
+    "No EP convergence claim beyond this finite unary query",
+    "No causal, individual, marketing, or financial decision claim",
+    "No CRDT posterior merge claim",
+    "No evidence that the small held-out metric difference generalizes"
+  ]
+}

@@ -33,11 +33,11 @@ runtimes unable to read each other.
 
 ## The byte-lock was green over a function nothing shipped
 
-`delta-log-entry/golden-vectors.test.ts` is the TypeScript oracle for the entry frame, and it passes.
+`src/Core.TypeScript/delta-log-entry/golden-vectors.test.ts` is the TypeScript oracle for the entry frame, and it passes.
 But `entryToTagged` — the function that produced those bytes — **lived inside the test file**. The
 lock proved TypeScript _can_ produce the canonical frame while nothing in `durability/` _could_.
 
-It is now `delta-log-entry/entry-codec.ts`, imported by the test, so the lock covers the product. It
+It is now `src/Core.TypeScript/delta-log-entry/entry-codec.ts`, imported by the test, so the lock covers the product. It
 also gained the half it never had: a **decoder**. Every prior assertion went encode → hex, or
 hex → decode → **re-encode** → hex — both directions through the encoder — so a decoder could have
 been absent or wrong and the vectors stayed green.

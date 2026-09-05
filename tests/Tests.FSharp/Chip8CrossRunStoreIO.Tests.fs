@@ -33,7 +33,7 @@ let private artifact seed =
     |> ok
 
 let private pathFor (artifact: Chip8CrossRunStore.Artifact) =
-    Path.Combine(root, Chip8CrossRunStore.artifactFileName artifact.Key)
+    ZetaFsPath.combine2 root (Chip8CrossRunStore.artifactFileName artifact.Key)
 
 let private seedFile (fileSystem: InMemoryFileSystem) path bytes =
     fileSystem.Files.[path] <- bytes
@@ -62,7 +62,8 @@ let private cancelAfterReadFileSystem (inner: IFileSystem) (cancelled: Cancellat
         member _.OpenWrite(path, fsync) = inner.OpenWrite(path, fsync)
         member _.OpenRead path = inner.OpenRead path
         member _.GetFiles(path, searchPattern) = inner.GetFiles(path, searchPattern)
-        member _.CreateDirectory path = inner.CreateDirectory path }
+        member _.CreateDirectory path = inner.CreateDirectory path
+        member _.WriteAt(path, offset, src) = inner.WriteAt(path, offset, src) }
 
 [<Fact>]
 let ``IO1 a fully verified directory publishes one exact reader`` () =
@@ -130,7 +131,7 @@ let ``IO4 a valid artifact under a non-canonical filename is refused`` () =
     task {
         let fileSystem = InMemoryFileSystem()
         let stored = artifact 4UL
-        let wrongPath = Path.Combine(root, "0000000000000000.orbit.json")
+        let wrongPath = ZetaFsPath.combine2 root "0000000000000000.orbit.json"
         seedArtifact fileSystem wrongPath stored
 
         let! result =
@@ -149,8 +150,8 @@ let ``IO5 two files for one run key are refused instead of last-writer-wins`` ()
         let fileSystem = InMemoryFileSystem()
         let stored = artifact 5UL
         let fileName = Chip8CrossRunStore.artifactFileName stored.Key
-        let first = Path.Combine(root, "a", fileName)
-        let second = Path.Combine(root, "b", fileName)
+        let first = ZetaFsPath.combine3 root "a" fileName
+        let second = ZetaFsPath.combine3 root "b" fileName
         seedArtifact fileSystem first stored
         seedArtifact fileSystem second stored
 

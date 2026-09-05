@@ -1,3 +1,4 @@
+[<global.Xunit.Collection("ZetaFsAmbientFileSystem")>]
 module Zeta.Tests.ZetaFsFreezeTests
 
 open System
@@ -29,37 +30,89 @@ let private tempStore () =
 let private freezeAsync (volume: ZetaFsFreeze.Volume) id cls =
     ZetaFsFreeze.freezeAsync volume id cls CancellationToken.None
 
+let private assertJournaledCasTrace (stage: string) (fs: InMemoryFileSystem) =
+    let captured = fs :> IFileSystem
+
+    Assert.True(
+        Object.ReferenceEquals(captured, FileSystem.Current),
+        sprintf "ZetaFs CAS trace: provider-changed at %s" stage
+    )
+
+    Assert.True(
+        fs.Files.ContainsKey "/freeze-mem/cas",
+        sprintf "ZetaFs CAS trace: missing-at-%s on the captured provider" stage
+    )
+
+    Assert.True(
+        FileSystem.Current.Exists "/freeze-mem/cas",
+        sprintf "ZetaFs CAS trace: missing-at-%s through FileSystem.Current" stage
+    )
+
 [<Fact>]
 let ``Journaled freeze ContentId matches the mutbuf snapshot, not a later pwrite`` () : Task =
     task {
         ensureHasher ()
-        FileSystem.Register(InMemoryFileSystem())
+        let fs = InMemoryFileSystem()
+        FileSystem.Register fs
         let volume = ZetaFsFreeze.create "/freeze-mem" (ZetaFsMutbuf.create "/freeze-mem" ZetaFsMutbuf.Coherence.Shared) None
 
         try
+            assertJournaledCasTrace "after-create" fs
             let id = mintId ()
             let h = ZetaFsMutbuf.openHandle volume.Mutbuf id
             ZetaFsMutbuf.pwrite volume.Mutbuf h 0L [| 1uy; 2uy; 3uy |] |> ignore
+            assertJournaledCasTrace "before-first-freeze" fs
             let! first = (freezeAsync volume id ZetaFsFreeze.Journaled).AsTask().ConfigureAwait(false)
 
             match first with
             | Error e -> Assert.Fail(ZetaFsFreeze.errorName e)
             | Ok first ->
+                assertJournaledCasTrace "after-first-freeze" fs
                 ZetaFsMutbuf.pwrite volume.Mutbuf h 0L [| 9uy; 9uy; 9uy |] |> ignore
+                assertJournaledCasTrace "before-second-freeze" fs
                 let! second = (freezeAsync volume id ZetaFsFreeze.Journaled).AsTask().ConfigureAwait(false)
 
                 match second with
                 | Error e -> Assert.Fail(ZetaFsFreeze.errorName e)
                 | Ok second ->
+                    assertJournaledCasTrace "after-second-freeze" fs
                     Assert.NotEqual<string>(first.Content.ToHex(), second.Content.ToHex())
                     Assert.Equal(0UL, first.Generation)
                     Assert.Equal(1UL, second.Generation)
                     Assert.True(ZetaFsFreeze.isReadable volume first.Content)
                     Assert.True(ZetaFsFreeze.isReadable volume second.Content)
+                    Assert.True(FileSystem.Current.Exists "/freeze-mem/cas")
+                    Assert.Equal(0, FileSystem.Current.GetFiles("/freeze-mem/objects", "*").Length)
         finally
             ZetaFsFreeze.dispose volume
             FileSystem.Reset()
     }
+
+[<Fact>]
+let ``Journaled block CAS path is specific to the default profile, not the stream control`` () =
+    ensureHasher ()
+    let fs = InMemoryFileSystem()
+    FileSystem.Register fs
+
+    try
+        let defaultVolume =
+            ZetaFsFreeze.create "/freeze-mem" (ZetaFsMutbuf.create "/freeze-mem" ZetaFsMutbuf.Coherence.Shared) None
+
+        try
+            assertJournaledCasTrace "default-profile-create" fs
+        finally
+            ZetaFsFreeze.dispose defaultVolume
+
+        let streamVolume =
+            ZetaFsFreeze.createManualStream "/freeze-stream" (ZetaFsMutbuf.create "/freeze-stream" ZetaFsMutbuf.Coherence.Shared) None
+
+        try
+            Assert.True(Object.ReferenceEquals((fs :> IFileSystem), FileSystem.Current), "ZetaFs CAS trace: provider-changed at stream-control-create")
+            Assert.False(fs.Files.ContainsKey "/freeze-stream/cas", "ZetaFs CAS trace: stream control unexpectedly created a BlockCas path")
+        finally
+            ZetaFsFreeze.dispose streamVolume
+    finally
+        FileSystem.Reset()
 
 [<Fact>]
 let ``Buffered freeze is not POSIX-readable (no freeze-commit)`` () : Task =
@@ -108,7 +161,7 @@ let ``Durable freeze on a real directory fsyncs and is readable`` () : Task =
                 Assert.False(OperatingSystem.IsWindows())
                 Assert.True(ZetaFsFreeze.isReadable volume r.Content)
                 Assert.True(r.CommitLsn > 0L)
-                Assert.True(File.Exists(Path.Combine(store, "log", "freeze")))
+                Assert.True(File.Exists(ZetaFsPath.combine3 store "log" "freeze"))
                 Assert.True(ZetaFsFreeze.logBoatCount volume >= 1)
         finally
             ZetaFsFreeze.dispose volume
@@ -175,7 +228,7 @@ let ``sealed log does not leave freeze-intent ASCII in the clear`` () : Task =
                 | Error e -> Assert.Fail(ZetaFsFreeze.errorName e)
                 | Ok r ->
                     Assert.True(ZetaFsFreeze.isReadable v r.Content)
-                    let logBytes = FileSystem.Current.ReadAllBytes(Path.Combine("/freeze-enc", "log", "freeze"))
+                    let logBytes = FileSystem.Current.ReadAllBytes(ZetaFsPath.combine3 "/freeze-enc" "log" "freeze")
                     let needle = Text.Encoding.UTF8.GetBytes "freeze-intent/1"
                     Assert.Equal(-1, MemoryExtensions.IndexOf(ReadOnlySpan<byte> logBytes, ReadOnlySpan<byte> needle))
         finally
@@ -254,7 +307,7 @@ let ``sealed replay with the wrong vault key recovers nothing and leaves the log
                 match first with
                 | Error e -> Assert.Fail(ZetaFsFreeze.errorName e)
                 | Ok first ->
-                    let logPath = Path.Combine(store, "log", "freeze")
+                    let logPath = ZetaFsPath.combine3 store "log" "freeze"
                     let before = FileSystem.Current.ReadAllBytes logPath
                     ZetaFsFreeze.dispose v
                     volume <- None
@@ -334,12 +387,12 @@ let ``Journaled freeze crash-mid-write leaves a torn log and does not finish`` (
     task {
         ensureHasher ()
         let mock = InMemoryFileSystem()
-        let logNeedle = Path.Combine("log", "freeze")
+        let logNeedle = ZetaFsPath.combine2 "log" "freeze"
         mock.ArmCrashMidWrite(logNeedle, 8)
         FileSystem.Register(mock)
         let store = "/crash-mid-freeze"
         let volume =
-            ZetaFsFreeze.createManual store (ZetaFsMutbuf.create store ZetaFsMutbuf.Coherence.Shared) None
+            ZetaFsFreeze.createManualStream store (ZetaFsMutbuf.create store ZetaFsMutbuf.Coherence.Shared) None
 
         try
             let id = mintId ()
@@ -354,7 +407,7 @@ let ``Journaled freeze crash-mid-write leaves a torn log and does not finish`` (
 
             Assert.Equal(8, ex.CommittedBytes)
             Assert.Equal(1, ZetaFsFreeze.logBoatCount volume)
-            let logPath = Path.Combine(store, "log", "freeze")
+            let logPath = ZetaFsPath.combine3 store "log" "freeze"
             Assert.True(FileSystem.Current.Exists logPath)
             Assert.Equal(8, FileSystem.Current.ReadAllBytes(logPath).Length)
         finally
@@ -401,9 +454,9 @@ let ``reopen after a torn second freeze keeps the first and drops the tail`` () 
         FileSystem.Register(mock)
         let store = "/freeze-replay-torn"
         let mutbuf = ZetaFsMutbuf.create store ZetaFsMutbuf.Coherence.Shared
-        let volume = ZetaFsFreeze.createManual store mutbuf None
-        let logNeedle = Path.Combine("log", "freeze")
-        let logPath = Path.Combine(store, "log", "freeze")
+        let volume = ZetaFsFreeze.createManualStream store mutbuf None
+        let logNeedle = ZetaFsPath.combine2 "log" "freeze"
+        let logPath = ZetaFsPath.combine3 store "log" "freeze"
 
         try
             let id1 = mintId ()
@@ -431,7 +484,7 @@ let ``reopen after a torn second freeze keeps the first and drops the tail`` () 
                 let tornLen = FileSystem.Current.ReadAllBytes(logPath).Length
                 Assert.True(tornLen > intactBytes.Length)
                 ZetaFsFreeze.dispose volume
-                let reopened = ZetaFsFreeze.createManual store mutbuf None
+                let reopened = ZetaFsFreeze.createManualStream store mutbuf None
 
                 try
                     Assert.True(ZetaFsFreeze.isReadable reopened first.Content)
@@ -449,12 +502,12 @@ let ``Journaled freeze that acks with a corrupt last write is not readable after
     task {
         ensureHasher ()
         let mock = InMemoryFileSystem()
-        let logNeedle = Path.Combine("log", "freeze")
+        let logNeedle = ZetaFsPath.combine2 "log" "freeze"
         mock.ArmCorruptLastWrite(logNeedle, 8)
         FileSystem.Register(mock)
         let store = "/corrupt-last-freeze"
         let mutbuf = ZetaFsMutbuf.create store ZetaFsMutbuf.Coherence.Shared
-        let volume = ZetaFsFreeze.createManual store mutbuf None
+        let volume = ZetaFsFreeze.createManualStream store mutbuf None
 
         try
             let id = mintId ()
@@ -469,7 +522,7 @@ let ``Journaled freeze that acks with a corrupt last write is not readable after
             | Ok first ->
                 Assert.True(ZetaFsFreeze.isReadable volume first.Content)
                 ZetaFsFreeze.dispose volume
-                let reopened = ZetaFsFreeze.createManual store mutbuf None
+                let reopened = ZetaFsFreeze.createManualStream store mutbuf None
 
                 try
                     Assert.False(ZetaFsFreeze.isReadable reopened first.Content)
@@ -488,8 +541,8 @@ let ``Journaled freeze crash during leaf put leaves extra garbage and is not rea
         FileSystem.Register(mock)
         let store = "/crash-intent-leaves"
         let mutbuf = ZetaFsMutbuf.create store ZetaFsMutbuf.Coherence.Shared
-        let volume = ZetaFsFreeze.createManual store mutbuf None
-        let logPath = Path.Combine(store, "log", "freeze")
+        let volume = ZetaFsFreeze.createManualStream store mutbuf None
+        let logPath = ZetaFsPath.combine3 store "log" "freeze"
 
         try
             let id = mintId ()
@@ -508,7 +561,7 @@ let ``Journaled freeze crash during leaf put leaves extra garbage and is not rea
             Assert.True(intentLen > 0)
             Assert.Equal(logPath, mock.CommitOrder.[0])
             ZetaFsFreeze.dispose volume
-            let reopened = ZetaFsFreeze.createManual store mutbuf None
+            let reopened = ZetaFsFreeze.createManualStream store mutbuf None
 
             try
                 let recoveredLen = FileSystem.Current.ReadAllBytes(logPath).Length
@@ -528,8 +581,8 @@ let ``reopen after a mid-log CRC mismatch keeps the prefix and drops the suffix`
         FileSystem.Register(mock)
         let store = "/freeze-mid-crc"
         let mutbuf = ZetaFsMutbuf.create store ZetaFsMutbuf.Coherence.Shared
-        let volume = ZetaFsFreeze.createManual store mutbuf None
-        let logPath = Path.Combine(store, "log", "freeze")
+        let volume = ZetaFsFreeze.createManualStream store mutbuf None
+        let logPath = ZetaFsPath.combine3 store "log" "freeze"
 
         try
             let id1 = mintId ()
@@ -561,7 +614,7 @@ let ``reopen after a mid-log CRC mismatch keeps the prefix and drops the suffix`
                     flipped.[prefixLen + 4] <- flipped.[prefixLen + 4] ^^^ 0xA5uy
                     mock.Files.[logPath] <- flipped
                     ZetaFsFreeze.dispose volume
-                    let reopened = ZetaFsFreeze.createManual store mutbuf None
+                    let reopened = ZetaFsFreeze.createManualStream store mutbuf None
 
                     try
                         Assert.True(ZetaFsFreeze.isReadable reopened first.Content)
@@ -586,13 +639,13 @@ let ``reopen after a mid-log sealed MAC mismatch keeps the prefix and drops the 
         let mutbuf = ZetaFsMutbuf.create store ZetaFsMutbuf.Coherence.Shared
         let vault = Array.init 32 (fun i -> byte i)
         let mutable volume: ZetaFsFreeze.Volume option = None
-        let logPath = Path.Combine(store, "log", "freeze")
+        let logPath = ZetaFsPath.combine3 store "log" "freeze"
 
         try
             match ZetaFsCrypto.sessionFromVaultKey 1u vault with
             | Error e -> Assert.Fail(ZetaFsCrypto.errorName e)
             | Ok session ->
-                let v = ZetaFsFreeze.createManualWith store mutbuf None (Some session)
+                let v = ZetaFsFreeze.createManualWithStream store mutbuf None (Some session)
                 volume <- Some v
                 let id1 = mintId ()
                 let h1 = ZetaFsMutbuf.openHandle mutbuf id1
@@ -622,7 +675,7 @@ let ``reopen after a mid-log sealed MAC mismatch keeps the prefix and drops the 
                         mock.Files.[logPath] <- flipped
                         ZetaFsFreeze.dispose v
                         volume <- None
-                        let reopened = ZetaFsFreeze.createManualWith store mutbuf None (Some session)
+                        let reopened = ZetaFsFreeze.createManualWithStream store mutbuf None (Some session)
 
                         try
                             Assert.True(ZetaFsFreeze.isReadable reopened first.Content)
@@ -733,7 +786,7 @@ let ``Journaled freeze CAS objects on IBlockIo are readable and not POSIX files`
             | Ok first ->
                 Assert.True(ZetaFsFreeze.isReadable volume first.Content)
                 Assert.True(cas.Count > 0)
-                Assert.Equal(0, FileSystem.Current.GetFiles(Path.Combine(store, "objects"), "*").Length)
+                Assert.Equal(0, FileSystem.Current.GetFiles(ZetaFsPath.combine2 store "objects", "*").Length)
                 ZetaFsFreeze.dispose volume
                 let reopened = ZetaFsFreeze.createManualWithBlockStore store mutbuf None logDev cas
 
@@ -860,6 +913,50 @@ let ``Journaled freeze CAS superblock reopens from cloned media without the in-m
     }
 
 [<Fact>]
+let ``Journaled freeze ReplayTo two FileSystemBlockIo devices stays readable`` () : Task =
+    task {
+        ensureHasher ()
+        FileSystem.Register(InMemoryFileSystem())
+        let store = "/freeze-replay-two-dev"
+        let mutbuf = ZetaFsMutbuf.create store ZetaFsMutbuf.Coherence.Shared
+        let logDev = SimulatedBlockIo(4096)
+        let objDev = SimulatedBlockIo(4096)
+        let cas = BlockCas(objDev)
+        let volume = ZetaFsFreeze.createManualWithBlockStore store mutbuf None logDev cas
+
+        try
+            let id = mintId ()
+            let h = ZetaFsMutbuf.openHandle volume.Mutbuf id
+            ZetaFsMutbuf.pwrite volume.Mutbuf h 0L [| 1uy; 2uy; 3uy |] |> ignore
+            let pending = (freezeAsync volume id ZetaFsFreeze.Journaled).AsTask()
+            do! (ZetaFsFreeze.pumpLog volume CancellationToken.None).ConfigureAwait(false)
+            let! first = pending.ConfigureAwait(false)
+
+            match first with
+            | Error e -> Assert.Fail(ZetaFsFreeze.errorName e)
+            | Ok first ->
+                Assert.True(cas.Count > 0)
+                Assert.True(logDev.RecordedOps.Length > 0)
+                Assert.True(objDev.RecordedOps.Length > 0)
+                ZetaFsFreeze.dispose volume
+                let fs = FileSystem.Current
+                let logPoly = FileSystemBlockIo(fs, ZetaFsPath.combine2 store "replay-log", 4096)
+                let objPoly = FileSystemBlockIo(fs, ZetaFsPath.combine2 store "replay-cas", 4096)
+                logDev.ReplayTo(logPoly :> IBlockIo)
+                objDev.ReplayTo(objPoly :> IBlockIo)
+                let cas2 = BlockCas(objPoly :> IBlockIo)
+                Assert.True(cas2.Count > 0)
+                let reopened = ZetaFsFreeze.createManualWithHostFileStore store mutbuf None logPoly cas2
+
+                try
+                    Assert.True(ZetaFsFreeze.isReadable reopened first.Content)
+                finally
+                    ZetaFsFreeze.dispose reopened
+        finally
+            FileSystem.Reset()
+    }
+
+[<Fact>]
 let ``Sealed journaled freeze through SimulatedBlockIo is readable after CloneMedia`` () : Task =
     task {
         ensureHasher ()
@@ -976,7 +1073,7 @@ let ``Sealed journaled freeze CAS objects on IBlockIo reopen from cloned media``
                 | Error e -> Assert.Fail(ZetaFsFreeze.errorName e)
                 | Ok first ->
                     Assert.True(cas.Count > 0)
-                    Assert.Equal(0, FileSystem.Current.GetFiles(Path.Combine(store, "objects"), "*").Length)
+                    Assert.Equal(0, FileSystem.Current.GetFiles(ZetaFsPath.combine2 store "objects", "*").Length)
                     let logIo = logDev :> IBlockIo
                     let logBytes = BlockLog.readAt logIo (BlockLog.origin logIo) logDev.LogicalBytes
                     let needle = Text.Encoding.UTF8.GetBytes "freeze-intent/1"
@@ -995,4 +1092,488 @@ let ``Sealed journaled freeze CAS objects on IBlockIo reopen from cloned media``
                         ZetaFsFreeze.dispose reopened
             finally
                 FileSystem.Reset()
+    }
+
+[<Fact>]
+let ``Journaled freeze through FileSystemBlockIo polyfill is readable after reopen`` () : Task =
+    task {
+        ensureHasher ()
+        FileSystem.Register(InMemoryFileSystem())
+        let store = "/freeze-file-blocks"
+        let mutbuf = ZetaFsMutbuf.create store ZetaFsMutbuf.Coherence.Shared
+        let volume = ZetaFsFreeze.createManualWithFileLog store mutbuf None
+
+        try
+            let id = mintId ()
+            let h = ZetaFsMutbuf.openHandle volume.Mutbuf id
+            ZetaFsMutbuf.pwrite volume.Mutbuf h 0L [| 1uy; 2uy; 3uy |] |> ignore
+            let pending = (freezeAsync volume id ZetaFsFreeze.Journaled).AsTask()
+            do! (ZetaFsFreeze.pumpLog volume CancellationToken.None).ConfigureAwait(false)
+            let! first = pending.ConfigureAwait(false)
+
+            match first with
+            | Error e -> Assert.Fail(ZetaFsFreeze.errorName e)
+            | Ok first ->
+                Assert.True(ZetaFsFreeze.isReadable volume first.Content)
+                Assert.True(FileSystem.Current.Exists(ZetaFsPath.combine3 store "log" "freeze"))
+                ZetaFsFreeze.dispose volume
+                let reopened = ZetaFsFreeze.createManualWithFileLog store mutbuf None
+
+                try
+                    Assert.True(ZetaFsFreeze.isReadable reopened first.Content)
+                finally
+                    ZetaFsFreeze.dispose reopened
+        finally
+            FileSystem.Reset()
+    }
+
+[<Fact>]
+let ``Sealed journaled freeze through FileSystemBlockIo is readable after reopen`` () : Task =
+    task {
+        ensureHasher ()
+        FileSystem.Register(InMemoryFileSystem())
+        let store = "/freeze-sealed-file-blocks"
+        let mutbuf = ZetaFsMutbuf.create store ZetaFsMutbuf.Coherence.Shared
+        let vault = Array.init 32 (fun i -> byte i)
+
+        match ZetaFsCrypto.sessionFromVaultKey 1u vault with
+        | Error e -> Assert.Fail(ZetaFsCrypto.errorName e)
+        | Ok session ->
+            let volume = ZetaFsFreeze.createManualWithSealedFileLog store mutbuf None session
+
+            try
+                let id = mintId ()
+                let h = ZetaFsMutbuf.openHandle volume.Mutbuf id
+                ZetaFsMutbuf.pwrite volume.Mutbuf h 0L [| 1uy; 2uy |] |> ignore
+                let pending = (freezeAsync volume id ZetaFsFreeze.Journaled).AsTask()
+                do! (ZetaFsFreeze.pumpLog volume CancellationToken.None).ConfigureAwait(false)
+                let! first = pending.ConfigureAwait(false)
+
+                match first with
+                | Error e -> Assert.Fail(ZetaFsFreeze.errorName e)
+                | Ok first ->
+                    let logBytes = FileSystem.Current.ReadAllBytes(ZetaFsPath.combine3 store "log" "freeze")
+                    let needle = Text.Encoding.UTF8.GetBytes "freeze-intent/1"
+                    Assert.Equal(-1, MemoryExtensions.IndexOf(ReadOnlySpan<byte> logBytes, ReadOnlySpan<byte> needle))
+                    ZetaFsFreeze.dispose volume
+                    let reopened = ZetaFsFreeze.createManualWithSealedFileLog store mutbuf None session
+
+                    try
+                        Assert.True(ZetaFsFreeze.isReadable reopened first.Content)
+                    finally
+                        ZetaFsFreeze.dispose reopened
+            finally
+                FileSystem.Reset()
+    }
+
+[<Fact>]
+let ``Sealed FileSystemBlockIo replay with the wrong vault key recovers nothing and does not truncate`` () : Task =
+    task {
+        ensureHasher ()
+        FileSystem.Register(InMemoryFileSystem())
+        let store = "/freeze-sealed-file-wrong-key"
+        let mutbuf = ZetaFsMutbuf.create store ZetaFsMutbuf.Coherence.Shared
+        let vault = Array.init 32 (fun i -> byte i)
+        let other = Array.init 32 (fun i -> byte (i + 1))
+
+        match ZetaFsCrypto.sessionFromVaultKey 1u vault, ZetaFsCrypto.sessionFromVaultKey 1u other with
+        | Error e, _ -> Assert.Fail(ZetaFsCrypto.errorName e)
+        | _, Error e -> Assert.Fail(ZetaFsCrypto.errorName e)
+        | Ok session, Ok otherSession ->
+            let volume = ZetaFsFreeze.createManualWithSealedFileLog store mutbuf None session
+
+            try
+                let id = mintId ()
+                let h = ZetaFsMutbuf.openHandle volume.Mutbuf id
+                ZetaFsMutbuf.pwrite volume.Mutbuf h 0L [| 9uy |] |> ignore
+                let pending = (freezeAsync volume id ZetaFsFreeze.Journaled).AsTask()
+                do! (ZetaFsFreeze.pumpLog volume CancellationToken.None).ConfigureAwait(false)
+                let! first = pending.ConfigureAwait(false)
+
+                match first with
+                | Error e -> Assert.Fail(ZetaFsFreeze.errorName e)
+                | Ok first ->
+                    let before = ZetaFsFreeze.logLogicalBytes volume
+                    ZetaFsFreeze.dispose volume
+                    let reopened =
+                        ZetaFsFreeze.createManualWithSealedFileLog store mutbuf None otherSession
+
+                    try
+                        Assert.False(ZetaFsFreeze.isReadable reopened first.Content)
+                        Assert.True((ZetaFsFreeze.logLogicalBytes reopened = before))
+                    finally
+                        ZetaFsFreeze.dispose reopened
+            finally
+                FileSystem.Reset()
+    }
+
+[<Fact>]
+let ``Journaled freeze CAS objects through FileSystemBlockIo reopen and are not POSIX files`` () : Task =
+    task {
+        ensureHasher ()
+        FileSystem.Register(InMemoryFileSystem())
+        let store = "/freeze-file-cas-blocks"
+        let mutbuf = ZetaFsMutbuf.create store ZetaFsMutbuf.Coherence.Shared
+        let volume = ZetaFsFreeze.createManualWithFileBlockStore store mutbuf None
+
+        try
+            let id = mintId ()
+            let h = ZetaFsMutbuf.openHandle volume.Mutbuf id
+            ZetaFsMutbuf.pwrite volume.Mutbuf h 0L [| 1uy; 2uy; 3uy |] |> ignore
+            let pending = (freezeAsync volume id ZetaFsFreeze.Journaled).AsTask()
+            do! (ZetaFsFreeze.pumpLog volume CancellationToken.None).ConfigureAwait(false)
+            let! first = pending.ConfigureAwait(false)
+
+            match first with
+            | Error e -> Assert.Fail(ZetaFsFreeze.errorName e)
+            | Ok first ->
+                Assert.True(ZetaFsFreeze.isReadable volume first.Content)
+                Assert.True(FileSystem.Current.Exists(ZetaFsPath.combine2 store "cas"))
+                Assert.Equal(0, FileSystem.Current.GetFiles(ZetaFsPath.combine2 store "objects", "*").Length)
+                ZetaFsFreeze.dispose volume
+                let reopened = ZetaFsFreeze.createManualWithFileBlockStore store mutbuf None
+
+                try
+                    Assert.True(ZetaFsFreeze.isReadable reopened first.Content)
+                finally
+                    ZetaFsFreeze.dispose reopened
+        finally
+            FileSystem.Reset()
+    }
+
+[<Fact>]
+let ``Sealed journaled freeze CAS through FileSystemBlockIo reopen and are not POSIX files`` () : Task =
+    task {
+        ensureHasher ()
+        FileSystem.Register(InMemoryFileSystem())
+        let store = "/freeze-sealed-file-cas"
+        let mutbuf = ZetaFsMutbuf.create store ZetaFsMutbuf.Coherence.Shared
+        let vault = Array.init 32 (fun i -> byte i)
+
+        match ZetaFsCrypto.sessionFromVaultKey 1u vault with
+        | Error e -> Assert.Fail(ZetaFsCrypto.errorName e)
+        | Ok session ->
+            let volume =
+                ZetaFsFreeze.createManualWithSealedFileBlockStore store mutbuf None session
+
+            try
+                let id = mintId ()
+                let h = ZetaFsMutbuf.openHandle volume.Mutbuf id
+                ZetaFsMutbuf.pwrite volume.Mutbuf h 0L [| 1uy; 2uy; 3uy |] |> ignore
+                let pending = (freezeAsync volume id ZetaFsFreeze.Journaled).AsTask()
+                do! (ZetaFsFreeze.pumpLog volume CancellationToken.None).ConfigureAwait(false)
+                let! first = pending.ConfigureAwait(false)
+
+                match first with
+                | Error e -> Assert.Fail(ZetaFsFreeze.errorName e)
+                | Ok first ->
+                    Assert.True(ZetaFsFreeze.isReadable volume first.Content)
+                    Assert.True(FileSystem.Current.Exists(ZetaFsPath.combine2 store "cas"))
+                    Assert.Equal(0, FileSystem.Current.GetFiles(ZetaFsPath.combine2 store "objects", "*").Length)
+                    let logBytes = FileSystem.Current.ReadAllBytes(ZetaFsPath.combine3 store "log" "freeze")
+                    let needle = Text.Encoding.UTF8.GetBytes "freeze-intent/1"
+                    Assert.Equal(-1, MemoryExtensions.IndexOf(ReadOnlySpan<byte> logBytes, ReadOnlySpan<byte> needle))
+                    ZetaFsFreeze.dispose volume
+                    let reopened =
+                        ZetaFsFreeze.createManualWithSealedFileBlockStore store mutbuf None session
+
+                    try
+                        Assert.True(ZetaFsFreeze.isReadable reopened first.Content)
+                    finally
+                        ZetaFsFreeze.dispose reopened
+            finally
+                FileSystem.Reset()
+    }
+
+[<Fact>]
+let ``Polyfill crash-mid-write on the second freeze keeps the first`` () : Task =
+    task {
+        ensureHasher ()
+        let mock = InMemoryFileSystem()
+        FileSystem.Register(mock)
+        let store = "/freeze-polyfill-crash-prefix"
+        let mutbuf = ZetaFsMutbuf.create store ZetaFsMutbuf.Coherence.Shared
+        let volume = ZetaFsFreeze.createManual store mutbuf None
+        let logNeedle = ZetaFsPath.combine2 "log" "freeze"
+
+        try
+            let id1 = mintId ()
+            let h1 = ZetaFsMutbuf.openHandle volume.Mutbuf id1
+            ZetaFsMutbuf.pwrite volume.Mutbuf h1 0L [| 1uy |] |> ignore
+            let pending1 = (freezeAsync volume id1 ZetaFsFreeze.Journaled).AsTask()
+            do! (ZetaFsFreeze.pumpLog volume CancellationToken.None).ConfigureAwait(false)
+            let! first = pending1.ConfigureAwait(false)
+
+            match first with
+            | Error e -> Assert.Fail(ZetaFsFreeze.errorName e)
+            | Ok first ->
+                mock.ArmCrashMidWrite(logNeedle, 8)
+                let id2 = mintId ()
+                let h2 = ZetaFsMutbuf.openHandle volume.Mutbuf id2
+                ZetaFsMutbuf.pwrite volume.Mutbuf h2 0L [| 2uy |] |> ignore
+                let pending2 = (freezeAsync volume id2 ZetaFsFreeze.Journaled).AsTask()
+                do! (ZetaFsFreeze.pumpLog volume CancellationToken.None).ConfigureAwait(false)
+                let! _ =
+                    Assert
+                        .ThrowsAsync<CrashMidWriteException>(fun () -> pending2 :> Task)
+                        .ConfigureAwait(false)
+
+                ZetaFsFreeze.dispose volume
+                let reopened = ZetaFsFreeze.createManual store mutbuf None
+
+                try
+                    Assert.True(ZetaFsFreeze.isReadable reopened first.Content)
+                finally
+                    ZetaFsFreeze.dispose reopened
+        finally
+            FileSystem.Reset()
+    }
+
+[<Fact>]
+let ``Polyfill corrupt-last-write on the second freeze acks and keeps the first`` () : Task =
+    task {
+        ensureHasher ()
+        let mock = InMemoryFileSystem()
+        FileSystem.Register(mock)
+        let store = "/freeze-polyfill-corrupt-prefix"
+        let mutbuf = ZetaFsMutbuf.create store ZetaFsMutbuf.Coherence.Shared
+        let volume = ZetaFsFreeze.createManual store mutbuf None
+        let logNeedle = ZetaFsPath.combine2 "log" "freeze"
+
+        try
+            let id1 = mintId ()
+            let h1 = ZetaFsMutbuf.openHandle volume.Mutbuf id1
+            ZetaFsMutbuf.pwrite volume.Mutbuf h1 0L [| 1uy |] |> ignore
+            let pending1 = (freezeAsync volume id1 ZetaFsFreeze.Journaled).AsTask()
+            do! (ZetaFsFreeze.pumpLog volume CancellationToken.None).ConfigureAwait(false)
+            let! first = pending1.ConfigureAwait(false)
+
+            match first with
+            | Error e -> Assert.Fail(ZetaFsFreeze.errorName e)
+            | Ok first ->
+                mock.ArmCorruptLastWrite(logNeedle, 8)
+                let id2 = mintId ()
+                let h2 = ZetaFsMutbuf.openHandle volume.Mutbuf id2
+                ZetaFsMutbuf.pwrite volume.Mutbuf h2 0L [| 2uy |] |> ignore
+                let pending2 = (freezeAsync volume id2 ZetaFsFreeze.Journaled).AsTask()
+                do! (ZetaFsFreeze.pumpLog volume CancellationToken.None).ConfigureAwait(false)
+                let! second = pending2.ConfigureAwait(false)
+
+                match second with
+                | Error e -> Assert.Fail(ZetaFsFreeze.errorName e)
+                | Ok _ ->
+                    Assert.True(ZetaFsFreeze.isReadable volume first.Content)
+                    ZetaFsFreeze.dispose volume
+                    let reopened = ZetaFsFreeze.createManual store mutbuf None
+
+                    try
+                        Assert.True(ZetaFsFreeze.isReadable reopened first.Content)
+                    finally
+                        ZetaFsFreeze.dispose reopened
+        finally
+            FileSystem.Reset()
+    }
+
+[<Fact>]
+let ``Polyfill reorder of the second freeze completes and keeps the first`` () : Task =
+    task {
+        ensureHasher ()
+        let mock = InMemoryFileSystem()
+        FileSystem.Register(mock)
+        let store = "/freeze-polyfill-reorder-prefix"
+        let mutbuf = ZetaFsMutbuf.create store ZetaFsMutbuf.Coherence.Shared
+        let volume = ZetaFsFreeze.createManual store mutbuf None
+        let logNeedle = ZetaFsPath.combine2 "log" "freeze"
+
+        try
+            let id1 = mintId ()
+            let h1 = ZetaFsMutbuf.openHandle volume.Mutbuf id1
+            ZetaFsMutbuf.pwrite volume.Mutbuf h1 0L [| 1uy |] |> ignore
+            let pending1 = (freezeAsync volume id1 ZetaFsFreeze.Journaled).AsTask()
+            do! (ZetaFsFreeze.pumpLog volume CancellationToken.None).ConfigureAwait(false)
+            let! first = pending1.ConfigureAwait(false)
+
+            match first with
+            | Error e -> Assert.Fail(ZetaFsFreeze.errorName e)
+            | Ok first ->
+                mock.ArmReorderNextTwo logNeedle
+                let id2 = mintId ()
+                let h2 = ZetaFsMutbuf.openHandle volume.Mutbuf id2
+                ZetaFsMutbuf.pwrite volume.Mutbuf h2 0L [| 2uy |] |> ignore
+                let pending2 = (freezeAsync volume id2 ZetaFsFreeze.Journaled).AsTask()
+                do! (ZetaFsFreeze.pumpLog volume CancellationToken.None).ConfigureAwait(false)
+                let! second = pending2.ConfigureAwait(false)
+
+                match second with
+                | Error e -> Assert.Fail(ZetaFsFreeze.errorName e)
+                | Ok _ ->
+                    Assert.True(ZetaFsFreeze.isReadable volume first.Content)
+                    ZetaFsFreeze.dispose volume
+                    let reopened = ZetaFsFreeze.createManual store mutbuf None
+
+                    try
+                        Assert.True(ZetaFsFreeze.isReadable reopened first.Content)
+                    finally
+                        ZetaFsFreeze.dispose reopened
+        finally
+            FileSystem.Reset()
+    }
+
+[<Fact>]
+let ``Polyfill torn-sector on the second freeze acks and keeps the first`` () : Task =
+    task {
+        ensureHasher ()
+        let mock = InMemoryFileSystem()
+        FileSystem.Register(mock)
+        let store = "/freeze-polyfill-torn-prefix"
+        let mutbuf = ZetaFsMutbuf.create store ZetaFsMutbuf.Coherence.Shared
+        let volume = ZetaFsFreeze.createManual store mutbuf None
+        let logNeedle = ZetaFsPath.combine2 "log" "freeze"
+
+        try
+            let id1 = mintId ()
+            let h1 = ZetaFsMutbuf.openHandle volume.Mutbuf id1
+            ZetaFsMutbuf.pwrite volume.Mutbuf h1 0L [| 1uy |] |> ignore
+            let pending1 = (freezeAsync volume id1 ZetaFsFreeze.Journaled).AsTask()
+            do! (ZetaFsFreeze.pumpLog volume CancellationToken.None).ConfigureAwait(false)
+            let! first = pending1.ConfigureAwait(false)
+
+            match first with
+            | Error e -> Assert.Fail(ZetaFsFreeze.errorName e)
+            | Ok first ->
+                mock.ArmTornSector(logNeedle, 512)
+                let id2 = mintId ()
+                let h2 = ZetaFsMutbuf.openHandle volume.Mutbuf id2
+                ZetaFsMutbuf.pwrite volume.Mutbuf h2 0L [| 2uy |] |> ignore
+                let pending2 = (freezeAsync volume id2 ZetaFsFreeze.Journaled).AsTask()
+                do! (ZetaFsFreeze.pumpLog volume CancellationToken.None).ConfigureAwait(false)
+                let! second = pending2.ConfigureAwait(false)
+
+                match second with
+                | Error e -> Assert.Fail(ZetaFsFreeze.errorName e)
+                | Ok _ ->
+                    Assert.True(ZetaFsFreeze.isReadable volume first.Content)
+                    ZetaFsFreeze.dispose volume
+                    let reopened = ZetaFsFreeze.createManual store mutbuf None
+
+                    try
+                        Assert.True(ZetaFsFreeze.isReadable reopened first.Content)
+                    finally
+                        ZetaFsFreeze.dispose reopened
+        finally
+            FileSystem.Reset()
+    }
+
+[<Fact>]
+let ``POSIX freeze of the same ContentId does not rewrite object bits`` () : Task =
+    task {
+        ensureHasher ()
+        let mock = InMemoryFileSystem()
+        FileSystem.Register(mock)
+        let store = "/freeze-posix-skip"
+        let mutbuf = ZetaFsMutbuf.create store ZetaFsMutbuf.Coherence.Shared
+        let volume = ZetaFsFreeze.createManualStream store mutbuf None
+
+        try
+            let id = mintId ()
+            let h = ZetaFsMutbuf.openHandle volume.Mutbuf id
+            ZetaFsMutbuf.pwrite volume.Mutbuf h 0L [| 1uy; 2uy; 3uy |] |> ignore
+            let pending1 = (freezeAsync volume id ZetaFsFreeze.Journaled).AsTask()
+            do! (ZetaFsFreeze.pumpLog volume CancellationToken.None).ConfigureAwait(false)
+            let! first = pending1.ConfigureAwait(false)
+
+            match first with
+            | Error e -> Assert.Fail(ZetaFsFreeze.errorName e)
+            | Ok first ->
+                let objectWrites () =
+                    mock.CommitOrder
+                    |> Array.filter (fun p -> p.IndexOf("objects", StringComparison.Ordinal) >= 0)
+
+                let afterFirst = objectWrites().Length
+                Assert.True(afterFirst > 0)
+                let pending2 = (freezeAsync volume id ZetaFsFreeze.Journaled).AsTask()
+                do! (ZetaFsFreeze.pumpLog volume CancellationToken.None).ConfigureAwait(false)
+                let! second = pending2.ConfigureAwait(false)
+
+                match second with
+                | Error e -> Assert.Fail(ZetaFsFreeze.errorName e)
+                | Ok second ->
+                    Assert.Equal(first.Content.ToHex(), second.Content.ToHex())
+                    // Re-freezing the identical ContentId must add zero new object
+                    // writes: the second freeze is a no-op on object bits. Compare the
+                    // post-second-freeze count against the count captured after the
+                    // first freeze; the delta rides the claim so the check can fail.
+                    let afterSecond = objectWrites().Length
+                    Assert.Equal(0, afterSecond - afterFirst)
+                    Assert.True(ZetaFsFreeze.isReadable volume first.Content)
+                    Assert.True(ZetaFsFreeze.isReadable volume second.Content)
+        finally
+            ZetaFsFreeze.dispose volume
+            FileSystem.Reset()
+    }
+
+[<Fact>]
+let ``reclaim crash-mid-sweep of extra garbage keeps a committed freeze readable`` () : Task =
+    task {
+        ensureHasher ()
+        let mock = InMemoryFileSystem()
+        FileSystem.Register(mock)
+        let store = "/freeze-reclaim-crash"
+        let mutbuf = ZetaFsMutbuf.create store ZetaFsMutbuf.Coherence.Shared
+        let volume = ZetaFsFreeze.createManualStream store mutbuf None
+        let dummy (n: byte) : ContentHash256 =
+            { Raw = Array.init 32 (fun i -> if i = 0 then n else 0uy) }
+
+        try
+            let id = mintId ()
+            let h = ZetaFsMutbuf.openHandle volume.Mutbuf id
+            ZetaFsMutbuf.pwrite volume.Mutbuf h 0L [| 1uy; 2uy; 3uy |] |> ignore
+            let pending = (freezeAsync volume id ZetaFsFreeze.Journaled).AsTask()
+            do! (ZetaFsFreeze.pumpLog volume CancellationToken.None).ConfigureAwait(false)
+            let! first = pending.ConfigureAwait(false)
+
+            match first with
+            | Error e -> Assert.Fail(ZetaFsFreeze.errorName e)
+            | Ok first ->
+                let live =
+                    FileSystem.Current.GetFiles(ZetaFsPath.combine2 store "objects", "*")
+
+                Assert.True(live.Length > 0)
+                let g1 = ZetaFsPath.combine2 store "g1"
+                let g2 = ZetaFsPath.combine2 store "g2"
+                let journal = ZetaFsPath.combine2 store "sweep.journal"
+                FileSystemIo.writeAllBytes FileSystem.Current g1 [| 9uy |]
+                FileSystemIo.writeAllBytes FileSystem.Current g2 [| 8uy |]
+                mock.ArmCrashOnDelete "g1"
+                let ex =
+                    Assert.Throws<CrashMidSweepException>(fun () ->
+                        ZetaFsReclaim.applyWithJournal
+                            FileSystem.Current
+                            journal
+                            [| dummy 1uy, g1; dummy 2uy, g2 |]
+                            { Bytes = 100UL; Count = 10 }
+                        |> ignore)
+
+                Assert.Equal(g1, ex.Path)
+                Assert.False(FileSystem.Current.Exists g1)
+                Assert.True(FileSystem.Current.Exists g2)
+                Assert.True(FileSystem.Current.Exists journal)
+                Assert.True(ZetaFsFreeze.isReadable volume first.Content)
+                let n =
+                    ZetaFsReclaim.applyWithJournal
+                        FileSystem.Current
+                        journal
+                        [||]
+                        { Bytes = 100UL; Count = 10 }
+
+                Assert.Equal(1, n)
+                Assert.False(FileSystem.Current.Exists g2)
+                Assert.False(FileSystem.Current.Exists journal)
+                Assert.True(ZetaFsFreeze.isReadable volume first.Content)
+
+                for p in live do
+                    Assert.True(FileSystem.Current.Exists p)
+        finally
+            ZetaFsFreeze.dispose volume
+            FileSystem.Reset()
     }

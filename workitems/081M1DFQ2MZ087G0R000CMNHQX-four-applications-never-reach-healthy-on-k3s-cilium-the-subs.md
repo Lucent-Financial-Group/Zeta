@@ -29,10 +29,11 @@ composes_with: []
 - Do not re-lift k3d `--scope included`. The lift condition is these four
   understood, not another green smoke.
 - Cilium helm-install follows the Application `targetRevision` (currently
-  `1.20.1`, via `shippedCiliumChartVersion()`). Do not bump
-  `cilium-install.yaml` (still `1.16.5`, metal first-boot) in this item:
-  Cilium forbids skipping minors on an in-place upgrade, and matching the two
-  pins is a different job.
+  `1.20.1`, via `shippedCiliumChartVersion()`). The bootstrap HelmChart
+  matched that pin on 2026-09-04: there is no live cluster, so first-boot
+  may jump (Cilium still forbids skip-minor on an in-place upgrade). Aaron
+  2026-09-04: "we don't have any live clusters yet so we can be on latest
+  from the start." Do not invent helm values in this item.
 
 ## What was measured
 
@@ -348,6 +349,542 @@ residuals `mimir` (`081M1FG1RCW`) and `arc-controller`. Do not invent a
 Cilium values tweak. Do not re-lift k3d `--scope included`. Do not
 dispatch another competing Cilium included probe.
 
+## MEASURED 2026-09-03 — k3d included lift 33429761222 is a cascade, not four independent defects
+
+Source: [run 33429761222](https://github.com/Lucent-Financial-Group/Zeta/actions/runs/33429761222)
+(`feat(k8s): lift the k3d lane from smoke to included`, job `99614682092`
+`live k3d ArgoCD health`, 2026-08-31). Revert was #16218. This is a
+**diagnostic dump of that already-run included lift**, not another
+included proof.
+
+**`failure.detail` at included:**
+
+    cert-manager           Unknown   Progressing
+    openziti-controller    Unknown   Degraded
+    spire                  Synced   Progressing
+    trust-manager          Synced   Degraded
+    vault                  Unknown   Progressing
+
+**Runtime (the dump):**
+
+- **cert-manager controller CrashLoopBackOff** (17 restarts):
+  `the Gateway API CRDs do not seem to be present, but ExperimentalGatewayAPISupport is set to true`.
+- **trust-manager** ContainerCreating 40m: `FailedMount` secret
+  `trust-manager-tls` not found (cert-manager never issued it).
+- **openziti** Init:0/1: `FailedMount` ConfigMap
+  `ziti-controller-ctrl-plane-cas` missing; secrets
+  `ziti-controller-ctrl-plane-client-identity-secret`,
+  `ziti-controller-web-identity-secret`,
+  `ziti-controller-ctrl-plane-identity-secret` missing.
+- **spire-agent** CrashLoop: `lookup spire-server.spire on 10.43.0.10:53: dial udp 10.43.0.10:53: i/o timeout`.
+  Server + SPIFFE CSI Running. **Separate** from cert-manager (CoreDNS/UDP
+  to cluster DNS). Do not invent a Cilium `routingMode` tweak from it.
+- **vault-0** 0/1 Running (not Ready). Not fully dumped.
+
+**Lead for trust-manager / ziti (and likely vault certs):** k3d bring-up
+**did not apply Gateway API CRDs**. Metal does (`k3s-server.nix`
+`aa-gateway-api-crds` first). Kindnetd applies remote
+`gateway-api` v1.2.0. Kind `--cni cilium` applies vendored
+`full-ai-cluster/k8s/bootstrap/gateway-api-crds.yaml`. k3d skipped all of
+that. The kindnetd log line even said `"kind/k3d"` while the call was
+**only** on the kindnetd branch.
+
+Three of the four (openziti, trust-manager, and the cert-manager smoke
+anchor that feeds them) are **one cascade**. spire-agent DNS i/o timeout
+is a **second k3s/k3d class**. Do not collapse it into Gateway API.
+
+**Distinguishing table (the useful artifact):**
+
+| Substrate | The four |
+|---|---|
+| kindnetd | Healthy |
+| kind+Cilium | Healthy |
+| k3d (k3s+Cilium) | Degraded / Progressing |
+
+Isolates to **k3s vs k3d**, not Cilium. Next software is k3d bring-up
+applying the **vendored** metal bundle (same file, never the GitHub
+remote — CI already RST'd `helm.cilium.io`). That is matching metal
+first-boot order. It is **not** a Cilium values tweak and **not** a
+k3d included re-lift.
+
+**Split (AceHack + Otto, 2026-09-03):** Otto takes mimir (`081M1FG1RCW`).
+Riven keeps this item. Hardware/USB stays Riven by default. Ownership of
+a loop, not a wall. Otto's mimir note (do not steal): static path is
+coherent; strongest live lead is Kafka ingest
+(`docker.io/apache/kafka-native:4.1.0`), look there before S3.
+Seaweedfs 4.33 was fail-open with zero identities; 4.45 made auth real;
+consumers already carry matching credentials, so that is not the break.
+
+## MEASURED 2026-09-03 — live-k3d smoke with vendored CRDs (run 33739778288)
+
+Job `100600115401` on SHA `d83e0b643` **succeeded**. This is the
+diagnostic, not a re-lift.
+
+**Gateway API CRDs present** (bring-up applied the vendored bundle;
+dump is not NONE):
+
+    gatewayclasses.gateway.networking.k8s.io
+    gateways.gateway.networking.k8s.io
+    grpcroutes.gateway.networking.k8s.io
+    httproutes.gateway.networking.k8s.io
+    referencegrants.gateway.networking.k8s.io
+
+**cert-manager cascade is broken.** Contrast 33429761222 (17
+CrashLoopBackOff restarts, no TLS):
+
+    cert-manager Application   Synced   Healthy
+    cert-manager-* pods        1/1 Running, RESTARTS=0
+    trust-manager pod         1/1 Running, RESTARTS=0
+    CertificateIssued         certificaterequest/trust-manager-1
+                              "Certificate fetched from issuer successfully"
+
+**The four at dump (smoke does not wait for them; NOT FOUND/Missing is
+honest at T+~60s of cert-manager):**
+
+    openziti-controller   OutOfSync   Missing
+    trust-manager         OutOfSync  Missing   (pod already 1/1 Running)
+    spire                 Synced      Progressing
+    vault                 Synced      Progressing   (vault-0 0/1 Running)
+
+**spire-agent is the remaining second class, live:** `spire-agent-fhvdt`
+0/1 Running, 2 restarts, hostNetwork IP `172.18.0.2`. Server + SPIFFE CSI
+2/2. `-l app=spire-agent` printed no logs (label miss); the restart count
+is the measurement. Do not invent a Cilium `routingMode` tweak. Do not
+re-lift `--scope included` because smoke went green.
+
+**Sibling on the same run:** `live kind included` failed
+`ApplicationUnhealthy` with `failure.detail` **only** `mimir`
+Unknown/Degraded. Otto `081M1FG1RCW`. This change did not leak onto
+kindnetd. `live kind Cilium CNI` succeeded. Probe stayed skipped.
+
+## Chart fact (2026-09-03) — the dump's `-l app=spire-agent` cannot see the agent
+
+spire-agent 0.24.2 `daemonset.yaml` **hardcodes** (not a values key, so
+the Application cannot turn it off):
+
+    hostNetwork: true
+    dnsPolicy: ClusterFirstWithHostNet
+
+Selector labels, MEASURED on live-k3d 33751425785 (not the helper's
+`.Chart.Name`):
+
+    app.kubernetes.io/name: agent
+    app.kubernetes.io/instance: spire
+    app.kubernetes.io/component: default
+
+DaemonSet name is `spire-agent`. There is no `app=spire-agent` label.
+That is why smoke 33739778288 printed an empty log block while the pod
+was 0/1 with 2 restarts. The dump now logs `daemonset/spire-agent`.
+
+## MEASURED 2026-09-03 — live-k3d smoke 33751425785, dump can see the agent
+
+Job `100636645454` on SHA `d81e93441` (PR #16501)
+[run 33751425785](https://github.com/Lucent-Financial-Group/Zeta/actions/runs/33751425785)
+**succeeded**. Dump is no longer empty.
+
+**The four at dump (smoke, T+~42s of the agent):**
+
+    openziti-controller   OutOfSync   Missing
+    trust-manager          OutOfSync  Progressing
+    spire                  Synced     Progressing
+    vault                  Synced      Progressing
+
+**spire-agent CrashLoop, and it is NOT the DNS timeout yet:**
+
+    could not parse trust bundle: open /run/spire/bundle/bundle.crt: no such file or directory
+
+Both current and `--previous` logs are that one line. hostNetwork=true,
+dnsPolicy=ClusterFirstWithHostNet, host IP `172.18.0.2`.
+
+**Why the bundle is missing:** `spire-server-0` is **0/2 Pending**.
+PVC `spire-data-spire-server-0` is still
+`ExternalProvisioning` on `rancher.io/local-path` (helper-pod
+ContainerCreating). The server writes `bundle.crt` into the ConfigMap
+at runtime. No server → empty mount → agent CrashLoop. This is the
+startup race smoke always sees. It is **not** the included-class
+`lookup spire-server.spire on 10.43.0.10:53: i/o timeout` from
+33429761222, where server + CSI were already Running.
+
+**kube-dns is programmed:** ClusterIP `10.43.0.10`, endpoints
+`10.143.0.41` (cluster-pool). `cilium-dbg service list` was grepped
+with stderr discarded and printed nothing — next dump prints the
+list without swallowing exec failure.
+
+## MEASURED 2026-09-03 — live-k3d smoke 33754516236, bundle ConfigMap is empty
+
+Job `100646643214` on SHA `fe51920bc` (PR #16504)
+[run 33754516236](https://github.com/Lucent-Financial-Group/Zeta/actions/runs/33754516236)
+**succeeded**. Same crash, now with PVC + ConfigMaps:
+
+    persistentvolumeclaim/spire-data-spire-server-0   Pending   zeta-local-path
+    configmap/spire-bundle                             DATA 0
+
+The ConfigMap exists and is mounted. It has **zero keys**. That is why
+the agent can start and still fail `open /run/spire/bundle/bundle.crt`.
+`cilium-dbg service list` failed `container not found ("cilium-agent")`
+— Cilium Application was still Progressing; dump now prints the Cilium
+DaemonSet/pods on that failure. kube-dns ClusterIP `10.43.0.10`,
+endpoints `10.143.0.138` (cluster-pool).
+
+Do not invent a Cilium values tweak. Do not re-lift `--scope included`.
+The included-class DNS timeout is still the remaining second class
+**after** the server writes the bundle. Smoke cannot see it while
+the PVC is still provisioning.
+
+## MEASURED 2026-09-03 — k3d skipped metal's `control-plane` hosts + SAN, and never waited for nodes Ready
+
+Smoke 33754516236 dump, T+~47s of catalog:
+
+- kube-dns already had cluster-pool IP `10.143.0.138` (CNI assigned once)
+- cert-manager, trust-manager, SPIFFE CSI: ContainerCreating, no pod IP
+- `cilium-dbg` failed `container not found ("cilium-agent")`
+- PVC `spire-data-spire-server-0` still Pending
+
+That is not "Cilium never installed". Helm `--wait` is Cilium pods.
+k3d create is `wait: false` because there is no CNI yet. kind `--cni
+cilium` then calls `waitForAllNodesReady(180)`. k3d did not.
+
+Separately, metal `k3s-server.nix` maps `control-plane -> 127.0.0.1` on
+the founder and `--tls-san=control-plane` so Cilium can dial the
+Application's `k8sServiceHost: control-plane`. k3d skipped both (the
+same class as skipping Gateway API CRDs). Helm deltas the host to the
+Docker DNS name; ArgoCD's cilium Application wants the metal name back.
+
+Next software is matching those metal first-boot facts, **not** a
+Cilium values tweak and **not** an included re-lift. The CI profile
+(agents: 0) may `hostAliases` 127.0.0.1 on every node it creates. The
+local three-node profile must SAN the cert and write founder hosts on
+the server container only — the same mapping on an agent is the
+joining-node defect `k3s-server.nix` refuses.
+
+## MEASURED 2026-09-03 — live-k3d smoke 33771284753 after control-plane hosts + nodes Ready (PR #16508)
+
+Job `100702922886` on SHA `3dde8ce4f`
+[run 33771284753](https://github.com/Lucent-Financial-Group/Zeta/actions/runs/33771284753)
+**succeeded** at smoke scope. Bring-up logged `Mapping control-plane ->
+127.0.0.1` and `Waiting for nodes Ready now that Cilium is the CNI`.
+
+**Dump contrast (same ~T+110s class as 33754516236):**
+
+| Signal | 33754516236 (before) | 33771284753 (after) |
+|---|---|---|
+| cert-manager | ContainerCreating | 1/1 Running, RESTARTS=0 |
+| trust-manager | ContainerCreating | Synced/Healthy |
+| spire-server-0 | 0/2 Pending | 2/2 Running |
+| spire-bundle | DATA 0 | `bundle.crt` present |
+| cilium-dbg kube-dns | container not found | `10.43.0.10` => `10.143.0.177` active |
+| spire-agent crash | missing `bundle.crt` | DNS i/o timeout to `spire-server.spire` |
+
+The startup race (empty bundle while PVC Pending / Cilium Progressing)
+is **closed** on smoke. The **second class** (hostNetwork agent
+`lookup spire-server.spire on 10.43.0.10:53: dial udp 10.43.0.10:53:
+i/o timeout`) is **visible again** once the server runs — same line as
+included dump 33429761222. Do not collapse the two. Do not invent
+Cilium values. Do not re-lift `--scope included`.
+
+Sibling on the same run: `live kind included` failed only on mimir
+Synced/Degraded + agent-memory OutOfSync/Missing — Otto `081M1FG1RCW`,
+not this PR. `gate (required)` green. #16508 squash `183322698` is on
+`main`.
+
+## Next dump — hostNetwork TCP ClusterIP distinguisher
+
+PR #16508 (bring-up: metal `control-plane` hosts + SAN + nodes Ready) made
+the second class visible on smoke: server Running, `bundle.crt` present,
+agent `lookup spire-server.spire on 10.43.0.10:53: i/o timeout`.
+
+The live-k3d dump now probes TCP ClusterIP from the k3d node (same netns
+as hostNetwork spire-agent):
+
+- TCP OPEN + DNS timeout => chart `hostAliases` is next software.
+- TCP FAIL => not DNS-only; do not invent Cilium values.
+
+## MEASURED 2026-09-03 — live-k3d 33781233753: TCP ClusterIP FAIL after bundle.crt (PR #16519)
+
+Job `100736414774` on SHA `6822fb1f6`
+[run 33781233753](https://github.com/Lucent-Financial-Group/Zeta/actions/runs/33781233753)
+**succeeded** at smoke. Bring-up logged `Mapping control-plane -> 127.0.0.1`
+and `Waiting for nodes Ready`. This is the distinguisher, not the
+pre-rebase dump on `d70198f3b` (server Pending / missing `bundle.crt`).
+
+| Signal | Value |
+|---|---|
+| cert-manager | 1/1 Running, RESTARTS=0 |
+| spire-server-0 | 2/2 Running, pod IP `10.143.0.44` |
+| PVC | Bound |
+| spire-bundle | `bundle.crt` present |
+| spire-agent | CrashLoop, `lookup spire-server.spire on 10.43.0.10:53: dial udp 10.43.0.10:53: i/o timeout` |
+| TCP kube-dns `10.43.0.10:53` (busybox hostNetwork) | **FAIL** |
+| TCP spire-server ClusterIP `:443` (busybox hostNetwork) | **FAIL** |
+| UDP nslookup from k3d node | FAIL |
+
+k3s node has neither busybox `nc` nor python3 (`NO_TOOL`); the
+measurement is the busybox `hostNetwork: true` fallback.
+
+**hostAliases to ClusterIP is not next software.** TCP to ClusterIP
+fails from the same netns as the agent. Do not invent Cilium values.
+Do not re-lift `--scope included`. Next measured step is TCP to the
+**pod IP** (`10.143.0.44`) from hostNetwork: OPEN isolates ClusterIP
+translation; FAIL means hostNetwork cannot reach the overlay either.
+
+## MEASURED 2026-09-03 — live-k3d 33800779819: hostNetwork ClusterIP FAIL, pod IP OPEN (PR #16526)
+
+Job `100800757935` on SHA `711ce22ee`
+[run 33800779819](https://github.com/Lucent-Financial-Group/Zeta/actions/runs/33800779819)
+**succeeded** at smoke. Server 2/2 Running, `bundle.crt` present,
+Cilium service list had ClusterIP backends **active**. This is the
+pod-IP distinguisher, not a startup-race dump.
+
+| Netns | kube-dns ClusterIP `:53` | kube-dns pod `:53` | spire-server ClusterIP `:443` | spire-server pod `:8081` |
+|---|---|---|---|---|
+| hostNetwork | **FAIL** | **OPEN** | **FAIL** | **OPEN** |
+| pod-network | **OPEN** | **OPEN** | **OPEN** | **OPEN** |
+
+| Signal | Value |
+|---|---|
+| cert-manager | 1/1 Running, RESTARTS=0 |
+| spire-server-0 | 2/2 Running, pod IP `10.143.0.70` |
+| PVC | Bound |
+| spire-bundle | `bundle.crt` present |
+| cilium-dbg kube-dns | `10.43.0.10:53` → `10.143.0.147:53` (active) |
+| cilium-dbg spire-server | `10.43.130.76:443` → `10.143.0.70:8081` (active) |
+| klipper | `svclb-cilium-ingress` 2/2 Running; `svclb-weaviate` Pending |
+
+Overlay from hostNetwork works. ClusterIP translation from hostNetwork
+does not. Pod-network ClusterIP works. kind+Cilium is Healthy on the
+**same** shipped helm values (only `k8sServiceHost` differs). Metal
+`k3s-server.nix` passes `--disable=servicelb`; k3d did not, and the
+dump shows klipper running.
+
+**hostAliases to ClusterIP stays closed.** **Do not invent Cilium
+values** (`socketLB`, `routingMode`, chart bumps). Next software was
+the metal k3s flag k3d skipped: `--disable=servicelb`. MEASURED
+33804533591: klipper gone, ClusterIP still FAIL.
+
+## MEASURED 2026-09-03 — live-k3d 33804533591: svclb gone, ClusterIP still FAIL (PR #16533)
+
+Job `100812620217` on SHA `c350832fd`
+[run 33804533591](https://github.com/Lucent-Financial-Group/Zeta/actions/runs/33804533591)
+**succeeded** at smoke after `--disable=servicelb`. Server 2/2,
+`bundle.crt` present.
+
+| Signal | Value |
+|---|---|
+| `app=svclb` | **No resources found** (klipper gone) |
+| hostNetwork kube-dns ClusterIP `:53` | **FAIL** |
+| hostNetwork kube-dns pod `:53` | **OPEN** |
+| hostNetwork spire-server ClusterIP `:443` | **FAIL** |
+| hostNetwork spire-server pod `:8081` | **OPEN** |
+| pod-network all four | **OPEN** |
+| spire-agent | `lookup spire-server.spire on 10.43.0.10:53: dial udp 10.43.0.10:53: i/o timeout` |
+
+**Klipper is not the ClusterIP translator.** Keep `--disable=servicelb`
+(metal match). Do not invent Cilium values. Do not re-lift included.
+MEASURED 33809535624: cgroupns already private; KPR True; ClusterIP
+still FAIL.
+
+## MEASURED 2026-09-03 — live-k3d 33809535624: cgroupns already private, ClusterIP still FAIL
+
+Job `100828865623` on SHA `6fc9e33f2`
+[run 33809535624](https://github.com/Lucent-Financial-Group/Zeta/actions/runs/33809535624)
+**succeeded** at smoke. `gate (required)` green. `lint (actionlint)` green.
+
+| Signal | Value |
+|---|---|
+| `app=svclb` | No resources found |
+| Docker `CgroupnsMode` | **private** (Privileged=true) |
+| `KubeProxyReplacement` | True, Direct Routing on eth0 `172.18.0.2` |
+| Routing | Network: Native, **Host: BPF** |
+| Cluster health | node 1/1, **endpoints 0/1** |
+| hostNetwork ClusterIP | **FAIL** (TCP + UDP DNS timeout) |
+| hostNetwork overlay pod IPs | **OPEN** |
+| pod-network ClusterIP | **OPEN** |
+
+**Cgroup namespace is not the hole.** k3d already uses private cgroupns, which is what Cilium's kind Socket-LB docs require. Non-verbose `cilium-dbg status` has no Socket LB coverage line. MEASURED 33814040666: `cilium-dbg config get` of guessed names is not the API.
+
+`live kind included` red is Otto mimir (`081M1FG1RCW`), not this item.
+
+## MEASURED 2026-09-03 — live-k3d 33814040666: config get names do not exist
+
+Job `100842821668` on SHA `1fa71680a`
+[run 33814040666](https://github.com/Lucent-Financial-Group/Zeta/actions/runs/33814040666)
+**succeeded** at smoke. `gate (required)` green.
+
+`cilium-dbg config get` returned `Error: Configuration does not exist`
+for `enable-socket-lb`, `bpf-lb-sock`, `bpf-lb-sock-hostns-only`,
+`bpf-lb-external-clusterip`. The one key that exists:
+`enable-host-legacy-routing=false` (matches Host BPF).
+
+ClusterIP from hostNetwork still FAIL. Next dump reads those keys
+from ConfigMap `cilium-config` (what the agent actually runs) and
+`cilium-dbg status --verbose` KubeProxyReplacement Details (Socket LB
+coverage). Still a read. Do not invent helm values.
+
+## MEASURED 2026-09-03 — live-k3d 33817974673: ConfigMap bpf-lb-sock=false, ClusterIP still FAIL
+
+Job `100854900709` on SHA `f93babb9a`
+[run 33817974673](https://github.com/Lucent-Financial-Group/Zeta/actions/runs/33817974673)
+**succeeded** at smoke. `gate (required)` green. The job the human
+saw hanging is **`live kind included`** (kindnetd), not this dump:
+`mimir=Synced/Degraded` + `agent-memory=OutOfSync/Progressing` toward
+the 2400s cap. That is Otto `081M1FG1RCW` (mimir / seaweedfs auth),
+not this item. Fail-fast the health wait on Degraded so that job
+stops looking stuck.
+
+| Signal | Value |
+|---|---|
+| `app=svclb` | No resources found |
+| ConfigMap `bpf-lb-sock` | **false** |
+| ConfigMap `bpf-lb-sock-hostns-only` | **true** |
+| ConfigMap `bpf-lb-external-clusterip` | **false** |
+| ConfigMap `kube-proxy-replacement` | true |
+| verbose Socket LB | Enabled, Coverage **Hostns-only** |
+| hostNetwork ClusterIP | **FAIL** (TCP + UDP DNS timeout) |
+| hostNetwork overlay pod IPs | **OPEN** |
+| pod-network ClusterIP | **OPEN** |
+| the four (smoke) | openziti OutOfSync/Missing; trust-manager Synced/Healthy; spire Synced/Progressing; vault Synced/Progressing |
+
+`bpf-lb-sock=false` with KPR True is per-packet LB in the pod netns
+(OPEN) and no working host-ns ClusterIP translation (FAIL). Verbose
+"Socket LB Enabled / Hostns-only" is the coverage claim; TCP still
+FAIL. Setting helm `socketLB` / `bpf.lbExternalClusterIP` is still
+inventing. Next software is `ip route get` of the kube-dns ClusterIP
+from the k3d node (is 10.43.0.0/16 local via `cilium_host` or via
+docker `eth0`?). Do not invent Cilium helm values. Do not re-lift
+included. Otto keeps mimir.
+
+## CI is a USB / metal first-boot rehearsal
+
+The point of the k3d lane is not "green on GitHub". It is whether the
+same k3s + Cilium + SPIRE stack will come up on USB boot of real
+hardware. A CI-only datapath (invented Cilium helm, hostAliases to
+ClusterIP, a SPIRE chart fork) would make the runner look healthy and
+leave first-boot broken.
+
+`--serve-tree dev` is a **runner CPU/memory overlay only**. GitHub
+nodes are 4000m; metal is a 16-core box. The metal rung stays in git
+for USB/hardware. Datapath values, k3s flags, and SPIRE stay the
+shipped metal surface. The only k3d deltas that have paid rent are
+flags metal already passes (`--disable=servicelb`, `--tls-san`,
+founder `/etc/hosts`) plus `k8sServiceHost` name resolution.
+
+Kind included already passed `--serve-tree dev` (#16543). k3d live
+parsed no such flag and `bootstrapK3dClusterInProcess` dropped the
+bundle even if one had been passed, so the k3d job kept applying
+metal (6390m) onto the 4000m runner. That wiring is now the same as
+kind. Disk is a different existing ladder: `runnerEnvelope.freeDiskGib`
+= 70, checked by `--check-envelope`. PVC sizes stay at metal
+`measured` because CI `zeta-local-path` is thin; shrinking PVCs in CI
+would not be a USB rehearsal. Do not invent a fourth budget.
+
+**MEASURED live-k3d + live-kind-included 33821540802 (SHA `bf6eabd1e`):**
+`--serve-tree` packed 411676B then `kubectl apply -f -` died
+`metadata.annotations: Too long: may not be more than 262144 bytes`.
+Client-side apply stores the whole ConfigMap YAML in
+`last-applied-configuration`. Delivery is now `--server-side
+--force-conflicts`, the same door the kubevirt CRD already takes.
+`--disable=servicelb` stays: metal `k3s-server.nix` turns off klipper
+so Cilium owns L4. That is not the ClusterIP hole; it is the metal
+match.
+
+**MEASURED live-k3d + live-kind-included 33822942615 (SHA `dc2e16e3e`):**
+SSA applied. ArgoCD then failed
+`Failed to checkout revision dc2e16e3e…` /
+`Unable to find dc2e16e3e… under http://zeta-lane-tree…/tree.git` /
+`Cannot obtain needed object`. The served repo is a fresh `git init`
+whose commit SHA is new. ArgoCD treats a 40-hex `targetRevision` as
+an OBJECT, not a branch. Child Applications already said
+`targetRevision: main`. Catalog now asks for `main`. A GitHub SHA
+passthrough would return the committed metal tree — the silent
+fallback `--serve-tree` exists to refuse. Same shape as GHCR not
+being a docker.io pull-through (081M1F1ZG0A). Dumb HTTP against
+GitHub Pages already exists (`gitpull.html` / `git-dumb-http`); the
+forge clone URL is still smart HTTP. Wiring that reader into this
+pod is how we learn in-cluster git over time, and it must not
+satisfy a GitHub SHA with the un-overlaid tree. Three git surfaces:
+host `git` 2.43.x writes the pack; busybox 1.37.0 has no git (nc +
+`LANE_TREE_SERVE_SH` ash payload in a ConfigMap, not a repo `.sh`
+and not httpd); Argo CD v3.5.2
+repo-server (`argo-cd` 10.7.0) lists refs with go-git (smart HTTP
+only) and fetches with Ubuntu 26.04's `git` CLI.
+
+**MEASURED live-kind-included + live-k3d 33824995558 (SHA `4e89a9600`):**
+asking for `main` closed the object-fetch hole. New hole: zero
+children, `argocd=Missing/Missing`, `cert-manager=Missing/Missing`,
+lane-tree pod `1/1 Running`. Root ComparisonError
+`failed to list refs: unexpected EOF`. This is **not** missing helm
+chart deps and **not** an ACE package-manager miss: App-of-Apps never
+listed refs, so no Application objects, so no helm pulls. Cause:
+Argo CD LsRemote is go-git, which does not speak dumb HTTP
+(argoproj/argo-cd#17267). busybox `httpd` 200s
+`GET /info/refs?service=git-upload-pack` with the dumb refs body;
+go-git parses pkt-line and EOFs. Git CLI falls back; go-git does not.
+404ing that probe is also wrong: git 2.43 treats 404 as "repository
+not found". Fix: a single-pack smart-HTTP shim (advertisement + NAK
++ the pack `buildBareRepo` already built). Still no git binary on
+the server. Fail-fast the ComparisonError instead of burning 900s on
+vault / 1200s on health. Keep `--disable=servicelb`. Do not invent
+helm values. Do not invent ACE chart-deps work from this dump.
+
+**MEASURED live-kind-included + live-k3d 33830308187 (SHA `def4f2fdd`):**
+the smart-HTTP overlay listed refs. live-k3d smoke `--serve-tree dev`
+was **green**: `child-application-count=16`, repo-server `git ls-remote`
+returned `9051f82306ef… HEAD` / `refs/heads/main`. live-kind-included
+also listed refs (mimir PVCs provisioning, children present) then
+aborted on `openziti-controller=OutOfSync/Degraded` while the ziti
+pod was still `Init:0/1`. That is not missing helm and not the
+unexpected-EOF hole. Degraded fail-fast is **Synced/Degraded** only
+(Otto's mimir case). OutOfSync/Degraded during Init is rollout.
+Parallel compares also `dial tcp 10.96.98.57:8080: connect: connection
+refused` — `nc -l` is one connection at a time. Keep
+`--disable=servicelb`. Do not invent helm values.
+
+**MEASURED live-k3d 33836543665 job `100910668481` (merge of #16533,
+SHA `c49779348`):** `ip route get 10.43.0.10` from the k3d node is
+
+    10.43.0.10 via 172.18.0.1 dev eth0 src 172.18.0.2
+
+Not via `cilium_host`. `cilium_host` exists (if5). kube-dns ClusterIP
+leaves through the Docker bridge gateway. hostNetwork ClusterIP TCP
+FAIL / overlay pod IP OPEN / pod-network all OPEN is unchanged.
+`bpf-lb-sock=false`, Socket LB Coverage Hostns-only, `app=svclb`
+empty. Agent still `lookup spire-server.spire on 10.43.0.10:53: i/o
+timeout` with server 2/2 and `bundle.crt` present.
+
+That is a **k3d-in-docker route**, not a NixOS k3s first-boot fact.
+Metal has no `172.18.0.1`. Do not invent `socketLB` to paper over
+docker0. Do not re-lift `--scope included`. Confirmation on hardware
+is `ip route get 10.43.0.10` after USB boot (expect local via
+`cilium_host` / service CIDR, not a docker gateway). Next software
+on the USB trajectory is chart currency (`081M1F2F4WQ`, seaweedfs
+4.40+ first), not another k3d datapath tweak.
+
+## CI runner budgets (three existing ladders)
+
+Do not invent a fourth. Do not shrink metal.
+
+| Axis | Ladder | CI overlay | Metal (git) |
+| --- | --- | --- | --- |
+| CPU / memory requests | `dev` vs `metal` in `storage-profiles.json` | `--serve-tree dev` on kind included and k3d live | `activeResourceProfile: metal` |
+| PVC capacity | `minimal` / `standard` / `measured` / `large` | none (CI `zeta-local-path` is thin) | `activeStorageProfile: measured` |
+| Runner disk | `runnerEnvelope.freeDiskGib: 70` | `--check-envelope` on live jobs | hardware `nodeDiskGib` |
+
+Envelope (hosted `ubuntu-24.04`): 4000m CPU, 15360Mi RAM, 70 GiB disk;
+reserved 1500m / 6144Mi / 4 GiB; margin 0.85 → budget **2500m / 9216Mi /
+~56 GiB**. `storage-profiles.ts --resource-profile <rung> --budget`:
+
+- `dev` lane (~39 apps): 1165m / 9164Mi — **FITS** (memory 52Mi from the ceiling)
+- `metal` lane: 6390m / 14352Mi — does not fit a runner
+
+The committed manifests stay `metal`. `--resource-profile metal --check`
+is green; `dev --check` drifts. That is why `--serve-tree` exists
+instead of rewriting git.
+
+kind+Cilium Healthy on the same helm values means Cilium-as-CNI is
+not the USB-boot hole. k3d still FAIL on hostNetwork ClusterIP is
+the remaining k3s-in-docker class that metal first-boot can still
+hit if host-ns socket-LB is similarly dark on NixOS k3s.
+
 ## The distinguishing test
 
 For each of the four, the question is the same and it is answerable:
@@ -375,8 +912,13 @@ obvious common thread, and the k3d lane has already produced one DNS defect.
 
 ## Pointers
 
-- `.github/workflows/k8s-argocd-health-test.yml` — `live-k3d`, and the in-place
-  note recording the reverted lift
+- `.github/workflows/k8s-argocd-health-test.yml` — `live-k3d`, the
+  in-place note recording the reverted lift, and the always() dump of
+  Gateway API CRDs + the four + `daemonset/spire-agent` logs + PVC/CM
+- `src/Core.TypeScript/cluster/provider-coverage.test.ts` — dump must
+  not use a label the chart never sets, and must not swallow cilium-dbg
+- `src/Core.TypeScript/cluster/provider-coverage.test.ts` — dump must
+  not use a label the chart never sets
 - `src/Core.TypeScript/cluster/argocd-health-test.ts` — `APPLIED_BUT_UNASSERTED_REASONS`,
   the format a justified deferral takes
 - `src/Core.TypeScript/cluster/applied-vs-asserted-agreement.test.ts` — the check

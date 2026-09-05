@@ -1,0 +1,12 @@
+{
+  "pr_number": 16578,
+  "archive_path": "docs/history/pr-reviews/PR-16578-fix-cluster-rewrite-hat-system-crd-wait-onto-registry-k8s-io-kubectl.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-04T14:59:09.017Z",
+  "schema_version": "v1",
+  "commit_sha": "464be7cd113486d1a86ccedbcb4fbd591a1781d7",
+  "title": "fix(cluster): rewrite hat-system CRD wait onto registry.k8s.io/kubectl",
+  "state": "MERGED",
+  "merged_at": "2026-09-04T14:58:35Z",
+  "head_ref": "cursor/gatekeeper-kubectl-shellfree-27c5"
+}

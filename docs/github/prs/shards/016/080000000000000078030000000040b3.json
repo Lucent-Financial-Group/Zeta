@@ -1,0 +1,12 @@
+{
+  "pr_number": 16563,
+  "archive_path": "docs/history/pr-reviews/PR-16563-fix-auto-vivify-stop-flagging-backtick-filenames-that-are-markdown-link-labels.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-04T07:34:54.567Z",
+  "schema_version": "v1",
+  "commit_sha": "e3cc8dc78dbe48ebabde39036cfc83990186037b",
+  "title": "fix(auto-vivify): stop flagging backtick filenames that are markdown-link labels",
+  "state": "MERGED",
+  "merged_at": "2026-09-04T07:34:18Z",
+  "head_ref": "alexa/fix-auto-vivify-mdlink-label-false-positive-20260904T065703Z"
+}

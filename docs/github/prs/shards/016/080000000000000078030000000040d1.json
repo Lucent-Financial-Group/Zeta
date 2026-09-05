@@ -1,0 +1,12 @@
+{
+  "pr_number": 16593,
+  "archive_path": "docs/history/pr-reviews/PR-16593-docs-creds-park-ca-1password-3-key-hardening-review.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-04T20:51:37.419Z",
+  "schema_version": "v1",
+  "commit_sha": "e0988fd7361f2db09641fe0f42a343d00bc4fad2",
+  "title": "docs(creds): park CA / 1Password / 3-key hardening review",
+  "state": "MERGED",
+  "merged_at": "2026-09-04T20:50:52Z",
+  "head_ref": "cursor/credential-review-ca-1p-27c5"
+}

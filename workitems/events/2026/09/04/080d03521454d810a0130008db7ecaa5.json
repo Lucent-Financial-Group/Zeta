@@ -1,0 +1,14 @@
+{
+  "id": "080d03521454d810a0130008db7ecaa5",
+  "at": "2026-09-04T02:32:20.891Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1N452MT087G0R001WA5621",
+    "type": "task",
+    "title": "dependency escrow closure with a reproduce-from-escrow test",
+    "slug": "dependency-escrow-closure-with-a-reproduce-from-escrow-test",
+    "priority": "P2",
+    "filename": "081M1N452MT087G0R001WA5621-dependency-escrow-closure-with-a-reproduce-from-escrow-test.md"
+  }
+}

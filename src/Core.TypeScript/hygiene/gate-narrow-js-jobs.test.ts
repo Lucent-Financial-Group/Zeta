@@ -29,4 +29,15 @@ describe("narrow JavaScript gate jobs", () => {
       expect(block).not.toContain("./tools/setup/install.sh");
     });
   }
+
+  test("FALSIFIER: hermetic timeout holds the measured 18-20min suite", () => {
+    // 2026-09-04: timeout-minutes: 20 cancelled the floor job mid-suite
+    // (run 33833532558, bun test 19m47s). A silent revert to 20 reopens that
+    // red: cancelled reads as FAIL, rerun-cancelled-gate will not heal a
+    // second attempt, and auto-merge sits blocked.
+    const block = jobBlock("test-typescript-hermetic");
+    const match = /^    timeout-minutes: (\d+)$/m.exec(block);
+    expect(match).not.toBeNull();
+    expect(Number(match?.[1])).toBeGreaterThanOrEqual(30);
+  });
 });

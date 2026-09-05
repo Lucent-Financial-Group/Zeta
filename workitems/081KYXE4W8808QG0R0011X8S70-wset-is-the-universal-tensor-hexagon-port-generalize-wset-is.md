@@ -52,3 +52,58 @@ section). Confirmed by Soraya's hexagon validation.
 Aji–McEliece 2000 (GDL); Fritz 2020 / Cho–Jacobs 2019 / Fox 1976 (comonoid strata); Joyal–Street–Verity
 1996 (traced monoidal = the four-corner trace). Composes-with `081KYXE4W7D08QG0R00256B56A` (IcosahedralH3 —
 the visual shape of this algebra).
+
+## STATUS — increment 3 LANDED (2026-09-03): rung split + Rel corner + the LEAN CERT. Work-item stays OPEN
+
+(revived 2026-09-03 by shadow from `otto/agent-sovereign-keys-proposal` — tag
+`archive/2026-09-03-branch-sweep/otto/agent-sovereign-keys-proposal`, commits authored by
+desktop-Otto 2026-08-13; PR #10511 landed only that branch's research doc and left the code
+"for its author to land"; the author stopped running. Aaron overruled two reviewers' advice
+not to revive. Re-applied onto current main one increment at a time, not rebased.)
+
+Start-gate audit (re-run against current main): increments 1–2 (+adjacent) are
+on main — copy Δ / discard ! / tensor / arr + the ℤ law pack + discriminator
+(#9816), FourCornerTrace (#9824, since extended with `appendCorrection` /
+`foldRecorded` / `foldWitnessed`), Meno.Bind fix (#9827), and the E8 demotion +
+`rootMvs` honest-scope correction. Landed in this PR, the three open legs:
+
+1. **Rung honesty split on `WSet`** (deliverable 1's missing half): the linear +
+   comonoid ops (`consolidate`/`apply`/`tensor`/`discard`) now take `#ISemiring`
+   (Add/Mul/Zero/One — all they consume), so the INVERSE-FREE corners of the
+   hexagon type-check; `negate` + the whole `FourCornerTrace` (all nine ring
+   parameters, including the ones added after the branch) demand `#IRing` —
+   retraction IS the additive inverse, so the compiler (not a runtime throw)
+   refuses the trace off the ring corners. Zero ripple: every existing consumer
+   (`WSetHeat`, `BipartiteMachZehnder`, the law packs) passes `IStarRing`
+   instances, which subsume both rungs.
+2. **The Bool/Rel corner** (deliverable 2's missing adapter) — **deviation from
+   the branch, on purpose**: the branch added a new `BoolOrSemiring` type in
+   `Semiring.fs`; current main already ships the one `(∨,∧)` `ISemiring<bool>`
+   in Core, `BooleanKleene` (`KleeneClosure.fs`). A second copy would be a
+   duplicate, not a corner (`only-the-irreducible-is-primitive`), so the Rel
+   corner instantiates over `BooleanKleene` and its docstring now names that
+   role, with the GF(2)/XOR distinction kept apart. Law-pack block added
+   (§2c): comonoid laws over (∨,∧); the discriminator Rel-flavoured
+   (total-deterministic = comonoid hom; NONDETERMINISTIC fails copy-naturality
+   via cross pairs; PARTIAL fails discard-naturality via mass-drop); the
+   Rel-specific witness ℤ cannot show — ∨-idempotence makes duplicate emission
+   invisible, so branching does NOT double discarded mass (the failure mode
+   moves from doubling to dropping); plus a ℤ-corner positive control that the
+   split removed no capability (`plus s (negate s)` still annihilates).
+3. **The Lean half of the two-tool proof** (the verification section's Lean leg):
+   `src/Core.Lean4/Lean4/ZSetCopyComonoid.lean` — ZSet as `K →₀ ℤ`;
+   `Coalgebra ℤ (K →₀ ℤ)` + `IsCocomm` via Mathlib `Finsupp.instCoalgebra`
+   (coassoc/counital/cocommutative = instance fields, nothing re-proved by hand);
+   `comul_single` (Δ IS the diagonal `single k 1 ⊗ single k w`), `counit_single`
+   (ε reads the weight), `counit_eq_total` (ε = Σ weights = `WSet.discard`, by
+   `Finsupp.induction_linear`). No `sorry`, nothing axiomatized; the GDL
+   one-circuit/N-semirings unifier stays a documented conjecture as specified.
+   Rebuilt 2026-09-03 against main's pinned Mathlib
+   (`0c154d67…`, Lean `v4.30.0-rc1`): `lake build Lean4.ZSetCopyComonoid` green.
+
+STILL OPEN on this row: the ℝ≥0-normalized Markov adapter as a first-class corner
+(currently a law-pack witness, not an adapter type); wiring the trace through
+`FourCorner.fs`'s C₄ phase object explicitly (deliverable 3's remaining half);
+`CliffordE8Roots.rootMvs` retirement decision (081KYXCM1WK's versor route);
+`MenoBraided` composition audit. Coordinate with the silicon-alife braid-bridge
+trajectory before closing.

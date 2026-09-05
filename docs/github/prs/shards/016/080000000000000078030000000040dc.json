@@ -1,0 +1,12 @@
+{
+  "pr_number": 16604,
+  "archive_path": "docs/history/pr-reviews/PR-16604-feat-081m1q1xhvv087g0r0034x846m-opensearch-3-8-0-dev-included-and-the-temporal-v.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-04T22:31:28.147Z",
+  "schema_version": "v1",
+  "commit_sha": "cfd0e8e6114796b39811e132fc2b52ddf78728fa",
+  "title": "feat(081M1Q1XHVV087G0R0034X846M): OpenSearch 3.8.0, dev-included, and the Temporal visibility wiring it cannot do yet",
+  "state": "MERGED",
+  "merged_at": "2026-09-04T22:30:50Z",
+  "head_ref": "otto/opensearch-visibility-store"
+}

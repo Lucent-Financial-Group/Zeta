@@ -1,0 +1,12 @@
+{
+  "pr_number": 16480,
+  "archive_path": "docs/history/pr-reviews/PR-16480-feat-081m1k9d4z0087g0r0002tfa8r-dual-checksummed-superblock-slots.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-03T10:04:09.508Z",
+  "schema_version": "v1",
+  "commit_sha": "f8efd26ac2df11005d0155cffefb6a42b7bbbc35",
+  "title": "feat(081M1K9D4Z0087G0R0002TFA8R): dual checksummed superblock slots",
+  "state": "MERGED",
+  "merged_at": "2026-09-03T10:03:33Z",
+  "head_ref": "feat/zetafs-block-superblock-crc"
+}

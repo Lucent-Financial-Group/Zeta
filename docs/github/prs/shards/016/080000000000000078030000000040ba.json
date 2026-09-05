@@ -1,0 +1,12 @@
+{
+  "pr_number": 16570,
+  "archive_path": "docs/history/pr-reviews/PR-16570-feat-cluster-pin-metal-first-boot-cilium-to-1-20-1.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-04T13:21:06.944Z",
+  "schema_version": "v1",
+  "commit_sha": "cb9b223df8599e157fe8247dcc3af007e2bc6e0e",
+  "title": "feat(cluster): pin metal first-boot Cilium to 1.20.1",
+  "state": "MERGED",
+  "merged_at": "2026-09-04T13:20:26Z",
+  "head_ref": "cursor/cilium-firstboot-120-27c5"
+}

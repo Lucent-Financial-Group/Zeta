@@ -1,11 +1,45 @@
 # Trajectory - Cluster Encryption / Credential Substrate
 
 Status: active — first surfaced 2026-05-29 from substrate inventory (was tracked only as scattered backlog rows; never had a trajectory surface, which is why it was easy to lose at cold-boot)
-Last refreshed: 2026-06-21 (credential-presence spot-check 2026-08-16 — see the box below)
+Last refreshed: 2026-09-04 (host→Secret #16587 landed; Lucent item is the SA-token store — metal first-boot login fetches it; post-init Vault unseal is a Google-shaped extraContainer, rewritten)
 Type: workstream (current-focus) — a trajectory the operator is *actively powering*. Many trajectories can be tracked; only a few are workstreams at once (finite-focus / WIP-bounded — a workstream is a trajectory under sustained thrust, and thrust budget is finite, so most trajectories coast). ("Trajectory" is the genus; "workstream" is the species: a trajectory under sustained thrust toward a deliverable, vs. emergent-posture trajectories like `anti-infection`, which self-describes as "not a workstream with a cadence." See [`factory-trajectory-surface`](../factory-trajectory-surface/RESUME.md) for the genus/species taxonomy.) One of the operator's three current cluster workstreams (encryption / usb-zflash / ts-workflow-engine).
 Eventual encoding (design-stage — the human maintainer 2026-05-23 genetic-ID substrate + Clifford/HKT): this trajectory's state is trackable as a 128-bit genetic-ID seed (discrete, reversible via parser-combinator ↔ generator-function) → Clifford-space path (continuous, eventual). Mirrors the three-lane I8-lattice / I9-manifold split.
 Current blocker: none operationally; the live design tension is interactive-login-vs-baked-in-keys-vs-CI-test (081KSGS9H0008QG0R003JNSVR5)
 Next concrete action: round-trip harness in flight (otto/onboarding-roundtrip-harness — sandboxed new-fork setup→teardown→re-setup ×N, surfaces the rotate-command gap). Then smart cascading teardown (cascade-with-warnings; extra-care warn on memories/hardware-state/unrecoverable-encrypted; OWNER-consent-gated memory delete; user-sovereign encryption can't be force-reset; each user = own git repo — see `docs/research/2026-06-21-smart-cascading-teardown-user-sovereign-deletion-…`). All 3 vaults now Active+Standby (rotation-ready: Lucent/Personal/CA, 2 service accounts each in Keychain). CA-recovery hardware (FIDO/HSM/N-of-M) = post-investor next layer. Live wipe + clean re-onboard once the harness is tight. Teardown primitive shipped (#9000).
+
+## 2026-09-04 — production-hardening review (Riven)
+
+Aaron asked to production-harden the CA, name the unseal startup, use
+Lucent 1Password (maybe for unseal), inventory checked-in pubkeys,
+verify GPG/SSH/wallets, keep 3 keys per agent/human, and fold rolling
+into Z-sets / 0-downtime schema evolution. 1Password AI materials were
+fetched live (training data is stale).
+
+Findings (no private material, no `op` / Keychain, no USB flash):
+[`docs/design/2026-09-04-credential-substrate-production-hardening-review.md`](../../design/2026-09-04-credential-substrate-production-hardening-review.md).
+Workitem: `081M1PYZRE5087G0R000HHG5HV`.
+
+Short version: git holds **one** pubkey per type per identity that has
+a tree; dual-key is the landed treaty; three live slots are allowed by
+`keyset.ts` extra standby and named in the 2026-08-09 research note,
+but they are not an inventory fact. Vault **init** remains a gated
+class (no agent runs `operator init`). Post-init unseal on pod restart
+is the automation we are going for: a Helm `extraContainers` sidecar
+that fetches Shamir shares from Lucent **at unseal time** (Google's
+shape, rewritten — not ESO-into-etcd, not threshold 1, not
+`alpine:latest`). Lucent 1Password as share store still has a
+chicken-egg (token must already be on the host). That chicken-egg
+breaks when the long-lived token is a **Lucent 1Password item** and
+**metal first-boot** login on that console (not the laptop, not a
+30-minute `op signin` session) reads it and hands the bytes to the
+projector. USB / k8s Secret are caches of the last fetch. Do **not**
+persist `OP_SESSION`. Relogin: SSH is break-glass; the product is
+Consent plus a portal lease panel that warns **before** 401.
+Host→Secret projector landed as PR #16587 (`081M1PWSF56087G0R000FDS3NY`).
+
+Persona trees present: otto, alexa, ani, amara. Missing trees: riven,
+vera, lior. Aaron still has no `cluster-nodes/`. One machine cert.
+TPM-seal mode still `"off"`.
 
 ## 2026-08-16 — presence spot-check ahead of first-metal bringup (the shadow)
 
@@ -124,6 +158,21 @@ exercise a full install without that discipline leaking a real credential
 
 ## Current Next Action
 
-Audit 081KSKBP80008QG0R003AX2A69 / 081KSKBP80008QG0R003ETGS01 against the on-disk `full-ai-cluster/usb-nixos-installer/`
+Host→Secret projector (`081M1PWSF56087G0R000FDS3NY`) landed as
+PR 16587: USB-restored GitHub / AI-login files become Opaque Secrets
+in `zeta-host-creds`. Design:
+[`docs/design/2026-09-04-host-creds-as-k8s-secrets.md`](../../design/2026-09-04-host-creds-as-k8s-secrets.md).
+Vault ingest / ExternalSecret remains a later hop (ESO ClusterSecretStore
+is still commented). Physical USB flash stays operator-gated.
+
+This review (`081M1PYZRE5087G0R000HHG5HV`) is the pickup map for CA /
+unseal / 3-key / Lucent 1Password — findings only. Next slices: fetch
+the Lucent item (2–3 token slots) at metal first boot and project the
+current slot; then the unsealer extraContainer (amend `TOPOLOGY.md`
+§5 in the same commit). Inventory lock test and 3-key ratification
+stay on the list. Do not persist tokens or ship the sidecar in the
+review PR.
+
+Then: audit 081KSKBP80008QG0R003AX2A69 / 081KSKBP80008QG0R003ETGS01 against the on-disk `full-ai-cluster/usb-nixos-installer/`
 to report real impl status, then drive the 081KSGS9H0008QG0R003JNSVR5 interactive-vs-baked-vs-CI
 resolution. Operator's call on priority vs the sibling workstreams.

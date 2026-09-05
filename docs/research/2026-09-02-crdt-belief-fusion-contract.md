@@ -1,6 +1,6 @@
 # CRDT-Compatible Belief Fusion Contract
 
-**Status:** Frozen before implementation; implemented and independently cross-verified in TypeScript and Python
+**Status:** Finite state/query census and canonical Gaussian evidence-query adapter independently cross-verified in TypeScript and Python
 
 **Author:** Manus AI
 
@@ -99,7 +99,24 @@ For the chosen anisotropic input pair, neither CI result covariance dominates bo
 
 The Python oracle independently implements the two-dimensional matrix arithmetic, evidence union, 1,001-point trace search, catalog traversal, and covariance-order diagnostic. It agrees with TypeScript on all law flags and exact witnesses within `1e-12`. A deliberately changed 999-step trace grid is rejected by the comparator, demonstrating that agreement is not a schema-only tautology.
 
-## 8. Explicit Non-Claims
+## 8. Canonical evidence-query adapter result
+
+`crdt-evidence-query-adapter.ts` is the first deliberately narrow adapter from immutable evidence state to a fresh query receipt. It normalizes a supplied `EvidenceState` through full-fingerprint union, refuses visible same-key multi-value conflicts, and computes the conflict-free Gaussian query by Kahan-compensated information accumulation in declared Unicode code-point order. It does not mutate an online posterior and does not promote the resulting product to a state merge.
+
+| Finite check | Result |
+|---|---|
+| Three-version posterior mean | `(0.01754385964912282, 0.3508771929824561)` |
+| Three-version posterior covariance | `[[0.5380116959064327, 0.09356725146198831], [0.09356725146198831, 0.5380116959064327]]` |
+| Six arrival permutations | Identical complete receipt |
+| Duplicate redelivery | Identical complete receipt; count remains `3` |
+| Changed mean or covariance at same key | `Conflict`; no posterior |
+| Kahan-versus-naive cancellation control | Distinguished (`9.999999999999997e-17` versus `1e-16`) |
+| Independent implementation | Separately authored Python; strict TypeScript comparator passes |
+| Naive-accumulation mutant | Detected |
+
+The Python oracle's string-order check is intentionally scoped to declared ASCII finite test keys. It does not establish non-ASCII cross-runtime collation. The adapter does not yet feed `MinimalBnn`, `MultilayerBnn`, RFFH, transport, or consensus; a future bridge must retain input fingerprints, source versions, conflict status, and prior/independence assumptions in every receipt.
+
+## 9. Explicit Non-Claims
 
 This census does not prove all covariance-intersection variants conservative, derive unknown cross-covariances, make probabilities a semilattice, or remove the need for provenance. It does not identify a neural, cortical, physical, or linguistic mechanism. A finite counterexample disproves a universal algebraic law for the declared operator; a finite pass does not prove the universal law.
 

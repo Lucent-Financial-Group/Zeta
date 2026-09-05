@@ -1,0 +1,12 @@
+{
+  "pr_number": 16503,
+  "archive_path": "docs/history/pr-reviews/PR-16503-chore-081m1khjb60087g0r0016g69kv-complete-sealed-file-cas-workitem.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-03T12:31:44.890Z",
+  "schema_version": "v1",
+  "commit_sha": "e96fb2552d2372f26fb7cc2137b3cbc1704bd82a",
+  "title": "chore(081M1KHJB60087G0R0016G69KV): complete sealed file-CAS workitem",
+  "state": "MERGED",
+  "merged_at": "2026-09-03T12:31:01Z",
+  "head_ref": "feat/zetafs-complete-sealed-file-cas"
+}

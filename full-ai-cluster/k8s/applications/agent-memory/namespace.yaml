@@ -4,6 +4,28 @@ metadata:
   name: agent-memory
   labels:
     app.kubernetes.io/part-of: zeta-agents
-    # Exempt from gatekeeper admission so a policy outage can never block
-    # the agents' own memory substrate (matches open-policy-agent exemptions).
-    admission.gatekeeper.sh/ignore: "true"
+    # NO GATEKEEPER IGNORE LABEL, and the removal is the fix rather than a
+    # loosening. This namespace carried `admission.gatekeeper.sh/ignore: "true"`
+    # with the comment "(matches open-policy-agent exemptions)". It did not:
+    # `agent-memory` was never in that Application's `exemptNamespaces`, and
+    # Gatekeeper's own `check-ignore-label` webhook refuses the label on any
+    # namespace outside that set. MEASURED on run 33790413535 (main, 2026-09-03):
+    # every sync attempt was denied, the Namespace never applied, and the
+    # Application read OutOfSync/Missing indefinitely. The label bought an
+    # exemption it did not have and cost the app its entire deployment.
+    #
+    # THE STATED REASON WAS ALREADY COVERED. The label was for "a policy outage
+    # can never block" this substrate -- and the Gatekeeper Application sets
+    # `validatingWebhookFailurePolicy: Ignore`, so it already fails OPEN: an
+    # unreachable engine admits, cluster-wide. Nothing about outage resilience
+    # was lost here.
+    #
+    # AND NO CONSTRAINT TARGETS THIS NAMESPACE'S KINDS. Every ConstraintTemplate
+    # in this tree (`applications/hat-system/policies/*.yaml`, seven of them)
+    # matches `apiGroups: ["society.zeta.io"]`, kinds `Hat` / `HatBinding` only.
+    # Nothing here matches a Pod, Deployment, StatefulSet or Namespace, so
+    # dropping the label exempts this namespace from nothing it was subject to.
+    #
+    # Checked by `src/Core.TypeScript/cluster/gatekeeper-ignore-label.ts`, which
+    # refuses any namespace claiming an exemption the Gatekeeper Application does
+    # not grant -- the cross-file invariant that was previously only a comment.

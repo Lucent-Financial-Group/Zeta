@@ -1,0 +1,14 @@
+{
+  "id": "080d0347d705e010a0130008a78fa5b4",
+  "at": "2026-09-03T20:34:27.132Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1MFNR5V087G0R0015V1T0S",
+    "type": "task",
+    "title": "GroupCommit segment append through FileSystemBlockIo",
+    "slug": "groupcommit-segment-append-through-filesystemblockio",
+    "priority": "P1",
+    "filename": "081M1MFNR5V087G0R0015V1T0S-groupcommit-segment-append-through-filesystemblockio.md"
+  }
+}

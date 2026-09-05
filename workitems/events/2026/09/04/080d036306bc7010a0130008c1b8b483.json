@@ -1,0 +1,14 @@
+{
+  "id": "080d036306bc7010a0130008c1b8b483",
+  "at": "2026-09-04T12:24:41.102Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1P61NWD087G0R003DN5XHY",
+    "type": "task",
+    "title": "POSIX freeze objects skip existing ContentId",
+    "slug": "posix-freeze-objects-skip-existing-contentid",
+    "priority": "P1",
+    "filename": "081M1P61NWD087G0R003DN5XHY-posix-freeze-objects-skip-existing-contentid.md"
+  }
+}

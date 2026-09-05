@@ -1,0 +1,14 @@
+{
+  "id": "080d0338c9660810a013000819bcc74d",
+  "at": "2026-09-03T11:48:18.241Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1KHJB60087G0R0016G69KV",
+    "type": "task",
+    "title": "Sealed freeze CAS through FileSystemBlockIo polyfill",
+    "slug": "sealed-freeze-cas-through-filesystemblockio-polyfill",
+    "priority": "P1",
+    "filename": "081M1KHJB60087G0R0016G69KV-sealed-freeze-cas-through-filesystemblockio-polyfill.md"
+  }
+}

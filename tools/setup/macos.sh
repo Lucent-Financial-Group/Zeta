@@ -132,6 +132,42 @@ if [ -f "$BREW_MANIFEST" ]; then
     #   nothing here uses.
     ZETA_BREW_LINK_OVERWRITE="binaryen"
 
+    # DOES THIS BREW SUPPORT `install --overwrite`? Probed once, not assumed.
+    #
+    # WHY IT MATTERS -- and this is a defect fix, not a tidy-up. Installing a declared
+    # winner WITHOUT `--overwrite` makes the link phase FAIL, and Homebrew's `ofail`
+    # emits a GitHub Actions error annotation when `GITHUB_ACTIONS` is set
+    # (`Library/Homebrew/utils/output.rb` onoe -> `GitHub::Actions
+    # .puts_annotation_if_env_set!`, gated on `env_set?` = `ENV.fetch("GITHUB_ACTIONS",
+    # false).present?`). We then recover with `brew link --overwrite`, the step exits 0,
+    # and the JOB GOES GREEN CARRYING A FAILURE ANNOTATION.
+    #
+    # MEASURED on run 33860210941: `build-and-test (macos-26)` was green with zero failed
+    # steps and this annotation attached --
+    #     ##[error]The `brew link` step did not complete successfully
+    #     Could not symlink bin/wasm2c ... belonging to wabt
+    # -- which `drift (loud)` reports as `(step swallowed by continue-on-error)`, because
+    # a failure annotation on a green job is indistinguishable, through the API, from a
+    # step swallowed by `continue-on-error`. It was the only evidence anywhere that
+    # anything had gone wrong.
+    #
+    # THE FIX IS TO NOT FAIL, NOT TO HIDE THE FAILING. Unsetting `GITHUB_ACTIONS` for the
+    # call would suppress the annotation and leave the failure happening -- the wrong
+    # shape, and it would blind brew's CI reporting for every other formula in the loop.
+    # `--overwrite` links over the conflicting file during install, reaching the same end
+    # state the recovery already produced (`brew link --overwrite` deletes the same wabt
+    # symlink) without a failure on the way.
+    #
+    # PROBED RATHER THAN ASSUMED because this script runs on dev laptops with whatever
+    # brew they have; `--overwrite` is not in every version. When it is absent the
+    # install-then-relink path below is unchanged, so an older brew keeps working and
+    # keeps its annotation -- honest either way.
+    if brew install --help 2>/dev/null | grep -q -- '--overwrite'; then
+      ZETA_BREW_INSTALL_OVERWRITE_SUPPORTED=1
+    else
+      ZETA_BREW_INSTALL_OVERWRITE_SUPPORTED=0
+    fi
+
     echo "↓ installing brew packages from $(basename "$BREW_MANIFEST")..."
     # `brew install` is idempotent on already-installed formulae.
     #
@@ -167,11 +203,26 @@ if [ -f "$BREW_MANIFEST" ]; then
       if brew list --formula "$pkg" >/dev/null 2>&1; then
         brew upgrade "$pkg" >/dev/null 2>&1 || true
       else
+        # A DECLARED winner installs WITH `--overwrite` where brew supports it, so its
+        # link phase never fails and never annotates. See the probe above for why the
+        # failing-then-recovering path is a defect rather than a cost of doing business.
+        zeta_install_flags=""
+        case " $ZETA_BREW_LINK_OVERWRITE " in
+          *" $pkg "*)
+            if [ "$ZETA_BREW_INSTALL_OVERWRITE_SUPPORTED" = "1" ]; then
+              echo "→ $pkg: declared link-conflict winner; installing with --overwrite"
+              zeta_install_flags="--overwrite"
+            fi
+            ;;
+        esac
+
         # A declared collision winner can fail to LINK against a formula installed
         # earlier in this same loop. Retry the link explicitly rather than letting the
         # install die -- and only for a formula named above, so an UNDECLARED collision
-        # still fails loudly instead of being forced through.
-        if ! brew install "$pkg"; then
+        # still fails loudly instead of being forced through. Reachable now only on a
+        # brew without `--overwrite`, or on a conflict `--overwrite` did not settle.
+        # shellcheck disable=SC2086
+        if ! brew install $zeta_install_flags "$pkg"; then
           case " $ZETA_BREW_LINK_OVERWRITE " in
             *" $pkg "*)
               echo "→ $pkg: install hit a link conflict; DECLARED overwrite winner, relinking"

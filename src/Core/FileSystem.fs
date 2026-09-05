@@ -21,17 +21,59 @@ type IFileSystem =
     abstract OpenRead: path: string -> Stream
     abstract GetFiles: path: string * searchPattern: string -> string[]
     abstract CreateDirectory: path: string -> unit
+    /// Write `src` at `offset` without replacing the rest of the file.
+    /// Crash/corrupt/reorder/torn-sector arms on `InMemoryFileSystem` apply
+    /// to `src`, not to a whole-file Dispose buffer.
+    abstract WriteAt: path: string * offset: int64 * src: ReadOnlyMemory<byte> -> int
 
 /// Native-volume block *primitive* (one LBA, one call). This is the device,
 /// not the IO program. Batch/single/multibatch dispatch is `BlockIoFerry`
 /// (Haskell `IO a` interpreted by `FerryThrottler`, including adjacent
 /// whole-block coalesce). The polyfill adapter maps a host file through
 /// `IFileSystem`. A later device impl must not go through POSIX files.
+///
+/// Geometry: `LbaCount` is NVMe Identify-shaped. 0 means unbounded
+/// (`SimulatedBlockIo` sparse DST). A native impl reports the namespace
+/// size. Signatures are synchronous (DST DoP=1). Native NVMe needs an
+/// async completion door (io_uring / SPDK) — wrapping these methods in
+/// Task.Run is not that door.
 type IBlockIo =
     abstract BlockSize: int
+    /// Number of addressable LBAs. 0 = unbounded (DST sparse).
+    abstract LbaCount: uint64
     abstract Read: lba: uint64 * dst: Memory<byte> -> int
     abstract Write: lba: uint64 * src: ReadOnlyMemory<byte> -> int
     abstract Flush: unit -> unit
+
+/// Issued device ops for DST record/replay. Call order, completed ops only.
+/// This is **what acts** (the event stream). Durable media after Flush is
+/// **what remains** (μένω). Chaos arms are intercepts, not commands.
+/// Native NVMe is not claimed.
+[<RequireQualifiedAccess>]
+type BlockIoOp =
+    | Write of lba: uint64 * data: byte[]
+    | Flush
+
+/// Replay a recorded op log onto any `IBlockIo` (sim, polyfill, later native).
+[<RequireQualifiedAccess>]
+module BlockIoReplay =
+    let replay (ops: BlockIoOp[]) (io: IBlockIo) =
+        for op in ops do
+            match op with
+            | BlockIoOp.Write(lba, data) ->
+                io.Write(lba, System.ReadOnlyMemory<byte>.op_Implicit data) |> ignore
+            | BlockIoOp.Flush -> io.Flush()
+
+/// Yielding completion door for a later native NVMe impl (io_uring / SPDK).
+/// DST polyfill and `SimulatedBlockIo` complete synchronously
+/// (`IsCompletedSuccessfully`). Wrapping `IBlockIo` in `Task.Run` is not
+/// this interface.
+type IAsyncBlockIo =
+    abstract BlockSize: int
+    abstract LbaCount: uint64
+    abstract ReadAsync: lba: uint64 * dst: Memory<byte> * ct: CancellationToken -> ValueTask<int>
+    abstract WriteAsync: lba: uint64 * src: ReadOnlyMemory<byte> * ct: CancellationToken -> ValueTask<int>
+    abstract FlushAsync: ct: CancellationToken -> ValueTask
 
 module private PhysicalFileSystemLimits =
     let maxReadAllBytes = 256L * 1024L * 1024L
@@ -89,6 +131,22 @@ type PhysicalFileSystem() =
             new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read) :> Stream
         member _.GetFiles(path, searchPattern) = Directory.GetFiles(path, searchPattern)
         member _.CreateDirectory(path) = Directory.CreateDirectory(path) |> ignore
+
+        member _.WriteAt(path, offset, src) =
+            if offset < 0L then
+                invalidArg (nameof offset) "offset must be >= 0"
+
+            let dir = Path.GetDirectoryName path
+
+            if not (String.IsNullOrEmpty dir) then
+                Directory.CreateDirectory dir |> ignore
+
+            use stream =
+                new FileStream(path, FileMode.OpenOrCreate, FileAccess.Write, FileShare.Read, 4096, true)
+
+            stream.Seek(offset, SeekOrigin.Begin) |> ignore
+            stream.Write(src.Span)
+            src.Length
 
 /// Byte helpers over `IFileSystem`. Temp+rename so a crash cannot leave a
 /// half-written FORMAT / object / ref. Dispose the write stream *before*
@@ -216,7 +274,32 @@ type SimulatedFileStream
 
 /// An in-memory mock file system that supports simulating latency, read/write sector corruption exceptions,
 /// file creation/modification tracking, and one-shot crash-mid-write /
-/// corrupt-last-write / reorder (D12 door).
+/// corrupt-last-write / reorder / torn-sector (D12 door).
+/// Canonicalise a path so that two spellings of the SAME file map to one key.
+///
+/// WHY THIS EXISTS. This double keys a dictionary on the path string, and a
+/// dictionary is exact where a filesystem is not. On Windows `\` and `/` are BOTH
+/// directory separators -- `Path.DirectorySeparatorChar` is `\` and
+/// `AltDirectorySeparatorChar` is `/` -- so `/store/cas` and `/store\cas` name the
+/// same file to Win32 and named two different entries here. That is a double that
+/// disagrees with the thing it doubles, which is worse than no double: the test it
+/// breaks is testing the mock, not the code.
+///
+/// MEASURED: `Zeta.Tests.ZetaFsFreezeTests."Journaled freeze ContentId matches the
+/// mutbuf snapshot, not a later pwrite"` line 60 asserted `Exists "/freeze-mem/cas"`
+/// while `ZetaFsFreeze.fs:670` created the file with `Path.Combine(storeDir, "cas")`
+/// -- `/freeze-mem\cas` on Windows. Red on `windows-2025` (35/59 runs) and
+/// `windows-11-arm` (33/59), green on every Unix runner, and it was the ONLY
+/// failure on either lane.
+///
+/// PLATFORM-CONDITIONAL, AND THAT IS NOT A DETAIL. On Unix `\` is a LEGAL FILENAME
+/// CHARACTER, so folding it to `/` there would merge two genuinely different files
+/// and invent a collision the real filesystem does not have. The fold is therefore
+/// applied only where the platform actually treats both as separators.
+module private InMemoryPathKey =
+    let normalize (path: string) : string =
+        if Path.DirectorySeparatorChar = '\\' then path.Replace('\\', '/') else path
+
 type InMemoryFileSystem() =
     let files = System.Collections.Concurrent.ConcurrentDictionary<string, byte[]>()
     let mutable latencyMs = 0L
@@ -228,6 +311,8 @@ type InMemoryFileSystem() =
     let mutable reorderNeedle: string option = None
     let mutable heldWrite: (string * byte[]) option = None
     let mutable deleteCrashArm: string option = None
+    let mutable tornArm: (string * int) option = None
+    let mutable heldRange: (string * int64 * byte[]) option = None
     let commitOrder = ResizeArray<string>()
     let lockObj = obj ()
 
@@ -236,9 +321,35 @@ type InMemoryFileSystem() =
     let pathMatches (needle: string) (path: string) =
         path.IndexOf(needle, StringComparison.Ordinal) >= 0
 
+    // `publish` and `existingBytes` normalise too, even though every current caller
+    // already hands them a canonical key. `InMemoryPathKey.normalize` is idempotent, so the second
+    // application costs nothing -- and requiring each caller to remember is the same
+    // shape as an include-list: correct until someone adds a call site.
     let publish (path: string) (bytes: byte[]) =
+        let path = InMemoryPathKey.normalize path
         files.[path] <- bytes
         commitOrder.Add path
+
+    let overlay (existing: byte[]) (offset: int64) (src: ReadOnlySpan<byte>) (take: int) =
+        if offset < 0L || offset > int64 Int32.MaxValue then
+            invalidArg (nameof offset) "offset must fit in a 32-bit file"
+
+        let off = int offset
+        let endAt = off + take
+        let buf = Array.zeroCreate (max existing.Length endAt)
+
+        if existing.Length > 0 then
+            Array.Copy(existing, buf, existing.Length)
+
+        if take > 0 then
+            src.Slice(0, take).CopyTo(Span(buf, off, take))
+
+        buf
+
+    let existingBytes (path: string) =
+        match files.TryGetValue(InMemoryPathKey.normalize path) with
+        | true, b -> b
+        | false, _ -> Array.empty
 
     let splitMix () =
         rngState <- rngState + 0x9E3779B97F4A7C15L
@@ -283,6 +394,16 @@ type InMemoryFileSystem() =
 
                     publish path copy
                 | _ ->
+                    match tornArm with
+                    | Some(needle, sectorBytes) when
+                        pathMatches needle path && bytes.Length > sectorBytes
+                        ->
+                        tornArm <- None
+                        let buf =
+                            overlay (existingBytes path) 0L (ReadOnlySpan bytes) sectorBytes
+
+                        publish path buf
+                    | _ ->
                     match reorderNeedle, heldWrite with
                     | Some needle, None when pathMatches needle path ->
                         heldWrite <- Some(path, bytes)
@@ -292,6 +413,10 @@ type InMemoryFileSystem() =
                         publish path bytes
                         publish heldPath heldBytes
                     | _ -> publish path bytes)
+
+    /// Exposed so the platform branch above is falsifiable on its own, rather than only
+    /// through a filesystem operation that happens to depend on it.
+    static member NormalizeKey(path: string) = InMemoryPathKey.normalize path
 
     member _.Files = files
 
@@ -327,7 +452,21 @@ type InMemoryFileSystem() =
 
         lock lockObj (fun () ->
             reorderNeedle <- Some pathContains
-            heldWrite <- None)
+            heldWrite <- None
+            heldRange <- None)
+
+    /// One-shot: next matching write longer than `sectorBytes` overlays only
+    /// that prefix of the NEW bytes; the rest of the range stays OLD. The
+    /// write acks. SQLite/PostgreSQL torn-page: a multi-sector write that
+    /// only some sectors persist.
+    member _.ArmTornSector(pathContains: string, sectorBytes: int) =
+        if String.IsNullOrEmpty pathContains then
+            invalidArg (nameof pathContains) "pathContains must be non-empty"
+
+        if sectorBytes < 1 then
+            invalidArg (nameof sectorBytes) "sectorBytes must be >= 1"
+
+        lock lockObj (fun () -> tornArm <- Some(pathContains, sectorBytes))
 
     /// One-shot: next matching Delete removes the file then throws.
     member _.ArmCrashOnDelete(pathContains: string) =
@@ -352,7 +491,7 @@ type InMemoryFileSystem() =
     interface IFileSystem with
         member _.Exists(path) =
             checkFault()
-            files.ContainsKey(path)
+            files.ContainsKey(InMemoryPathKey.normalize path)
 
         member _.Delete(path) =
             checkFault()
@@ -364,21 +503,21 @@ type InMemoryFileSystem() =
                         true
                     | _ -> false)
 
-            files.TryRemove(path) |> ignore
+            files.TryRemove(InMemoryPathKey.normalize path) |> ignore
 
             if crash then
                 raise (CrashMidSweepException path)
 
         member _.Move(src, dest, _overwrite) =
             checkFault()
-            match files.TryRemove(src) with
-            | true, bytes -> files.[dest] <- bytes
+            match files.TryRemove(InMemoryPathKey.normalize src) with
+            | true, bytes -> files.[InMemoryPathKey.normalize dest] <- bytes
             | false, _ -> raise (FileNotFoundException(src))
 
         member _.ReadAllBytes(path) =
             checkFault()
             applyLatency()
-            match files.TryGetValue(path) with
+            match files.TryGetValue(InMemoryPathKey.normalize path) with
             | true, bytes -> bytes
             | false, _ -> raise (FileNotFoundException(path))
 
@@ -386,44 +525,150 @@ type InMemoryFileSystem() =
             ct.ThrowIfCancellationRequested()
             checkFault()
             applyLatency()
-            match files.TryGetValue(path) with
+            match files.TryGetValue(InMemoryPathKey.normalize path) with
             | true, bytes -> return bytes
             | false, _ -> return raise (FileNotFoundException(path))
         }
 
         member _.OpenFile(path, mode, access, _share) =
-            new SimulatedFileStream(path, mode, access, files, checkFault, applyLatency, commitWrite, flushPublish) :> Stream
+            new SimulatedFileStream(InMemoryPathKey.normalize path, mode, access, files, checkFault, applyLatency, commitWrite, flushPublish) :> Stream
 
         member _.OpenWrite(path, _fsync) =
-            new SimulatedFileStream(path, FileMode.Create, FileAccess.Write, files, checkFault, applyLatency, commitWrite, flushPublish) :> Stream
+            new SimulatedFileStream(InMemoryPathKey.normalize path, FileMode.Create, FileAccess.Write, files, checkFault, applyLatency, commitWrite, flushPublish) :> Stream
 
         member _.OpenRead(path) =
-            new SimulatedFileStream(path, FileMode.Open, FileAccess.Read, files, checkFault, applyLatency, commitWrite, flushPublish) :> Stream
+            new SimulatedFileStream(InMemoryPathKey.normalize path, FileMode.Open, FileAccess.Read, files, checkFault, applyLatency, commitWrite, flushPublish) :> Stream
 
         member _.GetFiles(path, searchPattern) =
             checkFault()
             let suffix = searchPattern.Replace("*", "")
+            // The PREFIX is normalised as well as the stored keys. Normalising only one
+            // side would leave `GetFiles "/a/b"` blind to entries this same double keyed
+            // as `/a\b`, which is the defect one layer along rather than fixed.
+            let prefix = InMemoryPathKey.normalize path
             files.Keys
-            |> Seq.filter (fun k -> k.StartsWith(path) && k.EndsWith(suffix))
+            |> Seq.filter (fun k -> k.StartsWith(prefix, StringComparison.Ordinal) && k.EndsWith(suffix, StringComparison.Ordinal))
             |> Seq.toArray
 
         member _.CreateDirectory(_path) =
             checkFault()
             ()
 
+        member _.WriteAt(path, offset, src) =
+            if offset < 0L then
+                invalidArg (nameof offset) "offset must be >= 0"
+
+            // Shadowed once at the top rather than at each of the eight uses below --
+            // `publish`, `existingBytes`, the crash/corrupt/reorder arms and the return
+            // path all key or match on it, and normalising some of them would be worse
+            // than normalising none: a write published under one spelling and armed under
+            // another is a fault the double would report in the wrong place.
+            let path = InMemoryPathKey.normalize path
+
+            checkFault()
+            applyLatency()
+            lock lockObj (fun () ->
+                let srcArr = src.ToArray()
+
+                match crashArm with
+                | Some(needle, afterBytes) when pathMatches needle path && srcArr.Length > afterBytes ->
+                    crashArm <- None
+                    let buf = overlay (existingBytes path) offset (ReadOnlySpan srcArr) afterBytes
+                    publish path buf
+                    raise (CrashMidWriteException(path, afterBytes, srcArr.Length))
+                | _ ->
+                    match corruptArm with
+                    | Some(needle, lastBytes) when
+                        pathMatches needle path && srcArr.Length > 0 && lastBytes > 0
+                        ->
+                        corruptArm <- None
+                        let copy = Array.copy srcArr
+                        let n = min lastBytes copy.Length
+                        let start = copy.Length - n
+
+                        for i in start .. copy.Length - 1 do
+                            copy.[i] <- copy.[i] ^^^ corruptXor
+
+                        let buf = overlay (existingBytes path) offset (ReadOnlySpan copy) copy.Length
+                        publish path buf
+                        srcArr.Length
+                    | _ ->
+                        match tornArm with
+                        | Some(needle, sectorBytes) when
+                            pathMatches needle path && srcArr.Length > sectorBytes
+                            ->
+                            tornArm <- None
+                            let buf =
+                                overlay (existingBytes path) offset (ReadOnlySpan srcArr) sectorBytes
+
+                            publish path buf
+                            srcArr.Length
+                        | _ ->
+                        match reorderNeedle, heldRange with
+                        | Some needle, None when pathMatches needle path ->
+                            heldRange <- Some(path, offset, srcArr)
+                            srcArr.Length
+                        | Some needle, Some(heldPath, heldOff, heldBytes) when pathMatches needle path ->
+                            reorderNeedle <- None
+                            heldRange <- None
+                            let buf2 =
+                                overlay (existingBytes path) offset (ReadOnlySpan srcArr) srcArr.Length
+
+                            publish path buf2
+
+                            let heldExisting =
+                                if heldPath = path then
+                                    buf2
+                                else
+                                    existingBytes heldPath
+
+                            let buf1 =
+                                overlay heldExisting heldOff (ReadOnlySpan heldBytes) heldBytes.Length
+
+                            publish heldPath buf1
+                            srcArr.Length
+                        | _ ->
+                            let buf =
+                                overlay (existingBytes path) offset (ReadOnlySpan srcArr) srcArr.Length
+
+                            publish path buf
+                            srcArr.Length)
+
 /// Polyfill `IBlockIo`: one host file, LBA * BlockSize offset, through `IFileSystem`.
 [<Sealed>]
 type FileSystemBlockIo(fs: IFileSystem, path: string, blockSize: int) =
+    let lockObj = obj ()
+    let mutable logicalBytes = 0L
+
     do
         if blockSize <= 0 || (blockSize &&& (blockSize - 1)) <> 0 then
             invalidArg "blockSize" "block size must be a positive power of two"
 
         if not (fs.Exists path) then
             use stream = fs.OpenWrite(path, false)
-            ()
+            // Creation must be visible before the constructor returns. InMemory
+            // providers publish on Flush; relying on Dispose alone leaves an
+            // armed reorder path able to hide the empty backing file.
+            stream.Flush()
+
+    member _.Path = path
+
+    member _.LogicalBytes
+        with get () = lock lockObj (fun () -> logicalBytes)
+        and set v = lock lockObj (fun () -> logicalBytes <- v)
 
     interface IBlockIo with
         member _.BlockSize = blockSize
+
+        member _.LbaCount =
+            if not (fs.Exists path) then
+                0UL
+            else
+                use stream = fs.OpenFile(path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite)
+                if stream.Length <= 0L then
+                    0UL
+                else
+                    uint64 ((stream.Length + int64 blockSize - 1L) / int64 blockSize)
 
         member _.Read(lba, dst) =
             use stream = fs.OpenFile(path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite)
@@ -438,29 +683,57 @@ type FileSystemBlockIo(fs: IFileSystem, path: string, blockSize: int) =
                 stream.Read(dst.Span.Slice(0, toRead))
 
         member _.Write(lba, src) =
-            use stream =
-                fs.OpenFile(path, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.Read)
-
             let offset = int64 lba * int64 blockSize
-            stream.Seek(offset, SeekOrigin.Begin) |> ignore
-            stream.Write(src.Span)
-            src.Length
+            fs.WriteAt(path, offset, src)
 
         member _.Flush() =
             use stream = fs.OpenFile(path, FileMode.Open, FileAccess.ReadWrite, FileShare.Read)
             stream.Flush()
 
+    interface IAsyncBlockIo with
+        member this.BlockSize = (this :> IBlockIo).BlockSize
+        member this.LbaCount = (this :> IBlockIo).LbaCount
+
+        member this.ReadAsync(lba, dst, ct) =
+            if ct.IsCancellationRequested then
+                ValueTask<int>(Task.FromCanceled<int> ct)
+            else
+                ValueTask<int>((this :> IBlockIo).Read(lba, dst))
+
+        member this.WriteAsync(lba, src, ct) =
+            if ct.IsCancellationRequested then
+                ValueTask<int>(Task.FromCanceled<int> ct)
+            else
+                ValueTask<int>((this :> IBlockIo).Write(lba, src))
+
+        member this.FlushAsync(ct) =
+            if ct.IsCancellationRequested then
+                ValueTask(Task.FromCanceled ct)
+            else
+                (this :> IBlockIo).Flush()
+                ValueTask()
+
 /// DST block device: LBA → sparse blocks in memory. Not POSIX, not NVMe.
-/// Write is visible immediately unless reorder holds it. `ArmCrashMidWrite`
-/// tears the next Write that is longer than `afterBytes`. Crash recovery of
-/// a volume on this door stays `toy` until freeze/CAS speak `IBlockIo`.
+/// Default: Write is durable immediately (POSIX-like RAM).
+/// `volatileUntilFlush = true` is the NVMe Flush/FUA DST: Write is visible
+/// on this instance; `CloneMedia` (crash) keeps only Flush'd media.
+/// `ArmCrashMidWrite` tears the next Write that is longer than `afterBytes`.
+/// Crash recovery of a volume on this door stays `toy` until freeze/CAS
+/// speak `IBlockIo`. Native NVMe Flush/FUA is not claimed.
 [<Sealed>]
-type SimulatedBlockIo(blockSize: int, ?media: IReadOnlyDictionary<uint64, byte[]>) =
+type SimulatedBlockIo(blockSize: int, ?media: IReadOnlyDictionary<uint64, byte[]>, ?lbaCount: uint64, ?volatileUntilFlush: bool) =
     do
         if blockSize <= 0 || (blockSize &&& (blockSize - 1)) <> 0 then
             invalidArg "blockSize" "block size must be a positive power of two"
 
+    let vol = defaultArg volatileUntilFlush false
+
+    /// 0 = unbounded sparse DST. A positive count is Identify-shaped
+    /// namespace size (RAM test adapter; not a real NVMe format).
+    let capacity = defaultArg lbaCount 0UL
+
     let blocks = System.Collections.Concurrent.ConcurrentDictionary<uint64, byte[]>()
+    let cache = System.Collections.Concurrent.ConcurrentDictionary<uint64, byte[]>()
     do
         match media with
         | Some seed ->
@@ -470,9 +743,11 @@ type SimulatedBlockIo(blockSize: int, ?media: IReadOnlyDictionary<uint64, byte[]
     let lockObj = obj ()
     let mutable crashArm: int option = None
     let mutable corruptArm: int option = None
+    let mutable tornArm: int option = None
     let mutable reorderArmed = false
     let mutable heldWrite: (uint64 * byte[]) option = None
     let commitOrder = ResizeArray<uint64>()
+    let recorded = ResizeArray<BlockIoOp>()
     let mutable writes = 0
     let mutable logicalBytes = 0L
     let corruptXor = 0xA5uy
@@ -484,13 +759,59 @@ type SimulatedBlockIo(blockSize: int, ?media: IReadOnlyDictionary<uint64, byte[]
             let lba = startLba + uint64 (offset / blockSize)
             let within = offset % blockSize
             let n = min (blockSize - within) (src.Length - offset)
-            let block = blocks.GetOrAdd(lba, fun _ -> Array.zeroCreate blockSize)
+
+            let block =
+                if vol then
+                    cache.GetOrAdd(
+                        lba,
+                        fun key ->
+                            match blocks.TryGetValue key with
+                            | true, durable -> Array.copy durable
+                            | false, _ -> Array.zeroCreate blockSize
+                    )
+                else
+                    blocks.GetOrAdd(lba, fun _ -> Array.zeroCreate blockSize)
+
             src.Slice(offset, n).CopyTo(Span(block, within, n))
             offset <- offset + n
+
+    let tryGetVisible (lba: uint64) =
+        if vol then
+            match cache.TryGetValue lba with
+            | true, cached -> Some cached
+            | false, _ ->
+                match blocks.TryGetValue lba with
+                | true, durable -> Some durable
+                | false, _ -> None
+        else
+            match blocks.TryGetValue lba with
+            | true, durable -> Some durable
+            | false, _ -> None
 
     let publish (startLba: uint64) (bytes: byte[]) =
         writeRange startLba (ReadOnlySpan bytes)
         commitOrder.Add startLba
+
+    let lastLba (start: uint64) (len: int) =
+        if len <= 0 then
+            start
+        else
+            start + uint64 ((len + blockSize - 1) / blockSize) - 1UL
+
+    let ensureInRange (start: uint64) (len: int) =
+        if capacity > 0UL then
+            let last = lastLba start len
+
+            if start >= capacity || last >= capacity then
+                raise (
+                    IOException(
+                        sprintf
+                            "LBA out of range (start=%s last=%s LbaCount=%s)"
+                            (start.ToString System.Globalization.CultureInfo.InvariantCulture)
+                            (last.ToString System.Globalization.CultureInfo.InvariantCulture)
+                            (capacity.ToString System.Globalization.CultureInfo.InvariantCulture)
+                    )
+                )
 
     /// One-shot: next Write longer than `afterBytes` commits that prefix then throws.
     member _.ArmCrashMidWrite(afterBytes: int) =
@@ -506,6 +827,14 @@ type SimulatedBlockIo(blockSize: int, ?media: IReadOnlyDictionary<uint64, byte[]
 
         lock lockObj (fun () -> corruptArm <- Some lastBytes)
 
+    /// One-shot: next Write longer than `sectorBytes` overlays only that
+    /// prefix of the NEW bytes; the rest of the LBA stays OLD. Acks.
+    member _.ArmTornSector(sectorBytes: int) =
+        if sectorBytes < 1 then
+            invalidArg (nameof sectorBytes) "sectorBytes must be >= 1"
+
+        lock lockObj (fun () -> tornArm <- Some sectorBytes)
+
     /// One-shot: hold the first Write (not visible), then the second Write
     /// commits itself first and flushes the held write.
     member _.ArmReorderNextTwo() =
@@ -517,25 +846,42 @@ type SimulatedBlockIo(blockSize: int, ?media: IReadOnlyDictionary<uint64, byte[]
 
     member _.CommitOrder = lock lockObj (fun () -> commitOrder.ToArray())
 
+    /// Issued completed Write/Flush ops in call order — what acted.
+    /// Not copied by CloneMedia (μένω copies remain, not the act log).
+    member _.RecordedOps = lock lockObj (fun () -> recorded.ToArray())
+
+    /// Replay issued ops onto `target`. Chaos intercepts are not in the log.
+    /// Copies the log, then replays without holding the sim lock.
+    member _.ReplayTo(target: IBlockIo) =
+        let ops = lock lockObj (fun () -> recorded.ToArray())
+        BlockIoReplay.replay ops target
+
     /// Logical payload length the caller maintains (log bytes, not padded blocks).
     member _.LogicalBytes
         with get () = lock lockObj (fun () -> logicalBytes)
         and set v = lock lockObj (fun () -> logicalBytes <- v)
 
-    /// Copy the media bytes onto a fresh device. Arms, LogicalBytes, and any
-    /// BlockCas index are not copied — those must reload from the superblock.
+    /// Copy durable media onto a fresh device (μένω: what remains).
+    /// Volatile cache is dropped (crash-before-Flush). Arms, LogicalBytes,
+    /// RecordedOps (what acted), and any BlockCas index are not copied —
+    /// those must reload from the superblock.
     member _.CloneMedia() : SimulatedBlockIo =
         let seed = Dictionary<uint64, byte[]>()
 
         for kv in blocks do
             seed.[kv.Key] <- Array.copy kv.Value
 
-        SimulatedBlockIo(blockSize, seed)
+        SimulatedBlockIo(blockSize, seed, lbaCount = capacity, volatileUntilFlush = vol)
 
     interface IBlockIo with
         member _.BlockSize = blockSize
 
+        /// 0 = unbounded sparse DST. Positive = RAM namespace size.
+        member _.LbaCount = capacity
+
         member _.Read(lba, dst) =
+            ensureInRange lba dst.Length
+
             if dst.Length = 0 then
                 0
             else
@@ -547,9 +893,9 @@ type SimulatedBlockIo(blockSize: int, ?media: IReadOnlyDictionary<uint64, byte[]
                     let within = offset % blockSize
                     let n = min (blockSize - within) (dst.Length - offset)
 
-                    match blocks.TryGetValue cur with
-                    | true, block -> Span(block, within, n).CopyTo(dst.Span.Slice(offset, n))
-                    | false, _ -> dst.Span.Slice(offset, n).Clear()
+                    match tryGetVisible cur with
+                    | Some block -> Span(block, within, n).CopyTo(dst.Span.Slice(offset, n))
+                    | None -> dst.Span.Slice(offset, n).Clear()
 
                     copied <- copied + n
 
@@ -559,6 +905,7 @@ type SimulatedBlockIo(blockSize: int, ?media: IReadOnlyDictionary<uint64, byte[]
 
         member _.Write(lba, src) =
             lock lockObj (fun () ->
+                ensureInRange lba src.Length
                 writes <- writes + 1
 
                 match crashArm with
@@ -585,23 +932,66 @@ type SimulatedBlockIo(blockSize: int, ?media: IReadOnlyDictionary<uint64, byte[]
                             copy.[i] <- copy.[i] ^^^ corruptXor
 
                         publish lba copy
+                        recorded.Add(BlockIoOp.Write(lba, src.ToArray()))
                         src.Length
                     | _ ->
+                        match tornArm with
+                        | Some sectorBytes when src.Length > sectorBytes ->
+                            tornArm <- None
+                            writeRange lba (src.Span.Slice(0, sectorBytes))
+                            commitOrder.Add lba
+                            recorded.Add(BlockIoOp.Write(lba, src.ToArray()))
+                            src.Length
+                        | _ ->
                         match reorderArmed, heldWrite with
                         | true, None ->
                             heldWrite <- Some(lba, src.ToArray())
+                            recorded.Add(BlockIoOp.Write(lba, src.ToArray()))
                             src.Length
                         | true, Some(heldLba, heldBytes) ->
                             reorderArmed <- false
                             heldWrite <- None
                             publish lba (src.ToArray())
                             publish heldLba heldBytes
+                            recorded.Add(BlockIoOp.Write(lba, src.ToArray()))
                             src.Length
                         | _ ->
                             publish lba (src.ToArray())
+                            recorded.Add(BlockIoOp.Write(lba, src.ToArray()))
                             src.Length)
 
-        member _.Flush() = ()
+        member _.Flush() =
+            lock lockObj (fun () ->
+                if vol then
+                    for kv in cache do
+                        blocks.[kv.Key] <- Array.copy kv.Value
+
+                    cache.Clear()
+
+                recorded.Add BlockIoOp.Flush)
+
+    interface IAsyncBlockIo with
+        member this.BlockSize = (this :> IBlockIo).BlockSize
+        member this.LbaCount = (this :> IBlockIo).LbaCount
+
+        member this.ReadAsync(lba, dst, ct) =
+            if ct.IsCancellationRequested then
+                ValueTask<int>(Task.FromCanceled<int> ct)
+            else
+                ValueTask<int>((this :> IBlockIo).Read(lba, dst))
+
+        member this.WriteAsync(lba, src, ct) =
+            if ct.IsCancellationRequested then
+                ValueTask<int>(Task.FromCanceled<int> ct)
+            else
+                ValueTask<int>((this :> IBlockIo).Write(lba, src))
+
+        member this.FlushAsync(ct) =
+            if ct.IsCancellationRequested then
+                ValueTask(Task.FromCanceled ct)
+            else
+                (this :> IBlockIo).Flush()
+                ValueTask()
 
 /// Append/read a byte stream on `IBlockIo` with tail-block read-modify-write.
 /// Position is a byte offset. Does not pad the logical length to a block.
@@ -663,13 +1053,15 @@ module BlockLog =
     let origin (io: IBlockIo) = 2L * int64 io.BlockSize
 
 /// Two checksummed superblock copies at LBA 0 and LBA 1. Payload starts at
-/// `BlockLog.origin`. Log magic `ZFL2`, CAS magic `ZCA2`. A torn or corrupt
-/// write of the inactive slot leaves the previous generation readable.
-/// Index must fit in one block. CRC is IEEE-802 over bytes after offset 8.
+/// `BlockLog.origin`. Log magic `ZFL2`, CAS magic `ZCA2`, group-commit
+/// segment magic `ZGL2`. A torn or corrupt write of the inactive slot
+/// leaves the previous generation readable. Index must fit in one block.
+/// CRC is IEEE-802 over bytes after offset 8.
 [<RequireQualifiedAccess>]
 module BlockSuper =
     let logMagic = [| byte 'Z'; byte 'F'; byte 'L'; byte '2' |]
     let casMagic = [| byte 'Z'; byte 'C'; byte 'A'; byte '2' |]
+    let groupMagic = [| byte 'Z'; byte 'G'; byte 'L'; byte '2' |]
 
     let private crcOf (buf: byte[]) =
         Crc32.HashToUInt32(ReadOnlySpan(buf, 8, buf.Length - 8))
@@ -706,8 +1098,8 @@ module BlockSuper =
         | None -> 0UL, 1L
         | Some(slot, gen, _) -> 1UL - slot, gen + 1L
 
-    let private parseLog (buf: byte[]) : (int64 * int64) option =
-        if magicOk buf logMagic && crcOk buf then
+    let private parseNamed (buf: byte[]) (magic: byte[]) : (int64 * int64) option =
+        if magicOk buf magic && crcOk buf then
             let gen = BinaryPrimitives.ReadInt64LittleEndian(ReadOnlySpan(buf, 8, 8))
             let logical = BinaryPrimitives.ReadInt64LittleEndian(ReadOnlySpan(buf, 16, 8))
             Some(gen, logical)
@@ -775,20 +1167,28 @@ module BlockSuper =
             BinaryPrimitives.WriteInt32LittleEndian(Span(buf, o, 4), len)
             o <- o + 4
 
-    let writeLog (io: IBlockIo) (logical: int64) =
-        let current = pick (parseLog (readSlot io 0UL)) (parseLog (readSlot io 1UL))
+    let private writeNamed (io: IBlockIo) (magic: byte[]) (logical: int64) =
+        let current = pick (parseNamed (readSlot io 0UL) magic) (parseNamed (readSlot io 1UL) magic)
         let lba, gen = nextSlot current
         let buf = Array.zeroCreate io.BlockSize
-        Buffer.BlockCopy(logMagic, 0, buf, 0, 4)
+        Buffer.BlockCopy(magic, 0, buf, 0, 4)
         BinaryPrimitives.WriteInt64LittleEndian(Span(buf, 8, 8), gen)
         BinaryPrimitives.WriteInt64LittleEndian(Span(buf, 16, 8), logical)
         BinaryPrimitives.WriteUInt32LittleEndian(Span(buf, 4, 4), crcOf buf)
         io.Write(lba, System.ReadOnlyMemory<byte>.op_Implicit buf) |> ignore
 
-    let tryReadLog (io: IBlockIo) : int64 option =
-        match pick (parseLog (readSlot io 0UL)) (parseLog (readSlot io 1UL)) with
+    let private tryReadNamed (io: IBlockIo) (magic: byte[]) : int64 option =
+        match pick (parseNamed (readSlot io 0UL) magic) (parseNamed (readSlot io 1UL) magic) with
         | Some(_, _, logical) -> Some logical
         | None -> None
+
+    let writeLog (io: IBlockIo) (logical: int64) = writeNamed io logMagic logical
+
+    let tryReadLog (io: IBlockIo) : int64 option = tryReadNamed io logMagic
+
+    let writeGroup (io: IBlockIo) (logical: int64) = writeNamed io groupMagic logical
+
+    let tryReadGroup (io: IBlockIo) : int64 option = tryReadNamed io groupMagic
 
     let writeCas (io: IBlockIo) (entries: (string * int64 * int) array) =
         let current = pick (parseCas (readSlot io 0UL)) (parseCas (readSlot io 1UL))
@@ -854,21 +1254,24 @@ type BlockCas(io: IBlockIo) =
             invalidArg (nameof bytes) "bytes must not be null"
 
         lock lockObj (fun () ->
-            let start = pos
-            let after =
-                BlockLog.append io start (System.ReadOnlyMemory<byte>.op_Implicit bytes)
+            if index.ContainsKey key then
+                ()
+            else
+                let start = pos
+                let after =
+                    BlockLog.append io start (System.ReadOnlyMemory<byte>.op_Implicit bytes)
 
-            let snapshot = Dictionary(index, StringComparer.Ordinal)
-            snapshot.[key] <- struct (start, bytes.Length)
+                let snapshot = Dictionary(index, StringComparer.Ordinal)
+                snapshot.[key] <- struct (start, bytes.Length)
 
-            let entries =
-                [| for kv in snapshot ->
-                       let struct (s, n) = kv.Value
-                       kv.Key, s, n |]
+                let entries =
+                    [| for kv in snapshot ->
+                           let struct (s, n) = kv.Value
+                           kv.Key, s, n |]
 
-            BlockSuper.writeCas io entries
-            index.[key] <- struct (start, bytes.Length)
-            pos <- after)
+                BlockSuper.writeCas io entries
+                index.[key] <- struct (start, bytes.Length)
+                pos <- after)
 
 
 /// The global file system registry containing the active IFileSystem implementation.

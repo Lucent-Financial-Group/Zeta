@@ -81,7 +81,7 @@ Jira card) is referenced by neither org loop.
 
 ## The proof
 
-`apps/workers/test/org-implements-real-work.test.ts`, at the composition root where this codebase
+`agentic-organization/apps/workers/test/org-implements-real-work.test.ts`, at the composition root where this codebase
 says real adapters belong:
 
 - the dev hat runs a real sandboxed subprocess that **writes a real file**
@@ -92,7 +92,7 @@ says real adapters belong:
 - **the assertion is on the artifact on disk**, not on the report — the report is the org's account
   of itself, and an account is what the fixtures were already good at
 
-Every file touch goes through the sandbox, because `packages/test-node.d.ts` deliberately exposes
+Every file touch goes through the sandbox, because `agentic-organization/packages/test-node.d.ts` deliberately exposes
 only `mkdtempSync`/`rmSync` from `node:fs`. Rather than widen that, the assertion travels the same
 channel the organization does.
 

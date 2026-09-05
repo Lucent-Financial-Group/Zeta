@@ -1,0 +1,12 @@
+{
+  "pr_number": 16497,
+  "archive_path": "docs/history/pr-reviews/PR-16497-feat-081m1kdrjaa087g0r003s519dd-journaled-freeze-through-filesystemblockio.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-03T11:02:52.335Z",
+  "schema_version": "v1",
+  "commit_sha": "652cc4233543e47dedd9c72766e1cc8f02411483",
+  "title": "feat(081M1KDRJAA087G0R003S519DD): journaled freeze through FileSystemBlockIo",
+  "state": "MERGED",
+  "merged_at": "2026-09-03T11:02:15Z",
+  "head_ref": "feat/zetafs-file-block-log"
+}

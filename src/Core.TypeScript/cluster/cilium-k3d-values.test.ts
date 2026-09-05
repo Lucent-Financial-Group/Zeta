@@ -113,16 +113,16 @@ describe("the k3d lane installs metal's Cilium configuration", () => {
 
   test("ArgoCD is ClusterIP on BOTH providers — one host port 80 cannot serve two LoadBalancers", () => {
     // The shipped Cilium values enable `ingressController`, which creates a
-    // LoadBalancer Service. On k3s that materialises a klipper `svclb` DaemonSet
-    // binding host ports 80/443. A second LoadBalancer Service (ArgoCD's) then
-    // has nowhere to bind and its svclb pod sits Pending forever -- measured
+    // LoadBalancer Service. Metal disables k3s servicelb so Cilium owns L4;
+    // k3d now matches that flag. ClusterIP remains the ArgoCD type so a
+    // re-enable of klipper cannot collide on host :80/:443 -- measured
     // 2026-08-31, the run after the CNI was corrected.
     const code = codeWithoutComments(readFileSync(USE_CASES, "utf8"));
     expect(code).not.toContain("server.service.type=LoadBalancer");
     expect(code.match(/server\.service\.type=ClusterIP/g)?.length ?? 0).toBe(2);
   });
 
-  test("both helm installs read the Application pin — a restated 1.16.5 would desync ArgoCD adopt", () => {
+  test("both helm installs read the Application pin — a restated chart version would desync ArgoCD adopt", () => {
     const code = codeWithoutComments(readFileSync(USE_CASES, "utf8"));
     expect((code.match(/shippedCiliumChartVersion\(\)/g) ?? []).length).toBeGreaterThanOrEqual(2);
     expect(code).not.toMatch(/version:\s*"1\.16\.\d+"/);
@@ -145,6 +145,10 @@ describe("the k3d lane installs metal's Cilium configuration", () => {
       code.indexOf("export function tearDownK3dDevCluster"),
     );
     expect(k3dBody).toContain("applyK3dCoreDnsUpstreamOverride(ports)");
+    expect(k3dBody).toContain("applyVendoredGatewayApiCrds(ports)");
+    expect(k3dBody).toContain("applyK3dControlPlaneHostsAlias(ports, options.kubeApiHost)");
+    expect(k3dBody).toContain("waitForAllNodesReady(180)");
+    expect(k3dBody).not.toContain("gateway-api/releases/download");
     expect(code).toContain("coredns-custom");
     // The restart must be a REAL call. The first draft used
     // `controlPlane.restartDeployment?.()` -- a method absent from that
@@ -157,7 +161,9 @@ describe("the k3d lane installs metal's Cilium configuration", () => {
     const src = readFileSync(USE_CASES, "utf8");
     const kindFn = src.slice(src.indexOf("export function bringUpKindCiCluster"), src.indexOf("export function tearDownKindCluster"));
     expect(kindFn).not.toContain("applyK3dCoreDnsUpstreamOverride");
+    expect(kindFn).not.toContain("applyK3dControlPlaneHostsAlias");
     expect(kindFn).toContain("applyKindCiliumCoreDnsUpstreamOverride(ports)");
+    expect(kindFn).toContain("applyVendoredGatewayApiCrds(ports)");
   });
 
   test("a missing surface REFUSES rather than falling back to chart defaults", () => {

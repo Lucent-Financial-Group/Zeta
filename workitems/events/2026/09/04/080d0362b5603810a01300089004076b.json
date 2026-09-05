@@ -1,0 +1,14 @@
+{
+  "id": "080d0362b5603810a01300089004076b",
+  "at": "2026-09-04T12:13:34.599Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1P5DB07087G0R000GCAKH8",
+    "type": "task",
+    "title": "D12 torn-sector intercept and GroupCommit default IBlockIo",
+    "slug": "d12-torn-sector-intercept-and-groupcommit-default-iblockio",
+    "priority": "P1",
+    "filename": "081M1P5DB07087G0R000GCAKH8-d12-torn-sector-intercept-and-groupcommit-default-iblockio.md"
+  }
+}

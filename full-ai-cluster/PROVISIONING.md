@@ -148,6 +148,22 @@ scenarios where tty1 prompting is inappropriate (operator pre-
 stages passphrase at `/run/zeta-creds-passphrase` via separate
 mechanism).
 
+### Host credentials as Kubernetes Secrets (081M1PWSF56087G0R000FDS3NY)
+
+After restore, the control plane runs `zeta-creds-to-k8s.service`.
+It projects allowlisted restored files (`gh-cli`, `claude`, `gemini`,
+`codex`) into Opaque Secrets in namespace `zeta-host-creds` so agent
+pods can mount them. WiFi, SSH host keys, operator pubkey, and
+install-answers stay on the host.
+
+```bash
+systemctl status zeta-creds-to-k8s.service
+k3s kubectl -n zeta-host-creds get secrets
+```
+
+Per-host opt-out: `zeta.credsToK8s.enable = false;`. Design:
+`docs/design/2026-09-04-host-creds-as-k8s-secrets.md`.
+
 ## Step 5 (manual override only — first-boot service handles this automatically)
 
 These commands run automatically in the zero-typing flow. Use

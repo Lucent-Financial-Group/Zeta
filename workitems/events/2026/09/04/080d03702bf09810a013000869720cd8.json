@@ -1,0 +1,14 @@
+{
+  "id": "080d03702bf09810a013000869720cd8",
+  "at": "2026-09-04T20:04:08.851Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1Q0AZGJ087G0R00186F3QA",
+    "type": "task",
+    "title": "QEMU file-image NVMe argv helper; refuse host namespaces",
+    "slug": "qemu-file-image-nvme-argv-helper-refuse-host-namespaces",
+    "priority": "P1",
+    "filename": "081M1Q0AZGJ087G0R00186F3QA-qemu-file-image-nvme-argv-helper-refuse-host-namespaces.md"
+  }
+}

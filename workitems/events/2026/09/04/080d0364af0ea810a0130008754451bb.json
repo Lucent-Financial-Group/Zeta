@@ -1,0 +1,14 @@
+{
+  "id": "080d0364af0ea810a0130008754451bb",
+  "at": "2026-09-04T13:22:37.141Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1P9BREN087G0R000K7D38C",
+    "type": "task",
+    "title": "Reclaim crash-mid-sweep keeps a committed freeze readable",
+    "slug": "reclaim-crash-mid-sweep-keeps-a-committed-freeze-readable",
+    "priority": "P1",
+    "filename": "081M1P9BREN087G0R000K7D38C-reclaim-crash-mid-sweep-keeps-a-committed-freeze-readable.md"
+  }
+}

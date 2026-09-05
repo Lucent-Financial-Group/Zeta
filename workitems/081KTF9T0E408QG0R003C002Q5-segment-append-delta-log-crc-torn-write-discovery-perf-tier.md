@@ -44,3 +44,51 @@ Anchor: classic WAL (ARIES); SQLite WAL; segment+CRC is standard.
 CRC32C-framed records, fresh-instance recovery, and torn trailing record
 truncation. Remaining: segment rollover/compaction so physical `TruncateAsync`
 can reclaim bytes instead of relying only on `ReplayAsync(fromSeqExclusive)`.
+
+## Progress (2026-09-03) — segment rollover + physical truncation landed
+
+(revived 2026-09-03 by shadow from `otto/agent-sovereign-keys-proposal` — tag
+`archive/2026-09-03-branch-sweep/otto/agent-sovereign-keys-proposal`, commits authored by
+desktop-Otto 2026-08-13; PR #10511 landed only that branch's research doc and left the code
+"for its author to land"; the author stopped running. Aaron overruled two reviewers' advice
+not to revive. Re-applied onto current main one increment at a time, not rebased.)
+
+`GroupCommitDiskDeltaLog` now rolls segments and physically reclaims bytes
+(the v1 no-op `TruncateAsync` is gone):
+
+- Segments named `delta-{firstSeq:020}.segment` — coverage `[firstSeq,
+  next.firstSeq)` is derivable from NAMES alone, no index file to drift. The
+  active segment rolls when it reaches `maxSegmentBytes` (ctor knob, default
+  64 MiB; non-positive rejected); the next boat seals it and opens a segment
+  named by that boat's first sequence.
+- `TruncateAsync(seq)` deletes whole SEALED segments fully absorbed by the
+  snapshot (ARIES/SQLite-WAL/Kafka segment GC); the active segment is never
+  deleted (logical `ReplayAsync(fromSeqExclusive)` filtering still masks any
+  absorbed prefix it holds). A segment leaves the in-memory list only after
+  its unlink succeeds; a failed unlink is retried next time, not swallowed.
+- Torn-write handling is now POSITIONAL: only the ACTIVE segment can carry a
+  torn trailing record (every sealed segment was flushed through by its final
+  boat before the roll) — a torn tail there truncates on recovery as before,
+  but ANY anomaly inside a SEALED segment fails loudly as corruption.
+- A pre-rollover `delta.segment` is honoured as the FIRST segment (in-place
+  upgrade, no migration step); truncation past its coverage deletes it too.
+- End-to-end: RecoverableSpine with `AutoSnapshotEvery` gets real byte
+  reclamation (snapshot → truncate → sealed segments deleted → fresh-instance
+  recovery still exact).
+
+What had to change to fit current main (the branch predates all of it): the
+`fsDoor` bound at construction (background ferries must not re-read
+`FileSystem.Current`), `ConfigureAwait(false)` on the pooled `ValueTask`
+writes, try/finally stream disposal so a crash-mid-write faults the boat, a
+`*.segment` suffix glob (the in-memory test filesystem matches suffixes only),
+and — the load-bearing one — the **erasure classification** that landed after
+the branch: the v1 row declared `TruncateAsync` "Reversible because
+unimplemented … this declaration is what will fail when [compaction] lands".
+It did. Three rows replace it (read surface under the default cap = Reversible
+IN THE MODEL, fibre 1; read surface with the cap forced to one byte = Erasing,
+fibre 3 / 1.585 bits, measured by a new sweep row in
+`Erasure.Representation.Laws.Tests.fs`; the medium = Unmeasured).
+
+Remaining on this row: the Naledi append-throughput benchmark comparing the
+two disk logs before either becomes the default (the rollover itself is
+**unmetered** — no throughput claim is made).
