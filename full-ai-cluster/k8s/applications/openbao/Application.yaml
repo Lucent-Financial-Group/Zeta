@@ -62,6 +62,10 @@ metadata:
     # which the dev cluster provisions at bring-up, so there is no window where
     # the class does not exist.
     argocd.argoproj.io/sync-wave: "-60"
+    # DECLARED because `audit-vault-topology-coherence` demands it, and it is
+    # right to: every replica count and affinity rule below is unreadable
+    # without knowing which topology they target. One voter, one node.
+    cluster.zeta.io/topology: single-node
   name: openbao
   namespace: argocd
   finalizers: [ resources-finalizer.argocd.argoproj.io ]
@@ -123,6 +127,14 @@ spec:
           resources:
             requests: { cpu: 100m, memory: 256Mi }
         injector:
+          # `affinity: ""` DECLARED EVEN THOUGH THE INJECTOR IS OFF. The chart
+          # defaults `injector.affinity` to a REQUIRED podAntiAffinity
+          # (values.yaml:303 at 0.29.4), and a reader cannot tell from a manifest
+          # what will schedule if the manifest is silent about it. Verified the
+          # injector renders zero resources at `enabled: false`, so this is
+          # belt-and-braces rather than load-bearing -- which is the right
+          # disposition for a scheduling rule nobody can see.
+          affinity: ""
           # OFF. The sidecar injector rewrites pods to fetch secrets at runtime;
           # this tree uses external-secrets for that job, and running both would
           # be two mechanisms racing to own the same concern.

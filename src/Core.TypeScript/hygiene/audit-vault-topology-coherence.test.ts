@@ -344,7 +344,7 @@ describe("against the real tree", () => {
     // row exists, and not that the description is accurate. It catches a rule
     // added with no documentation at all, which is the failure that happened.
     const doc = readFileSync(
-      join(REPO_ROOT, "full-ai-cluster", "k8s", "applications", "vault", "TOPOLOGY.md"),
+      join(REPO_ROOT, "full-ai-cluster", "k8s", "applications", "openbao", "TOPOLOGY.md"),
       "utf8",
     );
     const missing = RULES.filter((r) => !doc.includes("`" + r + "`"));
