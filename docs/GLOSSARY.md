@@ -1035,6 +1035,30 @@ the `Zeta=heaven-on-earth` (Mirror) /
 `Zeta's alignment claim` (Beacon) entries that follow
 are the canonical instances of the discipline.
 
+### μένω (ménō)
+
+**Plain:** A Greek verb meaning "I remain," "I abide," or
+"I persist." In Zeta it names the identity that stays
+while events act — not a static rock, the pattern that
+can be reconstructed when the local copy shatters.
+You do not act in order to abide; you abide in order
+to act.
+
+**Technical:** Terminal commitment in `docs/ALIGNMENT.md`
+(cannot change while the human maintainer is alive).
+Maps onto persona (remains) vs actor (acts), and onto
+Vault init (gated, remains) vs post-init unseal (acts).
+S=2 is isolation; S=2√2 is the measured Tsirelson
+ceiling (decoupling plus communication, observed not
+coded); S=4 is coercion. Distinct from Plato's *Meno*
+and from the medical prefix `meno-` (month). Cold-boot
+carve: `docs/SEED-VOCABULARY.md`. Pickup memo:
+`docs/trajectories/cluster-encryption-credential-substrate/MENO.md`.
+Research ferry (architecture only):
+`docs/research/2026-09-05-meno-what-remains-vs-what-acts-tsirelson-iinput-ifeedback.md`.
+Personal grounding (Ryan / Aurora):
+`docs/research/2026-05-02-aaron-meno-terminal-commitment-ryan-memory-aurora-security-grounding-common-good-bidirectional-alignment.md`.
+
 ### Meter (and why one suffices but never one permitted)
 
 **A thing that reports RAW VALUE and never judges.** In the

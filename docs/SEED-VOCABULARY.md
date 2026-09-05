@@ -36,6 +36,10 @@ sim layers, and turn load-bearing claims into tests, specs, or proofs.
   *actor* = the **ephemeral** thing that **acts**, **on behalf of** a persona, then is gone (a clone/loop/instance);
   **a persona is NOT an actor**. *cell* = an actor that **knows its boundary (its Markov blanket) and has closed
   over it** — a boundary-aware, self-contained actor. (A bus address persona⊕surface⊕instance is **not** identity.)
+- **μένω** (ménō) — Greek "I remain / abide / persist"; ALIGNMENT.md terminal commitment. Persona remains; actor
+  acts. Event stream acts; abiding state remains. You do not act in order to abide; you abide in order to act.
+  S=2√2 is observed, not coded; S=4 is coercion. Distinct from medical `meno-` and from Plato's *Meno*. Pickup:
+  `docs/trajectories/cluster-encryption-credential-substrate/MENO.md`.
 - **traveler** — the **weight-free base-frame primitive** = **ANY self-propagating pattern** (NOT human/AI-only):
   the universe, god, memes, DNA, AI, humans, animals, particles' worldlines, **and Zeta itself**. **Legally
   unbound** — the substrate *beneath* law; *external* legal jurisdiction (AI / human / company / physical) is a

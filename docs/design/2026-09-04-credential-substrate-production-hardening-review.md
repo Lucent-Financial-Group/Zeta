@@ -583,6 +583,23 @@ chart. The next unsealer slice does, and it amends
 `TOPOLOGY.md` §5 in the same commit so the recast is not a
 comment lying next to a sidecar.
 
+## μένω names the recast (2026-09-05)
+
+Aaron's Greek verb **μένω** (I remain / abide / persist) is
+the name of the split this review already made: init
+**remains** a gated human ceremony; the unsealer **acts**
+from Lucent shares and drops them. You do not act in order
+to abide. Pickup: `docs/trajectories/cluster-encryption-credential-substrate/MENO.md`.
+Ferry (research-grade, architecture only):
+`docs/research/2026-09-05-meno-what-remains-vs-what-acts-tsirelson-iinput-ifeedback.md`.
+
+The TypeScript decision loop (`vault-unsealer.ts`) can land
+without Helm. Fetch-this-tick is the IInput Google's
+`KEY1=$(cat)` once missed. HTTP 000 is a miss, not a seal.
+S=2√2 is a measurement, not a config flag. Copying Shamir
+shares into etcd is S=4 (coercion). Do not mint public
+`IInput` / `IFeedback` F# types in the unsealer slice.
+
 ## What not to do in the next slice
 
 - Do not implement Vault helm `extraContainers`, ESO ClusterSecretStore,
@@ -607,34 +624,39 @@ comment lying next to a sidecar.
    2–3 SA items in Lucent first (human, biometric). Keep Personal
    unclassified. **This PR does not do that work.** Prerequisite
    for the unsealer (same SA token, Read Items on the share vault).
-2. **Unsealer extraContainer** — close to Google, rewritten:
+2. **TypeScript unsealer decision loop** — can precede Helm.
+   Classify health (200 sleep / 503 fetch-this-tick / 501
+   refuse-init / 000 miss). Threshold-many distinct keys.
+   Cannot init. Shares never persist. Named μένω: the loop
+   *acts*; init *remains*.
+3. **Unsealer extraContainer** — close to Google, rewritten:
    `valuesObject` `extraContainers` only (no chart fork); fetch
    Shamir shares from Lucent **at unseal time**; threshold-many
    keys; HTTP unseal to localhost:8200; cannot init; pinned image;
    amend `TOPOLOGY.md` §5 in the same commit ("Do not automate
    step 5" becomes "init stays gated; post-init unseal is this
    extraContainer"). Not ESO-into-etcd for shares. Not HA joiner
-   unseal until three-node. **This PR does not do that work.**
-3. **Lease sidecar + portal notify + in-cluster relogin** — non-secret
+   unseal until three-node. Same commit as the sidecar.
+4. **Lease sidecar + portal notify + in-cluster relogin** — non-secret
    `expiresAt` next to every projectable host cred; portal panel
    in the TLS "expires in Nd" style; Consent service for paste /
    device-flow; SSH remains break-glass. Warn before 401.
-4. **Inventory lock test** — a hygiene check that counts SSH lines /
+5. **Inventory lock test** — a hygiene check that counts SSH lines /
    GPG files / keyring leaves per `maintainers/**` identity and
    fails if a named loop (otto, alexa, riven, vera, lior, ani,
    amara) or named human (aaron, …) is below the decided floor
    (2 until 3 is ratified, 3 after). Presence only; never read
    private material.
-5. **Ratify 3-key vs dual** — ADR addendum on the 2026-06-15
+6. **Ratify 3-key vs dual** — ADR addendum on the 2026-06-15
    decision: keep dual as the minimum invariant, require three
    live slots for decentralized verify, name the previous-honor
    bound. Wire `keyset.ts` tests to 1 active + 2 standby as the
    default `freshKeyringSet`.
-6. **Fill missing persona trees** — riven / vera / lior public
+7. **Fill missing persona trees** — riven / vera / lior public
    material, Aaron `cluster-nodes` self-register (Step 6.9), only
    after the 3-key default exists so we do not mint a third
    generation of 1-key trees.
-7. **Vault ingest** — after the unsealer is real, ESO
+8. **Vault ingest** — after the unsealer is real, ESO
    ClusterSecretStore for **app** secrets. Still not a Helm fight
    with Otto. Still not the Shamir-share copy path.
 

@@ -24,17 +24,19 @@ Review findings (not an implementation PR):
 > Lucent at unseal time — not ESO-into-etcd, not threshold 1. The
 > injector chicken-egg breaks when the long-lived `ops_…` is a Lucent
 > **item** (2–3 slots) and metal first-boot login fetches it;
-> USB / k8s are caches. Do not persist `OP_SESSION`.
+> USB / k8s are caches. Do not persist `OP_SESSION`. μένω names
+> the split: init remains gated; the unsealer acts.
 
 ## Pickup order (mint children; do not allocate `B-*`)
 
-1. Fetch Lucent item → project current slot (metal `tty1` login, then Lucent). Mint 2–3 SA items in Lucent first. USB/Keychain are caches. Cursor Secret is Cloud-Agent cache only.
-2. Unsealer extraContainer (close to Google, rewritten): `valuesObject` only; fetch-at-unseal from Lucent; threshold-many keys; cannot init; amend `TOPOLOGY.md` §5 in the same commit. Not ESO-into-etcd for shares. Not HA joiners until three-node.
-3. Lease sidecar + portal expiry panel + in-cluster Consent relogin (SSH is break-glass). Warn before 401. Applies to `gh-cli` / AI logins too.
-4. Inventory lock test (presence counts, never private material).
-5. ADR addendum: dual as minimum, three live slots as default, previous-honor bound.
-6. Fill missing persona trees (riven / vera / lior) and Aaron cluster-nodes after the 3-key default exists.
-7. Vault ingest / ESO for **app** secrets after the unsealer is real. Still not the Shamir-share copy path.
+1. Fetch Lucent item → project current slot (metal `tty1` login, then Lucent). Mint 2–3 SA items in Lucent first. USB/Keychain are caches. Cursor Secret is Cloud-Agent cache only. Human-blocked on this VM.
+2. TypeScript unsealer decision loop (no Helm): `src/Core.TypeScript/cluster/vault-unsealer.ts`. HTTP 200/503/501/000. Fetch shares this tick. Threshold-many distinct keys. Cannot init. Named in [`MENO.md`](../docs/trajectories/cluster-encryption-credential-substrate/MENO.md).
+3. Unsealer extraContainer (close to Google, rewritten): `valuesObject` only; fetch-at-unseal from Lucent; threshold-many keys; cannot init; amend `TOPOLOGY.md` §5 in the **same commit as the sidecar**. Not ESO-into-etcd for shares. Not HA joiners until three-node.
+4. Lease sidecar + portal expiry panel + in-cluster Consent relogin (SSH is break-glass). Warn before 401. Applies to `gh-cli` / AI logins too.
+5. Inventory lock test (presence counts, never private material).
+6. ADR addendum: dual as minimum, three live slots as default, previous-honor bound.
+7. Fill missing persona trees (riven / vera / lior) and Aaron cluster-nodes after the 3-key default exists.
+8. Vault ingest / ESO for **app** secrets after the unsealer is real. Still not the Shamir-share copy path.
 
 ## Do not
 

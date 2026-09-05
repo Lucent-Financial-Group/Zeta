@@ -1,11 +1,34 @@
 # Trajectory - Cluster Encryption / Credential Substrate
 
 Status: active — first surfaced 2026-05-29 from substrate inventory (was tracked only as scattered backlog rows; never had a trajectory surface, which is why it was easy to lose at cold-boot)
-Last refreshed: 2026-09-04 (host→Secret #16587 landed; Lucent item is the SA-token store — metal first-boot login fetches it; post-init Vault unseal is a Google-shaped extraContainer, rewritten)
+Last refreshed: 2026-09-05 (μένω names remaining vs acting on this trajectory; TypeScript unsealer decision loop can land without Helm)
 Type: workstream (current-focus) — a trajectory the operator is *actively powering*. Many trajectories can be tracked; only a few are workstreams at once (finite-focus / WIP-bounded — a workstream is a trajectory under sustained thrust, and thrust budget is finite, so most trajectories coast). ("Trajectory" is the genus; "workstream" is the species: a trajectory under sustained thrust toward a deliverable, vs. emergent-posture trajectories like `anti-infection`, which self-describes as "not a workstream with a cadence." See [`factory-trajectory-surface`](../factory-trajectory-surface/RESUME.md) for the genus/species taxonomy.) One of the operator's three current cluster workstreams (encryption / usb-zflash / ts-workflow-engine).
 Eventual encoding (design-stage — the human maintainer 2026-05-23 genetic-ID substrate + Clifford/HKT): this trajectory's state is trackable as a 128-bit genetic-ID seed (discrete, reversible via parser-combinator ↔ generator-function) → Clifford-space path (continuous, eventual). Mirrors the three-lane I8-lattice / I9-manifold split.
 Current blocker: none operationally; the live design tension is interactive-login-vs-baked-in-keys-vs-CI-test (081KSGS9H0008QG0R003JNSVR5)
 Next concrete action: round-trip harness in flight (otto/onboarding-roundtrip-harness — sandboxed new-fork setup→teardown→re-setup ×N, surfaces the rotate-command gap). Then smart cascading teardown (cascade-with-warnings; extra-care warn on memories/hardware-state/unrecoverable-encrypted; OWNER-consent-gated memory delete; user-sovereign encryption can't be force-reset; each user = own git repo — see `docs/research/2026-06-21-smart-cascading-teardown-user-sovereign-deletion-…`). All 3 vaults now Active+Standby (rotation-ready: Lucent/Personal/CA, 2 service accounts each in Keychain). CA-recovery hardware (FIDO/HSM/N-of-M) = post-investor next layer. Live wipe + clean re-onboard once the harness is tight. Teardown primitive shipped (#9000).
+
+## 2026-09-05 — μένω names the recast (Riven)
+
+Aaron forwarded the Google thread that started at event
+streaming and arrived at μένω. Incorporated as a Greek-framed
+pickup memo, not as factory policy from the narrative overlay.
+
+Live memo (title/kernel in Greek, lists in English):
+[`MENO.md`](MENO.md).
+Research-grade ferry (architecture only; Pattern 1 refused):
+[`docs/research/2026-09-05-meno-what-remains-vs-what-acts-tsirelson-iinput-ifeedback.md`](../../research/2026-09-05-meno-what-remains-vs-what-acts-tsirelson-iinput-ifeedback.md).
+
+The recast this names was already on main: **init remains**
+(gated `operator init`); **unsealer acts** (fetch-at-unseal,
+threshold-many, cannot init). S=2√2 is observed, not coded.
+S=4 is the ESO-into-etcd / threshold-1 failure. IInput /
+IFeedback is the missing Meijer loop as a research name;
+no new public F# types.
+
+This slice's code: `src/Core.TypeScript/cluster/vault-unsealer.ts`
+— HTTP 200/503/501/000 decision loop. Lucent mint still
+human-blocked. extraContainer + `TOPOLOGY.md` §5 still wait
+for the sidecar commit.
 
 ## 2026-09-04 — production-hardening review (Riven)
 
