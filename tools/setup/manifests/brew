@@ -413,8 +413,8 @@ pam-reattach  # PAM module: re-attach to the Aqua session so Touch ID sudo works
 # librdkafka). bun/node/python already come from mise. clang comes from
 # `xcode-select`. zstd was apt-only until this row (ollama .tar.zst on Linux).
 cmake
-pkg-config
-openssl         # headers+lib; keg-only, matches Feldera README formula name
+pkgconf         # Homebrew renamed pkg-config -> pkgconf; `brew list --formula` reports pkgconf, so the manifest must too
+openssl@3       # headers+lib; keg-only. bare `openssl` is an alias; the installed keg is openssl@3, which is what `brew list --formula` reports
 cyrus-sasl      # brew name for apt libsasl2-dev
 zlib            # keg-only; macOS already ships zlib, formula matches the README
 zstd            # headers+binary; apt already had the binary for ollama .tar.zst
