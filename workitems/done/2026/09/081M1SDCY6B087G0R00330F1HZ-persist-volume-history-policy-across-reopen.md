@@ -1,11 +1,12 @@
 ---
 id: 081M1SDCY6B087G0R00330F1HZ
 type: task
-state: in-progress
+state: done
 priority: P2
 slug: persist-volume-history-policy-across-reopen
 title: "Persist volume history policy across reopen"
 created: 2026-09-05T18:30:53.387Z
+completed: 2026-09-05T18:54:51.424Z
 depends_on:
   - 081M1SC3ADK087G0R001M8YKBS
 composes_with: []
