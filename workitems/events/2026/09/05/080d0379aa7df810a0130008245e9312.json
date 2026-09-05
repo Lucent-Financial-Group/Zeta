@@ -1,0 +1,14 @@
+{
+  "id": "080d0379aa7df810a0130008245e9312",
+  "at": "2026-09-05T01:35:59.935Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1QKAKXY087G0R001ZH646M",
+    "type": "task",
+    "title": "Narrow hindsight to its one live blocker; ollama CPU-only needs a per-rung field override the tree does not have",
+    "slug": "narrow-hindsight-to-its-one-live-blocker-ollama-cpu-only-nee",
+    "priority": "P2",
+    "filename": "081M1QKAKXY087G0R001ZH646M-narrow-hindsight-to-its-one-live-blocker-ollama-cpu-only-nee.md"
+  }
+}
