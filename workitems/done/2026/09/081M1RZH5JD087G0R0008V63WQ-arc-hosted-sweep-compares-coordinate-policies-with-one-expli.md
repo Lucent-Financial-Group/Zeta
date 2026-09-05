@@ -1,7 +1,7 @@
 ---
 id: 081M1RZH5JD087G0R0008V63WQ
 type: task
-state: active
+state: done
 priority: P2
 slug: arc-hosted-sweep-compares-coordinate-policies-with-one-expli
 title: "ARC hosted sweep compares coordinate policies with one explicit dispatch"
@@ -26,3 +26,14 @@ Acceptance:
 - the dispatch fails loudly if either policy sees or plays zero environments;
 - after merge, dispatch the comparison and report the measured result without
   claiming that a truncated 200-action ceiling is leaderboard-comparable.
+
+Completion:
+
+- `compare_coordinate_policies` snapshots and reuses one sorted roster;
+- CLI and workflow dispatch expose the paired run without changing the normal
+  main-push centroid sweep;
+- both full reports and signed scene-feedback-minus-centroid deltas are emitted;
+- both reports are independently rejected when they see or play zero rows;
+- 177 ARC tests, repository Python lint, `actionlint`, offline paired execution,
+  and full `bun run preflight` pass on the refreshed branch;
+- the post-merge keyed dispatch remains the final operational verification.
