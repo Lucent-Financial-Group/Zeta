@@ -618,12 +618,91 @@ export interface CurrencyDrift {
  * published after the last refresh is invisible here -- which is exactly why
  * snapshot staleness is itself a finding below, and the LOUDEST one.
  */
+export const BASELINE_RELATIVE_PATH = "src/Core.TypeScript/hygiene/chart-currency.baseline.json";
+
+export interface AcknowledgedDrift {
+  readonly chart: string;
+  readonly reason: string;
+  readonly liftsWhen: string;
+  readonly observed: string;
+}
+
+/**
+ * Charts whose being-behind is CARRIED with a reason and an exit.
+ *
+ * Aaron 2026-09-05: "we want to cleanup our drift and not just ignore it or else
+ * everyting merged will be red forever in drift." The first version of `--drift`
+ * had exactly that defect -- it failed whenever ANY chart was behind, and charts
+ * are always somewhat behind, so it was red on every run. A permanently red check
+ * is one nobody reads.
+ *
+ * REFUSES A TOKEN ENTRY: an acknowledgement without a `liftsWhen` is an exemption
+ * nobody can retire, which is the same shape this repository refuses everywhere
+ * else it carries known debt.
+ */
+export function loadCurrencyBaseline(repoRoot = REPO_ROOT): readonly AcknowledgedDrift[] {
+  let raw: string;
+  try {
+    raw = readFileSync(join(repoRoot, BASELINE_RELATIVE_PATH), "utf8");
+  } catch (err) {
+    if ((err as NodeJS.ErrnoException).code === "ENOENT") return [];
+    throw err;
+  }
+  const list = (JSON.parse(raw) as { acknowledged?: unknown }).acknowledged;
+  if (!Array.isArray(list)) throw new Error(`${BASELINE_RELATIVE_PATH}: "acknowledged" must be an array`);
+  return list.map((entry) => {
+    const e = entry as Record<string, unknown>;
+    for (const key of ["chart", "reason", "liftsWhen", "observed"]) {
+      const value = e[key];
+      if (typeof value !== "string" || value.trim().length === 0) {
+        throw new Error(`${BASELINE_RELATIVE_PATH}: entry missing "${key}" -- an acknowledgement without one is an exemption nobody can audit or retire`);
+      }
+    }
+    return e as unknown as AcknowledgedDrift;
+  });
+}
+
 export function findCurrencyDrift(
   rows: readonly CurrencyRow[],
   asOf: string,
   now: Date = new Date(),
+  acknowledged: readonly AcknowledgedDrift[] = [],
 ): readonly CurrencyDrift[] {
   const out: CurrencyDrift[] = [];
+  const carried = new Set(acknowledged.map((a) => a.chart));
+
+  // A STALE ACKNOWLEDGEMENT IS ITS OWN FINDING, and it is an error. An entry for
+  // a chart that is no longer behind means the debt was paid and nobody removed
+  // the note -- which quietly grants that chart a permanent pass the next time it
+  // drifts. Same defect as an unacknowledged drift, pointed the other way.
+  // KEYED ON "PRODUCES A FINDING", NOT ON "IS BEHIND", and the difference is not
+  // academic: a DORMANT chart has `behind: 0` because upstream published nothing
+  // to be behind OF, yet it is exactly the kind of drift worth carrying. The
+  // first version of this predicate used `behind > 0` and immediately convicted
+  // `headscale`'s own entry as stale -- the check catching its author, which is
+  // the shape a falsifier is supposed to have.
+  const findingNow = new Set(
+    rows
+      .filter(
+        (r) =>
+          r.verdict === "UNREACHABLE" ||
+          r.verdict === "PIN-UNPUBLISHED" ||
+          r.verdict === "PIN-UNPARSEABLE" ||
+          r.verdict === "DORMANT" ||
+          (r.behind !== null && r.behind > 0),
+      )
+      .map((r) => r.chart),
+  );
+  for (const entry of acknowledged) {
+    if (findingNow.has(entry.chart)) continue;
+    out.push({
+      severity: "error",
+      kind: "stale-acknowledgement",
+      message:
+        `${entry.chart} is acknowledged as behind in ${BASELINE_RELATIVE_PATH} and is NOT behind any more. ` +
+        "Remove the entry -- a stale acknowledgement grants a silent pass the next time it drifts.",
+    });
+  }
 
   // STALENESS FIRST, and it is an error rather than a warning. A clean currency
   // report over a snapshot nobody refreshed is a check that did not run wearing
@@ -652,6 +731,10 @@ export function findCurrencyDrift(
   }
 
   for (const row of rows) {
+    // Carried with a reason and an exit -- see the baseline. NOT skipped silently:
+    // the entry is committed text a reader can open, and the summary line below
+    // reports how many are carried.
+    if (carried.has(row.chart)) continue;
     // Verdicts that mean the pin is broken, not merely old.
     if (row.verdict === "UNREACHABLE" || row.verdict === "PIN-UNPUBLISHED" || row.verdict === "PIN-UNPARSEABLE") {
       out.push({
@@ -720,10 +803,12 @@ function main(): void {
   // flag in here, and LOUD: GitHub annotations so `drift (loud)` surfaces it on
   // every PR instead of it living in a weekly job nobody opens.
   if (args.includes("--drift")) {
-    const findings = findCurrencyDrift(rows, asOf);
+    const acknowledged = loadCurrencyBaseline();
+    const findings = findCurrencyDrift(rows, asOf, new Date(), acknowledged);
     if (findings.length === 0) {
       process.stdout.write(
-        `chart currency: ${String(rows.length)} coordinate(s), none behind, snapshot asOf ${asOf}.\n`,
+        `chart currency: ${String(rows.length)} coordinate(s), no NEW drift, ` +
+          `${String(acknowledged.length)} carried with a reason and a lift condition, snapshot asOf ${asOf}.\n`,
       );
       return;
     }
