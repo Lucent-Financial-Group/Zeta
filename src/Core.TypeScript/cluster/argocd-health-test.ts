@@ -686,6 +686,39 @@ export function auditDevExclusionReasons(
  * instead of one -- see APPLIED_BUT_UNASSERTED_REASONS.
  */
 const DEV_INCLUDED_PROOF_DEFERRED_DIRS = new Set([
+  // `opensearch` -- DEFERRED ON A LIVE MEASUREMENT, not on a guess, and it is my
+  // own change from earlier today that produced the measurement.
+  //
+  // MEASURED, run 33936923932 (PR #16627), annotation verbatim:
+  //   "opensearch is OutOfSync/Progressing -- expected Synced/Healthy"
+  //
+  // It was added dev-INCLUDED on purpose (Aaron: "we want to try to test on dev
+  // for all of these"), the lane budget was checked, and it renders clean at
+  // both rungs. The live lane then refuted it inside the 2400s window, which is
+  // the mechanism working exactly as intended: a new Application went in, CI
+  // said no, and it is recorded rather than quietly excluded.
+  //
+  // TWO HYPOTHESES ARE ALREADY RULED OUT, so the next person does not re-test
+  // them:
+  //   - NOT a missing StorageClass. `zeta-local-path` is provisioned by
+  //     `dev-cluster/manifests/zeta-local-path.yaml`, and `seaweedfs` claims the
+  //     same class in the same lane and reaches Healthy.
+  //   - NOT the sysctl/`vm.max_map_count` init container that usually breaks
+  //     OpenSearch on kind. Rendered at 3.8.0 the only initContainer is
+  //     `fsgroup-volume` on busybox; `sysctlInit` is off by default.
+  //
+  // WHAT IS STILL UNKNOWN, and it is unknown rather than assumed: whether this
+  // is the JVM never passing its startup probe (failureThreshold 30 x
+  // periodSeconds 10 = 300s), the ~1.1GiB image pull plus start exceeding the
+  // window on a loaded runner, or the 1024Mi dev request being too tight beside
+  // a 512M heap. The job logs return EMPTY over the REST API from here, so the
+  // pod-level cause was not read.
+  //
+  // LIFTS WHEN: one run reads opensearch's pod events and container status --
+  // `kubectl describe` on the StatefulSet pod is the whole diagnosis -- and
+  // whichever of the three it turns out to be is fixed. It is deliberately NOT
+  // lifted by raising the timeout, which would convert a refutation into a wait.
+  "opensearch",
   // `agent-memory` is NOT here. It LEFT this set on 2026-09-03 together with its
   // DEV_EXCLUDED_REASONS entry, and the comment it carried was WRONG WHEN READ.
   //
@@ -975,6 +1008,27 @@ const DEV_INCLUDED_PROOF_DEFERRED_DIRS = new Set([
  * Adding an entry is cheap and honest; adding one WITHOUT a reason is refused.
  */
 export const APPLIED_BUT_UNASSERTED_REASONS: ReadonlyMap<string, string> = new Map([
+  [
+    "opensearch",
+    "DEFERRED ON A LIVE MEASUREMENT, run 33936923932 (PR #16627): \"opensearch is OutOfSync/Progressing -- " +
+      "expected Synced/Healthy\". It is APPLIED and not asserted -- it is not in the dev root's excludeGlob, so " +
+      "it still reaches the cluster and still produces a verdict to read, which is the whole point of leaving " +
+      "it in the shadow rather than excluding it: an Application that never syncs never produces a verdict, " +
+      "and that is how a deferral outlives its defect. " +
+      "TWO CAUSES RULED OUT so nobody re-tests them: NOT a missing StorageClass (`zeta-local-path` is " +
+      "provisioned by dev-cluster/manifests/zeta-local-path.yaml and `seaweedfs` claims the same class in the " +
+      "same lane and reaches Healthy), and NOT the sysctl/vm.max_map_count initContainer that usually breaks " +
+      "OpenSearch on kind (rendered at 3.8.0 the only initContainer is `fsgroup-volume` on busybox). " +
+      "STILL UNKNOWN and left unknown: startup probe never passing (failureThreshold 30 x periodSeconds 10 = " +
+      "300s), the ~1.1GiB image pull plus JVM start on a loaded runner, or the 1024Mi dev request being tight " +
+      "beside a 512M heap. Job logs return EMPTY over REST from the maintainer's machine, so the pod-level " +
+      "cause is unread rather than diagnosed. " +
+      "LIFTS WHEN: one run reads the pod events and container status for the StatefulSet pod, and whichever " +
+      "of the three it is gets fixed. NOT by raising the timeout, which converts a refutation into a wait. " +
+      "ANCHORS, CHECKED BY `reason-truth.ts`: " +
+      "[cite: glob-applies opensearch] " +
+      "[cite: chart-pin full-ai-cluster/opensearch opensearch 3.8.0] ",
+  ],
   [
     "arc-runner-set",
     "TWO independent blockers, either alone sufficient: it needs a GitHub App credential + a live runner registration that CI has no secret to bind, AND model-cache-pvc.yaml claims ReadWriteMany, which rancher.io/local-path behind the dev longhorn alias cannot serve (081KSXN940008QG0R000SCP2H1). " +
