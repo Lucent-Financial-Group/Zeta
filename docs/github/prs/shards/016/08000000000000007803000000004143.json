@@ -1,0 +1,12 @@
+{
+  "pr_number": 16707,
+  "archive_path": "docs/history/pr-reviews/PR-16707-feat-081m1snd350087g0r000dmd2qs-xor-of-blockcas-payload-is-not-readable.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-05T21:13:05.965Z",
+  "schema_version": "v1",
+  "commit_sha": "8f2f201df37878418042bd43fb9d0b3cf88d54a1",
+  "title": "feat(081M1SND350087G0R000DMD2QS): XOR of BlockCas payload is not readable",
+  "state": "MERGED",
+  "merged_at": "2026-09-05T21:12:23Z",
+  "head_ref": "feat/zetafs-blockcas-xor-readable"
+}
