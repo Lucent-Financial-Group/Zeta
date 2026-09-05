@@ -225,10 +225,50 @@ export const DEV_REDIS_AUTH_SECRET: DevBootstrapSecretSpec = {
  * `argocd-health-test.ts` refuses an included run for any member that is absent
  * from the cluster, and `use-cases.test.ts` asserts the loop covers all of it.
  */
+/**
+ * The OpenSearch initial admin credential, WITHOUT WHICH THE CONTAINER REFUSES
+ * TO BOOT.
+ *
+ * OpenSearch ships `securityConfig.enabled: true` and `protocol: https`, and
+ * since 2.12 the image will not start unless `OPENSEARCH_INITIAL_ADMIN_PASSWORD`
+ * is set to a strong value. The chart's own `values.yaml` leaves that key
+ * COMMENTED OUT, so a chart taken at its defaults cannot come up -- which is
+ * precisely what our live lane reported as `OutOfSync/Progressing` on run
+ * 33936923932. Upstream's three `ci/*-values.yaml` all set it; that is how the
+ * cause was found.
+ *
+ * MINTED, NEVER COMMITTED, AND THIS IS THE POINT. Aaron 2026-09-05: "passwords
+ * can be auto generated on cluster started never stored and then just the same
+ * secrets can be injected to the pod that need them". `applyDevBootstrapSecrets`
+ * generates `randomBytes(24).toString("base64url")` per cluster at bring-up. The
+ * value is never logged, never written to the tree, and dies with the cluster.
+ *
+ * IT REPLACES A WEAKER FIX. The first pass turned the security plugin OFF at the
+ * dev rung to avoid needing a password at all. That worked and tested less: dev
+ * then exercised a configuration metal never runs. Minting the credential lets
+ * dev run the SAME posture as metal, which is the whole argument for having a
+ * dev rung rather than a dev fork.
+ *
+ * ON METAL, the value is reachable exactly as Aaron described -- `kubectl get
+ * secret` into the cluster, or ssh to a node -- because it exists only in the
+ * cluster's own store and nowhere else.
+ */
+export const DEV_OPENSEARCH_ADMIN_SECRET: DevBootstrapSecretSpec = {
+  namespace: "opensearch",
+  name: "opensearch-admin-credentials",
+  userKey: "admin-user",
+  passwordKey: "admin-password",
+  user: "admin",
+  reason:
+    "Minted per dev/CI cluster at bring-up because OpenSearch >= 2.12 refuses to start without " +
+    "OPENSEARCH_INITIAL_ADMIN_PASSWORD while the security plugin is on.",
+} as const;
+
 export const DEV_BOOTSTRAP_SECRETS: readonly DevBootstrapSecretSpec[] = [
   DEV_GRAFANA_ADMIN_SECRET,
   DEV_ZITI_ADMIN_SECRET,
   DEV_REDIS_AUTH_SECRET,
+  DEV_OPENSEARCH_ADMIN_SECRET,
 ] as const;
 
 /**

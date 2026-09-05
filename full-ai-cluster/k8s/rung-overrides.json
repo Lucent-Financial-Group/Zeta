@@ -32,8 +32,14 @@
       "set": {
         "spec.source.helm.valuesObject.replicaCount": 1,
         "spec.source.helm.valuesObject.ollama.gpu.enabled": false,
-        "spec.source.helm.valuesObject.resources.requests": { "cpu": "250m", "memory": "512Mi" },
-        "spec.source.helm.valuesObject.resources.limits": { "cpu": "1", "memory": "2Gi" }
+        "spec.source.helm.valuesObject.resources.requests": {
+          "cpu": "250m",
+          "memory": "512Mi"
+        },
+        "spec.source.helm.valuesObject.resources.limits": {
+          "cpu": "1",
+          "memory": "2Gi"
+        }
       },
       "remove": [
         "spec.source.helm.valuesObject.nodeSelector"

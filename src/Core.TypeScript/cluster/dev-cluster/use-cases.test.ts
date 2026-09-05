@@ -9,6 +9,7 @@ import {
   DEV_CILIUM_LB_KIND_MANIFEST_RELPATH,
   DEV_GHCR_PULL_SECRET,
   DEV_GRAFANA_ADMIN_SECRET,
+  DEV_OPENSEARCH_ADMIN_SECRET,
   DEV_REDIS_AUTH_SECRET,
   DEV_ZITI_ADMIN_SECRET,
   devCiliumLbKindManifestPath,
@@ -512,7 +513,13 @@ describe("dev/CI bootstrap credentials", () => {
     expect(DEV_BOOTSTRAP_SECRETS).toContain(DEV_GRAFANA_ADMIN_SECRET);
     expect(DEV_BOOTSTRAP_SECRETS).toContain(DEV_ZITI_ADMIN_SECRET);
     expect(DEV_BOOTSTRAP_SECRETS).toContain(DEV_REDIS_AUTH_SECRET);
-    expect(DEV_BOOTSTRAP_SECRETS.length).toBe(3);
+    // 3 -> 4 on 2026-09-05: `DEV_OPENSEARCH_ADMIN_SECRET`. OpenSearch >= 2.12
+    // refuses to boot without OPENSEARCH_INITIAL_ADMIN_PASSWORD while the
+    // security plugin is on, which is what the live lane reported as
+    // OutOfSync/Progressing. Minting it lets dev run metal's posture instead of
+    // turning security off, which would have tested less.
+    expect(DEV_BOOTSTRAP_SECRETS).toContain(DEV_OPENSEARCH_ADMIN_SECRET);
+    expect(DEV_BOOTSTRAP_SECRETS.length).toBe(4);
     const refs = DEV_BOOTSTRAP_SECRETS.map((spec) => `${spec.namespace}/${spec.name}`);
     expect(new Set(refs).size).toBe(refs.length);
   });
