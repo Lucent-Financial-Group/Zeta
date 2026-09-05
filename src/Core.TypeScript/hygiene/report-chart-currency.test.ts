@@ -31,6 +31,7 @@ import {
   daysBetween,
   DORMANT_AFTER_DAYS,
   findCurrencyDrift,
+  loadCurrencyBaseline,
   SNAPSHOT_STALE_AFTER_DAYS,
   newestStableVersion,
   QUIET_AFTER_DAYS,
@@ -390,9 +391,16 @@ describe("findCurrencyDrift — the offline drift band that runs on every PR", (
     expect(found[0]?.severity).toBe("error");
   });
 
-  test("DORMANT is a warning and says replace-or-retire, because bumping it is not the remedy", () => {
+  test("DORMANT is an ERROR — you cannot stay on abandoned technology", () => {
+    // warning -> error on 2026-09-05. Aaron: "DORMANT detection should just be a
+    // failure, we can't stay on dormat technology we HAVE to upgrade so this is
+    // no different than a red check." Being unable to move is WORSE than being
+    // behind, not milder: no security fixes, no upgrade path. And `headscale`
+    // wore this label for 563 days while its project shipped four server
+    // releases -- the CHART had moved home. A warning invites waiting for a bump
+    // that cannot arrive; an error makes you find out why.
     const found = findCurrencyDrift([row({ verdict: "DORMANT", silentDays: 562 })], FRESH, NOW);
-    expect(found[0]?.severity).toBe("warning");
+    expect(found[0]?.severity).toBe("error");
     expect(found[0]?.message).toContain("replace-or-retire");
   });
 
@@ -403,5 +411,70 @@ describe("findCurrencyDrift — the offline drift band that runs on every PR", (
     expect(findCurrencyDrift([row({ behind: null, verdict: "CURRENT" })], FRESH, NOW)).toEqual([]);
     const unparseable = findCurrencyDrift([row({ behind: null, verdict: "PIN-UNPARSEABLE" })], FRESH, NOW);
     expect(unparseable[0]?.severity).toBe("error");
+  });
+});
+
+
+describe("the baseline — carrying drift without ignoring it", () => {
+  const row = (over: Partial<CurrencyRow>): CurrencyRow => ({
+    app: "demo", chart: "demo", repoURL: "https://example.invalid",
+    manifest: "m", pinned: "1.0.0", pinnedPublishedAt: "", newestStable: "1.0.0",
+    newestPublishedAt: "", behind: 0, bump: "none", activity: "active",
+    silentDays: 1, verdict: "CURRENT", unorderableVersions: 0, note: "", ...over,
+  });
+  const FRESH = "2026-09-05T00:00:00Z";
+  const NOW = new Date("2026-09-05T06:00:00Z");
+  const ack = (chart: string) => ({ chart, reason: "r", liftsWhen: "w", observed: "2026-09-05" });
+
+  test("an ACKNOWLEDGED chart being behind is not a finding", () => {
+    const behind = row({ chart: "gitlab", behind: 162, verdict: "BEHIND-MAJOR" });
+    expect(findCurrencyDrift([behind], FRESH, NOW)).toHaveLength(1);
+    expect(findCurrencyDrift([behind], FRESH, NOW, [ack("gitlab")])).toEqual([]);
+  });
+
+  test("an UNACKNOWLEDGED chart being behind still IS — carrying is per chart, not a blanket", () => {
+    // gitlab must be PRESENT and behind, or acknowledging it is itself stale --
+    // which the first version of this test tripped over, correctly.
+    const found = findCurrencyDrift(
+      [
+        row({ chart: "gitlab", behind: 162, verdict: "BEHIND-MAJOR" }),
+        row({ chart: "other", behind: 1, verdict: "BEHIND" }),
+      ],
+      FRESH,
+      NOW,
+      [ack("gitlab")],
+    );
+    expect(found).toHaveLength(1);
+    expect(found[0]?.kind).toBe("BEHIND");
+    expect(found[0]?.message).toContain("other");
+  });
+
+  /**
+   * THE FALSIFIER THAT KEEPS THE BASELINE FROM BECOMING A PARKING SPACE. An entry
+   * for a chart that is no longer behind means the debt was paid and nobody
+   * removed the note -- which silently grants that chart a pass the NEXT time it
+   * drifts. Same defect as unacknowledged drift, pointed the other way.
+   */
+  test("a STALE acknowledgement is an error in its own right", () => {
+    const found = findCurrencyDrift([row({ chart: "gitlab" })], FRESH, NOW, [ack("gitlab")]);
+    expect(found).toHaveLength(1);
+    expect(found[0]?.kind).toBe("stale-acknowledgement");
+    expect(found[0]?.severity).toBe("error");
+  });
+
+  test("DORMANT counts as a finding for staleness — behind:0 is not 'not drifting'", () => {
+    // The first predicate used `behind > 0` and convicted headscale's own entry
+    // as stale, because a dormant chart has nothing to be behind OF.
+    const dormant = row({ chart: "headscale", verdict: "DORMANT", behind: 0, silentDays: 563 });
+    expect(findCurrencyDrift([dormant], FRESH, NOW, [ack("headscale")])).toEqual([]);
+  });
+
+  test("the committed baseline loads, and every entry carries reason + liftsWhen", () => {
+    const live = loadCurrencyBaseline();
+    expect(live.length).toBeGreaterThan(0);
+    for (const e of live) {
+      expect(e.reason.length).toBeGreaterThan(20);
+      expect(e.liftsWhen.length).toBeGreaterThan(10);
+    }
   });
 });

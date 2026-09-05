@@ -89,14 +89,17 @@ spec:
   # two are costing a lane today. Saying so plainly beats letting a mechanism
   # imply a benefit it has not delivered.
   intentAdjudication:
-    spire -> vault:
+    spire -> openbao:
       class: intent
       reason: >-
+        REPOINTED 2026-09-05 when the secret store moved from Vault to OpenBao;
+        the adjudication is unchanged because the edge was never a runtime one.
         This node's own citation: `helm template` of the live values renders
         ZERO occurrences of `upstream` in 1386 lines and the server self-signs
-        (`ca_subject: zeta-spire-ca`), so SPIRE does not contact Vault at
-        runtime today. The edge is kept for bring-up order because SYNC-WAVES.md
-        asserts it; it is not a runtime dependency a lane must satisfy.
+        (`ca_subject: zeta-spire-ca`), so SPIRE does not contact the secret store
+        at runtime today. The edge is kept for bring-up order because
+        SYNC-WAVES.md asserts it; it is not a runtime dependency a lane must
+        satisfy.
     hindsight -> cockroachdb:
       class: intent
       reason: >-
@@ -162,12 +165,17 @@ spec:
           `cert-manager.io/inject-ca-from` annotation. An edge that does not exist
           is as wrong to declare as a real one is to omit.
 
-    - chart: vault
+    - chart: openbao
+      # SAME EDGE AS VAULT, and for the same reason: the bootstrap chain is
+      # "cert-manager -> secret store". OpenBao is the Vault fork this tree is
+      # migrating to for free PKCS#11 HSM auto-unseal
+      # (081M1HH1ERN087G0R00309EG9D's sibling work); while both exist it carries
+      # the same dependency the incumbent does.
       dependsOn: [cert-manager]
       citations:
         cert-manager: >-
           full-ai-cluster/dev-cluster/SYNC-WAVES.md bootstrap chain:
-          "cert-manager -> Vault".
+          "cert-manager -> Vault". OpenBao occupies the same position.
 
     - chart: spire-crds
       dependsOn: []
@@ -177,7 +185,7 @@ spec:
       # side of the edge below, which is where the ordering is stated.
 
     - chart: spire
-      dependsOn: [spire-crds, vault]
+      dependsOn: [spire-crds, openbao]
       citations:
         spire-crds: >-
           `helm template spire --version 0.24.2` with
@@ -194,7 +202,7 @@ spec:
           edge, run 32528419577 on `main`: `spire` sat OutOfSync/Missing with
           "one or more synchronization tasks are not valid (retried 5 times)"
           and zero pods.
-        vault: >-
+        openbao: >-
           full-ai-cluster/dev-cluster/SYNC-WAVES.md bootstrap chain: "Vault ->
           SPIRE"; full-ai-cluster/k8s/applications/spire/Application.yaml
           carries the (commented) `vaultAddr:
@@ -216,9 +224,9 @@ spec:
           distributor and consumes cert-manager's Issuer/Certificate types.
 
     - chart: external-secrets
-      dependsOn: [vault, cert-manager]
+      dependsOn: [openbao, cert-manager]
       citations:
-        vault: >-
+        openbao: >-
           full-ai-cluster/k8s/applications/external-secrets/Application.yaml:43
           configures the ClusterSecretStore backend as
           `https://vault.vault.svc.cluster.local:8200`. SYNC-WAVES.md: "ESO

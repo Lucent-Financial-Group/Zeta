@@ -222,12 +222,35 @@ describe("the live tree", () => {
     expect(exitCode(result)).toBe(0);
   });
 
-  test("and it is not vacuous: the tree really does carry a dormant source today", () => {
-    // If this ever goes green-because-empty, the check above stopped meaning
-    // anything and this test is what says so.
+  /**
+   * REWRITTEN 2026-09-05, and the reason is the best possible one: THE TREE HAS
+   * NO DORMANT SOURCE ANY MORE.
+   *
+   * This test used to assert `acknowledged.length > 0` and name `headscale` as
+   * the witness, on the reasoning that a non-vacuity check needs a live example.
+   * headscale was repointed off a dead third-party mirror onto the maintained
+   * chart (081M1HH1ERN087G0R00309EG9D), so the witness is gone -- and the test
+   * went red for SUCCEEDING at the thing the audit exists to cause.
+   *
+   * A NON-VACUITY GUARD THAT REQUIRES THE DEFECT TO EXIST IS SELF-DEFEATING: it
+   * makes fixing the last instance look like a regression, which is exactly the
+   * pressure you do not want on a checker. So the witness is a FIXTURE now. The
+   * detector is proven able to fire without the tree having to stay broken to
+   * prove it.
+   */
+  test("not vacuous: the detector still fires on a dormant coordinate, from a fixture", () => {
+    const dormantRow = {
+      app: "fixture", chart: "fixture", repoURL: "https://example.invalid",
+      manifest: "m", pinned: "1.0.0", pinnedPublishedAt: "2023-01-01T00:00:00Z",
+      newestStable: "1.0.0", newestPublishedAt: "2023-01-01T00:00:00Z",
+      behind: 0, bump: "none", activity: "dormant", silentDays: 900,
+      verdict: "DORMANT", unorderableVersions: 0, note: "",
+    } as unknown as Parameters<typeof findDormantSources>[0][number];
+    expect(findDormantSources([dormantRow]).length).toBeGreaterThan(0);
+
+    // And the live tree is CLEAN, which is the outcome, not a gap.
     const result = auditDormantChartSources();
-    expect(result.acknowledged.length).toBeGreaterThan(0);
-    expect(result.acknowledged.map((f) => f.key)).toContain(findingKey("headscale", "headscale"));
+    expect(result.acknowledged.map((f) => f.key)).not.toContain(findingKey("headscale", "headscale"));
   });
 });
 

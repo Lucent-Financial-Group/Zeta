@@ -478,9 +478,9 @@
   ],
   "acknowledgedLaneBudgetShortfall": [
     {
-      "key": "dev memory 10380>9216",
-      "reason": "TWO Applications now sit on this shortfall, and the second is the larger. (1) KEDA (081M1N0VTN8087G0R0008VE34B / Aaron 2026-09-04) first put the dev lane 140Mi over a 9216Mi budget. (2) OPENSEARCH (081M1Q1XHVV087G0R0034X846M / Aaron 2026-09-04) takes it to 10380Mi -- OVER by 1164Mi. THE NUMBER IS WRITTEN LARGE BECAUSE IT WAS UNDERSTATED ONCE. OpenSearch was added on the strength of `lane-partition.ts`, which reported lane-1 at 7734Mi against 9216Mi and therefore looked like 1482Mi of room. That is a DIFFERENT DENOMINATOR: lane-partition packs Applications into runner-sized lanes, while this budget is the dev lane's own applied set. The lane-packer's spare capacity is not this lane's spare capacity, and reading one as the other is what turned a 140Mi overage into a 1164Mi one while the prose still said it fit. THE BUDGET IS STILL NOT WIDENED. OpenSearch's dev rung is 250m/1024Mi, which is the honest floor for a JVM search engine: the heap is pinned at 512M, and 1024Mi leaves ~512Mi for non-heap and page cache. Shrinking it further would be a size chosen to pass rather than to be right -- the same move already rejected on the record for keda, and for cutting gmod's dev memory. WHAT THE OVERAGE ACTUALLY SPENDS: the runner envelope deliberately leaves ~4300Mi unreserved as headroom for BestEffort pods, so 1164Mi of request over budget is spent out of that headroom rather than out of nothing. It is real, it is not an immediate OOM, and it makes the next Application to join this lane the one that discovers the wall. LIFTS WHEN: the dev lane's memory is re-budgeted against a measured runner rather than the 9216Mi floor, or OpenSearch stops being needed in CI because Temporal's visibility store is proven elsewhere.",
-      "liftsWhen": "LIFTS WHEN: the reserve is re-sized against measured usage rather than against a roster where 33 of 54 Applications request nothing. That re-sizing is FORCED by 081M1N0VTN8087G0R0008VE34B anyway: giving those 33 real requests moves their consumption from the reserve into the budget, and a 6144Mi reserve on a 15360Mi node was sized when almost nothing declared. Until then this row is the honest form of the gap."
+      "key": "dev memory 10508>9216",
+      "reason": "THREE Applications now sit on this shortfall. KEDA first put the dev lane 140Mi over a 9216Mi budget (081M1N0VTN8087G0R0008VE34B); OPENSEARCH took it to 10380Mi (081M1Q1XHVV087G0R0034X846M); OPENBAO -- the Vault replacement, 128Mi at dev -- takes it to 10508Mi, over by 1292Mi. REMOVING VAULT DID NOT PAY IT, and I briefly recorded that it had. Vault's requests were UNGOVERNED (no resourceClaim row), so deleting the Application removed nothing from a total built out of governed rows. I recomputed the lane by hand, got 7436Mi, and wrote both a register-empty and a test asserting the lane fit. The catalogue's own `devLaneAppliedDirs()` says 10508Mi. The tool's reading is the authority over my arithmetic, and the error is written here because 'the debt was paid' is exactly the claim a stale acknowledgement makes. THE BUDGET IS NOT WIDENED. OpenBao's dev rung is 25m/128Mi -- 128Mi rather than the 64Mi floor most rows take, because it holds its unsealed keyring in memory and is designed not to swap it; an under-request makes the one pod holding every decryptable secret the first eviction candidate. LIFTS WHEN: the dev lane's memory is re-budgeted against a measured runner rather than the 9216Mi floor, or the ungoverned rows are governed so the total reflects what actually schedules.",
+      "liftsWhen": "LIFTS WHEN: the dev lane memory budget is re-measured against a real runner rather than the 9216Mi floor, or the ungoverned request rows are governed so the total reflects what actually schedules."
     }
   ],
   "resourceProfiles": [
@@ -1014,6 +1014,25 @@
       }
     },
     {
+      "id": "full-ai-cluster/openbao",
+      "dir": "openbao",
+      "path": "full-ai-cluster/k8s/applications/openbao/Application.yaml",
+      "docIndex": 0,
+      "requestsField": "spec.source.helm.valuesObject.server.resources.requests",
+      "pods": 1,
+      "metalSource": "manifest",
+      "evidence": "MEASURED 2026-09-05 by `helm template openbao openbao-official/openbao --version 0.29.4` with this Application's own valuesObject: ONE server pod (ha.replicas 1), injector/ui/csi all off. `metalSource: manifest` because the chart ships `server.resources: {}` -- no default to inherit, so both rungs are numbers this repo chose. 100m/256Mi at metal is a raft voter serving a secret store, not a database; 25m/128Mi at dev is the same process with nothing asking it for secrets yet.",
+      "consequence": "CPU is compressible -- a throttled seal/unseal is slower, not broken. MEMORY IS THE RISK and it is why dev keeps 128Mi rather than the 64Mi floor most rows take: OpenBao holds its unsealed keyring in memory and is explicitly designed to avoid swapping it to disk, so an under-request makes the one pod holding every decryptable secret the first eviction candidate under node pressure. A secret store that gets OOMKilled takes every consumer with it.",
+      "cpuMillis": {
+        "dev": 25,
+        "metal": 100
+      },
+      "memoryMib": {
+        "dev": 128,
+        "metal": 256
+      }
+    },
+    {
       "id": "full-ai-cluster/opensearch",
       "dir": "opensearch",
       "path": "full-ai-cluster/k8s/applications/opensearch/Application.yaml",
@@ -1379,12 +1398,6 @@
       "evidence": "trust-manager v0.15.0 rendered 2026-08-21: chart default resources are unset."
     },
     {
-      "dir": "vault",
-      "cpuMillis": 0,
-      "memoryMib": 0,
-      "evidence": "vault 0.29.1 rendered with this Application's valuesObject, 2026-08-21: chart default resources are unset."
-    },
-    {
       "dir": "vllm",
       "cpuMillis": 0,
       "memoryMib": 0,
@@ -1596,16 +1609,16 @@
       "id": "full-ai-cluster/headscale/config",
       "path": "full-ai-cluster/k8s/applications/headscale/Application.yaml",
       "docIndex": 0,
-      "storageClassField": "spec.source.helm.valuesObject.persistence.config.storageClass",
-      "sizeField": "spec.source.helm.valuesObject.persistence.config.size",
+      "storageClassField": "spec.source.helm.valuesObject.persistence.storageClass",
+      "sizeField": "spec.source.helm.valuesObject.persistence.size",
       "podsField": null,
       "podsSource": "singleton",
       "podsEvidence": "headscale runs one pod against a sqlite node database.",
       "scheduledAtBringUp": true,
       "bringUpNote": "automated sync",
-      "consequence": "sqlite node database, node private key and noise private key -- headscale 0.4.0 puts all three under /etc/headscale, which is the chart's `config` persistence item. RENAMED from `.../headscale/data` 2026-08-21: the row used to point at `persistence.data`, a key the chart mounts at /data and never writes to, while the database and both private keys sat on the container's ephemeral layer. 2Gi holds the control-plane state for far more nodes than this cluster will have.",
+      "consequence": "Headscale's node/route/preauth-key database. The chart moved home 2026-09-05 (charts.gabe565.com -> wrenix/helm-charts, 081M1HH1ERN087G0R00309EG9D) and the values surface flattened with it: `persistence.config.*` became `persistence.*`, and the rendered PVC is named `headscale` rather than `headscale-config`. Shrinking this below the working set does not make headscale smaller -- it fills, and a control plane that cannot write a route table stops admitting nodes rather than degrading.",
       "renderedApp": "full-ai-cluster/headscale",
-      "renderedPvcPattern": "^headscale-config$",
+      "renderedPvcPattern": "^headscale$",
       "sizes": {
         "minimal": "2Gi",
         "standard": "3Gi",

@@ -34,7 +34,7 @@ spec:
     # trade -- weaker field validation in exchange for CRDs our tooling can SEE. The
     # lane partitioner, the storage ledger and kubeconform all read the render, and a CRD
     # delivered by a hook Job is invisible to every one of them.
-    targetRevision: 2.0.3
+    targetRevision: 2.0.4
     helm:
       releaseName: argo-workflows
       valuesObject:

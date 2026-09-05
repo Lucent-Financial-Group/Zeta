@@ -1,4 +1,33 @@
-# Vault topology, TLS, storage, and the unseal ceremony
+# OpenBao topology, TLS, storage, and the unseal ceremony
+
+> **MOVED AND RETARGETED 2026-09-05.** This file was
+> `applications/vault/TOPOLOGY.md`. The secret store was replaced by **OpenBao**
+> (081M1S6D1M5087G0R000N11GND) because native PKCS#11 HSM auto-unseal is
+> Enterprise-only in Vault and free in the fork — which is the whole reason for
+> the swap, given the YubiHSM and smartcard HSMs on the hardware.
+>
+> **It was MOVED rather than deleted**, and that was the tree's call rather than
+> mine: `audit-vault-topology-coherence` derives its rule roster from the code
+> and asserts every rule name appears here. Deleting this file with the vault
+> directory would have silently un-documented twelve coherence classes, so the
+> checker refused. The audit itself now accepts either chart name and is
+> re-measured against openbao 0.29.4.
+>
+> **What changed with the store, and nothing else has been rewritten:**
+>
+> | | vault | openbao |
+> |---|---|---|
+> | chart | `hashicorp/vault` 0.34.1 | `openbao` 0.29.4 (appVersion v2.6.2) |
+> | raft data path | `/vault/data` | `/openbao/data` |
+> | CLI | `vault` | `bao` |
+> | PKCS#11 seal | Enterprise-only | **free** |
+>
+> **THE UNSEAL SECTION BELOW IS SUPERSEDED AND IS KEPT AS HISTORY.** It describes
+> a human ceremony behind a biometric gate. Aaron 2026-09-05: *"we are working on
+> getting auto unseal working"* — that is Riven's work (a 1Password sidecar, with
+> HSM-backed unseal on the new hardware), and it replaces the ceremony rather
+> than amending it. Read section 5 as the record of what was, not as the
+> instruction for what to do.
 
 Companion to `Application.yaml`. That file declares
 `cluster.zeta.io/topology: single-node`; this file records the delta to

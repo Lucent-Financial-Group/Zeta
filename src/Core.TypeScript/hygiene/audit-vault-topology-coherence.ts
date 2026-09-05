@@ -94,7 +94,34 @@ import { parse as parseYaml } from "yaml";
  * The direction is still strongly favourable: hashicorp/vault:1.18.1 was last
  * published 2024-10-30 -- nearly two years -- and 2.0.4 on 2026-08-04.
  */
-export const MEASURED_CHART_VERSION = "0.34.1";
+/**
+ * RE-MEASURED 2026-09-05 AGAINST A DIFFERENT CHART ENTIRELY -- openbao 0.29.4,
+ * not vault 0.34.1 -- because the store was replaced
+ * (081M1S6D1M5087G0R000N11GND). The audit refused the swap on sight, and it was
+ * RIGHT to: retargeting a checker without re-measuring makes it assert
+ * behaviours it never observed, which is the whole failure class this file
+ * exists to catch, committed by the file itself.
+ *
+ * WHAT WAS ACTUALLY RE-MEASURED, and the list is the scope of this constant --
+ * `helm template` and `values.yaml` at openbao 0.29.4:
+ *
+ *   - `server.affinity` still defaults to a REQUIRED podAntiAffinity on
+ *     `kubernetes.io/hostname` (values.yaml:722), so a single-node topology
+ *     still needs it explicitly emptied. Same shape as vault's.
+ *   - `injector.affinity` carries the same required rule (values.yaml:303).
+ *   - the injector renders ZERO resources at `enabled: false` (verified by
+ *     counting the rendered Deployment), so its affinity is declarative only.
+ *   - `global.tlsDisable` and the raft listener's `tls_disable` are the same two
+ *     coordinates in the same places, so the disagreement rule transfers.
+ *
+ * WHAT IS NOT COVERED, said plainly so a pass is not over-read: the data path
+ * moved (`/openbao/data`, not `/vault/data`), and these rules encode what the
+ * CHART renders from our values -- never what the BINARY does with the resulting
+ * config. OpenBao v2.6.2 is a fork of Vault at a different version; no rule here
+ * would notice a behavioural change inside it. That is a separate question from
+ * this constant, exactly as the vault note below said of Vault 2.0.
+ */
+export const MEASURED_CHART_VERSION = "0.29.4";
 
 /** Node topologies the Vault Application may declare, and their node counts. */
 export const TOPOLOGY_NODE_COUNT: Readonly<Record<string, number>> = {
@@ -245,7 +272,7 @@ export function rendersHashiCorpVault(source: unknown): boolean {
   const s = (source ?? {}) as Record<string, unknown>;
   const repo = typeof s["repoURL"] === "string" ? s["repoURL"] : "";
   const chart = typeof s["chart"] === "string" ? s["chart"] : "";
-  if (chart !== "" && chart !== "vault") return false;
+  if (chart !== "" && chart !== "vault" && chart !== "openbao") return false;
   if (repo !== "") {
     // Compare the HOST, not a substring. CodeQL flagged the original
     // `repo.includes("helm.releases.hashicorp.com")` as incomplete URL
@@ -643,7 +670,21 @@ export function deriveWorldFacts(root: string): WorldFacts {
   return { certificateResourcesExist, storageClassAvailability: availability };
 }
 
-export const VAULT_APP_RELPATH = "full-ai-cluster/k8s/applications/vault/Application.yaml";
+/**
+ * RETARGETED 2026-09-05 from vault to openbao, NOT deleted.
+ *
+ * The store was replaced (081M1S6D1M5087G0R000N11GND) and the obvious move was
+ * to delete this audit with the Application it named. That would have thrown
+ * away the checker and kept the defect class: every disagreement it guards --
+ * `global.tlsDisable` versus the listener's `tls_disable`, the probe's scheme
+ * versus the listener's, the storage path versus the mounted volume -- is
+ * EXACTLY as available in OpenBao, which is a Vault fork with the same config
+ * surface and a different data path (`/openbao/data`, not `/vault/data`).
+ *
+ * A checker that only knows the name of the thing it checked is a checker that
+ * dies with it. This one now accepts either chart name.
+ */
+export const VAULT_APP_RELPATH = "full-ai-cluster/k8s/applications/openbao/Application.yaml";
 
 function main(): number {
   const { values: argv } = parseArgs({

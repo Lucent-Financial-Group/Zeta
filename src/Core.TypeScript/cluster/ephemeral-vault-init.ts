@@ -2,10 +2,25 @@
 /**
  * src/Core.TypeScript/cluster/ephemeral-vault-init.ts
  *
- * THE EPHEMERAL HALF of the Vault unseal ceremony. The other half -- the one
- * that runs on METAL -- is `full-ai-cluster/k8s/applications/vault/TOPOLOGY.md`
- * section 5, and NOTHING here changes it. That ceremony stays a human ceremony,
- * behind the biometric gate, with a witness, exactly as written.
+ * THE EPHEMERAL HALF of the secret-store unseal ceremony, for CI only.
+ *
+ * STALE HEADER CORRECTED 2026-09-05. This said the other half "is
+ * `full-ai-cluster/k8s/applications/vault/TOPOLOGY.md` section 5 ... exactly as
+ * written". That file NO LONGER EXISTS -- vault was removed in favour of OpenBao
+ * (081M1RYF7YF087G0R003FTCZ5K) -- so the sentence pointed at nothing, and Aaron
+ * flagged it directly: "this is way out of date".
+ *
+ * WHAT IS TRUE NOW. The metal half is being rebuilt as AUTO-unseal rather than a
+ * human ceremony, and it is NOT this module's job and NOT this agent's task.
+ * Aaron 2026-09-05: "once you get the new openbao chart working i cna hand off to
+ * riven to continue the autounseal work". Riven already has a design using a
+ * 1Password sidecar, with HSM-backed unseal on the new hardware as the second
+ * path -- which is the whole reason the store moved to OpenBao, since native
+ * PKCS#11 seal is Enterprise-only in Vault and free here.
+ *
+ * So this file's scope is now exactly one thing: bring an EPHEMERAL CI cluster's
+ * store up so the lane can assert it Healthy. It mints key material that is
+ * thrown away with the cluster and it must never be the metal path.
  *
  * == WHAT WAS AUTHORISED, AND HOW NARROWLY ==================================
  *
@@ -409,7 +424,14 @@ export function redact(text: string, needles: readonly string[]): string {
  * Reading it from stdin into a shell variable puts it in the child's environment
  * and nowhere else.
  */
-export function kubectlVaultExec(namespace: string, pod: string, timeoutMs = 120_000): VaultExec {
+/**
+ * `binary` IS A PARAMETER NOW, because the secret store changed underneath this
+ * module. OpenBao is a Vault fork with the same command surface -- `operator
+ * init`, `operator unseal`, `status` -- and a different binary name (`bao`). The
+ * ceremony this file implements is unchanged; only the executable it drives is.
+ * Aaron 2026-09-05: "we can go ahead and remove vault".
+ */
+export function kubectlVaultExec(namespace: string, pod: string, timeoutMs = 120_000, binary = "bao"): VaultExec {
   return (args, stdin, mode) => {
     const prefix = ["exec", "-i", "-n", namespace, pod, "--"];
     // `read -r` returns non-zero on a final line with no newline, so each script
@@ -423,7 +445,7 @@ export function kubectlVaultExec(namespace: string, pod: string, timeoutMs = 120
     const command =
       mode === "env" || mode === "arg"
         ? [...prefix, "sh", "-c", script, "sh", ...args]
-        : [...prefix, "vault", ...args];
+        : [...prefix, binary, ...args];
     const result = spawnSync(
       "kubectl",
       command,

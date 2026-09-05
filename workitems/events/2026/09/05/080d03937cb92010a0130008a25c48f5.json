@@ -1,0 +1,14 @@
+{
+  "id": "080d03937cb92010a0130008a25c48f5",
+  "at": "2026-09-05T16:38:30.948Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1S6Z5S3087G0R000GEPSS2",
+    "type": "bug",
+    "title": "The blob-store S3 credential is a literal in five committed files; mint and rotate it like the others",
+    "slug": "the-blob-store-s3-credential-is-a-literal-in-five-committed",
+    "priority": "P2",
+    "filename": "081M1S6Z5S3087G0R000GEPSS2-the-blob-store-s3-credential-is-a-literal-in-five-committed.md"
+  }
+}
