@@ -279,6 +279,13 @@ module SoftValue =
     //     irrational for rational p, so it cannot ride the exact-ℚ `RationalRing` weights and
     //     would put floats in the byte-lock lineage. The integer multiplicity used by (B)
     //     keeps the whole schedule exact.
+    //   • UNVERIFIED CITATION, flagged 2026-09-05 and left in place with this warning rather
+    //     than deleted: the "Sivak/Morvan et al., Nature 655, 879-884 (2026)" reference above,
+    //     including its direct quotation, could not be checked from this repo. A direct quote is
+    //     the strongest citation form and needs a checked source
+    //     (`.claude/rules/anchor-to-human-prior-art.md` -- anchors must be CHECKED, not cited).
+    //     Note also that it anchors (A) `widen`, the operator this design deliberately does NOT
+    //     rely on, so it lends no support to `foldRetained` either way.
     //   • Entropy regularization (Haarnoja et al., SAC) — the paper's own route. Rejected as
     //     the primitive for the same reason (A) is not the load-bearing operator: it is a
     //     belief-reading penalty and does not commute with the evidence fold.
@@ -424,7 +431,31 @@ module SoftValue =
             let maxPhase = evidence |> List.map (fun e -> e.Phase) |> List.max
             evidence |> List.filter (fun e -> schedule maxPhase e.Phase > 0)
 
-    /// **foldRetained — the commutative widening operator.**
+    /// **foldRetained — the commutative re-opening operator.**
+    ///
+    /// TWO CORRECTIONS from the 2026-09-05 math review; both were over-claims in this
+    /// docstring, and both are recorded rather than quietly reworded.
+    ///
+    /// 1. IT DOES NOT ALWAYS WIDEN. This was called "the widening operator" unconditionally.
+    ///    Counterexample with the tests' own likelihoods (uniform-3 prior, 12x A then 12x B):
+    ///    retain-all gives H = 0.693 / maxw = 0.500; `window 12` retracts all of A and gives
+    ///    H = 0.000 / maxw = 1.000 -- retraction NARROWED the posterior, because the retracted
+    ///    evidence was CONFLICTING with the survivors. Retraction widens iff what is retracted
+    ///    was concentrating in the same direction as what is retained. The true general claim
+    ///    is Lindley (1956): expected information gain from evidence is never negative, so
+    ///    removing evidence widens IN EXPECTATION over the prior-predictive, not pointwise.
+    ///
+    /// 2. COMMUTATIVITY HAS AN UNSTATED PRECONDITION -- see 081M1SA32SS087G0R0026C01ZP.
+    ///    The normalized product IS order-independent. The CONTRADICTION PREDICATE is not:
+    ///    `build` refuses once total mass falls to or below EPS, and `observe` feeds it the
+    ///    posterior-weighted likelihood mean, which depends on the prefix. Two nodes with the
+    ///    same evidence set can therefore diverge into belief vs. contradiction. SUFFICIENT
+    ///    CONDITION for the claim below to be true: every likelihood value on the support
+    ///    strictly exceeds EPS. The falsifier in SoftValueWidening.Tests.fs uses 0.05/0.9,
+    ///    five orders clear of the floor, so it cannot reach this corner -- conditionally
+    ///    vacuous with respect to it.
+    ///
+    /// The claims below hold under that precondition, which is what they always meant.
     ///
     /// Folds `evidence` into `prior` with each piece weighted by its retention multiplicity.
     /// Stale evidence is RETRACTED (multiplicity 0) rather than the belief being flattened, so:
