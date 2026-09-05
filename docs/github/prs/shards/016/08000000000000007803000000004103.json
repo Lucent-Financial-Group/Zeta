@@ -1,0 +1,12 @@
+{
+  "pr_number": 16643,
+  "archive_path": "docs/history/pr-reviews/PR-16643-deps-bump-recharts-from-2-15-4-to-3-10-1-in-demo-identity-dla-site.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-05T07:41:14.716Z",
+  "schema_version": "v1",
+  "commit_sha": "f45fb9abc7c5df197dc9d813eac1be62d4c1c418",
+  "title": "deps: bump recharts from 2.15.4 to 3.10.1 in /demo/identity-dla-site",
+  "state": "MERGED",
+  "merged_at": "2026-09-05T07:40:37Z",
+  "head_ref": "dependabot/npm_and_yarn/demo/identity-dla-site/recharts-3.10.1"
+}

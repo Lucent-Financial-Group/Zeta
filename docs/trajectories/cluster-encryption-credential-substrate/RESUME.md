@@ -1,11 +1,97 @@
 # Trajectory - Cluster Encryption / Credential Substrate
 
 Status: active — first surfaced 2026-05-29 from substrate inventory (was tracked only as scattered backlog rows; never had a trajectory surface, which is why it was easy to lose at cold-boot)
-Last refreshed: 2026-09-04 (host→Secret #16587 landed; Lucent item is the SA-token store — metal first-boot login fetches it; post-init Vault unseal is a Google-shaped extraContainer, rewritten)
+Last refreshed: 2026-09-05 (μένω remain vs act; unsealer loop; seed vs broadcast classifier; join-hash recast as framework, hole-punch after discovery; OpenBao green; CI emulator rung SoftHSM/swtpm ≠ metal; NixOS host-seal profile: developer FIDO/biometric vs prod automatic rotation)
 Type: workstream (current-focus) — a trajectory the operator is *actively powering*. Many trajectories can be tracked; only a few are workstreams at once (finite-focus / WIP-bounded — a workstream is a trajectory under sustained thrust, and thrust budget is finite, so most trajectories coast). ("Trajectory" is the genus; "workstream" is the species: a trajectory under sustained thrust toward a deliverable, vs. emergent-posture trajectories like `anti-infection`, which self-describes as "not a workstream with a cadence." See [`factory-trajectory-surface`](../factory-trajectory-surface/RESUME.md) for the genus/species taxonomy.) One of the operator's three current cluster workstreams (encryption / usb-zflash / ts-workflow-engine).
 Eventual encoding (design-stage — the human maintainer 2026-05-23 genetic-ID substrate + Clifford/HKT): this trajectory's state is trackable as a 128-bit genetic-ID seed (discrete, reversible via parser-combinator ↔ generator-function) → Clifford-space path (continuous, eventual). Mirrors the three-lane I8-lattice / I9-manifold split.
 Current blocker: none operationally; the live design tension is interactive-login-vs-baked-in-keys-vs-CI-test (081KSGS9H0008QG0R003JNSVR5)
 Next concrete action: round-trip harness in flight (otto/onboarding-roundtrip-harness — sandboxed new-fork setup→teardown→re-setup ×N, surfaces the rotate-command gap). Then smart cascading teardown (cascade-with-warnings; extra-care warn on memories/hardware-state/unrecoverable-encrypted; OWNER-consent-gated memory delete; user-sovereign encryption can't be force-reset; each user = own git repo — see `docs/research/2026-06-21-smart-cascading-teardown-user-sovereign-deletion-…`). All 3 vaults now Active+Standby (rotation-ready: Lucent/Personal/CA, 2 service accounts each in Keychain). CA-recovery hardware (FIDO/HSM/N-of-M) = post-investor next layer. Live wipe + clean re-onboard once the harness is tight. Teardown primitive shipped (#9000).
+
+## 2026-09-05 — μένω names the recast (Riven)
+
+Aaron forwarded the Google thread that started at event
+streaming and arrived at μένω. Incorporated as a Greek-framed
+pickup memo, not as factory policy from the narrative overlay.
+
+Live memo (title/kernel in Greek, lists in English):
+[`MENO.md`](MENO.md).
+Research-grade ferry (architecture only; Pattern 1 refused):
+[`docs/research/2026-09-05-meno-what-remains-vs-what-acts-tsirelson-iinput-ifeedback.md`](../../research/2026-09-05-meno-what-remains-vs-what-acts-tsirelson-iinput-ifeedback.md).
+
+The recast this names was already on main: **init remains**
+(gated `operator init`); **unsealer acts** (fetch-at-unseal,
+threshold-many, cannot init). S=2√2 is observed, not coded.
+S=4 is the ESO-into-etcd / threshold-1 failure. IInput /
+IFeedback is the missing Meijer loop as a research name;
+no new public F# types.
+
+This slice's code: `src/Core.TypeScript/cluster/vault-unsealer.ts`
+— HTTP 200/503/501/000 decision loop. Lucent mint still
+human-blocked. extraContainer + `TOPOLOGY.md` §5 still wait
+for the sidecar commit.
+
+Continuation (same day): remain is **seeded, not broadcast**.
+Gossip over time / onion-shape — not a tweet, not DNS.
+Kernel name: seed vs broadcast (Ani, #16623). Classifier:
+`src/Core.TypeScript/discovery/seed-not-broadcast.ts`.
+Research:
+[`docs/research/2026-09-05-meno-dht-gossip-onion-over-time-not-broadcast.md`](../../research/2026-09-05-meno-dht-gossip-onion-over-time-not-broadcast.md).
+`dht-discovery.ts` is existing destination-hash discovery, not a
+public gate. Pin against TTL fade is `lastSeenMs` refresh.
+Heartbeat filename pin is on main (#16623). LLMTV broadcast
+stays (society picture). Onion is hop-count shape, not a Tor
+stack. Pattern 1 refused. Founder-sacrifice refused on main
+(#16624): agreement has no self-erasure clause.
+Product-lane catalog (the human maintainer 2026-09-05): working label
+**Zeta Gate** is the join/pin *framework* many protocols
+consume — not a sold product, not a SEED rename, not an HTTP
+gateway. After discovery: hole punch (outbound-only is
+enough; inbound is how anyone exits being a relay; STUN/TURN
+in the method set), then simulated DNS. [`docs/PRODUCT-LANES.md`](../../PRODUCT-LANES.md).
+Research:
+[`docs/research/2026-09-05-join-hash-is-framework-hole-punch-after-discovery.md`](../../research/2026-09-05-join-hash-is-framework-hole-punch-after-discovery.md).
+
+## 2026-09-05 — OpenBao is green; CI emulators witness wiring, not metal (Riven)
+
+Otto swapped Vault for OpenBao (081M1S6D1M5087G0R000N11GND).
+Verified by **presence**, not silence: `openbao` is not in
+`DEV_INCLUDED_PROOF_DEFERRED_DIRS` and is asserted
+Synced+Healthy. Auto-unseal handoff is unblocked. TOPOLOGY.md
+§5 (human Shamir ceremony) is **history** on metal once PKCS#11
+is real; keep `vault-unsealer.ts` for kind/CI until an emulator
+job inits without Shamir.
+
+Aaron: push HSM and TPM into CI with emulators; USB repair must
+keep HSM-talk. Classifier:
+`src/Core.TypeScript/cluster/seal-emulator-rung.ts`. Research:
+[`docs/research/2026-09-05-ci-emulator-rung-softhsm-swtpm-witness-wiring-not-metal.md`](../../research/2026-09-05-ci-emulator-rung-softhsm-swtpm-witness-wiring-not-metal.md).
+Workitem: `081M1SD6GZ8087G0R001TNHN19`. SoftHSM2 / swtpm are the
+wiring rung. YubiHSM domains, USB, this board's PCRs stay metal.
+Do not commit `seal "pkcs11"` until a module is in the image.
+
+## 2026-09-05 — NixOS host-seal profile (Riven)
+
+Aaron: make metal vs emulator follow **detected hardware**,
+NixOS not just k8s; developers get FIDO and biometrics; prod
+boxes rotate automatically.
+
+Kubernetes cannot see a USB HSM. Nix eval cannot either
+(placeholder `not-detected.nix`). The host declares
+`zeta.hostSeal.boxRole` (`undeclared` / `developer` /
+`prod-metal`; CI is not a NixOS role). Presence is still
+`frost-hardware-probe.ts` / `tpm2-linux-probe.ts` /
+`ID=nixos`. SoftHSM2 / swtpm stay a **job** declaration —
+never inferred from `/dev/tpmrm0` on a runner.
+
+- developer: libfido2 + fprintd userspace; no sudo PAM u2f.
+  HSM still wins if attached.
+- prod-metal: automatic HSM/TPM required. FIDO / biometric
+  refused as the rotator. pcscd + YubiHSM udev still land.
+- Default `undeclared` is a no-op. Do not flip control-plane
+  to `prod-metal` from a label.
+
+Classifier: `src/Core.TypeScript/cluster/host-seal-profile.ts`.
+Nix: `full-ai-cluster/nixos/modules/host-seal-{model,profile}.nix`.
 
 ## 2026-09-04 — production-hardening review (Riven)
 

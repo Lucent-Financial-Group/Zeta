@@ -1,0 +1,12 @@
+{
+  "pr_number": 16683,
+  "archive_path": "docs/history/pr-reviews/PR-16683-feat-arc-admit-bounded-motion-projections.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-05T17:37:16.576Z",
+  "schema_version": "v1",
+  "commit_sha": "8c5db6730fcad3879225f6d3afd0692291074892",
+  "title": "feat(arc): admit bounded motion projections",
+  "state": "MERGED",
+  "merged_at": "2026-09-05T17:36:36Z",
+  "head_ref": "codex/arc-predicted-position-actions"
+}

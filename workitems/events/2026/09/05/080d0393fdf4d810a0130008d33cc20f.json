@@ -1,0 +1,14 @@
+{
+  "id": "080d0393fdf4d810a0130008d33cc20f",
+  "at": "2026-09-05T16:56:09.627Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1S7ZFMT087G0R0008K0EKV",
+    "type": "task",
+    "title": "ARC motion forecasts can propose bounded future coordinates",
+    "slug": "arc-motion-forecasts-can-propose-bounded-future-coordinates",
+    "priority": "P2",
+    "filename": "081M1S7ZFMT087G0R0008K0EKV-arc-motion-forecasts-can-propose-bounded-future-coordinates.md"
+  }
+}

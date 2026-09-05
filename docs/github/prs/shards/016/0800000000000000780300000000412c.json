@@ -1,0 +1,12 @@
+{
+  "pr_number": 16684,
+  "archive_path": "docs/history/pr-reviews/PR-16684-feat-081m1s8wjx7087g0r000wgtpw8-keepnone-and-rolling-n-unpin-old-freezes.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-05T17:41:25.078Z",
+  "schema_version": "v1",
+  "commit_sha": "bcba28ca1221f673c2b355c7f562164e459a906f",
+  "title": "feat(081M1S8WJX7087G0R000WGTPW8): KeepNone and rolling(N) unpin old freezes",
+  "state": "MERGED",
+  "merged_at": "2026-09-05T17:40:44Z",
+  "head_ref": "feat/zetafs-keepnone-unpin"
+}

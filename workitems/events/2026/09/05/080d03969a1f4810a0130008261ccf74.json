@@ -1,0 +1,14 @@
+{
+  "id": "080d03969a1f4810a0130008261ccf74",
+  "at": "2026-09-05T18:27:23.241Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1SD6GZ8087G0R001TNHN19",
+    "type": "task",
+    "title": "CI emulator rung for OpenBao PKCS#11 (SoftHSM2) and TPM (swtpm); USB repair keeps HSM-talk",
+    "slug": "ci-emulator-rung-for-openbao-pkcs-11-softhsm2-and-tpm-swtpm",
+    "priority": "P2",
+    "filename": "081M1SD6GZ8087G0R001TNHN19-ci-emulator-rung-for-openbao-pkcs-11-softhsm2-and-tpm-swtpm.md"
+  }
+}

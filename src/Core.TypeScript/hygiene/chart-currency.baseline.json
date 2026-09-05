@@ -1,0 +1,49 @@
+{
+  "$comment": [
+    "ACKNOWLEDGED CHART DRIFT -- the reason this check can go GREEN.",
+    "",
+    "Aaron 2026-09-05: 'we want to cleanup our drift and not just ignore it or",
+    "else everyting merged will be red forever in drift.'",
+    "",
+    "He is right, and the first version of `--drift` had exactly that defect. It",
+    "failed whenever ANY chart was behind, and charts are ALWAYS somewhat behind --",
+    "argocd published 10.8.0 the day after we pinned 10.7.2. A check that is red on",
+    "every run is a check nobody reads, which is the cry-wolf failure `drift-loud.ts`",
+    "was written to avoid.",
+    "",
+    "So drift is CARRIED, not ignored. Every entry names WHY the bump is not a bump",
+    "and what would close it. A chart NOT listed here going behind turns the check",
+    "red, which is the signal actually worth having.",
+    "",
+    "AN ENTRY IS NOT A PARKING SPACE. `liftsWhen` must name a condition someone can",
+    "bring about, and the audit refuses an entry whose chart is no longer behind --",
+    "a stale acknowledgement is the same defect as an unacknowledged drift, pointed",
+    "the other way."
+  ],
+  "acknowledged": [
+    {
+      "chart": "gitlab",
+      "reason": "162 releases behind, 8.7.0 -> 10.3.1, MAJOR. Measured 2026-09-04: 10.x requires THREE external dependencies we do not run (external object storage among them), and gitlab is already the single largest Application in the tree at 2525m -- over what one hosted runner can hold (2125m). The bump is a migration with a prerequisite list, not a version change.",
+      "liftsWhen": "the three external dependencies exist and gitlab has governed resourceClaims so a dev rung can size it. Both are filed.",
+      "observed": "2026-09-05"
+    },
+    {
+      "chart": "temporal",
+      "reason": "26 releases behind, 0.59.0 -> 1.6.0, MAJOR, and measured rather than assumed: `sql.driver` is renamed `sql.pluginName` (a bump that left the key alone would render, deploy, and point Temporal at no datastore), five bundled subcharts are removed upstream, and appVersion 1.27.2 -> 1.31.2 is a SERVER upgrade whose schema job runs versioned SQL migrations against CockroachDB that do not roll back cleanly. `numHistoryShards` is immutable after first deploy.",
+      "liftsWhen": "the migration is done as its own change with its own testing -- and it is now on the critical path, because OpenSearch-backed visibility needs Temporal server >= 1.30.1.",
+      "observed": "2026-09-05"
+    },
+    {
+      "chart": "kube-prometheus-stack",
+      "reason": "7 releases behind, 88.6.3 -> 89.2.2, MAJOR. Not yet measured for breaking changes; a major on the chart that carries Prometheus, Alertmanager and Grafana touches the whole observability surface, and this tree's own `audit-observability-chain` pins the rendered shape of what it feeds.",
+      "liftsWhen": "the 89.x changelog is read against our valuesObject and the observability roster is refreshed. This is a real bump nobody has costed yet, and saying so is the point of the entry.",
+      "observed": "2026-09-05"
+    },
+    {
+      "chart": "spire",
+      "reason": "16 releases behind, 0.24.2 -> 0.30.1. Every one is a 0.x MINOR, and semver gives 0.x minors no compatibility promise at all -- sixteen of them is a major in everything but the version string. spire is the identity substrate the decentralised-trust design depends on, so a silent behaviour change here is worse than being behind.",
+      "liftsWhen": "the sixteen changelogs are read, or the bump is taken in stages with the live lane asserting spire Healthy at each one.",
+      "observed": "2026-09-05"
+    }
+  ]
+}

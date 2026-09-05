@@ -1,0 +1,12 @@
+{
+  "pr_number": 16687,
+  "archive_path": "docs/history/pr-reviews/PR-16687-test-081m1sc3adk087g0r001m8ykbs-keepnone-unpin-survives-reopen-without-pump.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-05T18:30:35.781Z",
+  "schema_version": "v1",
+  "commit_sha": "335480ef86f5d272aeb2790d2d1a14c861397753",
+  "title": "test(081M1SC3ADK087G0R001M8YKBS): KeepNone unpin survives reopen without pump",
+  "state": "MERGED",
+  "merged_at": "2026-09-05T18:29:54Z",
+  "head_ref": "feat/zetafs-keepnone-reopen"
+}

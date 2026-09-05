@@ -1,0 +1,12 @@
+{
+  "pr_number": 16628,
+  "archive_path": "docs/history/pr-reviews/PR-16628-feat-arc-expose-hosted-scene-feedback-experiment.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-05T02:11:23.512Z",
+  "schema_version": "v1",
+  "commit_sha": "6ca81a464cdd114bae2c173a43a34f3f559ba760",
+  "title": "feat(arc): expose hosted scene-feedback experiment",
+  "state": "MERGED",
+  "merged_at": "2026-09-05T02:10:46Z",
+  "head_ref": "claim/arc-scene-hosted-experiment"
+}

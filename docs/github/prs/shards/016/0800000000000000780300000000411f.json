@@ -1,0 +1,12 @@
+{
+  "pr_number": 16671,
+  "archive_path": "docs/history/pr-reviews/PR-16671-sync-evidenceseam-provenance-routes-to-pages.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-05T16:09:46.261Z",
+  "schema_version": "v1",
+  "commit_sha": "492b015bb622fe333b72efcd08bdcc027d2f9244",
+  "title": "Sync EvidenceSeam provenance routes to Pages",
+  "state": "MERGED",
+  "merged_at": "2026-09-05T16:09:08Z",
+  "head_ref": "lumen/pages-provenance-parity"
+}

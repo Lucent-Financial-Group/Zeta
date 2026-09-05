@@ -1,0 +1,17 @@
+{
+  "pr_number": 16621,
+  "archive_path": "docs/history/pr-reviews/PR-16621-feat-arc-close-scene-priors-over-measured-outcomes.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7qxul3",
+    "comment:PRRC_kwDOSF9kNM7qxul6",
+    "thread:PRRT_kwDOSF9kNM6fe1G0",
+    "thread:PRRT_kwDOSF9kNM6fe1G2"
+  ],
+  "fetched_at": "2026-09-05T01:25:35.180Z",
+  "schema_version": "v1",
+  "commit_sha": "c66ceaf1df7bcdbcfb39765e4287be1407b54434",
+  "title": "feat(arc): close scene priors over measured outcomes",
+  "state": "MERGED",
+  "merged_at": "2026-09-05T01:24:57Z",
+  "head_ref": "claim/task-arc-scene-feedback"
+}

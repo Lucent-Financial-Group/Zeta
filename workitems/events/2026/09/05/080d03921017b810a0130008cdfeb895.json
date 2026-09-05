@@ -1,0 +1,14 @@
+{
+  "id": "080d03921017b810a0130008cdfeb895",
+  "at": "2026-09-05T15:48:43.895Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1S440QQ087G0R00218K9AM",
+    "type": "task",
+    "title": "Reopen enqueues orphan reclaim without waiting for next freeze",
+    "slug": "reopen-enqueues-orphan-reclaim-without-waiting-for-next-free",
+    "priority": "P2",
+    "filename": "081M1S440QQ087G0R00218K9AM-reopen-enqueues-orphan-reclaim-without-waiting-for-next-free.md"
+  }
+}

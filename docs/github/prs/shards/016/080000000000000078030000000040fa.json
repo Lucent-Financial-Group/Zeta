@@ -1,0 +1,12 @@
+{
+  "pr_number": 16634,
+  "archive_path": "docs/history/pr-reviews/PR-16634-feat-081m1qrc1cd087g0r001egsfv9-meter-freeze-bytes-for-reclaim-pacer.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-05T03:26:36.316Z",
+  "schema_version": "v1",
+  "commit_sha": "92450dd2019236aefea4c6e05b3a76256c970fe8",
+  "title": "feat(081M1QRC1CD087G0R001EGSFV9): meter freeze bytes for reclaim pacer",
+  "state": "MERGED",
+  "merged_at": "2026-09-05T03:25:55Z",
+  "head_ref": "feat/zetafs-freeze-bytes-reclaim-meter"
+}

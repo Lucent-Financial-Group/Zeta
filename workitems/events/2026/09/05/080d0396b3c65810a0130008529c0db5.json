@@ -1,0 +1,14 @@
+{
+  "id": "080d0396b3c65810a0130008529c0db5",
+  "at": "2026-09-05T18:30:53.387Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1SDCY6B087G0R00330F1HZ",
+    "type": "task",
+    "title": "Persist volume history policy across reopen",
+    "slug": "persist-volume-history-policy-across-reopen",
+    "priority": "P2",
+    "filename": "081M1SDCY6B087G0R00330F1HZ-persist-volume-history-policy-across-reopen.md"
+  }
+}

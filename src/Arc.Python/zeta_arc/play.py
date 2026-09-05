@@ -16,16 +16,16 @@ literal `"OFFLINE"` regardless of anything, which is a claim no test could
 falsify. A key that is present but unreachable degrades to a scored offline
 episode and says so; absence must DEGRADE, never fail.
 
-THE SCORE, and what it is not. ARC's level formula (design doc §6) is
+THE SCORE, and what it is not. ARC's current level formula is
 
-    S(level) = min(1.0, h/a)**2
+    S(level) = min(1.15, (h/a)**2)
 
 with `a` the agent's action count and `h` a reference count. ARC uses the
-SECOND-BEST HUMAN for `h`. Offline we have no humans, so `h` here is the
+upper-median first-run human for `h`. Offline we have no humans, so `h` here is the
 OPTIMAL path length computed by breadth-first search over the level's own
 geometry. That substitution is stated rather than hidden: it makes this an
-efficiency-against-perfect-play number, strictly harsher than ARC's, and
-**not comparable to a leaderboard figure**.
+efficiency-against-perfect-play number and **not comparable to a leaderboard
+figure**.
 """
 
 from __future__ import annotations
@@ -56,7 +56,13 @@ from zeta_arc.environments.chase import (
 from zeta_arc.hosted import (
     MAX_ACTIONS_PER_LEVEL as HOSTED_MAX_ACTIONS_PER_LEVEL,
 )
-from zeta_arc.hosted import play_roster
+from zeta_arc.hosted import (
+    MAX_PUBLISHED_BASELINE_ACTIONS,
+    HostedCoordinatePolicy,
+    compare_coordinate_policies,
+    play_roster,
+    score_level,
+)
 
 #: Fixed action order, so a "random" agent is reproducible from its seed.
 _ACTION_ORDER: tuple[GameAction, ...] = tuple(_MOVES.keys())
@@ -285,7 +291,7 @@ def play(
                     "actions": actions,
                     "optimal": best,
                     "solved": True,
-                    "score": min(1.0, best / actions) ** 2,
+                    "score": score_level(actions, best),
                 }
             )
             if game.level_index == level_index:
@@ -293,9 +299,11 @@ def play(
             level_index = game.level_index
             actions = 0
 
-    # ARC environment score: level-weighted mean, E = sum(l * S_l) / (n(n+1)/2)
+    # ARC environment score: weighted mean capped by weighted completion.
+    denominator = total_levels * (total_levels + 1) / 2
     weighted = sum((entry["level"] + 1) * entry["score"] for entry in levels)
-    environment_score = weighted / (total_levels * (total_levels + 1) / 2)
+    completed = sum(entry["level"] + 1 for entry in levels if entry["solved"])
+    environment_score = min(weighted / denominator, completed / denominator)
 
     return {
         "agent": agent,
@@ -367,15 +375,24 @@ def main() -> None:
         "--agent", choices=("pixel", "greedy", "random"), default="greedy"
     )
     parser.add_argument("--seed", type=int, default=0)
-    parser.add_argument(
+    hosted_mode = parser.add_mutually_exclusive_group()
+    hosted_mode.add_argument(
         "--list-environments",
         action="store_true",
         help="report the hosted environments this key can see, and play nothing",
     )
-    parser.add_argument(
+    hosted_mode.add_argument(
         "--play-hosted",
         action="store_true",
         help="play every hosted environment this key can see and report the sweep",
+    )
+    hosted_mode.add_argument(
+        "--compare-hosted-coordinate-policies",
+        action="store_true",
+        help=(
+            "run centroid, observed scene feedback, and one-step predictive scene "
+            "feedback against the same hosted roster and seed"
+        ),
     )
     parser.add_argument(
         "--max-environments",
@@ -389,11 +406,29 @@ def main() -> None:
         default=HOSTED_MAX_ACTIONS_PER_LEVEL,
         help=(
             "per-level action ceiling for the hosted sweep. Below the largest "
-            "published baseline (578) the scores stop being comparable, and the "
-            "output says so rather than leaving it to the reader."
+            f"published baseline ({MAX_PUBLISHED_BASELINE_ACTIONS}) the scores stop "
+            "being comparable, and the output says so rather than leaving it to "
+            "the reader."
+        ),
+    )
+    parser.add_argument(
+        "--hosted-coordinate-policy",
+        choices=tuple(policy.value for policy in HostedCoordinatePolicy),
+        default=HostedCoordinatePolicy.CENTROID.value,
+        help=(
+            "coordinate policy for --play-hosted; scene-feedback policies are "
+            "experimental and centroid remains the default"
         ),
     )
     args = parser.parse_args()
+    if (
+        args.compare_hosted_coordinate_policies
+        and args.hosted_coordinate_policy != HostedCoordinatePolicy.CENTROID.value
+    ):
+        parser.error(
+            "--hosted-coordinate-policy cannot be combined with "
+            "--compare-hosted-coordinate-policies"
+        )
     if args.list_environments:
         print(json.dumps(list_environments(), indent=2))
         return
@@ -407,8 +442,19 @@ def main() -> None:
             max_environments=args.max_environments,
             max_actions_per_level=args.max_actions_per_level,
             seed=args.seed,
+            coordinate_policy=HostedCoordinatePolicy(args.hosted_coordinate_policy),
         )
         print(json.dumps({"mode": mode, **sweep}, indent=2))
+        return
+    if args.compare_hosted_coordinate_policies:
+        arcade, mode = open_arcade()
+        comparison = compare_coordinate_policies(
+            arcade,
+            max_environments=args.max_environments,
+            max_actions_per_level=args.max_actions_per_level,
+            seed=args.seed,
+        )
+        print(json.dumps({"mode": mode, **comparison}, indent=2))
         return
     print(json.dumps(play(agent=args.agent, seed=args.seed), indent=2))
 

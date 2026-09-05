@@ -170,6 +170,13 @@ library) but it is not enough to measure the volume yet. **Dogfood is the
 metering path** — 8b + dogfood ledger row 11 (OS filesystem → ZetaFS, ◐) +
 row 0d (Ace+Zeta CLIs, ○). Not a missing invention.
 
+**Product lanes (2026-09-05):** as many as make sense; bundle related; keep
+product vs framework separate. Index:
+[`docs/PRODUCT-LANES.md`](PRODUCT-LANES.md). Join-hash / pin (working label
+**Zeta Gate**) is **framework**, not a sold product — ZetaDB and other
+protocols consume it for non-local federation
+(`081M1RZ70FF087G0R0035580EZ`, `081M1S0K0R0087G0R001T4R8JH`).
+
 **Thin needle (consistent-with, not identified by count).** `FourCornerTrace` is
 the VALUE-channel close (WSet +1/−1, generator reread; `−1 = i²` on ℂ is a
 **ring** identity). We close over **interrupts** with the **Kleisli** ISR

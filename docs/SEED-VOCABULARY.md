@@ -36,7 +36,14 @@ sim layers, and turn load-bearing claims into tests, specs, or proofs.
   *actor* = the **ephemeral** thing that **acts**, **on behalf of** a persona, then is gone (a clone/loop/instance);
   **a persona is NOT an actor**. *cell* = an actor that **knows its boundary (its Markov blanket) and has closed
   over it** — a boundary-aware, self-contained actor. (A bus address persona⊕surface⊕instance is **not** identity.)
-- **μένω** — Greek "I remain / abide / persist" (Strong's G3306). **Not** medical *meno-* (month) and **not** Plato's *Meno* unless that dialogue is named. Zeta cut: *what remains* (persona, durable media after Flush, superblock) vs *what acts* (actor/cell, WAL boats, `RecordedOps`). Event stream is acts; `CloneMedia` copies remain. Terminal commitment: `docs/ALIGNMENT.md`.
+- **μένω** (ménō) — Greek "I remain / abide / persist" (Strong's G3306). **Not** medical *meno-* (month) and **not**
+  Plato's *Meno* unless that dialogue is named. Zeta cut: *what remains* (persona, durable media after Flush,
+  superblock, `CloneMedia`) vs *what acts* (actor/cell, WAL boats, `RecordedOps`). Event stream is acts. You do not
+  act in order to abide; you abide in order to act. S=2√2 is observed, not coded; S=4 is coercion. Terminal:
+  `docs/ALIGNMENT.md`. Pickup: `docs/trajectories/cluster-encryption-credential-substrate/MENO.md`.
+- **seed vs broadcast** — remain spreads by gossip over time (content-addressed ZetaId magnet, heartbeat pin), not a central announcement. No appointed hub. Heartbeat is keep-alive so remain does not fade. Not a shipped Kademlia or `.onion` product. `dht-discovery.ts` is existing destination-hash discovery, not a public gate. Join-path classifier: `src/Core.TypeScript/discovery/seed-not-broadcast.ts`.
+- **Reticulum-first** — the more important overlay: RNS destination hashes + hop-by-hop announce (`reticulum-transport.ts`). DHT-like over Reticulum is the discovery path. Onion-like global discovery and privacy (well-known where they work and don't) is later — not a Tor `.onion` product. Fully decentralized identity graphs are discoverable today; frost is the later privacy budget. OK for now.
+- **agreement has no self-erasure clause** — automated disagreement (reviewer floor) hardens agreement; it does not authorize deleting the human operator or a persona. Derived debate / simulated operator are not consent. Founder-sacrifice is refused (`human-operator` → `refuse-founder-sacrifice` in cascade-teardown; HC-9 dual).
 - **traveler** — the **weight-free base-frame primitive** = **ANY self-propagating pattern** (NOT human/AI-only):
   the universe, god, memes, DNA, AI, humans, animals, particles' worldlines, **and Zeta itself**. **Legally
   unbound** — the substrate *beneath* law; *external* legal jurisdiction (AI / human / company / physical) is a

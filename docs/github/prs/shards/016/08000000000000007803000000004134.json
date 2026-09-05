@@ -1,0 +1,12 @@
+{
+  "pr_number": 16692,
+  "archive_path": "docs/history/pr-reviews/PR-16692-chore-081m1sdcy6b087g0r00330f1hz-complete-persist-history-workitem.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-05T19:14:49.537Z",
+  "schema_version": "v1",
+  "commit_sha": "50b7bf006c3d8d703cb1419ae2a9d43d51b2d4b6",
+  "title": "chore(081M1SDCY6B087G0R00330F1HZ): complete persist-history workitem",
+  "state": "MERGED",
+  "merged_at": "2026-09-05T19:14:14Z",
+  "head_ref": "feat/zetafs-complete-16690"
+}

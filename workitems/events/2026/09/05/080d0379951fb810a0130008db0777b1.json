@@ -1,0 +1,14 @@
+{
+  "id": "080d0379951fb810a0130008db0777b1",
+  "at": "2026-09-05T01:33:04.887Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1QK58ZQ087G0R000Z73GH0",
+    "type": "task",
+    "title": "Freeze reclaimSweep owns the journal under StoreDir",
+    "slug": "freeze-reclaimsweep-owns-the-journal-under-storedir",
+    "priority": "P2",
+    "filename": "081M1QK58ZQ087G0R000Z73GH0-freeze-reclaimsweep-owns-the-journal-under-storedir.md"
+  }
+}

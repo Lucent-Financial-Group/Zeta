@@ -1,0 +1,14 @@
+{
+  "id": "080d037ad4103010a01300080d030c5d",
+  "at": "2026-09-05T02:16:37.638Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1QNN0G5087G0R0003VXYSK",
+    "type": "task",
+    "title": "Freeze reclaimTick composes pacer propose and sweep",
+    "slug": "freeze-reclaimtick-composes-pacer-propose-and-sweep",
+    "priority": "P2",
+    "filename": "081M1QNN0G5087G0R0003VXYSK-freeze-reclaimtick-composes-pacer-propose-and-sweep.md"
+  }
+}

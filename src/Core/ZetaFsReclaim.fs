@@ -16,7 +16,13 @@ open Zeta.Core.FSharp.Blake3
 /// garbage, not a missing live object. A committed Journaled freeze stays
 /// readable across that crash (tested). Sweep journal slice:
 /// `applyWithJournal` records remaining paths and resumes after
-/// crash-mid-sweep. Still `toy`: not wired to the freeze reclaim ferry.
+/// crash-mid-sweep. Freeze volume door: `ZetaFsFreeze.reclaimSweep`.
+/// Tick: `ZetaFsFreeze.reclaimTick`. Boat: `reclaimAsync` + `pumpReclaim`
+/// (DoP=1 FerryThrottler, not the freeze WAL boat). Metered pacer:
+/// `ZetaFsFreeze.reclaimTickMetered`. Successful freeze enqueues nonempty
+/// orphan reclaim on the reclaim ferry. Default freeze volumes reclaim via
+/// `BlockCas.Delete`; POSIX stream volumes still delete files. Manual
+/// volumes still `pumpReclaim`.
 ///
 /// DoP=1 on this ferry. No Task.Run.
 module ZetaFsReclaim =
@@ -186,11 +192,13 @@ module ZetaFsReclaim =
             else
                 Some(ContentHash256.ofHex (line.Substring(0, 64)), line.Substring(65)))
 
-    /// Journaled apply. Writes remaining (hex, path) lines before each
-    /// delete. A crash-mid-sweep leaves the journal; the next call with
-    /// this path resumes (empty `paths` still reads the journal).
-    /// Still `toy` — not the freeze reclaim ferry.
-    let applyWithJournal
+    /// Journaled apply through caller-supplied published/retract. POSIX
+    /// `applyWithJournal` and BlockCas reclaim share this so the journal
+    /// is one door. Partial retract is extra garbage, not a missing live
+    /// object.
+    let applyWithJournalUsing
+        (published: string -> bool)
+        (retract: string -> unit)
         (fs: IFileSystem)
         (journalPath: string)
         (paths: (ContentHash256 * string)[])
@@ -210,8 +218,8 @@ module ZetaFsReclaim =
             FileSystemIo.writeAllText fs journalPath (formatJournal rest)
             let _, path = loaded.[i]
 
-            if fs.Exists path then
-                fs.Delete path
+            if published path then
+                retract path
                 n <- n + 1
 
             i <- i + 1
@@ -223,3 +231,22 @@ module ZetaFsReclaim =
             FileSystemIo.writeAllText fs journalPath (formatJournal (Array.sub loaded i (loaded.Length - i)))
 
         n
+
+    /// Journaled apply. Writes remaining (hex, path) lines before each
+    /// delete. A crash-mid-sweep leaves the journal; the next call with
+    /// this path resumes (empty `paths` still reads the journal).
+    /// Freeze volume door is `ZetaFsFreeze.reclaimSweep`. Tick is
+    /// `ZetaFsFreeze.reclaimTick`. Boat is `reclaimAsync` + `pumpReclaim`.
+    let applyWithJournal
+        (fs: IFileSystem)
+        (journalPath: string)
+        (paths: (ContentHash256 * string)[])
+        (budget: Budget)
+        : int =
+        applyWithJournalUsing
+            (fun path -> fs.Exists path)
+            (fun path -> fs.Delete path)
+            fs
+            journalPath
+            paths
+            budget

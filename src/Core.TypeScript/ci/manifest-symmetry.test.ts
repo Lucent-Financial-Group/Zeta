@@ -139,17 +139,17 @@ const WINDOWS_EXCEPTIONS: Record<string, string> = {
   cmake:
     "Windows CMake comes from Microsoft Visual Studio C++ CMake tools (component Microsoft.VisualStudio.Component.VC.CMake.Project, bundled with VS Build Tools / Desktop development with C++). install.ps1 prepends the vswhere-found cmake.exe + ninja.exe dirs to PATH when the component is present, and warns (does not scoop) when it is not — Server Core smoke has no VS. Scoop/winget/choco cmake is refused.",
   "pkg-config":
-    "Unix .pc lookup for native crates (Feldera README). Windows native crates use CMake from Visual Studio / vcpkg; pkg-config is not a VS C++ CMake-tools binary and scoop pkgconf is a second stack. Do not scoop it.",
+    "apt's Unix .pc lookup for native crates (Feldera README). Windows native crates use CMake from Visual Studio / vcpkg; pkg-config is not a VS C++ CMake-tools binary and scoop pkgconf is a second stack. Do not scoop it.",
+  pkgconf:
+    "brew's renamed formula for the same Unix .pc lookup (Homebrew pkg-config -> pkgconf); same Windows disposition as pkg-config above — Windows native crates use CMake from Visual Studio / vcpkg, not scoop pkgconf.",
   "libssl-dev":
     "OpenSSL headers for Unix native crates (Feldera README libssl-dev). Windows uses Schannel / native TLS; the runtime exception for libssl3t64 already records this. Compiling against OpenSSL on Windows is a vcpkg/VS decision, not scoop openssl.",
-  openssl:
-    "brew's OpenSSL formula (headers+lib); same Windows disposition as libssl-dev / libssl3t64 — Schannel, not scoop openssl.",
+  "openssl@3":
+    "brew's OpenSSL formula (headers+lib; keg-only, bare `openssl` is an alias for openssl@3); same Windows disposition as libssl-dev / libssl3t64 — Schannel, not scoop openssl.",
   "libsasl2-dev":
     "Cyrus SASL headers, Linux-only (Feldera from-sources README). Kafka on Windows is not this slice; Nexmark-without-Kafka may not link SASL. No VS C++ CMake-tools equivalent.",
-  "cyrus-sasl":
-    "brew's name for the same SASL headers/libs as apt libsasl2-dev; same Windows disposition.",
-  "zlib1g-dev":
-    "zlib headers, Linux-only (Feldera README). Windows ships zlib with the OS / VS CRT.",
+  "cyrus-sasl": "brew's name for the same SASL headers/libs as apt libsasl2-dev; same Windows disposition.",
+  "zlib1g-dev": "zlib headers, Linux-only (Feldera README). Windows ships zlib with the OS / VS CRT.",
   zlib: "brew formula (keg-only; macOS already has zlib). Windows ships zlib in-box / VS CRT.",
   "libzstd-dev":
     "zstd headers (Feldera README libzstd-dev). The zstd BINARY is already excepted (Windows tar / in-box). Headers follow the same disposition — not scoop zstd.",

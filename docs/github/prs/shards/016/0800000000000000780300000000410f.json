@@ -1,0 +1,12 @@
+{
+  "pr_number": 16655,
+  "archive_path": "docs/history/pr-reviews/PR-16655-fix-tsconfig-drop-ts7-removed-baseurl-from-website-identity-dla-site.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-05T09:05:42.141Z",
+  "schema_version": "v1",
+  "commit_sha": "238cd17ceec5eb91f3e85fe576d21a3c40fcf061",
+  "title": "fix(tsconfig): drop TS7-removed baseUrl from website + identity-dla-site",
+  "state": "MERGED",
+  "merged_at": "2026-09-05T09:05:07Z",
+  "head_ref": "alexa/tsconfig-baseurl-ts7-20260905T084806Z"
+}

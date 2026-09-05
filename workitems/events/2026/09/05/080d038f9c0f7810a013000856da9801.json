@@ -1,0 +1,14 @@
+{
+  "id": "080d038f9c0f7810a013000856da9801",
+  "at": "2026-09-05T14:22:59.055Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1RZ70FF087G0R0035580EZ",
+    "type": "task",
+    "title": "Zeta Gate product lane: join/pin client on seed vs broadcast",
+    "slug": "zeta-gate-product-lane-join-pin-client-on-seed-vs-broadcast",
+    "priority": "P2",
+    "filename": "081M1RZ70FF087G0R0035580EZ-zeta-gate-product-lane-join-pin-client-on-seed-vs-broadcast.md"
+  }
+}

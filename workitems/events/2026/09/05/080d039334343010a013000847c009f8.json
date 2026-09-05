@@ -1,0 +1,14 @@
+{
+  "id": "080d039334343010a013000847c009f8",
+  "at": "2026-09-05T16:28:36.870Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1S6D1M5087G0R000N11GND",
+    "type": "task",
+    "title": "Replace Vault with OpenBao: native PKCS#11 HSM auto-unseal is free in the fork",
+    "slug": "replace-vault-with-openbao-native-pkcs-11-hsm-auto-unseal-is",
+    "priority": "P2",
+    "filename": "081M1S6D1M5087G0R000N11GND-replace-vault-with-openbao-native-pkcs-11-hsm-auto-unseal-is.md"
+  }
+}

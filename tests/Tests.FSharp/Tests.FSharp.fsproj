@@ -312,6 +312,7 @@
     <Compile Include="PhysUI.Tests.fs" />
     <Compile Include="ControlScheme.Tests.fs" />
     <Compile Include="GameEnvironment.Tests.fs" />
+    <Compile Include="FrameMotion.Tests.fs" />
     <Compile Include="MetaControl.Tests.fs" />
     <Compile Include="CorrespondencePong.Tests.fs" />
     <Compile Include="ChipAudio.Tests.fs" />
@@ -478,6 +479,8 @@
     <Compile Include="Watermark.CrossVerify.Tests.fs" />
     <Compile Include="Watermark.Legs.Tests.fs" />
     <Compile Include="SplitMix64.CrossVerify.Tests.fs" />
+    <Compile Include="ContextualGridBenchmark.Tests.fs" />
+    <Compile Include="ContextualGridResultReceipt.Tests.fs" />
     <Compile Include="RendezvousHash.CrossVerify.Tests.fs" />
     <Compile Include="Crc32c.CrossVerify.Tests.fs" />
     <Compile Include="FastCdc.CrossVerify.Tests.fs" />

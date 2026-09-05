@@ -26,20 +26,32 @@ from arc_agi.wrapper import EnvironmentWrapper  # type: ignore[import-untyped]
 from arcengine import GameAction, GameState
 
 from zeta_arc.agent import PixelAgent
-from zeta_arc.click import MAX_COORD, SWEEP_STRIDES, ClickPolicy
+from zeta_arc.click import (
+    MAX_COORD,
+    SWEEP_STRIDES,
+    ClickPolicy,
+    MeasuredCoordinatePolicy,
+)
 from zeta_arc.driver import advance, reset
 from zeta_arc.dynamics import conservative
 from zeta_arc.environments.chase import ZetaChase
+from zeta_arc.environments.click_target import ZetaClickTarget
 from zeta_arc.environments.discovery import ZetaDiscovery
 from zeta_arc.frames import grid_of, is_click, offered_actions
 from zeta_arc.hosted import (
+    HostedCoordinatePolicy,
     Wrapper,
+    _budget_comparability,
+    build_hosted_agent,
+    compare_coordinate_policies,
     environment_score,
     play_environment,
+    play_roster,
     score_level,
 )
 from zeta_arc.layered import CLICK, KEYBOARD, LayeredAgent
 from zeta_arc.perception import Component
+from zeta_arc.scene_feedback import SceneCoordinatePolicy
 
 
 class FakeFrame:
@@ -505,11 +517,12 @@ def test_an_unmodelled_action_set_still_advances_the_episode() -> None:
 
 
 def test_score_level_refuses_to_pay_credit_for_a_missing_reference() -> None:
-    """`min(1, h/a)` with an absent `h` read as optimal would hand every level
+    """An absent `h` read as optimal would hand every unscored level credit.
+
     of every environment that publishes no baselines a perfect score."""
     assert score_level(18, 18) == 1.0
     assert score_level(36, 18) == 0.25
-    assert score_level(9, 18) == 1.0  # faster than reference caps at 1
+    assert score_level(9, 18) == 1.15
     assert score_level(18, None) == 0.0
     assert score_level(0, 18) == 0.0
 
@@ -520,7 +533,11 @@ def test_environment_score_denominator_is_declared_levels_not_played_levels() ->
 
     cleared_one = [LevelResult(0, 10, 10, True, 1.0, "cleared", 7, 40)]
     assert environment_score(cleared_one, total_levels=1) == 1.0
-    assert environment_score(cleared_one, total_levels=8) < 0.05
+    assert environment_score(cleared_one, total_levels=8) == 1 / 36
+
+    faster = [LevelResult(0, 5, 10, True, 1.15, "cleared", 7, 40)]
+    assert environment_score(faster, total_levels=1) == 1.0
+    assert environment_score(faster, total_levels=8) == 1 / 36
 
 
 class ScriptedWrapper:
@@ -695,6 +712,15 @@ def test_the_breakdown_key_order_is_deterministic() -> None:
     assert _tally([]) == {}
 
 
+def test_budget_comparability_does_not_claim_800_is_below_578() -> None:
+    below = _budget_comparability(577)
+    covered = _budget_comparability(800)
+
+    assert below.startswith("not-leaderboard-comparable")
+    assert covered.startswith("published-reference-floor-covered")
+    assert "does not establish leaderboard comparability" in covered
+
+
 def test_the_loop_sends_coordinates_with_a_coordinate_action() -> None:
     """A click with no `{x, y}` validates into `x=0, y=0` and clicks the corner
     forever — a silent wrong answer, which is why the agent returns data."""
@@ -794,6 +820,172 @@ class OwnGameWrapper:
 
     def step(self, action: GameAction, data: dict[str, Any] | None = None) -> Any:
         return advance(self.game, action, **(data or {}))
+
+
+def test_the_hosted_coordinate_policy_default_remains_the_centroid_control() -> None:
+    agent = build_hosted_agent()
+
+    assert isinstance(agent.click, MeasuredCoordinatePolicy)
+    assert isinstance(agent.click.delegate, ClickPolicy)
+
+
+@pytest.mark.parametrize(
+    ("policy", "expected_type"),
+    [
+        (HostedCoordinatePolicy.CENTROID, ClickPolicy),
+        (
+            HostedCoordinatePolicy.SCENE_FEEDBACK_OBSERVED,
+            SceneCoordinatePolicy,
+        ),
+        (
+            HostedCoordinatePolicy.SCENE_FEEDBACK_PREDICTED,
+            SceneCoordinatePolicy,
+        ),
+    ],
+)
+def test_each_hosted_coordinate_policy_runs_the_real_click_game_end_to_end(
+    policy: HostedCoordinatePolicy, expected_type: type[Any]
+) -> None:
+    agent = build_hosted_agent(policy)
+    result = play_environment(
+        OwnGameWrapper(ZetaClickTarget(seed=4)),
+        references=[1],
+        total_levels=1,
+        agent=agent,
+    )
+
+    assert isinstance(agent.click, MeasuredCoordinatePolicy)
+    assert isinstance(agent.click.delegate, expected_type)
+    if policy is HostedCoordinatePolicy.SCENE_FEEDBACK_PREDICTED:
+        assert agent.click.delegate.motion_projection.value == "one-step-ahead"
+    assert result["levels_cleared"] == 1
+    assert result["actions_total"] == 1
+    assert result["terminated"] == "win"
+
+
+def test_roster_reports_the_experimental_policy_on_summary_and_environment() -> None:
+    class SourceOwnedArcade:
+        info = type(
+            "Info",
+            (),
+            {
+                "game_id": "zeta-click-target",
+                "title": "ZetaClickTarget",
+                "baseline_actions": [1],
+            },
+        )()
+
+        def get_environments(self) -> list[Any]:
+            return [self.info]
+
+        def make(self, game_id: str, seed: int) -> OwnGameWrapper:
+            assert game_id == self.info.game_id
+            return OwnGameWrapper(ZetaClickTarget(seed=seed))
+
+    result = play_roster(
+        SourceOwnedArcade(),
+        coordinate_policy=HostedCoordinatePolicy.SCENE_FEEDBACK_OBSERVED,
+    )
+
+    assert result["coordinate_policy"] == "scene-feedback-observed"
+    assert result["results"][0]["coordinate_policy"] == "scene-feedback-observed"
+    assert result["levels_cleared_total"] == 1
+    resource = result["policy_resource"]
+    assert resource["decision_calls"] == 1
+    assert resource["observation_calls"] == 1
+    assert resource["grid_cells_received"] == 8192
+    assert resource["retained_state_leaf_values_total"] > 0
+    assert resource["retained_state_json_bytes_peak"] > 0
+    assert (
+        resource["retained_state_json_bytes_peak"]
+        == resource["retained_state_json_bytes_total"]
+    )
+    assert resource["basis"].endswith("not CPU time or resident memory")
+
+
+def test_policy_comparison_reuses_one_roster_and_reports_signed_deltas() -> None:
+    class CountingArcade:
+        info = type(
+            "Info",
+            (),
+            {
+                "game_id": "zeta-click-target",
+                "title": "ZetaClickTarget",
+                "baseline_actions": [1],
+            },
+        )()
+
+        def __init__(self) -> None:
+            self.roster_reads = 0
+            self.games_made = 0
+
+        def get_environments(self) -> list[Any]:
+            self.roster_reads += 1
+            return [self.info]
+
+        def make(self, game_id: str, seed: int) -> OwnGameWrapper:
+            assert game_id == self.info.game_id
+            self.games_made += 1
+            return OwnGameWrapper(ZetaClickTarget(seed=seed))
+
+    arcade = CountingArcade()
+    result = compare_coordinate_policies(arcade, seed=17)
+
+    assert arcade.roster_reads == 1
+    assert arcade.games_made == 3
+    assert result["experiment"] == "hosted-coordinate-policy-comparison-v2"
+    assert result["seed"] == 17
+    arms = result["arms"]
+    assert arms["centroid"]["report"]["coordinate_policy"] == "centroid"
+    assert (
+        arms["scene_feedback_observed"]["report"]["coordinate_policy"]
+        == "scene-feedback-observed"
+    )
+    assert (
+        arms["scene_feedback_predicted"]["report"]["coordinate_policy"]
+        == "scene-feedback-predicted"
+    )
+    for comparison in result["comparisons"].values():
+        assert comparison["outcome"] == {
+            "environments_seen": 0,
+            "environments_played": 0,
+            "environments_failed": 0,
+            "levels_cleared_total": 0,
+            "mean_environment_score": 0.0,
+        }
+    for arm in arms.values():
+        runtime = arm["runtime_sample"]
+        assert runtime["process_cpu_ns"] >= 0
+        assert runtime["wall_time_ns"] >= 0
+        assert runtime["python_heap_peak_bytes"] > 0
+        assert runtime["report_json_bytes"] > 0
+
+    centroid_bytes = arms["centroid"]["report"]["policy_resource"][
+        "retained_state_json_bytes_peak"
+    ]
+    observed_bytes = arms["scene_feedback_observed"]["report"]["policy_resource"][
+        "retained_state_json_bytes_peak"
+    ]
+    predicted_bytes = arms["scene_feedback_predicted"]["report"]["policy_resource"][
+        "retained_state_json_bytes_peak"
+    ]
+    assert observed_bytes <= centroid_bytes + 1024
+    assert predicted_bytes <= observed_bytes + 16
+
+
+def test_hosted_policy_builder_has_no_game_or_level_identity_channel() -> None:
+    """The scorer may know references; the coordinate policy receives only grids."""
+    assert tuple(inspect.signature(build_hosted_agent).parameters) == (
+        "coordinate_policy",
+    )
+    assert tuple(inspect.signature(SceneCoordinatePolicy.choose).parameters) == (
+        "self",
+        "grid",
+    )
+    assert tuple(inspect.signature(SceneCoordinatePolicy.observe).parameters) == (
+        "self",
+        "grid",
+    )
 
 
 def test_the_hosted_loop_clears_a_real_environment_end_to_end() -> None:

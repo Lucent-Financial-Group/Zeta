@@ -618,7 +618,9 @@ describe("the live catalogue against the measured render", () => {
     // and mimir 6.2.0's bundled Kafka (+5). The disk was rendered the moment
     // those bumps landed; only the measurement was stale.
     // 301 -> 321 GiB on 2026-09-04: opensearch added a 20Gi PVC on zeta-local-path.
-    expect(totals.get("zeta-local-path")).toBe(321);
+    // 321 -> 336 on 2026-09-05: openbao adds 10Gi data + 5Gi audit.
+    // 336 -> 306 on 2026-09-05: vault removed (-30 GiB), openbao added (+15).
+    expect(totals.get("zeta-local-path")).toBe(306);
   });
 
   // WAS "the two live inert-values defects are still exactly two apps". Both
@@ -689,7 +691,10 @@ describe("the live catalogue against the measured render", () => {
     expect(named).not.toContain("full-ai-cluster/headscale/config");
     expect(named).not.toContain("full-ai-cluster/oz/data");
     const pvcNames = result.rendered.map((pvc) => `${pvc.appId} ${pvc.name}`);
-    expect(pvcNames).toContain("full-ai-cluster/headscale headscale-config");
+    // `headscale-config` -> `headscale` on 2026-09-05: the chart moved home and
+    // renames its PVC. The property is unchanged -- the claim resolves to a real
+    // rendered PVC -- so the NAME is updated rather than the assertion dropped.
+    expect(pvcNames).toContain("full-ai-cluster/headscale headscale");
     expect(pvcNames).toContain("full-ai-cluster/oz ziti-controller");
   });
 

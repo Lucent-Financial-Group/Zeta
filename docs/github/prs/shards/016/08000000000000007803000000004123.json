@@ -1,0 +1,12 @@
+{
+  "pr_number": 16675,
+  "archive_path": "docs/history/pr-reviews/PR-16675-fix-drift-goes-green-instead-of-permanently-red-and-headscale-moves-home-four-se.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-05T18:01:24.264Z",
+  "schema_version": "v1",
+  "commit_sha": "5611b1469c0a1223053b1d3474d223b405115a4d",
+  "title": "fix: drift goes GREEN instead of permanently red, and headscale moves home (four server releases)",
+  "state": "MERGED",
+  "merged_at": "2026-09-05T18:00:45Z",
+  "head_ref": "otto/drift-cleanup-and-headscale-home"
+}

@@ -4,7 +4,7 @@
   "actions/cache": "55cc8345863c7cc4c66a329aec7e433d2d1c52a9",
   "actions/cache/restore": "55cc8345863c7cc4c66a329aec7e433d2d1c52a9",
   "actions/checkout": "3d3c42e5aac5ba805825da76410c181273ba90b1",
-  "actions/deploy-pages": "cd2ce8fcbc39b97be8ca5fce6e763baed58fa128",
+  "actions/deploy-pages": "368f82528645a54fb793d4d04e342629a3f51346",
   "actions/github-script": "3a2844b7e9c422d3c10d287c895573f7108da1b3",
   "actions/setup-go": "b7ad1dad31e06c5925ef5d2fc7ad053ef454303e",
   "actions/upload-artifact": "043fb46d1a93c77aae656e7c1c64a875d1fc6a0a",

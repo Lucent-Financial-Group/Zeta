@@ -36,8 +36,13 @@ Allowlisted (agent-readable):
 Host-only (never projected): wifi, ssh-host-keys, ssh-operator-pubkey,
 install-answers. Personal 1Password vault stays personal.
 
-This is **not** a Helm chart and does **not** wait on Vault. External
-Secrets remains the later hop once Vault is unsealed.
+This is **not** a Helm chart and does **not** wait on OpenBao. External
+Secrets remains the later hop once OpenBao is unsealed.
+
+HSM-talk companions on the USB repair stick (PKCS#11 module path,
+connector config, authkey _reference_) are **not** projected as Secrets
+here. A PIN in etcd is the thing an HSM exists to prevent. See
+`src/Core.TypeScript/cluster/seal-emulator-rung.ts`.
 
 ## Agent pod pickup
 

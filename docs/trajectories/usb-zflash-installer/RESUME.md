@@ -1,7 +1,7 @@
 # Trajectory - USB / zflash Installer
 
 Status: active — shipped + iterating; first surfaced as a trajectory 2026-05-29 from substrate inventory (the flashing mechanism works on `origin/main`; this surface was missing, so the workstream lived head-only)
-Last refreshed: 2026-09-04
+Last refreshed: 2026-09-05
 Type: workstream (current-focus) — a trajectory the operator is _actively powering_. Many trajectories can be tracked; only a few are workstreams at once (finite-focus / WIP-bounded — a workstream is a trajectory under sustained thrust, and thrust budget is finite, so most trajectories coast). (Genus = "trajectory"; "workstream" is the species: a trajectory under sustained thrust toward a deliverable, vs. emergent-posture trajectories like `anti-infection`. See [`factory-trajectory-surface`](../factory-trajectory-surface/RESUME.md) for the genus/species taxonomy.) One of the operator's three current cluster workstreams (encryption / usb-zflash / ts-workflow-engine).
 Eventual encoding (design-stage — the human maintainer 2026-05-23 genetic-ID substrate + Clifford/HKT): this trajectory's state is trackable as a 128-bit genetic-ID seed (discrete, reversible via parser-combinator ↔ generator-function) → Clifford-space path (continuous, eventual). Mirrors the three-lane I8-lattice / I9-manifold split.
 Current blocker: hardware — metal S6 first-login + WiFi radio / Touch ID / TPM
@@ -407,6 +407,24 @@ because open-source). The workflow engine
 (`ts-workflow-engine-du-state-machine` trajectory) is portable across both
 substrates; usb/zflash keeps the local one alive with minimal human-in-the-loop
 (physical-only — plug in the USB, everything else automated).
+
+**2026-09-05 — repair stick must keep HSM-talk (Aaron, via Riven).**
+CLI creds on the stick are shipped. After OpenBao replaced Vault,
+a repaired box still has to talk to the YubiHSM / smartcard HSM.
+That is a companion inventory, not a second secret store:
+PKCS#11 module path, connector config, authkey _reference_,
+domain map, OpenBao seal env pointer. Forbidden as originals:
+PIN plaintext, Shamir shares, `OP_SESSION`, a brand type in the
+ZetaFS volume. Classifier:
+`src/Core.TypeScript/cluster/seal-emulator-rung.ts`. Sibling:
+`cluster-encryption-credential-substrate`. `--bake-cred` remains
+PLACEHOLDER; this names what the flag must grow, it does not
+implement it. SoftHSM2 in CI does **not** replace this metal
+companion set. NixOS `zeta.hostSeal.boxRole = "prod-metal"`
+is how a repaired box declares automatic rotation (HSM or
+TPM PKCS#11); FIDO / biometric stay developer-only. The
+role is declared on the host, not inferred from a k8s
+label, and presence is still a probe.
 
 ## Grounding (on `origin/main`)
 

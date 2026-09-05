@@ -1,0 +1,14 @@
+{
+  "id": "080d039a29ca1010a0130008e4385937",
+  "at": "2026-09-05T20:31:51.618Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1SMAEA2087G0R000T57AKG",
+    "type": "task",
+    "title": "Reopen replay fills ObjectSets so isReadable still hash-verifies",
+    "slug": "reopen-replay-fills-objectsets-so-isreadable-still-hash-veri",
+    "priority": "P2",
+    "filename": "081M1SMAEA2087G0R000T57AKG-reopen-replay-fills-objectsets-so-isreadable-still-hash-veri.md"
+  }
+}

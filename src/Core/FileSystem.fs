@@ -213,6 +213,19 @@ type CrashMidSweepException(path: string) =
     inherit IOException(sprintf "crash-mid-sweep at %s" path)
     member _.Path = path
 
+/// DST: power was cut. Volatile (un-Flush'd) cache is gone. Not a process
+/// crash, not bad RAM, not EIO on Flush. Only previously Flush'd media remains.
+[<Sealed>]
+type PowerOutageException() =
+    inherit IOException("power-outage: volatile cache dropped; only Flush'd media remains")
+
+/// DST: RAM went bad. The in-flight Write may have published XOR'd bytes,
+/// then the process died. Not a clean power cut (media can contain garbage).
+[<Sealed>]
+type BadMemoryException(path: string) =
+    inherit IOException(sprintf "bad-memory: RAM corruption at %s" path)
+    member _.Path = path
+
 /// A mock FileStream that commits its MemoryStream buffer to the InMemoryFileSystem registry upon disposal.
 /// `Flush` publishes the current buffer without firing crash/corrupt/reorder
 /// arms. Those arms stay on Dispose (`commitWrite`). A Flush that used
@@ -716,10 +729,13 @@ type FileSystemBlockIo(fs: IFileSystem, path: string, blockSize: int) =
 /// DST block device: LBA → sparse blocks in memory. Not POSIX, not NVMe.
 /// Default: Write is durable immediately (POSIX-like RAM).
 /// `volatileUntilFlush = true` is the NVMe Flush/FUA DST: Write is visible
-/// on this instance; `CloneMedia` (crash) keeps only Flush'd media.
-/// `ArmCrashMidWrite` tears the next Write that is longer than `afterBytes`.
-/// Crash recovery of a volume on this door stays `toy` until freeze/CAS
-/// speak `IBlockIo`. Native NVMe Flush/FUA is not claimed.
+/// on this instance; `CloneMedia` is power-loss remain (un-Flush'd cache
+/// dropped). `ArmPowerOutageOnFlush` is that cut on the live device.
+/// `ArmCrashMidWrite` tears the next Write (process died mid-DMA; prefix
+/// is still good bytes). `ArmBadMemoryOnWrite` XOR's the RAM buffer then
+/// dies (media may hold garbage). Those three are not one "crash".
+/// Volume recovery stays `toy` until the named corpus is green. Native
+/// NVMe Flush/FUA is not claimed.
 [<Sealed>]
 type SimulatedBlockIo(blockSize: int, ?media: IReadOnlyDictionary<uint64, byte[]>, ?lbaCount: uint64, ?volatileUntilFlush: bool) =
     do
@@ -745,6 +761,8 @@ type SimulatedBlockIo(blockSize: int, ?media: IReadOnlyDictionary<uint64, byte[]
     let mutable corruptArm: int option = None
     let mutable tornArm: int option = None
     let mutable reorderArmed = false
+    let mutable powerOutageArm = false
+    let mutable badMemoryArm = false
     let mutable heldWrite: (uint64 * byte[]) option = None
     let commitOrder = ResizeArray<uint64>()
     let recorded = ResizeArray<BlockIoOp>()
@@ -842,6 +860,19 @@ type SimulatedBlockIo(blockSize: int, ?media: IReadOnlyDictionary<uint64, byte[]
             reorderArmed <- true
             heldWrite <- None)
 
+    /// One-shot: next Flush drops the volatile cache and throws
+    /// `PowerOutageException`. Requires `volatileUntilFlush = true` or the
+    /// Writes already hit durable media (write-through is not a power cut).
+    member _.ArmPowerOutageOnFlush() =
+        lock lockObj (fun () -> powerOutageArm <- true)
+
+    /// One-shot: next Write XOR's the last byte of the RAM buffer, publishes
+    /// that garbage, then throws `BadMemoryException`. Last byte so a tail
+    /// RMW does not clobber the prior freeze sitting at offset 0. Not a
+    /// power cut.
+    member _.ArmBadMemoryOnWrite() =
+        lock lockObj (fun () -> badMemoryArm <- true)
+
     member _.Writes = lock lockObj (fun () -> writes)
 
     member _.CommitOrder = lock lockObj (fun () -> commitOrder.ToArray())
@@ -862,9 +893,9 @@ type SimulatedBlockIo(blockSize: int, ?media: IReadOnlyDictionary<uint64, byte[]
         and set v = lock lockObj (fun () -> logicalBytes <- v)
 
     /// Copy durable media onto a fresh device (μένω: what remains).
-    /// Volatile cache is dropped (crash-before-Flush). Arms, LogicalBytes,
-    /// RecordedOps (what acted), and any BlockCas index are not copied —
-    /// those must reload from the superblock.
+    /// Volatile cache is dropped (power-outage: un-Flush'd bytes are gone).
+    /// Arms, LogicalBytes, RecordedOps (what acted), and any BlockCas index
+    /// are not copied — those must reload from the superblock.
     member _.CloneMedia() : SimulatedBlockIo =
         let seed = Dictionary<uint64, byte[]>()
 
@@ -955,6 +986,21 @@ type SimulatedBlockIo(blockSize: int, ?media: IReadOnlyDictionary<uint64, byte[]
                             publish heldLba heldBytes
                             recorded.Add(BlockIoOp.Write(lba, src.ToArray()))
                             src.Length
+                        | _ when badMemoryArm ->
+                            badMemoryArm <- false
+                            let copy = src.ToArray()
+
+                            if copy.Length > 0 then
+                                let last = copy.Length - 1
+                                copy.[last] <- copy.[last] ^^^ corruptXor
+
+                            publish lba copy
+                            recorded.Add(BlockIoOp.Write(lba, copy))
+                            raise (
+                                BadMemoryException(
+                                    "lba:"
+                                    + lba.ToString(System.Globalization.CultureInfo.InvariantCulture)
+                                ))
                         | _ ->
                             publish lba (src.ToArray())
                             recorded.Add(BlockIoOp.Write(lba, src.ToArray()))
@@ -962,6 +1008,11 @@ type SimulatedBlockIo(blockSize: int, ?media: IReadOnlyDictionary<uint64, byte[]
 
         member _.Flush() =
             lock lockObj (fun () ->
+                if powerOutageArm then
+                    powerOutageArm <- false
+                    cache.Clear()
+                    raise (PowerOutageException())
+
                 if vol then
                     for kv in cache do
                         blocks.[kv.Key] <- Array.copy kv.Value
@@ -1243,6 +1294,39 @@ type BlockCas(io: IBlockIo) =
         else
             lock lockObj (fun () -> index.ContainsKey key)
 
+    /// Read the payload published under `key`. Missing key is `None`.
+    member _.TryGet(key: string) : byte[] option =
+        if String.IsNullOrEmpty key then
+            None
+        else
+            lock lockObj (fun () ->
+                match index.TryGetValue key with
+                | false, _ -> None
+                | true, struct (start, len) ->
+                    if len < 0 then
+                        None
+                    else
+                        Some(BlockLog.readAt io start (int64 len)))
+
+    /// DST: XOR 0xA5 into the last byte of every published payload, in place.
+    /// Superblock and names stay. `isReadable` must fail. Returns how many
+    /// keys were flipped.
+    member _.XorLastPayloadByteAll() : int =
+        lock lockObj (fun () ->
+            let mutable n = 0
+
+            for kv in index do
+                let struct (start, len) = kv.Value
+
+                if len > 0 then
+                    let bytes = BlockLog.readAt io start (int64 len)
+                    bytes.[bytes.Length - 1] <- bytes.[bytes.Length - 1] ^^^ 0xA5uy
+                    BlockLog.append io start (System.ReadOnlyMemory<byte>.op_Implicit bytes)
+                    |> ignore
+                    n <- n + 1
+
+            n)
+
     /// Append `bytes` through `BlockLog` after the superblock. Index and
     /// superblock update only after both the payload Write and the superblock
     /// Write return. A torn superblock slot does not publish the name.
@@ -1272,6 +1356,29 @@ type BlockCas(io: IBlockIo) =
                 BlockSuper.writeCas io entries
                 index.[key] <- struct (start, bytes.Length)
                 pos <- after)
+
+    /// Unpublish `key`. Superblock first, then RAM, so a torn slot keeps
+    /// the previous generation (the name still exists). Payload bytes stay
+    /// on the log until a later compaction. Missing key is a no-op.
+    member _.Delete(key: string) : bool =
+        if isNull key then
+            false
+        else
+            lock lockObj (fun () ->
+                if not (index.ContainsKey key) then
+                    false
+                else
+                    let snapshot = Dictionary(index, StringComparer.Ordinal)
+                    snapshot.Remove key |> ignore
+
+                    let entries =
+                        [| for kv in snapshot ->
+                               let struct (s, n) = kv.Value
+                               kv.Key, s, n |]
+
+                    BlockSuper.writeCas io entries
+                    index.Remove key |> ignore
+                    true)
 
 
 /// The global file system registry containing the active IFileSystem implementation.

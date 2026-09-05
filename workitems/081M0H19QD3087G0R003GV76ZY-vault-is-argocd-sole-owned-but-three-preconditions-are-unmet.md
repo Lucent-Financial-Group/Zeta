@@ -19,10 +19,14 @@ composes_with: []
 ## Context
 
 Dual ownership of Helm release `vault` (namespace `vault`) was resolved on
-2026-08-20 by making `full-ai-cluster/k8s/applications/vault/Application.yaml`
-the sole owner and deleting the former `vault-install.yaml` bootstrap manifest
+2026-08-20 by making the then-current Vault Application the sole owner and
+deleting the former `vault-install.yaml` bootstrap manifest
 plus its `vault-install.source` entry in
 `full-ai-cluster/nixos/modules/k3s-server.nix`.
+
+The application later moved to
+`full-ai-cluster/k8s/applications/openbao/Application.yaml`; this item preserves
+the earlier measurement rather than pretending the historical path still exists.
 
 That fix stopped the active harm — two `selfHeal: true` reconcilers rewriting
 Vault's storage stanza between `storage "file"` and `storage "raft"` on every

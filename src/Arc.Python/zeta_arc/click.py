@@ -34,8 +34,12 @@ that layer would sit on.
 
 from __future__ import annotations
 
-from dataclasses import dataclass, field
+import json
+from abc import abstractmethod
+from dataclasses import dataclass, field, fields, is_dataclass
+from enum import Enum
 from math import isfinite
+from typing import Protocol
 
 from zeta_arc.perception import Grid, components
 
@@ -79,6 +83,105 @@ class CoordinateDecision:
     committed: tuple[int, int] | None
 
 
+class CoordinatePolicy(Protocol):
+    """Hexagonal coordinate-action port used by the layer router."""
+
+    @abstractmethod
+    def observe(self, grid: Grid) -> None:
+        """Accept the frame produced by the previous coordinate action."""
+
+    @abstractmethod
+    def choose(self, grid: Grid) -> tuple[int, int]:
+        """Choose one coordinate from the current grid."""
+
+
+@dataclass(frozen=True)
+class PolicyResourceReceipt:
+    """Deterministic work and retained-state proxies for one policy instance.
+
+    These counters are deliberately not called CPU time or resident memory.
+    ``grid_cells_received`` is the exact input volume at the policy boundary,
+    while ``retained_state_json_bytes`` is the size of a canonical semantic
+    checkpoint. Hosted comparison adds separately labelled process CPU and
+    Python-heap measurements.
+    """
+
+    decision_calls: int
+    observation_calls: int
+    grid_cells_received: int
+    retained_state_leaf_values: int
+    retained_state_json_bytes: int
+
+
+def _canonical_state(value: object) -> object:
+    if is_dataclass(value) and not isinstance(value, type):
+        return {
+            item.name: _canonical_state(getattr(value, item.name))
+            for item in fields(value)
+        }
+    if isinstance(value, Enum):
+        return value.value
+    if isinstance(value, dict):
+        return {
+            str(key): _canonical_state(item)
+            for key, item in sorted(value.items(), key=lambda pair: str(pair[0]))
+        }
+    if isinstance(value, (set, frozenset)):
+        canonical = [_canonical_state(item) for item in value]
+        return sorted(canonical, key=lambda item: json.dumps(item, sort_keys=True))
+    if isinstance(value, (tuple, list)):
+        return [_canonical_state(item) for item in value]
+    if value is None or isinstance(value, (bool, int, float, str)):
+        return value
+    raise TypeError(f"unsupported policy state: {type(value).__qualname__}")
+
+
+def _leaf_count(value: object) -> int:
+    if isinstance(value, dict):
+        return sum(_leaf_count(item) for item in value.values())
+    if isinstance(value, list):
+        return sum(_leaf_count(item) for item in value)
+    return 1
+
+
+@dataclass
+class MeasuredCoordinatePolicy:
+    """Observe a coordinate policy through the same grid-only port it serves."""
+
+    delegate: CoordinatePolicy
+    decision_calls: int = 0
+    observation_calls: int = 0
+    grid_cells_received: int = 0
+
+    @staticmethod
+    def _cell_count(grid: Grid) -> int:
+        return sum(len(row) for row in grid)
+
+    def observe(self, grid: Grid) -> None:
+        self.observation_calls += 1
+        self.grid_cells_received += self._cell_count(grid)
+        self.delegate.observe(grid)
+
+    def choose(self, grid: Grid) -> tuple[int, int]:
+        self.decision_calls += 1
+        self.grid_cells_received += self._cell_count(grid)
+        return self.delegate.choose(grid)
+
+    def resource_receipt(self) -> PolicyResourceReceipt:
+        """Snapshot semantic state without claiming Python object-size parity."""
+        state = _canonical_state(self.delegate)
+        encoded = json.dumps(state, separators=(",", ":"), sort_keys=True).encode(
+            "utf-8"
+        )
+        return PolicyResourceReceipt(
+            decision_calls=self.decision_calls,
+            observation_calls=self.observation_calls,
+            grid_cells_received=self.grid_cells_received,
+            retained_state_leaf_values=_leaf_count(state),
+            retained_state_json_bytes=len(encoded),
+        )
+
+
 def _signature(grid: Grid) -> tuple[int, ...]:
     """A cheap, total identity for a frame, used only to ask "did it change".
 
@@ -102,6 +205,10 @@ class ClickPolicy:
     _last_signature: tuple[int, ...] | None = None
     _stride_index: int = 0
     _sweep_cursor: int = 0
+
+    def observe(self, grid: Grid) -> None:
+        """Accept the post-action frame; this policy only tracks world identity."""
+        self._sync_world(grid)
 
     def _sync_world(self, grid: Grid) -> None:
         signature = _signature(grid)

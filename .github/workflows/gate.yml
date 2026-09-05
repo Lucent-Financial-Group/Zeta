@@ -1455,6 +1455,37 @@ jobs:
         # DRIFT TIER, deliberately: this job is not in `gate (required)`'s needs, so a
         # finding paints a red X here and blocks nobody. Being behind must never gate a
         # merge -- it is a standing condition, not an error.
+        #
+        # `continue-on-error` IS LOAD-BEARING AND WAS MISSING FOR ONE DAY, which is the
+        # worst defect I have shipped in this file and is recorded rather than quietly
+        # patched. Steps in this job run in sequence and a FAILING step aborts the rest.
+        # Chart currency fails on EVERY run by design -- charts are always somewhat
+        # behind -- so without this flag the step killed the job at ~19s and SIXTEEN
+        # downstream checks never ran: graphql, scan-floor, ambient-time, arity-equality,
+        # arity-nonequality, hook-script-paths, linter-coverage, consent-signoff,
+        # collation, mise-parity, hygiene-tests, audit-tests, hw-inventory,
+        # inventory-readmodel, book-index, inventory-tests. Every one of them read
+        # `skipped`, which is indistinguishable from `passed` to anyone glancing at a
+        # green-ish job. I introduced the exact failure class this repository is built to
+        # refuse, inside a change whose entire purpose was to make a silent condition
+        # loud.
+        #
+        # WITH the flag the step still goes red, the `which step failed` line below still
+        # names it, and `drift (loud)` still surfaces it -- that job exists precisely to
+        # find a swallowed step-level failure, and its own canary does exactly this. So
+        # nothing is hidden and sixteen checks come back.
+        #
+        # AARON CAUGHT IT, 2026-09-05: "Failing after 19s, you are not good at detecting
+        # early failures or are you waiting to see the outcome of the job you care
+        # about?" The 19 seconds WAS the signal -- a job that dies that fast died early,
+        # and I had been reading the red as "my check, as designed" without re-reading
+        # what it cost.
+        #
+        # CONVERGED INDEPENDENTLY: `main` landed the same flag via PR #16680 with its own
+        # measurement ("chart-currency=failure, everything after skipped"). Two agents
+        # reached the same fix from the same evidence, which is the cross-check working;
+        # this comment is kept because it carries the cost accounting and the catch.
+        continue-on-error: true
         run: bun src/Core.TypeScript/hygiene/report-chart-currency.ts --drift
 
       - name: GraphQL-transport guard (REST is the default; GraphQL is the contested budget)

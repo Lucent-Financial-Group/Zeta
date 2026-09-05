@@ -83,7 +83,18 @@ module FileSync =
         else
             Error(FileSyncError.FlushFailed(path, lastErrno ()))
 
+    let private simulatedFlush (path: string) : Result<unit, FileSyncError> =
+        try
+            SimulatedFs.Flush path
+            Ok()
+        with
+        | :? CrashMidWriteException as ex -> raise ex
+        | _ -> Error(FileSyncError.FlushFailed(path, 5))
+
     let private flushPath (path: string) : Result<unit, FileSyncError> =
+        match simulatedFlush path with
+        | Error e -> Error e
+        | Ok() ->
         if OperatingSystem.IsWindows() then
             Ok()
         else
@@ -105,17 +116,20 @@ module FileSync =
     /// Windows: FlushFileBuffers via `FileStream.Flush(true)`.
     let fsyncFile (path: string) : Result<unit, FileSyncError> =
         if OperatingSystem.IsWindows() then
-            try
-                use fs =
-                    new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite, 1, FileOptions.None)
+            match simulatedFlush path with
+            | Error e -> Error e
+            | Ok() ->
+                try
+                    use fs =
+                        new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite, 1, FileOptions.None)
 
-                fs.Flush(true)
-                Ok()
-            with
-            | :? IOException as ex ->
-                Error(FileSyncError.FlushFailed(path, ex.HResult))
-            | :? UnauthorizedAccessException as ex ->
-                Error(FileSyncError.OpenFailed(path, ex.HResult))
+                    fs.Flush(true)
+                    Ok()
+                with
+                | :? IOException as ex ->
+                    Error(FileSyncError.FlushFailed(path, ex.HResult))
+                | :? UnauthorizedAccessException as ex ->
+                    Error(FileSyncError.OpenFailed(path, ex.HResult))
         else
             flushPath path
 

@@ -1,0 +1,38 @@
+{
+  "algorithm": "gscan-lexical-preflight/v2-streaming",
+  "command_form_count": 457355,
+  "dataset_bytes": 4225776355,
+  "dataset_sha256": "9e07b9406e8ab0de5c5c95f9f184d97174910109651fafa40fb7ab05212c1b2c",
+  "elapsed_seconds": 43.422,
+  "example_count": 88642,
+  "expected_dataset_sha256": "9e07b9406e8ab0de5c5c95f9f184d97174910109651fafa40fb7ab05212c1b2c",
+  "measurement_scope": "bounded-memory lexical admission preflight only; no coordinate calibration, model training, prediction, action execution, or benchmark score",
+  "parser": "ijson-3.5.1",
+  "peak_observed_wrapper_rss_kb": 35460,
+  "resolved_form_count": 51578,
+  "resolved_seed_ids": [
+    "big",
+    "small"
+  ],
+  "seed_version": "nsm-english-candidate-v0",
+  "split_name": "situational_1",
+  "status": "preflight-unresolved",
+  "unresolved_form_count": 405777,
+  "unresolved_forms": [
+    "a",
+    "blue",
+    "circle",
+    "cylinder",
+    "green",
+    "hesitantly",
+    "pull",
+    "push",
+    "red",
+    "square",
+    "to",
+    "walk",
+    "while spinning",
+    "while zigzagging",
+    "yellow"
+  ]
+}

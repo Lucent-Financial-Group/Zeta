@@ -23,6 +23,7 @@
  *   2 - usage error or named dependency/preflight failure
  */
 
+import { applyRungOverrides, loadRungOverrides } from "./rung-overrides.ts";
 import { spawnSync } from "node:child_process";
 import { existsSync, mkdtempSync, readdirSync, readFileSync } from "node:fs";
 import { tmpdir } from "node:os";
@@ -997,6 +998,7 @@ export const APPLIED_BUT_UNASSERTED_REASONS: ReadonlyMap<string, string> = new M
       'AND THE GREEN BUDGET GATE IS ABOUT A RUNG THE TREE DOES NOT CARRY, which is the part nothing had written down. MEASURED 2026-08-22, exit codes read directly: `--resource-profile metal --check` exits 0 (`manifests match resource profile "metal"`) and `--resource-profile dev --check` exits 1 with 54 drifts -- the committed tree IS `metal`. `--resource-profile metal --budget` exits 1; `--resource-profile dev --budget` exits 0. The `plan + unit tests` job runs the `dev` one. So the gate that is green is arithmetic about a configuration nobody applied, standing in front of a lane that then runs the configuration that exits 1. Nobody misreported it -- the workflow comment said `the same audit against the metal rung exits 1 today` -- but no check compared the two. `findRungCoverage` is that comparison now: the ledger declares `activeResourceProfile` (REQUIRED, refused if absent), `ciBudgetedProfile` reads the budgeted rung off the workflow\'s own run line rather than restating it, and a disagreement between them is a blocker unless the gap is carried as `acknowledgedRungBudgetGap` with all four numbers pinned. It IS carried today -- `metal@dev-lane=5231m/13475Mi>>2500m/9216Mi` -- so this remains a stated debt with a maintainer decision behind it rather than a hidden one, and moving any of those four numbers re-reddens it. ' +
       "EVERY CAPACITY NUMBER IN THIS REASON ROSE BY 1000m ON 2026-08-22 AND NOTHING GREW, which is the one part here that the two checks above do not already say: applicationDirs() enumerated depth 1, ArgoCD's include glob is not path-segment bounded (established against a LIVE cluster in app-of-apps-discovery.ts, in this repo, before this reason was written), and `game-hosting/gmod` -- an in-repo StatefulSet whose own manifest carries a literal cpu 1 / memory 2Gi -- had been applied by this root since it was written and counted by nothing. storage-profiles.json asserted in writing that it contributes 0m / 0Mi. The consequence for THIS reason was not cosmetic: it put the whole lane at `dev` at 2906m against a 2500m budget, STILL OVER by 406m, so taking the lane to `dev` was NECESSARY BUT NOT SUFFICIENT. THAT HALF IS CLOSED AS OF 2026-08-23 AND THE CORRECTION IS RECORDED RATHER THAN OVERWRITTEN. This reason said `NO RUNG REACHES gmod, because it is a git-path source with no valuesObject, so `--resource-profile dev --apply` cannot touch it`. The premise was right and the conclusion was WRONG ABOUT THIS REPO'S OWN APPLIER: `applyResourceProfile` addresses `path` + `docIndex` + `requestsField` as a dotted path into an ARBITRARY manifest and could always have written into statefulset.yaml; only the render-side reader (`overlayRung`) required the `spec.source.helm.valuesObject.` prefix, and it is that reader -- not the applier -- that has been widened. Three git-path Applications we own, carrying 1150m of hardcoded requests no rung could reach (gmod 1000m, platform 100m, agent-memory 50m), are now governed resourceClaims addressing their own manifests. `cdi` (100m) and `kubevirt` (20m x 2 pods) are reachable by the same mechanism and were governed for one draft before being backed out: both manifests are vendored byte-for-byte from upstream, and single-node-budget.json says of kubevirt's that editing it `would make the checked-in copy diverge from the cluster it documents, which is a worse lie than this one`. REACHING A FILE IS NOT A LICENCE TO EDIT IT, so those 120m stay ACKNOWLEDGED rather than governed. The dev lane is 1081m and FITS with 1419m of spare, after the 2026-08-23 dev CPU floor; `metal` is unchanged at 5231m, because the rows reproduce the committed literals exactly and `--resource-profile metal --verify` is clean. gmod did not schedule TODAY because its sync fails on gatekeeper's webhook -- a reprieve of exactly the shape the longhorn paragraph above describes, one resource type over, and it was NOT treated as a fit: the 1000m was priced and then governed rather than waited out. " +
       "(3) THE valuesObject WAS PARTLY INERT against this chart, and that half is NOW FIXED TOO -- so this blocker is narrowed a SECOND time rather than left standing. Fixed 2026-08-22: the Application wrote `postgresql.primary.persistence.{storageClass,size}` (the bitnami subchart layout) where the chart reads `postgresql.persistence.*`; the `.primary` level is gone and the re-render is 10Gi on `longhorn` instead of the chart default 8Gi with NO storageClassName. RE-CHECKED 2026-09-02 AGAINST 0.9.2, and the previously-inert keys are GONE FROM THE MANIFEST: it now writes `api.env.HINDSIGHT_API_LLM_PROVIDER` and `api.service`, the spellings the chart actually reads, and the rendered api Deployment carries HINDSIGHT_API_LLM_PROVIDER -- so the old sentence here (`api.llm.{provider,existingSecret}` and a top-level `service` remain inert) described keys this Application no longer has and has been removed rather than re-stated. WHAT SURVIVES IS THE SUBSTANTIVE HALF, and it is unchanged: no HINDSIGHT_API_LLM_API_KEY env reaches the api container (it carries only HINDSIGHT_API_DATABASE_URL, HINDSIGHT_API_LLM_MODEL and HINDSIGHT_API_LLM_PROVIDER). ALSO FIXED 2026-09-02, and NOT by the version bump: the chart defaults postgres to `ankane/pgvector:latest`, a repository Docker Hub reports as ARCHIVED with no push since 2023-10-11, and it still does so at 0.9.2 -- the Application now overrides it to the maintained `pgvector/pgvector`. AND THE HONEST LIMIT ON THIS THIRD BLOCKER, written because the exit condition below is the thing most likely to outlive its defect: nobody has measured whether hindsight-api can reach Healthy WITHOUT an LLM API key. It may start and fail only on first extraction, or it may crash at boot. Unknown, and left unknown rather than guessed -- so (3) is recorded as a DEFECT in its own right and is deliberately not claimed as a scheduling blocker. " +
+      "TWO OF THE THREE BLOCKERS ARE SPENT AS OF 2026-09-05, measured, and this reason is narrowed rather than left standing at its original width. (1) CAPACITY IS CLOSED. This reason's own arithmetic says it: \"Take the WHOLE lane to `dev` and it is 1081m, which FITS\". CI now DOES take the whole lane to dev -- `--serve-tree dev` builds a copy of the tree with the rung applied and serves it from an in-cluster git server -- and the lane measures 1490m against a 2500m budget, 1010m of spare. The condition the paragraph named has been met by the substrate rather than by shrinking this app, exactly as it predicted. (2) THE RUNG-REACH BLOCKER IS CLOSED. It said \"One committed tree, two substrates, no override point\". There is an override point now, and it is the same `--serve-tree`: it rewrites a STAGED copy, never the committed tree, so the 16-core box keeps `metal` while CI gets `dev`. (3) IS THE ONLY ONE LEFT, and it is still genuinely UNKNOWN rather than quietly assumed: nobody has measured whether hindsight-api reaches Healthy WITHOUT an LLM API key. An attempt was made to read it from the last green proof run (33917879207) and FAILED -- job logs return empty and the check-run carries no annotations -- so the verdict is unread, not green. It is NOT lifted on the strength of (1) and (2) being closed, because a Healthy nobody observed is the vacuity class and this file exists to refuse it. WHAT WOULD LIFT IT is now one measurement rather than a capacity argument: one live run that reads hindsight's health line. " +
       "LIFTS WHEN: this lane reports hindsight at `health=Healthy` -- NOT `sync=Synced health=Healthy`. The lane accepts `sync=Unknown health=Healthy` (argocd, cert-manager, external-secrets, headlamp, loki and node-feature-discovery all pass that way in the same green run; minio was in that list until 2026-09-01 and is not an app any more), and a LIFTS WHEN stricter than the gate it names is exactly what kept `headscale` deferred for a cycle after its defect was gone. Reaching it needs (a) the lane-wide capacity trade in (1)/(2) settled by the maintainer, and (b) whatever (3) turns out to cost once (a) lets a pod run long enough to find out. " +
       "ANCHORS, CHECKED BY `reason-truth.ts`: each names an artifact this tree holds, so a claim that outlives its artifact goes red instead of reading on. The four capacity numbers above are citations rather than prose FOR THAT REASON -- they are the numbers a reader is most likely to act on, so they are the ones that must not be allowed to go quietly stale. " +
       "[cite: glob-applies hindsight] " +
@@ -1005,8 +1007,8 @@ export const APPLIED_BUT_UNASSERTED_REASONS: ReadonlyMap<string, string> = new M
       "[cite: chart-pin full-ai-cluster/hindsight hindsight 0.9.2] " +
       "[cite: resource-rung hindsight metal 1000] " +
       "[cite: resource-rung hindsight dev 75] " +
-      "[cite: lane-cpu metal 7690 over] " +
-      "[cite: lane-cpu dev 1490 fits] " +
+      "[cite: lane-cpu metal 7790 over] " +
+      "[cite: lane-cpu dev 1515 fits] " +
       "[cite: workflow-job k8s-argocd-health-test.yml dry-run] " +
       "[cite: path full-ai-cluster/k8s/bootstrap/root-application.yaml] " +
       "[cite: path maintainers/Addisons820/cluster-nodes/node-ad1efd/node.yaml] " +
@@ -1974,7 +1976,29 @@ function buildLaneTreeForProfile(
     // that SHA as an object the served repo does not contain (33822942615).
     gitRef,
     image: LANE_TREE_IMAGE,
-    applyRung: (stagedRoot: string) => applyResourceProfile(catalogue, profile, stagedRoot).length,
+    // TWO OVERRIDE POINTS, applied in order, both to the STAGED copy only.
+    //
+    // The rung writes `<requestsField>.cpu` and `.memory` and nothing else. That
+    // was the whole vocabulary the dev lane had, so an Application whose
+    // dev/metal difference was anything else -- a GPU selector, a replica count,
+    // a resource key whose NAME contains dots -- had no expressible dev form and
+    // could only be excluded from CI entirely. Twelve were.
+    //
+    // `applyRungOverrides` is the second point: arbitrary dotted-path set/remove,
+    // declared in `rung-overrides.json`, each entry carrying a substrate reason
+    // and a lift condition, and each REFUSED if it produces no edits. It runs
+    // AFTER the rung so a resource claim and an override can address the same
+    // manifest without the override being silently reverted.
+    applyRung: (stagedRoot: string) => {
+      const rungEdits = applyResourceProfile(catalogue, profile, stagedRoot).length;
+      const overrideEdits = applyRungOverrides(
+        loadRungOverrides(catalogue.profiles, stagedRoot),
+        profile,
+        stagedRoot,
+      ).length;
+      console.log(`[serve-tree] rung edits=${String(rungEdits)} override edits=${String(overrideEdits)}`);
+      return rungEdits + overrideEdits;
+    },
   });
   console.log(
     `[serve-tree] rung=${profile} files=${String(bundle.staged.files)} ` +
@@ -2962,7 +2986,7 @@ async function runEphemeralVaultInitStep(
     return { report: null, failure: { kind: "EphemeralVaultInitFailed", message: gate.reason } };
   }
 
-  const exec = kubectlVaultExec("vault", "vault-0");
+  const exec = kubectlVaultExec("openbao", "openbao-0");
 
   // TOPOLOGY.md section 5 step 1, as a WAIT: exit 2 is the sealed signal, and
   // it is also the only exit this loop accepts. A pod that is not there yet,

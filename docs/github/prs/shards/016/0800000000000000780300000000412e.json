@@ -1,0 +1,12 @@
+{
+  "pr_number": 16686,
+  "archive_path": "docs/history/pr-reviews/PR-16686-feat-081m1sambmm087g0r000e7jveb-orphan-reclaim-budget-covers-jumprope-nodes.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-05T18:07:25.886Z",
+  "schema_version": "v1",
+  "commit_sha": "ffe966fd768f5346d35ad5a2cc00be579cd4e775",
+  "title": "feat(081M1SAMBMM087G0R000E7JVEB): orphan reclaim budget covers jumprope nodes",
+  "state": "MERGED",
+  "merged_at": "2026-09-05T18:06:53Z",
+  "head_ref": "feat/zetafs-rolling-mn"
+}

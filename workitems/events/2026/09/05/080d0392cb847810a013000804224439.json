@@ -1,0 +1,14 @@
+{
+  "id": "080d0392cb847810a013000804224439",
+  "at": "2026-09-05T16:14:19.279Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1S5JW4E087G0R00373QGC6",
+    "type": "bug",
+    "title": "Freeze result waits for orphan catalog persistence",
+    "slug": "freeze-result-waits-for-orphan-catalog-persistence",
+    "priority": "P2",
+    "filename": "081M1S5JW4E087G0R00373QGC6-freeze-result-waits-for-orphan-catalog-persistence.md"
+  }
+}

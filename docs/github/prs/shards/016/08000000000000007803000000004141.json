@@ -1,0 +1,12 @@
+{
+  "pr_number": 16705,
+  "archive_path": "docs/history/pr-reviews/PR-16705-feat-081m1smaea2087g0r000t57akg-replay-fills-objectsets-for-reopen-hash-verify.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-05T20:50:01.302Z",
+  "schema_version": "v1",
+  "commit_sha": "e18cdd01101c23a50d9d6607e4453c97300146de",
+  "title": "feat(081M1SMAEA2087G0R000T57AKG): replay fills ObjectSets for reopen hash-verify",
+  "state": "MERGED",
+  "merged_at": "2026-09-05T20:49:26Z",
+  "head_ref": "feat/zetafs-reopen-hash-verify"
+}

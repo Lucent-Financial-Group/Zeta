@@ -1,0 +1,12 @@
+{
+  "pr_number": 16625,
+  "archive_path": "docs/history/pr-reviews/PR-16625-clarify-deterministic-transport-simulation-boundaries.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-05T01:51:34.058Z",
+  "schema_version": "v1",
+  "commit_sha": "66dad67e4b63e9038de284f7ffb65cc22925c259",
+  "title": "Clarify deterministic transport simulation boundaries",
+  "state": "MERGED",
+  "merged_at": "2026-09-05T01:50:53Z",
+  "head_ref": "lumen/bounded-transport-simulation-contract"
+}

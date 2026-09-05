@@ -372,6 +372,40 @@ let ``SimulatedBlockIo default write is durable without Flush`` () =
     Assert.Equal<byte>(payload, dst)
 
 [<Fact>]
+let ``SimulatedBlockIo power outage on Flush drops unflushed writes`` () =
+    let device = SimulatedBlockIo(4096, volatileUntilFlush = true)
+    let io = device :> IBlockIo
+    let payload = [| 9uy; 8uy; 7uy |]
+    Assert.Equal(3, io.Write(0UL, System.ReadOnlyMemory<byte>.op_Implicit payload))
+    device.ArmPowerOutageOnFlush()
+    Assert.Throws<PowerOutageException>(fun () -> io.Flush()) |> ignore
+    let empty = [| 0uy; 0uy; 0uy |]
+    let lost = Array.zeroCreate<byte> 3
+    Assert.Equal(3, io.Read(0UL, System.Memory<byte>.op_Implicit lost))
+    Assert.Equal<byte>(empty, lost)
+    let cloned = device.CloneMedia() :> IBlockIo
+    let remain = Array.zeroCreate<byte> 3
+    Assert.Equal(3, cloned.Read(0UL, System.Memory<byte>.op_Implicit remain))
+    Assert.Equal<byte>(empty, remain)
+
+[<Fact>]
+let ``SimulatedBlockIo bad memory XOR publishes garbage then dies`` () =
+    let device = SimulatedBlockIo(4096)
+    let io = device :> IBlockIo
+    let payload = [| 9uy; 8uy; 7uy |]
+    device.ArmBadMemoryOnWrite()
+    Assert.Throws<BadMemoryException>(fun () -> io.Write(0UL, System.ReadOnlyMemory<byte>.op_Implicit payload) |> ignore)
+    |> ignore
+    let expected = [| payload.[0]; payload.[1]; payload.[2] ^^^ 0xA5uy |]
+    let poisoned = Array.zeroCreate<byte> 3
+    Assert.Equal(3, io.Read(0UL, System.Memory<byte>.op_Implicit poisoned))
+    Assert.Equal<byte>(expected, poisoned)
+    let cloned = device.CloneMedia() :> IBlockIo
+    let remain = Array.zeroCreate<byte> 3
+    Assert.Equal(3, cloned.Read(0UL, System.Memory<byte>.op_Implicit remain))
+    Assert.Equal<byte>(expected, remain)
+
+[<Fact>]
 let ``SimulatedBlockIo volatileUntilFlush write is visible then lost on CloneMedia until Flush`` () =
     let device = SimulatedBlockIo(4096, volatileUntilFlush = true)
     let io = device :> IBlockIo
@@ -717,6 +751,37 @@ let ``BlockCas Put of an existing key does not rewrite bits`` () =
     Assert.Equal(1, cas.Count)
     // The idempotent re-Put of an identical key must add exactly zero writes.
     Assert.Equal(0, device.Writes - writesAfterFirstPut)
+
+[<Fact>]
+let ``BlockCas XorLastPayloadByteAll flips the last published byte`` () =
+    let device = SimulatedBlockIo(4096)
+    let cas = BlockCas(device)
+    let payload = [| 1uy; 2uy; 3uy |]
+    cas.Put("aa", payload)
+    Assert.Equal(1, cas.XorLastPayloadByteAll())
+    match cas.TryGet "aa" with
+    | None -> Assert.Fail("payload must still be published")
+    | Some got ->
+        let expected = [| payload.[0]; payload.[1]; payload.[2] ^^^ 0xA5uy |]
+        Assert.Equal<byte>(expected, got)
+
+[<Fact>]
+let ``BlockCas Delete unpublishes a key and CloneMedia agrees`` () =
+    let device = SimulatedBlockIo(4096)
+    let cas = BlockCas(device)
+    cas.Put("aa", [| 1uy; 2uy; 3uy |])
+    Assert.True(cas.Exists "aa")
+    Assert.Equal(1, cas.Count)
+    Assert.True(cas.Delete "aa")
+    Assert.False(cas.Exists "aa")
+    Assert.Equal(0, cas.Count)
+    Assert.False(cas.Delete "aa")
+    let cloned = BlockCas(device.CloneMedia())
+    Assert.False(cloned.Exists "aa")
+    Assert.Equal(0, cloned.Count)
+    cas.Put("aa", [| 9uy |])
+    Assert.True(cas.Exists "aa")
+    Assert.Equal(1, cas.Count)
 
 [<Fact>]
 let ``BlockSuper log dual slot keeps previous logical after crash-mid-write`` () =
