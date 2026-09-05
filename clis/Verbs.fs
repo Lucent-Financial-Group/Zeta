@@ -68,8 +68,49 @@ type IBenchmark = interface end
 
 // ── The verbs (3-letter stems; pure interface stubs) ──
 
-/// sim(ulate) — ephemeral; produces NO output (void). The SETI@home edge run;
+/// gen(erator) - **THE INTRODUCTION FORM.** Embeds a generator into `ISim<'a>`.
+///
+/// ## Why this exists, and why it does not settle the open question
+///
+/// Until 2026-09-05 this family declared ELIMINATORS for `ISim<'a>` and no introduction form:
+/// `mea`, `cut`, `cla`, `res`, `ben` and `tie` all CONSUME an `ISim<'a>`, and no member returned
+/// one. `Verbs.Tests.fs` states the consequence at its sharpest, by reflection rather than by
+/// prose: *"an interface family with eliminators and no introduction form is uninhabitable as a
+/// pipeline by construction - no amount of implementation effort produces the first value."*
+/// That was BREAK A, and it made the whole surface un-startable.
+///
+/// **This closes BREAK A WITHOUT answering what `sim` means**, which is the reason it is safe to
+/// land. The open question restated in `Verbs.Tests.fs` lists three readings; ALL THREE require
+/// some way to produce the first value. Reading 2 says so outright - the value comes from *"a
+/// builder, the room, or `SimVerb`"* - so under that reading the form already exists and was
+/// merely never declared here. Declaring it takes nothing off the table.
+///
+/// **Why `'a` is now determined, which reading 1 objected to.** The objection was that
+/// `Sim: ISeed * TimeSpan -> ISim<'a>` would make `'a` a return-position-only parameter chosen by
+/// the caller out of nothing. `Gen<'a>: 'a -> ISim<'a>` has no such problem: `'a` comes from the
+/// ARGUMENT. That is what a generator embedding is - the free structure over a carrier - and it
+/// is the shape `.claude/rules/only-the-irreducible-is-primitive-generate-the-rest.md` already
+/// prescribes: the free object is primitive, and every structured case is an earned quotient.
+///
+/// **What is NOT claimed.** That `ISim<'a>` IS the free object remains a *shape correspondence*
+/// and is not promoted here (`numerology-vs-number-theory`: matching arity is the weakest
+/// evidence). An introduction form is NECESSARY for that reading and does not establish it.
+/// BREAK B is likewise untouched and still on file: under the free-object reading it is not a
+/// defect at all (`mea` and `cut` are two interpretations of one term, so the documented *pipe* is
+/// what is wrong), and under reading 3 it is a real defect. This change does not pick.
+///
+/// **`Sim` still returns `unit`, deliberately.** Reading 2's observation stands - `ISimVerb.Sim`
+/// is the CLI invocation and a command returns nothing, which is why the docstring's *"produces
+/// NO output (void)"* is a design statement rather than an oversight. The introduction form is a
+/// different verb at a different layer, not a rewrite of that one.
+type IGenVerb =
+    abstract member Gen<'a> : generator: 'a -> ISim<'a>
+
+/// sim(ulate) - ephemeral; produces NO output (void). The SETI@home edge run;
 /// `sim <duration>` (bare = 30s). Identity comes from the void.
+///
+/// Unchanged 2026-09-05: see `IGenVerb` above for why the introduction form is a separate verb
+/// rather than a new return type here.
 type ISimVerb =
     abstract member Sim: seed: ISeed * duration: TimeSpan -> unit
 
@@ -100,6 +141,7 @@ type IResVerb =
 /// The full family. The loop is `sim |> mea |> cut` (pipe = cut(mea(sim)); not bare
 /// juxtaposition — F# application is left-associative); `res` iterates it.
 type ICli =
+    inherit IGenVerb
     inherit ISimVerb
     inherit IMeaVerb
     inherit ICutVerb

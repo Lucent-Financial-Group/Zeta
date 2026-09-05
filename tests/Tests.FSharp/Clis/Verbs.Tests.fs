@@ -61,6 +61,8 @@ let private aSim<'a> () : ISim<'a> = { new ISim<'a> }
 /// and what nothing had ever checked.
 let private cli: ICli =
     { new ICli with
+        member _.Gen<'a>(_generator: 'a) : ISim<'a> = { new ISim<'a> }
+
         member _.Sim(_seed: ISeed, _duration: TimeSpan) : unit = ()
 
         member _.Mea<'a>(_effects: IEffects, _sim: ISim<'a>) : IMeasurement = { new IMeasurement }
@@ -102,13 +104,17 @@ let documentedLoop
     (family: ICli)
     (effects: IEffects)
     (at: TimeSpan)
-    (produceSim: ISeed -> TimeSpan -> ISim<'a>)
+    (generator: 'a)
     (seed: ISeed)
     (duration: TimeSpan)
     : IMeasurement * IDelta<'a> * ISeam =
     // `Sim` returns unit — the run is an effect, not a value the rest of the loop can reach.
+    // That is unchanged and deliberate (it is the CLI invocation).
     family.Sim(seed, duration)
-    let s = produceSim seed duration
+    // BREAK A IS CLOSED (2026-09-05). This line used to be an out-of-band `produceSim` parameter
+    // threaded in from the caller, because the family declared no way to make the first value. It
+    // now comes from the family itself.
+    let s = family.Gen(generator)
     let measurement = family.Mea(effects, s)
     let delta, seam = family.Cut(at, s)
     measurement, delta, seam
@@ -160,13 +166,20 @@ let ``cut's residue is a Z-set delta AND a sticky-end seam`` () =
     Assert.NotNull(box seam)
 
 [<Fact>]
-let ``the documented core loop needs an arrow the family does not declare`` () =
-    // BREAK A + BREAK B, executed. `produceSim` is the missing arrow; supplying it here is the test
-    // harness standing in for whatever will eventually produce an `ISim` — a decision that has not
-    // been made. If `ISimVerb.Sim` ever returns that value, this parameter disappears and the change
-    // is a one-line diff at this call site.
+let ``the documented core loop now starts from the family's own introduction form`` () =
+    // WAS: "the documented core loop needs an arrow the family does not declare". The arrow was
+    // `produceSim`, a function parameter the harness passed in because the family could not make
+    // the first value. The prediction written beside it was exact — *"if `ISimVerb.Sim` ever
+    // returns that value, this parameter disappears and the change is a one-line diff at this call
+    // site"*. It disappeared on 2026-09-05, and the diff is this line: the resolution was
+    // `IGenVerb.Gen`, a separate introduction form, rather than changing `Sim`'s return type.
+    //
+    // BREAK B IS STILL HERE and is still executed by `documentedLoop`: `mea` and `cut` are applied
+    // to the SAME sim, side by side, because `cut` cannot take `mea`'s output. Whether that is a
+    // defect or the intended fan-out is the semantics question this change deliberately does not
+    // answer.
     let measurement, delta, seam =
-        documentedLoop cli anEffects (TimeSpan.FromSeconds 30.0) (fun _ _ -> aSim<int> ()) aSeed (TimeSpan.FromSeconds 30.0)
+        documentedLoop cli anEffects (TimeSpan.FromSeconds 30.0) 42 aSeed (TimeSpan.FromSeconds 30.0)
 
     Assert.NotNull(box measurement)
     Assert.NotNull(box delta)
@@ -188,16 +201,23 @@ let ``the braid sub-family composes as a genuine pipe — braid then weave then 
     Assert.NotNull(box seam)
 
 [<Fact>]
-let ``the family declares eliminators for ISim and no introduction form`` () =
+let ``the family declares BOTH eliminators and an introduction form for ISim`` () =
     // The sharpest *mechanical* statement of BREAK A, and the one that survives every reading of the
     // semantics: reflect over every interface the surface declares and split its members by where
     // `ISim<_>` appears. Several consume it; none returns it. An interface family with eliminators
     // and no introduction form is uninhabitable as a pipeline by construction — no amount of
     // implementation effort produces the first value.
     //
-    // This is a falsifier, not a description: the day an introduction form is added (in whatever
-    // shape Aaron chooses), `producers` stops being empty and this test fails — which is exactly the
-    // moment the gap closes and this file must be revisited.
+    // REVISITED 2026-09-05, exactly as this comment required. It used to assert
+    // `Assert.Empty producers` and read: *"the day an introduction form is added (in whatever shape
+    // Aaron chooses), `producers` stops being empty and this test fails — which is exactly the
+    // moment the gap closes and this file must be revisited."* The form was added
+    // (`IGenVerb.Gen<'a>: 'a -> ISim<'a>`), the test failed as designed, and it is rewritten here
+    // rather than deleted — the assertion is INVERTED, so it still cannot pass vacuously: remove
+    // the introduction form and `producers` empties and this fails again.
+    //
+    // Both halves are asserted because a family with only introduction forms is as uninhabitable as
+    // one with only eliminators — you could make values and never interpret them.
     let isSim (t: Type) =
         t.IsGenericType && t.GetGenericTypeDefinition() = typedefof<ISim<_>>
 
@@ -213,7 +233,13 @@ let ``the family declares eliminators for ISim and no introduction form`` () =
     let producers = declared |> Array.filter (fun m -> isSim m.ReturnType)
 
     Assert.NotEmpty consumers
-    Assert.Empty producers
+    Assert.NotEmpty producers
+
+    // Name the producer, so a future reader sees WHICH member closed the gap rather than only that
+    // the count is non-zero. A bare `NotEmpty` would still pass if some unrelated member started
+    // returning an `ISim` by accident.
+    let producerNames = producers |> Array.map (fun m -> m.Name) |> Array.distinct |> Array.sort
+    Assert.Contains("Gen", producerNames)
 
 [<Fact>]
 let ``tie joins two strands of the same carrier type`` () =
@@ -223,6 +249,30 @@ let ``tie joins two strands of the same carrier type`` () =
     Assert.NotNull(box (braidCli.Tie(aSim<int> (), aSim<int> ())))
 
 // ── Left open, deliberately (the question that stops here) ────────────────────────────────────────
+//
+// ## STATUS 2026-09-05: BREAK A is closed. The question below is NOT answered.
+//
+// `IGenVerb.Gen<'a>: 'a -> ISim<'a>` was added to the family. What that settles and what it leaves
+// alone, stated separately so the second is not read off the first:
+//
+//   SETTLED — the family is now INHABITABLE as a pipeline. It declared eliminators and no
+//   introduction form, which made the first value unreachable by construction, and every one of the
+//   three readings below needs some way to produce it. Reading 2 says so outright ("a builder, the
+//   room, or `SimVerb`"), so declaring the form takes nothing off the table.
+//
+//   ANSWERED, narrowly — reading 1's objection. It said `Sim: ISeed * TimeSpan -> ISim<'a>` would
+//   make `'a` a return-position-only parameter chosen out of nothing. `Gen<'a>: 'a -> ISim<'a>`
+//   determines `'a` from the ARGUMENT, so that objection does not apply to this shape. Note this
+//   answers an objection to a *mechanism*; it does not choose reading 1.
+//
+//   NOT SETTLED — what `sim` MEANS, which of the three readings is right, and BREAK B. `Sim` still
+//   returns `unit` (reading 2's point stands: it is the CLI invocation, and a command returns
+//   nothing). `mea` and `cut` still both consume the sim, so the documented pipe still does not
+//   compose as a chain, and `documentedLoop` still executes the fan-out. Under the free-object
+//   reading that is correct and the DOC is wrong; under reading 3 it is a real defect. Nothing here
+//   picks, and adding an introduction form does not establish that `ISim<'a>` is a free object —
+//   it is necessary for that reading and very far from sufficient (`numerology-vs-number-theory`:
+//   a matching shape is the weakest evidence there is).
 //
 // **What does `sim` return?** Three honest readings, none picked here:
 //
