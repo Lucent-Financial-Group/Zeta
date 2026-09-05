@@ -1,0 +1,14 @@
+{
+  "id": "080d03955174a010a0130008ce8ba86f",
+  "at": "2026-09-05T17:42:30.804Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1SAMBMM087G0R000E7JVEB",
+    "type": "task",
+    "title": "rolling N drop oldest after M greater than N freezes",
+    "slug": "rolling-n-drop-oldest-after-m-greater-than-n-freezes",
+    "priority": "P2",
+    "filename": "081M1SAMBMM087G0R000E7JVEB-rolling-n-drop-oldest-after-m-greater-than-n-freezes.md"
+  }
+}

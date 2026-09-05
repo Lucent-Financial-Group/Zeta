@@ -2278,3 +2278,89 @@ let ``rolling 1 second freeze unpins the first after reclaim`` () : Task =
             ZetaFsFreeze.dispose volume
             FileSystem.Reset()
     }
+
+[<Fact>]
+let ``rolling 1 third freeze must not revive the first generation`` () : Task =
+    task {
+        ensureHasher ()
+        let mock = InMemoryFileSystem()
+        FileSystem.Register(mock)
+        let store = "/rolling-one-three"
+        let mutbuf = ZetaFsMutbuf.create store ZetaFsMutbuf.Coherence.Shared
+        let volume = ZetaFsFreeze.createManual store mutbuf None
+        volume.History <- ZetaFsPolicy.HistoryPolicy.Rolling(Some 1, None, None)
+
+        try
+            let id = mintId ()
+            let h = ZetaFsMutbuf.openHandle volume.Mutbuf id
+            let freezeOnce (payload: byte[]) =
+                task {
+                    ZetaFsMutbuf.truncate volume.Mutbuf h 0L |> ignore
+                    ZetaFsMutbuf.pwrite volume.Mutbuf h 0L payload |> ignore
+                    let pending = (freezeAsync volume id ZetaFsFreeze.Journaled).AsTask()
+                    do! (ZetaFsFreeze.pumpLog volume CancellationToken.None).ConfigureAwait(false)
+                    let! r = pending.ConfigureAwait(false)
+                    do! (ZetaFsFreeze.pumpReclaim volume CancellationToken.None).ConfigureAwait(false)
+                    return r
+                }
+
+            let! a = freezeOnce [| 1uy; 2uy; 3uy |]
+            let! b = freezeOnce [| 9uy; 8uy; 7uy; 6uy |]
+            match a, b with
+            | Error e, _
+            | _, Error e -> Assert.Fail(ZetaFsFreeze.errorName e)
+            | Ok a, Ok b ->
+                Assert.False(ZetaFsFreeze.isReadable volume a.Content)
+                Assert.True(ZetaFsFreeze.isReadable volume b.Content)
+                let! c = freezeOnce [| 5uy; 4uy; 3uy; 2uy; 1uy; 0uy |]
+                match c with
+                | Error e -> Assert.Fail(ZetaFsFreeze.errorName e)
+                | Ok c ->
+                    Assert.False(ZetaFsFreeze.isReadable volume a.Content)
+                    Assert.False(ZetaFsFreeze.isReadable volume b.Content)
+                    Assert.True(ZetaFsFreeze.isReadable volume c.Content)
+        finally
+            ZetaFsFreeze.dispose volume
+            FileSystem.Reset()
+    }
+
+[<Fact>]
+let ``rolling 2 after three freezes drops only the oldest`` () : Task =
+    task {
+        ensureHasher ()
+        let mock = InMemoryFileSystem()
+        FileSystem.Register(mock)
+        let store = "/rolling-two-three"
+        let mutbuf = ZetaFsMutbuf.create store ZetaFsMutbuf.Coherence.Shared
+        let volume = ZetaFsFreeze.createManual store mutbuf None
+        volume.History <- ZetaFsPolicy.HistoryPolicy.Rolling(Some 2, None, None)
+
+        try
+            let id = mintId ()
+            let h = ZetaFsMutbuf.openHandle volume.Mutbuf id
+            let freezeOnce (payload: byte[]) =
+                task {
+                    ZetaFsMutbuf.truncate volume.Mutbuf h 0L |> ignore
+                    ZetaFsMutbuf.pwrite volume.Mutbuf h 0L payload |> ignore
+                    let pending = (freezeAsync volume id ZetaFsFreeze.Journaled).AsTask()
+                    do! (ZetaFsFreeze.pumpLog volume CancellationToken.None).ConfigureAwait(false)
+                    let! r = pending.ConfigureAwait(false)
+                    do! (ZetaFsFreeze.pumpReclaim volume CancellationToken.None).ConfigureAwait(false)
+                    return r
+                }
+
+            let! a = freezeOnce [| 1uy; 2uy; 3uy |]
+            let! b = freezeOnce [| 9uy; 8uy; 7uy; 6uy |]
+            let! c = freezeOnce [| 5uy; 4uy; 3uy; 2uy; 1uy; 0uy |]
+            match a, b, c with
+            | Error e, _, _
+            | _, Error e, _
+            | _, _, Error e -> Assert.Fail(ZetaFsFreeze.errorName e)
+            | Ok a, Ok b, Ok c ->
+                Assert.False(ZetaFsFreeze.isReadable volume a.Content)
+                Assert.True(ZetaFsFreeze.isReadable volume b.Content)
+                Assert.True(ZetaFsFreeze.isReadable volume c.Content)
+        finally
+            ZetaFsFreeze.dispose volume
+            FileSystem.Reset()
+    }
