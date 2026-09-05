@@ -1,0 +1,12 @@
+{
+  "pr_number": 16717,
+  "archive_path": "docs/history/pr-reviews/PR-16717-feat-081m1stgf9y087g0r000ftwg8w-persist-freeze-byte-meter-in-the-catalog.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-05T22:40:11.616Z",
+  "schema_version": "v1",
+  "commit_sha": "0ec2486ae98fae7a56aee8c806d22bb3519456c0",
+  "title": "feat(081M1STGF9Y087G0R000FTWG8W): persist freeze-byte meter in the catalog",
+  "state": "MERGED",
+  "merged_at": "2026-09-05T22:39:35Z",
+  "head_ref": "feat/zetafs-persist-freeze-byte-meter"
+}
