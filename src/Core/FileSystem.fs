@@ -1294,6 +1294,20 @@ type BlockCas(io: IBlockIo) =
         else
             lock lockObj (fun () -> index.ContainsKey key)
 
+    /// Read the payload published under `key`. Missing key is `None`.
+    member _.TryGet(key: string) : byte[] option =
+        if String.IsNullOrEmpty key then
+            None
+        else
+            lock lockObj (fun () ->
+                match index.TryGetValue key with
+                | false, _ -> None
+                | true, struct (start, len) ->
+                    if len < 0 then
+                        None
+                    else
+                        Some(BlockLog.readAt io start (int64 len)))
+
     /// Append `bytes` through `BlockLog` after the superblock. Index and
     /// superblock update only after both the payload Write and the superblock
     /// Write return. A torn superblock slot does not publish the name.

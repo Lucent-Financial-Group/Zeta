@@ -1,0 +1,14 @@
+{
+  "id": "080d039982bd8010a0130008a6612d29",
+  "at": "2026-09-05T20:09:03.152Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1SK0NXF087G0R002N0DCM0",
+    "type": "task",
+    "title": "isReadable re-hashes stored leaf bytes against ContentId",
+    "slug": "isreadable-re-hashes-stored-leaf-bytes-against-contentid",
+    "priority": "P2",
+    "filename": "081M1SK0NXF087G0R002N0DCM0-isreadable-re-hashes-stored-leaf-bytes-against-contentid.md"
+  }
+}
