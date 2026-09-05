@@ -38,7 +38,7 @@
  * so a revert cannot be silent. It was written when the general guard did not
  * exist, on the principle that a narrow falsifier that runs beats a broad one
  * that does not, and it is kept: it states things the general guard cannot, such
- * as WHY `env.HEADSCALE_SERVER_URL` is load-bearing only while the Ingress is
+ * as WHY `headscale.config.server_url` is load-bearing only while the Ingress is
  * off.
  *
  * The general half is `inert-valuesobject-keys.ts`, which this file's header
@@ -69,23 +69,35 @@ function valuesObject(dir: string): Record<string, unknown> {
 }
 
 describe("headscale — the value the container needs reaches the chart", () => {
-  // MEASURED 2026-08-22 by `helm template` of headscale 0.4.0 against this
-  // Application's own valuesObject: the chart declares exactly `image`, `env`,
-  // `service`, `ingress`, `persistence`, `postgresql`. A top-level `config:` is
-  // read by nothing, and the render contained ZERO occurrences of `server_url`.
-  test("no top-level `config:` — the chart has no such key, so it would be inert", () => {
-    expect(Object.keys(valuesObject("headscale"))).not.toContain("config");
+  // REWRITTEN 2026-09-05 FOR A DIFFERENT CHART, not renumbered. headscale moved
+  // home (charts.gabe565.com -> wrenix/helm-charts, 081M1HH1ERN087G0R00309EG9D)
+  // and the values surface moved with it. The OLD assertions were:
+  //
+  //   - no top-level `config:` -- the gabe565 chart had no such key
+  //   - `env.HEADSCALE_SERVER_URL` is set -- it took server_url as an env var
+  //
+  // BOTH ARE NOW FALSE OF THE CHART WE INSTALL, and mechanically renaming the
+  // key would have kept a test that no longer describes anything: the new chart
+  // takes REAL headscale config under `headscale.config`, which is Aaron's
+  // "headscale with config". The property being defended is unchanged -- the
+  // container must receive a server_url from somewhere -- so the property is
+  // re-asserted against the new surface rather than the old string being sed'd.
+  test("`headscale.config.server_url` is set — the container has no default for it", () => {
+    const hs = valuesObject("headscale")["headscale"] as Record<string, unknown> | undefined;
+    expect(hs).toBeDefined();
+    const config = hs?.["config"] as Record<string, unknown> | undefined;
+    expect(config).toBeDefined();
+    expect(typeof config?.["server_url"]).toBe("string");
+    expect(String(config?.["server_url"])).toMatch(/^https?:\/\/\S+$/);
   });
 
-  test("`env.HEADSCALE_SERVER_URL` is set — headscale has no default for it", () => {
-    // The chart emits HEADSCALE_SERVER_URL itself ONLY under
-    // `ingress.main.enabled` (templates/common.yaml). This Application does not
-    // enable an Ingress, so if this key goes away the container is started with
-    // no server_url from any source again.
-    const env = valuesObject("headscale")["env"] as Record<string, unknown> | undefined;
-    expect(env).toBeDefined();
-    expect(typeof env?.["HEADSCALE_SERVER_URL"]).toBe("string");
-    expect(String(env?.["HEADSCALE_SERVER_URL"])).toMatch(/^https?:\/\/\S+$/);
+  test("cert-manager is OFF — the dev lane has no ClusterIssuer for it to reference", () => {
+    // The chart defaults `headscale.certmanager.enabled: true` pointing at a
+    // ClusterIssuer named `letsencrypt-prod`. Rendering that against a cluster
+    // without it produces a Certificate referencing an issuer that does not
+    // exist. Verified at render: 0 occurrences of `kind: Certificate`.
+    const hs = valuesObject("headscale")["headscale"] as Record<string, { enabled?: unknown }> | undefined;
+    expect(hs?.["certmanager"]?.enabled).toBe(false);
   });
 
   test("the ingress is still NOT enabled — which is what makes the key load-bearing", () => {
@@ -448,14 +460,16 @@ describe("false positives — the four legitimate sources of a key absent from t
   });
 
   test("OPEN MAP — an arbitrary env var and an arbitrary persistence item are accepted", () => {
-    const schema = snapshotSchema("https://charts.gabe565.com", "headscale", "0.4.0");
-    // `env` is consumed wholesale by bjw-s `_env_vars.tpl` (`$values :=
-    // .Values.env`, then ranged). A key nobody could enumerate is not inert.
-    expect(classifyPath("env.HEADSCALE_SERVER_URL", schema)).toBe("accepted");
-    expect(classifyPath("env.SOME_VARIABLE_INVENTED_FOR_THIS_TEST", schema)).toBe("accepted");
-    // `persistence` is keyed by an arbitrary item name (`range $index,
-    // $persistence := .Values.persistence`).
-    expect(classifyPath("persistence.whatever.enabled", schema)).toBe("accepted");
+    // REPOINTED to the chart the tree installs. This was a gabe565/headscale
+    // 0.4.0 fixture; that coordinate is dead (its whole index stopped publishing
+    // 2025-02-19) and a demonstration pinned to a chart nobody deploys
+    // demonstrates nothing. The PROPERTY under test is unchanged: a values path
+    // consumed wholesale by the template is `accepted`, never `inert`.
+    const schema = snapshotSchema("codeberg.org/wrenix/helm-charts", "headscale", "1.0.19");
+    // `headscale.config` is rendered wholesale into the config file, so any key
+    // under it is a real headscale setting rather than an inert one.
+    expect(classifyPath("headscale.config.server_url", schema)).toBe("accepted");
+    expect(classifyPath("headscale.config.some_setting_invented_for_this_test", schema)).toBe("accepted");
   });
 
   test("PIPELINE toYaml — node-feature-discovery's whole `worker.config` subtree is accepted", () => {

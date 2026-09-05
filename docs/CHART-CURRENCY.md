@@ -2,7 +2,7 @@
 
 <!-- GENERATED FILE. Do not hand-edit: `bun src/Core.TypeScript/hygiene/report-chart-currency.ts --write` overwrites it. -->
 
-**As of:** 2026-09-05T15:32:27Z — the instant `published-chart-versions.json` was last refreshed. Every age below is measured against that instant, not against the moment you are reading this, so this file is byte-reproducible from committed data.
+**As of:** 2026-09-05T15:49:28Z — the instant `published-chart-versions.json` was last refreshed. Every age below is measured against that instant, not against the moment you are reading this, so this file is byte-reproducible from committed data.
 
 **This is a report, never a gate.** Being behind is a standing condition, not a regression: 4 of 38 pins are behind upstream right now. A CI check on that would be red from birth and learned-to-ignore within a week. The blocking question — *does this pin resolve at all?* — is a different one and is answered on every PR by `src/Core.TypeScript/hygiene/audit-chart-target-revisions.ts`.
 
@@ -16,18 +16,17 @@
 | behind upstream | 4 |
 | …of those, crossing a **major** boundary | 3 |
 | …of those, a `0.x` minor (breaking by semver convention) | 1 |
-| at the newest version and upstream still active | 33 |
-| **`DORMANT`** — at the newest version because upstream stopped publishing | 1 |
-| upstream silent for over a year (any gap) | 1 |
+| at the newest version and upstream still active | 34 |
+| **`DORMANT`** — at the newest version because upstream stopped publishing | 0 |
+| upstream silent for over a year (any gap) | 0 |
 | **`UNREACHABLE`** — the refresh could not reach the repository | 0 |
 | pin upstream never published | 0 |
-| publish dates unavailable (OCI registries carry none) | 4 |
+| publish dates unavailable (OCI registries carry none) | 5 |
 
 ## Every remote chart pin
 
 | verdict | app | chart | pinned | pin published | newest stable | published | behind | bump | upstream |
 |---|---|---|---|---|---|---|---|---|---|
-| `DORMANT` | `headscale` | `headscale` | `0.16.0` | 2025-02-19 | `0.16.0` | 2025-02-19 | 0 | -- | **DORMANT** 563d |
 | `BEHIND-MAJOR` | `gitlab` | `gitlab` | `8.7.0` | 2024-12-19 | `10.3.1` | 2026-08-26 | 162 | **MAJOR** | active 10d |
 | `BEHIND-MAJOR` | `temporal` | `temporal` | `0.59.0` | 2025-03-28 | `1.6.0` | 2026-07-13 | 26 | **MAJOR** | active 54d |
 | `BEHIND-MAJOR` | `kube-prometheus-stack` | `kube-prometheus-stack` | `88.6.3` | 2026-09-02 | `89.2.2` | 2026-09-04 | 7 | **MAJOR** | active 0d |
@@ -46,6 +45,7 @@
 | `CURRENT` | `external-secrets` | `external-secrets` | `2.10.0` | 2026-08-28 | `2.10.0` | 2026-08-28 | 0 | -- | active 8d |
 | `CURRENT` | `forgejo` | `forgejo` | `17.1.5` | ? | `17.1.5` | ? | 0 | -- | unknown |
 | `CURRENT` | `headlamp` | `headlamp` | `0.45.0` | 2026-08-20 | `0.45.0` | 2026-08-20 | 0 | -- | active 15d |
+| `CURRENT` | `headscale` | `headscale` | `1.0.19` | ? | `1.0.19` | ? | 0 | -- | unknown |
 | `CURRENT` | `hindsight` | `hindsight` | `0.9.2` | ? | `0.9.2` | ? | 0 | -- | unknown |
 | `CURRENT` | `keda` | `keda` | `2.20.2` | 2026-07-31 | `2.20.2` | 2026-07-31 | 0 | -- | active 36d |
 | `CURRENT` | `loki` | `loki` | `18.12.1` | 2026-09-04 | `18.12.1` | 2026-09-04 | 0 | -- | active 1d |
@@ -68,10 +68,10 @@
 
 ## Rows that carry a caveat
 
-- **`headscale` / `headscale`** (`full-ai-cluster/k8s/applications/headscale/Application.yaml`) — at the newest published version ONLY because upstream stopped publishing
 - **`arc-controller` / `gha-runner-scale-set-controller`** (`full-ai-cluster/k8s/applications/arc-controller/Application.yaml`) — OCI registries expose tags, not publish timestamps: /v2/<repo>/tags/list carries no `created` field, and reading one would cost a manifest fetch per tag. Publish dates for this coordinate are UNAVAILABLE, which is not the same fact as `published recently`.
 - **`arc-runner-set` / `gha-runner-scale-set`** (`full-ai-cluster/k8s/applications/arc-runner-set/Application.yaml`) — OCI registries expose tags, not publish timestamps: /v2/<repo>/tags/list carries no `created` field, and reading one would cost a manifest fetch per tag. Publish dates for this coordinate are UNAVAILABLE, which is not the same fact as `published recently`.
 - **`forgejo` / `forgejo`** (`full-ai-cluster/k8s/applications/forgejo/Application.yaml`) — OCI registries expose tags, not publish timestamps: /v2/<repo>/tags/list carries no `created` field, and reading one would cost a manifest fetch per tag. Publish dates for this coordinate are UNAVAILABLE, which is not the same fact as `published recently`.
+- **`headscale` / `headscale`** (`full-ai-cluster/k8s/applications/headscale/Application.yaml`) — OCI registries expose tags, not publish timestamps: /v2/<repo>/tags/list carries no `created` field, and reading one would cost a manifest fetch per tag. Publish dates for this coordinate are UNAVAILABLE, which is not the same fact as `published recently`.
 - **`hindsight` / `hindsight`** (`full-ai-cluster/k8s/applications/hindsight/Application.yaml`) — OCI registries expose tags, not publish timestamps: /v2/<repo>/tags/list carries no `created` field, and reading one would cost a manifest fetch per tag. Publish dates for this coordinate are UNAVAILABLE, which is not the same fact as `published recently`.
 
 ## Reading the columns

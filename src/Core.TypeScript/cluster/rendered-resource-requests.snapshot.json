@@ -626,10 +626,16 @@
           "appId": "full-ai-cluster/headscale",
           "cpuMillis": 0,
           "memoryMib": 0,
-          "pods": 1,
+          "pods": 2,
           "workloads": [
             {
               "workload": "Deployment/headscale",
+              "replicas": 1,
+              "cpuMillis": 0,
+              "memoryMib": 0
+            },
+            {
+              "workload": "Job/headscale-keys",
               "replicas": 1,
               "cpuMillis": 0,
               "memoryMib": 0
@@ -2208,10 +2214,16 @@
           "appId": "full-ai-cluster/headscale",
           "cpuMillis": 0,
           "memoryMib": 0,
-          "pods": 1,
+          "pods": 2,
           "workloads": [
             {
               "workload": "Deployment/headscale",
+              "replicas": 1,
+              "cpuMillis": 0,
+              "memoryMib": 0
+            },
+            {
+              "workload": "Job/headscale-keys",
               "replicas": 1,
               "cpuMillis": 0,
               "memoryMib": 0

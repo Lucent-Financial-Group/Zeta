@@ -689,7 +689,10 @@ describe("the live catalogue against the measured render", () => {
     expect(named).not.toContain("full-ai-cluster/headscale/config");
     expect(named).not.toContain("full-ai-cluster/oz/data");
     const pvcNames = result.rendered.map((pvc) => `${pvc.appId} ${pvc.name}`);
-    expect(pvcNames).toContain("full-ai-cluster/headscale headscale-config");
+    // `headscale-config` -> `headscale` on 2026-09-05: the chart moved home and
+    // renames its PVC. The property is unchanged -- the claim resolves to a real
+    // rendered PVC -- so the NAME is updated rather than the assertion dropped.
+    expect(pvcNames).toContain("full-ai-cluster/headscale headscale");
     expect(pvcNames).toContain("full-ai-cluster/oz ziti-controller");
   });
 
