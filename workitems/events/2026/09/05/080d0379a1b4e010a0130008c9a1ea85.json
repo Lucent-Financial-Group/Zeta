@@ -1,0 +1,14 @@
+{
+  "id": "080d0379a1b4e010a0130008c9a1ea85",
+  "at": "2026-09-05T01:34:47.964Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1QK8DMV087G0R003SGRXP5",
+    "type": "task",
+    "title": "ARC hosted runner exposes explicit scene-feedback policy experiment",
+    "slug": "arc-hosted-runner-exposes-explicit-scene-feedback-policy-exp",
+    "priority": "P2",
+    "filename": "081M1QK8DMV087G0R003SGRXP5-arc-hosted-runner-exposes-explicit-scene-feedback-policy-exp.md"
+  }
+}
