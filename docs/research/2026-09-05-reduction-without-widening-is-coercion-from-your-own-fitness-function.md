@@ -860,6 +860,53 @@ one to watch, and the one my original sentence hid inside a bigger, wronger one.
 condition or be re-authorized as a gated act with a date, so that "we still refuse this" is a
 statement someone made *recently* rather than one nobody has had to make since it was written.
 
+### The bottleneck is HUMAN INITIATION, and that is the part machines are now good at
+
+Aaron, immediately:
+
+> *"this might be a human problem. Eventually we need multiple reinforcements to try to argue
+> against 'no'. AIs are getting better at one-shot over time."*
+
+**This locates the failure correctly, and it is not laziness.** Re-litigating a settled refusal is
+expensive for a person in a way that has nothing to do with whether the refusal is still right:
+status-quo bias is real and measured, reopening a decision has a social cost the original decider
+pays, and "we already discussed this" is a complete and socially sufficient answer. So a renewal
+requirement that depends on **a human remembering to attack their own past decision** is a
+requirement that will not run — which makes it a check that cannot fail, one layer out, and lands
+this whole section back in the class it was written to catch.
+
+An agent carries none of that load. It has no stake in the original decision, no relationship to
+spend re-opening it, and — Aaron's point about one-shot — **the cost of producing a serious
+argument against a refusal is falling fast.** What was infeasible (re-argue 12 `never` entries,
+properly, every quarter) becomes ordinary. This is a case where the machine is not smarter than the
+human; it is **differently incentivised**, and the incentive is the whole difference.
+
+**So the design is adversarial and scheduled, not aspirational:** each unexpiring refusal gets
+periodically argued *against* by several independent agents, and a human adjudicates only when an
+argument actually lands. That inverts the burden — the human stops having to *initiate* and only
+has to *decide*, which is the part only they may do anyway.
+
+**Three constraints, without which this becomes theatre:**
+
+1. **The challengers must be genuinely decorrelated.** N instances of one model on one prompt is
+   **one challenger counted N times** — Knight & Leveson on correlated redundancy, and the `ρ → 1`
+   collapse [`anti-babel`](../../.claude/rules/anti-babel-preserve-reconcilability.md) already
+   names. "Multiple reinforcements" has to mean different models, different framings, different
+   evidence, or the plurality is decorative.
+2. **A challenger that never concedes is worthless.** If it argues against every `never`
+   regardless, its output carries no information — the vacuity class wearing an adversarial hat.
+   **The measure of a good challenger is that it sometimes reports "this one still holds",** and
+   that number is checkable.
+3. **It produces ARGUMENTS, never decisions.** Lifting a permanent WONT-DO is a gated class; the
+   agents may propose and may not authorize (`no-directives`: source is not authorization, and the
+   shadow inherits authority, never extends it). The mechanism removes the human's obligation to
+   *remember*, not their authority to *refuse again*.
+
+**Status: not built.** The pieces exist — adversarial reviewer personas, the gated-class discipline,
+and a dated list of 12 refusals with no reachable condition — but nothing schedules the challenge
+and nothing records a concession. Recorded as Aaron's proposal, with the three constraints attached
+because each of them is a way this could pass while doing nothing.
+
 ### What it makes the §9a requirements
 
 Not merely good design. **Entries in that measure.** Building the real/emulated/unknown disclosure
