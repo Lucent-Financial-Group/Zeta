@@ -36,6 +36,42 @@
 #      an index with no Temporal consumer, which is a real capability on its own
 #      and is NOT pretending to be the other one.
 #
+# ── REFUTED BY THE LIVE LANE, THEN DIAGNOSED FROM UPSTREAM'S OWN CI ───────────
+# The sequence is kept here rather than in a commit message, because the next
+# person to touch this file is the one who needs it.
+#
+# REFUTED. Run 33936923932: "opensearch is OutOfSync/Progressing -- expected
+# Synced/Healthy". This Application went in dev-included on desk evidence -- lane
+# budget checked, clean render at both rungs -- and the live lane contradicted it.
+#
+# DIAGNOSED by reading how the chart's OWN repo tests, which is the cheapest
+# source of truth available and cost one API call. opensearch-project/helm-charts
+# runs `helm/kind-action` + `ct install` on ubuntu-latest, so this chart IS
+# expected to install on a GitHub runner. ALL THREE of its
+# `charts/opensearch/ci/*-values.yaml` set `OPENSEARCH_INITIAL_ADMIN_PASSWORD`.
+# The stock `values.yaml` has that line COMMENTED OUT (line 110) while shipping
+# `securityConfig.enabled: true` and `protocol: https` -- so the chart taken at
+# its defaults cannot boot, and a pod that cannot boot is exactly
+# OutOfSync/Progressing.
+#
+# FIXED AT THE DEV RUNG ONLY, by `opensearch/no-security-plugin-dev` in
+# `rung-overrides.json`: security off, http. NOT by committing a password. This
+# repository is PUBLIC and a literal admin credential in a values file is a
+# credential in git forever. A smoke-test index needs no TLS and no user
+# database; `metal` below is untouched and keeps security and https.
+#
+# TWO HYPOTHESES WERE WRONG, recorded so nobody re-runs them: it was NOT a
+# missing StorageClass (`zeta-local-path` is provisioned by
+# dev-cluster/manifests/zeta-local-path.yaml, and `seaweedfs` claims the same
+# class in the same lane and reaches Healthy), and NOT the sysctl /
+# vm.max_map_count initContainer that usually breaks OpenSearch on kind
+# (`sysctlInit` is off by default; the only initContainer is `fsgroup-volume`).
+#
+# IF THE NEXT RUN IS STILL PROGRESSING, the remaining candidates are the startup
+# probe window (failureThreshold 30 x periodSeconds 10 = 300s), the ~1.1GiB image
+# pull plus JVM start on a loaded runner, or the 1024Mi dev request beside a 512M
+# heap. Those need a `kubectl describe` on the pod, not another guess.
+
 # ── VERSION ───────────────────────────────────────────────────────────────────
 # 3.8.0, read from the LIVE repo index (`helm search repo opensearch --versions`)
 # on 2026-09-04, not from a release note and not from recall. Chart version and
