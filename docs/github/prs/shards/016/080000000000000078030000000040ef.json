@@ -1,0 +1,12 @@
+{
+  "pr_number": 16623,
+  "archive_path": "docs/history/pr-reviews/PR-16623-feat-081m1qhpy8v087g0r003ffjkpk-heartbeat-is-a-dht-pin-not-a-broadcast.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-05T01:28:10.475Z",
+  "schema_version": "v1",
+  "commit_sha": "52e11be0a0d596e0540557d59aa1a1f951c9bee1",
+  "title": "feat(081M1QHPY8V087G0R003FFJKPK): heartbeat is a DHT pin, not a broadcast",
+  "state": "MERGED",
+  "merged_at": "2026-09-05T01:27:33Z",
+  "head_ref": "feat/zetafs-dht-gossip-heartbeat-pin"
+}

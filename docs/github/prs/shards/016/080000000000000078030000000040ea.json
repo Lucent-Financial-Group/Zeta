@@ -1,0 +1,12 @@
+{
+  "pr_number": 16618,
+  "archive_path": "docs/history/pr-reviews/PR-16618-add-bounded-lexical-geometric-receipt-bridge.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-05T00:58:55.018Z",
+  "schema_version": "v1",
+  "commit_sha": "a73fae9c503aa16775b43c1c2be3775fe0bb4329",
+  "title": "Add bounded lexical-geometric receipt bridge",
+  "state": "MERGED",
+  "merged_at": "2026-09-05T00:58:17Z",
+  "head_ref": "lumen/user-declared-lexical-geometric-bridge"
+}
