@@ -1,0 +1,12 @@
+{
+  "pr_number": 16693,
+  "archive_path": "docs/history/pr-reviews/PR-16693-feat-arc-compare-quality-against-policy-cost.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-05T19:25:57.121Z",
+  "schema_version": "v1",
+  "commit_sha": "8509bd61e61893ef517748f3ef81bf8edd9e5db4",
+  "title": "feat(arc): compare quality against policy cost",
+  "state": "MERGED",
+  "merged_at": "2026-09-05T19:25:15Z",
+  "head_ref": "codex/arc-three-way-efficiency-audit"
+}
