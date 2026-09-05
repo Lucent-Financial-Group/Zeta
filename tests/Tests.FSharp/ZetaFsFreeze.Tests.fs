@@ -2327,6 +2327,54 @@ let ``KeepNone unpin survives reopen without pumping reclaim`` () : Task =
     }
 
 [<Fact>]
+let ``KeepNone history survives createManual reopen`` () : Task =
+    task {
+        ensureHasher ()
+        let mock = InMemoryFileSystem()
+        FileSystem.Register(mock)
+        let store = "/keepnone-history-reopen"
+        let mutbuf = ZetaFsMutbuf.create store ZetaFsMutbuf.Coherence.Shared
+        let id = mintId ()
+        let mutable firstContent = Unchecked.defaultof<ContentHash256>
+        let volume1 = ZetaFsFreeze.createManual store mutbuf None
+        volume1.History <- ZetaFsPolicy.HistoryPolicy.KeepNone
+
+        try
+            let h = ZetaFsMutbuf.openHandle volume1.Mutbuf id
+            ZetaFsMutbuf.truncate volume1.Mutbuf h 0L |> ignore
+            ZetaFsMutbuf.pwrite volume1.Mutbuf h 0L [| 1uy; 2uy; 3uy |] |> ignore
+            let pending = (freezeAsync volume1 id ZetaFsFreeze.Journaled).AsTask()
+            do! (ZetaFsFreeze.pumpLog volume1 CancellationToken.None).ConfigureAwait(false)
+            let! first = pending.ConfigureAwait(false)
+            match first with
+            | Error e -> Assert.Fail(ZetaFsFreeze.errorName e)
+            | Ok ok -> firstContent <- ok.Content
+        finally
+            ZetaFsFreeze.dispose volume1
+
+        let volume2 = ZetaFsFreeze.createManual store mutbuf None
+        try
+            match volume2.History with
+            | ZetaFsPolicy.HistoryPolicy.KeepNone -> ()
+            | other -> Assert.Fail(sprintf "expected KeepNone, got %A" other)
+            let h = ZetaFsMutbuf.openHandle volume2.Mutbuf id
+            ZetaFsMutbuf.truncate volume2.Mutbuf h 0L |> ignore
+            ZetaFsMutbuf.pwrite volume2.Mutbuf h 0L (Array.init 64 (fun i -> byte i)) |> ignore
+            let pending = (freezeAsync volume2 id ZetaFsFreeze.Journaled).AsTask()
+            do! (ZetaFsFreeze.pumpLog volume2 CancellationToken.None).ConfigureAwait(false)
+            let! second = pending.ConfigureAwait(false)
+            match second with
+            | Error e -> Assert.Fail(ZetaFsFreeze.errorName e)
+            | Ok second ->
+                do! (ZetaFsFreeze.pumpReclaim volume2 CancellationToken.None).ConfigureAwait(false)
+                Assert.False(ZetaFsFreeze.isReadable volume2 firstContent)
+                Assert.True(ZetaFsFreeze.isReadable volume2 second.Content)
+        finally
+            ZetaFsFreeze.dispose volume2
+            FileSystem.Reset()
+    }
+
+[<Fact>]
 let ``rolling 1 third freeze must not revive the first generation`` () : Task =
     task {
         ensureHasher ()
