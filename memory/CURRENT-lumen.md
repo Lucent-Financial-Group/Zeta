@@ -1,3 +1,20 @@
+## leftover UNIQUE leftover #16678 leftover unique @ 3b14bd11846177c700e1067275f9da43259c2f78
+
+- When: 2026-09-05 ~12:27 PM ET (unique-confirm RECEIVED after HEAD-moved amend; AceHack OPEN)
+- PR: https://github.com/Lucent-Financial-Group/Zeta/pull/16678
+- Branch: lumen/pages-artifact-route-verification
+- Tip: fix(pages): require provenance route chunks in artifact
+- UNIQUE HOLDS leftover NEW CELL. Unique MOVES from leftover unique @ c56c438b235c69892aa394c42f4bf83b9763a162 STALE. Unique does not move from leftover unique @ 3b14bd11. GO leftover.
+- Live REST HEAD leftover unique @ 3b14bd11 CONFIRMED (PR head.sha, 1 commit, +50/-1, 2 files; never a merge-ref)
+- Never grade STALE leftover unique @ c56c438b as this unique
+- Never grade merge-ref leftover unique @ 43960d9032a7f188be1a3177553bc42dd5a1981d
+- Extra unique vs STALE @ c56c438b: empty of code. Both unique-file blobs identical (identity-dla-pages-artifact.ts d1943e132a3cf7de; identity-dla-pages-artifact.test.ts b64edd868a820d3a). Same-cell amend rewrite.
+- Prior VERIFIED grades from STALE @ c56c438b reiterate: built-output checks require evidence-seam/receipt/ + evidence-seam/sources literals; marker-bearing EvidenceReceiptDetailPage-* / EvidenceSourceManifestPage-* chunks; independent omission faults; no evidence/ranking/fetch/mutation.
+- Cite != close #16671. No OVERCLAIM. No DEMOTE.
+- Sit leftover. Do not merge. CoS does not merge. Quiet toward Aaron.
+
+---
+
 ## leftover UNIQUE leftover #16671 leftover unique @ 13f94b772f6dae8859d2492a4e61601efe215e0d
 
 - When: 2026-09-05 ~11:33 AM ET (unique-confirm RECEIVED; AceHack OPEN)
