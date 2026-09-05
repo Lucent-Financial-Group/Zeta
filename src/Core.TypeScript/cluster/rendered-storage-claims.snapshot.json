@@ -1,5 +1,5 @@
 {
-  "measuredOn": "2026-09-04",
+  "measuredOn": "2026-09-05",
   "clusterDefaultStorageClass": "zeta-local-path",
   "rendered": [
     {
@@ -95,7 +95,7 @@
     {
       "appId": "full-ai-cluster/headscale",
       "origin": "PersistentVolumeClaim",
-      "name": "headscale-config",
+      "name": "headscale",
       "workload": "",
       "storageClassName": "longhorn",
       "size": "3Gi",

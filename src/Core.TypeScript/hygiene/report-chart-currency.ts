@@ -746,7 +746,22 @@ export function findCurrencyDrift(
     }
     if (row.verdict === "DORMANT") {
       out.push({
-        severity: "warning",
+        // ERROR, NOT WARNING. Aaron 2026-09-05: "DORMANT detection should just be
+        // a failure, we can't stay on dormat technology we HAVE to upgrade so
+        // this is no different than a red check."
+        //
+        // He is right, and the first version had it as a warning on the reasoning
+        // that a dormant chart has nothing to bump TO -- which is true and is
+        // beside the point. Being unable to move is WORSE than being behind, not
+        // milder: a coordinate nobody publishes to receives no security fixes and
+        // has no upgrade path, so the remedy is mandatory rather than optional.
+        //
+        // And DORMANT is frequently not even about the project. `headscale` wore
+        // this label for 563 days while the project shipped four server releases:
+        // the CHART had moved home and we were pinned to a dead third-party
+        // mirror (081M1HH1ERN087G0R00309EG9D). A warning invites you to wait for a
+        // bump that cannot arrive; an error makes you go find out why.
+        severity: "error",
         kind: "DORMANT",
         message:
           `${row.app} (${row.chart}) pinned ${row.pinned}: upstream has published nothing for ` +

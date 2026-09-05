@@ -22,12 +22,6 @@
   ],
   "acknowledged": [
     {
-      "chart": "headscale",
-      "reason": "DORMANT, not behind. Upstream has published nothing for 563 days, so there is no newer version to move to and a bump is not the remedy. This is a replace-or-retire decision about whether the tree should carry a mesh-VPN whose chart stopped moving before we adopted it.",
-      "liftsWhen": "headscale is replaced with a maintained alternative, or retired from the tree. NOT by a version bump -- there is nothing to bump to.",
-      "observed": "2026-09-05"
-    },
-    {
       "chart": "gitlab",
       "reason": "162 releases behind, 8.7.0 -> 10.3.1, MAJOR. Measured 2026-09-04: 10.x requires THREE external dependencies we do not run (external object storage among them), and gitlab is already the single largest Application in the tree at 2525m -- over what one hosted runner can hold (2125m). The bump is a migration with a prerequisite list, not a version change.",
       "liftsWhen": "the three external dependencies exist and gitlab has governed resourceClaims so a dev rung can size it. Both are filed.",

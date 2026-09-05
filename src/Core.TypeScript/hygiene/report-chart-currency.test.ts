@@ -391,9 +391,16 @@ describe("findCurrencyDrift — the offline drift band that runs on every PR", (
     expect(found[0]?.severity).toBe("error");
   });
 
-  test("DORMANT is a warning and says replace-or-retire, because bumping it is not the remedy", () => {
+  test("DORMANT is an ERROR — you cannot stay on abandoned technology", () => {
+    // warning -> error on 2026-09-05. Aaron: "DORMANT detection should just be a
+    // failure, we can't stay on dormat technology we HAVE to upgrade so this is
+    // no different than a red check." Being unable to move is WORSE than being
+    // behind, not milder: no security fixes, no upgrade path. And `headscale`
+    // wore this label for 563 days while its project shipped four server
+    // releases -- the CHART had moved home. A warning invites waiting for a bump
+    // that cannot arrive; an error makes you find out why.
     const found = findCurrencyDrift([row({ verdict: "DORMANT", silentDays: 562 })], FRESH, NOW);
-    expect(found[0]?.severity).toBe("warning");
+    expect(found[0]?.severity).toBe("error");
     expect(found[0]?.message).toContain("replace-or-retire");
   });
 
