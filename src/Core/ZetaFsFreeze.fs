@@ -183,6 +183,8 @@ module ZetaFsFreeze =
                             livePins.Add id |> ignore
                             j <- j + 1
 
+                persistCatalog storeDir known livePins
+
                 for i in 0 .. boat.Length - 1 do
                     let it = boat.Span.[i]
                     let outcome =
@@ -192,7 +194,6 @@ module ZetaFsFreeze =
 
                     it.Reply.TrySetResult outcome |> ignore
 
-                persistCatalog storeDir known livePins
                 Task.CompletedTask
 
             let fail (ex: exn) =

@@ -8,6 +8,12 @@ import pytest
 
 from zeta_arc.scene_prior_benchmark import benchmark_json, benchmark_payload
 from zeta_arc.scene_priors import (
+    DEFAULT_CURIOSITY,
+    CandidateSignals,
+    CuriosityComposition,
+    CuriosityFeedback,
+    CuriositySignal,
+    CuriosityTerm,
     ScenePriorModel,
     compare_scenes,
     forecast_scene,
@@ -121,6 +127,171 @@ def test_forecast_is_deterministic_unique_finite_and_normalized() -> None:
         for candidate in first.candidates
         for value in (candidate.score, candidate.probability)
     )
+
+
+def test_default_curiosity_preserves_the_original_score_and_names_every_term() -> None:
+    previous = _grid((1, 1, 1, 2, 2), (9, 5, 5, 1, 1))
+    current = _grid((1, 1, 1, 2, 2), (9, 4, 5, 1, 1))
+
+    forecast = forecast_scene(ScenePriorModel(), "new-game", current, previous)
+
+    assert forecast.feedback is None
+    for candidate in forecast.candidates:
+        signals = candidate.signals
+        expected = (
+            1.0
+            + signals.rarity
+            + signals.edge_density
+            + signals.change_density
+            + signals.motion
+        ) * (signals.learned_colour_change_rate + signals.learned_shape_change_rate)
+        assert candidate.score == pytest.approx(expected)
+        assert len(candidate.curiosity) == 1
+        evaluation = candidate.curiosity[0]
+        assert evaluation.score == pytest.approx(expected)
+        assert [item.signal.value for item in evaluation.structural] == [
+            "rarity",
+            "edge-density",
+            "change-density",
+            "motion",
+        ]
+        assert [item.signal.value for item in evaluation.learned] == [
+            "colour-meaning",
+            "shape-meaning",
+        ]
+        assert all(item.weight == 1.0 for item in evaluation.structural)
+        assert all(item.weight == 1.0 for item in evaluation.learned)
+
+
+def test_curiosity_channels_can_be_ablated_without_editing_the_forecaster() -> None:
+    previous = _grid((7, 1, 1, 1, 1), (7, 5, 5, 1, 1))
+    current = _grid((7, 1, 1, 1, 1), (7, 4, 5, 1, 1))
+    learned = DEFAULT_CURIOSITY.learned
+    no_temporal = CuriosityComposition(
+        structural=(
+            CuriosityTerm(CuriositySignal.RARITY),
+            CuriosityTerm(CuriositySignal.EDGE_DENSITY),
+        ),
+        learned=learned,
+    )
+    no_edge = CuriosityComposition(
+        structural=(
+            CuriosityTerm(CuriositySignal.RARITY),
+            CuriosityTerm(CuriositySignal.CHANGE_DENSITY),
+            CuriosityTerm(CuriositySignal.MOTION),
+        ),
+        learned=learned,
+    )
+    motion_weighted = CuriosityComposition(
+        structural=tuple(
+            CuriosityTerm(
+                term.signal,
+                4.0 if term.signal is CuriositySignal.MOTION else term.weight,
+            )
+            for term in DEFAULT_CURIOSITY.structural
+        ),
+        learned=learned,
+    )
+
+    default = forecast_scene(ScenePriorModel(), "new-game", current, previous)
+    without_temporal = forecast_scene(
+        ScenePriorModel(), "new-game", current, previous, no_temporal
+    )
+    without_edge = forecast_scene(
+        ScenePriorModel(), "new-game", current, previous, no_edge
+    )
+    with_motion_weight = forecast_scene(
+        ScenePriorModel(), "new-game", current, previous, motion_weighted
+    )
+
+    assert default.selected == (4, 5)
+    assert without_temporal.selected == (1, 1)
+    assert without_edge.selected == default.selected
+    default_moving = next(
+        item for item in default.candidates if (item.x, item.y) == (4, 5)
+    )
+    weighted_moving = next(
+        item for item in with_motion_weight.candidates if (item.x, item.y) == (4, 5)
+    )
+    assert weighted_moving.probability > default_moving.probability
+
+
+@pytest.mark.parametrize(
+    ("composition", "feedback"),
+    [
+        (
+            CuriosityComposition((), DEFAULT_CURIOSITY.learned),
+            CuriosityFeedback.NO_STRUCTURAL_TERMS,
+        ),
+        (
+            CuriosityComposition(DEFAULT_CURIOSITY.structural, ()),
+            CuriosityFeedback.NO_LEARNED_TERMS,
+        ),
+        (
+            CuriosityComposition(
+                (CuriosityTerm(CuriositySignal.COLOUR_MEANING),),
+                DEFAULT_CURIOSITY.learned,
+            ),
+            CuriosityFeedback.MISPLACED_TERM,
+        ),
+        (
+            CuriosityComposition(
+                (
+                    CuriosityTerm(CuriositySignal.RARITY),
+                    CuriosityTerm(CuriositySignal.RARITY),
+                ),
+                DEFAULT_CURIOSITY.learned,
+            ),
+            CuriosityFeedback.DUPLICATE_TERM,
+        ),
+        (
+            CuriosityComposition(
+                (CuriosityTerm(CuriositySignal.RARITY, float("nan")),),
+                DEFAULT_CURIOSITY.learned,
+            ),
+            CuriosityFeedback.INVALID_WEIGHT,
+        ),
+        (
+            CuriosityComposition(
+                (CuriosityTerm(CuriositySignal.RARITY, 0.0),),
+                DEFAULT_CURIOSITY.learned,
+            ),
+            CuriosityFeedback.INVALID_WEIGHT,
+        ),
+    ],
+)
+def test_invalid_curiosity_compositions_return_typed_feedback(
+    composition: CuriosityComposition, feedback: CuriosityFeedback
+) -> None:
+    forecast = forecast_scene(
+        ScenePriorModel(),
+        "game",
+        _grid((3, 1, 1, 1, 1)),
+        curiosity=composition,
+    )
+
+    assert forecast.feedback is feedback
+    assert forecast.candidates == ()
+    assert forecast.selected is None
+
+
+def test_invalid_composition_is_not_hidden_by_an_empty_frame() -> None:
+    composition = CuriosityComposition((), DEFAULT_CURIOSITY.learned)
+
+    forecast = forecast_scene(ScenePriorModel(), "game", [], curiosity=composition)
+
+    assert forecast.feedback is CuriosityFeedback.NO_STRUCTURAL_TERMS
+    assert forecast.candidates == ()
+    assert forecast.selected is None
+
+
+def test_out_of_range_signal_returns_feedback_instead_of_inventing_mass() -> None:
+    evaluation = DEFAULT_CURIOSITY.evaluate(
+        CandidateSignals(1.1, 0.5, 0.5, 0.5, 0.5, 0.5)
+    )
+
+    assert evaluation.feedback is CuriosityFeedback.SIGNAL_OUT_OF_RANGE
+    assert evaluation.score is None
 
 
 def test_recently_active_object_outranks_static_low_colour_distractor() -> None:

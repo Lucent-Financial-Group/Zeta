@@ -383,6 +383,33 @@ let ``manual pump packs N journaled freezes into one log boat`` () : Task =
     }
 
 [<Fact>]
+let ``catalog persistence failure faults the unresolved freeze reply`` () : Task =
+    task {
+        ensureHasher ()
+        let mock = InMemoryFileSystem()
+        FileSystem.Register(mock)
+        let store = "/freeze-catalog-failure"
+        let volume =
+            ZetaFsFreeze.createManualStream store (ZetaFsMutbuf.create store ZetaFsMutbuf.Coherence.Shared) None
+
+        try
+            let id = mintId ()
+            let h = ZetaFsMutbuf.openHandle volume.Mutbuf id
+            ZetaFsMutbuf.pwrite volume.Mutbuf h 0L [| 1uy; 2uy; 3uy |] |> ignore
+            mock.ArmCrashMidWrite("known.pins", 0)
+            let pending = (freezeAsync volume id ZetaFsFreeze.Journaled).AsTask()
+            do! (ZetaFsFreeze.pumpLog volume CancellationToken.None).ConfigureAwait(false)
+            let! _ =
+                Assert
+                    .ThrowsAsync<CrashMidWriteException>(fun () -> pending :> Task)
+                    .ConfigureAwait(false)
+            ()
+        finally
+            ZetaFsFreeze.dispose volume
+            FileSystem.Reset()
+    }
+
+[<Fact>]
 let ``Journaled freeze crash-mid-write leaves a torn log and does not finish`` () : Task =
     task {
         ensureHasher ()
