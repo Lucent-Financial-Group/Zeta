@@ -20,6 +20,18 @@ export interface ActionTerm {
 export interface HalfSpinActionOptions {
   /** Fault injection only: removes the Jordan-Wigner parity string. */
   readonly omitJordanWignerParity?: boolean;
+  /**
+   * Fault injection only: freezes the occupation toggle for generator 0 ALONE, so that gamma
+   * moves an EVEN number of bits (zero) while every other gamma still moves an odd number (one).
+   * A bivector pairing generator 0 with any other then toggles an odd total and flips parity.
+   *
+   * The asymmetry is the whole point, and my first attempt got it wrong: freezing EVERY gamma
+   * leaves the counter at zero, because two gammas toggling zero bits each still compose to an
+   * even total. Parity preservation under bivectors is structural in a stronger way than it
+   * first looks — ANY gamma toggling an odd number of bits composes with another to an even
+   * number. Only a mutant that makes the two halves disagree in parity can move this counter.
+   */
+  readonly freezeFirstGeneratorToggle?: boolean;
 }
 
 export interface HalfSpinActionCensus {
@@ -133,7 +145,11 @@ export function gammaAction(generator: number, mask: number, options: HalfSpinAc
   const mode = Math.floor(generator / 2);
   const occupied = (mask & (1 << mode)) !== 0;
   const stringSign = options.omitJordanWignerParity ? 1 : parityBelow(mask, mode);
-  const target = occupied ? mask & ~(1 << mode) : mask | (1 << mode);
+  const target = options.freezeFirstGeneratorToggle && generator === 0
+    ? mask
+    : occupied
+      ? mask & ~(1 << mode)
+      : mask | (1 << mode);
 
   if (generator % 2 === 0) {
     return { target, coefficient: complex(stringSign) };
@@ -256,6 +272,35 @@ function countGammaAnticommutatorViolations(options: HalfSpinActionOptions): num
   return violations;
 }
 
+/**
+ * **STRUCTURALLY ZERO under every PHYSICAL option — this counter was a check that could not
+ * fail, and is recorded rather than quietly deleted (2026-09-05 math review).**
+ *
+ * `gammaAction` sets `target = mask ^ (1 << mode)` with `mode = floor(generator / 2)` — a single
+ * bit toggle, and (before this change) independent of every option flag. `bivectorAction`
+ * composes two gammas, so it toggles two bits: distinct modes flip parity twice and restore it,
+ * and the same mode twice restores the mask outright. So `parity(target) === parity(mask)`
+ * IDENTICALLY, and this function returned `0` for every input — including the
+ * `omitJordanWignerParity` mutant, which only touches `stringSign`, i.e. coefficients, never
+ * targets.
+ *
+ * That made it the vacuity class (`.claude/rules/toy-is-free-metered-must-be-earned.md`): an
+ * assertion that looks like a check and constrains nothing, sitting inside an otherwise-metered
+ * census whose four OTHER counters are genuinely killed by their mutant. The declared falsifier
+ * — "any even basis state maps outside the even sector" — described an event with no reachable
+ * witness.
+ *
+ * The witness itself took two attempts, which is worth recording: freezing EVERY gamma leaves
+ * the counter at zero, because two gammas toggling zero bits still compose to an even total.
+ * Parity preservation here survives ANY uniform change to how many bits a gamma toggles — only
+ * a mutant that makes the two halves of a bivector disagree in parity can move it. That is a
+ * sharper statement of the grading than the counter itself ever made.
+ *
+ * It is kept because zero-by-construction is a real and useful statement: it says the parity
+ * grading is preserved by the bivector action as a matter of the encoding, not of luck. What it
+ * may never again be is *evidence that we checked something*. `freezeOccupationToggle` is the
+ * witness that it can move at all, which is what a counter has to have to be worth reporting.
+ */
 function countChiralityViolations(options: HalfSpinActionOptions): number {
   let violations = 0;
   for (const [first, second] of BIVECTOR_PAIRS) {
