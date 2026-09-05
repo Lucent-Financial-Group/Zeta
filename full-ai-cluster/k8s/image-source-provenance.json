@@ -1,5 +1,5 @@
 {
-  "$comment": "MEASURED image provenance — what an ANONYMOUS client got from each registry, and whose source repository the image names. Written ONLY by `bun src/Core.TypeScript/cluster/image-source-provenance.ts --refresh`; never hand-edited except for `note`. This file is EVIDENCE WITH A DATE, not an oracle: each row says 'as of resolvedAt, an anonymous pull returned this'. The VERDICT is not stored here — it is derived on every run by classify(), because a stored verdict is a hand-written allowlist wearing a measurement's clothes. See the module header for the incident (ghcr.io/flowdent/*, #14250) and the one-way rule this encodes.",
+  "$comment": "MEASURED image provenance \u2014 what an ANONYMOUS client got from each registry, and whose source repository the image names. Written ONLY by `bun src/Core.TypeScript/cluster/image-source-provenance.ts --refresh`; never hand-edited except for `note`. This file is EVIDENCE WITH A DATE, not an oracle: each row says 'as of resolvedAt, an anonymous pull returned this'. The VERDICT is not stored here \u2014 it is derived on every run by classify(), because a stored verdict is a hand-written allowlist wearing a measurement's clothes. See the module header for the incident (ghcr.io/flowdent/*, #14250) and the one-way rule this encodes.",
   "entries": [
     {
       "repository": "ghcr.io/acemod/arma-reforger",
@@ -37,6 +37,18 @@
       "sourceVisibility": "public",
       "packagePresence": "found",
       "resolvedAt": "2026-08-23"
+    },
+    {
+      "repository": "ghcr.io/juanfont/headscale",
+      "tags": {
+        "0.29.3": 200
+      },
+      "artifact": "public",
+      "sourceRepo": "juanfont/headscale",
+      "sourceEvidence": "ghcr-package",
+      "sourceVisibility": "public",
+      "packagePresence": "found",
+      "resolvedAt": "2026-09-05"
     },
     {
       "repository": "ghcr.io/lucent-financial-group/hat-system-operator",
