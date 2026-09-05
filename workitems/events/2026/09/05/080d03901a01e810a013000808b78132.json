@@ -1,0 +1,14 @@
+{
+  "id": "080d03901a01e810a013000808b78132",
+  "at": "2026-09-05T14:40:10.813Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1S06G1V087G0R0033NXEDZ",
+    "type": "task",
+    "title": "Auto-enqueue orphan reclaim after successful freeze",
+    "slug": "auto-enqueue-orphan-reclaim-after-successful-freeze",
+    "priority": "P2",
+    "filename": "081M1S06G1V087G0R0033NXEDZ-auto-enqueue-orphan-reclaim-after-successful-freeze.md"
+  }
+}
