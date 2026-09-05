@@ -68,44 +68,81 @@ function valuesObject(dir: string): Record<string, unknown> {
   return doc.spec?.source?.helm?.valuesObject ?? {};
 }
 
-describe("headscale — the value the container needs reaches the chart", () => {
-  // REWRITTEN 2026-09-05 FOR A DIFFERENT CHART, not renumbered. headscale moved
-  // home (charts.gabe565.com -> wrenix/helm-charts, 081M1HH1ERN087G0R00309EG9D)
-  // and the values surface moved with it. The OLD assertions were:
+describe("headscale — the value the container needs reaches the container", () => {
+  // REWRITTEN A SECOND TIME, 2026-09-05, and again NOT renumbered or sed'd.
   //
-  //   - no top-level `config:` -- the gabe565 chart had no such key
-  //   - `env.HEADSCALE_SERVER_URL` is set -- it took server_url as an env var
+  // History, because this block has now outlived two chart surfaces and the
+  // pattern is the lesson:
+  //   1. gabe565 chart      -> `env.HEADSCALE_SERVER_URL`
+  //   2. wrenix chart       -> `headscale.config.server_url`
+  //   3. NO CHART AT ALL    -> our own ConfigMap  (081M1HH1ERN087G0R00309EG9D)
   //
-  // BOTH ARE NOW FALSE OF THE CHART WE INSTALL, and mechanically renaming the
-  // key would have kept a test that no longer describes anything: the new chart
-  // takes REAL headscale config under `headscale.config`, which is Aaron's
-  // "headscale with config". The property being defended is unchanged -- the
-  // container must receive a server_url from somewhere -- so the property is
-  // re-asserted against the new surface rather than the old string being sed'd.
-  test("`headscale.config.server_url` is set — the container has no default for it", () => {
-    const hs = valuesObject("headscale")["headscale"] as Record<string, unknown> | undefined;
-    expect(hs).toBeDefined();
-    const config = hs?.["config"] as Record<string, unknown> | undefined;
-    expect(config).toBeDefined();
-    expect(typeof config?.["server_url"]).toBe("string");
-    expect(String(config?.["server_url"])).toMatch(/^https?:\/\/\S+$/);
+  // Each rewrite kept THE SAME PROPERTY and re-aimed it: **the container must
+  // receive a server_url from somewhere, because it has no default for it.** That
+  // property is why headscale CrashLoopBackOff'd on 2026-08-22 with an entire
+  // `config:` block inert, and it does not care which surface carries the value.
+  //
+  // The third move is the one that makes the property structurally safer rather
+  // than merely re-checked: a chart's values surface can go INERT — you set a key,
+  // the chart has no such key, and the value silently reaches nothing. A ConfigMap
+  // we write cannot, because there is no schema between the file and the container.
+  // The assertion below is correspondingly stronger: it reads the actual YAML the
+  // container will mount, not a value we hope a chart forwards.
+  const configMap = (): Record<string, unknown> => {
+    const docs = readFileSync(join(APPS, "headscale", "configmap.yaml"), "utf8");
+    const doc = parse(docs) as { data?: Record<string, string> };
+    const raw = doc.data?.["config.yaml"];
+    expect(typeof raw).toBe("string");
+    return parse(String(raw)) as Record<string, unknown>;
+  };
+
+  test("`server_url` is set in the mounted config — the container has no default for it", () => {
+    const cfg = configMap();
+    expect(typeof cfg["server_url"]).toBe("string");
+    expect(String(cfg["server_url"])).toMatch(/^https?:\/\/\S+$/);
   });
 
-  test("cert-manager is OFF — the dev lane has no ClusterIssuer for it to reference", () => {
-    // The chart defaults `headscale.certmanager.enabled: true` pointing at a
-    // ClusterIssuer named `letsencrypt-prod`. Rendering that against a cluster
-    // without it produces a Certificate referencing an issuer that does not
-    // exist. Verified at render: 0 occurrences of `kind: Certificate`.
-    const hs = valuesObject("headscale")["headscale"] as Record<string, { enabled?: unknown }> | undefined;
-    expect(hs?.["certmanager"]?.enabled).toBe(false);
+  test("the StatefulSet actually MOUNTS that ConfigMap at the path headscale reads", () => {
+    // Guards the test above from passing for the wrong reason. A correct config
+    // file that nothing mounts is exactly the inert-value failure in a new
+    // costume: the value exists, and the container still never sees it.
+    const sts = parse(readFileSync(join(APPS, "headscale", "statefulset.yaml"), "utf8")) as {
+      spec?: { template?: { spec?: {
+        containers?: { volumeMounts?: { name?: string; mountPath?: string; subPath?: string }[] }[];
+        volumes?: { name?: string; configMap?: { name?: string } }[];
+      } } };
+    };
+    const podSpec = sts.spec?.template?.spec;
+    const mount = podSpec?.containers?.[0]?.volumeMounts?.find(
+      (m) => m.mountPath === "/etc/headscale/config.yaml",
+    );
+    expect(mount).toBeDefined();
+    expect(mount?.subPath).toBe("config.yaml");
+    const volume = podSpec?.volumes?.find((v) => v.name === mount?.name);
+    expect(volume?.configMap?.name).toBe("headscale-config");
   });
 
-  test("the ingress is still NOT enabled — which is what makes the key load-bearing", () => {
-    // Guards the test above from passing for the wrong reason. If someone
-    // enables the Ingress, the chart supplies SERVER_URL from the host and this
-    // file's reasoning has to be re-derived rather than silently inherited.
-    const ingress = valuesObject("headscale")["ingress"] as Record<string, { enabled?: unknown }> | undefined;
-    expect(ingress?.["main"]?.enabled).not.toBe(true);
+  test("TLS paths are EMPTY — they named files no longer produced by anything", () => {
+    // The chart pointed these at /etc/headscale/certs, which only existed when its
+    // cert-manager integration was on. We turned that off, so the paths named files
+    // that were never going to be there. Empty means plain HTTP in-pod with TLS
+    // terminated at the ingress; `server_url` stays https because that is what
+    // CLIENTS dial, not what the pod listens on.
+    const cfg = configMap();
+    expect(cfg["tls_cert_path"]).toBe("");
+    expect(cfg["tls_key_path"]).toBe("");
+  });
+
+  test("no `pass:` literal survives in the mounted config — this repo is public", () => {
+    // The chart rendered a full database.postgres stanza including `pass: bar`
+    // while database.type was sqlite: dead config carrying a string that a scanner
+    // and a human both have to adjudicate. Pinned so it cannot come back with a
+    // future copy-paste from a chart render.
+    const raw = String(
+      (parse(readFileSync(join(APPS, "headscale", "configmap.yaml"), "utf8")) as { data?: Record<string, string> })
+        .data?.["config.yaml"],
+    );
+    expect(raw).not.toMatch(/\bpass\s*:/);
   });
 });
 
@@ -459,17 +496,31 @@ describe("false positives — the four legitimate sources of a key absent from t
     expect(classifyPath("ingress.main.tls", schema)).toBe("accepted");
   });
 
-  test("OPEN MAP — an arbitrary env var and an arbitrary persistence item are accepted", () => {
-    // REPOINTED to the chart the tree installs. This was a gabe565/headscale
-    // 0.4.0 fixture; that coordinate is dead (its whole index stopped publishing
-    // 2025-02-19) and a demonstration pinned to a chart nobody deploys
-    // demonstrates nothing. The PROPERTY under test is unchanged: a values path
-    // consumed wholesale by the template is `accepted`, never `inert`.
-    const schema = snapshotSchema("codeberg.org/wrenix/helm-charts", "headscale", "1.0.19");
-    // `headscale.config` is rendered wholesale into the config file, so any key
-    // under it is a real headscale setting rather than an inert one.
-    expect(classifyPath("headscale.config.server_url", schema)).toBe("accepted");
-    expect(classifyPath("headscale.config.some_setting_invented_for_this_test", schema)).toBe("accepted");
+  test("OPEN MAP — an arbitrary key under an open path is accepted, never inert", () => {
+    // REPOINTED A SECOND TIME, 2026-09-05, and the repetition is the finding.
+    //
+    //   gabe565/headscale 0.4.0  -> index stopped publishing; coordinate dead
+    //   wrenix/headscale 1.0.19  -> headscale left Helm entirely for raw manifests
+    //                               (081M1HH1ERN087G0R00309EG9D), so the chart is
+    //                               no longer in the tree or the schema snapshot
+    //
+    // Twice now this test broke for a reason that has NOTHING to do with the
+    // property it defends. That is a fixture-choice defect, not bad luck: pinning
+    // a demonstration to whichever chart the tree happens to install couples a
+    // unit test to deployment decisions made elsewhere, and the coupling is
+    // invisible until someone changes a deployment and gets a mystery red.
+    //
+    // FIXED BY CHOOSING A FIXTURE THAT CANNOT LEAVE: `argo-cd` is the chart that
+    // installs ArgoCD itself. Every other Application in this repo is reconciled
+    // BY it, so a tree in which this coordinate is absent is a tree in which
+    // nothing deploys at all — the fixture is now exactly as stable as the
+    // mechanism under test, which is the strongest guarantee available here.
+    //
+    // The PROPERTY is unchanged across all three: a values path consumed wholesale
+    // by the template is `accepted`, never `inert`.
+    const schema = snapshotSchema("https://argoproj.github.io/argo-helm", "argo-cd", "10.8.0");
+    expect(classifyPath("apiVersionOverrides.certmanager", schema)).toBe("accepted");
+    expect(classifyPath("apiVersionOverrides.some_key_invented_for_this_test", schema)).toBe("accepted");
   });
 
   test("PIPELINE toYaml — node-feature-discovery's whole `worker.config` subtree is accepted", () => {

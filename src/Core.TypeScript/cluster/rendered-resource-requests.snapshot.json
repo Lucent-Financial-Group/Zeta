@@ -624,24 +624,20 @@
         },
         {
           "appId": "full-ai-cluster/headscale",
-          "cpuMillis": 0,
-          "memoryMib": 0,
-          "pods": 2,
+          "cpuMillis": 50,
+          "memoryMib": 128,
+          "pods": 1,
           "workloads": [
             {
-              "workload": "Deployment/headscale",
+              "workload": "StatefulSet/headscale",
               "replicas": 1,
-              "cpuMillis": 0,
-              "memoryMib": 0
-            },
-            {
-              "workload": "Job/headscale-keys",
-              "replicas": 1,
-              "cpuMillis": 0,
-              "memoryMib": 0
+              "cpuMillis": 50,
+              "memoryMib": 128
             }
           ],
-          "overlaid": []
+          "overlaid": [
+            "full-ai-cluster/headscale/headscale"
+          ]
         },
         {
           "appId": "full-ai-cluster/hindsight",
@@ -2208,24 +2204,20 @@
         },
         {
           "appId": "full-ai-cluster/headscale",
-          "cpuMillis": 0,
-          "memoryMib": 0,
-          "pods": 2,
+          "cpuMillis": 100,
+          "memoryMib": 128,
+          "pods": 1,
           "workloads": [
             {
-              "workload": "Deployment/headscale",
+              "workload": "StatefulSet/headscale",
               "replicas": 1,
-              "cpuMillis": 0,
-              "memoryMib": 0
-            },
-            {
-              "workload": "Job/headscale-keys",
-              "replicas": 1,
-              "cpuMillis": 0,
-              "memoryMib": 0
+              "cpuMillis": 100,
+              "memoryMib": 128
             }
           ],
-          "overlaid": []
+          "overlaid": [
+            "full-ai-cluster/headscale/headscale"
+          ]
         },
         {
           "appId": "full-ai-cluster/hindsight",

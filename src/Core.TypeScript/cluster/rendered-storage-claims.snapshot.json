@@ -94,9 +94,9 @@
     },
     {
       "appId": "full-ai-cluster/headscale",
-      "origin": "PersistentVolumeClaim",
-      "name": "headscale",
-      "workload": "",
+      "origin": "volumeClaimTemplate",
+      "name": "data/headscale",
+      "workload": "StatefulSet/headscale",
       "storageClassName": "longhorn",
       "size": "3Gi",
       "gibibytes": 3,
