@@ -444,6 +444,7 @@ def play_roster(
     max_actions_per_level: int = MAX_ACTIONS_PER_LEVEL,
     seed: int = 4,
     coordinate_policy: HostedCoordinatePolicy = HostedCoordinatePolicy.CENTROID,
+    roster: Iterable[Any] | None = None,
 ) -> dict[str, Any]:
     """Play every hosted environment this key can see, and report the sweep.
 
@@ -463,7 +464,8 @@ def play_roster(
     The coordinate policy travels the same way: the roster summary and every
     environment row carry its name, including failure rows.
     """
-    environments = sorted(arcade.get_environments(), key=lambda e: e.game_id)
+    discovered = arcade.get_environments() if roster is None else roster
+    environments = sorted(discovered, key=lambda e: e.game_id)
     if max_environments is not None:
         environments = environments[:max_environments]
 
@@ -535,4 +537,54 @@ def play_roster(
         "max_actions_per_level": max_actions_per_level,
         "comparability": _budget_comparability(max_actions_per_level),
         "results": played,
+    }
+
+
+def compare_coordinate_policies(
+    arcade: Any,
+    max_environments: int | None = None,
+    max_actions_per_level: int = MAX_ACTIONS_PER_LEVEL,
+    seed: int = 4,
+) -> dict[str, Any]:
+    """Run both coordinate policies against one immutable roster snapshot."""
+    roster = tuple(sorted(arcade.get_environments(), key=lambda e: e.game_id))
+    centroid = play_roster(
+        arcade,
+        max_environments=max_environments,
+        max_actions_per_level=max_actions_per_level,
+        seed=seed,
+        coordinate_policy=HostedCoordinatePolicy.CENTROID,
+        roster=roster,
+    )
+    scene_feedback = play_roster(
+        arcade,
+        max_environments=max_environments,
+        max_actions_per_level=max_actions_per_level,
+        seed=seed,
+        coordinate_policy=HostedCoordinatePolicy.SCENE_FEEDBACK,
+        roster=roster,
+    )
+
+    return {
+        "experiment": "hosted-coordinate-policy-comparison-v1",
+        "seed": seed,
+        "max_environments": max_environments,
+        "max_actions_per_level": max_actions_per_level,
+        "centroid": centroid,
+        "scene_feedback": scene_feedback,
+        "delta": {
+            "environments_seen": int(scene_feedback["environments_seen"])
+            - int(centroid["environments_seen"]),
+            "environments_played": int(scene_feedback["environments_played"])
+            - int(centroid["environments_played"]),
+            "environments_failed": int(scene_feedback["environments_failed"])
+            - int(centroid["environments_failed"]),
+            "levels_cleared_total": int(scene_feedback["levels_cleared_total"])
+            - int(centroid["levels_cleared_total"]),
+            "mean_environment_score": round(
+                float(scene_feedback["mean_environment_score"])
+                - float(centroid["mean_environment_score"]),
+                4,
+            ),
+        },
     }

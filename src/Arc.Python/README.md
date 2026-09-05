@@ -139,6 +139,9 @@ experimental adapter with
 the default. Every roster summary and environment row records the selected
 policy, so measurements from the two implementations cannot be silently mixed.
 Without `ARC_API_KEY`, no hosted score is inferred from the offline fixtures.
+An explicit `--compare-hosted-coordinate-policies` run snapshots the roster
+once, runs both policies with the same seed and action ceiling, retains both
+complete reports, and emits signed scene-feedback-minus-centroid deltas.
 
 ## One mistake worth keeping
 
