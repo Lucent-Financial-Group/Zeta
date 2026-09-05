@@ -34,7 +34,10 @@ to hit production without a traditional integration suite.
    write, corrupt on-disk state. **Our `DiskBackingStore` doesn't
    go through a simulator interface.** ZetaFS PR1 routed `.zetafs`
    through `IFileSystem`; `ISimulatedFs` is still **flush-fail 5%
-   only**. Crash-mid-write intercept landed on `InMemoryFileSystem`
+   only**, now also on the freeze IBlockIo door and `FileSync`
+   (freeze maps it to `FreezeError.Fsync` — process lived). Power
+   outage (`ArmPowerOutageOnFlush`) and bad-memory (`ArmBadMemoryOnWrite`)
+   are separate doors. Crash-mid-write intercept landed on `InMemoryFileSystem`
    (`ArmCrashMidWrite`). Plain freeze-log replay restores intact
    boats. Corrupt-last-write intercept landed (`ArmCorruptLastWrite`).
    Reorder door landed (`ArmReorderNextTwo`). Journaled/Durable freeze
