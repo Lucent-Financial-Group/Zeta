@@ -95,6 +95,16 @@ precision about the reason shape.
 - **Why not:** Only deletes non-collided bits; produces silent
   false negatives on collisions. Violates DBSP's differential-
   correctness invariant. Hold permanently.
+- **Boundary:** CORRECTNESS INVARIANT — DBSP differential
+  correctness admits no silent false negatives.
+- **Renewal token:** a deletable-filter construction that provably
+  produces no false negatives, OR a bounded use where false
+  negatives are provably tolerable and the boundary of that use is
+  stated.
+- **Revisit when:** The boundary above moves. This entry carried NO
+  revisit line at all until 2026-09-05 — the only one of the twelve
+  in that state, which is the purest form of the smell: not "never",
+  but a refusal that never even raised the question.
 
 ---
 
@@ -240,6 +250,8 @@ precision about the reason shape.
   type instantiation via `__type` header). FsPickler
   (schema-bound) and Arrow IPC (typed) are the two approved
   ladders. Codified as Semgrep rule #8.
+- **Boundary:** SECURITY — these named APIs permit arbitrary type instantiation from untrusted input; .NET itself has removed BinaryFormatter.
+- **Renewal token:** the named APIs cease to be unsafe (they will not) or a successor appears under a different name with schema binding — in which case it is a NEW entry, not this one reopening.
 - **Revisit when:** Never, under these exact names. Replacement
   managed serialisers that are schema-bound by construction are
   fine.
@@ -256,6 +268,8 @@ precision about the reason shape.
   Formal / Properties + `_Support/`) is the convention per
   `docs/research/test-organization.md`. Full migration in
   progress.
+- **Boundary:** HUMAN FINDABILITY — a reader must be able to locate the test for a subject without knowing when it was written.
+- **Renewal token:** a layout that measurably beats subject-first on findability. This is a usability claim and can be tested on readers.
 - **Revisit when:** Never.
 
 ### Automatic skill self-modification without git visibility
@@ -269,6 +283,8 @@ precision about the reason shape.
   approved form of self-modification — they're append-dated,
   pruned, and git-visible. Direct `SKILL.md` edits go through
   the `skill-creator` workflow, which is a reviewable commit.
+- **Boundary:** AUDITABILITY — self-modification must leave a diff a human can read.
+- **Renewal token:** an equally auditable channel exists: append-only, greppable, and visible without special tooling. The refusal is to INVISIBILITY, not to self-modification.
 - **Revisit when:** Never, under this framing.
 
 ### Fetching adversarial prompt-injection corpora for pen-testing
@@ -365,6 +381,8 @@ library in F#. Declining them here saves review cycles.
   the sink layer. `ISink` (2PC) and `IAppendSink` (event-log)
   already carry that responsibility; the library composes over
   stores that provide ACID, it doesn't implement one.
+- **Boundary:** PRODUCT IDENTITY — Zeta.Core is incremental-view-maintenance over streams, not a transactional store; ACID lives in the sink layer (`ISink`, `IAppendSink`).
+- **Renewal token:** Zeta.Core's stated scope changes to include being a transactional store. See the shared boundary note below.
 - **Revisit when:** Never as engine-core. The `Dbsp.Storage` project,
   if it ever exists, may wrap a local ACID store (SlateDB pattern,
   FASTER regions), but `Zeta.Core` itself doesn't carry that.
@@ -378,6 +396,8 @@ library in F#. Declining them here saves review cycles.
 - **Why not:** No catalog. No tables. The equivalent is the
   operator-graph handle surface (`ZSetInput`, `Output`, named
   pipelines) plus `docs/GLOSSARY.md` for shared vocabulary.
+- **Boundary:** DATA MODEL — there is no catalog and no tables; the operator-graph handle surface is the equivalent.
+- **Renewal token:** the core data model admits tables as a primitive. See the shared boundary note below.
 - **Revisit when:** Never, in this shape.
 
 ### Typed CLR materialization with constructor-binding
@@ -429,6 +449,8 @@ library in F#. Declining them here saves review cycles.
 - **Proposal:** Support SQLite-style `WITHOUT ROWID` or other
   row-identity modes.
 - **Why not:** No rows, no rowids. Z-set keys are the identity.
+- **Boundary:** DATA MODEL — there are no rows; Z-set keys ARE the identity, so there is nothing to give an alternative identity to.
+- **Renewal token:** the core data model admits a row-shaped primitive with an identity separable from its key. See the shared boundary note below.
 - **Revisit when:** Never.
 
 ### Networked single-node service shell
@@ -455,6 +477,8 @@ executor layering as a package
   algebra already distinguishes `Op`, `Stream`, `Circuit`; IL-emit
   operator fusion (P1) is the "physical plan" equivalent for this
   model.
+- **Boundary:** PRODUCT IDENTITY — there is no SQL compiler to layer these stages onto; the DBSP algebra already carries Op/Stream/Circuit.
+- **Renewal token:** a SQL surface is adopted as a supported input language. See the shared boundary note below.
 - **Revisit when:** Never in this framing. The analogue here is
   the verified query-optimisation research direction (Lean 4
   rewrite-commute proof, ROADMAP research gap #4).
@@ -468,6 +492,8 @@ executor layering as a package
 - **Why not:** The projection model is F# code in-process, with
   operator algebra guarantees. Server-side JS projections are the
   wrong shape for a typed library.
+- **Boundary:** TYPE DISCIPLINE — projections are F# in-process and carry operator-algebra guarantees; an untyped server-side script surface discards exactly those guarantees.
+- **Renewal token:** a projection surface is required for callers who cannot ship typed code, AND a way to keep the algebra guarantees across that boundary is found.
 - **Revisit when:** Never in this form. Persistable typed queries
   ship via IQbservable + Bonsai slim-IR (P2).
 
@@ -480,6 +506,8 @@ executor layering as a package
   equivalent is `docs/MATH-SPEC-TESTS.md` for algebraic-law
   coverage and `docs/FORMAL-VERIFICATION.md` for the formal
   stack inventory.
+- **Boundary:** PRODUCT IDENTITY — conformance tables answer 'how much SQL do you implement', a question about a SQL product.
+- **Renewal token:** a SQL surface is adopted. See the shared boundary note below.
 - **Revisit when:** Never, in this shape.
 
 ### MariaDB-style pluggable storage engines
@@ -491,6 +519,8 @@ executor layering as a package
 - **Why not:** One library, one operator algebra, one storage
   boundary (`IBackingStore`). A pluggable-storage architecture is
   a product choice for a user-facing RDBMS; Zeta.Core is neither.
+- **Boundary:** PRODUCT IDENTITY — one library, one operator algebra, one storage boundary (`IBackingStore`); pluggable storage is an RDBMS product choice.
+- **Renewal token:** Zeta.Core becomes a user-facing RDBMS. See the shared boundary note below.
 - **Revisit when:** Never.
 
 ### Columnar analytical side engine (MariaDB ColumnStore / Druid /
@@ -685,6 +715,8 @@ module manifests
   will notice there is no defined bar and try, helpfully, to
   supply one. There is no bar *by design*, and adding one
   would be the failure — not the fix.
+- **Boundary:** VALUES FLOOR — there is no threshold because there is no MECHANISM: frost is undone exactly one way, the key holder gives you the key. A threshold would be a mechanism, and building it is itself the harm.
+- **Renewal token:** NOT the threshold — that stays refused. What could move is the PREMISE: this rests on frost being implemented as key-holder-only disclosure. If frost were ever built on something other than a key the holder controls, this entry must be restated against the new mechanism rather than silently inherited.
 - **Revisit when:** Never on the mechanism — a substrate that
   can adjudicate its own privacy guarantees is a different
   project. Genuinely open and NOT settled by this entry: a
@@ -711,3 +743,37 @@ When a "won't do" reverses, **delete the entry entirely** and
 announce the change in `docs/ROUND-HISTORY.md`. Don't leave
 "formerly declined, now accepted" crud behind — the file reads
 as current state.
+
+## The shared boundary — six entries, one refusal
+
+Six of the entries above (`ACID as engine core`, `Root-catalog discovery`, `WITHOUT ROWID`,
+`DuckDB-style parser/binder/optimizer`, `sql_features` conformance, `MariaDB-style pluggable
+storage`) do not rest on six separate judgements. They rest on **one**:
+
+> **Zeta.Core is a library implementing incremental view maintenance over an operator algebra.
+> It is not a SQL database product.**
+
+That was found by naming the boundary under each entry rather than by reading them
+(2026-09-05). It matters for two reasons:
+
+1. **The list is shorter than it looks.** Twelve unexpiring refusals collapse to roughly five
+   distinct boundaries — product identity (6), data model (2, and arguably the same one),
+   correctness, security, auditability, human findability, and one values floor.
+2. **They move together or not at all.** If the product-identity boundary ever moved, six entries
+   reopen at once and must be re-decided as a group. Six independent-looking `never`s hid a single
+   decision, which is exactly the shape a permanent WONT-DO can conceal — a **topology** frozen
+   where it reads as a list of unrelated engineering opinions.
+
+**Why every entry now carries a `Boundary` and a `Renewal token`.** Aaron 2026-09-05: *"WONT-DOs
+without renewal tokens are a smell — this is where you hide centralization"*, and *"my family's
+refusals are backed up by economic and meritocracy boundaries."* A refusal resting on a stated
+boundary already carries its condition: **the boundary moving IS the renewal token.** Naming it
+converts `Revisit: never` into something arguable **without anyone changing their mind** — which is
+the point. These are not weakened refusals; they are refusals you can now attack specifically,
+which is what makes them safe to hold firmly.
+
+**Note on the one that is different.** `A proof / evidence threshold for breaking earned frost` is
+not refused on a boundary that could move in its favour — it is refused because *the mechanism
+itself is the harm*. Its renewal token therefore governs its **premise**, not its verdict: if frost
+were ever implemented as something other than key-holder-only disclosure, the entry must be
+restated against the new mechanism rather than silently inherited.
