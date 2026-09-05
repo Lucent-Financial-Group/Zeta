@@ -1,11 +1,12 @@
 ---
 id: 081M1SAMBMM087G0R000E7JVEB
 type: task
-state: in-progress
+state: done
 priority: P2
 slug: rolling-n-drop-oldest-after-m-greater-than-n-freezes
 title: "rolling N drop oldest after M greater than N freezes"
 created: 2026-09-05T17:42:30.804Z
+completed: 2026-09-05T18:08:09.628Z
 depends_on:
   - 081M1S8WJX7087G0R000WGTPW8
 composes_with: []
