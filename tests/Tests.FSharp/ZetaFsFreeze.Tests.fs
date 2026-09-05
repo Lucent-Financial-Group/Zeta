@@ -1759,3 +1759,52 @@ let ``reclaimTickMetered paces from freeze Span and consumes the meter`` () : Ta
             ZetaFsFreeze.dispose volume
             FileSystem.Reset()
     }
+
+[<Fact>]
+let ``orphanObjects keeps full ids; path scan is not the catalog`` () : Task =
+    task {
+        ensureHasher ()
+        FileSystem.Register(InMemoryFileSystem())
+        let store = "/freeze-orphan-catalog"
+        let mutbuf = ZetaFsMutbuf.create store ZetaFsMutbuf.Coherence.Shared
+        let volume = ZetaFsFreeze.createManualStream store mutbuf None
+        let dummy (n: byte) : ContentHash256 =
+            { Raw = Array.init 32 (fun i -> if i = 0 then n else 0uy) }
+        let casPath (id: ContentHash256) =
+            let hex = (ContentHash256.toContentAddress128 id).ToHex()
+            ZetaFsPath.combine4 store "objects" (hex.Substring(0, 2)) (hex.Substring(2))
+
+        try
+            let id = mintId ()
+            let h = ZetaFsMutbuf.openHandle volume.Mutbuf id
+            ZetaFsMutbuf.pwrite volume.Mutbuf h 0L [| 1uy; 2uy; 3uy |] |> ignore
+            let pending = (freezeAsync volume id ZetaFsFreeze.Journaled).AsTask()
+            do! (ZetaFsFreeze.pumpLog volume CancellationToken.None).ConfigureAwait(false)
+            let! first = pending.ConfigureAwait(false)
+
+            match first with
+            | Error e -> Assert.Fail(ZetaFsFreeze.errorName e)
+            | Ok first ->
+                Assert.Equal(0, (ZetaFsFreeze.orphanObjects volume).Length)
+                let garbage = dummy 9uy
+                let path = casPath garbage
+                FileSystem.Current.CreateDirectory(ZetaFsPath.directoryName path)
+                FileSystemIo.writeAllBytes FileSystem.Current path [| 7uy |]
+                ZetaFsFreeze.noteKnownObject volume garbage 1UL
+                let orphans = ZetaFsFreeze.orphanObjects volume
+                Assert.Equal(1, orphans.Length)
+                Assert.Equal(garbage, orphans.[0].Id)
+                let roots =
+                    { ZetaFsReclaim.emptyRoots with
+                        LiveRefs = [| ZetaFsReclaim.hex first.Content |] }
+                let n =
+                    ZetaFsFreeze.reclaimTickMetered volume FileSystem.Current roots orphans
+
+                Assert.Equal(1, n)
+                Assert.False(FileSystem.Current.Exists path)
+                Assert.Equal(0, (ZetaFsFreeze.orphanObjects volume).Length)
+                Assert.True(ZetaFsFreeze.isReadable volume first.Content)
+        finally
+            ZetaFsFreeze.dispose volume
+            FileSystem.Reset()
+    }

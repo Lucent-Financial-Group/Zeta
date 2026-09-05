@@ -1,0 +1,14 @@
+{
+  "id": "080d038f68977810a013000861461a3c",
+  "at": "2026-09-05T14:15:57.423Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1RYT4QF087G0R000HWG25G",
+    "type": "task",
+    "title": "Orphan catalog retains full content ids for reclaim",
+    "slug": "orphan-catalog-retains-full-content-ids-for-reclaim",
+    "priority": "P2",
+    "filename": "081M1RYT4QF087G0R000HWG25G-orphan-catalog-retains-full-content-ids-for-reclaim.md"
+  }
+}

@@ -34,7 +34,7 @@ Additive. Do not reopen K1–K18. D9–D12: Aaron 2026-09-02 (ReFS feel, crash D
 | Id | Requirement | Today |
 |---|---|---|
 | **D1** | Fork is first-class (`editLocal` default; named permanent fork is legal, not a split-brain disaster). | `DagFs.editLocal` in-memory; volume fork is not a snap/ref product yet. |
-| **D2** | GC lifetimes Singleton / Scoped / Transient ≈ keep-all / rolling / none; nested scope = open file. Amortized reclaim ferry (K7). | `ZetaFsReclaim` maps the three. |
+| **D2** | GC lifetimes Singleton / Scoped / Transient ≈ keep-all / rolling / none; nested scope = open file. Amortized reclaim ferry (K7). | `ZetaFsReclaim` maps the three. Volume door `reclaimSweep` / `reclaimTick` / DoP=1 `reclaimAsync` ferry / freeze-byte meter landed. Orphan catalog keeps full ContentHash256 (`orphanObjects`). Still not auto-ticked after freeze. |
 | **D3** | `Regen` is two-phase: keep original until the generator is metered; then original is reclaim-eligible. | Policy case exists; `lifetimeOf Regen` is **Singleton** (conservative). Phase-2 must not silently drop bytes. |
 | **D4** | Volume small-write storms go through `FerryThrottler` (same auto-batch as `GroupCommitDiskDeltaLog`). | **ZD2 landed:** Journaled/Durable log appends ride `FreezeLog` (DoP=1, MaxBatchSize=64). `createManual` + `pumpLog` packs N freezes into one boat. Buffered still skips the log. Crash-mid-write intercept landed; plain-log replay of intact boats landed. |
 | **D5** | Content-addressed objects + erasure-coded placement (K1/K2). | Polyfill `single` only. |
@@ -1314,7 +1314,7 @@ Pre-v1 greenfield. Tests are the contract. No production users. Numbered steps *
 7. **PR7 -- WAL freeze + Buffered/Journaled/Durable + observer.**
 8. **PR8 -- Placement pure function + simulated-disk falsifiers.** Polyfill stays `single`.
 9. **PR9 -- Unencrypted vs nonce-explicit GCM harness** (FORMAT default `enc=off` until metered; C2).
-10. **PR10 -- Reclaim ferry + lifetime brands.** Crash-mid-sweep labelled `toy` until PR12 corpus.
+10. **PR10 -- Reclaim ferry + lifetime brands.** Sweep journal, tick, DoP=1 ferry, freeze-byte meter, and full-id orphan catalog landed. Crash-mid-sweep labelled `toy` until PR12 corpus. Not auto-ticked after freeze.
 11. **PR11 -- CLI prefixes** (`blake3:` / `entity:` / path). No FUSE required.
 12. **PR12 -- DST scenario corpus** (promotion out of `toy`; intercept already in PR1).
 13. **PR13 -- Linux FUSE + FUSE-T** (`..` path-contextual merge gate; MAP_SHARED optional/refused).
