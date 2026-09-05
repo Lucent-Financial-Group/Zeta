@@ -862,6 +862,47 @@ ideally one who wants a given refusal overturned — to rewrite the token for it
 someone who wants the refusal reopened, and accepted by someone who does not, is worth more than
 twelve written by whoever happened to be doing the pass.
 
+### SQL AS AN INTERFACE IS WANTED — the refusal is to SQL as an IDENTITY
+
+Aaron 2026-09-05, on the positioning statement:
+
+> *"I'd like to have a SQL interface for our streams and tables — but we are not a SQL product.
+> This is one of our many interfaces, based on history."*
+
+**This is the sharpest form of the boundary yet, and it moves an entry's STATUS rather than just
+its wording.** Two things that the phrase "no SQL surface" had been running together:
+
+| | wanted? | why |
+|---|---|---|
+| **SQL as an INTERFACE** — a front-end over streams and tables that lowers into the DBSP algebra | **YES** | one of several interfaces, chosen *because of history* — people already know it |
+| **SQL as the IDENTITY** — the model, the conformance surface, the thing we are measured as | **no** | that is the product-identity boundary, and it is the one that holds |
+
+**Consequences, entry by entry:**
+
+- **`PostgreSQL-style sql_features conformance table` — the refusal SURVIVES, on a different
+  boundary than the one I gave it.** I wrote "no SQL surface today", which is now known to be
+  temporary and expected to move. The durable reason is different and better: a conformance table
+  answers *"how much SQL are we?"*, which is a question about **identity**, not about interfaces.
+  Shipping a SQL front-end obliges nobody to publish a coverage matrix — DuckDB has SQL and is not
+  defined by a `sql_features` table either. So: refusal holds, boundary corrected, and its renewal
+  token should be rewritten by someone who wants it overturned (see the note above on token
+  authorship).
+- **`DuckDB-style parser / binder / logical / optimizer / physical` — the correction goes one step
+  further than I took it.** I said the refusal is to the DuckDB *shape*, not the stages. With a SQL
+  interface actually wanted, the **parser and binder stages become live work**, not merely
+  not-refused: a SQL front-end that lowers into the DBSP algebra needs exactly those. What stays
+  refused is the single-node, SQL-first *architecture*.
+- **`ACID as engine core`** is untouched by this — it was always a layering boundary, and a SQL
+  interface does not move ACID out of the sink layer.
+
+**And the "based on history" clause is the anti-Babel discipline, not a concession.** SQL is not
+adopted because it fits the model — it is adopted because it is an **externally anchored, already
+known** surface, which is the Mirror→Beacon compression this repo requires of load-bearing terms:
+*prefer the externally-standard form so a peer who does not share your vocabulary can still
+reconstruct your meaning.* SQL-as-interface is meeting people at an anchor they already hold.
+SQL-as-model would be the collapse — the vocabulary of one surface becoming the shape of the thing
+underneath.
+
 **This is the pass working twice in a row.** Naming the boundaries exposed a mis-scoped refusal
 (DuckDB), and then the positioning statement exposed that my *grouping* of the boundaries was
 itself too coarse. Neither would have surfaced from reading the entries, because the entries agree
