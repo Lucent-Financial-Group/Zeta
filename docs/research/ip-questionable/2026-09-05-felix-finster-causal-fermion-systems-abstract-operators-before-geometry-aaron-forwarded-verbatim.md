@@ -627,8 +627,52 @@ would be exactly the (i)-dressed-as-(ii) move this document was written to catch
 This is the same ladder he stated earlier — *"our braided monoidal category stuff is the more
 general, Clifford algebra is a specialization"*, and *"we bridge the graph-theoretic, which I
 consider more topology, into Clifford geometry, and this is where spacetime comes from for us."*
-Stating it as a **prediction about where an unsolved answer will be found** makes it falsifiable in
-the ordinary way: a derivation of the asymmetry at the geometric level would refute it.
+Stating it as a **prediction about where an unsolved answer will be found** makes it falsifiable —
+but **not** in the way I first wrote. My draft said *"a derivation of the asymmetry at the
+geometric level would refute it."* Aaron corrected that (2026-09-05):
+
+> *"I would say almost. If [the] geometric can be represented in what I call more general, then
+> it's still just a special case. To refute what I'm saying, [show] you can represent it **only**
+> in a less general way and **not** in the more general — then I'm falsified."*
+
+**He is right, and the correction is exactly the specialization relation.** A result obtained
+inside a special case does not refute a claim that the general theory is where the structure
+lives, provided the result **lifts**. Clifford algebra being where you *found* it is compatible
+with braided monoidal categories being where it *lives*. The refuting observation is a
+**non-liftable** result: something expressible in the specialization and provably not expressible
+in the generalization.
+
+#### The honest problem with that condition, and the register that repairs it
+
+**As stated, the condition is very hard to meet — possibly unmeetable — and that is worth saying
+rather than nodding along.** Category theory is extraordinarily expressive; encoding a geometric
+structure categorically is close to always possible. A falsification condition that requires
+proving *non-representability in category theory* is one almost nothing will ever satisfy, and a
+claim nothing can refute is the vacuity class
+(`.claude/rules/toy-is-free-metered-must-be-earned.md`) — which would be an unfortunate landing
+place for a prediction that is otherwise sharp and interesting.
+
+**The repair is a distinction this very document already turns on: REPRESENTED versus DERIVED.**
+
+| | at the general level | what it would mean |
+|---|---|---|
+| **represented** | the asymmetry can be *written down* categorically | nearly free; proves little |
+| **derived** | the asymmetry *follows from* the categorical axioms without being assumed | the actual claim |
+
+That is the same cut as (i) split versus (ii) asymmetry, one level up — and Finster is the worked
+example of the difference: he can *represent* chirality perfectly well; what he cannot do is
+*derive* the preference, so he assumes it. Representation was never the scarce thing.
+
+**So the sharp, meetable falsifier is:**
+
+> The asymmetry is **derived** from geometric/Clifford axioms, and at the categorical level it can
+> only be **assumed** — carried across as an extra axiom rather than following from the general
+> structure.
+
+If that happened, the general framework would be *describing* the result rather than *explaining*
+it, and the ladder claim fails in the register Aaron actually means, which is about where the
+**why** lives and not about where things can be encoded. Recorded as his prediction with this as
+the operative condition; nothing here is measured, and the prediction remains a bet.
 
 **And there is a convergence worth recording, carefully.** The math review dispatched an hour
 earlier — which had no access to this prediction — found that
