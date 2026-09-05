@@ -1,0 +1,12 @@
+{
+  "pr_number": 16660,
+  "archive_path": "docs/history/pr-reviews/PR-16660-chore-workitems-retire-081m0x23r-privacy-budget-frost-criteria-landed-on-main.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-05T13:21:21.066Z",
+  "schema_version": "v1",
+  "commit_sha": "f3dd00f11793587887dde73dcf5dac005dfe6535",
+  "title": "chore(workitems): retire 081M0X23R (privacy-budget/frost) — criteria landed on main",
+  "state": "MERGED",
+  "merged_at": "2026-09-05T13:20:42Z",
+  "head_ref": "alexa/retire-workitem-081M0X23R-privacy-frost-done-20260905T123507Z"
+}
