@@ -1007,8 +1007,8 @@ export const APPLIED_BUT_UNASSERTED_REASONS: ReadonlyMap<string, string> = new M
       "[cite: chart-pin full-ai-cluster/hindsight hindsight 0.9.2] " +
       "[cite: resource-rung hindsight metal 1000] " +
       "[cite: resource-rung hindsight dev 75] " +
-      "[cite: lane-cpu metal 7690 over] " +
-      "[cite: lane-cpu dev 1490 fits] " +
+      "[cite: lane-cpu metal 7790 over] " +
+      "[cite: lane-cpu dev 1515 fits] " +
       "[cite: workflow-job k8s-argocd-health-test.yml dry-run] " +
       "[cite: path full-ai-cluster/k8s/bootstrap/root-application.yaml] " +
       "[cite: path maintainers/Addisons820/cluster-nodes/node-ad1efd/node.yaml] " +
@@ -2986,7 +2986,7 @@ async function runEphemeralVaultInitStep(
     return { report: null, failure: { kind: "EphemeralVaultInitFailed", message: gate.reason } };
   }
 
-  const exec = kubectlVaultExec("vault", "vault-0");
+  const exec = kubectlVaultExec("openbao", "openbao-0");
 
   // TOPOLOGY.md section 5 step 1, as a WAIT: exit 2 is the sealed signal, and
   // it is also the only exit this loop accepts. A pod that is not there yet,

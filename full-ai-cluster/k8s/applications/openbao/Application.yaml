@@ -1,0 +1,139 @@
+# OpenBao — the Vault replacement, and the reason is the HSM.
+#
+# Aaron 2026-09-05: "lets switch to OpenBao over vault this will work with our
+# yubihsm and likely our smartcard hsms that we have attached to these boxes, we
+# can remove vault and use this instead ... our real hardware will have HSM on
+# most machines but TPM on almost all of them. we want to integreate deeply."
+#
+# ── WHY THIS IS NOT A PREFERENCE ──────────────────────────────────────────────
+# HashiCorp gates `seal "pkcs11"` behind Vault ENTERPRISE. The OSS binary does not
+# merely warn — it REFUSES the config at startup. So on the free tier a YubiHSM or
+# a smartcard HSM cannot be Vault's seal at all, and the only remaining path is a
+# sidecar script that reads unseal keys from somewhere and shells out to
+# `vault operator unseal` — which puts the key material back in a process, which
+# is the exact thing an HSM exists to prevent.
+#
+# OpenBao is the Linux Foundation fork and ships native PKCS#11 auto-unseal in the
+# FREE version. That single difference is the whole migration: it is the
+# difference between "the private key never leaves the device" and "the private
+# key is in a shell variable".
+#
+# ── WHAT THIS APPLICATION IS AND IS NOT ───────────────────────────────────────
+# STEP ONE OF TWO, deliberately. This adds OpenBao beside Vault; it does NOT
+# delete Vault. You do not remove the incumbent secret store before its
+# replacement has been observed Healthy on a real cluster — that is the same
+# discipline this tree applies to every deferral, applied to the component whose
+# failure mode is "nobody can decrypt anything".
+#
+# WHAT STILL POINTS AT VAULT, measured rather than assumed: `external-secrets`,
+# `hindsight` and `spire` mention Vault only in PROSE — no live wiring. The real
+# coupling is `src/Core.TypeScript/cluster/ephemeral-vault-init.ts` (673 lines,
+# plus a 456-line test), the `vault -> cert-manager` edge in the sync-wave graph,
+# and the `--ephemeral-vault-init` CI flag. Step two migrates that module (the
+# APIs are compatible — OpenBao is a fork, same paths, `bao` where the CLI was
+# `vault`) and then removes Vault.
+#
+# ── NO PKCS#11 SEAL HERE YET, AND THAT IS THE HONEST PART ─────────────────────
+# A GitHub runner has no HSM and no TPM. Turning on `seal "pkcs11"` in the
+# committed tree would render a config that cannot initialise anywhere CI can
+# reach, which is a check that cannot pass rather than a security improvement.
+#
+# The chart CAN express it — `server.volumes` / `server.volumeMounts` mount the
+# device, `server.extraEnvironmentVars` carries the PIN reference, and the `seal`
+# block goes in the raft `config` below beside the listener (the chart's own
+# `gcpckms` example shows the shape). So the metal rung grows a `seal "pkcs11"`
+# stanza and a device mount when the hardware wiring is done, and the TPM path —
+# which Aaron notes is on ALMOST ALL machines where the HSM is only on most — is
+# the broader one worth designing for, because a seal available on every node is
+# worth more than a stronger one available on some.
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  annotations:
+    # -60, the wave vault held. The comment here first said "same wave as vault"
+    # while the value said "1" -- and the graph caught it: spire (-50) and
+    # external-secrets (-40) both depend on the secret store, so a store at wave 1
+    # arrives AFTER its dependents and `derive-sync-waves` reported two new order
+    # violations. The claim and the number have to agree.
+    #
+    # -60 IS SAFE HERE FOR A REASON THAT DID NOT HOLD FOR VAULT. Vault's own file
+    # records that pinning `storageClass: longhorn` at -60 made its PVCs pend,
+    # because longhorn installs at wave -15. OpenBao claims `zeta-local-path`,
+    # which the dev cluster provisions at bring-up, so there is no window where
+    # the class does not exist.
+    argocd.argoproj.io/sync-wave: "-60"
+  name: openbao
+  namespace: argocd
+  finalizers: [ resources-finalizer.argocd.argoproj.io ]
+spec:
+  project: default
+  source:
+    # 0.29.4 / appVersion v2.6.2 -- read from the live index on 2026-09-05, not
+    # from a release note. The OFFICIAL chart: `helm search` also surfaces a
+    # `cc-gitlab/openbao` at 0.18.1, which is a GitLab-specific fork and is not
+    # this.
+    repoURL: https://openbao.github.io/openbao-helm
+    chart: openbao
+    targetRevision: 0.29.4
+    helm:
+      releaseName: openbao
+      valuesObject:
+        global:
+          enabled: true
+          # TLS off INSIDE the cluster, exactly as vault runs today. The mesh
+          # terminates TLS; a second layer here buys nothing on a dev lane and
+          # costs a cert nobody issues.
+          tlsDisable: true
+        server:
+          affinity: ""
+          ha:
+            enabled: true
+            # ONE replica. Raft with a single voter is a real cluster with a
+            # quorum of one -- it is not "HA off dressed up", and it is what the
+            # runner can hold. Metal raises this to 3 and gets a quorum that
+            # survives a node.
+            replicas: 1
+            disruptionBudget:
+              enabled: false
+            raft:
+              enabled: true
+              setNodeId: true
+              # `/openbao/data`, NOT `/vault/data`. The paths differ between the
+              # fork and its parent, and carrying vault's config across verbatim
+              # would point raft at a directory the image does not create.
+              config: |
+                ui = true
+                listener "tcp" {
+                  tls_disable = 1
+                  address = "[::]:8200"
+                  cluster_address = "[::]:8201"
+                }
+                storage "raft" {
+                  path = "/openbao/data"
+                }
+                service_registration "kubernetes" {}
+          dataStorage:
+            enabled: true
+            storageClass: zeta-local-path
+            size: 10Gi
+          auditStorage:
+            enabled: true
+            storageClass: zeta-local-path
+            size: 5Gi
+          resources:
+            requests: { cpu: 100m, memory: 256Mi }
+        injector:
+          # OFF. The sidecar injector rewrites pods to fetch secrets at runtime;
+          # this tree uses external-secrets for that job, and running both would
+          # be two mechanisms racing to own the same concern.
+          enabled: false
+        ui:
+          enabled: false
+        csi:
+          enabled: false
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: openbao
+  syncPolicy:
+    automated: { prune: false, selfHeal: true }
+    syncOptions: [ CreateNamespace=true, ServerSideApply=true ]

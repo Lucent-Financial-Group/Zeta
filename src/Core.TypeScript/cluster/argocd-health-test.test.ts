@@ -392,10 +392,13 @@ describe("081KSXN940008QG0R000SCP2H1 argocd-health-test manifest parsing", () =>
     expect(applications.some((app) => app.dir === "cilium" && app.excludedFromDev)).toBe(true);
     expect(applications.some((app) => app.dir === "cilium-lb-ipam" && app.excludedFromDev)).toBe(true);
     expect(applications.some((app) => app.dir === "longhorn" && app.excludedFromDev)).toBe(true);
-    // `vault` LIFTED 2026-08-21: the ephemeral init ceremony runs in this lane,
-    // so it is asserted rather than deferred. Pinned as NOT excluded, which is
-    // the assertion that goes red if someone re-defers it.
-    expect(applications.some((app) => app.dir === "vault" && !app.excludedFromDev)).toBe(true);
+    // `vault` LIFTED 2026-08-21 and was REPLACED 2026-09-05 -- OpenBao took its
+    // place (native PKCS#11 HSM auto-unseal is Enterprise-only in Vault and free
+    // in the fork). The ephemeral init ceremony still runs in this lane, now
+    // driving `bao` in the `openbao` namespace, so the store is asserted rather
+    // than deferred. Pinned as NOT excluded, which is the assertion that goes red
+    // if someone re-defers it.
+    expect(applications.some((app) => app.dir === "openbao" && !app.excludedFromDev)).toBe(true);
     // `agent-memory` LIFTED 2026-09-03 on its own recorded condition: its deferral
     // said it was "held by the glob, not by a measurement", and the glob entry is
     // gone. Pinned as NOT excluded, so re-deferring it without a measured reason
@@ -423,7 +426,7 @@ describe("081KSXN940008QG0R000SCP2H1 argocd-health-test manifest parsing", () =>
    * the manual-sync one, which is the difference between this and the
    * cdi/kubevirt defect: `manualSync` must be false for all three.
    */
-  test("deepseek-coder, qwen-coder, orleans, vault, spire and spire-crds are asserted under the full Synced+Healthy contract", () => {
+  test("deepseek-coder, qwen-coder, orleans, openbao, spire and spire-crds are asserted under the full Synced+Healthy contract", () => {
     const applications = discoverExpectedApplications();
     // `vault` joined this guard on 2026-08-21. It is the one that matters most
     // here: the whole point of running the ephemeral init ceremony is that Vault
@@ -436,7 +439,7 @@ describe("081KSXN940008QG0R000SCP2H1 argocd-health-test manifest parsing", () =>
     // that reports green without asserting it is reporting on the wrong thing.
     // spire-crds is here too because the pair is the assertion: the CRD provider
     // reaching Synced is what makes spire's own Synced mean anything.
-    for (const dir of ["deepseek-coder", "qwen-coder", "orleans", "vault", "spire", "spire-crds"]) {
+    for (const dir of ["deepseek-coder", "qwen-coder", "orleans", "openbao", "spire", "spire-crds"]) {
       const app = applications.find((candidate) => candidate.dir === dir);
       expect(app, `${dir} must be discovered`).toBeDefined();
       expect(app?.excludedFromDev, `${dir} must not be excluded from the included proof`).toBe(false);
@@ -876,8 +879,8 @@ describe("081KSXN940008QG0R000SCP2H1 argocd-health-test Application verdicts", (
           path: "full-ai-cluster/k8s/applications/cilium/Application.yaml",
         },
         {
-          dir: "vault",
-          name: "vault",
+          dir: "openbao",
+          name: "openbao",
           excludedFromDev: false,
           manualSync: false,
           path: "full-ai-cluster/k8s/applications/vault/Application.yaml",
@@ -901,7 +904,7 @@ describe("081KSXN940008QG0R000SCP2H1 argocd-health-test Application verdicts", (
         reason: "chart values drift",
       },
       {
-        name: "vault",
+        name: "openbao",
         ok: false,
         syncStatus: "Missing",
         healthStatus: "Missing",
@@ -1730,8 +1733,8 @@ describe("081M0JXXFV0087G0R00...: the four newly-visible non-storage defects", (
       // (1000m at metal, 250m at dev). The citations move with the ladder because
       // that is what they are for -- prose that did not follow is the drift
       // `reason-truth.ts` catches, and it caught exactly this pair today.
-      "[cite: lane-cpu metal 7690 over]",
-      "[cite: lane-cpu dev 1490 fits]",
+      "[cite: lane-cpu metal 7790 over]",
+      "[cite: lane-cpu dev 1515 fits]",
     ]) {
       expect(reason).toContain(cited);
     }

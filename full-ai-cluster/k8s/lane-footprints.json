@@ -168,6 +168,9 @@
       "openpolicyagent/gatekeeper-crds:v3.23.1",
       "openpolicyagent/gatekeeper:v3.23.1"
     ],
+    "full-ai-cluster/openbao": [
+      "quay.io/openbao/openbao:2.6.2"
+    ],
     "full-ai-cluster/opensearch": [
       "busybox:latest",
       "opensearchproject/opensearch:3.8.0"
@@ -218,10 +221,6 @@
     ],
     "full-ai-cluster/trust-manager": [
       "quay.io/jetstack/trust-manager:v0.24.0"
-    ],
-    "full-ai-cluster/vault": [
-      "hashicorp/vault-k8s:1.7.6",
-      "hashicorp/vault:2.0.4"
     ],
     "full-ai-cluster/vllm": [
       "vllm/vllm-openai:latest"
@@ -491,12 +490,6 @@
     "ghcr.io/vectorize-io/hindsight-control-plane:0.9.2": {
       "compressedBytes": 73364183
     },
-    "hashicorp/vault-k8s:1.7.6": {
-      "compressedBytes": 37741434
-    },
-    "hashicorp/vault:2.0.4": {
-      "compressedBytes": 192414879
-    },
     "longhornio/longhorn-manager:v1.7.2": {
       "compressedBytes": 118327944
     },
@@ -610,6 +603,9 @@
     },
     "quay.io/kubevirt/virt-operator:v1.8.4": {
       "compressedBytes": 133359009
+    },
+    "quay.io/openbao/openbao:2.6.2": {
+      "compressedBytes": 80599052
     },
     "quay.io/prometheus-operator/prometheus-config-reloader:v0.91.0@sha256:7d9e4eea5f1139e602508871f422b0116c60e87c662f3dcd234d5ab60cd0d8c1": {
       "compressedBytes": 14227492

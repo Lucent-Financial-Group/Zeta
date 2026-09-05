@@ -407,7 +407,8 @@ describe("the real tree", () => {
     // unpacked. The floor RISING is the direction that means an Application was
     // ADDED rather than an image going missing -- the distinction the notes above
     // exist to keep, and it is checked here rather than assumed.
-    expect(all.diskGib).toBeCloseTo(65.96, 2);
+    // 65.96 -> 65.59 on 2026-09-05: vault removed, openbao added -- the images differ.
+    expect(all.diskGib).toBeCloseTo(65.59, 2);
     expect(all.cpuMillis).toBeGreaterThan(budget.cpuMillis);
     // THE DISK AXIS STOPPED BINDING ON 2026-09-02, and this line used to assert the
     // opposite. `all.diskGib` is 61.83 against a 66 GiB budget, so for the first time
@@ -575,7 +576,7 @@ describe("the real tree", () => {
       .filter((e) => e.edgeClass === "intent")
       .map((e) => edgeKey(e.from, e.to))
       .sort();
-    expect(intent).toEqual(["hindsight -> cockroachdb", "spire -> vault"]);
+    expect(intent).toEqual(["hindsight -> cockroachdb", "spire -> openbao"]);
     // temporal's citation contains the phrase and is adjudicated OBSERVED: the
     // case a grep would get backwards.
     expect(text.includes("temporal -> cockroachdb")).toBe(true);

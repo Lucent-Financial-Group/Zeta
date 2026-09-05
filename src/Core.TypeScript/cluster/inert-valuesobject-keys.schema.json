@@ -29254,150 +29254,6 @@
       "dynamic": [],
       "charts": ["<root>=cilium@1.20.1"]
     },
-    "https://helm.releases.hashicorp.com|vault|0.34.1": {
-      "literal": {
-        "csi": {
-          "agent": {
-            "enabled": {},
-            "extraArgs": {},
-            "image": {
-              "pullPolicy": {},
-              "repository": {},
-              "tag": {}
-            },
-            "logFormat": {},
-            "logLevel": {},
-            "resources": {},
-            "securityContext": {
-              "container": {}
-            }
-          },
-          "daemonSet": {
-            "annotations": {},
-            "extraLabels": {},
-            "kubeletRootDir": {},
-            "providersDir": {},
-            "securityContext": {
-              "container": {},
-              "pod": {}
-            },
-            "updateStrategy": {
-              "maxUnavailable": {},
-              "type": {}
-            }
-          },
-          "debug": {},
-          "enabled": {},
-          "extraArgs": {},
-          "hmacSecretName": {},
-          "hostNetwork": {},
-          "image": {
-            "pullPolicy": {},
-            "repository": {},
-            "tag": {}
-          },
-          "livenessProbe": {
-            "failureThreshold": {},
-            "initialDelaySeconds": {},
-            "periodSeconds": {},
-            "successThreshold": {},
-            "timeoutSeconds": {}
-          },
-          "logLevel": {},
-          "pod": {
-            "affinity": {},
-            "annotations": {},
-            "extraLabels": {},
-            "nodeSelector": {},
-            "tolerations": {}
-          },
-          "priorityClassName": {},
-          "readinessProbe": {
-            "failureThreshold": {},
-            "initialDelaySeconds": {},
-            "periodSeconds": {},
-            "successThreshold": {},
-            "timeoutSeconds": {}
-          },
-          "resources": {},
-          "serviceAccount": {
-            "annotations": {},
-            "extraLabels": {}
-          },
-          "volumeMounts": {},
-          "volumes": {}
-        },
-        "fullnameOverride": {},
-        "global": {},
-        "injector": {},
-        "nameOverride": {},
-        "server": {},
-        "serverTelemetry": {
-          "prometheusRules": {
-            "enabled": {},
-            "rules": {},
-            "selectors": {}
-          },
-          "serviceMonitor": {
-            "authorization": {},
-            "enabled": {},
-            "interval": {},
-            "matchLabels": {},
-            "metricRelabelings": {},
-            "scrapeTimeout": {},
-            "selectors": {},
-            "tlsConfig": {}
-          }
-        },
-        "ui": {
-          "activeVaultPodOnly": {},
-          "annotations": {},
-          "enabled": {},
-          "externalPort": {},
-          "externalTrafficPolicy": {},
-          "publishNotReadyAddresses": {},
-          "serviceIPFamilies": {},
-          "serviceIPFamilyPolicy": {},
-          "serviceNodePort": {},
-          "serviceType": {},
-          "targetPort": {}
-        }
-      },
-      "open": [
-        "csi.agent.extraArgs",
-        "csi.agent.resources",
-        "csi.agent.securityContext.container",
-        "csi.daemonSet.annotations",
-        "csi.daemonSet.extraLabels",
-        "csi.daemonSet.securityContext.container",
-        "csi.daemonSet.securityContext.pod",
-        "csi.extraArgs",
-        "csi.pod.affinity",
-        "csi.pod.annotations",
-        "csi.pod.extraLabels",
-        "csi.pod.nodeSelector",
-        "csi.pod.tolerations",
-        "csi.resources",
-        "csi.serviceAccount.annotations",
-        "csi.serviceAccount.extraLabels",
-        "csi.volumeMounts",
-        "csi.volumes",
-        "global",
-        "injector",
-        "server",
-        "serverTelemetry.prometheusRules.rules",
-        "serverTelemetry.prometheusRules.selectors",
-        "serverTelemetry.serviceMonitor.authorization",
-        "serverTelemetry.serviceMonitor.matchLabels",
-        "serverTelemetry.serviceMonitor.metricRelabelings",
-        "serverTelemetry.serviceMonitor.selectors",
-        "serverTelemetry.serviceMonitor.tlsConfig",
-        "ui.annotations",
-        "ui.serviceIPFamilies"
-      ],
-      "dynamic": ["server"],
-      "charts": ["<root>=vault@0.34.1"]
-    },
     "https://kedacore.github.io/charts|keda|2.20.2": {
       "literal": {
         "additionalAnnotations": {},
@@ -31775,6 +31631,164 @@
       ],
       "dynamic": [],
       "charts": ["<root>=gatekeeper@3.23.1"]
+    },
+    "https://openbao.github.io/openbao-helm|openbao|0.29.4": {
+      "literal": {
+        "csi": {
+          "agent": {
+            "enabled": {},
+            "extraArgs": {},
+            "image": {
+              "pullPolicy": {},
+              "registry": {},
+              "repository": {},
+              "tag": {}
+            },
+            "logFormat": {},
+            "logLevel": {},
+            "resources": {}
+          },
+          "daemonSet": {
+            "annotations": {},
+            "endpoint": {},
+            "extraLabels": {},
+            "kubeletRootDir": {},
+            "providersDir": {},
+            "securityContext": {
+              "container": {},
+              "pod": {}
+            },
+            "updateStrategy": {
+              "maxUnavailable": {},
+              "type": {}
+            }
+          },
+          "debug": {},
+          "enabled": {},
+          "extraArgs": {},
+          "hmacSecretName": {},
+          "image": {
+            "pullPolicy": {},
+            "registry": {},
+            "repository": {},
+            "tag": {}
+          },
+          "livenessProbe": {
+            "failureThreshold": {},
+            "initialDelaySeconds": {},
+            "periodSeconds": {},
+            "successThreshold": {},
+            "timeoutSeconds": {}
+          },
+          "pod": {
+            "affinity": {},
+            "annotations": {},
+            "extraLabels": {},
+            "nodeSelector": {},
+            "tolerations": {}
+          },
+          "priorityClassName": {},
+          "readinessProbe": {
+            "failureThreshold": {},
+            "initialDelaySeconds": {},
+            "periodSeconds": {},
+            "successThreshold": {},
+            "timeoutSeconds": {}
+          },
+          "resources": {},
+          "serviceAccount": {
+            "annotations": {},
+            "extraLabels": {}
+          },
+          "volumeMounts": {},
+          "volumes": {}
+        },
+        "extraObjects": {},
+        "fullnameOverride": {},
+        "global": {},
+        "injector": {},
+        "nameOverride": {},
+        "server": {},
+        "serverTelemetry": {
+          "grafanaDashboard": {
+            "defaultLabel": {},
+            "enabled": {},
+            "extraAnnotations": {},
+            "extraLabel": {},
+            "extraLabels": {},
+            "namespace": {}
+          },
+          "prometheusRules": {
+            "enabled": {},
+            "rules": {},
+            "selectors": {}
+          },
+          "serviceMonitor": {
+            "authorization": {},
+            "bearerTokenFile": {},
+            "enabled": {},
+            "interval": {},
+            "port": {},
+            "scheme": {},
+            "scrapeClass": {},
+            "scrapeTimeout": {},
+            "selectors": {},
+            "tlsConfig": {}
+          }
+        },
+        "snapshotAgent": {},
+        "ui": {
+          "activeOpenbaoPodOnly": {},
+          "annotations": {},
+          "enabled": {},
+          "externalPort": {},
+          "externalTrafficPolicy": {},
+          "extraLabels": {},
+          "publishNotReadyAddresses": {},
+          "serviceIPFamilies": {},
+          "serviceIPFamilyPolicy": {},
+          "serviceNodePort": {},
+          "serviceType": {},
+          "targetPort": {}
+        }
+      },
+      "open": [
+        "csi.agent.extraArgs",
+        "csi.agent.resources",
+        "csi.daemonSet.annotations",
+        "csi.daemonSet.extraLabels",
+        "csi.daemonSet.securityContext.container",
+        "csi.daemonSet.securityContext.pod",
+        "csi.extraArgs",
+        "csi.pod.affinity",
+        "csi.pod.annotations",
+        "csi.pod.extraLabels",
+        "csi.pod.nodeSelector",
+        "csi.pod.tolerations",
+        "csi.resources",
+        "csi.serviceAccount.annotations",
+        "csi.serviceAccount.extraLabels",
+        "csi.volumeMounts",
+        "csi.volumes",
+        "extraObjects",
+        "global",
+        "injector",
+        "server",
+        "serverTelemetry.grafanaDashboard.extraAnnotations",
+        "serverTelemetry.grafanaDashboard.extraLabel",
+        "serverTelemetry.grafanaDashboard.extraLabels",
+        "serverTelemetry.prometheusRules.rules",
+        "serverTelemetry.prometheusRules.selectors",
+        "serverTelemetry.serviceMonitor.authorization",
+        "serverTelemetry.serviceMonitor.selectors",
+        "serverTelemetry.serviceMonitor.tlsConfig",
+        "snapshotAgent",
+        "ui.annotations",
+        "ui.extraLabels",
+        "ui.serviceIPFamilies"
+      ],
+      "dynamic": ["server"],
+      "charts": ["<root>=openbao@0.29.4"]
     },
     "https://opensearch-project.github.io/helm-charts/|opensearch|3.8.0": {
       "literal": {
@@ -39648,6 +39662,13 @@
       "chartKey": "https://open-policy-agent.github.io/gatekeeper/charts|gatekeeper|3.23.1"
     },
     {
+      "appId": "full-ai-cluster/openbao",
+      "chart": "openbao",
+      "targetRevision": "0.29.4",
+      "repoURL": "https://openbao.github.io/openbao-helm",
+      "chartKey": "https://openbao.github.io/openbao-helm|openbao|0.29.4"
+    },
+    {
       "appId": "full-ai-cluster/opensearch",
       "chart": "opensearch",
       "targetRevision": "3.8.0",
@@ -39746,13 +39767,6 @@
       "targetRevision": "v0.24.0",
       "repoURL": "https://charts.jetstack.io",
       "chartKey": "https://charts.jetstack.io|trust-manager|v0.24.0"
-    },
-    {
-      "appId": "full-ai-cluster/vault",
-      "chart": "vault",
-      "targetRevision": "0.34.1",
-      "repoURL": "https://helm.releases.hashicorp.com",
-      "chartKey": "https://helm.releases.hashicorp.com|vault|0.34.1"
     },
     {
       "appId": "full-ai-cluster/vllm",
