@@ -322,3 +322,89 @@ mapping is argued above and the two ToyBosonFermion modules (`src/Bayesian/ToyBo
 `ToyBosonFermionGenerator.fs`) are correctly `toy`-prefixed already. No fermionic evidence channel
 exists, no measurement supports the anti-DoS claim, and the Pauli-as-natural-bound argument is a
 structural analogy that has not been cashed out in code.
+
+## 8. Guardians over accelerated-time branches — and why "empty support" is the thing they guard
+
+Aaron, 2026-09-05, on the refusal condition the fix left in place (*the only refusal left is
+empty support, which is order-invariant because the survivor set is an intersection*):
+
+> *"yes — agree. In accelerated time this is a big risk, and it requires intelligence to merge it
+> in an order-invariant way. We will have travelers who are the **guardians** over certain
+> accelerated-time branches and try to save all / most **survivors**. They earn their ranking over
+> time by the intelligent traveler *inside* the accelerated-time branch **ranking the guardians**
+> — so this is also **mutual empowerment** based."*
+
+**The vocabulary collides exactly, and that is why this is a design and not an analogy.** The
+fold's refusal is *empty support*, and the support is the **survivor set** — the intersection of
+what every observation left standing. A guardian's stated job is *"save all / most survivors"*.
+So the technical failure the operator can still produce **is** the thing the guardian exists to
+prevent. They are the same object at two scales:
+
+| | fold | branch |
+|---|---|---|
+| survivors | candidates surviving every likelihood | travelers/state surviving the branch |
+| the bad end | empty support ⇒ `Contradicted` | nothing worth merging back |
+| what preserves it | intersection commutes, so order cannot cause the loss | **intelligence**, because the merge is not mechanical |
+
+### Why the merge needs intelligence and cannot be a fold
+
+This is the part worth stating precisely, because it is where the mechanical guarantee runs out.
+`foldRetainedBounded` is order-invariant **because the evidence set is fixed and the schedule is a
+pure function of carried phase**. An accelerated branch breaks the premise: it has run *further
+along its own worldline* than its peers, so at merge time the two sides do not hold the same
+evidence set at all — one holds strictly more, at phases the other has never seen. Commutativity
+of the fold says nothing about that situation. It guarantees *"same set, any order, same
+answer"*, and here the sets differ **by construction**, which is the whole point of accelerating.
+
+So the merge is a genuine judgement: **which of the accelerated branch's conclusions survive
+contact with a slower branch that never took that path?** That is an oracle's job, not a meter's
+(`dual-use-detection-is-neutral-oracle-decides.md`) — and it is exactly the reintegration
+`anti-babel` describes: *both branches held, each with its path recorded*, never collapsed to one
+surviving value. A merge that produced a single value would have destroyed the survivors the
+guardian was there to save.
+
+### The ranking is mutual, and that closes a hole this repo already knows about
+
+The load-bearing detail is **who ranks whom**:
+
+> the guardian saves survivors → **the intelligent traveler inside the branch ranks the guardian**
+
+The guardian cannot rank itself, and cannot be ranked by the peers who merely benefit downstream.
+Standing flows from **the party that was actually inside the accelerated branch** — the only one
+positioned to know whether the guardian saved what mattered. That is the same construction as
+every other currency here, and it is not a new mechanism:
+
+- `privacy-budget-is-hard-money-earned-by-others.md` — budget accrues only from *others attesting
+  you added value to them*; never self-minted, never confiscated.
+- `src/Core/TravelerRankLedger.fs` — TrueSkill-style ratings held **by others**, per
+  (traveler × hat-domain), with the whitewash window closed by construction (a fresh identity
+  starts at an honest `0.5`, not `0.0`).
+- the naming eigenvector — recognition flows from the already-recognized.
+- Aaron's own root note: **capabilities are derivatives of witnessed self-claims**, which is why
+  the trust system *"is NOT embarrassingly parallel"*.
+
+**Mutual is the new part.** In the existing constructions the flow is one-directional: others
+confer standing on you. Here it is a **loop with an asymmetry of position** — the guardian holds
+the *power* (it decides what survives the merge) and the inhabitant holds the *judgement* (it
+decides whether the guardian deserved it). Neither side can complete the circuit alone, which is
+precisely what makes the guardian's power non-coercive: **a guardian that discards survivors to
+make the merge easy is rated by the survivors it discarded.** That is the NCI applied to a role
+rather than to a belief — anti-collapse enforced by who gets to score.
+
+And it is Sybil-resistant for the reason already established: standing is socially conferred
+rather than purchasable, so a wealthy attacker cannot fund guardians into existence, and clones
+produce highly-correlated ΔU that prices near one agent's worth (`SocietyUsefulWork.fs`).
+
+### Sanctioned forks, restated with this in hand
+
+§7 recorded *"some forks are even sanctioned via time-accelerated branches"* as a bare note. With
+the guardian design it has a shape: a sanctioned fork is one that has **a guardian assigned, a
+merge obligation, and a ranking channel back from inside**. An accelerated branch with no
+guardian is not a sanctioned fork — it is an accidental one that has not been noticed yet, which
+is the case Aaron's *"we don't want accidental forks, just ones on purpose"* rules out.
+
+**Status: design intent, nothing built.** No guardian role, no accelerated branches, no merge
+protocol, no ranking channel from inside a branch. `TravelerRankLedger` exists and is the natural
+carrier for the ranking half. The order-invariance limit above **is** established — it follows
+from the fix committed in `081M1SA32SS087G0R0026C01ZP` and is the reason the merge cannot be
+mechanical.
