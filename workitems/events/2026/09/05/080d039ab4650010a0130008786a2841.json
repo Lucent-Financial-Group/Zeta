@@ -1,0 +1,14 @@
+{
+  "id": "080d039ab4650010a0130008786a2841",
+  "at": "2026-09-05T20:50:47.072Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1SND350087G0R000DMD2QS",
+    "type": "task",
+    "title": "XOR of BlockCas payload is not readable",
+    "slug": "xor-of-blockcas-payload-is-not-readable",
+    "priority": "P2",
+    "filename": "081M1SND350087G0R000DMD2QS-xor-of-blockcas-payload-is-not-readable.md"
+  }
+}

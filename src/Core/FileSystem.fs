@@ -1308,6 +1308,25 @@ type BlockCas(io: IBlockIo) =
                     else
                         Some(BlockLog.readAt io start (int64 len)))
 
+    /// DST: XOR 0xA5 into the last byte of every published payload, in place.
+    /// Superblock and names stay. `isReadable` must fail. Returns how many
+    /// keys were flipped.
+    member _.XorLastPayloadByteAll() : int =
+        lock lockObj (fun () ->
+            let mutable n = 0
+
+            for kv in index do
+                let struct (start, len) = kv.Value
+
+                if len > 0 then
+                    let bytes = BlockLog.readAt io start (int64 len)
+                    bytes.[bytes.Length - 1] <- bytes.[bytes.Length - 1] ^^^ 0xA5uy
+                    BlockLog.append io start (System.ReadOnlyMemory<byte>.op_Implicit bytes)
+                    |> ignore
+                    n <- n + 1
+
+            n)
+
     /// Append `bytes` through `BlockLog` after the superblock. Index and
     /// superblock update only after both the payload Write and the superblock
     /// Write return. A torn superblock slot does not publish the name.

@@ -753,6 +753,19 @@ let ``BlockCas Put of an existing key does not rewrite bits`` () =
     Assert.Equal(0, device.Writes - writesAfterFirstPut)
 
 [<Fact>]
+let ``BlockCas XorLastPayloadByteAll flips the last published byte`` () =
+    let device = SimulatedBlockIo(4096)
+    let cas = BlockCas(device)
+    let payload = [| 1uy; 2uy; 3uy |]
+    cas.Put("aa", payload)
+    Assert.Equal(1, cas.XorLastPayloadByteAll())
+    match cas.TryGet "aa" with
+    | None -> Assert.Fail("payload must still be published")
+    | Some got ->
+        let expected = [| payload.[0]; payload.[1]; payload.[2] ^^^ 0xA5uy |]
+        Assert.Equal<byte>(expected, got)
+
+[<Fact>]
 let ``BlockCas Delete unpublishes a key and CloneMedia agrees`` () =
     let device = SimulatedBlockIo(4096)
     let cas = BlockCas(device)
