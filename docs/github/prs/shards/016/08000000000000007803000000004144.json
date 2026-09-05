@@ -1,0 +1,12 @@
+{
+  "pr_number": 16708,
+  "archive_path": "docs/history/pr-reviews/PR-16708-feat-research-record-contextual-grid-v1-100-seed-receipt.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-05T21:13:49.295Z",
+  "schema_version": "v1",
+  "commit_sha": "8a7ed84adb3781afbd486e62d3afaf2df8634871",
+  "title": "feat(research): record contextual-grid v1 100-seed receipt",
+  "state": "MERGED",
+  "merged_at": "2026-09-05T21:13:12Z",
+  "head_ref": "lumen/contextual-grid-result-protocol"
+}
