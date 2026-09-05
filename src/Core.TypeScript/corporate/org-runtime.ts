@@ -1469,7 +1469,6 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
   };
 }
 
-/** Everyone who could be staffed, one agent per individual-contributor hat. */
 /**
  * The chooser the gate chain consults: QA for runtime validation, the review port for the rest.
  *
@@ -1510,6 +1509,7 @@ export function gateChooserFrom(
   };
 }
 
+/** Everyone who could be staffed, one agent per individual-contributor hat. */
 export function agentsFromChart(chart: OrgChart, prefix = "agent"): readonly OrgAgent[] {
   return chart.hats
     .filter((h) => h.level === "individual_contributor")

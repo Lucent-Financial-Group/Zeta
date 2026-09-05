@@ -325,13 +325,6 @@ export function fidelityOf(set: ProviderSet): FidelityReport {
 }
 
 /**
- * Refuse a set that cannot support the determinism a caller requires.
- *
- * For a DST run, or any run whose output is being compared against a golden expectation: a real
- * provider makes the comparison meaningless, and finding that out from a diff is worse than being
- * told up front.
- */
-/**
  * What a run COULD do, and what it actually DID — kept apart, because they are different claims.
  *
  * `fidelityOf` reads the ProviderSet's LABELS. That is the right basis for `replayable`: a set
@@ -463,6 +456,13 @@ export function recordingProviders(set: ProviderSet): {
   };
 }
 
+/**
+ * Refuse a set that cannot support the determinism a caller requires.
+ *
+ * For a DST run, or any run whose output is being compared against a golden expectation: a real
+ * provider makes the comparison meaningless, and finding that out from a diff is worse than being
+ * told up front.
+ */
 export function requireReplayable(set: ProviderSet): { readonly ok: true } | { readonly ok: false; readonly reason: string } {
   const report = fidelityOf(set);
   if (report.replayable) return { ok: true };

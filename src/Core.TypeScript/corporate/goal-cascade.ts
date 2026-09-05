@@ -93,8 +93,9 @@ export interface CascadeRung {
   readonly ownerLevel: HatLevel;
 }
 
-/** The ladder, top-down. Index is depth. */
 /**
+ * The ladder, top-down. Index is depth.
+ *
  * ── THE RUNG ORDER, AND WHY IT DIFFERS FROM THE REFERENCE ────────────────────
  * The reference's product shape reads
  *

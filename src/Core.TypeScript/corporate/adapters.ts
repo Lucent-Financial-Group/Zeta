@@ -792,15 +792,6 @@ export function commandTestRunner(input: {
 }
 
 /**
- * Changes as real git branches.
- *
- * `open` creates a branch; `merge` merges it back. Both refuse on a non-zero exit rather than
- * reporting a merge that did not happen — the one thing change control cannot do is claim a merge.
- *
- * MERGE IS `--no-ff` ON PURPOSE: a fast-forward leaves no record that a change existed, and this
- * port's whole job is that the record and the repository agree.
- */
-/**
  * How many commits `branch` has that `HEAD` does not.
  *
  * THE DEFECT THIS EXISTS FOR. `git merge --no-ff <branch>` where the branch points at the same
@@ -833,6 +824,15 @@ export function commitsAhead(
   return Number.isNaN(n) ? undefined : n;
 }
 
+/**
+ * Changes as real git branches.
+ *
+ * `open` creates a branch; `merge` merges it back. Both refuse on a non-zero exit rather than
+ * reporting a merge that did not happen — the one thing change control cannot do is claim a merge.
+ *
+ * MERGE IS `--no-ff` ON PURPOSE: a fast-forward leaves no record that a change existed, and this
+ * port's whole job is that the record and the repository agree.
+ */
 export function gitChangeControl(input: {
   readonly cwd: string;
   readonly baseBranch: string;

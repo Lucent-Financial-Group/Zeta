@@ -139,13 +139,6 @@ function commitFor(node: CascadeNode, paths: readonly string[]): CommitMetadata 
 }
 
 /**
- * Each hat's operational share of its own assigned work — the two-mandate ratio the menu balances.
- *
- * `aggregateAuthorRatios` does the counting, so the definition of "operational" is the classifier's
- * one and not a second one written here. Empty when no paths are supplied, which leaves the balance
- * term neutral rather than steering on a number nobody measured.
- */
-/**
  * Incident windows, read off the run's own event trace.
  *
  * Detection is the earliest event mentioning the incident; restoration is the event that moved it
@@ -189,6 +182,13 @@ export function classificationsFor(input: SurfaceInput): readonly Classification
   return out;
 }
 
+/**
+ * Each hat's operational share of its own assigned work — the two-mandate ratio the menu balances.
+ *
+ * `aggregateAuthorRatios` does the counting, so the definition of "operational" is the classifier's
+ * one and not a second one written here. Empty when no paths are supplied, which leaves the balance
+ * term neutral rather than steering on a number nobody measured.
+ */
 export function perHatRatios(input: SurfaceInput): Readonly<Record<string, number>> {
   const out: Record<string, number> = {};
   for (const stats of aggregateAuthorRatios(classificationsFor(input))) {

@@ -328,17 +328,6 @@ export function trackerMapper(source: string, pairs: readonly string[]): (item: 
 }
 
 /**
- * Choose the adapter for every port from the flags.
- *
- * Note what this does NOT do: fall back. A flag naming a real adapter always produces that adapter,
- * and a port with no flag always produces the simulated one — there is no case where asking for
- * reality quietly yields a simulation, which is the failure `providers.ts` exists to prevent.
- *
- * The command adapters pass exactly ONE argument: the work item's id, or the test case's. Never the
- * title, never anything a reporter typed. A work item arrives from intake, which with `--inbox` is a
- * directory somebody else can write to; its text is untrusted input to this process.
- */
-/**
  * What the flags ask for but cannot be given, said out loud instead of quietly downgraded.
  *
  * THE DEFECT THIS CLOSES. `--work-agent claude` with no `--work-verify` fell through every branch to
@@ -370,6 +359,17 @@ export function argRefusals(args: Args): readonly string[] {
   return out;
 }
 
+/**
+ * Choose the adapter for every port from the flags.
+ *
+ * Note what this does NOT do: fall back. A flag naming a real adapter always produces that adapter,
+ * and a port with no flag always produces the simulated one — there is no case where asking for
+ * reality quietly yields a simulation, which is the failure `providers.ts` exists to prevent.
+ *
+ * The command adapters pass exactly ONE argument: the work item's id, or the test case's. Never the
+ * title, never anything a reporter typed. A work item arrives from intake, which with `--inbox` is a
+ * directory somebody else can write to; its text is untrusted input to this process.
+ */
 export function providersFromArgs(args: Args, events: readonly ExternalEvent[], qaFallback: RunOutcome): ProviderSet {
   return {
     intake:

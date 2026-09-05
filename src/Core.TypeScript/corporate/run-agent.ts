@@ -29,9 +29,15 @@
  * organization rather than a second, different one — and it is what lets the agent's own state
  * resume from disk while the surface it looks at is rebuilt beside it.
  *
- * That is honest but it is not the same as the organization resuming: its cascade and calendar are
- * still recomputed rather than folded from the stored trace. Named here rather than implied, and it
- * is the next thing.
+ * That was honest AND INCOMPLETE, and `--resume` is the other half. With it, `resumedSurface`
+ * folds the cascade, the calendar, the priorities, the gate verdicts, the queue and the QA history
+ * out of the stored trace — no runtime, no recomputation — so the second process reads what the
+ * first one DID rather than recomputing what it would have done.
+ *
+ * The paragraph above used to end "and it is the next thing", which stayed on the page for two
+ * passes after the thing was built. In a register where a stated limit is a promise about the
+ * code, a stale one sends the next reader to build what already exists — so the limits here are
+ * checked against the code when they are edited, and the ones that survive say what is still true.
  */
 
 import { buildOrgChart } from "./org-chart";
@@ -108,15 +114,6 @@ export interface AgentRunArgs {
   readonly ports?: Args;
 }
 
-/** Run the organization and turn it into the surface the loop looks at. */
-/**
- * Rebuild the surface from a stored log — no runtime, no recomputation.
- *
- * `queue` and `qa` are EMPTY and that is stated rather than hidden: shards, claims and test runs
- * are not yet folded, so a resumed surface reports zero deployments and no test history. What it
- * does carry is the organization's WORK — the cascade, the calendar, the priorities and the gate
- * verdicts — which is what the menu is built from.
- */
 /**
  * One queue holding every folded queue's shards, claims and approvals.
  *
@@ -144,6 +141,18 @@ export function mergeQueues(queues: readonly WorkQueue[]): WorkQueue {
   };
 }
 
+/**
+ * Rebuild the surface from a stored log — no runtime, no recomputation.
+ *
+ * THIS DOCSTRING SAID THE OPPOSITE OF THE CODE UNTIL 2026-09-05. It read "`queue` and `qa` are
+ * EMPTY and that is stated rather than hidden", three lines above a comment reading "The queue and
+ * the QA history come from the LOG, not from an empty stand-in" — the limit was closed and the
+ * stated limit was not. In a register where "stated rather than hidden" makes a limit a promise
+ * about the code, a stale one sends the next reader to build something that already exists.
+ *
+ * It carries the organization's WORK — cascade, calendar, priorities, gate verdicts — and its
+ * QUEUE and QA history, folded from the log rather than stood in for.
+ */
 export function resumedSurface(store: string, atMs: number): {
   readonly surface: LoopSurface;
   readonly folded: ReturnType<typeof foldOrganization>;
@@ -178,6 +187,7 @@ export function resumedSurface(store: string, atMs: number): {
   };
 }
 
+/** Run the organization and turn it into the surface the loop looks at. */
 export async function organizationSurface(args: AgentRunArgs): Promise<{
   readonly surface: LoopSurface;
   readonly delivered: boolean;

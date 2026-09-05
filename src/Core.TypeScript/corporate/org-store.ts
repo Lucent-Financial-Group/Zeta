@@ -20,10 +20,14 @@
  * disagrees with its leaves). The events are the facts; anything else is a fold over them, and a
  * fold cannot drift from its own input.
  *
- * The honest limit, stated rather than hidden: a full `Cascade` fold from events is NOT implemented
- * here. What this gives is a durable, queryable, mergeable history — not yet a resumable runtime.
- * `runsIn` and `eventsFor` answer "what did this organization do"; rebuilding the live value
- * objects from the log is the next step and is not claimed by this module.
+ * The division of labour, and it is a boundary rather than a limit: this module STORES and READS;
+ * `org-fold.ts` rebuilds. A full `Cascade` fold from events is not implemented HERE, and is not
+ * missing — `foldOrganization` does it, and `run-agent.ts --resume` runs on the result.
+ *
+ * This paragraph read "not yet a resumable runtime… is the next step and is not claimed by this
+ * module" until 2026-09-05, while `org-fold.ts` opened by QUOTING that exact sentence as the thing
+ * it had closed. Two files, one claim, opposite tenses; the reader who believed the older one
+ * would have built a second fold beside the working one.
  */
 
 import { Category } from "../zeta-id/types";

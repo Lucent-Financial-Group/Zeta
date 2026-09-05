@@ -339,12 +339,6 @@ export interface ReputationExposure {
 }
 
 /**
- * The organization's own exposure to identity-restart.
- *
- * Reported rather than assumed away: no finite prior removes it, so a system that knows its number
- * is better off than one that believes it is immune.
- */
-/**
  * The reference implementation's prior, reported beside ours.
  *
  * `DEFAULT_PRIOR` is Beta(1,3) and the reference uses Beta(1,1). The difference is the whole
@@ -353,6 +347,12 @@ export interface ReputationExposure {
  */
 export const REFERENCE_WHITEWASH_THRESHOLD = whitewashThreshold(UNIFORM_PRIOR);
 
+/**
+ * The organization's own exposure to identity-restart.
+ *
+ * Reported rather than assumed away: no finite prior removes it, so a system that knows its number
+ * is better off than one that believes it is immune.
+ */
 export function reputationExposure(
   observations: readonly ReputationObservation[],
   hatId: string,
