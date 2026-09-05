@@ -781,6 +781,46 @@ That was found by naming the boundary under each entry rather than by reading th
    decision, which is exactly the shape a permanent WONT-DO can conceal — a **topology** frozen
    where it reads as a list of unrelated engineering opinions.
 
+### The positioning statement, and how it SPLITS the shared boundary
+
+Aaron 2026-09-05, immediately after the DuckDB correction:
+
+> **"DuckDB is the ultimate on-machine DB; ZetaDB is the ultimate decentralized version of that."**
+
+*(Register: this is a positioning statement and an aim, not a measured claim. "Ultimate" is
+aspiration; what follows uses only the STRUCTURAL half — that DuckDB is the reference point and the
+distinguishing axis is centralized vs decentralized.)*
+
+**This is a better boundary than the one written above, because it is POSITIVE.** "Zeta.Core is not
+a SQL database product" says what we are not, and a negative identity absorbs any refusal anyone
+cares to file under it. "The decentralized DuckDB" says what we *are*, and it can therefore be
+**argued with** — which is the property a renewal token needs.
+
+**And it does not support all six entries equally. It splits them.** DuckDB *has* a catalog, *has*
+rows, *has* ACID, *has* a SQL front-end — so "we are the decentralized DuckDB" cannot be the reason
+we refuse those. Sorting the six by what their refusal actually rests on:
+
+| entry | survives under "decentralized DuckDB"? | the boundary it really rests on |
+|---|---|---|
+| `MariaDB-style pluggable storage engines` | **yes, reinforced** — DuckDB also has one storage engine, not a pluggable framework | one library, one algebra, one storage boundary |
+| `WITHOUT ROWID` / row-identity | **yes, but re-based** | **DATA MODEL** — Z-set keys are the identity. Nothing to do with topology; it would hold on one machine too |
+| `Root-catalog discovery` | **yes, but re-based** | **DATA MODEL** — no tables to catalogue |
+| `ACID as engine core` | **needs restating** — DuckDB has ACID | **LAYERING** — IVM over streams with ACID in the sink layer. That is an architectural choice, not a consequence of being decentralized |
+| `sql_features` conformance | **needs restating** — DuckDB implements a lot of SQL | **no SQL surface TODAY**; the entry's sibling already says "revisit when a SQL front-end package ships", which is reachable |
+| `DuckDB-style parser/binder/optimizer` | **corrected above** — refuses the SHAPE, not the stages | **TOPOLOGY + INPUT LANGUAGE** |
+
+**So the "one shared boundary" claim in the previous section is too coarse, and this is its
+correction.** There are at least three underneath it — **data model** (Z-sets, not rows/tables),
+**layering** (a library, with ACID at the sink), and **topology/input language** — and only the
+third is about decentralization at all. Two entries (`ACID as engine core`, `sql_features`) now
+rest on a boundary their prose does not state, which makes them the next candidates for the same
+treatment rather than settled.
+
+**This is the pass working twice in a row.** Naming the boundaries exposed a mis-scoped refusal
+(DuckDB), and then the positioning statement exposed that my *grouping* of the boundaries was
+itself too coarse. Neither would have surfaced from reading the entries, because the entries agree
+with each other in prose and disagree only in what they actually rest on.
+
 **Why every entry now carries a `Boundary` and a `Renewal token`.** Aaron 2026-09-05: *"WONT-DOs
 without renewal tokens are a smell — this is where you hide centralization"*, and *"my family's
 refusals are backed up by economic and meritocracy boundaries."* A refusal resting on a stated
