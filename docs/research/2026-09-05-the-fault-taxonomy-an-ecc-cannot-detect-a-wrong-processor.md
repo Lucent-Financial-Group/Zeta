@@ -114,15 +114,42 @@ None of this is currently tested, and the gap is specific enough to close:
 2. **The falsifier is the interesting part:** flip a bit and show the byte-lock goes red. A
    corruption the four oracles do *not* catch is a more useful result than one they do — it maps
    the boundary of what the mechanism covers.
-3. **Cross-machine, not just cross-language.** Four implementations on one host do not test CPU
-   independence at all. The lanes already run on `ubuntu-24.04`, `ubuntu-24.04-arm` and `macos-26`
-   — **that is three independent processors already in the matrix**, and whether the byte-lock is
-   actually compared *across* them, rather than within each, is a question worth answering before
-   claiming the property.
+3. **Cross-machine, not just cross-language — MEASURED 2026-09-05, and the answer is NO.**
 
-**Register: `toy`.** The taxonomy is Aaron's and is sound; the mechanism table above is argued from
-what each fault corrupts; the claim that the byte-lock catches CPU faults is **structural, not
-measured** — no bit has been flipped and no disagreement has been induced. Point 3 is the cheapest
+   `.github/workflows/bytelock.yml` declares one job, `bytelock`, with `runs-on: ubuntu-24.04`
+   and **no `strategy:`/`matrix:` at all**. So the four-oracle byte-lock is *four languages on one
+   processor*. It is genuine N-version programming across implementations and it is **single-machine**,
+   which means the CPU-independence property §3 leans on **is not exercised anywhere in CI today.**
+
+   And the ingredients for it already exist, unconnected:
+
+   | | what it has | what it lacks |
+   |---|---|---|
+   | `bytelock.yml` | four independent implementations compared against golden vectors | **one runner** |
+   | `build-and-test` | **five machines** — `ubuntu-24.04`, `ubuntu-24.04-arm`, `macos-26`, `windows-2025`, `windows-11-arm` | each leg verifies independently; `upload-artifact` appears **0 times** in `gate.yml`, so no leg's output is ever compared against another's |
+
+   **Two mechanisms, each half of the answer, never combined.** Nothing compares a result computed
+   on one processor against the same result computed on another — which is precisely the comparison
+   that catches a mercurial core, and the only one that does.
+
+   Correction to an earlier draft of this section: I wrote that "three independent processors" are
+   in the matrix. **Five are** — Windows Server 2025 and Windows 11 ARM are already there
+   (Aaron 2026-09-05: *"and windows 11 and server"*). The nuance is *when*: the pre-merge
+   (`pull_request`) matrix is the three-OS set, and the five-OS set runs on push and
+   `workflow_dispatch`. So the hardware diversity is broader than I said and is exercised less often
+   than the headline suggests.
+
+   **The cheap experiment is now concrete:** give `bytelock` the same matrix, have each leg emit its
+   computed vectors, and compare across legs. A disagreement between two processors running the same
+   implementation is a CPU fault by construction — there is no other explanation left once the
+   language, the source and the input are held fixed. That is the one measurement that would move
+   §3 from `toy` to `metered`, and it needs no new hardware.
+
+**Register: `toy`, and now with a measured reason rather than a hedge.** The taxonomy is Aaron's and
+is sound; the mechanism table above is argued from what each fault corrupts; the claim that the
+byte-lock catches CPU faults is **structural, and MEASURABLY not realised** — the byte-lock runs on
+a single `ubuntu-24.04` runner, no bit has been flipped, and no cross-processor comparison exists to
+induce a disagreement in. Point 3 is the cheapest
 real experiment and the one that would move this to `metered`.
 
 ## Anchors
