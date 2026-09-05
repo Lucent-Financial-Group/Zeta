@@ -36,4 +36,12 @@ Completion:
 - both reports are independently rejected when they see or play zero rows;
 - 177 ARC tests, repository Python lint, `actionlint`, offline paired execution,
   and full `bun run preflight` pass on the refreshed branch;
-- the post-merge keyed dispatch remains the final operational verification.
+- post-merge workflow-dispatch run `33973867140` completed successfully on merge
+  commit `1baea12c3bdfad1e5748b9bff3beca3ab36ff457` in `NORMAL` mode:
+  centroid saw/played 26/26 with zero failures, cleared 4 levels, and scored
+  `0.0136`; scene-feedback saw/played the same 26/26 with zero failures, cleared
+  the same 4 levels, and scored `0.0147`; the signed score delta was `+0.0011`;
+- the measured gain was concentrated in `lp85` (`0.0009` to `0.0278`), while
+  scene-feedback also made the `ft09` and `sb26` attempts inert. One seed under
+  a 200-action ceiling does not establish general superiority, and remains
+  explicitly not leaderboard-comparable.
