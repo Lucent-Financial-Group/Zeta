@@ -254,7 +254,7 @@ module SoftValue =
     //                              mass toward the peak; widen pushes it toward uniform).
     //                              LOCAL-DECISION / FOLD-BOUNDARY USE ONLY.
     //
-    //   (B) RETRACT THE EVIDENCE — `foldRetained` below. Targeted: it names *which*
+    //   (B) RETRACT THE EVIDENCE — `foldRetainedBounded` below. Targeted: it names *which*
     //                              observations are discounted, and the posterior is a fold
     //                              over the surviving evidence SET. Because a fold over a set
     //                              is order-independent and `observe` commutes, **(B) commutes
@@ -285,7 +285,7 @@ module SoftValue =
     //     the strongest citation form and needs a checked source
     //     (`.claude/rules/anchor-to-human-prior-art.md` -- anchors must be CHECKED, not cited).
     //     Note also that it anchors (A) `widen`, the operator this design deliberately does NOT
-    //     rely on, so it lends no support to `foldRetained` either way.
+    //     rely on, so it lends no support to `foldRetainedBounded` either way.
     //   • Entropy regularization (Haarnoja et al., SAC) — the paper's own route. Rejected as
     //     the primitive for the same reason (A) is not the load-bearing operator: it is a
     //     belief-reading penalty and does not commute with the evidence fold.
@@ -328,7 +328,7 @@ module SoftValue =
     /// interleave differently WILL diverge. This is the same boundary
     /// `BeliefConvergence.sharpen` is documented to mark. Use it for LOCAL decisions, or once
     /// at the fold boundary (`widen λ (fold …)` is order-independent because the fold under
-    /// it is). For re-opening inside a shared fold use `foldRetained`, which commutes.
+    /// it is). For re-opening inside a shared fold use `foldRetainedBounded`, which commutes.
     let widen (lambda: float) (sv: SoftValue) : SoftValue =
         let n = List.length sv.Candidates
         if n <= 1 || lambda <= 0.0 then sv
@@ -401,7 +401,7 @@ module SoftValue =
     /// and lowering it is a retraction. `0` is full retraction.
     ///
     /// A schedule is a pure function of (agreed phase, agreed phase) — it CANNOT read a clock,
-    /// and it cannot read arrival order, which is what keeps `foldRetained` commutative.
+    /// and it cannot read arrival order, which is what keeps `foldRetainedBounded` commutative.
     type RetentionSchedule = Phase -> Phase -> int
 
     /// Upper bound on a single piece of evidence's multiplicity. A schedule is caller-supplied,
@@ -410,6 +410,20 @@ module SoftValue =
     /// `ZSet.consolidateSorted` guards with `Checked.(+)`). Clamped, never trusted.
     [<Literal>]
     let MAX_MULTIPLICITY = 1024
+
+    /// Declared ceiling on how many observations ONE fold may consume. `MAX_MULTIPLICITY` bounds
+    /// the work per item and left the item count unbounded, which is the DoS surface: cost grows
+    /// superlinearly in the number of observations and the count is attacker-influenceable.
+    /// TREATY VALUE — see `foldRetainedBounded`. A node that changes it unilaterally refuses on
+    /// different inputs than its peers and forks accidentally.
+    [<Literal>]
+    let MAX_EVIDENCE_COUNT = 4096
+
+    /// Declared ceiling on TOTAL retained multiplicity — the actual number of likelihood
+    /// applications, which is what costs. Bounding the count alone is insufficient: 4096
+    /// observations each at multiplicity 1024 is four million applications. TREATY VALUE.
+    [<Literal>]
+    let MAX_FOLD_WORK = 65536
 
     /// The default schedule: a hard window of `horizon` phases back from the newest evidence.
     /// Multiplicity 1 inside the window, 0 (fully retracted) outside. `horizon <= 0` retains
@@ -431,7 +445,7 @@ module SoftValue =
             let maxPhase = evidence |> List.map (fun e -> e.Phase) |> List.max
             evidence |> List.filter (fun e -> schedule maxPhase e.Phase > 0)
 
-    /// **foldRetained — the commutative re-opening operator.**
+    /// **foldRetainedBounded — the commutative re-opening operator.**
     ///
     /// TWO CORRECTIONS from the 2026-09-05 math review; both were over-claims in this
     /// docstring, and both are recorded rather than quietly reworded.
@@ -469,25 +483,138 @@ module SoftValue =
     ///     jittering forever at a floor — which is where this dominates `widen`, whose floor
     ///     permanently caps confidence at `1 - lambda + lambda/n`.
     ///
-    /// `None` on contradiction (every candidate refuted), the same honesty as `observe`.
-    let foldRetained
+    /// **Outcome, because `SoftValue option` conflated three distinguishable things.**
+    /// `None` used to mean "every candidate refuted" AND (after the 2026-09-05 fix) would have
+    /// had to mean "a declared bound was hit". Those are not the same event and a caller must be
+    /// able to tell them apart: one is a conclusion about the evidence, the other is a refusal to
+    /// spend. A refusal that names its bound is a DECLARED divergence (Aaron: *"we don't want
+    /// accidental forks, just ones on purpose"*); a silent stall is not.
+    type FoldRefusal =
+        /// The evidence set exceeds the declared per-fold ceiling.
+        | EvidenceBudget of count: int * limit: int
+        /// Total retained multiplicity (the actual work) exceeds the declared ceiling.
+        | WorkBudget of units: int * limit: int
+
+    type FoldOutcome =
+        /// A posterior. The normal case.
+        | Folded of SoftValue
+        /// Every candidate refuted by the evidence. ORDER-INVARIANT: the surviving support is the
+        /// intersection over all evidence, and intersection commutes.
+        | Contradicted
+        /// A declared bound was hit. Nothing was computed; this is a refusal, not a conclusion.
+        | Refused of FoldRefusal
+
+    /// **The bounded, order-invariant fold.** See `MAX_EVIDENCE_COUNT` / `MAX_FOLD_WORK`.
+    ///
+    /// THREE CHANGES from the original, all forced by the 2026-09-05 review
+    /// (`081M1SA32SS087G0R0026C01ZP`); the original is quoted in the bug so the diff is legible.
+    ///
+    /// 1. **No intermediate normalization, and therefore no intermediate threshold.** The original
+    ///    called `observe` once per multiplicity, and `observe` normalizes via `build`, which
+    ///    refuses once total mass falls to or below `EPS`. That total is the POSTERIOR-WEIGHTED
+    ///    likelihood mean, which depends on the prefix already folded — so comparing it against
+    ///    any strictly positive constant is an order-dependent test. Measured in EXACT rational
+    ///    arithmetic (no floats involved): 103 of 400 random evidence sets had some permutation
+    ///    disagree at `EPS = 1e-12`, and 0 of 400 disagreed at `EPS = 0`. The threshold was the
+    ///    defect, not rounding — bigfloat with the same `EPS` fails identically.
+    ///
+    /// 2. **Log-space accumulation with a CANONICAL SUMMATION ORDER.** Products are accumulated
+    ///    as sums of logs, which removes the underflow that `EPS` existed to guard against
+    ///    (`1e-308` becomes `-709`, and there is no floor to fall through). The per-candidate
+    ///    contributions are then SORTED before summing, so the float summation order is fixed by
+    ///    value and not by arrival — which makes the result bit-identical under reordering rather
+    ///    than merely close. Same discipline `build` already applies when it sums "over the MERGED
+    ///    tensor in ordinal order rather than over the raw input in arrival order".
+    ///
+    /// 3. **Declared bounds, refused loudly.** Exact/extended-range arithmetic is not free:
+    ///    measured cost grows superlinearly in the number of observations (4x the evidence, 27x
+    ///    the time at K=3200), and evidence count is attacker-influenceable wherever a peer can
+    ///    push observations into a fold. `MAX_MULTIPLICITY` bounded the work PER ITEM and left the
+    ///    item count unbounded. Aaron 2026-09-05: *"it could be a DDOS attack ... a chaotic
+    ///    adversary who is trying to overload your uncertainty to make you stop processing, or
+    ///    take up your entire CPU budget."* That is `TangleNavigator`'s **`Trapped`** cell —
+    ///    churning at the full price of chaos and going nowhere — reached deliberately by an
+    ///    adversary instead of by bad luck.
+    ///
+    /// THE BOUNDS ARE PART OF THE TREATY, NOT A LOCAL POLICY. If two nodes bound differently they
+    /// refuse on different inputs and diverge, which recreates the accidental fork by a new route.
+    /// Same object as the canonical collation problem: pick ONE, lock it in the golden vectors,
+    /// make every oracle conform (`.claude/rules/culture-invariant-by-default.md` — *the seed is
+    /// the treaty*). They are `[<Literal>]` here for exactly that reason, and changing one is a
+    /// treaty change.
+    ///
+    /// Retained properties: re-opens under a drifting source; a stationary source still converges
+    /// fully inside the window; the result is a function of the evidence SET and the phases
+    /// carried in it, never of arrival order.
+    let foldRetainedBounded
         (schedule: RetentionSchedule)
         (evidence: Evidence list)
         (prior: SoftValue)
-        : SoftValue option =
+        : FoldOutcome =
         match evidence with
-        | [] -> Some prior
+        | [] -> Folded prior
         | _ ->
-            let maxPhase = evidence |> List.map (fun e -> e.Phase) |> List.max
-            let rec applyN (lik: DynamicValue -> float) n acc =
-                if n <= 0 then acc
-                else applyN lik (n - 1) (acc |> Option.bind (observe lik))
-            evidence
-            |> List.fold
-                (fun acc e ->
-                    let m = min (schedule maxPhase e.Phase) MAX_MULTIPLICITY
-                    applyN e.Likelihood m acc)
-                (Some prior)
+            let count = List.length evidence
+            if count > MAX_EVIDENCE_COUNT then
+                Refused(EvidenceBudget(count, MAX_EVIDENCE_COUNT))
+            else
+                // maxPhase is `List.max` over the SET — order-invariant by construction.
+                let maxPhase = evidence |> List.map (fun e -> e.Phase) |> List.max
+                let weighted =
+                    evidence
+                    |> List.map (fun e -> e, min (max 0 (schedule maxPhase e.Phase)) MAX_MULTIPLICITY)
+                // Work is the sum of multiplicities: the actual number of likelihood applications.
+                let work = weighted |> List.sumBy snd
+                if work > MAX_FOLD_WORK then
+                    Refused(WorkBudget(work, MAX_FOLD_WORK))
+                else
+                    let candidates = prior.Candidates
+                    // Per candidate: ln(prior) plus m * ln(L) for each retained observation.
+                    // A likelihood of exactly 0 refutes the candidate outright (log = -infinity),
+                    // and refutation is order-invariant: the survivor set is an intersection.
+                    let logTotals =
+                        candidates
+                        |> List.map (fun (dv, w0) ->
+                            let contributions =
+                                weighted
+                                |> List.choose (fun (e, m) ->
+                                    if m <= 0 then None
+                                    else
+                                        let l = max 0.0 (e.Likelihood dv)
+                                        Some(if l = 0.0 then System.Double.NegativeInfinity
+                                             else float m * log l))
+                            let refuted = contributions |> List.exists System.Double.IsNegativeInfinity
+                            if refuted || w0 <= 0.0 then dv, System.Double.NegativeInfinity
+                            else
+                                // CANONICAL SUMMATION ORDER — sorted by value, never by arrival.
+                                // This is what makes the result bit-identical under reordering.
+                                let s = contributions |> List.sort |> List.sum
+                                dv, log w0 + s)
+                    let live = logTotals |> List.filter (fun (_, lt) -> not (System.Double.IsNegativeInfinity lt))
+                    match live with
+                    | [] -> Contradicted
+                    | _ ->
+                        // log-sum-exp: subtract the max before exponentiating so nothing overflows
+                        // or underflows on the way back. `shifted` is order-invariant because
+                        // `live` follows the prior's candidate order, not the evidence order.
+                        let m = live |> List.map snd |> List.max
+                        let shifted = live |> List.map (fun (dv, lt) -> dv, exp (lt - m))
+                        match build shifted with
+                        | Some sv -> Folded sv
+                        | None ->
+                            // Unreachable: the max-shifted entry is exactly exp 0 = 1, so the total
+                            // is at least 1 and cannot fall to the floor. Mapped rather than
+                            // asserted, because a claim of unreachability is not a proof of it.
+                            Contradicted
+
+    // NO BACK-COMPAT WRAPPER. An option-returning `foldRetained` was written here and then
+    // deleted: it had to map BOTH `Contradicted` and `Refused` onto `None`, which is precisely
+    // the conflation `FoldOutcome` exists to end -- a caller could not tell "the evidence refuted
+    // everything" from "I declined to spend the budget", and only the second is a fork the caller
+    // must declare. Aaron 2026-09-05: Zeta is greenfield and stays that way; stable surfaces get
+    // split into other repos over time. So there is no compatibility debt to pay here, and
+    // leaving a lossy path reachable to avoid touching five test call sites would have been the
+    // vacuity class wearing a migration plan.
 
     // ══════════════════════════════════════════════════════════════════════════
     // THE FLOAT / EXACT BOUNDARY — the one sanctioned exit to shared state

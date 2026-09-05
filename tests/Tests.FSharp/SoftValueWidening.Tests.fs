@@ -15,12 +15,21 @@ module SV = Zeta.Core.SoftValue
 // Two operators are under test and their commutativity status is OPPOSITE — that contrast is
 // the point of the change, so it is pinned here rather than described in prose:
 //   • `SV.widen`        — belief-reading floor. Idempotent. Does NOT commute with `observe`.
-//   • `SV.foldRetained` — evidence retraction. Re-opens AND commutes.
+//   • `SV.foldRetainedBounded` — evidence retraction. Re-opens AND commutes, under
+//     declared bounds; `Refused` is a DECLARED divergence, distinct from `Contradicted`.
 // ═══════════════════════════════════════════════════════════════════════════════
 
 let private cand i = DynamicValue.Int(int64 i)
 let private soft xs = (SV.ofWeighted xs).Value
 let private approx (a: float) (b: float) = abs (a - b) < 1e-9
+
+/// Unwraps the expected-success case. A `Contradicted` or `Refused` here is a test failure with
+/// a NAMED cause, never a silent `.Value` throw on an option.
+let private folded (o: SV.FoldOutcome) : SV.SoftValue =
+    match o with
+    | SV.Folded sv -> sv
+    | SV.Contradicted -> failwith "expected a posterior, got Contradicted (every candidate refuted)"
+    | SV.Refused r -> failwithf "expected a posterior, got Refused %A — a declared bound was hit" r
 
 let private sameDist (a: SV.SoftValue) (b: SV.SoftValue) =
     let ca, cb = SV.candidates a, SV.candidates b
@@ -60,11 +69,11 @@ let ``falsifier 1 - without retraction the posterior locks on the stale source; 
         @ [ for i in 0 .. 11 -> ev (int64 (40 + i)) B ]
 
     // No retraction (retain everything) — the CURRENT behaviour, and the bug.
-    let stuck = (SV.foldRetained (SV.window 1_000_000L) evidence uniform3).Value
+    let stuck = folded (SV.foldRetainedBounded (SV.window 1_000_000L) evidence uniform3)
     Assert.Equal(cand 0, argmax stuck)          // still locked on the STALE source A
 
     // With a phase-keyed retention window — tracks the new source.
-    let reopened = (SV.foldRetained (SV.window 10L) evidence uniform3).Value
+    let reopened = folded (SV.foldRetainedBounded (SV.window 10L) evidence uniform3)
     Assert.Equal(cand 1, argmax reopened)       // tracks B
 
     // And the two genuinely differ — guards against a vacuous pass if both arms degenerated.
@@ -83,13 +92,13 @@ let ``falsifier 2 - foldRetained commutes under reordering with widening enabled
         @ [ for i in 0 .. 11 -> ev (int64 (40 + i)) B ]
 
     let schedule = SV.window 10L
-    let baseline = (SV.foldRetained schedule evidence uniform3).Value
+    let baseline = folded (SV.foldRetainedBounded schedule evidence uniform3)
 
     // Deterministic reorderings (no ambient RNG — DST-replayable).
     let rng = System.Random(4)   // the common seed S=4
     for _ in 1 .. 200 do
         let shuffled = shuffle rng evidence
-        let got = (SV.foldRetained schedule shuffled uniform3).Value
+        let got = folded (SV.foldRetainedBounded schedule shuffled uniform3)
         Assert.True(sameDist baseline got, "reordering changed the posterior — local order leaked into the fold")
 
 [<Fact>]
@@ -153,7 +162,7 @@ let ``widen above the floor is a no-op (the max, not an increment)`` () =
 [<Fact>]
 let ``falsifier 4 - a stationary source still converges under retraction, and does not jitter`` () =
     let stationary = [ for i in 0 .. 59 -> ev (int64 i) A ]
-    let converged = (SV.foldRetained (SV.window 10L) stationary uniform3).Value
+    let converged = folded (SV.foldRetainedBounded (SV.window 10L) stationary uniform3)
     Assert.Equal(cand 0, argmax converged)
     Assert.True(SV.confidence converged > 0.99,
                 sprintf "stationary source failed to converge: confidence %f" (SV.confidence converged))
@@ -207,3 +216,99 @@ let ``widen never refutes a candidate and preserves normalization`` () =
 let ``widen on a point mass with one candidate is a no-op`` () =
     let pm = SV.certain (cand 0)
     Assert.True(sameDist pm (SV.widen 0.9 pm))
+
+// ══════════════════════════════════════════════════════════════════════════════════════════
+// THE NEAR-FLOOR CORNER — 081M1SA32SS087G0R0026C01ZP
+//
+// `falsifier 2` above uses likelihoods of 0.05/0.9, five orders of magnitude clear of the old
+// `EPS = 1e-12` floor, so it could never reach the corner where the original implementation
+// broke. It was NON-VACUOUS for the leak it was designed against (its mutant arm fails) and
+// CONDITIONALLY VACUOUS with respect to this one — a check that passes because the input never
+// approaches the guard. These tests supply the missing input.
+//
+// The original defect: `observe` normalized at every step, and `build` refused once total mass
+// fell to or below EPS. That total is the POSTERIOR-WEIGHTED likelihood mean, so it depends on
+// the prefix already folded — two nodes with the same evidence set could reach belief vs.
+// contradiction. Confirmed in EXACT rational arithmetic (103/400 random sets disagreed under
+// permutation at EPS=1e-12; 0/400 at EPS=0), so it was never a rounding artefact.
+// ══════════════════════════════════════════════════════════════════════════════════════════
+
+/// The counterexample from the bug, as likelihood tables. Both magnitudes sit far below the old
+/// floor; their RATIO is what carries the information, which is exactly what log-space preserves.
+let private tiny1 = lik [ 1.748758581843721e-13; 2.635587015937907e-12; 1e-13 ]
+let private tiny2 = lik [ 8.934760094614835e-05; 8.639005238161121e-08; 1e-9 ]
+
+[<Fact>]
+let ``falsifier 5 - near-floor likelihoods commute (the corner falsifier 2 cannot reach)`` () =
+    let evidence = [ ev 0L tiny1; ev 1L tiny2 ]
+    let schedule = SV.window 10L
+    let a = folded (SV.foldRetainedBounded schedule evidence uniform3)
+    let b = folded (SV.foldRetainedBounded schedule (List.rev evidence) uniform3)
+    Assert.True(sameDist a b, "near-floor evidence reordered changed the posterior")
+
+[<Fact>]
+let ``falsifier 5b - near-floor evidence still yields a posterior, not a contradiction`` () =
+    // The original returned `None` for one of the two orderings. Neither ordering may now, and
+    // this is the half that pins the ASYMMETRY rather than merely the agreement: two runs that
+    // agree on `Contradicted` would satisfy 5 while still being the bug.
+    for order in [ [ ev 0L tiny1; ev 1L tiny2 ]; [ ev 1L tiny2; ev 0L tiny1 ] ] do
+        match SV.foldRetainedBounded (SV.window 10L) order uniform3 with
+        | SV.Folded _ -> ()
+        | other -> failwithf "near-floor evidence must still fold; got %A" other
+
+[<Fact>]
+let ``falsifier 6 - extreme dynamic range commutes over many reorderings`` () =
+    // Magnitudes spanning ~1e-300, well past anything float multiplication survives without
+    // log-space. Deterministic (seed 4), no ambient RNG.
+    let rng = System.Random(4)
+    let mk i =
+        ev (int64 i) (lik [ 10.0 ** float (-60 - (i % 7) * 30)
+                            10.0 ** float (-61 - (i % 5) * 30)
+                            10.0 ** float (-62 - (i % 3) * 30) ])
+    let evidence = [ for i in 0 .. 9 -> mk i ]
+    let baseline = folded (SV.foldRetainedBounded (SV.window 100L) evidence uniform3)
+    for _ in 1 .. 100 do
+        let got = folded (SV.foldRetainedBounded (SV.window 100L) (shuffle rng evidence) uniform3)
+        Assert.True(sameDist baseline got, "extreme-range evidence reordered changed the posterior")
+
+[<Fact>]
+let ``falsifier 7 - a genuine contradiction is reported as Contradicted, not Refused`` () =
+    // Every candidate refuted by an exact-zero likelihood. Order-invariant: the survivor set is
+    // an intersection. This is the one case that SHOULD refuse to produce a posterior.
+    let refuteAll = lik [ 0.0; 0.0; 0.0 ]
+    match SV.foldRetainedBounded (SV.window 10L) [ ev 0L refuteAll ] uniform3 with
+    | SV.Contradicted -> ()
+    | other -> failwithf "expected Contradicted; got %A" other
+
+[<Fact>]
+let ``falsifier 8 - the evidence-count bound REFUSES rather than serving slowly`` () =
+    // The DoS guard. A refusal names its bound, which makes the divergence DECLARED - the
+    // distinction the FoldOutcome type exists to carry.
+    let tooMany = [ for i in 0 .. SV.MAX_EVIDENCE_COUNT -> ev (int64 i) A ]
+    match SV.foldRetainedBounded (SV.window 10L) tooMany uniform3 with
+    | SV.Refused (SV.EvidenceBudget (count, limit)) ->
+        Assert.Equal(SV.MAX_EVIDENCE_COUNT + 1, count)
+        Assert.Equal(SV.MAX_EVIDENCE_COUNT, limit)
+    | other -> failwithf "expected Refused(EvidenceBudget ...); got %A" other
+
+[<Fact>]
+let ``falsifier 8b - the WORK bound catches what the count bound cannot`` () =
+    // Few observations, enormous multiplicity: the count bound passes and the work bound must
+    // catch it. Without this, `MAX_EVIDENCE_COUNT` alone would be a check that cannot fail for
+    // the cost it is supposed to bound.
+    let schedule : SV.RetentionSchedule = fun _ _ -> SV.MAX_MULTIPLICITY
+    let few = [ for i in 0 .. 200 -> ev (int64 i) A ]
+    match SV.foldRetainedBounded schedule few uniform3 with
+    | SV.Refused (SV.WorkBudget (units, limit)) ->
+        Assert.True(units > limit, "work budget refused without exceeding the limit")
+        Assert.Equal(SV.MAX_FOLD_WORK, limit)
+    | other -> failwithf "expected Refused(WorkBudget ...); got %A" other
+
+[<Fact>]
+let ``falsifier 8c - a fold just inside both bounds still succeeds (the bounds are not vacuous)`` () =
+    // The other side of 8/8b: a guard that refused everything would pass them both while making
+    // the operator useless. Pins that the ceiling is reachable-but-not-hit for ordinary input.
+    let ok = [ for i in 0 .. 99 -> ev (int64 i) A ]
+    match SV.foldRetainedBounded (SV.window 1000L) ok uniform3 with
+    | SV.Folded _ -> ()
+    | other -> failwithf "an ordinary fold must not be refused; got %A" other
