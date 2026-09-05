@@ -1,0 +1,14 @@
+{
+  "id": "080d038f3cfe7810a0130008ca99133b",
+  "at": "2026-09-05T14:10:00.271Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1RYF7YF087G0R003FTCZ5K",
+    "type": "bug",
+    "title": "OpenSearch is OutOfSync/Progressing on the live kind lane -- deferred on the measurement I caused",
+    "slug": "opensearch-is-outofsync-progressing-on-the-live-kind-lane-de",
+    "priority": "P2",
+    "filename": "081M1RYF7YF087G0R003FTCZ5K-opensearch-is-outofsync-progressing-on-the-live-kind-lane-de.md"
+  }
+}
