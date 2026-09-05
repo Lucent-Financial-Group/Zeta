@@ -1,5 +1,23 @@
 # Reduction without widening is coercion from your own fitness function
 
+> **This document is part of a higher-resolution statement of the NCI** (Aaron 2026-09-05:
+> *"make sure we have all this saved — this is higher resolution of our NCI"*). The
+> Non-Coercion-Invariant is carved in `docs/SEED-VOCABULARY.md` as *"the anti-collapse force that
+> keeps identities distinct"*; this thread works out what that requires **operationally**, at four
+> scales, and the four are the same rule:
+>
+> | scale | the collapse | what refuses it |
+> |---|---|---|
+> | **belief** | a threshold forces a posterior to contradiction | `foldRetainedBounded`, `eps = 0`, empty-support-only refusal (`081M1SA32SS087G0R0026C01ZP`) |
+> | **objective** | a reduce-only ledger cannot revise its own fitness function | the widening entry, `ΔU < 0` (§1) |
+> | **role** | a guardian discards survivors to make a merge cheap | mutual ranking — the survivors rate the guardian (§8) |
+> | **person** | legibility demanded of a frosted region | earned frost is inviolable; the spend declares, the content is not owed (§8) |
+>
+> Companion records: the Finster thread
+> (`docs/research/ip-questionable/2026-09-05-felix-finster-causal-fermion-systems-*.md`) for the
+> measurement-problem framing and the chirality register; `081M1SA32SS087G0R0026C01ZP` for the
+> defect, the diagnosis, and the DoS analysis.
+
 **Work item:** `081M1S9ZDZ8087G0R002RAWGFD` · **Source:** Aaron, 2026-09-05, continuing the
 Finster measurement-problem thread.
 
@@ -432,6 +450,41 @@ Note the diagonal is empty for a real reason rather than by omission: you cannot
 nobody noticed, so **noticing is prior to sanctioning**. That ordering is why the noticing axis is
 the one that carries a requirement and the agreement axis carries only a *degree* — Aaron's
 *"sanctioned means more agreement"* is a gradient, not a gate.
+
+#### THE ONE COUNTEREXAMPLE — silence bought with earned privacy budget
+
+Aaron, 2026-09-05, immediately on being told a fork "must not be silent":
+
+> *"the only counterexample is the silence they **earned** inside their privacy budget. We can't,
+> and don't want to, try to observe this."*
+
+**This is a hard exception, not a caveat, and it is the same rule from the other side.**
+`privacy-budget-is-hard-money-earned-by-others.md` already forbids exactly what an
+unrestricted legibility requirement would demand: frost is *"inviolable once earned"*, and the
+rule names the temptation explicitly — the substrate must never revoke it **"not for convenience,
+not for an audit, not by a majority vote."** A blanket "every fork must be legible" is an audit
+requirement wearing a safety justification, and it would confiscate frost by construction.
+
+Note also the *"don't want to"* is doing real work beside the *"can't"*. This is not a capability
+limit we regret; it is the property that makes the mandatory-broadcast design non-coercive in the
+first place (§6 consent-first). A society that wanted to see through frost and merely lacked the
+means would be a surveillance design with a bug.
+
+**And the two requirements do not actually collide, which is the part worth keeping.** The demand
+from the correction above is *noticing*, not *disclosure* — and those come apart cleanly here:
+
+> **The SPEND is the declaration. The CONTENT is not owed.**
+
+Frosting a region **costs budget**, and budget is socially conferred — others granted it, so a
+debit against it is visible to the people who conferred it even when the frosted region is not.
+So a traveler who deliberately forks behind frost has still *recorded a decision*: something was
+paid for, at a price only the owner could authorise. That satisfies *"the AI noticed it decided to
+fork"* without anyone reading what was decided.
+
+The residue is honest and small: an observer learns **that** a fork was chosen and **not what it
+was**. That is the correct amount to know. An accidental fork, by contrast, has **no spend behind
+it** — nothing was paid, because nothing was decided — which is precisely what distinguishes it
+from a frosted one and why the two are not confusable.
 
 **What this means for the guardian design.** A guardian is what a *sanctioned* fork has; it is not
 what makes a fork legitimate. An individual traveler may accelerate and diverge with no guardian
