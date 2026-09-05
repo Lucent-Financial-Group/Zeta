@@ -68,22 +68,71 @@ concurrency:
 
 jobs:
   bytelock:
-    name: byte-lock (drift check)
-    timeout-minutes: 15
-    runs-on: ubuntu-24.04
+    name: byte-lock (${{ matrix.os }})
+    timeout-minutes: 25
+    runs-on: ${{ matrix.os }}
+    strategy:
+      # fail-fast MUST stay false. The cross-processor job below compares legs
+      # against each other, so cancelling siblings when one fails would destroy
+      # exactly the evidence the comparison needs -- and the interesting case is
+      # precisely a leg that fails while others pass.
+      fail-fast: false
+      matrix:
+        include:
+          # THE CALIBRATED LEG. These two floors were measured on this OS and are
+          # the ones the 2026-08-15 note refers to ("RAISED 2 -> 9 ... never lower
+          # it silently"). They are unchanged.
+          - os: ubuntu-24.04
+            min_substrates: "9"
+            required_substrates: "WAT,LLVM/C,Emscripten,Rust,AssemblyScript,Zig,JS (V8),Lua 5.4"
+          # UNCALIBRATED LEGS, added 2026-09-05 for cross-processor comparison.
+          #
+          # Their floors are deliberately 1 and their required-list empty, and that
+          # is stated rather than hidden: nobody has measured which substrates these
+          # runners can actually execute, and inventing a floor would be asserting a
+          # number instead of reading one. A floor of 1 still refuses a leg that ran
+          # NOTHING, which is the property that keeps an empty report from looking
+          # like a healthy one.
+          #
+          # RAISE THESE once the first runs report what each OS provides -- same
+          # discipline as the ubuntu leg's own history. A permanently-1 floor here
+          # would be a check that cannot fail, and the whole point of this matrix is
+          # the opposite.
+          #
+          # The gate these legs actually feed is `cross-processor` below, which
+          # compares their verdicts against ubuntu's. That comparison needs no floor
+          # to be meaningful -- it needs two legs that ran the same substrate.
+          - os: ubuntu-24.04-arm
+            min_substrates: "1"
+            required_substrates: ""
+          - os: macos-26
+            min_substrates: "1"
+            required_substrates: ""
 
     steps:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
-      - name: Install substrate toolchains
+      - name: Install substrate toolchains (apt)
+        if: startsWith(matrix.os, 'ubuntu')
         # wat2wasm (wabt) and lua5.4 are the two the runner shells out to; node runs the
         # WASM substrates and the JS reference. A toolchain that fails to install shows up
-        # as TOOLING-ABSENT (not a divergence) and reduces the executed count — which the
-        # liveness floor below then catches if it drops too far.
+        # as TOOLING-ABSENT (not a divergence) and reduces the executed count.
         run: |
           sudo apt-get update -qq
           sudo apt-get install -y --no-install-recommends wabt lua5.4
+
+      - name: Install substrate toolchains (brew)
+        if: startsWith(matrix.os, 'macos')
+        # Same two toolchains, this OS's package manager. `|| true` is deliberate and is
+        # NOT a swallowed error: a toolchain that fails to install must surface as
+        # TOOLING-ABSENT in the report -- which is a measured fact about this runner and
+        # is exactly what the cross-processor comparison needs to see -- rather than as a
+        # dead job with no report to compare.
+        run: |
+          brew install wabt lua || true
+          command -v wat2wasm || echo "wat2wasm: ABSENT on this runner"
+          command -v lua5.4 || command -v lua || echo "lua: ABSENT on this runner"
 
       # THE GO SUBSTRATE HAD NEVER EXECUTED IN CI. `run-go-wasm.mjs` needs
       # `dla-canonical-go.wasm`; that artefact was neither committed nor built here, so Go
@@ -142,7 +191,7 @@ jobs:
           #
           # Lower this ONLY together with removing a substrate from the roster — an honestly
           # smaller N is worth more than a padded one, but the two numbers must move as one.
-          BYTELOCK_MIN_SUBSTRATES: "9"
+          BYTELOCK_MIN_SUBSTRATES: ${{ matrix.min_substrates }}
           # PER-ROUTE FLOOR. The aggregate above catches *count* regressions; this list
           # catches *identity* regressions — a renamed substrate that passes the count but
           # never actually ran. A missing one fails and is named.
@@ -154,7 +203,7 @@ jobs:
           # Go is DECLARED ABSENT, not silently missing: `run-go-wasm.mjs` needs
           # `dla-canonical-go.wasm`, which is not committed and is not built here, so Go has
           # never been exercised in CI. Add it to this list in the same change that builds it.
-          BYTELOCK_REQUIRED_SUBSTRATES: "WAT,LLVM/C,Emscripten,Rust,AssemblyScript,Zig,JS (V8),Lua 5.4"
+          BYTELOCK_REQUIRED_SUBSTRATES: ${{ matrix.required_substrates }}
         run: node run-bytelock-ci.mjs
 
       # THE NEGATIVE CONTROLS HAD NEVER RUN EITHER. `test-fault-injection.mjs` is the suite
@@ -183,14 +232,65 @@ jobs:
           # Kept equal to the run step above so the uploaded report describes the same
           # instrument the job was judged on. `|| true` keeps the drift record uploadable
           # even when the run step failed — which is precisely when it is worth reading.
-          BYTELOCK_MIN_SUBSTRATES: "9"
+          BYTELOCK_MIN_SUBSTRATES: ${{ matrix.min_substrates }}
         run: node run-bytelock-ci.mjs --json > bytelock-report.json || true
 
       - name: Upload the report (the drift record)
         if: always()
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
-          name: bytelock-report
+          # PER-LEG NAME. A shared name would have the legs overwrite one another and
+          # leave exactly one report behind -- which the cross-processor job below would
+          # then correctly REFUSE as "fewer than two legs", but only after the evidence
+          # was already gone.
+          name: bytelock-report-${{ matrix.os }}
           path: src/wasm-dla/bytelock/bytelock-report.json
           if-no-files-found: warn
           retention-days: 30
+
+  # ==========================================================================
+  # THE CROSS-PROCESSOR COMPARISON -- the fault class no checksum can see.
+  # ==========================================================================
+  #
+  # The byte-lock above proves nine implementations agree with a committed
+  # trajectory. Until 2026-09-05 it ran on ONE runner, so it could not prove
+  # anything about the MACHINE: an error-correcting code detects corruption of
+  # the data, and if the processor miscomputes it computes the check wrong too,
+  # consistently and in agreement with itself. Mercurial cores do exactly this --
+  # miscompute specific inputs while passing every self-test (Hochschild et al.,
+  # "Cores That Don't Count", HotOS 2021).
+  #
+  # This job holds source, input and expectation fixed and varies only the
+  # hardware. A disagreement here has one explanation left.
+  #
+  # It runs `if: always()` ON PURPOSE. The interesting case is a leg that FAILED
+  # while its siblings passed, and a `needs:` that only fires on success would
+  # skip precisely then.
+  cross-processor:
+    name: cross-processor byte-lock
+    needs: bytelock
+    if: always()
+    timeout-minutes: 10
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Download every leg's report
+        uses: actions/download-artifact@018cc2cf5baa6db3ef3c5f8a56943fffe632ef53 # v6.0.0
+        with:
+          pattern: bytelock-report-*
+          path: legs
+
+      - name: Prove the comparator can fail before trusting it
+        # The negative controls for THIS file, run before its verdict is believed.
+        # A comparator that cannot report a divergence would turn the whole matrix
+        # into decoration, and it would do so silently.
+        working-directory: src/wasm-dla/bytelock
+        run: node compare-across-legs.mjs --self-test
+
+      - name: Compare the legs against each other
+        # Exit 1 = the machines disagree. Exit 2 = REFUSED, meaning it could not
+        # compare (fewer than two readable legs, or no shared substrate). Both are
+        # failures; only the first is a divergence, and the message says which.
+        run: node src/wasm-dla/bytelock/compare-across-legs.mjs legs
