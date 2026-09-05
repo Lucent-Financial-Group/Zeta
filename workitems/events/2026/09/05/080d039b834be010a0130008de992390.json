@@ -1,0 +1,14 @@
+{
+  "id": "080d039b834be010a0130008de992390",
+  "at": "2026-09-05T21:19:02.012Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1SQ0TBV087G0R001K5JEN7",
+    "type": "task",
+    "title": "Cross-processor byte-lock: an ECC cannot detect a wrong CPU",
+    "slug": "cross-processor-byte-lock-an-ecc-cannot-detect-a-wrong-cpu",
+    "priority": "P2",
+    "filename": "081M1SQ0TBV087G0R001K5JEN7-cross-processor-byte-lock-an-ecc-cannot-detect-a-wrong-cpu.md"
+  }
+}
