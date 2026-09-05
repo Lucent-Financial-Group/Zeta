@@ -1,0 +1,14 @@
+{
+  "id": "080d039806981810a0130008235b0b2f",
+  "at": "2026-09-05T19:17:08.995Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1SG1MR2087G0R002WJCCG4",
+    "type": "task",
+    "title": "Cross-domain frame motion transfer on source-owned CHIP-8 carts",
+    "slug": "cross-domain-frame-motion-transfer-on-source-owned-chip-8-ca",
+    "priority": "P2",
+    "filename": "081M1SG1MR2087G0R002WJCCG4-cross-domain-frame-motion-transfer-on-source-owned-chip-8-ca.md"
+  }
+}
