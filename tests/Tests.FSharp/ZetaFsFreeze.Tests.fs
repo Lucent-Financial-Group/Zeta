@@ -2616,6 +2616,36 @@ let ``XOR after reopen is not readable`` () : Task =
     }
 
 [<Fact>]
+let ``XOR of BlockCas payload is not readable`` () : Task =
+    task {
+        ensureHasher ()
+        FileSystem.Register(InMemoryFileSystem())
+        let store = "/hash-verify-blockcas-xor"
+        let mutbuf = ZetaFsMutbuf.create store ZetaFsMutbuf.Coherence.Shared
+        let logDev = SimulatedBlockIo(4096)
+        let objDev = SimulatedBlockIo(4096)
+        let cas = BlockCas(objDev)
+        let volume = ZetaFsFreeze.createManualWithBlockStore store mutbuf None logDev cas
+
+        try
+            let id = mintId ()
+            let h = ZetaFsMutbuf.openHandle volume.Mutbuf id
+            ZetaFsMutbuf.pwrite volume.Mutbuf h 0L [| 1uy; 2uy; 3uy |] |> ignore
+            let pending = (freezeAsync volume id ZetaFsFreeze.Journaled).AsTask()
+            do! (ZetaFsFreeze.pumpLog volume CancellationToken.None).ConfigureAwait(false)
+            let! first = pending.ConfigureAwait(false)
+            match first with
+            | Error e -> Assert.Fail(ZetaFsFreeze.errorName e)
+            | Ok first ->
+                Assert.True(ZetaFsFreeze.isReadable volume first.Content)
+                Assert.True(cas.XorLastPayloadByteAll() > 0)
+                Assert.False(ZetaFsFreeze.isReadable volume first.Content)
+        finally
+            ZetaFsFreeze.dispose volume
+            FileSystem.Reset()
+    }
+
+[<Fact>]
 let ``rolling 1 third freeze must not revive the first generation`` () : Task =
     task {
         ensureHasher ()
