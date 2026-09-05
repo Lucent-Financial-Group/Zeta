@@ -1,8 +1,9 @@
 # Contextual-Grid Curiosity and Transfer Benchmark Contract
 
-**Status:** proposed finite benchmark contract. This document defines what a
-future implementation may measure. It reports **no experiment, no learned
-policy, no transfer result, and no society-level consensus result**.
+**Status:** frozen finite benchmark contract. The merged implementation admits
+only a one-seed, F#–Python-compatible conformance preflight; it reports **no
+100-seed benchmark result, no accepted learned-policy comparison, no transfer
+result, and no society-level consensus result**.
 
 **Owner:** Zeta research and verification layer  
 **Version:** `contextual-grid-curiosity-transfer/v1`  

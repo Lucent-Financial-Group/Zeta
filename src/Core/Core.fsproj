@@ -554,6 +554,7 @@
     <Compile Include="AdinkraClock.fs" />
     <Compile Include="IdentityDLA.fs" />
     <Compile Include="ContextualGridBenchmark.fs" />
+    <Compile Include="ContextualGridResultReceipt.fs" />
 
   </ItemGroup>
 

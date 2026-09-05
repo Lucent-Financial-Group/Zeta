@@ -65,6 +65,8 @@ src/Arc.Python/tests/data/scene-feedback-benchmark.json
 # one-line canonical form.
 docs/research/data/2026-09-05-contextual-grid-v1-manifest.json
 docs/research/data/2026-09-05-contextual-grid-v1-evaluator-catalogue.json
+docs/research/data/2026-09-05-contextual-grid-v1-100-seed-fsharp.json
+docs/research/data/2026-09-05-contextual-grid-v1-100-seed-python.json
 
 # VERBATIM COPIES OF GIT HISTORY. The four pre-fix `Application.yaml` files under
 # `testdata/inert-valuesobject-history/` are byte-for-byte `git show <sha>:<path>`
