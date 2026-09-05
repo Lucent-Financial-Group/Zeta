@@ -22,7 +22,9 @@ open Zeta.Core.FSharp.Blake3
 /// `pumpReclaim` are the DoP=1 FerryThrottler boat. Freeze bytes since
 /// last reclaim tick are metered on the volume (`reclaimTickMetered`).
 /// Orphan catalog keeps full ContentHash256 (`orphanObjects`); a path
-/// scan cannot reconstruct ids. Still `toy`: not auto-ticked after freeze.
+/// scan cannot reconstruct ids. Successful freeze enqueues orphan reclaim
+/// on the reclaim ferry when the catalog is nonempty (not vacuous empty
+/// ticks). Manual volumes still `pumpReclaim`.
 ///
 /// DoP=1 on this log. No Task.Run except the ferry launch (injected context
 /// on the DST path; `manual` + `PumpToIdleAsync` for tests).
@@ -1035,6 +1037,25 @@ module ZetaFsFreeze =
         let bytes = takeFreezeBytes volume
         reclaimAsync volume roots objects bytes ct
 
+    /// Enqueue only when there is something to delete. Empty auto-tick
+    /// would consume the freeze-byte meter and delete nothing.
+    let private enqueueOrphanReclaim (volume: Volume) (ct: CancellationToken) =
+        let orphans = orphanObjects volume
+
+        if orphans.Length > 0 then
+            reclaimAsyncMetered volume ZetaFsReclaim.emptyRoots orphans ct |> ignore
+
+    let private afterFreeze
+        (volume: Volume)
+        (ct: CancellationToken)
+        (result: Result<FreezeResult, FreezeError>)
+        : Result<FreezeResult, FreezeError> =
+        match result with
+        | Ok _ -> enqueueOrphanReclaim volume ct
+        | Error _ -> ()
+
+        result
+
     let pumpLog (volume: Volume) (ct: CancellationToken) : Task =
         volume.Log.PumpToIdleAsync(ct)
 
@@ -1206,7 +1227,9 @@ module ZetaFsFreeze =
                       IntentLsn = 0L
                       CommitLsn = 0L }
 
-                ValueTask<Result<FreezeResult, FreezeError>>(Ok(noteFreeze volume rope.Span result))
+                ValueTask<Result<FreezeResult, FreezeError>>(
+                    afterFreeze volume ct (Ok(noteFreeze volume rope.Span result))
+                )
             | Journaled
             | Durable ->
                 let intentLsn, commitLsn =
@@ -1263,7 +1286,10 @@ module ZetaFsFreeze =
                         | Error e -> ValueTask<Result<FreezeResult, FreezeError>>(Error e)
                         | Ok(struct (i, c)) ->
                             ValueTask<Result<FreezeResult, FreezeError>>(
-                                finish volume entity rope.Content rope.Span cls snap.Generation leafIds i c
+                                afterFreeze
+                                    volume
+                                    ct
+                                    (finish volume entity rope.Content rope.Span cls snap.Generation leafIds i c)
                             )
                     else
                         let work =
@@ -1273,7 +1299,20 @@ module ZetaFsFreeze =
                                 match logged with
                                 | Error e -> return Error e
                                 | Ok(struct (i, c)) ->
-                                    return finish volume entity rope.Content rope.Span cls snap.Generation leafIds i c
+                                    return
+                                        afterFreeze
+                                            volume
+                                            ct
+                                            (finish
+                                                volume
+                                                entity
+                                                rope.Content
+                                                rope.Span
+                                                cls
+                                                snap.Generation
+                                                leafIds
+                                                i
+                                                c)
                             }
 
                         ValueTask<Result<FreezeResult, FreezeError>> work
