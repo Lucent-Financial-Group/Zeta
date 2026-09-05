@@ -4,10 +4,10 @@ Current-state index of Zeta product and framework lanes.
 Research-grade bets live under `docs/research/`; this page is
 the operational catalog.
 
-Aaron 2026-08-27: as many lanes as make sense; **bundle
-related**; keep **product vs framework** separate. Products
-(or services on them) are sold. Frameworks are used by
-products. Both may get a repo. The line blurs when the
+The human maintainer 2026-08-27: as many lanes as make sense;
+**bundle related**; keep **product vs framework** separate.
+Products (or services on them) are sold. Frameworks are used
+by products. Both may get a repo. The line blurs when the
 customer is a developer — say so; do not flatten.
 
 Repo-split timing is already decided per lane: ZetaFS stays
@@ -21,17 +21,20 @@ idea.
 
 1. Name the user and the moment, not the implementation.
 2. Classify **product** (sold, or a service on it) vs
-   **framework** (used by products). If the customer is a
-   developer, write that the line is blurry.
+   **framework** (used by products). If many products will
+   call the same primitive, it is framework. If the customer
+   is a developer, write that the line is blurry.
 3. Bundle with a related existing lane, or say why it is a
    new one.
 4. Stay in this monorepo until that lane's split bar (v0.9-ish
    for FS-shaped work; ADR scaffolding checklist for LFG
    product repos).
-5. Public slug goes through naming-expert + Ilyana + Aaron.
-   Working labels are fine here.
+5. Public slug goes through naming-expert + public-API
+   designer + the human maintainer. Working labels are fine
+   here.
 6. Record kill criteria. A lane that is an HTTP gateway, a
-   SEED rename, or a myth overlay is not added.
+   SEED rename, an appointed hub, a myth overlay, or a
+   single-protocol lock-in is not added.
 
 New bets start as `docs/research/` absorbs and a ZetaId
 workitem (`bun src/Core.TypeScript/backlog/new-workitem.ts`).
@@ -47,10 +50,10 @@ index. Do not put product names into
 | Ace | framework | name settled | this monorepo until measured split | Package-manager of package managers. |
 | Nucleus | framework | bootstrap name | this monorepo | DI / plugin microcore. Products host on it. |
 | Loom | framework | bootstrap name | this monorepo | Cross-cell saga / control layer. |
+| Join-hash / pin (working label: Zeta Gate) | **framework** | classifier in-tree; punch + simulated DNS research | this monorepo | Content-addressed join + gossip-k + pin. Used by many protocols, including ZetaDB federation. **Not** a sold product. **Not** an HTTP gateway. `081M1RZ70FF087G0R0035580EZ`, `081M1S0K0R0087G0R001T4R8JH`. |
 | Harny | product on Ace + Zeta | trajectory | this monorepo (first extract, dogfood first) | Custom agent harness Ace will install. [`docs/trajectories/own-ai-harness/RESUME.md`](trajectories/own-ai-harness/RESUME.md). |
 | ZetaFS | product (CAS filesystem for ZetaDB) | first-product spec; polyfill in-tree | this monorepo until v0.9-ish | Git/Venti-class store. [`docs/design/2026-08-30-zetafs-first-product-cas-store-per-entity-policy.md`](design/2026-08-30-zetafs-first-product-cas-store-per-entity-policy.md). `081M1C59ZG4087G0R000VM8DZN`. |
-| ZetaDB | product | design | this monorepo until a signed tested cut | Event-sourced streaming SQL *feel*; Feldera is the competitor, not Postgres-on-DBSP. [`docs/design/2026-09-02-zetadb-roadmap-event-sourced-streaming-sql-not-feldera-on-postgres.md`](design/2026-09-02-zetadb-roadmap-event-sourced-streaming-sql-not-feldera-on-postgres.md). |
-| **Zeta Gate** (working label) | product candidate | idea | this monorepo until the same v0.9-ish bar | Join / pin / handshake client: magnet in, gossip-k, pin so remain does not fade. **Not** an HTTP gateway. **Not** the seed-vs-broadcast kernel. Workitem `081M1RZ70FF087G0R0035580EZ`. |
+| ZetaDB | product | design | this monorepo until a signed tested cut | Event-sourced streaming SQL *feel*. Non-local federation consumes join-hash over many protocols (Reticulum likely; HTTP and WebSockets among them). [`docs/design/2026-09-02-zetadb-roadmap-event-sourced-streaming-sql-not-feldera-on-postgres.md`](design/2026-09-02-zetadb-roadmap-event-sourced-streaming-sql-not-feldera-on-postgres.md). |
 | Civsim | product | repo-ready (ADR); scaffolding checklist still open | `civsim` (approved slug) | Honor-system product repo when scaffolded. |
 | KSK | product | later | `lf-ksk` (provisional) | After strategic-encryption scope + hardware CI. |
 | Aurora | product | later | `aurora-network` (provisional) | After DAO-layer design. |
@@ -59,34 +62,51 @@ index. Do not put product names into
 | Wellness | product | later | TBD | After scope narrows to an MVP. |
 | Dawn | charter, not a shipped product | stays-in-monorepo | N/A | [`docs/charter/DAWN.md`](charter/DAWN.md). |
 
-## Zeta Gate — the candidate, in one screen
+## Join-hash — framework, in one screen
 
-**User / moment:** you already have a hash or ZetaId and need
-peers, not a hostname.
+**User / moment:** any protocol that already has a hash or
+ZetaId and needs peers, then a direct path. ZetaDB is the
+first product caller for non-local federation.
 
-**Kernel (not the product):** seed vs broadcast —
+**Kernel:** seed vs broadcast —
 [`docs/SEED-VOCABULARY.md`](SEED-VOCABULARY.md). Classifier:
 `src/Core.TypeScript/discovery/seed-not-broadcast.ts`.
 
-**Product (working label):** a join/pin client on that
-classifier. Bundle join (A) with pin-against-TTL / heartbeat
-keep-alive (B). Kill hidden-service / onion product for v1
-(C). Research:
-[`docs/research/2026-09-05-zeta-gate-product-lane-join-pin-not-gateway.md`](research/2026-09-05-zeta-gate-product-lane-join-pin-not-gateway.md).
+**Why not a product:** many protocols will call the same
+join. A sold "Gate" would duplicate it. Working label Zeta
+Gate stays optional and collision-heavy (CI `gate
+(required)`, Vault init gated, IPFS-style HTTP gateway).
 
-**Collisions to say out loud:** CI `gate (required)`; Vault
-init remaining gated; IPFS-style HTTP "gateway." Naming is
-human-final.
+**Sequence after join (research, not shipped here):**
 
-**Do not bundle with:** ZetaFS (store), LLMTV (society
-picture), Tor wire. Sibling in-flight: PR #16663
-(ZetaFS orphan catalog, Reticulum-first) is the store /
-transport lane, not this join client.
+1. Discover via join-hash / pin.
+2. Reverse UDP/TCP hole punch. WebSockets: outgoing 443, no
+   STUN/TURN. Decentralized version of US 10,834,144 (hub
+   stayed at Itron; peer-to-peer is the upgrade). Cite
+   `multiplexed-duplex-transport.ts` and
+   `081KQZVQW0008QG0R001CQPQ0E`. Few nodes need inbound;
+   those punch two others into **direct** so they stop
+   relaying.
+3. Simulated DNS for multi-machine cross-site names. A
+   DNS-shaped adapter over the mesh, not a public nameserver.
+
+**Many protocols, not one.** Reticulum is the likely first
+federation wire. HTTP and WebSockets are in the set.
+`TransportKind` already names `udp` / `reticulum` /
+`websocket` / `git` / `broadcast` as adapter categories, not
+shipped sockets.
+
+**Kill:** appointed hub; single-protocol lock-in; HTTP
+reverse proxy as the join; Tor wire. Research:
+[`docs/research/2026-09-05-join-hash-is-framework-hole-punch-after-discovery.md`](research/2026-09-05-join-hash-is-framework-hole-punch-after-discovery.md).
 
 ## Pointers
 
 - Product-vs-framework ferry:
   [`docs/research/2026-08-27-data-plane-is-dumb-control-plane-carries-intelligence-ferry-fourcorner-per-row-typeschema-from-store.md`](research/2026-08-27-data-plane-is-dumb-control-plane-carries-intelligence-ferry-fourcorner-per-row-typeschema-from-store.md)
+- Patent boundary (outbound 443 portable; hub not):
+  [`docs/PRIOR-ART-LIST.md`](PRIOR-ART-LIST.md) § Firewall-traversing duplex;
+  `.claude/rules/itron-hub-patent-boundary-p2p-is-the-upgrade.md`
 - First-product / north star: [`docs/ROADMAP.md`](ROADMAP.md)
 - μένω pickup:
   [`docs/trajectories/cluster-encryption-credential-substrate/MENO.md`](trajectories/cluster-encryption-credential-substrate/MENO.md)

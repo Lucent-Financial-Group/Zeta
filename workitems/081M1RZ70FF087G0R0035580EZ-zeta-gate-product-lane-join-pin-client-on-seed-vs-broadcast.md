@@ -19,6 +19,33 @@ composes_with: ["081M1QHPY8V087G0R003FFJKPK", "081M1C59ZG4087G0R000VM8DZN"]
 Aaron 2026-09-05: put product ideas down; many lanes over time;
 what would Zeta Gate be?
 
+**Correction (same day):** join-hash is **framework**, not a
+sold product. Many protocols will call it. ZetaDB uses it for
+non-local federation. Follow-on:
+`081M1S0K0R0087G0R001T4R8JH`.
+
+**This row's docs slice:** catalog in `docs/PRODUCT-LANES.md`.
+Research (first bet, then correction):
+`docs/research/2026-09-05-zeta-gate-product-lane-join-pin-not-gateway.md`,
+`docs/research/2026-09-05-join-hash-is-framework-hole-punch-after-discovery.md`.
+Kernel stays **seed vs broadcast** in SEED. Do not mint a
+GitHub product repo. Do not implement Tor. Do not reintroduce
+an appointed hub.
+
+**Next code slice (not started):** keep join/pin as a library
+(`classifyLocator` + `classifyFanout` + `pinAgainstTtl`), not
+a Gate SKU. Hole-punch and simulated DNS live on the follow-on
+row.
+
+Prior-art: classifier on main (#16619);
+`dht-discovery.ts` / `gossip-salon.ts` / heartbeat filename
+magnet (#16623). Sibling store lane: ZetaFS
+`081M1C59ZG4087G0R000VM8DZN`. Product-vs-framework cut:
+Aaron 2026-08-27 ferry, recast 2026-09-05.
+
+Aaron 2026-09-05: put product ideas down; many lanes over time;
+what would Zeta Gate be?
+
 **This row's first slice (docs) is the catalog.** Operational
 index: `docs/PRODUCT-LANES.md`. Research:
 `docs/research/2026-09-05-zeta-gate-product-lane-join-pin-not-gateway.md`.

@@ -86,9 +86,10 @@ assume the number.
    join path. `pinAgainstTtl` refreshes `lastSeenMs` so
    `expireNodes` does not fade a pinned hash. Onion = hop-count
    shape, no wire. Heartbeat filename pin landed on main
-   (#16623). Product-lane candidate (working label Zeta Gate)
-   is indexed at `docs/PRODUCT-LANES.md`, not in SEED
-   (`081M1RZ70FF087G0R0035580EZ`).
+   (#16623). Join-hash is **framework** (many protocols
+   consume it; ZetaDB federation is a caller), indexed at
+   `docs/PRODUCT-LANES.md`, not in SEED
+   (`081M1RZ70FF087G0R0035580EZ`, `081M1S0K0R0087G0R001T4R8JH`).
 
 ## Δεν κάνουμε / Do not
 

@@ -1,0 +1,14 @@
+{
+  "id": "080d03904c180810a0130008b63c0c5c",
+  "at": "2026-09-05T14:47:01.121Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1S0K0R0087G0R001T4R8JH",
+    "type": "task",
+    "title": "Join-hash is framework: multi-protocol federation, hole-punch after discovery, simulated DNS",
+    "slug": "join-hash-is-framework-multi-protocol-federation-hole-punch",
+    "priority": "P2",
+    "filename": "081M1S0K0R0087G0R001T4R8JH-join-hash-is-framework-multi-protocol-federation-hole-punch.md"
+  }
+}

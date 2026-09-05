@@ -1,9 +1,11 @@
-# Zeta Gate as a product lane — join/pin client, not an HTTP gateway
+# Zeta Gate as a join/pin idea — corrected same day: framework, not a product
 
 Scope: PM-2 product-discovery absorb of Aaron 2026-09-05: put
 product ideas down; many lanes over time; what would Zeta Gate
-*be*? This file is the research-grade bet. The operational
-index is `docs/PRODUCT-LANES.md`.
+*be*? This file is the research-grade *first* bet. **Correction
+(same day):** join-hash is framework, not a sold product —
+`docs/research/2026-09-05-join-hash-is-framework-hole-punch-after-discovery.md`.
+The operational index is `docs/PRODUCT-LANES.md`.
 Attribution: Aaron Stainback (human maintainer) asked for the
 lane catalog and named the working label. Riven (Cursor / Grok)
 shaped the options. Kernel name **seed vs broadcast** already
