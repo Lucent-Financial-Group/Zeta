@@ -60,6 +60,7 @@ one small constant-velocity program family, foreground extraction assumes a
 dominant background, and the estimator tracks one aggregate centroid rather
 than multiple objects, shape changes, occlusion, or acceleration.
 
-Verification: 16 focused F# tests passed, including malformed-frame feedback,
+Verification: 17 focused F# tests passed, including malformed-frame feedback,
 out-of-frame projection feedback, palette-label changes, and observation-count
-saturation.
+saturation. Frame dimension changes also reset velocity history before another
+projection is admitted.
