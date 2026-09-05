@@ -410,7 +410,7 @@ the exactness question, the "does coordinated retraction always widen or only
 sometimes" question, and the `MAX_MULTIPLICITY = 1024` clamp's effect on
 order-independence are **routed to the math team rather than asserted here**.
 
-## Chirality — Finster ASSUMES it; Aaron says ours falls out. The distinction that decides it.
+## Chirality — Finster ASSUMES it; Aaron says ours falls out. The distinction that decides it
 
 Aaron, 2026-09-05, forwarding the chirality and baryogenesis segment:
 
