@@ -1,0 +1,12 @@
+{
+  "pr_number": 16702,
+  "archive_path": "docs/history/pr-reviews/PR-16702-feat-081m1sk0nxf087g0r002n0dcm0-isreadable-re-hashes-stored-leaf-bytes.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-05T20:31:00.715Z",
+  "schema_version": "v1",
+  "commit_sha": "e02320ddbfc837c5fe6012198f72fb85a83820a8",
+  "title": "feat(081M1SK0NXF087G0R002N0DCM0): isReadable re-hashes stored leaf bytes",
+  "state": "MERGED",
+  "merged_at": "2026-09-05T20:30:20Z",
+  "head_ref": "feat/zetafs-hash-verify-readable"
+}
