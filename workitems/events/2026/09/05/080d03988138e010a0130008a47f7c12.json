@@ -1,0 +1,14 @@
+{
+  "id": "080d03988138e010a0130008a47f7c12",
+  "at": "2026-09-05T19:33:53.564Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1SH09RV087G0R002XD893C",
+    "type": "bug",
+    "title": "zeta-orleans-silo provenance acknowledgement is stale: latest went 401 to 200",
+    "slug": "zeta-orleans-silo-provenance-acknowledgement-is-stale-latest",
+    "priority": "P2",
+    "filename": "081M1SH09RV087G0R002XD893C-zeta-orleans-silo-provenance-acknowledgement-is-stale-latest.md"
+  }
+}
