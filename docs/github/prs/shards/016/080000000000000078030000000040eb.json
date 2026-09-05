@@ -1,0 +1,12 @@
+{
+  "pr_number": 16619,
+  "archive_path": "docs/history/pr-reviews/PR-16619-remain-vs-act-unsealer-loop-seed-vs-broadcast-classifier.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-05T02:12:27.705Z",
+  "schema_version": "v1",
+  "commit_sha": "26b627b6c8d60ab5cc3cebbd697d87d374d4bda5",
+  "title": "μένω remain vs act; unsealer loop; seed vs broadcast classifier",
+  "state": "MERGED",
+  "merged_at": "2026-09-05T02:11:48Z",
+  "head_ref": "cursor/meno-unseal-loop-27c5"
+}
