@@ -1,11 +1,12 @@
 ---
 id: 081M1SG1MR2087G0R002WJCCG4
 type: task
-state: in-progress
+state: done
 priority: P2
 slug: cross-domain-frame-motion-transfer-on-source-owned-chip-8-ca
 title: "Cross-domain frame motion transfer on source-owned CHIP-8 carts"
 created: 2026-09-05T19:17:08.994Z
+completed: 2026-09-05T19:51:42.861Z
 depends_on: []
 composes_with: []
 ---

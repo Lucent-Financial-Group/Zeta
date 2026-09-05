@@ -32,4 +32,21 @@ feedback. The report records pairwise score/action deltas plus deterministic
 policy-work receipts and explicitly sampled runtime measurements. The hosted
 workflow renders the versioned report and rejects an empty or wholly failed
 roster. Source-owned tests cover all three arms without credentials or network
-access. A hosted run remains required before making any ARC performance claim.
+access.
+
+The first hosted run completed successfully on 2026-09-05:
+<https://github.com/Lucent-Financial-Group/Zeta/actions/runs/33987454478>.
+All three arms played the same 26-environment roster. Centroid, observed scene
+feedback, and predicted scene feedback each cleared 4 levels. Mean environment
+scores were 0.0136, 0.0147, and 0.0147 respectively. Thus scene feedback beat
+the centroid control by 0.0011 in this run, while one-step prediction added no
+score over observed feedback.
+
+The two scene policies each made 1,040 decisions and received 8,519,680 cells,
+versus 1,447 decisions and 11,853,824 cells for centroid. Predicted feedback
+retained 207,916 canonical JSON bytes across decisions with a 16,003-byte peak;
+observed feedback retained 207,864 bytes with a 16,001-byte peak. Prediction
+therefore added 52 cumulative retained bytes and 2 peak bytes without measured
+quality gain. The single-process runtime samples are not confidence intervals,
+and the 200-action ceiling makes these scores unsuitable for leaderboard
+comparison.
