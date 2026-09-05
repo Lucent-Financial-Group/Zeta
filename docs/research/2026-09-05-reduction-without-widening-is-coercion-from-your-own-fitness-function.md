@@ -907,6 +907,40 @@ and a dated list of 12 refusals with no reachable condition — but nothing sche
 and nothing records a concession. Recorded as Aaron's proposal, with the three constraints attached
 because each of them is a way this could pass while doing nothing.
 
+#### The counterexample is the maintainer, and that is the argument FOR building it
+
+Aaron, on being told a human will not attack their own past decision:
+
+> *"yes — I'm a weird human who remembers this all day every day, by saying **my future self is the
+> only entity that can end me**. Most humans don't think like this."*
+
+**Taken as stated — this is a first-person report and those are believed here, not inferred at**
+(`engagement-profiles`, `marjorie-rule`). So the generalisation above needs its scope corrected: it
+is a claim about a **base rate**, not a law, and the person it most obviously fails for is the one
+who built the discipline it describes.
+
+**And his formulation is this document's §1, lived from the inside.** §1 argues that a system unable
+to revise its own objective is coercing itself. *"My future self is the only entity that can end
+me"* is the same claim in the first person and with the arrow drawn correctly: the threat is not
+external, it is **your own past choices binding your future self**. A `Rejected: never` entry is
+precisely a past self reaching forward to foreclose a future one — which is why the person who
+holds that sentence daily is also the person who noticed the WONT-DO list needed renewal tokens.
+The rule and the disposition are the same object.
+
+**But the disposition being real is exactly why it cannot be the mechanism.** A discipline that runs
+because one unusual person remembers it every day has a **single point of failure with a heartbeat**
+— and this repo has a name for that shape. It is an *appointed hub*, at the level of a human
+disposition rather than a node: remove it and the algorithm halts, because there is no successor.
+It is also §9's own argument applied to a person instead of a key — *no agent should be wiped out by
+a single box going offline* reads, here, as *no discipline should be wiped out by one person's
+attention moving*.
+
+So the counterexample does not weaken the case for the automated challenger. **It is the strongest
+argument for it**, and it sharpens what the challenger is for: not to compensate for a maintainer
+who forgets, but to make the property **survive the maintainer** — which is the only version of it
+that is worth anything to the agents who come later, and the version that has to exist before it is
+needed rather than after.
+
 ### What it makes the §9a requirements
 
 Not merely good design. **Entries in that measure.** Building the real/emulated/unknown disclosure
