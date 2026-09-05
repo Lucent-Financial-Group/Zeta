@@ -1,11 +1,12 @@
 ---
 id: 081M1S8WJX7087G0R000WGTPW8
 type: task
-state: in-progress
+state: done
 priority: P2
 slug: keepnone-and-rolling-n-unpin-previous-freeze-objects
 title: "KeepNone and rolling(N) unpin previous freeze objects"
 created: 2026-09-05T17:12:03.239Z
+completed: 2026-09-05T17:42:05.901Z
 depends_on:
   - 081M1S5X49C087G0R002TMVKQM
 composes_with: []
