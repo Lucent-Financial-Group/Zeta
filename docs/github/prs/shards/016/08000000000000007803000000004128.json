@@ -1,0 +1,12 @@
+{
+  "pr_number": 16680,
+  "archive_path": "docs/history/pr-reviews/PR-16680-feat-081m1s5x49c087g0r002tmvkqm-blockcas-delete-is-the-default-reclaim-door.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-05T17:08:08.181Z",
+  "schema_version": "v1",
+  "commit_sha": "5515c10bed464409621af022732890c84304303b",
+  "title": "feat(081M1S5X49C087G0R002TMVKQM): BlockCas.Delete is the default reclaim door",
+  "state": "MERGED",
+  "merged_at": "2026-09-05T17:07:24Z",
+  "head_ref": "feat/zetafs-blockcas-orphan-reclaim"
+}
