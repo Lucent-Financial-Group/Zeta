@@ -103,7 +103,7 @@ wrong: **the runner set has never been synced anywhere**, so the missing PVC has
 never blocked a pod.
 
 - Metal: the k8s layer has never been reconciled.
-  `full-ai-cluster/k8s/applications/vault/TOPOLOGY.md`
+  `full-ai-cluster/k8s/applications/openbao/TOPOLOGY.md`
   is categorical — *"Nothing has been applied to any cluster."* (NixOS itself did
   provision four physical nodes in June 2026; the layer above them did not come up.)
 - CI: `argocd-health-test.ts` excludes `arc-runner-set` from the kind lane

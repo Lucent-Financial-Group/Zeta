@@ -62,7 +62,7 @@ Two reasons, and the second is the harder one:
 2. The CronJob needs a **Namecheap DDNS credential**. This repo cannot mint one,
    and the secret machinery it would hang off (external-secrets ← Vault) is
    itself unavailable: Vault "has never been initialised on metal"
-   (`full-ai-cluster/k8s/applications/vault/TOPOLOGY.md` §2). Writing the Application without
+   (`full-ai-cluster/k8s/applications/openbao/TOPOLOGY.md` §2). Writing the Application without
    naming that dependency would produce an app that syncs and then fails at
    runtime -- a different flavour of the same "looks deployed" defect.
 
