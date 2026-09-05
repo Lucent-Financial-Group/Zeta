@@ -69,6 +69,13 @@
     # whose loss would be unrecoverable. Mode "prereqs" is the safe rung and is
     # the whole of what the installer can pre-stage.
     ./tpm2-seal-prereqs.nix
+    # 2026-09-05: host-seal profile (developer FIDO/biometric vs prod-metal
+    # automatic HSM/TPM rotation). Default `zeta.hostSeal.boxRole = "undeclared"`
+    # is a no-op — no pcscd, no udev, no packages — so this import leaves every
+    # host byte-for-byte unchanged. Do not set `prod-metal` on control-plane
+    # from a Kubernetes label; measure hardware, then declare the role.
+    # CI is not a NixOS host role.
+    ./host-seal-profile.nix
     # 081KZETP6AT: FHS loader (nix-ld) for foreign dynamically-linked ELFs — mise's
     # prebuilt toolchains and the vendor agent CLIs. Needed on INSTALLED nodes too,
     # not only on the ISO: the lazy first-login `mise install` recovery in this file
