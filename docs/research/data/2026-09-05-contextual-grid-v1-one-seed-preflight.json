@@ -1,0 +1,62 @@
+{
+  "configuration": {
+    "actionCap": 250,
+    "episodes": 1000,
+    "seed": "42"
+  },
+  "environmentFingerprint": "389fca213b59a18f9afe32640a0cefffc32c7423e155dd7fc866e8b4ed3e6338",
+  "evaluatorCatalogueFingerprint": "bedd7617e115d7d4a718edd2d5906bfb945a5b7ddbf385a50b17ae279d6b916c",
+  "notMeasured": [
+    "100-seed primary statistic",
+    "bootstrap interval",
+    "baseline superiority",
+    "transfer generalization",
+    "multi-agent outcome",
+    "society consensus"
+  ],
+  "receiptVersion": "zeta.contextual-grid/preflight-v1",
+  "runs": [
+    {
+      "evaluationTraceDigest": "c40a39f29210d53161a00adba6c7f3f7ba7b8db7a81a5b53d31a65c971d86418",
+      "heldOutReturnPpm": -10000000,
+      "policy": "uniform-random/v1",
+      "qDigestBeforeEvaluation": "8af595496b029d499be156fead16d7f6d38fe6ac618828507d2a5b8a16e70dd6",
+      "streamDraws": 90137,
+      "trainingTraceDigest": "ad6c7aa7ab7136c80b4322e9f152ea6b7c0a5cbcc31c23dc703a16598e1f125d",
+      "trainingUniqueStateActions": 96,
+      "trainingUniqueStates": 25
+    },
+    {
+      "evaluationTraceDigest": "a36aad3d8758747350678225543e6ba06139acb5528d187834168b5d1f630cf3",
+      "heldOutReturnPpm": -10000000,
+      "policy": "q-epsilon/v1",
+      "qDigestBeforeEvaluation": "a1c0981caa93fe4fc615fefae1666a2a01df0a2b969fa1ff564a1dca499a84f2",
+      "streamDraws": 15572,
+      "trainingTraceDigest": "fcfea05aab290161200b4db6737227ec5b0f5b05f14c51bbfcab34e1efb763c2",
+      "trainingUniqueStateActions": 95,
+      "trainingUniqueStates": 25
+    },
+    {
+      "evaluationTraceDigest": "962797deb33f967489a9a84081fcf97f48861a645620d162ed712bcbcf28bb64",
+      "heldOutReturnPpm": -10000000,
+      "policy": "q-ucb/v1",
+      "qDigestBeforeEvaluation": "ca184fb1ed6994d3f091b8a52b2476739916bd7860e8f5b337c5da4182e9b2b1",
+      "streamDraws": 12948,
+      "trainingTraceDigest": "b1cdae22b5a7078b08ea5b48e14a3b195722399e82f938734c13aeac798fe2dc",
+      "trainingUniqueStateActions": 96,
+      "trainingUniqueStates": 25
+    },
+    {
+      "evaluationTraceDigest": "7455ac109e7c253962d3deba0f17fb32192cd70d314cf2f4688cf54fe40fc73a",
+      "heldOutReturnPpm": -10000000,
+      "policy": "count-first/v1",
+      "qDigestBeforeEvaluation": "e65d2b17145584a26197b36f44699abd2ee2078037485ce68669e71a5feab49d",
+      "streamDraws": 93626,
+      "trainingTraceDigest": "1204644133517f0c6853f24d199dcd3510fece5ab1e6d3ee47ae0487691c6741",
+      "trainingUniqueStateActions": 96,
+      "trainingUniqueStates": 25
+    }
+  ],
+  "status": "compatible-conformance-only",
+  "summary": "F# and independently authored Python emitted byte-identical full-budget summaries for all four declared policies at seed 42. Every policy received the 250-step nonterminal held-out return; this is a negative one-seed observation, not a comparison score."
+}

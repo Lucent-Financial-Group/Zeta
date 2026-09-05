@@ -58,6 +58,14 @@ src/apps/twitch-ai/src/recordings/arc-coordinate-calibration.json
 src/Arc.Python/tests/data/scene-prior-benchmark.json
 src/Arc.Python/tests/data/scene-feedback-benchmark.json
 
+# Contextual-grid benchmark carriers: the runner and independently authored
+# Python oracle admit these tiny JSON files by SHA-256 of their exact UTF-8 bytes.
+# Prettier would substitute presentation bytes for benchmark identity and make
+# an equivalent-looking manifest fail closed, so the signed carrier owns its
+# one-line canonical form.
+docs/research/data/2026-09-05-contextual-grid-v1-manifest.json
+docs/research/data/2026-09-05-contextual-grid-v1-evaluator-catalogue.json
+
 # VERBATIM COPIES OF GIT HISTORY. The four pre-fix `Application.yaml` files under
 # `testdata/inert-valuesobject-history/` are byte-for-byte `git show <sha>:<path>`
 # output, and `inert-valuesobject-keys.test.ts` re-verifies them against those very
