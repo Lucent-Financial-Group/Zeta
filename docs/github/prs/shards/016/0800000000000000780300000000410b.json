@@ -1,0 +1,12 @@
+{
+  "pr_number": 16651,
+  "archive_path": "docs/history/pr-reviews/PR-16651-deps-bump-typescript-from-6-0-3-to-7-0-2-in-src-apps-twitch-ai.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-05T08:48:18.126Z",
+  "schema_version": "v1",
+  "commit_sha": "38ef885b36faa5adfbfb240e2b4fd9dc4d568bb6",
+  "title": "deps: bump typescript from 6.0.3 to 7.0.2 in /src/apps/twitch-ai",
+  "state": "MERGED",
+  "merged_at": "2026-09-05T08:47:44Z",
+  "head_ref": "dependabot/npm_and_yarn/src/apps/twitch-ai/typescript-7.0.2"
+}
