@@ -34,6 +34,7 @@ that layer would sit on.
 
 from __future__ import annotations
 
+from abc import abstractmethod
 from dataclasses import dataclass, field
 from math import isfinite
 from typing import Protocol
@@ -83,9 +84,13 @@ class CoordinateDecision:
 class CoordinatePolicy(Protocol):
     """Hexagonal coordinate-action port used by the layer router."""
 
-    def observe(self, grid: Grid) -> None: ...
+    @abstractmethod
+    def observe(self, grid: Grid) -> None:
+        """Accept the frame produced by the previous coordinate action."""
 
-    def choose(self, grid: Grid) -> tuple[int, int]: ...
+    @abstractmethod
+    def choose(self, grid: Grid) -> tuple[int, int]:
+        """Choose one coordinate from the current grid."""
 
 
 def _signature(grid: Grid) -> tuple[int, ...]:
