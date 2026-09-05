@@ -12,9 +12,27 @@ import json
 import os
 import unicodedata
 from collections.abc import Mapping
+from dataclasses import dataclass, field
 from typing import Final
 
-import ijson
+import ijson  # type: ignore[import-untyped]
+
+
+@dataclass
+class _OracleState:
+    """Typed accumulator for the event-stream pass.
+
+    Replaces the previous `dict[str, object]` scratch map so mypy can prove
+    every field's type instead of narrowing `object` at each use site.
+    """
+
+    example_count: int = 0
+    command_count: int = 0
+    command_form_count: int = 0
+    resolved_form_count: int = 0
+    resolved_seed_ids: set[str] = field(default_factory=set)
+    unresolved_forms: set[str] = field(default_factory=set)
+
 
 ORACLE_ALGORITHM: Final = "gscan-lexical-preflight-oracle/v1-event-stream"
 PARSER: Final = "ijson-3.5.1"
@@ -86,20 +104,20 @@ def _read_seed(path: str) -> tuple[str, dict[str, str]]:
 
 
 def _apply_command(
-    command: str, accepted: Mapping[str, str], state: dict[str, object]
+    command: str, accepted: Mapping[str, str], state: _OracleState
 ) -> None:
     forms = [_normalize(part) for part in command.split(",")]
     forms = [form for form in forms if form]
     if not forms:
         raise ValueError("GSCAN-COMMAND-EMPTY")
-    state["command_form_count"] = int(state["command_form_count"]) + len(forms)
+    state.command_form_count += len(forms)
     for form in forms:
         identifier = accepted.get(form)
         if identifier is None:
-            state["unresolved_forms"].add(form)  # type: ignore[union-attr]
+            state.unresolved_forms.add(form)
         else:
-            state["resolved_form_count"] = int(state["resolved_form_count"]) + 1
-            state["resolved_seed_ids"].add(identifier)  # type: ignore[union-attr]
+            state.resolved_form_count += 1
+            state.resolved_seed_ids.add(identifier)
 
 
 def inspect_gscan_lexical_preflight_oracle(
@@ -139,31 +157,24 @@ def inspect_gscan_lexical_preflight_oracle(
 
     example_prefix = f"examples.{split_name}.item"
     command_prefix = f"{example_prefix}.command"
-    state: dict[str, object] = {
-        "example_count": 0,
-        "command_count": 0,
-        "command_form_count": 0,
-        "resolved_form_count": 0,
-        "resolved_seed_ids": set(),
-        "unresolved_forms": set(),
-    }
+    state = _OracleState()
     try:
         with open(dataset_path, "rb") as source:
             for prefix, event, value in ijson.parse(source):
                 if prefix == example_prefix and event == "start_map":
-                    state["example_count"] = int(state["example_count"]) + 1
+                    state.example_count += 1
                 elif prefix == command_prefix:
                     if event != "string" or not isinstance(value, str):
                         raise TypeError(
-                            f"GSCAN-DATASET-COMMAND-SCHEMA:{state['command_count']}"
+                            f"GSCAN-DATASET-COMMAND-SCHEMA:{state.command_count}"
                         )
-                    state["command_count"] = int(state["command_count"]) + 1
+                    state.command_count += 1
                     _apply_command(value, accepted, state)
     except (OSError, TypeError, ValueError, ijson.JSONError) as error:
         return {**base, "status": "malformed-dataset", "reason": str(error)}
 
-    example_count = int(state["example_count"])
-    command_count = int(state["command_count"])
+    example_count = state.example_count
+    command_count = state.command_count
     if example_count == 0:
         return {
             **base,
@@ -177,18 +188,18 @@ def inspect_gscan_lexical_preflight_oracle(
             "reason": f"GSCAN-DATASET-COMMAND-COUNT:{command_count}-OF-{example_count}",
         }
 
-    command_form_count = int(state["command_form_count"])
-    resolved_form_count = int(state["resolved_form_count"])
+    command_form_count = state.command_form_count
+    resolved_form_count = state.resolved_form_count
     return {
         **base,
         "status": "preflight-lexically-covered"
-        if not state["unresolved_forms"]
+        if not state.unresolved_forms
         else "preflight-unresolved",
         "seed_version": seed_version,
         "example_count": example_count,
         "command_form_count": command_form_count,
         "resolved_form_count": resolved_form_count,
         "unresolved_form_count": command_form_count - resolved_form_count,
-        "resolved_seed_ids": sorted(state["resolved_seed_ids"]),
-        "unresolved_forms": sorted(state["unresolved_forms"]),
+        "resolved_seed_ids": sorted(state.resolved_seed_ids),
+        "unresolved_forms": sorted(state.unresolved_forms),
     }

@@ -9,38 +9,40 @@ from pathlib import Path
 from zeta.gscan_lexical_preflight import inspect_gscan_lexical_preflight
 from zeta.gscan_lexical_preflight_oracle import inspect_gscan_lexical_preflight_oracle
 
-SEED = {
+SEED_ENTRIES: list[dict[str, object]] = [
+    {
+        "id": "big",
+        "exponent": "big",
+        "category": "descriptor",
+        "allolexes": [],
+        "valencyFrames": [],
+    },
+    {
+        "id": "small",
+        "exponent": "small",
+        "category": "descriptor",
+        "allolexes": [],
+        "valencyFrames": [],
+    },
+    {
+        "id": "walk",
+        "exponent": "walk",
+        "category": "action",
+        "allolexes": [],
+        "valencyFrames": [],
+    },
+    {
+        "id": "spinning",
+        "exponent": "while spinning",
+        "category": "adverb",
+        "allolexes": [],
+        "valencyFrames": [],
+    },
+]
+
+SEED: dict[str, object] = {
     "version": "fixture-v1",
-    "entries": [
-        {
-            "id": "big",
-            "exponent": "big",
-            "category": "descriptor",
-            "allolexes": [],
-            "valencyFrames": [],
-        },
-        {
-            "id": "small",
-            "exponent": "small",
-            "category": "descriptor",
-            "allolexes": [],
-            "valencyFrames": [],
-        },
-        {
-            "id": "walk",
-            "exponent": "walk",
-            "category": "action",
-            "allolexes": [],
-            "valencyFrames": [],
-        },
-        {
-            "id": "spinning",
-            "exponent": "while spinning",
-            "category": "adverb",
-            "allolexes": [],
-            "valencyFrames": [],
-        },
-    ],
+    "entries": SEED_ENTRIES,
 }
 
 
@@ -109,7 +111,7 @@ def test_independent_oracle_retains_the_seed_removal_mutation(tmp_path: Path) ->
         seed_path,
         {
             **SEED,
-            "entries": [entry for entry in SEED["entries"] if entry["id"] != "walk"],
+            "entries": [entry for entry in SEED_ENTRIES if entry["id"] != "walk"],
         },
     )
     oracle = inspect_gscan_lexical_preflight_oracle(
@@ -150,7 +152,7 @@ def test_seed_entry_removal_changes_the_admission_receipt(tmp_path: Path) -> Non
         ["walk,big"],
         {
             **SEED,
-            "entries": [entry for entry in SEED["entries"] if entry["id"] != "walk"],
+            "entries": [entry for entry in SEED_ENTRIES if entry["id"] != "walk"],
         },
     )
     assert baseline["status"] == "preflight-lexically-covered"

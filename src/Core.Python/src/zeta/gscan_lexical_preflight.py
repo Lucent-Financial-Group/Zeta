@@ -14,7 +14,7 @@ import unicodedata
 from collections.abc import Mapping
 from typing import BinaryIO, Final
 
-import ijson
+import ijson  # type: ignore[import-untyped]
 
 ALGORITHM: Final = "gscan-lexical-preflight/v2-streaming"
 PARSER: Final = "ijson-3.5.1"
