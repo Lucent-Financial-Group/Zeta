@@ -1,0 +1,12 @@
+{
+  "pr_number": 16699,
+  "archive_path": "docs/history/pr-reviews/PR-16699-feat-arc-test-frame-motion-transfer-on-chip-8.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-05T20:27:25.324Z",
+  "schema_version": "v1",
+  "commit_sha": "285cb7b1b0edf7d90c564d4d0f0758a991847775",
+  "title": "feat(arc): test frame-motion transfer on CHIP-8",
+  "state": "MERGED",
+  "merged_at": "2026-09-05T20:26:44Z",
+  "head_ref": "codex/chip8-frame-motion-transfer"
+}
