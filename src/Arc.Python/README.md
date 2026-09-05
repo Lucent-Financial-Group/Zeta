@@ -61,11 +61,18 @@ doc's own warning, kept.
   coarse place fingerprints, occupancy, object boundaries, recoloring, shape
   change, split/merge, appearance/disappearance, and constant-velocity motion.
   It emits normalized coordinate candidates plus immutable Beta outcome
-  evidence scoped by game fingerprint and palette regime.
+  evidence. Color evidence is scoped by game and palette regime; structural
+  evidence is scoped by game and survives translation and recoloring.
+- `zeta_arc/scene_feedback.py` — the experimental coordinate-policy adapter.
+  Persistent evidence is kept separate from bounded per-turn decision/outcome
+  receipts, and terminal frames can credit the action without requiring a
+  later call to act.
 - `zeta_arc/scene_prior_benchmark.py` — generated next-mover localization
   evidence over palette relabelings and geometric symmetries. It carries the
   sudden-mover-switch counterexample in the same artifact as the supported
   temporal-persistence case.
+- `zeta_arc/scene_feedback_benchmark.py` — generated action-efficiency evidence
+  for stable color and shape features, plus explicit color/shape switch costs.
 - `zeta_arc/recording.py` — deterministic browser artifacts for the directional
   and coordinate-action episodes.
 - `zeta_arc/driver.py` — **the seam**. The only file that knows the engine's
@@ -117,6 +124,15 @@ labels them synthetic rather than an ARC leaderboard score. This establishes a
 narrow temporal-persistence feature and its failure boundary; it does not earn
 promotion to the acting policy.
 
+The feedback controller has a second controlled measurement over six-episode
+coordinate tasks. Stable color evidence reduces the existing centroid control
+from 12 actions to 7. A stable shape carried across six different palettes
+reduces 12 actions to 8. The counterexamples switch the target after episode
+three: the first switched color costs 5 actions and the first switched shape
+costs 3 before the controller adapts. These are synthetic, source-owned tasks,
+not leaderboard scores. The adapter conforms to the acting loop's coordinate
+port, but the hosted default remains the centroid control.
+
 ## One mistake worth keeping
 
 The first driver reimplemented the engine's action loop by hand and deadlocked.
@@ -152,9 +168,8 @@ So: never a dependency of `zeta-core`, never referenced by
   and stays useful without it.
 - **The real ARC environments.** `ft09` / `ls20` / `vc33` are ARC's, not ours;
   playing them is an ONLINE-mode job.
-- **Pointing our own agent at it.** The perception ladder and the posterior
-  sampling from the CHIP-8 arena are not wired here yet — that is the rung
-  where the score starts saying something about Zeta rather than about a
-  greedy baseline.
+- **Promoting scene feedback to the hosted default.** The perception, outcome
+  update, and coordinate-policy port are wired, but only synthetic tasks have
+  measured them. Hosted promotion requires held-out environment evidence.
 - **A generic environment interface.** `ArcTransport` owns the REST boundary,
   but the common CHIP-8/ARC `IEnvironment` shape belongs to rung C.

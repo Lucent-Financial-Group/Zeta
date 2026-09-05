@@ -1,0 +1,14 @@
+{
+  "id": "080d0377a1800810a013000827bbbcb3",
+  "at": "2026-09-05T00:24:51.969Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1QF8C01087G0R0019EJ17J",
+    "type": "task",
+    "title": "ARC scene feedback controller separates persistent identity from turn events",
+    "slug": "arc-scene-feedback-controller-separates-persistent-identity",
+    "priority": "P1",
+    "filename": "081M1QF8C01087G0R0019EJ17J-arc-scene-feedback-controller-separates-persistent-identity.md"
+  }
+}
