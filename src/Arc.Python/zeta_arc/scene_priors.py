@@ -276,6 +276,31 @@ class CuriosityEvaluation:
     feedback: CuriosityFeedback | None
 
 
+class MotionProjection(str, Enum):
+    """How observed motion contributes a coordinate action candidate."""
+
+    OBSERVED_ONLY = "observed-only"
+    ONE_STEP_AHEAD = "one-step-ahead"
+
+
+class CandidateSource(str, Enum):
+    """Whether a candidate uses an observed or predicted coordinate."""
+
+    OBSERVED = "observed"
+    PREDICTED = "predicted"
+
+
+@dataclass(frozen=True)
+class CandidateLocation:
+    """Inspect how a scene object became one bounded action coordinate."""
+
+    source: CandidateSource
+    observed: tuple[float, float]
+    projected: tuple[float, float] | None
+    velocity: tuple[float, float] | None
+    action: Coordinate
+
+
 @dataclass(frozen=True)
 class CuriosityComposition:
     """Compose bounded scene signals without hiding their contributions."""
@@ -377,6 +402,7 @@ class SceneCandidate:
     probability: float
     signals: CandidateSignals
     curiosity: tuple[CuriosityEvaluation, ...]
+    locations: tuple[CandidateLocation, ...]
 
 
 @dataclass(frozen=True)
@@ -719,12 +745,24 @@ def _object_change_density(
     return changed / item.area
 
 
+def _bounded_action_coordinate(
+    point: tuple[float, float], width: int, height: int
+) -> Coordinate:
+    max_x = min(63, max(0, width - 1))
+    max_y = min(63, max(0, height - 1))
+    return (
+        min(max_x, max(0, round(point[0]))),
+        min(max_y, max(0, round(point[1]))),
+    )
+
+
 def forecast_scene(
     model: ScenePriorModel,
     game_fingerprint: str,
     grid: Grid,
     previous_grid: Grid | None = None,
     curiosity: CuriosityComposition = DEFAULT_CURIOSITY,
+    motion_projection: MotionProjection = MotionProjection.OBSERVED_ONLY,
 ) -> ScenePriorForecast:
     """Turn proto-senses and scoped outcomes into normalized coordinate mass."""
     observation = observe_scene(grid)
@@ -744,32 +782,57 @@ def forecast_scene(
     if not observation.objects:
         return ScenePriorForecast(observation, delta, (), None)
 
-    motion_by_object: dict[tuple[int, tuple[float, float]], float] = {}
+    motion_by_object: dict[tuple[int, tuple[float, float]], MotionSense] = {}
     if delta is not None:
-        for motion in delta.motions:
-            key = (motion.colour, motion.current)
-            motion_by_object[key] = max(
-                motion_by_object.get(key, 0.0),
-                _bounded_motion(motion, observation.width, observation.height),
-            )
+        for motion_row in delta.motions:
+            key = (motion_row.colour, motion_row.current)
+            motion_by_object[key] = motion_row
 
     scores: dict[Coordinate, float] = {}
     signal_rows: dict[Coordinate, list[CandidateSignals]] = {}
     curiosity_rows: dict[Coordinate, list[CuriosityEvaluation]] = {}
+    locations_by_point: dict[Coordinate, list[CandidateLocation]] = {}
     colours_by_point: dict[Coordinate, set[int]] = {}
     shapes_by_point: dict[Coordinate, set[str]] = {}
     occupancy_by_colour = {
         sense.colour: sense.occupancy for sense in observation.colours
     }
     for item in observation.objects:
-        point = (
-            min(63, max(0, round(item.cx))),
-            min(63, max(0, round(item.cy))),
-        )
+        observed = (item.cx, item.cy)
         rarity = 1.0 - occupancy_by_colour[item.colour]
-        object_key = (item.colour, (item.cx, item.cy))
+        object_key = (item.colour, observed)
         activity = _object_change_density(item, previous_grid, grid)
-        motion_signal = motion_by_object.get(object_key, 0.0)
+        object_motion = motion_by_object.get(object_key)
+        motion_signal = (
+            _bounded_motion(object_motion, observation.width, observation.height)
+            if object_motion is not None
+            else 0.0
+        )
+        if (
+            motion_projection is MotionProjection.ONE_STEP_AHEAD
+            and object_motion is not None
+        ):
+            point = _bounded_action_coordinate(
+                object_motion.predicted, observation.width, observation.height
+            )
+            location = CandidateLocation(
+                CandidateSource.PREDICTED,
+                observed,
+                object_motion.predicted,
+                object_motion.velocity,
+                point,
+            )
+        else:
+            point = _bounded_action_coordinate(
+                observed, observation.width, observation.height
+            )
+            location = CandidateLocation(
+                CandidateSource.OBSERVED,
+                observed,
+                None,
+                None,
+                point,
+            )
         shape_fingerprint = _shape_fingerprint(item.shape)
         learned_colour = model.lookup_colour(
             game_fingerprint, observation.palette_fingerprint, item.colour
@@ -790,6 +853,7 @@ def forecast_scene(
         scores[point] = scores.get(point, 0.0) + score
         signal_rows.setdefault(point, []).append(signals)
         curiosity_rows.setdefault(point, []).append(evaluation)
+        locations_by_point.setdefault(point, []).append(location)
         colours_by_point.setdefault(point, set()).add(item.colour)
         shapes_by_point.setdefault(point, set()).add(shape_fingerprint)
 
@@ -819,6 +883,7 @@ def forecast_scene(
                 probability=scores[point] / denominator,
                 signals=signals,
                 curiosity=tuple(curiosity_rows[point]),
+                locations=tuple(locations_by_point[point]),
             )
         )
     selected = max(
