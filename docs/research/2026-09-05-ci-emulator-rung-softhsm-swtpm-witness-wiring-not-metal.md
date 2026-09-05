@@ -127,7 +127,47 @@ creates key material in the token before `bao operator init`.
   see a device **and** has no emulator sidecar in the same
   commit.
 - Persisting `OP_SESSION`.
+- Inferring swtpm from `/dev/tpmrm0` on a CI runner.
+- Prod key rotation via FIDO or biometric.
+- Enabling `security.pam.u2f` from `zeta.hostSeal`.
+- Setting `boxRole = "prod-metal"` from a Kubernetes label.
 - Pattern 1.
+
+## Host-seal profile — NixOS role, not a k8s label (Aaron 2026-09-05)
+
+Aaron: make the emulator-vs-metal distinction follow **detected
+hardware**; NixOS, not just Kubernetes; developers get FIDO and
+biometrics; prod boxes rotate automatically.
+
+Kubernetes labels cannot see a USB YubiHSM or a fingerprint
+reader. Nix eval also cannot see a hot-plugged device
+(`hardware-configuration.nix` in this tree is still
+`not-detected.nix`). Split:
+
+| Surface | What it may declare | What it may not |
+|---|---|---|
+| NixOS `zeta.hostSeal.boxRole` | `undeclared` / `developer` / `prod-metal`. Enables pcscd, YubiHSM udev, libfido2 / fprintd userspace | CI (`ci-emulator` is TypeScript-only). Presence of silicon. `security.pam.u2f` / sudo fingerprint (lockout) |
+| `/etc/os-release` `ID=nixos` | This host is NixOS | A YubiHSM is attached |
+| `frost-hardware-probe.ts` / `tpm2-linux-probe.ts` | Attached / present / absent / indeterminate / unavailable | SoftHSM2 / swtpm (those are job declarations) |
+| CI job | `classifyHostSeal("ci-emulator", …, "softhsm2" \| "swtpm")` | Inferring swtpm from `/dev/tpmrm0` on the runner |
+
+Rotation:
+
+- **developer** — FIDO and biometric *supported*. An attached
+  YubiHSM / smartcard HSM / TPM still wins. Assess is
+  `no-claim` (allowed, not required).
+- **prod-metal** — rotation **must** be automatic (HSM or TPM
+  PKCS#11). FIDO / biometric may exist as break-glass; they are
+  refused as the rotator (`prod-refuses-fido-rotation` /
+  `prod-refuses-biometric-rotation`). Unprobed ≠ drift.
+- **ci-emulator** — SoftHSM2 / swtpm, declared by the job.
+
+Init stays gated on every role. Default NixOS `undeclared` is a
+no-op (same as `zeta.tpm2Seal.mode = "off"`). Do not set
+`prod-metal` on control-plane from a label.
+
+Classifier: `src/Core.TypeScript/cluster/host-seal-profile.ts`.
+Nix model: `full-ai-cluster/nixos/modules/host-seal-model.nix`.
 
 ## Next slices (not this PR)
 

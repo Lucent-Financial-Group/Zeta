@@ -420,7 +420,11 @@ ZetaFS volume. Classifier:
 `cluster-encryption-credential-substrate`. `--bake-cred` remains
 PLACEHOLDER; this names what the flag must grow, it does not
 implement it. SoftHSM2 in CI does **not** replace this metal
-companion set.
+companion set. NixOS `zeta.hostSeal.boxRole = "prod-metal"`
+is how a repaired box declares automatic rotation (HSM or
+TPM PKCS#11); FIDO / biometric stay developer-only. The
+role is declared on the host, not inferred from a k8s
+label, and presence is still a probe.
 
 ## Grounding (on `origin/main`)
 

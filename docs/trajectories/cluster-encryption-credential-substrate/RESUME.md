@@ -1,7 +1,7 @@
 # Trajectory - Cluster Encryption / Credential Substrate
 
 Status: active — first surfaced 2026-05-29 from substrate inventory (was tracked only as scattered backlog rows; never had a trajectory surface, which is why it was easy to lose at cold-boot)
-Last refreshed: 2026-09-05 (μένω remain vs act; unsealer loop; seed vs broadcast classifier; join-hash recast as framework, hole-punch after discovery; OpenBao green; CI emulator rung SoftHSM/swtpm ≠ metal)
+Last refreshed: 2026-09-05 (μένω remain vs act; unsealer loop; seed vs broadcast classifier; join-hash recast as framework, hole-punch after discovery; OpenBao green; CI emulator rung SoftHSM/swtpm ≠ metal; NixOS host-seal profile: developer FIDO/biometric vs prod automatic rotation)
 Type: workstream (current-focus) — a trajectory the operator is *actively powering*. Many trajectories can be tracked; only a few are workstreams at once (finite-focus / WIP-bounded — a workstream is a trajectory under sustained thrust, and thrust budget is finite, so most trajectories coast). ("Trajectory" is the genus; "workstream" is the species: a trajectory under sustained thrust toward a deliverable, vs. emergent-posture trajectories like `anti-infection`, which self-describes as "not a workstream with a cadence." See [`factory-trajectory-surface`](../factory-trajectory-surface/RESUME.md) for the genus/species taxonomy.) One of the operator's three current cluster workstreams (encryption / usb-zflash / ts-workflow-engine).
 Eventual encoding (design-stage — the human maintainer 2026-05-23 genetic-ID substrate + Clifford/HKT): this trajectory's state is trackable as a 128-bit genetic-ID seed (discrete, reversible via parser-combinator ↔ generator-function) → Clifford-space path (continuous, eventual). Mirrors the three-lane I8-lattice / I9-manifold split.
 Current blocker: none operationally; the live design tension is interactive-login-vs-baked-in-keys-vs-CI-test (081KSGS9H0008QG0R003JNSVR5)
@@ -68,6 +68,30 @@ keep HSM-talk. Classifier:
 Workitem: `081M1SD6GZ8087G0R001TNHN19`. SoftHSM2 / swtpm are the
 wiring rung. YubiHSM domains, USB, this board's PCRs stay metal.
 Do not commit `seal "pkcs11"` until a module is in the image.
+
+## 2026-09-05 — NixOS host-seal profile (Riven)
+
+Aaron: make metal vs emulator follow **detected hardware**,
+NixOS not just k8s; developers get FIDO and biometrics; prod
+boxes rotate automatically.
+
+Kubernetes cannot see a USB HSM. Nix eval cannot either
+(placeholder `not-detected.nix`). The host declares
+`zeta.hostSeal.boxRole` (`undeclared` / `developer` /
+`prod-metal`; CI is not a NixOS role). Presence is still
+`frost-hardware-probe.ts` / `tpm2-linux-probe.ts` /
+`ID=nixos`. SoftHSM2 / swtpm stay a **job** declaration —
+never inferred from `/dev/tpmrm0` on a runner.
+
+- developer: libfido2 + fprintd userspace; no sudo PAM u2f.
+  HSM still wins if attached.
+- prod-metal: automatic HSM/TPM required. FIDO / biometric
+  refused as the rotator. pcscd + YubiHSM udev still land.
+- Default `undeclared` is a no-op. Do not flip control-plane
+  to `prod-metal` from a label.
+
+Classifier: `src/Core.TypeScript/cluster/host-seal-profile.ts`.
+Nix: `full-ai-cluster/nixos/modules/host-seal-{model,profile}.nix`.
 
 ## 2026-09-04 — production-hardening review (Riven)
 

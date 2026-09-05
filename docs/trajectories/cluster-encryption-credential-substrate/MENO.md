@@ -77,13 +77,21 @@ assume the number.
    Classify health: 200 sleep / 503 fetch-this-tick / 501
    refuse-init / curl 000 miss (not a seal). Keep until an
    emulator job inits OpenBao without Shamir. Cannot init.
-3. **CI emulator rung** (this slice — classifier, not the job).
+3. **CI emulator rung** (classifier landed; job is next).
    `src/Core.TypeScript/cluster/seal-emulator-rung.ts`.
    SoftHSM2 / swtpm witness wiring. YubiHSM domains, USB, and
    this board's PCRs stay metal. Do not put `seal "pkcs11"` in
    Application.yaml until a module is in the image in the same
    commit (`081M1SD6GZ8087G0R001TNHN19`). TOPOLOGY.md §5 is
    **history** on metal once PKCS#11 auto-unseal is real.
+   NixOS host-seal profile (role + capture, not a k8s label):
+   `zeta.hostSeal.boxRole` is `undeclared` (no-op) /
+   `developer` (FIDO + biometric userspace; no sudo PAM u2f) /
+   `prod-metal` (automatic HSM or TPM PKCS#11; FIDO/biometric
+   refused as the rotator). CI is not a NixOS role — the job
+   declares SoftHSM2/swtpm. Presence is a probe (`ID=nixos`,
+   `frost-hardware-probe.ts`, `tpm2-linux-probe.ts`).
+   `host-seal-profile.ts`.
 4. **USB repair HSM-talk** — companions on the stick (module
    path, connector config, authkey *reference*, domain map,
    OpenBao env pointer). Not PIN-as-original, not Shamir copy,
@@ -113,6 +121,12 @@ assume the number.
 - Copy Shamir shares into a Kubernetes Secret via ESO.
 - Call SoftHSM green "YubiHSM green", or swtpm green "this
   board's TPM green."
+- Infer swtpm from `/dev/tpmrm0` on a CI runner.
+- Rotate a prod box with FIDO or biometrics. Break-glass may
+  exist; it is not the rotator.
+- Enable `security.pam.u2f` (or sudo fingerprint) from
+  `zeta.hostSeal` — that is a lockout, bind it on the host.
+- Set `boxRole = "prod-metal"` from a Kubernetes label.
 - Commit `seal "pkcs11"` without a module in the image.
 - Appoint `yubi-hsm-mock` as the device.
 - Call the Shamir sidecar HashiCorp auto-unseal.

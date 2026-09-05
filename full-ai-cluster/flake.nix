@@ -311,6 +311,20 @@
               echo "$status" | tee "$out"
             '';
 
+          # Host-seal profile — NixOS role (developer vs prod-metal) plus
+          # the hardware-capture assess. NOT a VM test and NOT a USB/TPM
+          # probe. Default `undeclared` is a no-op. CI is not a NixOS
+          # host role (SoftHSM/swtpm are declared in TypeScript).
+          host-seal-profile-model =
+            let
+              report = import ./nixos/tests/host-seal-profile-eval-test.nix {
+                inherit (nixpkgs) lib;
+              };
+            in
+            pkgs.runCommand "host-seal-profile-model" { inherit (report) status; } ''
+              echo "$status" | tee "$out"
+            '';
+
           # Host→Secret projector wiring (081M1PWSF56087G0R000FDS3NY).
           # NOT a VM test. Pins After=restore+k3s and the "does not
           # requiredBy k3s" fail-open. The allowlist + leak lock lives in
