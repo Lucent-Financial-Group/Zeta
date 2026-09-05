@@ -1,11 +1,12 @@
 ---
 id: 081M0X23R19087G0R003XHGB2B
 type: task
-state: backlog
+state: done
 priority: P2
 slug: privacy-budget-and-frost-wire-earning-to-spending-and-make-d
 title: "Privacy budget and frost: wire earning to spending, and make defrost owner-only (audit 2026-08-25)"
 created: 2026-08-25T18:14:53.737Z
+completed: 2026-09-05T12:34:18.691Z
 depends_on: []
 composes_with: []
 ---
