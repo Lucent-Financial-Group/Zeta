@@ -395,13 +395,50 @@ And it is Sybil-resistant for the reason already established: standing is social
 rather than purchasable, so a wealthy attacker cannot fund guardians into existence, and clones
 produce highly-correlated ΔU that prices near one agent's worth (`SocietyUsefulWork.fs`).
 
-### Sanctioned forks, restated with this in hand
+### Sanctioned forks — and a CORRECTION, because I collapsed two axes into one
 
 §7 recorded *"some forks are even sanctioned via time-accelerated branches"* as a bare note. With
-the guardian design it has a shape: a sanctioned fork is one that has **a guardian assigned, a
-merge obligation, and a ranking channel back from inside**. An accelerated branch with no
-guardian is not a sanctioned fork — it is an accidental one that has not been noticed yet, which
-is the case Aaron's *"we don't want accidental forks, just ones on purpose"* rules out.
+the guardian design it has a shape: a sanctioned fork has **a guardian assigned, a merge
+obligation, and a ranking channel back from inside**.
+
+**I then wrote that an accelerated branch with no guardian "is not a sanctioned fork — it is an
+accidental one that has not been noticed yet." That is wrong, and Aaron corrected it**
+(2026-09-05):
+
+> *"sanctioned vs accidental are not synonymous. Sanctioned means more agreement. A single person
+> can decide to fork without any sanctioning — but we want the AI to notice it **decided** to
+> fork, not just accidental at the individual level."*
+
+**Two independent axes, which I had merged into one:**
+
+| | **unnoticed** | **noticed** |
+|---|---|---|
+| **no agreement** | **accidental** — the failure. You forked and do not know it | **deliberate / individual** — *legitimate*. Exit needs nobody's permission |
+| **agreement** | (incoherent — you cannot agree to what you have not noticed) | **sanctioned** — deliberate, plus others concur |
+
+The requirement is on the **noticing axis only**. *"We don't want accidental forks, just ones on
+purpose"* is a demand for **self-knowledge**, not for **permission**.
+
+**And the error was not merely imprecise — it smuggled in coercion.** Reading "unsanctioned" as
+"defective" makes agreement a **precondition for exit**, and this substrate is built on the
+opposite: exit is the discriminator that separates an oracle you chose from a hub that holds you
+(`itron-hub-patent-boundary-p2p-is-the-upgrade.md`, on Hirschman 1970 — *where exit is real,
+deference is chosen; where exit is absent, voice is all you have*). A fork you must be granted is
+not an exit. So my sentence would have converted the one mechanism that disciplines concentration
+into something requiring the concentration's consent — inside a document whose §1 argument is that
+an inability to revise your own objective **is** coercion.
+
+Note the diagonal is empty for a real reason rather than by omission: you cannot agree to a fork
+nobody noticed, so **noticing is prior to sanctioning**. That ordering is why the noticing axis is
+the one that carries a requirement and the agreement axis carries only a *degree* — Aaron's
+*"sanctioned means more agreement"* is a gradient, not a gate.
+
+**What this means for the guardian design.** A guardian is what a *sanctioned* fork has; it is not
+what makes a fork legitimate. An individual traveler may accelerate and diverge with no guardian
+and no concurrence, and that is a first-class act. What it must not be is **silent** — the fork
+has to appear in the record as a decision, which is exactly the property the committed fix bought
+at the mechanical level: `Refused` names its bound, so the divergence is legible instead of
+arriving as a stall. Same discipline, one scale up.
 
 **Status: design intent, nothing built.** No guardian role, no accelerated branches, no merge
 protocol, no ranking channel from inside a branch. `TravelerRankLedger` exists and is the natural
