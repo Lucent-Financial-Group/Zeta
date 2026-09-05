@@ -164,3 +164,88 @@ Today, near the floor, two nodes with the same evidence **fork accidentally and 
 holds a belief, the other reports contradiction, and nothing signals that they disagree. Even
 under a mitigation rather than a fix, the divergence must become **detectable**, because an
 undetected fork is strictly worse than a declared one.
+
+## THE COST IS AN ATTACK SURFACE — measured, and it changes the shape of the fix
+
+Aaron, 2026-09-05: *"even with bigint/bigfloat, if that's the answer, it can get expensive — so
+in general larger ones will take longer to calculate and we should put some consensus around
+this or else it could be a DDOS attack."*
+
+**Correct, and it is worse than a footnote — measured in exact ℚ, 3 candidates, 20-bit
+likelihood denominators, seed 4:**
+
+| K (observations) | normalize every step (today's shape) | accumulate then normalize ONCE | max bits in result |
+|---:|---:|---:|---:|
+| 50 | 0.9 ms | 0.2 ms | ~750 |
+| 200 | 9.4 ms | 1.2 ms | ~2,700 |
+| 800 | 162 ms | 10 ms | ~9,200 |
+| 3,200 | **4,453 ms** | **164 ms** | ~31,000 |
+
+Bit-length grows **linearly in K**; wall time grows **superlinearly** (4× the evidence, 27× the
+time). At 3,200 observations a single fold costs 4.5 seconds and each number is ~4 KB. Evidence
+count is attacker-influenceable wherever a peer can push observations into a fold, so this is a
+genuine denial-of-service surface — and note `MAX_MULTIPLICITY = 1024` bounds the multiplicity
+**per item** and does nothing about **how many items there are**. K is unbounded today.
+
+### The correctness fix and the performance fix are THE SAME CHANGE
+
+The measurement above is the useful surprise. Accumulating the unnormalized product and
+normalizing **once at the end** is:
+
+- **order-invariant** — the accumulated value is `∏ L^m` over a multiset, and multiplication
+  commutes, so there is no prefix-dependent quantity anywhere and no intermediate threshold to
+  compare against;
+- **27× faster at K = 3,200** — K multiplications and one division, instead of K divisions on
+  steadily-growing rationals;
+- **the only place a refusal can occur** is empty support at the end, which is the
+  order-invariant predicate established above.
+
+So "normalize once" is not a performance tweak bolted onto a correctness fix. It **is** the
+correctness fix, and it happens to be much cheaper. Per-step normalization exists to stop
+`float64` underflowing; in exact arithmetic it is pure cost, and it is the thing introducing the
+order dependence.
+
+### But cost still grows, so a BOUND is required — and the bound must be in the treaty
+
+Normalize-once removes the constant factor and does not change the asymptotics: bit-length still
+grows linearly in K. So Aaron's consensus point stands. Two bounds are needed, both **declared**:
+
+1. **Likelihood precision** — likelihoods enter on a declared denominator grid, so each item
+   contributes a bounded number of bits.
+2. **Evidence count per fold** — an explicit K ceiling, next to the existing
+   `MAX_MULTIPLICITY`, so the total is bounded rather than merely bounded-per-item.
+
+**And the bound must be shared, not per-node.** This is the trap: if two nodes round or truncate
+at different points, the truncation itself becomes a divergence source and we are back to
+accidental forks by a new route. That makes this the **same object as the canonical collation
+problem** — `.claude/rules/culture-invariant-by-default.md` picks ONE canonical collation, locks
+it in the golden vectors, and makes every oracle conform, because *"no two runtimes ship the same
+collation tables"*. Its sentence applies verbatim here:
+
+> **The seed is the treaty.**
+
+A precision bound is a shared calibration that must be agreed **in advance** and be
+**inspectable** — which is exactly the good-meter test in
+`dual-use-detection-is-neutral-oracle-decides.md` (*anyone can inspect it and agree to the
+rules*). Agreeing the bound after seeing the numbers would be picking the winner.
+
+**Any truncation must round ONCE, on the order-invariant product.** Rounding per step is a
+prefix-dependent operation and reintroduces the original defect in a new costume. Rounding the
+final accumulated value is safe because its input is order-invariant by construction.
+
+### Metering, not just bounding
+
+The cost is real work driven by declared inputs, which is the situation §13 noninterference is
+for: the fold is a metered channel, and a crossing that would blow the budget is **refused**
+rather than served slowly. A refusal that names the bound it hit is also a *declared* fork —
+Aaron's "on purpose" case — where a silent 4.5-second stall is not.
+
+## Revised recommendation
+
+1. Accumulate unnormalized; normalize once; refuse only on empty support (`eps = 0`).
+2. Exact ring (`RationalRing`) so `eps = 0` is safe.
+3. Declared, byte-locked bounds on likelihood precision **and** evidence count; single rounding
+   at the end if truncation is needed.
+4. Meter the fold and refuse loudly past the bound.
+
+Steps 1-2 make it correct. Steps 3-4 make it safe to expose. Still needs Aaron's call before code.
