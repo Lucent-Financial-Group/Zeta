@@ -145,6 +145,41 @@ None of this is currently tested, and the gap is specific enough to close:
    language, the source and the input are held fixed. That is the one measurement that would move
    §3 from `toy` to `metered`, and it needs no new hardware.
 
+## 5. FIRST RESULT (run 33991852357, 2026-09-05) — three machines, 36 pairs, zero disagreements
+
+The matrix landed and was dispatched on its own branch. All three legs and the comparator went
+green, and this is the measurement rather than the headline:
+
+| leg | executed | absent |
+|---|---|---|
+| `ubuntu-24.04` | **9** | -- |
+| `ubuntu-24.04-arm` | **9** | -- |
+| `macos-26` | **8** | `Lua 5.4` |
+
+**Cross-processor comparison: 36 shared (substrate, seed) pairs, 0 disagreements, across 3
+machines and 2 instruction-set architectures.** That is the first time this substrate has been
+compared across processors at all.
+
+**What it does and does not establish.** It does not prove the CPUs are sound — a clean run is one
+observation, and mercurial-core faults are input-specific and intermittent by nature; that is
+exactly why they evade self-tests. What it establishes is that **the instrument now exists and
+reports a number**: 36 is a count of comparisons actually made, and the comparator refuses rather
+than passing when that count would be zero. The claim moves from *"we have no way to see this fault
+class"* to *"we look, and here is how many places we looked."*
+
+**Two things the run surfaced that were not the point of it:**
+
+1. **`Go` executed on all three legs and was not in the required-substrate list.** The old list
+   carried eight names with the note *"Go is DECLARED ABSENT ... Add it to this list in the same
+   change that builds it."* The build step landed; the list never followed. The aggregate floor
+   would have caught Go going dark; the per-route list would not have NAMED it, which is the reason
+   that list exists.
+2. **macOS is 8 because `lua5.4` is not on the runner** — Homebrew's `lua` formula installs 5.5 as
+   `lua`, and the substrate shells out to `lua5.4` by name. Named rather than absorbed into a
+   smaller number, and the brew step now attempts `lua@5.4` specifically.
+
+The floors were raised to 9/9/8 from this measurement, keeping the promise the placeholder made.
+
 **Register: `toy`, and now with a measured reason rather than a hedge.** The taxonomy is Aaron's and
 is sound; the mechanism table above is argued from what each fault corrupts; the claim that the
 byte-lock catches CPU faults is **structural, and MEASURABLY not realised** — the byte-lock runs on

@@ -79,35 +79,43 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          # THE CALIBRATED LEG. These two floors were measured on this OS and are
-          # the ones the 2026-08-15 note refers to ("RAISED 2 -> 9 ... never lower
-          # it silently"). They are unchanged.
+          # ALL THREE LEGS ARE NOW CALIBRATED FROM A MEASUREMENT, not from a guess.
+          #
+          # They shipped on 2026-09-05 with the two new legs at min 1 and no required
+          # list, marked UNCALIBRATED, because nobody had measured what those runners
+          # execute and inventing a number would be asserting instead of reading. Run
+          # 33991852357 measured it, and these are that reading:
+          #
+          #   ubuntu-24.04       9 executed, 9 pass
+          #   ubuntu-24.04-arm   9 executed, 9 pass
+          #   macos-26           8 executed, 8 pass, Lua 5.4 TOOLING-ABSENT
+          #
+          # The promise made when the placeholder landed ("RAISE THESE once the first
+          # runs report") is kept here. A permanently-1 floor would have been the
+          # check-that-cannot-fail this matrix exists to defeat.
+          #
+          # GO IS NOW IN THE REQUIRED LIST, and its absence was a real gap rather than
+          # a new addition. The old list carried eight names with the note "Go is
+          # DECLARED ABSENT ... Add it to this list in the same change that builds
+          # it." The build step landed; the list never followed. Go executed on all
+          # three legs in the measured run, so the identity floor now covers it. The
+          # aggregate floor of 9 would have caught Go going dark; the per-route list
+          # would not have NAMED it, which is the whole reason that list exists.
           - os: ubuntu-24.04
             min_substrates: "9"
-            required_substrates: "WAT,LLVM/C,Emscripten,Rust,AssemblyScript,Zig,JS (V8),Lua 5.4"
-          # UNCALIBRATED LEGS, added 2026-09-05 for cross-processor comparison.
-          #
-          # Their floors are deliberately 1 and their required-list empty, and that
-          # is stated rather than hidden: nobody has measured which substrates these
-          # runners can actually execute, and inventing a floor would be asserting a
-          # number instead of reading one. A floor of 1 still refuses a leg that ran
-          # NOTHING, which is the property that keeps an empty report from looking
-          # like a healthy one.
-          #
-          # RAISE THESE once the first runs report what each OS provides -- same
-          # discipline as the ubuntu leg's own history. A permanently-1 floor here
-          # would be a check that cannot fail, and the whole point of this matrix is
-          # the opposite.
-          #
-          # The gate these legs actually feed is `cross-processor` below, which
-          # compares their verdicts against ubuntu's. That comparison needs no floor
-          # to be meaningful -- it needs two legs that ran the same substrate.
+            required_substrates: "WAT,LLVM/C,Emscripten,Rust,AssemblyScript,Zig,JS (V8),Lua 5.4,Go"
           - os: ubuntu-24.04-arm
-            min_substrates: "1"
-            required_substrates: ""
+            min_substrates: "9"
+            required_substrates: "WAT,LLVM/C,Emscripten,Rust,AssemblyScript,Zig,JS (V8),Lua 5.4,Go"
+          # macOS is 8, not 9, and the missing one is NAMED rather than absorbed into
+          # a lower number: `lua5.4` is not on the runner. Homebrew's `lua` formula
+          # installs 5.5 as `lua`, and the substrate shells out to `lua5.4` by name.
+          # The brew step now also tries `lua@5.4`; if that lands, this leg measures 9
+          # and THIS FLOOR MUST RISE TO MATCH -- it is set to the value observed
+          # today, not to the value hoped for tomorrow.
           - os: macos-26
-            min_substrates: "1"
-            required_substrates: ""
+            min_substrates: "8"
+            required_substrates: "WAT,LLVM/C,Emscripten,Rust,AssemblyScript,Zig,JS (V8),Go"
 
     steps:
       - name: Checkout
@@ -130,9 +138,19 @@ jobs:
         # is exactly what the cross-processor comparison needs to see -- rather than as a
         # dead job with no report to compare.
         run: |
-          brew install wabt lua || true
+          brew install wabt || true
+          # `lua@5.4` SPECIFICALLY, not `lua`. Measured in run 33991852357: the plain
+          # formula installs 5.5 as `lua`, the substrate shells out to `lua5.4` by
+          # name, and the leg reported Lua 5.4 TOOLING-ABSENT -- honestly, and with
+          # the count reduced, which is the behaviour we want from a missing
+          # toolchain. This is the attempt to supply it rather than to accept the 8.
+          brew install lua@5.4 || brew install lua || true
+          LUA_PREFIX="$(brew --prefix lua@5.4 2>/dev/null || true)"
+          if [ -n "$LUA_PREFIX" ] && [ -x "$LUA_PREFIX/bin/lua5.4" ]; then
+            echo "$LUA_PREFIX/bin" >> "$GITHUB_PATH"
+          fi
           command -v wat2wasm || echo "wat2wasm: ABSENT on this runner"
-          command -v lua5.4 || command -v lua || echo "lua: ABSENT on this runner"
+          command -v lua5.4 || echo "lua5.4: ABSENT on this runner (leg measures 8, not 9)"
 
       # THE GO SUBSTRATE HAD NEVER EXECUTED IN CI. `run-go-wasm.mjs` needs
       # `dla-canonical-go.wasm`; that artefact was neither committed nor built here, so Go
