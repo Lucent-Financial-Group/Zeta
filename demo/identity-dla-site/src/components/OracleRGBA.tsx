@@ -17,28 +17,9 @@
 
 import { useEffect, useRef, useState, useCallback } from "react";
 
-// ── WebGPU type stubs (same as OracleWebGPU.tsx) ─────────────────────────────
-declare global {
-  interface Navigator { gpu?: { requestAdapter(): Promise<{ requestDevice(): Promise<GPUDevice> } | null> } }
-  interface GPUDevice {
-    createBuffer(d: { size: number; usage: number; mappedAtCreation?: boolean }): GPUBuffer;
-    createBindGroupLayout(d: object): object;
-    createBindGroup(d: object): object;
-    createComputePipeline(d: object): object;
-    createCommandEncoder(): GPUCommandEncoder;
-    createShaderModule(d: { code: string }): object;
-    destroy(): void;
-  }
-  interface GPUBuffer {
-    getMappedRange(): ArrayBuffer; mapAsync(m: number): Promise<void>;
-    unmap(): void; destroy(): void;
-  }
-  interface GPUCommandEncoder {
-    beginComputePass(): { setPipeline(p: object): void; setBindGroup(i: number, b: object): void; dispatchWorkgroups(x: number): void; end(): void };
-    copyBufferToBuffer(s: GPUBuffer, so: number, d: GPUBuffer, do_: number, sz: number): void;
-    finish(): object;
-  }
-}
+// WebGPU types are provided by TypeScript's built-in DOM lib (lib.dom.d.ts)
+// as of TS 7. The former hand-rolled stubs were removed to avoid
+// duplicate-identifier / incompatible-declaration conflicts.
 
 const GRID = 256;
 const GRID2 = GRID * GRID;
