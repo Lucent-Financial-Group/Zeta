@@ -1,0 +1,12 @@
+{
+  "pr_number": 16640,
+  "archive_path": "docs/history/pr-reviews/PR-16640-deps-bump-actions-deploy-pages-from-5-0-0-to-5-0-1-in-the-github-actions-minor-p.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-05T08:47:55.601Z",
+  "schema_version": "v1",
+  "commit_sha": "85453a920679d1dea9f78569bb941b66f4e16c51",
+  "title": "deps: bump actions/deploy-pages from 5.0.0 to 5.0.1 in the github-actions-minor-patch group across 1 directory",
+  "state": "MERGED",
+  "merged_at": "2026-09-05T08:47:11Z",
+  "head_ref": "dependabot/github_actions/github-actions-minor-patch-e061d434e4"
+}
