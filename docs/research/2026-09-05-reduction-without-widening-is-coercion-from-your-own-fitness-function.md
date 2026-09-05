@@ -954,6 +954,46 @@ and **seeded** cases — refusals with a deliberately planted stale premise, whe
 is known by construction. The second is the mutation-testing pattern this repo already uses on its
 own falsifiers, pointed at a judge instead of at a test.
 
+#### A refusal that rests on a BOUNDARY already carries its own renewal token
+
+Aaron, on what those near-never concessions are made of:
+
+> *"my family's refusals are backed up by **economic and meritocracy boundaries**."*
+
+**This is the constructive half, and it resolves the `never` problem rather than merely excusing
+it.** A refusal is unexpiring in the dangerous sense only when it rests on *nothing stated* — when
+the answer to "what would change your mind?" is genuinely unavailable, so there is nothing to
+attack. A refusal that rests on a **boundary** is a different object entirely:
+
+> **If the refusal stands on a boundary, then "the boundary moved" IS the reachable condition.**
+
+- refused because **the economics do not work** → *the economics changing* is the renewal token,
+  and it is checkable by anyone with the numbers;
+- refused because **it does not stand on its merits** → *better work arriving* is the renewal
+  token, and the work can be put on the table.
+
+So a low concession rate backed by a stated boundary is **not** the unfalsifiable case my
+constraint was worried about. It is the opposite: it is a refusal you can argue against
+*specifically*, which is exactly what makes it safe to hold firmly. Conviction and challengeability
+are not in tension here — the boundary is what supplies both.
+
+**And this gives the 12 unexpiring entries a concrete, cheap remedy.** Most are almost certainly not
+groundless; they rest on a boundary nobody wrote down, because at the time the reason felt too
+obvious to state. The task is therefore **not** to argue each one out of existence — it is to
+**name the boundary each already rests on**, at which point the `never` converts into a reachable
+condition without anyone changing their mind about anything. That is a documentation pass with a
+real output, not a re-litigation.
+
+**One caution, stated because this repo's own rules require it and not as an objection.** Both
+boundaries are *meters*, and a meter is only as good as its inspectability
+([`dual-use-detection`](../../.claude/rules/dual-use-detection-is-neutral-oracle-decides.md): a good
+meter is one **anyone can inspect and agree to the rules of**). "The economics" is checkable once
+you say *whose costs are counted*; "merit" is checkable once you say *measured by what, judged by
+whom* — and the multi-oracle requirement exists precisely because that second question has no
+single mandatory answer. So the boundary must be named at the resolution where it can actually be
+checked. **"It is not economical" is not yet a renewal token; "it costs more than X, which we
+measure like this" is.**
+
 **Status: not built.** The pieces exist — adversarial reviewer personas, the gated-class discipline,
 and a dated list of 12 refusals with no reachable condition — but nothing schedules the challenge
 and nothing records a concession. Recorded as Aaron's proposal, with the three constraints attached
