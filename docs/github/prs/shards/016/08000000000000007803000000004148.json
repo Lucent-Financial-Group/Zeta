@@ -1,0 +1,12 @@
+{
+  "pr_number": 16712,
+  "archive_path": "docs/history/pr-reviews/PR-16712-test-081m1sr07ct087g0r000zyd0w2-crash-mid-write-of-known-pins-keeps-prior-freeze.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-05T21:54:50.678Z",
+  "schema_version": "v1",
+  "commit_sha": "9f706f1456c48f22996f5153cf282f1df57b7d38",
+  "title": "test(081M1SR07CT087G0R000ZYD0W2): crash mid-write of known.pins keeps prior freeze",
+  "state": "MERGED",
+  "merged_at": "2026-09-05T21:54:16Z",
+  "head_ref": "feat/zetafs-catalog-crash-keeps-pins"
+}

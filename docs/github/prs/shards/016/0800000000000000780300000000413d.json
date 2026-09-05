@@ -1,0 +1,12 @@
+{
+  "pr_number": 16701,
+  "archive_path": "docs/history/pr-reviews/PR-16701-feat-bytelock-matrix-across-processors-and-compare-the-legs-an-ecc-cannot-detect.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-05T21:41:54.381Z",
+  "schema_version": "v1",
+  "commit_sha": "6a157e72c15744a4f6882bb1bb2743def09f5ccc",
+  "title": "feat(bytelock): matrix across processors and compare the legs — an ECC cannot detect a wrong CPU",
+  "state": "MERGED",
+  "merged_at": "2026-09-05T21:41:22Z",
+  "head_ref": "otto/fault-taxonomy-ecc-limits"
+}
