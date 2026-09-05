@@ -1,11 +1,12 @@
 ---
 id: 081M1QF8C01087G0R0019EJ17J
 type: task
-state: backlog
+state: done
 priority: P1
 slug: arc-scene-feedback-controller-separates-persistent-identity
 title: "ARC scene feedback controller separates persistent identity from turn events"
 created: 2026-09-05T00:24:51.969Z
+completed: 2026-09-05T00:49:50Z
 depends_on: []
 composes_with: ["081M1Q4HPX1087G0R000HTJGNF"]
 ---
@@ -43,3 +44,33 @@ the source conversation as policy or evidence.
   case and the counterexample.
 - Existing click and hosted behavior stays unchanged until the benchmark earns
   a separately reviewed promotion.
+
+## Landed
+
+- `scene_priors.py` now learns color and translation-invariant shape outcomes
+  under distinct scopes. Color resets with the palette regime; shape survives
+  recoloring and translation but does not cross the game fingerprint.
+- `scene_feedback.py` owns the explicit coordinate-policy port adapter. Its
+  controller retains an immutable evidence model and at most one pending turn;
+  completed turn receipts are returned instead of accumulated internally.
+- `LayeredAgent.observe` credits terminal frames, so the final successful
+  coordinate action cannot disappear merely because no later `act` call occurs.
+- `scene-feedback-benchmark.json` records six-episode action counts against the
+  existing centroid policy:
+  - stable color: 7 vs 12 actions;
+  - stable shape across palettes: 8 vs 12;
+  - switched color: 11 vs 15, including a 5-action first switch;
+  - switched shape: 11 vs 13, including a 3-action first switch.
+
+## Limits
+
+The measurements are synthetic and source-owned, not ARC leaderboard results.
+They demonstrate narrow transfer and its adaptation cost. They do not justify
+changing the hosted default, so the scene adapter remains explicitly injected.
+
+## Verification
+
+- ARC Python suite: 171 passed.
+- Python lint: Ruff check/format and mypy passed for both Python projects.
+- `bun run preflight:quick`: 16/16 passed.
+- `bun run preflight`: 18/18 passed, including Release build and full tests.
