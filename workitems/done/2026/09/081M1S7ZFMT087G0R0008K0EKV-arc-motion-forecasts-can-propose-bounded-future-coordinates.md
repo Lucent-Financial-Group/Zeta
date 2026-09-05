@@ -1,7 +1,7 @@
 ---
 id: 081M1S7ZFMT087G0R0008K0EKV
 type: task
-state: active
+state: done
 priority: P2
 slug: arc-motion-forecasts-can-propose-bounded-future-coordinates
 title: "ARC motion forecasts can propose bounded future coordinates"
@@ -29,3 +29,15 @@ Acceptance:
 - candidates retain inspectable observed/predicted provenance;
 - the scene-feedback controller accepts the policy through its existing port;
 - tests prove default compatibility, projection, clamping, and controller use.
+
+Completion evidence:
+
+- `MotionProjection` exposes observed-only and one-step-ahead policies;
+- `CandidateLocation` preserves observed point, projected point, velocity, and
+  final bounded action for every contributing object;
+- moving candidates relocate in one-step mode while static candidates remain
+  observed;
+- implicit defaults equal explicit observed-only forecasts;
+- the scene-feedback controller accepts and applies the projection policy;
+- 191 ARC tests pass and the canonical Python lint gate is green;
+- `bun run preflight` passed all 18 checks.
