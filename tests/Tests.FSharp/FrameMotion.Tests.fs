@@ -140,3 +140,23 @@ let ``observation counter saturates without changing bounded state`` () =
     Assert.Equal(System.Int32.MaxValue, observed.Observations)
     Assert.Equal(20, receipt.LogicalBytes)
     Assert.Equal(28, receipt.MaximumLogicalBytes)
+
+[<Fact>]
+let ``frame dimension change resets velocity history`` () =
+    let frame width x : GE.Frame =
+        let cells = Array.zeroCreate<byte> (width * 2)
+        cells.[x] <- 1uy
+
+        { W = width
+          H = 2
+          Palette = 2
+          Cells = cells }
+
+    let first = FrameMotion.observe FrameMotion.empty (frame 2 0) |> requireOk
+    let resized = FrameMotion.observe first (frame 4 1) |> requireOk
+
+    Assert.Equal(Error FrameMotion.InsufficientHistory, FrameMotion.predict FrameMotion.Projection.OneStep resized)
+
+    let reinitialized = FrameMotion.observe resized (frame 4 2) |> requireOk
+    let expected: FrameMotion.Point = { X = 3; Y = 0 }
+    Assert.Equal(Ok expected, FrameMotion.predict FrameMotion.Projection.OneStep reinitialized)

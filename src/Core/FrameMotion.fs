@@ -107,8 +107,14 @@ module FrameMotion =
             do! validate frame
             let! point = foregroundCentroid frame
 
+            let previous =
+                if state.Width = frame.W && state.Height = frame.H then
+                    state.Current
+                else
+                    None
+
             return
-                { Previous = state.Current
+                { Previous = previous
                   Current = Some point
                   Width = frame.W
                   Height = frame.H
