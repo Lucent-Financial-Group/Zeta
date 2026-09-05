@@ -1,0 +1,12 @@
+{
+  "pr_number": 16635,
+  "archive_path": "docs/history/pr-reviews/PR-16635-fix-setup-macos-manifest-realized-pkg-config-pkgconf-openssl-openssl-3.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-05T05:44:19.025Z",
+  "schema_version": "v1",
+  "commit_sha": "ace55bd004d0b094109fed1f2eecc0e81b2b71f2",
+  "title": "fix(setup): macos manifest-realized — pkg-config→pkgconf, openssl→openssl@3",
+  "state": "MERGED",
+  "merged_at": "2026-09-05T05:43:46Z",
+  "head_ref": "alexa/fix-macos-manifest-realized-pkgconf-openssl3-20260905T044542Z"
+}
