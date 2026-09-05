@@ -19,8 +19,9 @@ open Zeta.Core.FSharp.Blake3
 /// frame; prefix kept). Sealed frames carry LSN in the clear so `openLog`
 /// can rebuild the nonce. Reclaim volume door is `reclaimSweep` (journal
 /// under `StoreDir`). `reclaimTick` is the sync core. `reclaimAsync` +
-/// `pumpReclaim` are the DoP=1 FerryThrottler boat. Still `toy`: not
-/// auto-ticked after freeze.
+/// `pumpReclaim` are the DoP=1 FerryThrottler boat. Freeze bytes since
+/// last reclaim tick are metered on the volume (`reclaimTickMetered`).
+/// Still `toy`: not auto-ticked after freeze.
 ///
 /// DoP=1 on this log. No Task.Run except the ferry launch (injected context
 /// on the DST path; `manual` + `PumpToIdleAsync` for tests).
@@ -368,6 +369,7 @@ module ZetaFsFreeze =
         let commits = Dictionary<ContentHash256, FreezeResult>()
         let leaves = Dictionary<ContentHash256, ContentHash256[]>()
         let mutable nextLsn = 1L
+        let mutable freezeBytesSinceReclaim = 0UL
         let log = new FreezeLog(storeDir, config, manual, blockIo, objectCas)
         let reclaim = new ReclaimFerry(storeDir, config, manual)
 
@@ -383,6 +385,9 @@ module ZetaFsFreeze =
             and set v = nextLsn <- v
         member internal _.Log = log
         member internal _.Reclaim = reclaim
+        member internal _.FreezeBytesSinceReclaim
+            with get () = freezeBytesSinceReclaim
+            and set v = freezeBytesSinceReclaim <- v
 
         interface IDisposable with
             member _.Dispose() =
@@ -956,6 +961,35 @@ module ZetaFsFreeze =
 
     let reclaimBoatCount (volume: Volume) = volume.Reclaim.Boats
 
+    let freezeBytesSinceReclaim (volume: Volume) = volume.FreezeBytesSinceReclaim
+
+    let private takeFreezeBytes (volume: Volume) =
+        lock volume.Gate (fun () ->
+            let n = volume.FreezeBytesSinceReclaim
+            volume.FreezeBytesSinceReclaim <- 0UL
+            n)
+
+    /// Reclaim tick paced from freeze bytes accumulated on this volume
+    /// since the last metered tick. Not wall-clock. Consumes the meter
+    /// even if nothing was eligible.
+    let reclaimTickMetered
+        (volume: Volume)
+        (fs: IFileSystem)
+        (roots: ZetaFsReclaim.Roots)
+        (objects: ZetaFsReclaim.Object[])
+        : int =
+        let bytes = takeFreezeBytes volume
+        reclaimTick volume fs roots objects bytes
+
+    let reclaimAsyncMetered
+        (volume: Volume)
+        (roots: ZetaFsReclaim.Roots)
+        (objects: ZetaFsReclaim.Object[])
+        (ct: CancellationToken)
+        : Task<int> =
+        let bytes = takeFreezeBytes volume
+        reclaimAsync volume roots objects bytes ct
+
     let pumpLog (volume: Volume) (ct: CancellationToken) : Task =
         volume.Log.PumpToIdleAsync(ct)
 
@@ -1052,6 +1086,12 @@ module ZetaFsFreeze =
 
                     ok)
 
+    let private noteFreeze (volume: Volume) (span: uint64) (result: FreezeResult) =
+        lock volume.Gate (fun () ->
+            volume.FreezeBytesSinceReclaim <- volume.FreezeBytesSinceReclaim + span)
+
+        result
+
     let private finish
         (volume: Volume)
         (entity: ZetaFsNamespace.EntityId)
@@ -1077,10 +1117,10 @@ module ZetaFsFreeze =
             volume.Leaves.[content] <- leafIds)
 
         match cls, volume.Observer with
-        | Durable, Some o -> o.OnDurable result |> Result.map (fun () -> result)
-        | Durable, None -> Ok result
-        | _, Some o -> o.OnJournaled result |> Result.map (fun () -> result)
-        | _, None -> Ok result
+        | Durable, Some o -> o.OnDurable result |> Result.map (fun () -> noteFreeze volume span result)
+        | Durable, None -> Ok(noteFreeze volume span result)
+        | _, Some o -> o.OnJournaled result |> Result.map (fun () -> noteFreeze volume span result)
+        | _, None -> Ok(noteFreeze volume span result)
 
     /// Library path: ValueTask. Await once (`let!` / `ConfigureAwait(false)`).
     ///
@@ -1118,7 +1158,7 @@ module ZetaFsFreeze =
                       IntentLsn = 0L
                       CommitLsn = 0L }
 
-                ValueTask<Result<FreezeResult, FreezeError>>(Ok result)
+                ValueTask<Result<FreezeResult, FreezeError>>(Ok(noteFreeze volume rope.Span result))
             | Journaled
             | Durable ->
                 let intentLsn, commitLsn =
