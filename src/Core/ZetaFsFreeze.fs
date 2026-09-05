@@ -28,8 +28,8 @@ open Zeta.Core.FSharp.Blake3
 /// `known.pins.0` / `known.pins.1` (generation + CRC); `known.pins`
 /// is a copy. Reopen still sees crash leftovers. Successful freeze enqueues orphan
 /// reclaim when the catalog is nonempty. Reopen enqueues from leftover
-/// sizes: the freeze-byte meter is RAM-only, and pacer(0) deletes
-/// nothing. Default `create` stores CAS on `BlockCas`; reclaim
+/// sizes. The freeze-byte meter persists in the catalog so reopen
+/// does not start at pacer(0). Default `create` stores CAS on `BlockCas`; reclaim
 /// unpublishes those keys (`Delete`). POSIX `createManualStream` still
 /// deletes files. Manual volumes still `pumpReclaim`. `KeepNone` /
 /// `rolling(N)` unpin previous generations of the same entity; product
@@ -155,11 +155,17 @@ module ZetaFsFreeze =
     let private encodeCatalog
         (gen: int64)
         (history: ZetaFsPolicy.HistoryPolicy)
+        (meter: uint64)
         (known: Dictionary<ContentHash256, uint64>)
         (livePins: HashSet<ContentHash256>)
         : string =
         let body =
-            String.concat "\n" (Array.append [| formatHistory history |] (catalogObjectLines known livePins))
+            String.concat
+                "\n"
+                (Array.append
+                    [| formatHistory history
+                       "meter " + meter.ToString(CultureInfo.InvariantCulture) |]
+                    (catalogObjectLines known livePins))
 
         let payload =
             "gen "
@@ -176,8 +182,9 @@ module ZetaFsFreeze =
 
     let private parsePinLines
         (lines: string[])
-        : ZetaFsPolicy.HistoryPolicy * (ContentHash256 * uint64 * bool)[] =
+        : ZetaFsPolicy.HistoryPolicy * uint64 * (ContentHash256 * uint64 * bool)[] =
         let mutable history = ZetaFsPolicy.HistoryPolicy.KeepAll
+        let mutable meter = 0UL
         let acc = ResizeArray<_>()
 
         for line in lines do
@@ -187,18 +194,22 @@ module ZetaFsFreeze =
                 | None ->
                     let parts = line.Split(' ')
 
-                    if parts.Length = 3 && parts.[0].Length = 64 then
+                    if parts.Length >= 2 && parts.[0] = "meter" then
+                        match UInt64.TryParse(parts.[1], NumberStyles.Integer, CultureInfo.InvariantCulture) with
+                        | true, n -> meter <- n
+                        | _ -> ()
+                    elif parts.Length = 3 && parts.[0].Length = 64 then
                         match UInt64.TryParse(parts.[1], NumberStyles.Integer, CultureInfo.InvariantCulture) with
                         | true, size ->
                             let id = ContentHash256.ofHex parts.[0]
                             acc.Add(id, size, parts.[2] = "1")
                         | _ -> ()
 
-        history, acc.ToArray()
+        history, meter, acc.ToArray()
 
     let private tryDecodeCatalog
         (text: string)
-        : (int64 * ZetaFsPolicy.HistoryPolicy * (ContentHash256 * uint64 * bool)[]) option =
+        : (int64 * ZetaFsPolicy.HistoryPolicy * uint64 * (ContentHash256 * uint64 * bool)[]) option =
         let lines =
             text.Replace("\r\n", "\n", StringComparison.Ordinal).Split('\n')
 
@@ -220,8 +231,8 @@ module ZetaFsFreeze =
                     | false, _ -> None
                     | true, gen when gen < 1L -> None
                     | true, gen ->
-                        let history, entries = parsePinLines (Array.skip 2 lines)
-                        Some(gen, history, entries)
+                        let history, meter, entries = parsePinLines (Array.skip 2 lines)
+                        Some(gen, history, meter, entries)
         else
             None
 
@@ -250,21 +261,22 @@ module ZetaFsFreeze =
         (known: Dictionary<ContentHash256, uint64>)
         (livePins: HashSet<ContentHash256>)
         (history: ZetaFsPolicy.HistoryPolicy)
+        (meter: uint64)
         =
         let fs = FileSystem.Current
         let mutable maxGen = 0L
 
         match tryDecodePath fs (catalogSlot storeDir 0) with
-        | Some(g, _, _) when g > maxGen -> maxGen <- g
+        | Some(g, _, _, _) when g > maxGen -> maxGen <- g
         | _ -> ()
 
         match tryDecodePath fs (catalogSlot storeDir 1) with
-        | Some(g, _, _) when g > maxGen -> maxGen <- g
+        | Some(g, _, _, _) when g > maxGen -> maxGen <- g
         | _ -> ()
 
         let gen = maxGen + 1L
         let slot = int (gen % 2L)
-        let text = encodeCatalog gen history known livePins
+        let text = encodeCatalog gen history meter known livePins
         FileSystemIo.writeAllText fs (catalogSlot storeDir slot) text
         FileSystemIo.writeAllText fs (catalogPath storeDir) text
 
@@ -272,19 +284,22 @@ module ZetaFsFreeze =
         (storeDir: string)
         (known: Dictionary<ContentHash256, uint64>)
         (livePins: HashSet<ContentHash256>)
+        (meter: uint64 ref)
         : ZetaFsPolicy.HistoryPolicy =
         let fs = FileSystem.Current
         let mutable bestGen = 0L
         let mutable bestHistory = ZetaFsPolicy.HistoryPolicy.KeepAll
+        let mutable bestMeter = 0UL
         let mutable bestEntries: (ContentHash256 * uint64 * bool)[] = [||]
         let mutable found = false
 
         let consider path =
             match tryDecodePath fs path with
-            | Some(g, h, entries) when (not found) || g > bestGen ->
+            | Some(g, h, m, entries) when (not found) || g > bestGen ->
                 found <- true
                 bestGen <- g
                 bestHistory <- h
+                bestMeter <- m
                 bestEntries <- entries
             | _ -> ()
 
@@ -293,6 +308,7 @@ module ZetaFsFreeze =
 
         if found then
             applyEntries known livePins bestEntries
+            meter := bestMeter
             bestHistory
         else
             let path = catalogPath storeDir
@@ -302,8 +318,9 @@ module ZetaFsFreeze =
                 let text = Encoding.UTF8.GetString(fs.ReadAllBytes path)
                 let lines =
                     text.Replace("\r\n", "\n", StringComparison.Ordinal).Split('\n')
-                let h, entries = parsePinLines lines
+                let h, m, entries = parsePinLines lines
                 history <- h
+                meter := m
                 applyEntries known livePins entries
 
             history
@@ -320,7 +337,8 @@ module ZetaFsFreeze =
             objectCas: BlockCas option,
             known: Dictionary<ContentHash256, uint64>,
             livePins: HashSet<ContentHash256>,
-            history: ZetaFsPolicy.HistoryPolicy ref
+            history: ZetaFsPolicy.HistoryPolicy ref,
+            meter: uint64 ref
         ) =
 
         do
@@ -346,7 +364,7 @@ module ZetaFsFreeze =
                             livePins.Add id |> ignore
                             j <- j + 1
 
-                persistCatalog storeDir known livePins !history
+                persistCatalog storeDir known livePins !history !meter
 
                 for i in 0 .. boat.Length - 1 do
                     let it = boat.Span.[i]
@@ -409,7 +427,7 @@ module ZetaFsFreeze =
                         | Some cas ->
                             cas.Put(hex, bytes)
                             known.[id] <- uint64 bytes.Length
-                            persistCatalog storeDir known livePins !history
+                            persistCatalog storeDir known livePins !history !meter
 
                             if item.Durable then
                                 tryFlush cas.Device (ZetaFsPath.combine2 storeDir "cas")
@@ -442,7 +460,7 @@ module ZetaFsFreeze =
 
                                     if n > 0 then
                                         known.[id] <- uint64 n
-                                        persistCatalog storeDir known livePins !history
+                                        persistCatalog storeDir known livePins !history !meter
 
                                 raise ex
 
@@ -692,16 +710,28 @@ module ZetaFsFreeze =
         let commits = Dictionary<ContentHash256, FreezeResult>()
         let leaves = Dictionary<ContentHash256, ContentHash256[]>()
         let mutable nextLsn = 1L
-        let mutable freezeBytesSinceReclaim = 0UL
+        let freezeBytesSinceReclaim = ref 0UL
         let known = Dictionary<ContentHash256, uint64>()
         let livePins = HashSet<ContentHash256>()
         let objectSets = Dictionary<ContentHash256, ContentHash256[]>()
-        let history = ref (loadCatalog storeDir known livePins)
-        let log = new FreezeLog(storeDir, config, manual, blockIo, objectCas, known, livePins, history)
+        let history = ref (loadCatalog storeDir known livePins freezeBytesSinceReclaim)
+        let log =
+            new FreezeLog(
+                storeDir,
+                config,
+                manual,
+                blockIo,
+                objectCas,
+                known,
+                livePins,
+                history,
+                freezeBytesSinceReclaim
+            )
         let reclaim = new ReclaimFerry(storeDir, config, manual, objectCas)
         do
-            // Reopen meter is 0 (not persisted). pacer(0) deletes nothing,
-            // so budget from leftover sizes. Does not wait for the next freeze.
+            // Reopen meter comes from the catalog. Leftover orphan sizes
+            // still enqueue if the catalog has orphans. Does not wait for
+            // the next freeze.
             let orphans = catalogOrphans storeDir known livePins objectCas
 
             if orphans.Length > 0 then
@@ -737,8 +767,8 @@ module ZetaFsFreeze =
         member internal _.Log = log
         member internal _.Reclaim = reclaim
         member internal _.FreezeBytesSinceReclaim
-            with get () = freezeBytesSinceReclaim
-            and set v = freezeBytesSinceReclaim <- v
+            with get () = !freezeBytesSinceReclaim
+            and set v = freezeBytesSinceReclaim := v
         member internal _.KnownObjects = known
         member internal _.LivePins = livePins
         member internal _.ObjectSets = objectSets
@@ -746,7 +776,7 @@ module ZetaFsFreeze =
             with get () = !history
             and set v =
                 history := v
-                persistCatalog storeDir known livePins v
+                persistCatalog storeDir known livePins v !freezeBytesSinceReclaim
 
         interface IDisposable with
             member _.Dispose() =
@@ -1345,7 +1375,7 @@ module ZetaFsFreeze =
     let noteKnownObject (volume: Volume) (id: ContentHash256) (size: uint64) =
         lock volume.Gate (fun () ->
             volume.KnownObjects.[id] <- size
-            persistCatalog volume.StoreDir volume.KnownObjects volume.LivePins volume.History)
+            persistCatalog volume.StoreDir volume.KnownObjects volume.LivePins volume.History volume.FreezeBytesSinceReclaim)
 
     /// Objects the volume wrote that no live freeze still pins. Keeps full
     /// ids so reclaim can propose them. Empty until something is unpinned
@@ -1358,6 +1388,12 @@ module ZetaFsFreeze =
         lock volume.Gate (fun () ->
             let n = volume.FreezeBytesSinceReclaim
             volume.FreezeBytesSinceReclaim <- 0UL
+            persistCatalog
+                volume.StoreDir
+                volume.KnownObjects
+                volume.LivePins
+                volume.History
+                0UL
             n)
 
     /// Reclaim tick paced from freeze bytes accumulated on this volume
@@ -1438,7 +1474,7 @@ module ZetaFsFreeze =
 
         volume.KnownObjects.[id] <- uint64 bytes.Length
         volume.LivePins.Add id |> ignore
-        persistCatalog volume.StoreDir volume.KnownObjects volume.LivePins volume.History
+        persistCatalog volume.StoreDir volume.KnownObjects volume.LivePins volume.History volume.FreezeBytesSinceReclaim
 
     let private tryReadObject (volume: Volume) (id: ContentHash256) : byte[] option =
         match volume.Log.ObjectCas with
@@ -1527,7 +1563,13 @@ module ZetaFsFreeze =
 
     let private noteFreeze (volume: Volume) (span: uint64) (result: FreezeResult) =
         lock volume.Gate (fun () ->
-            volume.FreezeBytesSinceReclaim <- volume.FreezeBytesSinceReclaim + span)
+            volume.FreezeBytesSinceReclaim <- volume.FreezeBytesSinceReclaim + span
+            persistCatalog
+                volume.StoreDir
+                volume.KnownObjects
+                volume.LivePins
+                volume.History
+                volume.FreezeBytesSinceReclaim)
 
         result
 
@@ -1562,7 +1604,7 @@ module ZetaFsFreeze =
             volume.LivePins.Add id |> ignore
 
         match keepCount volume.History with
-        | None -> persistCatalog volume.StoreDir volume.KnownObjects volume.LivePins volume.History
+        | None -> persistCatalog volume.StoreDir volume.KnownObjects volume.LivePins volume.History volume.FreezeBytesSinceReclaim
         | Some n ->
             let mine =
                 volume.Commits.Values
@@ -1573,7 +1615,7 @@ module ZetaFsFreeze =
             let dropCount = mine.Length - n
 
             if dropCount <= 0 then
-                persistCatalog volume.StoreDir volume.KnownObjects volume.LivePins volume.History
+                persistCatalog volume.StoreDir volume.KnownObjects volume.LivePins volume.History volume.FreezeBytesSinceReclaim
             else
                 let kept = HashSet<ContentHash256>()
 
@@ -1586,7 +1628,7 @@ module ZetaFsFreeze =
                         if not (kept.Contains id) then
                             volume.LivePins.Remove id |> ignore
 
-                persistCatalog volume.StoreDir volume.KnownObjects volume.LivePins volume.History
+                persistCatalog volume.StoreDir volume.KnownObjects volume.LivePins volume.History volume.FreezeBytesSinceReclaim
 
     let private finish
         (volume: Volume)

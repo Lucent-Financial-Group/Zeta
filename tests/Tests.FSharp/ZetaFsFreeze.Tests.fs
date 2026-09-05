@@ -2760,6 +2760,40 @@ let ``torn higher catalog slot loads the previous history policy`` () : Task =
     }
 
 [<Fact>]
+let ``freeze-byte meter survives createManual reopen`` () : Task =
+    task {
+        ensureHasher ()
+        FileSystem.Register(InMemoryFileSystem())
+        let store = "/meter-reopen"
+        let mutbuf = ZetaFsMutbuf.create store ZetaFsMutbuf.Coherence.Shared
+        let mutable span = 0UL
+        let volume1 = ZetaFsFreeze.createManual store mutbuf None
+
+        try
+            let id = mintId ()
+            let h = ZetaFsMutbuf.openHandle volume1.Mutbuf id
+            ZetaFsMutbuf.pwrite volume1.Mutbuf h 0L [| 1uy; 2uy; 3uy |] |> ignore
+            let pending = (freezeAsync volume1 id ZetaFsFreeze.Journaled).AsTask()
+            do! (ZetaFsFreeze.pumpLog volume1 CancellationToken.None).ConfigureAwait(false)
+            let! first = pending.ConfigureAwait(false)
+            match first with
+            | Error e -> Assert.Fail(ZetaFsFreeze.errorName e)
+            | Ok ok ->
+                span <- ok.Span
+                Assert.True(span > 0UL)
+                Assert.Equal(span, ZetaFsFreeze.freezeBytesSinceReclaim volume1)
+        finally
+            ZetaFsFreeze.dispose volume1
+
+        let volume2 = ZetaFsFreeze.createManual store mutbuf None
+        try
+            Assert.Equal(span, ZetaFsFreeze.freezeBytesSinceReclaim volume2)
+        finally
+            ZetaFsFreeze.dispose volume2
+            FileSystem.Reset()
+    }
+
+[<Fact>]
 let ``rolling 1 third freeze must not revive the first generation`` () : Task =
     task {
         ensureHasher ()
