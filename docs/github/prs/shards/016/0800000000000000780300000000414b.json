@@ -1,0 +1,12 @@
+{
+  "pr_number": 16715,
+  "archive_path": "docs/history/pr-reviews/PR-16715-feat-081m1ss7f78087g0r001q9kbp5-dual-slot-known-pins-with-crc-generations.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-05T22:19:28.983Z",
+  "schema_version": "v1",
+  "commit_sha": "05888240ae7ac9c0b40850deb5db5e02a9dee408",
+  "title": "feat(081M1SS7F78087G0R001Q9KBP5): dual-slot known.pins with CRC generations",
+  "state": "MERGED",
+  "merged_at": "2026-09-05T22:18:54Z",
+  "head_ref": "feat/zetafs-dual-slot-known-pins"
+}
