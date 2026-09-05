@@ -91,7 +91,9 @@ Gate stays optional and collision-heavy (CI `gate
    DNS-shaped adapter over the mesh, not a public nameserver.
 
 **Many protocols, not one.** Reticulum is the likely first
-federation wire. HTTP and WebSockets are in the set.
+federation wire (SEED: **Reticulum-first**; sibling absorb
+`docs/research/2026-09-05-reticulum-first-onion-like-later-social-graph-discoverable-ok.md`).
+HTTP and WebSockets are in the set.
 `TransportKind` already names `udp` / `reticulum` /
 `websocket` / `git` / `broadcast` as adapter categories, not
 shipped sockets.

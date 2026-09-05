@@ -101,8 +101,9 @@ mint a product repo for it.
 ## Many protocols, not one
 
 Reticulum is the likely first federation wire for ZetaDB
-(already in `zeta-transport-cell.ts` as a `TransportKind`,
-already Reticulum-first on the ZetaFS catalog lane). HTTP
+(SEED: Reticulum-first; sibling absorb
+`docs/research/2026-09-05-reticulum-first-onion-like-later-social-graph-discoverable-ok.md`;
+already in `zeta-transport-cell.ts` as a `TransportKind`). HTTP
 and WebSockets are in the same set. UDP, git, broadcast
 labels already exist as adapter categories. Presence of a
 label is not a shipped socket
