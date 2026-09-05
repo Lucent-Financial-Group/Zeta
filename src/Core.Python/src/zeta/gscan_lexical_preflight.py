@@ -114,12 +114,22 @@ def inspect_gscan_lexical_preflight(
         "split_name": split_name,
     }
     if observed_hash != expected_dataset_sha256:
-        return {**base, "status": "dataset-hash-mismatch", "reason": "GSCAN-DATASET-HASH-MISMATCH"}
+        return {
+            **base,
+            "status": "dataset-hash-mismatch",
+            "reason": "GSCAN-DATASET-HASH-MISMATCH",
+        }
 
     try:
         with open(seed_path, encoding="utf-8") as seed_file:
             seed_version, forms = _seed_form_index(json.load(seed_file))
-    except (OSError, UnicodeDecodeError, json.JSONDecodeError, TypeError, ValueError) as error:
+    except (
+        OSError,
+        UnicodeDecodeError,
+        json.JSONDecodeError,
+        TypeError,
+        ValueError,
+    ) as error:
         return {**base, "status": "malformed-seed", "reason": str(error)}
 
     resolved_ids: set[str] = set()
@@ -148,12 +158,18 @@ def inspect_gscan_lexical_preflight(
         return {**base, "status": "malformed-dataset", "reason": str(error)}
 
     if example_count == 0:
-        return {**base, "status": "malformed-dataset", "reason": f"GSCAN-DATASET-SPLIT-MISSING:{split_name}"}
+        return {
+            **base,
+            "status": "malformed-dataset",
+            "reason": f"GSCAN-DATASET-SPLIT-MISSING:{split_name}",
+        }
 
     ordered_unresolved = sorted(unresolved_forms)
     return {
         **base,
-        "status": "preflight-lexically-covered" if not ordered_unresolved else "preflight-unresolved",
+        "status": "preflight-lexically-covered"
+        if not ordered_unresolved
+        else "preflight-unresolved",
         "seed_version": seed_version,
         "example_count": example_count,
         "command_form_count": command_form_count,
@@ -165,13 +181,21 @@ def inspect_gscan_lexical_preflight(
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description="Bounded-memory gSCAN lexical-admission preflight")
-    parser.add_argument("dataset", help="explicit path to gSCAN dataset.txt JSON member")
+    parser = argparse.ArgumentParser(
+        description="Bounded-memory gSCAN lexical-admission preflight"
+    )
+    parser.add_argument(
+        "dataset", help="explicit path to gSCAN dataset.txt JSON member"
+    )
     parser.add_argument("seed", help="explicit path to a versioned English seed JSON")
     parser.add_argument("split", help="named gSCAN split to inspect")
-    parser.add_argument("expected_sha256", help="expected SHA-256 of the explicit dataset file")
+    parser.add_argument(
+        "expected_sha256", help="expected SHA-256 of the explicit dataset file"
+    )
     arguments = parser.parse_args()
-    receipt = inspect_gscan_lexical_preflight(arguments.dataset, arguments.seed, arguments.split, arguments.expected_sha256)
+    receipt = inspect_gscan_lexical_preflight(
+        arguments.dataset, arguments.seed, arguments.split, arguments.expected_sha256
+    )
     print(json.dumps(receipt, indent=2, sort_keys=True))
     return 0
 

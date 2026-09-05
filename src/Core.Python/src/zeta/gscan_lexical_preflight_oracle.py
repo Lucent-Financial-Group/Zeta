@@ -45,7 +45,11 @@ def _normalize(fragment: str) -> str:
 def _read_seed(path: str) -> tuple[str, dict[str, str]]:
     with open(path, encoding="utf-8") as source:
         raw = json.load(source)
-    if not isinstance(raw, Mapping) or not isinstance(raw.get("version"), str) or not isinstance(raw.get("entries"), list):
+    if (
+        not isinstance(raw, Mapping)
+        or not isinstance(raw.get("version"), str)
+        or not isinstance(raw.get("entries"), list)
+    ):
         raise TypeError("ENGLISH-SEED-SCHEMA")
 
     accepted: dict[str, str] = {}
@@ -81,7 +85,9 @@ def _read_seed(path: str) -> tuple[str, dict[str, str]]:
     return raw["version"], accepted
 
 
-def _apply_command(command: str, accepted: Mapping[str, str], state: dict[str, object]) -> None:
+def _apply_command(
+    command: str, accepted: Mapping[str, str], state: dict[str, object]
+) -> None:
     forms = [_normalize(part) for part in command.split(",")]
     forms = [form for form in forms if form]
     if not forms:
@@ -114,11 +120,21 @@ def inspect_gscan_lexical_preflight_oracle(
         "split_name": split_name,
     }
     if observed_hash != expected_dataset_sha256:
-        return {**base, "status": "dataset-hash-mismatch", "reason": "GSCAN-DATASET-HASH-MISMATCH"}
+        return {
+            **base,
+            "status": "dataset-hash-mismatch",
+            "reason": "GSCAN-DATASET-HASH-MISMATCH",
+        }
 
     try:
         seed_version, accepted = _read_seed(seed_path)
-    except (OSError, TypeError, UnicodeDecodeError, json.JSONDecodeError, ValueError) as error:
+    except (
+        OSError,
+        TypeError,
+        UnicodeDecodeError,
+        json.JSONDecodeError,
+        ValueError,
+    ) as error:
         return {**base, "status": "malformed-seed", "reason": str(error)}
 
     example_prefix = f"examples.{split_name}.item"
@@ -138,7 +154,9 @@ def inspect_gscan_lexical_preflight_oracle(
                     state["example_count"] = int(state["example_count"]) + 1
                 elif prefix == command_prefix:
                     if event != "string" or not isinstance(value, str):
-                        raise TypeError(f"GSCAN-DATASET-COMMAND-SCHEMA:{state['command_count']}")
+                        raise TypeError(
+                            f"GSCAN-DATASET-COMMAND-SCHEMA:{state['command_count']}"
+                        )
                     state["command_count"] = int(state["command_count"]) + 1
                     _apply_command(value, accepted, state)
     except (OSError, TypeError, ValueError, ijson.JSONError) as error:
@@ -147,7 +165,11 @@ def inspect_gscan_lexical_preflight_oracle(
     example_count = int(state["example_count"])
     command_count = int(state["command_count"])
     if example_count == 0:
-        return {**base, "status": "malformed-dataset", "reason": f"GSCAN-DATASET-SPLIT-MISSING:{split_name}"}
+        return {
+            **base,
+            "status": "malformed-dataset",
+            "reason": f"GSCAN-DATASET-SPLIT-MISSING:{split_name}",
+        }
     if example_count != command_count:
         return {
             **base,
@@ -159,7 +181,9 @@ def inspect_gscan_lexical_preflight_oracle(
     resolved_form_count = int(state["resolved_form_count"])
     return {
         **base,
-        "status": "preflight-lexically-covered" if not state["unresolved_forms"] else "preflight-unresolved",
+        "status": "preflight-lexically-covered"
+        if not state["unresolved_forms"]
+        else "preflight-unresolved",
         "seed_version": seed_version,
         "example_count": example_count,
         "command_form_count": command_form_count,
