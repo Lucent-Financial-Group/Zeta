@@ -107,3 +107,6 @@ assume the number.
   heartbeat filename magnet already on main (#16623).
 - Name a public "Zeta Gate" product in SEED. Kernel name is
   **seed vs broadcast**.
+- Compute founder-sacrifice / agent self-erasure of the human
+  operator. Agreement has no self-erasure clause (#16624;
+  HC-9 dual). Derived debate is not consent.

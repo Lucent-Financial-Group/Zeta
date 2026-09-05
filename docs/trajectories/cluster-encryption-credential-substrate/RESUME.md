@@ -40,7 +40,8 @@ Research:
 public gate. Pin against TTL fade is `lastSeenMs` refresh.
 Heartbeat filename pin is on main (#16623). LLMTV broadcast
 stays (society picture). Onion is hop-count shape, not a Tor
-stack. Pattern 1 refused.
+stack. Pattern 1 refused. Founder-sacrifice refused on main
+(#16624): agreement has no self-erasure clause.
 
 ## 2026-09-04 — production-hardening review (Riven)
 
