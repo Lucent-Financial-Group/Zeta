@@ -1,0 +1,14 @@
+{
+  "id": "080d03987c558010a013000878966dce",
+  "at": "2026-09-05T19:33:13.520Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1SGZ2ND087G0R000R3YADM",
+    "type": "task",
+    "title": "Power outage and bad-memory are two DST doors on freeze recovery",
+    "slug": "power-outage-and-bad-memory-are-two-dst-doors-on-freeze-reco",
+    "priority": "P2",
+    "filename": "081M1SGZ2ND087G0R000R3YADM-power-outage-and-bad-memory-are-two-dst-doors-on-freeze-reco.md"
+  }
+}

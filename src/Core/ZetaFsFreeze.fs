@@ -246,6 +246,21 @@ module ZetaFsFreeze =
                 lastBoat <- boat.Length
                 fsDoor.CreateDirectory logDir
                 let mutable err: FreezeError option = None
+
+                let tryFlush (io: IBlockIo) (path: string) =
+                    if err.IsNone then
+                        try
+                            SimulatedFs.Flush path
+                            io.Flush()
+                        with
+                        | :? CrashMidWriteException as ex -> raise ex
+                        | :? PowerOutageException as ex -> raise ex
+                        | :? BadMemoryException as ex -> raise ex
+                        | :? IOException ->
+                            err <- Some(FreezeError.Fsync(FileSync.FileSyncError.FlushFailed(path, 5)))
+                        | ex when ex.Message.IndexOf("BUGGIFY", StringComparison.Ordinal) >= 0 ->
+                            err <- Some(FreezeError.Fsync(FileSync.FileSyncError.FlushFailed(path, 5)))
+
                 let anyDurable =
                     let mutable d = false
                     let mutable i = 0
@@ -272,7 +287,7 @@ module ZetaFsFreeze =
                             persistCatalog storeDir known livePins !history
 
                             if item.Durable then
-                                cas.Device.Flush()
+                                tryFlush cas.Device (ZetaFsPath.combine2 storeDir "cas")
                         | None ->
                             let path = ZetaFsPath.combine3 objectsDir (hex.Substring(0, 2)) (hex.Substring(2))
                             let dir = ZetaFsPath.directoryName path
@@ -336,8 +351,10 @@ module ZetaFsFreeze =
 
                         door.LogicalBytes <- afterIntent - origin
                         BlockSuper.writeLog device door.LogicalBytes
-                        device.Flush()
-                        putLeaves item
+                        tryFlush device logPath
+
+                        if err.IsNone then
+                            putLeaves item
 
                         if err.IsNone then
                             let afterCommit =
@@ -348,7 +365,7 @@ module ZetaFsFreeze =
 
                             door.LogicalBytes <- afterCommit - origin
                             BlockSuper.writeLog device door.LogicalBytes
-                            device.Flush()
+                            tryFlush device logPath
 
                         i <- i + 1
                 | None ->
