@@ -1,0 +1,14 @@
+{
+  "id": "080d0394fdbf4810a01300080360eaf0",
+  "at": "2026-09-05T17:31:05.065Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1S9ZDZ8087G0R002RAWGFD",
+    "type": "task",
+    "title": "Two CPT-related uncertainties: widening as the anti-coercion operator, dynamic priors over ZetaId",
+    "slug": "two-cpt-related-uncertainties-widening-as-the-anti-coercion",
+    "priority": "P2",
+    "filename": "081M1S9ZDZ8087G0R002RAWGFD-two-cpt-related-uncertainties-widening-as-the-anti-coercion.md"
+  }
+}
