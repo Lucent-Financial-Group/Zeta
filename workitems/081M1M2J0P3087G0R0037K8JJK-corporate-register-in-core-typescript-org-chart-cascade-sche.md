@@ -1364,3 +1364,87 @@ tsc --noEmit                                       0 errors
 mutation: 24 matrices, 177/177 killed, 0 survivors, 0 stale anchors
 commit: 607c2804c
 ```
+
+## Pass 14 — the record inside the code had drifted from the code
+
+Three passes running, the next defect came from asking the previous pass's output a question. This
+one came from asking a different question — *what does this register still say about itself that is
+no longer true?* — and the answer was in the source files rather than in the reports.
+
+### Three stale stated-limits, and why they are not documentation nits
+
+"Stated rather than hidden" is used throughout this register to convert a limit into a promise about
+the code. That makes a **stale** limit worse than an undocumented one: it sends the next reader to
+build something that already exists.
+
+| the claim | what was true |
+|---|---|
+| `run-agent.ts` header: *"its cascade and calendar are still recomputed rather than folded from the stored trace … it is the next thing"* | `--resume` has folded exactly those since **pass 8** |
+| the docstring above `resumedSurface`: *"`queue` and `qa` are EMPTY"* | three lines below it, the code's own comment reads *"The queue and the QA history come from the LOG, not from an empty stand-in"* — one file contradicting itself |
+| `org-store.ts` header: *"not yet a resumable runtime … is the next step and is not claimed by this module"* | `org-fold.ts` **opens by quoting that sentence** as the thing it closed |
+
+Each now says what is true and records what it used to say, so the correction is legible rather
+than silent.
+
+### Nine docstrings that documented the wrong symbol
+
+`run-agent.ts` held three doc comments stacked with nothing between them, so an editor showed
+`mergeQueues` a docstring reading *"Run the organization and turn it into the surface the loop looks
+at"* — a different function.
+
+**The cause is mechanical, and it is mine.** Inserting a function by anchoring on
+`export function X(` and pasting before it lands the new code **between X's doc comment and X**. The
+diff is clean, the suite passes, and nothing anywhere says the docstring above X now belongs to
+something else. Three times in two days — `requireReplayable`, `gitChangeControl`,
+`providersFromArgs` — and caught by none of tsc, eslint, the suites, or review.
+
+Two of the nine were older and neither was an insertion: `gateChooserFrom`'s docstring sat **after
+its own function body**, above `agentsFromChart`, since the pass that extracted it; and
+`goal-cascade.ts` carried two blocks for one const, which are merged rather than moved.
+
+### The lint, and why the narrowing is the whole design
+
+`src/Core.TypeScript/hygiene/lint-orphaned-doc-comments.ts`. A top-level doc comment immediately
+followed by another, with no code between them, is always a bug.
+
+A noisy lint gets suppressed, and a suppressed lint is a check that did not run — so:
+
+- **File headers are exempt**, judged by POSITION rather than by reading the text. "Is this the
+  first block?" is a fact; "does this read like a header?" is a guess. That case was **44 of the
+  first draft's 101 findings**; the true tree-wide number is **57**.
+- **Indented blocks are never flagged** — inside an interface or a union the pattern is correct.
+- **Both delimiters must sit at column 0**, which is what makes a line scan safe: a regex cannot
+  tell a closer inside a string from one that ends a block, and a lint that mis-parses is worse
+  than no lint.
+
+Wired to `hygiene:no-orphaned-doc-comments` and a `gate.yml` step, **scoped to `corporate/`** where
+it is clean. The 57 elsewhere are pre-existing; widening is a separate change, because a step that
+lands red is a step people learn to ignore.
+
+**Registering it without wiring it was caught within the minute** by `hygiene:linter-coverage`:
+*"a check that exists, can fail, and is wired to nothing reads exactly like a check that passed."*
+That audit did to this lint precisely what this lint does to a docstring.
+
+### Falsifiers
+
+15 tests, **half of them for what must NOT fire** — that half decides whether anyone keeps the lint.
+10 mutants, one survivor on the first pass: no test built a top-level block containing an INDENTED
+closer, which happens whenever a docstring quotes code and under the mutant would misparse the rest
+of the file. Constructed, then 10/10.
+
+**And a contradiction of my own, inside the test that pins the boundary.** I asserted zero findings
+under a comment claiming the case *"SHOULD fire"* — prose disagreeing with the code beneath it, in
+the falsifier for a pass about prose disagreeing with the code beneath it. Rewritten to state the
+actual behaviour and why the narrowing is deliberate.
+
+### State at the end of pass 14
+
+```
+bun test corporate/ + the new lint            1060 pass, 0 fail  (45 files)
+tsc --noEmit                                     0 errors
+hygiene:no-orphaned-doc-comments                83 files clean (corporate/)
+hygiene:linter-coverage               13 tools, 33 scripts agree
+gate.yml parses; 233 steps, the new one present
+mutation: 25 matrices, 187/187 killed, 0 survivors, 0 stale anchors
+commit: 265174aa4
+```
