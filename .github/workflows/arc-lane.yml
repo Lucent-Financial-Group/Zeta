@@ -42,7 +42,13 @@ on:
     paths:
       - "src/Arc.Python/**"
       - ".github/workflows/arc-lane.yml"
-  workflow_dispatch: {}
+  workflow_dispatch:
+    inputs:
+      compare_hosted_coordinate_policies:
+        description: Run centroid and scene-feedback against one roster snapshot
+        required: false
+        default: false
+        type: boolean
 
 permissions:
   contents: read
@@ -283,9 +289,10 @@ jobs:
       - name: Sync the ARC lane's own uv project
         run: uv sync --project src/Arc.Python
 
-      - name: Play every hosted environment this key can see
+      - name: Play or compare every hosted environment this key can see
         env:
           ARC_API_KEY: ${{ secrets.ARC_API_KEY }}
+          ARC_COMPARE_POLICIES: ${{ github.event_name == 'workflow_dispatch' && inputs.compare_hosted_coordinate_policies && 'yes' || 'no' }}
           # THE PER-LEVEL CEILING, AND WHY IT IS NOT 800. The published
           # references run to 578 actions (DC22), so a full-budget sweep of 25
           # environments is tens of thousands of engine steps plus 25 downloads,
@@ -300,59 +307,77 @@ jobs:
           ARC_SWEEP_MAX_ACTIONS: "200"
         run: |
           set -euo pipefail
-          uv run --project src/Arc.Python python -m zeta_arc.play --play-hosted \
+          if [ "${ARC_COMPARE_POLICIES}" = "yes" ]; then
+            mode_args=(--compare-hosted-coordinate-policies)
+          else
+            mode_args=(--play-hosted)
+          fi
+          uv run --project src/Arc.Python python -m zeta_arc.play "${mode_args[@]}" \
             --seed 4 --max-actions-per-level "${ARC_SWEEP_MAX_ACTIONS}" \
             | tee /tmp/arc-sweep.json
           python3 - <<'PY'
           import json, sys
           text = open("/tmp/arc-sweep.json").read()
-          sweep = json.loads(text[text.index("{"):])
-          seen, played = sweep["environments_seen"], sweep["environments_played"]
-          print(
-              f"mode={sweep['mode']} seen={seen} played={played} "
-              f"failed={sweep['environments_failed']} "
-              f"levels_cleared={sweep['levels_cleared_total']} "
-              f"mean_score={sweep['mean_environment_score']}"
-          )
-          # WHY EACH LEVEL ENDED, counted across the whole roster. This is the
-          # read that says whether the CEILINGS are wrong rather than the agent:
-          # `level-budget` heavy means levels are defeating the policy, while
-          # `episode-budget` heavy means runs are being cut off before the
-          # levels ever get a fair attempt and raising the per-level budget
-          # would change nothing.
-          print(f"  ended: {sweep['ended_breakdown']}")
-          for row in sweep["results"]:
-              if "error" in row:
-                  print(f"  {row['game_id']}: FAILED {row['error']} {row.get('detail','')}")
-              else:
-                  print(
-                      f"  {row['game_id']}: cleared {row['levels_cleared']}"
-                      f"/{row['levels_declared']} score {row['environment_score']}"
-                      f" ({row['terminated']}; {row.get('ended_breakdown', {})})"
-                      # ENGAGEMENT, so a zero score is readable. `inert` counts
-                      # levels whose world never changed — a policy not playing
-                      # at all, which no budget rise can fix. Zero inert with
-                      # zero cleared is the opposite problem: it played and lost.
-                      f" [inert {row.get('inert_levels', '?')}"
-                      f", moved {row.get('cells_changed_total', '?')} cells]"
+          payload = json.loads(text[text.index("{"):])
+
+          def report(policy, sweep):
+              seen = sweep["environments_seen"]
+              played = sweep["environments_played"]
+              print(
+                  f"policy={policy} mode={payload['mode']} seen={seen} played={played} "
+                  f"failed={sweep['environments_failed']} "
+                  f"levels_cleared={sweep['levels_cleared_total']} "
+                  f"mean_score={sweep['mean_environment_score']}"
+              )
+              # WHY EACH LEVEL ENDED, counted across the whole roster. This is the
+              # read that says whether the CEILINGS are wrong rather than the agent:
+              # `level-budget` heavy means levels are defeating the policy, while
+              # `episode-budget` heavy means runs are being cut off before the
+              # levels ever get a fair attempt and raising the per-level budget
+              # would change nothing.
+              print(f"  ended: {sweep['ended_breakdown']}")
+              for row in sweep["results"]:
+                  if "error" in row:
+                      print(
+                          f"  {row['game_id']}: FAILED {row['error']} "
+                          f"{row.get('detail', '')}"
+                      )
+                  else:
+                      print(
+                          f"  {row['game_id']}: cleared {row['levels_cleared']}"
+                          f"/{row['levels_declared']} score {row['environment_score']}"
+                          f" ({row['terminated']}; {row.get('ended_breakdown', {})})"
+                          # ENGAGEMENT, so a zero score is readable. `inert` counts
+                          # levels whose world never changed — a policy not playing
+                          # at all, which no budget rise can fix. Zero inert with
+                          # zero cleared is the opposite problem: it played and lost.
+                          f" [inert {row.get('inert_levels', '?')}"
+                          f", moved {row.get('cells_changed_total', '?')} cells]"
+                      )
+              # LIVENESS, the same failure this lane already guards against once.
+              # A sweep that sees zero environments prints a tidy zero and exits 0 —
+              # identical in shape to a sweep that played them all and scored
+              # nothing. This job only runs where the credential IS supposed to
+              # arrive, so an empty roster here is a wiring fault, not a result.
+              if seen == 0:
+                  sys.exit(
+                      f"::error::{policy} hosted roster is EMPTY on a run that has "
+                      "the credential. Nothing was played, and without this check "
+                      "the job would have reported that as a clean zero. Check the "
+                      "ARC_API_KEY repository secret."
                   )
-          # LIVENESS, the same failure this lane already guards against once.
-          # A sweep that sees zero environments prints a tidy zero and exits 0 —
-          # identical in shape to a sweep that played them all and scored
-          # nothing. This job only runs where the credential IS supposed to
-          # arrive, so an empty roster here is a wiring fault, not a result.
-          if seen == 0:
-              sys.exit(
-                  "::error::the hosted roster is EMPTY on a run that has the "
-                  "credential. Nothing was played, and without this check the "
-                  "job would have reported that as a clean zero. Check the "
-                  "ARC_API_KEY repository secret."
-              )
-          # A sweep where every environment errored is the second false-green:
-          # 25 rows, all failures, mean score 0.0, exit 0.
-          if played == 0:
-              sys.exit(
-                  f"::error::all {seen} environments failed to play. See the "
-                  "per-environment errors above."
-              )
+              # A sweep where every environment errored is the second false-green:
+              # 25 rows, all failures, mean score 0.0, exit 0.
+              if played == 0:
+                  sys.exit(
+                      f"::error::{policy}: all {seen} environments failed to play. "
+                      "See the per-environment errors above."
+                  )
+
+          if payload.get("experiment") == "hosted-coordinate-policy-comparison-v1":
+              report("centroid", payload["centroid"])
+              report("scene-feedback", payload["scene_feedback"])
+              print(f"scene-feedback-minus-centroid: {payload['delta']}")
+          else:
+              report(payload["coordinate_policy"], payload)
           PY

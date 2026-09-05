@@ -59,6 +59,7 @@ from zeta_arc.hosted import (
 from zeta_arc.hosted import (
     MAX_PUBLISHED_BASELINE_ACTIONS,
     HostedCoordinatePolicy,
+    compare_coordinate_policies,
     play_roster,
 )
 
@@ -371,15 +372,21 @@ def main() -> None:
         "--agent", choices=("pixel", "greedy", "random"), default="greedy"
     )
     parser.add_argument("--seed", type=int, default=0)
-    parser.add_argument(
+    hosted_mode = parser.add_mutually_exclusive_group()
+    hosted_mode.add_argument(
         "--list-environments",
         action="store_true",
         help="report the hosted environments this key can see, and play nothing",
     )
-    parser.add_argument(
+    hosted_mode.add_argument(
         "--play-hosted",
         action="store_true",
         help="play every hosted environment this key can see and report the sweep",
+    )
+    hosted_mode.add_argument(
+        "--compare-hosted-coordinate-policies",
+        action="store_true",
+        help="run centroid and scene-feedback against the same hosted roster and seed",
     )
     parser.add_argument(
         "--max-environments",
@@ -408,6 +415,14 @@ def main() -> None:
         ),
     )
     args = parser.parse_args()
+    if (
+        args.compare_hosted_coordinate_policies
+        and args.hosted_coordinate_policy != HostedCoordinatePolicy.CENTROID.value
+    ):
+        parser.error(
+            "--hosted-coordinate-policy cannot be combined with "
+            "--compare-hosted-coordinate-policies"
+        )
     if args.list_environments:
         print(json.dumps(list_environments(), indent=2))
         return
@@ -424,6 +439,16 @@ def main() -> None:
             coordinate_policy=HostedCoordinatePolicy(args.hosted_coordinate_policy),
         )
         print(json.dumps({"mode": mode, **sweep}, indent=2))
+        return
+    if args.compare_hosted_coordinate_policies:
+        arcade, mode = open_arcade()
+        comparison = compare_coordinate_policies(
+            arcade,
+            max_environments=args.max_environments,
+            max_actions_per_level=args.max_actions_per_level,
+            seed=args.seed,
+        )
+        print(json.dumps({"mode": mode, **comparison}, indent=2))
         return
     print(json.dumps(play(agent=args.agent, seed=args.seed), indent=2))
 

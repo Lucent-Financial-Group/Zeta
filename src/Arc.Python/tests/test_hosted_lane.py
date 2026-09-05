@@ -38,6 +38,7 @@ from zeta_arc.hosted import (
     Wrapper,
     _budget_comparability,
     build_hosted_agent,
+    compare_coordinate_policies,
     environment_score,
     play_environment,
     play_roster,
@@ -868,6 +869,49 @@ def test_roster_reports_the_experimental_policy_on_summary_and_environment() -> 
     assert result["coordinate_policy"] == "scene-feedback"
     assert result["results"][0]["coordinate_policy"] == "scene-feedback"
     assert result["levels_cleared_total"] == 1
+
+
+def test_policy_comparison_reuses_one_roster_and_reports_signed_deltas() -> None:
+    class CountingArcade:
+        info = type(
+            "Info",
+            (),
+            {
+                "game_id": "zeta-click-target",
+                "title": "ZetaClickTarget",
+                "baseline_actions": [1],
+            },
+        )()
+
+        def __init__(self) -> None:
+            self.roster_reads = 0
+            self.games_made = 0
+
+        def get_environments(self) -> list[Any]:
+            self.roster_reads += 1
+            return [self.info]
+
+        def make(self, game_id: str, seed: int) -> OwnGameWrapper:
+            assert game_id == self.info.game_id
+            self.games_made += 1
+            return OwnGameWrapper(ZetaClickTarget(seed=seed))
+
+    arcade = CountingArcade()
+    result = compare_coordinate_policies(arcade, seed=17)
+
+    assert arcade.roster_reads == 1
+    assert arcade.games_made == 2
+    assert result["experiment"] == "hosted-coordinate-policy-comparison-v1"
+    assert result["seed"] == 17
+    assert result["centroid"]["coordinate_policy"] == "centroid"
+    assert result["scene_feedback"]["coordinate_policy"] == "scene-feedback"
+    assert result["delta"] == {
+        "environments_seen": 0,
+        "environments_played": 0,
+        "environments_failed": 0,
+        "levels_cleared_total": 0,
+        "mean_environment_score": 0.0,
+    }
 
 
 def test_the_hosted_loop_clears_a_real_environment_end_to_end() -> None:
