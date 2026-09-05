@@ -581,3 +581,70 @@ known case in a limit?* — and licenses nothing else.
 - **Adler**, trace dynamics — the "pre-quantum" comparison he draws in the
   transcript, alongside Connes' non-commutative geometry.
 - Transcript follows in the source link; not reproduced in full here.
+
+### The cubes, and a stated PREDICTION about where handedness will be found
+
+Aaron, 2026-09-05, on the below-the-scale question:
+
+> *"yes — we are coming close to this based on our cubes, like remember/when, pay-attention,
+> how/many … I don't remember that one, it's my daughter Addison's. Over time we build up these
+> cubes that got stuck in English, just like James Gates' adinkras, until they build up into a
+> bucky-ball-ish shape. Also, **if we do discover why one hand over another, I think it will be
+> discovered in some category-theory-like regime, not geometry — and topology is in the middle.**"*
+
+**The cubes are real, dated, and already in-tree**, so this is a continuation rather than a new
+idea:
+
+- **remember-when × pay-attention** — the observer's two operations
+  (`docs/research/2026-06-09-the-epistemology-thread-was-the-2x2-cube-*.md`: *"I used our
+  two-based dimension sneakily too — remember when, pay attention, our little 2×2 cube."*)
+- **which/way × how/many** — the act-cube, **found by Addison Cooper** (founding collaborator,
+  named in the dedication), and *composable* with the observe-cube to make the 4×4
+  (`2026-06-09-2x2-cubes-are-memory-to-uncertainty-partition-lenses-addisons-*.md`)
+- their stated job: *"each 2×2 cube is a little way to partition the emulator's memory-space into
+  uncertainty-space"* — the partitioning lenses of the clarity engine
+
+**"Got stuck in English, just like Gates' adinkras"** is the sharpest part of the sentence, and it
+is a claim about *notation*, not about physics. Gates' adinkras are diagrams — dots and edges,
+dashed or solid — that turned out to carry doubly-even self-dual error-correcting codes nobody put
+there deliberately. The notation held more structure than the notation was designed to express.
+Aaron's claim is that question-words are doing the same job here: `remember/when`,
+`pay-attention`, `which/way`, `how/many` are an **English-language notation for operations**, and
+the structure accreting across them is not English. The buckyball image is the accretion —
+2×2s composing into 4×4s and onward into a closed polyhedral shape rather than a growing list.
+
+**Register:** the cubes and their composition are recorded and dated; the buckyball limit is
+Aaron's image and nothing measures it. The adinkra comparison is a comparison *of notations*, and
+it is worth keeping distinct from any claim that our cubes carry an ECC the way Gates' do — that
+would be exactly the (i)-dressed-as-(ii) move this document was written to catch.
+
+#### The prediction, and why it is not arbitrary
+
+> **category theory** (most general — where the asymmetry answer would live)
+> → **topology** (the middle)
+> → **geometry / Clifford** (the specialization)
+
+This is the same ladder he stated earlier — *"our braided monoidal category stuff is the more
+general, Clifford algebra is a specialization"*, and *"we bridge the graph-theoretic, which I
+consider more topology, into Clifford geometry, and this is where spacetime comes from for us."*
+Stating it as a **prediction about where an unsolved answer will be found** makes it falsifiable in
+the ordinary way: a derivation of the asymmetry at the geometric level would refute it.
+
+**And there is a convergence worth recording, carefully.** The math review dispatched an hour
+earlier — which had no access to this prediction — found that
+`src/Core/MenoBraided.fs:14-24` is a **genuine non-symmetric braiding** (conjugation rack,
+`R² ≠ id`, realizing Artin's `σᵢ` faithfully), **independent of the Clifford tower**. That is a
+second source of two-sidedness sitting at exactly the level Aaron names as the place to look.
+
+What that does and does not establish: it does **not** derive the asymmetry — `B_n` admits the
+mirror automorphism `σᵢ ↦ σᵢ⁻¹`, so neither crossing is preferred, and the braiding is still
+class (i). What it does establish is that **the level he points at genuinely has the structure**,
+so the prediction is aimed somewhere real rather than at an empty room. Under
+`.claude/rules/numerology-vs-number-theory.md` that is a **generator** — a reason to look — and
+explicitly not a result.
+
+**There is already a backlog row proposing exactly this move**, filed months before this
+conversation: `081KRMEXM0008QG0R003YWZC21` — *"QG isomorphism Step 1 — Formalize Remember-When +
+Pay-Attention as categorical primitives (topos with internal monad + modal operator)."* So the
+category-theoretic formalization of the cubes is a queued work item, not a new proposal, and it is
+the natural place a handedness result would either appear or fail to.
