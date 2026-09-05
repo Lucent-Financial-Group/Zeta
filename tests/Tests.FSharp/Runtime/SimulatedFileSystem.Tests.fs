@@ -429,6 +429,20 @@ let ``SimulatedBlockIo records completed Write then Flush in call order`` () =
     | BlockIoOp.Write _ -> Assert.Fail("second recorded op must be Flush")
 
 [<Fact>]
+let ``SimulatedBlockIo CloneMedia is remain: RecordedOps acts are not copied`` () =
+    let device = SimulatedBlockIo(4096)
+    let io = device :> IBlockIo
+    let payload = [| 1uy; 2uy; 3uy |]
+    Assert.Equal(3, io.Write(0UL, System.ReadOnlyMemory<byte>.op_Implicit payload))
+    io.Flush()
+    Assert.True(device.RecordedOps.Length > 0)
+    let cloned = device.CloneMedia()
+    Assert.Equal(0, cloned.RecordedOps.Length)
+    let got = Array.zeroCreate<byte> 3
+    Assert.Equal(3, (cloned :> IBlockIo).Read(0UL, System.Memory<byte>.op_Implicit got))
+    Assert.Equal<byte>(payload, got)
+
+[<Fact>]
 let ``SimulatedBlockIo ReplayTo round-trips issued writes onto a fresh device`` () =
     let source = SimulatedBlockIo(4096)
     let io = source :> IBlockIo
