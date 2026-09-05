@@ -379,13 +379,14 @@ let ``SimulatedBlockIo power outage on Flush drops unflushed writes`` () =
     Assert.Equal(3, io.Write(0UL, System.ReadOnlyMemory<byte>.op_Implicit payload))
     device.ArmPowerOutageOnFlush()
     Assert.Throws<PowerOutageException>(fun () -> io.Flush()) |> ignore
+    let empty = [| 0uy; 0uy; 0uy |]
     let lost = Array.zeroCreate<byte> 3
     Assert.Equal(3, io.Read(0UL, System.Memory<byte>.op_Implicit lost))
-    Assert.Equal(0uy, lost.[0])
+    Assert.Equal<byte>(empty, lost)
     let cloned = device.CloneMedia() :> IBlockIo
     let remain = Array.zeroCreate<byte> 3
     Assert.Equal(3, cloned.Read(0UL, System.Memory<byte>.op_Implicit remain))
-    Assert.Equal(0uy, remain.[0])
+    Assert.Equal<byte>(empty, remain)
 
 [<Fact>]
 let ``SimulatedBlockIo bad memory XOR publishes garbage then dies`` () =
@@ -395,15 +396,14 @@ let ``SimulatedBlockIo bad memory XOR publishes garbage then dies`` () =
     device.ArmBadMemoryOnWrite()
     Assert.Throws<BadMemoryException>(fun () -> io.Write(0UL, System.ReadOnlyMemory<byte>.op_Implicit payload) |> ignore)
     |> ignore
+    let expected = [| payload.[0]; payload.[1]; payload.[2] ^^^ 0xA5uy |]
     let poisoned = Array.zeroCreate<byte> 3
     Assert.Equal(3, io.Read(0UL, System.Memory<byte>.op_Implicit poisoned))
-    Assert.Equal(payload.[0], poisoned.[0])
-    Assert.Equal(payload.[1], poisoned.[1])
-    Assert.Equal(payload.[2] ^^^ 0xA5uy, poisoned.[2])
+    Assert.Equal<byte>(expected, poisoned)
     let cloned = device.CloneMedia() :> IBlockIo
     let remain = Array.zeroCreate<byte> 3
     Assert.Equal(3, cloned.Read(0UL, System.Memory<byte>.op_Implicit remain))
-    Assert.Equal<byte>(poisoned, remain)
+    Assert.Equal<byte>(expected, remain)
 
 [<Fact>]
 let ``SimulatedBlockIo volatileUntilFlush write is visible then lost on CloneMedia until Flush`` () =
