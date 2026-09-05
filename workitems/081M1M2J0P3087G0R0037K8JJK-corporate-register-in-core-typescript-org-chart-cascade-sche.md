@@ -1155,3 +1155,110 @@ mutation: 18 matrices, 140/140 killed, 0 survivors, 0 stale anchors
 commits: a4c6e1ceb (cycle fidelity)  7cc97c107 (the decision)  3cc8afbc1 (fidelity on disk)
          13 files, +861 / -14
 ```
+
+## Pass 12 — the fifth boundary, and three things that only came out under a real run
+
+Passes 9 through 11 closed the four boundaries the ports were built for, and pass 11 shipped the
+disclosure that says which of them a run actually crossed. This pass exists because that disclosure
+immediately said something nobody had asked it: `run-agent.ts --store S` could only ever record
+`replayable: true`, and no flag could change it.
+
+### The two CLIs each held half of "end to end"
+
+| | `run-org.ts` | `run-agent.ts` |
+|---|---|---|
+| real ports | all five, 27 flags | **none** — zero references to `providers` |
+| model participant | **none** — zero references to `participant` | yes |
+| persistence, `--resume` | `--store` | yes |
+
+Measured, not read off the source:
+
+```
+bun run-agent.ts --agent alexa --at ... --store S
+  deliveryRate = {"runs":1,"delivered":1,"deliveredForReal":0,"deliveredSimulated":1,...}
+  run: delivered=true replayable=true realPorts=[]
+```
+
+The choosing was real in one and the doing was real in the other, and no single invocation had
+both — which is what "end to end" was supposed to mean. `run-agent.ts` now parses the same flags
+with the same `parseArgs` and maps them with the same `providersFromArgs`. One mapping, deliberately:
+two would be two sets of defaults to drift, and the default is the answer that decides whether a run
+touched anything. `--work-model` gives `modelProposal` the command line it never had.
+
+The falsifier, against a real repository:
+
+```
+run: delivered=true replayable=false realPorts=["work_execution","change_control"]
+git log --oneline
+  fe4300a merge work/task-...-015@task-...-015
+  195f39a merge work/task-...-013@task-...-013
+  65bf61d work task-...-015
+```
+
+### Three defects, and the pattern is now the finding
+
+**A performer with no verifier silently simulated.** `--work-agent claude` with no `--work-verify`
+fell past every branch to `simulatedWorkExecutor(true)`. An operator who forgot the verifier got a
+run in which every item succeeded, disclosed only by one line reading `simulated`. That is the
+fallback the port layer exists to refuse, arriving through the argument parser instead of the
+registry. `argRefusals` refuses it before the organization is built.
+
+**A merge that moved nothing reported success.** `git merge --no-ff <branch>` where the branch sits
+at the same commit as HEAD prints "Already up to date." and **exits 0**. Both git adapters read that
+zero as a merge, so a run whose work produced no commit reported real delivery over a repository
+nothing had happened in — and `deliveredForReal` counted it. Every unit test committed inside the
+change before merging, so the empty case was never constructed and 12 of 12 mutants passed over a
+branch no test reached.
+
+**A refused merge did not contradict DELIVERED.** The runtime's own comment beside that call has
+always said a refusal contradicts the claim rather than being logged beside it. It did not:
+`delivered` was `isDelivered(cascade, goalId)` alone. The fix is narrow on purpose — it can only
+bite where the change record and the repository disagree, which a simulated change control never
+does — and the full suite stayed at 996/0 across it, which is also how we know nothing covered it.
+
+**Five defects in this arc have now been found by running the thing rather than reading it**:
+`commandProposal` ignoring `ctx.workdir`, `gateChooser` making the review port decorative, two
+load-sensitive test budgets, twenty silently unreadable events, and now these three. The count is
+the finding. None was visible in review; all were visible on a first real run.
+
+### A false claim in a test header
+
+`cli-adapters.test.ts` said it gave `agentReview` a command line. `run-org.ts` has never referenced
+it — the adapter actually wired was `modelReview`. A file claiming to have closed a gap it did not
+close is worse than one that never mentioned it, because the claim is what stops anyone checking.
+Corrected in place rather than quietly widened.
+
+`agentReview` takes a judge FUNCTION, and a function cannot come from argv. It is an embedder seam,
+exercised in `review-adapters.test.ts`; its CLI-expressible siblings are the three that do have
+flags. Inventing a fourth flag that spawned a process would be `commandReview` under another name.
+
+### Falsifiers, and the six that had to fail first
+
+20 new mutants across four matrices. Six survived the first pass, and each named a real hole:
+
+| survivor | what it meant |
+|---|---|
+| both CLIs computed refusals and fell through to `if (false)` | `main` was untested for its own refusal path |
+| `ports` parsed and never attached | nothing called `main` with a port flag and then read the record |
+| `gitChangeControl` merging an empty branch | two adapters, one rule, and only one had a falsifier |
+| an unparseable count read as `1` | unreachable through any adapter — so `commitsAhead` is exported and both unknown paths are falsified directly |
+
+Then a seventh, found by the regression sweep rather than the new matrix: **the empty-branch guard
+absorbed the case that used to cover the conflict refusal**, leaving `gitChangeControl`'s git-level
+failure reached by no test at all. A genuinely conflicting merge now constructs it.
+
+And two matrices had **juries too narrow to see the suite that would have judged them** —
+`mut-adapters` and `mut-noopmerge` did not list `git-worktree.test.ts`, which the harness's own
+docstring warns is exactly how a matrix reads as a result without being one. Both now name every
+suite that exercises `adapters.ts`.
+
+### State at the end of pass 12
+
+```
+bun test src/Core.TypeScript/corporate/         1025 pass, 0 fail  (43 files)
+bun test src/Core.TypeScript/observe/           1630 pass, 0 fail  (111 files)
+tsc --noEmit                                       0 errors
+markdownlint, scoped to the branch diff             0 findings
+mutation: 22 matrices, 160/160 killed, 0 survivors, 0 stale anchors
+commit: aa4ace959
+```
