@@ -30,7 +30,7 @@
  */
 
 import { spawnSync } from "node:child_process";
-import { existsSync, readdirSync, readFileSync } from "node:fs";
+import { readdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 
 import {
@@ -166,12 +166,23 @@ export function directoryReview(dir: string, name = "queue"): ReviewPort {
     },
     review: async (request) => {
       const path = join(dir, request.workId, `${request.gate}.json`);
-      if (!existsSync(path)) {
-        return { ok: false, reason: `no verdict filed for '${request.gate}' on ${request.workId} (expected ${path})` };
+      // ONE SYSCALL. `existsSync(path)` then `readFileSync(path)` is a check-then-use race
+      // (TOCTOU, CWE-367): the verdict can be filed, or removed, between the two, so the answer the
+      // check gave is already stale when the read runs. A MISSING verdict and an unreadable one are
+      // still different answers — the first is "nobody has reviewed this", the second is a real
+      // fault — so `ENOENT` is separated from everything else rather than collapsed into it.
+      let raw: string;
+      try {
+        raw = readFileSync(path, "utf-8");
+      } catch (err) {
+        if ((err as NodeJS.ErrnoException).code === "ENOENT") {
+          return { ok: false, reason: `no verdict filed for '${request.gate}' on ${request.workId} (expected ${path})` };
+        }
+        return { ok: false, reason: `could not read the verdict for '${request.gate}' on ${request.workId}: ${err instanceof Error ? err.message : String(err)}` };
       }
       let parsed: unknown;
       try {
-        parsed = JSON.parse(readFileSync(path, "utf-8"));
+        parsed = JSON.parse(raw);
       } catch (err) {
         return { ok: false, reason: `${path} is not valid JSON: ${err instanceof Error ? err.message : String(err)}` };
       }
@@ -346,10 +357,21 @@ export function directoryIntake(dir: string, name = "directory"): IntakeSource {
       describes: `reads inbound events from ${dir}`,
     },
     poll: async () => {
-      if (!existsSync(dir)) return { ok: true, value: [], evidence: [{ kind: "document", ref: `empty:${dir}` }] };
+      // Attempted, not checked first: `existsSync(dir)` followed by `readdirSync(dir)` is the same
+      // check-then-use race. An absent inbox is a normal answer here — nothing has arrived — so it
+      // stays a success with no events; anything else is a real fault and is reported as one rather
+      // than read as an empty queue, which would make a broken mount look like a quiet morning.
+      let entries: readonly string[];
+      try {
+        entries = readdirSync(dir);
+      } catch (err) {
+        const code = (err as NodeJS.ErrnoException).code;
+        if (code === "ENOENT") return { ok: true, value: [], evidence: [{ kind: "document", ref: `empty:${dir}` }] };
+        return { ok: false, reason: `could not read the inbox at ${dir}: ${err instanceof Error ? err.message : String(err)}` };
+      }
       const events: ExternalEvent[] = [];
       const refs: string[] = [];
-      for (const entry of inboxOrder(readdirSync(dir))) {
+      for (const entry of inboxOrder(entries)) {
         const path = join(dir, entry);
         let parsed: unknown;
         try {

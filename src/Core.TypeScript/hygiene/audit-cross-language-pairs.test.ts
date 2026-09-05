@@ -100,3 +100,39 @@ describe("the roster", () => {
     }
   });
 });
+
+describe("a replay that lives BESIDE its module still counts as a pin", () => {
+  test("MenuGenerator is pinned — the transcript replay is in src/Core, not tests/", () => {
+    // Measured 2026-09-05: reported as a NEW unpinned pair the day `src/Core/MenuGenerator.fs`
+    // landed, while `src/Core/WorkflowEngine.Tests.fs` was already replaying its 19
+    // `MenuGeneration` vectors and calling `MenuGenerator.MenuInput`. The roster walked only
+    // `tests/Tests.FSharp`, so the pin was invisible to it.
+    //
+    // This is the direction that does real damage. The documented remedy for a false alarm is
+    // `DECLARED_UNPINNED` — "this pair needs no treaty" — so an unseeable pin invites a false
+    // statement onto the record about a pair that has one.
+    const pair = findPairs().find((p) => p.concept === "MenuGenerator");
+    expect(pair).toBeDefined();
+    expect(pair?.pinnedBy.length ?? 0).toBeGreaterThan(0);
+    expect(pair?.pinnedBy.some((f) => f.includes("WorkflowEngine.Tests"))).toBe(true);
+  });
+
+  test("...and it is NOT declared unpinned, which would be the false statement", () => {
+    expect(DECLARED_UNPINNED.has("MenuGenerator")).toBe(false);
+  });
+
+  test("the widening is real: at least one pin comes from a src-side replay", () => {
+    // Falsifies the change itself rather than its effect on one concept. Reverting the walk to
+    // `tests/Tests.FSharp` alone makes this empty.
+    // Separator-agnostic on purpose: `walk` returns native paths, so a forward-slash-only pattern
+    // passes on CI and fails on Windows — a test that is green on one machine and red on another
+    // is worse than no test, because the disagreement gets blamed on the code it guards.
+    const fromSrc = findPairs()
+      .flatMap((p) => p.pinnedBy)
+      .filter((f) => {
+        const norm = f.replace(/\\/g, "/");
+        return norm.includes("src/Core/") && norm.endsWith(".Tests.fs");
+      });
+    expect(fromSrc.length).toBeGreaterThan(0);
+  });
+});

@@ -71,7 +71,11 @@ describe("canonical bytes", () => {
     // different addresses on machines with different ICU data.
     const out = canonicalJson({ a: 1, B: 2 });
     expect(out.indexOf('"B"')).toBeLessThan(out.indexOf('"a"'));
-    expect("a".localeCompare("B", "en")).toBeLessThan(0); // the collation this avoids
+    // NOT asserted with `localeCompare`. That call's result depends on the runtime's ICU data,
+    // which is the very thing this code refuses to depend on — so an assertion about it is
+    // machine-dependent in exactly the way the production path is not. The contrast is stated
+    // above; what is CHECKED is the code-unit fact, which cannot vary.
+    expect("B" < "a").toBe(true);
   });
 });
 

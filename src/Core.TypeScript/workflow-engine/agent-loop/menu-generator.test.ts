@@ -211,7 +211,11 @@ describe("SCORING ORDERS AND NEVER FILTERS", () => {
       (s) => s.candidate.id,
     );
     expect(ordered).toEqual(["B", "a"]);
-    expect("a".localeCompare("B")).toBeLessThan(0); // the collation this deliberately avoids
+    // NOT asserted with `localeCompare`. That call's result depends on the runtime's ICU data,
+    // which is the very thing this code refuses to depend on — so an assertion about it is
+    // machine-dependent in exactly the way the production path is not. The contrast is stated
+    // above; what is CHECKED is the code-unit fact, which cannot vary.
+    expect("B" < "a").toBe(true);
   });
 
   test("the ordering is TOTAL and replayable — ties break on id", () => {

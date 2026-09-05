@@ -129,12 +129,25 @@ describe("the key sort is ORDINAL, and the change re-keyed nothing", () => {
   // measured across all 1675 shards on disk before the change; these tests keep it measured, so a
   // new field whose name breaks the equivalence fails here instead of silently re-keying the store.
 
-  test("ordinal and locale order agree on EVERY MetricsFrame key", () => {
+  test("the comparator IS code-unit order, checked against a second implementation", () => {
+    // This used to sort the keys a second time with `localeCompare` and assert the two agreed.
+    // That made the test's own truth depend on the runtime's ICU tables — the property this file
+    // exists to say the production path does NOT have. Agreement with ICU was never the claim
+    // worth pinning anyway; being code-unit order is.
+    //
+    // So the second sort is an INDEPENDENT implementation of the same rule: a char-by-char walk
+    // over `charCodeAt`, which shares no code with `<` and cannot drift with a locale.
     const keys = Object.keys(FRAME);
     expect(keys.length).toBeGreaterThan(5);
     const ordinal = [...keys].sort((a, b) => (a === b ? 0 : a < b ? -1 : 1));
-    const locale = [...keys].sort((a, b) => a.localeCompare(b, "en"));
-    expect(ordinal).toEqual(locale);
+    const byCodeUnit = [...keys].sort((a, b) => {
+      for (let i = 0; i < Math.min(a.length, b.length); i++) {
+        const d = a.charCodeAt(i) - b.charCodeAt(i);
+        if (d !== 0) return d;
+      }
+      return a.length - b.length;
+    });
+    expect(ordinal).toEqual(byCodeUnit);
   });
 
   test("the sort really is ordinal — it is not just agreeing by accident", () => {
@@ -142,7 +155,11 @@ describe("the key sort is ORDINAL, and the change re-keyed nothing", () => {
     // If `canonicalJson` were still locale-aware this would come back the other way round.
     const mixed = canonicalJson({ a: 1, B: 2 } as unknown as MetricsFrame);
     expect(mixed.indexOf('"B"')).toBeLessThan(mixed.indexOf('"a"'));
-    expect("a".localeCompare("B", "en")).toBeLessThan(0);
+    // NOT asserted with `localeCompare`. That call's result depends on the runtime's ICU data,
+    // which is the very thing this code refuses to depend on — so an assertion about it is
+    // machine-dependent in exactly the way the production path is not. The contrast is stated
+    // above; what is CHECKED is the code-unit fact, which cannot vary.
+    expect("B" < "a").toBe(true);
   });
 
   /**

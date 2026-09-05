@@ -172,7 +172,23 @@ function pinsFor(
 export function findPairs(): Pair[] {
   const fsharpFiles = walk(FSHARP_DIR).filter((f) => f.endsWith(".fs"));
   const tsFiles = walk(TS_DIR);
-  const fsTestFiles = walk(FSHARP_TESTS).filter((f) => f.endsWith(".fs"));
+  // BOTH PLACES F# TESTS LIVE. `tests/Tests.FSharp` is the usual one; a handful of replays sit
+  // beside the module they exercise as `src/Core/<Module>.Tests.fs`, and walking only the first
+  // made those pins invisible.
+  //
+  // Measured 2026-09-05: `MenuGenerator` was reported as a NEW unpinned pair the day
+  // `src/Core/MenuGenerator.fs` landed — while `src/Core/WorkflowEngine.Tests.fs` was already
+  // replaying its 19 `MenuGeneration` vectors out of the treaty transcript and calling
+  // `MenuGenerator.MenuInput`. The pin existed; the roster could not see it.
+  //
+  // That is the WORSE direction for this particular audit to fail in. Its own docstring says a
+  // roster that cries wolf gets ignored, and the remedy on offer for a false alarm is
+  // `DECLARED_UNPINNED` — so an unseeable pin invites someone to declare "this needs no treaty"
+  // about a pair that HAS one, which converts a tooling gap into a false statement on the record.
+  const fsTestFiles = [
+    ...walk(FSHARP_TESTS).filter((f) => f.endsWith(".fs")),
+    ...walk(FSHARP_DIR).filter((f) => f.endsWith(".Tests.fs")),
+  ];
 
   const tsPathSet = new Set(tsFiles.map((f) => f.replace(/\\/g, "/")));
   const tsDirs = new Set<string>();
