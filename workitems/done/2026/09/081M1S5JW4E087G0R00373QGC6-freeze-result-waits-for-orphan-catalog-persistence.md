@@ -1,7 +1,7 @@
 ---
 id: 081M1S5JW4E087G0R00373QGC6
 type: bug
-state: active
+state: done
 priority: P2
 slug: freeze-result-waits-for-orphan-catalog-persistence
 title: "Freeze result waits for orphan catalog persistence"
@@ -27,3 +27,12 @@ Acceptance:
 - catalog persistence failure faults unresolved replies;
 - the focused durable-freeze test passes repeatedly on macOS;
 - the repository gate remains green apart from declared nonblocking drift.
+
+Completion evidence:
+
+- catalog persistence now precedes every result completion in the batch;
+- an injected `known.pins` crash faults the unresolved caller;
+- the durable real-directory test passed 50 consecutive macOS repetitions;
+- the focused pair of ordering and persistence-failure tests passed;
+- F# style and analyzer checks passed;
+- `bun run preflight` passed all 18 checks.
