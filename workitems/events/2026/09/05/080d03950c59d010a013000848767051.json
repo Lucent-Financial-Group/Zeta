@@ -1,0 +1,14 @@
+{
+  "id": "080d03950c59d010a013000848767051",
+  "at": "2026-09-05T17:33:04.698Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1SA32SS087G0R0026C01ZP",
+    "type": "bug",
+    "title": "foldRetained is order-dependent near EPS: same evidence set yields belief vs contradiction",
+    "slug": "foldretained-is-order-dependent-near-eps-same-evidence-set-y",
+    "priority": "P2",
+    "filename": "081M1SA32SS087G0R0026C01ZP-foldretained-is-order-dependent-near-eps-same-evidence-set-y.md"
+  }
+}
