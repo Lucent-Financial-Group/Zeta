@@ -1,0 +1,14 @@
+{
+  "id": "080d039b7f274010a013000821e1dfa3",
+  "at": "2026-09-05T21:18:28.072Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1SPZS78087G0R002VVZT1E",
+    "type": "task",
+    "title": "Introduction form for ISim: the clis verb family stops being uninhabitable",
+    "slug": "introduction-form-for-isim-the-clis-verb-family-stops-being",
+    "priority": "P2",
+    "filename": "081M1SPZS78087G0R002VVZT1E-introduction-form-for-isim-the-clis-verb-family-stops-being.md"
+  }
+}
