@@ -1,0 +1,12 @@
+{
+  "pr_number": 16664,
+  "archive_path": "docs/history/pr-reviews/PR-16664-docs-join-hash-is-framework-hole-punch-after-discovery-not-a-gate-product.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-05T15:22:18.957Z",
+  "schema_version": "v1",
+  "commit_sha": "e8544f48ae18ab9ae5fa5b2e7b270ead71b90367",
+  "title": "docs: join-hash is framework; hole-punch after discovery, not a Gate product",
+  "state": "MERGED",
+  "merged_at": "2026-09-05T15:21:41Z",
+  "head_ref": "cursor/zeta-gate-product-lane-27c5"
+}

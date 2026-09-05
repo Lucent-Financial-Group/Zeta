@@ -1,0 +1,12 @@
+{
+  "pr_number": 16667,
+  "archive_path": "docs/history/pr-reviews/PR-16667-feat-arc-compare-hosted-coordinate-policies-on-one-roster.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-05T15:08:07.849Z",
+  "schema_version": "v1",
+  "commit_sha": "1baea12c3bdfad1e5748b9bff3beca3ab36ff457",
+  "title": "feat(arc): compare hosted coordinate policies on one roster",
+  "state": "MERGED",
+  "merged_at": "2026-09-05T15:07:27Z",
+  "head_ref": "claim/arc-hosted-policy-comparison"
+}

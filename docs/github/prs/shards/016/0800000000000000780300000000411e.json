@@ -1,0 +1,12 @@
+{
+  "pr_number": 16670,
+  "archive_path": "docs/history/pr-reviews/PR-16670-docs-arc-preserve-hosted-coordinate-policy-result.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-05T15:37:59.189Z",
+  "schema_version": "v1",
+  "commit_sha": "22d1c3b0c187a247749f13fd7ce5812d74e695da",
+  "title": "docs(arc): preserve hosted coordinate-policy result",
+  "state": "MERGED",
+  "merged_at": "2026-09-05T15:37:24Z",
+  "head_ref": "codex/arc-hosted-policy-evidence"
+}
