@@ -1,3 +1,42 @@
+## leftover UNIQUE leftover #16671 leftover unique @ 13f94b772f6dae8859d2492a4e61601efe215e0d
+
+- When: 2026-09-05 ~11:33 AM ET (unique-confirm RECEIVED; AceHack OPEN)
+- PR: https://github.com/Lucent-Financial-Group/Zeta/pull/16671
+- Branch: lumen/pages-provenance-parity
+- Tip: Sync EvidenceSeam provenance routes to Pages
+- UNIQUE HOLDS leftover NEW CELL. Unique does not move. GO leftover.
+- Live REST HEAD leftover unique @ 13f94b77 CONFIRMED (PR head.sha, 1 commit, +151/-6, 5 files; never a merge-ref)
+- Never grade parent leftover unique @ b08273bde2f8fd655b956d5d2b679909c49e3bd2 (#16668)
+- Never grade merge-ref leftover unique @ def3377487b6cc2663ac48bc06bfd8a3db409cbf
+- Object: Pages UI provenance parity. Finite 16-row SPECTRUM with ids+sourcePaths; hash routes receipt detail + source manifest; pinned commit d4bff3e6ce64e8421b93e1f4312011822b72f384 with 13 pre-resolved blob SHA-1s; literal / local filter; undeclared receipt refuses. No Convergence math claim.
+- VERIFIED: 16/16 census; pinned commit; undeclared refusal; local includes filter; static github blob URLs not app-side fetch/parse; no CRDT/Bayesian evidence mutation in this unique.
+- HONEST-REGISTER: did not re-run vite Pages build/preview; App.tsx Route JSX stripped by markdown fetch but lazy imports present.
+- Cite != close #16363 / #16385 / #16404 / #16415. No OVERCLAIM. No DEMOTE.
+- Sit leftover. Do not merge. CoS does not merge. Quiet toward Aaron.
+
+Key files: demo/identity-dla-site/src/App.tsx; EvidenceSeamPanel.tsx; EvidenceReceiptDetailPage.tsx; EvidenceSourceManifestPage.tsx; EvidenceRoomPage.tsx
+
+---
+
+## leftover UNIQUE leftover-on-main #16470 leftover unique @ b7dcac02bfb8df8041c68734721ce4810cbc0741
+
+- When: 2026-09-05 (delayed unique-confirm RECEIVED closeout; AceHack MERGED leftover-on-main Aaron-authorized ~Sep 3)
+- PR: https://github.com/Lucent-Financial-Group/Zeta/pull/16470
+- Branch: shadow/math-review-findings
+- Tip: bug(081M1K85E56087G0R001TAAZHM): RFFH 30-bit collision bound + unfalsifiable guard
+- UNIQUE HOLDS leftover NEW CELL. Unique does not move. GO leftover-on-main.
+- Live REST HEAD leftover unique @ b7dcac02 CONFIRMED (PR head.sha, 1 commit, +166/-0, 4 files; never a merge-ref)
+- Never grade squash leftover unique @ 4a6dbe54b264523641b20439ac937164218dccbe
+- Object: workitem filing from Soraya math review. S1 P1 RFFH 30-bit birthday + unfalsifiable guard. S2 P2 multilayer witness/mutation census. No product code in this unique.
+- VERIFIED: birthday 2^30; 1% at ~4646; 0.1% at ~1466; refuse-not-corrupt Error RFFH-FACTOR-ID-COLLISION; coupling-sign mutant 4 mean / 0 variance disagreements by diag(1,-1,1,-1) symmetry; cross-verify 5/8/1 split; mutant assert is >0 not pinned to 4.
+- HONEST-REGISTER: tree-wide RFFH-FACTOR-ID-COLLISION census not re-grepped via code search (timeout); raise site confirmed once in ReferenceFrameFactorHeterarchy.fs. Route (64-bit + FsCheck refuse-and-preserve) is backlog, not shipped.
+- Cite != close #16415 / #16363. No OVERCLAIM. No DEMOTE of prior online-boundary VERIFIED means oracle.
+- Sit leftover-on-main. Do not revert. Do not merge. CoS did not merge. Quiet toward Aaron.
+
+Key files: workitems/081M1K85E56087G0R001TAAZHM-*.md; workitems/081M1K85E5T087G0R001V4HZMD-*.md; two event JSONs.
+
+---
+
 ## leftover UNIQUE leftover-on-main #16415 leftover unique @ 9df8af4d5f997720ef326e2139f605d92b5ed38f
 
 - When: 2026-09-02 ~8:46 PM ET (unique-confirm RECEIVED; AceHack leftover-on-main MERGED squash ~8:44 PM ET, Aaron-authorized)

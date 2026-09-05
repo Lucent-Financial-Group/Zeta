@@ -2014,3 +2014,102 @@ let ``orphan catalog survives volume reopen after crash leftover`` () : Task =
             ZetaFsFreeze.dispose volume3
             FileSystem.Reset()
     }
+
+[<Fact>]
+let ``reopen enqueues orphan reclaim without waiting for the next freeze`` () : Task =
+    task {
+        ensureHasher ()
+        let mock = InMemoryFileSystem()
+        FileSystem.Register(mock)
+        let store = "/crash-orphan-reopen-tick"
+        let mutbuf = ZetaFsMutbuf.create store ZetaFsMutbuf.Coherence.Shared
+        let casPath (id: ContentHash256) =
+            let hex = (ContentHash256.toContentAddress128 id).ToHex()
+            ZetaFsPath.combine4 store "objects" (hex.Substring(0, 2)) (hex.Substring(2))
+        let id = mintId ()
+        let mutable firstContent = Unchecked.defaultof<ContentHash256>
+        let mutable leftoverId = Unchecked.defaultof<ContentHash256>
+        let volume1 = ZetaFsFreeze.createManualStream store mutbuf None
+
+        try
+            let h = ZetaFsMutbuf.openHandle volume1.Mutbuf id
+            ZetaFsMutbuf.pwrite volume1.Mutbuf h 0L [| 1uy; 2uy; 3uy |] |> ignore
+            let pending = (freezeAsync volume1 id ZetaFsFreeze.Journaled).AsTask()
+            do! (ZetaFsFreeze.pumpLog volume1 CancellationToken.None).ConfigureAwait(false)
+            let! first = pending.ConfigureAwait(false)
+            match first with
+            | Error e -> Assert.Fail(ZetaFsFreeze.errorName e)
+            | Ok ok ->
+                do! (ZetaFsFreeze.pumpReclaim volume1 CancellationToken.None).ConfigureAwait(false)
+                firstContent <- ok.Content
+        finally
+            ZetaFsFreeze.dispose volume1
+
+        let volume2 = ZetaFsFreeze.createManualStream store mutbuf None
+        try
+            mock.ArmCrashMidWrite("objects", 1)
+            let h = ZetaFsMutbuf.openHandle volume2.Mutbuf id
+            ZetaFsMutbuf.pwrite volume2.Mutbuf h 0L (Array.init 64 (fun i -> byte i)) |> ignore
+            let pending = (freezeAsync volume2 id ZetaFsFreeze.Journaled).AsTask()
+            do! (ZetaFsFreeze.pumpLog volume2 CancellationToken.None).ConfigureAwait(false)
+            let! _ =
+                Assert
+                    .ThrowsAsync<CrashMidWriteException>(fun () -> pending :> Task)
+                    .ConfigureAwait(false)
+            let leftovers = ZetaFsFreeze.orphanObjects volume2
+            Assert.True(leftovers.Length > 0)
+            leftoverId <- leftovers.[0].Id
+        finally
+            ZetaFsFreeze.dispose volume2
+
+        let volume3 = ZetaFsFreeze.createManualStream store mutbuf None
+        try
+            let leftoverPath = casPath leftoverId
+            Assert.True(FileSystem.Current.Exists leftoverPath)
+            Assert.Equal(0, ZetaFsFreeze.reclaimBoatCount volume3)
+            do! (ZetaFsFreeze.pumpReclaim volume3 CancellationToken.None).ConfigureAwait(false)
+            Assert.Equal(1, ZetaFsFreeze.reclaimBoatCount volume3)
+            Assert.False(FileSystem.Current.Exists leftoverPath)
+            Assert.True(ZetaFsFreeze.isReadable volume3 firstContent)
+        finally
+            ZetaFsFreeze.dispose volume3
+            FileSystem.Reset()
+    }
+
+[<Fact>]
+let ``reopen with empty orphan catalog does not enqueue reclaim`` () : Task =
+    task {
+        ensureHasher ()
+        let mock = InMemoryFileSystem()
+        FileSystem.Register(mock)
+        let store = "/reopen-empty-orphans"
+        let mutbuf = ZetaFsMutbuf.create store ZetaFsMutbuf.Coherence.Shared
+        let id = mintId ()
+        let mutable firstContent = Unchecked.defaultof<ContentHash256>
+        let volume1 = ZetaFsFreeze.createManualStream store mutbuf None
+
+        try
+            let h = ZetaFsMutbuf.openHandle volume1.Mutbuf id
+            ZetaFsMutbuf.pwrite volume1.Mutbuf h 0L [| 1uy; 2uy; 3uy |] |> ignore
+            let pending = (freezeAsync volume1 id ZetaFsFreeze.Journaled).AsTask()
+            do! (ZetaFsFreeze.pumpLog volume1 CancellationToken.None).ConfigureAwait(false)
+            let! first = pending.ConfigureAwait(false)
+            match first with
+            | Error e -> Assert.Fail(ZetaFsFreeze.errorName e)
+            | Ok ok ->
+                do! (ZetaFsFreeze.pumpReclaim volume1 CancellationToken.None).ConfigureAwait(false)
+                Assert.Equal(0, (ZetaFsFreeze.orphanObjects volume1).Length)
+                firstContent <- ok.Content
+        finally
+            ZetaFsFreeze.dispose volume1
+
+        let volume2 = ZetaFsFreeze.createManualStream store mutbuf None
+        try
+            Assert.Equal(0, (ZetaFsFreeze.orphanObjects volume2).Length)
+            do! (ZetaFsFreeze.pumpReclaim volume2 CancellationToken.None).ConfigureAwait(false)
+            Assert.Equal(0, ZetaFsFreeze.reclaimBoatCount volume2)
+            Assert.True(ZetaFsFreeze.isReadable volume2 firstContent)
+        finally
+            ZetaFsFreeze.dispose volume2
+            FileSystem.Reset()
+    }
