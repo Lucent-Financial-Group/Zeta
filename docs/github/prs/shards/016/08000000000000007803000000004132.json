@@ -1,0 +1,12 @@
+{
+  "pr_number": 16690,
+  "archive_path": "docs/history/pr-reviews/PR-16690-feat-081m1sdcy6b087g0r00330f1hz-persist-volume-history-policy-in-known-pins.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-05T18:54:04.802Z",
+  "schema_version": "v1",
+  "commit_sha": "bbd88d981db3108aa2c7cfa59c34bd69275b0cfd",
+  "title": "feat(081M1SDCY6B087G0R00330F1HZ): persist volume history policy in known.pins",
+  "state": "MERGED",
+  "merged_at": "2026-09-05T18:53:28Z",
+  "head_ref": "feat/zetafs-persist-history"
+}
