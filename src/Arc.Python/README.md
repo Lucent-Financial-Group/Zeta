@@ -133,6 +133,13 @@ costs 3 before the controller adapts. These are synthetic, source-owned tasks,
 not leaderboard scores. The adapter conforms to the acting loop's coordinate
 port, but the hosted default remains the centroid control.
 
+The hosted runner now exposes that boundary explicitly. A keyed run selects the
+experimental adapter with
+`--play-hosted --hosted-coordinate-policy scene-feedback`; `centroid` remains
+the default. Every roster summary and environment row records the selected
+policy, so measurements from the two implementations cannot be silently mixed.
+Without `ARC_API_KEY`, no hosted score is inferred from the offline fixtures.
+
 ## One mistake worth keeping
 
 The first driver reimplemented the engine's action loop by hand and deadlocked.

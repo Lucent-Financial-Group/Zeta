@@ -30,16 +30,22 @@ from zeta_arc.click import MAX_COORD, SWEEP_STRIDES, ClickPolicy
 from zeta_arc.driver import advance, reset
 from zeta_arc.dynamics import conservative
 from zeta_arc.environments.chase import ZetaChase
+from zeta_arc.environments.click_target import ZetaClickTarget
 from zeta_arc.environments.discovery import ZetaDiscovery
 from zeta_arc.frames import grid_of, is_click, offered_actions
 from zeta_arc.hosted import (
+    HostedCoordinatePolicy,
     Wrapper,
+    _budget_comparability,
+    build_hosted_agent,
     environment_score,
     play_environment,
+    play_roster,
     score_level,
 )
 from zeta_arc.layered import CLICK, KEYBOARD, LayeredAgent
 from zeta_arc.perception import Component
+from zeta_arc.scene_feedback import SceneCoordinatePolicy
 
 
 class FakeFrame:
@@ -695,6 +701,15 @@ def test_the_breakdown_key_order_is_deterministic() -> None:
     assert _tally([]) == {}
 
 
+def test_budget_comparability_does_not_claim_800_is_below_578() -> None:
+    below = _budget_comparability(577)
+    covered = _budget_comparability(800)
+
+    assert below.startswith("not-leaderboard-comparable")
+    assert covered.startswith("published-reference-floor-covered")
+    assert "does not establish leaderboard comparability" in covered
+
+
 def test_the_loop_sends_coordinates_with_a_coordinate_action() -> None:
     """A click with no `{x, y}` validates into `x=0, y=0` and clicks the corner
     forever — a silent wrong answer, which is why the agent returns data."""
@@ -794,6 +809,65 @@ class OwnGameWrapper:
 
     def step(self, action: GameAction, data: dict[str, Any] | None = None) -> Any:
         return advance(self.game, action, **(data or {}))
+
+
+def test_the_hosted_coordinate_policy_default_remains_the_centroid_control() -> None:
+    agent = build_hosted_agent("game")
+
+    assert isinstance(agent.click, ClickPolicy)
+
+
+@pytest.mark.parametrize(
+    ("policy", "expected_type"),
+    [
+        (HostedCoordinatePolicy.CENTROID, ClickPolicy),
+        (HostedCoordinatePolicy.SCENE_FEEDBACK, SceneCoordinatePolicy),
+    ],
+)
+def test_each_hosted_coordinate_policy_runs_the_real_click_game_end_to_end(
+    policy: HostedCoordinatePolicy, expected_type: type[Any]
+) -> None:
+    agent = build_hosted_agent("zeta-click-target", policy)
+    result = play_environment(
+        OwnGameWrapper(ZetaClickTarget(seed=4)),
+        references=[1],
+        total_levels=1,
+        agent=agent,
+    )
+
+    assert isinstance(agent.click, expected_type)
+    assert result["levels_cleared"] == 1
+    assert result["actions_total"] == 1
+    assert result["terminated"] == "win"
+
+
+def test_roster_reports_the_experimental_policy_on_summary_and_environment() -> None:
+    class SourceOwnedArcade:
+        info = type(
+            "Info",
+            (),
+            {
+                "game_id": "zeta-click-target",
+                "title": "ZetaClickTarget",
+                "baseline_actions": [1],
+            },
+        )()
+
+        def get_environments(self) -> list[Any]:
+            return [self.info]
+
+        def make(self, game_id: str, seed: int) -> OwnGameWrapper:
+            assert game_id == self.info.game_id
+            return OwnGameWrapper(ZetaClickTarget(seed=seed))
+
+    result = play_roster(
+        SourceOwnedArcade(),
+        coordinate_policy=HostedCoordinatePolicy.SCENE_FEEDBACK,
+    )
+
+    assert result["coordinate_policy"] == "scene-feedback"
+    assert result["results"][0]["coordinate_policy"] == "scene-feedback"
+    assert result["levels_cleared_total"] == 1
 
 
 def test_the_hosted_loop_clears_a_real_environment_end_to_end() -> None:

@@ -37,6 +37,7 @@ from __future__ import annotations
 
 from collections.abc import Iterable
 from dataclasses import dataclass
+from enum import StrEnum
 from typing import Any, Protocol
 
 from arcengine import GameAction, GameState
@@ -44,6 +45,7 @@ from arcengine import GameAction, GameState
 from zeta_arc.frames import grid_of
 from zeta_arc.layered import LayeredAgent
 from zeta_arc.progress import LevelProbe
+from zeta_arc.scene_feedback import SceneCoordinatePolicy
 
 #: Per-level ceiling. Deliberately generous against the published references —
 #: the largest `baseline_actions` entry on the live roster is 578 (DC22), and a
@@ -51,10 +53,31 @@ from zeta_arc.progress import LevelProbe
 #: failed on a level nobody clears that fast. Read off the roster, not chosen.
 MAX_ACTIONS_PER_LEVEL = 800
 
+#: Largest reference count observed on the hosted roster (DC22). This is only a
+#: measured floor for a useful action budget, not proof of leaderboard parity.
+MAX_PUBLISHED_BASELINE_ACTIONS = 578
+
 #: Whole-episode ceiling, because per-level alone does not bound the run: an
 #: environment reporting a level cleared every action would loop forever inside
 #: the per-level budget. 10 levels is the roster's maximum level count.
 MAX_ACTIONS_PER_EPISODE = MAX_ACTIONS_PER_LEVEL * 12
+
+
+class HostedCoordinatePolicy(StrEnum):
+    """Coordinate-policy implementations available to an explicit hosted run."""
+
+    CENTROID = "centroid"
+    SCENE_FEEDBACK = "scene-feedback"
+
+
+def build_hosted_agent(
+    game_fingerprint: str,
+    coordinate_policy: HostedCoordinatePolicy = HostedCoordinatePolicy.CENTROID,
+) -> LayeredAgent:
+    """Build one environment-scoped agent without changing the hosted default."""
+    if coordinate_policy is HostedCoordinatePolicy.SCENE_FEEDBACK:
+        return LayeredAgent(click=SceneCoordinatePolicy(game_fingerprint))
+    return LayeredAgent()
 
 
 class Wrapper(Protocol):
@@ -136,8 +159,13 @@ def play_environment(
     total_levels: int | None = None,
     max_actions_per_level: int = MAX_ACTIONS_PER_LEVEL,
     max_actions_per_episode: int = MAX_ACTIONS_PER_EPISODE,
+    agent: LayeredAgent | None = None,
 ) -> dict[str, Any]:
     """One episode against one environment. Returns per-level and aggregate scores.
+
+    An omitted agent preserves the centroid-policy default. Supplying an agent
+    is the explicit experiment port; the loop does not inspect its concrete
+    coordinate-policy implementation.
 
     LEVEL CLEARANCE IS READ FROM `levels_completed`, not inferred. The frame
     carries it (`arcengine/enums.py:135`), and it is the same counter the
@@ -151,7 +179,7 @@ def play_environment(
     the game ending are the same event and only one of them increments.
     """
     references = references or []
-    agent = LayeredAgent()
+    agent = agent if agent is not None else LayeredAgent()
 
     frame = wrapper.reset()
     if frame is None:
@@ -360,18 +388,38 @@ def _reference(references: list[int], level: int) -> int | None:
     return references[level] if 0 <= level < len(references) else None
 
 
-def play_hosted(arcade: Any, game_id: str, seed: int = 4) -> dict[str, Any]:
-    """Download one hosted environment and play it. Pure delegation, no logic.
+def _budget_comparability(max_actions_per_level: int) -> str:
+    """State exactly what the configured ceiling establishes, and no more."""
+    if max_actions_per_level < MAX_PUBLISHED_BASELINE_ACTIONS:
+        return (
+            "not-leaderboard-comparable: action ceiling is below the largest "
+            "published baseline (578), so some levels are prevented rather than "
+            "measured"
+        )
+    return (
+        "published-reference-floor-covered: action ceiling reaches the largest "
+        "published baseline (578); this alone does not establish leaderboard "
+        "comparability"
+    )
 
-    Everything decidable is in `play_environment`. This function exists to be
-    the ONLY unfalsifiable line in the lane — `arcade.make` needs a key and a
-    network — so that when the hosted path is finally exercised in CI, the part
-    that was never run locally is one call and its arguments.
+
+def play_hosted(
+    arcade: Any,
+    game_id: str,
+    seed: int = 4,
+    coordinate_policy: HostedCoordinatePolicy = HostedCoordinatePolicy.CENTROID,
+) -> dict[str, Any]:
+    """Download one hosted environment and play it with an explicit policy.
+
+    Everything decidable is in `build_hosted_agent` and `play_environment`.
+    This function keeps the ONLY unfalsifiable line in the lane — `arcade.make`
+    needs a key and a network — to one call whose arguments are visible.
     """
     wrapper = arcade.make(game_id, seed=seed)
     if wrapper is None:
         return {
             "game_id": game_id,
+            "coordinate_policy": coordinate_policy.value,
             "error": "make-returned-none",
             "environment_score": 0.0,
         }
@@ -380,8 +428,14 @@ def play_hosted(arcade: Any, game_id: str, seed: int = 4) -> dict[str, Any]:
         wrapper,
         references=list(info.baseline_actions or []),
         total_levels=len(info.baseline_actions or []) or None,
+        agent=build_hosted_agent(game_id, coordinate_policy),
     )
-    return {"game_id": game_id, "title": info.title, **result}
+    return {
+        "game_id": game_id,
+        "title": info.title,
+        "coordinate_policy": coordinate_policy.value,
+        **result,
+    }
 
 
 def play_roster(
@@ -389,6 +443,7 @@ def play_roster(
     max_environments: int | None = None,
     max_actions_per_level: int = MAX_ACTIONS_PER_LEVEL,
     seed: int = 4,
+    coordinate_policy: HostedCoordinatePolicy = HostedCoordinatePolicy.CENTROID,
 ) -> dict[str, Any]:
     """Play every hosted environment this key can see, and report the sweep.
 
@@ -404,6 +459,9 @@ def play_roster(
     whose published reference is 578 has not been measured against that level,
     it has been prevented from reaching it. The field is in the output so the
     caveat travels with the number rather than living in a commit message.
+
+    The coordinate policy travels the same way: the roster summary and every
+    environment row carry its name, including failure rows.
     """
     environments = sorted(arcade.get_environments(), key=lambda e: e.game_id)
     if max_environments is not None:
@@ -417,6 +475,7 @@ def play_roster(
                 played.append(
                     {
                         "game_id": info.game_id,
+                        "coordinate_policy": coordinate_policy.value,
                         "error": "make-returned-none",
                         "environment_score": 0.0,
                     }
@@ -428,12 +487,21 @@ def play_roster(
                 references=references,
                 total_levels=len(references) or None,
                 max_actions_per_level=max_actions_per_level,
+                agent=build_hosted_agent(info.game_id, coordinate_policy),
             )
-            played.append({"game_id": info.game_id, "title": info.title, **result})
+            played.append(
+                {
+                    "game_id": info.game_id,
+                    "title": info.title,
+                    "coordinate_policy": coordinate_policy.value,
+                    **result,
+                }
+            )
         except Exception as error:  # noqa: BLE001 — a sweep reports failures, it does not inherit them
             played.append(
                 {
                     "game_id": info.game_id,
+                    "coordinate_policy": coordinate_policy.value,
                     "error": type(error).__name__,
                     "detail": str(error)[:200],
                     "environment_score": 0.0,
@@ -442,6 +510,7 @@ def play_roster(
 
     scored = [row for row in played if "error" not in row]
     return {
+        "coordinate_policy": coordinate_policy.value,
         "environments_seen": len(environments),
         "environments_played": len(scored),
         "environments_failed": len(played) - len(scored),
@@ -464,10 +533,6 @@ def play_roster(
             else 0.0
         ),
         "max_actions_per_level": max_actions_per_level,
-        "comparability": (
-            "NOT leaderboard-comparable while `max_actions_per_level` is below the "
-            "largest published `baseline_actions` (578 on the live roster): a level "
-            "the agent was cut off before reaching was not measured, only prevented."
-        ),
+        "comparability": _budget_comparability(max_actions_per_level),
         "results": played,
     }

@@ -56,7 +56,11 @@ from zeta_arc.environments.chase import (
 from zeta_arc.hosted import (
     MAX_ACTIONS_PER_LEVEL as HOSTED_MAX_ACTIONS_PER_LEVEL,
 )
-from zeta_arc.hosted import play_roster
+from zeta_arc.hosted import (
+    MAX_PUBLISHED_BASELINE_ACTIONS,
+    HostedCoordinatePolicy,
+    play_roster,
+)
 
 #: Fixed action order, so a "random" agent is reproducible from its seed.
 _ACTION_ORDER: tuple[GameAction, ...] = tuple(_MOVES.keys())
@@ -389,8 +393,18 @@ def main() -> None:
         default=HOSTED_MAX_ACTIONS_PER_LEVEL,
         help=(
             "per-level action ceiling for the hosted sweep. Below the largest "
-            "published baseline (578) the scores stop being comparable, and the "
-            "output says so rather than leaving it to the reader."
+            f"published baseline ({MAX_PUBLISHED_BASELINE_ACTIONS}) the scores stop "
+            "being comparable, and the output says so rather than leaving it to "
+            "the reader."
+        ),
+    )
+    parser.add_argument(
+        "--hosted-coordinate-policy",
+        choices=tuple(policy.value for policy in HostedCoordinatePolicy),
+        default=HostedCoordinatePolicy.CENTROID.value,
+        help=(
+            "coordinate policy for --play-hosted; scene-feedback is experimental "
+            "and centroid remains the default"
         ),
     )
     args = parser.parse_args()
@@ -407,6 +421,7 @@ def main() -> None:
             max_environments=args.max_environments,
             max_actions_per_level=args.max_actions_per_level,
             seed=args.seed,
+            coordinate_policy=HostedCoordinatePolicy(args.hosted_coordinate_policy),
         )
         print(json.dumps({"mode": mode, **sweep}, indent=2))
         return
