@@ -1,11 +1,12 @@
 ---
 id: 081M1SC3ADK087G0R001M8YKBS
 type: task
-state: in-progress
+state: done
 priority: P2
 slug: keepnone-unpin-survives-volume-reopen-without-a-pump
 title: "KeepNone unpin survives volume reopen without a pump"
 created: 2026-09-05T18:08:09.652Z
+completed: 2026-09-05T18:30:53.363Z
 depends_on:
   - 081M1SAMBMM087G0R000E7JVEB
 composes_with: []
