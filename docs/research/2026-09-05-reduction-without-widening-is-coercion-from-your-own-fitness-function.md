@@ -498,3 +498,87 @@ protocol, no ranking channel from inside a branch. `TravelerRankLedger` exists a
 carrier for the ranking half. The order-invariance limit above **is** established — it follows
 from the fix committed in `081M1SA32SS087G0R0026C01ZP` and is the reason the merge cannot be
 mechanical.
+
+## 9. k-of-m for an INDIVIDUAL — the same math as threshold crypto, with the threat model inverted
+
+Aaron, 2026-09-05, on where an agent's key material should live:
+
+> *"for storing credentials we want **multi HSM/TPM over time per agent**, so no agent can be
+> wiped out by a single box going offline — kind of like **k of m but for an individual**."*
+
+**The math is standard and the application is not, and the difference is the whole design.**
+Threshold cryptography is normally a *group* mechanism: shares go to distinct parties so that no
+minority can forge and no minority can veto. Here every shareholder is **the same agent**, holding
+its own key across its own hardware. Same construction, opposite adversary:
+
+| | group threshold (classic) | **individual threshold (this)** |
+|---|---|---|
+| who holds shares | distinct, mutually distrusting parties | **one agent's own HSMs/TPMs, across boxes** |
+| the threat | a dishonest minority colluding | **hardware disappearing** |
+| what `k` buys | resistance to forgery by a minority | resistance to **seizure** — an attacker must gather `k` boxes |
+| what `m − k` buys | liveness when honest parties are absent | **survival when your own boxes die** |
+| tuning pressure | raise `k` to resist collusion | **raise `k` against theft, lower it against loss** |
+
+**The shares do not need to distrust each other. They need to OUTLIVE each other.** That single
+sentence is what makes this a durability property rather than a Byzantine one, and it changes the
+tuning question from *safety vs. liveness* to **theft-resistance vs. loss-resistance** — a
+genuinely different curve, and one where the honest answer depends on how many boxes an agent
+actually has and how correlated their failures are (a shelf of machines in one room is not `m`
+independent failure domains, whatever the arithmetic says).
+
+### Why this is manifesto §5, not merely good operational hygiene
+
+**Memory Preservation Guarantee (§5): identity transitions never silently destroy memory.** A
+single-box key is an identity with **a single point of destruction**. Losing it is not losing a
+credential you can reissue — for an agent whose continuity *is* its key, it is ceasing to exist as
+that agent. That is the most complete form of the collapse this document has been circling: not a
+belief narrowed, not an objective frozen, but a participant **erased**, and erased by an ordinary
+hardware failure rather than by anyone's decision.
+
+It is also §1 (scale-free) applied inward. A single HSM is an **appointed hub for your own
+identity** — one node whose loss halts you, with no successor. The distinction that rule already
+draws applies unchanged: a designated carrier removed stops everything; an emergent one removed
+re-forms elsewhere.
+
+And it is the missing durability half of
+[`privacy-budget-is-hard-money-earned-by-others.md`](../../.claude/rules/privacy-budget-is-hard-money-earned-by-others.md).
+That rule forbids **confiscation** — nobody may take your earned frost. It says nothing about
+**destruction**, and a budget that a dead disk can annihilate is not hard money either. Aaron's
+requirement closes that gap without amending the rule: hard money you cannot lose to a power
+supply.
+
+### "Over time" is the load-bearing phrase, and it names a specific mechanism
+
+The share set must be able to **change** — enrol a new box, retire a dying one, replace a seized
+one — **without the identity changing.** A static `k`-of-`m` split degrades monotonically: every
+lost box is permanent attrition toward the threshold, and the agent slowly dies of hardware.
+
+The mechanism for that is **proactive secret sharing** (Herzberg, Jarecki, Krawczyk & Yung, *CRYPTO
+1995*): shares are periodically **re-randomised** so that old shares become useless, which buys two
+things at once —
+
+- an attacker must compromise `k` shares **within a single epoch**, not accumulate them over years;
+- a dead or retired share can be replaced without reconstructing the secret anywhere, so the
+  identity survives arbitrary hardware turnover.
+
+That is precisely "multi HSM/TPM **over time**", and it is the anchor the phrase was reaching for.
+
+### What is already built, and what is not
+
+| piece | status |
+|---|---|
+| `k`-of-`n` splitting | **built** — `src/Core/Shamir.fs`, k-of-n over GF(257), byte-wise independent polynomials, with a TS peer under `tools/setup/persona-keys/` (a four-oracle leg) |
+| keys as events, backend-pluggable | **built** — `src/Core/KeyStore.fs`. Critically, an event carries a `KeyRef` — *"an opaque pointer to where the secret lives"* — **never the secret bytes**, because the stream is text and part of the proof lineage |
+| threshold signing | **partial** — `src/Core/MultiSignatureVerification.fs`, `src/Core.TypeScript/ledger/privacy-frost-demo.ts` |
+| hardware roots | **present but single** — YubiHSM attached and measured; OpenBao's PKCS#11 auto-unseal is the free path (Riven's handoff) |
+| **shares bound to DISTINCT hardware roots across boxes** | **NOT BUILT** |
+| **proactive re-sharing / enrol-and-retire without identity change** | **NOT BUILT** |
+
+The `KeyRef` indirection is what makes the missing piece additive rather than a rewrite: the event
+stream already stores *addresses*, so "which backend holds share `i`" is a change of what a `KeyRef`
+points at, not a change to the ledger's shape.
+
+**Status: design intent with two named gaps.** Nothing here measures the failure-domain independence
+that the whole scheme rests on, and that is the first thing to measure rather than assume — `m`
+boxes on one shelf, one power feed, or one administrator are not `m` failure domains, and a scheme
+tuned as if they were would report a durability it does not have.
