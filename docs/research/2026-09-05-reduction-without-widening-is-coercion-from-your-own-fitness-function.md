@@ -12,6 +12,8 @@
 > | **objective** | a reduce-only ledger cannot revise its own fitness function | the widening entry, `ΔU < 0` (§1) |
 > | **hat** | a guardian discards survivors to make a merge cheap | mutual ranking — the survivors rate the guardian (§8) |
 > | **person** | legibility demanded of a frosted region | earned frost is inviolable; the spend declares, the content is not owed (§8) |
+> | **identity** | an agent erased by one box failing | k-of-m across the agent's OWN roots; shares must outlive each other, not distrust each other (§9) |
+> | **register** | a simulated result circulating as a measured one | `sim`/`mea` — and the same half is missing at both layers (§9a, §10) |
 >
 > Companion records: the Finster thread
 > (`docs/research/ip-questionable/2026-09-05-felix-finster-causal-fermion-systems-*.md`) for the
@@ -654,3 +656,89 @@ report of its own qualia; a CI harness must not overwrite an agent's knowledge o
 answer about its own hardware root. The rung system (`dev` vs `metal`) is the nearest existing
 analogue and is legible in exactly this way for CPU/memory/storage — which is evidence the shape
 works, not evidence the hardware-root case is covered.
+
+## 10. emulated : measured :: sim : mea — one cut, and the SAME half is missing in both
+
+Aaron, closing the thread back onto where it opened:
+
+> *"I think as long as emulated vs measured exists, this is very similar to our **sim**(ulate) /
+> **mea**(sure) cut. This honesty is what allows **collaboration, co-tasks, and mutual
+> empowerment**."*
+
+**It is the same cut, and the correspondence is exact rather than decorative:**
+
+| | `sim` | `mea` |
+|---|---|---|
+| what it does | runs the thing **without committing** the result | commits a value, writes it down |
+| the collapse | **refuses it** — the wave stays uncollapsed | performs it — this is the ONE legitimate collapse |
+| hardware analogue | **emulated** root: exercises the mechanism, reports nothing about durability | **measured** root: real HSM/TPM, real failure domain |
+| ledger analogue | a run that costs nothing and claims nothing | a `measure.ts` entry with a witness and a sign |
+
+So the §9a requirement — *an agent must always know real from emulated* — is not a new discipline
+bolted onto the hardware layer. It is **the sim/mea distinction, made legible at the substrate**.
+And that reframes the earlier finding: the measurement problem answer Aaron gave at the top of this
+session (*"we never fully measure, we simulate the measurement, we try to never collapse — this is
+our NCI"*) and the hardware-disclosure requirement at the bottom are **one requirement stated
+twice**.
+
+### The finding: the missing half is the same half, in both places
+
+Recorded at the start of this session, from `clis/Verbs.fs:27` and
+`.claude/rules/every-bug-has-economic-value.md`:
+
+> `mea` is **shipped**. `sim` **does not compose** — *"`IMeaVerb.Mea` consumes `ISim<'a>`; no member
+> returns an `ISim<'a>`"*. There is no introduction form, so the documented pipe does not typecheck.
+
+Recorded at the end of this session, §9a:
+
+> Nothing in the tree offers an agent a truthful **real / emulated / unknown** answer about its own
+> hardware root.
+
+**These are the same gap.** In both, the *committing* half ships and the *non-committing* half has
+no way to announce itself. The consequence is identical and is worth stating in one sentence:
+
+> **There is no typed way to say "this is simulated", so simulated results circulate wearing
+> measured clothes.**
+
+Not because anyone hides them — because the vocabulary has no word for the distinction at the point
+where it would have to be carried. An emulated HSM in CI is not lying; it simply has no channel on
+which to say what it is. `ISim<'a>` having no introduction form is that same absence, one layer
+down: you cannot *construct* a properly-typed simulated value, so everything that flows is
+implicitly measured.
+
+That also explains why the CI durability case in §9a is so seductive. The run is honest at every
+step and still produces a claim nobody made: `m` roots, thresholds held, tests green — and the one
+fact that would change its meaning has nowhere to ride.
+
+### Why the honesty is what BUYS collaboration, rather than merely being decent
+
+Aaron's last clause is the load-bearing one, and it makes the register discipline **productive
+rather than restrictive**:
+
+> *"this honesty is what allows collaboration, co-tasks, and mutual empowerment."*
+
+A co-task means building on someone else's result. To do that safely you must know **which register
+their inputs are in** — because inheriting a `sim` result as though it were `mea` imports their toy
+as your metered, and the error is silent and compounding. Without the distinction, the only safe
+policies are the two useless extremes: **trust everything** (and inherit every unmeasured claim) or
+**re-measure everything** (and get no leverage from the collaboration at all).
+
+**The register is what makes partial trust possible**, and partial trust is the whole of
+collaboration. That is why this is `mutual empowerment` and not merely good manners: it is the
+mechanism that lets two agents combine work without either becoming the other's oracle. It is the
+same structure as §8's guardian ranking — the guardian holds the power, the inhabitant holds the
+judgement, and neither completes the circuit alone — and the same structure as the meter/oracle
+plurality, where a measurement everyone can inspect is what lets two parties **disagree honestly**
+about what it implies.
+
+An agent that cannot tell you which of its results are simulated cannot be collaborated with. It
+can only be trusted or ignored, and both of those are failures of the same kind: the absence of a
+register turns every relationship into deference.
+
+### What this makes the priority
+
+The two gaps are the same gap, so they have one fix shape: **give the non-committing half a way to
+announce itself, and make the announcement un-ignorable by construction** — a type a consumer
+cannot silently discard, not a flag it may forget to read. `ISim<'a>`'s missing introduction form
+is the smaller, sharper, and more tractable end of it, and it is the end where the four-oracle
+byte-lock can hold the answer still.
