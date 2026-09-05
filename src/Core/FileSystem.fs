@@ -46,7 +46,8 @@ type IBlockIo =
     abstract Flush: unit -> unit
 
 /// Issued device ops for DST record/replay. Call order, completed ops only.
-/// Chaos arms (crash/corrupt/torn/reorder) are intercepts, not commands.
+/// This is **what acts** (the event stream). Durable media after Flush is
+/// **what remains** (μένω). Chaos arms are intercepts, not commands.
 /// Native NVMe is not claimed.
 [<RequireQualifiedAccess>]
 type BlockIoOp =
@@ -845,7 +846,8 @@ type SimulatedBlockIo(blockSize: int, ?media: IReadOnlyDictionary<uint64, byte[]
 
     member _.CommitOrder = lock lockObj (fun () -> commitOrder.ToArray())
 
-    /// Issued completed Write/Flush ops in call order. Not copied by CloneMedia.
+    /// Issued completed Write/Flush ops in call order — what acted.
+    /// Not copied by CloneMedia (μένω copies remain, not the act log).
     member _.RecordedOps = lock lockObj (fun () -> recorded.ToArray())
 
     /// Replay issued ops onto `target`. Chaos intercepts are not in the log.
@@ -859,9 +861,10 @@ type SimulatedBlockIo(blockSize: int, ?media: IReadOnlyDictionary<uint64, byte[]
         with get () = lock lockObj (fun () -> logicalBytes)
         and set v = lock lockObj (fun () -> logicalBytes <- v)
 
-    /// Copy durable media onto a fresh device. Volatile cache is dropped
-    /// (crash-before-Flush). Arms, LogicalBytes, RecordedOps, and any
-    /// BlockCas index are not copied — those must reload from the superblock.
+    /// Copy durable media onto a fresh device (μένω: what remains).
+    /// Volatile cache is dropped (crash-before-Flush). Arms, LogicalBytes,
+    /// RecordedOps (what acted), and any BlockCas index are not copied —
+    /// those must reload from the superblock.
     member _.CloneMedia() : SimulatedBlockIo =
         let seed = Dictionary<uint64, byte[]>()
 
