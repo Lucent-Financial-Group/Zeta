@@ -23,7 +23,7 @@ export default function EvidenceRoomPage() {
         <nav style={{ borderBottom: "1px solid var(--border)", marginBottom: "1.2rem", paddingBottom: "0.6rem", fontSize: "0.58rem", display: "grid", gridTemplateColumns: "minmax(0, 1fr) auto minmax(0, 1fr)", gap: "1rem", alignItems: "center" }}>
           <a href={observatoryHref} style={{ color: "var(--amber-dim)", textDecoration: "none", fontSize: "0.56rem", letterSpacing: "0.08em" }}>← MULTI-ORACLE OBSERVATORY</a>
           <span className="evidence-room-wordmark">ZETA//IDENTITY-SPACE::PROOF-ENGINE</span>
-          <span style={{ color: "var(--muted-foreground)", letterSpacing: "0.06em", justifySelf: "end", fontSize: "0.52rem" }}>FINITE BOUNDARY · NO PHYSICS OVERCLAIM</span>
+          <a href="#/evidence-seam/sources" style={{ color: "var(--muted-foreground)", letterSpacing: "0.06em", justifySelf: "end", fontSize: "0.52rem", textDecoration: "none" }}>SOURCE MANIFEST · FINITE / NO FETCH</a>
         </nav>
         <div className="evidence-chamber evidence-chamber-seam"><EvidenceSeamPanel /></div>
         <div className="evidence-chamber evidence-chamber-live"><LiveRoomEvidenceFeed /></div>
