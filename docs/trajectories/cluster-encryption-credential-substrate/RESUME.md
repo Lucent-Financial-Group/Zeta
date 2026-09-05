@@ -42,7 +42,7 @@ Heartbeat filename pin is on main (#16623). LLMTV broadcast
 stays (society picture). Onion is hop-count shape, not a Tor
 stack. Pattern 1 refused. Founder-sacrifice refused on main
 (#16624): agreement has no self-erasure clause.
-Product-lane catalog (Aaron 2026-09-05): working label
+Product-lane catalog (the human maintainer 2026-09-05): working label
 **Zeta Gate** is the join/pin *product candidate* on that
 classifier — not a SEED rename, not an HTTP gateway.
 [`docs/PRODUCT-LANES.md`](../../PRODUCT-LANES.md).

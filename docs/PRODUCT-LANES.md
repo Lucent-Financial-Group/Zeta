@@ -79,7 +79,7 @@ init remaining gated; IPFS-style HTTP "gateway." Naming is
 human-final.
 
 **Do not bundle with:** ZetaFS (store), LLMTV (society
-picture), Tor wire. Sibling in-flight: Ani #16663
+picture), Tor wire. Sibling in-flight: PR #16663
 (ZetaFS orphan catalog, Reticulum-first) is the store /
 transport lane, not this join client.
 

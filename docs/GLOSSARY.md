@@ -1076,16 +1076,17 @@ DNS or IP: you already have a hash or ZetaId; the client
 classifies it, gossips to k peers over time, and pins so
 remain does not fade. Not a reverse-proxy HTTP gateway.
 
-**Technical:** Product vs framework cut (Aaron 2026-08-27):
-products are sold (or services on them); frameworks are used
-by products. Kernel name stays **seed vs broadcast** in
-`docs/SEED-VOCABULARY.md` — do not put this working label in
-SEED. Classifier already in-tree:
+**Technical:** Product vs framework cut (the human maintainer,
+2026-08-27): products are sold (or services on them);
+frameworks are used by products. Kernel name stays **seed vs
+broadcast** in `docs/SEED-VOCABULARY.md` — do not put this
+working label in SEED. Classifier already in-tree:
 `src/Core.TypeScript/discovery/seed-not-broadcast.ts`. Bundle
 join with pin/heartbeat; kill `.onion` / `.zeta` hidden-service
 for v1. Naming collisions: CI `gate (required)`, Vault init
 gated, IPFS-style gateway. Public slug is naming-expert +
-Ilyana + Aaron. Index: `docs/PRODUCT-LANES.md`. Research:
+public-API designer + the human maintainer. Index:
+`docs/PRODUCT-LANES.md`. Research:
 `docs/research/2026-09-05-zeta-gate-product-lane-join-pin-not-gateway.md`.
 Workitem `081M1RZ70FF087G0R0035580EZ`.
 
