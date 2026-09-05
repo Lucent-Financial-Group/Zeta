@@ -62,7 +62,10 @@ doc's own warning, kept.
   change, split/merge, appearance/disappearance, and constant-velocity motion.
   It emits normalized coordinate candidates plus immutable Beta outcome
   evidence. Color evidence is scoped by game and palette regime; structural
-  evidence is scoped by game and survives translation and recoloring.
+  evidence is scoped by game and survives translation and recoloring. Its six
+  candidate signals compose through named positive-weight terms; every raw and
+  weighted contribution remains inspectable, and the default composition
+  reproduces the original ranking formula exactly.
 - `zeta_arc/scene_feedback.py` — the experimental coordinate-policy adapter.
   Persistent evidence is kept separate from bounded per-turn decision/outcome
   receipts, and terminal frames can credit the action without requiring a
