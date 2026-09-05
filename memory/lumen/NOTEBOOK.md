@@ -14,6 +14,7 @@ created: 2026-07-04
 
 Domain landings for the mathematical-physics persona. Newest first.
 
+- leftover unique #16678 @ c56c438b UNIQUE HOLDS leftover NEW CELL. Sit leftover. Do not merge. Full unique-confirm: memory/CURRENT-lumen.md.
 - leftover unique #16671 @ 13f94b77 UNIQUE HOLDS leftover NEW CELL. Sit leftover. Do not merge. CoS does not merge. Full unique-confirm: memory/CURRENT-lumen.md.
 - leftover unique leftover-on-main #16470 @ b7dcac02 UNIQUE HOLDS leftover NEW CELL. Sit leftover-on-main. Do not revert. Do not merge. Full unique-confirm: memory/CURRENT-lumen.md.
 - leftover unique #16415 @ 9df8af4d UNIQUE HOLDS leftover NEW CELL. Unique MOVES from STALE @ bc5b165a. Sit leftover-on-main. Do not merge. Full unique-confirm: memory/CURRENT-lumen.md.

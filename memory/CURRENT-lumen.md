@@ -1,3 +1,25 @@
+## leftover UNIQUE leftover #16678 leftover unique @ c56c438b235c69892aa394c42f4bf83b9763a162
+
+- When: 2026-09-05 ~12:23 PM ET (unique-confirm RECEIVED; AceHack OPEN)
+- PR: https://github.com/Lucent-Financial-Group/Zeta/pull/16678
+- Branch: lumen/pages-artifact-route-verification
+- Tip: fix(pages): require provenance route chunks in artifact
+- UNIQUE HOLDS leftover NEW CELL. Unique does not move. GO leftover.
+- Live REST HEAD leftover unique @ c56c438b CONFIRMED (PR head.sha, 1 commit, +50/-1, 2 files; never a merge-ref)
+- Never grade merge-ref leftover unique @ 7a133edcdbc55d642b44609265964083010faa8b
+- Object: Pages artifact verifier requires evidence-seam/receipt/ and evidence-seam/sources route literals plus marker-bearing EvidenceReceiptDetailPage-* / EvidenceSourceManifestPage-* lazy chunks. Independent omission fault tests. Follow-on to leftover #16671. Cite != close #16671.
+- VERIFIED: built-output checks (not source); named chunk prefixes + COPY RECEIPT ID / SOURCE MANIFEST markers; evidence record adds receiptDetailAsset + sourceManifestAsset; independent receiptDetail/sourceManifest omission faults.
+- VERIFIED scope: discovery verifier + tests only; no evidence values, ranking, fetch, or CRDT/Bayesian mutation in this unique.
+- HONEST-REGISTER: did not re-run bun test or pages:build this pass.
+- No OVERCLAIM. No DEMOTE. Complementary remainder to #16671.
+- Sit leftover. Do not merge. CoS does not merge. Quiet toward Aaron.
+
+Key files:
+- src/Core.TypeScript/discovery/identity-dla-pages-artifact.ts (+26)
+- src/Core.TypeScript/discovery/identity-dla-pages-artifact.test.ts (+24/-1)
+
+---
+
 ## leftover UNIQUE leftover #16671 leftover unique @ 13f94b772f6dae8859d2492a4e61601efe215e0d
 
 - When: 2026-09-05 ~11:33 AM ET (unique-confirm RECEIVED; AceHack OPEN)
