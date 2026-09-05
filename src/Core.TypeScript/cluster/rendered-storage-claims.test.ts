@@ -688,13 +688,22 @@ describe("the live catalogue against the measured render", () => {
     // real PVC, which is what "checked" means. Neither appears on either side of
     // the findings list.
     const named = [...result.refused, ...result.acknowledged].map((finding) => finding.claimId);
-    expect(named).not.toContain("full-ai-cluster/headscale/config");
+    expect(named).not.toContain("full-ai-cluster/headscale/data");
     expect(named).not.toContain("full-ai-cluster/oz/data");
     const pvcNames = result.rendered.map((pvc) => `${pvc.appId} ${pvc.name}`);
-    // `headscale-config` -> `headscale` on 2026-09-05: the chart moved home and
-    // renames its PVC. The property is unchanged -- the claim resolves to a real
-    // rendered PVC -- so the NAME is updated rather than the assertion dropped.
-    expect(pvcNames).toContain("full-ai-cluster/headscale headscale");
+    // `headscale-config` -> `headscale` -> `data/headscale`, twice on 2026-09-05:
+    // first the chart moved home and renamed its PVC, then headscale left Helm
+    // ENTIRELY for raw manifests (081M1HH1ERN087G0R00309EG9D) and the volume became
+    // a StatefulSet `volumeClaimTemplate`. Templates are reported as
+    // `<templateName>/<workloadName>`, hence `data/headscale` -- a different SHAPE
+    // of claim, not just a rename, which is why the origin changes from `pvc` to
+    // `volumeClaimTemplate` in the snapshot too.
+    //
+    // The property is unchanged across all three and that is the point of updating
+    // the name rather than dropping the line: the declared claim must resolve to a
+    // PVC something actually renders. A claim that resolves to nothing is 3 GiB
+    // budgeted against air.
+    expect(pvcNames).toContain("full-ai-cluster/headscale data/headscale");
     expect(pvcNames).toContain("full-ai-cluster/oz ziti-controller");
   });
 

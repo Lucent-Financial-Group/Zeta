@@ -1,21 +1,47 @@
-# Headscale — self-hosted Tailscale control server (the SOVEREIGN network-plane control,
-# Aaron 2026-06-10: "we are using Reticulum and Headscale ... lets get headscale in argocd
-# then — that's in repo we close over it that way").
+# full-ai-cluster/k8s/applications/headscale/Application.yaml
 #
-# Runs on the zetacluster (k3s/ArgoCD); the PC gets the `tailscale` client + `headscale-cli`
-# (declared in tools/setup/manifests/brew). This Application is the SERVER half — closed over
-# in-repo so the whole network plane is declarative.
+# NO HELM CHART. ArgoCD reconciles the YAML in this directory directly, which is
+# the shape ten other applications here already use (agent-memory, cdi,
+# cilium-lb-ipam, deepseek-coder, hat-system, kubevirt, orleans, platform,
+# qwen-coder, vllm).
 #
-# Chart: gabe565/headscale (https://charts.gabe565.com), the widely-used community chart
-# (bjw-s common library). Version pinned per dep-pin-search-first (ArtifactHub 2026-06-10:
-# latest = 0.4.0). NOT upstream-maintained — chart issues go to gabe565/charts.
+# WHY THIS ONE LEFT HELM, recorded because "we dropped the chart" is the kind of
+# decision that looks arbitrary a year later:
 #
-# OPERATOR TODO before first real use (Max owns the corporate/domain side):
-#   - set config.server_url to the headscale subdomain on the ACME/Let's-Encrypt domain
-#     cert-manager already serves (e.g. https://headscale.<zeta-domain>).
-#   - provision OIDC / pre-auth keys + the noise private key as a Sealed Secret / Vault.
-#   - confirm Ingress + cert-manager annotations for that subdomain.
-# Conservative syncPolicy (prune:false) until server_url + secrets are set, mirroring redis.
+#   gabe565/headscale, the original pin, went DORMANT -- 563 days with no upstream
+#   publish. Dormancy is a hard failure here, not a warning: staying on
+#   unmaintained infrastructure is the same class of defect as a red check.
+#
+#   The repoint to codeberg.org/wrenix/helm-charts headscale 1.0.19 was measured
+#   and correct at the chart level -- `helm pull` returns a digest, the chart
+#   renders 12 resources against our values, `server_url` survives the render, and
+#   inert-valuesobject-keys.ts does not flag it. It still came back
+#   OutOfSync/Missing on the live kind lane, and what remained after those
+#   eliminations was ArgoCD-side resolution of a BARE-HOST OCI `repoURL` with no
+#   repository registration anywhere in this tree (ArgoCD v3.5.2).
+#
+#   That form has never been exercised by the dev included-proof. Three other apps
+#   use it -- forgejo, arc-runner-set, hindsight -- and all three are deferred for
+#   reasons that have NOTHING to do with OCI (a missing GitHub App credential; a
+#   standby Git host that ships manual-sync by design; blockers the lane cannot
+#   reach). So it is a coincidence that no OCI chart is asserted, NOT evidence the
+#   form is broken -- an earlier draft of this comment claimed the pattern was
+#   suspicious, which was a co-occurrence read as structure.
+#
+#   And wrenix publishes OCI only: its classic Helm index is empty (`entries: {}`).
+#   So the choice was to debug an unproven transport, or to own ~90 lines of YAML
+#   for a single-replica service whose config we want direct control over anyway.
+#
+# THE STANDING RULE THIS FOLLOWS (Aaron 2026-09-05): prefer the third-party chart;
+# own the deployment ourselves only when our requirements cannot get in through
+# the app-of-apps. Here the requirement that could not get in was the plainest one
+# -- that it sync at all on the dev rung.
+#
+# What owning it buys, beyond the transport: headscale's config schema changes
+# across releases (this app has already been bitten once, 2026-08-22, when an
+# entire `config:` block was INERT because the chart had no such key and the
+# container ran with no server_url from any source). A ConfigMap we write cannot
+# be inert -- there is no values schema between us and the file.
 
 apiVersion: argoproj.io/v1alpha1
 kind: Application
@@ -24,70 +50,29 @@ metadata:
     argocd.argoproj.io/sync-wave: "1" # after core infra (longhorn/cilium) at wave 0
   name: headscale
   namespace: argocd
-  finalizers: [ resources-finalizer.argocd.argoproj.io ]
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
 spec:
   project: default
   source:
-    # MOVED HOME, 2026-09-05 -- this is a REPOINT, not a bump, and the old
-    # coordinate is dead rather than dormant.
-    #
-    # `docs/CHART-CURRENCY.md` labelled this row DORMANT for 563 days, which was
-    # a true fact about the COORDINATE and a misleading one about the PROJECT.
-    # Aaron 2026-09-02: "i read headscale is still supported not unsupport fyi" --
-    # and he was right. headscale is actively developed; `charts.gabe565.com` is a
-    # third-party personal chart repo whose WHOLE INDEX is dead: `max(created)`
-    # across all 39 of its charts is 2025-02-19. The full measurement, including a
-    # correction that first read the repo as alive in the ACQUITTING direction, is
-    # workitem 081M1HH1ERN087G0R00309EG9D.
-    #
-    #   was   charts.gabe565.com/headscale  0.16.0   appVersion v0.25.0
-    #   now   wrenix/helm-charts/headscale  1.0.19   appVersion 0.29.3
-    #
-    # NO `oci://` SCHEME ON THE repoURL, and that is not cosmetic. Written as
-    # `oci://codeberg.org/...` the render tooling built
-    # `https://oci/v2/wrenix/...` -- it read `oci` as the HOST -- and headscale
-    # became the tree's only unrenderable Application. The three OCI charts that
-    # already work here (`arc-controller`, `arc-runner-set`, `hindsight` on
-    # `ghcr.io/...`) all use the bare-host form, so this matches them.
-    #
-    # So the repoint is worth FOUR MINOR SERVER RELEASES, which no chart-version
-    # bump could ever have delivered -- the coordinate we were pinned to has no
-    # newer version to move to. That is the general defect the work item names:
-    # CHART currency is not APP currency, and the report only measures the first.
-    #
-    # THE VALUES ARE REWRITTEN, not carried across, because it is a different
-    # chart with a different surface. Two settings had to move:
-    #
-    #   persistence.config.{enabled,type,accessMode,storageClass,size}
-    #     -> persistence.{enabled,accessMode,storageClass,size}   (flat here)
-    #   env.HEADSCALE_SERVER_URL
-    #     -> headscale.config.server_url                          (real config,
-    #        not an env var -- which is Aaron's "headscale with config")
-    #
-    # `disable_check_updates` is kept at the chart's own default of true: a
-    # cluster component phoning home for version checks is an undeclared channel.
-    repoURL: codeberg.org/wrenix/helm-charts
-    chart: headscale
-    targetRevision: 1.0.19
-    helm:
-      releaseName: headscale
-      valuesObject:
-        persistence:
-          enabled: true
-          accessMode: ReadWriteOnce
-          storageClass: longhorn
-          size: 3Gi
-        headscale:
-          certmanager:
-            # OFF. The dev lane has no ClusterIssuer named `letsencrypt-prod`,
-            # and the chart's default would render a Certificate referencing one
-            # that does not exist. TLS termination is the ingress's job here.
-            enabled: false
-          config:
-            server_url: https://headscale.zeta.local
+    repoURL: https://github.com/Lucent-Financial-Group/Zeta
+    targetRevision: main
+    path: full-ai-cluster/k8s/applications/headscale
+    directory:
+      # An INCLUDE glob, not `recurse: true` + an exclude. Both express the same
+      # set today, but the repo's renderers walk `directory.include` to find which
+      # manifests an Application actually syncs -- so the recurse form renders as
+      # NOTHING to them and every governed row prices a workload that, as far as
+      # the tooling can see, does not exist. Caught by rendered-resource-requests
+      # reporting "0m / 0Mi" for an app whose statefulset plainly declares 100m.
+      include: '{namespace,configmap,service,statefulset}.yaml'
   destination:
     server: https://kubernetes.default.svc
     namespace: headscale
   syncPolicy:
-    automated: { prune: false, selfHeal: true }
-    syncOptions: [ CreateNamespace=true, ServerSideApply=true ]
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+      - ServerSideApply=true

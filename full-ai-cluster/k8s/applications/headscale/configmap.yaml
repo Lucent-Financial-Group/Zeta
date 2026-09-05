@@ -1,0 +1,73 @@
+# headscale config.yaml, owned by us rather than by a chart's values schema.
+#
+# DERIVED, NOT INVENTED: this is the wrenix headscale-1.0.19 chart's own rendered
+# config against our previous valuesObject, with three deliberate edits recorded
+# below. Keeping the provenance explicit matters because headscale's config
+# structure changes across releases, and "where did this key come from" is the
+# question a future reader will actually have.
+#
+#   1. THE POSTGRES BLOCK IS REMOVED. The chart emitted a full `database.postgres`
+#      stanza including `pass: bar` while `database.type` was `sqlite`, so the
+#      block was dead config carrying a literal that reads like a credential. This
+#      repository is PUBLIC; a dead placeholder password is still a string a
+#      scanner and a human both have to adjudicate. Removed rather than kept and
+#      explained.
+#
+#   2. TLS PATHS ARE EMPTY. The chart pointed `tls_cert_path` / `tls_key_path` at
+#      /etc/headscale/certs, which only exists when its certmanager integration is
+#      on -- and we had it off, so those paths named files that were never going to
+#      be there. Empty means headscale serves plain HTTP and TLS terminates at the
+#      ingress, which is the ordinary self-hosted arrangement. `server_url` stays
+#      https because that is what CLIENTS dial, not what the pod listens on.
+#
+#   3. KEY PATHS MOVED ONTO THE PERSISTENT VOLUME. The chart generated the noise /
+#      DERP / WireGuard keys with a Job plus its own ServiceAccount, Role,
+#      RoleBinding and Secret -- five resources whose only job was to put three
+#      files somewhere. Pointing them at /var/lib/headscale (the PVC) lets
+#      headscale own its own keys and deletes all five.
+#
+#      HONEST LIMIT, STATED RATHER THAN ASSUMED: this depends on headscale
+#      generating a missing private key at startup. If it does not, the pod fails
+#      loudly on first boot and the dev lane reports it -- which is the outcome we
+#      want from an untested assumption. It is written here so that a
+#      CrashLoopBackOff is read as THIS assumption failing, not as a mystery.
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: headscale-config
+  namespace: headscale
+data:
+  config.yaml: |
+    server_url: https://headscale.zeta.local
+    listen_addr: :8080
+    metrics_listen_addr: :9090
+    grpc_listen_addr: :50443
+    disable_check_updates: true
+    database:
+      type: sqlite
+      sqlite:
+        path: /var/lib/headscale/db.sqlite
+    noise:
+      private_key_path: /var/lib/headscale/noise.key
+    private_key_path: /var/lib/headscale/wireguard.key
+    prefixes:
+      allocation: sequential
+      v4: 100.64.0.0/10
+      v6: fd7a:115c:a1e0::/48
+    derp:
+      auto_update_enabled: false
+      update_frequency: 24h
+      paths: []
+      urls: []
+      server:
+        enabled: true
+        region_id: 999
+        region_code: headscale
+        region_name: Headscale Embedded DERP
+        stun_listen_addr: :3478
+        private_key_path: /var/lib/headscale/derp.key
+    dns:
+      base_domain: zeta.local
+      override_local_dns: false
+    tls_cert_path: ""
+    tls_key_path: ""
