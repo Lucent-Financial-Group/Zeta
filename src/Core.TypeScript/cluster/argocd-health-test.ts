@@ -23,6 +23,7 @@
  *   2 - usage error or named dependency/preflight failure
  */
 
+import { applyRungOverrides, loadRungOverrides } from "./rung-overrides.ts";
 import { spawnSync } from "node:child_process";
 import { existsSync, mkdtempSync, readdirSync, readFileSync } from "node:fs";
 import { tmpdir } from "node:os";
@@ -1975,7 +1976,29 @@ function buildLaneTreeForProfile(
     // that SHA as an object the served repo does not contain (33822942615).
     gitRef,
     image: LANE_TREE_IMAGE,
-    applyRung: (stagedRoot: string) => applyResourceProfile(catalogue, profile, stagedRoot).length,
+    // TWO OVERRIDE POINTS, applied in order, both to the STAGED copy only.
+    //
+    // The rung writes `<requestsField>.cpu` and `.memory` and nothing else. That
+    // was the whole vocabulary the dev lane had, so an Application whose
+    // dev/metal difference was anything else -- a GPU selector, a replica count,
+    // a resource key whose NAME contains dots -- had no expressible dev form and
+    // could only be excluded from CI entirely. Twelve were.
+    //
+    // `applyRungOverrides` is the second point: arbitrary dotted-path set/remove,
+    // declared in `rung-overrides.json`, each entry carrying a substrate reason
+    // and a lift condition, and each REFUSED if it produces no edits. It runs
+    // AFTER the rung so a resource claim and an override can address the same
+    // manifest without the override being silently reverted.
+    applyRung: (stagedRoot: string) => {
+      const rungEdits = applyResourceProfile(catalogue, profile, stagedRoot).length;
+      const overrideEdits = applyRungOverrides(
+        loadRungOverrides(catalogue.profiles, stagedRoot),
+        profile,
+        stagedRoot,
+      ).length;
+      console.log(`[serve-tree] rung edits=${String(rungEdits)} override edits=${String(overrideEdits)}`);
+      return rungEdits + overrideEdits;
+    },
   });
   console.log(
     `[serve-tree] rung=${profile} files=${String(bundle.staged.files)} ` +
