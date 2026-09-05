@@ -39,7 +39,7 @@ import { SEED_HATS } from "./org-seed";
 import { agentsFromChart, runOrgRuntime, type OrgRuntimeDeps } from "./org-runtime";
 import { statusSurfaceFrom } from "./agent-loop-bridge";
 import { appendRun, deliveryRate, readEvents } from "./org-store";
-import { foldOrganization } from "./org-fold";
+import { everyRunWasSimulated, foldOrganization } from "./org-fold";
 import { idlePortfolios, PortfolioKind, portfolioHistory, portfolioOf } from "./portfolio";
 import { emptyQueue, type WorkQueue } from "./work-market";
 import { IntakeKind, Severity, type ExternalEvent } from "./intake";
@@ -230,6 +230,10 @@ export async function organizationSurface(args: AgentRunArgs): Promise<{
         levelsEngaged: report.levelsEngaged,
         refusals: report.refusals,
         trace: report.trace,
+        // The run's own fidelity, written down. Without it the summary cannot tell a history where
+        // everything shipped from one where nothing did.
+        replayable: report.fidelity.replayable,
+        realPorts: report.fidelity.realPorts,
       },
       args.store,
     );
@@ -287,6 +291,16 @@ export async function main(argv: readonly string[]): Promise<number> {
         `${surface.candidates.length} candidate(s) on the surface` +
         (folded.refusals.length === 0 ? "" : `  UNACCOUNTED: ${folded.refusals.join("; ")}`),
     );
+    // WHAT THE INHERITED WORK WAS MADE OF. How much was recovered is a different question from
+    // whether any of it was real, and the second one is the one a resumed organization cannot
+    // answer for itself: before this line a store built from real merges printed exactly what a
+    // pure simulation printed.
+    console.log(`  inherited from ${String(folded.fidelities.length)} recorded run(s): ` +
+      (folded.fidelities.length === 0
+        ? "no run recorded its fidelity — UNKNOWN, not simulated"
+        : everyRunWasSimulated(folded.fidelities)
+          ? "every one simulated; nothing here was performed or reached"
+          : `real port(s) touched: ${[...new Set(folded.fidelities.flatMap((f) => f.realPorts))].join(", ")}`));
     return mainAsync(argv, { surface: () => surface });
   }
 

@@ -647,6 +647,10 @@ export async function main(argv: readonly string[]): Promise<number> {
         levelsEngaged: report.levelsEngaged,
         refusals: report.refusals,
         trace: report.trace,
+        // The run's own fidelity, written down. Without it the summary cannot tell a history where
+        // everything shipped from one where nothing did.
+        replayable: report.fidelity.replayable,
+        realPorts: report.fidelity.realPorts,
       },
       args.store,
     );

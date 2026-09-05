@@ -38,6 +38,7 @@ import type { GateEvaluation } from "./quality-gate";
 import type { Portfolio, PortfolioBook } from "./portfolio";
 import type { WorkQueue } from "./work-market";
 import type { QaCycleReport } from "./qa";
+import type { FidelityReport } from "./providers";
 
 /** The events that constitute state, in the order they happened. */
 export function factEvents(events: readonly OrgEvent[]): readonly OrgEvent[] {
@@ -235,6 +236,37 @@ export function foldQaCycles(events: readonly OrgEvent[]): readonly QaCycleRepor
 }
 
 /**
+ * What every run in this log could actually do, in the order the runs happened.
+ *
+ * PLURAL, and never reduced to one verdict. A store spans runs, and a history of nine simulated
+ * runs plus one real one is not "real" — nor is it "simulated". Collapsing them would manufacture a
+ * single version of the truth out of ten separate facts, which is exactly what the raw vault
+ * forbids: a single version of the FACTS, never a single version of the TRUTH.
+ *
+ * A caller that wants a verdict computes one and owns it. `everyRunWasSimulated` is offered because
+ * it is the one question with an unambiguous answer, and it is deliberately the CONSERVATIVE
+ * direction: an empty log is not "all simulated", because nothing was observed.
+ */
+export function foldRunFidelity(events: readonly OrgEvent[]): readonly FidelityReport[] {
+  const out: FidelityReport[] = [];
+  for (const event of factEvents(events)) {
+    if (event.fact?.kind === "run_fidelity") out.push(event.fact.report);
+  }
+  return out;
+}
+
+/**
+ * True only when the log records at least one run and EVERY recorded run was simulated.
+ *
+ * An empty log answers `false`: nothing was observed, and "no evidence of reality" is not "evidence
+ * of simulation". A log with runs predating this fact also answers `false`, for the same reason —
+ * see `deliveryRate`, which reports those as unknown rather than assuming either way.
+ */
+export function everyRunWasSimulated(reports: readonly FidelityReport[]): boolean {
+  return reports.length > 0 && reports.every((r) => r.replayable);
+}
+
+/**
  * The priorities the organization decided, latest per work item.
  *
  * LATEST wins: a re-prioritization is the organization changing its mind, and keeping the first
@@ -324,6 +356,13 @@ export interface FoldedOrganization {
   readonly queues: readonly WorkQueue[];
   /** Every QA cycle in order, so a resumed run can still tell a regression from a new failure. */
   readonly qa: readonly QaCycleReport[];
+  /**
+   * What each run in this log could actually do, in run order.
+   *
+   * Without it a resumed organization cannot tell inherited REAL work from inherited simulated work
+   * — the two stores are otherwise byte-identical.
+   */
+  readonly fidelities: readonly FidelityReport[];
   /** Empty when the log accounted for everything it referred to. */
   readonly refusals: readonly string[];
   /** How many events carried a fact. Zero means the log holds no state, only commentary. */
@@ -348,6 +387,7 @@ export function foldOrganization(events: readonly OrgEvent[]): FoldedOrganizatio
     portfolios: foldPortfolioBook(events),
     queues: foldQueues(events),
     qa: foldQaCycles(events),
+    fidelities: foldRunFidelity(events),
     refusals: foldRefusals(events),
     factCount: factEvents(events).length,
   };

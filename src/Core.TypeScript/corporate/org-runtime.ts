@@ -1291,6 +1291,20 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
   // Emitted here rather than at each shard transition: `work-market.ts` owns those transitions, and
   // a fold that replayed them would be a second copy of that state machine, free to drift. One
   // snapshot, one authority, and a round trip that can be checked.
+  // ── WHAT THIS RUN COULD ACTUALLY DO ───────────────────────────────────────
+  // Recorded, not merely returned. `fidelity` in the report tells a live caller; this fact tells
+  // everyone who reads the log afterwards, which is the only audience a resumed organization has.
+  note({
+    kind: OrgEventKind.RunFidelity,
+    subjectId: goalId,
+    decision:
+      fidelity.replayable
+        ? "every port was simulated; this run performed nothing and reached nothing"
+        : `these port(s) touched something real: ${fidelity.realPorts.join(", ")}`,
+    atMs: warmedAt,
+    fact: { kind: "run_fidelity", report: fidelity },
+  });
+
   note({
     kind: OrgEventKind.QueueSnapshot,
     subjectId: queue.queueId,

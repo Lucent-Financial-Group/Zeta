@@ -105,7 +105,10 @@ describe("THE SURFACE IS A REAL ORGANIZATION", () => {
     expect(readRuns(store)).toEqual([]); // no --store: no side effect
     await organizationSurface({ atMs: AT_MS, qaFails: true, incident: false, resume: false, store });
     expect(readRuns(store)).toHaveLength(1);
-    expect(deliveryRate(store)).toEqual({ runs: 1, delivered: 0 });
+    expect(deliveryRate(store)).toEqual({
+      runs: 1, delivered: 0,
+      deliveredForReal: 0, deliveredSimulated: 0, deliveredUnknownFidelity: 0,
+    });
   });
 });
 

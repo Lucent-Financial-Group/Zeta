@@ -34,6 +34,16 @@ import type { OrgEvent } from "./org-event";
 /** A run's own summary, stored beside its events so a history has runs and not only moments. */
 export interface RunRecord {
   /**
+   * Whether this run touched anything real, and which ports did.
+   *
+   * OPTIONAL, and absence means **unknown** — never "simulated". Records written before this was
+   * recorded carry no fidelity, and reading that silence as "nothing was real" would invent a fact
+   * about history nobody observed. `deliveryRate` counts them in their own bucket for exactly that
+   * reason.
+   */
+  readonly replayable?: boolean;
+  readonly realPorts?: readonly string[];
+  /**
    * MINTED FROM THE RUN'S OWN CONTENT, never supplied.
    *
    * The first cut let the caller pass one and the CLI passed `run-${nowMs}` — which is not a
@@ -57,14 +67,34 @@ const EVENTS = "events";
 const RUNS = "runs";
 
 /**
- * Identity of a stored event.
+ * Identity of a stored event: its CONTENT ADDRESS — the same one that chose its filename.
  *
- * The event's OWN `id` is the identity, not a re-mint of its content: the runtime already assigned
- * it, and re-deriving one here would create a second notion of the same event's identity. Two
- * copies of one event — a re-run, a merged branch — therefore collapse to one.
+ * ── WHAT THIS REPLACED, AND THE DATA LOSS IT CAUSED ──────────────────────────
+ * This used to return `event.id`, reasoning that the runtime had already assigned an identity and
+ * that re-deriving one would create a second notion of it. The intent was right: two copies of one
+ * event — a re-run, a merged branch — must collapse to one.
+ *
+ * But the store ALREADY had a content notion: `shardPath` derives every filename from the record's
+ * content. So there were two notions and they disagreed, and the disagreement lost data. Two
+ * genuinely DIFFERENT events that share an id land at different paths — both written — and then
+ * `readShards` drops one, because it de-duplicates on this function.
+ *
+ * Measured on `run-org.ts --store S` run twice with different flags, which mints the same ids every
+ * invocation (`nowMs` is fixed and the counter restarts): **78 event files on disk, 58 returned.**
+ * Twenty events written and unreadable, with nothing anywhere saying so.
+ *
+ * ── THE CONTENT ADDRESS SATISFIES THE ORIGINAL INTENT STRICTLY BETTER ────────
+ *   - two byte-identical copies of one event  -> same address -> collapse, as before
+ *   - two DIFFERENT events sharing an id      -> different addresses -> both survive
+ *
+ * And it removes the second notion rather than adding one: identity is now the filename, so "two
+ * files" and "two events" are the same statement.
+ *
+ * It does NOT excuse a writer minting colliding ids — `run-agent.ts` scopes its ids to the run's
+ * instant for exactly that reason — but a writer's mistake must not silently delete history.
  */
 function identifyEvent(event: OrgEvent): string {
-  return event.id;
+  return toHex(shardZetaId(event, event.atMs, Category.Workflow));
 }
 
 function identifyRun(run: RunRecord): string {
@@ -95,6 +125,9 @@ export function appendRun(
     readonly levelsEngaged: readonly string[];
     readonly refusals: readonly string[];
     readonly trace: readonly OrgEvent[];
+    /** The run's own `fidelity`. Omitted only by callers that genuinely have none. */
+    readonly replayable?: boolean;
+    readonly realPorts?: readonly string[];
   },
   root: string,
 ): { readonly runPath: string; readonly eventPaths: readonly string[] } {
@@ -107,6 +140,11 @@ export function appendRun(
     eventCount: input.trace.length,
     levelsEngaged: [...input.levelsEngaged],
     refusals: [...input.refusals],
+    // Spread rather than defaulted: a caller with no fidelity writes a record with no fidelity, and
+    // `runId` is minted from this summary, so an absent field must stay absent rather than becoming
+    // a `false` that both changes the id and asserts something nobody measured.
+    ...(input.replayable === undefined ? {} : { replayable: input.replayable }),
+    ...(input.realPorts === undefined ? {} : { realPorts: [...input.realPorts] }),
   };
   const run: RunRecord = { runId: mintRunId(summary), ...summary };
   const runPath = writeShard(
@@ -155,7 +193,37 @@ export function decidedUnder(root: string, hatId: string): readonly OrgEvent[] {
 }
 
 /** How many runs delivered, and how many did not — the simplest thing a history is for. */
-export function deliveryRate(root: string): { readonly runs: number; readonly delivered: number } {
+export interface DeliveryRate {
+  readonly runs: number;
+  readonly delivered: number;
+  /** Delivered runs that touched something real. */
+  readonly deliveredForReal: number;
+  /** Delivered runs that recorded themselves as touching nothing. */
+  readonly deliveredSimulated: number;
+  /** Delivered runs whose fidelity was never recorded. Neither real nor simulated — UNKNOWN. */
+  readonly deliveredUnknownFidelity: number;
+}
+
+/**
+ * How the history went, and how much of it was real.
+ *
+ * This used to return `{ runs, delivered }` alone, which is a number that cannot tell a history
+ * where everything shipped from one where nothing did. A store built from real commands, real
+ * worktrees and real merges and a store built from a pure simulation both reported "N/N delivered",
+ * because the only thing separating them lived in memory and died at the disk boundary.
+ *
+ * THREE BUCKETS, NOT TWO. A run predating the `run_fidelity` fact is `unknown`, and folding it into
+ * either of the other two would invent a fact about history nobody observed — the same refusal
+ * `directoryReview` makes when no verdict was filed. Unknown is a real answer and it is reported.
+ */
+export function deliveryRate(root: string): DeliveryRate {
   const runs = readRuns(root);
-  return { runs: runs.length, delivered: runs.filter((r) => r.delivered).length };
+  const delivered = runs.filter((r) => r.delivered);
+  return {
+    runs: runs.length,
+    delivered: delivered.length,
+    deliveredForReal: delivered.filter((r) => r.replayable === false).length,
+    deliveredSimulated: delivered.filter((r) => r.replayable === true).length,
+    deliveredUnknownFidelity: delivered.filter((r) => r.replayable === undefined).length,
+  };
 }

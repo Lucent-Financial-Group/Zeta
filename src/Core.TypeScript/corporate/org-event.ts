@@ -30,6 +30,7 @@ import type { GateEvaluation } from "./quality-gate";
 import type { PortfolioKind } from "./portfolio";
 import type { WorkQueue } from "./work-market";
 import type { QaCycleReport } from "./qa";
+import type { FidelityReport } from "./providers";
 
 export const OrgEventKind = {
   IntakeReceived: "intake_received",
@@ -53,6 +54,8 @@ export const OrgEventKind = {
   ChangeProjected: "change_projected",
   /** The work market as it stood at the end of a run — see the `queue_snapshot` fact. */
   QueueSnapshot: "queue_snapshot",
+  /** What the run's ports were — see the `run_fidelity` fact. */
+  RunFidelity: "run_fidelity",
   Refusal: "refusal",
 } as const;
 
@@ -147,6 +150,22 @@ export type OrgFact =
    * a max-revision fold would resurrect the older one.
    */
   | { readonly kind: "queue_snapshot"; readonly queue: WorkQueue }
+  /**
+   * WHAT THIS RUN'S CAPABILITIES ACTUALLY WERE.
+   *
+   * `fidelityOf` tells a live run whether it touched anything. Until this fact existed that answer
+   * was in memory only and died at the disk boundary, so a store built from real commands, real
+   * worktrees and real `--no-ff` merges resumed IDENTICALLY to one built from a pure simulation:
+   * same run count, same `delivered: true`, same facts, same work items. Measured.
+   *
+   * That is the failure the port layer exists to prevent — a run that shipped something versus one
+   * that decided it had — displaced in time, and worse than the original, because after the fact it
+   * is not recoverable even in principle. The evidence was never written down.
+   *
+   * Carried as the whole report rather than a boolean: `replayable` is the conclusion, and a reader
+   * asking WHICH capability was real needs the ports, not the verdict.
+   */
+  | { readonly kind: "run_fidelity"; readonly report: FidelityReport }
   /**
    * One QA cycle: every run it made, the regressions it found, the defects it filed.
    *

@@ -7,7 +7,7 @@
  */
 
 import { afterEach, describe, expect, test } from "bun:test";
-import { mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+import { mkdirSync, mkdtempSync, readdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { basename, join } from "node:path";
 import {
@@ -118,7 +118,11 @@ describe("THE RUN ID IS MINTED FROM CONTENT, never supplied", () => {
     appendRun(runInput({ delivered: true }), root);
     appendRun(runInput({ delivered: false, trace: [ev({ id: "e2", atMs: 2_000 })] }), root);
     expect(readRuns(root)).toHaveLength(2);
-    expect(deliveryRate(root)).toEqual({ runs: 2, delivered: 1 });
+    expect(deliveryRate(root)).toEqual({
+      runs: 2, delivered: 1,
+      // This fixture records no fidelity, so the delivered run is UNKNOWN — not simulated.
+      deliveredForReal: 0, deliveredSimulated: 0, deliveredUnknownFidelity: 1,
+    });
   });
 
   test("re-appending an identical run does NOT duplicate it", () => {
@@ -126,7 +130,10 @@ describe("THE RUN ID IS MINTED FROM CONTENT, never supplied", () => {
     appendRun(runInput(), root);
     appendRun(runInput(), root);
     expect(readRuns(root)).toHaveLength(1);
-    expect(deliveryRate(root)).toEqual({ runs: 1, delivered: 1 });
+    expect(deliveryRate(root)).toEqual({
+      runs: 1, delivered: 1,
+      deliveredForReal: 0, deliveredSimulated: 0, deliveredUnknownFidelity: 1,
+    });
   });
 });
 
@@ -135,7 +142,10 @@ describe("events", () => {
     const root = join(tempRoot(), "never-written");
     expect(readEvents(root)).toEqual([]);
     expect(readRuns(root)).toEqual([]);
-    expect(deliveryRate(root)).toEqual({ runs: 0, delivered: 0 });
+    expect(deliveryRate(root)).toEqual({
+      runs: 0, delivered: 0,
+      deliveredForReal: 0, deliveredSimulated: 0, deliveredUnknownFidelity: 0,
+    });
   });
 
   test("ordering is by TIME even when the ids disagree with it", () => {
@@ -230,10 +240,68 @@ describe("ACROSS RUNS — the questions the trace exists to answer", () => {
     expect(readRuns(root)).toHaveLength(2);
     // One delivered, one did not — the simplest thing a history is for, and it was WRONG before
     // the run id was content-derived.
-    expect(deliveryRate(root)).toEqual({ runs: 2, delivered: 1 });
+    expect(deliveryRate(root)).toEqual({
+      runs: 2, delivered: 1,
+      // This fixture records no fidelity, so the delivered run is UNKNOWN — not simulated.
+      deliveredForReal: 0, deliveredSimulated: 0, deliveredUnknownFidelity: 1,
+    });
     // The runs are ordered oldest first.
     expect(readRuns(root).map((r) => r.delivered)).toEqual([true, false]);
     // And the combined event log holds more than either run alone.
     expect(readEvents(root).length).toBeGreaterThan(Math.max(ok.trace.length, bad.trace.length));
+  });
+});
+
+describe("EVENT IDENTITY IS THE CONTENT ADDRESS, not the writer's id", () => {
+  test("TWO DIFFERENT EVENTS SHARING AN ID BOTH SURVIVE — the store must not delete history", () => {
+    // This used to lose one. `identifyEvent` returned `event.id`, so two genuinely different events
+    // that happened to share an id landed at different paths, were BOTH written, and then one was
+    // dropped on read. Measured on `run-org.ts --store S` run twice with different flags — which
+    // mints the same ids every invocation: 78 event files on disk, 58 returned.
+    const root = tempRoot();
+    const shared = "evt-062";
+    appendRun({ atMs: 0, delivered: true, levelsEngaged: [], refusals: [],
+      trace: [ev({ id: shared, decision: "the first thing that happened" })] }, root);
+    appendRun({ atMs: 0, delivered: true, levelsEngaged: [], refusals: [],
+      trace: [ev({ id: shared, decision: "a DIFFERENT thing that also happened" })] }, root);
+
+    const read = readEvents(root);
+    expect(read).toHaveLength(2);
+    expect(read.map((e) => e.decision).sort()).toEqual([
+      "a DIFFERENT thing that also happened",
+      "the first thing that happened",
+    ]);
+  });
+
+  test("...and two BYTE-IDENTICAL copies still collapse, which was the original intent", () => {
+    // The reason the id-based identity existed: a re-run or a merged branch must not duplicate
+    // history. Content identity keeps that and loses nothing.
+    const root = tempRoot();
+    const once = ev({ id: "evt-1", decision: "exactly the same event" });
+    appendRun({ atMs: 0, delivered: true, levelsEngaged: [], refusals: [], trace: [once] }, root);
+    appendRun({ atMs: 0, delivered: true, levelsEngaged: [], refusals: [], trace: [once] }, root);
+    expect(readEvents(root)).toHaveLength(1);
+  });
+
+  test("what the reader returns matches what is ON DISK — the two cannot disagree", () => {
+    // The defect was precisely a disagreement between the file count and the read count, and
+    // nothing anywhere said so. Identity is now the filename, so "two files" and "two events" are
+    // one statement.
+    const root = tempRoot();
+    for (const decision of ["a", "b", "c"]) {
+      appendRun({ atMs: 0, delivered: true, levelsEngaged: [], refusals: [],
+        trace: [ev({ id: "same-id-every-time", decision })] }, root);
+    }
+    const onDisk: string[] = [];
+    const walk = (dir: string): void => {
+      for (const entry of readdirSync(dir, { withFileTypes: true })) {
+        const full = join(dir, entry.name);
+        if (entry.isDirectory()) walk(full);
+        else if (entry.name.endsWith(".json")) onDisk.push(full);
+      }
+    };
+    walk(join(root, "events"));
+    expect(readEvents(root)).toHaveLength(onDisk.length);
+    expect(onDisk).toHaveLength(3);
   });
 });
