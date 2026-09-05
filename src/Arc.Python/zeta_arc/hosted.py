@@ -25,27 +25,39 @@ can be checked:
     otherwise be found by a red CI run with no local reproduction.
 
 `h` IS NOT INVENTED HERE, and that is the payoff from having read the roster
-first. ARC's level score is `min(1, h/a)**2` where `h` is a reference action
-count. `play.py` substitutes BFS-optimal for our own environments and says so,
+first. ARC's level score is `min(1.15, (h/a)**2)` where `h` is a reference
+action count. `play.py` substitutes BFS-optimal for our own environments and says so,
 because offline there is nothing else. Hosted environments PUBLISH it:
 `EnvironmentInfo.baseline_actions` is a per-level reference count (SB26 reports
-`[18, 28, 18, 19, 31, 23, 58, 18]`). So hosted scores use the environment's own
-reference and are comparable in a way the offline ones are not.
+`[18, 28, 18, 19, 31, 23, 58, 18]`). Hosted estimates therefore use the same
+reference unit as ARC scoring. Normal-mode public-roster runs are still not
+official or held-out leaderboard results.
 """
 
 from __future__ import annotations
 
+import gc
+import json
+import time
+import tracemalloc
 from collections.abc import Iterable
-from dataclasses import dataclass
+from dataclasses import asdict, dataclass
 from enum import StrEnum
-from typing import Any, Protocol
+from typing import Any, Protocol, cast
 
 from arcengine import GameAction, GameState
 
+from zeta_arc.click import (
+    ClickPolicy,
+    CoordinatePolicy,
+    MeasuredCoordinatePolicy,
+    PolicyResourceReceipt,
+)
 from zeta_arc.frames import grid_of
 from zeta_arc.layered import LayeredAgent
 from zeta_arc.progress import LevelProbe
 from zeta_arc.scene_feedback import SceneCoordinatePolicy
+from zeta_arc.scene_priors import MotionProjection
 
 #: Per-level ceiling. Deliberately generous against the published references —
 #: the largest `baseline_actions` entry on the live roster is 578 (DC22), and a
@@ -67,17 +79,24 @@ class HostedCoordinatePolicy(StrEnum):
     """Coordinate-policy implementations available to an explicit hosted run."""
 
     CENTROID = "centroid"
-    SCENE_FEEDBACK = "scene-feedback"
+    SCENE_FEEDBACK_OBSERVED = "scene-feedback-observed"
+    SCENE_FEEDBACK_PREDICTED = "scene-feedback-predicted"
 
 
 def build_hosted_agent(
-    game_fingerprint: str,
     coordinate_policy: HostedCoordinatePolicy = HostedCoordinatePolicy.CENTROID,
 ) -> LayeredAgent:
-    """Build one environment-scoped agent without changing the hosted default."""
-    if coordinate_policy is HostedCoordinatePolicy.SCENE_FEEDBACK:
-        return LayeredAgent(click=SceneCoordinatePolicy(game_fingerprint))
-    return LayeredAgent()
+    """Build one measured, episode-scoped agent without receiving game identity."""
+    click: CoordinatePolicy
+    if coordinate_policy is HostedCoordinatePolicy.SCENE_FEEDBACK_OBSERVED:
+        click = SceneCoordinatePolicy("hosted-episode")
+    elif coordinate_policy is HostedCoordinatePolicy.SCENE_FEEDBACK_PREDICTED:
+        click = SceneCoordinatePolicy(
+            "hosted-episode", motion_projection=MotionProjection.ONE_STEP_AHEAD
+        )
+    else:
+        click = ClickPolicy()
+    return LayeredAgent(click=MeasuredCoordinatePolicy(click))
 
 
 class Wrapper(Protocol):
@@ -125,7 +144,7 @@ class LevelResult:
 
 
 def score_level(actions: int, reference: int | None) -> float:
-    """ARC's level score: `min(1, h/a)**2`, and `0.0` when `h` is unknown.
+    """ARC's level score: `min(1.15, (h/a)**2)`, or zero without `h`.
 
     An unknown reference scores ZERO rather than 1.0, and the choice matters:
     `min(1, h/a)` with a missing `h` treated as "as good as optimal" would hand
@@ -136,11 +155,11 @@ def score_level(actions: int, reference: int | None) -> float:
     """
     if actions <= 0 or reference is None or reference <= 0:
         return 0.0
-    return min(1.0, reference / actions) ** 2
+    return min(1.15, (reference / actions) ** 2)
 
 
 def environment_score(levels: list[LevelResult], total_levels: int) -> float:
-    """Level-weighted mean, `E = sum((l+1) * S_l) / (n(n+1)/2)`.
+    """Level-weighted mean capped by the weighted completion fraction.
 
     The denominator uses the environment's DECLARED level count, not the number
     played. An agent that clears two of eight levels and stops must not be
@@ -149,8 +168,10 @@ def environment_score(levels: list[LevelResult], total_levels: int) -> float:
     """
     if total_levels <= 0:
         return 0.0
+    denominator = total_levels * (total_levels + 1) / 2
     weighted = sum((entry.level + 1) * entry.score for entry in levels)
-    return weighted / (total_levels * (total_levels + 1) / 2)
+    completed_weight = sum(entry.level + 1 for entry in levels if entry.solved)
+    return min(weighted / denominator, completed_weight / denominator)
 
 
 def play_environment(
@@ -424,16 +445,19 @@ def play_hosted(
             "environment_score": 0.0,
         }
     info = wrapper.info
+    agent = build_hosted_agent(coordinate_policy)
     result = play_environment(
         wrapper,
         references=list(info.baseline_actions or []),
         total_levels=len(info.baseline_actions or []) or None,
-        agent=build_hosted_agent(game_id, coordinate_policy),
+        agent=agent,
     )
+    measured = cast(MeasuredCoordinatePolicy, agent.click)
     return {
         "game_id": game_id,
         "title": info.title,
         "coordinate_policy": coordinate_policy.value,
+        "policy_resource": asdict(measured.resource_receipt()),
         **result,
     }
 
@@ -484,18 +508,21 @@ def play_roster(
                 )
                 continue
             references = list(info.baseline_actions or [])
+            agent = build_hosted_agent(coordinate_policy)
             result = play_environment(
                 wrapper,
                 references=references,
                 total_levels=len(references) or None,
                 max_actions_per_level=max_actions_per_level,
-                agent=build_hosted_agent(info.game_id, coordinate_policy),
+                agent=agent,
             )
+            measured = cast(MeasuredCoordinatePolicy, agent.click)
             played.append(
                 {
                     "game_id": info.game_id,
                     "title": info.title,
                     "coordinate_policy": coordinate_policy.value,
+                    "policy_resource": asdict(measured.resource_receipt()),
                     **result,
                 }
             )
@@ -511,6 +538,11 @@ def play_roster(
             )
 
     scored = [row for row in played if "error" not in row]
+    resource_rows = [
+        PolicyResourceReceipt(**row["policy_resource"])
+        for row in scored
+        if "policy_resource" in row
+    ]
     return {
         "coordinate_policy": coordinate_policy.value,
         "environments_seen": len(environments),
@@ -536,7 +568,129 @@ def play_roster(
         ),
         "max_actions_per_level": max_actions_per_level,
         "comparability": _budget_comparability(max_actions_per_level),
+        "policy_resource": {
+            "decision_calls": sum(row.decision_calls for row in resource_rows),
+            "observation_calls": sum(row.observation_calls for row in resource_rows),
+            "grid_cells_received": sum(
+                row.grid_cells_received for row in resource_rows
+            ),
+            "retained_state_leaf_values_total": sum(
+                row.retained_state_leaf_values for row in resource_rows
+            ),
+            "retained_state_json_bytes_total": sum(
+                row.retained_state_json_bytes for row in resource_rows
+            ),
+            "retained_state_json_bytes_peak": max(
+                (row.retained_state_json_bytes for row in resource_rows), default=0
+            ),
+            "basis": (
+                "deterministic boundary counters and canonical semantic state; "
+                "not CPU time or resident memory"
+            ),
+        },
         "results": played,
+    }
+
+
+def _measure_roster(
+    arcade: Any,
+    roster: tuple[Any, ...],
+    coordinate_policy: HostedCoordinatePolicy,
+    max_environments: int | None,
+    max_actions_per_level: int,
+    seed: int,
+) -> tuple[dict[str, Any], dict[str, Any]]:
+    """Measure one arm once; runtime telemetry is evidence, never a test oracle."""
+    gc.collect()
+    tracing_before = tracemalloc.is_tracing()
+    if not tracing_before:
+        tracemalloc.start()
+    else:
+        tracemalloc.reset_peak()
+    cpu_started = time.process_time_ns()
+    wall_started = time.perf_counter_ns()
+    try:
+        report = play_roster(
+            arcade,
+            max_environments=max_environments,
+            max_actions_per_level=max_actions_per_level,
+            seed=seed,
+            coordinate_policy=coordinate_policy,
+            roster=roster,
+        )
+        cpu_ns = time.process_time_ns() - cpu_started
+        wall_ns = time.perf_counter_ns() - wall_started
+        _, heap_peak = tracemalloc.get_traced_memory()
+    finally:
+        if not tracing_before:
+            tracemalloc.stop()
+
+    report_bytes = len(
+        json.dumps(report, separators=(",", ":"), sort_keys=True).encode("utf-8")
+    )
+    return report, {
+        "process_cpu_ns": cpu_ns,
+        "wall_time_ns": wall_ns,
+        "python_heap_peak_bytes": heap_peak,
+        "report_json_bytes": report_bytes,
+        "basis": (
+            "single in-process sample; CPU and wall include wrapper work, Python heap "
+            "excludes native allocations, and report bytes use canonical compact JSON"
+        ),
+    }
+
+
+def _signed_fields(
+    after: dict[str, Any], before: dict[str, Any], fields: tuple[str, ...]
+) -> dict[str, int | float]:
+    return {
+        field: round(float(after[field]) - float(before[field]), 4)
+        if isinstance(after[field], float) or isinstance(before[field], float)
+        else int(after[field]) - int(before[field])
+        for field in fields
+    }
+
+
+def _comparison_delta(
+    after: dict[str, Any],
+    before: dict[str, Any],
+    after_runtime: dict[str, Any],
+    before_runtime: dict[str, Any],
+) -> dict[str, Any]:
+    return {
+        "outcome": _signed_fields(
+            after,
+            before,
+            (
+                "environments_seen",
+                "environments_played",
+                "environments_failed",
+                "levels_cleared_total",
+                "mean_environment_score",
+            ),
+        ),
+        "policy_resource": _signed_fields(
+            after["policy_resource"],
+            before["policy_resource"],
+            (
+                "decision_calls",
+                "observation_calls",
+                "grid_cells_received",
+                "retained_state_leaf_values_total",
+                "retained_state_json_bytes_total",
+                "retained_state_json_bytes_peak",
+            ),
+        ),
+        "runtime_sample": _signed_fields(
+            after_runtime,
+            before_runtime,
+            (
+                "process_cpu_ns",
+                "wall_time_ns",
+                "python_heap_peak_bytes",
+                "report_json_bytes",
+            ),
+        ),
     }
 
 
@@ -546,45 +700,64 @@ def compare_coordinate_policies(
     max_actions_per_level: int = MAX_ACTIONS_PER_LEVEL,
     seed: int = 4,
 ) -> dict[str, Any]:
-    """Run both coordinate policies against one immutable roster snapshot."""
+    """Run three coordinate policies against one immutable roster snapshot."""
     roster = tuple(sorted(arcade.get_environments(), key=lambda e: e.game_id))
-    centroid = play_roster(
+    centroid, centroid_runtime = _measure_roster(
         arcade,
+        roster,
+        HostedCoordinatePolicy.CENTROID,
         max_environments=max_environments,
         max_actions_per_level=max_actions_per_level,
         seed=seed,
-        coordinate_policy=HostedCoordinatePolicy.CENTROID,
-        roster=roster,
     )
-    scene_feedback = play_roster(
+    observed, observed_runtime = _measure_roster(
         arcade,
+        roster,
+        HostedCoordinatePolicy.SCENE_FEEDBACK_OBSERVED,
         max_environments=max_environments,
         max_actions_per_level=max_actions_per_level,
         seed=seed,
-        coordinate_policy=HostedCoordinatePolicy.SCENE_FEEDBACK,
-        roster=roster,
+    )
+    predicted, predicted_runtime = _measure_roster(
+        arcade,
+        roster,
+        HostedCoordinatePolicy.SCENE_FEEDBACK_PREDICTED,
+        max_environments=max_environments,
+        max_actions_per_level=max_actions_per_level,
+        seed=seed,
     )
 
     return {
-        "experiment": "hosted-coordinate-policy-comparison-v1",
+        "experiment": "hosted-coordinate-policy-comparison-v2",
         "seed": seed,
         "max_environments": max_environments,
         "max_actions_per_level": max_actions_per_level,
-        "centroid": centroid,
-        "scene_feedback": scene_feedback,
-        "delta": {
-            "environments_seen": int(scene_feedback["environments_seen"])
-            - int(centroid["environments_seen"]),
-            "environments_played": int(scene_feedback["environments_played"])
-            - int(centroid["environments_played"]),
-            "environments_failed": int(scene_feedback["environments_failed"])
-            - int(centroid["environments_failed"]),
-            "levels_cleared_total": int(scene_feedback["levels_cleared_total"])
-            - int(centroid["levels_cleared_total"]),
-            "mean_environment_score": round(
-                float(scene_feedback["mean_environment_score"])
-                - float(centroid["mean_environment_score"]),
-                4,
+        "arms": {
+            "centroid": {"report": centroid, "runtime_sample": centroid_runtime},
+            "scene_feedback_observed": {
+                "report": observed,
+                "runtime_sample": observed_runtime,
+            },
+            "scene_feedback_predicted": {
+                "report": predicted,
+                "runtime_sample": predicted_runtime,
+            },
+        },
+        "comparisons": {
+            "observed_minus_centroid": _comparison_delta(
+                observed, centroid, observed_runtime, centroid_runtime
+            ),
+            "predicted_minus_centroid": _comparison_delta(
+                predicted, centroid, predicted_runtime, centroid_runtime
+            ),
+            "predicted_minus_observed": _comparison_delta(
+                predicted, observed, predicted_runtime, observed_runtime
             ),
         },
+        "limits": [
+            "one sample per arm is not a confidence interval",
+            "the roster and seed are shared, but hosted execution is not a cloned process",
+            "runtime telemetry includes wrapper and instrumentation overhead",
+            "scores from a truncated action ceiling are not leaderboard-comparable",
+        ],
     }
