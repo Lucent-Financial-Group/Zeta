@@ -2086,3 +2086,59 @@ let ``reopen with empty orphan catalog does not enqueue reclaim`` () : Task =
             ZetaFsFreeze.dispose volume2
             FileSystem.Reset()
     }
+
+[<Fact>]
+let ``BlockCas unpinned key is an orphan reopen reclaims`` () : Task =
+    task {
+        ensureHasher ()
+        let mock = InMemoryFileSystem()
+        FileSystem.Register(mock)
+        let store = "/block-orphan-reopen"
+        let mutbuf = ZetaFsMutbuf.create store ZetaFsMutbuf.Coherence.Shared
+        let id = mintId ()
+        let leftoverId: ContentHash256 =
+            { Raw = Array.init 32 (fun i -> if i = 0 then 0xA5uy else 0uy) }
+        let leftoverKey = (ContentHash256.toContentAddress128 leftoverId).ToHex()
+        let leftoverBytes = [| 7uy; 7uy; 7uy |]
+        let mutable firstContent = Unchecked.defaultof<ContentHash256>
+        let volume1 = ZetaFsFreeze.createManual store mutbuf None
+
+        try
+            let h = ZetaFsMutbuf.openHandle volume1.Mutbuf id
+            ZetaFsMutbuf.pwrite volume1.Mutbuf h 0L [| 1uy; 2uy; 3uy |] |> ignore
+            let pending = (freezeAsync volume1 id ZetaFsFreeze.Journaled).AsTask()
+            do! (ZetaFsFreeze.pumpLog volume1 CancellationToken.None).ConfigureAwait(false)
+            let! first = pending.ConfigureAwait(false)
+            match first with
+            | Error e -> Assert.Fail(ZetaFsFreeze.errorName e)
+            | Ok ok ->
+                do! (ZetaFsFreeze.pumpReclaim volume1 CancellationToken.None).ConfigureAwait(false)
+                Assert.Equal(0, (ZetaFsFreeze.orphanObjects volume1).Length)
+                match volume1.Log.ObjectCas with
+                | None -> Assert.Fail("createManual must have a BlockCas")
+                | Some cas ->
+                    cas.Put(leftoverKey, leftoverBytes)
+                    ZetaFsFreeze.noteKnownObject volume1 leftoverId (uint64 leftoverBytes.Length)
+                    Assert.True(cas.Exists leftoverKey)
+                    Assert.True((ZetaFsFreeze.orphanObjects volume1).Length > 0)
+                firstContent <- ok.Content
+        finally
+            ZetaFsFreeze.dispose volume1
+
+        let volume2 = ZetaFsFreeze.createManual store mutbuf None
+        try
+            let leftovers = ZetaFsFreeze.orphanObjects volume2
+            Assert.True(leftovers.Length > 0)
+            Assert.Equal(leftoverId, leftovers.[0].Id)
+            Assert.Equal(0, ZetaFsFreeze.reclaimBoatCount volume2)
+            do! (ZetaFsFreeze.pumpReclaim volume2 CancellationToken.None).ConfigureAwait(false)
+            Assert.Equal(1, ZetaFsFreeze.reclaimBoatCount volume2)
+            Assert.Equal(0, (ZetaFsFreeze.orphanObjects volume2).Length)
+            match volume2.Log.ObjectCas with
+            | None -> Assert.Fail("reopen must have a BlockCas")
+            | Some cas -> Assert.False(cas.Exists leftoverKey)
+            Assert.True(ZetaFsFreeze.isReadable volume2 firstContent)
+        finally
+            ZetaFsFreeze.dispose volume2
+            FileSystem.Reset()
+    }
