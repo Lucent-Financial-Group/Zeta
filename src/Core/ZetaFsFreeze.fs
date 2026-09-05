@@ -32,7 +32,8 @@ open Zeta.Core.FSharp.Blake3
 /// unpublishes those keys (`Delete`). POSIX `createManualStream` still
 /// deletes files. Manual volumes still `pumpReclaim`. `KeepNone` /
 /// `rolling(N)` unpin previous generations of the same entity; product
-/// `create` uses `rollingDefault`. DST manuals stay `KeepAll`.
+/// `create` uses `rollingDefault`. DST manuals stay `KeepAll` until
+/// `known.pins` records `history keep-none` / `rolling N`.
 ///
 /// DoP=1 on this log. No Task.Run except the ferry launch (injected context
 /// on the DST path; `manual` + `PumpToIdleAsync` for tests).
@@ -106,13 +107,38 @@ module ZetaFsFreeze =
     let private catalogPath (storeDir: string) =
         ZetaFsPath.combine2 storeDir "known.pins"
 
+    let private formatHistory (h: ZetaFsPolicy.HistoryPolicy) : string =
+        match h with
+        | ZetaFsPolicy.HistoryPolicy.KeepNone -> "history keep-none"
+        | ZetaFsPolicy.HistoryPolicy.Rolling(Some n, _, _) ->
+            "history rolling " + n.ToString(CultureInfo.InvariantCulture)
+        | ZetaFsPolicy.HistoryPolicy.KeepAll
+        | ZetaFsPolicy.HistoryPolicy.Rolling(None, _, _)
+        | ZetaFsPolicy.HistoryPolicy.Regen _ -> "history keep-all"
+
+    let private parseHistory (line: string) : ZetaFsPolicy.HistoryPolicy option =
+        let parts = line.Split(' ')
+
+        if parts.Length >= 2 && parts.[0] = "history" then
+            match parts.[1] with
+            | "keep-none" -> Some ZetaFsPolicy.HistoryPolicy.KeepNone
+            | "keep-all" -> Some ZetaFsPolicy.HistoryPolicy.KeepAll
+            | "rolling" when parts.Length >= 3 ->
+                match Int32.TryParse(parts.[2], NumberStyles.Integer, CultureInfo.InvariantCulture) with
+                | true, n when n >= 1 -> Some(ZetaFsPolicy.HistoryPolicy.Rolling(Some n, None, None))
+                | _ -> Some ZetaFsPolicy.HistoryPolicy.KeepAll
+            | _ -> None
+        else
+            None
+
     let private persistCatalog
         (storeDir: string)
         (known: Dictionary<ContentHash256, uint64>)
         (livePins: HashSet<ContentHash256>)
+        (history: ZetaFsPolicy.HistoryPolicy)
         =
         let fs = FileSystem.Current
-        let lines =
+        let objects =
             known
             |> Seq.map (fun kv ->
                 let pin = if livePins.Contains kv.Key then "1" else "0"
@@ -123,32 +149,39 @@ module ZetaFsFreeze =
                 + pin)
             |> Seq.toArray
 
+        let lines = Array.append [| formatHistory history |] objects
         FileSystemIo.writeAllText fs (catalogPath storeDir) (String.concat "\n" lines)
 
     let private loadCatalog
         (storeDir: string)
         (known: Dictionary<ContentHash256, uint64>)
         (livePins: HashSet<ContentHash256>)
-        =
+        : ZetaFsPolicy.HistoryPolicy =
         let fs = FileSystem.Current
         let path = catalogPath storeDir
+        let mutable history = ZetaFsPolicy.HistoryPolicy.KeepAll
 
         if fs.Exists path then
             let text = Encoding.UTF8.GetString(fs.ReadAllBytes path)
 
             for line in text.Replace("\r\n", "\n", StringComparison.Ordinal).Split('\n') do
                 if line.Length > 0 then
-                    let parts = line.Split(' ')
+                    match parseHistory line with
+                    | Some h -> history <- h
+                    | None ->
+                        let parts = line.Split(' ')
 
-                    if parts.Length = 3 && parts.[0].Length = 64 then
-                        match UInt64.TryParse(parts.[1], NumberStyles.Integer, CultureInfo.InvariantCulture) with
-                        | true, size ->
-                            let id = ContentHash256.ofHex parts.[0]
-                            known.[id] <- size
+                        if parts.Length = 3 && parts.[0].Length = 64 then
+                            match UInt64.TryParse(parts.[1], NumberStyles.Integer, CultureInfo.InvariantCulture) with
+                            | true, size ->
+                                let id = ContentHash256.ofHex parts.[0]
+                                known.[id] <- size
 
-                            if parts.[2] = "1" then
-                                livePins.Add id |> ignore
-                        | _ -> ()
+                                if parts.[2] = "1" then
+                                    livePins.Add id |> ignore
+                            | _ -> ()
+
+        history
 
     /// DoP=1 segment writer. One boat = N freezes, one Flush; Durable adds one
     /// fsync of objects-dir + log. `manual` is the DST pump (no background ferry).
@@ -161,7 +194,8 @@ module ZetaFsFreeze =
             blockIo: FreezeBlockIo option,
             objectCas: BlockCas option,
             known: Dictionary<ContentHash256, uint64>,
-            livePins: HashSet<ContentHash256>
+            livePins: HashSet<ContentHash256>,
+            history: ZetaFsPolicy.HistoryPolicy ref
         ) =
 
         do
@@ -187,7 +221,7 @@ module ZetaFsFreeze =
                             livePins.Add id |> ignore
                             j <- j + 1
 
-                persistCatalog storeDir known livePins
+                persistCatalog storeDir known livePins !history
 
                 for i in 0 .. boat.Length - 1 do
                     let it = boat.Span.[i]
@@ -235,7 +269,7 @@ module ZetaFsFreeze =
                         | Some cas ->
                             cas.Put(hex, bytes)
                             known.[id] <- uint64 bytes.Length
-                            persistCatalog storeDir known livePins
+                            persistCatalog storeDir known livePins !history
 
                             if item.Durable then
                                 cas.Device.Flush()
@@ -268,7 +302,7 @@ module ZetaFsFreeze =
 
                                     if n > 0 then
                                         known.[id] <- uint64 n
-                                        persistCatalog storeDir known livePins
+                                        persistCatalog storeDir known livePins !history
 
                                 raise ex
 
@@ -520,9 +554,8 @@ module ZetaFsFreeze =
         let known = Dictionary<ContentHash256, uint64>()
         let livePins = HashSet<ContentHash256>()
         let objectSets = Dictionary<ContentHash256, ContentHash256[]>()
-        let mutable history = ZetaFsPolicy.HistoryPolicy.KeepAll
-        do loadCatalog storeDir known livePins
-        let log = new FreezeLog(storeDir, config, manual, blockIo, objectCas, known, livePins)
+        let history = ref (loadCatalog storeDir known livePins)
+        let log = new FreezeLog(storeDir, config, manual, blockIo, objectCas, known, livePins, history)
         let reclaim = new ReclaimFerry(storeDir, config, manual, objectCas)
         do
             // Reopen meter is 0 (not persisted). pacer(0) deletes nothing,
@@ -568,8 +601,10 @@ module ZetaFsFreeze =
         member internal _.LivePins = livePins
         member internal _.ObjectSets = objectSets
         member _.History
-            with get () = history
-            and set v = history <- v
+            with get () = !history
+            and set v =
+                history := v
+                persistCatalog storeDir known livePins v
 
         interface IDisposable with
             member _.Dispose() =
@@ -1154,7 +1189,7 @@ module ZetaFsFreeze =
     let noteKnownObject (volume: Volume) (id: ContentHash256) (size: uint64) =
         lock volume.Gate (fun () ->
             volume.KnownObjects.[id] <- size
-            persistCatalog volume.StoreDir volume.KnownObjects volume.LivePins)
+            persistCatalog volume.StoreDir volume.KnownObjects volume.LivePins volume.History)
 
     /// Objects the volume wrote that no live freeze still pins. Keeps full
     /// ids so reclaim can propose them. Empty until something is unpinned
@@ -1247,7 +1282,7 @@ module ZetaFsFreeze =
 
         volume.KnownObjects.[id] <- uint64 bytes.Length
         volume.LivePins.Add id |> ignore
-        persistCatalog volume.StoreDir volume.KnownObjects volume.LivePins
+        persistCatalog volume.StoreDir volume.KnownObjects volume.LivePins volume.History
 
     let private objectExists (volume: Volume) (id: ContentHash256) : bool =
         match volume.Log.ObjectCas with
@@ -1354,7 +1389,7 @@ module ZetaFsFreeze =
             volume.LivePins.Add id |> ignore
 
         match keepCount volume.History with
-        | None -> persistCatalog volume.StoreDir volume.KnownObjects volume.LivePins
+        | None -> persistCatalog volume.StoreDir volume.KnownObjects volume.LivePins volume.History
         | Some n ->
             let mine =
                 volume.Commits.Values
@@ -1365,7 +1400,7 @@ module ZetaFsFreeze =
             let dropCount = mine.Length - n
 
             if dropCount <= 0 then
-                persistCatalog volume.StoreDir volume.KnownObjects volume.LivePins
+                persistCatalog volume.StoreDir volume.KnownObjects volume.LivePins volume.History
             else
                 let kept = HashSet<ContentHash256>()
 
@@ -1378,7 +1413,7 @@ module ZetaFsFreeze =
                         if not (kept.Contains id) then
                             volume.LivePins.Remove id |> ignore
 
-                persistCatalog volume.StoreDir volume.KnownObjects volume.LivePins
+                persistCatalog volume.StoreDir volume.KnownObjects volume.LivePins volume.History
 
     let private finish
         (volume: Volume)
