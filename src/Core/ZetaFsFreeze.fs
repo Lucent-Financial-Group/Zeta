@@ -18,8 +18,9 @@ open Zeta.Core.FSharp.Blake3
 /// (torn tail / intent-without-commit / mid-log CRC dropped from the bad
 /// frame; prefix kept). Sealed frames carry LSN in the clear so `openLog`
 /// can rebuild the nonce. Reclaim volume door is `reclaimSweep` (journal
-/// under `StoreDir`). `reclaimTick` composes pacer + propose + sweep.
-/// Still `toy`: not a FerryThrottler boat / not auto-ticked after freeze.
+/// under `StoreDir`). `reclaimTick` is the sync core. `reclaimAsync` +
+/// `pumpReclaim` are the DoP=1 FerryThrottler boat. Still `toy`: not
+/// auto-ticked after freeze.
 ///
 /// DoP=1 on this log. No Task.Run except the ferry launch (injected context
 /// on the DST path; `manual` + `PumpToIdleAsync` for tests).
@@ -280,6 +281,77 @@ module ZetaFsFreeze =
         interface IDisposable with
             member _.Dispose() = (throttler :> IDisposable).Dispose()
 
+    let private objectPath (storeDir: string) (id: ContentHash256) =
+        let hex = (ContentHash256.toContentAddress128 id).ToHex()
+        ZetaFsPath.combine4 storeDir "objects" (hex.Substring(0, 2)) (hex.Substring(2))
+
+    let private journalPath (storeDir: string) =
+        ZetaFsPath.combine2 storeDir "sweep.journal"
+
+    let private tickStore
+        (storeDir: string)
+        (fs: IFileSystem)
+        (roots: ZetaFsReclaim.Roots)
+        (objects: ZetaFsReclaim.Object[])
+        (freezeBytesSinceLastTick: uint64)
+        : int =
+        let budget = ZetaFsReclaim.pacer freezeBytesSinceLastTick
+        let ids = ZetaFsReclaim.propose roots objects budget
+        let paths = ids |> Array.map (fun id -> id, objectPath storeDir id)
+        ZetaFsReclaim.applyWithJournal fs (journalPath storeDir) paths budget
+
+    type internal ReclaimItem =
+        { Roots: ZetaFsReclaim.Roots
+          Objects: ZetaFsReclaim.Object[]
+          FreezeBytes: uint64
+          Reply: TaskCompletionSource<int> }
+
+    /// DoP=1 reclaim boat. Separate from FreezeLog so WAL writes and deletes
+    /// do not share a boat (crash-mid-write vs crash-on-delete).
+    [<Sealed>]
+    type internal ReclaimFerry (storeDir: string, config: FerryThrottlerConfig, manual: bool) =
+        do
+            if config.MaxDegreeOfParallelism <> 1 then
+                invalidArg (nameof config) "ReclaimFerry MaxDegreeOfParallelism must be 1."
+
+        let mutable boats = 0
+        let mutable lastBoat = 0
+
+        let processBatch (boat: ReadOnlyMemory<ReclaimItem>) (ct: CancellationToken) : Task =
+            try
+                ct.ThrowIfCancellationRequested()
+                boats <- boats + 1
+                lastBoat <- boat.Length
+                let fs = FileSystem.Current
+                let mutable i = 0
+
+                while i < boat.Length do
+                    let item = boat.Span.[i]
+                    let n = tickStore storeDir fs item.Roots item.Objects item.FreezeBytes
+                    item.Reply.TrySetResult n |> ignore
+                    i <- i + 1
+
+                Task.CompletedTask
+            with ex ->
+                for i in 0 .. boat.Length - 1 do
+                    boat.Span.[i].Reply.TrySetException ex |> ignore
+
+                Task.CompletedTask
+
+        let throttler = new FerryThrottler<ReclaimItem>(config, processBatch, manual = manual)
+
+        member _.Boats = boats
+        member _.LastBoatSize = lastBoat
+
+        member _.SubmitAsync(item: ReclaimItem, ct: CancellationToken) : ValueTask =
+            throttler.EnqueueAsync(item, ct)
+
+        member _.PumpToIdleAsync(?cancellationToken: CancellationToken) =
+            throttler.PumpToIdleAsync(?cancellationToken = cancellationToken)
+
+        interface IDisposable with
+            member _.Dispose() = (throttler :> IDisposable).Dispose()
+
     [<Sealed>]
     type Volume
         (
@@ -297,6 +369,7 @@ module ZetaFsFreeze =
         let leaves = Dictionary<ContentHash256, ContentHash256[]>()
         let mutable nextLsn = 1L
         let log = new FreezeLog(storeDir, config, manual, blockIo, objectCas)
+        let reclaim = new ReclaimFerry(storeDir, config, manual)
 
         member _.StoreDir = storeDir
         member _.Mutbuf = mutbuf
@@ -309,16 +382,15 @@ module ZetaFsFreeze =
             with get () = nextLsn
             and set v = nextLsn <- v
         member internal _.Log = log
+        member internal _.Reclaim = reclaim
 
         interface IDisposable with
-            member _.Dispose() = (log :> IDisposable).Dispose()
+            member _.Dispose() =
+                (reclaim :> IDisposable).Dispose()
+                (log :> IDisposable).Dispose()
 
     let private logDir (v: Volume) = ZetaFsPath.combine2 v.StoreDir "log"
     let private objectsDir (v: Volume) = ZetaFsPath.combine2 v.StoreDir "objects"
-
-    let private objectPath (storeDir: string) (id: ContentHash256) =
-        let hex = (ContentHash256.toContentAddress128 id).ToHex()
-        ZetaFsPath.combine4 storeDir "objects" (hex.Substring(0, 2)) (hex.Substring(2))
 
     let errorName (e: FreezeError) : string =
         match e with
@@ -823,8 +895,7 @@ module ZetaFsFreeze =
 
     /// Journal for a crash-mid-sweep. Owned by the volume, not invented by
     /// the caller. `reclaimSweep` is the only apply door that uses it.
-    let sweepJournalPath (volume: Volume) =
-        ZetaFsPath.combine2 volume.StoreDir "sweep.journal"
+    let sweepJournalPath (volume: Volume) = journalPath volume.StoreDir
 
     /// Journaled reclaim through the freeze volume. Still `toy`: this is
     /// the volume door, not a freeze-boat tick.
@@ -837,8 +908,8 @@ module ZetaFsFreeze =
         ZetaFsReclaim.applyWithJournal fs (sweepJournalPath volume) paths budget
 
     /// One reclaim tick: pacer from freeze bytes (not wall-clock), propose
-    /// unpinned objects, sweep through the volume journal. Still `toy`:
-    /// not enqueued on a FerryThrottler and not called from freezeAsync.
+    /// unpinned objects, sweep through the volume journal. The ferry door is
+    /// `reclaimAsync` + `pumpReclaim`. Still `toy`: not auto-ticked after freeze.
     let reclaimTick
         (volume: Volume)
         (fs: IFileSystem)
@@ -846,10 +917,44 @@ module ZetaFsFreeze =
         (objects: ZetaFsReclaim.Object[])
         (freezeBytesSinceLastTick: uint64)
         : int =
-        let budget = ZetaFsReclaim.pacer freezeBytesSinceLastTick
-        let ids = ZetaFsReclaim.propose roots objects budget
-        let paths = ids |> Array.map (fun id -> id, objectPath volume.StoreDir id)
-        reclaimSweep volume fs paths budget
+        tickStore volume.StoreDir fs roots objects freezeBytesSinceLastTick
+
+    /// Enqueue one reclaim tick on the DoP=1 reclaim ferry. Manual volumes
+    /// need `pumpReclaim` before the task completes.
+    let reclaimAsync
+        (volume: Volume)
+        (roots: ZetaFsReclaim.Roots)
+        (objects: ZetaFsReclaim.Object[])
+        (freezeBytesSinceLastTick: uint64)
+        (ct: CancellationToken)
+        : Task<int> =
+        let reply =
+            TaskCompletionSource<int>(TaskCreationOptions.RunContinuationsAsynchronously)
+
+        let item =
+            { Roots = roots
+              Objects = objects
+              FreezeBytes = freezeBytesSinceLastTick
+              Reply = reply }
+
+        let write = volume.Reclaim.SubmitAsync(item, ct)
+
+        task {
+            try
+                if not write.IsCompletedSuccessfully then
+                    do! write.AsTask().ConfigureAwait(false)
+
+                return! reply.Task.WaitAsync(ct).ConfigureAwait(false)
+            with
+            | :? OperationCanceledException as ex ->
+                reply.TrySetCanceled ct |> ignore
+                return raise ex
+        }
+
+    let pumpReclaim (volume: Volume) (ct: CancellationToken) : Task =
+        volume.Reclaim.PumpToIdleAsync(ct)
+
+    let reclaimBoatCount (volume: Volume) = volume.Reclaim.Boats
 
     let pumpLog (volume: Volume) (ct: CancellationToken) : Task =
         volume.Log.PumpToIdleAsync(ct)

@@ -1,0 +1,14 @@
+{
+  "id": "080d037b83280810a01300080650dd33",
+  "at": "2026-09-05T02:40:32.001Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1QQ0S81087G0R001YVF1AN",
+    "type": "task",
+    "title": "Freeze reclaim ferry is a DoP=1 boat",
+    "slug": "freeze-reclaim-ferry-is-a-dop-1-boat",
+    "priority": "P2",
+    "filename": "081M1QQ0S81087G0R001YVF1AN-freeze-reclaim-ferry-is-a-dop-1-boat.md"
+  }
+}

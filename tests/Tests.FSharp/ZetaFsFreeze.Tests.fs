@@ -1644,3 +1644,61 @@ let ``reclaimTick paces extra CAS garbage and keeps a committed freeze readable`
             ZetaFsFreeze.dispose volume
             FileSystem.Reset()
     }
+
+[<Fact>]
+let ``reclaimAsync does not delete until pumpReclaim on a manual volume`` () : Task =
+    task {
+        ensureHasher ()
+        FileSystem.Register(InMemoryFileSystem())
+        let store = "/freeze-reclaim-ferry"
+        let mutbuf = ZetaFsMutbuf.create store ZetaFsMutbuf.Coherence.Shared
+        let volume = ZetaFsFreeze.createManualStream store mutbuf None
+        let dummy (n: byte) : ContentHash256 =
+            { Raw = Array.init 32 (fun i -> if i = 0 then n else 0uy) }
+        let casPath (id: ContentHash256) =
+            let hex = (ContentHash256.toContentAddress128 id).ToHex()
+            ZetaFsPath.combine4 store "objects" (hex.Substring(0, 2)) (hex.Substring(2))
+        let garbageObj (n: byte) : ZetaFsReclaim.Object =
+            { Id = dummy n; Size = 8UL; Refs = [||] }
+
+        try
+            let id = mintId ()
+            let h = ZetaFsMutbuf.openHandle volume.Mutbuf id
+            ZetaFsMutbuf.pwrite volume.Mutbuf h 0L [| 1uy; 2uy; 3uy |] |> ignore
+            let pendingFreeze = (freezeAsync volume id ZetaFsFreeze.Journaled).AsTask()
+            do! (ZetaFsFreeze.pumpLog volume CancellationToken.None).ConfigureAwait(false)
+            let! first = pendingFreeze.ConfigureAwait(false)
+
+            match first with
+            | Error e -> Assert.Fail(ZetaFsFreeze.errorName e)
+            | Ok first ->
+                let g1 = garbageObj 1uy
+                let g2 = garbageObj 2uy
+                let p1 = casPath g1.Id
+                let p2 = casPath g2.Id
+                FileSystem.Current.CreateDirectory(ZetaFsPath.directoryName p1)
+                FileSystem.Current.CreateDirectory(ZetaFsPath.directoryName p2)
+                FileSystemIo.writeAllBytes FileSystem.Current p1 [| 9uy |]
+                FileSystemIo.writeAllBytes FileSystem.Current p2 [| 8uy |]
+                let roots =
+                    { ZetaFsReclaim.emptyRoots with
+                        LiveRefs = [| ZetaFsReclaim.hex first.Content |] }
+                let objects = [| g1; g2 |]
+                Assert.Equal(0, ZetaFsFreeze.reclaimBoatCount volume)
+                let pending =
+                    ZetaFsFreeze.reclaimAsync volume roots objects 100UL CancellationToken.None
+
+                Assert.False(pending.IsCompleted)
+                Assert.True(FileSystem.Current.Exists p1)
+                Assert.True(FileSystem.Current.Exists p2)
+                do! (ZetaFsFreeze.pumpReclaim volume CancellationToken.None).ConfigureAwait(false)
+                let! n = pending.ConfigureAwait(false)
+                Assert.Equal(2, n)
+                Assert.Equal(1, ZetaFsFreeze.reclaimBoatCount volume)
+                Assert.False(FileSystem.Current.Exists p1)
+                Assert.False(FileSystem.Current.Exists p2)
+                Assert.True(ZetaFsFreeze.isReadable volume first.Content)
+        finally
+            ZetaFsFreeze.dispose volume
+            FileSystem.Reset()
+    }
