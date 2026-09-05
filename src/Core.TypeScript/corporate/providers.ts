@@ -331,6 +331,138 @@ export function fidelityOf(set: ProviderSet): FidelityReport {
  * provider makes the comparison meaningless, and finding that out from a diff is worse than being
  * told up front.
  */
+/**
+ * What a run COULD do, and what it actually DID — kept apart, because they are different claims.
+ *
+ * `fidelityOf` reads the ProviderSet's LABELS. That is the right basis for `replayable`: a set
+ * holding a real adapter cannot be promised to replay, whether or not this particular run happened
+ * to reach it, and answering otherwise would be a promise the next run breaks.
+ *
+ * It is the wrong basis for the sentence a human reads. The register wrote *"these port(s) touched
+ * something real: review"* over a run with **zero gate evaluations** — measured — because the
+ * reviewer was configured, not called. "Touched" is a claim about the world; configuration is a
+ * claim about intent, and a disclosure that conflates them overstates in the one direction this
+ * whole layer exists to prevent.
+ *
+ * So a run reports THREE things rather than two:
+ *
+ *   - `reached`             real AND called. The only set "touched something" can honestly name.
+ *   - `configuredNotCalled` real and never called. Not nothing, and not a reach — its own answer.
+ *   - `replayable`          configuration-derived, unchanged, deliberately conservative.
+ *
+ * Both new fields are DERIVED from `realPorts` and the invocation set. Neither can be declared.
+ */
+export interface RunFidelity extends FidelityReport {
+  /** Every port whose adapter was called, real or simulated. */
+  readonly invoked: readonly Port[];
+  /** Real ports that were called. What the run reached. */
+  readonly reached: readonly Port[];
+  /** Real ports that were never called. Configured to reach, and did not. */
+  readonly configuredNotCalled: readonly Port[];
+}
+
+export function runFidelityOf(set: ProviderSet, invoked: Iterable<Port>): RunFidelity {
+  const base = fidelityOf(set);
+  // Ordinal, and ordered by the port enum rather than by call order: a report whose field order
+  // depended on which adapter happened to answer first would differ between two runs that did the
+  // same thing, and this value is written to a content-addressed store.
+  const called = new Set(invoked);
+  const order = (ports: readonly Port[]) => [...ports].sort();
+  return {
+    ...base,
+    invoked: order([...called]),
+    reached: order(base.realPorts.filter((p) => called.has(p))),
+    configuredNotCalled: order(base.realPorts.filter((p) => !called.has(p))),
+  };
+}
+
+/**
+ * The one sentence, in one place.
+ *
+ * The runtime writes it into the log and both CLIs print it. Three copies of this wording is three
+ * chances to say something the report does not support — which is how it got out of step in the
+ * first place: the emitted fact and the two CLI prints all independently said "touched something"
+ * about a field that measures CONFIGURATION.
+ */
+export function fidelityLine(f: RunFidelity): string {
+  if (f.reached.length > 0) {
+    const unreached =
+      f.configuredNotCalled.length === 0
+        ? ""
+        : `; configured real but never called: ${f.configuredNotCalled.join(", ")}`;
+    return `these port(s) reached something real: ${f.reached.join(", ")}${unreached}`;
+  }
+  if (f.configuredNotCalled.length > 0) {
+    // NOT "performed nothing". The run is still un-replayable: the same set run again would reach.
+    return `no real port was called; configured real and never reached: ${f.configuredNotCalled.join(", ")}`;
+  }
+  return "every port was simulated; this run performed nothing and reached nothing";
+}
+
+/**
+ * The same set, plus a record of which ports were actually called.
+ *
+ * A wrapper rather than a flag inside each adapter: an adapter that counted its own calls would be
+ * a fact each of the fourteen adapters could get wrong independently, and three of them would
+ * quietly not have it. Here there is one place to be right about, and `invoked()` is the only way
+ * to learn the answer — so it cannot drift from what actually ran.
+ */
+export function recordingProviders(set: ProviderSet): {
+  readonly providers: ProviderSet;
+  invoked(): readonly Port[];
+} {
+  const called = new Set<Port>();
+  const mark = (port: Port) => {
+    called.add(port);
+  };
+  return {
+    invoked: () => [...called].sort(),
+    providers: {
+      intake: {
+        meta: set.intake.meta,
+        poll: async () => {
+          mark(Port.Intake);
+          return set.intake.poll();
+        },
+      },
+      work: {
+        meta: set.work.meta,
+        execute: async (node, ctx) => {
+          mark(Port.WorkExecution);
+          return set.work.execute(node, ctx);
+        },
+      },
+      tests: {
+        meta: set.tests.meta,
+        run: async (testCase, ctx) => {
+          mark(Port.TestExecution);
+          return set.tests.run(testCase, ctx);
+        },
+      },
+      review: {
+        meta: set.review.meta,
+        review: async (request) => {
+          mark(Port.Review);
+          return set.review.review(request);
+        },
+      },
+      change: {
+        meta: set.change.meta,
+        // BOTH halves mark. A change that was opened and never merged still reached the repository,
+        // and a report that only counted merges would call that run untouched.
+        open: async (node, ctx) => {
+          mark(Port.ChangeControl);
+          return set.change.open(node, ctx);
+        },
+        merge: async (handle) => {
+          mark(Port.ChangeControl);
+          return set.change.merge(handle);
+        },
+      },
+    },
+  };
+}
+
 export function requireReplayable(set: ProviderSet): { readonly ok: true } | { readonly ok: false; readonly reason: string } {
   const report = fidelityOf(set);
   if (report.replayable) return { ok: true };

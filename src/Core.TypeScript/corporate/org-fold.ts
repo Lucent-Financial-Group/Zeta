@@ -38,7 +38,7 @@ import type { GateEvaluation } from "./quality-gate";
 import type { Portfolio, PortfolioBook } from "./portfolio";
 import type { WorkQueue } from "./work-market";
 import type { QaCycleReport } from "./qa";
-import type { FidelityReport } from "./providers";
+import type { FidelityReport, RunFidelity } from "./providers";
 
 /** The events that constitute state, in the order they happened. */
 export function factEvents(events: readonly OrgEvent[]): readonly OrgEvent[] {
@@ -247,8 +247,8 @@ export function foldQaCycles(events: readonly OrgEvent[]): readonly QaCycleRepor
  * it is the one question with an unambiguous answer, and it is deliberately the CONSERVATIVE
  * direction: an empty log is not "all simulated", because nothing was observed.
  */
-export function foldRunFidelity(events: readonly OrgEvent[]): readonly FidelityReport[] {
-  const out: FidelityReport[] = [];
+export function foldRunFidelity(events: readonly OrgEvent[]): readonly RunFidelity[] {
+  const out: RunFidelity[] = [];
   for (const event of factEvents(events)) {
     if (event.fact?.kind === "run_fidelity") out.push(event.fact.report);
   }
@@ -362,7 +362,7 @@ export interface FoldedOrganization {
    * Without it a resumed organization cannot tell inherited REAL work from inherited simulated work
    * — the two stores are otherwise byte-identical.
    */
-  readonly fidelities: readonly FidelityReport[];
+  readonly fidelities: readonly RunFidelity[];
   /** Empty when the log accounted for everything it referred to. */
   readonly refusals: readonly string[];
   /** How many events carried a fact. Zero means the log holds no state, only commentary. */

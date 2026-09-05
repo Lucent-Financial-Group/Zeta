@@ -42,6 +42,7 @@ import { appendRun, deliveryRate, readEvents } from "./org-store";
 import { everyRunWasSimulated, foldOrganization } from "./org-fold";
 import { idlePortfolios, PortfolioKind, portfolioHistory, portfolioOf } from "./portfolio";
 import { emptyQueue, type WorkQueue } from "./work-market";
+import { fidelityLine } from "./providers";
 import { argRefusals, parseArgs, providersFromArgs, type Args } from "./run-org";
 import { IntakeKind, Severity, type ExternalEvent } from "./intake";
 import { RunOutcome } from "./qa";
@@ -361,11 +362,10 @@ export async function main(argv: readonly string[]): Promise<number> {
   );
   // BESIDE the verdict, not under it. "DELIVERED" reads identically whether the work reached a
   // repository or reached nothing, and this is the only line that tells the two apart.
-  console.log(
-    `  DST-replayable: ${
-      org.fidelity.replayable ? "yes — every port simulated; this run performed nothing" : `no — ${org.fidelity.realPorts.join(", ")} touched something`
-    }`,
-  );
+  console.log(`  DST-replayable: ${org.fidelity.replayable ? "yes" : "no"}`);
+  // The same sentence the log gets, from the same function. Two wordings of one fact is two
+  // chances to overstate it, and overstating it is the defect this line exists to prevent.
+  console.log(`  ${fidelityLine(org.fidelity)}`);
 
   // What the PORTFOLIO has seen — across every stored run, which is the question a single run
   // cannot answer because each goal is its own tree.

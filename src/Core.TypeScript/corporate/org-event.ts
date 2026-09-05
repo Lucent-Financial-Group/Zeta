@@ -30,7 +30,7 @@ import type { GateEvaluation } from "./quality-gate";
 import type { PortfolioKind } from "./portfolio";
 import type { WorkQueue } from "./work-market";
 import type { QaCycleReport } from "./qa";
-import type { FidelityReport } from "./providers";
+import type { RunFidelity } from "./providers";
 
 export const OrgEventKind = {
   IntakeReceived: "intake_received",
@@ -165,7 +165,7 @@ export type OrgFact =
    * Carried as the whole report rather than a boolean: `replayable` is the conclusion, and a reader
    * asking WHICH capability was real needs the ports, not the verdict.
    */
-  | { readonly kind: "run_fidelity"; readonly report: FidelityReport }
+  | { readonly kind: "run_fidelity"; readonly report: RunFidelity }
   /**
    * One QA cycle: every run it made, the regressions it found, the defects it filed.
    *

@@ -59,7 +59,7 @@ import {
   traceHealth,
 } from "./org-status";
 import { IntakeKind, Severity, normalize, type ExternalEvent } from "./intake";
-import type { ProviderSet } from "./providers";
+import { fidelityLine, type ProviderSet } from "./providers";
 import {
   agentWorkExecutor,
   autoApproveReview,
@@ -572,11 +572,11 @@ export async function main(argv: readonly string[]): Promise<number> {
   // mention it is the claim this whole layer exists to make unsayable, and a block that only
   // appeared when something was real would train a reader to skip it.
   console.log(`\n--- fidelity ---`);
-  console.log(
-    `  DST-replayable: ${
-      report.fidelity.replayable ? "yes" : `no — ${report.fidelity.realPorts.join(", ")} touched something`
-    }`,
-  );
+  // TWO STATEMENTS, because they answer different questions and can differ. `replayable` is about
+  // the SET — a real adapter in it means the next run could reach, whether or not this one did.
+  // The line beneath is about THIS run, and says which of those ports it actually called.
+  console.log(`  DST-replayable: ${report.fidelity.replayable ? "yes" : "no"}`);
+  console.log(`  ${fidelityLine(report.fidelity)}`);
   for (const port of report.fidelity.ports) {
     console.log(`  ${port.port.padEnd(15)} ${port.name.padEnd(12)} ${port.fidelity.padEnd(10)} ${port.describes}`);
   }

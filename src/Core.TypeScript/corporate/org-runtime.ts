@@ -89,7 +89,7 @@ import {
 import { bindWearerToLoop } from "./loop-policy";
 import { firstLegalChooser, preferChooser, type OrgChooser } from "./org-decision";
 import { reportsUpTo, type HatLevel, type OrgChart } from "./org-chart";
-import { fidelityOf, type ChangeHandle, type FidelityReport, type ProviderSet, type ReviewVerdict } from "./providers";
+import { fidelityLine, recordingProviders, runFidelityOf, type ChangeHandle, type ProviderSet, type ReviewVerdict, type RunFidelity } from "./providers";
 import { autoApproveReview, simulatedChangeControl, simulatedIntake, simulatedTestRunner, simulatedWorkExecutor } from "./adapters";
 import { associateGoal, EMPTY_BOOK, openPortfolio, type PortfolioKind } from "./portfolio";
 import {
@@ -319,7 +319,7 @@ export interface OrgRuntimeReport {
    * DERIVED from the providers rather than declared. A run that reached a shell or a network and
    * called itself deterministic is the claim `providers.ts` exists to make unsayable by accident.
    */
-  readonly fidelity: FidelityReport;
+  readonly fidelity: RunFidelity;
 }
 
 const NEUTRAL_INPUTS: PriorityInputs = {
@@ -356,14 +356,23 @@ const LEVEL_ORDER: readonly HatLevel[] = [
 export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeReport> {
   // The ports, resolved ONCE. Defaulting here rather than at each call site means one place decides
   // what this run is touching, and one place reports it.
-  const providers: ProviderSet = deps.providers ?? {
+  const configured: ProviderSet = deps.providers ?? {
     intake: simulatedIntake(deps.externalEvents),
     work: simulatedWorkExecutor(true),
     tests: simulatedTestRunner(deps.qaPlan ?? new Map(), deps.qaFallback ?? RunOutcome.Passed),
     review: autoApproveReview(),
     change: simulatedChangeControl(),
   };
-  const fidelity = fidelityOf(providers);
+  // WRAPPED, so the report can say what the run DID and not only what it was configured to do.
+  // `providers` below is the recording set; nothing in this function may reach the raw one, or the
+  // count would silently miss whatever bypassed it.
+  const recorder = recordingProviders(configured);
+  const providers = recorder.providers;
+
+  // A FUNCTION, not a value. Computed once at the top it would be the configuration and nothing
+  // else — which is exactly the claim being narrowed here — and every early return below would
+  // record a run's reach before the run had a chance to reach anything.
+  const fidelityNow = (): RunFidelity => runFidelityOf(configured, recorder.invoked());
 
   const trace: OrgEvent[] = [];
   const refusals: string[] = [];
@@ -460,8 +469,35 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
     atMs: deps.nowMs,
   });
 
+  /** Write the run's fidelity into the LOG. Called on every path out of this function. */
+  const noteFidelity = (subjectId: string, atMs: number): RunFidelity => {
+    const f = fidelityNow();
+    note({
+      kind: OrgEventKind.RunFidelity,
+      subjectId,
+      decision: fidelityLine(f),
+      atMs,
+      fact: { kind: "run_fidelity", report: f },
+    });
+    return f;
+  };
+
+  /**
+   * An early return is still a run, and it still has to say what it could and did reach.
+   *
+   * THE DEFECT THIS CLOSES. The fact was emitted at the end of the happy path only, so all three
+   * `return empty()` paths wrote nothing. `empty()` carried `fidelity` in the RETURNED report, so a
+   * live caller was fine and the store was not: measured on a run with no workable goal, persisted
+   * exactly as both CLIs persist, the run record said `{"replayable":true,"realPorts":[]}` and the
+   * event log said `[]`. Two records of one fact in one store, disagreeing — and `--resume`, which
+   * reads the log, printed "no run recorded its fidelity — UNKNOWN, not simulated" for a run whose
+   * fidelity was sitting in the same store.
+   *
+   * Same shape as the `runOrgCycle` early return closed one pass earlier, in that pass's own words,
+   * and its sibling was never checked.
+   */
   const empty = (): OrgRuntimeReport => ({
-    fidelity,
+    fidelity: noteFidelity("run", deps.nowMs),
     // An empty run still gets a REAL reactor report over an empty organization, not a hand-written
     // stub: it quiesces immediately because there is nothing to do, which is the true answer and
     // the same one the loop would give. A fabricated `quiesced: true` would be indistinguishable
@@ -1291,19 +1327,13 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
   // Emitted here rather than at each shard transition: `work-market.ts` owns those transitions, and
   // a fold that replayed them would be a second copy of that state machine, free to drift. One
   // snapshot, one authority, and a round trip that can be checked.
-  // ── WHAT THIS RUN COULD ACTUALLY DO ───────────────────────────────────────
-  // Recorded, not merely returned. `fidelity` in the report tells a live caller; this fact tells
-  // everyone who reads the log afterwards, which is the only audience a resumed organization has.
-  note({
-    kind: OrgEventKind.RunFidelity,
-    subjectId: goalId,
-    decision:
-      fidelity.replayable
-        ? "every port was simulated; this run performed nothing and reached nothing"
-        : `these port(s) touched something real: ${fidelity.realPorts.join(", ")}`,
-    atMs: warmedAt,
-    fact: { kind: "run_fidelity", report: fidelity },
-  });
+  // ── WHAT THIS RUN COULD DO, AND WHAT IT DID ───────────────────────────────
+  // Recorded, not merely returned: the report tells a live caller, this fact tells everyone who
+  // reads the log afterwards, which is the only audience a resumed organization has.
+  //
+  // LAST, deliberately. Every port has been called by now if it was going to be, so `invoked()` is
+  // complete. Emitting earlier would record the configuration under a name that promises more.
+  const fidelity = noteFidelity(goalId, warmedAt);
 
   note({
     kind: OrgEventKind.QueueSnapshot,
