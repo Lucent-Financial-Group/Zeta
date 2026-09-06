@@ -349,5 +349,35 @@ the loop settles rather than spins — and are **not** evidence that work has be
 end-to-end file asserts that limit about itself, because a green e2e suite is exactly the
 artifact someone would later cite as proof of something it never measured.
 
-Two signal families (`ReportRisk`, `SuggestImprovement`) still have no senders, and are named
-here rather than left looking wired.
+## The last two readers that had no writer
+
+Both were named in the paragraph above as remaining, and both are now closed — which is the
+point of naming them.
+
+**No run produced an artifact.** `openArtifact` had zero callers outside tests, so the entire
+deliberation layer was unreachable: a turn cites a revision, `deliberationsOf` needs an artifact
+to name one of, and none existed. The pipeline was already making the thing — every phase with a
+producer returns an artifact — so `historyFromPhases` translates them into a chain, one revision
+per phase, in the pipeline's own order. Linear, because a run is not concurrent; manufacturing a
+divergence would invent a disagreement the run did not have. **26 reviews are now offerable
+across 7 hats, where every hat previously saw zero.**
+
+**And then the drive stopped settling** — every hat was offered a turn every tick, so it ran to
+its bound posting about a document nobody had changed. That is chatter, not deliberation. *You
+speak once per version*: a hat that already addressed this revision is not offered another turn
+on it, and when the artifact moves the head changes and everyone may speak again — which is
+exactly when their opinion is worth having. Settles in 14 rounds. Fixing it surfaced a second
+defect: turns were attributed to the anchor's first participant, so a room of three recorded one
+hat saying everything.
+
+**`ReportRisk` had no sender**, so the organization measured its own pace, found it behind, and
+told nobody — the trigger went into `refusals`, a list for things that went wrong rather than a
+channel anyone watches. A mission 90% through its window with nothing delivered now reports
+upward with the pace reading as evidence. An on-time mission reports nothing.
+
+**`SuggestImprovement` stays unsent, and that is a decision.** Every other tool has a condition
+the organization can OBSERVE. An improvement suggestion is a judgement somebody chooses to
+offer, and a runtime emitting them on a schedule would be manufacturing opinions nobody held. A
+test asserts it stays zero so it is not later "fixed".
+
+Seven of eight signal families have senders, up from four.
