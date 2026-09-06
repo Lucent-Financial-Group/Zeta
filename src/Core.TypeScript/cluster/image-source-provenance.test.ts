@@ -714,7 +714,7 @@ describe("this repository, right now", () => {
     expect(realTree().byClass.get("foreign-private") ?? []).toEqual([]);
   }, 30_000);
 
-  test("the three ours-unpublished references are ACKNOWLEDGED, not silently passed", () => {
+  test("the remaining ours-unpublished references are ACKNOWLEDGED, not silently passed", () => {
     // Pins the current honest state: the check is not green because it found
     // nothing, it is green because three real findings are on the register with
     // a work-item and a lift condition. If one is published, the register goes
@@ -722,8 +722,6 @@ describe("this repository, right now", () => {
     const acked = realTree().findings.filter((f) => f.acknowledged);
     expect(acked.map((f) => f.subject).sort()).toEqual([
       "ghcr.io/lucent-financial-group/hat-system-operator:placeholder",
-      "ghcr.io/lucent-financial-group/zeta-orleans-silo:bootstrap",
-      "ghcr.io/lucent-financial-group/zeta-orleans-silo:latest",
     ]);
     for (const f of acked) expect(f.detail).toContain("LIFTS WHEN:");
   }, 30_000);

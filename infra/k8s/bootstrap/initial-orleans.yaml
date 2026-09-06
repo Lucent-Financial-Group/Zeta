@@ -94,7 +94,20 @@ spec:
       serviceAccountName: orleans-silo
       containers:
         - name: silo
-          image: ghcr.io/lucent-financial-group/zeta-orleans-silo:bootstrap
+          # `:bootstrap` DID NOT EXIST. Measured 2026-09-05 by the provenance
+          # refresh: that tag returns 404, while `:latest` returns 200. The tag was
+          # pinned here when nothing built the image at all
+          # (081M0QB1Q6Z087G0R00091JH3Q), and when the build finally shipped it
+          # published `latest` and `sha-<commit>` -- never `bootstrap`. So this
+          # manifest named an image that was never going to resolve, and would have
+          # ImagePullBackOff'd the moment anyone raised its replicas above zero.
+          #
+          # Repointed to the tag that is actually published. This file is still at
+          # `replicas: 0` for a separate and still-valid reason: it is the legacy
+          # tree's bootstrap copy, and standing it up alongside
+          # full-ai-cluster/k8s/applications/orleans would put two silos on one
+          # Redis clustering identity.
+          image: ghcr.io/lucent-financial-group/zeta-orleans-silo:latest
           imagePullPolicy: IfNotPresent
           ports:
             - name: silo

@@ -522,22 +522,20 @@ export interface Acknowledgement {
  * forced anyway one run later.
  */
 export const ACKNOWLEDGED_PRIVATE: ReadonlyMap<string, Acknowledgement> = new Map([
-  [
-    "ghcr.io/lucent-financial-group/zeta-orleans-silo",
-    {
-      workitem: "081M0QNFBZ0087G0R000N3RXGF",
-      recordedOn: "2026-08-23",
-      reason:
-        "OURS, NEVER BUILT. The packages API reports no `zeta-orleans-silo` package under " +
-        "Lucent-Financial-Group and no workflow in this tree builds one; three manifests name it " +
-        "anyway (the finding prints them, so this reason does not repeat paths that will move). " +
-        "PRE-EXISTING, not introduced by the change that added this check -- `orleans` is already " +
-        "in lane-partition.ts's unpriced quarantine for exactly this reason, and " +
-        "docs/research/2026-08-21-what-each-deferred-argocd-application-needs-to-boot.md records it. " +
-        "LIFTS WHEN: a build+push workflow publishes the package, --refresh records artifact: public, " +
-        "and this entry then goes STALE and fails.",
-    },
-  ],
+  // RETIRED 2026-09-06: `ghcr.io/lucent-financial-group/zeta-orleans-silo`.
+  //
+  // Its own LIFTS WHEN clause fired, verbatim: "a build+push workflow publishes the
+  // package, --refresh records artifact: public, and this entry then goes STALE and
+  // fails." All three happened -- build-platform-images.yml publishes it, the
+  // 2026-09-06 refresh recorded `artifact: public` with `oci-label` evidence
+  // pointing at this repository, and the acknowledgement-stale rule failed exactly
+  // as written.
+  //
+  // Recorded rather than silently deleted because an acknowledgement that PREDICTED
+  // ITS OWN RETIREMENT and was then retired on schedule is the mechanism working,
+  // and the next reader should be able to see that it did. Public is intended
+  // (Aaron 2026-09-06: "publically avialable is just fine"), so the artifact being
+  // world-readable is a decision, not a leak.
   [
     "ghcr.io/lucent-financial-group/hat-system-operator",
     {
