@@ -6,7 +6,7 @@ Lifecycle: active
 Author: Vera, OpenAI Codex using GPT-6 Astra
 Work item: 081M1WDDB6M087G0R002KN8DWQ
 Code baseline: `113fdbf0ea7a88c9d234ea6655b3023681d1cea9`
-Status: contract recorded before bridge implementation and finite witness execution
+Status: reviewed contract, preserved before bridge implementation and finite witness execution
 
 ## Question and scope
 
@@ -113,7 +113,13 @@ Restrict attention to the dephasing objects `(M_n,Delta_n)`. Define
 `K(n)=(M_n,Delta_n)` and `K(S)=E(S)`. The sandwich law holds because E reads
 only diagonal input and emits only diagonal output. Now `K(I_n)=Delta_n` is
 the correct object identity. Composition and tensor follow section C, using
-`Delta_n tensor Delta_p=Delta_(np)` in the specified basis order. Conversely,
+`Delta_n tensor Delta_p=Delta_(np)` in the specified basis order. The symmetry
+between dephasing objects is the quantum swap channel sandwiched by the
+source/output dephasings: `Delta_(pn) Ad_(U_swap) Delta_(np)=E(P_swap)`.
+Its inverse composes to Delta, the split-object identity. It is not the
+ordinary swap channel acting on unrestricted coherent full-matrix states.
+Canonical tensor comparison maps likewise use split-object identities.
+Conversely,
 every CPTP arrow satisfying this sandwich law is determined by its stochastic
 action on diagonal basis states. This statement concerns this dephasing
 subcategory only.
@@ -123,7 +129,9 @@ identity on `M_n` as dephasing. In `FDAlgCPTP`, diagonal extraction
 `d:M_n->D_n` and inclusion `i:D_n->M_n` explicitly split Delta:
 `d i=id_(D_n)` and `i d=Delta_n`. The classical intermediate object is essential.
 Selinger's [*Idempotents in dagger categories*](https://www.mathstat.dal.ca/~selinger/papers/papers/idem.pdf),
-Definition 3.3, gives the identity and sandwich law used here. The underlying
+Definition 3.3, starts with an ordinary category and gives the identity and
+sandwich law used here. Its later dagger refinements are not invoked;
+normalized QChan is not dagger-closed. The underlying
 [CPM construction](https://www.mathstat.dal.ca/~selinger/papers/papers/dagger.pdf)
 has distinct full-matrix objects. Heunen, Kissinger and Selinger,
 [*Completely positive projections and biproducts*](https://arxiv.org/abs/1308.4557),
@@ -143,7 +151,10 @@ The stochastic subcategory requires separate entrywise nonnegativity and
 column-sum-one admission. A generic signed rational WSet does not provide
 those constraints. The normalized signed matrix `A=[[2,0],[-1,1]]` has
 column sums one but sends `[1,0]` to `[2,-1]`; the corresponding diagonal
-Choi entry is negative. A positive full-matrix map need not be CP either:
+Choi entry is negative. This refusal uses the fixed standard positive cone;
+it does not refute a signed-coordinate representation with a separately
+specified decoder and transported cone. A positive full-matrix map need not
+be CP either:
 transpose preserves positive matrices, but partial transpose of the normalized
 Bell state has a negative direction. These are different failed admissions.
 
@@ -164,7 +175,13 @@ int64 rational operations; independent verification uses separately written
 Python `Fraction` arithmetic. All coefficients are rational, and full matrix
 units `E_ab` form a complex-linear basis. Tests on those units concern maps
 specified to be complex-linear, rather than a claim that real density samples
-exhaust all quantum states. No floating eigensolver or tolerance is needed.
+exhaust all quantum states. No floating eigensolver or tolerance is needed. The native E(S) witness uses
+actual `WSet.apply`/`consolidate` on operator keys `(a,b)`: a diagonal key
+branches to `(j,j)` with weight `S[j,a]`; an off-diagonal key maps to zero.
+Tensor witnesses use actual `WSet.tensor` and the operator-key reshuffle
+`((a,b),(c,d)) -> ((a,c),(b,d))` before the declared flattened pair indices.
+These are algebraic matrix-unit tests, not admissions of off-diagonal units
+as physical states.
 
 Retain these named checks and all failures:
 
@@ -212,3 +229,13 @@ written argument, which finite cases agree, and which proposed stronger
 connections fail. No operational/canonical promotion is part of this task.
 Coordinate with the acting-carrier cost window: no builds, tests, lints,
 training, or other experiments during that window.
+
+## H. Coordinating review before publication
+
+The coordinating contributor reviewed the contract, checked the cited CP*
+classical-channel statement, and approved the fourteen named finite checks.
+The final review made the dephasing-sandwiched symmetry explicit and verified
+that Selinger Definition 3.3 supplies an ordinary-category construction. It
+also accepted the actual WSet operator-key witness and the qualification that
+the signed refusal concerns the fixed standard cone. No witness execution or
+implementation preceded this contract review.
