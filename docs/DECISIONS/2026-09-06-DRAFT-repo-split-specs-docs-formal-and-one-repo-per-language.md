@@ -95,11 +95,78 @@ are **read** from at least ten different language directories —
   4  src/Core.Rust.Clock
 ```
 
-**If languages become repos while the vectors stay in the TypeScript one, TypeScript becomes
-an appointed hub** — every other oracle must route through it to be verified. That is exactly
-what `itron-hub-patent-boundary-p2p-is-the-upgrade.md` forbids, and
-`clone-at-tag-stays-sufficient.md` compounds it: a clone at a tag must build and check with
-no package manager present, so "the vectors come from a dependency" is not available either.
+### RETRACTED: "TypeScript becomes an appointed hub"
+
+That is what this section said, and it is **wrong twice over.** Aaron, on reading it:
+
+> *"no typescript avoids being a hub because it's just the scripting language and it's open
+> source ish with ecmascript standards, and multiple vendor implementations — but any
+> research you want to do here to make it less hub like is very valid."*
+
+**Wrong once because it contradicts a standing decision from two days earlier.**
+`docs/DECISIONS/2026-09-04-typescript-is-the-canonical-implementation-and-what-that-does-not-license.md`
+records the maintainer's direction — *"typescript is what we want to turn into the
+canonical"* — and it already applies the same discriminator I reached for, against the same
+rule: *"Where either language may hold the better answer and the treaty can adjudicate,
+deference is chosen. Where one language must be routed through, it holds you."* It even
+names the exact error I made: *"Conflating them is how a good decision becomes an appointed
+hub."* **Canonical-by-choice is not appointed.**
+
+It also records that the arrangement I described as a future risk is **already the operating
+reality** — `workflow-treaty-transcript.json` lives in the TS tree today, 283 vectors across
+five families, TS generates and F# conforms.
+
+**Wrong twice because the language-level exit is real, and measurable.** ECMAScript is a
+published standard with multiple independent implementations, so a reader is not locked to a
+vendor. In this tree specifically:
+
+| | measured |
+|---|---|
+| TS files touching the `Bun.` global | **168 of 2,666 — 6.3%** |
+| a second runtime already in CI | **yes** — `node` runs in `bytelock.yml` and two others |
+
+So ~94% of the TypeScript surface is runtime-portable in principle, and the multi-vendor
+claim is **exercised, not merely available**. The honest qualifier is the 6.3%: those files
+are bun-locked, and that is the number to watch if portability is ever load-bearing.
+
+### What survives the retraction, stated narrowly
+
+One thing does, and it is **independent of which language holds the vectors** — it would be
+identical if they lived in `zeta-fs`:
+
+> **The split converts a file every oracle HAS into a repo every oracle must REACH.**
+
+Today each language has the vectors in its own clone; exit is total, because you already have
+the bytes. After a split, verification depends on a remote being reachable and on someone
+merging there. That is a new coupling created by the *split*, not by TypeScript.
+
+`clone-at-tag-stays-sufficient.md` is what makes it concrete rather than theoretical: a clone
+at a tag must build and check with **no package manager present**, so "the vectors come from
+a dependency" is not an available answer for any owner.
+
+### The research Aaron invited: four things that reduce it, in order of value
+
+1. **Vendor the vectors, do not fetch them.** Each language repo commits the pinned treaty
+   (subtree or checked-in copy at a named ref). A clone at a tag then still has the bytes and
+   builds offline — which satisfies the rule *and* dissolves the required-remote problem
+   above. This is the one that matters; the rest are refinements.
+2. **Keep the vectors text.** `no-binary-in-proof-lineage.md` already requires hex-in-JSON, and
+   that is exactly the good-meter test from
+   `dual-use-detection-is-neutral-oracle-decides.md`: *"anyone can inspect it and agree to the
+   rules."* A treaty nobody can read is one you must trust, and a meter you must trust is an
+   authority.
+3. **More than one generator.** Today TS generates and F# conforms. The 2026-09-04 decision
+   flags the hole itself — `MenuGenerator.fs` is *"the ONE part with no F# counterpart, and
+   therefore outside the transcript"*. A second generator for even one family would make the
+   treaty checkable from both sides, which is what makes agreement evidence rather than echo.
+4. **Name the runtime dependence.** The 6.3% above is the measurable edge of the multi-vendor
+   argument. An audit that keeps `Bun.`-global usage out of the *vector-generating* path would
+   make the portability claim checked rather than asserted.
+
+**Either way the conclusion for this plan is unchanged, and now for a better reason:**
+`zeta-treaty` is worth doing — not because TypeScript would otherwise be a hub, but because a
+declared common nexus is the honest home for an agreement that no participant should have to
+host.
 
 **Therefore the language split has a prerequisite, and it is one step, not eight:**
 
