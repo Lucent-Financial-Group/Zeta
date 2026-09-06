@@ -207,7 +207,9 @@ filename as the module-path *value* (it contains
 `pkcs11`, so the old rule would bake a self-pointer).
 Bake-cred also refuses SoftHSM / swtpm module paths
 (`081M1V880WV087G0R002E07KGH`); `libtpm2_pkcs11.so`
-stays metal.
+stays metal. Setup overlay now consumes an injected
+restore-file capture (`081M1V9KQFX087G0R0038J326D`);
+opening any other path is not this companion.
 
 1. Metal: `seal "pkcs11"` in Application.yaml still waits.
    Same commit as a **reachable** module: same-libc image
