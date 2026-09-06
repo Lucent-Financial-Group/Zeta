@@ -1,0 +1,14 @@
+{
+  "id": "080d03ad665f1010a01300083d1b0494",
+  "at": "2026-09-06T07:44:13.794Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1TTSJZ2087G0R001WC027P",
+    "type": "task",
+    "title": "Render every chart K3S installs on first boot — the metal path had never been helm-templated",
+    "slug": "render-every-chart-k3s-installs-on-first-boot-the-metal-path",
+    "priority": "P2",
+    "filename": "081M1TTSJZ2087G0R001WC027P-render-every-chart-k3s-installs-on-first-boot-the-metal-path.md"
+  }
+}

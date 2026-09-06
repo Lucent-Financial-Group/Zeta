@@ -325,6 +325,36 @@ jobs:
         # this repo report success for months while its tool exited 1.
         run: bun src/Core.TypeScript/hygiene/audit-local-helm-charts.ts --helm
 
+      - name: Render every chart K3S installs on FIRST BOOT
+        # ADDED 2026-09-06 (Aaron: "continue with our k8s/helm testing that closely
+        # matches metal in CI"). The step above renders the 37 Applications; the
+        # `helm.cattle.io/v1` HelmChart CRs under the two k8s/bootstrap/ trees had NEVER
+        # been rendered by anything. `validate-bootstrap.ts` checks they pin an exact
+        # version and that the roster matches `services.k3s.manifests`, and stops -- so
+        # nothing had asked whether they template with the `valuesContent` beside them.
+        #
+        # They are the manifests K3S auto-applies on NixOS first boot, before ArgoCD
+        # exists, and NO CI LANE APPLIES THEM: kind and k3d bring ArgoCD up from
+        # `dev-cluster/use-cases.ts`. So this is simultaneously the most metal-specific
+        # surface in the tree and, until now, the least checked -- a values key that
+        # stopped being valid at its pinned version would have been found by someone's
+        # hardware, at boot, with no ArgoCD running to report it.
+        #
+        # MEASURED on first run: 8 of 8 render clean and kubeconform accepts every one, so
+        # this is a HARD GATE with no ratchet and no baseline. It carries no debt to
+        # amortise; it simply has to stay green.
+        #
+        # It REFUSES below a floor of 6 CRs rather than reporting "0 failed" over a
+        # collapsed scan, which is the same discipline the ratchet below applies to counts.
+        run: bun infra/k8s/tests/render-first-boot-charts.ts
+
+      - name: Prove the first-boot renderer parses what it claims (offline)
+        # The render half is proven by the step above; these cases cover everything
+        # upstream of the spawn, which is where this renderer would go quietly wrong -- a
+        # parser that reads half a multi-document file still prints a confident Results
+        # line. `spire-install.yaml` really does carry two HelmCharts.
+        run: bun test infra/k8s/tests/render-first-boot-charts.test.ts
+
       - name: Ratchet the full-ai-cluster tree (render + failure ceiling)
         # ADDED 2026-08-20. The 122-file, ~60-Application tree at
         # full-ai-cluster/k8s had NEVER been rendered by CI. Pointing this same
