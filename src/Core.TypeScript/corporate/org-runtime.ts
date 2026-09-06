@@ -426,13 +426,6 @@ const LEVEL_ORDER: readonly HatLevel[] = [
 ];
 
 /**
- * Run the whole organization once.
- *
- * Long and linear on purpose: the value of this function is that the entire pipeline is readable in
- * the order it happens. Splitting it into ten helpers would hide the one thing it exists to show —
- * that these modules compose.
- */
-/**
  * The ports a run uses when the caller named none — EVERY ONE SIMULATED.
  *
  * Exported because a second caller needs the same answer, and the one thing every entry point must
@@ -454,6 +447,13 @@ export function defaultProviderSet(deps: {
   };
 }
 
+/**
+ * Run the whole organization once.
+ *
+ * Long and linear on purpose: the value of this function is that the entire pipeline is readable in
+ * the order it happens. Splitting it into ten helpers would hide the one thing it exists to show —
+ * that these modules compose.
+ */
 export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeReport> {
   // The ports, resolved ONCE. Defaulting here rather than at each call site means one place decides
   // what this run is touching, and one place reports it.

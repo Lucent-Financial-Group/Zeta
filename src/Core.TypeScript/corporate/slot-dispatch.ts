@@ -121,13 +121,6 @@ export type PerformWork = (workId: string) => Promise<{
 }>;
 
 /**
- * PRIMARY — the selected slot reaches the real runtime.
- *
- * `PickWork` runs the pipeline for that item and reports what it did. Every other slot performs
- * nothing HERE and says so, rather than being quietly treated as a success: heartbeats, pauses and
- * free time are changes to the agent's own state, and the state machine already applies them.
- */
-/**
  * The budget check a dispatcher consults before performing.
  *
  * Returns a refusal reason, or `undefined` to proceed. A function rather than a `Budget` value so
@@ -139,6 +132,13 @@ export type PerformWork = (workId: string) => Promise<{
  */
 export type BudgetGate = (workId: string) => { readonly refusal?: string; readonly checked: boolean };
 
+/**
+ * PRIMARY — the selected slot reaches the real runtime.
+ *
+ * `PickWork` runs the pipeline for that item and reports what it did. Every other slot performs
+ * nothing HERE and says so, rather than being quietly treated as a success: heartbeats, pauses and
+ * free time are changes to the agent's own state, and the state machine already applies them.
+ */
 export function primaryDispatcher(perform: PerformWork, budget?: BudgetGate): SlotDispatcher {
   return {
     meta: {
