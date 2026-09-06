@@ -1,7 +1,7 @@
 # Trajectory - Cluster Encryption / Credential Substrate
 
 Status: active — first surfaced 2026-05-29 from substrate inventory (was tracked only as scattered backlog rows; never had a trajectory surface, which is why it was easy to lose at cold-boot)
-Last refreshed: 2026-09-06 (USB --bake-cred HSM-talk companions)
+Last refreshed: 2026-09-06 (PKCS#11 hostPath overlay planner; ABI is not a module)
 Type: workstream (current-focus) — a trajectory the operator is *actively powering*. Many trajectories can be tracked; only a few are workstreams at once (finite-focus / WIP-bounded — a workstream is a trajectory under sustained thrust, and thrust budget is finite, so most trajectories coast). ("Trajectory" is the genus; "workstream" is the species: a trajectory under sustained thrust toward a deliverable, vs. emergent-posture trajectories like `anti-infection`, which self-describes as "not a workstream with a cadence." See [`factory-trajectory-surface`](../factory-trajectory-surface/RESUME.md) for the genus/species taxonomy.) One of the operator's three current cluster workstreams (encryption / usb-zflash / ts-workflow-engine).
 Eventual encoding (design-stage — the human maintainer 2026-05-23 genetic-ID substrate + Clifford/HKT): this trajectory's state is trackable as a 128-bit genetic-ID seed (discrete, reversible via parser-combinator ↔ generator-function) → Clifford-space path (continuous, eventual). Mirrors the three-lane I8-lattice / I9-manifold split.
 Current blocker: none operationally; the live design tension is interactive-login-vs-baked-in-keys-vs-CI-test (081KSGS9H0008QG0R003JNSVR5)
@@ -186,6 +186,30 @@ Workitem: `081M1TX6CV6087G0R002GZEXMP`.
 - SoftHSM green is not this metal companion set. Metal
   `seal "pkcs11"` stays a later hop (same commit as a
   module in the image or hostPath overlay).
+
+## 2026-09-06 — PKCS#11 hostPath overlay planner; musl+glibc is not a module (Riven)
+
+Aaron: continue after USB companions. Metal
+`seal "pkcs11"` needs a module in the image or a
+hostPath overlay **in the same commit**.
+
+Consumer: `src/Core.TypeScript/cluster/pkcs11-hostpath-overlay.ts`.
+Workitem: `081M1TZH2PW087G0R0036F3S18`.
+
+- Plans volumes (module file, `/nix/store` when the path
+  is NixOS, USB / pcscd / `/dev/tpmrm0` per oracle) and
+  pins mechanism (YubiHSM AES-GCM, TPM OAEP, SmartCard
+  measure-on-device).
+- Today's chart image is Alpine musl; NixOS libraries
+  are glibc. That overlay is
+  `glibc-host-into-musl-image` and **does not** count as
+  `moduleInImage`. Application.yaml stays Shamir.
+- USB companion restore file is the path *string*, not
+  the `.so`. SoftHSM / swtpm are the CI job, not this
+  overlay. PIN is `BAO_HSM_PIN`, never values. Two seals
+  refuse. YubiHSM SDK nix module stays blocked
+  (`081M0B5V6Z5087G0R0026RANJ3`). extraContainer stays
+  later.
 
 ## 2026-09-04 — production-hardening review (Riven)
 

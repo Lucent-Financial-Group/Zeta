@@ -443,6 +443,11 @@ detector. SoftHSM / swtpm 2×2 is a CI install matrix
 USB path. Off-cluster `bao operator init` against that
 SoftHSM (`081M1TV43F6087G0R0008QFTKM`) is a CI witness,
 not a substitute for the metal companion set.
+The hostPath overlay **planner**
+(`081M1TZH2PW087G0R0036F3S18`,
+`pkcs11-hostpath-overlay.ts`) consumes the companion
+path string. glibc-host-into-musl-image is not a
+module; Application.yaml stays Shamir.
 
 ## Grounding (on `origin/main`)
 
