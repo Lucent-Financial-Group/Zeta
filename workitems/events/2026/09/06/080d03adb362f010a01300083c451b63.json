@@ -1,0 +1,14 @@
+{
+  "id": "080d03adb362f010a01300083c451b63",
+  "at": "2026-09-06T07:54:44.702Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1TVCV2Y087G0R0022QGM0Y",
+    "type": "bug",
+    "title": "The first-boot NixOS tests read k8s/bootstrap manifests but never run when those manifests change",
+    "slug": "the-first-boot-nixos-tests-read-k8s-bootstrap-manifests-but",
+    "priority": "P2",
+    "filename": "081M1TVCV2Y087G0R0022QGM0Y-the-first-boot-nixos-tests-read-k8s-bootstrap-manifests-but.md"
+  }
+}
