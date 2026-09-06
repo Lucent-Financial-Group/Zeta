@@ -1,5 +1,5 @@
 {
-  "measuredOn": "2026-09-05",
+  "measuredOn": "2026-09-06",
   "appsDiscovered": [
     "full-ai-cluster/agent-memory",
     "full-ai-cluster/alloy",
@@ -1114,18 +1114,20 @@
         },
         {
           "appId": "full-ai-cluster/orleans",
-          "cpuMillis": 0,
-          "memoryMib": 0,
-          "pods": 0,
+          "cpuMillis": 250,
+          "memoryMib": 512,
+          "pods": 1,
           "workloads": [
             {
               "workload": "StatefulSet/orleans-silo",
-              "replicas": 0,
-              "cpuMillis": 500,
+              "replicas": 1,
+              "cpuMillis": 250,
               "memoryMib": 512
             }
           ],
-          "overlaid": []
+          "overlaid": [
+            "full-ai-cluster/orleans/silo"
+          ]
         },
         {
           "appId": "full-ai-cluster/oz",
@@ -2694,18 +2696,20 @@
         },
         {
           "appId": "full-ai-cluster/orleans",
-          "cpuMillis": 0,
-          "memoryMib": 0,
-          "pods": 0,
+          "cpuMillis": 500,
+          "memoryMib": 512,
+          "pods": 1,
           "workloads": [
             {
               "workload": "StatefulSet/orleans-silo",
-              "replicas": 0,
+              "replicas": 1,
               "cpuMillis": 500,
               "memoryMib": 512
             }
           ],
-          "overlaid": []
+          "overlaid": [
+            "full-ai-cluster/orleans/silo"
+          ]
         },
         {
           "appId": "full-ai-cluster/oz",

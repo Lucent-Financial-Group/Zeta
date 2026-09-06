@@ -1,0 +1,14 @@
+{
+  "id": "080d03a4f47f7810a013000827e8ed7d",
+  "at": "2026-09-06T02:49:03.727Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1T9X3ZE087G0R000JNAYE7",
+    "type": "task",
+    "title": "Setup-time HSM/TPM detect; TPM and Lucent unseal paths; emulator install 2x2",
+    "slug": "setup-time-hsm-tpm-detect-tpm-and-lucent-unseal-paths-emulat",
+    "priority": "P2",
+    "filename": "081M1T9X3ZE087G0R000JNAYE7-setup-time-hsm-tpm-detect-tpm-and-lucent-unseal-paths-emulat.md"
+  }
+}
