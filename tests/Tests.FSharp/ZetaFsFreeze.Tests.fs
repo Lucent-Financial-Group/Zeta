@@ -301,6 +301,33 @@ let ``new freeze volume writes ns=bindings and git-trees deltaLog still refuses`
     }
 
 [<Fact>]
+let ``bindFile under ROOT liveResolves the same EntityId after reopen`` () =
+    ensureHasher ()
+    FileSystem.Register(InMemoryFileSystem())
+    let store = "/freeze-bind-file"
+    let mutbuf = ZetaFsMutbuf.create store ZetaFsMutbuf.Coherence.Shared
+    let volume = ZetaFsFreeze.createManualStream store mutbuf None
+    let name = [| 97uy |]
+
+    try
+        match ZetaFsFreeze.bindFile volume name with
+        | Error e -> Assert.Fail(sprintf "bindFile failed: %A" e)
+        | Ok id ->
+            match ZetaFsFreeze.liveResolve volume name with
+            | Some live -> Assert.Equal(0, ZetaFsNamespace.EntityId.compare id live)
+            | None -> Assert.Fail("liveResolve must find the bound File")
+            ZetaFsFreeze.dispose volume
+            let reopened = ZetaFsFreeze.createManualStream store mutbuf None
+            try
+                match ZetaFsFreeze.liveResolve reopened name with
+                | None -> Assert.Fail("liveResolve must find the bound File after reopen")
+                | Some again -> Assert.Equal(0, ZetaFsNamespace.EntityId.compare id again)
+            finally
+                ZetaFsFreeze.dispose reopened
+    finally
+        FileSystem.Reset()
+
+[<Fact>]
 let ``Durable freeze on a real directory fsyncs and is readable`` () : Task =
     task {
         ensureHasher ()
@@ -752,7 +779,8 @@ let ``Journaled freeze crash during leaf put leaves extra garbage and is not rea
                 mock.CommitOrder
                 |> Array.filter (fun p ->
                     p.IndexOf("FORMAT", StringComparison.Ordinal) < 0
-                    && p.IndexOf("ROOT", StringComparison.Ordinal) < 0)
+                    && p.IndexOf("ROOT", StringComparison.Ordinal) < 0
+                    && p.IndexOf("bindings", StringComparison.Ordinal) < 0)
             Assert.Equal(logPath, freezeWrites.[0])
             ZetaFsFreeze.dispose volume
             let reopened = ZetaFsFreeze.createManualStream store mutbuf None
