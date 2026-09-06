@@ -38,8 +38,9 @@ open Zeta.Core.FSharp.Blake3
 /// Catalog also persists `ObjectSets` (`set <content> <id>...`) so reopen
 /// hash-verifies jumprope internals, not only trunk plus leaves. Buffered
 /// `putObject` maps catalog persist IOException/BUGGIFY to `FreezeError.Fsync`
-/// (Buffered does not ride FreezeLog). History setter and reclaim-meter persist
-/// still throw.
+/// (Buffered does not ride FreezeLog). History setter, reclaim-meter,
+/// `noteFreeze` / `applyRetention` / `noteKnownObject` persist are best-effort
+/// (write-fail does not throw; next FreezeLog persist retries).
 ///
 /// DoP=1 on this log. No Task.Run except the ferry launch (injected context
 /// on the DST path; `manual` + `PumpToIdleAsync` for tests).
@@ -361,6 +362,21 @@ module ZetaFsFreeze =
         | :? IOException -> Error(catalogPersistError storeDir)
         | ex when ex.Message.IndexOf("BUGGIFY", StringComparison.Ordinal) >= 0 ->
             Error(catalogPersistError storeDir)
+
+    /// Volume catalog persist outside FreezeLog is not the freeze ack.
+    /// Crash/power/bad-memory still raise. Fsync is ignored; the next
+    /// FreezeLog persist retries.
+    let private persistCatalogBestEffort
+        (storeDir: string)
+        (known: Dictionary<ContentHash256, uint64>)
+        (livePins: HashSet<ContentHash256>)
+        (history: ZetaFsPolicy.HistoryPolicy)
+        (meter: uint64)
+        (objectSets: Dictionary<ContentHash256, ContentHash256[]>)
+        =
+        match tryPersistCatalog storeDir known livePins history meter objectSets with
+        | Ok() -> ()
+        | Error _ -> ()
 
     let private loadCatalog
         (storeDir: string)
@@ -893,7 +909,7 @@ module ZetaFsFreeze =
             with get () = !history
             and set v =
                 history := v
-                persistCatalog storeDir known livePins v !freezeBytesSinceReclaim objectSets
+                persistCatalogBestEffort storeDir known livePins v !freezeBytesSinceReclaim objectSets
 
         interface IDisposable with
             member _.Dispose() =
@@ -1496,7 +1512,7 @@ module ZetaFsFreeze =
     let noteKnownObject (volume: Volume) (id: ContentHash256) (size: uint64) =
         lock volume.Gate (fun () ->
             volume.KnownObjects.[id] <- size
-            persistCatalog volume.StoreDir volume.KnownObjects volume.LivePins volume.History volume.FreezeBytesSinceReclaim volume.ObjectSets)
+            persistCatalogBestEffort volume.StoreDir volume.KnownObjects volume.LivePins volume.History volume.FreezeBytesSinceReclaim volume.ObjectSets)
 
     /// Objects the volume wrote that no live freeze still pins. Keeps full
     /// ids so reclaim can propose them. Empty until something is unpinned
@@ -1509,7 +1525,7 @@ module ZetaFsFreeze =
         lock volume.Gate (fun () ->
             let n = volume.FreezeBytesSinceReclaim
             volume.FreezeBytesSinceReclaim <- 0UL
-            persistCatalog
+            persistCatalogBestEffort
                 volume.StoreDir
                 volume.KnownObjects
                 volume.LivePins
@@ -1692,7 +1708,7 @@ module ZetaFsFreeze =
     let private noteFreeze (volume: Volume) (span: uint64) (result: FreezeResult) =
         lock volume.Gate (fun () ->
             volume.FreezeBytesSinceReclaim <- volume.FreezeBytesSinceReclaim + span
-            persistCatalog
+            persistCatalogBestEffort
                 volume.StoreDir
                 volume.KnownObjects
                 volume.LivePins
@@ -1733,7 +1749,7 @@ module ZetaFsFreeze =
             volume.LivePins.Add id |> ignore
 
         match keepCount volume.History with
-        | None -> persistCatalog volume.StoreDir volume.KnownObjects volume.LivePins volume.History volume.FreezeBytesSinceReclaim volume.ObjectSets
+        | None -> persistCatalogBestEffort volume.StoreDir volume.KnownObjects volume.LivePins volume.History volume.FreezeBytesSinceReclaim volume.ObjectSets
         | Some n ->
             let mine =
                 volume.Commits.Values
@@ -1744,7 +1760,7 @@ module ZetaFsFreeze =
             let dropCount = mine.Length - n
 
             if dropCount <= 0 then
-                persistCatalog volume.StoreDir volume.KnownObjects volume.LivePins volume.History volume.FreezeBytesSinceReclaim volume.ObjectSets
+                persistCatalogBestEffort volume.StoreDir volume.KnownObjects volume.LivePins volume.History volume.FreezeBytesSinceReclaim volume.ObjectSets
             else
                 let kept = HashSet<ContentHash256>()
 
@@ -1757,7 +1773,7 @@ module ZetaFsFreeze =
                         if not (kept.Contains id) then
                             volume.LivePins.Remove id |> ignore
 
-                persistCatalog volume.StoreDir volume.KnownObjects volume.LivePins volume.History volume.FreezeBytesSinceReclaim volume.ObjectSets
+                persistCatalogBestEffort volume.StoreDir volume.KnownObjects volume.LivePins volume.History volume.FreezeBytesSinceReclaim volume.ObjectSets
 
     let private finish
         (volume: Volume)
