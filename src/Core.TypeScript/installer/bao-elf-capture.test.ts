@@ -83,6 +83,13 @@ describe("captureBaoElfFromRead — installer opens bao, not the overlay", () =>
     expect(capture.interpreter).toBe(ELF_INTERP_MUSL_X86_64);
   });
 
+  test("nodeBaoElfRead: ENOENT is unmeasured; a directory is not ENOENT", () => {
+    const missing = nodeBaoElfRead(join(tmpdir(), `bao-elf-missing-${Date.now()}`));
+    expect(missing).toEqual({ exists: false, bytes: null });
+    const dir = mkdtempSync(join(tmpdir(), "bao-elf-dir-"));
+    expect(() => nodeBaoElfRead(dir)).toThrow();
+  });
+
   test("on-host glibc bytes may emit host HCL and cannot commit Application.yaml", () => {
     const capture = captureBaoElfFromRead("/run/current-system/sw/bin/bao", "on-host", () => ({
       exists: true,
