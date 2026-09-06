@@ -679,6 +679,23 @@ Workitem: `081M1WE7Z5S087G0R001WT3K6G`.
 - Does not invent an integrate decision. Does not expand
   `ZetaFirstbootRole`. Does not edit Application.yaml.
 
+## 2026-09-06 — ISO bun consume reports named unseal request (Riven)
+
+Aaron: continue after overlay env join reads the request. Bun
+JSON still reported only ask and epoch, so a missing request
+was invisible.
+
+Consumer: `src/Core.TypeScript/zflash/firstboot-bao-env.ts`
+plus `full-ai-cluster/usb-nixos-installer/zeta-install.sh`.
+Workitem: `081M1WG1RJB087G0R001ADMJNK`.
+
+- JSON includes `requested`. Missing is unmeasured (`null`),
+  not `auto`. `/dev/tpmrm0` still refuses at parse. ISO bun
+  does not export `ZETA_UNSEAL_REQUEST`. Does not call
+  `integrateAtSetup`. Does not invent a capture.
+- Does not invent an integrate decision. Does not expand
+  `ZetaFirstbootRole`. Does not edit Application.yaml.
+
 ## 2026-09-04 — production-hardening review (Riven)
 
 Aaron asked to production-harden the CA, name the unseal startup, use

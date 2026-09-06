@@ -3395,9 +3395,11 @@ if [ -d "$ZETA_HOME" ]; then
   # Invoke firstboot-bao-env.ts the same way wifi/iserial helpers
   # run. Epoch is named installer-iso here (this block runs on the
   # live ISO after nixos-install into /mnt). Do not infer epoch
-  # from /mnt or /dev/tpmrm0. Do not invoke from zeta-first-boot.sh.
-  # Do not open /dev/tpmrm0. Do not fill /run/current-system/sw/bin/bao.
-  # Do not write Application.yaml. A null ask is not a seal.
+  # from /mnt or /dev/tpmrm0. Do not export ZETA_UNSEAL_REQUEST
+  # (missing is unmeasured, not auto). Do not invoke from
+  # zeta-first-boot.sh. Do not open /dev/tpmrm0. Do not fill
+  # /run/current-system/sw/bin/bao. Do not write Application.yaml.
+  # A null ask is not a seal. A null request is not auto.
   BAO_ENV_HELPER="$ZETA_HOME/Zeta/src/Core.TypeScript/zflash/firstboot-bao-env.ts"
   if [ -z "${ZETA_BAO_LOAD_SITE:-}" ] || [ -z "${ZETA_BAO_PATH:-}" ]; then
     echo "[081M1W1NCDT087G0R002H3VG6Y-bao]   no bao names in env; consume skipped"
@@ -3417,7 +3419,12 @@ if [ -d "$ZETA_HOME" ]; then
       echo "[081M1W1NCDT087G0R002H3VG6Y-bao]   consume $BAO_ENV_JSON"
       BAO_ENV_ASK=$(printf '%s' "$BAO_ENV_JSON" | jq -c '.ask' 2>/dev/null || printf 'unparseable')
       BAO_ENV_EPOCH=$(printf '%s' "$BAO_ENV_JSON" | jq -c '.epoch' 2>/dev/null || printf 'unparseable')
+      BAO_ENV_REQUESTED=$(printf '%s' "$BAO_ENV_JSON" | jq -c '.requested' 2>/dev/null || printf 'unparseable')
       echo "[081M1W6J9MH087G0R003VNMDDR-bao]   named epoch $BAO_ENV_EPOCH"
+      echo "[081M1WG1RJB087G0R001ADMJNK-bao]   named PathRequest $BAO_ENV_REQUESTED"
+      if [ "$BAO_ENV_REQUESTED" = "null" ]; then
+        echo "[081M1WG1RJB087G0R001ADMJNK-bao]   null request is unmeasured, not auto; not a seal"
+      fi
       if [ "$BAO_ENV_ASK" = "null" ]; then
         echo "[081M1W1NCDT087G0R002H3VG6Y-bao]   null ask is not option D at this epoch (tpmrm0 / non-bao / ISO current-system); not a seal"
       else
