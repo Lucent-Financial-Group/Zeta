@@ -192,6 +192,11 @@ assume the number.
    `firstboot-bao-elf.ts`, not installer `fs`. A non-null
    ask without a role is refused. Does not edit
    `zeta-first-boot.sh`.
+   CLI flags (`081M1VTE7TZ087G0R002XSHAYZ`):
+   `file-backed.ts` parses `--bao-load-site` and
+   `--bao-path`. One without the other refuses. Does not
+   fill `NIXOS_HOST_BAO`. Does not expand
+   `ZetaFirstbootRole`. Does not edit `zeta-first-boot.sh`.
 7. extraContainer sidecar — later, **same commit as the
    sidecar**, and only for the Shamir kind path until the
    emulator job replaces it. `valuesObject` only. Do not fork

@@ -1,9 +1,11 @@
 /**
  * src/Core.TypeScript/zflash/firstboot-bao-elf.ts
  *
- * Pure first-boot bao carrier + role-conf join. No filesystem.
- * `lib.ts` writes the joined conf onto the ESP. Installer
- * capture / overlay still live in bao-elf-capture.ts (that
+ * Pure first-boot bao carrier + role-conf join + named-ask
+ * argv parse. No filesystem. `lib.ts` writes the joined
+ * conf onto the ESP. `file-backed.ts` parses `--bao-load-site`
+ * and `--bao-path` here so it does not import installer `fs`.
+ * Capture / overlay still live in bao-elf-capture.ts (that
  * module may read). Does not expand `ZetaFirstbootRole`.
  * Does not edit `zeta-first-boot.sh`.
  *
@@ -48,6 +50,73 @@ export function namedBaoElfAsk(
 /** Option D contract path. Caller still names the site by invoking this. */
 export function nixosHostBaoAsk(): NamedBaoElfAsk {
   return { site: "on-host", openedPath: NIXOS_HOST_BAO };
+}
+
+export type NamedBaoElfArgError =
+  | "site-without-path"
+  | "path-without-site"
+  | "unknown-site"
+  | "empty-site"
+  | "empty-path"
+  | "unsafe-conf-value";
+
+export type NamedBaoElfArgResult =
+  | { readonly ok: true; readonly ask: NamedBaoElfAsk | null }
+  | { readonly ok: false; readonly reason: NamedBaoElfArgError };
+
+function isBaoLoadSite(value: string): value is BaoLoadSite {
+  return value === "on-host" || value === "in-chart-image";
+}
+
+function takeFlagValue(
+  argv: readonly string[],
+  i: number,
+  prefix: string,
+): { value: string | undefined; next: number } {
+  const arg = argv[i]!;
+  if (arg === prefix) {
+    const next = argv[i + 1];
+    if (next === undefined || next.startsWith("--")) return { value: "", next: i };
+    return { value: next, next: i + 1 };
+  }
+  if (arg.startsWith(`${prefix}=`)) return { value: arg.slice(prefix.length + 1), next: i };
+  return { value: undefined, next: i };
+}
+
+/**
+ * Live-installer invoke: `--bao-load-site` and `--bao-path` together.
+ * Neither flag is unmeasured, not `on-host`. One without the other
+ * refuses — do not fill `NIXOS_HOST_BAO`, do not infer site from a
+ * path or from `/dev/tpmrm0`. Other argv is ignored.
+ */
+export function parseNamedBaoElfArgs(argv: readonly string[]): NamedBaoElfArgResult {
+  let site: string | undefined;
+  let openedPath: string | undefined;
+  for (let i = 0; i < argv.length; i++) {
+    const siteFlag = takeFlagValue(argv, i, "--bao-load-site");
+    if (siteFlag.value !== undefined) {
+      site = siteFlag.value;
+      i = siteFlag.next;
+      continue;
+    }
+    const pathFlag = takeFlagValue(argv, i, "--bao-path");
+    if (pathFlag.value !== undefined) {
+      openedPath = pathFlag.value;
+      i = pathFlag.next;
+    }
+  }
+  const hasSite = site !== undefined;
+  const hasPath = openedPath !== undefined;
+  if (!hasSite && !hasPath) return { ok: true, ask: null };
+  if (hasSite && !hasPath) return { ok: false, reason: "site-without-path" };
+  if (!hasSite && hasPath) return { ok: false, reason: "path-without-site" };
+  const namedSite = site;
+  const namedPath = openedPath;
+  if (namedSite === undefined || namedPath === undefined) return { ok: true, ask: null };
+  if (namedSite.length === 0) return { ok: false, reason: "empty-site" };
+  if (namedPath.length === 0) return { ok: false, reason: "empty-path" };
+  if (!isBaoLoadSite(namedSite)) return { ok: false, reason: "unknown-site" };
+  return { ok: true, ask: namedBaoElfAsk(namedSite, namedPath) };
 }
 
 /**

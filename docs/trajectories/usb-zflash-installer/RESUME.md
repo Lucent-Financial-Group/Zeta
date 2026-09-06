@@ -491,6 +491,12 @@ ESP write
 lines on `/zeta-firstboot.conf` via
 `firstboot-bao-elf.ts`, not installer `fs`;
 still does not edit `zeta-first-boot.sh`.
+CLI flags
+(`081M1VTE7TZ087G0R002XSHAYZ`) parse
+`--bao-load-site` and `--bao-path` in
+`file-backed.ts`; one without the other
+refuses; does not fill `NIXOS_HOST_BAO`;
+still does not edit `zeta-first-boot.sh`.
 glibc-host-into-musl-image is not a
 module; Application.yaml stays Shamir.
 
