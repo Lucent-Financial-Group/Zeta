@@ -38,7 +38,7 @@
 
 import type { CascadeNode } from "./goal-cascade";
 import type { ChangeHandle, PortResult, ProviderMeta } from "./providers";
-import { evaluateGate, gateOwners, GateKind, ORDERED_GATES, type GateEvaluation, type GateOutcome } from "./quality-gate";
+import { evaluateGate, gateOwners, GateKind, ORDERED_GATES, type GateEvaluation, type GateOutcome, type RecoveryPath } from "./quality-gate";
 import type { OrgChart, OrgHat } from "./org-chart";
 import type { OrgChooser } from "./org-decision";
 
@@ -199,6 +199,21 @@ export interface PipelineRunInput {
    * come from the test runs. Merged with whatever the phase produced.
    */
   readonly extraEvidenceFor?: (gate: GateKind) => readonly string[];
+  /**
+   * Called AFTER this phase produced and BEFORE its gate is evaluated.
+   *
+   * The seam that lets a reviewer be consulted about a thing that exists. The runtime used to fetch
+   * every gate's verdict up front — so `adversarial_review`'s reviewer was asked before the design
+   * had been written — because `OrgChooser` is synchronous by design and pre-resolving kept that
+   * shape. This hook keeps the chooser synchronous and moves the ASKING to the right moment: the
+   * runtime awaits its review port here and stashes the verdict the chooser will read.
+   */
+  readonly prepare?: (
+    gate: GateKind,
+    produced: Artifact | undefined,
+    /** Everything produced so far, so a late reviewer can see the whole trail rather than one step. */
+    soFar: ReadonlyMap<GateKind, Artifact>,
+  ) => Promise<void>;
 }
 
 export interface PipelineRunResult {
@@ -208,6 +223,11 @@ export interface PipelineRunResult {
   readonly complete: boolean;
   readonly blockedAt: GateKind | undefined;
   readonly refusals: readonly string[];
+  /**
+   * Where a REJECTED gate sends the work. Absent when the pipeline completed, or when it stopped
+   * because a producer refused — a thing that was never made has no review to recover from.
+   */
+  readonly recovery: RecoveryPath | undefined;
 }
 
 /**
@@ -236,11 +256,14 @@ export async function runPipeline(chart: OrgChart, input: PipelineRunInput): Pro
       const result = await phase.produce.produce(input.node, contextFrom(input.handle, artifacts));
       if (!result.ok) {
         refusals.push(`producer '${phase.produce.meta.name}' for '${gate}' on ${input.workId}: ${result.reason}`);
-        return { evaluations, passed, artifacts, complete: false, blockedAt: gate, refusals };
+        return { evaluations, passed, artifacts, complete: false, blockedAt: gate, refusals, recovery: undefined };
       }
       produced = result.value;
       artifacts.set(gate, produced);
     }
+
+    // The thing exists now, so whoever judges it can be asked about it.
+    if (input.prepare !== undefined) await input.prepare(gate, produced, artifacts);
 
     // The proposer is excluded before an evaluator is picked, so a chart where the author is the
     // only scope-holder BLOCKS rather than self-approving.
@@ -252,7 +275,7 @@ export async function runPipeline(chart: OrgChart, input: PipelineRunInput): Pro
           ? `the only hat holding '${gate}' is '${input.proposerHatId}', which did the work`
           : `no hat holds the approval scope for '${gate}'`,
       );
-      return { evaluations, passed, artifacts, complete: false, blockedAt: gate, refusals };
+      return { evaluations, passed, artifacts, complete: false, blockedAt: gate, refusals, recovery: undefined };
     }
 
     // WHAT THE PHASE MADE IS WHAT THE GATE IS JUDGED ON. Evidence stops being a field somebody
@@ -275,16 +298,16 @@ export async function runPipeline(chart: OrgChart, input: PipelineRunInput): Pro
     });
     if (!result.ok) {
       refusals.push(result.reason);
-      return { evaluations, passed, artifacts, complete: false, blockedAt: gate, refusals };
+      return { evaluations, passed, artifacts, complete: false, blockedAt: gate, refusals, recovery: undefined };
     }
     evaluations.push(result.evaluation);
     passed = result.passed;
     if (!passed.has(gate)) {
       // The gate was evaluated and did not pass. The pipeline stops here; the recovery path on the
       // evaluation says where the work goes back to.
-      return { evaluations, passed, artifacts, complete: false, blockedAt: gate, refusals };
+      return { evaluations, passed, artifacts, complete: false, blockedAt: gate, refusals, recovery: result.recovery };
     }
   }
 
-  return { evaluations, passed, artifacts, complete: true, blockedAt: undefined, refusals };
+  return { evaluations, passed, artifacts, complete: true, blockedAt: undefined, refusals, recovery: undefined };
 }
