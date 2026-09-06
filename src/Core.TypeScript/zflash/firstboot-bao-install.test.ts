@@ -338,6 +338,8 @@ describe("zeta-install.sh named bao bun consume after 6.95a", () => {
     expect(executable.split(NIXOS_HOST_BAO).length - 1).toBe(0);
     expect(executable.split("Application.yaml").length - 1).toBe(0);
     expect(executable.split("seal ").length - 1).toBe(0);
+    expect(block.split("ISO current-system").length - 1).toBe(1);
+    expect(block.split("null ask is not a named bao").length - 1).toBe(0);
   });
 
   test("the helper the installer names still consumes option D from env", () => {
@@ -354,7 +356,7 @@ describe("zeta-install.sh named bao bun consume after 6.95a", () => {
     expect(JSON.parse(spawned.stdout)).toEqual({ ok: true, ask: nixosHostBaoAsk(), epoch: null });
   });
 
-  test("the helper the installer names reports installer-iso when that epoch is exported", () => {
+  test("the helper the installer names reports installer-iso and filters ISO current-system bao", () => {
     expect(helper.endsWith(BAO_ENV_HELPER_REL.replace("src/Core.TypeScript/zflash/", ""))).toBe(true);
     const spawned = spawnSync(process.execPath, [helper], {
       encoding: "utf8",
@@ -368,7 +370,7 @@ describe("zeta-install.sh named bao bun consume after 6.95a", () => {
     expect(spawned.status).toBe(0);
     expect(JSON.parse(spawned.stdout)).toEqual({
       ok: true,
-      ask: nixosHostBaoAsk(),
+      ask: null,
       epoch: "installer-iso",
     });
   });

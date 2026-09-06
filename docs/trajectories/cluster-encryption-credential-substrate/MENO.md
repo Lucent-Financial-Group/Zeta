@@ -237,6 +237,11 @@ assume the number.
    a TypeScript argument. A named ask without a named epoch
    refuses. Missing keys stay unmeasured. Does not invent an
    integrate decision.
+   ISO bun filters current-system bao (`081M1W9VW7P087G0R0026A9J6Z`):
+   `consumeFirstbootBaoElfEnvWithEpoch` applies
+   `namedBaoElfAskAtEpoch` when epoch is named. Bun JSON ask is
+   null for ISO current-system bao. Missing epoch still reports
+   the sourced ask. Does not invent an integrate decision.
 7. extraContainer sidecar — later, **same commit as the
    sidecar**, and only for the Shamir kind path until the
    emulator job replaces it. `valuesObject` only. Do not fork
