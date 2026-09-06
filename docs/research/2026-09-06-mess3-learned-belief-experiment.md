@@ -274,3 +274,9 @@ inference CPU, allocation and peak memory against an ordinary learned HMM and
 a fixed-feature recurrent baseline, then freeze the learner before non-ARC
 held-out games. This result does not justify changing ARC priors or runtime
 admission policy on its own.
+
+Follow-up, later on 2026-09-06: the separately registered
+[predictive-state batch](2026-09-06-predictive-state-batch-results.md) runs
+RRXOR, interventions, exact entropy/spectral checks and inference measurements.
+This report and its original numerical receipt remain historical evidence;
+the later batch does not replace their results.

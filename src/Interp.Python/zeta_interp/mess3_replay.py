@@ -76,16 +76,20 @@ def known_after(contexts):
     return belief, 0.65875 * belief + 0.11375
 
 
-def initial_parameters(hidden, seed):
+def initial_parameters(hidden, seed, alphabet=3):
     stream = Stream(domain(seed, 1))
-    parameters = [0.0] * (hidden * hidden + 7 * hidden + 3)
+    parameters = [0.0] * (hidden * hidden + (2 * alphabet + 1) * hidden + alphabet)
     for start, stop, scale in [
         (0, hidden * hidden, math.sqrt(3 / hidden)),
-        (hidden * hidden, hidden * hidden + 3 * hidden, math.sqrt(6 / (hidden + 3))),
         (
-            hidden * hidden + 4 * hidden,
-            hidden * hidden + 7 * hidden,
-            math.sqrt(6 / (hidden + 3)),
+            hidden * hidden,
+            hidden * hidden + alphabet * hidden,
+            math.sqrt(6 / (hidden + alphabet)),
+        ),
+        (
+            hidden * hidden + (alphabet + 1) * hidden,
+            hidden * hidden + (2 * alphabet + 1) * hidden,
+            math.sqrt(6 / (hidden + alphabet)),
         ),
     ]:
         for index in range(start, stop):
@@ -102,28 +106,31 @@ def digest(parameters):
 
 
 class Network:
-    def __init__(self, hidden, parameters):
+    def __init__(self, hidden, parameters, alphabet=3):
         self.hidden = hidden
         values = np.asarray(parameters, dtype=np.float64)
         a, b, c, d = (
             hidden * hidden,
-            hidden * hidden + 3 * hidden,
-            hidden * hidden + 4 * hidden,
-            hidden * hidden + 7 * hidden,
+            hidden * hidden + alphabet * hidden,
+            hidden * hidden + (alphabet + 1) * hidden,
+            hidden * hidden + (2 * alphabet + 1) * hidden,
         )
         self.recurrent = values[:a].reshape(hidden, hidden)
-        self.inputs = values[a:b].reshape(hidden, 3)
+        self.inputs = values[a:b].reshape(hidden, alphabet)
         self.bias = values[b:c]
-        self.output = values[c:d].reshape(3, hidden)
+        self.output = values[c:d].reshape(alphabet, hidden)
         self.output_bias = values[d:]
 
     def step(self, state, tokens):
         state = np.tanh(state @ self.recurrent.T + self.inputs[:, tokens].T + self.bias)
+        return state, self.probabilities(state)
+
+    def probabilities(self, state):
         logits = state @ self.output.T + self.output_bias
         logits -= logits.max(axis=1, keepdims=True)
         probabilities = np.exp(logits)
         probabilities /= probabilities.sum(axis=1, keepdims=True)
-        return state, probabilities
+        return probabilities
 
     def after(self, contexts):
         state = np.zeros((len(contexts), self.hidden))
@@ -134,11 +141,12 @@ class Network:
 
 def joint3(step, state, probabilities):
     columns = []
-    for a in range(3):
+    alphabet = probabilities.shape[1]
+    for a in range(alphabet):
         state_a, prob_a = step(state, a)
-        for b in range(3):
+        for b in range(alphabet):
             _, prob_b = step(state_a, b)
-            for c in range(3):
+            for c in range(alphabet):
                 columns.append(probabilities[:, a] * prob_a[:, b] * prob_b[:, c])
     return np.stack(columns, axis=1)
 
@@ -147,7 +155,9 @@ def ridge(fitting, targets, testing):
     mean, target_mean = fitting.mean(axis=0), targets.mean(axis=0)
     count, width = fitting.shape
     design = np.concatenate([fitting - mean, np.eye(width) * math.sqrt(count * 1e-6)])
-    response = np.concatenate([targets - target_mean, np.zeros((width, 3))])
+    response = np.concatenate(
+        [targets - target_mean, np.zeros((width, targets.shape[1]))]
+    )
     slopes, _, _, _ = np.linalg.lstsq(design, response, rcond=None)
     return (testing - mean) @ slopes + target_mean
 
