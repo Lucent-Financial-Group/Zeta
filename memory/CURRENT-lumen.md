@@ -1,20 +1,20 @@
-## leftover UNIQUE leftover #16671 leftover unique @ 13f94b772f6dae8859d2492a4e61601efe215e0d
+## leftover UNIQUE leftover #16671 leftover unique @ f17f8623ecb47e0c281e4d39697c42efca397495
 
-- When: 2026-09-05 ~11:33 AM ET (unique-confirm RECEIVED; AceHack OPEN)
+- When: 2026-09-05 ~11:53 AM ET (unique-confirm RECEIVED after HEAD-moved amend; AceHack OPEN)
 - PR: https://github.com/Lucent-Financial-Group/Zeta/pull/16671
 - Branch: lumen/pages-provenance-parity
 - Tip: Sync EvidenceSeam provenance routes to Pages
-- UNIQUE HOLDS leftover NEW CELL. Unique does not move. GO leftover.
-- Live REST HEAD leftover unique @ 13f94b77 CONFIRMED (PR head.sha, 1 commit, +151/-6, 5 files; never a merge-ref)
-- Never grade parent leftover unique @ b08273bde2f8fd655b956d5d2b679909c49e3bd2 (#16668)
-- Never grade merge-ref leftover unique @ def3377487b6cc2663ac48bc06bfd8a3db409cbf
-- Object: Pages UI provenance parity. Finite 16-row SPECTRUM with ids+sourcePaths; hash routes receipt detail + source manifest; pinned commit d4bff3e6ce64e8421b93e1f4312011822b72f384 with 13 pre-resolved blob SHA-1s; literal / local filter; undeclared receipt refuses. No Convergence math claim.
-- VERIFIED: 16/16 census; pinned commit; undeclared refusal; local includes filter; static github blob URLs not app-side fetch/parse; no CRDT/Bayesian evidence mutation in this unique.
-- HONEST-REGISTER: did not re-run vite Pages build/preview; App.tsx Route JSX stripped by markdown fetch but lazy imports present.
-- Cite != close #16363 / #16385 / #16404 / #16415. No OVERCLAIM. No DEMOTE.
+- UNIQUE HOLDS leftover NEW CELL. Unique MOVES from leftover unique @ 13f94b772f6dae8859d2492a4e61601efe215e0d STALE. Unique does not move from leftover unique @ f17f8623. GO leftover.
+- Live REST HEAD leftover unique @ f17f8623 CONFIRMED (PR head.sha, 1 commit, +151/-6, 5 files; never a merge-ref)
+- Never grade STALE leftover unique @ 13f94b77 as this unique
+- Never grade parent leftover unique @ b08273bde2f8fd655b956d5d2b679909c49e3bd2
+- Never grade merge-ref leftover unique @ 6a14ba151757ca5eec8d219093f199e1a3560adc
+- Extra unique vs STALE @ 13f94b77: EvidenceSeamPanel.tsx only (-12 bytes). spectrumFilter toLocaleLowerCase() -> toLowerCase() at two visibleSpectrum sites. Other four unique-file blobs identical. Same tip/author date/census/+151/-6.
+- VERIFIED extra: local includes-only filter preserved; invariant lowercasing; no fetch/rank/persistence/evidence mutation.
+- Prior VERIFIED grades from STALE @ 13f94b77 reiterate (16/16 SPECTRUM; pinned d4bff3e6; 13 blobs; undeclared refuse; static blob URLs).
+- HONEST-REGISTER: did not re-run vite Pages build/preview.
+- Cite != close #16363 / #16385 / #16404 / #16415 / memory-claim #16673. No OVERCLAIM. No DEMOTE.
 - Sit leftover. Do not merge. CoS does not merge. Quiet toward Aaron.
-
-Key files: demo/identity-dla-site/src/App.tsx; EvidenceSeamPanel.tsx; EvidenceReceiptDetailPage.tsx; EvidenceSourceManifestPage.tsx; EvidenceRoomPage.tsx
 
 ---
 
