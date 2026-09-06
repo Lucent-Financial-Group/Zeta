@@ -364,6 +364,25 @@ jobs:
         working-directory: full-ai-cluster
         run: nix build .#installer-iso --print-build-logs --fallback
 
+      - name: The built ISO carries the name this repo chose
+        working-directory: full-ai-cluster
+        # 081KSGS9H0008QG0R00033DT02, closed 2026-09-06. `isoImage.isoName = lib.mkForce`
+        # stopped naming the ISO when nixpkgs 25.11 moved to `system.build.image` +
+        # normalized filenames, and every ISO this repo published shipped as
+        # `nixos-minimal-*`. The workflow was fix-forwarded to accept BOTH names, which
+        # kept the lane green and made the defect invisible for three months.
+        #
+        # THE ALIAS IS WHY IT HID. `isoImage.isoName` and `image.fileName` BOTH evaluate
+        # to our value; only `image.baseName` reaches the derivation. Measured:
+        #   image.fileName             = zeta-installer-25.11.iso
+        #   system.build.isoImage.name = nixos-minimal-25.11...-x86_64-linux.iso
+        # So reading the option back said "fixed" while the artifact said otherwise.
+        #
+        # This step asserts the ARTIFACT, not the option, so the next upstream option move
+        # fails here instead of rotting for another three months. Its falsifiers are
+        # `src/Core.TypeScript/ci/assert-iso-name.test.ts`.
+        run: bun ../src/Core.TypeScript/ci/assert-iso-name.ts result/iso
+
       - name: Audit installer ISO content (cascade #4 — post-build floor)
         # Inspects the BUILT ISO via 7z list + asserts expected top-
         # level files (nix-store.squashfs, kernel, initrd, grub.cfg).
@@ -379,9 +398,9 @@ jobs:
           # Copilot finding on #5119). Under `set -u`, unbound
           # iso_candidates[0] would give an opaque "unbound variable"
           # error; explicit count check gives a clear workflow error.
-          mapfile -t iso_candidates < <(find result/iso -maxdepth 1 -type f \( -name 'zeta-installer-*.iso' -o -name 'nixos-minimal-*.iso' \) | sort)
+          mapfile -t iso_candidates < <(find result/iso -maxdepth 1 -type f -name 'zeta-installer-*.iso' | sort)
           if [ "${#iso_candidates[@]}" -eq 0 ]; then
-            echo "::error::Audit step: No installer ISO under result/iso/ (looked for zeta-installer-*.iso OR nixos-minimal-*.iso per nixpkgs 25.11 default; see 081KSGS9H0008QG0R00033DT02)" >&2
+            echo "::error::Audit step: No installer ISO under result/iso/ (looked for zeta-installer-*.iso; the nixos-minimal-* fallback was removed with 081KSGS9H0008QG0R00033DT02's fix -- image.baseName now drives the name)" >&2
             ls -la result/iso/ >&2 || true
             exit 1
           fi
@@ -463,7 +482,7 @@ jobs:
         working-directory: full-ai-cluster
         run: |
           set -euo pipefail
-          mapfile -t iso_candidates < <(find result/iso -maxdepth 1 -type f \( -name 'zeta-installer-*.iso' -o -name 'nixos-minimal-*.iso' \) | sort)
+          mapfile -t iso_candidates < <(find result/iso -maxdepth 1 -type f -name 'zeta-installer-*.iso' | sort)
           if [ "${#iso_candidates[@]}" -eq 0 ]; then
             echo "::error::081KSNY2Z0008QG0R0008PN7RQ scenario 1: No installer ISO under result/iso/" >&2
             exit 1
@@ -494,7 +513,7 @@ jobs:
           QEMU_FIRST_SESSION_PHASE3: "1"
         run: |
           set -euo pipefail
-          mapfile -t iso_candidates < <(find result/iso -maxdepth 1 -type f \( -name 'zeta-installer-*.iso' -o -name 'nixos-minimal-*.iso' \) | sort)
+          mapfile -t iso_candidates < <(find result/iso -maxdepth 1 -type f -name 'zeta-installer-*.iso' | sort)
           if [ "${#iso_candidates[@]}" -eq 0 ]; then
             echo "::error::081KSNY2Z0008QG0R0008PN7RQ scenario 2: No installer ISO under result/iso/" >&2
             exit 1
@@ -519,7 +538,7 @@ jobs:
           QEMU_UEFI_KEYFILE_RESTORE: "1"
         run: |
           set -euo pipefail
-          mapfile -t iso_candidates < <(find result/iso -maxdepth 1 -type f \( -name 'zeta-installer-*.iso' -o -name 'nixos-minimal-*.iso' \) | sort)
+          mapfile -t iso_candidates < <(find result/iso -maxdepth 1 -type f -name 'zeta-installer-*.iso' | sort)
           if [ "${#iso_candidates[@]}" -eq 0 ]; then
             echo "::error::UEFI keyfile restore: No installer ISO under result/iso/" >&2
             exit 1
@@ -557,7 +576,7 @@ jobs:
           QEMU_FIRST_SESSION_PHASE3: "1"
         run: |
           set -euo pipefail
-          mapfile -t iso_candidates < <(find result/iso -maxdepth 1 -type f \( -name 'zeta-installer-*.iso' -o -name 'nixos-minimal-*.iso' \) | sort)
+          mapfile -t iso_candidates < <(find result/iso -maxdepth 1 -type f -name 'zeta-installer-*.iso' | sort)
           if [ "${#iso_candidates[@]}" -eq 0 ]; then
             echo "::error::081KSGS9H0008QG0R003V23XNZ wifi ESP: No installer ISO under result/iso/" >&2
             exit 1
@@ -585,7 +604,7 @@ jobs:
           QEMU_UEFI_KEYFILE_PHASE1: "1"
         run: |
           set -euo pipefail
-          mapfile -t iso_candidates < <(find result/iso -maxdepth 1 -type f \( -name 'zeta-installer-*.iso' -o -name 'nixos-minimal-*.iso' \) | sort)
+          mapfile -t iso_candidates < <(find result/iso -maxdepth 1 -type f -name 'zeta-installer-*.iso' | sort)
           if [ "${#iso_candidates[@]}" -eq 0 ]; then
             echo "::error::UEFI keyfile phase-1: No installer ISO under result/iso/" >&2
             exit 1
@@ -613,7 +632,7 @@ jobs:
           QEMU_UEFI_KEYFILE_PICKER: "1"
         run: |
           set -euo pipefail
-          mapfile -t iso_candidates < <(find result/iso -maxdepth 1 -type f \( -name 'zeta-installer-*.iso' -o -name 'nixos-minimal-*.iso' \) | sort)
+          mapfile -t iso_candidates < <(find result/iso -maxdepth 1 -type f -name 'zeta-installer-*.iso' | sort)
           if [ "${#iso_candidates[@]}" -eq 0 ]; then
             echo "::error::UEFI keyfile picker: No installer ISO under result/iso/" >&2
             exit 1
@@ -641,7 +660,7 @@ jobs:
           ZFLASH_QEMU_RETENTION_RUN_DIR: ${{ github.workspace }}/b0891-retention-run
         run: |
           set -euo pipefail
-          mapfile -t iso_candidates < <(find result/iso -maxdepth 1 -type f \( -name 'zeta-installer-*.iso' -o -name 'nixos-minimal-*.iso' \) | sort)
+          mapfile -t iso_candidates < <(find result/iso -maxdepth 1 -type f -name 'zeta-installer-*.iso' | sort)
           if [ "${#iso_candidates[@]}" -eq 0 ]; then
             echo "::error::081KSNY2Z0008QG0R0008PN7RQ scenario 3: No installer ISO under result/iso/" >&2
             exit 1
@@ -662,7 +681,7 @@ jobs:
           ZFLASH_QEMU_PATH_FORK_RUN_DIR: ${{ github.workspace }}/b0891-path-fork-run
         run: |
           set -euo pipefail
-          mapfile -t iso_candidates < <(find result/iso -maxdepth 1 -type f \( -name 'zeta-installer-*.iso' -o -name 'nixos-minimal-*.iso' \) | sort)
+          mapfile -t iso_candidates < <(find result/iso -maxdepth 1 -type f -name 'zeta-installer-*.iso' | sort)
           if [ "${#iso_candidates[@]}" -eq 0 ]; then
             echo "::error::081KSNY2Z0008QG0R0008PN7RQ scenario 4: No installer ISO under result/iso/" >&2
             exit 1
@@ -724,9 +743,9 @@ jobs:
         working-directory: full-ai-cluster
         run: |
           set -euo pipefail
-          mapfile -t iso_candidates < <(find result/iso -maxdepth 1 -type f \( -name 'zeta-installer-*.iso' -o -name 'nixos-minimal-*.iso' \) | sort)
+          mapfile -t iso_candidates < <(find result/iso -maxdepth 1 -type f -name 'zeta-installer-*.iso' | sort)
           if [ "${#iso_candidates[@]}" -eq 0 ]; then
-            echo "::error::No installer ISO found under result/iso/ (looked for zeta-installer-*.iso OR nixos-minimal-*.iso per nixpkgs 25.11 default; see 081KSGS9H0008QG0R00033DT02)" >&2
+            echo "::error::No installer ISO found under result/iso/ (looked for zeta-installer-*.iso; the nixos-minimal-* fallback was removed with 081KSGS9H0008QG0R00033DT02's fix -- image.baseName now drives the name)" >&2
             ls -la result/iso/ >&2 || true
             exit 1
           fi
@@ -942,6 +961,25 @@ jobs:
         working-directory: full-ai-cluster
         run: nix build .#installer-iso --print-build-logs --fallback
 
+      - name: The built ISO carries the name this repo chose
+        working-directory: full-ai-cluster
+        # 081KSGS9H0008QG0R00033DT02, closed 2026-09-06. `isoImage.isoName = lib.mkForce`
+        # stopped naming the ISO when nixpkgs 25.11 moved to `system.build.image` +
+        # normalized filenames, and every ISO this repo published shipped as
+        # `nixos-minimal-*`. The workflow was fix-forwarded to accept BOTH names, which
+        # kept the lane green and made the defect invisible for three months.
+        #
+        # THE ALIAS IS WHY IT HID. `isoImage.isoName` and `image.fileName` BOTH evaluate
+        # to our value; only `image.baseName` reaches the derivation. Measured:
+        #   image.fileName             = zeta-installer-25.11.iso
+        #   system.build.isoImage.name = nixos-minimal-25.11...-x86_64-linux.iso
+        # So reading the option back said "fixed" while the artifact said otherwise.
+        #
+        # This step asserts the ARTIFACT, not the option, so the next upstream option move
+        # fails here instead of rotting for another three months. Its falsifiers are
+        # `src/Core.TypeScript/ci/assert-iso-name.test.ts`.
+        run: bun ../src/Core.TypeScript/ci/assert-iso-name.ts result/iso
+
       - name: Install QEMU (aarch64 system emulator + EDK2 UEFI firmware)
         run: sudo apt-get update -y && sudo DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends qemu-system-arm qemu-efi-aarch64
 
@@ -971,7 +1009,7 @@ jobs:
         working-directory: full-ai-cluster
         run: |
           set -euo pipefail
-          mapfile -t iso_candidates < <(find result/iso -maxdepth 1 -type f \( -name 'zeta-installer-*.iso' -o -name 'nixos-minimal-*.iso' \) | sort)
+          mapfile -t iso_candidates < <(find result/iso -maxdepth 1 -type f -name 'zeta-installer-*.iso' | sort)
           if [ "${#iso_candidates[@]}" -eq 0 ]; then
             echo "::error::aarch64 QEMU boot test: No installer ISO under result/iso/" >&2
             exit 1
@@ -1042,7 +1080,7 @@ jobs:
         working-directory: full-ai-cluster
         run: |
           set -euo pipefail
-          mapfile -t iso_candidates < <(find result/iso -maxdepth 1 -type f \( -name 'zeta-installer-*.iso' -o -name 'nixos-minimal-*.iso' \) | sort)
+          mapfile -t iso_candidates < <(find result/iso -maxdepth 1 -type f -name 'zeta-installer-*.iso' | sort)
           if [ "${#iso_candidates[@]}" -eq 0 ]; then
             echo "::error::aarch64: No installer ISO under result/iso/" >&2
             ls -la result/iso/ >&2 || true
@@ -1088,10 +1126,13 @@ jobs:
       - name: Upload the aarch64 ISO digest manifest as a workflow artifact
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
-          # Fixed name rather than the x86_64 job's `${{ steps.iso.outputs.name }}`:
-          # both jobs currently build a `nixos-minimal-<ver>-<arch>-linux.iso`,
-          # and two artifacts in one run may not share a name. The aarch64 ISO
-          # artifact already uses a fixed name for the same reason.
+          # Fixed name rather than the x86_64 job's `${{ steps.iso.outputs.name }}`.
+          # The original reason was that both jobs built a `nixos-minimal-*` ISO whose
+          # names could collide; as of 081KSGS9H0008QG0R00033DT02 they build
+          # `zeta-installer-<release>-<system>.iso`, which already differs by arch. The
+          # fixed name is KEPT anyway: it is stable across releases, which is what a
+          # downstream consumer of this artifact wants, and it does not depend on a
+          # filename this repo may rename again.
           name: zeta-installer-aarch64-iso.sha256
           path: ${{ steps.iso.outputs.sha256_path }}
           retention-days: 14

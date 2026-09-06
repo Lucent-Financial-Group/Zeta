@@ -93,3 +93,32 @@ stops accepting the wrong answer.
 The published ISOs are named `zeta-installer-*.iso`, a check fails if they are not, and the
 `nixos-minimal-*` fallback is gone from both `find` invocations.
 
+## 2026-09-06, same day — THIS IS A DUPLICATE, and the original had the answer
+
+`docs/backlog/P2/081KSGS9H0008QG0R00033DT02-investigate-isoname-mkforce-not-sticking-on-nixpkgs-25-11-aa.md`
+was filed **2026-05-26**, at Aaron's ask, with the same finding and a better diagnosis. I
+wrote *"the warning has been printed on every run and read by nobody"* — someone read it,
+diagnosed it, filed it, and fix-forwarded the workflow to accept both names. That is the
+second time today I have called something undiscovered that was already on file.
+
+**And the original was right where I was wrong.** It predicted *"the unified `image.baseName`
+option likely now drives the ISO filename via a new code path that bypasses ... the legacy
+`isoImage.isoName`"*, and named `image.baseName` as candidate fix #1.
+
+I had started fixing this as `image.fileName` — the option the rename warning names. Measured
+before shipping:
+
+```
+image.fileName             = zeta-installer-25.11.iso        <- the option reads back correct
+system.build.isoImage.name = nixos-minimal-25.11...-x86_64-linux.iso   <- the artifact does not
+```
+
+**`isoImage.isoName` and `image.fileName` BOTH evaluate to our value** — nixpkgs aliases the
+old spelling — while only `image.baseName` reaches the derivation. That alias is the whole
+reason this hid: reading the option back says "fixed". A fix validated by evaluating the
+option rather than the artifact would have shipped, silenced the warning, and changed nothing.
+
+**Superseded by the fix under `081KSGS9H0008QG0R00033DT02`.** This entry is kept, rather than
+deleted, as the record of the near-miss: the check that closes it asserts the ARTIFACT, and
+this is why.
+
