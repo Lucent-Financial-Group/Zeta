@@ -271,16 +271,21 @@ Installer-iso epoch (`081M1W4XQH4087G0R000F69WYQ`):
 open `NIXOS_HOST_BAO`. `installed-host` may.
 `/mnt` existing does not pick the epoch. Does
 not fill a `/mnt/...` path.
+ISO bun names epoch (`081M1W6J9MH087G0R003VNMDDR`):
+`zeta-install.sh` exports
+`ZETA_BAO_ELF_EPOCH='installer-iso'` as a literal.
+Missing epoch is unmeasured, not `installed-host`.
+`/mnt` is unknown, not `installer-iso`.
 
 1. Metal: `seal "pkcs11"` in Application.yaml still waits.
    Same commit as a **reachable** module: same-libc image
    (glibc OpenBao that can load the host `.so`) or option D
    host `bao`. Dual-vendor per node is ZetaFS k-of-n, not
    two active OpenBao seals. Do not treat this planner as
-   that commit. The epoch is named; a live installer call
-   still must not invent an integrate decision. Does not
-   expand `ZetaFirstbootRole`. `/dev/tpmrm0` is still not
-   an ask.
+   that commit. Epoch is named at the ISO consume. A live
+   installer call still must not invent an integrate
+   decision. Does not expand `ZetaFirstbootRole`.
+   `/dev/tpmrm0` is still not an ask.
 2. extraContainer Shamir sidecar (`valuesObject` only) until
    kind/CI consume the emulator init.
 

@@ -227,6 +227,11 @@ assume the number.
    `NIXOS_HOST_BAO`. `installed-host` may. `/mnt` existing
    does not pick the epoch. Does not fill a `/mnt/...`
    path. Does not invent an integrate decision.
+   ISO bun names epoch (`081M1W6J9MH087G0R003VNMDDR`):
+   `zeta-install.sh` exports `ZETA_BAO_ELF_EPOCH='installer-iso'`
+   as a literal after 6.95a. Missing epoch is unmeasured, not
+   `installed-host`. `/mnt` is unknown, not `installer-iso`.
+   Does not invent an integrate decision.
 7. extraContainer sidecar — later, **same commit as the
    sidecar**, and only for the Shamir kind path until the
    emulator job replaces it. `valuesObject` only. Do not fork

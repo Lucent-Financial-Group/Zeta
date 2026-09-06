@@ -578,6 +578,22 @@ Workitem: `081M1W4XQH4087G0R000F69WYQ`.
 - Does not invent an integrate decision. Does not expand
   `ZetaFirstbootRole`. Does not edit Application.yaml.
 
+## 2026-09-06 — ISO bun consume names installer-iso epoch (Riven)
+
+Aaron: continue after the epoch type. Step 6.95a still did
+not name that epoch.
+
+Consumer: `full-ai-cluster/usb-nixos-installer/zeta-install.sh`
+plus `src/Core.TypeScript/zflash/firstboot-bao-env.ts`
+(`consumeFirstbootBaoElfEnvWithEpoch`).
+Workitem: `081M1W6J9MH087G0R003VNMDDR`.
+
+- Literal `ZETA_BAO_ELF_EPOCH='installer-iso'`. Missing epoch
+  is unmeasured, not `installed-host`. `/mnt` is unknown, not
+  `installer-iso`. Does not infer from `/dev/tpmrm0`.
+- Does not invent an integrate decision. Does not expand
+  `ZetaFirstbootRole`. Does not edit Application.yaml.
+
 ## 2026-09-04 — production-hardening review (Riven)
 
 Aaron asked to production-harden the CA, name the unseal startup, use

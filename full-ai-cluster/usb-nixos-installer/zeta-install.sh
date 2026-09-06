@@ -3393,9 +3393,11 @@ if [ -d "$ZETA_HOME" ]; then
   # Pickup exported both names (or neither) before bun existed.
   # tools/setup/install.sh has now run; bun/mise may be on PATH.
   # Invoke firstboot-bao-env.ts the same way wifi/iserial helpers
-  # run. Do not invoke from zeta-first-boot.sh. Do not open
-  # /dev/tpmrm0. Do not fill /run/current-system/sw/bin/bao. Do
-  # not write Application.yaml. A null ask is not a seal.
+  # run. Epoch is named installer-iso here (this block runs on the
+  # live ISO after nixos-install into /mnt). Do not infer epoch
+  # from /mnt or /dev/tpmrm0. Do not invoke from zeta-first-boot.sh.
+  # Do not open /dev/tpmrm0. Do not fill /run/current-system/sw/bin/bao.
+  # Do not write Application.yaml. A null ask is not a seal.
   BAO_ENV_HELPER="$ZETA_HOME/Zeta/src/Core.TypeScript/zflash/firstboot-bao-env.ts"
   if [ -z "${ZETA_BAO_LOAD_SITE:-}" ] || [ -z "${ZETA_BAO_PATH:-}" ]; then
     echo "[081M1W1NCDT087G0R002H3VG6Y-bao]   no bao names in env; consume skipped"
@@ -3406,7 +3408,7 @@ if [ -d "$ZETA_HOME" ]; then
     BAO_ENV_JSON=$(
       sudo --preserve-env=PATH -u "#$ZETA_UID" HOME="$ZETA_HOME" BUN_INSTALL="$ZETA_HOME/.bun" \
         MISE_TRUSTED_CONFIG_PATHS="$ZETA_HOME/Zeta" \
-        bash -c "set -o pipefail; export PATH='/run/current-system/sw/bin:${ZETA_HOME}/.local/share/mise/shims:${ZETA_HOME}/.bun/bin:/usr/bin:/bin'; eval \"\$(mise activate bash 2>/dev/null || true)\"; export ZETA_BAO_LOAD_SITE='$ZETA_BAO_LOAD_SITE' ZETA_BAO_PATH='$ZETA_BAO_PATH'; cd '$ZETA_HOME/Zeta' && bun '$BAO_ENV_HELPER'" \
+        bash -c "set -o pipefail; export PATH='/run/current-system/sw/bin:${ZETA_HOME}/.local/share/mise/shims:${ZETA_HOME}/.bun/bin:/usr/bin:/bin'; eval \"\$(mise activate bash 2>/dev/null || true)\"; export ZETA_BAO_LOAD_SITE='$ZETA_BAO_LOAD_SITE' ZETA_BAO_PATH='$ZETA_BAO_PATH' ZETA_BAO_ELF_EPOCH='installer-iso'; cd '$ZETA_HOME/Zeta' && bun '$BAO_ENV_HELPER'" \
         2>/tmp/zeta-bao-env.err
     )
     BAO_ENV_RC=$?
@@ -3414,6 +3416,8 @@ if [ -d "$ZETA_HOME" ]; then
     if [ "$BAO_ENV_RC" -eq 0 ]; then
       echo "[081M1W1NCDT087G0R002H3VG6Y-bao]   consume $BAO_ENV_JSON"
       BAO_ENV_ASK=$(printf '%s' "$BAO_ENV_JSON" | jq -c '.ask' 2>/dev/null || printf 'unparseable')
+      BAO_ENV_EPOCH=$(printf '%s' "$BAO_ENV_JSON" | jq -c '.epoch' 2>/dev/null || printf 'unparseable')
+      echo "[081M1W6J9MH087G0R003VNMDDR-bao]   named epoch $BAO_ENV_EPOCH"
       if [ "$BAO_ENV_ASK" = "null" ]; then
         echo "[081M1W1NCDT087G0R002H3VG6Y-bao]   null ask is not a named bao (tpmrm0 / non-bao path); not a seal"
       else
