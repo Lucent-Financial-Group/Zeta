@@ -129,8 +129,10 @@ module AntiSybil =
     /// Pairwise CHSH `S` from two per-round probe streams (truncated to the
     /// shorter). Rounds are bucketed by the setting pair; `E` per bucket is the
     /// mean outcome product; `S = E(0,0) − E(0,1) + E(1,0) + E(1,1)` via
-    /// `BellTest.chshOf`. An EMPTY bucket contributes `E = 0` — degeneracy only
-    /// ever weakens conviction (soundness-biased), never manufactures it.
+    /// `BellTest.chshOf`. An EMPTY bucket contributes `E = 0` for this descriptive
+    /// statistic only. This can inflate |S|: missing (0,1) with constant +1 products
+    /// gives 3 instead of the complete contrast 2. Calibrated inference must check
+    /// setting coverage; a raw score is not a measurement-eligibility certificate.
     let chshS (a: ChshRound list) (b: ChshRound list) : float =
         let n = min (List.length a) (List.length b)
         if n <= 0 then
@@ -312,18 +314,40 @@ module AntiSybil =
                      |> List.sum)
             float n / factor
 
-    /// The **autocorrelation-corrected CHSH margin**: substitute `n_eff` (a Bartlett-windowed HAC estimate
-    /// over the pair's own outcome-product series, `effectiveSampleSizeHAC`) for `n` in the Hoeffding ε.
-    /// On a stream with no positive autocorrelation at any lag it **equals** `chshMargin delta n`; on any
-    /// positively-autocorrelated stream (at any lag ≤ bandwidth) it is strictly **larger** (`n_eff < n`) —
-    /// the sound correction for Caveat (a), now robust past lag 1. Takes the actual streams (not just `n`)
-    /// because the `ρ_k` depend on the outcomes. `n_eff < 1` ⇒ `infinity` (no effective power ⇒ never convict).
+    // Only paired observations enter the statistic. Unmatched suffixes are intentionally ignored.
+    // Zero also represents malformed paired probes; it cannot become calibrated evidence.
+    let private minimumChshBucketCount (a: ChshRound list) (b: ChshRound list) =
+        let counts = Array.zeroCreate<int> 4
+        let valid (round: ChshRound) =
+            not (isNull (box round))
+            && (round.Setting = 0 || round.Setting = 1)
+            && (round.Outcome = -1 || round.Outcome = 1)
+        let rec collect left right =
+            match left, right with
+            | ra :: restA, rb :: restB when valid ra && valid rb ->
+                let bucket = 2 * ra.Setting + rb.Setting
+                counts.[bucket] <- counts.[bucket] + 1
+                collect restA restB
+            | [], _ | _, [] -> Array.min counts
+            | _ -> 0
+        if isNull (box a) || isNull (box b) then 0 else collect a b
+
+    /// Coverage-limited HAC engineering margin. Cap the outcome-product HAC effective
+    /// rounds by `4 * minimumBucketCount`; absent settings or malformed paired probes
+    /// return infinity. Balanced valid buckets preserve the previous HAC formula.
+    /// Under conditional independent bounded samples, `sum_b 1/n_b <= 4/min_b(n_b)`
+    /// motivates the cap. It never decreases the earlier margin, but proves neither
+    /// general dependent-sample calibration nor a two-sided false-alarm guarantee.
+    /// Setting randomization, locality and sampling validity remain separate assumptions.
     let chshMarginAutocorr (delta: float) (a: ChshRound list) (b: ChshRound list) : float =
-        let series = outcomeProductSeries a b
-        let n = List.length series
-        let nEff = effectiveSampleSizeHAC series (neweyWestBandwidth n)
-        if nEff < 1.0 || delta <= 0.0 || delta >= 1.0 then infinity
-        else sqrt (32.0 * log (1.0 / delta) / nEff)
+        let minimumCount = minimumChshBucketCount a b
+        if minimumCount = 0 || not (System.Double.IsFinite delta) || delta <= 0.0 || delta >= 1.0 then infinity
+        else
+            let series = outcomeProductSeries a b
+            let n = List.length series
+            let nEff = min (4.0 * float minimumCount) (effectiveSampleSizeHAC series (neweyWestBandwidth n))
+            if nEff < 1.0 then infinity
+            else sqrt (32.0 * log (1.0 / delta) / nEff)
 
     /// **Approximate-stationarity gate** (Soraya's candidate #2): the outcome-product series' first-half
     /// and second-half means differ by `≤ tol`. Crude but honest — a NON-stationary window must
@@ -366,20 +390,15 @@ module AntiSybil =
             let spread xs = List.max xs - List.min xs
             spread (stats |> List.map fst) <= tol && spread (stats |> List.map snd) <= tol
 
-    /// The CALIBRATED CHSH identity oracle: conviction at `2 + ε` with the pair's own run length, so an
-    /// honestly-local pair at the bound is falsely convicted with probability ≤ δ (per pair) — the sound
-    /// default the bare-threshold `chshSybil` is not. Same one-way inference: convicts sameness, never
-    /// acquits. Deterministic (DST §7).
+    /// CHSH component classification at `2 + ε`, with valid four-setting coverage and
+    /// the pair's coverage-limited HAC margin. An ineligible pair adds no merge edge;
+    /// this does not establish independence. The margin is an engineering refinement,
+    /// not a proved general per-pair false-classification bound. Deterministic (DST §7).
     ///
-    /// **ε is now the autocorrelation-corrected margin `chshMarginAutocorr` (Caveat-A default switch,
-    /// 2026-08-04)**, not the i.i.d. `chshMargin`. Real streams autocorrelate ⇒ the i.i.d. margin
-    /// over-convicts (false collapse of honest-but-bursty identities); the corrected margin uses the pair's
-    /// own HAC effective sample size. Soraya VERIFIED this is **provably more conservative** than the i.i.d.
-    /// variant — the conviction set is a strict subset, so the switch can only *remove* false collapses,
-    /// never add one (obligations (a)/(b)/(c), + the 40-batch machine-check). **Framing:** "more
-    /// conservative than i.i.d.", NOT "fully sound" — dependence beyond the HAC bandwidth can still evade.
-    /// The stationarity-gated variant is `chshSybilAutocorrCalibrated` (opt-in — it needs a tol choice);
-    /// this default is the parameter-free margin swap only.
+    /// HAC replaced the i.i.d. margin in 2026-08-04; the setting-count cap is an
+    /// additional conservative refinement. Either change can remove true or false
+    /// merge edges. Neither checks measurement independence or proves arbitrary-
+    /// dependence concentration. See docs/research/chsh-coverage/2026-09-06-audit.md.
     let chshSybilCalibrated (delta: float) (streams: ChshRound list list) : DistinctnessReadout =
         let k = List.length streams
         let arr = List.toArray streams
@@ -389,8 +408,8 @@ module AntiSybil =
 
         for i in 0 .. k - 1 do
             for j in i + 1 .. k - 1 do
-                // Caveat-A: the autocorrelation-corrected margin (n_eff from the pair's own HAC), not n.
-                if abs (chshS arr.[i] arr.[j]) > 2.0 + chshMarginAutocorr delta arr.[i] arr.[j] then
+                let margin = chshMarginAutocorr delta arr.[i] arr.[j]
+                if System.Double.IsFinite margin && abs (chshS arr.[i] arr.[j]) > 2.0 + margin then
                     union i j
 
         let roots = [ 0 .. k - 1 ] |> List.map find
@@ -407,14 +426,13 @@ module AntiSybil =
           SourceOf = sourceOf
           AllDistinct = distinct = k }
 
-    /// The **autocorrelation-calibrated** CHSH sybil oracle — the sound default for streams that may
-    /// autocorrelate (Caveat (a)). Two changes vs `chshSybilCalibrated`: (1) conviction at
-    /// `2 + chshMarginAutocorr` (each pair's own `n_eff`), and (2) a pair whose outcome-product series is
+    /// Stationarity-gated CHSH classification. The same coverage-limited margin as
+    /// `chshSybilCalibrated` applies; a pair whose outcome-product series is
     /// NOT approximately stationary **downgrades to non-convicting** (never evidence). Because
     /// `marginAutocorr ≥ marginᵢᵢᵈ` and the stationarity gate only ever *removes* convictions, this is
-    /// **strictly more conservative** than `chshSybilCalibrated` — it can only drop FALSE collapses of
-    /// honest-but-autocorrelated identities, never add new ones. Same one-way inference (convicts sameness,
-    /// never acquits) and determinism (DST §7). `stationarityTol` in `[0, 2]` (product means live in
+    /// at least as conservative as `chshSybilCalibrated`: it can remove either true or
+    /// false merge edges, never add edges. This is not a general calibration theorem.
+    /// Deterministic (DST §7). `stationarityTol` in `[0, 2]` (product means live in
     /// `[-1, 1]`); a smaller tol downgrades more aggressively.
     let chshSybilAutocorrCalibrated (delta: float) (stationarityTol: float) (streams: ChshRound list list) : DistinctnessReadout =
         let k = List.length streams
@@ -425,11 +443,10 @@ module AntiSybil =
 
         for i in 0 .. k - 1 do
             for j in i + 1 .. k - 1 do
-                let series = outcomeProductSeries arr.[i] arr.[j]
-                // Stationarity gate first (multi-block: catches within-half drift the two-halves check
-                // missed): a non-stationary window is Unmeasured, never convicting.
-                if isApproxStationaryMultiBlock stationarityTol 4 series
-                   && abs (chshS arr.[i] arr.[j]) > 2.0 + chshMarginAutocorr delta arr.[i] arr.[j] then
+                let margin = chshMarginAutocorr delta arr.[i] arr.[j]
+                if System.Double.IsFinite margin
+                   && isApproxStationaryMultiBlock stationarityTol 4 (outcomeProductSeries arr.[i] arr.[j])
+                   && abs (chshS arr.[i] arr.[j]) > 2.0 + margin then
                     union i j
 
         let roots = [ 0 .. k - 1 ] |> List.map find
@@ -490,7 +507,10 @@ module AntiSybil =
 
     /// Classify `s` (raw signed `Ŝ` from `chshS`) against the bounds, calibrated to this reading's run
     /// length. Arg order mirrors `chshMargin (delta) (rounds)` so it partial-applies; `s` is last so it
-    /// pipes. `rounds` = the pair's min stream length (the same `n` the calibrated oracle uses).
+    /// pipes. `rounds` is the declared sample count for this scalar i.i.d.-shaped margin;
+    /// stream-based classifiers instead apply setting coverage and HAC refinement.
+    /// This scalar API cannot verify setting coverage. Callers must establish valid
+    /// four-setting estimates separately; an incomplete raw score is ineligible.
     ///
     /// Boundary policy is SOUNDNESS-BIASED: escalation to a stronger band requires STRICT exceedance, so
     /// every tie falls to the WEAKER band. The Tsirelson edge carries the same `1e-12` slack as

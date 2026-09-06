@@ -233,6 +233,7 @@
     <Compile Include="../../src/Research.FSharp/RelationalIdentityExperiment.fs" Link="Research/RelationalIdentityExperiment.fs" />
     <Compile Include="RelationalIdentity.Tests.fs" />
     <Compile Include="AntiSybil.Tests.fs" />
+    <Compile Include="ChshCoverage.Tests.fs" />
     <Compile Include="ReportTriage.Tests.fs" />
     <Compile Include="AntiSybilCaveatA.Property.Tests.fs" />
     <Compile Include="ChshBand.Property.Tests.fs" />
