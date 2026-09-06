@@ -35,6 +35,8 @@ The [protocol](2026-09-06-predictive-state-batch-protocol.md) was committed as
 `103df7d214` and pushed to `claim/task-predictive-state-batch` before training.
 Implementation `d9dba7a5f4` preceded every registered run. No training budget,
 width, initialization, pair selection or metric was changed after results.
+Git tag `archive/experiments/081M1VJE1B4087G0R001MC85J5` retains the
+pre-squash protocol and implementation ancestry for independent auditing.
 All final models, all controls and every repetition are retained:
 
 - [RNN weights and measurements](../../src/Research.FSharp/rrxor-learned-belief-results.json).
