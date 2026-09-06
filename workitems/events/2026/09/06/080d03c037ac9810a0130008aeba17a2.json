@@ -1,0 +1,14 @@
+{
+  "id": "080d03c037ac9810a0130008aeba17a2",
+  "at": "2026-09-06T18:41:57.139Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1W0DXCJ087G0R000M47BRK",
+    "type": "task",
+    "title": "Buffered freeze catalog write-fail maps to Fsync",
+    "slug": "buffered-freeze-catalog-write-fail-maps-to-fsync",
+    "priority": "P2",
+    "filename": "081M1W0DXCJ087G0R000M47BRK-buffered-freeze-catalog-write-fail-maps-to-fsync.md"
+  }
+}
