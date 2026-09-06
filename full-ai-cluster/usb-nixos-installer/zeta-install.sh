@@ -3419,7 +3419,7 @@ if [ -d "$ZETA_HOME" ]; then
       BAO_ENV_EPOCH=$(printf '%s' "$BAO_ENV_JSON" | jq -c '.epoch' 2>/dev/null || printf 'unparseable')
       echo "[081M1W6J9MH087G0R003VNMDDR-bao]   named epoch $BAO_ENV_EPOCH"
       if [ "$BAO_ENV_ASK" = "null" ]; then
-        echo "[081M1W1NCDT087G0R002H3VG6Y-bao]   null ask is not a named bao (tpmrm0 / non-bao path); not a seal"
+        echo "[081M1W1NCDT087G0R002H3VG6Y-bao]   null ask is not option D at this epoch (tpmrm0 / non-bao / ISO current-system); not a seal"
       else
         echo "[081M1W1NCDT087G0R002H3VG6Y-bao]   named ask $BAO_ENV_ASK; stanza unchanged"
       fi

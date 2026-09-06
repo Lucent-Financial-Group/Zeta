@@ -1286,8 +1286,15 @@ module ZetaFsFreeze =
         (objectCas: BlockCas option)
         : Volume =
         let fs = FileSystem.Current
+        fs.CreateDirectory storeDir
         fs.CreateDirectory (ZetaFsPath.combine2 storeDir "log")
         fs.CreateDirectory (ZetaFsPath.combine2 storeDir "objects")
+        let formatPath = ZetaFsPath.combine2 storeDir ZetaFsFormat.FileName
+        let headPath = ZetaFsPath.combine2 storeDir "HEAD"
+
+        if not (fs.Exists formatPath) && not (fs.Exists headPath) then
+            ZetaFsFormat.write fs storeDir ZetaFsFormat.bindingsDefault
+
         let volume = new Volume(storeDir, mutbuf, observer, session, config, manual, blockIo, objectCas)
 
         try
