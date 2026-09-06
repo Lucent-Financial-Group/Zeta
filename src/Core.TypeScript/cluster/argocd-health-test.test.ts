@@ -977,6 +977,27 @@ describe("081KSXN940008QG0R000SCP2H1 argocd-health-test planning", () => {
     expect(repoServer?.args.join(" ")).toContain("argocd-repo-server");
   });
 
+  test("the diagnostic bundle is attached to BOTH failure paths, not just the child-wait one", () => {
+    // THE DEFECT THIS PINS IS MINE, one commit old. The pod-level commands were added to
+    // the roster for `orleans is Synced/Progressing -- expected Synced/Healthy`
+    // (081M1TFG81G087G0R001XPQGQZ) and the bundle hung ONLY off the repo-backed
+    // child-wait timeout -- a path that failure does not take. Measured on the included
+    // proof for #16740 (check-run 101435639577): the run failed with orleans and
+    // headscale Progressing and dumped no pod state at all. A diagnostic that cannot
+    // fire for the case it was built for is worse than none, because the roster reads
+    // as coverage.
+    //
+    // Asserted on the SOURCE rather than by invoking the runner, because the claim is
+    // about WIRING and the runner needs a live cluster. Crude, and it goes red if the
+    // second call site is removed, which is the whole job.
+    const source = readFileSync(join(import.meta.dir, "argocd-health-test.ts"), "utf-8");
+    const callSites = source.match(/attachClusterDiagnostics\(/g) ?? [];
+    // Two calls plus the declaration.
+    expect(callSites.length).toBe(3);
+    expect(source).toContain('attachClusterDiagnostics(childFailure, "repo-backed child wait timed out")');
+    expect(source).toContain('attachClusterDiagnostics(failure, "ArgoCD health wait gave up")');
+  });
+
   test("the roster can answer WHY a pod is not running, not just that ArgoCD is unhappy", () => {
     // 081M1TFG81G087G0R001XPQGQZ: orleans reported Synced/Progressing, no crash-loop
     // logs existed to capture, and the bug had to say the pod was "most likely

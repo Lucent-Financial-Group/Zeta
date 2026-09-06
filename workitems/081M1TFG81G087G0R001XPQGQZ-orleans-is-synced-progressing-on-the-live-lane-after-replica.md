@@ -58,3 +58,44 @@ The bump was right and is not in question: the blocker it removed was stale (the
 `Microsoft.Orleans.Server 10.3.1` is referenced, the Dockerfile and build workflow are real). What
 is open is whether a single silo *fits* on a dev runner, and that is a resource question with a
 measured answer available on the next run.
+
+## 2026-09-06 — the live proof reproduced it, and my own fix could not see it
+
+**Read from check-run 101435639577**, the `live kind included Synced+Healthy proof` on
+#16740's head:
+
+```
+orleans is Synced/Progressing -- expected Synced/Healthy
+headscale is OutOfSync/Progressing -- expected Synced/Healthy
+```
+
+So this reproduces, and it is not alone. **`forgejo` is NOT in that list**, which is the
+first live confirmation that pulling it out of `DEV_INCLUDED_PROOF_DEFERRED_DIRS` was
+safe: it reached Synced/Healthy with its minted credential.
+
+### The diagnostic gap is WIDER than this work-item said, and the first fix missed it
+
+This item's closing line was *"a Pending pod is currently diagnosed by guesswork, which is
+a gap in the lane rather than in orleans."* #16754 added `not-running-pods` and
+`warning-events` to `REPO_BACKED_CHILD_WAIT_DIAGNOSTIC_COMMANDS` to close it.
+
+**That bundle hung only off the repo-backed child-wait timeout.** This failure is a
+health-verdict failure and does not take that path, so the run above dumped **no pod state
+at all** — the commands existed, were correct, and were unreachable from the one case they
+were written for. A diagnostic that cannot fire for its own motivating failure is the
+vacuity class pointed at instrumentation, and it is worse than none: the roster reads as
+coverage.
+
+Fixed by attaching the bundle to the health-wait failure as well, pinned by a falsifier
+that asserts BOTH call sites exist.
+
+### What is still unknown, and stays unknown
+
+**Why** orleans is Progressing. The hypothesis in this item — Pending on the 500m CPU
+request — is still a hypothesis, and the run that could have refuted it produced no pod
+data. The next included proof carrying the second call site is what answers it, and the
+answer will be one `FailedScheduling` line or something else entirely.
+
+`headscale is OutOfSync/Progressing` is a **different** symptom from the `Missing` that the
+`base_domain` fix cleared, and is not assumed to be the same defect.
+
