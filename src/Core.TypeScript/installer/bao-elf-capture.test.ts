@@ -32,6 +32,7 @@ import {
   composeFirstbootBaoElfCarrier,
   firstbootBaoElfArgvFromAsk,
   namedBaoElfAsk,
+  namedBaoElfAskAtEpoch,
   nixosHostBaoAsk,
   nodeBaoElfRead,
   parseFirstbootBaoElfConf,
@@ -466,6 +467,31 @@ describe("parseFirstbootBaoElfConf — consume both names or neither", () => {
   });
 });
 
+describe("namedBaoElfAskAtEpoch — ISO current-system is not option D", () => {
+  const storeBao = "/nix/store/eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee-openbao/bin/bao";
+
+  test("installer-iso refuses NIXOS_HOST_BAO and does not fill a /mnt path", () => {
+    expect(namedBaoElfAskAtEpoch("on-host", NIXOS_HOST_BAO, "installer-iso")).toBeNull();
+    expect(namedBaoElfAskAtEpoch("in-chart-image", NIXOS_HOST_BAO, "installer-iso")).toBeNull();
+  });
+
+  test("installed-host keeps option D; a named store path is still an ask on the ISO", () => {
+    expect(namedBaoElfAskAtEpoch("on-host", NIXOS_HOST_BAO, "installed-host")).toEqual({
+      site: "on-host",
+      openedPath: NIXOS_HOST_BAO,
+    });
+    expect(namedBaoElfAskAtEpoch("on-host", storeBao, "installer-iso")).toEqual({
+      site: "on-host",
+      openedPath: storeBao,
+    });
+  });
+
+  test("tpmrm0 is still not an ask at either epoch", () => {
+    expect(namedBaoElfAskAtEpoch("on-host", TPM_CHAR_DEVICE, "installer-iso")).toBeNull();
+    expect(namedBaoElfAskAtEpoch("on-host", TPM_CHAR_DEVICE, "installed-host")).toBeNull();
+  });
+});
+
 describe("planSetupFromNamedBaoElfEnv — env join, still not a seal", () => {
   const missingRestore = {
     openedPath: USB_PKCS11_MODULE_POINTER,
@@ -478,7 +504,7 @@ describe("planSetupFromNamedBaoElfEnv — env join, still not a seal", () => {
     return integrateAtSetup({ requested: "pkcs11-tpm" }, emptyCapture({ os: "nixos", tpm2: "present" }));
   }
 
-  test("option D env may emit host HCL and cannot commit Application.yaml", () => {
+  test("installed-host option D env may emit host HCL and cannot commit Application.yaml", () => {
     const opened: string[] = [];
     const fromEnv = planSetupFromNamedBaoElfEnv(
       tpmDecision(),
@@ -489,6 +515,7 @@ describe("planSetupFromNamedBaoElfEnv — env join, still not a seal", () => {
         ZETA_BAO_LOAD_SITE: "on-host",
         ZETA_BAO_PATH: NIXOS_HOST_BAO,
       },
+      "installed-host",
       (path) => {
         opened.push(path);
         return {
@@ -505,12 +532,71 @@ describe("planSetupFromNamedBaoElfEnv — env join, still not a seal", () => {
     expect(overlaySealHcl(fromEnv.plan)).toBeNull();
   });
 
+  test("installer-iso does not open NIXOS_HOST_BAO even when glibc bytes are injected", () => {
+    const opened: string[] = [];
+    const fromIso = planSetupFromNamedBaoElfEnv(
+      tpmDecision(),
+      missingRestore,
+      {
+        ZETA_BAO_LOAD_SITE: "on-host",
+        ZETA_BAO_PATH: NIXOS_HOST_BAO,
+      },
+      "installer-iso",
+      (path) => {
+        opened.push(path);
+        return {
+          exists: true,
+          bytes: path === NIXOS_HOST_BAO ? elf64LeWithInterp(ELF_INTERP_GLIBC_X86_64) : null,
+        };
+      },
+    );
+    expect(fromIso.ok).toBe(true);
+    if (!fromIso.ok) return;
+    expect(opened).toEqual([]);
+    expect(fromIso.plan.mayCommitHostHcl).toBe(false);
+    expect(hostBaoSealHcl(fromIso.plan)).toBeNull();
+    expect(overlaySealHcl(fromIso.plan)).toBeNull();
+  });
+
+  test("installer-iso still opens a named store bao path", () => {
+    const storeBao = "/nix/store/eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee-openbao/bin/bao";
+    const opened: string[] = [];
+    const fromStore = planSetupFromNamedBaoElfEnv(
+      tpmDecision(),
+      missingRestore,
+      {
+        ZETA_BAO_LOAD_SITE: "on-host",
+        ZETA_BAO_PATH: storeBao,
+      },
+      "installer-iso",
+      (path) => {
+        opened.push(path);
+        return {
+          exists: true,
+          bytes: path === storeBao ? elf64LeWithInterp(ELF_INTERP_GLIBC_X86_64) : null,
+        };
+      },
+    );
+    expect(fromStore.ok).toBe(true);
+    if (!fromStore.ok) return;
+    expect(opened).toEqual([storeBao]);
+    expect(fromStore.plan.mayCommitSeal).toBe(false);
+    expect(fromStore.plan.mayCommitHostHcl).toBe(true);
+    expect(overlaySealHcl(fromStore.plan)).toBeNull();
+  });
+
   test("missing keys are unmeasured even when glibc bytes are injected", () => {
     const opened: string[] = [];
-    const empty = planSetupFromNamedBaoElfEnv(tpmDecision(), missingRestore, { PATH: "/usr/bin" }, (path) => {
-      opened.push(path);
-      return { exists: true, bytes: elf64LeWithInterp(ELF_INTERP_GLIBC_X86_64) };
-    });
+    const empty = planSetupFromNamedBaoElfEnv(
+      tpmDecision(),
+      missingRestore,
+      { PATH: "/usr/bin" },
+      "installer-iso",
+      (path) => {
+        opened.push(path);
+        return { exists: true, bytes: elf64LeWithInterp(ELF_INTERP_GLIBC_X86_64) };
+      },
+    );
     expect(empty.ok).toBe(true);
     if (!empty.ok) return;
     expect(opened).toEqual([]);
@@ -527,6 +613,7 @@ describe("planSetupFromNamedBaoElfEnv — env join, still not a seal", () => {
         ZETA_BAO_LOAD_SITE: "on-host",
         ZETA_BAO_PATH: TPM_CHAR_DEVICE,
       },
+      "installer-iso",
       (path) => {
         opened.push(path);
         return { exists: true, bytes: elf64LeWithInterp(ELF_INTERP_GLIBC_X86_64) };
@@ -545,6 +632,7 @@ describe("planSetupFromNamedBaoElfEnv — env join, still not a seal", () => {
       tpmDecision(),
       missingRestore,
       { ZETA_BAO_LOAD_SITE: "on-host" },
+      "installer-iso",
       (path) => {
         opened.push(path);
         return { exists: true, bytes: elf64LeWithInterp(ELF_INTERP_GLIBC_X86_64) };
@@ -556,6 +644,7 @@ describe("planSetupFromNamedBaoElfEnv — env join, still not a seal", () => {
       tpmDecision(),
       missingRestore,
       { ZETA_BAO_PATH: NIXOS_HOST_BAO },
+      "installer-iso",
       (path) => {
         opened.push(path);
         return { exists: true, bytes: elf64LeWithInterp(ELF_INTERP_GLIBC_X86_64) };

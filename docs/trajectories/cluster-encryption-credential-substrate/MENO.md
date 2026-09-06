@@ -222,6 +222,11 @@ assume the number.
    read — the installer ISO's current-system bao is not
    metal option D. tpmrm0 is still not an ask. Does not
    invent an integrate decision. Does not land the stanza.
+   Installer-iso epoch (`081M1W4XQH4087G0R000F69WYQ`):
+   `namedBaoElfAskAtEpoch`. `installer-iso` does not open
+   `NIXOS_HOST_BAO`. `installed-host` may. `/mnt` existing
+   does not pick the epoch. Does not fill a `/mnt/...`
+   path. Does not invent an integrate decision.
 7. extraContainer sidecar — later, **same commit as the
    sidecar**, and only for the Shamir kind path until the
    emulator job replaces it. `valuesObject` only. Do not fork
