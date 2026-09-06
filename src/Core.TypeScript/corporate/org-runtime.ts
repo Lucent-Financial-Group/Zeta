@@ -353,6 +353,13 @@ export interface OrgRuntimeReport {
    * a reading nobody took must not be reported as a good one.
    */
   readonly trajectory: Trajectory | undefined;
+  /**
+   * Tasks whose loop an escalation STOPPED, and which action stopped it.
+   *
+   * The difference between "this run finished" and "this run gave up" — a driver that cannot tell
+   * them apart will either spin on a halted task or stop on a healthy one.
+   */
+  readonly halted: readonly { readonly taskId: string; readonly action: EscalationAction; readonly byHatId: string }[];
 }
 
 const NEUTRAL_INPUTS: PriorityInputs = {
@@ -551,6 +558,7 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
 
   const empty = (): OrgRuntimeReport => ({
     fidelity: noteFidelity("run", deps.nowMs),
+    halted: [],
     // An early return has done no work, so its pace is measured over an empty cascade — which the
     // trajectory reports as NOT STARTED rather than as on track.
     trajectory: trajectoryOf([]),
@@ -1113,6 +1121,8 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
   const gateEvaluations: GateEvaluation[] = [];
   const gateBlocked: { taskId: string; gate: GateKind; recovery?: RecoveryPath }[] = [];
   const escalations: OrgRuntimeReport["escalations"][number][] = [];
+  /** Tasks whose loop an escalation STOPPED, so a caller can tell 'finished' from 'gave up'. */
+  const halted: { readonly taskId: string; readonly action: EscalationAction; readonly byHatId: string }[] = [];
   const maxAttempts = Math.max(1, deps.maxGateAttempts ?? 3);
   const threshold = deps.churnThreshold ?? DEFAULT_CHURN_THRESHOLD;
 
@@ -1366,6 +1376,20 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
         toState: esc.action,
         atMs: warmedAt,
       });
+
+      // ── THE EFFECT IS RECORDED, AND THE LOOP STOPS EITHER WAY ─────────────
+      // A first attempt at this let `changes_the_input` RETRY, on the reasoning that `AddAgents`
+      // and `ReScope` exist precisely to change the input and try again. That was wrong, and a
+      // test caught it: nothing in this runtime APPLIES an escalation action. No agents are added,
+      // no scope is cut. Retrying on an input that did not change is a spin — five identical
+      // attempts instead of two — and the typed effect would have been asserting something that
+      // did not happen.
+      //
+      // So the loop stops on either effect, and the LIMIT is the honest part: the split is
+      // recorded (`escalations` carries it) and will decide the retry the day something applies
+      // the action. Until then, "we escalated and tried again with the same input" is not a
+      // sentence this runtime is entitled to.
+      halted.push({ taskId: task.workId, action: esc.action, byHatId: esc.byHatId });
       break;
     }
 
@@ -1568,6 +1592,7 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
 
   return {
     trajectory,
+    halted,
     intakeAccepted: accepted,
     intakeRefused: refusedIntake,
     priorities: ordered,

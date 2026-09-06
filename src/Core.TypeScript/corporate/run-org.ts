@@ -107,6 +107,7 @@ import { observeForHat } from "./work-batch";
 import { isLeafType, WorkType as WorkTypeValue } from "./goal-cascade";
 import { associateGoal, EMPTY_BOOK, openPortfolio, PortfolioKind, retirePortfolio } from "./portfolio";
 import { appendRun, deliveryRate } from "./org-store";
+import { runUntilSettled } from "./autonomy";
 import { decideSupply, endorseRecommendation } from "./rmo";
 import { authorityFor, pressureBoard } from "./schedule-pressure";
 import { isFullyMeasured, renderDora } from "./dora";
@@ -114,7 +115,7 @@ import { contextFor, runAgentCycle, statusSurfaceFrom } from "./agent-loop-bridg
 import type { AgentState } from "../workflow-engine/agent-loop/state-machine";
 import { GateKind, GateOutcome, NO_PROPOSER } from "./quality-gate";
 import type { OrgChart } from "./org-chart";
-import type { OrgRuntimeReport } from "./org-runtime";
+import type { OrgRuntimeDeps, OrgRuntimeReport } from "./org-runtime";
 import type { NextAction } from "../observe/observe";
 
 /** The reports this run feeds in. Three deliberately: one good, one duplicate, one incomplete. */
@@ -206,6 +207,14 @@ export interface Args {
    * Absent means the run declares no schedule, and the pace is reported as unmeasured rather than
    * as healthy — the same three-state honesty the fidelity block uses.
    */
+  /**
+   * Keep cycling until the organization settles, up to this many cycles.
+   *
+   * Absent means ONE cycle, which is what this CLI has always done. The bound is required when the
+   * flag is used — a defaulted bound is a bound nobody chose, and it is the only number between an
+   * autonomous loop and an unbounded one.
+   */
+  readonly until: string | undefined;
   readonly windowStart: string | undefined;
   readonly windowTarget: string | undefined;
 }
@@ -250,6 +259,7 @@ export function parseArgs(argv: readonly string[]): Args {
     trackerSource: valueAfter(argv, "--tracker-source") ?? "tracker",
     workAgent: valueAfter(argv, "--work-agent"),
     workModel: valueAfter(argv, "--work-model"),
+    until: valueAfter(argv, "--until"),
     windowStart: valueAfter(argv, "--window-start"),
     windowTarget: valueAfter(argv, "--window-target"),
     workAgentArgs: valuesAfter(argv, "--work-agent-arg"),
@@ -361,6 +371,12 @@ export function argRefusals(args: Args): readonly string[] {
       // nothing to turn testimony into an outcome, and the honest answer is that this run cannot be
       // configured — never that it silently becomes a simulation that reports success.
       out.push(`${flag} needs --work-verify — the performer only gives testimony, and something else has to decide whether it worked`);
+    }
+  }
+  if (args.until !== undefined) {
+    const n = Number.parseInt(args.until, 10);
+    if (Number.isNaN(n) || n < 1) {
+      out.push("--until takes a cycle bound of at least 1; an unbounded autonomous loop is not on offer");
     }
   }
   const startMs = args.windowStart === undefined ? undefined : Date.parse(args.windowStart);
@@ -554,7 +570,7 @@ export async function main(argv: readonly string[]): Promise<number> {
 
   // ── The whole organization ────────────────────────────────────────────────
   const providers = providersFromArgs(args, REPORTS, args.qaFails ? RunOutcome.Failed : RunOutcome.Passed);
-  const report = await runOrgRuntime({
+  const runtimeDeps = {
     chart,
     externalEvents: REPORTS,
     agents,
@@ -574,7 +590,7 @@ export async function main(argv: readonly string[]): Promise<number> {
     ...(args.qaFails ? { qaFallback: RunOutcome.Failed } : {}),
     ...(args.churn ? { churnThreshold: 2, maxGateAttempts: 5 } : {}),
     providers,
-    priorityInputsFor: (item) => ({
+    priorityInputsFor: (item: { readonly severity?: unknown }) => ({
       executivePriority: 0.5,
       customerImpact: item.severity === Severity.Critical || item.severity === Severity.High ? 1 : 0.4,
       severity: item.severity === Severity.Critical ? 1 : item.severity === Severity.High ? 0.8 : 0.3,
@@ -586,7 +602,27 @@ export async function main(argv: readonly string[]): Promise<number> {
       budgetBurn: 0,
       estimatedEffort: 0.2,
     }),
-  });
+  } satisfies OrgRuntimeDeps;
+
+  // ── ONE CYCLE, OR UNTIL IT SETTLES ────────────────────────────────────────
+  // Absent `--until`, this is the single cycle the CLI has always run. With it, the driver keeps
+  // going and reports WHY it stopped — delivered, an escalation halted a task, a cycle changed
+  // nothing, or the bound. "It stopped" and "it finished" are the two sentences a caller must
+  // never confuse, so the reason is printed rather than folded into the exit code.
+  const settled =
+    args.until === undefined
+      ? undefined
+      : await runUntilSettled(
+          runtimeDeps,
+          {
+            maxCycles: Number.parseInt(args.until, 10),
+            // The clock advances between cycles: the runtime keys its ids on the instant, so a
+            // frozen clock would mint colliding ids across cycles and fold two runs into one.
+            nextNowMs: (_c, prev) => prev + 1,
+          },
+          runOrgRuntime,
+        );
+  const report = settled?.last ?? (await runOrgRuntime(runtimeDeps));
 
   if (args.json) {
     console.log(JSON.stringify(report, null, 2));
@@ -609,6 +645,14 @@ export async function main(argv: readonly string[]): Promise<number> {
   // PACE, beside fidelity and for the same reason: "DELIVERED" says nothing about whether it
   // arrived when it was supposed to, and an organization that only reports completion discovers
   // its schedule at the deadline.
+  // WHY THE LOOP STOPPED, when there was a loop. Printed before the rest, because every line that
+  // follows describes the LAST cycle and a reader needs to know whether that cycle was the end.
+  if (settled !== undefined) {
+    console.log(`
+--- autonomy ---`);
+    console.log(`  ${settled.stoppedBecause.toUpperCase()}: ${settled.summary}`);
+  }
+
   console.log(`
 --- pace ---`);
   console.log(
