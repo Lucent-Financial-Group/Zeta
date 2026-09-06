@@ -1,0 +1,12 @@
+{
+  "pr_number": 16809,
+  "archive_path": "docs/history/pr-reviews/PR-16809-fix-installer-image-basename-is-what-names-the-iso-the-other-two-spellings-only-.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-06T17:06:11.710Z",
+  "schema_version": "v1",
+  "commit_sha": "78d398f78df79e960134e41b2000931c88174c7d",
+  "title": "fix(installer): image.baseName is what names the ISO — the other two spellings only look right",
+  "state": "MERGED",
+  "merged_at": "2026-09-06T17:05:13Z",
+  "head_ref": "shadow/iso-name-is-forced-and-checked"
+}
