@@ -256,8 +256,8 @@
     {
       "path": "src/wasm-dla/README.md",
       "disposition": "blocking",
-      "note": "States the byte-lock toolchain (wabt, binaryen, emscripten, nodejs) is declared in infra/nixos/modules/common.nix. TRUE TODAY and it is the ONLY NixOS module that declares it — VERIFIED 2026-08-17: full-ai-cluster/nixos/modules/common.nix contains none of wabt/binaryen/emscripten/zig/rustup. This is content unique to the stale tree, not a stale citation.",
-      "migrateTo": "carry the byte-lock toolchain block into full-ai-cluster/nixos/modules/common.nix (or decide on the record that cluster nodes do not need it and the root devShell is the only home), THEN re-point this line."
+      "note": "States the byte-lock toolchain (wabt, binaryen, emscripten, nodejs) is declared in infra/nixos/modules/common.nix. TRUE TODAY and it is the ONLY NixOS module that declares it — VERIFIED 2026-08-17: full-ai-cluster/nixos/modules/common.nix contains none of wabt/binaryen/emscripten/zig/rustup. This is content unique to the stale tree, not a stale citation. MEASURED 2026-09-06, so the decision below needs no further digging: (a) the README enumerates FOUR declaration sites — NixOS, brew, apt, and the root flake devShell — and deleting infra/nixos removes only the NixOS one; (b) `full-ai-cluster/` declares the byte-lock toolchain NOWHERE (grep for wabt/binaryen/emscripten across the tree returns nothing), so the packages would simply be absent from cluster hosts; (c) bytelock.yml never runs on a cluster host — its matrix is ubuntu-24.04 / macos / windows GitHub runners and it installs wabt via apt, brew and choco. So no byte-lock work depends on the NixOS declaration today.",
+      "migrateTo": "MAINTAINER DECISION, now cheap: either carry the byte-lock toolchain block into full-ai-cluster/nixos/modules/common.nix (cluster hosts gain 4 packages they are not measured to need), or record on the record that cluster hosts do not need it and the root devShell + the three OS manifests are the declaration set. The evidence for the second is in the note above; this roster does not choose."
     }
   ]
 }
