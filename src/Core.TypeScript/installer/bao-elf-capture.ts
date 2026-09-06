@@ -15,13 +15,16 @@
  * Env join is the argv/conf sibling: sourced process env
  * into `planSetupFromNamedBaoElf`. Epoch is named from that
  * same env (`ZETA_BAO_ELF_EPOCH`) — a TypeScript caller cannot
- * pass a different epoch than the env names. ISO
- * current-system bao is not option D. Role conf plus named bao
- * is one planner call; the role type is unchanged. Pure join
- * + argv parse + conf/env consume live in firstboot-bao-elf.ts
- * so zflash can consume sourced names without installer `fs`.
- * Does not expand `ZetaFirstbootRole`. Does not edit
- * `zeta-first-boot.sh`. Does not open the installer ISO's
+ * pass a different epoch than the env names. Unseal request
+ * is named from that same env (`ZETA_UNSEAL_REQUEST`) — a
+ * TypeScript caller cannot pass `pkcs11-tpm` while env is
+ * missing. Capture stays injected. ISO current-system bao is
+ * not option D. Role conf plus named bao is one planner call;
+ * the role type is unchanged. Pure join + argv parse + conf/env
+ * consume live in firstboot-bao-elf.ts so zflash can consume
+ * sourced names without installer `fs`. Does not expand
+ * `ZetaFirstbootRole`. Does not edit `zeta-first-boot.sh`.
+ * Does not open the installer ISO's
  * `/run/current-system/sw/bin/bao` as metal option D.
  *
  * Cite: bao-load-site.ts, pkcs11-hostpath-overlay.ts,
@@ -35,10 +38,13 @@ import {
   type BaoElfCapture,
   type BaoLoadSite,
 } from "../cluster/bao-load-site.ts";
+import { type HostHardwareCapture } from "../cluster/host-seal-profile.ts";
 import { USB_PKCS11_MODULE_POINTER, type OverlayPlan } from "../cluster/pkcs11-hostpath-overlay.ts";
 import {
+  integrateAtSetupFromEnv,
   planSetupFromRestoredCompanion,
   type IntegrateDecision,
+  type NamedPathRequestError,
   type RestoredPkcs11PointerCapture,
 } from "../cluster/unseal-path.ts";
 import {
@@ -142,6 +148,11 @@ export function planSetupFromNamedBaoElf(
 export type FirstBootBaoElfFromArgv =
   { readonly ok: true; readonly plan: OverlayPlan } | { readonly ok: false; readonly reason: NamedBaoElfArgError };
 
+export type FirstBootFromEnvError = NamedBaoElfArgError | NamedPathRequestError;
+
+export type FirstBootBaoElfFromEnv =
+  { readonly ok: true; readonly plan: OverlayPlan } | { readonly ok: false; readonly reason: FirstBootFromEnvError };
+
 /** First-boot calls this. Overlay still does not open files. */
 export function planSetupFromNamedBaoElfArgv(
   decision: IntegrateDecision,
@@ -171,19 +182,23 @@ export function planSetupFromNamedBaoElfConf(
  * does not open files. Epoch is named from env
  * (`ZETA_BAO_ELF_EPOCH`): `installer-iso` does not open
  * `NIXOS_HOST_BAO` (that string is the live ISO's bao).
- * `installed-host` may. A named ask without a named epoch
- * refuses (`empty-epoch`) — missing is unmeasured, not
- * `installed-host`. Injected `read` is required. A refused
+ * `installed-host` may. Unseal request is named from env
+ * (`ZETA_UNSEAL_REQUEST`): missing is unmeasured, not `auto`.
+ * Capture stays injected. `/dev/tpmrm0` still refuses at
+ * parse. A named ask without a named epoch refuses
+ * (`empty-epoch`). Injected `read` is required. A refused
  * env is not filled with `NIXOS_HOST_BAO` or a `/mnt/...`
  * path. tpmrm0 is still not an ask. `/mnt` existing does
  * not pick the epoch.
  */
 export function planSetupFromNamedBaoElfEnv(
-  decision: IntegrateDecision,
   restore: RestoredPkcs11PointerCapture,
   env: { readonly [key: string]: string | undefined },
   read: BaoElfRead,
-): FirstBootBaoElfFromArgv {
+  host: HostHardwareCapture,
+): FirstBootBaoElfFromEnv {
+  const fromEnv = integrateAtSetupFromEnv(env, host);
+  if (!fromEnv.ok) return fromEnv;
   const parsed = consumeFirstbootBaoElfEnvWithEpoch(env);
   if (!parsed.ok) return parsed;
   if (parsed.ask !== null && parsed.epoch === null) {
@@ -193,5 +208,9 @@ export function planSetupFromNamedBaoElfEnv(
     parsed.ask === null || parsed.epoch === null
       ? null
       : namedBaoElfAskAtEpoch(parsed.ask.site, parsed.ask.openedPath, parsed.epoch);
+  // Unmeasured request is not `auto`. Overlay only checks
+  // `decision.ok`; mapping null onto the existing refuse keeps
+  // oracle `"none"` without expanding IntegrateRefuse.
+  const decision: IntegrateDecision = fromEnv.decision ?? { ok: false, reason: "no-path" };
   return { ok: true, plan: planSetupFromNamedBaoElf(decision, restore, ask, read) };
 }

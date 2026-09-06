@@ -251,6 +251,11 @@ assume the number.
    `integrateAtSetupFromEnv`. Missing request is unmeasured, not
    `auto`. Capture stays injected. `/dev/tpmrm0` still refuses
    at parse. Does not invent an integrate decision.
+   Overlay env join reads unseal request (`081M1WE7Z5S087G0R001WT3K6G`):
+   `planSetupFromNamedBaoElfEnv` takes the request from env, not
+   as a TypeScript `IntegrateDecision`. Capture stays injected.
+   Missing request is unmeasured, not `auto`. Does not invent
+   an integrate decision.
 7. extraContainer sidecar — later, **same commit as the
    sidecar**, and only for the Shamir kind path until the
    emulator job replaces it. `valuesObject` only. Do not fork
