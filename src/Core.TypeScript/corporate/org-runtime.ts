@@ -90,7 +90,7 @@ import {
 import { bindWearerToLoop } from "./loop-policy";
 import { firstLegalChooser, preferChooser, type OrgChooser } from "./org-decision";
 import { reportsUpTo, type HatLevel, type OrgChart } from "./org-chart";
-import { evaluateTrajectory, warrantsEscalation, type Trajectory } from "./mission-trajectory";
+import { evaluateTrajectory, TrajectoryStatus, warrantsEscalation, type Trajectory } from "./mission-trajectory";
 import {
   DEFAULT_PIPELINE,
   runPipeline,
@@ -1925,6 +1925,54 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
       decision: `mission pace: ${trajectory.status} — ${trajectory.basis}`,
       atMs: warmedAt,
     });
+    // A PACE PROBLEM IS A RISK, and `ReportRisk` is the family for one — *"a risk could affect
+    // scope, schedule, quality, security, or cost"*. It had no senders, so the organization
+    // measured its own pace and told nobody: the trigger went into `refusals`, which is a list for
+    // things that went wrong rather than a channel anyone is watching.
+    //
+    // Raised for AT RISK as well as OFF TRACK, and that is the point of a risk report: off track
+    // is a fact somebody must act on, at risk is a warning while acting is still cheap. Reporting
+    // only the first would make the family a slower duplicate of the escalation above it.
+    if (trajectory.status !== TrajectoryStatus.OnTrack && trajectory.status !== TrajectoryStatus.NotStarted) {
+      const owner = cascade.nodes.find((n) => n.workId === goalId)?.ownerHatId;
+      const risk =
+        owner === undefined
+          ? undefined
+          : sendSupervisorSignal(
+              deps.chart,
+              board,
+              {
+                signalId: deps.createId("sig"),
+                anchorId: deps.createId("anchor"),
+                fromHatId: owner,
+                tool: SignalTool.ReportRisk,
+                title: `mission pace is ${trajectory.status}`,
+                message: trajectory.basis,
+                // The pace reading IS the measurement. A risk reported without one is an opinion
+                // about the schedule, and `evidenceSatisfies` refuses it.
+                evidence: [{ kind: "measurement", ref: `pace:${goalId}:${trajectory.status}` }],
+                atMs: warmedAt,
+                workItemId: goalId,
+              },
+              deps.resourceAuthorityHatId,
+            );
+      if (risk?.ok === true) {
+        board = risk.board;
+        signals.push(risk.signal);
+        note({
+          kind: OrgEventKind.SupervisorSignalSent,
+          subjectId: goalId,
+          actorHatId: risk.signal.fromHatId,
+          decision: `${risk.signal.tool} → ${risk.signal.toHatId}`,
+          toState: risk.signal.toHatId,
+          atMs: warmedAt,
+          evidenceRefs: risk.signal.evidence.map((e) => e.ref),
+          fact: { kind: "supervisor_signal", signal: risk.signal },
+        });
+      } else if (risk !== undefined) {
+        refusals.push(`could not report the pace risk on ${goalId}: ${risk.reason}`);
+      }
+    }
     if (warrantsEscalation(trajectory)) {
       refusals.push(
         `mission is off track (${trajectory.basis}) — ${EscalationTrigger.MissionOffTrack} is warranted`,

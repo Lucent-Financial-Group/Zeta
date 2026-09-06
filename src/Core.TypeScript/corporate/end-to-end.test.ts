@@ -383,3 +383,70 @@ describe("THE RUN PRODUCES ARTIFACTS, AND THE DELIBERATION IS ABOUT THEM", () =>
     }
   });
 });
+
+describe("A PACE PROBLEM IS REPORTED AS A RISK", () => {
+  async function pacedRun(nowMs: number, failing: boolean) {
+    let n = 0;
+    return runOrgRuntime({
+      chart,
+      agents: agentsFromChart(chart),
+      observations: [],
+      externalEvents: [TICKET],
+      acceptingHatId: "cto",
+      resourceAuthorityHatId: "rmo_office",
+      priorityDeciderHatId: "cto",
+      createId: (p: string) => `${p}-${String(++n).padStart(3, "0")}`,
+      nowMs,
+      workBlockMs: 3_600_000,
+      leaseMs: 300_000,
+      missionWindow: { startsAtMs: 0, targetAtMs: 10_000_000 },
+      ...(failing ? { qaFallback: RunOutcome.Failed } : {}),
+      priorityInputsFor: () => ({
+        executivePriority: 0.5,
+        customerImpact: 1,
+        severity: 1,
+        releaseRisk: 0.2,
+        blockedDownstreamCount: 2,
+        dependencyFanOut: 1,
+        queueAgeMs: 0,
+        hatScarcity: 0,
+        budgetBurn: 0,
+        estimatedEffort: 0.2,
+      }),
+    } as unknown as OrgRuntimeDeps);
+  }
+
+  test("a mission 90% through its window with nothing delivered reports a risk UPWARD", async () => {
+    // `ReportRisk` had no senders, so the organization measured its own pace and told nobody: the
+    // trigger went into `refusals`, a list for things that went wrong rather than a channel anyone
+    // is watching.
+    const report = await pacedRun(9_000_000, true);
+    expect(report.trajectory?.status).toBe("off_track");
+    const risks = report.signals.filter((s) => s.tool === SignalTool.ReportRisk);
+    expect(risks.length).toBe(1);
+    // Up the line, derived — the goal's owner to its supervisor.
+    expect(risks[0]?.toHatId).not.toBe(risks[0]?.fromHatId);
+  });
+
+  test("...and carries the pace MEASUREMENT, not an opinion about the schedule", async () => {
+    const report = await pacedRun(9_000_000, true);
+    const risk = report.signals.find((s) => s.tool === SignalTool.ReportRisk);
+    expect(risk?.evidence.some((e) => e.kind === "measurement" && e.ref.startsWith("pace:"))).toBe(true);
+  });
+
+  test("AN ON-TIME MISSION REPORTS NO RISK — a warning on every run is noise", async () => {
+    const report = await pacedRun(0, false);
+    expect(report.trajectory?.status).toBe("on_track");
+    expect(report.signals.filter((s) => s.tool === SignalTool.ReportRisk)).toEqual([]);
+  });
+
+  test("SUGGEST_IMPROVEMENT IS DELIBERATELY UNSENT, and that is not a gap", async () => {
+    // The last family with no sender, and it should stay that way. Every other tool has a
+    // condition the organization can OBSERVE — a gate rejected twice, a pace behind, a review
+    // owed. An improvement suggestion is a judgement somebody chooses to offer, and a runtime
+    // that emitted them on a schedule would be manufacturing opinions nobody held. It stays
+    // available to a hat and unsent by the machinery.
+    const report = await pacedRun(0, false);
+    expect(report.signals.filter((s) => s.tool === SignalTool.SuggestImprovement)).toEqual([]);
+  });
+});
