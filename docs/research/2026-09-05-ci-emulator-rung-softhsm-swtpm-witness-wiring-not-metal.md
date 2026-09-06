@@ -194,7 +194,11 @@ reach (hands-off-metal §1.4 option A, unproven). The
 companion pointer file is not the `.so`.
 `frost-hardware-probe.ts` now looks at those exact NixOS
 contracts (`081M1V19MC5087G0R002P2W9EK`); a `.so` is still
-a driver.
+a driver. Setup glue (`081M1V32K68087G0R000SW5PJB`)
+joins USB companion *contents* into that overlay;
+the restore filename is not the `.so`; a companion
+without an attached device is not a seal. The current
+chart still cannot commit the stanza.
 
 1. Metal: `seal "pkcs11"` in Application.yaml still waits.
    Same commit as a **reachable** module: same-libc image

@@ -446,7 +446,11 @@ not a substitute for the metal companion set.
 The hostPath overlay **planner**
 (`081M1TZH2PW087G0R0036F3S18`,
 `pkcs11-hostpath-overlay.ts`) consumes the companion
-path string. glibc-host-into-musl-image is not a
+path string. Setup glue
+(`081M1V32K68087G0R000SW5PJB`,
+`planSetupPkcs11Overlay`) joins those contents with
+the attached-device oracle; the restore filename is
+not the `.so`. glibc-host-into-musl-image is not a
 module; Application.yaml stays Shamir.
 
 ## Grounding (on `origin/main`)

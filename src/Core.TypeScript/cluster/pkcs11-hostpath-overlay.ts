@@ -282,6 +282,30 @@ export function currentChartOverlayInput(
   };
 }
 
+export interface SetupPkcs11OverlayInput {
+  /** Attached-device oracle. `none` is a missing device, not a missing .so. */
+  readonly oracle: SealOracle;
+  /** Contents of `/etc/zeta/seal/pkcs11-module-path`, never that filename. */
+  readonly companionModulePath: string | null;
+  readonly moduleFileExists: boolean;
+}
+
+function companionContents(raw: string | null): string | null {
+  if (raw === null) return null;
+  const trimmed = raw.trim();
+  return trimmed.length === 0 ? null : trimmed;
+}
+
+/**
+ * Setup-time join: USB companion *contents* win; NixOS contract is
+ * the fallback; current chart ABI still cannot commit the stanza.
+ */
+export function planSetupPkcs11Overlay(input: SetupPkcs11OverlayInput): OverlayPlan {
+  const companion = companionContents(input.companionModulePath);
+  const modulePath = resolveOverlayModulePath(input.oracle, companion);
+  return planPkcs11HostPathOverlay(currentChartOverlayInput(input.oracle, modulePath, input.moduleFileExists));
+}
+
 export function overlaySealHcl(plan: OverlayPlan): string | null {
   if (!plan.ok || !plan.mayCommitSeal || plan.modulePath === null) return null;
   const lines = ['seal "pkcs11" {', `  lib = "${plan.modulePath}"`, '  token_label = "zeta-openbao"'];

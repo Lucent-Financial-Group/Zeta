@@ -230,6 +230,27 @@ Workitem: `081M1V19MC5087G0R002P2W9EK`.
   `noHardwareDetected`. Does not land `yubihsm.nix`. Does
   not edit Application.yaml.
 
+## 2026-09-06 — setup wires overlay from USB companion contents (Riven)
+
+Aaron: continue after the NixOS probe path. USB
+companions restore a path *string*. The overlay
+planner consumes a resolved module path. Setup must
+join them.
+
+Consumer: `src/Core.TypeScript/cluster/pkcs11-hostpath-overlay.ts`
+(`planSetupPkcs11Overlay`). Workitem:
+`081M1V32K68087G0R000SW5PJB`.
+
+- Companion *contents* win on an attached device.
+  Blank companion falls back to the NixOS contract.
+  Restore filename `/etc/zeta/seal/pkcs11-module-path`
+  is not the `.so`. Companion without an attached
+  device is `no-oracle`, not a seal.
+- Current chart ABI stays
+  `glibc-host-into-musl-image`. `overlaySealHcl` is
+  null. Does not edit Application.yaml. Does not land
+  `yubihsm.nix`. extraContainer stays later.
+
 ## 2026-09-04 — production-hardening review (Riven)
 
 Aaron asked to production-harden the CA, name the unseal startup, use
