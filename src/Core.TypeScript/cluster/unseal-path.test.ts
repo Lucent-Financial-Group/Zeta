@@ -1,6 +1,6 @@
 import { describe, expect, test } from "bun:test";
 import { UNSEAL_THRESHOLD } from "./vault-unsealer.ts";
-import { ELF_INTERP_GLIBC_X86_64 } from "./bao-load-site.ts";
+import { ELF_INTERP_GLIBC_X86_64, TPM_CHAR_DEVICE } from "./bao-load-site.ts";
 import { emptyCapture, pickSealOracleFromCapture, type HostHardwareCapture } from "./host-seal-profile.ts";
 import {
   NIXOS_PKCS11_MODULE_PATH,
@@ -10,8 +10,11 @@ import {
 } from "./pkcs11-hostpath-overlay.ts";
 import {
   availablePaths,
+  consumeUnsealRequestFromEnv,
   emulatorMatrixCell,
   integrateAtSetup,
+  namedPathRequestErrorMessage,
+  parsePathRequest,
   pickInstallPath,
   planSetupFromRestoredCompanion,
   planSetupOverlayFromIntegrate,
@@ -20,6 +23,7 @@ import {
   companionContentsFromRestore,
   skipIfAbsentCannotWearPass,
   tpmCanAutoUnseal,
+  UNSEAL_REQUEST_ENV_KEY,
 } from "./unseal-path.ts";
 
 /** Completed metal look: both automatic oracles absent. */
@@ -519,6 +523,45 @@ describe("setup overlay reads the restored pointer file", () => {
         "  # pin: never here. BAO_HSM_PIN env.",
         "}",
       ].join("\n"),
+    );
+  });
+});
+
+describe("parsePathRequest — named, not inferred from tpmrm0", () => {
+  test("missing is unmeasured, not auto and not pkcs11-tpm", () => {
+    expect(parsePathRequest(undefined)).toEqual({ ok: true, requested: null });
+    expect(consumeUnsealRequestFromEnv({})).toEqual({ ok: true, requested: null });
+  });
+
+  test("named PathRequest values round-trip", () => {
+    expect(parsePathRequest("auto")).toEqual({ ok: true, requested: "auto" });
+    expect(parsePathRequest("pkcs11-hsm")).toEqual({ ok: true, requested: "pkcs11-hsm" });
+    expect(parsePathRequest("pkcs11-tpm")).toEqual({ ok: true, requested: "pkcs11-tpm" });
+    expect(parsePathRequest("pkcs11-yubihsm")).toEqual({ ok: true, requested: "pkcs11-yubihsm" });
+    expect(parsePathRequest("pkcs11-smartcard")).toEqual({ ok: true, requested: "pkcs11-smartcard" });
+    expect(parsePathRequest("lucent-shamir")).toEqual({ ok: true, requested: "lucent-shamir" });
+    expect(
+      consumeUnsealRequestFromEnv({ [UNSEAL_REQUEST_ENV_KEY]: "pkcs11-tpm" }),
+    ).toEqual({ ok: true, requested: "pkcs11-tpm" });
+  });
+
+  test("tpmrm0 and /mnt are unknown, not pkcs11-tpm", () => {
+    expect(parsePathRequest(TPM_CHAR_DEVICE)).toEqual({ ok: false, reason: "unknown-request" });
+    expect(parsePathRequest("/mnt")).toEqual({ ok: false, reason: "unknown-request" });
+    expect(
+      consumeUnsealRequestFromEnv({ [UNSEAL_REQUEST_ENV_KEY]: TPM_CHAR_DEVICE }),
+    ).toEqual({ ok: false, reason: "unknown-request" });
+  });
+
+  test("empty and unsafe values refuse", () => {
+    expect(parsePathRequest("")).toEqual({ ok: false, reason: "empty-request" });
+    expect(parsePathRequest("pkcs11-tpm;reboot")).toEqual({ ok: false, reason: "unsafe-conf-value" });
+    expect(namedPathRequestErrorMessage("empty-request")).toBe("ZETA_UNSEAL_REQUEST requires a value");
+    expect(namedPathRequestErrorMessage("unknown-request")).toBe(
+      "ZETA_UNSEAL_REQUEST must be a named PathRequest",
+    );
+    expect(namedPathRequestErrorMessage("unsafe-conf-value")).toBe(
+      "ZETA_UNSEAL_REQUEST contains a value firstboot conf cannot carry",
     );
   });
 });

@@ -539,6 +539,11 @@ ISO bun filters current-system bao
 (`081M1W9VW7P087G0R0026A9J6Z`) so bun JSON
 ask is null at `installer-iso` plus
 `NIXOS_HOST_BAO`.
+Named unseal request
+(`081M1WBA6RX087G0R002450S9J`) from
+`ZETA_UNSEAL_REQUEST`; `/dev/tpmrm0` is
+not `pkcs11-tpm`; still does not invent
+an integrate decision.
 glibc-host-into-musl-image is not a
 module; Application.yaml stays Shamir.
 
