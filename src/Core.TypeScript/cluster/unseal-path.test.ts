@@ -7,9 +7,11 @@ import {
   emulatorMatrixCell,
   integrateAtSetup,
   pickInstallPath,
+  planSetupFromRestoredCompanion,
   planSetupOverlayFromIntegrate,
   refuseTwoOpenBaoSeals,
   sealOracleFromUnsealPath,
+  companionContentsFromRestore,
   skipIfAbsentCannotWearPass,
   tpmCanAutoUnseal,
 } from "./unseal-path.ts";
@@ -410,6 +412,73 @@ describe("setup integrate decision feeds the PKCS#11 overlay", () => {
   test("restore filename through integrate is still not the .so", () => {
     const decision = integrateAtSetup({ requested: "auto" }, capture({ yubiHsm2: "attached" }));
     const plan = planSetupOverlayFromIntegrate(decision, USB_PKCS11_MODULE_POINTER, true);
+    expect(plan.ok).toBe(false);
+    if (!plan.ok) expect(plan.reason).toBe("companion-pointer-is-not-the-module");
+  });
+});
+
+describe("setup overlay reads the restored pointer file", () => {
+  test("restore-file contents win on attached YubiHSM; stanza still cannot commit", () => {
+    const decision = integrateAtSetup({ requested: "auto" }, capture({ yubiHsm2: "attached" }));
+    const plan = planSetupFromRestoredCompanion(decision, {
+      openedPath: USB_PKCS11_MODULE_POINTER,
+      exists: true,
+      contents: "/opt/vendor/yubihsm_pkcs11.so",
+      resolvedModuleExists: true,
+    });
+    expect(plan.modulePath).toBe("/opt/vendor/yubihsm_pkcs11.so");
+    expect(plan.mayCommitSeal).toBe(false);
+    expect(overlaySealHcl(plan)).toBeNull();
+  });
+
+  test("missing restore file falls back to the NixOS contract", () => {
+    const decision = integrateAtSetup({ requested: "auto" }, capture({ smartcardHsm: true }));
+    const plan = planSetupFromRestoredCompanion(decision, {
+      openedPath: USB_PKCS11_MODULE_POINTER,
+      exists: false,
+      contents: null,
+      resolvedModuleExists: true,
+    });
+    expect(
+      companionContentsFromRestore({
+        openedPath: USB_PKCS11_MODULE_POINTER,
+        exists: false,
+        contents: null,
+        resolvedModuleExists: true,
+      }),
+    ).toBeNull();
+    expect(plan.modulePath).toBe(NIXOS_PKCS11_MODULE_PATH["smartcard-hsm"]);
+    expect(plan.mayCommitSeal).toBe(false);
+  });
+
+  test("opening a .so path is not this companion — contents ignored, NixOS fallback", () => {
+    const decision = integrateAtSetup({ requested: "auto" }, capture({ yubiHsm2: "attached" }));
+    const opened = "/opt/vendor/yubihsm_pkcs11.so";
+    expect(
+      companionContentsFromRestore({
+        openedPath: opened,
+        exists: true,
+        contents: opened,
+        resolvedModuleExists: true,
+      }),
+    ).toBeNull();
+    const plan = planSetupFromRestoredCompanion(decision, {
+      openedPath: opened,
+      exists: true,
+      contents: opened,
+      resolvedModuleExists: true,
+    });
+    expect(plan.modulePath).toBe(NIXOS_PKCS11_MODULE_PATH.yubihsm2);
+  });
+
+  test("restore file whose contents are its own path is still not the .so", () => {
+    const decision = integrateAtSetup({ requested: "auto" }, capture({ yubiHsm2: "attached" }));
+    const plan = planSetupFromRestoredCompanion(decision, {
+      openedPath: USB_PKCS11_MODULE_POINTER,
+      exists: true,
+      contents: `  ${USB_PKCS11_MODULE_POINTER}  `,
+      resolvedModuleExists: true,
+    });
     expect(plan.ok).toBe(false);
     if (!plan.ok) expect(plan.reason).toBe("companion-pointer-is-not-the-module");
   });

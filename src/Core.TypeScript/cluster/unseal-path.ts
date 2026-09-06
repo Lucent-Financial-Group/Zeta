@@ -8,7 +8,8 @@
  * as HSM; keep Lucent 1Password unsealing; multiple paths.
  *
  * This module CLASSIFIES. It does not talk to USB, OpenBao, or
- * 1Password. A capture is injected. SoftHSM2 / swtpm are job
+ * 1Password. A capture is injected (host hardware, and the
+ * restored PKCS#11 pointer file). SoftHSM2 / swtpm are job
  * declarations, never inferred from `/dev/tpmrm0`.
  *
  * OpenBao takes ONE seal per node. Multiple *paths* means the
@@ -39,7 +40,7 @@
  */
 
 import { emptyCapture, type HostHardwareCapture } from "./host-seal-profile.ts";
-import { planSetupPkcs11Overlay, type OverlayPlan } from "./pkcs11-hostpath-overlay.ts";
+import { planSetupPkcs11Overlay, USB_PKCS11_MODULE_POINTER, type OverlayPlan } from "./pkcs11-hostpath-overlay.ts";
 import { pickOpenbaoMechanism, type MechanismPick, type SealOracle } from "./seal-emulator-rung.ts";
 import { UNSEAL_THRESHOLD } from "./vault-unsealer.ts";
 
@@ -373,6 +374,34 @@ export function planSetupOverlayFromIntegrate(
 ): OverlayPlan {
   const oracle = decision.ok ? sealOracleFromUnsealPath(decision.path) : "none";
   return planSetupPkcs11Overlay({ oracle, companionModulePath, moduleFileExists });
+}
+
+/**
+ * Injected read of `/etc/zeta/seal/pkcs11-module-path`.
+ * `openedPath` is which file was opened, not the module.
+ * Contents are the path *string*. No live filesystem here.
+ */
+export interface RestoredPkcs11PointerCapture {
+  readonly openedPath: string;
+  readonly exists: boolean;
+  readonly contents: string | null;
+  readonly resolvedModuleExists: boolean;
+}
+
+/** Only the restore file's contents count. Any other opened path is not this companion. */
+export function companionContentsFromRestore(capture: RestoredPkcs11PointerCapture): string | null {
+  if (capture.openedPath !== USB_PKCS11_MODULE_POINTER) return null;
+  if (!capture.exists) return null;
+  if (capture.contents === null) return null;
+  const trimmed = capture.contents.trim();
+  return trimmed.length === 0 ? null : trimmed;
+}
+
+export function planSetupFromRestoredCompanion(
+  decision: IntegrateDecision,
+  capture: RestoredPkcs11PointerCapture,
+): OverlayPlan {
+  return planSetupOverlayFromIntegrate(decision, companionContentsFromRestore(capture), capture.resolvedModuleExists);
 }
 
 export function defaultMetalCapture(): HostHardwareCapture {

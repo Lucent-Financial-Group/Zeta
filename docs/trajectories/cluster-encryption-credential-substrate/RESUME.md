@@ -302,6 +302,25 @@ Consumer: `src/Core.TypeScript/installer/usb-hsm-companion.ts`
   infer swtpm from `/dev/tpmrm0`. Does not edit
   Application.yaml.
 
+## 2026-09-06 — setup overlay reads the restored pointer file (Riven)
+
+Aaron: continue after bake-cred refuses the restore
+filename and SoftHSM. Setup still took companion
+contents as a naked string. The restore file has a
+path. Capture it.
+
+Consumer: `src/Core.TypeScript/cluster/unseal-path.ts`
+(`planSetupFromRestoredCompanion`,
+`companionContentsFromRestore`). Workitem:
+`081M1V9KQFX087G0R0038J326D`.
+
+- Injected read of `/etc/zeta/seal/pkcs11-module-path`.
+  Contents win. Missing file falls back to NixOS.
+  Opening a `.so` path is not this companion. File
+  whose contents are its own path is still not the
+  `.so`. No live filesystem. Does not edit
+  Application.yaml.
+
 ## 2026-09-04 — production-hardening review (Riven)
 
 Aaron asked to production-harden the CA, name the unseal startup, use

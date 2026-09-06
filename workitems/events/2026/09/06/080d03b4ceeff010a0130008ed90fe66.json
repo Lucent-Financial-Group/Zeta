@@ -1,0 +1,14 @@
+{
+  "id": "080d03b4ceeff010a0130008ed90fe66",
+  "at": "2026-09-06T12:03:10.462Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1V9KQFX087G0R0038J326D",
+    "type": "task",
+    "title": "Setup overlay reads restored PKCS#11 pointer file contents; still not a seal",
+    "slug": "setup-overlay-reads-restored-pkcs-11-pointer-file-contents-s",
+    "priority": "P2",
+    "filename": "081M1V9KQFX087G0R0038J326D-setup-overlay-reads-restored-pkcs-11-pointer-file-contents-s.md"
+  }
+}

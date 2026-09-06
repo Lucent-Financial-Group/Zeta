@@ -154,7 +154,12 @@ assume the number.
    `planSetupOverlayFromIntegrate` takes the
    `integrateAtSetup` decision as the oracle. Lucent /
    kind / a refused request are `no-oracle`. SoftHSM is
-   still not this overlay.
+   still not this overlay. Restore-file capture
+   (`081M1V9KQFX087G0R0038J326D`):
+   `planSetupFromRestoredCompanion` consumes an injected
+   read of `/etc/zeta/seal/pkcs11-module-path`. Opening
+   any other path is not this companion. No live
+   filesystem. Current chart still cannot commit.
 7. extraContainer sidecar — later, **same commit as the
    sidecar**, and only for the Shamir kind path until the
    emulator job replaces it. `valuesObject` only. Do not fork

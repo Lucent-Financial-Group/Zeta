@@ -457,6 +457,8 @@ Bake-cred refuses the restore filename as the
 module-path value (`081M1V6WCHN087G0R0022FN5DV`)
 and refuses SoftHSM / swtpm paths on that stick
 (`081M1V880WV087G0R002E07KGH`).
+Setup overlay reads that restored file via an injected
+capture (`081M1V9KQFX087G0R0038J326D`).
 glibc-host-into-musl-image is not a
 module; Application.yaml stays Shamir.
 
