@@ -115,6 +115,97 @@ requires.
 pinned by tag in each language repo, so a vector change is a deliberate bump per oracle, and
 a lagging oracle is *visible as a lagging pin* rather than as a mysterious byte-lock failure.
 
+## The nexus architecture — Aaron's refinement, and it changes the shape
+
+Aaron, mid-draft, 2026-09-06:
+
+> *"in a perfect world our helm charts would only exist and be tested in the language they
+> were created in, this is likely a new ace package manager dimension we need to track, all
+> other deps would be stubbed out in that language. zeta is the nexus for now but it's an
+> ACCIDENTAL nexus. we likely want a nexus repo per language/toolchain and a common one that
+> is very intentional, similar to our multi oracle agreements in this repo."*
+
+**"Accidental nexus" is the sharpest thing said about this repo all day**, and it renames the
+problem. Zeta is not a monorepo that grew — it is a **junction** that nothing declared. Every
+language meets here because here is where they happened to be, and no document says what that
+junction is *for*. That is why `docs/` accumulated machine-read substrate, why the golden
+vectors ended up inside one oracle, and why 728 files reach across the boundary: **an
+undeclared junction has no rules, so everything crosses.**
+
+The fix is not "fewer junctions". It is **junctions that were declared**:
+
+| | accidental | intentional |
+|---|---|---|
+| what it is | wherever things happened to meet | a repo whose only job is the meeting |
+| what crosses | whatever anyone reached for | exactly what the contract names |
+| how you know | you read the whole tree | you read one file |
+| failure | silent coupling, found years later | a refused crossing, found at the boundary |
+
+### Two tiers, and the shape is one this repo already has
+
+**Per language/toolchain: a nexus repo.** `zeta-ts` is where TypeScript's own world is
+complete — its code, its tests, **its Helm charts**, and **stubs for everything it does not
+own**. A TypeScript developer clones one repo and everything resolves. That is the context
+win Aaron asked for, stated precisely: *one clone is a whole world*.
+
+**Across languages: one common nexus, and it is `zeta-treaty`.** The refinement is that the
+treaty is not merely a file store for golden vectors — it is **the intentional common
+nexus**, and it is the only place a cross-language fact is allowed to live. *"Similar to our
+multi-oracle agreements in this repo"* is exact: the vectors already ARE the agreement,
+`culture-invariant-by-default.md` already calls the seed a **treaty**, and the four oracles
+are already named oracles rather than instruments. The split does not invent this
+architecture — it moves the agreement out of one participant's house.
+
+### Helm charts belong to the language that created them
+
+Today the charts are **not** owned that way and the numbers say the ask is nearly free:
+
+- **37 charts in the cluster tree are third-party**, pinned upstream. They belong to whoever
+  deploys them, i.e. the cluster tree — not to a language.
+- **This repo owns exactly TWO charts**, and both are `examples/helm-dependency-graph/charts/`
+  — a fixture for the dependency-graph work, not a deployment.
+
+So "charts live with their language" is a rule with almost no migration attached **today**,
+and the right moment to adopt it is *before* the first service chart is written, not after.
+The rule worth carving now:
+
+> **A chart that deploys code lives in that code's repo and is rendered by that repo's CI.
+> A chart that deploys someone else's software lives with the cluster that deploys it.**
+
+The second half matters as much as the first: it stops "charts live with their language"
+from being read as a licence to scatter the 37 upstream pins across eight repos, which would
+undo the pin-parity work landed today.
+
+### "All other deps stubbed out in that language"
+
+This is what makes a per-language nexus **complete rather than partial**, and it has a
+falsifier this repo already understands: a language repo's tests must pass **with no other
+language present**. If `zeta-fs` needs `zeta-ts` on disk to run its own suite, it is not a
+nexus — it is a client of an accidental one, and the split moved the coupling without
+removing it.
+
+That test is also the honest limit on the stubbing idea: **a stub that drifts from the thing
+it stands for is a lie with a green tick**, which is the failure this repo names first. So a
+stub must be checked against the real implementation *somewhere* — and that somewhere is the
+treaty, by golden vector, which is the mechanism that already exists. **Stubs are how a
+language repo stands alone; the treaty is what stops them drifting.** Neither works without
+the other.
+
+### The ace dimension
+
+Aaron: *"likely a new ace package manager dimension we need to track."* Stated so it does not
+violate the rule it sits next to:
+
+`ace` may learn to resolve *language nexus + toolchain + treaty pin* as a coordinate. What it
+may not become is the **only** way to do so — `clone-at-tag-stays-sufficient.md` is explicit
+that `ace` may be the good path and may accumulate any amount of use, and that the moment it
+is the *only* path it is an appointed hub. So the treaty pin has to be a plain committed
+ref that `git` alone can follow, with `ace` as the ergonomic layer on top.
+
+**That is the same two-tier shape one level up**: the treaty is the intentional nexus for
+*facts*, and `ace` would be the ergonomic nexus for *resolution* — and neither may become
+mandatory without violating §1.
+
 ## Naming — the memory constraint, satisfied
 
 One prefix, one word, no punctuation to remember:

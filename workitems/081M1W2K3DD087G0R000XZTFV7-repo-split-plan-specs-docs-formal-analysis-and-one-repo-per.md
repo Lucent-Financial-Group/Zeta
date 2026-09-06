@@ -44,3 +44,43 @@ The plan has been adversarially reviewed and either accepted or amended — and 
 step 4 (`zeta-treaty`) is confirmed as the gate: if the four-oracle byte-lock cannot pass from
 a pinned treaty checkout with no package manager, steps 5–6 do not start.
 
+## Aaron's refinement, same day — the nexus architecture
+
+> *"zeta is the nexus for now but it's an ACCIDENTAL nexus. we likely want a nexus repo per
+> language/toolchain and a common one that is very intentional."*
+
+**"Accidental nexus" renames the problem.** Zeta is not a monorepo that grew — it is a
+junction nothing declared, and **an undeclared junction has no rules, so everything crosses.**
+That is one cause behind all three measurements above: 728 cross-references, machine-read
+substrate under `docs/`, and the golden vectors sitting inside one oracle.
+
+Two tiers, and the second is already half-built here:
+
+- **Per language/toolchain: a nexus repo.** One clone is a whole world — code, tests, its own
+  Helm charts, and **stubs for everything it does not own**.
+- **Across languages: one intentional common nexus — `zeta-treaty`.** *"Similar to our
+  multi-oracle agreements in this repo"* is exact: the vectors already **are** the agreement,
+  and `culture-invariant-by-default.md` already calls the seed a treaty. The split does not
+  invent this; it moves the agreement out of one participant's house.
+
+**Helm charts: the ask is nearly free today.** 37 cluster charts are third-party pins; this
+repo owns exactly **two**, both fixtures under `examples/helm-dependency-graph/charts/`. So
+the rule can be carved before the first service chart is written rather than after:
+
+> A chart that deploys **code** lives in that code's repo and is rendered by that repo's CI.
+> A chart that deploys **someone else's software** lives with the cluster that deploys it.
+
+The second half stops the rule being read as licence to scatter 37 upstream pins across eight
+repos, which would undo the pin-parity work.
+
+**The stubbing has a falsifier and an honest limit.** A language repo's tests must pass with
+**no other language present** — if `zeta-fs` needs `zeta-ts` on disk, the split moved the
+coupling without removing it. But a stub that drifts from what it stands for is a lie with a
+green tick, so stubs must be checked against the real thing by golden vector. **Stubs are how
+a repo stands alone; the treaty is what stops them drifting. Neither works without the other.**
+
+**The ace dimension, stated so it does not violate the rule beside it:** `ace` may resolve
+*language nexus + toolchain + treaty pin* as a coordinate, but never become the only way to —
+`clone-at-tag-stays-sufficient.md` is explicit that the moment `ace` is the only path it is an
+appointed hub. The treaty pin stays a plain committed ref `git` alone can follow.
+
