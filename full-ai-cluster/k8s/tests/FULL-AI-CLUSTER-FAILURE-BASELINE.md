@@ -8,7 +8,7 @@
 **Previous:** 13, `the four unrenderable Applications fixed`
 **Previous:** 18, `temporal datastore wired to CockroachDB` (#13469)
 **Toolchain:** helm `v4.2.0+g0646808` · kubeconform `v0.7.0` · bun `1.3.14` · `--kube-version 1.33.0`
-**Reproduce:** `bun infra/k8s/tests/ratchet-app-failures.ts` (it prints the count it measured)
+**Reproduce:** `bun full-ai-cluster/k8s/tests/ratchet-app-failures.ts` (it prints the count it measured)
 
 ## What this number is
 

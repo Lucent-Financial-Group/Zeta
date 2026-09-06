@@ -72,9 +72,9 @@
     },
     {
       "path": ".github/workflows/helm-validate.yml",
-      "disposition": "blocking",
-      "note": "The whole workflow is keyed on infra/k8s: PR + push path filters, and four invocations of `bun infra/k8s/tests/validate-applications.ts`, a script that lives INSIDE the stale tree. Deleting the tree deletes the validator.",
-      "migrateTo": "full-ai-cluster/k8s/applications via the validator's existing --apps-dir flag, AND move the validator out of infra/k8s/tests/. MEASURED 2026-08-17: pointed at the live tree it reports 224 passed, 14 failed — so this is not a one-line repoint. See the work item."
+      "disposition": "derived",
+      "note": "MEASURED 2026-09-06 and the previous note was STALE on both halves. (1) It recorded '224 passed, 14 failed' against the live tree from 2026-08-17; today it is 285 passed, 0 failed. (2) It said to repoint via --apps-dir, but the validator's DEFAULT already moved to full-ai-cluster/k8s/applications and this workflow invokes it with no --apps-dir, so it was already validating the live tree. The only real remainder was that the validators LIVED in the stale tree; they now live in full-ai-cluster/k8s/tests/. What is left here is path filters naming infra/k8s/**, and a filter naming a deleted directory simply never matches.",
+      "migrateTo": "drop the infra/k8s path-filter entries in the deletion commit; nothing breaks if it lags."
     },
     {
       "path": ".github/workflows/root-flake-check.yml",
@@ -141,6 +141,36 @@
       "disposition": "derived",
       "note": "acknowledgedRootAppDuplicates suppresses the root-app-collision blocker. VERIFIED 2026-08-17: emptying it makes single-node-readiness.ts exit 1 on the live collision.",
       "migrateTo": "empty the array — the collision is gone once one tree is."
+    },
+    {
+      "path": "full-ai-cluster/k8s/tests/ratchet-app-failures.ts",
+      "disposition": "prose",
+      "note": "Comment only — the file header's historical note; it measures whichever tree the validator defaults to, which is the live one.",
+      "migrateTo": "drop the historical note when the stale tree is gone."
+    },
+    {
+      "path": "full-ai-cluster/k8s/tests/validate-applications.test.ts",
+      "disposition": "prose",
+      "note": "Comment only — narrative about the two-tree history the validator no longer depends on.",
+      "migrateTo": "drop the historical paragraph when the stale tree is gone."
+    },
+    {
+      "path": "full-ai-cluster/k8s/tests/validate-applications.ts",
+      "disposition": "prose",
+      "note": "Comment only: the paragraph recording that seven Applications used to live under the stale tree and why they were removed (one root, one directory). The validator's default apps-dir is the live tree.",
+      "migrateTo": "drop the historical paragraph when the stale tree is gone."
+    },
+    {
+      "path": "full-ai-cluster/k8s/tests/validate-bootstrap.test.ts",
+      "disposition": "prose",
+      "note": "Comment only — narrative about the two-tree history.",
+      "migrateTo": "drop the historical paragraph when the stale tree is gone."
+    },
+    {
+      "path": "full-ai-cluster/k8s/tests/validate-bootstrap.ts",
+      "disposition": "prose",
+      "note": "Comment only. Its Test 2 header used to hardcode the stale path; it now prints the tree actually being validated, derived from --infra-dir.",
+      "migrateTo": "drop the historical paragraph when the stale tree is gone."
     },
     {
       "path": "src/Core.TypeScript/ace/deps.ts",
@@ -240,6 +270,18 @@
       "disposition": "derived",
       "note": "Synthetic flake body in a fixture string mentions ./infra/nixos/hosts/control-plane/configuration.nix. Test data only; nothing reads the real path.",
       "migrateTo": "update the fixture string."
+    },
+    {
+      "path": "src/Core.TypeScript/society/effective-agent-count.test.ts",
+      "disposition": "derived",
+      "note": "Exercises `FRAME_RENAMES` with the same historical paths. Same class as the entry above.",
+      "migrateTo": "NO EDIT REQUIRED at deletion — the key is a historical path that is not meant to resolve. Drop the row only when the ledger records citing it are themselves retired."
+    },
+    {
+      "path": "src/Core.TypeScript/society/effective-agent-count.ts",
+      "disposition": "derived",
+      "note": "`FRAME_RENAMES` maps the pre-move path of two validators to their current path, so a draw recorded in the APPEND-ONLY mutation-findings ledger still lands in the frame. Same class as the `db/mutation-findings/*.jsonl` rows above and rostered on the same reasoning: the old path is the SUBJECT of a past record, not a path anything resolves. `applyFrameRename` is frame-aware, so the row is inert at any frame that does not hold the target.",
+      "migrateTo": "NO EDIT REQUIRED at deletion — the key is a historical path that is not meant to resolve. Drop the row only when the ledger records citing it are themselves retired."
     },
     {
       "path": "src/wasm-dla/README.md",
