@@ -1,0 +1,12 @@
+{
+  "pr_number": 16824,
+  "archive_path": "docs/history/pr-reviews/PR-16824-feat-081m1vz0mej087g0r0022k821s-catalog-write-fail-of-tmp-does-not-publish.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-06T18:53:09.207Z",
+  "schema_version": "v1",
+  "commit_sha": "2fa21fd54d88bc4f30347c9a8546d6205e4147ee",
+  "title": "feat(081M1VZ0MEJ087G0R0022K821S): catalog write-fail of tmp does not publish",
+  "state": "MERGED",
+  "merged_at": "2026-09-06T18:52:32Z",
+  "head_ref": "feat/zetafs-catalog-write-fail-tmp"
+}

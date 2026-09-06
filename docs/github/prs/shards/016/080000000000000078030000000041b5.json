@@ -1,0 +1,12 @@
+{
+  "pr_number": 16821,
+  "archive_path": "docs/history/pr-reviews/PR-16821-feat-cluster-no-chart-s-values-carry-a-secret-as-a-literal.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-06T18:36:20.794Z",
+  "schema_version": "v1",
+  "commit_sha": "d3791d4206a072040e98f5206b0cad4b6c097c70",
+  "title": "feat(cluster): no chart's values carry a secret as a literal",
+  "state": "MERGED",
+  "merged_at": "2026-09-06T18:35:43Z",
+  "head_ref": "shadow/no-committed-chart-credentials"
+}
