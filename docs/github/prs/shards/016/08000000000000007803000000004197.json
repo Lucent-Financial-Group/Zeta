@@ -1,0 +1,15 @@
+{
+  "pr_number": 16791,
+  "archive_path": "docs/history/pr-reviews/PR-16791-feat-creds-classify-bao-elf-interpreter-and-option-d-load-site.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7rFBXG",
+    "thread:PRRT_kwDOSF9kNM6frudK"
+  ],
+  "fetched_at": "2026-09-06T13:12:28.973Z",
+  "schema_version": "v1",
+  "commit_sha": "7322cc00fa84582c15a1d1c9d272df1f49ca5621",
+  "title": "feat(creds): Classify bao ELF interpreter and option D load-site",
+  "state": "MERGED",
+  "merged_at": "2026-09-06T13:11:45Z",
+  "head_ref": "cursor/bao-load-site-elf-27c5"
+}
