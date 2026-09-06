@@ -173,8 +173,11 @@ export function mayEvaluate(chart: OrgChart, hatId: string, gate: GateKind): boo
  * construction the one whose priors are all satisfied. Returns `undefined` when every gate has
  * passed — the item may merge.
  */
-export function nextLegalGate(passed: ReadonlySet<GateKind>): GateKind | undefined {
-  return ORDERED_GATES.find((g) => !passed.has(g));
+export function nextLegalGate(
+  passed: ReadonlySet<GateKind>,
+  chain: readonly GateKind[] = ORDERED_GATES,
+): GateKind | undefined {
+  return chain.find((g) => !passed.has(g));
 }
 
 /** How far through the chain this item is, as a fraction — for reporting only. */
@@ -336,6 +339,20 @@ export function evaluateGate(
      * references nothing is the assertion this whole layer exists to refuse.
      */
     readonly evidenceRefs?: readonly string[];
+    /**
+     * The chain THIS run is crossing. Defaults to the canonical order.
+     *
+     * WHY THIS IS A PARAMETER. The order was a module constant, so "the gates are crossed in order"
+     * silently meant "in the order this file happens to declare" — and a pipeline that legitimately
+     * reorders or omits phases was refused as out-of-order. That made the pipeline's
+     * configurability nominal: you could describe a different process and not run it.
+     *
+     * Making it a parameter does not weaken the guarantee, it locates it. Within a run, gates are
+     * crossed in the chain that run declared, and none can be skipped. What changes is that the
+     * chain is the caller's to state rather than this module's to impose — which is the difference
+     * between a process engine and one organization's process hardcoded as a law.
+     */
+    readonly chain?: readonly GateKind[];
   },
 ): GateResult {
   const hat = chart.byId.get(input.evaluatorHatId);
@@ -344,7 +361,7 @@ export function evaluateGate(
   if (input.passed.has(input.gate)) {
     return { ok: false, reason: `gate '${input.gate}' on '${input.workId}' has already passed` };
   }
-  const expected = nextLegalGate(input.passed);
+  const expected = nextLegalGate(input.passed, input.chain ?? ORDERED_GATES);
   if (expected !== input.gate) {
     return {
       ok: false,
