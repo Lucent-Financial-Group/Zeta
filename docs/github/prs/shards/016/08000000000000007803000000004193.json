@@ -1,0 +1,12 @@
+{
+  "pr_number": 16787,
+  "archive_path": "docs/history/pr-reviews/PR-16787-feat-creds-refuse-softhsm-swtpm-as-a-metal-bake-cred-pkcs-11-path.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-06T12:02:15.031Z",
+  "schema_version": "v1",
+  "commit_sha": "56a256d85030dc771e34e7afe8eecf19ab660cb0",
+  "title": "feat(creds): Refuse SoftHSM/swtpm as a metal bake-cred PKCS#11 path",
+  "state": "MERGED",
+  "merged_at": "2026-09-06T12:01:32Z",
+  "head_ref": "cursor/bake-cred-refuse-softhsm-27c5"
+}
