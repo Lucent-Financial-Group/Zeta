@@ -1,0 +1,12 @@
+{
+  "pr_number": 16747,
+  "archive_path": "docs/history/pr-reviews/PR-16747-feat-081m1thbwtw087g0r002vncxbx-isimulatedfs-write-fail-on-object-put.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-06T05:21:59.260Z",
+  "schema_version": "v1",
+  "commit_sha": "b2791c556514e121806ceadd8143783ee05a4998",
+  "title": "feat(081M1THBWTW087G0R002VNCXBX): ISimulatedFs write-fail on object put",
+  "state": "MERGED",
+  "merged_at": "2026-09-06T05:21:19Z",
+  "head_ref": "feat/zetafs-simulatedfs-write-fail"
+}

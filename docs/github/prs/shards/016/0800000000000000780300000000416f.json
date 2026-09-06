@@ -1,0 +1,12 @@
+{
+  "pr_number": 16751,
+  "archive_path": "docs/history/pr-reviews/PR-16751-feat-cluster-forgejo-stops-being-gitlab-s-standby-both-git-hosts-run.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-06T05:33:37.970Z",
+  "schema_version": "v1",
+  "commit_sha": "b55899946b1641cdf7d48754f4b83b015f204cae",
+  "title": "feat(cluster): forgejo stops being gitlab's standby — both Git hosts run",
+  "state": "MERGED",
+  "merged_at": "2026-09-06T05:33:00Z",
+  "head_ref": "shadow/forgejo-is-not-standby"
+}
