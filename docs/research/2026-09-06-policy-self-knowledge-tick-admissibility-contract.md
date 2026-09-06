@@ -98,6 +98,12 @@ The first executable adapter must add independently checked faults that make eac
 
 ## Scope and Next Gate
 
+The initial structural-admission conformance result is recorded in
+[`2026-09-06-policy-self-knowledge-tick-admissibility-conformance-result.md`](2026-09-06-policy-self-knowledge-tick-admissibility-conformance-result.md).
+It admits one finite registry-matched fixture for its attributed tick envelope,
+retains NCI and consensus as deferred labels, and adds neither a policy score
+nor a consensus claim.
+
 The narrow next code slice is an adapter-local F# receipt module plus an independently authored Python validator. It may consume a fixed `ComplexityRegistry` row and a `SoftScheduler` tick envelope. It must not alter MiniGrid policy scoring, contextual-grid results, transport prioritization, society admission, or any live heartbeat configuration.
 
 Only after exact F#/Python receipt agreement and the faults above are observed may a later contract decide whether a benchmark policy can expose this receipt. That later work still needs a distinct observation interface, train/evaluation split, novelty statistic, and benchmark-specific comparison protocol.
