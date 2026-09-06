@@ -3,10 +3,12 @@
  * src/Core.TypeScript/zflash/firstboot-bao-env.ts
  *
  * First-boot bun consume of sourced bao names. Bash `.` sources
- * `/zeta-firstboot.conf`; this reads `ZETA_BAO_LOAD_SITE` and
- * `ZETA_BAO_PATH` from the resulting env. Does not open files.
- * Does not edit `zeta-first-boot.sh`. Does not expand
- * `ZetaFirstbootRole`. Does not land Application.yaml.
+ * `/zeta-firstboot.conf` and exports both keys (or neither);
+ * this reads `ZETA_BAO_LOAD_SITE` and `ZETA_BAO_PATH` from the
+ * resulting env. Does not open files. bun invoke from
+ * `zeta-first-boot.sh` stays forbidden (not on PATH until
+ * zeta-install Step 6.95a). Does not expand `ZetaFirstbootRole`.
+ * Does not land Application.yaml.
  *
  * Usage: bun src/Core.TypeScript/zflash/firstboot-bao-env.ts
  * Exit 0: JSON `{ ok: true, ask }` (ask may be null).

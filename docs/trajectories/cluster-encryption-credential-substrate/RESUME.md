@@ -1,7 +1,7 @@
 # Trajectory - Cluster Encryption / Credential Substrate
 
 Status: active — first surfaced 2026-05-29 from substrate inventory (was tracked only as scattered backlog rows; never had a trajectory surface, which is why it was easy to lose at cold-boot)
-Last refreshed: 2026-09-06 (first-boot bun consumes sourced bao env; still not a seal)
+Last refreshed: 2026-09-06 (first-boot exports bao names; zeta-install sed-parses; still not a seal)
 Type: workstream (current-focus) — a trajectory the operator is *actively powering*. Many trajectories can be tracked; only a few are workstreams at once (finite-focus / WIP-bounded — a workstream is a trajectory under sustained thrust, and thrust budget is finite, so most trajectories coast). ("Trajectory" is the genus; "workstream" is the species: a trajectory under sustained thrust toward a deliverable, vs. emergent-posture trajectories like `anti-infection`, which self-describes as "not a workstream with a cadence." See [`factory-trajectory-surface`](../factory-trajectory-surface/RESUME.md) for the genus/species taxonomy.) One of the operator's three current cluster workstreams (encryption / usb-zflash / ts-workflow-engine).
 Eventual encoding (design-stage — the human maintainer 2026-05-23 genetic-ID substrate + Clifford/HKT): this trajectory's state is trackable as a 128-bit genetic-ID seed (discrete, reversible via parser-combinator ↔ generator-function) → Clifford-space path (continuous, eventual). Mirrors the three-lane I8-lattice / I9-manifold split.
 Current blocker: none operationally; the live design tension is interactive-login-vs-baked-in-keys-vs-CI-test (081KSGS9H0008QG0R003JNSVR5)
@@ -507,6 +507,24 @@ Workitem: `081M1VXAQEJ087G0R00325DJRS`.
   not an ask. Does not open files.
 - Does not expand `ZetaFirstbootRole`. Does not edit
   `zeta-first-boot.sh`. Does not edit Application.yaml.
+
+## 2026-09-06 — first-boot exports bao names; install sed-parses (Riven)
+
+Aaron: continue after the bun consume. Sourced names are
+not inherited by the child until exported. Manual
+`zeta-install` never sources the conf.
+
+Consumer: `full-ai-cluster/usb-nixos-installer/zeta-first-boot.sh`
+plus `full-ai-cluster/usb-nixos-installer/zeta-install.sh`.
+Workitem: `081M1VZRST2087G0R001QEJDWG`.
+
+- Both names or neither. One without the other unsets
+  both. Does not fill `NIXOS_HOST_BAO`. tpmrm0 may be
+  exported; bun consume is still not an ask.
+- Does not invoke bun from first-boot or from this
+  pickup (bun is not on PATH until Step 6.95a). Does
+  not stage unused files. Does not expand
+  `ZetaFirstbootRole`. Does not edit Application.yaml.
 
 ## 2026-09-04 — production-hardening review (Riven)
 

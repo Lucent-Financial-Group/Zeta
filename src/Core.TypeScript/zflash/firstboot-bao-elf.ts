@@ -9,7 +9,9 @@
  * also lives here so firstboot-bao-env.ts can read sourced
  * names without installer `fs`. Capture / overlay still live
  * in bao-elf-capture.ts (that module may read). Does not expand
- * `ZetaFirstbootRole`. Does not edit `zeta-first-boot.sh`.
+ * `ZetaFirstbootRole`. Bash export / sed-parse live in
+ * `zeta-first-boot.sh` and `zeta-install.sh`; this module stays
+ * pure and does not invoke bun.
  *
  * Cite: firstboot-role.ts, bao-load-site.ts,
  * docs/research/2026-08-21-hands-off-metal-*.md §1.4.

@@ -503,8 +503,13 @@ those same flags from `prepare-boot-image.ts`;
 still does not edit `zeta-first-boot.sh`.
 First-boot env consume
 (`081M1VXAQEJ087G0R00325DJRS`) reads sourced
-`ZETA_BAO_*` in `firstboot-bao-env.ts`; still
-does not edit `zeta-first-boot.sh`.
+`ZETA_BAO_*` in `firstboot-bao-env.ts`.
+Bash pickup
+(`081M1VZRST2087G0R001QEJDWG`) exports both
+names from `zeta-first-boot.sh` and
+sed-parses them in `zeta-install.sh`; both
+or neither; does not fill `NIXOS_HOST_BAO`;
+does not invoke bun.
 glibc-host-into-musl-image is not a
 module; Application.yaml stays Shamir.
 
