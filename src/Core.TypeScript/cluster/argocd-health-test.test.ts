@@ -977,6 +977,35 @@ describe("081KSXN940008QG0R000SCP2H1 argocd-health-test planning", () => {
     expect(repoServer?.args.join(" ")).toContain("argocd-repo-server");
   });
 
+  test("the roster can answer WHY a pod is not running, not just that ArgoCD is unhappy", () => {
+    // 081M1TFG81G087G0R001XPQGQZ: orleans reported Synced/Progressing, no crash-loop
+    // logs existed to capture, and the bug had to say the pod was "most likely
+    // Pending" on a "leading hypothesis". Every other command in this roster is
+    // ArgoCD-side or kube-system, so the workload pods were never looked at. These two
+    // are asserted by SHAPE rather than by label alone -- a label with the wrong
+    // field-selector would pass a name check and dump the wrong thing.
+    const byLabel = (label: string) =>
+      REPO_BACKED_CHILD_WAIT_DIAGNOSTIC_COMMANDS.find((command) => command.label === label);
+
+    const notRunning = byLabel("not-running-pods");
+    expect(notRunning).toBeDefined();
+    const notRunningArgs = notRunning?.args.join(" ") ?? "";
+    expect(notRunningArgs).toContain("-A");
+    expect(notRunningArgs).toContain("status.phase!=Running");
+    // Without this clause every completed Job pod lands in the dump and buries the one
+    // pod that matters, which is how a diagnostic becomes noise nobody reads.
+    expect(notRunningArgs).toContain("status.phase!=Succeeded");
+
+    const events = byLabel("warning-events");
+    expect(events).toBeDefined();
+    const eventArgs = events?.args.join(" ") ?? "";
+    expect(eventArgs).toContain("events");
+    expect(eventArgs).toContain("-A");
+    // `type=Warning` is what carries FailedScheduling / ImagePullBackOff / FailedMount.
+    // Dumping ALL events would bury them under Normal Pulled/Created/Started spam.
+    expect(eventArgs).toContain("type=Warning");
+  });
+
   test("child-wait diagnostic merge keeps the NotFound stderr and attaches dumps", () => {
     const merged = mergeArgoCdTimeoutDiagnostics(
       {
