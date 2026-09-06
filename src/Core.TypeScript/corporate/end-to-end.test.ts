@@ -440,13 +440,29 @@ describe("A PACE PROBLEM IS REPORTED AS A RISK", () => {
     expect(report.signals.filter((s) => s.tool === SignalTool.ReportRisk)).toEqual([]);
   });
 
-  test("SUGGEST_IMPROVEMENT IS DELIBERATELY UNSENT, and that is not a gap", async () => {
-    // The last family with no sender, and it should stay that way. Every other tool has a
-    // condition the organization can OBSERVE — a gate rejected twice, a pace behind, a review
-    // owed. An improvement suggestion is a judgement somebody chooses to offer, and a runtime
-    // that emitted them on a schedule would be manufacturing opinions nobody held. It stays
-    // available to a hat and unsent by the machinery.
+  test("RECURRING FRICTION BECOMES AN IMPROVEMENT REQUEST — I had this backwards", async () => {
+    // I recorded `SuggestImprovement` as deliberately unsent, reasoning that an improvement is a
+    // judgement with no observable trigger. That was wrong, and wrong in the way this register is
+    // least allowed to be: I asserted a limit about the design without reading the part that
+    // specifies it. `ORGANIZATION_RUNTIME_ARCHITECTURE.md` has agents request new workflows "when
+    // they discover repeatable organizational inefficiency", and every example it gives is
+    // countable — repeated review drift, repeated missed coverage.
+    //
+    // The trigger is REPETITION ACROSS ITEMS, which is measurable, and the previous version of
+    // this test asserted the count stays zero: a falsifier pinning my mistake in place.
+    const report = await pacedRun(0, true);
+    expect(report.inefficiencies.length).toBeGreaterThan(0);
+    const asks = report.signals.filter((s) => s.tool === SignalTool.SuggestImprovement);
+    expect(asks.length).toBe(report.inefficiencies.length);
+    // Up the chain, from the hat that felt the friction.
+    expect(asks[0]?.toHatId).not.toBe(asks[0]?.fromHatId);
+  });
+
+  test("...and a run where nothing recurred asks for nothing", async () => {
+    // The other half. An organization filing a workflow request every run manufactures opinions
+    // nobody held, which is the failure my wrong reasoning was actually reaching for.
     const report = await pacedRun(0, false);
+    expect(report.inefficiencies).toEqual([]);
     expect(report.signals.filter((s) => s.tool === SignalTool.SuggestImprovement)).toEqual([]);
   });
 });

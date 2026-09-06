@@ -112,6 +112,7 @@ import {
 import { reconcile, type ReconciliationReport } from "./reconciliation";
 import { groomingProducer } from "./grooming";
 import { historyFromPhases, type ArtifactHistory } from "./artifact-deliberation";
+import { findInefficiencies, type Inefficiency } from "./inefficiency";
 import { bookQaBlocks, bookReviewBlocks, requestReviewsFor } from "./review-calendar";
 import type { NamedDependency, WorkBatch } from "./work-batch";
 import {
@@ -408,6 +409,14 @@ export interface OrgRuntimeReport {
    */
   readonly artifacts: ReadonlyMap<string, ArtifactHistory>;
   /**
+   * Frictions that recurred across DIFFERENT work items this run — the organization noticing that
+   * something keeps going wrong rather than that one thing went wrong.
+   *
+   * Reported as well as signalled: the signal travels the chain and this is what a reader of the
+   * run sees without folding the log.
+   */
+  readonly inefficiencies: readonly Inefficiency[];
+  /**
    * Tasks whose loop an escalation STOPPED, and which action stopped it.
    *
    * The difference between "this run finished" and "this run gave up" — a driver that cannot tell
@@ -637,6 +646,9 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
     // An early return ran no phases, so it produced no artifact. Empty rather than a map of empty
     // histories: an artifact with no content would claim the run made something.
     artifacts: new Map(),
+    // Nothing ran, so nothing recurred. An empty list is the true reading of a run that did
+    // no work, and is not the same claim as "this organization is efficient".
+    inefficiencies: [],
     // An early return reconciled NOTHING, and that is what it reports: no items, no disagreements,
     // and the tracker listed as unchecked. `fullyReconciled` is false over it, which is correct —
     // a run that did nothing has not established that anything agrees.
@@ -1917,6 +1929,63 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
   // Computed from the finished cascade so the reading is over what the run actually delivered.
   // A run that is measurably behind RAISES the trigger rather than deciding anything: what to do
   // about it is the organization's call, through the normal authority check.
+  // ── REPEATABLE INEFFICIENCY IS A REQUEST TO CHANGE THE SYSTEM ─────────────
+  // `ORGANIZATION_RUNTIME_ARCHITECTURE.md` §"Workflow and Runtime Expansion": agents request new
+  // workflows and automation *"when they discover repeatable organizational inefficiency"*, and
+  // its examples are all countable — an Engineering Manager noticing REPEATED review drift, QA
+  // noticing REPEATED missed coverage.
+  //
+  // The unit is DISTINCT WORK ITEMS, never occurrences. One item failing a gate four times is a
+  // hard item, which churn and escalation already handle; four different items failing the same
+  // gate is the process. That is also what separates this from the escalation above it: an
+  // escalation asks somebody to decide about ONE stuck thing, an improvement says no per-item
+  // decision will stop the next one.
+  const inefficiencies = findInefficiencies({
+    gateBlocked,
+    escalations,
+    refusals,
+  });
+  for (const pattern of inefficiencies) {
+    // Raised by the hat that OWNS the affected work, so it travels the chain from where the
+    // friction was felt rather than from wherever the detector happens to run.
+    const owner = cascade.nodes.find((n) => n.workId === pattern.workIds[0])?.ownerHatId;
+    if (owner === undefined) continue;
+    const asked = sendSupervisorSignal(
+      deps.chart,
+      board,
+      {
+        signalId: deps.createId("sig"),
+        anchorId: deps.createId("anchor"),
+        fromHatId: owner,
+        tool: SignalTool.SuggestImprovement,
+        title: `recurring ${pattern.kind}: ${pattern.pattern}`,
+        // What was seen, NOT what to build. The doc has a Director or a Manager deciding what
+        // workflow to add; a detector arriving with a solution would make that call from the
+        // bottom of the chain with the least context about what else is already in flight.
+        message: `${pattern.summary} — ${pattern.workIds.join(", ")}`,
+        evidence: pattern.workIds.map((id) => ({ kind: "trace" as const, ref: `recurrence:${id}` })),
+        atMs: warmedAt,
+      },
+      deps.resourceAuthorityHatId,
+    );
+    if (asked.ok) {
+      board = asked.board;
+      signals.push(asked.signal);
+      note({
+        kind: OrgEventKind.SupervisorSignalSent,
+        subjectId: pattern.pattern,
+        actorHatId: asked.signal.fromHatId,
+        decision: `${asked.signal.tool} → ${asked.signal.toHatId}: ${pattern.summary}`,
+        toState: asked.signal.toHatId,
+        atMs: warmedAt,
+        evidenceRefs: asked.signal.evidence.map((e) => e.ref),
+        fact: { kind: "supervisor_signal", signal: asked.signal },
+      });
+    } else {
+      refusals.push(`could not raise '${pattern.pattern}' as an improvement: ${asked.reason}`);
+    }
+  }
+
   const trajectory = trajectoryOf(cascade.nodes);
   if (trajectory !== undefined) {
     note({
@@ -2011,6 +2080,7 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
     refusals,
     reactor,
     artifacts,
+    inefficiencies,
     // THE LAST STEP OF THE LOOP. Computed from what this run actually did, so the comparison is
     // against the repository and the gates rather than against the plan. The tracker is not passed
     // here: this runtime has no external state to compare with, and the report says so by listing

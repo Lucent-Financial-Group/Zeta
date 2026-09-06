@@ -375,9 +375,40 @@ told nobody — the trigger went into `refusals`, a list for things that went wr
 channel anyone watches. A mission 90% through its window with nothing delivered now reports
 upward with the pace reading as evidence. An on-time mission reports nothing.
 
-**`SuggestImprovement` stays unsent, and that is a decision.** Every other tool has a condition
-the organization can OBSERVE. An improvement suggestion is a judgement somebody chooses to
-offer, and a runtime emitting them on a schedule would be manufacturing opinions nobody held. A
-test asserts it stays zero so it is not later "fixed".
+**`SuggestImprovement` — and a correction I had to be told to make.**
 
-Seven of eight signal families have senders, up from four.
+I recorded this family as *deliberately* unsent, reasoning that an improvement is "a judgement
+somebody chooses to offer" with no condition the organization can observe. **That was wrong**,
+and wrong in the way this register is least allowed to be: I asserted a limit about the design
+without reading the part of the design that specifies it. Worse, I wrote a test asserting the
+count stays zero — a falsifier pinning my own mistake in place, which is the most durable way to
+be wrong here.
+
+`ORGANIZATION_RUNTIME_ARCHITECTURE.md` §"Workflow and Runtime Expansion" is explicit:
+
+> *"Agents should also be able to request new Temporal workflows, durable triggers, Dapr actors,
+> and scheduled automation when they discover **repeatable organizational inefficiency**."*
+>
+> *"Engineering Manager notices **repeated** review drift and requests `ReviewEscalationWorkflow`.
+> QA Engineering Manager notices **repeated** missed test coverage…"*
+
+and `NORTH_STAR_ALIGNMENT_CHECKPOINT.md` adds *"escalate repeated inefficiency through the
+management chain."* This organization is designed to improve itself, and the trigger is
+REPETITION — which is countable.
+
+`inefficiency.ts` counts it, and the unit is what makes it honest: **distinct work items
+affected, never occurrences.** One item failing a gate four times is a hard item, which churn and
+escalation already handle; four different items failing the same gate is the process. That is
+also what separates an improvement from an escalation — an escalation asks somebody to decide
+about one stuck thing, an improvement says no per-item decision will stop the next one.
+
+The finding names the pattern and the items it recurred over and **proposes nothing**: the doc
+has a Director or Manager deciding what to build, and a detector arriving with a solution would
+make that call from the bottom of the chain with the least context about what else is in flight.
+
+Measured: a run where QA fails every item raises two patterns — `runtime_validation` blocking two
+different items, and two items escalating to `add_agents` — and `tech_lead` asks
+`engineering_manager` for both, which is precisely the doc's own first example. A clean run
+raises none.
+
+**All eight signal families now have senders.**
