@@ -1,0 +1,12 @@
+{
+  "pr_number": 16814,
+  "archive_path": "docs/history/pr-reviews/PR-16814-fix-cluster-pay-cert-manager-and-trust-manager-in-that-order.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-06T17:30:28.025Z",
+  "schema_version": "v1",
+  "commit_sha": "24f0ef99208d1b4e7a878da75c2f3e69ada125b2",
+  "title": "fix(cluster): pay cert-manager and trust-manager, in that order",
+  "state": "MERGED",
+  "merged_at": "2026-09-06T17:29:55Z",
+  "head_ref": "shadow/cert-manager-pin-parity"
+}
