@@ -1,11 +1,12 @@
 ---
 id: 081M1TB7K9F087G0R001FMKH0M
 type: task
-state: in-progress
+state: done
 priority: P2
 slug: add-cross-domain-frame-signals-over-emulator-observations
 title: "Add cross-domain frame signals over emulator observations"
 created: 2026-09-06T03:12:15.663Z
+completed: 2026-09-06T03:38:37.145Z
 depends_on: []
 composes_with: []
 ---
@@ -40,3 +41,19 @@ outside the port.
 This slice does not claim ARC benchmark improvement, cross-game transfer, or a
 general learned model. A later treaty can compare this F# contract with the
 existing Python scene-prior implementation.
+
+## Completion evidence
+
+- `FrameSignals.observe` computes the dominant background, four-connected
+  components, normalized shapes, per-color occupancy, and exposed-edge density
+  from rendered cells only.
+- `FrameSignals.compare` separates background crossings from direct foreground
+  recoloring and independently reports structural, palette, and placement
+  changes.
+- The combined `FrameSignals` and `FrameMotion` focused suite passes 19 tests,
+  including source-owned CHIP-8 motion carts.
+- `bun run preflight` passes all 18 checks: every language lint, TypeScript
+  compilation, build-graph drift, release build, and complete .NET test suite.
+- One initial `MSB6006` exit 139 did not reproduce after an isolated clean
+  `Core.fsproj` build. The isolated build completed with 0 warnings and 0
+  errors; the full release build then passed in preflight.
