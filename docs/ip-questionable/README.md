@@ -61,3 +61,9 @@ promptly in good faith.
   shadow logs, decorrelation records) is disagreement-shaped where most training data is not.
   Analysis that cites it:
   `docs/research/2026-08-27-the-data-flywheel-is-a-du-with-a-learned-discriminator-and-our-corpus-is-disagreement-shaped.md`.
+- `2026-09-06-christopher-fuchs-hans-busstra-dizzying-free-fall-of-qbism.md` — source and
+  timestamped study index for Hans Busstra's interview with Christopher Fuchs on QBism, agent-relative
+  quantum-state assignments, action and experience, and neutral monism. Aaron supplied the
+  auto-transcript while connecting the interview to Zeta's pairwise-memory, anti-Sybil, Bayesian,
+  categorical-quantum, Clifford, and emulator research. Original analysis remains in the linked
+  Vera handoff and treats these as hypotheses and analogies, not source-established equivalences.
