@@ -249,16 +249,23 @@ One without the other refuses. Does not fill
 First-boot env consume (`081M1VXAQEJ087G0R00325DJRS`):
 `firstboot-bao-env.ts` reads sourced `ZETA_BAO_*`.
 Does not open files. Does not edit `zeta-first-boot.sh`.
+Bash pickup (`081M1VZRST2087G0R001QEJDWG`):
+`zeta-first-boot.sh` exports both names or unsets
+both. `zeta-install.sh` sed-parses both keys for
+the manual path. Does not fill `NIXOS_HOST_BAO`.
+Does not invoke bun (not on PATH until Step
+6.95a). `/dev/tpmrm0` may be exported; bun
+consume is still not an ask.
 
 1. Metal: `seal "pkcs11"` in Application.yaml still waits.
    Same commit as a **reachable** module: same-libc image
    (glibc OpenBao that can load the host `.so`) or option D
    host `bao`. Dual-vendor per node is ZetaFS k-of-n, not
    two active OpenBao seals. Do not treat this planner as
-   that commit. `zeta-first-boot.sh` still has to *export
-   and invoke* the bun consume (not from `/dev/tpmrm0`).
-   Does not expand `ZetaFirstbootRole` until that bash
-   invoke lands.
+   that commit. bun invoke of `firstboot-bao-env.ts`
+   still waits for zeta-install Step 6.95a (bun/mise on
+   PATH). Does not expand `ZetaFirstbootRole` until that
+   invoke lands. `/dev/tpmrm0` is still not an ask.
 2. extraContainer Shamir sidecar (`valuesObject` only) until
    kind/CI consume the emulator init.
 

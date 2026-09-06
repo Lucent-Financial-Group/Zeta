@@ -1,0 +1,14 @@
+{
+  "id": "080d03bfe33a1810a013000888650ac2",
+  "at": "2026-09-06T18:30:25.347Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1VZRST2087G0R001QEJDWG",
+    "type": "task",
+    "title": "first-boot exports and zeta-install sed-parses bao names",
+    "slug": "first-boot-exports-and-zeta-install-sed-parses-bao-names",
+    "priority": "P2",
+    "filename": "081M1VZRST2087G0R001QEJDWG-first-boot-exports-and-zeta-install-sed-parses-bao-names.md"
+  }
+}

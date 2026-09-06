@@ -205,6 +205,13 @@ assume the number.
    `firstboot-bao-env.ts` reads sourced `ZETA_BAO_*` from
    process env. Does not open files. Does not edit
    `zeta-first-boot.sh`.
+   Bash pickup (`081M1VZRST2087G0R001QEJDWG`):
+   `zeta-first-boot.sh` exports both names or unsets both.
+   `zeta-install.sh` sed-parses both keys (both or neither)
+   for the manual path. Does not fill `NIXOS_HOST_BAO`.
+   Does not invoke bun (not on PATH until Step 6.95a).
+   `/dev/tpmrm0` may be exported; bun consume is still
+   not an ask. Does not expand `ZetaFirstbootRole`.
 7. extraContainer sidecar — later, **same commit as the
    sidecar**, and only for the Shamir kind path until the
    emulator job replaces it. `valuesObject` only. Do not fork

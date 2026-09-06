@@ -1991,6 +1991,46 @@ if [ -n "$PUBKEY_FILE" ]; then
     fi
   fi
 
+  # ── 081M1VZRST2087G0R001QEJDWG: named bao site+path pickup ──────
+  #
+  # Same conf, two more scalars (src/Core.TypeScript/zflash/firstboot-bao-elf.ts):
+  #
+  #   ZETA_BAO_LOAD_SITE  on-host | in-chart-image
+  #   ZETA_BAO_PATH       a named bao binary, never /dev/tpmrm0 as an ask
+  #
+  # First-boot may already have exported both. Manual `zeta-install`
+  # sed-parses with the same quoted-assignment pattern as the join
+  # URL. The conf is NOT sourced here. Both names or neither. Do not
+  # fill /run/current-system/sw/bin/bao. Do not invoke bun — it is
+  # not installed yet. Do not stage unused files under /mnt/etc/zeta.
+  # /dev/tpmrm0 matches the path allowlist and may be exported;
+  # later bun consume still returns ask:null.
+  if [ -n "${ZETA_BAO_LOAD_SITE:-}" ] && [ -n "${ZETA_BAO_PATH:-}" ]; then
+    :
+  elif [ -n "${ZETA_BAO_LOAD_SITE:-}" ] || [ -n "${ZETA_BAO_PATH:-}" ]; then
+    echo "[081M1VZRST2087G0R001QEJDWG-bao]   WARN: one bao name without the other; unsetting both" >&2
+    unset ZETA_BAO_LOAD_SITE ZETA_BAO_PATH
+  elif sudo test -f "$BOOT_USB_FIRSTBOOT_CONF"; then
+    ZETA_BAO_LOAD_SITE=$(sudo sed -n "s/^ZETA_BAO_LOAD_SITE='\([^']*\)'\$/\1/p" \
+      "$BOOT_USB_FIRSTBOOT_CONF" | head -1 || true)
+    ZETA_BAO_PATH=$(sudo sed -n "s/^ZETA_BAO_PATH='\([^']*\)'\$/\1/p" \
+      "$BOOT_USB_FIRSTBOOT_CONF" | head -1 || true)
+  fi
+  if [ -n "${ZETA_BAO_LOAD_SITE:-}" ] && [ -n "${ZETA_BAO_PATH:-}" ]; then
+    if echo "$ZETA_BAO_LOAD_SITE" | grep -Eq '^(on-host|in-chart-image)$' \
+      && echo "$ZETA_BAO_PATH" | grep -Eq '^[A-Za-z0-9._:/@-]+$'; then
+      export ZETA_BAO_LOAD_SITE ZETA_BAO_PATH
+      echo "[081M1VZRST2087G0R001QEJDWG-bao]   exported site=$ZETA_BAO_LOAD_SITE path=$ZETA_BAO_PATH"
+    else
+      echo "[081M1VZRST2087G0R001QEJDWG-bao]   WARN: refusing malformed bao names site='$ZETA_BAO_LOAD_SITE' path='$ZETA_BAO_PATH'" >&2
+      unset ZETA_BAO_LOAD_SITE ZETA_BAO_PATH
+    fi
+  elif [ -n "${ZETA_BAO_LOAD_SITE:-}" ] || [ -n "${ZETA_BAO_PATH:-}" ]; then
+    echo "[081M1VZRST2087G0R001QEJDWG-bao]   WARN: one bao name without the other after pickup; unsetting both" >&2
+    unset ZETA_BAO_LOAD_SITE ZETA_BAO_PATH
+  fi
+  # ── 081M1VZRST2087G0R001QEJDWG: end named bao pickup ────────────
+
   # ── joining-node-address-assignment: static segment addressing pickup ──────
   #
   # Same conf, three more scalars (src/Core.TypeScript/zflash/cluster-address.ts):
