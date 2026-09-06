@@ -211,12 +211,19 @@ stays metal. Setup overlay now consumes an injected
 restore-file capture (`081M1V9KQFX087G0R0038J326D`);
 opening any other path is not this companion.
 
+Load-site / ELF (`081M1VB58YS087G0R001G1RSXW`): captured
+`PT_INTERP` classifies musl vs glibc. Option D host `bao`
+is a named site; host HCL is not a chart seal. A glibc
+CI tarball on disk is not the chart image. No live
+`readelf`.
+
 1. Metal: `seal "pkcs11"` in Application.yaml still waits.
    Same commit as a **reachable** module: same-libc image
    (glibc OpenBao that can load the host `.so`) or option D
    host `bao`. Dual-vendor per node is ZetaFS k-of-n, not
    two active OpenBao seals. Do not treat this planner as
-   that commit.
+   that commit. Live `readelf` of a candidate `bao` lives
+   in installer/first-boot, not in the classifier.
 2. extraContainer Shamir sidecar (`valuesObject` only) until
    kind/CI consume the emulator init.
 

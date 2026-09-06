@@ -12,18 +12,29 @@
  * NixOS PKCS#11 libraries are glibc. hostPath of a glibc `.so` into
  * that image is option A in
  * docs/research/2026-08-21-hands-off-metal-*.md §1.4 — unproven.
- * That ABI mismatch is **not** `moduleInImage`.
+ * That ABI mismatch is **not** `moduleInImage`. Option D host
+ * `bao` is a named load site, not a chart seal. ABI is measured
+ * from a captured ELF interpreter when one is supplied; the
+ * current-chart helper still defaults to alpine-musl.
  *
  * USB `--bake-cred` restores a path *string* at
  * `/etc/zeta/seal/pkcs11-module-path`. That pointer file is not the
  * module. SoftHSM / swtpm are the CI job, not this overlay.
  * Dual-vendor per node is ZetaFS k-of-n, not two OpenBao seals.
  *
- * Cite: seal-emulator-rung.ts, usb-hsm-companion.ts,
+ * Cite: bao-load-site.ts, seal-emulator-rung.ts, usb-hsm-companion.ts,
  * host-seal-profile.ts, unseal-path.ts,
  * openbao.org/docs/configuration/seal/pkcs11/.
  */
 
+import {
+  baoElfOpenedPathIsBinary,
+  classifyElfInterpreter,
+  ELF_INTERP_MUSL_X86_64,
+  imageAbiFromBaoElf,
+  type BaoElfCapture,
+  type BaoLoadSite,
+} from "./bao-load-site.ts";
 import {
   hclHasPkcs11Seal,
   pickOpenbaoMechanism,
@@ -32,8 +43,13 @@ import {
   type SealOracle,
 } from "./seal-emulator-rung.ts";
 
+export type { BaoElfCapture, BaoLoadSite } from "./bao-load-site.ts";
+
 /** Chart image today. Measured: Alpine musl, no PKCS#11 module in the image. */
 export const OPENBAO_HSM_IMAGE_ABI = "alpine-musl" as const;
+
+/** PT_INTERP of that chart image. A glibc tarball is not this string. */
+export const OPENBAO_HSM_IMAGE_INTERP = ELF_INTERP_MUSL_X86_64;
 
 /** NixOS host libraries (opensc, tpm2-pkcs11, yubihsm_pkcs11) are glibc. */
 export const NIXOS_HOST_ABI = "glibc" as const;
@@ -67,7 +83,9 @@ export type OverlayRefuseReason =
   | "pin-in-values-refuse"
   | "two-openbao-seals"
   | "glibc-host-into-musl-image"
-  | "abi-mismatch";
+  | "abi-mismatch"
+  | "bao-elf-unmeasured"
+  | "elf-capture-is-not-bao";
 
 export interface Pkcs11HostPathVolume {
   readonly name: string;
@@ -83,6 +101,10 @@ export interface Pkcs11HostPathInput {
   readonly moduleFileExists: boolean;
   readonly imageAbi: LibcAbi;
   readonly hostAbi: LibcAbi;
+  /** Named load site. Default is the chart image, not option D. */
+  readonly loadSite?: BaoLoadSite;
+  /** PT_INTERP of host `bao`. Required when loadSite is `on-host`. */
+  readonly baoElfInterpreter?: string | null;
   /** PIN bytes. Any non-null value is refused — PIN is BAO_HSM_PIN env. */
   readonly pinValue?: string | null;
   /** A second seal oracle on the same node. Dual-vendor is ZetaFS k-of-n. */
@@ -99,7 +121,21 @@ export type OverlayPlan =
       readonly volumes: readonly Pkcs11HostPathVolume[];
       readonly envPointerName: string;
       readonly abi: "same-libc";
+      readonly loadSite: "in-chart-image";
       readonly mayCommitSeal: true;
+      readonly mayCommitHostHcl: false;
+    }
+  | {
+      readonly ok: true;
+      readonly oracle: SealOracle;
+      readonly mechanism: MechanismPick;
+      readonly modulePath: string;
+      readonly volumes: readonly Pkcs11HostPathVolume[];
+      readonly envPointerName: string;
+      readonly abi: "same-libc";
+      readonly loadSite: "on-host";
+      readonly mayCommitSeal: false;
+      readonly mayCommitHostHcl: true;
     }
   | {
       readonly ok: false;
@@ -110,7 +146,9 @@ export type OverlayPlan =
       readonly volumes: readonly Pkcs11HostPathVolume[];
       readonly envPointerName: string;
       readonly abi: OverlayAbi;
+      readonly loadSite: BaoLoadSite;
       readonly mayCommitSeal: false;
+      readonly mayCommitHostHcl: false;
     };
 
 function classifyAbi(imageAbi: LibcAbi, hostAbi: LibcAbi): OverlayAbi {
@@ -183,6 +221,10 @@ function volumesFor(oracle: SealOracle, modulePath: string): readonly Pkcs11Host
   return vols;
 }
 
+function loadSiteOf(input: Pkcs11HostPathInput): BaoLoadSite {
+  return input.loadSite ?? "in-chart-image";
+}
+
 function refuse(
   input: Pkcs11HostPathInput,
   reason: OverlayRefuseReason,
@@ -198,7 +240,9 @@ function refuse(
     volumes,
     envPointerName: input.envPointerName ?? BAO_HSM_PIN_ENV,
     abi: classifyAbi(input.imageAbi, input.hostAbi),
+    loadSite: loadSiteOf(input),
     mayCommitSeal: false,
+    mayCommitHostHcl: false,
   };
 }
 
@@ -234,6 +278,29 @@ export function planPkcs11HostPathOverlay(input: Pkcs11HostPathInput): OverlayPl
     return refuse(input, "module-file-absent", modulePath, volumesFor(input.oracle, modulePath));
   }
 
+  const site = loadSiteOf(input);
+  if (site === "on-host") {
+    const hostBaoAbi = classifyHostBaoAbi(input.baoElfInterpreter);
+    if (hostBaoAbi === "unknown") {
+      return refuse(input, "bao-elf-unmeasured", modulePath, []);
+    }
+    if (hostBaoAbi !== input.hostAbi) {
+      return refuse(input, "abi-mismatch", modulePath, []);
+    }
+    return {
+      ok: true,
+      oracle: input.oracle,
+      mechanism,
+      modulePath,
+      volumes: [],
+      envPointerName,
+      abi: "same-libc",
+      loadSite: "on-host",
+      mayCommitSeal: false,
+      mayCommitHostHcl: true,
+    };
+  }
+
   const abi = classifyAbi(input.imageAbi, input.hostAbi);
   const volumes = volumesFor(input.oracle, modulePath);
   if (abi !== "same-libc") {
@@ -248,7 +315,9 @@ export function planPkcs11HostPathOverlay(input: Pkcs11HostPathInput): OverlayPl
       volumes,
       envPointerName,
       abi,
+      loadSite: "in-chart-image",
       mayCommitSeal: false,
+      mayCommitHostHcl: false,
     };
   }
 
@@ -260,8 +329,15 @@ export function planPkcs11HostPathOverlay(input: Pkcs11HostPathInput): OverlayPl
     volumes,
     envPointerName,
     abi: "same-libc",
+    loadSite: "in-chart-image",
     mayCommitSeal: true,
+    mayCommitHostHcl: false,
   };
+}
+
+function classifyHostBaoAbi(interpreter: string | null | undefined): "glibc" | "alpine-musl" | "unknown" {
+  if (interpreter === undefined) return "unknown";
+  return classifyElfInterpreter(interpreter);
 }
 
 /**
@@ -288,6 +364,8 @@ export interface SetupPkcs11OverlayInput {
   /** Contents of `/etc/zeta/seal/pkcs11-module-path`, never that filename. */
   readonly companionModulePath: string | null;
   readonly moduleFileExists: boolean;
+  /** Injected PT_INTERP of a candidate `bao`. Null keeps the chart constant. */
+  readonly baoElf?: BaoElfCapture | null;
 }
 
 function companionContents(raw: string | null): string | null {
@@ -298,16 +376,35 @@ function companionContents(raw: string | null): string | null {
 
 /**
  * Setup-time join: USB companion *contents* win; NixOS contract is
- * the fallback; current chart ABI still cannot commit the stanza.
+ * the fallback; current chart ABI still cannot commit the stanza
+ * unless a capture names a same-libc in-chart `bao`. Option D
+ * host `bao` may produce host HCL and still cannot edit
+ * Application.yaml.
  */
 export function planSetupPkcs11Overlay(input: SetupPkcs11OverlayInput): OverlayPlan {
   const companion = companionContents(input.companionModulePath);
   const modulePath = resolveOverlayModulePath(input.oracle, companion);
-  return planPkcs11HostPathOverlay(currentChartOverlayInput(input.oracle, modulePath, input.moduleFileExists));
+  const capture = input.baoElf ?? null;
+  const chartInput = currentChartOverlayInput(input.oracle, modulePath, input.moduleFileExists);
+  if (capture !== null && !baoElfOpenedPathIsBinary(capture.openedPath, USB_PKCS11_MODULE_POINTER)) {
+    return refuse({ ...chartInput, loadSite: capture.site }, "elf-capture-is-not-bao", modulePath, []);
+  }
+  const imageAbi = imageAbiFromBaoElf(capture, OPENBAO_HSM_IMAGE_ABI);
+  const loadSite = capture?.site ?? "in-chart-image";
+  const baoElfInterpreter = loadSite === "on-host" ? (capture?.interpreter ?? null) : null;
+  return planPkcs11HostPathOverlay({
+    oracle: input.oracle,
+    modulePath,
+    moduleFileExists: input.moduleFileExists,
+    imageAbi,
+    hostAbi: NIXOS_HOST_ABI,
+    loadSite,
+    baoElfInterpreter,
+  });
 }
 
-export function overlaySealHcl(plan: OverlayPlan): string | null {
-  if (!plan.ok || !plan.mayCommitSeal || plan.modulePath === null) return null;
+function sealHclBody(plan: OverlayPlan): string | null {
+  if (plan.modulePath === null) return null;
   const lines = ['seal "pkcs11" {', `  lib = "${plan.modulePath}"`, '  token_label = "zeta-openbao"'];
   if (plan.mechanism.kind === "must-pin-rsa-oaep") {
     lines.push('  mechanism = "CKM_RSA_PKCS_OAEP"');
@@ -318,6 +415,17 @@ export function overlaySealHcl(plan: OverlayPlan): string | null {
   lines.push("  # pin: never here. BAO_HSM_PIN env.");
   lines.push("}");
   return lines.join("\n");
+}
+
+export function overlaySealHcl(plan: OverlayPlan): string | null {
+  if (!plan.ok || !plan.mayCommitSeal) return null;
+  return sealHclBody(plan);
+}
+
+/** Option D host `bao` HCL. Not a chart seal. Not Application.yaml. */
+export function hostBaoSealHcl(plan: OverlayPlan): string | null {
+  if (!plan.ok || !plan.mayCommitHostHcl) return null;
+  return sealHclBody(plan);
 }
 
 /**

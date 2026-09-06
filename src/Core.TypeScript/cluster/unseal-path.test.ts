@@ -1,7 +1,13 @@
 import { describe, expect, test } from "bun:test";
 import { UNSEAL_THRESHOLD } from "./vault-unsealer.ts";
+import { ELF_INTERP_GLIBC_X86_64 } from "./bao-load-site.ts";
 import { emptyCapture, pickSealOracleFromCapture, type HostHardwareCapture } from "./host-seal-profile.ts";
-import { NIXOS_PKCS11_MODULE_PATH, USB_PKCS11_MODULE_POINTER, overlaySealHcl } from "./pkcs11-hostpath-overlay.ts";
+import {
+  NIXOS_PKCS11_MODULE_PATH,
+  USB_PKCS11_MODULE_POINTER,
+  hostBaoSealHcl,
+  overlaySealHcl,
+} from "./pkcs11-hostpath-overlay.ts";
 import {
   availablePaths,
   emulatorMatrixCell,
@@ -481,5 +487,38 @@ describe("setup overlay reads the restored pointer file", () => {
     });
     expect(plan.ok).toBe(false);
     if (!plan.ok) expect(plan.reason).toBe("companion-pointer-is-not-the-module");
+  });
+
+  test("option D host bao ELF with restore contents is host HCL, not a chart seal", () => {
+    const decision = integrateAtSetup({ requested: "pkcs11-tpm" }, capture({ tpm2: "present" }));
+    const plan = planSetupFromRestoredCompanion(
+      decision,
+      {
+        openedPath: USB_PKCS11_MODULE_POINTER,
+        exists: false,
+        contents: null,
+        resolvedModuleExists: true,
+      },
+      {
+        site: "on-host",
+        interpreter: ELF_INTERP_GLIBC_X86_64,
+        openedPath: "/run/current-system/sw/bin/bao",
+      },
+    );
+    expect(plan.ok).toBe(true);
+    expect(plan.loadSite).toBe("on-host");
+    expect(plan.mayCommitSeal).toBe(false);
+    expect(plan.mayCommitHostHcl).toBe(true);
+    expect(overlaySealHcl(plan)).toBeNull();
+    expect(hostBaoSealHcl(plan)).toBe(
+      [
+        'seal "pkcs11" {',
+        `  lib = "${NIXOS_PKCS11_MODULE_PATH["tpm2-pkcs11"]}"`,
+        '  token_label = "zeta-openbao"',
+        '  mechanism = "CKM_RSA_PKCS_OAEP"',
+        "  # pin: never here. BAO_HSM_PIN env.",
+        "}",
+      ].join("\n"),
+    );
   });
 });
