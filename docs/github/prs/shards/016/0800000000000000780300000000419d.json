@@ -1,0 +1,12 @@
+{
+  "pr_number": 16797,
+  "archive_path": "docs/history/pr-reviews/PR-16797-feat-creds-parse-first-boot-argv-for-named-bao-site.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-06T15:05:17.051Z",
+  "schema_version": "v1",
+  "commit_sha": "2071a17b7d071fd17f2e581df8601cb3d407f4ab",
+  "title": "feat(creds): Parse first-boot argv for named bao site",
+  "state": "MERGED",
+  "merged_at": "2026-09-06T15:04:42Z",
+  "head_ref": "cursor/firstboot-bao-elf-argv-27c5"
+}
