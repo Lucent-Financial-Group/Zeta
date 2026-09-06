@@ -108,6 +108,7 @@ import {
   type ActionKind,
   type ReactorReport,
 } from "./org-reactor";
+import { reconcile, type ReconciliationReport } from "./reconciliation";
 import type { NamedDependency, WorkBatch } from "./work-batch";
 import {
   computeRecommendation,
@@ -372,6 +373,14 @@ export interface OrgRuntimeReport {
    */
   readonly trajectory: Trajectory | undefined;
   /**
+   * Whether reality agrees with what this run believes — the north-star loop's last step.
+   *
+   * Always present, and always reporting what it could NOT check: the tracker is compared only
+   * when one was supplied, and a reconciliation that skipped a party says so rather than counting
+   * its silence as agreement.
+   */
+  readonly reconciliation: ReconciliationReport;
+  /**
    * Tasks whose loop an escalation STOPPED, and which action stopped it.
    *
    * The difference between "this run finished" and "this run gave up" — a driver that cannot tell
@@ -593,6 +602,16 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
   const empty = (): OrgRuntimeReport => ({
     fidelity: noteFidelity("run", deps.nowMs),
     halted: [],
+    // An early return reconciled NOTHING, and that is what it reports: no items, no disagreements,
+    // and the tracker listed as unchecked. `fullyReconciled` is false over it, which is correct —
+    // a run that did nothing has not established that anything agrees.
+    reconciliation: reconcile({
+      cascade: [],
+      changesLanded: [],
+      changesUnlanded: [],
+      gateEvaluations: [],
+      delivered: false,
+    }),
     // An early return has done no work, so its pace is measured over an empty cascade — which the
     // trajectory reports as NOT STARTED rather than as on track.
     trajectory: trajectoryOf([]),
@@ -1660,6 +1679,17 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
     events: trace.map(render),
     refusals,
     reactor,
+    // THE LAST STEP OF THE LOOP. Computed from what this run actually did, so the comparison is
+    // against the repository and the gates rather than against the plan. The tracker is not passed
+    // here: this runtime has no external state to compare with, and the report says so by listing
+    // it under `notChecked` — silence is never counted as agreement.
+    reconciliation: reconcile({
+      cascade: cascade.nodes,
+      changesLanded,
+      changesUnlanded,
+      gateEvaluations,
+      delivered,
+    }),
     fidelity,
   };
 }

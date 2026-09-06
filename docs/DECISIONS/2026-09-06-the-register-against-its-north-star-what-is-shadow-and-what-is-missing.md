@@ -89,11 +89,11 @@ cycle 1:     7 option(s) -> EmitHeartbeat -> Idle  [not dispatched]
 | event published | **present, without a broker** — `org-reactor.ts` derives the next action from what just happened. I first recorded this as absent by looking for a bus; the module's own header answers it: *"a transport is not what makes this event-driven; deriving the next action from what just happened is"* |
 | rules evaluated → reaction plan | **present** — `runReactor` is a work queue where `reactionsTo(events)` enqueues the next action, wired into the runtime at Phase 11. **My first table called this absent, and that was wrong** |
 | leases / hat supply checked | **present** — work-market leases, RMO hat-supply voting |
-| budget checked | **absent** |
+| budget checked | **present as of this pass** — `budget.ts`, consulted by the primary dispatcher before it performs |
 | actions executed | **present** — five ports plus phase producers |
 | **an agent's choice CAUSES the action** | **present as of this pass** — `deliverWorkItem`, reached through the dispatch seam |
 | outcomes observed | **present** — fidelity, gate records with evidence, pace |
-| **reconciliation verifies reality matches org state** | **absent** — the reference has `change-control-reconciliation.ts`; the register has only `changesUnlanded`, a single disagreement check |
+| **reconciliation verifies reality matches org state** | **present as of this pass** — `reconciliation.ts`, wired into the runtime report; `changesUnlanded` was one row of it |
 | observe-act modes | **present as of this pass** |
 | durable `observe_act_tick` window | **present as of this pass** — a fact on the log, folded into a rolling window |
 | divergence measurement | **present as of this pass** — the observe-act selection compared against the legacy priority lane, every tick |
@@ -125,7 +125,7 @@ So the two gaps were closed rather than merely reported.
 
 ## So: is it working end to end?
 
-**The lane runs end to end; two orchestration elements remain.** Precisely:
+**The loop is complete; the operating evidence is thin.** Precisely:
 
 - The **pipeline** takes a real ticket to a merged MR. Measured and reproducible.
 - The **agent loop** chooses real work off a real cascade. Measured.
@@ -134,8 +134,7 @@ So the two gaps were closed rather than merely reported.
   prints `observe_act_primary`. That is the property the previous pass could not claim.
 - The **agent's choice now causes the delivery** — measured: picking work in primary opens and
   merges that exact branch, and a refused merge reaches the agent as a failure.
-- **Reconciliation and budget** remain absent, and until they exist the north star's loop is not
-  complete however well the rest of it runs.
+- **Reconciliation and budget** now exist and are wired — see below.
 
 ## The join, closed at the return
 
@@ -186,17 +185,61 @@ gate refuses promotion, and it is right to. That is the divergence measurement d
 rather than reporting a comfortable zero — which is the strongest evidence available that it is not
 vacuous.
 
-## What is still missing, honestly
+## The last two, and the same discipline in both
 
-1. **Reconciliation.** Nothing verifies that the repository, the tracker and the organization's
-   state agree. `changesUnlanded` is one instance of the idea; the reference generalises it in
-   `change-control-reconciliation.ts`.
-2. **Budget.** Named in the north-star loop, checked nowhere.
+**Reconciliation** was the loop's final step and the register had one row of it — `changesUnlanded`,
+a single check that a change projected as merged actually merged. `reconciliation.ts` generalises
+it into five named disagreement kinds, because each has a different fix and one `Mismatch` kind
+carrying a message would hide the important one inside the ordinary one: a bookkeeping lag
+(`LandedButNotDone`) and work that went around the process (`DoneWithoutGates`) are not the same
+event.
 
-Two bounded gaps, both in the orchestration layer, neither of which makes the work above
-conditional. The earlier version of this list had four entries and **two of them were my error** —
-`org-reactor.ts` is the rules-and-reactions machinery I recorded as absent, because I went looking
-for a broker instead of reading the module that says why there isn't one.
+It **reports and never repairs**. Moving a work item to match the repository would destroy the
+evidence that they disagreed, and the finding is the product. Which of the three parties is right
+is a judgement, and judgements belong to whoever holds the hat.
+
+And the property the whole module turns on: **a tracker nobody asked has not agreed.** The report
+carries `checked` and `notChecked` separately, `fullyReconciled` is false when any party went
+unconsulted, and the summary names what it skipped in the same breath as the clean result —
+because "0 disagreements" over two of three parties sounds like a clean bill and is a strictly
+narrower claim.
+
+**Budget** is the north star's precondition — *"if budget is available → create Hermes implementer
+run"* — and a hard limit in its precedence ladder. `budget.ts` gives it three states for the same
+reason everything else here has three: an **undeclared budget is not an unlimited one**. Reading
+`Unbudgeted` as admission makes the limit decorative; reading it as refusal stops every
+organization that has not set a budget yet and reads as a broken runtime. So it is its own answer,
+and a dispatch that proceeded without a budget check records `budgetChecked: false` rather than
+passing for one that ran.
+
+It is checked **before** the work runs — a budget consulted afterwards is a report, not a limit —
+and a refusal produces **no result**, exactly as shadow does: the work did not fail, it was never
+started. Spending is **idempotent per key**, because a retried action must not be billed twice; a
+budget that double-bills on recovery refuses work the organization was entitled to do.
+
+## So where does this actually stand
+
+Every element of the north-star loop is now present and measured. That is a real statement and it
+is not the same as "the system is finished":
+
+- The pipeline, the agent loop, and **the join between them** run end to end, with the agent's
+  choice causing the delivery.
+- The promotion gate can **open**, and with real work on the menu it currently **refuses** — 33.3%
+  divergence between the two lanes. The lane is in shadow because it has not earned primary, which
+  is the mechanism working.
+- Reconciliation and budget exist, are wired, and are mutation-checked.
+
+What has *not* happened: none of this has run against a live tracker, a real repository at scale,
+or over a window long enough to earn a promotion honestly. Every measurement above is over
+simulated adapters or a single real end-to-end run. The architecture holds; the operating evidence
+is a few runs deep.
+
+**A correction worth keeping.** An earlier version of this list had four entries and **two were my
+error**. I recorded rules-and-reactions and event publication as absent because I went looking for
+a broker; `org-reactor.ts` is that machinery, wired at Phase 11, and its own header explains why
+there deliberately is no broker: *"a transport is not what makes this event-driven; deriving the
+next action from what just happened is."* I had audited the architecture by searching for the
+reference's shapes instead of reading what this one built.
 
 ## The clock, because it matters here
 
@@ -226,5 +269,10 @@ run cannot inflate its own soak.
   `mut-workdelivery`: **11/11 killed**, after three survivors showed three uncovered properties —
   including one guarding a phase whose gate has no eligible evaluator, which needed a reduced chart
   to reach at all
+- `src/Core.TypeScript/corporate/reconciliation.ts` / `.test.ts` — five disagreement kinds, the
+  unconsulted-party rule; 17 falsifiers, mutation `mut-recon` **10/10 killed** (one survivor showed
+  a test using an OPEN item where the mutant agreed by coincidence)
+- `src/Core.TypeScript/corporate/budget.ts` / `.test.ts` — three states, keyed idempotent spend;
+  17 falsifiers, mutation `mut-budget` **12/12 killed** first pass
 - `agentic-organization/docs/OBSERVE_ACT_PROMOTION_GATE.md` — the rule this implements
 - `agentic-organization/docs/ALWAYS_ON_ORCHESTRATION_RUNTIME.md` — the core loop the table judges against
