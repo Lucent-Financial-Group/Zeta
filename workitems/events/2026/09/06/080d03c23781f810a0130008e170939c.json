@@ -1,0 +1,14 @@
+{
+  "id": "080d03c23781f810a0130008e170939c",
+  "at": "2026-09-06T19:51:50.079Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1W4DW1Y087G0R000WR0JRN",
+    "type": "task",
+    "title": "Superagent is a capability ratchet: each run routes the next one to less intelligence",
+    "slug": "superagent-is-a-capability-ratchet-each-run-routes-the-next",
+    "priority": "P2",
+    "filename": "081M1W4DW1Y087G0R000WR0JRN-superagent-is-a-capability-ratchet-each-run-routes-the-next.md"
+  }
+}
