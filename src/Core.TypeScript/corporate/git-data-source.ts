@@ -11,8 +11,16 @@
  *       *"the database IS the git history, folded"* — git owns the SUBSTRATE (commit = event,
  *       history = log, merge = reconcile), the domain layer owns the SEMANTICS
  *   `src/Core.TypeScript/agent-bus/`
- *       the working instance: `ls-tree` + `show` at a REF, ordered by a compound cursor, unioned
- *       across clones as a G-Set (`g-set-view.ts`)
+ *       the best worked example of the TECHNIQUE — `ls-tree` + `show` at a REF, unioned across
+ *       clones as a G-Set (`g-set-view.ts`).
+ *
+ *       WHAT THE BUS IS, STATED SO THIS IS NOT MISREAD: it is COMMUNICATION — addressed messages
+ *       between a fixed roster of fleet personas (`SENDER_IDS`) over nine fixed topics. A closed
+ *       command set, deliberately. This module is not built on the bus and does not extend it; it
+ *       reuses the git-as-database mechanism the bus demonstrates, for a different purpose
+ *       (reading documents). Saying "the architecture this plugs into" about the bus itself would
+ *       overstate the relationship — the architecture is git-as-database, and the bus is one
+ *       consumer of it.
  *
  * The corporate register used git for CHANGE CONTROL — `gitChangeControl`, `gitWorktreeChangeControl`
  * — which is the WRITE half. There was no read half at all: no way to point the organization at a
@@ -34,12 +42,18 @@
  *       return []; // ref or path absent (e.g. no bus folder yet)
  *     }
  *
- * For a bus whose folder legitimately does not exist yet that is defensible. For a data source it
- * is the failure this register keeps finding: a repository that could not be read would be
- * indistinguishable from one holding nothing, and an agent would groom against silence while
- * reporting that it had consulted the source. So a MISSING REF IS A REFUSAL here, and only an
- * empty-but-readable tree is an empty answer. `directoryIntake` already made this exact call — "a
- * broken mount looks like a quiet morning" — and this is the same rule one substrate over.
+ * That line conflates two cases: a bus folder that does not exist yet (empty IS the right answer)
+ * and a git invocation that FAILED (empty is a lie). An earlier draft of this comment called it
+ * "defensible", which was too generous — an agent that cannot reach the bus and reads the result as
+ * silence concludes nobody is talking to it, and for a communication channel that is arguably the
+ * worse place for the conflation, not the better one. It is noted, not changed: the bus is not this
+ * module's to fix.
+ *
+ * Here the same conflation is refused outright. A repository that could not be read must not be
+ * indistinguishable from one holding nothing, or an agent grooms against silence while reporting
+ * that it consulted the source. So a MISSING REF IS A REFUSAL, and only an empty-but-readable tree
+ * is an empty answer. `directoryIntake` already made this exact call — "a broken mount looks like a
+ * quiet morning" — and this is that rule one substrate over.
  */
 
 import { execFileSync } from "node:child_process";
