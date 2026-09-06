@@ -1294,6 +1294,14 @@ module ZetaFsFreeze =
 
         if not (fs.Exists formatPath) && not (fs.Exists headPath) then
             ZetaFsFormat.write fs storeDir ZetaFsFormat.bindingsDefault
+            let rootPath = ZetaFsPath.combine2 storeDir ZetaFsNamespace.RootFileName
+
+            if not (fs.Exists rootPath) then
+                let ns =
+                    ZetaFsNamespace.create (
+                        ZetaFsNamespace.Entropy(fun () -> SystemEnvironment.Default.NextInt64())
+                    )
+                FileSystemIo.writeAllText fs rootPath (ZetaFsNamespace.EntityId.format ns.Root)
 
         let volume = new Volume(storeDir, mutbuf, observer, session, config, manual, blockIo, objectCas)
 
