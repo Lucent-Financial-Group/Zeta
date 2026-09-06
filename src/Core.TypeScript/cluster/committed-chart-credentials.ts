@@ -35,11 +35,13 @@
 // Run:  bun src/Core.TypeScript/cluster/committed-chart-credentials.ts
 
 import { type Dirent, readFileSync, readdirSync } from "node:fs";
+import { bootstrapDirs } from "./declared-cluster-trees.ts";
 import { join } from "node:path";
 import { parseAllDocuments, parse as parseYaml } from "yaml";
 
 export const APPLICATIONS_DIR = "full-ai-cluster/k8s/applications";
-export const BOOTSTRAP_DIRS = ["full-ai-cluster/k8s/bootstrap", "infra/k8s/bootstrap"] as const;
+/** Derived from the tree roster — see `declared-cluster-trees.ts` for why it is not a literal. */
+export const BOOTSTRAP_DIRS: readonly string[] = bootstrapDirs();
 export const BASELINE_FILE = "src/Core.TypeScript/cluster/committed-chart-credentials.baseline.json";
 
 /** The lowest number of values documents a healthy scan reaches. Below this it REFUSES. */

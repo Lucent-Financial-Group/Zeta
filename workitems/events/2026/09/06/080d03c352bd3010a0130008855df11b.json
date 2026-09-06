@@ -1,0 +1,14 @@
+{
+  "id": "080d03c352bd3010a0130008855df11b",
+  "at": "2026-09-06T20:30:30.310Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1W6MNX6087G0R002WKAV34",
+    "type": "task",
+    "title": "derive the declared cluster tree list from the roster instead of hardcoding it in every parity guard",
+    "slug": "derive-the-declared-cluster-tree-list-from-the-roster-instea",
+    "priority": "P2",
+    "filename": "081M1W6MNX6087G0R002WKAV34-derive-the-declared-cluster-tree-list-from-the-roster-instea.md"
+  }
+}

@@ -57,9 +57,20 @@ const DEV_CLUSTER = (...versions: readonly string[]): string =>
     )
     .join("\n");
 
+// The two HelmChart sites, bound once. They are DERIVED from the tree roster now, so indexing
+// yields `string | undefined`; binding here with a runtime check keeps the fixtures typed AND
+// makes the suite's own assumption explicit — it is written for exactly two declared trees, and
+// will say so rather than silently testing one when that changes.
+const [HELM_A, HELM_B] = HELMCHART_PIN_FILES;
+if (HELM_A === undefined || HELM_B === undefined) {
+  throw new Error(
+    `this suite assumes two HelmChart pin sites; the roster declares ${HELMCHART_PIN_FILES.length}`,
+  );
+}
+
 const helmTexts = (a: string, b: string): Record<string, string> => ({
-  [HELMCHART_PIN_FILES[0]]: HELM_CHART(a),
-  [HELMCHART_PIN_FILES[1]]: HELM_CHART(b),
+  [HELM_A]: HELM_CHART(a),
+  [HELM_B]: HELM_CHART(b),
 });
 
 describe("argocd-pin-parity", () => {
@@ -80,7 +91,7 @@ describe("argocd-pin-parity", () => {
     expect(message).toContain("7.7.10");
     // NAMES THE SITE. A parity failure that says "they disagree" without saying which
     // file is behind sends the reader to five files to find out.
-    expect(message).toContain(HELMCHART_PIN_FILES[1]);
+    expect(message).toContain(HELM_B);
   });
 
   test("RED when either dev-cluster site lags — both are checked, not just the first", () => {
@@ -158,7 +169,7 @@ spec:
     expect(parseApplicationTargetRevision("spec:\n  source:\n    chart: argo-cd\n")).toBeNull();
 
     const findings = checkPins(
-      { [HELMCHART_PIN_FILES[0]]: HELM_CHART("10.8.0"), [HELMCHART_PIN_FILES[1]]: noVersion },
+      { [HELM_A]: HELM_CHART("10.8.0"), [HELM_B]: noVersion },
       APPLICATION("10.8.0"),
       DEV_CLUSTER("10.8.0", "10.8.0"),
     );
