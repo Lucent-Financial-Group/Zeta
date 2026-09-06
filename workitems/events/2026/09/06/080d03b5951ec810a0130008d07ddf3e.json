@@ -1,0 +1,14 @@
+{
+  "id": "080d03b5951ec810a0130008d07ddf3e",
+  "at": "2026-09-06T12:30:13.977Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1VB58YS087G0R001G1RSXW",
+    "type": "task",
+    "title": "Classify bao ELF interpreter and option D host load-site; still not a seal",
+    "slug": "classify-bao-elf-interpreter-and-option-d-host-load-site-sti",
+    "priority": "P2",
+    "filename": "081M1VB58YS087G0R001G1RSXW-classify-bao-elf-interpreter-and-option-d-host-load-site-sti.md"
+  }
+}

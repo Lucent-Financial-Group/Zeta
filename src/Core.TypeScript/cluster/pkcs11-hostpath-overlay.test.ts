@@ -11,6 +11,8 @@
  *   * TPM overlay omitting CKM_RSA_PKCS_OAEP.
  *   * Setup treating the restore filename as the .so.
  *   * Companion path without an attached device as a seal.
+ *   * Option D host bao HCL counting as a chart seal.
+ *   * `/dev/tpmrm0` picking on-host.
  */
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
@@ -32,7 +34,9 @@ import {
   planSetupPkcs11Overlay,
   refuseSealWithoutReachableModule,
   resolveOverlayModulePath,
+  hostBaoSealHcl,
 } from "./pkcs11-hostpath-overlay.ts";
+import { ELF_INTERP_GLIBC_X86_64, ELF_INTERP_MUSL_X86_64, TPM_CHAR_DEVICE } from "./bao-load-site.ts";
 
 const APPLICATION = join(import.meta.dir, "../../../full-ai-cluster/k8s/applications/openbao/Application.yaml");
 
@@ -61,10 +65,12 @@ describe("ABI — glibc host into musl image is not a module in reach", () => {
     const plan = planPkcs11HostPathOverlay(yubihsmSameLibc);
     expect(plan.ok).toBe(true);
     expect(plan.mayCommitSeal).toBe(true);
+    expect(plan.mayCommitHostHcl).toBe(false);
+    expect(plan.loadSite).toBe("in-chart-image");
     expect(plan.abi).toBe("same-libc");
     expect(overlaySealHcl(plan)).toContain('seal "pkcs11"');
     expect(overlaySealHcl(plan)).toContain("CKM_AES_GCM");
-    expect(overlaySealHcl(plan)).not.toContain("1234");
+    expect(hostBaoSealHcl(plan)).toBeNull();
   });
 
   test("OPENBAO_HSM_IMAGE_ABI is alpine-musl; NixOS host is glibc", () => {
@@ -265,5 +271,119 @@ describe("setup wires companion contents into the current-chart overlay", () => 
     expect(plan.ok).toBe(false);
     if (!plan.ok) expect(plan.reason).toBe("no-oracle");
     expect(plan.mayCommitSeal).toBe(false);
+  });
+});
+
+describe("bao ELF capture — measured ABI and option D host load-site", () => {
+  const tpmModule = NIXOS_PKCS11_MODULE_PATH["tpm2-pkcs11"];
+  const hostBaoHcl = [
+    'seal "pkcs11" {',
+    `  lib = "${tpmModule}"`,
+    '  token_label = "zeta-openbao"',
+    '  mechanism = "CKM_RSA_PKCS_OAEP"',
+    "  # pin: never here. BAO_HSM_PIN env.",
+    "}",
+  ].join("\n");
+
+  test("in-chart musl capture keeps current-chart refuse", () => {
+    const plan = planSetupPkcs11Overlay({
+      oracle: "tpm2-pkcs11",
+      companionModulePath: null,
+      moduleFileExists: true,
+      baoElf: { site: "in-chart-image", interpreter: ELF_INTERP_MUSL_X86_64, openedPath: "/bin/bao" },
+    });
+    expect(plan.ok).toBe(false);
+    if (!plan.ok) expect(plan.reason).toBe("glibc-host-into-musl-image");
+    expect(plan.mayCommitSeal).toBe(false);
+    expect(plan.mayCommitHostHcl).toBe(false);
+    expect(overlaySealHcl(plan)).toBeNull();
+    expect(hostBaoSealHcl(plan)).toBeNull();
+  });
+
+  test("in-chart glibc capture may commit the chart seal; host HCL stays null", () => {
+    const plan = planSetupPkcs11Overlay({
+      oracle: "tpm2-pkcs11",
+      companionModulePath: null,
+      moduleFileExists: true,
+      baoElf: { site: "in-chart-image", interpreter: ELF_INTERP_GLIBC_X86_64, openedPath: "/bin/bao" },
+    });
+    expect(plan.ok).toBe(true);
+    expect(plan.loadSite).toBe("in-chart-image");
+    expect(plan.mayCommitSeal).toBe(true);
+    expect(plan.mayCommitHostHcl).toBe(false);
+    expect(overlaySealHcl(plan)).toBe(hostBaoHcl);
+    expect(hostBaoSealHcl(plan)).toBeNull();
+  });
+
+  test("option D on-host glibc bao may commit host HCL; Application.yaml still cannot", () => {
+    const yaml = readFileSync(APPLICATION, "utf8");
+    const plan = planSetupPkcs11Overlay({
+      oracle: "tpm2-pkcs11",
+      companionModulePath: null,
+      moduleFileExists: true,
+      baoElf: {
+        site: "on-host",
+        interpreter: ELF_INTERP_GLIBC_X86_64,
+        openedPath: "/run/current-system/sw/bin/bao",
+      },
+    });
+    expect(plan.ok).toBe(true);
+    expect(plan.loadSite).toBe("on-host");
+    expect(plan.mayCommitSeal).toBe(false);
+    expect(plan.mayCommitHostHcl).toBe(true);
+    expect(plan.volumes).toEqual([]);
+    expect(overlaySealHcl(plan)).toBeNull();
+    expect(hostBaoSealHcl(plan)).toBe(hostBaoHcl);
+    expect(overlayCountsAsModuleInImage(plan)).toBe(false);
+    expect(applicationMayGainPkcs11Seal(yaml, plan)).toBe(false);
+    expect(overlayValuesObject(plan).extraVolumes).toEqual([]);
+  });
+
+  test("on-host without interpreter is unmeasured, not a seal", () => {
+    const plan = planSetupPkcs11Overlay({
+      oracle: "yubihsm2",
+      companionModulePath: null,
+      moduleFileExists: true,
+      baoElf: { site: "on-host", interpreter: null, openedPath: "/run/current-system/sw/bin/bao" },
+    });
+    expect(plan.ok).toBe(false);
+    if (!plan.ok) expect(plan.reason).toBe("bao-elf-unmeasured");
+    expect(plan.mayCommitHostHcl).toBe(false);
+    expect(hostBaoSealHcl(plan)).toBeNull();
+  });
+
+  test("opening the restore pointer as bao ELF is refused", () => {
+    const plan = planSetupPkcs11Overlay({
+      oracle: "yubihsm2",
+      companionModulePath: null,
+      moduleFileExists: true,
+      baoElf: { site: "on-host", interpreter: ELF_INTERP_GLIBC_X86_64, openedPath: USB_PKCS11_MODULE_POINTER },
+    });
+    expect(plan.ok).toBe(false);
+    if (!plan.ok) expect(plan.reason).toBe("elf-capture-is-not-bao");
+  });
+
+  test("opening a .so or tpmrm0 is not a bao ELF; tpmrm0 does not pick on-host", () => {
+    const so = planSetupPkcs11Overlay({
+      oracle: "tpm2-pkcs11",
+      companionModulePath: null,
+      moduleFileExists: true,
+      baoElf: {
+        site: "on-host",
+        interpreter: ELF_INTERP_GLIBC_X86_64,
+        openedPath: NIXOS_PKCS11_MODULE_PATH["tpm2-pkcs11"],
+      },
+    });
+    expect(so.ok).toBe(false);
+    if (!so.ok) expect(so.reason).toBe("elf-capture-is-not-bao");
+    const tpm = planSetupPkcs11Overlay({
+      oracle: "tpm2-pkcs11",
+      companionModulePath: null,
+      moduleFileExists: true,
+      baoElf: { site: "in-chart-image", interpreter: ELF_INTERP_GLIBC_X86_64, openedPath: TPM_CHAR_DEVICE },
+    });
+    expect(tpm.ok).toBe(false);
+    if (!tpm.ok) expect(tpm.reason).toBe("elf-capture-is-not-bao");
+    expect(tpm.loadSite).toBe("in-chart-image");
   });
 });

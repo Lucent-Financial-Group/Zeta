@@ -160,6 +160,12 @@ assume the number.
    read of `/etc/zeta/seal/pkcs11-module-path`. Opening
    any other path is not this companion. No live
    filesystem. Current chart still cannot commit.
+   Load-site / ELF follow-on (`081M1VB58YS087G0R001G1RSXW`):
+   captured `PT_INTERP` classifies musl vs glibc; option D
+   host `bao` is a named site that may emit host HCL and
+   still cannot edit Application.yaml. A glibc CI tarball
+   on disk is not the chart image. `/dev/tpmrm0` does not
+   pick on-host. No live `readelf`.
 7. extraContainer sidecar — later, **same commit as the
    sidecar**, and only for the Shamir kind path until the
    emulator job replaces it. `valuesObject` only. Do not fork

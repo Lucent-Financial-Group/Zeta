@@ -40,7 +40,12 @@
  */
 
 import { emptyCapture, type HostHardwareCapture } from "./host-seal-profile.ts";
-import { planSetupPkcs11Overlay, USB_PKCS11_MODULE_POINTER, type OverlayPlan } from "./pkcs11-hostpath-overlay.ts";
+import {
+  planSetupPkcs11Overlay,
+  USB_PKCS11_MODULE_POINTER,
+  type BaoElfCapture,
+  type OverlayPlan,
+} from "./pkcs11-hostpath-overlay.ts";
 import { pickOpenbaoMechanism, type MechanismPick, type SealOracle } from "./seal-emulator-rung.ts";
 import { UNSEAL_THRESHOLD } from "./vault-unsealer.ts";
 
@@ -365,15 +370,18 @@ export function sealOracleFromUnsealPath(path: UnsealPath): SealOracle {
 /**
  * Setup join: the integrate decision is the oracle. Companion
  * *contents* still win. A refused integrate is no-oracle, not a seal.
- * Current chart ABI still cannot commit the stanza.
+ * Current chart ABI still cannot commit the stanza unless a
+ * capture names a same-libc in-chart `bao`. Option D is a
+ * named host load-site, not a chart seal.
  */
 export function planSetupOverlayFromIntegrate(
   decision: IntegrateDecision,
   companionModulePath: string | null,
   moduleFileExists: boolean,
+  baoElf?: BaoElfCapture | null,
 ): OverlayPlan {
   const oracle = decision.ok ? sealOracleFromUnsealPath(decision.path) : "none";
-  return planSetupPkcs11Overlay({ oracle, companionModulePath, moduleFileExists });
+  return planSetupPkcs11Overlay({ oracle, companionModulePath, moduleFileExists, baoElf: baoElf ?? null });
 }
 
 /**
@@ -400,8 +408,14 @@ export function companionContentsFromRestore(capture: RestoredPkcs11PointerCaptu
 export function planSetupFromRestoredCompanion(
   decision: IntegrateDecision,
   capture: RestoredPkcs11PointerCapture,
+  baoElf?: BaoElfCapture | null,
 ): OverlayPlan {
-  return planSetupOverlayFromIntegrate(decision, companionContentsFromRestore(capture), capture.resolvedModuleExists);
+  return planSetupOverlayFromIntegrate(
+    decision,
+    companionContentsFromRestore(capture),
+    capture.resolvedModuleExists,
+    baoElf,
+  );
 }
 
 export function defaultMetalCapture(): HostHardwareCapture {
