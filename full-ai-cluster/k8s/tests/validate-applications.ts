@@ -1,15 +1,15 @@
 #!/usr/bin/env bun
 /**
- * infra/k8s/tests/validate-applications.ts
+ * full-ai-cluster/k8s/tests/validate-applications.ts
  *
  * ArgoCD Application + Helm chart validation for the `infra/k8s` GitOps tree.
  *
  * Usage:
- *   bun infra/k8s/tests/validate-applications.ts                 # structural + chart pin (online)
- *   bun infra/k8s/tests/validate-applications.ts --offline       # structural only, no network
- *   bun infra/k8s/tests/validate-applications.ts --render        # + helm template + kubeconform
- *   bun infra/k8s/tests/validate-applications.ts --apps-dir DIR  # point at another tree
- *   bun infra/k8s/tests/validate-applications.ts --root-app PATH # root-application.yaml elsewhere
+ *   bun full-ai-cluster/k8s/tests/validate-applications.ts                 # structural + chart pin (online)
+ *   bun full-ai-cluster/k8s/tests/validate-applications.ts --offline       # structural only, no network
+ *   bun full-ai-cluster/k8s/tests/validate-applications.ts --render        # + helm template + kubeconform
+ *   bun full-ai-cluster/k8s/tests/validate-applications.ts --apps-dir DIR  # point at another tree
+ *   bun full-ai-cluster/k8s/tests/validate-applications.ts --root-app PATH # root-application.yaml elsewhere
  *
  * Exit codes: 0 = all checks passed, 1 = one or more failed, 2 = usage error.
  *
@@ -39,7 +39,7 @@
  * `helm template` and `kubeconform`, which are pinned in `.mise.full.toml`.
  *
  * Every claim above is re-proved on every run of
- * `infra/k8s/tests/validate-applications.test.ts`, which mutates manifests in
+ * `full-ai-cluster/k8s/tests/validate-applications.test.ts`, which mutates manifests in
  * a temp tree and asserts this script exits 1. A check that is not proved to
  * go red is occupying the slot where a real one would go.
  *

@@ -1,11 +1,11 @@
 #!/usr/bin/env bun
 /**
- * infra/k8s/tests/ratchet-app-failures.ts
+ * full-ai-cluster/k8s/tests/ratchet-app-failures.ts
  *
  * RATCHET for the full-ai-cluster/k8s GitOps tree.
  *
  * Usage:
- *   bun infra/k8s/tests/ratchet-app-failures.ts    # measure + compare (no options)
+ *   bun full-ai-cluster/k8s/tests/ratchet-app-failures.ts    # measure + compare (no options)
  *
  * Exit codes: 0 = count matches baseline exactly, 1 = it does not, 2 = the
  * measurement itself could not be trusted.
@@ -43,7 +43,7 @@ import { fileURLToPath } from "node:url";
 // passing -- a check that did not run looking like one that did. One mode, one
 // number. Run the validator directly if an offline pass is wanted.
 if (process.argv.length !== 2) {
-  console.error("usage: bun infra/k8s/tests/ratchet-app-failures.ts   (takes no options)");
+  console.error("usage: bun full-ai-cluster/k8s/tests/ratchet-app-failures.ts   (takes no options)");
   process.exit(2);
 }
 const testsDir = dirname(fileURLToPath(import.meta.url));

@@ -1065,7 +1065,7 @@ jobs:
         # Kubernetes released most recently, which is NOT the version any of our
         # clusters run and which DRIFTS UNDER US with no commit here. The pin's
         # provenance was this repo's own already-declared target: the `kube-version`
-        # default in infra/k8s/tests/validate-applications.ts, which the helm-validate
+        # default in full-ai-cluster/k8s/tests/validate-applications.ts, which the helm-validate
         # lane had been rendering against for the other cluster tree. Two lanes
         # validating the same kinds against two different Kubernetes versions is the
         # drift that closed.
