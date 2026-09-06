@@ -233,6 +233,11 @@ experimental choices and must not be retroactively described as doing so.
 The independent reference and PixelProjection leakage falsifier must pass
 before measurement, after implementation and protocol are remotely preserved.
 
+The subsequent
+[independent carrier/replay source review](2026-09-06-rendered-catch-carrier-replay-review.md)
+retains the premeasurement envelope-coverage and failed-attempt provenance
+findings, their corrections, and the native/reference execution boundary.
+
 ## Why the other inspected carriers are not the minimum follow-up
 
 [`ContextualGridBenchmark.fs`](../../src/Core/ContextualGridBenchmark.fs),
