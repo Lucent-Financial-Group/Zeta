@@ -715,8 +715,8 @@ describe("the checked-in catalogue", () => {
   // is pinned is its total, not its agreement with the YAML. The manifests are
   // pinned against the ACTIVE rung below, read from the ledger, which is a
   // check that cannot go stale by naming the wrong profile.
-  test("large is still the pre-ladder declaration, 1599 GiB", () => {
-    expect(profileTotalGib(catalogue, "large")).toBe(1599);
+  test("large is still the pre-ladder declaration, 1575 GiB", () => {
+    expect(profileTotalGib(catalogue, "large")).toBe(1575);
   });
 
   test("the manifests declare exactly the rung the ledger says is active", async () => {

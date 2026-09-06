@@ -233,8 +233,17 @@ describe("validate-applications mutation suite", () => {
     "RED when the ArgoCD finalizer is dropped (orphans resources on delete)",
     () => {
       const { exitCode, output } = runWithMutation((appsDir) => {
+        // BOTH YAML SEQUENCE STYLES. The old pattern matched only a block
+        // sequence, and `gitlab` in full-ai-cluster writes the flow form
+        // `finalizers: [ resources-finalizer.argocd.argoproj.io ]` on one line --
+        // so the mutation silently matched nothing, the validator passed, and the
+        // case failed for the right reason by accident rather than by mutation.
+        // A mutation that does not mutate is the same defect as a check that
+        // cannot fail, one level up.
         edit(appManifest(appsDir, "gitlab"), (t) =>
-          t.replace(/^ {2}finalizers:\n {4}- resources-finalizer\.argocd\.argoproj\.io\n/m, ""),
+          t
+            .replace(/^ {2}finalizers:\n(?: {4}- .*\n)+/m, "")
+            .replace(/^ {2}finalizers: \[[^\]]*\]\n/m, ""),
         );
       });
       expect(output).toContain("missing resources-finalizer.argocd.argoproj.io");
@@ -380,11 +389,19 @@ describe("validate-applications mutation suite", () => {
         mkdirSync(join(appsDir, "onlydir"), { recursive: true });
         writeFileSync(join(appsDir, "onlydir", "Application.yaml"), DIRECTORY_SOURCE_APP, "utf-8");
         writeFileSync(join(appsDir, "root-application.yaml"), ROOT_APP, "utf-8");
-        const proc = Bun.spawnSync(["bun", validator, "--apps-dir", appsDir, "--render"], {
-          stdout: "pipe",
-          stderr: "pipe",
-          cwd: repoRoot,
-        });
+        // `--root-app` IS REQUIRED NOW. This tree is synthetic and keeps its root
+        // beside the Applications; the validator's default root moved to
+        // full-ai-cluster/k8s/bootstrap/root-application.yaml with the apps-dir
+        // default, so without this flag it would read the REAL root and treat the
+        // synthetic one as an Application no check reads.
+        const proc = Bun.spawnSync(
+          ["bun", validator, "--apps-dir", appsDir, "--root-app", join(appsDir, "root-application.yaml"), "--render"],
+          {
+            stdout: "pipe",
+            stderr: "pipe",
+            cwd: repoRoot,
+          },
+        );
         const output = `${proc.stdout.toString()}${proc.stderr.toString()}`;
         // Test 9's refusal must fire, and NOTHING ELSE may be failing for an
         // unrelated reason — otherwise this case would pass on somebody else's

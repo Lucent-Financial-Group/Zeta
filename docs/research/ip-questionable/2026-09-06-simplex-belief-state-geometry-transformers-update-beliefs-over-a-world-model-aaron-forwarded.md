@@ -107,6 +107,108 @@ has a different functional form from a single generator's. **Not tested here.**
   unknown. That exchange is left in rather than trimmed.
 - **Aaron's framing is the register to keep:** *"very closely related"*, not *"the same"*.
 
+## The slide equations, transcribed (Aaron: "they will for sure come in handy for our model design")
+
+**Provenance from the slide chrome itself**, which the transcript did not carry:
+*FOUNDATIONS OF INTERPRETABILITY, AUGUST 31 – SEPTEMBER 4, 2026, www.ipam.ucla.edu* · slide footer
+*"The shape of beliefs and abstraction in neural networks."* So: **IPAM, UCLA**, a workshop rather
+than a conference paper.
+
+### Cross-entropy loss
+
+$$\langle \mathcal{L}_\theta \rangle_{Q(X_{1:L})}
+= -\big\langle \log \Pr_\theta(X_{1:L}) \big\rangle_{Q(X_{1:L})}
+= \sum_{\ell=1}^{L} -\big\langle \log \Pr_\theta(X_\ell \mid X_{1:\ell-1}) \big\rangle_{Q(X_{1:\ell})}
+= \sum_{\ell=1}^{L} c_\ell^{(\Pr_\theta, Q)}$$
+
+### Minimized by joint entropy
+
+$$\min_\theta \langle \mathcal{L}_\theta \rangle_{Q(X_{1:L})}
+= -\big\langle \log Q(X_{1:L}) \big\rangle_{Q(X_{1:L})}
+= \sum_{\ell=1}^{L} -\big\langle \log Q(X_\ell \mid X_{1:\ell-1}) \big\rangle_{Q(X_{1:\ell})}
+= \sum_{\ell=1}^{L} h_\ell^{Q}$$
+
+where `Q` is the ground-truth sequence distribution, `Pr_θ` the model's, `c_ℓ` the per-position
+cross-entropy and `h_ℓ` the per-position conditional entropy of the source.
+
+### Why these are the entropy-decomposition equations, and not just the loss
+
+Aaron 2026-09-06: *"we are heavily focused on entropy decomposition so we can measure it as
+accurately as Maxwell's demon and capture it for identity space expansion — the attached formulas
+are very closely related."*
+
+The two lines above are **the same sum decomposed twice**, and subtracting them is the whole point:
+
+$$c_\ell - h_\ell = D_{\mathrm{KL}}\!\left(Q(X_\ell \mid X_{1:\ell-1}) \,\|\, \Pr_\theta(X_\ell \mid X_{1:\ell-1})\right) \ \ge 0$$
+
+- **`h_ℓ`** is the source's own conditional entropy — **irreducible**. No model, however good, gets
+  below it. It is the noise floor of the world.
+- **`c_ℓ − h_ℓ`** is everything the model has *failed to extract* — **reducible**, and it goes to
+  zero exactly when the model has the world model.
+
+That split is the demon's ledger in its exact form: **how much of what you are seeing is
+irreducible uncertainty, and how much is order you have not yet extracted.** A demon that cannot
+tell those apart cannot do work; one that can, can. And it is a *per-position* decomposition, so
+the quantity is indexed by where in the sequence you are — which is what makes it measurable rather
+than a global scalar.
+
+**The connection to identity-space expansion, stated as Aaron's claim and not as a result:** if the
+reducible part is what a system can convert into structure, then extracting it is exactly what
+grows the space an identity occupies — and the irreducible part is the floor that keeps the space
+from collapsing. That is the same two-sided shape as the diversity floor
+(`docs/SEED-VOCABULARY.md`: coercion collapses diversity → 1) read in information-theoretic units.
+**Not measured here.** What the equations supply is the *decomposition*, which is the prerequisite.
+
+## Four corners, pseudo-retrocausality, and the S-value conjecture
+
+Aaron 2026-09-06, two claims recorded with his own registers attached.
+
+### (a) Feedback reinterprets the past; it does not rewrite it
+
+> *"our four corner stuff is the root of our pseudo-retrocausality over Erik Meijer's vF/uF-like
+> shapes, where feedback can cause a REINTERPRETATION of the past, not a changing of the actual
+> historical data."*
+
+**This is the raw-vault sentence in dynamical form**, and it is worth recording because it names
+the mechanism rather than the discipline. `dv2-data-split-discipline-activated.md`: *a single
+version of the FACTS, never a single version of the TRUTH* — the facts are immutable, the
+interpretation is not. Z-set retraction is **correction, not deletion**: `+1` then `−1` leaves both
+in the log. So "the past is reinterpreted, never rewritten" is not a metaphor here; it is what the
+storage layer already does.
+
+Meijer is a standing anchor in this substrate (`IEnumerable ⇄ IObservable`, catamorphism/anamorphism
+as fold/unfold — *what remains* ⇄ *what acts*), which is why the vF/uF framing lands rather than
+needing translation.
+
+### (b) The S-value conjecture — explicitly an assumption
+
+> *"the 2√2 is my assumption that the four corners is what allows for our common seed to stay
+> correlated … when working over a real network with latency. **Not been measured yet.** Our
+> measurements have said **S = 4 superdeterministic** because we have a common seed for
+> correlation. I think with just the normal channels, without the feedback channels that four
+> corners gives you, you can't do things like backpressure … so I think you'll end up with a lesser
+> S value. **This is an assumption at this point in time.**"*
+
+Stated as a chain so the measured and assumed parts stay separable:
+
+| step | status |
+|---|---|
+| a common seed defeats the free-choice assumption, so agents sharing it are **superdeterministically** correlated and reach the algebraic maximum **S = 4** | **measured in-tree** |
+| a real network with latency and loss degrades that correlation | expected; the mechanism the Reticulum note treats as the candidate instrument |
+| **four-corner feedback channels** (backpressure among them) are what hold correlation up under that degradation | **ASSUMPTION** |
+| without them, the achievable S falls — perhaps toward 2√2 | **ASSUMPTION, and the number is not claimed** |
+
+**The register is his and it is the right one.** `FourCornerC4.fs` already carries an in-file
+warning that a numeric coincidence with 2√2 is *"not a measurement of Tsirelson"*, and this
+conjecture is consistent with that warning rather than in tension with it: it says where a
+measurement *could* come from, and says plainly that it has not been made.
+
+What makes it a good conjecture rather than a resonance: **it predicts a DIRECTION and a
+mechanism.** Remove the feedback channels and S should fall; keep them and it should not. That is a
+differential experiment over a substrate we control, and a null result — S unchanged either way —
+would refute the role of the feedback channels without needing anyone to agree about what 2√2
+means.
+
 ## Transcript (verbatim as forwarded)
 
 ```

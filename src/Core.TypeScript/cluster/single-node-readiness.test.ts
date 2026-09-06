@@ -1259,16 +1259,16 @@ describe("findLedgerFigureDrift — the ledger's PROSE numbers are checked too",
   });
 
   test("a token that is not a known StorageClass is prose, not a figure", () => {
-    // `measured     967 GiB declared` is a rung name, not a class, and must not
+    // `measured     943 GiB declared` is a rung name, not a class, and must not
     // be adjudicated as one — otherwise the check fires on its own comment.
-    expect(quotedFigures(["    measured     967 GiB declared"], new Set(["longhorn"]))).toEqual([]);
-    expect(quotedFigures(["    longhorn      967 GiB   (x)"], new Set(["longhorn"]))).toHaveLength(1);
+    expect(quotedFigures(["    measured     943 GiB declared"], new Set(["longhorn"]))).toEqual([]);
+    expect(quotedFigures(["    longhorn      943 GiB   (x)"], new Set(["longhorn"]))).toHaveLength(1);
   });
 
   test("an inline mention with no alignment is not a figure", () => {
-    // `longhorn=1599GiB>>1047GiB@node-ad1efd` is an acknowledgement KEY, and
+    // `longhorn=1575GiB>>1047GiB@node-ad1efd` is an acknowledgement KEY, and
     // those are checked by findCapacityProvenance, not here.
-    expect(quotedFigures(["  longhorn=1599GiB>>1047GiB@node-ad1efd"], new Set(["longhorn"]))).toEqual([]);
+    expect(quotedFigures(["  longhorn=1575GiB>>1047GiB@node-ad1efd"], new Set(["longhorn"]))).toEqual([]);
   });
 
   // THE WIRING, not just the function. Mutation M14 (2026-08-22) deleted the

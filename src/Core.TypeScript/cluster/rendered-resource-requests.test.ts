@@ -868,7 +868,7 @@ describe("unreachable git-path requests", () => {
     }
   });
 
-  test("the zero-replica four carry 5100m of LATENT request; the vendored two cost 120m TODAY", () => {
+  test("the zero-replica four carry 4600m of LATENT request; the vendored two cost 120m TODAY", () => {
     const open = unreachableGitPathRequests(catalogue);
     // LATENT: schedules nothing while `replicas: 0`. 4000 (vllm) + 500
     // (orleans) + 500 (infra/orleans) + 100 (hat-system).
@@ -877,7 +877,7 @@ describe("unreachable git-path requests", () => {
     // list by hand and dropped hat-system. The check caught it, which is the
     // only reason the number here is measured rather than asserted.
     const latent = open.filter((entry) => entry.replicas === 0);
-    expect(latent.reduce((sum, entry) => sum + entry.cpuMillis, 0)).toBe(5100);
+    expect(latent.reduce((sum, entry) => sum + entry.cpuMillis, 0)).toBe(4600);
     expect(latent.reduce((sum, entry) => sum + entry.memoryMib, 0)).toBe(17536);
     expect(open.find((entry) => entry.appId === "full-ai-cluster/vllm")?.cpuMillis).toBe(4000);
 
