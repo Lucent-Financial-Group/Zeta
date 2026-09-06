@@ -90,3 +90,24 @@ All four pairs agree, each having been re-rendered at its new version — or the
 empty because the divergences were closed the other way. Either ends with an audit that
 passes because the tree is right, not because the roster is long.
 
+## 2026-09-06 — one paid: `spire-crds` 0.5.0 -> 0.6.1
+
+The cheapest of the four, and the suggested order held. Measured with `helm template` at
+both versions before touching the pin:
+
+| | 0.5.0 | 0.6.1 |
+|---|---|---|
+| CRDs rendered | `clusterspiffeids`, `clusterfederatedtrustdomains`, `clusterstaticentries` | same three |
+| served API version | `v1alpha1` in all three | same |
+| `openAPIV3Schema` property diff | — | **0 removed, 0 added**, in all three |
+
+So the API surface a running controller sees is unchanged, which is what made this one
+cheap: nothing to re-render (the CR carries no `valuesContent`) and nothing to migrate.
+
+Its baseline entry is **deleted, not edited** — the key carries both versions, so an edited
+entry would have been a new acknowledgement of a divergence that no longer exists. Three
+remain: `cert-manager`, `external-secrets`, `trust-manager`.
+
+Verified: pin-parity rc=0 with 3 acknowledged and none open, 10/10 falsifiers, first-boot
+render 8/8 (spire-crds now templating at 0.6.1), `validate-bootstrap` rc=0.
+

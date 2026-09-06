@@ -27,7 +27,18 @@ metadata:
 spec:
   chart: spire-crds
   repo: https://spiffe.github.io/helm-charts-hardened/
-  version: 0.5.0
+  # 0.5.0 -> 0.6.1 on 2026-09-06, to EQUAL k8s/applications/spire-crds/Application.yaml.
+  # The two install the same Helm release -- K3S at first boot, then the Application adopts
+  # it -- so a split pin means the cluster upgrades its own CRDs in an early sync wave,
+  # underneath a spire chart (0.24.2 on both sides, correct) that is coming up against them.
+  #
+  # MEASURED before bumping, `helm template` at both versions:
+  #   same three CRDs (clusterspiffeids, clusterfederatedtrustdomains, clusterstaticentries)
+  #   same served version, v1alpha1, in all three
+  #   openAPIV3Schema property diff: 0 removed, 0 added, in all three
+  # So the API surface is byte-identical in the sense that matters, which is what made this
+  # the cheapest of the four divergences to close: nothing to re-render, nothing to migrate.
+  version: 0.6.1
   targetNamespace: spire
   createNamespace: true
 ---

@@ -25,11 +25,6 @@
       "liftsWhen": "LIFTS WHEN: the two pins are byte-equal. This one should be read as a real migration rather than a bump -- render 2.10.0 against this file's values, check the CRD API versions the tree's ExternalSecret manifests use are still served, and only then move both pins. If 2.10.0 turns out to be wrong for first boot, moving the APPLICATION down to the bootstrap's line is an equally valid way to close this entry."
     },
     {
-      "key": "spire-crds|bootstrap=0.5.0|application=0.6.1",
-      "reason": "THE NARROWEST GAP AND THE ONE WITH THE SHARPEST FAILURE MODE. spire-crds installs nothing but CustomResourceDefinitions, so the divergence is purely a CRD-schema upgrade landing mid-bring-up, underneath the spire chart (pinned 0.24.2 on BOTH sides, i.e. correct) that is coming up against it. A CRD set that changes under a running controller is the case where `helm template` renders clean and the cluster still misbehaves.",
-      "liftsWhen": "LIFTS WHEN: the two pins are byte-equal. Cheapest of the four to pay -- the bootstrap CR carries no valuesContent, so there is nothing to re-render; the check is that 0.6.1's CRDs are compatible with spire 0.24.2, which is already the pinned spire on both sides."
-    },
-    {
       "key": "trust-manager|bootstrap=v0.15.0|application=v0.24.0",
       "reason": "THE ONE WHERE THE COUPLING IS ALREADY WRITTEN DOWN -- FOR A VALUE, NOT THE VERSION. `trust-manager-install.yaml` says a value `MUST MATCH k8s/applications/trust-manager/Application.yaml`, because the bootstrap and the Application `share a Helm release` and a mismatch is `two reconcilers flipping the flag against each other`. That reasoning applies to the chart version identically and was not extended to it, so the file guards the smaller half of its own hazard. CRD-bearing, and downstream of cert-manager, which is itself divergent above.",
       "liftsWhen": "LIFTS WHEN: the two pins are byte-equal. Pay this one AFTER cert-manager: trust-manager consumes cert-manager's CRDs, so moving it first would be measuring the wrong variable. Its `MUST MATCH` value note should be extended to name the version at the same time, so the file states the whole coupling rather than half of it."
