@@ -1971,6 +1971,84 @@ jobs:
       - name: Run check-tick-history-order
         run: bun src/Core.TypeScript/hygiene/check-tick-history-order.ts
 
+  # The triangle meter, as a NON-BLOCKING drift step (Aaron 2026-09-06: "wire it into
+  # gate as a non-blocking drift step").
+  #
+  # It reports where the tracked bytes sit across generator / joins / observability, and
+  # on a pull request also which way THIS PR moves the ratio. It is not in
+  # `registry/uncompensatable-floor.yaml`, so it cannot block a merge — the floor is the
+  # only thing `gate (required)` rolls up. That is deliberate: byte composition is a
+  # direction to watch, never a bar to clear, and a composition check that could block
+  # would be a bar nobody agreed to.
+  #
+  # WHY THE STEP IS `continue-on-error` AND WHAT THAT COSTS. The meter exits non-zero on
+  # one condition: over 20% of tracked bytes unclassified, meaning its rules no longer
+  # cover the tree and the number would be a guess. Swallowing that here is intentional —
+  # but this file already documents that a step-level swallow produces a green job with a
+  # failed step and no red X anywhere, which is precisely the class `drift (loud)` exists
+  # to surface. So the refusal is absorbed here and reported there. It is quiet in this
+  # job and loud in the one whose job is loudness, which is the arrangement this workflow
+  # already uses on purpose.
+  #
+  # NO `bun install`. The meter imports only `node:child_process`, `node:fs` and
+  # `node:path`, so the locked graph is not needed and an apt/registry stall cannot
+  # suppress the reading.
+  #
+  # It is invoked through the `hygiene:triangle-corners` package script rather than by
+  # path, because `audit-linter-coverage-vs-invocation` requires that a CONFIGURED tool
+  # be an INVOKED one — which is the same discipline this meter's own document argues
+  # under a different name: an artifact nobody consults stores nothing. Registering the
+  # script without wiring it here is exactly what that audit caught.
+  drift-triangle-corners:
+    name: drift (triangle corners)
+    timeout-minutes: 10
+    runs-on: ubuntu-24.04
+    if: always()
+
+    steps:
+      # `git ls-tree -r -l` reads tree entries AND blob sizes, so this must be an
+      # unfiltered checkout. depth 1 is enough — the meter measures ONE commit; the
+      # comparison base is fetched separately below, also at depth 1.
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Setup pinned Bun
+        uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
+        with:
+          bun-version: "1.3.13"
+
+      # A probe that fails is UNKNOWN, never a negative result. If the base commit
+      # cannot be fetched, this says so and the composition is still reported without a
+      # direction — it must never print "no movement" when it could not look.
+      - name: Fetch the comparison base (pull requests only)
+        id: base
+        if: github.event_name == 'pull_request'
+        continue-on-error: true
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+        run: |
+          set -euo pipefail
+          if git fetch --depth=1 origin "$BASE_SHA" 2>/dev/null; then
+            echo "base=$BASE_SHA" >> "$GITHUB_OUTPUT"
+            echo "comparison base available: $BASE_SHA"
+          else
+            echo "base=" >> "$GITHUB_OUTPUT"
+            echo "comparison base UNAVAILABLE for $BASE_SHA - direction will be reported as unknown, not as zero"
+          fi
+
+      - name: Measure the triangle corners
+        continue-on-error: true
+        env:
+          BASE: ${{ steps.base.outputs.base }}
+        run: |
+          set -euo pipefail
+          if [ -n "${BASE:-}" ]; then
+            bun run hygiene:triangle-corners --since "$BASE"
+          else
+            echo "direction of travel: UNKNOWN (no comparison base on this event)"
+            bun run hygiene:triangle-corners
+          fi
+
   lint-no-conflict-markers:
     # Fail if any committed file contains git merge-conflict markers
     # (`<<<<<<<`, `=======`, `>>>>>>>`). Maintainer 2026-04-26 ask:
