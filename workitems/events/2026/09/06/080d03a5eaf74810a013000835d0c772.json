@@ -1,0 +1,14 @@
+{
+  "id": "080d03a5eaf74810a013000835d0c772",
+  "at": "2026-09-06T03:22:42.793Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1TBTQQ8087G0R00074Z6Y6",
+    "type": "task",
+    "title": "BlockCas DST door to XOR one published key",
+    "slug": "blockcas-dst-door-to-xor-one-published-key",
+    "priority": "P2",
+    "filename": "081M1TBTQQ8087G0R00074Z6Y6-blockcas-dst-door-to-xor-one-published-key.md"
+  }
+}
