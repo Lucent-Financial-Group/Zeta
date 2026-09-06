@@ -834,12 +834,18 @@ describe("a rung reaches a raw in-repo manifest", () => {
 describe("unreachable git-path requests", () => {
   const catalogue = loadResourceCatalogue();
 
-  // SIX remain, in TWO classes, and the classes are different refusals:
-  //   - four are `replicas: 0` and CANNOT be governed (`pods >= 1` in the schema)
+  // FIVE remain, in TWO classes, and the classes are different refusals:
+  //   - three are `replicas: 0` and CANNOT be governed (`pods >= 1` in the schema)
+  //
+  // WAS SIX. `infra/orleans` left by DELETION, not by being fixed: it was one of
+  // seven Applications under `infra/k8s/applications` that duplicated
+  // full-ai-cluster ones, and `Application/zeta-root` was declared twice with
+  // different `path:` values -- so metal booted a 7-app cluster while CI proved a
+  // 50-app one. One root now, one directory, and the duplicate is gone.
   //   - two are vendored byte-for-byte and are DELIBERATELY not governed
   // The set is asserted whole, so a seventh appearing fails here even if
   // somebody also remembers to baseline it.
-  test("exactly six remain, in two named classes, all acknowledged", () => {
+  test("exactly five remain, in two named classes, all acknowledged", () => {
     const open = unreachableGitPathRequests(catalogue);
     expect(open.map((entry) => entry.appId).sort()).toEqual([
       "full-ai-cluster/cdi",
@@ -847,14 +853,13 @@ describe("unreachable git-path requests", () => {
       "full-ai-cluster/kubevirt",
       "full-ai-cluster/orleans",
       "full-ai-cluster/vllm",
-      "infra/orleans",
     ]);
     expect(
       open
         .filter((entry) => entry.replicas === 0)
         .map((entry) => entry.appId)
         .sort(),
-    ).toEqual(["full-ai-cluster/hat-system", "full-ai-cluster/orleans", "full-ai-cluster/vllm", "infra/orleans"]);
+    ).toEqual(["full-ai-cluster/hat-system", "full-ai-cluster/orleans", "full-ai-cluster/vllm"]);
     expect(
       open
         .filter((entry) => entry.replicas > 0)
@@ -878,7 +883,7 @@ describe("unreachable git-path requests", () => {
     // only reason the number here is measured rather than asserted.
     const latent = open.filter((entry) => entry.replicas === 0);
     expect(latent.reduce((sum, entry) => sum + entry.cpuMillis, 0)).toBe(4600);
-    expect(latent.reduce((sum, entry) => sum + entry.memoryMib, 0)).toBe(17536);
+    expect(latent.reduce((sum, entry) => sum + entry.memoryMib, 0)).toBe(17024);
     expect(open.find((entry) => entry.appId === "full-ai-cluster/vllm")?.cpuMillis).toBe(4000);
 
     // SCHEDULED: the vendored pair reserves this today, at every rung, and no

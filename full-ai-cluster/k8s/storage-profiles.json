@@ -39,7 +39,7 @@
     "",
     "  minimal    200 GiB declared  ->  ~267 GiB Longhorn disk  ->  a ~300 GiB box",
     "  standard   595 GiB declared  ->  ~793 GiB Longhorn disk  ->  a ~850 GiB box",
-    "  measured   967 GiB declared  ->  ~1289 GiB Longhorn disk ->  see below",
+    "  measured   943 GiB declared  ->  ~1289 GiB Longhorn disk ->  see below",
     "  large     1599 GiB declared  ->  ~2132 GiB Longhorn disk ->  a ~2.2 TiB box",
     "",
     "`measured` is the rung this deployment runs, and the row above is the",
@@ -1503,7 +1503,7 @@
     "Both were recorded in rendered-storage-claims.baseline.json when the checker",
     "found them; all three acknowledgements are now RETIRED rather than carried, because",
     "a baseline entry that outlives its defect is itself a finding. The declared",
-    "\"measured\" total is 967 GiB; 861 GiB of longhorn renders as declared, 106 GiB",
+    "\"measured\" total is 943 GiB; 861 GiB of longhorn renders as declared, 106 GiB",
     "sits behind apps that could not be rendered at all, and 0 GiB of the declaration",
     "fails to render."
   ],
