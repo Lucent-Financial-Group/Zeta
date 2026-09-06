@@ -1,0 +1,12 @@
+{
+  "pr_number": 16736,
+  "archive_path": "docs/history/pr-reviews/PR-16736-feat-arc-add-cross-domain-frame-signals.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-06T04:01:02.974Z",
+  "schema_version": "v1",
+  "commit_sha": "a0b2be4189a276d3d3fc35a5621bb0873c1c4b21",
+  "title": "feat(arc): add cross-domain frame signals",
+  "state": "MERGED",
+  "merged_at": "2026-09-06T04:00:22Z",
+  "head_ref": "codex/frame-signals-cross-domain"
+}

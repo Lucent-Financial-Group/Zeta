@@ -1,0 +1,12 @@
+{
+  "pr_number": 16733,
+  "archive_path": "docs/history/pr-reviews/PR-16733-feat-081m1tbtqq8087g0r00074z6y6-blockcas-dst-door-to-xor-one-key.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-06T04:17:13.288Z",
+  "schema_version": "v1",
+  "commit_sha": "b3ca154fb4450bab2059054d90f35163caba7745",
+  "title": "feat(081M1TBTQQ8087G0R00074Z6Y6): BlockCas DST door to XOR one key",
+  "state": "MERGED",
+  "merged_at": "2026-09-06T04:16:36Z",
+  "head_ref": "feat/zetafs-blockcas-xor-one"
+}
