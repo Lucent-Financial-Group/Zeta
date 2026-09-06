@@ -5,10 +5,11 @@
  * argv parse. No filesystem. `lib.ts` writes the joined
  * conf onto the ESP. `file-backed.ts` parses `--bao-load-site`
  * and `--bao-path` here so it does not import installer `fs`.
- * `prepare-boot-image.ts` uses the same parse. Capture / overlay
- * still live in bao-elf-capture.ts (that module may read).
- * Does not expand `ZetaFirstbootRole`. Does not edit
- * `zeta-first-boot.sh`.
+ * `prepare-boot-image.ts` uses the same parse. Conf/env consume
+ * also lives here so firstboot-bao-env.ts can read sourced
+ * names without installer `fs`. Capture / overlay still live
+ * in bao-elf-capture.ts (that module may read). Does not expand
+ * `ZetaFirstbootRole`. Does not edit `zeta-first-boot.sh`.
  *
  * Cite: firstboot-role.ts, bao-load-site.ts,
  * docs/research/2026-08-21-hands-off-metal-*.md §1.4.
@@ -235,4 +236,86 @@ export function planFirstbootConfWithNamedBaoElf(
     value: appendFirstbootBaoElfConf(planned.value, named, restorePointer),
     config: planned.config,
   };
+}
+
+export interface FirstbootBaoElfEnv {
+  readonly ZETA_BAO_LOAD_SITE?: string;
+  readonly ZETA_BAO_PATH?: string;
+}
+
+function unquoteFirstbootConfValue(raw: string): string | null {
+  if (raw.startsWith("'")) {
+    if (raw.length < 2 || !raw.endsWith("'")) return null;
+    const inner = raw.slice(1, -1);
+    if (inner.includes("'")) return null;
+    return inner;
+  }
+  if (raw.includes("'") || raw.includes('"') || raw.includes("`")) return null;
+  return raw;
+}
+
+function envValueOrUnsafe(value: string | undefined): { ok: true; value: string | undefined } | { ok: false } {
+  if (value === undefined) return { ok: true, value: undefined };
+  if (value.length > 0 && !SHELL_SAFE_CONF_VALUE_REGEX.test(value)) return { ok: false };
+  return { ok: true, value };
+}
+
+/**
+ * Env after a sourced firstboot conf. Values are unquoted.
+ * Both keys or neither — same rule as argv. tpmrm0 is
+ * shell-safe and still not an ask.
+ */
+export function parseFirstbootBaoElfEnv(env: FirstbootBaoElfEnv): NamedBaoElfArgResult {
+  const siteGot = envValueOrUnsafe(env[FIRSTBOOT_BAO_LOAD_SITE_KEY]);
+  const pathGot = envValueOrUnsafe(env[FIRSTBOOT_BAO_PATH_KEY]);
+  if (!siteGot.ok || !pathGot.ok) return { ok: false, reason: "unsafe-conf-value" };
+  const argv: string[] = [];
+  if (siteGot.value !== undefined) argv.push(`--bao-load-site=${siteGot.value}`);
+  if (pathGot.value !== undefined) argv.push(`--bao-path=${pathGot.value}`);
+  return parseNamedBaoElfArgs(argv);
+}
+
+/**
+ * Process env after bash sources the ESP conf. Missing keys
+ * are unmeasured. Does not open files. Does not infer
+ * `on-host` from `/dev/tpmrm0`.
+ */
+export function consumeFirstbootBaoElfProcessEnv(env: {
+  readonly [key: string]: string | undefined;
+}): NamedBaoElfArgResult {
+  return parseFirstbootBaoElfEnv({
+    ...(env[FIRSTBOOT_BAO_LOAD_SITE_KEY] === undefined
+      ? {}
+      : { [FIRSTBOOT_BAO_LOAD_SITE_KEY]: env[FIRSTBOOT_BAO_LOAD_SITE_KEY] }),
+    ...(env[FIRSTBOOT_BAO_PATH_KEY] === undefined ? {} : { [FIRSTBOOT_BAO_PATH_KEY]: env[FIRSTBOOT_BAO_PATH_KEY] }),
+  });
+}
+
+/**
+ * Parse ESP / ISO firstboot conf content. HOST / ZETA_ROLE
+ * are ignored. One bao key without the other refuses. Does
+ * not open files. Does not edit `zeta-first-boot.sh`.
+ */
+export function parseFirstbootBaoElfConf(conf: string): NamedBaoElfArgResult {
+  let site: string | undefined;
+  let openedPath: string | undefined;
+  for (const rawLine of conf.split("\n")) {
+    const line = rawLine.replace(/\r$/u, "").trim();
+    if (line.length === 0 || line.startsWith("#")) continue;
+    if (line.startsWith(`${FIRSTBOOT_BAO_LOAD_SITE_KEY}=`)) {
+      const parsed = unquoteFirstbootConfValue(line.slice(FIRSTBOOT_BAO_LOAD_SITE_KEY.length + 1));
+      if (parsed === null) return { ok: false, reason: "unsafe-conf-value" };
+      site = parsed;
+      continue;
+    }
+    if (line.startsWith(`${FIRSTBOOT_BAO_PATH_KEY}=`)) {
+      const parsed = unquoteFirstbootConfValue(line.slice(FIRSTBOOT_BAO_PATH_KEY.length + 1));
+      if (parsed === null) return { ok: false, reason: "unsafe-conf-value" };
+      openedPath = parsed;
+    }
+  }
+  return parseFirstbootBaoElfEnv({
+    ...(site === undefined ? {} : { [FIRSTBOOT_BAO_LOAD_SITE_KEY]: site }),
+    ...(openedPath === undefined ? {} : { [FIRSTBOOT_BAO_PATH_KEY]: openedPath }),
+  });
 }

@@ -246,15 +246,19 @@ QEMU harness (`081M1VW190B087G0R003D4GWJF`):
 `prepare-boot-image.ts` forwards those same flags.
 One without the other refuses. Does not fill
 `NIXOS_HOST_BAO`.
+First-boot env consume (`081M1VXAQEJ087G0R00325DJRS`):
+`firstboot-bao-env.ts` reads sourced `ZETA_BAO_*`.
+Does not open files. Does not edit `zeta-first-boot.sh`.
 
 1. Metal: `seal "pkcs11"` in Application.yaml still waits.
    Same commit as a **reachable** module: same-libc image
    (glibc OpenBao that can load the host `.so`) or option D
    host `bao`. Dual-vendor per node is ZetaFS k-of-n, not
    two active OpenBao seals. Do not treat this planner as
-   that commit. `zeta-first-boot.sh` still has to *source
-   and pass* the carrier (not from `/dev/tpmrm0`). Does not
-   expand `ZetaFirstbootRole` until that bash consume lands.
+   that commit. `zeta-first-boot.sh` still has to *export
+   and invoke* the bun consume (not from `/dev/tpmrm0`).
+   Does not expand `ZetaFirstbootRole` until that bash
+   invoke lands.
 2. extraContainer Shamir sidecar (`valuesObject` only) until
    kind/CI consume the emulator init.
 

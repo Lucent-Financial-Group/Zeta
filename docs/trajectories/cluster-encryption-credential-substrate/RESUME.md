@@ -1,7 +1,7 @@
 # Trajectory - Cluster Encryption / Credential Substrate
 
 Status: active — first surfaced 2026-05-29 from substrate inventory (was tracked only as scattered backlog rows; never had a trajectory surface, which is why it was easy to lose at cold-boot)
-Last refreshed: 2026-09-06 (prepare-boot-image names bao load site and path; still not a seal)
+Last refreshed: 2026-09-06 (first-boot bun consumes sourced bao env; still not a seal)
 Type: workstream (current-focus) — a trajectory the operator is *actively powering*. Many trajectories can be tracked; only a few are workstreams at once (finite-focus / WIP-bounded — a workstream is a trajectory under sustained thrust, and thrust budget is finite, so most trajectories coast). ("Trajectory" is the genus; "workstream" is the species: a trajectory under sustained thrust toward a deliverable, vs. emergent-posture trajectories like `anti-infection`, which self-describes as "not a workstream with a cadence." See [`factory-trajectory-surface`](../factory-trajectory-surface/RESUME.md) for the genus/species taxonomy.) One of the operator's three current cluster workstreams (encryption / usb-zflash / ts-workflow-engine).
 Eventual encoding (design-stage — the human maintainer 2026-05-23 genetic-ID substrate + Clifford/HKT): this trajectory's state is trackable as a 128-bit genetic-ID seed (discrete, reversible via parser-combinator ↔ generator-function) → Clifford-space path (continuous, eventual). Mirrors the three-lane I8-lattice / I9-manifold split.
 Current blocker: none operationally; the live design tension is interactive-login-vs-baked-in-keys-vs-CI-test (081KSGS9H0008QG0R003JNSVR5)
@@ -488,6 +488,23 @@ Workitem: `081M1VW190B087G0R003D4GWJF`.
   refuses. Does not fill `NIXOS_HOST_BAO`. tpmrm0 is still
   not an ask. A non-null ask without `--role` parses, then
   the planner refuses.
+- Does not expand `ZetaFirstbootRole`. Does not edit
+  `zeta-first-boot.sh`. Does not edit Application.yaml.
+
+## 2026-09-06 — first-boot bun consumes sourced bao names (Riven)
+
+Aaron: continue after the QEMU harness. First-boot still
+has to consume `ZETA_BAO_LOAD_SITE` and `ZETA_BAO_PATH`
+from the env that sourcing the ESP conf produces.
+
+Consumer: `src/Core.TypeScript/zflash/firstboot-bao-env.ts`
+plus `src/Core.TypeScript/zflash/firstboot-bao-elf.ts`
+(`consumeFirstbootBaoElfProcessEnv`).
+Workitem: `081M1VXAQEJ087G0R00325DJRS`.
+
+- Missing keys are unmeasured. One without the other
+  refuses. Does not fill `NIXOS_HOST_BAO`. tpmrm0 is still
+  not an ask. Does not open files.
 - Does not expand `ZetaFirstbootRole`. Does not edit
   `zeta-first-boot.sh`. Does not edit Application.yaml.
 

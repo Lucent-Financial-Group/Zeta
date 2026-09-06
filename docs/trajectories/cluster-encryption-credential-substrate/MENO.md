@@ -201,6 +201,10 @@ assume the number.
    `prepare-boot-image.ts` forwards those same flags.
    One without the other refuses. Does not fill
    `NIXOS_HOST_BAO`. Does not edit `zeta-first-boot.sh`.
+   First-boot env consume (`081M1VXAQEJ087G0R00325DJRS`):
+   `firstboot-bao-env.ts` reads sourced `ZETA_BAO_*` from
+   process env. Does not open files. Does not edit
+   `zeta-first-boot.sh`.
 7. extraContainer sidecar — later, **same commit as the
    sidecar**, and only for the Shamir kind path until the
    emulator job replaces it. `valuesObject` only. Do not fork

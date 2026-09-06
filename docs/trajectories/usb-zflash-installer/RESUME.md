@@ -501,6 +501,10 @@ QEMU harness
 (`081M1VW190B087G0R003D4GWJF`) forwards
 those same flags from `prepare-boot-image.ts`;
 still does not edit `zeta-first-boot.sh`.
+First-boot env consume
+(`081M1VXAQEJ087G0R00325DJRS`) reads sourced
+`ZETA_BAO_*` in `firstboot-bao-env.ts`; still
+does not edit `zeta-first-boot.sh`.
 glibc-host-into-musl-image is not a
 module; Application.yaml stays Shamir.
 
