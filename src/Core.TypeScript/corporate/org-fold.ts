@@ -257,13 +257,6 @@ export function foldRunFidelity(events: readonly OrgEvent[]): readonly RunFideli
 }
 
 /**
- * True only when the log records at least one run and EVERY recorded run was simulated.
- *
- * An empty log answers `false`: nothing was observed, and "no evidence of reality" is not "evidence
- * of simulation". A log with runs predating this fact also answers `false`, for the same reason —
- * see `deliveryRate`, which reports those as unknown rather than assuming either way.
- */
-/**
  * Every observe-act tick the log recorded.
  *
  * PLURAL and unreduced, exactly like `foldRunFidelity` — the window is computed by
@@ -279,6 +272,13 @@ export function foldObserveActTicks(events: readonly OrgEvent[]): readonly Obser
   return out;
 }
 
+/**
+ * True only when the log records at least one run and EVERY recorded run was simulated.
+ *
+ * An empty log answers `false`: nothing was observed, and "no evidence of reality" is not "evidence
+ * of simulation". A log with runs predating this fact also answers `false`, for the same reason —
+ * see `deliveryRate`, which reports those as unknown rather than assuming either way.
+ */
 export function everyRunWasSimulated(reports: readonly FidelityReport[]): boolean {
   return reports.length > 0 && reports.every((r) => r.replayable);
 }
