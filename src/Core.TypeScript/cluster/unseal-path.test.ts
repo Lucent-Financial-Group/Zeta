@@ -1,12 +1,15 @@
 import { describe, expect, test } from "bun:test";
 import { UNSEAL_THRESHOLD } from "./vault-unsealer.ts";
-import { emptyCapture, type HostHardwareCapture } from "./host-seal-profile.ts";
+import { emptyCapture, pickSealOracleFromCapture, type HostHardwareCapture } from "./host-seal-profile.ts";
+import { NIXOS_PKCS11_MODULE_PATH, USB_PKCS11_MODULE_POINTER, overlaySealHcl } from "./pkcs11-hostpath-overlay.ts";
 import {
   availablePaths,
   emulatorMatrixCell,
   integrateAtSetup,
   pickInstallPath,
+  planSetupOverlayFromIntegrate,
   refuseTwoOpenBaoSeals,
+  sealOracleFromUnsealPath,
   skipIfAbsentCannotWearPass,
   tpmCanAutoUnseal,
 } from "./unseal-path.ts";
@@ -340,5 +343,74 @@ describe("emulator install 2×2 — declared by installing, never skip-if-absent
     expect(r.ok).toBe(false);
     if (r.ok) return;
     expect(r.reason).toBe("no-path");
+  });
+});
+
+describe("setup integrate decision feeds the PKCS#11 overlay", () => {
+  test("attached YubiHSM + companion contents: overlay path wins; stanza still cannot commit", () => {
+    const decision = integrateAtSetup({ requested: "auto" }, capture({ yubiHsm2: "attached" }));
+    expect(sealOracleFromUnsealPath("pkcs11-yubihsm")).toBe("yubihsm2");
+    expect(pickSealOracleFromCapture(capture({ yubiHsm2: "attached" }))).toBe("yubihsm2");
+    const plan = planSetupOverlayFromIntegrate(decision, "/opt/vendor/yubihsm_pkcs11.so", true);
+    expect(plan.modulePath).toBe("/opt/vendor/yubihsm_pkcs11.so");
+    expect(plan.mayCommitSeal).toBe(false);
+    expect(plan.abi).toBe("glibc-host-into-musl-image");
+    expect(overlaySealHcl(plan)).toBeNull();
+  });
+
+  test("blank companion on CardContact falls back to the NixOS OpenSC contract", () => {
+    const decision = integrateAtSetup({ requested: "auto" }, capture({ smartcardHsm: true }));
+    expect(sealOracleFromUnsealPath("pkcs11-smartcard")).toBe("smartcard-hsm");
+    const plan = planSetupOverlayFromIntegrate(decision, "  ", true);
+    expect(plan.modulePath).toBe(NIXOS_PKCS11_MODULE_PATH["smartcard-hsm"]);
+    expect(plan.mayCommitSeal).toBe(false);
+  });
+
+  test("TPM integrate pins OAEP on the overlay and still cannot commit the stanza", () => {
+    const decision = integrateAtSetup({ requested: "pkcs11-tpm" }, capture({ tpm2: "present" }));
+    expect(sealOracleFromUnsealPath("pkcs11-tpm")).toBe("tpm2-pkcs11");
+    const plan = planSetupOverlayFromIntegrate(decision, null, true);
+    expect(plan.mechanism).toEqual({
+      kind: "must-pin-rsa-oaep",
+      reason: "tpm2-pkcs11-has-no-aes-gcm",
+    });
+    expect(plan.mayCommitSeal).toBe(false);
+  });
+
+  test("Lucent Shamir is no-oracle, not a hostPath overlay", () => {
+    const decision = integrateAtSetup({ requested: "lucent-shamir" }, METAL);
+    expect(sealOracleFromUnsealPath("lucent-shamir")).toBe("none");
+    const plan = planSetupOverlayFromIntegrate(decision, "/opt/vendor/yubihsm_pkcs11.so", true);
+    expect(plan.ok).toBe(false);
+    if (!plan.ok) expect(plan.reason).toBe("no-oracle");
+    expect(plan.mayCommitSeal).toBe(false);
+  });
+
+  test("refused PKCS#11 request is no-oracle even with companion contents", () => {
+    const decision = integrateAtSetup({ requested: "pkcs11-yubihsm" }, METAL);
+    expect(decision.ok).toBe(false);
+    const plan = planSetupOverlayFromIntegrate(decision, "/opt/vendor/yubihsm_pkcs11.so", true);
+    expect(plan.ok).toBe(false);
+    if (!plan.ok) expect(plan.reason).toBe("no-oracle");
+  });
+
+  test("SoftHSM install path is not this overlay", () => {
+    const decision = pickInstallPath({
+      softhsmInstalled: true,
+      swtpmInstalled: false,
+      lucentFetcherPresent: false,
+      kindUnsealerPresent: false,
+    });
+    expect(sealOracleFromUnsealPath("ci-softhsm")).toBe("softhsm2");
+    const plan = planSetupOverlayFromIntegrate(decision, "/usr/lib/softhsm/libsofthsm2.so", true);
+    expect(plan.ok).toBe(false);
+    if (!plan.ok) expect(plan.reason).toBe("softhsm-is-not-a-hostpath-overlay");
+  });
+
+  test("restore filename through integrate is still not the .so", () => {
+    const decision = integrateAtSetup({ requested: "auto" }, capture({ yubiHsm2: "attached" }));
+    const plan = planSetupOverlayFromIntegrate(decision, USB_PKCS11_MODULE_POINTER, true);
+    expect(plan.ok).toBe(false);
+    if (!plan.ok) expect(plan.reason).toBe("companion-pointer-is-not-the-module");
   });
 });
