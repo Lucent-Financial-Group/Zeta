@@ -1,0 +1,14 @@
+{
+  "id": "080d03a59e697810a013000883466866",
+  "at": "2026-09-06T03:12:15.663Z",
+  "by": "vera-codex",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1TB7K9F087G0R001FMKH0M",
+    "type": "task",
+    "title": "Add cross-domain frame signals over emulator observations",
+    "slug": "add-cross-domain-frame-signals-over-emulator-observations",
+    "priority": "P2",
+    "filename": "081M1TB7K9F087G0R001FMKH0M-add-cross-domain-frame-signals-over-emulator-observations.md"
+  }
+}
