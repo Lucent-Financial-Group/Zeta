@@ -475,6 +475,11 @@ Conf/argv carrier
 `ZETA_BAO_LOAD_SITE` and `ZETA_BAO_PATH`, or
 neither; does not expand `ZetaFirstbootRole`;
 does not edit `zeta-first-boot.sh`.
+Conf consume
+(`081M1VNS22M087G0R000P9A1XH`) parses those
+assignments back into a named ask; a bare
+tpmrm0 path is still not an ask; still does
+not edit `zeta-first-boot.sh`.
 glibc-host-into-musl-image is not a
 module; Application.yaml stays Shamir.
 

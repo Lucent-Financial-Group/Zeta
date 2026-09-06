@@ -22,7 +22,7 @@ import {
   planSetupPkcs11Overlay,
 } from "../cluster/pkcs11-hostpath-overlay.ts";
 import { integrateAtSetup } from "../cluster/unseal-path.ts";
-import { planFirstbootConfFileContent, SHELL_SAFE_CONF_VALUE_REGEX } from "../zflash/firstboot-role.ts";
+import { SHELL_SAFE_CONF_VALUE_REGEX, planFirstbootConfFileContent } from "../zflash/firstboot-role.ts";
 import {
   FIRSTBOOT_BAO_LOAD_SITE_KEY,
   FIRSTBOOT_BAO_PATH_KEY,
@@ -34,9 +34,12 @@ import {
   namedBaoElfAsk,
   nixosHostBaoAsk,
   nodeBaoElfRead,
+  parseFirstbootBaoElfConf,
+  parseFirstbootBaoElfEnv,
   parseNamedBaoElfArgs,
   planSetupFromNamedBaoElf,
   planSetupFromNamedBaoElfArgv,
+  planSetupFromNamedBaoElfConf,
 } from "./bao-elf-capture.ts";
 
 function elf64LeWithInterp(interp: string): Uint8Array {
@@ -356,5 +359,107 @@ describe("composeFirstbootBaoElfCarrier — both names or neither", () => {
       `${FIRSTBOOT_BAO_LOAD_SITE_KEY}='on-host'`,
       `${FIRSTBOOT_BAO_PATH_KEY}='${NIXOS_HOST_BAO}'`,
     ]);
+  });
+});
+
+describe("parseFirstbootBaoElfConf — consume both names or neither", () => {
+  const missingRestore = {
+    openedPath: USB_PKCS11_MODULE_POINTER,
+    exists: false,
+    contents: null,
+    resolvedModuleExists: true,
+  };
+
+  function tpmDecision() {
+    return integrateAtSetup({ requested: "pkcs11-tpm" }, emptyCapture({ os: "nixos", tpm2: "present" }));
+  }
+
+  test("a founder conf with no bao keys is unmeasured", () => {
+    const planned = planFirstbootConfFileContent({ kind: "first-control-plane" });
+    if (!planned.ok) throw new Error(planned.error);
+    expect(parseFirstbootBaoElfConf(planned.value)).toEqual({ ok: true, ask: null });
+    expect(parseFirstbootBaoElfEnv({})).toEqual({ ok: true, ask: null });
+  });
+
+  test("appended option D round-trips through conf and env", () => {
+    const planned = planFirstbootConfFileContent({ kind: "first-control-plane" });
+    if (!planned.ok) throw new Error(planned.error);
+    const ask = nixosHostBaoAsk();
+    const withBao = appendFirstbootBaoElfConf(planned.value, ask);
+    expect(parseFirstbootBaoElfConf(withBao)).toEqual({ ok: true, ask });
+    expect(
+      parseFirstbootBaoElfEnv({
+        ZETA_BAO_LOAD_SITE: "on-host",
+        ZETA_BAO_PATH: NIXOS_HOST_BAO,
+      }),
+    ).toEqual({ ok: true, ask });
+  });
+
+  test("one conf key without the other refuses — does not fill the NixOS host path", () => {
+    expect(parseFirstbootBaoElfConf(`${FIRSTBOOT_BAO_LOAD_SITE_KEY}='on-host'\n`)).toEqual({
+      ok: false,
+      reason: "site-without-path",
+    });
+    expect(parseFirstbootBaoElfConf(`${FIRSTBOOT_BAO_PATH_KEY}='${NIXOS_HOST_BAO}'\n`)).toEqual({
+      ok: false,
+      reason: "path-without-site",
+    });
+    expect(parseFirstbootBaoElfEnv({ ZETA_BAO_LOAD_SITE: "on-host" })).toEqual({
+      ok: false,
+      reason: "site-without-path",
+    });
+  });
+
+  test("tpmrm0 in both conf keys is shell-safe and still not an ask", () => {
+    const conf =
+      `${FIRSTBOOT_BAO_LOAD_SITE_KEY}='on-host'\n` + `${FIRSTBOOT_BAO_PATH_KEY}='${TPM_CHAR_DEVICE}'\n`;
+    expect(SHELL_SAFE_CONF_VALUE_REGEX.test(TPM_CHAR_DEVICE)).toBe(true);
+    expect(parseFirstbootBaoElfConf(conf)).toEqual({ ok: true, ask: null });
+    expect(
+      parseFirstbootBaoElfEnv({
+        ZETA_BAO_LOAD_SITE: "on-host",
+        ZETA_BAO_PATH: TPM_CHAR_DEVICE,
+      }),
+    ).toEqual({ ok: true, ask: null });
+  });
+
+  test("a path with a shell metacharacter in conf or env refuses", () => {
+    const conf =
+      `${FIRSTBOOT_BAO_LOAD_SITE_KEY}='on-host'\n` + `${FIRSTBOOT_BAO_PATH_KEY}='${NIXOS_HOST_BAO};reboot'\n`;
+    expect(parseFirstbootBaoElfConf(conf)).toEqual({ ok: false, reason: "unsafe-conf-value" });
+    expect(
+      parseFirstbootBaoElfEnv({
+        ZETA_BAO_LOAD_SITE: "on-host",
+        ZETA_BAO_PATH: `${NIXOS_HOST_BAO};reboot`,
+      }),
+    ).toEqual({ ok: false, reason: "unsafe-conf-value" });
+  });
+
+  test("conf consume may emit host HCL and cannot commit Application.yaml", () => {
+    const planned = planFirstbootConfFileContent({ kind: "first-control-plane" });
+    if (!planned.ok) throw new Error(planned.error);
+    const withBao = appendFirstbootBaoElfConf(planned.value, nixosHostBaoAsk());
+    const fromConf = planSetupFromNamedBaoElfConf(
+      tpmDecision(),
+      missingRestore,
+      withBao,
+      (path) => ({
+        exists: true,
+        bytes: path === NIXOS_HOST_BAO ? elf64LeWithInterp(ELF_INTERP_GLIBC_X86_64) : null,
+      }),
+    );
+    expect(fromConf.ok).toBe(true);
+    if (!fromConf.ok) return;
+    expect(fromConf.plan.mayCommitSeal).toBe(false);
+    expect(fromConf.plan.mayCommitHostHcl).toBe(true);
+    expect(overlaySealHcl(fromConf.plan)).toBeNull();
+    const empty = planSetupFromNamedBaoElfConf(tpmDecision(), missingRestore, planned.value, () => ({
+      exists: true,
+      bytes: elf64LeWithInterp(ELF_INTERP_GLIBC_X86_64),
+    }));
+    expect(empty.ok).toBe(true);
+    if (!empty.ok) return;
+    expect(empty.plan.mayCommitHostHcl).toBe(false);
+    expect(hostBaoSealHcl(empty.plan)).toBeNull();
   });
 });

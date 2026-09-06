@@ -180,6 +180,10 @@ assume the number.
    and `ZETA_BAO_PATH`, or neither. `/dev/tpmrm0` is
    shell-safe and still not a bao path. Does not expand
    `ZetaFirstbootRole`. Does not edit `zeta-first-boot.sh`.
+   Conf consume (`081M1VNS22M087G0R000P9A1XH`): parse those
+   assignments back into a named ask. One key without the
+   other refuses. `/dev/tpmrm0` is still not an ask. Does
+   not edit `zeta-first-boot.sh`.
 7. extraContainer sidecar — later, **same commit as the
    sidecar**, and only for the Shamir kind path until the
    emulator job replaces it. `valuesObject` only. Do not fork
