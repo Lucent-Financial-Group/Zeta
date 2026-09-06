@@ -1,23 +1,24 @@
 {
   "$comment": [
-    "Bootstrap-vs-Application chart pin divergences that are ACKNOWLEDGED, not fixed.",
+    "EMPTY, and that is the finished state rather than an unfinished one.",
     "",
-    "Each key is chart + BOTH versions, so paying the debt -- moving either side -- makes the",
-    "entry STALE and the audit fails on it. The roster can only shrink as the debt is paid; it",
-    "can never over-claim, and an acknowledgement cannot outlive its defect.",
+    "This roster opened on 2026-09-06 with FOUR acknowledged divergences between a chart's",
+    "first-boot HelmChart pin and the ArgoCD Application that adopts the same Helm release.",
+    "All four were paid the same day, in the order the work-item proposed:",
     "",
-    "Measured on main 2026-09-06: FOUR divergences, three of them CRD-bearing. They are carried",
-    "rather than bumped because a first-boot chart bump is a real cluster change per chart -- the",
-    "bootstrap CRs carry their own valuesContent, which has to be re-rendered at the new version",
-    "before anyone can claim the bump is safe. Blind bumping four charts that install on real",
-    "hardware at first boot is exactly the guessing this repo refuses elsewhere."
+    "  spire-crds      0.5.0   -> 0.6.1     schema diff: 0 removed, 0 added, in all three CRDs",
+    "  cert-manager    v1.16.2 -> v1.21.1   52 -> 50 objects, nothing added",
+    "  trust-manager   v0.15.0 -> v0.24.0   14 -> 15, nothing removed; the openziti Role survives",
+    "  external-secrets 0.10.7 -> 2.10.0    34 -> 44, nothing removed; all ten new CRDs",
+    "",
+    "So `audit-bootstrap-application-pin-parity.ts` is now a FLOOR AT ZERO: any new divergence",
+    "is OPEN and fails. The file is kept rather than deleted because the audit reads it, and",
+    "because an empty roster with its history is a stronger statement than no roster -- it says",
+    "the debt was paid, not that nobody looked.",
+    "",
+    "Each key carries BOTH versions, so re-acknowledging a paid divergence is impossible: the",
+    "audit reports a key matching nothing as STALE."
   ],
   "refreshCommand": "bun src/Core.TypeScript/hygiene/audit-bootstrap-application-pin-parity.ts",
-  "entries": [
-    {
-      "key": "external-secrets|bootstrap=0.10.7|application=2.10.0",
-      "reason": "A MAJOR-VERSION JUMP, 0.x -> 2.x, and the widest gap of the four. Whatever compatibility the 0.10 line had with the ExternalSecret/ClusterSecretStore resources in this tree, 2.10 is not promised to keep it, and the upgrade would run at first boot immediately after the store it authenticates to. The bootstrap header records a DIFFERENT concern entirely (`Vault is ArgoCD-owned now, sync-wave -60 before ESO's -40`) and says nothing about the version, so this pin has simply not been revisited since that change.",
-      "liftsWhen": "LIFTS WHEN: the two pins are byte-equal. This one should be read as a real migration rather than a bump -- render 2.10.0 against this file's values, check the CRD API versions the tree's ExternalSecret manifests use are still served, and only then move both pins. If 2.10.0 turns out to be wrong for first boot, moving the APPLICATION down to the bootstrap's line is an equally valid way to close this entry."
-    }
-  ]
+  "entries": []
 }

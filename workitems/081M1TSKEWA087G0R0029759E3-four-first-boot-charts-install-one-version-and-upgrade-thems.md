@@ -138,3 +138,34 @@ hazard. Both are equal now, and the audit keeps them so.
 **One divergence left: `external-secrets` 0.10.7 vs 2.10.0**, a major jump, and the one its
 own entry says to treat as a migration rather than a bump.
 
+## 2026-09-06 — the fourth and last: `external-secrets` 0.10.7 -> 2.10.0. Roster empty.
+
+Its own entry said to treat this as a **migration rather than a bump**, and that was right —
+but not for the reason the entry gave. The *render* is the cleanest of the four:
+
+| | 0.10.7 | 2.10.0 |
+|---|---|---|
+| objects | 34 | **44, nothing removed** |
+| the ten additions | — | all new generator CRDs (`grafanas`, `sshkeys`, `quayaccesstokens`, …) |
+| CRDs | 15 | 25 |
+| Deployments | all three at `replicas: 1` | **same** |
+
+**The major-version risk is real and a rendered-object diff does not show it.** It is in the
+SERVED API versions:
+
+```
+0.10.7   externalsecrets / secretstores / clustersecretstores:  v1alpha1 + v1beta1 served
+2.10.0   v1 served+storage, and v1beta1 served: FALSE
+```
+
+Nothing in this tree creates such an object, so nothing breaks — the only
+`external-secrets.io/v1beta1` in the repo is **inside a comment**. But that comment is
+*instructions*: an example `ClusterSecretStore` for Vault that "lands as a separate manifest
+after vault + ESO are both healthy". Following it would have produced an object the API
+server refuses, at the moment someone finally did the Vault wiring.
+
+Corrected to `v1` in the same change, after checking every field it uses exists in the v1
+schema (`server`, `path`, `version`, `auth.kubernetes.mountPath`, `auth.kubernetes.role`).
+
+**All four are paid and the roster is empty**, so the audit is a floor at zero.
+
