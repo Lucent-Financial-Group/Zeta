@@ -1,0 +1,14 @@
+{
+  "id": "080d03a787ea9010a0130008440b8609",
+  "at": "2026-09-06T04:19:05.682Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1TF1ZAJ087G0R001BHVDPS",
+    "type": "task",
+    "title": "pwrite during freeze keeps ContentId at snapshot G",
+    "slug": "pwrite-during-freeze-keeps-contentid-at-snapshot-g",
+    "priority": "P2",
+    "filename": "081M1TF1ZAJ087G0R001BHVDPS-pwrite-during-freeze-keeps-contentid-at-snapshot-g.md"
+  }
+}
