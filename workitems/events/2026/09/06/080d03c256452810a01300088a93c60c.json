@@ -1,0 +1,14 @@
+{
+  "id": "080d03c256452810a01300088a93c60c",
+  "at": "2026-09-06T19:56:02.085Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1W4NJ54087G0R002B6HZD7",
+    "type": "task",
+    "title": "The ratchet benchmark: task resistance, retention capacitance, and where the linear model breaks",
+    "slug": "the-ratchet-benchmark-task-resistance-retention-capacitance",
+    "priority": "P2",
+    "filename": "081M1W4NJ54087G0R002B6HZD7-the-ratchet-benchmark-task-resistance-retention-capacitance.md"
+  }
+}
