@@ -1,11 +1,12 @@
 ---
 id: 081M1W8PRK0087G0R000T7C4X8
 type: bug
-state: backlog
+state: done
 priority: P1
 slug: refuse-incomplete-chsh-setting-coverage-before-calibrated-cl
 title: "Refuse incomplete CHSH setting coverage before calibrated classification"
 created: 2026-09-06T21:06:35.744Z
+completed: 2026-09-06T21:36:49.217Z
 depends_on: []
 composes_with: []
 ---
@@ -18,7 +19,7 @@ composes_with: []
 
 ## Confirmed witness and scope
 
-[Independent source review and native witnesses](../docs/research/chsh-coverage/2026-09-06-audit.md)
+[Independent source review and native witnesses](../../../../docs/research/chsh-coverage/2026-09-06-audit.md)
 show that an absent subtractive CHSH bucket produces score 3 from constant
 local responses. Both calibrated component paths and the direct metrology
 consumer classify it above bound. A single observation in the rare bucket also
@@ -35,3 +36,11 @@ passes with total-count/HAC calibration.
 
 The component-count terminology follow-up is separately owned. This repair
 must not claim that surviving components prove physical source distinctness.
+
+## Completion
+
+Implementation `a46143f6b` passes the full local repair gate (7,475 tests,
+six existing skips; zero-warning Release build) and focused public-contract
+checks. [Repair and API review](../../../../docs/research/chsh-coverage/2026-09-06-repair-review.md)
+records the independent review, source and JSON migration, and scope limits.
+The final integration and hosted merge checks are retained with the PR.

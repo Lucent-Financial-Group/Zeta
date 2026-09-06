@@ -102,8 +102,19 @@ header and public result comments: DAG concurrency and HAC were being promoted
 to physical validity and a general error guarantee. Those comments now state
 the external-assumption boundary; the dated audit preserves the finding.
 
-The public-API review is ACCEPT_WITH_CONDITIONS pending the full final build,
-test and serialization gates. Consumer search and the focused suite found no
-unmigrated typed callers. The 55 focused CHSH/meter tests passed, including nine
-new public-contract facts. Final full-gate receipts will be appended before
-landing.
+The independent reviewer re-read the corrected header and public comments and
+accepted the public API change: ACCEPT, subject to the ordinary integration
+checks. Consumer search found no unmigrated typed callers. The 55 focused
+CHSH/meter tests passed, including nine new public-contract facts and default
+JSON serialization. The full repair suite passed 7,475 tests with six existing
+skips; Release build ended with zero warnings and zero errors.
+
+Implementation commit: `a46143f6b`. The final integration merges
+`origin/main` at `0e3456d60` (including relational identity PR #16857) via
+`66d0121ce`. The integration build passed with zero warnings/errors; its full suite
+passed 7,487 tests with six existing skips. All 16 quick-preflight checks passed.
+
+[Validation commands and retained output](validation/README.md) distinguish
+local build/test evidence from GitHub's merge matrix. The formatter supports
+C# and VB; it explicitly skips F# projects and is not claimed as F# formatting
+validation.
