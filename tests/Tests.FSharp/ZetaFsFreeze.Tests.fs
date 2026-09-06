@@ -122,6 +122,56 @@ let ``pwrite during freeze keeps ContentId at snapshot G`` () : Task =
     }
 
 [<Fact>]
+let ``subset of jumprope leaves is not readable after freeze`` () : Task =
+    task {
+        ensureHasher ()
+        FileSystem.Register(InMemoryFileSystem())
+        let store = "/subset-of-leaves"
+        let mutbuf = ZetaFsMutbuf.create store ZetaFsMutbuf.Coherence.Shared
+        let payload = Array.init 80_000 (fun i -> byte (i % 223))
+        let logDev = SimulatedBlockIo(4096)
+        let objDev = SimulatedBlockIo(4096)
+        let cas = BlockCas(objDev)
+        let mutable firstContent = Unchecked.defaultof<ContentHash256>
+        let volume1 = ZetaFsFreeze.createManualWithBlockStore store mutbuf None logDev cas
+
+        try
+            let id = mintId ()
+            let h = ZetaFsMutbuf.openHandle volume1.Mutbuf id
+            ZetaFsMutbuf.pwrite volume1.Mutbuf h 0L payload |> ignore
+            let pending = (freezeAsync volume1 id ZetaFsFreeze.Journaled).AsTask()
+            do! (ZetaFsFreeze.pumpLog volume1 CancellationToken.None).ConfigureAwait(false)
+            let! first = pending.ConfigureAwait(false)
+            match first with
+            | Error e -> Assert.Fail(ZetaFsFreeze.errorName e)
+            | Ok ok ->
+                firstContent <- ok.Content
+                Assert.True(ZetaFsFreeze.isReadable volume1 firstContent)
+                let rope = ZetaFsJumprope.buildV1 payload
+                Assert.Equal(ok.Content.ToHex(), rope.Content.ToHex())
+                Assert.True(rope.Leaves.Length > 1)
+                let leaf =
+                    rope.Leaves
+                    |> Array.map fst
+                    |> Array.find (fun hid -> not (hid.Equals rope.Content))
+                let key = (ContentHash256.toContentAddress128 leaf).ToHex()
+                Assert.True(cas.Delete key)
+                Assert.False(ZetaFsFreeze.isReadable volume1 firstContent)
+        finally
+            ZetaFsFreeze.dispose volume1
+
+        let logClone = logDev.CloneMedia()
+        let objClone = objDev.CloneMedia()
+        let cas2 = BlockCas(objClone)
+        let volume2 = ZetaFsFreeze.createManualWithBlockStore store mutbuf None logClone cas2
+        try
+            Assert.False(ZetaFsFreeze.isReadable volume2 firstContent)
+        finally
+            ZetaFsFreeze.dispose volume2
+            FileSystem.Reset()
+    }
+
+[<Fact>]
 let ``Journaled block CAS path is specific to the default profile, not the stream control`` () =
     ensureHasher ()
     let fs = InMemoryFileSystem()
