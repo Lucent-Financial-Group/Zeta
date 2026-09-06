@@ -1,0 +1,12 @@
+{
+  "pr_number": 16755,
+  "archive_path": "docs/history/pr-reviews/PR-16755-fix-cluster-the-metal-argocd-bootstrap-was-a-fifth-pin-site-nobody-counted.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-06T06:40:37.082Z",
+  "schema_version": "v1",
+  "commit_sha": "19bf575bb4985b8c9e992894220f4641f67829ea",
+  "title": "fix(cluster): the metal ArgoCD bootstrap was a fifth pin site nobody counted",
+  "state": "MERGED",
+  "merged_at": "2026-09-06T06:40:00Z",
+  "head_ref": "shadow/argocd-pin-parity"
+}
