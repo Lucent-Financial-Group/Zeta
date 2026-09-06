@@ -37,6 +37,7 @@ The experiment kernels and test source stayed byte-identical to this first gate.
 - [Cost start](rendered-cost-start.txt) and [execution](rendered-cost.log).
 - [Independent replay start](rendered-replay-start.txt) and [execution](rendered-replay.log).
 - [Full Python suite](rendered-python-suite.log), including the existing deprecation warning.
+- [Final integrated Python suite](rendered-python-final-suite.log), 140 passed after the CI wiring repair.
 - [Final integrated build](rendered-final-build.log), after merging current main.
 - [Final integrated solution tests](rendered-final-tests.log).
 - [Final integrated formatter](rendered-final-format.log).

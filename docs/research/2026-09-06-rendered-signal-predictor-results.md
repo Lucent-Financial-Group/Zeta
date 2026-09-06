@@ -214,6 +214,18 @@ reported one existing `HookedTransformer` deprecation warning. FSI runners
 and their provenance helper compile with warnings as errors. `dotnet format`
 supports C#/VB and explicitly skips F#; its success is stated at that scope.
 
+The [first interp CI run](https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34059437248)
+passed 139 cases but failed the live FSI hand fixture:
+the fresh workflow had no Core-build step before Python tests. The workflow
+now builds the required native assembly explicitly and raises its test-count
+floor to 140. Lane-local Ruff also required separating first-party imports
+in three test files; run its checks from `src/Interp.Python`, including mypy
+over both `zeta_interp/` and `tests/`. General quick preflight lints the Core
+and ARC Python projects; it does not cover this opt-in interp lane. These
+execution fixes change no measured source, threshold or completed receipt.
+The final local lane command passes all **140 tests**, with the same existing
+deprecation warning; lane-local Ruff, formatting and mypy over source/tests pass.
+
 ## Receipts and reproduction
 
 - [Native corpus, models, predictions and detection](../../src/Research.FSharp/rendered-signal-results.json)

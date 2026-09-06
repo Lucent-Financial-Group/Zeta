@@ -50,6 +50,10 @@ available. The live worldview-refresh entry point is
 `tools/github/refresh-worldview.ts` bootstrap pointer is stale. A full build
 can transiently exit 139 in an unchanged F# project; preserve the failure,
 try that project in isolation, and verify the full retry before calling green.
+For the opt-in interp lane, run Ruff and `mypy zeta_interp/ tests/` from
+`src/Interp.Python`; root quick preflight covers the Core/ARC Python projects,
+and root-invoked Ruff can classify first-party test imports differently.
+The live Python/F# hand fixture requires a prior Release Core build.
 
 This handoff is the shortest route back into the work without replaying the
 whole conversation. The predictive-state experiments named below are landed on

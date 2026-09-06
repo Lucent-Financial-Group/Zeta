@@ -10,6 +10,7 @@ from pathlib import Path
 
 import numpy as np
 import pytest
+
 from zeta_interp import rendered_signal_replay as replay_module
 from zeta_interp.mess3_replay import Network, digest, initial_parameters
 from zeta_interp.rendered_signal_carrier import (
@@ -219,8 +220,9 @@ def test_native_hand_fixture_agrees_with_independent_interpreter_and_prediction(
         text=True,
         capture_output=True,
         timeout=120,
-        check=True,
+        check=False,
     )
+    assert completed.returncode == 0, completed.stderr
     fixture = json.loads(completed.stdout)
     assert fixture["Protocol"] == "rendered-signal-kernel-v1"
     replay_module.validate_assemblies(fixture["LoadedAssemblies"])
