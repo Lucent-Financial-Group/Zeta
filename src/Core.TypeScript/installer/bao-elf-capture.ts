@@ -21,7 +21,19 @@ import {
   type BaoElfCapture,
   type BaoLoadSite,
 } from "../cluster/bao-load-site.ts";
-import { USB_PKCS11_MODULE_POINTER } from "../cluster/pkcs11-hostpath-overlay.ts";
+import { USB_PKCS11_MODULE_POINTER, type OverlayPlan } from "../cluster/pkcs11-hostpath-overlay.ts";
+import {
+  planSetupFromRestoredCompanion,
+  type IntegrateDecision,
+  type RestoredPkcs11PointerCapture,
+} from "../cluster/unseal-path.ts";
+
+/**
+ * Named NixOS host `bao` path (option D). First-boot may pass
+ * this. Existence of this path, of a `.so`, or of `/dev/tpmrm0`
+ * does not pick the site.
+ */
+export const NIXOS_HOST_BAO = "/run/current-system/sw/bin/bao";
 
 export interface BaoElfFileRead {
   readonly exists: boolean;
@@ -64,4 +76,44 @@ export function captureBaoElfFromRead(
     exists: got.exists,
     bytes: got.bytes,
   });
+}
+
+/**
+ * First-boot names site and path together. Non-bao paths
+ * (`/dev/tpmrm0`, `.so`, restore pointer) are not an ask.
+ */
+export interface NamedBaoElfAsk {
+  readonly site: BaoLoadSite;
+  readonly openedPath: string;
+}
+
+export function namedBaoElfAsk(
+  site: BaoLoadSite,
+  openedPath: string,
+  restorePointer: string = USB_PKCS11_MODULE_POINTER,
+): NamedBaoElfAsk | null {
+  if (!baoElfOpenedPathIsBinary(openedPath, restorePointer)) return null;
+  return { site, openedPath };
+}
+
+/** Option D contract path. Caller still names the site by invoking this. */
+export function nixosHostBaoAsk(): NamedBaoElfAsk {
+  return { site: "on-host", openedPath: NIXOS_HOST_BAO };
+}
+
+/**
+ * First-boot join: named site + named bao path + injected read
+ * into the restore-companion overlay. Null ask is unmeasured,
+ * not `on-host`. Overlay still does not open files. Does not
+ * edit Application.yaml.
+ */
+export function planSetupFromNamedBaoElf(
+  decision: IntegrateDecision,
+  restore: RestoredPkcs11PointerCapture,
+  named: NamedBaoElfAsk | null,
+  read: BaoElfRead,
+): OverlayPlan {
+  const ask = named === null ? null : namedBaoElfAsk(named.site, named.openedPath);
+  const baoElf = ask === null ? null : captureBaoElfFromRead(ask.openedPath, ask.site, read);
+  return planSetupFromRestoredCompanion(decision, restore, baoElf);
 }

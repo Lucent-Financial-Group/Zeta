@@ -1,0 +1,14 @@
+{
+  "id": "080d03b86c553810a0130008e6f0f3c2",
+  "at": "2026-09-06T14:09:31.303Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1VGV2N6087G0R001ZHWZDS",
+    "type": "task",
+    "title": "First-boot names bao load-site and path into captureBaoElfFromRead",
+    "slug": "first-boot-names-bao-load-site-and-path-into-capturebaoelffr",
+    "priority": "P2",
+    "filename": "081M1VGV2N6087G0R001ZHWZDS-first-boot-names-bao-load-site-and-path-into-capturebaoelffr.md"
+  }
+}
