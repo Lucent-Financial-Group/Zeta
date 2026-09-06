@@ -39,8 +39,8 @@ let measurements = ResizeArray<_>()
 for repetition in 0 .. 4 do
     for offset in 0 .. candidates.Count - 1 do
         let c = candidates.[(offset + repetition) % candidates.Count]
-        use process = Process.GetCurrentProcess()
-        let cpu = process.TotalProcessorTime.TotalMilliseconds
+        use currentProcess = Process.GetCurrentProcess()
+        let cpu = currentProcess.TotalProcessorTime.TotalMilliseconds
         let watch = Stopwatch()
         let before = GC.GetAllocatedBytesForCurrentThread()
         let mutable sum = 0.0
@@ -48,10 +48,10 @@ for repetition in 0 .. 4 do
         for i in 0 .. 4095 do sum <- sum + checksum (SmallRnn.after c.Model c.Contexts.[i % 256] |> require) i
         watch.Stop()
         let allocated = GC.GetAllocatedBytesForCurrentThread() - before
-        process.Refresh()
+        currentProcess.Refresh()
         measurements.Add {| Model = c.Id; ContextLength = c.Length; Repetition = repetition; Calls = 4096
                             ThreadAllocatedBytes = allocated; ElapsedMilliseconds = watch.Elapsed.TotalMilliseconds
-                            ProcessCpuMilliseconds = process.TotalProcessorTime.TotalMilliseconds - cpu; Checksum = sum |}
+                            ProcessCpuMilliseconds = currentProcess.TotalProcessorTime.TotalMilliseconds - cpu; Checksum = sum |}
     eprintfn "allocation repetition %d/5" (repetition + 1)
 let hashes = [| "../Core/SplitMix64.fs"; "ResearchRandom.fs"; "Mess3.fs"; "SmallRnn.fs"; "PredictiveState.fs"; "measure-rnn-allocation.fsx" |] |> Array.map (fun file ->
     {| File = file; Sha256 = fingerprint (Path.Combine(__SOURCE_DIRECTORY__, file)) |})

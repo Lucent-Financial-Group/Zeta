@@ -1,6 +1,7 @@
 #load "../Core/SplitMix64.fs"
 #load "ResearchRandom.fs"
 #load "Mess3.fs"
+#load "SmallRnn.fs"
 #load "PredictiveState.fs"
 #load "DenseHmm.fs"
 
@@ -15,7 +16,7 @@ open Zeta.Research
 let require = function Ok value -> value | Error reason -> eprintfn "%A" reason; exit 1
 let output = match fsi.CommandLineArgs |> Array.skip 1 with [| path |] -> path | _ -> eprintfn "usage: run-hmm-training.fsx OUTPUT"; exit 2
 if File.Exists output then eprintfn "refusing to overwrite %s" output; exit 2
-let hashes = [| "../Core/SplitMix64.fs"; "ResearchRandom.fs"; "Mess3.fs"; "PredictiveState.fs"; "DenseHmm.fs"; "run-hmm-training.fsx" |] |> Array.map (fun file ->
+let hashes = [| "../Core/SplitMix64.fs"; "ResearchRandom.fs"; "Mess3.fs"; "SmallRnn.fs"; "PredictiveState.fs"; "DenseHmm.fs"; "run-hmm-training.fsx" |] |> Array.map (fun file ->
     {| File = file; Sha256 = File.ReadAllBytes(Path.Combine(__SOURCE_DIRECTORY__, file)) |> SHA256.HashData |> Convert.ToHexString |})
 let completed = ResizeArray<_>()
 let save complete =

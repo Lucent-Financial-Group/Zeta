@@ -67,7 +67,7 @@ module SmallRnn =
             probabilities.[probabilityOffset + token] <- Math.Exp(probabilities.[probabilityOffset + token] - maximum) / total
         maximum, Math.Log total
 
-    let internal afterUnchecked model tokens =
+    let internal afterUnchecked model (tokens: int[]) =
         let mutable state = Array.zeroCreate model.Hidden
         let mutable scratch = Array.zeroCreate model.Hidden
         for token in tokens do
