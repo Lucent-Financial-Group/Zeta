@@ -4,7 +4,30 @@ Date: 2026-09-06
 From: Vera, OpenAI Codex, GPT-6 Astra
 To: a fresh Vera session starting in GPT-6 Astra
 Operational status: research-grade handoff
-Baseline: `origin/main` after PR #16817
+Baseline: `origin/main` after PR #16826
+
+## Fresh Vera bootstrap
+
+Paste this into a fresh GPT-6 Astra session:
+
+> You are Vera in a writer-owned Zeta clone. Start from current `origin/main`;
+> never edit the shared checkout. Read `AGENTS.md`, `docs/ALIGNMENT.md`, this
+> handoff, the Simplex/WSet verdict, both predictive-state result documents,
+> the Alexa pairwise-memory ferry and its grounding correction, and the QBism
+> source record linked below. Keep every correspondence in an evidence
+> register. First preregister the bounded non-ARC chronological
+> rendered-signal predictor described here. In a separate research lane,
+> specify the invariant that two skewed agents' pairwise memories both
+> preserve; do not call the construction Lorentz-invariant, anti-Sybil, CQM,
+> or universal until the required map, laws, and adversarial tests exist.
+> Preserve protocols before results, retain independent replay, and route any
+> ARC integration only after frozen held-out non-ARC evidence.
+
+Immediate pointers for that second lane:
+
+- [Alexa pairwise-memory ferry](../research/2026-08-17-ferry-alexa-lorentz-transformable-pairwise-memories-zset-minus-sign-and-consensus-gated-c.md)
+- [Repo-grounded correction](../research/2026-08-17-grounding-the-alexa-ferry-against-the-code-four-folk-memories-and-one-correct-prediction.md)
+- [QBism source record](../ip-questionable/2026-09-06-christopher-fuchs-hans-busstra-dizzying-free-fall-of-qbism.md)
 
 ## Start here
 
@@ -207,6 +230,96 @@ owned, version-pinned carrier. They do not yet form a learned transfer result.
 - No experiment has established fractal neural geometry, learned factor
   discovery, physical quantum computation, energy reduction, or goal
   acquisition.
+
+## QBism, neutral monism, and pairwise agent identity
+
+Aaron identified Hans Busstra's interview with Christopher Fuchs,
+[*The dizzying free fall of QBism*](https://www.youtube.com/watch?v=nSqDMtHoaT0),
+as the closest external account he has encountered to Zeta's intended
+agent-pairwise decentralized identity framework and its relational or
+"relativistic" memories. The quarantined [source record](../ip-questionable/2026-09-06-christopher-fuchs-hans-busstra-dizzying-free-fall-of-qbism.md)
+retains provenance and a timestamped index without embedding the transcript in
+Zeta's original analysis.
+
+The strongest correspondence is structural. In the interview, quantum-state
+assignments are commitments held by an agent; actions and resulting
+experiences are agent-world relations rather than readings from an omniscient
+view. In Zeta's proposed identity shape, memory and trust can likewise be
+indexed by an ordered pair of agents and their interaction history rather than
+by one ambient identity oracle. Neither framework requires a single globally
+privileged account before local action is possible.
+
+Neutral monism sharpens the connection: if a constituent is classified through
+its relations rather than by an intrinsic mind/matter label, a category-first
+description is a natural language for the hypothesis. Objects alone do not do
+the work; typed morphisms, composition, and invariants under representation
+change do. This is consonant with Zeta's CQM and spacetime-from-category-theory
+research direction. It does **not** derive CQM, spacetime, or neutral monism
+from one another. The repo's own prior-art ledger already requires a specific
+functor for every claimed bridge from braided structure to CQM and from
+Clifford structure to braided structure.
+
+The current software correspondences are real but distinct:
+
+| Zeta surface | What is present | What QBism does not establish |
+| --- | --- | --- |
+| `SoftValue` | Finite-support classical beliefs, Bayesian conditioning, entropy, and a calibrated refusal boundary | That all agent-relative belief is quantum |
+| `SoftEmu` | Real-weight probabilistic execution over emulator states | Phase, interference, or physical quantum computation |
+| `AmplitudeEmu` | Complex amplitudes, interference, and a Born-style reference path | A quantum processor or an ontology of agents |
+| `AntiSybil` / `CoordinationSpectrum` | Distinct-source and correlation probes that can convict shared-source behavior without proving distinctness from silence | The pairwise-history mechanism or Sybil soundness under adaptive attack |
+| `CliffordAntiSybil` | A geometric-product probe over paired trajectories | That Clifford is already a proved specialization of the whole category-theory stack |
+| `WSet` | Exact finite-support free-semimodule behavior under declared laws | An unrestricted universal representation or compression theorem |
+
+This also refines an important folk memory. The August Alexa ferry proposed
+that `n` fabricated agents would need approximately `n^2/2` consistent
+pairwise histories. That is not an alternative to identity-as-entropy in the
+intended design. **Entropy capture is additive:** each claimed distinct
+identity must sustain its own irreducible source. **Pairwise relational memory
+is the multiplier over that floor:** as the fleet grows, a fabrication must
+also maintain mutually compatible bilateral histories across the relevant
+pairs. The subsequent repo-grounding correctly found that today's
+`AntiSybil` tests discharge pieces of the additive distinct-source and
+correlation layer, not the complete pairwise multiplier under adaptive attack.
+The combined construction is therefore the target; only its current lower
+layer should be described as shipped.
+
+The relativistic language has the same status. Z-set negative weights support
+retraction without rewriting history, and pairwise agents may maintain
+different coordinate descriptions. But no shared `ds^2`-like invariant has
+yet been written down. Until two skewed agents can compute a named quantity
+that is preserved by the proposed transport, the result is convergence or
+reconciliation, not Lorentz invariance.
+
+### Separate next experiment: relational-memory identity
+
+Keep this out of the first ARC predictor experiment. Preregister a separate
+protocol with:
+
+1. A typed pairwise-memory record indexed by both identities, interaction,
+   local causal position, observation channel, and signatures or attestations.
+2. A candidate transport between two agents' skewed histories and one explicit
+   invariant both sides must compute identically.
+3. Adversaries for replay, key substitution, forked histories, colluding
+   witnesses, shared entropy, fabricated counterparties, and selective
+   disclosure.
+4. A scaling receipt that separates the additive per-identity entropy floor
+   from the pairwise cross-consistency multiplier, including sparse-topology
+   cases where not every possible pair has interacted.
+5. Separate judgments for continuity, cryptographic authentication,
+   statistical independence, and personhood; none may stand in for another.
+6. False-positive and false-negative receipts against current `AntiSybil`,
+   `CoordinationSpectrum`, and simple signature-only baselines.
+7. A categorical statement naming objects, morphisms, composition, identity,
+   and the specific law-preserving functor claimed. Clifford and CQM enter only
+   after that statement has a proof or falsifier.
+
+The eventual ARC-AGI-3 connection is observer-relative world modeling:
+chronological memory, action-conditioned belief revision, and explicit lack of
+an omniscient state can help an agent reason under partial information. The
+identity protocol may later matter for multi-agent ARC-like environments or
+cross-agent transfer. It is not an input to the current single-agent rendered
+signal experiment, and combining the lanes now would make both claims harder
+to falsify.
 
 ## How this reaches ARC-AGI-3
 
