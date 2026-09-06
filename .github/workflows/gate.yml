@@ -3246,6 +3246,8 @@ jobs:
           - push-without-rebase
           - skip-token-cannot-land
           - dotnet-pin-parity
+          - argocd-pin-parity
+          - argocd-pin-parity-tests
           - mise-toolchain-couplings
           - flash-entrypoint-parity
           - chart-target-revisions

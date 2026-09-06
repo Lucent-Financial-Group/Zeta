@@ -1,0 +1,14 @@
+{
+  "id": "080d03a9f2ad1010a013000876d7c936",
+  "at": "2026-09-06T05:43:34.562Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1TKWND2087G0R0012RR041",
+    "type": "bug",
+    "title": "The metal ArgoCD bootstrap was a fifth pin site nobody counted, three bumps behind at 7.7.10",
+    "slug": "the-metal-argocd-bootstrap-was-a-fifth-pin-site-nobody-count",
+    "priority": "P2",
+    "filename": "081M1TKWND2087G0R0012RR041-the-metal-argocd-bootstrap-was-a-fifth-pin-site-nobody-count.md"
+  }
+}

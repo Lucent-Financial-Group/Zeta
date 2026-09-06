@@ -74,6 +74,8 @@ generator that read an EMPTY roster cannot pass.
 | `cross-verify (push-without-rebase)`           | Commit-back lane can re-express its work (AH001)                                  |
 | `cross-verify (skip-token-cannot-land)`        | Commit-back lane can actually land (AH002)                                        |
 | `cross-verify (dotnet-pin-parity)`             | .NET SDK pin declared once (.mise.toml canonical, global.json restates)           |
+| `cross-verify (argocd-pin-parity)`             | ArgoCD chart pinned identically at all five install sites                         |
+| `cross-verify (argocd-pin-parity-tests)`       | argocd-pin-parity falsifiers (roster refusal + chart-anchored parse)              |
 | `cross-verify (mise-toolchain-couplings)`      | mise toolchain couplings (rust restatements · zig byte-lock provenance)           |
 | `cross-verify (flash-entrypoint-parity)`       | zflash host-arm parity (every arm verifies the ISO before writing)                |
 | `cross-verify (chart-target-revisions)`        | ArgoCD chart targetRevisions resolve (offline, against the committed snapshot)    |
