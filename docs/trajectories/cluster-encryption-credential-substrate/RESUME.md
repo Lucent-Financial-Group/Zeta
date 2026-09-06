@@ -560,6 +560,24 @@ Workitem: `081M1W3BPCN087G0R001R97E45`.
 - Does not invent an integrate decision. Does not expand
   `ZetaFirstbootRole`. Does not edit Application.yaml.
 
+## 2026-09-06 — installer-iso epoch does not treat current-system bao as option D (Riven)
+
+Aaron: continue after the env join. Step 6.95a still runs on
+the live ISO. `/run/current-system/sw/bin/bao` there is the
+ISO's bao.
+
+Consumer: `src/Core.TypeScript/zflash/firstboot-bao-elf.ts`
+(`namedBaoElfAskAtEpoch`) plus
+`src/Core.TypeScript/installer/bao-elf-capture.ts`
+(`planSetupFromNamedBaoElfEnv`).
+Workitem: `081M1W4XQH4087G0R000F69WYQ`.
+
+- Epoch is named: `installer-iso` vs `installed-host`.
+  Exact `NIXOS_HOST_BAO` match only. Does not infer from
+  `/mnt` or `/dev/tpmrm0`. Does not fill a `/mnt/...` path.
+- Does not invent an integrate decision. Does not expand
+  `ZetaFirstbootRole`. Does not edit Application.yaml.
+
 ## 2026-09-04 — production-hardening review (Riven)
 
 Aaron asked to production-harden the CA, name the unseal startup, use

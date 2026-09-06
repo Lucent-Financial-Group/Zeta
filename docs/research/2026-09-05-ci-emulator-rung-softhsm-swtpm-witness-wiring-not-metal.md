@@ -266,17 +266,21 @@ env into the overlay plan. Injected read — the
 installer ISO's current-system bao is not metal
 option D. tpmrm0 is still not an ask. Does not
 invent an integrate decision.
+Installer-iso epoch (`081M1W4XQH4087G0R000F69WYQ`):
+`namedBaoElfAskAtEpoch`. `installer-iso` does not
+open `NIXOS_HOST_BAO`. `installed-host` may.
+`/mnt` existing does not pick the epoch. Does
+not fill a `/mnt/...` path.
 
 1. Metal: `seal "pkcs11"` in Application.yaml still waits.
    Same commit as a **reachable** module: same-libc image
    (glibc OpenBao that can load the host `.so`) or option D
    host `bao`. Dual-vendor per node is ZetaFS k-of-n, not
    two active OpenBao seals. Do not treat this planner as
-   that commit. The env join now exists; it still cannot
-   land the stanza. A live installer call with
-   `nodeBaoElfRead` on the ISO's current-system bao is
-   forbidden. Does not expand `ZetaFirstbootRole`.
-   `/dev/tpmrm0` is still not an ask.
+   that commit. The epoch is named; a live installer call
+   still must not invent an integrate decision. Does not
+   expand `ZetaFirstbootRole`. `/dev/tpmrm0` is still not
+   an ask.
 2. extraContainer Shamir sidecar (`valuesObject` only) until
    kind/CI consume the emulator init.
 
