@@ -36,20 +36,20 @@ module RelationalIdentityExperiment =
           Claims = value.Claims |> List.map (fun claim -> [| claim.Actor; claim.Counterparty; claim.Channel; claim.Claim; text claim.Weight |]) |> List.toArray }
 
     type Case =
-        { Name: string; Status: string; MissingLeft: string[]; MissingRight: string[]
+        { Name: string; Status: string; Expected: string[]; MissingLeft: string[]; MissingRight: string[]
           UnverifiedLeft: string[]; UnverifiedRight: string[]; RejectedLeft: string[]; RejectedRight: string[]
           Conflicts: string[]; BoundaryParents: string[]; RepeatedLeft: int; RepeatedRight: int; Invariant: WireInvariant[] }
 
-    let snapshot name (outcome: Result<R.Readout, R.Refusal>) =
+    let snapshot expected name (outcome: Result<R.Readout, R.Refusal>) =
         let empty status =
-            { Name = name; Status = status; MissingLeft = [||]; MissingRight = [||]
+            { Name = name; Status = status; Expected = expected |> List.distinct |> List.sort |> List.toArray; MissingLeft = [||]; MissingRight = [||]
               UnverifiedLeft = [||]; UnverifiedRight = [||]; RejectedLeft = [||]; RejectedRight = [||]
               Conflicts = [||]; BoundaryParents = [||]; RepeatedLeft = 0; RepeatedRight = 0; Invariant = [||] }
         match outcome with
         | Error(R.InvalidInput _) -> empty "refused-input"
         | Error(R.InvalidCoordinates _) -> empty "refused-coordinates"
         | Ok value ->
-            { Name = name; Status = value.Status
+            { Name = name; Status = value.Status; Expected = List.toArray value.Expected
               MissingLeft = List.toArray value.MissingLeft; MissingRight = List.toArray value.MissingRight
               UnverifiedLeft = List.toArray value.UnverifiedLeft; UnverifiedRight = List.toArray value.UnverifiedRight
               RejectedLeft = List.toArray value.RejectedLeft; RejectedRight = List.toArray value.RejectedRight
@@ -96,7 +96,7 @@ module RelationalIdentityExperiment =
         let left, right = view "A" receipts, view "B" receipts
         let update event change (value: R.View) = { value with Occurrences = value.Occurrences |> List.map (fun item -> if item.Receipt.EventId = event then change item else item) }
         let omit event (value: R.View) = { value with Occurrences = value.Occurrences |> List.filter (fun item -> item.Receipt.EventId <> event) }
-        let run name entries cut a b = R.compareViews (verify entries) cut a b |> snapshot name
+        let run name entries cut a b = R.compareViews (verify entries) cut a b |> snapshot cut name
         let changed = { receipts.[2] with Claim = "green" }
         let forked = update "e2" (fun item -> { item with Receipt = changed; Attestation = "fixture-fork" }) right
         let forkTable = (changed, "fixture-fork") :: table

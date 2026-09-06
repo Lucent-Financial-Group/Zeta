@@ -38,7 +38,7 @@ let semantic =
 clock.Stop()
 let result =
     {| Protocol = "relational-identity-v1"
-       SourceArchive = "archive/relational-identity-20260906-source-v2"
+       SourceArchive = "archive/relational-identity-20260906-source-v3"
        ProtocolCommit = "4f470f40e"
        SourceHashes = sourceHashes
        Semantic = semantic

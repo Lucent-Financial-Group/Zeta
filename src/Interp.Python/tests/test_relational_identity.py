@@ -114,3 +114,9 @@ def test_unavailable_alternative_remains_unknown_when_event_id_is_covered() -> N
     assert result["Status"] == "unknown-coverage"
     assert result["UnverifiedRight"] == ["e2"]
     assert result["Invariant"] == []
+
+
+def test_reports_name_the_declared_cut_even_when_incomplete_or_refused() -> None:
+    cases = {row["Name"]: row for row in r.mutation_panel()}
+    for name in ("missing-parent", "causal-coordinate-reversal"):
+        assert cases[name]["Expected"] == ["e0", "e1", "e2", "e3"]

@@ -20,7 +20,8 @@ soundness, personhood, a Lorentz metric, or a CQM/Clifford equivalence.
 
 The original source is `archive/relational-identity-20260906-source-v1`; the
 [repaired source](2026-09-06-source-repairs.md) is
-`archive/relational-identity-20260906-source-v2`. The repaired archive pins the kernel, exact
+`archive/relational-identity-20260906-source-v3` (v2 is also retained).
+The repaired archive pins the kernel, exact
 fixture panel, and independent Python implementation before execution.
 
 - [F# kernel](../../../src/Research.FSharp/RelationalIdentity.fs)

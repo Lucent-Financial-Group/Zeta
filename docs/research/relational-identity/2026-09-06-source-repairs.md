@@ -1,4 +1,4 @@
-# Source v2: pre-result repairs with retained witnesses
+# Source repairs before the complete result panel
 
 Date: 2026-09-06
 Operational status: research-grade
@@ -52,3 +52,13 @@ future unrelated edits to the live repository.
 Both archived refs must remain reachable. Run the complete panel only after
 the v2 source ref is pushed, retain the output and independent replay, then
 apply the registered stopping and promotion rules.
+
+## Source v3: carry the declared cut through the JSON projection
+
+Before the complete panel ran, review of the wire projection found that the
+kernel's `Readout.Expected` field was being dropped from each JSON case. The
+protocol requires every report to name its declared cut. Source v3 adds
+`Expected` to every case, including incomplete and refused views, and adds
+native/Python regression assertions. Neither the kernel's consistency rule nor
+any registered threshold changes. The first complete measured panel uses
+`archive/relational-identity-20260906-source-v3`; v1 and v2 remain preserved.

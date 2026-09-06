@@ -97,6 +97,7 @@ def compare(
     out: dict[str, Any] = {
         "Name": name,
         "Status": "",
+        "Expected": sorted(set(cut)),
         "RepeatedLeft": 0,
         "RepeatedRight": 0,
         "Invariant": [],
@@ -197,7 +198,9 @@ def compare(
                 for a, b in pairs
             ):
                 empty = compare(name, set(), (), View("A", ()), View("B", ()))
-                empty.update(Status="refused-coordinates", Invariant=[])
+                empty.update(
+                    Status="refused-coordinates", Expected=sorted(cut_set), Invariant=[]
+                )
                 return empty
     if out["Conflicts"]:
         out["Status"] = "authenticated-conflict"
@@ -608,7 +611,7 @@ def verify_saved(
     if (
         saved.get("Protocol") != "relational-identity-v1"
         or saved.get("SourceArchive")
-        != "archive/relational-identity-20260906-source-v2"
+        != "archive/relational-identity-20260906-source-v3"
     ):
         raise ValueError("unexpected protocol or source archive")
     if saved.get("ProtocolCommit") != "4f470f40e":

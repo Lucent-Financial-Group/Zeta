@@ -35,6 +35,8 @@ let ``registered mutations distinguish missing coverage authentication and contr
     Assert.Equal("authenticated-causal-cycle", cases.["authenticated-causal-cycle"].Status)
     Assert.Equal<string[]>([|"e3"|], cases.["conflict-with-missing-coverage"].MissingRight)
     Assert.Equal(1, cases.["identical-replay"].RepeatedRight)
+    Assert.Equal<string[]>([|"e0";"e1";"e2";"e3"|], cases.["missing-parent"].Expected)
+    Assert.Equal<string[]>([|"e0";"e1";"e2";"e3"|], cases.["causal-coordinate-reversal"].Expected)
     for name in ["causal-coordinate-reversal";"coordinate-collision"] do Assert.Equal("refused-coordinates", cases.[name].Status)
 
 [<Fact>]
