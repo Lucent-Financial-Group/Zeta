@@ -450,7 +450,10 @@ path string. Setup glue
 (`081M1V32K68087G0R000SW5PJB`,
 `planSetupPkcs11Overlay`) joins those contents with
 the attached-device oracle; the restore filename is
-not the `.so`. glibc-host-into-musl-image is not a
+not the `.so`. The path picker now feeds that overlay
+(`081M1V5ER44087G0R0000WPCC4`,
+`planSetupOverlayFromIntegrate`).
+glibc-host-into-musl-image is not a
 module; Application.yaml stays Shamir.
 
 ## Grounding (on `origin/main`)

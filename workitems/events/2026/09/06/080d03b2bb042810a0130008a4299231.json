@@ -1,0 +1,14 @@
+{
+  "id": "080d03b2bb042810a0130008a4299231",
+  "at": "2026-09-06T10:50:32.965Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1V5ER44087G0R0000WPCC4",
+    "type": "task",
+    "title": "Setup integrate decision feeds PKCS#11 overlay; still not a seal stanza",
+    "slug": "setup-integrate-decision-feeds-pkcs-11-overlay-still-not-a-s",
+    "priority": "P2",
+    "filename": "081M1V5ER44087G0R0000WPCC4-setup-integrate-decision-feeds-pkcs-11-overlay-still-not-a-s.md"
+  }
+}

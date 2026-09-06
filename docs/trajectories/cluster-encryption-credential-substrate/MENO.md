@@ -143,7 +143,11 @@ assume the number.
    *contents* (not the restore filename) with the
    attached-device oracle; NixOS contract is the
    fallback; current chart ABI still cannot commit the
-   stanza.
+   stanza. Integrate join (`081M1V5ER44087G0R0000WPCC4`):
+   `planSetupOverlayFromIntegrate` takes the
+   `integrateAtSetup` decision as the oracle. Lucent /
+   kind / a refused request are `no-oracle`. SoftHSM is
+   still not this overlay.
 7. extraContainer sidecar — later, **same commit as the
    sidecar**, and only for the Shamir kind path until the
    emulator job replaces it. `valuesObject` only. Do not fork

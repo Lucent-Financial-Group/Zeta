@@ -198,7 +198,10 @@ a driver. Setup glue (`081M1V32K68087G0R000SW5PJB`)
 joins USB companion *contents* into that overlay;
 the restore filename is not the `.so`; a companion
 without an attached device is not a seal. The current
-chart still cannot commit the stanza.
+chart still cannot commit the stanza. Integrate join
+(`081M1V5ER44087G0R0000WPCC4`) feeds that overlay from
+the path picker; Lucent / a refused request / SoftHSM
+are not a hostPath overlay.
 
 1. Metal: `seal "pkcs11"` in Application.yaml still waits.
    Same commit as a **reachable** module: same-libc image

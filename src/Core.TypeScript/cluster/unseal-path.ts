@@ -33,12 +33,14 @@
  * PKCS#11 tier (frost-hardware-probe no-silent-downgrade).
  *
  * Cite: host-seal-profile.ts, seal-emulator-rung.ts,
- * vault-unsealer.ts, tpm2-linux-probe.ts, frost-hardware-probe.ts,
+ * pkcs11-hostpath-overlay.ts, vault-unsealer.ts,
+ * tpm2-linux-probe.ts, frost-hardware-probe.ts,
  * docs/design/2026-09-04-credential-substrate-production-hardening-review.md.
  */
 
 import { emptyCapture, type HostHardwareCapture } from "./host-seal-profile.ts";
-import { pickOpenbaoMechanism, type MechanismPick } from "./seal-emulator-rung.ts";
+import { planSetupPkcs11Overlay, type OverlayPlan } from "./pkcs11-hostpath-overlay.ts";
+import { pickOpenbaoMechanism, type MechanismPick, type SealOracle } from "./seal-emulator-rung.ts";
 import { UNSEAL_THRESHOLD } from "./vault-unsealer.ts";
 
 /** One OpenBao seal (or the Shamir HTTP loop) per node. */
@@ -335,6 +337,42 @@ export function emulatorMatrixCell(cell: {
 
 export function skipIfAbsentCannotWearPass(): false {
   return false;
+}
+
+/**
+ * Integrate path → overlay oracle. Lucent / kind are not a hostPath
+ * overlay. CI emulators map so the overlay can refuse them by name.
+ */
+export function sealOracleFromUnsealPath(path: UnsealPath): SealOracle {
+  switch (path) {
+    case "pkcs11-yubihsm":
+      return "yubihsm2";
+    case "pkcs11-smartcard":
+      return "smartcard-hsm";
+    case "pkcs11-tpm":
+      return "tpm2-pkcs11";
+    case "ci-softhsm":
+      return "softhsm2";
+    case "ci-swtpm":
+      return "swtpm";
+    case "lucent-shamir":
+    case "kind-shamir":
+      return "none";
+  }
+}
+
+/**
+ * Setup join: the integrate decision is the oracle. Companion
+ * *contents* still win. A refused integrate is no-oracle, not a seal.
+ * Current chart ABI still cannot commit the stanza.
+ */
+export function planSetupOverlayFromIntegrate(
+  decision: IntegrateDecision,
+  companionModulePath: string | null,
+  moduleFileExists: boolean,
+): OverlayPlan {
+  const oracle = decision.ok ? sealOracleFromUnsealPath(decision.path) : "none";
+  return planSetupPkcs11Overlay({ oracle, companionModulePath, moduleFileExists });
 }
 
 export function defaultMetalCapture(): HostHardwareCapture {

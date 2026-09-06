@@ -251,6 +251,27 @@ Consumer: `src/Core.TypeScript/cluster/pkcs11-hostpath-overlay.ts`
   null. Does not edit Application.yaml. Does not land
   `yubihsm.nix`. extraContainer stays later.
 
+## 2026-09-06 — setup integrate decision feeds the overlay (Riven)
+
+Aaron: continue after the companion-contents glue.
+`integrateAtSetup` picks a path. `planSetupPkcs11Overlay`
+plans volumes. Setup must join them.
+
+Consumer: `src/Core.TypeScript/cluster/unseal-path.ts`
+(`planSetupOverlayFromIntegrate`,
+`sealOracleFromUnsealPath`). Workitem:
+`081M1V5ER44087G0R0000WPCC4`.
+
+- Integrate path is the overlay oracle (same vendor
+  order as `pickSealOracleFromCapture`). Companion
+  *contents* still win. A refused PKCS#11 request is
+  `no-oracle` even with companion contents. Lucent /
+  kind Shamir are not this overlay. SoftHSM install
+  path is `softhsm-is-not-a-hostpath-overlay`.
+- Current chart ABI stays
+  `glibc-host-into-musl-image`. Does not edit
+  Application.yaml.
+
 ## 2026-09-04 — production-hardening review (Riven)
 
 Aaron asked to production-harden the CA, name the unseal startup, use
