@@ -544,6 +544,9 @@ Named unseal request
 `ZETA_UNSEAL_REQUEST`; `/dev/tpmrm0` is
 not `pkcs11-tpm`; still does not invent
 an integrate decision.
+Env request joins injected capture
+(`081M1WCEGYJ087G0R0039T2T39`); missing
+is unmeasured, not `auto`.
 glibc-host-into-musl-image is not a
 module; Application.yaml stays Shamir.
 

@@ -247,6 +247,10 @@ assume the number.
    unmeasured, not `auto`. `/dev/tpmrm0` is unknown, not
    `pkcs11-tpm`. Does not call `integrateAtSetup`. Does not
    invent an integrate decision.
+   Env request joins injected capture (`081M1WCEGYJ087G0R0039T2T39`):
+   `integrateAtSetupFromEnv`. Missing request is unmeasured, not
+   `auto`. Capture stays injected. `/dev/tpmrm0` still refuses
+   at parse. Does not invent an integrate decision.
 7. extraContainer sidecar — later, **same commit as the
    sidecar**, and only for the Shamir kind path until the
    emulator job replaces it. `valuesObject` only. Do not fork

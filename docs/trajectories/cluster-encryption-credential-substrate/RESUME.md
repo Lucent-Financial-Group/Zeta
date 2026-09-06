@@ -646,6 +646,23 @@ Workitem: `081M1WBA6RX087G0R002450S9J`.
 - Does not invent an integrate decision. Does not expand
   `ZetaFirstbootRole`. Does not edit Application.yaml.
 
+## 2026-09-06 — env unseal request joins injected capture (Riven)
+
+Aaron: continue after naming the request. `integrateAtSetup`
+still took a TypeScript SetupRequest, so missing env could
+become `auto`.
+
+Consumer: `src/Core.TypeScript/cluster/unseal-path.ts`
+(`integrateAtSetupFromEnv`).
+Workitem: `081M1WCEGYJ087G0R0039T2T39`.
+
+- Request from `ZETA_UNSEAL_REQUEST`. Missing is unmeasured
+  (`decision` null), not `auto`. Capture stays injected.
+  `/dev/tpmrm0` still refuses at parse. Does not invent a
+  capture from the char device.
+- Does not invent an integrate decision. Does not expand
+  `ZetaFirstbootRole`. Does not edit Application.yaml.
+
 ## 2026-09-04 — production-hardening review (Riven)
 
 Aaron asked to production-harden the CA, name the unseal startup, use
