@@ -222,6 +222,22 @@ let ``Buffered freeze is not POSIX-readable (no freeze-commit)`` () : Task =
     }
 
 [<Fact>]
+let ``D10 DurabilityMode maps onto freeze class and Journaled has no twin`` () =
+    Assert.Equal(ZetaFsFreeze.Buffered, DurabilityFreezeMap.freezeClass DurabilityMode.InMemoryOnly)
+    Assert.Equal(ZetaFsFreeze.Buffered, DurabilityFreezeMap.freezeClass DurabilityMode.OsBuffered)
+    Assert.Equal(ZetaFsFreeze.Durable, DurabilityFreezeMap.freezeClass DurabilityMode.StableStorage)
+    Assert.Equal(ZetaFsFreeze.Durable, DurabilityFreezeMap.freezeClass DurabilityMode.WitnessDurable)
+    match DurabilityFreezeMap.tryDurabilityMode ZetaFsFreeze.Buffered with
+    | Some DurabilityMode.OsBuffered -> ()
+    | other -> Assert.Fail(sprintf "Buffered maps to OsBuffered, got %A" other)
+    match DurabilityFreezeMap.tryDurabilityMode ZetaFsFreeze.Journaled with
+    | None -> ()
+    | Some m -> Assert.Fail(sprintf "Journaled has no DurabilityMode twin, got %A" m)
+    match DurabilityFreezeMap.tryDurabilityMode ZetaFsFreeze.Durable with
+    | Some DurabilityMode.StableStorage -> ()
+    | other -> Assert.Fail(sprintf "Durable maps to StableStorage, got %A" other)
+
+[<Fact>]
 let ``Durable freeze on a real directory fsyncs and is readable`` () : Task =
     task {
         ensureHasher ()

@@ -366,3 +366,23 @@ module DurabilityMode =
             "research preview — no shipped durability guarantee; \
              Save throws until the WDC protocol is specified and \
              proved"
+
+/// D10 documented mapping between `DurabilityMode` (backing-store knob)
+/// and freeze `DurabilityClass`. Not an equivalence: freeze `Journaled`
+/// has no twin; Windows freeze Durable is refused while `StableStorage`
+/// still ships; Darwin Durable uses `F_FULLFSYNC` and `StableStorage` uses
+/// `fsync`. One authority for the *names* of the intent, not one protocol.
+module DurabilityFreezeMap =
+
+    let freezeClass (mode: DurabilityMode) : ZetaFsFreeze.DurabilityClass =
+        match mode with
+        | DurabilityMode.InMemoryOnly
+        | DurabilityMode.OsBuffered -> ZetaFsFreeze.Buffered
+        | DurabilityMode.StableStorage
+        | DurabilityMode.WitnessDurable -> ZetaFsFreeze.Durable
+
+    let tryDurabilityMode (cls: ZetaFsFreeze.DurabilityClass) : DurabilityMode option =
+        match cls with
+        | ZetaFsFreeze.Buffered -> Some DurabilityMode.OsBuffered
+        | ZetaFsFreeze.Journaled -> None
+        | ZetaFsFreeze.Durable -> Some DurabilityMode.StableStorage
