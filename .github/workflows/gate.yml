@@ -1042,6 +1042,32 @@ jobs:
           echo "$PWD/.venv-yamllint/bin" >> "$GITHUB_PATH"
           echo "$(go env GOPATH)/bin" >> "$GITHUB_PATH"
 
+      # The manifest roots, DERIVED from the cluster-tree roster rather than spelled twice
+      # below. Two reasons, and the second is a live fragility rather than tidiness:
+      #
+      #   1. `infra/k8s` is scheduled for deletion (081M00QCHWA087G0R000GKKRXD). Spelled
+      #      literally, this job is a `blocking` consumer that the deletion commit must edit;
+      #      derived, it needs no change at all.
+      #   2. `find` ERRORS on a missing directory. If the tree is deleted without editing this
+      #      file, `lint (yaml/k8s)` breaks — and it breaks in the kubeconform step, which
+      #      reads as a schema failure rather than as a missing path. `existingClusterDirs`
+      #      emits only roots that are present, so the deletion degrades to "one fewer tree
+      #      scanned" instead of a misleading red.
+      #
+      # `agentic-organization/deploy` is not a cluster tree and stays literal.
+      - name: Declared cluster manifest roots (derived from the roster)
+        id: manifest-roots
+        run: |
+          set -euo pipefail
+          roots="$(bun -e 'import { existsSync } from "node:fs"; import { clusterK8sRoots, readDeclaredTrees } from "./src/Core.TypeScript/cluster/declared-cluster-trees.ts"; process.stdout.write(clusterK8sRoots(readDeclaredTrees()).filter((r) => existsSync(r)).join(" "))')"
+          if [ -z "$roots" ]; then
+            echo "REFUSED: the roster declares no cluster k8s root that exists on disk." >&2
+            echo "Scanning nothing would pass silently, which is the failure this step exists to avoid." >&2
+            exit 1
+          fi
+          echo "roots=$roots" >> "$GITHUB_OUTPUT"
+          echo "[yaml/k8s] manifest roots: $roots agentic-organization/deploy"
+
       - name: yamllint (k8s manifests)
         # relaxed profile: structural correctness (indent/dup-key/syntax), not
         # cosmetic line-length — the manifests are machine-authored Helm values.
@@ -1050,7 +1076,12 @@ jobs:
         # were never validated by anything. They reach a cluster via ArgoCD sync, so a
         # malformed one failed at APPLY time on real hardware instead of here. That is
         # the wrong place to find it once runners live on USB-provisioned nodes.
-        run: yamllint -d relaxed full-ai-cluster/k8s/ infra/k8s/ agentic-organization/deploy/
+        env:
+          ROOTS: ${{ steps.manifest-roots.outputs.roots }}
+        run: |
+          set -euo pipefail
+          read -ra manifest_roots <<< "$ROOTS"
+          yamllint -d relaxed "${manifest_roots[@]}" agentic-organization/deploy/
 
       - name: kubeconform (k8s API-schema validation)
         # -ignore-missing-schemas: skip CRs we have no schema for; -skip:
@@ -1078,15 +1109,18 @@ jobs:
         # which is how this comment's own stale number was found. MEASURED on the agentic-org tree before landing: 26
         # resources in 12 files, Valid 26 / Invalid 0 both with and without the flag,
         # so the pin changes no verdict today -- it fixes WHICH QUESTION is being asked.
+        env:
+          ROOTS: ${{ steps.manifest-roots.outputs.roots }}
         run: |
           # READ, not written here. This was a literal 1.33.0 while the observability
           # audit said 1.31.0 and k3s shipped 1.35.6 -- the very drift the comment above
           # says this pin closes, left open in a third lane.
+          read -ra manifest_roots <<< "$ROOTS"
           kube_version="$(python3 -c 'import json;print(json.load(open("full-ai-cluster/k8s/kubernetes-version.json"))["kubernetesVersion"])')"
           echo "[yaml/k8s] validating against Kubernetes $kube_version (declared)"
           crd_kinds="Application,Blueprint,CiliumL2AnnouncementPolicy,CiliumLoadBalancerIPPool,ClusterIssuer,ConstraintTemplate,Deployable,Gateway,HTTPRoute,Hat,HatConflict,HatCooldown,HatMaxBindings,HatMaxNew,HatNoCycle,HatPolicy,HatQuorum,HatWarmup,HelmChart,Policy"
           kc() {
-            find full-ai-cluster/k8s infra/k8s agentic-organization/deploy -type f \( -name '*.yaml' -o -name '*.yml' \) -print0 \
+            find "${manifest_roots[@]}" agentic-organization/deploy -type f \( -name '*.yaml' -o -name '*.yml' \) -print0 \
               | xargs -0 kubeconform -strict -ignore-missing-schemas -summary -schema-location default -kubernetes-version "$kube_version" -skip "$crd_kinds"
           }
           kc || { echo "[yaml/k8s] retry in 30s (schema-registry rate limit?)"; sleep 30; kc; } \

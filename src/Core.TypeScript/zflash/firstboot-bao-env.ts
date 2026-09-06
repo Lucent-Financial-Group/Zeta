@@ -7,6 +7,7 @@
  * this reads `ZETA_BAO_LOAD_SITE` and `ZETA_BAO_PATH` from the
  * resulting env. After Step 6.95a the installer names
  * `ZETA_BAO_ELF_EPOCH=installer-iso` (literal, not from `/mnt`).
+ * Named epoch filters ISO current-system bao from the JSON ask.
  * Does not open files. bun invoke lives in
  * `zeta-install.sh` after Step 6.95a (mise/bun on PATH).
  * bun invoke from `zeta-first-boot.sh` stays forbidden.

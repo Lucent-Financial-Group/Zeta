@@ -129,17 +129,35 @@ describe("parseBaoElfEpoch — named, not inferred", () => {
 });
 
 describe("consumeFirstbootBaoElfEnvWithEpoch", () => {
-  test("ISO names installer-iso and still reports a sourced option D ask", () => {
+  test("installer-iso filters NIXOS_HOST_BAO from the sourced ask", () => {
     expect(
       consumeFirstbootBaoElfEnvWithEpoch({
         [FIRSTBOOT_BAO_LOAD_SITE_KEY]: "on-host",
         [FIRSTBOOT_BAO_PATH_KEY]: NIXOS_HOST_BAO,
         [FIRSTBOOT_BAO_ELF_EPOCH_KEY]: "installer-iso",
       }),
-    ).toEqual({ ok: true, ask: nixosHostBaoAsk(), epoch: "installer-iso" });
+    ).toEqual({ ok: true, ask: null, epoch: "installer-iso" });
   });
 
-  test("missing epoch is unmeasured; unknown epoch refuses", () => {
+  test("installer-iso still reports a named store path as an ask", () => {
+    const storeBao = "/nix/store/eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee-openbao/bin/bao";
+    expect(
+      consumeFirstbootBaoElfEnvWithEpoch({
+        [FIRSTBOOT_BAO_LOAD_SITE_KEY]: "on-host",
+        [FIRSTBOOT_BAO_PATH_KEY]: storeBao,
+        [FIRSTBOOT_BAO_ELF_EPOCH_KEY]: "installer-iso",
+      }),
+    ).toEqual({ ok: true, ask: { site: "on-host", openedPath: storeBao }, epoch: "installer-iso" });
+  });
+
+  test("installed-host keeps option D; missing epoch still reports the sourced ask", () => {
+    expect(
+      consumeFirstbootBaoElfEnvWithEpoch({
+        [FIRSTBOOT_BAO_LOAD_SITE_KEY]: "on-host",
+        [FIRSTBOOT_BAO_PATH_KEY]: NIXOS_HOST_BAO,
+        [FIRSTBOOT_BAO_ELF_EPOCH_KEY]: "installed-host",
+      }),
+    ).toEqual({ ok: true, ask: nixosHostBaoAsk(), epoch: "installed-host" });
     expect(
       consumeFirstbootBaoElfEnvWithEpoch({
         [FIRSTBOOT_BAO_LOAD_SITE_KEY]: "on-host",
@@ -157,7 +175,7 @@ describe("consumeFirstbootBaoElfEnvWithEpoch", () => {
 });
 
 describe("runFirstbootBaoElfEnvCli epoch", () => {
-  test("writes installer-iso epoch next to a sourced ask", () => {
+  test("writes installer-iso epoch with a null ask for NIXOS_HOST_BAO", () => {
     const lines: string[] = [];
     const code = runFirstbootBaoElfEnvCli(
       {
@@ -171,7 +189,7 @@ describe("runFirstbootBaoElfEnvCli epoch", () => {
     );
     expect(code).toBe(0);
     expect(lines).toEqual([
-      `${JSON.stringify({ ok: true, ask: nixosHostBaoAsk(), epoch: "installer-iso" })}\n`,
+      `${JSON.stringify({ ok: true, ask: null, epoch: "installer-iso" })}\n`,
     ]);
   });
 });

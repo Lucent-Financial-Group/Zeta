@@ -3,6 +3,7 @@ module Zeta.Tests.ZetaFsFreezeTests
 
 open System
 open System.IO
+open System.Text
 open System.Threading
 open System.Threading.Tasks
 open global.Xunit
@@ -236,6 +237,52 @@ let ``D10 DurabilityMode maps onto freeze class and Journaled has no twin`` () =
     match DurabilityFreezeMap.tryDurabilityMode ZetaFsFreeze.Durable with
     | Some DurabilityMode.StableStorage -> ()
     | other -> Assert.Fail(sprintf "Durable maps to StableStorage, got %A" other)
+
+[<Fact>]
+let ``new freeze volume writes ns=bindings and git-trees deltaLog still refuses`` () : Task =
+    task {
+        ensureHasher ()
+        FileSystem.Register(InMemoryFileSystem())
+        let store = "/freeze-ns-bindings"
+        let mutbuf = ZetaFsMutbuf.create store ZetaFsMutbuf.Coherence.Shared
+        let volume = ZetaFsFreeze.createManualStream store mutbuf None
+        let codec =
+            CborEntryCodec<string>(
+                (fun (s: string) -> DynamicValue.String s),
+                (fun (dv: DynamicValue) ->
+                    match dv with
+                    | DynamicValue.String s -> s
+                    | _ -> "")
+            )
+
+        try
+            let formatPath = ZetaFsPath.combine2 store ZetaFsFormat.FileName
+            Assert.True(FileSystem.Current.Exists formatPath)
+            let text = Encoding.UTF8.GetString(FileSystem.Current.ReadAllBytes formatPath)
+            Assert.Contains("ns=bindings", text, StringComparison.Ordinal)
+            Assert.DoesNotContain("ns=git-trees", text, StringComparison.Ordinal)
+            let id = mintId ()
+            let h = ZetaFsMutbuf.openHandle volume.Mutbuf id
+            ZetaFsMutbuf.pwrite volume.Mutbuf h 0L [| 1uy; 2uy; 3uy |] |> ignore
+            let pending = (freezeAsync volume id ZetaFsFreeze.Journaled).AsTask()
+            do! (ZetaFsFreeze.pumpLog volume CancellationToken.None).ConfigureAwait(false)
+            let! first = pending.ConfigureAwait(false)
+            match first with
+            | Error e -> Assert.Fail(ZetaFsFreeze.errorName e)
+            | Ok first ->
+                ZetaFsFreeze.dispose volume
+                let reopened = ZetaFsFreeze.createManualStream store mutbuf None
+                try
+                    Assert.True(ZetaFsFreeze.isReadable reopened first.Content)
+                finally
+                    ZetaFsFreeze.dispose reopened
+                let ex =
+                    Assert.Throws<InvalidOperationException>(fun () ->
+                        ZetaFsStore.deltaLog store codec |> ignore)
+                Assert.Contains("ns=bindings", ex.Message, StringComparison.Ordinal)
+        finally
+            FileSystem.Reset()
+    }
 
 [<Fact>]
 let ``Durable freeze on a real directory fsyncs and is readable`` () : Task =
@@ -685,7 +732,10 @@ let ``Journaled freeze crash during leaf put leaves extra garbage and is not rea
             Assert.True(FileSystem.Current.Exists logPath)
             let intentLen = FileSystem.Current.ReadAllBytes(logPath).Length
             Assert.True(intentLen > 0)
-            Assert.Equal(logPath, mock.CommitOrder.[0])
+            let freezeWrites =
+                mock.CommitOrder
+                |> Array.filter (fun p -> p.IndexOf("FORMAT", StringComparison.Ordinal) < 0)
+            Assert.Equal(logPath, freezeWrites.[0])
             ZetaFsFreeze.dispose volume
             let reopened = ZetaFsFreeze.createManualStream store mutbuf None
 
