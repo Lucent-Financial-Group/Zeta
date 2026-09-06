@@ -1,0 +1,14 @@
+{
+  "id": "080d03c36487b010a0130008d5f5cc17",
+  "at": "2026-09-06T20:32:56.054Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1W6S47P087G0R002FDFVQ1",
+    "type": "task",
+    "title": "BlockCas planted garbage returns MissingLeaves",
+    "slug": "blockcas-planted-garbage-returns-missingleaves",
+    "priority": "P2",
+    "filename": "081M1W6S47P087G0R002FDFVQ1-blockcas-planted-garbage-returns-missingleaves.md"
+  }
+}
