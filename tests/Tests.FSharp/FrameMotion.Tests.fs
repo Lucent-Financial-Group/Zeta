@@ -1,5 +1,7 @@
 module Zeta.Tests.FrameMotionTests
 
+open System.IO
+open System.Text.Json
 open Xunit
 open Zeta.Core
 
@@ -25,6 +27,24 @@ let private litPoint (frame: GE.Frame) : int * int =
     frame.Cells
     |> Array.findIndex ((<>) 0uy)
     |> fun index -> index % frame.W, index / frame.W
+
+let private repoRoot () =
+    let mutable directory =
+        DirectoryInfo(Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location))
+
+    while not (isNull directory) && not (File.Exists(Path.Join(directory.FullName, "Zeta.sln"))) do
+        directory <- directory.Parent
+
+    if isNull directory then failwith "could not locate repo root" else directory.FullName
+
+let private aggregate (receipts: FrameMotion.AccuracyReceipt list) : FrameMotion.AccuracyReceipt =
+    let correct = receipts |> List.sumBy _.Correct
+    let total = receipts |> List.sumBy _.Total
+
+    { Correct = correct
+      Total = total
+      BasisPoints = int (int64 correct * 10_000L / int64 total)
+      State = receipts.Head.State }
 
 [<Fact>]
 let ``source-owned CHIP8 cart renders a moving pixel without exposing registers to the predictor`` () =
@@ -60,6 +80,53 @@ let ``one-step motion beats current-position control across direction and speed 
     Assert.Equal(10_000, projected.BasisPoints)
     Assert.Equal(observed.State.MaximumLogicalBytes, projected.State.MaximumLogicalBytes)
     Assert.Equal(28, projected.State.LogicalBytes)
+
+[<Fact>]
+let ``CHIP8 motion measurements select the policy recorded for ARC transfer`` () =
+    let fixtures =
+        [ CartFixtures.motionDotForward
+          CartFixtures.motionDotReverse
+          CartFixtures.motionDotFast
+          CartFixtures.motionDotFastReverse ]
+
+    let measure projection =
+        fixtures
+        |> List.map (fun fixture -> renderedFrames fixture 8 |> FrameMotion.evaluate projection |> requireOk)
+        |> aggregate
+
+    let observed = measure FrameMotion.Projection.Observed
+    let oneStep = measure FrameMotion.Projection.OneStep
+    let selection = FrameMotion.selectProjection observed oneStep |> requireOk
+    let artifact =
+        Path.Join(repoRoot (), "src", "Arc.Python", "tests", "data", "motion-transfer-benchmark.json")
+
+    use document = JsonDocument.Parse(File.ReadAllText artifact)
+    let source = document.RootElement.GetProperty("sourceTraining")
+
+    Assert.Equal(0, observed.Correct)
+    Assert.Equal(24, oneStep.Correct)
+    Assert.Equal(FrameMotion.Projection.OneStep, selection.Selected)
+    Assert.Equal(10_000, selection.DeltaBasisPoints)
+    Assert.Equal(source.GetProperty("forecastCount").GetInt32(), observed.Total)
+    Assert.Equal(source.GetProperty("observedCorrect").GetInt32(), observed.Correct)
+    Assert.Equal(source.GetProperty("oneStepCorrect").GetInt32(), oneStep.Correct)
+    Assert.Equal(source.GetProperty("maximumLogicalBytes").GetInt32(), oneStep.State.MaximumLogicalBytes)
+    Assert.Equal("one-step-ahead", source.GetProperty("selectedPolicy").GetString())
+
+[<Fact>]
+let ``motion policy selection is conservative on ties and refuses incomparable receipts`` () =
+    let frames = renderedFrames CartFixtures.motionDotForward 8
+    let observed = FrameMotion.evaluate FrameMotion.Projection.Observed frames |> requireOk
+    let tied = FrameMotion.selectProjection observed observed |> requireOk
+
+    Assert.Equal(FrameMotion.Projection.Observed, tied.Selected)
+
+    let shorter = { observed with Total = observed.Total - 1 }
+
+    Assert.Equal(
+        Error(FrameMotion.IncomparableReceipts "projection receipts must cover the same number of forecasts"),
+        FrameMotion.selectProjection observed shorter
+    )
 
 [<Fact>]
 let ``frame motion is palette-label agnostic`` () =
