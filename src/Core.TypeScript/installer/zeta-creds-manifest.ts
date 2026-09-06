@@ -53,7 +53,8 @@ export const DEFAULT_MANIFEST: Manifest = {
       paths: ["~/.config/gh/hosts.yml"],
       personaScoped: false,
       required: true,
-      notes: "GitHub CLI token + host config. Per-AI identity (081KSGS9H0008QG0R002T0XQ50) future may flip personaScoped:true.",
+      notes:
+        "GitHub CLI token + host config. Per-AI identity (081KSGS9H0008QG0R002T0XQ50) future may flip personaScoped:true.",
     },
     {
       id: "claude",
@@ -116,6 +117,42 @@ export const DEFAULT_MANIFEST: Manifest = {
         "questions are NOT re-asked — UNLESS a new question appears, or the operator chooses to reanswer / a " +
         "'fresh' reformat-from-scratch is selected (081KSNY2Z0008QG0R0008PN7RQ scenario). Retention ties to install mode: " +
         "Live/retain reuses; fresh/Erase re-prompts.",
+    },
+    {
+      id: "pkcs11-module-path",
+      paths: ["/etc/zeta/seal/pkcs11-module-path"],
+      personaScoped: false,
+      required: false,
+      notes:
+        "HSM-talk companion: absolute PKCS#11 .so path on the repaired box. Not the module bytes, not a brand type.",
+    },
+    {
+      id: "connector-config",
+      paths: ["/etc/zeta/seal/connector.json"],
+      personaScoped: false,
+      required: false,
+      notes: "HSM-talk companion: connector JSON (URL/timeout). No pin / authkey fields.",
+    },
+    {
+      id: "authkey-reference",
+      paths: ["/etc/zeta/seal/authkey-reference"],
+      personaScoped: false,
+      required: false,
+      notes: "HSM-talk companion: authkey *label* (e.g. label:zeta-unseal). Not key material.",
+    },
+    {
+      id: "domain-map",
+      paths: ["/etc/zeta/seal/domain-map.json"],
+      personaScoped: false,
+      required: false,
+      notes: "HSM-talk companion: YubiHSM domain id → role label. Not wrap keys.",
+    },
+    {
+      id: "openbao-seal-env-pointer",
+      paths: ["/etc/zeta/seal/openbao-env-pointer"],
+      personaScoped: false,
+      required: false,
+      notes: "HSM-talk companion: env *name* (BAO_HSM_PIN). Not NAME=value. PIN stays off the stick.",
     },
   ],
 };

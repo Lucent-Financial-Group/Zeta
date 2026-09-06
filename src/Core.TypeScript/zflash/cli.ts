@@ -1315,6 +1315,9 @@ async function main() {
         "                            pubkey into /zeta-authorized-keys.pub. Production USB/ISO builds\n" +
         "                            must omit this flag so prod never trusts the ephemeral test key.\n" +
         "  --bake-cred <id=value>    081KSKBP80008QG0R003AX2A69 write encrypted /zeta-creds.enc to USB ESP\n" +
+        "                            CLI creds plus HSM-talk companions (module path, connector,\n" +
+        "                            authkey reference, domain map, OpenBao env pointer). PIN,\n" +
+        "                            Shamir, and OP_SESSION are refused as originals.\n" +
         "                            after flashing; repeatable. Values use the existing\n" +
         "                            zeta-creds-persist credential handlers.\n" +
         "  --bake-passphrase-file <path>\n" +

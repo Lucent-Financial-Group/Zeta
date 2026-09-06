@@ -1,0 +1,14 @@
+{
+  "id": "080d03ae999b3810a0130008f707a5a7",
+  "at": "2026-09-06T08:26:10.663Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1TX6CV6087G0R002GZEXMP",
+    "type": "task",
+    "title": "USB --bake-cred grows HSM-talk companions; PIN stays a reference",
+    "slug": "usb-bake-cred-grows-hsm-talk-companions-pin-stays-a-referenc",
+    "priority": "P2",
+    "filename": "081M1TX6CV6087G0R002GZEXMP-usb-bake-cred-grows-hsm-talk-companions-pin-stays-a-referenc.md"
+  }
+}

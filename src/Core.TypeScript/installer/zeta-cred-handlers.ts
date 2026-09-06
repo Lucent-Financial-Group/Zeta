@@ -23,11 +23,12 @@
 
 import { readFileSync, existsSync } from "node:fs";
 import { homedir } from "node:os";
+import { USB_HSM_COMPANION } from "../cluster/seal-emulator-rung.ts";
+import { refuseForbiddenBakeCredId, validateCompanionValue } from "./usb-hsm-companion.ts";
 
 /** Outcome of parsing/validating one --bake-cred CLI arg. */
 export type CredResolveResult =
-  | { readonly ok: { readonly id: string; readonly value: Buffer } }
-  | { readonly error: string };
+  { readonly ok: { readonly id: string; readonly value: Buffer } } | { readonly error: string };
 
 /** Per-cred-type handler contract. Pure validation; source-resolution separate. */
 export interface CredHandler {
@@ -154,6 +155,22 @@ export const WIFI_HANDLER: CredHandler = {
 /** Handler for install-answers — saved answers to install prompts; JSON object (Aaron 2026-06-07). */
 export const INSTALL_ANSWERS_HANDLER = makeJsonHandler("install-answers");
 
+function makeCompanionHandler(id: (typeof USB_HSM_COMPANION)[number]): CredHandler {
+  return {
+    id,
+    supportedSources: ["literal", "file", "env"],
+    validateValue(value) {
+      return validateCompanionValue(id, value);
+    },
+  };
+}
+
+export const PKCS11_MODULE_PATH_HANDLER = makeCompanionHandler("pkcs11-module-path");
+export const CONNECTOR_CONFIG_HANDLER = makeCompanionHandler("connector-config");
+export const AUTHKEY_REFERENCE_HANDLER = makeCompanionHandler("authkey-reference");
+export const DOMAIN_MAP_HANDLER = makeCompanionHandler("domain-map");
+export const OPENBAO_SEAL_ENV_POINTER_HANDLER = makeCompanionHandler("openbao-seal-env-pointer");
+
 /** Default registry of handlers, keyed by manifest id. */
 export const DEFAULT_HANDLERS: Readonly<Record<string, CredHandler>> = {
   "gh-cli": GH_CLI_HANDLER,
@@ -164,6 +181,11 @@ export const DEFAULT_HANDLERS: Readonly<Record<string, CredHandler>> = {
   "ssh-host-keys": SSH_HOST_KEYS_HANDLER,
   wifi: WIFI_HANDLER,
   "install-answers": INSTALL_ANSWERS_HANDLER,
+  "pkcs11-module-path": PKCS11_MODULE_PATH_HANDLER,
+  "connector-config": CONNECTOR_CONFIG_HANDLER,
+  "authkey-reference": AUTHKEY_REFERENCE_HANDLER,
+  "domain-map": DOMAIN_MAP_HANDLER,
+  "openbao-seal-env-pointer": OPENBAO_SEAL_ENV_POINTER_HANDLER,
 };
 
 /**
@@ -265,6 +287,9 @@ export function resolveBakeCred(
 ): CredResolveResult {
   const parsed = parseBakeCredArg(arg);
   if ("error" in parsed) return { error: parsed.error };
+
+  const forbidden = refuseForbiddenBakeCredId(parsed.id);
+  if (forbidden !== null) return { error: forbidden };
 
   const handler = handlers[parsed.id];
   if (handler === undefined) {
