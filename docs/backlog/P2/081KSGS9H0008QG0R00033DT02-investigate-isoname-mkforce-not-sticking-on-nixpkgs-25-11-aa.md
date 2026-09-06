@@ -1,7 +1,7 @@
 ---
 id: 081KSGS9H0008QG0R00033DT02
 priority: P2
-status: open
+status: done
 title: investigate why `isoImage.isoName = lib.mkForce "zeta-installer-..."` is no longer sticking on nixpkgs 25.11 — workflow audit fix-fwd accepts both names but the underlying mkForce-override regression should be diagnosed + fixed at the substrate layer (Aaron 2026-05-26)
 effort: S
 ask: aaron 2026-05-26
@@ -101,3 +101,40 @@ Per [`.claude/rules/verify-existing-substrate-before-authoring.md`](../../../.cl
 Discovered empirically when PR #5222 (the glxinfo P0 fix-fwd) merged but the post-merge ISO build failed the `Audit installer ISO content` step because the produced filename no longer matched the expected `zeta-installer-*.iso` glob. Sibling fix-fwd PR (workflow audit-glob lenient match) unblocks the build immediately; this row tracks the proper substrate fix.
 
 Filed as P2 because the workaround (lenient glob) eliminates operator-impact; the substrate-layer fix is cleanliness rather than urgency.
+
+## RESOLVED 2026-09-06 — candidate fix #1 was right
+
+`image.baseName`. Measured on this tree, before and after:
+
+```
+before   image.fileName             = zeta-installer-25.11.iso
+         system.build.isoImage.name = nixos-minimal-25.11.20260522.b77b3de-x86_64-linux.iso
+
+after    image.baseName             = zeta-installer-25.11-x86_64-linux
+         system.build.isoImage.name = zeta-installer-25.11-x86_64-linux.iso
+         (aarch64)                  = zeta-installer-25.11-aarch64-linux.iso
+```
+
+**Why the other two spellings are wrong, and both look right.** nixpkgs *aliases*
+`isoImage.isoName` to `image.fileName`, so BOTH evaluate to our forced value — while the ISO
+derivation reads `image.baseName` and neither of the others. Reading the option back said
+"fixed" the whole time. That alias is why this survived three months and why the check below
+asserts the artifact instead.
+
+**The arch is kept in the name.** The nixpkgs default carried it, and dropping it would trade
+one legibility defect for another: both jobs would emit `zeta-installer-<release>.iso`, a
+downloaded file could not say which machine it is for, and the two ISO artifacts would
+collide on name inside one run.
+
+**The fix-forward is reverted with it.** All 12 `find` sites in `build-ai-cluster-iso.yml`
+dropped the `-o -name 'nixos-minimal-*.iso'` arm — that fallback is what kept the lane green
+over the wrong name, and leaving it would leave the mechanism that hid this.
+
+**And it now has a falsifier**, which the original ask did not include:
+`src/Core.TypeScript/ci/assert-iso-name.ts` runs after each ISO build and refuses a name the
+tree did not choose, with a message that distinguishes "the option went inert again" from
+"somebody renamed the prefix". Six cases in `assert-iso-name.test.ts`, including that an
+EMPTY directory is a failure rather than a pass.
+
+Duplicate filed and corrected the same day: `081M1VP8G1M087G0R001GYHWMA`.
+
