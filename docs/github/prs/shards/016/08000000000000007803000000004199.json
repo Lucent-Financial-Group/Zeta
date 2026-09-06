@@ -1,0 +1,12 @@
+{
+  "pr_number": 16793,
+  "archive_path": "docs/history/pr-reviews/PR-16793-feat-creds-parse-bao-pt-interp-from-injected-elf-bytes.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-06T14:07:02.397Z",
+  "schema_version": "v1",
+  "commit_sha": "3814c8c3bb2d63e950f06ce32ee2d3576b2a0189",
+  "title": "feat(creds): Parse bao PT_INTERP from injected ELF bytes",
+  "state": "MERGED",
+  "merged_at": "2026-09-06T14:06:23Z",
+  "head_ref": "cursor/bao-elf-pt-interp-bytes-27c5"
+}
