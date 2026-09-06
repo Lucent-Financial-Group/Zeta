@@ -67,10 +67,20 @@ spec:
         filer: { enabled: false }
         s3:
           enabled: false
-          credentials:
-            admin:
-              accessKey: zeta-blob-store
-              secretKey: zeta-blob-store-dev-secret
+          # THE SECRET IS MINTED, NOT COMMITTED (081M1S6Z5S3087G0R000GEPSS2). This block used
+          # to carry `credentials.admin.secretKey` as a literal, in a PUBLIC repository, and
+          # it reached the rendered Secret twice -- as `admin_secret_access_key` and inside
+          # the generated `seaweedfs_s3_config` identities JSON.
+          #
+          # `existingConfigSecret` REPLACES the generated document entirely, so the chart no
+          # longer mints its own identities: `applyDevSharedSecrets` draws one value per
+          # cluster and writes the same `seaweedfs_s3_config` into object-store, plus the
+          # matching env var into loki and mimir. One draw, four presenters.
+          #
+          # The chart's own `anvReadOnly` identity goes with the generated document. Nothing
+          # consumed it and it was `randAlphaNum` per render, so fewer identities here is the
+          # correct outcome rather than a regression.
+          existingConfigSecret: zeta-blob-store
         allInOne:
           enabled: true
           data:

@@ -302,6 +302,116 @@ export const DEV_FORGEJO_ADMIN_SECRET: DevBootstrapSecretSpec = {
     "provision the admin account without it.",
 } as const;
 
+/**
+ * ONE DRAWN VALUE, LANDED IN SEVERAL NAMESPACES, IN THE SHAPE EACH CONSUMER READS.
+ *
+ * -- WHY THIS EXISTS AND WHY IT IS NOT A `DevBootstrapSecretSpec` -----------
+ * Every spec above is one credential for one consumer, so `applyDevBootstrapSecrets` draws
+ * fresh entropy PER SPEC. That is correct for them and WRONG for a shared credential: the
+ * blob store's S3 secret key is presented by a producer (seaweedfs) and three consumers
+ * (loki, mimir x3) that must all agree on the SAME string. Adding three
+ * `DevBootstrapSecretSpec` entries would mint three different values and leave two services
+ * authenticating with a key the store does not know.
+ *
+ * So this is a second, narrow shape rather than a widened first one: `namespaces` is a list,
+ * the value is drawn ONCE by the caller, and `keys` says how each namespace's Secret is
+ * spelled -- because the consumers do not agree on that either. seaweedfs's chart wants
+ * `existingConfigSecret` pointing at a Secret whose `seaweedfs_s3_config` key holds an INLINE
+ * JSON identities document; loki and mimir want a plain env var they can expand with
+ * `-config.expand-env=true`.
+ *
+ * `keys` is a FUNCTION of the drawn value rather than a template, so the JSON is built in
+ * TypeScript and cannot drift from the string it embeds.
+ *
+ * 081M1S6Z5S3087G0R000GEPSS2. The value is `randomBytes(24).toString("base64url")` per
+ * cluster, logged nowhere, written nowhere, and dies with the cluster -- exactly the pattern
+ * Aaron named: "passwords can be auto generated on cluster started never stored and then just
+ * the same secrets can be injected to the pod that need them".
+ */
+export interface DevSharedSecretSpec {
+  readonly name: string;
+  readonly namespaces: readonly string[];
+  /** Given the one drawn value, the `stringData` each namespace's Secret carries. */
+  readonly keys: (value: string) => Readonly<Record<string, string>>;
+  readonly reason: string;
+}
+
+/** The S3 access-key ID. NOT a secret -- an identifier, committed on purpose. */
+export const BLOB_STORE_ACCESS_KEY = "zeta-blob-store";
+
+/** The env var loki and mimir expand into their `secret_access_key` fields. */
+export const BLOB_STORE_ENV_KEY = "BLOB_STORE_SECRET_KEY";
+
+/** The key the seaweedfs chart reads out of `s3.existingConfigSecret`. */
+export const SEAWEEDFS_S3_CONFIG_KEY = "seaweedfs_s3_config";
+
+/**
+ * The identities document seaweedfs's S3 gateway authenticates against.
+ *
+ * ONE IDENTITY, not the chart's default two. The chart's own template also mints an
+ * `anvReadOnly` pair with `randAlphaNum` on every render; nothing in this tree consumes it,
+ * and `existingConfigSecret` replaces the generated document entirely, so it does not come
+ * along. Fewer identities is the correct outcome, not a regression.
+ */
+export function seaweedfsS3Config(secretKey: string): string {
+  return JSON.stringify({
+    identities: [
+      {
+        name: "anvAdmin",
+        credentials: [{ accessKey: BLOB_STORE_ACCESS_KEY, secretKey }],
+        actions: ["Admin", "Read", "Write"],
+      },
+    ],
+  });
+}
+
+export const DEV_BLOB_STORE_SECRET: DevSharedSecretSpec = {
+  name: "zeta-blob-store",
+  // The producer and every consumer. `applyDevSharedSecrets` draws once and applies to all
+  // three, which is the entire reason this shape exists.
+  namespaces: ["object-store", "loki", "mimir"],
+  keys: (value) => ({
+    [SEAWEEDFS_S3_CONFIG_KEY]: seaweedfsS3Config(value),
+    [BLOB_STORE_ENV_KEY]: value,
+  }),
+  reason:
+    "Minted per dev/CI cluster at bring-up. seaweedfs authenticates its S3 gateway against " +
+    "seaweedfs_s3_config; loki and mimir expand BLOB_STORE_SECRET_KEY into their " +
+    "secret_access_key with -config.expand-env=true. All four must agree on one value.",
+} as const;
+
+export const DEV_SHARED_SECRETS: readonly DevSharedSecretSpec[] = [DEV_BLOB_STORE_SECRET] as const;
+
+/**
+ * A shared Secret, as a manifest, for ONE namespace.
+ *
+ * PURE and the value is a PARAMETER, exactly like `buildDevAdminSecretManifest` -- so the
+ * shape is testable without entropy, and the one place entropy enters is the caller.
+ * `stringData` rather than `data` for the same reason as above: the API server does the
+ * base64, so nothing here is an encoded blob a reader must decode before auditing it.
+ */
+export function buildDevSharedSecretManifest(
+  spec: DevSharedSecretSpec,
+  namespace: string,
+  value: string,
+): string {
+  const entries = Object.entries(spec.keys(value));
+  return [
+    "apiVersion: v1",
+    "kind: Secret",
+    "metadata:",
+    `  name: ${spec.name}`,
+    `  namespace: ${namespace}`,
+    "  annotations:",
+    `    zeta.io/dev-only: "true"`,
+    `    zeta.io/minted-reason: ${JSON.stringify(spec.reason)}`,
+    "type: Opaque",
+    "stringData:",
+    ...entries.map(([k, v]) => `  ${k}: ${JSON.stringify(v)}`),
+    "",
+  ].join("\n");
+}
+
 export const DEV_BOOTSTRAP_SECRETS: readonly DevBootstrapSecretSpec[] = [
   DEV_GRAFANA_ADMIN_SECRET,
   DEV_ZITI_ADMIN_SECRET,

@@ -147,8 +147,32 @@ describe("committed-chart-credentials", () => {
     );
     expect(leaks).toEqual([]);
 
-    // The absence check must have had something to look for. With zero secrets the loop
-    // above is vacuously empty and would pass over a scan that found nothing.
-    expect(secrets.length).toBeGreaterThan(0);
+    // THE LEAK CHECK IS NOW PROVEN BY A CONTROL RATHER THAN BY A DEFECT EXISTING.
+    //
+    // This guard used to be `expect(secrets.length).toBeGreaterThan(0)` -- "the loop must have
+    // had something to look for". That was right while five literals were acknowledged and
+    // WRONG the moment they were minted away (081M1S6Z5S3087G0R000GEPSS2): the tree reaching
+    // zero committed secrets made the anti-vacuity guard fail, i.e. the guard was keyed to the
+    // defect rather than to the mechanism.
+    //
+    // So the mechanism is exercised against a PLANTED value instead. `leaks` above may now be
+    // legitimately empty; this proves that if it were not, it would say so -- including
+    // through an encoding, which is the whole reason it is not a `not.toContain`.
+    // The haystack carries ONLY the base64 form, so a raw-string search would find nothing.
+    // That is the exact case a `not.toContain(secret)` would have passed.
+    const planted = "planted-control-secret-value";
+    const haystack = `prefix ${Buffer.from(planted, "utf8").toString("base64")} suffix`;
+    const control = encodingsOf(planted)
+      .filter((e) => haystack.includes(e.text))
+      .map((e) => e.how);
+    expect({
+      catchesAnEncodedLeak: control.includes("base64"),
+      andTheRawFormIsGenuinelyAbsent: control.includes("raw"),
+    }).toEqual({ catchesAnEncodedLeak: true, andTheRawFormIsGenuinelyAbsent: false });
+
+    // And the real tree carries none. Asserted positively rather than left implied by the
+    // empty `leaks` above, because "no findings" and "no leak among the findings" are two
+    // different claims and only one of them is the goal.
+    expect(findings).toEqual([]);
   });
 });

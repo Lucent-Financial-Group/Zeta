@@ -22,7 +22,7 @@ import {
   type BaselineEntry,
   type SecretReference,
 } from "./audit-existing-secret-is-minted.ts";
-import { DEV_BOOTSTRAP_SECRETS } from "./dev-cluster/lib.ts";
+import { DEV_BOOTSTRAP_SECRETS, DEV_SHARED_SECRETS } from "./dev-cluster/lib.ts";
 
 function appTree(values: string, dir = "app"): { root: string; cleanup: () => void } {
   const root = mkdtempSync(join(tmpdir(), "zeta-secretref-"));
@@ -180,7 +180,9 @@ describe("readBaseline", () => {
 });
 
 describe("the live tree", () => {
-  const minted = new Set(DEV_BOOTSTRAP_SECRETS.map((s) => s.name));
+  // BOTH ROSTERS, exactly as `main()` builds it -- a test that read only one would pass while
+// the tool refused a Secret the dev lane creates.
+const minted = new Set([...DEV_BOOTSTRAP_SECRETS, ...DEV_SHARED_SECRETS].map((s) => s.name));
 
   test("every named Secret is minted or acknowledged — no refusals, no stale entries", () => {
     const result = auditExistingSecretIsMinted(minted);
@@ -197,6 +199,11 @@ describe("the live tree", () => {
     expect(minted.size).toBeGreaterThan(0);
     // Both roster credentials are actually REFERENCED by an Application; a
     // minted Secret nobody names would be a credential with no consumer.
-    expect(result.minted.map((r) => r.secretName).sort()).toEqual([...minted].sort());
+    // SETS, not arrays. `zeta-blob-store` is referenced by THREE Applications (seaweedfs
+    // names it in `s3.existingConfigSecret`; loki and mimir in `global.extraEnvFrom`), so
+    // `result.minted` legitimately carries it three times while `minted` is a set of names.
+    // Comparing the arrays would fail on duplication rather than on the property, which is
+    // "every minted Secret has at least one consumer".
+    expect([...new Set(result.minted.map((r) => r.secretName))].sort()).toEqual([...minted].sort());
   });
 });
