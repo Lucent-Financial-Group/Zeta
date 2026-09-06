@@ -1,0 +1,14 @@
+{
+  "id": "080d03ab38f2b810a0130008d97216b2",
+  "at": "2026-09-06T06:28:07.383Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1TPE7JP087G0R0000381ME",
+    "type": "bug",
+    "title": "headscale is OutOfSync/Progressing on the live lane, and no pod data exists to say why",
+    "slug": "headscale-is-outofsync-progressing-on-the-live-lane-and-no-p",
+    "priority": "P2",
+    "filename": "081M1TPE7JP087G0R0000381ME-headscale-is-outofsync-progressing-on-the-live-lane-and-no-p.md"
+  }
+}
