@@ -232,6 +232,11 @@ assume the number.
    as a literal after 6.95a. Missing epoch is unmeasured, not
    `installed-host`. `/mnt` is unknown, not `installer-iso`.
    Does not invent an integrate decision.
+   Env join reads named epoch (`081M1W8D6MF087G0R003405R3N`):
+   `planSetupFromNamedBaoElfEnv` takes epoch from env, not as
+   a TypeScript argument. A named ask without a named epoch
+   refuses. Missing keys stay unmeasured. Does not invent an
+   integrate decision.
 7. extraContainer sidecar — later, **same commit as the
    sidecar**, and only for the Shamir kind path until the
    emulator job replaces it. `valuesObject` only. Do not fork
