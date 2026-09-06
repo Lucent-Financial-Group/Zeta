@@ -22,9 +22,15 @@ import {
   planSetupPkcs11Overlay,
 } from "../cluster/pkcs11-hostpath-overlay.ts";
 import { integrateAtSetup } from "../cluster/unseal-path.ts";
+import { planFirstbootConfFileContent, SHELL_SAFE_CONF_VALUE_REGEX } from "../zflash/firstboot-role.ts";
 import {
+  FIRSTBOOT_BAO_LOAD_SITE_KEY,
+  FIRSTBOOT_BAO_PATH_KEY,
   NIXOS_HOST_BAO,
+  appendFirstbootBaoElfConf,
   captureBaoElfFromRead,
+  composeFirstbootBaoElfCarrier,
+  firstbootBaoElfArgvFromAsk,
   namedBaoElfAsk,
   nixosHostBaoAsk,
   nodeBaoElfRead,
@@ -262,5 +268,93 @@ describe("parseNamedBaoElfArgs — live installer names both flags", () => {
     if (!empty.ok) return;
     expect(empty.plan.mayCommitHostHcl).toBe(false);
     expect(hostBaoSealHcl(empty.plan)).toBeNull();
+  });
+});
+
+describe("composeFirstbootBaoElfCarrier — both names or neither", () => {
+  const tpmAsk: { site: "on-host"; openedPath: string } = {
+    site: "on-host",
+    openedPath: TPM_CHAR_DEVICE,
+  };
+  const soAsk: { site: "on-host"; openedPath: string } = {
+    site: "on-host",
+    openedPath: "/run/current-system/sw/lib/libtpm2_pkcs11.so",
+  };
+  const restoreAsk: { site: "on-host"; openedPath: string } = {
+    site: "on-host",
+    openedPath: USB_PKCS11_MODULE_POINTER,
+  };
+  const unsafeAsk: { site: "on-host"; openedPath: string } = {
+    site: "on-host",
+    openedPath: `${NIXOS_HOST_BAO};reboot`,
+  };
+
+  test("null ask is unmeasured — neither conf line, empty argv", () => {
+    expect(composeFirstbootBaoElfCarrier(null)).toEqual({ ok: false, reason: "unmeasured" });
+    expect(firstbootBaoElfArgvFromAsk(null)).toEqual([]);
+  });
+
+  test("tpmrm0 is shell-safe and still not a bao path — neither name", () => {
+    expect(SHELL_SAFE_CONF_VALUE_REGEX.test(TPM_CHAR_DEVICE)).toBe(true);
+    expect(composeFirstbootBaoElfCarrier(tpmAsk)).toEqual({ ok: false, reason: "not-bao-path" });
+    expect(firstbootBaoElfArgvFromAsk(tpmAsk)).toEqual([]);
+  });
+
+  test("a .so and the restore pointer are not a bao path — neither name", () => {
+    expect(composeFirstbootBaoElfCarrier(soAsk)).toEqual({ ok: false, reason: "not-bao-path" });
+    expect(composeFirstbootBaoElfCarrier(restoreAsk)).toEqual({ ok: false, reason: "not-bao-path" });
+    expect(firstbootBaoElfArgvFromAsk(soAsk)).toEqual([]);
+    expect(firstbootBaoElfArgvFromAsk(restoreAsk)).toEqual([]);
+  });
+
+  test("a path with a shell metacharacter refuses both names", () => {
+    expect(composeFirstbootBaoElfCarrier(unsafeAsk)).toEqual({ ok: false, reason: "unsafe-conf-value" });
+    expect(firstbootBaoElfArgvFromAsk(unsafeAsk)).toEqual([]);
+  });
+
+  test("option D emits both quoted conf lines and both argv tokens", () => {
+    const ask = nixosHostBaoAsk();
+    expect(composeFirstbootBaoElfCarrier(ask)).toEqual({
+      ok: true,
+      confLines: [
+        `${FIRSTBOOT_BAO_LOAD_SITE_KEY}='on-host'`,
+        `${FIRSTBOOT_BAO_PATH_KEY}='${NIXOS_HOST_BAO}'`,
+      ],
+      argv: [`--bao-load-site=on-host`, `--bao-path=${NIXOS_HOST_BAO}`],
+    });
+  });
+
+  test("argv carrier round-trips through parseNamedBaoElfArgs", () => {
+    const ask = nixosHostBaoAsk();
+    expect(parseNamedBaoElfArgs(firstbootBaoElfArgvFromAsk(ask))).toEqual({ ok: true, ask });
+    expect(parseNamedBaoElfArgs(firstbootBaoElfArgvFromAsk(null))).toEqual({ ok: true, ask: null });
+    expect(parseNamedBaoElfArgs(firstbootBaoElfArgvFromAsk(tpmAsk))).toEqual({ ok: true, ask: null });
+  });
+
+  test("append writes both lines after a founder conf, or leaves the conf unchanged", () => {
+    const planned = planFirstbootConfFileContent({ kind: "first-control-plane" });
+    if (!planned.ok) throw new Error(planned.error);
+    const withBao = appendFirstbootBaoElfConf(planned.value, nixosHostBaoAsk());
+    expect(withBao).toBe(
+      `${planned.value}${FIRSTBOOT_BAO_LOAD_SITE_KEY}='on-host'\n${FIRSTBOOT_BAO_PATH_KEY}='${NIXOS_HOST_BAO}'\n`,
+    );
+    expect(appendFirstbootBaoElfConf(planned.value, null)).toBe(planned.value);
+    expect(appendFirstbootBaoElfConf(planned.value, tpmAsk)).toBe(planned.value);
+    expect(appendFirstbootBaoElfConf(planned.value, soAsk)).toBe(planned.value);
+    expect(appendFirstbootBaoElfConf(planned.value, unsafeAsk)).toBe(planned.value);
+  });
+
+  test("appended founder assignments are both names after HOST, never one", () => {
+    const planned = planFirstbootConfFileContent({ kind: "first-control-plane" });
+    if (!planned.ok) throw new Error(planned.error);
+    const assignments = appendFirstbootBaoElfConf(planned.value, nixosHostBaoAsk())
+      .split("\n")
+      .filter((line) => !line.startsWith("#") && line.length > 0);
+    expect(assignments).toEqual([
+      "ZETA_ROLE='first-control-plane'",
+      "HOST='control-plane'",
+      `${FIRSTBOOT_BAO_LOAD_SITE_KEY}='on-host'`,
+      `${FIRSTBOOT_BAO_PATH_KEY}='${NIXOS_HOST_BAO}'`,
+    ]);
   });
 });

@@ -470,6 +470,11 @@ does not pick `on-host`.
 Argv names both flags
 (`081M1VJGMMP087G0R002JRZ458`); a bare tpmrm0
 argv is not `on-host`.
+Conf/argv carrier
+(`081M1VM7S47087G0R001VQ1QK5`) emits both
+`ZETA_BAO_LOAD_SITE` and `ZETA_BAO_PATH`, or
+neither; does not expand `ZetaFirstbootRole`;
+does not edit `zeta-first-boot.sh`.
 glibc-host-into-musl-image is not a
 module; Application.yaml stays Shamir.
 

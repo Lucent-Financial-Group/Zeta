@@ -223,14 +223,18 @@ First-boot named site (`081M1VGV2N6087G0R001ZHWZDS`):
 `planSetupFromNamedBaoElf`. TPM present is not `on-host`.
 Argv (`081M1VJGMMP087G0R002JRZ458`): `--bao-load-site` plus
 `--bao-path`. One flag without the other refuses.
+Conf/argv carrier (`081M1VM7S47087G0R001VQ1QK5`): both
+`ZETA_BAO_LOAD_SITE` and `ZETA_BAO_PATH`, or neither.
+`/dev/tpmrm0` is shell-safe and still not a bao path.
 
 1. Metal: `seal "pkcs11"` in Application.yaml still waits.
    Same commit as a **reachable** module: same-libc image
    (glibc OpenBao that can load the host `.so`) or option D
    host `bao`. Dual-vendor per node is ZetaFS k-of-n, not
    two active OpenBao seals. Do not treat this planner as
-   that commit. `zeta-first-boot.sh` still has to pass those
-   flags (not from `/dev/tpmrm0`).
+   that commit. `zeta-first-boot.sh` still has to *consume*
+   the carrier (not from `/dev/tpmrm0`). Does not expand
+   `ZetaFirstbootRole` until that consume lands.
 2. extraContainer Shamir sidecar (`valuesObject` only) until
    kind/CI consume the emulator init.
 

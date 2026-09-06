@@ -175,7 +175,11 @@ assume the number.
    (`081M1VJGMMP087G0R002JRZ458`): `--bao-load-site` and
    `--bao-path` together. One flag without the other
    refuses. A bare tpmrm0 argv is not `on-host`. Does not
-   edit Application.yaml.
+   edit Application.yaml. Conf/argv carrier
+   (`081M1VM7S47087G0R001VQ1QK5`): both `ZETA_BAO_LOAD_SITE`
+   and `ZETA_BAO_PATH`, or neither. `/dev/tpmrm0` is
+   shell-safe and still not a bao path. Does not expand
+   `ZetaFirstbootRole`. Does not edit `zeta-first-boot.sh`.
 7. extraContainer sidecar — later, **same commit as the
    sidecar**, and only for the Shamir kind path until the
    emulator job replaces it. `valuesObject` only. Do not fork
