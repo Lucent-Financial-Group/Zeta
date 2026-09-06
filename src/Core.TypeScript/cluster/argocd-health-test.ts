@@ -2439,6 +2439,37 @@ export const REPO_BACKED_CHILD_WAIT_DIAGNOSTIC_COMMANDS: readonly {
     args: ["-n", "argocd", "logs", "statefulset/argocd-application-controller", "--tail=150"],
   },
   { label: "kube-system-pods", args: ["-n", "kube-system", "get", "pods", "-o", "wide"] },
+  // THE TWO BELOW ANSWER "WHY IS A POD NOT RUNNING", which this roster could not.
+  //
+  // Added 2026-09-06 out of `081M1TFG81G087G0R001XPQGQZ`: orleans reported
+  // `Synced/Progressing` on the live lane, no crash-loop logs were captured, and the
+  // bug had to be filed saying the pod was "MOST LIKELY Pending" with a "LEADING
+  // HYPOTHESIS" about its CPU request. Every surface above is ArgoCD-side or
+  // kube-system; nothing looked at the workload pods, so a Pending pod was diagnosed
+  // by guesswork. A diagnostic bundle that cannot distinguish Pending from
+  // CrashLoopBackOff is not a diagnosis, it is a prompt to speculate.
+  //
+  // `status.phase!=Succeeded` is on the first one deliberately: without it every
+  // completed Job pod in the cluster lands in the dump and buries the one pod that
+  // matters. Warning events carry the WHY -- FailedScheduling names the exact
+  // insufficient resource, ImagePullBackOff names the image, FailedMount names the
+  // volume -- and they are what turns "most likely Pending" into a reading.
+  {
+    label: "not-running-pods",
+    args: [
+      "get",
+      "pods",
+      "-A",
+      "-o",
+      "wide",
+      "--field-selector",
+      "status.phase!=Running,status.phase!=Succeeded",
+    ],
+  },
+  {
+    label: "warning-events",
+    args: ["get", "events", "-A", "--field-selector", "type=Warning", "--sort-by=.lastTimestamp"],
+  },
   { label: "cilium-lb-pool", args: ["get", "ciliumloadbalancerippools.cilium.io", "-o", "wide"] },
   { label: "loadbalancer-services", args: ["get", "svc", "-A", "--field-selector", "spec.type=LoadBalancer"] },
   {
