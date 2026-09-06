@@ -324,12 +324,21 @@ module ZetaFsFreeze =
         let gen = maxGen + 1L
         let slot = int (gen % 2L)
         let text = encodeCatalog gen history meter known livePins objectSets
-        let slotPath = catalogSlot storeDir slot
-        let copyPath = catalogPath storeDir
-        FileSystemIo.writeAllText fs slotPath text
-        SimulatedFs.Write slotPath
-        FileSystemIo.writeAllText fs copyPath text
-        SimulatedFs.Write copyPath
+        let bytes = Encoding.UTF8.GetBytes text
+
+        let writePublished path =
+            let tmp = path + ".tmp"
+
+            do
+                use stream = fs.OpenWrite(tmp, false)
+                stream.Write(bytes, 0, bytes.Length)
+                stream.Flush()
+
+            SimulatedFs.Write tmp
+            fs.Move(tmp, path, true)
+
+        writePublished (catalogSlot storeDir slot)
+        writePublished (catalogPath storeDir)
 
     let private catalogPersistError (storeDir: string) =
         FreezeError.Fsync(FileSync.FileSyncError.FlushFailed(catalogPath storeDir, 5))
@@ -601,6 +610,9 @@ module ZetaFsFreeze =
                             putLeaves item
 
                         if err.IsNone then
+                            persist ()
+
+                        if err.IsNone then
                             let afterCommit =
                                 BlockLog.append
                                     device
@@ -623,6 +635,9 @@ module ZetaFsFreeze =
                             stream.Write(item.IntentFrame, 0, item.IntentFrame.Length)
                             stream.Flush()
                             putLeaves item
+
+                            if err.IsNone then
+                                persist ()
 
                             if err.IsNone then
                                 stream.Write(item.CommitFrame, 0, item.CommitFrame.Length)

@@ -2664,6 +2664,51 @@ let ``ISimulatedFs write-fail on Buffered catalog persist keeps the prior freeze
     }
 
 [<Fact>]
+let ``catalog write-fail of tmp does not publish the unacked freeze on reopen`` () : Task =
+    task {
+        ensureHasher ()
+        FileSystem.Register(InMemoryFileSystem())
+        let store = "/catalog-write-fail-tmp"
+        let mutbuf = ZetaFsMutbuf.create store ZetaFsMutbuf.Coherence.Shared
+        let payloadA = [| 1uy; 2uy; 3uy |]
+        let payloadB = [| 9uy; 8uy; 7uy |]
+        let mutable firstContent = Unchecked.defaultof<ContentHash256>
+        let volume1 = ZetaFsFreeze.createManualStream store mutbuf None
+
+        try
+            let id = mintId ()
+            let h = ZetaFsMutbuf.openHandle volume1.Mutbuf id
+            ZetaFsMutbuf.pwrite volume1.Mutbuf h 0L payloadA |> ignore
+            let pendingA = (freezeAsync volume1 id ZetaFsFreeze.Journaled).AsTask()
+            do! (ZetaFsFreeze.pumpLog volume1 CancellationToken.None).ConfigureAwait(false)
+            let! first = pendingA.ConfigureAwait(false)
+            match first with
+            | Error e -> Assert.Fail(ZetaFsFreeze.errorName e)
+            | Ok ok ->
+                firstContent <- ok.Content
+                SimulatedFs.Register(CatalogFailFs() :> ISimulatedFs)
+                ZetaFsMutbuf.pwrite volume1.Mutbuf h 0L payloadB |> ignore
+                let pendingB = (freezeAsync volume1 id ZetaFsFreeze.Journaled).AsTask()
+                do! (ZetaFsFreeze.pumpLog volume1 CancellationToken.None).ConfigureAwait(false)
+                let! second = pendingB.ConfigureAwait(false)
+                match second with
+                | Ok _ -> Assert.Fail("second freeze must not ack a failed catalog persist")
+                | Error e -> Assert.Equal("Fsync", ZetaFsFreeze.errorName e)
+        finally
+            SimulatedFs.Clear()
+            ZetaFsFreeze.dispose volume1
+
+        let volume2 = ZetaFsFreeze.createManualStream store mutbuf None
+        try
+            Assert.True(ZetaFsFreeze.isReadable volume2 firstContent)
+            let ropeB = ZetaFsJumprope.buildV1 payloadB
+            Assert.False(ZetaFsFreeze.isReadable volume2 ropeB.Content)
+        finally
+            ZetaFsFreeze.dispose volume2
+            FileSystem.Reset()
+    }
+
+[<Fact>]
 let ``power outage on the second freeze Flush keeps the first`` () : Task =
     task {
         ensureHasher ()
