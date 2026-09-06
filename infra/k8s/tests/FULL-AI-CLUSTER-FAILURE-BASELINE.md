@@ -2,9 +2,10 @@
 
 <!-- Machine-readable. The ratchet parses EXACTLY this line; keep the format. -->
 
-    BASELINE_FAILURES: 13
+    BASELINE_FAILURES: 0
 
-**Measured:** 2026-08-22 · **at commit:** `the four unrenderable Applications fixed (this PR)`
+**Measured:** 2026-09-06 · **at commit:** `ONE zeta-root -- the validator learned the two conventions (this PR)`
+**Previous:** 13, `the four unrenderable Applications fixed`
 **Previous:** 18, `temporal datastore wired to CockroachDB` (#13469)
 **Toolchain:** helm `v4.2.0+g0646808` · kubeconform `v0.7.0` · bun `1.3.14` · `--kube-version 1.33.0`
 **Reproduce:** `bun infra/k8s/tests/ratchet-app-failures.ts` (it prints the count it measured)
@@ -39,7 +40,7 @@ number to write when it refuses.
 
 | n   | class                                                                                                                                                                                                                                                                                                                                                      | verdict                        |
 | --- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------ |
-| 13  | ArgoCD contract: missing `syncPolicy.automated.prune` / `.selfHeal`, or `CreateNamespace=true` absent from `syncOptions`                                                                                                                                                                                                                                   | **real** — but read the caveat |
+| 0   | _(empty — kept as the ledger of what left it.)_ ArgoCD contract: missing `syncPolicy.automated.prune` / `.selfHeal`, or `CreateNamespace=true` absent from `syncOptions`. **All 13 left 2026-09-06, and not one by editing a manifest** — the validator learned the two conventions the caveat below asked it to learn (6 either/or manual-sync alternatives; 7 apps that already have their namespace). Both relaxations are pinned by mutation cases in `validate-applications.test.ts`; see the section above for the full account and for what a zero ceiling does and does not mean. | **cleared** — by the validator, and falsified |
 | 0   | _(empty — kept as the ledger of what left it.)_ `oz` LEFT 2026-08-22, taking **2** with it (version check + render): it pinned `ziti-controller` **1.4.5**, which openziti has never published — its 1.x line ends at 1.3.4 and `1.4.x` exists there only as an _appVersion_. Corrected to **3.1.1**, the newest chart still on appVersion 1.7.2, so the pin moves as far forward as it can WITHOUT changing which OpenZiti server runs (3.2.1 is appVersion 2.0.1 and additionally requires `cluster.mode`). Measured across 1.3.4 / 2.1.2 / 3.1.1 / 3.2.1: every key this manifest sets survives all three majors and the storage contract is identical, so the earlier "not drop-in" reason for deferring did not hold. The render half needed a second fix the bad pin had been hiding — `clientApi.advertisedHost`, required by every published version | **cleared**, both fixed        |
 | 0   | _(empty — kept as the ledger of what left it.)_ `sealed-secrets` LEFT 2026-08-21: repoURL moved `bitnami-labs` -> `bitnami`, corrected, both failures with it. `forgejo` LEFT 2026-08-21: `https://code.forgejo.org/forgejo-helm/` is an organisation page whose `index.yaml` 404s and the chart is OCI-only, so the source became the bare `code.forgejo.org/forgejo-helm`; and the pin `9.0.6` was never published (169 tags, exactly one 9.x — `9.0.0`), so it moved to `17.1.5` (Forgejo 15.0.7). Both of its failures — version check and render — went with it | **cleared**, both fixed        |
 | 0   | _(empty — kept as the ledger of what left it.)_ **"the chart refuses to render with the values we hand it" IS NOW AN EMPTY CLASS.** All four left on 2026-08-22 and not one was a limitation of the renderer — every one would have failed inside ArgoCD in the same place. `temporal`: refused with "Please specify cassandra port for default store" because its `valuesObject` disabled the bundled Cassandra without naming a replacement; both stores are now wired to the CockroachDB already in the cluster over `postgres12` (#13469). `gitlab`: needed `global.ingress.configureCertmanager: false`, which `certmanager.install: false` does NOT imply — the sibling gitlab Application in the other cluster tree already carried it, which is exactly why that one rendered. `headscale`: passed `persistence.data`, a key the chart mounts at `/data` and never writes to, with no `accessMode`; renamed to the chart's own `persistence.config` (mountPath `/etc/headscale`) so the volume is where the sqlite DB and both private keys actually live. `arc-runner-set`: the chart discovers the `gha-rs-controller` ServiceAccount with `lookup` at template time, and ships `controllerServiceAccount.{name,namespace}` to skip it — BOTH keys, since `name` alone then fails on the namespace lookup | **cleared**, all four fixed    |
@@ -48,6 +49,41 @@ Per-app split of the 13: `cdi` 3, `kubevirt` 3, `forgejo` 2, `ollama` 2,
 `vllm` 2, `cilium-lb-ipam` 1. (`forgejo` keeps its 2 here: it is the
 manual-sync standby half of the `gitlab`/`forgejo` pair, so its missing
 `automated:` block is the documented convention, not a defect — see the caveat.)
+
+## 2026-09-06 — the 13 went to ZERO, and the honest account is that the VALIDATOR changed
+
+**Read this before treating a green ratchet as a clean tree.** Not one of the 13
+was fixed by editing a manifest. All thirteen were reclassified by
+`validate-applications.ts` learning two conventions it did not know, which is the
+same class as the 7 validator-scope artifacts that made the ceiling open at 23
+rather than 29 — and, more to the point, it is **exactly what the caveat below
+asked for**: *"the manifest is correct and the validator is what needs to learn
+the convention."*
+
+| n | what the validator learned | which of the 13 |
+|---|---|---|
+| 6 | `prune` / `selfHeal` are required only of an Application that DECLARES `spec.syncPolicy.automated`. Alternatives in an either/or pair omit the block on purpose | `forgejo` 2, `ollama` 2, `vllm` 2 |
+| 7 | `CreateNamespace=true` is not required of an app that already has its namespace — it either VENDORS its own `Namespace` manifest or targets one that always exists (`kube-system`) | `cdi` 3, `kubevirt` 3, `cilium-lb-ipam` 1 |
+
+**Why this is not the ceiling being lowered by looking away.** A relaxation with
+no falsifier is indistinguishable from deleting a check, so both are pinned in
+`validate-applications.test.ts`:
+
+- `CreateNamespace=true` — *"RED when CreateNamespace=true is dropped"*, mutating
+  **`longhorn`**, which is neither exempt route. Mutating an exempt app would be a
+  test that cannot go red.
+- `prune`/`selfHeal` — two cases added with this change: *"RED when an app that
+  DECLARES automated: drops prune"* (the rule still binds) and *"GREEN when an app
+  has NO automated: block at all"* (the exemption is real, not an artifact of
+  nothing testing it). Both assert the mutation actually changed the file, and the
+  absence-test asserts the validator reached its `Results:` line, because two
+  `not.toContain` assertions both pass on a crash.
+
+**What a zero ceiling now means, precisely:** every Application in the tree
+satisfies every rule the validator knows, and the validator's rules are pinned by
+16 mutation cases. It does **not** mean the tree is correct — it means the ratchet
+has moved from measuring a debt to guarding a floor, and the next regression is
+the first thing it will report.
 
 > **Caveat on the 13 — do not "fix" them blindly to lower this number.**
 > `root-application.yaml`'s own header documents an either/or gating convention:

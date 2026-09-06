@@ -269,6 +269,57 @@ describe("validate-applications mutation suite", () => {
     TIMEOUT_MS,
   );
 
+  // THE TWO CASES BELOW GUARD THE 2026-09-06 RELAXATION. `prune` and `selfHeal`
+  // moved out of REQUIRED_FIELDS and into AUTOMATED_ONLY_FIELDS, applied only to
+  // Applications that actually declare `spec.syncPolicy.automated`. That is the
+  // convention `root-application.yaml` documents -- alternatives in an either/or
+  // pair (gitlab/forgejo, ollama/vllm) omit `automated:` on purpose -- but a
+  // relaxation with no falsifier is indistinguishable from deleting the check.
+  // So one case proves the rule still BINDS where it applies, and the other
+  // proves the exemption is REAL rather than a side effect of nothing testing it.
+  test(
+    "RED when an app that DECLARES automated: drops prune (the rule still binds)",
+    () => {
+      const { exitCode, output } = runWithMutation((appsDir) => {
+        // cockroachdb writes the FLOW form `automated: { prune: false, selfHeal: true }`.
+        // Asserting the text changed is not ceremony: the finalizer case above was
+        // green-by-accident for a while because its regex matched only the block
+        // form. A mutation that does not mutate is a check that cannot fail.
+        const manifest = appManifest(appsDir, "cockroachdb");
+        const before = readFileSync(manifest, "utf-8");
+        edit(manifest, (t) => t.replace(/automated: \{ prune: false, /, "automated: { "));
+        expect(readFileSync(manifest, "utf-8")).not.toBe(before);
+      });
+      expect(output).toContain("missing required field .spec.syncPolicy.automated.prune");
+      expect(exitCode).toBe(1);
+    },
+    TIMEOUT_MS,
+  );
+
+  test(
+    "GREEN when an app has NO automated: block at all (the either/or exemption is real)",
+    () => {
+      // Deleting the whole block must NOT produce a prune/selfHeal complaint --
+      // that is what lets forgejo/ollama/vllm ship as manual-sync alternatives.
+      // The assertion is on the ABSENCE of that specific message rather than on
+      // exit 0, because this mutation may legitimately trip other checks; what is
+      // being falsified is precisely that the automated-only fields stop applying.
+      const { output } = runWithMutation((appsDir) => {
+        const manifest = appManifest(appsDir, "cockroachdb");
+        const before = readFileSync(manifest, "utf-8");
+        edit(manifest, (t) => t.replace(/^ {4}automated: \{[^}]*\}\n/m, ""));
+        expect(readFileSync(manifest, "utf-8")).not.toBe(before);
+      });
+      // The validator must have RUN to completion, or two `not.toContain`
+      // assertions would both pass on a crash with empty output -- an absence
+      // test is vacuous unless something proves the thing was present to observe.
+      expect(output).toContain("Results:");
+      expect(output).not.toContain("missing required field .spec.syncPolicy.automated.prune");
+      expect(output).not.toContain("missing required field .spec.syncPolicy.automated.selfHeal");
+    },
+    TIMEOUT_MS,
+  );
+
   test(
     "RED when root-application.yaml loses directory.include (would sync stray files)",
     () => {
