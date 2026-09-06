@@ -53,6 +53,12 @@ admission drift; it cannot independently establish the soundness of TLC or the
 model's interpretation. An alternative checker would require a new contract,
 separate expected-result reconciliation, and a distinct fault model.
 
+The subsequent
+[emitter capability correction](2026-09-06-nci-emitter-capability-correction.md)
+replaces an import-regex independence claim with an executable, bounded
+dependency and effect fixture. It preserves the original R5 gate finding,
+the upstream static-roster repair, and the fixture's explicit limits.
+
 ## 3. Observed faults
 
 The conformance suites exercised the following named failures rather than

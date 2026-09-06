@@ -1,6 +1,7 @@
 # Claim - task-nci-emitter-capability-20260906
 
 - **Session ID:** codex/nci-emitter-capability-20260906
+- **Co-claimants:** codex/nci-emitter-capability-20260906, codex/nci-capability-review-20260906-981c
 - **Harness:** codex
 - **Claimed at:** 2026-09-06T23:11:17Z
 - **ETA:** Focused test and review within one hour; publication after gates.
@@ -13,3 +14,4 @@
   and upstream static-roster fix in PR #16881.
 - **Coordination:** Parent rendered-catch contributor owns the acting archive;
   this is an independent branch and PR. Quiesce on its cost-window signal.
+  The co-claimant owns only the independent review document.
