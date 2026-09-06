@@ -261,6 +261,24 @@ export interface OrgRuntimeDeps {
   readonly priorityChooser?: OrgChooser<PriorityClass>;
   readonly maxGateAttempts?: number;
   readonly churnThreshold?: number;
+  /**
+   * Which staffed work this run delivers ITSELF. Absent means all of it — the behaviour this
+   * runtime has always had.
+   *
+   * Pass `[]` and the runtime staffs, schedules and runs QA but delivers nothing, leaving the work
+   * live for an agent to pick up and deliver through `deliverWorkItem`.
+   *
+   * WHY THIS HAS TO EXIST. The agent loop is offered `candidatesFrom`, which is live leaves only.
+   * A runtime that delivers everything before the loop is consulted leaves ZERO candidates, so the
+   * agent's only legal choices are heartbeats and free time — and its decision is decorative no
+   * matter how honestly the dispatcher is wired underneath. Measured: every cycle of the demo run
+   * chose `EmitHeartbeat` over an empty candidate list, with a fully-wired dispatcher behind it
+   * that never once ran.
+   *
+   * So this is not a convenience flag. It is what makes an agent's choice CAPABLE of being
+   * load-bearing: someone has to leave the work undone for the agent to do it.
+   */
+  readonly deliverSelf?: readonly string[];
   /** Wearers per hat the RMO has authorized. */
   readonly supplyTarget?: number;
 }
@@ -393,16 +411,32 @@ const LEVEL_ORDER: readonly HatLevel[] = [
  * the order it happens. Splitting it into ten helpers would hide the one thing it exists to show —
  * that these modules compose.
  */
-export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeReport> {
-  // The ports, resolved ONCE. Defaulting here rather than at each call site means one place decides
-  // what this run is touching, and one place reports it.
-  const configured: ProviderSet = deps.providers ?? {
+/**
+ * The ports a run uses when the caller named none — EVERY ONE SIMULATED.
+ *
+ * Exported because a second caller needs the same answer, and the one thing every entry point must
+ * agree on is what "unspecified" means: that is the answer deciding whether a run touched anything
+ * real. A copy of this object elsewhere would be a second set of defaults to drift, and the drift
+ * would show up as a fidelity report naming a capability that never ran.
+ */
+export function defaultProviderSet(deps: {
+  readonly externalEvents: OrgRuntimeDeps["externalEvents"];
+  readonly qaPlan?: OrgRuntimeDeps["qaPlan"];
+  readonly qaFallback?: OrgRuntimeDeps["qaFallback"];
+}): ProviderSet {
+  return {
     intake: simulatedIntake(deps.externalEvents),
     work: simulatedWorkExecutor(true),
     tests: simulatedTestRunner(deps.qaPlan ?? new Map(), deps.qaFallback ?? RunOutcome.Passed),
     review: autoApproveReview(),
     change: simulatedChangeControl(),
   };
+}
+
+export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeReport> {
+  // The ports, resolved ONCE. Defaulting here rather than at each call site means one place decides
+  // what this run is touching, and one place reports it.
+  const configured: ProviderSet = deps.providers ?? defaultProviderSet(deps);
   // WRAPPED, so the report can say what the run DID and not only what it was configured to do.
   // `providers` below is the recording set; nothing in this function may reach the raw one, or the
   // count would silently miss whatever bypassed it.
@@ -1127,6 +1161,12 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
   const threshold = deps.churnThreshold ?? DEFAULT_CHURN_THRESHOLD;
 
   for (const task of staffedTasks) {
+    // Work this run was told not to deliver stays LIVE, for an agent to pick up. Skipped before QA
+    // and before the change is opened, so a deferred item leaves no half-started branch behind.
+    if (deps.deliverSelf !== undefined && !deps.deliverSelf.includes(task.workId)) {
+      refusals.push(`${task.workId} was left for the agent lane to deliver; this run did not deliver it`);
+      continue;
+    }
     // QA derives its cases from the task's own criterion — the BRD stands in for the spec.
     const cases = deriveTestCases(
       {

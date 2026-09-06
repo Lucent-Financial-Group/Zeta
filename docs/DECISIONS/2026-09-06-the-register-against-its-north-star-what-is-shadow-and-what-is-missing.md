@@ -86,11 +86,12 @@ cycle 1:     7 option(s) -> EmitHeartbeat -> Idle  [not dispatched]
 | north-star element | state |
 |---|---|
 | domain event persisted | **present** — content-addressed shard store, folds |
-| event published | **absent** — no bus, no publication; the runtime calls its ports directly |
-| rules evaluated → reaction plan | **absent** — the runtime is a top-to-bottom pipeline, not rule-driven reaction |
+| event published | **present, without a broker** — `org-reactor.ts` derives the next action from what just happened. I first recorded this as absent by looking for a bus; the module's own header answers it: *"a transport is not what makes this event-driven; deriving the next action from what just happened is"* |
+| rules evaluated → reaction plan | **present** — `runReactor` is a work queue where `reactionsTo(events)` enqueues the next action, wired into the runtime at Phase 11. **My first table called this absent, and that was wrong** |
 | leases / hat supply checked | **present** — work-market leases, RMO hat-supply voting |
 | budget checked | **absent** |
 | actions executed | **present** — five ports plus phase producers |
+| **an agent's choice CAUSES the action** | **present as of this pass** — `deliverWorkItem`, reached through the dispatch seam |
 | outcomes observed | **present** — fidelity, gate records with evidence, pace |
 | **reconciliation verifies reality matches org state** | **absent** — the reference has `change-control-reconciliation.ts`; the register has only `changesUnlanded`, a single disagreement check |
 | observe-act modes | **present as of this pass** |
@@ -124,30 +125,78 @@ So the two gaps were closed rather than merely reported.
 
 ## So: is it working end to end?
 
-**The observe-act lane now is, and the wider runtime still is not.** Precisely:
+**The lane runs end to end; two orchestration elements remain.** Precisely:
 
 - The **pipeline** takes a real ticket to a merged MR. Measured and reproducible.
 - The **agent loop** chooses real work off a real cascade. Measured.
 - The **join** exists, records durable ticks, measures divergence against a second selector, and
   **the gate demonstrably opens** — four dated runs against one store soak past 24h and the CLI
   prints `observe_act_primary`. That is the property the previous pass could not claim.
-- The **runtime around it** is still a top-to-bottom pipeline, not the event-driven reactive loop
-  the north star describes. Three elements of that loop remain absent, unchanged by this pass.
+- The **agent's choice now causes the delivery** — measured: picking work in primary opens and
+  merges that exact branch, and a refused merge reaches the agent as a failure.
+- **Reconciliation and budget** remain absent, and until they exist the north star's loop is not
+  complete however well the rest of it runs.
+
+## The join, closed at the return
+
+Two rows of the table above were still decorative after the promotion gate was built, and the
+second one was mine.
+
+**`run-agent.ts` supplied no dispatcher at all.** A participant choosing `PickWork` advanced the
+state machine to `ExecutingWork` and nothing ran. The reason nothing *could* be supplied honestly is
+that the core's `resultFor` is **synchronous**, and reaching a delivery pipeline is asynchronous —
+so the only value that fits a sync seam is one made up on the spot. The core now offers an **async
+`dispatch`** on `MainDeps`, awaited by `mainAsync` after the participant has chosen, filled by the
+register exactly as `surface` already was. The loop still does not know an organization exists.
+
+**`run-org.ts` read the report of a pipeline that had already run.** Replacing the hardcoded
+`{ success: true }` with a *lookup* felt like a fix and was not one: the pipeline ran because the
+runtime iterated its own list, and the agent's choice was consulted by nobody. **A dispatcher that
+reports an outcome it did not cause is the same lie told more quietly.**
+
+Both now call `deliverWorkItem` — one definition of what delivering an item means: open a change,
+walk the phases, merge what passed. Four failures stay four distinct outcomes and none is rounded
+into another: nothing attempted / stopped at a named phase / judged and rejected / **passed every
+gate and did not merge**. That last one is the disagreement change control exists to catch, and it
+scores zero.
+
+### And the deeper form of the same defect
+
+Wiring the dispatcher was not enough, and the run said so. The runtime delivered every staffed task
+*before* the agent loop was consulted, so `candidatesFrom` — live leaves only — returned **zero**,
+and the agent's only legal choices were heartbeats. Every cycle chose `EmitHeartbeat` over an empty
+list, with a fully-wired dispatcher behind it that never once ran. The choice was still decorative,
+one layer down.
+
+`deliverSelf` is what fixes it: the runtime may be told to deliver nothing and leave the work live.
+**Someone has to leave the work undone for the agent to do it.** With `--agent-delivers` the same
+run offers 2 candidates, the agent picks `PickWork`, and the delivery happens because it chose.
+
+### What that measurement then showed
+
+With real work on the menu, the divergence rate stopped being zero:
+
+```text
+mode:    observe_act_shadow — divergence 0.3333333333333333 exceeds 0.05
+window:  12 shadow tick(s) over 72.0h, 12 compared, divergence 33.3%
+```
+
+The observe-act lane and the legacy priority lane genuinely disagree about which item to take, the
+gate refuses promotion, and it is right to. That is the divergence measurement doing real work
+rather than reporting a comfortable zero — which is the strongest evidence available that it is not
+vacuous.
 
 ## What is still missing, honestly
 
-1. **Event publication.** The runtime calls its ports directly; there is no bus and nothing
-   subscribes. The reference has two packages for this; the register has none.
-2. **Rules → reaction plan.** Reactions are coded into the pipeline's phase order rather than
-   evaluated from rules against published events.
-3. **Reconciliation.** Nothing verifies that the repository, the tracker and the organization's
+1. **Reconciliation.** Nothing verifies that the repository, the tracker and the organization's
    state agree. `changesUnlanded` is one instance of the idea; the reference generalises it in
    `change-control-reconciliation.ts`.
-4. **Budget.** Not checked anywhere.
+2. **Budget.** Named in the north-star loop, checked nowhere.
 
-Those are named, bounded gaps in the *orchestration* layer. They do not make the observe-act work
-above conditional — that lane is measured, mutated and reachable — but they are the reason this
-document still does not say "the system works end to end".
+Two bounded gaps, both in the orchestration layer, neither of which makes the work above
+conditional. The earlier version of this list had four entries and **two of them were my error** —
+`org-reactor.ts` is the rules-and-reactions machinery I recorded as absent, because I went looking
+for a broker instead of reading the module that says why there isn't one.
 
 ## The clock, because it matters here
 
@@ -170,5 +219,12 @@ run cannot inflate its own soak.
   killed**, after two survivors exposed two of these tests as vacuous — one asserted that shadow
   ticks are excluded from the primary counters using ticks that were *also* outside the 30-minute
   demotion window, so the mode filter it claimed to test was never exercised
+- `src/Core.TypeScript/corporate/work-delivery.ts` — `deliverWorkItem`: what a chosen slot DOES
+- `src/Core.TypeScript/corporate/work-delivery.test.ts` — 15 falsifiers, led by "picking work in
+  primary opens and merges a branch" (asserted on the port calls, so it is causation and not
+  correlation) and its mirror, "in shadow the same choice opens no branch at all". Mutation matrix
+  `mut-workdelivery`: **11/11 killed**, after three survivors showed three uncovered properties —
+  including one guarding a phase whose gate has no eligible evaluator, which needed a reduced chart
+  to reach at all
 - `agentic-organization/docs/OBSERVE_ACT_PROMOTION_GATE.md` — the rule this implements
 - `agentic-organization/docs/ALWAYS_ON_ORCHESTRATION_RUNTIME.md` — the core loop the table judges against
