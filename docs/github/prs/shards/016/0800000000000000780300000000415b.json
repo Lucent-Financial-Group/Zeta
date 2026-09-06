@@ -1,0 +1,12 @@
+{
+  "pr_number": 16731,
+  "archive_path": "docs/history/pr-reviews/PR-16731-feat-orleans-replicas-0-1-the-blocker-was-stale-and-the-silo-image-exists.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-06T03:33:54.497Z",
+  "schema_version": "v1",
+  "commit_sha": "e5431867f5d24b5a51e2c0b78274336baf96d3cf",
+  "title": "feat(orleans): replicas 0 -> 1 — the blocker was stale and the silo image exists",
+  "state": "MERGED",
+  "merged_at": "2026-09-06T03:33:16Z",
+  "head_ref": "otto/orleans-working"
+}

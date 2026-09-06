@@ -1,0 +1,12 @@
+{
+  "pr_number": 16728,
+  "archive_path": "docs/history/pr-reviews/PR-16728-feat-creds-setup-time-hsm-tpm-detect-tpm-lucent-unseal-paths.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-06T03:34:26.558Z",
+  "schema_version": "v1",
+  "commit_sha": "966a506a7b190176f14fc1e9180d039ceb46fc78",
+  "title": "feat(creds): Setup-time HSM/TPM detect; TPM + Lucent unseal paths",
+  "state": "MERGED",
+  "merged_at": "2026-09-06T03:33:53Z",
+  "head_ref": "cursor/unseal-paths-setup-27c5"
+}
