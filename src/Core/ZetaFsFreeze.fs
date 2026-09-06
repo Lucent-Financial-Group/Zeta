@@ -42,7 +42,7 @@ open Zeta.Core.FSharp.Blake3
 /// `noteFreeze` / `applyRetention` / `noteKnownObject` persist are best-effort
 /// (write-fail does not throw; next FreezeLog persist retries). After putLeaves,
 /// stored object bytes are hashed; mismatch withholds commit as
-/// `FreezeError.MissingLeaves`.
+/// `FreezeError.MissingLeaves`. Buffered `putObject` hash-verifies the same way.
 ///
 /// DoP=1 on this log. No Task.Run except the ferry launch (injected context
 /// on the DST path; `manual` + `PumpToIdleAsync` for tests).
@@ -1646,15 +1646,24 @@ module ZetaFsFreeze =
             fs.CreateDirectory dir
             FileSystemIo.writeAllBytes fs path bytes
 
-        volume.KnownObjects.[id] <- uint64 bytes.Length
-        volume.LivePins.Add id |> ignore
-        tryPersistCatalog
-            volume.StoreDir
-            volume.KnownObjects
-            volume.LivePins
-            volume.History
-            volume.FreezeBytesSinceReclaim
-            volume.ObjectSets
+        let stored =
+            if fs.Exists path then
+                Some(fs.ReadAllBytes path)
+            else
+                None
+
+        match stored with
+        | Some b when (ContentHash256.ofBytes b).Equals(id) ->
+            volume.KnownObjects.[id] <- uint64 bytes.Length
+            volume.LivePins.Add id |> ignore
+            tryPersistCatalog
+                volume.StoreDir
+                volume.KnownObjects
+                volume.LivePins
+                volume.History
+                volume.FreezeBytesSinceReclaim
+                volume.ObjectSets
+        | _ -> Error(FreezeError.MissingLeaves 1)
 
     let private tryReadObject (volume: Volume) (id: ContentHash256) : byte[] option =
         match volume.Log.ObjectCas with
