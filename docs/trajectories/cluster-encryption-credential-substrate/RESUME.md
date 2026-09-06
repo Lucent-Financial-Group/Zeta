@@ -612,6 +612,24 @@ Workitem: `081M1W8D6MF087G0R003405R3N`.
 - Does not invent an integrate decision. Does not expand
   `ZetaFirstbootRole`. Does not edit Application.yaml.
 
+## 2026-09-06 — ISO bun consume filters current-system bao at named epoch (Riven)
+
+Aaron: continue after the env join reads epoch from env. Bun
+JSON still reported the sourced ISO current-system path as a
+named ask.
+
+Consumer: `src/Core.TypeScript/zflash/firstboot-bao-elf.ts`
+(`consumeFirstbootBaoElfEnvWithEpoch`) plus
+`src/Core.TypeScript/zflash/firstboot-bao-env.ts`.
+Workitem: `081M1W9VW7P087G0R0026A9J6Z`.
+
+- Named epoch applies `namedBaoElfAskAtEpoch`. `installer-iso`
+  plus `NIXOS_HOST_BAO` is a null ask. A named store path stays
+  an ask. Missing epoch still reports the sourced ask (join
+  refuses `empty-epoch`). Does not infer from `/mnt`.
+- Does not invent an integrate decision. Does not expand
+  `ZetaFirstbootRole`. Does not edit Application.yaml.
+
 ## 2026-09-04 — production-hardening review (Riven)
 
 Aaron asked to production-harden the CA, name the unseal startup, use

@@ -281,6 +281,10 @@ Env join reads named epoch (`081M1W8D6MF087G0R003405R3N`):
 A named ask without a named epoch refuses. Missing
 keys stay unmeasured. Does not invent an integrate
 decision.
+ISO bun filters current-system bao (`081M1W9VW7P087G0R0026A9J6Z`):
+`consumeFirstbootBaoElfEnvWithEpoch` applies
+`namedBaoElfAskAtEpoch` when epoch is named. Bun JSON
+ask is null for ISO current-system bao.
 
 1. Metal: `seal "pkcs11"` in Application.yaml still waits.
    Same commit as a **reachable** module: same-libc image
@@ -288,7 +292,8 @@ decision.
    host `bao`. Dual-vendor per node is ZetaFS k-of-n, not
    two active OpenBao seals. Do not treat this planner as
    that commit. Env join cannot plan a named ask without a
-   named epoch. A live installer call still must not invent
+   named epoch. ISO bun JSON ask is already filtered at
+   `installer-iso`. A live installer call still must not invent
    an integrate decision. Does not expand `ZetaFirstbootRole`.
    `/dev/tpmrm0` is still not an ask.
 2. extraContainer Shamir sidecar (`valuesObject` only) until
