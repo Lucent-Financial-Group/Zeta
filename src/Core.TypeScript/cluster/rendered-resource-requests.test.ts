@@ -604,7 +604,7 @@ describe("eight mutations against the live validators", () => {
   // carrying a REAL debt still convicts a dead one" — which is the property that
   // stops the next genuine shortfall hiding behind an expired row.
   test("7 the lane register carries the live shortfall, and a revived one is convicted STALE", () => {
-    expect(liveCatalogue.acknowledgedLaneBudgetShortfall.map((a) => a.key)).toEqual(["dev memory 10636>9216"]);
+    expect(liveCatalogue.acknowledgedLaneBudgetShortfall.map((a) => a.key)).toEqual(["dev memory 11148>9216"]);
     expect(auditRunnerBudget(liveCatalogue, "dev")).toEqual([]);
     const revived = {
       ...liveCatalogue,
@@ -834,18 +834,30 @@ describe("a rung reaches a raw in-repo manifest", () => {
 describe("unreachable git-path requests", () => {
   const catalogue = loadResourceCatalogue();
 
-  // SIX remain, in TWO classes, and the classes are different refusals:
-  //   - four are `replicas: 0` and CANNOT be governed (`pods >= 1` in the schema)
+  // FIVE remain, in TWO classes, and the classes are different refusals:
+  //   - three are `replicas: 0` and CANNOT be governed (`pods >= 1` in the schema)
   //   - two are vendored byte-for-byte and are DELIBERATELY not governed
-  // The set is asserted whole, so a seventh appearing fails here even if
-  // somebody also remembers to baseline it.
-  test("exactly six remain, in two named classes, all acknowledged", () => {
+  // The set is asserted whole, so a sixth appearing fails here even if somebody
+  // also remembers to baseline it.
+  //
+  // WAS SIX until 2026-09-06. `full-ai-cluster/orleans` LEFT this set by being
+  // fixed rather than excused: its StatefulSet went `replicas: 0` -> `1` once the
+  // silo image it had always pinned was actually published, and it now carries a
+  // real resourceClaim (`full-ai-cluster/orleans/silo`). An entry leaving here
+  // because it became governable is the outcome this class-closer exists to
+  // produce.
+  //
+  // `infra/orleans` STAYS, and deliberately. It is the legacy tree's copy, under a
+  // separate root app-of-apps, and bumping it would stand up a SECOND silo against
+  // the same Redis clustering keys -- two silos claiming one cluster identity. Its
+  // zero is still the correct posture; only the full-ai-cluster copy was ever the
+  // one meant to run.
+  test("exactly five remain, in two named classes, all acknowledged", () => {
     const open = unreachableGitPathRequests(catalogue);
     expect(open.map((entry) => entry.appId).sort()).toEqual([
       "full-ai-cluster/cdi",
       "full-ai-cluster/hat-system",
       "full-ai-cluster/kubevirt",
-      "full-ai-cluster/orleans",
       "full-ai-cluster/vllm",
       "infra/orleans",
     ]);
@@ -854,7 +866,7 @@ describe("unreachable git-path requests", () => {
         .filter((entry) => entry.replicas === 0)
         .map((entry) => entry.appId)
         .sort(),
-    ).toEqual(["full-ai-cluster/hat-system", "full-ai-cluster/orleans", "full-ai-cluster/vllm", "infra/orleans"]);
+    ).toEqual(["full-ai-cluster/hat-system", "full-ai-cluster/vllm", "infra/orleans"]);
     expect(
       open
         .filter((entry) => entry.replicas > 0)
@@ -868,7 +880,7 @@ describe("unreachable git-path requests", () => {
     }
   });
 
-  test("the zero-replica four carry 5100m of LATENT request; the vendored two cost 120m TODAY", () => {
+  test("the zero-replica four carry 4600m of LATENT request; the vendored two cost 120m TODAY", () => {
     const open = unreachableGitPathRequests(catalogue);
     // LATENT: schedules nothing while `replicas: 0`. 4000 (vllm) + 500
     // (orleans) + 500 (infra/orleans) + 100 (hat-system).
@@ -877,8 +889,8 @@ describe("unreachable git-path requests", () => {
     // list by hand and dropped hat-system. The check caught it, which is the
     // only reason the number here is measured rather than asserted.
     const latent = open.filter((entry) => entry.replicas === 0);
-    expect(latent.reduce((sum, entry) => sum + entry.cpuMillis, 0)).toBe(5100);
-    expect(latent.reduce((sum, entry) => sum + entry.memoryMib, 0)).toBe(17536);
+    expect(latent.reduce((sum, entry) => sum + entry.cpuMillis, 0)).toBe(4600);
+    expect(latent.reduce((sum, entry) => sum + entry.memoryMib, 0)).toBe(17024);
     expect(open.find((entry) => entry.appId === "full-ai-cluster/vllm")?.cpuMillis).toBe(4000);
 
     // SCHEDULED: the vendored pair reserves this today, at every rung, and no

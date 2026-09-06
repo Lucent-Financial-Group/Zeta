@@ -419,6 +419,29 @@ export function overlayRung(source: ApplicationSource, catalogue: ResourceCatalo
       continue;
     }
 
+    // A CLAIM ADDRESSED TO ANOTHER TREE'S COPY OF THE SAME DIRECTORY IS NOT THIS
+    // APPLICATION'S CLAIM, and reporting it here would be a false finding.
+    //
+    // `discoverApplications` walks BOTH `full-ai-cluster` and
+    // `infra/k8s/applications`, and four directory names exist in both trees
+    // (cockroachdb, gitlab, longhorn, orleans). Claims are keyed by `dir` alone, so
+    // a claim for `full-ai-cluster/.../orleans/statefulset.yaml` is also offered to
+    // the `infra/.../orleans` Application, where `claimIsInsideGitPath` correctly
+    // says no.
+    //
+    // Before 2026-09-06 that landed in `unoverlayable`, which reads "a rung written
+    // nowhere would agree with every rung equally" -- a true sentence about a
+    // DIFFERENT situation. Orleans is the first dual-tree directory to carry a
+    // resourceClaim, so nothing had exercised this path.
+    //
+    // The check is NOT weakened: a claim whose path is inside NO application still
+    // lands in `unoverlayable` below, which is the case that sentence describes.
+    // Only the cross-tree namesake is skipped, and it is skipped because another
+    // Application will answer for it.
+    if (source.kind === "git-path" && claimPathTargetsAnotherApplication(claim.path, source.gitPath)) {
+      continue;
+    }
+
     // Neither a values coordinate nor a manifest this Application syncs. A rung
     // written nowhere would agree with every rung equally.
     unoverlayable.push(claim.id);
@@ -441,6 +464,22 @@ export function overlayRung(source: ApplicationSource, catalogue: ResourceCatalo
  * `.../applications/orleans`, and an overlay attributed to the wrong
  * Application is a finding the checker manufactured.
  */
+/**
+ * Is `claimPath` addressed to a DIFFERENT application than the one at `gitPath`?
+ *
+ * True only when the claim names a manifest under some other `.../applications/<dir>/`
+ * directory — i.e. another Application will be offered this same claim and can answer
+ * for it. A claim pointing at no application at all returns false, so it still
+ * surfaces as unoverlayable rather than being silently dropped.
+ */
+export function claimPathTargetsAnotherApplication(claimPath: string, gitPath: string): boolean {
+  const marker = "/applications/";
+  const at = claimPath.indexOf(marker);
+  if (at < 0) return false;
+  const appDir = claimPath.slice(0, claimPath.indexOf("/", at + marker.length));
+  return appDir !== "" && appDir !== gitPath;
+}
+
 export function claimIsInsideGitPath(claimPath: string, gitPath: string): boolean {
   if (gitPath === "") return false;
   return claimPath.startsWith(`${gitPath}/`);

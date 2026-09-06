@@ -1,5 +1,5 @@
 {
-  "$comment": "MEASURED image provenance \u2014 what an ANONYMOUS client got from each registry, and whose source repository the image names. Written ONLY by `bun src/Core.TypeScript/cluster/image-source-provenance.ts --refresh`; never hand-edited except for `note`. This file is EVIDENCE WITH A DATE, not an oracle: each row says 'as of resolvedAt, an anonymous pull returned this'. The VERDICT is not stored here \u2014 it is derived on every run by classify(), because a stored verdict is a hand-written allowlist wearing a measurement's clothes. See the module header for the incident (ghcr.io/flowdent/*, #14250) and the one-way rule this encodes.",
+  "$comment": "MEASURED image provenance — what an ANONYMOUS client got from each registry, and whose source repository the image names. Written ONLY by `bun src/Core.TypeScript/cluster/image-source-provenance.ts --refresh`; never hand-edited except for `note`. This file is EVIDENCE WITH A DATE, not an oracle: each row says 'as of resolvedAt, an anonymous pull returned this'. The VERDICT is not stored here — it is derived on every run by classify(), because a stored verdict is a hand-written allowlist wearing a measurement's clothes. See the module header for the incident (ghcr.io/flowdent/*, #14250) and the one-way rule this encodes.",
   "entries": [
     {
       "repository": "ghcr.io/acemod/arma-reforger",
@@ -11,7 +11,7 @@
       "sourceEvidence": "oci-label",
       "sourceVisibility": "public",
       "packagePresence": "found",
-      "resolvedAt": "2026-08-23"
+      "resolvedAt": "2026-09-06"
     },
     {
       "repository": "ghcr.io/actions/actions-runner",
@@ -23,7 +23,7 @@
       "sourceEvidence": "oci-label",
       "sourceVisibility": "public",
       "packagePresence": "found",
-      "resolvedAt": "2026-08-23"
+      "resolvedAt": "2026-09-06"
     },
     {
       "repository": "ghcr.io/ich777/steamcmd",
@@ -36,7 +36,7 @@
       "sourceEvidence": "oci-label",
       "sourceVisibility": "public",
       "packagePresence": "found",
-      "resolvedAt": "2026-08-23"
+      "resolvedAt": "2026-09-06"
     },
     {
       "repository": "ghcr.io/juanfont/headscale",
@@ -48,7 +48,7 @@
       "sourceEvidence": "ghcr-package",
       "sourceVisibility": "public",
       "packagePresence": "found",
-      "resolvedAt": "2026-09-05"
+      "resolvedAt": "2026-09-06"
     },
     {
       "repository": "ghcr.io/lucent-financial-group/hat-system-operator",
@@ -60,20 +60,19 @@
       "sourceEvidence": "none",
       "sourceVisibility": "unknown",
       "packagePresence": "absent",
-      "resolvedAt": "2026-08-23"
+      "resolvedAt": "2026-09-06"
     },
     {
       "repository": "ghcr.io/lucent-financial-group/zeta-orleans-silo",
       "tags": {
-        "bootstrap": 401,
-        "latest": 401
+        "latest": 200
       },
-      "artifact": "denied",
-      "sourceRepo": null,
-      "sourceEvidence": "none",
-      "sourceVisibility": "unknown",
-      "packagePresence": "absent",
-      "resolvedAt": "2026-08-23"
+      "artifact": "public",
+      "sourceRepo": "Lucent-Financial-Group/Zeta",
+      "sourceEvidence": "oci-label",
+      "sourceVisibility": "public",
+      "packagePresence": "found",
+      "resolvedAt": "2026-09-06"
     },
     {
       "repository": "ghcr.io/lucent-financial-group/zeta-platform-controller",
@@ -85,7 +84,7 @@
       "sourceEvidence": "oci-label",
       "sourceVisibility": "public",
       "packagePresence": "found",
-      "resolvedAt": "2026-08-23"
+      "resolvedAt": "2026-09-06"
     },
     {
       "repository": "ghcr.io/lucent-financial-group/zeta-portal",
@@ -97,7 +96,7 @@
       "sourceEvidence": "oci-label",
       "sourceVisibility": "public",
       "packagePresence": "found",
-      "resolvedAt": "2026-08-23"
+      "resolvedAt": "2026-09-06"
     },
     {
       "repository": "ghcr.io/vectorize-io/hindsight",
@@ -109,7 +108,7 @@
       "sourceEvidence": "oci-label",
       "sourceVisibility": "public",
       "packagePresence": "found",
-      "resolvedAt": "2026-08-23"
+      "resolvedAt": "2026-09-06"
     },
     {
       "repository": "quay.io/kubevirt/cdi-operator",
@@ -121,7 +120,7 @@
       "sourceEvidence": "none",
       "sourceVisibility": "unknown",
       "packagePresence": "not-ghcr",
-      "resolvedAt": "2026-08-23"
+      "resolvedAt": "2026-09-06"
     },
     {
       "repository": "quay.io/kubevirt/virt-operator",
@@ -133,7 +132,7 @@
       "sourceEvidence": "none",
       "sourceVisibility": "unknown",
       "packagePresence": "not-ghcr",
-      "resolvedAt": "2026-08-23"
+      "resolvedAt": "2026-09-06"
     },
     {
       "repository": "registry-1.docker.io/atmoz/sftp",
@@ -145,7 +144,7 @@
       "sourceEvidence": "oci-label",
       "sourceVisibility": "unknown",
       "packagePresence": "not-ghcr",
-      "resolvedAt": "2026-08-23"
+      "resolvedAt": "2026-09-06"
     },
     {
       "repository": "registry-1.docker.io/cm2network/steamcmd",
@@ -157,7 +156,7 @@
       "sourceEvidence": "none",
       "sourceVisibility": "unknown",
       "packagePresence": "not-ghcr",
-      "resolvedAt": "2026-08-23"
+      "resolvedAt": "2026-09-06"
     },
     {
       "repository": "registry-1.docker.io/cockroachdb/cockroach",
@@ -169,7 +168,7 @@
       "sourceEvidence": "none",
       "sourceVisibility": "unknown",
       "packagePresence": "not-ghcr",
-      "resolvedAt": "2026-08-23"
+      "resolvedAt": "2026-09-06"
     },
     {
       "repository": "registry-1.docker.io/curlimages/curl",
@@ -181,7 +180,7 @@
       "sourceEvidence": "oci-label",
       "sourceVisibility": "unknown",
       "packagePresence": "not-ghcr",
-      "resolvedAt": "2026-08-23"
+      "resolvedAt": "2026-09-06"
     },
     {
       "repository": "registry-1.docker.io/grafana/grafana",
@@ -193,7 +192,7 @@
       "sourceEvidence": "none",
       "sourceVisibility": "unknown",
       "packagePresence": "not-ghcr",
-      "resolvedAt": "2026-08-23"
+      "resolvedAt": "2026-09-06"
     },
     {
       "repository": "registry-1.docker.io/grafana/loki",
@@ -205,7 +204,7 @@
       "sourceEvidence": "oci-label",
       "sourceVisibility": "unknown",
       "packagePresence": "not-ghcr",
-      "resolvedAt": "2026-08-23"
+      "resolvedAt": "2026-09-06"
     },
     {
       "repository": "registry-1.docker.io/grafana/mimir",
@@ -217,7 +216,7 @@
       "sourceEvidence": "oci-label",
       "sourceVisibility": "unknown",
       "packagePresence": "not-ghcr",
-      "resolvedAt": "2026-08-23"
+      "resolvedAt": "2026-09-06"
     },
     {
       "repository": "registry-1.docker.io/grafana/tempo",
@@ -229,7 +228,7 @@
       "sourceEvidence": "oci-label",
       "sourceVisibility": "unknown",
       "packagePresence": "not-ghcr",
-      "resolvedAt": "2026-08-23"
+      "resolvedAt": "2026-09-06"
     },
     {
       "repository": "registry-1.docker.io/library/agentic-org-worker",
@@ -241,7 +240,7 @@
       "sourceEvidence": "none",
       "sourceVisibility": "unknown",
       "packagePresence": "not-ghcr",
-      "resolvedAt": "2026-08-23"
+      "resolvedAt": "2026-09-06"
     },
     {
       "repository": "registry-1.docker.io/library/busybox",
@@ -253,7 +252,7 @@
       "sourceEvidence": "none",
       "sourceVisibility": "unknown",
       "packagePresence": "not-ghcr",
-      "resolvedAt": "2026-08-23"
+      "resolvedAt": "2026-09-06"
     },
     {
       "repository": "registry-1.docker.io/library/nats",
@@ -265,7 +264,7 @@
       "sourceEvidence": "oci-label",
       "sourceVisibility": "unknown",
       "packagePresence": "not-ghcr",
-      "resolvedAt": "2026-08-23"
+      "resolvedAt": "2026-09-06"
     },
     {
       "repository": "registry-1.docker.io/library/nginx",
@@ -277,7 +276,7 @@
       "sourceEvidence": "none",
       "sourceVisibility": "unknown",
       "packagePresence": "not-ghcr",
-      "resolvedAt": "2026-08-23"
+      "resolvedAt": "2026-09-06"
     },
     {
       "repository": "registry-1.docker.io/library/postgres",
@@ -289,7 +288,7 @@
       "sourceEvidence": "none",
       "sourceVisibility": "unknown",
       "packagePresence": "not-ghcr",
-      "resolvedAt": "2026-08-23"
+      "resolvedAt": "2026-09-06"
     },
     {
       "repository": "registry-1.docker.io/ollama/ollama",
@@ -301,7 +300,7 @@
       "sourceEvidence": "none",
       "sourceVisibility": "unknown",
       "packagePresence": "not-ghcr",
-      "resolvedAt": "2026-08-23"
+      "resolvedAt": "2026-09-06"
     },
     {
       "repository": "registry-1.docker.io/otel/opentelemetry-collector-contrib",
@@ -313,7 +312,7 @@
       "sourceEvidence": "oci-label",
       "sourceVisibility": "unknown",
       "packagePresence": "not-ghcr",
-      "resolvedAt": "2026-08-23"
+      "resolvedAt": "2026-09-06"
     },
     {
       "repository": "registry-1.docker.io/rancher/k3s",
@@ -325,7 +324,7 @@
       "sourceEvidence": "oci-label",
       "sourceVisibility": "unknown",
       "packagePresence": "not-ghcr",
-      "resolvedAt": "2026-08-23"
+      "resolvedAt": "2026-09-06"
     },
     {
       "repository": "registry-1.docker.io/vllm/vllm-openai",
@@ -337,7 +336,7 @@
       "sourceEvidence": "oci-label",
       "sourceVisibility": "unknown",
       "packagePresence": "not-ghcr",
-      "resolvedAt": "2026-08-23"
+      "resolvedAt": "2026-09-06"
     },
     {
       "repository": "registry.k8s.io/kubectl",
@@ -349,7 +348,7 @@
       "sourceEvidence": "none",
       "sourceVisibility": "unknown",
       "packagePresence": "not-ghcr",
-      "resolvedAt": "2026-09-04"
+      "resolvedAt": "2026-09-06"
     }
   ]
 }
