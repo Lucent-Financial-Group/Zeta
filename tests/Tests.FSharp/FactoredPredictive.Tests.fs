@@ -80,20 +80,60 @@ let ``direct sum and orthogonality have different witnesses`` () =
     near (Array.map2 (*) state effect |> Array.sum) (Array.map2 (*) (rotate state) (rotate effect) |> Array.sum)
     Assert.Equal(state.Length, (rotate state).Length)
 
-[<Fact>]
-let ``RNN inference allocation does not grow with context length`` () =
-    let model = SmallRnn.create 3 8 1009UL |> require
-    let short, long = [||], Array.init 256 (fun i -> i%3)
-    for _ in 1..256 do
-        SmallRnn.after model short |> require |> ignore
-        SmallRnn.after model long |> require |> ignore
+// Compare steady-state minima across a fixed, alternating sample roster.
+// One counter interval can include runtime transitions unrelated to a per-call
+// context-length allocation. Equality remains exact; the retained-copy negative
+// control below checks a specific persistent context-copy regression.
+let private inferenceAllocationSamples (infer: int[] -> float[] * float[]) short long =
     let allocated tokens =
         let mutable consumed = 0.0
         let before = GC.GetAllocatedBytesForCurrentThread()
         for _ in 1..128 do
-            let state, p = SmallRnn.after model tokens |> require
+            let state, p = infer tokens
             consumed <- consumed + state.[0] + p.[0]
         let bytes = GC.GetAllocatedBytesForCurrentThread() - before
         Assert.True(Double.IsFinite consumed)
         bytes
-    Assert.Equal(allocated short, allocated long)
+    let shortSamples, longSamples = Array.zeroCreate<int64> 5, Array.zeroCreate<int64> 5
+    // Warm the actual counter/checksum batch method, not just inference.
+    // A fixed 32 pairs precede the five recorded observations.
+    for i in 0..31 do
+        if i % 2 = 0 then
+            allocated short |> ignore
+            allocated long |> ignore
+        else
+            allocated long |> ignore
+            allocated short |> ignore
+    for i in 0..4 do
+        if i % 2 = 0 then
+            shortSamples.[i] <- allocated short
+            longSamples.[i] <- allocated long
+        else
+            longSamples.[i] <- allocated long
+            shortSamples.[i] <- allocated short
+    shortSamples, longSamples
+
+[<Fact>]
+let ``sampled steady-state RNN allocation does not grow with context length`` () =
+    let model = SmallRnn.create 3 8 1009UL |> require
+    let short, long = [||], Array.init 256 (fun i -> i%3)
+    let shortSamples, longSamples = inferenceAllocationSamples (fun tokens -> SmallRnn.after model tokens |> require) short long
+    Assert.True(
+        Array.min shortSamples = Array.min longSamples,
+        sprintf "Expected equal steady-state allocation; short=%A long=%A" shortSamples longSamples)
+
+[<Fact>]
+let ``allocation growth sampler rejects retained context copies`` () =
+    let model = SmallRnn.create 3 8 1009UL |> require
+    let short, long = [||], Array.init 256 (fun i -> i%3)
+    let copyingInference tokens =
+        let copy = Array.copy tokens
+        let result = SmallRnn.after model copy |> require
+        GC.KeepAlive copy
+        result
+    let shortSamples, longSamples = inferenceAllocationSamples copyingInference short long
+    let excess = Array.min longSamples - Array.min shortSamples
+    let copiedPayload = 128L * int64 long.Length * int64 sizeof<int>
+    Assert.True(
+        excess >= copiedPayload,
+        sprintf "Context-copy discriminator missed %d payload bytes; short=%A long=%A" copiedPayload shortSamples longSamples)

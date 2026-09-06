@@ -261,6 +261,15 @@ let ``new freeze volume writes ns=bindings and git-trees deltaLog still refuses`
             let text = Encoding.UTF8.GetString(FileSystem.Current.ReadAllBytes formatPath)
             Assert.Contains("ns=bindings", text, StringComparison.Ordinal)
             Assert.DoesNotContain("ns=git-trees", text, StringComparison.Ordinal)
+            let rootPath = ZetaFsPath.combine2 store ZetaFsNamespace.RootFileName
+            Assert.True(FileSystem.Current.Exists rootPath)
+            let rootText = Encoding.UTF8.GetString(FileSystem.Current.ReadAllBytes rootPath)
+            let rootId =
+                match ZetaFsNamespace.EntityId.tryParse rootText with
+                | Some id -> id
+                | None ->
+                    Assert.Fail("ROOT must be a StoreEntity EntityId")
+                    Unchecked.defaultof<_>
             let id = mintId ()
             let h = ZetaFsMutbuf.openHandle volume.Mutbuf id
             ZetaFsMutbuf.pwrite volume.Mutbuf h 0L [| 1uy; 2uy; 3uy |] |> ignore
@@ -274,6 +283,11 @@ let ``new freeze volume writes ns=bindings and git-trees deltaLog still refuses`
                 let reopened = ZetaFsFreeze.createManualStream store mutbuf None
                 try
                     Assert.True(ZetaFsFreeze.isReadable reopened first.Content)
+                    let rootAgain = Encoding.UTF8.GetString(FileSystem.Current.ReadAllBytes rootPath)
+                    match ZetaFsNamespace.EntityId.tryParse rootAgain with
+                    | None -> Assert.Fail("ROOT must still parse after reopen")
+                    | Some again ->
+                        Assert.Equal(0, ZetaFsNamespace.EntityId.compare rootId again)
                 finally
                     ZetaFsFreeze.dispose reopened
                 let ex =
@@ -734,7 +748,9 @@ let ``Journaled freeze crash during leaf put leaves extra garbage and is not rea
             Assert.True(intentLen > 0)
             let freezeWrites =
                 mock.CommitOrder
-                |> Array.filter (fun p -> p.IndexOf("FORMAT", StringComparison.Ordinal) < 0)
+                |> Array.filter (fun p ->
+                    p.IndexOf("FORMAT", StringComparison.Ordinal) < 0
+                    && p.IndexOf("ROOT", StringComparison.Ordinal) < 0)
             Assert.Equal(logPath, freezeWrites.[0])
             ZetaFsFreeze.dispose volume
             let reopened = ZetaFsFreeze.createManualStream store mutbuf None

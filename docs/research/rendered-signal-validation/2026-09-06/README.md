@@ -45,3 +45,36 @@ The experiment kernels and test source stayed byte-identical to this first gate.
 The original command receipts carry local paths and host timing; they are
 evidence of execution rather than portable golden output. The report and
 registered JSON receipts define the reproducible semantic comparison.
+
+## Allocation assertion and identity integration
+
+[Allocation-test review](allocation-test-review.md) preserves the Linux ARM
+single-interval failure, source audit, bounded runtime-phase diagnostics,
+failed first repair and final fixed-sample discriminator. This changes the
+validation instrument, not the registered predictor or its measured receipts.
+
+The subsequent integration includes the landed relational-identity lane and
+keeps the two experiments' source archives separate. Source `cc5744478` passed
+the full Release build with zero warnings/errors and 7,492 solution tests
+with six existing skips. The test-only repair changes no registered numerical
+source or cost receipt.
+
+- [Original ARM allocation failure excerpt](rendered-arm-allocation-failure.txt), with full-log hash.
+- [Final integration build](rendered-final-integration-build.log).
+- [Final integration solution tests](rendered-final-integration-tests.log).
+- [Integrated Python suite](rendered-identity-integration-python.log): 157 passed, one existing warning.
+- [Integrated formatter](rendered-identity-integration-format.log): C#/VB verification; F# unsupported.
+
+## Main-based validation follow-up
+
+The follow-up is based on refreshed main `9e7622efe`, which includes the
+experiment merge. Source `2d9927303` passed a fresh Release build with zero
+warnings/errors and all 7,492 solution tests, with six existing skips:
+
+- [Follow-up build](rendered-followup-build.log).
+- [Follow-up solution tests](rendered-followup-tests.log).
+
+PR #16858 itself finished with 93 successful hosted checks and three skips
+at head `69ba5db2f`; its earlier ARM failure passed on the replacement job.
+The allocation sampler and logs above are a separate follow-up to that merged
+head, not changes included retroactively in its hosted run.
