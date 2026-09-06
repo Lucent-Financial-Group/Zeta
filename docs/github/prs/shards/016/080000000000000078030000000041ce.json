@@ -1,0 +1,12 @@
+{
+  "pr_number": 16846,
+  "archive_path": "docs/history/pr-reviews/PR-16846-feat-creds-name-bao-epoch-iso-current-system-is-not-option-d.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-06T20:27:32.142Z",
+  "schema_version": "v1",
+  "commit_sha": "51afeedfa9c7f17f05222a023312de06dea1fbab",
+  "title": "feat(creds): Name bao epoch; ISO current-system is not option D",
+  "state": "MERGED",
+  "merged_at": "2026-09-06T20:26:56Z",
+  "head_ref": "cursor/bao-elf-epoch-iso-27c5"
+}

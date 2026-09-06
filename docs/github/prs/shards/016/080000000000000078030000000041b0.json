@@ -1,0 +1,12 @@
+{
+  "pr_number": 16816,
+  "archive_path": "docs/history/pr-reviews/PR-16816-feat-creds-name-bao-load-site-and-path-from-prepare-boot-image.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-06T17:46:03.652Z",
+  "schema_version": "v1",
+  "commit_sha": "67ff5589c48ae1590ce0baf6be8820b6d58fab4e",
+  "title": "feat(creds): Name bao load site and path from prepare-boot-image",
+  "state": "MERGED",
+  "merged_at": "2026-09-06T17:45:20Z",
+  "head_ref": "cursor/prepare-boot-bao-flags-27c5"
+}

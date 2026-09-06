@@ -1,0 +1,14 @@
+{
+  "id": "080d03c2a92e4810a01300083e57065e",
+  "at": "2026-09-06T20:07:21.289Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1W5A9E9087G0R0020X4NP4",
+    "type": "task",
+    "title": "Freeze returns MissingLeaves when stored object hash mismatches",
+    "slug": "freeze-returns-missingleaves-when-stored-object-hash-mismatc",
+    "priority": "P2",
+    "filename": "081M1W5A9E9087G0R0020X4NP4-freeze-returns-missingleaves-when-stored-object-hash-mismatc.md"
+  }
+}

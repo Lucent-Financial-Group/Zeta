@@ -524,6 +524,7 @@
     <Compile Include="StrokeAnim.fs" />
     <Compile Include="IndexFormat.fs" />
     <Compile Include="ComplexityRegistry.fs" />
+    <Compile Include="PolicyAdmissibility.fs" />
     <Compile Include="FluxView.fs" />
     <Compile Include="MagneticPorts.fs" />
     <Compile Include="HtmlCssBinding.fs" />

@@ -5,9 +5,16 @@
  * argv parse. No filesystem. `lib.ts` writes the joined
  * conf onto the ESP. `file-backed.ts` parses `--bao-load-site`
  * and `--bao-path` here so it does not import installer `fs`.
- * Capture / overlay still live in bao-elf-capture.ts (that
- * module may read). Does not expand `ZetaFirstbootRole`.
- * Does not edit `zeta-first-boot.sh`.
+ * `prepare-boot-image.ts` uses the same parse. Conf/env consume
+ * also lives here so firstboot-bao-env.ts can read sourced
+ * names without installer `fs`. Capture / overlay still live
+ * in bao-elf-capture.ts (that module may read). Epoch is named
+ * (`installer-iso` vs `installed-host`): the live ISO's
+ * `/run/current-system/sw/bin/bao` is not option D. `/mnt`
+ * existing does not pick the epoch. Does not expand
+ * `ZetaFirstbootRole`. Bash export / sed-parse live in
+ * `zeta-first-boot.sh` and `zeta-install.sh`; this module stays
+ * pure and does not invoke bun.
  *
  * Cite: firstboot-role.ts, bao-load-site.ts,
  * docs/research/2026-08-21-hands-off-metal-*.md §1.4.
@@ -52,13 +59,57 @@ export function nixosHostBaoAsk(): NamedBaoElfAsk {
   return { site: "on-host", openedPath: NIXOS_HOST_BAO };
 }
 
+/**
+ * When the overlay consume runs. Named, not inferred.
+ * `zeta-install.sh` Step 6.95a is `installer-iso` (`ZETA_HOME`
+ * is `/mnt/home/zeta`). First boot of the installed system is
+ * `installed-host`. `/mnt` existing, `/dev/tpmrm0`, and a `.so`
+ * do not pick this.
+ */
+export type BaoElfEpoch = "installer-iso" | "installed-host";
+
+/**
+ * Option D is the installed host's current-system bao. The live
+ * ISO uses the same path string for a different binary. Exact
+ * `NIXOS_HOST_BAO` match only — no wildcard under
+ * `/run/current-system`. Does not fill a `/mnt/...` path.
+ */
+export function namedBaoElfAskAtEpoch(
+  site: BaoLoadSite,
+  openedPath: string,
+  epoch: BaoElfEpoch,
+  restorePointer: string = USB_PKCS11_MODULE_POINTER,
+): NamedBaoElfAsk | null {
+  if (epoch === "installer-iso" && openedPath === NIXOS_HOST_BAO) return null;
+  return namedBaoElfAsk(site, openedPath, restorePointer);
+}
+
+/**
+ * Named epoch from process env. Missing is unmeasured, not
+ * `installed-host`. `/mnt` and `tpmrm0` are unknown, not
+ * `installer-iso`.
+ */
+export function parseBaoElfEpoch(
+  value: string | undefined,
+):
+  | { readonly ok: true; readonly epoch: BaoElfEpoch | null }
+  | { readonly ok: false; readonly reason: NamedBaoElfArgError } {
+  if (value === undefined) return { ok: true, epoch: null };
+  if (value.length === 0) return { ok: false, reason: "empty-epoch" };
+  if (!SHELL_SAFE_CONF_VALUE_REGEX.test(value)) return { ok: false, reason: "unsafe-conf-value" };
+  if (value === "installer-iso" || value === "installed-host") return { ok: true, epoch: value };
+  return { ok: false, reason: "unknown-epoch" };
+}
+
 export type NamedBaoElfArgError =
   | "site-without-path"
   | "path-without-site"
   | "unknown-site"
   | "empty-site"
   | "empty-path"
-  | "unsafe-conf-value";
+  | "unsafe-conf-value"
+  | "unknown-epoch"
+  | "empty-epoch";
 
 export type NamedBaoElfArgResult =
   | { readonly ok: true; readonly ask: NamedBaoElfAsk | null }
@@ -119,6 +170,28 @@ export function parseNamedBaoElfArgs(argv: readonly string[]): NamedBaoElfArgRes
   return { ok: true, ask: namedBaoElfAsk(namedSite, namedPath) };
 }
 
+/** Operator-facing refusal for a named-bao argv parse. Shared by file-backed and prepare-boot-image. */
+export function namedBaoElfArgErrorMessage(reason: NamedBaoElfArgError): string {
+  switch (reason) {
+    case "site-without-path":
+      return "--bao-load-site requires --bao-path";
+    case "path-without-site":
+      return "--bao-path requires --bao-load-site";
+    case "unknown-site":
+      return "--bao-load-site must be on-host or in-chart-image";
+    case "empty-site":
+      return "--bao-load-site requires a value";
+    case "empty-path":
+      return "--bao-path requires a value";
+    case "unsafe-conf-value":
+      return "--bao-load-site / --bao-path contains a value firstboot conf cannot carry";
+    case "unknown-epoch":
+      return "ZETA_BAO_ELF_EPOCH must be installer-iso or installed-host";
+    case "empty-epoch":
+      return "ZETA_BAO_ELF_EPOCH requires a value";
+  }
+}
+
 /**
  * ESP / firstboot conf keys for a named bao. Both lines or
  * neither — the same all-or-none rule as cluster-segment
@@ -128,6 +201,7 @@ export function parseNamedBaoElfArgs(argv: readonly string[]): NamedBaoElfArgRes
  */
 export const FIRSTBOOT_BAO_LOAD_SITE_KEY = "ZETA_BAO_LOAD_SITE";
 export const FIRSTBOOT_BAO_PATH_KEY = "ZETA_BAO_PATH";
+export const FIRSTBOOT_BAO_ELF_EPOCH_KEY = "ZETA_BAO_ELF_EPOCH";
 
 export type FirstbootBaoElfCarrierRefuse = "unmeasured" | "not-bao-path" | "unsafe-conf-value";
 
@@ -216,4 +290,105 @@ export function planFirstbootConfWithNamedBaoElf(
     value: appendFirstbootBaoElfConf(planned.value, named, restorePointer),
     config: planned.config,
   };
+}
+
+export interface FirstbootBaoElfEnv {
+  readonly ZETA_BAO_LOAD_SITE?: string;
+  readonly ZETA_BAO_PATH?: string;
+}
+
+function unquoteFirstbootConfValue(raw: string): string | null {
+  if (raw.startsWith("'")) {
+    if (raw.length < 2 || !raw.endsWith("'")) return null;
+    const inner = raw.slice(1, -1);
+    if (inner.includes("'")) return null;
+    return inner;
+  }
+  if (raw.includes("'") || raw.includes('"') || raw.includes("`")) return null;
+  return raw;
+}
+
+function envValueOrUnsafe(value: string | undefined): { ok: true; value: string | undefined } | { ok: false } {
+  if (value === undefined) return { ok: true, value: undefined };
+  if (value.length > 0 && !SHELL_SAFE_CONF_VALUE_REGEX.test(value)) return { ok: false };
+  return { ok: true, value };
+}
+
+/**
+ * Env after a sourced firstboot conf. Values are unquoted.
+ * Both keys or neither — same rule as argv. tpmrm0 is
+ * shell-safe and still not an ask.
+ */
+export function parseFirstbootBaoElfEnv(env: FirstbootBaoElfEnv): NamedBaoElfArgResult {
+  const siteGot = envValueOrUnsafe(env[FIRSTBOOT_BAO_LOAD_SITE_KEY]);
+  const pathGot = envValueOrUnsafe(env[FIRSTBOOT_BAO_PATH_KEY]);
+  if (!siteGot.ok || !pathGot.ok) return { ok: false, reason: "unsafe-conf-value" };
+  const argv: string[] = [];
+  if (siteGot.value !== undefined) argv.push(`--bao-load-site=${siteGot.value}`);
+  if (pathGot.value !== undefined) argv.push(`--bao-path=${pathGot.value}`);
+  return parseNamedBaoElfArgs(argv);
+}
+
+/**
+ * Process env after bash sources the ESP conf. Missing keys
+ * are unmeasured. Does not open files. Does not infer
+ * `on-host` from `/dev/tpmrm0`.
+ */
+export function consumeFirstbootBaoElfProcessEnv(env: {
+  readonly [key: string]: string | undefined;
+}): NamedBaoElfArgResult {
+  return parseFirstbootBaoElfEnv({
+    ...(env[FIRSTBOOT_BAO_LOAD_SITE_KEY] === undefined
+      ? {}
+      : { [FIRSTBOOT_BAO_LOAD_SITE_KEY]: env[FIRSTBOOT_BAO_LOAD_SITE_KEY] }),
+    ...(env[FIRSTBOOT_BAO_PATH_KEY] === undefined ? {} : { [FIRSTBOOT_BAO_PATH_KEY]: env[FIRSTBOOT_BAO_PATH_KEY] }),
+  });
+}
+
+export type FirstbootBaoElfEnvConsume =
+  | { readonly ok: true; readonly ask: NamedBaoElfAsk | null; readonly epoch: BaoElfEpoch | null }
+  | { readonly ok: false; readonly reason: NamedBaoElfArgError };
+
+/**
+ * Site+path plus named epoch. Missing epoch is unmeasured, not
+ * `installed-host`. Does not open files. Does not infer epoch
+ * from `/mnt` or `/dev/tpmrm0`.
+ */
+export function consumeFirstbootBaoElfEnvWithEpoch(env: {
+  readonly [key: string]: string | undefined;
+}): FirstbootBaoElfEnvConsume {
+  const parsed = consumeFirstbootBaoElfProcessEnv(env);
+  if (!parsed.ok) return parsed;
+  const epochGot = parseBaoElfEpoch(env[FIRSTBOOT_BAO_ELF_EPOCH_KEY]);
+  if (!epochGot.ok) return epochGot;
+  return { ok: true, ask: parsed.ask, epoch: epochGot.epoch };
+}
+
+/**
+ * Parse ESP / ISO firstboot conf content. HOST / ZETA_ROLE
+ * are ignored. One bao key without the other refuses. Does
+ * not open files. Does not edit `zeta-first-boot.sh`.
+ */
+export function parseFirstbootBaoElfConf(conf: string): NamedBaoElfArgResult {
+  let site: string | undefined;
+  let openedPath: string | undefined;
+  for (const rawLine of conf.split("\n")) {
+    const line = rawLine.replace(/\r$/u, "").trim();
+    if (line.length === 0 || line.startsWith("#")) continue;
+    if (line.startsWith(`${FIRSTBOOT_BAO_LOAD_SITE_KEY}=`)) {
+      const parsed = unquoteFirstbootConfValue(line.slice(FIRSTBOOT_BAO_LOAD_SITE_KEY.length + 1));
+      if (parsed === null) return { ok: false, reason: "unsafe-conf-value" };
+      site = parsed;
+      continue;
+    }
+    if (line.startsWith(`${FIRSTBOOT_BAO_PATH_KEY}=`)) {
+      const parsed = unquoteFirstbootConfValue(line.slice(FIRSTBOOT_BAO_PATH_KEY.length + 1));
+      if (parsed === null) return { ok: false, reason: "unsafe-conf-value" };
+      openedPath = parsed;
+    }
+  }
+  return parseFirstbootBaoElfEnv({
+    ...(site === undefined ? {} : { [FIRSTBOOT_BAO_LOAD_SITE_KEY]: site }),
+    ...(openedPath === undefined ? {} : { [FIRSTBOOT_BAO_PATH_KEY]: openedPath }),
+  });
 }

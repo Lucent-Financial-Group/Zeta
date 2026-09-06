@@ -1,0 +1,14 @@
+{
+  "id": "080d03c349348810a01300089031e9a0",
+  "at": "2026-09-06T20:29:12.209Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1W6J9MH087G0R003VNMDDR",
+    "type": "task",
+    "title": "ISO bun consume names installer-iso epoch",
+    "slug": "iso-bun-consume-names-installer-iso-epoch",
+    "priority": "P2",
+    "filename": "081M1W6J9MH087G0R003VNMDDR-iso-bun-consume-names-installer-iso-epoch.md"
+  }
+}

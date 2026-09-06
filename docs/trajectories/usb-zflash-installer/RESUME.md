@@ -497,6 +497,39 @@ CLI flags
 `file-backed.ts`; one without the other
 refuses; does not fill `NIXOS_HOST_BAO`;
 still does not edit `zeta-first-boot.sh`.
+QEMU harness
+(`081M1VW190B087G0R003D4GWJF`) forwards
+those same flags from `prepare-boot-image.ts`;
+still does not edit `zeta-first-boot.sh`.
+First-boot env consume
+(`081M1VXAQEJ087G0R00325DJRS`) reads sourced
+`ZETA_BAO_*` in `firstboot-bao-env.ts`.
+Bash pickup
+(`081M1VZRST2087G0R001QEJDWG`) exports both
+names from `zeta-first-boot.sh` and
+sed-parses them in `zeta-install.sh`; both
+or neither; does not fill `NIXOS_HOST_BAO`;
+does not invoke bun.
+Post-6.95a bun consume
+(`081M1W1NCDT087G0R002H3VG6Y`) invokes
+`firstboot-bao-env.ts` after mise/bun exist;
+a null ask is not a seal; still does not
+invoke bun from `zeta-first-boot.sh`.
+Env join
+(`081M1W3BPCN087G0R001R97E45`) plans the
+overlay from sourced `ZETA_BAO_*`; injected
+read; tpmrm0 is still not an ask; still
+does not invent an integrate decision.
+Installer-iso epoch
+(`081M1W4XQH4087G0R000F69WYQ`) names the
+epoch; ISO current-system bao is not
+option D; `/mnt` existing does not pick
+the epoch.
+ISO bun names epoch
+(`081M1W6J9MH087G0R003VNMDDR`) exports
+`ZETA_BAO_ELF_EPOCH='installer-iso'` as a
+literal after 6.95a; `/mnt` is unknown,
+not `installer-iso`.
 glibc-host-into-musl-image is not a
 module; Application.yaml stays Shamir.
 

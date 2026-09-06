@@ -1,0 +1,12 @@
+{
+  "pr_number": 16817,
+  "archive_path": "docs/history/pr-reviews/PR-16817-research-compare-learned-hmms-and-factored-predictive-inference.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-06T18:02:37.921Z",
+  "schema_version": "v1",
+  "commit_sha": "cb629037d9ef7988c00c84ec7556305e75594ccd",
+  "title": "research: compare learned HMMs and factored predictive inference",
+  "state": "MERGED",
+  "merged_at": "2026-09-06T18:02:01Z",
+  "head_ref": "codex/factored-predictive-comparison"
+}

@@ -1,0 +1,1 @@
+{"policyId":"rng.splitmix64","revision":"policy-self-knowledge-fixture/v1","operation":"mix","inputMeasureId":"observations","timeO":"O(1)","spaceO":"O(1)","declaredBy":"zeta-test-fixture","declarationKind":"self-reported"}

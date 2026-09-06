@@ -1,0 +1,12 @@
+{
+  "pr_number": 16831,
+  "archive_path": "docs/history/pr-reviews/PR-16831-docs-policy-freeze-self-knowledge-tick-admissibility-contract.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-06T19:15:58.718Z",
+  "schema_version": "v1",
+  "commit_sha": "abfcdee7ffadae34630d84a5784b6e348a8c9d06",
+  "title": "docs(policy): freeze self-knowledge tick-admissibility contract",
+  "state": "MERGED",
+  "merged_at": "2026-09-06T19:15:21Z",
+  "head_ref": "lumen/policy-admissibility-tick-contract"
+}

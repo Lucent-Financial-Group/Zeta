@@ -1,0 +1,12 @@
+{
+  "pr_number": 16848,
+  "archive_path": "docs/history/pr-reviews/PR-16848-feat-081m1w5a9e9087g0r0020x4np4-freeze-returns-missingleaves-on-stored-hash-mism.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-06T20:32:45.678Z",
+  "schema_version": "v1",
+  "commit_sha": "5f575b384c1504b00eafd49faa58cce8e1af4fa4",
+  "title": "feat(081M1W5A9E9087G0R0020X4NP4): freeze returns MissingLeaves on stored hash mismatch",
+  "state": "MERGED",
+  "merged_at": "2026-09-06T20:32:06Z",
+  "head_ref": "feat/zetafs-missing-leaves-after-put"
+}

@@ -78,6 +78,11 @@ docs/research/data/2026-09-06-contextual-grid-v1-reflect-x-100-seed-python.json
 docs/research/data/2026-09-06-minigrid-empty-5x5-v310-adapter-carrier.json
 docs/research/data/2026-09-06-minigrid-empty-5x5-v310-adapter-fsharp.json
 docs/research/data/2026-09-06-minigrid-empty-5x5-v310-adapter-python.json
+docs/research/data/2026-09-06-policy-admissibility-v1-self-report.json
+docs/research/data/2026-09-06-policy-admissibility-v1-tick-envelope.json
+docs/research/data/2026-09-06-policy-admissibility-v1-constraint-basis.json
+docs/research/data/2026-09-06-policy-admissibility-v1-fsharp.json
+docs/research/data/2026-09-06-policy-admissibility-v1-python.json
 
 # VERBATIM COPIES OF GIT HISTORY. The four pre-fix `Application.yaml` files under
 # `testdata/inert-valuesobject-history/` are byte-for-byte `git show <sha>:<path>`

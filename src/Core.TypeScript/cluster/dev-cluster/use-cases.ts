@@ -13,8 +13,10 @@ import {
 import type { DevClusterPorts, KindCni } from "../ports.ts";
 import {
   buildDevAdminSecretManifest,
+  buildDevSharedSecretManifest,
   buildDevRegistryPullSecretManifest,
   DEV_BOOTSTRAP_SECRETS,
+  DEV_SHARED_SECRETS,
   DEV_CILIUM_LB_KIND_CRDS,
   DEV_GHCR_PULL_SECRET,
   devCiliumLbKindManifestPath,
@@ -189,6 +191,46 @@ export function applyDevBootstrapSecrets(ports: DevClusterPorts): void {
     }
     console.log(`Minting dev/CI credential ${namespace}/${name} (value is per-cluster and never logged) ...`);
     ports.controlPlane.applyInlineManifest(buildDevAdminSecretManifest(spec, randomBytes(24).toString("base64url")));
+  }
+  applyDevSharedSecrets(ports);
+}
+
+/**
+ * Mint the SHARED credentials -- one drawn value, several namespaces.
+ *
+ * THE DRAW IS OUTSIDE THE NAMESPACE LOOP, and that placement is the entire point. A producer
+ * and its consumers must present the SAME string; drawing per namespace would mint three
+ * different values and leave two services authenticating with a key the store does not know.
+ * `applyDevBootstrapSecrets` draws per spec because each of those credentials has exactly one
+ * consumer -- correct there, wrong here (081M1S6Z5S3087G0R000GEPSS2).
+ *
+ * ALL-OR-NOTHING ON RE-RUN, which is the subtle half. If ANY namespace already holds the
+ * Secret the whole spec is skipped, because a partial mint is the failure this exists to
+ * prevent: filling in the two missing namespaces with a FRESH draw would leave the third
+ * holding the old value, and the mismatch would surface as an S3 auth error days later rather
+ * than as a refusal now.
+ */
+export function applyDevSharedSecrets(ports: DevClusterPorts): void {
+  for (const spec of DEV_SHARED_SECRETS) {
+    const ref = `secret/${spec.name}`;
+    for (const namespace of spec.namespaces) ports.controlPlane.ensureNamespace(namespace);
+
+    const present = spec.namespaces.filter((ns) => ports.controlPlane.resourceExists(ref, ns));
+    if (present.length > 0) {
+      console.log(
+        `Dev/CI shared credential ${spec.name} already present in ${present.join(", ")}; leaving the whole set alone ` +
+          `(a partial re-mint would give the namespaces DIFFERENT values).`,
+      );
+      continue;
+    }
+    console.log(
+      `Minting dev/CI shared credential ${spec.name} into ${spec.namespaces.join(", ")} ` +
+        `(one value, per-cluster, never logged) ...`,
+    );
+    const value = randomBytes(24).toString("base64url");
+    for (const namespace of spec.namespaces) {
+      ports.controlPlane.applyInlineManifest(buildDevSharedSecretManifest(spec, namespace, value));
+    }
   }
 }
 

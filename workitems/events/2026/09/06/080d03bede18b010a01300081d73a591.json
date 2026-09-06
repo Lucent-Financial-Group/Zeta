@@ -1,0 +1,14 @@
+{
+  "id": "080d03bede18b010a01300081d73a591",
+  "at": "2026-09-06T17:54:46.166Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1VXQGRP087G0R002V4GZKD",
+    "type": "task",
+    "title": "ISimulatedFs write-fail on catalog persist keeps the prior freeze",
+    "slug": "isimulatedfs-write-fail-on-catalog-persist-keeps-the-prior-f",
+    "priority": "P2",
+    "filename": "081M1VXQGRP087G0R002V4GZKD-isimulatedfs-write-fail-on-catalog-persist-keeps-the-prior-f.md"
+  }
+}

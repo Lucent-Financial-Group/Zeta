@@ -36,7 +36,13 @@ open Zeta.Core.FSharp.Blake3
 /// `create` uses `rollingDefault`. DST manuals stay `KeepAll` until
 /// `known.pins` / slots record `history keep-none` / `rolling N`.
 /// Catalog also persists `ObjectSets` (`set <content> <id>...`) so reopen
-/// hash-verifies jumprope internals, not only trunk plus leaves.
+/// hash-verifies jumprope internals, not only trunk plus leaves. Buffered
+/// `putObject` maps catalog persist IOException/BUGGIFY to `FreezeError.Fsync`
+/// (Buffered does not ride FreezeLog). History setter, reclaim-meter,
+/// `noteFreeze` / `applyRetention` / `noteKnownObject` persist are best-effort
+/// (write-fail does not throw; next FreezeLog persist retries). After putLeaves,
+/// stored object bytes are hashed; mismatch withholds commit as
+/// `FreezeError.MissingLeaves`.
 ///
 /// DoP=1 on this log. No Task.Run except the ferry launch (injected context
 /// on the DST path; `manual` + `PumpToIdleAsync` for tests).
@@ -321,8 +327,58 @@ module ZetaFsFreeze =
         let gen = maxGen + 1L
         let slot = int (gen % 2L)
         let text = encodeCatalog gen history meter known livePins objectSets
-        FileSystemIo.writeAllText fs (catalogSlot storeDir slot) text
-        FileSystemIo.writeAllText fs (catalogPath storeDir) text
+        let bytes = Encoding.UTF8.GetBytes text
+
+        let writePublished path =
+            let tmp = path + ".tmp"
+
+            do
+                use stream = fs.OpenWrite(tmp, false)
+                stream.Write(bytes, 0, bytes.Length)
+                stream.Flush()
+
+            SimulatedFs.Write tmp
+            fs.Move(tmp, path, true)
+
+        writePublished (catalogSlot storeDir slot)
+        writePublished (catalogPath storeDir)
+
+    let private catalogPersistError (storeDir: string) =
+        FreezeError.Fsync(FileSync.FileSyncError.FlushFailed(catalogPath storeDir, 5))
+
+    let private tryPersistCatalog
+        (storeDir: string)
+        (known: Dictionary<ContentHash256, uint64>)
+        (livePins: HashSet<ContentHash256>)
+        (history: ZetaFsPolicy.HistoryPolicy)
+        (meter: uint64)
+        (objectSets: Dictionary<ContentHash256, ContentHash256[]>)
+        : Result<unit, FreezeError> =
+        try
+            persistCatalog storeDir known livePins history meter objectSets
+            Ok()
+        with
+        | :? CrashMidWriteException as ex -> raise ex
+        | :? PowerOutageException as ex -> raise ex
+        | :? BadMemoryException as ex -> raise ex
+        | :? IOException -> Error(catalogPersistError storeDir)
+        | ex when ex.Message.IndexOf("BUGGIFY", StringComparison.Ordinal) >= 0 ->
+            Error(catalogPersistError storeDir)
+
+    /// Volume catalog persist outside FreezeLog is not the freeze ack.
+    /// Crash/power/bad-memory still raise. Fsync is ignored; the next
+    /// FreezeLog persist retries.
+    let private persistCatalogBestEffort
+        (storeDir: string)
+        (known: Dictionary<ContentHash256, uint64>)
+        (livePins: HashSet<ContentHash256>)
+        (history: ZetaFsPolicy.HistoryPolicy)
+        (meter: uint64)
+        (objectSets: Dictionary<ContentHash256, ContentHash256[]>)
+        =
+        match tryPersistCatalog storeDir known livePins history meter objectSets with
+        | Ok() -> ()
+        | Error _ -> ()
 
     let private loadCatalog
         (storeDir: string)
@@ -403,7 +459,17 @@ module ZetaFsFreeze =
         let mutable lastBoat = 0
 
         let processBatch (boat: ReadOnlyMemory<LogItem>) (ct: CancellationToken) : Task =
-            let succeed (err: FreezeError option) =
+            let mutable err: FreezeError option = None
+
+            let persist () =
+                if err.IsNone then
+                    match tryPersistCatalog storeDir known livePins !history !meter objectSets with
+                    | Ok() -> ()
+                    | Error e -> err <- Some e
+
+            let succeed () =
+                persist ()
+
                 if err.IsNone then
                     for i in 0 .. boat.Length - 1 do
                         let it = boat.Span.[i]
@@ -413,8 +479,6 @@ module ZetaFsFreeze =
                             let struct (id, _) = it.Objects.[j]
                             livePins.Add id |> ignore
                             j <- j + 1
-
-                persistCatalog storeDir known livePins !history !meter objectSets
 
                 for i in 0 .. boat.Length - 1 do
                     let it = boat.Span.[i]
@@ -438,7 +502,6 @@ module ZetaFsFreeze =
                 boats <- boats + 1
                 lastBoat <- boat.Length
                 fsDoor.CreateDirectory logDir
-                let mutable err: FreezeError option = None
 
                 let tryFlush (io: IBlockIo) (path: string) =
                     if err.IsNone then
@@ -490,7 +553,7 @@ module ZetaFsFreeze =
                         | Some cas ->
                             cas.Put(hex, bytes)
                             known.[id] <- uint64 bytes.Length
-                            persistCatalog storeDir known livePins !history !meter objectSets
+                            persist ()
                             tryWrite (ZetaFsPath.combine2 storeDir "cas")
 
                             if item.Durable then
@@ -525,7 +588,7 @@ module ZetaFsFreeze =
 
                                     if n > 0 then
                                         known.[id] <- uint64 n
-                                        persistCatalog storeDir known livePins !history !meter objectSets
+                                        persist ()
 
                                 raise ex
 
@@ -540,6 +603,38 @@ module ZetaFsFreeze =
                         match FileSync.fsyncDir objectsDir with
                         | Error e -> err <- Some(FreezeError.Fsync e)
                         | Ok() -> ()
+
+                let objectMatchesStored (id: ContentHash256) : bool =
+                    let hex = (ContentHash256.toContentAddress128 id).ToHex()
+
+                    match objectCas with
+                    | Some cas ->
+                        match cas.TryGet hex with
+                        | None -> false
+                        | Some b -> (ContentHash256.ofBytes b).Equals(id)
+                    | None ->
+                        let path = ZetaFsPath.combine3 objectsDir (hex.Substring(0, 2)) (hex.Substring(2))
+
+                        if not (fsDoor.Exists path) then
+                            false
+                        else
+                            (ContentHash256.ofBytes (fsDoor.ReadAllBytes path)).Equals(id)
+
+                let verifyLeaves (item: LogItem) =
+                    if err.IsNone then
+                        let mutable missing = 0
+                        let mutable k = 0
+
+                        while k < item.Objects.Length do
+                            let struct (id, _) = item.Objects.[k]
+
+                            if not (objectMatchesStored id) then
+                                missing <- missing + 1
+
+                            k <- k + 1
+
+                        if missing > 0 then
+                            err <- Some(FreezeError.MissingLeaves missing)
 
                 // Intent Flush publishes without crash arms on the file door.
                 // On IBlockIo, Flush is the barrier; crash arms fire on Write.
@@ -563,6 +658,10 @@ module ZetaFsFreeze =
 
                         if err.IsNone then
                             putLeaves item
+                            verifyLeaves item
+
+                        if err.IsNone then
+                            persist ()
 
                         if err.IsNone then
                             let afterCommit =
@@ -587,6 +686,10 @@ module ZetaFsFreeze =
                             stream.Write(item.IntentFrame, 0, item.IntentFrame.Length)
                             stream.Flush()
                             putLeaves item
+                            verifyLeaves item
+
+                            if err.IsNone then
+                                persist ()
 
                             if err.IsNone then
                                 stream.Write(item.CommitFrame, 0, item.CommitFrame.Length)
@@ -601,7 +704,7 @@ module ZetaFsFreeze =
                                 | Error e -> err <- Some(FreezeError.Fsync e)
                                 | Ok() -> ()
 
-                succeed err
+                succeed ()
             with
             | ex -> fail ex
 
@@ -842,7 +945,7 @@ module ZetaFsFreeze =
             with get () = !history
             and set v =
                 history := v
-                persistCatalog storeDir known livePins v !freezeBytesSinceReclaim objectSets
+                persistCatalogBestEffort storeDir known livePins v !freezeBytesSinceReclaim objectSets
 
         interface IDisposable with
             member _.Dispose() =
@@ -1445,7 +1548,7 @@ module ZetaFsFreeze =
     let noteKnownObject (volume: Volume) (id: ContentHash256) (size: uint64) =
         lock volume.Gate (fun () ->
             volume.KnownObjects.[id] <- size
-            persistCatalog volume.StoreDir volume.KnownObjects volume.LivePins volume.History volume.FreezeBytesSinceReclaim volume.ObjectSets)
+            persistCatalogBestEffort volume.StoreDir volume.KnownObjects volume.LivePins volume.History volume.FreezeBytesSinceReclaim volume.ObjectSets)
 
     /// Objects the volume wrote that no live freeze still pins. Keeps full
     /// ids so reclaim can propose them. Empty until something is unpinned
@@ -1458,7 +1561,7 @@ module ZetaFsFreeze =
         lock volume.Gate (fun () ->
             let n = volume.FreezeBytesSinceReclaim
             volume.FreezeBytesSinceReclaim <- 0UL
-            persistCatalog
+            persistCatalogBestEffort
                 volume.StoreDir
                 volume.KnownObjects
                 volume.LivePins
@@ -1534,7 +1637,7 @@ module ZetaFsFreeze =
             else
                 0L
 
-    let private putObject (volume: Volume) (id: ContentHash256) (bytes: byte[]) =
+    let private putObject (volume: Volume) (id: ContentHash256) (bytes: byte[]) : Result<unit, FreezeError> =
         let path = objectPath volume.StoreDir id
         let fs = FileSystem.Current
 
@@ -1545,7 +1648,13 @@ module ZetaFsFreeze =
 
         volume.KnownObjects.[id] <- uint64 bytes.Length
         volume.LivePins.Add id |> ignore
-        persistCatalog volume.StoreDir volume.KnownObjects volume.LivePins volume.History volume.FreezeBytesSinceReclaim volume.ObjectSets
+        tryPersistCatalog
+            volume.StoreDir
+            volume.KnownObjects
+            volume.LivePins
+            volume.History
+            volume.FreezeBytesSinceReclaim
+            volume.ObjectSets
 
     let private tryReadObject (volume: Volume) (id: ContentHash256) : byte[] option =
         match volume.Log.ObjectCas with
@@ -1635,7 +1744,7 @@ module ZetaFsFreeze =
     let private noteFreeze (volume: Volume) (span: uint64) (result: FreezeResult) =
         lock volume.Gate (fun () ->
             volume.FreezeBytesSinceReclaim <- volume.FreezeBytesSinceReclaim + span
-            persistCatalog
+            persistCatalogBestEffort
                 volume.StoreDir
                 volume.KnownObjects
                 volume.LivePins
@@ -1676,7 +1785,7 @@ module ZetaFsFreeze =
             volume.LivePins.Add id |> ignore
 
         match keepCount volume.History with
-        | None -> persistCatalog volume.StoreDir volume.KnownObjects volume.LivePins volume.History volume.FreezeBytesSinceReclaim volume.ObjectSets
+        | None -> persistCatalogBestEffort volume.StoreDir volume.KnownObjects volume.LivePins volume.History volume.FreezeBytesSinceReclaim volume.ObjectSets
         | Some n ->
             let mine =
                 volume.Commits.Values
@@ -1687,7 +1796,7 @@ module ZetaFsFreeze =
             let dropCount = mine.Length - n
 
             if dropCount <= 0 then
-                persistCatalog volume.StoreDir volume.KnownObjects volume.LivePins volume.History volume.FreezeBytesSinceReclaim volume.ObjectSets
+                persistCatalogBestEffort volume.StoreDir volume.KnownObjects volume.LivePins volume.History volume.FreezeBytesSinceReclaim volume.ObjectSets
             else
                 let kept = HashSet<ContentHash256>()
 
@@ -1700,7 +1809,7 @@ module ZetaFsFreeze =
                         if not (kept.Contains id) then
                             volume.LivePins.Remove id |> ignore
 
-                persistCatalog volume.StoreDir volume.KnownObjects volume.LivePins volume.History volume.FreezeBytesSinceReclaim volume.ObjectSets
+                persistCatalogBestEffort volume.StoreDir volume.KnownObjects volume.LivePins volume.History volume.FreezeBytesSinceReclaim volume.ObjectSets
 
     let private finish
         (volume: Volume)
@@ -1759,21 +1868,29 @@ module ZetaFsFreeze =
 
             match cls with
             | Buffered ->
+                let mutable putErr: FreezeError option = None
+
                 for kv in rope.Cas.Objects do
-                    putObject volume kv.Key kv.Value
+                    if putErr.IsNone then
+                        match putObject volume kv.Key kv.Value with
+                        | Error e -> putErr <- Some e
+                        | Ok() -> ()
 
-                let result =
-                    { Entity = entity
-                      Content = rope.Content
-                      Span = rope.Span
-                      Class = cls
-                      Generation = snap.Generation
-                      IntentLsn = 0L
-                      CommitLsn = 0L }
+                match putErr with
+                | Some e -> ValueTask<Result<FreezeResult, FreezeError>>(Error e)
+                | None ->
+                    let result =
+                        { Entity = entity
+                          Content = rope.Content
+                          Span = rope.Span
+                          Class = cls
+                          Generation = snap.Generation
+                          IntentLsn = 0L
+                          CommitLsn = 0L }
 
-                ValueTask<Result<FreezeResult, FreezeError>>(
-                    afterFreeze volume ct (Ok(noteFreeze volume rope.Span result))
-                )
+                    ValueTask<Result<FreezeResult, FreezeError>>(
+                        afterFreeze volume ct (Ok(noteFreeze volume rope.Span result))
+                    )
             | Journaled
             | Durable ->
                 let intentLsn, commitLsn =

@@ -1,0 +1,494 @@
+{
+  "Change": [
+    {
+      "Panel": "unchanged",
+      "KnownNull": {
+        "Alarms": 53,
+        "Rate": 0.02587890625,
+        "Wilson95": [
+          0.01983946574635757,
+          0.033693646350824655
+        ],
+        "Pre128": 18,
+        "Post128": 35,
+        "Post128Rate": 0.01708984375,
+        "Post128AtRiskRate": 0.017241379310344827,
+        "Misses": 1995,
+        "ConditionalDelayQuantiles": [
+          6.0,
+          81.0,
+          141.2,
+          184.0
+        ]
+      },
+      "WrongIidNull": {
+        "Alarms": 2048,
+        "Rate": 1.0,
+        "Wilson95": [
+          0.9981277993949387,
+          1.0
+        ],
+        "Pre128": 2046,
+        "Post128": 2,
+        "Post128Rate": 0.0009765625,
+        "Post128AtRiskRate": 1.0,
+        "Misses": 0,
+        "ConditionalDelayQuantiles": [
+          4.0,
+          28.5,
+          48.1,
+          53.0
+        ]
+      }
+    },
+    {
+      "Panel": "permanent-fair",
+      "KnownNull": {
+        "Alarms": 2048,
+        "Rate": 1.0,
+        "Wilson95": [
+          0.9981277993949387,
+          1.0
+        ],
+        "Pre128": 15,
+        "Post128": 2033,
+        "Post128Rate": 0.99267578125,
+        "Post128AtRiskRate": 1.0,
+        "Misses": 0,
+        "ConditionalDelayQuantiles": [
+          3.0,
+          29.0,
+          65.0,
+          208.0
+        ]
+      },
+      "WrongIidNull": {
+        "Alarms": 2044,
+        "Rate": 0.998046875,
+        "Wilson95": [
+          0.9949886488695355,
+          0.9992402138090165
+        ],
+        "Pre128": 2043,
+        "Post128": 1,
+        "Post128Rate": 0.00048828125,
+        "Post128AtRiskRate": 0.2,
+        "Misses": 4,
+        "ConditionalDelayQuantiles": [
+          1.0,
+          1.0,
+          1.0,
+          1.0
+        ]
+      }
+    },
+    {
+      "Panel": "permanent-anticopy",
+      "KnownNull": {
+        "Alarms": 2048,
+        "Rate": 1.0,
+        "Wilson95": [
+          0.9981277993949387,
+          1.0
+        ],
+        "Pre128": 21,
+        "Post128": 2027,
+        "Post128Rate": 0.98974609375,
+        "Post128AtRiskRate": 1.0,
+        "Misses": 0,
+        "ConditionalDelayQuantiles": [
+          3.0,
+          8.0,
+          15.0,
+          38.0
+        ]
+      },
+      "WrongIidNull": {
+        "Alarms": 2048,
+        "Rate": 1.0,
+        "Wilson95": [
+          0.9981277993949387,
+          1.0
+        ],
+        "Pre128": 2043,
+        "Post128": 5,
+        "Post128Rate": 0.00244140625,
+        "Post128AtRiskRate": 1.0,
+        "Misses": 0,
+        "ConditionalDelayQuantiles": [
+          16.0,
+          24.0,
+          68.4,
+          76.0
+        ]
+      }
+    },
+    {
+      "Panel": "transient-fair",
+      "KnownNull": {
+        "Alarms": 684,
+        "Rate": 0.333984375,
+        "Wilson95": [
+          0.3138857141908597,
+          0.35470466491628955
+        ],
+        "Pre128": 16,
+        "Post128": 668,
+        "Post128Rate": 0.326171875,
+        "Post128AtRiskRate": 0.328740157480315,
+        "Misses": 1364,
+        "ConditionalDelayQuantiles": [
+          1.0,
+          12.0,
+          22.0,
+          180.0
+        ]
+      },
+      "WrongIidNull": {
+        "Alarms": 2048,
+        "Rate": 1.0,
+        "Wilson95": [
+          0.9981277993949387,
+          1.0
+        ],
+        "Pre128": 2045,
+        "Post128": 3,
+        "Post128Rate": 0.00146484375,
+        "Post128AtRiskRate": 1.0,
+        "Misses": 0,
+        "ConditionalDelayQuantiles": [
+          23.0,
+          29.0,
+          33.0,
+          34.0
+        ]
+      }
+    }
+  ],
+  "Factors": [
+    {
+      "Model": "n2-e0.0-s41-Dense",
+      "NextKlBits": 0,
+      "MaximumStateError": 0,
+      "JointVsMarginalsKlBits": 1.9844291816667095e-17
+    },
+    {
+      "Model": "n2-e0.0-s41-TensorJoint",
+      "NextKlBits": 2.6078126064104596e-16,
+      "MaximumStateError": 2.220446049250313e-16,
+      "JointVsMarginalsKlBits": 1.9844291816667095e-17
+    },
+    {
+      "Model": "n2-e0.0-s41-ProjectedProduct",
+      "NextKlBits": 2.6883701446421774e-16,
+      "MaximumStateError": 3.3306690738754696e-16,
+      "JointVsMarginalsKlBits": 1.9844291816667095e-17
+    },
+    {
+      "Model": "n2-e0.0-s53-Dense",
+      "NextKlBits": 0,
+      "MaximumStateError": 0,
+      "JointVsMarginalsKlBits": 5.4514458185005656e-17
+    },
+    {
+      "Model": "n2-e0.0-s53-TensorJoint",
+      "NextKlBits": 2.1648943941556194e-16,
+      "MaximumStateError": 3.3306690738754696e-16,
+      "JointVsMarginalsKlBits": 5.4514458185005656e-17
+    },
+    {
+      "Model": "n2-e0.0-s53-ProjectedProduct",
+      "NextKlBits": 1.8005629617973681e-16,
+      "MaximumStateError": 3.3306690738754696e-16,
+      "JointVsMarginalsKlBits": 5.4514458185005656e-17
+    },
+    {
+      "Model": "n2-e0.0-s67-Dense",
+      "NextKlBits": 0,
+      "MaximumStateError": 0,
+      "JointVsMarginalsKlBits": 1.928170227911003e-17
+    },
+    {
+      "Model": "n2-e0.0-s67-TensorJoint",
+      "NextKlBits": 2.7795709200337386e-16,
+      "MaximumStateError": 2.220446049250313e-16,
+      "JointVsMarginalsKlBits": 1.928170227911003e-17
+    },
+    {
+      "Model": "n2-e0.0-s67-ProjectedProduct",
+      "NextKlBits": 2.541300717658282e-16,
+      "MaximumStateError": 3.3306690738754696e-16,
+      "JointVsMarginalsKlBits": 1.928170227911003e-17
+    },
+    {
+      "Model": "n2-e0.2-s41-Dense",
+      "NextKlBits": 0,
+      "MaximumStateError": 0,
+      "JointVsMarginalsKlBits": 0.10094330298549152
+    },
+    {
+      "Model": "n2-e0.2-s41-TensorJoint",
+      "NextKlBits": 1.8328917234516252e-16,
+      "MaximumStateError": 2.220446049250313e-16,
+      "JointVsMarginalsKlBits": 0.10094330298549152
+    },
+    {
+      "Model": "n2-e0.2-s41-ProjectedProduct",
+      "NextKlBits": 0.001146005359873194,
+      "MaximumStateError": 0.17952047943404303,
+      "JointVsMarginalsKlBits": 0.10094330298549152
+    },
+    {
+      "Model": "n2-e0.2-s53-Dense",
+      "NextKlBits": 0,
+      "MaximumStateError": 0,
+      "JointVsMarginalsKlBits": 0.08953363208390683
+    },
+    {
+      "Model": "n2-e0.2-s53-TensorJoint",
+      "NextKlBits": 1.878615149416593e-16,
+      "MaximumStateError": 3.3306690738754696e-16,
+      "JointVsMarginalsKlBits": 0.08953363208390683
+    },
+    {
+      "Model": "n2-e0.2-s53-ProjectedProduct",
+      "NextKlBits": 0.001013836527521785,
+      "MaximumStateError": 0.18040566224096105,
+      "JointVsMarginalsKlBits": 0.08953363208390683
+    },
+    {
+      "Model": "n2-e0.2-s67-Dense",
+      "NextKlBits": 0,
+      "MaximumStateError": 0,
+      "JointVsMarginalsKlBits": 0.10256007398431424
+    },
+    {
+      "Model": "n2-e0.2-s67-TensorJoint",
+      "NextKlBits": 1.9794556728862033e-16,
+      "MaximumStateError": 2.220446049250313e-16,
+      "JointVsMarginalsKlBits": 0.10256007398431424
+    },
+    {
+      "Model": "n2-e0.2-s67-ProjectedProduct",
+      "NextKlBits": 0.0011472130009195453,
+      "MaximumStateError": 0.18277423822081473,
+      "JointVsMarginalsKlBits": 0.10256007398431424
+    },
+    {
+      "Model": "n3-e0.0-s41-Dense",
+      "NextKlBits": 0,
+      "MaximumStateError": 0,
+      "JointVsMarginalsKlBits": 2.2701540135786398e-17
+    },
+    {
+      "Model": "n3-e0.0-s41-TensorJoint",
+      "NextKlBits": 1.1357909872987922e-16,
+      "MaximumStateError": 2.220446049250313e-16,
+      "JointVsMarginalsKlBits": 2.2701540135786398e-17
+    },
+    {
+      "Model": "n3-e0.0-s41-ProjectedProduct",
+      "NextKlBits": 1.3215249975393509e-16,
+      "MaximumStateError": 3.3306690738754696e-16,
+      "JointVsMarginalsKlBits": 2.2701540135786398e-17
+    },
+    {
+      "Model": "n3-e0.0-s53-Dense",
+      "NextKlBits": 0,
+      "MaximumStateError": 0,
+      "JointVsMarginalsKlBits": -9.936467261957668e-18
+    },
+    {
+      "Model": "n3-e0.0-s53-TensorJoint",
+      "NextKlBits": 1.6618519462232017e-16,
+      "MaximumStateError": 2.220446049250313e-16,
+      "JointVsMarginalsKlBits": -9.936467261957668e-18
+    },
+    {
+      "Model": "n3-e0.0-s53-ProjectedProduct",
+      "NextKlBits": 1.6069463724198e-16,
+      "MaximumStateError": 3.3306690738754696e-16,
+      "JointVsMarginalsKlBits": -9.936467261957668e-18
+    },
+    {
+      "Model": "n3-e0.0-s67-Dense",
+      "NextKlBits": 0,
+      "MaximumStateError": 0,
+      "JointVsMarginalsKlBits": -2.0039650315405334e-17
+    },
+    {
+      "Model": "n3-e0.0-s67-TensorJoint",
+      "NextKlBits": 1.4785603242812743e-16,
+      "MaximumStateError": 2.220446049250313e-16,
+      "JointVsMarginalsKlBits": -2.0039650315405334e-17
+    },
+    {
+      "Model": "n3-e0.0-s67-ProjectedProduct",
+      "NextKlBits": 1.398904775641935e-16,
+      "MaximumStateError": 3.3306690738754696e-16,
+      "JointVsMarginalsKlBits": -2.0039650315405334e-17
+    },
+    {
+      "Model": "n3-e0.2-s41-Dense",
+      "NextKlBits": 0,
+      "MaximumStateError": 0,
+      "JointVsMarginalsKlBits": 0.2205905365101179
+    },
+    {
+      "Model": "n3-e0.2-s41-TensorJoint",
+      "NextKlBits": 2.2145360867087725e-16,
+      "MaximumStateError": 2.220446049250313e-16,
+      "JointVsMarginalsKlBits": 0.2205905365101179
+    },
+    {
+      "Model": "n3-e0.2-s41-ProjectedProduct",
+      "NextKlBits": 0.0027531142250262442,
+      "MaximumStateError": 0.27708789805127754,
+      "JointVsMarginalsKlBits": 0.2205905365101179
+    },
+    {
+      "Model": "n3-e0.2-s53-Dense",
+      "NextKlBits": 0,
+      "MaximumStateError": 0,
+      "JointVsMarginalsKlBits": 0.22208911628487288
+    },
+    {
+      "Model": "n3-e0.2-s53-TensorJoint",
+      "NextKlBits": 2.480928880434656e-16,
+      "MaximumStateError": 2.220446049250313e-16,
+      "JointVsMarginalsKlBits": 0.22208911628487288
+    },
+    {
+      "Model": "n3-e0.2-s53-ProjectedProduct",
+      "NextKlBits": 0.0026807026458265976,
+      "MaximumStateError": 0.2979319527038452,
+      "JointVsMarginalsKlBits": 0.22208911628487288
+    },
+    {
+      "Model": "n3-e0.2-s67-Dense",
+      "NextKlBits": 0,
+      "MaximumStateError": 0,
+      "JointVsMarginalsKlBits": 0.22895278737451488
+    },
+    {
+      "Model": "n3-e0.2-s67-TensorJoint",
+      "NextKlBits": 2.047935281415758e-16,
+      "MaximumStateError": 2.220446049250313e-16,
+      "JointVsMarginalsKlBits": 0.22895278737451488
+    },
+    {
+      "Model": "n3-e0.2-s67-ProjectedProduct",
+      "NextKlBits": 0.0029396076056598225,
+      "MaximumStateError": 0.29596292533988366,
+      "JointVsMarginalsKlBits": 0.22895278737451488
+    },
+    {
+      "Model": "n4-e0.0-s41-Dense",
+      "NextKlBits": 0,
+      "MaximumStateError": 0,
+      "JointVsMarginalsKlBits": -1.8522734014880597e-17
+    },
+    {
+      "Model": "n4-e0.0-s41-TensorJoint",
+      "NextKlBits": 3.1871907342432873e-16,
+      "MaximumStateError": 2.220446049250313e-16,
+      "JointVsMarginalsKlBits": -1.8522734014880597e-17
+    },
+    {
+      "Model": "n4-e0.0-s41-ProjectedProduct",
+      "NextKlBits": 2.8774538319985214e-16,
+      "MaximumStateError": 3.3306690738754696e-16,
+      "JointVsMarginalsKlBits": -1.8522734014880597e-17
+    },
+    {
+      "Model": "n4-e0.0-s53-Dense",
+      "NextKlBits": 0,
+      "MaximumStateError": 0,
+      "JointVsMarginalsKlBits": 5.578109906291491e-17
+    },
+    {
+      "Model": "n4-e0.0-s53-TensorJoint",
+      "NextKlBits": 2.9093797532489253e-16,
+      "MaximumStateError": 3.3306690738754696e-16,
+      "JointVsMarginalsKlBits": 5.578109906291491e-17
+    },
+    {
+      "Model": "n4-e0.0-s53-ProjectedProduct",
+      "NextKlBits": 2.922930952232288e-16,
+      "MaximumStateError": 3.3306690738754696e-16,
+      "JointVsMarginalsKlBits": 5.578109906291491e-17
+    },
+    {
+      "Model": "n4-e0.0-s67-Dense",
+      "NextKlBits": 0,
+      "MaximumStateError": 0,
+      "JointVsMarginalsKlBits": 2.946018034387906e-17
+    },
+    {
+      "Model": "n4-e0.0-s67-TensorJoint",
+      "NextKlBits": 3.08152125989547e-16,
+      "MaximumStateError": 2.220446049250313e-16,
+      "JointVsMarginalsKlBits": 2.946018034387906e-17
+    },
+    {
+      "Model": "n4-e0.0-s67-ProjectedProduct",
+      "NextKlBits": 2.9309589538970076e-16,
+      "MaximumStateError": 4.440892098500626e-16,
+      "JointVsMarginalsKlBits": 2.946018034387906e-17
+    },
+    {
+      "Model": "n4-e0.2-s41-Dense",
+      "NextKlBits": 0,
+      "MaximumStateError": 0,
+      "JointVsMarginalsKlBits": 0.37542036690788094
+    },
+    {
+      "Model": "n4-e0.2-s41-TensorJoint",
+      "NextKlBits": 3.0556206386030667e-16,
+      "MaximumStateError": 3.3306690738754696e-16,
+      "JointVsMarginalsKlBits": 0.37542036690788094
+    },
+    {
+      "Model": "n4-e0.2-s41-ProjectedProduct",
+      "NextKlBits": 0.005206919724377848,
+      "MaximumStateError": 0.35552872854976,
+      "JointVsMarginalsKlBits": 0.37542036690788094
+    },
+    {
+      "Model": "n4-e0.2-s53-Dense",
+      "NextKlBits": 0,
+      "MaximumStateError": 0,
+      "JointVsMarginalsKlBits": 0.3690693494994246
+    },
+    {
+      "Model": "n4-e0.2-s53-TensorJoint",
+      "NextKlBits": 2.9878657596407485e-16,
+      "MaximumStateError": 2.220446049250313e-16,
+      "JointVsMarginalsKlBits": 0.3690693494994246
+    },
+    {
+      "Model": "n4-e0.2-s53-ProjectedProduct",
+      "NextKlBits": 0.005119060050065053,
+      "MaximumStateError": 0.3976940227062333,
+      "JointVsMarginalsKlBits": 0.3690693494994246
+    },
+    {
+      "Model": "n4-e0.2-s67-Dense",
+      "NextKlBits": 0,
+      "MaximumStateError": 0,
+      "JointVsMarginalsKlBits": 0.36470547030037953
+    },
+    {
+      "Model": "n4-e0.2-s67-TensorJoint",
+      "NextKlBits": 3.111183354809109e-16,
+      "MaximumStateError": 2.220446049250313e-16,
+      "JointVsMarginalsKlBits": 0.36470547030037953
+    },
+    {
+      "Model": "n4-e0.2-s67-ProjectedProduct",
+      "NextKlBits": 0.004952953564819512,
+      "MaximumStateError": 0.3494095632744177,
+      "JointVsMarginalsKlBits": 0.36470547030037953
+    }
+  ]
+}

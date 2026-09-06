@@ -1,0 +1,14 @@
+{
+  "id": "080d03beaaee9810a0130008e51e0a5b",
+  "at": "2026-09-06T17:47:47.027Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1VXAQEJ087G0R00325DJRS",
+    "type": "task",
+    "title": "first-boot bun consumes sourced bao names from env",
+    "slug": "first-boot-bun-consumes-sourced-bao-names-from-env",
+    "priority": "P2",
+    "filename": "081M1VXAQEJ087G0R00325DJRS-first-boot-bun-consumes-sourced-bao-names-from-env.md"
+  }
+}

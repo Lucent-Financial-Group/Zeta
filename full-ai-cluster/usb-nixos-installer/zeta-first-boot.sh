@@ -94,6 +94,24 @@ if [[ "${ZETA_ROLE}" == "joiner" ]]; then
   export ZETA_JOIN_TOKEN_ESP_PATH="${ZETA_JOIN_TOKEN_ESP_PATH:-}"
 fi
 export ZETA_ROLE
+# ── 081M1VZRST2087G0R001QEJDWG: named bao export ──────────────────
+#
+# zflash may have written ZETA_BAO_LOAD_SITE / ZETA_BAO_PATH into the
+# ESP conf this script already sourced. Sourced vars are not exported;
+# the child zeta-install would not see them. Both names or neither —
+# same all-or-none rule as cluster-segment addressing. bun/mise are
+# not on PATH until zeta-install Step 6.95a, so this script does not
+# invoke firstboot-bao-env.ts. Do not fill /run/current-system/sw/bin/bao.
+# /dev/tpmrm0 is shell-safe and may be exported; bun consume still
+# returns ask:null.
+if [[ -n "${ZETA_BAO_LOAD_SITE:-}" && -n "${ZETA_BAO_PATH:-}" ]]; then
+  export ZETA_BAO_LOAD_SITE ZETA_BAO_PATH
+  echo "[081M1VZRST2087G0R001QEJDWG-bao] exported site=${ZETA_BAO_LOAD_SITE} path=${ZETA_BAO_PATH}"
+elif [[ -n "${ZETA_BAO_LOAD_SITE:-}" || -n "${ZETA_BAO_PATH:-}" ]]; then
+  echo "[081M1VZRST2087G0R001QEJDWG-bao] WARN: one bao name without the other; unsetting both (does not fill host bao)" >&2
+  unset ZETA_BAO_LOAD_SITE ZETA_BAO_PATH
+fi
+# ── 081M1VZRST2087G0R001QEJDWG: end named bao export ──────────────
 REPO_URL="${REPO_URL:-https://github.com/Lucent-Financial-Group/Zeta}"
 ETHERNET_WAIT_SECS="${ETHERNET_WAIT_SECS:-30}"
 ROLE_PROMPT_SECS="${ROLE_PROMPT_SECS:-10}"

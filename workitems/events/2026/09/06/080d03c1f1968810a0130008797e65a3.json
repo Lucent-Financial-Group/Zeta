@@ -1,0 +1,14 @@
+{
+  "id": "080d03c1f1968810a0130008797e65a3",
+  "at": "2026-09-06T19:42:17.297Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1W3WCPG087G0R00217F66M",
+    "type": "task",
+    "title": "D10 documented mapping DurabilityMode to freeze class",
+    "slug": "d10-documented-mapping-durabilitymode-to-freeze-class",
+    "priority": "P2",
+    "filename": "081M1W3WCPG087G0R00217F66M-d10-documented-mapping-durabilitymode-to-freeze-class.md"
+  }
+}

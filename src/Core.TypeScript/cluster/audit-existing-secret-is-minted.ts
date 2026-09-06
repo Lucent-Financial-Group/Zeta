@@ -87,8 +87,19 @@ const APPLICATIONS_DIR = "full-ai-cluster/k8s/applications";
  * bare `name:` means a hundred things in a values file, and matching it would
  * convict half the tree. The same applies to `secretRef` (used by `envFrom`),
  * so both are recognised only in that position.
+ *
+ * WIDENED AGAIN 2026-09-06, `existingSecret` -> `existing<Anything>Secret`. seaweedfs names
+ * its Secret in `s3.existingConfigSecret`, and the old pattern did not match it -- the word
+ * is `existing`, then `Config`, then `Secret`, so "existingSecret" is not a substring. That
+ * reference was INVISIBLE to this audit: a chart naming an unminted Secret in that field
+ * would have passed silently, which is the exact failure this file exists to catch, in this
+ * file. Found because 081M1S6Z5S3087G0R000GEPSS2 made seaweedfs use that field and the
+ * roster then showed two references where three were expected.
+ *
+ * The widening is bounded on both sides -- it still requires the name to END in `Secret` and
+ * to contain `existing` -- so it does not start matching `secretsDir` or `secretEngine`.
  */
-const SECRET_NAME_KEY = /(^|\.)[A-Za-z]*([Ee]xistingSecret|[Ss]ecretName)$/;
+const SECRET_NAME_KEY = /(^|\.)[A-Za-z]*([Ee]xisting[A-Za-z]*Secret|[Ss]ecretName)$/;
 
 /** `...secretKeyRef.name` / `...secretRef.name` — the standard env-var forms. */
 const SECRET_REF_NAME_KEY = /(^|\.)(secretKeyRef|secretRef)(\.[0-9]+)?\.name$/;
@@ -258,10 +269,18 @@ export function auditExistingSecretIsMinted(mintedNames: ReadonlySet<string>, re
 async function main(): Promise<void> {
   // Imported lazily so the pure functions above stay testable without dragging
   // the dev-cluster port surface into every consumer.
-  const { DEV_BOOTSTRAP_SECRETS } = (await import("./dev-cluster/lib.ts")) as {
+  // BOTH ROSTERS. `DEV_SHARED_SECRETS` was added 2026-09-06 for a credential one producer and
+  // three consumers must agree on (081M1S6Z5S3087G0R000GEPSS2), and it mints Secrets exactly
+  // as the bootstrap roster does. Reading only the first roster would REFUSE a Secret the dev
+  // lane really does create -- a false accusation, which trains people to acknowledge things
+  // that were never wrong.
+  const { DEV_BOOTSTRAP_SECRETS, DEV_SHARED_SECRETS } = (await import("./dev-cluster/lib.ts")) as {
     DEV_BOOTSTRAP_SECRETS: readonly { readonly name: string }[];
+    DEV_SHARED_SECRETS: readonly { readonly name: string }[];
   };
-  const result = auditExistingSecretIsMinted(new Set(DEV_BOOTSTRAP_SECRETS.map((s) => s.name)));
+  const result = auditExistingSecretIsMinted(
+    new Set([...DEV_BOOTSTRAP_SECRETS, ...DEV_SHARED_SECRETS].map((s) => s.name)),
+  );
   process.stdout.write(`${formatReport(result)}\n`);
   process.exit(exitCode(result));
 }

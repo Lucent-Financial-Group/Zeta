@@ -197,6 +197,41 @@ assume the number.
    `--bao-path`. One without the other refuses. Does not
    fill `NIXOS_HOST_BAO`. Does not expand
    `ZetaFirstbootRole`. Does not edit `zeta-first-boot.sh`.
+   QEMU harness (`081M1VW190B087G0R003D4GWJF`):
+   `prepare-boot-image.ts` forwards those same flags.
+   One without the other refuses. Does not fill
+   `NIXOS_HOST_BAO`. Does not edit `zeta-first-boot.sh`.
+   First-boot env consume (`081M1VXAQEJ087G0R00325DJRS`):
+   `firstboot-bao-env.ts` reads sourced `ZETA_BAO_*` from
+   process env. Does not open files. Does not edit
+   `zeta-first-boot.sh`.
+   Bash pickup (`081M1VZRST2087G0R001QEJDWG`):
+   `zeta-first-boot.sh` exports both names or unsets both.
+   `zeta-install.sh` sed-parses both keys (both or neither)
+   for the manual path. Does not fill `NIXOS_HOST_BAO`.
+   Does not invoke bun (not on PATH until Step 6.95a).
+   `/dev/tpmrm0` may be exported; bun consume is still
+   not an ask. Does not expand `ZetaFirstbootRole`.
+   Post-6.95a bun consume (`081M1W1NCDT087G0R002H3VG6Y`):
+   `zeta-install.sh` invokes `firstboot-bao-env.ts` after
+   mise/bun exist. Does not invoke bun from
+   `zeta-first-boot.sh`. A null ask is not a seal.
+   Env join (`081M1W3BPCN087G0R001R97E45`):
+   `planSetupFromNamedBaoElfEnv` is the argv/conf sibling.
+   Sourced process env into the overlay plan. Injected
+   read — the installer ISO's current-system bao is not
+   metal option D. tpmrm0 is still not an ask. Does not
+   invent an integrate decision. Does not land the stanza.
+   Installer-iso epoch (`081M1W4XQH4087G0R000F69WYQ`):
+   `namedBaoElfAskAtEpoch`. `installer-iso` does not open
+   `NIXOS_HOST_BAO`. `installed-host` may. `/mnt` existing
+   does not pick the epoch. Does not fill a `/mnt/...`
+   path. Does not invent an integrate decision.
+   ISO bun names epoch (`081M1W6J9MH087G0R003VNMDDR`):
+   `zeta-install.sh` exports `ZETA_BAO_ELF_EPOCH='installer-iso'`
+   as a literal after 6.95a. Missing epoch is unmeasured, not
+   `installed-host`. `/mnt` is unknown, not `installer-iso`.
+   Does not invent an integrate decision.
 7. extraContainer sidecar — later, **same commit as the
    sidecar**, and only for the Shamir kind path until the
    emulator job replaces it. `valuesObject` only. Do not fork

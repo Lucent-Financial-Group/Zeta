@@ -1,0 +1,12 @@
+{
+  "pr_number": 16828,
+  "archive_path": "docs/history/pr-reviews/PR-16828-feat-creds-export-and-sed-parse-first-boot-bao-names.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-06T19:01:21.166Z",
+  "schema_version": "v1",
+  "commit_sha": "61e893a0d17d33bbe9565e281cb4f0abb3724910",
+  "title": "feat(creds): Export and sed-parse first-boot bao names",
+  "state": "MERGED",
+  "merged_at": "2026-09-06T19:00:41Z",
+  "head_ref": "cursor/firstboot-bao-bash-pickup-27c5"
+}

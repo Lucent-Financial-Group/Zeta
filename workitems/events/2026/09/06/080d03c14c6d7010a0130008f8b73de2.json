@@ -1,0 +1,14 @@
+{
+  "id": "080d03c14c6d7010a0130008f8b73de2",
+  "at": "2026-09-06T19:19:44.302Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1W2K3DD087G0R000XZTFV7",
+    "type": "task",
+    "title": "Repo split plan: specs, docs, formal analysis, and one repo per language",
+    "slug": "repo-split-plan-specs-docs-formal-analysis-and-one-repo-per",
+    "priority": "P2",
+    "filename": "081M1W2K3DD087G0R000XZTFV7-repo-split-plan-specs-docs-formal-analysis-and-one-repo-per.md"
+  }
+}

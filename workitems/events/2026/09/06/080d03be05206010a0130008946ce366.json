@@ -1,0 +1,14 @@
+{
+  "id": "080d03be05206010a0130008946ce366",
+  "at": "2026-09-06T17:25:08.748Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1VW190B087G0R003D4GWJF",
+    "type": "task",
+    "title": "prepare-boot-image names bao load site and path onto ESP",
+    "slug": "prepare-boot-image-names-bao-load-site-and-path-onto-esp",
+    "priority": "P2",
+    "filename": "081M1VW190B087G0R003D4GWJF-prepare-boot-image-names-bao-load-site-and-path-onto-esp.md"
+  }
+}

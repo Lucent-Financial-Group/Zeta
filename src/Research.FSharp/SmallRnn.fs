@@ -8,7 +8,7 @@ module SmallRnn =
     type Model = private { Alphabet: int; Hidden: int; Weights: float[] }
 
     // Flat row-major layout: recurrent, input, hidden bias, output, output bias.
-    let internal offsets a h = h * h, h * h + a * h, h * h + (a + 1) * h, h * h + (2 * a + 1) * h
+    let internal offsets a h = struct (h * h, h * h + a * h, h * h + (a + 1) * h, h * h + (2 * a + 1) * h)
     let internal parameterCount a h = h * h + (2 * a + 1) * h + a
     let alphabet model = model.Alphabet
     let width model = model.Hidden
@@ -29,7 +29,7 @@ module SmallRnn =
         else
             let rng = ResearchRandom.Stream seed
             let values = Array.zeroCreate (parameterCount alphabet hidden)
-            let input, bias, output, outputBias = offsets alphabet hidden
+            let struct (input, bias, output, outputBias) = offsets alphabet hidden
             let fill start finish scale =
                 for i in start .. finish - 1 do values.[i] <- (2.0 * rng.Next() - 1.0) * scale
             fill 0 input (sqrt (3.0 / float hidden))
@@ -44,7 +44,7 @@ module SmallRnn =
     let internal hiddenInto model (previous: float[]) previousOffset token (target: float[]) targetOffset =
         let h = model.Hidden
         let w = model.Weights
-        let input, bias, _, _ = offsets model.Alphabet h
+        let struct (input, bias, _, _) = offsets model.Alphabet h
         for i in 0 .. h - 1 do
             let mutable value = w.[bias + i] + w.[input + i * model.Alphabet + token]
             for j in 0 .. h - 1 do value <- value + w.[i * h + j] * previous.[previousOffset + j]
@@ -52,7 +52,7 @@ module SmallRnn =
 
     /// Keep the maximum separate from log(sum(exp(logit - maximum))) to avoid large-offset cancellation.
     let internal outputInto model (hidden: float[]) offset (probabilities: float[]) probabilityOffset =
-        let _, _, output, bias = offsets model.Alphabet model.Hidden
+        let struct (_, _, output, bias) = offsets model.Alphabet model.Hidden
         let mutable maximum = Double.NegativeInfinity
         for token in 0 .. model.Alphabet - 1 do
             let mutable value = model.Weights.[bias + token]
@@ -65,9 +65,9 @@ module SmallRnn =
             total <- total + Math.Exp(probabilities.[probabilityOffset + token] - maximum)
         for token in 0 .. model.Alphabet - 1 do
             probabilities.[probabilityOffset + token] <- Math.Exp(probabilities.[probabilityOffset + token] - maximum) / total
-        maximum, Math.Log total
+        struct (maximum, Math.Log total)
 
-    let internal afterUnchecked model tokens =
+    let internal afterUnchecked model (tokens: int[]) =
         let mutable state = Array.zeroCreate model.Hidden
         let mutable scratch = Array.zeroCreate model.Hidden
         for token in tokens do
@@ -105,13 +105,13 @@ module SmallRnn =
         let h = model.Hidden
         let w = model.Weights
         let a = model.Alphabet
-        let input, bias, output, outputBias = offsets a h
+        let struct (input, bias, output, outputBias) = offsets a h
         let states, probabilities = workspace.States, workspace.Probabilities
         let steps = tokens.Length - 1
         let mutable loss = 0.0
         for t in 0 .. steps - 1 do
             hiddenInto model states (t * h) tokens.[t] states ((t + 1) * h)
-            let maximum, logTotal = outputInto model states ((t + 1) * h) probabilities (t * a)
+            let struct (maximum, logTotal) = outputInto model states ((t + 1) * h) probabilities (t * a)
             let target = tokens.[t + 1]
             let mutable logit = w.[outputBias + target]
             for i in 0 .. h - 1 do logit <- logit + w.[output + target * h + i] * states.[(t + 1) * h + i]
