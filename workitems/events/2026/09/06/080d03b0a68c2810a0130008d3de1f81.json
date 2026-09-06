@@ -1,0 +1,14 @@
+{
+  "id": "080d03b0a68c2810a0130008d3de1f81",
+  "at": "2026-09-06T09:37:50.981Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1V19MC5087G0R002P2W9EK",
+    "type": "task",
+    "title": "frost-hardware-probe sees NixOS PKCS#11 path contracts; a driver is still not a device",
+    "slug": "frost-hardware-probe-sees-nixos-pkcs-11-path-contracts-a-dri",
+    "priority": "P2",
+    "filename": "081M1V19MC5087G0R002P2W9EK-frost-hardware-probe-sees-nixos-pkcs-11-path-contracts-a-dri.md"
+  }
+}

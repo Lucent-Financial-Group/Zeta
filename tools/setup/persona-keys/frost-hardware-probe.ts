@@ -246,6 +246,8 @@ export interface HardwareProbeResult {
  * smart card via OpenSC). NONE of these can drive a YubiHSM 2 — see
  * `YUBIHSM2_PKCS11_LIBRARY_PATHS` and the MATCHED PAIR section of the header.
  */
+import { NIXOS_PKCS11_MODULE_PATH } from "../../../src/Core.TypeScript/cluster/pkcs11-hostpath-overlay.ts";
+
 const PKCS11_LIBRARY_PATHS: readonly string[] = [
   "/usr/local/lib/ykcs11.dylib",
   "/opt/homebrew/lib/ykcs11.dylib",
@@ -253,6 +255,9 @@ const PKCS11_LIBRARY_PATHS: readonly string[] = [
   "/usr/lib/x86_64-linux-gnu/opensc-pkcs11.so",
   "/usr/lib/x86_64-linux-gnu/libykcs11.so",
   "/usr/lib/libykcs11.so",
+  // NixOS OpenSC / CardContact SmartCard-HSM. Exact contract from
+  // pkcs11-hostpath-overlay.ts. A DRIVER, not a device. Not yubihsm_pkcs11.
+  NIXOS_PKCS11_MODULE_PATH["smartcard-hsm"],
 ];
 
 /**
@@ -263,14 +268,19 @@ const PKCS11_LIBRARY_PATHS: readonly string[] = [
  * a YubiKey. One flat list would let the module for one device vouch for the presence of
  * the other.
  */
-const YUBIHSM2_PKCS11_LIBRARY_PATHS: readonly string[] = [
+export const YUBIHSM2_PKCS11_LIBRARY_PATHS: readonly string[] = [
   "/usr/local/lib/yubihsm_pkcs11.dylib",
   "/opt/homebrew/lib/yubihsm_pkcs11.dylib",
   "/usr/local/lib/pkcs11/yubihsm_pkcs11.dylib",
   "/usr/lib/x86_64-linux-gnu/pkcs11/yubihsm_pkcs11.so",
   "/usr/local/lib/pkcs11/yubihsm_pkcs11.so",
   "/usr/lib/pkcs11/yubihsm_pkcs11.so",
+  // NixOS fourth Linux path. Exact. Never a wildcard.
+  // 081M0B5V6Z5087G0R0026RANJ3 / overlay NIXOS_PKCS11_MODULE_PATH.yubihsm2.
+  NIXOS_PKCS11_MODULE_PATH.yubihsm2,
 ];
+
+export const PKCS11_TOKEN_LIBRARY_PATHS: readonly string[] = PKCS11_LIBRARY_PATHS;
 
 /** USB interface class 0x0B is "Smart Card" (USB-IF CCID). */
 const USB_CCID_INTERFACE_CLASS = "0b";

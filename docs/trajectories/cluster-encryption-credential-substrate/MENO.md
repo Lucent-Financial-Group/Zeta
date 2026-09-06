@@ -122,7 +122,7 @@ assume the number.
    not Shamir copy, not `OP_SESSION`, not a brand type in
    the volume. Host-only — not `zeta-host-creds` Secrets.
    SoftHSM CI is not this metal companion set.
-6. **PKCS#11 hostPath overlay planner** (this slice,
+6. **PKCS#11 hostPath overlay planner** (landed, #16776,
    `081M1TZH2PW087G0R0036F3S18`).
    `pkcs11-hostpath-overlay.ts`: volumes, mechanism pin,
    ABI. Today's Alpine `openbao-hsm` + NixOS glibc `.so`
@@ -134,6 +134,10 @@ assume the number.
    nixpkgs module stays `081M0B5V6Z5087G0R0026RANJ3`
    (sign-off). Seal stanza waits for same-libc image (or
    option D host `bao`) in the same commit as the stanza.
+   Probe path follow-on: `frost-hardware-probe.ts` now
+   looks at those exact NixOS contracts
+   (`081M1V19MC5087G0R002P2W9EK`); a `.so` on disk is
+   still a driver.
 7. extraContainer sidecar — later, **same commit as the
    sidecar**, and only for the Shamir kind path until the
    emulator job replaces it. `valuesObject` only. Do not fork
