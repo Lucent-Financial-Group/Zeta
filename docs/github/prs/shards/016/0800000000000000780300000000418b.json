@@ -1,0 +1,12 @@
+{
+  "pr_number": 16779,
+  "archive_path": "docs/history/pr-reviews/PR-16779-feat-creds-probe-the-exact-nixos-pkcs-11-paths-a-driver-is-still-not-a-device.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-06T10:08:17.003Z",
+  "schema_version": "v1",
+  "commit_sha": "15bbb82c8b620baa21825c75002a966d48e350ec",
+  "title": "feat(creds): Probe the exact NixOS PKCS#11 paths; a driver is still not a device",
+  "state": "MERGED",
+  "merged_at": "2026-09-06T10:07:38Z",
+  "head_ref": "cursor/nixos-pkcs11-probe-path-27c5"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 16777,
+  "archive_path": "docs/history/pr-reviews/PR-16777-feat-research-measure-a-native-learned-predictive-state-on-mess3.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-06T09:53:19.123Z",
+  "schema_version": "v1",
+  "commit_sha": "42981a03136623d00a703ef279da6208b7ed4af1",
+  "title": "feat(research): measure a native learned predictive state on Mess3",
+  "state": "MERGED",
+  "merged_at": "2026-09-06T09:52:44Z",
+  "head_ref": "codex/simplex-trained-belief"
+}
