@@ -214,16 +214,19 @@ opening any other path is not this companion.
 Load-site / ELF (`081M1VB58YS087G0R001G1RSXW`): captured
 `PT_INTERP` classifies musl vs glibc. Option D host `bao`
 is a named site; host HCL is not a chart seal. A glibc
-CI tarball on disk is not the chart image. No live
-`readelf`.
+CI tarball on disk is not the chart image.
+
+Installer bytes (`081M1VDMK7R087G0R0038GVG66`):
+`ptInterpFromElfBytes` plus `captureBaoElfFromRead`.
+No `readelf`. Overlay still does not open a filesystem.
 
 1. Metal: `seal "pkcs11"` in Application.yaml still waits.
    Same commit as a **reachable** module: same-libc image
    (glibc OpenBao that can load the host `.so`) or option D
    host `bao`. Dual-vendor per node is ZetaFS k-of-n, not
    two active OpenBao seals. Do not treat this planner as
-   that commit. Live `readelf` of a candidate `bao` lives
-   in installer/first-boot, not in the classifier.
+   that commit. First-boot still has to pass a named site
+   plus a bao path into `captureBaoElfFromRead`.
 2. extraContainer Shamir sidecar (`valuesObject` only) until
    kind/CI consume the emulator init.
 

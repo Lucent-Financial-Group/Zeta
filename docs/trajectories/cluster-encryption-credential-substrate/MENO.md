@@ -165,7 +165,9 @@ assume the number.
    host `bao` is a named site that may emit host HCL and
    still cannot edit Application.yaml. A glibc CI tarball
    on disk is not the chart image. `/dev/tpmrm0` does not
-   pick on-host. No live `readelf`.
+   pick on-host. Bytes follow-on (`081M1VDMK7R087G0R0038GVG66`):
+   installer parses `PT_INTERP` from injected ELF bytes.
+   No `readelf`. Overlay still does not open a filesystem.
 7. extraContainer sidecar — later, **same commit as the
    sidecar**, and only for the Shamir kind path until the
    emulator job replaces it. `valuesObject` only. Do not fork

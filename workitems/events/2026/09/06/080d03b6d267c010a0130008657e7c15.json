@@ -1,0 +1,14 @@
+{
+  "id": "080d03b6d267c010a0130008657e7c15",
+  "at": "2026-09-06T13:13:33.176Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1VDMK7R087G0R0038GVG66",
+    "type": "task",
+    "title": "Parse bao PT_INTERP from injected ELF bytes; still not a seal",
+    "slug": "parse-bao-pt-interp-from-injected-elf-bytes-still-not-a-seal",
+    "priority": "P2",
+    "filename": "081M1VDMK7R087G0R0038GVG66-parse-bao-pt-interp-from-injected-elf-bytes-still-not-a-seal.md"
+  }
+}
