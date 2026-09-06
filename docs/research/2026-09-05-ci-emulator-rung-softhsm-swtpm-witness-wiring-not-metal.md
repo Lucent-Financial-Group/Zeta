@@ -175,25 +175,22 @@ no-op (same as `zeta.tpm2Seal.mode = "off"`). Do not set
 Classifier: `src/Core.TypeScript/cluster/host-seal-profile.ts`.
 Nix model: `full-ai-cluster/nixos/modules/host-seal-model.nix`.
 
-## Next slices (after off-cluster bao PKCS#11 init)
+## Next slices (after USB HSM-talk companions)
 
-The 2×2 install job is `081M1TS32Y3087G0R0026Y21F5`
-(`.github/workflows/seal-emulator-install.yml`). Off-cluster
-`bao operator init` against SoftHSM is
-`081M1TV43F6087G0R0008QFTKM`
-(`.github/workflows/seal-emulator-bao.yml`): glibc
-`openbao-hsm` 2.6.2 + `pkcs11-tool` AES wrap key, PIN via
-`BAO_HSM_PIN`, recovery keys, zero Shamir unseal keys.
+The 2×2 install job is `081M1TS32Y3087G0R0026Y21F5`.
+Off-cluster `bao operator init` is `081M1TV43F6087G0R0008QFTKM`.
+USB `--bake-cred` companions are `081M1TX6CV6087G0R002GZEXMP`
+(`usb-hsm-companion.ts`): module path, connector config,
+authkey *reference*, domain map, OpenBao env *name*. PIN /
+Shamir / `OP_SESSION` / brand-type refuse as originals.
 Application.yaml stays Shamir. SoftHSM green is not
 YubiHSM green.
 
-1. USB `--bake-cred` grows the companion kinds. PIN stays a
-   reference.
-2. Metal: `seal "pkcs11"` + device mount, mechanism pinned per
+1. Metal: `seal "pkcs11"` + device mount, mechanism pinned per
    oracle. Dual-vendor per node is ZetaFS k-of-n, not two
    active OpenBao seals. Same commit as a module in the
    image or a hostPath overlay.
-3. extraContainer Shamir sidecar (`valuesObject` only) until
+2. extraContainer Shamir sidecar (`valuesObject` only) until
    kind/CI consume the emulator init.
 
 ## Setup-time detect; TPM auto-unseal; Lucent as a peer path (Aaron 2026-09-06)

@@ -234,14 +234,19 @@ describe("SSH_HOST_KEYS_HANDLER (Phase 1 deferred)", () => {
 });
 
 describe("DEFAULT_HANDLERS registry", () => {
-  it("registers all 8 default manifest entries", () => {
+  it("registers CLI creds plus HSM-talk companions", () => {
     expect(Object.keys(DEFAULT_HANDLERS).sort()).toEqual(
       [
+        "authkey-reference",
         "claude",
         "codex",
+        "connector-config",
+        "domain-map",
         "gemini",
         "gh-cli",
         "install-answers",
+        "openbao-seal-env-pointer",
+        "pkcs11-module-path",
         "ssh-host-keys",
         "ssh-operator-pubkey",
         "wifi",

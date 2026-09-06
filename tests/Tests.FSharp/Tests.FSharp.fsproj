@@ -491,6 +491,7 @@
     <Compile Include="SplitMix64.CrossVerify.Tests.fs" />
     <Compile Include="ContextualGridBenchmark.Tests.fs" />
     <Compile Include="ContextualGridResultReceipt.Tests.fs" />
+    <Compile Include="MiniGridEmpty5x5Adapter.Tests.fs" />
     <Compile Include="RendezvousHash.CrossVerify.Tests.fs" />
     <Compile Include="Crc32c.CrossVerify.Tests.fs" />
     <Compile Include="FastCdc.CrossVerify.Tests.fs" />

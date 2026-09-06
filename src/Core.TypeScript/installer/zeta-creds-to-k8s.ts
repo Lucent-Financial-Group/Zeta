@@ -8,9 +8,9 @@
 // (host files → namespaced Opaque Secrets) so future agent pods do not wait
 // on an unsealed Vault.
 //
-// Allowlist is load-bearing. WiFi, SSH host keys, operator pubkey, and
-// install-answers stay on the host. A new DEFAULT_MANIFEST id without a
-// classification fails the lock test.
+// Allowlist is load-bearing. WiFi, SSH host keys, operator pubkey,
+// install-answers, and USB HSM-talk companions stay on the host. A new
+// DEFAULT_MANIFEST id without a classification fails the lock test.
 //
 // Usage:
 //   bun src/Core.TypeScript/installer/zeta-creds-to-k8s.ts \
@@ -32,6 +32,7 @@
 import { spawnSync } from "node:child_process";
 import { readFileSync } from "node:fs";
 import { basename, join } from "node:path";
+import { USB_HSM_COMPANION } from "../cluster/seal-emulator-rung.ts";
 import { DEFAULT_MANIFEST, type CredentialEntry } from "./zeta-creds-manifest";
 
 /** Harness / AI-login creds agent pods actually need. */
@@ -43,6 +44,7 @@ export const HOST_ONLY_CRED_IDS: readonly string[] = [
   "ssh-operator-pubkey",
   "wifi",
   "install-answers",
+  ...USB_HSM_COMPANION,
 ];
 
 export const DEFAULT_NAMESPACE = "zeta-host-creds";
@@ -251,9 +253,7 @@ export function planHostCredDocuments(opts: {
   const namespace = opts.namespace ?? DEFAULT_NAMESPACE;
   const persona = opts.persona ?? null;
   const collected =
-    opts.files !== undefined
-      ? { files: opts.files, skipped: opts.skipped ?? [] }
-      : collectRestoredFiles(opts.home);
+    opts.files !== undefined ? { files: opts.files, skipped: opts.skipped ?? [] } : collectRestoredFiles(opts.home);
   const secrets = collected.files.map((file) => secretObject(file, namespace, persona));
   const documents = [...scaffolding(namespace), ...secrets];
   return {
@@ -365,7 +365,9 @@ export function kubectlEffects(k3sBin: string, kubeconfig: string): ClusterEffec
 }
 
 /** Exported for tests that assert the lock against DEFAULT_MANIFEST. */
-export function unclassifiedManifestIds(manifest: { readonly credentials: readonly CredentialEntry[] }): readonly string[] {
+export function unclassifiedManifestIds(manifest: {
+  readonly credentials: readonly CredentialEntry[];
+}): readonly string[] {
   return manifest.credentials.map((c) => c.id).filter((id) => classifyCredId(id) === "unclassified");
 }
 

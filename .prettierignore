@@ -72,6 +72,13 @@ docs/research/data/2026-09-06-contextual-grid-v1-reflect-x-evaluator-catalogue.j
 docs/research/data/2026-09-06-contextual-grid-v1-reflect-x-100-seed-fsharp.json
 docs/research/data/2026-09-06-contextual-grid-v1-reflect-x-100-seed-python.json
 
+# MiniGrid adapter carrier: both independent conformance implementations check
+# this immutable source/runtime/action/witness manifest by raw SHA-256 before
+# a trace runs. Formatting is therefore an identity mutation, not a style fix.
+docs/research/data/2026-09-06-minigrid-empty-5x5-v310-adapter-carrier.json
+docs/research/data/2026-09-06-minigrid-empty-5x5-v310-adapter-fsharp.json
+docs/research/data/2026-09-06-minigrid-empty-5x5-v310-adapter-python.json
+
 # VERBATIM COPIES OF GIT HISTORY. The four pre-fix `Application.yaml` files under
 # `testdata/inert-valuesobject-history/` are byte-for-byte `git show <sha>:<path>`
 # output, and `inert-valuesobject-keys.test.ts` re-verifies them against those very

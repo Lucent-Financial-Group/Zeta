@@ -417,9 +417,10 @@ domain map, OpenBao seal env pointer. Forbidden as originals:
 PIN plaintext, Shamir shares, `OP_SESSION`, a brand type in the
 ZetaFS volume. Classifier:
 `src/Core.TypeScript/cluster/seal-emulator-rung.ts`. Sibling:
-`cluster-encryption-credential-substrate`. `--bake-cred` remains
-PLACEHOLDER; this names what the flag must grow, it does not
-implement it. SoftHSM2 in CI does **not** replace this metal
+`cluster-encryption-credential-substrate`. `--bake-cred` now
+accepts the five companion kinds
+(`081M1TX6CV6087G0R002GZEXMP`); PIN stays an env-name
+reference. SoftHSM2 in CI does **not** replace this metal
 companion set. NixOS `zeta.hostSeal.boxRole = "prod-metal"`
 is how a repaired box declares automatic rotation (HSM or
 TPM PKCS#11); FIDO / biometric stay developer-only. The

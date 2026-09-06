@@ -1,0 +1,106 @@
+{
+  "schemaVersion": "zeta.minigrid-empty-5x5-adapter/v1",
+  "upstream": {
+    "owner": "Farama-Foundation",
+    "repository": "Minigrid",
+    "tag": "v3.1.0",
+    "commit": "90928729376741a41222a257911343b97103b548",
+    "license": "Apache-2.0",
+    "sourceFiles": [
+      {
+        "path": "minigrid/envs/empty.py",
+        "sha256": "9daabf330a51023f5fe2a8884b9b6b26482ee489cbee68604712271e818e5ae6"
+      },
+      {
+        "path": "minigrid/minigrid_env.py",
+        "sha256": "23490887fbaadd8f4973b4375cd40a23b7636e7aedf59561f767315c36cd0371"
+      },
+      {
+        "path": "minigrid/core/actions.py",
+        "sha256": "787274f08bc91a76dba83b322ff5ee8fdb8ea7843cb706a1b5371029ac234e28"
+      },
+      {
+        "path": "minigrid/core/constants.py",
+        "sha256": "5e82c8765064461001b8a5e07b2c5f693ce65297418755a11d7917dacbd204ac"
+      }
+    ]
+  },
+  "fixtureRuntime": {
+    "python": "3.14.6",
+    "minigrid": "3.1.0",
+    "gymnasium": "1.3.0",
+    "numpy": "2.5.1",
+    "pygameCe": "2.5.8"
+  },
+  "environment": {
+    "id": "MiniGrid-Empty-5x5-v0",
+    "registryKwargs": { "size": 5 },
+    "maxSteps": 100,
+    "world": "empty-5x5/walls+green-goal@3,3",
+    "initialPosition": [1, 1],
+    "initialDirection": 0,
+    "goalPosition": [3, 3]
+  },
+  "stateProjection": "static-world-pose/v1",
+  "actions": [
+    { "name": "left", "integer": 0 },
+    { "name": "right", "integer": 1 },
+    { "name": "forward", "integer": 2 }
+  ],
+  "resetObservationDigest": "bbb0d1c0527b767dd4b926b057e3a1a1c3977b0ca5d6417ff6c36faa15bc4b6d",
+  "witness": {
+    "seeds": [42, 43],
+    "steps": [
+      {
+        "action": "forward",
+        "integer": 2,
+        "position": [2, 1],
+        "direction": 0,
+        "rewardBinary64Bits": "0000000000000000",
+        "rewardPpm": 0,
+        "terminated": false,
+        "truncated": false
+      },
+      {
+        "action": "forward",
+        "integer": 2,
+        "position": [3, 1],
+        "direction": 0,
+        "rewardBinary64Bits": "0000000000000000",
+        "rewardPpm": 0,
+        "terminated": false,
+        "truncated": false
+      },
+      {
+        "action": "right",
+        "integer": 1,
+        "position": [3, 1],
+        "direction": 1,
+        "rewardBinary64Bits": "0000000000000000",
+        "rewardPpm": 0,
+        "terminated": false,
+        "truncated": false
+      },
+      {
+        "action": "forward",
+        "integer": 2,
+        "position": [3, 2],
+        "direction": 1,
+        "rewardBinary64Bits": "0000000000000000",
+        "rewardPpm": 0,
+        "terminated": false,
+        "truncated": false
+      },
+      {
+        "action": "forward",
+        "integer": 2,
+        "position": [3, 3],
+        "direction": 1,
+        "rewardBinary64Bits": "3fee8f5c28f5c28f",
+        "rewardPpm": 955000,
+        "terminated": true,
+        "truncated": false
+      }
+    ]
+  }
+}

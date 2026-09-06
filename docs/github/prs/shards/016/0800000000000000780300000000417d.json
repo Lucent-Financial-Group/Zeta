@@ -1,0 +1,12 @@
+{
+  "pr_number": 16765,
+  "archive_path": "docs/history/pr-reviews/PR-16765-docs-benchmark-freeze-minigrid-adapter-boundary.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-06T07:35:37.870Z",
+  "schema_version": "v1",
+  "commit_sha": "520dc6bebc20025fa78541fcf43a819c62daab0e",
+  "title": "docs(benchmark): freeze MiniGrid adapter boundary",
+  "state": "MERGED",
+  "merged_at": "2026-09-06T07:34:59Z",
+  "head_ref": "lumen/minigrid-v310-source-audit"
+}
