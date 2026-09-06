@@ -1,0 +1,1 @@
+{"actions":["north","east","south","west"],"goal":[0,0],"heldOutStart":[4,4],"nonterminalRewardPpm":-40000,"terminalRewardPpm":2000000,"trainingStart":[4,0],"transitionVersion":"zeta.contextual-grid/v1-reflect-x"}

@@ -20,6 +20,23 @@ def test_repository_carriers_match_the_frozen_fingerprints() -> None:
     oracle.verify_repository_carriers(_repo_root())
 
 
+def test_reflected_carrier_is_separately_admitted_and_refuses_v1_catalogue() -> None:
+    carrier = oracle.load_verified_carrier(_repo_root(), "v1-reflect-x")
+    assert carrier.training_start == (4, 0)
+    assert carrier.held_out_start == (4, 4)
+    assert carrier.goal == (0, 0)
+    with pytest.raises(ValueError, match="CatalogueFingerprintMismatch"):
+        oracle.run_for_carrier(
+            carrier,
+            carrier.environment_fingerprint,
+            oracle.EVALUATOR_CATALOGUE_FINGERPRINT,
+            "count-first/v1",
+            100,
+            12,
+            20,
+        )
+
+
 def test_splitmix64_seed_zero_matches_the_declared_stream_vectors() -> None:
     vectors_path = (
         _repo_root()

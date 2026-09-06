@@ -5,6 +5,7 @@ open System.Globalization
 open System.IO
 open System.Security.Cryptography
 open System.Text
+open System.Text.Json
 
 /// A finite, deterministic contextual-grid benchmark carrier.
 ///
@@ -51,6 +52,22 @@ module ContextualGridBenchmark =
         | UnknownFingerprint of supplied: string
         | CatalogueFingerprintMismatch of supplied: string
 
+    type CarrierId =
+        | V1
+        | ReflectX
+
+    type Carrier =
+        { Id: CarrierId
+          EnvironmentFingerprint: string
+          EvaluatorCatalogueFingerprint: string
+          EnvironmentManifestRelativePath: string
+          EvaluatorCatalogueRelativePath: string
+          TrainingStart: Position
+          HeldOutStart: Position
+          Goal: Position
+          NonterminalRewardPpm: int
+          TerminalRewardPpm: int }
+
     type Stream =
         { State: uint64
           Draws: int }
@@ -85,6 +102,24 @@ module ContextualGridBenchmark =
         | South -> "south"
         | West -> "west"
 
+    let private reflectedEnvironmentFingerprint = "7477bb597b44805212e7202751ad4988dcae81e4c22e418f7f892cb1c35a1d5a"
+    let private reflectedEvaluatorCatalogueFingerprint = "1872f54a6fce5f54e3a52456c443012e01c71a8cce33515ef28fb07465da39d7"
+    let private reflectedEnvironmentManifestRelativePath = "docs/research/data/2026-09-06-contextual-grid-v1-reflect-x-manifest.json"
+    let private reflectedEvaluatorCatalogueRelativePath = "docs/research/data/2026-09-06-contextual-grid-v1-reflect-x-evaluator-catalogue.json"
+    let private canonicalActionNames = [ "north"; "east"; "south"; "west" ]
+
+    let private v1Carrier =
+        { Id = V1
+          EnvironmentFingerprint = EnvironmentFingerprint
+          EvaluatorCatalogueFingerprint = EvaluatorCatalogueFingerprint
+          EnvironmentManifestRelativePath = EnvironmentManifestRelativePath
+          EvaluatorCatalogueRelativePath = EvaluatorCatalogueRelativePath
+          TrainingStart = trainingStart
+          HeldOutStart = heldOutStart
+          Goal = goal
+          NonterminalRewardPpm = nonterminalRewardPpm
+          TerminalRewardPpm = terminalRewardPpm }
+
     let private policyName policy =
         match policy with
         | UniformRandom -> "uniform-random/v1"
@@ -106,19 +141,88 @@ module ContextualGridBenchmark =
             let actual = File.ReadAllBytes path |> sha256Hex
             if actual = expected then Ok() else Error(sprintf "carrier hash mismatch for %s: %s" relativePath actual)
 
+    let private parsePosition (property: JsonElement) =
+        let values = property.EnumerateArray() |> Seq.toList
+        match values with
+        | [ x; y ] -> { X = x.GetInt32(); Y = y.GetInt32() }
+        | _ -> failwith "carrier position must be a two-element coordinate"
+
+    let private metadata carrierId =
+        match carrierId with
+        | V1 ->
+            EnvironmentFingerprint,
+            EvaluatorCatalogueFingerprint,
+            EnvironmentManifestRelativePath,
+            EvaluatorCatalogueRelativePath,
+            "zeta.contextual-grid/v1",
+            "zeta.contextual-grid/evaluators/v1"
+        | ReflectX ->
+            reflectedEnvironmentFingerprint,
+            reflectedEvaluatorCatalogueFingerprint,
+            reflectedEnvironmentManifestRelativePath,
+            reflectedEvaluatorCatalogueRelativePath,
+            "zeta.contextual-grid/v1-reflect-x",
+            "zeta.contextual-grid/evaluators/v1-reflect-x"
+
+    /// Loads a carrier only after its two raw-byte identities and their explicit
+    /// environment binding are verified. Equivalent parsed JSON is insufficient.
+    let loadVerifiedCarrier repositoryRoot carrierId : Result<Carrier, string> =
+        let environmentFingerprint, catalogueFingerprint, environmentPath, cataloguePath, transitionVersion, catalogueVersion = metadata carrierId
+        match verifyFile repositoryRoot environmentPath environmentFingerprint with
+        | Error failure -> Error failure
+        | Ok() ->
+            match verifyFile repositoryRoot cataloguePath catalogueFingerprint with
+            | Error failure -> Error failure
+            | Ok() ->
+                try
+                    let environmentBytes = File.ReadAllBytes(Path.Combine(repositoryRoot, environmentPath.Replace('/', Path.DirectorySeparatorChar)))
+                    let catalogueBytes = File.ReadAllBytes(Path.Combine(repositoryRoot, cataloguePath.Replace('/', Path.DirectorySeparatorChar)))
+                    use environment = JsonDocument.Parse environmentBytes
+                    use catalogue = JsonDocument.Parse catalogueBytes
+                    let root = environment.RootElement
+                    let actionNames = root.GetProperty("actions").EnumerateArray() |> Seq.map (fun value -> value.GetString()) |> Seq.toList
+                    let catalogueEntries = catalogue.RootElement.GetProperty("entries").EnumerateArray() |> Seq.map (fun value -> value.GetString()) |> Seq.toList
+                    if actionNames <> canonicalActionNames then
+                        Error "carrier action order is not the declared canonical order"
+                    elif root.GetProperty("transitionVersion").GetString() <> transitionVersion then
+                        Error "carrier transition version does not match selected identity"
+                    elif catalogue.RootElement.GetProperty("catalogueVersion").GetString() <> catalogueVersion then
+                        Error "carrier catalogue version does not match selected identity"
+                    elif catalogue.RootElement.GetProperty("environmentFingerprint").GetString() <> environmentFingerprint then
+                        Error "carrier catalogue is not bound to the selected environment fingerprint"
+                    elif catalogueEntries <> [ "external-return/v1"; "state-action-count/v1"; "q-epsilon/v1"; "q-ucb/v1"; "count-first/v1" ] then
+                        Error "carrier evaluator entries are not the declared canonical catalogue"
+                    else
+                        Ok
+                            { Id = carrierId
+                              EnvironmentFingerprint = environmentFingerprint
+                              EvaluatorCatalogueFingerprint = catalogueFingerprint
+                              EnvironmentManifestRelativePath = environmentPath
+                              EvaluatorCatalogueRelativePath = cataloguePath
+                              TrainingStart = parsePosition (root.GetProperty("trainingStart"))
+                              HeldOutStart = parsePosition (root.GetProperty("heldOutStart"))
+                              Goal = parsePosition (root.GetProperty("goal"))
+                              NonterminalRewardPpm = root.GetProperty("nonterminalRewardPpm").GetInt32()
+                              TerminalRewardPpm = root.GetProperty("terminalRewardPpm").GetInt32() }
+                with error -> Error(sprintf "carrier parse failure: %s" error.Message)
+
     /// Verifies exact raw carrier bytes. Parsing equivalent JSON is intentionally insufficient.
     let verifyRepositoryCarriers (repositoryRoot: string) : Result<unit, string> =
         match verifyFile repositoryRoot EnvironmentManifestRelativePath EnvironmentFingerprint with
         | Error failure -> Error failure
         | Ok() -> verifyFile repositoryRoot EvaluatorCatalogueRelativePath EvaluatorCatalogueFingerprint
 
-    let admit environmentFingerprint evaluatorCatalogueFingerprint : Result<unit, AdmissionFailure> =
-        if environmentFingerprint <> EnvironmentFingerprint then
+    let private admitCarrier carrier environmentFingerprint evaluatorCatalogueFingerprint : Result<unit, AdmissionFailure> =
+        if environmentFingerprint <> carrier.EnvironmentFingerprint then
             Error(UnknownFingerprint environmentFingerprint)
-        elif evaluatorCatalogueFingerprint <> EvaluatorCatalogueFingerprint then
+        elif evaluatorCatalogueFingerprint <> carrier.EvaluatorCatalogueFingerprint then
             Error(CatalogueFingerprintMismatch evaluatorCatalogueFingerprint)
         else
             Ok()
+
+    /// Retained v1 admission wrapper for existing callers and regression receipts.
+    let admit environmentFingerprint evaluatorCatalogueFingerprint : Result<unit, AdmissionFailure> =
+        admitCarrier v1Carrier environmentFingerprint evaluatorCatalogueFingerprint
 
     /// Benchmark-local stateful SplitMix64 stream. It reuses the repository's
     /// published constants but deliberately does not claim that the stateless
@@ -179,7 +283,7 @@ module ContextualGridBenchmark =
                 candidates.[index], next
         | CountFirst -> minimumCountAction counts position stream
 
-    let private transition position action =
+    let private transition carrier position action =
         let dx, dy =
             match action with
             | North -> 0, -1
@@ -189,14 +293,14 @@ module ContextualGridBenchmark =
         let attempted = { X = position.X + dx; Y = position.Y + dy }
         let next =
             if attempted.X < 0 || attempted.X > 4 || attempted.Y < 0 || attempted.Y > 4 then position else attempted
-        if next = goal then next, terminalRewardPpm, true else next, nonterminalRewardPpm, false
+        if next = carrier.Goal then next, carrier.TerminalRewardPpm, true else next, carrier.NonterminalRewardPpm, false
 
     let private maxNextQ q position = actions |> List.map (fun action -> qValue q (position, action)) |> List.max
 
     /// Computes the finite-horizon, undiscounted held-out return directly from
     /// the declared transition/reward table. It does not inspect a learned Q
     /// table and therefore remains an external denominator for suboptimality.
-    let optimalHeldOutReturn actionCap =
+    let optimalHeldOutReturnFor carrier actionCap =
         if actionCap < 0 then invalidArg "actionCap" "actionCap must be non-negative"
         let positions =
             [ for y in 0 .. 4 do
@@ -210,12 +314,15 @@ module ContextualGridBenchmark =
                     let best =
                         actions
                         |> List.map (fun action ->
-                            let next, reward, terminal = transition position action
+                            let next, reward, terminal = transition carrier position action
                             reward + if terminal then 0 else Map.find next previous)
                         |> List.max
                     position, best)
                 |> Map.ofList
-        Map.find heldOutStart previous
+        Map.find carrier.HeldOutStart previous
+
+    /// Retained v1 dynamic-programming denominator for existing result receipts.
+    let optimalHeldOutReturn actionCap = optimalHeldOutReturnFor v1Carrier actionCap
 
     let private floatBits (value: float) =
         BitConverter.DoubleToInt64Bits value
@@ -243,7 +350,8 @@ module ContextualGridBenchmark =
               string reward
               string countBefore ]
 
-    let run
+    let runForCarrier
+        carrier
         environmentFingerprint
         evaluatorCatalogueFingerprint
         policy
@@ -251,7 +359,7 @@ module ContextualGridBenchmark =
         episodes
         actionCap
         : Result<RunReceipt, AdmissionFailure> =
-        match admit environmentFingerprint evaluatorCatalogueFingerprint with
+        match admitCarrier carrier environmentFingerprint evaluatorCatalogueFingerprint with
         | Error failure -> Error failure
         | Ok() ->
             if episodes < 0 then invalidArg "episodes" "episodes must be non-negative"
@@ -269,7 +377,7 @@ module ContextualGridBenchmark =
             let mutable trainingTraceRev: string list = []
 
             for episode in 1 .. episodes do
-                let mutable position = trainingStart
+                let mutable position = carrier.TrainingStart
                 let mutable step = 0
                 let mutable terminal = false
                 visitedStates <- Set.add position visitedStates
@@ -281,7 +389,7 @@ module ContextualGridBenchmark =
                     let countBefore = countValue counts key
                     noveltySum <- noveltySum + 1.0 / sqrt (1.0 + float countBefore)
                     noveltyCount <- noveltyCount + 1
-                    let nextPosition, reward, reachedGoal = transition position action
+                    let nextPosition, reward, reachedGoal = transition carrier position action
                     trainingReturn <- trainingReturn + int64 reward
                     let bootstrap = if reachedGoal then 0.0 else maxNextQ q nextPosition
                     let alpha = 0.05 / sqrt (float (max 1 (time + 1)))
@@ -297,7 +405,7 @@ module ContextualGridBenchmark =
                     if reachedGoal then trainingGoalEpisodes <- trainingGoalEpisodes + 1
 
             let qBeforeEvaluation = qDigest q
-            let mutable evaluationPosition = heldOutStart
+            let mutable evaluationPosition = carrier.HeldOutStart
             let mutable evaluationStep = 0
             let mutable evaluationTerminal = false
             let mutable heldOutReturn = 0
@@ -307,7 +415,7 @@ module ContextualGridBenchmark =
             while evaluationStep < actionCap && not evaluationTerminal do
                 let action = greedyAction q evaluationPosition
                 let countBefore = countValue counts (evaluationPosition, action)
-                let nextPosition, reward, reachedGoal = transition evaluationPosition action
+                let nextPosition, reward, reachedGoal = transition carrier evaluationPosition action
                 evaluationStep <- evaluationStep + 1
                 heldOutReturn <- heldOutReturn + reward
                 evaluationActionsRev <- actionName action :: evaluationActionsRev
@@ -333,6 +441,32 @@ module ContextualGridBenchmark =
                   QDigestBeforeEvaluation = qBeforeEvaluation
                   QDigestAfterEvaluation = qAfterEvaluation
                   StreamDraws = stream.Draws }
+
+    /// Retained v1 execution wrapper for existing tests and result receipts.
+    let run
+        environmentFingerprint
+        evaluatorCatalogueFingerprint
+        policy
+        seed
+        episodes
+        actionCap
+        =
+        runForCarrier v1Carrier environmentFingerprint evaluatorCatalogueFingerprint policy seed episodes actionCap
+
+    /// Executes a selected carrier only after raw-byte verification and
+    /// environment/catalogue cross-binding validation at the repository root.
+    let runKnownCarrier repositoryRoot carrierId policy seed =
+        match loadVerifiedCarrier repositoryRoot carrierId with
+        | Error failure -> Error(UnknownFingerprint failure)
+        | Ok carrier ->
+            runForCarrier
+                carrier
+                carrier.EnvironmentFingerprint
+                carrier.EvaluatorCatalogueFingerprint
+                policy
+                seed
+                TrainingEpisodes
+                EpisodeActionCap
 
     let runKnown policy seed =
         run EnvironmentFingerprint EvaluatorCatalogueFingerprint policy seed TrainingEpisodes EpisodeActionCap

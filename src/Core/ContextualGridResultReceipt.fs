@@ -79,12 +79,17 @@ module ContextualGridResultReceipt =
           Comparisons: BootstrapComparison list }
 
     type ResultReceipt =
-        { OptimalHeldOutReturnPpm: int
+        { EnvironmentFingerprint: string
+          EvaluatorCatalogueFingerprint: string
+          SeedFirst: uint64
+          SeedLast: uint64
+          OptimalHeldOutReturnPpm: int
           Policies: PolicyRow list
           Bootstrap: BootstrapReceipt
           ComparisonVerdict: string }
 
     let canonicalRoster = [ SeedFirst .. SeedLast ]
+    let reflectedRoster = [ 100UL .. 199UL ]
 
     let private sha256Hex (bytes: byte array) =
         SHA256.HashData bytes |> Convert.ToHexString |> fun value -> value.ToLowerInvariant()
@@ -106,11 +111,11 @@ module ContextualGridResultReceipt =
         |> uint64
         |> fun bits -> bits.ToString("x16", CultureInfo.InvariantCulture)
 
-    let private validateRoster roster =
-        if roster = canonicalRoster then
+    let private validateRoster expected roster =
+        if roster = expected then
             Ok()
         else
-            Error(IncompleteOrNoncanonicalRoster "roster must be the exact ascending unsigned sequence 0 through 99")
+            Error(IncompleteOrNoncanonicalRoster "roster must be the exact ascending unsigned sequence for this declared carrier")
 
     let private seedRow (receipt: ContextualGridBenchmark.RunReceipt) =
         { Seed = receipt.Seed
@@ -220,7 +225,7 @@ module ContextualGridResultReceipt =
             "criterion-not-met-on-declared-grid"
 
     let run roster : Result<ResultReceipt, RosterFailure> =
-        match validateRoster roster with
+        match validateRoster canonicalRoster roster with
         | Error failure -> Error failure
         | Ok() ->
             let rec collect policies completed =
@@ -243,7 +248,11 @@ module ContextualGridResultReceipt =
             | Ok policyRows ->
                 let bootstrap = makeBootstrap policyRows
                 Ok
-                    { OptimalHeldOutReturnPpm = ContextualGridBenchmark.optimalHeldOutReturn ContextualGridBenchmark.EpisodeActionCap
+                    { EnvironmentFingerprint = ContextualGridBenchmark.EnvironmentFingerprint
+                      EvaluatorCatalogueFingerprint = ContextualGridBenchmark.EvaluatorCatalogueFingerprint
+                      SeedFirst = SeedFirst
+                      SeedLast = SeedLast
+                      OptimalHeldOutReturnPpm = ContextualGridBenchmark.optimalHeldOutReturn ContextualGridBenchmark.EpisodeActionCap
                       Policies = policyRows
                       Bootstrap = bootstrap
                       ComparisonVerdict = comparisonVerdict bootstrap }
@@ -254,6 +263,51 @@ module ContextualGridResultReceipt =
         | Ok() -> run roster
 
     let runCanonical repositoryRoot = runVerified repositoryRoot canonicalRoster
+
+    let runReflectedCanonical repositoryRoot : Result<ResultReceipt, RosterFailure> =
+        match validateRoster reflectedRoster reflectedRoster with
+        | Error failure -> Error failure
+        | Ok() ->
+            match ContextualGridBenchmark.loadVerifiedCarrier repositoryRoot ContextualGridBenchmark.ReflectX with
+            | Error failure -> Error(CarrierVerificationFailure failure)
+            | Ok carrier ->
+                let runPolicy policy =
+                    let rec loop remaining completed =
+                        match remaining with
+                        | [] -> Ok(List.rev completed)
+                        | seed :: tail ->
+                            match ContextualGridBenchmark.runForCarrier carrier carrier.EnvironmentFingerprint carrier.EvaluatorCatalogueFingerprint policy seed ContextualGridBenchmark.TrainingEpisodes ContextualGridBenchmark.EpisodeActionCap with
+                            | Ok receipt -> loop tail (seedRow receipt :: completed)
+                            | Error failure -> Error(UnexpectedRunnerAdmissionFailure failure)
+                    loop reflectedRoster []
+                let rec collect policies completed =
+                    match policies with
+                    | [] -> Ok(List.rev completed)
+                    | policy :: tail ->
+                        match runPolicy policy with
+                        | Error failure -> Error failure
+                        | Ok rows ->
+                            let meanHeldOut = rows |> List.map (fun row -> row.HeldOutReturnPpm) |> meanPpm
+                            let optimal = ContextualGridBenchmark.optimalHeldOutReturnFor carrier ContextualGridBenchmark.EpisodeActionCap
+                            let row =
+                                { Policy = policyName policy
+                                  MeanHeldOutReturnPpm = meanHeldOut
+                                  MeanSuboptimalityPpm = int64 optimal - meanHeldOut
+                                  Seeds = rows }
+                            collect tail (row :: completed)
+                match collect expectedPolicies [] with
+                | Error failure -> Error failure
+                | Ok policyRows ->
+                    let bootstrap = makeBootstrap policyRows
+                    Ok
+                        { EnvironmentFingerprint = carrier.EnvironmentFingerprint
+                          EvaluatorCatalogueFingerprint = carrier.EvaluatorCatalogueFingerprint
+                          SeedFirst = reflectedRoster.Head
+                          SeedLast = reflectedRoster |> List.last
+                          OptimalHeldOutReturnPpm = ContextualGridBenchmark.optimalHeldOutReturnFor carrier ContextualGridBenchmark.EpisodeActionCap
+                          Policies = policyRows
+                          Bootstrap = bootstrap
+                          ComparisonVerdict = comparisonVerdict bootstrap }
 
     let private renderSeedRow row =
         String.concat ""
@@ -291,10 +345,10 @@ module ContextualGridResultReceipt =
               ",\"configuration\":{\"actionCap\":"; string ContextualGridBenchmark.EpisodeActionCap
               ",\"episodes\":"; string ContextualGridBenchmark.TrainingEpisodes
               ",\"seedCount\":"; string SeedCount
-              ",\"seedFirst\":"; quote (string SeedFirst)
-              ",\"seedLast\":"; quote (string SeedLast); "}"
-              ",\"environmentFingerprint\":"; quote ContextualGridBenchmark.EnvironmentFingerprint
-              ",\"evaluatorCatalogueFingerprint\":"; quote ContextualGridBenchmark.EvaluatorCatalogueFingerprint
+              ",\"seedFirst\":"; quote (string receipt.SeedFirst)
+              ",\"seedLast\":"; quote (string receipt.SeedLast); "}"
+              ",\"environmentFingerprint\":"; quote receipt.EnvironmentFingerprint
+              ",\"evaluatorCatalogueFingerprint\":"; quote receipt.EvaluatorCatalogueFingerprint
               ",\"optimalHeldOutReturnPpm\":"; string receipt.OptimalHeldOutReturnPpm
               ",\"policies\":["; receipt.Policies |> List.map renderPolicyRow |> String.concat ","; "]"
               ",\"bootstrap\":{\"confidenceLevelPercent\":"; string BootstrapConfidenceLevelPercent
