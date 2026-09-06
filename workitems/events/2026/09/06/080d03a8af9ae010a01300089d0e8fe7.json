@@ -1,0 +1,14 @@
+{
+  "id": "080d03a8af9ae010a01300089d0e8fe7",
+  "at": "2026-09-06T04:59:27.964Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1THBWTW087G0R002VNCXBX",
+    "type": "task",
+    "title": "ISimulatedFs write-fail on object put keeps the prior freeze",
+    "slug": "isimulatedfs-write-fail-on-object-put-keeps-the-prior-freeze",
+    "priority": "P2",
+    "filename": "081M1THBWTW087G0R002VNCXBX-isimulatedfs-write-fail-on-object-put-keeps-the-prior-freeze.md"
+  }
+}
