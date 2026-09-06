@@ -188,4 +188,20 @@ and Visual Basic, not F#; the separate repository F# lint passed.
 - [All 16 preflight checks](validation/2026-09-06-components-preflight.txt)
 - [Source-line equivalence and executable caller audit](validation/2026-09-06-components-code-equivalence.txt)
 
-Remaining full-suite and publication receipts will be recorded before landing.
+The full native suite passed 7,487 tests across seven assemblies, with zero
+failures and six existing skips; the main F# assembly passed 6,497 tests in
+5 minutes 47 seconds. After the final comment qualification and integration of
+`origin/main` through `0e3456d604096b0b8d51b6be91704650d7d3d323`
+(documentation only), a fresh full Release build passed with zero warnings
+and errors in 61.13 seconds. The final focused AntiSybil/SybilBft/
+TwoTimescaleFold/ShapeAcceptance filter passed all 104 selected tests in
+219 milliseconds. These durations describe validation runs, not benchmarks.
+
+- [Full native suite](validation/2026-09-06-components-tests.txt)
+- [Final Release build](validation/2026-09-06-components-final-build.txt)
+- [Final focused API/caller check](validation/2026-09-06-components-final-focused.txt)
+
+The executable caller audit found no old helper calls. All nine added native
+facts, including the 16-base loop, are included in the full suite and focused
+filter. No benchmark, controller-count certification, or strengthened security
+claim is earned by these checks.
