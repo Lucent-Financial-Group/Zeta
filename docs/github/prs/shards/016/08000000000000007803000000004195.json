@@ -1,0 +1,12 @@
+{
+  "pr_number": 16789,
+  "archive_path": "docs/history/pr-reviews/PR-16789-feat-creds-read-restored-pkcs-11-pointer-file-into-setup-overlay.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-06T12:26:11.170Z",
+  "schema_version": "v1",
+  "commit_sha": "a573154c45a78f63f489b6965babc75c12567a6d",
+  "title": "feat(creds): Read restored PKCS#11 pointer file into setup overlay",
+  "state": "MERGED",
+  "merged_at": "2026-09-06T12:25:32Z",
+  "head_ref": "cursor/setup-restored-pointer-file-27c5"
+}
