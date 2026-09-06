@@ -481,8 +481,85 @@ export function observe(world: World): NextAction {
   // it never sticks as idle.)
   if (world.mode && isFreeMode(world.mode)) return freeModeAction(world.mode);
 
+  // ── OTHER AGENTS OUTRANK NEW WORK ────────────────────────────────────────
+  // Placed BELOW the operator and the persisted free mode, and ABOVE the backlog. The ordering is
+  // the argument:
+  //
+  //   BEING BLOCKED comes first. Asking costs one message and un-sticks this agent; starting
+  //   something else while stuck is how an agent accumulates two unfinished things instead of one.
+  //   `request_information` is also the one verb that is never gated, so it is always a real
+  //   option — an oracle that recommended it and a gate that removed it would be incoherent.
+  //
+  //   A REVIEW SOMEBODY IS WAITING ON comes next. Another agent is blocked on this one, so the
+  //   work is already started and finishing it is worth more than beginning something new. This is
+  //   where a queue stops growing.
+  //
+  //   AN OPEN ROOM comes after that: a deliberation with a turn owed is cheaper to close than a
+  //   fresh work item is to open.
+  //
+  // All three sit above `do_item` for the same underlying reason — an organization whose members
+  // always prefer new work to unblocking each other builds a backlog of half-finished things and a
+  // queue of people waiting. None of them is forced: they are what `observe` RECOMMENDS, and the
+  // free modes remain in the menu beside them exactly as before.
+  const blocked = world.missing?.[0];
+  if (blocked) {
+    return {
+      kind: "request_information",
+      about: blocked.about,
+      blocking: blocked.blocking,
+      reason: `${blocked.blocking} is blocked on ${blocked.about}`,
+    };
+  }
+  const asked = world.reviewsAsked?.[0];
+  if (asked) {
+    return {
+      kind: "review_artifact",
+      artifactId: asked.artifactId,
+      revisionId: asked.revisionId,
+      forGate: asked.forGate,
+      reason: `${asked.askedByHatId} is waiting on '${asked.forGate}'`,
+    };
+  }
+  const room = world.deliberations?.[0];
+  if (room) {
+    return {
+      kind: "respond_to_artifact",
+      anchorId: room.anchorId,
+      artifactId: room.artifactId,
+      revisionId: room.revisionId,
+      reason: `'${room.title}' is open and you are in it`,
+    };
+  }
+
+  // ASSIGNING OUTRANKS DOING. A hat holding unassigned work while its reports are idle is the
+  // bottleneck, and a manager who does the task itself has cleared one item and still has the
+  // queue. This is above `do_item` for that reason and no other.
+  const toAssign = world.assignable?.[0];
+  if (toAssign && toAssign.toHatIds.length > 0) {
+    return {
+      kind: "assign_work",
+      item: toAssign.item,
+      toHatId: toAssign.toHatIds[0]!,
+      reason: `hand '${toAssign.item.id}' to ${toAssign.toHatIds[0]!}`,
+    };
+  }
+
   const doable = world.backlog.find((i) => i.ready && !i.ambiguous);
   if (doable) return { kind: "do_item", item: doable };
+
+  // CONVENING SITS BELOW OWN WORK, because it spends other hats' calendars: a divergence is worth
+  // a room, and it is not worth one before this agent has done the work already in front of it.
+  // Above the free modes, though — an artifact with two heads is stuck, and exploring past it
+  // leaves it stuck.
+  const room2 = world.convenable?.[0];
+  if (room2 && room2.withHatIds.length > 1) {
+    return {
+      kind: "convene_meeting",
+      artifactId: room2.artifactId,
+      withHatIds: room2.withHatIds,
+      reason: `${room2.artifactId} has two heads and needs one`,
+    };
+  }
 
   // Forge-aware: if no backlog work is ready but clean PRs exist, signal
   // that merge work is available. The action is "do_item" with a synthetic

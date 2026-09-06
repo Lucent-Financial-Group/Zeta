@@ -36,7 +36,7 @@ import type {
   ReviewAsk,
   World,
 } from "../observe/observe";
-import { directReportsOf, type OrgChart } from "./org-chart";
+import { hatsAtLevel, reportsUpTo, type OrgChart } from "./org-chart";
 import { SignalTool, sendSupervisorSignal, type SupervisorSignal } from "./supervisor-signal";
 import { AnchorState, type AnchorBoard } from "./discussion-anchor";
 import { headsOf, type ArtifactHistory } from "./artifact-deliberation";
@@ -138,7 +138,22 @@ export function assignableBy(
   view: OrgView,
   hatId: string,
 ): readonly { readonly item: BacklogItem; readonly toHatIds: readonly string[] }[] {
-  const reports = directReportsOf(view.chart, hatId).map((h) => h.id);
+  // INDIVIDUAL CONTRIBUTORS IN THIS HAT'S ORG, not its direct reports.
+  //
+  // Two corrections in one line, both found by the organization refusing what this offered. Work is
+  // executed by an IC — `assign` says so — so offering a lead is offering an act that will be
+  // refused, and the menu's own rule is that it must never do that. And DIRECT reports are too
+  // narrow: an engineering manager's only direct report may be a tech lead, which would leave the
+  // manager unable to place any of the work it owns. Transitive reporting is what "my org can take
+  // this" actually means.
+  //
+  // SELF IS EXCLUDED, and that is not a detail. `supervisorChainOf` includes the hat itself, so
+  // without this an IC is offered "assign this work to me" — which is not an assignment, it is
+  // picking work up, and it routes around the manager whose job the placement is. Measured: an IC
+  // was offered exactly one target, itself.
+  const reports = hatsAtLevel(view.chart, "individual_contributor")
+    .filter((h) => h.id !== hatId && reportsUpTo(view.chart, h.id, hatId))
+    .map((h) => h.id);
   if (reports.length === 0) return [];
   return view.cascade
     .filter(
