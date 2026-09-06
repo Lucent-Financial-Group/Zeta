@@ -226,6 +226,25 @@ execution fixes change no measured source, threshold or completed receipt.
 The final local lane command passes all **140 tests**, with the same existing
 deprecation warning; lane-local Ruff, formatting and mypy over source/tests pass.
 
+A later Linux ARM matrix job exposed a pre-existing single-interval allocation
+assertion: 39,936 expected bytes versus 39,952 observed bytes across 128 calls.
+The [allocation-test review](rendered-signal-validation/2026-09-06/allocation-test-review.md)
+retains that failure and the failed first repair. The final sampler uses a
+fixed warmup and five alternating batches, exact minimum equality, and a
+retained-context-copy negative control. Its focused suite and eight fresh
+processes pass; runtime-phase variation is observed, but the cause of the
+original 16-byte event is not identified. `SmallRnn`, registered criteria and
+scientific receipts remain unchanged. This is a sampled steady-state check,
+not a guarantee that every cold runtime interval allocates identical bytes.
+
+Final integration source `cc5744478` passes a zero-warning/error Release build
+and **7,492 solution tests** with six existing skips. The
+[validation archive](rendered-signal-validation/2026-09-06/README.md) retains
+the final logs and original ARM failure excerpt.
+After integrating the relational-identity landing, all **157 Python tests**
+pass with the same existing warning; the workflow's minimum count is 157.
+The handoff links both results and retains their separate proof boundaries.
+
 ## Receipts and reproduction
 
 - [Native corpus, models, predictions and detection](../../src/Research.FSharp/rendered-signal-results.json)
