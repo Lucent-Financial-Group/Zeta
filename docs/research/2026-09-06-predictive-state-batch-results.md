@@ -252,8 +252,12 @@ Missing-case and deliberately corrupted-measurement checks must fail.
 
 Release build has zero warnings and errors. The isolated Python suite has
 62 passing cases and one existing TransformerLens deprecation warning;
-the warning was not suppressed. Full .NET, formatting and remote integration
-status are recorded when those checks complete below.
+the warning was not suppressed. Full .NET execution passes 7,441 tests, with
+six existing skips: one manual benchmark, three Rx integration tests and two
+collation-contract gaps. `dotnet format --verify-no-changes --no-restore`
+passes for its supported projects; it does not format F#. All 16 quick
+preflight checks pass, including the F# lint. Main `2071a17b7d` was integrated
+without conflict. Remote integration is subject to the PR checks and merge.
 
 This was a self-review against the repository's code, API, measurement and
 research criteria, plus independent numerical implementations. No separate
