@@ -201,7 +201,10 @@ without an attached device is not a seal. The current
 chart still cannot commit the stanza. Integrate join
 (`081M1V5ER44087G0R0000WPCC4`) feeds that overlay from
 the path picker; Lucent / a refused request / SoftHSM
-are not a hostPath overlay.
+are not a hostPath overlay. Bake-cred
+(`081M1V6WCHN087G0R0022FN5DV`) refuses the restore
+filename as the module-path *value* (it contains
+`pkcs11`, so the old rule would bake a self-pointer).
 
 1. Metal: `seal "pkcs11"` in Application.yaml still waits.
    Same commit as a **reachable** module: same-libc image

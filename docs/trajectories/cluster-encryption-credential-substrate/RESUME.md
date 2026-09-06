@@ -272,6 +272,21 @@ Consumer: `src/Core.TypeScript/cluster/unseal-path.ts`
   `glibc-host-into-musl-image`. Does not edit
   Application.yaml.
 
+## 2026-09-06 — USB bake-cred refuses the restore filename as the .so (Riven)
+
+Aaron: continue after the integrate→overlay join. Overlay
+already refuses `/etc/zeta/seal/pkcs11-module-path` as
+the module. Bake-cred's "contains pkcs11" rule would
+still write that string onto the stick.
+
+Consumer: `src/Core.TypeScript/installer/usb-hsm-companion.ts`
+(`validatePkcs11ModulePath`). Workitem:
+`081M1V6WCHN087G0R0022FN5DV`.
+
+- Restore filename (trimmed) is refused. A real NixOS
+  `yubihsm_pkcs11.so` path still bakes. Does not edit
+  Application.yaml. Does not land `yubihsm.nix`.
+
 ## 2026-09-04 — production-hardening review (Riven)
 
 Aaron asked to production-harden the CA, name the unseal startup, use

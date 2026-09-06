@@ -453,6 +453,8 @@ the attached-device oracle; the restore filename is
 not the `.so`. The path picker now feeds that overlay
 (`081M1V5ER44087G0R0000WPCC4`,
 `planSetupOverlayFromIntegrate`).
+Bake-cred refuses the restore filename as the
+module-path value (`081M1V6WCHN087G0R0022FN5DV`).
 glibc-host-into-musl-image is not a
 module; Application.yaml stays Shamir.
 
