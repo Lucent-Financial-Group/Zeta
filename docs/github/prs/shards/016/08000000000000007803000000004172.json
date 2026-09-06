@@ -1,0 +1,12 @@
+{
+  "pr_number": 16754,
+  "archive_path": "docs/history/pr-reviews/PR-16754-fix-cluster-the-live-lane-can-say-why-a-pod-is-not-running-instead-of-guessing.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-06T06:07:57.545Z",
+  "schema_version": "v1",
+  "commit_sha": "01325ed734c95686c18ae9cc64297f5acb055bfe",
+  "title": "fix(cluster): the live lane can say WHY a pod is not running, instead of guessing",
+  "state": "MERGED",
+  "merged_at": "2026-09-06T06:07:14Z",
+  "head_ref": "shadow/diagnose-pending-pods"
+}
