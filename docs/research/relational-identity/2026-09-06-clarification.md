@@ -42,3 +42,12 @@ The registered stop rule, graph sizes/costs, prediction-lane separation,
 unknown-coverage behavior, and evidence boundaries are unchanged. The
 multiplier remains the accounting identity `M=1+R/B`, with stipulated work
 costs, not an empirical estimate of adversarial hardness.
+
+## Conditional innovation wording
+
+The protocol's fair-innovation example requires fairness and mutual
+independence **conditional on `Z`**, or joint independence of the innovations
+from `Z` in addition to mutual independence. Unconditional independence alone
+does not suffice: `Z=(X1,X2,X3)` reveals every bit. The pointwise conditional
+proposition already states the correct premise; the registered fixture fixes
+`Z` constant, so this clarification changes no fixture or bound.

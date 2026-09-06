@@ -23,8 +23,32 @@ let paths =
        "src/Interp.Python/zeta_interp/relational_identity.py"
        "src/Core/AntiSybil.fs"
        "src/Core/CoordinationSpectrum.fs" |]
+let archive = "archive/relational-identity-20260906-source-v4"
+let gitBytes arguments =
+    let start = ProcessStartInfo("git")
+    start.WorkingDirectory <- root
+    start.UseShellExecute <- false
+    start.RedirectStandardOutput <- true
+    start.RedirectStandardError <- true
+    for argument in arguments do start.ArgumentList.Add argument
+    use child = Process.Start start
+    use buffer = new MemoryStream()
+    child.StandardOutput.BaseStream.CopyTo buffer
+    let error = child.StandardError.ReadToEnd()
+    child.WaitForExit()
+    if child.ExitCode <> 0 then eprintfn "archive verification failed: %s" error; exit 2
+    buffer.ToArray()
+let sourceCommit = gitBytes ["rev-parse"; "refs/tags/" + archive + "^{commit}"] |> System.Text.Encoding.UTF8.GetString |> fun value -> value.Trim()
 let sourceHashes = paths |> Array.map (fun path ->
-    {| Path = path; Sha256 = File.ReadAllBytes(Path.Combine(root, path)) |> SHA256.HashData |> Convert.ToHexString |})
+    let current = File.ReadAllBytes(Path.Combine(root, path)) |> SHA256.HashData |> Convert.ToHexString
+    let archived = gitBytes ["show"; sourceCommit + ":" + path] |> SHA256.HashData |> Convert.ToHexString
+    if current <> archived then eprintfn "source differs from immutable archive: %s" path; exit 2
+    {| Path = path; Sha256 = current |})
+let coreAssembly = typeof<Zeta.Core.AntiSybil.DistinctnessReadout>.Assembly
+let loadedCore =
+    {| Sha256 = File.ReadAllBytes(coreAssembly.Location) |> SHA256.HashData |> Convert.ToHexString
+       ModuleVersionId = coreAssembly.ManifestModule.ModuleVersionId.ToString("D")
+       Scope = "Identifies the loaded Core binary; fresh build is recorded separately, not a reproducible-build proof." |}
 let runningProcess = Process.GetCurrentProcess()
 let cpu = runningProcess.TotalProcessorTime
 let allocated = GC.GetAllocatedBytesForCurrentThread()
@@ -38,7 +62,9 @@ let semantic =
 clock.Stop()
 let result =
     {| Protocol = "relational-identity-v1"
-       SourceArchive = "archive/relational-identity-20260906-source-v3"
+       SourceArchive = archive
+       SourceCommit = sourceCommit
+       LoadedCoreAssembly = loadedCore
        ProtocolCommit = "4f470f40e"
        SourceHashes = sourceHashes
        Semantic = semantic

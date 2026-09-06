@@ -1,6 +1,7 @@
 """Independent exact replay and deliberately corrupted receipt controls."""
 
 import json
+import subprocess
 from copy import deepcopy
 from dataclasses import replace
 from hashlib import sha256
@@ -32,6 +33,10 @@ def test_saved_native_receipt_matches_independent_regeneration() -> None:
         "extra_hash",
         "invariant",
         "archive",
+        "boolean_count",
+        "numeric_boolean",
+        "boolean_statistic",
+        "extra_semantic",
     ],
 )
 def test_corrupted_receipt_is_rejected(field: str) -> None:
@@ -48,6 +53,14 @@ def test_corrupted_receipt_is_rejected(field: str) -> None:
         saved["SourceHashes"].append(saved["SourceHashes"][0])
     elif field == "invariant":
         saved["Semantic"]["Transport"]["Invariant"]["Claims"] = []
+    elif field == "boolean_count":
+        saved["Semantic"]["Mutations"][0]["RepeatedLeft"] = False
+    elif field == "numeric_boolean":
+        saved["Semantic"]["Baselines"][0]["SharedController"] = 1
+    elif field == "boolean_statistic":
+        saved["Semantic"]["Baselines"][0]["Correlation"] = True
+    elif field == "extra_semantic":
+        saved["Semantic"]["unregistered"] = 0
     else:
         saved["SourceArchive"] = "unregistered-source"
     with pytest.raises(ValueError):
@@ -89,11 +102,42 @@ def test_strict_replay_checks_a_supplied_source_snapshot(tmp_path: Path) -> None
         path.parent.mkdir(parents=True, exist_ok=True)
         path.write_bytes(content)
         row["Sha256"] = sha256(content).hexdigest().upper()
+
+    def git(*arguments: str) -> bytes:
+        return subprocess.check_output(
+            [
+                "git",
+                "-c",
+                "user.name=Fixture",
+                "-c",
+                "user.email=fixture@example.invalid",
+                *arguments,
+            ],
+            cwd=tmp_path,
+            stderr=subprocess.DEVNULL,
+        )
+
+    git("init", "--quiet")
+    git("add", ".")
+    git("commit", "--quiet", "-m", "Synthetic source snapshot fixture")
+    git("tag", saved["SourceArchive"])
+    saved["SourceCommit"] = git("rev-parse", "HEAD").decode().strip()
     assert r.verify_saved(saved, tmp_path)["SourceSnapshotVerified"]
     path = tmp_path / saved["SourceHashes"][0]["Path"]
     path.write_bytes(path.read_bytes() + b"changed")
     with pytest.raises(ValueError, match="source hash mismatch"):
         r.verify_saved(saved, tmp_path)
+    altered = deepcopy(saved)
+    altered["SourceHashes"][0]["Sha256"] = sha256(path.read_bytes()).hexdigest().upper()
+    with pytest.raises(ValueError, match="source differs from immutable archive"):
+        r.verify_saved(altered, tmp_path)
+    historical = r.verify_saved(saved, tmp_path, check_source_snapshot=False)
+    assert historical["ExactSemanticMatch"]
+    assert not historical["SourceSnapshotVerified"]
+    # Semantic replay can run without any current source files. Schema remains checked.
+    assert r.verify_saved(saved, tmp_path / "absent", check_source_snapshot=False)[
+        "ExactSemanticMatch"
+    ]
 
 
 def test_unavailable_alternative_remains_unknown_when_event_id_is_covered() -> None:

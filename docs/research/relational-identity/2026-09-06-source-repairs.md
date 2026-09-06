@@ -60,5 +60,41 @@ kernel's `Readout.Expected` field was being dropped from each JSON case. The
 protocol requires every report to name its declared cut. Source v3 adds
 `Expected` to every case, including incomplete and refused views, and adds
 native/Python regression assertions. Neither the kernel's consistency rule nor
-any registered threshold changes. The first complete measured panel uses
+any registered threshold changes. The planned first complete measured panel then targeted
 `archive/relational-identity-20260906-source-v3`; v1 and v2 remain preserved.
+
+## Source v4: honor the historical-replay source check option
+
+Independent review found that `check_source_snapshot=False` was reported in
+replay metadata but the verifier still unconditionally read and hashed current
+source bytes. This contradicted the documented historical-regression contract.
+Source v4 always validates the exact path roster, unique coverage and uppercase
+64-digit hexadecimal SHA256 format. It compares current bytes only when the
+option is true; the command-line replay keeps that strict default. The temporary
+snapshot regression now requires strict mode to reject altered bytes and
+historical semantic mode to succeed even when the source directory is absent.
+
+No complete panel or output receipt existed before this repair. The first
+complete measured panel uses `archive/relational-identity-20260906-source-v4`;
+all three earlier refs remain unchanged. This correction changes replay
+validation, not fixtures, thresholds, model outcomes or promotion criteria.
+
+The same pre-result review found that hashing live source while naming an
+archive did not verify archive equality, and source hashes did not identify
+the prebuilt Core DLL actually loaded. Source v4 resolves the archive to its
+full commit and refuses execution when any registered source byte differs
+from that commit. Strict Python replay independently verifies the archive
+resolution and each source hash, including a regression where altered current
+bytes and a correspondingly altered receipt still fail the archive check.
+The runner additionally records the loaded Core assembly SHA256 and module
+version ID. A fresh Release build and its validation record are retained
+separately; these identify the artifact and build activity without claiming a
+reproducible-build attestation or proof of source-to-binary derivation.
+
+A final inspection found that ordinary Python dictionary equality treats
+`False` as equal to count `0`, and `1` as equal to boolean `True`. Source v4
+compares the full semantic tree with explicit types: booleans and integers
+remain distinct, floating statistics admit finite JSON integers/floats but
+exclude booleans, and dictionary keys/list lengths must agree exactly. Four
+malformed-receipt controls preserve the type and extra-field defects. This
+closes an overly permissive replay verifier without changing native outcomes.

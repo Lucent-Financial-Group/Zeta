@@ -20,7 +20,7 @@ soundness, personhood, a Lorentz metric, or a CQM/Clifford equivalence.
 
 The original source is `archive/relational-identity-20260906-source-v1`; the
 [repaired source](2026-09-06-source-repairs.md) is
-`archive/relational-identity-20260906-source-v3` (v2 is also retained).
+`archive/relational-identity-20260906-source-v4` (v2 and v3 are also retained).
 The repaired archive pins the kernel, exact
 fixture panel, and independent Python implementation before execution.
 
@@ -38,7 +38,8 @@ dotnet fsi --warnaserror src/Research.FSharp/run-relational-identity.fsx /tmp/re
 uv run --project src/Interp.Python python -m zeta_interp.relational_identity /tmp/relational-native.json /tmp/relational-python.json
 ```
 
-Strict replay verifies every registered source hash against the supplied
-checkout. Current-tree regression tests compare the complete semantic panel
+The native runner and strict replay resolve the immutable archive and verify
+every registered source hash against both its commit and the supplied checkout.
+The native receipt identifies the loaded Core assembly by SHA256 and MVID. Current-tree regression tests compare the complete semantic panel
 and hash schema, so historical source pins do not prohibit unrelated future
 source edits. A separate temporary-snapshot test checks hash rejection.

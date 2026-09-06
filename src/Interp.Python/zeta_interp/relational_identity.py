@@ -8,11 +8,13 @@ from __future__ import annotations
 
 import argparse
 import json
+import subprocess
 from collections import Counter, defaultdict
 from dataclasses import asdict, dataclass, replace
 from fractions import Fraction
 from hashlib import sha256
 from itertools import combinations, permutations, product
+from math import isfinite
 from pathlib import Path
 from typing import Any
 
@@ -605,17 +607,64 @@ def semantic_panel() -> dict[str, Any]:
     }
 
 
+def semantic_equal(actual: Any, expected: Any) -> bool:
+    """Match the wire schema while admitting JSON integers for floating statistics."""
+    if isinstance(expected, bool):
+        return type(actual) is bool and actual == expected
+    if isinstance(expected, int):
+        return type(actual) is int and actual == expected
+    if isinstance(expected, float):
+        return type(actual) in (int, float) and isfinite(actual) and actual == expected
+    if isinstance(expected, dict):
+        return (
+            type(actual) is dict
+            and actual.keys() == expected.keys()
+            and all(
+                semantic_equal(actual[key], value) for key, value in expected.items()
+            )
+        )
+    if isinstance(expected, list):
+        return (
+            type(actual) is list
+            and len(actual) == len(expected)
+            and all(semantic_equal(a, b) for a, b in zip(actual, expected, strict=True))
+        )
+    return type(actual) is type(expected) and actual == expected
+
+
 def verify_saved(
     saved: dict[str, Any], root: Path, *, check_source_snapshot: bool = True
 ) -> dict[str, Any]:
     if (
         saved.get("Protocol") != "relational-identity-v1"
         or saved.get("SourceArchive")
-        != "archive/relational-identity-20260906-source-v3"
+        != "archive/relational-identity-20260906-source-v4"
     ):
         raise ValueError("unexpected protocol or source archive")
     if saved.get("ProtocolCommit") != "4f470f40e":
         raise ValueError("unexpected preregistration commit")
+    source_commit = saved.get("SourceCommit")
+    if (
+        not isinstance(source_commit, str)
+        or len(source_commit) != 40
+        or any(character not in "0123456789abcdef" for character in source_commit)
+    ):
+        raise ValueError("invalid resolved source commit")
+    if check_source_snapshot:
+        resolved = (
+            subprocess.check_output(
+                [
+                    "git",
+                    "rev-parse",
+                    "refs/tags/" + saved["SourceArchive"] + "^{commit}",
+                ],
+                cwd=root,
+            )
+            .decode()
+            .strip()
+        )
+        if source_commit != resolved:
+            raise ValueError("resolved source archive differs from receipt")
     expected_paths = {
         "docs/research/relational-identity/2026-09-06-protocol.md",
         "docs/research/relational-identity/2026-09-06-clarification.md",
@@ -629,24 +678,46 @@ def verify_saved(
     }
     hashes = saved.get("SourceHashes", [])
     if (
-        len(hashes) != len(expected_paths)
+        not isinstance(hashes, list)
+        or len(hashes) != len(expected_paths)
+        or any(
+            not isinstance(row, dict)
+            or row.keys() != {"Path", "Sha256"}
+            or not isinstance(row["Path"], str)
+            for row in hashes
+        )
         or {row["Path"] for row in hashes} != expected_paths
     ):
         raise ValueError("source hash coverage differs from registered files")
     for row in hashes:
+        digest = row.get("Sha256")
         if (
-            sha256((root / row["Path"]).read_bytes()).hexdigest().upper()
-            != row["Sha256"]
+            not isinstance(digest, str)
+            or len(digest) != 64
+            or any(character not in "0123456789ABCDEF" for character in digest)
+        ):
+            raise ValueError("invalid source SHA256: " + row["Path"])
+        if check_source_snapshot and (
+            sha256((root / row["Path"]).read_bytes()).hexdigest().upper() != digest
         ):
             raise ValueError("source hash mismatch: " + row["Path"])
+        if check_source_snapshot:
+            archived = subprocess.check_output(
+                ["git", "show", source_commit + ":" + row["Path"]], cwd=root
+            )
+            if sha256(archived).hexdigest().upper() != digest:
+                raise ValueError(
+                    "source differs from immutable archive: " + row["Path"]
+                )
     expected = semantic_panel()
-    if saved.get("Semantic") != expected:
+    if not semantic_equal(saved.get("Semantic"), expected):
         raise ValueError(
             "native receipt differs from independently regenerated semantic panel"
         )
     return {
         "Protocol": "relational-identity-independent-replay-v1",
         "SourceArchive": saved["SourceArchive"],
+        "SourceCommit": source_commit,
         "ExactSemanticMatch": True,
         "SourceSnapshotVerified": check_source_snapshot,
         "TransportChecks": expected["Transport"]["Checks"],
