@@ -245,6 +245,16 @@ After integrating the relational-identity landing, all **157 Python tests**
 pass with the same existing warning; the workflow's minimum count is 157.
 The handoff links both results and retains their separate proof boundaries.
 
+The experiment itself landed through [PR #16858](https://github.com/Lucent-Financial-Group/Zeta/pull/16858)
+at source `69ba5db2f`, merge `d9787b016bc2ccc9a1d86bf3ab67a6df1f8df5e0`.
+Its final hosted matrix recovered from the earlier ARM failure: 93 successful
+checks and three skips. The successful replacement ARM job is
+[101563778563](https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34060359580/job/101563778563).
+The allocation-test improvement and final integration records were prepared
+locally while repository automation merged that earlier head; they land as a
+separate validation follow-up. A successful retry does not establish the
+cause of the original event or remove the value of its preserved witness.
+
 ## Receipts and reproduction
 
 - [Native corpus, models, predictions and detection](../../src/Research.FSharp/rendered-signal-results.json)

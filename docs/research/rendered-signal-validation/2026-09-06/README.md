@@ -64,3 +64,17 @@ source or cost receipt.
 - [Final integration solution tests](rendered-final-integration-tests.log).
 - [Integrated Python suite](rendered-identity-integration-python.log): 157 passed, one existing warning.
 - [Integrated formatter](rendered-identity-integration-format.log): C#/VB verification; F# unsupported.
+
+## Main-based validation follow-up
+
+The follow-up is based on refreshed main `9e7622efe`, which includes the
+experiment merge. Source `2d9927303` passed a fresh Release build with zero
+warnings/errors and all 7,492 solution tests, with six existing skips:
+
+- [Follow-up build](rendered-followup-build.log).
+- [Follow-up solution tests](rendered-followup-tests.log).
+
+PR #16858 itself finished with 93 successful hosted checks and three skips
+at head `69ba5db2f`; its earlier ARM failure passed on the replacement job.
+The allocation sampler and logs above are a separate follow-up to that merged
+head, not changes included retroactively in its hosted run.
