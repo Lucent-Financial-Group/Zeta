@@ -8,6 +8,19 @@ Author: Vera, OpenAI Codex using GPT-6 Astra
 Source baseline: `928c0f5e1fa5cadd2b8bad0bc810796874c719bf`
 Artifact status: design proposal; not a preregistration or measured result
 
+Design correction, 2026-09-06: the
+[acting preregistration draft](2026-09-06-rendered-catch-actions-protocol.md)
+places the hit glyph at y=26 and preserves target rows 0..23. This supersedes
+the initial audit's y=16 glyph and rows 0..11 projection, so a bar at y=20
+remains visible while every catcher/feedback pixel stays outside policy input.
+The palette panel keeps fixed dot geometry; it does not alternate shape/Y.
+Coordinating review also clarified that the adapter hides its individual
+steps. The acting draft now observes a separate 17-step shadow execution,
+compares its complete final state with each primary adapter result, and
+counts/times both paths. Primary instructions remain 1,122 per episode;
+the private audit adds 1,122, for 2,244 actual transitions. The shadow trace
+is not direct adapter instrumentation or an independent implementation.
+
 ## Question and evidence boundary
 
 Can the frozen fitted order-two predictor improve a real key-input action's
@@ -79,7 +92,7 @@ only 64 environment actions or silently omit initialization cost.
 ## Proposed 17-instruction round and ROM budget
 
 Keep fixed registers `V1=24` for catcher height, `V3=8` for target-observation
-height, `V4=4` and `V5=16` for the binary hit glyph. Append a one-row `80`
+height, `V4=4` and `V5=26` for the binary hit glyph. Append a one-row `80`
 sprite. The following is a design calculation, not an assembled ROM or a
 validated execution trace:
 
@@ -97,7 +110,7 @@ validated execution trace:
 | 14 | `D211` | XOR the transient target again, restoring the catcher image. |
 | 15 | `D231` | Reveal the new target at y=8. |
 | 16 | `F629` | Select built-in font glyph 0/1 using saved hit bit `V6`. |
-| 17 | `D455` | Render binary hit feedback at x=4, y=16. |
+| 17 | `D455` | Render binary hit feedback at x=4, y=26. |
 
 All admitted rounds have the same instruction path. `Chip8Cow`'s `FX0A`
 reads the lowest currently held key, including key zero. With no key held it
@@ -121,10 +134,12 @@ With `N` rounds, the proposed ROM size is `34 + 34*N + 2 + 1` bytes:
 | 65 | 2,247 | One warmup plus 64 scored rounds; 66 source symbols |
 | 96 | 3,301 | Still below the 3,584-byte classic program/data limit |
 
-The 65-round schedule would execute `66*17 = 1,122` instructions including
-bootstrap. Validate every program address, opcode, target operand, sprite
-address, and font access against the admitted layout. Confirm expected PC
-before and after every instruction, including the last group boundary.
+The 65-round schedule would execute `66*17 = 1,122` primary instructions
+including bootstrap, plus 1,122 private shadow instructions under the
+coordinating review correction. Validate every program address, opcode,
+target operand, sprite address, and font access against the admitted layout.
+Observe/check PCs around each shadow instruction, tick once, then compare
+the complete shadow state with the real adapter result at every group end.
 Those checks belong to the private environment/evaluator, not policy input.
 
 ## Projection and source-policy separation
@@ -137,8 +152,9 @@ lag-two observation needed for its next decision. A comparison using the
 full current frame cannot establish that internal history is necessary.
 
 Give every policy the same declared target-band projection: copy the 64x32
-palette-2 frame and replace cells outside rows 0..11 with background zero.
-The target is at y=8; catcher y=24 and hit glyph rows 16..20 are excluded.
+palette-2 frame and replace cells outside rows 0..23 with the background
+computed exclusively from those top 24 rows. The target is at y=8, or y=20
+for the draft's bar panel; catcher y=24 and glyph rows 26..30 are excluded.
 Validate the full frame shape and palette before projection. Run the existing
 single-component decoder on the copied projection. This is a supplied
 representation boundary, not feature discovery. Never substitute source
@@ -195,7 +211,7 @@ experimental choices and must not be retroactively described as doing so.
    committed policy action. No frame derived from the next target may reach
    the policy before its corresponding key is recorded and applied.
 3. **PixelProjection leakage:** perturb arbitrary catcher/feedback pixels
-   below row 12 while preserving the target band. The projected frame bytes
+   below row 24 while preserving the target band. The projected frame bytes
    and each policy's next decision must remain identical. Also perturb the
    target band to demonstrate that admissible observation changes do reach
    the decision path. A test that injects direct tokens bypasses this test.
@@ -244,8 +260,10 @@ its clean/assisted distinction is not this fixed-observation policy ablation.
 
 ## Continuation and durability
 
-Preserve this reviewed design as a focused commit under the existing handoff
-work item. The coordinating continuation will index it from the handoff or
-new acting protocol when integrating it into the next claim branch. This
+The initial reviewed design was committed under the handoff work item. It is
+now indexed by the local
+[acting draft](2026-09-06-rendered-catch-actions-protocol.md) and
+[follow-up work item](../../workitems/081M1W8T690087G0R002DJ91MJ-preregister-rendered-catch-actions-from-a-frozen-chronologic.md).
+The coordinating continuation owns remote publication and main indexing. This
 note alone is not an indexed protocol, an implementation authorization
 artifact, or evidence that a proposed falsifier has passed.

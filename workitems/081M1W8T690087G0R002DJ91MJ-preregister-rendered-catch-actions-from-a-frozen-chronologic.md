@@ -33,5 +33,7 @@ Acceptance:
   acting measurement; retain failures and avoid post-result tuning.
 
 Claim: `task-rendered-catch-actions-20260906`.
-The coordinating continuation will add the protocol and audit links when
-the reviewed draft is integrated after the passive predictor result lands.
+The [protocol draft](../docs/research/2026-09-06-rendered-catch-actions-protocol.md)
+indexes the [source/design audit](../docs/research/2026-09-06-rendered-catch-followup-design-audit.md).
+The coordinating continuation owns reviewed remote publication and main
+integration after the passive predictor result lands.
