@@ -438,6 +438,34 @@ export const CROSS_VERIFY_AUDITS: readonly CrossVerifyAudit[] = [
   // quietly useless -- parsing the wrong `version:` line, and auditing fewer sites than
   // exist -- plus one case that reads all five REAL files, so a rename cannot leave the
   // fixture-driven cases green over an audit that reads nothing.
+  // METAL PARITY, and the least-exercised surface in the tree. `*/k8s/bootstrap/` is what
+  // K3S auto-applies on NixOS FIRST BOOT; the kind and k3d lanes bring ArgoCD up from
+  // `dev-cluster/use-cases.ts` and never apply those manifests at all. So a chart pinned
+  // one way at boot and another way by the Application that adopts the same Helm release
+  // is invisible to every live lane -- the cluster installs one version and upgrades
+  // itself in the earliest sync wave, which is the mid-run self-upgrade
+  // `argocd-install.yaml`'s header describes and the 2026-09-03 cached-manifest incident
+  // measured. First run on main found FOUR such pairs, three of them CRD-bearing; they are
+  // acknowledged with a reason and a lift condition rather than bumped blind, because a
+  // first-boot chart bump is a real cluster change per chart. The key carries BOTH
+  // versions, so paying the debt makes the entry stale and the audit says so.
+  {
+    id: "bootstrap-application-pin-parity",
+    title: "A chart installed at first boot AND by an Application is pinned once",
+    command: "bun src/Core.TypeScript/hygiene/audit-bootstrap-application-pin-parity.ts",
+  },
+
+  // The falsifiers for the audit above. Weighted toward how a check over an unexercised
+  // path goes quietly useless: parsing less than it thinks (the multi-document
+  // `spire-install.yaml` case), and letting an acknowledgement outlive its defect (the
+  // stale-key and half-paid-debt cases). One case reads the REAL tree so a rename cannot
+  // leave the fixture-driven ones green over an audit that reads nothing.
+  {
+    id: "bootstrap-application-pin-parity-tests",
+    title: "bootstrap/Application pin falsifiers (multi-doc parse + stale acknowledgement)",
+    command: "bun test src/Core.TypeScript/hygiene/audit-bootstrap-application-pin-parity.test.ts",
+  },
+
   {
     id: "argocd-pin-parity-tests",
     title: "argocd-pin-parity falsifiers (roster refusal + chart-anchored parse)",
