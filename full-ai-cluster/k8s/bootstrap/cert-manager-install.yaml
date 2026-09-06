@@ -10,7 +10,23 @@ metadata:
 spec:
   chart: cert-manager
   repo: https://charts.jetstack.io
-  version: v1.16.2
+  # v1.16.2 -> v1.21.1 on 2026-09-06, to EQUAL k8s/applications/cert-manager/Application.yaml,
+  # which moved on 2026-09-01. Both install the same Helm release -- K3S at first boot, then
+  # the Application adopts it -- so the split pin had the cluster upgrading cert-manager's
+  # CRDs in an early sync wave while everything downstream of it (trust-manager, spire, every
+  # Certificate) came up against whichever set was live at that instant.
+  #
+  # MEASURED with THIS FILE's valuesContent at both versions, comparing kind/name pairs:
+  #   52 objects -> 50; NOTHING ADDED
+  #   the two lost are Role/cert-manager-tokenrequest and its RoleBinding
+  #   every value still lands: 6 CRDs at both, all three Deployments at replicas 1,
+  #     no ServiceMonitor (servicemonitor disabled) at both
+  #
+  # Independently corroborates the Application's own note from 2026-09-01, which recorded
+  # the same two losses -- and warns about the trap this compare avoided: the newer chart
+  # QUOTES metadata.name and the older does not, so a raw-text diff reads all six CRDs as
+  # removed-and-re-added. Comparing kind/name pairs is what makes "nothing added" trustworthy.
+  version: v1.21.1
   targetNamespace: cert-manager
   createNamespace: true
   valuesContent: |-

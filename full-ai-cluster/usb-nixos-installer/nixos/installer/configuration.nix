@@ -400,8 +400,44 @@
     };
   };
 
+  # `image.fileName`, NOT `isoImage.isoName`. nixpkgs renamed the option, and the old
+  # spelling was a `lib.mkForce` that forced nothing: every ISO this repo has published
+  # shipped as `nixos-minimal-<release>-<arch>.iso`, the nixpkgs default, while CI printed
+  # `evaluation warning: The option `isoImage.isoName' ... has been renamed to
+  # `image.fileName'` three times a run and nobody read it (081M1VP8G1M087G0R001GYHWMA).
+  #
+  # The image was never wrong -- `networking.hostName` above is live, and the x86_64 boot
+  # reaches `zeta-installer login:` in 24s -- only the NAME was. Which made it the quiet
+  # kind of defect: an artifact whose filename cannot distinguish it from stock NixOS,
+  # and digest manifests keyed on that name.
+  #
+  # `qemu-boot-test`'s ISO discovery used to accept `nixos-minimal-*.iso` as a fallback,
+  # which is what kept the lane green over this. That fallback is gone, and
+  # `assert-iso-name.ts` now refuses a name the tree did not choose -- so the next time
+  # nixpkgs moves an option out from under this block, it fails instead of rotting.
+  # `image.baseName`, and the two rejected spellings are named because each one LOOKS right:
+  #
+  #   isoImage.isoName  -- renamed upstream; nixpkgs aliases it, so it still EVALUATES to
+  #                        our value while the derivation ignores it. The alias is why this
+  #                        went unnoticed: the option reads back correct.
+  #   image.fileName    -- what the rename warning names, and it also evaluates to our
+  #                        value. Also ignored. Measured:
+  #                          image.fileName            = zeta-installer-25.11.iso
+  #                          system.build.isoImage.name = nixos-minimal-25.11...-x86_64-linux.iso
+  #
+  # `image.baseName` is what the ISO derivation actually reads (extension excluded; nixpkgs
+  # appends `.iso`). Predicted by 081KSGS9H0008QG0R00033DT02 on 2026-05-26 -- "the unified
+  # `image.baseName` option likely now drives the ISO filename via a new code path" -- and
+  # confirmed here by evaluating `system.build.isoImage.name` rather than the option.
+  # THE ARCH STAYS IN THE NAME. The nixpkgs default carried it
+  # (`nixos-minimal-<release>-<system>.iso`) and dropping it would trade one legibility
+  # defect for another: both jobs in a run would emit `zeta-installer-<release>.iso`, a
+  # downloaded file could not say which machine it is for, and the two ISO artifacts would
+  # collide on name inside one workflow run -- which the aarch64 upload step already works
+  # around with a fixed artifact name, for exactly this reason.
+  image.baseName = lib.mkForce "zeta-installer-${config.system.nixos.release}-${pkgs.stdenv.hostPlatform.system}";
+
   isoImage = {
-    isoName = lib.mkForce "zeta-installer-${config.system.nixos.release}.iso";
     volumeID = lib.mkForce "ZETA_INSTALL";
     makeEfiBootable = true;
     makeUsbBootable = true;

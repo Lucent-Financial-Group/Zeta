@@ -6,11 +6,11 @@ import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
 import {
-  planFirstbootConfFileContent,
   ZETA_FIRSTBOOT_CONF_ESP_DESTINATION,
   ZETA_JOIN_TOKEN_ESP_DESTINATION,
   type ZetaFirstbootRole,
 } from "./firstboot-role.ts";
+import { planFirstbootConfWithNamedBaoElf, type NamedBaoElfAsk } from "./firstboot-bao-elf.ts";
 
 /**
  * RFC1123 hostname regex.
@@ -249,6 +249,13 @@ export interface FileBackedZflashImagePlanInput {
    */
   readonly firstbootRole?: ZetaFirstbootRole;
   /**
+   * Named bao site+path to join onto that conf. Omitted or null is
+   * unmeasured — the role conf is byte-identical. A non-null ask
+   * without `firstbootRole` is refused: bao names with no role conf
+   * are never read. Does not expand `ZetaFirstbootRole`.
+   */
+  readonly namedBaoElf?: NamedBaoElfAsk | null;
+  /**
    * Host path to k3s node-token material to copy onto the ESP as
    * `/zeta-join-token`. Only meaningful for a joiner whose role names that
    * same ESP path — a token with no config pointing at it is a file nothing
@@ -472,8 +479,9 @@ export function planFileBackedZflashImage(input: FileBackedZflashImagePlanInput)
   // writes so adding a role cannot disturb the byte-for-byte shape of a plan
   // that does not ask for one.
   const joinTokenSourcePath = input.joinTokenSourcePath?.trim();
+  const namedBaoElf = input.namedBaoElf;
   if (input.firstbootRole !== undefined) {
-    const firstboot = planFirstbootConfFileContent(input.firstbootRole);
+    const firstboot = planFirstbootConfWithNamedBaoElf(input.firstbootRole, namedBaoElf ?? null);
     if (!firstboot.ok) {
       return { ok: false, error: firstboot.error };
     }
@@ -504,6 +512,11 @@ export function planFileBackedZflashImage(input: FileBackedZflashImagePlanInput)
     return {
       ok: false,
       error: "joinTokenSourcePath requires a joiner firstbootRole; a token with no role config is never read",
+    };
+  } else if (namedBaoElf !== undefined && namedBaoElf !== null) {
+    return {
+      ok: false,
+      error: "namedBaoElf requires firstbootRole; bao names with no role conf are never read",
     };
   }
 

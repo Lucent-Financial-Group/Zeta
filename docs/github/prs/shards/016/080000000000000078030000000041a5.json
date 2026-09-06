@@ -1,0 +1,12 @@
+{
+  "pr_number": 16805,
+  "archive_path": "docs/history/pr-reviews/PR-16805-bug-081m1vp8g1m-isoimage-isoname-is-renamed-so-the-installer-iso-ships-as-nixos-.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-06T16:06:12.998Z",
+  "schema_version": "v1",
+  "commit_sha": "7672240c85a6d549052011d30790b08c0e114732",
+  "title": "bug(081M1VP8G1M): isoImage.isoName is renamed, so the installer ISO ships as nixos-minimal",
+  "state": "MERGED",
+  "merged_at": "2026-09-06T16:05:37Z",
+  "head_ref": "shadow/inert-isoname-mkforce"
+}

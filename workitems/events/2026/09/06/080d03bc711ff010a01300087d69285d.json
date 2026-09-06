@@ -1,0 +1,14 @@
+{
+  "id": "080d03bc711ff010a01300087d69285d",
+  "at": "2026-09-06T16:29:59.166Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1VRW8ZY087G0R000XDM4BG",
+    "type": "task",
+    "title": "zflash ESP writes joined bao names without installer fs",
+    "slug": "zflash-esp-writes-joined-bao-names-without-installer-fs",
+    "priority": "P2",
+    "filename": "081M1VRW8ZY087G0R000XDM4BG-zflash-esp-writes-joined-bao-names-without-installer-fs.md"
+  }
+}

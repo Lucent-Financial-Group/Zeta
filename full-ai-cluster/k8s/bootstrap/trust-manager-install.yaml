@@ -9,7 +9,17 @@ metadata:
 spec:
   chart: trust-manager
   repo: https://charts.jetstack.io
-  version: v0.15.0
+  # v0.15.0 -> v0.24.0 on 2026-09-06, to EQUAL k8s/applications/trust-manager/Application.yaml.
+  # PAID AFTER cert-manager in the same change, deliberately: trust-manager consumes
+  # cert-manager's CRDs, so moving it first would have measured the wrong variable.
+  #
+  # MEASURED with THIS FILE's valuesContent at both versions, comparing kind/name pairs:
+  #   14 objects -> 15; NOTHING REMOVED
+  #   the one addition is ClusterRole/trust-manager-cluster-view
+  #   THE LOAD-BEARING VALUE SURVIVES: Role and RoleBinding `trust-manager` still land in
+  #     namespace `openziti` at v0.24.0, which is the whole point of the app.trust.namespace
+  #     note below -- the Secrets-reading Role ziti-controller's Bundle depends on.
+  version: v0.24.0
   targetNamespace: cert-manager   # trust-manager lives in cert-manager ns
   createNamespace: false   # cert-manager-install.yaml already created it
   valuesContent: |-
@@ -18,14 +28,19 @@ spec:
     defaultPackage: { enabled: false }
     app:
       trust:
-        # MUST MATCH k8s/applications/trust-manager/Application.yaml, which
-        # carries the full reasoning: trust-manager v0.15.0 resolves Bundle
-        # sources from exactly one namespace and creates its Secrets-reading
-        # Role only there, and ziti-controller's Bundle sources a Secret minted
-        # into `openziti`. Two surfaces install this chart -- this one at k3s
-        # first boot, the Application at sync-wave -45 -- and they share a Helm
-        # release name and namespace, so a disagreement here would have the two
-        # reconcilers flipping the flag against each other.
+        # MUST MATCH k8s/applications/trust-manager/Application.yaml -- AND SO MUST THE
+        # CHART VERSION ABOVE. This note guarded the value and not the version, and on
+        # 2026-09-06 the version was found three minors apart (v0.15.0 here, v0.24.0
+        # there): the file was guarding the smaller half of its own hazard. Both are equal
+        # now and `audit-bootstrap-application-pin-parity.ts` keeps them so.
+        #
+        # The full reasoning, unchanged at v0.24.0 and re-measured there: trust-manager
+        # resolves Bundle sources from exactly one namespace and creates its
+        # Secrets-reading Role only in that namespace, and ziti-controller's Bundle sources
+        # a Secret minted into `openziti`. Two surfaces install this chart -- this one at
+        # k3s first boot, the Application at sync-wave -45 -- and they share a Helm release
+        # name and namespace, so a disagreement in EITHER the value or the version has the
+        # two reconcilers fighting.
         #
         # `openziti` is created before this file is applied by
         # k8s/bootstrap/openziti-namespace.yaml (lexically earlier than

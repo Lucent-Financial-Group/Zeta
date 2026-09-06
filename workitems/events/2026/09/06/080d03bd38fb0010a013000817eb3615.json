@@ -1,0 +1,14 @@
+{
+  "id": "080d03bd38fb0010a013000817eb3615",
+  "at": "2026-09-06T16:57:16.384Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1VTE7TZ087G0R002XSHAYZ",
+    "type": "task",
+    "title": "zflash CLI names bao load site and path onto ESP",
+    "slug": "zflash-cli-names-bao-load-site-and-path-onto-esp",
+    "priority": "P2",
+    "filename": "081M1VTE7TZ087G0R002XSHAYZ-zflash-cli-names-bao-load-site-and-path-onto-esp.md"
+  }
+}
