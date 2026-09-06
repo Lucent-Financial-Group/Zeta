@@ -13,9 +13,9 @@
 # `k8s/bootstrap/` tree. So a change to a first-boot manifest did not run the tests that
 # read first-boot manifests.
 #
-# MEASURED, not theorised: PR #16755 moved the ArgoCD chart K3S installs on metal first
-# boot from 7.7.10 to 10.8.0 in `infra/k8s/bootstrap/argocd-install.yaml`, and
-# `build-ai-cluster-iso` has no run for that branch.
+# MEASURED, not theorised: PR #16755 moved an ArgoCD chart pin 7.7.10 -> 10.8.0 in a
+# first-boot manifest and `build-ai-cluster-iso` had no run for that branch. A bootstrap
+# manifest changed and no lane read it.
 #
 # WHAT THIS COSTS, AND WHY IT IS NOT THE ISO LANE. Option A -- adding the same globs to
 # `build-ai-cluster-iso.yml` -- also happened (it is the drift half Aaron asked for: it
@@ -37,7 +37,12 @@ on:
   pull_request:
     paths:
       - "full-ai-cluster/k8s/bootstrap/**"
-      - "infra/k8s/bootstrap/**"
+      # SCOPED TO THE LIVE TREE, and that scope is the whole claim. This lane evaluates
+      # `full-ai-cluster/flake.nix`, and its checks read exactly the manifests
+      # `full-ai-cluster/nixos/modules/k3s-server.nix` declares. A glob for a manifest no
+      # check in this flake reads would fire a lane that cannot say anything about what
+      # changed -- green with nothing behind it.
+      #
       # The modules that DECLARE the roster these manifests are named by. A manifest and
       # its `services.k3s.manifests` entry are two halves of one fact, and the eval-test
       # reads both -- so a lane triggered on only one half would be checking a pair it
@@ -50,7 +55,6 @@ on:
     branches: [main]
     paths:
       - "full-ai-cluster/k8s/bootstrap/**"
-      - "infra/k8s/bootstrap/**"
       - "full-ai-cluster/nixos/modules/k3s-server.nix"
   workflow_dispatch: {}
 
