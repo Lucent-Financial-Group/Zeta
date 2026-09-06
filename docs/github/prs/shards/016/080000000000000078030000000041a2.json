@@ -1,0 +1,12 @@
+{
+  "pr_number": 16802,
+  "archive_path": "docs/history/pr-reviews/PR-16802-feat-creds-parse-first-boot-conf-back-into-a-named-bao-ask.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-06T15:59:01.209Z",
+  "schema_version": "v1",
+  "commit_sha": "954e82a638a5241779856da85018977b913fb9a5",
+  "title": "feat(creds): Parse first-boot conf back into a named bao ask",
+  "state": "MERGED",
+  "merged_at": "2026-09-06T15:58:27Z",
+  "head_ref": "cursor/firstboot-bao-elf-conf-parse-27c5"
+}
