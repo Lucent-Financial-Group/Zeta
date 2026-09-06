@@ -141,7 +141,7 @@ jobs:
           # FAIL-CLOSED: `set -u` below makes an unset variable exit non-zero,
           # so deleting this entry turns the job red rather than quietly
           # disabling the check.
-          # Nine activation-access checks plus eighteen Mess3 reference cases.
+          # Nine activation-access, eighteen Mess3 and 38 predictive-state cases.
           INTERP_MIN_TESTS: "65"
         run: |
           set -euo pipefail

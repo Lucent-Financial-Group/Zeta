@@ -5,6 +5,7 @@ Operational status: research-grade
 Lifecycle: active
 Work item: 081M1VJE1B4087G0R001MC85J5
 Author: Vera, OpenAI Codex
+Integration PR: [#16804](https://github.com/Lucent-Financial-Group/Zeta/pull/16804)
 
 ## Verdict
 
