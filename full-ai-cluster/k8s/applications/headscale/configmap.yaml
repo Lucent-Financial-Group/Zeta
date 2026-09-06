@@ -31,6 +31,14 @@
 #      loudly on first boot and the dev lane reports it -- which is the outcome we
 #      want from an untested assumption. It is written here so that a
 #      CrashLoopBackOff is read as THIS assumption failing, not as a mystery.
+#
+#      MEASURED 2026-09-05 (run 33995838640): the pod DID CrashLoopBackOff, and it
+#      was NOT this. The key paths were never reached -- headscale rejected the
+#      config before starting, on the `base_domain` conflict documented below. So
+#      this assumption remains UNTESTED rather than confirmed: the first boot that
+#      gets past config validation is the one that exercises it. Recorded because
+#      "the predicted failure happened" and "the predicted CAUSE happened" are
+#      different claims, and only the first is true here.
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -67,7 +75,23 @@ data:
         stun_listen_addr: :3478
         private_key_path: /var/lib/headscale/derp.key
     dns:
-      base_domain: zeta.local
+      # MUST NOT CONTAIN server_url's HOST. headscale refuses the config outright
+      # when it does -- measured on live run 33995838640, which CrashLoopBackOff'd
+      # with:
+      #
+      #   Error: initializing: loading configuration: server_url cannot be part of
+      #   base_domain in a way that could make the DERP and headscale server
+      #   unreachable
+      #
+      # `server_url` is `https://headscale.zeta.local` and this was `zeta.local`,
+      # so the control server's own hostname sat INSIDE the tailnet's MagicDNS
+      # zone -- headscale would have been shadowing itself, and it says so rather
+      # than starting and failing later. The chart shipped `example.com` here; the
+      # conflict was introduced by changing it to `zeta.local` for tidiness.
+      #
+      # `tailnet.zeta.local` is disjoint from `headscale.zeta.local` (a sibling
+      # label, not an ancestor), which is what the check requires.
+      base_domain: tailnet.zeta.local
       override_local_dns: false
     tls_cert_path: ""
     tls_key_path: ""
