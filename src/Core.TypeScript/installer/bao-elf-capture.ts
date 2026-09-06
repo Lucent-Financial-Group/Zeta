@@ -14,7 +14,7 @@
  * docs/research/2026-08-21-hands-off-metal-*.md §1.4.
  */
 
-import { existsSync, readFileSync } from "node:fs";
+import { readFileSync } from "node:fs";
 import {
   baoElfCaptureFromBytes,
   baoElfOpenedPathIsBinary,
@@ -32,8 +32,16 @@ export type BaoElfRead = (path: string) => BaoElfFileRead;
 
 /** Live host read. Tests inject a fake. Never used by the overlay. */
 export function nodeBaoElfRead(path: string): BaoElfFileRead {
-  if (!existsSync(path)) return { exists: false, bytes: null };
-  return { exists: true, bytes: readFileSync(path) };
+  // One syscall, one answer, no check-then-use window (CWE-367): read and
+  // interpret ENOENT as "does not exist" rather than probing first.
+  try {
+    return { exists: true, bytes: readFileSync(path) };
+  } catch (e) {
+    if ((e as NodeJS.ErrnoException).code === "ENOENT") {
+      return { exists: false, bytes: null };
+    }
+    throw e;
+  }
 }
 
 /**
