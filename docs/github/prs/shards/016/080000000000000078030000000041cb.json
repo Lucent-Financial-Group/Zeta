@@ -1,0 +1,12 @@
+{
+  "pr_number": 16843,
+  "archive_path": "docs/history/pr-reviews/PR-16843-docs-research-superagent-is-the-best-honest-router-the-capability-ratchet.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-06T20:29:39.115Z",
+  "schema_version": "v1",
+  "commit_sha": "721578c33f8dcd7fc2615f3ddf10c0d06a3f852a",
+  "title": "docs(research): superagent is the best honest router — the capability ratchet",
+  "state": "MERGED",
+  "merged_at": "2026-09-06T20:29:01Z",
+  "head_ref": "shadow/superagent-routes-downward"
+}
