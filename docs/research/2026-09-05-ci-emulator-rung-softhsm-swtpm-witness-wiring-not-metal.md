@@ -175,18 +175,20 @@ no-op (same as `zeta.tpm2Seal.mode = "off"`). Do not set
 Classifier: `src/Core.TypeScript/cluster/host-seal-profile.ts`.
 Nix model: `full-ai-cluster/nixos/modules/host-seal-model.nix`.
 
-## Next slices (not this PR)
+## Next slices (after the install job)
 
-1. Dejan: apt/mise install SoftHSM2 (+ swtpm / tpm2-tools) on
-   the runner; optional derived image or hostPath that puts
-   `libsofthsm2.so` where `bao` can load it.
-2. Off-cluster job: init SoftHSM token, generate wrap key,
-   `bao` with `BAO_SEAL_TYPE=pkcs11`, assert health 200 without
-   Shamir. Skip-if-absent is the cardinal failure — the job
-   **installs** the emulator so absent cannot wear pass.
-3. USB `--bake-cred` grows the companion kinds. PIN stays a
+The 2×2 install job is `081M1TS32Y3087G0R0026Y21F5`
+(`.github/workflows/seal-emulator-install.yml`). It
+installs SoftHSM2 / swtpm, witnesses the disk, and inits a
+SoftHSM token. It does not run `bao operator init`.
+
+1. Off-cluster `bao` with `BAO_SEAL_TYPE=pkcs11` against the
+   installed module — same commit as any `seal "pkcs11"`
+   stanza, and not in Application.yaml until the module is
+   in the image.
+2. USB `--bake-cred` grows the companion kinds. PIN stays a
    reference.
-4. Metal: `seal "pkcs11"` + device mount, mechanism pinned per
+3. Metal: `seal "pkcs11"` + device mount, mechanism pinned per
    oracle. Dual-vendor per node is ZetaFS k-of-n, not two
    active OpenBao seals.
 

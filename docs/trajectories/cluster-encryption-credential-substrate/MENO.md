@@ -77,22 +77,26 @@ assume the number.
    Classify health: 200 sleep / 503 fetch-this-tick / 501
    refuse-init / curl 000 miss (not a seal). Keep until an
    emulator job inits OpenBao without Shamir. Cannot init.
-3. **CI emulator rung** (classifier landed; job is next).
-   `src/Core.TypeScript/cluster/seal-emulator-rung.ts`.
-   SoftHSM2 / swtpm witness wiring. YubiHSM domains, USB, and
-   this board's PCRs stay metal. Do not put `seal "pkcs11"` in
-   Application.yaml until a module is in the image in the same
-   commit (`081M1SD6GZ8087G0R001TNHN19`). TOPOLOGY.md §5 is
-   **history** on metal once PKCS#11 auto-unseal is real.
-   NixOS host-seal profile (role + capture, not a k8s label):
-   `zeta.hostSeal.boxRole` is `undeclared` (no-op) /
+3. **CI emulator rung** (classifier landed; **install job this
+   slice**). `src/Core.TypeScript/cluster/seal-emulator-rung.ts`
+   plus `seal-emulator-install.ts` and
+   `.github/workflows/seal-emulator-install.yml`
+   (`081M1TS32Y3087G0R0026Y21F5`). SoftHSM2 / swtpm 2×2: the
+   job **installs** the declared packages, then the witness
+   measures the disk. skip-if-absent cannot wear pass. YubiHSM
+   domains, USB, CardContact, and this board's PCRs stay metal.
+   Do not put `seal "pkcs11"` in Application.yaml until a
+   module is in the image in the same commit. `bao operator
+   init` against SoftHSM is the next runtime hop, not this
+   job. NixOS host-seal profile (role + capture, not a k8s
+   label): `zeta.hostSeal.boxRole` is `undeclared` (no-op) /
    `developer` (FIDO + biometric userspace; no sudo PAM u2f) /
    `prod-metal` (automatic HSM or TPM PKCS#11; FIDO/biometric
    refused as the rotator). CI is not a NixOS role — the job
    declares SoftHSM2/swtpm. Presence is a probe (`ID=nixos`,
    `frost-hardware-probe.ts`, `tpm2-linux-probe.ts`).
    `host-seal-profile.ts`.
-4. **Setup-time path picker** (classifier this slice).
+4. **Setup-time path picker** (classifier landed, #16728).
    `src/Core.TypeScript/cluster/unseal-path.ts`
    (`081M1T9X3ZE087G0R000JNAYE7`). Detect HSM/TPM during
    setup; integrate PKCS#11 **only** if the device is
@@ -103,11 +107,8 @@ assume the number.
    Lucent 1Password Shamir is a **peer** path, not a silent
    fallback from requested PKCS#11. Fleet may mix paths;
    one OpenBao seal per node. Dual-vendor on one box is
-   ZetaFS k-of-n. Emulator install 2×2
-   (SoftHSM × swtpm) is declared by installing; skip-if-absent
-   cannot wear pass. Dejan's apt/mise SoftHSM job is still
-   the next *runtime* rung — this picker does not install
-   packages.
+   ZetaFS k-of-n. The install job (item 3) is the 2×2
+   consumer.
 5. **USB repair HSM-talk** — companions on the stick (module
    path, connector config, authkey *reference*, domain map,
    OpenBao env pointer). Not PIN-as-original, not Shamir copy,
