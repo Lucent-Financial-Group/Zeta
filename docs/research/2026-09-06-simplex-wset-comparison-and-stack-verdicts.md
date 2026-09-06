@@ -164,6 +164,12 @@ the stationary model. Neither observation establishes coercion from the sign of 
 
 ## Paper boundary and remaining work
 
+Follow-up: the [registered Mess3 experiment](2026-09-06-mess3-learned-belief-experiment.md)
+now measures a genuinely trained native recurrent network with held-out probes
+and independent numerical checks. It is a different architecture from the
+papers' transformers. The exact-algebra result above is unchanged; the follow-up
+does not establish a fractal dimension or information beyond next-token outputs.
+
 Shai et al., [NeurIPS 2024](https://arxiv.org/abs/2405.15943), tests belief geometry
 against trained residual activations. Piotrowski et al.,
 [ICML 2025](https://arxiv.org/abs/2502.01954), studies architecture-constrained belief

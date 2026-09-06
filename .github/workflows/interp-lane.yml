@@ -35,6 +35,7 @@ on:
   pull_request:
     paths:
       - "src/Interp.Python/**"
+      - "src/Research.FSharp/**"
       - "tools/setup/manifests/from-uv-project"
       - "src/Core.TypeScript/ace/setup-realizers/from-uv-project.ts"
       - ".github/workflows/interp-lane.yml"
@@ -42,6 +43,7 @@ on:
     branches: [main]
     paths:
       - "src/Interp.Python/**"
+      - "src/Research.FSharp/**"
       - "tools/setup/manifests/from-uv-project"
       - "src/Core.TypeScript/ace/setup-realizers/from-uv-project.ts"
       - ".github/workflows/interp-lane.yml"
@@ -130,16 +132,17 @@ jobs:
             exit 1
           fi
 
-      - name: Run the activation-access falsifier
+      - name: Run activation-access and learned-state checks
         env:
           # The floor that makes a green here mean something. A pytest that
-          # collects 0 tests exits 5, but a suite that silently shrinks from 9
+          # collects 0 tests exits 5, but a suite that silently shrinks from 27
           # to 2 exits 0 and looks identical to success.
           #
           # FAIL-CLOSED: `set -u` below makes an unset variable exit non-zero,
           # so deleting this entry turns the job red rather than quietly
           # disabling the check.
-          INTERP_MIN_TESTS: "9"
+          # Nine activation-access checks plus eighteen Mess3 reference cases.
+          INTERP_MIN_TESTS: "27"
         run: |
           set -euo pipefail
           uv run --project src/Interp.Python pytest src/Interp.Python/tests -q \

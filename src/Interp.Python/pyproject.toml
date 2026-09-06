@@ -45,6 +45,8 @@ dependencies = [
     "torch==2.13.0",
     "transformer-lens==3.8.0",
     "nnsight==0.7.0",
+    # Independent replay imports NumPy directly; pin the already locked version.
+    "numpy==2.5.2",
 ]
 
 [build-system]

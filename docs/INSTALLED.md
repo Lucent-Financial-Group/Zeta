@@ -38,6 +38,11 @@ be able to recreate the environment from this doc.
 
 ## Python model-interpretability libraries (activation access)
 
+2026-09-06: the existing locked project was realized in the dedicated Codex
+experiment clone through `ZETA_INSTALL_INTERP=1 bun src/Core.TypeScript/ace/setup-realize.ts from-uv-project`.
+PyTorch autograd independently checks the native Mess3 learner's gradient;
+no dependency was added to the database runtime or to the default install tier.
+
 Opt-in and **not** part of any default install tier. Declared as a locked `uv`
 project at `src/Interp.Python` (its own project, on the `src/Arc.Python`
 precedent) and realized by `ace` through

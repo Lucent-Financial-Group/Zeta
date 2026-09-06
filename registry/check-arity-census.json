@@ -62,6 +62,7 @@
     "tests/Tests.FSharp/Infra/Environment.Tests.fs": 1,
     "tests/Tests.FSharp/KeyCustody.Tests.fs": 1,
     "tests/Tests.FSharp/Merkle.FullVertical.Tests.fs": 1,
+    "tests/Tests.FSharp/Mess3Learning.Tests.fs": 2,
     "tests/Tests.FSharp/MetaControl.Tests.fs": 1,
     "tests/Tests.FSharp/MixCogen.Tests.fs": 1,
     "tests/Tests.FSharp/MultiSignatureVerification.Tests.fs": 2,
