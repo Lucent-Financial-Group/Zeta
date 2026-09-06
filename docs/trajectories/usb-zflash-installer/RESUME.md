@@ -551,6 +551,10 @@ Overlay env join reads unseal request
 (`081M1WE7Z5S087G0R001WT3K6G`) from
 `ZETA_UNSEAL_REQUEST`; capture stays
 injected.
+ISO bun consume reports named unseal
+request (`081M1WG1RJB087G0R001ADMJNK`);
+missing is unmeasured, not `auto`; does
+not export a default request.
 glibc-host-into-musl-image is not a
 module; Application.yaml stays Shamir.
 

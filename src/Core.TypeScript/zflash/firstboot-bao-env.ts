@@ -8,17 +8,22 @@
  * resulting env. After Step 6.95a the installer names
  * `ZETA_BAO_ELF_EPOCH=installer-iso` (literal, not from `/mnt`).
  * Named epoch filters ISO current-system bao from the JSON ask.
- * Does not open files. bun invoke lives in
- * `zeta-install.sh` after Step 6.95a (mise/bun on PATH).
+ * Named unseal request (`ZETA_UNSEAL_REQUEST`) is reported, not
+ * inferred: missing is unmeasured (`requested` null), not `auto`.
+ * `/dev/tpmrm0` still refuses. Does not call `integrateAtSetup`.
+ * Does not invent a capture. Does not open files. bun invoke
+ * lives in `zeta-install.sh` after Step 6.95a (mise/bun on PATH).
  * bun invoke from `zeta-first-boot.sh` stays forbidden.
  * Does not expand `ZetaFirstbootRole`. Does not land
  * Application.yaml.
  *
  * Usage: bun src/Core.TypeScript/zflash/firstboot-bao-env.ts
- * Exit 0: JSON `{ ok: true, ask, epoch }` (ask and epoch may be null).
+ * Exit 0: JSON `{ ok: true, ask, epoch, requested }`
+ * (ask, epoch, and requested may be null).
  * Exit 2: JSON `{ ok: false, reason }`.
  */
 
+import { consumeUnsealRequestFromEnv } from "../cluster/unseal-path.ts";
 import { consumeFirstbootBaoElfEnvWithEpoch, type FirstbootBaoElfEnvConsume } from "./firstboot-bao-elf.ts";
 
 export function runFirstbootBaoElfEnvCli(
@@ -27,9 +32,25 @@ export function runFirstbootBaoElfEnvCli(
     process.stdout.write(line);
   },
 ): number {
+  const request = consumeUnsealRequestFromEnv(env);
+  if (!request.ok) {
+    write(`${JSON.stringify(request)}\n`);
+    return 2;
+  }
   const parsed: FirstbootBaoElfEnvConsume = consumeFirstbootBaoElfEnvWithEpoch(env);
-  write(`${JSON.stringify(parsed)}\n`);
-  return parsed.ok ? 0 : 2;
+  if (!parsed.ok) {
+    write(`${JSON.stringify(parsed)}\n`);
+    return 2;
+  }
+  write(
+    `${JSON.stringify({
+      ok: true,
+      ask: parsed.ask,
+      epoch: parsed.epoch,
+      requested: request.requested,
+    })}\n`,
+  );
+  return 0;
 }
 
 function main(): void {
