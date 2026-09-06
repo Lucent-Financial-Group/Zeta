@@ -32,14 +32,18 @@ adapter conformance study, not a novelty or partial-observability claim.
 | Upstream source license  | Apache License 2.0                                                                        |
 | Upstream action integers | `0=left`, `1=right`, `2=forward`                                                          |
 | Default max steps        | `4 × size²`, therefore 100 for the candidate                                              |
-| Current probe runtime    | CPython 3.12.3; `minigrid==3.1.0`, `gymnasium==1.3.0`, `numpy==2.5.1`, `pygame-ce==2.5.8` |
+| Initial discovery probe  | CPython 3.12.3; `minigrid==3.1.0`, `gymnasium==1.3.0`, `numpy==2.5.1`, `pygame-ce==2.5.8` |
+| Declared fixture runtime | CPython 3.14.6; `minigrid==3.1.0`, `gymnasium==1.3.0`, `numpy==2.5.1`, `pygame-ce==2.5.8` |
 
 The release is a valid immutable source boundary only when both the tag and
 resolved commit are recorded. MiniGrid's own packaging specifies dependency
-floors rather than a fully locked transitive environment. Consequently, the
-probe runtime above is an observation, not a portable compatibility guarantee.
-A later contract must pin all runtime artifact identities or use a vendored,
-reviewed conformance fixture under the upstream license.
+floors rather than a fully locked transitive environment. The first probe is
+therefore a discovery observation, not a portable compatibility guarantee. The
+repository-declared fixture environment is separately locked at CPython 3.14.6
+and repeated the fixed trace exactly, including the initial digest and terminal
+binary64 reward bits. It still remains an environment-specific conformance
+observation rather than a claim about other Python versions, wrappers, or
+MiniGrid releases.
 
 ## Authoritative Interface Facts
 

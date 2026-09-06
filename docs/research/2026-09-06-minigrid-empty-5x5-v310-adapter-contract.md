@@ -1,7 +1,10 @@
 # MiniGrid Empty-5x5 v3.1.0 Adapter Contract
 
-**Status:** proposed external-adapter conformance contract. This document admits
-no policy score, transfer result, curiosity result, or general-learning claim.
+**Status:** implemented source/transition conformance contract. The first
+adapter result is recorded in
+[`2026-09-06-minigrid-empty-5x5-v310-adapter-conformance-result.md`](2026-09-06-minigrid-empty-5x5-v310-adapter-conformance-result.md).
+This document still admits no policy score, transfer result, curiosity result,
+or general-learning claim.
 
 > **Decision:** the first external carrier is a fixed-start,
 > `MiniGrid-Empty-5x5-v0` adapter at upstream MiniGrid v3.1.0. The first
@@ -29,11 +32,12 @@ insufficient.
 | Required source: `minigrid/core/actions.py`   | SHA-256 `787274f08bc91a76dba83b322ff5ee8fdb8ea7843cb706a1b5371029ac234e28`                  |
 | Required source: `minigrid/core/constants.py` | SHA-256 `5e82c8765064461001b8a5e07b2c5f693ce65297418755a11d7917dacbd204ac`                  |
 | Required upstream license                     | Apache License 2.0                                                                          |
-| Python fixture runtime                        | CPython `3.12.3`; `minigrid==3.1.0`; `gymnasium==1.3.0`; `numpy==2.5.1`; `pygame-ce==2.5.8` |
+| Python fixture runtime                        | CPython `3.14.6`; `minigrid==3.1.0`; `gymnasium==1.3.0`; `numpy==2.5.1`; `pygame-ce==2.5.8` |
 
-The listed runtime identifies the observed fixture environment, rather than
-asserting that MiniGrid’s dependency declarations themselves freeze an ABI. Any
-change to any listed source or package identity must return
+The listed runtime identifies Zeta’s declared fixture environment, which
+repeated the earlier CPython 3.12.3 source-discovery trace under CPython 3.14.6.
+It does not assert that MiniGrid’s upstream dependency declarations themselves
+freeze an ABI. Any change to any listed source or package identity must return
 `UPSTREAM_IDENTITY_MISMATCH` and emit no comparison receipt.
 
 ## 2. Fixed Environment and State Projection
@@ -112,6 +116,10 @@ rendering claim.
 
 No training or evaluation comparison may run until the adapter conformance
 receipt and all mutations in Section 6 pass in two independent implementations.
+That source/transition conformance gate is now met only for the pinned
+five-action Empty-5x5 witness reported in the linked result record. It does not
+admit a learner comparison: such a comparison still needs the new
+`minigrid-empty-5x5/policy-comparison/v1` contract defined below.
 After that gate, a future `minigrid-empty-5x5/policy-comparison/v1` contract
 must declare, before execution:
 
