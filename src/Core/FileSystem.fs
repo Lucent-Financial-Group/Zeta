@@ -1284,6 +1284,16 @@ type BlockCas(io: IBlockIo) =
             pos <- endAt
         | None -> ()
 
+    let xorLastByte (start: int64) (len: int) : bool =
+        if len <= 0 then
+            false
+        else
+            let bytes = BlockLog.readAt io start (int64 len)
+            bytes.[bytes.Length - 1] <- bytes.[bytes.Length - 1] ^^^ 0xA5uy
+            BlockLog.append io start (System.ReadOnlyMemory<byte>.op_Implicit bytes)
+            |> ignore
+            true
+
     member _.Device = io
 
     member _.Count = lock lockObj (fun () -> index.Count)
@@ -1308,6 +1318,18 @@ type BlockCas(io: IBlockIo) =
                     else
                         Some(BlockLog.readAt io start (int64 len)))
 
+    /// DST: XOR 0xA5 into the last byte of one published payload, in place.
+    /// Superblock and names stay. Missing or empty key is false. Lets a
+    /// freeze test poison one jumprope internal without flipping the trunk.
+    member _.XorLastPayloadByte(key: string) : bool =
+        if String.IsNullOrEmpty key then
+            false
+        else
+            lock lockObj (fun () ->
+                match index.TryGetValue key with
+                | false, _ -> false
+                | true, struct (start, len) -> xorLastByte start len)
+
     /// DST: XOR 0xA5 into the last byte of every published payload, in place.
     /// Superblock and names stay. `isReadable` must fail. Returns how many
     /// keys were flipped.
@@ -1318,11 +1340,7 @@ type BlockCas(io: IBlockIo) =
             for kv in index do
                 let struct (start, len) = kv.Value
 
-                if len > 0 then
-                    let bytes = BlockLog.readAt io start (int64 len)
-                    bytes.[bytes.Length - 1] <- bytes.[bytes.Length - 1] ^^^ 0xA5uy
-                    BlockLog.append io start (System.ReadOnlyMemory<byte>.op_Implicit bytes)
-                    |> ignore
+                if xorLastByte start len then
                     n <- n + 1
 
             n)

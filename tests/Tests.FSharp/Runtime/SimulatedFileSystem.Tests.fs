@@ -766,6 +766,23 @@ let ``BlockCas XorLastPayloadByteAll flips the last published byte`` () =
         Assert.Equal<byte>(expected, got)
 
 [<Fact>]
+let ``BlockCas XorLastPayloadByte flips one key and leaves the other`` () =
+    let device = SimulatedBlockIo(4096)
+    let cas = BlockCas(device)
+    let a = [| 1uy; 2uy; 3uy |]
+    let b = [| 9uy; 8uy; 7uy |]
+    cas.Put("aa", a)
+    cas.Put("bb", b)
+    Assert.False(cas.XorLastPayloadByte "missing")
+    Assert.True(cas.XorLastPayloadByte "aa")
+    match cas.TryGet "aa", cas.TryGet "bb" with
+    | Some gotA, Some gotB ->
+        let expectedA = [| a.[0]; a.[1]; a.[2] ^^^ 0xA5uy |]
+        Assert.Equal<byte>(expectedA, gotA)
+        Assert.Equal<byte>(b, gotB)
+    | _ -> Assert.Fail("both keys must stay published")
+
+[<Fact>]
 let ``BlockCas Delete unpublishes a key and CloneMedia agrees`` () =
     let device = SimulatedBlockIo(4096)
     let cas = BlockCas(device)
