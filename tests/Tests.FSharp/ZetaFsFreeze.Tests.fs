@@ -2849,6 +2849,61 @@ let ``reopen freeze-byte meter still paces reclaimTickMetered`` () : Task =
     }
 
 [<Fact>]
+let ``XOR of jumprope internal stays unread after reopen`` () : Task =
+    task {
+        ensureHasher ()
+        FileSystem.Register(InMemoryFileSystem())
+        let store = "/objectsets-reopen-internal"
+        let mutbuf = ZetaFsMutbuf.create store ZetaFsMutbuf.Coherence.Shared
+        let payload = [| 1uy; 2uy; 3uy |]
+        let mutable firstContent = Unchecked.defaultof<ContentHash256>
+        let volume1 = ZetaFsFreeze.createManualStream store mutbuf None
+
+        try
+            let id = mintId ()
+            let h = ZetaFsMutbuf.openHandle volume1.Mutbuf id
+            ZetaFsMutbuf.pwrite volume1.Mutbuf h 0L payload |> ignore
+            let pending = (freezeAsync volume1 id ZetaFsFreeze.Journaled).AsTask()
+            do! (ZetaFsFreeze.pumpLog volume1 CancellationToken.None).ConfigureAwait(false)
+            let! first = pending.ConfigureAwait(false)
+            match first with
+            | Error e -> Assert.Fail(ZetaFsFreeze.errorName e)
+            | Ok ok ->
+                firstContent <- ok.Content
+                Assert.True(ZetaFsFreeze.isReadable volume1 firstContent)
+                let rope = ZetaFsJumprope.buildV1 payload
+                Assert.Equal(ok.Content.ToHex(), rope.Content.ToHex())
+                let chunks = rope.Leaves |> Array.map fst
+                let internals =
+                    rope.Cas.Objects
+                    |> Seq.map (fun kv -> kv.Key)
+                    |> Seq.filter (fun hid ->
+                        not (hid.Equals rope.Content)
+                        && not (Array.exists (fun c -> c.Equals hid) chunks))
+                    |> Seq.toArray
+                Assert.True(internals.Length > 0)
+                let target = internals.[0]
+                let hex = (ContentHash256.toContentAddress128 target).ToHex()
+                let path = ZetaFsPath.combine4 store "objects" (hex.Substring(0, 2)) (hex.Substring(2))
+                Assert.True(FileSystem.Current.Exists path)
+                let bytes = FileSystem.Current.ReadAllBytes path
+                Assert.True(bytes.Length > 0)
+                let poisoned = Array.copy bytes
+                poisoned.[poisoned.Length - 1] <- poisoned.[poisoned.Length - 1] ^^^ 0xA5uy
+                FileSystemIo.writeAllBytes FileSystem.Current path poisoned
+                Assert.False(ZetaFsFreeze.isReadable volume1 firstContent)
+        finally
+            ZetaFsFreeze.dispose volume1
+
+        let volume2 = ZetaFsFreeze.createManualStream store mutbuf None
+        try
+            Assert.False(ZetaFsFreeze.isReadable volume2 firstContent)
+        finally
+            ZetaFsFreeze.dispose volume2
+            FileSystem.Reset()
+    }
+
+[<Fact>]
 let ``rolling 1 third freeze must not revive the first generation`` () : Task =
     task {
         ensureHasher ()
