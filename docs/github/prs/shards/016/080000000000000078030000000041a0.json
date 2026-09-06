@@ -1,0 +1,12 @@
+{
+  "pr_number": 16800,
+  "archive_path": "docs/history/pr-reviews/PR-16800-feat-creds-emit-first-boot-bao-names-together-or-not-at-all.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-06T15:33:51.462Z",
+  "schema_version": "v1",
+  "commit_sha": "201030f1a4ee8dd0e985d3094bdeefe1bee33bf9",
+  "title": "feat(creds): Emit first-boot bao names together or not at all",
+  "state": "MERGED",
+  "merged_at": "2026-09-06T15:33:17Z",
+  "head_ref": "cursor/firstboot-bao-elf-carrier-27c5"
+}
