@@ -186,10 +186,19 @@ Shamir / `OP_SESSION` / brand-type refuse as originals.
 Application.yaml stays Shamir. SoftHSM green is not
 YubiHSM green.
 
-1. Metal: `seal "pkcs11"` + device mount, mechanism pinned per
-   oracle. Dual-vendor per node is ZetaFS k-of-n, not two
-   active OpenBao seals. Same commit as a module in the
-   image or a hostPath overlay.
+HostPath overlay **planner** is `081M1TZH2PW087G0R0036F3S18`
+(`pkcs11-hostpath-overlay.ts`). Volumes, mechanism pin, ABI.
+glibc NixOS `.so` into Alpine `openbao-hsm` is
+`glibc-host-into-musl-image` and is **not** a module in
+reach (hands-off-metal §1.4 option A, unproven). The
+companion pointer file is not the `.so`.
+
+1. Metal: `seal "pkcs11"` in Application.yaml still waits.
+   Same commit as a **reachable** module: same-libc image
+   (glibc OpenBao that can load the host `.so`) or option D
+   host `bao`. Dual-vendor per node is ZetaFS k-of-n, not
+   two active OpenBao seals. Do not treat this planner as
+   that commit.
 2. extraContainer Shamir sidecar (`valuesObject` only) until
    kind/CI consume the emulator init.
 

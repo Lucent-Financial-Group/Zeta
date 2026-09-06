@@ -115,25 +115,37 @@ assume the number.
    one OpenBao seal per node. Dual-vendor on one box is
    ZetaFS k-of-n. The install job (item 3) is the 2×2
    consumer.
-5. **USB repair HSM-talk** (`--bake-cred` this slice,
+5. **USB repair HSM-talk** (landed, #16774,
    `081M1TX6CV6087G0R002GZEXMP`). Companions on the stick:
    module path, connector config, authkey *reference*,
    domain map, OpenBao env pointer. Not PIN-as-original,
    not Shamir copy, not `OP_SESSION`, not a brand type in
    the volume. Host-only — not `zeta-host-creds` Secrets.
    SoftHSM CI is not this metal companion set.
-6. extraContainer sidecar — later, **same commit as the
+6. **PKCS#11 hostPath overlay planner** (this slice,
+   `081M1TZH2PW087G0R0036F3S18`).
+   `pkcs11-hostpath-overlay.ts`: volumes, mechanism pin,
+   ABI. Today's Alpine `openbao-hsm` + NixOS glibc `.so`
+   is `glibc-host-into-musl-image` — **not** a module in
+   reach. USB companion pointer file is not the `.so`.
+   SoftHSM / swtpm are not this overlay. PIN stays
+   `BAO_HSM_PIN`. Dual-vendor is ZetaFS k-of-n, not two
+   seals. Does **not** edit Application.yaml. YubiHSM SDK
+   nixpkgs module stays `081M0B5V6Z5087G0R0026RANJ3`
+   (sign-off). Seal stanza waits for same-libc image (or
+   option D host `bao`) in the same commit as the stanza.
+7. extraContainer sidecar — later, **same commit as the
    sidecar**, and only for the Shamir kind path until the
    emulator job replaces it. `valuesObject` only. Do not fork
    the chart.
-7. Lease sidecar / portal / Consent (SSH is break-glass).
-8. Inventory lock test (presence counts, never private material).
-9. ADR: dual as minimum, three live slots as default.
-10. Missing persona trees (riven / vera / lior) after the 3-key
+8. Lease sidecar / portal / Consent (SSH is break-glass).
+9. Inventory lock test (presence counts, never private material).
+10. ADR: dual as minimum, three live slots as default.
+11. Missing persona trees (riven / vera / lior) after the 3-key
     default exists.
-11. ESO for **app** secrets after the unsealer is real — never
+12. ESO for **app** secrets after the unsealer is real — never
     Shamir-share copy.
-12. **seed vs broadcast** (classifier landed). Join-hash is
+13. **seed vs broadcast** (classifier landed). Join-hash is
     **framework**, indexed at `docs/PRODUCT-LANES.md`, not in
     SEED (`081M1RZ70FF087G0R0035580EZ`,
     `081M1S0K0R0087G0R001T4R8JH`).

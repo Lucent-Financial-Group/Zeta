@@ -1,0 +1,14 @@
+{
+  "id": "080d03afc456e010a0130008d342b7fb",
+  "at": "2026-09-06T09:06:57.884Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1TZH2PW087G0R0036F3S18",
+    "type": "task",
+    "title": "PKCS#11 hostPath overlay planner; musl image plus glibc host .so is not a module",
+    "slug": "pkcs-11-hostpath-overlay-planner-musl-image-plus-glibc-host",
+    "priority": "P2",
+    "filename": "081M1TZH2PW087G0R0036F3S18-pkcs-11-hostpath-overlay-planner-musl-image-plus-glibc-host.md"
+  }
+}
