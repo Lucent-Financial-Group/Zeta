@@ -11,6 +11,12 @@ and count-based controls, rendering nuisances, independent replay and cost
 receipts before measurement. This is a passive prediction experiment;
 no action return or ARC policy promotion follows from it.
 
+The [measured result](../../docs/research/2026-09-06-rendered-signal-predictor-results.md)
+retains all seeds and independent replay. Every RNN beats bigram but fails
+the frozen improvement criterion against order-two; the simpler control
+remains the next acting-carrier candidate. The report indexes complete
+prediction/detection/cost receipts, the verdict and its admission-repair witness.
+
 ## Simplex belief comparison
 
 See [the report](../../docs/research/2026-09-06-simplex-wset-comparison-and-stack-verdicts.md)

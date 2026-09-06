@@ -89,6 +89,8 @@ def _replay_admission(native, cost, replay, input_hash, cost_hash):
         raise ValueError(
             "requires passed complete prediction, detection and cost replay"
         )
+    number(replay["MaximumNumericError"], "prediction/detector replay error", 1e-10)
+    number(replay["CostReplay"]["MaximumChecksumError"], "cost replay error", 1e-10)
     training = replay["TrainingReplay"]
     expected = {
         "status": "passed",

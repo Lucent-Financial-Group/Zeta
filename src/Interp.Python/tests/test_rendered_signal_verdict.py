@@ -79,7 +79,8 @@ def fixture():
         "PredictionArmPanels": 72,
         "DetectorArmPanels": 30,
         "Comparisons": 102,
-        "CostReplay": {"Complete": True, "Rows": 120},
+        "MaximumNumericError": 0.0,
+        "CostReplay": {"Complete": True, "Rows": 120, "MaximumChecksumError": 0.0},
         "TrainingReplay": {
             "status": "passed",
             "seed": 41,
@@ -174,6 +175,18 @@ def test_one_seed_one_panel_failure_blocks_promotion_without_discarding_seed():
         False,
         True,
     ]
+
+
+@pytest.mark.parametrize("cost_error", [False, True])
+@pytest.mark.parametrize("error", [1.0, float("nan"), float("inf"), True])
+def test_passed_flag_cannot_override_invalid_replay_error(cost_error, error):
+    native, cost, replay = fixture()
+    if cost_error:
+        replay["CostReplay"]["MaximumChecksumError"] = error
+    else:
+        replay["MaximumNumericError"] = error
+    with pytest.raises(ValueError, match="replay error"):
+        target.verdict(*bind(native, cost, replay))
 
 
 def test_sanity_and_stronger_promotion_are_reported_separately():
