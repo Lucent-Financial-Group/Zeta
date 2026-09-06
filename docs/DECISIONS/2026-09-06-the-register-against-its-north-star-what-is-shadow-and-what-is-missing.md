@@ -276,3 +276,78 @@ run cannot inflate its own soak.
   17 falsifiers, mutation `mut-budget` **12/12 killed** first pass
 - `agentic-organization/docs/OBSERVE_ACT_PROMOTION_GATE.md` — the rule this implements
 - `agentic-organization/docs/ALWAYS_ON_ORCHESTRATION_RUNTIME.md` — the core loop the table judges against
+
+---
+
+# ADDENDUM — the organization drives itself (same day, later)
+
+The table above was written when the question was "does the delivery pipeline work". The
+question then became whether the ORGANIZATION runs: escalation up the right chains, decisions
+recorded, TPMs assigning, directors deciding execution, engineering managers unblocking people
+and getting reviews arranged, everything on the calendar, all of it driven through `observe.ts`.
+
+## What that exposed, in order
+
+**The grammar could not address another agent.** `observe.ts` had seventeen `NextAction` kinds
+and exactly one communication verb — `respond_to_operator`, which addresses the human. An agent
+could work, decompose, explore, rest and rewrite the grammar itself, and had no way to look at a
+colleague's artifact, answer it, ask for what it was missing, pull anyone into a room, or hand
+work to someone. *A hierarchy whose members cannot address each other is an org chart drawn over
+solitary confinement.*
+
+Five verbs now exist, all generic — the core takes strings and knows nothing about hats. The
+repo's own guardrails made the change honest rather than easy: `Record<ActionKind, ActionRow>`
+refused to compile until every kind had a gate and a scope, the gate switch is exhaustive so each
+new gate had to name the authority it reads, and a test that MIRRORS that switch failed until it
+agreed.
+
+**`request_information` is never gated**, and that is an NCI-shaped call rather than an
+oversight: an agent that cannot say "I am missing something" has only guessing and going quiet
+when blocked, and both cost the organization more than the interruption.
+
+**Reviews and QA had no calendar time.** The runtime booked one block type —
+`prioritized_work`, for the assignee — and thirteen gates were then judged by hats with nothing
+on their calendars. That is not bookkeeping: `loop-policy.ts` makes the calendar RUNTIME
+AUTHORITY, so a review with no block is one the reviewing hat's tick cannot SEE it is meant to
+do. Work was authorised by the schedule and reviews were not, which is why the review lane could
+never drive itself. From 2 blocks on 3 hats to 14 hats booked.
+
+**And nothing ever asked for a review.** `RequestReview` had a reader building a hat's menu and
+no writer, so that surface was always empty and `review_artifact` was a verb no agent could be
+offered. The first fix sent 26 requests and all 26 landed on ONE lead, because the family routed
+to `supervisor` while the calendar had booked seven different hats — so `scope_holder` became a
+fourth routing kind, deriving the target from gate ownership rather than from the chain. Routing
+is still not the sender's to choose. Measured after: 26 requests, 7 hats, 26/26 to hats holding
+the booked block.
+
+**Escalations decided alone.** `RequestDecision`'s policy names its case exactly — *"multiple
+valid paths exist and authority sits above the hat"* — and it had zero senders. Now a failing
+run escalates twice and asks `engineering_director` both times, with the gate record attached.
+A clean run asks nobody.
+
+## What "it drives itself" now means, precisely
+
+`org-drive.ts` closes the loop: state → surface → menu → choice → effect → state. The chain test
+is the claim in one assertion — a blocked IC reports it, the report routes to its supervisor
+because the chart says so, and the next tick of that supervisor holds it. **Nobody wrote
+"engineering managers unblock people" anywhere.** Two different ICs asking the same question
+reach two different supervisors, which is what stops an agent shopping for a friendlier answerer.
+
+`observe()`'s priority oracle now knows other agents exist: blocked first (asking is cheap and
+un-sticks you), then a review someone waits on, then an open room, then assigning (a manager who
+does the task itself has cleared one item and still has the queue), then own work, then convening
+— and the free modes remain beside all of it.
+
+## THE LIMIT, STATED PLAINLY
+
+Every port in these runs is **simulated**. `realPorts` is empty and the runs are replayable.
+Nothing touched a repository, a tracker or a test runner.
+
+So the 1390 passing tests and the 19-case end-to-end file are evidence about the **organization's
+wiring** — that the chains route, the calendar authorises, the deliberation survives the store,
+the loop settles rather than spins — and are **not** evidence that work has been delivered. The
+end-to-end file asserts that limit about itself, because a green e2e suite is exactly the
+artifact someone would later cite as proof of something it never measured.
+
+Two signal families (`ReportRisk`, `SuggestImprovement`) still have no senders, and are named
+here rather than left looking wired.
