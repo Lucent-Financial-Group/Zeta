@@ -205,8 +205,10 @@ export function readTree(rev: string, cwd: string): readonly TreeEntry[] {
     const tab = line.indexOf("\t");
     if (tab < 0) continue;
     const meta = line.slice(0, tab).split(/\s+/);
-    if (meta.length < 4 || meta[1] !== "blob") continue;
-    const bytes = Number.parseInt(meta[3], 10);
+    const type = meta[1];
+    const size = meta[3];
+    if (type !== "blob" || size === undefined) continue;
+    const bytes = Number.parseInt(size, 10);
     if (!Number.isFinite(bytes)) continue;
     out.push({ path: line.slice(tab + 1), bytes });
   }
@@ -235,8 +237,20 @@ export function topUnclassifiedDirs(entries: readonly TreeEntry[], limit: number
 
 function main(): number {
   const argv = process.argv.slice(2);
-  const at = argv.includes("--at") ? argv[argv.indexOf("--at") + 1] : "HEAD";
-  const since = argv.includes("--since") ? argv[argv.indexOf("--since") + 1] : undefined;
+  // A flag whose value is missing must refuse rather than silently fall back — `--since` with
+  // no rev would otherwise read as "no comparison requested", which is a check that did not run.
+  const flagValue = (name: string): string | undefined => {
+    const i = argv.indexOf(name);
+    if (i < 0) return undefined;
+    const v = argv[i + 1];
+    if (v === undefined || v.startsWith("--")) {
+      console.error(`REFUSED: ${name} requires a git rev.`);
+      process.exit(2);
+    }
+    return v;
+  };
+  const at = flagValue("--at") ?? "HEAD";
+  const since = flagValue("--since");
   const asJson = argv.includes("--json");
   const cwd = process.cwd();
 
