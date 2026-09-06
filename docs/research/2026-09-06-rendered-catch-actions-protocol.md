@@ -1,19 +1,21 @@
-# Rendered catch actions: preregistration draft
+# Rendered catch actions: preregistration
 
 Date: 2026-09-06
 Operational status: research-grade
 Lifecycle: active
 Work item: 081M1W8T690087G0R002DJ91MJ
 Author: Vera, OpenAI Codex using GPT-6 Astra
-Draft baseline: `cfc3f53f011b21ce54d9d9380d9de244b6b4015f`
-Registration status: reviewed local draft awaiting prerequisite landing and registration commit
+Registration basis: `b5ef469d805aecbc1af8ba58af5bc52d0b7cfbe1`
+Review freeze: 2026-09-06T21:43:14Z
+Registration status: reviewed and frozen before acting implementation/measurement
+Prerequisite PR #16858: pending main landing at registration
 
 ## Question and claim boundary
 
 Does the passive experiment's frozen fitted order-two predictor improve real
 keypad-action return over fitted bigram, last-beacon, and fair controls when
 all decisions receive the same chronological rendered observation channel?
-This draft indexes the
+This protocol indexes the
 [source/design audit](2026-09-06-rendered-catch-followup-design-audit.md) and
 [new work item](../../workitems/081M1W8T690087G0R002DJ91MJ-preregister-rendered-catch-actions-from-a-frozen-chronologic.md).
 Its predecessor is the
@@ -30,12 +32,15 @@ No learned vision, goal acquisition, multi-step planning, action-dependent
 world-model learning, unseen-dynamics generalization, or ARC claim follows.
 Use no ARC data and make no hosted-policy change.
 
-All choices below are proposed frozen values for review. Before publication,
-resolve source constraints and mark a reviewed version registered. Preserve
-that protocol remotely before acting implementation measurements; preserve
-implementation remotely before any evaluation or timing. No measurements are
-authorized by the draft label. Do not reinterpret this local draft as an
-already completed preregistration.
+The choices below are frozen after coordinating review. The registration
+basis merges current main `0e3456d604096b0b8d51b6be91704650d7d3d323` and
+the remotely preserved predecessor branch at
+`69ba5db2f663a44e81d85e1c70bfb02c660fb7e5`. Thus the exact input receipt and
+source links resolve through real ancestry while PR #16858 remains pending;
+the prerequisite is not represented as already merged to main. Preserve this
+protocol remotely before acting implementation, and preserve the implementation
+remotely before any evaluation or timing. No acting implementation or
+measurement exists at registration.
 
 ## A. Exact input artifact and frozen policies
 
@@ -395,21 +400,24 @@ not executed tests or independent empirical validation.
   complete action/hit traces and per-episode hashes are retained.
 
 Coordinating review approved the amended shadow-audit resolution before any
-acting measurements. Publication waits for the predecessor result/source
-landing, then a reviewed registration commit; this draft is not yet frozen.
+acting implementation or measurements. It also approved merging the remotely
+preserved predecessor branch and current main before registration while the
+predecessor PR remains pending. That dependency ancestry is retained in the
+registration basis above; no source/input link depends on a future file.
 
 ## J. Publication and continuation
 
-Resolve this draft through coordinating review before pushing the protocol.
-Keep the design audit indexed by this file and the work item; leave existing
-main handoff/README integration to the coordinating continuation after the
-predecessor PR lands. Then preserve the reviewed protocol and implementation
-under a long-lived ref and immutable
-`archive/experiments/081M1W8T690087G0R002DJ91MJ` tag before measurement.
-Record the exact preservation commits in the eventual results document.
+Publish this reviewed protocol under the co-claimed remote branch and immutable
+`archive/experiments/081M1W8T690087G0R002DJ91MJ-registration` tag before acting
+implementation. Keep the design audit indexed by this file and the work item;
+leave existing main handoff/README integration to the coordinating continuation
+after the predecessor PR lands. Preserve the integrated implementation under
+the long-lived ref and immutable
+`archive/experiments/081M1W8T690087G0R002DJ91MJ` tag before measurement. Record
+the exact preservation commits in the eventual results document.
 
 Expected implementation surfaces are separately named rendered-catch research
 modules/runners and an independent Python replay/verdict, with focused
-cross-checks. This draft creates none of them. The implementation must expose
+cross-checks. This protocol creates none of them. The implementation must expose
 explicit native, cost, replay, and verdict commands before measurement; their
 source bytes and invocation arguments belong in the eventual receipts.

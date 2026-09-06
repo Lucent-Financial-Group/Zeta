@@ -9,13 +9,13 @@ Source baseline: `928c0f5e1fa5cadd2b8bad0bc810796874c719bf`
 Artifact status: design proposal; not a preregistration or measured result
 
 Design correction, 2026-09-06: the
-[acting preregistration draft](2026-09-06-rendered-catch-actions-protocol.md)
+[acting preregistration](2026-09-06-rendered-catch-actions-protocol.md)
 places the hit glyph at y=26 and preserves target rows 0..23. This supersedes
 the initial audit's y=16 glyph and rows 0..11 projection, so a bar at y=20
 remains visible while every catcher/feedback pixel stays outside policy input.
 The palette panel keeps fixed dot geometry; it does not alternate shape/Y.
 Coordinating review also clarified that the adapter hides its individual
-steps. The acting draft now observes a separate 17-step shadow execution,
+steps. The acting protocol requires a separate 17-step shadow execution,
 compares its complete final state with each primary adapter result, and
 counts/times both paths. Primary instructions remain 1,122 per episode;
 the private audit adds 1,122, for 2,244 actual transitions. The shadow trace
@@ -154,7 +154,7 @@ full current frame cannot establish that internal history is necessary.
 Give every policy the same declared target-band projection: copy the 64x32
 palette-2 frame and replace cells outside rows 0..23 with the background
 computed exclusively from those top 24 rows. The target is at y=8, or y=20
-for the draft's bar panel; catcher y=24 and glyph rows 26..30 are excluded.
+for the protocol's bar panel; catcher y=24 and glyph rows 26..30 are excluded.
 Validate the full frame shape and palette before projection. Run the existing
 single-component decoder on the copied projection. This is a supplied
 representation boundary, not feature discovery. Never substitute source
@@ -261,8 +261,8 @@ its clean/assisted distinction is not this fixed-observation policy ablation.
 ## Continuation and durability
 
 The initial reviewed design was committed under the handoff work item. It is
-now indexed by the local
-[acting draft](2026-09-06-rendered-catch-actions-protocol.md) and
+now indexed by the
+[acting preregistration](2026-09-06-rendered-catch-actions-protocol.md) and
 [follow-up work item](../../workitems/081M1W8T690087G0R002DJ91MJ-preregister-rendered-catch-actions-from-a-frozen-chronologic.md).
 The coordinating continuation owns remote publication and main indexing. This
 note alone is not an indexed protocol, an implementation authorization

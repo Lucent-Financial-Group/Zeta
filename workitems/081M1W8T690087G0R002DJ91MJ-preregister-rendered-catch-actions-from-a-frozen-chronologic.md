@@ -33,7 +33,8 @@ Acceptance:
   acting measurement; retain failures and avoid post-result tuning.
 
 Claim: `task-rendered-catch-actions-20260906`.
-The [protocol draft](../docs/research/2026-09-06-rendered-catch-actions-protocol.md)
+The [registered protocol](../docs/research/2026-09-06-rendered-catch-actions-protocol.md)
 indexes the [source/design audit](../docs/research/2026-09-06-rendered-catch-followup-design-audit.md).
-The coordinating continuation owns reviewed remote publication and main
-integration after the passive predictor result lands.
+The coordinating continuation owns integrated implementation publication and
+main integration after the passive predictor result lands. Registration
+retains that pending predecessor's remotely preserved branch ancestry.
