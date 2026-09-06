@@ -462,6 +462,8 @@ capture (`081M1V9KQFX087G0R0038J326D`).
 Load-site / ELF capture classifies musl vs glibc and
 names option D host `bao` (`081M1VB58YS087G0R001G1RSXW`);
 host HCL is not a chart seal.
+Installer parses `PT_INTERP` from ELF bytes
+(`081M1VDMK7R087G0R0038GVG66`); no `readelf`.
 glibc-host-into-musl-image is not a
 module; Application.yaml stays Shamir.
 

@@ -6,8 +6,9 @@
  * commit: a same-libc chart image, or option D host `bao`
  * (docs/research/2026-08-21-hands-off-metal-*.md §1.4). This
  * module CLASSIFIES the load site and the captured ELF
- * interpreter. It does not run `readelf`, does not open a
- * filesystem, and does not edit Application.yaml.
+ * interpreter. It parses `PT_INTERP` from injected bytes. It
+ * does not spawn `readelf`, does not open a filesystem, and
+ * does not edit Application.yaml.
  *
  * Today's `quay.io/openbao/openbao-hsm` is Alpine/musl
  * (`/lib/ld-musl-x86_64.so.1`). The off-cluster CI job uses the
@@ -111,4 +112,79 @@ export function imageAbiFromBaoElf(
 export function hostBaoAbiFromCapture(capture: BaoElfCapture): ElfLibc {
   if (capture.site !== "on-host") return "unknown";
   return classifyElfInterpreter(capture.interpreter);
+}
+
+const ELFCLASS64 = 2;
+const ELFDATA2LSB = 1;
+const PT_INTERP = 3;
+const ELF64_EHDR_SIZE = 64;
+const ELF64_PHDR_SIZE = 56;
+
+function u16le(view: DataView, offset: number): number {
+  return view.getUint16(offset, true);
+}
+
+function u32le(view: DataView, offset: number): number {
+  return view.getUint32(offset, true);
+}
+
+function u64leAsNumber(view: DataView, offset: number): number | null {
+  const n = view.getBigUint64(offset, true);
+  if (n > BigInt(Number.MAX_SAFE_INTEGER)) return null;
+  return Number(n);
+}
+
+/**
+ * ELF64 little-endian `PT_INTERP` string, or null. Not a spawn of
+ * `readelf`. 32-bit / big-endian / truncated / non-ELF is
+ * unmeasured, not a glibc proof. No filesystem.
+ */
+export function ptInterpFromElfBytes(bytes: Uint8Array): string | null {
+  if (bytes.length < ELF64_EHDR_SIZE) return null;
+  if (bytes[0] !== 0x7f || bytes[1] !== 0x45 || bytes[2] !== 0x4c || bytes[3] !== 0x46) return null;
+  if (bytes[4] !== ELFCLASS64 || bytes[5] !== ELFDATA2LSB) return null;
+  const view = new DataView(bytes.buffer, bytes.byteOffset, bytes.byteLength);
+  const phoff = u64leAsNumber(view, 32);
+  if (phoff === null) return null;
+  const phentsize = u16le(view, 54);
+  const phnum = u16le(view, 56);
+  if (phentsize !== ELF64_PHDR_SIZE || phnum === 0) return null;
+  for (let i = 0; i < phnum; i += 1) {
+    const off = phoff + i * ELF64_PHDR_SIZE;
+    if (off + ELF64_PHDR_SIZE > bytes.length) return null;
+    if (u32le(view, off) !== PT_INTERP) continue;
+    const pOffset = u64leAsNumber(view, off + 8);
+    const pFilesz = u64leAsNumber(view, off + 32);
+    if (pOffset === null || pFilesz === null || pFilesz === 0) return null;
+    if (pOffset + pFilesz > bytes.length) return null;
+    const slice = bytes.subarray(pOffset, pOffset + pFilesz);
+    const nul = slice.indexOf(0);
+    const text = slice.subarray(0, nul === -1 ? slice.length : nul);
+    const interp = new TextDecoder("utf-8").decode(text).trim();
+    return interp.length === 0 ? null : interp;
+  }
+  return null;
+}
+
+export interface BaoElfBytesInput {
+  readonly site: BaoLoadSite;
+  readonly openedPath: string;
+  readonly exists: boolean;
+  readonly bytes: Uint8Array | null;
+}
+
+/**
+ * Bytes → capture. Missing / unreadable / non-ELF is interpreter
+ * null (unmeasured). Site stays named. Opening a `.so` still
+ * produces a capture so the overlay can refuse the path.
+ */
+export function baoElfCaptureFromBytes(input: BaoElfBytesInput): BaoElfCapture {
+  if (!input.exists || input.bytes === null) {
+    return { site: input.site, openedPath: input.openedPath, interpreter: null };
+  }
+  return {
+    site: input.site,
+    openedPath: input.openedPath,
+    interpreter: ptInterpFromElfBytes(input.bytes),
+  };
 }
