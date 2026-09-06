@@ -1,0 +1,12 @@
+{
+  "pr_number": 16834,
+  "archive_path": "docs/history/pr-reviews/PR-16834-feat-creds-invoke-bun-bao-consume-after-installer-6-95a.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-06T19:28:21.433Z",
+  "schema_version": "v1",
+  "commit_sha": "93c2da399626f6935660448591f0c406a8f5bc38",
+  "title": "feat(creds): Invoke bun bao consume after installer 6.95a",
+  "state": "MERGED",
+  "merged_at": "2026-09-06T19:27:41Z",
+  "head_ref": "cursor/firstboot-bao-bun-invoke-27c5"
+}
