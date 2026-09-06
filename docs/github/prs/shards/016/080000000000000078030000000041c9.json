@@ -1,0 +1,12 @@
+{
+  "pr_number": 16841,
+  "archive_path": "docs/history/pr-reviews/PR-16841-feat-081m1w3wcpg087g0r00217f66m-d10-documented-mapping-durabilitymode-to-freeze-.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-06T20:06:37.843Z",
+  "schema_version": "v1",
+  "commit_sha": "b9894fd2109c1bfb17039987243f5d1bad88d0f6",
+  "title": "feat(081M1W3WCPG087G0R00217F66M): D10 documented mapping DurabilityMode to freeze class",
+  "state": "MERGED",
+  "merged_at": "2026-09-06T20:06:01Z",
+  "head_ref": "feat/zetafs-d10-durability-freeze-mapping"
+}
