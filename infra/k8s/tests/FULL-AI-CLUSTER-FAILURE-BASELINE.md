@@ -65,19 +65,33 @@ the convention."_
 | 6 | `prune` / `selfHeal` are required only of an Application that DECLARES `spec.syncPolicy.automated`. Alternatives in an either/or pair omit the block on purpose | `forgejo` 2, `ollama` 2, `vllm` 2 |
 | 7 | `CreateNamespace=true` is not required of an app that already has its namespace — it either VENDORS its own `Namespace` manifest or targets one that always exists (`kube-system`) | `cdi` 3, `kubevirt` 3, `cilium-lb-ipam` 1 |
 
+**The 6 are exempt by DECLARATION, never by omission.** The first cut of this
+relaxation keyed on `spec.syncPolicy.automated` being absent, which is the exact
+hole `src/Core.TypeScript/cluster/manual-sync-policy.ts` was built to close — an
+absent block is _"indistinguishable from someone forgetting one"_, so keying on
+absence would let a **forgotten** block buy what a **claimed** posture buys. The
+validator now imports `classifySyncPolicy` from that module, which is what its
+header asked for (_"both checkers are meant to import THIS module rather than each
+grow a private notion of 'manual is fine'"_) and which it named as _"a separate,
+ratchet-affecting change"_. This is that change. `invalid` is treated exactly as
+`automated` — fail-closed — so a malformed declaration is never cheaper than a
+correct one.
+
 **Why this is not the ceiling being lowered by looking away.** A relaxation with
-no falsifier is indistinguishable from deleting a check, so both are pinned in
+no falsifier is indistinguishable from deleting a check, so all of it is pinned in
 `validate-applications.test.ts`:
 
 - `CreateNamespace=true` — _"RED when CreateNamespace=true is dropped"_, mutating
   **`longhorn`**, which is neither exempt route. Mutating an exempt app would be a
   test that cannot go red.
-- `prune`/`selfHeal` — two cases added with this change: _"RED when an app that
-  DECLARES automated: drops prune"_ (the rule still binds) and _"GREEN when an app
-  has NO automated: block at all"_ (the exemption is real, not an artifact of
-  nothing testing it). Both assert the mutation actually changed the file, and the
-  absence-test asserts the validator reached its `Results:` line, because two
-  `not.toContain` assertions both pass on a crash.
+- `prune`/`selfHeal` — three cases added with this change: _"RED when an app that
+  DECLARES automated: drops prune"_ (the rule still binds), _"RED when automated: is
+  dropped and NOTHING claims manual"_ (omission is not a declaration — the hole
+  above), and _"GREEN when the omission is CLAIMED with annotation + reason"_ (the
+  exemption is reachable, so the convention is not a rule nothing can satisfy). All
+  three assert the mutation actually changed the file, and the absence-test asserts
+  the validator reached its `Results:` line, because `not.toContain` assertions all
+  pass on a crash with empty output.
 
 **What a zero ceiling now means, precisely:** every Application in the tree
 satisfies every rule the validator knows, and the validator's rules are pinned by

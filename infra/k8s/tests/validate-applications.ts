@@ -57,6 +57,12 @@ import { tmpdir } from "node:os";
 import { fileURLToPath } from "node:url";
 import { parseArgs } from "node:util";
 import { parse as parseYamlStrict, stringify as stringifyYaml } from "yaml";
+// THE ONE DEFINITION OF "deliberately manual-sync", imported rather than re-derived.
+// That module's own header asks for exactly this: "both checkers are meant to import
+// THIS module rather than each grow a private notion of 'manual is fine' (or, worse,
+// a hardcoded list of app names, which is the thing that drifts)", and it names this
+// validator's adoption as "a separate, ratchet-affecting change". This is that change.
+import { classifySyncPolicy } from "../../../src/Core.TypeScript/cluster/manual-sync-policy.ts";
 
 /** The one declared Kubernetes version; see full-ai-cluster/k8s/kubernetes-version.json. */
 function declaredKubeVersion(): string {
@@ -350,14 +356,32 @@ const REQUIRED_FIELDS = [
  * check that is not merely wrong but pushes toward the opposite of the intent. It
  * only went unnoticed because this validator defaulted to `infra/k8s/applications`,
  * where no manual-sync app lived.
+ *
+ * THE EXEMPTION IS EARNED BY A DECLARATION, NEVER BY AN OMISSION. The first cut of
+ * this relaxation keyed on `spec.syncPolicy.automated === undefined`, which is
+ * exactly the hole `manual-sync-policy.ts` was built to close: an absent block is
+ * "indistinguishable from someone forgetting one", so keying on absence would let a
+ * forgotten block buy the same exemption a claimed posture buys. `classifySyncPolicy`
+ * is total on the 2x2 of {annotation, `automated:`} and returns `invalid` for the
+ * mismatches -- and `invalid` is treated here exactly as `automated` is, fail-closed,
+ * for the reason that module states: "a malformed declaration must never be cheaper
+ * to satisfy than a correct one, or the malformed form becomes the preferred way to
+ * quiet a lane."
  */
 const AUTOMATED_ONLY_FIELDS = ["spec.syncPolicy.automated.prune", "spec.syncPolicy.automated.selfHeal"];
 
 console.log("\n=== Test 2: required ArgoCD Application fields ===");
 for (const app of parsedApps) {
   let allOk = true;
-  const declaresAutomated = get(app.yaml, "spec.syncPolicy.automated") !== undefined;
-  const fields = declaresAutomated ? [...REQUIRED_FIELDS, ...AUTOMATED_ONLY_FIELDS] : REQUIRED_FIELDS;
+  const syncPolicy = classifySyncPolicy(readFileSync(app.path, "utf-8"));
+  if (syncPolicy.kind === "invalid") {
+    err(`${app.name}/Application.yaml: malformed sync-policy declaration — ${syncPolicy.problem}`);
+    allOk = false;
+  }
+  // `manual` is the ONLY posture that drops the automated-only fields, and it has to
+  // be claimed with a non-empty reason to be `manual` at all.
+  const fields =
+    syncPolicy.kind === "manual" ? REQUIRED_FIELDS : [...REQUIRED_FIELDS, ...AUTOMATED_ONLY_FIELDS];
   for (const field of fields) {
     const val = get(app.yaml, field);
     if (val === undefined || val === null) {

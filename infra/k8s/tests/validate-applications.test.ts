@@ -297,23 +297,54 @@ describe("validate-applications mutation suite", () => {
   );
 
   test(
-    "GREEN when an app has NO automated: block at all (the either/or exemption is real)",
+    "RED when automated: is dropped and NOTHING claims manual (omission is not a declaration)",
     () => {
-      // Deleting the whole block must NOT produce a prune/selfHeal complaint --
-      // that is what lets forgejo/ollama/vllm ship as manual-sync alternatives.
-      // The assertion is on the ABSENCE of that specific message rather than on
-      // exit 0, because this mutation may legitimately trip other checks; what is
-      // being falsified is precisely that the automated-only fields stop applying.
-      const { output } = runWithMutation((appsDir) => {
+      // THE HOLE THE FIRST CUT LEFT OPEN. Keying the exemption on `automated:` being
+      // absent would let a FORGOTTEN block buy exactly what a claimed posture buys --
+      // "the absence of a block is not a declaration; it is indistinguishable from
+      // someone forgetting one" (manual-sync-policy.ts). So the exemption is earned by
+      // the annotation, and a bare omission must still be red.
+      const { exitCode, output } = runWithMutation((appsDir) => {
         const manifest = appManifest(appsDir, "cockroachdb");
         const before = readFileSync(manifest, "utf-8");
         edit(manifest, (t) => t.replace(/^ {4}automated: \{[^}]*\}\n/m, ""));
         expect(readFileSync(manifest, "utf-8")).not.toBe(before);
       });
-      // The validator must have RUN to completion, or two `not.toContain`
-      // assertions would both pass on a crash with empty output -- an absence
-      // test is vacuous unless something proves the thing was present to observe.
+      // cockroachdb carries no `zeta.io/sync-policy` annotation, so removing the block
+      // leaves it neither automated nor validly manual.
+      expect(output).toContain("malformed sync-policy declaration");
+      expect(exitCode).toBe(1);
+    },
+    TIMEOUT_MS,
+  );
+
+  test(
+    "GREEN when the omission is CLAIMED with annotation + reason (the exemption is real)",
+    () => {
+      // The paired half of the case above. Same mutation -- drop `automated:` -- plus
+      // the declaration that earns the exemption. If this went red the relaxation
+      // would be unreachable, and `manual-sync-policy.ts`'s whole convention would be
+      // a rule nothing can satisfy.
+      const { output } = runWithMutation((appsDir) => {
+        const manifest = appManifest(appsDir, "cockroachdb");
+        const before = readFileSync(manifest, "utf-8");
+        edit(manifest, (t) =>
+          t
+            .replace(/^ {4}automated: \{[^}]*\}\n/m, "")
+            .replace(
+              /^ {2}annotations:\n/m,
+              "  annotations:\n" +
+                "    zeta.io/sync-policy: manual\n" +
+                "    zeta.io/sync-policy-reason: mutation-suite fixture for the claimed-omission case\n",
+            ),
+        );
+        expect(readFileSync(manifest, "utf-8")).not.toBe(before);
+      });
+      // The validator must have RUN to completion, or three `not.toContain`
+      // assertions would all pass on a crash with empty output -- an absence test is
+      // vacuous unless something proves the thing was present to observe.
       expect(output).toContain("Results:");
+      expect(output).not.toContain("malformed sync-policy declaration");
       expect(output).not.toContain("missing required field .spec.syncPolicy.automated.prune");
       expect(output).not.toContain("missing required field .spec.syncPolicy.automated.selfHeal");
     },
