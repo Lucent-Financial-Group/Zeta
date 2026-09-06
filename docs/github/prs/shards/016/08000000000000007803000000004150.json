@@ -1,0 +1,12 @@
+{
+  "pr_number": 16720,
+  "archive_path": "docs/history/pr-reviews/PR-16720-fix-headscale-base-domain-must-not-contain-server-url-s-host-main-crash-loops-to.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-06T01:26:18.377Z",
+  "schema_version": "v1",
+  "commit_sha": "2ade9af5c29844575e371ab6ad6b99f08bb43d20",
+  "title": "fix(headscale): base_domain must not contain server_url's host — main crash-loops today",
+  "state": "MERGED",
+  "merged_at": "2026-09-06T01:25:40Z",
+  "head_ref": "otto/headscale-base-domain-fix"
+}
