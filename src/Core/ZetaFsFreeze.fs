@@ -321,8 +321,12 @@ module ZetaFsFreeze =
         let gen = maxGen + 1L
         let slot = int (gen % 2L)
         let text = encodeCatalog gen history meter known livePins objectSets
-        FileSystemIo.writeAllText fs (catalogSlot storeDir slot) text
-        FileSystemIo.writeAllText fs (catalogPath storeDir) text
+        let slotPath = catalogSlot storeDir slot
+        let copyPath = catalogPath storeDir
+        FileSystemIo.writeAllText fs slotPath text
+        SimulatedFs.Write slotPath
+        FileSystemIo.writeAllText fs copyPath text
+        SimulatedFs.Write copyPath
 
     let private loadCatalog
         (storeDir: string)
@@ -403,7 +407,24 @@ module ZetaFsFreeze =
         let mutable lastBoat = 0
 
         let processBatch (boat: ReadOnlyMemory<LogItem>) (ct: CancellationToken) : Task =
-            let succeed (err: FreezeError option) =
+            let mutable err: FreezeError option = None
+
+            let persist () =
+                if err.IsNone then
+                    try
+                        persistCatalog storeDir known livePins !history !meter objectSets
+                    with
+                    | :? CrashMidWriteException as ex -> raise ex
+                    | :? PowerOutageException as ex -> raise ex
+                    | :? BadMemoryException as ex -> raise ex
+                    | :? IOException ->
+                        err <- Some(FreezeError.Fsync(FileSync.FileSyncError.FlushFailed(catalogPath storeDir, 5)))
+                    | ex when ex.Message.IndexOf("BUGGIFY", StringComparison.Ordinal) >= 0 ->
+                        err <- Some(FreezeError.Fsync(FileSync.FileSyncError.FlushFailed(catalogPath storeDir, 5)))
+
+            let succeed () =
+                persist ()
+
                 if err.IsNone then
                     for i in 0 .. boat.Length - 1 do
                         let it = boat.Span.[i]
@@ -413,8 +434,6 @@ module ZetaFsFreeze =
                             let struct (id, _) = it.Objects.[j]
                             livePins.Add id |> ignore
                             j <- j + 1
-
-                persistCatalog storeDir known livePins !history !meter objectSets
 
                 for i in 0 .. boat.Length - 1 do
                     let it = boat.Span.[i]
@@ -438,7 +457,6 @@ module ZetaFsFreeze =
                 boats <- boats + 1
                 lastBoat <- boat.Length
                 fsDoor.CreateDirectory logDir
-                let mutable err: FreezeError option = None
 
                 let tryFlush (io: IBlockIo) (path: string) =
                     if err.IsNone then
@@ -490,7 +508,7 @@ module ZetaFsFreeze =
                         | Some cas ->
                             cas.Put(hex, bytes)
                             known.[id] <- uint64 bytes.Length
-                            persistCatalog storeDir known livePins !history !meter objectSets
+                            persist ()
                             tryWrite (ZetaFsPath.combine2 storeDir "cas")
 
                             if item.Durable then
@@ -525,7 +543,7 @@ module ZetaFsFreeze =
 
                                     if n > 0 then
                                         known.[id] <- uint64 n
-                                        persistCatalog storeDir known livePins !history !meter objectSets
+                                        persist ()
 
                                 raise ex
 
@@ -601,7 +619,7 @@ module ZetaFsFreeze =
                                 | Error e -> err <- Some(FreezeError.Fsync e)
                                 | Ok() -> ()
 
-                succeed err
+                succeed ()
             with
             | ex -> fail ex
 
