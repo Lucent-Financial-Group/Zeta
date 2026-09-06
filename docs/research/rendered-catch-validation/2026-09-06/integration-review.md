@@ -123,3 +123,31 @@ an additional recorded-evidence/source-binding check, not a third interpreter,
 new replay algorithm or independent remeasurement. Full rendered execution
 belongs to the separately written Python replay retained with the
 [registered result](../../2026-09-06-rendered-catch-actions-results.md).
+
+## Publication integration gate
+
+The complete measured data/report snapshot is archived separately at
+`8487974c6c64a9a73612ee4e5e8271d921b4cb89`. Integrating current main yielded
+`19aa9d7cbd3617ceae44445b18d786185020d63d`. All 23 admitted scientific
+files still match their measurement hashes and their committed bytes.
+The original native/cost binary receipts remain untouched; publication
+validation is a separate check of the combined repository tree.
+
+The first full publication build failed with `MSB6006: dotnet exited with
+code 139` in `Tests.FSharp.fsproj`. The affected project passed unchanged
+with `-m:1`, followed by a successful ordinary full Release build and all
+7,523 solution tests with six existing skips. No source or build-setting
+repair was needed; the crash mechanism is not established by that recovery.
+The final quick gate passes all 16 checks. Evidence:
+
+- [Original compiler failure](publication-compiler-failure.log).
+- [Unchanged isolated project build](publication-isolated-build.log).
+- [Full recovery build](publication-recovery-build.log).
+- [Full recovery test output](publication-recovery-tests.log).
+- [All 16 publication preflight checks](publication-preflight.log).
+
+The delegated verdict/evidence reviewer also accepted the final result
+wording after inspecting its counts, gain bounds, retained first cost
+repetition, allocation/payload distinction, native-shadow/Python boundary,
+and supplied-goal claim limit. That acceptance is an evidence and report
+review; it does not create another independently authored interpreter.

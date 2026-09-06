@@ -45,6 +45,14 @@ retain publication evidence. Both pushes passed all 16 required preflight checks
 No archive was moved, no output replaced, and no source, seed, threshold,
 model or roster changed after results were observed.
 
+The complete measured receipts and first result report are additionally
+preserved at `8487974c6c64a9a73612ee4e5e8271d921b4cb89`, under immutable
+tag `archive/experiments/081M1W8T690087G0R002DJ91MJ-results`.
+The [results archive proof](rendered-catch-validation/2026-09-06/results-archive-remote.txt)
+and [publication log](rendered-catch-validation/2026-09-06/results-publication.log)
+retain that separate preservation step. The original implementation tag
+remains the source-admission authority.
+
 | Receipt | Exact-byte SHA256 |
 | --- | --- |
 | [Native behavior](rendered-catch-validation/2026-09-06/behavior.json) | `32D48E93BB5478286DA221A5982D99BD1D815CA43A304A5A54B8BBE2592109AC` |
@@ -188,6 +196,17 @@ separate Python lint/format/types, and all 16 quick gates. The
 preserves two corrected pre-freeze findings: failed replay lost attribution,
 and full-envelope mutation coverage was missing. Strict admission, full
 rosters, failure locations and exclusive receipt publication are tested.
+
+After merging current main, the combined publication snapshot
+`19aa9d7cbd3617ceae44445b18d786185020d63d` again passed all 7,523 solution
+tests with six skips, a zero-warning/error Release build and all 16 quick
+checks. Its 23 admitted scientific source files are byte-identical to the
+measurement archive. The first publication build had an F# compiler exit
+139; the unchanged affected project passed in isolation, then the full
+build/test retry passed. The failure, isolated check and recovery logs are
+indexed in the integrated validation record. No model, test expectation,
+compiler setting, source-admission rule or scientific criterion was changed
+to obtain that recovery.
 
 One explicit pre-archive CLI negative control refused with zero panels and
 retained its [failed receipt](rendered-catch-validation/2026-09-06/refused-before-archive.json).
