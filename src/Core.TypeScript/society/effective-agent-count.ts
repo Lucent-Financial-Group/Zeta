@@ -529,9 +529,22 @@ export const FRAME_RENAMES: ReadonlyMap<string, string> = new Map([
   ["infra/k8s/tests/validate-bootstrap.ts", "full-ai-cluster/k8s/tests/validate-bootstrap.ts"],
 ]);
 
-/** Translate a recorded draw into the frame's current vocabulary. Identity when not renamed. */
-export function applyFrameRename(path: string): string {
-  return FRAME_RENAMES.get(path) ?? path;
+/**
+ * Translate a recorded draw into the vocabulary of the frame it is being checked against.
+ *
+ * FRAME-AWARE ON PURPOSE, and this is the whole subtlety. `rho-series` computes the same
+ * statistic at HISTORICAL commits, where the recorded path is the CORRECT one and the post-move
+ * path does not exist yet. A blind rename would fix the tip and break every point before the
+ * move — trading one out-of-frame draw for hundreds.
+ *
+ * So the rule is: a path already in the frame is left alone, and a rename is applied only if it
+ * LANDS in the frame. Never invent a path the frame does not have; if neither resolves, return
+ * the original and let `assertFrameContainsDraws` say so.
+ */
+export function applyFrameRename(path: string, frame: ReadonlySet<string>): string {
+  if (frame.has(path)) return path;
+  const target = FRAME_RENAMES.get(path);
+  return target !== undefined && frame.has(target) ? target : path;
 }
 
 /**
@@ -546,6 +559,7 @@ export function frameRenamesAreLive(frame: readonly string[]): readonly string[]
 
 export function measure(root: string): Report {
   const frame = enumerateUniverse(root);
+  const frameSet = new Set(frame);
   const deadRenames = frameRenamesAreLive(frame);
   if (deadRenames.length > 0) {
     throw new Error(
@@ -558,7 +572,7 @@ export function measure(root: string): Report {
   for (const agent of AGENTS) {
     const findings = readFindings(root, agent);
     all.push(...findings);
-    draws.set(agent, new Set(findings.map((f) => applyFrameRename(f.source))));
+    draws.set(agent, new Set(findings.map((f) => applyFrameRename(f.source, frameSet))));
   }
   assertFrameContainsDraws(frame, draws);
 

@@ -306,7 +306,7 @@ describe("the measurement over db/mutation-findings/", () => {
       // sampled is the same sampling unit under a new name, and the append-only ledger keeps
       // the name it recorded. Without this the assertion below fires on a rename, which is a
       // false alarm — the unit never left the population.
-      draws.set(a, new Set(readFindings(ROOT, a).map((f) => applyFrameRename(f.source))));
+      draws.set(a, new Set(readFindings(ROOT, a).map((f) => applyFrameRename(f.source, new Set(frame)))));
     }
     // The check that killed the N = 616 frame. It must throw, not filter.
     expect(() => {
@@ -485,10 +485,16 @@ describe("FRAME_RENAMES — a moved file is the same sampling unit", () => {
     const [from, to] = [...FRAME_RENAMES.entries()][0] ?? [];
     expect(from).toBeDefined();
     expect(to).toBeDefined();
-    expect(applyFrameRename(from as string)).toBe(to as string);
-    expect(applyFrameRename("src/Core.TypeScript/society/effective-agent-count.ts")).toBe(
+    const live = new Set([to as string, "src/Core.TypeScript/society/effective-agent-count.ts"]);
+    expect(applyFrameRename(from as string, live)).toBe(to as string);
+    expect(applyFrameRename("src/Core.TypeScript/society/effective-agent-count.ts", live)).toBe(
       "src/Core.TypeScript/society/effective-agent-count.ts",
     );
+    // FRAME-AWARE: at a historical frame that still holds the OLD path, nothing is translated.
+    const historical = new Set([from as string]);
+    expect(applyFrameRename(from as string, historical)).toBe(from as string);
+    // And a rename whose target is in NEITHER frame returns the original rather than inventing.
+    expect(applyFrameRename(from as string, new Set(["unrelated.ts"]))).toBe(from as string);
   });
 
   test("every rename target is live in the real frame", () => {
@@ -505,7 +511,8 @@ describe("FRAME_RENAMES — a moved file is the same sampling unit", () => {
 
   test("renaming preserves the draw COUNT — it is a rename, not a filter", () => {
     const recorded = ["infra/k8s/tests/validate-bootstrap.ts", "a/b.ts", "a/b.ts"];
-    const translated = recorded.map(applyFrameRename);
+    const f = new Set(["full-ai-cluster/k8s/tests/validate-bootstrap.ts", "a/b.ts"]);
+    const translated = recorded.map((r) => applyFrameRename(r, f));
     expect(translated.length).toBe(recorded.length);
     expect(new Set(translated).size).toBe(new Set(recorded).size);
   });
