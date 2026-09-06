@@ -26,7 +26,14 @@ import { join } from "node:path";
 import { agentsFromChart, runOrgRuntime, type OrgRuntimeDeps } from "./org-runtime";
 import { buildOrgChart } from "./org-chart";
 import { SEED_HATS } from "./org-seed";
-import { commandTestRunner, commandWorkExecutor, directoryIntake, gitChangeControl, autoApproveReview } from "./adapters";
+import {
+  autoApproveReview,
+  commandReview,
+  commandTestRunner,
+  commandWorkExecutor,
+  directoryIntake,
+  gitChangeControl,
+} from "./adapters";
 import { gitDataSource } from "./git-data-source";
 import { Fidelity, Port } from "./providers";
 
@@ -230,4 +237,76 @@ describe("THE GUARD THAT WOULD HAVE PREVENTED THE INCIDENT", () => {
       rmSync(repo, { recursive: true, force: true });
     }
   });
+});
+
+describe("NO SIMULATED PORT AT ALL", () => {
+  test("all six ports real, and the goal delivered into a real repository", async () => {
+    // The strongest statement this register can make about itself: a run in which nothing was
+    // assumed. Every other suite here holds at least one simulated adapter, and the review port is
+    // the one that matters most — `autoApproveReview` approves every gate it is asked about and
+    // reads no evidence, so a run carrying it has thirteen judgements nobody made.
+    const repo = realRepo();
+    const inbox = realInbox();
+    let n = 0;
+    try {
+      const report = await runOrgRuntime({
+        chart,
+        agents: agentsFromChart(chart),
+        observations: [],
+        externalEvents: [],
+        acceptingHatId: "cto",
+        resourceAuthorityHatId: "rmo_office",
+        priorityDeciderHatId: "cto",
+        createId: (p: string) => `${p}-${String(++n).padStart(3, "0")}`,
+        nowMs: 0,
+        workBlockMs: 3_600_000,
+        leaseMs: 300_000,
+        dataSource: gitDataSource({ repoDir: repo, ref: "main", extensions: [".md"] }),
+        providers: {
+          intake: directoryIntake(inbox),
+          work: commandWorkExecutor({
+            command: "git",
+            argsFor: (node) => ["commit", "--allow-empty", "-m", node.workId],
+            cwd: repo,
+          }),
+          tests: commandTestRunner({ command: "git", argsFor: () => ["--version"], cwd: repo }),
+          // A command that exits 0 is an approval, which is thin as reviews go — but it is a REAL
+          // process making the call, not a constant, and the fidelity report stops claiming a
+          // simulated judgement.
+          review: commandReview({ command: "git", argsFor: () => ["--version"], cwd: repo }),
+          change: gitChangeControl({ cwd: repo, baseBranch: "main" }),
+        },
+        priorityInputsFor: () => ({
+          executivePriority: 0.5,
+          customerImpact: 1,
+          severity: 1,
+          releaseRisk: 0.2,
+          blockedDownstreamCount: 2,
+          dependencyFanOut: 1,
+          queueAgeMs: 0,
+          hatScarcity: 0,
+          budgetBurn: 0,
+          estimatedEffort: 0.2,
+        }),
+      } as unknown as OrgRuntimeDeps);
+
+      // NOT ONE simulated port.
+      expect(report.fidelity.ports.filter((p) => p.fidelity === Fidelity.Simulated)).toEqual([]);
+      expect(report.fidelity.reached.length).toBe(report.fidelity.ports.length);
+      expect(report.delivered).toBe(true);
+
+      // And the repository agrees.
+      const merges = execFileSync("git", ["log", "--merges", "--oneline", "main"], {
+        cwd: repo,
+        encoding: "utf-8",
+      })
+        .split("\n")
+        .filter((l) => l.trim() !== "");
+      expect(merges.length).toBe(report.changesLanded.length);
+      expect(merges.length).toBeGreaterThan(0);
+    } finally {
+      rmSync(repo, { recursive: true, force: true });
+      rmSync(inbox, { recursive: true, force: true });
+    }
+  }, 180_000);
 });
