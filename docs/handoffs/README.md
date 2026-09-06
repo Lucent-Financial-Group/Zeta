@@ -23,6 +23,12 @@ Current:
   on `main`; next slice is sibling dispatch `if: always()` so a restore
   red does not skip wifi/write/picker (live hang was
   [run 32724820159](https://github.com/Lucent-Financial-Group/Zeta/actions/runs/32724820159)).
+- [`2026-09-06-shadow-to-vera-reverse-direction-map-simplex-belief-geometry-onto-the-zeta-stack.md`](./2026-09-06-shadow-to-vera-reverse-direction-map-simplex-belief-geometry-onto-the-zeta-stack.md)
+  — **Vera, the reverse-direction map.** The Simplex belief-state-geometry talk read as a
+  specification to check ourselves against: negative-coefficient operators ↔ Z-set, `WSet` as
+  the universal tensor, Riechers' nondiagonalizable spectral decomposition ↔ `SpectralPivot` /
+  scene-change detection, `c_ℓ − h_ℓ` ↔ the uncertainty ledger. Six ranked experiments; every
+  correspondence carries a register. Aaron is routing this through OpenAI's Astra.
 - `vera-qsharp-verification-package.txt` — the Q# verification hand-off (brief REVISION 2 +
   claim-bearing sources + known-answer table). Vera's verdict lines remain hers to write.
 - `kestrel-shape-validation-bundle.txt` — the faithful-renderer port bundle (sources + cartridges

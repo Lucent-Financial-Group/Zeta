@@ -1,0 +1,11 @@
+{
+  "id": "080d03a7efb94010a0130008ea8a6b64",
+  "at": "2026-09-06T04:33:16.072Z",
+  "by": "vera-codex",
+  "kind": "state-changed",
+  "payload": {
+    "workItemId": "081M1TE2RQW087G0R003DXT7C2",
+    "from": "in-progress",
+    "to": "done"
+  }
+}
