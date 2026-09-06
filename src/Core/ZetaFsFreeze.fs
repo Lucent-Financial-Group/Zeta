@@ -40,7 +40,9 @@ open Zeta.Core.FSharp.Blake3
 /// `putObject` maps catalog persist IOException/BUGGIFY to `FreezeError.Fsync`
 /// (Buffered does not ride FreezeLog). History setter, reclaim-meter,
 /// `noteFreeze` / `applyRetention` / `noteKnownObject` persist are best-effort
-/// (write-fail does not throw; next FreezeLog persist retries).
+/// (write-fail does not throw; next FreezeLog persist retries). After putLeaves,
+/// stored object bytes are hashed; mismatch withholds commit as
+/// `FreezeError.MissingLeaves`.
 ///
 /// DoP=1 on this log. No Task.Run except the ferry launch (injected context
 /// on the DST path; `manual` + `PumpToIdleAsync` for tests).
@@ -602,6 +604,38 @@ module ZetaFsFreeze =
                         | Error e -> err <- Some(FreezeError.Fsync e)
                         | Ok() -> ()
 
+                let objectMatchesStored (id: ContentHash256) : bool =
+                    let hex = (ContentHash256.toContentAddress128 id).ToHex()
+
+                    match objectCas with
+                    | Some cas ->
+                        match cas.TryGet hex with
+                        | None -> false
+                        | Some b -> (ContentHash256.ofBytes b).Equals(id)
+                    | None ->
+                        let path = ZetaFsPath.combine3 objectsDir (hex.Substring(0, 2)) (hex.Substring(2))
+
+                        if not (fsDoor.Exists path) then
+                            false
+                        else
+                            (ContentHash256.ofBytes (fsDoor.ReadAllBytes path)).Equals(id)
+
+                let verifyLeaves (item: LogItem) =
+                    if err.IsNone then
+                        let mutable missing = 0
+                        let mutable k = 0
+
+                        while k < item.Objects.Length do
+                            let struct (id, _) = item.Objects.[k]
+
+                            if not (objectMatchesStored id) then
+                                missing <- missing + 1
+
+                            k <- k + 1
+
+                        if missing > 0 then
+                            err <- Some(FreezeError.MissingLeaves missing)
+
                 // Intent Flush publishes without crash arms on the file door.
                 // On IBlockIo, Flush is the barrier; crash arms fire on Write.
                 match blockIo with
@@ -624,6 +658,7 @@ module ZetaFsFreeze =
 
                         if err.IsNone then
                             putLeaves item
+                            verifyLeaves item
 
                         if err.IsNone then
                             persist ()
@@ -651,6 +686,7 @@ module ZetaFsFreeze =
                             stream.Write(item.IntentFrame, 0, item.IntentFrame.Length)
                             stream.Flush()
                             putLeaves item
+                            verifyLeaves item
 
                             if err.IsNone then
                                 persist ()
