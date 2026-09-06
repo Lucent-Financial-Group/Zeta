@@ -58,6 +58,7 @@ import {
   type WorkResult,
 } from "../workflow-engine/agent-loop/state-machine";
 import { generateMenu, isNonCoercive, type NamedDependencyOffer } from "../workflow-engine/agent-loop/menu-generator";
+import type { Dispatch, SlotDispatcher } from "./slot-dispatch";
 
 export interface SurfaceInput extends DoraInput {
   readonly cascade: Cascade;
@@ -393,4 +394,63 @@ export function runAgentCycle(input: AgentCycleInput): AgentCycleReport {
 /** The context an org-driven agent carries into the loop. */
 export function contextFor(agent: AgentContext["agent"], cycle: number, sessionStartIso: string): AgentContext {
   return { agent, cycle, sessionStartIso };
+}
+
+/**
+ * One cycle where the chosen slot is actually DISPATCHED.
+ *
+ * `runAgentCycle` takes a synchronous `resultFor`, which is why the register could only ever hand
+ * it a constant: reaching a pipeline is asynchronous, so the sync seam could be satisfied by an
+ * invented value and by nothing else. That is exactly what it was given —
+ * `{ success: true, doraContribution: 0.5 }`.
+ *
+ * The order here is the whole point, and it is the same produce-then-judge shape the pipeline uses
+ * one layer down:
+ *
+ *   build the menu -> choose within it -> DISPATCH the choice -> apply what came back
+ *
+ * A dispatcher that performs nothing returns no result, and the agent stays in `ExecutingWork` —
+ * picked up, outstanding. That is the true state of a shadow lane, and it is what the old constant
+ * was hiding.
+ */
+export async function runDispatchedCycle(
+  input: AgentCycleInput & { readonly dispatcher: SlotDispatcher },
+): Promise<AgentCycleReport & { readonly dispatch: Dispatch | undefined }> {
+  const refusals: string[] = [];
+  const offered = generateMenu({
+    state: input.state,
+    snapshot: input.surface.snapshot,
+    candidates: input.surface.candidates,
+    ...(input.namedDeps === undefined ? {} : { namedDeps: input.namedDeps }),
+  });
+  const menu = input.menuPolicy?.(offered) ?? offered;
+  const nonCoercive = isNonCoercive(menu);
+  if (!nonCoercive) refusals.push("the menu offered to this agent was coercive — a free mode was missing");
+
+  const choice = chooseWithinLegal(menu, `agent-loop cycle ${input.state.context.cycle}`, input.chooser ?? firstLegalChooser());
+  if (choice.outcome !== "chosen") {
+    return { menu, state: input.state, nonCoercive, refusals: [...refusals, choice.reason], dispatch: undefined };
+  }
+  if (choice.clamped === true) refusals.push(`chooser clamped: ${choice.reason}`);
+
+  const inFlight = input.state.tag === "ExecutingWork" ? input.state.work.id : undefined;
+  const acted = transition(input.state, choice.option);
+
+  // THE DISPATCH. Between the transition and the result, because the result is what the dispatch
+  // produced — and a dispatcher that produced nothing must not close the cycle as if it had.
+  const dispatch = await input.dispatcher.dispatch(choice.option);
+  const result = dispatch.result;
+
+  const abandonedWorkId =
+    inFlight !== undefined && choice.option.tag === "PickWork" && result === undefined ? inFlight : undefined;
+  const after = result === undefined ? acted : postResultTransition(acted, result);
+  return {
+    menu,
+    chosen: choice.option,
+    state: cycleClose(after),
+    nonCoercive,
+    refusals,
+    dispatch,
+    ...(abandonedWorkId === undefined ? {} : { abandonedWorkId }),
+  };
 }

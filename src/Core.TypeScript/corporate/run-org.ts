@@ -104,14 +104,18 @@ import {
 import { EscalationAction, EscalationTrigger } from "./escalation";
 import { ScheduleBlockType } from "./work-schedule";
 import { observeForHat } from "./work-batch";
-import { isLeafType, WorkType as WorkTypeValue } from "./goal-cascade";
+import { isLeafType, WorkState as WorkStateValue, WorkType as WorkTypeValue } from "./goal-cascade";
 import { associateGoal, EMPTY_BOOK, openPortfolio, PortfolioKind, retirePortfolio } from "./portfolio";
-import { appendRun, deliveryRate } from "./org-store";
+import { appendRun, deliveryRate, readEvents } from "./org-store";
 import { runUntilSettled } from "./autonomy";
 import { decideSupply, endorseRecommendation } from "./rmo";
 import { authorityFor, pressureBoard } from "./schedule-pressure";
 import { isFullyMeasured, renderDora } from "./dora";
-import { contextFor, runAgentCycle, statusSurfaceFrom } from "./agent-loop-bridge";
+import { contextFor, runDispatchedCycle, statusSurfaceFrom } from "./agent-loop-bridge";
+import { dispatcherFor, evaluatePromotionGate } from "./slot-dispatch";
+import { compareToLegacy, foldObserveActWindow, legacySelection, type ObserveActTick } from "./observe-act-window";
+import { foldObserveActTicks } from "./org-fold";
+import { emit } from "./org-event";
 import type { AgentState } from "../workflow-engine/agent-loop/state-machine";
 import { GateKind, GateOutcome, NO_PROPOSER } from "./quality-gate";
 import type { OrgChart } from "./org-chart";
@@ -217,6 +221,16 @@ export interface Args {
   readonly until: string | undefined;
   readonly windowStart: string | undefined;
   readonly windowTarget: string | undefined;
+  /**
+   * The instant this run happens, ISO-8601. Defaults to epoch 0 — the frozen clock this CLI has
+   * always used, so nothing changes for a caller who does not pass it.
+   *
+   * A DECLARED channel for time, not an ambient one. `Date.now()` here would make every run
+   * unreplayable and would quietly let wall-clock drift into the observe-act window, which is the
+   * failure `local-time-never-enters-the-shared-fold` names. Passing the instant means a soak can
+   * be demonstrated deterministically: the same flags always produce the same window.
+   */
+  readonly now: string | undefined;
 }
 
 /** The value after a flag, or undefined. A flag with nothing after it is the same as absent. */
@@ -262,6 +276,7 @@ export function parseArgs(argv: readonly string[]): Args {
     until: valueAfter(argv, "--until"),
     windowStart: valueAfter(argv, "--window-start"),
     windowTarget: valueAfter(argv, "--window-target"),
+    now: valueAfter(argv, "--now"),
     workAgentArgs: valuesAfter(argv, "--work-agent-arg"),
     workVerify: valueAfter(argv, "--work-verify"),
     workVerifyArgs: valuesAfter(argv, "--work-verify-arg"),
@@ -391,6 +406,9 @@ export function argRefusals(args: Args): readonly string[] {
   }
   if (startMs !== undefined && targetMs !== undefined && !Number.isNaN(startMs) && !Number.isNaN(targetMs) && targetMs <= startMs) {
     out.push("--window-target must be after --window-start; a window that ends before it begins has no pace");
+  }
+  if (args.now !== undefined && Number.isNaN(Date.parse(args.now))) {
+    out.push("--now is not a parseable ISO-8601 instant");
   }
   if (args.workVerify !== undefined && args.workAgent === undefined && args.workModel === undefined) {
     out.push("--work-verify was given with nothing to verify: add --work-agent or --work-model");
@@ -531,7 +549,9 @@ export async function main(argv: readonly string[]): Promise<number> {
 
   let n = 0;
   const createId = (p: string): string => `${p}-${String(++n).padStart(3, "0")}`;
-  const nowMs = 0;
+  // Epoch 0 unless the caller declares otherwise — see `--now`. Never `Date.now()`: an ambient
+  // clock would make this run unreplayable and would leak wall time into the observe-act window.
+  const nowMs = args.now === undefined ? 0 : Date.parse(args.now);
 
   // ── The delivery loop alone ───────────────────────────────────────────────
   if (args.cycleOnly) {
@@ -764,24 +784,91 @@ export async function main(argv: readonly string[]): Promise<number> {
       `${surface.snapshot.hotTrajectories.length} hot / ${surface.snapshot.coolingTrajectories.length} cooling, ` +
       `${surface.snapshot.explorationCandidates.length} worth exploring`,
   );
+  // ── WHICH MODE THIS LANE HAS EARNED ───────────────────────────────────────
+  // The gate decides, not the caller. A fresh window has no soak, so it resolves to SHADOW — and
+  // shadow dispatches nothing and produces no result, which is what leaves the agent in
+  // `ExecutingWork`: picked up, outstanding. The line this replaced handed the loop
+  // `{ success: true, doraContribution: 0.5 }`, so every cycle reported work nobody did.
+  // The window is FOLDED from durable ticks, not declared. With no store there are no prior ticks
+  // and the window is empty — which still resolves to shadow, but now for the true reason (nothing
+  // has soaked) rather than because the number was hardcoded to zero.
+  const priorTicks = args.store === undefined ? [] : foldObserveActTicks(readEvents(args.store));
+  const readout = foldObserveActWindow(priorTicks, nowMs);
+  const verdict = evaluatePromotionGate(readout.window);
+  const dispatcher = dispatcherFor(verdict, async (workId) => ({
+    succeeded: report.cascade.nodes.some((n) => n.workId === workId && n.state === WorkStateValue.Done),
+    evidenceRefs: report.gateEvaluations.filter((g) => g.workId === workId).flatMap((g) => g.evidenceRefs),
+    summary: `pipeline outcome for ${workId}`,
+    // MEASURED from what landed, not a constant: the fraction of this item's gates that passed.
+    doraContribution:
+      report.gateEvaluations.filter((g) => g.workId === workId).length === 0
+        ? 0
+        : report.changesLanded.includes(workId)
+          ? 1
+          : 0,
+  }));
+  console.log(`  mode:        ${verdict.mode}${verdict.blockedBy.length === 0 ? "" : ` — ${verdict.blockedBy[0]!}`}`);
+  console.log(`  window:      ${readout.summary}`);
+
   let loopState: AgentState = { tag: "Idle", context: contextFor("alexa", 1, new Date(nowMs).toISOString()) };
+  const ticks: ObserveActTick[] = [];
   for (let cycle = 1; cycle <= 3; cycle += 1) {
-    const turn = runAgentCycle({
-      state: loopState,
-      surface,
-      resultFor: (o) =>
-        o.tag === "PickWork"
-          ? { workId: o.work.id, lane: o.work.lane, success: true, doraContribution: 0.5 }
-          : undefined,
+    const turn = await runDispatchedCycle({ state: loopState, surface, dispatcher });
+    // THE COMPARISON, run every tick. The legacy lane is the priority-ordered assignment path the
+    // organization already has — a genuinely different selector from the menu generator, which
+    // weighs trajectory heat, balance and interest. They can disagree, which is what makes the
+    // divergence rate a measurement rather than a tautology over one selector consulted twice.
+    const compared = compareToLegacy(
+      {
+        slot: turn.chosen?.tag ?? "(none)",
+        ...(turn.dispatch?.workId === undefined ? {} : { workId: turn.dispatch.workId }),
+      },
+      legacySelection(surface.candidates),
+    );
+    ticks.push({
+      tickId: `tick-${String(cycle)}`,
+      // AT the run's instant, not after it. `nowMs + cycle` stamped ticks in the future relative to
+      // the run's own clock, and the window's future guard then dropped every one of them — a fold
+      // that correctly refused evidence the emitter had mislabelled.
+      atMs: nowMs,
+      mode: verdict.mode,
+      slot: turn.chosen?.tag ?? "(none)",
+      ...(turn.dispatch?.workId === undefined ? {} : { workId: turn.dispatch.workId }),
+      performed: turn.dispatch?.performed ?? false,
+      // A clamped choice is the chooser having reached outside the menu — the illegal selection the
+      // gate counts. `runDispatchedCycle` reports it as a refusal rather than hiding the clamp.
+      illegalSelection: turn.refusals.some((r) => r.startsWith("chooser clamped")),
+      // Nothing in this register refuses at act time yet, so this is HONESTLY false rather than
+      // absent — no dispatch was authorized and then stopped.
+      controlBypassRejected: false,
+      ...compared,
     });
     console.log(
       `  cycle ${cycle}:     ${turn.menu.length} option(s) -> ${turn.chosen?.tag ?? "(none)"}` +
         ` -> ${turn.state.tag}${turn.nonCoercive ? "" : "  COERCIVE MENU"}` +
-        (turn.abandonedWorkId === undefined ? "" : `  (abandoned ${turn.abandonedWorkId})`),
+        (turn.abandonedWorkId === undefined ? "" : `  (abandoned ${turn.abandonedWorkId})`) +
+        (turn.dispatch === undefined ? "" : `  [${turn.dispatch.performed ? "dispatched" : "not dispatched"}]`) +
+        `  {legacy ${compared.comparison}}`,
     );
     for (const r of turn.refusals) console.log(`   ! ${r}`);
     loopState = turn.state;
   }
+  // The ticks join the run's own trace, so storing the run stores them and the NEXT run folds a
+  // window that includes this one. That is the whole mechanism: without this line the window is
+  // empty forever and the gate is unfalsifiable.
+  const tickEvents = ticks.map((tick, i) =>
+    // Keyed by the run's instant AND the cycle. Two runs at different instants store distinct
+    // ticks; re-running the SAME instant re-stores the same shard, which is an upsert — the
+    // idempotency discipline, and the reason a repeated run cannot inflate its own soak window.
+    emit(chart, `evt-tick-${String(nowMs)}-${String(i + 1)}`, {
+      kind: "observe_act_tick",
+      subjectId: tick.workId ?? tick.slot,
+      decision: `observe-act tick: ${tick.slot} in ${tick.mode} (legacy ${tick.comparison})`,
+      atMs: tick.atMs,
+      evidenceRefs: [`observe-act-tick:${tick.tickId}`],
+      fact: { kind: "observe_act_tick", tick },
+    }),
+  );
 
   // -- persist the run, if asked --
   //
@@ -795,7 +882,7 @@ export async function main(argv: readonly string[]): Promise<number> {
         delivered: report.delivered,
         levelsEngaged: report.levelsEngaged,
         refusals: report.refusals,
-        trace: report.trace,
+        trace: [...report.trace, ...tickEvents],
         // The run's own fidelity, written down. Without it the summary cannot tell a history where
         // everything shipped from one where nothing did.
         replayable: report.fidelity.replayable,

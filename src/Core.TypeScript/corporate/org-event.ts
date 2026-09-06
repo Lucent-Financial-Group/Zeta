@@ -31,6 +31,7 @@ import type { PortfolioKind } from "./portfolio";
 import type { WorkQueue } from "./work-market";
 import type { QaCycleReport } from "./qa";
 import type { RunFidelity } from "./providers";
+import type { ObserveActTick } from "./observe-act-window";
 
 export const OrgEventKind = {
   IntakeReceived: "intake_received",
@@ -56,6 +57,8 @@ export const OrgEventKind = {
   QueueSnapshot: "queue_snapshot",
   /** What the run's ports were — see the `run_fidelity` fact. */
   RunFidelity: "run_fidelity",
+  /** One turn of the observe-act lane — see the `observe_act_tick` fact. */
+  ObserveActTick: "observe_act_tick",
   Refusal: "refusal",
 } as const;
 
@@ -166,6 +169,14 @@ export type OrgFact =
    * asking WHICH capability was real needs the ports, not the verdict.
    */
   | { readonly kind: "run_fidelity"; readonly report: RunFidelity }
+  /**
+   * One turn of the observe-act lane, durable.
+   *
+   * The promotion gate reads a window folded from these. Before this fact existed the window was
+   * always empty, so the gate always answered shadow — correct, and unfalsifiable, which is the
+   * one property a gate must not have.
+   */
+  | { readonly kind: "observe_act_tick"; readonly tick: ObserveActTick }
   /**
    * One QA cycle: every run it made, the regressions it found, the defects it filed.
    *
