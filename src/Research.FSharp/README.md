@@ -17,3 +17,12 @@ dotnet test tests/Tests.FSharp/Tests.FSharp.fsproj -c Release --filter FullyQual
 Regenerate `simplex-belief-comparison.json` from the runner's stdout. The JSON is a
 measured report, not an independent reference implementation. Exact predictions
 are checked against dense propagation and separate closed-form predictors in code.
+
+## Learned and factored predictive models
+
+The [preregistered comparison](../../docs/research/2026-09-06-factored-predictive-protocol.md)
+and [result report](../../docs/research/2026-09-06-factored-predictive-results.md)
+cover observation-only HMM learning, matched binary64 inference, allocation
+repair, likelihood-ratio change detection, and shared versus projected factors.
+The report indexes all raw receipts, independent replays, and the permanent
+archive tag preserving pre-measurement protocol and measured source versions.

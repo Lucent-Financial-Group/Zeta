@@ -15,10 +15,13 @@ def test_em_counts_match_hidden_path_enumeration():
     initials = np.zeros_like(prior)
     for word in corpus:
         paths = list(itertools.product(range(2), repeat=4))
-        weights = np.array([
-            prior[p[0]] * np.prod([edges[x, p[t], p[t + 1]] for t, x in enumerate(word)])
-            for p in paths
-        ])
+        weights = np.array(
+            [
+                prior[p[0]]
+                * np.prod([edges[x, p[t], p[t + 1]] for t, x in enumerate(word)])
+                for p in paths
+            ]
+        )
         for path, weight in zip(paths, weights / weights.sum(), strict=True):
             initials[path[0]] += weight
             for t, x in enumerate(word):
@@ -41,18 +44,33 @@ def test_native_fixture_matches_independent_variable_length_em():
         initials = np.zeros_like(prior)
         for word in corpus:
             paths = list(itertools.product(range(2), repeat=len(word) + 1))
-            weights = np.array([
-                prior[p[0]] * np.prod([edges[x, p[t], p[t + 1]] for t, x in enumerate(word)])
-                for p in paths
-            ])
+            weights = np.array(
+                [
+                    prior[p[0]]
+                    * np.prod([edges[x, p[t], p[t + 1]] for t, x in enumerate(word)])
+                    for p in paths
+                ]
+            )
             for path, weight in zip(paths, weights / weights.sum(), strict=True):
                 initials[path[0]] += weight
                 for t, x in enumerate(word):
                     counts[x, path[t], path[t + 1]] += weight
         prior = initials / initials.sum()
         edges = counts / counts.sum(axis=(0, 2))[None, :, None]
-    np.testing.assert_allclose(prior, [0.7289050672631926, 0.2710949327368074], atol=1e-14)
-    np.testing.assert_allclose(edges.ravel(), [
-        0.3944266772873601, 0.1387344860585561, 0.20562851502306864, 0.12235873645787698,
-        0.08931893840408917, 0.37751989824999466, 0.275587663334462, 0.39642508518459246,
-    ], atol=1e-14)
+    np.testing.assert_allclose(
+        prior, [0.7289050672631926, 0.2710949327368074], atol=1e-14
+    )
+    np.testing.assert_allclose(
+        edges.ravel(),
+        [
+            0.3944266772873601,
+            0.1387344860585561,
+            0.20562851502306864,
+            0.12235873645787698,
+            0.08931893840408917,
+            0.37751989824999466,
+            0.275587663334462,
+            0.39642508518459246,
+        ],
+        atol=1e-14,
+    )

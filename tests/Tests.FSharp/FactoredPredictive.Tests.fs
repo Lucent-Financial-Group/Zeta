@@ -79,3 +79,21 @@ let ``direct sum and orthogonality have different witnesses`` () =
     let state,effect = [|0.3;0.7|], [|0.8;0.2|]
     near (Array.map2 (*) state effect |> Array.sum) (Array.map2 (*) (rotate state) (rotate effect) |> Array.sum)
     Assert.Equal(state.Length, (rotate state).Length)
+
+[<Fact>]
+let ``RNN inference allocation does not grow with context length`` () =
+    let model = SmallRnn.create 3 8 1009UL |> require
+    let short, long = [||], Array.init 256 (fun i -> i%3)
+    for _ in 1..256 do
+        SmallRnn.after model short |> require |> ignore
+        SmallRnn.after model long |> require |> ignore
+    let allocated tokens =
+        let mutable consumed = 0.0
+        let before = GC.GetAllocatedBytesForCurrentThread()
+        for _ in 1..128 do
+            let state, p = SmallRnn.after model tokens |> require
+            consumed <- consumed + state.[0] + p.[0]
+        let bytes = GC.GetAllocatedBytesForCurrentThread() - before
+        Assert.True(Double.IsFinite consumed)
+        bytes
+    Assert.Equal(allocated short, allocated long)

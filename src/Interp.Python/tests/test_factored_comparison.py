@@ -34,16 +34,37 @@ def test_every_shared_factor_prediction_and_benchmark_checksum_replays():
 
 def test_current_known_binary64_filters_match_exact_word_enumeration():
     result = subprocess.run(
-        ["dotnet", "fsi", "--warnaserror", "--optimize+", "src/Research.FSharp/check-known-binary64.fsx"],
-        cwd=ROOT, text=True, capture_output=True, check=True, timeout=120,
+        [
+            "dotnet",
+            "fsi",
+            "--warnaserror",
+            "--optimize+",
+            "src/Research.FSharp/check-known-binary64.fsx",
+        ],
+        cwd=ROOT,
+        text=True,
+        capture_output=True,
+        check=True,
+        timeout=120,
     )
     cases = json.loads(result.stdout)
     assert len(cases) == 32
     for case in cases:
         if case["Source"] == "mess3":
             prior = [Fraction(1, 3)] * 3
-            matrices = np.array([[[Fraction((18 if i == j else 1) * (34 if x == j else 3), 800)
-                                  for j in range(3)] for i in range(3)] for x in range(3)], dtype=object)
+            matrices = np.array(
+                [
+                    [
+                        [
+                            Fraction((18 if i == j else 1) * (34 if x == j else 3), 800)
+                            for j in range(3)
+                        ]
+                        for i in range(3)
+                    ]
+                    for x in range(3)
+                ],
+                dtype=object,
+            )
         else:
             prior = [Fraction(x, 6) for x in [2, 1, 1, 1, 1]]
             matrices = np.full((2, 5, 5), Fraction(0), dtype=object)

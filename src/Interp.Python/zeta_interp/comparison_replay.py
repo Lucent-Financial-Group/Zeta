@@ -30,10 +30,15 @@ def corpus(source, seed, count, length):
 def oracle(source):
     if source == "rrxor":
         return np.array([2, 1, 1, 1, 1]) / 6, rrxor.matrices()
-    edges = np.array([
-        [[(18 if i == j else 1) * (34 if x == j else 3) / 800 for j in range(3)] for i in range(3)]
-        for x in range(3)
-    ])
+    edges = np.array(
+        [
+            [
+                [(18 if i == j else 1) * (34 if x == j else 3) / 800 for j in range(3)]
+                for i in range(3)
+            ]
+            for x in range(3)
+        ]
+    )
     return np.full(3, 1 / 3), edges
 
 
@@ -49,10 +54,14 @@ def joint4(network, state, p):
     def expand(depth, state, p):
         if depth == 1:
             return p
-        return np.concatenate([
-            p[:, x, None] * expand(depth - 1, *network.step(state, x))
-            for x in range(p.shape[1])
-        ], axis=1)
+        return np.concatenate(
+            [
+                p[:, x, None] * expand(depth - 1, *network.step(state, x))
+                for x in range(p.shape[1])
+            ],
+            axis=1,
+        )
+
     return expand(4, state, p)
 
 
@@ -61,7 +70,11 @@ def models(root):
     for source, a in [("mess3", 3), ("rrxor", 2)]:
         for row in read(root, source + "-learned-belief-results.json")["Runs"]:
             ident = f"{source}-h{row['Hidden']}-s{row['Seed']}"
-            result[ident] = (source, "rnn", mess3.Network(row["Hidden"], row["Parameters"], a))
+            result[ident] = (
+                source,
+                "rnn",
+                mess3.Network(row["Hidden"], row["Parameters"], a),
+            )
             result[ident + "-bigram"] = (source, "bigram", np.array(row["Bigram"]))
         result[source + "-known"] = (source, "known", oracle(source))
     data = read(root, "learned-hmm-results.json")
@@ -70,7 +83,14 @@ def models(root):
         a, n = row["Alphabet"], row["States"]
         for prefix, kind in [("", "hmm"), ("Initial", "initial-hmm")]:
             ident = f"{row['Source']}-n{n}-s{row['Seed']}-{kind}"
-            result[ident] = (row["Source"], kind, (np.array(row[prefix + "Prior"]), np.array(row[prefix + "Edges"]).reshape(a, n, n)))
+            result[ident] = (
+                row["Source"],
+                kind,
+                (
+                    np.array(row[prefix + "Prior"]),
+                    np.array(row[prefix + "Edges"]).reshape(a, n, n),
+                ),
+            )
     assert len(result) == 62
     return result
 
@@ -82,8 +102,10 @@ def predict(model, contexts):
         return state, p, joint4(value, state, p)
     if kind == "bigram":
         last = contexts[:, -1]
-        columns = [value[last, a] * value[a, b] * value[b, c] * value[c, d]
-                   for a, b, c, d in itertools.product(range(len(value)), repeat=4)]
+        columns = [
+            value[last, a] * value[a, b] * value[b, c] * value[c, d]
+            for a, b, c, d in itertools.product(range(len(value)), repeat=4)
+        ]
         return last[:, None].astype(float), value[last], np.stack(columns, axis=1)
     return hmm.predict(*value, contexts)
 
@@ -93,8 +115,12 @@ def score(truth, output):
     _, q, g = output
     entropy = -(p * np.log2(p, out=np.zeros_like(p), where=p > 0)).sum(axis=1).mean()
     kl = rrxor.divergence(p, q).mean()
-    return {"NextEntropyBits": entropy, "NextKlBits": kl,
-            "NextCrossEntropyBits": entropy + kl, "Future4KlBits": rrxor.divergence(f, g).mean()}
+    return {
+        "NextEntropyBits": entropy,
+        "NextKlBits": kl,
+        "NextCrossEntropyBits": entropy + kl,
+        "Future4KlBits": rrxor.divergence(f, g).mean(),
+    }
 
 
 def verify_comparison(root):
@@ -113,7 +139,10 @@ def verify_comparison(root):
                 if model[0] == source:
                     outputs[ident, length] = predict(model, panel)
     for row in data["Scores"]:
-        expected_score = score(outputs[row["Source"] + "-known", row["Length"]], outputs[row["Model"], row["Length"]])
+        expected_score = score(
+            outputs[row["Source"] + "-known", row["Length"]],
+            outputs[row["Model"], row["Length"]],
+        )
         for key, value in expected_score.items():
             maximum = max(maximum, abs(value - row[key]))
             np.testing.assert_allclose(value, row[key], atol=2e-9, rtol=2e-8)
@@ -124,7 +153,9 @@ def verify_comparison(root):
         test = outputs[row["Model"], row["Length"]]
         target = outputs["rrxor-known", row["Length"]][0]
         for name, index in [("Hidden", 0), ("Joint4Output", 2)]:
-            actual = mess3.probe_score(mess3.ridge(fitted[index], fit_target, test[index]), target)
+            actual = mess3.probe_score(
+                mess3.ridge(fitted[index], fit_target, test[index]), target
+            )
             for key, value in actual.items():
                 maximum = max(maximum, abs(value - row[name][key]))
                 np.testing.assert_allclose(value, row[name][key], atol=3e-8, rtol=2e-8)
@@ -135,23 +166,39 @@ def verify_comparison(root):
 
 def verify_training(root):
     data = read(root, "learned-hmm-results.json")
-    configurations = {(s, n, seed) for s, sizes, seeds in [("mess3", [3, 8], [11, 23, 37]), ("rrxor", [5, 8], [41, 53, 67])]
-                      for n in sizes for seed in seeds}
-    assert {(r["Source"], r["States"], r["Seed"]) for r in data["Runs"]} == configurations
+    configurations = {
+        (s, n, seed)
+        for s, sizes, seeds in [
+            ("mess3", [3, 8], [11, 23, 37]),
+            ("rrxor", [5, 8], [41, 53, 67]),
+        ]
+        for n in sizes
+        for seed in seeds
+    }
+    assert {
+        (r["Source"], r["States"], r["Seed"]) for r in data["Runs"]
+    } == configurations
     maximum = 0.0
     for row in data["Runs"]:
         a, n, seed = row["Alphabet"], row["States"], row["Seed"]
         observations = corpus(row["Source"], mess3.domain(seed, 2), 65536, 33)
-        assert hashlib.sha256(observations.astype(np.uint8).tobytes()).hexdigest().upper() == row["CorpusSha256"]
+        assert (
+            hashlib.sha256(observations.astype(np.uint8).tobytes()).hexdigest().upper()
+            == row["CorpusSha256"]
+        )
         prior, edges = hmm.initialize(a, n, seed)
         np.testing.assert_allclose(prior, row["InitialPrior"], atol=1e-14)
         np.testing.assert_allclose(edges.ravel(), row["InitialEdges"], atol=1e-14)
         assert [t["Pass"] for t in row["Trace"]] == list(range(9))
         for pass_index in range(8):
             prior, edges, loss = hmm.em_step(prior, edges, observations)
-            np.testing.assert_allclose(loss, row["Trace"][pass_index]["CorpusLossNats"], atol=1e-5, rtol=1e-10)
+            np.testing.assert_allclose(
+                loss, row["Trace"][pass_index]["CorpusLossNats"], atol=1e-5, rtol=1e-10
+            )
         loss = -np.log(hmm.forward(prior, edges, observations)[1]).sum()
-        np.testing.assert_allclose(loss, row["Trace"][8]["CorpusLossNats"], atol=1e-5, rtol=1e-10)
+        np.testing.assert_allclose(
+            loss, row["Trace"][8]["CorpusLossNats"], atol=1e-5, rtol=1e-10
+        )
         maximum = max(maximum, float(np.max(np.abs(edges.ravel() - row["Edges"]))))
         np.testing.assert_allclose(prior, row["Prior"], atol=1e-9, rtol=1e-8)
         np.testing.assert_allclose(edges.ravel(), row["Edges"], atol=1e-9, rtol=1e-8)
@@ -162,15 +209,28 @@ def verify_training(root):
 
 
 def output_checksum(state, p, calls=4096):
-    return sum(float(state[i % len(state), i % state.shape[1]] if i % 2 == 0 else p[i % len(p), i % p.shape[1]]) for i in range(calls))
+    return sum(
+        float(
+            state[i % len(state), i % state.shape[1]]
+            if i % 2 == 0
+            else p[i % len(p), i % p.shape[1]]
+        )
+        for i in range(calls)
+    )
 
 
 def verify_cost(root):
     all_models = models(root)
     data = read(root, "matched-inference-results.json")
-    expected = {ident for ident, (_, kind, _) in all_models.items() if kind in {"rnn", "hmm", "known"}}
+    expected = {
+        ident
+        for ident, (_, kind, _) in all_models.items()
+        if kind in {"rnn", "hmm", "known"}
+    }
     assert len(expected) == 32 and len(data["Measurements"]) == 160
-    assert {(r["Model"], r["Repetition"]) for r in data["Measurements"]} == {(i, r) for i in expected for r in range(5)}
+    assert {(r["Model"], r["Repetition"]) for r in data["Measurements"]} == {
+        (i, r) for i in expected for r in range(5)
+    }
     checksums = {}
     for ident in expected:
         model = all_models[ident]
@@ -178,7 +238,11 @@ def verify_cost(root):
         output = predict(model, panel)
         checksums[ident] = output_checksum(*output[:2])
     for row in data["Measurements"]:
-        assert row["Calls"] == 4096 and row["ThreadAllocatedBytes"] > 0 and row["ElapsedMilliseconds"] > 0
+        assert (
+            row["Calls"] == 4096
+            and row["ThreadAllocatedBytes"] > 0
+            and row["ElapsedMilliseconds"] > 0
+        )
         np.testing.assert_allclose(row["Checksum"], checksums[row["Model"]], atol=2e-8)
     baseline = read(root, "rnn-layout-before-results.json")["Rows"]
     assert len(baseline) == 504
@@ -189,13 +253,19 @@ def verify_cost(root):
         assert len(rows) == 50
         for ident in ["mess3-h8-s11", "rrxor-h8-s41"]:
             for length in [0, 1, 16, 64, 256]:
-                selected = [r for r in rows if r["Model"] == ident and r["ContextLength"] == length]
+                selected = [
+                    r
+                    for r in rows
+                    if r["Model"] == ident and r["ContextLength"] == length
+                ]
                 assert sorted(r["Repetition"] for r in selected) == list(range(5))
                 model = all_models[ident]
                 panel = corpus(model[0], mess3.domain(1009, 34), 256, length)
                 state, p = network_outputs(model[2], panel)
                 for row in selected:
-                    np.testing.assert_allclose(row["Checksum"], output_checksum(state, p), atol=2e-8)
+                    np.testing.assert_allclose(
+                        row["Checksum"], output_checksum(state, p), atol=2e-8
+                    )
     return len(data["Measurements"])
 
 
@@ -207,7 +277,10 @@ def main():
     args = parser.parse_args()
     if args.output.exists():
         raise ValueError("refusing to overwrite replay receipt")
-    result = {"ComparisonMaximumError": verify_comparison(args.root), "CostRows": verify_cost(args.root)}
+    result = {
+        "ComparisonMaximumError": verify_comparison(args.root),
+        "CostRows": verify_cost(args.root),
+    }
     if args.training:
         result["TrainingMaximumParameterError"] = verify_training(args.root)
     args.output.write_text(json.dumps(result, indent=2) + "\n")

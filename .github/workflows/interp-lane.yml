@@ -135,14 +135,15 @@ jobs:
       - name: Run activation-access and learned-state checks
         env:
           # The floor that makes a green here mean something. A pytest that
-          # collects 0 tests exits 5, but a suite that silently shrinks from 65
+          # collects 0 tests exits 5, but a suite that silently shrinks from 72
           # to 2 exits 0 and looks identical to success.
           #
           # FAIL-CLOSED: `set -u` below makes an unset variable exit non-zero,
           # so deleting this entry turns the job red rather than quietly
           # disabling the check.
-          # Nine activation-access, eighteen Mess3 and 38 predictive-state cases.
-          INTERP_MIN_TESTS: "65"
+          # Nine activation-access, eighteen Mess3, 38 predictive-state,
+          # and seven learned/factored-comparison cases.
+          INTERP_MIN_TESTS: "72"
         run: |
           set -euo pipefail
           uv run --project src/Interp.Python pytest src/Interp.Python/tests -q \

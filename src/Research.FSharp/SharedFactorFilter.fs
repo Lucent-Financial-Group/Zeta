@@ -25,7 +25,7 @@ module SharedFactorFilter =
         for s in 0 .. joint.Length - 1 do
             for f in 0..n-1 do values.[2*f + bit s f] <- values.[2*f + bit s f] + joint.[s]
         values
-    let expand model state = if model.Mode = ProjectedProduct then product state model.Factors else Array.copy state
+    let internal expand model state = if model.Mode = ProjectedProduct then product state model.Factors else Array.copy state
     let create factors noise mode =
         if factors < 2 || factors > 4 || not (Double.IsFinite noise) || noise < 0.0 || noise > 1.0 then Error "shared-factor fixture needs 2..4 factors and noise in [0,1]"
         else
