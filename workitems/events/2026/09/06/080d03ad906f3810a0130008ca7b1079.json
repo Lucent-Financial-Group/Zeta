@@ -1,0 +1,14 @@
+{
+  "id": "080d03ad906f3810a0130008ca7b1079",
+  "at": "2026-09-06T07:49:58.375Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1TV43F6087G0R0008QFTKM",
+    "type": "task",
+    "title": "Off-cluster bao PKCS#11 init against SoftHSM so Shamir is not the unseal",
+    "slug": "off-cluster-bao-pkcs-11-init-against-softhsm-so-shamir-is-no",
+    "priority": "P2",
+    "filename": "081M1TV43F6087G0R0008QFTKM-off-cluster-bao-pkcs-11-init-against-softhsm-so-shamir-is-no.md"
+  }
+}

@@ -75,25 +75,31 @@ assume the number.
 2. **TypeScript unsealer decision loop** (landed — Shamir path
    for kind/CI). `src/Core.TypeScript/cluster/vault-unsealer.ts`.
    Classify health: 200 sleep / 503 fetch-this-tick / 501
-   refuse-init / curl 000 miss (not a seal). Keep until an
-   emulator job inits OpenBao without Shamir. Cannot init.
-3. **CI emulator rung** (classifier landed; **install job this
-   slice**). `src/Core.TypeScript/cluster/seal-emulator-rung.ts`
-   plus `seal-emulator-install.ts` and
-   `.github/workflows/seal-emulator-install.yml`
-   (`081M1TS32Y3087G0R0026Y21F5`). SoftHSM2 / swtpm 2×2: the
-   job **installs** the declared packages, then the witness
-   measures the disk. skip-if-absent cannot wear pass. YubiHSM
-   domains, USB, CardContact, and this board's PCRs stay metal.
-   Do not put `seal "pkcs11"` in Application.yaml until a
-   module is in the image in the same commit. `bao operator
-   init` against SoftHSM is the next runtime hop, not this
-   job. NixOS host-seal profile (role + capture, not a k8s
-   label): `zeta.hostSeal.boxRole` is `undeclared` (no-op) /
-   `developer` (FIDO + biometric userspace; no sudo PAM u2f) /
-   `prod-metal` (automatic HSM or TPM PKCS#11; FIDO/biometric
-   refused as the rotator). CI is not a NixOS role — the job
-   declares SoftHSM2/swtpm. Presence is a probe (`ID=nixos`,
+   refuse-init / curl 000 miss (not a seal). Keep until
+   kind/CI consume the off-cluster emulator init (item 3).
+   Cannot init the chart.
+3. **CI emulator rung** (classifier + install + **off-cluster
+   bao PKCS#11 init this slice**). Classifier:
+   `seal-emulator-rung.ts`. Install 2×2 (#16767,
+   `081M1TS32Y3087G0R0026Y21F5`): the job **installs**
+   SoftHSM2 / swtpm, then the witness measures the disk.
+   skip-if-absent cannot wear pass. Off-cluster init
+   (`081M1TV43F6087G0R0008QFTKM`,
+   `.github/workflows/seal-emulator-bao.yml`): glibc
+   `openbao-hsm` 2.6.2 tarball + Ubuntu `libsofthsm2.so` +
+   `pkcs11-tool` AES wrap key, then `bao operator init`.
+   PIN is `BAO_HSM_PIN`, never HCL. Shamir unseal keys fail
+   the claim; recovery keys + health 200 without
+   `bao operator unseal` is the witness. SoftHSM green is
+   not YubiHSM / CardContact / this-board TPM green. Do not
+   put `seal "pkcs11"` in Application.yaml until a module
+   is in the image in the same commit. NixOS host-seal
+   profile (role + capture, not a k8s label):
+   `zeta.hostSeal.boxRole` is `undeclared` (no-op) /
+   `developer` (FIDO + biometric userspace; no sudo PAM u2f)
+   / `prod-metal` (automatic HSM or TPM PKCS#11;
+   FIDO/biometric refused as the rotator). CI is not a
+   NixOS role. Presence is a probe (`ID=nixos`,
    `frost-hardware-probe.ts`, `tpm2-linux-probe.ts`).
    `host-seal-profile.ts`.
 4. **Setup-time path picker** (classifier landed, #16728).
