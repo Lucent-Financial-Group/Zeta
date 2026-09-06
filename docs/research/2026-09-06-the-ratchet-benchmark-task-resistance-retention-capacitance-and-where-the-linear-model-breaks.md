@@ -240,11 +240,67 @@ Aaron's *"move points toward generators"* is the DV2.0 partition given a **direc
 that DV2.0 itself does not state: not merely *put each thing where its change rate belongs*, but
 **work to lower the change rate**, because the fast corner is the one that bills you forever.
 
-**The guard, and it is the same one as everywhere else in this document.** A point moved to the
-generator corner **must still produce the observation it replaced**. A generator that has
-quietly stopped reproducing its points is the vacuity class in its most expensive form — the
-retention cost is gone and so is the fact. So migration is only complete when the generator is
-*run and compared*, which is the byte-lock discipline pointed at this triangle.
+### The hard problem, named: you deleted the witness
+
+A point moved to the generator corner **must still produce the observation it replaced**. A
+generator that has quietly stopped reproducing its points is the vacuity class in its most
+expensive form — the retention cost is gone **and so is the fact**.
+
+Aaron, on that sentence: *"yes — you've just named the hard problem out loud."* So it is
+promoted here from a guard to the section it deserves, because the difficulty is structural
+rather than a matter of diligence.
+
+**The tension is exact, and it does not dissolve.** The *saving* comes from not retaining the
+point. The *verification* requires comparing against the point. Migration therefore consumes
+the very thing that could detect its own failure — and unlike most defects, this one is
+**silent and arbitrarily delayed**: the generator was correct when it was written, the
+observation was deleted because it was correct, and drift arrives later with no witness left to
+contradict it.
+
+**Four ways out, and each pays something:**
+
+| approach | cost |
+|---|---|
+| retain a **sample** of the points | partial retention ⇒ partial saving; the sample must be chosen before you know what drifts |
+| retain a **digest** rather than the points | O(1) instead of O(n) — the golden-vector answer, and the cheapest honest one |
+| run **two independent generators** and compare | correlated-redundancy caveat: if the second is derived from the first, its agreement is worth nothing |
+| move the points to **cold storage** | defers the cost, does not remove it, and staleness still accrues |
+
+**This repo already picked the second, and pays for it deliberately.** Hex-in-JSON golden
+vectors *are* retained observations — kept minimal, kept as text so the retention is diffable
+and mergeable rather than opaque. `no-binary-in-proof-lineage` is, read through this triangle,
+a rule about **the form the residual observability must take.**
+
+**And the repo has already named this exact failure under another name.** In
+`dual-use-detection-is-neutral-oracle-decides`, a meter is *judgement crystallised once, in a
+treaty*, and the dangerous third case is the **broken meter** — one that crystallised and then
+drifted, presenting as frozen while behaving otherwise. A generator that has quietly stopped
+reproducing its points **is** a broken meter. That rule's answer transfers intact:
+
+> **The failure is not undetectable. It is a byte-lock nobody re-ran.**
+
+So the hard problem reduces to a **liveness** requirement on the comparison — and liveness of
+checks is the vacuity class in its original form. It does not become easy; it becomes the
+familiar hard thing rather than a new one.
+
+### The honest correction this forces on "observability costs more"
+
+Aaron's cost claim is right about **retention** and needs one qualification, because the
+verification above is itself observability:
+
+> Migration does not eliminate the recurring cost. It **changes its shape** — from *store,
+> re-read, keep fresh, re-verify* to *regenerate and compare* — plus an irreducible residue of
+> retained digests.
+
+Whether that trade is favourable is an **empirical question with a real negative result
+available**: a generator that is expensive to run, compared often, against a large digest set,
+can cost more than simply having kept the points. The claim is very likely true in the ordinary
+case — regeneration is usually cheap and staleness is usually the expensive part — but it is a
+measurement, not a theorem, and it is the cheapest experiment named in this document.
+
+**Which sharpens τ's definition once more:** τ counts migrations that are **still being
+verified**. A point migrated into a generator nobody re-runs has not moved corners; it has left
+the triangle.
 
 **Register:** the triangle and the direction of travel are Aaron's. The DV2.0 correspondence is
 argued here and is checkable by inspection. The cost asymmetry (per-point-forever vs.
@@ -349,8 +405,13 @@ compare Δ.** It needs no full τ curve and it tests the diode claim directly.
 - **"Measures general intelligence"** — declined as stated, with the narrower claim substituted
   and the reason given.
 - **The triangle (generator / joins / observability) and the direction of travel** — Aaron's.
-  The DV2.0 correspondence is argued here; the cost asymmetry is qualitative and unmeasured,
+  The DV2.0 correspondence is argued here; the cost asymmetry is qualitative and **unmeasured**,
   and measuring it is the cheapest experiment in the document.
+- **"You deleted the witness"** — Aaron named this the hard problem. The tension is structural
+  (the saving consumes the evidence that would detect its failure); the four escapes and their
+  costs are argued; the reduction to a **liveness** requirement is the broken-meter case already
+  on file, transferred. The correction that migration reshapes rather than removes the recurring
+  cost is stated as a measurement to run, not a result.
 - **The diode observation** — argued; one of two parts with a cheap decisive experiment.
 - **The parasitic-recruitment prediction (break 5)** — argued and unmeasured, but **unmetered
   rather than unmeasurable**: Aaron has FPGA fabric on hand and more planned, the ablation is
