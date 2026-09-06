@@ -14,6 +14,8 @@
  * PathRequest from env (`ZETA_UNSEAL_REQUEST`) is the same
  * rule: missing is unmeasured, not `auto`; `/dev/tpmrm0` is
  * not `pkcs11-tpm`. Parse does not call `integrateAtSetup`.
+ * Env join (`integrateAtSetupFromEnv`) still injects the
+ * capture: missing request is unmeasured, not `auto`.
  *
  * OpenBao takes ONE seal per node. Multiple *paths* means the
  * fleet may mix PKCS#11-YubiHSM, PKCS#11-SmartCard-HSM,
@@ -349,6 +351,26 @@ export function integrateAtSetup(request: SetupRequest, capture: HostHardwareCap
     return { ok: false, reason: "probe-did-not-run", requested };
   }
   return ok("lucent-shamir");
+}
+
+export type IntegrateFromEnv =
+  | { readonly ok: true; readonly decision: IntegrateDecision | null }
+  | { readonly ok: false; readonly reason: NamedPathRequestError };
+
+/**
+ * Request from env, capture still injected. Missing request is
+ * unmeasured (`decision` null) — not `auto`. `/dev/tpmrm0`
+ * refuses at parse and does not call `integrateAtSetup`.
+ * Does not invent a capture from the char device.
+ */
+export function integrateAtSetupFromEnv(
+  env: { readonly [key: string]: string | undefined },
+  capture: HostHardwareCapture,
+): IntegrateFromEnv {
+  const parsed = consumeUnsealRequestFromEnv(env);
+  if (!parsed.ok) return parsed;
+  if (parsed.requested === null) return { ok: true, decision: null };
+  return { ok: true, decision: integrateAtSetup({ requested: parsed.requested }, capture) };
 }
 
 /**

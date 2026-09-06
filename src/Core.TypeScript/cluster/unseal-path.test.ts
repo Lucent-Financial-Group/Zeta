@@ -13,6 +13,7 @@ import {
   consumeUnsealRequestFromEnv,
   emulatorMatrixCell,
   integrateAtSetup,
+  integrateAtSetupFromEnv,
   namedPathRequestErrorMessage,
   parsePathRequest,
   pickInstallPath,
@@ -563,5 +564,38 @@ describe("parsePathRequest — named, not inferred from tpmrm0", () => {
     expect(namedPathRequestErrorMessage("unsafe-conf-value")).toBe(
       "ZETA_UNSEAL_REQUEST contains a value firstboot conf cannot carry",
     );
+  });
+});
+
+describe("integrateAtSetupFromEnv — request from env, capture injected", () => {
+  test("missing request is unmeasured even when TPM is present — not auto", () => {
+    const tpmPresent = capture({ tpm2: "present" });
+    expect(integrateAtSetupFromEnv({}, tpmPresent)).toEqual({ ok: true, decision: null });
+    const auto = integrateAtSetup({ requested: "auto" }, tpmPresent);
+    expect(auto.ok).toBe(true);
+    if (!auto.ok) return;
+    expect(auto.path).toBe("pkcs11-tpm");
+  });
+
+  test("named pkcs11-tpm with present TPM integrates; tpmrm0 still refuses", () => {
+    const tpmPresent = capture({ tpm2: "present" });
+    const named = integrateAtSetupFromEnv({ [UNSEAL_REQUEST_ENV_KEY]: "pkcs11-tpm" }, tpmPresent);
+    expect(named.ok).toBe(true);
+    if (!named.ok) return;
+    expect(named.decision).toEqual(integrateAtSetup({ requested: "pkcs11-tpm" }, tpmPresent));
+    expect(
+      integrateAtSetupFromEnv({ [UNSEAL_REQUEST_ENV_KEY]: TPM_CHAR_DEVICE }, tpmPresent),
+    ).toEqual({ ok: false, reason: "unknown-request" });
+  });
+
+  test("named request still refuses when the injected capture has no device", () => {
+    const named = integrateAtSetupFromEnv({ [UNSEAL_REQUEST_ENV_KEY]: "pkcs11-tpm" }, METAL);
+    expect(named.ok).toBe(true);
+    if (!named.ok) return;
+    expect(named.decision).toEqual({
+      ok: false,
+      reason: "requested-pkcs11-not-accessible",
+      requested: "pkcs11-tpm",
+    });
   });
 });
