@@ -1,11 +1,12 @@
 ---
 id: 081M1TE2RQW087G0R003DXT7C2
 type: task
-state: in-progress
+state: done
 priority: P2
 slug: lock-fsharp-and-python-frame-signal-semantics-with-shared-ve
 title: "Lock FSharp and Python frame signal semantics with shared vectors"
 created: 2026-09-06T04:02:03.132Z
+completed: 2026-09-06T04:33:16.071Z
 depends_on: []
 composes_with: []
 ---
@@ -38,3 +39,16 @@ the Python ARC scene-prior implementation.
 
 The vectors do not establish benchmark gain or learned transfer. They lock the
 meaning of deterministic inputs to later inference and evaluation.
+
+## Evidence
+
+- Shared vectors replay seven observations and three temporal comparisons in
+  F# and Python.
+- Dominant-color ties now choose the lower palette value in both languages;
+  normalized shape coordinates serialize in row-major order in both languages.
+- Palette identity no longer includes shape, and placement no longer changes
+  when a component grows at the same origin.
+- `test_scene_priors.py`: 30 passed.
+- `FrameSignals` plus `FrameMotion`: 20 passed.
+- Cross-verification: 44/44 primitives passed.
+- Full preflight: 18/18 checks passed, including Release build and tests.
