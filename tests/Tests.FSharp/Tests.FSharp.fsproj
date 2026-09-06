@@ -59,6 +59,8 @@
     <Compile Include="Algebra/CellSchedulerScale.Tests.fs" />
     <Compile Include="Algebra/ProbabilitySemiring.Tests.fs" />
     <Compile Include="Algebra/ProbabilitySemiring.Boundary.Tests.fs" />
+    <Compile Include="../../src/Research.FSharp/SimplexBeliefComparison.fs" Link="Research/SimplexBeliefComparison.fs" />
+    <Compile Include="SimplexBeliefComparison.Tests.fs" />
     <Compile Include="Algebra/Spine.AsyncProtocol.Properties.fs" />
     <Compile Include="ProbabilitySemiring.CrossVerify.Tests.fs" />
     <Compile Include="YinYang.Tests.fs" />

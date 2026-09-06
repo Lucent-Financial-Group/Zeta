@@ -1,0 +1,160 @@
+[
+  {
+    "Process": "golden-mean-p-half",
+    "Histories": 2047,
+    "Possible": 375,
+    "Impossible": 1672,
+    "DenseMismatches": 0,
+    "AnalyticMismatches": 0,
+    "SignedMismatches": 0,
+    "ClippedSignedMismatches": 2047,
+    "DistinctBeliefs": 3,
+    "Entropy": [
+      {
+        "Position": 1,
+        "SourceBits": 0.9182958340544896,
+        "MemorylessCrossEntropyBits": 0.9182958340544896,
+        "ConditionalKlBits": 0
+      },
+      {
+        "Position": 2,
+        "SourceBits": 0.6666666666666666,
+        "MemorylessCrossEntropyBits": 0.9182958340544896,
+        "ConditionalKlBits": 0.2516291673878228
+      },
+      {
+        "Position": 3,
+        "SourceBits": 0.6666666666666666,
+        "MemorylessCrossEntropyBits": 0.9182958340544896,
+        "ConditionalKlBits": 0.2516291673878228
+      },
+      {
+        "Position": 4,
+        "SourceBits": 0.6666666666666666,
+        "MemorylessCrossEntropyBits": 0.9182958340544896,
+        "ConditionalKlBits": 0.2516291673878228
+      },
+      {
+        "Position": 5,
+        "SourceBits": 0.6666666666666666,
+        "MemorylessCrossEntropyBits": 0.9182958340544897,
+        "ConditionalKlBits": 0.2516291673878228
+      },
+      {
+        "Position": 6,
+        "SourceBits": 0.6666666666666666,
+        "MemorylessCrossEntropyBits": 0.9182958340544896,
+        "ConditionalKlBits": 0.2516291673878228
+      },
+      {
+        "Position": 7,
+        "SourceBits": 0.6666666666666666,
+        "MemorylessCrossEntropyBits": 0.9182958340544896,
+        "ConditionalKlBits": 0.2516291673878228
+      },
+      {
+        "Position": 8,
+        "SourceBits": 0.6666666666666666,
+        "MemorylessCrossEntropyBits": 0.9182958340544896,
+        "ConditionalKlBits": 0.2516291673878228
+      },
+      {
+        "Position": 9,
+        "SourceBits": 0.6666666666666667,
+        "MemorylessCrossEntropyBits": 0.9182958340544896,
+        "ConditionalKlBits": 0.25162916738782287
+      },
+      {
+        "Position": 10,
+        "SourceBits": 0.6666666666666665,
+        "MemorylessCrossEntropyBits": 0.9182958340544897,
+        "ConditionalKlBits": 0.25162916738782287
+      },
+      {
+        "Position": 11,
+        "SourceBits": 0.6666666666666666,
+        "MemorylessCrossEntropyBits": 0.91829583405449,
+        "ConditionalKlBits": 0.251629167387823
+      }
+    ]
+  },
+  {
+    "Process": "even-p-half",
+    "Histories": 2047,
+    "Possible": 596,
+    "Impossible": 1451,
+    "DenseMismatches": 0,
+    "AnalyticMismatches": 0,
+    "SignedMismatches": 0,
+    "ClippedSignedMismatches": 2047,
+    "DistinctBeliefs": 4,
+    "Entropy": [
+      {
+        "Position": 1,
+        "SourceBits": 0.9182958340544896,
+        "MemorylessCrossEntropyBits": 0.9182958340544896,
+        "ConditionalKlBits": 0
+      },
+      {
+        "Position": 2,
+        "SourceBits": 0.8741854163060885,
+        "MemorylessCrossEntropyBits": 0.9182958340544896,
+        "ConditionalKlBits": 0.044110417748400944
+      },
+      {
+        "Position": 3,
+        "SourceBits": 0.792481250360578,
+        "MemorylessCrossEntropyBits": 0.9182958340544896,
+        "ConditionalKlBits": 0.1258145836939114
+      },
+      {
+        "Position": 4,
+        "SourceBits": 0.7704260414863776,
+        "MemorylessCrossEntropyBits": 0.9182958340544896,
+        "ConditionalKlBits": 0.1478697925681119
+      },
+      {
+        "Position": 5,
+        "SourceBits": 0.7295739585136223,
+        "MemorylessCrossEntropyBits": 0.9182958340544897,
+        "ConditionalKlBits": 0.1887218755408671
+      },
+      {
+        "Position": 6,
+        "SourceBits": 0.7185463540765222,
+        "MemorylessCrossEntropyBits": 0.9182958340544896,
+        "ConditionalKlBits": 0.19974947997796735
+      },
+      {
+        "Position": 7,
+        "SourceBits": 0.6981203125901445,
+        "MemorylessCrossEntropyBits": 0.9182958340544896,
+        "ConditionalKlBits": 0.220175521464345
+      },
+      {
+        "Position": 8,
+        "SourceBits": 0.6926065103715943,
+        "MemorylessCrossEntropyBits": 0.9182958340544894,
+        "ConditionalKlBits": 0.22568932368289513
+      },
+      {
+        "Position": 9,
+        "SourceBits": 0.6823934896284058,
+        "MemorylessCrossEntropyBits": 0.9182958340544894,
+        "ConditionalKlBits": 0.2359023444260839
+      },
+      {
+        "Position": 10,
+        "SourceBits": 0.6796365885191303,
+        "MemorylessCrossEntropyBits": 0.9182958340544898,
+        "ConditionalKlBits": 0.23865924553535897
+      },
+      {
+        "Position": 11,
+        "SourceBits": 0.6745300781475361,
+        "MemorylessCrossEntropyBits": 0.9182958340544904,
+        "ConditionalKlBits": 0.2437657559069537
+      }
+    ]
+  }
+]
