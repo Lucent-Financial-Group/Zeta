@@ -148,6 +148,28 @@ jobs:
             required_substrates: ""
 
     steps:
+      # MUST RUN BEFORE `checkout`, and it is the reason the Windows legs failed on
+      # their first dispatch (run 34003022419). Both died in CHECKOUT, not in any
+      # toolchain step:
+      #
+      #   error: unable to create file docs/recovered-orphan-branches-2026-05/misc/
+      #   archive/pr4990-.../working-tree/docs/backlog/P2/B-0735-...md:
+      #   Filename too long
+      #
+      # That is Windows' MAX_PATH (260), and it is a fact about THIS REPOSITORY
+      # rather than about this job: 28 tracked paths exceed 260 characters on their
+      # own and 42 exceed it once a runner's workspace prefix is added. They are the
+      # recovered-orphan-branch archives, which nest a whole working tree under a
+      # long directory name and then a long filename inside it.
+      #
+      # `core.longpaths` is the standard fix and is set globally so it applies to
+      # the checkout action's own git invocation. It is NOT a workaround for a
+      # defect in this workflow -- without it the repository simply cannot be
+      # checked out on Windows at all, by anyone.
+      - name: Enable Windows long paths (before checkout — see 34003022419)
+        if: startsWith(matrix.os, 'windows')
+        run: git config --global core.longpaths true
+
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
