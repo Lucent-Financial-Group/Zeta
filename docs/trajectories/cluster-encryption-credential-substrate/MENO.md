@@ -92,22 +92,38 @@ assume the number.
    declares SoftHSM2/swtpm. Presence is a probe (`ID=nixos`,
    `frost-hardware-probe.ts`, `tpm2-linux-probe.ts`).
    `host-seal-profile.ts`.
-4. **USB repair HSM-talk** — companions on the stick (module
+4. **Setup-time path picker** (classifier this slice).
+   `src/Core.TypeScript/cluster/unseal-path.ts`
+   (`081M1T9X3ZE087G0R000JNAYE7`). Detect HSM/TPM during
+   setup; integrate PKCS#11 **only** if the device is
+   accessible. Metal HSM vendors are peers: YubiHSM 2 and
+   CardContact SmartCard-HSM (sc-hsm / OpenSC; not a YubiKey).
+   SmartCard-HSM mechanism is measure-on-device, not YubiHSM
+   AES-GCM. TPM *is* an auto-unseal path (OAEP pin).
+   Lucent 1Password Shamir is a **peer** path, not a silent
+   fallback from requested PKCS#11. Fleet may mix paths;
+   one OpenBao seal per node. Dual-vendor on one box is
+   ZetaFS k-of-n. Emulator install 2×2
+   (SoftHSM × swtpm) is declared by installing; skip-if-absent
+   cannot wear pass. Dejan's apt/mise SoftHSM job is still
+   the next *runtime* rung — this picker does not install
+   packages.
+5. **USB repair HSM-talk** — companions on the stick (module
    path, connector config, authkey *reference*, domain map,
    OpenBao env pointer). Not PIN-as-original, not Shamir copy,
    not `OP_SESSION`, not a brand type in the volume.
-5. extraContainer sidecar — later, **same commit as the
+6. extraContainer sidecar — later, **same commit as the
    sidecar**, and only for the Shamir kind path until the
    emulator job replaces it. `valuesObject` only. Do not fork
    the chart.
-6. Lease sidecar / portal / Consent (SSH is break-glass).
-7. Inventory lock test (presence counts, never private material).
-8. ADR: dual as minimum, three live slots as default.
-9. Missing persona trees (riven / vera / lior) after the 3-key
-   default exists.
-10. ESO for **app** secrets after the unsealer is real — never
+7. Lease sidecar / portal / Consent (SSH is break-glass).
+8. Inventory lock test (presence counts, never private material).
+9. ADR: dual as minimum, three live slots as default.
+10. Missing persona trees (riven / vera / lior) after the 3-key
+    default exists.
+11. ESO for **app** secrets after the unsealer is real — never
     Shamir-share copy.
-11. **seed vs broadcast** (classifier landed). Join-hash is
+12. **seed vs broadcast** (classifier landed). Join-hash is
     **framework**, indexed at `docs/PRODUCT-LANES.md`, not in
     SEED (`081M1RZ70FF087G0R0035580EZ`,
     `081M1S0K0R0087G0R001T4R8JH`).
@@ -130,6 +146,12 @@ assume the number.
 - Commit `seal "pkcs11"` without a module in the image.
 - Appoint `yubi-hsm-mock` as the device.
 - Call the Shamir sidecar HashiCorp auto-unseal.
+- Two active OpenBao seals on one node.
+- Silent PKCS#11 → Lucent downgrade when the requested
+  device is missing.
+- skip-if-absent wearing pass on an emulator matrix cell.
+- Collapse CardContact SmartCard-HSM into YubiHSM, or treat
+  a YubiKey as the card.
 - Mint public `IInput` / `IFeedback` F# types.
 - Absorb FF7 identity-blend as factory policy
   (`docs/DRIFT-TAXONOMY.md` Pattern 1).

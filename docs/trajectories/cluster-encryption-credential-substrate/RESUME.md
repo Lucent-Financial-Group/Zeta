@@ -1,7 +1,7 @@
 # Trajectory - Cluster Encryption / Credential Substrate
 
 Status: active — first surfaced 2026-05-29 from substrate inventory (was tracked only as scattered backlog rows; never had a trajectory surface, which is why it was easy to lose at cold-boot)
-Last refreshed: 2026-09-05 (μένω remain vs act; unsealer loop; seed vs broadcast classifier; join-hash recast as framework, hole-punch after discovery; OpenBao green; CI emulator rung SoftHSM/swtpm ≠ metal; NixOS host-seal profile: developer FIDO/biometric vs prod automatic rotation)
+Last refreshed: 2026-09-06 (setup-time HSM/TPM detect; TPM auto-unseal + Lucent peer path; emulator install 2×2)
 Type: workstream (current-focus) — a trajectory the operator is *actively powering*. Many trajectories can be tracked; only a few are workstreams at once (finite-focus / WIP-bounded — a workstream is a trajectory under sustained thrust, and thrust budget is finite, so most trajectories coast). ("Trajectory" is the genus; "workstream" is the species: a trajectory under sustained thrust toward a deliverable, vs. emergent-posture trajectories like `anti-infection`, which self-describes as "not a workstream with a cadence." See [`factory-trajectory-surface`](../factory-trajectory-surface/RESUME.md) for the genus/species taxonomy.) One of the operator's three current cluster workstreams (encryption / usb-zflash / ts-workflow-engine).
 Eventual encoding (design-stage — the human maintainer 2026-05-23 genetic-ID substrate + Clifford/HKT): this trajectory's state is trackable as a 128-bit genetic-ID seed (discrete, reversible via parser-combinator ↔ generator-function) → Clifford-space path (continuous, eventual). Mirrors the three-lane I8-lattice / I9-manifold split.
 Current blocker: none operationally; the live design tension is interactive-login-vs-baked-in-keys-vs-CI-test (081KSGS9H0008QG0R003JNSVR5)
@@ -92,6 +92,33 @@ never inferred from `/dev/tpmrm0` on a runner.
 
 Classifier: `src/Core.TypeScript/cluster/host-seal-profile.ts`.
 Nix: `full-ai-cluster/nixos/modules/host-seal-{model,profile}.nix`.
+
+## 2026-09-06 — setup detects HSM/TPM; TPM auto-unseal; Lucent is a peer path (Riven)
+
+Aaron: detect during setup if the real hardware has HSM and/or
+TPM; integrate only if accessible on the physical device;
+emulator install tests with and without HSM/TPM; can TPM
+auto-unseal or only HSM; keep the 1Password / Lucent unseal
+design; multiple paths.
+
+Classifier: `src/Core.TypeScript/cluster/unseal-path.ts`.
+Workitem: `081M1T9X3ZE087G0R000JNAYE7`. Research addendum on
+[`docs/research/2026-09-05-ci-emulator-rung-softhsm-swtpm-witness-wiring-not-metal.md`](../../research/2026-09-05-ci-emulator-rung-softhsm-swtpm-witness-wiring-not-metal.md).
+
+- PKCS#11 only when YubiHSM is `attached`, CardContact
+  SmartCard-HSM is present, or TPM is `present`. A `.so` on
+  disk is not a device. A YubiKey is not a SmartCard-HSM.
+  Unprobed / unavailable is a check that did not run.
+  SmartCard-HSM wrap is measure-on-device, not YubiHSM AES-GCM.
+- Requested PKCS#11 that is missing **refuses** — it does not
+  become Lucent.
+- TPM **can** auto-unseal (`tpm2-pkcs11`, OAEP pin). HSM
+  prefers AES-GCM. Lucent-Shamir is the 2026-09-04 peer path
+  (fetch-at-unseal, threshold >= 2, cannot init).
+- Fleet may mix paths. One OpenBao seal per node.
+- Emulator 2×2 is declared by installing. skip-if-absent
+  cannot wear pass. No `seal "pkcs11"` in Application.yaml
+  in this slice.
 
 ## 2026-09-04 — production-hardening review (Riven)
 

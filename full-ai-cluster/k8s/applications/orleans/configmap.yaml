@@ -30,12 +30,25 @@
 # `auth.existingSecret`; the silo reads the password from it rather than carrying a
 # literal.
 #
-# THIS CONFIGURES NOTHING YET, and that is not a defect: statefulset.yaml is at
-# `replicas: 0` behind a placeholder image because no Microsoft.Orleans package is
-# referenced anywhere in this repo. `OrleansCronAdapter.fs` says of itself that it is
-# "a lightweight in-memory adapter ... in a real deployment, this would be backed by
-# Orleans IGrain timers". The first real step is a silo image carrying grain code;
-# this file is the clustering decision that image will read.
+# THIS NOW CONFIGURES A RUNNING SILO. The paragraph here used to read "THIS
+# CONFIGURES NOTHING YET ... because no Microsoft.Orleans package is referenced
+# anywhere in this repo", which was true when written and is stale as of
+# 2026-09-06. Every piece it named as missing now exists:
+#
+#   full-ai-cluster/orleans-silo/Zeta.Orleans.Silo.csproj
+#       Microsoft.Orleans.Server 10.3.1 + Microsoft.Orleans.Clustering.Redis 10.3.1
+#   full-ai-cluster/orleans-silo/Dockerfile + Program.cs + Grains/
+#   .github/workflows/build-platform-images.yml   builds and pushes it
+#   ghcr.io/lucent-financial-group/zeta-orleans-silo:latest   published 2026-09-05
+#
+# So `replicas: 0` was no longer honest either -- it was the correct posture while
+# the image was a placeholder, and afterwards it was an app that could not fail
+# because it never ran. Bumped to 1 in the same change that corrects this comment,
+# because the comment was the stated reason for the zero.
+#
+# The silo reads THIS FILE at /etc/orleans/cluster.json and refuses to start
+# (exit 2) if it is missing or malformed, so a broken ConfigMap is a crash rather
+# than a silo running on defaults.
 # ENDPOINT MOVED 2026-09-01, with the redis Application. That Application left
 # the Bitnami chart for the Valkey project's own, whose primary Service is
 # `redis-valkey`, not `redis-master`. The new name was read off an actual

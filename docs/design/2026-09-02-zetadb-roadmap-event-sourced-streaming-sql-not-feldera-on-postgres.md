@@ -422,7 +422,7 @@ ZetaFS PR12 (DST corpus) and PR13 (FUSE) remain on the FS spec. They are not del
 
 ### ZD10 — Bloom vs anti-bloom: measure, then maybe ship (analysis until then)
 
-- **Files:** `src/Core/BloomFilter.fs` stays counting/blocked. New two-filter type only after the benches. `docs/research/bloom-filter-frontier.md` Assess row.
+- **Files:** `src/Core/BloomFilter.fs` counting/blocked stay the join-probe path. Toy `InsertDeleteBloom` (two grow-only blocked Blooms, `{Absent, Present, Unknown}`) is in-tree; not wired to join-probe. `docs/research/bloom-filter-frontier.md` Assess row.
 - **Depends on:** nothing. Does not block PR12 / ZD9.
 - **Falsifiers:** (1) `fp(I)×fp(D)` vs `CountingBloomFilter` space at equal guarantees. (2) unknown-region size under retraction churn **including insert-delete-insert**.
 - **Does not:** reopen WONT-DO deletable Bloom; replace counting Bloom on the hot path; put this on ZetaFS.
