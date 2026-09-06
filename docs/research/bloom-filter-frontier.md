@@ -52,9 +52,10 @@ CQF), ChainedFilter composition theory, Stable Learned Bloom
 anti-bloom (2026-09-05):** two grow-only Bloom filters over
 ever-inserted and ever-deleted keys; three-valued
 `{present, absent, unknown}`; unknown region `fp(I)×fp(D)`.
-G-set shaped; no counter saturation. Analysis, not a result.
+G-set shaped; no counter saturation. Toy type plus unit
+measurements in `Bloom.Tests.fs`, not a join-probe replacement.
 Does not un-Hold deletable Bloom. Resurrection (insert after
-delete) is UNKNOWN. Measure before replacing counting Bloom
+delete) is UNKNOWN. Counting Bloom stays shipped
 (ZD10, `081M1T9SMM9087G0R002FS29S4`).
 
 **Hold.**
