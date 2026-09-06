@@ -8,6 +8,7 @@
  *   * env pointer as NAME=value.
  *   * hex key material as an authkey "reference".
  *   * restore filename /etc/zeta/seal/pkcs11-module-path as the .so path.
+ *   * SoftHSM / swtpm module paths on the metal repair stick.
  */
 import { describe, expect, test } from "bun:test";
 import { NIXOS_PKCS11_MODULE_PATH, USB_PKCS11_MODULE_POINTER } from "../cluster/pkcs11-hostpath-overlay.ts";
@@ -52,10 +53,28 @@ describe("companion ids are bake-cred handlers; forbidden ids never are", () => 
 
 describe("companion values are references, not originals", () => {
   test("module path accepts an absolute .so; rejects ELF bytes and brand-only paths", () => {
-    expect(validateCompanionValue("pkcs11-module-path", Buffer.from("/usr/lib/softhsm/libsofthsm2.so"))).toBeNull();
+    expect(validateCompanionValue("pkcs11-module-path", Buffer.from("/usr/lib/pkcs11/yubihsm_pkcs11.so"))).toBeNull();
     expect(validateCompanionValue("pkcs11-module-path", Buffer.from("\x7fELF...."))).toContain("not the .so bytes");
     expect(validateCompanionValue("pkcs11-module-path", Buffer.from("/yubihsm"))).toContain("not a brand type");
     expect(validateCompanionValue("pkcs11-module-path", Buffer.from("yubihsm_pkcs11.so"))).toContain("absolute path");
+  });
+
+  test("SoftHSM / swtpm module paths are the CI job, not this metal stick", () => {
+    const emulator = "pkcs11-module-path is a metal module, not a CI emulator (SoftHSM/swtpm)";
+    expect(validateCompanionValue("pkcs11-module-path", Buffer.from("/usr/lib/softhsm/libsofthsm2.so"))).toBe(emulator);
+    expect(validateCompanionValue("pkcs11-module-path", Buffer.from("/usr/lib/swtpm/libswtpm_pkcs11.so"))).toBe(
+      emulator,
+    );
+    expect(
+      validateCompanionValue("pkcs11-module-path", Buffer.from(NIXOS_PKCS11_MODULE_PATH["tpm2-pkcs11"])),
+    ).toBeNull();
+    expect(
+      validateCompanionValue("pkcs11-module-path", Buffer.from(NIXOS_PKCS11_MODULE_PATH["smartcard-hsm"])),
+    ).toBeNull();
+    const baked = resolveBakeCred("pkcs11-module-path=/usr/lib/softhsm/libsofthsm2.so");
+    expect("error" in baked).toBe(true);
+    if (!("error" in baked)) return;
+    expect(baked.error).toBe(`pkcs11-module-path: ${emulator}`);
   });
 
   test("restore filename is not a module path, even though it contains pkcs11", () => {

@@ -1,0 +1,14 @@
+{
+  "id": "080d03b4201ce010a0130008f8b4b472",
+  "at": "2026-09-06T11:39:18.300Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1V880WV087G0R002E07KGH",
+    "type": "task",
+    "title": "USB bake-cred refuses SoftHSM/swtpm as a metal PKCS#11 module path",
+    "slug": "usb-bake-cred-refuses-softhsm-swtpm-as-a-metal-pkcs-11-modul",
+    "priority": "P2",
+    "filename": "081M1V880WV087G0R002E07KGH-usb-bake-cred-refuses-softhsm-swtpm-as-a-metal-pkcs-11-modul.md"
+  }
+}

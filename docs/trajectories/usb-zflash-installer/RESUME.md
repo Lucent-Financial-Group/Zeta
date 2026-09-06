@@ -454,7 +454,9 @@ not the `.so`. The path picker now feeds that overlay
 (`081M1V5ER44087G0R0000WPCC4`,
 `planSetupOverlayFromIntegrate`).
 Bake-cred refuses the restore filename as the
-module-path value (`081M1V6WCHN087G0R0022FN5DV`).
+module-path value (`081M1V6WCHN087G0R0022FN5DV`)
+and refuses SoftHSM / swtpm paths on that stick
+(`081M1V880WV087G0R002E07KGH`).
 glibc-host-into-musl-image is not a
 module; Application.yaml stays Shamir.
 

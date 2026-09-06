@@ -287,6 +287,21 @@ Consumer: `src/Core.TypeScript/installer/usb-hsm-companion.ts`
   `yubihsm_pkcs11.so` path still bakes. Does not edit
   Application.yaml. Does not land `yubihsm.nix`.
 
+## 2026-09-06 — USB bake-cred refuses SoftHSM/swtpm as metal (Riven)
+
+Aaron: continue after the restore-filename refuse. MENO
+already says SoftHSM CI is not this metal companion set.
+Bake-cred still accepted `libsofthsm2.so`.
+
+Consumer: `src/Core.TypeScript/installer/usb-hsm-companion.ts`
+(`validatePkcs11ModulePath`). Workitem:
+`081M1V880WV087G0R002E07KGH`.
+
+- Paths containing `softhsm` or `swtpm` refuse. NixOS
+  `libtpm2_pkcs11.so` and OpenSC still bake. Does not
+  infer swtpm from `/dev/tpmrm0`. Does not edit
+  Application.yaml.
+
 ## 2026-09-04 — production-hardening review (Riven)
 
 Aaron asked to production-harden the CA, name the unseal startup, use
