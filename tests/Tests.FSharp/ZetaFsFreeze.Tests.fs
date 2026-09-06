@@ -2462,6 +2462,15 @@ type private FlushFailFs() =
         member _.FlushToStableStorage(path) =
             failwith ("BUGGIFY: Simulated disk flush failure for " + path)
 
+        member _.WriteToStableStorage(_) = ()
+
+type private WriteFailFs() =
+    interface ISimulatedFs with
+        member _.FlushToStableStorage(_) = ()
+
+        member _.WriteToStableStorage(path) =
+            failwith ("BUGGIFY: Simulated disk write failure for " + path)
+
 [<Fact>]
 let ``ISimulatedFs flush-fail on the volume door keeps the prior freeze readable`` () : Task =
     task {
@@ -2489,6 +2498,42 @@ let ``ISimulatedFs flush-fail on the volume door keeps the prior freeze readable
                 let! second = pendingB.ConfigureAwait(false)
                 match second with
                 | Ok _ -> Assert.Fail("second freeze must not ack a failed flush")
+                | Error e ->
+                    Assert.Equal("Fsync", ZetaFsFreeze.errorName e)
+                    SimulatedFs.Clear()
+                    Assert.True(ZetaFsFreeze.isReadable volume first.Content)
+        finally
+            SimulatedFs.Clear()
+            ZetaFsFreeze.dispose volume
+            FileSystem.Reset()
+    }
+
+[<Fact>]
+let ``ISimulatedFs write-fail on object put keeps the prior freeze readable`` () : Task =
+    task {
+        ensureHasher ()
+        FileSystem.Register(InMemoryFileSystem())
+        let store = "/write-fail-volume"
+        let mutbuf = ZetaFsMutbuf.create store ZetaFsMutbuf.Coherence.Shared
+        let volume = ZetaFsFreeze.createManualStream store mutbuf None
+
+        try
+            let id = mintId ()
+            let h = ZetaFsMutbuf.openHandle volume.Mutbuf id
+            ZetaFsMutbuf.pwrite volume.Mutbuf h 0L [| 1uy; 2uy; 3uy |] |> ignore
+            let pendingA = (freezeAsync volume id ZetaFsFreeze.Journaled).AsTask()
+            do! (ZetaFsFreeze.pumpLog volume CancellationToken.None).ConfigureAwait(false)
+            let! first = pendingA.ConfigureAwait(false)
+            match first with
+            | Error e -> Assert.Fail(ZetaFsFreeze.errorName e)
+            | Ok first ->
+                SimulatedFs.Register(WriteFailFs() :> ISimulatedFs)
+                ZetaFsMutbuf.pwrite volume.Mutbuf h 0L [| 9uy; 8uy; 7uy |] |> ignore
+                let pendingB = (freezeAsync volume id ZetaFsFreeze.Journaled).AsTask()
+                do! (ZetaFsFreeze.pumpLog volume CancellationToken.None).ConfigureAwait(false)
+                let! second = pendingB.ConfigureAwait(false)
+                match second with
+                | Ok _ -> Assert.Fail("second freeze must not ack a failed object write")
                 | Error e ->
                     Assert.Equal("Fsync", ZetaFsFreeze.errorName e)
                     SimulatedFs.Clear()

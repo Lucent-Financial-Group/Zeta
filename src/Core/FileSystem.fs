@@ -434,7 +434,7 @@ type InMemoryFileSystem() =
     member _.Files = files
 
     /// One-shot: next matching write Dispose commits `afterBytes` then throws.
-    /// `ISimulatedFs` stays flush-only; this is the crash-mid-write intercept.
+    /// `ISimulatedFs` is flush-fail and write-fail; this is the crash-mid-write intercept.
     member _.ArmCrashMidWrite(pathContains: string, afterBytes: int) =
         if String.IsNullOrEmpty pathContains then
             invalidArg (nameof pathContains) "pathContains must be non-empty"

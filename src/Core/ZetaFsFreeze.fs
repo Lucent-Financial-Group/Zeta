@@ -454,6 +454,19 @@ module ZetaFsFreeze =
                         | ex when ex.Message.IndexOf("BUGGIFY", StringComparison.Ordinal) >= 0 ->
                             err <- Some(FreezeError.Fsync(FileSync.FileSyncError.FlushFailed(path, 5)))
 
+                let tryWrite (path: string) =
+                    if err.IsNone then
+                        try
+                            SimulatedFs.Write path
+                        with
+                        | :? CrashMidWriteException as ex -> raise ex
+                        | :? PowerOutageException as ex -> raise ex
+                        | :? BadMemoryException as ex -> raise ex
+                        | :? IOException ->
+                            err <- Some(FreezeError.Fsync(FileSync.FileSyncError.FlushFailed(path, 5)))
+                        | ex when ex.Message.IndexOf("BUGGIFY", StringComparison.Ordinal) >= 0 ->
+                            err <- Some(FreezeError.Fsync(FileSync.FileSyncError.FlushFailed(path, 5)))
+
                 let anyDurable =
                     let mutable d = false
                     let mutable i = 0
@@ -489,6 +502,7 @@ module ZetaFsFreeze =
                             try
                                 if not (fsDoor.Exists path) then
                                     FileSystemIo.writeAllBytes fsDoor path bytes
+                                    tryWrite path
 
                                 known.[id] <- uint64 bytes.Length
                             with

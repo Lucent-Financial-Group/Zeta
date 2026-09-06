@@ -50,10 +50,12 @@ type Buggify =
         Buggify.IsActive(probability)
 
 
-/// Simulated filesystem interface. Flush-fail only (Buggify 5%).
-/// Crash-mid-write is `InMemoryFileSystem.ArmCrashMidWrite`, not this type.
+/// Simulated filesystem interface. Flush-fail and write-fail (Buggify 5%).
+/// Crash-mid-write (torn prefix, process died) is still
+/// `InMemoryFileSystem.ArmCrashMidWrite`, not this type.
 type ISimulatedFs =
     abstract FlushToStableStorage: path: string -> unit
+    abstract WriteToStableStorage: path: string -> unit
 
 
 /// Global registry to dispatch filesystem simulation intercepts.
@@ -65,6 +67,11 @@ type SimulatedFs =
     static member Flush(path: string) =
         match SimulatedFs.current with
         | Some fs -> fs.FlushToStableStorage path
+        | None -> ()
+
+    static member Write(path: string) =
+        match SimulatedFs.current with
+        | Some fs -> fs.WriteToStableStorage path
         | None -> ()
 
 
@@ -128,6 +135,10 @@ type ChaosEnvironment
         member _.FlushToStableStorage(path) =
             if Buggify.Check(0.05, "fs.flush_failure") then
                 failwithf "BUGGIFY: Simulated disk flush failure for %s" path
+
+        member _.WriteToStableStorage(path) =
+            if Buggify.Check(0.05, "fs.write_failure") then
+                failwithf "BUGGIFY: Simulated disk write failure for %s" path
 
     /// Internal: advance without taking the lock (caller must hold it).
     /// Lets composite operations — RNG draw + clock advance — happen
