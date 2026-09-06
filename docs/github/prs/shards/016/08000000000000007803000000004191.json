@@ -1,0 +1,12 @@
+{
+  "pr_number": 16785,
+  "archive_path": "docs/history/pr-reviews/PR-16785-feat-creds-refuse-pkcs-11-restore-filename-as-a-bake-cred-module-path.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-06T11:38:28.175Z",
+  "schema_version": "v1",
+  "commit_sha": "58ec2a366953c33e540531b6eedde324ed267158",
+  "title": "feat(creds): Refuse PKCS#11 restore filename as a bake-cred module path",
+  "state": "MERGED",
+  "merged_at": "2026-09-06T11:37:53Z",
+  "head_ref": "cursor/bake-cred-pointer-not-module-27c5"
+}
