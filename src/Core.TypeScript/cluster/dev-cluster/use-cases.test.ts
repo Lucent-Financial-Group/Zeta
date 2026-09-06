@@ -5,6 +5,7 @@ import {
   buildDevAdminSecretManifest,
   buildDevRegistryPullSecretManifest,
   DEV_BOOTSTRAP_SECRETS,
+  DEV_SHARED_SECRETS,
   DEV_CILIUM_LB_KIND_CRDS,
   DEV_CILIUM_LB_KIND_MANIFEST_RELPATH,
   DEV_GHCR_PULL_SECRET,
@@ -537,8 +538,23 @@ describe("dev/CI bootstrap credentials", () => {
     const catalogAt = log.findIndex((entry) => entry.startsWith("catalog:"));
     expect(catalogAt).toBeGreaterThan(-1);
 
+    // BOTH ROSTERS. `DEV_SHARED_SECRETS` mints one Secret per NAMESPACE from a single drawn
+    // value, so its contribution is the sum of `namespaces.length`, not the spec count --
+    // asserting the spec count would pass over a shared secret that reached only one of its
+    // three namespaces, which is the exact partial-mint this design refuses.
+    const sharedManifests = DEV_SHARED_SECRETS.reduce((n, spec) => n + spec.namespaces.length, 0);
     const mints = log.filter((entry) => entry.startsWith("inline-manifest:"));
-    expect(mints.length).toBe(DEV_BOOTSTRAP_SECRETS.length);
+    expect(mints.length).toBe(DEV_BOOTSTRAP_SECRETS.length + sharedManifests);
+
+    // ONE DRAWN VALUE, and this is the property the whole shape exists for: a producer and
+    // its consumers must present the SAME string. Every namespace's manifest for a shared
+    // spec must therefore carry an identical rendering of it.
+    for (const spec of DEV_SHARED_SECRETS) {
+      const rendered = mints.filter((entry) => entry.includes(`name: ${spec.name}`));
+      expect(rendered.length).toBe(spec.namespaces.length);
+      const bodies = rendered.map((entry) => entry.slice(entry.indexOf("stringData:")));
+      expect(new Set(bodies).size).toBe(1);
+    }
 
     for (const spec of DEV_BOOTSTRAP_SECRETS) {
       const mintAt = log.findIndex(
@@ -587,7 +603,13 @@ describe("dev/CI bootstrap credentials", () => {
    */
   test("a second bring-up against a cluster that already has them does NOT rotate them", () => {
     const log: string[] = [];
-    const existing = DEV_BOOTSTRAP_SECRETS.map((spec) => `secret/${spec.name}@${spec.namespace}`);
+    // BOTH ROSTERS, and the shared one contributes one ref PER NAMESPACE. Listing only the
+    // bootstrap refs would leave the shared secrets absent, they would mint, and this test
+    // would fail for the right reason while claiming the wrong one.
+    const existing = [
+      ...DEV_BOOTSTRAP_SECRETS.map((spec) => `secret/${spec.name}@${spec.namespace}`),
+      ...DEV_SHARED_SECRETS.flatMap((spec) => spec.namespaces.map((ns) => `secret/${spec.name}@${ns}`)),
+    ];
     bringUpKindCiCluster(fakePorts(log, existing), kindOptions);
     for (const ref of existing) expect(log).toContain(`exists?:${ref}`);
     expect(log.some((entry) => entry.startsWith("inline-manifest:"))).toBe(false);
@@ -612,9 +634,16 @@ describe("dev/CI bootstrap credentials", () => {
    */
   test("a cluster holding every rostered credential but one converges by minting the missing metadata.name", () => {
     const log: string[] = [];
-    const already = DEV_BOOTSTRAP_SECRETS.filter((spec) => spec !== DEV_REDIS_AUTH_SECRET).map(
-      (spec) => `secret/${spec.name}@${spec.namespace}`,
-    );
+    const already = [
+      ...DEV_BOOTSTRAP_SECRETS.filter((spec) => spec !== DEV_REDIS_AUTH_SECRET).map(
+        (spec) => `secret/${spec.name}@${spec.namespace}`,
+      ),
+      // The shared secrets are present in FULL. A shared spec is all-or-nothing on re-run --
+      // a partial set would re-mint the whole spec with a FRESH value, which is the
+      // divergence that shape exists to refuse -- so this scenario keeps them complete and
+      // leaves exactly one bootstrap credential missing.
+      ...DEV_SHARED_SECRETS.flatMap((spec) => spec.namespaces.map((ns) => `secret/${spec.name}@${ns}`)),
+    ];
     bringUpKindCiCluster(fakePorts(log, already), kindOptions);
     const mintedNames = log
       .filter((entry) => entry.startsWith("inline-manifest:"))
@@ -657,7 +686,9 @@ describe("dev/CI bootstrap credentials", () => {
       bringUpKindCiCluster(fakePorts(log), { ...kindOptions, configPath: `/tmp/kind-${n}.yaml` });
       return log.filter((entry) => entry.startsWith("inline-manifest:"));
     });
-    expect(runs[0]!.length).toBe(DEV_BOOTSTRAP_SECRETS.length);
+    expect(runs[0]!.length).toBe(
+      DEV_BOOTSTRAP_SECRETS.length + DEV_SHARED_SECRETS.reduce((n, spec) => n + spec.namespaces.length, 0),
+    );
     // Across clusters.
     expect(runs[0]![0]).not.toBe(runs[1]![0]);
     // Within one cluster: parse each spec's passwordKey, not a restated
@@ -667,9 +698,29 @@ describe("dev/CI bootstrap credentials", () => {
       const line = manifest.split("\n").find((l) => l.includes(needle));
       return line?.slice(line.indexOf(needle) + needle.length).trim() ?? "";
     };
-    const values = runs[0]!.map((manifest, i) => passwordOf(manifest, DEV_BOOTSTRAP_SECRETS[i]!));
+    // MATCHED BY NAME, NOT BY INDEX. The index coupling broke the moment
+    // `DEV_SHARED_SECRETS` started contributing manifests too (three of them, appended after
+    // the five bootstrap ones), and `DEV_BOOTSTRAP_SECRETS[i]` then read past the end. A
+    // by-name lookup states the pairing the assertion actually means.
+    const values = DEV_BOOTSTRAP_SECRETS.map((spec) => {
+      const manifest = runs[0]!.find((m) => m.includes(`name: ${spec.name}`));
+      expect(manifest).toBeDefined();
+      return passwordOf(manifest ?? "", spec);
+    });
     expect(values.every((v) => v.length > 0)).toBe(true);
     expect(new Set(values).size).toBe(values.length);
+
+    // AND THE SHARED SECRETS ARE DELIBERATELY *NOT* DISTINCT ACROSS THEIR NAMESPACES -- that
+    // is the property, not a gap in this one. Asserted here as well as in the mint test,
+    // because "every minted value is unique" reads as a rule this file otherwise appears to
+    // state, and the exception has to be visible where the rule is.
+    for (const spec of DEV_SHARED_SECRETS) {
+      const bodies = runs[0]!
+        .filter((m) => m.includes(`name: ${spec.name}`))
+        .map((m) => m.slice(m.indexOf("stringData:")));
+      expect(bodies.length).toBe(spec.namespaces.length);
+      expect(new Set(bodies).size).toBe(1);
+    }
   });
 
   /** THE THIRD DOOR again — `apply-root-app.ts` cannot be driven with fakes. */
@@ -733,7 +784,9 @@ describe("dev/CI registry pull credential", () => {
     expect(pullMints(log)).toEqual([]);
     // The skip must be LOCAL to this credential -- a bring-up that bailed here
     // would leave Grafana and ziti without theirs for an unrelated reason.
-    expect(log.filter((e) => e.startsWith("inline-manifest:")).length).toBe(DEV_BOOTSTRAP_SECRETS.length);
+    expect(log.filter((e) => e.startsWith("inline-manifest:")).length).toBe(
+      DEV_BOOTSTRAP_SECRETS.length + DEV_SHARED_SECRETS.reduce((n, spec) => n + spec.namespaces.length, 0),
+    );
   });
 
   test("with a token the bring-up mints it, into the pods' OWN namespace, before the catalog", () => {
