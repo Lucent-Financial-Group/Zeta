@@ -497,6 +497,10 @@ CLI flags
 `file-backed.ts`; one without the other
 refuses; does not fill `NIXOS_HOST_BAO`;
 still does not edit `zeta-first-boot.sh`.
+QEMU harness
+(`081M1VW190B087G0R003D4GWJF`) forwards
+those same flags from `prepare-boot-image.ts`;
+still does not edit `zeta-first-boot.sh`.
 glibc-host-into-musl-image is not a
 module; Application.yaml stays Shamir.
 

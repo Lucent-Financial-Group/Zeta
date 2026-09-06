@@ -19,6 +19,8 @@
  *     [--flake-host <attr>] \
  *     [--join-server-url https://host[:port]] \
  *     [--join-token <path to k3s node-token>] \
+ *     [--bao-load-site on-host|in-chart-image] \
+ *     [--bao-path <named bao binary>] \
  *     [--cluster-segment-mac <aa:bb:cc:dd:ee:ff>] \
  *     [--cluster-host-index <2..254>]
  *
@@ -33,6 +35,11 @@ import { fileURLToPath } from "node:url";
 import { detectIsohybridEspOffsetBytes, ISOHYBRID_ESP_OFFSET_FALLBACK_BYTES } from "../lib.ts";
 import { runFileBackedZflashCli } from "../file-backed.ts";
 import { firstbootRoleFromFlags, type ZetaFirstbootRole } from "../firstboot-role.ts";
+import {
+  namedBaoElfArgErrorMessage,
+  parseNamedBaoElfArgs,
+  type NamedBaoElfAsk,
+} from "../firstboot-bao-elf.ts";
 import { buildBlob, composeBundle } from "../../installer/zeta-creds-persist";
 
 export const DEFAULT_QEMU_USB_UUID = "b0891-qemu-test-usb-00000001";
@@ -65,6 +72,11 @@ export interface PrepareBootImageInput {
   readonly wifiCredentials?: PrepareBootImageWifiCredentials;
   /** 081KSNY2Z0008QG0R0008PN7RQ scenario 5 — role written to the ESP. */
   readonly firstbootRole?: ZetaFirstbootRole;
+  /**
+   * Named bao site + path for `/zeta-firstboot.conf`. Sibling of
+   * `firstbootRole`. Both flags or neither. Null is unmeasured.
+   */
+  readonly namedBaoElf?: NamedBaoElfAsk | null;
   readonly joinTokenSourcePath?: string;
   /** QEMU-only: bake `/zeta-bind-uefi-keyfile` so the guest writes the target ESP keyfile. */
   readonly bindUefiKeyfileMarker?: boolean;
@@ -162,6 +174,7 @@ export function prepareBootImage(input: PrepareBootImageInput): PrepareBootImage
           wifiPassword: input.wifiCredentials.password,
         }),
     ...(input.firstbootRole === undefined ? {} : { firstbootRole: input.firstbootRole }),
+    ...(input.namedBaoElf === undefined ? {} : { namedBaoElf: input.namedBaoElf }),
     ...(input.joinTokenSourcePath === undefined ? {} : { joinTokenSourcePath: input.joinTokenSourcePath }),
     ...(input.bindUefiKeyfileMarker === true ? { bindUefiKeyfileMarker: true } : {}),
     ...(input.qemuBakeTestCredMarker === true ? { qemuBakeTestCredMarker: true } : {}),
@@ -181,7 +194,7 @@ export function prepareBootImage(input: PrepareBootImageInput): PrepareBootImage
   };
 }
 
-function parseArgs(argv: readonly string[]): PrepareBootImageInput | { readonly error: string } {
+export function parsePrepareBootImageArgs(argv: readonly string[]): PrepareBootImageInput | { readonly error: string } {
   let isoPath = "";
   let outputImagePath = "";
   let withCredentialBlob = true;
@@ -192,6 +205,8 @@ function parseArgs(argv: readonly string[]): PrepareBootImageInput | { readonly 
   let flakeHostFlag: string | undefined;
   let joinServerUrlFlag: string | undefined;
   let joinTokenSourcePath: string | undefined;
+  let baoLoadSiteFlag: string | undefined;
+  let baoPathFlag: string | undefined;
   let clusterSegmentMac: string | undefined;
   let clusterHostIndex: string | undefined;
 
@@ -217,6 +232,20 @@ function parseArgs(argv: readonly string[]): PrepareBootImageInput | { readonly 
       joinServerUrlFlag = argv[++i] ?? "";
     } else if (arg === "--join-token") {
       joinTokenSourcePath = argv[++i] ?? "";
+    } else if (arg === "--bao-load-site") {
+      const value = argv[i + 1];
+      if (value === undefined || value.startsWith("-")) {
+        return { error: "--bao-load-site requires a value" };
+      }
+      baoLoadSiteFlag = value;
+      i++;
+    } else if (arg === "--bao-path") {
+      const value = argv[i + 1];
+      if (value === undefined || value.startsWith("-")) {
+        return { error: "--bao-path requires a value" };
+      }
+      baoPathFlag = value;
+      i++;
     } else if (arg === "--cluster-segment-mac") {
       clusterSegmentMac = argv[++i] ?? "";
     } else if (arg === "--cluster-host-index") {
@@ -241,6 +270,16 @@ function parseArgs(argv: readonly string[]): PrepareBootImageInput | { readonly 
   });
   if (!firstbootRole.ok) return { error: firstbootRole.error };
 
+  const namedArgv: string[] = [];
+  if (baoLoadSiteFlag !== undefined) namedArgv.push(`--bao-load-site=${baoLoadSiteFlag}`);
+  if (baoPathFlag !== undefined) namedArgv.push(`--bao-path=${baoPathFlag}`);
+  let namedBaoElf: NamedBaoElfAsk | null | undefined;
+  if (namedArgv.length > 0) {
+    const parsedNamed = parseNamedBaoElfArgs(namedArgv);
+    if (!parsedNamed.ok) return { error: namedBaoElfArgErrorMessage(parsedNamed.reason) };
+    namedBaoElf = parsedNamed.ask;
+  }
+
   return {
     isoPath,
     outputImagePath,
@@ -257,12 +296,13 @@ function parseArgs(argv: readonly string[]): PrepareBootImageInput | { readonly 
         }
       : {}),
     ...(firstbootRole.value === undefined ? {} : { firstbootRole: firstbootRole.value }),
+    ...(namedBaoElf === undefined ? {} : { namedBaoElf }),
     ...(joinTokenSourcePath === undefined ? {} : { joinTokenSourcePath }),
   };
 }
 
 function main(argv: readonly string[]): number {
-  const parsed = parseArgs(argv.slice(2));
+  const parsed = parsePrepareBootImageArgs(argv.slice(2));
   if ("error" in parsed) {
     console.error(parsed.error);
     return 2;

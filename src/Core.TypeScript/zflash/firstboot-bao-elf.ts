@@ -5,9 +5,10 @@
  * argv parse. No filesystem. `lib.ts` writes the joined
  * conf onto the ESP. `file-backed.ts` parses `--bao-load-site`
  * and `--bao-path` here so it does not import installer `fs`.
- * Capture / overlay still live in bao-elf-capture.ts (that
- * module may read). Does not expand `ZetaFirstbootRole`.
- * Does not edit `zeta-first-boot.sh`.
+ * `prepare-boot-image.ts` uses the same parse. Capture / overlay
+ * still live in bao-elf-capture.ts (that module may read).
+ * Does not expand `ZetaFirstbootRole`. Does not edit
+ * `zeta-first-boot.sh`.
  *
  * Cite: firstboot-role.ts, bao-load-site.ts,
  * docs/research/2026-08-21-hands-off-metal-*.md §1.4.
@@ -117,6 +118,24 @@ export function parseNamedBaoElfArgs(argv: readonly string[]): NamedBaoElfArgRes
   if (namedPath.length === 0) return { ok: false, reason: "empty-path" };
   if (!isBaoLoadSite(namedSite)) return { ok: false, reason: "unknown-site" };
   return { ok: true, ask: namedBaoElfAsk(namedSite, namedPath) };
+}
+
+/** Operator-facing refusal for a named-bao argv parse. Shared by file-backed and prepare-boot-image. */
+export function namedBaoElfArgErrorMessage(reason: NamedBaoElfArgError): string {
+  switch (reason) {
+    case "site-without-path":
+      return "--bao-load-site requires --bao-path";
+    case "path-without-site":
+      return "--bao-path requires --bao-load-site";
+    case "unknown-site":
+      return "--bao-load-site must be on-host or in-chart-image";
+    case "empty-site":
+      return "--bao-load-site requires a value";
+    case "empty-path":
+      return "--bao-path requires a value";
+    case "unsafe-conf-value":
+      return "--bao-load-site / --bao-path contains a value firstboot conf cannot carry";
+  }
 }
 
 /**
