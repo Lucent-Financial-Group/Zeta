@@ -34,7 +34,7 @@ has its own top-level directory already. But the golden vectors LIVE in `src/Cor
 src (19), four Rust crates, `tests/cross-verification`. Splitting languages while the vectors
 stay in one of them makes **TypeScript an appointed hub**, which
 `itron-hub-patent-boundary-p2p-is-the-upgrade.md` forbids and
-`clone-at-tag-stays-sufficient.md` compounds.
+`.claude/rules/clone-at-tag-stays-sufficient.md` compounds.
 
 So the language split has a single prerequisite: **`zeta-treaty`**, a repo no oracle owns.
 
@@ -60,7 +60,7 @@ Two tiers, and the second is already half-built here:
   Helm charts, and **stubs for everything it does not own**.
 - **Across languages: one intentional common nexus — `zeta-treaty`.** *"Similar to our
   multi-oracle agreements in this repo"* is exact: the vectors already **are** the agreement,
-  and `culture-invariant-by-default.md` already calls the seed a treaty. The split does not
+  and `.claude/rules/culture-invariant-by-default.md` already calls the seed a treaty. The split does not
   invent this; it moves the agreement out of one participant's house.
 
 **Helm charts: the ask is nearly free today.** 37 cluster charts are third-party pins; this
@@ -81,6 +81,6 @@ a repo stands alone; the treaty is what stops them drifting. Neither works witho
 
 **The ace dimension, stated so it does not violate the rule beside it:** `ace` may resolve
 *language nexus + toolchain + treaty pin* as a coordinate, but never become the only way to —
-`clone-at-tag-stays-sufficient.md` is explicit that the moment `ace` is the only path it is an
+`.claude/rules/clone-at-tag-stays-sufficient.md` is explicit that the moment `ace` is the only path it is an
 appointed hub. The treaty pin stays a plain committed ref `git` alone can follow.
 
