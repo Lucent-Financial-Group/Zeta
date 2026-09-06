@@ -130,6 +130,8 @@ module RelationalIdentityExperiment =
            run "different-observation-channel" extraTable (expected @ [ "e4" ]) (view "A" extended) (view "B" extended)
            run "coherent-fabricated-counterparties" table expected left right
            run "coherent-fabricated-complete-graph" fabricatedTable (fabricated |> List.map _.EventId) (view "A" fabricated) (view "B" fabricated)
+           run "unverified-alternative-with-covered-id" table expected left
+               { right with Occurrences = right.Occurrences @ [ { right.Occurrences.[2] with Position = 10L; Receipt = changed; Attestation = "unavailable" } ] }
            run "open-causal-boundary" boundaryTable expected (openCut left) (openCut right)
            run "causal-coordinate-reversal" table expected left (R.rechart (fun p -> 3L - p) id right)
            run "coordinate-collision" table expected left (R.rechart (fun _ -> 0L) id right)

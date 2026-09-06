@@ -27,7 +27,7 @@ let ``registered mutations distinguish missing coverage authentication and contr
     let cases = E.mutationPanel () |> Array.map (fun row -> row.Name, row) |> Map.ofArray
     for name in ["baseline";"identical-replay";"different-observation-channel";"coherent-fabricated-counterparties";"coherent-fabricated-complete-graph";"empty-cut"] do
         Assert.Equal("consistent-on-declared-cut", cases.[name].Status)
-    for name in ["missing-parent";"omitted-expected-event";"unavailable-verifier";"open-causal-boundary"] do
+    for name in ["missing-parent";"omitted-expected-event";"unavailable-verifier";"unverified-alternative-with-covered-id";"open-causal-boundary"] do
         Assert.Equal("unknown-coverage", cases.[name].Status)
         Assert.Empty(cases.[name].Invariant)
     for name in ["changed-payload-old-attestation";"substituted-key"] do Assert.Equal("authentication-rejected", cases.[name].Status)
@@ -141,3 +141,13 @@ let ``signed consolidation does not overflow int64 and keeps historical receipts
     let invariant = result.Invariant |> Option.defaultWith (fun () -> failwith "missing invariant")
     Assert.Equal(128,invariant.Receipts.Length)
     Assert.Equal(128I*bigint Int64.MaxValue,invariant.Claims.Head.Weight)
+
+[<Fact>]
+let ``unverified alternatives cannot disappear behind a covered event ID`` () =
+    let left,right = sample "A",sample "B"
+    for receipt in [E.receipts.[2];{E.receipts.[2] with Claim="alternative"}] do
+        let unknown = {right.Occurrences.[2] with Position=10L;Receipt=receipt;Attestation="unavailable"}
+        let result = compare left {right with Occurrences=right.Occurrences @ [unknown]} |> require
+        Assert.Equal("unknown-coverage",result.Status)
+        Assert.Equal<string list>(["e2"],result.UnverifiedRight)
+        Assert.True(result.Invariant.IsNone)

@@ -145,7 +145,7 @@ def compare(
             o.receipt.EventId
             for o in normalized
             if authenticate(table, o) == "unavailable"
-        } - accepted_ids
+        }
         invalid = {
             o.receipt.EventId
             for o in normalized
@@ -157,7 +157,7 @@ def compare(
         out["Unverified" + suffix] = sorted(unverified)
         out["Rejected" + suffix] = sorted(invalid)
         out["Repeated" + suffix] = len(accepted) - len({o.receipt for o in accepted})
-        unknown |= not cut_set <= accepted_ids
+        unknown |= not cut_set <= accepted_ids or bool(unverified)
         rejected |= bool(invalid)
         union.update(o.receipt for o in accepted)
     grouped: dict[str, set[Receipt]] = defaultdict(set)
@@ -396,6 +396,24 @@ def mutation_panel() -> list[dict[str, Any]]:
             view("B", fabricated),
         ),
         compare(
+            "unverified-alternative-with-covered-id",
+            TABLE,
+            EXPECTED,
+            left,
+            replace(
+                right,
+                occurrences=right.occurrences
+                + (
+                    replace(
+                        right.occurrences[2],
+                        position=10,
+                        receipt=changed,
+                        attestation="unavailable",
+                    ),
+                ),
+            ),
+        ),
+        compare(
             "open-causal-boundary",
             boundary_table,
             EXPECTED,
@@ -590,7 +608,7 @@ def verify_saved(
     if (
         saved.get("Protocol") != "relational-identity-v1"
         or saved.get("SourceArchive")
-        != "archive/relational-identity-20260906-source-v1"
+        != "archive/relational-identity-20260906-source-v2"
     ):
         raise ValueError("unexpected protocol or source archive")
     if saved.get("ProtocolCommit") != "4f470f40e":
@@ -598,6 +616,7 @@ def verify_saved(
     expected_paths = {
         "docs/research/relational-identity/2026-09-06-protocol.md",
         "docs/research/relational-identity/2026-09-06-clarification.md",
+        "docs/research/relational-identity/2026-09-06-source-repairs.md",
         "src/Research.FSharp/RelationalIdentity.fs",
         "src/Research.FSharp/RelationalIdentityExperiment.fs",
         "src/Research.FSharp/run-relational-identity.fsx",

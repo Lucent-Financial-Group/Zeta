@@ -19,7 +19,7 @@ def test_saved_native_receipt_matches_independent_regeneration() -> None:
     )
     assert result["ExactSemanticMatch"]
     assert result["TransportChecks"] == 288
-    assert result["MutationCases"] == 17
+    assert result["MutationCases"] == 18
 
 
 @pytest.mark.parametrize(
@@ -94,3 +94,23 @@ def test_strict_replay_checks_a_supplied_source_snapshot(tmp_path: Path) -> None
     path.write_bytes(path.read_bytes() + b"changed")
     with pytest.raises(ValueError, match="source hash mismatch"):
         r.verify_saved(saved, tmp_path)
+
+
+def test_unavailable_alternative_remains_unknown_when_event_id_is_covered() -> None:
+    left, right = r.view("A", r.RECEIPTS), r.view("B", r.RECEIPTS)
+    alternative = replace(
+        right.occurrences[2],
+        position=10,
+        receipt=replace(r.RECEIPTS[2], Claim="alternative"),
+        attestation="unavailable",
+    )
+    result = r.compare(
+        "unknown",
+        r.TABLE,
+        r.EXPECTED,
+        left,
+        replace(right, occurrences=right.occurrences + (alternative,)),
+    )
+    assert result["Status"] == "unknown-coverage"
+    assert result["UnverifiedRight"] == ["e2"]
+    assert result["Invariant"] == []

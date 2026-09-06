@@ -73,9 +73,8 @@ module RelationalIdentity =
         let classified = items |> List.map (fun item -> item, verify item.Receipt item.Attestation)
         let ids state = classified |> List.choose (fun (item, outcome) -> if outcome = state then Some item.Receipt.EventId else None) |> Set.ofList
         let accepted = classified |> List.choose (fun (item, outcome) -> if outcome = Accepted then Some item else None)
-        let acceptedIds = ids Accepted
         { View = view; Accepted = accepted; Present = items |> List.map _.Receipt.EventId |> Set.ofList
-          Unverified = Set.difference (ids Unavailable) acceptedIds; Rejected = ids Rejected
+          Unverified = ids Unavailable; Rejected = ids Rejected
           Repeated = accepted.Length - (accepted |> List.map _.Receipt |> List.distinct |> List.length) }
 
     let private closure (receipts: Receipt list) =
@@ -129,6 +128,7 @@ module RelationalIdentity =
                 let unknown = not (Set.isSubset cut (a.Accepted |> List.map _.Receipt.EventId |> Set.ofList))
                               || not (Set.isSubset cut (b.Accepted |> List.map _.Receipt.EventId |> Set.ofList))
                               || not (List.isEmpty boundary)
+                              || not (Set.isEmpty a.Unverified && Set.isEmpty b.Unverified)
                 if List.isEmpty conflicts && not cycle && (not (ordered pairs a) || not (ordered pairs b)) then
                     Error(InvalidCoordinates(if not (ordered pairs a) then left.Observer else right.Observer))
                 else

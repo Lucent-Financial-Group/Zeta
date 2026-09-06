@@ -16,6 +16,7 @@ let root = Path.GetFullPath(Path.Combine(__SOURCE_DIRECTORY__, "..", ".."))
 let paths =
     [| "docs/research/relational-identity/2026-09-06-protocol.md"
        "docs/research/relational-identity/2026-09-06-clarification.md"
+       "docs/research/relational-identity/2026-09-06-source-repairs.md"
        "src/Research.FSharp/RelationalIdentity.fs"
        "src/Research.FSharp/RelationalIdentityExperiment.fs"
        "src/Research.FSharp/run-relational-identity.fsx"
@@ -24,8 +25,8 @@ let paths =
        "src/Core/CoordinationSpectrum.fs" |]
 let sourceHashes = paths |> Array.map (fun path ->
     {| Path = path; Sha256 = File.ReadAllBytes(Path.Combine(root, path)) |> SHA256.HashData |> Convert.ToHexString |})
-let process = Process.GetCurrentProcess()
-let cpu = process.TotalProcessorTime
+let runningProcess = Process.GetCurrentProcess()
+let cpu = runningProcess.TotalProcessorTime
 let allocated = GC.GetAllocatedBytesForCurrentThread()
 let clock = Stopwatch.StartNew()
 let semantic =
@@ -37,12 +38,12 @@ let semantic =
 clock.Stop()
 let result =
     {| Protocol = "relational-identity-v1"
-       SourceArchive = "archive/relational-identity-20260906-source-v1"
+       SourceArchive = "archive/relational-identity-20260906-source-v2"
        ProtocolCommit = "4f470f40e"
        SourceHashes = sourceHashes
        Semantic = semantic
        Measurement = {| ElapsedMilliseconds = clock.Elapsed.TotalMilliseconds
-                        ProcessCpuMilliseconds = (process.TotalProcessorTime - cpu).TotalMilliseconds
+                        ProcessCpuMilliseconds = (runningProcess.TotalProcessorTime - cpu).TotalMilliseconds
                         ThreadAllocatedBytes = GC.GetAllocatedBytesForCurrentThread() - allocated
                         Runtime = RuntimeInformation.FrameworkDescription; Platform = RuntimeInformation.OSDescription
                         Scope = "One cold deterministic panel; current-thread managed allocation, not retained heap, energy or stipulated work costs." |} |}
