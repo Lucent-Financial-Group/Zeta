@@ -1,0 +1,51 @@
+{
+  "caseDigest": "391dbc746171e2788d346901bcf5189f135f71bdc82a100e4c24db0dd78bd1d0",
+  "kind": "chip8-to-arc-motion-transfer-v1",
+  "limits": [
+    "source-owned environments only",
+    "pixels and selected policy cross the domain boundary",
+    "not an ARC leaderboard score",
+    "direction changes and mover switches are expected failures"
+  ],
+  "sourceTraining": {
+    "domain": "chip8-hand-authored-motion-carts",
+    "fixtureCount": 4,
+    "forecastCount": 24,
+    "maximumLogicalBytes": 28,
+    "observedBasisPoints": 0,
+    "observedCorrect": 0,
+    "oneStepBasisPoints": 10000,
+    "oneStepCorrect": 24,
+    "selectedPolicy": "one-step-ahead"
+  },
+  "targetEvaluation": {
+    "constantVelocity": {
+      "caseCount": 32,
+      "observedCorrect": 0,
+      "observedTop1Accuracy": 0.0,
+      "transferredCorrect": 32,
+      "transferredTop1Accuracy": 1.0
+    },
+    "directionChange": {
+      "caseCount": 8,
+      "observedCorrect": 0,
+      "observedTop1Accuracy": 0.0,
+      "transferredCorrect": 0,
+      "transferredTop1Accuracy": 0.0
+    },
+    "persistentMotion": {
+      "caseCount": 40,
+      "observedCorrect": 0,
+      "observedTop1Accuracy": 0.0,
+      "transferredCorrect": 32,
+      "transferredTop1Accuracy": 0.8
+    },
+    "switchedMover": {
+      "caseCount": 8,
+      "observedCorrect": 0,
+      "observedTop1Accuracy": 0.0,
+      "transferredCorrect": 0,
+      "transferredTop1Accuracy": 0.0
+    }
+  }
+}

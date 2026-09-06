@@ -1,0 +1,14 @@
+{
+  "id": "080d03a8acae6010a01300089438e968",
+  "at": "2026-09-06T04:59:04.012Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1THB5EA087G0R000QS2YPF",
+    "type": "task",
+    "title": "Measure CHIP8 motion policy transfer on ARC rendered frames",
+    "slug": "measure-chip8-motion-policy-transfer-on-arc-rendered-frames",
+    "priority": "P2",
+    "filename": "081M1THB5EA087G0R000QS2YPF-measure-chip8-motion-policy-transfer-on-arc-rendered-frames.md"
+  }
+}

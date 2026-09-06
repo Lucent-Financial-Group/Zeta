@@ -129,6 +129,15 @@ labels them synthetic rather than an ARC leaderboard score. This establishes a
 narrow temporal-persistence feature and its failure boundary; it does not earn
 promotion to the acting policy.
 
+A cross-domain motion measurement selects one-step projection from four
+hand-authored CHIP-8 carts: 24/24 correct forecasts versus 0/24 for retaining
+the last observed position, with a constant 28-byte logical state bound. The
+fixed choice then predicts 32/40 next positions in transformed ZetaChase frames
+versus 0/40 for the observed-position control. All 32 constant-velocity cases
+pass; all eight direction changes and all eight switched-mover counterexamples
+fail. This is synthetic transfer between source-owned environments, not hosted
+ARC evidence, and it does not promote the projected policy.
+
 The feedback controller has a second controlled measurement over six-episode
 coordinate tasks. Stable color evidence reduces the existing centroid control
 from 12 actions to 7. A stable shape carried across six different palettes
