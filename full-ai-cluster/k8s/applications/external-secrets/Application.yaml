@@ -38,7 +38,9 @@ spec:
           replicaCount: 1
         # ClusterSecretStore for Vault (lands as a separate manifest
         # after vault + ESO are both healthy):
-        #   apiVersion: external-secrets.io/v1beta1
+        #   apiVersion: external-secrets.io/v1        <- v1, NOT v1beta1: at the pinned
+        #                                                  2.10.0 v1beta1 is `served: false`,
+        #                                                  so a v1beta1 object is refused.
         #   kind: ClusterSecretStore
         #   metadata: { name: vault-backend }
         #   spec:
