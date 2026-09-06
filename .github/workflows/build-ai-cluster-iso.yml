@@ -70,6 +70,25 @@ on:
       - "full-ai-cluster/flake.lock"
       - "full-ai-cluster/usb-nixos-installer/**"
       - "full-ai-cluster/nixos/**"
+      # THE FIRST-BOOT MANIFEST TREE, added 2026-09-06
+      # (081M1TVCV2Y087G0R0022QGM0Y). `k3s-first-boot-apply-order-eval-test.nix`
+      # and `k3s-first-boot-roster.nix` READ these files, and this lane was the
+      # only one that ran them -- so until now a change to a first-boot manifest
+      # did not run the tests that read first-boot manifests. Measured: PR #16755
+      # moved the ArgoCD chart K3S installs on metal first boot and this workflow
+      # has no run for that branch.
+      #
+      # THIS IS THE DRIFT HALF, deliberately. It costs ~32 min and it CANNOT
+      # block: `gate (required)` is the only required status check on `main`, so
+      # these jobs are watched rather than gating. The fast half is
+      # `first-boot-manifest-check.yml`, which evaluates the same flake in
+      # minutes and answers a manifest edit without waiting for an ISO.
+      #
+      # SCOPED TO THE TREE THIS WORKFLOW BUILDS. It makes the full-ai-cluster ISO and
+      # evaluates that flake, so it watches the manifests that flake's checks read. A
+      # glob for manifests it never evaluates would spend 32 minutes proving nothing
+      # about what changed.
+      - "full-ai-cluster/k8s/bootstrap/**"
       - "src/Core.TypeScript/zflash/**"
       - "src/Core.TypeScript/ci/audit-installer-substrate.ts"
       - "src/Core.TypeScript/ci/audit-installer-iso-content.ts"
