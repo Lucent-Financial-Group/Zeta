@@ -28,7 +28,9 @@ import {
   namedBaoElfAsk,
   nixosHostBaoAsk,
   nodeBaoElfRead,
+  parseNamedBaoElfArgs,
   planSetupFromNamedBaoElf,
+  planSetupFromNamedBaoElfArgv,
 } from "./bao-elf-capture.ts";
 
 function elf64LeWithInterp(interp: string): Uint8Array {
@@ -198,5 +200,67 @@ describe("planSetupFromNamedBaoElf — first-boot names site and path", () => {
     expect(plan.loadSite).toBe("in-chart-image");
     expect(plan.mayCommitHostHcl).toBe(false);
     expect(hostBaoSealHcl(plan)).toBeNull();
+  });
+});
+
+describe("parseNamedBaoElfArgs — live installer names both flags", () => {
+  const missingRestore = {
+    openedPath: USB_PKCS11_MODULE_POINTER,
+    exists: false,
+    contents: null,
+    resolvedModuleExists: true,
+  };
+
+  function tpmDecision() {
+    return integrateAtSetup({ requested: "pkcs11-tpm" }, emptyCapture({ os: "nixos", tpm2: "present" }));
+  }
+
+  test("no flags is unmeasured; a bare tpmrm0 argv is not on-host", () => {
+    expect(parseNamedBaoElfArgs([])).toEqual({ ok: true, ask: null });
+    expect(parseNamedBaoElfArgs([TPM_CHAR_DEVICE, "--tpm"])).toEqual({ ok: true, ask: null });
+  });
+
+  test("one flag without the other refuses — does not fill the NixOS host path", () => {
+    expect(parseNamedBaoElfArgs(["--bao-load-site=on-host"])).toEqual({ ok: false, reason: "site-without-path" });
+    expect(parseNamedBaoElfArgs(["--bao-path", NIXOS_HOST_BAO])).toEqual({ ok: false, reason: "path-without-site" });
+    expect(parseNamedBaoElfArgs(["--bao-load-site="])).toEqual({ ok: false, reason: "site-without-path" });
+  });
+
+  test("unknown site is not on-host; tpmrm0 as path is not an ask", () => {
+    expect(parseNamedBaoElfArgs(["--bao-load-site=tpmrm0", "--bao-path", NIXOS_HOST_BAO])).toEqual({
+      ok: false,
+      reason: "unknown-site",
+    });
+    expect(parseNamedBaoElfArgs(["--bao-load-site=on-host", `--bao-path=${TPM_CHAR_DEVICE}`])).toEqual({
+      ok: true,
+      ask: null,
+    });
+  });
+
+  test("both flags name option D; argv still cannot commit Application.yaml", () => {
+    const parsed = parseNamedBaoElfArgs(["--bao-load-site", "on-host", "--bao-path", NIXOS_HOST_BAO]);
+    expect(parsed).toEqual({ ok: true, ask: { site: "on-host", openedPath: NIXOS_HOST_BAO } });
+    const fromArgv = planSetupFromNamedBaoElfArgv(
+      tpmDecision(),
+      missingRestore,
+      ["--bao-load-site=on-host", `--bao-path=${NIXOS_HOST_BAO}`],
+      (path) => ({
+        exists: true,
+        bytes: path === NIXOS_HOST_BAO ? elf64LeWithInterp(ELF_INTERP_GLIBC_X86_64) : null,
+      }),
+    );
+    expect(fromArgv.ok).toBe(true);
+    if (!fromArgv.ok) return;
+    expect(fromArgv.plan.mayCommitSeal).toBe(false);
+    expect(fromArgv.plan.mayCommitHostHcl).toBe(true);
+    expect(overlaySealHcl(fromArgv.plan)).toBeNull();
+    const empty = planSetupFromNamedBaoElfArgv(tpmDecision(), missingRestore, [], () => ({
+      exists: true,
+      bytes: elf64LeWithInterp(ELF_INTERP_GLIBC_X86_64),
+    }));
+    expect(empty.ok).toBe(true);
+    if (!empty.ok) return;
+    expect(empty.plan.mayCommitHostHcl).toBe(false);
+    expect(hostBaoSealHcl(empty.plan)).toBeNull();
   });
 });

@@ -1,0 +1,14 @@
+{
+  "id": "080d03b94294b010a013000842460864",
+  "at": "2026-09-06T14:38:46.422Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1VJGMMP087G0R002JRZ458",
+    "type": "task",
+    "title": "First-boot argv names bao site and path; tpmrm0 does not",
+    "slug": "first-boot-argv-names-bao-site-and-path-tpmrm0-does-not",
+    "priority": "P2",
+    "filename": "081M1VJGMMP087G0R002JRZ458-first-boot-argv-names-bao-site-and-path-tpmrm0-does-not.md"
+  }
+}

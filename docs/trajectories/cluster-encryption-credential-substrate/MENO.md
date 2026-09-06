@@ -171,7 +171,11 @@ assume the number.
    First-boot named site (`081M1VGV2N6087G0R001ZHWZDS`):
    `planSetupFromNamedBaoElf` takes a named site plus a bao
    path into `captureBaoElfFromRead`. `/dev/tpmrm0` present
-   does not pick `on-host`. Does not edit Application.yaml.
+   does not pick `on-host`. Argv follow-on
+   (`081M1VJGMMP087G0R002JRZ458`): `--bao-load-site` and
+   `--bao-path` together. One flag without the other
+   refuses. A bare tpmrm0 argv is not `on-host`. Does not
+   edit Application.yaml.
 7. extraContainer sidecar — later, **same commit as the
    sidecar**, and only for the Shamir kind path until the
    emulator job replaces it. `valuesObject` only. Do not fork
