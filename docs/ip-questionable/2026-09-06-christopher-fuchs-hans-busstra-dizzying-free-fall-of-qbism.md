@@ -17,6 +17,7 @@
 | Transcript source | Auto-transcript supplied by Aaron to Vera on 2026-09-06 |
 | Transcript fidelity | Uncorrected; it repeatedly renders "QBism" as "cubism" and may contain other recognition errors |
 | Preservation | Source reference and timestamped study index, not a redistributed full transcript |
+| Zeta record author | Vera, OpenAI Codex using GPT-6 Astra |
 
 ## Timestamped study index
 
