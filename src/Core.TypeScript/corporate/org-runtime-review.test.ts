@@ -17,7 +17,7 @@ import { agentsFromChart, gateChooserFrom, runOrgRuntime, type OrgRuntimeDeps } 
 import { buildOrgChart } from "./org-chart";
 import { SEED_HATS } from "./org-seed";
 import { IntakeKind, Severity, type ExternalEvent } from "./intake";
-import { GateKind, GateOutcome } from "./quality-gate";
+import { GateKind, GateOutcome , ORDERED_GATES} from "./quality-gate";
 import { RunOutcome } from "./qa";
 import { agentReview, autoApproveReview, simulatedChangeControl, simulatedIntake, simulatedTestRunner, simulatedWorkExecutor } from "./adapters";
 import { Fidelity, Port, type ProviderSet, type ReviewPort, type ReviewVerdict } from "./providers";
@@ -127,7 +127,10 @@ describe("A REVIEW THAT COULD NOT BE OBTAINED IS NOT AN APPROVAL", () => {
     );
     expect(report.delivered).toBe(false);
     expect(report.refusals.some((r) => r.includes("unreachable"))).toBe(true);
-    expect(report.refusals.some((r) => r.includes(GateKind.CustomerRfpReview))).toBe(true);
+    // The FIRST gate, derived. Reviews are now asked at their own phase, so a run stops at the
+    // first reviewer that cannot be reached rather than pre-collecting refusals for phases it
+    // never gets to — asking about an architecture the run will never reach is work nobody needs.
+    expect(report.refusals.some((r) => r.includes(ORDERED_GATES[0]!))).toBe(true);
     // The gate record shows it was turned back rather than silently skipped.
     expect(report.gateEvaluations.some((g) => g.outcome === GateOutcome.Rejected && g.reason.includes("not reviewed"))).toBe(true);
   });

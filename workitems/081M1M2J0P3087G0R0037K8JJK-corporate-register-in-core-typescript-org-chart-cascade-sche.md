@@ -1550,3 +1550,111 @@ hygiene:no-orphaned-doc-comments              86 files clean
 markdownlint, scoped to the diff               0 findings
 mutation: 27 matrices, 200/200 killed, 0 survivors, 0 stale anchors
 ```
+
+## Pass 16 — the work happens at its phase, and the loop exists in the program
+
+Five items, and the first two were the blocker: a chain of thirteen gates that reviewed nothing.
+
+### The defect, stated as line numbers
+
+```
+ 418  intake.poll()          inbound work
+1125  tests.run()            QA runs
+1199  runGateChain()         ALL 13 gates evaluated
+1287  change.open()          branch created
+1299  work.execute()         ← THE WORK IS PERFORMED HERE
+```
+
+`implementation_review`, `qa_uat` and `adversarial_review` approved an implementation that did not
+exist; `runtime_validation` was decided by tests that ran before the code was written. Ordered,
+owned, unforgeable — and reviewing nothing. Already wrong at seven gates; thirteen made it obvious.
+
+### The fix is not "call execute earlier"
+
+Thirteen review gates and ONE producer can only ever be wrong somewhere, because most phases make
+the thing a later phase argues about. So a **phase** pairs a producer with the gate that judges it,
+and a **pipeline** is a list of phases:
+
+```
+produce (if this phase produces) -> ask the reviewer ABOUT WHAT WAS JUST MADE -> evaluate -> next
+```
+
+The artifact's refs become the gate's `evidenceRefs`, so evidence is a by-product of doing the work
+rather than a field somebody fills in. A phase with no producer is a pure judgement — a legitimate
+shape, not a hole.
+
+**Pluggable, which was the ask.** A `Pipeline` is data: reorder, drop, add, swap a producer, hand in
+a three-phase pipeline for a spike, all without touching the runtime.
+
+### And that exposed a contradiction I had to resolve
+
+`evaluateGate` enforced `ORDERED_GATES`, a module constant — so a reordered pipeline was refused as
+out-of-order and the configurability would have been **nominal**: you could describe a different
+process and not run it. The chain is now a PARAMETER defaulting to the canonical order.
+
+That does not weaken the guarantee, it **locates** it. Within a run, gates are crossed in the chain
+that run declared and none can be skipped; what changed is that the chain is the caller's to state
+rather than this module's to impose — the difference between a process engine and one
+organization's process hardcoded as a law.
+
+### The reviews moved too — the same defect one level down
+
+Every gate's verdict was fetched UP FRONT because `OrgChooser` is synchronous and pre-resolving kept
+that shape, so `adversarial_review`'s reviewer was asked about an architecture before it was
+written. `runPipeline` takes a `prepare` hook called after production and before evaluation: the
+chooser stays synchronous and the ASKING moved. A reviewer sees its own phase's artifact **plus the
+whole trail**, because a late reviewer seeing only its own step would be nearly as blind.
+
+### An escalation now stops the loop — and a correction
+
+`escalationEffect` has typed every action `changes_the_input | halts_the_loop` since the module was
+written, and nothing read it. My first fix let `changes_the_input` RETRY. **A test caught it and the
+test was right**: nothing in this runtime APPLIES an escalation action — no agents are added, no
+scope is cut — so retrying on an unchanged input is a spin, five attempts where two were expected.
+The loop stops on either effect and the limit is written down: the split will decide the retry the
+day something applies the action.
+
+### The loop
+
+`autonomy.ts` — four ways to stop, only one of them success: `delivered`, `halted`, `no_progress`,
+`bound_reached`. Every reason reported rather than collapsed into a boolean, because "it stopped"
+and "it finished" are the two sentences a driver must never confuse.
+
+`no_progress` is not a heuristic here: the runtime is deterministic, so a cycle whose inputs did not
+change produces an identical cycle. The signature is deliberately coarse — a finer one would differ
+for reasons that are not progress, and a no-progress check that cannot detect no progress is the
+failure that matters. `maxCycles` has no default; `--until 0` is refused.
+
+### End to end, in one invocation
+
+Real HTTP tracker → field-mapped ticket → thirteen gates with producers at their phases → agent
+commits in isolated worktrees → two real `--no-ff` merges:
+
+```
+=== DELIVERED ===
+  these port(s) reached something real: change_control, intake, work_execution
+--- autonomy ---
+  DELIVERED: delivered after 1 cycle(s)
+
+repo:  d86481f merge work/task-013@task-013
+       8913f10 merge work/task-011@task-011
+store: deliveryRate={"runs":1,"delivered":1,"deliveredForReal":1,...}
+       realPorts=["intake","work_execution","change_control"]
+```
+
+And the record shows which phases produce and which are still stamps:
+
+```
+implementation_review   approved   <the work executor's own artifact>
+runtime_validation      approved   planned:tc-050:passed
+adversarial_review      approved   auto-approved:adversarial_review:task-013
+```
+
+### State at the end of pass 16
+
+```
+bun test src/Core.TypeScript/corporate/   1125 pass, 0 fail  (48 files)
+tsc --noEmit                                 0 errors
+hygiene:no-orphaned-doc-comments            90 files clean
+mutation: 29 matrices, 219/219 killed, 0 survivors, 0 stale anchors
+```

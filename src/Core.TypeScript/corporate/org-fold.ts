@@ -39,6 +39,7 @@ import type { Portfolio, PortfolioBook } from "./portfolio";
 import type { WorkQueue } from "./work-market";
 import type { QaCycleReport } from "./qa";
 import type { FidelityReport, RunFidelity } from "./providers";
+import type { ObserveActTick } from "./observe-act-window";
 
 /** The events that constitute state, in the order they happened. */
 export function factEvents(events: readonly OrgEvent[]): readonly OrgEvent[] {
@@ -251,6 +252,22 @@ export function foldRunFidelity(events: readonly OrgEvent[]): readonly RunFideli
   const out: RunFidelity[] = [];
   for (const event of factEvents(events)) {
     if (event.fact?.kind === "run_fidelity") out.push(event.fact.report);
+  }
+  return out;
+}
+
+/**
+ * Every observe-act tick the log recorded.
+ *
+ * PLURAL and unreduced, exactly like `foldRunFidelity` — the window is computed by
+ * `foldObserveActWindow`, which is where the time bounds and the divergence rule live. Splitting
+ * the read from the judgement means a caller can inspect the raw ticks without going through the
+ * gate's opinion of them.
+ */
+export function foldObserveActTicks(events: readonly OrgEvent[]): readonly ObserveActTick[] {
+  const out: ObserveActTick[] = [];
+  for (const event of factEvents(events)) {
+    if (event.fact?.kind === "observe_act_tick") out.push(event.fact.tick);
   }
   return out;
 }

@@ -91,6 +91,14 @@ import { bindWearerToLoop } from "./loop-policy";
 import { firstLegalChooser, preferChooser, type OrgChooser } from "./org-decision";
 import { reportsUpTo, type HatLevel, type OrgChart } from "./org-chart";
 import { evaluateTrajectory, warrantsEscalation, type Trajectory } from "./mission-trajectory";
+import {
+  DEFAULT_PIPELINE,
+  runPipeline,
+  withProducers,
+  type Artifact,
+  type Pipeline,
+  type ProducerPort,
+} from "./pipeline";
 import { fidelityLine, recordingProviders, runFidelityOf, type ChangeHandle, type ProviderSet, type ReviewVerdict, type RunFidelity } from "./providers";
 import { autoApproveReview, simulatedChangeControl, simulatedIntake, simulatedTestRunner, simulatedWorkExecutor } from "./adapters";
 import { associateGoal, EMPTY_BOOK, openPortfolio, type PortfolioKind } from "./portfolio";
@@ -123,7 +131,6 @@ import {
   GateOutcome,
   gateOwners,
   ORDERED_GATES,
-  runGateChain,
   type GateEvaluation,
   type GateRunResult,
   type RecoveryPath,
@@ -188,6 +195,15 @@ export interface OrgRuntimeDeps {
    * never agreed to.
    */
   readonly missionWindow?: { readonly startsAtMs: number; readonly targetAtMs: number };
+  /**
+   * The process this run follows. Absent means the canonical thirteen phases.
+   *
+   * The reason the pipeline is data: a caller can reorder phases, drop them, or hand in a short
+   * one for a spike, without this module deciding what every organization's process must be. What
+   * stays non-negotiable is that the gates of whatever pipeline is supplied are crossed in ITS
+   * order, each by an authorized hat that did not do the work.
+   */
+  readonly pipeline?: Pipeline;
   readonly leaseMs: number;
   /** How each accepted intake item scores. Absent = a neutral score. */
   /**
@@ -337,6 +353,13 @@ export interface OrgRuntimeReport {
    * a reading nobody took must not be reported as a good one.
    */
   readonly trajectory: Trajectory | undefined;
+  /**
+   * Tasks whose loop an escalation STOPPED, and which action stopped it.
+   *
+   * The difference between "this run finished" and "this run gave up" — a driver that cannot tell
+   * them apart will either spin on a halted task or stop on a healthy one.
+   */
+  readonly halted: readonly { readonly taskId: string; readonly action: EscalationAction; readonly byHatId: string }[];
 }
 
 const NEUTRAL_INPUTS: PriorityInputs = {
@@ -535,6 +558,7 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
 
   const empty = (): OrgRuntimeReport => ({
     fidelity: noteFidelity("run", deps.nowMs),
+    halted: [],
     // An early return has done no work, so its pace is measured over an empty cascade — which the
     // trajectory reports as NOT STARTED rather than as on track.
     trajectory: trajectoryOf([]),
@@ -1097,6 +1121,8 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
   const gateEvaluations: GateEvaluation[] = [];
   const gateBlocked: { taskId: string; gate: GateKind; recovery?: RecoveryPath }[] = [];
   const escalations: OrgRuntimeReport["escalations"][number][] = [];
+  /** Tasks whose loop an escalation STOPPED, so a caller can tell 'finished' from 'gave up'. */
+  const halted: { readonly taskId: string; readonly action: EscalationAction; readonly byHatId: string }[] = [];
   const maxAttempts = Math.max(1, deps.maxGateAttempts ?? 3);
   const threshold = deps.churnThreshold ?? DEFAULT_CHURN_THRESHOLD;
 
@@ -1113,102 +1139,175 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
     );
     allCases.push(...cases);
 
-    const qa = await runQaCycle({
-      cases,
-      priorRuns: [],
-      // The QA cycle keeps its own `TestExecutor` shape; the PORT is what answers it. A refusal
-      // from the runner is a test that could not be run, which is not the same as a failing test —
-      // so it becomes `Errored` and carries the reason, rather than a quiet `Failed` that would
-      // blame the code for a missing binary.
-      executor: {
-        execute: async (testCase, ctx) => {
-          const r = await providers.tests.run(testCase, ctx);
-          if (!r.ok) {
-            return {
-              outcome: RunOutcome.Errored,
-              evidence: [{ kind: "trace" as const, ref: `runner-refused:${r.reason}` }],
-            };
-          }
-          return { outcome: r.value.outcome, evidence: r.evidence };
-        },
+    // ── THE CHANGE IS OPENED FIRST ────────────────────────────────────────
+    // Producers write inside it, so the branch (and the worktree, when the adapter gives each
+    // change one) has to exist before the first phase runs.
+    const branch = `work/${task.workId}`;
+    const openedResult = await providers.change.open(task, { branch });
+    if (!openedResult.ok) {
+      refusals.push(`change control '${providers.change.meta.name}' could not open ${branch}: ${openedResult.reason}`);
+      continue;
+    }
+    openedChanges.set(task.workId, openedResult.value);
+    const handle = openedResult.value;
+
+    // ── WHAT EACH PHASE PRODUCES ──────────────────────────────────────────
+    // The work executor and the test runner are PRODUCERS now, attached to the phases whose gates
+    // judge what they make. That is the whole reordering: `implementation_review` reviews code that
+    // exists because the phase before it wrote the code, and `runtime_validation` weighs tests that
+    // ran against that code rather than against an empty branch.
+    let qaVerdict = gateOutcomeFor({ runs: [], passed: 0, failed: 0, errored: 0, cases: [] } as unknown as QaCycleReport);
+
+    const workProducer: ProducerPort = {
+      meta: providers.work.meta,
+      produce: async (node, ctx) => {
+        const performed = await providers.work.execute(node, {
+          branch: ctx.branch,
+          ...(ctx.workdir === undefined ? {} : { workdir: ctx.workdir }),
+        });
+        if (!performed.ok) return { ok: false, reason: performed.reason };
+        if (!performed.value.succeeded) {
+          // A work item that ran and did not succeed is a REFUSAL of the phase, not an artifact.
+          // Producing something here would hand the reviewer an approval-shaped nothing.
+          return { ok: false, reason: `the work did not succeed: ${performed.value.summary}` };
+        }
+        return {
+          ok: true,
+          value: { refs: [...performed.value.artifacts], summary: performed.value.summary },
+          evidence: performed.evidence,
+        };
       },
-      branch: `work/${task.workId}`,
-      qaHatId: "qa_engineer",
-      createId: deps.createId,
-      nowMs: warmedAt,
-    });
-    qaReports.push(qa);
-    engage("qa_engineer");
-    const qaVerdict = gateOutcomeFor(qa);
-    note({
-      kind: OrgEventKind.TestRunRecorded,
-      subjectId: task.workId,
-      actorHatId: "qa_engineer",
-      decision: `${qa.passed}/${qa.runs.length} passed → ${qaVerdict.outcome}`,
-      toState: qaVerdict.outcome,
-      atMs: warmedAt,
-      evidenceRefs: qa.runs.flatMap((r) => r.evidence.map((e) => e.ref)),
-      // The prose says how many passed; the FACT carries the runs. Without it a resumed run has no
-      // QA history at all, and `regressions` — which is *passed before, fails now* — has no
-      // "before" to compare against, so every regression would read as a feature that never worked.
-      fact: { kind: "qa_cycle", report: qa },
-    });
+    };
+
+    const testProducer: ProducerPort = {
+      meta: providers.tests.meta,
+      produce: async () => {
+        const qa = await runQaCycle({
+          cases,
+          priorRuns: [],
+          // A refusal from the runner is a test that could not be RUN, which is not the same as a
+          // failing test — so it becomes `Errored` and carries the reason, rather than a quiet
+          // `Failed` that would blame the code for a missing binary.
+          executor: {
+            execute: async (testCase, ctx) => {
+              const r = await providers.tests.run(testCase, ctx);
+              if (!r.ok) {
+                return {
+                  outcome: RunOutcome.Errored,
+                  evidence: [{ kind: "trace" as const, ref: `runner-refused:${r.reason}` }],
+                };
+              }
+              return { outcome: r.value.outcome, evidence: r.evidence };
+            },
+          },
+          branch,
+          qaHatId: "qa_engineer",
+          createId: deps.createId,
+          nowMs: warmedAt,
+        });
+        qaReports.push(qa);
+        engage("qa_engineer");
+        qaVerdict = gateOutcomeFor(qa);
+        note({
+          kind: OrgEventKind.TestRunRecorded,
+          subjectId: task.workId,
+          actorHatId: "qa_engineer",
+          decision: `${qa.passed}/${qa.runs.length} passed → ${qaVerdict.outcome}`,
+          toState: qaVerdict.outcome,
+          atMs: warmedAt,
+          evidenceRefs: qa.runs.flatMap((r) => r.evidence.map((e) => e.ref)),
+          // The prose says how many passed; the FACT carries the runs, so a resumed run has a QA
+          // history and `regressions` — passed before, fails now — has a "before".
+          fact: { kind: "qa_cycle", report: qa },
+        });
+        return {
+          ok: true,
+          value: {
+            refs: qa.runs.flatMap((r) => r.evidence.map((e) => e.ref)),
+            summary: `${qa.passed}/${qa.runs.length} passed`,
+          },
+          evidence: qa.runs.flatMap((r) => r.evidence),
+        };
+      },
+    };
+
+    const pipeline = withProducers(
+      deps.pipeline ?? DEFAULT_PIPELINE,
+      new Map<GateKind, ProducerPort>([
+        [GateKind.ImplementationReview, workProducer],
+        [GateKind.RuntimeValidation, testProducer],
+      ]),
+    );
 
     // ── WHO DECIDES EACH GATE ─────────────────────────────────────────────
     // Runtime validation is decided by the EVIDENCE and is not the reviewer's to overrule: green
     // tests are green tests, and letting an opinion outrank them would put the one earned verdict
-    // back on the same footing as the six that were not.
+    // back on the same footing as the others.
     //
-    // Every other gate goes to the REVIEW PORT. Until it existed they all returned `Approved` with
-    // the reason "reviewed" — a constant, so six of seven gates could not fail — and `fidelityOf`
-    // reported four ports and said nothing about it.
-    //
-    // The verdicts are fetched BEFORE the chain runs because `OrgChooser` is synchronous by design
-    // (the menu discipline: code computes the legal set, an agent picks within it, index clamped).
-    // Pre-resolving keeps that shape rather than making every chooser in the register async.
+    // Every other gate goes to the REVIEW PORT — and is now asked AT ITS PHASE rather than up
+    // front. The verdicts used to be fetched for all thirteen gates before any of them ran, so a
+    // reviewer was asked about an architecture before the architecture had been written.
     const reviewed = new Map<GateKind, ReviewVerdict>();
-    // WHAT THE REVIEWER CONSULTED, kept per gate. The `Review` port already returns evidence;
-    // until now none of it survived into the gate record, so a gate whose whole claim is that
-    // something was consulted rested on the approver's say-so.
     const reviewEvidence = new Map<GateKind, readonly string[]>();
-    for (const gate of ORDERED_GATES) {
-      if (gate === GateKind.RuntimeValidation) continue;
+    const askTheReviewer = async (
+      gate: GateKind,
+      produced: Artifact | undefined,
+      soFar: ReadonlyMap<GateKind, Artifact>,
+    ): Promise<void> => {
+      if (gate === GateKind.RuntimeValidation) return;
+      // WHAT THIS PHASE MADE, PLUS THE WHOLE TRAIL BEHIND IT. A reviewer judging from a title is
+      // the thing the evidence work was for; a LATE reviewer judging only from its own phase would
+      // be nearly as blind — the final architecture review needs the design and the test runs, not
+      // just whatever the last step happened to emit.
+      const trail = [...soFar.values()].flatMap((a) => a.refs);
+      const shown = [...new Set([...(produced?.refs ?? []), ...trail])];
       const verdict = await providers.review.review({
         gate,
         workId: task.workId,
-        evidence: qa.runs.flatMap((r) => r.evidence),
+        evidence: shown.map((ref) => ({ kind: "document" as const, ref })),
       });
       if (!verdict.ok) {
-        // A REVIEW THAT COULD NOT BE OBTAINED IS NOT AN APPROVAL. Failing closed is the only safe
-        // direction: "nobody was available to review this" and "this was reviewed and approved"
-        // are the two sentences an organization must never confuse.
+        // A REVIEW THAT COULD NOT BE OBTAINED IS NOT AN APPROVAL. "Nobody was available to review
+        // this" and "this was reviewed and approved" are the two sentences an organization must
+        // never confuse.
         refusals.push(`review '${providers.review.meta.name}' on ${gate} for ${task.workId}: ${verdict.reason}`);
         reviewed.set(gate, { outcome: GateOutcome.Rejected, reason: `not reviewed: ${verdict.reason}` });
-        continue;
+        return;
       }
       reviewed.set(gate, verdict.value);
       reviewEvidence.set(gate, verdict.evidence.map((e) => e.ref));
-    }
+    };
 
-    // No caller override: the ports decide, and evidence decides runtime validation. See the note
-    // where `gateChooser` used to be declared for what was removed and why.
-    const chooser: OrgChooser<GateOutcome> = gateChooserFrom(reviewed, qaVerdict);
+    // The chooser stays SYNCHRONOUS — the menu discipline — and reads what `askTheReviewer` and the
+    // test producer have already put in place for the gate being evaluated.
+    const chooser: OrgChooser<GateOutcome> = (legal, ctx) => gateChooserFrom(reviewed, qaVerdict)(legal, ctx);
 
     let merged = false;
     for (let attempt = 1; attempt <= maxAttempts && !merged; attempt += 1) {
-      const run = runGateChain(deps.chart, {
+      const walked = await runPipeline(deps.chart, {
         workId: task.workId,
+        node: task,
+        pipeline,
         chooser,
         atMs: warmedAt,
         // Separation of duties: whoever did the work does not review it.
         proposerHatId: task.assigneeHatId ?? NO_PROPOSER,
-        // Runtime validation's evidence is the TEST RUNS, not a reviewer's note — the one gate
-        // whose consultation is a machine's, so its references come from where they were produced.
-        evidenceFor: (gate) =>
-          gate === GateKind.RuntimeValidation
-            ? qa.runs.flatMap((r) => r.evidence.map((e) => e.ref))
-            : (reviewEvidence.get(gate) ?? []),
+        handle,
+        // The reviewer is asked HERE — after this phase produced, before its gate is judged.
+        prepare: askTheReviewer,
+        // A reviewer's own references, on top of whatever the phase produced.
+        extraEvidenceFor: (gate) => reviewEvidence.get(gate) ?? [],
       });
+      // Shaped as the old `GateRunResult` so the churn/escalation handling below is untouched by
+      // the reordering — that logic is about what a rejection MEANS, which did not change.
+      const run: GateRunResult = {
+        evaluations: walked.evaluations,
+        passed: walked.passed,
+        merged: walked.complete,
+        refusals: walked.refusals,
+        ...(walked.blockedAt === undefined ? {} : { blockedAt: walked.blockedAt }),
+        ...(walked.recovery === undefined ? {} : { recovery: walked.recovery }),
+      };
       gateRuns.push({ taskId: task.workId, run });
       gateEvaluations.push(...run.evaluations);
       for (const e of run.evaluations) engage(e.byHatId);
@@ -1277,45 +1376,29 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
         toState: esc.action,
         atMs: warmedAt,
       });
+
+      // ── THE EFFECT IS RECORDED, AND THE LOOP STOPS EITHER WAY ─────────────
+      // A first attempt at this let `changes_the_input` RETRY, on the reasoning that `AddAgents`
+      // and `ReScope` exist precisely to change the input and try again. That was wrong, and a
+      // test caught it: nothing in this runtime APPLIES an escalation action. No agents are added,
+      // no scope is cut. Retrying on an input that did not change is a spin — five identical
+      // attempts instead of two — and the typed effect would have been asserting something that
+      // did not happen.
+      //
+      // So the loop stops on either effect, and the LIMIT is the honest part: the split is
+      // recorded (`escalations` carries it) and will decide the retry the day something applies
+      // the action. Until then, "we escalated and tried again with the same input" is not a
+      // sentence this runtime is entitled to.
+      halted.push({ taskId: task.workId, action: esc.action, byHatId: esc.byHatId });
       break;
     }
 
     if (!merged) continue;
 
-    // The change is opened FIRST, so the branch the executor is about to be handed exists.
-    const branch = `work/${task.workId}`;
-    const opened = await providers.change.open(task, { branch });
-    if (!opened.ok) {
-      refusals.push(`change control '${providers.change.meta.name}' could not open ${branch}: ${opened.reason}`);
-      continue;
-    }
-    openedChanges.set(task.workId, opened.value);
-
-    // THE WORK IS PERFORMED HERE — or, with the simulated executor, assumed. Either way it is the
-    // PORT that decides, so a task no longer completes merely by reaching this line.
-    //
-    // The change's own checkout is handed over when it has one, which is what makes a
-    // worktree-per-change adapter isolate the work rather than merely name a branch for it.
-    const performed = await providers.work.execute(task, {
-      branch,
-      ...(opened.value.workdir === undefined ? {} : { workdir: opened.value.workdir }),
-    });
-    if (!performed.ok) {
-      refusals.push(`work executor '${providers.work.meta.name}' on ${task.workId}: ${performed.reason}`);
-      continue;
-    }
-    if (!performed.value.succeeded) {
-      note({
-        kind: OrgEventKind.WorkItemTransition,
-        subjectId: task.workId,
-        actorHatId: task.assigneeHatId,
-        decision: `work did not succeed: ${performed.value.summary}`,
-        atMs: warmedAt,
-        evidenceRefs: performed.evidence.map((e) => e.ref),
-      });
-      continue;
-    }
-
+    // THE CHANGE IS ALREADY OPEN AND THE WORK IS ALREADY DONE — both happened inside the pipeline,
+    // at the phases whose gates judge them. This block used to open the change and call the work
+    // executor HERE, after every gate had approved: the reordering is the point of the change that
+    // introduced `pipeline.ts`, and leaving a second execution here would perform the work twice.
     const closed = setState(cascade, task.workId, WorkState.Done);
     if (!closed.ok) refusals.push(`complete ${task.workId}: ${closed.reason}`);
     else {
@@ -1509,6 +1592,7 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
 
   return {
     trajectory,
+    halted,
     intakeAccepted: accepted,
     intakeRefused: refusedIntake,
     priorities: ordered,

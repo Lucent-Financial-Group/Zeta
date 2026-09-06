@@ -104,17 +104,22 @@ import {
 import { EscalationAction, EscalationTrigger } from "./escalation";
 import { ScheduleBlockType } from "./work-schedule";
 import { observeForHat } from "./work-batch";
-import { isLeafType, WorkType as WorkTypeValue } from "./goal-cascade";
+import { isLeafType, WorkState as WorkStateValue, WorkType as WorkTypeValue } from "./goal-cascade";
 import { associateGoal, EMPTY_BOOK, openPortfolio, PortfolioKind, retirePortfolio } from "./portfolio";
-import { appendRun, deliveryRate } from "./org-store";
+import { appendRun, deliveryRate, readEvents } from "./org-store";
+import { runUntilSettled } from "./autonomy";
 import { decideSupply, endorseRecommendation } from "./rmo";
 import { authorityFor, pressureBoard } from "./schedule-pressure";
 import { isFullyMeasured, renderDora } from "./dora";
-import { contextFor, runAgentCycle, statusSurfaceFrom } from "./agent-loop-bridge";
+import { contextFor, runDispatchedCycle, statusSurfaceFrom } from "./agent-loop-bridge";
+import { dispatcherFor, evaluatePromotionGate } from "./slot-dispatch";
+import { compareToLegacy, foldObserveActWindow, legacySelection, type ObserveActTick } from "./observe-act-window";
+import { foldObserveActTicks } from "./org-fold";
+import { emit } from "./org-event";
 import type { AgentState } from "../workflow-engine/agent-loop/state-machine";
 import { GateKind, GateOutcome, NO_PROPOSER } from "./quality-gate";
 import type { OrgChart } from "./org-chart";
-import type { OrgRuntimeReport } from "./org-runtime";
+import type { OrgRuntimeDeps, OrgRuntimeReport } from "./org-runtime";
 import type { NextAction } from "../observe/observe";
 
 /** The reports this run feeds in. Three deliberately: one good, one duplicate, one incomplete. */
@@ -206,8 +211,26 @@ export interface Args {
    * Absent means the run declares no schedule, and the pace is reported as unmeasured rather than
    * as healthy — the same three-state honesty the fidelity block uses.
    */
+  /**
+   * Keep cycling until the organization settles, up to this many cycles.
+   *
+   * Absent means ONE cycle, which is what this CLI has always done. The bound is required when the
+   * flag is used — a defaulted bound is a bound nobody chose, and it is the only number between an
+   * autonomous loop and an unbounded one.
+   */
+  readonly until: string | undefined;
   readonly windowStart: string | undefined;
   readonly windowTarget: string | undefined;
+  /**
+   * The instant this run happens, ISO-8601. Defaults to epoch 0 — the frozen clock this CLI has
+   * always used, so nothing changes for a caller who does not pass it.
+   *
+   * A DECLARED channel for time, not an ambient one. `Date.now()` here would make every run
+   * unreplayable and would quietly let wall-clock drift into the observe-act window, which is the
+   * failure `local-time-never-enters-the-shared-fold` names. Passing the instant means a soak can
+   * be demonstrated deterministically: the same flags always produce the same window.
+   */
+  readonly now: string | undefined;
 }
 
 /** The value after a flag, or undefined. A flag with nothing after it is the same as absent. */
@@ -250,8 +273,10 @@ export function parseArgs(argv: readonly string[]): Args {
     trackerSource: valueAfter(argv, "--tracker-source") ?? "tracker",
     workAgent: valueAfter(argv, "--work-agent"),
     workModel: valueAfter(argv, "--work-model"),
+    until: valueAfter(argv, "--until"),
     windowStart: valueAfter(argv, "--window-start"),
     windowTarget: valueAfter(argv, "--window-target"),
+    now: valueAfter(argv, "--now"),
     workAgentArgs: valuesAfter(argv, "--work-agent-arg"),
     workVerify: valueAfter(argv, "--work-verify"),
     workVerifyArgs: valuesAfter(argv, "--work-verify-arg"),
@@ -363,6 +388,12 @@ export function argRefusals(args: Args): readonly string[] {
       out.push(`${flag} needs --work-verify — the performer only gives testimony, and something else has to decide whether it worked`);
     }
   }
+  if (args.until !== undefined) {
+    const n = Number.parseInt(args.until, 10);
+    if (Number.isNaN(n) || n < 1) {
+      out.push("--until takes a cycle bound of at least 1; an unbounded autonomous loop is not on offer");
+    }
+  }
   const startMs = args.windowStart === undefined ? undefined : Date.parse(args.windowStart);
   const targetMs = args.windowTarget === undefined ? undefined : Date.parse(args.windowTarget);
   if ((args.windowStart === undefined) !== (args.windowTarget === undefined)) {
@@ -375,6 +406,9 @@ export function argRefusals(args: Args): readonly string[] {
   }
   if (startMs !== undefined && targetMs !== undefined && !Number.isNaN(startMs) && !Number.isNaN(targetMs) && targetMs <= startMs) {
     out.push("--window-target must be after --window-start; a window that ends before it begins has no pace");
+  }
+  if (args.now !== undefined && Number.isNaN(Date.parse(args.now))) {
+    out.push("--now is not a parseable ISO-8601 instant");
   }
   if (args.workVerify !== undefined && args.workAgent === undefined && args.workModel === undefined) {
     out.push("--work-verify was given with nothing to verify: add --work-agent or --work-model");
@@ -515,7 +549,9 @@ export async function main(argv: readonly string[]): Promise<number> {
 
   let n = 0;
   const createId = (p: string): string => `${p}-${String(++n).padStart(3, "0")}`;
-  const nowMs = 0;
+  // Epoch 0 unless the caller declares otherwise — see `--now`. Never `Date.now()`: an ambient
+  // clock would make this run unreplayable and would leak wall time into the observe-act window.
+  const nowMs = args.now === undefined ? 0 : Date.parse(args.now);
 
   // ── The delivery loop alone ───────────────────────────────────────────────
   if (args.cycleOnly) {
@@ -554,7 +590,7 @@ export async function main(argv: readonly string[]): Promise<number> {
 
   // ── The whole organization ────────────────────────────────────────────────
   const providers = providersFromArgs(args, REPORTS, args.qaFails ? RunOutcome.Failed : RunOutcome.Passed);
-  const report = await runOrgRuntime({
+  const runtimeDeps = {
     chart,
     externalEvents: REPORTS,
     agents,
@@ -574,7 +610,7 @@ export async function main(argv: readonly string[]): Promise<number> {
     ...(args.qaFails ? { qaFallback: RunOutcome.Failed } : {}),
     ...(args.churn ? { churnThreshold: 2, maxGateAttempts: 5 } : {}),
     providers,
-    priorityInputsFor: (item) => ({
+    priorityInputsFor: (item: { readonly severity?: unknown }) => ({
       executivePriority: 0.5,
       customerImpact: item.severity === Severity.Critical || item.severity === Severity.High ? 1 : 0.4,
       severity: item.severity === Severity.Critical ? 1 : item.severity === Severity.High ? 0.8 : 0.3,
@@ -586,7 +622,27 @@ export async function main(argv: readonly string[]): Promise<number> {
       budgetBurn: 0,
       estimatedEffort: 0.2,
     }),
-  });
+  } satisfies OrgRuntimeDeps;
+
+  // ── ONE CYCLE, OR UNTIL IT SETTLES ────────────────────────────────────────
+  // Absent `--until`, this is the single cycle the CLI has always run. With it, the driver keeps
+  // going and reports WHY it stopped — delivered, an escalation halted a task, a cycle changed
+  // nothing, or the bound. "It stopped" and "it finished" are the two sentences a caller must
+  // never confuse, so the reason is printed rather than folded into the exit code.
+  const settled =
+    args.until === undefined
+      ? undefined
+      : await runUntilSettled(
+          runtimeDeps,
+          {
+            maxCycles: Number.parseInt(args.until, 10),
+            // The clock advances between cycles: the runtime keys its ids on the instant, so a
+            // frozen clock would mint colliding ids across cycles and fold two runs into one.
+            nextNowMs: (_c, prev) => prev + 1,
+          },
+          runOrgRuntime,
+        );
+  const report = settled?.last ?? (await runOrgRuntime(runtimeDeps));
 
   if (args.json) {
     console.log(JSON.stringify(report, null, 2));
@@ -609,6 +665,14 @@ export async function main(argv: readonly string[]): Promise<number> {
   // PACE, beside fidelity and for the same reason: "DELIVERED" says nothing about whether it
   // arrived when it was supposed to, and an organization that only reports completion discovers
   // its schedule at the deadline.
+  // WHY THE LOOP STOPPED, when there was a loop. Printed before the rest, because every line that
+  // follows describes the LAST cycle and a reader needs to know whether that cycle was the end.
+  if (settled !== undefined) {
+    console.log(`
+--- autonomy ---`);
+    console.log(`  ${settled.stoppedBecause.toUpperCase()}: ${settled.summary}`);
+  }
+
   console.log(`
 --- pace ---`);
   console.log(
@@ -720,24 +784,91 @@ export async function main(argv: readonly string[]): Promise<number> {
       `${surface.snapshot.hotTrajectories.length} hot / ${surface.snapshot.coolingTrajectories.length} cooling, ` +
       `${surface.snapshot.explorationCandidates.length} worth exploring`,
   );
+  // ── WHICH MODE THIS LANE HAS EARNED ───────────────────────────────────────
+  // The gate decides, not the caller. A fresh window has no soak, so it resolves to SHADOW — and
+  // shadow dispatches nothing and produces no result, which is what leaves the agent in
+  // `ExecutingWork`: picked up, outstanding. The line this replaced handed the loop
+  // `{ success: true, doraContribution: 0.5 }`, so every cycle reported work nobody did.
+  // The window is FOLDED from durable ticks, not declared. With no store there are no prior ticks
+  // and the window is empty — which still resolves to shadow, but now for the true reason (nothing
+  // has soaked) rather than because the number was hardcoded to zero.
+  const priorTicks = args.store === undefined ? [] : foldObserveActTicks(readEvents(args.store));
+  const readout = foldObserveActWindow(priorTicks, nowMs);
+  const verdict = evaluatePromotionGate(readout.window);
+  const dispatcher = dispatcherFor(verdict, async (workId) => ({
+    succeeded: report.cascade.nodes.some((n) => n.workId === workId && n.state === WorkStateValue.Done),
+    evidenceRefs: report.gateEvaluations.filter((g) => g.workId === workId).flatMap((g) => g.evidenceRefs),
+    summary: `pipeline outcome for ${workId}`,
+    // MEASURED from what landed, not a constant: the fraction of this item's gates that passed.
+    doraContribution:
+      report.gateEvaluations.filter((g) => g.workId === workId).length === 0
+        ? 0
+        : report.changesLanded.includes(workId)
+          ? 1
+          : 0,
+  }));
+  console.log(`  mode:        ${verdict.mode}${verdict.blockedBy.length === 0 ? "" : ` — ${verdict.blockedBy[0]!}`}`);
+  console.log(`  window:      ${readout.summary}`);
+
   let loopState: AgentState = { tag: "Idle", context: contextFor("alexa", 1, new Date(nowMs).toISOString()) };
+  const ticks: ObserveActTick[] = [];
   for (let cycle = 1; cycle <= 3; cycle += 1) {
-    const turn = runAgentCycle({
-      state: loopState,
-      surface,
-      resultFor: (o) =>
-        o.tag === "PickWork"
-          ? { workId: o.work.id, lane: o.work.lane, success: true, doraContribution: 0.5 }
-          : undefined,
+    const turn = await runDispatchedCycle({ state: loopState, surface, dispatcher });
+    // THE COMPARISON, run every tick. The legacy lane is the priority-ordered assignment path the
+    // organization already has — a genuinely different selector from the menu generator, which
+    // weighs trajectory heat, balance and interest. They can disagree, which is what makes the
+    // divergence rate a measurement rather than a tautology over one selector consulted twice.
+    const compared = compareToLegacy(
+      {
+        slot: turn.chosen?.tag ?? "(none)",
+        ...(turn.dispatch?.workId === undefined ? {} : { workId: turn.dispatch.workId }),
+      },
+      legacySelection(surface.candidates),
+    );
+    ticks.push({
+      tickId: `tick-${String(cycle)}`,
+      // AT the run's instant, not after it. `nowMs + cycle` stamped ticks in the future relative to
+      // the run's own clock, and the window's future guard then dropped every one of them — a fold
+      // that correctly refused evidence the emitter had mislabelled.
+      atMs: nowMs,
+      mode: verdict.mode,
+      slot: turn.chosen?.tag ?? "(none)",
+      ...(turn.dispatch?.workId === undefined ? {} : { workId: turn.dispatch.workId }),
+      performed: turn.dispatch?.performed ?? false,
+      // A clamped choice is the chooser having reached outside the menu — the illegal selection the
+      // gate counts. `runDispatchedCycle` reports it as a refusal rather than hiding the clamp.
+      illegalSelection: turn.refusals.some((r) => r.startsWith("chooser clamped")),
+      // Nothing in this register refuses at act time yet, so this is HONESTLY false rather than
+      // absent — no dispatch was authorized and then stopped.
+      controlBypassRejected: false,
+      ...compared,
     });
     console.log(
       `  cycle ${cycle}:     ${turn.menu.length} option(s) -> ${turn.chosen?.tag ?? "(none)"}` +
         ` -> ${turn.state.tag}${turn.nonCoercive ? "" : "  COERCIVE MENU"}` +
-        (turn.abandonedWorkId === undefined ? "" : `  (abandoned ${turn.abandonedWorkId})`),
+        (turn.abandonedWorkId === undefined ? "" : `  (abandoned ${turn.abandonedWorkId})`) +
+        (turn.dispatch === undefined ? "" : `  [${turn.dispatch.performed ? "dispatched" : "not dispatched"}]`) +
+        `  {legacy ${compared.comparison}}`,
     );
     for (const r of turn.refusals) console.log(`   ! ${r}`);
     loopState = turn.state;
   }
+  // The ticks join the run's own trace, so storing the run stores them and the NEXT run folds a
+  // window that includes this one. That is the whole mechanism: without this line the window is
+  // empty forever and the gate is unfalsifiable.
+  const tickEvents = ticks.map((tick, i) =>
+    // Keyed by the run's instant AND the cycle. Two runs at different instants store distinct
+    // ticks; re-running the SAME instant re-stores the same shard, which is an upsert — the
+    // idempotency discipline, and the reason a repeated run cannot inflate its own soak window.
+    emit(chart, `evt-tick-${String(nowMs)}-${String(i + 1)}`, {
+      kind: "observe_act_tick",
+      subjectId: tick.workId ?? tick.slot,
+      decision: `observe-act tick: ${tick.slot} in ${tick.mode} (legacy ${tick.comparison})`,
+      atMs: tick.atMs,
+      evidenceRefs: [`observe-act-tick:${tick.tickId}`],
+      fact: { kind: "observe_act_tick", tick },
+    }),
+  );
 
   // -- persist the run, if asked --
   //
@@ -751,7 +882,7 @@ export async function main(argv: readonly string[]): Promise<number> {
         delivered: report.delivered,
         levelsEngaged: report.levelsEngaged,
         refusals: report.refusals,
-        trace: report.trace,
+        trace: [...report.trace, ...tickEvents],
         // The run's own fidelity, written down. Without it the summary cannot tell a history where
         // everything shipped from one where nothing did.
         replayable: report.fidelity.replayable,
