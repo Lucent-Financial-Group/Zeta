@@ -35,6 +35,8 @@ Current:
   the upstream orthogonality correction, and the parallel CHIP-8/contextual-grid/MiniGrid
   carrier ladder. Now includes a paste-ready bootstrap and a grounded QBism/neutral-monism bridge
   to pairwise relational memory, anti-Sybil identity, CQM, Clifford, and the soft/amplitude stack.
+  Continuation results retain order-two after the rendered predictor comparison and formalize
+  declared-cut memory invariance with conditional entropy and pairwise workload limits.
   Ends with separately preregistered predictor and identity tasks and the gates required before
   any ARC-AGI-3 policy integration.
   The rendered predictor now has independently replayed results: all RNNs beat bigram,

@@ -146,8 +146,8 @@ jobs:
           # FAIL-CLOSED: `set -u` below makes an unset variable exit non-zero,
           # so deleting this entry turns the job red rather than quietly
           # disabling the check.
-          # The original 72 cases, 40 rendered carrier/training cases,
-          # and 28 all-seed verdict/admission cases.
+          # The 157 predecessor/identity cases plus 101 acting carrier,
+          # full-envelope, and independent-verdict cases.
           INTERP_MIN_TESTS: "258"
         run: |
           set -euo pipefail
