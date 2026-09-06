@@ -317,6 +317,69 @@ one it must first reconstruct.
 this tree today (`src/Core/ZSet.fs`, `RetractionReading.fs`). The cosmological half is his
 framing and is not measured here.
 
+### The objective function has a name: compress while staying accurate
+
+Aaron, on the shape-change above:
+
+> *"yes — this is exactly the shape transition we are trying to compress while being accurate."*
+
+That is not a restatement; it **names an objective function**, and the objective already has a
+literature. *Compress* is a rate; *while being accurate* is a fidelity constraint. Minimising
+the first subject to the second is **rate–distortion** (Shannon 1959), and the form that counts
+both halves **in the same units** — which is what this triangle needs, since generator bytes and
+retained points are both bytes — is **minimum description length** (Rissanen 1978):
+
+> **total = |generator| + |observations the generator does not subsume|**, minimised subject to
+> reproducing the data.
+
+**This immediately corrects a misreading the direction of travel invites.** *"Move points toward
+generators"* does not mean the observability corner should go to zero. MDL says the optimum is
+interior: a generator large enough to memorise its data has not compressed anything — it has
+moved the bytes and added indirection. So the goal is not an empty corner; it is the **shorter
+total description**, and a proposed migration that lengthens it is a loss dressed as a
+principle.
+
+**And it gives the hard problem above its formal shape.** In rate–distortion terms, distortion
+`D` is defined *against the source*. Delete the source and `D` is no longer computable — which
+is exactly "you deleted the witness", stated as the reason rather than as an anecdote. The four
+escapes are then the four standard ways of estimating a distortion you cannot compute directly:
+a held-out sample, a checksum (detects *any* deviation, measures none), a second independent
+coder, or keeping the source at lower cost. Nothing about the situation is unusual; it is the
+ordinary lossy-compression problem with the ordinary answers, which is a considerably better
+position than "an open research question".
+
+### First measurement — and it goes the wrong way
+
+The composition claim above stopped being a `toy` on the day it was written, because it is
+cheap to measure and the measurement is now committed
+(`src/Core.TypeScript/hygiene/measure-triangle-corners.ts`, PR #16849):
+
+| corner | bytes | files |
+|---|---|---|
+| generator | 57.8 MB | 6,379 |
+| joins | 5.7 MB | 485 |
+| **observability** | **205.6 MB** | 42,436 |
+| prose (excluded from the ratio) | 97.4 MB | 7,181 |
+
+**Observability per generator byte: 3.556. One month earlier: 2.546.** The repo has been moving
+**toward** the expensive corner, not away from it.
+
+Two qualifications, because the first reading of the attribution was wrong and the correction
+matters: the largest contributor (`db/search-index`, +59.7 MB) is a **one-time landing**, not a
+monthly rate, and its rebuild cadence is `disabled_manually` — a deliberate choice under the
+size-reduction decision, not a lane that broke. The ongoing half is the PR archive
+(`docs/history`, +36.5 MB), which the archive-split draft already addresses.
+
+**The search index is the cleanest instance of this document's own tension**: 60 MB of committed
+points whose generator exists, so they are regenerable — and committing them is precisely what
+buys `clone-at-tag-stays-sufficient`, a clone that can search without rebuilding anything. The
+triangle does not settle that. It **prices** it, at 24% of the observability corner, which is
+what a meter is for.
+
+**Register:** the composition is **measured** and the tool is committed with its classification
+table published and its refusals exercised. It measures **bytes, not cost** — Aaron's cost claim
+remains unmeasured, and byte composition is a proxy that can be wrong in both directions.
+
 ## What it measures — and the over-claim I am not going to make
 
 Aaron said *"to measure general intelligence"*. The honest position:
@@ -423,7 +486,9 @@ compare Δ.** It needs no full τ curve and it tests the diode claim directly.
 - `docs/research/2026-09-06-a-superagent-routes-the-next-run-to-less-intelligence-the-capability-ratchet.md` — the definition this quantifies, and the Landauer point about unrecorded runs.
 - `docs/design/2026-08-23-arc-agi-3-integration-design-chip8-chip9-atari-and-the-arena.md` — the arena, and §4's entailment check on Chollet's denominator.
 - `docs/backlog/P2/081KSKBP80008QG0R003NM9XEC-zeta-instantiation-of-arc-agi-3-style-benchmark-*` — the existing benchmark row this would extend.
-- `.claude/rules/toy-is-free-metered-must-be-earned.md` · `.claude/rules/numerology-vs-number-theory.md` — why this is `toy`, and why an analogy that matches in shape is not a result.
+- `.claude/rules/toy-is-free-metered-must-be-earned.md` · `.claude/rules/numerology-vs-number-theory.md` — why most of this is `toy`, and why an analogy that matches in shape is not a result.
+- `src/Core.TypeScript/hygiene/measure-triangle-corners.ts` — the corner meter; the one part of this document that is measured rather than argued.
+- Rissanen (1978), *Modeling by shortest data description* — MDL, the objective function that counts generator and retained observations in the same units. Over Shannon (1959) rate–distortion, which supplies the compress-subject-to-fidelity shape.
 - `.claude/rules/dual-use-detection-is-neutral-oracle-decides.md` — *a good meter anyone can inspect and agree to the rules*; the published ladder in step 2 is what buys that here.
 - Adrian Thompson, *An Evolved Circuit, Intrinsic in Silicon, Entwined with Physics* (ICES 1996) and *Hardware Evolution* (1998) — the recruited-parasitics result that anchors break 5; the honest boundary of every lumped-element model.
 - `.claude/rules/clone-at-tag-stays-sufficient.md` · `.claude/rules/itron-hub-patent-boundary-p2p-is-the-upgrade.md` — the same refusal-to-be-necessary, applied to systems rather than to agents.
