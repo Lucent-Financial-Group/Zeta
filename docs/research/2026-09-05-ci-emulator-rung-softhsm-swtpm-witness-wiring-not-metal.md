@@ -289,15 +289,20 @@ Named unseal request (`081M1WBA6RX087G0R002450S9J`):
 `parsePathRequest`. Missing is unmeasured, not `auto`.
 `/dev/tpmrm0` is unknown, not `pkcs11-tpm`. Does not
 call `integrateAtSetup`.
+Env request joins injected capture (`081M1WCEGYJ087G0R0039T2T39`):
+`integrateAtSetupFromEnv`. Missing is unmeasured, not
+`auto`. Capture stays injected. `/dev/tpmrm0` still
+refuses at parse.
 
 1. Metal: `seal "pkcs11"` in Application.yaml still waits.
    Same commit as a **reachable** module: same-libc image
    (glibc OpenBao that can load the host `.so`) or option D
    host `bao`. Dual-vendor per node is ZetaFS k-of-n, not
-   two active OpenBao seals. Do not treat this parser as
-   that commit. A live installer call still must not invent
-   an integrate decision — naming the request is not calling
-   `integrateAtSetup`. Does not expand `ZetaFirstbootRole`.
+   two active OpenBao seals. Do not treat this join as
+   that commit. Naming the request and joining an injected
+   capture is not inventing a capture from `/dev/tpmrm0`.
+   A live installer call still must not invent the capture.
+   Does not expand `ZetaFirstbootRole`.
    `/dev/tpmrm0` is still not an ask and not a PathRequest.
 2. extraContainer Shamir sidecar (`valuesObject` only) until
    kind/CI consume the emulator init.
