@@ -68,10 +68,14 @@ Training uses only observed tokens: 4096 Adam updates, batch 16, 32 prediction
 positions, learning rate .003, gradient norm cap 1. Each of the nine models
 receives 2,097,152 prediction positions. The recurrent state resets for each
 sequence. The source's state, phase and posterior never enter the optimizer.
+There is no beginning-of-sequence prediction: the first observed symbol is
+context, and the 32 targets are positions two through 33.
 
 There are 512 independent fitting contexts and 2048 evaluation contexts per
 panel. Affine probes fit at length 16 and remain frozen at length 64. Draws
 are independent, not guaranteed-distinct strings. There is no unseen-game claim.
+Evaluation `L` denotes context length. In the spectral formula below, `L`
+denotes the predicted position, with `L-1` preceding observations.
 
 All following losses and changes are in bits. R2 columns use length 16.
 `Merge change` is mean midpoint KL minus mean intact KL over 128 fixed pairs.
