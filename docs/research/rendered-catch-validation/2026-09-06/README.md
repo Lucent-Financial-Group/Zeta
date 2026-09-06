@@ -8,6 +8,8 @@ Work item: 081M1W8T690087G0R002DJ91MJ
 
 This record indexes native implementation/conformance evidence for the
 [registered protocol](../../2026-09-06-rendered-catch-actions-protocol.md).
+The [integrated validation and verdict review](integration-review.md) retains
+the full native/Python gates, archive-admission refusal, and upstream gate repair.
 It is not an experiment result or promotion. The registered source corpus,
 return comparison, and resource measurement have not been run by this writer.
 The coordinating contributor owns integrated archive publication, full gates,
