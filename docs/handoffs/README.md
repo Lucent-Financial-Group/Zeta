@@ -29,6 +29,12 @@ Current:
   the universal tensor, Riechers' nondiagonalizable spectral decomposition ↔ `SpectralPivot` /
   scene-change detection, `c_ℓ − h_ℓ` ↔ the uncertainty ledger. Six ranked experiments; every
   correspondence carries a register. Aaron is routing this through OpenAI's Astra.
+- [`2026-09-06-vera-to-vera-predictive-state-research-and-arc3-bridge.md`](./2026-09-06-vera-to-vera-predictive-state-research-and-arc3-bridge.md)
+  — **Fresh Astra re-entry.** Links Vera's landed ARC honesty audit, WSet/Simplex comparison,
+  Mess3 and RRXOR learning, entropy/spectral work, learned-HMM and factored-state controls,
+  the upstream orthogonality correction, and the parallel CHIP-8/contextual-grid/MiniGrid
+  carrier ladder. Ends with a preregistered non-ARC chronological-predictor task and the gates
+  required before any ARC-AGI-3 policy integration.
 - `vera-qsharp-verification-package.txt` — the Q# verification hand-off (brief REVISION 2 +
   claim-bearing sources + known-answer table). Vera's verdict lines remain hers to write.
 - `kestrel-shape-validation-bundle.txt` — the faithful-renderer port bundle (sources + cartridges
