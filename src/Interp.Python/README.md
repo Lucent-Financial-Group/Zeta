@@ -122,7 +122,7 @@ uv run --project src/Interp.Python python -m zeta_interp.rrxor_replay
 uv run --project src/Interp.Python python -m zeta_interp.inference_replay
 ```
 
-The isolated lane now collects 62 tests, including the original 27. SymPy
+The isolated lane now collects 65 tests, including the original 27. SymPy
 1.14.0 checks rational Jordan decompositions independently; it remains outside
 the database runtime. Benchmark replay verifies all 190 measured calls-batches
 and their consumed outputs, not equality of hardware timing. A zero raw

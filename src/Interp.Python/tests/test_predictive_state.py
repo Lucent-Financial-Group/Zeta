@@ -13,8 +13,9 @@ import pytest
 import torch
 
 from zeta_interp.inference_replay import verify as verify_inference
+from zeta_interp.mess3_replay import domain
 from zeta_interp.predictive_reference import filter_word, fixtures, verify
-from zeta_interp.rrxor_replay import replay, validate
+from zeta_interp.rrxor_replay import observations, replay, validate
 
 ROOT = Path(__file__).resolve().parents[3]
 
@@ -179,6 +180,22 @@ def test_every_rrxor_result_and_intervention_replays(trained, hidden, seed):
     row = next(r for r in trained["Runs"] if (r["Hidden"], r["Seed"]) == (hidden, seed))
     result = replay(row, trained["InterventionPairs"])
     assert result["comparisons"] == 340
+
+
+@pytest.mark.parametrize("seed", [41, 53, 67])
+def test_empirical_baselines_reconstruct_from_the_entire_training_stream(trained, seed):
+    contexts, observed = observations(domain(seed, 2), 65536, 32)
+    tokens = np.column_stack([contexts, observed])
+    counts = np.bincount(tokens[:, 1:].ravel(), minlength=2) + 1
+    transitions = (
+        np.bincount((2 * tokens[:, :-1] + tokens[:, 1:]).ravel(), minlength=4) + 1
+    ).reshape(2, 2)
+    unigram = counts / counts.sum()
+    bigram = transitions / transitions.sum(axis=1, keepdims=True)
+    for row in trained["Runs"]:
+        if row["Seed"] == seed:
+            np.testing.assert_array_equal(unigram, row["Unigram"])
+            np.testing.assert_array_equal(bigram, row["Bigram"])
 
 
 @pytest.mark.parametrize(

@@ -13,6 +13,6 @@ The protocol is committed before inspecting trained-model measurements.
 
 Progress: all four experiments are recorded in
 [the report](../research/2026-09-06-predictive-state-batch-results.md).
-Independent replay and repeat training agree; release build, all 62 Python
+Independent replay and repeat training agree; release build, all 65 Python
 tests and 7,441 .NET tests pass (six existing .NET skips). Formatting and all
 16 quick-preflight checks pass. Remote integration remains in progress.

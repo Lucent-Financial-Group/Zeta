@@ -250,10 +250,12 @@ closure, loss identities, interventions and five-coordinate probes.
 Python independently checks both alphabets against PyTorch autograd and Adam,
 exact block generation, rational closures, Jordan powers, and all 3,060
 RNN score/intervention values. Maximum model-replay discrepancy is 1.02e-13.
+It also reconstructs all 2,097,152 training positions for each of the three
+data streams and reproduces every fitted unigram and bigram exactly.
 Missing-case and deliberately corrupted-measurement checks must fail.
 
 Release build has zero warnings and errors. The isolated Python suite has
-62 passing cases and one existing TransformerLens deprecation warning;
+65 passing cases and one existing TransformerLens deprecation warning;
 the warning was not suppressed. Full .NET execution passes 7,441 tests, with
 six existing skips: one manual benchmark, three Rx integration tests and two
 collation-contract gaps. `dotnet format --verify-no-changes --no-restore`
