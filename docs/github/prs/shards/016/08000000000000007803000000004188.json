@@ -1,0 +1,12 @@
+{
+  "pr_number": 16776,
+  "archive_path": "docs/history/pr-reviews/PR-16776-feat-cluster-plan-pkcs-11-hostpath-overlay-musl-glibc-is-not-a-module.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-06T09:35:57.065Z",
+  "schema_version": "v1",
+  "commit_sha": "ac339b50242c144c4bb232ad7b01778131738cfc",
+  "title": "feat(cluster): Plan PKCS#11 hostPath overlay; musl+glibc is not a module",
+  "state": "MERGED",
+  "merged_at": "2026-09-06T09:35:18Z",
+  "head_ref": "cursor/pkcs11-hostpath-overlay-27c5"
+}

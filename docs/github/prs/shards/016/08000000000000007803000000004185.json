@@ -1,0 +1,15 @@
+{
+  "pr_number": 16773,
+  "archive_path": "docs/history/pr-reviews/PR-16773-feat-benchmark-add-pinned-minigrid-adapter-conformance.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7rCztq",
+    "thread:PRRT_kwDOSF9kNM6fqP-C"
+  ],
+  "fetched_at": "2026-09-06T09:15:06.006Z",
+  "schema_version": "v1",
+  "commit_sha": "d88301e293285a8f948b8c0f29221928a4273780",
+  "title": "feat(benchmark): add pinned MiniGrid adapter conformance",
+  "state": "MERGED",
+  "merged_at": "2026-09-06T09:14:34Z",
+  "head_ref": "lumen/minigrid-empty-5x5-adapter"
+}
