@@ -848,6 +848,9 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
       toState: sent.signal.toHatId,
       atMs: deps.nowMs,
       evidenceRefs: sent.signal.evidence.map((e) => e.ref),
+      // THE SIGNAL ITSELF, so a second process can read what was asked rather than a sentence
+      // about it. Without this the upward channel does not survive a process boundary.
+      fact: { kind: "supervisor_signal", signal: sent.signal },
     });
 
     // TWO SEPARATE QUESTIONS, and conflating them is what made the first run of this pipeline
@@ -1461,6 +1464,16 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
         fromState: EscalationTrigger.RepeatedGateRejection,
         toState: esc.action,
         atMs: warmedAt,
+        // The DECISION as a value. An escalation is the organization deciding something, and a
+        // decision recorded as prose has to be re-parsed by whoever needs to act on it.
+        fact: {
+          kind: "escalation",
+          taskId: task.workId,
+          action: esc.action,
+          effect: esc.effect,
+          byHatId: esc.byHatId,
+          trigger: EscalationTrigger.RepeatedGateRejection,
+        },
       });
 
       // ── THE EFFECT IS RECORDED, AND THE LOOP STOPS EITHER WAY ─────────────

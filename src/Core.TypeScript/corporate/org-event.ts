@@ -32,6 +32,7 @@ import type { WorkQueue } from "./work-market";
 import type { QaCycleReport } from "./qa";
 import type { RunFidelity } from "./providers";
 import type { ObserveActTick } from "./observe-act-window";
+import type { SupervisorSignal } from "./supervisor-signal";
 
 export const OrgEventKind = {
   IntakeReceived: "intake_received",
@@ -177,6 +178,31 @@ export type OrgFact =
    * one property a gate must not have.
    */
   | { readonly kind: "observe_act_tick"; readonly tick: ObserveActTick }
+  /**
+   * A hat talking upward, as a VALUE rather than as a sentence.
+   *
+   * `supervisor_signal_sent` recorded `decision: "<tool> → <hat>"` and nothing else, so the routed,
+   * evidenced signal was flattened to prose the moment it was logged. Fourteen other event kinds
+   * carried a fact; this one did not, which meant a second process folding the log could read that
+   * a signal happened and could not read WHAT WAS ASKED. An organization whose upward channel
+   * survives only as a description of itself has no upward channel across a process boundary.
+   */
+  | { readonly kind: "supervisor_signal"; readonly signal: SupervisorSignal }
+  /**
+   * An escalation, likewise — who escalated, what action, what effect.
+   *
+   * Same defect and the same consequence: `escalated → <action> (<effect>)` is readable by a human
+   * and unusable by a fold. An escalation is the organization DECIDING something, and a decision
+   * that survives as prose has to be re-parsed and re-interpreted by whoever needs to act on it.
+   */
+  | {
+      readonly kind: "escalation";
+      readonly taskId: string;
+      readonly action: string;
+      readonly effect: string;
+      readonly byHatId: string;
+      readonly trigger: string;
+    }
   /**
    * One QA cycle: every run it made, the regressions it found, the defects it filed.
    *

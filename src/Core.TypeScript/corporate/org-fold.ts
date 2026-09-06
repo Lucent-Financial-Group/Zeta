@@ -40,6 +40,7 @@ import type { WorkQueue } from "./work-market";
 import type { QaCycleReport } from "./qa";
 import type { FidelityReport, RunFidelity } from "./providers";
 import type { ObserveActTick } from "./observe-act-window";
+import type { SupervisorSignal } from "./supervisor-signal";
 
 /** The events that constitute state, in the order they happened. */
 export function factEvents(events: readonly OrgEvent[]): readonly OrgEvent[] {
@@ -252,6 +253,68 @@ export function foldRunFidelity(events: readonly OrgEvent[]): readonly RunFideli
   const out: RunFidelity[] = [];
   for (const event of factEvents(events)) {
     if (event.fact?.kind === "run_fidelity") out.push(event.fact.report);
+  }
+  return out;
+}
+
+/**
+ * Every upward signal the log recorded — the organization's upward channel, folded.
+ *
+ * This is what makes the channel work ACROSS PROCESSES without a message bus. A signal is emitted
+ * as a fact into the same content-addressed, append-only store everything else uses, so a second
+ * process reads the routed, evidenced signal by folding the log — the substrate corporate already
+ * has, rather than a second one beside it.
+ *
+ * PLURAL and unreduced, like `foldRunFidelity`: two signals asking the same hat for the same thing
+ * are two askings, and collapsing them would lose the fact that it had to be asked twice.
+ */
+export function foldSupervisorSignals(events: readonly OrgEvent[]): readonly SupervisorSignal[] {
+  const out: SupervisorSignal[] = [];
+  for (const event of factEvents(events)) {
+    if (event.fact?.kind === "supervisor_signal") out.push(event.fact.signal);
+  }
+  return out;
+}
+
+/** Signals addressed to one hat — the question "what is waiting for me?", answerable from disk. */
+export function signalsTo(events: readonly OrgEvent[], hatId: string): readonly SupervisorSignal[] {
+  return foldSupervisorSignals(events).filter((s) => s.toHatId === hatId);
+}
+
+/**
+ * Every escalation the log recorded, as decisions rather than as sentences.
+ *
+ * Kept separate from the signals fold because they answer different questions: a signal is a hat
+ * ASKING, an escalation is the organization DECIDING. A caller wanting to know what was decided
+ * should not have to filter a list of requests to find out.
+ */
+export function foldEscalations(
+  events: readonly OrgEvent[],
+): readonly {
+  readonly taskId: string;
+  readonly action: string;
+  readonly effect: string;
+  readonly byHatId: string;
+  readonly trigger: string;
+}[] {
+  const out: {
+    taskId: string;
+    action: string;
+    effect: string;
+    byHatId: string;
+    trigger: string;
+  }[] = [];
+  for (const event of factEvents(events)) {
+    if (event.fact?.kind === "escalation") {
+      const f = event.fact;
+      out.push({
+        taskId: f.taskId,
+        action: f.action,
+        effect: f.effect,
+        byHatId: f.byHatId,
+        trigger: f.trigger,
+      });
+    }
   }
   return out;
 }
