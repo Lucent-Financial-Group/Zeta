@@ -1,0 +1,12 @@
+{
+  "pr_number": 16741,
+  "archive_path": "docs/history/pr-reviews/PR-16741-docs-handoffs-vera-the-simplex-belief-geometry-talk-as-a-reverse-direction-map-o.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-06T04:56:02.385Z",
+  "schema_version": "v1",
+  "commit_sha": "432adb7d889c6a5a4ef31748b27c1747474d3325",
+  "title": "docs(handoffs): Vera — the Simplex belief-geometry talk as a reverse-direction map onto the stack",
+  "state": "MERGED",
+  "merged_at": "2026-09-06T04:55:18Z",
+  "head_ref": "shadow/vera-reverse-direction-handoff"
+}

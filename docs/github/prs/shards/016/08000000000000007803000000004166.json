@@ -1,0 +1,12 @@
+{
+  "pr_number": 16742,
+  "archive_path": "docs/history/pr-reviews/PR-16742-fix-arc-lock-f-and-python-frame-signal-semantics.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-06T04:55:41.716Z",
+  "schema_version": "v1",
+  "commit_sha": "73582a4d896d7c53080fc7d356e8987468fdaa48",
+  "title": "fix(arc): lock F# and Python frame signal semantics",
+  "state": "MERGED",
+  "merged_at": "2026-09-06T04:54:58Z",
+  "head_ref": "codex/frame-signals-treaty"
+}
