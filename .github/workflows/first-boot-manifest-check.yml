@@ -1,0 +1,130 @@
+# first-boot-manifest-check.yml — evaluate the full-ai-cluster flake when a FIRST-BOOT
+# manifest changes.
+#
+# WHY THIS EXISTS (081M1TVCV2Y087G0R0022QGM0Y). `k3s-first-boot-apply-order-eval-test.nix`
+# READS the bootstrap manifests -- its own section header says "Reading the manifests
+# themselves", it filters `services.k3s.manifests` by `hasPathSource` and opens the
+# path-sourced ones, naming `spire-install.yaml`, `trust-manager-install.yaml` and
+# `root-application.yaml`. The flake wires it as a check whose "assertions fire during
+# EVALUATION -- so `nix flake check --no-build` already runs it."
+#
+# The only lane that ran that evaluation was `build-ai-cluster-iso.yml`, whose `paths:`
+# filter covers `full-ai-cluster/nixos/**`, the flake and the installer -- and NOT either
+# `k8s/bootstrap/` tree. So a change to a first-boot manifest did not run the tests that
+# read first-boot manifests.
+#
+# MEASURED, not theorised: PR #16755 moved the ArgoCD chart K3S installs on metal first
+# boot from 7.7.10 to 10.8.0 in `infra/k8s/bootstrap/argocd-install.yaml`, and
+# `build-ai-cluster-iso` has no run for that branch.
+#
+# WHAT THIS COSTS, AND WHY IT IS NOT THE ISO LANE. Option A -- adding the same globs to
+# `build-ai-cluster-iso.yml` -- also happened (it is the drift half Aaron asked for: it
+# runs, it is watched, and it cannot block because `gate (required)` is the only required
+# status check on `main`). But that lane's jobs measured 32 min and 26 min on their last
+# run, and a manifest edit should not wait on an ISO build to learn that its roster is
+# still ordered. This lane installs nix and evaluates; it does not build a single
+# derivation.
+#
+# WHAT IT DOES NOT COVER, stated so the green is read correctly: `--no-build` realises
+# nothing, so `k3s-first-boot-roster` -- a full `nixosTest` whose own header says it
+# "REQUIRES INTERNET (five Helm charts and roughly 2-3 GB of images)" -- is EVALUATED here
+# and RUN only by the ISO lane. This says the roster and its order are still well-formed.
+# It does not say the cluster boots.
+
+name: first-boot-manifest-check
+
+on:
+  pull_request:
+    paths:
+      - "full-ai-cluster/k8s/bootstrap/**"
+      - "infra/k8s/bootstrap/**"
+      # The modules that DECLARE the roster these manifests are named by. A manifest and
+      # its `services.k3s.manifests` entry are two halves of one fact, and the eval-test
+      # reads both -- so a lane triggered on only one half would be checking a pair it
+      # could see only when the other side moved.
+      - "full-ai-cluster/nixos/modules/k3s-server.nix"
+      - "full-ai-cluster/nixos/tests/k3s-first-boot-apply-order-eval-test.nix"
+      - "full-ai-cluster/nixos/tests/k3s-first-boot-roster.nix"
+      - ".github/workflows/first-boot-manifest-check.yml"
+  push:
+    branches: [main]
+    paths:
+      - "full-ai-cluster/k8s/bootstrap/**"
+      - "infra/k8s/bootstrap/**"
+      - "full-ai-cluster/nixos/modules/k3s-server.nix"
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+
+concurrency:
+  group: first-boot-manifest-check-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  evaluate:
+    name: first-boot manifests evaluate (drift)
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Install Nix
+        # Same pinned action and the same `determinate: false` as
+        # build-ai-cluster-iso.yml and root-flake-check.yml. Upstream Nix only -- no
+        # FlakeHub login, which flaked with "Transient authentication mechanism error"
+        # on PR #8095.
+        uses: DeterminateSystems/nix-installer-action@ef8a148080ab6020fd15196c2084a2eea5ff2d25 # v22
+        with:
+          determinate: false
+
+      - name: Show full-ai-cluster flake metadata
+        working-directory: full-ai-cluster
+        # The pins this lane is judging, printed before the verdict so a reader can tell
+        # WHICH universe went green.
+        run: nix flake metadata --json | jq '{description, lastModified, revision}'
+
+      - name: Evaluate the full-ai-cluster flake
+        working-directory: full-ai-cluster
+        # `--no-build` keeps this an EVAL check: typos, missing imports, undefined
+        # attributes, and eval-time assertions -- which is precisely where
+        # `k3s-first-boot-apply-order` lives, by the flake's own design.
+        #
+        # `--all-systems` is here for the same reason root-flake-check.yml carries it:
+        # without it nix silently omits outputs incompatible with the runner and still
+        # exits 0, which is a narrower vacuous green replacing a wider one.
+        run: |
+          set -o pipefail
+          nix flake check --no-build --all-systems --show-trace 2>&1 | tee /tmp/fac-flake-check.log
+
+      - name: Assert the check actually checked something
+        # ANTI-VACUITY, copied deliberately from `root-flake-check.yml`, whose own comment
+        # says "anyone adding a nix lane anywhere should copy this step, because the
+        # default failure mode of a nix eval lane is a confident green over an empty
+        # check." `nix flake check` exits 0 on a flake whose outputs it skipped entirely.
+        #
+        # THE PATTERN IS FORMAT-INDEPENDENT ON PURPOSE, and that lesson was learned the
+        # expensive way on run 33023664270: a version that counted `^✅` lines was reading
+        # DETERMINATE Nix 3.x presentation, while this job installs UPSTREAM nix, which
+        # prints `checking flake output '...'` and never emits an emoji. The guard
+        # reported ZERO outputs while nix had checked twenty.
+        run: |
+          checked=$(grep -cE '^(✅|checking |evaluating )' /tmp/fac-flake-check.log || true)
+          echo "outputs checked: $checked"
+          if [ "$checked" -eq 0 ]; then
+            echo "::error title=full-ai-cluster flake check validated nothing::nix flake check exited 0 having checked ZERO outputs. An eval lane that evaluates nothing is indistinguishable from one that passed."
+            exit 1
+          fi
+          # NAME THE CHECK THIS LANE EXISTS FOR. A green that did not reach
+          # `k3s-first-boot-apply-order` is a green about some other flake output, and
+          # this lane's whole claim is about that one. The substring is chosen to appear
+          # under BOTH output formats: upstream prints
+          # `checking derivation k3s-first-boot-apply-order`, Determinate prints
+          # `✅ checks.x86_64-linux.k3s-first-boot-apply-order`.
+          if ! grep -q 'k3s-first-boot-apply-order' /tmp/fac-flake-check.log; then
+            echo "::error title=The first-boot check was not among the outputs evaluated::nix flake check never mentioned k3s-first-boot-apply-order. Either the check was renamed or removed, or --all-systems omitted the system it lives on. Either way this lane is green about something else."
+            exit 1
+          fi
+          echo "k3s-first-boot-apply-order was evaluated."
