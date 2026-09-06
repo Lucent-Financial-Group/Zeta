@@ -111,3 +111,30 @@ remain: `cert-manager`, `external-secrets`, `trust-manager`.
 Verified: pin-parity rc=0 with 3 acknowledged and none open, 10/10 falsifiers, first-boot
 render 8/8 (spire-crds now templating at 0.6.1), `validate-bootstrap` rc=0.
 
+## 2026-09-06 — two more paid: `cert-manager` and `trust-manager`, in that order
+
+`trust-manager` consumes `cert-manager`'s CRDs, so they moved together and in that order —
+paying trust-manager first would have measured the wrong variable.
+
+**`cert-manager` v1.16.2 -> v1.21.1.** Rendered with the bootstrap's own `valuesContent` at
+both, compared as kind/name pairs: **52 objects -> 50, nothing added**, the two losses being
+`Role/cert-manager-tokenrequest` and its RoleBinding. Every value still lands — 6 CRDs at
+both, all three Deployments at `replicas: 1`, no ServiceMonitor at either. This
+independently reproduces the Application's own 2026-09-01 note, including the trap it warns
+about: the newer chart **quotes `metadata.name`** and the older does not, so a raw-text diff
+reads all six CRDs as removed-and-re-added. Comparing kind/name pairs is what makes "nothing
+added" trustworthy.
+
+**`trust-manager` v0.15.0 -> v0.24.0.** **14 objects -> 15, nothing removed**, the addition
+being `ClusterRole/trust-manager-cluster-view`. The load-bearing value survives: `Role` and
+`RoleBinding` `trust-manager` still land in namespace **`openziti`** at v0.24.0 — the
+Secrets-reading Role ziti-controller's Bundle depends on, and the whole subject of that
+file's `MUST MATCH` note.
+
+**That note now guards the version too.** It said a value MUST MATCH the Application while
+the version sat three minors apart — the file was guarding the smaller half of its own
+hazard. Both are equal now, and the audit keeps them so.
+
+**One divergence left: `external-secrets` 0.10.7 vs 2.10.0**, a major jump, and the one its
+own entry says to treat as a migration rather than a bump.
+

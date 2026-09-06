@@ -15,19 +15,9 @@
   "refreshCommand": "bun src/Core.TypeScript/hygiene/audit-bootstrap-application-pin-parity.ts",
   "entries": [
     {
-      "key": "cert-manager|bootstrap=v1.16.2|application=v1.21.1",
-      "reason": "FIVE MINOR VERSIONS BEHIND, AND CRD-BEARING. K3S installs cert-manager v1.16.2 on NixOS first boot; the Application then adopts the same Helm release and reconciles it to v1.21.1 in an early sync wave, so a CRD upgrade runs during bring-up on real hardware -- while everything downstream of cert-manager (trust-manager, spire, every Certificate) is coming up against whichever CRD set is live at that instant. Nothing in either file's header states this divergence is intended; it reads as a bootstrap pin that was never moved with the Application, which is the same class as the ArgoCD fifth-site drift found the same day.",
-      "liftsWhen": "LIFTS WHEN: the two pins are byte-equal. Paying it is NOT a one-line bump -- the bootstrap carries its own valuesContent, so the honest sequence is `helm template` at v1.21.1 with THIS file's values, confirm every key still lands and nothing is removed, then move both pins in one commit. This entry goes STALE automatically the moment either version changes, because the key carries both."
-    },
-    {
       "key": "external-secrets|bootstrap=0.10.7|application=2.10.0",
       "reason": "A MAJOR-VERSION JUMP, 0.x -> 2.x, and the widest gap of the four. Whatever compatibility the 0.10 line had with the ExternalSecret/ClusterSecretStore resources in this tree, 2.10 is not promised to keep it, and the upgrade would run at first boot immediately after the store it authenticates to. The bootstrap header records a DIFFERENT concern entirely (`Vault is ArgoCD-owned now, sync-wave -60 before ESO's -40`) and says nothing about the version, so this pin has simply not been revisited since that change.",
       "liftsWhen": "LIFTS WHEN: the two pins are byte-equal. This one should be read as a real migration rather than a bump -- render 2.10.0 against this file's values, check the CRD API versions the tree's ExternalSecret manifests use are still served, and only then move both pins. If 2.10.0 turns out to be wrong for first boot, moving the APPLICATION down to the bootstrap's line is an equally valid way to close this entry."
-    },
-    {
-      "key": "trust-manager|bootstrap=v0.15.0|application=v0.24.0",
-      "reason": "THE ONE WHERE THE COUPLING IS ALREADY WRITTEN DOWN -- FOR A VALUE, NOT THE VERSION. `trust-manager-install.yaml` says a value `MUST MATCH k8s/applications/trust-manager/Application.yaml`, because the bootstrap and the Application `share a Helm release` and a mismatch is `two reconcilers flipping the flag against each other`. That reasoning applies to the chart version identically and was not extended to it, so the file guards the smaller half of its own hazard. CRD-bearing, and downstream of cert-manager, which is itself divergent above.",
-      "liftsWhen": "LIFTS WHEN: the two pins are byte-equal. Pay this one AFTER cert-manager: trust-manager consumes cert-manager's CRDs, so moving it first would be measuring the wrong variable. Its `MUST MATCH` value note should be extended to name the version at the same time, so the file states the whole coupling rather than half of it."
     }
   ]
 }
