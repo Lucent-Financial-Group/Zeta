@@ -41,6 +41,7 @@ import {
   planSetupFromNamedBaoElf,
   planSetupFromNamedBaoElfArgv,
   planSetupFromNamedBaoElfConf,
+  planSetupFromNamedBaoElfEnv,
 } from "./bao-elf-capture.ts";
 
 function elf64LeWithInterp(interp: string): Uint8Array {
@@ -462,6 +463,106 @@ describe("parseFirstbootBaoElfConf — consume both names or neither", () => {
     if (!empty.ok) return;
     expect(empty.plan.mayCommitHostHcl).toBe(false);
     expect(hostBaoSealHcl(empty.plan)).toBeNull();
+  });
+});
+
+describe("planSetupFromNamedBaoElfEnv — env join, still not a seal", () => {
+  const missingRestore = {
+    openedPath: USB_PKCS11_MODULE_POINTER,
+    exists: false,
+    contents: null,
+    resolvedModuleExists: true,
+  };
+
+  function tpmDecision() {
+    return integrateAtSetup({ requested: "pkcs11-tpm" }, emptyCapture({ os: "nixos", tpm2: "present" }));
+  }
+
+  test("option D env may emit host HCL and cannot commit Application.yaml", () => {
+    const opened: string[] = [];
+    const fromEnv = planSetupFromNamedBaoElfEnv(
+      tpmDecision(),
+      missingRestore,
+      {
+        PATH: "/usr/bin",
+        ZETA_ROLE: "first-control-plane",
+        ZETA_BAO_LOAD_SITE: "on-host",
+        ZETA_BAO_PATH: NIXOS_HOST_BAO,
+      },
+      (path) => {
+        opened.push(path);
+        return {
+          exists: true,
+          bytes: path === NIXOS_HOST_BAO ? elf64LeWithInterp(ELF_INTERP_GLIBC_X86_64) : null,
+        };
+      },
+    );
+    expect(fromEnv.ok).toBe(true);
+    if (!fromEnv.ok) return;
+    expect(opened).toEqual([NIXOS_HOST_BAO]);
+    expect(fromEnv.plan.mayCommitSeal).toBe(false);
+    expect(fromEnv.plan.mayCommitHostHcl).toBe(true);
+    expect(overlaySealHcl(fromEnv.plan)).toBeNull();
+  });
+
+  test("missing keys are unmeasured even when glibc bytes are injected", () => {
+    const opened: string[] = [];
+    const empty = planSetupFromNamedBaoElfEnv(tpmDecision(), missingRestore, { PATH: "/usr/bin" }, (path) => {
+      opened.push(path);
+      return { exists: true, bytes: elf64LeWithInterp(ELF_INTERP_GLIBC_X86_64) };
+    });
+    expect(empty.ok).toBe(true);
+    if (!empty.ok) return;
+    expect(opened).toEqual([]);
+    expect(empty.plan.mayCommitHostHcl).toBe(false);
+    expect(hostBaoSealHcl(empty.plan)).toBeNull();
+  });
+
+  test("tpmrm0 env is not an ask and does not open the char device", () => {
+    const opened: string[] = [];
+    const fromTpm = planSetupFromNamedBaoElfEnv(
+      tpmDecision(),
+      missingRestore,
+      {
+        ZETA_BAO_LOAD_SITE: "on-host",
+        ZETA_BAO_PATH: TPM_CHAR_DEVICE,
+      },
+      (path) => {
+        opened.push(path);
+        return { exists: true, bytes: elf64LeWithInterp(ELF_INTERP_GLIBC_X86_64) };
+      },
+    );
+    expect(fromTpm.ok).toBe(true);
+    if (!fromTpm.ok) return;
+    expect(opened).toEqual([]);
+    expect(fromTpm.plan.mayCommitHostHcl).toBe(false);
+    expect(hostBaoSealHcl(fromTpm.plan)).toBeNull();
+  });
+
+  test("one env key without the other refuses — does not fill the NixOS host path", () => {
+    const opened: string[] = [];
+    const siteOnly = planSetupFromNamedBaoElfEnv(
+      tpmDecision(),
+      missingRestore,
+      { ZETA_BAO_LOAD_SITE: "on-host" },
+      (path) => {
+        opened.push(path);
+        return { exists: true, bytes: elf64LeWithInterp(ELF_INTERP_GLIBC_X86_64) };
+      },
+    );
+    expect(siteOnly).toEqual({ ok: false, reason: "site-without-path" });
+    expect(opened).toEqual([]);
+    const pathOnly = planSetupFromNamedBaoElfEnv(
+      tpmDecision(),
+      missingRestore,
+      { ZETA_BAO_PATH: NIXOS_HOST_BAO },
+      (path) => {
+        opened.push(path);
+        return { exists: true, bytes: elf64LeWithInterp(ELF_INTERP_GLIBC_X86_64) };
+      },
+    );
+    expect(pathOnly).toEqual({ ok: false, reason: "path-without-site" });
+    expect(opened).toEqual([]);
   });
 });
 

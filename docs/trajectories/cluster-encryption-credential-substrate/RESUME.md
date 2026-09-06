@@ -543,6 +543,23 @@ Workitem: `081M1W1NCDT087G0R002H3VG6Y`.
   not expand `ZetaFirstbootRole`. Does not edit
   Application.yaml.
 
+## 2026-09-06 — first-boot env join plans overlay from sourced names (Riven)
+
+Aaron: continue after the bun consume. Argv and conf already
+join a named ask into `planSetupFromNamedBaoElf`. Env did not.
+
+Consumer: `src/Core.TypeScript/installer/bao-elf-capture.ts`
+(`planSetupFromNamedBaoElfEnv`).
+Workitem: `081M1W3BPCN087G0R001R97E45`.
+
+- Sourced `ZETA_BAO_*` into the overlay plan. Missing keys
+  are unmeasured. One without the other refuses. Does not
+  fill `NIXOS_HOST_BAO`. tpmrm0 is still not an ask and is
+  not opened. Injected read — the installer ISO's
+  current-system bao is not metal option D.
+- Does not invent an integrate decision. Does not expand
+  `ZetaFirstbootRole`. Does not edit Application.yaml.
+
 ## 2026-09-04 — production-hardening review (Riven)
 
 Aaron asked to production-harden the CA, name the unseal startup, use
