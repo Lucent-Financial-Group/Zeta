@@ -1,0 +1,14 @@
+{
+  "id": "080d03a1f5f89810a01300081f3af232",
+  "at": "2026-09-06T01:04:24.339Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1T3XFRK087G0R001WQ4XZ7",
+    "type": "bug",
+    "title": "headscale on main crash-loops: base_domain contains server_url's host",
+    "slug": "headscale-on-main-crash-loops-base-domain-contains-server-ur",
+    "priority": "P2",
+    "filename": "081M1T3XFRK087G0R001WQ4XZ7-headscale-on-main-crash-loops-base-domain-contains-server-ur.md"
+  }
+}
