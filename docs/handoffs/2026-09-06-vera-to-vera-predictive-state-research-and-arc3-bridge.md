@@ -5,7 +5,7 @@ From: Vera, OpenAI Codex, GPT-6 Astra
 To: a fresh Vera session starting in GPT-6 Astra
 Operational status: research-grade handoff
 Original baseline: `origin/main` after PR #16826
-Continuation: rendered-signal comparison and relational-identity result, 2026-09-06
+Continuation: rendered prediction-to-action result and identity/coverage repairs, 2026-09-06
 
 ## Fresh Vera bootstrap
 
@@ -17,12 +17,16 @@ Paste this into a fresh GPT-6 Astra session:
 > the Alexa pairwise-memory ferry and its grounding correction, and the QBism
 > source record linked below. Keep every correspondence in an evidence
 > register. Read the rendered-signal result: every RNN beats bigram but fails
-> the registered improvement over order-two. Retain order-two as the candidate
-> for a separately preregistered non-ARC action loop. Read the relational-identity
+> the registered improvement over order-two. Read the registered rendered-catch
+> result: frozen order-two achieves approximately 75% versus 50% for controls
+> on three structured panels, with exact full replay and both cost caps met.
+> The goal, projection and action meanings are supplied; action-conditioned
+> hidden dynamics and planning still require a new preregistration. Read the relational-identity
 > result: its invariant is authenticated receipt content, causal order and the
 > signed claim map on a declared closed cut. Keep conditional entropy bits
 > separate from stipulated work: B=sum b_i, R=sum r_e, M=1+R/B for B>0.
-> Pairwise consistency alone cannot establish distinct controllers. Do not
+> Pairwise consistency and correlation-component counts cannot establish
+> distinct controllers. Read the component and CHSH coverage corrections. Do not
 > call the construction Lorentz-invariant, anti-Sybil, CQM,
 > or universal until the required map, laws, and adversarial tests exist.
 > Preserve protocols before results, retain independent replay, and route any
@@ -45,7 +49,20 @@ All three RNNs beat bigram on both held-out renderings, but none meets the
 120 cost rows and one complete retraining reproduce independently. Keep
 order-two as the next acting-carrier candidate. Rendering dominates total
 cost; token-only RNN inference is about fourteen times slower here.
-No action return or ARC result was measured.
+That passive comparison measured no action return or ARC result.
+
+The subsequent [registered rendered-catch result](../research/2026-09-06-rendered-catch-actions-results.md)
+completes `081M1W8T690087G0R002DJ91MJ`. Its implementation archive is
+`36fa2275e049017aefa6ebdfd77fdbd2dfbd5180`, published before measurement.
+Across 20,480 behavioral episodes, frozen order-two catches 74.74% to 75.03%
+of targets on the dot, bar and palette panels versus roughly 50% for controls.
+Its largest independent-symbol-panel advantage is 0.206 percentage points.
+All 20 behavioral arm-panels and 25 cost rows replay exactly, including 200
+warmup and 1,600 timed episodes. Order-two/bigram median wall and allocation
+ratios are 0.987079 and 0.999461. All registered conditions pass. The first
+timing repetition is retained; these ratios do not establish a speed advantage.
+This verifies supplied-goal predictor-to-key composition, not learned vision,
+goal acquisition, planning, action-dependent dynamics or an ARC policy.
 
 The separate
 [relational-identity result](../research/relational-identity/2026-09-06-results.md)
@@ -67,12 +84,28 @@ is a separate work-accounting identity: `B=sum b_i`, `R=sum r_e`,
 internally consistent under the permissive fixture verifier. This result does
 not prove source non-fungibility, price a Sybil attack, or identify controllers.
 
-The next bounded steps are a separately registered rendered key-action trial
-using frozen order-two counts and focused repairs to defects found in shipped
-identity measurements and their interpretation. Preserve each new protocol,
-pre-fix witness and source snapshot before its corresponding result. Current
-claims and result records determine status; a proposed follow-up is not a
-completed experiment.
+The [component interpretation correction](../research/relational-identity/2026-09-06-component-interpretation-correction.md)
+landed in [PR #16871](https://github.com/Lucent-Financial-Group/Zeta/pull/16871).
+The shipped quantity is now named `correlationComponentCount`: a common-source
+XOR construction can produce multiple apparently uncorrelated components,
+and adding a bridge can reduce component count/progress. Neither physical
+controller multiplicity nor generally monotone progress follows. Conditional
+entropy assumptions and an external identity oracle remain separate premises.
+
+The [CHSH coverage audit](../research/chsh-coverage/2026-09-06-audit.md)
+landed in [PR #16869](https://github.com/Lucent-Financial-Group/Zeta/pull/16869).
+Missing setting buckets now refuse calibrated certification, and the smallest
+bucket caps the reported effective sample count. Raw descriptive S remains
+available; unmeasured bounds stay absent rather than becoming favorable zeros.
+The cap is an engineering safeguard, not a general HAC validity theorem, and
+causal incomparability alone does not establish physical no-signaling.
+
+The next empirical step is a separately registered action-conditioned hidden
+dynamics task with declared representation, goal and planning controls.
+Preserve each new protocol, source snapshot and falsifier before its result.
+Current claims and result records determine status; a proposed follow-up is
+not a completed experiment. The supplied-goal catch result alone cannot
+justify ARC integration or any new identity/physics equivalence.
 
 Re-entry environment notes: run from a writer-owned clone with its local
 `.mise.toml` trusted and a login shell so signing and all preflight tools are
@@ -112,6 +145,12 @@ Read in this order:
 8. [Relational-identity result](../research/relational-identity/2026-09-06-results.md)
    for the declared-cut invariant, conditional entropy premise, pairwise work
    multiplier and preserved collusion/coverage counterexamples.
+9. [Rendered-catch result](../research/2026-09-06-rendered-catch-actions-results.md)
+   for real key actions, exact independent replay, matched whole-episode costs
+   and the supplied-representation contextual-bandit boundary.
+10. [Identity component correction](../research/relational-identity/2026-09-06-component-interpretation-correction.md)
+    and [CHSH coverage audit](../research/chsh-coverage/2026-09-06-audit.md)
+    for repaired shipped measurements and their retained counterexamples.
 
 The one-sentence thesis is:
 

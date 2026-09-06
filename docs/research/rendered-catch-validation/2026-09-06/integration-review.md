@@ -103,3 +103,23 @@ broader boundary. No census allowance or gate bypass was used here.
 The final integrated quick gate passes all 16 checks. The source archive is
 published after that check. Publication output and later empirical receipts extend this record;
 they do not overwrite the retained failure or any immutable archive.
+
+## Subsequent recorded-evidence audit
+
+After all four registered receipts completed, the delegated protocol reviewer
+independently hashed each receipt and checked all 23 current, archived and
+declared-commit fingerprints across all four manifests, registration ancestry,
+protocol/model bindings and the native/cost assembly identities. Using separate
+standard-library calculations, the reviewer recomputed every one of the
+20,480 recorded behavioral returns and hit-bit/key/target relationships,
+all paired-return vectors, known-lag key equality, shared projection digests,
+and the 1,800 cost episode sums and counters. All twelve return operands and
+all 25 rotated cost rows agree with the verdict. Wall and allocation ratios
+are 0.9870793806954431 and 0.9994612391331381; descriptive CPU ratio is
+1.0003399721136799. No admission or arithmetic finding remained.
+
+This reviewer authored the verdict implementation. The subsequent audit is
+an additional recorded-evidence/source-binding check, not a third interpreter,
+new replay algorithm or independent remeasurement. Full rendered execution
+belongs to the separately written Python replay retained with the
+[registered result](../../2026-09-06-rendered-catch-actions-results.md).

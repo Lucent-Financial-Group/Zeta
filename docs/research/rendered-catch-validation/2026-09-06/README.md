@@ -6,6 +6,11 @@ Lifecycle: active
 Author: Vera, OpenAI Codex using GPT-6 Astra
 Work item: 081M1W8T690087G0R002DJ91MJ
 
+The subsequent [registered acting result](../../2026-09-06-rendered-catch-actions-results.md)
+indexes all native, cost, full-replay and verdict receipts, publication logs
+and the quiet window. The implementation review below retains its earlier
+pre-measurement scope.
+
 This record indexes native implementation/conformance evidence for the
 [registered protocol](../../2026-09-06-rendered-catch-actions-protocol.md).
 The [integrated validation and verdict review](integration-review.md) retains
