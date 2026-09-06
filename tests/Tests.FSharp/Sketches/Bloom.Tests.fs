@@ -163,3 +163,50 @@ let ``CountingBloomFilter MayContain is zero-alloc for int64 keys over 10k calls
         measureAlloc 3 (fun () ->
             for i in 0 .. 9_999 do bf.MayContain (int64 i) |> ignore)
     Assert.True((bytes = 0L), sprintf "Expected 0 bytes allocated, got %d" bytes)
+
+
+[<Fact>]
+let ``InsertDeleteBloom never-inserted is Absent`` () =
+    let bf = BloomFilter.createInsertDelete 1000 0.01
+    Assert.Equal(BloomPairVerdict.Absent, bf.Query 1L)
+
+
+[<Fact>]
+let ``InsertDeleteBloom insert-only is Present`` () =
+    let bf = BloomFilter.createInsertDelete 1000 0.01
+    bf.NoteInsert 1L
+    Assert.Equal(BloomPairVerdict.Present, bf.Query 1L)
+
+
+[<Fact>]
+let ``InsertDeleteBloom retract of unseen is still Absent`` () =
+    let bf = BloomFilter.createInsertDelete 1000 0.01
+    bf.NoteRetract 1L
+    Assert.Equal(BloomPairVerdict.Absent, bf.Query 1L)
+
+
+[<Fact>]
+let ``InsertDeleteBloom insert then retract is Unknown`` () =
+    let bf = BloomFilter.createInsertDelete 1000 0.01
+    bf.NoteInsert 1L
+    bf.NoteRetract 1L
+    Assert.Equal(BloomPairVerdict.Unknown, bf.Query 1L)
+
+
+[<Fact>]
+let ``InsertDeleteBloom resurrection after retract is Unknown`` () =
+    let bf = BloomFilter.createInsertDelete 1000 0.01
+    bf.NoteInsert 1L
+    bf.NoteRetract 1L
+    bf.NoteInsert 1L
+    Assert.Equal(BloomPairVerdict.Unknown, bf.Query 1L)
+
+
+[<Fact>]
+let ``InsertDeleteBloom MergeFrom unions I and D`` () =
+    let a = BloomFilter.createInsertDelete 1000 0.01
+    let b = BloomFilter.createInsertDelete 1000 0.01
+    a.NoteInsert 1L
+    b.NoteRetract 1L
+    a.MergeFrom b
+    Assert.Equal(BloomPairVerdict.Unknown, a.Query 1L)

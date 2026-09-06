@@ -512,6 +512,43 @@ type CountingBloomFilter(cellCount: int, probesPerLookup: int) =
     member _.ProbesPerLookup : int = probesPerLookup
 
 
+/// Three-valued membership from two grow-only Bloom filters (ZD10).
+/// Bloom(I) = ever inserted; Bloom(D) = ever deleted. Bits never
+/// decrement. `x ∉ I` is absent; `x ∈ I ∧ x ∉ D` is present; both is
+/// UNKNOWN. Resurrection (insert, retract, insert) is UNKNOWN.
+/// Toy until measured. Does not replace CountingBloomFilter.
+type BloomPairVerdict =
+    | Absent
+    | Present
+    | Unknown
+
+[<Sealed>]
+type InsertDeleteBloom(bucketCount: int, probesPerLookup: int) =
+    let inserted = BlockedBloomFilter(bucketCount, probesPerLookup)
+    let deleted = BlockedBloomFilter(bucketCount, probesPerLookup)
+
+    member _.NoteInsert(key: int64) = inserted.Add key
+    member _.NoteRetract(key: int64) = deleted.Add key
+
+    member _.Query(key: int64) : BloomPairVerdict =
+        let i = inserted.MayContain key
+        let d = deleted.MayContain key
+
+        if not i then
+            BloomPairVerdict.Absent
+        elif not d then
+            BloomPairVerdict.Present
+        else
+            BloomPairVerdict.Unknown
+
+    member _.MergeFrom(other: InsertDeleteBloom) =
+        inserted.MergeFrom other.Inserted
+        deleted.MergeFrom other.Deleted
+
+    member internal _.Inserted = inserted
+    member internal _.Deleted = deleted
+
+
 /// Space-optimal parameter derivation from `(expectedElements, falsePositiveRate)`.
 [<RequireQualifiedAccess>]
 [<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
@@ -558,3 +595,16 @@ module BloomFilter =
     let createCounting (expectedElements: int) (falsePositiveRate: float) : CountingBloomFilter =
         let struct (m, k) = optimalShape expectedElements falsePositiveRate
         CountingBloomFilter(m, k)
+
+    /// Two grow-only blocked Blooms (I and D). Same bucket shape as
+    /// `createBlocked`. Toy. Not the join-probe path.
+    let createInsertDelete (expectedElements: int) (falsePositiveRate: float) : InsertDeleteBloom =
+        let struct (m, k) = optimalShape expectedElements falsePositiveRate
+        let bucketBits = 512
+        let buckets = max 1 ((m + bucketBits - 1) / bucketBits)
+        let mutable pb = 1
+
+        while pb < buckets do
+            pb <- pb <<< 1
+
+        InsertDeleteBloom(pb, k)
