@@ -1,0 +1,14 @@
+{
+  "id": "080d03a9fd371810a013000890bc6de2",
+  "at": "2026-09-06T05:45:00.899Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1TKZ9Q2087G0R000VZQ3H1",
+    "type": "task",
+    "title": "The live lane's diagnostic bundle can name why a pod is not running",
+    "slug": "the-live-lane-s-diagnostic-bundle-can-name-why-a-pod-is-not",
+    "priority": "P2",
+    "filename": "081M1TKZ9Q2087G0R000VZQ3H1-the-live-lane-s-diagnostic-bundle-can-name-why-a-pod-is-not.md"
+  }
+}
