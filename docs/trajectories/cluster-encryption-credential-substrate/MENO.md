@@ -96,10 +96,14 @@ assume the number.
    `src/Core.TypeScript/cluster/unseal-path.ts`
    (`081M1T9X3ZE087G0R000JNAYE7`). Detect HSM/TPM during
    setup; integrate PKCS#11 **only** if the device is
-   accessible. TPM *is* an auto-unseal path (OAEP pin).
+   accessible. Metal HSM vendors are peers: YubiHSM 2 and
+   CardContact SmartCard-HSM (sc-hsm / OpenSC; not a YubiKey).
+   SmartCard-HSM mechanism is measure-on-device, not YubiHSM
+   AES-GCM. TPM *is* an auto-unseal path (OAEP pin).
    Lucent 1Password Shamir is a **peer** path, not a silent
    fallback from requested PKCS#11. Fleet may mix paths;
-   one OpenBao seal per node. Emulator install 2×2
+   one OpenBao seal per node. Dual-vendor on one box is
+   ZetaFS k-of-n. Emulator install 2×2
    (SoftHSM × swtpm) is declared by installing; skip-if-absent
    cannot wear pass. Dejan's apt/mise SoftHSM job is still
    the next *runtime* rung — this picker does not install
@@ -146,6 +150,8 @@ assume the number.
 - Silent PKCS#11 → Lucent downgrade when the requested
   device is missing.
 - skip-if-absent wearing pass on an emulator matrix cell.
+- Collapse CardContact SmartCard-HSM into YubiHSM, or treat
+  a YubiKey as the card.
 - Mint public `IInput` / `IFeedback` F# types.
 - Absorb FF7 identity-blend as factory policy
   (`docs/DRIFT-TAXONOMY.md` Pattern 1).

@@ -429,7 +429,9 @@ label, and presence is still a probe.
 **2026-09-06 — setup-time detect, then companion (Aaron, via
 Riven).** First-boot / setup probes HSM and TPM and
 integrates PKCS#11 _only_ if the device is accessible.
-TPM is an auto-unseal path (OAEP). Lucent 1Password remains
+Metal HSM vendors are YubiHSM 2 and CardContact
+SmartCard-HSM (not a YubiKey). TPM is an auto-unseal path
+(OAEP). Lucent 1Password remains
 a peer unseal path for boxes that do not have that silicon,
 or that choose it. Classifier:
 `src/Core.TypeScript/cluster/unseal-path.ts`. The repair

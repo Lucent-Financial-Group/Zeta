@@ -135,6 +135,8 @@ creates key material in the token before `bao operator init`.
 - Two OpenBao seals on one node.
 - Silent PKCS#11 → Lucent when the requested device is missing.
 - skip-if-absent wearing pass on an emulator cell.
+- Collapsing CardContact SmartCard-HSM into YubiHSM (AES-GCM
+  stolen; YubiKey treated as the card).
 - Pattern 1.
 
 ## Host-seal profile — NixOS role, not a k8s label (Aaron 2026-09-05)
@@ -205,12 +207,13 @@ and it does not install SoftHSM2.
 | Question | Answer |
 |---|---|
 | Detect when? | Setup. Capture is injected (`frost-hardware-probe` / `tpm2-linux-probe`). A driver on disk is not a device. Unprobed / unavailable / unreadable / indeterminate is a check that did not run, not absent. |
-| Integrate PKCS#11 when? | Only if accessible: YubiHSM `attached`, smartcard HSM present, or TPM `present`. Requested PKCS#11 that is missing **refuses** — it does not fall to Lucent (no-silent-downgrade). |
+| Integrate PKCS#11 when? | Only if accessible: YubiHSM `attached`, CardContact SmartCard-HSM present (<https://www.smartcard-hsm.com/>), or TPM `present`. A YubiKey is not a SmartCard-HSM. Requested PKCS#11 that is missing **refuses** — it does not fall to Lucent (no-silent-downgrade). SoftHSM2 is not a substitute for either metal vendor. |
 | TPM auto-unseal? | **Yes.** `tpm2-pkcs11`, mechanism **must pin** `CKM_RSA_PKCS_OAEP`. AES-GCM is not a TPM path. |
-| HSM auto-unseal? | Yes. PKCS#11, preferred AES-GCM (YubiHSM / SoftHSM). |
+| HSM auto-unseal? | Yes, both metal vendors. YubiHSM prefers AES-GCM. SmartCard-HSM AES-GCM is **measured on the device** (not inherited from SoftHSM/YubiHSM). `pkcs11-hsm` is a request umbrella; the result names `pkcs11-yubihsm` or `pkcs11-smartcard`. |
 | 1Password / Lucent? | **Peer path**, not a silent fallback. Shamir HTTP loop / fetch-at-unseal, threshold >= 2, cannot init. Explicit `lucent-shamir` is allowed even when an HSM is attached. `auto` with a completed look and nothing accessible picks Lucent. |
-| Multiple paths? | Fleet may mix PKCS#11-HSM, PKCS#11-TPM, Lucent-Shamir, kind-Shamir. **One OpenBao seal per node.** Two distinct paths as seals refuse. Dual-vendor remains ZetaFS k-of-n. |
+| Multiple paths? | Fleet may mix PKCS#11-YubiHSM, PKCS#11-SmartCard-HSM, PKCS#11-TPM, Lucent-Shamir, kind-Shamir. **One OpenBao seal per node.** Two distinct paths as seals refuse, including YubiHSM + CardContact on the same member. Dual-vendor custody is ZetaFS k-of-n. |
 | Emulator 2×2? | SoftHSM × swtpm, **declared by installing**. Cell that wants an emulator the runner did not install is `fail-missing`. skip-if-absent cannot wear pass. Both installed → ci-softhsm (HSM wins). Neither + Lucent fetcher → lucent-shamir. Neither + kind unsealer → kind-shamir. Neither + nothing → `no-path`. `ci-softhsm` / `ci-swtpm` via `integrateAtSetup` without a job is `emulator-not-declared`. |
 
-HSM wins over TPM when both are accessible (`auto`). That is
-one seal, not a ranking of vendors.
+YubiHSM wins over SmartCard-HSM wins over TPM when more than
+one is accessible (`auto`). That is one OpenBao seal, not a
+ranking of vendors for ZetaFS k-of-n.

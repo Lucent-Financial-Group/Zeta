@@ -105,9 +105,11 @@ Classifier: `src/Core.TypeScript/cluster/unseal-path.ts`.
 Workitem: `081M1T9X3ZE087G0R000JNAYE7`. Research addendum on
 [`docs/research/2026-09-05-ci-emulator-rung-softhsm-swtpm-witness-wiring-not-metal.md`](../../research/2026-09-05-ci-emulator-rung-softhsm-swtpm-witness-wiring-not-metal.md).
 
-- PKCS#11 only when YubiHSM is `attached`, a smartcard HSM is
-  present, or TPM is `present`. A `.so` on disk is not a
-  device. Unprobed / unavailable is a check that did not run.
+- PKCS#11 only when YubiHSM is `attached`, CardContact
+  SmartCard-HSM is present, or TPM is `present`. A `.so` on
+  disk is not a device. A YubiKey is not a SmartCard-HSM.
+  Unprobed / unavailable is a check that did not run.
+  SmartCard-HSM wrap is measure-on-device, not YubiHSM AES-GCM.
 - Requested PKCS#11 that is missing **refuses** — it does not
   become Lucent.
 - TPM **can** auto-unseal (`tpm2-pkcs11`, OAEP pin). HSM

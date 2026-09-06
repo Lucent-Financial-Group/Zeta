@@ -12,16 +12,25 @@
  * declarations, never inferred from `/dev/tpmrm0`.
  *
  * OpenBao takes ONE seal per node. Multiple *paths* means the
- * fleet may mix PKCS#11-HSM, PKCS#11-TPM, and Lucent-Shamir
- * across boxes (and kind still uses the HTTP unsealer). It does
- * not mean two seal stanzas on one member.
+ * fleet may mix PKCS#11-YubiHSM, PKCS#11-SmartCard-HSM,
+ * PKCS#11-TPM, and Lucent-Shamir across boxes (and kind still
+ * uses the HTTP unsealer). It does not mean two seal stanzas
+ * on one member. Dual-vendor on one box is ZetaFS k-of-n, not
+ * two OpenBao seals.
+ *
+ * Metal HSM vendors are peers (PKCS#11, not a brand in the
+ * volume): YubiHSM 2, and CardContact SmartCard-HSM
+ * (https://www.smartcard-hsm.com/). A YubiKey FIDO/CCID token
+ * is not a SmartCard-HSM. SoftHSM2 is not a substitute for
+ * either device.
  *
  * TPM auto-unseal: yes, via tpm2-pkcs11, mechanism pinned to
- * CKM_RSA_PKCS_OAEP (no AES-GCM on that token). HSM prefers
- * AES-GCM. Lucent-Shamir is the 2026-09-04 peer path
- * (fetch-at-unseal, threshold >= 2, cannot init) — not a silent
- * fallback from a requested PKCS#11 tier
- * (frost-hardware-probe no-silent-downgrade).
+ * CKM_RSA_PKCS_OAEP (no AES-GCM on that token). YubiHSM
+ * prefers AES-GCM. SmartCard-HSM AES-GCM is measured on the
+ * device, not inherited from SoftHSM/YubiHSM. Lucent-Shamir
+ * is the 2026-09-04 peer path (fetch-at-unseal, threshold >= 2,
+ * cannot init) — not a silent fallback from a requested
+ * PKCS#11 tier (frost-hardware-probe no-silent-downgrade).
  *
  * Cite: host-seal-profile.ts, seal-emulator-rung.ts,
  * vault-unsealer.ts, tpm2-linux-probe.ts, frost-hardware-probe.ts,
@@ -33,10 +42,15 @@ import { pickOpenbaoMechanism, type MechanismPick } from "./seal-emulator-rung.t
 import { UNSEAL_THRESHOLD } from "./vault-unsealer.ts";
 
 /** One OpenBao seal (or the Shamir HTTP loop) per node. */
-export type UnsealPath = "pkcs11-hsm" | "pkcs11-tpm" | "lucent-shamir" | "ci-softhsm" | "ci-swtpm" | "kind-shamir";
+export type UnsealPath =
+  "pkcs11-yubihsm" | "pkcs11-smartcard" | "pkcs11-tpm" | "lucent-shamir" | "ci-softhsm" | "ci-swtpm" | "kind-shamir";
 
-/** What setup asked for. `auto` picks the strongest *accessible* path. */
-export type PathRequest = "auto" | UnsealPath;
+/**
+ * What setup asked for. `auto` picks the strongest accessible path.
+ * `pkcs11-hsm` is request-only: either metal HSM vendor (YubiHSM or
+ * CardContact SmartCard-HSM). The result names the vendor.
+ */
+export type PathRequest = "auto" | "pkcs11-hsm" | UnsealPath;
 
 export interface SetupRequest {
   readonly requested: PathRequest;
@@ -76,12 +90,27 @@ export interface InstallEmulators {
   readonly kindUnsealerPresent: boolean;
 }
 
-const PKCS11_PATHS: ReadonlySet<UnsealPath> = new Set(["pkcs11-hsm", "pkcs11-tpm", "ci-softhsm", "ci-swtpm"]);
+const PKCS11_PATHS: ReadonlySet<UnsealPath> = new Set([
+  "pkcs11-yubihsm",
+  "pkcs11-smartcard",
+  "pkcs11-tpm",
+  "ci-softhsm",
+  "ci-swtpm",
+]);
 
 const AUTO_UNSEAL_PATHS: ReadonlySet<UnsealPath> = PKCS11_PATHS;
 
+export function yubiHsmAccessible(capture: HostHardwareCapture): boolean {
+  return capture.yubiHsm2 === "attached";
+}
+
+/** CardContact SmartCard-HSM (sc-hsm / OpenSC), not a YubiKey. */
+export function smartcardHsmAccessible(capture: HostHardwareCapture): boolean {
+  return capture.smartcardHsm;
+}
+
 export function hsmAccessible(capture: HostHardwareCapture): boolean {
-  return capture.yubiHsm2 === "attached" || capture.smartcardHsm;
+  return yubiHsmAccessible(capture) || smartcardHsmAccessible(capture);
 }
 
 /** TPM 2.0 usable for PKCS#11 auto-unseal. Five-state: only `present`. */
@@ -138,9 +167,11 @@ export function isPkcs11OpenBaoSeal(path: UnsealPath): boolean {
 
 function mechanismFor(path: UnsealPath): UnsealMechanism {
   switch (path) {
-    case "pkcs11-hsm":
+    case "pkcs11-yubihsm":
     case "ci-softhsm":
       return flattenMechanism(pickOpenbaoMechanism("yubihsm2"));
+    case "pkcs11-smartcard":
+      return flattenMechanism(pickOpenbaoMechanism("smartcard-hsm"));
     case "pkcs11-tpm":
     case "ci-swtpm":
       return flattenMechanism(pickOpenbaoMechanism("tpm2-pkcs11"));
@@ -187,8 +218,29 @@ export function integrateAtSetup(request: SetupRequest, capture: HostHardwareCap
     return ok("kind-shamir");
   }
 
+  if (requested === "pkcs11-yubihsm") {
+    if (yubiHsmAccessible(capture)) return ok("pkcs11-yubihsm");
+    if (hsmCheckDidNotRun(capture) || capture.yubiHsm2 === "not-asked") {
+      return { ok: false, reason: "probe-did-not-run", requested };
+    }
+    if (driverWithoutDevice(capture)) {
+      return { ok: false, reason: "driver-is-not-a-device", requested };
+    }
+    return { ok: false, reason: "requested-pkcs11-not-accessible", requested };
+  }
+
+  if (requested === "pkcs11-smartcard") {
+    if (smartcardHsmAccessible(capture)) return ok("pkcs11-smartcard");
+    if (driverWithoutDevice(capture)) {
+      return { ok: false, reason: "driver-is-not-a-device", requested };
+    }
+    return { ok: false, reason: "requested-pkcs11-not-accessible", requested };
+  }
+
+  // Umbrella: either metal HSM vendor. Result names which one.
   if (requested === "pkcs11-hsm") {
-    if (hsmAccessible(capture)) return ok("pkcs11-hsm");
+    if (yubiHsmAccessible(capture)) return ok("pkcs11-yubihsm");
+    if (smartcardHsmAccessible(capture)) return ok("pkcs11-smartcard");
     if (hsmCheckDidNotRun(capture) || capture.yubiHsm2 === "not-asked") {
       return { ok: false, reason: "probe-did-not-run", requested };
     }
@@ -211,7 +263,11 @@ export function integrateAtSetup(request: SetupRequest, capture: HostHardwareCap
 
   // auto: strongest accessible PKCS#11, else Lucent. Incomplete probe
   // is not "absent" — do not pick Lucent because we failed to look.
-  if (hsmAccessible(capture)) return ok("pkcs11-hsm");
+  // YubiHSM and SmartCard-HSM are peer vendors; if both are on the
+  // same node, one OpenBao seal still wins (YubiHSM first, matching
+  // host-seal-profile). Dual-vendor custody is ZetaFS k-of-n.
+  if (yubiHsmAccessible(capture)) return ok("pkcs11-yubihsm");
+  if (smartcardHsmAccessible(capture)) return ok("pkcs11-smartcard");
   if (tpmAccessible(capture)) return ok("pkcs11-tpm");
   if (automaticProbeIncomplete(capture)) {
     return { ok: false, reason: "probe-did-not-run", requested };
@@ -226,7 +282,8 @@ export function integrateAtSetup(request: SetupRequest, capture: HostHardwareCap
  */
 export function availablePaths(capture: HostHardwareCapture): readonly UnsealPath[] {
   const paths: UnsealPath[] = [];
-  if (hsmAccessible(capture)) paths.push("pkcs11-hsm");
+  if (yubiHsmAccessible(capture)) paths.push("pkcs11-yubihsm");
+  if (smartcardHsmAccessible(capture)) paths.push("pkcs11-smartcard");
   if (tpmAccessible(capture)) paths.push("pkcs11-tpm");
   paths.push("lucent-shamir");
   return paths;

@@ -23,11 +23,11 @@ function capture(partial: Partial<HostHardwareCapture>): HostHardwareCapture {
 }
 
 describe("integrateAtSetup — PKCS#11 only when the device is accessible", () => {
-  test("auto + attached YubiHSM2 → pkcs11-hsm (not Lucent)", () => {
+  test("auto + attached YubiHSM2 → pkcs11-yubihsm (not Lucent)", () => {
     const r = integrateAtSetup({ requested: "auto" }, capture({ yubiHsm2: "attached" }));
     expect(r.ok).toBe(true);
     if (!r.ok) return;
-    expect(r.path).toBe("pkcs11-hsm");
+    expect(r.path).toBe("pkcs11-yubihsm");
     expect(r.mechanism).toBe("aes-gcm");
     expect(r.autoUnseal).toBe(true);
   });
@@ -45,14 +45,60 @@ describe("integrateAtSetup — PKCS#11 only when the device is accessible", () =
     const r = integrateAtSetup({ requested: "auto" }, capture({ yubiHsm2: "attached", tpm2: "present" }));
     expect(r.ok).toBe(true);
     if (!r.ok) return;
-    expect(r.path).toBe("pkcs11-hsm");
+    expect(r.path).toBe("pkcs11-yubihsm");
   });
 
-  test("smartcard HSM is pkcs11-hsm, not a YubiKey", () => {
+  test("CardContact SmartCard-HSM wins over TPM when no YubiHSM", () => {
+    const r = integrateAtSetup({ requested: "auto" }, capture({ smartcardHsm: true, tpm2: "present" }));
+    expect(r.ok).toBe(true);
+    if (!r.ok) return;
+    expect(r.path).toBe("pkcs11-smartcard");
+    expect(r.mechanism).toBe("measure-on-device");
+  });
+
+  test("CardContact SmartCard-HSM is a peer vendor — measure-on-device, not YubiHSM AES-GCM", () => {
     const r = integrateAtSetup({ requested: "auto" }, capture({ smartcardHsm: true }));
     expect(r.ok).toBe(true);
     if (!r.ok) return;
-    expect(r.path).toBe("pkcs11-hsm");
+    expect(r.path).toBe("pkcs11-smartcard");
+    expect(r.mechanism).toBe("measure-on-device");
+    expect(r.autoUnseal).toBe(true);
+  });
+
+  test("YubiKey FIDO is not a SmartCard-HSM", () => {
+    const r = integrateAtSetup({ requested: "auto" }, capture({ yubikeyFido: true }));
+    expect(r.ok).toBe(true);
+    if (!r.ok) return;
+    expect(r.path).toBe("lucent-shamir");
+  });
+
+  test("both metal HSM vendors attached → one OpenBao seal (YubiHSM first)", () => {
+    const r = integrateAtSetup({ requested: "auto" }, capture({ yubiHsm2: "attached", smartcardHsm: true }));
+    expect(r.ok).toBe(true);
+    if (!r.ok) return;
+    expect(r.path).toBe("pkcs11-yubihsm");
+  });
+
+  test("umbrella pkcs11-hsm with only CardContact names pkcs11-smartcard", () => {
+    const r = integrateAtSetup({ requested: "pkcs11-hsm" }, capture({ smartcardHsm: true }));
+    expect(r.ok).toBe(true);
+    if (!r.ok) return;
+    expect(r.path).toBe("pkcs11-smartcard");
+    expect(r.mechanism).toBe("measure-on-device");
+  });
+
+  test("requested pkcs11-smartcard with only YubiHSM refuses — not the other vendor, not Lucent", () => {
+    const r = integrateAtSetup({ requested: "pkcs11-smartcard" }, capture({ yubiHsm2: "attached" }));
+    expect(r.ok).toBe(false);
+    if (r.ok) return;
+    expect(r.reason).toBe("requested-pkcs11-not-accessible");
+  });
+
+  test("requested pkcs11-yubihsm with only SmartCard-HSM refuses — not the other vendor", () => {
+    const r = integrateAtSetup({ requested: "pkcs11-yubihsm" }, capture({ smartcardHsm: true }));
+    expect(r.ok).toBe(false);
+    if (r.ok) return;
+    expect(r.reason).toBe("requested-pkcs11-not-accessible");
   });
 
   test("auto + nothing accessible → lucent-shamir (1Password peer path)", () => {
@@ -130,7 +176,16 @@ describe("availablePaths — fleet may mix; Lucent is always listed", () => {
 
   test("HSM + TPM both accessible → three paths; caller still picks one seal", () => {
     expect(availablePaths(capture({ yubiHsm2: "attached", tpm2: "present" }))).toEqual([
-      "pkcs11-hsm",
+      "pkcs11-yubihsm",
+      "pkcs11-tpm",
+      "lucent-shamir",
+    ]);
+  });
+
+  test("both metal HSM vendors + TPM are listed; Lucent stays a peer", () => {
+    expect(availablePaths(capture({ yubiHsm2: "attached", smartcardHsm: true, tpm2: "present" }))).toEqual([
+      "pkcs11-yubihsm",
+      "pkcs11-smartcard",
       "pkcs11-tpm",
       "lucent-shamir",
     ]);
@@ -147,14 +202,21 @@ describe("TPM auto-unseal is PKCS#11 OAEP, not AES-GCM", () => {
 
 describe("one OpenBao seal per node", () => {
   test("two distinct PKCS#11 paths refuse", () => {
-    const r = refuseTwoOpenBaoSeals(["pkcs11-hsm", "pkcs11-tpm"]);
+    const r = refuseTwoOpenBaoSeals(["pkcs11-yubihsm", "pkcs11-tpm"]);
+    expect(r.ok).toBe(false);
+    if (r.ok) return;
+    expect(r.reason).toBe("two-openbao-seals");
+  });
+
+  test("YubiHSM plus CardContact on the same node is two OpenBao seals — dual-vendor is ZetaFS k-of-n", () => {
+    const r = refuseTwoOpenBaoSeals(["pkcs11-yubihsm", "pkcs11-smartcard"]);
     expect(r.ok).toBe(false);
     if (r.ok) return;
     expect(r.reason).toBe("two-openbao-seals");
   });
 
   test("HSM plus Lucent on the same node is still two OpenBao seals if both are requested as seals", () => {
-    const r = refuseTwoOpenBaoSeals(["pkcs11-hsm", "lucent-shamir"]);
+    const r = refuseTwoOpenBaoSeals(["pkcs11-yubihsm", "lucent-shamir"]);
     expect(r.ok).toBe(false);
     if (r.ok) return;
     expect(r.reason).toBe("two-openbao-seals");
