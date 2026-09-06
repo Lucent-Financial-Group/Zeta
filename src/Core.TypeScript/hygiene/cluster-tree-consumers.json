@@ -161,6 +161,12 @@
       "migrateTo": "re-point the comment when the validator moves."
     },
     {
+      "path": "src/Core.TypeScript/cluster/committed-chart-credentials.ts",
+      "disposition": "blocking",
+      "note": "`infra/k8s/bootstrap` is a literal in BOOTSTRAP_DIRS. This is a CREDENTIAL check, so scanning one tree fewer is a real narrowing rather than a cosmetic one -- and the narrowing would be SILENT: the directory read is guarded, so deleting the stale tree leaves the audit passing over a surface it no longer looks at, and its MIN_EXPECTED_VALUES_DOCS floor would still be met by the surviving tree alone.",
+      "migrateTo": "drop `infra/k8s/bootstrap` from BOOTSTRAP_DIRS in the deletion commit, and re-check MIN_EXPECTED_VALUES_DOCS against the surviving count so the floor still convicts a collapsed scan. No baseline entry names an infra/ path today -- all five are full-ai-cluster -- so committed-chart-credentials.baseline.json does not move with it."
+    },
+    {
       "path": "src/Core.TypeScript/cluster/manual-sync-policy.ts",
       "disposition": "prose",
       "note": "Two DOC-COMMENT references only, no import and no path construction: it points at infra/k8s/tests/validate-applications.ts as the OTHER consumer of this same manual-sync convention, and at FULL-AI-CLUSTER-FAILURE-BASELINE.md for the failure count. Both files exist at those paths today. The pointer is the POINT -- it is what tells the next reader that the render validator must adopt this module rather than grow a parallel convention, which is the drift this repo keeps catching. Migration target: repoint both mentions when the render validator moves out of infra/.",

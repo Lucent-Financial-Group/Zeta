@@ -449,6 +449,37 @@ export const CROSS_VERIFY_AUDITS: readonly CrossVerifyAudit[] = [
   // acknowledged with a reason and a lift condition rather than bumped blind, because a
   // first-boot chart bump is a real cluster change per chart. The key carries BOTH
   // versions, so paying the debt makes the entry stale and the audit says so.
+  // NO CHART'S VALUES CARRY A SECRET AS A LITERAL. `audit-existing-secret-is-minted.ts`
+  // guards the REFERENCE side -- a chart naming an `existingSecret` nothing mints. Nothing
+  // guarded the other side: a chart whose values carry the secret ITSELF, as text, in a
+  // PUBLIC repository. That is the harder failure, because the manifest looks complete and
+  // every other check passes.
+  //
+  // First scan of the whole surface -- every Application `valuesObject` and every bootstrap
+  // `valuesContent` -- found FIVE literals, and all five are the SAME credential (seaweedfs
+  // declares the S3 identity; loki and mimir x3 present it back). So this is a floor at ZERO
+  // once 081M1S6Z5S3087G0R000GEPSS2 lands, and until then it closes the class against NEW
+  // literals rather than waiting for the migration. It REFUSES below 20 values documents:
+  // on a credential check, a false clean is the most expensive false clean in the tree.
+  //
+  // It never prints a value. A check that reports a committed secret by quoting it has
+  // copied it into every CI log that runs the check.
+  {
+    id: "committed-chart-credentials",
+    title: "No chart's values carry a secret as a literal",
+    command: "bun src/Core.TypeScript/cluster/committed-chart-credentials.ts",
+  },
+
+  // The falsifiers. Weighted toward the safe/unsafe boundary -- an identifier must NOT be
+  // flagged and the three shapes the fix produces must pass, or the correct fix becomes
+  // inexpressible -- plus the stale-key case, and one asserting no acknowledgement quotes
+  // the credential it apologises for.
+  {
+    id: "committed-chart-credentials-tests",
+    title: "committed-chart-credentials falsifiers (identifier vs secret, stale keys, no leak)",
+    command: "bun test src/Core.TypeScript/cluster/committed-chart-credentials.test.ts",
+  },
+
   {
     id: "bootstrap-application-pin-parity",
     title: "A chart installed at first boot AND by an Application is pinned once",
