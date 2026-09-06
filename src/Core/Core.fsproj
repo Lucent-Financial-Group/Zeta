@@ -558,6 +558,7 @@
     <Compile Include="IdentityDLA.fs" />
     <Compile Include="ContextualGridBenchmark.fs" />
     <Compile Include="ContextualGridResultReceipt.fs" />
+    <Compile Include="MiniGridEmpty5x5Adapter.fs" />
 
   </ItemGroup>
 
