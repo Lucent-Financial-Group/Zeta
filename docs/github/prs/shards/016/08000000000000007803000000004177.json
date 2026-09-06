@@ -1,0 +1,12 @@
+{
+  "pr_number": 16759,
+  "archive_path": "docs/history/pr-reviews/PR-16759-bug-081m1tpe7jp-headscale-is-outofsync-progressing-and-nothing-can-say-why.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-06T06:49:00.457Z",
+  "schema_version": "v1",
+  "commit_sha": "f654897e48270fd33e185d2e2bdb35a1d3043dd7",
+  "title": "bug(081M1TPE7JP): headscale is OutOfSync/Progressing, and nothing can say why",
+  "state": "MERGED",
+  "merged_at": "2026-09-06T06:48:17Z",
+  "head_ref": "shadow/headscale-outofsync-observation"
+}

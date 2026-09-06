@@ -1,0 +1,12 @@
+{
+  "pr_number": 16757,
+  "archive_path": "docs/history/pr-reviews/PR-16757-docs-081m1fg1rcw-answer-the-open-question-and-separate-condition-from-outcome.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-06T06:41:18.729Z",
+  "schema_version": "v1",
+  "commit_sha": "8701d1d4358cc25ef654a8fb4cdabb3d4ec5a271",
+  "title": "docs(081M1FG1RCW): answer the open question, and separate condition from outcome",
+  "state": "MERGED",
+  "merged_at": "2026-09-06T06:40:42Z",
+  "head_ref": "shadow/seaweedfs-auth-open-questions"
+}
