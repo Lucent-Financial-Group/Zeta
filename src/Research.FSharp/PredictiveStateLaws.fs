@@ -21,13 +21,14 @@ module PredictiveStateLaws =
 
     let private losses maxLength model =
         let rows = ResizeArray<LossRow>()
+        let mutable failure = None
         for predictor, fixedOne in [ "known-model", None; "bernoulli-half", Some 0.5; "bernoulli-third", Some(1.0 / 3.0) ] do
             let mutable chainH, chainC, chainKl = 0.0, 0.0, 0.0
             for length in 1 .. maxLength do
                 for history in words 2 (length - 1) do
                     match PredictiveState.filter model history with
                     | Error PredictiveState.ImpossibleObservation -> ()
-                    | Error _ -> () // Shapes are bounded by this private enumeration.
+                    | Error reason -> failure <- Some reason
                     | Ok(belief, (n, d)) ->
                         let mass = PredictiveState.ratio n d
                         let p = PredictiveState.probabilities model belief
@@ -49,11 +50,12 @@ module PredictiveStateLaws =
                         kl <- kl + p * Math.Log2(p / q)
                 rows.Add { Length = length; Predictor = predictor; Entropy = h; CrossEntropy = c; Kl = kl
                            ChainEntropy = chainH; ChainCrossEntropy = chainC; ChainKl = chainKl; ProbabilityMass = mass }
-        rows.ToArray()
+        match failure with Some reason -> Error reason | None -> Ok(rows.ToArray())
 
     let run maxLength model =
         if maxLength < 1 || maxLength > 12 || PredictiveState.alphabet model <> 2 then Error(PredictiveState.InvalidInput "loss enumeration requires binary models and length 1 to 12")
         else
             PredictiveState.closure 128 4096 model |> Result.bind (fun closure ->
-                PredictiveState.entropyCurve 64 closure |> Result.map (fun curve ->
-                    { Model = PredictiveState.name model; Losses = losses maxLength model; Closure = closure; EntropyCurve = curve }))
+                PredictiveState.entropyCurve 64 closure |> Result.bind (fun curve ->
+                    losses maxLength model |> Result.map (fun rows ->
+                        { Model = PredictiveState.name model; Losses = rows; Closure = closure; EntropyCurve = curve })))

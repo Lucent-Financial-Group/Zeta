@@ -108,3 +108,22 @@ compare 630 reported quantities. They validate the stored models' measurements;
 they do not retrain the entire sweep during CI. The separately
 registered [experiment](../../docs/research/2026-09-06-mess3-learned-belief-experiment.md)
 owns the training protocol and its measured outcomes.
+
+## Predictive-state batch
+
+The follow-up [protocol](../../docs/research/2026-09-06-predictive-state-batch-protocol.md)
+and [report](../../docs/research/2026-09-06-predictive-state-batch-results.md)
+cover binary RRXOR learning, matched-history interventions, exact entropy
+identities, generalized spectral powers, and inference microbenchmarks.
+
+```sh
+uv run --project src/Interp.Python python -m zeta_interp.predictive_reference
+uv run --project src/Interp.Python python -m zeta_interp.rrxor_replay
+uv run --project src/Interp.Python python -m zeta_interp.inference_replay
+```
+
+The isolated lane now collects 62 tests, including the original 27. SymPy
+1.14.0 checks rational Jordan decompositions independently; it remains outside
+the database runtime. Benchmark replay verifies all 190 measured calls-batches
+and their consumed outputs, not equality of hardware timing. A zero raw
+peak-working-set counter is reported as unavailable, never zero memory use.

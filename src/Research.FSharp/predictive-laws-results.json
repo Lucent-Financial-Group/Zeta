@@ -1,0 +1,3245 @@
+{
+  "Complete": true,
+  "Models": [
+    {
+      "Model": "biased-coin",
+      "Losses": [
+        {
+          "Length": 1,
+          "Predictor": "known-model",
+          "Entropy": 0.8112781244591328,
+          "CrossEntropy": 0.8112781244591328,
+          "Kl": 0,
+          "ChainEntropy": 0.8112781244591328,
+          "ChainCrossEntropy": 0.8112781244591328,
+          "ChainKl": 0,
+          "ProbabilityMass": 1
+        },
+        {
+          "Length": 2,
+          "Predictor": "known-model",
+          "Entropy": 1.6225562489182659,
+          "CrossEntropy": 1.6225562489182659,
+          "Kl": 0,
+          "ChainEntropy": 1.6225562489182657,
+          "ChainCrossEntropy": 1.6225562489182657,
+          "ChainKl": 0,
+          "ProbabilityMass": 1
+        },
+        {
+          "Length": 3,
+          "Predictor": "known-model",
+          "Entropy": 2.4338343733773993,
+          "CrossEntropy": 2.4338343733773993,
+          "Kl": 0,
+          "ChainEntropy": 2.4338343733773993,
+          "ChainCrossEntropy": 2.4338343733773993,
+          "ChainKl": 0,
+          "ProbabilityMass": 1
+        },
+        {
+          "Length": 4,
+          "Predictor": "known-model",
+          "Entropy": 3.2451124978365313,
+          "CrossEntropy": 3.2451124978365313,
+          "Kl": 0,
+          "ChainEntropy": 3.2451124978365327,
+          "ChainCrossEntropy": 3.2451124978365327,
+          "ChainKl": 0,
+          "ProbabilityMass": 1
+        },
+        {
+          "Length": 5,
+          "Predictor": "known-model",
+          "Entropy": 4.056390622295663,
+          "CrossEntropy": 4.056390622295663,
+          "Kl": 0,
+          "ChainEntropy": 4.056390622295664,
+          "ChainCrossEntropy": 4.056390622295664,
+          "ChainKl": 0,
+          "ProbabilityMass": 1
+        },
+        {
+          "Length": 6,
+          "Predictor": "known-model",
+          "Entropy": 4.867668746754796,
+          "CrossEntropy": 4.867668746754796,
+          "Kl": 0,
+          "ChainEntropy": 4.867668746754793,
+          "ChainCrossEntropy": 4.867668746754793,
+          "ChainKl": 0,
+          "ProbabilityMass": 1
+        },
+        {
+          "Length": 7,
+          "Predictor": "known-model",
+          "Entropy": 5.678946871213931,
+          "CrossEntropy": 5.678946871213931,
+          "Kl": 0,
+          "ChainEntropy": 5.678946871213922,
+          "ChainCrossEntropy": 5.678946871213922,
+          "ChainKl": 0,
+          "ProbabilityMass": 1
+        },
+        {
+          "Length": 8,
+          "Predictor": "known-model",
+          "Entropy": 6.4902249956730405,
+          "CrossEntropy": 6.4902249956730405,
+          "Kl": 0,
+          "ChainEntropy": 6.490224995673051,
+          "ChainCrossEntropy": 6.490224995673051,
+          "ChainKl": 0,
+          "ProbabilityMass": 1
+        },
+        {
+          "Length": 9,
+          "Predictor": "known-model",
+          "Entropy": 7.301503120132167,
+          "CrossEntropy": 7.301503120132167,
+          "Kl": 0,
+          "ChainEntropy": 7.30150312013218,
+          "ChainCrossEntropy": 7.30150312013218,
+          "ChainKl": 0,
+          "ProbabilityMass": 1
+        },
+        {
+          "Length": 10,
+          "Predictor": "known-model",
+          "Entropy": 8.112781244591313,
+          "CrossEntropy": 8.112781244591313,
+          "Kl": 0,
+          "ChainEntropy": 8.11278124459125,
+          "ChainCrossEntropy": 8.11278124459125,
+          "ChainKl": 0,
+          "ProbabilityMass": 1
+        },
+        {
+          "Length": 11,
+          "Predictor": "known-model",
+          "Entropy": 8.924059369050198,
+          "CrossEntropy": 8.924059369050198,
+          "Kl": 0,
+          "ChainEntropy": 8.924059369050504,
+          "ChainCrossEntropy": 8.924059369050504,
+          "ChainKl": 0,
+          "ProbabilityMass": 1
+        },
+        {
+          "Length": 12,
+          "Predictor": "known-model",
+          "Entropy": 9.735337493509762,
+          "CrossEntropy": 9.735337493509762,
+          "Kl": 0,
+          "ChainEntropy": 9.735337493509757,
+          "ChainCrossEntropy": 9.735337493509757,
+          "ChainKl": 0,
+          "ProbabilityMass": 1
+        },
+        {
+          "Length": 1,
+          "Predictor": "bernoulli-half",
+          "Entropy": 0.8112781244591328,
+          "CrossEntropy": 1,
+          "Kl": 0.18872187554086717,
+          "ChainEntropy": 0.8112781244591328,
+          "ChainCrossEntropy": 1,
+          "ChainKl": 0.18872187554086717,
+          "ProbabilityMass": 1
+        },
+        {
+          "Length": 2,
+          "Predictor": "bernoulli-half",
+          "Entropy": 1.6225562489182659,
+          "CrossEntropy": 2,
+          "Kl": 0.3774437510817342,
+          "ChainEntropy": 1.6225562489182657,
+          "ChainCrossEntropy": 2,
+          "ChainKl": 0.3774437510817342,
+          "ProbabilityMass": 1
+        },
+        {
+          "Length": 3,
+          "Predictor": "bernoulli-half",
+          "Entropy": 2.4338343733773993,
+          "CrossEntropy": 3,
+          "Kl": 0.5661656266226015,
+          "ChainEntropy": 2.4338343733773993,
+          "ChainCrossEntropy": 3,
+          "ChainKl": 0.5661656266226013,
+          "ProbabilityMass": 1
+        },
+        {
+          "Length": 4,
+          "Predictor": "bernoulli-half",
+          "Entropy": 3.2451124978365313,
+          "CrossEntropy": 4,
+          "Kl": 0.7548875021634686,
+          "ChainEntropy": 3.2451124978365327,
+          "ChainCrossEntropy": 4,
+          "ChainKl": 0.7548875021634682,
+          "ProbabilityMass": 1
+        },
+        {
+          "Length": 5,
+          "Predictor": "bernoulli-half",
+          "Entropy": 4.056390622295663,
+          "CrossEntropy": 5,
+          "Kl": 0.943609377704336,
+          "ChainEntropy": 4.056390622295664,
+          "ChainCrossEntropy": 5,
+          "ChainKl": 0.9436093777043352,
+          "ProbabilityMass": 1
+        },
+        {
+          "Length": 6,
+          "Predictor": "bernoulli-half",
+          "Entropy": 4.867668746754796,
+          "CrossEntropy": 6,
+          "Kl": 1.1323312532452048,
+          "ChainEntropy": 4.867668746754793,
+          "ChainCrossEntropy": 6,
+          "ChainKl": 1.1323312532452043,
+          "ProbabilityMass": 1
+        },
+        {
+          "Length": 7,
+          "Predictor": "bernoulli-half",
+          "Entropy": 5.678946871213931,
+          "CrossEntropy": 7,
+          "Kl": 1.3210531287860732,
+          "ChainEntropy": 5.678946871213922,
+          "ChainCrossEntropy": 7,
+          "ChainKl": 1.3210531287860723,
+          "ProbabilityMass": 1
+        },
+        {
+          "Length": 8,
+          "Predictor": "bernoulli-half",
+          "Entropy": 6.4902249956730405,
+          "CrossEntropy": 8,
+          "Kl": 1.5097750043269393,
+          "ChainEntropy": 6.490224995673051,
+          "ChainCrossEntropy": 8,
+          "ChainKl": 1.5097750043269402,
+          "ProbabilityMass": 1
+        },
+        {
+          "Length": 9,
+          "Predictor": "bernoulli-half",
+          "Entropy": 7.301503120132167,
+          "CrossEntropy": 9,
+          "Kl": 1.6984968798678186,
+          "ChainEntropy": 7.30150312013218,
+          "ChainCrossEntropy": 9,
+          "ChainKl": 1.6984968798678113,
+          "ProbabilityMass": 1
+        },
+        {
+          "Length": 10,
+          "Predictor": "bernoulli-half",
+          "Entropy": 8.112781244591313,
+          "CrossEntropy": 10,
+          "Kl": 1.887218755408686,
+          "ChainEntropy": 8.11278124459125,
+          "ChainCrossEntropy": 10,
+          "ChainKl": 1.8872187554086717,
+          "ProbabilityMass": 1
+        },
+        {
+          "Length": 11,
+          "Predictor": "bernoulli-half",
+          "Entropy": 8.924059369050198,
+          "CrossEntropy": 11,
+          "Kl": 2.0759406309494928,
+          "ChainEntropy": 8.924059369050504,
+          "ChainCrossEntropy": 11,
+          "ChainKl": 2.0759406309495416,
+          "ProbabilityMass": 1
+        },
+        {
+          "Length": 12,
+          "Predictor": "bernoulli-half",
+          "Entropy": 9.735337493509762,
+          "CrossEntropy": 12,
+          "Kl": 2.2646625064906925,
+          "ChainEntropy": 9.735337493509757,
+          "ChainCrossEntropy": 12,
+          "ChainKl": 2.2646625064903176,
+          "ProbabilityMass": 1
+        },
+        {
+          "Length": 1,
+          "Predictor": "bernoulli-third",
+          "Entropy": 0.8112781244591328,
+          "CrossEntropy": 0.8349625007211561,
+          "Kl": 0.023684376262023105,
+          "ChainEntropy": 0.8112781244591328,
+          "ChainCrossEntropy": 0.8349625007211561,
+          "ChainKl": 0.023684376262023105,
+          "ProbabilityMass": 1
+        },
+        {
+          "Length": 2,
+          "Predictor": "bernoulli-third",
+          "Entropy": 1.6225562489182659,
+          "CrossEntropy": 1.6699250014423122,
+          "Kl": 0.04736875252404642,
+          "ChainEntropy": 1.6225562489182657,
+          "ChainCrossEntropy": 1.6699250014423124,
+          "ChainKl": 0.047368752524046216,
+          "ProbabilityMass": 1
+        },
+        {
+          "Length": 3,
+          "Predictor": "bernoulli-third",
+          "Entropy": 2.4338343733773993,
+          "CrossEntropy": 2.504887502163468,
+          "Kl": 0.07105312878606972,
+          "ChainEntropy": 2.4338343733773993,
+          "ChainCrossEntropy": 2.504887502163468,
+          "ChainKl": 0.07105312878606931,
+          "ProbabilityMass": 1
+        },
+        {
+          "Length": 4,
+          "Predictor": "bernoulli-third",
+          "Entropy": 3.2451124978365313,
+          "CrossEntropy": 3.3398500028846234,
+          "Kl": 0.09473750504809292,
+          "ChainEntropy": 3.2451124978365327,
+          "ChainCrossEntropy": 3.339850002884623,
+          "ChainKl": 0.09473750504809245,
+          "ProbabilityMass": 1
+        },
+        {
+          "Length": 5,
+          "Predictor": "bernoulli-third",
+          "Entropy": 4.056390622295663,
+          "CrossEntropy": 4.17481250360578,
+          "Kl": 0.11842188131011602,
+          "ChainEntropy": 4.056390622295664,
+          "ChainCrossEntropy": 4.174812503605784,
+          "ChainKl": 0.11842188131011559,
+          "ProbabilityMass": 1
+        },
+        {
+          "Length": 6,
+          "Predictor": "bernoulli-third",
+          "Entropy": 4.867668746754796,
+          "CrossEntropy": 5.009775004326936,
+          "Kl": 0.1421062575721396,
+          "ChainEntropy": 4.867668746754793,
+          "ChainCrossEntropy": 5.00977500432695,
+          "ChainKl": 0.14210625757213874,
+          "ProbabilityMass": 1
+        },
+        {
+          "Length": 7,
+          "Predictor": "bernoulli-third",
+          "Entropy": 5.678946871213931,
+          "CrossEntropy": 5.844737505048117,
+          "Kl": 0.16579063383416298,
+          "ChainEntropy": 5.678946871213922,
+          "ChainCrossEntropy": 5.844737505048116,
+          "ChainKl": 0.16579063383416107,
+          "ProbabilityMass": 1
+        },
+        {
+          "Length": 8,
+          "Predictor": "bernoulli-third",
+          "Entropy": 6.4902249956730405,
+          "CrossEntropy": 6.679700005769259,
+          "Kl": 0.18947501009618695,
+          "ChainEntropy": 6.490224995673051,
+          "ChainCrossEntropy": 6.679700005769269,
+          "ChainKl": 0.18947501009618453,
+          "ProbabilityMass": 1
+        },
+        {
+          "Length": 9,
+          "Predictor": "bernoulli-third",
+          "Entropy": 7.301503120132167,
+          "CrossEntropy": 7.514662506490353,
+          "Kl": 0.21315938635820922,
+          "ChainEntropy": 7.30150312013218,
+          "ChainCrossEntropy": 7.514662506490465,
+          "ChainKl": 0.21315938635820778,
+          "ProbabilityMass": 1
+        },
+        {
+          "Length": 10,
+          "Predictor": "bernoulli-third",
+          "Entropy": 8.112781244591313,
+          "CrossEntropy": 8.34962500721157,
+          "Kl": 0.23684376262022364,
+          "ChainEntropy": 8.11278124459125,
+          "ChainCrossEntropy": 8.349625007211642,
+          "ChainKl": 0.23684376262022644,
+          "ProbabilityMass": 1
+        },
+        {
+          "Length": 11,
+          "Predictor": "bernoulli-third",
+          "Entropy": 8.924059369050198,
+          "CrossEntropy": 9.184587507932273,
+          "Kl": 0.26052813888226783,
+          "ChainEntropy": 8.924059369050504,
+          "ChainCrossEntropy": 9.18458750793262,
+          "ChainKl": 0.26052813888224774,
+          "ProbabilityMass": 1
+        },
+        {
+          "Length": 12,
+          "Predictor": "bernoulli-third",
+          "Entropy": 9.735337493509762,
+          "CrossEntropy": 10.019550008653848,
+          "Kl": 0.28421251514433626,
+          "ChainEntropy": 9.735337493509757,
+          "ChainCrossEntropy": 10.019550008653594,
+          "ChainKl": 0.28421251514429113,
+          "ProbabilityMass": 1
+        }
+      ],
+      "Closure": {
+        "Beliefs": [["1"]],
+        "Edges": [
+          {
+            "Source": 0,
+            "Symbol": 0,
+            "Destination": 0,
+            "Probability": {
+              "Numerator": "3",
+              "Denominator": "4"
+            }
+          },
+          {
+            "Source": 0,
+            "Symbol": 1,
+            "Destination": 0,
+            "Probability": {
+              "Numerator": "1",
+              "Denominator": "4"
+            }
+          }
+        ],
+        "Matrix": [[1]],
+        "Entropy": [0.8112781244591328]
+      },
+      "EntropyCurve": [
+        0.8112781244591328, 0.8112781244591328, 0.8112781244591328, 0.8112781244591328, 0.8112781244591328,
+        0.8112781244591328, 0.8112781244591328, 0.8112781244591328, 0.8112781244591328, 0.8112781244591328,
+        0.8112781244591328, 0.8112781244591328, 0.8112781244591328, 0.8112781244591328, 0.8112781244591328,
+        0.8112781244591328, 0.8112781244591328, 0.8112781244591328, 0.8112781244591328, 0.8112781244591328,
+        0.8112781244591328, 0.8112781244591328, 0.8112781244591328, 0.8112781244591328, 0.8112781244591328,
+        0.8112781244591328, 0.8112781244591328, 0.8112781244591328, 0.8112781244591328, 0.8112781244591328,
+        0.8112781244591328, 0.8112781244591328, 0.8112781244591328, 0.8112781244591328, 0.8112781244591328,
+        0.8112781244591328, 0.8112781244591328, 0.8112781244591328, 0.8112781244591328, 0.8112781244591328,
+        0.8112781244591328, 0.8112781244591328, 0.8112781244591328, 0.8112781244591328, 0.8112781244591328,
+        0.8112781244591328, 0.8112781244591328, 0.8112781244591328, 0.8112781244591328, 0.8112781244591328,
+        0.8112781244591328, 0.8112781244591328, 0.8112781244591328, 0.8112781244591328, 0.8112781244591328,
+        0.8112781244591328, 0.8112781244591328, 0.8112781244591328, 0.8112781244591328, 0.8112781244591328,
+        0.8112781244591328, 0.8112781244591328, 0.8112781244591328, 0.8112781244591328
+      ]
+    },
+    {
+      "Model": "golden-mean",
+      "Losses": [
+        {
+          "Length": 1,
+          "Predictor": "known-model",
+          "Entropy": 0.9182958340544896,
+          "CrossEntropy": 0.9182958340544896,
+          "Kl": 0,
+          "ChainEntropy": 0.9182958340544896,
+          "ChainCrossEntropy": 0.9182958340544896,
+          "ChainKl": 0,
+          "ProbabilityMass": 1
+        },
+        {
+          "Length": 2,
+          "Predictor": "known-model",
+          "Entropy": 1.584962500721156,
+          "CrossEntropy": 1.584962500721156,
+          "Kl": 0,
+          "ChainEntropy": 1.584962500721156,
+          "ChainCrossEntropy": 1.584962500721156,
+          "ChainKl": 0,
+          "ProbabilityMass": 1
+        },
+        {
+          "Length": 3,
+          "Predictor": "known-model",
+          "Entropy": 2.2516291673878226,
+          "CrossEntropy": 2.2516291673878226,
+          "Kl": 0,
+          "ChainEntropy": 2.2516291673878226,
+          "ChainCrossEntropy": 2.2516291673878226,
+          "ChainKl": 0,
+          "ProbabilityMass": 0.9999999999999999
+        },
+        {
+          "Length": 4,
+          "Predictor": "known-model",
+          "Entropy": 2.918295834054489,
+          "CrossEntropy": 2.918295834054489,
+          "Kl": 0,
+          "ChainEntropy": 2.9182958340544896,
+          "ChainCrossEntropy": 2.9182958340544896,
+          "ChainKl": 0,
+          "ProbabilityMass": 1
+        },
+        {
+          "Length": 5,
+          "Predictor": "known-model",
+          "Entropy": 3.584962500721156,
+          "CrossEntropy": 3.584962500721156,
+          "Kl": 0,
+          "ChainEntropy": 3.5849625007211565,
+          "ChainCrossEntropy": 3.5849625007211565,
+          "ChainKl": 0,
+          "ProbabilityMass": 1.0000000000000002
+        },
+        {
+          "Length": 6,
+          "Predictor": "known-model",
+          "Entropy": 4.251629167387824,
+          "CrossEntropy": 4.251629167387824,
+          "Kl": 0,
+          "ChainEntropy": 4.251629167387824,
+          "ChainCrossEntropy": 4.251629167387824,
+          "ChainKl": 0,
+          "ProbabilityMass": 0.9999999999999998
+        },
+        {
+          "Length": 7,
+          "Predictor": "known-model",
+          "Entropy": 4.918295834054492,
+          "CrossEntropy": 4.918295834054492,
+          "Kl": 0,
+          "ChainEntropy": 4.91829583405449,
+          "ChainCrossEntropy": 4.91829583405449,
+          "ChainKl": 0,
+          "ProbabilityMass": 1
+        },
+        {
+          "Length": 8,
+          "Predictor": "known-model",
+          "Entropy": 5.5849625007211605,
+          "CrossEntropy": 5.5849625007211605,
+          "Kl": 0,
+          "ChainEntropy": 5.584962500721156,
+          "ChainCrossEntropy": 5.584962500721156,
+          "ChainKl": 0,
+          "ProbabilityMass": 1.0000000000000002
+        },
+        {
+          "Length": 9,
+          "Predictor": "known-model",
+          "Entropy": 6.251629167387829,
+          "CrossEntropy": 6.251629167387829,
+          "Kl": 0,
+          "ChainEntropy": 6.251629167387824,
+          "ChainCrossEntropy": 6.251629167387824,
+          "ChainKl": 0,
+          "ProbabilityMass": 0.9999999999999998
+        },
+        {
+          "Length": 10,
+          "Predictor": "known-model",
+          "Entropy": 6.918295834054502,
+          "CrossEntropy": 6.918295834054502,
+          "Kl": 0,
+          "ChainEntropy": 6.91829583405449,
+          "ChainCrossEntropy": 6.91829583405449,
+          "ChainKl": 0,
+          "ProbabilityMass": 1
+        },
+        {
+          "Length": 11,
+          "Predictor": "known-model",
+          "Entropy": 7.584962500721178,
+          "CrossEntropy": 7.584962500721178,
+          "Kl": 0,
+          "ChainEntropy": 7.584962500721156,
+          "ChainCrossEntropy": 7.584962500721156,
+          "ChainKl": 0,
+          "ProbabilityMass": 1.0000000000000002
+        },
+        {
+          "Length": 12,
+          "Predictor": "known-model",
+          "Entropy": 8.251629167387863,
+          "CrossEntropy": 8.251629167387863,
+          "Kl": 0,
+          "ChainEntropy": 8.251629167387824,
+          "ChainCrossEntropy": 8.251629167387824,
+          "ChainKl": 0,
+          "ProbabilityMass": 0.9999999999999999
+        },
+        {
+          "Length": 1,
+          "Predictor": "bernoulli-half",
+          "Entropy": 0.9182958340544896,
+          "CrossEntropy": 1,
+          "Kl": 0.08170416594551039,
+          "ChainEntropy": 0.9182958340544896,
+          "ChainCrossEntropy": 1,
+          "ChainKl": 0.08170416594551039,
+          "ProbabilityMass": 1
+        },
+        {
+          "Length": 2,
+          "Predictor": "bernoulli-half",
+          "Entropy": 1.584962500721156,
+          "CrossEntropy": 2,
+          "Kl": 0.4150374992788437,
+          "ChainEntropy": 1.584962500721156,
+          "ChainCrossEntropy": 1.9999999999999998,
+          "ChainKl": 0.4150374992788437,
+          "ProbabilityMass": 1
+        },
+        {
+          "Length": 3,
+          "Predictor": "bernoulli-half",
+          "Entropy": 2.2516291673878226,
+          "CrossEntropy": 3,
+          "Kl": 0.748370832612177,
+          "ChainEntropy": 2.2516291673878226,
+          "ChainCrossEntropy": 2.9999999999999996,
+          "ChainKl": 0.748370832612177,
+          "ProbabilityMass": 0.9999999999999999
+        },
+        {
+          "Length": 4,
+          "Predictor": "bernoulli-half",
+          "Entropy": 2.918295834054489,
+          "CrossEntropy": 4,
+          "Kl": 1.0817041659455102,
+          "ChainEntropy": 2.9182958340544896,
+          "ChainCrossEntropy": 3.9999999999999996,
+          "ChainKl": 1.0817041659455102,
+          "ProbabilityMass": 1
+        },
+        {
+          "Length": 5,
+          "Predictor": "bernoulli-half",
+          "Entropy": 3.584962500721156,
+          "CrossEntropy": 4.999999999999999,
+          "Kl": 1.4150374992788441,
+          "ChainEntropy": 3.5849625007211565,
+          "ChainCrossEntropy": 4.999999999999999,
+          "ChainKl": 1.4150374992788435,
+          "ProbabilityMass": 1.0000000000000002
+        },
+        {
+          "Length": 6,
+          "Predictor": "bernoulli-half",
+          "Entropy": 4.251629167387824,
+          "CrossEntropy": 6,
+          "Kl": 1.7483708326121767,
+          "ChainEntropy": 4.251629167387824,
+          "ChainCrossEntropy": 6,
+          "ChainKl": 1.7483708326121767,
+          "ProbabilityMass": 0.9999999999999998
+        },
+        {
+          "Length": 7,
+          "Predictor": "bernoulli-half",
+          "Entropy": 4.918295834054492,
+          "CrossEntropy": 6.999999999999998,
+          "Kl": 2.0817041659455104,
+          "ChainEntropy": 4.91829583405449,
+          "ChainCrossEntropy": 7,
+          "ChainKl": 2.08170416594551,
+          "ProbabilityMass": 1
+        },
+        {
+          "Length": 8,
+          "Predictor": "bernoulli-half",
+          "Entropy": 5.5849625007211605,
+          "CrossEntropy": 8.000000000000002,
+          "Kl": 2.4150374992788435,
+          "ChainEntropy": 5.584962500721156,
+          "ChainCrossEntropy": 7.999999999999999,
+          "ChainKl": 2.4150374992788435,
+          "ProbabilityMass": 1.0000000000000002
+        },
+        {
+          "Length": 9,
+          "Predictor": "bernoulli-half",
+          "Entropy": 6.251629167387829,
+          "CrossEntropy": 9,
+          "Kl": 2.7483708326121743,
+          "ChainEntropy": 6.251629167387824,
+          "ChainCrossEntropy": 8.999999999999996,
+          "ChainKl": 2.748370832612177,
+          "ProbabilityMass": 0.9999999999999998
+        },
+        {
+          "Length": 10,
+          "Predictor": "bernoulli-half",
+          "Entropy": 6.918295834054502,
+          "CrossEntropy": 10.000000000000005,
+          "Kl": 3.081704165945505,
+          "ChainEntropy": 6.91829583405449,
+          "ChainCrossEntropy": 9.999999999999996,
+          "ChainKl": 3.08170416594551,
+          "ProbabilityMass": 1
+        },
+        {
+          "Length": 11,
+          "Predictor": "bernoulli-half",
+          "Entropy": 7.584962500721178,
+          "CrossEntropy": 11,
+          "Kl": 3.4150374992788572,
+          "ChainEntropy": 7.584962500721156,
+          "ChainCrossEntropy": 10.999999999999998,
+          "ChainKl": 3.4150374992788435,
+          "ProbabilityMass": 1.0000000000000002
+        },
+        {
+          "Length": 12,
+          "Predictor": "bernoulli-half",
+          "Entropy": 8.251629167387863,
+          "CrossEntropy": 12,
+          "Kl": 3.748370832612189,
+          "ChainEntropy": 8.251629167387824,
+          "ChainCrossEntropy": 11.999999999999996,
+          "ChainKl": 3.748370832612177,
+          "ProbabilityMass": 0.9999999999999999
+        },
+        {
+          "Length": 1,
+          "Predictor": "bernoulli-third",
+          "Entropy": 0.9182958340544896,
+          "CrossEntropy": 1.2516291673878228,
+          "Kl": 0.33333333333333326,
+          "ChainEntropy": 0.9182958340544896,
+          "ChainCrossEntropy": 1.2516291673878228,
+          "ChainKl": 0.33333333333333326,
+          "ProbabilityMass": 1
+        },
+        {
+          "Length": 2,
+          "Predictor": "bernoulli-third",
+          "Entropy": 1.584962500721156,
+          "CrossEntropy": 2.503258334775645,
+          "Kl": 0.9182958340544892,
+          "ChainEntropy": 1.584962500721156,
+          "ChainCrossEntropy": 2.5032583347756456,
+          "ChainKl": 0.9182958340544892,
+          "ProbabilityMass": 1
+        },
+        {
+          "Length": 3,
+          "Predictor": "bernoulli-third",
+          "Entropy": 2.2516291673878226,
+          "CrossEntropy": 3.7548875021634682,
+          "Kl": 1.5032583347756452,
+          "ChainEntropy": 2.2516291673878226,
+          "ChainCrossEntropy": 3.7548875021634682,
+          "ChainKl": 1.5032583347756452,
+          "ProbabilityMass": 0.9999999999999999
+        },
+        {
+          "Length": 4,
+          "Predictor": "bernoulli-third",
+          "Entropy": 2.918295834054489,
+          "CrossEntropy": 5.00651666955129,
+          "Kl": 2.0882208354968017,
+          "ChainEntropy": 2.9182958340544896,
+          "ChainCrossEntropy": 5.006516669551293,
+          "ChainKl": 2.088220835496801,
+          "ProbabilityMass": 1
+        },
+        {
+          "Length": 5,
+          "Predictor": "bernoulli-third",
+          "Entropy": 3.584962500721156,
+          "CrossEntropy": 6.258145836939113,
+          "Kl": 2.673183336217958,
+          "ChainEntropy": 3.5849625007211565,
+          "ChainCrossEntropy": 6.258145836939116,
+          "ChainKl": 2.673183336217957,
+          "ProbabilityMass": 1.0000000000000002
+        },
+        {
+          "Length": 6,
+          "Predictor": "bernoulli-third",
+          "Entropy": 4.251629167387824,
+          "CrossEntropy": 7.5097750043269365,
+          "Kl": 3.2581458369391134,
+          "ChainEntropy": 4.251629167387824,
+          "ChainCrossEntropy": 7.509775004326938,
+          "ChainKl": 3.2581458369391143,
+          "ProbabilityMass": 0.9999999999999998
+        },
+        {
+          "Length": 7,
+          "Predictor": "bernoulli-third",
+          "Entropy": 4.918295834054492,
+          "CrossEntropy": 8.761404171714764,
+          "Kl": 3.8431083376602695,
+          "ChainEntropy": 4.91829583405449,
+          "ChainCrossEntropy": 8.761404171714762,
+          "ChainKl": 3.843108337660272,
+          "ProbabilityMass": 1
+        },
+        {
+          "Length": 8,
+          "Predictor": "bernoulli-third",
+          "Entropy": 5.5849625007211605,
+          "CrossEntropy": 10.013033339102586,
+          "Kl": 4.428070838381426,
+          "ChainEntropy": 5.584962500721156,
+          "ChainCrossEntropy": 10.013033339102591,
+          "ChainKl": 4.428070838381428,
+          "ProbabilityMass": 1.0000000000000002
+        },
+        {
+          "Length": 9,
+          "Predictor": "bernoulli-third",
+          "Entropy": 6.251629167387829,
+          "CrossEntropy": 11.264662506490406,
+          "Kl": 5.013033339102583,
+          "ChainEntropy": 6.251629167387824,
+          "ChainCrossEntropy": 11.264662506490415,
+          "ChainKl": 5.01303333910258,
+          "ProbabilityMass": 0.9999999999999998
+        },
+        {
+          "Length": 10,
+          "Predictor": "bernoulli-third",
+          "Entropy": 6.918295834054502,
+          "CrossEntropy": 12.516291673878232,
+          "Kl": 5.5979958398237395,
+          "ChainEntropy": 6.91829583405449,
+          "ChainCrossEntropy": 12.516291673878223,
+          "ChainKl": 5.59799583982373,
+          "ProbabilityMass": 1
+        },
+        {
+          "Length": 11,
+          "Predictor": "bernoulli-third",
+          "Entropy": 7.584962500721178,
+          "CrossEntropy": 13.767920841266031,
+          "Kl": 6.182958340544893,
+          "ChainEntropy": 7.584962500721156,
+          "ChainCrossEntropy": 13.767920841266005,
+          "ChainKl": 6.182958340544887,
+          "ProbabilityMass": 1.0000000000000002
+        },
+        {
+          "Length": 12,
+          "Predictor": "bernoulli-third",
+          "Entropy": 8.251629167387863,
+          "CrossEntropy": 15.019550008653809,
+          "Kl": 6.767920841266043,
+          "ChainEntropy": 8.251629167387824,
+          "ChainCrossEntropy": 15.019550008653763,
+          "ChainKl": 6.767920841266058,
+          "ProbabilityMass": 0.9999999999999999
+        }
+      ],
+      "Closure": {
+        "Beliefs": [
+          ["2", "1"],
+          ["0", "1"],
+          ["1", "0"]
+        ],
+        "Edges": [
+          {
+            "Source": 0,
+            "Symbol": 0,
+            "Destination": 1,
+            "Probability": {
+              "Numerator": "1",
+              "Denominator": "3"
+            }
+          },
+          {
+            "Source": 0,
+            "Symbol": 1,
+            "Destination": 2,
+            "Probability": {
+              "Numerator": "2",
+              "Denominator": "3"
+            }
+          },
+          {
+            "Source": 1,
+            "Symbol": 1,
+            "Destination": 2,
+            "Probability": {
+              "Numerator": "1",
+              "Denominator": "1"
+            }
+          },
+          {
+            "Source": 2,
+            "Symbol": 0,
+            "Destination": 1,
+            "Probability": {
+              "Numerator": "1",
+              "Denominator": "2"
+            }
+          },
+          {
+            "Source": 2,
+            "Symbol": 1,
+            "Destination": 2,
+            "Probability": {
+              "Numerator": "1",
+              "Denominator": "2"
+            }
+          }
+        ],
+        "Matrix": [
+          [0, 0.3333333333333333, 0.6666666666666666],
+          [0, 0, 1],
+          [0, 0.5, 0.5]
+        ],
+        "Entropy": [0.9182958340544896, 0, 1]
+      },
+      "EntropyCurve": [
+        0.9182958340544896, 0.6666666666666666, 0.6666666666666666, 0.6666666666666666, 0.6666666666666666,
+        0.6666666666666666, 0.6666666666666666, 0.6666666666666666, 0.6666666666666666, 0.6666666666666666,
+        0.6666666666666666, 0.6666666666666666, 0.6666666666666666, 0.6666666666666666, 0.6666666666666666,
+        0.6666666666666666, 0.6666666666666666, 0.6666666666666666, 0.6666666666666666, 0.6666666666666666,
+        0.6666666666666666, 0.6666666666666666, 0.6666666666666666, 0.6666666666666666, 0.6666666666666666,
+        0.6666666666666666, 0.6666666666666666, 0.6666666666666666, 0.6666666666666666, 0.6666666666666666,
+        0.6666666666666666, 0.6666666666666666, 0.6666666666666666, 0.6666666666666666, 0.6666666666666666,
+        0.6666666666666666, 0.6666666666666666, 0.6666666666666666, 0.6666666666666666, 0.6666666666666666,
+        0.6666666666666666, 0.6666666666666666, 0.6666666666666666, 0.6666666666666666, 0.6666666666666666,
+        0.6666666666666666, 0.6666666666666666, 0.6666666666666666, 0.6666666666666666, 0.6666666666666666,
+        0.6666666666666666, 0.6666666666666666, 0.6666666666666666, 0.6666666666666666, 0.6666666666666666,
+        0.6666666666666666, 0.6666666666666666, 0.6666666666666666, 0.6666666666666666, 0.6666666666666666,
+        0.6666666666666666, 0.6666666666666666, 0.6666666666666666, 0.6666666666666666
+      ]
+    },
+    {
+      "Model": "even",
+      "Losses": [
+        {
+          "Length": 1,
+          "Predictor": "known-model",
+          "Entropy": 0.9182958340544896,
+          "CrossEntropy": 0.9182958340544896,
+          "Kl": 0,
+          "ChainEntropy": 0.9182958340544896,
+          "ChainCrossEntropy": 0.9182958340544896,
+          "ChainKl": 0,
+          "ProbabilityMass": 1
+        },
+        {
+          "Length": 2,
+          "Predictor": "known-model",
+          "Entropy": 1.792481250360578,
+          "CrossEntropy": 1.792481250360578,
+          "Kl": 0,
+          "ChainEntropy": 1.7924812503605783,
+          "ChainCrossEntropy": 1.7924812503605783,
+          "ChainKl": 0,
+          "ProbabilityMass": 1
+        },
+        {
+          "Length": 3,
+          "Predictor": "known-model",
+          "Entropy": 2.584962500721156,
+          "CrossEntropy": 2.584962500721156,
+          "Kl": 0,
+          "ChainEntropy": 2.584962500721156,
+          "ChainCrossEntropy": 2.584962500721156,
+          "ChainKl": 0,
+          "ProbabilityMass": 1
+        },
+        {
+          "Length": 4,
+          "Predictor": "known-model",
+          "Entropy": 3.3553885422075336,
+          "CrossEntropy": 3.3553885422075336,
+          "Kl": 0,
+          "ChainEntropy": 3.3553885422075336,
+          "ChainCrossEntropy": 3.3553885422075336,
+          "ChainKl": 0,
+          "ProbabilityMass": 1
+        },
+        {
+          "Length": 5,
+          "Predictor": "known-model",
+          "Entropy": 4.084962500721156,
+          "CrossEntropy": 4.084962500721156,
+          "Kl": 0,
+          "ChainEntropy": 4.084962500721155,
+          "ChainCrossEntropy": 4.084962500721155,
+          "ChainKl": 0,
+          "ProbabilityMass": 0.9999999999999999
+        },
+        {
+          "Length": 6,
+          "Predictor": "known-model",
+          "Entropy": 4.803508854797678,
+          "CrossEntropy": 4.803508854797678,
+          "Kl": 0,
+          "ChainEntropy": 4.803508854797676,
+          "ChainCrossEntropy": 4.803508854797676,
+          "ChainKl": 0,
+          "ProbabilityMass": 0.9999999999999999
+        },
+        {
+          "Length": 7,
+          "Predictor": "known-model",
+          "Entropy": 5.501629167387826,
+          "CrossEntropy": 5.501629167387826,
+          "Kl": 0,
+          "ChainEntropy": 5.5016291673878195,
+          "ChainCrossEntropy": 5.5016291673878195,
+          "ChainKl": 0,
+          "ProbabilityMass": 1.0000000000000002
+        },
+        {
+          "Length": 8,
+          "Predictor": "known-model",
+          "Entropy": 6.194235677759425,
+          "CrossEntropy": 6.194235677759425,
+          "Kl": 0,
+          "ChainEntropy": 6.194235677759416,
+          "ChainCrossEntropy": 6.194235677759416,
+          "ChainKl": 0,
+          "ProbabilityMass": 0.9999999999999999
+        },
+        {
+          "Length": 9,
+          "Predictor": "known-model",
+          "Entropy": 6.876629167387831,
+          "CrossEntropy": 6.876629167387831,
+          "Kl": 0,
+          "ChainEntropy": 6.876629167387821,
+          "ChainCrossEntropy": 6.876629167387821,
+          "ChainKl": 0,
+          "ProbabilityMass": 0.9999999999999998
+        },
+        {
+          "Length": 10,
+          "Predictor": "known-model",
+          "Entropy": 7.55626575590697,
+          "CrossEntropy": 7.55626575590697,
+          "Kl": 0,
+          "ChainEntropy": 7.55626575590695,
+          "ChainCrossEntropy": 7.55626575590695,
+          "ChainKl": 0,
+          "ProbabilityMass": 1
+        },
+        {
+          "Length": 11,
+          "Predictor": "known-model",
+          "Entropy": 8.23079583405451,
+          "CrossEntropy": 8.23079583405451,
+          "Kl": 0,
+          "ChainEntropy": 8.23079583405449,
+          "ChainCrossEntropy": 8.23079583405449,
+          "ChainKl": 0,
+          "ProbabilityMass": 1
+        },
+        {
+          "Length": 12,
+          "Predictor": "known-model",
+          "Entropy": 8.903947461647396,
+          "CrossEntropy": 8.903947461647396,
+          "Kl": 0,
+          "ChainEntropy": 8.903947461647387,
+          "ChainCrossEntropy": 8.903947461647387,
+          "ChainKl": 0,
+          "ProbabilityMass": 0.9999999999999999
+        },
+        {
+          "Length": 1,
+          "Predictor": "bernoulli-half",
+          "Entropy": 0.9182958340544896,
+          "CrossEntropy": 1,
+          "Kl": 0.08170416594551039,
+          "ChainEntropy": 0.9182958340544896,
+          "ChainCrossEntropy": 1,
+          "ChainKl": 0.08170416594551039,
+          "ProbabilityMass": 1
+        },
+        {
+          "Length": 2,
+          "Predictor": "bernoulli-half",
+          "Entropy": 1.792481250360578,
+          "CrossEntropy": 2,
+          "Kl": 0.20751874963942185,
+          "ChainEntropy": 1.7924812503605783,
+          "ChainCrossEntropy": 2,
+          "ChainKl": 0.20751874963942182,
+          "ProbabilityMass": 1
+        },
+        {
+          "Length": 3,
+          "Predictor": "bernoulli-half",
+          "Entropy": 2.584962500721156,
+          "CrossEntropy": 3,
+          "Kl": 0.4150374992788437,
+          "ChainEntropy": 2.584962500721156,
+          "ChainCrossEntropy": 3.0000000000000004,
+          "ChainKl": 0.4150374992788437,
+          "ProbabilityMass": 1
+        },
+        {
+          "Length": 4,
+          "Predictor": "bernoulli-half",
+          "Entropy": 3.3553885422075336,
+          "CrossEntropy": 4,
+          "Kl": 0.6446114577924661,
+          "ChainEntropy": 3.3553885422075336,
+          "ChainCrossEntropy": 4.000000000000001,
+          "ChainKl": 0.6446114577924661,
+          "ProbabilityMass": 1
+        },
+        {
+          "Length": 5,
+          "Predictor": "bernoulli-half",
+          "Entropy": 4.084962500721156,
+          "CrossEntropy": 5.000000000000001,
+          "Kl": 0.9150374992788437,
+          "ChainEntropy": 4.084962500721155,
+          "ChainCrossEntropy": 5.000000000000003,
+          "ChainKl": 0.9150374992788437,
+          "ProbabilityMass": 0.9999999999999999
+        },
+        {
+          "Length": 6,
+          "Predictor": "bernoulli-half",
+          "Entropy": 4.803508854797678,
+          "CrossEntropy": 6,
+          "Kl": 1.1964911452023217,
+          "ChainEntropy": 4.803508854797676,
+          "ChainCrossEntropy": 6.000000000000003,
+          "ChainKl": 1.1964911452023217,
+          "ProbabilityMass": 0.9999999999999999
+        },
+        {
+          "Length": 7,
+          "Predictor": "bernoulli-half",
+          "Entropy": 5.501629167387826,
+          "CrossEntropy": 6.999999999999997,
+          "Kl": 1.498370832612177,
+          "ChainEntropy": 5.5016291673878195,
+          "ChainCrossEntropy": 7.000000000000001,
+          "ChainKl": 1.498370832612177,
+          "ProbabilityMass": 1.0000000000000002
+        },
+        {
+          "Length": 8,
+          "Predictor": "bernoulli-half",
+          "Entropy": 6.194235677759425,
+          "CrossEntropy": 7.999999999999999,
+          "Kl": 1.8057643222405826,
+          "ChainEntropy": 6.194235677759416,
+          "ChainCrossEntropy": 8.000000000000002,
+          "ChainKl": 1.8057643222405826,
+          "ProbabilityMass": 0.9999999999999999
+        },
+        {
+          "Length": 9,
+          "Predictor": "bernoulli-half",
+          "Entropy": 6.876629167387831,
+          "CrossEntropy": 9,
+          "Kl": 2.123370832612177,
+          "ChainEntropy": 6.876629167387821,
+          "ChainCrossEntropy": 9,
+          "ChainKl": 2.123370832612177,
+          "ProbabilityMass": 0.9999999999999998
+        },
+        {
+          "Length": 10,
+          "Predictor": "bernoulli-half",
+          "Entropy": 7.55626575590697,
+          "CrossEntropy": 9.999999999999995,
+          "Kl": 2.443734244093043,
+          "ChainEntropy": 7.55626575590695,
+          "ChainCrossEntropy": 10.000000000000002,
+          "ChainKl": 2.4437342440930467,
+          "ProbabilityMass": 1
+        },
+        {
+          "Length": 11,
+          "Predictor": "bernoulli-half",
+          "Entropy": 8.23079583405451,
+          "CrossEntropy": 10.999999999999993,
+          "Kl": 2.769204165945509,
+          "ChainEntropy": 8.23079583405449,
+          "ChainCrossEntropy": 11.000000000000002,
+          "ChainKl": 2.769204165945511,
+          "ProbabilityMass": 1
+        },
+        {
+          "Length": 12,
+          "Predictor": "bernoulli-half",
+          "Entropy": 8.903947461647396,
+          "CrossEntropy": 12,
+          "Kl": 3.096052538352626,
+          "ChainEntropy": 8.903947461647387,
+          "ChainCrossEntropy": 12.000000000000002,
+          "ChainKl": 3.096052538352612,
+          "ProbabilityMass": 0.9999999999999999
+        },
+        {
+          "Length": 1,
+          "Predictor": "bernoulli-third",
+          "Entropy": 0.9182958340544896,
+          "CrossEntropy": 1.2516291673878228,
+          "Kl": 0.33333333333333326,
+          "ChainEntropy": 0.9182958340544896,
+          "ChainCrossEntropy": 1.2516291673878228,
+          "ChainKl": 0.33333333333333326,
+          "ProbabilityMass": 1
+        },
+        {
+          "Length": 2,
+          "Predictor": "bernoulli-third",
+          "Entropy": 1.792481250360578,
+          "CrossEntropy": 2.5032583347756456,
+          "Kl": 0.7107770844150674,
+          "ChainEntropy": 1.7924812503605783,
+          "ChainCrossEntropy": 2.5032583347756456,
+          "ChainKl": 0.7107770844150675,
+          "ProbabilityMass": 1
+        },
+        {
+          "Length": 3,
+          "Predictor": "bernoulli-third",
+          "Entropy": 2.584962500721156,
+          "CrossEntropy": 3.7548875021634682,
+          "Kl": 1.169925001442312,
+          "ChainEntropy": 2.584962500721156,
+          "ChainCrossEntropy": 3.7548875021634687,
+          "ChainKl": 1.169925001442312,
+          "ProbabilityMass": 1
+        },
+        {
+          "Length": 4,
+          "Predictor": "bernoulli-third",
+          "Entropy": 3.3553885422075336,
+          "CrossEntropy": 5.006516669551291,
+          "Kl": 1.6511281273437572,
+          "ChainEntropy": 3.3553885422075336,
+          "ChainCrossEntropy": 5.006516669551291,
+          "ChainKl": 1.6511281273437568,
+          "ProbabilityMass": 1
+        },
+        {
+          "Length": 5,
+          "Predictor": "bernoulli-third",
+          "Entropy": 4.084962500721156,
+          "CrossEntropy": 6.258145836939114,
+          "Kl": 2.1731833362179573,
+          "ChainEntropy": 4.084962500721155,
+          "ChainCrossEntropy": 6.2581458369391125,
+          "ChainKl": 2.173183336217957,
+          "ProbabilityMass": 0.9999999999999999
+        },
+        {
+          "Length": 6,
+          "Predictor": "bernoulli-third",
+          "Entropy": 4.803508854797678,
+          "CrossEntropy": 7.509775004326938,
+          "Kl": 2.7062661495292586,
+          "ChainEntropy": 4.803508854797676,
+          "ChainCrossEntropy": 7.509775004326933,
+          "ChainKl": 2.706266149529259,
+          "ProbabilityMass": 0.9999999999999999
+        },
+        {
+          "Length": 7,
+          "Predictor": "bernoulli-third",
+          "Entropy": 5.501629167387826,
+          "CrossEntropy": 8.761404171714759,
+          "Kl": 3.2597750043269365,
+          "ChainEntropy": 5.5016291673878195,
+          "ChainCrossEntropy": 8.761404171714762,
+          "ChainKl": 3.259775004326939,
+          "ProbabilityMass": 1.0000000000000002
+        },
+        {
+          "Length": 8,
+          "Predictor": "bernoulli-third",
+          "Entropy": 6.194235677759425,
+          "CrossEntropy": 10.013033339102583,
+          "Kl": 3.818797661343167,
+          "ChainEntropy": 6.194235677759416,
+          "ChainCrossEntropy": 10.013033339102586,
+          "ChainKl": 3.8187976613431682,
+          "ProbabilityMass": 0.9999999999999999
+        },
+        {
+          "Length": 9,
+          "Predictor": "bernoulli-third",
+          "Entropy": 6.876629167387831,
+          "CrossEntropy": 11.264662506490408,
+          "Kl": 4.38803333910258,
+          "ChainEntropy": 6.876629167387821,
+          "ChainCrossEntropy": 11.264662506490392,
+          "ChainKl": 4.388033339102581,
+          "ProbabilityMass": 0.9999999999999998
+        },
+        {
+          "Length": 10,
+          "Predictor": "bernoulli-third",
+          "Entropy": 7.55626575590697,
+          "CrossEntropy": 12.51629167387823,
+          "Kl": 4.960025917971271,
+          "ChainEntropy": 7.55626575590695,
+          "ChainCrossEntropy": 12.516291673878172,
+          "ChainKl": 4.960025917971275,
+          "ProbabilityMass": 1
+        },
+        {
+          "Length": 11,
+          "Predictor": "bernoulli-third",
+          "Entropy": 8.23079583405451,
+          "CrossEntropy": 13.767920841266065,
+          "Kl": 5.537125007211557,
+          "ChainEntropy": 8.23079583405449,
+          "ChainCrossEntropy": 13.76792084126593,
+          "ChainKl": 5.537125007211576,
+          "ProbabilityMass": 1
+        },
+        {
+          "Length": 12,
+          "Predictor": "bernoulli-third",
+          "Entropy": 8.903947461647396,
+          "CrossEntropy": 15.019550008653814,
+          "Kl": 6.115602547006479,
+          "ChainEntropy": 8.903947461647387,
+          "ChainCrossEntropy": 15.0195500086537,
+          "ChainKl": 6.115602547006528,
+          "ProbabilityMass": 0.9999999999999999
+        }
+      ],
+      "Closure": {
+        "Beliefs": [
+          ["2", "1"],
+          ["1", "0"],
+          ["1", "1"],
+          ["0", "1"]
+        ],
+        "Edges": [
+          {
+            "Source": 0,
+            "Symbol": 0,
+            "Destination": 1,
+            "Probability": {
+              "Numerator": "1",
+              "Denominator": "3"
+            }
+          },
+          {
+            "Source": 0,
+            "Symbol": 1,
+            "Destination": 2,
+            "Probability": {
+              "Numerator": "2",
+              "Denominator": "3"
+            }
+          },
+          {
+            "Source": 1,
+            "Symbol": 0,
+            "Destination": 1,
+            "Probability": {
+              "Numerator": "1",
+              "Denominator": "2"
+            }
+          },
+          {
+            "Source": 1,
+            "Symbol": 1,
+            "Destination": 3,
+            "Probability": {
+              "Numerator": "1",
+              "Denominator": "2"
+            }
+          },
+          {
+            "Source": 2,
+            "Symbol": 0,
+            "Destination": 1,
+            "Probability": {
+              "Numerator": "1",
+              "Denominator": "4"
+            }
+          },
+          {
+            "Source": 2,
+            "Symbol": 1,
+            "Destination": 0,
+            "Probability": {
+              "Numerator": "3",
+              "Denominator": "4"
+            }
+          },
+          {
+            "Source": 3,
+            "Symbol": 1,
+            "Destination": 1,
+            "Probability": {
+              "Numerator": "1",
+              "Denominator": "1"
+            }
+          }
+        ],
+        "Matrix": [
+          [0, 0.3333333333333333, 0.6666666666666666, 0],
+          [0, 0.5, 0, 0.5],
+          [0.75, 0.25, 0, 0],
+          [0, 1, 0, 0]
+        ],
+        "Entropy": [0.9182958340544896, 1, 0.8112781244591328, 0]
+      },
+      "EntropyCurve": [
+        0.9182958340544896, 0.8741854163060885, 0.792481250360578, 0.7704260414863776, 0.7295739585136224,
+        0.718546354076522, 0.6981203125901445, 0.6926065103715944, 0.6823934896284056, 0.6796365885191304,
+        0.6745300781475361, 0.6731516275928986, 0.6705983724071014, 0.6699091471297826, 0.668632519536884,
+        0.6682879068982247, 0.6676495931017753, 0.6674772867824456, 0.667158129884221, 0.6670719767245562,
+        0.6669123982754438, 0.6668693216956113, 0.6667895324710552, 0.6667679941811391, 0.6667280995688609,
+        0.6667173304239028, 0.6666973831177637, 0.6666919985452847, 0.6666820248922153, 0.6666793326059757,
+        0.6666743457794408, 0.6666729996363212, 0.6666705062230538, 0.6666698331514939, 0.6666685864448602,
+        0.6666682499090802, 0.6666676265557635, 0.6666674582878734, 0.666667146611215, 0.66666706247727,
+        0.6666669066389409, 0.6666668645719683, 0.6666667866528037, 0.6666667656193175, 0.6666667266597353,
+        0.666666716142992, 0.6666666966632009, 0.6666666914048294, 0.6666666816649338, 0.6666666790357479,
+        0.6666666741658002, 0.6666666728512074, 0.6666666704162334, 0.666666669758937, 0.66666666854145,
+        0.6666666682128018, 0.6666666676040583, 0.6666666674397341, 0.6666666671353625, 0.6666666670532004,
+        0.6666666669010146, 0.6666666668599335, 0.6666666667838406, 0.6666666667633001
+      ]
+    },
+    {
+      "Model": "rrxor",
+      "Losses": [
+        {
+          "Length": 1,
+          "Predictor": "known-model",
+          "Entropy": 1,
+          "CrossEntropy": 1,
+          "Kl": 0,
+          "ChainEntropy": 1,
+          "ChainCrossEntropy": 1,
+          "ChainKl": 0,
+          "ProbabilityMass": 1
+        },
+        {
+          "Length": 2,
+          "Predictor": "known-model",
+          "Entropy": 2,
+          "CrossEntropy": 2,
+          "Kl": 0,
+          "ChainEntropy": 2,
+          "ChainCrossEntropy": 2,
+          "ChainKl": 0,
+          "ProbabilityMass": 1
+        },
+        {
+          "Length": 3,
+          "Predictor": "known-model",
+          "Entropy": 2.9182958340544896,
+          "CrossEntropy": 2.9182958340544896,
+          "Kl": 0,
+          "ChainEntropy": 2.91829583405449,
+          "ChainCrossEntropy": 2.91829583405449,
+          "ChainKl": 0,
+          "ProbabilityMass": 1
+        },
+        {
+          "Length": 4,
+          "Predictor": "known-model",
+          "Entropy": 3.825011210824177,
+          "CrossEntropy": 3.825011210824177,
+          "Kl": 0,
+          "ChainEntropy": 3.8250112108241776,
+          "ChainCrossEntropy": 3.8250112108241776,
+          "ChainKl": 0,
+          "ProbabilityMass": 1
+        },
+        {
+          "Length": 5,
+          "Predictor": "known-model",
+          "Entropy": 4.6887218755408675,
+          "CrossEntropy": 4.6887218755408675,
+          "Kl": 0,
+          "ChainEntropy": 4.688721875540868,
+          "ChainCrossEntropy": 4.688721875540868,
+          "ChainKl": 0,
+          "ProbabilityMass": 1
+        },
+        {
+          "Length": 6,
+          "Predictor": "known-model",
+          "Entropy": 5.522055208874202,
+          "CrossEntropy": 5.522055208874202,
+          "Kl": 0,
+          "ChainEntropy": 5.5220552088742005,
+          "ChainCrossEntropy": 5.5220552088742005,
+          "ChainKl": 0,
+          "ProbabilityMass": 0.9999999999999998
+        },
+        {
+          "Length": 7,
+          "Predictor": "known-model",
+          "Entropy": 6.332067386399961,
+          "CrossEntropy": 6.332067386399961,
+          "Kl": 0,
+          "ChainEntropy": 6.332067386399964,
+          "ChainCrossEntropy": 6.332067386399964,
+          "ChainKl": 0,
+          "ProbabilityMass": 1.0000000000000002
+        },
+        {
+          "Length": 8,
+          "Predictor": "known-model",
+          "Entropy": 7.110902344426098,
+          "CrossEntropy": 7.110902344426098,
+          "Kl": 0,
+          "ChainEntropy": 7.110902344426084,
+          "ChainCrossEntropy": 7.110902344426084,
+          "ChainKl": 0,
+          "ProbabilityMass": 1.000000000000001
+        },
+        {
+          "Length": 9,
+          "Predictor": "known-model",
+          "Entropy": 7.871115365169309,
+          "CrossEntropy": 7.871115365169309,
+          "Kl": 0,
+          "ChainEntropy": 7.871115365169296,
+          "ChainCrossEntropy": 7.871115365169296,
+          "ChainKl": 0,
+          "ProbabilityMass": 0.9999999999999983
+        },
+        {
+          "Length": 10,
+          "Predictor": "known-model",
+          "Entropy": 8.61528507621742,
+          "CrossEntropy": 8.61528507621742,
+          "Kl": 0,
+          "ChainEntropy": 8.615285076217425,
+          "ChainCrossEntropy": 8.615285076217425,
+          "ChainKl": 0,
+          "ProbabilityMass": 1.0000000000000007
+        },
+        {
+          "Length": 11,
+          "Predictor": "known-model",
+          "Entropy": 9.341447461647423,
+          "CrossEntropy": 9.341447461647423,
+          "Kl": 0,
+          "ChainEntropy": 9.341447461647583,
+          "ChainCrossEntropy": 9.341447461647583,
+          "ChainKl": 0,
+          "ProbabilityMass": 1.0000000000000075
+        },
+        {
+          "Length": 12,
+          "Predictor": "known-model",
+          "Entropy": 10.057440560538158,
+          "CrossEntropy": 10.057440560538158,
+          "Kl": 0,
+          "ChainEntropy": 10.057440560537891,
+          "ChainCrossEntropy": 10.057440560537891,
+          "ChainKl": 0,
+          "ProbabilityMass": 0.9999999999999907
+        },
+        {
+          "Length": 1,
+          "Predictor": "bernoulli-half",
+          "Entropy": 1,
+          "CrossEntropy": 1,
+          "Kl": 0,
+          "ChainEntropy": 1,
+          "ChainCrossEntropy": 1,
+          "ChainKl": 0,
+          "ProbabilityMass": 1
+        },
+        {
+          "Length": 2,
+          "Predictor": "bernoulli-half",
+          "Entropy": 2,
+          "CrossEntropy": 2,
+          "Kl": 0,
+          "ChainEntropy": 2,
+          "ChainCrossEntropy": 2,
+          "ChainKl": 0,
+          "ProbabilityMass": 1
+        },
+        {
+          "Length": 3,
+          "Predictor": "bernoulli-half",
+          "Entropy": 2.9182958340544896,
+          "CrossEntropy": 3,
+          "Kl": 0.08170416594551037,
+          "ChainEntropy": 2.91829583405449,
+          "ChainCrossEntropy": 3,
+          "ChainKl": 0.08170416594551037,
+          "ProbabilityMass": 1
+        },
+        {
+          "Length": 4,
+          "Predictor": "bernoulli-half",
+          "Entropy": 3.825011210824177,
+          "CrossEntropy": 4,
+          "Kl": 0.17498878917582292,
+          "ChainEntropy": 3.8250112108241776,
+          "ChainCrossEntropy": 4,
+          "ChainKl": 0.17498878917582272,
+          "ProbabilityMass": 1
+        },
+        {
+          "Length": 5,
+          "Predictor": "bernoulli-half",
+          "Entropy": 4.6887218755408675,
+          "CrossEntropy": 5,
+          "Kl": 0.31127812445913283,
+          "ChainEntropy": 4.688721875540868,
+          "ChainCrossEntropy": 5,
+          "ChainKl": 0.3112781244591328,
+          "ProbabilityMass": 1
+        },
+        {
+          "Length": 6,
+          "Predictor": "bernoulli-half",
+          "Entropy": 5.522055208874202,
+          "CrossEntropy": 6,
+          "Kl": 0.47794479112579935,
+          "ChainEntropy": 5.5220552088742005,
+          "ChainCrossEntropy": 6.0000000000000036,
+          "ChainKl": 0.47794479112579924,
+          "ProbabilityMass": 0.9999999999999998
+        },
+        {
+          "Length": 7,
+          "Predictor": "bernoulli-half",
+          "Entropy": 6.332067386399961,
+          "CrossEntropy": 6.999999999999998,
+          "Kl": 0.6679326136000439,
+          "ChainEntropy": 6.332067386399964,
+          "ChainCrossEntropy": 7,
+          "ChainKl": 0.667932613600043,
+          "ProbabilityMass": 1.0000000000000002
+        },
+        {
+          "Length": 8,
+          "Predictor": "bernoulli-half",
+          "Entropy": 7.110902344426098,
+          "CrossEntropy": 8.000000000000009,
+          "Kl": 0.8890976555739165,
+          "ChainEntropy": 7.110902344426084,
+          "ChainCrossEntropy": 7.999999999999979,
+          "ChainKl": 0.8890976555739158,
+          "ProbabilityMass": 1.000000000000001
+        },
+        {
+          "Length": 9,
+          "Predictor": "bernoulli-half",
+          "Entropy": 7.871115365169309,
+          "CrossEntropy": 9,
+          "Kl": 1.128884634830728,
+          "ChainEntropy": 7.871115365169296,
+          "ChainCrossEntropy": 8.999999999999915,
+          "ChainKl": 1.1288846348307267,
+          "ProbabilityMass": 0.9999999999999983
+        },
+        {
+          "Length": 10,
+          "Predictor": "bernoulli-half",
+          "Entropy": 8.61528507621742,
+          "CrossEntropy": 9.999999999999998,
+          "Kl": 1.3847149237826215,
+          "ChainEntropy": 8.615285076217425,
+          "ChainCrossEntropy": 9.999999999999936,
+          "ChainKl": 1.384714923782625,
+          "ProbabilityMass": 1.0000000000000007
+        },
+        {
+          "Length": 11,
+          "Predictor": "bernoulli-half",
+          "Entropy": 9.341447461647423,
+          "CrossEntropy": 10.999999999999961,
+          "Kl": 1.6585525383525952,
+          "ChainEntropy": 9.341447461647583,
+          "ChainCrossEntropy": 11.000000000000234,
+          "ChainKl": 1.6585525383526105,
+          "ProbabilityMass": 1.0000000000000075
+        },
+        {
+          "Length": 12,
+          "Predictor": "bernoulli-half",
+          "Entropy": 10.057440560538158,
+          "CrossEntropy": 12,
+          "Kl": 1.9425594394618826,
+          "ChainEntropy": 10.057440560537891,
+          "ChainCrossEntropy": 11.999999999999886,
+          "ChainKl": 1.9425594394618713,
+          "ProbabilityMass": 0.9999999999999907
+        },
+        {
+          "Length": 1,
+          "Predictor": "bernoulli-third",
+          "Entropy": 1,
+          "CrossEntropy": 1.084962500721156,
+          "Kl": 0.08496250072115608,
+          "ChainEntropy": 1,
+          "ChainCrossEntropy": 1.084962500721156,
+          "ChainKl": 0.08496250072115608,
+          "ProbabilityMass": 1
+        },
+        {
+          "Length": 2,
+          "Predictor": "bernoulli-third",
+          "Entropy": 2,
+          "CrossEntropy": 2.169925001442312,
+          "Kl": 0.1699250014423123,
+          "ChainEntropy": 2,
+          "ChainCrossEntropy": 2.169925001442312,
+          "ChainKl": 0.16992500144231215,
+          "ProbabilityMass": 1
+        },
+        {
+          "Length": 3,
+          "Predictor": "bernoulli-third",
+          "Entropy": 2.9182958340544896,
+          "CrossEntropy": 3.254887502163468,
+          "Kl": 0.33659166810897884,
+          "ChainEntropy": 2.91829583405449,
+          "ChainCrossEntropy": 3.2548875021634682,
+          "ChainKl": 0.3365916681089787,
+          "ProbabilityMass": 1
+        },
+        {
+          "Length": 4,
+          "Predictor": "bernoulli-third",
+          "Entropy": 3.825011210824177,
+          "CrossEntropy": 4.339850002884624,
+          "Kl": 0.5148387920604475,
+          "ChainEntropy": 3.8250112108241776,
+          "ChainCrossEntropy": 4.339850002884624,
+          "ChainKl": 0.514838792060447,
+          "ProbabilityMass": 1
+        },
+        {
+          "Length": 5,
+          "Predictor": "bernoulli-third",
+          "Entropy": 4.6887218755408675,
+          "CrossEntropy": 5.4248125036057795,
+          "Kl": 0.7360906280649134,
+          "ChainEntropy": 4.688721875540868,
+          "ChainCrossEntropy": 5.42481250360578,
+          "ChainKl": 0.7360906280649131,
+          "ProbabilityMass": 1
+        },
+        {
+          "Length": 6,
+          "Predictor": "bernoulli-third",
+          "Entropy": 5.522055208874202,
+          "CrossEntropy": 6.509775004326937,
+          "Kl": 0.987719795452736,
+          "ChainEntropy": 5.5220552088742005,
+          "ChainCrossEntropy": 6.509775004326942,
+          "ChainKl": 0.9877197954527359,
+          "ProbabilityMass": 0.9999999999999998
+        },
+        {
+          "Length": 7,
+          "Predictor": "bernoulli-third",
+          "Entropy": 6.332067386399961,
+          "CrossEntropy": 7.594737505048098,
+          "Kl": 1.262670118648137,
+          "ChainEntropy": 6.332067386399964,
+          "ChainCrossEntropy": 7.594737505048089,
+          "ChainKl": 1.2626701186481384,
+          "ProbabilityMass": 1.0000000000000002
+        },
+        {
+          "Length": 8,
+          "Predictor": "bernoulli-third",
+          "Entropy": 7.110902344426098,
+          "CrossEntropy": 8.679700005769249,
+          "Kl": 1.568797661343165,
+          "ChainEntropy": 7.110902344426084,
+          "ChainCrossEntropy": 8.679700005769229,
+          "ChainKl": 1.5687976613431713,
+          "ProbabilityMass": 1.000000000000001
+        },
+        {
+          "Length": 9,
+          "Predictor": "bernoulli-third",
+          "Entropy": 7.871115365169309,
+          "CrossEntropy": 9.764662506490396,
+          "Kl": 1.893547141321133,
+          "ChainEntropy": 7.871115365169296,
+          "ChainCrossEntropy": 9.764662506490277,
+          "ChainKl": 1.893547141321139,
+          "ProbabilityMass": 0.9999999999999983
+        },
+        {
+          "Length": 10,
+          "Predictor": "bernoulli-third",
+          "Entropy": 8.61528507621742,
+          "CrossEntropy": 10.849625007211609,
+          "Kl": 2.23433993099418,
+          "ChainEntropy": 8.615285076217425,
+          "ChainCrossEntropy": 10.849625007211417,
+          "ChainKl": 2.2343399309941825,
+          "ProbabilityMass": 1.0000000000000007
+        },
+        {
+          "Length": 11,
+          "Predictor": "bernoulli-third",
+          "Entropy": 9.341447461647423,
+          "CrossEntropy": 11.934587507932676,
+          "Kl": 2.5931400462853285,
+          "ChainEntropy": 9.341447461647583,
+          "ChainCrossEntropy": 11.934587507932646,
+          "ChainKl": 2.5931400462853267,
+          "ProbabilityMass": 1.0000000000000075
+        },
+        {
+          "Length": 12,
+          "Predictor": "bernoulli-third",
+          "Entropy": 10.057440560538158,
+          "CrossEntropy": 13.019550008653841,
+          "Kl": 2.962109448115766,
+          "ChainEntropy": 10.057440560537891,
+          "ChainCrossEntropy": 13.019550008653946,
+          "ChainKl": 2.9621094481157755,
+          "ProbabilityMass": 0.9999999999999907
+        }
+      ],
+      "Closure": {
+        "Beliefs": [
+          ["2", "1", "1", "1", "1"],
+          ["2", "2", "0", "1", "1"],
+          ["2", "0", "2", "1", "1"],
+          ["1", "1", "0", "0", "1"],
+          ["1", "0", "1", "1", "0"],
+          ["1", "1", "0", "1", "0"],
+          ["1", "0", "1", "0", "1"],
+          ["2", "1", "0", "0", "1"],
+          ["0", "0", "1", "1", "0"],
+          ["0", "1", "0", "1", "0"],
+          ["2", "0", "1", "0", "1"],
+          ["0", "1", "0", "0", "1"],
+          ["2", "0", "1", "1", "0"],
+          ["2", "1", "0", "1", "0"],
+          ["0", "0", "1", "0", "1"],
+          ["2", "2", "0", "0", "1"],
+          ["0", "0", "2", "1", "0"],
+          ["0", "0", "0", "1", "0"],
+          ["2", "0", "0", "0", "1"],
+          ["0", "0", "0", "0", "1"],
+          ["2", "0", "0", "1", "0"],
+          ["2", "2", "0", "1", "0"],
+          ["0", "0", "2", "0", "1"],
+          ["0", "2", "0", "1", "0"],
+          ["2", "0", "2", "0", "1"],
+          ["0", "2", "0", "0", "1"],
+          ["2", "0", "2", "1", "0"],
+          ["1", "0", "0", "0", "1"],
+          ["1", "0", "0", "0", "0"],
+          ["1", "1", "0", "0", "0"],
+          ["0", "0", "1", "0", "0"],
+          ["0", "1", "0", "0", "0"],
+          ["1", "0", "1", "0", "0"],
+          ["1", "0", "0", "1", "0"],
+          ["2", "1", "0", "0", "0"],
+          ["2", "0", "1", "0", "0"]
+        ],
+        "Edges": [
+          {
+            "Source": 0,
+            "Symbol": 0,
+            "Destination": 1,
+            "Probability": {
+              "Numerator": "1",
+              "Denominator": "2"
+            }
+          },
+          {
+            "Source": 0,
+            "Symbol": 1,
+            "Destination": 2,
+            "Probability": {
+              "Numerator": "1",
+              "Denominator": "2"
+            }
+          },
+          {
+            "Source": 1,
+            "Symbol": 0,
+            "Destination": 3,
+            "Probability": {
+              "Numerator": "1",
+              "Denominator": "2"
+            }
+          },
+          {
+            "Source": 1,
+            "Symbol": 1,
+            "Destination": 4,
+            "Probability": {
+              "Numerator": "1",
+              "Denominator": "2"
+            }
+          },
+          {
+            "Source": 2,
+            "Symbol": 0,
+            "Destination": 5,
+            "Probability": {
+              "Numerator": "1",
+              "Denominator": "2"
+            }
+          },
+          {
+            "Source": 2,
+            "Symbol": 1,
+            "Destination": 6,
+            "Probability": {
+              "Numerator": "1",
+              "Denominator": "2"
+            }
+          },
+          {
+            "Source": 3,
+            "Symbol": 0,
+            "Destination": 7,
+            "Probability": {
+              "Numerator": "2",
+              "Denominator": "3"
+            }
+          },
+          {
+            "Source": 3,
+            "Symbol": 1,
+            "Destination": 8,
+            "Probability": {
+              "Numerator": "1",
+              "Denominator": "3"
+            }
+          },
+          {
+            "Source": 4,
+            "Symbol": 0,
+            "Destination": 9,
+            "Probability": {
+              "Numerator": "1",
+              "Denominator": "3"
+            }
+          },
+          {
+            "Source": 4,
+            "Symbol": 1,
+            "Destination": 10,
+            "Probability": {
+              "Numerator": "2",
+              "Denominator": "3"
+            }
+          },
+          {
+            "Source": 5,
+            "Symbol": 0,
+            "Destination": 11,
+            "Probability": {
+              "Numerator": "1",
+              "Denominator": "3"
+            }
+          },
+          {
+            "Source": 5,
+            "Symbol": 1,
+            "Destination": 12,
+            "Probability": {
+              "Numerator": "2",
+              "Denominator": "3"
+            }
+          },
+          {
+            "Source": 6,
+            "Symbol": 0,
+            "Destination": 13,
+            "Probability": {
+              "Numerator": "2",
+              "Denominator": "3"
+            }
+          },
+          {
+            "Source": 6,
+            "Symbol": 1,
+            "Destination": 14,
+            "Probability": {
+              "Numerator": "1",
+              "Denominator": "3"
+            }
+          },
+          {
+            "Source": 7,
+            "Symbol": 0,
+            "Destination": 15,
+            "Probability": {
+              "Numerator": "5",
+              "Denominator": "8"
+            }
+          },
+          {
+            "Source": 7,
+            "Symbol": 1,
+            "Destination": 16,
+            "Probability": {
+              "Numerator": "3",
+              "Denominator": "8"
+            }
+          },
+          {
+            "Source": 8,
+            "Symbol": 0,
+            "Destination": 17,
+            "Probability": {
+              "Numerator": "1",
+              "Denominator": "4"
+            }
+          },
+          {
+            "Source": 8,
+            "Symbol": 1,
+            "Destination": 18,
+            "Probability": {
+              "Numerator": "3",
+              "Denominator": "4"
+            }
+          },
+          {
+            "Source": 9,
+            "Symbol": 0,
+            "Destination": 19,
+            "Probability": {
+              "Numerator": "1",
+              "Denominator": "4"
+            }
+          },
+          {
+            "Source": 9,
+            "Symbol": 1,
+            "Destination": 20,
+            "Probability": {
+              "Numerator": "3",
+              "Denominator": "4"
+            }
+          },
+          {
+            "Source": 10,
+            "Symbol": 0,
+            "Destination": 21,
+            "Probability": {
+              "Numerator": "5",
+              "Denominator": "8"
+            }
+          },
+          {
+            "Source": 10,
+            "Symbol": 1,
+            "Destination": 22,
+            "Probability": {
+              "Numerator": "3",
+              "Denominator": "8"
+            }
+          },
+          {
+            "Source": 11,
+            "Symbol": 0,
+            "Destination": 18,
+            "Probability": {
+              "Numerator": "3",
+              "Denominator": "4"
+            }
+          },
+          {
+            "Source": 11,
+            "Symbol": 1,
+            "Destination": 17,
+            "Probability": {
+              "Numerator": "1",
+              "Denominator": "4"
+            }
+          },
+          {
+            "Source": 12,
+            "Symbol": 0,
+            "Destination": 23,
+            "Probability": {
+              "Numerator": "3",
+              "Denominator": "8"
+            }
+          },
+          {
+            "Source": 12,
+            "Symbol": 1,
+            "Destination": 24,
+            "Probability": {
+              "Numerator": "5",
+              "Denominator": "8"
+            }
+          },
+          {
+            "Source": 13,
+            "Symbol": 0,
+            "Destination": 25,
+            "Probability": {
+              "Numerator": "3",
+              "Denominator": "8"
+            }
+          },
+          {
+            "Source": 13,
+            "Symbol": 1,
+            "Destination": 26,
+            "Probability": {
+              "Numerator": "5",
+              "Denominator": "8"
+            }
+          },
+          {
+            "Source": 14,
+            "Symbol": 0,
+            "Destination": 20,
+            "Probability": {
+              "Numerator": "3",
+              "Denominator": "4"
+            }
+          },
+          {
+            "Source": 14,
+            "Symbol": 1,
+            "Destination": 19,
+            "Probability": {
+              "Numerator": "1",
+              "Denominator": "4"
+            }
+          },
+          {
+            "Source": 15,
+            "Symbol": 0,
+            "Destination": 3,
+            "Probability": {
+              "Numerator": "3",
+              "Denominator": "5"
+            }
+          },
+          {
+            "Source": 15,
+            "Symbol": 1,
+            "Destination": 8,
+            "Probability": {
+              "Numerator": "2",
+              "Denominator": "5"
+            }
+          },
+          {
+            "Source": 16,
+            "Symbol": 0,
+            "Destination": 17,
+            "Probability": {
+              "Numerator": "1",
+              "Denominator": "3"
+            }
+          },
+          {
+            "Source": 16,
+            "Symbol": 1,
+            "Destination": 27,
+            "Probability": {
+              "Numerator": "2",
+              "Denominator": "3"
+            }
+          },
+          {
+            "Source": 17,
+            "Symbol": 1,
+            "Destination": 28,
+            "Probability": {
+              "Numerator": "1",
+              "Denominator": "1"
+            }
+          },
+          {
+            "Source": 18,
+            "Symbol": 0,
+            "Destination": 29,
+            "Probability": {
+              "Numerator": "2",
+              "Denominator": "3"
+            }
+          },
+          {
+            "Source": 18,
+            "Symbol": 1,
+            "Destination": 30,
+            "Probability": {
+              "Numerator": "1",
+              "Denominator": "3"
+            }
+          },
+          {
+            "Source": 19,
+            "Symbol": 0,
+            "Destination": 28,
+            "Probability": {
+              "Numerator": "1",
+              "Denominator": "1"
+            }
+          },
+          {
+            "Source": 20,
+            "Symbol": 0,
+            "Destination": 31,
+            "Probability": {
+              "Numerator": "1",
+              "Denominator": "3"
+            }
+          },
+          {
+            "Source": 20,
+            "Symbol": 1,
+            "Destination": 32,
+            "Probability": {
+              "Numerator": "2",
+              "Denominator": "3"
+            }
+          },
+          {
+            "Source": 21,
+            "Symbol": 0,
+            "Destination": 11,
+            "Probability": {
+              "Numerator": "2",
+              "Denominator": "5"
+            }
+          },
+          {
+            "Source": 21,
+            "Symbol": 1,
+            "Destination": 4,
+            "Probability": {
+              "Numerator": "3",
+              "Denominator": "5"
+            }
+          },
+          {
+            "Source": 22,
+            "Symbol": 0,
+            "Destination": 33,
+            "Probability": {
+              "Numerator": "2",
+              "Denominator": "3"
+            }
+          },
+          {
+            "Source": 22,
+            "Symbol": 1,
+            "Destination": 19,
+            "Probability": {
+              "Numerator": "1",
+              "Denominator": "3"
+            }
+          },
+          {
+            "Source": 23,
+            "Symbol": 0,
+            "Destination": 19,
+            "Probability": {
+              "Numerator": "1",
+              "Denominator": "3"
+            }
+          },
+          {
+            "Source": 23,
+            "Symbol": 1,
+            "Destination": 33,
+            "Probability": {
+              "Numerator": "2",
+              "Denominator": "3"
+            }
+          },
+          {
+            "Source": 24,
+            "Symbol": 0,
+            "Destination": 5,
+            "Probability": {
+              "Numerator": "3",
+              "Denominator": "5"
+            }
+          },
+          {
+            "Source": 24,
+            "Symbol": 1,
+            "Destination": 14,
+            "Probability": {
+              "Numerator": "2",
+              "Denominator": "5"
+            }
+          },
+          {
+            "Source": 25,
+            "Symbol": 0,
+            "Destination": 27,
+            "Probability": {
+              "Numerator": "2",
+              "Denominator": "3"
+            }
+          },
+          {
+            "Source": 25,
+            "Symbol": 1,
+            "Destination": 17,
+            "Probability": {
+              "Numerator": "1",
+              "Denominator": "3"
+            }
+          },
+          {
+            "Source": 26,
+            "Symbol": 0,
+            "Destination": 9,
+            "Probability": {
+              "Numerator": "2",
+              "Denominator": "5"
+            }
+          },
+          {
+            "Source": 26,
+            "Symbol": 1,
+            "Destination": 6,
+            "Probability": {
+              "Numerator": "3",
+              "Denominator": "5"
+            }
+          },
+          {
+            "Source": 27,
+            "Symbol": 0,
+            "Destination": 34,
+            "Probability": {
+              "Numerator": "3",
+              "Denominator": "4"
+            }
+          },
+          {
+            "Source": 27,
+            "Symbol": 1,
+            "Destination": 30,
+            "Probability": {
+              "Numerator": "1",
+              "Denominator": "4"
+            }
+          },
+          {
+            "Source": 28,
+            "Symbol": 0,
+            "Destination": 31,
+            "Probability": {
+              "Numerator": "1",
+              "Denominator": "2"
+            }
+          },
+          {
+            "Source": 28,
+            "Symbol": 1,
+            "Destination": 30,
+            "Probability": {
+              "Numerator": "1",
+              "Denominator": "2"
+            }
+          },
+          {
+            "Source": 29,
+            "Symbol": 0,
+            "Destination": 11,
+            "Probability": {
+              "Numerator": "1",
+              "Denominator": "2"
+            }
+          },
+          {
+            "Source": 29,
+            "Symbol": 1,
+            "Destination": 8,
+            "Probability": {
+              "Numerator": "1",
+              "Denominator": "2"
+            }
+          },
+          {
+            "Source": 30,
+            "Symbol": 0,
+            "Destination": 17,
+            "Probability": {
+              "Numerator": "1",
+              "Denominator": "2"
+            }
+          },
+          {
+            "Source": 30,
+            "Symbol": 1,
+            "Destination": 19,
+            "Probability": {
+              "Numerator": "1",
+              "Denominator": "2"
+            }
+          },
+          {
+            "Source": 31,
+            "Symbol": 0,
+            "Destination": 19,
+            "Probability": {
+              "Numerator": "1",
+              "Denominator": "2"
+            }
+          },
+          {
+            "Source": 31,
+            "Symbol": 1,
+            "Destination": 17,
+            "Probability": {
+              "Numerator": "1",
+              "Denominator": "2"
+            }
+          },
+          {
+            "Source": 32,
+            "Symbol": 0,
+            "Destination": 9,
+            "Probability": {
+              "Numerator": "1",
+              "Denominator": "2"
+            }
+          },
+          {
+            "Source": 32,
+            "Symbol": 1,
+            "Destination": 14,
+            "Probability": {
+              "Numerator": "1",
+              "Denominator": "2"
+            }
+          },
+          {
+            "Source": 33,
+            "Symbol": 0,
+            "Destination": 31,
+            "Probability": {
+              "Numerator": "1",
+              "Denominator": "4"
+            }
+          },
+          {
+            "Source": 33,
+            "Symbol": 1,
+            "Destination": 35,
+            "Probability": {
+              "Numerator": "3",
+              "Denominator": "4"
+            }
+          },
+          {
+            "Source": 34,
+            "Symbol": 0,
+            "Destination": 25,
+            "Probability": {
+              "Numerator": "1",
+              "Denominator": "2"
+            }
+          },
+          {
+            "Source": 34,
+            "Symbol": 1,
+            "Destination": 16,
+            "Probability": {
+              "Numerator": "1",
+              "Denominator": "2"
+            }
+          },
+          {
+            "Source": 35,
+            "Symbol": 0,
+            "Destination": 23,
+            "Probability": {
+              "Numerator": "1",
+              "Denominator": "2"
+            }
+          },
+          {
+            "Source": 35,
+            "Symbol": 1,
+            "Destination": 22,
+            "Probability": {
+              "Numerator": "1",
+              "Denominator": "2"
+            }
+          }
+        ],
+        "Matrix": [
+          [
+            0, 0.5, 0.5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0
+          ],
+          [
+            0, 0, 0, 0.5, 0.5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0
+          ],
+          [
+            0, 0, 0, 0, 0, 0.5, 0.5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0
+          ],
+          [
+            0, 0, 0, 0, 0, 0, 0, 0.6666666666666666, 0.3333333333333333, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+          ],
+          [
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0.3333333333333333, 0.6666666666666666, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+          ],
+          [
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0.3333333333333333, 0.6666666666666666, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+          ],
+          [
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0.6666666666666666, 0.3333333333333333, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+          ],
+          [
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0.625, 0.375, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0
+          ],
+          [
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0.25, 0.75, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0
+          ],
+          [
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0.25, 0.75, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0
+          ],
+          [
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0.625, 0.375, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0
+          ],
+          [
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0.25, 0.75, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0
+          ],
+          [
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0.375, 0.625, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0
+          ],
+          [
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0.375, 0.625, 0, 0, 0, 0, 0, 0,
+            0, 0, 0
+          ],
+          [
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0.25, 0.75, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0
+          ],
+          [
+            0, 0, 0, 0.6, 0, 0, 0, 0, 0.4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0
+          ],
+          [
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0.3333333333333333, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0.6666666666666666, 0, 0, 0, 0, 0, 0, 0, 0
+          ],
+          [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0],
+          [
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0.6666666666666666,
+            0.3333333333333333, 0, 0, 0, 0, 0
+          ],
+          [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0],
+          [
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0.3333333333333333, 0.6666666666666666, 0, 0, 0
+          ],
+          [
+            0, 0, 0, 0, 0.6, 0, 0, 0, 0, 0, 0, 0.4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0
+          ],
+          [
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0.3333333333333333, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0.6666666666666666, 0, 0
+          ],
+          [
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0.3333333333333333, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0.6666666666666666, 0, 0
+          ],
+          [
+            0, 0, 0, 0, 0, 0.6, 0, 0, 0, 0, 0, 0, 0, 0, 0.4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0
+          ],
+          [
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0.3333333333333333, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0.6666666666666666, 0, 0, 0, 0, 0, 0, 0, 0
+          ],
+          [
+            0, 0, 0, 0, 0, 0, 0.6, 0, 0, 0.4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0
+          ],
+          [
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0.25, 0, 0, 0,
+            0.75, 0
+          ],
+          [
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0.5, 0.5, 0, 0, 0,
+            0
+          ],
+          [
+            0, 0, 0, 0, 0, 0, 0, 0, 0.5, 0, 0, 0.5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0
+          ],
+          [
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0.5, 0, 0.5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0
+          ],
+          [
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0.5, 0, 0.5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0
+          ],
+          [
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0.5, 0, 0, 0, 0, 0.5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0
+          ],
+          [
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0.25, 0, 0, 0,
+            0.75
+          ],
+          [
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0.5, 0, 0, 0, 0, 0, 0, 0, 0, 0.5, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0
+          ],
+          [
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0.5, 0.5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0
+          ]
+        ],
+        "Entropy": [
+          1, 1, 1, 0.9182958340544896, 0.9182958340544896, 0.9182958340544896, 0.9182958340544896, 0.954434002924965,
+          0.8112781244591328, 0.8112781244591328, 0.954434002924965, 0.8112781244591328, 0.954434002924965,
+          0.954434002924965, 0.8112781244591328, 0.9709505944546686, 0.9182958340544896, 0, 0.9182958340544896, 0,
+          0.9182958340544896, 0.9709505944546686, 0.9182958340544896, 0.9182958340544896, 0.9709505944546686,
+          0.9182958340544896, 0.9709505944546686, 0.8112781244591328, 1, 1, 1, 1, 1, 0.8112781244591328, 1, 1
+        ]
+      },
+      "EntropyCurve": [
+        1, 1, 0.9182958340544896, 0.9067153767696876, 0.8637106647166901, 0.8333333333333333, 0.8100121775257553,
+        0.7788349580261281, 0.7602130207431887, 0.7441697110481054, 0.7261623854300099, 0.7159930988907249,
+        0.7068757610953597, 0.6972674193192413, 0.6919681965751451, 0.6871356069405066, 0.6821802663106797,
+        0.6794770100700182, 0.6769922350684601, 0.6744767723181047, 0.6731117329806205, 0.6718522254337818,
+        0.6705850459497436, 0.6698991734767131, 0.6692651396917788, 0.6686291879225446, 0.6682854134849573,
+        0.6679673265896114, 0.6676487601981905, 0.6674766634291288, 0.6673173524807362, 0.6671579216583248,
+        0.667071820886227, 0.6669920985368508, 0.6669123462189698, 0.6668692827360292, 0.666829404842546,
+        0.6667895194569368, 0.6667679844412435, 0.6667480413148033, 0.6667280963153314, 0.666717327988929,
+        0.6667073553807842, 0.6666973823043815, 0.6666919979365413, 0.6666870113712378, 0.6666820246888696,
+        0.6666793324537899, 0.6666768391058303, 0.6666743457286045, 0.6666729995982749, 0.6666717529079681,
+        0.6666705062103447, 0.6666698331419824, 0.6666692097927472, 0.6666685864416829, 0.6666682499067025,
+        0.6666679382310645, 0.6666676265549691, 0.666667458287279, 0.6666673024492049, 0.6666671466110164,
+        0.6666670624771215, 0.6666669845580208
+      ]
+    },
+    {
+      "Model": "lag-two-copy",
+      "Losses": [
+        {
+          "Length": 1,
+          "Predictor": "known-model",
+          "Entropy": 1,
+          "CrossEntropy": 1,
+          "Kl": 0,
+          "ChainEntropy": 1,
+          "ChainCrossEntropy": 1,
+          "ChainKl": 0,
+          "ProbabilityMass": 1
+        },
+        {
+          "Length": 2,
+          "Predictor": "known-model",
+          "Entropy": 2,
+          "CrossEntropy": 2,
+          "Kl": 0,
+          "ChainEntropy": 2,
+          "ChainCrossEntropy": 2,
+          "ChainKl": 0,
+          "ProbabilityMass": 1
+        },
+        {
+          "Length": 3,
+          "Predictor": "known-model",
+          "Entropy": 2.811278124459133,
+          "CrossEntropy": 2.811278124459133,
+          "Kl": 0,
+          "ChainEntropy": 2.8112781244591325,
+          "ChainCrossEntropy": 2.8112781244591325,
+          "ChainKl": 0,
+          "ProbabilityMass": 1
+        },
+        {
+          "Length": 4,
+          "Predictor": "known-model",
+          "Entropy": 3.6225562489182663,
+          "CrossEntropy": 3.6225562489182663,
+          "Kl": 0,
+          "ChainEntropy": 3.6225562489182668,
+          "ChainCrossEntropy": 3.6225562489182668,
+          "ChainKl": 0,
+          "ProbabilityMass": 1
+        },
+        {
+          "Length": 5,
+          "Predictor": "known-model",
+          "Entropy": 4.433834373377399,
+          "CrossEntropy": 4.433834373377399,
+          "Kl": 0,
+          "ChainEntropy": 4.4338343733774,
+          "ChainCrossEntropy": 4.4338343733774,
+          "ChainKl": 0,
+          "ProbabilityMass": 1
+        },
+        {
+          "Length": 6,
+          "Predictor": "known-model",
+          "Entropy": 5.24511249783653,
+          "CrossEntropy": 5.24511249783653,
+          "Kl": 0,
+          "ChainEntropy": 5.245112497836522,
+          "ChainCrossEntropy": 5.245112497836522,
+          "ChainKl": 0,
+          "ProbabilityMass": 1
+        },
+        {
+          "Length": 7,
+          "Predictor": "known-model",
+          "Entropy": 6.05639062229566,
+          "CrossEntropy": 6.05639062229566,
+          "Kl": 0,
+          "ChainEntropy": 6.056390622295644,
+          "ChainCrossEntropy": 6.056390622295644,
+          "ChainKl": 0,
+          "ProbabilityMass": 1
+        },
+        {
+          "Length": 8,
+          "Predictor": "known-model",
+          "Entropy": 6.867668746754795,
+          "CrossEntropy": 6.867668746754795,
+          "Kl": 0,
+          "ChainEntropy": 6.867668746754766,
+          "ChainCrossEntropy": 6.867668746754766,
+          "ChainKl": 0,
+          "ProbabilityMass": 1
+        },
+        {
+          "Length": 9,
+          "Predictor": "known-model",
+          "Entropy": 7.678946871213896,
+          "CrossEntropy": 7.678946871213896,
+          "Kl": 0,
+          "ChainEntropy": 7.678946871213902,
+          "ChainCrossEntropy": 7.678946871213902,
+          "ChainKl": 0,
+          "ProbabilityMass": 1
+        },
+        {
+          "Length": 10,
+          "Predictor": "known-model",
+          "Entropy": 8.490224995673039,
+          "CrossEntropy": 8.490224995673039,
+          "Kl": 0,
+          "ChainEntropy": 8.490224995673069,
+          "ChainCrossEntropy": 8.490224995673069,
+          "ChainKl": 0,
+          "ProbabilityMass": 1
+        },
+        {
+          "Length": 11,
+          "Predictor": "known-model",
+          "Entropy": 9.301503120132152,
+          "CrossEntropy": 9.301503120132152,
+          "Kl": 0,
+          "ChainEntropy": 9.301503120132276,
+          "ChainCrossEntropy": 9.301503120132276,
+          "ChainKl": 0,
+          "ProbabilityMass": 1
+        },
+        {
+          "Length": 12,
+          "Predictor": "known-model",
+          "Entropy": 10.112781244591106,
+          "CrossEntropy": 10.112781244591106,
+          "Kl": 0,
+          "ChainEntropy": 10.112781244591554,
+          "ChainCrossEntropy": 10.112781244591554,
+          "ChainKl": 0,
+          "ProbabilityMass": 1
+        },
+        {
+          "Length": 1,
+          "Predictor": "bernoulli-half",
+          "Entropy": 1,
+          "CrossEntropy": 1,
+          "Kl": 0,
+          "ChainEntropy": 1,
+          "ChainCrossEntropy": 1,
+          "ChainKl": 0,
+          "ProbabilityMass": 1
+        },
+        {
+          "Length": 2,
+          "Predictor": "bernoulli-half",
+          "Entropy": 2,
+          "CrossEntropy": 2,
+          "Kl": 0,
+          "ChainEntropy": 2,
+          "ChainCrossEntropy": 2,
+          "ChainKl": 0,
+          "ProbabilityMass": 1
+        },
+        {
+          "Length": 3,
+          "Predictor": "bernoulli-half",
+          "Entropy": 2.811278124459133,
+          "CrossEntropy": 3,
+          "Kl": 0.18872187554086717,
+          "ChainEntropy": 2.8112781244591325,
+          "ChainCrossEntropy": 3,
+          "ChainKl": 0.18872187554086717,
+          "ProbabilityMass": 1
+        },
+        {
+          "Length": 4,
+          "Predictor": "bernoulli-half",
+          "Entropy": 3.6225562489182663,
+          "CrossEntropy": 4,
+          "Kl": 0.3774437510817342,
+          "ChainEntropy": 3.6225562489182668,
+          "ChainCrossEntropy": 4,
+          "ChainKl": 0.37744375108173445,
+          "ProbabilityMass": 1
+        },
+        {
+          "Length": 5,
+          "Predictor": "bernoulli-half",
+          "Entropy": 4.433834373377399,
+          "CrossEntropy": 5,
+          "Kl": 0.5661656266226013,
+          "ChainEntropy": 4.4338343733774,
+          "ChainCrossEntropy": 5,
+          "ChainKl": 0.5661656266226015,
+          "ProbabilityMass": 1
+        },
+        {
+          "Length": 6,
+          "Predictor": "bernoulli-half",
+          "Entropy": 5.24511249783653,
+          "CrossEntropy": 6,
+          "Kl": 0.7548875021634686,
+          "ChainEntropy": 5.245112497836522,
+          "ChainCrossEntropy": 6,
+          "ChainKl": 0.7548875021634681,
+          "ProbabilityMass": 1
+        },
+        {
+          "Length": 7,
+          "Predictor": "bernoulli-half",
+          "Entropy": 6.05639062229566,
+          "CrossEntropy": 7,
+          "Kl": 0.9436093777043358,
+          "ChainEntropy": 6.056390622295644,
+          "ChainCrossEntropy": 7,
+          "ChainKl": 0.9436093777043347,
+          "ProbabilityMass": 1
+        },
+        {
+          "Length": 8,
+          "Predictor": "bernoulli-half",
+          "Entropy": 6.867668746754795,
+          "CrossEntropy": 8,
+          "Kl": 1.1323312532452052,
+          "ChainEntropy": 6.867668746754766,
+          "ChainCrossEntropy": 8,
+          "ChainKl": 1.132331253245204,
+          "ProbabilityMass": 1
+        },
+        {
+          "Length": 9,
+          "Predictor": "bernoulli-half",
+          "Entropy": 7.678946871213896,
+          "CrossEntropy": 9,
+          "Kl": 1.3210531287860707,
+          "ChainEntropy": 7.678946871213902,
+          "ChainCrossEntropy": 9,
+          "ChainKl": 1.321053128786075,
+          "ProbabilityMass": 1
+        },
+        {
+          "Length": 10,
+          "Predictor": "bernoulli-half",
+          "Entropy": 8.490224995673039,
+          "CrossEntropy": 10,
+          "Kl": 1.509775004326948,
+          "ChainEntropy": 8.490224995673069,
+          "ChainCrossEntropy": 10,
+          "ChainKl": 1.509775004326946,
+          "ProbabilityMass": 1
+        },
+        {
+          "Length": 11,
+          "Predictor": "bernoulli-half",
+          "Entropy": 9.301503120132152,
+          "CrossEntropy": 11,
+          "Kl": 1.6984968798677975,
+          "ChainEntropy": 9.301503120132276,
+          "ChainCrossEntropy": 11,
+          "ChainKl": 1.698496879867817,
+          "ProbabilityMass": 1
+        },
+        {
+          "Length": 12,
+          "Predictor": "bernoulli-half",
+          "Entropy": 10.112781244591106,
+          "CrossEntropy": 12,
+          "Kl": 1.8872187554086703,
+          "ChainEntropy": 10.112781244591554,
+          "ChainCrossEntropy": 12,
+          "ChainKl": 1.8872187554087958,
+          "ProbabilityMass": 1
+        },
+        {
+          "Length": 1,
+          "Predictor": "bernoulli-third",
+          "Entropy": 1,
+          "CrossEntropy": 1.084962500721156,
+          "Kl": 0.08496250072115608,
+          "ChainEntropy": 1,
+          "ChainCrossEntropy": 1.084962500721156,
+          "ChainKl": 0.08496250072115608,
+          "ProbabilityMass": 1
+        },
+        {
+          "Length": 2,
+          "Predictor": "bernoulli-third",
+          "Entropy": 2,
+          "CrossEntropy": 2.169925001442312,
+          "Kl": 0.1699250014423123,
+          "ChainEntropy": 2,
+          "ChainCrossEntropy": 2.169925001442312,
+          "ChainKl": 0.16992500144231215,
+          "ProbabilityMass": 1
+        },
+        {
+          "Length": 3,
+          "Predictor": "bernoulli-third",
+          "Entropy": 2.811278124459133,
+          "CrossEntropy": 3.2548875021634687,
+          "Kl": 0.44360937770433556,
+          "ChainEntropy": 2.8112781244591325,
+          "ChainCrossEntropy": 3.2548875021634682,
+          "ChainKl": 0.4436093777043354,
+          "ProbabilityMass": 1
+        },
+        {
+          "Length": 4,
+          "Predictor": "bernoulli-third",
+          "Entropy": 3.6225562489182663,
+          "CrossEntropy": 4.339850002884624,
+          "Kl": 0.7172937539663589,
+          "ChainEntropy": 3.6225562489182668,
+          "ChainCrossEntropy": 4.3398500028846225,
+          "ChainKl": 0.7172937539663586,
+          "ProbabilityMass": 1
+        },
+        {
+          "Length": 5,
+          "Predictor": "bernoulli-third",
+          "Entropy": 4.433834373377399,
+          "CrossEntropy": 5.424812503605783,
+          "Kl": 0.990978130228382,
+          "ChainEntropy": 4.4338343733774,
+          "ChainCrossEntropy": 5.424812503605775,
+          "ChainKl": 0.9909781302283818,
+          "ProbabilityMass": 1
+        },
+        {
+          "Length": 6,
+          "Predictor": "bernoulli-third",
+          "Entropy": 5.24511249783653,
+          "CrossEntropy": 6.509775004326934,
+          "Kl": 1.2646625064904056,
+          "ChainEntropy": 5.245112497836522,
+          "ChainCrossEntropy": 6.509775004326954,
+          "ChainKl": 1.2646625064904036,
+          "ProbabilityMass": 1
+        },
+        {
+          "Length": 7,
+          "Predictor": "bernoulli-third",
+          "Entropy": 6.05639062229566,
+          "CrossEntropy": 7.594737505048084,
+          "Kl": 1.538346882752429,
+          "ChainEntropy": 6.056390622295644,
+          "ChainCrossEntropy": 7.594737505048133,
+          "ChainKl": 1.5383468827524316,
+          "ProbabilityMass": 1
+        },
+        {
+          "Length": 8,
+          "Predictor": "bernoulli-third",
+          "Entropy": 6.867668746754795,
+          "CrossEntropy": 8.679700005769245,
+          "Kl": 1.8120312590144527,
+          "ChainEntropy": 6.867668746754766,
+          "ChainCrossEntropy": 8.679700005769234,
+          "ChainKl": 1.812031259014456,
+          "ProbabilityMass": 1
+        },
+        {
+          "Length": 9,
+          "Predictor": "bernoulli-third",
+          "Entropy": 7.678946871213896,
+          "CrossEntropy": 9.764662506490415,
+          "Kl": 2.0857156352764714,
+          "ChainEntropy": 7.678946871213902,
+          "ChainCrossEntropy": 9.76466250649029,
+          "ChainKl": 2.085715635276485,
+          "ProbabilityMass": 1
+        },
+        {
+          "Length": 10,
+          "Predictor": "bernoulli-third",
+          "Entropy": 8.490224995673039,
+          "CrossEntropy": 10.849625007211555,
+          "Kl": 2.35940001153849,
+          "ChainEntropy": 8.490224995673069,
+          "ChainCrossEntropy": 10.849625007211344,
+          "ChainKl": 2.359400011538491,
+          "ProbabilityMass": 1
+        },
+        {
+          "Length": 11,
+          "Predictor": "bernoulli-third",
+          "Entropy": 9.301503120132152,
+          "CrossEntropy": 11.934587507932825,
+          "Kl": 2.6330843878005328,
+          "ChainEntropy": 9.301503120132276,
+          "ChainCrossEntropy": 11.934587507932399,
+          "ChainKl": 2.633084387800497,
+          "ProbabilityMass": 1
+        },
+        {
+          "Length": 12,
+          "Predictor": "bernoulli-third",
+          "Entropy": 10.112781244591106,
+          "CrossEntropy": 13.01955000865404,
+          "Kl": 2.9067687640625843,
+          "ChainEntropy": 10.112781244591554,
+          "ChainCrossEntropy": 13.019550008653319,
+          "ChainKl": 2.9067687640627113,
+          "ProbabilityMass": 1
+        }
+      ],
+      "Closure": {
+        "Beliefs": [
+          ["1", "1", "1", "1"],
+          ["1", "0", "1", "0"],
+          ["0", "1", "0", "1"],
+          ["1", "0", "0", "0"],
+          ["0", "1", "0", "0"],
+          ["0", "0", "1", "0"],
+          ["0", "0", "0", "1"]
+        ],
+        "Edges": [
+          {
+            "Source": 0,
+            "Symbol": 0,
+            "Destination": 1,
+            "Probability": {
+              "Numerator": "1",
+              "Denominator": "2"
+            }
+          },
+          {
+            "Source": 0,
+            "Symbol": 1,
+            "Destination": 2,
+            "Probability": {
+              "Numerator": "1",
+              "Denominator": "2"
+            }
+          },
+          {
+            "Source": 1,
+            "Symbol": 0,
+            "Destination": 3,
+            "Probability": {
+              "Numerator": "1",
+              "Denominator": "2"
+            }
+          },
+          {
+            "Source": 1,
+            "Symbol": 1,
+            "Destination": 4,
+            "Probability": {
+              "Numerator": "1",
+              "Denominator": "2"
+            }
+          },
+          {
+            "Source": 2,
+            "Symbol": 0,
+            "Destination": 5,
+            "Probability": {
+              "Numerator": "1",
+              "Denominator": "2"
+            }
+          },
+          {
+            "Source": 2,
+            "Symbol": 1,
+            "Destination": 6,
+            "Probability": {
+              "Numerator": "1",
+              "Denominator": "2"
+            }
+          },
+          {
+            "Source": 3,
+            "Symbol": 0,
+            "Destination": 3,
+            "Probability": {
+              "Numerator": "3",
+              "Denominator": "4"
+            }
+          },
+          {
+            "Source": 3,
+            "Symbol": 1,
+            "Destination": 4,
+            "Probability": {
+              "Numerator": "1",
+              "Denominator": "4"
+            }
+          },
+          {
+            "Source": 4,
+            "Symbol": 0,
+            "Destination": 5,
+            "Probability": {
+              "Numerator": "3",
+              "Denominator": "4"
+            }
+          },
+          {
+            "Source": 4,
+            "Symbol": 1,
+            "Destination": 6,
+            "Probability": {
+              "Numerator": "1",
+              "Denominator": "4"
+            }
+          },
+          {
+            "Source": 5,
+            "Symbol": 0,
+            "Destination": 3,
+            "Probability": {
+              "Numerator": "1",
+              "Denominator": "4"
+            }
+          },
+          {
+            "Source": 5,
+            "Symbol": 1,
+            "Destination": 4,
+            "Probability": {
+              "Numerator": "3",
+              "Denominator": "4"
+            }
+          },
+          {
+            "Source": 6,
+            "Symbol": 0,
+            "Destination": 5,
+            "Probability": {
+              "Numerator": "1",
+              "Denominator": "4"
+            }
+          },
+          {
+            "Source": 6,
+            "Symbol": 1,
+            "Destination": 6,
+            "Probability": {
+              "Numerator": "3",
+              "Denominator": "4"
+            }
+          }
+        ],
+        "Matrix": [
+          [0, 0.5, 0.5, 0, 0, 0, 0],
+          [0, 0, 0, 0.5, 0.5, 0, 0],
+          [0, 0, 0, 0, 0, 0.5, 0.5],
+          [0, 0, 0, 0.75, 0.25, 0, 0],
+          [0, 0, 0, 0, 0, 0.75, 0.25],
+          [0, 0, 0, 0.25, 0.75, 0, 0],
+          [0, 0, 0, 0, 0, 0.25, 0.75]
+        ],
+        "Entropy": [1, 1, 1, 0.8112781244591328, 0.8112781244591328, 0.8112781244591328, 0.8112781244591328]
+      },
+      "EntropyCurve": [
+        1, 1, 0.8112781244591328, 0.8112781244591328, 0.8112781244591328, 0.8112781244591328, 0.8112781244591328,
+        0.8112781244591328, 0.8112781244591328, 0.8112781244591328, 0.8112781244591328, 0.8112781244591328,
+        0.8112781244591328, 0.8112781244591328, 0.8112781244591328, 0.8112781244591328, 0.8112781244591328,
+        0.8112781244591328, 0.8112781244591328, 0.8112781244591328, 0.8112781244591328, 0.8112781244591328,
+        0.8112781244591328, 0.8112781244591328, 0.8112781244591328, 0.8112781244591328, 0.8112781244591328,
+        0.8112781244591328, 0.8112781244591328, 0.8112781244591328, 0.8112781244591328, 0.8112781244591328,
+        0.8112781244591328, 0.8112781244591328, 0.8112781244591328, 0.8112781244591328, 0.8112781244591328,
+        0.8112781244591328, 0.8112781244591328, 0.8112781244591328, 0.8112781244591328, 0.8112781244591328,
+        0.8112781244591328, 0.8112781244591328, 0.8112781244591328, 0.8112781244591328, 0.8112781244591328,
+        0.8112781244591328, 0.8112781244591328, 0.8112781244591328, 0.8112781244591328, 0.8112781244591328,
+        0.8112781244591328, 0.8112781244591328, 0.8112781244591328, 0.8112781244591328, 0.8112781244591328,
+        0.8112781244591328, 0.8112781244591328, 0.8112781244591328, 0.8112781244591328, 0.8112781244591328,
+        0.8112781244591328, 0.8112781244591328
+      ]
+    }
+  ],
+  "Protocol": "predictive-laws-v1",
+  "SourceHashes": [
+    {
+      "File": "../Core/SplitMix64.fs",
+      "Sha256": "56D14EA951C459EF9509F934AE9AD65A293BEACBA841A2CBA8A2289693AAF174"
+    },
+    {
+      "File": "ResearchRandom.fs",
+      "Sha256": "4422C5EE4380A698FF479F0082C44E1453990C48AA034B9842719C4E0E7C79FF"
+    },
+    {
+      "File": "SmallRnn.fs",
+      "Sha256": "DFB2E2828E3086CE8691DCCF777A93A0C77C7A130DD00440ED96B22312EFDA9E"
+    },
+    {
+      "File": "PredictiveState.fs",
+      "Sha256": "F534A468A64DBB1272AE869B04B864F027970DB220A42B9901AA5BE0C57B27EB"
+    },
+    {
+      "File": "PredictiveStateLaws.fs",
+      "Sha256": "01CFA5BF9FB565F837D9AE3C1876B8B1DFAB1DD3CF981FC8F66AE0906E2E9E49"
+    },
+    {
+      "File": "run-predictive-laws.fsx",
+      "Sha256": "6E7BF9CA28D1980A83A2880CB2CA6B3ED1C741575F79D846CCBBD0CB995DCAF5"
+    }
+  ]
+}

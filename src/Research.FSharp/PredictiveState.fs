@@ -63,7 +63,7 @@ module PredictiveState =
             Array.init 4 (fun destination ->
                 if destination = 2 * (state % 2) + symbol then (if symbol = state / 2 then 3 else 1) else 0)))
         fixture "lag-two-copy" 4 edges [| 1; 1; 1; 1 |]
-    let fixtures = [| coin; goldenMean; even; rrxor; lagTwoCopy |]
+    let fixtures () = [| coin; goldenMean; even; rrxor; lagTwoCopy |]
     let name model = model.Name
     let internal prior model = Array.copy model.Prior
     let internal alphabet (model: Model) = model.Edges.Length

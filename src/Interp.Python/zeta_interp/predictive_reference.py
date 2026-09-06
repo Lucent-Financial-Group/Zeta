@@ -197,6 +197,20 @@ def spectral_check():
     }
 
 
+def future_rank_diagnostic():
+    """Post-result diagnostic only; it does not replace the registered 3-token probe."""
+    model = fixtures()["rrxor"]
+    return [
+        sp.Matrix(
+            [
+                future(model, [F(int(i == j)) for j in range(5)], length)
+                for i in range(5)
+            ]
+        ).rank()
+        for length in range(1, 5)
+    ]
+
+
 def verify(receipt):
     if (
         receipt.get("Protocol") != "predictive-laws-v1"
@@ -275,6 +289,7 @@ def verify(receipt):
         "loss_comparisons": comparisons,
         "maximum_absolute_error": maximum,
         "spectral": spectral_check(),
+        "post_hoc_rrxor_future_map_ranks_1_to_4": future_rank_diagnostic(),
     }
 
 

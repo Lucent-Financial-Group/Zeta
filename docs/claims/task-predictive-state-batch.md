@@ -10,3 +10,8 @@
 
 No game-policy, database runtime, cluster or other-agent changes are claimed.
 The protocol is committed before inspecting trained-model measurements.
+
+Progress: all four experiments are recorded in
+[the report](../research/2026-09-06-predictive-state-batch-results.md).
+Independent replay and repeat training agree; release build and Python checks
+pass. Full .NET execution and remote integration remain in progress.

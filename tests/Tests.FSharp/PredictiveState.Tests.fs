@@ -28,7 +28,7 @@ let ``binary and ternary recurrent gradients match every finite difference`` () 
 
 [<Fact>]
 let ``exact word weights agree with normalized filtering including impossible histories`` () =
-    for model in PredictiveState.fixtures do
+    for model in PredictiveState.fixtures () do
         for length in 0 .. 8 do
             let mutable mass = 0.0
             for word in PredictiveStateLaws.words 2 length do
@@ -44,7 +44,7 @@ let ``exact word weights agree with normalized filtering including impossible hi
 
 [<Fact>]
 let ``finite mixed state closures and chain rule agree without rounding`` () =
-    for model, count in List.zip (Array.toList PredictiveState.fixtures) [ 1; 3; 4; 36; 7 ] do
+    for model, count in List.zip (Array.toList (PredictiveState.fixtures ())) [ 1; 3; 4; 36; 7 ] do
         let receipt = PredictiveStateLaws.run 8 model |> require
         Assert.Equal(count, receipt.Closure.Beliefs.Length)
         for row in receipt.Losses do
@@ -59,6 +59,11 @@ let ``finite mixed state closures and chain rule agree without rounding`` () =
             near 1e-10 (known.[i].Entropy - prior) receipt.EntropyCurve.[i]
     let lag = PredictiveState.closure 128 4096 PredictiveState.lagTwoCopy |> require |> PredictiveState.entropyCurve 64 |> require
     for i in 0 .. 63 do near 1e-12 (if i < 2 then 1.0 else PredictiveState.entropy [| 0.25; 0.75 |]) lag.[i]
+    let coin = PredictiveState.closure 128 4096 PredictiveState.coin |> require |> PredictiveState.entropyCurve 64 |> require
+    let golden = PredictiveState.closure 128 4096 PredictiveState.goldenMean |> require |> PredictiveState.entropyCurve 64 |> require
+    for i in 0 .. 63 do
+        near 1e-12 (PredictiveState.entropy [| 0.25; 0.75 |]) coin.[i]
+        near 1e-12 (if i = 0 then PredictiveState.entropy [| 1.0 / 3.0; 2.0 / 3.0 |] else 2.0 / 3.0) golden.[i]
     Assert.True((PredictiveStateLaws.crossEntropy [| 0.5; 0.5 |] [| 1.0; 0.0 |]).IsError)
     near 0.0 0.0 (PredictiveStateLaws.crossEntropy [| 1.0; 0.0 |] [| 1.0; 0.0 |] |> require)
 
@@ -102,3 +107,16 @@ let ``five coordinate probe and zero probability RRXOR evaluation stay finite`` 
     near 1e-12 0.0 exact.Future3KlBits
     Assert.True((BeliefProbe.fit 1e-6 [| [| 1.0 |] |] [| [||] |]).IsError)
     Assert.True((BeliefProbe.score [| [| 1.0 |] |] null).IsError)
+
+[<Fact>]
+let ``model and fixture collection do not retain caller owned mutable arrays`` () =
+    let edges = [| [| [| 3 |] |]; [| [| 1 |] |] |]
+    let prior = [| 1 |]
+    let model = PredictiveState.create "copy-check" 4 edges prior |> require
+    edges.[0].[0].[0] <- 0
+    prior.[0] <- 0
+    let _, (n, d) = PredictiveState.filter model [| 0 |] |> require
+    Assert.Equal<bigint * bigint>((3I, 4I), (n, d))
+    let first = PredictiveState.fixtures ()
+    first.[0] <- PredictiveState.rrxor
+    Assert.Equal("biased-coin", PredictiveState.name (PredictiveState.fixtures ()).[0])

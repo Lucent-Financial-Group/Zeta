@@ -145,6 +145,7 @@ def test_every_entropy_identity_and_generalized_spectral_power(laws):
     result = verify(laws)
     assert result["loss_comparisons"] == 1080
     assert result["spectral"]["powers_verified"] == 64
+    assert result["post_hoc_rrxor_future_map_ranks_1_to_4"] == [2, 3, 4, 5]
 
 
 @pytest.mark.parametrize("removed", ["model", "loss", "context"])
@@ -229,6 +230,15 @@ def inference():
 def test_inference_consumes_every_frozen_model_output(inference):
     result = verify_inference(inference, ROOT / "src/Research.FSharp")
     assert result["measurements"] == 190
+
+
+def test_zero_memory_counter_is_unknown_not_zero_memory(inference):
+    data = copy.deepcopy(inference)
+    data["ProcessPeakWorkingSetBytes"] = 0
+    assert (
+        verify_inference(data, ROOT / "src/Research.FSharp")["peak_memory_status"]
+        == "unavailable"
+    )
 
 
 @pytest.mark.parametrize(

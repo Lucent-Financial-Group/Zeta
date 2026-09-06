@@ -100,13 +100,16 @@ def verify(receipt, directory):
         if not math.isfinite(error) or error > 1e-8:
             raise ValueError("output checksum mismatch")
         checksum_error = max(checksum_error, float(error))
-    if receipt["ProcessPeakWorkingSetBytes"] <= 0:
-        raise ValueError("missing runtime-inclusive memory sample")
+    if receipt["ProcessPeakWorkingSetBytes"] < 0:
+        raise ValueError("invalid runtime-inclusive memory counter")
     return {
         "status": "passed",
         "candidates": 38,
         "measurements": len(rows),
         "maximum_checksum_error": checksum_error,
+        "peak_memory_status": "unavailable"
+        if receipt["ProcessPeakWorkingSetBytes"] == 0
+        else "runtime-inclusive-only",
     }
 
 

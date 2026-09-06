@@ -13,7 +13,7 @@ open Zeta.Research
 let require = function Ok value -> value | Error reason -> eprintfn "%A" reason; exit 1
 let output = match fsi.CommandLineArgs |> Array.skip 1 with [| path |] -> path | _ -> eprintfn "usage: run-predictive-laws.fsx OUTPUT"; exit 2
 if File.Exists output then eprintfn "refusing to overwrite %s" output; exit 2
-let rows = PredictiveState.fixtures |> Array.map (PredictiveStateLaws.run 12 >> require)
+let rows = PredictiveState.fixtures () |> Array.map (PredictiveStateLaws.run 12 >> require)
 let hashes = [| "../Core/SplitMix64.fs"; "ResearchRandom.fs"; "SmallRnn.fs"; "PredictiveState.fs"; "PredictiveStateLaws.fs"; "run-predictive-laws.fsx" |] |> Array.map (fun name ->
     {| File = name; Sha256 = File.ReadAllBytes(Path.Combine(__SOURCE_DIRECTORY__, name)) |> SHA256.HashData |> Convert.ToHexString |})
 let result = {| Protocol = "predictive-laws-v1"; Complete = true; SourceHashes = hashes; Models = rows |}
