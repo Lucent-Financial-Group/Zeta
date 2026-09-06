@@ -4,7 +4,7 @@
 - **Harness:** codex
 - **Claimed at:** 2026-09-06T21:04:24.028891+00:00
 - **ETA:** Bounded witness and findings within one hour.
-- **Scope:** Audit missing CHSH setting coverage and both calibrated classification paths; preserve an executable defect witness and proposed refusal boundary.
+- **Scope:** Preserve CHSH coverage witnesses; implement coverage-limited margins and explicit metrology refusals with public-contract tests.
 - **Durable target:** ZetaId bug workitem plus indexed research findings and native witness.
 
 ## Notes
