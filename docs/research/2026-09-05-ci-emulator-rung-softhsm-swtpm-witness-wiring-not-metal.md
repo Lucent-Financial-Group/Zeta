@@ -226,15 +226,18 @@ Argv (`081M1VJGMMP087G0R002JRZ458`): `--bao-load-site` plus
 Conf/argv carrier (`081M1VM7S47087G0R001VQ1QK5`): both
 `ZETA_BAO_LOAD_SITE` and `ZETA_BAO_PATH`, or neither.
 `/dev/tpmrm0` is shell-safe and still not a bao path.
+Conf consume (`081M1VNS22M087G0R000P9A1XH`): parse those
+assignments back into a named ask. One key without the
+other refuses.
 
 1. Metal: `seal "pkcs11"` in Application.yaml still waits.
    Same commit as a **reachable** module: same-libc image
    (glibc OpenBao that can load the host `.so`) or option D
    host `bao`. Dual-vendor per node is ZetaFS k-of-n, not
    two active OpenBao seals. Do not treat this planner as
-   that commit. `zeta-first-boot.sh` still has to *consume*
-   the carrier (not from `/dev/tpmrm0`). Does not expand
-   `ZetaFirstbootRole` until that consume lands.
+   that commit. `zeta-first-boot.sh` still has to *source
+   and pass* the carrier (not from `/dev/tpmrm0`). Does not
+   expand `ZetaFirstbootRole` until that bash consume lands.
 2. extraContainer Shamir sidecar (`valuesObject` only) until
    kind/CI consume the emulator init.
 

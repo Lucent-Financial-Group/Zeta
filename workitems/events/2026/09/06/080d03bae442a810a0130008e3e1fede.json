@@ -1,0 +1,14 @@
+{
+  "id": "080d03bae442a810a0130008e3e1fede",
+  "at": "2026-09-06T15:35:48.053Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1VNS22M087G0R000P9A1XH",
+    "type": "task",
+    "title": "First-boot conf consume names bao site and path; tpmrm0 does not",
+    "slug": "first-boot-conf-consume-names-bao-site-and-path-tpmrm0-does",
+    "priority": "P2",
+    "filename": "081M1VNS22M087G0R000P9A1XH-first-boot-conf-consume-names-bao-site-and-path-tpmrm0-does.md"
+  }
+}
