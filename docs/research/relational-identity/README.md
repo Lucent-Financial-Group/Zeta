@@ -5,6 +5,9 @@ the pairwise cross-consistency multiplier, and names the causal receipt
 structure preserved between skewed local memories on a declared disclosed cut.
 It is separate from ARC and rendered-signal prediction.
 
+- [2026-09-06 results](2026-09-06-results.md): exact native/Python replay,
+  retained collusion and entropy counterexamples, all mutation outcomes, and
+  workload-accounting limits.
 - [2026-09-06 preregistration](2026-09-06-protocol.md): assumptions, explicit
   functor, workload accounting, attack controls, independent replay, and
   promotion limits.
