@@ -1,0 +1,12 @@
+{
+  "pr_number": 16783,
+  "archive_path": "docs/history/pr-reviews/PR-16783-feat-creds-feed-pkcs-11-overlay-from-setup-integrate-still-not-a-seal.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-06T11:14:28.460Z",
+  "schema_version": "v1",
+  "commit_sha": "aeeafbd7d2fa67aece1b66510a07eb726d4c12f0",
+  "title": "feat(creds): Feed PKCS#11 overlay from setup integrate; still not a seal",
+  "state": "MERGED",
+  "merged_at": "2026-09-06T11:13:50Z",
+  "head_ref": "cursor/setup-integrate-overlay-27c5"
+}
