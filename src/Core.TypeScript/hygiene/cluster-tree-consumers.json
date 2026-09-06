@@ -65,6 +65,12 @@
       "migrateTo": "drop the two-substrate paragraph when there is one."
     },
     {
+      "path": ".github/workflows/first-boot-manifest-check.yml",
+      "disposition": "derived",
+      "note": "A `paths:` glob, `infra/k8s/bootstrap/**`, on the lane that evaluates the full-ai-cluster flake when a first-boot manifest changes. It is `derived` rather than `blocking` because a stale glob BREAKS NOTHING: GitHub Actions path filters match against changed files, so a pattern matching a directory that no longer exists simply never fires. The lane keeps working for the surviving tree.",
+      "migrateTo": "delete the `infra/k8s/bootstrap/**` line from this workflow's two `paths:` lists in the deletion commit. Nothing else in the file names the stale tree, and the full-ai-cluster glob beside it carries the lane on its own."
+    },
+    {
       "path": ".github/workflows/gate.yml",
       "disposition": "blocking",
       "note": "The `lint (yaml/k8s)` job runs `yamllint -d relaxed full-ai-cluster/k8s/ infra/k8s/ ...` and a `find full-ai-cluster/k8s infra/k8s ... | xargs kubeconform`. Both name infra/k8s as a literal path argument; `find` errors on a missing directory.",
