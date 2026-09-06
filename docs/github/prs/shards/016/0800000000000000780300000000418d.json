@@ -1,0 +1,12 @@
+{
+  "pr_number": 16781,
+  "archive_path": "docs/history/pr-reviews/PR-16781-feat-creds-wire-setup-overlay-from-usb-companion-still-not-a-seal.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-06T10:49:02.879Z",
+  "schema_version": "v1",
+  "commit_sha": "a77ad7d2ce340b14b385b3435a7a020661af3a7c",
+  "title": "feat(creds): Wire setup overlay from USB companion; still not a seal",
+  "state": "MERGED",
+  "merged_at": "2026-09-06T10:48:25Z",
+  "head_ref": "cursor/setup-overlay-from-companion-27c5"
+}
