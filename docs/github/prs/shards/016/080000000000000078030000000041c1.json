@@ -1,0 +1,12 @@
+{
+  "pr_number": 16833,
+  "archive_path": "docs/history/pr-reviews/PR-16833-docs-handoff-add-qbism-relational-identity-bridge.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-06T19:34:01.593Z",
+  "schema_version": "v1",
+  "commit_sha": "01fdeb5236ffff5dbd196f5b58d9bfbf3b36b9c3",
+  "title": "docs(handoff): add QBism relational identity bridge",
+  "state": "MERGED",
+  "merged_at": "2026-09-06T19:33:25Z",
+  "head_ref": "codex/vera-qbism-relational-identity-bootstrap"
+}
