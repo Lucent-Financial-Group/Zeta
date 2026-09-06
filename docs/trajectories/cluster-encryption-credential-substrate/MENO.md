@@ -78,8 +78,8 @@ assume the number.
    refuse-init / curl 000 miss (not a seal). Keep until
    kind/CI consume the off-cluster emulator init (item 3).
    Cannot init the chart.
-3. **CI emulator rung** (classifier + install + **off-cluster
-   bao PKCS#11 init this slice**). Classifier:
+3. **CI emulator rung** (classifier + install + off-cluster
+   bao PKCS#11 init landed, #16772). Classifier:
    `seal-emulator-rung.ts`. Install 2×2 (#16767,
    `081M1TS32Y3087G0R0026Y21F5`): the job **installs**
    SoftHSM2 / swtpm, then the witness measures the disk.
@@ -115,10 +115,13 @@ assume the number.
    one OpenBao seal per node. Dual-vendor on one box is
    ZetaFS k-of-n. The install job (item 3) is the 2×2
    consumer.
-5. **USB repair HSM-talk** — companions on the stick (module
-   path, connector config, authkey *reference*, domain map,
-   OpenBao env pointer). Not PIN-as-original, not Shamir copy,
-   not `OP_SESSION`, not a brand type in the volume.
+5. **USB repair HSM-talk** (`--bake-cred` this slice,
+   `081M1TX6CV6087G0R002GZEXMP`). Companions on the stick:
+   module path, connector config, authkey *reference*,
+   domain map, OpenBao env pointer. Not PIN-as-original,
+   not Shamir copy, not `OP_SESSION`, not a brand type in
+   the volume. Host-only — not `zeta-host-creds` Secrets.
+   SoftHSM CI is not this metal companion set.
 6. extraContainer sidecar — later, **same commit as the
    sidecar**, and only for the Shamir kind path until the
    emulator job replaces it. `valuesObject` only. Do not fork

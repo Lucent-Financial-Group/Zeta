@@ -44,6 +44,11 @@ function expectedFixtureSummary(): string {
     "  SKIP ssh-operator-pubkey: host-only (not cluster-projectable)",
     "  SKIP wifi: host-only (not cluster-projectable)",
     "  SKIP install-answers: host-only (not cluster-projectable)",
+    "  SKIP pkcs11-module-path: host-only (not cluster-projectable)",
+    "  SKIP connector-config: host-only (not cluster-projectable)",
+    "  SKIP authkey-reference: host-only (not cluster-projectable)",
+    "  SKIP domain-map: host-only (not cluster-projectable)",
+    "  SKIP openbao-seal-env-pointer: host-only (not cluster-projectable)",
   ].join("\n");
 }
 
@@ -83,8 +88,18 @@ describe("classification lock", () => {
     }
   });
 
-  it("wifi, ssh, and install-answers stay host-only", () => {
-    for (const id of ["wifi", "ssh-host-keys", "ssh-operator-pubkey", "install-answers"]) {
+  it("wifi, ssh, install-answers, and HSM companions stay host-only", () => {
+    for (const id of [
+      "wifi",
+      "ssh-host-keys",
+      "ssh-operator-pubkey",
+      "install-answers",
+      "pkcs11-module-path",
+      "connector-config",
+      "authkey-reference",
+      "domain-map",
+      "openbao-seal-env-pointer",
+    ]) {
       expect(classifyCredId(id)).toBe("host-only");
       expect(HOST_ONLY_CRED_IDS).toContain(id);
     }
@@ -128,6 +143,11 @@ describe("planHostCredDocuments", () => {
       { id: "ssh-operator-pubkey", reason: "host-only (not cluster-projectable)" },
       { id: "wifi", reason: "host-only (not cluster-projectable)" },
       { id: "install-answers", reason: "host-only (not cluster-projectable)" },
+      { id: "pkcs11-module-path", reason: "host-only (not cluster-projectable)" },
+      { id: "connector-config", reason: "host-only (not cluster-projectable)" },
+      { id: "authkey-reference", reason: "host-only (not cluster-projectable)" },
+      { id: "domain-map", reason: "host-only (not cluster-projectable)" },
+      { id: "openbao-seal-env-pointer", reason: "host-only (not cluster-projectable)" },
     ]);
   });
 

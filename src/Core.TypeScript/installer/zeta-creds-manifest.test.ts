@@ -68,6 +68,22 @@ describe("DEFAULT_MANIFEST", () => {
     expect(entry).toBeDefined();
     expect(entry!.required).toBe(false);
   });
+
+  it("declares HSM-talk companions as optional host-level references", () => {
+    for (const id of [
+      "pkcs11-module-path",
+      "connector-config",
+      "authkey-reference",
+      "domain-map",
+      "openbao-seal-env-pointer",
+    ]) {
+      const entry = DEFAULT_MANIFEST.credentials.find((c) => c.id === id);
+      expect(entry).toBeDefined();
+      expect(entry!.required).toBe(false);
+      expect(entry!.personaScoped).toBe(false);
+      expect(entry!.paths[0]).toContain("/etc/zeta/seal/");
+    }
+  });
 });
 
 describe("validateManifest — accepts well-formed input", () => {

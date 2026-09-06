@@ -1,7 +1,7 @@
 # Trajectory - Cluster Encryption / Credential Substrate
 
 Status: active — first surfaced 2026-05-29 from substrate inventory (was tracked only as scattered backlog rows; never had a trajectory surface, which is why it was easy to lose at cold-boot)
-Last refreshed: 2026-09-06 (off-cluster bao PKCS#11 init against SoftHSM)
+Last refreshed: 2026-09-06 (USB --bake-cred HSM-talk companions)
 Type: workstream (current-focus) — a trajectory the operator is *actively powering*. Many trajectories can be tracked; only a few are workstreams at once (finite-focus / WIP-bounded — a workstream is a trajectory under sustained thrust, and thrust budget is finite, so most trajectories coast). ("Trajectory" is the genus; "workstream" is the species: a trajectory under sustained thrust toward a deliverable, vs. emergent-posture trajectories like `anti-infection`, which self-describes as "not a workstream with a cadence." See [`factory-trajectory-surface`](../factory-trajectory-surface/RESUME.md) for the genus/species taxonomy.) One of the operator's three current cluster workstreams (encryption / usb-zflash / ts-workflow-engine).
 Eventual encoding (design-stage — the human maintainer 2026-05-23 genetic-ID substrate + Clifford/HKT): this trajectory's state is trackable as a 128-bit genetic-ID seed (discrete, reversible via parser-combinator ↔ generator-function) → Clifford-space path (continuous, eventual). Mirrors the three-lane I8-lattice / I9-manifold split.
 Current blocker: none operationally; the live design tension is interactive-login-vs-baked-in-keys-vs-CI-test (081KSGS9H0008QG0R003JNSVR5)
@@ -165,6 +165,27 @@ green.
   sidecar stays a later hop (`valuesObject` only, same
   commit as the sidecar). Lucent mint and metal `tty1`
   stay human-blocked.
+
+## 2026-09-06 — USB --bake-cred grows HSM-talk companions (Riven)
+
+Aaron: continue after SoftHSM `bao` init. A repaired box
+still has to talk to the device. That is companions on the
+stick, not a second secret store.
+
+Consumer: `src/Core.TypeScript/installer/usb-hsm-companion.ts`
+plus bake-cred handlers / manifest entries.
+Workitem: `081M1TX6CV6087G0R002GZEXMP`.
+
+- Five kinds: `pkcs11-module-path`, `connector-config`,
+  `authkey-reference`, `domain-map`,
+  `openbao-seal-env-pointer`.
+- PIN / Shamir / `OP_SESSION` / brand-type refuse as
+  bake-cred originals. Env pointer is the *name*
+  (`BAO_HSM_PIN`), not `NAME=value`.
+- Host-only. Not projected into `zeta-host-creds`.
+- SoftHSM green is not this metal companion set. Metal
+  `seal "pkcs11"` stays a later hop (same commit as a
+  module in the image or hostPath overlay).
 
 ## 2026-09-04 — production-hardening review (Riven)
 
