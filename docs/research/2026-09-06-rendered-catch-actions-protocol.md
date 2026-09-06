@@ -421,3 +421,37 @@ modules/runners and an independent Python replay/verdict, with focused
 cross-checks. This protocol creates none of them. The implementation must expose
 explicit native, cost, replay, and verdict commands before measurement; their
 source bytes and invocation arguments belong in the eventual receipts.
+
+## K. Post-registration, pre-implementation review clarification
+
+The immutable registration commit is
+`8e08b5424feb2a80d80c1807e403c52ab34e79d1`. The following independent
+source-review findings arrived while that registration push was running.
+They are preserved before acting implementation or measurement; the original
+registration tag is unchanged. The scientific roster, thresholds, streams,
+opcode schedule, and comparison remain unchanged.
+
+Independent reviewer: Vera, OpenAI Codex using GPT-6 Astra, delegated
+`protocol_review` source audit. The audit found no material issue in chronology,
+lower-band noninterference, the opcode/layout budget, or the bounded contextual
+bandit claim. The coordinating contributor accepted these clarifications:
+
+- Prefix/suffix and lower-band noninterference witnesses fork identical bounded
+  policy state, including the fair arm's RNG state and draw index. Comparing
+  successive random choices from one evolving stream is not such a witness.
+- The complete timed episode includes construction of `Chip8Adapter` and its
+  constructor ROM copy, as well as `Reset` and loading. Only source generation,
+  ROM compilation/admission, and the other explicit section G exclusions remain
+  outside timing.
+- Native, cost, replay, and verdict CLIs bind their own source/runtime manifests
+  and verify admitted source-file bytes against the resolved immutable
+  implementation archive commit. An arbitrary commit label or unverified hash
+  list is insufficient. Replay and verdict additionally hash exactly the input
+  bytes checked. Unit/conformance fixtures may compile before implementation
+  archival; measurement and public verdict paths must enforce source admission.
+  Use the separate immutable registration and implementation tags in section J;
+  never move either tag.
+
+This is a source-review record and implementation-contract clarification, not
+an executed conformance test or measured result. The final receipts bind this
+protocol's full bytes, including this addendum, with `ProtocolSha256`.
