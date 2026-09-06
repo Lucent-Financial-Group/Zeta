@@ -34,3 +34,4 @@ Claim: `task-finite-stochastic-cqm-bridge-20260906`.
 [Proof/witness contract](../docs/research/2026-09-06-finite-stochastic-cqm-bridge-protocol.md).
 [Implementation and receipt boundary](../docs/research/2026-09-06-finite-stochastic-cqm-bridge-implementation.md).
 [Independent source review](../docs/research/2026-09-06-finite-stochastic-cqm-bridge-review.md).
+[Exact results and validation](../docs/research/2026-09-06-finite-stochastic-cqm-bridge-results.md).
