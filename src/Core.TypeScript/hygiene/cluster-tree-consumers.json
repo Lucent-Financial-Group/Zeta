@@ -174,27 +174,21 @@
     },
     {
       "path": "src/Core.TypeScript/cluster/rendered-resource-requests.test.ts",
-      "disposition": "derived",
-      "note": "Pins `appTreeOf` against the cross-tree collision the checker had in draft: `full-ai-cluster` and `infra` each hold an Application called `gitlab` and one called `cockroachdb`, and splitting an appId on the first slash attributed one tree's render to the other tree's catalogue row.",
-      "migrateTo": "the collision case needs TWO trees to exist; when there is one, replace the fixture with a synthetic second tree rather than deleting the test -- the function is still wrong without it."
+      "disposition": "prose",
+      "note": "Comment only — the two-tree behaviour it describes is now derived, not listed.",
+      "migrateTo": "drop the two-tree paragraph when there is one tree."
     },
     {
       "path": "src/Core.TypeScript/cluster/rendered-resource-requests.ts",
-      "disposition": "derived",
-      "note": "Renders every discovered Application at both resource rungs. It does not TARGET infra/k8s -- it inherits the tree list from `discoverApplications`, which walks both roots -- and it names the path only in the finding text that says the CPU/memory ladder cannot cover a second tree. Nothing here breaks when infra/k8s goes; the finding simply stops being produced.",
-      "migrateTo": "drop the `(it is in the \"<tree>\" tree; ...)` clause from `uncovered-application` when full-ai-cluster is the only tree, or leave it -- it is derived from `appTreeOf`, not from a literal."
+      "disposition": "prose",
+      "note": "Its application roots now come from `discoverApplications`, which reads the derived tree list; the only remaining mention is the paragraph explaining that it walks BOTH trees.",
+      "migrateTo": "drop the two-tree paragraph when there is one tree."
     },
     {
       "path": "src/Core.TypeScript/cluster/rendered-storage-claims.test.ts",
       "disposition": "prose",
       "note": "One comment (line ~356) records WHY the storage-claim set shrank: infra/k8s/applications held seven Applications that duplicated full-ai-cluster ones, and they left by deletion rather than by discovery getting worse. The mention is the explanation of a removal, not a dependency on the tree.",
       "migrateTo": "drop the sentence when infra/k8s is deleted and the comparison it draws stops being legible."
-    },
-    {
-      "path": "src/Core.TypeScript/cluster/rendered-storage-claims.ts",
-      "disposition": "derived",
-      "note": "APPLICATION_ROOTS lists `infra/k8s/applications` beside `full-ai-cluster/k8s/applications` so the render check covers BOTH declarations of the cluster. It has to: infra/cockroachdb carries a catalogue row (`infra/cockroachdb/data`, 8Gi x3), and infra/gitlab renders four PVCs totalling 76 GiB that no row declares. Nothing BREAKS when the tree is deleted -- `readdirIfPresent` returns an empty list for a missing directory rather than throwing -- but the checked-in render snapshot would keep naming apps that no longer exist and `--check-snapshot` would report them as GONE, which is drift, not a crash.",
-      "migrateTo": "drop `infra/k8s/applications` from APPLICATION_ROOTS in the deletion commit and re-run `--write-snapshot`; the infra entries leave the snapshot in the same pass. The `infra/cockroachdb/data` row in storage-profiles.json goes with them (it is already noted there as living in the other app-of-apps tree)."
     },
     {
       "path": "src/Core.TypeScript/cluster/single-node-readiness.test.ts",
@@ -204,9 +198,9 @@
     },
     {
       "path": "src/Core.TypeScript/cluster/single-node-readiness.ts",
-      "disposition": "derived",
-      "note": "MANIFEST_ROOTS lists infra/k8s/applications and infra/k8s/bootstrap so the auditor can see the collision at all.",
-      "migrateTo": "remove both roots when the tree goes."
+      "disposition": "prose",
+      "note": "`DEFAULT_ROOTS` is now derived from the roster via `clusterDirs`; the only remaining mention is the paragraph explaining why the duplicate-detection keys are tree-qualified.",
+      "migrateTo": "drop the two-tree paragraph when there is one tree."
     },
     {
       "path": "src/Core.TypeScript/hygiene/audit-argocd-pin-parity.ts",
@@ -240,12 +234,6 @@
       "path": "src/Core.TypeScript/hygiene/cluster-tree-consumers.json",
       "disposition": "self",
       "note": "This roster."
-    },
-    {
-      "path": "src/Core.TypeScript/hygiene/lint-kubernetes-version-agrees.ts",
-      "disposition": "derived",
-      "note": "SCAN_GLOBS includes infra/k8s/tests because a Kubernetes-version literal there is exactly what this linter exists to catch -- the legacy validator carried 1.33.0 while the observability audit carried 1.31.0 and the cluster ran 1.35.6. Scanning only the surviving tree would leave the drift it was written for unwatched.",
-      "migrateTo": "drop the infra/k8s/tests entry from SCAN_GLOBS when that tree is deleted; the remaining globs need no change."
     },
     {
       "path": "src/Core.TypeScript/hygiene/mise-pin-parity.test.ts",
