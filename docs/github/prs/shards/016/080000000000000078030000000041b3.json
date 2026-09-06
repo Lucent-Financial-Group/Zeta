@@ -1,0 +1,12 @@
+{
+  "pr_number": 16819,
+  "archive_path": "docs/history/pr-reviews/PR-16819-feat-corporate-the-process-becomes-a-value-the-loop-exists-in-the-program-and-th.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-06T18:07:11.143Z",
+  "schema_version": "v1",
+  "commit_sha": "837518bb86d56f9f7aefadf696a21dc6f441b4e8",
+  "title": "feat(corporate): the process becomes a value, the loop exists in the program, and the dispatch gate can open",
+  "state": "MERGED",
+  "merged_at": "2026-09-06T18:06:30Z",
+  "head_ref": "org-pipeline-phases"
+}

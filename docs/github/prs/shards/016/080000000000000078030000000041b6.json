@@ -1,0 +1,12 @@
+{
+  "pr_number": 16822,
+  "archive_path": "docs/history/pr-reviews/PR-16822-feat-081m1vxqgrp087g0r002v4gzkd-isimulatedfs-write-fail-on-catalog-persist.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-06T18:16:56.995Z",
+  "schema_version": "v1",
+  "commit_sha": "6687ec3de5eb380ac327de2f769582f4fb7ba229",
+  "title": "feat(081M1VXQGRP087G0R002V4GZKD): ISimulatedFs write-fail on catalog persist",
+  "state": "MERGED",
+  "merged_at": "2026-09-06T18:16:21Z",
+  "head_ref": "feat/zetafs-catalog-write-fail"
+}
