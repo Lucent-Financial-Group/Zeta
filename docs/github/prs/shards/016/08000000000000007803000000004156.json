@@ -1,0 +1,12 @@
+{
+  "pr_number": 16726,
+  "archive_path": "docs/history/pr-reviews/PR-16726-test-081m1t9yhr2087g0r002zx9t36-reopen-meter-still-paces-reclaimtickmetered.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-06T03:11:43.031Z",
+  "schema_version": "v1",
+  "commit_sha": "b6c871bcb03fd5a9fd661e40653d6499428a0062",
+  "title": "test(081M1T9YHR2087G0R002ZX9T36): reopen meter still paces reclaimTickMetered",
+  "state": "MERGED",
+  "merged_at": "2026-09-06T03:11:00Z",
+  "head_ref": "feat/zetafs-reopen-meter-paces-reclaim"
+}

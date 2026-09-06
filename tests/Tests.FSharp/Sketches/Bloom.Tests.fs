@@ -210,3 +210,81 @@ let ``InsertDeleteBloom MergeFrom unions I and D`` () =
     b.NoteRetract 1L
     a.MergeFrom b
     Assert.Equal(BloomPairVerdict.Unknown, a.Query 1L)
+
+
+/// ZD10 measurement 1: two blocked G-sets vs 4-bit counting at the same
+/// (n, p). Pair bytes = 2 * buckets * 64. Counting bytes = packed 4-bit
+/// cells. Not a MemoryDiagnoser bench. Does not replace the join-probe path.
+[<Fact>]
+let ``InsertDeleteBloom pair is smaller than counting at n=10000 p=0.01`` () =
+    let pair = BloomFilter.createInsertDelete 10_000 0.01
+    let counting = BloomFilter.createCounting 10_000 0.01
+    let pairBytes = pair.Inserted.BucketCount * 64 * 2
+    let countingBytes = (counting.CellCount + 1) / 2
+    Assert.True(pairBytes > 0)
+    Assert.True(countingBytes > 0)
+    Assert.True(
+        pairBytes < countingBytes,
+        sprintf "pair %d bytes, counting %d bytes" pairBytes countingBytes)
+
+
+/// ZD10 measurement 1b: never-inserted keys. Unknown is the product region
+/// and must not exceed Present (fp(I) and not fp(D) vs both).
+[<Fact>]
+let ``InsertDeleteBloom unknown among never-inserted stays at or below Present`` () =
+    let n = 10_000
+    let bf = BloomFilter.createInsertDelete n 0.01
+    for i in 0 .. n - 1 do
+        bf.NoteInsert(int64 i)
+
+    let mutable present = 0
+    let mutable unknown = 0
+    let mutable absent = 0
+    let last = n + 4 * n - 1
+
+    for i in n .. last do
+        match bf.Query(int64 i) with
+        | BloomPairVerdict.Present -> present <- present + 1
+        | BloomPairVerdict.Unknown -> unknown <- unknown + 1
+        | BloomPairVerdict.Absent -> absent <- absent + 1
+
+    let probes = 4 * n
+    Assert.True(absent > present)
+    Assert.True(unknown <= present)
+    Assert.True(present < probes / 20)
+
+
+/// ZD10 measurement 2: after retracting every inserted key the pair is
+/// Unknown for all of them (grow-only D). Counting MayContain is false.
+/// Resurrection stays Unknown on the pair and becomes present on counting.
+[<Fact>]
+let ``InsertDeleteBloom full retract is Unknown; counting is absent; resurrection stays Unknown`` () =
+    let n = 2_000
+    let pair = BloomFilter.createInsertDelete n 0.01
+    let counting = BloomFilter.createCounting n 0.01
+
+    for i in 0 .. n - 1 do
+        pair.NoteInsert(int64 i)
+        counting.Add(int64 i)
+
+    for i in 0 .. n - 1 do
+        pair.NoteRetract(int64 i)
+        counting.Remove(int64 i)
+
+    Assert.False(counting.CounterSaturated)
+    let mutable unknown = 0
+    let mutable countingMaybe = 0
+
+    for i in 0 .. n - 1 do
+        if pair.Query(int64 i) = BloomPairVerdict.Unknown then
+            unknown <- unknown + 1
+
+        if counting.MayContain(int64 i) then
+            countingMaybe <- countingMaybe + 1
+
+    Assert.Equal(n, unknown)
+    Assert.Equal(0, countingMaybe)
+    pair.NoteInsert 0L
+    Assert.Equal(BloomPairVerdict.Unknown, pair.Query 0L)
+    counting.Add 0L
+    Assert.True(counting.MayContain 0L)

@@ -142,7 +142,7 @@ Local time never filters the shared fold (`.claude/rules/local-time-never-enters
 | Postgres/MySQL wire | — | **absent** | Adapter layer. `sql-engine-expert` already names Postgres-wire-compatible. |
 | Planner cost model | — | **absent** | Fusion exists (Map/Filter IL-emit). Cost-based join order does not. |
 | Realistic TPC / streaming mix | `bench/Feldera.Bench` Nexmark | micro | Unique-key Q1/Q2 is Big-O, not TPC-C. |
-| Membership sketches | `src/Core/BloomFilter.fs` | shipped counting + blocked | Join-probe / negative lookup. **Bloom vs anti-bloom** (two G-set filters, `{present, absent, unknown}`) is analysis — ZD10. Not a FS feature. |
+| Membership sketches | `src/Core/BloomFilter.fs` | shipped counting + blocked | Join-probe / negative lookup. **Bloom vs anti-bloom** (two G-set filters, `{present, absent, unknown}`) is a toy type plus unit measurements — ZD10. Counting stays the join-probe path. Not a FS feature. |
 
 **ZLinq ([Cysharp/ZLinq](https://github.com/Cysharp/ZLinq)).** Crutch for zero-alloc LINQ *shape*. Our operators are Z-set / G-set / indexed-set. Prefer our own LINQ over those types. F# computation expressions stay regardless. Do not take a ZLinq dependency on the hot path until a bench shows the crutch winning; ColumnLinearOps already did the SIMD Where/Select without it.
 
@@ -174,12 +174,12 @@ Three things it buys that counting Bloom does not, **if** the measurements hold:
 
 **Honest limit (the churn check must include this):** grow-only D cannot forget a deletion. Insert, delete, insert again ⇒ `x ∈ I` and `x ∈ D` ⇒ **UNKNOWN** even though the Z-set weight is positive again. Counting Bloom handles resurrection by increment. This construction is conservative (not wrong) and loses `present` after any historical retract. That is the price of never decrementing.
 
-**Two measurements that would settle it (ZD10):**
+**ZD10 measurements (unit tests in-tree; MemoryDiagnoser still open):**
 
 1. `fp(I) × fp(D)` against counting Bloom **space at equal guarantees**.
 2. Whether the unknown region stays bounded under sustained retraction churn, **including resurrection**.
 
-Until those exist this stays analysis. Do not replace `CountingBloomFilter` on the join-probe path.
+First unit measurements are in `Bloom.Tests.fs` (pair smaller than counting at n=10000 p=0.01; never-inserted Unknown stays at or below Present; after full retract the pair is Unknown for every inserted key while counting is absent; resurrection stays Unknown on the pair). Not a MemoryDiagnoser bench. Do not replace `CountingBloomFilter` on the join-probe path.
 
 Workitem: `081M1T9SMM9087G0R002FS29S4`.
 
@@ -356,7 +356,7 @@ Order, each with a falsifier:
 16. **One cache authority** (D10). Double-buffering is a bug, not a feature.
 17. **Policies exist to bound CoW** (D11). A workload that 10×s the volume under `keep-all` is using the wrong policy, not a missing compressor.
 18. **Crash DST covers FS and DB** (D12). Intercept landed on both paths; the recovery claim stays `toy` until PR12's remaining corpus is green.
-19. **Bloom vs anti-bloom is a ZetaDB/Core query sketch, not a filesystem feature.** Analysis, not a result. Does not reopen WONT-DO deletable Bloom. Counting Bloom stays shipped until ZD10 measures.
+19. **Bloom vs anti-bloom is a ZetaDB/Core query sketch, not a filesystem feature.** Toy type plus unit measurements, not a join-probe replacement. Does not reopen WONT-DO deletable Bloom. Counting Bloom stays shipped.
 
 ---
 
@@ -422,7 +422,7 @@ ZetaFS PR12 (DST corpus) and PR13 (FUSE) remain on the FS spec. They are not del
 
 ### ZD10 — Bloom vs anti-bloom: measure, then maybe ship (analysis until then)
 
-- **Files:** `src/Core/BloomFilter.fs` counting/blocked stay the join-probe path. Toy `InsertDeleteBloom` (two grow-only blocked Blooms, `{Absent, Present, Unknown}`) is in-tree; not wired to join-probe. `docs/research/bloom-filter-frontier.md` Assess row.
+- **Files:** `src/Core/BloomFilter.fs` counting/blocked stay the join-probe path. Toy `InsertDeleteBloom` is in-tree; first unit measurements in `tests/Tests.FSharp/Sketches/Bloom.Tests.fs`; not wired to join-probe. `docs/research/bloom-filter-frontier.md` Assess row.
 - **Depends on:** nothing. Does not block PR12 / ZD9.
 - **Falsifiers:** (1) `fp(I)×fp(D)` vs `CountingBloomFilter` space at equal guarantees. (2) unknown-region size under retraction churn **including insert-delete-insert**.
 - **Does not:** reopen WONT-DO deletable Bloom; replace counting Bloom on the hot path; put this on ZetaFS.
