@@ -9,8 +9,16 @@
  * by hand on `node-5b2dfa`, which runs three production Windows guests. An
  * automated sync (or selfHeal) could roll `virt-operator` -> `virt-handler`
  * underneath live VMs. `ollama`/`vllm` omit it because the local-models phase is
- * deferred; `forgejo` omits it because it is the standby half of an either/or
- * pair with `gitlab`.
+ * deferred.
+ *
+ * `forgejo` USED TO BE IN THIS LIST and is not any more (2026-09-06). It omitted the
+ * block "because it is the standby half of an either/or pair with `gitlab`", and Aaron
+ * retired that posture: "gitlab and forgejo we will be testing both over time so we
+ * want both up, neither is standby." It now declares `automated:` like any other app,
+ * and its initial-admin credential is minted by `DEV_FORGEJO_ADMIN_SECRET`. The line is
+ * rewritten rather than deleted because the class this module governs is defined by
+ * which apps are in it, and an app LEAVING is the outcome the class exists to make
+ * possible.
  *
  * Two checkers read that intent and neither could see it, because the intent was
  * only ever written in a YAML COMMENT:

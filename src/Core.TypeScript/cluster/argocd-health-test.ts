@@ -714,12 +714,26 @@ const DEV_INCLUDED_PROOF_DEFERRED_DIRS = new Set([
   // rather than re-deferred (see the header above); `hindsight` is the one
   // whose blockers this lane cannot reach.
   // ----------------------------------------------------------------------
-  // Standby half of the either/or Git-host pair (gitlab is the default-on one),
-  // so it ships manual-sync BY DESIGN. Asserting it here would assert the
-  // manual-sync contract -- exists + compared, never synced -- which is exactly
-  // the cdi/kubevirt vacuity #13084 had to fix. Testing it for real means
-  // running BOTH Git hosts at once, the configuration its own header forbids.
-  "forgejo",
+  // `forgejo` is NOT here. It LEFT this set on 2026-09-06, and the entry is recorded
+  // as closed rather than the lines silently deleted.
+  //
+  //   It read: "Standby half of the either/or Git-host pair (gitlab is the default-on
+  //   one), so it ships manual-sync BY DESIGN ... Testing it for real means running
+  //   BOTH Git hosts at once, the configuration its own header forbids."
+  //
+  // Every clause was true when written and the last one is what changed. Aaron
+  // 2026-09-05: "gitlab and forgejo we will be testing both over time so we want both
+  // up, neither is standby." So the header no longer forbids it, forgejo declares
+  // `automated:`, and the two preconditions the old entry implied are both met:
+  // `DEV_FORGEJO_ADMIN_SECRET` mints the credential the chart's init container reads,
+  // and the dev lane already ensures the `zeta-local-path` alias StorageClass its 20Gi
+  // PVC binds. Asserting it now asserts a real sync rather than the manual-sync
+  // contract, which is the #13084 vacuity this deferral was protecting against.
+  //
+  // WHAT THIS BUYS AND WHAT IT COSTS: the lane will now go red if forgejo does not
+  // reach Synced/Healthy, which is the point -- "both up" that nothing checks is the
+  // same claim the standby posture was making. gitlab STAYS deferred below, for
+  // reasons that are about chart size rather than about the pair.
   // charts.gitlab.io/gitlab 8.7.0: ~40 subcharts, a `gitlab-initial-root-password`
   // Secret CI has no source for, and a Postgres/Redis/Gitaly/MinIO stack wanting
   // several PVCs plus multi-GB images. A kind runner cannot schedule that inside
@@ -982,11 +996,13 @@ export const APPLIED_BUT_UNASSERTED_REASONS: ReadonlyMap<string, string> = new M
       "[cite: path full-ai-cluster/k8s/applications/arc-runner-set/model-cache-pvc.yaml] " +
       "[cite: glob-applies arc-runner-set] ",
   ],
-  [
-    "forgejo",
-    "deferred until dev wiring exists (DEV_INCLUDED_PROOF_DEFERRED_DIRS). " +
-      "[cite: glob-applies forgejo] [cite: renders full-ai-cluster/forgejo]",
-  ],
+  // `forgejo`'s row is GONE, 2026-09-06. It read "deferred until dev wiring exists
+  // (DEV_INCLUDED_PROOF_DEFERRED_DIRS)", and that dev wiring now exists: the
+  // credential is minted (`DEV_FORGEJO_ADMIN_SECRET`) and the StorageClass its PVC
+  // binds is already ensured by the lane. A reason kept past its condition is a stale
+  // excuse, and `auditAppliedButUnasserted().stale` is the check that says so -- it
+  // went red the moment forgejo left the deferred set, which is how this row was found
+  // rather than remembered.
   [
     "hindsight",
     "THREE independent blockers, established 2026-08-21 by rendering hindsight 0.3.0 against this Application's own valuesObject; any ONE of them defers it. " +

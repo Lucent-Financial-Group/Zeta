@@ -264,11 +264,50 @@ export const DEV_OPENSEARCH_ADMIN_SECRET: DevBootstrapSecretSpec = {
     "OPENSEARCH_INITIAL_ADMIN_PASSWORD while the security plugin is on.",
 } as const;
 
+/**
+ * The Forgejo initial-admin credential the chart expects to ALREADY EXIST.
+ *
+ * WHY IT ARRIVES NOW. `forgejo/Application.yaml` sets
+ * `gitea.admin.existingSecret: forgejo-initial-admin`, and until 2026-09-06 nothing
+ * minted it -- acknowledged in `existing-secret-is-minted.baseline.json` with a
+ * STRUCTURAL reason: forgejo was the standby half of an either/or Git-host pair and
+ * shipped manual-sync, so no pod ever looked for the Secret. That entry named its own
+ * lift condition exactly: "forgejo is synced in any lane ... At that moment a pod
+ * really does need this credential, and the honest fix is to add it to
+ * DEV_BOOTSTRAP_SECRETS rather than to re-acknowledge it." Aaron 2026-09-05, retiring
+ * the standby posture: "gitlab and forgejo we will be testing both over time so we
+ * want both up, neither is standby." So the condition is met and this is the fix it
+ * asked for, rather than a fresh acknowledgement.
+ *
+ * THE KEY NAMES ARE MEASURED, NOT GUESSED. `helm template` at the pinned chart 17.1.5
+ * renders the init container reading `secretKeyRef.key: username` and
+ * `secretKeyRef.key: password` from this Secret -- so a rename on either side breaks
+ * the pod rather than being absorbed. `gitea_admin` is the chart's own default
+ * username (`gitea.admin.username` in its values.yaml), kept rather than invented
+ * because Forgejo reserves some names and the default is known to be accepted.
+ *
+ * MINTED, NEVER COMMITTED, exactly as the four above: `applyDevBootstrapSecrets`
+ * draws `randomBytes(24).toString("base64url")` per cluster at bring-up, logs
+ * nothing, writes nothing to the tree, and the value dies with the cluster.
+ */
+export const DEV_FORGEJO_ADMIN_SECRET: DevBootstrapSecretSpec = {
+  namespace: "forgejo",
+  name: "forgejo-initial-admin",
+  userKey: "username",
+  passwordKey: "password",
+  user: "gitea_admin",
+  reason:
+    "Minted per dev/CI cluster at bring-up because the Forgejo chart's init container reads " +
+    "GITEA_ADMIN_USERNAME/GITEA_ADMIN_PASSWORD from gitea.admin.existingSecret and will not " +
+    "provision the admin account without it.",
+} as const;
+
 export const DEV_BOOTSTRAP_SECRETS: readonly DevBootstrapSecretSpec[] = [
   DEV_GRAFANA_ADMIN_SECRET,
   DEV_ZITI_ADMIN_SECRET,
   DEV_REDIS_AUTH_SECRET,
   DEV_OPENSEARCH_ADMIN_SECRET,
+  DEV_FORGEJO_ADMIN_SECRET,
 ] as const;
 
 /**
