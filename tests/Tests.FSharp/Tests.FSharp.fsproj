@@ -313,6 +313,7 @@
     <Compile Include="ControlScheme.Tests.fs" />
     <Compile Include="GameEnvironment.Tests.fs" />
     <Compile Include="FrameMotion.Tests.fs" />
+    <Compile Include="FrameSignals.Tests.fs" />
     <Compile Include="MetaControl.Tests.fs" />
     <Compile Include="CorrespondencePong.Tests.fs" />
     <Compile Include="ChipAudio.Tests.fs" />
