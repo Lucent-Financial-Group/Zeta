@@ -455,3 +455,9 @@ bandit claim. The coordinating contributor accepted these clarifications:
 This is a source-review record and implementation-contract clarification, not
 an executed conformance test or measured result. The final receipts bind this
 protocol's full bytes, including this addendum, with `ProtocolSha256`.
+
+A subsequent wording clarification, before measurement, interprets section E's
+universal statement as including matching refusal for a tied top-band majority.
+Successful byte equality applies to admitted projections; every registered
+dot/bar frame has a unique majority. The native implementation tests both
+cases. This preserves the original projection rule and scientific comparison.

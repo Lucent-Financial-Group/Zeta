@@ -38,3 +38,8 @@ indexes the [source/design audit](../docs/research/2026-09-06-rendered-catch-fol
 The coordinating continuation owns integrated implementation publication and
 main integration after the passive predictor result lands. Registration
 retains that pending predecessor's remotely preserved branch ancestry.
+
+The [native implementation review and hand fixture](../docs/research/rendered-catch-validation/2026-09-06/README.md)
+retain focused conformance evidence before integrated implementation archival
+and before registered measurement. The coordinating contributor owns the
+independent replay and the eventual measured decision.
