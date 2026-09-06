@@ -118,6 +118,10 @@ records 18 passing tests, zero failures, and 37 assertions on Bun 1.3.13.
 
 ## Limits and validation
 
+The [independent review](2026-09-06-nci-emitter-capability-review.md) records
+source and retained-output inspection by a separate agent, including the
+executed-effect, syntax-admission, and delegated-checker boundaries.
+
 This is a trusted-code regression fixture for the named calls and mutations.
 The Node documentation explicitly says
 [`node:vm` is not a security mechanism](https://nodejs.org/api/vm.html).
