@@ -71,6 +71,22 @@ jobs:
     name: byte-lock (${{ matrix.os }})
     timeout-minutes: 25
     runs-on: ${{ matrix.os }}
+    # BASH ON EVERY LEG, INCLUDING WINDOWS. Every `run:` step in this job was
+    # written for a POSIX shell -- `cmd || echo "ABSENT"`, `command -v`, `$(...)`,
+    # `>>` redirects -- and GitHub defaults Windows to `pwsh`, where a missing
+    # command raises CommandNotFoundException that `||` does not catch.
+    #
+    # Measured on run 34003187805: checkout, choco, Go setup and the Go WASM build
+    # all SUCCEEDED on both Windows legs, and the job then died in `Versions`, whose
+    # entire body is `foo --version || echo "foo: ABSENT"`. The substrate work was
+    # never reached, and the uploaded reports were EMPTY FILES.
+    #
+    # Windows runners ship Git Bash, so one default fixes every step at the root
+    # rather than porting them one at a time. The choco step keeps an explicit
+    # `shell: pwsh` because it is genuinely PowerShell.
+    defaults:
+      run:
+        shell: bash
     strategy:
       # fail-fast MUST stay false. The cross-processor job below compares legs
       # against each other, so cancelling siblings when one fails would destroy
