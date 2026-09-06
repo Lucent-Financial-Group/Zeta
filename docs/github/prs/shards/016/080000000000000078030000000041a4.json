@@ -1,0 +1,12 @@
+{
+  "pr_number": 16804,
+  "archive_path": "docs/history/pr-reviews/PR-16804-test-research-measure-predictive-memory-and-entropy-spectra.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-06T16:14:41.849Z",
+  "schema_version": "v1",
+  "commit_sha": "3d84f0926d61fa8156f2961d15fb440bf3c8218a",
+  "title": "test(research): measure predictive memory and entropy spectra",
+  "state": "MERGED",
+  "merged_at": "2026-09-06T16:14:04Z",
+  "head_ref": "codex/predictive-state-batch"
+}
