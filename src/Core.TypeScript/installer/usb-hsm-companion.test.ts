@@ -7,8 +7,10 @@
  *   * connector JSON carrying pin=.
  *   * env pointer as NAME=value.
  *   * hex key material as an authkey "reference".
+ *   * restore filename /etc/zeta/seal/pkcs11-module-path as the .so path.
  */
 import { describe, expect, test } from "bun:test";
+import { NIXOS_PKCS11_MODULE_PATH, USB_PKCS11_MODULE_POINTER } from "../cluster/pkcs11-hostpath-overlay.ts";
 import { USB_HSM_COMPANION, USB_HSM_FORBIDDEN, classifyUsbRepairArtifact } from "../cluster/seal-emulator-rung.ts";
 import { resolveBakeCred } from "./zeta-cred-handlers.ts";
 import { FORBIDDEN_BAKE_CRED_ALIASES, refuseForbiddenBakeCredId, validateCompanionValue } from "./usb-hsm-companion.ts";
@@ -54,6 +56,20 @@ describe("companion values are references, not originals", () => {
     expect(validateCompanionValue("pkcs11-module-path", Buffer.from("\x7fELF...."))).toContain("not the .so bytes");
     expect(validateCompanionValue("pkcs11-module-path", Buffer.from("/yubihsm"))).toContain("not a brand type");
     expect(validateCompanionValue("pkcs11-module-path", Buffer.from("yubihsm_pkcs11.so"))).toContain("absolute path");
+  });
+
+  test("restore filename is not a module path, even though it contains pkcs11", () => {
+    expect(validateCompanionValue("pkcs11-module-path", Buffer.from(USB_PKCS11_MODULE_POINTER))).toBe(
+      "pkcs11-module-path is the restore file, not the .so",
+    );
+    expect(validateCompanionValue("pkcs11-module-path", Buffer.from(`  ${USB_PKCS11_MODULE_POINTER}  `))).toBe(
+      "pkcs11-module-path is the restore file, not the .so",
+    );
+    expect(validateCompanionValue("pkcs11-module-path", Buffer.from(NIXOS_PKCS11_MODULE_PATH.yubihsm2))).toBeNull();
+    const baked = resolveBakeCred(`pkcs11-module-path=${USB_PKCS11_MODULE_POINTER}`);
+    expect("error" in baked).toBe(true);
+    if (!("error" in baked)) return;
+    expect(baked.error).toBe("pkcs11-module-path: pkcs11-module-path is the restore file, not the .so");
   });
 
   test("connector-config refuses a pin field", () => {

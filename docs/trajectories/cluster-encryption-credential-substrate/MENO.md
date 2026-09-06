@@ -121,7 +121,11 @@ assume the number.
    domain map, OpenBao env pointer. Not PIN-as-original,
    not Shamir copy, not `OP_SESSION`, not a brand type in
    the volume. Host-only — not `zeta-host-creds` Secrets.
-   SoftHSM CI is not this metal companion set.
+   SoftHSM CI is not this metal companion set. Bake-cred
+   follow-on (`081M1V6WCHN087G0R0022FN5DV`):
+   `validatePkcs11ModulePath` refuses the restore
+   filename as the value — it contains `pkcs11`, so the
+   old rule would have baked a pointer to itself.
 6. **PKCS#11 hostPath overlay planner** (landed, #16776,
    `081M1TZH2PW087G0R0036F3S18`).
    `pkcs11-hostpath-overlay.ts`: volumes, mechanism pin,

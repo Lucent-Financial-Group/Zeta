@@ -13,9 +13,11 @@
  * host-only — never zeta-host-creds Secrets.
  *
  * Cite: seal-emulator-rung.ts, zeta-cred-handlers.ts,
- * zeta-creds-to-k8s.ts, openbao.org/docs/configuration/seal/pkcs11/.
+ * zeta-creds-to-k8s.ts, pkcs11-hostpath-overlay.ts,
+ * openbao.org/docs/configuration/seal/pkcs11/.
  */
 
+import { USB_PKCS11_MODULE_POINTER } from "../cluster/pkcs11-hostpath-overlay.ts";
 import { USB_HSM_COMPANION, USB_HSM_FORBIDDEN, classifyUsbRepairArtifact } from "../cluster/seal-emulator-rung.ts";
 
 export const USB_HSM_COMPANION_IDS = USB_HSM_COMPANION;
@@ -110,6 +112,9 @@ export function validatePkcs11ModulePath(value: Buffer): string | null {
   const text = asUtf8Text(value, "pkcs11-module-path");
   if (typeof text !== "string") return text.error;
   if (text.includes("\n") || text.includes("\r")) return "pkcs11-module-path must be a single path line";
+  if (text === USB_PKCS11_MODULE_POINTER) {
+    return "pkcs11-module-path is the restore file, not the .so";
+  }
   if (!text.startsWith("/")) return "pkcs11-module-path must be an absolute path";
   if (!text.includes("/")) return "pkcs11-module-path must be a path, not a brand name";
   const lower = text.toLowerCase();

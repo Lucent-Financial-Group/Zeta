@@ -1,0 +1,14 @@
+{
+  "id": "080d03b37191b010a0130008bb88c2c0",
+  "at": "2026-09-06T11:15:28.438Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1V6WCHN087G0R0022FN5DV",
+    "type": "task",
+    "title": "USB bake-cred refuses the PKCS#11 restore filename as the module path",
+    "slug": "usb-bake-cred-refuses-the-pkcs-11-restore-filename-as-the-mo",
+    "priority": "P2",
+    "filename": "081M1V6WCHN087G0R0022FN5DV-usb-bake-cred-refuses-the-pkcs-11-restore-filename-as-the-mo.md"
+  }
+}
