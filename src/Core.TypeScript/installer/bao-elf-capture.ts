@@ -12,11 +12,15 @@
  * names `in-chart-image`. A bare tpmrm0 argv is not `on-host`.
  * First-boot conf/argv carrier emits both names or neither.
  * Conf consume parses those assignments back into a named ask.
- * Role conf plus named bao is one planner call; the role type
- * is unchanged. Pure join + argv parse + conf/env consume
- * live in firstboot-bao-elf.ts so zflash can consume sourced
- * names without installer `fs`. Does not expand
- * `ZetaFirstbootRole`. Does not edit `zeta-first-boot.sh`.
+ * Env join is the argv/conf sibling: sourced process env
+ * into `planSetupFromNamedBaoElf`. Epoch is named — ISO
+ * current-system bao is not option D. Role conf plus named bao
+ * is one planner call; the role type is unchanged. Pure join
+ * + argv parse + conf/env consume live in firstboot-bao-elf.ts
+ * so zflash can consume sourced names without installer `fs`.
+ * Does not expand `ZetaFirstbootRole`. Does not edit
+ * `zeta-first-boot.sh`. Does not open the installer ISO's
+ * `/run/current-system/sw/bin/bao` as metal option D.
  *
  * Cite: bao-load-site.ts, pkcs11-hostpath-overlay.ts,
  * docs/research/2026-08-21-hands-off-metal-*.md §1.4.
@@ -36,9 +40,12 @@ import {
   type RestoredPkcs11PointerCapture,
 } from "../cluster/unseal-path.ts";
 import {
+  consumeFirstbootBaoElfProcessEnv,
   namedBaoElfAsk,
+  namedBaoElfAskAtEpoch,
   parseFirstbootBaoElfConf,
   parseNamedBaoElfArgs,
+  type BaoElfEpoch,
   type NamedBaoElfArgError,
   type NamedBaoElfAsk,
 } from "../zflash/firstboot-bao-elf.ts";
@@ -52,11 +59,13 @@ export {
   firstbootBaoElfArgvFromAsk,
   NIXOS_HOST_BAO,
   namedBaoElfAsk,
+  namedBaoElfAskAtEpoch,
   nixosHostBaoAsk,
   parseFirstbootBaoElfConf,
   parseFirstbootBaoElfEnv,
   parseNamedBaoElfArgs,
   planFirstbootConfWithNamedBaoElf,
+  type BaoElfEpoch,
   type FirstbootBaoElfCarrier,
   type FirstbootBaoElfCarrierRefuse,
   type FirstbootBaoElfEnv,
@@ -150,4 +159,27 @@ export function planSetupFromNamedBaoElfConf(
   const parsed = parseFirstbootBaoElfConf(conf);
   if (!parsed.ok) return parsed;
   return { ok: true, plan: planSetupFromNamedBaoElf(decision, restore, parsed.ask, read) };
+}
+
+/**
+ * First-boot env consume after bash export. Overlay still
+ * does not open files. Epoch is named: `installer-iso` does
+ * not open `NIXOS_HOST_BAO` (that string is the live ISO's
+ * bao). `installed-host` may. Injected `read` is required.
+ * A refused env is not filled with `NIXOS_HOST_BAO` or a
+ * `/mnt/...` path. tpmrm0 is still not an ask. `/mnt`
+ * existing does not pick the epoch.
+ */
+export function planSetupFromNamedBaoElfEnv(
+  decision: IntegrateDecision,
+  restore: RestoredPkcs11PointerCapture,
+  env: { readonly [key: string]: string | undefined },
+  epoch: BaoElfEpoch,
+  read: BaoElfRead,
+): FirstBootBaoElfFromArgv {
+  const parsed = consumeFirstbootBaoElfProcessEnv(env);
+  if (!parsed.ok) return parsed;
+  const ask =
+    parsed.ask === null ? null : namedBaoElfAskAtEpoch(parsed.ask.site, parsed.ask.openedPath, epoch);
+  return { ok: true, plan: planSetupFromNamedBaoElf(decision, restore, ask, read) };
 }

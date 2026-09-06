@@ -1,0 +1,14 @@
+{
+  "id": "080d03c276f12810a01300080e2b759f",
+  "at": "2026-09-06T20:00:29.733Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1W4XQH4087G0R000F69WYQ",
+    "type": "task",
+    "title": "Installer-iso epoch does not treat current-system bao as option D",
+    "slug": "installer-iso-epoch-does-not-treat-current-system-bao-as-opt",
+    "priority": "P2",
+    "filename": "081M1W4XQH4087G0R000F69WYQ-installer-iso-epoch-does-not-treat-current-system-bao-as-opt.md"
+  }
+}

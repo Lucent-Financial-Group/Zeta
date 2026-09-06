@@ -22,6 +22,15 @@ spec:
     helm:
       releaseName: loki
       valuesObject:
+        global:
+          # -config.expand-env=true is what makes `${BLOB_STORE_SECRET_KEY}` above a
+          # reference rather than a literal string. WITHOUT IT loki would authenticate
+          # with the seven characters `${BLOB` -- a silent auth failure, not a crash.
+          extraArgs:
+            - -config.expand-env=true
+          extraEnvFrom:
+            - secretRef:
+                name: zeta-blob-store
         deploymentMode: SimpleScalable
         minio:
           enabled: false
@@ -40,7 +49,12 @@ spec:
             s3:
               endpoint: blob-store-seaweedfs-all-in-one.object-store.svc:8333
               accessKeyId: zeta-blob-store
-              secretAccessKey: zeta-blob-store-dev-secret
+              # EXPANDED AT RUNTIME from the minted Secret, never committed
+              # (081M1S6Z5S3087G0R000GEPSS2). `global.extraArgs` below turns on
+              # `-config.expand-env=true`, which is the mechanism this chart's own values
+              # documentation names for exactly this: "Such environment variables can be then
+              # stored in a separate Secret and injected via the global.extraEnvFrom value."
+              secretAccessKey: ${BLOB_STORE_SECRET_KEY}
               insecure: true
               s3ForcePathStyle: true
         write: { replicas: 1 }

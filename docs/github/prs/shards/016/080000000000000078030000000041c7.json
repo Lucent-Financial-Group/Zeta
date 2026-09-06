@@ -1,0 +1,12 @@
+{
+  "pr_number": 16839,
+  "archive_path": "docs/history/pr-reviews/PR-16839-feat-creds-join-sourced-bao-env-into-the-overlay-plan.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-06T19:57:14.408Z",
+  "schema_version": "v1",
+  "commit_sha": "507db8c30dd23fb15034418339071d566facdf77",
+  "title": "feat(creds): Join sourced bao env into the overlay plan",
+  "state": "MERGED",
+  "merged_at": "2026-09-06T19:56:37Z",
+  "head_ref": "cursor/firstboot-bao-env-plan-27c5"
+}

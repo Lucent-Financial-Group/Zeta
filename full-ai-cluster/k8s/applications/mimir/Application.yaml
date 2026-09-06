@@ -40,6 +40,16 @@ spec:
           serviceMonitor: { enabled: false }
         minio:
           enabled: false
+        global:
+          # `-config.expand-env=true` on every component is what makes the three
+          # `${BLOB_STORE_SECRET_KEY}` references below resolve. WITHOUT IT mimir would
+          # authenticate with the literal characters -- a silent S3 auth failure rather
+          # than a crash, which is why the env var and the flag must land together
+          # (081M1S6Z5S3087G0R000GEPSS2).
+          extraEnvFrom:
+            - secretRef:
+                name: zeta-blob-store
+
         mimir:
           structuredConfig:
             blocks_storage:
@@ -48,7 +58,8 @@ spec:
                 endpoint: blob-store-seaweedfs-all-in-one.object-store.svc:8333
                 bucket_name: mimir-tsdb
                 access_key_id: zeta-blob-store
-                secret_access_key: zeta-blob-store-dev-secret
+                # expanded at runtime from the minted Secret; see the global block above
+                secret_access_key: ${BLOB_STORE_SECRET_KEY}
                 insecure: true
             alertmanager_storage:
               backend: s3
@@ -56,7 +67,8 @@ spec:
                 endpoint: blob-store-seaweedfs-all-in-one.object-store.svc:8333
                 bucket_name: mimir-ruler
                 access_key_id: zeta-blob-store
-                secret_access_key: zeta-blob-store-dev-secret
+                # expanded at runtime from the minted Secret; see the global block above
+                secret_access_key: ${BLOB_STORE_SECRET_KEY}
                 insecure: true
             ruler_storage:
               backend: s3
@@ -64,7 +76,8 @@ spec:
                 endpoint: blob-store-seaweedfs-all-in-one.object-store.svc:8333
                 bucket_name: mimir-ruler
                 access_key_id: zeta-blob-store
-                secret_access_key: zeta-blob-store-dev-secret
+                # expanded at runtime from the minted Secret; see the global block above
+                secret_access_key: ${BLOB_STORE_SECRET_KEY}
                 insecure: true
         # ALL THREE VOLUMES BELOW ARE SIZE CUTS, 50Gi -> 16Gi, WITH NO POD CUT.
         # None of these pod counts is ours to cut anyway: mimir-distributed

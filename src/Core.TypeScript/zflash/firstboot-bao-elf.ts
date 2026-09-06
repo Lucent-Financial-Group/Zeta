@@ -8,7 +8,10 @@
  * `prepare-boot-image.ts` uses the same parse. Conf/env consume
  * also lives here so firstboot-bao-env.ts can read sourced
  * names without installer `fs`. Capture / overlay still live
- * in bao-elf-capture.ts (that module may read). Does not expand
+ * in bao-elf-capture.ts (that module may read). Epoch is named
+ * (`installer-iso` vs `installed-host`): the live ISO's
+ * `/run/current-system/sw/bin/bao` is not option D. `/mnt`
+ * existing does not pick the epoch. Does not expand
  * `ZetaFirstbootRole`. Bash export / sed-parse live in
  * `zeta-first-boot.sh` and `zeta-install.sh`; this module stays
  * pure and does not invoke bun.
@@ -54,6 +57,31 @@ export function namedBaoElfAsk(
 /** Option D contract path. Caller still names the site by invoking this. */
 export function nixosHostBaoAsk(): NamedBaoElfAsk {
   return { site: "on-host", openedPath: NIXOS_HOST_BAO };
+}
+
+/**
+ * When the overlay consume runs. Named, not inferred.
+ * `zeta-install.sh` Step 6.95a is `installer-iso` (`ZETA_HOME`
+ * is `/mnt/home/zeta`). First boot of the installed system is
+ * `installed-host`. `/mnt` existing, `/dev/tpmrm0`, and a `.so`
+ * do not pick this.
+ */
+export type BaoElfEpoch = "installer-iso" | "installed-host";
+
+/**
+ * Option D is the installed host's current-system bao. The live
+ * ISO uses the same path string for a different binary. Exact
+ * `NIXOS_HOST_BAO` match only — no wildcard under
+ * `/run/current-system`. Does not fill a `/mnt/...` path.
+ */
+export function namedBaoElfAskAtEpoch(
+  site: BaoLoadSite,
+  openedPath: string,
+  epoch: BaoElfEpoch,
+  restorePointer: string = USB_PKCS11_MODULE_POINTER,
+): NamedBaoElfAsk | null {
+  if (epoch === "installer-iso" && openedPath === NIXOS_HOST_BAO) return null;
+  return namedBaoElfAsk(site, openedPath, restorePointer);
 }
 
 export type NamedBaoElfArgError =

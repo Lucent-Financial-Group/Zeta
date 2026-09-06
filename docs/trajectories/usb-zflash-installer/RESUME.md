@@ -515,6 +515,16 @@ Post-6.95a bun consume
 `firstboot-bao-env.ts` after mise/bun exist;
 a null ask is not a seal; still does not
 invoke bun from `zeta-first-boot.sh`.
+Env join
+(`081M1W3BPCN087G0R001R97E45`) plans the
+overlay from sourced `ZETA_BAO_*`; injected
+read; tpmrm0 is still not an ask; still
+does not invent an integrate decision.
+Installer-iso epoch
+(`081M1W4XQH4087G0R000F69WYQ`) names the
+epoch; ISO current-system bao is not
+option D; `/mnt` existing does not pick
+the epoch.
 glibc-host-into-musl-image is not a
 module; Application.yaml stays Shamir.
 
