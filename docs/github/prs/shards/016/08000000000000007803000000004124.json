@@ -1,0 +1,12 @@
+{
+  "pr_number": 16676,
+  "archive_path": "docs/history/pr-reviews/PR-16676-docs-memory-unique-moves-leftover-16671-to-f17f8623.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-06T02:28:16.604Z",
+  "schema_version": "v1",
+  "commit_sha": "2dfae1309ca1e27cdee96a743dc3c8c58a6b5426",
+  "title": "docs(memory): unique MOVES leftover #16671 to f17f8623",
+  "state": "MERGED",
+  "merged_at": "2026-09-06T02:27:41Z",
+  "head_ref": "cursor/lumen-unique-confirm-16671-bcc9"
+}
