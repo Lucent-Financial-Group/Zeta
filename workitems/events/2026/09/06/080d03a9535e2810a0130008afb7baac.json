@@ -1,0 +1,14 @@
+{
+  "id": "080d03a9535e2810a0130008afb7baac",
+  "at": "2026-09-06T05:21:49.509Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1TJMTY4087G0R0024AA4DB",
+    "type": "task",
+    "title": "ISimulatedFs write-fail on BlockCas put keeps the prior freeze",
+    "slug": "isimulatedfs-write-fail-on-blockcas-put-keeps-the-prior-free",
+    "priority": "P2",
+    "filename": "081M1TJMTY4087G0R0024AA4DB-isimulatedfs-write-fail-on-blockcas-put-keeps-the-prior-free.md"
+  }
+}
