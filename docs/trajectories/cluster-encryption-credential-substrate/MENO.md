@@ -216,6 +216,12 @@ assume the number.
    `zeta-install.sh` invokes `firstboot-bao-env.ts` after
    mise/bun exist. Does not invoke bun from
    `zeta-first-boot.sh`. A null ask is not a seal.
+   Env join (`081M1W3BPCN087G0R001R97E45`):
+   `planSetupFromNamedBaoElfEnv` is the argv/conf sibling.
+   Sourced process env into the overlay plan. Injected
+   read — the installer ISO's current-system bao is not
+   metal option D. tpmrm0 is still not an ask. Does not
+   invent an integrate decision. Does not land the stanza.
 7. extraContainer sidecar — later, **same commit as the
    sidecar**, and only for the Shamir kind path until the
    emulator job replaces it. `valuesObject` only. Do not fork

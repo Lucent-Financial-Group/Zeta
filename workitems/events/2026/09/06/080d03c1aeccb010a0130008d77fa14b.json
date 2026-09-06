@@ -1,0 +1,14 @@
+{
+  "id": "080d03c1aeccb010a0130008d77fa14b",
+  "at": "2026-09-06T19:33:10.166Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1W3BPCN087G0R001R97E45",
+    "type": "task",
+    "title": "First-boot env join plans overlay from sourced bao names",
+    "slug": "first-boot-env-join-plans-overlay-from-sourced-bao-names",
+    "priority": "P2",
+    "filename": "081M1W3BPCN087G0R001R97E45-first-boot-env-join-plans-overlay-from-sourced-bao-names.md"
+  }
+}
