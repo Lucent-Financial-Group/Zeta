@@ -1,0 +1,12 @@
+{
+  "pr_number": 16730,
+  "archive_path": "docs/history/pr-reviews/PR-16730-feat-081m1t9smm9087g0r002fs29s4-toy-insertdeletebloom-three-valued-membership.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-06T03:33:03.737Z",
+  "schema_version": "v1",
+  "commit_sha": "d2d5568c5d18c86b54d7f216c63bdbee74f9ed47",
+  "title": "feat(081M1T9SMM9087G0R002FS29S4): toy InsertDeleteBloom three-valued membership",
+  "state": "MERGED",
+  "merged_at": "2026-09-06T03:32:31Z",
+  "head_ref": "feat/zetadb-insert-delete-bloom"
+}
