@@ -1,0 +1,14 @@
+{
+  "id": "080d03ac487d2810a0130008c960ac65",
+  "at": "2026-09-06T07:05:11.845Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1TRJ3X5087G0R0032TNP8H",
+    "type": "task",
+    "title": "Where Zeta actually grows: 64% of new files are the PR archive, 44 MB a month",
+    "slug": "where-zeta-actually-grows-64-of-new-files-are-the-pr-archive",
+    "priority": "P2",
+    "filename": "081M1TRJ3X5087G0R0032TNP8H-where-zeta-actually-grows-64-of-new-files-are-the-pr-archive.md"
+  }
+}
