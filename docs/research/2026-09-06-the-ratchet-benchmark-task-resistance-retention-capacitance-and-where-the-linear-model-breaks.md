@@ -364,6 +364,10 @@ cheap to measure and the measurement is now committed
 **Observability per generator byte: 3.556. One month earlier: 2.546.** The repo has been moving
 **toward** the expensive corner, not away from it.
 
+*Measured at `origin/main` on 2026-09-06; the number drifts as `main` advances, which is the
+point of committing the tool rather than the number. Reproduce with
+`bun src/Core.TypeScript/hygiene/measure-triangle-corners.ts --since <rev>`.*
+
 Two qualifications, because the first reading of the attribution was wrong and the correction
 matters: the largest contributor (`db/search-index`, +59.7 MB) is a **one-time landing**, not a
 monthly rate, and its rebuild cadence is `disabled_manually` — a deliberate choice under the
