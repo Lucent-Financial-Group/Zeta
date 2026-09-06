@@ -1,0 +1,12 @@
+{
+  "pr_number": 16758,
+  "archive_path": "docs/history/pr-reviews/PR-16758-fix-cluster-the-pod-diagnostics-could-not-fire-for-the-failure-they-were-built-f.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-06T06:46:44.429Z",
+  "schema_version": "v1",
+  "commit_sha": "43d653649d212ebd94a2b13b213dd856fb46e86c",
+  "title": "fix(cluster): the pod diagnostics could not fire for the failure they were built for",
+  "state": "MERGED",
+  "merged_at": "2026-09-06T06:46:05Z",
+  "head_ref": "shadow/health-failure-gets-pod-diagnostics"
+}

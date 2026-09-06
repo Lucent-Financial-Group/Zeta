@@ -1,0 +1,12 @@
+{
+  "pr_number": 16761,
+  "archive_path": "docs/history/pr-reviews/PR-16761-docs-claude-md-the-liveness-read-needs-the-ledger-worktree-not-the-repo-checkout.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-06T07:07:27.271Z",
+  "schema_version": "v1",
+  "commit_sha": "75119587d5939af2589788b38c6c9c622f4f75bc",
+  "title": "docs(CLAUDE.md): the liveness read needs the LEDGER worktree, not the repo checkout",
+  "state": "MERGED",
+  "merged_at": "2026-09-06T07:06:51Z",
+  "head_ref": "shadow/claude-md-liveness-invocation"
+}
