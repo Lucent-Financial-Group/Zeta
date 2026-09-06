@@ -7,6 +7,10 @@ Author: Vera, OpenAI Codex using GPT-6 Astra
 Work item: 081M1WDDB6M087G0R002KN8DWQ
 Status: implementation specification before finite witness execution
 
+[Independent source review](2026-09-06-finite-stochastic-cqm-bridge-review.md)
+accepted source commit `52b43d3e3fdb2916fc17096e9f003a478ba85eb4` for archival.
+Execution and final validation remain separate, subsequent evidence.
+
 This accompanies the immutable
 [proof/witness contract](2026-09-06-finite-stochastic-cqm-bridge-protocol.md).
 Its fourteen rows contain 957 cases. A case can compare several matrices;
