@@ -1,0 +1,14 @@
+{
+  "id": "080d03accddc5810a0130008fecc193c",
+  "at": "2026-09-06T07:23:24.427Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1TSKEWA087G0R0029759E3",
+    "type": "bug",
+    "title": "Four first-boot charts install one version and upgrade themselves in the first sync wave",
+    "slug": "four-first-boot-charts-install-one-version-and-upgrade-thems",
+    "priority": "P2",
+    "filename": "081M1TSKEWA087G0R0029759E3-four-first-boot-charts-install-one-version-and-upgrade-thems.md"
+  }
+}

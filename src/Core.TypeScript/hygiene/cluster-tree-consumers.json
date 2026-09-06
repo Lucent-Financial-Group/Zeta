@@ -209,6 +209,12 @@
       "migrateTo": "drop the infra/k8s/bootstrap/argocd-install.yaml entry from the pin-site list in the deletion commit; the surviving full-ai-cluster/k8s/bootstrap/argocd-install.yaml entry stays. AND lower the count from 5 to 4 in the audit's own message and in its `all N sites` falsifier -- that count is ASSERTED, so leaving it at 5 turns a correct deletion into a red naming the wrong thing."
     },
     {
+      "path": "src/Core.TypeScript/hygiene/audit-bootstrap-application-pin-parity.ts",
+      "disposition": "blocking",
+      "note": "`infra/k8s/bootstrap` is a literal in BOOTSTRAP_DIRS -- one of the two first-boot trees whose HelmChart pins this audit holds equal against the Applications that adopt them. It is `blocking` for a SOFTER reason than the sibling argocd audit, and the softness is the hazard: the directory read is guarded by existsSync, so deleting the stale tree does not throw -- the audit keeps passing while silently covering one tree fewer, and its own empty-scan refusal will not fire because full-ai-cluster still yields pins. A check that quietly narrows its own scope is worse than one that breaks.",
+      "migrateTo": "drop `infra/k8s/bootstrap` from BOOTSTRAP_DIRS in the same commit that deletes the tree, so the reduced scope is a deliberate edit rather than a silent consequence. No baseline entry names an infra/ chart today (all four are full-ai-cluster), so nothing in bootstrap-application-pin-parity.baseline.json moves with it."
+    },
+    {
       "path": "src/Core.TypeScript/hygiene/audit-cluster-tree-consumers.test.ts",
       "disposition": "self",
       "note": "The mutation suite proving the audit can go red."

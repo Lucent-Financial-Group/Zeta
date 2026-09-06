@@ -3247,6 +3247,8 @@ jobs:
           - skip-token-cannot-land
           - dotnet-pin-parity
           - argocd-pin-parity
+          - bootstrap-application-pin-parity
+          - bootstrap-application-pin-parity-tests
           - argocd-pin-parity-tests
           - mise-toolchain-couplings
           - flash-entrypoint-parity
