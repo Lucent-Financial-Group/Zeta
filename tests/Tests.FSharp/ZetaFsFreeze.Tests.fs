@@ -2794,6 +2794,61 @@ let ``freeze-byte meter survives createManual reopen`` () : Task =
     }
 
 [<Fact>]
+let ``reopen freeze-byte meter still paces reclaimTickMetered`` () : Task =
+    task {
+        ensureHasher ()
+        FileSystem.Register(InMemoryFileSystem())
+        let store = "/meter-reopen-paces"
+        let mutbuf = ZetaFsMutbuf.create store ZetaFsMutbuf.Coherence.Shared
+        let mutable firstContent = Unchecked.defaultof<ContentHash256>
+        let volume1 = ZetaFsFreeze.createManualStream store mutbuf None
+
+        try
+            let id = mintId ()
+            let h = ZetaFsMutbuf.openHandle volume1.Mutbuf id
+            ZetaFsMutbuf.pwrite volume1.Mutbuf h 0L [| 1uy; 2uy; 3uy |] |> ignore
+            let pending = (freezeAsync volume1 id ZetaFsFreeze.Journaled).AsTask()
+            do! (ZetaFsFreeze.pumpLog volume1 CancellationToken.None).ConfigureAwait(false)
+            let! first = pending.ConfigureAwait(false)
+            match first with
+            | Error e -> Assert.Fail(ZetaFsFreeze.errorName e)
+            | Ok ok ->
+                firstContent <- ok.Content
+                Assert.True(ok.Span > 0UL)
+        finally
+            ZetaFsFreeze.dispose volume1
+
+        let volume2 = ZetaFsFreeze.createManualStream store mutbuf None
+        try
+            Assert.True(ZetaFsFreeze.freezeBytesSinceReclaim volume2 > 0UL)
+            let dummy (n: byte) : ContentHash256 =
+                { Raw = Array.init 32 (fun i -> if i = 0 then n else 0uy) }
+            let casPath (id: ContentHash256) =
+                let hex = (ContentHash256.toContentAddress128 id).ToHex()
+                ZetaFsPath.combine4 store "objects" (hex.Substring(0, 2)) (hex.Substring(2))
+            let g1 = dummy 1uy
+            let p1 = casPath g1
+            FileSystem.Current.CreateDirectory(ZetaFsPath.directoryName p1)
+            FileSystemIo.writeAllBytes FileSystem.Current p1 [| 9uy |]
+            let roots =
+                { ZetaFsReclaim.emptyRoots with
+                    LiveRefs = [| ZetaFsReclaim.hex firstContent |] }
+            let n =
+                ZetaFsFreeze.reclaimTickMetered
+                    volume2
+                    FileSystem.Current
+                    roots
+                    [| { Id = g1; Size = 1UL; Refs = [||] } |]
+            Assert.Equal(1, n)
+            Assert.Equal(0UL, ZetaFsFreeze.freezeBytesSinceReclaim volume2)
+            Assert.False(FileSystem.Current.Exists p1)
+            Assert.True(ZetaFsFreeze.isReadable volume2 firstContent)
+        finally
+            ZetaFsFreeze.dispose volume2
+            FileSystem.Reset()
+    }
+
+[<Fact>]
 let ``rolling 1 third freeze must not revive the first generation`` () : Task =
     task {
         ensureHasher ()
