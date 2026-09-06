@@ -13,6 +13,11 @@ import {
   resolveZetaTestInfraPubkeyFromZflashModule,
 } from "./lib.ts";
 import { firstbootRoleFromFlags, validateJoinTokenMaterial, type ZetaFirstbootRole } from "./firstboot-role.ts";
+import {
+  parseNamedBaoElfArgs,
+  type NamedBaoElfArgError,
+  type NamedBaoElfAsk,
+} from "./firstboot-bao-elf.ts";
 import { railFindingsForEspWrites } from "./injection-rail.ts";
 import type {
   FileBackedZflashImageExecution,
@@ -35,6 +40,12 @@ export interface FileBackedZflashCliOptions {
   readonly inlineStagingDirectory?: string;
   /** 081KSNY2Z0008QG0R0008PN7RQ scenario 5 — see firstboot-role.ts. */
   readonly firstbootRole?: ZetaFirstbootRole;
+  /**
+   * Named bao site + path for `/zeta-firstboot.conf`. Sibling of
+   * `firstbootRole`, not a field on the role. Both flags or neither.
+   * Null is unmeasured (tpmrm0 / `.so`), not `on-host`.
+   */
+  readonly namedBaoElf?: NamedBaoElfAsk | null;
   readonly joinTokenSourcePath?: string;
   readonly bindUefiKeyfileMarker?: boolean;
   /** QEMU-only test passphrase for `/zeta-qemu-creds-passphrase`. Never log. */
@@ -92,6 +103,8 @@ const USAGE =
   "  --flake-host <attr>          flake host attribute for --role (defaults per role)\n" +
   "  --join-server-url <url>      https://host[:port] of the existing control plane (joiner only)\n" +
   "  --join-token <path>          copy k3s node-token material to /zeta-join-token (joiner only)\n" +
+  "  --bao-load-site <on-host|in-chart-image>  name bao load site (requires --bao-path)\n" +
+  "  --bao-path <path>            named bao binary; both names land on /zeta-firstboot.conf with --role\n" +
   "  --bind-uefi-keyfile-marker   write /zeta-bind-uefi-keyfile (guest persist-opt-in; not default)\n" +
   "  --qemu-creds-passphrase-file <path>  write /zeta-qemu-creds-passphrase from a file (QEMU; not argv)\n" +
   "  --qemu-bake-test-cred-marker write /zeta-qemu-bake-test-cred (QEMU restore probe bake; not default)\n";
@@ -172,6 +185,23 @@ function requireValue(args: readonly string[], index: number, flag: string): str
   return value;
 }
 
+function namedBaoElfCliError(reason: NamedBaoElfArgError): string {
+  switch (reason) {
+    case "site-without-path":
+      return "--bao-load-site requires --bao-path";
+    case "path-without-site":
+      return "--bao-path requires --bao-load-site";
+    case "unknown-site":
+      return "--bao-load-site must be on-host or in-chart-image";
+    case "empty-site":
+      return "--bao-load-site requires a value";
+    case "empty-path":
+      return "--bao-path requires a value";
+    case "unsafe-conf-value":
+      return "--bao-load-site / --bao-path contains a value firstboot conf cannot carry";
+  }
+}
+
 export function parseFileBackedZflashArgs(args: readonly string[]): FileBackedZflashCliParseResult {
   let isoPath: string | undefined;
   let outputImagePath: string | undefined;
@@ -187,6 +217,8 @@ export function parseFileBackedZflashArgs(args: readonly string[]): FileBackedZf
   let flakeHostFlag: string | undefined;
   let joinServerUrlFlag: string | undefined;
   let joinTokenSourcePath: string | undefined;
+  let baoLoadSiteFlag: string | undefined;
+  let baoPathFlag: string | undefined;
   let testMode = false;
   let bindUefiKeyfileMarker = false;
   let qemuBakeTestCredMarker = false;
@@ -223,6 +255,8 @@ export function parseFileBackedZflashArgs(args: readonly string[]): FileBackedZf
       arg === "--flake-host" ||
       arg === "--join-server-url" ||
       arg === "--join-token" ||
+      arg === "--bao-load-site" ||
+      arg === "--bao-path" ||
       arg === "--qemu-creds-passphrase-file"
     ) {
       const value = requireValue(args, index, arg);
@@ -245,6 +279,8 @@ export function parseFileBackedZflashArgs(args: readonly string[]): FileBackedZf
       else if (arg === "--flake-host") flakeHostFlag = value;
       else if (arg === "--join-server-url") joinServerUrlFlag = value;
       else if (arg === "--join-token") joinTokenSourcePath = value;
+      else if (arg === "--bao-load-site") baoLoadSiteFlag = value;
+      else if (arg === "--bao-path") baoPathFlag = value;
       else if (arg === "--qemu-creds-passphrase-file") qemuCredsPassphraseFile = value;
       else inlineStagingDirectory = value;
       index++;
@@ -265,6 +301,16 @@ export function parseFileBackedZflashArgs(args: readonly string[]): FileBackedZf
     ...(joinTokenSourcePath === undefined ? {} : { joinTokenSourcePath }),
   });
   if (!firstbootRole.ok) return { kind: "error", error: firstbootRole.error };
+
+  const namedArgv: string[] = [];
+  if (baoLoadSiteFlag !== undefined) namedArgv.push(`--bao-load-site=${baoLoadSiteFlag}`);
+  if (baoPathFlag !== undefined) namedArgv.push(`--bao-path=${baoPathFlag}`);
+  let namedBaoElf: NamedBaoElfAsk | null | undefined;
+  if (namedArgv.length > 0) {
+    const parsedNamed = parseNamedBaoElfArgs(namedArgv);
+    if (!parsedNamed.ok) return { kind: "error", error: namedBaoElfCliError(parsedNamed.reason) };
+    namedBaoElf = parsedNamed.ask;
+  }
 
   let qemuCredsPassphrase: string | undefined;
   if (qemuCredsPassphraseFile !== undefined) {
@@ -299,6 +345,7 @@ export function parseFileBackedZflashArgs(args: readonly string[]): FileBackedZf
       ...(wifiPassword === undefined ? {} : { wifiPassword }),
       ...(inlineStagingDirectory === undefined ? {} : { inlineStagingDirectory }),
       ...(firstbootRole.value === undefined ? {} : { firstbootRole: firstbootRole.value }),
+      ...(namedBaoElf === undefined ? {} : { namedBaoElf }),
       ...(joinTokenSourcePath === undefined ? {} : { joinTokenSourcePath }),
       ...(bindUefiKeyfileMarker ? { bindUefiKeyfileMarker: true } : {}),
       ...(qemuBakeTestCredMarker ? { qemuBakeTestCredMarker: true } : {}),
@@ -377,6 +424,7 @@ export function runFileBackedZflashCli(
     ...(options.credentialBlobPath === undefined ? {} : { credentialBlobPath: options.credentialBlobPath }),
     ...(wifiCredentials === undefined ? {} : { wifiCredentials }),
     ...(options.firstbootRole === undefined ? {} : { firstbootRole: options.firstbootRole }),
+    ...(options.namedBaoElf === undefined ? {} : { namedBaoElf: options.namedBaoElf }),
     ...(options.joinTokenSourcePath === undefined ? {} : { joinTokenSourcePath: options.joinTokenSourcePath }),
     ...(options.bindUefiKeyfileMarker === true ? { bindUefiKeyfileMarker: true } : {}),
     ...(options.qemuBakeTestCredMarker === true ? { qemuBakeTestCredMarker: true } : {}),
