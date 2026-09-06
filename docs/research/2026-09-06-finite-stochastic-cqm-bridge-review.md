@@ -7,7 +7,7 @@ Reviewer: Vera, OpenAI Codex using GPT-6 Astra, independent reviewer agent
 Work item: 081M1WDDB6M087G0R002KN8DWQ
 Reviewed contract: `86205e52d65b2aa9dd43eff8c02a2bca9852f797`
 Reviewed implementation: `52b43d3e3fdb2916fc17096e9f003a478ba85eb4`
-Status: protocol and source accepted for archival; execution and final validation pending
+Status: protocol, source, first receipts and final local validation accepted
 
 ## Scope and method
 
@@ -181,3 +181,86 @@ gate. The recommendation is to archive the reviewed source, execute the fixed
 roster, and retain the first native/replay receipts and full validation results.
 The indexed results report must preserve those outcomes and the failed build
 attempt, then request the separate final evidence review.
+
+## First receipt and results review
+
+The reviewer separately inspected the first
+[native and Fraction receipts](finite-stochastic-cqm-bridge-validation/2026-09-06/README.md)
+and [results report](2026-09-06-finite-stochastic-cqm-bridge-results.md).
+This pass used raw-file hashing, parsed-record inspection, and git source-byte
+comparison. It did not import or execute either scientific implementation,
+rerun the experiment, or supply a third witness algorithm.
+
+| Receipt | Independently computed SHA256 |
+| --- | --- |
+| Native | `CAA481CBB41956BC6FAE56A4ACECEFED14B300B51AEBEDB332E447B025683B64` |
+| Fraction replay | `340733433B7689038B62512138DF0C039E53D1879225D105D51F72858BDC501F` |
+
+The replay binds the exact native digest. Both receipts identify the same
+eight source/protocol fingerprints and admitted archive commit
+`ce7fcffd496d8dcdea55f99d9919519276b35bd9`. The reviewer resolved the archive,
+checked contract ancestry, and compared all eight recorded fingerprints
+against both the archived files and the working scientific source. All match.
+The native receipt records loaded Core/Core.Abstractions SHA256 and canonical
+MVID values; the Python receipt records its executing-source hash and runtime.
+These are the evidence identities specified before execution, with the
+source-to-binary and admitted-snapshot limits retained above.
+
+The fourteen group counts are exactly 9, 27, 6, 81, 729, 81, 9, 9, 1, 1, 1,
+1, 1 and 1: 957 records. Every retained left/right vector agrees and every
+case/group pass flag is true. The reviewed replay source recomputes those
+ordered records before asserting agreement; this read-only audit independently
+checks their retained content and accounting, not another execution of that
+recomputation.
+
+The reviewer inspected the rectangular record and all five negative-control
+bodies rather than treating their passing flags as positive quantum results:
+
+- The rectangular routes all retain `[7/18,11/18]` or its diagonal matrix.
+- The plus-state loses its off-diagonal entry by 1/2, and ordinary identity
+  preservation is explicitly false.
+- The signed normalized map retains output `[2,-1]`, a negative Choi
+  coefficient, and identity output partial trace. It is not positive in the
+  standard cone despite satisfying normalization.
+- Bell partial transpose retains the negative quadratic value -1 on the
+  registered unnormalized vector.
+- The reset transpose is nonstochastic with column sums 2 and 0; the sum of
+  identities has diagonal entries 2 and fails stochastic normalization.
+
+The native arithmetic receipt has zero refusals, maximum absolute numerator
+11, and maximum denominator 18. The independent retained-coefficient bounds
+are also 11 and 18. This agreement is consistent with the output evidence;
+it does not independently establish the native intermediate-operation ledger.
+The result report makes that distinction and preserves the rational versus
+mathematically complex-linear boundary.
+
+No material scientific, admission, or results-interpretation finding remains.
+The report correctly presents a bounded classical inclusion, the repaired
+split-object identity, and explicit refusals of stronger identifications. It
+does not promote generic signed WSet weights, CQM equivalence/universality,
+Clifford/Lorentz structure, quantum hardware, or operational use. Finite
+receipts do not replace the contract's general mathematical arguments.
+
+## Final validation disposition
+
+The reviewer inspected the full Python log: 198 tests passed with one existing
+HookedTransformer deprecation warning. The first full .NET log retains a
+failed BftConsensus TLC run that could not unpickle a pool-file value of kind
+-98. That is a validation failure, separately preserved from the complete
+scientific receipts; the log alone does not establish its cause. The
+reviewer also inspected the unchanged isolated recovery log: exactly the
+BftConsensus theory case passed in 2 minutes 55 seconds. The fresh full
+Release build ended with zero warnings and errors in 53.03 seconds. The
+subsequent complete solution log has seven passing suite rows totaling
+7,515 passed, six skipped, and zero failed; its F# suite passed 6,525 tests
+in 5 minutes 35 seconds. The tested integration includes refreshed main at
+`5957b1ad8aa3ea9f4507b29221b2e8c63aa6103d`. The reviewer rechecked all eight
+scientific source/protocol fingerprints after that integration: each still
+matches the preserved receipt. No scientific receipt was replaced to obtain
+the passing validation gate.
+
+The final local validation and bounded evidence are accepted. The failed
+compiler and first full-suite attempts, isolated recovery, successful full
+build/tests, and exact first scientific receipts must remain separately
+indexed in the contributor's validation record. The PR's publication checks
+remain its own final integration evidence.
