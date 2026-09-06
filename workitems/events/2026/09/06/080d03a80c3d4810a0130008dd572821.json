@@ -1,0 +1,14 @@
+{
+  "id": "080d03a80c3d4810a0130008dd572821",
+  "at": "2026-09-06T04:37:09.673Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1TG31X8087G0R000W4EHQC",
+    "type": "task",
+    "title": "Subset of jumprope leaves is not readable after freeze",
+    "slug": "subset-of-jumprope-leaves-is-not-readable-after-freeze",
+    "priority": "P2",
+    "filename": "081M1TG31X8087G0R000W4EHQC-subset-of-jumprope-leaves-is-not-readable-after-freeze.md"
+  }
+}
