@@ -2904,6 +2904,60 @@ let ``XOR of jumprope internal stays unread after reopen`` () : Task =
     }
 
 [<Fact>]
+let ``XOR of one BlockCas jumprope internal stays unread after CloneMedia reopen`` () : Task =
+    task {
+        ensureHasher ()
+        FileSystem.Register(InMemoryFileSystem())
+        let store = "/objectsets-blockcas-internal-xor"
+        let mutbuf = ZetaFsMutbuf.create store ZetaFsMutbuf.Coherence.Shared
+        let payload = [| 1uy; 2uy; 3uy |]
+        let logDev = SimulatedBlockIo(4096)
+        let objDev = SimulatedBlockIo(4096)
+        let cas = BlockCas(objDev)
+        let mutable firstContent = Unchecked.defaultof<ContentHash256>
+        let volume1 = ZetaFsFreeze.createManualWithBlockStore store mutbuf None logDev cas
+
+        try
+            let id = mintId ()
+            let h = ZetaFsMutbuf.openHandle volume1.Mutbuf id
+            ZetaFsMutbuf.pwrite volume1.Mutbuf h 0L payload |> ignore
+            let pending = (freezeAsync volume1 id ZetaFsFreeze.Journaled).AsTask()
+            do! (ZetaFsFreeze.pumpLog volume1 CancellationToken.None).ConfigureAwait(false)
+            let! first = pending.ConfigureAwait(false)
+            match first with
+            | Error e -> Assert.Fail(ZetaFsFreeze.errorName e)
+            | Ok ok ->
+                firstContent <- ok.Content
+                Assert.True(ZetaFsFreeze.isReadable volume1 firstContent)
+                let rope = ZetaFsJumprope.buildV1 payload
+                Assert.Equal(ok.Content.ToHex(), rope.Content.ToHex())
+                let chunks = rope.Leaves |> Array.map fst
+                let internals =
+                    rope.Cas.Objects
+                    |> Seq.map (fun kv -> kv.Key)
+                    |> Seq.filter (fun hid ->
+                        not (hid.Equals rope.Content)
+                        && not (Array.exists (fun c -> c.Equals hid) chunks))
+                    |> Seq.toArray
+                Assert.True(internals.Length > 0)
+                let key = (ContentHash256.toContentAddress128 internals.[0]).ToHex()
+                Assert.True(cas.XorLastPayloadByte key)
+                Assert.False(ZetaFsFreeze.isReadable volume1 firstContent)
+        finally
+            ZetaFsFreeze.dispose volume1
+
+        let logClone = logDev.CloneMedia()
+        let objClone = objDev.CloneMedia()
+        let cas2 = BlockCas(objClone)
+        let volume2 = ZetaFsFreeze.createManualWithBlockStore store mutbuf None logClone cas2
+        try
+            Assert.False(ZetaFsFreeze.isReadable volume2 firstContent)
+        finally
+            ZetaFsFreeze.dispose volume2
+            FileSystem.Reset()
+    }
+
+[<Fact>]
 let ``rolling 1 third freeze must not revive the first generation`` () : Task =
     task {
         ensureHasher ()
