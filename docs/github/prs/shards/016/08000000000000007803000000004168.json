@@ -1,0 +1,12 @@
+{
+  "pr_number": 16744,
+  "archive_path": "docs/history/pr-reviews/PR-16744-test-081m1tg31x8087g0r000w4ehqc-subset-of-jumprope-leaves-is-not-readable.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-06T04:58:46.649Z",
+  "schema_version": "v1",
+  "commit_sha": "6af326bbfed304abd48ca727538e287f068c478c",
+  "title": "test(081M1TG31X8087G0R000W4EHQC): subset of jumprope leaves is not readable",
+  "state": "MERGED",
+  "merged_at": "2026-09-06T04:58:10Z",
+  "head_ref": "feat/zetafs-subset-of-leaves"
+}
