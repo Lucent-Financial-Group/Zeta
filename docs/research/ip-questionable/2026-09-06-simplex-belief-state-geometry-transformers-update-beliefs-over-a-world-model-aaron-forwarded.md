@@ -209,6 +209,81 @@ differential experiment over a substrate we control, and a null result — S unc
 would refute the role of the feedback channels without needing anyone to agree about what 2√2
 means.
 
+## The spectral slide — authorship, the equations, and the closest correspondence yet
+
+A second screenshot supplies what the transcript never named: **the paper and its authors.**
+
+> **"Next-token pretraining implies in-context learning"** — Paul M. Riechers\*, Henry R. Bigelow,
+> Eric A. Alt, Adam Shai · **Simplex, Astera Institute**
+
+and the two works it stands on, cited on the same slide:
+
+> Riechers & Crutchfield, **"Spectral simplicity of apparent complexity. I. The nondiagonalizable
+> metadynamics of prediction"** and **"II. Exact complexities and complexity spectra"** (both
+> *research article, March 23 2018*).
+
+That is a real Beacon anchor and it is now on file: the lineage is **computational mechanics** —
+Crutchfield's ε-machines, causal states, and the statistical complexity of a process.
+
+### The equations
+
+$$h_\mu(L) = \big\langle \delta_\pi \big| W^{L-1} \big| \mathrm{H}(W^{\mathcal{A}}) \big\rangle$$
+
+$$h_\mu(L) = \sum_{\substack{\lambda \in \Lambda_W \\ \lambda \neq 0}} \ \sum_{m=0}^{\nu_\lambda - 1}
+\big\langle \delta_\pi \big| W_{\lambda,m} \big| \mathrm{H}(W^{\mathcal{A}}) \big\rangle
+\binom{L-1}{m} \lambda^{\,L-1-m}
+\ +\ [\,0 \in \Lambda_W\,] \sum_{m=0}^{\nu_0 - 1} \delta_{L-1,m}
+\big\langle \delta_\pi \big| W_0 W^{m} \big| \mathrm{H}(W^{\mathcal{A}}) \big\rangle$$
+
+Read plainly: **the in-context entropy rate at length `L`, decomposed over the spectrum of the
+transition operator `W`.** The first line is the raw power `W^{L−1}`; the second is its
+**nondiagonalizable** (Jordan) decomposition — one term per eigenvalue `λ` and per index
+`m < ν_λ`, each contributing `binom(L−1, m) · λ^{L−1−m}`, i.e. **polynomial × exponential**, which
+is precisely the "polynomials times exponential decay" the transcript mentions in passing.
+
+**And the `λ = 0` block is the part worth staring at.** It carries a Kronecker `δ_{L−1,m}`, so it
+contributes **only at finitely many `L`** and then vanishes identically — a *transient* with a hard
+end, not a decay. Aaron: *"this is how we load the context."* That reading is exactly what the
+term's form says: the nilpotent block **is** the loading phase, finite and terminating, and
+everything after it is the `λ ≠ 0` asymptotics.
+
+### Why this is the closest correspondence in the whole document
+
+Aaron 2026-09-06: *"his spectral theory is very similar to our spectral fingerprinting … Vera has
+been doing a lot of work here on ARC game playing so it can detect scene changes, and we have work
+on CHIP-8 that detects game changes while staying in the soft regime, and we have a spectral
+identification system too."*
+
+The tree carries all three, and they are not name-matches:
+
+| in-tree | what it is |
+|---|---|
+| `src/Core/SpectralPivot.fs` | *"the soft and hard FFT: fingerprinting into spectral, a **pivot in phase spaces**"* — HARD is the exact DFT (lossless, invertible, the round-trip is a test); **SOFT is a Goertzel-shaped probe of k chosen bins**, a spectral MinHash |
+| `src/Core/StructureFingerprint.fs`, `FingerprintPrism.fs`, `GameFingerprint.fs` | the identification system, from content-derived external identity down to *soft* (weighted, non-crisp) ties |
+| `src/Core/SoftRegimeStability.fs`, `src/Core/Orbit.fs`, `TangleNavigator.fs` | staying in the soft regime while detecting that the regime changed |
+| `src/Core/IharaZeta.fs`, `CoordinationSpectrum.fs` | spectral objects over graphs and over coordination |
+
+**The structural match is specific, not vibes.** Riechers' decomposition answers *"how does
+uncertainty about the process decay as context accumulates, resolved by spectral component"*.
+`SpectralPivot`'s soft/hard split answers *"which components do I need to probe to identify this,
+and can I pay for only k of them"*. Those are **the same object read in two directions** — one
+asking what the spectrum predicts, the other asking what the spectrum identifies — over the same
+non-normal operator.
+
+**And the change-detection connection is the sharpest part.** A scene change or a game change is
+precisely a **change of the generating process**, which in this formalism means the operator `W`
+itself changed — so the observed `h_μ(L)` stops following the decomposition it had been following.
+That gives change detection a *principled* statistic rather than a heuristic threshold: **detect
+the regime change as a departure from the predicted spectral decay curve.** Whether our CHIP-8 and
+ARC detectors are computing anything equivalent to that is **not established here** and is exactly
+the comparison worth making, since it is checkable on both sides.
+
+**Register.** The equations and authorship are quoted facts. The correspondence between Riechers'
+spectral decomposition and `SpectralPivot`/the fingerprint family is **argued from what each
+computes**, and is stronger than the other items in this document precisely because both sides are
+explicit mathematics over an operator spectrum rather than one side being a metaphor. It is still
+not a proof that they coincide — nobody has run one against the other.
+
 ## Transcript (verbatim as forwarded)
 
 ```
