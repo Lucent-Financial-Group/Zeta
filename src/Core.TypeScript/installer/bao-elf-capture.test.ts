@@ -24,6 +24,7 @@ import {
 import { integrateAtSetup } from "../cluster/unseal-path.ts";
 import { SHELL_SAFE_CONF_VALUE_REGEX, planFirstbootConfFileContent } from "../zflash/firstboot-role.ts";
 import {
+  FIRSTBOOT_BAO_ELF_EPOCH_KEY,
   FIRSTBOOT_BAO_LOAD_SITE_KEY,
   FIRSTBOOT_BAO_PATH_KEY,
   NIXOS_HOST_BAO,
@@ -514,8 +515,8 @@ describe("planSetupFromNamedBaoElfEnv — env join, still not a seal", () => {
         ZETA_ROLE: "first-control-plane",
         ZETA_BAO_LOAD_SITE: "on-host",
         ZETA_BAO_PATH: NIXOS_HOST_BAO,
+        [FIRSTBOOT_BAO_ELF_EPOCH_KEY]: "installed-host",
       },
-      "installed-host",
       (path) => {
         opened.push(path);
         return {
@@ -540,8 +541,8 @@ describe("planSetupFromNamedBaoElfEnv — env join, still not a seal", () => {
       {
         ZETA_BAO_LOAD_SITE: "on-host",
         ZETA_BAO_PATH: NIXOS_HOST_BAO,
+        [FIRSTBOOT_BAO_ELF_EPOCH_KEY]: "installer-iso",
       },
-      "installer-iso",
       (path) => {
         opened.push(path);
         return {
@@ -567,8 +568,8 @@ describe("planSetupFromNamedBaoElfEnv — env join, still not a seal", () => {
       {
         ZETA_BAO_LOAD_SITE: "on-host",
         ZETA_BAO_PATH: storeBao,
+        [FIRSTBOOT_BAO_ELF_EPOCH_KEY]: "installer-iso",
       },
-      "installer-iso",
       (path) => {
         opened.push(path);
         return {
@@ -591,7 +592,6 @@ describe("planSetupFromNamedBaoElfEnv — env join, still not a seal", () => {
       tpmDecision(),
       missingRestore,
       { PATH: "/usr/bin" },
-      "installer-iso",
       (path) => {
         opened.push(path);
         return { exists: true, bytes: elf64LeWithInterp(ELF_INTERP_GLIBC_X86_64) };
@@ -612,8 +612,8 @@ describe("planSetupFromNamedBaoElfEnv — env join, still not a seal", () => {
       {
         ZETA_BAO_LOAD_SITE: "on-host",
         ZETA_BAO_PATH: TPM_CHAR_DEVICE,
+        [FIRSTBOOT_BAO_ELF_EPOCH_KEY]: "installer-iso",
       },
-      "installer-iso",
       (path) => {
         opened.push(path);
         return { exists: true, bytes: elf64LeWithInterp(ELF_INTERP_GLIBC_X86_64) };
@@ -632,7 +632,6 @@ describe("planSetupFromNamedBaoElfEnv — env join, still not a seal", () => {
       tpmDecision(),
       missingRestore,
       { ZETA_BAO_LOAD_SITE: "on-host" },
-      "installer-iso",
       (path) => {
         opened.push(path);
         return { exists: true, bytes: elf64LeWithInterp(ELF_INTERP_GLIBC_X86_64) };
@@ -644,13 +643,55 @@ describe("planSetupFromNamedBaoElfEnv — env join, still not a seal", () => {
       tpmDecision(),
       missingRestore,
       { ZETA_BAO_PATH: NIXOS_HOST_BAO },
-      "installer-iso",
       (path) => {
         opened.push(path);
         return { exists: true, bytes: elf64LeWithInterp(ELF_INTERP_GLIBC_X86_64) };
       },
     );
     expect(pathOnly).toEqual({ ok: false, reason: "path-without-site" });
+    expect(opened).toEqual([]);
+  });
+
+  test("option D env without a named epoch refuses and does not open NIXOS_HOST_BAO", () => {
+    const opened: string[] = [];
+    const missingEpoch = planSetupFromNamedBaoElfEnv(
+      tpmDecision(),
+      missingRestore,
+      {
+        ZETA_BAO_LOAD_SITE: "on-host",
+        ZETA_BAO_PATH: NIXOS_HOST_BAO,
+      },
+      (path) => {
+        opened.push(path);
+        return {
+          exists: true,
+          bytes: path === NIXOS_HOST_BAO ? elf64LeWithInterp(ELF_INTERP_GLIBC_X86_64) : null,
+        };
+      },
+    );
+    expect(missingEpoch).toEqual({ ok: false, reason: "empty-epoch" });
+    expect(opened).toEqual([]);
+  });
+
+  test("/mnt as epoch refuses unknown-epoch and does not open NIXOS_HOST_BAO", () => {
+    const opened: string[] = [];
+    const fromMnt = planSetupFromNamedBaoElfEnv(
+      tpmDecision(),
+      missingRestore,
+      {
+        ZETA_BAO_LOAD_SITE: "on-host",
+        ZETA_BAO_PATH: NIXOS_HOST_BAO,
+        [FIRSTBOOT_BAO_ELF_EPOCH_KEY]: "/mnt",
+      },
+      (path) => {
+        opened.push(path);
+        return {
+          exists: true,
+          bytes: path === NIXOS_HOST_BAO ? elf64LeWithInterp(ELF_INTERP_GLIBC_X86_64) : null,
+        };
+      },
+    );
+    expect(fromMnt).toEqual({ ok: false, reason: "unknown-epoch" });
     expect(opened).toEqual([]);
   });
 });

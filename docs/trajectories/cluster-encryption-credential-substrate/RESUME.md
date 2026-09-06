@@ -594,6 +594,24 @@ Workitem: `081M1W6J9MH087G0R003VNMDDR`.
 - Does not invent an integrate decision. Does not expand
   `ZetaFirstbootRole`. Does not edit Application.yaml.
 
+## 2026-09-06 — overlay env join reads named epoch from env (Riven)
+
+Aaron: continue after the ISO bun consume. Epoch lived in
+process env, but `planSetupFromNamedBaoElfEnv` still took it
+as a TypeScript argument.
+
+Consumer: `src/Core.TypeScript/installer/bao-elf-capture.ts`
+(`planSetupFromNamedBaoElfEnv`).
+Workitem: `081M1W8D6MF087G0R003405R3N`.
+
+- Epoch comes from `ZETA_BAO_ELF_EPOCH`. A named ask without
+  a named epoch refuses (`empty-epoch`) and does not open
+  `NIXOS_HOST_BAO`. `/mnt` is unknown-epoch. Missing keys stay
+  unmeasured. Does not default missing epoch to
+  `installed-host`.
+- Does not invent an integrate decision. Does not expand
+  `ZetaFirstbootRole`. Does not edit Application.yaml.
+
 ## 2026-09-04 — production-hardening review (Riven)
 
 Aaron asked to production-harden the CA, name the unseal startup, use

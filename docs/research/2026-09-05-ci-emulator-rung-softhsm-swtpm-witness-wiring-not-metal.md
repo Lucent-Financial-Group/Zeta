@@ -276,15 +276,20 @@ ISO bun names epoch (`081M1W6J9MH087G0R003VNMDDR`):
 `ZETA_BAO_ELF_EPOCH='installer-iso'` as a literal.
 Missing epoch is unmeasured, not `installed-host`.
 `/mnt` is unknown, not `installer-iso`.
+Env join reads named epoch (`081M1W8D6MF087G0R003405R3N`):
+`planSetupFromNamedBaoElfEnv` takes epoch from env.
+A named ask without a named epoch refuses. Missing
+keys stay unmeasured. Does not invent an integrate
+decision.
 
 1. Metal: `seal "pkcs11"` in Application.yaml still waits.
    Same commit as a **reachable** module: same-libc image
    (glibc OpenBao that can load the host `.so`) or option D
    host `bao`. Dual-vendor per node is ZetaFS k-of-n, not
    two active OpenBao seals. Do not treat this planner as
-   that commit. Epoch is named at the ISO consume. A live
-   installer call still must not invent an integrate
-   decision. Does not expand `ZetaFirstbootRole`.
+   that commit. Env join cannot plan a named ask without a
+   named epoch. A live installer call still must not invent
+   an integrate decision. Does not expand `ZetaFirstbootRole`.
    `/dev/tpmrm0` is still not an ask.
 2. extraContainer Shamir sidecar (`valuesObject` only) until
    kind/CI consume the emulator init.

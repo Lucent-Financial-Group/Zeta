@@ -13,7 +13,9 @@
  * First-boot conf/argv carrier emits both names or neither.
  * Conf consume parses those assignments back into a named ask.
  * Env join is the argv/conf sibling: sourced process env
- * into `planSetupFromNamedBaoElf`. Epoch is named — ISO
+ * into `planSetupFromNamedBaoElf`. Epoch is named from that
+ * same env (`ZETA_BAO_ELF_EPOCH`) — a TypeScript caller cannot
+ * pass a different epoch than the env names. ISO
  * current-system bao is not option D. Role conf plus named bao
  * is one planner call; the role type is unchanged. Pure join
  * + argv parse + conf/env consume live in firstboot-bao-elf.ts
@@ -40,12 +42,11 @@ import {
   type RestoredPkcs11PointerCapture,
 } from "../cluster/unseal-path.ts";
 import {
-  consumeFirstbootBaoElfProcessEnv,
+  consumeFirstbootBaoElfEnvWithEpoch,
   namedBaoElfAsk,
   namedBaoElfAskAtEpoch,
   parseFirstbootBaoElfConf,
   parseNamedBaoElfArgs,
-  type BaoElfEpoch,
   type NamedBaoElfArgError,
   type NamedBaoElfAsk,
 } from "../zflash/firstboot-bao-elf.ts";
@@ -167,23 +168,30 @@ export function planSetupFromNamedBaoElfConf(
 
 /**
  * First-boot env consume after bash export. Overlay still
- * does not open files. Epoch is named: `installer-iso` does
- * not open `NIXOS_HOST_BAO` (that string is the live ISO's
- * bao). `installed-host` may. Injected `read` is required.
- * A refused env is not filled with `NIXOS_HOST_BAO` or a
- * `/mnt/...` path. tpmrm0 is still not an ask. `/mnt`
- * existing does not pick the epoch.
+ * does not open files. Epoch is named from env
+ * (`ZETA_BAO_ELF_EPOCH`): `installer-iso` does not open
+ * `NIXOS_HOST_BAO` (that string is the live ISO's bao).
+ * `installed-host` may. A named ask without a named epoch
+ * refuses (`empty-epoch`) — missing is unmeasured, not
+ * `installed-host`. Injected `read` is required. A refused
+ * env is not filled with `NIXOS_HOST_BAO` or a `/mnt/...`
+ * path. tpmrm0 is still not an ask. `/mnt` existing does
+ * not pick the epoch.
  */
 export function planSetupFromNamedBaoElfEnv(
   decision: IntegrateDecision,
   restore: RestoredPkcs11PointerCapture,
   env: { readonly [key: string]: string | undefined },
-  epoch: BaoElfEpoch,
   read: BaoElfRead,
 ): FirstBootBaoElfFromArgv {
-  const parsed = consumeFirstbootBaoElfProcessEnv(env);
+  const parsed = consumeFirstbootBaoElfEnvWithEpoch(env);
   if (!parsed.ok) return parsed;
+  if (parsed.ask !== null && parsed.epoch === null) {
+    return { ok: false, reason: "empty-epoch" };
+  }
   const ask =
-    parsed.ask === null ? null : namedBaoElfAskAtEpoch(parsed.ask.site, parsed.ask.openedPath, epoch);
+    parsed.ask === null || parsed.epoch === null
+      ? null
+      : namedBaoElfAskAtEpoch(parsed.ask.site, parsed.ask.openedPath, parsed.epoch);
   return { ok: true, plan: planSetupFromNamedBaoElf(decision, restore, ask, read) };
 }

@@ -530,6 +530,11 @@ ISO bun names epoch
 `ZETA_BAO_ELF_EPOCH='installer-iso'` as a
 literal after 6.95a; `/mnt` is unknown,
 not `installer-iso`.
+Env join reads named epoch
+(`081M1W8D6MF087G0R003405R3N`) from
+`ZETA_BAO_ELF_EPOCH`; a named ask without
+a named epoch refuses; still does not
+invent an integrate decision.
 glibc-host-into-musl-image is not a
 module; Application.yaml stays Shamir.
 
