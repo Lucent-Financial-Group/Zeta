@@ -1,0 +1,96 @@
+"""Independent exact replay and deliberately corrupted receipt controls."""
+
+import json
+from copy import deepcopy
+from dataclasses import replace
+from hashlib import sha256
+from pathlib import Path
+
+import pytest
+from zeta_interp import relational_identity as r
+
+ROOT = Path(__file__).resolve().parents[3]
+RECEIPT = ROOT / "src/Research.FSharp/relational-identity-results.json"
+
+
+def test_saved_native_receipt_matches_independent_regeneration() -> None:
+    result = r.verify_saved(
+        json.loads(RECEIPT.read_text()), ROOT, check_source_snapshot=False
+    )
+    assert result["ExactSemanticMatch"]
+    assert result["TransportChecks"] == 288
+    assert result["MutationCases"] == 17
+
+
+@pytest.mark.parametrize(
+    "field",
+    [
+        "entropy",
+        "coverage",
+        "controller",
+        "hashes",
+        "extra_hash",
+        "invariant",
+        "archive",
+    ],
+)
+def test_corrupted_receipt_is_rejected(field: str) -> None:
+    saved = deepcopy(json.loads(RECEIPT.read_text()))
+    if field == "entropy":
+        saved["Semantic"]["Entropy"][3]["JointMinEntropyBits"] = 3
+    elif field == "coverage":
+        saved["Semantic"]["Mutations"][6]["Status"] = "consistent-on-declared-cut"
+    elif field == "controller":
+        saved["Semantic"]["Baselines"][5]["SharedController"] = False
+    elif field == "hashes":
+        saved["SourceHashes"][0]["Sha256"] = "00"
+    elif field == "extra_hash":
+        saved["SourceHashes"].append(saved["SourceHashes"][0])
+    elif field == "invariant":
+        saved["Semantic"]["Transport"]["Invariant"]["Claims"] = []
+    else:
+        saved["SourceArchive"] = "unregistered-source"
+    with pytest.raises(ValueError):
+        r.verify_saved(saved, ROOT, check_source_snapshot=False)
+
+
+def test_independent_fork_diagnostics_are_arrival_invariant() -> None:
+    first = replace(r.RECEIPTS[0], Parents=("outside-a",))
+    second = replace(r.RECEIPTS[0], Parents=("outside-b",))
+    table = {(first, "first"), (second, "second")}
+    occurrences = (
+        r.Occurrence(0, 0, first, "first"),
+        r.Occurrence(1, 1, second, "second"),
+    )
+    forward = r.View("A", occurrences)
+    backward = r.View("A", occurrences[::-1])
+    a = r.compare("fork", table, ("e0",), forward, forward)
+    b = r.compare("fork", table, ("e0",), backward, backward)
+    assert a == b
+    assert a["BoundaryParents"] == ["outside-a", "outside-b"]
+    assert a["RepeatedLeft"] == 0
+    assert a["Status"] == "authenticated-conflict"
+
+
+def test_pairwise_independence_is_not_joint_entropy_additivity() -> None:
+    row = r.entropy_panel()[3]
+    assert row["PairwiseIndependent"]
+    assert not row["OneBitConditionalPremise"]
+    assert row["MaximumProbability"] == ["1", "4"]
+    assert row["JointMinEntropyBits"] == 2
+
+
+def test_strict_replay_checks_a_supplied_source_snapshot(tmp_path: Path) -> None:
+    # Build an explicitly current test snapshot, not a claim that history changed.
+    saved = json.loads(RECEIPT.read_text())
+    for row in saved["SourceHashes"]:
+        content = (ROOT / row["Path"]).read_bytes()
+        path = tmp_path / row["Path"]
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_bytes(content)
+        row["Sha256"] = sha256(content).hexdigest().upper()
+    assert r.verify_saved(saved, tmp_path)["SourceSnapshotVerified"]
+    path = tmp_path / saved["SourceHashes"][0]["Path"]
+    path.write_bytes(path.read_bytes() + b"changed")
+    with pytest.raises(ValueError, match="source hash mismatch"):
+        r.verify_saved(saved, tmp_path)

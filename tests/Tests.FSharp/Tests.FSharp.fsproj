@@ -224,6 +224,9 @@
     <Compile Include="Optic.Tests.fs" />
     <Compile Include="Conjugate.Tests.fs" />
     <Compile Include="BitGan.Tests.fs" />
+    <Compile Include="../../src/Research.FSharp/RelationalIdentity.fs" Link="Research/RelationalIdentity.fs" />
+    <Compile Include="../../src/Research.FSharp/RelationalIdentityExperiment.fs" Link="Research/RelationalIdentityExperiment.fs" />
+    <Compile Include="RelationalIdentity.Tests.fs" />
     <Compile Include="AntiSybil.Tests.fs" />
     <Compile Include="ReportTriage.Tests.fs" />
     <Compile Include="AntiSybilCaveatA.Property.Tests.fs" />
