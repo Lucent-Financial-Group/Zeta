@@ -110,14 +110,45 @@ describe("committed-chart-credentials", () => {
       expect(entry.reason.length).toBeGreaterThan(80);
       expect(entry.liftsWhen).toContain("LIFTS WHEN:");
     }
-    // AND NO ENTRY QUOTES THE SECRET. The roster is committed and public; an acknowledgement
-    // that spelled the credential out would republish the thing it is apologising for.
-    const secrets = new Set(findings.map((f) => f.value));
-    for (const entry of baseline) {
-      for (const secret of secrets) {
-        expect(entry.reason).not.toContain(secret);
-        expect(entry.liftsWhen).not.toContain(secret);
-      }
-    }
+    // AND NO ENTRY LEAKS THE SECRET, IN ANY ENCODING. The roster is committed and public; an
+    // acknowledgement that spelled the credential out would republish the thing it is
+    // apologising for.
+    //
+    // THIS WAS A `not.toContain` PER ENTRY AND THAT WAS NOT A TEST OF THIS PROPERTY --
+    // `audit-check-arity-nonequality.ts` convicted it, correctly: "an absence assertion
+    // witnesses ONE RENDERING of a leak, never its absence." The case it cites is exactly
+    // this shape one path over: `tools/setup/persona-keys/machine.test.ts` claimed "no
+    // private bytes anywhere in it", discharged it with `not.toContain("PRIVATE")`, and
+    // published the COMPLETE private key base64-encoded through 27 green tests.
+    //
+    // So the claim is carried by ONE EXACT-EQUALITY assertion over a derived set, and the
+    // encodings are enumerated rather than assumed. `expectedEncodings` is asserted too: a
+    // future edit that quietly drops an encoding would otherwise narrow the claim while the
+    // `toEqual([])` still passed -- the same defect, one level up.
+    const secrets = [...new Set(findings.map((f) => f.value))];
+    const encodingsOf = (secret: string): { readonly how: string; readonly text: string }[] => [
+      { how: "raw", text: secret },
+      { how: "base64", text: Buffer.from(secret, "utf8").toString("base64") },
+      { how: "base64url", text: Buffer.from(secret, "utf8").toString("base64url") },
+      { how: "hex", text: Buffer.from(secret, "utf8").toString("hex") },
+      { how: "uri", text: encodeURIComponent(secret) },
+      { how: "no-separators", text: secret.replace(/[-_ .]/g, "") },
+    ];
+    const expectedEncodings = ["raw", "base64", "base64url", "hex", "uri", "no-separators"];
+    expect(encodingsOf("x").map((e) => e.how)).toEqual(expectedEncodings);
+
+    const baselineText = readFileSync(join(root, BASELINE_FILE), "utf8");
+    const leaks = secrets.flatMap((secret) =>
+      encodingsOf(secret)
+        .filter((e) => e.text.length >= 8 && baselineText.includes(e.text))
+        // The LEAK ITSELF IS NEVER PUT IN THE FAILURE MESSAGE -- a test that printed the
+        // credential to prove it was leaked would leak it into every CI log.
+        .map((e) => `${e.how} encoding of a committed secret appears in ${BASELINE_FILE}`),
+    );
+    expect(leaks).toEqual([]);
+
+    // The absence check must have had something to look for. With zero secrets the loop
+    // above is vacuously empty and would pass over a scan that found nothing.
+    expect(secrets.length).toBeGreaterThan(0);
   });
 });
