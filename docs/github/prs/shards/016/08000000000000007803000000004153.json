@@ -1,0 +1,12 @@
+{
+  "pr_number": 16723,
+  "archive_path": "docs/history/pr-reviews/PR-16723-feat-bytelock-windows-legs-five-machines-three-architectures-non-blocking-but-no.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-06T03:09:09.042Z",
+  "schema_version": "v1",
+  "commit_sha": "4fb0cdff9d971449067733df8f2e2a64fad64e0e",
+  "title": "feat(bytelock): Windows legs — five machines, three architectures, non-blocking but not rotting",
+  "state": "MERGED",
+  "merged_at": "2026-09-06T03:08:31Z",
+  "head_ref": "otto/bytelock-windows-legs"
+}
