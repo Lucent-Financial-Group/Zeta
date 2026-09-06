@@ -25,6 +25,9 @@ const FIRSTBOOT_START = "# ── 081M1VZRST2087G0R001QEJDWG: named bao export";
 const FIRSTBOOT_END = "# ── 081M1VZRST2087G0R001QEJDWG: end named bao export";
 const INSTALL_START = "# ── 081M1VZRST2087G0R001QEJDWG: named bao site+path pickup";
 const INSTALL_END = "# ── 081M1VZRST2087G0R001QEJDWG: end named bao pickup";
+const INVOKE_START = "# ── 081M1W1NCDT087G0R002H3VG6Y: named bao bun consume";
+const INVOKE_END = "# ── 081M1W1NCDT087G0R002H3VG6Y: end named bao bun consume";
+const BAO_ENV_HELPER_REL = "src/Core.TypeScript/zflash/firstboot-bao-env.ts";
 
 const SITE_SED_BASH = `s/^${FIRSTBOOT_BAO_LOAD_SITE_KEY}='\\([^']*\\)'\\$/\\1/p`;
 const PATH_SED_BASH = `s/^${FIRSTBOOT_BAO_PATH_KEY}='\\([^']*\\)'\\$/\\1/p`;
@@ -295,5 +298,68 @@ describe("zeta-install.sh named bao sed-parse", () => {
         [FIRSTBOOT_BAO_PATH_KEY]: got.openedPath,
       }),
     ).toEqual({ ok: true, ask: null });
+  });
+});
+
+describe("zeta-install.sh named bao bun consume after 6.95a", () => {
+  const src = readFileSync(INSTALL_SH, "utf8");
+  const firstboot = readFileSync(FIRSTBOOT_SH, "utf8");
+  const block = sliceMarkedBlock(src, INVOKE_START, INVOKE_END);
+  const helper = fileURLToPath(new URL("./firstboot-bao-env.ts", import.meta.url));
+
+  test("invoke sits after 6.95a-bootstrap and after ESP pickup", () => {
+    expect(src.indexOf(BAO_ENV_HELPER_REL)).toBeGreaterThan(src.indexOf("6.95a-bootstrap"));
+    expect(src.indexOf(INVOKE_START)).toBeGreaterThan(src.indexOf(INSTALL_END));
+    expect(src.indexOf(INVOKE_START)).toBeGreaterThan(src.indexOf("tools/setup/install.sh"));
+  });
+
+  test("first-boot still does not invoke bun consume", () => {
+    const executable = executableLines(firstboot);
+    expect(executable.split("firstboot-bao-env").length - 1).toBe(0);
+    expect(executable.split("bun ").length - 1).toBe(0);
+  });
+
+  test("pickup executable still does not invoke bun", () => {
+    const pickup = executableLines(sliceMarkedBlock(src, INSTALL_START, INSTALL_END));
+    expect(pickup.split("firstboot-bao-env").length - 1).toBe(0);
+    expect(pickup.split("bun").length - 1).toBe(0);
+  });
+
+  test("invoke passes both env names into bun and does not open tpmrm0 or fill host bao", () => {
+    const executable = executableLines(block);
+    expect(executable.split("bun '$BAO_ENV_HELPER'").length - 1).toBe(1);
+    expect(executable.split(`export ${FIRSTBOOT_BAO_LOAD_SITE_KEY}=`).length - 1).toBe(1);
+    expect(executable.split(`${FIRSTBOOT_BAO_PATH_KEY}='`).length - 1).toBe(1);
+    expect(executable.split(TPM_CHAR_DEVICE).length - 1).toBe(0);
+    expect(executable.split(NIXOS_HOST_BAO).length - 1).toBe(0);
+    expect(executable.split("Application.yaml").length - 1).toBe(0);
+    expect(executable.split("seal ").length - 1).toBe(0);
+  });
+
+  test("the helper the installer names still consumes option D from env", () => {
+    expect(helper.endsWith(BAO_ENV_HELPER_REL.replace("src/Core.TypeScript/zflash/", ""))).toBe(true);
+    const spawned = spawnSync(process.execPath, [helper], {
+      encoding: "utf8",
+      env: {
+        PATH: process.env.PATH,
+        [FIRSTBOOT_BAO_LOAD_SITE_KEY]: "on-host",
+        [FIRSTBOOT_BAO_PATH_KEY]: NIXOS_HOST_BAO,
+      },
+    });
+    expect(spawned.status).toBe(0);
+    expect(JSON.parse(spawned.stdout)).toEqual({ ok: true, ask: nixosHostBaoAsk() });
+  });
+
+  test("the helper the installer names still returns null ask for tpmrm0", () => {
+    const spawned = spawnSync(process.execPath, [helper], {
+      encoding: "utf8",
+      env: {
+        PATH: process.env.PATH,
+        [FIRSTBOOT_BAO_LOAD_SITE_KEY]: "on-host",
+        [FIRSTBOOT_BAO_PATH_KEY]: TPM_CHAR_DEVICE,
+      },
+    });
+    expect(spawned.status).toBe(0);
+    expect(JSON.parse(spawned.stdout)).toEqual({ ok: true, ask: null });
   });
 });

@@ -3388,6 +3388,52 @@ if [ -d "$ZETA_HOME" ]; then
   sudo mkdir -p "$ZETA_HOME/.bun/bin"
   sudo chown -R "$ZETA_UID:$ZETA_GID" "$ZETA_HOME/.bun"
 
+  # ── 081M1W1NCDT087G0R002H3VG6Y: named bao bun consume ──────────
+  #
+  # Pickup exported both names (or neither) before bun existed.
+  # tools/setup/install.sh has now run; bun/mise may be on PATH.
+  # Invoke firstboot-bao-env.ts the same way wifi/iserial helpers
+  # run. Do not invoke from zeta-first-boot.sh. Do not open
+  # /dev/tpmrm0. Do not fill /run/current-system/sw/bin/bao. Do
+  # not write Application.yaml. A null ask is not a seal.
+  BAO_ENV_HELPER="$ZETA_HOME/Zeta/src/Core.TypeScript/zflash/firstboot-bao-env.ts"
+  if [ -z "${ZETA_BAO_LOAD_SITE:-}" ] || [ -z "${ZETA_BAO_PATH:-}" ]; then
+    echo "[081M1W1NCDT087G0R002H3VG6Y-bao]   no bao names in env; consume skipped"
+  elif [ ! -f "$BAO_ENV_HELPER" ]; then
+    echo "[081M1W1NCDT087G0R002H3VG6Y-bao]   helper absent; consume skipped"
+  else
+    set +e
+    BAO_ENV_JSON=$(
+      sudo --preserve-env=PATH -u "#$ZETA_UID" HOME="$ZETA_HOME" BUN_INSTALL="$ZETA_HOME/.bun" \
+        MISE_TRUSTED_CONFIG_PATHS="$ZETA_HOME/Zeta" \
+        bash -c "set -o pipefail; export PATH='/run/current-system/sw/bin:${ZETA_HOME}/.local/share/mise/shims:${ZETA_HOME}/.bun/bin:/usr/bin:/bin'; eval \"\$(mise activate bash 2>/dev/null || true)\"; export ZETA_BAO_LOAD_SITE='$ZETA_BAO_LOAD_SITE' ZETA_BAO_PATH='$ZETA_BAO_PATH'; cd '$ZETA_HOME/Zeta' && bun '$BAO_ENV_HELPER'" \
+        2>/tmp/zeta-bao-env.err
+    )
+    BAO_ENV_RC=$?
+    set -e
+    if [ "$BAO_ENV_RC" -eq 0 ]; then
+      echo "[081M1W1NCDT087G0R002H3VG6Y-bao]   consume $BAO_ENV_JSON"
+      BAO_ENV_ASK=$(printf '%s' "$BAO_ENV_JSON" | jq -c '.ask' 2>/dev/null || printf 'unparseable')
+      if [ "$BAO_ENV_ASK" = "null" ]; then
+        echo "[081M1W1NCDT087G0R002H3VG6Y-bao]   null ask is not a named bao (tpmrm0 / non-bao path); not a seal"
+      else
+        echo "[081M1W1NCDT087G0R002H3VG6Y-bao]   named ask $BAO_ENV_ASK; stanza unchanged"
+      fi
+    elif ! sudo --preserve-env=PATH -u "#$ZETA_UID" HOME="$ZETA_HOME" BUN_INSTALL="$ZETA_HOME/.bun" \
+           bash -c "export PATH='/run/current-system/sw/bin:${ZETA_HOME}/.local/share/mise/shims:${ZETA_HOME}/.bun/bin:/usr/bin:/bin'; command -v bun >/dev/null 2>&1"; then
+      echo "[081M1W1NCDT087G0R002H3VG6Y-bao]   consume unavailable (bun/runtime missing — install.sh incomplete)"
+    else
+      echo "[081M1W1NCDT087G0R002H3VG6Y-bao]   WARN: consume refused rc=$BAO_ENV_RC json='$BAO_ENV_JSON'" >&2
+    fi
+    if [ -s /tmp/zeta-bao-env.err ]; then
+      echo "[081M1W1NCDT087G0R002H3VG6Y-bao]   --- consume stderr ---"
+      sed -e 's/^/[081M1W1NCDT087G0R002H3VG6Y-bao]   /' /tmp/zeta-bao-env.err 2>/dev/null | tail -10
+      echo "[081M1W1NCDT087G0R002H3VG6Y-bao]   --- end consume stderr ---"
+    fi
+    rm -f /tmp/zeta-bao-env.err
+  fi
+  # ── 081M1W1NCDT087G0R002H3VG6Y: end named bao bun consume ──────
+
   # ── Step 6.95c: iter-5.5.1 wifi NetworkManager profile write (081KZHJPJCF) ──────────────────
   # iter-5.2/6.6 staged /mnt/boot/zeta-wifi-credentials.json but could NOT write the NM profile
   # there (no repo/mise pre-6.95a). Now the runtime bootstrap has run ($ZETA_HOME/Zeta cloned,

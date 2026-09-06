@@ -212,6 +212,10 @@ assume the number.
    Does not invoke bun (not on PATH until Step 6.95a).
    `/dev/tpmrm0` may be exported; bun consume is still
    not an ask. Does not expand `ZetaFirstbootRole`.
+   Post-6.95a bun consume (`081M1W1NCDT087G0R002H3VG6Y`):
+   `zeta-install.sh` invokes `firstboot-bao-env.ts` after
+   mise/bun exist. Does not invoke bun from
+   `zeta-first-boot.sh`. A null ask is not a seal.
 7. extraContainer sidecar — later, **same commit as the
    sidecar**, and only for the Shamir kind path until the
    emulator job replaces it. `valuesObject` only. Do not fork
