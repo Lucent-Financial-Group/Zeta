@@ -74,6 +74,9 @@ information beyond next-token probabilities. The output-only probe measures
 this limitation directly. RRXOR or another next-token-degenerate process is a
 separate follow-up, not an unreported substitution if these results disappoint.
 
+The split separates random draws, not token-string values: independent draws
+can produce identical strings, especially on a persistent process. We do not
+claim that every evaluation string is absent from training or probe fitting.
 Longer-context evaluation uses the same process. It is not unseen-game transfer.
 Approximate binary64 arithmetic is not exact rational arithmetic or a
 cross-platform byte-identity promise. Timing has no pass threshold and must not
@@ -108,7 +111,10 @@ receipts incomplete. Existing output files are not silently overwritten.
 ## Recorded results
 
 Protocol commit: `9e0a858018`, before training. First implementation commit:
-`af434e26b2`. All nine registered runs completed; none was excluded or selected
+`af434e26b2`. Preregistration and implementation history are retained under
+[`archive/experiments/081M1TXSGV2087G0R000Y88DEY`](https://github.com/Lucent-Financial-Group/Zeta/tree/archive/experiments/081M1TXSGV2087G0R000Y88DEY),
+so squash-only merging and automatic branch deletion do not discard those
+ancestors. All nine registered runs completed; none was excluded or selected
 as a checkpoint. Each run consumed 2,097,152 prediction positions. The three
 seeds use different streams; widths with the same seed deliberately share
 training and evaluation observations. The nine rows are not nine independent
@@ -151,7 +157,7 @@ learner beaten by this experiment. Every trained model has nonzero excess loss.
 2. **Random features are useful.** The untrained hidden probe reaches R2 as high
    as 0.947632. Training improves this measure in all nine main-panel runs, but
    high decodability alone would not establish that training learned the state.
-   Shuffled-fit-label R2 ranges from -0.082141 to 0.114605; finite-sample random
+   Shuffled-fit-label R2 ranges from -0.082142 to 0.114598; finite-sample random
    regression is not required to have a negative R2 on every draw.
 3. **More width is not uniformly better prediction.** Mean main-panel next KL
    across the three seeds is 0.001714, 0.001086, and 0.001198 for widths 3, 8,
@@ -198,6 +204,9 @@ not a claim of independent human or second-agent scientific peer review.
 - PyTorch autograd matches the native gradient. Two additional cases compare
   four native Adam steps against PyTorch Adam, with and without a norm exceeding
   the clipping threshold. Both the parameters and reported losses agree.
+  Removing native clipping makes the clipped case fail on all 33 parameters
+  (maximum discrepancy about 5.80e-6), while the unclipped case still passes.
+  Restoring clipping returns the complete Python suite to green.
 - Independent NumPy matrix operations and augmented least squares replay all
   630 prediction/probe quantities from all nine stored models. Maximum absolute
   discrepancy was approximately 1.65e-14. The RNG matches by design to replay
@@ -248,13 +257,15 @@ the existing F# suite. No default runtime dependency was added.
 ## Gate status and next boundary
 
 Release build: zero warnings and errors; `dotnet format --verify-no-changes`
-passes. Full .NET suite: 7425 passed, zero failed, six existing skips (one manual
+passes. After integrating main `d88301e293`, the full .NET suite has 7434 passes,
+zero failures, and six existing skips (one manual
 benchmark, three Rx integration cases, two collation-contract gaps). These
 skips are not new coverage. The latest native boundary change also passes all
 eight targeted research tests. The Python suite has 27 passes and one
 pre-existing TransformerLens deprecation warning in its activation-access
-fixture; the new code does not suppress it. Final quick preflight and remote
-integration are still being checked.
+fixture; the new code does not suppress it. All 16 quick-preflight checks pass
+on the integrated branch, including the pre-push hook. Remote integration is
+subject to the PR's recorded checks and merge state.
 
 The next discriminating experiment is a predeclared next-token-degenerate
 process such as RRXOR, with a multi-step output baseline and held-out causal
