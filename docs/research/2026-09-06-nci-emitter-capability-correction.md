@@ -148,3 +148,17 @@ Validation follows the TypeScript/test/documentation scope in
 native source, emitted receipt, or cross-language primitive changed; a new
 native build or TLC measurement was not run for this test-only correction.
 Independent review is indexed before the standalone PR is published.
+
+## Publication integration correction
+
+The initial PR #16887 head,
+`6774b7e1b020e1cc305574ea93159b4e1cd0b2bd`, passed quick preflight but failed
+the separate `cross-verify (tech-radar-claims)` CI audit. Its
+[retained failure output](data/2026-09-06-nci-emitter-capability-tech-radar-failure.txt)
+names the new fixture's direct import of the existing `typescript` developer
+dependency: the technology radar had no package-named ring for that verification
+use. The repair adds a Trial row in [`TECH-RADAR.md`](../TECH-RADAR.md) describing
+the exact AST-admission and type-erasure role, the existing 6.0.3 package pin,
+and the fixture's limits. No dependency or test behavior changes. The separate
+[post-correction audit output](data/2026-09-06-nci-emitter-capability-tech-radar-pass.txt)
+records the same audit passing.
