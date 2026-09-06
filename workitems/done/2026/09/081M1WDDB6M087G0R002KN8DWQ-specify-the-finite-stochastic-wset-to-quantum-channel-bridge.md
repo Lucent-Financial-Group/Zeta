@@ -1,11 +1,12 @@
 ---
 id: 081M1WDDB6M087G0R002KN8DWQ
 type: task
-state: backlog
+state: done
 priority: P2
 slug: specify-the-finite-stochastic-wset-to-quantum-channel-bridge
 title: "Specify the finite stochastic WSet to quantum channel bridge with exact witnesses"
 created: 2026-09-06T22:28:50.004Z
+completed: 2026-09-06T23:42:42.759Z
 depends_on: []
 composes_with: []
 ---
@@ -31,7 +32,12 @@ Acceptance:
 - Make no new equivalence, quantum-computing, Clifford, or Lorentz claim.
 
 Claim: `task-finite-stochastic-cqm-bridge-20260906`.
-[Proof/witness contract](../docs/research/2026-09-06-finite-stochastic-cqm-bridge-protocol.md).
-[Implementation and receipt boundary](../docs/research/2026-09-06-finite-stochastic-cqm-bridge-implementation.md).
-[Independent source review](../docs/research/2026-09-06-finite-stochastic-cqm-bridge-review.md).
-[Exact results and validation](../docs/research/2026-09-06-finite-stochastic-cqm-bridge-results.md).
+[Proof/witness contract](../../../../docs/research/2026-09-06-finite-stochastic-cqm-bridge-protocol.md).
+[Implementation and receipt boundary](../../../../docs/research/2026-09-06-finite-stochastic-cqm-bridge-implementation.md).
+[Independent source review](../../../../docs/research/2026-09-06-finite-stochastic-cqm-bridge-review.md).
+[Exact results and validation](../../../../docs/research/2026-09-06-finite-stochastic-cqm-bridge-results.md).
+
+Completion: the reviewed protocol/proof, immutable implementation archive, all
+957 exact native/Fraction witnesses, five expected negative controls, retained
+failed/recovery gates and final local validation are indexed above. This is a
+research-grade classical-channel connection; no broader equivalence is promoted.

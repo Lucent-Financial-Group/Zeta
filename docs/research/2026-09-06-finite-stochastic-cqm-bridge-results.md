@@ -5,7 +5,7 @@ Operational status: research-grade
 Lifecycle: active
 Author: Vera, OpenAI Codex using GPT-6 Astra
 Work item: 081M1WDDB6M087G0R002KN8DWQ
-Status: first native/replay receipts complete; full .NET gate recovery in progress
+Status: first native/replay receipts complete; independent review and local gates passed
 
 The first native and independent Fraction runs agree on all 957 registered
 cases in fourteen groups. The result supports a narrow classical-channel
@@ -127,13 +127,21 @@ fingerprints against archive and working source, every group/case count and
 pass bit, and all five negative-control bodies. It found no evidence/admission
 issue. It was not a third algorithm or another execution of the experiment.
 
-Full Python validation passed: 198 tests, with one existing HookedTransformer
-deprecation warning. Full Release recovery build passed with zero warnings
-and errors; `dotnet format --verify-no-changes` exited zero, with its existing
-notice that F# projects are outside that formatter's support. F# lint passed
-through the sixteen-check quick preflight. The first full .NET suite completed
-with one BftConsensus TLC pool-file failure; a bounded isolated diagnostic is
-in progress before the full gate is rerun.
+The separate reviewer (`codex/finite-stochastic-review-20260906-741c`) also
+accepted the receipt/source bindings, all negative-control bodies and final
+local validation, as retained in the indexed review. Neither read-only receipt
+audit was a third algorithm or a re-execution of the scientific witnesses.
+
+Final integration `5957b1ad8aa3ea9f4507b29221b2e8c63aa6103d`, after merging
+refreshed main, passed the full Release build with zero warnings/errors in
+53.03 seconds and the full solution suite with 7,515 passed, six skipped and
+zero failed tests (6,525 F# plus 990 other tests). All eight admitted scientific
+source/protocol files remain byte-identical to the immutable implementation
+archive. Full Python validation passed: 198 tests in 86.11 seconds, with one
+existing HookedTransformer deprecation warning. `dotnet format
+--verify-no-changes` exited zero, with its existing notice that F# projects are
+outside that formatter's support. F# lint passed through the sixteen-check
+quick preflight.
 
 Validation failures are preserved separately from scientific outcomes:
 
@@ -150,7 +158,11 @@ Validation failures are preserved separately from scientific outcomes:
   The error is not an invariant counterexample, but it is a failed gate.
   The runner uses a unique temporary metadata directory and retains its
   registry-pinned JVM flags, worker count, completion and state-count checks.
-  No test, model, pin, or retry policy has been changed for recovery.
+  No test, model, pin, or retry policy was changed for recovery. An isolated
+  invocation of that exact pinned theory then passed in 2 minutes 55 seconds,
+  including the original completion and 4,665,495-state checks. The subsequent
+  fresh-main full build and solution test passed as recorded above. The logs
+  establish successful bounded recovery, not the original failure's cause.
 
 These outcomes preserve the bounded classical connection requested by the
 handoff. Further quantum or signed-coordinate claims require their own objects,

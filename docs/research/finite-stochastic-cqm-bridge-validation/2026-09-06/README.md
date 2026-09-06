@@ -28,5 +28,17 @@ Completed validation logs, including failed attempts:
   BftConsensus pool-file read failure.
 - [Full Python suite](logs/python-tests.log): 198 passed, one existing warning.
 
-The bounded TLC diagnostic and subsequent full gate outcome will be added
-before this work is proposed for main.
+- [Isolated unchanged BftConsensus recovery](logs/tlc-isolated-recovery.log):
+  one pinned theory passed, retaining its original state-count judge.
+- [Final full Release build](logs/build-final.log): zero warnings/errors,
+  53.03 seconds at integration `5957b1ad8aa3ea9f4507b29221b2e8c63aa6103d`.
+- [Final full solution suite](logs/dotnet-tests-final.log): 7,515 passed,
+  six skipped, zero failed at the same integration.
+- [Final quick preflight](logs/preflight-final.log): all sixteen checks passed.
+- [Validation manifest](validation.json): exact raw log/receipt fingerprints,
+  commands, exit statuses and tested integration; compiled source bytes were
+  unchanged by the subsequent documentation/index updates.
+
+The [independent evidence addendum](../../2026-09-06-finite-stochastic-cqm-bridge-review.md#final-validation-disposition)
+records the separate read-only review of these outcomes. No witness was rerun
+or replaced during gate recovery.

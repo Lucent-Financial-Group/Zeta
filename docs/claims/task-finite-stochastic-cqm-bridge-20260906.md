@@ -6,7 +6,7 @@
 - **Claimed at:** 2026-09-06T22:30:40.381880+00:00
 - **ETA:** first proof-contract review within one hour; bounded witnesses after review
 - **Scope:** Explicit finite stochastic/commutative-algebra and dephasing-idempotent maps, exact law witnesses, and negative controls for broader WSet/CQM claims.
-- **Durable target:** `workitems/081M1WDDB6M087G0R002KN8DWQ-specify-the-finite-stochastic-wset-to-quantum-channel-bridge.md`, `docs/research/2026-09-06-finite-stochastic-cqm-bridge-protocol.md`, indexed finite verification evidence.
+- **Durable target:** `workitems/done/2026/09/081M1WDDB6M087G0R002KN8DWQ-specify-the-finite-stochastic-wset-to-quantum-channel-bridge.md`, `docs/research/2026-09-06-finite-stochastic-cqm-bridge-protocol.md`, indexed finite verification evidence.
 
 ## Notes
 
@@ -16,3 +16,10 @@ No full CQM, CP*/idempotent equivalence, quantum computing, Clifford, or
 Lorentz-invariance promotion is in scope. No existing core primitive changes.
 The proof/witness contract is committed and reviewed before witness execution.
 All builds/tests are suspended during the coordinating acting-cost window.
+
+## Completion evidence
+
+The completed work item indexes the immutable proof/source refs, exact native
+and independent Fraction receipts (957 cases), separate source/evidence review,
+and full local validation. Publication CI and main ancestry remain the final
+integration evidence; neither archive tag moves during that step.
