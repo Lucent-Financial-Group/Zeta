@@ -66,9 +66,9 @@
     },
     {
       "path": ".github/workflows/gate.yml",
-      "disposition": "blocking",
-      "note": "The `lint (yaml/k8s)` job runs `yamllint -d relaxed full-ai-cluster/k8s/ infra/k8s/ ...` and a `find full-ai-cluster/k8s infra/k8s ... | xargs kubeconform`. Both name infra/k8s as a literal path argument; `find` errors on a missing directory.",
-      "migrateTo": "drop infra/k8s from both argument lists in the deletion commit."
+      "disposition": "prose",
+      "note": "The `lint (yaml/k8s)` job now DERIVES its manifest roots from this roster (a `Declared cluster manifest roots` step emits the declared k8s roots that exist on disk, and yamllint + the kubeconform `find` consume them via env). No literal stale path remains in any argument list; what is left are comments describing history.",
+      "migrateTo": "drop the historical comments when the stale tree is gone; the derivation needs no change."
     },
     {
       "path": ".github/workflows/helm-validate.yml",
