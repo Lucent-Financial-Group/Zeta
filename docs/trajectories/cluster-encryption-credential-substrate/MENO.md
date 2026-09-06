@@ -126,6 +126,9 @@ assume the number.
    `validatePkcs11ModulePath` refuses the restore
    filename as the value — it contains `pkcs11`, so the
    old rule would have baked a pointer to itself.
+   SoftHSM / swtpm follow-on (`081M1V880WV087G0R002E07KGH`):
+   those paths are the CI job, not this metal stick.
+   `libtpm2_pkcs11.so` still bakes.
 6. **PKCS#11 hostPath overlay planner** (landed, #16776,
    `081M1TZH2PW087G0R0036F3S18`).
    `pkcs11-hostpath-overlay.ts`: volumes, mechanism pin,

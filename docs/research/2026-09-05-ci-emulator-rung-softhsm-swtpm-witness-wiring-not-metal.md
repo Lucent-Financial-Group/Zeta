@@ -205,6 +205,9 @@ are not a hostPath overlay. Bake-cred
 (`081M1V6WCHN087G0R0022FN5DV`) refuses the restore
 filename as the module-path *value* (it contains
 `pkcs11`, so the old rule would bake a self-pointer).
+Bake-cred also refuses SoftHSM / swtpm module paths
+(`081M1V880WV087G0R002E07KGH`); `libtpm2_pkcs11.so`
+stays metal.
 
 1. Metal: `seal "pkcs11"` in Application.yaml still waits.
    Same commit as a **reachable** module: same-libc image

@@ -121,6 +121,9 @@ export function validatePkcs11ModulePath(value: Buffer): string | null {
   if (lower === "/yubihsm" || lower === "/smartcard-hsm" || lower === "/yubikey") {
     return "pkcs11-module-path is a .so path, not a brand type in the volume";
   }
+  if (lower.includes("softhsm") || lower.includes("swtpm")) {
+    return "pkcs11-module-path is a metal module, not a CI emulator (SoftHSM/swtpm)";
+  }
   if (!lower.endsWith(".so") && !lower.includes("pkcs11")) {
     return "pkcs11-module-path must name a PKCS#11 module (.so or a pkcs11 path)";
   }
