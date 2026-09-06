@@ -113,6 +113,22 @@ export function deliberationsOf(view: OrgView, hatId: string): readonly OpenDeli
     // The revision a turn would cite. With two heads there is no single "what we are looking at",
     // so the room needs a merge before another opinion helps.
     if (heads.length !== 1) continue;
+    // ── YOU SPEAK ONCE PER VERSION ────────────────────────────────────────
+    // A hat that has already addressed THIS revision is not offered another turn on it. Without
+    // this the menu offers a turn every tick forever and the drive never settles — measured: a
+    // ten-round drive that never reached quiescence because two hats posted a fresh turn each
+    // round about a document nobody had changed.
+    //
+    // That is also the difference between deliberation and chatter. A turn is worth taking when
+    // there is something new to address; when the artifact moves, the head changes and everyone
+    // may speak again, which is exactly when their opinion is worth having.
+    const already = view.board.posts.some(
+      (p) =>
+        p.anchorId === anchor.anchorId &&
+        p.byHatId === hatId &&
+        p.evidence.some((e) => e.ref.endsWith(heads[0]!.revisionId)),
+    );
+    if (already) continue;
     out.push({
       anchorId: anchor.anchorId,
       artifactId,
@@ -228,6 +244,12 @@ export type OrgEffect =
       readonly anchorId: string;
       readonly artifactId: string;
       readonly revisionId: string;
+      /**
+       * WHO IS SPEAKING. Carried rather than re-derived at the point of application, because the
+       * applier had no way to know: it attributed every turn to the anchor's first participant, so
+       * a room of three recorded one hat saying everything.
+       */
+      readonly byHatId: string;
     }
   | {
       readonly kind: "review";
@@ -301,6 +323,7 @@ export function effectOf(
           anchorId: action.anchorId,
           artifactId: action.artifactId,
           revisionId: action.revisionId,
+          byHatId: hatId,
         },
       };
     case "review_artifact":

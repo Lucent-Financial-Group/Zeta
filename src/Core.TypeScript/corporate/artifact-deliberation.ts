@@ -275,3 +275,80 @@ export function participantsIn(history: ArtifactHistory): readonly string[] {
     a < b ? -1 : a > b ? 1 : 0,
   );
 }
+
+/**
+ * The history a PIPELINE RUN produced — one revision per phase that made something.
+ *
+ * ── THE READER THAT HAD NO WRITER ────────────────────────────────────────────
+ * `openArtifact` had zero callers outside tests, so no run ever produced an `ArtifactHistory` and
+ * the whole deliberation layer was unreachable in practice: no hat was offered a turn, because
+ * `deliberationsOf` needs an artifact to name a revision of, and no artifact existed. The
+ * machinery worked and nothing fed it.
+ *
+ * The pipeline was already making the thing. Every phase with a producer returns an `Artifact` —
+ * the design, the implementation, the test runs — and those are exactly what a reviewer looks at
+ * and what a turn should cite. Turning them into revisions is a translation, not a new source of
+ * truth.
+ *
+ * ── LINEAR, BECAUSE THE PIPELINE IS ─────────────────────────────────────────
+ * Each phase's revision has the previous phase's as its parent, so the history is a chain and
+ * `headsOf` returns exactly one. That is the honest shape: the phases ran in order, each building
+ * on what came before, and nothing about a pipeline run is concurrent. Divergence appears when two
+ * HATS revise the same parent — which is what a meeting is for — and manufacturing it here would
+ * invent a disagreement the run did not have.
+ *
+ * The ORDER GIVEN is the order used, and it is the pipeline's own chain rather than the canonical
+ * gate order: a pipeline that reorders its phases produces a history in the order it actually ran.
+ */
+export function historyFromPhases(input: {
+  readonly artifactId: string;
+  /** Phase outputs in the order the pipeline ran them, with the gate that produced each. */
+  readonly phases: readonly { readonly gate: string; readonly refs: readonly string[]; readonly summary: string }[];
+  readonly byHatId: string;
+  readonly atMs: number;
+}): ArtifactHistory | undefined {
+  // NO PHASES PRODUCED ANYTHING -> NO ARTIFACT. An empty history whose head is a revision with no
+  // content would be a document claiming the run made something, and every turn citing it would
+  // cite nothing. Absent is the true answer.
+  if (input.phases.length === 0) return undefined;
+
+  const first = input.phases[0]!;
+  const opened = openArtifact({
+    artifactId: input.artifactId,
+    byHatId: input.byHatId,
+    atMs: input.atMs,
+    content: contentOf(first),
+    note: `produced at '${first.gate}'`,
+  });
+  if (!opened.ok) return undefined;
+
+  let history = opened.history;
+  let parent = opened.revision.revisionId;
+  for (const phase of input.phases.slice(1)) {
+    const next = revise(history, {
+      parents: [parent],
+      byHatId: input.byHatId,
+      atMs: input.atMs,
+      content: contentOf(phase),
+      note: `produced at '${phase.gate}'`,
+    });
+    // A REFUSED REVISION STOPS THE CHAIN rather than being skipped. Skipping would leave a later
+    // phase parented on something two steps back, and the lineage would then describe a pipeline
+    // that did not run.
+    if (!next.ok) break;
+    history = next.history;
+    parent = next.revision.revisionId;
+  }
+  return history;
+}
+
+/**
+ * A phase's artifact as text.
+ *
+ * The refs are included in the CONTENT, not just carried alongside, because the content is what a
+ * revision is addressed by: two phases with the same summary and different outputs must be two
+ * revisions, and hashing the summary alone would collapse them into one.
+ */
+function contentOf(phase: { readonly gate: string; readonly refs: readonly string[]; readonly summary: string }): string {
+  return `${phase.gate}: ${phase.summary}\n${[...phase.refs].sort((a, b) => (a < b ? -1 : a > b ? 1 : 0)).join("\n")}`;
+}

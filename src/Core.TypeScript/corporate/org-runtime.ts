@@ -111,6 +111,7 @@ import {
 } from "./org-reactor";
 import { reconcile, type ReconciliationReport } from "./reconciliation";
 import { groomingProducer } from "./grooming";
+import { historyFromPhases, type ArtifactHistory } from "./artifact-deliberation";
 import { bookQaBlocks, bookReviewBlocks, requestReviewsFor } from "./review-calendar";
 import type { NamedDependency, WorkBatch } from "./work-batch";
 import {
@@ -395,6 +396,18 @@ export interface OrgRuntimeReport {
    */
   readonly reconciliation: ReconciliationReport;
   /**
+   * What each work item's phases PRODUCED, as an artifact history a hat can cite and revise.
+   *
+   * `openArtifact` had zero callers outside tests, so no run ever produced one of these and the
+   * whole deliberation layer was unreachable: no hat could be offered a turn, because a turn cites
+   * a revision and no revision existed. The pipeline was already making the thing — every phase
+   * with a producer returns an artifact — and this is that, translated.
+   *
+   * A work item whose phases produced nothing is ABSENT from the map rather than present and
+   * empty: an artifact with no content is a document claiming the run made something.
+   */
+  readonly artifacts: ReadonlyMap<string, ArtifactHistory>;
+  /**
    * Tasks whose loop an escalation STOPPED, and which action stopped it.
    *
    * The difference between "this run finished" and "this run gave up" — a driver that cannot tell
@@ -621,6 +634,9 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
   const empty = (): OrgRuntimeReport => ({
     fidelity: noteFidelity("run", deps.nowMs),
     halted: [],
+    // An early return ran no phases, so it produced no artifact. Empty rather than a map of empty
+    // histories: an artifact with no content would claim the run made something.
+    artifacts: new Map(),
     // An early return reconciled NOTHING, and that is what it reports: no items, no disagreements,
     // and the tracker listed as unchecked. `fullyReconciled` is false over it, which is correct —
     // a run that did nothing has not established that anything agrees.
@@ -1344,6 +1360,8 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
 
   // ── 8 & 9. QA and the GATES ───────────────────────────────────────────────
   const qaReports: QaCycleReport[] = [];
+  /** Per work item, what its phases produced — see `OrgRuntimeReport.artifacts`. */
+  const artifacts = new Map<string, ArtifactHistory>();
   /**
    * The change opened for each task, kept so the same handle is the one merged later.
    *
@@ -1553,6 +1571,21 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
       });
       // Shaped as the old `GateRunResult` so the churn/escalation handling below is untouched by
       // the reordering — that logic is about what a rejection MEANS, which did not change.
+      // THE PHASES' OUTPUT AS AN ARTIFACT the organization can deliberate over. In the pipeline's
+      // own order, so a reordered pipeline yields a history in the order it actually ran.
+      const produced = [...walked.artifacts.entries()].map(([gate, art]) => ({
+        gate: String(gate),
+        refs: art.refs,
+        summary: art.summary,
+      }));
+      const history = historyFromPhases({
+        artifactId: task.workId,
+        phases: produced,
+        byHatId: task.assigneeHatId ?? NO_PROPOSER,
+        atMs: warmedAt,
+      });
+      if (history !== undefined) artifacts.set(task.workId, history);
+
       const run: GateRunResult = {
         evaluations: walked.evaluations,
         passed: walked.passed,
@@ -1929,6 +1962,7 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
     events: trace.map(render),
     refusals,
     reactor,
+    artifacts,
     // THE LAST STEP OF THE LOOP. Computed from what this run actually did, so the comparison is
     // against the repository and the gates rather than against the plan. The tracker is not passed
     // here: this runtime has no external state to compare with, and the report says so by listing

@@ -307,3 +307,57 @@ describe("the whole surface for one hat", () => {
     expect(surface.assignable).toEqual([]);
   });
 });
+
+describe("YOU SPEAK ONCE PER VERSION — deliberation, not chatter", () => {
+  const anchor: DiscussionAnchor = {
+    anchorId: "a1",
+    anchorType: AnchorType.Gate,
+    title: "the design",
+    purpose: "agree it",
+    expectedOutput: ExpectedOutput.Decision,
+    participantHatIds: ["tech_lead", "qa_director"],
+    openedByHatId: "tech_lead",
+    openedAtMs: 1,
+    state: AnchorState.Open,
+    workItemId: "task-1",
+  };
+
+  function withPost(byHatId: string, revisionId: string) {
+    return view({
+      board: {
+        ...EMPTY_BOARD,
+        anchors: [anchor],
+        posts: [
+          {
+            postId: "p1",
+            anchorId: "a1",
+            byHatId,
+            atMs: 2,
+            body: "said",
+            evidence: [{ kind: "document", ref: `artifact:task-1@${revisionId}` }],
+          },
+        ],
+      },
+    });
+  }
+
+  test("a hat that already addressed THIS revision is not offered another turn", () => {
+    // Without this the menu offers a turn every tick forever and the drive never settles —
+    // measured: a ten-round drive that never quiesced because two hats posted a fresh turn each
+    // round about a document nobody had changed.
+    const head = headsOf(artifact())[0]!.revisionId;
+    expect(deliberationsOf(withPost("qa_director", head), "qa_director")).toEqual([]);
+  });
+
+  test("...but ANOTHER hat still is — one speaker does not close the room", () => {
+    const head = headsOf(artifact())[0]!.revisionId;
+    expect(deliberationsOf(withPost("qa_director", head), "tech_lead").length).toBe(1);
+  });
+
+  test("A HAT THAT SPOKE ABOUT AN OLDER REVISION MAY SPEAK AGAIN", () => {
+    // When the artifact moves, the head changes and everyone may speak again — which is exactly
+    // when their opinion is worth having. A rule that silenced them permanently would make the
+    // first version the only one anybody reviewed.
+    expect(deliberationsOf(withPost("qa_director", "some-older-revision"), "qa_director").length).toBe(1);
+  });
+});

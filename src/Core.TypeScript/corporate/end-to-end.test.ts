@@ -26,6 +26,8 @@ import { foldBoard, foldSupervisorSignals } from "./org-fold";
 import { SignalTool } from "./supervisor-signal";
 import { ScheduleBlockType } from "./work-schedule";
 import { driveStateFrom, driveUntilSettled, type DriveDeps } from "./org-drive";
+import { orgSurfaceFor } from "./org-observe-bridge";
+import { headsOf } from "./artifact-deliberation";
 import { WorkState } from "./goal-cascade";
 import { GateKind, gateOwners } from "./quality-gate";
 import { RunOutcome } from "./qa";
@@ -315,5 +317,69 @@ describe("WHEN IT GOES WRONG, A DIRECTOR IS ASKED", () => {
     // overruling it later is the chain working, and it cannot overrule what it never heard.
     const report = await failingRun();
     for (const e of report.escalations) expect(e.action).not.toBe("");
+  });
+});
+
+describe("THE RUN PRODUCES ARTIFACTS, AND THE DELIBERATION IS ABOUT THEM", () => {
+  function deps(): DriveDeps {
+    let k = 0;
+    return {
+      chart,
+      nowMs: 10_000_000,
+      createId: (p) => `${p}-a${String(++k)}`,
+      resourceAuthorityHatId: "rmo_office",
+    };
+  }
+
+  test("each delivered item has a walkable artifact history", async () => {
+    const report = await runOrg();
+    expect(report.artifacts.size).toBeGreaterThan(0);
+    for (const [, history] of report.artifacts) {
+      expect(history.revisions.length).toBeGreaterThan(0);
+      // One head: a pipeline run is not concurrent, so there is a single current version.
+      expect(headsOf(history).length).toBe(1);
+    }
+  });
+
+  test("REVIEWS ARE NOW OFFERABLE — the reader has a writer", async () => {
+    // Before the run produced histories this was zero for every hat: `reviewsAskedOf` needs an
+    // artifact to name a revision of, so `review_artifact` was a verb nobody could be offered.
+    const report = await runOrg();
+    const state = driveStateFrom(report, chart);
+    const offered = HATS.flatMap((h) => orgSurfaceFor(state.view, h).reviewsAsked ?? []);
+    expect(offered.length).toBeGreaterThan(0);
+    // And each names a revision that resolves in the artifact it belongs to.
+    for (const ask of offered.slice(0, 5)) {
+      const history = report.artifacts.get(ask.artifactId);
+      expect(history).toBeDefined();
+      expect(history!.revisions.some((r) => r.revisionId === ask.revisionId)).toBe(true);
+    }
+  });
+
+  test("THE DRIVE SETTLES EVEN WITH ROOMS OPEN — it does not chatter", async () => {
+    // With turns available the loop must still reach quiescence. It did not at first: every hat
+    // was offered a turn every tick, so the drive ran to its bound posting about a document
+    // nobody had changed. "One turn per version" is what makes a conversation end.
+    const report = await runOrg();
+    const r = driveUntilSettled(driveStateFrom(report, chart), HATS, deps(), 30);
+    expect(r.settled).toBe(true);
+    expect(r.rounds[r.rounds.length - 1]?.changes).toBe(0);
+  });
+
+  test("...and every turn is attributed to the hat that SPOKE", async () => {
+    // This read the anchor's first participant, so a room of three recorded one hat saying
+    // everything — and the speak-once rule could never match the hat that actually ticked.
+    const report = await runOrg();
+    const r = driveUntilSettled(driveStateFrom(report, chart), HATS, deps(), 30);
+    const posts = r.state.view.board.posts;
+    expect(posts.length).toBeGreaterThan(0);
+    expect(new Set(posts.map((p) => p.byHatId)).size).toBeGreaterThan(1);
+    // Nobody speaks twice about one revision on one anchor.
+    const seen = new Set<string>();
+    for (const p of posts) {
+      const key = `${p.anchorId}|${p.byHatId}|${p.evidence[0]?.ref ?? ""}`;
+      expect(seen.has(key)).toBe(false);
+      seen.add(key);
+    }
   });
 });

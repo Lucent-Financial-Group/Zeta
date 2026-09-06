@@ -23,6 +23,7 @@ import {
   openArtifact,
   participantsIn,
   revise,
+  historyFromPhases,
   revisionIdOf,
   soleHead,
   type ArtifactHistory,
@@ -263,5 +264,66 @@ describe("a history stays walkable", () => {
 
   test("participants are ordered ORDINALLY, not by locale", () => {
     expect("B" < "a").toBe(true);
+  });
+});
+
+describe("A PIPELINE RUN BECOMES AN ARTIFACT — the writer that was missing", () => {
+  test("one revision per producing phase, chained in the order they ran", () => {
+    // `openArtifact` had zero callers outside tests, so no run produced a history and the whole
+    // deliberation layer was unreachable: a turn cites a revision, and none existed.
+    const h = historyFromPhases({
+      artifactId: "task-1",
+      phases: [
+        { gate: "architecture_design", refs: ["doc:design"], summary: "the design" },
+        { gate: "implementation_review", refs: ["diff:abc"], summary: "the code" },
+        { gate: "runtime_validation", refs: ["test:1"], summary: "3/3 passed" },
+      ],
+      byHatId: "backend_implementer",
+      atMs: 10,
+    });
+    expect(h).toBeDefined();
+    expect(h!.revisions.length).toBe(3);
+    // LINEAR: the phases ran in order, so there is exactly one head and a walkable lineage. A
+    // pipeline run is not concurrent, and manufacturing a divergence here would invent a
+    // disagreement the run did not have.
+    expect(headsOf(h!).length).toBe(1);
+    expect(lineageOf(h!, headsOf(h!)[0]!.revisionId).length).toBe(3);
+  });
+
+  test("THE HEAD IS THE LAST PHASE, so a reviewer sees what the run ended with", () => {
+    const h = historyFromPhases({
+      artifactId: "task-1",
+      phases: [
+        { gate: "a", refs: [], summary: "first" },
+        { gate: "b", refs: [], summary: "last" },
+      ],
+      byHatId: "h",
+      atMs: 1,
+    });
+    expect(headsOf(h!)[0]!.content).toContain("last");
+  });
+
+  test("NO PHASE PRODUCED ANYTHING -> NO ARTIFACT, not an empty one", () => {
+    // An artifact with no content is a document claiming the run made something, and every turn
+    // citing it would cite nothing.
+    expect(historyFromPhases({ artifactId: "t", phases: [], byHatId: "h", atMs: 1 })).toBeUndefined();
+  });
+
+  test("THE REFS ARE IN THE CONTENT — two phases differing only in output are two revisions", () => {
+    // Hashing the summary alone would collapse them into one, and a citation would then be
+    // ambiguous about which output it meant.
+    const a = historyFromPhases({
+      artifactId: "t",
+      phases: [{ gate: "g", refs: ["diff:one"], summary: "same" }],
+      byHatId: "h",
+      atMs: 1,
+    });
+    const b = historyFromPhases({
+      artifactId: "t",
+      phases: [{ gate: "g", refs: ["diff:two"], summary: "same" }],
+      byHatId: "h",
+      atMs: 1,
+    });
+    expect(headsOf(a!)[0]!.revisionId).not.toBe(headsOf(b!)[0]!.revisionId);
   });
 });

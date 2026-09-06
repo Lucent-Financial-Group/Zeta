@@ -167,7 +167,10 @@ export function apply(state: DriveState, effect: OrgEffect, deps: DriveDeps): Ap
       const posted = postToAnchor(state.view.board, {
         postId: deps.createId("post"),
         anchorId: effect.anchorId,
-        byHatId: headHatOf(state.view.board, effect.anchorId) ?? head.byHatId,
+        // THE HAT THAT SPOKE. This read the anchor's first participant, so every turn in a
+        // three-hat room was recorded as one hat saying everything — and the "you speak once per
+        // version" rule could never match the hat that actually ticked.
+        byHatId: effect.byHatId,
         atMs: deps.nowMs,
         body: `addressing ${effect.revisionId}`,
         evidence: [{ kind: "document", ref: `artifact:${effect.artifactId}@${effect.revisionId}` }],
@@ -211,11 +214,6 @@ export function apply(state: DriveState, effect: OrgEffect, deps: DriveDeps): Ap
       // chosen; `deliverWorkItem` is what judges.
       return { state, changed: false, refusals: [] };
   }
-}
-
-/** The hat that opened an anchor, so a turn is attributed to a participant rather than an author. */
-function headHatOf(board: AnchorBoard, anchorId: string): string | undefined {
-  return board.anchors.find((a) => a.anchorId === anchorId)?.participantHatIds[0];
 }
 
 export interface DriveResult {
@@ -274,9 +272,10 @@ export function driveRound(state: DriveState, hatIds: readonly string[], deps: D
  * bridge deals in organizational state generally, and a report is one particular way of having
  * some.
  *
- * ARTIFACTS ARE THE CALLER'S. A run does not produce artifact histories today, and inventing one
- * per work item would manufacture a revision nobody wrote — so the map is passed in, and an empty
- * one means no hat is offered a turn or a room. Absent rather than fabricated, as everywhere else.
+ * ARTIFACTS COME FROM THE RUN. A report now carries what each item's phases produced, so the
+ * default is the run's own — and a caller may still pass its own map to drive against artifacts
+ * from somewhere else. An item whose phases produced nothing is absent rather than present and
+ * empty, so no hat is offered a turn about a document that does not exist.
  */
 export function driveStateFrom(
   report: {
@@ -284,9 +283,10 @@ export function driveStateFrom(
     readonly calendar: Calendar;
     readonly board: AnchorBoard;
     readonly signals: readonly import("./supervisor-signal").SupervisorSignal[];
+    readonly artifacts?: ReadonlyMap<string, import("./artifact-deliberation").ArtifactHistory>;
   },
   chart: OrgChart,
-  artifacts: ReadonlyMap<string, import("./artifact-deliberation").ArtifactHistory> = new Map(),
+  artifacts?: ReadonlyMap<string, import("./artifact-deliberation").ArtifactHistory>,
   blockers?: ReadonlyMap<string, readonly import("../observe/observe").MissingInformation[]>,
 ): DriveState {
   return {
@@ -295,7 +295,8 @@ export function driveStateFrom(
       board: report.board,
       signals: report.signals,
       cascade: report.cascade.nodes,
-      artifacts,
+      // The caller's map wins when given; otherwise the run's own. Neither is fabricated.
+      artifacts: artifacts ?? report.artifacts ?? new Map(),
       ...(blockers === undefined ? {} : { blockers }),
     },
     cascade: report.cascade,
