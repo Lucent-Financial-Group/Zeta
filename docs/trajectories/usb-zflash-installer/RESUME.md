@@ -486,6 +486,11 @@ lines onto the role conf, or leaves it
 byte-identical; still does not expand
 `ZetaFirstbootRole`; still does not edit
 `zeta-first-boot.sh`.
+ESP write
+(`081M1VRW8ZY087G0R000XDM4BG`) puts those
+lines on `/zeta-firstboot.conf` via
+`firstboot-bao-elf.ts`, not installer `fs`;
+still does not edit `zeta-first-boot.sh`.
 glibc-host-into-musl-image is not a
 module; Application.yaml stays Shamir.
 

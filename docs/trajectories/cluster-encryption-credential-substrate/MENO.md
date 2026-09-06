@@ -187,6 +187,11 @@ assume the number.
    Role conf plus named bao (`081M1VQ6CHS087G0R0036YJAQ5`):
    one planner call. Null / tpmrm0 leave the role conf
    byte-identical. Does not expand `ZetaFirstbootRole`.
+   ESP write (`081M1VRW8ZY087G0R000XDM4BG`):
+   `planFileBackedZflashImage` joins via
+   `firstboot-bao-elf.ts`, not installer `fs`. A non-null
+   ask without a role is refused. Does not edit
+   `zeta-first-boot.sh`.
 7. extraContainer sidecar — later, **same commit as the
    sidecar**, and only for the Shamir kind path until the
    emulator job replaces it. `valuesObject` only. Do not fork
