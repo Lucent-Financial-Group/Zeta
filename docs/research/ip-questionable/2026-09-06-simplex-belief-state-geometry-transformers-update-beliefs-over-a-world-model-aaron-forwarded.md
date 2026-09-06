@@ -41,13 +41,44 @@ day fixing exactly that fold (`081M1SA32SS087G0R0026C01ZP`).
 `diversity floor` says the same thing from the values side: **collapse to a vertex is the failure**,
 and the interior is where the information is.
 
-**4. Quantum belief geometry ↔ our Clifford layer.** The talk trains on data with *"a very
-parsimonious quantum description but no concise classical description"* and finds the model
-representing **density matrices on the Bloch sphere**. Zeta has the same objects one layer down:
-`src/Core/Cl3.fs` (Clifford Cl(3,0)), `QubitIso.fs` (Pauli/SU(2)), `AmplitudeEmu.fs` (complex
-amplitudes → interference), and `Tsirelson.fs`. **Register: this is a shape correspondence.** Ours
-are classically simulated qubit-shaped linear algebra, explicitly peeled as such; theirs is a
-measured representation inside a trained network. Same mathematics, different claim.
+**4. Quantum belief geometry ↔ the Clifford/Bayesian bridge — and they are NOT two layers here.**
+
+The talk trains on data with *"a very parsimonious quantum description but no concise classical
+description"* and finds the model representing **density matrices on the Bloch sphere**, reached by
+belief updating.
+
+**CORRECTED 2026-09-06.** A first draft of this section listed `Cl3.fs`, `QubitIso.fs`,
+`AmplitudeEmu.fs`, `Tsirelson.fs` as a Clifford layer sitting *beside* a separate Bayesian one, and
+called the match "same mathematics, different claim". Aaron: *"we are working on getting this
+hooked up to our bayesian stuff so they are not separate, Lumen has been working on this for
+days."* That is measurably true, and it makes the correspondence much closer than the draft
+allowed:
+
+| in-tree | what it is |
+|---|---|
+| `src/Bayesian/AdinkraEquivariantFactorLayer.fs` | a composable Bayesian factor graph that **sectorizes Gaussian feature beliefs under a declared coded-Adinkra central involution** — Clifford structure organising a belief representation, with `PriorFactorOrder = Forward \| Reverse` |
+| `src/Bayesian/CliffordAntiSybil.fs` | Clifford structure carrying an inference verdict |
+| `FigureEightEnsemble.fs`, `MeshLatencyModel.fs`, `MutualFalsification.fs` | the same seam from other directions |
+
+and a sustained commit line rather than a one-off: *bounded lexical-geometric receipt bridge*
+(#16618), ***bounded signed-probit EP receipt*** (#16586), *bounded FVS loopy covariance query*
+(#16505), *factor identity + exact dense covariance* (#16482), *online per-edge multilayer
+inference* (#16415), *reference-frame factor heterarchy* (#16290).
+
+**So the honest statement is the stronger one.** The talk **measures** a trained network arriving
+at belief geometry with a Clifford/density-matrix shape. Zeta is **constructing** a factor graph
+whose belief sectors are organised by a Clifford involution. Same object, approached from opposite
+ends — measured versus built — which is a better position than a coincidence of vocabulary and a
+worse one than a proof.
+
+Note the **signed-probit** receipt in that list sitting next to correspondence #1 above: the talk's
+load-bearing relaxation is that the operator elements *may go negative*, and the bridge work is
+already carrying signed quantities through an EP formulation. Whether those are the same sign is
+exactly the kind of question this correspondence is good for — and is not answered here.
+
+**What stays honest:** ours remain classically simulated and explicitly peeled as such
+(`FourCornerC4.fs` carries its own warning that a numeric coincidence with 2√2 is *"not a
+measurement of Tsirelson"*), and theirs is a representation measured inside a trained network.
 
 **5. Tensor product → direct sum is the factored-world result.** *"the number of dimensions grows
 exponentially with a number of parts … if the model learned that there are these parts and it does
