@@ -45,12 +45,16 @@
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { parse as parseYaml } from "yaml";
+import { bootstrapManifests } from "../cluster/declared-cluster-trees.ts";
 
-/** The two `helm.cattle.io/v1` HelmChart manifests, each with `spec.version`. */
-export const HELMCHART_PIN_FILES = [
-  "full-ai-cluster/k8s/bootstrap/argocd-install.yaml",
-  "infra/k8s/bootstrap/argocd-install.yaml",
-] as const;
+/**
+ * The `helm.cattle.io/v1` HelmChart manifests, each with `spec.version` — one per declared
+ * cluster tree. DERIVED from the tree roster rather than listed here: the pair exists only
+ * because the repo currently carries two declarations of one cluster, so the roster is where
+ * that fact belongs. `assertRootsPresent` refuses if a declared tree is missing from disk,
+ * which is louder than the literal list it replaces — it names the tree that vanished.
+ */
+export const HELMCHART_PIN_FILES: readonly string[] = bootstrapManifests("argocd-install.yaml");
 
 /** The self-managing ArgoCD Application, with `spec.source.targetRevision`. */
 export const APPLICATION_PIN_FILE = "full-ai-cluster/k8s/applications/argocd/Application.yaml";

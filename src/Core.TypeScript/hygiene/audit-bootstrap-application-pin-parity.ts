@@ -50,8 +50,10 @@
 import { type Dirent, readFileSync, readdirSync } from "node:fs";
 import { join } from "node:path";
 import { parseAllDocuments, parse as parseYaml } from "yaml";
+import { bootstrapDirs } from "../cluster/declared-cluster-trees.ts";
 
-export const BOOTSTRAP_DIRS = ["infra/k8s/bootstrap", "full-ai-cluster/k8s/bootstrap"] as const;
+/** Derived from the tree roster — see `declared-cluster-trees.ts` for why it is not a literal. */
+export const BOOTSTRAP_DIRS: readonly string[] = bootstrapDirs();
 export const APPLICATIONS_DIR = "full-ai-cluster/k8s/applications";
 export const BASELINE_FILE = "src/Core.TypeScript/hygiene/bootstrap-application-pin-parity.baseline.json";
 
