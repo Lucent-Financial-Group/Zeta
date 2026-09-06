@@ -4,7 +4,8 @@ Date: 2026-09-06
 From: Vera, OpenAI Codex, GPT-6 Astra
 To: a fresh Vera session starting in GPT-6 Astra
 Operational status: research-grade handoff
-Baseline: `origin/main` after PR #16826
+Original baseline: `origin/main` after PR #16826
+Continuation: rendered-signal comparison and relational-identity result, 2026-09-06
 
 ## Fresh Vera bootstrap
 
@@ -17,9 +18,12 @@ Paste this into a fresh GPT-6 Astra session:
 > source record linked below. Keep every correspondence in an evidence
 > register. Read the rendered-signal result: every RNN beats bigram but fails
 > the registered improvement over order-two. Retain order-two as the candidate
-> for a separately preregistered non-ARC action loop. In a separate research lane,
-> specify the invariant that two skewed agents' pairwise memories both
-> preserve; do not call the construction Lorentz-invariant, anti-Sybil, CQM,
+> for a separately preregistered non-ARC action loop. Read the relational-identity
+> result: its invariant is authenticated receipt content, causal order and the
+> signed claim map on a declared closed cut. Keep conditional entropy bits
+> separate from stipulated work: B=sum b_i, R=sum r_e, M=1+R/B for B>0.
+> Pairwise consistency alone cannot establish distinct controllers. Do not
+> call the construction Lorentz-invariant, anti-Sybil, CQM,
 > or universal until the required map, laws, and adversarial tests exist.
 > Preserve protocols before results, retain independent replay, and route any
 > ARC integration only after frozen held-out non-ARC evidence.
@@ -43,6 +47,33 @@ order-two as the next acting-carrier candidate. Rendering dominates total
 cost; token-only RNN inference is about fourteen times slower here.
 No action return or ARC result was measured.
 
+The separate
+[relational-identity result](../research/relational-identity/2026-09-06-results.md)
+landed in [PR #16857](https://github.com/Lucent-Financial-Group/Zeta/pull/16857).
+Independent replay matched 288 coordinate transports with inverse/composition
+checks, 18 mutations, four entropy fixtures, 45 workload rows and seven
+baseline rows. The invariant is actor-bound authenticated receipt content,
+transitive causal order and the consolidated signed claim map on a declared
+closed event cut. The coordinate-forgetting functor preserves identity and
+composition in that restricted domain; no physical boost or spacetime metric
+was constructed.
+
+Additive min-entropy follows from the declared pointwise conditional innovation
+bounds, including earlier innovations and adversary information. Pairwise
+independence alone fails: for independent fair `U,V`, `(U,V,U XOR V)` has only
+two joint bits. The multiplier
+is a separate work-accounting identity: `B=sum b_i`, `R=sum r_e`,
+`M=1+R/B`, `C=B*M=B+R` for `B>0`. A fabricated complete receipt graph remains
+internally consistent under the permissive fixture verifier. This result does
+not prove source non-fungibility, price a Sybil attack, or identify controllers.
+
+The next bounded steps are a separately registered rendered key-action trial
+using frozen order-two counts and focused repairs to defects found in shipped
+identity measurements and their interpretation. Preserve each new protocol,
+pre-fix witness and source snapshot before its corresponding result. Current
+claims and result records determine status; a proposed follow-up is not a
+completed experiment.
+
 Re-entry environment notes: run from a writer-owned clone with its local
 `.mise.toml` trusted and a login shell so signing and all preflight tools are
 available. The live worldview-refresh entry point is
@@ -56,10 +87,9 @@ and root-invoked Ruff can classify first-party test imports differently.
 The live Python/F# hand fixture requires a prior Release Core build.
 
 This handoff is the shortest route back into the work without replaying the
-whole conversation. The predictive-state experiments named below are landed on
-`main`. There is no unpublished result or half-finished predictive experiment
-to recover. The active work is now synthesis, selection of the next registered
-experiment, and eventual composition with the ARC-AGI-3 lane.
+whole conversation. The completed batches below form the preserved baseline.
+The continuation advances registered non-ARC action experiments and concrete
+measurement repairs before considering composition with the ARC-AGI-3 lane.
 
 Read in this order:
 
@@ -79,6 +109,9 @@ Read in this order:
 7. [Rendered-signal result](../research/2026-09-06-rendered-signal-predictor-results.md)
    for the completed chronological frame boundary, stronger-control verdict,
    independent replay, retained admission repair and cost accounting.
+8. [Relational-identity result](../research/relational-identity/2026-09-06-results.md)
+   for the declared-cut invariant, conditional entropy premise, pairwise work
+   multiplier and preserved collusion/coverage counterexamples.
 
 The one-sentence thesis is:
 
