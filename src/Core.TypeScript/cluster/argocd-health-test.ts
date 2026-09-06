@@ -2518,9 +2518,22 @@ function collectRepoBackedChildWaitDiagnostics(): Record<string, string> {
   return dumps;
 }
 
-function attachRepoBackedChildWaitDiagnostics(failure: Failure): Failure {
+/**
+ * Dump the bundle and attach it to a failure.
+ *
+ * TAKES THE CONTEXT LINE AS A PARAMETER BECAUSE THERE ARE TWO CALL SITES, and until
+ * 2026-09-06 there was one. The bundle hung only off the repo-backed child-wait timeout,
+ * so the failure class it was extended for -- `orleans is Synced/Progressing -- expected
+ * Synced/Healthy`, 081M1TFG81G087G0R001XPQGQZ -- never reached it. The pod-level commands
+ * were added to the roster in the same week and wired to a path that failure does not
+ * take: a diagnostic that cannot fire for the case it was built for is the vacuity class
+ * pointed at instrumentation, and it is worse than none, because the roster reads as
+ * coverage. Measured on the included proof for #16740 (check-run 101435639577): the run
+ * failed with orleans and headscale Progressing and dumped no pod state at all.
+ */
+function attachClusterDiagnostics(failure: Failure, context: string): Failure {
   const dumps = collectRepoBackedChildWaitDiagnostics();
-  console.log("=== repo-backed child wait timed out; cluster state at timeout ===");
+  console.log(`=== ${context}; cluster state at failure ===`);
   for (const { label } of REPO_BACKED_CHILD_WAIT_DIAGNOSTIC_COMMANDS) {
     console.log(`--- ${label} ---`);
     console.log(dumps[label] ?? "");
@@ -2604,7 +2617,7 @@ async function waitForArgoCd(plan: HarnessPlan, options: CliOptions): Promise<Fa
   if (plan.gitRef === "main") return null;
 
   const childFailure = await waitForRepoBackedChild(poll);
-  if (childFailure !== null) return attachRepoBackedChildWaitDiagnostics(childFailure);
+  if (childFailure !== null) return attachClusterDiagnostics(childFailure, "repo-backed child wait timed out");
 
   return patchGitBackedApplicationsToGitRef(plan.gitRef);
 }
@@ -2934,7 +2947,12 @@ async function waitForApplications(
       detail: lastVerdicts.filter((verdict) => !verdict.ok),
     };
   });
-  if (failure !== null) return failure;
+  // THE SECOND CALL SITE, and the reason the bundle exists at all. This is where
+  // `<app> is Synced/Progressing -- expected Synced/Healthy` gives up, which is the
+  // failure the pod-level commands were added for. Attaching here is what makes
+  // `not-running-pods` and `warning-events` reachable from it: a Pending pod's
+  // FailedScheduling event is one line and it replaces a paragraph of hypothesis.
+  if (failure !== null) return attachClusterDiagnostics(failure, "ArgoCD health wait gave up");
   return lastVerdicts;
 }
 
