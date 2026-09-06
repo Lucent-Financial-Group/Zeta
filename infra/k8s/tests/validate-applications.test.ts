@@ -33,25 +33,56 @@ import { fileURLToPath } from "node:url";
 const here = dirname(fileURLToPath(import.meta.url));
 const repoRoot = resolve(here, "../../..");
 const validator = join(here, "validate-applications.ts");
-const realAppsDir = join(repoRoot, "infra", "k8s", "applications");
+// MOVED 2026-09-06 with the validator's own default. `infra/k8s/applications` held
+// seven Applications that duplicated full-ai-cluster ones, and `Application/zeta-root`
+// was declared twice with different `path:` values -- so metal booted a 7-app cluster
+// while CI proved a 50-app one. One root, one directory, and this suite mutates the
+// tree that actually ships.
+//
+// Two app names differ between the trees (`argorollouts` -> `argo-rollouts`,
+// `argoworkflows` -> `argo-workflows`); the rest are the same word.
+const realAppsDir = join(repoRoot, "full-ai-cluster", "k8s", "applications");
+const realRootApp = join(repoRoot, "full-ai-cluster", "k8s", "bootstrap", "root-application.yaml");
 
 interface RunResult {
   readonly exitCode: number;
   readonly output: string;
 }
 
-/** Copy the real tree, let `mutate` edit it, run the validator against the copy. */
-function runWithMutation(mutate: (appsDir: string) => void): RunResult {
+/**
+ * Copy the real tree, let `mutate` edit it, run the validator against the copy.
+ *
+ * THE ROOT IS STAGED INTO THE COPY (2026-09-06). full-ai-cluster keeps
+ * `root-application.yaml` in `bootstrap/`, not beside the Applications, so a
+ * straight copy of the apps directory contains no root and every root mutation
+ * silently edited a file that was not there -- the mutation ran, changed nothing,
+ * and the test then failed for the right reason by accident.
+ *
+ * Staging it AS `<appsDir>/root-application.yaml` and passing `--root-app` keeps
+ * every existing mutation working unchanged while the real tree keeps the root
+ * where it belongs.
+ */
+function runWithMutation(mutate: (appsDir: string, rootApp: string) => void): RunResult {
   const dir = mkdtempSync(join(tmpdir(), "zeta-k8s-mutation-"));
   try {
     const appsDir = join(dir, "applications");
     cpSync(realAppsDir, appsDir, { recursive: true });
-    mutate(appsDir);
-    const proc = Bun.spawnSync(["bun", validator, "--offline", "--apps-dir", appsDir], {
-      stdout: "pipe",
-      stderr: "pipe",
-      cwd: repoRoot,
-    });
+    // OUTSIDE appsDir on purpose: the validator refuses a file in the apps tree
+    // that holds an Application no check reads ("rename it to Application.yaml, or
+    // declare it with --root-app"), and staging the root beside the apps tripped
+    // exactly that. It lives one level up and is named via --root-app, which is how
+    // the real tree is laid out too.
+    const rootApp = join(dir, "root-application.yaml");
+    cpSync(realRootApp, rootApp);
+    mutate(appsDir, rootApp);
+    const proc = Bun.spawnSync(
+      ["bun", validator, "--offline", "--apps-dir", appsDir, "--root-app", rootApp],
+      {
+        stdout: "pipe",
+        stderr: "pipe",
+        cwd: repoRoot,
+      },
+    );
     return {
       exitCode: proc.exitCode,
       output: `${proc.stdout.toString()}${proc.stderr.toString()}`,
@@ -216,7 +247,12 @@ describe("validate-applications mutation suite", () => {
     "RED when CreateNamespace=true is dropped from syncOptions",
     () => {
       const { exitCode, output } = runWithMutation((appsDir) => {
-        edit(appManifest(appsDir, "argorollouts"), (t) => t.replace(/^ {6}- CreateNamespace=true\n/m, ""));
+        // `longhorn`, not `argo-rollouts`: the rule is now qualified, and an app
+        // that vendors its own Namespace or targets kube-system is legitimately
+        // exempt (cdi, kubevirt, cilium-lb-ipam). Mutating an exempt app would
+        // produce a test that cannot go red -- the mutation must land on an app
+        // the rule actually binds.
+        edit(appManifest(appsDir, "longhorn"), (t) => t.replace(/CreateNamespace=true,?\s*/g, ""));
       });
       expect(output).toContain("missing CreateNamespace=true in syncOptions");
       expect(exitCode).toBe(1);
@@ -227,8 +263,8 @@ describe("validate-applications mutation suite", () => {
   test(
     "RED when root-application.yaml loses directory.include (would sync stray files)",
     () => {
-      const { exitCode, output } = runWithMutation((appsDir) => {
-        edit(join(appsDir, "root-application.yaml"), (t) => t.replace(/^ {6}include: .*\n/m, ""));
+      const { exitCode, output } = runWithMutation((_appsDir, rootApp) => {
+        edit(rootApp, (t) => t.replace(/^ {6}include: .*\n/m, ""));
       });
       expect(output).toContain("directory.include is missing");
       expect(exitCode).toBe(1);
@@ -239,8 +275,8 @@ describe("validate-applications mutation suite", () => {
   test(
     "RED when root-application.yaml loses recurse=true (would find no Applications)",
     () => {
-      const { exitCode, output } = runWithMutation((appsDir) => {
-        edit(join(appsDir, "root-application.yaml"), (t) => t.replace("recurse: true", "recurse: false"));
+      const { exitCode, output } = runWithMutation((_appsDir, rootApp) => {
+        edit(rootApp, (t) => t.replace("recurse: true", "recurse: false"));
       });
       expect(output).toContain("directory.recurse is not true");
       expect(exitCode).toBe(1);
@@ -252,7 +288,7 @@ describe("validate-applications mutation suite", () => {
     "RED when kind is not Application",
     () => {
       const { exitCode, output } = runWithMutation((appsDir) => {
-        edit(appManifest(appsDir, "argoworkflows"), (t) => t.replace(/^kind: Application$/m, "kind: ApplicationSet"));
+        edit(appManifest(appsDir, "argo-workflows"), (t) => t.replace(/^kind: Application$/m, "kind: ApplicationSet"));
       });
       expect(output).toContain("wrong apiVersion");
       expect(exitCode).toBe(1);
