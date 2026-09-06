@@ -1,0 +1,14 @@
+{
+  "id": "080d03c13102e810a013000897094866",
+  "at": "2026-09-06T19:15:59.709Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1W2C82X087G0R00022X9KR",
+    "type": "task",
+    "title": "Volume catalog persist write-fail does not throw",
+    "slug": "volume-catalog-persist-write-fail-does-not-throw",
+    "priority": "P2",
+    "filename": "081M1W2C82X087G0R00022X9KR-volume-catalog-persist-write-fail-does-not-throw.md"
+  }
+}
