@@ -203,6 +203,12 @@
       "migrateTo": "remove both roots when the tree goes."
     },
     {
+      "path": "src/Core.TypeScript/hygiene/audit-argocd-pin-parity.ts",
+      "disposition": "blocking",
+      "note": "`infra/k8s/bootstrap/argocd-install.yaml` is one of the FIVE ArgoCD install sites this audit holds equal -- the HelmChart K3S auto-applies on NixOS first boot. The path is a literal in HELMCHART_PIN_FILES and is read with readFileSync, so deleting the stale tree makes this audit throw ENOENT and exit non-zero for the wrong reason: a check that fails because its subject is gone reads exactly like a check that caught something.",
+      "migrateTo": "drop `infra/k8s/bootstrap/argocd-install.yaml` from HELMCHART_PIN_FILES in the same commit that deletes the tree, and lower the count in the audit's own message and its `all N sites` falsifier from 5 to 4."
+    },
+    {
       "path": "src/Core.TypeScript/hygiene/audit-cluster-tree-consumers.test.ts",
       "disposition": "self",
       "note": "The mutation suite proving the audit can go red."
