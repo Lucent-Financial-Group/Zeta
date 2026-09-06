@@ -43,6 +43,12 @@ experiment clone through `ZETA_INSTALL_INTERP=1 bun src/Core.TypeScript/ace/setu
 PyTorch autograd independently checks the native Mess3 learner's gradient;
 no dependency was added to the database runtime or to the default install tier.
 
+2026-09-06 predictive-state batch: SymPy 1.14.0 is now a direct, exact
+dependency in that isolated project for rational Jordan decomposition.
+It was already installed transitively by PyTorch; `uv lock` retained the
+existing version and added no packages. `uv run --project src/Interp.Python`
+realized the updated project metadata in the experiment clone.
+
 Opt-in and **not** part of any default install tier. Declared as a locked `uv`
 project at `src/Interp.Python` (its own project, on the `src/Arc.Python`
 precedent) and realized by `ace` through

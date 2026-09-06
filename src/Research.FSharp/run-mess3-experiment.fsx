@@ -81,7 +81,7 @@ let completedRuns = ResizeArray<_>()
 let results =
     [| for hidden in widths do
            for seed in seeds do
-               let initial = SmallRnn.create hidden (ResearchRandom.domain seed 1) |> require
+               let initial = SmallRnn.create 3 hidden (ResearchRandom.domain seed 1) |> require
                let initialHash = fingerprint (SmallRnn.parameters initial)
                let stream = ResearchRandom.Stream(ResearchRandom.domain seed 2)
                let counts = Array.create 3 1.0
@@ -111,7 +111,7 @@ let results =
                    {| Hidden = hidden; Seed = seed; Parameters = SmallRnn.parameters trained.Model
                       InitialSha256 = initialHash; TrainedSha256 = frozenHash
                       ParameterCount = (SmallRnn.parameters trained.Model).Length
-                      ModelNumericPayloadBytes = int64 (SmallRnn.parameterCount hidden + hidden) * 8L
+                      ModelNumericPayloadBytes = int64 (SmallRnn.parameterCount 3 hidden + hidden) * 8L
                       PayloadDefinition = "parameters plus one hidden state, binary64; excludes arrays, scratch, optimizer, and runtime"
                       TrainedTokens = trained.TrainedTokens; TrainingTrace = trained.Trace
                       TrainingCost = trainingCost; EvaluationCost = evaluationCost

@@ -35,21 +35,21 @@ let ``source and learner reject invalid bounds and nonfinite input`` () =
     Assert.True((Mess3.sample (ResearchRandom.Stream 0UL) 0).IsError)
     Assert.True((Mess3.filter [| 3 |]).IsError)
     Assert.True((Mess3.filter (Array.zeroCreate 257)).IsError)
-    Assert.True((SmallRnn.create 0 0UL).IsError)
-    Assert.True((SmallRnn.create 65 0UL).IsError)
-    Assert.True((SmallRnn.fromParameters 3 (Array.create 33 Double.NaN)).IsError)
-    let model = SmallRnn.create 3 1UL |> require
+    Assert.True((SmallRnn.create 3 0 0UL).IsError)
+    Assert.True((SmallRnn.create 3 65 0UL).IsError)
+    Assert.True((SmallRnn.fromParameters 3 3 (Array.create 33 Double.NaN)).IsError)
+    let model = SmallRnn.create 3 3 1UL |> require
     Assert.True((SmallRnn.after model [| -1 |]).IsError)
     Assert.True((SmallRnn.lossGradient model [| 0 |]).IsError)
 
 [<Fact>]
 let ``every recurrent parameter gradient matches central finite differences`` () =
     for hidden in [ 1; 2; 3; 5 ] do
-        let model = SmallRnn.create hidden 123UL |> require
+        let model = SmallRnn.create 3 hidden 123UL |> require
         let parameters = SmallRnn.parameters model
         for tokens in [ [| 0; 1; 2; 0 |]; [| 2; 2; 0; 1; 0; 2 |] ] do
             let _, analytic = SmallRnn.lossGradient model tokens |> require
-            let objective p = SmallRnn.fromParameters hidden p |> require |> fun m -> SmallRnn.lossGradient m tokens |> require |> fst
+            let objective p = SmallRnn.fromParameters 3 hidden p |> require |> fun m -> SmallRnn.lossGradient m tokens |> require |> fst
             for i in 0 .. parameters.Length - 1 do
                 let plus, minus = Array.copy parameters, Array.copy parameters
                 plus.[i] <- plus.[i] + 1e-5
@@ -61,7 +61,7 @@ let ``every recurrent parameter gradient matches central finite differences`` ()
 let ``softmax and loss are stable under a huge common output bias`` () =
     let values = Array.zeroCreate 33
     for i in 30 .. 32 do values.[i] <- 1e300
-    let model = SmallRnn.fromParameters 3 values |> require
+    let model = SmallRnn.fromParameters 3 3 values |> require
     let _, probabilities = SmallRnn.after model [| 0 |] |> require
     for p in probabilities do close (1.0 / 3.0) p
     let loss, _ = SmallRnn.lossGradient model [| 0; 1; 2 |] |> require
@@ -69,7 +69,7 @@ let ``softmax and loss are stable under a huge common output bias`` () =
 
 [<Fact>]
 let ``training is deterministic and preserves the untrained model`` () =
-    let initial = SmallRnn.create 3 123UL |> require
+    let initial = SmallRnn.create 3 3 123UL |> require
     let before = SmallRnn.parameters initial
     let config: SmallRnnTraining.Config = { Steps = 64; Batch = 4; SequenceSteps = 8; LearningRate = 0.003 }
     let run () =
@@ -87,7 +87,7 @@ let ``training is deterministic and preserves the untrained model`` () =
 
 [<Fact>]
 let ``refused training does not mutate caller parameters`` () =
-    let initial = SmallRnn.create 3 0UL |> require
+    let initial = SmallRnn.create 3 3 0UL |> require
     let before = SmallRnn.parameters initial
     let config: SmallRnnTraining.Config = { Steps = 2; Batch = 1; SequenceSteps = 2; LearningRate = 0.003 }
     let mutable calls = 0
@@ -121,7 +121,7 @@ let ``evaluation has normalized joint futures and separate negative controls`` (
     let fitting = Mess3Evaluation.examples 10UL 64 16 |> require
     let testing = Mess3Evaluation.examples 20UL 64 16 |> require
     Assert.False(Array.forall2 (fun (a: Mess3Evaluation.Example) (b: Mess3Evaluation.Example) -> a.Context = b.Context) fitting testing)
-    let model = SmallRnn.create 3 123UL |> require
+    let model = SmallRnn.create 3 3 123UL |> require
     let state, probabilities = SmallRnn.after model testing.[0].Context |> require
     let future = Mess3Evaluation.future3 (SmallRnn.stepUnchecked model) state probabilities
     Assert.Equal(27, future.Length)

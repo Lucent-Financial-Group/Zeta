@@ -68,6 +68,10 @@
     <Compile Include="../../src/Research.FSharp/BeliefProbe.fs" Link="Research/BeliefProbe.fs" />
     <Compile Include="../../src/Research.FSharp/Mess3Evaluation.fs" Link="Research/Mess3Evaluation.fs" />
     <Compile Include="Mess3Learning.Tests.fs" />
+    <Compile Include="../../src/Research.FSharp/PredictiveState.fs" Link="Research/PredictiveState.fs" />
+    <Compile Include="../../src/Research.FSharp/PredictiveStateLaws.fs" Link="Research/PredictiveStateLaws.fs" />
+    <Compile Include="../../src/Research.FSharp/RrxorEvaluation.fs" Link="Research/RrxorEvaluation.fs" />
+    <Compile Include="PredictiveState.Tests.fs" />
     <Compile Include="Algebra/Spine.AsyncProtocol.Properties.fs" />
     <Compile Include="ProbabilitySemiring.CrossVerify.Tests.fs" />
     <Compile Include="YinYang.Tests.fs" />

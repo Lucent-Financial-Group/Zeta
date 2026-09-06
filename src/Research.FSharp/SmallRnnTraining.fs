@@ -23,7 +23,7 @@ module SmallRnnTraining =
             let first = Array.zeroCreate parameters.Length
             let second = Array.zeroCreate parameters.Length
             let gradient = Array.zeroCreate parameters.Length
-            let workspace = SmallRnn.Workspace(SmallRnn.width model, config.SequenceSteps)
+            let workspace = SmallRnn.Workspace(SmallRnn.alphabet model, SmallRnn.width model, config.SequenceSteps)
             let trace = ResizeArray<Progress>()
             let mutable failure = None
             let mutable step = 0
@@ -36,7 +36,7 @@ module SmallRnnTraining =
                 while batch < config.Batch && Option.isNone failure do
                     match nextSequence () with
                     | Error reason -> failure <- Some reason
-                    | Ok tokens when not (SmallRnn.validTokens 2 tokens) || tokens.Length <> config.SequenceSteps + 1 ->
+                    | Ok tokens when not (SmallRnn.validTokens (SmallRnn.alphabet model) 2 tokens) || tokens.Length <> config.SequenceSteps + 1 ->
                         failure <- Some "training source returned an invalid sequence"
                     | Ok tokens -> loss <- loss + SmallRnn.accumulate model tokens workspace gradient
                     batch <- batch + 1

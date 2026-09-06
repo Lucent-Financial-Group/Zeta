@@ -10,7 +10,7 @@ open System.Text.Json
 open Zeta.Research
 
 let require = function Ok value -> value | Error reason -> failwith reason
-let model = SmallRnn.create 3 123UL |> require
+let model = SmallRnn.create 3 3 123UL |> require
 let tokens = [| 0; 1; 0; 2; 2; 1; 0 |]
 let loss, gradient = SmallRnn.lossGradient model tokens |> require
 let parameters = SmallRnn.parameters model
@@ -20,7 +20,7 @@ let numeric =
         let plus, minus = Array.copy parameters, Array.copy parameters
         plus.[i] <- plus.[i] + epsilon
         minus.[i] <- minus.[i] - epsilon
-        let objective p = SmallRnn.fromParameters 3 p |> require |> fun m -> SmallRnn.lossGradient m tokens |> require |> fst
+        let objective p = SmallRnn.fromParameters 3 3 p |> require |> fun m -> SmallRnn.lossGradient m tokens |> require |> fst
         (objective plus - objective minus) / (2.0 * epsilon))
 let error = Array.map2 (fun a b -> abs (a - b)) gradient numeric |> Array.max
 if error > 1e-8 then failwithf "gradient mismatch: %.12g" error
@@ -41,7 +41,7 @@ let optimizerChecks =
                cursor <- cursor + 1
                Ok row
            let config: SmallRnnTraining.Config = { Steps = 4; Batch = 2; SequenceSteps = 6; LearningRate = 0.003 }
-           let initial = SmallRnn.fromParameters 3 start |> require
+           let initial = SmallRnn.fromParameters 3 3 start |> require
            let receipt = SmallRnnTraining.train config next ignore initial |> require
            yield {| Clipped = clipped; Initial = start; Sequences = sequences; Config = config
                     Final = SmallRnn.parameters receipt.Model; Trace = receipt.Trace |} |]
