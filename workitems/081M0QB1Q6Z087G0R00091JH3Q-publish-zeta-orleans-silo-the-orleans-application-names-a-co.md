@@ -19,7 +19,7 @@ composes_with: []
 ## The measurement
 
 `full-ai-cluster/k8s/applications/orleans/statefulset.yaml` and
-`infra/k8s/applications/orleans/deployment.yaml` both pin
+[the former duplicate deployment](https://github.com/Lucent-Financial-Group/Zeta/blob/3616153778cbe041e9a59d2fee6523b0ee54090e/infra/k8s/applications/orleans/deployment.yaml) (removed by #16740) both pinned at measurement time
 `ghcr.io/lucent-financial-group/zeta-orleans-silo:latest`;
 `infra/k8s/bootstrap/initial-orleans.yaml` pins `:bootstrap`.
 

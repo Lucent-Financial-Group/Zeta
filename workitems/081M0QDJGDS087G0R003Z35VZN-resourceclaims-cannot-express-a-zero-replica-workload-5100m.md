@@ -27,7 +27,7 @@ shipping `replicas: 0`:
 | --- | --- | --- | --- |
 | `full-ai-cluster/vllm` | `full-ai-cluster/k8s/applications/vllm/deployment.yaml` doc 1 | **4000m / 16384Mi** | 0 |
 | `full-ai-cluster/orleans` | `full-ai-cluster/k8s/applications/orleans/statefulset.yaml` doc 0 | 500m / 512Mi | 0 |
-| `infra/orleans` | `infra/k8s/applications/orleans/deployment.yaml` doc 0 | 500m / 512Mi | 0 |
+| former infra Orleans workload (removed by #16740) | [historical deployment](https://github.com/Lucent-Financial-Group/Zeta/blob/3616153778cbe041e9a59d2fee6523b0ee54090e/infra/k8s/applications/orleans/deployment.yaml) doc 0 | 500m / 512Mi | 0 |
 | `full-ai-cluster/hat-system` | `full-ai-cluster/k8s/applications/hat-system/deployment.yaml` doc 0 | 100m / 128Mi | 0 |
 
 **Total latent: 5100m / 17536Mi.** They schedule nothing today, and that is a
