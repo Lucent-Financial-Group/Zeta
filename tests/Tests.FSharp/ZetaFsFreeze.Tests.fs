@@ -2764,6 +2764,48 @@ let ``planted garbage at the next object path returns MissingLeaves and keeps th
     }
 
 [<Fact>]
+let ``planted garbage on BlockCas returns MissingLeaves and keeps the prior freeze readable`` () : Task =
+    task {
+        ensureHasher ()
+        FileSystem.Register(InMemoryFileSystem())
+        let store = "/missing-leaves-garbage-blockcas"
+        let mutbuf = ZetaFsMutbuf.create store ZetaFsMutbuf.Coherence.Shared
+        let logDev = SimulatedBlockIo(4096)
+        let objDev = SimulatedBlockIo(4096)
+        let cas = BlockCas(objDev)
+        let volume = ZetaFsFreeze.createManualWithBlockStore store mutbuf None logDev cas
+        let payloadB = [| 9uy; 8uy; 7uy |]
+
+        try
+            let id = mintId ()
+            let h = ZetaFsMutbuf.openHandle volume.Mutbuf id
+            ZetaFsMutbuf.pwrite volume.Mutbuf h 0L [| 1uy; 2uy; 3uy |] |> ignore
+            let pendingA = (freezeAsync volume id ZetaFsFreeze.Journaled).AsTask()
+            do! (ZetaFsFreeze.pumpLog volume CancellationToken.None).ConfigureAwait(false)
+            let! first = pendingA.ConfigureAwait(false)
+            match first with
+            | Error e -> Assert.Fail(ZetaFsFreeze.errorName e)
+            | Ok first ->
+                let ropeB = ZetaFsJumprope.buildV1 payloadB
+                for kv in ropeB.Cas.Objects do
+                    let key = (ContentHash256.toContentAddress128 kv.Key).ToHex()
+                    cas.Put(key, [| 0xA5uy |])
+                ZetaFsMutbuf.pwrite volume.Mutbuf h 0L payloadB |> ignore
+                let pendingB = (freezeAsync volume id ZetaFsFreeze.Journaled).AsTask()
+                do! (ZetaFsFreeze.pumpLog volume CancellationToken.None).ConfigureAwait(false)
+                let! second = pendingB.ConfigureAwait(false)
+                match second with
+                | Ok _ -> Assert.Fail("second freeze must not ack a hash-mismatched BlockCas object")
+                | Error e ->
+                    Assert.Equal("MissingLeaves", ZetaFsFreeze.errorName e)
+                    Assert.True(ZetaFsFreeze.isReadable volume first.Content)
+                    Assert.False(ZetaFsFreeze.isReadable volume ropeB.Content)
+        finally
+            ZetaFsFreeze.dispose volume
+            FileSystem.Reset()
+    }
+
+[<Fact>]
 let ``catalog write-fail of tmp does not publish the unacked freeze on reopen`` () : Task =
     task {
         ensureHasher ()
