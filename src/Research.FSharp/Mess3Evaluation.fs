@@ -120,9 +120,10 @@ module Mess3Evaluation =
         let valid (rows: Example[]) =
             not (isNull rows) && rows.Length >= 2 && rows.Length <= 8192
             && rows |> Array.forall (fun e ->
-                SmallRnn.validTokens 1 e.Context && e.Context.Length <= 256
+                SmallRnn.validTokens 3 1 e.Context && e.Context.Length <= 256
                 && e.ObservedNext >= 0 && e.ObservedNext < 3 && distribution e.Belief && distribution e.Next)
-        if not (distribution unigram) || isNull bigram || bigram.Length <> 3 || not (Array.forall distribution bigram) then
+        if SmallRnn.alphabet model <> 3 || SmallRnn.alphabet untrained <> 3 then Error "Mess3 requires three-token networks"
+        elif not (distribution unigram) || isNull bigram || bigram.Length <> 3 || not (Array.forall distribution bigram) then
             Error "empirical baselines must be strictly positive three-token distributions"
         elif not (valid fitting && valid testing) then Error "evaluation examples are invalid or exceed the bounded limits"
         elif testing |> Array.exists (fun e -> e.Context.Length <> testing.[0].Context.Length) then

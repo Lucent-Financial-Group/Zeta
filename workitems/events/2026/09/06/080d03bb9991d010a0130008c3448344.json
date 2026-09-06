@@ -1,0 +1,14 @@
+{
+  "id": "080d03bb9991d010a0130008c3448344",
+  "at": "2026-09-06T16:00:33.338Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1VQ6CHS087G0R0036YJAQ5",
+    "type": "task",
+    "title": "First-boot role conf plus named bao; both names or neither",
+    "slug": "first-boot-role-conf-plus-named-bao-both-names-or-neither",
+    "priority": "P2",
+    "filename": "081M1VQ6CHS087G0R0036YJAQ5-first-boot-role-conf-plus-named-bao-both-names-or-neither.md"
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "id": "080d03bb2201a010a0130008dd466629",
+  "at": "2026-09-06T15:44:13.876Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1VP8G1M087G0R001GYHWMA",
+    "type": "bug",
+    "title": "isoImage.isoName is a renamed option, so the installer ISO ships as nixos-minimal-*.iso",
+    "slug": "isoimage-isoname-is-a-renamed-option-so-the-installer-iso-sh",
+    "priority": "P2",
+    "filename": "081M1VP8G1M087G0R001GYHWMA-isoimage-isoname-is-a-renamed-option-so-the-installer-iso-sh.md"
+  }
+}

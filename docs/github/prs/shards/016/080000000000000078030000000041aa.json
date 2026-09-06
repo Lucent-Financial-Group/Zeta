@@ -1,0 +1,12 @@
+{
+  "pr_number": 16810,
+  "archive_path": "docs/history/pr-reviews/PR-16810-feat-creds-write-joined-bao-names-onto-the-zflash-esp.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-06T16:53:18.923Z",
+  "schema_version": "v1",
+  "commit_sha": "235955069a9a1fc0721799b83865aa48134400de",
+  "title": "feat(creds): Write joined bao names onto the zflash ESP",
+  "state": "MERGED",
+  "merged_at": "2026-09-06T16:52:42Z",
+  "head_ref": "cursor/zflash-esp-bao-conf-27c5"
+}

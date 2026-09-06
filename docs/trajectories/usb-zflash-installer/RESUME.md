@@ -464,6 +464,39 @@ names option D host `bao` (`081M1VB58YS087G0R001G1RSXW`);
 host HCL is not a chart seal.
 Installer parses `PT_INTERP` from ELF bytes
 (`081M1VDMK7R087G0R0038GVG66`); no `readelf`.
+First-boot names the bao site and path
+(`081M1VGV2N6087G0R001ZHWZDS`); `/dev/tpmrm0`
+does not pick `on-host`.
+Argv names both flags
+(`081M1VJGMMP087G0R002JRZ458`); a bare tpmrm0
+argv is not `on-host`.
+Conf/argv carrier
+(`081M1VM7S47087G0R001VQ1QK5`) emits both
+`ZETA_BAO_LOAD_SITE` and `ZETA_BAO_PATH`, or
+neither; does not expand `ZetaFirstbootRole`;
+does not edit `zeta-first-boot.sh`.
+Conf consume
+(`081M1VNS22M087G0R000P9A1XH`) parses those
+assignments back into a named ask; a bare
+tpmrm0 path is still not an ask; still does
+not edit `zeta-first-boot.sh`.
+Role conf plus named bao
+(`081M1VQ6CHS087G0R0036YJAQ5`) joins those
+lines onto the role conf, or leaves it
+byte-identical; still does not expand
+`ZetaFirstbootRole`; still does not edit
+`zeta-first-boot.sh`.
+ESP write
+(`081M1VRW8ZY087G0R000XDM4BG`) puts those
+lines on `/zeta-firstboot.conf` via
+`firstboot-bao-elf.ts`, not installer `fs`;
+still does not edit `zeta-first-boot.sh`.
+CLI flags
+(`081M1VTE7TZ087G0R002XSHAYZ`) parse
+`--bao-load-site` and `--bao-path` in
+`file-backed.ts`; one without the other
+refuses; does not fill `NIXOS_HOST_BAO`;
+still does not edit `zeta-first-boot.sh`.
 glibc-host-into-musl-image is not a
 module; Application.yaml stays Shamir.
 

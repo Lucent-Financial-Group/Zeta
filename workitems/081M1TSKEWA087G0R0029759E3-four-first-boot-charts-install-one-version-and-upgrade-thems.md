@@ -90,3 +90,51 @@ All four pairs agree, each having been re-rendered at its new version — or the
 empty because the divergences were closed the other way. Either ends with an audit that
 passes because the tree is right, not because the roster is long.
 
+## 2026-09-06 — one paid: `spire-crds` 0.5.0 -> 0.6.1
+
+The cheapest of the four, and the suggested order held. Measured with `helm template` at
+both versions before touching the pin:
+
+| | 0.5.0 | 0.6.1 |
+|---|---|---|
+| CRDs rendered | `clusterspiffeids`, `clusterfederatedtrustdomains`, `clusterstaticentries` | same three |
+| served API version | `v1alpha1` in all three | same |
+| `openAPIV3Schema` property diff | — | **0 removed, 0 added**, in all three |
+
+So the API surface a running controller sees is unchanged, which is what made this one
+cheap: nothing to re-render (the CR carries no `valuesContent`) and nothing to migrate.
+
+Its baseline entry is **deleted, not edited** — the key carries both versions, so an edited
+entry would have been a new acknowledgement of a divergence that no longer exists. Three
+remain: `cert-manager`, `external-secrets`, `trust-manager`.
+
+Verified: pin-parity rc=0 with 3 acknowledged and none open, 10/10 falsifiers, first-boot
+render 8/8 (spire-crds now templating at 0.6.1), `validate-bootstrap` rc=0.
+
+## 2026-09-06 — two more paid: `cert-manager` and `trust-manager`, in that order
+
+`trust-manager` consumes `cert-manager`'s CRDs, so they moved together and in that order —
+paying trust-manager first would have measured the wrong variable.
+
+**`cert-manager` v1.16.2 -> v1.21.1.** Rendered with the bootstrap's own `valuesContent` at
+both, compared as kind/name pairs: **52 objects -> 50, nothing added**, the two losses being
+`Role/cert-manager-tokenrequest` and its RoleBinding. Every value still lands — 6 CRDs at
+both, all three Deployments at `replicas: 1`, no ServiceMonitor at either. This
+independently reproduces the Application's own 2026-09-01 note, including the trap it warns
+about: the newer chart **quotes `metadata.name`** and the older does not, so a raw-text diff
+reads all six CRDs as removed-and-re-added. Comparing kind/name pairs is what makes "nothing
+added" trustworthy.
+
+**`trust-manager` v0.15.0 -> v0.24.0.** **14 objects -> 15, nothing removed**, the addition
+being `ClusterRole/trust-manager-cluster-view`. The load-bearing value survives: `Role` and
+`RoleBinding` `trust-manager` still land in namespace **`openziti`** at v0.24.0 — the
+Secrets-reading Role ziti-controller's Bundle depends on, and the whole subject of that
+file's `MUST MATCH` note.
+
+**That note now guards the version too.** It said a value MUST MATCH the Application while
+the version sat three minors apart — the file was guarding the smaller half of its own
+hazard. Both are equal now, and the audit keeps them so.
+
+**One divergence left: `external-secrets` 0.10.7 vs 2.10.0**, a major jump, and the one its
+own entry says to treat as a migration rather than a bump.
+

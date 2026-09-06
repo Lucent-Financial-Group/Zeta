@@ -219,14 +219,38 @@ CI tarball on disk is not the chart image.
 Installer bytes (`081M1VDMK7R087G0R0038GVG66`):
 `ptInterpFromElfBytes` plus `captureBaoElfFromRead`.
 No `readelf`. Overlay still does not open a filesystem.
+First-boot named site (`081M1VGV2N6087G0R001ZHWZDS`):
+`planSetupFromNamedBaoElf`. TPM present is not `on-host`.
+Argv (`081M1VJGMMP087G0R002JRZ458`): `--bao-load-site` plus
+`--bao-path`. One flag without the other refuses.
+Conf/argv carrier (`081M1VM7S47087G0R001VQ1QK5`): both
+`ZETA_BAO_LOAD_SITE` and `ZETA_BAO_PATH`, or neither.
+`/dev/tpmrm0` is shell-safe and still not a bao path.
+Conf consume (`081M1VNS22M087G0R000P9A1XH`): parse those
+assignments back into a named ask. One key without the
+other refuses.
+Role conf plus named bao (`081M1VQ6CHS087G0R0036YJAQ5`):
+one planner call. Null / tpmrm0 leave the role conf
+byte-identical. Does not expand the role type.
+ESP write (`081M1VRW8ZY087G0R000XDM4BG`):
+`planFileBackedZflashImage` writes the joined conf.
+Pure join lives in `firstboot-bao-elf.ts` so `lib.ts`
+does not import installer `fs`.
+CLI flags (`081M1VTE7TZ087G0R002XSHAYZ`):
+`file-backed.ts` parses `--bao-load-site` plus
+`--bao-path`. One without the other refuses. Does
+not fill `NIXOS_HOST_BAO`. `parseNamedBaoElfArgs`
+lives next to the carrier so the CLI does not
+import installer `fs`.
 
 1. Metal: `seal "pkcs11"` in Application.yaml still waits.
    Same commit as a **reachable** module: same-libc image
    (glibc OpenBao that can load the host `.so`) or option D
    host `bao`. Dual-vendor per node is ZetaFS k-of-n, not
    two active OpenBao seals. Do not treat this planner as
-   that commit. First-boot still has to pass a named site
-   plus a bao path into `captureBaoElfFromRead`.
+   that commit. `zeta-first-boot.sh` still has to *source
+   and pass* the carrier (not from `/dev/tpmrm0`). Does not
+   expand `ZetaFirstbootRole` until that bash consume lands.
 2. extraContainer Shamir sidecar (`valuesObject` only) until
    kind/CI consume the emulator init.
 

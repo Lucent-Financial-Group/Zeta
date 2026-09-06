@@ -26,6 +26,8 @@ import {
   type ZetaFirstbootRole,
 } from "./firstboot-role.ts";
 import { planFileBackedZflashImage } from "./lib.ts";
+import { TPM_CHAR_DEVICE } from "../cluster/bao-load-site.ts";
+import { nixosHostBaoAsk, planFirstbootConfWithNamedBaoElf } from "./firstboot-bao-elf.ts";
 
 describe("constants pinned against the guest tree", () => {
   test("token destination matches k3s-agent.nix tokenFile", () => {
@@ -557,6 +559,54 @@ describe("planFileBackedZflashImage role provisioning", () => {
       firstbootRole: { kind: "joiner", serverUrl: "http://control-plane.local:6443" },
     });
     expect(planned.ok).toBe(false);
+  });
+
+  test("omitted namedBaoElf leaves the role conf byte-identical", () => {
+    const role = { kind: "first-control-plane" as const };
+    const planned = planFileBackedZflashImage({ ...base, firstbootRole: role });
+    const roleOnly = planFirstbootConfFileContent(role);
+    if (!planned.ok) throw new Error(planned.error);
+    if (!roleOnly.ok) throw new Error(roleOnly.error);
+    const conf = planned.value.espWrites.find((w) => w.destination === "/zeta-firstboot.conf");
+    expect(conf?.content).toBe(roleOnly.value);
+  });
+
+  test("option D namedBaoElf writes both bao names onto the ESP conf", () => {
+    const role = { kind: "first-control-plane" as const };
+    const ask = nixosHostBaoAsk();
+    const planned = planFileBackedZflashImage({ ...base, firstbootRole: role, namedBaoElf: ask });
+    const joined = planFirstbootConfWithNamedBaoElf(role, ask);
+    if (!planned.ok) throw new Error(planned.error);
+    if (!joined.ok) throw new Error(joined.error);
+    const conf = planned.value.espWrites.find((w) => w.destination === "/zeta-firstboot.conf");
+    expect(conf?.content).toBe(joined.value);
+  });
+
+  test("tpmrm0 namedBaoElf leaves the role conf byte-identical", () => {
+    const role = { kind: "first-control-plane" as const };
+    const planned = planFileBackedZflashImage({
+      ...base,
+      firstbootRole: role,
+      namedBaoElf: { site: "on-host", openedPath: TPM_CHAR_DEVICE },
+    });
+    const roleOnly = planFirstbootConfFileContent(role);
+    if (!planned.ok) throw new Error(planned.error);
+    if (!roleOnly.ok) throw new Error(roleOnly.error);
+    const conf = planned.value.espWrites.find((w) => w.destination === "/zeta-firstboot.conf");
+    expect(conf?.content).toBe(roleOnly.value);
+  });
+
+  test("refuses namedBaoElf with no role at all", () => {
+    expect(planFileBackedZflashImage({ ...base, namedBaoElf: nixosHostBaoAsk() })).toEqual({
+      ok: false,
+      error: "namedBaoElf requires firstbootRole; bao names with no role conf are never read",
+    });
+  });
+
+  test("null namedBaoElf without a role does not invent a conf write", () => {
+    const planned = planFileBackedZflashImage({ ...base, namedBaoElf: null });
+    if (!planned.ok) throw new Error(planned.error);
+    expect(planned.value.espWrites.map((w) => w.destination)).toEqual(["/zeta-authorized-keys.pub"]);
   });
 });
 

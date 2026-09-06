@@ -1,0 +1,14 @@
+{
+  "id": "080d03ba1f244010a013000836eb2fc5",
+  "at": "2026-09-06T15:08:53.256Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1VM7S47087G0R001VQ1QK5",
+    "type": "task",
+    "title": "First-boot bao conf and argv carrier; both names or neither",
+    "slug": "first-boot-bao-conf-and-argv-carrier-both-names-or-neither",
+    "priority": "P2",
+    "filename": "081M1VM7S47087G0R001VQ1QK5-first-boot-bao-conf-and-argv-carrier-both-names-or-neither.md"
+  }
+}

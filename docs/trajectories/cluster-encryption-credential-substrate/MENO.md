@@ -168,6 +168,35 @@ assume the number.
    pick on-host. Bytes follow-on (`081M1VDMK7R087G0R0038GVG66`):
    installer parses `PT_INTERP` from injected ELF bytes.
    No `readelf`. Overlay still does not open a filesystem.
+   First-boot named site (`081M1VGV2N6087G0R001ZHWZDS`):
+   `planSetupFromNamedBaoElf` takes a named site plus a bao
+   path into `captureBaoElfFromRead`. `/dev/tpmrm0` present
+   does not pick `on-host`. Argv follow-on
+   (`081M1VJGMMP087G0R002JRZ458`): `--bao-load-site` and
+   `--bao-path` together. One flag without the other
+   refuses. A bare tpmrm0 argv is not `on-host`. Does not
+   edit Application.yaml. Conf/argv carrier
+   (`081M1VM7S47087G0R001VQ1QK5`): both `ZETA_BAO_LOAD_SITE`
+   and `ZETA_BAO_PATH`, or neither. `/dev/tpmrm0` is
+   shell-safe and still not a bao path. Does not expand
+   `ZetaFirstbootRole`. Does not edit `zeta-first-boot.sh`.
+   Conf consume (`081M1VNS22M087G0R000P9A1XH`): parse those
+   assignments back into a named ask. One key without the
+   other refuses. `/dev/tpmrm0` is still not an ask. Does
+   not edit `zeta-first-boot.sh`.
+   Role conf plus named bao (`081M1VQ6CHS087G0R0036YJAQ5`):
+   one planner call. Null / tpmrm0 leave the role conf
+   byte-identical. Does not expand `ZetaFirstbootRole`.
+   ESP write (`081M1VRW8ZY087G0R000XDM4BG`):
+   `planFileBackedZflashImage` joins via
+   `firstboot-bao-elf.ts`, not installer `fs`. A non-null
+   ask without a role is refused. Does not edit
+   `zeta-first-boot.sh`.
+   CLI flags (`081M1VTE7TZ087G0R002XSHAYZ`):
+   `file-backed.ts` parses `--bao-load-site` and
+   `--bao-path`. One without the other refuses. Does not
+   fill `NIXOS_HOST_BAO`. Does not expand
+   `ZetaFirstbootRole`. Does not edit `zeta-first-boot.sh`.
 7. extraContainer sidecar — later, **same commit as the
    sidecar**, and only for the Shamir kind path until the
    emulator job replaces it. `valuesObject` only. Do not fork

@@ -47,6 +47,8 @@ dependencies = [
     "nnsight==0.7.0",
     # Independent replay imports NumPy directly; pin the already locked version.
     "numpy==2.5.2",
+    # Exact Jordan decomposition; already present through torch at this version.
+    "sympy==1.14.0",
 ]
 
 [build-system]
@@ -85,4 +87,9 @@ torch = [{ index = "pytorch-cpu", marker = "sys_platform == 'linux'" }]
 # scoped to that one module so a future typed release starts being checked.
 [[tool.mypy.overrides]]
 module = ["nnsight.*"]
+ignore_missing_imports = true
+
+# SymPy 1.14.0 also lacks typing metadata; only the independent symbolic checker imports it.
+[[tool.mypy.overrides]]
+module = ["sympy.*"]
 ignore_missing_imports = true

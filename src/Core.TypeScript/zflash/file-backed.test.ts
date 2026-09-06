@@ -2,7 +2,9 @@ import { describe, expect, test } from "bun:test";
 import { mkdtempSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
+import { TPM_CHAR_DEVICE } from "../cluster/bao-load-site.ts";
 import { parseFileBackedZflashArgs, runFileBackedZflashCli } from "./file-backed.ts";
+import { NIXOS_HOST_BAO, nixosHostBaoAsk, planFirstbootConfWithNamedBaoElf } from "./firstboot-bao-elf.ts";
 
 describe("parseFileBackedZflashArgs", () => {
   test("parses the file-backed QEMU image CLI shape", () => {
@@ -150,6 +152,151 @@ describe("parseFileBackedZflashArgs", () => {
       error: "--qemu-creds-passphrase-file not found",
     });
     expect(JSON.stringify(parsed)).not.toContain(missingPath);
+  });
+
+  test("parses --bao-load-site and --bao-path with --role into namedBaoElf", () => {
+    const parsed = parseFileBackedZflashArgs([
+      "--iso",
+      "installer.iso",
+      "--output",
+      "out.img",
+      "--esp-offset-bytes",
+      "1048576",
+      "--ssh-key",
+      "fixtures/id_ed25519.pub",
+      "--role",
+      "first-control-plane",
+      "--bao-load-site",
+      "on-host",
+      "--bao-path",
+      NIXOS_HOST_BAO,
+    ]);
+    expect(parsed).toEqual({
+      kind: "run",
+      options: {
+        espOffsetBytes: 1_048_576,
+        firstbootRole: { kind: "first-control-plane" },
+        isoPath: "installer.iso",
+        namedBaoElf: nixosHostBaoAsk(),
+        outputImagePath: "out.img",
+        pubkeyPath: "fixtures/id_ed25519.pub",
+      },
+    });
+  });
+
+  test("refuses --bao-load-site without --bao-path", () => {
+    expect(
+      parseFileBackedZflashArgs([
+        "--iso",
+        "installer.iso",
+        "--output",
+        "out.img",
+        "--esp-offset-bytes",
+        "1048576",
+        "--role",
+        "first-control-plane",
+        "--bao-load-site",
+        "on-host",
+      ]),
+    ).toEqual({
+      kind: "error",
+      error: "--bao-load-site requires --bao-path",
+    });
+  });
+
+  test("refuses --bao-path without --bao-load-site and does not fill NIXOS_HOST_BAO", () => {
+    expect(
+      parseFileBackedZflashArgs([
+        "--iso",
+        "installer.iso",
+        "--output",
+        "out.img",
+        "--esp-offset-bytes",
+        "1048576",
+        "--bao-path",
+        NIXOS_HOST_BAO,
+      ]),
+    ).toEqual({
+      kind: "error",
+      error: "--bao-path requires --bao-load-site",
+    });
+  });
+
+  test("refuses an unknown --bao-load-site", () => {
+    expect(
+      parseFileBackedZflashArgs([
+        "--iso",
+        "installer.iso",
+        "--output",
+        "out.img",
+        "--esp-offset-bytes",
+        "1048576",
+        "--bao-load-site",
+        "tpmrm0",
+        "--bao-path",
+        NIXOS_HOST_BAO,
+      ]),
+    ).toEqual({
+      kind: "error",
+      error: "--bao-load-site must be on-host or in-chart-image",
+    });
+  });
+
+  test("parses tpmrm0 --bao-path as namedBaoElf null", () => {
+    const parsed = parseFileBackedZflashArgs([
+      "--iso",
+      "installer.iso",
+      "--output",
+      "out.img",
+      "--esp-offset-bytes",
+      "1048576",
+      "--ssh-key",
+      "fixtures/id_ed25519.pub",
+      "--role",
+      "first-control-plane",
+      "--bao-load-site",
+      "on-host",
+      "--bao-path",
+      TPM_CHAR_DEVICE,
+    ]);
+    expect(parsed).toEqual({
+      kind: "run",
+      options: {
+        espOffsetBytes: 1_048_576,
+        firstbootRole: { kind: "first-control-plane" },
+        isoPath: "installer.iso",
+        namedBaoElf: null,
+        outputImagePath: "out.img",
+        pubkeyPath: "fixtures/id_ed25519.pub",
+      },
+    });
+  });
+
+  test("parses both bao flags without --role; a non-null ask is still an ask", () => {
+    const parsed = parseFileBackedZflashArgs([
+      "--iso",
+      "installer.iso",
+      "--output",
+      "out.img",
+      "--esp-offset-bytes",
+      "1048576",
+      "--ssh-key",
+      "fixtures/id_ed25519.pub",
+      "--bao-load-site",
+      "on-host",
+      "--bao-path",
+      NIXOS_HOST_BAO,
+    ]);
+    expect(parsed).toEqual({
+      kind: "run",
+      options: {
+        espOffsetBytes: 1_048_576,
+        isoPath: "installer.iso",
+        namedBaoElf: nixosHostBaoAsk(),
+        outputImagePath: "out.img",
+        pubkeyPath: "fixtures/id_ed25519.pub",
+      },
+    });
   });
 });
 
@@ -315,6 +462,63 @@ describe("runFileBackedZflashCli", () => {
     if (!result.ok) {
       expect(result.error).not.toContain("super-secret");
     }
+  });
+
+  test("refuses a non-null namedBaoElf with no role before any command runs", () => {
+    const ran: string[] = [];
+    const result = runFileBackedZflashCli(
+      {
+        espOffsetBytes: 1_048_576,
+        isoPath: "artifacts/zeta-installer.iso",
+        namedBaoElf: nixosHostBaoAsk(),
+        outputImagePath: "artifacts/zflash-baked.img",
+        pubkeyPath: "fixtures/id_ed25519.pub",
+      },
+      {
+        createInlineStagingDirectory: () => "/private/tmp/zflash-inline-bao",
+        executor: {
+          runCommand: (command) => {
+            ran.push(command.command);
+            return { exitCode: 0, stderr: "", stdout: "" };
+          },
+          writeFile: () => undefined,
+        },
+      },
+    );
+    expect(result).toEqual({
+      ok: false,
+      error: "namedBaoElf requires firstbootRole; bao names with no role conf are never read",
+    });
+    expect(ran).toEqual([]);
+  });
+
+  test("writes option D bao names onto /zeta-firstboot.conf when CLI names both with a role", () => {
+    const role = { kind: "first-control-plane" as const };
+    const ask = nixosHostBaoAsk();
+    const joined = planFirstbootConfWithNamedBaoElf(role, ask);
+    if (!joined.ok) throw new Error(joined.error);
+    const writes: Array<{ destination: string; content: string }> = [];
+    const result = runFileBackedZflashCli(
+      {
+        espOffsetBytes: 1_048_576,
+        firstbootRole: role,
+        isoPath: "artifacts/zeta-installer.iso",
+        namedBaoElf: ask,
+        outputImagePath: "artifacts/zflash-baked.img",
+        pubkeyPath: "fixtures/id_ed25519.pub",
+      },
+      {
+        createInlineStagingDirectory: () => "/private/tmp/zflash-inline-bao",
+        executor: {
+          runCommand: () => ({ exitCode: 0, stderr: "", stdout: "" }),
+          writeFile: (file) => {
+            writes.push({ destination: file.destination, content: file.content });
+          },
+        },
+      },
+    );
+    expect(result.ok).toBe(true);
+    expect(writes).toEqual([{ destination: "/zeta-firstboot.conf", content: joined.value }]);
   });
 });
 

@@ -1,0 +1,14 @@
+{
+  "id": "080d03b9382b2810a0130008f47454e0",
+  "at": "2026-09-06T14:37:21.125Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1VJE1B4087G0R001MC85J5",
+    "type": "task",
+    "title": "Measure predictive memory spectral entropy and inference cost as a registered batch",
+    "slug": "measure-predictive-memory-spectral-entropy-and-inference-cos",
+    "priority": "P2",
+    "filename": "081M1VJE1B4087G0R001MC85J5-measure-predictive-memory-spectral-entropy-and-inference-cos.md"
+  }
+}

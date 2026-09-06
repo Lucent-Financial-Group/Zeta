@@ -1,7 +1,7 @@
 # Trajectory - Cluster Encryption / Credential Substrate
 
 Status: active — first surfaced 2026-05-29 from substrate inventory (was tracked only as scattered backlog rows; never had a trajectory surface, which is why it was easy to lose at cold-boot)
-Last refreshed: 2026-09-06 (installer PT_INTERP from ELF bytes, still not a seal)
+Last refreshed: 2026-09-06 (zflash CLI names bao load site and path; still not a seal)
 Type: workstream (current-focus) — a trajectory the operator is *actively powering*. Many trajectories can be tracked; only a few are workstreams at once (finite-focus / WIP-bounded — a workstream is a trajectory under sustained thrust, and thrust budget is finite, so most trajectories coast). ("Trajectory" is the genus; "workstream" is the species: a trajectory under sustained thrust toward a deliverable, vs. emergent-posture trajectories like `anti-infection`, which self-describes as "not a workstream with a cadence." See [`factory-trajectory-surface`](../factory-trajectory-surface/RESUME.md) for the genus/species taxonomy.) One of the operator's three current cluster workstreams (encryption / usb-zflash / ts-workflow-engine).
 Eventual encoding (design-stage — the human maintainer 2026-05-23 genetic-ID substrate + Clifford/HKT): this trajectory's state is trackable as a 128-bit genetic-ID seed (discrete, reversible via parser-combinator ↔ generator-function) → Clifford-space path (continuous, eventual). Mirrors the three-lane I8-lattice / I9-manifold split.
 Current blocker: none operationally; the live design tension is interactive-login-vs-baked-in-keys-vs-CI-test (081KSGS9H0008QG0R003JNSVR5)
@@ -354,6 +354,123 @@ Workitem: `081M1VDMK7R087G0R0038GVG66`.
   Overlay still does not open a filesystem. `.so` /
   restore pointer / `/dev/tpmrm0` are not opened.
   Site stays named. Does not edit Application.yaml.
+
+## 2026-09-06 — first-boot names bao site and path (Riven)
+
+Aaron: continue after the bytes parser. First-boot still has
+to pass a named site plus a bao path into
+`captureBaoElfFromRead`.
+
+Consumer: `src/Core.TypeScript/installer/bao-elf-capture.ts`
+(`planSetupFromNamedBaoElf`, `namedBaoElfAsk`).
+Workitem: `081M1VGV2N6087G0R001ZHWZDS`.
+
+- Site and path are named together. Null ask is unmeasured,
+  not `on-host`. `/dev/tpmrm0`, a `.so`, and the restore
+  pointer are not a bao ask and are not opened.
+- Option D NixOS host path may emit host HCL and still
+  cannot gain Application.yaml. Overlay / unseal-path still
+  do not open files. Does not spawn `readelf`.
+
+## 2026-09-06 — first-boot argv names bao site and path (Riven)
+
+Aaron: continue after the named-site join. The live installer
+still has to invoke it with a named site, not from
+`/dev/tpmrm0`.
+
+Consumer: `src/Core.TypeScript/installer/bao-elf-capture.ts`
+(`parseNamedBaoElfArgs`, `planSetupFromNamedBaoElfArgv`).
+Workitem: `081M1VJGMMP087G0R002JRZ458`.
+
+- `--bao-load-site` and `--bao-path` together. Neither flag
+  is unmeasured. One without the other refuses — do not fill
+  the NixOS host path, do not infer site from a path.
+- A bare tpmrm0 argv is not `on-host`. `--bao-path=/dev/tpmrm0`
+  is not an ask. Does not edit Application.yaml. Does not
+  edit `zeta-first-boot.sh`.
+
+## 2026-09-06 — first-boot bao conf/argv carrier (Riven)
+
+Aaron: continue after the argv parser. First-boot still has
+to carry both names onto the medium. Both conf lines and
+both argv tokens, or neither.
+
+Consumer: `src/Core.TypeScript/installer/bao-elf-capture.ts`
+(`composeFirstbootBaoElfCarrier`, `firstbootBaoElfArgvFromAsk`,
+`appendFirstbootBaoElfConf`).
+Workitem: `081M1VM7S47087G0R001VQ1QK5`.
+
+- `ZETA_BAO_LOAD_SITE` and `ZETA_BAO_PATH` together. Null
+  ask is unmeasured. `/dev/tpmrm0` matches the bash
+  allowlist and is still not a bao path — filter first.
+- Does not expand `ZetaFirstbootRole`. Does not edit
+  `zeta-first-boot.sh`. Does not edit Application.yaml.
+
+## 2026-09-06 — first-boot conf consume names bao site and path (Riven)
+
+Aaron: continue after the carrier. First-boot still has to
+*read* both names. Parse sourced conf assignments back into
+a named ask, not from `/dev/tpmrm0`.
+
+Consumer: `src/Core.TypeScript/installer/bao-elf-capture.ts`
+(`parseFirstbootBaoElfConf`, `parseFirstbootBaoElfEnv`,
+`planSetupFromNamedBaoElfConf`).
+Workitem: `081M1VNS22M087G0R000P9A1XH`.
+
+- Both conf keys or neither. One without the other refuses.
+  `/dev/tpmrm0` is shell-safe and still not an ask.
+- Does not expand `ZetaFirstbootRole`. Does not edit
+  `zeta-first-boot.sh`. Does not edit Application.yaml.
+
+## 2026-09-06 — first-boot role conf plus named bao (Riven)
+
+Aaron: continue after conf consume. The flash still has to
+compose a role conf with the bao carrier in one call.
+
+Consumer: `src/Core.TypeScript/installer/bao-elf-capture.ts`
+(`planFirstbootConfWithNamedBaoElf`).
+Workitem: `081M1VQ6CHS087G0R0036YJAQ5`.
+
+- Null / tpmrm0 / `.so` leave the role conf byte-identical.
+  Option D appends both names. A refused role is unchanged.
+- Does not expand `ZetaFirstbootRole` or `ZetaFirstbootConfig`.
+  Does not edit `zeta-first-boot.sh`. Does not import into
+  `src/Core.TypeScript/zflash/lib.ts` this slice. Does not edit Application.yaml.
+
+## 2026-09-06 — zflash ESP writes joined bao names (Riven)
+
+Aaron: continue after the join. The flash still has to write
+the joined conf onto the ESP, without installer `fs`.
+
+Consumer: `src/Core.TypeScript/zflash/lib.ts`
+(`planFileBackedZflashImage` `namedBaoElf`) plus
+`src/Core.TypeScript/zflash/firstboot-bao-elf.ts`.
+Workitem: `081M1VRW8ZY087G0R000XDM4BG`.
+
+- Optional sibling of `firstbootRole`, not a role field.
+  Omitted / tpmrm0 leave the role conf byte-identical.
+  A non-null ask without a role is refused.
+- Does not expand `ZetaFirstbootRole`. Does not edit
+  `zeta-first-boot.sh`. Does not edit Application.yaml.
+
+## 2026-09-06 — zflash CLI names bao load site and path (Riven)
+
+Aaron: continue after the ESP write. Production flash still
+has to parse `--bao-load-site` and `--bao-path` so the
+planner is not test-only.
+
+Consumer: `src/Core.TypeScript/zflash/file-backed.ts`
+(`parseFileBackedZflashArgs`) plus
+`src/Core.TypeScript/zflash/firstboot-bao-elf.ts`
+(`parseNamedBaoElfArgs`).
+Workitem: `081M1VTE7TZ087G0R002XSHAYZ`.
+
+- Both flags or neither. One without the other refuses.
+  Does not fill `NIXOS_HOST_BAO`. tpmrm0 is still not an ask.
+  A non-null ask without `--role` parses, then the planner
+  refuses.
+- Does not expand `ZetaFirstbootRole`. Does not edit
+  `zeta-first-boot.sh`. Does not edit Application.yaml.
 
 ## 2026-09-04 — production-hardening review (Riven)
 
