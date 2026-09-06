@@ -525,6 +525,11 @@ Installer-iso epoch
 epoch; ISO current-system bao is not
 option D; `/mnt` existing does not pick
 the epoch.
+ISO bun names epoch
+(`081M1W6J9MH087G0R003VNMDDR`) exports
+`ZETA_BAO_ELF_EPOCH='installer-iso'` as a
+literal after 6.95a; `/mnt` is unknown,
+not `installer-iso`.
 glibc-host-into-musl-image is not a
 module; Application.yaml stays Shamir.
 

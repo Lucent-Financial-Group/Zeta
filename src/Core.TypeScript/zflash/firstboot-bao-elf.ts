@@ -84,13 +84,32 @@ export function namedBaoElfAskAtEpoch(
   return namedBaoElfAsk(site, openedPath, restorePointer);
 }
 
+/**
+ * Named epoch from process env. Missing is unmeasured, not
+ * `installed-host`. `/mnt` and `tpmrm0` are unknown, not
+ * `installer-iso`.
+ */
+export function parseBaoElfEpoch(
+  value: string | undefined,
+):
+  | { readonly ok: true; readonly epoch: BaoElfEpoch | null }
+  | { readonly ok: false; readonly reason: NamedBaoElfArgError } {
+  if (value === undefined) return { ok: true, epoch: null };
+  if (value.length === 0) return { ok: false, reason: "empty-epoch" };
+  if (!SHELL_SAFE_CONF_VALUE_REGEX.test(value)) return { ok: false, reason: "unsafe-conf-value" };
+  if (value === "installer-iso" || value === "installed-host") return { ok: true, epoch: value };
+  return { ok: false, reason: "unknown-epoch" };
+}
+
 export type NamedBaoElfArgError =
   | "site-without-path"
   | "path-without-site"
   | "unknown-site"
   | "empty-site"
   | "empty-path"
-  | "unsafe-conf-value";
+  | "unsafe-conf-value"
+  | "unknown-epoch"
+  | "empty-epoch";
 
 export type NamedBaoElfArgResult =
   | { readonly ok: true; readonly ask: NamedBaoElfAsk | null }
@@ -166,6 +185,10 @@ export function namedBaoElfArgErrorMessage(reason: NamedBaoElfArgError): string 
       return "--bao-path requires a value";
     case "unsafe-conf-value":
       return "--bao-load-site / --bao-path contains a value firstboot conf cannot carry";
+    case "unknown-epoch":
+      return "ZETA_BAO_ELF_EPOCH must be installer-iso or installed-host";
+    case "empty-epoch":
+      return "ZETA_BAO_ELF_EPOCH requires a value";
   }
 }
 
@@ -178,6 +201,7 @@ export function namedBaoElfArgErrorMessage(reason: NamedBaoElfArgError): string 
  */
 export const FIRSTBOOT_BAO_LOAD_SITE_KEY = "ZETA_BAO_LOAD_SITE";
 export const FIRSTBOOT_BAO_PATH_KEY = "ZETA_BAO_PATH";
+export const FIRSTBOOT_BAO_ELF_EPOCH_KEY = "ZETA_BAO_ELF_EPOCH";
 
 export type FirstbootBaoElfCarrierRefuse = "unmeasured" | "not-bao-path" | "unsafe-conf-value";
 
@@ -319,6 +343,25 @@ export function consumeFirstbootBaoElfProcessEnv(env: {
       : { [FIRSTBOOT_BAO_LOAD_SITE_KEY]: env[FIRSTBOOT_BAO_LOAD_SITE_KEY] }),
     ...(env[FIRSTBOOT_BAO_PATH_KEY] === undefined ? {} : { [FIRSTBOOT_BAO_PATH_KEY]: env[FIRSTBOOT_BAO_PATH_KEY] }),
   });
+}
+
+export type FirstbootBaoElfEnvConsume =
+  | { readonly ok: true; readonly ask: NamedBaoElfAsk | null; readonly epoch: BaoElfEpoch | null }
+  | { readonly ok: false; readonly reason: NamedBaoElfArgError };
+
+/**
+ * Site+path plus named epoch. Missing epoch is unmeasured, not
+ * `installed-host`. Does not open files. Does not infer epoch
+ * from `/mnt` or `/dev/tpmrm0`.
+ */
+export function consumeFirstbootBaoElfEnvWithEpoch(env: {
+  readonly [key: string]: string | undefined;
+}): FirstbootBaoElfEnvConsume {
+  const parsed = consumeFirstbootBaoElfProcessEnv(env);
+  if (!parsed.ok) return parsed;
+  const epochGot = parseBaoElfEpoch(env[FIRSTBOOT_BAO_ELF_EPOCH_KEY]);
+  if (!epochGot.ok) return epochGot;
+  return { ok: true, ask: parsed.ask, epoch: epochGot.epoch };
 }
 
 /**

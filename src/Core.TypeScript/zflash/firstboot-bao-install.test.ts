@@ -6,6 +6,7 @@ import { join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { TPM_CHAR_DEVICE } from "../cluster/bao-load-site.ts";
 import {
+  FIRSTBOOT_BAO_ELF_EPOCH_KEY,
   FIRSTBOOT_BAO_LOAD_SITE_KEY,
   FIRSTBOOT_BAO_PATH_KEY,
   NIXOS_HOST_BAO,
@@ -330,6 +331,9 @@ describe("zeta-install.sh named bao bun consume after 6.95a", () => {
     expect(executable.split("bun '$BAO_ENV_HELPER'").length - 1).toBe(1);
     expect(executable.split(`export ${FIRSTBOOT_BAO_LOAD_SITE_KEY}=`).length - 1).toBe(1);
     expect(executable.split(`${FIRSTBOOT_BAO_PATH_KEY}='`).length - 1).toBe(1);
+    expect(executable.split(`${FIRSTBOOT_BAO_ELF_EPOCH_KEY}='installer-iso'`).length - 1).toBe(1);
+    expect(executable.split("[ -d /mnt ]").length - 1).toBe(0);
+    expect(executable.split("test -d /mnt").length - 1).toBe(0);
     expect(executable.split(TPM_CHAR_DEVICE).length - 1).toBe(0);
     expect(executable.split(NIXOS_HOST_BAO).length - 1).toBe(0);
     expect(executable.split("Application.yaml").length - 1).toBe(0);
@@ -347,7 +351,26 @@ describe("zeta-install.sh named bao bun consume after 6.95a", () => {
       },
     });
     expect(spawned.status).toBe(0);
-    expect(JSON.parse(spawned.stdout)).toEqual({ ok: true, ask: nixosHostBaoAsk() });
+    expect(JSON.parse(spawned.stdout)).toEqual({ ok: true, ask: nixosHostBaoAsk(), epoch: null });
+  });
+
+  test("the helper the installer names reports installer-iso when that epoch is exported", () => {
+    expect(helper.endsWith(BAO_ENV_HELPER_REL.replace("src/Core.TypeScript/zflash/", ""))).toBe(true);
+    const spawned = spawnSync(process.execPath, [helper], {
+      encoding: "utf8",
+      env: {
+        PATH: process.env.PATH,
+        [FIRSTBOOT_BAO_LOAD_SITE_KEY]: "on-host",
+        [FIRSTBOOT_BAO_PATH_KEY]: NIXOS_HOST_BAO,
+        [FIRSTBOOT_BAO_ELF_EPOCH_KEY]: "installer-iso",
+      },
+    });
+    expect(spawned.status).toBe(0);
+    expect(JSON.parse(spawned.stdout)).toEqual({
+      ok: true,
+      ask: nixosHostBaoAsk(),
+      epoch: "installer-iso",
+    });
   });
 
   test("the helper the installer names still returns null ask for tpmrm0", () => {
@@ -360,6 +383,6 @@ describe("zeta-install.sh named bao bun consume after 6.95a", () => {
       },
     });
     expect(spawned.status).toBe(0);
-    expect(JSON.parse(spawned.stdout)).toEqual({ ok: true, ask: null });
+    expect(JSON.parse(spawned.stdout)).toEqual({ ok: true, ask: null, epoch: null });
   });
 });
