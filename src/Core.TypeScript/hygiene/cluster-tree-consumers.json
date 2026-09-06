@@ -144,9 +144,9 @@
     },
     {
       "path": "src/Core.TypeScript/ace/deps.ts",
-      "disposition": "blocking",
-      "note": "generateArgoCD() emits Applications whose spec.source.path is `infra/k8s/applications/${chart}` — a path in the tree ArgoCD will prune. It ships in the ace CLI. deps.test.ts does not assert the path, so after the deletion this fails SILENTLY, in generated output, at deploy time.",
-      "migrateTo": "full-ai-cluster/k8s/applications/${chart}, plus an assertion in deps.test.ts so the path can go red."
+      "disposition": "prose",
+      "note": "`generateArgoCD` now emits `full-ai-cluster/k8s/applications/${chart}`; the only remaining mention is the comment recording what the path used to be and why it was wrong (the stale tree prunes, and it holds no per-chart directories, so the old path resolved to nothing). `deps.test.ts` asserts the emitted path and refuses any path under a roster-declared stale tree.",
+      "migrateTo": "drop the historical note when the stale tree is gone."
     },
     {
       "path": "src/Core.TypeScript/ci/cross-verify-roster.ts",
