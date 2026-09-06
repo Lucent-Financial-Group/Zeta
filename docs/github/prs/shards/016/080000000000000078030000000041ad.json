@@ -1,0 +1,12 @@
+{
+  "pr_number": 16813,
+  "archive_path": "docs/history/pr-reviews/PR-16813-feat-creds-name-bao-load-site-and-path-from-the-zflash-cli.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-06T17:22:56.028Z",
+  "schema_version": "v1",
+  "commit_sha": "a14fdb7704bce666a985c9ec74b7c129d965723c",
+  "title": "feat(creds): Name bao load site and path from the zflash CLI",
+  "state": "MERGED",
+  "merged_at": "2026-09-06T17:22:14Z",
+  "head_ref": "cursor/zflash-cli-bao-flags-27c5"
+}
