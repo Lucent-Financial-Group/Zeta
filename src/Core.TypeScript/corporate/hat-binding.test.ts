@@ -18,6 +18,7 @@ import {
   revokeBinding,
   SuccessionPolicy,
   timingFor,
+  isInCooldown,
   type HatBinding,
 } from "./hat-binding";
 import { buildOrgChart, type OrgHat } from "./org-chart";
@@ -329,5 +330,44 @@ describe("succession", () => {
       expect(plan.nextWearerAgentId).toBeUndefined();
       expect(plan.candidateAgentIds).toEqual(roster);
     }
+  });
+});
+
+describe("isInCooldown — the staffing rule, out where it can be falsified", () => {
+  const binding = (over: Partial<HatBinding> = {}): HatBinding =>
+    ({ hatId: "tech_lead", wearerAgentId: "a1", cooldownUntilMs: 1_000, ...over }) as HatBinding;
+
+  test("inside the window, cooling", () => {
+    expect(isInCooldown([binding()], "tech_lead", "a1", 500)).toBe(true);
+  });
+
+  test("past the window, not cooling — the boundary is exclusive at the end", () => {
+    expect(isInCooldown([binding()], "tech_lead", "a1", 1_000)).toBe(false);
+    expect(isInCooldown([binding()], "tech_lead", "a1", 1_001)).toBe(false);
+  });
+
+  test("A MISSING cooldown is NOT cooling", () => {
+    // The conservative direction is the wrong one here. A binding that never recorded a cooldown
+    // is one whose cooldown never started; reading that silence as "still cooling" would strand an
+    // agent forever on the strength of an absent field.
+    // Built by omission rather than by an explicit `undefined`: under `exactOptionalPropertyTypes`
+    // those are different things, and the case that actually occurs is the field being ABSENT.
+    const noCooldown = { hatId: "tech_lead", wearerAgentId: "a1" } as HatBinding;
+    expect(isInCooldown([noCooldown], "tech_lead", "a1", 0)).toBe(false);
+  });
+
+  test("it is scoped to the HAT and the AGENT, not to either alone", () => {
+    const bs = [binding()];
+    expect(isInCooldown(bs, "engineering_manager", "a1", 500)).toBe(false);
+    expect(isInCooldown(bs, "tech_lead", "a2", 500)).toBe(false);
+  });
+
+  test("ANY matching binding cools — the newest does not have to be the one", () => {
+    const bs = [binding({ cooldownUntilMs: 10 }), binding({ cooldownUntilMs: 9_000 })];
+    expect(isInCooldown(bs, "tech_lead", "a1", 500)).toBe(true);
+  });
+
+  test("no bindings at all is not cooling", () => {
+    expect(isInCooldown([], "tech_lead", "a1", 500)).toBe(false);
   });
 });

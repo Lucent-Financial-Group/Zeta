@@ -335,6 +335,34 @@ export interface SuccessionPlan {
  * wearer can legitimately have left the candidate pool, and a hat that cannot be handed on because
  * its previous holder is gone is the succession problem, not a solution to it.
  */
+/**
+ * Is this agent still cooling down on this hat?
+ *
+ * EXTRACTED from `assignment-engine`, where it was four inlined conditions inside a `find`. A rule
+ * that lives only inside its caller cannot be falsified on its own — the same reason `inboxOrder`
+ * and `gateChooserFrom` were pulled out of theirs — and this one decides who may be staffed, which
+ * makes "the cooldown quietly stopped applying" a defect nobody would see except as an agent
+ * cycling through a hat it should have been resting from.
+ *
+ * ABSENT `cooldownUntilMs` is NOT cooling. A binding that never recorded one is a binding whose
+ * cooldown was never started; reading the silence as "still cooling" would strand an agent forever
+ * on the strength of a missing field.
+ */
+export function isInCooldown(
+  bindings: readonly HatBinding[],
+  hatId: string,
+  agentId: string,
+  nowMs: number,
+): boolean {
+  return bindings.some(
+    (b) =>
+      b.hatId === hatId &&
+      b.wearerAgentId === agentId &&
+      b.cooldownUntilMs !== undefined &&
+      nowMs < b.cooldownUntilMs,
+  );
+}
+
 export function planSuccession(input: {
   readonly hat: OrgHat;
   readonly candidateAgentIds: readonly string[];

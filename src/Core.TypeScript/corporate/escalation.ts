@@ -42,6 +42,21 @@ export const EscalationTrigger = {
   SlaBreach: "sla_breach",
   StaleBlocker: "stale_blocker",
   ReviewQueueSaturated: "review_queue_saturated",
+  /**
+   * An agent reached something it cannot resolve and STOPPED.
+   *
+   * The trigger the others could not express. Every one of them is a symptom the organization can
+   * observe from outside — a gate rejected twice, an SLA passed, a queue too long. This one is
+   * raised by the worker itself, and it is the only honest thing to do with a genuine unknown:
+   * the alternative is an agent choosing plausibly and the organization learning about it at the
+   * gate, where the cost is a rejected review instead of a question.
+   *
+   * It carries no blame. `never-assume-malice-where-mistake-is-possible` applies to the agent
+   * here — hitting an unknown is the base rate of real work, not a failure to try.
+   */
+  UnknownEncountered: "unknown_encountered",
+  /** The mission is measurably behind its own schedule. See `mission-trajectory.ts`. */
+  MissionOffTrack: "mission_off_track",
 } as const;
 
 export type EscalationTrigger = (typeof EscalationTrigger)[keyof typeof EscalationTrigger];
@@ -81,6 +96,23 @@ const LEGAL_BY_TRIGGER: Readonly<Record<EscalationTrigger, readonly EscalationAc
     EscalationAction.ReScope,
   ],
   [EscalationTrigger.ReviewQueueSaturated]: [EscalationAction.ReassignReviewer, EscalationAction.AddAgents],
+  [EscalationTrigger.UnknownEncountered]: [
+    // An unknown is answered by bringing in someone who knows, by narrowing the work until the
+    // unknown is out of scope, by parking it, or by giving the agent something else to do while a
+    // human is found. Deliberately NOT `AcceptRisk`: accepting a risk you cannot describe is not a
+    // decision, it is the guess this trigger exists to prevent.
+    EscalationAction.BringInArchitect,
+    EscalationAction.AssignOwner,
+    EscalationAction.ReScope,
+    EscalationAction.Pause,
+    EscalationAction.AlternateWork,
+  ],
+  [EscalationTrigger.MissionOffTrack]: [
+    EscalationAction.AddAgents,
+    EscalationAction.ReScope,
+    EscalationAction.Pause,
+    EscalationAction.AcceptRisk,
+  ],
 };
 
 /** Escalation is a MANAGEMENT act. A lead or an IC may raise one; only a manager and above decides. */
