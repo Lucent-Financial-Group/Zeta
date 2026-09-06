@@ -71,6 +71,29 @@ jobs:
     name: byte-lock (${{ matrix.os }})
     timeout-minutes: 25
     runs-on: ${{ matrix.os }}
+    # NON-BLOCKING ON macOS AND WINDOWS, BLOCKING ON LINUX (Aaron 2026-09-06:
+    # "windows and mac can always stay non blocking but we dont want to let it
+    # rot"). The two halves of that sentence need different mechanisms, and the
+    # split below is what keeps the second half true:
+    #
+    #   * A LEG's own health is ADVISORY on macOS/Windows. Those platforms carry a
+    #     measured failure rate the repo does not currently keep green -- the drift
+    #     reporter puts `build-and-test (windows-2025)` at 30/59 executions failed,
+    #     50.8% -- so blocking on them would import that flakiness into this gate.
+    #
+    #   * A CROSS-PROCESSOR DISAGREEMENT stays BLOCKING for every leg, including
+    #     these. `cross-processor` has no continue-on-error and is not conditional.
+    #
+    # That line is the whole design: a MISSING TOOLCHAIN is environmental and must
+    # not block; a substrate computing DIFFERENT BYTES on two machines is the fault
+    # class this workflow exists to catch, and it blocks wherever it appears.
+    #
+    # ANTI-ROT, because non-blocking is exactly how a leg rots. Three things keep
+    # these honest without blocking: the floors below are MEASURED (a degraded leg
+    # goes red and is visible, rather than passing at a floor of 1); the comparator
+    # names every leg it could not read; and `--expect-legs` makes a leg that
+    # VANISHES a loud warning rather than a silent shrinkage of the comparison set.
+    continue-on-error: ${{ matrix.blocking == false }}
     # BASH ON EVERY LEG, INCLUDING WINDOWS. Every `run:` step in this job was
     # written for a POSIX shell -- `cmd || echo "ABSENT"`, `command -v`, `$(...)`,
     # `>>` redirects -- and GitHub defaults Windows to `pwsh`, where a missing
@@ -120,9 +143,11 @@ jobs:
           - os: ubuntu-24.04
             min_substrates: "9"
             required_substrates: "WAT,LLVM/C,Emscripten,Rust,AssemblyScript,Zig,JS (V8),Lua 5.4,Go"
+            blocking: true
           - os: ubuntu-24.04-arm
             min_substrates: "9"
             required_substrates: "WAT,LLVM/C,Emscripten,Rust,AssemblyScript,Zig,JS (V8),Lua 5.4,Go"
+            blocking: true
           # macOS reached 9 on run 33992105626 and this floor rose to match, in the
           # same session that set it to 8 -- which is the discipline working rather
           # than a correction. The 8 was the value OBSERVED at the time: `lua5.4` was
@@ -137,6 +162,7 @@ jobs:
           - os: macos-26
             min_substrates: "9"
             required_substrates: "WAT,LLVM/C,Emscripten,Rust,AssemblyScript,Zig,JS (V8),Lua 5.4,Go"
+            blocking: false
           # WINDOWS, ADDED UNCALIBRATED 2026-09-05 -- the same discipline the arm64
           # and macOS legs went through, not a shortcut around it. Nobody has
           # measured which substrates a Windows runner executes: `wabt` and `lua5.4`
@@ -157,11 +183,13 @@ jobs:
           # `windows-2025` shares x86_64 with `ubuntu-24.04` and adds an OS rather
           # than an architecture.
           - os: windows-2025
-            min_substrates: "1"
-            required_substrates: ""
+            min_substrates: "8"
+            required_substrates: "WAT,LLVM/C,Emscripten,Rust,AssemblyScript,Zig,JS (V8),Go"
+            blocking: false
           - os: windows-11-arm
-            min_substrates: "1"
-            required_substrates: ""
+            min_substrates: "8"
+            required_substrates: "WAT,LLVM/C,Emscripten,Rust,AssemblyScript,Zig,JS (V8),Go"
+            blocking: false
 
     steps:
       # MUST RUN BEFORE `checkout`, and it is the reason the Windows legs failed on
@@ -411,7 +439,15 @@ jobs:
         run: node compare-across-legs.mjs --self-test
 
       - name: Compare the legs against each other
+        # `--expect-legs` is the anti-rot half. The comparison itself needs only two
+        # legs, so three healthy Linux legs would keep this green forever while
+        # macOS and Windows quietly stopped reporting -- the comparison set shrinking
+        # with nothing saying so. Naming the expected set makes a vanished leg a LOUD
+        # warning without making it a blocker, which is the drift tier this repo
+        # already uses for exactly this shape.
         # Exit 1 = the machines disagree. Exit 2 = REFUSED, meaning it could not
         # compare (fewer than two readable legs, or no shared substrate). Both are
         # failures; only the first is a divergence, and the message says which.
-        run: node src/wasm-dla/bytelock/compare-across-legs.mjs legs
+        run: |
+          node src/wasm-dla/bytelock/compare-across-legs.mjs legs \
+            --expect-legs=ubuntu-24.04,ubuntu-24.04-arm,macos-26,windows-2025,windows-11-arm
