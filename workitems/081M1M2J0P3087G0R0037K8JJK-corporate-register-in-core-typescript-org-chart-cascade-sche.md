@@ -32,7 +32,7 @@ and composes over the core; nothing in the core imports it.
 
 ## What was actually there before
 
-`observe/room/hat-gate.ts` carried `HatLevel` and says outright that it *"mirrors
+`src/Core.TypeScript/observe/room/hat-gate.ts` carried `HatLevel` and says outright that it *"mirrors
 agentic-organization HatLevel"*. That was the whole of the organization in 2492 TypeScript files.
 `grep -r` over the package returned **zero** for `reportsTo`, `departmentId`, `ScheduleBlock`,
 `DiscussionAnchor`, `DecisionRecord`, `Initiative`, `parentWorkItem`, and `rmo`.
@@ -57,7 +57,7 @@ were handed the identical menu, so the levels were a label on a chart.
 Each is the single rule that makes its subsystem mean something:
 
 1. **A schedule refuses overlapping occupying blocks.** The reference states it
-   (`AGENT_WORK_RHYTHM_AND_PROMPT_FLOWS.md`), and without it "is this hat busy" has no answer —
+   (`agentic-organization/docs/AGENT_WORK_RHYTHM_AND_PROMPT_FLOWS.md`), and without it "is this hat busy" has no answer —
    the honest reply becomes "in three ways at once", and every downstream question inherits it.
 2. **An anchor cannot resolve without producing its expected output.** A `decision` anchor needs a
    `DecisionRecord`; everything else needs an evidenced post. Without it "we discussed it" closes a
@@ -378,7 +378,7 @@ a chart where the author is the only scope-holder BLOCKS rather than self-approv
 
 ### Change control — the F# side
 
-`src/Core/WorkflowEngine.fs` and its TS twin `workflow-engine/agent-loop/work-lifecycle-state-machine.ts`
+`src/Core/WorkflowEngine.fs` and its TS twin `src/Core.TypeScript/workflow-engine/agent-loop/work-lifecycle-state-machine.ts`
 carry an eleven-state PR lifecycle. The register never touched it, so "delivered" meant delivered to
 the organization's own bookkeeping. `change-control.ts` projects each task onto that lifecycle,
 DERIVED from what the organization did:
@@ -417,7 +417,7 @@ a fabricated chain would attribute the act to a line it never belonged to and hi
 
 ### The reference gap map, honestly scored
 
-`WORK_OS_OVERHAUL_GAPS_AND_DESIGN.md` lists G1–G16. Done: G3 intake, G5 hat-scoped observe, G8–G11
+`agentic-organization/docs/WORK_OS_OVERHAUL_GAPS_AND_DESIGN.md` lists G1–G16. Done: G3 intake, G5 hat-scoped observe, G8–G11
 QA, G12 defect loop, G13 churn, G14 escalation, G16 typed events. Partial: G1 (four work types, not
 nine), G4 (change control projects to Merged; no release workflow), G6/G7 (per-item, no work-batch
 roll-up). **Not done: G2 work batches, G15 event-driven movement** — the cycle still runs once,
@@ -552,7 +552,7 @@ valid options are offered at each state"** — and no menu generator existed. Th
 `menu-generator.ts` under v2 scope, undone, while calling it the place *"where alignment lives"*.
 The loop had a state machine, a work lifecycle, and no way to decide what to offer.
 
-Built `workflow-engine/agent-loop/menu-generator.ts` to the README's own three acceptance criteria:
+Built `src/Core.TypeScript/workflow-engine/agent-loop/menu-generator.ts` to the README's own three acceptance criteria:
 
 - **Never coercive** — the free modes and escape hatches are on EVERY menu, in every state,
   unconditionally, and not parameterised so no future caller can gate them by passing something.
@@ -569,7 +569,7 @@ already-understood work highest and systematically avoid the work that pays.
 ### DORA, with the unmeasurable declared rather than zero-filled
 
 `WorkflowEngine.fs` carries `DoraMetrics` as the surface the loop is steered by; nothing computed
-it. `corporate/dora.ts` folds it from what the organization recorded — and returns the fields it
+it. `src/Core.TypeScript/corporate/dora.ts` folds it from what the organization recorded — and returns the fields it
 could NOT measure, with reasons, because a `0` meaning "unmeasured" is indistinguishable from a
 measured zero, and the second is a claim.
 
@@ -654,14 +654,14 @@ Three findings on the way:
 
 ### 2. State is in Git, and the loop resumes
 
-`agent-loop/state-store.ts` + `cli.ts`, and `corporate/org-store.ts`. The README's *"state IS data
+`src/Core.TypeScript/workflow-engine/agent-loop/state-store.ts` + `src/Core.TypeScript/workflow-engine/agent-loop/cli.ts`, and `src/Core.TypeScript/corporate/org-store.ts`. The README's *"state IS data
 in Git append-only"* and *"the agent never holds state internally"* are now true: a paused agent's
 next invocation, in a separate process, reads `Paused` off disk and is offered only the way out.
 
 The shape is the one the repo already proved — one file per write, ZetaId-named, under a date shard,
 so the merge is set union and conflicts are structurally impossible rather than merely unlikely. The
 mechanics had been written three times (`tick-shards`, then this, then the org store), so they were
-extracted to `shard-store/shard-store.ts` first.
+extracted to `src/Core.TypeScript/shard-store/shard-store.ts` first.
 
 Findings:
 
@@ -680,7 +680,7 @@ Findings:
 
 ### 3. A real model has driven the loop
 
-`agent-loop/participant.ts`. `qwen2.5:0.5b` chose across three separate processes, persisting and
+`src/Core.TypeScript/workflow-engine/agent-loop/participant.ts`. `qwen2.5:0.5b` chose across three separate processes, persisting and
 resuming each time. It picked **index 5 on the 7-option menu and index 4 on the 6-option paused
 menu — the same option by content, at different positions**, so it is reading the menu rather than
 emitting a constant. Same seed, same answer: DST survives a model in the loop.
@@ -740,12 +740,12 @@ live:     a real local model drove three cycles, resuming from disk each time
 
 ### 1. The two halves now meet
 
-`agent-loop/cli.ts` had persistence and a participant and always ran against `emptySurface` with no
+`src/Core.TypeScript/workflow-engine/agent-loop/cli.ts` had persistence and a participant and always ran against `emptySurface` with no
 candidates — the model that drove three cycles was choosing over an organization with no work in it.
-`corporate/run-org.ts` had a real surface and neither persistence nor a participant. Both halves were
+`src/Core.TypeScript/corporate/run-org.ts` had a real surface and neither persistence nor a participant. Both halves were
 tested and mutation-checked; neither was connected to the other.
 
-The core now offers `MainDeps.surface`; the register fills it (`corporate/run-agent.ts`). The loop
+The core now offers `MainDeps.surface`; the register fills it (`src/Core.TypeScript/corporate/run-agent.ts`). The loop
 still does not know an organization exists — the boundary test still passes. A local model picks REAL
 work off a REAL run, records it, and resumes from disk.
 

@@ -41,7 +41,7 @@
 
 import { readFileSync, writeFileSync, existsSync } from "fs";
 import { execSync } from "child_process";
-import { fileURLToPath } from "url";
+import { fileURLToPath, pathToFileURL } from "url";
 import { dirname, join } from "path";
 
 const __dir = dirname(fileURLToPath(import.meta.url));
@@ -109,7 +109,20 @@ if (seedsFileArg) {
 }
 
 // ── Import reference ──────────────────────────────────────────────────────────
-const { runDLA, toGoldenVector, verify } = await import(join(__dir, "reference.mjs"));
+//
+// `pathToFileURL`, NOT the bare path. Node's ESM loader takes a URL, and on POSIX a
+// bare absolute path happens to work because it has no scheme. On Windows the path
+// starts `D:\...` and Node reads `d:` AS a scheme, then refuses it:
+//
+//   ERR_UNSUPPORTED_ESM_URL_SCHEME: Only URLs with a scheme in: file, data, and node
+//   are supported by the default ESM loader. On Windows, absolute paths must be valid
+//   file:// URLs. Received protocol 'd:'
+//
+// Found 2026-09-06 by run 34004416589, the first time this runner had ever executed on
+// Windows. It is a portability defect in THIS FILE rather than a CI configuration
+// problem, and no amount of workflow fixing would have reached it -- the leg had to get
+// far enough to run the runner before the runner's own bug became visible.
+const { runDLA, toGoldenVector, verify } = await import(pathToFileURL(join(__dir, "reference.mjs")).href);
 
 // ── REFERENCE PIN — the committed golden vectors must actually be READ ─────────
 //

@@ -1,0 +1,14 @@
+{
+  "id": "080d03a4fa381810a0130008716248f9",
+  "at": "2026-09-06T02:49:50.595Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1T9YHR2087G0R002ZX9T36",
+    "type": "task",
+    "title": "Reopen freeze-byte meter still paces reclaimTickMetered",
+    "slug": "reopen-freeze-byte-meter-still-paces-reclaimtickmetered",
+    "priority": "P2",
+    "filename": "081M1T9YHR2087G0R002ZX9T36-reopen-freeze-byte-meter-still-paces-reclaimtickmetered.md"
+  }
+}

@@ -46,8 +46,23 @@
  *
  * Silence is never reported as agreement.
  *
+ * == ANTI-ROT: --expect-legs ================================================
+ * The comparison itself needs only TWO legs. That is enough to catch a
+ * disagreement and it is NOT enough to keep the matrix honest: three healthy
+ * Linux legs would hold this green forever while macOS and Windows quietly
+ * stopped reporting, the comparison set shrinking with nothing saying so. Those
+ * legs are non-blocking by design (Aaron 2026-09-06: "windows and mac can always
+ * stay non blocking but we dont want to let it rot"), and non-blocking is exactly
+ * how a leg rots.
+ *
+ * `--expect-legs=a,b,c` names the set that SHOULD report. A missing one is
+ * printed as a GitHub warning annotation and listed in the summary. It does NOT
+ * fail the run -- absence is environmental, and blocking on it would re-import the
+ * flakiness the non-blocking decision exists to keep out. What it does is make the
+ * shrinkage impossible to not see.
+ *
  * Usage:
- *   node compare-across-legs.mjs <dir-of-leg-reports>
+ *   node compare-across-legs.mjs <dir-of-leg-reports> [--expect-legs=a,b,c]
  *   node compare-across-legs.mjs --self-test
  *
  * Exit: 0 agreed | 1 DIVERGED across legs | 2 REFUSED (could not compare)
@@ -96,6 +111,20 @@ export function indexVerdicts(report) {
     }
   }
   return out;
+}
+
+/**
+ * Legs that were expected and did not report, matched against the artifact
+ * directory names (which carry a `bytelock-report-` prefix).
+ *
+ * A leg that reported but was UNREADABLE counts as present here on purpose: it is
+ * already named by `compareLegs` as unreadable, and reporting it twice under two
+ * different headings would suggest two problems where there is one.
+ */
+export function missingLegs(legs, expected) {
+  if (expected.length === 0) return [];
+  const seen = legs.map((l) => l.name.replace(/^bytelock-report-/, ""));
+  return expected.filter((e) => !seen.includes(e));
 }
 
 export function compareLegs(legs) {
@@ -230,6 +259,24 @@ function selfTest() {
   const spaced = compareLegs([mk("a", [["JS (V8)", 42, true]]), mk("b", [["JS (V8)", 42, false]])]);
   check("substrate names with spaces round-trip", spaced.findings[0] && spaced.findings[0].substrate, "JS (V8)");
 
+  // 7. ANTI-ROT: a declared leg that did not report is named.
+  const legsFor = [mk("bytelock-report-ubuntu-24.04", [["Rust", 1, true]]), mk("bytelock-report-macos-26", [["Rust", 1, true]])];
+  check(
+    "a leg that did not report is named as missing",
+    missingLegs(legsFor, ["ubuntu-24.04", "macos-26", "windows-2025"]).join(","),
+    "windows-2025",
+  );
+  check("no expected set -> nothing is missing", missingLegs(legsFor, []).length, 0);
+  check(
+    "an UNREADABLE leg counts as present, not missing (it is already named once)",
+    missingLegs([...legsFor, { name: "bytelock-report-windows-2025", ok: false, reason: "empty" }], [
+      "ubuntu-24.04",
+      "macos-26",
+      "windows-2025",
+    ]).length,
+    0,
+  );
+
   let failed = 0;
   for (const c of checks) {
     if (!c.ok) failed++;
@@ -248,13 +295,33 @@ if (argv.includes("--self-test")) {
   process.exit(selfTest());
 }
 
-const root = argv[0];
+const expectArg = argv.find((a) => a.startsWith("--expect-legs="));
+const expected = expectArg ? expectArg.slice("--expect-legs=".length).split(",").map((x) => x.trim()).filter(Boolean) : [];
+
+const root = argv.find((a) => !a.startsWith("--"));
 if (!root) {
   console.error("usage: node compare-across-legs.mjs <dir-of-leg-reports> | --self-test");
   process.exit(2);
 }
 
-const result = compareLegs(loadLegs(root));
+const loaded = loadLegs(root);
+
+// Loud, never blocking. Emitted BEFORE the verdict so it is visible even when the
+// comparison then refuses for its own reasons.
+const absent = missingLegs(loaded, expected);
+for (const leg of absent) {
+  console.log(
+    `::warning title=byte-lock leg did not report::${leg} produced no artifact. ` +
+      `The comparison proceeded without it, so the cross-processor set is SMALLER than declared. ` +
+      `This does not fail the run (these legs are non-blocking by design) and it must not go unnoticed.`,
+  );
+}
+if (expected.length > 0) {
+  const present = expected.length - absent.length;
+  console.log(`legs expected: ${expected.length} · reported: ${present}${absent.length ? ` · MISSING: ${absent.join(", ")}` : ""}`);
+}
+
+const result = compareLegs(loaded);
 if (result.status === "REFUSED") {
   console.error("\nCROSS-PROCESSOR BYTE-LOCK REFUSED - " + result.reason + "\n");
   process.exit(2);

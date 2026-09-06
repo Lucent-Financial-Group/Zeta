@@ -48,7 +48,15 @@ slots. Peer-reviewed 8 years; widely implemented
 Binary Fuse / Ribbon-BuRR (static AMQs for frozen
 partitions), Vector Quotient Filter (SIMD alternative to
 CQF), ChainedFilter composition theory, Stable Learned Bloom
-(only learned variant with drift-bounded FPR).
+(only learned variant with drift-bounded FPR). **Bloom vs
+anti-bloom (2026-09-05):** two grow-only Bloom filters over
+ever-inserted and ever-deleted keys; three-valued
+`{present, absent, unknown}`; unknown region `fp(I)×fp(D)`.
+G-set shaped; no counter saturation. Toy type plus unit
+measurements in `Bloom.Tests.fs`, not a join-probe replacement.
+Does not un-Hold deletable Bloom. Resurrection (insert after
+delete) is UNKNOWN. Counting Bloom stays shipped
+(ZD10, `081M1T9SMM9087G0R002FS29S4`).
 
 **Hold.**
 

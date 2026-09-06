@@ -1,0 +1,14 @@
+{
+  "id": "080d03a4e6945010a0130008268360d4",
+  "at": "2026-09-06T02:47:09.706Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1T9SMM9087G0R002FS29S4",
+    "type": "task",
+    "title": "Bloom vs anti-bloom: two grow-only filters, three-valued membership",
+    "slug": "bloom-vs-anti-bloom-two-grow-only-filters-three-valued-membe",
+    "priority": "P2",
+    "filename": "081M1T9SMM9087G0R002FS29S4-bloom-vs-anti-bloom-two-grow-only-filters-three-valued-membe.md"
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 16732,
+  "archive_path": "docs/history/pr-reviews/PR-16732-feat-081m1tbftyf087g0r001akt57e-persist-objectsets-in-the-catalog.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-06T03:40:12.585Z",
+  "schema_version": "v1",
+  "commit_sha": "4c3807e0ae51fd723904b9acea42303c51c51c3d",
+  "title": "feat(081M1TBFTYF087G0R001AKT57E): persist ObjectSets in the catalog",
+  "state": "MERGED",
+  "merged_at": "2026-09-06T03:39:39Z",
+  "head_ref": "feat/zetafs-persist-objectsets"
+}

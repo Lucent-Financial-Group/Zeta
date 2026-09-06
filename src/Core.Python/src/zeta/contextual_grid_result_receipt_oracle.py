@@ -35,6 +35,10 @@ def canonical_roster() -> list[int]:
     return list(range(SEED_FIRST, SEED_LAST + 1))
 
 
+def reflected_roster() -> list[int]:
+    return list(range(100, 200))
+
+
 def _int_field(receipt: dict[str, object], name: str) -> int:
     value = receipt[name]
     if not isinstance(value, int) or isinstance(value, bool):
@@ -80,7 +84,7 @@ def _seed_row(receipt: dict[str, object]) -> dict[str, object]:
 
 
 def _transition(
-    position: tuple[int, int], action: str
+    carrier: runner.Carrier, position: tuple[int, int], action: str
 ) -> tuple[tuple[int, int], int, bool]:
     deltas = {
         "north": (0, -1),
@@ -95,12 +99,12 @@ def _transition(
         if candidate[0] < 0 or candidate[0] > 4 or candidate[1] < 0 or candidate[1] > 4
         else candidate
     )
-    if next_position == (4, 0):
-        return next_position, 2_000_000, True
-    return next_position, -40_000, False
+    if next_position == carrier.goal:
+        return next_position, carrier.terminal_reward_ppm, True
+    return next_position, carrier.nonterminal_reward_ppm, False
 
 
-def optimal_held_out_return(action_cap: int) -> int:
+def optimal_held_out_return(carrier: runner.Carrier, action_cap: int) -> int:
     if action_cap < 0:
         raise ValueError("action_cap must be non-negative")
     actions = ("north", "east", "south", "west")
@@ -110,15 +114,17 @@ def optimal_held_out_return(action_cap: int) -> int:
             position: max(
                 reward if terminal else reward + values[next_position]
                 for action in actions
-                for next_position, reward, terminal in (_transition(position, action),)
+                for next_position, reward, terminal in (
+                    _transition(carrier, position, action),
+                )
             )
             for position in values
         }
-    return values[(0, 4)]
+    return values[carrier.held_out_start]
 
 
-def _validate_roster(roster: list[int]) -> None:
-    if roster != canonical_roster():
+def _validate_roster(roster: list[int], expected: list[int]) -> None:
+    if roster != expected:
         raise ValueError("INCOMPLETE_OR_NONCANONICAL_ROSTER")
 
 
@@ -181,16 +187,19 @@ def _comparison_verdict(comparisons: list[dict[str, object]]) -> str:
     return "criterion-not-met-on-declared-grid"
 
 
-def run(roster: list[int]) -> dict[str, object]:
-    _validate_roster(roster)
-    optimal_return = optimal_held_out_return(runner.EPISODE_ACTION_CAP)
+def run_for_carrier(
+    carrier: runner.Carrier, roster: list[int], expected_roster: list[int]
+) -> dict[str, object]:
+    _validate_roster(roster, expected_roster)
+    optimal_return = optimal_held_out_return(carrier, runner.EPISODE_ACTION_CAP)
     policy_rows: list[dict[str, object]] = []
     for policy in POLICIES:
         seed_rows = [
             _seed_row(
-                runner.run(
-                    runner.ENVIRONMENT_FINGERPRINT,
-                    runner.EVALUATOR_CATALOGUE_FINGERPRINT,
+                runner.run_for_carrier(
+                    carrier,
+                    carrier.environment_fingerprint,
+                    carrier.catalogue_fingerprint,
                     policy,
                     seed,
                     runner.TRAINING_EPISODES,
@@ -241,11 +250,11 @@ def run(roster: list[int]) -> dict[str, object]:
             "actionCap": runner.EPISODE_ACTION_CAP,
             "episodes": runner.TRAINING_EPISODES,
             "seedCount": SEED_COUNT,
-            "seedFirst": str(SEED_FIRST),
-            "seedLast": str(SEED_LAST),
+            "seedFirst": str(expected_roster[0]),
+            "seedLast": str(expected_roster[-1]),
         },
-        "environmentFingerprint": runner.ENVIRONMENT_FINGERPRINT,
-        "evaluatorCatalogueFingerprint": runner.EVALUATOR_CATALOGUE_FINGERPRINT,
+        "environmentFingerprint": carrier.environment_fingerprint,
+        "evaluatorCatalogueFingerprint": carrier.catalogue_fingerprint,
         "optimalHeldOutReturnPpm": optimal_return,
         "policies": policy_rows,
         "bootstrap": {
@@ -261,9 +270,20 @@ def run(roster: list[int]) -> dict[str, object]:
     }
 
 
+def run(roster: list[int]) -> dict[str, object]:
+    return run_for_carrier(runner.V1_CARRIER, roster, canonical_roster())
+
+
 def run_verified(repository_root: Path, roster: list[int]) -> dict[str, object]:
     runner.verify_repository_carriers(repository_root)
     return run(roster)
+
+
+def run_reflected_verified(
+    repository_root: Path, roster: list[int]
+) -> dict[str, object]:
+    carrier = runner.load_verified_carrier(repository_root, "v1-reflect-x")
+    return run_for_carrier(carrier, roster, reflected_roster())
 
 
 def run_canonical(repository_root: Path) -> dict[str, object]:

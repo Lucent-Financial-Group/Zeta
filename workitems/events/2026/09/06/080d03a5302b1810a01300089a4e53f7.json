@@ -1,0 +1,14 @@
+{
+  "id": "080d03a5302b1810a01300089a4e53f7",
+  "at": "2026-09-06T02:57:12.547Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1TAC1B2087G0R001S14FJ9",
+    "type": "task",
+    "title": "Orleans comes up: replicas 0 to 1, the silo image exists",
+    "slug": "orleans-comes-up-replicas-0-to-1-the-silo-image-exists",
+    "priority": "P2",
+    "filename": "081M1TAC1B2087G0R001S14FJ9-orleans-comes-up-replicas-0-to-1-the-silo-image-exists.md"
+  }
+}

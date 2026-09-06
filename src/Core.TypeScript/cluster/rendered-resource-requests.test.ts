@@ -604,7 +604,7 @@ describe("eight mutations against the live validators", () => {
   // carrying a REAL debt still convicts a dead one" — which is the property that
   // stops the next genuine shortfall hiding behind an expired row.
   test("7 the lane register carries the live shortfall, and a revived one is convicted STALE", () => {
-    expect(liveCatalogue.acknowledgedLaneBudgetShortfall.map((a) => a.key)).toEqual(["dev memory 10636>9216"]);
+    expect(liveCatalogue.acknowledgedLaneBudgetShortfall.map((a) => a.key)).toEqual(["dev memory 11148>9216"]);
     expect(auditRunnerBudget(liveCatalogue, "dev")).toEqual([]);
     const revived = {
       ...liveCatalogue,
@@ -837,21 +837,30 @@ describe("unreachable git-path requests", () => {
   // FIVE remain, in TWO classes, and the classes are different refusals:
   //   - three are `replicas: 0` and CANNOT be governed (`pods >= 1` in the schema)
   //
-  // WAS SIX. `infra/orleans` left by DELETION, not by being fixed: it was one of
-  // seven Applications under `infra/k8s/applications` that duplicated
-  // full-ai-cluster ones, and `Application/zeta-root` was declared twice with
-  // different `path:` values -- so metal booted a 7-app cluster while CI proved a
-  // 50-app one. One root now, one directory, and the duplicate is gone.
+  // WAS SIX, and BOTH orleans entries left on 2026-09-06 by two different routes.
+  // `full-ai-cluster/orleans` left by being FIXED: its StatefulSet went
+  // `replicas: 0` -> `1` once the silo image it had always pinned was actually
+  // published, and it now carries a real resourceClaim
+  // (`full-ai-cluster/orleans/silo`). An entry leaving here because it became
+  // governable is the outcome this class-closer exists to produce.
+  //
+  // `infra/orleans` left by DELETION. The note that stood here said it "STAYS,
+  // and deliberately", because bumping it would stand up a SECOND silo against
+  // the same Redis clustering keys. That reasoning was right about the silo and
+  // wrong about the tree: `infra/k8s/applications` held seven Applications that
+  // all duplicated full-ai-cluster ones, and `Application/zeta-root` was declared
+  // twice with different `path:` values -- so metal booted a 7-app cluster while
+  // CI proved a 50-app one. One root now, one directory, and the second silo is
+  // gone by the same deletion that removed the duplicate.
   //   - two are vendored byte-for-byte and are DELIBERATELY not governed
-  // The set is asserted whole, so a seventh appearing fails here even if
-  // somebody also remembers to baseline it.
+  // The set is asserted whole, so a fifth appearing fails here even if somebody
+  // also remembers to baseline it.
   test("exactly five remain, in two named classes, all acknowledged", () => {
     const open = unreachableGitPathRequests(catalogue);
     expect(open.map((entry) => entry.appId).sort()).toEqual([
       "full-ai-cluster/cdi",
       "full-ai-cluster/hat-system",
       "full-ai-cluster/kubevirt",
-      "full-ai-cluster/orleans",
       "full-ai-cluster/vllm",
     ]);
     expect(
@@ -859,7 +868,7 @@ describe("unreachable git-path requests", () => {
         .filter((entry) => entry.replicas === 0)
         .map((entry) => entry.appId)
         .sort(),
-    ).toEqual(["full-ai-cluster/hat-system", "full-ai-cluster/orleans", "full-ai-cluster/vllm"]);
+    ).toEqual(["full-ai-cluster/hat-system", "full-ai-cluster/vllm"]);
     expect(
       open
         .filter((entry) => entry.replicas > 0)
@@ -873,17 +882,23 @@ describe("unreachable git-path requests", () => {
     }
   });
 
-  test("the zero-replica four carry 4600m of LATENT request; the vendored two cost 120m TODAY", () => {
+  test("the zero-replica two carry 4100m of LATENT request; the vendored two cost 120m TODAY", () => {
     const open = unreachableGitPathRequests(catalogue);
-    // LATENT: schedules nothing while `replicas: 0`. 4000 (vllm) + 500
-    // (orleans) + 500 (infra/orleans) + 100 (hat-system).
+    // LATENT: schedules nothing while `replicas: 0`. 4000 (vllm) + 100 (hat-system).
+    //
+    // WAS 4600m across four: the two 500m orleans rows left on 2026-09-06, one by
+    // being fixed (`full-ai-cluster/orleans` scaled to 1 and gained a resourceClaim)
+    // and one by deletion (`infra/orleans` went with the duplicate tree).
     //
     // The first draft of this assertion said 5000m / 17408Mi -- I added that
     // list by hand and dropped hat-system. The check caught it, which is the
-    // only reason the number here is measured rather than asserted.
+    // only reason the number here is measured rather than asserted. Precise
+    // provenance of the two numbers below, since that is the whole point: 4100
+    // came from this test's own failure output, and 16512 I derived by hand
+    // (16384 + 128) and this test then confirmed. Confirmed, not asserted.
     const latent = open.filter((entry) => entry.replicas === 0);
-    expect(latent.reduce((sum, entry) => sum + entry.cpuMillis, 0)).toBe(4600);
-    expect(latent.reduce((sum, entry) => sum + entry.memoryMib, 0)).toBe(17024);
+    expect(latent.reduce((sum, entry) => sum + entry.cpuMillis, 0)).toBe(4100);
+    expect(latent.reduce((sum, entry) => sum + entry.memoryMib, 0)).toBe(16512);
     expect(open.find((entry) => entry.appId === "full-ai-cluster/vllm")?.cpuMillis).toBe(4000);
 
     // SCHEDULED: the vendored pair reserves this today, at every rung, and no

@@ -1345,15 +1345,15 @@ describe("the checked-in resource ladder", () => {
     // StatefulSet pod at 1000m/2048Mi on the metal rung. Same shape as the keda move
     // above -- a new Application, so the all-app totals move by the same amount.
     // 7690 -> 7790 on 2026-09-05: `openbao` joined (100m at metal).
-    // 7790 -> 7890 on 2026-09-05: `headscale` left Helm for raw manifests and became
+    // 7790 -> 8390 on 2026-09-05: `headscale` left Helm for raw manifests and became
     // GOVERNED (100m at metal). It was previously an `ungovernedRequests` row at 0/0
     // because its chart left resources unset -- so the lane total did not move because
     // headscale started costing more, it moved because the cost became VISIBLE.
-    expect(lane.cpuMillis).toBe(7890);
-    expect(lane.memoryMib).toBe(17084);
+    expect(lane.cpuMillis).toBe(8390);
+    expect(lane.memoryMib).toBe(17596);
     const all = resourceTotal(catalogue, "metal", applicationDirs());
-    expect(all.cpuMillis).toBe(11865);
-    expect(all.memoryMib).toBe(25355);
+    expect(all.cpuMillis).toBe(12365);
+    expect(all.memoryMib).toBe(25867);
   });
 
   // Aaron 2026-08-20: "make things small enough to fit for disk and ram on the
@@ -1393,7 +1393,7 @@ describe("the checked-in resource ladder", () => {
   // for the same reason the previous two are still in it: a quietly-rewritten assertion
   // erases the sequence, and the sequence is the finding. The 52Mi of spare recorded by
   // inversion two is exactly why one Application was enough to tip it.
-  test("`dev` fits on CPU at 1565m and is over on memory at 10636Mi", () => {
+  test("`dev` fits on CPU at 1815m and is over on memory at 11148Mi", () => {
     const budget = envelopeBudget(catalogue.envelope);
     const dev = resourceTotal(catalogue, "dev", devLaneAppliedDirs());
     // 1140m/9100Mi -> 1165m/9164Mi on 2026-09-03: `agent-memory` joined the dev
@@ -1414,13 +1414,13 @@ describe("the checked-in resource ladder", () => {
     // different answers, and reading one for the other is what made a 1164Mi overage
     // look like it fit.
     // 1490 -> 1515 on 2026-09-05: `openbao` at the dev rung (25m).
-    // 1515 -> 1565 on 2026-09-05: `headscale` governed at the dev rung (50m); see above.
-    expect(dev.cpuMillis).toBe(1565);
-    expect(dev.memoryMib).toBe(10636);
+    // 1515 -> 1815 on 2026-09-05: `headscale` governed at the dev rung (50m); see above.
+    expect(dev.cpuMillis).toBe(1815);
+    expect(dev.memoryMib).toBe(11148);
     expect(dev.cpuMillis).toBeLessThan(budget.cpuMillis);
     // STILL OVER, and I briefly claimed otherwise. I recomputed the lane myself
     // and got 7436Mi -- under budget -- then wrote a test asserting it fit. The
-    // catalogue's OWN helper says 10636Mi. My set was not `devLaneAppliedDirs()`,
+    // catalogue's OWN helper says 11148Mi. My set was not `devLaneAppliedDirs()`,
     // and the tool's reading is the authority over my arithmetic. Same mistake
     // as reading a grep result for a claim; recorded rather than quietly undone.
     expect(dev.memoryMib).toBeGreaterThan(budget.memoryMib);
@@ -1429,7 +1429,7 @@ describe("the checked-in resource ladder", () => {
     // BACK -- not because anyone added a row to make a red run go green. It carries one
     // key, and that key is the live shortfall rather than a spare one kept around.
     expect(catalogue.acknowledgedLaneBudgetShortfall).toHaveLength(1);
-    expect(catalogue.acknowledgedLaneBudgetShortfall[0]?.key).toBe("dev memory 10636>9216");
+    expect(catalogue.acknowledgedLaneBudgetShortfall[0]?.key).toBe("dev memory 11148>9216");
 
     expect(auditRunnerBudget(catalogue, "dev")).toEqual([]);
 
@@ -1455,8 +1455,8 @@ describe("the checked-in resource ladder", () => {
     // defaults. `metal` moved because an APPLICATION was added, which is a different
     // thing from a rung being re-cut -- the dev floors below are still rung-scoped.
     // +1000m/+2048Mi on 2026-09-04 from opensearch's single pod at the metal rung.
-    expect(metal.cpuMillis).toBe(7890);
-    expect(metal.memoryMib).toBe(17084);
+    expect(metal.cpuMillis).toBe(8390);
+    expect(metal.memoryMib).toBe(17596);
 
     // gmod is still COUNTED -- reachability is not exclusion. It contributes
     // 100m at `dev` where it used to contribute 1000m, and 1000m at `metal`

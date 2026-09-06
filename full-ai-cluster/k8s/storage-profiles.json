@@ -476,8 +476,8 @@
   ],
   "acknowledgedLaneBudgetShortfall": [
     {
-      "key": "dev memory 10636>9216",
-      "reason": "THREE Applications now sit on this shortfall. KEDA first put the dev lane 140Mi over a 9216Mi budget (081M1N0VTN8087G0R0008VE34B); OPENSEARCH took it to 10380Mi (081M1Q1XHVV087G0R0034X846M); OPENBAO -- the Vault replacement, 128Mi at dev -- takes it to 10508Mi, over by 1292Mi. REMOVING VAULT DID NOT PAY IT, and I briefly recorded that it had. Vault's requests were UNGOVERNED (no resourceClaim row), so deleting the Application removed nothing from a total built out of governed rows. I recomputed the lane by hand, got 7436Mi, and wrote both a register-empty and a test asserting the lane fit. The catalogue's own `devLaneAppliedDirs()` says 10508Mi. The tool's reading is the authority over my arithmetic, and the error is written here because 'the debt was paid' is exactly the claim a stale acknowledgement makes. THE BUDGET IS NOT WIDENED. OpenBao's dev rung is 25m/128Mi -- 128Mi rather than the 64Mi floor most rows take, because it holds its unsealed keyring in memory and is designed not to swap it; an under-request makes the one pod holding every decryptable secret the first eviction candidate. LIFTS WHEN: the dev lane's memory is re-budgeted against a measured runner rather than the 9216Mi floor, or the ungoverned rows are governed so the total reflects what actually schedules. Moved 10508->10636 on 2026-09-05: headscale left Helm for raw manifests and became GOVERNED at 128Mi, having been an ungovernedRequests row at 0/0 while its chart left resources unset. The lane did not get hungrier; the appetite became visible.",
+      "key": "dev memory 11148>9216",
+      "reason": "THREE Applications now sit on this shortfall. KEDA first put the dev lane 140Mi over a 9216Mi budget (081M1N0VTN8087G0R0008VE34B); OPENSEARCH took it to 10380Mi (081M1Q1XHVV087G0R0034X846M); OPENBAO -- the Vault replacement, 128Mi at dev -- takes it to 10508Mi, over by 1292Mi. REMOVING VAULT DID NOT PAY IT, and I briefly recorded that it had. Vault's requests were UNGOVERNED (no resourceClaim row), so deleting the Application removed nothing from a total built out of governed rows. I recomputed the lane by hand, got 7436Mi, and wrote both a register-empty and a test asserting the lane fit. The catalogue's own `devLaneAppliedDirs()` says 10508Mi. The tool's reading is the authority over my arithmetic, and the error is written here because 'the debt was paid' is exactly the claim a stale acknowledgement makes. THE BUDGET IS NOT WIDENED. OpenBao's dev rung is 25m/128Mi -- 128Mi rather than the 64Mi floor most rows take, because it holds its unsealed keyring in memory and is designed not to swap it; an under-request makes the one pod holding every decryptable secret the first eviction candidate. LIFTS WHEN: the dev lane's memory is re-budgeted against a measured runner rather than the 9216Mi floor, or the ungoverned rows are governed so the total reflects what actually schedules. Moved 10508->11148 on 2026-09-05: headscale left Helm for raw manifests and became GOVERNED at 128Mi, having been an ungovernedRequests row at 0/0 while its chart left resources unset. The lane did not get hungrier; the appetite became visible.",
       "liftsWhen": "LIFTS WHEN: the dev lane memory budget is re-measured against a real runner rather than the 9216Mi floor, or the ungoverned request rows are governed so the total reflects what actually schedules."
     }
   ],
@@ -1219,6 +1219,25 @@
         "dev": 128,
         "metal": 128
       }
+    },
+    {
+      "id": "full-ai-cluster/orleans/silo",
+      "dir": "orleans",
+      "path": "full-ai-cluster/k8s/applications/orleans/statefulset.yaml",
+      "docIndex": 0,
+      "requestsField": "spec.template.spec.containers[0].resources.requests",
+      "pods": 1,
+      "metalSource": "manifest",
+      "evidence": "IN-REPO MANIFEST WE OWN. Became governable on 2026-09-06 when `replicas` went 0 -> 1: at zero the coordinate was carried as an `unreachable-git-path-request` baseline with x0 replicas, which priced nothing because nothing ran. The literal on container `silo` is 500m / 512Mi and `metal` reproduces it exactly, so `--resource-profile metal --verify` stays clean.",
+      "consequence": "A single Orleans silo forming cluster membership over Redis. CPU is compressible, so the dev rung's 250m throttles startup rather than failing it. MEMORY IS UNCHANGED ACROSS RUNGS and that is deliberate: this is a .NET host plus the Orleans runtime, 512Mi is already modest for it, and memory is the incompressible axis -- an under-request makes this pod the first eviction candidate under node pressure, and evicting the silo does not slow the cluster down, it dissolves the membership the cluster IS.",
+      "cpuMillis": {
+        "dev": 250,
+        "metal": 500
+      },
+      "memoryMib": {
+        "dev": 512,
+        "metal": 512
+      }
     }
   ],
   "ungovernedRequests": [
@@ -1359,12 +1378,6 @@
       "cpuMillis": 0,
       "memoryMib": 0,
       "evidence": "otwld/ollama 1.6.0 rendered 2026-08-21: resources unset, and replicaCount is 0. Glob-excluded from the dev lane."
-    },
-    {
-      "dir": "orleans",
-      "cpuMillis": 0,
-      "memoryMib": 0,
-      "evidence": "In-repo manifests declare no requests. Glob-excluded from the dev lane."
     },
     {
       "dir": "oz",

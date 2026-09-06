@@ -71,6 +71,45 @@ jobs:
     name: byte-lock (${{ matrix.os }})
     timeout-minutes: 25
     runs-on: ${{ matrix.os }}
+    # NON-BLOCKING ON macOS AND WINDOWS, BLOCKING ON LINUX (Aaron 2026-09-06:
+    # "windows and mac can always stay non blocking but we dont want to let it
+    # rot"). The two halves of that sentence need different mechanisms, and the
+    # split below is what keeps the second half true:
+    #
+    #   * A LEG's own health is ADVISORY on macOS/Windows. Those platforms carry a
+    #     measured failure rate the repo does not currently keep green -- the drift
+    #     reporter puts `build-and-test (windows-2025)` at 30/59 executions failed,
+    #     50.8% -- so blocking on them would import that flakiness into this gate.
+    #
+    #   * A CROSS-PROCESSOR DISAGREEMENT stays BLOCKING for every leg, including
+    #     these. `cross-processor` has no continue-on-error and is not conditional.
+    #
+    # That line is the whole design: a MISSING TOOLCHAIN is environmental and must
+    # not block; a substrate computing DIFFERENT BYTES on two machines is the fault
+    # class this workflow exists to catch, and it blocks wherever it appears.
+    #
+    # ANTI-ROT, because non-blocking is exactly how a leg rots. Three things keep
+    # these honest without blocking: the floors below are MEASURED (a degraded leg
+    # goes red and is visible, rather than passing at a floor of 1); the comparator
+    # names every leg it could not read; and `--expect-legs` makes a leg that
+    # VANISHES a loud warning rather than a silent shrinkage of the comparison set.
+    continue-on-error: ${{ matrix.blocking == false }}
+    # BASH ON EVERY LEG, INCLUDING WINDOWS. Every `run:` step in this job was
+    # written for a POSIX shell -- `cmd || echo "ABSENT"`, `command -v`, `$(...)`,
+    # `>>` redirects -- and GitHub defaults Windows to `pwsh`, where a missing
+    # command raises CommandNotFoundException that `||` does not catch.
+    #
+    # Measured on run 34003187805: checkout, choco, Go setup and the Go WASM build
+    # all SUCCEEDED on both Windows legs, and the job then died in `Versions`, whose
+    # entire body is `foo --version || echo "foo: ABSENT"`. The substrate work was
+    # never reached, and the uploaded reports were EMPTY FILES.
+    #
+    # Windows runners ship Git Bash, so `shell: bash` on every `run:` step fixes
+    # them all. A JOB-LEVEL `defaults:` would do this in one place, but the
+    # unexecuted-test-files hygiene check refuses job defaults (they shift the
+    # filter base it parses `bun test` invocations against), so the shell is
+    # pinned PER STEP instead. The choco step keeps an explicit `shell: pwsh`
+    # because it is genuinely PowerShell.
     strategy:
       # fail-fast MUST stay false. The cross-processor job below compares legs
       # against each other, so cancelling siblings when one fails would destroy
@@ -104,9 +143,11 @@ jobs:
           - os: ubuntu-24.04
             min_substrates: "9"
             required_substrates: "WAT,LLVM/C,Emscripten,Rust,AssemblyScript,Zig,JS (V8),Lua 5.4,Go"
+            blocking: true
           - os: ubuntu-24.04-arm
             min_substrates: "9"
             required_substrates: "WAT,LLVM/C,Emscripten,Rust,AssemblyScript,Zig,JS (V8),Lua 5.4,Go"
+            blocking: true
           # macOS reached 9 on run 33992105626 and this floor rose to match, in the
           # same session that set it to 8 -- which is the discipline working rather
           # than a correction. The 8 was the value OBSERVED at the time: `lua5.4` was
@@ -121,8 +162,59 @@ jobs:
           - os: macos-26
             min_substrates: "9"
             required_substrates: "WAT,LLVM/C,Emscripten,Rust,AssemblyScript,Zig,JS (V8),Lua 5.4,Go"
+            blocking: false
+          # WINDOWS, ADDED UNCALIBRATED 2026-09-05 -- the same discipline the arm64
+          # and macOS legs went through, not a shortcut around it. Nobody has
+          # measured which substrates a Windows runner executes: `wabt` and `lua5.4`
+          # come from apt and brew on the other legs, and whether Chocolatey supplies
+          # them under the names the substrates shell out to is exactly the unknown.
+          #
+          # Floor 1 and no required list, stated rather than hidden. A floor of 1
+          # still refuses a leg that ran NOTHING, which keeps an empty report from
+          # reading as a healthy one. RAISE BOTH once the first run reports -- the
+          # arm64 and macOS legs took 9 and 8-then-9 by exactly this route, and a
+          # floor left at 1 would be the check-that-cannot-fail this matrix exists
+          # to defeat.
+          #
+          # These are the two Windows runners already in `gate.yml`'s build-and-test
+          # matrix, so the runners are known to exist; what is unknown is the
+          # toolchain. `windows-11-arm` is the more interesting of the two for THIS
+          # workflow's purpose: it is a fourth distinct processor, where
+          # `windows-2025` shares x86_64 with `ubuntu-24.04` and adds an OS rather
+          # than an architecture.
+          - os: windows-2025
+            min_substrates: "8"
+            required_substrates: "WAT,LLVM/C,Emscripten,Rust,AssemblyScript,Zig,JS (V8),Go"
+            blocking: false
+          - os: windows-11-arm
+            min_substrates: "8"
+            required_substrates: "WAT,LLVM/C,Emscripten,Rust,AssemblyScript,Zig,JS (V8),Go"
+            blocking: false
 
     steps:
+      # MUST RUN BEFORE `checkout`, and it is the reason the Windows legs failed on
+      # their first dispatch (run 34003022419). Both died in CHECKOUT, not in any
+      # toolchain step:
+      #
+      #   error: unable to create file docs/recovered-orphan-branches-2026-05/misc/
+      #   archive/pr4990-.../working-tree/docs/backlog/P2/B-0735-...md:
+      #   Filename too long
+      #
+      # That is Windows' MAX_PATH (260), and it is a fact about THIS REPOSITORY
+      # rather than about this job: 28 tracked paths exceed 260 characters on their
+      # own and 42 exceed it once a runner's workspace prefix is added. They are the
+      # recovered-orphan-branch archives, which nest a whole working tree under a
+      # long directory name and then a long filename inside it.
+      #
+      # `core.longpaths` is the standard fix and is set globally so it applies to
+      # the checkout action's own git invocation. It is NOT a workaround for a
+      # defect in this workflow -- without it the repository simply cannot be
+      # checked out on Windows at all, by anyone.
+      - name: Enable Windows long paths (before checkout — see 34003022419)
+        if: startsWith(matrix.os, 'windows')
+        shell: bash
+        run: git config --global core.longpaths true
+
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
@@ -176,6 +268,41 @@ jobs:
       # REQUIREMENT, not a preference: `wasm_exec.js` is the Go runtime's own JS bridge and
       # is committed alongside the source, so it must come from a compatible Go. Bump both
       # together or the harness fails at boot.
+      - name: Install substrate toolchains (choco)
+        if: startsWith(matrix.os, 'windows')
+        # UNMEASURED on this OS -- this step is the experiment. `|| true` everywhere
+        # is deliberate and is NOT a swallowed error: a toolchain that fails to
+        # install must surface as TOOLING-ABSENT in the report, which is a measured
+        # fact about this runner and exactly what the cross-processor comparison
+        # needs, rather than as a dead job with no report to compare against.
+        #
+        # The substrates shell out to `wat2wasm` and `lua5.4` BY NAME. Chocolatey's
+        # `lua` package installs `lua.exe`, so a shim under the expected name is
+        # created when possible -- the same problem macOS had, where brew's `lua`
+        # formula gave 5.5 as `lua` and the leg reported Lua 5.4 absent until
+        # `lua@5.4` was installed specifically.
+        shell: pwsh
+        run: |
+          choco install -y wabt --no-progress 2>&1 | Out-Null
+          choco install -y lua --no-progress 2>&1 | Out-Null
+          $ErrorActionPreference = "Continue"
+          if (Get-Command wat2wasm -ErrorAction SilentlyContinue) {
+            Write-Host "wat2wasm: present"
+          } else {
+            Write-Host "wat2wasm: ABSENT on this runner"
+          }
+          $lua = Get-Command lua -ErrorAction SilentlyContinue
+          if ($lua -and -not (Get-Command lua5.4 -ErrorAction SilentlyContinue)) {
+            # The runner expects `lua5.4`; supply it as a shim next to the real one.
+            $dir = Split-Path $lua.Source
+            Copy-Item $lua.Source (Join-Path $dir "lua5.4.exe") -ErrorAction SilentlyContinue
+          }
+          if (Get-Command lua5.4 -ErrorAction SilentlyContinue) {
+            Write-Host "lua5.4: present"
+          } else {
+            Write-Host "lua5.4: ABSENT on this runner"
+          }
+
       - name: Setup Go (pinned to .mise.toml — must match the committed wasm_exec.js)
         uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
         with:
@@ -187,9 +314,11 @@ jobs:
         # `build-substrates.mjs` checks the exit status AND the emitted file's WebAssembly
         # header, so a failed build cannot leave a missing or non-module artefact behind
         # while reporting success.
+        shell: bash
         run: node build-substrates.mjs --only=Go
 
       - name: Versions (recorded so a drift can be attributed to a toolchain change)
+        shell: bash
         run: |
           node --version
           go version || echo "go: ABSENT"
@@ -227,6 +356,7 @@ jobs:
           # `dla-canonical-go.wasm`, which is not committed and is not built here, so Go has
           # never been exercised in CI. Add it to this list in the same change that builds it.
           BYTELOCK_REQUIRED_SUBSTRATES: ${{ matrix.required_substrates }}
+        shell: bash
         run: node run-bytelock-ci.mjs
 
       # THE NEGATIVE CONTROLS HAD NEVER RUN EITHER. `test-fault-injection.mjs` is the suite
@@ -246,6 +376,7 @@ jobs:
       # substrate returns instead, and each asserts the blast radius is exactly one substrate.
       - name: Run the fault-injection negative controls
         working-directory: src/wasm-dla/bytelock
+        shell: bash
         run: node test-fault-injection.mjs
 
       - name: Emit the machine-readable report
@@ -256,6 +387,7 @@ jobs:
           # instrument the job was judged on. `|| true` keeps the drift record uploadable
           # even when the run step failed — which is precisely when it is worth reading.
           BYTELOCK_MIN_SUBSTRATES: ${{ matrix.min_substrates }}
+        shell: bash
         run: node run-bytelock-ci.mjs --json > bytelock-report.json || true
 
       - name: Upload the report (the drift record)
@@ -313,7 +445,15 @@ jobs:
         run: node compare-across-legs.mjs --self-test
 
       - name: Compare the legs against each other
+        # `--expect-legs` is the anti-rot half. The comparison itself needs only two
+        # legs, so three healthy Linux legs would keep this green forever while
+        # macOS and Windows quietly stopped reporting -- the comparison set shrinking
+        # with nothing saying so. Naming the expected set makes a vanished leg a LOUD
+        # warning without making it a blocker, which is the drift tier this repo
+        # already uses for exactly this shape.
         # Exit 1 = the machines disagree. Exit 2 = REFUSED, meaning it could not
         # compare (fewer than two readable legs, or no shared substrate). Both are
         # failures; only the first is a divergence, and the message says which.
-        run: node src/wasm-dla/bytelock/compare-across-legs.mjs legs
+        run: |
+          node src/wasm-dla/bytelock/compare-across-legs.mjs legs \
+            --expect-legs=ubuntu-24.04,ubuntu-24.04-arm,macos-26,windows-2025,windows-11-arm

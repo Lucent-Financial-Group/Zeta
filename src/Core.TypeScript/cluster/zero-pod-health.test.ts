@@ -47,9 +47,18 @@ describe("findZeroPodApplications — the live tree", () => {
    * and the count is asserted so that bringing one up to >=1 replica MOVES this
    * test rather than silently improving a number nobody reads.
    */
-  test("the four known zero-pod Applications are found", () => {
+  test("the three remaining zero-pod Applications are found", () => {
+    // WAS FOUR. `orleans` left this set on 2026-09-06 when its StatefulSet went
+    // `replicas: 0` -> `1`, which is the outcome this checker exists to produce
+    // rather than a change that weakens it. The zero was correct while the image
+    // was a placeholder and stopped being correct when the image shipped -- see
+    // the corrected comment in orleans/configmap.yaml.
+    //
+    // The assertion is an EXACT SET, not a count, so orleans reappearing here would
+    // fail just as loudly as a fourth app appearing: a regression to `replicas: 0`
+    // is caught by name.
     const dirs = findZeroPodApplications().map((f) => f.dir).sort();
-    expect(dirs).toEqual(["hat-system", "ollama", "orleans", "vllm"]);
+    expect(dirs).toEqual(["hat-system", "ollama", "vllm"]);
   });
 
   test("it reaches BOTH the Application and its sibling workload YAML", () => {
@@ -57,10 +66,15 @@ describe("findZeroPodApplications — the live tree", () => {
     // ollama declares its zero in the Application's valuesObject...
     const ollama = found.find((f) => f.dir === "ollama");
     expect(ollama?.declarations.some((d) => d.startsWith("Application.yaml:"))).toBe(true);
-    // ...while orleans declares it in a git-path StatefulSet the Application applies.
-    // A checker that read only Application.yaml would miss three of the four.
-    const orleans = found.find((f) => f.dir === "orleans");
-    expect(orleans?.declarations.some((d) => d.startsWith("statefulset.yaml:"))).toBe(true);
+    // ...while vllm declares it in a git-path workload the Application applies.
+    // A checker that read only Application.yaml would miss it.
+    //
+    // This half used to be demonstrated by `orleans`, which has since been bumped to
+    // one replica. Repointed to another app in the same class rather than dropped,
+    // because the PROPERTY under test -- that the walk reaches sibling YAML and not
+    // just the Application -- is exactly what a single-file reader would fail.
+    const vllm = found.find((f) => f.dir === "vllm");
+    expect(vllm?.declarations.some((d) => !d.startsWith("Application.yaml:"))).toBe(true);
   });
 
   test("a tree with a running replica count yields NOTHING — the check can pass", () => {

@@ -1,0 +1,14 @@
+{
+  "id": "080d03a5bf5e7810a01300085f59bf81",
+  "at": "2026-09-06T03:16:45.647Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1TBFTYF087G0R001AKT57E",
+    "type": "task",
+    "title": "Persist ObjectSets in known.pins so reopen hash-verifies jumprope internals",
+    "slug": "persist-objectsets-in-known-pins-so-reopen-hash-verifies-jum",
+    "priority": "P2",
+    "filename": "081M1TBFTYF087G0R001AKT57E-persist-objectsets-in-known-pins-so-reopen-hash-verifies-jum.md"
+  }
+}
