@@ -39,7 +39,7 @@
     "",
     "  minimal    200 GiB declared  ->  ~267 GiB Longhorn disk  ->  a ~300 GiB box",
     "  standard   595 GiB declared  ->  ~793 GiB Longhorn disk  ->  a ~850 GiB box",
-    "  measured   967 GiB declared  ->  ~1289 GiB Longhorn disk ->  see below",
+    "  measured   943 GiB declared  ->  ~1289 GiB Longhorn disk ->  see below",
     "  large     1599 GiB declared  ->  ~2132 GiB Longhorn disk ->  a ~2.2 TiB box",
     "",
     "`measured` is the rung this deployment runs, and the row above is the",
@@ -343,9 +343,7 @@
     "Application forces a human to look before it can hide in here.",
     "",
     "AND THE SECOND TREE IS STILL UNCOVERED, named here because it is the same class:",
-    "infra/k8s/applications is a separate App-of-Apps root (`zeta-root`, auto-applied by",
     "K3S via services.k3s.manifests). Its seven Applications render 4035m / 8837Mi",
-    "(infra/gitlab 2525m, infra/cockroachdb 1500m, infra/local-path-provisioner 10m),",
     "and no row here can name them: every `dir` key is relative to",
     "full-ai-cluster/k8s/applications. rendered-resource-requests.ts reports all seven as",
     "`uncovered-application` at both rungs and they are baselined with that reason and a",
@@ -1518,7 +1516,7 @@
     "Both were recorded in rendered-storage-claims.baseline.json when the checker",
     "found them; all three acknowledgements are now RETIRED rather than carried, because",
     "a baseline entry that outlives its defect is itself a finding. The declared",
-    "\"measured\" total is 967 GiB; 861 GiB of longhorn renders as declared, 106 GiB",
+    "\"measured\" total is 943 GiB; 861 GiB of longhorn renders as declared, 106 GiB",
     "sits behind apps that could not be rendered at all, and 0 GiB of the declaration",
     "fails to render."
   ],
@@ -2071,33 +2069,6 @@
         "standard": 1,
         "measured": 1,
         "large": 1
-      }
-    },
-    {
-      "id": "infra/cockroachdb/data",
-      "path": "infra/k8s/applications/cockroachdb/Application.yaml",
-      "docIndex": 0,
-      "storageClassField": "spec.source.helm.valuesObject.storage.persistentVolume.storageClass",
-      "sizeField": "spec.source.helm.valuesObject.storage.persistentVolume.size",
-      "podsField": "spec.source.helm.valuesObject.statefulset.replicas",
-      "podsSource": "manifest",
-      "podsEvidence": "",
-      "scheduledAtBringUp": true,
-      "bringUpNote": "automated sync \u2014 but in the OTHER app-of-apps tree. argocd/zeta-root is declared twice (see acknowledgedRootAppDuplicates), and only one tree can own that identity in a cluster, so in practice at most one of this row and full-ai-cluster/cockroachdb/data is live. Both are counted anyway: a bound that assumes the favourable tree is a bound that cannot convict.",
-      "consequence": "minimal drops this Raft group from 3 to 1 for the same reason as the full-ai-cluster row, and it is the same HA statement: no quorum, no replication, no survivable failure.",
-      "renderedApp": "infra/cockroachdb",
-      "renderedPvcPattern": "^datadir/cockroachdb$",
-      "sizes": {
-        "minimal": "8Gi",
-        "standard": "8Gi",
-        "measured": "8Gi",
-        "large": "8Gi"
-      },
-      "pods": {
-        "minimal": 1,
-        "standard": 3,
-        "measured": 3,
-        "large": 3
       }
     }
   ]

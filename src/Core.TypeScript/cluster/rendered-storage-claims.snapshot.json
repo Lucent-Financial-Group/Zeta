@@ -1,5 +1,5 @@
 {
-  "measuredOn": "2026-09-05",
+  "measuredOn": "2026-09-06",
   "clusterDefaultStorageClass": "zeta-local-path",
   "rendered": [
     {
@@ -381,58 +381,8 @@
       "size": "32Gi",
       "gibibytes": 32,
       "count": 1
-    },
-    {
-      "appId": "infra/cockroachdb",
-      "origin": "volumeClaimTemplate",
-      "name": "datadir/cockroachdb",
-      "workload": "StatefulSet/cockroachdb",
-      "storageClassName": "longhorn",
-      "size": "8Gi",
-      "gibibytes": 8,
-      "count": 3
-    },
-    {
-      "appId": "infra/gitlab",
-      "origin": "volumeClaimTemplate",
-      "name": "data/gitlab-postgresql",
-      "workload": "StatefulSet/gitlab-postgresql",
-      "storageClassName": "",
-      "size": "8Gi",
-      "gibibytes": 8,
-      "count": 1
-    },
-    {
-      "appId": "infra/gitlab",
-      "origin": "PersistentVolumeClaim",
-      "name": "gitlab-minio",
-      "workload": "",
-      "storageClassName": "",
-      "size": "10Gi",
-      "gibibytes": 10,
-      "count": 1
-    },
-    {
-      "appId": "infra/gitlab",
-      "origin": "volumeClaimTemplate",
-      "name": "redis-data/gitlab-redis-master",
-      "workload": "StatefulSet/gitlab-redis-master",
-      "storageClassName": "",
-      "size": "8Gi",
-      "gibibytes": 8,
-      "count": 1
-    },
-    {
-      "appId": "infra/gitlab",
-      "origin": "volumeClaimTemplate",
-      "name": "repo-data/gitlab-gitaly",
-      "workload": "StatefulSet/gitlab-gitaly",
-      "storageClassName": "",
-      "size": "50Gi",
-      "gibibytes": 50,
-      "count": 1
     }
   ],
   "unrenderable": [],
-  "appsDiscovered": 56
+  "appsDiscovered": 49
 }

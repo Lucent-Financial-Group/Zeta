@@ -1,0 +1,14 @@
+{
+  "id": "080d03a7c1018010a013000883f79536",
+  "at": "2026-09-06T04:26:53.360Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1TFG81G087G0R001XPQGQZ",
+    "type": "bug",
+    "title": "orleans is Synced/Progressing on the live lane after replicas 0 to 1",
+    "slug": "orleans-is-synced-progressing-on-the-live-lane-after-replica",
+    "priority": "P2",
+    "filename": "081M1TFG81G087G0R001XPQGQZ-orleans-is-synced-progressing-on-the-live-lane-after-replica.md"
+  }
+}

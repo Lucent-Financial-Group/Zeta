@@ -410,7 +410,11 @@ describe("081KSXN940008QG0R000SCP2H1 argocd-health-test manifest parsing", () =>
     const included = applications.filter((app) => !app.excludedFromDev);
     expect(included.length).toBeGreaterThan(10);
     expect(included.some((app) => app.name === "trust-manager")).toBe(true);
-    expect(included.some((app) => app.name === "forgejo")).toBe(false);
+    // FLIPPED 2026-09-06 with the standby posture it encoded. `gitlab` on line 408 is
+    // the control that keeps this pair meaningful: one Git host is still excluded, so
+    // a `forgejo` that is now included proves the mechanism discriminates rather than
+    // that it stopped excluding anything.
+    expect(included.some((app) => app.name === "forgejo")).toBe(true);
   });
 
   /**
@@ -937,7 +941,10 @@ describe("081KSXN940008QG0R000SCP2H1 argocd-health-test planning", () => {
     expect(plan.checks.join("\n")).toContain("Synced and Healthy");
     const included = plan.expectedApplications.filter((app) => !app.excludedFromDev).map((app) => app.name);
     expect(included).not.toContain("gitlab");
-    expect(included).not.toContain("forgejo");
+    // `forgejo` IS included now -- both Git hosts run, and only the big one is deferred.
+    // Asserted positively rather than deleted: a dropped assertion would leave the
+    // included/excluded split for this pair unpinned in either direction.
+    expect(included).toContain("forgejo");
     // `agent-memory` FLIPPED SIDES 2026-09-03 -- pinned as NOT included while the
     // glob held it, pinned as INCLUDED now that the glob does not. This is the
     // line that turns its old LIFTS WHEN into a proof target the included lane

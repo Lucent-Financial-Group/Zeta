@@ -143,11 +143,6 @@
       "migrateTo": "empty the array — the collision is gone once one tree is."
     },
     {
-      "path": "full-ai-cluster/k8s/storage-profiles.json",
-      "disposition": "blocking",
-      "note": "One claim row (id infra/cockroachdb/data) names infra/k8s/applications/cockroachdb/Application.yaml. It is DELIBERATE, not stray coupling: argocd/zeta-root is declared in both trees, only one can own that identity in a cluster, and the catalogue counts BOTH cockroachdb rows because a bound that assumes the favourable tree is a bound that cannot convict. Classified `blocking` rather than `derived` because it is CHECKED, not assumed: storage-profiles.ts readField() degrades gracefully on a missing path (:286 returns found:false), but the --apply path THROWS at :468 (\"catalogue references a manifest that does not exist\"). So deleting infra/k8s breaks `storage-profiles --apply` until this row goes with it. MIGRATION: delete this one claim row in the same commit that deletes infra/k8s; the full-ai-cluster/cockroachdb/data row already carries the surviving tree's accounting and needs no change."
-    },
-    {
       "path": "src/Core.TypeScript/ace/deps.ts",
       "disposition": "blocking",
       "note": "generateArgoCD() emits Applications whose spec.source.path is `infra/k8s/applications/${chart}` — a path in the tree ArgoCD will prune. It ships in the ace CLI. deps.test.ts does not assert the path, so after the deletion this fails SILENTLY, in generated output, at deploy time.",
@@ -166,22 +161,10 @@
       "migrateTo": "re-point the comment when the validator moves."
     },
     {
-      "path": "src/Core.TypeScript/cluster/inert-valuesobject-keys.schema.json",
-      "disposition": "derived",
-      "note": "MACHINE-WRITTEN measurement (`inert-valuesobject-keys.ts --write-snapshot`). It names infra/k8s because it measures BOTH declarations of the cluster -- it reuses `discoverApplications` from rendered-storage-claims.ts, whose APPLICATION_ROOTS is already rostered above for the same reason. The literal path appears only inside `unavailable.detail` for the two git-path Applications there (`infra/orleans`), where the checker reports WHICH directory carries no Chart.yaml; naming it is the checkable half of that verdict. Nothing BREAKS when the stale tree is deleted -- the entries simply stop being produced -- but the checked-in snapshot would keep naming apps that no longer exist, and `--check-snapshot` would report them as GONE, which is drift rather than a crash.",
-      "migrateTo": "re-run `bun src/Core.TypeScript/cluster/inert-valuesobject-keys.ts --write-snapshot` in the deletion commit; the infra entries leave the snapshot in the same pass that drops `infra/k8s/applications` from APPLICATION_ROOTS. No hand-editing: this file is owned by the generator."
-    },
-    {
       "path": "src/Core.TypeScript/cluster/manual-sync-policy.ts",
       "disposition": "prose",
       "note": "Two DOC-COMMENT references only, no import and no path construction: it points at infra/k8s/tests/validate-applications.ts as the OTHER consumer of this same manual-sync convention, and at FULL-AI-CLUSTER-FAILURE-BASELINE.md for the failure count. Both files exist at those paths today. The pointer is the POINT -- it is what tells the next reader that the render validator must adopt this module rather than grow a parallel convention, which is the drift this repo keeps catching. Migration target: repoint both mentions when the render validator moves out of infra/.",
       "migrateTo": ""
-    },
-    {
-      "path": "src/Core.TypeScript/cluster/rendered-resource-requests.baseline.json",
-      "disposition": "derived",
-      "note": "Fourteen baselined `uncovered-application` findings, one per infra/ Application per rung, each with the measured total and the schema change that would cover it. They exist BECAUSE the second tree exists.",
-      "migrateTo": "delete all fourteen entries when infra/k8s is deleted -- the audit reports an entry that matches nothing as STALE and exits 1, so the deletion forces it in the same commit rather than leaving them behind."
     },
     {
       "path": "src/Core.TypeScript/cluster/rendered-resource-requests.test.ts",
@@ -194,6 +177,12 @@
       "disposition": "derived",
       "note": "Renders every discovered Application at both resource rungs. It does not TARGET infra/k8s -- it inherits the tree list from `discoverApplications`, which walks both roots -- and it names the path only in the finding text that says the CPU/memory ladder cannot cover a second tree. Nothing here breaks when infra/k8s goes; the finding simply stops being produced.",
       "migrateTo": "drop the `(it is in the \"<tree>\" tree; ...)` clause from `uncovered-application` when full-ai-cluster is the only tree, or leave it -- it is derived from `appTreeOf`, not from a literal."
+    },
+    {
+      "path": "src/Core.TypeScript/cluster/rendered-storage-claims.test.ts",
+      "disposition": "prose",
+      "note": "One comment (line ~356) records WHY the storage-claim set shrank: infra/k8s/applications held seven Applications that duplicated full-ai-cluster ones, and they left by deletion rather than by discovery getting worse. The mention is the explanation of a removal, not a dependency on the tree.",
+      "migrateTo": "drop the sentence when infra/k8s is deleted and the comparison it draws stops being legible."
     },
     {
       "path": "src/Core.TypeScript/cluster/rendered-storage-claims.ts",

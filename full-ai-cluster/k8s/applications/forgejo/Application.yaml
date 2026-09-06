@@ -1,22 +1,28 @@
-# Forgejo — self-hosted Git. Lighter than GitLab; pick one.
+# Forgejo — self-hosted Git. Lighter than GitLab, and NOT its standby.
 #
-# DEFAULT: NOT reconciled. The repo ships both gitlab/ and forgejo/
-# Application definitions for review; only one should run at a time.
-# GitLab is the default-on; Forgejo is manual-sync. To switch:
-#   1. Move `automated` block from gitlab/Application.yaml here
-#   2. Remove `automated` from gitlab/Application.yaml
-#   3. argocd app delete gitlab + argocd app sync forgejo
+# BOTH GIT HOSTS RUN. Aaron 2026-09-05: "gitlab and forgejo we will be testing both
+# over time so we want both up, neither is standby." This header used to say the
+# opposite -- "only one should run at a time" -- and prescribe a swap procedure that
+# moved the `automated:` block from gitlab to here.
+#
+# THE "ONLY ONE AT A TIME" CLAIM WAS NEVER MECHANICAL, which is why retiring it costs
+# nothing. The two Applications target DIFFERENT namespaces (`forgejo` and `gitlab`),
+# share no object, and collide over no name. What the claim was really about is
+# budget, and the budget answers it: MEASURED from
+# `src/Core.TypeScript/cluster/rendered-resource-requests.snapshot.json`, at both the
+# dev and metal rungs --
+#
+#   forgejo   100m /   128Mi /  1 pod
+#   gitlab   2525m /  5733Mi / 17 pods
+#
+# -- so running Forgejo alongside GitLab costs 4% of GitLab's CPU and 2% of its
+# memory. The cheap half of an either/or pair is not worth an either/or.
 
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
   annotations:
     argocd.argoproj.io/sync-wave: "30"
-    zeta.io/sync-policy: manual
-    zeta.io/sync-policy-reason: Standby half of the either/or Git-host pair;
-      gitlab is the default-on one. Both Applications ship for review and only
-      one may reconcile at a time, so this side stays manual until the swap
-      described in the header is performed.
   name: forgejo
   namespace: argocd
   finalizers: [ resources-finalizer.argocd.argoproj.io ]
@@ -71,13 +77,21 @@ spec:
         # database would therefore buy an ImagePullBackOff, not a database.
         #
         # So the chart's own default stands: DB_TYPE=sqlite3 on the PVC above.
-        # OPEN, and a maintainer decision rather than one to guess here: whether
-        # this standby host gets an external PostgreSQL (`gitea.config.database.*`)
-        # or the CockroachDB the old comment pointed at. Nothing auto-deploys in the
-        # meantime -- this Application is manual-sync by design (see header).
+        # STILL OPEN, and a maintainer decision rather than one to guess here: whether
+        # this host gets an external PostgreSQL (`gitea.config.database.*`) or the
+        # CockroachDB the old comment pointed at. What CHANGED on 2026-09-06 is the
+        # consequence of leaving it open: this Application now auto-syncs, so sqlite3
+        # on the PVC above is what actually runs rather than what would run if anyone
+        # ever synced it. That is a real posture with a real limitation -- one writer,
+        # no replication, backed by the 20Gi local-path volume -- and it is now being
+        # exercised instead of merely described.
   destination:
     server: https://kubernetes.default.svc
     namespace: forgejo
-  # Manual sync only by default — see header comment for swap procedure.
   syncPolicy:
+    # `prune: false`, matching gitlab. A Git host holds the only copy of whatever has
+    # been pushed to it, so an Application-level prune is the one reconciliation this
+    # workload must never perform automatically. `selfHeal` is safe and wanted: it
+    # restores drifted Deployments without touching the PVC.
+    automated: { prune: false, selfHeal: true }
     syncOptions: [ CreateNamespace=true, ServerSideApply=true ]
