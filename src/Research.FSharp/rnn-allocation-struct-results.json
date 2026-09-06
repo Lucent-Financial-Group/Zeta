@@ -1,0 +1,551 @@
+{
+  "Calls": 4096,
+  "Complete": true,
+  "Contexts": 256,
+  "DataDomain": 34,
+  "DataSeed": 1009,
+  "InputReceipts": [
+    {
+      "File": "mess3-learned-belief-results.json",
+      "Sha256": "5576A341EE32A5F72945518C56F94C5C6C8957CB6BC0B7AD49E5400575949072"
+    },
+    {
+      "File": "rrxor-learned-belief-results.json",
+      "Sha256": "302F339E702E30B037FAB22F301486E0A6E6C45BD6F93F7207892D5BAAE7EACF"
+    }
+  ],
+  "Measurements": [
+    {
+      "Calls": 4096,
+      "Checksum": 682.6922975610197,
+      "ContextLength": 0,
+      "ElapsedMilliseconds": 1.8921,
+      "Model": "mess3-h8-s11",
+      "ProcessCpuMilliseconds": 1.9519999999997708,
+      "Repetition": 0,
+      "ThreadAllocatedBytes": 1277952
+    },
+    {
+      "Calls": 4096,
+      "Checksum": 414.0387369909655,
+      "ContextLength": 1,
+      "ElapsedMilliseconds": 3.384,
+      "Model": "mess3-h8-s11",
+      "ProcessCpuMilliseconds": 3.3880000000003747,
+      "Repetition": 0,
+      "ThreadAllocatedBytes": 1277952
+    },
+    {
+      "Calls": 4096,
+      "Checksum": 523.7445404082703,
+      "ContextLength": 16,
+      "ElapsedMilliseconds": 34.3639,
+      "Model": "mess3-h8-s11",
+      "ProcessCpuMilliseconds": 32.93299999999999,
+      "Repetition": 0,
+      "ThreadAllocatedBytes": 1278080
+    },
+    {
+      "Calls": 4096,
+      "Checksum": 742.0775069188005,
+      "ContextLength": 64,
+      "ElapsedMilliseconds": 101.0317,
+      "Model": "mess3-h8-s11",
+      "ProcessCpuMilliseconds": 101.00900000000001,
+      "Repetition": 0,
+      "ThreadAllocatedBytes": 1277952
+    },
+    {
+      "Calls": 4096,
+      "Checksum": 687.2677030517465,
+      "ContextLength": 256,
+      "ElapsedMilliseconds": 152.4212,
+      "Model": "mess3-h8-s11",
+      "ProcessCpuMilliseconds": 159.02599999999984,
+      "Repetition": 0,
+      "ThreadAllocatedBytes": 1158272
+    },
+    {
+      "Calls": 4096,
+      "Checksum": 754.7221875672534,
+      "ContextLength": 0,
+      "ElapsedMilliseconds": 0.2407,
+      "Model": "rrxor-h8-s41",
+      "ProcessCpuMilliseconds": 0.24200000000018917,
+      "Repetition": 0,
+      "ThreadAllocatedBytes": 1114112
+    },
+    {
+      "Calls": 4096,
+      "Checksum": 886.3445886496249,
+      "ContextLength": 1,
+      "ElapsedMilliseconds": 0.7272,
+      "Model": "rrxor-h8-s41",
+      "ProcessCpuMilliseconds": 0.7279999999996107,
+      "Repetition": 0,
+      "ThreadAllocatedBytes": 1114112
+    },
+    {
+      "Calls": 4096,
+      "Checksum": 1913.5850712574472,
+      "ContextLength": 16,
+      "ElapsedMilliseconds": 8.4083,
+      "Model": "rrxor-h8-s41",
+      "ProcessCpuMilliseconds": 8.40899999999965,
+      "Repetition": 0,
+      "ThreadAllocatedBytes": 1114112
+    },
+    {
+      "Calls": 4096,
+      "Checksum": 1865.422362593255,
+      "ContextLength": 64,
+      "ElapsedMilliseconds": 32.7752,
+      "Model": "rrxor-h8-s41",
+      "ProcessCpuMilliseconds": 32.77500000000009,
+      "Repetition": 0,
+      "ThreadAllocatedBytes": 1114112
+    },
+    {
+      "Calls": 4096,
+      "Checksum": 1770.9298257535017,
+      "ContextLength": 256,
+      "ElapsedMilliseconds": 129.5197,
+      "Model": "rrxor-h8-s41",
+      "ProcessCpuMilliseconds": 129.4409999999998,
+      "Repetition": 0,
+      "ThreadAllocatedBytes": 1114112
+    },
+    {
+      "Calls": 4096,
+      "Checksum": 414.0387369909655,
+      "ContextLength": 1,
+      "ElapsedMilliseconds": 0.8523,
+      "Model": "mess3-h8-s11",
+      "ProcessCpuMilliseconds": 0.8510000000001128,
+      "Repetition": 1,
+      "ThreadAllocatedBytes": 1146880
+    },
+    {
+      "Calls": 4096,
+      "Checksum": 523.7445404082703,
+      "ContextLength": 16,
+      "ElapsedMilliseconds": 8.2029,
+      "Model": "mess3-h8-s11",
+      "ProcessCpuMilliseconds": 8.203999999999724,
+      "Repetition": 1,
+      "ThreadAllocatedBytes": 1146880
+    },
+    {
+      "Calls": 4096,
+      "Checksum": 742.0775069188005,
+      "ContextLength": 64,
+      "ElapsedMilliseconds": 33.0092,
+      "Model": "mess3-h8-s11",
+      "ProcessCpuMilliseconds": 33.00999999999976,
+      "Repetition": 1,
+      "ThreadAllocatedBytes": 1146880
+    },
+    {
+      "Calls": 4096,
+      "Checksum": 687.2677030517465,
+      "ContextLength": 256,
+      "ElapsedMilliseconds": 129.4239,
+      "Model": "mess3-h8-s11",
+      "ProcessCpuMilliseconds": 129.4319999999998,
+      "Repetition": 1,
+      "ThreadAllocatedBytes": 1146880
+    },
+    {
+      "Calls": 4096,
+      "Checksum": 754.7221875672534,
+      "ContextLength": 0,
+      "ElapsedMilliseconds": 0.2797,
+      "Model": "rrxor-h8-s41",
+      "ProcessCpuMilliseconds": 0.28099999999994907,
+      "Repetition": 1,
+      "ThreadAllocatedBytes": 1114112
+    },
+    {
+      "Calls": 4096,
+      "Checksum": 886.3445886496249,
+      "ContextLength": 1,
+      "ElapsedMilliseconds": 0.6653,
+      "Model": "rrxor-h8-s41",
+      "ProcessCpuMilliseconds": 0.6649999999999636,
+      "Repetition": 1,
+      "ThreadAllocatedBytes": 1114112
+    },
+    {
+      "Calls": 4096,
+      "Checksum": 1913.5850712574472,
+      "ContextLength": 16,
+      "ElapsedMilliseconds": 8.4881,
+      "Model": "rrxor-h8-s41",
+      "ProcessCpuMilliseconds": 8.487999999999829,
+      "Repetition": 1,
+      "ThreadAllocatedBytes": 1114112
+    },
+    {
+      "Calls": 4096,
+      "Checksum": 1865.422362593255,
+      "ContextLength": 64,
+      "ElapsedMilliseconds": 32.9884,
+      "Model": "rrxor-h8-s41",
+      "ProcessCpuMilliseconds": 32.98100000000022,
+      "Repetition": 1,
+      "ThreadAllocatedBytes": 1114112
+    },
+    {
+      "Calls": 4096,
+      "Checksum": 1770.9298257535017,
+      "ContextLength": 256,
+      "ElapsedMilliseconds": 129.8715,
+      "Model": "rrxor-h8-s41",
+      "ProcessCpuMilliseconds": 130.2779999999998,
+      "Repetition": 1,
+      "ThreadAllocatedBytes": 1114112
+    },
+    {
+      "Calls": 4096,
+      "Checksum": 682.6922975610197,
+      "ContextLength": 0,
+      "ElapsedMilliseconds": 0.3044,
+      "Model": "mess3-h8-s11",
+      "ProcessCpuMilliseconds": 0.5899999999996908,
+      "Repetition": 1,
+      "ThreadAllocatedBytes": 1146880
+    },
+    {
+      "Calls": 4096,
+      "Checksum": 523.7445404082703,
+      "ContextLength": 16,
+      "ElapsedMilliseconds": 8.276,
+      "Model": "mess3-h8-s11",
+      "ProcessCpuMilliseconds": 9.034999999999854,
+      "Repetition": 2,
+      "ThreadAllocatedBytes": 1146880
+    },
+    {
+      "Calls": 4096,
+      "Checksum": 742.0775069188005,
+      "ContextLength": 64,
+      "ElapsedMilliseconds": 31.5975,
+      "Model": "mess3-h8-s11",
+      "ProcessCpuMilliseconds": 31.584000000000287,
+      "Repetition": 2,
+      "ThreadAllocatedBytes": 1146880
+    },
+    {
+      "Calls": 4096,
+      "Checksum": 687.2677030517465,
+      "ContextLength": 256,
+      "ElapsedMilliseconds": 128.0163,
+      "Model": "mess3-h8-s11",
+      "ProcessCpuMilliseconds": 127.90700000000015,
+      "Repetition": 2,
+      "ThreadAllocatedBytes": 1146880
+    },
+    {
+      "Calls": 4096,
+      "Checksum": 754.7221875672534,
+      "ContextLength": 0,
+      "ElapsedMilliseconds": 0.2578,
+      "Model": "rrxor-h8-s41",
+      "ProcessCpuMilliseconds": 0.25900000000001455,
+      "Repetition": 2,
+      "ThreadAllocatedBytes": 1114112
+    },
+    {
+      "Calls": 4096,
+      "Checksum": 886.3445886496249,
+      "ContextLength": 1,
+      "ElapsedMilliseconds": 0.6681,
+      "Model": "rrxor-h8-s41",
+      "ProcessCpuMilliseconds": 0.66800000000012,
+      "Repetition": 2,
+      "ThreadAllocatedBytes": 1114112
+    },
+    {
+      "Calls": 4096,
+      "Checksum": 1913.5850712574472,
+      "ContextLength": 16,
+      "ElapsedMilliseconds": 8.2505,
+      "Model": "rrxor-h8-s41",
+      "ProcessCpuMilliseconds": 8.25,
+      "Repetition": 2,
+      "ThreadAllocatedBytes": 1114112
+    },
+    {
+      "Calls": 4096,
+      "Checksum": 1865.422362593255,
+      "ContextLength": 64,
+      "ElapsedMilliseconds": 31.6933,
+      "Model": "rrxor-h8-s41",
+      "ProcessCpuMilliseconds": 31.69399999999996,
+      "Repetition": 2,
+      "ThreadAllocatedBytes": 1114112
+    },
+    {
+      "Calls": 4096,
+      "Checksum": 1770.9298257535017,
+      "ContextLength": 256,
+      "ElapsedMilliseconds": 127.82,
+      "Model": "rrxor-h8-s41",
+      "ProcessCpuMilliseconds": 127.81800000000021,
+      "Repetition": 2,
+      "ThreadAllocatedBytes": 1114112
+    },
+    {
+      "Calls": 4096,
+      "Checksum": 682.6922975610197,
+      "ContextLength": 0,
+      "ElapsedMilliseconds": 0.3999,
+      "Model": "mess3-h8-s11",
+      "ProcessCpuMilliseconds": 0.6619999999998072,
+      "Repetition": 2,
+      "ThreadAllocatedBytes": 1146880
+    },
+    {
+      "Calls": 4096,
+      "Checksum": 414.0387369909655,
+      "ContextLength": 1,
+      "ElapsedMilliseconds": 0.8421,
+      "Model": "mess3-h8-s11",
+      "ProcessCpuMilliseconds": 0.843000000000302,
+      "Repetition": 2,
+      "ThreadAllocatedBytes": 1146880
+    },
+    {
+      "Calls": 4096,
+      "Checksum": 742.0775069188005,
+      "ContextLength": 64,
+      "ElapsedMilliseconds": 31.2529,
+      "Model": "mess3-h8-s11",
+      "ProcessCpuMilliseconds": 31.221000000000004,
+      "Repetition": 3,
+      "ThreadAllocatedBytes": 1146880
+    },
+    {
+      "Calls": 4096,
+      "Checksum": 687.2677030517465,
+      "ContextLength": 256,
+      "ElapsedMilliseconds": 125.8655,
+      "Model": "mess3-h8-s11",
+      "ProcessCpuMilliseconds": 125.81800000000021,
+      "Repetition": 3,
+      "ThreadAllocatedBytes": 1146880
+    },
+    {
+      "Calls": 4096,
+      "Checksum": 754.7221875672534,
+      "ContextLength": 0,
+      "ElapsedMilliseconds": 0.2607,
+      "Model": "rrxor-h8-s41",
+      "ProcessCpuMilliseconds": 0.26099999999996726,
+      "Repetition": 3,
+      "ThreadAllocatedBytes": 1114112
+    },
+    {
+      "Calls": 4096,
+      "Checksum": 886.3445886496249,
+      "ContextLength": 1,
+      "ElapsedMilliseconds": 0.7972,
+      "Model": "rrxor-h8-s41",
+      "ProcessCpuMilliseconds": 0.7970000000000255,
+      "Repetition": 3,
+      "ThreadAllocatedBytes": 1114112
+    },
+    {
+      "Calls": 4096,
+      "Checksum": 1913.5850712574472,
+      "ContextLength": 16,
+      "ElapsedMilliseconds": 8.5537,
+      "Model": "rrxor-h8-s41",
+      "ProcessCpuMilliseconds": 10.298999999999978,
+      "Repetition": 3,
+      "ThreadAllocatedBytes": 1114112
+    },
+    {
+      "Calls": 4096,
+      "Checksum": 1865.422362593255,
+      "ContextLength": 64,
+      "ElapsedMilliseconds": 32.5829,
+      "Model": "rrxor-h8-s41",
+      "ProcessCpuMilliseconds": 32.929999999999836,
+      "Repetition": 3,
+      "ThreadAllocatedBytes": 1114112
+    },
+    {
+      "Calls": 4096,
+      "Checksum": 1770.9298257535017,
+      "ContextLength": 256,
+      "ElapsedMilliseconds": 131.8969,
+      "Model": "rrxor-h8-s41",
+      "ProcessCpuMilliseconds": 131.80600000000004,
+      "Repetition": 3,
+      "ThreadAllocatedBytes": 1114112
+    },
+    {
+      "Calls": 4096,
+      "Checksum": 682.6922975610197,
+      "ContextLength": 0,
+      "ElapsedMilliseconds": 0.325,
+      "Model": "mess3-h8-s11",
+      "ProcessCpuMilliseconds": 0.32600000000002183,
+      "Repetition": 3,
+      "ThreadAllocatedBytes": 1146880
+    },
+    {
+      "Calls": 4096,
+      "Checksum": 414.0387369909655,
+      "ContextLength": 1,
+      "ElapsedMilliseconds": 0.8521,
+      "Model": "mess3-h8-s11",
+      "ProcessCpuMilliseconds": 0.8519999999998618,
+      "Repetition": 3,
+      "ThreadAllocatedBytes": 1146880
+    },
+    {
+      "Calls": 4096,
+      "Checksum": 523.7445404082703,
+      "ContextLength": 16,
+      "ElapsedMilliseconds": 8.1147,
+      "Model": "mess3-h8-s11",
+      "ProcessCpuMilliseconds": 8.115000000000236,
+      "Repetition": 3,
+      "ThreadAllocatedBytes": 1146880
+    },
+    {
+      "Calls": 4096,
+      "Checksum": 687.2677030517465,
+      "ContextLength": 256,
+      "ElapsedMilliseconds": 128.9335,
+      "Model": "mess3-h8-s11",
+      "ProcessCpuMilliseconds": 129.42300000000023,
+      "Repetition": 4,
+      "ThreadAllocatedBytes": 1146880
+    },
+    {
+      "Calls": 4096,
+      "Checksum": 754.7221875672534,
+      "ContextLength": 0,
+      "ElapsedMilliseconds": 0.3427,
+      "Model": "rrxor-h8-s41",
+      "ProcessCpuMilliseconds": 0.3429999999998472,
+      "Repetition": 4,
+      "ThreadAllocatedBytes": 1114112
+    },
+    {
+      "Calls": 4096,
+      "Checksum": 886.3445886496249,
+      "ContextLength": 1,
+      "ElapsedMilliseconds": 0.8015,
+      "Model": "rrxor-h8-s41",
+      "ProcessCpuMilliseconds": 0.8029999999998836,
+      "Repetition": 4,
+      "ThreadAllocatedBytes": 1114112
+    },
+    {
+      "Calls": 4096,
+      "Checksum": 1913.5850712574472,
+      "ContextLength": 16,
+      "ElapsedMilliseconds": 8.4906,
+      "Model": "rrxor-h8-s41",
+      "ProcessCpuMilliseconds": 8.461999999999989,
+      "Repetition": 4,
+      "ThreadAllocatedBytes": 1114112
+    },
+    {
+      "Calls": 4096,
+      "Checksum": 1865.422362593255,
+      "ContextLength": 64,
+      "ElapsedMilliseconds": 33.756,
+      "Model": "rrxor-h8-s41",
+      "ProcessCpuMilliseconds": 33.73999999999978,
+      "Repetition": 4,
+      "ThreadAllocatedBytes": 1114112
+    },
+    {
+      "Calls": 4096,
+      "Checksum": 1770.9298257535017,
+      "ContextLength": 256,
+      "ElapsedMilliseconds": 130.8968,
+      "Model": "rrxor-h8-s41",
+      "ProcessCpuMilliseconds": 130.82200000000012,
+      "Repetition": 4,
+      "ThreadAllocatedBytes": 1114112
+    },
+    {
+      "Calls": 4096,
+      "Checksum": 682.6922975610197,
+      "ContextLength": 0,
+      "ElapsedMilliseconds": 0.339,
+      "Model": "mess3-h8-s11",
+      "ProcessCpuMilliseconds": 0.33900000000039654,
+      "Repetition": 4,
+      "ThreadAllocatedBytes": 1146880
+    },
+    {
+      "Calls": 4096,
+      "Checksum": 414.0387369909655,
+      "ContextLength": 1,
+      "ElapsedMilliseconds": 0.7814,
+      "Model": "mess3-h8-s11",
+      "ProcessCpuMilliseconds": 0.781999999999698,
+      "Repetition": 4,
+      "ThreadAllocatedBytes": 1146880
+    },
+    {
+      "Calls": 4096,
+      "Checksum": 523.7445404082703,
+      "ContextLength": 16,
+      "ElapsedMilliseconds": 8.17,
+      "Model": "mess3-h8-s11",
+      "ProcessCpuMilliseconds": 8.171000000000276,
+      "Repetition": 4,
+      "ThreadAllocatedBytes": 1146880
+    },
+    {
+      "Calls": 4096,
+      "Checksum": 742.0775069188005,
+      "ContextLength": 64,
+      "ElapsedMilliseconds": 31.078,
+      "Model": "mess3-h8-s11",
+      "ProcessCpuMilliseconds": 31.07900000000018,
+      "Repetition": 4,
+      "ThreadAllocatedBytes": 1146880
+    }
+  ],
+  "Platform": "macOS 26.6.2",
+  "Protocol": "rnn-allocation-profile-v1",
+  "Repetitions": 5,
+  "Runtime": ".NET 10.0.11",
+  "SourceHashes": [
+    {
+      "File": "../Core/SplitMix64.fs",
+      "Sha256": "56D14EA951C459EF9509F934AE9AD65A293BEACBA841A2CBA8A2289693AAF174"
+    },
+    {
+      "File": "ResearchRandom.fs",
+      "Sha256": "4422C5EE4380A698FF479F0082C44E1453990C48AA034B9842719C4E0E7C79FF"
+    },
+    {
+      "File": "Mess3.fs",
+      "Sha256": "EB93D9835421732A71553848D6A7A8946DB2335A3F3AD1BE9C8F9CA421602422"
+    },
+    {
+      "File": "SmallRnn.fs",
+      "Sha256": "E2A4C965D61D9E128B9B9F8857D69E24A527ABD4E9386DD61EC506B40A05DABD"
+    },
+    {
+      "File": "PredictiveState.fs",
+      "Sha256": "D0B755DD1D65C9F5FBB8A6B960AB851995EE35A8D3910192A3857DBD696AF950"
+    },
+    {
+      "File": "measure-rnn-allocation.fsx",
+      "Sha256": "7D4B53B43FABED7DC955A5863C3E82C26DAD117E364AF05A7EE255531DC13377"
+    }
+  ],
+  "WarmupCalls": 256,
+  "WarmupChecksum": 637.4726369840726
+}

@@ -1,0 +1,1541 @@
+{
+  "Complete": true,
+  "Contexts": 512,
+  "DataDomains": [
+    31,
+    32
+  ],
+  "DataSeed": 1009,
+  "Inputs": [
+    {
+      "File": "learned-hmm-results.json",
+      "Sha256": "D984048A4B326063E1D25130050470CF755DF66F2230CD36B354F9F46EC54B21"
+    },
+    {
+      "File": "mess3-learned-belief-results.json",
+      "Sha256": "5576A341EE32A5F72945518C56F94C5C6C8957CB6BC0B7AD49E5400575949072"
+    },
+    {
+      "File": "rrxor-learned-belief-results.json",
+      "Sha256": "302F339E702E30B037FAB22F301486E0A6E6C45BD6F93F7207892D5BAAE7EACF"
+    }
+  ],
+  "OracleValidation": [
+    {
+      "Length": 16,
+      "MaximumStateError": 0,
+      "Source": "mess3"
+    },
+    {
+      "Length": 64,
+      "MaximumStateError": 0,
+      "Source": "mess3"
+    },
+    {
+      "Length": 16,
+      "MaximumStateError": 0,
+      "Source": "rrxor"
+    },
+    {
+      "Length": 64,
+      "MaximumStateError": 0,
+      "Source": "rrxor"
+    }
+  ],
+  "ProbeDomain": 33,
+  "Probes": [
+    {
+      "Hidden": {
+        "MeanSquaredError": 0.1053259499461275,
+        "R2": 0.27997846022703565
+      },
+      "Joint4Output": {
+        "MeanSquaredError": 0.02496318709622377,
+        "R2": 0.8293484899034183
+      },
+      "Length": 16,
+      "Model": "rrxor-h3-s41"
+    },
+    {
+      "Hidden": {
+        "MeanSquaredError": 0.1243210008457366,
+        "R2": 0.15012588539815563
+      },
+      "Joint4Output": {
+        "MeanSquaredError": 0.12395287974457589,
+        "R2": 0.15264240789063
+      },
+      "Length": 16,
+      "Model": "rrxor-h3-s53"
+    },
+    {
+      "Hidden": {
+        "MeanSquaredError": 0.10186237439473747,
+        "R2": 0.3036559015689595
+      },
+      "Joint4Output": {
+        "MeanSquaredError": 0.036419096349178066,
+        "R2": 0.7510344426621594
+      },
+      "Length": 16,
+      "Model": "rrxor-h3-s67"
+    },
+    {
+      "Hidden": {
+        "MeanSquaredError": 0.08935453232926954,
+        "R2": 0.3891610948078683
+      },
+      "Joint4Output": {
+        "MeanSquaredError": 0.005965916378611046,
+        "R2": 0.959216239689446
+      },
+      "Length": 16,
+      "Model": "rrxor-h8-s41"
+    },
+    {
+      "Hidden": {
+        "MeanSquaredError": 0.08657882318007268,
+        "R2": 0.4081361942642594
+      },
+      "Joint4Output": {
+        "MeanSquaredError": 0.006106488931256595,
+        "R2": 0.9582552679074926
+      },
+      "Length": 16,
+      "Model": "rrxor-h8-s53"
+    },
+    {
+      "Hidden": {
+        "MeanSquaredError": 0.055913330758481136,
+        "R2": 0.6177693861090419
+      },
+      "Joint4Output": {
+        "MeanSquaredError": 0.003335478760258372,
+        "R2": 0.9771982445535061
+      },
+      "Length": 16,
+      "Model": "rrxor-h8-s67"
+    },
+    {
+      "Hidden": {
+        "MeanSquaredError": 0.03206007571391782,
+        "R2": 0.7808332600600327
+      },
+      "Joint4Output": {
+        "MeanSquaredError": 0.0038917234785374325,
+        "R2": 0.9733956851771063
+      },
+      "Length": 16,
+      "Model": "rrxor-h16-s41"
+    },
+    {
+      "Hidden": {
+        "MeanSquaredError": 0.0267464467839379,
+        "R2": 0.8171579007198437
+      },
+      "Joint4Output": {
+        "MeanSquaredError": 0.0027012054681555407,
+        "R2": 0.9815342171476327
+      },
+      "Length": 16,
+      "Model": "rrxor-h16-s53"
+    },
+    {
+      "Hidden": {
+        "MeanSquaredError": 0.013672849272384638,
+        "R2": 0.9065306698755485
+      },
+      "Joint4Output": {
+        "MeanSquaredError": 0.001559142955308589,
+        "R2": 0.9893415011971726
+      },
+      "Length": 16,
+      "Model": "rrxor-h16-s67"
+    },
+    {
+      "Hidden": {
+        "MeanSquaredError": 0.10804892529286436,
+        "R2": 0.30808821801690833
+      },
+      "Joint4Output": {
+        "MeanSquaredError": 0.015981585773551268,
+        "R2": 0.8976588849771395
+      },
+      "Length": 64,
+      "Model": "rrxor-h3-s41"
+    },
+    {
+      "Hidden": {
+        "MeanSquaredError": 0.13111043773744052,
+        "R2": 0.16040945001896578
+      },
+      "Joint4Output": {
+        "MeanSquaredError": 0.1297317052107479,
+        "R2": 0.16923842519698118
+      },
+      "Length": 64,
+      "Model": "rrxor-h3-s53"
+    },
+    {
+      "Hidden": {
+        "MeanSquaredError": 0.10632815995799653,
+        "R2": 0.3191074651403386
+      },
+      "Joint4Output": {
+        "MeanSquaredError": 0.03655315983273164,
+        "R2": 0.7659249095867833
+      },
+      "Length": 64,
+      "Model": "rrxor-h3-s67"
+    },
+    {
+      "Hidden": {
+        "MeanSquaredError": 0.08925540888954522,
+        "R2": 0.4284360640422473
+      },
+      "Joint4Output": {
+        "MeanSquaredError": 0.0012525689982610779,
+        "R2": 0.9919789369001634
+      },
+      "Length": 64,
+      "Model": "rrxor-h8-s41"
+    },
+    {
+      "Hidden": {
+        "MeanSquaredError": 0.09123592703976889,
+        "R2": 0.4157534405098353
+      },
+      "Joint4Output": {
+        "MeanSquaredError": 0.0015918578784509373,
+        "R2": 0.9898062362179224
+      },
+      "Length": 64,
+      "Model": "rrxor-h8-s53"
+    },
+    {
+      "Hidden": {
+        "MeanSquaredError": 0.04960490797587246,
+        "R2": 0.6823455654032325
+      },
+      "Joint4Output": {
+        "MeanSquaredError": 0.00045941441736254226,
+        "R2": 0.9970580526615656
+      },
+      "Length": 64,
+      "Model": "rrxor-h8-s67"
+    },
+    {
+      "Hidden": {
+        "MeanSquaredError": 0.025540053495950697,
+        "R2": 0.8364494243841056
+      },
+      "Joint4Output": {
+        "MeanSquaredError": 0.0006358240478656692,
+        "R2": 0.9959283801408112
+      },
+      "Length": 64,
+      "Model": "rrxor-h16-s41"
+    },
+    {
+      "Hidden": {
+        "MeanSquaredError": 0.021190980182317725,
+        "R2": 0.8642995400447158
+      },
+      "Joint4Output": {
+        "MeanSquaredError": 0.00044957250004310753,
+        "R2": 0.9971210772454027
+      },
+      "Length": 64,
+      "Model": "rrxor-h16-s53"
+    },
+    {
+      "Hidden": {
+        "MeanSquaredError": 0.007389641979684694,
+        "R2": 0.9526790263158835
+      },
+      "Joint4Output": {
+        "MeanSquaredError": 0.00029062095696356097,
+        "R2": 0.9981389535928353
+      },
+      "Length": 64,
+      "Model": "rrxor-h16-s67"
+    }
+  ],
+  "Protocol": "hmm-comparison-v1",
+  "Scores": [
+    {
+      "Future4KlBits": 1.03136493971373,
+      "Kind": "hmm",
+      "Length": 16,
+      "Model": "mess3-n3-s11-hmm",
+      "NextCrossEntropyBits": 1.4050747768895242,
+      "NextEntropyBits": 1.1469186159286924,
+      "NextKlBits": 0.2581561609608319,
+      "Source": "mess3"
+    },
+    {
+      "Future4KlBits": 1.876688821994638,
+      "Kind": "initial-hmm",
+      "Length": 16,
+      "Model": "mess3-n3-s11-initial-hmm",
+      "NextCrossEntropyBits": 1.6137622715247142,
+      "NextEntropyBits": 1.1469186159286924,
+      "NextKlBits": 0.4668436555960217,
+      "Source": "mess3"
+    },
+    {
+      "Future4KlBits": 0.3650313589751476,
+      "Kind": "hmm",
+      "Length": 16,
+      "Model": "mess3-n3-s23-hmm",
+      "NextCrossEntropyBits": 1.237996172666157,
+      "NextEntropyBits": 1.1469186159286924,
+      "NextKlBits": 0.09107755673746468,
+      "Source": "mess3"
+    },
+    {
+      "Future4KlBits": 1.7751001042291064,
+      "Kind": "initial-hmm",
+      "Length": 16,
+      "Model": "mess3-n3-s23-initial-hmm",
+      "NextCrossEntropyBits": 1.5888194108659204,
+      "NextEntropyBits": 1.1469186159286924,
+      "NextKlBits": 0.4419007949372279,
+      "Source": "mess3"
+    },
+    {
+      "Future4KlBits": 0.6363782001352409,
+      "Kind": "hmm",
+      "Length": 16,
+      "Model": "mess3-n3-s37-hmm",
+      "NextCrossEntropyBits": 1.3044862872181269,
+      "NextEntropyBits": 1.1469186159286924,
+      "NextKlBits": 0.15756767128943455,
+      "Source": "mess3"
+    },
+    {
+      "Future4KlBits": 1.7759304400844098,
+      "Kind": "initial-hmm",
+      "Length": 16,
+      "Model": "mess3-n3-s37-initial-hmm",
+      "NextCrossEntropyBits": 1.5890844948035205,
+      "NextEntropyBits": 1.1469186159286924,
+      "NextKlBits": 0.44216587887482817,
+      "Source": "mess3"
+    },
+    {
+      "Future4KlBits": 0.24904855486913732,
+      "Kind": "hmm",
+      "Length": 16,
+      "Model": "mess3-n8-s11-hmm",
+      "NextCrossEntropyBits": 1.2089004761421087,
+      "NextEntropyBits": 1.1469186159286924,
+      "NextKlBits": 0.061981860213416305,
+      "Source": "mess3"
+    },
+    {
+      "Future4KlBits": 1.769969496896654,
+      "Kind": "initial-hmm",
+      "Length": 16,
+      "Model": "mess3-n8-s11-initial-hmm",
+      "NextCrossEntropyBits": 1.5880443200195664,
+      "NextEntropyBits": 1.1469186159286924,
+      "NextKlBits": 0.4411257040908739,
+      "Source": "mess3"
+    },
+    {
+      "Future4KlBits": 0.4038711514798106,
+      "Kind": "hmm",
+      "Length": 16,
+      "Model": "mess3-n8-s23-hmm",
+      "NextCrossEntropyBits": 1.246690586451517,
+      "NextEntropyBits": 1.1469186159286924,
+      "NextKlBits": 0.09977197052282451,
+      "Source": "mess3"
+    },
+    {
+      "Future4KlBits": 1.7766718828841528,
+      "Kind": "initial-hmm",
+      "Length": 16,
+      "Model": "mess3-n8-s23-initial-hmm",
+      "NextCrossEntropyBits": 1.5895922845636523,
+      "NextEntropyBits": 1.1469186159286924,
+      "NextKlBits": 0.44267366863496005,
+      "Source": "mess3"
+    },
+    {
+      "Future4KlBits": 0.2585241926327375,
+      "Kind": "hmm",
+      "Length": 16,
+      "Model": "mess3-n8-s37-hmm",
+      "NextCrossEntropyBits": 1.2119343687226696,
+      "NextEntropyBits": 1.1469186159286924,
+      "NextKlBits": 0.06501575279397719,
+      "Source": "mess3"
+    },
+    {
+      "Future4KlBits": 1.748785429949545,
+      "Kind": "initial-hmm",
+      "Length": 16,
+      "Model": "mess3-n8-s37-initial-hmm",
+      "NextCrossEntropyBits": 1.582849054089753,
+      "NextEntropyBits": 1.1469186159286924,
+      "NextKlBits": 0.4359304381610607,
+      "Source": "mess3"
+    },
+    {
+      "Future4KlBits": 0.010313542527745946,
+      "Kind": "rnn",
+      "Length": 16,
+      "Model": "mess3-h3-s11",
+      "NextCrossEntropyBits": 1.1493308611877742,
+      "NextEntropyBits": 1.1469186159286924,
+      "NextKlBits": 0.002412245259081713,
+      "Source": "mess3"
+    },
+    {
+      "Future4KlBits": 0.005528046302189999,
+      "Kind": "rnn",
+      "Length": 16,
+      "Model": "mess3-h3-s23",
+      "NextCrossEntropyBits": 1.148304952109971,
+      "NextEntropyBits": 1.1469186159286924,
+      "NextKlBits": 0.0013863361812786225,
+      "Source": "mess3"
+    },
+    {
+      "Future4KlBits": 0.004944482518695601,
+      "Kind": "rnn",
+      "Length": 16,
+      "Model": "mess3-h3-s37",
+      "NextCrossEntropyBits": 1.1481858771316498,
+      "NextEntropyBits": 1.1469186159286924,
+      "NextKlBits": 0.0012672612029572935,
+      "Source": "mess3"
+    },
+    {
+      "Future4KlBits": 0.002812637238131051,
+      "Kind": "rnn",
+      "Length": 16,
+      "Model": "mess3-h8-s11",
+      "NextCrossEntropyBits": 1.1476379755527448,
+      "NextEntropyBits": 1.1469186159286924,
+      "NextKlBits": 0.0007193596240523553,
+      "Source": "mess3"
+    },
+    {
+      "Future4KlBits": 0.004870108165584053,
+      "Kind": "rnn",
+      "Length": 16,
+      "Model": "mess3-h8-s23",
+      "NextCrossEntropyBits": 1.1481603988352584,
+      "NextEntropyBits": 1.1469186159286924,
+      "NextKlBits": 0.0012417829065660417,
+      "Source": "mess3"
+    },
+    {
+      "Future4KlBits": 0.006439125935169382,
+      "Kind": "rnn",
+      "Length": 16,
+      "Model": "mess3-h8-s37",
+      "NextCrossEntropyBits": 1.1485046319249985,
+      "NextEntropyBits": 1.1469186159286924,
+      "NextKlBits": 0.0015860159963061598,
+      "Source": "mess3"
+    },
+    {
+      "Future4KlBits": 0.004402573072611345,
+      "Kind": "rnn",
+      "Length": 16,
+      "Model": "mess3-h16-s11",
+      "NextCrossEntropyBits": 1.1480487861585478,
+      "NextEntropyBits": 1.1469186159286924,
+      "NextKlBits": 0.0011301702298554138,
+      "Source": "mess3"
+    },
+    {
+      "Future4KlBits": 0.004500203392659664,
+      "Kind": "rnn",
+      "Length": 16,
+      "Model": "mess3-h16-s23",
+      "NextCrossEntropyBits": 1.148066650045202,
+      "NextEntropyBits": 1.1469186159286924,
+      "NextKlBits": 0.0011480341165096494,
+      "Source": "mess3"
+    },
+    {
+      "Future4KlBits": 0.006309041629023862,
+      "Kind": "rnn",
+      "Length": 16,
+      "Model": "mess3-h16-s37",
+      "NextCrossEntropyBits": 1.1485303910228888,
+      "NextEntropyBits": 1.1469186159286924,
+      "NextKlBits": 0.0016117750941963486,
+      "Source": "mess3"
+    },
+    {
+      "Future4KlBits": 0.3699415150542555,
+      "Kind": "bigram",
+      "Length": 16,
+      "Model": "mess3-h3-s11-bigram",
+      "NextCrossEntropyBits": 1.239403791998676,
+      "NextEntropyBits": 1.1469186159286924,
+      "NextKlBits": 0.0924851760699837,
+      "Source": "mess3"
+    },
+    {
+      "Future4KlBits": 0.36996977146136467,
+      "Kind": "bigram",
+      "Length": 16,
+      "Model": "mess3-h3-s23-bigram",
+      "NextCrossEntropyBits": 1.2394470678019152,
+      "NextEntropyBits": 1.1469186159286924,
+      "NextKlBits": 0.09252845187322274,
+      "Source": "mess3"
+    },
+    {
+      "Future4KlBits": 0.37000285616060086,
+      "Kind": "bigram",
+      "Length": 16,
+      "Model": "mess3-h3-s37-bigram",
+      "NextCrossEntropyBits": 1.2394152691317954,
+      "NextEntropyBits": 1.1469186159286924,
+      "NextKlBits": 0.0924966532031031,
+      "Source": "mess3"
+    },
+    {
+      "Future4KlBits": 0.3699415150542555,
+      "Kind": "bigram",
+      "Length": 16,
+      "Model": "mess3-h8-s11-bigram",
+      "NextCrossEntropyBits": 1.239403791998676,
+      "NextEntropyBits": 1.1469186159286924,
+      "NextKlBits": 0.0924851760699837,
+      "Source": "mess3"
+    },
+    {
+      "Future4KlBits": 0.36996977146136467,
+      "Kind": "bigram",
+      "Length": 16,
+      "Model": "mess3-h8-s23-bigram",
+      "NextCrossEntropyBits": 1.2394470678019152,
+      "NextEntropyBits": 1.1469186159286924,
+      "NextKlBits": 0.09252845187322274,
+      "Source": "mess3"
+    },
+    {
+      "Future4KlBits": 0.37000285616060086,
+      "Kind": "bigram",
+      "Length": 16,
+      "Model": "mess3-h8-s37-bigram",
+      "NextCrossEntropyBits": 1.2394152691317954,
+      "NextEntropyBits": 1.1469186159286924,
+      "NextKlBits": 0.0924966532031031,
+      "Source": "mess3"
+    },
+    {
+      "Future4KlBits": 0.3699415150542555,
+      "Kind": "bigram",
+      "Length": 16,
+      "Model": "mess3-h16-s11-bigram",
+      "NextCrossEntropyBits": 1.239403791998676,
+      "NextEntropyBits": 1.1469186159286924,
+      "NextKlBits": 0.0924851760699837,
+      "Source": "mess3"
+    },
+    {
+      "Future4KlBits": 0.36996977146136467,
+      "Kind": "bigram",
+      "Length": 16,
+      "Model": "mess3-h16-s23-bigram",
+      "NextCrossEntropyBits": 1.2394470678019152,
+      "NextEntropyBits": 1.1469186159286924,
+      "NextKlBits": 0.09252845187322274,
+      "Source": "mess3"
+    },
+    {
+      "Future4KlBits": 0.37000285616060086,
+      "Kind": "bigram",
+      "Length": 16,
+      "Model": "mess3-h16-s37-bigram",
+      "NextCrossEntropyBits": 1.2394152691317954,
+      "NextEntropyBits": 1.1469186159286924,
+      "NextKlBits": 0.0924966532031031,
+      "Source": "mess3"
+    },
+    {
+      "Future4KlBits": 0,
+      "Kind": "known",
+      "Length": 16,
+      "Model": "mess3-known",
+      "NextCrossEntropyBits": 1.1469186159286924,
+      "NextEntropyBits": 1.1469186159286924,
+      "NextKlBits": 0,
+      "Source": "mess3"
+    },
+    {
+      "Future4KlBits": 1.0554303928247486,
+      "Kind": "hmm",
+      "Length": 64,
+      "Model": "mess3-n3-s11-hmm",
+      "NextCrossEntropyBits": 1.4164192995059,
+      "NextEntropyBits": 1.1463270326853163,
+      "NextKlBits": 0.2700922668205835,
+      "Source": "mess3"
+    },
+    {
+      "Future4KlBits": 1.866026493781664,
+      "Kind": "initial-hmm",
+      "Length": 64,
+      "Model": "mess3-n3-s11-initial-hmm",
+      "NextCrossEntropyBits": 1.6106089327052109,
+      "NextEntropyBits": 1.1463270326853163,
+      "NextKlBits": 0.4642819000198945,
+      "Source": "mess3"
+    },
+    {
+      "Future4KlBits": 0.36078434960373784,
+      "Kind": "hmm",
+      "Length": 64,
+      "Model": "mess3-n3-s23-hmm",
+      "NextCrossEntropyBits": 1.2346545070047987,
+      "NextEntropyBits": 1.1463270326853163,
+      "NextKlBits": 0.08832747431948243,
+      "Source": "mess3"
+    },
+    {
+      "Future4KlBits": 1.7808873869785244,
+      "Kind": "initial-hmm",
+      "Length": 64,
+      "Model": "mess3-n3-s23-initial-hmm",
+      "NextCrossEntropyBits": 1.590901808323085,
+      "NextEntropyBits": 1.1463270326853163,
+      "NextKlBits": 0.44457477563776876,
+      "Source": "mess3"
+    },
+    {
+      "Future4KlBits": 0.6291334465685193,
+      "Kind": "hmm",
+      "Length": 64,
+      "Model": "mess3-n3-s37-hmm",
+      "NextCrossEntropyBits": 1.3024398084867257,
+      "NextEntropyBits": 1.1463270326853163,
+      "NextKlBits": 0.15611277580140936,
+      "Source": "mess3"
+    },
+    {
+      "Future4KlBits": 1.7917946918297238,
+      "Kind": "initial-hmm",
+      "Length": 64,
+      "Model": "mess3-n3-s37-initial-hmm",
+      "NextCrossEntropyBits": 1.593612799794295,
+      "NextEntropyBits": 1.1463270326853163,
+      "NextKlBits": 0.4472857671089788,
+      "Source": "mess3"
+    },
+    {
+      "Future4KlBits": 0.25158109963319547,
+      "Kind": "hmm",
+      "Length": 64,
+      "Model": "mess3-n8-s11-hmm",
+      "NextCrossEntropyBits": 1.2087667327799736,
+      "NextEntropyBits": 1.1463270326853163,
+      "NextKlBits": 0.06243970009465734,
+      "Source": "mess3"
+    },
+    {
+      "Future4KlBits": 1.7788946156777727,
+      "Kind": "initial-hmm",
+      "Length": 64,
+      "Model": "mess3-n8-s11-initial-hmm",
+      "NextCrossEntropyBits": 1.5905947095966777,
+      "NextEntropyBits": 1.1463270326853163,
+      "NextKlBits": 0.44426767691136126,
+      "Source": "mess3"
+    },
+    {
+      "Future4KlBits": 0.3987400132101913,
+      "Kind": "hmm",
+      "Length": 64,
+      "Model": "mess3-n8-s23-hmm",
+      "NextCrossEntropyBits": 1.2445250717417933,
+      "NextEntropyBits": 1.1463270326853163,
+      "NextKlBits": 0.09819803905647694,
+      "Source": "mess3"
+    },
+    {
+      "Future4KlBits": 1.7846136043205427,
+      "Kind": "initial-hmm",
+      "Length": 64,
+      "Model": "mess3-n8-s23-initial-hmm",
+      "NextCrossEntropyBits": 1.5917882748825039,
+      "NextEntropyBits": 1.1463270326853163,
+      "NextKlBits": 0.44546124219718747,
+      "Source": "mess3"
+    },
+    {
+      "Future4KlBits": 0.25927497251088083,
+      "Kind": "hmm",
+      "Length": 64,
+      "Model": "mess3-n8-s37-hmm",
+      "NextCrossEntropyBits": 1.211856527798969,
+      "NextEntropyBits": 1.1463270326853163,
+      "NextKlBits": 0.0655294951136526,
+      "Source": "mess3"
+    },
+    {
+      "Future4KlBits": 1.7504237175293589,
+      "Kind": "initial-hmm",
+      "Length": 64,
+      "Model": "mess3-n8-s37-initial-hmm",
+      "NextCrossEntropyBits": 1.5831635687146084,
+      "NextEntropyBits": 1.1463270326853163,
+      "NextKlBits": 0.4368365360292921,
+      "Source": "mess3"
+    },
+    {
+      "Future4KlBits": 0.010462782190228193,
+      "Kind": "rnn",
+      "Length": 64,
+      "Model": "mess3-h3-s11",
+      "NextCrossEntropyBits": 1.1488905956861137,
+      "NextEntropyBits": 1.1463270326853163,
+      "NextKlBits": 0.0025635630007974203,
+      "Source": "mess3"
+    },
+    {
+      "Future4KlBits": 0.005483942297634922,
+      "Kind": "rnn",
+      "Length": 64,
+      "Model": "mess3-h3-s23",
+      "NextCrossEntropyBits": 1.147701953098556,
+      "NextEntropyBits": 1.1463270326853163,
+      "NextKlBits": 0.0013749204132396512,
+      "Source": "mess3"
+    },
+    {
+      "Future4KlBits": 0.004833128600319396,
+      "Kind": "rnn",
+      "Length": 64,
+      "Model": "mess3-h3-s37",
+      "NextCrossEntropyBits": 1.1475022755227768,
+      "NextEntropyBits": 1.1463270326853163,
+      "NextKlBits": 0.0011752428374605323,
+      "Source": "mess3"
+    },
+    {
+      "Future4KlBits": 0.0028649279718418095,
+      "Kind": "rnn",
+      "Length": 64,
+      "Model": "mess3-h8-s11",
+      "NextCrossEntropyBits": 1.147113140462579,
+      "NextEntropyBits": 1.1463270326853163,
+      "NextKlBits": 0.0007861077772627028,
+      "Source": "mess3"
+    },
+    {
+      "Future4KlBits": 0.005063789539929835,
+      "Kind": "rnn",
+      "Length": 64,
+      "Model": "mess3-h8-s23",
+      "NextCrossEntropyBits": 1.1477174898317313,
+      "NextEntropyBits": 1.1463270326853163,
+      "NextKlBits": 0.0013904571464149664,
+      "Source": "mess3"
+    },
+    {
+      "Future4KlBits": 0.006514159410827191,
+      "Kind": "rnn",
+      "Length": 64,
+      "Model": "mess3-h8-s37",
+      "NextCrossEntropyBits": 1.1479435518844265,
+      "NextEntropyBits": 1.1463270326853163,
+      "NextKlBits": 0.001616519199110279,
+      "Source": "mess3"
+    },
+    {
+      "Future4KlBits": 0.004258457220148812,
+      "Kind": "rnn",
+      "Length": 64,
+      "Model": "mess3-h16-s11",
+      "NextCrossEntropyBits": 1.147382821131953,
+      "NextEntropyBits": 1.1463270326853163,
+      "NextKlBits": 0.0010557884466365715,
+      "Source": "mess3"
+    },
+    {
+      "Future4KlBits": 0.0045073220628618575,
+      "Kind": "rnn",
+      "Length": 64,
+      "Model": "mess3-h16-s23",
+      "NextCrossEntropyBits": 1.1475603967619534,
+      "NextEntropyBits": 1.1463270326853163,
+      "NextKlBits": 0.0012333640766370865,
+      "Source": "mess3"
+    },
+    {
+      "Future4KlBits": 0.006423342328441106,
+      "Kind": "rnn",
+      "Length": 64,
+      "Model": "mess3-h16-s37",
+      "NextCrossEntropyBits": 1.1479548861530182,
+      "NextEntropyBits": 1.1463270326853163,
+      "NextKlBits": 0.0016278534677019697,
+      "Source": "mess3"
+    },
+    {
+      "Future4KlBits": 0.3714832994968579,
+      "Kind": "bigram",
+      "Length": 64,
+      "Model": "mess3-h3-s11-bigram",
+      "NextCrossEntropyBits": 1.240127349506682,
+      "NextEntropyBits": 1.1463270326853163,
+      "NextKlBits": 0.09380031682136576,
+      "Source": "mess3"
+    },
+    {
+      "Future4KlBits": 0.3714343587059234,
+      "Kind": "bigram",
+      "Length": 64,
+      "Model": "mess3-h3-s23-bigram",
+      "NextCrossEntropyBits": 1.2401473695885865,
+      "NextEntropyBits": 1.1463270326853163,
+      "NextKlBits": 0.09382033690327019,
+      "Source": "mess3"
+    },
+    {
+      "Future4KlBits": 0.37162947574777855,
+      "Kind": "bigram",
+      "Length": 64,
+      "Model": "mess3-h3-s37-bigram",
+      "NextCrossEntropyBits": 1.2401711576748937,
+      "NextEntropyBits": 1.1463270326853163,
+      "NextKlBits": 0.09384412498957731,
+      "Source": "mess3"
+    },
+    {
+      "Future4KlBits": 0.3714832994968579,
+      "Kind": "bigram",
+      "Length": 64,
+      "Model": "mess3-h8-s11-bigram",
+      "NextCrossEntropyBits": 1.240127349506682,
+      "NextEntropyBits": 1.1463270326853163,
+      "NextKlBits": 0.09380031682136576,
+      "Source": "mess3"
+    },
+    {
+      "Future4KlBits": 0.3714343587059234,
+      "Kind": "bigram",
+      "Length": 64,
+      "Model": "mess3-h8-s23-bigram",
+      "NextCrossEntropyBits": 1.2401473695885865,
+      "NextEntropyBits": 1.1463270326853163,
+      "NextKlBits": 0.09382033690327019,
+      "Source": "mess3"
+    },
+    {
+      "Future4KlBits": 0.37162947574777855,
+      "Kind": "bigram",
+      "Length": 64,
+      "Model": "mess3-h8-s37-bigram",
+      "NextCrossEntropyBits": 1.2401711576748937,
+      "NextEntropyBits": 1.1463270326853163,
+      "NextKlBits": 0.09384412498957731,
+      "Source": "mess3"
+    },
+    {
+      "Future4KlBits": 0.3714832994968579,
+      "Kind": "bigram",
+      "Length": 64,
+      "Model": "mess3-h16-s11-bigram",
+      "NextCrossEntropyBits": 1.240127349506682,
+      "NextEntropyBits": 1.1463270326853163,
+      "NextKlBits": 0.09380031682136576,
+      "Source": "mess3"
+    },
+    {
+      "Future4KlBits": 0.3714343587059234,
+      "Kind": "bigram",
+      "Length": 64,
+      "Model": "mess3-h16-s23-bigram",
+      "NextCrossEntropyBits": 1.2401473695885865,
+      "NextEntropyBits": 1.1463270326853163,
+      "NextKlBits": 0.09382033690327019,
+      "Source": "mess3"
+    },
+    {
+      "Future4KlBits": 0.37162947574777855,
+      "Kind": "bigram",
+      "Length": 64,
+      "Model": "mess3-h16-s37-bigram",
+      "NextCrossEntropyBits": 1.2401711576748937,
+      "NextEntropyBits": 1.1463270326853163,
+      "NextKlBits": 0.09384412498957731,
+      "Source": "mess3"
+    },
+    {
+      "Future4KlBits": 0,
+      "Kind": "known",
+      "Length": 64,
+      "Model": "mess3-known",
+      "NextCrossEntropyBits": 1.1463270326853163,
+      "NextEntropyBits": 1.1463270326853163,
+      "NextKlBits": 0,
+      "Source": "mess3"
+    },
+    {
+      "Future4KlBits": 1.2546350736522052,
+      "Kind": "hmm",
+      "Length": 16,
+      "Model": "rrxor-n5-s41-hmm",
+      "NextCrossEntropyBits": 0.9959405281370374,
+      "NextEntropyBits": 0.7008723482028738,
+      "NextKlBits": 0.29506817993416357,
+      "Source": "rrxor"
+    },
+    {
+      "Future4KlBits": 1.3045891355853731,
+      "Kind": "initial-hmm",
+      "Length": 16,
+      "Model": "rrxor-n5-s41-initial-hmm",
+      "NextCrossEntropyBits": 1.004136224127874,
+      "NextEntropyBits": 0.7008723482028738,
+      "NextKlBits": 0.3032638759250002,
+      "Source": "rrxor"
+    },
+    {
+      "Future4KlBits": 1.2685423108088976,
+      "Kind": "hmm",
+      "Length": 16,
+      "Model": "rrxor-n5-s53-hmm",
+      "NextCrossEntropyBits": 0.999477039420696,
+      "NextEntropyBits": 0.7008723482028738,
+      "NextKlBits": 0.29860469121782224,
+      "Source": "rrxor"
+    },
+    {
+      "Future4KlBits": 1.270169881176951,
+      "Kind": "initial-hmm",
+      "Length": 16,
+      "Model": "rrxor-n5-s53-initial-hmm",
+      "NextCrossEntropyBits": 0.9995977857292712,
+      "NextEntropyBits": 0.7008723482028738,
+      "NextKlBits": 0.29872543752639735,
+      "Source": "rrxor"
+    },
+    {
+      "Future4KlBits": 1.2634855053863294,
+      "Kind": "hmm",
+      "Length": 16,
+      "Model": "rrxor-n5-s67-hmm",
+      "NextCrossEntropyBits": 0.9981691218371644,
+      "NextEntropyBits": 0.7008723482028738,
+      "NextKlBits": 0.29729677363429063,
+      "Source": "rrxor"
+    },
+    {
+      "Future4KlBits": 1.2692819738358987,
+      "Kind": "initial-hmm",
+      "Length": 16,
+      "Model": "rrxor-n5-s67-initial-hmm",
+      "NextCrossEntropyBits": 0.9980826462466353,
+      "NextEntropyBits": 0.7008723482028738,
+      "NextKlBits": 0.29721029804376153,
+      "Source": "rrxor"
+    },
+    {
+      "Future4KlBits": 1.2685154058227195,
+      "Kind": "hmm",
+      "Length": 16,
+      "Model": "rrxor-n8-s41-hmm",
+      "NextCrossEntropyBits": 0.9994224552053516,
+      "NextEntropyBits": 0.7008723482028738,
+      "NextKlBits": 0.29855010700247775,
+      "Source": "rrxor"
+    },
+    {
+      "Future4KlBits": 1.2746896447533143,
+      "Kind": "initial-hmm",
+      "Length": 16,
+      "Model": "rrxor-n8-s41-initial-hmm",
+      "NextCrossEntropyBits": 1.0024163933155572,
+      "NextEntropyBits": 0.7008723482028738,
+      "NextKlBits": 0.30154404511268335,
+      "Source": "rrxor"
+    },
+    {
+      "Future4KlBits": 1.2689844222272288,
+      "Kind": "hmm",
+      "Length": 16,
+      "Model": "rrxor-n8-s53-hmm",
+      "NextCrossEntropyBits": 0.9996665930850674,
+      "NextEntropyBits": 0.7008723482028738,
+      "NextKlBits": 0.2987942448821937,
+      "Source": "rrxor"
+    },
+    {
+      "Future4KlBits": 1.2737047328707314,
+      "Kind": "initial-hmm",
+      "Length": 16,
+      "Model": "rrxor-n8-s53-initial-hmm",
+      "NextCrossEntropyBits": 1.001860036243078,
+      "NextEntropyBits": 0.7008723482028738,
+      "NextKlBits": 0.30098768804020415,
+      "Source": "rrxor"
+    },
+    {
+      "Future4KlBits": 1.2668851382413766,
+      "Kind": "hmm",
+      "Length": 16,
+      "Model": "rrxor-n8-s67-hmm",
+      "NextCrossEntropyBits": 0.9991292040837436,
+      "NextEntropyBits": 0.7008723482028738,
+      "NextKlBits": 0.2982568558808698,
+      "Source": "rrxor"
+    },
+    {
+      "Future4KlBits": 1.2693670493396436,
+      "Kind": "initial-hmm",
+      "Length": 16,
+      "Model": "rrxor-n8-s67-initial-hmm",
+      "NextCrossEntropyBits": 0.9992977660816034,
+      "NextEntropyBits": 0.7008723482028738,
+      "NextKlBits": 0.2984254178787296,
+      "Source": "rrxor"
+    },
+    {
+      "Future4KlBits": 0.5027864590637586,
+      "Kind": "rnn",
+      "Length": 16,
+      "Model": "rrxor-h3-s41",
+      "NextCrossEntropyBits": 0.8278106574674398,
+      "NextEntropyBits": 0.7008723482028738,
+      "NextKlBits": 0.12693830926456595,
+      "Source": "rrxor"
+    },
+    {
+      "Future4KlBits": 1.0956621360461931,
+      "Kind": "rnn",
+      "Length": 16,
+      "Model": "rrxor-h3-s53",
+      "NextCrossEntropyBits": 0.9695992358384546,
+      "NextEntropyBits": 0.7008723482028738,
+      "NextKlBits": 0.2687268876355808,
+      "Source": "rrxor"
+    },
+    {
+      "Future4KlBits": 0.5564376385137555,
+      "Kind": "rnn",
+      "Length": 16,
+      "Model": "rrxor-h3-s67",
+      "NextCrossEntropyBits": 0.8282118070189487,
+      "NextEntropyBits": 0.7008723482028738,
+      "NextKlBits": 0.1273394588160749,
+      "Source": "rrxor"
+    },
+    {
+      "Future4KlBits": 0.1753118540178166,
+      "Kind": "rnn",
+      "Length": 16,
+      "Model": "rrxor-h8-s41",
+      "NextCrossEntropyBits": 0.743526547849122,
+      "NextEntropyBits": 0.7008723482028738,
+      "NextKlBits": 0.04265419964624819,
+      "Source": "rrxor"
+    },
+    {
+      "Future4KlBits": 0.1590709211013489,
+      "Kind": "rnn",
+      "Length": 16,
+      "Model": "rrxor-h8-s53",
+      "NextCrossEntropyBits": 0.7386167521670167,
+      "NextEntropyBits": 0.7008723482028738,
+      "NextKlBits": 0.037744403964142866,
+      "Source": "rrxor"
+    },
+    {
+      "Future4KlBits": 0.11814163353355261,
+      "Kind": "rnn",
+      "Length": 16,
+      "Model": "rrxor-h8-s67",
+      "NextCrossEntropyBits": 0.7324600245408747,
+      "NextEntropyBits": 0.7008723482028738,
+      "NextKlBits": 0.03158767633800081,
+      "Source": "rrxor"
+    },
+    {
+      "Future4KlBits": 0.09230755320062135,
+      "Kind": "rnn",
+      "Length": 16,
+      "Model": "rrxor-h16-s41",
+      "NextCrossEntropyBits": 0.7226767714277764,
+      "NextEntropyBits": 0.7008723482028738,
+      "NextKlBits": 0.021804423224902652,
+      "Source": "rrxor"
+    },
+    {
+      "Future4KlBits": 0.08110652157712822,
+      "Kind": "rnn",
+      "Length": 16,
+      "Model": "rrxor-h16-s53",
+      "NextCrossEntropyBits": 0.7227744384656876,
+      "NextEntropyBits": 0.7008723482028738,
+      "NextKlBits": 0.021902090262813725,
+      "Source": "rrxor"
+    },
+    {
+      "Future4KlBits": 0.03670557811513503,
+      "Kind": "rnn",
+      "Length": 16,
+      "Model": "rrxor-h16-s67",
+      "NextCrossEntropyBits": 0.7104337226021995,
+      "NextEntropyBits": 0.7008723482028738,
+      "NextKlBits": 0.009561374399325646,
+      "Source": "rrxor"
+    },
+    {
+      "Future4KlBits": 1.2702758725525594,
+      "Kind": "bigram",
+      "Length": 16,
+      "Model": "rrxor-h3-s41-bigram",
+      "NextCrossEntropyBits": 1.0000048354442868,
+      "NextEntropyBits": 0.7008723482028738,
+      "NextKlBits": 0.29913248724141284,
+      "Source": "rrxor"
+    },
+    {
+      "Future4KlBits": 1.2702514305355486,
+      "Kind": "bigram",
+      "Length": 16,
+      "Model": "rrxor-h3-s53-bigram",
+      "NextCrossEntropyBits": 0.9999846140835016,
+      "NextEntropyBits": 0.7008723482028738,
+      "NextKlBits": 0.29911226588062784,
+      "Source": "rrxor"
+    },
+    {
+      "Future4KlBits": 1.2702873705099555,
+      "Kind": "bigram",
+      "Length": 16,
+      "Model": "rrxor-h3-s67-bigram",
+      "NextCrossEntropyBits": 1.0000202769245026,
+      "NextEntropyBits": 0.7008723482028738,
+      "NextKlBits": 0.2991479287216287,
+      "Source": "rrxor"
+    },
+    {
+      "Future4KlBits": 1.2702758725525594,
+      "Kind": "bigram",
+      "Length": 16,
+      "Model": "rrxor-h8-s41-bigram",
+      "NextCrossEntropyBits": 1.0000048354442868,
+      "NextEntropyBits": 0.7008723482028738,
+      "NextKlBits": 0.29913248724141284,
+      "Source": "rrxor"
+    },
+    {
+      "Future4KlBits": 1.2702514305355486,
+      "Kind": "bigram",
+      "Length": 16,
+      "Model": "rrxor-h8-s53-bigram",
+      "NextCrossEntropyBits": 0.9999846140835016,
+      "NextEntropyBits": 0.7008723482028738,
+      "NextKlBits": 0.29911226588062784,
+      "Source": "rrxor"
+    },
+    {
+      "Future4KlBits": 1.2702873705099555,
+      "Kind": "bigram",
+      "Length": 16,
+      "Model": "rrxor-h8-s67-bigram",
+      "NextCrossEntropyBits": 1.0000202769245026,
+      "NextEntropyBits": 0.7008723482028738,
+      "NextKlBits": 0.2991479287216287,
+      "Source": "rrxor"
+    },
+    {
+      "Future4KlBits": 1.2702758725525594,
+      "Kind": "bigram",
+      "Length": 16,
+      "Model": "rrxor-h16-s41-bigram",
+      "NextCrossEntropyBits": 1.0000048354442868,
+      "NextEntropyBits": 0.7008723482028738,
+      "NextKlBits": 0.29913248724141284,
+      "Source": "rrxor"
+    },
+    {
+      "Future4KlBits": 1.2702514305355486,
+      "Kind": "bigram",
+      "Length": 16,
+      "Model": "rrxor-h16-s53-bigram",
+      "NextCrossEntropyBits": 0.9999846140835016,
+      "NextEntropyBits": 0.7008723482028738,
+      "NextKlBits": 0.29911226588062784,
+      "Source": "rrxor"
+    },
+    {
+      "Future4KlBits": 1.2702873705099555,
+      "Kind": "bigram",
+      "Length": 16,
+      "Model": "rrxor-h16-s67-bigram",
+      "NextCrossEntropyBits": 1.0000202769245026,
+      "NextEntropyBits": 0.7008723482028738,
+      "NextKlBits": 0.2991479287216287,
+      "Source": "rrxor"
+    },
+    {
+      "Future4KlBits": 0,
+      "Kind": "known",
+      "Length": 16,
+      "Model": "rrxor-known",
+      "NextCrossEntropyBits": 0.7008723482028738,
+      "NextEntropyBits": 0.7008723482028738,
+      "NextKlBits": 0,
+      "Source": "rrxor"
+    },
+    {
+      "Future4KlBits": 1.3081509384953394,
+      "Kind": "hmm",
+      "Length": 64,
+      "Model": "rrxor-n5-s41-hmm",
+      "NextCrossEntropyBits": 0.9960354281302735,
+      "NextEntropyBits": 0.67578125,
+      "NextKlBits": 0.32025417813027346,
+      "Source": "rrxor"
+    },
+    {
+      "Future4KlBits": 1.3616427128761894,
+      "Kind": "initial-hmm",
+      "Length": 64,
+      "Model": "rrxor-n5-s41-initial-hmm",
+      "NextCrossEntropyBits": 1.0057960591885495,
+      "NextEntropyBits": 0.67578125,
+      "NextKlBits": 0.3300148091885496,
+      "Source": "rrxor"
+    },
+    {
+      "Future4KlBits": 1.3223921218793502,
+      "Kind": "hmm",
+      "Length": 64,
+      "Model": "rrxor-n5-s53-hmm",
+      "NextCrossEntropyBits": 0.9995816439265979,
+      "NextEntropyBits": 0.67578125,
+      "NextKlBits": 0.3238003939265978,
+      "Source": "rrxor"
+    },
+    {
+      "Future4KlBits": 1.324035665424138,
+      "Kind": "initial-hmm",
+      "Length": 64,
+      "Model": "rrxor-n5-s53-initial-hmm",
+      "NextCrossEntropyBits": 0.9999113413457206,
+      "NextEntropyBits": 0.67578125,
+      "NextKlBits": 0.3241300913457206,
+      "Source": "rrxor"
+    },
+    {
+      "Future4KlBits": 1.3167186411991816,
+      "Kind": "hmm",
+      "Length": 64,
+      "Model": "rrxor-n5-s67-hmm",
+      "NextCrossEntropyBits": 0.998261500722303,
+      "NextEntropyBits": 0.67578125,
+      "NextKlBits": 0.3224802507223031,
+      "Source": "rrxor"
+    },
+    {
+      "Future4KlBits": 1.3236420198506036,
+      "Kind": "initial-hmm",
+      "Length": 64,
+      "Model": "rrxor-n5-s67-initial-hmm",
+      "NextCrossEntropyBits": 0.9988714168527103,
+      "NextEntropyBits": 0.67578125,
+      "NextKlBits": 0.3230901668527103,
+      "Source": "rrxor"
+    },
+    {
+      "Future4KlBits": 1.3224217427610412,
+      "Kind": "hmm",
+      "Length": 64,
+      "Model": "rrxor-n8-s41-hmm",
+      "NextCrossEntropyBits": 0.9996049959580703,
+      "NextEntropyBits": 0.67578125,
+      "NextKlBits": 0.3238237459580703,
+      "Source": "rrxor"
+    },
+    {
+      "Future4KlBits": 1.3279639082850485,
+      "Kind": "initial-hmm",
+      "Length": 64,
+      "Model": "rrxor-n8-s41-initial-hmm",
+      "NextCrossEntropyBits": 1.001915808725327,
+      "NextEntropyBits": 0.67578125,
+      "NextKlBits": 0.326134558725327,
+      "Source": "rrxor"
+    },
+    {
+      "Future4KlBits": 1.3229625035156785,
+      "Kind": "hmm",
+      "Length": 64,
+      "Model": "rrxor-n8-s53-hmm",
+      "NextCrossEntropyBits": 0.9996978917994321,
+      "NextEntropyBits": 0.67578125,
+      "NextKlBits": 0.3239166417994322,
+      "Source": "rrxor"
+    },
+    {
+      "Future4KlBits": 1.327364797020002,
+      "Kind": "initial-hmm",
+      "Length": 64,
+      "Model": "rrxor-n8-s53-initial-hmm",
+      "NextCrossEntropyBits": 1.001308057347467,
+      "NextEntropyBits": 0.67578125,
+      "NextKlBits": 0.325526807347467,
+      "Source": "rrxor"
+    },
+    {
+      "Future4KlBits": 1.3206317531176806,
+      "Kind": "hmm",
+      "Length": 64,
+      "Model": "rrxor-n8-s67-hmm",
+      "NextCrossEntropyBits": 0.9992081637663457,
+      "NextEntropyBits": 0.67578125,
+      "NextKlBits": 0.32342691376634564,
+      "Source": "rrxor"
+    },
+    {
+      "Future4KlBits": 1.3233894719398895,
+      "Kind": "initial-hmm",
+      "Length": 64,
+      "Model": "rrxor-n8-s67-initial-hmm",
+      "NextCrossEntropyBits": 0.9995217158321237,
+      "NextEntropyBits": 0.67578125,
+      "NextKlBits": 0.32374046583212374,
+      "Source": "rrxor"
+    },
+    {
+      "Future4KlBits": 0.5204144527959962,
+      "Kind": "rnn",
+      "Length": 64,
+      "Model": "rrxor-h3-s41",
+      "NextCrossEntropyBits": 0.8081637987936197,
+      "NextEntropyBits": 0.67578125,
+      "NextKlBits": 0.13238254879361966,
+      "Source": "rrxor"
+    },
+    {
+      "Future4KlBits": 1.1236894526816075,
+      "Kind": "rnn",
+      "Length": 64,
+      "Model": "rrxor-h3-s53",
+      "NextCrossEntropyBits": 0.9439516912470931,
+      "NextEntropyBits": 0.67578125,
+      "NextKlBits": 0.26817044124709305,
+      "Source": "rrxor"
+    },
+    {
+      "Future4KlBits": 0.5762550766988623,
+      "Kind": "rnn",
+      "Length": 64,
+      "Model": "rrxor-h3-s67",
+      "NextCrossEntropyBits": 0.8184684613167297,
+      "NextEntropyBits": 0.67578125,
+      "NextKlBits": 0.14268721131672968,
+      "Source": "rrxor"
+    },
+    {
+      "Future4KlBits": 0.1414869049467087,
+      "Kind": "rnn",
+      "Length": 64,
+      "Model": "rrxor-h8-s41",
+      "NextCrossEntropyBits": 0.7107338086050211,
+      "NextEntropyBits": 0.67578125,
+      "NextKlBits": 0.034952558605021083,
+      "Source": "rrxor"
+    },
+    {
+      "Future4KlBits": 0.12207192511199101,
+      "Kind": "rnn",
+      "Length": 64,
+      "Model": "rrxor-h8-s53",
+      "NextCrossEntropyBits": 0.7064357502379154,
+      "NextEntropyBits": 0.67578125,
+      "NextKlBits": 0.030654500237915435,
+      "Source": "rrxor"
+    },
+    {
+      "Future4KlBits": 0.093254906026344,
+      "Kind": "rnn",
+      "Length": 64,
+      "Model": "rrxor-h8-s67",
+      "NextCrossEntropyBits": 0.6986577461053695,
+      "NextEntropyBits": 0.67578125,
+      "NextKlBits": 0.02287649610536943,
+      "Source": "rrxor"
+    },
+    {
+      "Future4KlBits": 0.05682977012015033,
+      "Kind": "rnn",
+      "Length": 64,
+      "Model": "rrxor-h16-s41",
+      "NextCrossEntropyBits": 0.6902796425130813,
+      "NextEntropyBits": 0.67578125,
+      "NextKlBits": 0.014498392513081302,
+      "Source": "rrxor"
+    },
+    {
+      "Future4KlBits": 0.05858940111135987,
+      "Kind": "rnn",
+      "Length": 64,
+      "Model": "rrxor-h16-s53",
+      "NextCrossEntropyBits": 0.6904592606383093,
+      "NextEntropyBits": 0.67578125,
+      "NextKlBits": 0.0146780106383093,
+      "Source": "rrxor"
+    },
+    {
+      "Future4KlBits": 0.023033410535876424,
+      "Kind": "rnn",
+      "Length": 64,
+      "Model": "rrxor-h16-s67",
+      "NextCrossEntropyBits": 0.6813553927764604,
+      "NextEntropyBits": 0.67578125,
+      "NextKlBits": 0.005574142776460415,
+      "Source": "rrxor"
+    },
+    {
+      "Future4KlBits": 1.3242175283214406,
+      "Kind": "bigram",
+      "Length": 64,
+      "Model": "rrxor-h3-s41-bigram",
+      "NextCrossEntropyBits": 1.000009934160273,
+      "NextEntropyBits": 0.67578125,
+      "NextKlBits": 0.32422868416027306,
+      "Source": "rrxor"
+    },
+    {
+      "Future4KlBits": 1.3242060727590377,
+      "Kind": "bigram",
+      "Length": 64,
+      "Model": "rrxor-h3-s53-bigram",
+      "NextCrossEntropyBits": 0.9999940018120159,
+      "NextEntropyBits": 0.67578125,
+      "NextKlBits": 0.32421275181201586,
+      "Source": "rrxor"
+    },
+    {
+      "Future4KlBits": 1.3242296912193412,
+      "Kind": "bigram",
+      "Length": 64,
+      "Model": "rrxor-h3-s67-bigram",
+      "NextCrossEntropyBits": 1.000017279319966,
+      "NextEntropyBits": 0.67578125,
+      "NextKlBits": 0.324236029319966,
+      "Source": "rrxor"
+    },
+    {
+      "Future4KlBits": 1.3242175283214406,
+      "Kind": "bigram",
+      "Length": 64,
+      "Model": "rrxor-h8-s41-bigram",
+      "NextCrossEntropyBits": 1.000009934160273,
+      "NextEntropyBits": 0.67578125,
+      "NextKlBits": 0.32422868416027306,
+      "Source": "rrxor"
+    },
+    {
+      "Future4KlBits": 1.3242060727590377,
+      "Kind": "bigram",
+      "Length": 64,
+      "Model": "rrxor-h8-s53-bigram",
+      "NextCrossEntropyBits": 0.9999940018120159,
+      "NextEntropyBits": 0.67578125,
+      "NextKlBits": 0.32421275181201586,
+      "Source": "rrxor"
+    },
+    {
+      "Future4KlBits": 1.3242296912193412,
+      "Kind": "bigram",
+      "Length": 64,
+      "Model": "rrxor-h8-s67-bigram",
+      "NextCrossEntropyBits": 1.000017279319966,
+      "NextEntropyBits": 0.67578125,
+      "NextKlBits": 0.324236029319966,
+      "Source": "rrxor"
+    },
+    {
+      "Future4KlBits": 1.3242175283214406,
+      "Kind": "bigram",
+      "Length": 64,
+      "Model": "rrxor-h16-s41-bigram",
+      "NextCrossEntropyBits": 1.000009934160273,
+      "NextEntropyBits": 0.67578125,
+      "NextKlBits": 0.32422868416027306,
+      "Source": "rrxor"
+    },
+    {
+      "Future4KlBits": 1.3242060727590377,
+      "Kind": "bigram",
+      "Length": 64,
+      "Model": "rrxor-h16-s53-bigram",
+      "NextCrossEntropyBits": 0.9999940018120159,
+      "NextEntropyBits": 0.67578125,
+      "NextKlBits": 0.32421275181201586,
+      "Source": "rrxor"
+    },
+    {
+      "Future4KlBits": 1.3242296912193412,
+      "Kind": "bigram",
+      "Length": 64,
+      "Model": "rrxor-h16-s67-bigram",
+      "NextCrossEntropyBits": 1.000017279319966,
+      "NextEntropyBits": 0.67578125,
+      "NextKlBits": 0.324236029319966,
+      "Source": "rrxor"
+    },
+    {
+      "Future4KlBits": 0,
+      "Kind": "known",
+      "Length": 64,
+      "Model": "rrxor-known",
+      "NextCrossEntropyBits": 0.67578125,
+      "NextEntropyBits": 0.67578125,
+      "NextKlBits": 0,
+      "Source": "rrxor"
+    }
+  ],
+  "SourceHashes": [
+    {
+      "File": "ComparisonSupport.fsx",
+      "Sha256": "17CC4E8DFC086C6A35ADECC3A21AE2D5C4EE2BAC831C2820DC99242583724297"
+    },
+    {
+      "File": "run-hmm-comparison.fsx",
+      "Sha256": "4D22472504FD17490BD24DEB8085F3183D39DCE91B0F5FA504E6E1642E48A446"
+    },
+    {
+      "File": "SmallRnn.fs",
+      "Sha256": "E2A4C965D61D9E128B9B9F8857D69E24A527ABD4E9386DD61EC506B40A05DABD"
+    },
+    {
+      "File": "DenseHmm.fs",
+      "Sha256": "6642B49BFC29C36206A724D4D8675DCAE2988341520788553EA507E0428656FE"
+    },
+    {
+      "File": "BeliefProbe.fs",
+      "Sha256": "2C2604D931C9016177AEF91D5D36E635BC906340A883C32B9DBC28980C1A9C8A"
+    },
+    {
+      "File": "ResearchRandom.fs",
+      "Sha256": "4422C5EE4380A698FF479F0082C44E1453990C48AA034B9842719C4E0E7C79FF"
+    },
+    {
+      "File": "Mess3.fs",
+      "Sha256": "EB93D9835421732A71553848D6A7A8946DB2335A3F3AD1BE9C8F9CA421602422"
+    },
+    {
+      "File": "PredictiveState.fs",
+      "Sha256": "D0B755DD1D65C9F5FBB8A6B960AB851995EE35A8D3910192A3857DBD696AF950"
+    }
+  ]
+}

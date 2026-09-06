@@ -72,6 +72,11 @@
     <Compile Include="../../src/Research.FSharp/PredictiveStateLaws.fs" Link="Research/PredictiveStateLaws.fs" />
     <Compile Include="../../src/Research.FSharp/RrxorEvaluation.fs" Link="Research/RrxorEvaluation.fs" />
     <Compile Include="PredictiveState.Tests.fs" />
+    <Compile Include="../../src/Research.FSharp/DenseHmm.fs" Link="Research/DenseHmm.fs" />
+    <Compile Include="DenseHmm.Tests.fs" />
+    <Compile Include="../../src/Research.FSharp/LagChangeDetection.fs" Link="Research/LagChangeDetection.fs" />
+    <Compile Include="../../src/Research.FSharp/SharedFactorFilter.fs" Link="Research/SharedFactorFilter.fs" />
+    <Compile Include="FactoredPredictive.Tests.fs" />
     <Compile Include="Algebra/Spine.AsyncProtocol.Properties.fs" />
     <Compile Include="ProbabilitySemiring.CrossVerify.Tests.fs" />
     <Compile Include="YinYang.Tests.fs" />

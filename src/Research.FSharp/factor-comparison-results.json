@@ -1,0 +1,3232 @@
+{
+  "Algebra": {
+    "DirectSumDeterminant": 1,
+    "RotationDimensions": 2,
+    "RotationPrediction": 0.38,
+    "SquaredPrincipalCosine": 0.5
+  },
+  "Calls": 4096,
+  "Complete": true,
+  "ContextLength": 64,
+  "Contexts": 256,
+  "DataDomain": 51,
+  "Measurements": [
+    {
+      "Model": "n2-e0.0-s41-Dense",
+      "Repetition": 0,
+      "Calls": 4096,
+      "ElapsedMilliseconds": 9.044,
+      "ProcessCpuMilliseconds": 9.059000000000196,
+      "ThreadAllocatedBytes": 917504,
+      "Checksum": 1027.838827189817
+    },
+    {
+      "Model": "n2-e0.0-s41-TensorJoint",
+      "Repetition": 0,
+      "Calls": 4096,
+      "ElapsedMilliseconds": 9.1043,
+      "ProcessCpuMilliseconds": 9.100000000000364,
+      "ThreadAllocatedBytes": 1507328,
+      "Checksum": 1027.838827189817
+    },
+    {
+      "Model": "n2-e0.0-s41-ProjectedProduct",
+      "Repetition": 0,
+      "Calls": 4096,
+      "ElapsedMilliseconds": 5.3042,
+      "ProcessCpuMilliseconds": 5.304999999999836,
+      "ThreadAllocatedBytes": 1277952,
+      "Checksum": 1608.3330118924312
+    },
+    {
+      "Model": "n2-e0.0-s53-Dense",
+      "Repetition": 0,
+      "Calls": 4096,
+      "ElapsedMilliseconds": 8.45,
+      "ProcessCpuMilliseconds": 8.451000000000022,
+      "ThreadAllocatedBytes": 917504,
+      "Checksum": 1090.1154022547962
+    },
+    {
+      "Model": "n2-e0.0-s53-TensorJoint",
+      "Repetition": 0,
+      "Calls": 4096,
+      "ElapsedMilliseconds": 8.3973,
+      "ProcessCpuMilliseconds": 8.393000000000029,
+      "ThreadAllocatedBytes": 1507328,
+      "Checksum": 1090.1154022547962
+    },
+    {
+      "Model": "n2-e0.0-s53-ProjectedProduct",
+      "Repetition": 0,
+      "Calls": 4096,
+      "ElapsedMilliseconds": 5.1508,
+      "ProcessCpuMilliseconds": 5.15099999999984,
+      "ThreadAllocatedBytes": 1277952,
+      "Checksum": 1607.7769713973373
+    },
+    {
+      "Model": "n2-e0.0-s67-Dense",
+      "Repetition": 0,
+      "Calls": 4096,
+      "ElapsedMilliseconds": 8.5895,
+      "ProcessCpuMilliseconds": 8.586999999999989,
+      "ThreadAllocatedBytes": 917504,
+      "Checksum": 969.9658898091079
+    },
+    {
+      "Model": "n2-e0.0-s67-TensorJoint",
+      "Repetition": 0,
+      "Calls": 4096,
+      "ElapsedMilliseconds": 8.8269,
+      "ProcessCpuMilliseconds": 8.767999999999574,
+      "ThreadAllocatedBytes": 1507328,
+      "Checksum": 969.9658898091079
+    },
+    {
+      "Model": "n2-e0.0-s67-ProjectedProduct",
+      "Repetition": 0,
+      "Calls": 4096,
+      "ElapsedMilliseconds": 5.2005,
+      "ProcessCpuMilliseconds": 5.201000000000022,
+      "ThreadAllocatedBytes": 1277952,
+      "Checksum": 1476.8378750783254
+    },
+    {
+      "Model": "n2-e0.2-s41-Dense",
+      "Repetition": 0,
+      "Calls": 4096,
+      "ElapsedMilliseconds": 8.4934,
+      "ProcessCpuMilliseconds": 8.494000000000142,
+      "ThreadAllocatedBytes": 917504,
+      "Checksum": 1053.1687343899182
+    },
+    {
+      "Model": "n2-e0.2-s41-TensorJoint",
+      "Repetition": 0,
+      "Calls": 4096,
+      "ElapsedMilliseconds": 8.7354,
+      "ProcessCpuMilliseconds": 8.729999999999563,
+      "ThreadAllocatedBytes": 1507328,
+      "Checksum": 1053.1687343899182
+    },
+    {
+      "Model": "n2-e0.2-s41-ProjectedProduct",
+      "Repetition": 0,
+      "Calls": 4096,
+      "ElapsedMilliseconds": 5.2244,
+      "ProcessCpuMilliseconds": 5.224999999999909,
+      "ThreadAllocatedBytes": 1277952,
+      "Checksum": 1641.0961373863074
+    },
+    {
+      "Model": "n2-e0.2-s53-Dense",
+      "Repetition": 0,
+      "Calls": 4096,
+      "ElapsedMilliseconds": 8.5485,
+      "ProcessCpuMilliseconds": 8.548999999999978,
+      "ThreadAllocatedBytes": 917504,
+      "Checksum": 1107.9730496639224
+    },
+    {
+      "Model": "n2-e0.2-s53-TensorJoint",
+      "Repetition": 0,
+      "Calls": 4096,
+      "ElapsedMilliseconds": 8.6803,
+      "ProcessCpuMilliseconds": 8.684000000000196,
+      "ThreadAllocatedBytes": 1507328,
+      "Checksum": 1107.9730496639224
+    },
+    {
+      "Model": "n2-e0.2-s53-ProjectedProduct",
+      "Repetition": 0,
+      "Calls": 4096,
+      "ElapsedMilliseconds": 5.2209,
+      "ProcessCpuMilliseconds": 5.221000000000004,
+      "ThreadAllocatedBytes": 1277952,
+      "Checksum": 1658.506574230382
+    },
+    {
+      "Model": "n2-e0.2-s67-Dense",
+      "Repetition": 0,
+      "Calls": 4096,
+      "ElapsedMilliseconds": 8.8645,
+      "ProcessCpuMilliseconds": 8.842000000000098,
+      "ThreadAllocatedBytes": 917504,
+      "Checksum": 1054.2010150876433
+    },
+    {
+      "Model": "n2-e0.2-s67-TensorJoint",
+      "Repetition": 0,
+      "Calls": 4096,
+      "ElapsedMilliseconds": 8.3731,
+      "ProcessCpuMilliseconds": 8.36700000000019,
+      "ThreadAllocatedBytes": 1507328,
+      "Checksum": 1054.2010150876433
+    },
+    {
+      "Model": "n2-e0.2-s67-ProjectedProduct",
+      "Repetition": 0,
+      "Calls": 4096,
+      "ElapsedMilliseconds": 5.2074,
+      "ProcessCpuMilliseconds": 5.208000000000084,
+      "ThreadAllocatedBytes": 1277952,
+      "Checksum": 1633.3988535647939
+    },
+    {
+      "Model": "n3-e0.0-s41-Dense",
+      "Repetition": 0,
+      "Calls": 4096,
+      "ElapsedMilliseconds": 16.9782,
+      "ProcessCpuMilliseconds": 16.976000000000113,
+      "ThreadAllocatedBytes": 1310720,
+      "Checksum": 501.7959182561543
+    },
+    {
+      "Model": "n3-e0.0-s41-TensorJoint",
+      "Repetition": 0,
+      "Calls": 4096,
+      "ElapsedMilliseconds": 19.5232,
+      "ProcessCpuMilliseconds": 19.523999999999887,
+      "ThreadAllocatedBytes": 2228224,
+      "Checksum": 501.7959182561543
+    },
+    {
+      "Model": "n3-e0.0-s41-ProjectedProduct",
+      "Repetition": 0,
+      "Calls": 4096,
+      "ElapsedMilliseconds": 6.7678,
+      "ProcessCpuMilliseconds": 6.768999999999778,
+      "ThreadAllocatedBytes": 1671168,
+      "Checksum": 1520.2205037769718
+    },
+    {
+      "Model": "n3-e0.0-s53-Dense",
+      "Repetition": 0,
+      "Calls": 4096,
+      "ElapsedMilliseconds": 17.3121,
+      "ProcessCpuMilliseconds": 17.30199999999968,
+      "ThreadAllocatedBytes": 1310720,
+      "Checksum": 499.1312510672187
+    },
+    {
+      "Model": "n3-e0.0-s53-TensorJoint",
+      "Repetition": 0,
+      "Calls": 4096,
+      "ElapsedMilliseconds": 18.7726,
+      "ProcessCpuMilliseconds": 19.33100000000013,
+      "ThreadAllocatedBytes": 2228224,
+      "Checksum": 499.1312510672187
+    },
+    {
+      "Model": "n3-e0.0-s53-ProjectedProduct",
+      "Repetition": 0,
+      "Calls": 4096,
+      "ElapsedMilliseconds": 6.5786,
+      "ProcessCpuMilliseconds": 6.581000000000131,
+      "ThreadAllocatedBytes": 1671168,
+      "Checksum": 1379.1172738191076
+    },
+    {
+      "Model": "n3-e0.0-s67-Dense",
+      "Repetition": 0,
+      "Calls": 4096,
+      "ElapsedMilliseconds": 17.28,
+      "ProcessCpuMilliseconds": 17.2800000000002,
+      "ThreadAllocatedBytes": 1310720,
+      "Checksum": 535.1064019225474
+    },
+    {
+      "Model": "n3-e0.0-s67-TensorJoint",
+      "Repetition": 0,
+      "Calls": 4096,
+      "ElapsedMilliseconds": 19.5074,
+      "ProcessCpuMilliseconds": 19.506999999999607,
+      "ThreadAllocatedBytes": 2228224,
+      "Checksum": 535.1064019225474
+    },
+    {
+      "Model": "n3-e0.0-s67-ProjectedProduct",
+      "Repetition": 0,
+      "Calls": 4096,
+      "ElapsedMilliseconds": 6.5968,
+      "ProcessCpuMilliseconds": 6.597999999999956,
+      "ThreadAllocatedBytes": 1671168,
+      "Checksum": 1437.44269570307
+    },
+    {
+      "Model": "n3-e0.2-s41-Dense",
+      "Repetition": 0,
+      "Calls": 4096,
+      "ElapsedMilliseconds": 16.5083,
+      "ProcessCpuMilliseconds": 16.503999999999905,
+      "ThreadAllocatedBytes": 1310720,
+      "Checksum": 513.4008816517847
+    },
+    {
+      "Model": "n3-e0.2-s41-TensorJoint",
+      "Repetition": 0,
+      "Calls": 4096,
+      "ElapsedMilliseconds": 18.5876,
+      "ProcessCpuMilliseconds": 18.588999999999942,
+      "ThreadAllocatedBytes": 2228224,
+      "Checksum": 513.4008816517847
+    },
+    {
+      "Model": "n3-e0.2-s41-ProjectedProduct",
+      "Repetition": 0,
+      "Calls": 4096,
+      "ElapsedMilliseconds": 6.6405,
+      "ProcessCpuMilliseconds": 6.640999999999622,
+      "ThreadAllocatedBytes": 1671168,
+      "Checksum": 1480.2160430297927
+    },
+    {
+      "Model": "n3-e0.2-s53-Dense",
+      "Repetition": 0,
+      "Calls": 4096,
+      "ElapsedMilliseconds": 16.7895,
+      "ProcessCpuMilliseconds": 17.098999999999705,
+      "ThreadAllocatedBytes": 1310720,
+      "Checksum": 533.5888244652585
+    },
+    {
+      "Model": "n3-e0.2-s53-TensorJoint",
+      "Repetition": 0,
+      "Calls": 4096,
+      "ElapsedMilliseconds": 18.9937,
+      "ProcessCpuMilliseconds": 18.963000000000193,
+      "ThreadAllocatedBytes": 2228224,
+      "Checksum": 533.5888244652585
+    },
+    {
+      "Model": "n3-e0.2-s53-ProjectedProduct",
+      "Repetition": 0,
+      "Calls": 4096,
+      "ElapsedMilliseconds": 6.5824,
+      "ProcessCpuMilliseconds": 6.583000000000084,
+      "ThreadAllocatedBytes": 1671168,
+      "Checksum": 1416.0562048242534
+    },
+    {
+      "Model": "n3-e0.2-s67-Dense",
+      "Repetition": 0,
+      "Calls": 4096,
+      "ElapsedMilliseconds": 16.937,
+      "ProcessCpuMilliseconds": 16.936999999999898,
+      "ThreadAllocatedBytes": 1310720,
+      "Checksum": 534.8230787219819
+    },
+    {
+      "Model": "n3-e0.2-s67-TensorJoint",
+      "Repetition": 0,
+      "Calls": 4096,
+      "ElapsedMilliseconds": 19.3145,
+      "ProcessCpuMilliseconds": 19.315000000000055,
+      "ThreadAllocatedBytes": 2228224,
+      "Checksum": 534.8230787219819
+    },
+    {
+      "Model": "n3-e0.2-s67-ProjectedProduct",
+      "Repetition": 0,
+      "Calls": 4096,
+      "ElapsedMilliseconds": 6.9082,
+      "ProcessCpuMilliseconds": 6.893000000000029,
+      "ThreadAllocatedBytes": 1671168,
+      "Checksum": 1447.3291773826882
+    },
+    {
+      "Model": "n4-e0.0-s41-Dense",
+      "Repetition": 0,
+      "Calls": 4096,
+      "ElapsedMilliseconds": 55.5376,
+      "ProcessCpuMilliseconds": 55.39300000000003,
+      "ThreadAllocatedBytes": 2097152,
+      "Checksum": 246.68494007674022
+    },
+    {
+      "Model": "n4-e0.0-s41-TensorJoint",
+      "Repetition": 0,
+      "Calls": 4096,
+      "ElapsedMilliseconds": 42.0113,
+      "ProcessCpuMilliseconds": 42.207000000000335,
+      "ThreadAllocatedBytes": 3604480,
+      "Checksum": 246.68494007674022
+    },
+    {
+      "Model": "n4-e0.0-s41-ProjectedProduct",
+      "Repetition": 0,
+      "Calls": 4096,
+      "ElapsedMilliseconds": 6.7687,
+      "ProcessCpuMilliseconds": 6.768999999999778,
+      "ThreadAllocatedBytes": 2195456,
+      "Checksum": 1396.2018866826493
+    },
+    {
+      "Model": "n4-e0.0-s53-Dense",
+      "Repetition": 0,
+      "Calls": 4096,
+      "ElapsedMilliseconds": 58.4939,
+      "ProcessCpuMilliseconds": 58.49499999999989,
+      "ThreadAllocatedBytes": 2097152,
+      "Checksum": 281.6226294200232
+    },
+    {
+      "Model": "n4-e0.0-s53-TensorJoint",
+      "Repetition": 0,
+      "Calls": 4096,
+      "ElapsedMilliseconds": 42.6268,
+      "ProcessCpuMilliseconds": 42.56899999999996,
+      "ThreadAllocatedBytes": 3604480,
+      "Checksum": 281.6226294200232
+    },
+    {
+      "Model": "n4-e0.0-s53-ProjectedProduct",
+      "Repetition": 0,
+      "Calls": 4096,
+      "ElapsedMilliseconds": 7.0434,
+      "ProcessCpuMilliseconds": 7.044000000000324,
+      "ThreadAllocatedBytes": 2195456,
+      "Checksum": 1340.675932295379
+    },
+    {
+      "Model": "n4-e0.0-s67-Dense",
+      "Repetition": 0,
+      "Calls": 4096,
+      "ElapsedMilliseconds": 56.2759,
+      "ProcessCpuMilliseconds": 56.22699999999986,
+      "ThreadAllocatedBytes": 2097152,
+      "Checksum": 260.96673574144233
+    },
+    {
+      "Model": "n4-e0.0-s67-TensorJoint",
+      "Repetition": 0,
+      "Calls": 4096,
+      "ElapsedMilliseconds": 41.9368,
+      "ProcessCpuMilliseconds": 41.89599999999973,
+      "ThreadAllocatedBytes": 3604480,
+      "Checksum": 260.96673574144233
+    },
+    {
+      "Model": "n4-e0.0-s67-ProjectedProduct",
+      "Repetition": 0,
+      "Calls": 4096,
+      "ElapsedMilliseconds": 6.8123,
+      "ProcessCpuMilliseconds": 6.814000000000306,
+      "ThreadAllocatedBytes": 2195456,
+      "Checksum": 1443.99932319568
+    },
+    {
+      "Model": "n4-e0.2-s41-Dense",
+      "Repetition": 0,
+      "Calls": 4096,
+      "ElapsedMilliseconds": 57.6226,
+      "ProcessCpuMilliseconds": 57.577999999999975,
+      "ThreadAllocatedBytes": 2097152,
+      "Checksum": 253.53873093502267
+    },
+    {
+      "Model": "n4-e0.2-s41-TensorJoint",
+      "Repetition": 0,
+      "Calls": 4096,
+      "ElapsedMilliseconds": 41.8998,
+      "ProcessCpuMilliseconds": 41.88000000000011,
+      "ThreadAllocatedBytes": 3604480,
+      "Checksum": 253.53873093502244
+    },
+    {
+      "Model": "n4-e0.2-s41-ProjectedProduct",
+      "Repetition": 0,
+      "Calls": 4096,
+      "ElapsedMilliseconds": 6.7585,
+      "ProcessCpuMilliseconds": 6.760000000000218,
+      "ThreadAllocatedBytes": 2195456,
+      "Checksum": 1390.1836409019916
+    },
+    {
+      "Model": "n4-e0.2-s53-Dense",
+      "Repetition": 0,
+      "Calls": 4096,
+      "ElapsedMilliseconds": 57.5471,
+      "ProcessCpuMilliseconds": 57.52799999999979,
+      "ThreadAllocatedBytes": 2097152,
+      "Checksum": 273.5324278497897
+    },
+    {
+      "Model": "n4-e0.2-s53-TensorJoint",
+      "Repetition": 0,
+      "Calls": 4096,
+      "ElapsedMilliseconds": 42.5066,
+      "ProcessCpuMilliseconds": 42.50599999999986,
+      "ThreadAllocatedBytes": 3604480,
+      "Checksum": 273.53242784978966
+    },
+    {
+      "Model": "n4-e0.2-s53-ProjectedProduct",
+      "Repetition": 0,
+      "Calls": 4096,
+      "ElapsedMilliseconds": 6.9173,
+      "ProcessCpuMilliseconds": 6.91800000000012,
+      "ThreadAllocatedBytes": 2195456,
+      "Checksum": 1334.7548294339922
+    },
+    {
+      "Model": "n4-e0.2-s67-Dense",
+      "Repetition": 0,
+      "Calls": 4096,
+      "ElapsedMilliseconds": 57.6818,
+      "ProcessCpuMilliseconds": 57.66600000000017,
+      "ThreadAllocatedBytes": 2097152,
+      "Checksum": 279.86916799373074
+    },
+    {
+      "Model": "n4-e0.2-s67-TensorJoint",
+      "Repetition": 0,
+      "Calls": 4096,
+      "ElapsedMilliseconds": 42.93,
+      "ProcessCpuMilliseconds": 44.66200000000026,
+      "ThreadAllocatedBytes": 3604480,
+      "Checksum": 279.86916799373074
+    },
+    {
+      "Model": "n4-e0.2-s67-ProjectedProduct",
+      "Repetition": 0,
+      "Calls": 4096,
+      "ElapsedMilliseconds": 6.7133,
+      "ProcessCpuMilliseconds": 6.7150000000001455,
+      "ThreadAllocatedBytes": 2195456,
+      "Checksum": 1416.4299432906346
+    },
+    {
+      "Model": "n2-e0.0-s41-TensorJoint",
+      "Repetition": 1,
+      "Calls": 4096,
+      "ElapsedMilliseconds": 8.7101,
+      "ProcessCpuMilliseconds": 8.707999999999629,
+      "ThreadAllocatedBytes": 1507328,
+      "Checksum": 1027.838827189817
+    },
+    {
+      "Model": "n2-e0.0-s41-ProjectedProduct",
+      "Repetition": 1,
+      "Calls": 4096,
+      "ElapsedMilliseconds": 5.3477,
+      "ProcessCpuMilliseconds": 5.34900000000016,
+      "ThreadAllocatedBytes": 1277952,
+      "Checksum": 1608.3330118924312
+    },
+    {
+      "Model": "n2-e0.0-s53-Dense",
+      "Repetition": 1,
+      "Calls": 4096,
+      "ElapsedMilliseconds": 8.9153,
+      "ProcessCpuMilliseconds": 8.916000000000167,
+      "ThreadAllocatedBytes": 917504,
+      "Checksum": 1090.1154022547962
+    },
+    {
+      "Model": "n2-e0.0-s53-TensorJoint",
+      "Repetition": 1,
+      "Calls": 4096,
+      "ElapsedMilliseconds": 8.5025,
+      "ProcessCpuMilliseconds": 8.493999999999687,
+      "ThreadAllocatedBytes": 1507328,
+      "Checksum": 1090.1154022547962
+    },
+    {
+      "Model": "n2-e0.0-s53-ProjectedProduct",
+      "Repetition": 1,
+      "Calls": 4096,
+      "ElapsedMilliseconds": 5.1778,
+      "ProcessCpuMilliseconds": 5.170999999999367,
+      "ThreadAllocatedBytes": 1277952,
+      "Checksum": 1607.7769713973373
+    },
+    {
+      "Model": "n2-e0.0-s67-Dense",
+      "Repetition": 1,
+      "Calls": 4096,
+      "ElapsedMilliseconds": 8.5161,
+      "ProcessCpuMilliseconds": 8.516000000000531,
+      "ThreadAllocatedBytes": 917504,
+      "Checksum": 969.9658898091079
+    },
+    {
+      "Model": "n2-e0.0-s67-TensorJoint",
+      "Repetition": 1,
+      "Calls": 4096,
+      "ElapsedMilliseconds": 8.2556,
+      "ProcessCpuMilliseconds": 8.256000000000313,
+      "ThreadAllocatedBytes": 1507328,
+      "Checksum": 969.9658898091079
+    },
+    {
+      "Model": "n2-e0.0-s67-ProjectedProduct",
+      "Repetition": 1,
+      "Calls": 4096,
+      "ElapsedMilliseconds": 5.2682,
+      "ProcessCpuMilliseconds": 5.268000000000029,
+      "ThreadAllocatedBytes": 1277952,
+      "Checksum": 1476.8378750783254
+    },
+    {
+      "Model": "n2-e0.2-s41-Dense",
+      "Repetition": 1,
+      "Calls": 4096,
+      "ElapsedMilliseconds": 8.4589,
+      "ProcessCpuMilliseconds": 8.459000000000742,
+      "ThreadAllocatedBytes": 917504,
+      "Checksum": 1053.1687343899182
+    },
+    {
+      "Model": "n2-e0.2-s41-TensorJoint",
+      "Repetition": 1,
+      "Calls": 4096,
+      "ElapsedMilliseconds": 8.5604,
+      "ProcessCpuMilliseconds": 8.561000000000604,
+      "ThreadAllocatedBytes": 1507328,
+      "Checksum": 1053.1687343899182
+    },
+    {
+      "Model": "n2-e0.2-s41-ProjectedProduct",
+      "Repetition": 1,
+      "Calls": 4096,
+      "ElapsedMilliseconds": 5.126,
+      "ProcessCpuMilliseconds": 5.1270000000004075,
+      "ThreadAllocatedBytes": 1277952,
+      "Checksum": 1641.0961373863074
+    },
+    {
+      "Model": "n2-e0.2-s53-Dense",
+      "Repetition": 1,
+      "Calls": 4096,
+      "ElapsedMilliseconds": 8.458,
+      "ProcessCpuMilliseconds": 8.457999999999629,
+      "ThreadAllocatedBytes": 917504,
+      "Checksum": 1107.9730496639224
+    },
+    {
+      "Model": "n2-e0.2-s53-TensorJoint",
+      "Repetition": 1,
+      "Calls": 4096,
+      "ElapsedMilliseconds": 8.7082,
+      "ProcessCpuMilliseconds": 8.653999999999542,
+      "ThreadAllocatedBytes": 1507328,
+      "Checksum": 1107.9730496639224
+    },
+    {
+      "Model": "n2-e0.2-s53-ProjectedProduct",
+      "Repetition": 1,
+      "Calls": 4096,
+      "ElapsedMilliseconds": 5.2055,
+      "ProcessCpuMilliseconds": 5.192000000000007,
+      "ThreadAllocatedBytes": 1277952,
+      "Checksum": 1658.506574230382
+    },
+    {
+      "Model": "n2-e0.2-s67-Dense",
+      "Repetition": 1,
+      "Calls": 4096,
+      "ElapsedMilliseconds": 8.4617,
+      "ProcessCpuMilliseconds": 8.472999999999956,
+      "ThreadAllocatedBytes": 917504,
+      "Checksum": 1054.2010150876433
+    },
+    {
+      "Model": "n2-e0.2-s67-TensorJoint",
+      "Repetition": 1,
+      "Calls": 4096,
+      "ElapsedMilliseconds": 8.3758,
+      "ProcessCpuMilliseconds": 8.375,
+      "ThreadAllocatedBytes": 1507328,
+      "Checksum": 1054.2010150876433
+    },
+    {
+      "Model": "n2-e0.2-s67-ProjectedProduct",
+      "Repetition": 1,
+      "Calls": 4096,
+      "ElapsedMilliseconds": 5.1898,
+      "ProcessCpuMilliseconds": 5.190000000000509,
+      "ThreadAllocatedBytes": 1277952,
+      "Checksum": 1633.3988535647939
+    },
+    {
+      "Model": "n3-e0.0-s41-Dense",
+      "Repetition": 1,
+      "Calls": 4096,
+      "ElapsedMilliseconds": 17.1701,
+      "ProcessCpuMilliseconds": 17.171000000000276,
+      "ThreadAllocatedBytes": 1310720,
+      "Checksum": 501.7959182561543
+    },
+    {
+      "Model": "n3-e0.0-s41-TensorJoint",
+      "Repetition": 1,
+      "Calls": 4096,
+      "ElapsedMilliseconds": 19.4074,
+      "ProcessCpuMilliseconds": 19.350999999999658,
+      "ThreadAllocatedBytes": 2228224,
+      "Checksum": 501.7959182561543
+    },
+    {
+      "Model": "n3-e0.0-s41-ProjectedProduct",
+      "Repetition": 1,
+      "Calls": 4096,
+      "ElapsedMilliseconds": 6.6027,
+      "ProcessCpuMilliseconds": 6.594999999999345,
+      "ThreadAllocatedBytes": 1671168,
+      "Checksum": 1520.2205037769718
+    },
+    {
+      "Model": "n3-e0.0-s53-Dense",
+      "Repetition": 1,
+      "Calls": 4096,
+      "ElapsedMilliseconds": 16.8595,
+      "ProcessCpuMilliseconds": 16.860000000000582,
+      "ThreadAllocatedBytes": 1310720,
+      "Checksum": 499.1312510672187
+    },
+    {
+      "Model": "n3-e0.0-s53-TensorJoint",
+      "Repetition": 1,
+      "Calls": 4096,
+      "ElapsedMilliseconds": 19.428,
+      "ProcessCpuMilliseconds": 19.429000000000087,
+      "ThreadAllocatedBytes": 2228224,
+      "Checksum": 499.1312510672187
+    },
+    {
+      "Model": "n3-e0.0-s53-ProjectedProduct",
+      "Repetition": 1,
+      "Calls": 4096,
+      "ElapsedMilliseconds": 6.6778,
+      "ProcessCpuMilliseconds": 6.678999999999178,
+      "ThreadAllocatedBytes": 1671168,
+      "Checksum": 1379.1172738191076
+    },
+    {
+      "Model": "n3-e0.0-s67-Dense",
+      "Repetition": 1,
+      "Calls": 4096,
+      "ElapsedMilliseconds": 17.3651,
+      "ProcessCpuMilliseconds": 17.679000000000087,
+      "ThreadAllocatedBytes": 1310720,
+      "Checksum": 535.1064019225474
+    },
+    {
+      "Model": "n3-e0.0-s67-TensorJoint",
+      "Repetition": 1,
+      "Calls": 4096,
+      "ElapsedMilliseconds": 19.4298,
+      "ProcessCpuMilliseconds": 19.43000000000029,
+      "ThreadAllocatedBytes": 2228224,
+      "Checksum": 535.1064019225474
+    },
+    {
+      "Model": "n3-e0.0-s67-ProjectedProduct",
+      "Repetition": 1,
+      "Calls": 4096,
+      "ElapsedMilliseconds": 6.7128,
+      "ProcessCpuMilliseconds": 6.712999999999738,
+      "ThreadAllocatedBytes": 1671168,
+      "Checksum": 1437.44269570307
+    },
+    {
+      "Model": "n3-e0.2-s41-Dense",
+      "Repetition": 1,
+      "Calls": 4096,
+      "ElapsedMilliseconds": 17.3158,
+      "ProcessCpuMilliseconds": 17.317000000000007,
+      "ThreadAllocatedBytes": 1310720,
+      "Checksum": 513.4008816517847
+    },
+    {
+      "Model": "n3-e0.2-s41-TensorJoint",
+      "Repetition": 1,
+      "Calls": 4096,
+      "ElapsedMilliseconds": 19.5481,
+      "ProcessCpuMilliseconds": 19.547999999999774,
+      "ThreadAllocatedBytes": 2228224,
+      "Checksum": 513.4008816517847
+    },
+    {
+      "Model": "n3-e0.2-s41-ProjectedProduct",
+      "Repetition": 1,
+      "Calls": 4096,
+      "ElapsedMilliseconds": 6.9035,
+      "ProcessCpuMilliseconds": 7.880999999999403,
+      "ThreadAllocatedBytes": 1671168,
+      "Checksum": 1480.2160430297927
+    },
+    {
+      "Model": "n3-e0.2-s53-Dense",
+      "Repetition": 1,
+      "Calls": 4096,
+      "ElapsedMilliseconds": 16.6425,
+      "ProcessCpuMilliseconds": 16.626000000000204,
+      "ThreadAllocatedBytes": 1310720,
+      "Checksum": 533.5888244652585
+    },
+    {
+      "Model": "n3-e0.2-s53-TensorJoint",
+      "Repetition": 1,
+      "Calls": 4096,
+      "ElapsedMilliseconds": 19.3526,
+      "ProcessCpuMilliseconds": 19.353000000000065,
+      "ThreadAllocatedBytes": 2228224,
+      "Checksum": 533.5888244652585
+    },
+    {
+      "Model": "n3-e0.2-s53-ProjectedProduct",
+      "Repetition": 1,
+      "Calls": 4096,
+      "ElapsedMilliseconds": 6.5907,
+      "ProcessCpuMilliseconds": 6.5919999999996435,
+      "ThreadAllocatedBytes": 1671168,
+      "Checksum": 1416.0562048242534
+    },
+    {
+      "Model": "n3-e0.2-s67-Dense",
+      "Repetition": 1,
+      "Calls": 4096,
+      "ElapsedMilliseconds": 17.2834,
+      "ProcessCpuMilliseconds": 17.28399999999965,
+      "ThreadAllocatedBytes": 1310720,
+      "Checksum": 534.8230787219819
+    },
+    {
+      "Model": "n3-e0.2-s67-TensorJoint",
+      "Repetition": 1,
+      "Calls": 4096,
+      "ElapsedMilliseconds": 19.5756,
+      "ProcessCpuMilliseconds": 19.577000000000226,
+      "ThreadAllocatedBytes": 2228224,
+      "Checksum": 534.8230787219819
+    },
+    {
+      "Model": "n3-e0.2-s67-ProjectedProduct",
+      "Repetition": 1,
+      "Calls": 4096,
+      "ElapsedMilliseconds": 6.7131,
+      "ProcessCpuMilliseconds": 6.712999999999738,
+      "ThreadAllocatedBytes": 1671168,
+      "Checksum": 1447.3291773826882
+    },
+    {
+      "Model": "n4-e0.0-s41-Dense",
+      "Repetition": 1,
+      "Calls": 4096,
+      "ElapsedMilliseconds": 57.6594,
+      "ProcessCpuMilliseconds": 57.5590000000002,
+      "ThreadAllocatedBytes": 2097152,
+      "Checksum": 246.68494007674022
+    },
+    {
+      "Model": "n4-e0.0-s41-TensorJoint",
+      "Repetition": 1,
+      "Calls": 4096,
+      "ElapsedMilliseconds": 42.1817,
+      "ProcessCpuMilliseconds": 42.14900000000034,
+      "ThreadAllocatedBytes": 3604480,
+      "Checksum": 246.68494007674022
+    },
+    {
+      "Model": "n4-e0.0-s41-ProjectedProduct",
+      "Repetition": 1,
+      "Calls": 4096,
+      "ElapsedMilliseconds": 6.67,
+      "ProcessCpuMilliseconds": 6.670000000000073,
+      "ThreadAllocatedBytes": 2195456,
+      "Checksum": 1396.2018866826493
+    },
+    {
+      "Model": "n4-e0.0-s53-Dense",
+      "Repetition": 1,
+      "Calls": 4096,
+      "ElapsedMilliseconds": 58.6252,
+      "ProcessCpuMilliseconds": 58.626000000000204,
+      "ThreadAllocatedBytes": 2097152,
+      "Checksum": 281.6226294200232
+    },
+    {
+      "Model": "n4-e0.0-s53-TensorJoint",
+      "Repetition": 1,
+      "Calls": 4096,
+      "ElapsedMilliseconds": 43.4761,
+      "ProcessCpuMilliseconds": 43.48199999999997,
+      "ThreadAllocatedBytes": 3604480,
+      "Checksum": 281.6226294200232
+    },
+    {
+      "Model": "n4-e0.0-s53-ProjectedProduct",
+      "Repetition": 1,
+      "Calls": 4096,
+      "ElapsedMilliseconds": 7.0634,
+      "ProcessCpuMilliseconds": 7.063999999999396,
+      "ThreadAllocatedBytes": 2195456,
+      "Checksum": 1340.675932295379
+    },
+    {
+      "Model": "n4-e0.0-s67-Dense",
+      "Repetition": 1,
+      "Calls": 4096,
+      "ElapsedMilliseconds": 58.2931,
+      "ProcessCpuMilliseconds": 58.189000000000306,
+      "ThreadAllocatedBytes": 2097152,
+      "Checksum": 260.96673574144233
+    },
+    {
+      "Model": "n4-e0.0-s67-TensorJoint",
+      "Repetition": 1,
+      "Calls": 4096,
+      "ElapsedMilliseconds": 44.7692,
+      "ProcessCpuMilliseconds": 44.55500000000029,
+      "ThreadAllocatedBytes": 3604480,
+      "Checksum": 260.96673574144233
+    },
+    {
+      "Model": "n4-e0.0-s67-ProjectedProduct",
+      "Repetition": 1,
+      "Calls": 4096,
+      "ElapsedMilliseconds": 6.975,
+      "ProcessCpuMilliseconds": 6.9760000000005675,
+      "ThreadAllocatedBytes": 2195456,
+      "Checksum": 1443.99932319568
+    },
+    {
+      "Model": "n4-e0.2-s41-Dense",
+      "Repetition": 1,
+      "Calls": 4096,
+      "ElapsedMilliseconds": 57.5202,
+      "ProcessCpuMilliseconds": 57.46399999999994,
+      "ThreadAllocatedBytes": 2097152,
+      "Checksum": 253.53873093502267
+    },
+    {
+      "Model": "n4-e0.2-s41-TensorJoint",
+      "Repetition": 1,
+      "Calls": 4096,
+      "ElapsedMilliseconds": 43.632,
+      "ProcessCpuMilliseconds": 43.634000000000015,
+      "ThreadAllocatedBytes": 3604480,
+      "Checksum": 253.53873093502244
+    },
+    {
+      "Model": "n4-e0.2-s41-ProjectedProduct",
+      "Repetition": 1,
+      "Calls": 4096,
+      "ElapsedMilliseconds": 7.0395,
+      "ProcessCpuMilliseconds": 7.039999999999964,
+      "ThreadAllocatedBytes": 2195456,
+      "Checksum": 1390.1836409019916
+    },
+    {
+      "Model": "n4-e0.2-s53-Dense",
+      "Repetition": 1,
+      "Calls": 4096,
+      "ElapsedMilliseconds": 58.4862,
+      "ProcessCpuMilliseconds": 58.391999999999825,
+      "ThreadAllocatedBytes": 2097152,
+      "Checksum": 273.5324278497897
+    },
+    {
+      "Model": "n4-e0.2-s53-TensorJoint",
+      "Repetition": 1,
+      "Calls": 4096,
+      "ElapsedMilliseconds": 42.7871,
+      "ProcessCpuMilliseconds": 42.75500000000011,
+      "ThreadAllocatedBytes": 3604480,
+      "Checksum": 273.53242784978966
+    },
+    {
+      "Model": "n4-e0.2-s53-ProjectedProduct",
+      "Repetition": 1,
+      "Calls": 4096,
+      "ElapsedMilliseconds": 7.1755,
+      "ProcessCpuMilliseconds": 7.175999999999476,
+      "ThreadAllocatedBytes": 2195456,
+      "Checksum": 1334.7548294339922
+    },
+    {
+      "Model": "n4-e0.2-s67-Dense",
+      "Repetition": 1,
+      "Calls": 4096,
+      "ElapsedMilliseconds": 59.2631,
+      "ProcessCpuMilliseconds": 59.11999999999989,
+      "ThreadAllocatedBytes": 2097152,
+      "Checksum": 279.86916799373074
+    },
+    {
+      "Model": "n4-e0.2-s67-TensorJoint",
+      "Repetition": 1,
+      "Calls": 4096,
+      "ElapsedMilliseconds": 42.1158,
+      "ProcessCpuMilliseconds": 41.98700000000008,
+      "ThreadAllocatedBytes": 3604480,
+      "Checksum": 279.86916799373074
+    },
+    {
+      "Model": "n4-e0.2-s67-ProjectedProduct",
+      "Repetition": 1,
+      "Calls": 4096,
+      "ElapsedMilliseconds": 6.791,
+      "ProcessCpuMilliseconds": 6.778000000000247,
+      "ThreadAllocatedBytes": 2195456,
+      "Checksum": 1416.4299432906346
+    },
+    {
+      "Model": "n2-e0.0-s41-Dense",
+      "Repetition": 1,
+      "Calls": 4096,
+      "ElapsedMilliseconds": 8.524,
+      "ProcessCpuMilliseconds": 8.525000000000546,
+      "ThreadAllocatedBytes": 917504,
+      "Checksum": 1027.838827189817
+    },
+    {
+      "Model": "n2-e0.0-s41-ProjectedProduct",
+      "Repetition": 2,
+      "Calls": 4096,
+      "ElapsedMilliseconds": 5.2416,
+      "ProcessCpuMilliseconds": 5.242999999999483,
+      "ThreadAllocatedBytes": 1277952,
+      "Checksum": 1608.3330118924312
+    },
+    {
+      "Model": "n2-e0.0-s53-Dense",
+      "Repetition": 2,
+      "Calls": 4096,
+      "ElapsedMilliseconds": 8.4696,
+      "ProcessCpuMilliseconds": 8.470999999999549,
+      "ThreadAllocatedBytes": 917504,
+      "Checksum": 1090.1154022547962
+    },
+    {
+      "Model": "n2-e0.0-s53-TensorJoint",
+      "Repetition": 2,
+      "Calls": 4096,
+      "ElapsedMilliseconds": 8.5399,
+      "ProcessCpuMilliseconds": 8.539999999999964,
+      "ThreadAllocatedBytes": 1507328,
+      "Checksum": 1090.1154022547962
+    },
+    {
+      "Model": "n2-e0.0-s53-ProjectedProduct",
+      "Repetition": 2,
+      "Calls": 4096,
+      "ElapsedMilliseconds": 5.2084,
+      "ProcessCpuMilliseconds": 5.208999999999833,
+      "ThreadAllocatedBytes": 1277952,
+      "Checksum": 1607.7769713973373
+    },
+    {
+      "Model": "n2-e0.0-s67-Dense",
+      "Repetition": 2,
+      "Calls": 4096,
+      "ElapsedMilliseconds": 8.4939,
+      "ProcessCpuMilliseconds": 8.493999999999687,
+      "ThreadAllocatedBytes": 917504,
+      "Checksum": 969.9658898091079
+    },
+    {
+      "Model": "n2-e0.0-s67-TensorJoint",
+      "Repetition": 2,
+      "Calls": 4096,
+      "ElapsedMilliseconds": 8.6232,
+      "ProcessCpuMilliseconds": 8.623999999999796,
+      "ThreadAllocatedBytes": 1507328,
+      "Checksum": 969.9658898091079
+    },
+    {
+      "Model": "n2-e0.0-s67-ProjectedProduct",
+      "Repetition": 2,
+      "Calls": 4096,
+      "ElapsedMilliseconds": 5.6571,
+      "ProcessCpuMilliseconds": 5.548999999999978,
+      "ThreadAllocatedBytes": 1277952,
+      "Checksum": 1476.8378750783254
+    },
+    {
+      "Model": "n2-e0.2-s41-Dense",
+      "Repetition": 2,
+      "Calls": 4096,
+      "ElapsedMilliseconds": 8.4462,
+      "ProcessCpuMilliseconds": 8.445999999999913,
+      "ThreadAllocatedBytes": 917504,
+      "Checksum": 1053.1687343899182
+    },
+    {
+      "Model": "n2-e0.2-s41-TensorJoint",
+      "Repetition": 2,
+      "Calls": 4096,
+      "ElapsedMilliseconds": 8.2353,
+      "ProcessCpuMilliseconds": 8.235999999999876,
+      "ThreadAllocatedBytes": 1507328,
+      "Checksum": 1053.1687343899182
+    },
+    {
+      "Model": "n2-e0.2-s41-ProjectedProduct",
+      "Repetition": 2,
+      "Calls": 4096,
+      "ElapsedMilliseconds": 5.098,
+      "ProcessCpuMilliseconds": 5.09900000000016,
+      "ThreadAllocatedBytes": 1277952,
+      "Checksum": 1641.0961373863074
+    },
+    {
+      "Model": "n2-e0.2-s53-Dense",
+      "Repetition": 2,
+      "Calls": 4096,
+      "ElapsedMilliseconds": 8.4638,
+      "ProcessCpuMilliseconds": 8.463999999999942,
+      "ThreadAllocatedBytes": 917504,
+      "Checksum": 1107.9730496639224
+    },
+    {
+      "Model": "n2-e0.2-s53-TensorJoint",
+      "Repetition": 2,
+      "Calls": 4096,
+      "ElapsedMilliseconds": 8.227,
+      "ProcessCpuMilliseconds": 8.226999999999862,
+      "ThreadAllocatedBytes": 1507328,
+      "Checksum": 1107.9730496639224
+    },
+    {
+      "Model": "n2-e0.2-s53-ProjectedProduct",
+      "Repetition": 2,
+      "Calls": 4096,
+      "ElapsedMilliseconds": 5.1568,
+      "ProcessCpuMilliseconds": 5.157000000000153,
+      "ThreadAllocatedBytes": 1277952,
+      "Checksum": 1658.506574230382
+    },
+    {
+      "Model": "n2-e0.2-s67-Dense",
+      "Repetition": 2,
+      "Calls": 4096,
+      "ElapsedMilliseconds": 8.4292,
+      "ProcessCpuMilliseconds": 8.430000000000291,
+      "ThreadAllocatedBytes": 917504,
+      "Checksum": 1054.2010150876433
+    },
+    {
+      "Model": "n2-e0.2-s67-TensorJoint",
+      "Repetition": 2,
+      "Calls": 4096,
+      "ElapsedMilliseconds": 8.3029,
+      "ProcessCpuMilliseconds": 8.303000000000793,
+      "ThreadAllocatedBytes": 1507328,
+      "Checksum": 1054.2010150876433
+    },
+    {
+      "Model": "n2-e0.2-s67-ProjectedProduct",
+      "Repetition": 2,
+      "Calls": 4096,
+      "ElapsedMilliseconds": 5.4675,
+      "ProcessCpuMilliseconds": 5.42200000000048,
+      "ThreadAllocatedBytes": 1277952,
+      "Checksum": 1633.3988535647939
+    },
+    {
+      "Model": "n3-e0.0-s41-Dense",
+      "Repetition": 2,
+      "Calls": 4096,
+      "ElapsedMilliseconds": 16.4321,
+      "ProcessCpuMilliseconds": 16.409999999999854,
+      "ThreadAllocatedBytes": 1310720,
+      "Checksum": 501.7959182561543
+    },
+    {
+      "Model": "n3-e0.0-s41-TensorJoint",
+      "Repetition": 2,
+      "Calls": 4096,
+      "ElapsedMilliseconds": 19.0517,
+      "ProcessCpuMilliseconds": 19.052999999999884,
+      "ThreadAllocatedBytes": 2228224,
+      "Checksum": 501.7959182561543
+    },
+    {
+      "Model": "n3-e0.0-s41-ProjectedProduct",
+      "Repetition": 2,
+      "Calls": 4096,
+      "ElapsedMilliseconds": 6.6368,
+      "ProcessCpuMilliseconds": 6.63799999999992,
+      "ThreadAllocatedBytes": 1671168,
+      "Checksum": 1520.2205037769718
+    },
+    {
+      "Model": "n3-e0.0-s53-Dense",
+      "Repetition": 2,
+      "Calls": 4096,
+      "ElapsedMilliseconds": 17.3046,
+      "ProcessCpuMilliseconds": 17.305999999999585,
+      "ThreadAllocatedBytes": 1310720,
+      "Checksum": 499.1312510672187
+    },
+    {
+      "Model": "n3-e0.0-s53-TensorJoint",
+      "Repetition": 2,
+      "Calls": 4096,
+      "ElapsedMilliseconds": 19.5152,
+      "ProcessCpuMilliseconds": 19.51599999999962,
+      "ThreadAllocatedBytes": 2228224,
+      "Checksum": 499.1312510672187
+    },
+    {
+      "Model": "n3-e0.0-s53-ProjectedProduct",
+      "Repetition": 2,
+      "Calls": 4096,
+      "ElapsedMilliseconds": 6.5798,
+      "ProcessCpuMilliseconds": 6.579999999999927,
+      "ThreadAllocatedBytes": 1671168,
+      "Checksum": 1379.1172738191076
+    },
+    {
+      "Model": "n3-e0.0-s67-Dense",
+      "Repetition": 2,
+      "Calls": 4096,
+      "ElapsedMilliseconds": 17.0826,
+      "ProcessCpuMilliseconds": 16.98400000000038,
+      "ThreadAllocatedBytes": 1310720,
+      "Checksum": 535.1064019225474
+    },
+    {
+      "Model": "n3-e0.0-s67-TensorJoint",
+      "Repetition": 2,
+      "Calls": 4096,
+      "ElapsedMilliseconds": 19.3876,
+      "ProcessCpuMilliseconds": 19.38799999999992,
+      "ThreadAllocatedBytes": 2228224,
+      "Checksum": 535.1064019225474
+    },
+    {
+      "Model": "n3-e0.0-s67-ProjectedProduct",
+      "Repetition": 2,
+      "Calls": 4096,
+      "ElapsedMilliseconds": 6.562,
+      "ProcessCpuMilliseconds": 6.561999999999898,
+      "ThreadAllocatedBytes": 1671168,
+      "Checksum": 1437.44269570307
+    },
+    {
+      "Model": "n3-e0.2-s41-Dense",
+      "Repetition": 2,
+      "Calls": 4096,
+      "ElapsedMilliseconds": 17.2737,
+      "ProcessCpuMilliseconds": 17.17999999999938,
+      "ThreadAllocatedBytes": 1310720,
+      "Checksum": 513.4008816517847
+    },
+    {
+      "Model": "n3-e0.2-s41-TensorJoint",
+      "Repetition": 2,
+      "Calls": 4096,
+      "ElapsedMilliseconds": 19.1419,
+      "ProcessCpuMilliseconds": 19.144000000000233,
+      "ThreadAllocatedBytes": 2228224,
+      "Checksum": 513.4008816517847
+    },
+    {
+      "Model": "n3-e0.2-s41-ProjectedProduct",
+      "Repetition": 2,
+      "Calls": 4096,
+      "ElapsedMilliseconds": 6.6931,
+      "ProcessCpuMilliseconds": 6.694000000000415,
+      "ThreadAllocatedBytes": 1671168,
+      "Checksum": 1480.2160430297927
+    },
+    {
+      "Model": "n3-e0.2-s53-Dense",
+      "Repetition": 2,
+      "Calls": 4096,
+      "ElapsedMilliseconds": 17.2875,
+      "ProcessCpuMilliseconds": 17.28900000000067,
+      "ThreadAllocatedBytes": 1310720,
+      "Checksum": 533.5888244652585
+    },
+    {
+      "Model": "n3-e0.2-s53-TensorJoint",
+      "Repetition": 2,
+      "Calls": 4096,
+      "ElapsedMilliseconds": 19.3815,
+      "ProcessCpuMilliseconds": 19.342000000000553,
+      "ThreadAllocatedBytes": 2228224,
+      "Checksum": 533.5888244652585
+    },
+    {
+      "Model": "n3-e0.2-s53-ProjectedProduct",
+      "Repetition": 2,
+      "Calls": 4096,
+      "ElapsedMilliseconds": 6.6857,
+      "ProcessCpuMilliseconds": 6.667999999999665,
+      "ThreadAllocatedBytes": 1671168,
+      "Checksum": 1416.0562048242534
+    },
+    {
+      "Model": "n3-e0.2-s67-Dense",
+      "Repetition": 2,
+      "Calls": 4096,
+      "ElapsedMilliseconds": 16.4842,
+      "ProcessCpuMilliseconds": 16.472999999999956,
+      "ThreadAllocatedBytes": 1310720,
+      "Checksum": 534.8230787219819
+    },
+    {
+      "Model": "n3-e0.2-s67-TensorJoint",
+      "Repetition": 2,
+      "Calls": 4096,
+      "ElapsedMilliseconds": 19.2547,
+      "ProcessCpuMilliseconds": 19.254000000000815,
+      "ThreadAllocatedBytes": 2228224,
+      "Checksum": 534.8230787219819
+    },
+    {
+      "Model": "n3-e0.2-s67-ProjectedProduct",
+      "Repetition": 2,
+      "Calls": 4096,
+      "ElapsedMilliseconds": 6.9925,
+      "ProcessCpuMilliseconds": 6.992999999999483,
+      "ThreadAllocatedBytes": 1671168,
+      "Checksum": 1447.3291773826882
+    },
+    {
+      "Model": "n4-e0.0-s41-Dense",
+      "Repetition": 2,
+      "Calls": 4096,
+      "ElapsedMilliseconds": 58.0129,
+      "ProcessCpuMilliseconds": 57.909999999999854,
+      "ThreadAllocatedBytes": 2097152,
+      "Checksum": 246.68494007674022
+    },
+    {
+      "Model": "n4-e0.0-s41-TensorJoint",
+      "Repetition": 2,
+      "Calls": 4096,
+      "ElapsedMilliseconds": 42.7745,
+      "ProcessCpuMilliseconds": 42.677999999999884,
+      "ThreadAllocatedBytes": 3604480,
+      "Checksum": 246.68494007674022
+    },
+    {
+      "Model": "n4-e0.0-s41-ProjectedProduct",
+      "Repetition": 2,
+      "Calls": 4096,
+      "ElapsedMilliseconds": 7.0518,
+      "ProcessCpuMilliseconds": 7.052999999999884,
+      "ThreadAllocatedBytes": 2195456,
+      "Checksum": 1396.2018866826493
+    },
+    {
+      "Model": "n4-e0.0-s53-Dense",
+      "Repetition": 2,
+      "Calls": 4096,
+      "ElapsedMilliseconds": 56.8348,
+      "ProcessCpuMilliseconds": 56.83300000000054,
+      "ThreadAllocatedBytes": 2097152,
+      "Checksum": 281.6226294200232
+    },
+    {
+      "Model": "n4-e0.0-s53-TensorJoint",
+      "Repetition": 2,
+      "Calls": 4096,
+      "ElapsedMilliseconds": 43.3277,
+      "ProcessCpuMilliseconds": 43.23700000000008,
+      "ThreadAllocatedBytes": 3604480,
+      "Checksum": 281.6226294200232
+    },
+    {
+      "Model": "n4-e0.0-s53-ProjectedProduct",
+      "Repetition": 2,
+      "Calls": 4096,
+      "ElapsedMilliseconds": 6.8619,
+      "ProcessCpuMilliseconds": 6.863000000000284,
+      "ThreadAllocatedBytes": 2195456,
+      "Checksum": 1340.675932295379
+    },
+    {
+      "Model": "n4-e0.0-s67-Dense",
+      "Repetition": 2,
+      "Calls": 4096,
+      "ElapsedMilliseconds": 57.5612,
+      "ProcessCpuMilliseconds": 57.55400000000009,
+      "ThreadAllocatedBytes": 2097152,
+      "Checksum": 260.96673574144233
+    },
+    {
+      "Model": "n4-e0.0-s67-TensorJoint",
+      "Repetition": 2,
+      "Calls": 4096,
+      "ElapsedMilliseconds": 42.7774,
+      "ProcessCpuMilliseconds": 42.77900000000045,
+      "ThreadAllocatedBytes": 3604480,
+      "Checksum": 260.96673574144233
+    },
+    {
+      "Model": "n4-e0.0-s67-ProjectedProduct",
+      "Repetition": 2,
+      "Calls": 4096,
+      "ElapsedMilliseconds": 7.1774,
+      "ProcessCpuMilliseconds": 7.179000000000087,
+      "ThreadAllocatedBytes": 2195456,
+      "Checksum": 1443.99932319568
+    },
+    {
+      "Model": "n4-e0.2-s41-Dense",
+      "Repetition": 2,
+      "Calls": 4096,
+      "ElapsedMilliseconds": 58.5053,
+      "ProcessCpuMilliseconds": 58.42199999999957,
+      "ThreadAllocatedBytes": 2097152,
+      "Checksum": 253.53873093502267
+    },
+    {
+      "Model": "n4-e0.2-s41-TensorJoint",
+      "Repetition": 2,
+      "Calls": 4096,
+      "ElapsedMilliseconds": 42.6966,
+      "ProcessCpuMilliseconds": 42.66199999999935,
+      "ThreadAllocatedBytes": 3604480,
+      "Checksum": 253.53873093502244
+    },
+    {
+      "Model": "n4-e0.2-s41-ProjectedProduct",
+      "Repetition": 2,
+      "Calls": 4096,
+      "ElapsedMilliseconds": 6.7216,
+      "ProcessCpuMilliseconds": 6.721999999999753,
+      "ThreadAllocatedBytes": 2195456,
+      "Checksum": 1390.1836409019916
+    },
+    {
+      "Model": "n4-e0.2-s53-Dense",
+      "Repetition": 2,
+      "Calls": 4096,
+      "ElapsedMilliseconds": 58.8922,
+      "ProcessCpuMilliseconds": 58.89300000000003,
+      "ThreadAllocatedBytes": 2097152,
+      "Checksum": 273.5324278497897
+    },
+    {
+      "Model": "n4-e0.2-s53-TensorJoint",
+      "Repetition": 2,
+      "Calls": 4096,
+      "ElapsedMilliseconds": 43.5575,
+      "ProcessCpuMilliseconds": 43.55799999999999,
+      "ThreadAllocatedBytes": 3604480,
+      "Checksum": 273.53242784978966
+    },
+    {
+      "Model": "n4-e0.2-s53-ProjectedProduct",
+      "Repetition": 2,
+      "Calls": 4096,
+      "ElapsedMilliseconds": 6.8712,
+      "ProcessCpuMilliseconds": 6.873000000000502,
+      "ThreadAllocatedBytes": 2195456,
+      "Checksum": 1334.7548294339922
+    },
+    {
+      "Model": "n4-e0.2-s67-Dense",
+      "Repetition": 2,
+      "Calls": 4096,
+      "ElapsedMilliseconds": 58.5775,
+      "ProcessCpuMilliseconds": 58.57799999999952,
+      "ThreadAllocatedBytes": 2097152,
+      "Checksum": 279.86916799373074
+    },
+    {
+      "Model": "n4-e0.2-s67-TensorJoint",
+      "Repetition": 2,
+      "Calls": 4096,
+      "ElapsedMilliseconds": 41.9777,
+      "ProcessCpuMilliseconds": 41.92099999999937,
+      "ThreadAllocatedBytes": 3604480,
+      "Checksum": 279.86916799373074
+    },
+    {
+      "Model": "n4-e0.2-s67-ProjectedProduct",
+      "Repetition": 2,
+      "Calls": 4096,
+      "ElapsedMilliseconds": 6.9117,
+      "ProcessCpuMilliseconds": 6.912000000000262,
+      "ThreadAllocatedBytes": 2195456,
+      "Checksum": 1416.4299432906346
+    },
+    {
+      "Model": "n2-e0.0-s41-Dense",
+      "Repetition": 2,
+      "Calls": 4096,
+      "ElapsedMilliseconds": 8.4476,
+      "ProcessCpuMilliseconds": 8.447000000000116,
+      "ThreadAllocatedBytes": 917504,
+      "Checksum": 1027.838827189817
+    },
+    {
+      "Model": "n2-e0.0-s41-TensorJoint",
+      "Repetition": 2,
+      "Calls": 4096,
+      "ElapsedMilliseconds": 8.616,
+      "ProcessCpuMilliseconds": 8.61699999999928,
+      "ThreadAllocatedBytes": 1507328,
+      "Checksum": 1027.838827189817
+    },
+    {
+      "Model": "n2-e0.0-s53-Dense",
+      "Repetition": 3,
+      "Calls": 4096,
+      "ElapsedMilliseconds": 8.7681,
+      "ProcessCpuMilliseconds": 8.73700000000008,
+      "ThreadAllocatedBytes": 917504,
+      "Checksum": 1090.1154022547962
+    },
+    {
+      "Model": "n2-e0.0-s53-TensorJoint",
+      "Repetition": 3,
+      "Calls": 4096,
+      "ElapsedMilliseconds": 8.2924,
+      "ProcessCpuMilliseconds": 8.293999999999869,
+      "ThreadAllocatedBytes": 1507328,
+      "Checksum": 1090.1154022547962
+    },
+    {
+      "Model": "n2-e0.0-s53-ProjectedProduct",
+      "Repetition": 3,
+      "Calls": 4096,
+      "ElapsedMilliseconds": 5.2033,
+      "ProcessCpuMilliseconds": 5.188000000000102,
+      "ThreadAllocatedBytes": 1277952,
+      "Checksum": 1607.7769713973373
+    },
+    {
+      "Model": "n2-e0.0-s67-Dense",
+      "Repetition": 3,
+      "Calls": 4096,
+      "ElapsedMilliseconds": 8.4865,
+      "ProcessCpuMilliseconds": 8.48700000000008,
+      "ThreadAllocatedBytes": 917504,
+      "Checksum": 969.9658898091079
+    },
+    {
+      "Model": "n2-e0.0-s67-TensorJoint",
+      "Repetition": 3,
+      "Calls": 4096,
+      "ElapsedMilliseconds": 8.4814,
+      "ProcessCpuMilliseconds": 8.481999999999971,
+      "ThreadAllocatedBytes": 1507328,
+      "Checksum": 969.9658898091079
+    },
+    {
+      "Model": "n2-e0.0-s67-ProjectedProduct",
+      "Repetition": 3,
+      "Calls": 4096,
+      "ElapsedMilliseconds": 5.19,
+      "ProcessCpuMilliseconds": 5.1909999999998035,
+      "ThreadAllocatedBytes": 1277952,
+      "Checksum": 1476.8378750783254
+    },
+    {
+      "Model": "n2-e0.2-s41-Dense",
+      "Repetition": 3,
+      "Calls": 4096,
+      "ElapsedMilliseconds": 8.4288,
+      "ProcessCpuMilliseconds": 8.429000000000087,
+      "ThreadAllocatedBytes": 917504,
+      "Checksum": 1053.1687343899182
+    },
+    {
+      "Model": "n2-e0.2-s41-TensorJoint",
+      "Repetition": 3,
+      "Calls": 4096,
+      "ElapsedMilliseconds": 8.612,
+      "ProcessCpuMilliseconds": 8.613000000000284,
+      "ThreadAllocatedBytes": 1507328,
+      "Checksum": 1053.1687343899182
+    },
+    {
+      "Model": "n2-e0.2-s41-ProjectedProduct",
+      "Repetition": 3,
+      "Calls": 4096,
+      "ElapsedMilliseconds": 5.1496,
+      "ProcessCpuMilliseconds": 5.15099999999984,
+      "ThreadAllocatedBytes": 1277952,
+      "Checksum": 1641.0961373863074
+    },
+    {
+      "Model": "n2-e0.2-s53-Dense",
+      "Repetition": 3,
+      "Calls": 4096,
+      "ElapsedMilliseconds": 8.8447,
+      "ProcessCpuMilliseconds": 8.808999999999287,
+      "ThreadAllocatedBytes": 917504,
+      "Checksum": 1107.9730496639224
+    },
+    {
+      "Model": "n2-e0.2-s53-TensorJoint",
+      "Repetition": 3,
+      "Calls": 4096,
+      "ElapsedMilliseconds": 8.5701,
+      "ProcessCpuMilliseconds": 8.54699999999957,
+      "ThreadAllocatedBytes": 1507328,
+      "Checksum": 1107.9730496639224
+    },
+    {
+      "Model": "n2-e0.2-s53-ProjectedProduct",
+      "Repetition": 3,
+      "Calls": 4096,
+      "ElapsedMilliseconds": 5.3052,
+      "ProcessCpuMilliseconds": 5.286000000000058,
+      "ThreadAllocatedBytes": 1277952,
+      "Checksum": 1658.506574230382
+    },
+    {
+      "Model": "n2-e0.2-s67-Dense",
+      "Repetition": 3,
+      "Calls": 4096,
+      "ElapsedMilliseconds": 8.5547,
+      "ProcessCpuMilliseconds": 8.534999999999854,
+      "ThreadAllocatedBytes": 917504,
+      "Checksum": 1054.2010150876433
+    },
+    {
+      "Model": "n2-e0.2-s67-TensorJoint",
+      "Repetition": 3,
+      "Calls": 4096,
+      "ElapsedMilliseconds": 8.2971,
+      "ProcessCpuMilliseconds": 8.297999999999774,
+      "ThreadAllocatedBytes": 1507328,
+      "Checksum": 1054.2010150876433
+    },
+    {
+      "Model": "n2-e0.2-s67-ProjectedProduct",
+      "Repetition": 3,
+      "Calls": 4096,
+      "ElapsedMilliseconds": 5.1202,
+      "ProcessCpuMilliseconds": 5.120999999999185,
+      "ThreadAllocatedBytes": 1277952,
+      "Checksum": 1633.3988535647939
+    },
+    {
+      "Model": "n3-e0.0-s41-Dense",
+      "Repetition": 3,
+      "Calls": 4096,
+      "ElapsedMilliseconds": 16.69,
+      "ProcessCpuMilliseconds": 16.690999999999804,
+      "ThreadAllocatedBytes": 1310720,
+      "Checksum": 501.7959182561543
+    },
+    {
+      "Model": "n3-e0.0-s41-TensorJoint",
+      "Repetition": 3,
+      "Calls": 4096,
+      "ElapsedMilliseconds": 19.0755,
+      "ProcessCpuMilliseconds": 19.070999999999913,
+      "ThreadAllocatedBytes": 2228224,
+      "Checksum": 501.7959182561543
+    },
+    {
+      "Model": "n3-e0.0-s41-ProjectedProduct",
+      "Repetition": 3,
+      "Calls": 4096,
+      "ElapsedMilliseconds": 6.6188,
+      "ProcessCpuMilliseconds": 6.619999999999891,
+      "ThreadAllocatedBytes": 1671168,
+      "Checksum": 1520.2205037769718
+    },
+    {
+      "Model": "n3-e0.0-s53-Dense",
+      "Repetition": 3,
+      "Calls": 4096,
+      "ElapsedMilliseconds": 16.7053,
+      "ProcessCpuMilliseconds": 16.70600000000013,
+      "ThreadAllocatedBytes": 1310720,
+      "Checksum": 499.1312510672187
+    },
+    {
+      "Model": "n3-e0.0-s53-TensorJoint",
+      "Repetition": 3,
+      "Calls": 4096,
+      "ElapsedMilliseconds": 19.182,
+      "ProcessCpuMilliseconds": 19.204999999999927,
+      "ThreadAllocatedBytes": 2228224,
+      "Checksum": 499.1312510672187
+    },
+    {
+      "Model": "n3-e0.0-s53-ProjectedProduct",
+      "Repetition": 3,
+      "Calls": 4096,
+      "ElapsedMilliseconds": 6.6609,
+      "ProcessCpuMilliseconds": 6.661999999999352,
+      "ThreadAllocatedBytes": 1671168,
+      "Checksum": 1379.1172738191076
+    },
+    {
+      "Model": "n3-e0.0-s67-Dense",
+      "Repetition": 3,
+      "Calls": 4096,
+      "ElapsedMilliseconds": 17.6349,
+      "ProcessCpuMilliseconds": 17.578999999999724,
+      "ThreadAllocatedBytes": 1310720,
+      "Checksum": 535.1064019225474
+    },
+    {
+      "Model": "n3-e0.0-s67-TensorJoint",
+      "Repetition": 3,
+      "Calls": 4096,
+      "ElapsedMilliseconds": 18.6232,
+      "ProcessCpuMilliseconds": 18.623999999999796,
+      "ThreadAllocatedBytes": 2228224,
+      "Checksum": 535.1064019225474
+    },
+    {
+      "Model": "n3-e0.0-s67-ProjectedProduct",
+      "Repetition": 3,
+      "Calls": 4096,
+      "ElapsedMilliseconds": 6.6313,
+      "ProcessCpuMilliseconds": 6.632000000000517,
+      "ThreadAllocatedBytes": 1671168,
+      "Checksum": 1437.44269570307
+    },
+    {
+      "Model": "n3-e0.2-s41-Dense",
+      "Repetition": 3,
+      "Calls": 4096,
+      "ElapsedMilliseconds": 16.7689,
+      "ProcessCpuMilliseconds": 16.769999999999527,
+      "ThreadAllocatedBytes": 1310720,
+      "Checksum": 513.4008816517847
+    },
+    {
+      "Model": "n3-e0.2-s41-TensorJoint",
+      "Repetition": 3,
+      "Calls": 4096,
+      "ElapsedMilliseconds": 18.9185,
+      "ProcessCpuMilliseconds": 18.91899999999987,
+      "ThreadAllocatedBytes": 2228224,
+      "Checksum": 513.4008816517847
+    },
+    {
+      "Model": "n3-e0.2-s41-ProjectedProduct",
+      "Repetition": 3,
+      "Calls": 4096,
+      "ElapsedMilliseconds": 6.6631,
+      "ProcessCpuMilliseconds": 6.66399999999976,
+      "ThreadAllocatedBytes": 1671168,
+      "Checksum": 1480.2160430297927
+    },
+    {
+      "Model": "n3-e0.2-s53-Dense",
+      "Repetition": 3,
+      "Calls": 4096,
+      "ElapsedMilliseconds": 16.8337,
+      "ProcessCpuMilliseconds": 16.82299999999941,
+      "ThreadAllocatedBytes": 1310720,
+      "Checksum": 533.5888244652585
+    },
+    {
+      "Model": "n3-e0.2-s53-TensorJoint",
+      "Repetition": 3,
+      "Calls": 4096,
+      "ElapsedMilliseconds": 19.0797,
+      "ProcessCpuMilliseconds": 19.073999999999614,
+      "ThreadAllocatedBytes": 2228224,
+      "Checksum": 533.5888244652585
+    },
+    {
+      "Model": "n3-e0.2-s53-ProjectedProduct",
+      "Repetition": 3,
+      "Calls": 4096,
+      "ElapsedMilliseconds": 6.6925,
+      "ProcessCpuMilliseconds": 6.688000000000102,
+      "ThreadAllocatedBytes": 1671168,
+      "Checksum": 1416.0562048242534
+    },
+    {
+      "Model": "n3-e0.2-s67-Dense",
+      "Repetition": 3,
+      "Calls": 4096,
+      "ElapsedMilliseconds": 17.4632,
+      "ProcessCpuMilliseconds": 17.41699999999946,
+      "ThreadAllocatedBytes": 1310720,
+      "Checksum": 534.8230787219819
+    },
+    {
+      "Model": "n3-e0.2-s67-TensorJoint",
+      "Repetition": 3,
+      "Calls": 4096,
+      "ElapsedMilliseconds": 20.3566,
+      "ProcessCpuMilliseconds": 20.346999999999753,
+      "ThreadAllocatedBytes": 2228224,
+      "Checksum": 534.8230787219819
+    },
+    {
+      "Model": "n3-e0.2-s67-ProjectedProduct",
+      "Repetition": 3,
+      "Calls": 4096,
+      "ElapsedMilliseconds": 7.1663,
+      "ProcessCpuMilliseconds": 7.16399999999976,
+      "ThreadAllocatedBytes": 1671168,
+      "Checksum": 1447.3291773826882
+    },
+    {
+      "Model": "n4-e0.0-s41-Dense",
+      "Repetition": 3,
+      "Calls": 4096,
+      "ElapsedMilliseconds": 57.6342,
+      "ProcessCpuMilliseconds": 57.615999999999985,
+      "ThreadAllocatedBytes": 2097152,
+      "Checksum": 246.68494007674022
+    },
+    {
+      "Model": "n4-e0.0-s41-TensorJoint",
+      "Repetition": 3,
+      "Calls": 4096,
+      "ElapsedMilliseconds": 43.1942,
+      "ProcessCpuMilliseconds": 43.189000000000306,
+      "ThreadAllocatedBytes": 3604480,
+      "Checksum": 246.68494007674022
+    },
+    {
+      "Model": "n4-e0.0-s41-ProjectedProduct",
+      "Repetition": 3,
+      "Calls": 4096,
+      "ElapsedMilliseconds": 6.925,
+      "ProcessCpuMilliseconds": 6.925000000000182,
+      "ThreadAllocatedBytes": 2195456,
+      "Checksum": 1396.2018866826493
+    },
+    {
+      "Model": "n4-e0.0-s53-Dense",
+      "Repetition": 3,
+      "Calls": 4096,
+      "ElapsedMilliseconds": 57.6627,
+      "ProcessCpuMilliseconds": 57.63300000000072,
+      "ThreadAllocatedBytes": 2097152,
+      "Checksum": 281.6226294200232
+    },
+    {
+      "Model": "n4-e0.0-s53-TensorJoint",
+      "Repetition": 3,
+      "Calls": 4096,
+      "ElapsedMilliseconds": 42.4361,
+      "ProcessCpuMilliseconds": 42.430999999999585,
+      "ThreadAllocatedBytes": 3604480,
+      "Checksum": 281.6226294200232
+    },
+    {
+      "Model": "n4-e0.0-s53-ProjectedProduct",
+      "Repetition": 3,
+      "Calls": 4096,
+      "ElapsedMilliseconds": 6.8327,
+      "ProcessCpuMilliseconds": 6.834000000000742,
+      "ThreadAllocatedBytes": 2195456,
+      "Checksum": 1340.675932295379
+    },
+    {
+      "Model": "n4-e0.0-s67-Dense",
+      "Repetition": 3,
+      "Calls": 4096,
+      "ElapsedMilliseconds": 57.7042,
+      "ProcessCpuMilliseconds": 57.61200000000008,
+      "ThreadAllocatedBytes": 2097152,
+      "Checksum": 260.96673574144233
+    },
+    {
+      "Model": "n4-e0.0-s67-TensorJoint",
+      "Repetition": 3,
+      "Calls": 4096,
+      "ElapsedMilliseconds": 41.4089,
+      "ProcessCpuMilliseconds": 41.40599999999995,
+      "ThreadAllocatedBytes": 3604480,
+      "Checksum": 260.96673574144233
+    },
+    {
+      "Model": "n4-e0.0-s67-ProjectedProduct",
+      "Repetition": 3,
+      "Calls": 4096,
+      "ElapsedMilliseconds": 6.8531,
+      "ProcessCpuMilliseconds": 6.854000000000269,
+      "ThreadAllocatedBytes": 2195456,
+      "Checksum": 1443.99932319568
+    },
+    {
+      "Model": "n4-e0.2-s41-Dense",
+      "Repetition": 3,
+      "Calls": 4096,
+      "ElapsedMilliseconds": 58.2055,
+      "ProcessCpuMilliseconds": 58.16100000000006,
+      "ThreadAllocatedBytes": 2097152,
+      "Checksum": 253.53873093502267
+    },
+    {
+      "Model": "n4-e0.2-s41-TensorJoint",
+      "Repetition": 3,
+      "Calls": 4096,
+      "ElapsedMilliseconds": 42.329,
+      "ProcessCpuMilliseconds": 42.32899999999972,
+      "ThreadAllocatedBytes": 3604480,
+      "Checksum": 253.53873093502244
+    },
+    {
+      "Model": "n4-e0.2-s41-ProjectedProduct",
+      "Repetition": 3,
+      "Calls": 4096,
+      "ElapsedMilliseconds": 7.1141,
+      "ProcessCpuMilliseconds": 7.113999999999578,
+      "ThreadAllocatedBytes": 2195456,
+      "Checksum": 1390.1836409019916
+    },
+    {
+      "Model": "n4-e0.2-s53-Dense",
+      "Repetition": 3,
+      "Calls": 4096,
+      "ElapsedMilliseconds": 57.9765,
+      "ProcessCpuMilliseconds": 57.92999999999938,
+      "ThreadAllocatedBytes": 2097152,
+      "Checksum": 273.5324278497897
+    },
+    {
+      "Model": "n4-e0.2-s53-TensorJoint",
+      "Repetition": 3,
+      "Calls": 4096,
+      "ElapsedMilliseconds": 43.3208,
+      "ProcessCpuMilliseconds": 43.249000000000706,
+      "ThreadAllocatedBytes": 3604480,
+      "Checksum": 273.53242784978966
+    },
+    {
+      "Model": "n4-e0.2-s53-ProjectedProduct",
+      "Repetition": 3,
+      "Calls": 4096,
+      "ElapsedMilliseconds": 7.0994,
+      "ProcessCpuMilliseconds": 7.100000000000364,
+      "ThreadAllocatedBytes": 2195456,
+      "Checksum": 1334.7548294339922
+    },
+    {
+      "Model": "n4-e0.2-s67-Dense",
+      "Repetition": 3,
+      "Calls": 4096,
+      "ElapsedMilliseconds": 56.1541,
+      "ProcessCpuMilliseconds": 56.06500000000051,
+      "ThreadAllocatedBytes": 2097152,
+      "Checksum": 279.86916799373074
+    },
+    {
+      "Model": "n4-e0.2-s67-TensorJoint",
+      "Repetition": 3,
+      "Calls": 4096,
+      "ElapsedMilliseconds": 41.8744,
+      "ProcessCpuMilliseconds": 41.865999999999985,
+      "ThreadAllocatedBytes": 3604480,
+      "Checksum": 279.86916799373074
+    },
+    {
+      "Model": "n4-e0.2-s67-ProjectedProduct",
+      "Repetition": 3,
+      "Calls": 4096,
+      "ElapsedMilliseconds": 7.2145,
+      "ProcessCpuMilliseconds": 7.164999999999964,
+      "ThreadAllocatedBytes": 2195456,
+      "Checksum": 1416.4299432906346
+    },
+    {
+      "Model": "n2-e0.0-s41-Dense",
+      "Repetition": 3,
+      "Calls": 4096,
+      "ElapsedMilliseconds": 8.7481,
+      "ProcessCpuMilliseconds": 8.739999999999782,
+      "ThreadAllocatedBytes": 917504,
+      "Checksum": 1027.838827189817
+    },
+    {
+      "Model": "n2-e0.0-s41-TensorJoint",
+      "Repetition": 3,
+      "Calls": 4096,
+      "ElapsedMilliseconds": 8.5241,
+      "ProcessCpuMilliseconds": 8.52100000000064,
+      "ThreadAllocatedBytes": 1507328,
+      "Checksum": 1027.838827189817
+    },
+    {
+      "Model": "n2-e0.0-s41-ProjectedProduct",
+      "Repetition": 3,
+      "Calls": 4096,
+      "ElapsedMilliseconds": 5.1721,
+      "ProcessCpuMilliseconds": 5.1729999999997744,
+      "ThreadAllocatedBytes": 1277952,
+      "Checksum": 1608.3330118924312
+    },
+    {
+      "Model": "n2-e0.0-s53-TensorJoint",
+      "Repetition": 4,
+      "Calls": 4096,
+      "ElapsedMilliseconds": 8.51,
+      "ProcessCpuMilliseconds": 8.828999999999724,
+      "ThreadAllocatedBytes": 1507328,
+      "Checksum": 1090.1154022547962
+    },
+    {
+      "Model": "n2-e0.0-s53-ProjectedProduct",
+      "Repetition": 4,
+      "Calls": 4096,
+      "ElapsedMilliseconds": 5.128,
+      "ProcessCpuMilliseconds": 5.128999999999905,
+      "ThreadAllocatedBytes": 1277952,
+      "Checksum": 1607.7769713973373
+    },
+    {
+      "Model": "n2-e0.0-s67-Dense",
+      "Repetition": 4,
+      "Calls": 4096,
+      "ElapsedMilliseconds": 8.4361,
+      "ProcessCpuMilliseconds": 8.437000000000808,
+      "ThreadAllocatedBytes": 917504,
+      "Checksum": 969.9658898091079
+    },
+    {
+      "Model": "n2-e0.0-s67-TensorJoint",
+      "Repetition": 4,
+      "Calls": 4096,
+      "ElapsedMilliseconds": 8.1963,
+      "ProcessCpuMilliseconds": 8.197000000000116,
+      "ThreadAllocatedBytes": 1507328,
+      "Checksum": 969.9658898091079
+    },
+    {
+      "Model": "n2-e0.0-s67-ProjectedProduct",
+      "Repetition": 4,
+      "Calls": 4096,
+      "ElapsedMilliseconds": 5.1081,
+      "ProcessCpuMilliseconds": 5.109000000000378,
+      "ThreadAllocatedBytes": 1277952,
+      "Checksum": 1476.8378750783254
+    },
+    {
+      "Model": "n2-e0.2-s41-Dense",
+      "Repetition": 4,
+      "Calls": 4096,
+      "ElapsedMilliseconds": 8.7565,
+      "ProcessCpuMilliseconds": 8.702000000000226,
+      "ThreadAllocatedBytes": 917504,
+      "Checksum": 1053.1687343899182
+    },
+    {
+      "Model": "n2-e0.2-s41-TensorJoint",
+      "Repetition": 4,
+      "Calls": 4096,
+      "ElapsedMilliseconds": 8.269,
+      "ProcessCpuMilliseconds": 8.261000000000422,
+      "ThreadAllocatedBytes": 1507328,
+      "Checksum": 1053.1687343899182
+    },
+    {
+      "Model": "n2-e0.2-s41-ProjectedProduct",
+      "Repetition": 4,
+      "Calls": 4096,
+      "ElapsedMilliseconds": 5.1298,
+      "ProcessCpuMilliseconds": 5.131999999999607,
+      "ThreadAllocatedBytes": 1277952,
+      "Checksum": 1641.0961373863074
+    },
+    {
+      "Model": "n2-e0.2-s53-Dense",
+      "Repetition": 4,
+      "Calls": 4096,
+      "ElapsedMilliseconds": 8.3948,
+      "ProcessCpuMilliseconds": 8.390999999999622,
+      "ThreadAllocatedBytes": 917504,
+      "Checksum": 1107.9730496639224
+    },
+    {
+      "Model": "n2-e0.2-s53-TensorJoint",
+      "Repetition": 4,
+      "Calls": 4096,
+      "ElapsedMilliseconds": 8.3919,
+      "ProcessCpuMilliseconds": 8.390000000000327,
+      "ThreadAllocatedBytes": 1507328,
+      "Checksum": 1107.9730496639224
+    },
+    {
+      "Model": "n2-e0.2-s53-ProjectedProduct",
+      "Repetition": 4,
+      "Calls": 4096,
+      "ElapsedMilliseconds": 5.1161,
+      "ProcessCpuMilliseconds": 5.117000000000189,
+      "ThreadAllocatedBytes": 1277952,
+      "Checksum": 1658.506574230382
+    },
+    {
+      "Model": "n2-e0.2-s67-Dense",
+      "Repetition": 4,
+      "Calls": 4096,
+      "ElapsedMilliseconds": 8.4908,
+      "ProcessCpuMilliseconds": 8.488000000000284,
+      "ThreadAllocatedBytes": 917504,
+      "Checksum": 1054.2010150876433
+    },
+    {
+      "Model": "n2-e0.2-s67-TensorJoint",
+      "Repetition": 4,
+      "Calls": 4096,
+      "ElapsedMilliseconds": 8.1714,
+      "ProcessCpuMilliseconds": 8.168999999999869,
+      "ThreadAllocatedBytes": 1507328,
+      "Checksum": 1054.2010150876433
+    },
+    {
+      "Model": "n2-e0.2-s67-ProjectedProduct",
+      "Repetition": 4,
+      "Calls": 4096,
+      "ElapsedMilliseconds": 5.148,
+      "ProcessCpuMilliseconds": 5.1489999999994325,
+      "ThreadAllocatedBytes": 1277952,
+      "Checksum": 1633.3988535647939
+    },
+    {
+      "Model": "n3-e0.0-s41-Dense",
+      "Repetition": 4,
+      "Calls": 4096,
+      "ElapsedMilliseconds": 16.7037,
+      "ProcessCpuMilliseconds": 16.670000000000073,
+      "ThreadAllocatedBytes": 1310720,
+      "Checksum": 501.7959182561543
+    },
+    {
+      "Model": "n3-e0.0-s41-TensorJoint",
+      "Repetition": 4,
+      "Calls": 4096,
+      "ElapsedMilliseconds": 18.6766,
+      "ProcessCpuMilliseconds": 18.66899999999987,
+      "ThreadAllocatedBytes": 2228224,
+      "Checksum": 501.7959182561543
+    },
+    {
+      "Model": "n3-e0.0-s41-ProjectedProduct",
+      "Repetition": 4,
+      "Calls": 4096,
+      "ElapsedMilliseconds": 6.5854,
+      "ProcessCpuMilliseconds": 6.585999999999331,
+      "ThreadAllocatedBytes": 1671168,
+      "Checksum": 1520.2205037769718
+    },
+    {
+      "Model": "n3-e0.0-s53-Dense",
+      "Repetition": 4,
+      "Calls": 4096,
+      "ElapsedMilliseconds": 17.144,
+      "ProcessCpuMilliseconds": 17.144999999999527,
+      "ThreadAllocatedBytes": 1310720,
+      "Checksum": 499.1312510672187
+    },
+    {
+      "Model": "n3-e0.0-s53-TensorJoint",
+      "Repetition": 4,
+      "Calls": 4096,
+      "ElapsedMilliseconds": 19.4958,
+      "ProcessCpuMilliseconds": 19.44499999999971,
+      "ThreadAllocatedBytes": 2228224,
+      "Checksum": 499.1312510672187
+    },
+    {
+      "Model": "n3-e0.0-s53-ProjectedProduct",
+      "Repetition": 4,
+      "Calls": 4096,
+      "ElapsedMilliseconds": 6.5533,
+      "ProcessCpuMilliseconds": 6.555000000000291,
+      "ThreadAllocatedBytes": 1671168,
+      "Checksum": 1379.1172738191076
+    },
+    {
+      "Model": "n3-e0.0-s67-Dense",
+      "Repetition": 4,
+      "Calls": 4096,
+      "ElapsedMilliseconds": 16.8533,
+      "ProcessCpuMilliseconds": 16.846999999999753,
+      "ThreadAllocatedBytes": 1310720,
+      "Checksum": 535.1064019225474
+    },
+    {
+      "Model": "n3-e0.0-s67-TensorJoint",
+      "Repetition": 4,
+      "Calls": 4096,
+      "ElapsedMilliseconds": 19.4173,
+      "ProcessCpuMilliseconds": 19.418000000000575,
+      "ThreadAllocatedBytes": 2228224,
+      "Checksum": 535.1064019225474
+    },
+    {
+      "Model": "n3-e0.0-s67-ProjectedProduct",
+      "Repetition": 4,
+      "Calls": 4096,
+      "ElapsedMilliseconds": 6.5922,
+      "ProcessCpuMilliseconds": 6.592999999999847,
+      "ThreadAllocatedBytes": 1671168,
+      "Checksum": 1437.44269570307
+    },
+    {
+      "Model": "n3-e0.2-s41-Dense",
+      "Repetition": 4,
+      "Calls": 4096,
+      "ElapsedMilliseconds": 17.3079,
+      "ProcessCpuMilliseconds": 17.28399999999965,
+      "ThreadAllocatedBytes": 1310720,
+      "Checksum": 513.4008816517847
+    },
+    {
+      "Model": "n3-e0.2-s41-TensorJoint",
+      "Repetition": 4,
+      "Calls": 4096,
+      "ElapsedMilliseconds": 18.882,
+      "ProcessCpuMilliseconds": 18.847999999999956,
+      "ThreadAllocatedBytes": 2228224,
+      "Checksum": 513.4008816517847
+    },
+    {
+      "Model": "n3-e0.2-s41-ProjectedProduct",
+      "Repetition": 4,
+      "Calls": 4096,
+      "ElapsedMilliseconds": 10.0686,
+      "ProcessCpuMilliseconds": 8.056999999999789,
+      "ThreadAllocatedBytes": 1671168,
+      "Checksum": 1480.2160430297927
+    },
+    {
+      "Model": "n3-e0.2-s53-Dense",
+      "Repetition": 4,
+      "Calls": 4096,
+      "ElapsedMilliseconds": 17.8655,
+      "ProcessCpuMilliseconds": 17.764000000000124,
+      "ThreadAllocatedBytes": 1310720,
+      "Checksum": 533.5888244652585
+    },
+    {
+      "Model": "n3-e0.2-s53-TensorJoint",
+      "Repetition": 4,
+      "Calls": 4096,
+      "ElapsedMilliseconds": 18.6576,
+      "ProcessCpuMilliseconds": 18.6279999999997,
+      "ThreadAllocatedBytes": 2228224,
+      "Checksum": 533.5888244652585
+    },
+    {
+      "Model": "n3-e0.2-s53-ProjectedProduct",
+      "Repetition": 4,
+      "Calls": 4096,
+      "ElapsedMilliseconds": 6.5151,
+      "ProcessCpuMilliseconds": 6.516999999999825,
+      "ThreadAllocatedBytes": 1671168,
+      "Checksum": 1416.0562048242534
+    },
+    {
+      "Model": "n3-e0.2-s67-Dense",
+      "Repetition": 4,
+      "Calls": 4096,
+      "ElapsedMilliseconds": 17.8328,
+      "ProcessCpuMilliseconds": 17.65100000000075,
+      "ThreadAllocatedBytes": 1310720,
+      "Checksum": 534.8230787219819
+    },
+    {
+      "Model": "n3-e0.2-s67-TensorJoint",
+      "Repetition": 4,
+      "Calls": 4096,
+      "ElapsedMilliseconds": 20.8064,
+      "ProcessCpuMilliseconds": 20.65099999999984,
+      "ThreadAllocatedBytes": 2228224,
+      "Checksum": 534.8230787219819
+    },
+    {
+      "Model": "n3-e0.2-s67-ProjectedProduct",
+      "Repetition": 4,
+      "Calls": 4096,
+      "ElapsedMilliseconds": 7.4572,
+      "ProcessCpuMilliseconds": 7.347999999999956,
+      "ThreadAllocatedBytes": 1671168,
+      "Checksum": 1447.3291773826882
+    },
+    {
+      "Model": "n4-e0.0-s41-Dense",
+      "Repetition": 4,
+      "Calls": 4096,
+      "ElapsedMilliseconds": 58.3512,
+      "ProcessCpuMilliseconds": 58.21600000000035,
+      "ThreadAllocatedBytes": 2097152,
+      "Checksum": 246.68494007674022
+    },
+    {
+      "Model": "n4-e0.0-s41-TensorJoint",
+      "Repetition": 4,
+      "Calls": 4096,
+      "ElapsedMilliseconds": 43.6732,
+      "ProcessCpuMilliseconds": 43.55499999999938,
+      "ThreadAllocatedBytes": 3604480,
+      "Checksum": 246.68494007674022
+    },
+    {
+      "Model": "n4-e0.0-s41-ProjectedProduct",
+      "Repetition": 4,
+      "Calls": 4096,
+      "ElapsedMilliseconds": 7.4744,
+      "ProcessCpuMilliseconds": 7.417999999999665,
+      "ThreadAllocatedBytes": 2195456,
+      "Checksum": 1396.2018866826493
+    },
+    {
+      "Model": "n4-e0.0-s53-Dense",
+      "Repetition": 4,
+      "Calls": 4096,
+      "ElapsedMilliseconds": 57.8024,
+      "ProcessCpuMilliseconds": 57.613000000000284,
+      "ThreadAllocatedBytes": 2097152,
+      "Checksum": 281.6226294200232
+    },
+    {
+      "Model": "n4-e0.0-s53-TensorJoint",
+      "Repetition": 4,
+      "Calls": 4096,
+      "ElapsedMilliseconds": 43.4659,
+      "ProcessCpuMilliseconds": 43.26299999999992,
+      "ThreadAllocatedBytes": 3604480,
+      "Checksum": 281.6226294200232
+    },
+    {
+      "Model": "n4-e0.0-s53-ProjectedProduct",
+      "Repetition": 4,
+      "Calls": 4096,
+      "ElapsedMilliseconds": 7.1639,
+      "ProcessCpuMilliseconds": 7.153000000000247,
+      "ThreadAllocatedBytes": 2195456,
+      "Checksum": 1340.675932295379
+    },
+    {
+      "Model": "n4-e0.0-s67-Dense",
+      "Repetition": 4,
+      "Calls": 4096,
+      "ElapsedMilliseconds": 57.0914,
+      "ProcessCpuMilliseconds": 57.05000000000018,
+      "ThreadAllocatedBytes": 2097152,
+      "Checksum": 260.96673574144233
+    },
+    {
+      "Model": "n4-e0.0-s67-TensorJoint",
+      "Repetition": 4,
+      "Calls": 4096,
+      "ElapsedMilliseconds": 43.2605,
+      "ProcessCpuMilliseconds": 43.17800000000079,
+      "ThreadAllocatedBytes": 3604480,
+      "Checksum": 260.96673574144233
+    },
+    {
+      "Model": "n4-e0.0-s67-ProjectedProduct",
+      "Repetition": 4,
+      "Calls": 4096,
+      "ElapsedMilliseconds": 7.1659,
+      "ProcessCpuMilliseconds": 7.167000000000371,
+      "ThreadAllocatedBytes": 2195456,
+      "Checksum": 1443.99932319568
+    },
+    {
+      "Model": "n4-e0.2-s41-Dense",
+      "Repetition": 4,
+      "Calls": 4096,
+      "ElapsedMilliseconds": 57.1235,
+      "ProcessCpuMilliseconds": 57.07099999999991,
+      "ThreadAllocatedBytes": 2097152,
+      "Checksum": 253.53873093502267
+    },
+    {
+      "Model": "n4-e0.2-s41-TensorJoint",
+      "Repetition": 4,
+      "Calls": 4096,
+      "ElapsedMilliseconds": 42.4008,
+      "ProcessCpuMilliseconds": 42.347999999999956,
+      "ThreadAllocatedBytes": 3604480,
+      "Checksum": 253.53873093502244
+    },
+    {
+      "Model": "n4-e0.2-s41-ProjectedProduct",
+      "Repetition": 4,
+      "Calls": 4096,
+      "ElapsedMilliseconds": 6.8616,
+      "ProcessCpuMilliseconds": 6.863000000000284,
+      "ThreadAllocatedBytes": 2195456,
+      "Checksum": 1390.1836409019916
+    },
+    {
+      "Model": "n4-e0.2-s53-Dense",
+      "Repetition": 4,
+      "Calls": 4096,
+      "ElapsedMilliseconds": 59.0615,
+      "ProcessCpuMilliseconds": 59.0619999999999,
+      "ThreadAllocatedBytes": 2097152,
+      "Checksum": 273.5324278497897
+    },
+    {
+      "Model": "n4-e0.2-s53-TensorJoint",
+      "Repetition": 4,
+      "Calls": 4096,
+      "ElapsedMilliseconds": 42.9589,
+      "ProcessCpuMilliseconds": 42.960000000000036,
+      "ThreadAllocatedBytes": 3604480,
+      "Checksum": 273.53242784978966
+    },
+    {
+      "Model": "n4-e0.2-s53-ProjectedProduct",
+      "Repetition": 4,
+      "Calls": 4096,
+      "ElapsedMilliseconds": 6.9413,
+      "ProcessCpuMilliseconds": 6.943000000000211,
+      "ThreadAllocatedBytes": 2195456,
+      "Checksum": 1334.7548294339922
+    },
+    {
+      "Model": "n4-e0.2-s67-Dense",
+      "Repetition": 4,
+      "Calls": 4096,
+      "ElapsedMilliseconds": 57.4181,
+      "ProcessCpuMilliseconds": 57.41899999999896,
+      "ThreadAllocatedBytes": 2097152,
+      "Checksum": 279.86916799373074
+    },
+    {
+      "Model": "n4-e0.2-s67-TensorJoint",
+      "Repetition": 4,
+      "Calls": 4096,
+      "ElapsedMilliseconds": 42.7383,
+      "ProcessCpuMilliseconds": 42.715000000000146,
+      "ThreadAllocatedBytes": 3604480,
+      "Checksum": 279.86916799373074
+    },
+    {
+      "Model": "n4-e0.2-s67-ProjectedProduct",
+      "Repetition": 4,
+      "Calls": 4096,
+      "ElapsedMilliseconds": 6.6797,
+      "ProcessCpuMilliseconds": 6.680000000000291,
+      "ThreadAllocatedBytes": 2195456,
+      "Checksum": 1416.4299432906346
+    },
+    {
+      "Model": "n2-e0.0-s41-Dense",
+      "Repetition": 4,
+      "Calls": 4096,
+      "ElapsedMilliseconds": 8.4602,
+      "ProcessCpuMilliseconds": 8.46100000000115,
+      "ThreadAllocatedBytes": 917504,
+      "Checksum": 1027.838827189817
+    },
+    {
+      "Model": "n2-e0.0-s41-TensorJoint",
+      "Repetition": 4,
+      "Calls": 4096,
+      "ElapsedMilliseconds": 8.5077,
+      "ProcessCpuMilliseconds": 8.509000000000015,
+      "ThreadAllocatedBytes": 1507328,
+      "Checksum": 1027.838827189817
+    },
+    {
+      "Model": "n2-e0.0-s41-ProjectedProduct",
+      "Repetition": 4,
+      "Calls": 4096,
+      "ElapsedMilliseconds": 5.1166,
+      "ProcessCpuMilliseconds": 5.117000000000189,
+      "ThreadAllocatedBytes": 1277952,
+      "Checksum": 1608.3330118924312
+    },
+    {
+      "Model": "n2-e0.0-s53-Dense",
+      "Repetition": 4,
+      "Calls": 4096,
+      "ElapsedMilliseconds": 8.389,
+      "ProcessCpuMilliseconds": 8.389000000001033,
+      "ThreadAllocatedBytes": 917504,
+      "Checksum": 1090.1154022547962
+    }
+  ],
+  "PayloadNote": "Binary64 numeric coefficients and retained state, not heap. Shared local tables count once per model; dense joint matrices are materialized. Metadata, object headers, scratch and complete next-distribution outputs are excluded from payload but included in measured allocation.",
+  "Platform": "macOS 26.6.2",
+  "Protocol": "shared-factor-comparison-v1",
+  "Repetitions": 5,
+  "Runtime": ".NET 10.0.11",
+  "Scores": [
+    {
+      "CacheBytes": 128,
+      "ContextSha256": "F2632BB70F6532338F0A01F2A1AE3804409C43A553BC90393BDE4E29C7D0063E",
+      "Epsilon": 0,
+      "Factors": 2,
+      "JointVsMarginalsKlBits": 1.9844291816667095E-17,
+      "MaximumStateError": 0,
+      "Mode": "Dense",
+      "Model": "n2-e0.0-s41-Dense",
+      "NextKlBits": 0,
+      "ParameterBytes": 544,
+      "Seed": 41,
+      "StateBytes": 32
+    },
+    {
+      "CacheBytes": 32,
+      "ContextSha256": "F2632BB70F6532338F0A01F2A1AE3804409C43A553BC90393BDE4E29C7D0063E",
+      "Epsilon": 0,
+      "Factors": 2,
+      "JointVsMarginalsKlBits": 1.9844291816667095E-17,
+      "MaximumStateError": 2.220446049250313E-16,
+      "Mode": "TensorJoint",
+      "Model": "n2-e0.0-s41-TensorJoint",
+      "NextKlBits": 2.6078126064104596E-16,
+      "ParameterBytes": 88,
+      "Seed": 41,
+      "StateBytes": 32
+    },
+    {
+      "CacheBytes": 32,
+      "ContextSha256": "F2632BB70F6532338F0A01F2A1AE3804409C43A553BC90393BDE4E29C7D0063E",
+      "Epsilon": 0,
+      "Factors": 2,
+      "JointVsMarginalsKlBits": 1.9844291816667095E-17,
+      "MaximumStateError": 3.3306690738754696E-16,
+      "Mode": "ProjectedProduct",
+      "Model": "n2-e0.0-s41-ProjectedProduct",
+      "NextKlBits": 2.6883701446421774E-16,
+      "ParameterBytes": 88,
+      "Seed": 41,
+      "StateBytes": 32
+    },
+    {
+      "CacheBytes": 128,
+      "ContextSha256": "1513FBF4EE15AEFBC0AC81CEF3F83DE913750B419381094E7E611B382F84A716",
+      "Epsilon": 0,
+      "Factors": 2,
+      "JointVsMarginalsKlBits": 5.4514458185005656E-17,
+      "MaximumStateError": 0,
+      "Mode": "Dense",
+      "Model": "n2-e0.0-s53-Dense",
+      "NextKlBits": 0,
+      "ParameterBytes": 544,
+      "Seed": 53,
+      "StateBytes": 32
+    },
+    {
+      "CacheBytes": 32,
+      "ContextSha256": "1513FBF4EE15AEFBC0AC81CEF3F83DE913750B419381094E7E611B382F84A716",
+      "Epsilon": 0,
+      "Factors": 2,
+      "JointVsMarginalsKlBits": 5.4514458185005656E-17,
+      "MaximumStateError": 3.3306690738754696E-16,
+      "Mode": "TensorJoint",
+      "Model": "n2-e0.0-s53-TensorJoint",
+      "NextKlBits": 2.1648943941556194E-16,
+      "ParameterBytes": 88,
+      "Seed": 53,
+      "StateBytes": 32
+    },
+    {
+      "CacheBytes": 32,
+      "ContextSha256": "1513FBF4EE15AEFBC0AC81CEF3F83DE913750B419381094E7E611B382F84A716",
+      "Epsilon": 0,
+      "Factors": 2,
+      "JointVsMarginalsKlBits": 5.4514458185005656E-17,
+      "MaximumStateError": 3.3306690738754696E-16,
+      "Mode": "ProjectedProduct",
+      "Model": "n2-e0.0-s53-ProjectedProduct",
+      "NextKlBits": 1.8005629617973681E-16,
+      "ParameterBytes": 88,
+      "Seed": 53,
+      "StateBytes": 32
+    },
+    {
+      "CacheBytes": 128,
+      "ContextSha256": "4F9689D1D6CC61F8C258094EDCA271229146D51BEB4AE5C967A0499F1EE92302",
+      "Epsilon": 0,
+      "Factors": 2,
+      "JointVsMarginalsKlBits": 1.928170227911003E-17,
+      "MaximumStateError": 0,
+      "Mode": "Dense",
+      "Model": "n2-e0.0-s67-Dense",
+      "NextKlBits": 0,
+      "ParameterBytes": 544,
+      "Seed": 67,
+      "StateBytes": 32
+    },
+    {
+      "CacheBytes": 32,
+      "ContextSha256": "4F9689D1D6CC61F8C258094EDCA271229146D51BEB4AE5C967A0499F1EE92302",
+      "Epsilon": 0,
+      "Factors": 2,
+      "JointVsMarginalsKlBits": 1.928170227911003E-17,
+      "MaximumStateError": 2.220446049250313E-16,
+      "Mode": "TensorJoint",
+      "Model": "n2-e0.0-s67-TensorJoint",
+      "NextKlBits": 2.7795709200337386E-16,
+      "ParameterBytes": 88,
+      "Seed": 67,
+      "StateBytes": 32
+    },
+    {
+      "CacheBytes": 32,
+      "ContextSha256": "4F9689D1D6CC61F8C258094EDCA271229146D51BEB4AE5C967A0499F1EE92302",
+      "Epsilon": 0,
+      "Factors": 2,
+      "JointVsMarginalsKlBits": 1.928170227911003E-17,
+      "MaximumStateError": 3.3306690738754696E-16,
+      "Mode": "ProjectedProduct",
+      "Model": "n2-e0.0-s67-ProjectedProduct",
+      "NextKlBits": 2.541300717658282E-16,
+      "ParameterBytes": 88,
+      "Seed": 67,
+      "StateBytes": 32
+    },
+    {
+      "CacheBytes": 128,
+      "ContextSha256": "322691CDE81D4419564EC7FE150EAE99F510C7C5E113D4E94D8F5D4D8B6ED4B8",
+      "Epsilon": 0.2,
+      "Factors": 2,
+      "JointVsMarginalsKlBits": 0.10094330298549152,
+      "MaximumStateError": 0,
+      "Mode": "Dense",
+      "Model": "n2-e0.2-s41-Dense",
+      "NextKlBits": 0,
+      "ParameterBytes": 544,
+      "Seed": 41,
+      "StateBytes": 32
+    },
+    {
+      "CacheBytes": 32,
+      "ContextSha256": "322691CDE81D4419564EC7FE150EAE99F510C7C5E113D4E94D8F5D4D8B6ED4B8",
+      "Epsilon": 0.2,
+      "Factors": 2,
+      "JointVsMarginalsKlBits": 0.10094330298549152,
+      "MaximumStateError": 2.220446049250313E-16,
+      "Mode": "TensorJoint",
+      "Model": "n2-e0.2-s41-TensorJoint",
+      "NextKlBits": 1.8328917234516252E-16,
+      "ParameterBytes": 88,
+      "Seed": 41,
+      "StateBytes": 32
+    },
+    {
+      "CacheBytes": 32,
+      "ContextSha256": "322691CDE81D4419564EC7FE150EAE99F510C7C5E113D4E94D8F5D4D8B6ED4B8",
+      "Epsilon": 0.2,
+      "Factors": 2,
+      "JointVsMarginalsKlBits": 0.10094330298549152,
+      "MaximumStateError": 0.17952047943404303,
+      "Mode": "ProjectedProduct",
+      "Model": "n2-e0.2-s41-ProjectedProduct",
+      "NextKlBits": 0.001146005359873194,
+      "ParameterBytes": 88,
+      "Seed": 41,
+      "StateBytes": 32
+    },
+    {
+      "CacheBytes": 128,
+      "ContextSha256": "8DC09574E067ECB1FEE93E9DF69D148656406157838C9E48BF14B18889FAE959",
+      "Epsilon": 0.2,
+      "Factors": 2,
+      "JointVsMarginalsKlBits": 0.08953363208390683,
+      "MaximumStateError": 0,
+      "Mode": "Dense",
+      "Model": "n2-e0.2-s53-Dense",
+      "NextKlBits": 0,
+      "ParameterBytes": 544,
+      "Seed": 53,
+      "StateBytes": 32
+    },
+    {
+      "CacheBytes": 32,
+      "ContextSha256": "8DC09574E067ECB1FEE93E9DF69D148656406157838C9E48BF14B18889FAE959",
+      "Epsilon": 0.2,
+      "Factors": 2,
+      "JointVsMarginalsKlBits": 0.08953363208390683,
+      "MaximumStateError": 3.3306690738754696E-16,
+      "Mode": "TensorJoint",
+      "Model": "n2-e0.2-s53-TensorJoint",
+      "NextKlBits": 1.878615149416593E-16,
+      "ParameterBytes": 88,
+      "Seed": 53,
+      "StateBytes": 32
+    },
+    {
+      "CacheBytes": 32,
+      "ContextSha256": "8DC09574E067ECB1FEE93E9DF69D148656406157838C9E48BF14B18889FAE959",
+      "Epsilon": 0.2,
+      "Factors": 2,
+      "JointVsMarginalsKlBits": 0.08953363208390683,
+      "MaximumStateError": 0.18040566224096105,
+      "Mode": "ProjectedProduct",
+      "Model": "n2-e0.2-s53-ProjectedProduct",
+      "NextKlBits": 0.001013836527521785,
+      "ParameterBytes": 88,
+      "Seed": 53,
+      "StateBytes": 32
+    },
+    {
+      "CacheBytes": 128,
+      "ContextSha256": "BE5CF1E6301FC69DFEE19D06FF1D692950FEE35932EE2F5D0789C58987DB95D7",
+      "Epsilon": 0.2,
+      "Factors": 2,
+      "JointVsMarginalsKlBits": 0.10256007398431424,
+      "MaximumStateError": 0,
+      "Mode": "Dense",
+      "Model": "n2-e0.2-s67-Dense",
+      "NextKlBits": 0,
+      "ParameterBytes": 544,
+      "Seed": 67,
+      "StateBytes": 32
+    },
+    {
+      "CacheBytes": 32,
+      "ContextSha256": "BE5CF1E6301FC69DFEE19D06FF1D692950FEE35932EE2F5D0789C58987DB95D7",
+      "Epsilon": 0.2,
+      "Factors": 2,
+      "JointVsMarginalsKlBits": 0.10256007398431424,
+      "MaximumStateError": 2.220446049250313E-16,
+      "Mode": "TensorJoint",
+      "Model": "n2-e0.2-s67-TensorJoint",
+      "NextKlBits": 1.9794556728862033E-16,
+      "ParameterBytes": 88,
+      "Seed": 67,
+      "StateBytes": 32
+    },
+    {
+      "CacheBytes": 32,
+      "ContextSha256": "BE5CF1E6301FC69DFEE19D06FF1D692950FEE35932EE2F5D0789C58987DB95D7",
+      "Epsilon": 0.2,
+      "Factors": 2,
+      "JointVsMarginalsKlBits": 0.10256007398431424,
+      "MaximumStateError": 0.18277423822081473,
+      "Mode": "ProjectedProduct",
+      "Model": "n2-e0.2-s67-ProjectedProduct",
+      "NextKlBits": 0.0011472130009195453,
+      "ParameterBytes": 88,
+      "Seed": 67,
+      "StateBytes": 32
+    },
+    {
+      "CacheBytes": 512,
+      "ContextSha256": "6DE7871402C7537B6CAEE218A81EEA0CC143927197D1FA96CCE5F4B27462875C",
+      "Epsilon": 0,
+      "Factors": 3,
+      "JointVsMarginalsKlBits": 2.2701540135786398E-17,
+      "MaximumStateError": 0,
+      "Mode": "Dense",
+      "Model": "n3-e0.0-s41-Dense",
+      "NextKlBits": 0,
+      "ParameterBytes": 4160,
+      "Seed": 41,
+      "StateBytes": 64
+    },
+    {
+      "CacheBytes": 32,
+      "ContextSha256": "6DE7871402C7537B6CAEE218A81EEA0CC143927197D1FA96CCE5F4B27462875C",
+      "Epsilon": 0,
+      "Factors": 3,
+      "JointVsMarginalsKlBits": 2.2701540135786398E-17,
+      "MaximumStateError": 2.220446049250313E-16,
+      "Mode": "TensorJoint",
+      "Model": "n3-e0.0-s41-TensorJoint",
+      "NextKlBits": 1.1357909872987922E-16,
+      "ParameterBytes": 88,
+      "Seed": 41,
+      "StateBytes": 64
+    },
+    {
+      "CacheBytes": 32,
+      "ContextSha256": "6DE7871402C7537B6CAEE218A81EEA0CC143927197D1FA96CCE5F4B27462875C",
+      "Epsilon": 0,
+      "Factors": 3,
+      "JointVsMarginalsKlBits": 2.2701540135786398E-17,
+      "MaximumStateError": 3.3306690738754696E-16,
+      "Mode": "ProjectedProduct",
+      "Model": "n3-e0.0-s41-ProjectedProduct",
+      "NextKlBits": 1.3215249975393509E-16,
+      "ParameterBytes": 88,
+      "Seed": 41,
+      "StateBytes": 48
+    },
+    {
+      "CacheBytes": 512,
+      "ContextSha256": "07DD71FDA19F700A6AFF25882DFD7B7A6ADA75B5D586FDEE417B51EB6B9D71FF",
+      "Epsilon": 0,
+      "Factors": 3,
+      "JointVsMarginalsKlBits": -9.936467261957668E-18,
+      "MaximumStateError": 0,
+      "Mode": "Dense",
+      "Model": "n3-e0.0-s53-Dense",
+      "NextKlBits": 0,
+      "ParameterBytes": 4160,
+      "Seed": 53,
+      "StateBytes": 64
+    },
+    {
+      "CacheBytes": 32,
+      "ContextSha256": "07DD71FDA19F700A6AFF25882DFD7B7A6ADA75B5D586FDEE417B51EB6B9D71FF",
+      "Epsilon": 0,
+      "Factors": 3,
+      "JointVsMarginalsKlBits": -9.936467261957668E-18,
+      "MaximumStateError": 2.220446049250313E-16,
+      "Mode": "TensorJoint",
+      "Model": "n3-e0.0-s53-TensorJoint",
+      "NextKlBits": 1.6618519462232017E-16,
+      "ParameterBytes": 88,
+      "Seed": 53,
+      "StateBytes": 64
+    },
+    {
+      "CacheBytes": 32,
+      "ContextSha256": "07DD71FDA19F700A6AFF25882DFD7B7A6ADA75B5D586FDEE417B51EB6B9D71FF",
+      "Epsilon": 0,
+      "Factors": 3,
+      "JointVsMarginalsKlBits": -9.936467261957668E-18,
+      "MaximumStateError": 3.3306690738754696E-16,
+      "Mode": "ProjectedProduct",
+      "Model": "n3-e0.0-s53-ProjectedProduct",
+      "NextKlBits": 1.6069463724198E-16,
+      "ParameterBytes": 88,
+      "Seed": 53,
+      "StateBytes": 48
+    },
+    {
+      "CacheBytes": 512,
+      "ContextSha256": "1E952E2E53B929896776FDA02395A6DB2159A5CF7B023B814858284CBCE15369",
+      "Epsilon": 0,
+      "Factors": 3,
+      "JointVsMarginalsKlBits": -2.0039650315405334E-17,
+      "MaximumStateError": 0,
+      "Mode": "Dense",
+      "Model": "n3-e0.0-s67-Dense",
+      "NextKlBits": 0,
+      "ParameterBytes": 4160,
+      "Seed": 67,
+      "StateBytes": 64
+    },
+    {
+      "CacheBytes": 32,
+      "ContextSha256": "1E952E2E53B929896776FDA02395A6DB2159A5CF7B023B814858284CBCE15369",
+      "Epsilon": 0,
+      "Factors": 3,
+      "JointVsMarginalsKlBits": -2.0039650315405334E-17,
+      "MaximumStateError": 2.220446049250313E-16,
+      "Mode": "TensorJoint",
+      "Model": "n3-e0.0-s67-TensorJoint",
+      "NextKlBits": 1.4785603242812743E-16,
+      "ParameterBytes": 88,
+      "Seed": 67,
+      "StateBytes": 64
+    },
+    {
+      "CacheBytes": 32,
+      "ContextSha256": "1E952E2E53B929896776FDA02395A6DB2159A5CF7B023B814858284CBCE15369",
+      "Epsilon": 0,
+      "Factors": 3,
+      "JointVsMarginalsKlBits": -2.0039650315405334E-17,
+      "MaximumStateError": 3.3306690738754696E-16,
+      "Mode": "ProjectedProduct",
+      "Model": "n3-e0.0-s67-ProjectedProduct",
+      "NextKlBits": 1.398904775641935E-16,
+      "ParameterBytes": 88,
+      "Seed": 67,
+      "StateBytes": 48
+    },
+    {
+      "CacheBytes": 512,
+      "ContextSha256": "B9ECDD5A78E181619D9FB876E61031FA29D3534CBE1433691042E3A72ADE60F3",
+      "Epsilon": 0.2,
+      "Factors": 3,
+      "JointVsMarginalsKlBits": 0.2205905365101179,
+      "MaximumStateError": 0,
+      "Mode": "Dense",
+      "Model": "n3-e0.2-s41-Dense",
+      "NextKlBits": 0,
+      "ParameterBytes": 4160,
+      "Seed": 41,
+      "StateBytes": 64
+    },
+    {
+      "CacheBytes": 32,
+      "ContextSha256": "B9ECDD5A78E181619D9FB876E61031FA29D3534CBE1433691042E3A72ADE60F3",
+      "Epsilon": 0.2,
+      "Factors": 3,
+      "JointVsMarginalsKlBits": 0.2205905365101179,
+      "MaximumStateError": 2.220446049250313E-16,
+      "Mode": "TensorJoint",
+      "Model": "n3-e0.2-s41-TensorJoint",
+      "NextKlBits": 2.2145360867087725E-16,
+      "ParameterBytes": 88,
+      "Seed": 41,
+      "StateBytes": 64
+    },
+    {
+      "CacheBytes": 32,
+      "ContextSha256": "B9ECDD5A78E181619D9FB876E61031FA29D3534CBE1433691042E3A72ADE60F3",
+      "Epsilon": 0.2,
+      "Factors": 3,
+      "JointVsMarginalsKlBits": 0.2205905365101179,
+      "MaximumStateError": 0.27708789805127754,
+      "Mode": "ProjectedProduct",
+      "Model": "n3-e0.2-s41-ProjectedProduct",
+      "NextKlBits": 0.0027531142250262442,
+      "ParameterBytes": 88,
+      "Seed": 41,
+      "StateBytes": 48
+    },
+    {
+      "CacheBytes": 512,
+      "ContextSha256": "00DDBD0787BED70037338BA66A6820E67462DD56E1FD984BDE04DBCA007A1A6F",
+      "Epsilon": 0.2,
+      "Factors": 3,
+      "JointVsMarginalsKlBits": 0.22208911628487288,
+      "MaximumStateError": 0,
+      "Mode": "Dense",
+      "Model": "n3-e0.2-s53-Dense",
+      "NextKlBits": 0,
+      "ParameterBytes": 4160,
+      "Seed": 53,
+      "StateBytes": 64
+    },
+    {
+      "CacheBytes": 32,
+      "ContextSha256": "00DDBD0787BED70037338BA66A6820E67462DD56E1FD984BDE04DBCA007A1A6F",
+      "Epsilon": 0.2,
+      "Factors": 3,
+      "JointVsMarginalsKlBits": 0.22208911628487288,
+      "MaximumStateError": 2.220446049250313E-16,
+      "Mode": "TensorJoint",
+      "Model": "n3-e0.2-s53-TensorJoint",
+      "NextKlBits": 2.480928880434656E-16,
+      "ParameterBytes": 88,
+      "Seed": 53,
+      "StateBytes": 64
+    },
+    {
+      "CacheBytes": 32,
+      "ContextSha256": "00DDBD0787BED70037338BA66A6820E67462DD56E1FD984BDE04DBCA007A1A6F",
+      "Epsilon": 0.2,
+      "Factors": 3,
+      "JointVsMarginalsKlBits": 0.22208911628487288,
+      "MaximumStateError": 0.2979319527038452,
+      "Mode": "ProjectedProduct",
+      "Model": "n3-e0.2-s53-ProjectedProduct",
+      "NextKlBits": 0.0026807026458265976,
+      "ParameterBytes": 88,
+      "Seed": 53,
+      "StateBytes": 48
+    },
+    {
+      "CacheBytes": 512,
+      "ContextSha256": "27C9638516BA024A4BD39731D45115B29085A94B4FC81A1416250D15240DC3E5",
+      "Epsilon": 0.2,
+      "Factors": 3,
+      "JointVsMarginalsKlBits": 0.22895278737451488,
+      "MaximumStateError": 0,
+      "Mode": "Dense",
+      "Model": "n3-e0.2-s67-Dense",
+      "NextKlBits": 0,
+      "ParameterBytes": 4160,
+      "Seed": 67,
+      "StateBytes": 64
+    },
+    {
+      "CacheBytes": 32,
+      "ContextSha256": "27C9638516BA024A4BD39731D45115B29085A94B4FC81A1416250D15240DC3E5",
+      "Epsilon": 0.2,
+      "Factors": 3,
+      "JointVsMarginalsKlBits": 0.22895278737451488,
+      "MaximumStateError": 2.220446049250313E-16,
+      "Mode": "TensorJoint",
+      "Model": "n3-e0.2-s67-TensorJoint",
+      "NextKlBits": 2.047935281415758E-16,
+      "ParameterBytes": 88,
+      "Seed": 67,
+      "StateBytes": 64
+    },
+    {
+      "CacheBytes": 32,
+      "ContextSha256": "27C9638516BA024A4BD39731D45115B29085A94B4FC81A1416250D15240DC3E5",
+      "Epsilon": 0.2,
+      "Factors": 3,
+      "JointVsMarginalsKlBits": 0.22895278737451488,
+      "MaximumStateError": 0.29596292533988366,
+      "Mode": "ProjectedProduct",
+      "Model": "n3-e0.2-s67-ProjectedProduct",
+      "NextKlBits": 0.0029396076056598225,
+      "ParameterBytes": 88,
+      "Seed": 67,
+      "StateBytes": 48
+    },
+    {
+      "CacheBytes": 2048,
+      "ContextSha256": "7EAF020D36B0ED21CDDFEDA111A60A0448B076427F56955A3C8663D8A01E2FFC",
+      "Epsilon": 0,
+      "Factors": 4,
+      "JointVsMarginalsKlBits": -1.8522734014880597E-17,
+      "MaximumStateError": 0,
+      "Mode": "Dense",
+      "Model": "n4-e0.0-s41-Dense",
+      "NextKlBits": 0,
+      "ParameterBytes": 32896,
+      "Seed": 41,
+      "StateBytes": 128
+    },
+    {
+      "CacheBytes": 32,
+      "ContextSha256": "7EAF020D36B0ED21CDDFEDA111A60A0448B076427F56955A3C8663D8A01E2FFC",
+      "Epsilon": 0,
+      "Factors": 4,
+      "JointVsMarginalsKlBits": -1.8522734014880597E-17,
+      "MaximumStateError": 2.220446049250313E-16,
+      "Mode": "TensorJoint",
+      "Model": "n4-e0.0-s41-TensorJoint",
+      "NextKlBits": 3.1871907342432873E-16,
+      "ParameterBytes": 88,
+      "Seed": 41,
+      "StateBytes": 128
+    },
+    {
+      "CacheBytes": 32,
+      "ContextSha256": "7EAF020D36B0ED21CDDFEDA111A60A0448B076427F56955A3C8663D8A01E2FFC",
+      "Epsilon": 0,
+      "Factors": 4,
+      "JointVsMarginalsKlBits": -1.8522734014880597E-17,
+      "MaximumStateError": 3.3306690738754696E-16,
+      "Mode": "ProjectedProduct",
+      "Model": "n4-e0.0-s41-ProjectedProduct",
+      "NextKlBits": 2.8774538319985214E-16,
+      "ParameterBytes": 88,
+      "Seed": 41,
+      "StateBytes": 64
+    },
+    {
+      "CacheBytes": 2048,
+      "ContextSha256": "B9ACF7069B11C364587568200B9AB8A59D8AE2419402C84240FB084A8CD3D43E",
+      "Epsilon": 0,
+      "Factors": 4,
+      "JointVsMarginalsKlBits": 5.578109906291491E-17,
+      "MaximumStateError": 0,
+      "Mode": "Dense",
+      "Model": "n4-e0.0-s53-Dense",
+      "NextKlBits": 0,
+      "ParameterBytes": 32896,
+      "Seed": 53,
+      "StateBytes": 128
+    },
+    {
+      "CacheBytes": 32,
+      "ContextSha256": "B9ACF7069B11C364587568200B9AB8A59D8AE2419402C84240FB084A8CD3D43E",
+      "Epsilon": 0,
+      "Factors": 4,
+      "JointVsMarginalsKlBits": 5.578109906291491E-17,
+      "MaximumStateError": 3.3306690738754696E-16,
+      "Mode": "TensorJoint",
+      "Model": "n4-e0.0-s53-TensorJoint",
+      "NextKlBits": 2.9093797532489253E-16,
+      "ParameterBytes": 88,
+      "Seed": 53,
+      "StateBytes": 128
+    },
+    {
+      "CacheBytes": 32,
+      "ContextSha256": "B9ACF7069B11C364587568200B9AB8A59D8AE2419402C84240FB084A8CD3D43E",
+      "Epsilon": 0,
+      "Factors": 4,
+      "JointVsMarginalsKlBits": 5.578109906291491E-17,
+      "MaximumStateError": 3.3306690738754696E-16,
+      "Mode": "ProjectedProduct",
+      "Model": "n4-e0.0-s53-ProjectedProduct",
+      "NextKlBits": 2.922930952232288E-16,
+      "ParameterBytes": 88,
+      "Seed": 53,
+      "StateBytes": 64
+    },
+    {
+      "CacheBytes": 2048,
+      "ContextSha256": "1116EB377CD816C15E73C1F14A6AF0596BB528012B92A4137BFD91B6BF581E3D",
+      "Epsilon": 0,
+      "Factors": 4,
+      "JointVsMarginalsKlBits": 2.946018034387906E-17,
+      "MaximumStateError": 0,
+      "Mode": "Dense",
+      "Model": "n4-e0.0-s67-Dense",
+      "NextKlBits": 0,
+      "ParameterBytes": 32896,
+      "Seed": 67,
+      "StateBytes": 128
+    },
+    {
+      "CacheBytes": 32,
+      "ContextSha256": "1116EB377CD816C15E73C1F14A6AF0596BB528012B92A4137BFD91B6BF581E3D",
+      "Epsilon": 0,
+      "Factors": 4,
+      "JointVsMarginalsKlBits": 2.946018034387906E-17,
+      "MaximumStateError": 2.220446049250313E-16,
+      "Mode": "TensorJoint",
+      "Model": "n4-e0.0-s67-TensorJoint",
+      "NextKlBits": 3.08152125989547E-16,
+      "ParameterBytes": 88,
+      "Seed": 67,
+      "StateBytes": 128
+    },
+    {
+      "CacheBytes": 32,
+      "ContextSha256": "1116EB377CD816C15E73C1F14A6AF0596BB528012B92A4137BFD91B6BF581E3D",
+      "Epsilon": 0,
+      "Factors": 4,
+      "JointVsMarginalsKlBits": 2.946018034387906E-17,
+      "MaximumStateError": 4.440892098500626E-16,
+      "Mode": "ProjectedProduct",
+      "Model": "n4-e0.0-s67-ProjectedProduct",
+      "NextKlBits": 2.9309589538970076E-16,
+      "ParameterBytes": 88,
+      "Seed": 67,
+      "StateBytes": 64
+    },
+    {
+      "CacheBytes": 2048,
+      "ContextSha256": "2DB62C644599077EC3BB5900447C9F8198749DF990C2F79B307C4DDA160F592F",
+      "Epsilon": 0.2,
+      "Factors": 4,
+      "JointVsMarginalsKlBits": 0.37542036690788094,
+      "MaximumStateError": 0,
+      "Mode": "Dense",
+      "Model": "n4-e0.2-s41-Dense",
+      "NextKlBits": 0,
+      "ParameterBytes": 32896,
+      "Seed": 41,
+      "StateBytes": 128
+    },
+    {
+      "CacheBytes": 32,
+      "ContextSha256": "2DB62C644599077EC3BB5900447C9F8198749DF990C2F79B307C4DDA160F592F",
+      "Epsilon": 0.2,
+      "Factors": 4,
+      "JointVsMarginalsKlBits": 0.37542036690788094,
+      "MaximumStateError": 3.3306690738754696E-16,
+      "Mode": "TensorJoint",
+      "Model": "n4-e0.2-s41-TensorJoint",
+      "NextKlBits": 3.0556206386030667E-16,
+      "ParameterBytes": 88,
+      "Seed": 41,
+      "StateBytes": 128
+    },
+    {
+      "CacheBytes": 32,
+      "ContextSha256": "2DB62C644599077EC3BB5900447C9F8198749DF990C2F79B307C4DDA160F592F",
+      "Epsilon": 0.2,
+      "Factors": 4,
+      "JointVsMarginalsKlBits": 0.37542036690788094,
+      "MaximumStateError": 0.35552872854976,
+      "Mode": "ProjectedProduct",
+      "Model": "n4-e0.2-s41-ProjectedProduct",
+      "NextKlBits": 0.005206919724377848,
+      "ParameterBytes": 88,
+      "Seed": 41,
+      "StateBytes": 64
+    },
+    {
+      "CacheBytes": 2048,
+      "ContextSha256": "655A4F544B544A7F2CF12B54425B1DC9C64FEE3E520BCC56CDCE29C67CE0061F",
+      "Epsilon": 0.2,
+      "Factors": 4,
+      "JointVsMarginalsKlBits": 0.3690693494994246,
+      "MaximumStateError": 0,
+      "Mode": "Dense",
+      "Model": "n4-e0.2-s53-Dense",
+      "NextKlBits": 0,
+      "ParameterBytes": 32896,
+      "Seed": 53,
+      "StateBytes": 128
+    },
+    {
+      "CacheBytes": 32,
+      "ContextSha256": "655A4F544B544A7F2CF12B54425B1DC9C64FEE3E520BCC56CDCE29C67CE0061F",
+      "Epsilon": 0.2,
+      "Factors": 4,
+      "JointVsMarginalsKlBits": 0.3690693494994246,
+      "MaximumStateError": 2.220446049250313E-16,
+      "Mode": "TensorJoint",
+      "Model": "n4-e0.2-s53-TensorJoint",
+      "NextKlBits": 2.9878657596407485E-16,
+      "ParameterBytes": 88,
+      "Seed": 53,
+      "StateBytes": 128
+    },
+    {
+      "CacheBytes": 32,
+      "ContextSha256": "655A4F544B544A7F2CF12B54425B1DC9C64FEE3E520BCC56CDCE29C67CE0061F",
+      "Epsilon": 0.2,
+      "Factors": 4,
+      "JointVsMarginalsKlBits": 0.3690693494994246,
+      "MaximumStateError": 0.3976940227062333,
+      "Mode": "ProjectedProduct",
+      "Model": "n4-e0.2-s53-ProjectedProduct",
+      "NextKlBits": 0.005119060050065053,
+      "ParameterBytes": 88,
+      "Seed": 53,
+      "StateBytes": 64
+    },
+    {
+      "CacheBytes": 2048,
+      "ContextSha256": "1CD79F3B3472761655769D9883AD7D37F56CBA88991B87F83440CDBF58935CBB",
+      "Epsilon": 0.2,
+      "Factors": 4,
+      "JointVsMarginalsKlBits": 0.36470547030037953,
+      "MaximumStateError": 0,
+      "Mode": "Dense",
+      "Model": "n4-e0.2-s67-Dense",
+      "NextKlBits": 0,
+      "ParameterBytes": 32896,
+      "Seed": 67,
+      "StateBytes": 128
+    },
+    {
+      "CacheBytes": 32,
+      "ContextSha256": "1CD79F3B3472761655769D9883AD7D37F56CBA88991B87F83440CDBF58935CBB",
+      "Epsilon": 0.2,
+      "Factors": 4,
+      "JointVsMarginalsKlBits": 0.36470547030037953,
+      "MaximumStateError": 2.220446049250313E-16,
+      "Mode": "TensorJoint",
+      "Model": "n4-e0.2-s67-TensorJoint",
+      "NextKlBits": 3.111183354809109E-16,
+      "ParameterBytes": 88,
+      "Seed": 67,
+      "StateBytes": 128
+    },
+    {
+      "CacheBytes": 32,
+      "ContextSha256": "1CD79F3B3472761655769D9883AD7D37F56CBA88991B87F83440CDBF58935CBB",
+      "Epsilon": 0.2,
+      "Factors": 4,
+      "JointVsMarginalsKlBits": 0.36470547030037953,
+      "MaximumStateError": 0.3494095632744177,
+      "Mode": "ProjectedProduct",
+      "Model": "n4-e0.2-s67-ProjectedProduct",
+      "NextKlBits": 0.004952953564819512,
+      "ParameterBytes": 88,
+      "Seed": 67,
+      "StateBytes": 64
+    }
+  ],
+  "SourceHashes": [
+    {
+      "File": "ComparisonSupport.fsx",
+      "Sha256": "17CC4E8DFC086C6A35ADECC3A21AE2D5C4EE2BAC831C2820DC99242583724297"
+    },
+    {
+      "File": "SharedFactorFilter.fs",
+      "Sha256": "A50FE17A03F6C16029B1DC71D09CB79D13933B570B37609F4BF0EB04822CDFFF"
+    },
+    {
+      "File": "DenseHmm.fs",
+      "Sha256": "6642B49BFC29C36206A724D4D8675DCAE2988341520788553EA507E0428656FE"
+    },
+    {
+      "File": "ResearchRandom.fs",
+      "Sha256": "4422C5EE4380A698FF479F0082C44E1453990C48AA034B9842719C4E0E7C79FF"
+    },
+    {
+      "File": "run-factor-comparison.fsx",
+      "Sha256": "8EE3460E946CA72C364440B77B8664CCBBF22197E0B9B6AA241229F849949274"
+    }
+  ],
+  "WarmupCalls": 256,
+  "WarmupChecksum": 3049.7678984496483
+}
