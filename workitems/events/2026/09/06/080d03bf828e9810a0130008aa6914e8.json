@@ -1,0 +1,14 @@
+{
+  "id": "080d03bf828e9810a0130008aa6914e8",
+  "at": "2026-09-06T18:17:13.427Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1VZ0MEJ087G0R0022K821S",
+    "type": "task",
+    "title": "Catalog write-fail of tmp does not publish a new generation",
+    "slug": "catalog-write-fail-of-tmp-does-not-publish-a-new-generation",
+    "priority": "P2",
+    "filename": "081M1VZ0MEJ087G0R0022K821S-catalog-write-fail-of-tmp-does-not-publish-a-new-generation.md"
+  }
+}
