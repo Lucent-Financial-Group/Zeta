@@ -73,7 +73,11 @@ See [`docs/CONFLICT-RESOLUTION.md`](docs/CONFLICT-RESOLUTION.md). On deadlock, t
   including runs that find nothing wrong. Fetch first, exactly like `heartbeat/*`:
   `git fetch origin '+refs/heads/liveness/*:refs/remotes/origin/liveness/*'`, then ask
   **"is anyone still observing?"** — a question a check-run annotation cannot answer —
-  with `bun src/Core.TypeScript/agent-heartbeats/liveness-ledger.ts read --dir <checkout>`
-  (exit 1 = nobody has observed inside the threshold). One-file read:
+  by putting the LEDGER in a worktree and reading THAT — `--dir` is the ledger, never the
+  repo checkout, and pointing it at the checkout prints "holds NO records at all" and
+  exits 1, which is a FALSE ALARM in the one check whose job is telling real silence from
+  apparent silence: `git worktree add --detach /tmp/lw origin/liveness/observations && bun
+  src/Core.TypeScript/agent-heartbeats/liveness-ledger.ts read --dir /tmp/lw`
+  (exit 1 = nobody has observed inside the threshold). One-file read, no worktree:
   `git show origin/liveness/observations:latest.json`.
   Full: `docs/DECISIONS/2026-08-27-liveness-observations-reach-main-without-a-pr.md`.
