@@ -265,3 +265,72 @@ export function driveRound(state: DriveState, hatIds: readonly string[], deps: D
       (deps.dryRun === true ? " (DRY RUN — nothing was applied)" : ""),
   };
 }
+
+/**
+ * The drive state of an organization that has just RUN.
+ *
+ * The join between the two halves of this register: `runOrgRuntime` produces a report, and the
+ * driver needs a view. Written here rather than in the bridge because it is about a RUN — the
+ * bridge deals in organizational state generally, and a report is one particular way of having
+ * some.
+ *
+ * ARTIFACTS ARE THE CALLER'S. A run does not produce artifact histories today, and inventing one
+ * per work item would manufacture a revision nobody wrote — so the map is passed in, and an empty
+ * one means no hat is offered a turn or a room. Absent rather than fabricated, as everywhere else.
+ */
+export function driveStateFrom(
+  report: {
+    readonly cascade: Cascade;
+    readonly calendar: Calendar;
+    readonly board: AnchorBoard;
+    readonly signals: readonly import("./supervisor-signal").SupervisorSignal[];
+  },
+  chart: OrgChart,
+  artifacts: ReadonlyMap<string, import("./artifact-deliberation").ArtifactHistory> = new Map(),
+  blockers?: ReadonlyMap<string, readonly import("../observe/observe").MissingInformation[]>,
+): DriveState {
+  return {
+    view: {
+      chart,
+      board: report.board,
+      signals: report.signals,
+      cascade: report.cascade.nodes,
+      artifacts,
+      ...(blockers === undefined ? {} : { blockers }),
+    },
+    cascade: report.cascade,
+    calendar: report.calendar,
+  };
+}
+
+/**
+ * Drive until the organization settles, or until a bound.
+ *
+ * Settling means a whole round in which NOTHING changed. That is the same stall condition
+ * `autonomy.ts` applies to the delivery loop, for the same reason: a driver that keeps ticking
+ * while nothing moves burns a budget producing nothing and reports success by never admitting it
+ * finished.
+ *
+ * `maxRounds` is REQUIRED, with no default — the one number between a self-driving organization
+ * and an unbounded one, and a defaulted bound is a bound nobody chose.
+ */
+export function driveUntilSettled(
+  state: DriveState,
+  hatIds: readonly string[],
+  deps: DriveDeps,
+  maxRounds: number,
+): { readonly state: DriveState; readonly rounds: readonly DriveResult[]; readonly settled: boolean } {
+  if (maxRounds < 1) throw new Error("maxRounds must be at least 1; a loop that cannot run once is not a loop");
+  let current = state;
+  const rounds: DriveResult[] = [];
+  for (let i = 0; i < maxRounds; i += 1) {
+    const r = driveRound(current, hatIds, deps);
+    rounds.push(r);
+    current = r.state;
+    // SETTLED, not finished. The organization has nothing further it can do on its own; whether
+    // that is because the work is done or because it is stuck is a different question, and one the
+    // caller answers by looking at the cascade rather than at the round count.
+    if (r.changes === 0) return { state: current, rounds, settled: true };
+  }
+  return { state: current, rounds, settled: false };
+}
