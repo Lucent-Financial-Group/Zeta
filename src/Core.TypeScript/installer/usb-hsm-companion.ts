@@ -34,6 +34,36 @@ export const FORBIDDEN_BAKE_CRED_ALIASES = [
   "wrap_key",
 ] as const;
 
+/**
+ * Discriminated error carrier. The `_tag` field discriminates the failure
+ * branch from a parsed JSON object (a `Record<string, unknown>` whose index
+ * signature would otherwise make `"error" in obj` non-narrowing, leaving
+ * `obj.error` typed as `unknown`).
+ */
+interface ValidationError {
+  readonly _tag: "error";
+  readonly error: string;
+}
+
+function validationError(error: string): ValidationError {
+  return { _tag: "error", error };
+}
+
+/**
+ * Type guard that narrows a helper result to its failure branch. Using a
+ * predicate (rather than `"error" in x`) is required because the success
+ * branch is a `Record<string, unknown>` whose index signature makes the
+ * `in` operator non-narrowing.
+ */
+function isValidationError(value: unknown): value is ValidationError {
+  return (
+    typeof value === "object" &&
+    value !== null &&
+    (value as { _tag?: unknown })._tag === "error" &&
+    typeof (value as { error?: unknown }).error === "string"
+  );
+}
+
 const SECRET_JSON_KEY = /^(pin|password|secret|authkey|auth_key|unseal|wrap_key|wrapkey|op_session)$/i;
 const ENV_NAME = /^[A-Z][A-Z0-9_]{0,63}$/;
 const HEX_KEY_MATERIAL = /^[0-9a-fA-F]{32,}$/;
@@ -48,29 +78,29 @@ export function refuseForbiddenBakeCredId(id: string): string | null {
   return null;
 }
 
-function asUtf8Text(value: Buffer, id: string): string | { readonly error: string } {
-  if (value.length === 0) return { error: `${id} value must be non-empty` };
-  if (value.includes(0)) return { error: `${id} is a reference, not a binary blob` };
+function asUtf8Text(value: Buffer, id: string): string | ValidationError {
+  if (value.length === 0) return validationError(`${id} value must be non-empty`);
+  if (value.includes(0)) return validationError(`${id} is a reference, not a binary blob`);
   if (value.length >= 4 && value[0] === 0x7f && value[1] === 0x45 && value[2] === 0x4c && value[3] === 0x46) {
-    return { error: `${id} is a module path, not the .so bytes` };
+    return validationError(`${id} is a module path, not the .so bytes`);
   }
   return value.toString("utf8").trim();
 }
 
-function parseJsonObject(text: string, id: string): Record<string, unknown> | { readonly error: string } {
+function parseJsonObject(text: string, id: string): Record<string, unknown> | ValidationError {
   let parsed: unknown;
   try {
     parsed = JSON.parse(text);
   } catch {
-    return { error: `${id} value must be a JSON object` };
+    return validationError(`${id} value must be a JSON object`);
   }
   if (parsed === null || typeof parsed !== "object" || Array.isArray(parsed)) {
-    return { error: `${id} value must be a JSON object` };
+    return validationError(`${id} value must be a JSON object`);
   }
   const record = parsed as Record<string, unknown>;
   for (const key of Object.keys(record)) {
     if (SECRET_JSON_KEY.test(key)) {
-      return { error: `${id} must not carry ${key} (reference only; PIN/authkey bytes stay off the stick)` };
+      return validationError(`${id} must not carry ${key} (reference only; PIN/authkey bytes stay off the stick)`);
     }
   }
   return record;
@@ -96,7 +126,7 @@ export function validateConnectorConfig(value: Buffer): string | null {
   const text = asUtf8Text(value, "connector-config");
   if (typeof text !== "string") return text.error;
   const obj = parseJsonObject(text, "connector-config");
-  if ("error" in obj) return obj.error;
+  if (isValidationError(obj)) return obj.error;
   return null;
 }
 
@@ -114,7 +144,7 @@ export function validateDomainMap(value: Buffer): string | null {
   const text = asUtf8Text(value, "domain-map");
   if (typeof text !== "string") return text.error;
   const obj = parseJsonObject(text, "domain-map");
-  if ("error" in obj) return obj.error;
+  if (isValidationError(obj)) return obj.error;
   for (const [key, val] of Object.entries(obj)) {
     if (typeof val !== "string" || val.length === 0) {
       return "domain-map values must be non-empty role labels";
