@@ -37,28 +37,28 @@ These choices are recorded before inspecting trained-model evaluation results.
 Implementation defects may be fixed; any experimental change after a run must
 be recorded with its reason. A failed scientific comparison is not a code defect.
 
-| Dimension | Fixed choice |
-|---|---|
-| Source | Mess3, the numerical matrices in Appendix A.3; uniform stationary initial state |
-| Observation | Integers 0, 1, 2 only; no generator state, posterior, or transition matrix enters the learner |
-| Network | One tanh recurrent layer, one linear three-token softmax readout; zero initial hidden state |
-| Trainable parameters | Input matrix, recurrent matrix, hidden bias, output matrix, output bias |
-| Hidden widths | 3, 8, 16; every width reported |
-| Repetitions | Seeds 11, 23, 37; every repetition reported |
-| Initialization | Independent Glorot-uniform matrices, zero biases |
-| Objective | Mean next-token negative log likelihood, full backpropagation within each 32-step sequence |
-| Training | 4096 updates, batch 16, 33 tokens per generated sequence; state resets between sequences |
-| Optimizer | Adam, learning rate 0.003, beta1 0.9, beta2 0.999, epsilon 1e-8, gradient L2 cap 1 |
-| Selection | Final weights only; no evaluation-based checkpoint selection or early stopping |
-| Randomness | Explicit domain-separated streams for initialization, training, probe fit, evaluation, and shuffle |
-| Probe | Affine ridge regression, mean squared error plus 1e-6 slope penalty; intercept unpenalized |
-| Probe fit | 512 independent sequences, one final activation after 16 observations per sequence |
-| Held-out evaluation | 2048 independent sequences; no sequence contributes to both probe fit and evaluation |
-| Contexts | Main evaluation after 16 tokens; separately report 64-token context extrapolation |
-| Prediction | Conditional expected cross-entropy, entropy floor, excess KL, sampled next-token loss, and joint three-token future KL |
-| Controls | Exact known-model filter, training-fitted unigram/bigram with additive-one smoothing, same-initialization untrained RNN, shuffled-label probe, next-token-output probe |
-| Resource accounting | Binary64 numeric payload bytes separately from measured allocation, elapsed time, and process CPU; no payload-as-heap claim |
-| Gates | Gradient finite differences, independently expressed Mess3 checks, numerical reference, deterministic replay, build/test/lint |
+| Dimension            | Fixed choice                                                                                                                                                           |
+| -------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Source               | Mess3, the numerical matrices in Appendix A.3; uniform stationary initial state                                                                                        |
+| Observation          | Integers 0, 1, 2 only; no generator state, posterior, or transition matrix enters the learner                                                                          |
+| Network              | One tanh recurrent layer, one linear three-token softmax readout; zero initial hidden state                                                                            |
+| Trainable parameters | Input matrix, recurrent matrix, hidden bias, output matrix, output bias                                                                                                |
+| Hidden widths        | 3, 8, 16; every width reported                                                                                                                                         |
+| Repetitions          | Seeds 11, 23, 37; every repetition reported                                                                                                                            |
+| Initialization       | Independent Glorot-uniform matrices, zero biases                                                                                                                       |
+| Objective            | Mean next-token negative log likelihood, full backpropagation within each 32-step sequence                                                                             |
+| Training             | 4096 updates, batch 16, 33 tokens per generated sequence; state resets between sequences                                                                               |
+| Optimizer            | Adam, learning rate 0.003, beta1 0.9, beta2 0.999, epsilon 1e-8, gradient L2 cap 1                                                                                     |
+| Selection            | Final weights only; no evaluation-based checkpoint selection or early stopping                                                                                         |
+| Randomness           | Explicit domain-separated streams for initialization, training, probe fit, evaluation, and shuffle                                                                     |
+| Probe                | Affine ridge regression, mean squared error plus 1e-6 slope penalty; intercept unpenalized                                                                             |
+| Probe fit            | 512 independent sequences, one final activation after 16 observations per sequence                                                                                     |
+| Held-out evaluation  | 2048 independent sequences; no sequence contributes to both probe fit and evaluation                                                                                   |
+| Contexts             | Main evaluation after 16 tokens; separately report 64-token context extrapolation                                                                                      |
+| Prediction           | Conditional expected cross-entropy, entropy floor, excess KL, sampled next-token loss, and joint three-token future KL                                                 |
+| Controls             | Exact known-model filter, training-fitted unigram/bigram with additive-one smoothing, same-initialization untrained RNN, shuffled-label probe, next-token-output probe |
+| Resource accounting  | Binary64 numeric payload bytes separately from measured allocation, elapsed time, and process CPU; no payload-as-heap claim                                            |
+| Gates                | Gradient finite differences, independently expressed Mess3 checks, numerical reference, deterministic replay, build/test/lint                                          |
 
 ## Interpretation rules
 
@@ -105,8 +105,161 @@ The runner records source hashes, parameters, weight hashes, every scheduled
 trace, and measured costs. It checkpoints completed runs and marks partial
 receipts incomplete. Existing output files are not silently overwritten.
 
-## Progress
+## Recorded results
 
-- Protocol committed before training in `9e0a858018`.
-- Native implementation and independent numerical checks complete.
-- Registered sweep, final review, and full build/test gates pending.
+Protocol commit: `9e0a858018`, before training. First implementation commit:
+`af434e26b2`. All nine registered runs completed; none was excluded or selected
+as a checkpoint. Each run consumed 2,097,152 prediction positions. The three
+seeds use different streams; widths with the same seed deliberately share
+training and evaluation observations. The nine rows are not nine independent
+datasets.
+
+The [complete receipt](../../src/Research.FSharp/mess3-learned-belief-results.json)
+contains weights, initial/final weight hashes, module hashes, configuration,
+loss traces, all scores, runtime/platform, and measured costs. The table below
+rounds the main, 16-observation-context panel. KL is in bits; lower is better.
+R2 is held-out affine decoding of the three-coordinate posterior.
+
+| Width | Seed | RNN next KL | RNN joint-3 KL | Bigram next KL | Trained hidden R2 | Untrained hidden R2 | Trained output R2 |
+| ----: | ---: | ----------: | -------------: | -------------: | ----------------: | ------------------: | ----------------: |
+|     3 |   11 |    0.002535 |       0.007728 |       0.091567 |          0.984504 |            0.551328 |          0.995523 |
+|     3 |   23 |    0.001382 |       0.004066 |       0.087546 |          0.986968 |            0.712768 |          0.997802 |
+|     3 |   37 |    0.001226 |       0.003653 |       0.083674 |          0.988521 |            0.802929 |          0.998135 |
+|     8 |   11 |    0.000654 |       0.001979 |       0.091567 |          0.991428 |            0.928839 |          0.998951 |
+|     8 |   23 |    0.001074 |       0.003457 |       0.087546 |          0.994449 |            0.946249 |          0.998307 |
+|     8 |   37 |    0.001529 |       0.004649 |       0.083674 |          0.994089 |            0.936955 |          0.998483 |
+|    16 |   11 |    0.001090 |       0.003247 |       0.091567 |          0.995182 |            0.947632 |          0.998706 |
+|    16 |   23 |    0.000997 |       0.003209 |       0.087546 |          0.994261 |            0.932445 |          0.998542 |
+|    16 |   37 |    0.001507 |       0.004566 |       0.083674 |          0.996333 |            0.929529 |          0.998638 |
+
+Every trained model beats its unigram, bigram, and untrained-RNN controls on
+next-token and joint-three-token KL in both panels. At context 64, trained next
+KL ranges from 0.000742 to 0.002655 bits. The probe fit still uses only the
+separate context-16 fitting split; it is not refitted for context 64.
+
+The known-model filter has zero KL against the process distribution by
+construction. It is an independently checked ground-truth calculation, not a
+learner beaten by this experiment. Every trained model has nonzero excess loss.
+
+### Counterinterpretations that survive the result
+
+1. **The output-only control wins.** It decodes belief better than the hidden
+   activation probe in every main-panel run. For this Mess3 parameterization,
+   `P(next=i | history) = 0.65875 * belief[i] + 0.11375`. Thus belief is already
+   affinely recoverable from the next-token probabilities. This experiment
+   provides no evidence of additional belief information beyond those outputs.
+2. **Random features are useful.** The untrained hidden probe reaches R2 as high
+   as 0.947632. Training improves this measure in all nine main-panel runs, but
+   high decodability alone would not establish that training learned the state.
+   Shuffled-fit-label R2 ranges from -0.082141 to 0.114605; finite-sample random
+   regression is not required to have a negative R2 on every draw.
+3. **More width is not uniformly better prediction.** Mean main-panel next KL
+   across the three seeds is 0.001714, 0.001086, and 0.001198 for widths 3, 8,
+   and 16 respectively. Three seeds do not support a general scaling law.
+4. **A probe is not a causal mechanism.** No intervention tests whether the
+   fitted belief coordinates mediate the network's computation. No Bayes-update
+   circuit, fractal dimension, density matrix, or physical quantum effect is
+   identified by these scores.
+
+## Resource accounting
+
+The native learner uses F# and existing Core random mixing, without PyTorch,
+NumPy, or another neural runtime dependency. Python is an independent analysis
+and numerical-check lane, not a dependency of the native learner or database.
+
+| Width | Trainable parameters | Parameters plus one state, bytes | Observed training elapsed range, ms |
+| ----: | -------------------: | -------------------------------: | ----------------------------------: |
+|     3 |                   33 |                              288 |                             301-409 |
+|     8 |                  123 |                             1048 |                             682-694 |
+|    16 |                  371 |                             3096 |                           1796-1813 |
+
+These are binary64 payload sizes, not managed heap or peak resident memory.
+Training's measured cumulative thread allocation is about 144.7 MB per run,
+apart from the first run's additional warm-up allocation. That is cumulative
+allocation, not simultaneously live bytes. The evaluator's cost includes all
+controls and probe fits; it is not a per-model inference benchmark. Process
+CPU and elapsed times differ because they measure different quantities.
+
+The recorded machine is a macOS Arm64 host running .NET 10, with other work
+active. A repeat sweep changed timing materially while leaving every weight,
+trace, and scientific score identical. No inference throughput, peak-memory,
+storage-efficiency, or speed advantage over the known filter is established.
+
+## Independent checks and adversarial review
+
+This is an implementation self-review plus independent numerical algorithms,
+not a claim of independent human or second-agent scientific peer review.
+
+- The F# analytic gradient matches central finite differences for every
+  parameter at widths 1, 2, 3, and 5, on two sequences each.
+- A separately written Python scalar forward pass, exact-fraction filter, and
+  pivoted ridge solve check the native fixture. Its finite-difference maximum
+  gradient discrepancy was approximately 2.73e-11.
+- PyTorch autograd matches the native gradient. Two additional cases compare
+  four native Adam steps against PyTorch Adam, with and without a norm exceeding
+  the clipping threshold. Both the parameters and reported losses agree.
+- Independent NumPy matrix operations and augmented least squares replay all
+  630 prediction/probe quantities from all nine stored models. Maximum absolute
+  discrepancy was approximately 1.65e-14. The RNG matches by design to replay
+  identical observations; filtering, forward computation, and regression do
+  not call the F# implementations.
+- Receipt validation rejects missing runs, context panels, prediction controls,
+  and probe controls. Deleting cases cannot create an easier green result.
+- Replacing the model-copy operation with identity makes both preservation
+  tests fail. The failed-source test was initially vacuous under this mutation:
+  it refused before the first update. It now permits one update before refusing.
+  The corrected implementation passes both. The check-arity census admits only
+  these two mutation-mediated comparisons, not a general exemption.
+- Post-sweep review found another R2 boundary defect: finite error divided by a
+  very small finite target variance could return negative infinity. A witnessed
+  input with targets +/-1e-155 now returns a typed error. The final receipt was
+  regenerated after this fix; all model weights, traces, and scientific scores
+  match the first sweep exactly. No scientific configuration changed.
+
+The seven named source hashes cover the runner and research modules. The Core
+random-mixing dependency is pinned by the code baseline and git history, rather
+than duplicated in those module hashes. Complete cross-platform training
+bit-identity is not asserted; independent replay uses explicit tolerances.
+
+## Reproduce
+
+Run from the repository root in a writer-owned clone. The output must not
+already exist; the runner refuses accidental overwrite and retains completed
+runs if a later run fails.
+
+```sh
+dotnet fsi --warnaserror --optimize+ src/Research.FSharp/run-mess3-experiment.fsx --output /tmp/mess3-new-run.json
+python3 src/Interp.Python/zeta_interp/mess3_reference.py
+uv run --project src/Interp.Python python src/Interp.Python/zeta_interp/mess3_replay.py /tmp/mess3-new-run.json
+uv run --project src/Interp.Python pytest src/Interp.Python/tests -q
+dotnet test tests/Tests.FSharp/Tests.FSharp.fsproj -c Release --filter FullyQualifiedName~Mess3Learning
+```
+
+To compare two same-host runs, remove only `TrainingCost` and `EvaluationCost`
+from each run record. The post-boundary-fix comparison also excludes
+`SourceHashes`, because that source actually changed. The signed scientific
+claim is unchanged outputs, not unchanged clock readings.
+
+The existing optional interpretability CI lane now watches the research source
+path and runs 27 checks: nine activation-access cases and eighteen Mess3 cases.
+Its collection floor was raised to 27. The eight native research tests run in
+the existing F# suite. No default runtime dependency was added.
+
+## Gate status and next boundary
+
+Release build: zero warnings and errors; `dotnet format --verify-no-changes`
+passes. Full .NET suite: 7425 passed, zero failed, six existing skips (one manual
+benchmark, three Rx integration cases, two collation-contract gaps). These
+skips are not new coverage. The latest native boundary change also passes all
+eight targeted research tests. The Python suite has 27 passes and one
+pre-existing TransformerLens deprecation warning in its activation-access
+fixture; the new code does not suppress it. Final quick preflight and remote
+integration are still being checked.
+
+The next discriminating experiment is a predeclared next-token-degenerate
+process such as RRXOR, with a multi-step output baseline and held-out causal
+interventions. That is separate work. Before game integration, also measure
+inference CPU, allocation and peak memory against an ordinary learned HMM and
+a fixed-feature recurrent baseline, then freeze the learner before non-ARC
+held-out games. This result does not justify changing ARC priors or runtime
+admission policy on its own.

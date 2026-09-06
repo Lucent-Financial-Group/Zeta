@@ -83,4 +83,7 @@ module BeliefProbe =
                     total <- total + pown (targets.[row].[j] - mean.[j]) 2
             if not (Double.IsFinite error && Double.IsFinite total) then Error "non-finite probe score"
             elif total <= 0.0 then Error "R2 is undefined for a constant target"
-            else Ok { MeanSquaredError = error / float (3 * targets.Length); R2 = 1.0 - error / total }
+            else
+                let r2 = 1.0 - error / total
+                if Double.IsFinite r2 then Ok { MeanSquaredError = error / (3.0 * float targets.Length); R2 = r2 }
+                else Error "non-finite probe R2"

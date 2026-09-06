@@ -44,7 +44,7 @@ let ``source and learner reject invalid bounds and nonfinite input`` () =
 
 [<Fact>]
 let ``every recurrent parameter gradient matches central finite differences`` () =
-    for hidden in [ 1; 3 ] do
+    for hidden in [ 1; 2; 3; 5 ] do
         let model = SmallRnn.create hidden 123UL |> require
         let parameters = SmallRnn.parameters model
         for tokens in [ [| 0; 1; 2; 0 |]; [| 2; 2; 0; 1; 0; 2 |] ] do
@@ -90,7 +90,12 @@ let ``refused training does not mutate caller parameters`` () =
     let initial = SmallRnn.create 3 0UL |> require
     let before = SmallRnn.parameters initial
     let config: SmallRnnTraining.Config = { Steps = 2; Batch = 1; SequenceSteps = 2; LearningRate = 0.003 }
-    Assert.Equal(Error "source refused", SmallRnnTraining.train config (fun () -> Error "source refused") ignore initial)
+    let mutable calls = 0
+    let partialSource () =
+        calls <- calls + 1
+        if calls = 1 then Ok [| 0; 1; 2 |] else Error "source refused"
+    Assert.Equal(Error "source refused", SmallRnnTraining.train config partialSource ignore initial)
+    Assert.Equal(2, calls)
     Assert.True((SmallRnnTraining.train config (fun () -> Ok [| 0; 1 |]) ignore initial).IsError)
     Assert.True((SmallRnnTraining.train { config with Steps = 10001 } (fun () -> failwith "must not request data") ignore initial).IsError)
     Assert.Equal<float>(before, SmallRnn.parameters initial)
@@ -108,6 +113,8 @@ let ``affine probe generalizes heldout linear targets and rejects undefined R2``
     Assert.True((BeliefProbe.fit 0.0 fitting (Array.map target fitting)).IsError)
     let constant = Array.init 10 (fun _ -> [| 0.2; 0.3; 0.5 |])
     Assert.True((BeliefProbe.score constant constant).IsError)
+    let tinyVariance = [| [| -1e-155; 0.0; 0.0 |]; [| 1e-155; 0.0; 0.0 |] |]
+    Assert.True((BeliefProbe.score (Array.init 2 (fun _ -> Array.create 3 1.0)) tinyVariance).IsError)
 
 [<Fact>]
 let ``evaluation has normalized joint futures and separate negative controls`` () =

@@ -1,6 +1,6 @@
 # `src/Interp.Python` — the model-interpretability lane
 
-**What it is for:** reading and *writing* intermediate activations of a trained
+**What it is for:** reading and _writing_ intermediate activations of a trained
 model. Ollama's `/api/generate` returns text and `/api/embeddings` returns a
 pooled vector; neither is a residual-stream activation, so neither can answer a
 causal question. This lane is the aperture.
@@ -39,11 +39,11 @@ installer-test workflows already set.
 
 Sizes are the wheel `Content-Length`, measured 2026-08-25.
 
-| Host | torch build | Wheel | Accelerator |
-|---|---|---|---|
+| Host                                        | torch build     | Wheel    | Accelerator   |
+| ------------------------------------------- | --------------- | -------- | ------------- |
 | macOS arm64 (`macos-26`, maintainer laptop) | `2.13.0` (PyPI) | 111.2 MB | CPU + **MPS** |
-| `ubuntu-24.04` (x86_64) | `2.13.0+cpu` | 191.8 MB | CPU only |
-| `ubuntu-24.04-arm` (aarch64) | `2.13.0+cpu` | 155.0 MB | CPU only |
+| `ubuntu-24.04` (x86_64)                     | `2.13.0+cpu`    | 191.8 MB | CPU only      |
+| `ubuntu-24.04-arm` (aarch64)                | `2.13.0+cpu`    | 155.0 MB | CPU only      |
 
 The linux rows come from the PyTorch CPU index via `[tool.uv.sources]`. Without
 that pin, linux x86_64 resolves the 526.6 MB default wheel **and** the whole
@@ -63,8 +63,9 @@ exercises them, so treat it as unmetered rather than supported.
 uv run --project src/Interp.Python pytest src/Interp.Python/tests -q
 ```
 
-Nine tests, all offline on randomly-initialised weights — no HuggingFace
-download, no credentials. The load-bearing pair:
+Nine activation-access tests use randomly-initialised weights. Eighteen Mess3
+reference cases below also run offline. No HuggingFace downloads or credentials
+are needed. The activation-access load-bearing pair:
 
 - `test_causal_write_changes_the_output` — patching the residual stream must
   move the logits. Verified to fail: making the write a no-op turns exactly this
@@ -75,9 +76,10 @@ download, no credentials. The load-bearing pair:
 
 ## What this does NOT claim
 
-Plumbing only. Nothing here measures geometry, and `toy_hooked_model` is
-randomly initialised — it models nothing. H1 stays `toy` until something
-measures it on a real model. See
+The activation-access checks are plumbing only, and `toy_hooked_model` is
+randomly initialised: it models nothing. The separate Mess3 experiment measures
+a trained recurrent network on a synthetic process, not an LLM. H1 stays `toy`
+until something measures it on a real model. See
 `.claude/rules/toy-is-free-metered-must-be-earned.md`.
 
 ## Mess3 numerical reference
@@ -91,7 +93,18 @@ python3 src/Interp.Python/zeta_interp/mess3_reference.py
 
 The script invokes the source-owned F# fixture through `dotnet fsi`.
 `tests/test_mess3_reference.py` additionally compares the native gradient with
-PyTorch autograd and requires a deliberately corrupted gradient to fail.
-These are numerical checks, not a trained-model capability result. The separately
+PyTorch autograd, checks clipped and unclipped updates against PyTorch Adam,
+and requires a deliberately corrupted gradient to fail.
+
+`zeta_interp/mess3_replay.py` replays all nine recorded networks, both context
+lengths, and every prediction/probe control with independent NumPy calculations:
+
+```bash
+uv run --project src/Interp.Python python src/Interp.Python/zeta_interp/mess3_replay.py
+```
+
+The tests reject a receipt missing any registered run, panel, or control, and
+compare 630 reported quantities. They validate the stored models' measurements;
+they do not retrain the entire sweep during CI. The separately
 registered [experiment](../../docs/research/2026-09-06-mess3-learned-belief-experiment.md)
 owns the training protocol and its measured outcomes.

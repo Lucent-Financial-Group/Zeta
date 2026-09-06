@@ -1,0 +1,2475 @@
+{
+  "Architecture": "Arm64",
+  "Arithmetic": "binary64",
+  "Complete": true,
+  "Config": {
+    "Steps": 4096,
+    "Batch": 16,
+    "SequenceSteps": 32,
+    "LearningRate": 0.003
+  },
+  "ExpectedRuns": 9,
+  "Platform": "macOS 26.6.2",
+  "Protocol": "mess3-rnn-v1",
+  "Runs": [
+    {
+      "Bigram": [
+        [0.6739061075986946, 0.1627486411741057, 0.1633452512271997],
+        [0.1629485366928629, 0.6745279238954364, 0.16252353941170072],
+        [0.16321219816295482, 0.1626316873134072, 0.674156114523638]
+      ],
+      "EvaluationCost": {
+        "ElapsedMilliseconds": 264.2787,
+        "ProcessCpuMilliseconds": 264.31100000000015,
+        "ThreadAllocatedBytes": 169603816
+      },
+      "Evaluations": [
+        {
+          "ContextLength": 16,
+          "Examples": 2048,
+          "Predictions": [
+            {
+              "Model": "known-model-filter",
+              "NextCrossEntropyBits": 1.1403774916943819,
+              "NextEntropyBits": 1.1403774916943819,
+              "NextKlBits": 0,
+              "SampledNextLossBits": 1.126394913517075,
+              "Future3KlBits": 0
+            },
+            {
+              "Model": "empirical-unigram",
+              "NextCrossEntropyBits": 1.5849568597081958,
+              "NextEntropyBits": 1.1403774916943819,
+              "NextKlBits": 0.4445793680138139,
+              "SampledNextLossBits": 1.5849592544374391,
+              "Future3KlBits": 1.326370554194149
+            },
+            {
+              "Model": "empirical-bigram",
+              "NextCrossEntropyBits": 1.2319447876270224,
+              "NextEntropyBits": 1.1403774916943819,
+              "NextKlBits": 0.09156729593264057,
+              "SampledNextLossBits": 1.233153907292979,
+              "Future3KlBits": 0.27829960135611326
+            },
+            {
+              "Model": "untrained-rnn",
+              "NextCrossEntropyBits": 1.6127887657742546,
+              "NextEntropyBits": 1.1403774916943819,
+              "NextKlBits": 0.4724112740798727,
+              "SampledNextLossBits": 1.6266082395961659,
+              "Future3KlBits": 1.4036561469917852
+            },
+            {
+              "Model": "trained-rnn",
+              "NextCrossEntropyBits": 1.142912784134575,
+              "NextEntropyBits": 1.1403774916943819,
+              "NextKlBits": 0.0025352924401931265,
+              "SampledNextLossBits": 1.132432726399868,
+              "Future3KlBits": 0.007728330197047483
+            }
+          ],
+          "Probes": [
+            {
+              "Features": "trained-hidden",
+              "Score": {
+                "MeanSquaredError": 0.0025944748207155695,
+                "R2": 0.9845041945154785
+              }
+            },
+            {
+              "Features": "untrained-hidden",
+              "Score": {
+                "MeanSquaredError": 0.07512154576443213,
+                "R2": 0.5513277478865024
+              }
+            },
+            {
+              "Features": "shuffled-fit-labels",
+              "Score": {
+                "MeanSquaredError": 0.14824359805134932,
+                "R2": 0.1145977053283842
+              }
+            },
+            {
+              "Features": "trained-next-probabilities",
+              "Score": {
+                "MeanSquaredError": 0.0007495965742720419,
+                "R2": 0.9955229464498794
+              }
+            },
+            {
+              "Features": "known-next-probabilities",
+              "Score": {
+                "MeanSquaredError": 1.4109964122790894e-11,
+                "R2": 0.9999999999157266
+              }
+            }
+          ]
+        },
+        {
+          "ContextLength": 64,
+          "Examples": 2048,
+          "Predictions": [
+            {
+              "Model": "known-model-filter",
+              "NextCrossEntropyBits": 1.1441594780817084,
+              "NextEntropyBits": 1.1441594780817084,
+              "NextKlBits": 0,
+              "SampledNextLossBits": 1.1360179024011314,
+              "Future3KlBits": 0
+            },
+            {
+              "Model": "empirical-unigram",
+              "NextCrossEntropyBits": 1.5849609021726807,
+              "NextEntropyBits": 1.1441594780817084,
+              "NextKlBits": 0.44080142409097234,
+              "SampledNextLossBits": 1.5849648404570091,
+              "Future3KlBits": 1.321465575642783
+            },
+            {
+              "Model": "empirical-bigram",
+              "NextCrossEntropyBits": 1.2363653677335467,
+              "NextEntropyBits": 1.1441594780817084,
+              "NextKlBits": 0.09220588965183829,
+              "SampledNextLossBits": 1.2261763074243142,
+              "Future3KlBits": 0.27780503576514615
+            },
+            {
+              "Model": "untrained-rnn",
+              "NextCrossEntropyBits": 1.6090609600111272,
+              "NextEntropyBits": 1.1441594780817084,
+              "NextKlBits": 0.4649014819294188,
+              "SampledNextLossBits": 1.6031516200323133,
+              "Future3KlBits": 1.394906373389383
+            },
+            {
+              "Model": "trained-rnn",
+              "NextCrossEntropyBits": 1.146814509295773,
+              "NextEntropyBits": 1.1441594780817084,
+              "NextKlBits": 0.0026550312140647403,
+              "SampledNextLossBits": 1.137708897408202,
+              "Future3KlBits": 0.007864301561591252
+            }
+          ],
+          "Probes": [
+            {
+              "Features": "trained-hidden",
+              "Score": {
+                "MeanSquaredError": 0.0027047945726587914,
+                "R2": 0.9837071418480569
+              }
+            },
+            {
+              "Features": "untrained-hidden",
+              "Score": {
+                "MeanSquaredError": 0.0720055703417764,
+                "R2": 0.5662603897585082
+              }
+            },
+            {
+              "Features": "shuffled-fit-labels",
+              "Score": {
+                "MeanSquaredError": 0.14691999799515268,
+                "R2": 0.11499870961891268
+              }
+            },
+            {
+              "Features": "trained-next-probabilities",
+              "Score": {
+                "MeanSquaredError": 0.0007875223284776697,
+                "R2": 0.9952562055103645
+              }
+            },
+            {
+              "Features": "known-next-probabilities",
+              "Score": {
+                "MeanSquaredError": 1.3952524723935241e-11,
+                "R2": 0.9999999999159542
+              }
+            }
+          ]
+        }
+      ],
+      "Hidden": 3,
+      "InitialSha256": "16EA9A3494DB2B4BB5F0C4FB0DF53A2884DD855A29CDFE820479DF14C1A65002",
+      "ModelNumericPayloadBytes": 288,
+      "ParameterCount": 33,
+      "Parameters": [
+        0.6990460846957247, 1.3141188603147897, 0.31664160217535214, 0.18808457075732019, -0.028720878293605985,
+        -0.1785954505145981, -0.0002770696681966191, -0.015419743773224219, 0.8915289517300629, -0.05019902647708666,
+        -1.3684197157901419, 0.11191208136932165, 0.31859972427970495, -1.0859813514871088, 0.11209343346654595,
+        -0.4055579702330802, 0.9221516490233806, 1.0155728828960682, 0.7320854988433318, 0.17069616409869737,
+        -0.3645557753699448, -0.45127634711028647, 0.3298047574049683, -0.5115204125654859, -1.037191827457367,
+        -0.41146961960828154, 0.41027124812864274, 0.042413764594148994, 0.9936585107172186, 1.6844185807910814,
+        0.2435342507080652, 0.19693113995863634, -0.49339131812304216
+      ],
+      "PayloadDefinition": "parameters plus one hidden state, binary64; excludes arrays, scratch, optimizer, and runtime",
+      "Seed": 11,
+      "TrainedSha256": "7F36BED472DFA98019223C6A6251BD7873A0A257DF9D60E261DEA4C8E0C77410",
+      "TrainedTokens": 2097152,
+      "TrainingCost": {
+        "ElapsedMilliseconds": 409.0335,
+        "ProcessCpuMilliseconds": 423.82699999999977,
+        "ThreadAllocatedBytes": 150245384
+      },
+      "TrainingTrace": [
+        {
+          "Step": 1,
+          "LossNats": 1.0983489312031338
+        },
+        {
+          "Step": 512,
+          "LossNats": 0.8970396942961623
+        },
+        {
+          "Step": 1024,
+          "LossNats": 0.7793603168593818
+        },
+        {
+          "Step": 1536,
+          "LossNats": 0.8052338766031555
+        },
+        {
+          "Step": 2048,
+          "LossNats": 0.8226779563556194
+        },
+        {
+          "Step": 2560,
+          "LossNats": 0.8098239544859822
+        },
+        {
+          "Step": 3072,
+          "LossNats": 0.7484941354241404
+        },
+        {
+          "Step": 3584,
+          "LossNats": 0.7621682292517513
+        },
+        {
+          "Step": 4096,
+          "LossNats": 0.7805464440817684
+        }
+      ],
+      "Unigram": [0.3333301544234928, 0.3332476617131304, 0.3334221838633768]
+    },
+    {
+      "Bigram": [
+        [0.6746010359591604, 0.16305592268944466, 0.1623430413513949],
+        [0.16347923055478114, 0.6738307134738694, 0.16269005597134953],
+        [0.16302775890865798, 0.16348013907458817, 0.6734921020167539]
+      ],
+      "EvaluationCost": {
+        "ElapsedMilliseconds": 147.9799,
+        "ProcessCpuMilliseconds": 238.14499999999998,
+        "ThreadAllocatedBytes": 174549472
+      },
+      "Evaluations": [
+        {
+          "ContextLength": 16,
+          "Examples": 2048,
+          "Predictions": [
+            {
+              "Model": "known-model-filter",
+              "NextCrossEntropyBits": 1.1387824363282175,
+              "NextEntropyBits": 1.1387824363282175,
+              "NextKlBits": 0,
+              "SampledNextLossBits": 1.1483386346538027,
+              "Future3KlBits": 0
+            },
+            {
+              "Model": "empirical-unigram",
+              "NextCrossEntropyBits": 1.5849794462697775,
+              "NextEntropyBits": 1.1387824363282175,
+              "NextKlBits": 0.44619700994156,
+              "SampledNextLossBits": 1.585074941975513,
+              "Future3KlBits": 1.328315435837114
+            },
+            {
+              "Model": "empirical-bigram",
+              "NextCrossEntropyBits": 1.2263283140300123,
+              "NextEntropyBits": 1.1387824363282175,
+              "NextKlBits": 0.08754587770179478,
+              "SampledNextLossBits": 1.2191883303520317,
+              "Future3KlBits": 0.2745724673708611
+            },
+            {
+              "Model": "untrained-rnn",
+              "NextCrossEntropyBits": 1.6567480206097567,
+              "NextEntropyBits": 1.1387824363282175,
+              "NextKlBits": 0.5179655842815392,
+              "SampledNextLossBits": 1.663882572972777,
+              "Future3KlBits": 1.5371518487106168
+            },
+            {
+              "Model": "trained-rnn",
+              "NextCrossEntropyBits": 1.1401640759750653,
+              "NextEntropyBits": 1.1387824363282175,
+              "NextKlBits": 0.0013816396468477876,
+              "SampledNextLossBits": 1.1485408009563602,
+              "Future3KlBits": 0.004066078277832881
+            }
+          ],
+          "Probes": [
+            {
+              "Features": "trained-hidden",
+              "Score": {
+                "MeanSquaredError": 0.0021925326076210902,
+                "R2": 0.9869675086137675
+              }
+            },
+            {
+              "Features": "untrained-hidden",
+              "Score": {
+                "MeanSquaredError": 0.04832274159379909,
+                "R2": 0.7127679144240301
+              }
+            },
+            {
+              "Features": "shuffled-fit-labels",
+              "Score": {
+                "MeanSquaredError": 0.17880974025477278,
+                "R2": -0.0628514219331151
+              }
+            },
+            {
+              "Features": "trained-next-probabilities",
+              "Score": {
+                "MeanSquaredError": 0.0003698351432116845,
+                "R2": 0.9978016868248715
+              }
+            },
+            {
+              "Features": "known-next-probabilities",
+              "Score": {
+                "MeanSquaredError": 1.4425459141866979e-11,
+                "R2": 0.9999999999142546
+              }
+            }
+          ]
+        },
+        {
+          "ContextLength": 64,
+          "Examples": 2048,
+          "Predictions": [
+            {
+              "Model": "known-model-filter",
+              "NextCrossEntropyBits": 1.144598154053324,
+              "NextEntropyBits": 1.144598154053324,
+              "NextKlBits": 0,
+              "SampledNextLossBits": 1.166327673225914,
+              "Future3KlBits": 0
+            },
+            {
+              "Model": "empirical-unigram",
+              "NextCrossEntropyBits": 1.5849478685840155,
+              "NextEntropyBits": 1.144598154053324,
+              "NextKlBits": 0.4403497145306914,
+              "SampledNextLossBits": 1.584956482493486,
+              "Future3KlBits": 1.3207801565819435
+            },
+            {
+              "Model": "empirical-bigram",
+              "NextCrossEntropyBits": 1.2359052085880389,
+              "NextEntropyBits": 1.144598154053324,
+              "NextKlBits": 0.09130705453471477,
+              "SampledNextLossBits": 1.255149730341965,
+              "Future3KlBits": 0.2766844069986672
+            },
+            {
+              "Model": "untrained-rnn",
+              "NextCrossEntropyBits": 1.6572914977433326,
+              "NextEntropyBits": 1.144598154053324,
+              "NextKlBits": 0.5126933436900085,
+              "SampledNextLossBits": 1.650457514184987,
+              "Future3KlBits": 1.5309472190694011
+            },
+            {
+              "Model": "trained-rnn",
+              "NextCrossEntropyBits": 1.1460437217308665,
+              "NextEntropyBits": 1.144598154053324,
+              "NextKlBits": 0.0014455676775424475,
+              "SampledNextLossBits": 1.1673259656611747,
+              "Future3KlBits": 0.004188420908620137
+            }
+          ],
+          "Probes": [
+            {
+              "Features": "trained-hidden",
+              "Score": {
+                "MeanSquaredError": 0.002047686846675925,
+                "R2": 0.9876648757759505
+              }
+            },
+            {
+              "Features": "untrained-hidden",
+              "Score": {
+                "MeanSquaredError": 0.05078986356763542,
+                "R2": 0.6940453676076863
+              }
+            },
+            {
+              "Features": "shuffled-fit-labels",
+              "Score": {
+                "MeanSquaredError": 0.17663307323805474,
+                "R2": -0.06402544119670361
+              }
+            },
+            {
+              "Features": "trained-next-probabilities",
+              "Score": {
+                "MeanSquaredError": 0.00038321937098211234,
+                "R2": 0.9976915129606854
+              }
+            },
+            {
+              "Features": "known-next-probabilities",
+              "Score": {
+                "MeanSquaredError": 1.4248410488303413e-11,
+                "R2": 0.9999999999141685
+              }
+            }
+          ]
+        }
+      ],
+      "Hidden": 3,
+      "InitialSha256": "D73DBAFC550CB1C03FF3AC2D05E1958373E5AF3EC37CEED32F0121593F4D0C80",
+      "ModelNumericPayloadBytes": 288,
+      "ParameterCount": 33,
+      "Parameters": [
+        0.6072261966124786, 0.43548796308785037, 0.480846468593495, 0.27624571096890416, 0.6454244946124187,
+        -0.29320094529472135, 0.5869768481437491, -0.49569969015933657, 0.26006540698512437, -1.1441987690192224,
+        -1.133904141731488, 0.7445876778587461, -0.7822249688312871, 0.5970809997764989, 0.5706508022151646,
+        0.44946730418832465, -0.9002578428686001, 0.43827582537609516, -0.0006357934731688556, 0.1614860250353095,
+        0.42981380569820166, 0.20269381032693526, -0.677158513118719, 0.5283378905363945, -0.035595818007188716,
+        0.746772427661962, -0.23451507069005773, 1.1850782086016693, 0.46680995856344015, 0.5691757606649813,
+        0.06180860973015454, -0.18489551732907755, 0.0506328943234691
+      ],
+      "PayloadDefinition": "parameters plus one hidden state, binary64; excludes arrays, scratch, optimizer, and runtime",
+      "Seed": 23,
+      "TrainedSha256": "65CAC1009C0561254058C87E6E712762769ADEDD565CFB5BE85D99D8B35E2915",
+      "TrainedTokens": 2097152,
+      "TrainingCost": {
+        "ElapsedMilliseconds": 300.9249,
+        "ProcessCpuMilliseconds": 339.2449999999999,
+        "ThreadAllocatedBytes": 144713520
+      },
+      "TrainingTrace": [
+        {
+          "Step": 1,
+          "LossNats": 1.1276699934578804
+        },
+        {
+          "Step": 512,
+          "LossNats": 0.7771491559112482
+        },
+        {
+          "Step": 1024,
+          "LossNats": 0.8336969287337948
+        },
+        {
+          "Step": 1536,
+          "LossNats": 0.8022619508446562
+        },
+        {
+          "Step": 2048,
+          "LossNats": 0.8013973910631196
+        },
+        {
+          "Step": 2560,
+          "LossNats": 0.7345625427458918
+        },
+        {
+          "Step": 3072,
+          "LossNats": 0.7904027080629318
+        },
+        {
+          "Step": 3584,
+          "LossNats": 0.7914315852102491
+        },
+        {
+          "Step": 4096,
+          "LossNats": 0.8554031934332065
+        }
+      ],
+      "Unigram": [0.33426999911785255, 0.333555221240204, 0.3321747796419435]
+    },
+    {
+      "Bigram": [
+        [0.6719330267318195, 0.164583213567117, 0.16348375970106352],
+        [0.16291895146733787, 0.6731418738147931, 0.16393917471786904],
+        [0.1630270622125407, 0.16317266542380526, 0.673800272363654]
+      ],
+      "EvaluationCost": {
+        "ElapsedMilliseconds": 89.3578,
+        "ProcessCpuMilliseconds": 90.23799999999983,
+        "ThreadAllocatedBytes": 177540040
+      },
+      "Evaluations": [
+        {
+          "ContextLength": 16,
+          "Examples": 2048,
+          "Predictions": [
+            {
+              "Model": "known-model-filter",
+              "NextCrossEntropyBits": 1.1332757820355657,
+              "NextEntropyBits": 1.1332757820355657,
+              "NextKlBits": 0,
+              "SampledNextLossBits": 1.0875564080320665,
+              "Future3KlBits": 0
+            },
+            {
+              "Model": "empirical-unigram",
+              "NextCrossEntropyBits": 1.5849424752974954,
+              "NextEntropyBits": 1.1332757820355657,
+              "NextKlBits": 0.45166669326192976,
+              "SampledNextLossBits": 1.58481942109434,
+              "Future3KlBits": 1.3353722363235179
+            },
+            {
+              "Model": "empirical-bigram",
+              "NextCrossEntropyBits": 1.2169496402176319,
+              "NextEntropyBits": 1.1332757820355657,
+              "NextKlBits": 0.08367385818206619,
+              "SampledNextLossBits": 1.1951639830027596,
+              "Future3KlBits": 0.27233649747056654
+            },
+            {
+              "Model": "untrained-rnn",
+              "NextCrossEntropyBits": 1.6221732076980888,
+              "NextEntropyBits": 1.1332757820355657,
+              "NextKlBits": 0.48889742566252314,
+              "SampledNextLossBits": 1.593397034248928,
+              "Future3KlBits": 1.4483817939011445
+            },
+            {
+              "Model": "trained-rnn",
+              "NextCrossEntropyBits": 1.1345016721392571,
+              "NextEntropyBits": 1.1332757820355657,
+              "NextKlBits": 0.0012258901036914516,
+              "SampledNextLossBits": 1.0881678157243753,
+              "Future3KlBits": 0.0036533263466094444
+            }
+          ],
+          "Probes": [
+            {
+              "Features": "trained-hidden",
+              "Score": {
+                "MeanSquaredError": 0.0019567221241949457,
+                "R2": 0.9885211622182817
+              }
+            },
+            {
+              "Features": "untrained-hidden",
+              "Score": {
+                "MeanSquaredError": 0.033593355293985334,
+                "R2": 0.8029292605244398
+              }
+            },
+            {
+              "Features": "shuffled-fit-labels",
+              "Score": {
+                "MeanSquaredError": 0.16664084451116437,
+                "R2": 0.02242469776376277
+              }
+            },
+            {
+              "Features": "trained-next-probabilities",
+              "Score": {
+                "MeanSquaredError": 0.0003179963860534382,
+                "R2": 0.9981345184962418
+              }
+            },
+            {
+              "Features": "known-next-probabilities",
+              "Score": {
+                "MeanSquaredError": 1.597432716599678e-11,
+                "R2": 0.9999999999062889
+              }
+            }
+          ]
+        },
+        {
+          "ContextLength": 64,
+          "Examples": 2048,
+          "Predictions": [
+            {
+              "Model": "known-model-filter",
+              "NextCrossEntropyBits": 1.1414840360249878,
+              "NextEntropyBits": 1.1414840360249878,
+              "NextKlBits": 0,
+              "SampledNextLossBits": 1.1256028956372481,
+              "Future3KlBits": 0
+            },
+            {
+              "Model": "empirical-unigram",
+              "NextCrossEntropyBits": 1.5850051264997485,
+              "NextEntropyBits": 1.1414840360249878,
+              "NextKlBits": 0.4435210904747606,
+              "SampledNextLossBits": 1.5849917596034986,
+              "Future3KlBits": 1.3249345758737396
+            },
+            {
+              "Model": "empirical-bigram",
+              "NextCrossEntropyBits": 1.2312588014386334,
+              "NextEntropyBits": 1.1414840360249878,
+              "NextKlBits": 0.0897747654136456,
+              "SampledNextLossBits": 1.2141966139695768,
+              "Future3KlBits": 0.27607251920893644
+            },
+            {
+              "Model": "untrained-rnn",
+              "NextCrossEntropyBits": 1.6288221390292252,
+              "NextEntropyBits": 1.1414840360249878,
+              "NextKlBits": 0.4873381030042374,
+              "SampledNextLossBits": 1.629069905296546,
+              "Future3KlBits": 1.449751337747811
+            },
+            {
+              "Model": "trained-rnn",
+              "NextCrossEntropyBits": 1.1427404374481283,
+              "NextEntropyBits": 1.1414840360249878,
+              "NextKlBits": 0.0012564014231404297,
+              "SampledNextLossBits": 1.1279995076280223,
+              "Future3KlBits": 0.00372236276434956
+            }
+          ],
+          "Probes": [
+            {
+              "Features": "trained-hidden",
+              "Score": {
+                "MeanSquaredError": 0.002100203888829031,
+                "R2": 0.9874355318343182
+              }
+            },
+            {
+              "Features": "untrained-hidden",
+              "Score": {
+                "MeanSquaredError": 0.03502881778976746,
+                "R2": 0.7904401242460367
+              }
+            },
+            {
+              "Features": "shuffled-fit-labels",
+              "Score": {
+                "MeanSquaredError": 0.1639255184036558,
+                "R2": 0.019315710974150302
+              }
+            },
+            {
+              "Features": "trained-next-probabilities",
+              "Score": {
+                "MeanSquaredError": 0.0003215023698626424,
+                "R2": 0.9980766123171104
+              }
+            },
+            {
+              "Features": "known-next-probabilities",
+              "Score": {
+                "MeanSquaredError": 1.5626183192072164e-11,
+                "R2": 0.9999999999065163
+              }
+            }
+          ]
+        }
+      ],
+      "Hidden": 3,
+      "InitialSha256": "0E357EBDAA1F1118AED491BDFFBF21536D8CE8D9D0EF3566967F4EA5AC09DE44",
+      "ModelNumericPayloadBytes": 288,
+      "ParameterCount": 33,
+      "Parameters": [
+        0.2032579130128025, 0.5506615789461378, 0.6195346139225231, 0.6044458082859281, 0.6001517691827443,
+        -0.5508002562256458, 0.3578072096077281, -0.3138968463018541, 0.5328413573292098, -1.0118739657964975,
+        0.2811451188586625, -1.1297619560044747, 0.9436060539597907, 0.9277352916521426, -0.8599532651232121,
+        -0.706795835457778, 0.7206903284064812, 0.6614853580102391, 0.12769725312773855, 0.19060122034947413,
+        0.12475774338647337, -0.048029665005476056, 0.3924417636834449, -0.817399996864355, 0.6992333556874498,
+        0.6187615394571128, 0.5890728920635768, -0.11477525400519623, -0.5613335768377068, 0.3628503863441128,
+        0.05813710825281698, -0.17991708852568164, 0.034267727196215556
+      ],
+      "PayloadDefinition": "parameters plus one hidden state, binary64; excludes arrays, scratch, optimizer, and runtime",
+      "Seed": 37,
+      "TrainedSha256": "394CAA80192A408793C23948B1527D2A56F7255A98035D4FE52CBA3F63C244F2",
+      "TrainedTokens": 2097152,
+      "TrainingCost": {
+        "ElapsedMilliseconds": 303.7254,
+        "ProcessCpuMilliseconds": 331.1940000000004,
+        "ThreadAllocatedBytes": 144713520
+      },
+      "TrainingTrace": [
+        {
+          "Step": 1,
+          "LossNats": 1.1354965520001246
+        },
+        {
+          "Step": 512,
+          "LossNats": 0.8561864785861608
+        },
+        {
+          "Step": 1024,
+          "LossNats": 0.8030241417696125
+        },
+        {
+          "Step": 1536,
+          "LossNats": 0.8115992779057007
+        },
+        {
+          "Step": 2048,
+          "LossNats": 0.8155182546684541
+        },
+        {
+          "Step": 2560,
+          "LossNats": 0.8445598873262251
+        },
+        {
+          "Step": 3072,
+          "LossNats": 0.8482513105755571
+        },
+        {
+          "Step": 3584,
+          "LossNats": 0.8134469256526113
+        },
+        {
+          "Step": 4096,
+          "LossNats": 0.7570308142174111
+        }
+      ],
+      "Unigram": [0.3318367025804006, 0.3340616215778042, 0.3341016758417952]
+    },
+    {
+      "Bigram": [
+        [0.6739061075986946, 0.1627486411741057, 0.1633452512271997],
+        [0.1629485366928629, 0.6745279238954364, 0.16252353941170072],
+        [0.16321219816295482, 0.1626316873134072, 0.674156114523638]
+      ],
+      "EvaluationCost": {
+        "ElapsedMilliseconds": 120.4846,
+        "ProcessCpuMilliseconds": 122.35999999999967,
+        "ThreadAllocatedBytes": 182302920
+      },
+      "Evaluations": [
+        {
+          "ContextLength": 16,
+          "Examples": 2048,
+          "Predictions": [
+            {
+              "Model": "known-model-filter",
+              "NextCrossEntropyBits": 1.1403774916943819,
+              "NextEntropyBits": 1.1403774916943819,
+              "NextKlBits": 0,
+              "SampledNextLossBits": 1.126394913517075,
+              "Future3KlBits": 0
+            },
+            {
+              "Model": "empirical-unigram",
+              "NextCrossEntropyBits": 1.5849568597081958,
+              "NextEntropyBits": 1.1403774916943819,
+              "NextKlBits": 0.4445793680138139,
+              "SampledNextLossBits": 1.5849592544374391,
+              "Future3KlBits": 1.326370554194149
+            },
+            {
+              "Model": "empirical-bigram",
+              "NextCrossEntropyBits": 1.2319447876270224,
+              "NextEntropyBits": 1.1403774916943819,
+              "NextKlBits": 0.09156729593264057,
+              "SampledNextLossBits": 1.233153907292979,
+              "Future3KlBits": 0.27829960135611326
+            },
+            {
+              "Model": "untrained-rnn",
+              "NextCrossEntropyBits": 1.7370599221282768,
+              "NextEntropyBits": 1.1403774916943819,
+              "NextKlBits": 0.5966824304338949,
+              "SampledNextLossBits": 1.73428974928724,
+              "Future3KlBits": 1.773705199374225
+            },
+            {
+              "Model": "trained-rnn",
+              "NextCrossEntropyBits": 1.1410316370787599,
+              "NextEntropyBits": 1.1403774916943819,
+              "NextKlBits": 0.0006541453843780243,
+              "SampledNextLossBits": 1.127267799118319,
+              "Future3KlBits": 0.0019788139236142977
+            }
+          ],
+          "Probes": [
+            {
+              "Features": "trained-hidden",
+              "Score": {
+                "MeanSquaredError": 0.0014352466592381199,
+                "R2": 0.9914278208151085
+              }
+            },
+            {
+              "Features": "untrained-hidden",
+              "Score": {
+                "MeanSquaredError": 0.011914485304513327,
+                "R2": 0.928839337636737
+              }
+            },
+            {
+              "Features": "shuffled-fit-labels",
+              "Score": {
+                "MeanSquaredError": 0.1513123039259592,
+                "R2": 0.0962694991949179
+              }
+            },
+            {
+              "Features": "trained-next-probabilities",
+              "Score": {
+                "MeanSquaredError": 0.00017567406348798138,
+                "R2": 0.9989507660298917
+              }
+            },
+            {
+              "Features": "known-next-probabilities",
+              "Score": {
+                "MeanSquaredError": 1.4109964122790894e-11,
+                "R2": 0.9999999999157266
+              }
+            }
+          ]
+        },
+        {
+          "ContextLength": 64,
+          "Examples": 2048,
+          "Predictions": [
+            {
+              "Model": "known-model-filter",
+              "NextCrossEntropyBits": 1.1441594780817084,
+              "NextEntropyBits": 1.1441594780817084,
+              "NextKlBits": 0,
+              "SampledNextLossBits": 1.1360179024011314,
+              "Future3KlBits": 0
+            },
+            {
+              "Model": "empirical-unigram",
+              "NextCrossEntropyBits": 1.5849609021726807,
+              "NextEntropyBits": 1.1441594780817084,
+              "NextKlBits": 0.44080142409097234,
+              "SampledNextLossBits": 1.5849648404570091,
+              "Future3KlBits": 1.321465575642783
+            },
+            {
+              "Model": "empirical-bigram",
+              "NextCrossEntropyBits": 1.2363653677335467,
+              "NextEntropyBits": 1.1441594780817084,
+              "NextKlBits": 0.09220588965183829,
+              "SampledNextLossBits": 1.2261763074243142,
+              "Future3KlBits": 0.27780503576514615
+            },
+            {
+              "Model": "untrained-rnn",
+              "NextCrossEntropyBits": 1.731900491715677,
+              "NextEntropyBits": 1.1441594780817084,
+              "NextKlBits": 0.5877410136339687,
+              "SampledNextLossBits": 1.7356947913516296,
+              "Future3KlBits": 1.7606408694353008
+            },
+            {
+              "Model": "trained-rnn",
+              "NextCrossEntropyBits": 1.1449011206305129,
+              "NextEntropyBits": 1.1441594780817084,
+              "NextKlBits": 0.0007416425488044887,
+              "SampledNextLossBits": 1.1369160943804462,
+              "Future3KlBits": 0.002105240832026763
+            }
+          ],
+          "Probes": [
+            {
+              "Features": "trained-hidden",
+              "Score": {
+                "MeanSquaredError": 0.0015112665774969674,
+                "R2": 0.9908965907334225
+              }
+            },
+            {
+              "Features": "untrained-hidden",
+              "Score": {
+                "MeanSquaredError": 0.012215606124428085,
+                "R2": 0.9264169117177455
+              }
+            },
+            {
+              "Features": "shuffled-fit-labels",
+              "Score": {
+                "MeanSquaredError": 0.14996101870779208,
+                "R2": 0.09668052767304658
+              }
+            },
+            {
+              "Features": "trained-next-probabilities",
+              "Score": {
+                "MeanSquaredError": 0.00020499099877023053,
+                "R2": 0.9987651966995388
+              }
+            },
+            {
+              "Features": "known-next-probabilities",
+              "Score": {
+                "MeanSquaredError": 1.3952524723935241e-11,
+                "R2": 0.9999999999159542
+              }
+            }
+          ]
+        }
+      ],
+      "Hidden": 8,
+      "InitialSha256": "AC19C809CC740B28EBEDED511CA39F2A7B0EC83F572FF77FE62367AB690C1FD2",
+      "ModelNumericPayloadBytes": 1048,
+      "ParameterCount": 123,
+      "Parameters": [
+        0.04399444156945857, 0.3986692742684845, 0.4370845971488154, 0.08898925871643287, -0.6266429061542383,
+        -0.038710676329142255, -0.2413035000122489, -0.3357163737170631, 0.3103158164412451, 0.5772890498599533,
+        -0.5460248067782046, -0.41116280115535436, 0.24205816368133723, -0.7287783154013033, -0.19584876041815566,
+        0.03578996281048711, 0.10003813804762743, 0.23053286810636806, -0.3954552337096984, 0.49124291686646127,
+        -0.10200185853387303, -0.3227247789414098, -0.14828571233810411, 0.09812036989478694, 0.13492508083638666,
+        0.23758157325286344, 0.2249605496867412, -0.2071846753654327, -0.31111498596828135, -0.27318841094127405,
+        0.021957011654431487, -0.5367497479704139, 0.00891102332109573, -0.11429704860330593, 0.09752743142468069,
+        0.43092121306895204, -0.31005519006597476, 0.0021611973269054455, -0.5949505652794072, 0.394878021698012,
+        0.3865477383642615, -0.453624779355869, -0.36821787115171895, -0.3373666675059725, -0.26282515519972616,
+        0.3305889785001029, -0.4184666429942599, -0.11440934011332393, -0.5745364844151355, -0.31521376459701467,
+        0.30222948568563524, 0.6797390146963553, 0.009982618247933724, -0.2334348636820352, 0.611749407344555,
+        -0.1787425412219868, -0.06266745089872158, 0.21752174159674048, 0.038625053166798144, -0.04644906179542027,
+        0.1727140648390935, 0.019893934457356332, 0.0764903282189414, 0.09741690747570406, -0.5726539705866708,
+        -0.41890886660953514, -0.13330809723321585, 1.1764574530886476, -0.6116924915909046, -0.45422423180376237,
+        0.717624147467007, 0.7465848897994146, 0.33846619885128437, -0.6847897977249886, 0.48519679894147544,
+        -0.44085217412548505, -0.19609678456783342, -0.19298655117593932, -0.9147530248511596, -0.9302982025508233,
+        -0.9002659481979908, 0.587523890829853, -0.7743303630755126, 0.8682882993198007, -0.9135309564392301,
+        0.6016154995073086, -0.7059463615735444, 0.2323930729651082, 0.06653047189745222, -0.2648286142118607,
+        0.04327654474770409, 0.009429190523540715, 0.021539355473106377, 0.003242431199425972, -0.29949723666329103,
+        0.10406431992050304, 0.06011111306706176, 0.3604161047122279, -0.24731169631682115, -0.09788328609694619,
+        -0.12677499400424455, -0.16173882421516178, -0.13137245309331752, 0.1097626281842834, -0.188655472937656,
+        -0.4976167777583644, -0.034865026431096575, 0.5049782349979712, -0.15937931081401419, 0.03815427663721501,
+        0.4389402449959309, -0.04310748538766928, -0.08275213427339792, -0.7424381575031077, -0.04221999549887291,
+        0.41423557719590065, -0.31478569244968085, 0.9568084488788232, -0.2731840351319542, 0.6214484260272141,
+        0.07333094702962975, 0.012895751119781555, -0.07416564411473456
+      ],
+      "PayloadDefinition": "parameters plus one hidden state, binary64; excludes arrays, scratch, optimizer, and runtime",
+      "Seed": 11,
+      "TrainedSha256": "4E20D3A4F5CAAFCE52C3BC4F9EB260934FF509CB2EA7B4508ABC9CD42C21EFC9",
+      "TrainedTokens": 2097152,
+      "TrainingCost": {
+        "ElapsedMilliseconds": 694.3287,
+        "ProcessCpuMilliseconds": 739.31,
+        "ThreadAllocatedBytes": 144717800
+      },
+      "TrainingTrace": [
+        {
+          "Step": 1,
+          "LossNats": 1.178615482656423
+        },
+        {
+          "Step": 512,
+          "LossNats": 0.8956683671877492
+        },
+        {
+          "Step": 1024,
+          "LossNats": 0.7755158719378903
+        },
+        {
+          "Step": 1536,
+          "LossNats": 0.8041939700157695
+        },
+        {
+          "Step": 2048,
+          "LossNats": 0.8154289980912521
+        },
+        {
+          "Step": 2560,
+          "LossNats": 0.810449550539023
+        },
+        {
+          "Step": 3072,
+          "LossNats": 0.7445288603164747
+        },
+        {
+          "Step": 3584,
+          "LossNats": 0.7575961169524761
+        },
+        {
+          "Step": 4096,
+          "LossNats": 0.7800490590483968
+        }
+      ],
+      "Unigram": [0.3333301544234928, 0.3332476617131304, 0.3334221838633768]
+    },
+    {
+      "Bigram": [
+        [0.6746010359591604, 0.16305592268944466, 0.1623430413513949],
+        [0.16347923055478114, 0.6738307134738694, 0.16269005597134953],
+        [0.16302775890865798, 0.16348013907458817, 0.6734921020167539]
+      ],
+      "EvaluationCost": {
+        "ElapsedMilliseconds": 127.9339,
+        "ProcessCpuMilliseconds": 135.60799999999927,
+        "ThreadAllocatedBytes": 182192584
+      },
+      "Evaluations": [
+        {
+          "ContextLength": 16,
+          "Examples": 2048,
+          "Predictions": [
+            {
+              "Model": "known-model-filter",
+              "NextCrossEntropyBits": 1.1387824363282175,
+              "NextEntropyBits": 1.1387824363282175,
+              "NextKlBits": 0,
+              "SampledNextLossBits": 1.1483386346538027,
+              "Future3KlBits": 0
+            },
+            {
+              "Model": "empirical-unigram",
+              "NextCrossEntropyBits": 1.5849794462697775,
+              "NextEntropyBits": 1.1387824363282175,
+              "NextKlBits": 0.44619700994156,
+              "SampledNextLossBits": 1.585074941975513,
+              "Future3KlBits": 1.328315435837114
+            },
+            {
+              "Model": "empirical-bigram",
+              "NextCrossEntropyBits": 1.2263283140300123,
+              "NextEntropyBits": 1.1387824363282175,
+              "NextKlBits": 0.08754587770179478,
+              "SampledNextLossBits": 1.2191883303520317,
+              "Future3KlBits": 0.2745724673708611
+            },
+            {
+              "Model": "untrained-rnn",
+              "NextCrossEntropyBits": 1.7469800925447463,
+              "NextEntropyBits": 1.1387824363282175,
+              "NextKlBits": 0.6081976562165288,
+              "SampledNextLossBits": 1.7548627581495868,
+              "Future3KlBits": 1.8104225719384328
+            },
+            {
+              "Model": "trained-rnn",
+              "NextCrossEntropyBits": 1.1398564265637825,
+              "NextEntropyBits": 1.1387824363282175,
+              "NextKlBits": 0.001073990235564981,
+              "SampledNextLossBits": 1.1481747334698065,
+              "Future3KlBits": 0.003457202907366091
+            }
+          ],
+          "Probes": [
+            {
+              "Features": "trained-hidden",
+              "Score": {
+                "MeanSquaredError": 0.000933907237431675,
+                "R2": 0.9944488223413132
+              }
+            },
+            {
+              "Features": "untrained-hidden",
+              "Score": {
+                "MeanSquaredError": 0.009042900018727023,
+                "R2": 0.9462486823726234
+              }
+            },
+            {
+              "Features": "shuffled-fit-labels",
+              "Score": {
+                "MeanSquaredError": 0.179940727910473,
+                "R2": -0.06957405257022153
+              }
+            },
+            {
+              "Features": "trained-next-probabilities",
+              "Score": {
+                "MeanSquaredError": 0.00028478277981718205,
+                "R2": 0.9983072410818365
+              }
+            },
+            {
+              "Features": "known-next-probabilities",
+              "Score": {
+                "MeanSquaredError": 1.4425459141866979e-11,
+                "R2": 0.9999999999142546
+              }
+            }
+          ]
+        },
+        {
+          "ContextLength": 64,
+          "Examples": 2048,
+          "Predictions": [
+            {
+              "Model": "known-model-filter",
+              "NextCrossEntropyBits": 1.144598154053324,
+              "NextEntropyBits": 1.144598154053324,
+              "NextKlBits": 0,
+              "SampledNextLossBits": 1.166327673225914,
+              "Future3KlBits": 0
+            },
+            {
+              "Model": "empirical-unigram",
+              "NextCrossEntropyBits": 1.5849478685840155,
+              "NextEntropyBits": 1.144598154053324,
+              "NextKlBits": 0.4403497145306914,
+              "SampledNextLossBits": 1.584956482493486,
+              "Future3KlBits": 1.3207801565819435
+            },
+            {
+              "Model": "empirical-bigram",
+              "NextCrossEntropyBits": 1.2359052085880389,
+              "NextEntropyBits": 1.144598154053324,
+              "NextKlBits": 0.09130705453471477,
+              "SampledNextLossBits": 1.255149730341965,
+              "Future3KlBits": 0.2766844069986672
+            },
+            {
+              "Model": "untrained-rnn",
+              "NextCrossEntropyBits": 1.7425700290353867,
+              "NextEntropyBits": 1.144598154053324,
+              "NextKlBits": 0.5979718749820626,
+              "SampledNextLossBits": 1.7231347806707327,
+              "Future3KlBits": 1.7907922361176543
+            },
+            {
+              "Model": "trained-rnn",
+              "NextCrossEntropyBits": 1.1458567818048602,
+              "NextEntropyBits": 1.144598154053324,
+              "NextKlBits": 0.0012586277515360678,
+              "SampledNextLossBits": 1.1664412939721178,
+              "Future3KlBits": 0.003636491239715908
+            }
+          ],
+          "Probes": [
+            {
+              "Features": "trained-hidden",
+              "Score": {
+                "MeanSquaredError": 0.0009227909060512707,
+                "R2": 0.9944411712770224
+              }
+            },
+            {
+              "Features": "untrained-hidden",
+              "Score": {
+                "MeanSquaredError": 0.009087115755830495,
+                "R2": 0.945259841919458
+              }
+            },
+            {
+              "Features": "shuffled-fit-labels",
+              "Score": {
+                "MeanSquaredError": 0.17792703789966213,
+                "R2": -0.07182019500311099
+              }
+            },
+            {
+              "Features": "trained-next-probabilities",
+              "Score": {
+                "MeanSquaredError": 0.0003406900360881122,
+                "R2": 0.9979477067385256
+              }
+            },
+            {
+              "Features": "known-next-probabilities",
+              "Score": {
+                "MeanSquaredError": 1.4248410488303413e-11,
+                "R2": 0.9999999999141685
+              }
+            }
+          ]
+        }
+      ],
+      "Hidden": 8,
+      "InitialSha256": "B2E47B18CA34F8E96CE3F9046064A08C4C94E14A1647DE4CB6A2982D54759C3C",
+      "ModelNumericPayloadBytes": 1048,
+      "ParameterCount": 123,
+      "Parameters": [
+        -0.18674472113511087, -0.42834064028875696, -0.6260983956192724, 0.01709928278208615, 0.09050523905500092,
+        -0.3798470485648415, 0.03829432508429206, -0.5233389892902155, -0.35599517774037626, 0.4094264860859391,
+        -0.03062385167979037, -0.5075571761309927, -0.10523078181668423, 0.33585733072981483, -0.5408732264230871,
+        0.40406746089886214, -0.47201300554431375, -0.08712775759438622, 0.45385060637579383, -0.11132816616459061,
+        0.002261279508256094, -0.025221490615188774, 0.34340636473882963, 0.29034770303863966, 0.37230256386723115,
+        0.3262889566972017, 0.016645989669172717, 0.1581692322401292, 0.19777669902486558, -0.15763164408761351,
+        -0.10383727107217226, -0.20532351734498527, 0.00709380044525554, -0.04276393120421689, -0.3565416946874153,
+        -0.016914359916133312, -0.274718859547899, 0.10033701805724883, -0.08120623963386395, -0.0896085963486755,
+        -0.14168770648647802, 0.0779367192926945, 0.19706269783043132, -0.14063872564198096, 0.05231664814916682,
+        0.22610289094449848, -0.006338205276151705, 0.2002793195515371, -0.22508548999036235, -0.2551402206757747,
+        -0.16553484673353544, 0.21537909497387267, -0.21677128186073083, 0.2341194483135856, 0.7810578305149976,
+        -0.2253643099853988, -0.06476586827376456, 0.10176273194895856, -0.4285425564569559, 0.09049293550116295,
+        -0.41271879253027594, -0.15568087849354495, -0.08939247590334468, -0.16973996290413065, 0.5738863408314552,
+        0.9730621418795723, -0.8128009635212979, 1.0985657886752522, -0.5549719497784242, 0.7389272456308075,
+        -0.5309309987247767, -0.3974060014204175, 0.462787678908145, -1.0430591831369072, 0.03482770942032191,
+        -0.12469254089963586, -0.5120482655046972, -0.6027650007985416, -0.17956700029064582, -0.36820678300291576,
+        -0.013378612106449939, 0.32372427705685697, -0.915658666343229, 0.43735674124250684, 0.5830185181453635,
+        -0.2680111629781751, -0.5648829046157201, 0.506471059998691, 0.014403761860091114, 0.06191582103939376,
+        -0.12793972803232903, 0.06491287423477088, 0.2286247706431052, 0.09872147347906622, 0.25424409573843065,
+        -0.07125742227687588, -0.23947223058748243, 0.70298929335759, -0.7584775452133146, -0.32674067014223845,
+        0.39156100801484894, -0.43555586799974916, -0.10053181752394705, 0.31155190384809694, 0.27279036258926953,
+        0.01657652503876082, -0.5173033471899898, 0.28377237089316015, -0.3679248283309107, -0.21296204836694363,
+        0.8652153770830179, 0.52536701525568, -0.5598768155924622, 0.4288490239125872, 0.5559585488340409,
+        0.1414892054450396, 0.4316696695099992, -0.5744849789446842, 0.5585310174311418, 0.6581273831862016,
+        -0.11399684875516072, -0.14139471746197177, 0.2841896656696896
+      ],
+      "PayloadDefinition": "parameters plus one hidden state, binary64; excludes arrays, scratch, optimizer, and runtime",
+      "Seed": 23,
+      "TrainedSha256": "EC2B2A3B4A3B506830FF87913BDF0EA48B7C4AA471FCCF7AA5D3F89A08A121FE",
+      "TrainedTokens": 2097152,
+      "TrainingCost": {
+        "ElapsedMilliseconds": 683.2044,
+        "ProcessCpuMilliseconds": 694.25,
+        "ThreadAllocatedBytes": 144717800
+      },
+      "TrainingTrace": [
+        {
+          "Step": 1,
+          "LossNats": 1.176900243420107
+        },
+        {
+          "Step": 512,
+          "LossNats": 0.7752816327233971
+        },
+        {
+          "Step": 1024,
+          "LossNats": 0.8353568842127705
+        },
+        {
+          "Step": 1536,
+          "LossNats": 0.8012558075806926
+        },
+        {
+          "Step": 2048,
+          "LossNats": 0.800228615865789
+        },
+        {
+          "Step": 2560,
+          "LossNats": 0.7317199231134778
+        },
+        {
+          "Step": 3072,
+          "LossNats": 0.7902871610981737
+        },
+        {
+          "Step": 3584,
+          "LossNats": 0.7927853861443237
+        },
+        {
+          "Step": 4096,
+          "LossNats": 0.8572935374633704
+        }
+      ],
+      "Unigram": [0.33426999911785255, 0.333555221240204, 0.3321747796419435]
+    },
+    {
+      "Bigram": [
+        [0.6719330267318195, 0.164583213567117, 0.16348375970106352],
+        [0.16291895146733787, 0.6731418738147931, 0.16393917471786904],
+        [0.1630270622125407, 0.16317266542380526, 0.673800272363654]
+      ],
+      "EvaluationCost": {
+        "ElapsedMilliseconds": 118.4882,
+        "ProcessCpuMilliseconds": 118.8720000000003,
+        "ThreadAllocatedBytes": 182037512
+      },
+      "Evaluations": [
+        {
+          "ContextLength": 16,
+          "Examples": 2048,
+          "Predictions": [
+            {
+              "Model": "known-model-filter",
+              "NextCrossEntropyBits": 1.1332757820355657,
+              "NextEntropyBits": 1.1332757820355657,
+              "NextKlBits": 0,
+              "SampledNextLossBits": 1.0875564080320665,
+              "Future3KlBits": 0
+            },
+            {
+              "Model": "empirical-unigram",
+              "NextCrossEntropyBits": 1.5849424752974954,
+              "NextEntropyBits": 1.1332757820355657,
+              "NextKlBits": 0.45166669326192976,
+              "SampledNextLossBits": 1.58481942109434,
+              "Future3KlBits": 1.3353722363235179
+            },
+            {
+              "Model": "empirical-bigram",
+              "NextCrossEntropyBits": 1.2169496402176319,
+              "NextEntropyBits": 1.1332757820355657,
+              "NextKlBits": 0.08367385818206619,
+              "SampledNextLossBits": 1.1951639830027596,
+              "Future3KlBits": 0.27233649747056654
+            },
+            {
+              "Model": "untrained-rnn",
+              "NextCrossEntropyBits": 1.9193758861830388,
+              "NextEntropyBits": 1.1332757820355657,
+              "NextKlBits": 0.7861001041474731,
+              "SampledNextLossBits": 1.912246825214903,
+              "Future3KlBits": 2.3309798482394104
+            },
+            {
+              "Model": "trained-rnn",
+              "NextCrossEntropyBits": 1.1348047357744466,
+              "NextEntropyBits": 1.1332757820355657,
+              "NextKlBits": 0.001528953738880956,
+              "SampledNextLossBits": 1.090257919881677,
+              "Future3KlBits": 0.004649415750080837
+            }
+          ],
+          "Probes": [
+            {
+              "Features": "trained-hidden",
+              "Score": {
+                "MeanSquaredError": 0.0010076817307849767,
+                "R2": 0.9940885754904821
+              }
+            },
+            {
+              "Features": "untrained-hidden",
+              "Score": {
+                "MeanSquaredError": 0.010746816621983,
+                "R2": 0.9369552972554182
+              }
+            },
+            {
+              "Features": "shuffled-fit-labels",
+              "Score": {
+                "MeanSquaredError": 0.1702517837293933,
+                "R2": 0.0012416258225955712
+              }
+            },
+            {
+              "Features": "trained-next-probabilities",
+              "Score": {
+                "MeanSquaredError": 0.0002586482321920395,
+                "R2": 0.9984826761740213
+              }
+            },
+            {
+              "Features": "known-next-probabilities",
+              "Score": {
+                "MeanSquaredError": 1.597432716599678e-11,
+                "R2": 0.9999999999062889
+              }
+            }
+          ]
+        },
+        {
+          "ContextLength": 64,
+          "Examples": 2048,
+          "Predictions": [
+            {
+              "Model": "known-model-filter",
+              "NextCrossEntropyBits": 1.1414840360249878,
+              "NextEntropyBits": 1.1414840360249878,
+              "NextKlBits": 0,
+              "SampledNextLossBits": 1.1256028956372481,
+              "Future3KlBits": 0
+            },
+            {
+              "Model": "empirical-unigram",
+              "NextCrossEntropyBits": 1.5850051264997485,
+              "NextEntropyBits": 1.1414840360249878,
+              "NextKlBits": 0.4435210904747606,
+              "SampledNextLossBits": 1.5849917596034986,
+              "Future3KlBits": 1.3249345758737396
+            },
+            {
+              "Model": "empirical-bigram",
+              "NextCrossEntropyBits": 1.2312588014386334,
+              "NextEntropyBits": 1.1414840360249878,
+              "NextKlBits": 0.0897747654136456,
+              "SampledNextLossBits": 1.2141966139695768,
+              "Future3KlBits": 0.27607251920893644
+            },
+            {
+              "Model": "untrained-rnn",
+              "NextCrossEntropyBits": 1.9153947635254915,
+              "NextEntropyBits": 1.1414840360249878,
+              "NextKlBits": 0.7739107275005037,
+              "SampledNextLossBits": 1.9101453225157428,
+              "Future3KlBits": 2.314065105354475
+            },
+            {
+              "Model": "trained-rnn",
+              "NextCrossEntropyBits": 1.1430822464377572,
+              "NextEntropyBits": 1.1414840360249878,
+              "NextKlBits": 0.0015982104127694186,
+              "SampledNextLossBits": 1.1276996500076442,
+              "Future3KlBits": 0.004799242274676403
+            }
+          ],
+          "Probes": [
+            {
+              "Features": "trained-hidden",
+              "Score": {
+                "MeanSquaredError": 0.001048587935387258,
+                "R2": 0.9937268234750117
+              }
+            },
+            {
+              "Features": "untrained-hidden",
+              "Score": {
+                "MeanSquaredError": 0.010274758958765303,
+                "R2": 0.9385312623530857
+              }
+            },
+            {
+              "Features": "shuffled-fit-labels",
+              "Score": {
+                "MeanSquaredError": 0.16680239421032098,
+                "R2": 0.002104803651424403
+              }
+            },
+            {
+              "Features": "trained-next-probabilities",
+              "Score": {
+                "MeanSquaredError": 0.000276347718010908,
+                "R2": 0.9983467499874297
+              }
+            },
+            {
+              "Features": "known-next-probabilities",
+              "Score": {
+                "MeanSquaredError": 1.5626183192072164e-11,
+                "R2": 0.9999999999065163
+              }
+            }
+          ]
+        }
+      ],
+      "Hidden": 8,
+      "InitialSha256": "3A7F537696C5FC4DB6689F23BF954C508D2165FDD98CB3A127C91DC5F7AB98FE",
+      "ModelNumericPayloadBytes": 1048,
+      "ParameterCount": 123,
+      "Parameters": [
+        -0.4305929166489451, 0.15040951161872862, 0.5455676369374901, 0.22848791320590223, 0.151407846093329,
+        -0.16998748226202293, 0.6455927924294723, -0.10354891685346618, -0.20297053467485424, -0.5393265412326286,
+        -0.4886268547025106, -0.36599686792774594, -0.5321375870967184, -0.2231136177117118, -0.17100790337623914,
+        0.04845131574810395, 0.585996826188614, -0.1507485137890471, 0.21661281717404146, 0.3288276501818342,
+        -0.5972838658925663, 0.3030841170506632, 0.1310929732727633, 0.3537951928174065, -0.07107072381638604,
+        -0.29338333167492564, 0.4586663411628709, 0.20154529824639367, 0.07913135399380583, 0.39067756944370075,
+        -0.4544435798897369, 0.44022883140234137, -0.178406660617911, 0.42916830836439546, 0.08579052562797211,
+        0.6165411313658917, 0.18741400848907405, -0.06437471566086507, 0.29084685718134967, -0.13359375590505893,
+        0.20539546393151395, 0.46125770846170355, -0.6037644568960059, -0.0277401998805494, 0.2693130060459631,
+        -0.045674018526743326, -0.34680524135866525, -0.3516702261942304, 0.6533680925437069, -0.5127103570825542,
+        0.23995597497430943, -0.3418245288311108, 0.1973761508704978, 0.15359414060375248, 0.4242228098785743,
+        -0.43352331743506545, 0.21387624027877314, -0.20969136708097877, 0.4889068373410605, 0.6490317888084709,
+        0.2309204728619394, 0.07106157173627825, 0.035914460169674686, -0.47039546861473136, 0.393735448444148,
+        -0.1772275831814573, 0.434339220897789, 0.004343529267165567, 0.1474794435572311, -0.2801030992065015,
+        -0.4287934838204277, -0.14099276871743308, 0.9273229337024002, -0.37661780546497065, 0.881370116391413,
+        0.7850859916361043, 0.1495796291921997, -0.05710457049539669, -0.30284072076969887, -0.5366182020143003,
+        0.12011387053570848, 0.5169738774231369, 1.2692110600424116, -0.8321283546128373, 1.0495163767017426,
+        -0.5264702720170339, 0.08685453129294993, -0.16023135981264983, -0.48730438673594945, -0.04415763264727622,
+        -0.2572096739085558, -0.027103442133700438, 0.22122224724497636, 0.05557618307640987, 0.001410040380179574,
+        0.2520553085681631, -0.2160585526715982, -0.15347655080891287, -0.5122127855686378, -0.6103926427784689,
+        0.12069929975171004, -0.5775695053030583, -0.053608754861529405, -0.3643934113782567, -0.03986364870689435,
+        -0.025219253220688378, -0.3531883628481033, 0.21030646040375156, -0.18146234239406944, -0.4030169221193389,
+        -1.1463092381228768, -0.16126868625919163, 0.3594065887017852, 0.1455833261490647, 0.6561873474898218,
+        0.2588332433921366, 0.023894258094093686, -0.0007890788362400541, -0.0992141389073887, -0.07989095804120161,
+        -0.12815518699998488, 0.1245662092161487, -0.017853956946617518
+      ],
+      "PayloadDefinition": "parameters plus one hidden state, binary64; excludes arrays, scratch, optimizer, and runtime",
+      "Seed": 37,
+      "TrainedSha256": "CE81DBD2FEEB6AAB70FB18539FF4621E784A9B6D574B5A3764369EE72B3FBFFA",
+      "TrainedTokens": 2097152,
+      "TrainingCost": {
+        "ElapsedMilliseconds": 681.8505,
+        "ProcessCpuMilliseconds": 686.3829999999998,
+        "ThreadAllocatedBytes": 144717800
+      },
+      "TrainingTrace": [
+        {
+          "Step": 1,
+          "LossNats": 1.3245699386739604
+        },
+        {
+          "Step": 512,
+          "LossNats": 0.8437304371095383
+        },
+        {
+          "Step": 1024,
+          "LossNats": 0.8004275308240307
+        },
+        {
+          "Step": 1536,
+          "LossNats": 0.8075591743002104
+        },
+        {
+          "Step": 2048,
+          "LossNats": 0.81486517642359
+        },
+        {
+          "Step": 2560,
+          "LossNats": 0.8449130388893834
+        },
+        {
+          "Step": 3072,
+          "LossNats": 0.8444292348829195
+        },
+        {
+          "Step": 3584,
+          "LossNats": 0.8179586412789999
+        },
+        {
+          "Step": 4096,
+          "LossNats": 0.7545808397195044
+        }
+      ],
+      "Unigram": [0.3318367025804006, 0.3340616215778042, 0.3341016758417952]
+    },
+    {
+      "Bigram": [
+        [0.6739061075986946, 0.1627486411741057, 0.1633452512271997],
+        [0.1629485366928629, 0.6745279238954364, 0.16252353941170072],
+        [0.16321219816295482, 0.1626316873134072, 0.674156114523638]
+      ],
+      "EvaluationCost": {
+        "ElapsedMilliseconds": 283.7502,
+        "ProcessCpuMilliseconds": 1118.3110000000006,
+        "ThreadAllocatedBytes": 189933512
+      },
+      "Evaluations": [
+        {
+          "ContextLength": 16,
+          "Examples": 2048,
+          "Predictions": [
+            {
+              "Model": "known-model-filter",
+              "NextCrossEntropyBits": 1.1403774916943819,
+              "NextEntropyBits": 1.1403774916943819,
+              "NextKlBits": 0,
+              "SampledNextLossBits": 1.126394913517075,
+              "Future3KlBits": 0
+            },
+            {
+              "Model": "empirical-unigram",
+              "NextCrossEntropyBits": 1.5849568597081958,
+              "NextEntropyBits": 1.1403774916943819,
+              "NextKlBits": 0.4445793680138139,
+              "SampledNextLossBits": 1.5849592544374391,
+              "Future3KlBits": 1.326370554194149
+            },
+            {
+              "Model": "empirical-bigram",
+              "NextCrossEntropyBits": 1.2319447876270224,
+              "NextEntropyBits": 1.1403774916943819,
+              "NextKlBits": 0.09156729593264057,
+              "SampledNextLossBits": 1.233153907292979,
+              "Future3KlBits": 0.27829960135611326
+            },
+            {
+              "Model": "untrained-rnn",
+              "NextCrossEntropyBits": 1.8140860317563565,
+              "NextEntropyBits": 1.1403774916943819,
+              "NextKlBits": 0.6737085400619747,
+              "SampledNextLossBits": 1.8103848157564555,
+              "Future3KlBits": 2.0019406296903903
+            },
+            {
+              "Model": "trained-rnn",
+              "NextCrossEntropyBits": 1.141467669282531,
+              "NextEntropyBits": 1.1403774916943819,
+              "NextKlBits": 0.0010901775881491105,
+              "SampledNextLossBits": 1.1269597754249396,
+              "Future3KlBits": 0.0032465281157621657
+            }
+          ],
+          "Probes": [
+            {
+              "Features": "trained-hidden",
+              "Score": {
+                "MeanSquaredError": 0.0008066526318236018,
+                "R2": 0.9951821724471898
+              }
+            },
+            {
+              "Features": "untrained-hidden",
+              "Score": {
+                "MeanSquaredError": 0.008767950857926752,
+                "R2": 0.947632384054202
+              }
+            },
+            {
+              "Features": "shuffled-fit-labels",
+              "Score": {
+                "MeanSquaredError": 0.15343968432570101,
+                "R2": 0.08356346998130981
+              }
+            },
+            {
+              "Features": "trained-next-probabilities",
+              "Score": {
+                "MeanSquaredError": 0.0002166040211805386,
+                "R2": 0.9987063070519786
+              }
+            },
+            {
+              "Features": "known-next-probabilities",
+              "Score": {
+                "MeanSquaredError": 1.4109964122790894e-11,
+                "R2": 0.9999999999157266
+              }
+            }
+          ]
+        },
+        {
+          "ContextLength": 64,
+          "Examples": 2048,
+          "Predictions": [
+            {
+              "Model": "known-model-filter",
+              "NextCrossEntropyBits": 1.1441594780817084,
+              "NextEntropyBits": 1.1441594780817084,
+              "NextKlBits": 0,
+              "SampledNextLossBits": 1.1360179024011314,
+              "Future3KlBits": 0
+            },
+            {
+              "Model": "empirical-unigram",
+              "NextCrossEntropyBits": 1.5849609021726807,
+              "NextEntropyBits": 1.1441594780817084,
+              "NextKlBits": 0.44080142409097234,
+              "SampledNextLossBits": 1.5849648404570091,
+              "Future3KlBits": 1.321465575642783
+            },
+            {
+              "Model": "empirical-bigram",
+              "NextCrossEntropyBits": 1.2363653677335467,
+              "NextEntropyBits": 1.1441594780817084,
+              "NextKlBits": 0.09220588965183829,
+              "SampledNextLossBits": 1.2261763074243142,
+              "Future3KlBits": 0.27780503576514615
+            },
+            {
+              "Model": "untrained-rnn",
+              "NextCrossEntropyBits": 1.7814981648743204,
+              "NextEntropyBits": 1.1441594780817084,
+              "NextKlBits": 0.6373386867926121,
+              "SampledNextLossBits": 1.7528310514285619,
+              "Future3KlBits": 1.934964768746114
+            },
+            {
+              "Model": "trained-rnn",
+              "NextCrossEntropyBits": 1.1452964722652748,
+              "NextEntropyBits": 1.1441594780817084,
+              "NextKlBits": 0.0011369941835663866,
+              "SampledNextLossBits": 1.1372020286902813,
+              "Future3KlBits": 0.0033219688077567797
+            }
+          ],
+          "Probes": [
+            {
+              "Features": "trained-hidden",
+              "Score": {
+                "MeanSquaredError": 0.0008492939539821246,
+                "R2": 0.9948841120647726
+              }
+            },
+            {
+              "Features": "untrained-hidden",
+              "Score": {
+                "MeanSquaredError": 0.009932945366251106,
+                "R2": 0.9401669644270816
+              }
+            },
+            {
+              "Features": "shuffled-fit-labels",
+              "Score": {
+                "MeanSquaredError": 0.1523944194893417,
+                "R2": 0.08202246300470362
+              }
+            },
+            {
+              "Features": "trained-next-probabilities",
+              "Score": {
+                "MeanSquaredError": 0.00023789576263550608,
+                "R2": 0.9985669884305637
+              }
+            },
+            {
+              "Features": "known-next-probabilities",
+              "Score": {
+                "MeanSquaredError": 1.3952524723935241e-11,
+                "R2": 0.9999999999159542
+              }
+            }
+          ]
+        }
+      ],
+      "Hidden": 16,
+      "InitialSha256": "D8B696A308F85EF089F3E82E46DF679846A9B80571C3013600E543DE8C0593EF",
+      "ModelNumericPayloadBytes": 3096,
+      "ParameterCount": 371,
+      "Parameters": [
+        0.17585208745528436, 0.23631431080438545, 0.2892041245837178, 0.046135016907481556, -0.1682615353734755,
+        -0.10598359547765465, -0.025004672289148284, -0.13406929855701838, 0.25622919839611596, 0.11334768158474347,
+        -0.21474589348887582, -0.3400122664664353, 0.038871295215941994, -0.32272973885102446, -0.22528176796200694,
+        -0.0019186209890576494, 0.09820749459911869, 0.0038448626100958745, -0.27682465984005544, 0.3809343291314116,
+        0.23122386194985198, 0.05548653295881082, -0.02283420596182656, 0.22070092737079658, 0.002817551048470258,
+        0.012045153125999894, 0.22312632873766397, -0.014703691188270038, -0.07268130521198728, -0.008235222196199063,
+        -0.451889498768895, -0.2692370637649839, 0.09391990028849888, -0.12288774272778345, 0.12485005726371978,
+        0.31910004832387123, 0.09559601680069299, 0.1557294094840426, -0.4198279177404548, 0.44750915244331757,
+        0.10465598698677753, -0.32023686449359395, -0.24915007189148478, 0.031496806207896785, -0.4821232577375072,
+        0.16114566307820402, -0.20802719256522328, -0.2824582158815882, -0.21332269342733765, -0.5788643914774643,
+        0.22533875510882034, 0.4472688178882585, -0.15250724781593486, 0.15319617070321312, 0.28227150548786617,
+        0.2891513118178148, 0.0014002698993773256, 0.044066069100037956, 0.08893336529772002, 0.1384818973826251,
+        0.20109457966012936, 0.023861695586051286, -0.00232085990710613, 0.03464283906831142, -0.2649341931661293,
+        -0.14189719777670515, 0.15625145597475182, 0.3509036186210147, -0.473217243862155, 0.07413178989130542,
+        0.059402901123458196, 0.32477232314385734, 0.30445543851650386, -0.2227135436501486, -0.033672713534599885,
+        -0.1413294267927853, -0.2149983112354846, 0.020244577578132, -0.11843959148537814, -0.34777245940160945,
+        -0.05096705440076396, -0.008138380097712134, -0.18981235836242805, 0.04655518924567887, 0.05221342621942402,
+        0.1493857685012847, -0.1355039720070381, 0.013815368078426411, 0.2780239083679539, 0.10099367111683641,
+        -0.11013137254462636, 0.02262408312894851, 0.06251241616767614, 0.08567800219637098, 0.1625675408376954,
+        0.09787806419165818, -0.017578997248777293, -0.021830057506620204, -0.1558456849779342, 0.21233800894220983,
+        -0.27864641974789417, 0.03703532680437024, -0.12572233517810077, -0.15752446374600407, -0.13047688842348357,
+        -0.14962000816694887, 0.06111520568902597, 0.13037164506261747, 0.005663254205722, 0.14247325234752575,
+        -0.04959508037531695, 0.18355243381718161, 0.21477869468825914, 0.03951109125121643, -0.27958508347838007,
+        0.3312387280934136, -0.2851108777573303, -0.36235167664575046, -0.18664199065272952, -0.3796374651261529,
+        -0.011703488790584915, 0.2611047178814942, 0.12166937886861366, -0.11963459402634155, 0.34058054481536965,
+        0.30473217480138526, -0.2839296698103498, 0.3381805048005966, -0.3749459674038668, 0.03609189375135955,
+        -0.004536929346803511, -0.32283718549907353, -0.05174636270479324, 0.41519079694444183, -0.10467154499437081,
+        -0.01731226724384761, -0.03713244971320367, -0.20036313618894233, 0.019541300642465023, -0.3950211771238657,
+        -0.2762018529810923, -0.1842064446989292, -0.02356248757628992, 0.16927891805623335, 0.3143186040653826,
+        0.30046375067810843, 0.044457215025468566, 0.1755035241716005, 0.07049591065949212, 0.042546992238433355,
+        -0.05273156446984131, -0.2149751280924657, -0.16754100303579766, -0.03828917868309138, 0.17920539176305988,
+        0.1497566373443432, -0.0533124239924192, -0.25693461386227784, -0.1567062349746681, 0.04914362684914248,
+        -0.026306550877565272, 0.1548858982751558, 0.33729053546445514, -0.3388682902699333, 0.04008370683645191,
+        0.494324028859548, -0.15152459087742504, 0.019480011074551908, -0.1172948890973255, -0.2140175219320541,
+        -0.3451907718957303, -0.16151252874185365, -0.10717380385957773, -0.28975378637134325, -0.09876372656417949,
+        0.2885287554169809, 0.17706769366960162, 0.3946170020087915, 0.06689675183174848, 0.32796474191473823,
+        0.1161341643018426, 0.2842659655633888, -0.506974506716186, -0.2760044481098151, 0.31275390993396207,
+        0.3571722778062462, -0.032047629333852114, 0.023832960171577208, -0.016889110574054657, -0.06753967584073481,
+        -0.10418967426314772, 0.27381346076022256, 0.1588710831606009, -0.011469822235056156, -0.4900019571226178,
+        0.024349215721820743, 0.10379344507038273, 0.4250068423297799, 0.43836061431245427, -0.06719869844513478,
+        -0.11532455047035454, -0.288470962514911, -0.09975805255217306, 0.044048441336366276, 0.451998087016119,
+        -0.15855638190729632, -0.264654971605021, 0.08955097906595876, -0.37479839601678716, -0.24929579586789305,
+        0.04563353034898537, -0.12905070058941012, 0.3284661796611115, 0.2812543011097657, -0.3568971901686293,
+        0.28030077133529113, -0.24749072108111578, -0.3908247770332309, 0.28710935297259743, 0.25035840125660536,
+        -0.11925756062774587, 0.540741661205145, -0.11375804807186851, 0.1647827507638332, 0.36114953935833694,
+        0.07586996816236703, 0.5176820326917723, 0.2805291152388338, -0.04616543708421183, 0.4006044189013249,
+        0.23256341968525016, 0.25864281043984516, 0.1509021087104726, 0.10947590431373308, -0.03511477876108921,
+        -0.40003767742776, 0.07729093541197604, -0.20464306068656252, -0.39599947432616506, -0.23766681281459753,
+        0.2259170122999613, -0.3667754054733627, 0.25422812578259496, 0.16378841072626563, 0.12269335527499065,
+        -0.031797739993585074, 0.18115514843022112, 0.16764760084512773, -0.2199957215344283, -0.16723098875421402,
+        0.1559739534669658, -0.2527600529456932, 0.19885563037157594, -0.048553037398343116, -0.24119095400890506,
+        0.38394515732739526, 0.33468906505006274, 0.13387412750703187, 0.15393599596958682, -0.6340894721247968,
+        -0.41501651252739497, 0.8789285811916172, -0.6563732929388167, 0.7019530941571316, 0.05195393032460145,
+        0.7854093987166239, 0.6660021544113802, -0.4596621711335363, -0.15691318834348117, -0.0835252324608086,
+        -0.04859291426914407, 0.32585831660235315, 0.03554759549431684, -0.3998601701235451, 0.37112621961325054,
+        -0.7331940518041444, -0.4517442254958044, -0.4966861279963233, 0.5577838943299755, 0.264690390605675,
+        0.18461203078042202, -0.28380964501313793, 0.013378906239745277, -0.32778923756026795, -0.19572328757455698,
+        0.10212126210097391, 0.2460861921128628, 0.1909970828666732, -0.11897816212475659, -0.09444730500437587,
+        -0.2194577186424581, -0.3108265077005543, 0.6618430836005095, -0.43557143482191435, -0.6333951745952079,
+        -0.6015318568632275, 0.8540770099300148, -0.687376510371286, -0.159239320779706, -0.16062753594070997,
+        0.12879617961106074, 0.522374774665936, 0.6432926542606681, -0.5085573910219964, -0.12257080518812753,
+        -0.09956694222602548, -0.1485923155249082, -0.002787510263090643, 0.07257070348665388, -0.05711583734804785,
+        0.0748616854597325, -0.12556170808076622, -0.008758743449366214, 0.030809504814656694, -0.0769070560920079,
+        0.052657719112710465, -0.1565122422298758, -0.20359678350580704, 0.11510820277988476, 0.00366073620313034,
+        0.1213765272829401, -0.47219012720873194, -0.5707522166662158, 0.5506979684947398, -0.1596990653354794,
+        -0.2647980296035124, 0.07345224071547068, -0.22735543849081413, 0.3525469728898176, -0.2135497660893845,
+        0.3517409805289137, -0.0899278750293432, 0.11669614919856537, -0.33855193558575325, 0.014525587068874649,
+        0.2053699808640168, 0.27410280341124643, -0.4094651401087555, 0.07585918936130263, 0.5969961718285555,
+        -0.31871660191293766, 0.11606669550432601, -0.31444727810434125, 0.16028463816767, 0.31288253674640126,
+        -0.07518270959155031, 0.273891877572012, -0.3546829112442299, -0.4802789159056148, 0.3058633689977311,
+        -0.13119072676981441, 0.23173410018714066, -0.33307436443169286, -0.3120347522132283, -0.2821610043797794,
+        -0.40659370649117665, -0.08825787487928824, -0.2574778285186609, -0.043910382735282305, 0.05368805547371138,
+        0.3492629201523291, -0.22877972798397983, 0.23880704349064036, -0.2249468284870535, -0.48248123198102044,
+        -0.5237565861145153, 0.28449338275087077, 0.006799668961520924, -0.0013928687788141683, -0.06637282754649286,
+        0.11908511971618976
+      ],
+      "PayloadDefinition": "parameters plus one hidden state, binary64; excludes arrays, scratch, optimizer, and runtime",
+      "Seed": 11,
+      "TrainedSha256": "0CF4F92CEC4411FA3674330990805FF73B96707D0FE81178B9738C69BB939D65",
+      "TrainedTokens": 2097152,
+      "TrainingCost": {
+        "ElapsedMilliseconds": 1813.162,
+        "ProcessCpuMilliseconds": 1838.4650000000001,
+        "ThreadAllocatedBytes": 144727976
+      },
+      "TrainingTrace": [
+        {
+          "Step": 1,
+          "LossNats": 1.2636900991127553
+        },
+        {
+          "Step": 512,
+          "LossNats": 0.8948300840196083
+        },
+        {
+          "Step": 1024,
+          "LossNats": 0.776029555628652
+        },
+        {
+          "Step": 1536,
+          "LossNats": 0.8054407235531036
+        },
+        {
+          "Step": 2048,
+          "LossNats": 0.8133265254762257
+        },
+        {
+          "Step": 2560,
+          "LossNats": 0.8106829886271735
+        },
+        {
+          "Step": 3072,
+          "LossNats": 0.744693740557248
+        },
+        {
+          "Step": 3584,
+          "LossNats": 0.7566925704384106
+        },
+        {
+          "Step": 4096,
+          "LossNats": 0.781679570566125
+        }
+      ],
+      "Unigram": [0.3333301544234928, 0.3332476617131304, 0.3334221838633768]
+    },
+    {
+      "Bigram": [
+        [0.6746010359591604, 0.16305592268944466, 0.1623430413513949],
+        [0.16347923055478114, 0.6738307134738694, 0.16269005597134953],
+        [0.16302775890865798, 0.16348013907458817, 0.6734921020167539]
+      ],
+      "EvaluationCost": {
+        "ElapsedMilliseconds": 222.9327,
+        "ProcessCpuMilliseconds": 223.6869999999999,
+        "ThreadAllocatedBytes": 189980792
+      },
+      "Evaluations": [
+        {
+          "ContextLength": 16,
+          "Examples": 2048,
+          "Predictions": [
+            {
+              "Model": "known-model-filter",
+              "NextCrossEntropyBits": 1.1387824363282175,
+              "NextEntropyBits": 1.1387824363282175,
+              "NextKlBits": 0,
+              "SampledNextLossBits": 1.1483386346538027,
+              "Future3KlBits": 0
+            },
+            {
+              "Model": "empirical-unigram",
+              "NextCrossEntropyBits": 1.5849794462697775,
+              "NextEntropyBits": 1.1387824363282175,
+              "NextKlBits": 0.44619700994156,
+              "SampledNextLossBits": 1.585074941975513,
+              "Future3KlBits": 1.328315435837114
+            },
+            {
+              "Model": "empirical-bigram",
+              "NextCrossEntropyBits": 1.2263283140300123,
+              "NextEntropyBits": 1.1387824363282175,
+              "NextKlBits": 0.08754587770179478,
+              "SampledNextLossBits": 1.2191883303520317,
+              "Future3KlBits": 0.2745724673708611
+            },
+            {
+              "Model": "untrained-rnn",
+              "NextCrossEntropyBits": 1.6792318364119092,
+              "NextEntropyBits": 1.1387824363282175,
+              "NextKlBits": 0.5404494000836917,
+              "SampledNextLossBits": 1.6863757683951002,
+              "Future3KlBits": 1.596765843801534
+            },
+            {
+              "Model": "trained-rnn",
+              "NextCrossEntropyBits": 1.1397799129320463,
+              "NextEntropyBits": 1.1387824363282175,
+              "NextKlBits": 0.000997476603828762,
+              "SampledNextLossBits": 1.1487407110881733,
+              "Future3KlBits": 0.003209194267770088
+            }
+          ],
+          "Probes": [
+            {
+              "Features": "trained-hidden",
+              "Score": {
+                "MeanSquaredError": 0.0009655124616023185,
+                "R2": 0.994260959770726
+              }
+            },
+            {
+              "Features": "untrained-hidden",
+              "Score": {
+                "MeanSquaredError": 0.01136520062291141,
+                "R2": 0.9324448454239389
+              }
+            },
+            {
+              "Features": "shuffled-fit-labels",
+              "Score": {
+                "MeanSquaredError": 0.1820550930287822,
+                "R2": -0.08214191363460643
+              }
+            },
+            {
+              "Features": "trained-next-probabilities",
+              "Score": {
+                "MeanSquaredError": 0.0002452948447976044,
+                "R2": 0.9985419587645811
+              }
+            },
+            {
+              "Features": "known-next-probabilities",
+              "Score": {
+                "MeanSquaredError": 1.4425459141866979e-11,
+                "R2": 0.9999999999142546
+              }
+            }
+          ]
+        },
+        {
+          "ContextLength": 64,
+          "Examples": 2048,
+          "Predictions": [
+            {
+              "Model": "known-model-filter",
+              "NextCrossEntropyBits": 1.144598154053324,
+              "NextEntropyBits": 1.144598154053324,
+              "NextKlBits": 0,
+              "SampledNextLossBits": 1.166327673225914,
+              "Future3KlBits": 0
+            },
+            {
+              "Model": "empirical-unigram",
+              "NextCrossEntropyBits": 1.5849478685840155,
+              "NextEntropyBits": 1.144598154053324,
+              "NextKlBits": 0.4403497145306914,
+              "SampledNextLossBits": 1.584956482493486,
+              "Future3KlBits": 1.3207801565819435
+            },
+            {
+              "Model": "empirical-bigram",
+              "NextCrossEntropyBits": 1.2359052085880389,
+              "NextEntropyBits": 1.144598154053324,
+              "NextKlBits": 0.09130705453471477,
+              "SampledNextLossBits": 1.255149730341965,
+              "Future3KlBits": 0.2766844069986672
+            },
+            {
+              "Model": "untrained-rnn",
+              "NextCrossEntropyBits": 1.6672520963438096,
+              "NextEntropyBits": 1.144598154053324,
+              "NextKlBits": 0.5226539422904855,
+              "SampledNextLossBits": 1.670860892703422,
+              "Future3KlBits": 1.5711457744889585
+            },
+            {
+              "Model": "trained-rnn",
+              "NextCrossEntropyBits": 1.1457262040606375,
+              "NextEntropyBits": 1.144598154053324,
+              "NextKlBits": 0.0011280500073134192,
+              "SampledNextLossBits": 1.1670081976997226,
+              "Future3KlBits": 0.0033576788208464787
+            }
+          ],
+          "Probes": [
+            {
+              "Features": "trained-hidden",
+              "Score": {
+                "MeanSquaredError": 0.0009213968509282173,
+                "R2": 0.9944495689688598
+              }
+            },
+            {
+              "Features": "untrained-hidden",
+              "Score": {
+                "MeanSquaredError": 0.011553683977379115,
+                "R2": 0.930401405206205
+              }
+            },
+            {
+              "Features": "shuffled-fit-labels",
+              "Score": {
+                "MeanSquaredError": 0.18061634127630288,
+                "R2": -0.0880203729164819
+              }
+            },
+            {
+              "Features": "trained-next-probabilities",
+              "Score": {
+                "MeanSquaredError": 0.0002856710814563665,
+                "R2": 0.9982791371235777
+              }
+            },
+            {
+              "Features": "known-next-probabilities",
+              "Score": {
+                "MeanSquaredError": 1.4248410488303413e-11,
+                "R2": 0.9999999999141685
+              }
+            }
+          ]
+        }
+      ],
+      "Hidden": 16,
+      "InitialSha256": "F6866CD6FE0A0EF3825F655D8A4F1A19345E3A514546E1A33032C440C8D2A293",
+      "ModelNumericPayloadBytes": 3096,
+      "ParameterCount": 371,
+      "Parameters": [
+        -0.3494535027823098, -0.4087554704818853, 0.04587369267903285, 0.08480352793100365, 0.08760987000150579,
+        -0.16625286135115247, 0.2024113085094163, -0.08965136020579303, -0.11530003546137631, 0.14377975186180467,
+        -0.25608583416009595, 0.14218492612301695, 0.07587590599186234, 0.3120205386104515, -0.12233732415272959,
+        0.35346614258728654, -0.02301673947702192, -0.11869408635012307, 0.12795063283695796, -0.14881563282318017,
+        0.2344844450437392, 0.3847387501765885, 0.19674850793221613, 0.2724887150896983, 0.3699018762807869,
+        0.02957928822071513, 0.07368676613589104, 0.10662744130020418, -0.218856244934742, -0.023492351136332797,
+        0.05952022393481787, -0.23763261985165757, -0.030428541144014193, -0.11145168024565132, -0.43543188374163,
+        0.18736656429376175, -0.11533309505871168, 0.0750855062046961, -0.10704428362845399, -0.2520236552765691,
+        -0.11794783756801529, 0.06932067842882905, 0.10654820339631951, -0.1902713986625001, -0.16216005001326134,
+        0.27652543921388417, -0.06117290342079391, 0.04448576017850502, -0.20259401974084162, 0.03359581921132713,
+        -0.08894288913611574, 0.12753476640735387, -0.011954885951109445, 0.017863635683136182, 0.15486669492924748,
+        -0.18261897921162254, -0.06262891048541265, -0.03588747683814874, -0.20498136194072725, -0.07019173865608873,
+        -0.04689866580464511, 0.044546269535630074, -0.10770263208872183, -0.036691400616933406, 0.1301553418754187,
+        0.22603717937818055, -0.16370844935009257, 0.2549992988042887, -0.20479168903782957, 0.15640639694955916,
+        -0.05382944127205296, -0.008208794586514814, 0.0221333313717567, -0.34600397605635375, -0.12018893228092699,
+        -0.09070918312502732, -0.08111777098484693, -0.21655961371741328, -0.12252583185825534, -0.17798085780915202,
+        -0.036667302885051, -0.03048656950354612, -0.3553193526219407, 0.025915787434268773, 0.12251939451049913,
+        -0.25833745667021357, -0.28872666319441603, 0.25594624609626665, -0.2476783023323086, 0.16807971536798627,
+        -0.2511914046846235, -0.2693294933535702, 0.4055629521492318, -0.13502100406140985, 0.08165080907949313,
+        0.17654225978971314, 0.0807541106502328, 0.26182225417371496, -0.26781807802569496, 0.3865687573966942,
+        -0.2783890965990307, 0.09853143539086034, 0.4982438639847359, 0.13179555892906566, -0.1335079659285107,
+        0.15536001092144583, 0.005787354971795234, -0.06190459869109453, 0.09712799903819753, -0.5532089942915416,
+        0.18812287576206396, 0.12759935434505565, 0.15782231290829643, -0.053194371120956326, 0.38095602372886667,
+        0.14714695747529802, -0.11690400914632557, 0.26592385378558214, -0.3155170233544399, -0.06555065303595209,
+        -0.24148839191571278, -0.23673901342324424, 0.37678403464752774, 0.5263444247444947, -0.06916420003107943,
+        0.06871954543742585, 0.14873894806252502, -0.022762235350182392, 0.2476806595763227, -0.4165410640526102,
+        0.43167788021034137, -0.047885121562734875, 0.16293670202769775, 0.020577329582831715, -0.3270406210637395,
+        -0.020109814033835112, 0.04799979193860689, -0.3972212673245566, 0.024449210059467992, 0.016509958914394926,
+        0.019786927692178387, 0.1560021701919125, 0.07620393912393054, 0.1886168349174674, 0.08882632915999843,
+        0.11388316648562857, 0.1797726456669074, 0.23890806119252503, -0.33088929496480113, 0.016043327471885072,
+        -0.20159444883993186, -0.32246935496376505, -0.4705692722998993, 0.44018967124617586, 0.04273520997141291,
+        0.37733684178941057, 0.15165892359208033, 0.056209924772376706, 0.17462336420692756, 0.20145672054166147,
+        0.3082653350957109, 0.44114861314128617, 0.19169637095952524, 0.05865172986675221, 0.06911479910888574,
+        0.06827603428114154, 0.10774422052960114, -0.012441179977267179, -0.27580016101149857, -0.01842879406108303,
+        -0.026066872707945072, 0.05270378201532703, 0.16524552473705734, -0.3849099387751017, 0.22681182640381992,
+        -0.22788259074133987, -0.3150622674566254, -0.3344038445172435, -0.028159252643439193, -0.16250848235118145,
+        -0.15149847050853468, -0.04956152505264857, 0.3054469026285963, -0.1343615533541877, 0.17346449183049487,
+        0.10408609053230874, -0.3140338080227052, 0.38933665876732537, -0.06383187685759713, 0.10265411398242773,
+        -0.4768074757834495, 0.15672806572983036, -0.31481898994377416, 0.05124851921883741, -0.16146321578968553,
+        0.3206818568666984, 0.180729123603217, -0.2588197465664523, 0.16849668884369798, 0.21310415317428358,
+        -0.09330482671985806, 0.13593408685687453, -0.3312051064132235, -0.08349761384594116, 0.10409524668766022,
+        -0.09089347470599556, -0.20147121407440638, -0.12227947194035725, -0.3921751490260612, -0.0354049915556075,
+        -0.44536301211300827, 0.14183064184584632, 0.26276123843638816, 0.2723594588074517, -0.3750760951289816,
+        0.2617736261944188, 0.0002688069825522422, 0.3659994269053679, 0.310747461316721, -0.1852971850860659,
+        0.23342854819438363, 0.011433708138634039, -0.36548239878315486, 0.18901461066446065, 0.3818218763853688,
+        0.3953174162683721, -0.14206403891752023, 0.46538077132033323, 0.34634314240356906, -0.01652804621889962,
+        0.08139527740834951, -0.4650604936708194, -0.07773300098595533, -0.06749015917336103, 0.0959982757194777,
+        -0.4598513255145078, -0.05017405387257046, 0.11347081529821625, -0.12092005152315168, 0.2189669940017054,
+        0.2593117447886104, -0.1412892905348607, 0.12110568776620363, -0.27383945196657017, 0.05041399096146069,
+        -0.17417594876421816, -0.31127470969115545, 0.006227743505731483, -0.3466655733947516, 0.051252764557491386,
+        0.17973568620631766, 0.2505772122394637, -0.06914715933412839, 0.29053415326726745, 0.29268517052616005,
+        -0.06764248919364849, 0.6062346736177836, 0.014314671511046626, 0.11853951731229133, -0.08307615417222712,
+        -0.5862405916331076, -0.20173464129749036, -0.29610665605323877, 0.05222752035073412, 0.06243407777190645,
+        0.4068321113665151, -0.3691289351941985, -0.1052827129933613, 0.5260286141002721, -0.03776614552428625,
+        -0.7597328867377824, 0.29807108679066846, 0.15572907851860554, 0.12752711066976474, 0.6752724373993647,
+        -0.40444590254889495, 0.6243546886124696, -0.07078835639422426, 0.008447588919333265, -0.6453158528385434,
+        -0.28270268217301137, 0.17153407106345475, -0.7121083304417438, -0.6751638607359922, -0.7037212491637295,
+        0.7498384073068132, -0.3492441914018801, 0.09791941366224922, -0.35591359190608124, -0.4491773914180581,
+        0.1990133948647332, 0.633105523266803, -0.30260702721874083, 0.2867996852127643, 0.12625468498931175,
+        -0.1491026255308451, 0.5704211169509672, -0.1666003786478348, 0.7396517181323023, -0.4801456043941406,
+        -0.00025292726639630596, -0.4183397298889091, -0.26476370196932136, 0.14512214219172542, -0.06297353383657113,
+        0.0775073097551267, 0.11596244112066541, -0.1096067480437007, -0.011524448646032595, 0.03726497557385694,
+        0.020665958218571645, 0.11890594439136347, 0.25727632486114727, -0.15311197713129643, 0.08729004881237004,
+        0.03995166987745971, -0.05460027827104395, -0.04567628502361565, -0.18917218255992588, 0.0830814567390841,
+        0.2444408213677611, -0.17268027287963025, -0.07439798978530833, -0.09933192159209739, 0.4160144233927098,
+        0.27320565982079054, 0.45231081829038094, 0.3007532711818037, -0.11894647834544271, -0.4437445908388769,
+        -0.4353807744510974, -0.40262438597997197, 0.08185956483941237, -0.33001295884795306, 0.6001405785979932,
+        0.08658851208352912, -0.13923986160994456, -0.3971239630602149, -0.08932818494481641, 0.2644921721623596,
+        0.33583016671760413, 0.32331107169279044, -0.32258769951815114, -0.025134975459705805, 0.23092587751894297,
+        -0.4198196002044713, 0.3547373202406579, 0.18630285569323948, 0.006640206285796127, 0.1043410341168148,
+        -0.2870135553676529, 0.288353498571407, -0.32204266332504106, -0.06768081823051131, -0.10516988517919289,
+        0.1147721503570649, -0.07403426451554564, 0.31459988444652726, 0.35897908039483734, 0.07025499682293276,
+        -0.11894853735146133, 0.49163452803121954, -0.2496791274460613, 0.2712869309516179, 0.06306072801076905,
+        -0.23602487040685038, 0.1407395026541029, 0.167843027134475, -0.08738056862688329, 0.03015090722999994,
+        0.0842681088193206
+      ],
+      "PayloadDefinition": "parameters plus one hidden state, binary64; excludes arrays, scratch, optimizer, and runtime",
+      "Seed": 23,
+      "TrainedSha256": "C16A9CA708AC802572B7FB68AE986CD17CD9C011C7BBC049248B880C94B087EE",
+      "TrainedTokens": 2097152,
+      "TrainingCost": {
+        "ElapsedMilliseconds": 1802.0072,
+        "ProcessCpuMilliseconds": 1816.326000000001,
+        "ThreadAllocatedBytes": 144727976
+      },
+      "TrainingTrace": [
+        {
+          "Step": 1,
+          "LossNats": 1.1555068343271733
+        },
+        {
+          "Step": 512,
+          "LossNats": 0.7691645835811081
+        },
+        {
+          "Step": 1024,
+          "LossNats": 0.8334766731763966
+        },
+        {
+          "Step": 1536,
+          "LossNats": 0.7995815712160282
+        },
+        {
+          "Step": 2048,
+          "LossNats": 0.8009283378513632
+        },
+        {
+          "Step": 2560,
+          "LossNats": 0.7338375611748899
+        },
+        {
+          "Step": 3072,
+          "LossNats": 0.7922428462726703
+        },
+        {
+          "Step": 3584,
+          "LossNats": 0.792331007159984
+        },
+        {
+          "Step": 4096,
+          "LossNats": 0.8586087698075913
+        }
+      ],
+      "Unigram": [0.33426999911785255, 0.333555221240204, 0.3321747796419435]
+    },
+    {
+      "Bigram": [
+        [0.6719330267318195, 0.164583213567117, 0.16348375970106352],
+        [0.16291895146733787, 0.6731418738147931, 0.16393917471786904],
+        [0.1630270622125407, 0.16317266542380526, 0.673800272363654]
+      ],
+      "EvaluationCost": {
+        "ElapsedMilliseconds": 233.9852,
+        "ProcessCpuMilliseconds": 237.70999999999913,
+        "ThreadAllocatedBytes": 190075896
+      },
+      "Evaluations": [
+        {
+          "ContextLength": 16,
+          "Examples": 2048,
+          "Predictions": [
+            {
+              "Model": "known-model-filter",
+              "NextCrossEntropyBits": 1.1332757820355657,
+              "NextEntropyBits": 1.1332757820355657,
+              "NextKlBits": 0,
+              "SampledNextLossBits": 1.0875564080320665,
+              "Future3KlBits": 0
+            },
+            {
+              "Model": "empirical-unigram",
+              "NextCrossEntropyBits": 1.5849424752974954,
+              "NextEntropyBits": 1.1332757820355657,
+              "NextKlBits": 0.45166669326192976,
+              "SampledNextLossBits": 1.58481942109434,
+              "Future3KlBits": 1.3353722363235179
+            },
+            {
+              "Model": "empirical-bigram",
+              "NextCrossEntropyBits": 1.2169496402176319,
+              "NextEntropyBits": 1.1332757820355657,
+              "NextKlBits": 0.08367385818206619,
+              "SampledNextLossBits": 1.1951639830027596,
+              "Future3KlBits": 0.27233649747056654
+            },
+            {
+              "Model": "untrained-rnn",
+              "NextCrossEntropyBits": 1.7631019372411159,
+              "NextEntropyBits": 1.1332757820355657,
+              "NextKlBits": 0.6298261552055502,
+              "SampledNextLossBits": 1.7653896692926738,
+              "Future3KlBits": 1.8487462881971113
+            },
+            {
+              "Model": "trained-rnn",
+              "NextCrossEntropyBits": 1.1347830752010137,
+              "NextEntropyBits": 1.1332757820355657,
+              "NextKlBits": 0.0015072931654480648,
+              "SampledNextLossBits": 1.0895526636407589,
+              "Future3KlBits": 0.004565665808298264
+            }
+          ],
+          "Probes": [
+            {
+              "Features": "trained-hidden",
+              "Score": {
+                "MeanSquaredError": 0.000625157035630307,
+                "R2": 0.9963326033311691
+              }
+            },
+            {
+              "Features": "untrained-hidden",
+              "Score": {
+                "MeanSquaredError": 0.012012693064480924,
+                "R2": 0.9295292094346393
+              }
+            },
+            {
+              "Features": "shuffled-fit-labels",
+              "Score": {
+                "MeanSquaredError": 0.17443402714041936,
+                "R2": -0.023292922586305442
+              }
+            },
+            {
+              "Features": "trained-next-probabilities",
+              "Score": {
+                "MeanSquaredError": 0.00023225586130944638,
+                "R2": 0.9986375033415021
+              }
+            },
+            {
+              "Features": "known-next-probabilities",
+              "Score": {
+                "MeanSquaredError": 1.597432716599678e-11,
+                "R2": 0.9999999999062889
+              }
+            }
+          ]
+        },
+        {
+          "ContextLength": 64,
+          "Examples": 2048,
+          "Predictions": [
+            {
+              "Model": "known-model-filter",
+              "NextCrossEntropyBits": 1.1414840360249878,
+              "NextEntropyBits": 1.1414840360249878,
+              "NextKlBits": 0,
+              "SampledNextLossBits": 1.1256028956372481,
+              "Future3KlBits": 0
+            },
+            {
+              "Model": "empirical-unigram",
+              "NextCrossEntropyBits": 1.5850051264997485,
+              "NextEntropyBits": 1.1414840360249878,
+              "NextKlBits": 0.4435210904747606,
+              "SampledNextLossBits": 1.5849917596034986,
+              "Future3KlBits": 1.3249345758737396
+            },
+            {
+              "Model": "empirical-bigram",
+              "NextCrossEntropyBits": 1.2312588014386334,
+              "NextEntropyBits": 1.1414840360249878,
+              "NextKlBits": 0.0897747654136456,
+              "SampledNextLossBits": 1.2141966139695768,
+              "Future3KlBits": 0.27607251920893644
+            },
+            {
+              "Model": "untrained-rnn",
+              "NextCrossEntropyBits": 1.7577233235576897,
+              "NextEntropyBits": 1.1414840360249878,
+              "NextKlBits": 0.6162392875327019,
+              "SampledNextLossBits": 1.7696905669993388,
+              "Future3KlBits": 1.8375564582905717
+            },
+            {
+              "Model": "trained-rnn",
+              "NextCrossEntropyBits": 1.1430417274906408,
+              "NextEntropyBits": 1.1414840360249878,
+              "NextKlBits": 0.0015576914656529883,
+              "SampledNextLossBits": 1.1264598762548093,
+              "Future3KlBits": 0.004687566643527537
+            }
+          ],
+          "Probes": [
+            {
+              "Features": "trained-hidden",
+              "Score": {
+                "MeanSquaredError": 0.0006400605854812194,
+                "R2": 0.9961708380347442
+              }
+            },
+            {
+              "Features": "untrained-hidden",
+              "Score": {
+                "MeanSquaredError": 0.011167194277675258,
+                "R2": 0.9331922687372678
+              }
+            },
+            {
+              "Features": "shuffled-fit-labels",
+              "Score": {
+                "MeanSquaredError": 0.17067114755623172,
+                "R2": -0.021040010294555156
+              }
+            },
+            {
+              "Features": "trained-next-probabilities",
+              "Score": {
+                "MeanSquaredError": 0.00023355198264003553,
+                "R2": 0.9986027754416983
+              }
+            },
+            {
+              "Features": "known-next-probabilities",
+              "Score": {
+                "MeanSquaredError": 1.5626183192072164e-11,
+                "R2": 0.9999999999065163
+              }
+            }
+          ]
+        }
+      ],
+      "Hidden": 16,
+      "InitialSha256": "3ADCBB1571B778BD1353A493E4E9CE5926BC70DADA939DF97C64A88AAC48C06F",
+      "ModelNumericPayloadBytes": 3096,
+      "ParameterCount": 371,
+      "Parameters": [
+        -0.3415623216182351, 0.20899937028379584, 0.11709819703475348, 0.3744083243538015, 0.06698055728761432,
+        -0.04022372314075823, 0.048847771398155285, 0.022598447012321086, 0.050271947415657936, -0.26510477443753644,
+        -0.22128795223851644, -0.11439823808521406, -0.19260775637461125, -0.18655285664480914, 0.05327046994366809,
+        -0.13124956282359396, 0.12363497509896171, -0.18690705960020756, -0.028601437655390242, 0.31009595240592197,
+        -0.2724140892128493, 0.058039927598010375, -0.19521023841866011, 0.274141952020836, 0.020382136788338872,
+        -0.15144870024662552, -0.05310145418893912, -0.16854132498473884, 0.08360441890563587, 0.05144414717067401,
+        0.03032079423221724, 0.23631873190710576, 0.1263041642555118, 0.25267077494041523, -0.04481993854951631,
+        0.20182128304297023, 0.23941914715657553, -0.21102821392057022, 0.2295051215732233, -0.029658637399220075,
+        0.2055384193294952, 0.3999640617547609, -0.18072003651741575, 0.03561613661438951, 0.1381110676522009,
+        -0.14896909505307587, -0.3406429694272868, -0.29620139967390724, 0.3550672665618902, -0.15704677951685803,
+        0.21583547801614053, -0.15146708962141683, -0.014820136190082855, 0.019904451167391465, 0.010514223745527126,
+        -0.3516802143822172, -0.09030265114213103, -0.0811684882598831, 0.057835764945031266, 0.44976679706375844,
+        0.16768505512639073, -0.3524108518318678, 0.06725150461596267, -0.1335510168487077, 0.15844426139360218,
+        0.43273655185352067, -0.004654450525946553, -0.1793385261274267, 0.5080693502569672, -0.4263166157822678,
+        -0.28841283473062046, 0.19604319157218747, 0.23304838662523622, 0.06660128903134062, 0.2139117504492148,
+        0.28185237926603607, -0.00834210334597343, 0.1971198186604669, -0.29560661651458764, -0.6078901805373174,
+        0.16606425879340542, 0.13348095278477162, 0.3707503738509492, 0.14606890706224523, 0.07005076972970567,
+        -0.1781363942720129, -0.04967180131100128, -0.2561818543728794, -0.23559386215309294, -0.02658862307568274,
+        -0.48437351222902225, -0.024856170629492677, 0.3104727711295369, -0.18396073036823157, -0.20372854200953258,
+        0.16573671093799933, -0.04021441024628311, -0.2953735373562243, -0.1565396663033908, -0.0941743590395925,
+        -0.3185869560211761, -0.38996002245692196, -0.07761665250742097, -0.21494424884414706, 0.10201142300049047,
+        0.13012482347473964, 0.3182181789509601, -0.15563567227763273, 0.08404837935774201, 0.1416307699481556,
+        -0.13904314253044855, -0.13176986358586149, 0.1514416086847308, 0.28839085390595487, -0.04275252615232893,
+        -0.08350308950847705, 0.41317803864682207, -0.24921711091460916, 0.28563747895865155, 0.09156855690880998,
+        0.1553299671509238, -0.07270038255413426, -0.32227449935431873, 0.0932180990083936, -0.30884043876540995,
+        0.32430296103953854, 0.061126295264716, 0.014261675153423775, -0.23128167822340268, 0.32597994204725483,
+        0.2530688310316644, 0.09548411677256509, 0.05206590367980602, 0.2539119722033661, 0.08206866266977798,
+        0.09177230332387559, -0.36447143680475874, -0.17937058941461242, -0.42455925617250595, 0.0002964731826948487,
+        0.02103540180638605, -0.20477813320025726, 0.12296222411336465, 0.17783685052830223, -0.10019138003759738,
+        0.19053380963746536, -0.14720638120878565, 0.033476935427656944, -0.16227020546918655, 0.2432239046780668,
+        -0.22876870888393885, 0.20437758838541395, -0.6148498806300504, 0.534220644969265, -0.11187749116982013,
+        0.1659204184492565, -0.2049809076486874, -0.17304430273124505, -0.08384537908935047, 0.21850198115602742,
+        0.11985854458651589, 0.042752176694402164, 0.11214394528408327, -0.2269571879899323, -0.03327484841921954,
+        0.2832054407354493, -0.44920299894297516, -0.20359944524783696, 0.12139074871413318, 0.026626553999633026,
+        0.07607456669663097, -0.27022265136300705, 0.04231585145913607, 0.0497566455153833, 0.2559449540367857,
+        0.15940313153668387, -0.11048813068199483, 0.05695247335864982, 0.05764253613171316, 0.29822218051328453,
+        -0.17680664118022812, 0.1450743070501815, 0.24890379093762802, 0.06045014314369531, 0.03682257531419443,
+        0.12845528257325836, 0.004122188534746819, 0.1325302440709991, -0.23303992045059052, -0.29313438564242195,
+        0.19267189151449582, 0.2505405281628665, -0.35174176995273515, -0.3349486681436562, -0.12510109745700385,
+        -0.06907271300507752, -0.21802624255865216, -0.27008043302420276, 0.01501577578008445, 0.04082442256451476,
+        0.14526160489725956, -0.38743384042776746, 0.07030449614658563, 0.1907632526467722, 0.5299548228739291,
+        -0.21509639366971348, 0.16459718439644908, -0.04648319443929114, -0.11139374468967327, -0.06046368724760617,
+        0.11256800200450139, 0.11000177904138249, 0.05577549264499474, -0.18961774466215278, 0.176563956781286,
+        -0.17680054507644252, -0.06607172390667264, -0.2471526859331461, -0.14995306511173864, 0.4778322603237945,
+        0.14392657007673007, -0.3631858137519146, -0.2938454026113444, -0.13924778038298813, -0.19224946866005863,
+        0.14349509871536612, -0.03507971744446756, 0.24436497670922921, -0.4177359439485642, 0.3213628784808219,
+        -0.32088306953972573, 0.4840253133388962, 0.13646971727959303, -0.25057442809173397, -0.015207444105113608,
+        -0.07940547494418994, 0.22687000616161748, -0.3320844089975227, 0.15236907091244387, -0.2504704671637335,
+        0.11022501195035489, 0.406999986709802, 0.32408105684305655, -0.20080620592465023, -0.0645369187351266,
+        -0.07354857901901074, 0.6262945198679649, 0.0243856228685621, 0.08361927426194085, 0.15880820398537343,
+        0.008935884532687495, 0.375364397369014, -0.0034200037153796605, -0.17573511680078108, 0.16739844780056135,
+        0.23896822047346764, -0.42385348068346435, -0.2796357811085559, 0.13617781296814965, -0.5988810589744787,
+        -0.30626026605101353, 0.7370767752802234, 0.3358727248007603, 0.3094942369678852, -0.33368184481905583,
+        0.047473150844938306, -0.062351868559548954, 0.5061201073596647, 0.3150618699368409, -0.9013231278233976,
+        0.36384678632938794, -0.31406287963500684, -0.46751302024275526, -0.16114334888054074, -0.3070771218155301,
+        0.44234691194092185, -0.04245765845901304, 0.30894260877305896, 0.6755745359615613, -0.28131677163856694,
+        0.42239734645406685, -0.44071893082020624, -0.5569549708726608, -0.8027215740611778, 0.5272716122680682,
+        0.5945499738677924, -0.00468334907040619, 0.11805029592131407, 0.20539620391016922, -0.02847675132810026,
+        0.13694488574512184, 0.27420909398639415, 0.8353251319396803, 0.8384011026456639, -0.28031510895781825,
+        0.08108830654447169, -0.6757499447019121, 0.17096804282319314, -0.03974113531363478, 0.36772976536155133,
+        -0.5583549573607134, -0.7407115567094354, 0.6519120165832599, -0.2623180985164429, 0.07222086401007477,
+        0.12386222820562773, -0.07984306130608425, -0.03218843418640232, 0.30072573422468935, 0.23860595688930997,
+        -0.07001884137208397, 0.07763418532528053, -0.02002064150375702, 0.25730395235513787, -0.09494941779953271,
+        -0.11212811124685797, -0.05218118014071493, 0.07809403519381962, 0.03807560251153461, -0.058430967293377996,
+        -0.0684410309349384, 0.22568193120398453, -0.1538184832798185, -0.3117560147216951, 0.0838259417067112,
+        -0.09789862665527442, 0.04785038828283644, -0.07846477572127951, 0.3423957409944412, -0.7439018064499253,
+        0.33033753476456135, 0.06635284512694196, 0.11265531354265258, -0.21176942088915754, 0.5290674804272999,
+        -0.5644641583291817, 0.300753814509994, 0.25339296105682774, -0.00941792537988837, -0.3342275454183189,
+        -0.4386302477513455, -0.14325647886699452, 0.17892195934440086, -0.003912908346143188, 0.146482216513363,
+        0.23947367534242037, 0.3620167632407442, -0.20049281753127407, 0.27568702082656893, -0.26290495090095645,
+        0.5168669135464492, 0.11410093621857244, 0.14968607059473404, 0.6447715700482616, -0.32976271379918026,
+        -0.18551042725219927, 0.4290328123013026, -0.025516939654516714, 0.4554945001036799, -0.09909990982676878,
+        0.3792522540020628, 0.2783399161602886, 0.3385914256374116, -0.2207419086712495, -0.5801003431363791,
+        -0.06666744622147769, 0.35762765282170234, -0.18672430845052218, -0.0073151075295593585, -0.09316136794525788,
+        0.03185103409822919
+      ],
+      "PayloadDefinition": "parameters plus one hidden state, binary64; excludes arrays, scratch, optimizer, and runtime",
+      "Seed": 37,
+      "TrainedSha256": "FF790EC29041C782C8301A6A36291B58773A85BC71E11F9616271127DE725A25",
+      "TrainedTokens": 2097152,
+      "TrainingCost": {
+        "ElapsedMilliseconds": 1795.8705,
+        "ProcessCpuMilliseconds": 1803.179,
+        "ThreadAllocatedBytes": 144727976
+      },
+      "TrainingTrace": [
+        {
+          "Step": 1,
+          "LossNats": 1.237476522835621
+        },
+        {
+          "Step": 512,
+          "LossNats": 0.8506550618745289
+        },
+        {
+          "Step": 1024,
+          "LossNats": 0.7986756923970614
+        },
+        {
+          "Step": 1536,
+          "LossNats": 0.8068164973710433
+        },
+        {
+          "Step": 2048,
+          "LossNats": 0.8156737568320046
+        },
+        {
+          "Step": 2560,
+          "LossNats": 0.8434539371291712
+        },
+        {
+          "Step": 3072,
+          "LossNats": 0.8435760197142167
+        },
+        {
+          "Step": 3584,
+          "LossNats": 0.8140547111991293
+        },
+        {
+          "Step": 4096,
+          "LossNats": 0.7542436181977099
+        }
+      ],
+      "Unigram": [0.3318367025804006, 0.3340616215778042, 0.3341016758417952]
+    }
+  ],
+  "Runtime": ".NET 10.0.11",
+  "Source": "arXiv:2405.15943v2 Appendix A.3",
+  "SourceHashes": [
+    {
+      "File": "ResearchRandom.fs",
+      "Sha256": "4422C5EE4380A698FF479F0082C44E1453990C48AA034B9842719C4E0E7C79FF"
+    },
+    {
+      "File": "Mess3.fs",
+      "Sha256": "EB93D9835421732A71553848D6A7A8946DB2335A3F3AD1BE9C8F9CA421602422"
+    },
+    {
+      "File": "SmallRnn.fs",
+      "Sha256": "5311F6CE68293122F054018013D540958B19EB684491999E0451B6A7A8220A0D"
+    },
+    {
+      "File": "SmallRnnTraining.fs",
+      "Sha256": "638CB4886024300A067C34B2ED8A810B28FE34743CADBEF1F0D42C77D29EF10B"
+    },
+    {
+      "File": "BeliefProbe.fs",
+      "Sha256": "4F9AB977ACCA476F4B3A23B7D12E62E17D0E5FA2C03689B015A21EF8FDE3C766"
+    },
+    {
+      "File": "Mess3Evaluation.fs",
+      "Sha256": "BF4B0B52148CFD700577CD876BE254CEACC0117213364F1FFC946253A4387A7D"
+    },
+    {
+      "File": "run-mess3-experiment.fsx",
+      "Sha256": "AC78C4A8BA8CF51BB253D66EFFBFFB5EEB6543BF4370CB6B67A3B03A35DEE09C"
+    }
+  ]
+}
