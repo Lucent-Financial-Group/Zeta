@@ -630,6 +630,22 @@ Workitem: `081M1W9VW7P087G0R0026A9J6Z`.
 - Does not invent an integrate decision. Does not expand
   `ZetaFirstbootRole`. Does not edit Application.yaml.
 
+## 2026-09-06 — named unseal request is not inferred from tpmrm0 (Riven)
+
+Aaron: continue after ISO bun filters current-system bao. Overlay
+join still takes an IntegrateDecision a live installer would
+invent.
+
+Consumer: `src/Core.TypeScript/cluster/unseal-path.ts`
+(`parsePathRequest`, `consumeUnsealRequestFromEnv`).
+Workitem: `081M1WBA6RX087G0R002450S9J`.
+
+- `ZETA_UNSEAL_REQUEST` names a `PathRequest`. Missing is
+  unmeasured, not `auto`, not `pkcs11-tpm`. `/dev/tpmrm0` and
+  `/mnt` are unknown-request. Does not call `integrateAtSetup`.
+- Does not invent an integrate decision. Does not expand
+  `ZetaFirstbootRole`. Does not edit Application.yaml.
+
 ## 2026-09-04 — production-hardening review (Riven)
 
 Aaron asked to production-harden the CA, name the unseal startup, use

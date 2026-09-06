@@ -285,17 +285,20 @@ ISO bun filters current-system bao (`081M1W9VW7P087G0R0026A9J6Z`):
 `consumeFirstbootBaoElfEnvWithEpoch` applies
 `namedBaoElfAskAtEpoch` when epoch is named. Bun JSON
 ask is null for ISO current-system bao.
+Named unseal request (`081M1WBA6RX087G0R002450S9J`):
+`parsePathRequest`. Missing is unmeasured, not `auto`.
+`/dev/tpmrm0` is unknown, not `pkcs11-tpm`. Does not
+call `integrateAtSetup`.
 
 1. Metal: `seal "pkcs11"` in Application.yaml still waits.
    Same commit as a **reachable** module: same-libc image
    (glibc OpenBao that can load the host `.so`) or option D
    host `bao`. Dual-vendor per node is ZetaFS k-of-n, not
-   two active OpenBao seals. Do not treat this planner as
-   that commit. Env join cannot plan a named ask without a
-   named epoch. ISO bun JSON ask is already filtered at
-   `installer-iso`. A live installer call still must not invent
-   an integrate decision. Does not expand `ZetaFirstbootRole`.
-   `/dev/tpmrm0` is still not an ask.
+   two active OpenBao seals. Do not treat this parser as
+   that commit. A live installer call still must not invent
+   an integrate decision — naming the request is not calling
+   `integrateAtSetup`. Does not expand `ZetaFirstbootRole`.
+   `/dev/tpmrm0` is still not an ask and not a PathRequest.
 2. extraContainer Shamir sidecar (`valuesObject` only) until
    kind/CI consume the emulator init.
 

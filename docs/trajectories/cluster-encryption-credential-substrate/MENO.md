@@ -242,6 +242,11 @@ assume the number.
    `namedBaoElfAskAtEpoch` when epoch is named. Bun JSON ask is
    null for ISO current-system bao. Missing epoch still reports
    the sourced ask. Does not invent an integrate decision.
+   Named unseal request (`081M1WBA6RX087G0R002450S9J`):
+   `parsePathRequest` / `ZETA_UNSEAL_REQUEST`. Missing is
+   unmeasured, not `auto`. `/dev/tpmrm0` is unknown, not
+   `pkcs11-tpm`. Does not call `integrateAtSetup`. Does not
+   invent an integrate decision.
 7. extraContainer sidecar — later, **same commit as the
    sidecar**, and only for the Shamir kind path until the
    emulator job replaces it. `valuesObject` only. Do not fork

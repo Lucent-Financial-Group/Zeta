@@ -10,7 +10,10 @@
  * This module CLASSIFIES. It does not talk to USB, OpenBao, or
  * 1Password. A capture is injected (host hardware, and the
  * restored PKCS#11 pointer file). SoftHSM2 / swtpm are job
- * declarations, never inferred from `/dev/tpmrm0`.
+ * declarations, never inferred from `/dev/tpmrm0`. A named
+ * PathRequest from env (`ZETA_UNSEAL_REQUEST`) is the same
+ * rule: missing is unmeasured, not `auto`; `/dev/tpmrm0` is
+ * not `pkcs11-tpm`. Parse does not call `integrateAtSetup`.
  *
  * OpenBao takes ONE seal per node. Multiple *paths* means the
  * fleet may mix PKCS#11-YubiHSM, PKCS#11-SmartCard-HSM,
@@ -62,6 +65,71 @@ export type PathRequest = "auto" | "pkcs11-hsm" | UnsealPath;
 
 export interface SetupRequest {
   readonly requested: PathRequest;
+}
+
+/**
+ * First-boot / installer env key for a named PathRequest.
+ * Missing is unmeasured, not `auto`, not `pkcs11-tpm`.
+ */
+export const UNSEAL_REQUEST_ENV_KEY = "ZETA_UNSEAL_REQUEST";
+
+export type NamedPathRequestError = "empty-request" | "unknown-request" | "unsafe-conf-value";
+
+export type NamedPathRequestResult =
+  | { readonly ok: true; readonly requested: PathRequest | null }
+  | { readonly ok: false; readonly reason: NamedPathRequestError };
+
+/** Same allowlist as firstboot-role `SHELL_SAFE_CONF_VALUE_REGEX`. Cluster must not import zflash. */
+const SHELL_SAFE_REQUEST_REGEX = /^[A-Za-z0-9._:/@-]+$/;
+
+const PATH_REQUESTS: ReadonlySet<string> = new Set([
+  "auto",
+  "pkcs11-hsm",
+  "pkcs11-yubihsm",
+  "pkcs11-smartcard",
+  "pkcs11-tpm",
+  "lucent-shamir",
+  "ci-softhsm",
+  "ci-swtpm",
+  "kind-shamir",
+]);
+
+function isPathRequest(value: string): value is PathRequest {
+  return PATH_REQUESTS.has(value);
+}
+
+/**
+ * Named request from a string. Missing is unmeasured, not `auto`.
+ * `/dev/tpmrm0` and `/mnt` are unknown, not `pkcs11-tpm`.
+ * Does not open files. Does not call `integrateAtSetup`.
+ */
+export function parsePathRequest(value: string | undefined): NamedPathRequestResult {
+  if (value === undefined) return { ok: true, requested: null };
+  if (value.length === 0) return { ok: false, reason: "empty-request" };
+  if (!SHELL_SAFE_REQUEST_REGEX.test(value)) return { ok: false, reason: "unsafe-conf-value" };
+  if (isPathRequest(value)) return { ok: true, requested: value };
+  return { ok: false, reason: "unknown-request" };
+}
+
+/**
+ * Process env after bash sources a named request. Missing key
+ * is unmeasured. Does not infer `pkcs11-tpm` from `/dev/tpmrm0`.
+ */
+export function consumeUnsealRequestFromEnv(env: {
+  readonly [key: string]: string | undefined;
+}): NamedPathRequestResult {
+  return parsePathRequest(env[UNSEAL_REQUEST_ENV_KEY]);
+}
+
+export function namedPathRequestErrorMessage(reason: NamedPathRequestError): string {
+  switch (reason) {
+    case "empty-request":
+      return "ZETA_UNSEAL_REQUEST requires a value";
+    case "unknown-request":
+      return "ZETA_UNSEAL_REQUEST must be a named PathRequest";
+    case "unsafe-conf-value":
+      return "ZETA_UNSEAL_REQUEST contains a value firstboot conf cannot carry";
+  }
 }
 
 export type UnsealMechanism = "aes-gcm" | "must-pin-rsa-oaep" | "measure-on-device" | "none";
