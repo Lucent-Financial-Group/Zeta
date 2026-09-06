@@ -99,7 +99,22 @@ describe("finite NciNonUrgency witness receipt", () => {
   });
 
   test("the TypeScript witness emitter does not depend on the independent Python checker", () => {
+    // EXACT import set, not a string-absence check. The claim is INDEPENDENCE — the two
+    // implementations must not share code, or their agreement is worth nothing as evidence
+    // (Knight-Leveson: correlated implementations fail together). `not.toContain("...oracle")`
+    // witnesses one spelling of one leak and cannot witness its absence; any other route to the
+    // Python checker — a differently-named module, a relative path, a dynamic import — passes it.
+    //
+    // Pinning the whole set instead means ANY new dependency fails here, which is the claim.
     const source = readFileSync("src/Core.TypeScript/formal-verification/nci-witness-receipt.ts", "utf8");
-    expect(source).not.toContain("nci_witness_receipt_oracle");
+    const imports = [...source.matchAll(/^\s*import\s[^"']*["']([^"']+)["']/gmu)].map((m) => m[1]);
+    expect(imports).toEqual(["node:crypto", "node:fs", "node:path", "node:child_process"]);
+
+    // And nothing reaches the checker by a route that is not an import statement — a dynamic
+    // `import()` or a `require` would not appear above.
+    const dynamic = [...source.matchAll(/(?:\bimport\s*\(|\brequire\s*\()\s*["']([^"']+)["']/gu)].map(
+      (m) => m[1],
+    );
+    expect(dynamic).toEqual([]);
   });
 });
