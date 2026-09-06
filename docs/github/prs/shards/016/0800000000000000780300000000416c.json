@@ -1,0 +1,12 @@
+{
+  "pr_number": 16748,
+  "archive_path": "docs/history/pr-reviews/PR-16748-feat-arc-measure-chip-8-motion-transfer.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-06T05:39:15.431Z",
+  "schema_version": "v1",
+  "commit_sha": "fbd758a267d5e290d321ac9355a42e5249ba38d4",
+  "title": "feat(arc): measure CHIP-8 motion transfer",
+  "state": "MERGED",
+  "merged_at": "2026-09-06T05:38:38Z",
+  "head_ref": "codex/arc-emulator-signal-transfer"
+}

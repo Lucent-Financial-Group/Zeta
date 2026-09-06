@@ -1,0 +1,12 @@
+{
+  "pr_number": 16752,
+  "archive_path": "docs/history/pr-reviews/PR-16752-docs-081m1s6z5s3087g0r000gepss2-render-the-chart-instead-of-reasoning-about-it.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-06T05:49:52.845Z",
+  "schema_version": "v1",
+  "commit_sha": "682238631c2ac10a46b2d331b702d21c77d858f0",
+  "title": "docs(081M1S6Z5S3087G0R000GEPSS2): render the chart instead of reasoning about it",
+  "state": "MERGED",
+  "merged_at": "2026-09-06T05:49:12Z",
+  "head_ref": "shadow/blob-store-credential-measurements"
+}
