@@ -1,0 +1,12 @@
+{
+  "pr_number": 16826,
+  "archive_path": "docs/history/pr-reviews/PR-16826-docs-handoff-connect-predictive-research-to-arc-agi-3.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-06T18:53:56.956Z",
+  "schema_version": "v1",
+  "commit_sha": "ad294431bc6ef0eb5835518bb2ad1ca694c990b1",
+  "title": "docs(handoff): connect predictive research to ARC-AGI-3",
+  "state": "MERGED",
+  "merged_at": "2026-09-06T18:53:21Z",
+  "head_ref": "codex/vera-predictive-arc3-handoff"
+}

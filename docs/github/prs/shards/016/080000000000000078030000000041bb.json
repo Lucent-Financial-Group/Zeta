@@ -1,0 +1,12 @@
+{
+  "pr_number": 16827,
+  "archive_path": "docs/history/pr-reviews/PR-16827-fix-cluster-pay-external-secrets-0-10-7-2-10-0-the-roster-is-now-empty.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-06T18:59:58.383Z",
+  "schema_version": "v1",
+  "commit_sha": "250d3fde4a92ff484ca0bf938264757704c32ecf",
+  "title": "fix(cluster): pay external-secrets 0.10.7 → 2.10.0 — the roster is now empty",
+  "state": "MERGED",
+  "merged_at": "2026-09-06T18:59:24Z",
+  "head_ref": "shadow/external-secrets-migration"
+}

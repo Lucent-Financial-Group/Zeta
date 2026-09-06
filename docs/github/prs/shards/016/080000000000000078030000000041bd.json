@@ -1,0 +1,12 @@
+{
+  "pr_number": 16829,
+  "archive_path": "docs/history/pr-reviews/PR-16829-feat-081m1w0dxcj087g0r000m47brk-buffered-freeze-catalog-write-fail-maps-to-fsync.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-06T19:14:58.192Z",
+  "schema_version": "v1",
+  "commit_sha": "3e33a8b88854c2d22946dc29475ccb5d2b7ec7bd",
+  "title": "feat(081M1W0DXCJ087G0R000M47BRK): Buffered freeze catalog write-fail maps to Fsync",
+  "state": "MERGED",
+  "merged_at": "2026-09-06T19:14:24Z",
+  "head_ref": "feat/zetafs-buffered-catalog-write-fail"
+}
