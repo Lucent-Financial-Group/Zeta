@@ -6,6 +6,7 @@
 - **ETA:** First measured implementation and validation in this foreground session.
 - **Scope:** Research-owned Mess3 generator, bounded recurrent learner, independent prediction and gradient checks, held-out representation measurements, and resource receipts.
 - **Durable target:** `src/Research.FSharp/`, `tests/Tests.FSharp/`, and `docs/research/2026-09-06-mess3-learned-belief-experiment.md`.
+- **Reference scope:** New Mess3 checker/tests under `src/Interp.Python/`; extend its existing path-filtered workflow. No new runtime dependencies.
 - **Work item:** 081M1TXSGV2087G0R000Y88DEY
 
 ## Boundaries

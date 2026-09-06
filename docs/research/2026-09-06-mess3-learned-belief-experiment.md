@@ -56,7 +56,7 @@ be recorded with its reason. A failed scientific comparison is not a code defect
 | Held-out evaluation | 2048 independent sequences; no sequence contributes to both probe fit and evaluation |
 | Contexts | Main evaluation after 16 tokens; separately report 64-token context extrapolation |
 | Prediction | Conditional expected cross-entropy, entropy floor, excess KL, sampled next-token loss, and joint three-token future KL |
-| Controls | Exact known-model filter, training-fitted unigram/bigram, same-initialization untrained RNN, shuffled-label probe, next-token-output probe |
+| Controls | Exact known-model filter, training-fitted unigram/bigram with additive-one smoothing, same-initialization untrained RNN, shuffled-label probe, next-token-output probe |
 | Resource accounting | Binary64 numeric payload bytes separately from measured allocation, elapsed time, and process CPU; no payload-as-heap claim |
 | Gates | Gradient finite differences, independently expressed Mess3 checks, numerical reference, deterministic replay, build/test/lint |
 
@@ -80,7 +80,33 @@ cross-platform byte-identity promise. Timing has no pass threshold and must not
 be used to call a known-model baseline an unfair competitor: its knowledge
 advantage is disclosed, while its cost remains relevant.
 
+## Implementation checks before the registered sweep
+
+The separate smoke configuration uses width 3, seed 999, 64 optimizer updates,
+and 64 probe/evaluation rows. It is an execution check, not one of the nine
+registered scientific runs. No hyperparameters were selected using it.
+
+Eight F# tests pass, including all 364 histories through length 5 checked
+against an independently factored BigInteger filter, finite-difference gradients,
+replay, frozen-model preservation, and probe controls. The Python reference
+uses exact fractions, an independently written forward pass, finite differences,
+and pivoted elimination for ridge. A third gradient check uses the existing
+interpretability project's PyTorch autograd. All three Python checks pass.
+
+Two implementation defects were found and fixed before the scientific sweep:
+
+- Combining a huge maximum logit with log-sum-exp lost the small normalization
+  term. Keeping the maximum separate makes probabilities and loss stable under
+  a common `1e300` output bias; a regression test covers it.
+- A numerically averaged constant target had a tiny nonzero residual variance,
+  making R2 look defined. Exact constant rows now refuse explicitly.
+
+The runner records source hashes, parameters, weight hashes, every scheduled
+trace, and measured costs. It checkpoints completed runs and marks partial
+receipts incomplete. Existing output files are not silently overwritten.
+
 ## Progress
 
-- Protocol recorded; no trained-model results measured yet.
-- Implementation, numerical checks, run receipts, and final review pending.
+- Protocol committed before training in `9e0a858018`.
+- Native implementation and independent numerical checks complete.
+- Registered sweep, final review, and full build/test gates pending.

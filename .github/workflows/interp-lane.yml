@@ -35,6 +35,7 @@ on:
   pull_request:
     paths:
       - "src/Interp.Python/**"
+      - "src/Research.FSharp/**"
       - "tools/setup/manifests/from-uv-project"
       - "src/Core.TypeScript/ace/setup-realizers/from-uv-project.ts"
       - ".github/workflows/interp-lane.yml"
@@ -42,6 +43,7 @@ on:
     branches: [main]
     paths:
       - "src/Interp.Python/**"
+      - "src/Research.FSharp/**"
       - "tools/setup/manifests/from-uv-project"
       - "src/Core.TypeScript/ace/setup-realizers/from-uv-project.ts"
       - ".github/workflows/interp-lane.yml"

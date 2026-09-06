@@ -61,6 +61,13 @@
     <Compile Include="Algebra/ProbabilitySemiring.Boundary.Tests.fs" />
     <Compile Include="../../src/Research.FSharp/SimplexBeliefComparison.fs" Link="Research/SimplexBeliefComparison.fs" />
     <Compile Include="SimplexBeliefComparison.Tests.fs" />
+    <Compile Include="../../src/Research.FSharp/ResearchRandom.fs" Link="Research/ResearchRandom.fs" />
+    <Compile Include="../../src/Research.FSharp/Mess3.fs" Link="Research/Mess3.fs" />
+    <Compile Include="../../src/Research.FSharp/SmallRnn.fs" Link="Research/SmallRnn.fs" />
+    <Compile Include="../../src/Research.FSharp/SmallRnnTraining.fs" Link="Research/SmallRnnTraining.fs" />
+    <Compile Include="../../src/Research.FSharp/BeliefProbe.fs" Link="Research/BeliefProbe.fs" />
+    <Compile Include="../../src/Research.FSharp/Mess3Evaluation.fs" Link="Research/Mess3Evaluation.fs" />
+    <Compile Include="Mess3Learning.Tests.fs" />
     <Compile Include="Algebra/Spine.AsyncProtocol.Properties.fs" />
     <Compile Include="ProbabilitySemiring.CrossVerify.Tests.fs" />
     <Compile Include="YinYang.Tests.fs" />

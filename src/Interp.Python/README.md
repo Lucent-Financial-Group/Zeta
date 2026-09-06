@@ -79,3 +79,19 @@ Plumbing only. Nothing here measures geometry, and `toy_hooked_model` is
 randomly initialised — it models nothing. H1 stays `toy` until something
 measures it on a real model. See
 `.claude/rules/toy-is-free-metered-must-be-earned.md`.
+
+## Mess3 numerical reference
+
+`zeta_interp/mess3_reference.py` independently checks the native F# recurrent
+learner's numerical fixture. It runs with the Python standard library alone:
+
+```bash
+python3 src/Interp.Python/zeta_interp/mess3_reference.py
+```
+
+The script invokes the source-owned F# fixture through `dotnet fsi`.
+`tests/test_mess3_reference.py` additionally compares the native gradient with
+PyTorch autograd and requires a deliberately corrupted gradient to fail.
+These are numerical checks, not a trained-model capability result. The separately
+registered [experiment](../../docs/research/2026-09-06-mess3-learned-belief-experiment.md)
+owns the training protocol and its measured outcomes.
