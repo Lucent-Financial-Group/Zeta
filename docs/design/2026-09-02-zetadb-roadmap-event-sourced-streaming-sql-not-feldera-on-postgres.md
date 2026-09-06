@@ -142,8 +142,46 @@ Local time never filters the shared fold (`.claude/rules/local-time-never-enters
 | Postgres/MySQL wire | — | **absent** | Adapter layer. `sql-engine-expert` already names Postgres-wire-compatible. |
 | Planner cost model | — | **absent** | Fusion exists (Map/Filter IL-emit). Cost-based join order does not. |
 | Realistic TPC / streaming mix | `bench/Feldera.Bench` Nexmark | micro | Unique-key Q1/Q2 is Big-O, not TPC-C. |
+| Membership sketches | `src/Core/BloomFilter.fs` | shipped counting + blocked | Join-probe / negative lookup. **Bloom vs anti-bloom** (two G-set filters, `{present, absent, unknown}`) is analysis — ZD10. Not a FS feature. |
 
 **ZLinq ([Cysharp/ZLinq](https://github.com/Cysharp/ZLinq)).** Crutch for zero-alloc LINQ *shape*. Our operators are Z-set / G-set / indexed-set. Prefer our own LINQ over those types. F# computation expressions stay regardless. Do not take a ZLinq dependency on the hot path until a bench shows the crutch winning; ColumnLinearOps already did the SIMD Where/Select without it.
+
+---
+
+## Bloom vs anti-bloom — two grow-only filters (analysis, not a result)
+
+**Where it fits: ZetaDB / Core query membership, not ZetaFS.** Join-probe pushdown and cross-shard negative lookup already sit on `src/Core/BloomFilter.fs` (`BlockedBloomFilter` insert-only; `CountingBloomFilter` 4-bit counters, `CounterSaturated` at 15). Volume identity is ContentId — exact, not probabilistic. Do not put this on the filesystem.
+
+**Does not reopen** [`docs/WONT-DO.md`](../WONT-DO.md) *Deletable Bloom (Rothenberg 2010)*. That Hold is silent false negatives on collided bits. This construction never deletes bits. Unknown is a named verdict.
+
+Register: **analysis** (four-register in-progress / proving-with-data). Nothing is built or measured. Counting Bloom stays the shipped retraction-safe sketch. CQF stays Trial on [`docs/research/bloom-filter-frontier.md`](../research/bloom-filter-frontier.md) (variable-width counts — a different upgrade).
+
+Two grow-only Bloom filters, G-set shaped (`SimVerb` irreversible half: union-folded, idempotent, commutative). Inserted keys go to Bloom(I). Deleted keys go to Bloom(D). Nothing decrements.
+
+| query | verdict |
+|---|---|
+| `x ∉ Bloom(I)` | **absent** — certain; Bloom has no false negatives |
+| `x ∈ Bloom(I)`, `x ∉ Bloom(D)` | **present** — never deleted is certain; error is only `fp(I)` |
+| `x ∈ Bloom(I)`, `x ∈ Bloom(D)` | **UNKNOWN** — explicitly bounded |
+
+The unknown region is `fp(I) × fp(D)` — a product, smaller than either filter alone. Counting Bloom returns `{maybe-present, definitely-absent}` and collapses unknown into maybe. This returns `{present, absent, unknown}`.
+
+Three things it buys that counting Bloom does not, **if** the measurements hold:
+
+1. **No saturation ceiling.** Counting Bloom: "insertions ever observed for a hash-bucket must not exceed 15." Two insert-only filters never decrement, so they never overflow a counter.
+2. **They are G-sets.** Counting Bloom is mutable cell state. Two grow-only bitsets are the substrate's own primitive.
+3. **Three-valued answer.** The value is not a cheaper filter. It is a filter that does not collapse the uncertainty it cannot resolve.
+
+**Honest limit (the churn check must include this):** grow-only D cannot forget a deletion. Insert, delete, insert again ⇒ `x ∈ I` and `x ∈ D` ⇒ **UNKNOWN** even though the Z-set weight is positive again. Counting Bloom handles resurrection by increment. This construction is conservative (not wrong) and loses `present` after any historical retract. That is the price of never decrementing.
+
+**Two measurements that would settle it (ZD10):**
+
+1. `fp(I) × fp(D)` against counting Bloom **space at equal guarantees**.
+2. Whether the unknown region stays bounded under sustained retraction churn, **including resurrection**.
+
+Until those exist this stays analysis. Do not replace `CountingBloomFilter` on the join-probe path.
+
+Workitem: `081M1T9SMM9087G0R002FS29S4`.
 
 ---
 
@@ -318,6 +356,7 @@ Order, each with a falsifier:
 16. **One cache authority** (D10). Double-buffering is a bug, not a feature.
 17. **Policies exist to bound CoW** (D11). A workload that 10×s the volume under `keep-all` is using the wrong policy, not a missing compressor.
 18. **Crash DST covers FS and DB** (D12). Intercept landed on both paths; the recovery claim stays `toy` until PR12's remaining corpus is green.
+19. **Bloom vs anti-bloom is a ZetaDB/Core query sketch, not a filesystem feature.** Analysis, not a result. Does not reopen WONT-DO deletable Bloom. Counting Bloom stays shipped until ZD10 measures.
 
 ---
 
@@ -381,6 +420,14 @@ Independently reviewable. Tests green or it does not land. ZetaFS numbered PRs s
 
 ZetaFS PR12 (DST corpus) and PR13 (FUSE) remain on the FS spec. They are not delayed by ZetaDB, and ZetaDB must not claim crash-safe until PR12. D12 makes PR12 load-bearing for **both** products, not only the mount.
 
+### ZD10 — Bloom vs anti-bloom: measure, then maybe ship (analysis until then)
+
+- **Files:** `src/Core/BloomFilter.fs` stays counting/blocked. New two-filter type only after the benches. `docs/research/bloom-filter-frontier.md` Assess row.
+- **Depends on:** nothing. Does not block PR12 / ZD9.
+- **Falsifiers:** (1) `fp(I)×fp(D)` vs `CountingBloomFilter` space at equal guarantees. (2) unknown-region size under retraction churn **including insert-delete-insert**.
+- **Does not:** reopen WONT-DO deletable Bloom; replace counting Bloom on the hot path; put this on ZetaFS.
+- **Workitem:** `081M1T9SMM9087G0R002FS29S4`.
+
 ---
 
 ## Open Questions
@@ -389,6 +436,7 @@ ZetaFS PR12 (DST corpus) and PR13 (FUSE) remain on the FS spec. They are not del
 2. **First SQL subset** — which ANSI:2023 features are in v0 vs later (windows? `MATCH_RECOGNIZE` is ROADMAP P2 CEP). Do not silently pick "all of Postgres."
 3. **ZD6 before or after ZD5** — a Postgres-wire *empty server* can prove the adapter without SQL. Prefer a real catalog if ZD5 is close; otherwise a host-language catalog is an allowed thinner cut.
 4. **When ZetaFS-as-product is killed** — only after ZD4 has numbers. Until then it stays the designed store.
+5. **Bloom vs anti-bloom vs CQF** — two grow-only filters (three-valued, no saturation, G-set) vs counting Bloom (shipped) vs CQF (radar Trial, variable-width counts). Settled by ZD10 measurements, not by preferring the story. Resurrection (insert after delete) is UNKNOWN in the two-filter form; that may lose to counting/CQF on retract-heavy workloads.
 
 ---
 
@@ -400,5 +448,6 @@ ZetaFS PR12 (DST corpus) and PR13 (FUSE) remain on the FS spec. They are not del
 - Reaqtor: <https://github.com/reaqtive/reaqtor>
 - ZLinq (crutch): <https://github.com/Cysharp/ZLinq>
 - Budiu et al., DBSP, VLDB 2023; McSherry et al., Differential Dataflow, CIDR 2013; Carbone et al., Flink, 2015; Arasu/Babu/Widom, CQL, 2006; Meijer, *Your Mouse is a Database*; De Smet, IQbservable / Nuqleon / Reaqtor.
+- Bloom, *Space/time trade-offs in hash coding with allowable errors*, CACM 1970; Fan et al., *Summary cache*, SIGCOMM 1998 (counting Bloom); Shapiro et al., *A comprehensive study of Convergent and Commutative Replicated Data Types*, INRIA 2011 (G-Set). Deletable Bloom is WONT-DO (Rothenberg 2010); two grow-only filters are a different construction.
 - Zhou et al., FoundationDB, SIGMOD 2021; Will Wilson, DST, Strange Loop 2014; TigerBeetle journal (ambition, not a measured claim).
 - ReFS (Beacon, not a port): Sinofsky, "Building the next generation file system for Windows: ReFS" (Building Windows 8, 2012) — allocate-on-write / shadow paging; [Block cloning](https://learn.microsoft.com/en-us/windows-server/storage/refs/block-cloning); [Integrity streams](https://learn.microsoft.com/en-us/windows-server/storage/refs/integrity-streams); Lorie, *Physical Integrity in a Large Segmented Database* (ACM TODS 1977) for shadow paging. KB 4016173 — allocate-on-write metadata + lazy cache can explode RAM.

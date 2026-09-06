@@ -95,6 +95,12 @@ precision about the reason shape.
 - **Why not:** Only deletes non-collided bits; produces silent
   false negatives on collisions. Violates DBSP's differential-
   correctness invariant. Hold permanently.
+- **Related, not a reopen (2026-09-05):** two grow-only Bloom
+  filters Bloom(I) / Bloom(D) never delete bits. Unknown is a
+  named verdict (`fp(I)×fp(D)`). That targets this *why*, not
+  Rothenberg's construction. Analysis, not a result. Does not
+  change this Hold. ZetaDB roadmap ZD10
+  (`081M1T9SMM9087G0R002FS29S4`).
 - **Boundary:** CORRECTNESS INVARIANT — DBSP differential
   correctness admits no silent false negatives.
 - **Renewal token:** a deletable-filter construction that provably
