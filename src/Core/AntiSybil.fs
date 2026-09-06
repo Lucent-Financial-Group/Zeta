@@ -1,37 +1,27 @@
 namespace Zeta.Core
 
-/// **`AntiSybil` — the base case that makes `clock-drift ≡ identity` non-circular (Aaron 2026-06-08).**
+/// Threshold-graph observations over claimed identities' supplied bit streams.
 ///
-/// Soraya called `clock-drift ≡ identity` "circular/definitional." That verdict is *behavioralist-loaded*:
-/// drop behavioralism (intentions are real — GOVERNANCE §3) and the identification is **synthetic** — drift
-/// is the agent's only **unforgeable** external trace. The self-reference is **meta-circular** (a productive
-/// fixed point grounded by a base case), which *compiles*. **This module is that base case.**
+/// `antiSybil` joins input indices when their absolute agreement score reaches a
+/// threshold. Its connected components detect some record similarities, including
+/// nonempty exact/complemented replays at thresholds at most 1. They do not count
+/// physical clocks, independent entropy sources, or distinct controllers. One shared
+/// stream deterministically recoded with balanced XOR masks can yield arbitrarily
+/// many disconnected components at positive thresholds as the record length grows.
 ///
-/// **The anti-Sybil claim (the falsifiable core):** forging *k* distinct drift-identities costs **≥ *k*
-/// independent entropy sources** — clock-drift entropy is **non-fungible across identities**. A Sybil forger
-/// claiming *k* identities from *s &lt; k* sources must (pigeonhole) re-use a source across two claims, so two
-/// of its emitted bit-streams are **correlated**. The `probe` (`BitGan`) becomes a **distinguishing oracle**:
-/// a discriminator confined to observed bits can beat chance on a correlated pair ⇒ the forgery is caught.
-///
-/// **Proof-of-distinctness**, structurally identical to how proof-of-work grounds a blockchain's otherwise
-/// circular "longest chain is truth": the circle bottoms out on a hardness fact, and the hardness does the
-/// work. Anchors: Douceur 2002 (*The Sybil Attack*); Dwork–Naor 1992 / Nakamoto 2008 (PoW); the
-/// jitter/ring-oscillator TRNG non-reproducibility that makes two clocks' drift uncheaply-mergeable (#7091).
-///
-/// **Honest scope (peel):** this is **sound for exact replays** (a re-used source ⇒ correlation `1.0` ⇒
-/// always caught). For *noisy* forgeries and at *finite* stream length there is a detection/length tradeoff:
-/// genuinely-independent streams can spuriously correlate at short length (false positive), with probability
-/// shrinking as length grows. So the guarantee is: *exact source-reuse is always detected*; noisy reuse is
-/// detected above a length/threshold curve. This is the attack-research surface — route to Aminata/Mateo
-/// before any outward "Sybil-resistance via drift non-fungibility" claim. Not yet a proved theorem: a named
-/// function + a falsifiable property + an attack program.
+/// The earlier physical-source floor claim confused source reuse with exact record
+/// replay. The executable counterexample and correction are preserved in
+/// docs/research/relational-identity/2026-09-06-component-interpretation-correction.md.
+/// Entropy floors require a separate conditional-innovation premise; admission and
+/// controller identity require evidence not supplied by this statistic.
 module AntiSybil =
 
     open ZetaCli
 
-    /// Cross-stream agreement **beyond chance**, in `[0,1]`. Streams are truncated to the shorter length.
-    /// `0` = independent (≈50% agreement); `1` = same source (perfect agreement **or** perfect
-    /// anti-correlation — an inverted replay is still one source). Empty/length-≤-0 overlap ⇒ `0`.
+    /// Absolute normalized agreement in `[0,1]`, truncating to the shorter stream and mapping
+    /// each integer to `x <> 0`. Zero means half agreement; one means all agree or all disagree.
+    /// Neither value establishes statistical independence or common physical provenance.
+    /// Empty overlap returns zero and therefore carries no evidence of independence.
     let correlation (a: int list) (b: int list) : float =
         let n = min (List.length a) (List.length b)
         if n <= 0 then
@@ -43,38 +33,25 @@ module AntiSybil =
             let frac = float agree / float n
             abs (2.0 * frac - 1.0)
 
-    /// **Readout** of a distinctness run over a set of claimed identities (indexed by position in the input).
-    ///
-    /// Renamed from `SybilVerdict` 2026-08-11 (Aaron: *"not have the intent in the name"*). Every field here
-    /// was already a neutral fact — counts and a component map — while the type name carried both the attack
-    /// (*Sybil*) and the reading (*Verdict*). The container was named for a conclusion its own contents
-    /// refuse to draw, which is the defect `dual-use-detection-is-neutral-oracle-decides` names.
-    ///
-    /// Note what was deliberately NOT renamed: `AntiSybil` and `antiSybil` name what the mechanism
-    /// **withstands**, the same way "forgery-resistance" does in `EntropyFloorLift.lean`. That is a property
-    /// of a mechanism, not a sentence passed on a party — and the distinction is the whole line. What this
-    /// readout reports is *how many genuinely-distinct sources the claims required*; whether that is a
-    /// forger, a reunion, or an instrument mis-scoped is the caller's oracle to decide. Sibling precedent in
-    /// this same module: `LoopholeFlags`, which already documents having deliberately no
-    /// `IsGenuine` / `IsForgery` field.
+    /// Connected-component readout for the pair criterion of the selected probe.
+    /// Field names retain the existing API vocabulary; "source" means an invocation-local
+    /// graph component here. Component membership is an observation, not a controller verdict.
     type DistinctnessReadout =
-        { /// Number of claimed identities (input streams).
+        { /// Number of supplied claimed-identity streams.
           ClaimedCount: int
-          /// Number of genuinely-distinct entropy sources detected (connected components). The **forgery-cost
-          /// floor**: to pass as `ClaimedCount`, the adversary needed at least this many independent clocks.
+          /// Number of connected components under the probe's pair criterion.
           DistinctCount: int
-          /// Claimed-identity index → its source-component id (`0 .. DistinctCount-1`). Two indices sharing a
-          /// component were forged from one source (Sybil).
+          /// Input index to component id, canonicalized by first appearance in this invocation.
+          /// Connectivity is transitive; two members need not directly meet the pair criterion.
           SourceOf: Map<int, int>
-          /// True iff every claimed identity is its own source — no Sybil detected within budget.
+          /// True iff every component is a singleton; vacuously true for empty input.
+          /// This does not certify independent entropy, distinct controllers, or absence of Sybils.
           AllDistinct: bool }
 
-    /// Run the anti-Sybil oracle: collapse claimed identities whose pairwise `correlation` meets `threshold`
-    /// into shared sources (union-find), and report how many genuinely-distinct sources remain.
-    ///
-    /// **The guarantee:** an adversary emitting `streams` from `s` independent sources yields
-    /// `DistinctCount ≤ s` — it cannot be seen as more distinct identities than it had sources (exact reuse ⇒
-    /// `correlation = 1 ≥ threshold` ⇒ collapsed). Deterministic (DST §7).
+    /// Connect each pair whose `correlation >= threshold` and report the graph's components.
+    /// Deterministic for a fixed input order. Thresholds are used as supplied, without validation.
+    /// A nonempty exact or complemented replay pair scores one and is joined if `threshold <= 1`.
+    /// Recoding one shared stream can avoid every edge; source count has no bound from this output.
     let antiSybil (threshold: float) (streams: int list list) : DistinctnessReadout =
         let k = List.length streams
         let arr = List.toArray streams
@@ -103,10 +80,9 @@ module AntiSybil =
           SourceOf = sourceOf
           AllDistinct = distinct = k }
 
-    /// The forgery-cost floor for a claimed identity set: the minimum number of independent entropy sources
-    /// (clocks) an adversary needed to produce `streams` — i.e. `DistinctCount`. "Forging *k* identities costs
-    /// ≥ this many clocks." Equal to `ClaimedCount` exactly when no Sybil is present.
-    let forgeryCostFloor (threshold: float) (streams: int list list) : int =
+    /// Number of correlation-threshold graph components; shorthand for `antiSybil(...).DistinctCount`.
+    /// This is an observable count, with no physical-source or forgery-cost interpretation.
+    let correlationComponentCount (threshold: float) (streams: int list list) : int =
         (antiSybil threshold streams).DistinctCount
 
     // ── CHSH escalation (2026-07-02, Addendum 4 of the name(name) doc) ──────────
