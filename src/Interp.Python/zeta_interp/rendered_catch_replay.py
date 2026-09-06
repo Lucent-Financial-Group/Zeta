@@ -437,6 +437,8 @@ def validate_envelope(native, cost, root):
         "ImplementationArchive",
         "ImplementationCommit",
         "LoadedAssemblies",
+        "Runtime",
+        "OperatingSystem",
     ):
         exact(cost["Provenance"][key], native["Provenance"][key], f"cost.{key}")
     exact(native["InputSha256"], MODEL_SHA)
@@ -517,13 +519,44 @@ def validate_envelope(native, cost, root):
     return load_model(root)
 
 
-def replay(native_raw, cost_raw, root, arguments=(), progress=print):
+def attempt_context():
+    return {
+        "InputSha256": None,
+        "CostInputSha256": None,
+        "ProtocolSha256": None,
+        "CountsSha256": None,
+        "Provenance": None,
+        "Stage": "input-read",
+        "Panel": None,
+        "Arm": None,
+        "EpisodeOffset": 0,
+        "CompletedBehaviorArmPanels": 0,
+        "CompletedCostRows": 0,
+    }
+
+
+def replay(native_raw, cost_raw, root, arguments=(), progress=print, attempt=None):
+    state = attempt if attempt is not None else attempt_context()
+    state.update(
+        InputSha256=sha(native_raw),
+        CostInputSha256=sha(cost_raw),
+        Stage="source-admission",
+    )
     provenance = source_manifest(
         root, arguments
     )  # Admission precedes expensive execution.
+    state["Provenance"] = provenance
+    state["ProtocolSha256"] = next(
+        row["Sha256"]
+        for row in provenance["SourceHashes"]
+        if row["File"] == PROTOCOL_FILE
+    )
+    state["Stage"] = "JSON-and-byte-binding"
     native, cost = parse(native_raw), parse(cost_raw)
     exact(cost["InputSha256"], sha(native_raw), "cost/native bytes")
+    state["Stage"] = "envelope-admission"
     counts = validate_envelope(native, cost, root)
+    state["CountsSha256"] = COUNTS_SHA
     for panel in native["Panels"]:
         config = panel["Config"]
         rows = source_rows(
@@ -534,6 +567,9 @@ def replay(native_raw, cost_raw, root, arguments=(), progress=print):
         )
         for arm in panel["Arms"]:
             name = arm["Name"]
+            state.update(
+                Stage="behavior-replay", Panel=config["Name"], Arm=name, EpisodeOffset=0
+            )
             rng = (
                 Stream(domain(config["ActionSeed"], config["ActionDomain"]))
                 if name == "fair-independent"
@@ -543,15 +579,24 @@ def replay(native_raw, cost_raw, root, arguments=(), progress=print):
                 rows, config["Geometry"], config["Palette"], name, counts, rng
             )
             exact(arm["Batch"], expected, config["Name"] + "/" + name)
+            state["CompletedBehaviorArmPanels"] += 1
             progress(f"replayed {config['Name']}/{name}: 1024 episodes", flush=True)
     rows = source_rows(7001, 701, 72, 0.75)
     for row in cost["Measurements"]:
         name = row["Name"]
+        state.update(
+            Stage="cost-warmup-replay",
+            Panel="cost-dot-three-quarter",
+            Arm=name,
+            EpisodeOffset=0,
+        )
         rng = Stream(domain(8003, 801)) if name == "fair-independent" else None
         warmup = run_batch(rows[:8], "dot", "fixed", name, counts, rng)
-        timed = run_batch(rows[8:], "dot", "fixed", name, counts, rng, start_index=8)
         exact(row["Warmup"], warmup, "cost warmup")
+        state.update(Stage="cost-timed-replay", EpisodeOffset=8)
+        timed = run_batch(rows[8:], "dot", "fixed", name, counts, rng, start_index=8)
         exact(row["Timed"], timed, "cost timed")
+        state["CompletedCostRows"] += 1
         progress(f"replayed cost {row['Repetition']}/{name}", flush=True)
     exact(count_hash(counts), COUNTS_SHA)
     return {
@@ -591,37 +636,61 @@ def write_new(path, receipt):
     partial.unlink()
 
 
-def main():
+def failure_receipt(error, state):
+    match = re.search(r"\.Episodes\[(\d+)\]", str(error))
+    episode = getattr(error, "episode", None)
+    if episode is None and match:
+        episode = int(match.group(1)) + state["EpisodeOffset"]
+    return {
+        "Protocol": PROTOCOL,
+        "Kind": "independent-replay",
+        "Complete": False,
+        "Passed": False,
+        **{
+            key: state[key]
+            for key in (
+                "InputSha256",
+                "CostInputSha256",
+                "ProtocolSha256",
+                "CountsSha256",
+                "Provenance",
+                "CompletedBehaviorArmPanels",
+                "CompletedCostRows",
+            )
+        },
+        "Failure": {
+            "Stage": state["Stage"],
+            "Code": type(error).__name__,
+            "Detail": str(error),
+            "Panel": state["Panel"],
+            "Arm": state["Arm"],
+            "Episode": episode,
+        },
+    }
+
+
+def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("native", type=Path)
     parser.add_argument("cost", type=Path)
     parser.add_argument("output", type=Path)
-    args = parser.parse_args()
+    arguments = list(sys.argv[1:] if argv is None else argv)
+    args = parser.parse_args(arguments)
     if (
         args.output.exists()
         or args.output.with_name(args.output.name + ".partial").exists()
     ):
         parser.error("refusing existing output or partial attempt")
     root = Path(__file__).resolve().parents[3]
+    state = attempt_context()
     try:
-        result = replay(
-            args.native.read_bytes(), args.cost.read_bytes(), root, sys.argv[1:]
-        )
+        native_raw = args.native.read_bytes()
+        state["InputSha256"] = sha(native_raw)
+        cost_raw = args.cost.read_bytes()
+        state["CostInputSha256"] = sha(cost_raw)
+        result = replay(native_raw, cost_raw, root, arguments, attempt=state)
     except (ValueError, KeyError, TypeError, OSError, OverflowError) as error:
-        result = {
-            "Protocol": PROTOCOL,
-            "Kind": "independent-replay",
-            "Complete": False,
-            "Passed": False,
-            "Failure": {
-                "Stage": "independent-replay",
-                "Code": type(error).__name__,
-                "Detail": str(error),
-                "Panel": None,
-                "Arm": None,
-                "Episode": None,
-            },
-        }
+        result = failure_receipt(error, state)
         write_new(args.output, result)
         raise SystemExit(1) from error
     write_new(args.output, result)

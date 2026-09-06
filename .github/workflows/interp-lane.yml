@@ -140,7 +140,7 @@ jobs:
       - name: Run activation-access and learned-state checks
         env:
           # The floor that makes a green here mean something. A pytest that
-          # collects 0 tests exits 5, but a suite that silently shrinks from 140
+          # collects 0 tests exits 5, but a suite that silently shrinks from 258
           # to 2 exits 0 and looks identical to success.
           #
           # FAIL-CLOSED: `set -u` below makes an unset variable exit non-zero,
@@ -148,7 +148,7 @@ jobs:
           # disabling the check.
           # The original 72 cases, 40 rendered carrier/training cases,
           # and 28 all-seed verdict/admission cases.
-          INTERP_MIN_TESTS: "140"
+          INTERP_MIN_TESTS: "258"
         run: |
           set -euo pipefail
           uv run --project src/Interp.Python pytest src/Interp.Python/tests -q \

@@ -7,6 +7,7 @@ import sys
 from unittest.mock import patch
 
 import pytest
+
 from zeta_interp import rendered_catch_verdict as target
 
 COUNTS = {

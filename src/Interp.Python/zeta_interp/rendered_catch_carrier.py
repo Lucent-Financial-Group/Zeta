@@ -421,17 +421,28 @@ def run_episode(rom, geometry, palette, policy, index, aggregate=None):
     }
 
 
+class EpisodeExecutionError(ValueError):
+    def __init__(self, episode, cause):
+        self.episode = episode
+        super().__init__(f"episode {episode}: {cause}")
+
+
 def run_batch(rows, geometry, palette, name, counts, rng=None, start_index=0):
+    if not rows:
+        raise ValueError("empty replay batch")
     hashes = [hashlib.sha256() for _ in range(3)]
     episodes = []
     draws = 0
     for index, row in enumerate(rows, start=start_index):
-        policy = Policy(name, counts, rng)
-        episodes.append(
-            run_episode(
-                compile_rom(row, geometry), geometry, palette, policy, index, hashes
+        try:
+            policy = Policy(name, counts, rng)
+            episodes.append(
+                run_episode(
+                    compile_rom(row, geometry), geometry, palette, policy, index, hashes
+                )
             )
-        )
+        except ValueError as error:
+            raise EpisodeExecutionError(index, error) from error
         draws += policy.draws
     total = sum(episode["Return"] for episode in episodes)
     return {

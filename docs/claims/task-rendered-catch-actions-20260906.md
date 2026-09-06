@@ -1,7 +1,7 @@
 # Claim - task-rendered-catch-actions-20260906
 
 - **Session ID:** codex/native-20260906-73b9
-- **Co-claimants:** codex/01a0783bc64f70e1, codex/native-20260906-73b9, codex/rendered-catch-verdict-20260906-44b2
+- **Co-claimants:** codex/01a0783bc64f70e1, codex/native-20260906-73b9, codex/rendered-catch-verdict-20260906-44b2, codex/identity-formalization-review-20260906
 - **Harness:** codex
 - **Claimed at:** 2026-09-06T21:08:28Z
 - **ETA:** Registration now; implementation progress within two hours.
@@ -35,3 +35,7 @@ panel keeps fixed dot geometry and changes palette on odd observation indices.
 The delegated verdict contributor co-claims the Python verdict and its tests;
 the coordinator retains carrier/replay ownership and integrated publication.
 PR #16858 is now merged as `d9787b016bc2ccc9a1d86bf3ab67a6df1f8df5e0`.
+
+The independent identity contributor co-claims the carrier/replay review note
+and its link from the design audit; implementation remains with the assigned
+writers above.

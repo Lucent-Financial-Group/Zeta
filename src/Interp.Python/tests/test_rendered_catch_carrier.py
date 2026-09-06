@@ -186,3 +186,14 @@ def test_fair_stream_persists_across_episodes_and_source_history_resets(counts):
     mutated["Unigram"][0] = True
     with pytest.raises(ValueError, match="probability"):
         count_hash(mutated)
+
+
+def test_interpreter_failure_keeps_the_corpus_episode_index(counts):
+    from zeta_interp.rendered_catch_carrier import EpisodeExecutionError
+
+    with pytest.raises(EpisodeExecutionError) as refused:
+        run_batch([bytes(65)], "dot", "fixed", "order-two", counts, start_index=8)
+    assert refused.value.episode == 8
+    assert "ROM source" in str(refused.value)
+    with pytest.raises(ValueError, match="empty"):
+        run_batch([], "dot", "fixed", "order-two", counts)
