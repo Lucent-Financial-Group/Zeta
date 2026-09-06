@@ -51,7 +51,7 @@
  * job (.github/workflows/k8s-argocd-health-test.yml), not this file's.
  */
 
-import { mkdtempSync, readdirSync, readFileSync, statSync } from "node:fs";
+import { existsSync, mkdtempSync, readdirSync, readFileSync, statSync } from "node:fs";
 import { join, resolve, dirname, relative } from "node:path";
 import { tmpdir } from "node:os";
 import { fileURLToPath } from "node:url";
@@ -220,7 +220,18 @@ if (offline && render) {
 }
 
 const repoRoot = resolve(dirname(fileURLToPath(import.meta.url)), "../../..");
-const appsDir = args["apps-dir"] ? resolve(args["apps-dir"]) : join(repoRoot, "infra", "k8s", "applications");
+// DEFAULT MOVED 2026-09-06: `infra/k8s/applications` -> `full-ai-cluster/k8s/applications`.
+//
+// The seven Applications that used to live under `infra/k8s/applications` were
+// removed in the same change, because `Application/zeta-root` was declared TWICE --
+// here and in full-ai-cluster/k8s/bootstrap/root-application.yaml -- with different
+// `path:` values, so metal booted a 7-app cluster while CI proved a 50-app one.
+// There is now one root and one directory, and this default follows it.
+//
+// `--apps-dir` still points the validator at any tree; only the default moved.
+const appsDir = args["apps-dir"]
+  ? resolve(args["apps-dir"])
+  : join(repoRoot, "full-ai-cluster", "k8s", "applications");
 
 // ── Parse every Application.yaml up front ────────────────────────────────────
 
@@ -231,7 +242,14 @@ interface AppEntry {
   readonly parseError: string | null;
 }
 
-const rootAppPath = args["root-app"] ? resolve(args["root-app"]) : join(appsDir, "root-application.yaml");
+// DEFAULT MOVED with `apps-dir` (2026-09-06). full-ai-cluster keeps its root in
+// `bootstrap/` rather than beside the Applications, which is why `--root-app`
+// exists at all -- see the note on the flag above. Defaulting to
+// `join(appsDir, ...)` reported ENOENT the moment the apps default moved, which is
+// the validator's assumption failing rather than a manifest being wrong.
+const rootAppPath = args["root-app"]
+  ? resolve(args["root-app"])
+  : join(repoRoot, "full-ai-cluster", "k8s", "bootstrap", "root-application.yaml");
 const appFiles = findApplicationYamls(appsDir);
 const apps: AppEntry[] = [];
 
@@ -314,14 +332,33 @@ const REQUIRED_FIELDS = [
   "spec.source.repoURL",
   "spec.destination.server",
   "spec.destination.namespace",
-  "spec.syncPolicy.automated.prune",
-  "spec.syncPolicy.automated.selfHeal",
 ];
+
+/**
+ * Required ONLY of Applications that opt into automated sync.
+ *
+ * MANUAL SYNC IS A DECLARED POSTURE HERE, NOT AN OMISSION. `vllm` and `ollama`
+ * ship `syncPolicy` with `syncOptions` and no `automated:` block on purpose -- the
+ * comment in vllm/Application.yaml says so outright: "syncPolicy is manual-only so
+ * ArgoCD doesn't reconcile until a maintainer explicitly triggers `argocd app sync
+ * vllm`". `src/Core.TypeScript/cluster/manual-sync-policy.ts` is the module that
+ * governs the class, and the live lane asserts those apps under a weaker contract
+ * BECAUSE they are manual.
+ *
+ * Requiring `automated.prune`/`automated.selfHeal` of every Application would
+ * therefore demand that a deliberately-manual app declare itself automated -- a
+ * check that is not merely wrong but pushes toward the opposite of the intent. It
+ * only went unnoticed because this validator defaulted to `infra/k8s/applications`,
+ * where no manual-sync app lived.
+ */
+const AUTOMATED_ONLY_FIELDS = ["spec.syncPolicy.automated.prune", "spec.syncPolicy.automated.selfHeal"];
 
 console.log("\n=== Test 2: required ArgoCD Application fields ===");
 for (const app of parsedApps) {
   let allOk = true;
-  for (const field of REQUIRED_FIELDS) {
+  const declaresAutomated = get(app.yaml, "spec.syncPolicy.automated") !== undefined;
+  const fields = declaresAutomated ? [...REQUIRED_FIELDS, ...AUTOMATED_ONLY_FIELDS] : REQUIRED_FIELDS;
+  for (const field of fields) {
     const val = get(app.yaml, field);
     if (val === undefined || val === null) {
       err(`${app.name}/Application.yaml: missing required field .${field}`);
@@ -337,7 +374,34 @@ for (const app of parsedApps) {
     allOk = false;
   }
   const syncOpts = get(app.yaml, "spec.syncPolicy.syncOptions");
-  if (!Array.isArray(syncOpts) || !syncOpts.includes("CreateNamespace=true")) {
+  // `CreateNamespace=true` IS NOT REQUIRED OF AN APP THAT ALREADY HAS ITS NAMESPACE.
+  //
+  // Two legitimate ways an Application does not need ArgoCD to create one, both
+  // present in full-ai-cluster and neither present in infra/k8s, which is why this
+  // rule stood unqualified until the default tree moved (2026-09-06):
+  //
+  //   * IT VENDORS ITS OWN Namespace MANIFEST. `cdi` and `kubevirt` ship the
+  //     Namespace beside the Application and sync it themselves. Asking ArgoCD to
+  //     also create it is redundant, and declaring the option would not make the
+  //     deployment more correct.
+  //   * IT TARGETS A SYSTEM NAMESPACE THAT ALWAYS EXISTS. `cilium-lb-ipam` deploys
+  //     into `kube-system`.
+  //
+  // Requiring it of those three would be a red that names the wrong culprit -- the
+  // failure mode this file's own `--root-app` note already warns about: "a red that
+  // names the wrong culprit trains people to ignore reds."
+  const destNs = get(app.yaml, "spec.destination.namespace");
+  const alwaysPresentNs = destNs === "kube-system" || destNs === "default" || destNs === "kube-public";
+  const vendorsOwnNamespace = existsSync(join(appsDir, app.name))
+    ? readdirSync(join(appsDir, app.name))
+        .filter((f) => f.endsWith(".yaml") || f.endsWith(".yml"))
+        .some((f) => /^kind:\s*Namespace\s*$/m.test(readFileSync(join(appsDir, app.name, f), "utf8")))
+    : false;
+  if (
+    !alwaysPresentNs &&
+    !vendorsOwnNamespace &&
+    (!Array.isArray(syncOpts) || !syncOpts.includes("CreateNamespace=true"))
+  ) {
     err(`${app.name}/Application.yaml: missing CreateNamespace=true in syncOptions`);
     allOk = false;
   }
