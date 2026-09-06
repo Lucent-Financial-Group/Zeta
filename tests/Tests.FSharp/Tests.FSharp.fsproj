@@ -77,6 +77,11 @@
     <Compile Include="../../src/Research.FSharp/LagChangeDetection.fs" Link="Research/LagChangeDetection.fs" />
     <Compile Include="../../src/Research.FSharp/SharedFactorFilter.fs" Link="Research/SharedFactorFilter.fs" />
     <Compile Include="FactoredPredictive.Tests.fs" />
+    <Compile Include="../../src/Research.FSharp/RenderedSignalCarrier.fs" Link="Research/RenderedSignalCarrier.fs" />
+    <Compile Include="../../src/Research.FSharp/RenderedSignalPrediction.fs" Link="Research/RenderedSignalPrediction.fs" />
+    <Compile Include="../../src/Research.FSharp/RenderedSignalDetection.fs" Link="Research/RenderedSignalDetection.fs" />
+    <Compile Include="../../src/Research.FSharp/RenderedSignalExperiment.fs" Link="Research/RenderedSignalExperiment.fs" />
+    <Compile Include="RenderedSignal.Tests.fs" />
     <Compile Include="Algebra/Spine.AsyncProtocol.Properties.fs" />
     <Compile Include="ProbabilitySemiring.CrossVerify.Tests.fs" />
     <Compile Include="YinYang.Tests.fs" />

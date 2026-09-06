@@ -15,8 +15,9 @@ Paste this into a fresh GPT-6 Astra session:
 > handoff, the Simplex/WSet verdict, both predictive-state result documents,
 > the Alexa pairwise-memory ferry and its grounding correction, and the QBism
 > source record linked below. Keep every correspondence in an evidence
-> register. First preregister the bounded non-ARC chronological
-> rendered-signal predictor described here. In a separate research lane,
+> register. Read the rendered-signal result: every RNN beats bigram but fails
+> the registered improvement over order-two. Retain order-two as the candidate
+> for a separately preregistered non-ARC action loop. In a separate research lane,
 > specify the invariant that two skewed agents' pairwise memories both
 > preserve; do not call the construction Lorentz-invariant, anti-Sybil, CQM,
 > or universal until the required map, laws, and adversarial tests exist.
@@ -30,6 +31,29 @@ Immediate pointers for that second lane:
 - [QBism source record](../ip-questionable/2026-09-06-christopher-fuchs-hans-busstra-dizzying-free-fall-of-qbism.md)
 
 ## Start here
+
+Continuation, 2026-09-06: the
+[chronological rendered-signal result](../research/2026-09-06-rendered-signal-predictor-results.md)
+completes work item `081M1W41PKD087G0R0024JFXHT` under a remotely preserved
+[preregistration](../research/2026-09-06-rendered-signal-predictor-protocol.md).
+All three RNNs beat bigram on both held-out renderings, but none meets the
+.01-bit improvement against order-two. All 102 prediction/detector arm-panels,
+120 cost rows and one complete retraining reproduce independently. Keep
+order-two as the next acting-carrier candidate. Rendering dominates total
+cost; token-only RNN inference is about fourteen times slower here.
+No action return or ARC result was measured.
+
+Re-entry environment notes: run from a writer-owned clone with its local
+`.mise.toml` trusted and a login shell so signing and all preflight tools are
+available. The live worldview-refresh entry point is
+`src/Core.TypeScript/forge-host/github/refresh-worldview.ts`; the older
+`tools/github/refresh-worldview.ts` bootstrap pointer is stale. A full build
+can transiently exit 139 in an unchanged F# project; preserve the failure,
+try that project in isolation, and verify the full retry before calling green.
+For the opt-in interp lane, run Ruff and `mypy zeta_interp/ tests/` from
+`src/Interp.Python`; root quick preflight covers the Core/ARC Python projects,
+and root-invoked Ruff can classify first-party test imports differently.
+The live Python/F# hand fixture requires a prior Release Core build.
 
 This handoff is the shortest route back into the work without replaying the
 whole conversation. The predictive-state experiments named below are landed on
@@ -52,6 +76,9 @@ Read in this order:
    before interpreting any public ARC run.
 6. [MiniGrid adapter result](../research/2026-09-06-minigrid-empty-5x5-v310-adapter-conformance-result.md)
    for the newest external non-ARC carrier boundary.
+7. [Rendered-signal result](../research/2026-09-06-rendered-signal-predictor-results.md)
+   for the completed chronological frame boundary, stronger-control verdict,
+   independent replay, retained admission repair and cost accounting.
 
 The one-sentence thesis is:
 
@@ -355,11 +382,13 @@ The bridge is therefore not "put the HMM in ARC." It is:
 This sequence lets the research improve the ARC lane without letting ARC's
 public roster leak backward into model selection.
 
-## Recommended first task for the fresh session
+## Original first-task specification, now completed
 
-Preregister one bounded experiment called, in substance, "chronological
-rendered-signal prediction before ARC integration." Do not edit the hosted
-default while doing it.
+The original first task was "chronological rendered-signal prediction before
+ARC integration." Its [result](../research/2026-09-06-rendered-signal-predictor-results.md)
+is now preserved. The following was the specification, retained for context;
+the fresh task is an explicitly registered action-before-feedback experiment
+using the selected simpler candidate.
 
 Freeze the following before collecting results:
 
