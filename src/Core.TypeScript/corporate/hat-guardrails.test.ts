@@ -17,7 +17,7 @@ import {
 } from "./hat-guardrails";
 import { buildOrgChart, type OrgHat } from "./org-chart";
 import { SEED_HATS } from "./org-seed";
-import { evaluateGate, GateKind, NO_PROPOSER, runGateChain } from "./quality-gate";
+import { evaluateGate, GateKind, NO_PROPOSER, runGateChain , ORDERED_GATES} from "./quality-gate";
 import { firstLegalChooser, preferChooser } from "./org-decision";
 import { GateOutcome } from "./quality-gate";
 
@@ -37,6 +37,12 @@ const conflicted = (() => {
   if (!r.ok) throw new Error(r.reason);
   return r.chart;
 })();
+
+
+/** Every gate before `gate` — derived, so extending the chain does not edit this file. */
+function priorsOf(gate: GateKind): Set<GateKind> {
+  return new Set(ORDERED_GATES.slice(0, ORDERED_GATES.indexOf(gate)));
+}
 
 describe("the preflight answers each action class from the existing authority", () => {
   test("only an IC implements", () => {
@@ -116,7 +122,7 @@ describe("SEPARATION OF DUTIES", () => {
 
 describe("THE HOLE, closed", () => {
   test("the implementer cannot review its OWN implementation", () => {
-    const passed = new Set([GateKind.CustomerRfpReview, GateKind.BrdApproval, GateKind.ArchitectureApproval]);
+    const passed = priorsOf(GateKind.ImplementationReview);
     const own = evaluateGate(conflicted, {
       workId: "w1",
       gate: GateKind.ImplementationReview,
@@ -131,7 +137,7 @@ describe("THE HOLE, closed", () => {
   });
 
   test("…but it may review someone ELSE's", () => {
-    const passed = new Set([GateKind.CustomerRfpReview, GateKind.BrdApproval, GateKind.ArchitectureApproval]);
+    const passed = priorsOf(GateKind.ImplementationReview);
     const other = evaluateGate(conflicted, {
       workId: "w1",
       gate: GateKind.ImplementationReview,

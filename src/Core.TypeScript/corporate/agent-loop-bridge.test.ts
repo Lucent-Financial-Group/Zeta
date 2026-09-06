@@ -65,7 +65,7 @@ const gate = (workId: string, outcome: GateOutcome): GateEvaluation => ({
   outcome,
   byHatId: "tech_lead",
   reason: "r",
-  atMs: 0,
+  atMs: 0, evidenceRefs: [],
 });
 
 const surfaceInput = (over: Partial<SurfaceInput> = {}): SurfaceInput => ({

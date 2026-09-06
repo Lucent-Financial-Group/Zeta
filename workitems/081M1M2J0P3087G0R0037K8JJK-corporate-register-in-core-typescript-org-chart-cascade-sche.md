@@ -1448,3 +1448,105 @@ gate.yml parses; 233 steps, the new one present
 mutation: 25 matrices, 187/187 killed, 0 survivors, 0 stale anchors
 commit: 265174aa4
 ```
+
+## Pass 15 — the lifecycle the maintainer actually described
+
+The task was two things: port three modules recorded as unported, and then audit the delivery
+lifecycle against a description of what it should be. The first turned out to be mostly done and
+checking that was most of its work; the second was where the code was missing.
+
+### The port list was stale, and the check is the finding
+
+| module | measured against the reference |
+|---|---|
+| `observe-for-hat` | **fully ported** — `scopeOf` / `batchesInScope` in `work-batch.ts` are the same functions under corporate's names, exported and in use |
+| `hat-lifecycle` | ported except one predicate; `hat-binding.ts` carries the transitions, succession and more |
+| `schedule-optimizer` | pressure, correctives, meetings, calendars all present. One capability genuinely absent: **pace** |
+
+A name-matched diff reported 0 of 15 schedule exports present, which was wrong in the direction
+that produces fifteen duplicate functions. Same class as pass 14's stale stated-limits: a list of
+what is missing, itself gone stale, read as a work plan.
+
+### The chain was too short for the process it claimed to run
+
+Seven gates covered discovery, BRD, architecture, implementation review, runtime validation,
+business sign-off and release — and left out most of what a delivery does between them. Six added:
+
+`business_context_grooming` · `peer_review` · `architecture_design` · **`adversarial_review`** ·
+`qa_uat` · `final_architecture_review`
+
+The adversarial gate is the distinctive one. It sits **after** the design and **before** the build,
+because the interesting failures are between the documents and changing them is still cheap there;
+and it is owned by three departments so the pass can come from outside the line that produced the
+plan. `final_architecture_review` exists because `architecture_approval` judged a drawing six gates
+earlier — approving the drawing is not approving the building.
+
+All six are staffed in `org-seed.ts`; the runtime refuses to start when any gate has no owning hat,
+so an unstaffed phase could never have merged as a silent no-op.
+
+### The determinism claim, with falsifiers instead of a comment
+
+`lifecycle.test.ts` drives the chain adversarially — ORDERED, OWNED, UNFORGEABLE, each asserted in
+**both** directions so none is satisfied by a chain that simply never works. Every gate but the
+first is refused from an empty history, tested for all of them by a hat that genuinely owns each;
+`mayEvaluate` and `gateOwners` are cross-checked for every (hat, gate) pair; no gate lets a hat
+approve work it did itself.
+
+**A defect of mine, caught by the test I wrote for it**: thirteen `GateKind` values declared,
+twelve wired into `ORDERED_GATES`. `final_architecture_review` was a phase that existed as a name
+and was in no chain.
+
+**And a test I damaged while fixing others.** Sixteen tests broke on the chain extension, each
+because it had written down a position in the chain rather than asked for one. An automated rewrite
+replaced the `passed` set in "OUT OF ORDER is refused" with that gate's own priors — making the call
+in-order and leaving the test green while asserting nothing.
+
+### A gate approval now says what it consulted
+
+`GateEvaluation` recorded who, which, when, the outcome and a reason — not what they looked at. The
+`Review` port already received evidence; none of it survived into the record.
+
+**The first version REFUSED an evidence-free approval, and reversing that is the point.** It looked
+like enforcement and was none: any string satisfies a presence check, and `autoApproveReview` —
+"reads no evidence and consults nobody" — returns `auto-approved:<gate>:<workId>`, which passed
+while consulting nothing. A control the null adapter satisfies is the vacuity class.
+
+The shipped claim is the narrower true one: an attested approval is **distinguishable** from a bare
+one, and the null reviewer **names itself** in the record. Before this both looked identical. What
+stays impossible is making a fabricated reference impossible, and that is written down rather than
+papered over.
+
+### Pace, wired rather than shipped beside the runtime
+
+`mission-trajectory.ts` answers a different question from `schedule-pressure.ts`: PACE, not LOAD.
+An organization can be unloaded and badly behind, or slammed and exactly on time.
+
+It landed unwired for one commit — the exact "library the loop does not consult" failure this whole
+survey began from — and an audit over `corporate/` for modules nothing in the runtime or a CLI
+imports is what caught it. Now on both return paths, with `--window-start` / `--window-target`,
+refusals for a half-declared or backwards window, and the count taken from the cascade's own leaves
+so the pace cannot disagree with the work.
+
+### Escalation on an unknown
+
+`EscalationTrigger.UnknownEncountered` — the trigger the other four could not express. Each of them
+is a symptom observed from OUTSIDE; this one is raised by the worker itself, and it is the only
+honest thing to do with a genuine unknown. Its legal actions deliberately exclude `AcceptRisk`:
+accepting a risk you cannot describe is not a decision, it is the guess the trigger prevents.
+
+### The audit
+
+`docs/DECISIONS/2026-09-06-the-delivery-lifecycle-audited-against-what-was-asked-for.md` walks the
+requested lifecycle against the implementation with a measurement for every row, and says how far
+each gap was closed. Two stay open: "adversarial" is a name rather than a behaviour, and no single
+invocation has driven a model through all thirteen gates against a real tracker and repository.
+
+### State at the end of pass 15
+
+```
+bun test src/Core.TypeScript/corporate/     1092 pass, 0 fail  (46 files)
+tsc --noEmit                                   0 errors
+hygiene:no-orphaned-doc-comments              86 files clean
+markdownlint, scoped to the diff               0 findings
+mutation: 27 matrices, 200/200 killed, 0 survivors, 0 stale anchors
+```

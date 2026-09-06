@@ -207,7 +207,7 @@ describe("priorities and gate verdicts", () => {
     // visible, and `movement`/`deriveDora` both count rejections.
     const rejection = (atMs: number) => ({
       workId: "w1", gate: GateKind.ImplementationReview, outcome: GateOutcome.Rejected,
-      byHatId: "tech_lead", reason: "again", atMs,
+      byHatId: "tech_lead", reason: "again", atMs, evidenceRefs: [],
     });
     const folded = foldGateEvaluations([
       ev({ id: "a", atMs: 1_000, fact: { kind: "gates_evaluated", evaluations: [rejection(1_000)] } }),
@@ -220,7 +220,7 @@ describe("priorities and gate verdicts", () => {
     // The other direction: a merge must not manufacture a rejection that never happened.
     const one = ev({
       id: "a", atMs: 1_000,
-      fact: { kind: "gates_evaluated", evaluations: [{ workId: "w1", gate: GateKind.ImplementationReview, outcome: GateOutcome.Rejected, byHatId: "tech_lead", reason: "r", atMs: 1_000 }] },
+      fact: { kind: "gates_evaluated", evaluations: [{ workId: "w1", gate: GateKind.ImplementationReview, outcome: GateOutcome.Rejected, byHatId: "tech_lead", reason: "r", atMs: 1_000 , evidenceRefs: []}] },
     });
     expect(foldGateEvaluations([one, one])).toHaveLength(1);
   });

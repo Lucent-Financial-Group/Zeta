@@ -67,6 +67,7 @@ import {
   WorkState,
   WorkType,
   type Cascade,
+  type CascadeNode,
 } from "./goal-cascade";
 import {
   advanceAll,
@@ -89,6 +90,7 @@ import {
 import { bindWearerToLoop } from "./loop-policy";
 import { firstLegalChooser, preferChooser, type OrgChooser } from "./org-decision";
 import { reportsUpTo, type HatLevel, type OrgChart } from "./org-chart";
+import { evaluateTrajectory, warrantsEscalation, type Trajectory } from "./mission-trajectory";
 import { fidelityLine, recordingProviders, runFidelityOf, type ChangeHandle, type ProviderSet, type ReviewVerdict, type RunFidelity } from "./providers";
 import { autoApproveReview, simulatedChangeControl, simulatedIntake, simulatedTestRunner, simulatedWorkExecutor } from "./adapters";
 import { associateGoal, EMPTY_BOOK, openPortfolio, type PortfolioKind } from "./portfolio";
@@ -178,6 +180,14 @@ export interface OrgRuntimeDeps {
   readonly createId: (prefix: string) => string;
   readonly nowMs: number;
   readonly workBlockMs: number;
+  /**
+   * The window this goal is supposed to land inside.
+   *
+   * OPTIONAL, and its absence is reported rather than defaulted: a run with no declared window has
+   * no pace to be measured against, and inventing one would manufacture a schedule the organization
+   * never agreed to.
+   */
+  readonly missionWindow?: { readonly startsAtMs: number; readonly targetAtMs: number };
   readonly leaseMs: number;
   /** How each accepted intake item scores. Absent = a neutral score. */
   /**
@@ -320,6 +330,13 @@ export interface OrgRuntimeReport {
    * called itself deterministic is the claim `providers.ts` exists to make unsayable by accident.
    */
   readonly fidelity: RunFidelity;
+  /**
+   * Whether the work is keeping pace with its own window — `undefined` when none was declared.
+   *
+   * `undefined` rather than an `on_track` stand-in, for the reason this register keeps repeating:
+   * a reading nobody took must not be reported as a good one.
+   */
+  readonly trajectory: Trajectory | undefined;
 }
 
 const NEUTRAL_INPUTS: PriorityInputs = {
@@ -496,8 +513,31 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
    * Same shape as the `runOrgCycle` early return closed one pass earlier, in that pass's own words,
    * and its sibling was never checked.
    */
+  /**
+   * The mission's pace, measured over the cascade's own leaves.
+   *
+   * DELIVERED over TOTAL, counted from the cascade rather than from a separately-maintained number,
+   * so the pace cannot disagree with the work. Absent window -> `undefined`, never a stand-in.
+   */
+  const trajectoryOf = (nodes: readonly CascadeNode[]): Trajectory | undefined => {
+    const w = deps.missionWindow;
+    if (w === undefined) return undefined;
+    const leaves = nodes.filter((n) => isLeafType(n.workType));
+    return evaluateTrajectory({
+      missionId: "mission",
+      startsAtMs: w.startsAtMs,
+      targetAtMs: w.targetAtMs,
+      nowMs: deps.nowMs,
+      delivered: leaves.filter((n) => n.state === WorkState.Done).length,
+      total: leaves.length,
+    });
+  };
+
   const empty = (): OrgRuntimeReport => ({
     fidelity: noteFidelity("run", deps.nowMs),
+    // An early return has done no work, so its pace is measured over an empty cascade — which the
+    // trajectory reports as NOT STARTED rather than as on track.
+    trajectory: trajectoryOf([]),
     // An empty run still gets a REAL reactor report over an empty organization, not a hand-written
     // stub: it quiesces immediately because there is nothing to do, which is the true answer and
     // the same one the loop would give. A fabricated `quiesced: true` would be indistinguishable
@@ -1127,6 +1167,10 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
     // (the menu discipline: code computes the legal set, an agent picks within it, index clamped).
     // Pre-resolving keeps that shape rather than making every chooser in the register async.
     const reviewed = new Map<GateKind, ReviewVerdict>();
+    // WHAT THE REVIEWER CONSULTED, kept per gate. The `Review` port already returns evidence;
+    // until now none of it survived into the gate record, so a gate whose whole claim is that
+    // something was consulted rested on the approver's say-so.
+    const reviewEvidence = new Map<GateKind, readonly string[]>();
     for (const gate of ORDERED_GATES) {
       if (gate === GateKind.RuntimeValidation) continue;
       const verdict = await providers.review.review({
@@ -1143,6 +1187,7 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
         continue;
       }
       reviewed.set(gate, verdict.value);
+      reviewEvidence.set(gate, verdict.evidence.map((e) => e.ref));
     }
 
     // No caller override: the ports decide, and evidence decides runtime validation. See the note
@@ -1157,6 +1202,12 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
         atMs: warmedAt,
         // Separation of duties: whoever did the work does not review it.
         proposerHatId: task.assigneeHatId ?? NO_PROPOSER,
+        // Runtime validation's evidence is the TEST RUNS, not a reviewer's note — the one gate
+        // whose consultation is a machine's, so its references come from where they were produced.
+        evidenceFor: (gate) =>
+          gate === GateKind.RuntimeValidation
+            ? qa.runs.flatMap((r) => r.evidence.map((e) => e.ref))
+            : (reviewEvidence.get(gate) ?? []),
       });
       gateRuns.push({ taskId: task.workId, run });
       gateEvaluations.push(...run.evaluations);
@@ -1437,7 +1488,27 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
   trace.push(...reactor.trace);
   refusals.push(...reactor.refusals);
 
+  // ── PACE, and the escalation it may warrant ───────────────────────────────
+  // Computed from the finished cascade so the reading is over what the run actually delivered.
+  // A run that is measurably behind RAISES the trigger rather than deciding anything: what to do
+  // about it is the organization's call, through the normal authority check.
+  const trajectory = trajectoryOf(cascade.nodes);
+  if (trajectory !== undefined) {
+    note({
+      kind: OrgEventKind.WorkItemTransition,
+      subjectId: goalId,
+      decision: `mission pace: ${trajectory.status} — ${trajectory.basis}`,
+      atMs: warmedAt,
+    });
+    if (warrantsEscalation(trajectory)) {
+      refusals.push(
+        `mission is off track (${trajectory.basis}) — ${EscalationTrigger.MissionOffTrack} is warranted`,
+      );
+    }
+  }
+
   return {
+    trajectory,
     intakeAccepted: accepted,
     intakeRefused: refusedIntake,
     priorities: ordered,

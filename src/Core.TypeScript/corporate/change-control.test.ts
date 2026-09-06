@@ -11,7 +11,7 @@ import { buildOrgChart } from "./org-chart";
 import { SEED_HATS } from "./org-seed";
 import { IntakeKind, Severity, type ExternalEvent } from "./intake";
 import { RunOutcome } from "./qa";
-import { GateKind, GateOutcome } from "./quality-gate";
+import { GateKind, GateOutcome , ORDERED_GATES} from "./quality-gate";
 import { WorkState, setState, childrenOf } from "./goal-cascade";
 import { isTerminal } from "../workflow-engine/agent-loop/work-lifecycle-state-machine";
 
@@ -160,7 +160,7 @@ describe("the projection is DERIVED — it cannot be advanced on its own", () =>
     })!;
     expect(facts.assigneeHatId).toBeDefined();
     expect(facts.shardId).toBeDefined();
-    expect(facts.gateEvaluations.length).toBe(7);
+    expect(facts.gateEvaluations.length).toBe(ORDERED_GATES.length);
     expect(facts.cancelled).toBe(false);
     expect(factsFor("ghost", { cascade: report.cascade, queue: report.queue, gateEvaluations: [], nowMs: 0 })).toBeUndefined();
   });
@@ -281,7 +281,7 @@ describe("shapes the pipeline does not produce, which a caller can", () => {
       facts: {
         workId: "w1",
         gateEvaluations: [
-          { workId: "w1", gate: GateKind.CustomerRfpReview, outcome: GateOutcome.Approved, byHatId: "product_manager", reason: "", atMs: 0 },
+          { workId: "w1", gate: GateKind.CustomerRfpReview, outcome: GateOutcome.Approved, byHatId: "product_manager", reason: "", atMs: 0 , evidenceRefs: []},
         ],
         cancelled: false,
       },

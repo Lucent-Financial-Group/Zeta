@@ -54,7 +54,7 @@ export const SEED_HATS: readonly OrgHat[] = [
   { id: "cto", name: "CTO", level: "c_suite", departmentId: D.ExecutiveBoardAndGovernance, reportsTo: "ceo" },
   { id: "coo", name: "COO", level: "c_suite", departmentId: D.ExecutiveBoardAndGovernance, reportsTo: "ceo" },
   { id: "cfo", name: "CFO", level: "c_suite", departmentId: D.ExecutiveBoardAndGovernance, reportsTo: "ceo" },
-  { id: "chief_architect", name: "Chief Architect", level: "c_suite", departmentId: D.ExecutiveBoardAndGovernance, reportsTo: "cto", approvalScopes: [G.ArchitectureApproval] },
+  { id: "chief_architect", name: "Chief Architect", level: "c_suite", departmentId: D.ExecutiveBoardAndGovernance, reportsTo: "cto", approvalScopes: [G.ArchitectureApproval, G.FinalArchitectureReview, G.AdversarialReview] },
   { id: "hat_approval_steward", name: "Hat Approval Steward", level: "director", departmentId: D.ExecutiveBoardAndGovernance, reportsTo: "ceo" },
 
   // ── Program and Initiative Management ──
@@ -65,24 +65,24 @@ export const SEED_HATS: readonly OrgHat[] = [
   { id: "initiative_planner", name: "Initiative Planner", level: "individual_contributor", departmentId: D.ProgramAndInitiativeManagement, reportsTo: "program_director" },
 
   // ── Product and Customer Discovery ──
-  { id: "product_director", name: "Product Director", level: "director", departmentId: D.ProductAndCustomerDiscovery, reportsTo: "ceo", approvalScopes: [G.CustomerRfpReview, G.BrdApproval, G.FinalBusinessValidation] },
-  { id: "product_manager", name: "Product Manager", level: "manager", departmentId: D.ProductAndCustomerDiscovery, reportsTo: "product_director", approvalScopes: [G.CustomerRfpReview, G.BrdApproval, G.FinalBusinessValidation] },
+  { id: "product_director", name: "Product Director", level: "director", departmentId: D.ProductAndCustomerDiscovery, reportsTo: "ceo", approvalScopes: [G.CustomerRfpReview, G.BrdApproval, G.FinalBusinessValidation, G.BusinessContextGrooming, G.PeerReview] },
+  { id: "product_manager", name: "Product Manager", level: "manager", departmentId: D.ProductAndCustomerDiscovery, reportsTo: "product_director", approvalScopes: [G.CustomerRfpReview, G.BrdApproval, G.FinalBusinessValidation, G.BusinessContextGrooming, G.PeerReview, G.QaUat] },
 
   // ── Architecture ──
-  { id: "architecture_director", name: "Architecture Director", level: "director", departmentId: D.Architecture, reportsTo: "cto", approvalScopes: [G.ArchitectureApproval] },
-  { id: "solution_architect", name: "Solution Architect", level: "individual_contributor", departmentId: D.Architecture, reportsTo: "architecture_director", approvalScopes: [G.ArchitectureApproval] },
+  { id: "architecture_director", name: "Architecture Director", level: "director", departmentId: D.Architecture, reportsTo: "cto", approvalScopes: [G.ArchitectureApproval, G.ArchitectureDesign, G.FinalArchitectureReview, G.AdversarialReview] },
+  { id: "solution_architect", name: "Solution Architect", level: "individual_contributor", departmentId: D.Architecture, reportsTo: "architecture_director", approvalScopes: [G.ArchitectureApproval, G.ArchitectureDesign] },
 
   // ── Engineering ──
   { id: "engineering_director", name: "Engineering Director", level: "director", departmentId: D.Engineering, reportsTo: "cto" },
   { id: "engineering_manager", name: "Engineering Manager", level: "manager", departmentId: D.Engineering, reportsTo: "engineering_director", approvalScopes: [G.ImplementationReview] },
-  { id: "tech_lead", name: "Tech Lead", level: "lead", departmentId: D.Engineering, reportsTo: "engineering_manager", approvalScopes: [G.ImplementationReview] },
+  { id: "tech_lead", name: "Tech Lead", level: "lead", departmentId: D.Engineering, reportsTo: "engineering_manager", approvalScopes: [G.ImplementationReview, G.PeerReview, G.AdversarialReview] },
   { id: "backend_implementer", name: "Backend Implementer", level: "individual_contributor", departmentId: D.Engineering, reportsTo: "tech_lead" },
   { id: "frontend_implementer", name: "Frontend Implementer", level: "individual_contributor", departmentId: D.Engineering, reportsTo: "tech_lead" },
 
   // ── QA and Verification ──
-  { id: "qa_director", name: "QA Director", level: "director", departmentId: D.QaAndVerification, reportsTo: "coo", approvalScopes: [G.RuntimeValidation] },
-  { id: "qa_manager", name: "QA Manager", level: "manager", departmentId: D.QaAndVerification, reportsTo: "qa_director", approvalScopes: [G.RuntimeValidation] },
-  { id: "qa_engineer", name: "QA Engineer", level: "individual_contributor", departmentId: D.QaAndVerification, reportsTo: "qa_manager", approvalScopes: [G.RuntimeValidation] },
+  { id: "qa_director", name: "QA Director", level: "director", departmentId: D.QaAndVerification, reportsTo: "coo", approvalScopes: [G.RuntimeValidation, G.QaUat, G.AdversarialReview] },
+  { id: "qa_manager", name: "QA Manager", level: "manager", departmentId: D.QaAndVerification, reportsTo: "qa_director", approvalScopes: [G.RuntimeValidation, G.QaUat] },
+  { id: "qa_engineer", name: "QA Engineer", level: "individual_contributor", departmentId: D.QaAndVerification, reportsTo: "qa_manager", approvalScopes: [G.RuntimeValidation, G.QaUat] },
 
   // ── Security and Compliance ──
   { id: "security_director", name: "Security Director", level: "director", departmentId: D.SecurityAndCompliance, reportsTo: "cto" },

@@ -79,7 +79,7 @@ const gate = (workId: string, outcome: GateOutcome): GateEvaluation => ({
   outcome,
   byHatId: "tech_lead",
   reason: "r",
-  atMs: 0,
+  atMs: 0, evidenceRefs: [],
 });
 
 describe("the menu is a SET, not the next line of a script", () => {

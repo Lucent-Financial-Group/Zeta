@@ -19,7 +19,7 @@
  */
 
 import { chooseWithinLegal, type OrgChooser } from "./org-decision";
-import { isTerminal, type HatBinding } from "./hat-binding";
+import { isInCooldown, isTerminal, type HatBinding } from "./hat-binding";
 import { reportsUpTo, type OrgChart, type OrgHat } from "./org-chart";
 import {
   DEFAULT_DECAY,
@@ -89,14 +89,7 @@ export function eligibleFor(input: EligibilityInput): EligibilityResult {
       excluded.push({ agentId: c.agentId, reason: `already wears '${input.hat.id}'` });
       continue;
     }
-    const cooling = input.bindings.find(
-      (b) =>
-        b.hatId === input.hat.id &&
-        b.wearerAgentId === c.agentId &&
-        b.cooldownUntilMs !== undefined &&
-        input.nowMs < b.cooldownUntilMs,
-    );
-    if (cooling !== undefined) {
+    if (isInCooldown(input.bindings, input.hat.id, c.agentId, input.nowMs)) {
       excluded.push({ agentId: c.agentId, reason: `cooling down on '${input.hat.id}'` });
       continue;
     }

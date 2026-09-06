@@ -49,7 +49,7 @@ import { buildOrgChart } from "./org-chart";
 import { SEED_HATS } from "./org-seed";
 import { IntakeKind, Severity, normalize, type ExternalEvent } from "./intake";
 import { RunOutcome } from "./qa";
-import { GateKind, GateOutcome, NO_PROPOSER } from "./quality-gate";
+import { GateKind, GateOutcome, NO_PROPOSER , ORDERED_GATES} from "./quality-gate";
 import { EscalationAction, EscalationTrigger } from "./escalation";
 import { BindingPhase } from "./hat-binding";
 import { ScheduleBlockState, ScheduleBlockType } from "./work-schedule";
@@ -101,6 +101,12 @@ const run = (over?: Partial<OrgRuntimeDeps>) => runOrgRuntime(deps(over));
 const at = (r: Awaited<ReturnType<typeof run>>) => Math.max(...r.bindings.map((b) => b.warmupEndsMs), 0);
 
 // ─── Status ─────────────────────────────────────────────────────────────────
+
+
+/** Every gate before `gate` — derived, so extending the chain does not edit this file. */
+function priorsOf(gate: GateKind): Set<GateKind> {
+  return new Set(ORDERED_GATES.slice(0, ORDERED_GATES.indexOf(gate)));
+}
 
 describe("the status reads a REAL run", () => {
   test("the whole readout comes back populated", async () => {
@@ -186,7 +192,7 @@ describe("the status reads a REAL run", () => {
     const r = await run();
     const forged = [
       ...r.gateEvaluations,
-      { workId: "w", gate: GateKind.RuntimeValidation, outcome: GateOutcome.Approved, byHatId: "backend_implementer", reason: "", atMs: 0 },
+      { workId: "w", gate: GateKind.RuntimeValidation, outcome: GateOutcome.Approved, byHatId: "backend_implementer", reason: "", atMs: 0, evidenceRefs: [] },
     ];
     expect(gateHealth(chart, "w", forged).unauthorizedEvaluations).toBe(1);
   });
@@ -384,7 +390,7 @@ describe("the admin surface CHECKS AUTHORITY before acting", () => {
 
     const inOrder = decideGate(chart, {
       workId: "w", gate: GateKind.CustomerRfpReview, evaluatorHatId: "product_manager",
-      passed: new Set(), outcome: GateOutcome.Rejected, atMs: 0,
+      passed: priorsOf(GateKind.CustomerRfpReview), outcome: GateOutcome.Rejected, atMs: 0,
       proposerHatId: NO_PROPOSER,
     });
     expect(inOrder.ok).toBe(true);
@@ -396,7 +402,7 @@ describe("the admin surface CHECKS AUTHORITY before acting", () => {
   test("a manager asking to WAIVE through the admin path is still clamped", () => {
     const r = decideGate(chart, {
       workId: "w", gate: GateKind.ImplementationReview, evaluatorHatId: "engineering_manager",
-      passed: new Set([GateKind.CustomerRfpReview, GateKind.BrdApproval, GateKind.ArchitectureApproval]),
+      passed: priorsOf(GateKind.ImplementationReview),
       outcome: GateOutcome.Waived, atMs: 0,
       proposerHatId: NO_PROPOSER,
     });

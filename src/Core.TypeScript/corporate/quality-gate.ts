@@ -33,12 +33,50 @@ import type { OrgChart, OrgHat } from "./org-chart";
 
 /** The seven gates. */
 export const GateKind = {
+  /**
+   * The business context, groomed from a SOURCE rather than from the agent's own recollection.
+   *
+   * First on purpose. Everything downstream — the BRD, the architecture, the adversarial pass —
+   * argues about a context; if that context was invented by whoever happened to start, the whole
+   * chain is a well-reviewed opinion about nothing. This gate asks the narrow question the rest
+   * cannot: was the context READ from somewhere a second party could read too?
+   */
+  BusinessContextGrooming: "business_context_grooming",
   CustomerRfpReview: "customer_rfp_review",
   BrdApproval: "brd_approval",
+  /**
+   * A PEER on the same work looks at the groomed context before anyone designs against it.
+   *
+   * Distinct from `BrdApproval`, which is a director signing off DOWNWARD. This is lateral: the
+   * cheapest place to catch a misread requirement is before an architecture exists to defend.
+   */
+  PeerReview: "peer_review",
+  /** The architecture document is PRODUCED. Separate from approving it — see the next two. */
+  ArchitectureDesign: "architecture_design",
+  /** The architecture document is REVIEWED and approved. */
   ArchitectureApproval: "architecture_approval",
+  /**
+   * An ADVERSARIAL pass across the context, the BRD and the architecture together.
+   *
+   * The one gate whose job is to fail. Every gate before it asks "is this acceptable?", which is a
+   * question a tired reviewer answers yes to; this one asks "where does this break?" — and it sits
+   * after the design rather than inside each review because the interesting failures are between
+   * the documents, not inside any one of them.
+   */
+  AdversarialReview: "adversarial_review",
   ImplementationReview: "implementation_review",
+  /** User-acceptance: does it do what the BRD said, judged by someone who did not build it. */
+  QaUat: "qa_uat",
+  /** The automated half — tests actually ran and actually passed. Decided by QA, not by opinion. */
   RuntimeValidation: "runtime_validation",
   FinalBusinessValidation: "final_business_validation",
+  /**
+   * The architect looks again, at what was BUILT rather than at what was drawn.
+   *
+   * `ArchitectureApproval` judged a document; six gates later the thing exists and can have drifted
+   * from it. Approving the drawing is not approving the building.
+   */
+  FinalArchitectureReview: "final_architecture_review",
   ReleaseReadiness: "release_readiness",
 } as const;
 
@@ -50,12 +88,18 @@ export type GateKind = (typeof GateKind)[keyof typeof GateKind];
  * table, so the two cannot disagree about what comes before what.
  */
 export const ORDERED_GATES: readonly GateKind[] = [
+  GateKind.BusinessContextGrooming,
   GateKind.CustomerRfpReview,
   GateKind.BrdApproval,
+  GateKind.PeerReview,
+  GateKind.ArchitectureDesign,
   GateKind.ArchitectureApproval,
+  GateKind.AdversarialReview,
   GateKind.ImplementationReview,
+  GateKind.QaUat,
   GateKind.RuntimeValidation,
   GateKind.FinalBusinessValidation,
+  GateKind.FinalArchitectureReview,
   GateKind.ReleaseReadiness,
 ];
 
@@ -138,7 +182,7 @@ export function gateProgress(passed: ReadonlySet<GateKind>): number {
   return ORDERED_GATES.filter((g) => passed.has(g)).length / ORDERED_GATES.length;
 }
 
-/** Have all seven passed? */
+/** Have all of them passed? The count is `ORDERED_GATES.length`, never a number written twice. */
 export function allGatesPassed(passed: ReadonlySet<GateKind>): boolean {
   return nextLegalGate(passed) === undefined;
 }
@@ -156,13 +200,25 @@ export type RecoveryPath = (typeof RecoveryPath)[keyof typeof RecoveryPath];
 
 export function recoveryPathFor(gate: GateKind): RecoveryPath {
   switch (gate) {
+    case GateKind.BusinessContextGrooming:
     case GateKind.CustomerRfpReview:
     case GateKind.BrdApproval:
+    case GateKind.PeerReview:
+      // A peer rejecting the groomed context sends it back to grooming, not to engineering: the
+      // defect is in what was understood, and building on it faster does not fix it.
       return RecoveryPath.ReopenDiscoveryOrBrd;
+    case GateKind.ArchitectureDesign:
     case GateKind.ArchitectureApproval:
+    case GateKind.FinalArchitectureReview:
       return RecoveryPath.ReopenArchitecture;
+    case GateKind.AdversarialReview:
+      // Deliberately BackToEngineering rather than a path of its own. An adversarial finding is a
+      // defect in the thing, and routing it somewhere special would let it become a note nobody
+      // has to act on — which is how this gate would quietly become decorative.
+      return RecoveryPath.BackToEngineering;
     case GateKind.ImplementationReview:
       return RecoveryPath.BackToEngineering;
+    case GateKind.QaUat:
     case GateKind.RuntimeValidation:
       return RecoveryPath.ValidationProcessImprovement;
     case GateKind.FinalBusinessValidation:
@@ -172,7 +228,7 @@ export function recoveryPathFor(gate: GateKind): RecoveryPath {
   return assertNeverGate(gate);
 }
 
-/** Exhaustiveness, enforced by the compiler: an eighth gate fails to typecheck here. */
+/** Exhaustiveness, enforced by the compiler: a new gate fails to typecheck until it is routed. */
 function assertNeverGate(x: never): never {
   throw new Error(`unhandled gate: ${String(x)}`);
 }
@@ -184,6 +240,53 @@ export interface GateEvaluation {
   readonly byHatId: string;
   readonly reason: string;
   readonly atMs: number;
+  /**
+   * What the approver consulted. Retained on the record, not merely shown to the reviewer.
+   *
+   * The `Review` port already receives evidence so a reviewer can judge from it; until this field
+   * existed none of it survived into the evaluation, so a gate's whole claim rested on the
+   * approver's say-so and an audit could not tell a considered approval from a reflex.
+   */
+  readonly evidenceRefs: readonly string[];
+}
+
+/**
+ * Gates whose entire claim is that something OUTSIDE the approver's own opinion was consulted.
+ *
+ * Deliberately three, not thirteen. Requiring evidence everywhere would turn the requirement into
+ * a field people fill with the word "reviewed" — the shape that makes a control decorative. These
+ * three are the ones whose name is a claim about an act:
+ *
+ *   grooming     asserts a data source was READ. With no reference, it asserts a recollection.
+ *   adversarial  asserts someone TRIED TO BREAK IT. A rubber stamp passes this gate exactly like
+ *                a real attempt, and without a reference the two are indistinguishable.
+ *   uat          asserts the thing was EXERCISED by someone who did not build it.
+ *
+ * The others are judgements, and a judgement's evidence is its reason.
+ */
+export const GATES_REQUIRING_EVIDENCE: readonly GateKind[] = [
+  GateKind.BusinessContextGrooming,
+  GateKind.AdversarialReview,
+  GateKind.QaUat,
+];
+
+export function requiresEvidence(gate: GateKind): boolean {
+  return GATES_REQUIRING_EVIDENCE.includes(gate);
+}
+
+/**
+ * Approvals that asserted an act and referenced nothing.
+ *
+ * DERIVED from the evaluations rather than counted as they are made, so it cannot drift from the
+ * record. Only passing outcomes are reported: a rejection that consulted nothing is a reviewer
+ * declining to engage, which is a different fact and not one this is measuring.
+ */
+export function unattestedApprovals(
+  evaluations: readonly GateEvaluation[],
+): readonly GateEvaluation[] {
+  return evaluations.filter(
+    (e) => requiresEvidence(e.gate) && isPassing(e.outcome) && e.evidenceRefs.length === 0,
+  );
 }
 
 export type GateResult =
@@ -227,6 +330,12 @@ export function evaluateGate(
      * unassigned work, so that choice is visible at the call site.
      */
     readonly proposerHatId: string;
+    /**
+     * What was consulted. REQUIRED for the gates in `GATES_REQUIRING_EVIDENCE`, and refused when
+     * missing — an approval on those is a claim about an act, and a claim about an act that
+     * references nothing is the assertion this whole layer exists to refuse.
+     */
+    readonly evidenceRefs?: readonly string[];
   },
 ): GateResult {
   const hat = chart.byId.get(input.evaluatorHatId);
@@ -258,6 +367,21 @@ export function evaluateGate(
   );
   if (choice.outcome === "no_legal_option") return { ok: false, reason: choice.reason };
 
+  // RECORDED, NOT REFUSED — and the first draft of this did refuse, which was an overclaim.
+  //
+  // Refusing an evidence-free approval looks like enforcement and is not: any string satisfies it.
+  // `autoApproveReview` — whose own description is "reads no evidence and consults nobody" —
+  // returns `auto-approved:<gate>:<workId>`, which would have passed the check while consulting
+  // nothing. A control that the null adapter satisfies is the vacuity class, and shipping it as
+  // "agents cannot approve without evidence" would have been a stronger claim than the mechanism
+  // supports.
+  //
+  // What IS deliverable is the three-state honesty this register uses everywhere else: the record
+  // keeps what was referenced, `unattested` names the approvals that referenced nothing, and a
+  // reader can tell an attested approval from a bare one — which they could not before, because
+  // the evidence reached the reviewer and never reached the record.
+  const evidenceRefs = (input.evidenceRefs ?? []).filter((r) => r.trim() !== "");
+
   const evaluation: GateEvaluation = {
     workId: input.workId,
     gate: input.gate,
@@ -265,6 +389,7 @@ export function evaluateGate(
     byHatId: hat.id,
     reason: choice.reason,
     atMs: input.atMs,
+    evidenceRefs,
   };
 
   if (!isPassing(choice.option)) {
@@ -303,6 +428,14 @@ export function runGateChain(
     readonly atMs: number;
     /** The hat that did the work, so no gate is evaluated by its author. `NO_PROPOSER` if none. */
     readonly proposerHatId: string;
+    /**
+     * What each gate's decider consulted, keyed by gate.
+     *
+     * Supplied by the CALLER because the caller is what talked to the reviewer — the runtime hands
+     * over what the `Review` port returned. Inventing a reference here would be the register
+     * fabricating the evidence for a claim it is meant to be checking.
+     */
+    readonly evidenceFor?: (gate: GateKind) => readonly string[];
   },
 ): GateRunResult {
   const evaluations: GateEvaluation[] = [];
@@ -337,6 +470,7 @@ export function runGateChain(
       chooser: input.chooser,
       atMs: input.atMs,
       proposerHatId: input.proposerHatId,
+      evidenceRefs: input.evidenceFor?.(gate) ?? [],
     });
     if (!result.ok) {
       refusals.push(result.reason);
