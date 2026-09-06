@@ -1,0 +1,17 @@
+{
+  "pr_number": 16713,
+  "archive_path": "docs/history/pr-reviews/PR-16713-feat-corporate-the-organization-implements-the-work-five-ports-real-adapters-and.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7q-PL4",
+    "comment:PRRC_kwDOSF9kNM7q-PL6",
+    "thread:PRRT_kwDOSF9kNM6fnOrY",
+    "thread:PRRT_kwDOSF9kNM6fnOrZ"
+  ],
+  "fetched_at": "2026-09-06T01:49:04.271Z",
+  "schema_version": "v1",
+  "commit_sha": "2738fe8b6986c9c075f3f4a198bb6df4c10baecf",
+  "title": "feat(corporate): the organization implements the work — five ports, real adapters, and fidelity that survives the disk",
+  "state": "MERGED",
+  "merged_at": "2026-09-06T01:48:16Z",
+  "head_ref": "org-implements-work"
+}
