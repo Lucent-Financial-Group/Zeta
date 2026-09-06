@@ -324,18 +324,6 @@ export interface SuccessionPlan {
 }
 
 /**
- * Who takes the hat next.
- *
- * `Rotate` is deterministic — the candidate after the last wearer, wrapping. `Renew` returns the
- * same wearer. `Appoint` and `None` deliberately leave the successor UNDECIDED: those policies route
- * to an authority, and inventing a successor here would be this module making a staffing decision it
- * has no standing to make.
- *
- * A rotation whose last wearer is not in the roster starts from the top rather than failing — a
- * wearer can legitimately have left the candidate pool, and a hat that cannot be handed on because
- * its previous holder is gone is the succession problem, not a solution to it.
- */
-/**
  * Is this agent still cooling down on this hat?
  *
  * EXTRACTED from `assignment-engine`, where it was four inlined conditions inside a `find`. A rule
@@ -363,6 +351,18 @@ export function isInCooldown(
   );
 }
 
+/**
+ * Who takes the hat next.
+ *
+ * `Rotate` is deterministic — the candidate after the last wearer, wrapping. `Renew` returns the
+ * same wearer. `Appoint` and `None` deliberately leave the successor UNDECIDED: those policies route
+ * to an authority, and inventing a successor here would be this module making a staffing decision it
+ * has no standing to make.
+ *
+ * A rotation whose last wearer is not in the roster starts from the top rather than failing — a
+ * wearer can legitimately have left the candidate pool, and a hat that cannot be handed on because
+ * its previous holder is gone is the succession problem, not a solution to it.
+ */
 export function planSuccession(input: {
   readonly hat: OrgHat;
   readonly candidateAgentIds: readonly string[];
