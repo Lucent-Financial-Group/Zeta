@@ -121,6 +121,31 @@ jobs:
           - os: macos-26
             min_substrates: "9"
             required_substrates: "WAT,LLVM/C,Emscripten,Rust,AssemblyScript,Zig,JS (V8),Lua 5.4,Go"
+          # WINDOWS, ADDED UNCALIBRATED 2026-09-05 -- the same discipline the arm64
+          # and macOS legs went through, not a shortcut around it. Nobody has
+          # measured which substrates a Windows runner executes: `wabt` and `lua5.4`
+          # come from apt and brew on the other legs, and whether Chocolatey supplies
+          # them under the names the substrates shell out to is exactly the unknown.
+          #
+          # Floor 1 and no required list, stated rather than hidden. A floor of 1
+          # still refuses a leg that ran NOTHING, which keeps an empty report from
+          # reading as a healthy one. RAISE BOTH once the first run reports -- the
+          # arm64 and macOS legs took 9 and 8-then-9 by exactly this route, and a
+          # floor left at 1 would be the check-that-cannot-fail this matrix exists
+          # to defeat.
+          #
+          # These are the two Windows runners already in `gate.yml`'s build-and-test
+          # matrix, so the runners are known to exist; what is unknown is the
+          # toolchain. `windows-11-arm` is the more interesting of the two for THIS
+          # workflow's purpose: it is a fourth distinct processor, where
+          # `windows-2025` shares x86_64 with `ubuntu-24.04` and adds an OS rather
+          # than an architecture.
+          - os: windows-2025
+            min_substrates: "1"
+            required_substrates: ""
+          - os: windows-11-arm
+            min_substrates: "1"
+            required_substrates: ""
 
     steps:
       - name: Checkout
@@ -176,6 +201,41 @@ jobs:
       # REQUIREMENT, not a preference: `wasm_exec.js` is the Go runtime's own JS bridge and
       # is committed alongside the source, so it must come from a compatible Go. Bump both
       # together or the harness fails at boot.
+      - name: Install substrate toolchains (choco)
+        if: startsWith(matrix.os, 'windows')
+        # UNMEASURED on this OS -- this step is the experiment. `|| true` everywhere
+        # is deliberate and is NOT a swallowed error: a toolchain that fails to
+        # install must surface as TOOLING-ABSENT in the report, which is a measured
+        # fact about this runner and exactly what the cross-processor comparison
+        # needs, rather than as a dead job with no report to compare against.
+        #
+        # The substrates shell out to `wat2wasm` and `lua5.4` BY NAME. Chocolatey's
+        # `lua` package installs `lua.exe`, so a shim under the expected name is
+        # created when possible -- the same problem macOS had, where brew's `lua`
+        # formula gave 5.5 as `lua` and the leg reported Lua 5.4 absent until
+        # `lua@5.4` was installed specifically.
+        shell: pwsh
+        run: |
+          choco install -y wabt --no-progress 2>&1 | Out-Null
+          choco install -y lua --no-progress 2>&1 | Out-Null
+          $ErrorActionPreference = "Continue"
+          if (Get-Command wat2wasm -ErrorAction SilentlyContinue) {
+            Write-Host "wat2wasm: present"
+          } else {
+            Write-Host "wat2wasm: ABSENT on this runner"
+          }
+          $lua = Get-Command lua -ErrorAction SilentlyContinue
+          if ($lua -and -not (Get-Command lua5.4 -ErrorAction SilentlyContinue)) {
+            # The runner expects `lua5.4`; supply it as a shim next to the real one.
+            $dir = Split-Path $lua.Source
+            Copy-Item $lua.Source (Join-Path $dir "lua5.4.exe") -ErrorAction SilentlyContinue
+          }
+          if (Get-Command lua5.4 -ErrorAction SilentlyContinue) {
+            Write-Host "lua5.4: present"
+          } else {
+            Write-Host "lua5.4: ABSENT on this runner"
+          }
+
       - name: Setup Go (pinned to .mise.toml — must match the committed wasm_exec.js)
         uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
         with:
