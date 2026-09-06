@@ -200,6 +200,14 @@ export interface Args {
    * adapter. Supplying this makes each change its own directory.
    */
   readonly worktrees: string | undefined;
+  /**
+   * The window the goal is supposed to land inside, as two ISO instants.
+   *
+   * Absent means the run declares no schedule, and the pace is reported as unmeasured rather than
+   * as healthy — the same three-state honesty the fidelity block uses.
+   */
+  readonly windowStart: string | undefined;
+  readonly windowTarget: string | undefined;
 }
 
 /** The value after a flag, or undefined. A flag with nothing after it is the same as absent. */
@@ -242,6 +250,8 @@ export function parseArgs(argv: readonly string[]): Args {
     trackerSource: valueAfter(argv, "--tracker-source") ?? "tracker",
     workAgent: valueAfter(argv, "--work-agent"),
     workModel: valueAfter(argv, "--work-model"),
+    windowStart: valueAfter(argv, "--window-start"),
+    windowTarget: valueAfter(argv, "--window-target"),
     workAgentArgs: valuesAfter(argv, "--work-agent-arg"),
     workVerify: valueAfter(argv, "--work-verify"),
     workVerifyArgs: valuesAfter(argv, "--work-verify-arg"),
@@ -352,6 +362,19 @@ export function argRefusals(args: Args): readonly string[] {
       // configured — never that it silently becomes a simulation that reports success.
       out.push(`${flag} needs --work-verify — the performer only gives testimony, and something else has to decide whether it worked`);
     }
+  }
+  const startMs = args.windowStart === undefined ? undefined : Date.parse(args.windowStart);
+  const targetMs = args.windowTarget === undefined ? undefined : Date.parse(args.windowTarget);
+  if ((args.windowStart === undefined) !== (args.windowTarget === undefined)) {
+    // HALF a window is not a window. Silently ignoring the supplied half would report the run as
+    // having no schedule when the operator plainly meant to give it one.
+    out.push("--window-start and --window-target come as a pair; one without the other declares no window");
+  }
+  for (const [flag, ms] of [["--window-start", startMs], ["--window-target", targetMs]] as const) {
+    if (ms !== undefined && Number.isNaN(ms)) out.push(`${flag} is not a parseable ISO-8601 instant`);
+  }
+  if (startMs !== undefined && targetMs !== undefined && !Number.isNaN(startMs) && !Number.isNaN(targetMs) && targetMs <= startMs) {
+    out.push("--window-target must be after --window-start; a window that ends before it begins has no pace");
   }
   if (args.workVerify !== undefined && args.workAgent === undefined && args.workModel === undefined) {
     out.push("--work-verify was given with nothing to verify: add --work-agent or --work-model");
@@ -542,6 +565,11 @@ export async function main(argv: readonly string[]): Promise<number> {
     createId,
     nowMs,
     workBlockMs: 3_600_000,
+    // The declared window, if the operator gave one. Absent means the run reports its pace as
+    // unmeasured rather than as healthy.
+    ...(args.windowStart === undefined || args.windowTarget === undefined
+      ? {}
+      : { missionWindow: { startsAtMs: Date.parse(args.windowStart), targetAtMs: Date.parse(args.windowTarget) } }),
     leaseMs: 300_000,
     ...(args.qaFails ? { qaFallback: RunOutcome.Failed } : {}),
     ...(args.churn ? { churnThreshold: 2, maxGateAttempts: 5 } : {}),
@@ -577,6 +605,17 @@ export async function main(argv: readonly string[]): Promise<number> {
   // The line beneath is about THIS run, and says which of those ports it actually called.
   console.log(`  DST-replayable: ${report.fidelity.replayable ? "yes" : "no"}`);
   console.log(`  ${fidelityLine(report.fidelity)}`);
+
+  // PACE, beside fidelity and for the same reason: "DELIVERED" says nothing about whether it
+  // arrived when it was supposed to, and an organization that only reports completion discovers
+  // its schedule at the deadline.
+  console.log(`
+--- pace ---`);
+  console.log(
+    report.trajectory === undefined
+      ? "  no window declared — pace UNMEASURED (pass --window-start and --window-target)"
+      : `  ${report.trajectory.status.toUpperCase()}: ${report.trajectory.basis}`,
+  );
   for (const port of report.fidelity.ports) {
     console.log(`  ${port.port.padEnd(15)} ${port.name.padEnd(12)} ${port.fidelity.padEnd(10)} ${port.describes}`);
   }
