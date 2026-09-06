@@ -1,0 +1,12 @@
+{
+  "pr_number": 16766,
+  "archive_path": "docs/history/pr-reviews/PR-16766-feat-hygiene-a-chart-installed-at-first-boot-and-by-an-application-is-pinned-onc.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-06T07:44:09.697Z",
+  "schema_version": "v1",
+  "commit_sha": "41024fabda91aec7112dcf970a8555393f1ecc6a",
+  "title": "feat(hygiene): a chart installed at first boot AND by an Application is pinned once",
+  "state": "MERGED",
+  "merged_at": "2026-09-06T07:43:30Z",
+  "head_ref": "shadow/bootstrap-application-pin-parity"
+}
