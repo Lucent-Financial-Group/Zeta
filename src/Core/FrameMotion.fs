@@ -24,6 +24,7 @@ module FrameMotion =
         | InsufficientHistory
         | ProjectionOutsideFrame of x: int64 * y: int64
         | InsufficientEvaluationFrames
+        | IncomparableReceipts of string
 
     [<Struct>]
     type State =
@@ -47,6 +48,13 @@ module FrameMotion =
           Total: int
           BasisPoints: int
           State: StateReceipt }
+
+    [<Struct>]
+    type ProjectionSelection =
+        { Selected: Projection
+          ObservedBasisPoints: int
+          OneStepBasisPoints: int
+          DeltaBasisPoints: int }
 
     let empty: State =
         { Previous = None
@@ -155,6 +163,27 @@ module FrameMotion =
           LogicalInt32Values = words
           LogicalBytes = words * sizeof<int>
           MaximumLogicalBytes = 7 * sizeof<int> }
+
+    /// Select a projection from comparable measurements. A tie keeps the
+    /// observed-position control; a more complex policy must earn promotion.
+    let selectProjection
+        (observed: AccuracyReceipt)
+        (oneStep: AccuracyReceipt)
+        : Result<ProjectionSelection, Feedback> =
+        if observed.Total <= 0 || oneStep.Total <= 0 then
+            Error(IncomparableReceipts "projection receipts must contain observations")
+        elif observed.Total <> oneStep.Total then
+            Error(IncomparableReceipts "projection receipts must cover the same number of forecasts")
+        else
+            Ok
+                { Selected =
+                    if oneStep.BasisPoints > observed.BasisPoints then
+                        Projection.OneStep
+                    else
+                        Projection.Observed
+                  ObservedBasisPoints = observed.BasisPoints
+                  OneStepBasisPoints = oneStep.BasisPoints
+                  DeltaBasisPoints = oneStep.BasisPoints - observed.BasisPoints }
 
     /// Evaluate next-position predictions over an ordered frame sequence. The
     /// first two frames initialize velocity; every later frame is an unseen

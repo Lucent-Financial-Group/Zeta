@@ -1,0 +1,14 @@
+{
+  "id": "080d03a969a0f810a0130008297c4414",
+  "at": "2026-09-06T05:24:51.871Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1TJTD0X087G0R000WR5FTF",
+    "type": "task",
+    "title": "forgejo stops being gitlab's standby: mint its admin credential, auto-sync it, and assert it live",
+    "slug": "forgejo-stops-being-gitlab-s-standby-mint-its-admin-credenti",
+    "priority": "P2",
+    "filename": "081M1TJTD0X087G0R000WR5FTF-forgejo-stops-being-gitlab-s-standby-mint-its-admin-credenti.md"
+  }
+}

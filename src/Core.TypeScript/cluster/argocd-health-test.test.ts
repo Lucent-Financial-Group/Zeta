@@ -410,7 +410,11 @@ describe("081KSXN940008QG0R000SCP2H1 argocd-health-test manifest parsing", () =>
     const included = applications.filter((app) => !app.excludedFromDev);
     expect(included.length).toBeGreaterThan(10);
     expect(included.some((app) => app.name === "trust-manager")).toBe(true);
-    expect(included.some((app) => app.name === "forgejo")).toBe(false);
+    // FLIPPED 2026-09-06 with the standby posture it encoded. `gitlab` on line 408 is
+    // the control that keeps this pair meaningful: one Git host is still excluded, so
+    // a `forgejo` that is now included proves the mechanism discriminates rather than
+    // that it stopped excluding anything.
+    expect(included.some((app) => app.name === "forgejo")).toBe(true);
   });
 
   /**
@@ -937,7 +941,10 @@ describe("081KSXN940008QG0R000SCP2H1 argocd-health-test planning", () => {
     expect(plan.checks.join("\n")).toContain("Synced and Healthy");
     const included = plan.expectedApplications.filter((app) => !app.excludedFromDev).map((app) => app.name);
     expect(included).not.toContain("gitlab");
-    expect(included).not.toContain("forgejo");
+    // `forgejo` IS included now -- both Git hosts run, and only the big one is deferred.
+    // Asserted positively rather than deleted: a dropped assertion would leave the
+    // included/excluded split for this pair unpinned in either direction.
+    expect(included).toContain("forgejo");
     // `agent-memory` FLIPPED SIDES 2026-09-03 -- pinned as NOT included while the
     // glob held it, pinned as INCLUDED now that the glob does not. This is the
     // line that turns its old LIFTS WHEN into a proof target the included lane
@@ -968,6 +975,35 @@ describe("081KSXN940008QG0R000SCP2H1 argocd-health-test planning", () => {
       (command) => command.label === "repo-server-logs",
     );
     expect(repoServer?.args.join(" ")).toContain("argocd-repo-server");
+  });
+
+  test("the roster can answer WHY a pod is not running, not just that ArgoCD is unhappy", () => {
+    // 081M1TFG81G087G0R001XPQGQZ: orleans reported Synced/Progressing, no crash-loop
+    // logs existed to capture, and the bug had to say the pod was "most likely
+    // Pending" on a "leading hypothesis". Every other command in this roster is
+    // ArgoCD-side or kube-system, so the workload pods were never looked at. These two
+    // are asserted by SHAPE rather than by label alone -- a label with the wrong
+    // field-selector would pass a name check and dump the wrong thing.
+    const byLabel = (label: string) =>
+      REPO_BACKED_CHILD_WAIT_DIAGNOSTIC_COMMANDS.find((command) => command.label === label);
+
+    const notRunning = byLabel("not-running-pods");
+    expect(notRunning).toBeDefined();
+    const notRunningArgs = notRunning?.args.join(" ") ?? "";
+    expect(notRunningArgs).toContain("-A");
+    expect(notRunningArgs).toContain("status.phase!=Running");
+    // Without this clause every completed Job pod lands in the dump and buries the one
+    // pod that matters, which is how a diagnostic becomes noise nobody reads.
+    expect(notRunningArgs).toContain("status.phase!=Succeeded");
+
+    const events = byLabel("warning-events");
+    expect(events).toBeDefined();
+    const eventArgs = events?.args.join(" ") ?? "";
+    expect(eventArgs).toContain("events");
+    expect(eventArgs).toContain("-A");
+    // `type=Warning` is what carries FailedScheduling / ImagePullBackOff / FailedMount.
+    // Dumping ALL events would bury them under Normal Pulled/Created/Started spam.
+    expect(eventArgs).toContain("type=Warning");
   });
 
   test("child-wait diagnostic merge keeps the NotFound stderr and attaches dumps", () => {

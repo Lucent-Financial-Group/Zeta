@@ -8,7 +8,12 @@ from typing import Any
 
 import pytest
 
-from zeta_arc.scene_prior_benchmark import benchmark_json, benchmark_payload
+from zeta_arc.scene_prior_benchmark import (
+    benchmark_json,
+    benchmark_payload,
+    motion_transfer_json,
+    motion_transfer_payload,
+)
 from zeta_arc.scene_priors import (
     DEFAULT_CURIOSITY,
     CandidateSignals,
@@ -615,3 +620,45 @@ def test_next_mover_benchmark_artifact_is_generated_byte_for_byte() -> None:
     artifact = Path(__file__).with_name("data") / "scene-prior-benchmark.json"
 
     assert artifact.read_text(encoding="utf-8") == benchmark_json()
+
+
+def test_chip8_selected_motion_policy_transfers_with_explicit_failures() -> None:
+    artifact = Path(__file__).with_name("data") / "motion-transfer-benchmark.json"
+    expected: dict[str, Any] = json.loads(artifact.read_text(encoding="utf-8"))
+    source_training: dict[str, object] = expected["sourceTraining"]
+    selected_policy = MotionProjection(source_training["selectedPolicy"])
+    actual = motion_transfer_payload(source_training, selected_policy)
+
+    assert actual["targetEvaluation"] == {
+        "constantVelocity": {
+            "caseCount": 32,
+            "observedCorrect": 0,
+            "observedTop1Accuracy": 0.0,
+            "transferredCorrect": 32,
+            "transferredTop1Accuracy": 1.0,
+        },
+        "directionChange": {
+            "caseCount": 8,
+            "observedCorrect": 0,
+            "observedTop1Accuracy": 0.0,
+            "transferredCorrect": 0,
+            "transferredTop1Accuracy": 0.0,
+        },
+        "persistentMotion": {
+            "caseCount": 40,
+            "observedCorrect": 0,
+            "observedTop1Accuracy": 0.0,
+            "transferredCorrect": 32,
+            "transferredTop1Accuracy": 0.8,
+        },
+        "switchedMover": {
+            "caseCount": 8,
+            "observedCorrect": 0,
+            "observedTop1Accuracy": 0.0,
+            "transferredCorrect": 0,
+            "transferredTop1Accuracy": 0.0,
+        },
+    }
+    assert artifact.read_text(encoding="utf-8") == motion_transfer_json(
+        source_training, selected_policy
+    )

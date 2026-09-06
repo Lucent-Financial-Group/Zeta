@@ -103,18 +103,6 @@
       "reason": "MEASURED 2026-08-22 against weaviate 17.6.0: the ollama modules accept ONLY `enabled` in this chart version. `templates/_helpers.tpl:50,134` reads `(index .Values \"modules\" \"<module>\" \"enabled\")` and nothing else, and values.yaml:1183,1692 declare the two blocks with `enabled` as their sole key -- unlike the sibling octoai modules, which do carry an `apiKey`. So the endpoint and model this cluster believes it has configured for Ollama are not reaching the pod from here; they would have to come from the container's environment. Four entries rather than one because each is a separate declared value that governs nothing. CARRIED ACROSS A CHART BUMP 2026-09-01: the acknowledgement text pinned the OLD chart version, and the version alone moved. The key was RE-CONFIRMED inert at the new version by the same run that reported the text drift -- an acknowledgement is not carried forward on the assumption that it still holds, only on a reading that says it does.",
       "liftsWhen": "LIFTS WHEN this Application stops declaring `modules.text2vec-ollama.modelId` -- either dropped, or moved to whatever weaviate 17.6.0 does read for the Ollama endpoint/model (its environment), or the pin moves to a chart version whose ollama module block carries this key.",
       "observed": "`modules.text2vec-ollama.modelId` is not a key weaviate@17.8.3 has: the chart's own values, its subcharts' values, and every `.Values` reference in its templates name no path at or under it, and no node containing it is consumed wholesale. Helm discards it silently, so the value declared here governs NOTHING: modules.text2vec-ollama.modelId"
-    },
-    {
-      "key": "infra/argorollouts dashboard.serviceType",
-      "reason": "MEASURED 2026-08-22 against argo-rollouts 2.39.5: the chart's key is `dashboard.service.type` (values.yaml:66-68). `dashboard.serviceType` is one word away from real and reaches nothing, so the dashboard Service silently takes the chart default. Not repaired in the change that added this guard: changing a Service type is a live-cluster change and belongs in a change that can watch it land.",
-      "liftsWhen": "LIFTS WHEN this Application sets `dashboard.service.type` instead of `dashboard.serviceType` -- at which point this finding disappears and this entry goes STALE, which is itself refused.",
-      "observed": "`dashboard.serviceType` is not a key argo-rollouts@2.39.5 has: the chart's own values, its subcharts' values, and every `.Values` reference in its templates name no path at or under it, and no node containing it is consumed wholesale. Helm discards it silently, so the value declared here governs NOTHING: dashboard.serviceType"
-    },
-    {
-      "key": "infra/argorollouts notifications.enabled",
-      "reason": "MEASURED 2026-08-22 against argo-rollouts 2.39.5: `notifications` has no `enabled` key. The chart gates notifications on `notifications.configmap.create` and `notifications.secret.create` (values.yaml:461+), both of which have their own defaults, so this line has never turned anything on or off.",
-      "liftsWhen": "LIFTS WHEN this Application drops `notifications.enabled` or replaces it with the `notifications.configmap.create` / `notifications.secret.create` pair the chart reads.",
-      "observed": "`notifications.enabled` is not a key argo-rollouts@2.39.5 has: the chart's own values, its subcharts' values, and every `.Values` reference in its templates name no path at or under it, and no node containing it is consumed wholesale. Helm discards it silently, so the value declared here governs NOTHING: notifications.enabled"
     }
   ]
 }

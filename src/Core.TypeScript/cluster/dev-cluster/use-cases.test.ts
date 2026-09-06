@@ -9,6 +9,7 @@ import {
   DEV_CILIUM_LB_KIND_MANIFEST_RELPATH,
   DEV_GHCR_PULL_SECRET,
   DEV_GRAFANA_ADMIN_SECRET,
+  DEV_FORGEJO_ADMIN_SECRET,
   DEV_OPENSEARCH_ADMIN_SECRET,
   DEV_REDIS_AUTH_SECRET,
   DEV_ZITI_ADMIN_SECRET,
@@ -519,7 +520,13 @@ describe("dev/CI bootstrap credentials", () => {
     // OutOfSync/Progressing. Minting it lets dev run metal's posture instead of
     // turning security off, which would have tested less.
     expect(DEV_BOOTSTRAP_SECRETS).toContain(DEV_OPENSEARCH_ADMIN_SECRET);
-    expect(DEV_BOOTSTRAP_SECRETS.length).toBe(4);
+    // 4 -> 5 on 2026-09-06: `DEV_FORGEJO_ADMIN_SECRET`. forgejo stopped being the
+    // standby half of the Git-host pair, so a pod really does look for
+    // `gitea.admin.existingSecret` now -- the exact lift condition its acknowledgement
+    // in `existing-secret-is-minted.baseline.json` named, and that entry is gone rather
+    // than re-worded.
+    expect(DEV_BOOTSTRAP_SECRETS).toContain(DEV_FORGEJO_ADMIN_SECRET);
+    expect(DEV_BOOTSTRAP_SECRETS.length).toBe(5);
     const refs = DEV_BOOTSTRAP_SECRETS.map((spec) => `${spec.namespace}/${spec.name}`);
     expect(new Set(refs).size).toBe(refs.length);
   });

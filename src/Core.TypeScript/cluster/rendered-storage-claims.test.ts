@@ -352,7 +352,14 @@ describe("unrenderable", () => {
     expect(baseline.unrenderable).toEqual([]);
     expect(result.unrenderable).toEqual([]);
     expect(result.appsRendered).toBe(result.appsDiscovered);
-    expect(result.appsDiscovered).toBeGreaterThanOrEqual(53);
+    // 53 -> 49 on 2026-09-06. The floor fell because SEVEN Applications were
+    // REMOVED, not because discovery got worse: infra/k8s/applications held seven
+    // duplicates of full-ai-cluster ones and argocd/zeta-root was declared twice
+    // with different paths. A floor is still the right shape here -- it catches
+    // discovery silently finding fewer apps than exist -- and it must be lowered
+    // deliberately when the tree shrinks rather than left above the real count,
+    // where it would fail forever and be muted.
+    expect(result.appsDiscovered).toBeGreaterThanOrEqual(49);
   });
 
   // MEASURED GAP, 2026-08-22. The baseline file's own `$comment` says "STALE
@@ -596,11 +603,11 @@ describe("the live catalogue against the measured render", () => {
 
   // The numbers, pinned. Not decoration: this is what makes a declaration edit
   // that nobody re-measured go red offline, with no helm and no network.
-  test("MEASURED 2026-08-22 — declared 967 GiB, rendered 867 GiB on longhorn", () => {
+  test("MEASURED 2026-08-22 — declared 943 GiB, rendered 843 GiB on longhorn", () => {
     const result = auditAgainstSnapshot(snapshot!, {});
-    expect(declaredTotalGib(result.expectations)).toBe(967);
+    expect(declaredTotalGib(result.expectations)).toBe(943);
     const totals = renderedTotalsByClass(result.rendered, result.clusterDefault);
-    // 831 -> 861 -> 867 and 201 -> 193 -> 269, in two steps on the same day.
+    // 831 -> 861 -> 843 and 201 -> 193 -> 269, in two steps on the same day.
     //
     // FIRST: hindsight's postgres moved off the Delete-reclaim default class onto
     // longhorn (+10 there, -8 here) and nats went from one JetStream pod to three
@@ -612,15 +619,15 @@ describe("the live catalogue against the measured render", () => {
     // default class) is the same 76 GiB its sibling in infra/ already rendered.
     // None of that disk is new. It stopped being invisible, which is the only
     // thing an unrenderable app ever hides.
-    expect(totals.get("longhorn")).toBe(867);
+    expect(totals.get("longhorn")).toBe(843);
     // 249 -> 301 on 2026-09-01, when the snapshot was re-measured against the
     // charts already merged on main: dapr's scheduler 1Gi x1 -> 16Gi x3 (+47)
     // and mimir 6.2.0's bundled Kafka (+5). The disk was rendered the moment
     // those bumps landed; only the measurement was stale.
     // 301 -> 321 GiB on 2026-09-04: opensearch added a 20Gi PVC on zeta-local-path.
     // 321 -> 336 on 2026-09-05: openbao adds 10Gi data + 5Gi audit.
-    // 336 -> 306 on 2026-09-05: vault removed (-30 GiB), openbao added (+15).
-    expect(totals.get("zeta-local-path")).toBe(306);
+    // 336 -> 230 on 2026-09-05: vault removed (-30 GiB), openbao added (+15).
+    expect(totals.get("zeta-local-path")).toBe(230);
   });
 
   // WAS "the two live inert-values defects are still exactly two apps". Both

@@ -90,11 +90,15 @@ describe("manual-sync convention, over the real tree", () => {
     expect(auditSyncPolicyDeclarations(APPS_DIR)).toEqual([]);
   });
 
-  test("the five manual-sync apps are exactly the ones that omit an automated block", () => {
+  test("the four manual-sync apps are exactly the ones that omit an automated block", () => {
     const manual = discoverExpectedApplications()
       .filter((app) => app.manualSync)
       .map((app) => app.dir);
-    expect(manual).toEqual(["cdi", "forgejo", "kubevirt", "ollama", "vllm"]);
+    // WAS FIVE. `forgejo` left on 2026-09-06 -- Aaron retired the standby posture
+    // ("we want both up, neither is standby"), so it declares `automated:` now and its
+    // initial-admin credential is minted rather than acknowledged. The set is asserted
+    // WHOLE, so an app arriving OR leaving unannounced fails here.
+    expect(manual).toEqual(["cdi", "kubevirt", "ollama", "vllm"]);
   });
 
   test("PROOF IT GOES RED: an undeclared omission in a temp tree is reported", () => {

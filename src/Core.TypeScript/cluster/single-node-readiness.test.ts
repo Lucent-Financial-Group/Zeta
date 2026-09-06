@@ -1259,16 +1259,16 @@ describe("findLedgerFigureDrift — the ledger's PROSE numbers are checked too",
   });
 
   test("a token that is not a known StorageClass is prose, not a figure", () => {
-    // `measured     967 GiB declared` is a rung name, not a class, and must not
+    // `measured     943 GiB declared` is a rung name, not a class, and must not
     // be adjudicated as one — otherwise the check fires on its own comment.
-    expect(quotedFigures(["    measured     967 GiB declared"], new Set(["longhorn"]))).toEqual([]);
-    expect(quotedFigures(["    longhorn      967 GiB   (x)"], new Set(["longhorn"]))).toHaveLength(1);
+    expect(quotedFigures(["    measured     943 GiB declared"], new Set(["longhorn"]))).toEqual([]);
+    expect(quotedFigures(["    longhorn      943 GiB   (x)"], new Set(["longhorn"]))).toHaveLength(1);
   });
 
   test("an inline mention with no alignment is not a figure", () => {
-    // `longhorn=1599GiB>>1047GiB@node-ad1efd` is an acknowledgement KEY, and
+    // `longhorn=1575GiB>>1047GiB@node-ad1efd` is an acknowledgement KEY, and
     // those are checked by findCapacityProvenance, not here.
-    expect(quotedFigures(["  longhorn=1599GiB>>1047GiB@node-ad1efd"], new Set(["longhorn"]))).toEqual([]);
+    expect(quotedFigures(["  longhorn=1575GiB>>1047GiB@node-ad1efd"], new Set(["longhorn"]))).toEqual([]);
   });
 
   // THE WIRING, not just the function. Mutation M14 (2026-08-22) deleted the
@@ -1355,7 +1355,13 @@ describe("findLedgerFigureDrift — the ledger's PROSE numbers are checked too",
     expect(findLedgerFigureDrift(ledger, claims, loadCatalogue(), readiness.DEFAULT_LEDGER_PATH)).toEqual([]);
     // And the check is NOT vacuous on the real file: it found figures to check.
     const known = new Set([...ledger.budgetedStorageClasses, "zeta-local-path"]);
-    expect(quotedFigures(ledgerComments(readiness.DEFAULT_LEDGER_PATH), known).length).toBeGreaterThanOrEqual(6);
+    // 6 -> 5 on 2026-09-06. TWO of the six quoted storage rows were "(the RENDER,
+    // infra tree)" readings, and that tree's seven duplicate Applications were
+    // removed when argocd/zeta-root stopped being declared twice. The floor is
+    // lowered to what the ledger now quotes rather than left above it, where it
+    // would fail forever and get muted -- the failure mode this whole file exists
+    // to prevent.
+    expect(quotedFigures(ledgerComments(readiness.DEFAULT_LEDGER_PATH), known).length).toBeGreaterThanOrEqual(5);
   });
 });
 
