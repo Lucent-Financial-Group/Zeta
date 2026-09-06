@@ -480,6 +480,12 @@ Conf consume
 assignments back into a named ask; a bare
 tpmrm0 path is still not an ask; still does
 not edit `zeta-first-boot.sh`.
+Role conf plus named bao
+(`081M1VQ6CHS087G0R0036YJAQ5`) joins those
+lines onto the role conf, or leaves it
+byte-identical; still does not expand
+`ZetaFirstbootRole`; still does not edit
+`zeta-first-boot.sh`.
 glibc-host-into-musl-image is not a
 module; Application.yaml stays Shamir.
 
