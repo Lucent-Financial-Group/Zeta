@@ -273,6 +273,81 @@ ref that `git` alone can follow, with `ace` as the ergonomic layer on top.
 *facts*, and `ace` would be the ergonomic nexus for *resolution* — and neither may become
 mandatory without violating §1.
 
+## Where this is going — the language repos are CHALLENGERS to the IR
+
+Aaron, giving the end state the split is shaped toward:
+
+> *"eventually our zeta repo will be our own zeta language and IR that generates all others via
+> Futamura projections, and the language-specific ones will be AI/hand-coded versions trying to
+> beat the auto-generated versions on benchmarks and tests over the IR-generated ones. This is
+> similar to what we are going for with our universal linguistic scene, where all the crazy
+> rules from any human language can be composed together — the famous missing one from English
+> is she/he naming of objects; in our meta-language this would be representable, but in English
+> it would be suppressed. Things like that."*
+
+**This resolves a question the plan above leaves open**, and it is worth stating because the
+obvious reading of "Zeta generates all the implementations" is that the language repos become
+redundant. They do not. They become the **control**.
+
+| repo | role after the IR exists |
+|---|---|
+| Zeta | the language + IR; **generates** an implementation per target |
+| `zeta-fs`, `zeta-rs`, `zeta-ts`, … | **hand-written and AI-written challengers** to the generated one |
+| `zeta-treaty` | the shared golden vectors both must pass, and the benchmarks that rank them |
+
+**Why the challengers must survive the IR, stated as a property rather than a preference:** an
+IR-generated implementation and its generator share a single point of failure. If every target
+is generated from one source, then all six agree by *construction*, and their agreement is
+worth nothing as evidence — which is the standing Knight–Leveson finding this repo already
+leans on (correlated implementations fail together, so their consensus does not measure
+correctness). An independently written implementation is the only thing whose **disagreement**
+with the generated one carries information. So the challengers are not legacy; they are what
+keeps the byte-lock from becoming a mirror.
+
+And it gives the benchmark a real scoreboard: **generated vs. hand-written, over the treaty's
+own vectors.** Either result is informative. If the generated implementation wins, the IR has
+earned the target. If a hand-written one wins, the gap is a specification of what the IR cannot
+yet express — which is exactly the next piece of work, named precisely.
+
+### The linguistic constraint, which is a hard requirement on the IR
+
+The analogy Aaron draws is not decorative — it states a design rule the IR must satisfy, and it
+rules out the obvious implementation:
+
+> **The meta-language must be able to REPRESENT what a target language suppresses, and record
+> the suppression — not intersect down to what all targets share.**
+
+English suppresses grammatical gender on inanimate objects; most Romance and Germanic languages
+do not. A meta-language built as the **intersection** of its targets cannot represent gender at
+all, so translating *through* it destroys a distinction the source made — silently, and
+unrecoverably. A meta-language built as the **union with declared per-target suppression** keeps
+the distinction, records that English drops it, and can say *what was lost and where*.
+
+The compiler form is identical and is the part that binds us: an IR that only carries what all
+of F#, C#, TypeScript, Rust, Python, Go can express loses everything any one of them can express
+uniquely — ownership and lifetimes, higher-kinded types, structural typing, goroutines, units of
+measure. Generating six implementations from that IR would produce six that are equally
+impoverished, and they would agree with each other perfectly, which brings us back to the
+correlated-redundancy problem above wearing a different hat.
+
+**So the requirement is:** the IR carries the **union**, and each target's backend declares what
+it **suppresses** and how. A suppression is a recorded, inspectable fact — the same discipline
+as the raw vault (a single version of the facts, never of the truth) and the same as
+*reintegration is not reconvergence*, applied to language targets rather than to belief
+branches. What a target cannot express does not vanish; it is written down as unexpressible
+*there*.
+
+**What this changes about the split, concretely:** `zeta-treaty` is not only the vector store —
+it is where the **suppression maps** live, because they are exactly the shared, negotiated,
+cross-language artifact that no single language repo may own. That strengthens the argument in
+the nexus section above rather than complicating it: the treaty repo now has a second load
+bearing role, and both roles are the same kind of thing.
+
+**Register:** the end state and the linguistic analogy are Aaron's. The union-not-intersection
+requirement is the direct consequence, argued here, and it is falsifiable in the ordinary way —
+the first target-unique construct that survives a round trip through the IR is evidence for it,
+and the first one silently lost is evidence the IR was built as an intersection after all.
+
 ## Naming — the memory constraint, satisfied
 
 One prefix, one word, no punctuation to remember:
