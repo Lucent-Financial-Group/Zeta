@@ -14,8 +14,8 @@ import {
 } from "./lib.ts";
 import { firstbootRoleFromFlags, validateJoinTokenMaterial, type ZetaFirstbootRole } from "./firstboot-role.ts";
 import {
+  namedBaoElfArgErrorMessage,
   parseNamedBaoElfArgs,
-  type NamedBaoElfArgError,
   type NamedBaoElfAsk,
 } from "./firstboot-bao-elf.ts";
 import { railFindingsForEspWrites } from "./injection-rail.ts";
@@ -185,23 +185,6 @@ function requireValue(args: readonly string[], index: number, flag: string): str
   return value;
 }
 
-function namedBaoElfCliError(reason: NamedBaoElfArgError): string {
-  switch (reason) {
-    case "site-without-path":
-      return "--bao-load-site requires --bao-path";
-    case "path-without-site":
-      return "--bao-path requires --bao-load-site";
-    case "unknown-site":
-      return "--bao-load-site must be on-host or in-chart-image";
-    case "empty-site":
-      return "--bao-load-site requires a value";
-    case "empty-path":
-      return "--bao-path requires a value";
-    case "unsafe-conf-value":
-      return "--bao-load-site / --bao-path contains a value firstboot conf cannot carry";
-  }
-}
-
 export function parseFileBackedZflashArgs(args: readonly string[]): FileBackedZflashCliParseResult {
   let isoPath: string | undefined;
   let outputImagePath: string | undefined;
@@ -308,7 +291,7 @@ export function parseFileBackedZflashArgs(args: readonly string[]): FileBackedZf
   let namedBaoElf: NamedBaoElfAsk | null | undefined;
   if (namedArgv.length > 0) {
     const parsedNamed = parseNamedBaoElfArgs(namedArgv);
-    if (!parsedNamed.ok) return { kind: "error", error: namedBaoElfCliError(parsedNamed.reason) };
+    if (!parsedNamed.ok) return { kind: "error", error: namedBaoElfArgErrorMessage(parsedNamed.reason) };
     namedBaoElf = parsedNamed.ask;
   }
 

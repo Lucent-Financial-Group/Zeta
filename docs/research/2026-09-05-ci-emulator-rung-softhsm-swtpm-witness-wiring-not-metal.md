@@ -242,6 +242,10 @@ CLI flags (`081M1VTE7TZ087G0R002XSHAYZ`):
 not fill `NIXOS_HOST_BAO`. `parseNamedBaoElfArgs`
 lives next to the carrier so the CLI does not
 import installer `fs`.
+QEMU harness (`081M1VW190B087G0R003D4GWJF`):
+`prepare-boot-image.ts` forwards those same flags.
+One without the other refuses. Does not fill
+`NIXOS_HOST_BAO`.
 
 1. Metal: `seal "pkcs11"` in Application.yaml still waits.
    Same commit as a **reachable** module: same-libc image

@@ -2,9 +2,84 @@ import { describe, expect, test } from "bun:test";
 import { mkdtempSync, readFileSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { DEFAULT_QEMU_USB_UUID, writeTestCredentialBlob } from "./prepare-boot-image";
+import { TPM_CHAR_DEVICE } from "../../cluster/bao-load-site.ts";
+import { NIXOS_HOST_BAO, nixosHostBaoAsk } from "../firstboot-bao-elf.ts";
+import { DEFAULT_QEMU_USB_UUID, parsePrepareBootImageArgs, writeTestCredentialBlob } from "./prepare-boot-image";
 import { planQcow2SnapshotRetention } from "./qemu-state";
 import { B0891_RETENTION_USB_SERIAL_MARKERS } from "./serial-markers";
+
+describe("parsePrepareBootImageArgs", () => {
+  const required = ["--iso", "installer.iso", "--output", "out.img"] as const;
+
+  test("parses --bao-load-site and --bao-path with --role into namedBaoElf", () => {
+    const baseline = parsePrepareBootImageArgs([...required]);
+    if ("error" in baseline) throw new Error(baseline.error);
+    expect(
+      parsePrepareBootImageArgs([
+        ...required,
+        "--role",
+        "first-control-plane",
+        "--bao-load-site",
+        "on-host",
+        "--bao-path",
+        NIXOS_HOST_BAO,
+      ]),
+    ).toEqual({
+      ...baseline,
+      firstbootRole: { kind: "first-control-plane" },
+      namedBaoElf: nixosHostBaoAsk(),
+    });
+  });
+
+  test("refuses --bao-load-site without --bao-path", () => {
+    expect(
+      parsePrepareBootImageArgs([...required, "--role", "first-control-plane", "--bao-load-site", "on-host"]),
+    ).toEqual({ error: "--bao-load-site requires --bao-path" });
+  });
+
+  test("refuses --bao-path without --bao-load-site and does not fill NIXOS_HOST_BAO", () => {
+    expect(parsePrepareBootImageArgs([...required, "--bao-path", NIXOS_HOST_BAO])).toEqual({
+      error: "--bao-path requires --bao-load-site",
+    });
+  });
+
+  test("refuses an unknown --bao-load-site", () => {
+    expect(
+      parsePrepareBootImageArgs([...required, "--bao-load-site", "tpmrm0", "--bao-path", NIXOS_HOST_BAO]),
+    ).toEqual({ error: "--bao-load-site must be on-host or in-chart-image" });
+  });
+
+  test("parses tpmrm0 --bao-path as namedBaoElf null", () => {
+    const baseline = parsePrepareBootImageArgs([...required]);
+    if ("error" in baseline) throw new Error(baseline.error);
+    expect(
+      parsePrepareBootImageArgs([
+        ...required,
+        "--role",
+        "first-control-plane",
+        "--bao-load-site",
+        "on-host",
+        "--bao-path",
+        TPM_CHAR_DEVICE,
+      ]),
+    ).toEqual({
+      ...baseline,
+      firstbootRole: { kind: "first-control-plane" },
+      namedBaoElf: null,
+    });
+  });
+
+  test("parses both bao flags without --role; a non-null ask is still an ask", () => {
+    const baseline = parsePrepareBootImageArgs([...required]);
+    if ("error" in baseline) throw new Error(baseline.error);
+    expect(
+      parsePrepareBootImageArgs([...required, "--bao-load-site", "on-host", "--bao-path", NIXOS_HOST_BAO]),
+    ).toEqual({
+      ...baseline,
+      namedBaoElf: nixosHostBaoAsk(),
+    });
+  });
+});
 
 describe("prepare-boot-image", () => {
   test("writeTestCredentialBlob produces a non-empty encrypted blob", () => {
