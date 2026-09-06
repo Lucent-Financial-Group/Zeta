@@ -13,6 +13,7 @@ import hashlib
 import json
 import math
 import struct
+from dataclasses import dataclass
 from pathlib import Path
 
 ENVIRONMENT_FINGERPRINT = (
@@ -26,6 +27,18 @@ ENVIRONMENT_MANIFEST = Path(
 )
 EVALUATOR_CATALOGUE = Path(
     "docs/research/data/2026-09-05-contextual-grid-v1-evaluator-catalogue.json"
+)
+REFLECT_X_ENVIRONMENT_FINGERPRINT = (
+    "7477bb597b44805212e7202751ad4988dcae81e4c22e418f7f892cb1c35a1d5a"
+)
+REFLECT_X_EVALUATOR_CATALOGUE_FINGERPRINT = (
+    "1872f54a6fce5f54e3a52456c443012e01c71a8cce33515ef28fb07465da39d7"
+)
+REFLECT_X_ENVIRONMENT_MANIFEST = Path(
+    "docs/research/data/2026-09-06-contextual-grid-v1-reflect-x-manifest.json"
+)
+REFLECT_X_EVALUATOR_CATALOGUE = Path(
+    "docs/research/data/2026-09-06-contextual-grid-v1-reflect-x-evaluator-catalogue.json"
 )
 
 MASK = (1 << 64) - 1
@@ -45,24 +58,105 @@ Position = tuple[int, int]
 StateAction = tuple[Position, str]
 
 
+@dataclass(frozen=True)
+class Carrier:
+    environment_fingerprint: str
+    catalogue_fingerprint: str
+    environment_manifest: Path
+    evaluator_catalogue: Path
+    training_start: Position
+    held_out_start: Position
+    goal: Position
+    nonterminal_reward_ppm: int
+    terminal_reward_ppm: int
+
+
+V1_CARRIER = Carrier(
+    ENVIRONMENT_FINGERPRINT,
+    EVALUATOR_CATALOGUE_FINGERPRINT,
+    ENVIRONMENT_MANIFEST,
+    EVALUATOR_CATALOGUE,
+    TRAINING_START,
+    HELD_OUT_START,
+    GOAL,
+    NONTERMINAL_REWARD_PPM,
+    TERMINAL_REWARD_PPM,
+)
+
+
 def _sha256(data: bytes) -> str:
     return hashlib.sha256(data).hexdigest()
 
 
-def verify_repository_carriers(root: Path) -> None:
-    environment = (root / ENVIRONMENT_MANIFEST).read_bytes()
-    catalogue = (root / EVALUATOR_CATALOGUE).read_bytes()
-    if _sha256(environment) != ENVIRONMENT_FINGERPRINT:
+def load_verified_carrier(root: Path, carrier_id: str) -> Carrier:
+    if carrier_id == "v1":
+        expected_environment = ENVIRONMENT_FINGERPRINT
+        expected_catalogue = EVALUATOR_CATALOGUE_FINGERPRINT
+        environment_path = ENVIRONMENT_MANIFEST
+        catalogue_path = EVALUATOR_CATALOGUE
+        expected_transition_version = "zeta.contextual-grid/v1"
+        expected_catalogue_version = "zeta.contextual-grid/evaluators/v1"
+    elif carrier_id == "v1-reflect-x":
+        expected_environment = REFLECT_X_ENVIRONMENT_FINGERPRINT
+        expected_catalogue = REFLECT_X_EVALUATOR_CATALOGUE_FINGERPRINT
+        environment_path = REFLECT_X_ENVIRONMENT_MANIFEST
+        catalogue_path = REFLECT_X_EVALUATOR_CATALOGUE
+        expected_transition_version = "zeta.contextual-grid/v1-reflect-x"
+        expected_catalogue_version = "zeta.contextual-grid/evaluators/v1-reflect-x"
+    else:
+        raise ValueError("UnknownCarrier")
+    environment = (root / environment_path).read_bytes()
+    catalogue = (root / catalogue_path).read_bytes()
+    if _sha256(environment) != expected_environment:
         raise ValueError("environment manifest hash mismatch")
-    if _sha256(catalogue) != EVALUATOR_CATALOGUE_FINGERPRINT:
+    if _sha256(catalogue) != expected_catalogue:
         raise ValueError("evaluator catalogue hash mismatch")
+    environment_data = json.loads(environment)
+    catalogue_data = json.loads(catalogue)
+    if environment_data["actions"] != list(ACTIONS):
+        raise ValueError("carrier action order is not canonical")
+    if environment_data["transitionVersion"] != expected_transition_version:
+        raise ValueError("carrier transition version mismatch")
+    if catalogue_data["catalogueVersion"] != expected_catalogue_version:
+        raise ValueError("carrier catalogue version mismatch")
+    if catalogue_data["environmentFingerprint"] != expected_environment:
+        raise ValueError("catalogue environment binding mismatch")
+    if catalogue_data["entries"] != [
+        "external-return/v1",
+        "state-action-count/v1",
+        "q-epsilon/v1",
+        "q-ucb/v1",
+        "count-first/v1",
+    ]:
+        raise ValueError("carrier evaluator entries mismatch")
+    return Carrier(
+        expected_environment,
+        expected_catalogue,
+        environment_path,
+        catalogue_path,
+        tuple(environment_data["trainingStart"]),
+        tuple(environment_data["heldOutStart"]),
+        tuple(environment_data["goal"]),
+        environment_data["nonterminalRewardPpm"],
+        environment_data["terminalRewardPpm"],
+    )
+
+
+def verify_repository_carriers(root: Path) -> None:
+    load_verified_carrier(root, "v1")
+
+
+def _admit(
+    carrier: Carrier, environment_fingerprint: str, catalogue_fingerprint: str
+) -> None:
+    if environment_fingerprint != carrier.environment_fingerprint:
+        raise ValueError("UnknownFingerprint")
+    if catalogue_fingerprint != carrier.catalogue_fingerprint:
+        raise ValueError("CatalogueFingerprintMismatch")
 
 
 def admit(environment_fingerprint: str, catalogue_fingerprint: str) -> None:
-    if environment_fingerprint != ENVIRONMENT_FINGERPRINT:
-        raise ValueError("UnknownFingerprint")
-    if catalogue_fingerprint != EVALUATOR_CATALOGUE_FINGERPRINT:
-        raise ValueError("CatalogueFingerprintMismatch")
+    _admit(V1_CARRIER, environment_fingerprint, catalogue_fingerprint)
 
 
 def next_stream(state: int) -> tuple[int, int]:
@@ -162,7 +256,9 @@ def _choose_training_action(
     raise ValueError(f"unknown policy: {policy}")
 
 
-def _transition(position: Position, action: str) -> tuple[Position, int, bool]:
+def _transition(
+    carrier: Carrier, position: Position, action: str
+) -> tuple[Position, int, bool]:
     dx, dy = {
         "north": (0, -1),
         "east": (1, 0),
@@ -175,9 +271,9 @@ def _transition(position: Position, action: str) -> tuple[Position, int, bool]:
         if not (0 <= attempted[0] <= 4 and 0 <= attempted[1] <= 4)
         else attempted
     )
-    if next_position == GOAL:
-        return next_position, TERMINAL_REWARD_PPM, True
-    return next_position, NONTERMINAL_REWARD_PPM, False
+    if next_position == carrier.goal:
+        return next_position, carrier.terminal_reward_ppm, True
+    return next_position, carrier.nonterminal_reward_ppm, False
 
 
 def _max_next_q(q_values: dict[StateAction, float], position: Position) -> float:
@@ -226,7 +322,8 @@ def _trace_line(
     )
 
 
-def run(
+def run_for_carrier(
+    carrier: Carrier,
     environment_fingerprint: str,
     catalogue_fingerprint: str,
     policy: str,
@@ -234,7 +331,7 @@ def run(
     episodes: int,
     action_cap: int,
 ) -> dict[str, object]:
-    admit(environment_fingerprint, catalogue_fingerprint)
+    _admit(carrier, environment_fingerprint, catalogue_fingerprint)
     if episodes < 0 or action_cap < 0:
         raise ValueError("episodes and action_cap must be non-negative")
 
@@ -251,7 +348,7 @@ def run(
     training_trace: list[str] = []
 
     for episode in range(1, episodes + 1):
-        position = TRAINING_START
+        position = carrier.training_start
         visited_states.add(position)
         terminal = False
         step = 0
@@ -263,7 +360,7 @@ def run(
             count_before = _count_value(counts, key)
             novelty_sum += 1.0 / math.sqrt(1.0 + count_before)
             novelty_count += 1
-            next_position, reward, reached_goal = _transition(position, action)
+            next_position, reward, reached_goal = _transition(carrier, position, action)
             training_return += reward
             bootstrap = 0.0 if reached_goal else _max_next_q(q_values, next_position)
             alpha = 0.05 / math.sqrt(max(1, time + 1))
@@ -292,7 +389,7 @@ def run(
                 training_goal_episodes += 1
 
     q_before_evaluation = _q_digest(q_values)
-    position = HELD_OUT_START
+    position = carrier.held_out_start
     held_out_return = 0
     evaluation_actions: list[str] = []
     evaluation_trace: list[str] = []
@@ -301,7 +398,7 @@ def run(
     while step < action_cap and not terminal:
         action = _greedy_action(q_values, position)
         count_before = _count_value(counts, (position, action))
-        next_position, reward, reached_goal = _transition(position, action)
+        next_position, reward, reached_goal = _transition(carrier, position, action)
         step += 1
         held_out_return += reward
         evaluation_actions.append(action)
@@ -332,6 +429,25 @@ def run(
         "qDigestAfterEvaluation": q_after_evaluation,
         "streamDraws": draws,
     }
+
+
+def run(
+    environment_fingerprint: str,
+    catalogue_fingerprint: str,
+    policy: str,
+    seed: int,
+    episodes: int,
+    action_cap: int,
+) -> dict[str, object]:
+    return run_for_carrier(
+        V1_CARRIER,
+        environment_fingerprint,
+        catalogue_fingerprint,
+        policy,
+        seed,
+        episodes,
+        action_cap,
+    )
 
 
 def _main() -> None:

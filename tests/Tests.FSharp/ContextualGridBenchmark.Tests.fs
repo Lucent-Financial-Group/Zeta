@@ -192,3 +192,27 @@ let ``independent Python oracle agrees on bounded replay traces for every declar
                     |> Seq.toList
                 Assert.Equal<string>(fsharp.HeldOutActions :> seq<string>, pythonActions :> seq<string>)
                 Assert.Equal(fsharp.MeanPreIncrementNovelty, root.GetProperty("meanPreIncrementNovelty").GetDouble(), 12)
+
+[<Fact>]
+let ``reflected carrier is separately admitted and refuses the v1 catalogue before simulation`` () =
+    match ContextualGridBenchmark.loadVerifiedCarrier (repoRoot ()) ContextualGridBenchmark.ReflectX with
+    | Error failure -> failwith failure
+    | Ok carrier ->
+        Assert.Equal(4, carrier.TrainingStart.X)
+        Assert.Equal(0, carrier.TrainingStart.Y)
+        Assert.Equal(4, carrier.HeldOutStart.X)
+        Assert.Equal(4, carrier.HeldOutStart.Y)
+        Assert.Equal(0, carrier.Goal.X)
+        Assert.Equal(0, carrier.Goal.Y)
+        match
+            ContextualGridBenchmark.runForCarrier
+                carrier
+                carrier.EnvironmentFingerprint
+                ContextualGridBenchmark.EvaluatorCatalogueFingerprint
+                ContextualGridBenchmark.CountFirst
+                100UL
+                12
+                20 with
+        | Error(ContextualGridBenchmark.CatalogueFingerprintMismatch supplied) ->
+            Assert.Equal(ContextualGridBenchmark.EvaluatorCatalogueFingerprint, supplied)
+        | other -> failwithf "expected reflected carrier catalogue refusal, got %A" other
