@@ -94,6 +94,7 @@ import { evaluateTrajectory, warrantsEscalation, type Trajectory } from "./missi
 import {
   DEFAULT_PIPELINE,
   runPipeline,
+  gatesOf,
   withProducers,
   type Artifact,
   type Pipeline,
@@ -110,6 +111,7 @@ import {
 } from "./org-reactor";
 import { reconcile, type ReconciliationReport } from "./reconciliation";
 import { groomingProducer } from "./grooming";
+import { bookQaBlocks, bookReviewBlocks } from "./review-calendar";
 import type { NamedDependency, WorkBatch } from "./work-batch";
 import {
   computeRecommendation,
@@ -1052,6 +1054,78 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
         workItemId: task.workId,
       },
     });
+    cursor += deps.workBlockMs;
+
+    // ── REVIEWS AND QA GET TIME TOO ──────────────────────────────────────
+    // Booked here, alongside the work, because the calendar is RUNTIME AUTHORITY: `loop-policy`
+    // narrows a hat's menu by what it is booked to be doing, so a review with no block is one the
+    // reviewing hat's tick cannot see it is supposed to do. Work was authorised by the schedule
+    // and reviews were not, which is why the review lane could never drive itself.
+    const chain = gatesOf(deps.pipeline ?? DEFAULT_PIPELINE);
+    const reviews = bookReviewBlocks({
+      chart: deps.chart,
+      calendar,
+      gates: chain,
+      workId: task.workId,
+      proposerHatId: task.assigneeHatId!,
+      fromMs: cursor,
+      blockMs: deps.workBlockMs,
+      createId: deps.createId,
+    });
+    calendar = reviews.calendar;
+    for (const r of reviews.refusals) refusals.push(r);
+    for (const b of reviews.booked) {
+      note({
+        kind: OrgEventKind.ScheduleBlockPlanned,
+        subjectId: task.workId,
+        actorHatId: b.block.hatId,
+        decision: `booked a review of '${b.gate}'`,
+        toState: ScheduleBlockType.Review,
+        atMs: b.block.startMs,
+        fact: {
+          kind: "block_planned",
+          blockId: b.block.blockId,
+          hatId: b.block.hatId,
+          blockType: ScheduleBlockType.Review,
+          startMs: b.block.startMs,
+          endMs: b.block.endMs,
+          workItemId: task.workId,
+        },
+      });
+    }
+    cursor += chain.length * deps.workBlockMs;
+
+    const qa = bookQaBlocks({
+      calendar,
+      qaHatIds: gateOwners(deps.chart, GateKind.RuntimeValidation)
+        .filter((h) => h.id !== task.assigneeHatId)
+        .map((h) => h.id),
+      workId: task.workId,
+      fromMs: cursor,
+      blockMs: deps.workBlockMs,
+      createId: deps.createId,
+    });
+    calendar = qa.calendar;
+    for (const r of qa.refusals) refusals.push(r);
+    for (const b of qa.booked) {
+      note({
+        kind: OrgEventKind.ScheduleBlockPlanned,
+        subjectId: task.workId,
+        actorHatId: b.block.hatId,
+        decision: "booked QA time",
+        toState: ScheduleBlockType.PromptFlowExecution,
+        atMs: b.block.startMs,
+        fact: {
+          kind: "block_planned",
+          blockId: b.block.blockId,
+          hatId: b.block.hatId,
+          blockType: ScheduleBlockType.PromptFlowExecution,
+          startMs: b.block.startMs,
+          endMs: b.block.endMs,
+          workItemId: task.workId,
+        },
+      });
+    }
     cursor += deps.workBlockMs;
   }
 
