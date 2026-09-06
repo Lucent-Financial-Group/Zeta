@@ -1167,6 +1167,10 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
     // (the menu discipline: code computes the legal set, an agent picks within it, index clamped).
     // Pre-resolving keeps that shape rather than making every chooser in the register async.
     const reviewed = new Map<GateKind, ReviewVerdict>();
+    // WHAT THE REVIEWER CONSULTED, kept per gate. The `Review` port already returns evidence;
+    // until now none of it survived into the gate record, so a gate whose whole claim is that
+    // something was consulted rested on the approver's say-so.
+    const reviewEvidence = new Map<GateKind, readonly string[]>();
     for (const gate of ORDERED_GATES) {
       if (gate === GateKind.RuntimeValidation) continue;
       const verdict = await providers.review.review({
@@ -1183,6 +1187,7 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
         continue;
       }
       reviewed.set(gate, verdict.value);
+      reviewEvidence.set(gate, verdict.evidence.map((e) => e.ref));
     }
 
     // No caller override: the ports decide, and evidence decides runtime validation. See the note
@@ -1197,6 +1202,12 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
         atMs: warmedAt,
         // Separation of duties: whoever did the work does not review it.
         proposerHatId: task.assigneeHatId ?? NO_PROPOSER,
+        // Runtime validation's evidence is the TEST RUNS, not a reviewer's note — the one gate
+        // whose consultation is a machine's, so its references come from where they were produced.
+        evidenceFor: (gate) =>
+          gate === GateKind.RuntimeValidation
+            ? qa.runs.flatMap((r) => r.evidence.map((e) => e.ref))
+            : (reviewEvidence.get(gate) ?? []),
       });
       gateRuns.push({ taskId: task.workId, run });
       gateEvaluations.push(...run.evaluations);

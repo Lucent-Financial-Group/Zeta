@@ -192,7 +192,7 @@ describe("the status reads a REAL run", () => {
     const r = await run();
     const forged = [
       ...r.gateEvaluations,
-      { workId: "w", gate: GateKind.RuntimeValidation, outcome: GateOutcome.Approved, byHatId: "backend_implementer", reason: "", atMs: 0 },
+      { workId: "w", gate: GateKind.RuntimeValidation, outcome: GateOutcome.Approved, byHatId: "backend_implementer", reason: "", atMs: 0, evidenceRefs: [] },
     ];
     expect(gateHealth(chart, "w", forged).unauthorizedEvaluations).toBe(1);
   });

@@ -29,7 +29,7 @@ const ev = (workId: string, gate: GateKind, outcome: GateOutcome): GateEvaluatio
   outcome,
   byHatId: "qa_manager",
   reason: "",
-  atMs: 0,
+  atMs: 0, evidenceRefs: [],
 });
 
 const failed = (n: number, gate: GateKind = GateKind.RuntimeValidation): GateEvaluation[] =>

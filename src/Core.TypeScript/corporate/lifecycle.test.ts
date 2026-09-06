@@ -33,6 +33,8 @@ import {
   NO_PROPOSER,
   ORDERED_GATES,
   recoveryPathFor,
+  requiresEvidence,
+  unattestedApprovals,
   type GateEvaluation,
 } from "./quality-gate";
 import { buildOrgChart } from "./org-chart";
@@ -277,5 +279,103 @@ describe("the record of a run is a record of the PROCESS", () => {
     expect(allGatesPassed(passed)).toBe(true);
     // Every evaluation names WHO decided it, so the trace answers "who let this through".
     for (const e of evaluations) expect(e.byHatId).not.toBe("");
+  });
+});
+
+describe("AN APPROVAL NOW SAYS WHAT IT CONSULTED — or says that it consulted nothing", () => {
+  const evaluate = (gate: GateKind, evidenceRefs: readonly string[]) =>
+    evaluateGate(chart, {
+      workId: "w1",
+      gate,
+      evaluatorHatId: anOwnerOf(gate),
+      passed: priorsOf(gate),
+      chooser: approve,
+      atMs: 0,
+      proposerHatId: NO_PROPOSER,
+      evidenceRefs,
+    });
+
+  test("the three gates whose NAME is a claim about an act are the ones tracked", () => {
+    // Three, not thirteen. Requiring it everywhere turns the field into the word "reviewed", which
+    // is the shape that makes a control decorative.
+    expect(requiresEvidence(GateKind.BusinessContextGrooming)).toBe(true);
+    expect(requiresEvidence(GateKind.AdversarialReview)).toBe(true);
+    expect(requiresEvidence(GateKind.QaUat)).toBe(true);
+    expect(requiresEvidence(GateKind.BrdApproval)).toBe(false);
+    expect(requiresEvidence(GateKind.ReleaseReadiness)).toBe(false);
+  });
+
+  test("what the reviewer consulted reaches the RECORD, not just the reviewer", () => {
+    const r = evaluate(GateKind.AdversarialReview, ["attack:coupon-double-apply", "doc:arch-v2"]);
+    expect(r.ok).toBe(true);
+    if (!r.ok) return;
+    expect(r.evaluation.evidenceRefs).toEqual(["attack:coupon-double-apply", "doc:arch-v2"]);
+  });
+
+  test("an EVIDENCE-FREE approval is still accepted — and is reported as unattested", () => {
+    // The honest position. Refusing would look like enforcement and be none: any string satisfies
+    // an evidence check, so the mechanism can distinguish attested from bare, and cannot make a
+    // bare one impossible.
+    const r = evaluate(GateKind.AdversarialReview, []);
+    expect(r.ok).toBe(true);
+    if (!r.ok) return;
+    expect(r.evaluation.evidenceRefs).toEqual([]);
+    expect(unattestedApprovals([r.evaluation])).toHaveLength(1);
+  });
+
+  test("...and an ATTESTED one is not reported", () => {
+    const r = evaluate(GateKind.QaUat, ["session:uat-2026-09-06"]);
+    expect(r.ok).toBe(true);
+    if (!r.ok) return;
+    expect(unattestedApprovals([r.evaluation])).toEqual([]);
+  });
+
+  test("whitespace is not evidence", () => {
+    const r = evaluate(GateKind.BusinessContextGrooming, ["   ", ""]);
+    expect(r.ok).toBe(true);
+    if (!r.ok) return;
+    expect(r.evaluation.evidenceRefs).toEqual([]);
+    expect(unattestedApprovals([r.evaluation])).toHaveLength(1);
+  });
+
+  test("a REJECTION that consulted nothing is not an unattested approval", () => {
+    // A reviewer declining to engage is a different fact, and counting it here would inflate the
+    // one number this is for.
+    const reject: OrgChooser<GateOutcome> = (legal) => ({
+      index: Math.max(0, legal.indexOf(GateOutcome.Rejected)),
+      reason: "no",
+    });
+    const r = evaluateGate(chart, {
+      workId: "w1",
+      gate: GateKind.AdversarialReview,
+      evaluatorHatId: anOwnerOf(GateKind.AdversarialReview),
+      passed: priorsOf(GateKind.AdversarialReview),
+      chooser: reject,
+      atMs: 0,
+      proposerHatId: NO_PROPOSER,
+      evidenceRefs: [],
+    });
+    expect(r.ok).toBe(true);
+    if (!r.ok) return;
+    expect(unattestedApprovals([r.evaluation])).toEqual([]);
+  });
+
+  test("a gate OUTSIDE the tracked three is never reported, evidence or not", () => {
+    const r = evaluate(GateKind.BrdApproval, []);
+    expect(r.ok).toBe(true);
+    if (!r.ok) return;
+    expect(unattestedApprovals([r.evaluation])).toEqual([]);
+  });
+
+  test("THE NULL REVIEWER IS DISTINGUISHABLE, which is the whole gain", () => {
+    // `autoApproveReview` describes itself as reading no evidence and consulting nobody, and it
+    // returns `auto-approved:<gate>:<workId>`. That satisfies a presence check — which is exactly
+    // why presence is not enforced — but it NAMES itself in the record, so a reader can tell it
+    // from a real consultation after the fact. Before this field, both looked identical.
+    const stamped = evaluate(GateKind.AdversarialReview, ["auto-approved:adversarial_review:w1"]);
+    expect(stamped.ok).toBe(true);
+    if (!stamped.ok) return;
+    expect(stamped.evaluation.evidenceRefs[0]).toContain("auto-approved");
+    expect(unattestedApprovals([stamped.evaluation])).toEqual([]);
   });
 });

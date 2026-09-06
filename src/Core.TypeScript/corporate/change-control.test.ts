@@ -281,7 +281,7 @@ describe("shapes the pipeline does not produce, which a caller can", () => {
       facts: {
         workId: "w1",
         gateEvaluations: [
-          { workId: "w1", gate: GateKind.CustomerRfpReview, outcome: GateOutcome.Approved, byHatId: "product_manager", reason: "", atMs: 0 },
+          { workId: "w1", gate: GateKind.CustomerRfpReview, outcome: GateOutcome.Approved, byHatId: "product_manager", reason: "", atMs: 0 , evidenceRefs: []},
         ],
         cancelled: false,
       },
