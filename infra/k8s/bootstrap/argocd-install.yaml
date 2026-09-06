@@ -42,16 +42,45 @@
 # `services.k3s.manifests` actually understands".
 #
 # ── VERSION PIN ────────────────────────────────────────────────────────────
-# argo-cd chart 7.7.10 has appVersion v2.13.2 — the EXACT ArgoCD version the
-# retired Kustomization pinned, checked against
-# https://argoproj.github.io/argo-helm/index.yaml, not assumed. It is also
-# the pin `full-ai-cluster` uses, which the daily live-kind lane
-# (.github/workflows/k8s-argocd-health-test.yml) already exercises.
+# argo-cd chart 10.8.0, appVersion v3.5.2.
 #
-# To upgrade ArgoCD: bump `version` below and confirm the chart's appVersion
-# in that index. `targetRevision: main` in root-application.yaml controls
-# which Git ref ArgoCD TRACKS, never which ArgoCD version is INSTALLED —
-# those two are independent, keep both pinned.
+# THIS FILE WAS THE FIFTH SITE NOBODY COUNTED. It said 7.7.10 (v2.13.2) until
+# 2026-09-06 and its header claimed "It is also the pin `full-ai-cluster` uses"
+# — true when written on 2026-08-18, false from 2026-09-01, and never noticed
+# because three sequential bumps (09-01, 09-03, 09-04) all worked from a roster
+# of FOUR sites that did not include this one. This is the METAL path: K3S
+# auto-applies this HelmChart on NixOS first boot.
+#
+# WHAT THE DRIFT COST WOULD HAVE BEEN, and it is not hypothetical — the same
+# defect fired on 2026-09-03 in the kind lane, run 33736439359. v2.13.2 ships
+# Helm 3 only; seaweedfs >= 4.33.0 uses the Helm-4-only `fromToml`; the
+# repo-server fails manifest generation and CACHES the error per revision, so
+# the wave -90 self-upgrade arrives after the failure is cached and cannot
+# clear it. seaweedfs then reads health=Healthy VACUOUSLY with zero applied
+# resources. On metal it would be one major version wider: install v2.13.2,
+# then have it upgrade itself to v3.5.2 in the earliest sync wave.
+#
+# MEASURED BEFORE BUMPING, with THIS FILE's exact values at both versions —
+# `helm template argo/argo-cd -n argocd -f <these values>`:
+#   40 -> 44 resources; NOTHING REMOVED
+#   the four additions are all NetworkPolicy (application-controller, redis,
+#     repo-server, server). Four rather than the five `full-ai-cluster` measured
+#     because dex is off here, so there is no dex NetworkPolicy.
+#   every value this file sets still lands: argocd-server Service is ClusterIP,
+#     `server.insecure: true` reaches argocd-cmd-params-cm, notifications render
+#     zero resources, and dex renders zero resources at 10.8.0.
+#
+# ALL FIVE PIN SITES MOVE TOGETHER, and that is now CHECKED rather than asserted:
+# `src/Core.TypeScript/hygiene/audit-argocd-pin-parity.ts` fails when they
+# disagree. It went red on `main` when written, naming this file. Prose was what
+# was already in place when this pin was left behind three times, so prose is not
+# what stops the next one.
+#
+# To upgrade ArgoCD: bump ALL FIVE sites, confirm the chart's appVersion in
+# https://argoproj.github.io/argo-helm/index.yaml, and re-render the values.
+# `targetRevision: main` in root-application.yaml controls which Git ref ArgoCD
+# TRACKS, never which ArgoCD version is INSTALLED — those two are independent,
+# keep both pinned.
 
 apiVersion: helm.cattle.io/v1
 kind: HelmChart
@@ -61,7 +90,7 @@ metadata:
 spec:
   chart: argo-cd
   repo: https://argoproj.github.io/argo-helm
-  version: 7.7.10
+  version: 10.8.0
   targetNamespace: argocd
   # argocd-namespace.yaml creates the namespace explicitly and is applied
   # first, so the chart must not race it.

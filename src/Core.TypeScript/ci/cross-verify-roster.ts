@@ -416,6 +416,34 @@ export const CROSS_VERIFY_AUDITS: readonly CrossVerifyAudit[] = [
     command: "bun src/Core.TypeScript/hygiene/audit-dotnet-pin-parity.ts",
   },
 
+  // FIVE places install ArgoCD and they must name ONE chart version. The response to the
+  // 2026-09-03 incident -- the k3s bootstrap moved to 10.6.0 and "this kind-lane pin was
+  // the one left behind", so v2.13.2's Helm 3 could not render seaweedfs's Helm-4-only
+  // `fromToml`, the repo-server CACHED the manifest error per revision, and the wave -90
+  // self-upgrade arrived too late to clear it -- was to write "All FOUR pin sites move
+  // together" into four file headers. Prose was already in place when the pin was left
+  // behind, so prose is not what stops the next one. And the prose was wrong when written:
+  // `infra/k8s/bootstrap/argocd-install.yaml`, the HelmChart K3S auto-applies on NixOS
+  // first boot, was never in the roster and sat at 7.7.10 through all three bumps. This
+  // audit went red on `main` the day it was written, naming exactly that file. It REFUSES
+  // when the dev-cluster install-site count changes rather than auditing whatever it
+  // found, because the roster is the thing that drifted both times.
+  {
+    id: "argocd-pin-parity",
+    title: "ArgoCD chart pinned identically at all five install sites",
+    command: "bun src/Core.TypeScript/hygiene/audit-argocd-pin-parity.ts",
+  },
+
+  // The falsifiers for the audit above. Weighted toward the two ways a parity check goes
+  // quietly useless -- parsing the wrong `version:` line, and auditing fewer sites than
+  // exist -- plus one case that reads all five REAL files, so a rename cannot leave the
+  // fixture-driven cases green over an audit that reads nothing.
+  {
+    id: "argocd-pin-parity-tests",
+    title: "argocd-pin-parity falsifiers (roster refusal + chart-anchored parse)",
+    command: "bun test src/Core.TypeScript/hygiene/audit-argocd-pin-parity.test.ts",
+  },
+
   // The `.mise.toml` pins that OTHER files silently depend on. Two couplings, both of
   // which fail by being quiet: a stale `~/.rustup/toolchains/<v>-*` cache glob degrades
   // the offline path to a CDN fetch, a stale `.mise.full.toml` gives full-tier hosts a
