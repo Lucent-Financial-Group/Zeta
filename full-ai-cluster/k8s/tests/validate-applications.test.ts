@@ -1,5 +1,5 @@
 /**
- * infra/k8s/tests/validate-applications.test.ts
+ * full-ai-cluster/k8s/tests/validate-applications.test.ts
  *
  * MUTATION SUITE — proves `validate-applications.ts` can go RED.
  *

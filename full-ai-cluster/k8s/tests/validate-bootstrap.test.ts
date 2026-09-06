@@ -1,5 +1,5 @@
 /**
- * infra/k8s/tests/validate-bootstrap.test.ts
+ * full-ai-cluster/k8s/tests/validate-bootstrap.test.ts
  *
  * MUTATION SUITE — proves `validate-bootstrap.ts` can go RED.
  *

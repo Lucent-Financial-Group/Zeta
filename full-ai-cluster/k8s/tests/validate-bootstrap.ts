@@ -1,12 +1,12 @@
 #!/usr/bin/env bun
 /**
- * infra/k8s/tests/validate-bootstrap.ts
+ * full-ai-cluster/k8s/tests/validate-bootstrap.ts
  *
  * K3S FIRST-BOOT manifest validation for the `infra/` cluster substrate.
  *
  * Usage:
- *   bun infra/k8s/tests/validate-bootstrap.ts                  # validate infra/
- *   bun infra/k8s/tests/validate-bootstrap.ts --infra-dir DIR  # point at a copy
+ *   bun full-ai-cluster/k8s/tests/validate-bootstrap.ts                  # validate infra/
+ *   bun full-ai-cluster/k8s/tests/validate-bootstrap.ts --infra-dir DIR  # point at a copy
  *
  * Exit codes: 0 = all checks passed, 1 = one or more failed, 2 = usage error.
  *
@@ -47,7 +47,7 @@
  * deployed.
  *
  * Every check below is proved able to go RED by
- * `infra/k8s/tests/validate-bootstrap.test.ts`, which copies the real tree,
+ * `full-ai-cluster/k8s/tests/validate-bootstrap.test.ts`, which copies the real tree,
  * applies one mutation, and asserts this script exits 1 with the specific
  * reason. Check 4 goes red on the pre-2026-08-18 `argocd-install.yaml`
  * verbatim — that mutation case is the regression guard for the bug above.
@@ -245,7 +245,13 @@ const resolved = roster.filter((e): e is RosterEntry & { path: string } => e.pat
 // `services.k3s.manifests` attribute names is never applied by anything — it
 // reads as cluster desired-state and is inert.
 
-console.log("\n=== Test 2: every infra/k8s/bootstrap file is declared in services.k3s.manifests ===");
+// The header names the tree ACTUALLY being validated. It used to hardcode
+// `infra/k8s/bootstrap`, and helm-validate runs this script twice — once plain and once with
+// `--infra-dir full-ai-cluster` — so one of the two runs printed a label for a tree it had
+// not looked at. A report that misnames its own subject is worse than no header.
+console.log(
+  `\n=== Test 2: every ${relative(repoRoot, bootstrapDir)} file is declared in services.k3s.manifests ===`,
+);
 const declaredPaths = new Set(resolved.map((e) => e.path));
 const bootstrapFiles = readdirSync(bootstrapDir)
   .filter((f) => f.endsWith(".yaml") || f.endsWith(".yml"))

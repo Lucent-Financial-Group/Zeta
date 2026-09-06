@@ -34,17 +34,19 @@
  * not replace them — it is the cheap check that runs on every PR, ahead of the expensive
  * ones that need a VM.
  *
- * Run:  bun infra/k8s/tests/render-first-boot-charts.ts
- *       bun infra/k8s/tests/render-first-boot-charts.ts --kube-version 1.33.0
+ * Run:  bun full-ai-cluster/k8s/tests/render-first-boot-charts.ts
+ *       bun full-ai-cluster/k8s/tests/render-first-boot-charts.ts --kube-version 1.33.0
  */
 
 import { mkdtempSync, readFileSync, readdirSync, rmSync, writeFileSync } from "node:fs";
+import { bootstrapDirs } from "../../../src/Core.TypeScript/cluster/declared-cluster-trees.ts";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { parseArgs } from "node:util";
 import { parseAllDocuments } from "yaml";
 
-export const BOOTSTRAP_DIRS = ["infra/k8s/bootstrap", "full-ai-cluster/k8s/bootstrap"] as const;
+/** Derived from the tree roster — see `declared-cluster-trees.ts` for why it is not a literal. */
+export const BOOTSTRAP_DIRS: readonly string[] = bootstrapDirs();
 
 /** The lowest number of HelmChart CRs a healthy scan finds. A scan below this REFUSES. */
 export const MIN_EXPECTED_CHARTS = 6;

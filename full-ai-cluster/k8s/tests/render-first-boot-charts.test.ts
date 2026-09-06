@@ -96,10 +96,15 @@ ${helmChart({ chart: "argo-cd", repo: "https://e.invalid", version: "10.8.0" })}
     expect(found.length).toBeGreaterThanOrEqual(MIN_EXPECTED_CHARTS);
     expect(found.some((c) => c.chart === "spire-crds")).toBe(true);
     expect(found.some((c) => c.chart === "spire")).toBe(true);
-    // BOTH trees contribute. The infra one is the metal first-boot path and is the half a
-    // scan pointed only at full-ai-cluster would silently drop.
-    expect(found.some((c) => c.file.startsWith("infra/k8s/bootstrap/"))).toBe(true);
-    expect(found.some((c) => c.file.startsWith("full-ai-cluster/k8s/bootstrap/"))).toBe(true);
+    // EVERY declared bootstrap tree contributes at least one chart. Stated over the derived
+    // dir list rather than over two spelled paths, which makes it strictly stronger: it holds
+    // for however many trees the roster declares, and it keeps this file from naming a tree
+    // scheduled for deletion. A scan pointed at only one tree silently drops the other half,
+    // and that is what this catches.
+    expect(BOOTSTRAP_DIRS.length).toBeGreaterThan(0); // else the loop below asserts nothing
+    for (const dir of BOOTSTRAP_DIRS) {
+      expect(found.some((c) => c.file.startsWith(`${dir}/`))).toBe(true);
+    }
     // Every CR the renderer will hand to helm has the three fields it needs.
     for (const cr of found) {
       expect(cr.chart.length).toBeGreaterThan(0);

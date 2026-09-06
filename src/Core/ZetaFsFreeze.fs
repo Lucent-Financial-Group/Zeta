@@ -883,6 +883,14 @@ module ZetaFsFreeze =
         let livePins = HashSet<ContentHash256>()
         let objectSets = Dictionary<ContentHash256, ContentHash256[]>()
         let history = ref (loadCatalog storeDir known livePins freezeBytesSinceReclaim objectSets)
+        let root =
+            let path = ZetaFsPath.combine2 storeDir ZetaFsNamespace.RootFileName
+            let fs = FileSystem.Current
+
+            if not (fs.Exists path) then
+                None
+            else
+                ZetaFsNamespace.EntityId.tryParse (Encoding.UTF8.GetString(fs.ReadAllBytes path))
         let log =
             new FreezeLog(
                 storeDir,
@@ -946,6 +954,7 @@ module ZetaFsFreeze =
             and set v =
                 history := v
                 persistCatalogBestEffort storeDir known livePins v !freezeBytesSinceReclaim objectSets
+        member _.Root = root
 
         interface IDisposable with
             member _.Dispose() =
@@ -1294,6 +1303,14 @@ module ZetaFsFreeze =
 
         if not (fs.Exists formatPath) && not (fs.Exists headPath) then
             ZetaFsFormat.write fs storeDir ZetaFsFormat.bindingsDefault
+            let rootPath = ZetaFsPath.combine2 storeDir ZetaFsNamespace.RootFileName
+
+            if not (fs.Exists rootPath) then
+                let ns =
+                    ZetaFsNamespace.create (
+                        ZetaFsNamespace.Entropy(fun () -> SystemEnvironment.Default.NextInt64())
+                    )
+                FileSystemIo.writeAllText fs rootPath (ZetaFsNamespace.EntityId.format ns.Root)
 
         let volume = new Volume(storeDir, mutbuf, observer, session, config, manual, blockIo, objectCas)
 
