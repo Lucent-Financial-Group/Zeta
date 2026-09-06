@@ -1,0 +1,12 @@
+{
+  "pr_number": 16798,
+  "archive_path": "docs/history/pr-reviews/PR-16798-ci-first-boot-b-as-the-fast-lane-a-as-the-watched-drift-lane.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-06T15:30:55.022Z",
+  "schema_version": "v1",
+  "commit_sha": "c55175cf12573ebdc2dead6dac39466b12e1ed57",
+  "title": "ci(first-boot): B as the fast lane, A as the watched drift lane",
+  "state": "MERGED",
+  "merged_at": "2026-09-06T15:30:18Z",
+  "head_ref": "shadow/first-boot-eval-lane"
+}
