@@ -510,6 +510,11 @@ names from `zeta-first-boot.sh` and
 sed-parses them in `zeta-install.sh`; both
 or neither; does not fill `NIXOS_HOST_BAO`;
 does not invoke bun.
+Post-6.95a bun consume
+(`081M1W1NCDT087G0R002H3VG6Y`) invokes
+`firstboot-bao-env.ts` after mise/bun exist;
+a null ask is not a seal; still does not
+invoke bun from `zeta-first-boot.sh`.
 glibc-host-into-musl-image is not a
 module; Application.yaml stays Shamir.
 
