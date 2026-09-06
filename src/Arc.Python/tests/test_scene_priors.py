@@ -2,7 +2,9 @@
 
 from __future__ import annotations
 
+import json
 from pathlib import Path
+from typing import Any
 
 import pytest
 
@@ -16,6 +18,7 @@ from zeta_arc.scene_priors import (
     CuriositySignal,
     CuriosityTerm,
     MotionProjection,
+    SceneObservation,
     ScenePriorModel,
     compare_scenes,
     forecast_scene,
@@ -36,6 +39,128 @@ def _grid(*objects: tuple[int, int, int, int, int]) -> list[list[int]]:
 
 def _kinds(before: list[list[int]], after: list[list[int]]) -> set[str]:
     return {event.kind for event in compare_scenes(before, after).events}
+
+
+def _frame_from_vector(value: dict[str, Any]) -> list[list[int]]:
+    width = int(value["width"])
+    height = int(value["height"])
+    cells = [int(cell) for cell in value["cells"]]
+    return [
+        cells[offset : offset + width] for offset in range(0, width * height, width)
+    ]
+
+
+def _shape_projection(observation: SceneObservation) -> list[dict[str, object]]:
+    objects = observation.objects
+    projected = [
+        {
+            "width": item.width,
+            "height": item.height,
+            "area": item.area,
+            "perimeter": item.perimeter,
+            "cells": [list(cell) for cell in item.shape],
+        }
+        for item in objects
+    ]
+    return sorted(
+        projected,
+        key=lambda item: (
+            item["width"],
+            item["height"],
+            item["area"],
+            item["perimeter"],
+            item["cells"],
+        ),
+    )
+
+
+def _placement_projection(observation: SceneObservation) -> list[tuple[int, int]]:
+    objects = observation.objects
+    return sorted((item.min_x, item.min_y) for item in objects)
+
+
+def test_python_scene_priors_replay_the_shared_frame_signal_treaty() -> None:
+    path = (
+        Path(__file__).resolve().parents[3]
+        / "src"
+        / "Core"
+        / "golden-vectors-frame-signals.json"
+    )
+    treaty = json.loads(path.read_text(encoding="utf-8"))
+    assert treaty["schemaVersion"] == 1
+    scale = int(treaty["basisPointScale"])
+    frames: dict[str, list[list[int]]] = {}
+    observations: dict[str, SceneObservation] = {}
+
+    for case in treaty["observations"]:
+        input_frame = _frame_from_vector(case["frame"])
+        expected = case["expected"]
+        observed = observe_scene(input_frame)
+        frames[case["name"]] = input_frame
+        observations[case["name"]] = observed
+        assert observed.background == expected["background"]
+        assert [colour.colour for colour in observed.colours] == expected[
+            "foregroundPalette"
+        ]
+        assert [
+            {
+                "colour": colour.colour,
+                "pixels": colour.pixels,
+                "occupancyBasisPoints": round(colour.occupancy * scale),
+                "componentCount": colour.component_count,
+                "edgeDensityBasisPoints": round(colour.edge_density * scale),
+            }
+            for colour in observed.colours
+        ] == expected["colours"]
+        assert _shape_projection(observed) == expected["shapes"]
+        assert [list(origin) for origin in _placement_projection(observed)] == expected[
+            "origins"
+        ]
+
+    for case in treaty["comparisons"]:
+        previous_name = case["previous"]
+        current_name = case["current"]
+        previous_grid = frames[previous_name]
+        current_grid = frames[current_name]
+        previous = observations[previous_name]
+        current = observations[current_name]
+        expected = case["expected"]
+        delta = compare_scenes(previous_grid, current_grid)
+        previous_background = previous.background
+        current_background = current.background
+        background_crossings = sum(
+            (before != previous_background) != (after != current_background)
+            for before_row, after_row in zip(previous_grid, current_grid, strict=True)
+            for before, after in zip(before_row, after_row, strict=True)
+            if before != after
+        )
+        previous_colours = previous.colours
+        current_colours = current.colours
+        previous_occupancy = [(item.colour, item.pixels) for item in previous_colours]
+        current_occupancy = [(item.colour, item.pixels) for item in current_colours]
+        previous_edges = [
+            (item.colour, round(item.edge_density * scale)) for item in previous_colours
+        ]
+        current_edges = [
+            (item.colour, round(item.edge_density * scale)) for item in current_colours
+        ]
+        actual_projection = {
+            "changedCells": delta.changed_pixels,
+            "changeDensityBasisPoints": round(delta.change_density * scale),
+            "recolouredForegroundCells": delta.colour_change_pixels,
+            "recolourDensityBasisPoints": round(delta.colour_change_density * scale),
+            "backgroundCrossings": background_crossings,
+            "backgroundChanged": previous_background != current_background,
+            "structureChanged": previous.structural_fingerprint
+            != current.structural_fingerprint,
+            "paletteChanged": previous.palette_fingerprint
+            != current.palette_fingerprint,
+            "colourOccupancyChanged": previous_occupancy != current_occupancy,
+            "colourEdgeDensityChanged": previous_edges != current_edges,
+            "placementChanged": _placement_projection(previous)
+            != _placement_projection(current),
+        }
+        assert actual_projection == expected
 
 
 def test_structural_identity_survives_translation_and_palette_relabeling() -> None:

@@ -40,16 +40,6 @@ module FrameSignals =
           ComponentCount: int
           EdgeDensityBasisPoints: int }
 
-    [<StructuralEquality; StructuralComparison>]
-    type PaletteShape =
-        { Colour: byte
-          Shape: Shape }
-
-    [<StructuralEquality; StructuralComparison>]
-    type PlacedShape =
-        { Origin: Point
-          Shape: Shape }
-
     /// Exact algorithmic accounting. Coordinates are logical retained values,
     /// not CLR heap size; neighbor probes include out-of-frame boundaries.
     [<Struct>]
@@ -67,8 +57,8 @@ module FrameSignals =
           Components: Component list
           Colours: ColourSignal list
           StructuralShapes: Shape list
-          PaletteShapes: PaletteShape list
-          PlacedShapes: PlacedShape list
+          ForegroundPalette: byte list
+          ComponentOrigins: Point list
           Receipt: ObservationReceipt }
 
     [<Struct>]
@@ -86,6 +76,8 @@ module FrameSignals =
           BackgroundChanged: bool
           StructureChanged: bool
           PaletteChanged: bool
+          ColourOccupancyChanged: bool
+          ColourEdgeDensityChanged: bool
           PlacementChanged: bool
           Receipt: ComparisonReceipt }
 
@@ -226,19 +218,7 @@ module FrameSignals =
 
         let structuralShapes = componentList |> List.map _.Shape |> List.sort
 
-        let paletteShapes =
-            componentList
-            |> List.map (fun item ->
-                { Colour = item.Colour
-                  Shape = item.Shape })
-            |> List.sort
-
-        let placedShapes =
-            componentList
-            |> List.map (fun item ->
-                { Origin = item.Origin
-                  Shape = item.Shape })
-            |> List.sort
+        let componentOrigins = componentList |> List.map _.Origin |> List.sort
 
         { Width = frame.W
           Height = frame.H
@@ -246,8 +226,8 @@ module FrameSignals =
           Components = componentList
           Colours = colours
           StructuralShapes = structuralShapes
-          PaletteShapes = paletteShapes
-          PlacedShapes = placedShapes
+          ForegroundPalette = colours |> List.map _.Colour
+          ComponentOrigins = componentOrigins
           Receipt =
             { FrameCells = frame.Cells.Length
               HistogramUpdates = frame.Cells.Length
@@ -289,8 +269,18 @@ module FrameSignals =
           BackgroundCrossings = backgroundCrossings
           BackgroundChanged = previousBackground <> currentBackground
           StructureChanged = previousObservation.StructuralShapes <> currentObservation.StructuralShapes
-          PaletteChanged = previousObservation.PaletteShapes <> currentObservation.PaletteShapes
-          PlacementChanged = previousObservation.PlacedShapes <> currentObservation.PlacedShapes
+          PaletteChanged =
+            previousObservation.Background <> currentObservation.Background
+            || previousObservation.ForegroundPalette <> currentObservation.ForegroundPalette
+          ColourOccupancyChanged =
+            (previousObservation.Colours |> List.map (fun colour -> colour.Colour, colour.Pixels))
+            <> (currentObservation.Colours |> List.map (fun colour -> colour.Colour, colour.Pixels))
+          ColourEdgeDensityChanged =
+            (previousObservation.Colours
+             |> List.map (fun colour -> colour.Colour, colour.EdgeDensityBasisPoints))
+            <> (currentObservation.Colours
+                |> List.map (fun colour -> colour.Colour, colour.EdgeDensityBasisPoints))
+          PlacementChanged = previousObservation.ComponentOrigins <> currentObservation.ComponentOrigins
           Receipt =
             { ComparedCells = previous.Cells.Length
               Previous = previousObservation.Receipt
