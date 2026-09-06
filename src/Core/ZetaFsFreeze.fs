@@ -491,6 +491,7 @@ module ZetaFsFreeze =
                             cas.Put(hex, bytes)
                             known.[id] <- uint64 bytes.Length
                             persistCatalog storeDir known livePins !history !meter objectSets
+                            tryWrite (ZetaFsPath.combine2 storeDir "cas")
 
                             if item.Durable then
                                 tryFlush cas.Device (ZetaFsPath.combine2 storeDir "cas")
