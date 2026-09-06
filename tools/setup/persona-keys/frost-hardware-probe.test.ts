@@ -16,9 +16,12 @@ import {
   pkcs11MatchedPair,
   enumerateDarwinUsb,
   yubiHsm2CheckRan,
+  PKCS11_TOKEN_LIBRARY_PATHS,
+  YUBIHSM2_PKCS11_LIBRARY_PATHS,
   type HardwareProbeEffects,
 } from "./frost-hardware-probe.ts";
 import type { ListOutcome, PathOutcome, Tpm2LinuxEffects } from "./tpm2-linux-probe.ts";
+import { NIXOS_PKCS11_MODULE_PATH } from "../../../src/Core.TypeScript/cluster/pkcs11-hostpath-overlay.ts";
 
 // These tests used to be four `expect(typeof x).toBe("boolean")` assertions. Every one of
 // them passed on any machine, in any state, for any implementation that returned an
@@ -569,6 +572,45 @@ describe("the yubihsm_pkcs11 module is a driver, not a device", () => {
 
   it("finds nothing when no module is installed", () => {
     expect(probeYubiHsm2Pkcs11(host()).found).toBeFalse();
+  });
+
+  it("sees the exact NixOS yubihsm_pkcs11 path as a DRIVER, not a device", () => {
+    const nixosModule = NIXOS_PKCS11_MODULE_PATH.yubihsm2;
+    const fx = host({ platform: "linux", exists: (q) => q === nixosModule });
+    const res = probeHardwareSecurity(fx);
+    expect(res.yubiHsm2Pkcs11ModuleFound).toBeTrue();
+    expect(res.yubiHsm2Pkcs11LibraryPath).toBe(nixosModule);
+    expect(res.yubiHsm2Detected).toBeFalse();
+    expect(res.noHardwareDetected).toBeTrue();
+    expect(availableHardwareSealTiers(res)).toEqual([]);
+  });
+});
+
+describe("NixOS PKCS#11 path contracts — exact, no wildcard", () => {
+  it("YubiHSM list includes the overlay NixOS contract and no glob", () => {
+    expect(YUBIHSM2_PKCS11_LIBRARY_PATHS).toContain(NIXOS_PKCS11_MODULE_PATH.yubihsm2);
+    expect(YUBIHSM2_PKCS11_LIBRARY_PATHS.some((p) => p.includes("*") || p.includes("?"))).toBe(false);
+    const nixosEntries = YUBIHSM2_PKCS11_LIBRARY_PATHS.filter((p) => p.startsWith("/run/current-system/"));
+    expect(nixosEntries).toEqual([NIXOS_PKCS11_MODULE_PATH.yubihsm2]);
+  });
+
+  it("token/OpenSC list includes NixOS opensc-pkcs11; that is not yubihsm_pkcs11", () => {
+    expect(PKCS11_TOKEN_LIBRARY_PATHS).toContain(NIXOS_PKCS11_MODULE_PATH["smartcard-hsm"]);
+    const nixosEntries = PKCS11_TOKEN_LIBRARY_PATHS.filter((p) => p.startsWith("/run/current-system/"));
+    expect(nixosEntries).toEqual([NIXOS_PKCS11_MODULE_PATH["smartcard-hsm"]]);
+    const fx = host({
+      platform: "linux",
+      exists: (q) => q === NIXOS_PKCS11_MODULE_PATH["smartcard-hsm"],
+    });
+    expect(probePkcs11(fx)).toEqual({
+      found: true,
+      path: NIXOS_PKCS11_MODULE_PATH["smartcard-hsm"],
+    });
+    expect(probeYubiHsm2Pkcs11(fx).found).toBe(false);
+    const res = probeHardwareSecurity(fx);
+    expect(res.pkcs11ModuleFound).toBeTrue();
+    expect(res.yubiHsm2Pkcs11ModuleFound).toBeFalse();
+    expect(res.noHardwareDetected).toBeTrue();
   });
 });
 

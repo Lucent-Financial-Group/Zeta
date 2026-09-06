@@ -192,6 +192,9 @@ glibc NixOS `.so` into Alpine `openbao-hsm` is
 `glibc-host-into-musl-image` and is **not** a module in
 reach (hands-off-metal §1.4 option A, unproven). The
 companion pointer file is not the `.so`.
+`frost-hardware-probe.ts` now looks at those exact NixOS
+contracts (`081M1V19MC5087G0R002P2W9EK`); a `.so` is still
+a driver.
 
 1. Metal: `seal "pkcs11"` in Application.yaml still waits.
    Same commit as a **reachable** module: same-libc image
