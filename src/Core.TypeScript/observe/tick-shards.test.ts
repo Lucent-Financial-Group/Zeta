@@ -1,5 +1,5 @@
 import { describe, expect, test } from "bun:test";
-import { mkdtempSync, readFileSync, rmSync } from "node:fs";
+import { existsSync, mkdtempSync, readdirSync, readFileSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { basename, join } from "node:path";
 
@@ -16,6 +16,9 @@ import {
 import { unpack } from "../zeta-id/zeta-id";
 import { fromHex, toHex } from "../zeta-id/encoding";
 import { Category, Chromosome, IdVersion } from "../zeta-id/types";
+
+/** The repo root, from this test file's own location — no cwd assumption. */
+const REPO_ROOT = join(import.meta.dir, "..", "..", "..");
 
 const FRAME: MetricsFrame = {
   t: "2026-07-08T20:17:26.288Z",
@@ -115,4 +118,91 @@ describe("tick-shards — store behaviour", () => {
       expect(rollup.provenance.derived_from).toBe("data/tick-shards/**/*.json");
     });
   });
+});
+
+describe("the key sort is ORDINAL, and the change re-keyed nothing", () => {
+  // `canonicalJson` used `localeCompare(a, b, "en")` to order keys. That is culture-sensitive, and
+  // it decides the digest, which decides the shard's filename — so the same frame could land at
+  // different addresses on machines with different ICU data.
+  //
+  // Replacing it was safe only because the two orders agree on every key this frame has. That was
+  // measured across all 1675 shards on disk before the change; these tests keep it measured, so a
+  // new field whose name breaks the equivalence fails here instead of silently re-keying the store.
+
+  test("the comparator IS code-unit order, checked against a second implementation", () => {
+    // This used to sort the keys a second time with `localeCompare` and assert the two agreed.
+    // That made the test's own truth depend on the runtime's ICU tables — the property this file
+    // exists to say the production path does NOT have. Agreement with ICU was never the claim
+    // worth pinning anyway; being code-unit order is.
+    //
+    // So the second sort is an INDEPENDENT implementation of the same rule: a char-by-char walk
+    // over `charCodeAt`, which shares no code with `<` and cannot drift with a locale.
+    const keys = Object.keys(FRAME);
+    expect(keys.length).toBeGreaterThan(5);
+    const ordinal = [...keys].sort((a, b) => (a === b ? 0 : a < b ? -1 : 1));
+    const byCodeUnit = [...keys].sort((a, b) => {
+      for (let i = 0; i < Math.min(a.length, b.length); i++) {
+        const d = a.charCodeAt(i) - b.charCodeAt(i);
+        if (d !== 0) return d;
+      }
+      return a.length - b.length;
+    });
+    expect(ordinal).toEqual(byCodeUnit);
+  });
+
+  test("the sort really is ordinal — it is not just agreeing by accident", () => {
+    // A key set where the two DISAGREE: ordinal puts "B" (0x42) before "a" (0x61); locale does not.
+    // If `canonicalJson` were still locale-aware this would come back the other way round.
+    const mixed = canonicalJson({ a: 1, B: 2 } as unknown as MetricsFrame);
+    expect(mixed.indexOf('"B"')).toBeLessThan(mixed.indexOf('"a"'));
+    // NOT asserted with `localeCompare`. That call's result depends on the runtime's ICU data,
+    // which is the very thing this code refuses to depend on — so an assertion about it is
+    // machine-dependent in exactly the way the production path is not. The contrast is stated
+    // above; what is CHECKED is the code-unit fact, which cannot vary.
+    expect("B" < "a").toBe(true);
+  });
+
+  /**
+   * The budget for the whole-store re-derivation.
+   *
+   * NOT because the work is slow — the entire file runs in ~440ms on an idle machine. It is because
+   * the work is 1675 file reads plus 1675 hashes, so its wall time is set by FILESYSTEM CONTENTION
+   * rather than by its own cost, and contention is the one thing a per-test default cannot know
+   * about. Measured at 23_630ms during a full-tree run with ten concurrent suites — a ~50x
+   * stretch — where bun's 5000ms default turned a healthy check into a red that said nothing about
+   * shards.
+   *
+   * This is the second test in this suite to be sized against that default and the first was a
+   * different shape: `event-sink-folder.git.test.ts` sat at ~78% of budget while IDLE. Both fail the
+   * same way and for the same reason — a check that goes red for reasons unrelated to what it tests
+   * teaches people to discount red.
+   *
+   * 60s is ~2.5x the worst contention actually observed. Deliberately not "disable the timeout":
+   * a walk that never returns must still be caught.
+   */
+  const WHOLE_STORE_BUDGET_MS = 60_000;
+
+  test("EVERY SHARD ON DISK still resolves to its own filename", () => {
+    // The migration check, kept as a check. A frame whose re-derived id no longer matches the name
+    // it is stored under is a shard the store can no longer find by content.
+    const root = join(REPO_ROOT, "data", "tick-shards");
+    if (!existsSync(root)) return;
+    const files: string[] = [];
+    const walk = (d: string): void => {
+      for (const e of readdirSync(d, { withFileTypes: true })) {
+        const f = join(d, e.name);
+        if (e.isDirectory()) walk(f);
+        else if (e.name.endsWith(".json")) files.push(f);
+      }
+    };
+    walk(root);
+    expect(files.length).toBeGreaterThan(100);
+    let mismatched = 0;
+    for (const file of files) {
+      const frame = JSON.parse(readFileSync(file, "utf-8")) as MetricsFrame;
+      const expected = basename(file, ".json");
+      if (toHex(shardZetaId(frame)) !== expected) mismatched += 1;
+    }
+    expect(mismatched).toBe(0);
+  }, WHOLE_STORE_BUDGET_MS);
 });

@@ -1394,6 +1394,28 @@ jobs:
         # regression cannot report success the way `lint:markdown` did (#10712).
         run: bun run hygiene:no-decide-by-grep
 
+      - name: Orphaned doc comments (a docstring that documents the wrong symbol)
+        id: orphaned_doc_comments
+        # A top-level doc comment immediately followed by another, with no code between
+        # them, means the first has been detached from what it described and now
+        # documents whatever follows. Editors, hovers and generated docs all attribute
+        # it to that symbol. Measured 2026-09-05 in corporate/run-agent.ts: three doc
+        # comments stacked, so `mergeQueues` showed a docstring reading "Run the
+        # organization and turn it into the surface" -- a different function. One of
+        # them also asserted "queue and qa are EMPTY" three lines above code whose own
+        # comment says the opposite.
+        #
+        # The cause is mechanical, which is why a lint is the right answer: inserting a
+        # function by anchoring on `export function X(` and pasting before it lands the
+        # new code BETWEEN X's doc comment and X. Done three times in two days by one
+        # author and caught by none of tsc, eslint, the suites, or review.
+        #
+        # SCOPED to corporate/, which is clean. 57 sites remain elsewhere in the tree
+        # (pre-existing); widening is a separate change so this step cannot land red.
+        # File headers are exempt -- that case was 44 of the first draft's 101 hits.
+        # Exits 2 if it scans nothing, so an empty scope cannot report success.
+        run: bun run hygiene:no-orphaned-doc-comments
+
       - name: Chart currency (out-of-date dependencies are DRIFT, and they are read on every PR)
         id: chart_currency
         # Aaron 2026-09-04: "i'd love a read check on CI for any chart that is out of date

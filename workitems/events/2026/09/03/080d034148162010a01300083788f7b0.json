@@ -1,0 +1,14 @@
+{
+  "id": "080d034148162010a01300083788f7b0",
+  "at": "2026-09-03T16:45:13.284Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1M2J0P3087G0R0037K8JJK",
+    "type": "task",
+    "title": "Corporate register in Core.TypeScript: org chart, cascade, schedule/meetings, artifact communication, wired into the loop",
+    "slug": "corporate-register-in-core-typescript-org-chart-cascade-sche",
+    "priority": "P2",
+    "filename": "081M1M2J0P3087G0R0037K8JJK-corporate-register-in-core-typescript-org-chart-cascade-sche.md"
+  }
+}

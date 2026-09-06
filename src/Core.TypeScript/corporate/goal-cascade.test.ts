@@ -1,0 +1,431 @@
+import { describe, expect, test } from "bun:test";
+import {
+  accountableHatsFor,
+  acceptGoal,
+  assign,
+  CASCADE_RUNGS,
+  cascadeChainOf,
+  childrenOf,
+  decompose,
+  EMPTY_CASCADE,
+  isDelivered,
+  isLeafType,
+  LEAF_TYPES,
+  nextRung,
+  nodeById,
+  ownerForRung,
+  rungFor,
+  setState,
+  unstaffedTasks,
+  WorkState,
+  WorkType,
+  type Cascade,
+} from "./goal-cascade";
+import { buildOrgChart, reportsUpTo } from "./org-chart";
+import { SEED_HATS } from "./org-seed";
+
+const chart = (() => {
+  const r = buildOrgChart(SEED_HATS);
+  if (!r.ok) throw new Error(r.reason);
+  return r.chart;
+})();
+
+const must = (r: { ok: true; cascade: Cascade } | { ok: false; reason: string }): Cascade => {
+  if (!r.ok) throw new Error(r.reason);
+  return r.cascade;
+};
+
+/** Goal → initiative → project → task, fully staffed. The whole ladder, built once. */
+function fullLadder(): Cascade {
+  let c = must(acceptGoal(EMPTY_CASCADE, chart, { workId: "g1", title: "cut checkout abandonment", acceptingHatId: "cto" }));
+  c = must(decompose(c, chart, "g1", [{ workId: "i1", title: "fix the coupon path" }]));
+  c = must(decompose(c, chart, "i1", [{ workId: "p1", title: "coupon service hardening" }]));
+  c = must(decompose(c, chart, "p1", [
+    { workId: "t1", title: "stop the double-apply" },
+    { workId: "t2", title: "add the regression test" },
+  ]));
+  c = must(assign(c, chart, "t1", "backend_implementer"));
+  c = must(assign(c, chart, "t2", "backend_implementer"));
+  return c;
+}
+
+describe("the ladder", () => {
+  test("four rungs, top-down, one level each", () => {
+    expect(CASCADE_RUNGS.map((r) => [r.workType, r.ownerLevel])).toEqual([
+      ["goal", "c_suite"],
+      ["initiative", "director"],
+      ["project", "manager"],
+      ["task", "lead"],
+    ]);
+  });
+
+  test("the bottom rung has nothing below it", () => {
+    expect(nextRung(WorkType.Task)).toBeUndefined();
+    expect(nextRung(WorkType.Goal)?.workType).toBe(WorkType.Initiative);
+  });
+});
+
+describe("a goal is accepted at the top, or not at all", () => {
+  test("the C-suite may", () => {
+    expect(acceptGoal(EMPTY_CASCADE, chart, { workId: "g", title: "x", acceptingHatId: "cto" }).ok).toBe(true);
+  });
+
+  test("the board may", () => {
+    expect(
+      acceptGoal(EMPTY_CASCADE, chart, { workId: "g", title: "x", acceptingHatId: "executive_board_member" }).ok,
+    ).toBe(true);
+  });
+
+  test("a manager may NOT — authority is what the rung means", () => {
+    const r = acceptGoal(EMPTY_CASCADE, chart, { workId: "g", title: "x", acceptingHatId: "engineering_manager" });
+    expect(r.ok).toBe(false);
+    if (!r.ok) expect(r.reason).toContain("accepted at the top");
+  });
+
+  test("a director may not either", () => {
+    expect(acceptGoal(EMPTY_CASCADE, chart, { workId: "g", title: "x", acceptingHatId: "qa_director" }).ok).toBe(false);
+  });
+
+  test("an unknown hat and an empty title are refused", () => {
+    expect(acceptGoal(EMPTY_CASCADE, chart, { workId: "g", title: "x", acceptingHatId: "ghost" }).ok).toBe(false);
+    expect(acceptGoal(EMPTY_CASCADE, chart, { workId: "g", title: " ", acceptingHatId: "cto" }).ok).toBe(false);
+  });
+});
+
+describe("ownership is derived from the graph", () => {
+  test("the owner of a rung reports up to the rung above", () => {
+    const c = fullLadder();
+    for (const node of c.nodes) {
+      if (node.parentWorkId === undefined) continue;
+      const parent = nodeById(c, node.parentWorkId);
+      expect(parent).toBeDefined();
+      // The property that makes this an ORG cascade rather than a tree that happens to have levels.
+      expect(reportsUpTo(chart, node.ownerHatId, parent!.ownerHatId)).toBe(true);
+    }
+  });
+
+  test("each rung lands on the right level", () => {
+    const c = fullLadder();
+    expect(chart.byId.get(nodeById(c, "g1")!.ownerHatId)?.level).toBe("c_suite");
+    expect(chart.byId.get(nodeById(c, "i1")!.ownerHatId)?.level).toBe("director");
+    expect(chart.byId.get(nodeById(c, "p1")!.ownerHatId)?.level).toBe("manager");
+    expect(chart.byId.get(nodeById(c, "t1")!.ownerHatId)?.level).toBe("lead");
+  });
+
+  test("the CTO's initiative goes to a director under the CTO, not under the COO", () => {
+    const c = fullLadder();
+    const owner = nodeById(c, "i1")!.ownerHatId;
+    expect(reportsUpTo(chart, owner, "cto")).toBe(true);
+    expect(reportsUpTo(chart, owner, "coo")).toBe(false);
+  });
+
+  test("ownerForRung never returns the parent itself", () => {
+    // The C-suite reports to the C-suite in this chart, so without the self-exclusion a c_suite
+    // rung could be handed straight back to the hat that already holds it.
+    expect(ownerForRung(chart, "c_suite", "cto")?.id).not.toBe("cto");
+  });
+
+  test("ownerForRung returns undefined when nobody at that level is in the line", () => {
+    // A dev supervises nobody, so no manager can hang beneath it.
+    expect(ownerForRung(chart, "manager", "backend_implementer")).toBeUndefined();
+  });
+
+  test("a tie is broken toward an owner who can carry the NEXT rung", () => {
+    // The regression this pins was live and silent. Three directors report to the CTO at equal
+    // distance — architecture, engineering, security — and only engineering has a manager beneath
+    // it. Without the tie-break, declaration order picked `architecture_director`, so every goal
+    // the CTO accepted produced an initiative that could never become a project: a plan that read
+    // as staffed and was not, failing one rung after the decision was made.
+    const blind = ownerForRung(chart, "director", "cto");
+    const aware = ownerForRung(chart, "director", "cto", "manager");
+    expect(aware?.id).toBe("engineering_director");
+    // The two genuinely differ here, which is what makes this test load-bearing rather than
+    // decorative — if they agreed, the tie-break would be untested by construction.
+    expect(blind?.id).not.toBe(aware?.id);
+  });
+
+  test("distance still beats support — a nearer owner is not skipped for a further one", () => {
+    // The tie-break is a TIE break, and this needs a chart the seed cannot provide: a nearer
+    // candidate that CANNOT support the next rung alongside a further one that can. In the seed
+    // every such pair happens to tie on distance, so the seed cannot tell the two orderings apart.
+    // Purpose-built rather than contorting the seed to make a witness.
+    const built = buildOrgChart([
+      { id: "root", name: "Board", level: "executive_board", departmentId: "d" },
+      // Distance 1 from root, and no manager beneath it.
+      { id: "near_dir", name: "Near", level: "director", departmentId: "d", reportsTo: "root" },
+      { id: "mid", name: "Mid", level: "c_suite", departmentId: "d", reportsTo: "root" },
+      // Distance 2 from root, and it does have a manager.
+      { id: "far_dir", name: "Far", level: "director", departmentId: "d", reportsTo: "mid" },
+      { id: "far_mgr", name: "Far Mgr", level: "manager", departmentId: "d", reportsTo: "far_dir" },
+    ]);
+    expect(built.ok).toBe(true);
+    if (!built.ok) return;
+
+    // The nearer director wins even though it cannot carry the rung below. Ordering by support
+    // first would hand the work over the head of the hat that is actually closest.
+    expect(ownerForRung(built.chart, "director", "root", "manager")?.id).toBe("near_dir");
+  });
+});
+
+describe("decomposition refuses rather than inventing", () => {
+  test("a goal whose owner has no director beneath it cannot be staffed", () => {
+    // The CFO has no directors reporting to it in this seed.
+    let c = must(acceptGoal(EMPTY_CASCADE, chart, { workId: "g", title: "cost", acceptingHatId: "cfo" }));
+    const r = decompose(c, chart, "g", [{ workId: "i", title: "x" }]);
+    expect(r.ok).toBe(false);
+    if (!r.ok) expect(r.reason).toContain("cannot be staffed");
+  });
+
+  test("decomposing into zero children is refused", () => {
+    const c = must(acceptGoal(EMPTY_CASCADE, chart, { workId: "g", title: "x", acceptingHatId: "cto" }));
+    expect(decompose(c, chart, "g", []).ok).toBe(false);
+  });
+
+  test("a task cannot be decomposed further", () => {
+    const c = fullLadder();
+    const r = decompose(c, chart, "t1", [{ workId: "x", title: "y" }]);
+    expect(r.ok).toBe(false);
+    if (!r.ok) expect(r.reason).toContain("bottom rung");
+  });
+
+  test("a duplicate work id is refused", () => {
+    const c = fullLadder();
+    expect(decompose(c, chart, "p1", [{ workId: "t1", title: "dup" }]).ok).toBe(false);
+  });
+
+  test("an unknown parent is refused", () => {
+    expect(decompose(EMPTY_CASCADE, chart, "ghost", [{ workId: "x", title: "y" }]).ok).toBe(false);
+  });
+});
+
+describe("assignment", () => {
+  test("a task goes to an IC in the owner's line", () => {
+    const c = fullLadder();
+    expect(nodeById(c, "t1")?.assigneeHatId).toBe("backend_implementer");
+  });
+
+  test("an IC OUTSIDE the line is refused", () => {
+    let c = fullLadder();
+    // The QA engineer is a real IC and does not report to the engineering tech lead. Handing work
+    // across means the owner cannot follow it up and the assignee answers to a non-supervisor.
+    const r = assign(c, chart, "t1", "qa_engineer");
+    expect(r.ok).toBe(false);
+    if (!r.ok) expect(r.reason).toContain("does not report up to");
+  });
+
+  test("a non-IC is refused BECAUSE it is not a contributor", () => {
+    // Asserting only `ok === false` passed for the wrong reason: the engineering manager is refused
+    // by the reporting-line check too, since it sits ABOVE the task's owner rather than under it.
+    // In this chart every hat beneath a lead is already an IC, so the level check has no
+    // independent witness — pin the reason instead of contriving a hat to make one.
+    const c = fullLadder();
+    const r = assign(c, chart, "t1", "engineering_manager");
+    expect(r.ok).toBe(false);
+    if (!r.ok) expect(r.reason).toContain("individual contributor");
+  });
+
+  test("only a task takes an assignee", () => {
+    const c = fullLadder();
+    const r = assign(c, chart, "p1", "backend_implementer");
+    expect(r.ok).toBe(false);
+    if (!r.ok) expect(r.reason).toContain("only a task");
+  });
+});
+
+describe("THE RULE: a goal cannot be closed by closing the goal", () => {
+  test("marking a parent done is refused while it has children", () => {
+    const c = fullLadder();
+    const r = setState(c, "g1", WorkState.Done);
+    expect(r.ok).toBe(false);
+    if (!r.ok) expect(r.reason).toContain("delivered when they are");
+  });
+
+  test("a task with no assignee cannot be done — nobody did it", () => {
+    let c = must(acceptGoal(EMPTY_CASCADE, chart, { workId: "g", title: "x", acceptingHatId: "cto" }));
+    c = must(decompose(c, chart, "g", [{ workId: "i", title: "y" }]));
+    c = must(decompose(c, chart, "i", [{ workId: "p", title: "z" }]));
+    c = must(decompose(c, chart, "p", [{ workId: "t", title: "w" }]));
+    const r = setState(c, "t", WorkState.Done);
+    expect(r.ok).toBe(false);
+    if (!r.ok) expect(r.reason).toContain("no assignee");
+  });
+
+  test("delivery rolls up from the leaves, all the way", () => {
+    let c = fullLadder();
+    expect(isDelivered(c, "g1")).toBe(false);
+
+    c = must(setState(c, "t1", WorkState.Done));
+    // One of two done. The goal is not delivered, and neither is anything above the task.
+    expect(isDelivered(c, "t1")).toBe(true);
+    expect(isDelivered(c, "p1")).toBe(false);
+    expect(isDelivered(c, "g1")).toBe(false);
+
+    c = must(setState(c, "t2", WorkState.Done));
+    // Now every leaf is done, so every ancestor is delivered — without anyone marking them.
+    expect(isDelivered(c, "p1")).toBe(true);
+    expect(isDelivered(c, "i1")).toBe(true);
+    expect(isDelivered(c, "g1")).toBe(true);
+  });
+
+  test("a goal nobody decomposed is NOT delivered", () => {
+    // Vacuous `every` over no children is the most dangerous kind of green.
+    const c = must(acceptGoal(EMPTY_CASCADE, chart, { workId: "g", title: "x", acceptingHatId: "cto" }));
+    expect(isDelivered(c, "g")).toBe(false);
+  });
+
+  test("canceled children are skipped, but all-canceled is not delivered", () => {
+    let c = fullLadder();
+    c = must(setState(c, "t2", WorkState.Canceled));
+    c = must(setState(c, "t1", WorkState.Done));
+    // One live child, and it is done.
+    expect(isDelivered(c, "p1")).toBe(true);
+
+    let d = fullLadder();
+    d = must(setState(d, "t1", WorkState.Canceled));
+    d = must(setState(d, "t2", WorkState.Canceled));
+    // Nothing was done, so nothing was delivered.
+    expect(isDelivered(d, "p1")).toBe(false);
+  });
+
+  test("an unknown node is not delivered", () => {
+    expect(isDelivered(fullLadder(), "ghost")).toBe(false);
+  });
+});
+
+describe("who is accountable for this work", () => {
+  test("the chain runs task → project → initiative → goal", () => {
+    const c = fullLadder();
+    expect(cascadeChainOf(c, "t1")).toEqual(["t1", "p1", "i1", "g1"]);
+  });
+
+  test("the accountable hats are lead, manager, director, C-suite — each named", () => {
+    const c = fullLadder();
+    const hats = accountableHatsFor(c, "t1");
+    expect(hats).toHaveLength(4);
+    const levels = hats.map((h) => chart.byId.get(h)?.level);
+    expect(levels).toEqual(["lead", "manager", "director", "c_suite"]);
+    // And they form a real reporting line, bottom to top.
+    for (let i = 0; i + 1 < hats.length; i += 1) {
+      expect(reportsUpTo(chart, hats[i]!, hats[i + 1]!)).toBe(true);
+    }
+  });
+});
+
+describe("what the RMO is asked to staff", () => {
+  test("unstaffed tasks are exactly the unassigned, uncancelled ones", () => {
+    let c = must(acceptGoal(EMPTY_CASCADE, chart, { workId: "g", title: "x", acceptingHatId: "cto" }));
+    c = must(decompose(c, chart, "g", [{ workId: "i", title: "y" }]));
+    c = must(decompose(c, chart, "i", [{ workId: "p", title: "z" }]));
+    c = must(decompose(c, chart, "p", [{ workId: "t1", title: "a" }, { workId: "t2", title: "b" }]));
+    expect(unstaffedTasks(c).map((n) => n.workId)).toEqual(["t1", "t2"]);
+
+    c = must(assign(c, chart, "t1", "backend_implementer"));
+    expect(unstaffedTasks(c).map((n) => n.workId)).toEqual(["t2"]);
+
+    c = must(setState(c, "t2", WorkState.Canceled));
+    expect(unstaffedTasks(c)).toHaveLength(0);
+  });
+
+  test("higher rungs are never counted as unstaffed — they are owned, not executed", () => {
+    const c = fullLadder();
+    expect(unstaffedTasks(c)).toHaveLength(0);
+    expect(childrenOf(c, "g1")).toHaveLength(1);
+  });
+});
+
+/** A cascade built down to the project rung, ready to decompose into leaves. */
+function threeRungs(): { readonly cascade: Cascade; readonly projectId: string } {
+  let c = must(acceptGoal(EMPTY_CASCADE, chart, { workId: "g1", title: "cut checkout abandonment", acceptingHatId: "cto" }));
+  c = must(decompose(c, chart, "g1", [{ workId: "i1", title: "fix the coupon path" }]));
+  c = must(decompose(c, chart, "i1", [{ workId: "p1", title: "coupon service hardening" }]));
+  return { cascade: c, projectId: "p1" };
+}
+
+describe("the rung order is DELIBERATE, and pinned", () => {
+  test("goal -> initiative -> project -> leaf, each owned a level down", () => {
+    // Pinned because the reference orders Project above Initiative and the difference is a reading
+    // of what its top arrow MEANS — an association to a long-lived product, not a decomposition.
+    // A silent reorder to "match the reference" would invert a ladder that is correct as it stands.
+    expect(CASCADE_RUNGS.map((r) => r.workType)).toEqual([
+      WorkType.Goal,
+      WorkType.Initiative,
+      WorkType.Project,
+      WorkType.Task,
+    ]);
+    expect(CASCADE_RUNGS.map((r) => r.ownerLevel)).toEqual(["c_suite", "director", "manager", "lead"]);
+  });
+
+  test("every rung except the last has one below it, and the last is a leaf", () => {
+    for (const rung of CASCADE_RUNGS.slice(0, -1)) expect(nextRung(rung.workType)).toBeDefined();
+    expect(isLeafType(CASCADE_RUNGS[CASCADE_RUNGS.length - 1]!.workType)).toBe(true);
+  });
+});
+
+describe("THE BOTTOM RUNG IS NOT ONE SHAPE", () => {
+  test("every leaf type shares the lead rung, and none has a rung below it", () => {
+    for (const leaf of LEAF_TYPES) {
+      expect(isLeafType(leaf)).toBe(true);
+      expect(rungFor(leaf)?.ownerLevel).toBe("lead");
+      // A leaf decomposes into nothing, whichever leaf it is.
+      expect(nextRung(leaf)).toBeUndefined();
+    }
+    expect(LEAF_TYPES).toHaveLength(5);
+  });
+
+  test("the rungs above are NOT leaves, and each still has one below it", () => {
+    for (const t of [WorkType.Goal, WorkType.Initiative, WorkType.Project]) {
+      expect(isLeafType(t)).toBe(false);
+      expect(nextRung(t)).toBeDefined();
+    }
+  });
+
+  test("a child may name its own LEAF type", () => {
+    const built = threeRungs();
+    const r = decompose(built.cascade, chart, built.projectId, [
+      { workId: "d1", title: "fix the outage", workType: WorkType.Incident },
+      { workId: "r1", title: "verify the fix", workType: WorkType.Review },
+    ]);
+    expect(r.ok).toBe(true);
+    if (!r.ok) return;
+    expect(nodeById(r.cascade, "d1")?.workType).toBe(WorkType.Incident);
+    expect(nodeById(r.cascade, "r1")?.workType).toBe(WorkType.Review);
+  });
+
+  test("A CHILD CANNOT SMUGGLE IN A TYPE FROM ANOTHER RUNG", () => {
+    // Without the rung check a caller could create a `goal` as the child of a project and invert
+    // the whole ladder — the cascade's ordering is the thing it exists to enforce.
+    const built = threeRungs();
+    const r = decompose(built.cascade, chart, built.projectId, [
+      { workId: "g9", title: "sneaky", workType: WorkType.Goal },
+    ]);
+    expect(r.ok).toBe(false);
+    if (!r.ok) expect(r.reason).toContain("does not belong at the");
+  });
+
+  test("a leaf of ANY type can be assigned and completed", () => {
+    const built = threeRungs();
+    const made = decompose(built.cascade, chart, built.projectId, [
+      { workId: "inc1", title: "restore service", workType: WorkType.Incident },
+    ]);
+    expect(made.ok).toBe(true);
+    if (!made.ok) return;
+    const assigned = assign(made.cascade, chart, "inc1", "backend_implementer");
+    expect(assigned.ok).toBe(true);
+    if (!assigned.ok) return;
+    const done = setState(assigned.cascade, "inc1", WorkState.Done);
+    expect(done.ok).toBe(true);
+    if (done.ok) expect(isDelivered(done.cascade, "inc1")).toBe(true);
+  });
+
+  test("an unassigned leaf of any type cannot be marked done, and the refusal names its type", () => {
+    const built = threeRungs();
+    const made = decompose(built.cascade, chart, built.projectId, [
+      { workId: "inc1", title: "restore", workType: WorkType.Incident },
+    ]);
+    expect(made.ok).toBe(true);
+    if (!made.ok) return;
+    const done = setState(made.cascade, "inc1", WorkState.Done);
+    expect(done.ok).toBe(false);
+    if (!done.ok) expect(done.reason).toContain("incident");
+  });
+});

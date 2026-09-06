@@ -1,0 +1,233 @@
+/**
+ * corporate/org-store.ts — the organization's history, on disk.
+ *
+ * ── WHAT WAS IN MEMORY ───────────────────────────────────────────────────────
+ * `runOrgRuntime` produced a cascade, a calendar, an anchor board, a queue and a typed event trace,
+ * and every one of them was a value that died with the process. So the organization could be run
+ * and could not be RESUMED, audited across runs, or asked what it did last week — and `org-event.ts`
+ * exists precisely so those questions are answerable.
+ *
+ * ── THE TRACE IS ALREADY THE LOG ─────────────────────────────────────────────
+ * Nothing new needed inventing. `OrgEvent` is already an append-only record of what happened, each
+ * one carrying its own `atMs`, its subject, its actor and the supervisor chain that authorised it.
+ * Persisting it is one shard per event — the convention in `shard-store.ts`, so the merge is set
+ * union and two writers never contend for a path.
+ *
+ * ── WHY THE TRACE AND NOT THE CASCADE ────────────────────────────────────────
+ * Storing the cascade, calendar and board as snapshots would put a SECOND record of the same facts
+ * beside the events that produced them, and the two can disagree — the failure this register keeps
+ * refusing everywhere else (a metric that disagrees with what it counts, a parent state that
+ * disagrees with its leaves). The events are the facts; anything else is a fold over them, and a
+ * fold cannot drift from its own input.
+ *
+ * The division of labour, and it is a boundary rather than a limit: this module STORES and READS;
+ * `org-fold.ts` rebuilds. A full `Cascade` fold from events is not implemented HERE, and is not
+ * missing — `foldOrganization` does it, and `run-agent.ts --resume` runs on the result.
+ *
+ * This paragraph read "not yet a resumable runtime… is the next step and is not claimed by this
+ * module" until 2026-09-05, while `org-fold.ts` opened by QUOTING that exact sentence as the thing
+ * it had closed. Two files, one claim, opposite tenses; the reader who believed the older one
+ * would have built a second fold beside the working one.
+ */
+
+import { Category } from "../zeta-id/types";
+import { readShards, shardZetaId, writeShard } from "../shard-store/shard-store";
+import { toHex } from "../zeta-id/encoding";
+import type { OrgEvent } from "./org-event";
+
+/** A run's own summary, stored beside its events so a history has runs and not only moments. */
+export interface RunRecord {
+  /**
+   * Whether this run touched anything real, and which ports did.
+   *
+   * OPTIONAL, and absence means **unknown** — never "simulated". Records written before this was
+   * recorded carry no fidelity, and reading that silence as "nothing was real" would invent a fact
+   * about history nobody observed. `deliveryRate` counts them in their own bucket for exactly that
+   * reason.
+   */
+  readonly replayable?: boolean;
+  readonly realPorts?: readonly string[];
+  /**
+   * MINTED FROM THE RUN'S OWN CONTENT, never supplied.
+   *
+   * The first cut let the caller pass one and the CLI passed `run-${nowMs}` — which is not a
+   * unique id when `nowMs` is fixed, as it is in every deterministic run. Two genuinely different
+   * runs then shared an identity and the second silently vanished from the history: the store
+   * reported "0/1 delivered" after two runs, one of which had delivered.
+   *
+   * Content-derived instead, so distinct runs are distinct and identical runs collapse — which is
+   * the idempotency the shard shape is for, rather than an accident of the clock.
+   */
+  readonly runId: string;
+  readonly atMs: number;
+  readonly delivered: boolean;
+  readonly eventCount: number;
+  /** The levels that actually decided something, as the run reported them. */
+  readonly levelsEngaged: readonly string[];
+  readonly refusals: readonly string[];
+}
+
+const EVENTS = "events";
+const RUNS = "runs";
+
+/**
+ * Identity of a stored event: its CONTENT ADDRESS — the same one that chose its filename.
+ *
+ * ── WHAT THIS REPLACED, AND THE DATA LOSS IT CAUSED ──────────────────────────
+ * This used to return `event.id`, reasoning that the runtime had already assigned an identity and
+ * that re-deriving one would create a second notion of it. The intent was right: two copies of one
+ * event — a re-run, a merged branch — must collapse to one.
+ *
+ * But the store ALREADY had a content notion: `shardPath` derives every filename from the record's
+ * content. So there were two notions and they disagreed, and the disagreement lost data. Two
+ * genuinely DIFFERENT events that share an id land at different paths — both written — and then
+ * `readShards` drops one, because it de-duplicates on this function.
+ *
+ * Measured on `run-org.ts --store S` run twice with different flags, which mints the same ids every
+ * invocation (`nowMs` is fixed and the counter restarts): **78 event files on disk, 58 returned.**
+ * Twenty events written and unreadable, with nothing anywhere saying so.
+ *
+ * ── THE CONTENT ADDRESS SATISFIES THE ORIGINAL INTENT STRICTLY BETTER ────────
+ *   - two byte-identical copies of one event  -> same address -> collapse, as before
+ *   - two DIFFERENT events sharing an id      -> different addresses -> both survive
+ *
+ * And it removes the second notion rather than adding one: identity is now the filename, so "two
+ * files" and "two events" are the same statement.
+ *
+ * It does NOT excuse a writer minting colliding ids — `run-agent.ts` scopes its ids to the run's
+ * instant for exactly that reason — but a writer's mistake must not silently delete history.
+ */
+function identifyEvent(event: OrgEvent): string {
+  return toHex(shardZetaId(event, event.atMs, Category.Workflow));
+}
+
+function identifyRun(run: RunRecord): string {
+  return run.runId;
+}
+
+/** The run's identity: a pure function of what the run did. */
+export function mintRunId(input: {
+  readonly atMs: number;
+  readonly delivered: boolean;
+  readonly eventCount: number;
+  readonly levelsEngaged: readonly string[];
+  readonly refusals: readonly string[];
+}): string {
+  return toHex(shardZetaId(input, input.atMs, Category.Workflow));
+}
+
+/**
+ * Append a run: every event as its own shard, plus the run's summary.
+ *
+ * Idempotent at the record level — re-appending the same run writes the same bytes to the same
+ * paths, so replaying a run is an upsert rather than a duplicated history.
+ */
+export function appendRun(
+  input: {
+    readonly atMs: number;
+    readonly delivered: boolean;
+    readonly levelsEngaged: readonly string[];
+    readonly refusals: readonly string[];
+    readonly trace: readonly OrgEvent[];
+    /** The run's own `fidelity`. Omitted only by callers that genuinely have none. */
+    readonly replayable?: boolean;
+    readonly realPorts?: readonly string[];
+  },
+  root: string,
+): { readonly runPath: string; readonly eventPaths: readonly string[] } {
+  const eventPaths = input.trace.map((event) =>
+    writeShard({ value: event, atMs: event.atMs, category: Category.Workflow, prefix: [EVENTS] }, root),
+  );
+  const summary = {
+    atMs: input.atMs,
+    delivered: input.delivered,
+    eventCount: input.trace.length,
+    levelsEngaged: [...input.levelsEngaged],
+    refusals: [...input.refusals],
+    // Spread rather than defaulted: a caller with no fidelity writes a record with no fidelity, and
+    // `runId` is minted from this summary, so an absent field must stay absent rather than becoming
+    // a `false` that both changes the id and asserts something nobody measured.
+    ...(input.replayable === undefined ? {} : { replayable: input.replayable }),
+    ...(input.realPorts === undefined ? {} : { realPorts: [...input.realPorts] }),
+  };
+  const run: RunRecord = { runId: mintRunId(summary), ...summary };
+  const runPath = writeShard(
+    { value: run, atMs: input.atMs, category: Category.Workflow, prefix: [RUNS] },
+    root,
+  );
+  return { runPath, eventPaths };
+}
+
+/**
+ * Every event ever stored, in the order they happened.
+ *
+ * Ordered by the event's own `atMs`, with its id as the tie-break — never by filename, which is an
+ * artefact of the store rather than of the organization.
+ */
+export function readEvents(root: string): readonly OrgEvent[] {
+  const events = readShards<OrgEvent>(`${root}/${EVENTS}`, identifyEvent);
+  return [...events].sort((a, b) => {
+    if (a.atMs !== b.atMs) return a.atMs - b.atMs;
+    return a.id === b.id ? 0 : a.id < b.id ? -1 : 1;
+  });
+}
+
+/** Every run, oldest first. */
+export function readRuns(root: string): readonly RunRecord[] {
+  const runs = readShards<RunRecord>(`${root}/${RUNS}`, identifyRun);
+  return [...runs].sort((a, b) => {
+    if (a.atMs !== b.atMs) return a.atMs - b.atMs;
+    return a.runId === b.runId ? 0 : a.runId < b.runId ? -1 : 1;
+  });
+}
+
+/**
+ * What happened to one work item, ACROSS RUNS.
+ *
+ * The question `org-event.ts` was built to answer, now answerable over more than one process
+ * lifetime — which is the whole point of the history being durable.
+ */
+export function eventsFor(root: string, subjectId: string): readonly OrgEvent[] {
+  return readEvents(root).filter((e) => e.subjectId === subjectId);
+}
+
+/** Everything a line of authority decided, across runs. */
+export function decidedUnder(root: string, hatId: string): readonly OrgEvent[] {
+  return readEvents(root).filter((e) => e.supervisorChain.includes(hatId));
+}
+
+/** How many runs delivered, and how many did not — the simplest thing a history is for. */
+export interface DeliveryRate {
+  readonly runs: number;
+  readonly delivered: number;
+  /** Delivered runs that touched something real. */
+  readonly deliveredForReal: number;
+  /** Delivered runs that recorded themselves as touching nothing. */
+  readonly deliveredSimulated: number;
+  /** Delivered runs whose fidelity was never recorded. Neither real nor simulated — UNKNOWN. */
+  readonly deliveredUnknownFidelity: number;
+}
+
+/**
+ * How the history went, and how much of it was real.
+ *
+ * This used to return `{ runs, delivered }` alone, which is a number that cannot tell a history
+ * where everything shipped from one where nothing did. A store built from real commands, real
+ * worktrees and real merges and a store built from a pure simulation both reported "N/N delivered",
+ * because the only thing separating them lived in memory and died at the disk boundary.
+ *
+ * THREE BUCKETS, NOT TWO. A run predating the `run_fidelity` fact is `unknown`, and folding it into
+ * either of the other two would invent a fact about history nobody observed — the same refusal
+ * `directoryReview` makes when no verdict was filed. Unknown is a real answer and it is reported.
+ */
+export function deliveryRate(root: string): DeliveryRate {
+  const runs = readRuns(root);
+  const delivered = runs.filter((r) => r.delivered);
+  return {
+    runs: runs.length,
+    delivered: delivered.length,
+    deliveredForReal: delivered.filter((r) => r.replayable === false).length,
+    deliveredSimulated: delivered.filter((r) => r.replayable === true).length,
+    deliveredUnknownFidelity: delivered.filter((r) => r.replayable === undefined).length,
+  };
+}

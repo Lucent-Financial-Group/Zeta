@@ -3,7 +3,16 @@
 // Generates the workflow treaty transcript to compare TS and F# implementations.
 
 import { transition, postResultTransition, cycleClose } from "./agent-loop/state-machine";
-import type { AgentState, MenuOption, WorkResult, AgentContext, WorkCandidate } from "./agent-loop/state-machine";
+import type {
+  AgentState,
+  MenuOption,
+  WorkResult,
+  AgentContext,
+  WorkCandidate,
+  StatusSnapshot,
+  Lane,
+} from "./agent-loop/state-machine";
+import { generateMenu, rankCandidates } from "./agent-loop/menu-generator";
 import { applyTransition } from "./agent-loop/work-lifecycle-state-machine";
 import type { WorkLifecycleState, WorkLifecycleTransition, BacklogRow } from "./agent-loop/work-lifecycle-state-machine";
 import { writeFileSync } from "fs";
@@ -173,6 +182,173 @@ for (const state of workStates) {
       expectedResult: result,
     });
   }
+}
+
+// ── MenuGeneration vectors ──────────────────────────────────────────────────
+//
+// The menu generator was built after this transcript, which left the newest and most load-bearing
+// part of the loop as the ONE part not byte-locked across languages. These vectors close that:
+// every case below is one where a plausible-but-different implementation would diverge, so the
+// F# port cannot pass by accident.
+const menuSnapshot = (over: Partial<StatusSnapshot> = {}): StatusSnapshot => ({
+  snapshotIso: "2026-06-11T16:05:00.000Z",
+  currentDora: {
+    deploymentCount: 15,
+    leadTimeMedianSeconds: 1200,
+    changeFailureRate: 0.05,
+    mttrMedianSeconds: 300,
+    substrateRatio: 0.75,
+  },
+  hotTrajectories: [],
+  coolingTrajectories: [],
+  explorationCandidates: [],
+  perAgentRatios: {},
+  ...over,
+});
+
+const menuCandidate = (over: Partial<WorkCandidate> = {}): WorkCandidate => ({
+  id: "w-base",
+  lane: "operational",
+  estimatedDoraContribution: 0.5,
+  uncertainty: 0.5,
+  trajectoryPhase: "execution",
+  agentInterest: 0.5,
+  ...over,
+});
+
+interface MenuCase {
+  readonly name: string;
+  readonly state: AgentState;
+  readonly snapshot: StatusSnapshot;
+  readonly candidates: readonly WorkCandidate[];
+  readonly namedDeps: readonly { readonly namedDep: string; readonly eta?: string }[];
+  readonly heartbeatLane: Lane;
+}
+
+const menuCases: MenuCase[] = [
+  // Every state, so the non-coercion invariant is locked in all ten.
+  ...agentStates.map((state, i) => ({
+    name: `state-${i}`,
+    state,
+    snapshot: menuSnapshot(),
+    candidates: [menuCandidate()],
+    namedDeps: [],
+    heartbeatLane: "operational" as Lane,
+  })),
+  // No work at all — the case where a naive generator returns almost nothing.
+  {
+    name: "no-candidates",
+    state: { tag: "Idle", context: ctx },
+    snapshot: menuSnapshot(),
+    candidates: [],
+    namedDeps: [],
+    heartbeatLane: "operational",
+  },
+  // ORDERING: the four score terms pulling in different directions at once.
+  {
+    name: "ordering-all-terms",
+    state: { tag: "Idle", context: ctx },
+    snapshot: menuSnapshot({
+      hotTrajectories: ["w-hot"],
+      coolingTrajectories: ["w-cold"],
+      perAgentRatios: { otto: 0.9 },
+    }),
+    candidates: [
+      menuCandidate({ id: "w-cold", estimatedDoraContribution: 0.9 }),
+      menuCandidate({ id: "w-hot", uncertainty: 0.1 }),
+      menuCandidate({ id: "w-sunset", trajectoryPhase: "sunset" }),
+      menuCandidate({ id: "w-substrate", lane: "substrate-cascade" }),
+      menuCandidate({ id: "w-keen", agentInterest: 1 }),
+    ],
+    namedDeps: [],
+    heartbeatLane: "operational",
+  },
+  // THE ORDINAL TIE-BREAK. Locale collation puts "a" before "B"; code-unit order does not.
+  {
+    name: "ordinal-tie-break",
+    state: { tag: "Idle", context: ctx },
+    snapshot: menuSnapshot(),
+    candidates: [menuCandidate({ id: "a" }), menuCandidate({ id: "B" }), menuCandidate({ id: "Z" })],
+    namedDeps: [],
+    heartbeatLane: "operational",
+  },
+  // Out-of-range inputs, which must be clamped identically on both sides.
+  {
+    name: "clamped-inputs",
+    state: { tag: "Idle", context: ctx },
+    snapshot: menuSnapshot({ perAgentRatios: { otto: Number.NaN } }),
+    candidates: [
+      menuCandidate({ id: "w-wild", estimatedDoraContribution: 999, uncertainty: -5, agentInterest: 42 }),
+    ],
+    namedDeps: [],
+    heartbeatLane: "operational",
+  },
+  // The in-flight item must not be offered again.
+  {
+    name: "in-flight-excluded",
+    state: { tag: "ExecutingWork", context: ctx, work: menuCandidate({ id: "w-current" }) },
+    snapshot: menuSnapshot(),
+    candidates: [menuCandidate({ id: "w-current" }), menuCandidate({ id: "w-other" })],
+    namedDeps: [],
+    heartbeatLane: "memory",
+  },
+  // Named waits, with and without an ETA — absent must stay absent.
+  {
+    name: "named-waits",
+    state: { tag: "Idle", context: ctx },
+    snapshot: menuSnapshot(),
+    candidates: [],
+    namedDeps: [{ namedDep: "CI-pipeline", eta: "2026-06-11T17:00:00.000Z" }, { namedDep: "operator reply" }],
+    heartbeatLane: "heartbeat",
+  },
+  // Paused: only the way out, plus the free modes.
+  {
+    name: "paused-offers-only-resume",
+    state: { tag: "Paused", context: ctx, reason: "break", expectedResumeIso: "2026-06-11T18:00:00.000Z" },
+    snapshot: menuSnapshot(),
+    candidates: [menuCandidate({ id: "w-1" }), menuCandidate({ id: "w-2" })],
+    namedDeps: [{ namedDep: "CI-pipeline" }],
+    heartbeatLane: "operational",
+  },
+  // The balance term inverted: an agent SHORT of operational work.
+  {
+    name: "balance-inverted",
+    state: { tag: "Idle", context: ctx },
+    snapshot: menuSnapshot({ perAgentRatios: { otto: 0.1 } }),
+    candidates: [
+      menuCandidate({ id: "w-op", lane: "operational" }),
+      menuCandidate({ id: "w-sub", lane: "substrate-cascade" }),
+    ],
+    namedDeps: [],
+    heartbeatLane: "operational",
+  },
+];
+
+for (const c of menuCases) {
+  const menu = generateMenu({
+    state: c.state,
+    snapshot: c.snapshot,
+    candidates: c.candidates,
+    namedDeps: c.namedDeps,
+    heartbeatLane: c.heartbeatLane,
+  });
+  vectors.push({
+    vectorType: "MenuGeneration",
+    name: c.name,
+    state: c.state,
+    snapshot: c.snapshot,
+    candidates: c.candidates,
+    namedDeps: c.namedDeps,
+    heartbeatLane: c.heartbeatLane,
+    expectedMenu: menu,
+    // The scored terms are locked too: identical ordering can still hide a divergent score, and a
+    // score that drifts today is an ordering that drifts on the next input.
+    expectedScores: rankCandidates(c.candidates, c.snapshot, c.state.context.agent).map((s) => ({
+      id: s.candidate.id,
+      score: s.score,
+      terms: s.terms,
+    })),
+  });
 }
 
 const outputPath = join(__dirname, "workflow-treaty-transcript.json");
