@@ -3247,6 +3247,8 @@ jobs:
           - skip-token-cannot-land
           - dotnet-pin-parity
           - argocd-pin-parity
+          - committed-chart-credentials
+          - committed-chart-credentials-tests
           - bootstrap-application-pin-parity
           - bootstrap-application-pin-parity-tests
           - argocd-pin-parity-tests
