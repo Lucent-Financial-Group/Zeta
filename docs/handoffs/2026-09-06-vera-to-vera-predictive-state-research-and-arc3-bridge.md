@@ -31,6 +31,14 @@ Immediate pointers for that second lane:
 
 ## Start here
 
+Continuation, 2026-09-06: the next experiment is now specified in the
+[chronological rendered-signal preregistration](../research/2026-09-06-rendered-signal-predictor-protocol.md),
+work item `081M1W41PKD087G0R0024JFXHT`. It uses a real source-owned CHIP-8
+beacon animation, an observation-only RNN, a stronger order-two count
+control, and shape/palette nuisance panels. Implementation and measurement
+follow remote preservation of the protocol. No new measured claim is made
+by this preregistration.
+
 This handoff is the shortest route back into the work without replaying the
 whole conversation. The predictive-state experiments named below are landed on
 `main`. There is no unpublished result or half-finished predictive experiment

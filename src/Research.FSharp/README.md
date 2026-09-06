@@ -3,6 +3,14 @@
 Source-owned, bounded experiments compiled into the F# test executable. They are not
 part of the database runtime assembly.
 
+## Chronological rendered-signal prediction
+
+The [registered beacon experiment](../../docs/research/2026-09-06-rendered-signal-predictor-protocol.md)
+freezes a source-owned CHIP-8 frame boundary, lag-two sequence law, learned
+and count-based controls, rendering nuisances, independent replay and cost
+receipts before measurement. This is a passive prediction experiment;
+no action return or ARC policy promotion follows from it.
+
 ## Simplex belief comparison
 
 See [the report](../../docs/research/2026-09-06-simplex-wset-comparison-and-stack-verdicts.md)
