@@ -214,6 +214,12 @@
       "migrateTo": "remove both roots when the tree goes."
     },
     {
+      "path": "src/Core.TypeScript/hygiene/audit-argocd-pin-parity.ts",
+      "disposition": "blocking",
+      "note": "Audits the ArgoCD version pin across all sites and names infra/k8s/bootstrap/argocd-install.yaml as one of them -- it is a genuine fifth pin site that lives inside the stale tree, not a stale citation. The auditor's expected-pin-site list carries the literal path, so deleting the tree makes it point at a file that no longer exists.",
+      "migrateTo": "drop the infra/k8s/bootstrap/argocd-install.yaml entry from the pin-site list in the deletion commit; the surviving full-ai-cluster/k8s/bootstrap/argocd-install.yaml entry stays."
+    },
+    {
       "path": "src/Core.TypeScript/hygiene/audit-cluster-tree-consumers.test.ts",
       "disposition": "self",
       "note": "The mutation suite proving the audit can go red."
