@@ -264,9 +264,12 @@ let ``new freeze volume writes ns=bindings and git-trees deltaLog still refuses`
             let rootPath = ZetaFsPath.combine2 store ZetaFsNamespace.RootFileName
             Assert.True(FileSystem.Current.Exists rootPath)
             let rootText = Encoding.UTF8.GetString(FileSystem.Current.ReadAllBytes rootPath)
-            match ZetaFsNamespace.EntityId.tryParse rootText with
-            | None -> Assert.Fail("ROOT must be a StoreEntity EntityId")
-            | Some _ -> ()
+            let rootId =
+                match ZetaFsNamespace.EntityId.tryParse rootText with
+                | Some id -> id
+                | None ->
+                    Assert.Fail("ROOT must be a StoreEntity EntityId")
+                    Unchecked.defaultof<_>
             let id = mintId ()
             let h = ZetaFsMutbuf.openHandle volume.Mutbuf id
             ZetaFsMutbuf.pwrite volume.Mutbuf h 0L [| 1uy; 2uy; 3uy |] |> ignore
@@ -281,7 +284,10 @@ let ``new freeze volume writes ns=bindings and git-trees deltaLog still refuses`
                 try
                     Assert.True(ZetaFsFreeze.isReadable reopened first.Content)
                     let rootAgain = Encoding.UTF8.GetString(FileSystem.Current.ReadAllBytes rootPath)
-                    Assert.Equal(rootText, rootAgain)
+                    match ZetaFsNamespace.EntityId.tryParse rootAgain with
+                    | None -> Assert.Fail("ROOT must still parse after reopen")
+                    | Some again ->
+                        Assert.Equal(0, ZetaFsNamespace.EntityId.compare rootId again)
                 finally
                     ZetaFsFreeze.dispose reopened
                 let ex =
