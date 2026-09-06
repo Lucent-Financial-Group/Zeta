@@ -16,6 +16,7 @@ classifies against.
 Operational status: research-grade
 GOVERNANCE.md §33: research-grade. Current-state promotion is
 `src/Core.TypeScript/cluster/seal-emulator-rung.ts` plus
+`src/Core.TypeScript/cluster/unseal-path.ts` plus
 `docs/trajectories/cluster-encryption-credential-substrate/MENO.md`.
 Non-fusion disclaimer: Pattern 1 (FF7 identity-blend) refused.
 
@@ -131,6 +132,9 @@ creates key material in the token before `bao operator init`.
 - Prod key rotation via FIDO or biometric.
 - Enabling `security.pam.u2f` from `zeta.hostSeal`.
 - Setting `boxRole = "prod-metal"` from a Kubernetes label.
+- Two OpenBao seals on one node.
+- Silent PKCS#11 → Lucent when the requested device is missing.
+- skip-if-absent wearing pass on an emulator cell.
 - Pattern 1.
 
 ## Host-seal profile — NixOS role, not a k8s label (Aaron 2026-09-05)
@@ -183,3 +187,30 @@ Nix model: `full-ai-cluster/nixos/modules/host-seal-model.nix`.
 4. Metal: `seal "pkcs11"` + device mount, mechanism pinned per
    oracle. Dual-vendor per node is ZetaFS k-of-n, not two
    active OpenBao seals.
+
+## Setup-time detect; TPM auto-unseal; Lucent as a peer path (Aaron 2026-09-06)
+
+Aaron: detect during setup whether the real hardware has HSM
+and/or TPM; integrate only if that hardware is accessible on
+the physical device; use the emulators to test install *with
+and without* HSM/TPM; can TPM auto-unseal or only HSM; still
+allow hardware that uses 1Password for unsealing (the
+2026-09-04 Lucent design); multiple paths.
+
+Classifier: `src/Core.TypeScript/cluster/unseal-path.ts`.
+Workitem: `081M1T9X3ZE087G0R000JNAYE7`. This is the path
+picker. It does not put `seal "pkcs11"` in Application.yaml
+and it does not install SoftHSM2.
+
+| Question | Answer |
+|---|---|
+| Detect when? | Setup. Capture is injected (`frost-hardware-probe` / `tpm2-linux-probe`). A driver on disk is not a device. Unprobed / unavailable / unreadable / indeterminate is a check that did not run, not absent. |
+| Integrate PKCS#11 when? | Only if accessible: YubiHSM `attached`, smartcard HSM present, or TPM `present`. Requested PKCS#11 that is missing **refuses** — it does not fall to Lucent (no-silent-downgrade). |
+| TPM auto-unseal? | **Yes.** `tpm2-pkcs11`, mechanism **must pin** `CKM_RSA_PKCS_OAEP`. AES-GCM is not a TPM path. |
+| HSM auto-unseal? | Yes. PKCS#11, preferred AES-GCM (YubiHSM / SoftHSM). |
+| 1Password / Lucent? | **Peer path**, not a silent fallback. Shamir HTTP loop / fetch-at-unseal, threshold >= 2, cannot init. Explicit `lucent-shamir` is allowed even when an HSM is attached. `auto` with a completed look and nothing accessible picks Lucent. |
+| Multiple paths? | Fleet may mix PKCS#11-HSM, PKCS#11-TPM, Lucent-Shamir, kind-Shamir. **One OpenBao seal per node.** Two distinct paths as seals refuse. Dual-vendor remains ZetaFS k-of-n. |
+| Emulator 2×2? | SoftHSM × swtpm, **declared by installing**. Cell that wants an emulator the runner did not install is `fail-missing`. skip-if-absent cannot wear pass. Both installed → ci-softhsm (HSM wins). Neither + Lucent fetcher → lucent-shamir. Neither + kind unsealer → kind-shamir. Neither + nothing → `no-path`. `ci-softhsm` / `ci-swtpm` via `integrateAtSetup` without a job is `emulator-not-declared`. |
+
+HSM wins over TPM when both are accessible (`auto`). That is
+one seal, not a ranking of vendors.
