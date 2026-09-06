@@ -54,16 +54,26 @@ export interface BaoElfCapture {
 }
 
 /**
- * PT_INTERP → libc. `ld-musl` is musl. `ld-linux` is glibc
- * (including NixOS store paths). Empty / other is unknown —
+ * PT_INTERP → libc. Named contracts first (chart musl, CI glibc
+ * tarball, aarch64 peers), then substring for NixOS store paths
+ * (`.../ld-linux-x86-64.so.2`). Empty / other is unknown —
  * unknown is not a glibc proof.
  */
 export function classifyElfInterpreter(interpreter: string | null): ElfLibc {
   if (interpreter === null) return "unknown";
   const trimmed = interpreter.trim();
   if (trimmed.length === 0) return "unknown";
-  if (trimmed.includes("ld-musl")) return "alpine-musl";
-  if (trimmed.includes("ld-linux")) return "glibc";
+  if (trimmed === ELF_INTERP_MUSL_X86_64 || trimmed === ELF_INTERP_MUSL_AARCH64 || trimmed.includes("ld-musl")) {
+    return "alpine-musl";
+  }
+  if (
+    trimmed === ELF_INTERP_GLIBC_X86_64 ||
+    trimmed === ELF_INTERP_GLIBC_X86_64_LIB ||
+    trimmed === ELF_INTERP_GLIBC_AARCH64 ||
+    trimmed.includes("ld-linux")
+  ) {
+    return "glibc";
+  }
   return "unknown";
 }
 

@@ -30,6 +30,7 @@
 import {
   baoElfOpenedPathIsBinary,
   classifyElfInterpreter,
+  ELF_INTERP_MUSL_X86_64,
   imageAbiFromBaoElf,
   type BaoElfCapture,
   type BaoLoadSite,
@@ -46,6 +47,9 @@ export type { BaoElfCapture, BaoLoadSite } from "./bao-load-site.ts";
 
 /** Chart image today. Measured: Alpine musl, no PKCS#11 module in the image. */
 export const OPENBAO_HSM_IMAGE_ABI = "alpine-musl" as const;
+
+/** PT_INTERP of that chart image. A glibc tarball is not this string. */
+export const OPENBAO_HSM_IMAGE_INTERP = ELF_INTERP_MUSL_X86_64;
 
 /** NixOS host libraries (opensc, tpm2-pkcs11, yubihsm_pkcs11) are glibc. */
 export const NIXOS_HOST_ABI = "glibc" as const;

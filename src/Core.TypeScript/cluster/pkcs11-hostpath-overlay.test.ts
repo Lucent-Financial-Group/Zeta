@@ -17,12 +17,18 @@
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { describe, expect, test } from "bun:test";
-import { hclHasPkcs11Seal } from "./seal-emulator-rung.ts";
+import {
+  classifyElfInterpreter,
+  ELF_INTERP_GLIBC_X86_64,
+  ELF_INTERP_MUSL_X86_64,
+  TPM_CHAR_DEVICE,
+} from "./bao-load-site.ts";
 import {
   BAO_HSM_PIN_ENV,
   NIXOS_HOST_ABI,
   NIXOS_PKCS11_MODULE_PATH,
   OPENBAO_HSM_IMAGE_ABI,
+  OPENBAO_HSM_IMAGE_INTERP,
   USB_PKCS11_MODULE_POINTER,
   applicationMayGainPkcs11Seal,
   currentChartOverlayInput,
@@ -36,7 +42,7 @@ import {
   resolveOverlayModulePath,
   hostBaoSealHcl,
 } from "./pkcs11-hostpath-overlay.ts";
-import { ELF_INTERP_GLIBC_X86_64, ELF_INTERP_MUSL_X86_64, TPM_CHAR_DEVICE } from "./bao-load-site.ts";
+import { hclHasPkcs11Seal } from "./seal-emulator-rung.ts";
 
 const APPLICATION = join(import.meta.dir, "../../../full-ai-cluster/k8s/applications/openbao/Application.yaml");
 
@@ -76,6 +82,8 @@ describe("ABI — glibc host into musl image is not a module in reach", () => {
   test("OPENBAO_HSM_IMAGE_ABI is alpine-musl; NixOS host is glibc", () => {
     expect(OPENBAO_HSM_IMAGE_ABI).toBe("alpine-musl");
     expect(NIXOS_HOST_ABI).toBe("glibc");
+    expect(OPENBAO_HSM_IMAGE_INTERP).toBe(ELF_INTERP_MUSL_X86_64);
+    expect(classifyElfInterpreter(OPENBAO_HSM_IMAGE_INTERP)).toBe("alpine-musl");
   });
 });
 
