@@ -1,5 +1,9 @@
 module Zeta.Tests.FrameSignalsTests
 
+open System
+open System.Collections.Generic
+open System.IO
+open System.Text.Json
 open Xunit
 open Zeta.Core
 
@@ -9,6 +13,38 @@ let private requireOk =
     function
     | Ok value -> value
     | Error feedback -> failwithf "unexpected feedback: %A" feedback
+
+let private repoRoot () =
+    let mutable directory =
+        DirectoryInfo(Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location))
+
+    while not (isNull directory) && not (File.Exists(Path.Join(directory.FullName, "Zeta.sln"))) do
+        directory <- directory.Parent
+
+    if isNull directory then failwith "could not locate repo root" else directory.FullName
+
+let private treatyPath () =
+    Path.Join(repoRoot (), "src", "Core", "golden-vectors-frame-signals.json")
+
+let private frameOfJson (element: JsonElement) : GE.Frame =
+    { W = element.GetProperty("width").GetInt32()
+      H = element.GetProperty("height").GetInt32()
+      Palette = element.GetProperty("palette").GetInt32()
+      Cells = [| for cell in element.GetProperty("cells").EnumerateArray() -> byte (cell.GetInt32()) |] }
+
+let private assertShape (expected: JsonElement) (actual: FrameSignals.Shape) =
+    Assert.Equal(expected.GetProperty("width").GetInt32(), actual.Width)
+    Assert.Equal(expected.GetProperty("height").GetInt32(), actual.Height)
+    Assert.Equal(expected.GetProperty("area").GetInt32(), actual.Area)
+    Assert.Equal(expected.GetProperty("perimeter").GetInt64(), actual.Perimeter)
+
+    let expectedCells =
+        [ for cell in expected.GetProperty("cells").EnumerateArray() do
+              let coordinates = cell.EnumerateArray() |> Seq.toArray
+              yield coordinates.[0].GetInt32(), coordinates.[1].GetInt32() ]
+
+    let actualCells = actual.Cells |> List.map (fun point -> point.X, point.Y)
+    Assert.Equal<(int * int) list>(expectedCells, actualCells)
 
 let private frame width height palette background (points: (int * int * byte) list) : GE.Frame =
     let cells = Array.create (width * height) background
@@ -67,8 +103,8 @@ let ``normalized structure survives translation and palette relabeling`` () =
         |> requireOk
 
     Assert.Equal<FrameSignals.Shape list>(first.StructuralShapes, movedAndRecoloured.StructuralShapes)
-    Assert.NotEqual<FrameSignals.PaletteShape list>(first.PaletteShapes, movedAndRecoloured.PaletteShapes)
-    Assert.NotEqual<FrameSignals.PlacedShape list>(first.PlacedShapes, movedAndRecoloured.PlacedShapes)
+    Assert.NotEqual<byte list>(first.ForegroundPalette, movedAndRecoloured.ForegroundPalette)
+    Assert.NotEqual<FrameSignals.Point list>(first.ComponentOrigins, movedAndRecoloured.ComponentOrigins)
 
 [<Fact>]
 let ``translation is separated from direct foreground recoloring`` () =
@@ -83,6 +119,8 @@ let ``translation is separated from direct foreground recoloring`` () =
     Assert.Equal(2, motion.BackgroundCrossings)
     Assert.False(motion.StructureChanged)
     Assert.False(motion.PaletteChanged)
+    Assert.False(motion.ColourOccupancyChanged)
+    Assert.False(motion.ColourEdgeDensityChanged)
     Assert.True(motion.PlacementChanged)
 
     let colour = FrameSignals.compare first recoloured |> requireOk
@@ -91,6 +129,8 @@ let ``translation is separated from direct foreground recoloring`` () =
     Assert.Equal(0, colour.BackgroundCrossings)
     Assert.False(colour.StructureChanged)
     Assert.True(colour.PaletteChanged)
+    Assert.True(colour.ColourOccupancyChanged)
+    Assert.True(colour.ColourEdgeDensityChanged)
     Assert.False(colour.PlacementChanged)
 
 [<Fact>]
@@ -102,8 +142,10 @@ let ``shape and density changes are explicit`` () =
     Assert.Equal(1, delta.ChangedCells)
     Assert.Equal(1_250, delta.ChangeDensityBasisPoints)
     Assert.True(delta.StructureChanged)
-    Assert.True(delta.PaletteChanged)
-    Assert.True(delta.PlacementChanged)
+    Assert.False(delta.PaletteChanged)
+    Assert.True(delta.ColourOccupancyChanged)
+    Assert.True(delta.ColourEdgeDensityChanged)
+    Assert.False(delta.PlacementChanged)
     Assert.Equal(8, delta.Receipt.ComparedCells)
 
 [<Fact>]
@@ -163,7 +205,95 @@ let ``source-owned CHIP8 motion cart keeps structure while placement changes`` (
         let delta = FrameSignals.compare previous current |> requireOk
         Assert.False(delta.StructureChanged)
         Assert.False(delta.PaletteChanged)
+        Assert.False(delta.ColourOccupancyChanged)
+        Assert.False(delta.ColourEdgeDensityChanged)
         Assert.True(delta.PlacementChanged)
         Assert.Equal(2, delta.BackgroundCrossings)
         Assert.Equal(0, delta.RecolouredForegroundCells)
         Assert.Equal(previous.Cells.Length, delta.Receipt.ComparedCells)
+
+[<Fact>]
+let ``FSharp frame signals replay the shared semantic treaty`` () =
+    use document = JsonDocument.Parse(File.ReadAllText(treatyPath ()))
+    let root = document.RootElement
+    Assert.Equal(1, root.GetProperty("schemaVersion").GetInt32())
+    Assert.Equal(10_000, root.GetProperty("basisPointScale").GetInt32())
+    let frames = Dictionary<string, GE.Frame>(StringComparer.Ordinal)
+
+    for case in root.GetProperty("observations").EnumerateArray() do
+        let name = case.GetProperty("name").GetString() |> Option.ofObj |> Option.get
+        let input = frameOfJson (case.GetProperty("frame"))
+        frames.Add(name, input)
+        let expected = case.GetProperty("expected")
+        let actual = FrameSignals.observe input |> requireOk
+        Assert.Equal(byte (expected.GetProperty("background").GetInt32()), actual.Background)
+
+        let expectedPalette =
+            [ for colour in expected.GetProperty("foregroundPalette").EnumerateArray() -> byte (colour.GetInt32()) ]
+
+        Assert.Equal<byte list>(expectedPalette, actual.ForegroundPalette)
+        let expectedColours = expected.GetProperty("colours").EnumerateArray() |> Seq.toArray
+        Assert.Equal(expectedColours.Length, actual.Colours.Length)
+
+        for expectedColour, actualColour in Array.zip expectedColours (List.toArray actual.Colours) do
+            Assert.Equal(byte (expectedColour.GetProperty("colour").GetInt32()), actualColour.Colour)
+            Assert.Equal(expectedColour.GetProperty("pixels").GetInt32(), actualColour.Pixels)
+
+            Assert.Equal(
+                expectedColour.GetProperty("occupancyBasisPoints").GetInt32(),
+                actualColour.OccupancyBasisPoints
+            )
+
+            Assert.Equal(expectedColour.GetProperty("componentCount").GetInt32(), actualColour.ComponentCount)
+
+            Assert.Equal(
+                expectedColour.GetProperty("edgeDensityBasisPoints").GetInt32(),
+                actualColour.EdgeDensityBasisPoints
+            )
+
+        let expectedShapes = expected.GetProperty("shapes").EnumerateArray() |> Seq.toArray
+        Assert.Equal(expectedShapes.Length, actual.StructuralShapes.Length)
+        Array.iter2 assertShape expectedShapes (List.toArray actual.StructuralShapes)
+
+        let expectedOrigins =
+            [ for origin in expected.GetProperty("origins").EnumerateArray() do
+                  let coordinates = origin.EnumerateArray() |> Seq.toArray
+                  yield coordinates.[0].GetInt32(), coordinates.[1].GetInt32() ]
+
+        let actualOrigins = actual.ComponentOrigins |> List.map (fun point -> point.X, point.Y)
+        Assert.Equal<(int * int) list>(expectedOrigins, actualOrigins)
+
+    for case in root.GetProperty("comparisons").EnumerateArray() do
+        let previousName = case.GetProperty("previous").GetString() |> Option.ofObj |> Option.get
+        let currentName = case.GetProperty("current").GetString() |> Option.ofObj |> Option.get
+        let expected = case.GetProperty("expected")
+        let actual = FrameSignals.compare frames.[previousName] frames.[currentName] |> requireOk
+        Assert.Equal(expected.GetProperty("changedCells").GetInt32(), actual.ChangedCells)
+        Assert.Equal(expected.GetProperty("changeDensityBasisPoints").GetInt32(), actual.ChangeDensityBasisPoints)
+
+        Assert.Equal(
+            expected.GetProperty("recolouredForegroundCells").GetInt32(),
+            actual.RecolouredForegroundCells
+        )
+
+        Assert.Equal(
+            expected.GetProperty("recolourDensityBasisPoints").GetInt32(),
+            actual.RecolourDensityBasisPoints
+        )
+
+        Assert.Equal(expected.GetProperty("backgroundCrossings").GetInt32(), actual.BackgroundCrossings)
+        Assert.Equal(expected.GetProperty("backgroundChanged").GetBoolean(), actual.BackgroundChanged)
+        Assert.Equal(expected.GetProperty("structureChanged").GetBoolean(), actual.StructureChanged)
+        Assert.Equal(expected.GetProperty("paletteChanged").GetBoolean(), actual.PaletteChanged)
+
+        Assert.Equal(
+            expected.GetProperty("colourOccupancyChanged").GetBoolean(),
+            actual.ColourOccupancyChanged
+        )
+
+        Assert.Equal(
+            expected.GetProperty("colourEdgeDensityChanged").GetBoolean(),
+            actual.ColourEdgeDensityChanged
+        )
+
+        Assert.Equal(expected.GetProperty("placementChanged").GetBoolean(), actual.PlacementChanged)
