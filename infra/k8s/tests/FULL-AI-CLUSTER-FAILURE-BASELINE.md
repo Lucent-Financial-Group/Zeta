@@ -57,8 +57,8 @@ was fixed by editing a manifest. All thirteen were reclassified by
 `validate-applications.ts` learning two conventions it did not know, which is the
 same class as the 7 validator-scope artifacts that made the ceiling open at 23
 rather than 29 — and, more to the point, it is **exactly what the caveat below
-asked for**: *"the manifest is correct and the validator is what needs to learn
-the convention."*
+asked for**: _"the manifest is correct and the validator is what needs to learn
+the convention."_
 
 | n | what the validator learned | which of the 13 |
 |---|---|---|
@@ -69,12 +69,12 @@ the convention."*
 no falsifier is indistinguishable from deleting a check, so both are pinned in
 `validate-applications.test.ts`:
 
-- `CreateNamespace=true` — *"RED when CreateNamespace=true is dropped"*, mutating
+- `CreateNamespace=true` — _"RED when CreateNamespace=true is dropped"_, mutating
   **`longhorn`**, which is neither exempt route. Mutating an exempt app would be a
   test that cannot go red.
-- `prune`/`selfHeal` — two cases added with this change: *"RED when an app that
-  DECLARES automated: drops prune"* (the rule still binds) and *"GREEN when an app
-  has NO automated: block at all"* (the exemption is real, not an artifact of
+- `prune`/`selfHeal` — two cases added with this change: _"RED when an app that
+  DECLARES automated: drops prune"_ (the rule still binds) and _"GREEN when an app
+  has NO automated: block at all"_ (the exemption is real, not an artifact of
   nothing testing it). Both assert the mutation actually changed the file, and the
   absence-test asserts the validator reached its `Results:` line, because two
   `not.toContain` assertions both pass on a crash.
