@@ -28,6 +28,7 @@ import { ScheduleBlockType } from "./work-schedule";
 import { driveStateFrom, driveUntilSettled, type DriveDeps } from "./org-drive";
 import { WorkState } from "./goal-cascade";
 import { GateKind, gateOwners } from "./quality-gate";
+import { RunOutcome } from "./qa";
 
 const chart = (() => {
   const r = buildOrgChart(SEED_HATS);
@@ -249,5 +250,70 @@ describe("WHAT THIS RUN HONESTLY DID NOT DO", () => {
     const done = report.cascade.nodes.filter((n) => n.state === WorkState.Done).length;
     // Whatever the run achieved, `delivered` agrees with the cascade rather than with optimism.
     if (report.delivered) expect(done).toBeGreaterThan(0);
+  });
+});
+
+describe("WHEN IT GOES WRONG, A DIRECTOR IS ASKED", () => {
+  async function failingRun() {
+    let n = 0;
+    return runOrgRuntime({
+      chart,
+      agents: agentsFromChart(chart),
+      observations: [],
+      externalEvents: [TICKET],
+      acceptingHatId: "cto",
+      resourceAuthorityHatId: "rmo_office",
+      priorityDeciderHatId: "cto",
+      createId: (p: string) => `${p}-${String(++n).padStart(3, "0")}`,
+      nowMs: 0,
+      workBlockMs: 3_600_000,
+      leaseMs: 300_000,
+      qaFallback: RunOutcome.Failed,
+      priorityInputsFor: () => ({
+        executivePriority: 0.5,
+        customerImpact: 1,
+        severity: 1,
+        releaseRisk: 0.2,
+        blockedDownstreamCount: 2,
+        dependencyFanOut: 1,
+        queueAgeMs: 0,
+        hatScarcity: 0,
+        budgetBurn: 0,
+        estimatedEffort: 0.2,
+      }),
+    } as unknown as OrgRuntimeDeps);
+  }
+
+  test("an escalation ASKS the level above rather than deciding alone", async () => {
+    // `RequestDecision`'s own policy: "multiple valid paths exist and authority sits above the
+    // hat". It had ZERO senders, so the one family meant to carry "how should we execute this?"
+    // upward was never used and an escalation was a call the hat that noticed made for itself.
+    const report = await failingRun();
+    expect(report.escalations.length).toBeGreaterThan(0);
+    const asks = report.signals.filter((s) => s.tool === SignalTool.RequestDecision);
+    expect(asks.length).toBe(report.escalations.length);
+    // Up the line, to a DIRECTOR — derived from the chart, not named anywhere.
+    expect(asks[0]?.toHatId).toBe("engineering_director");
+  });
+
+  test("...and it carries the gate record, so nobody re-derives the problem to decide it", async () => {
+    const report = await failingRun();
+    const ask = report.signals.find((s) => s.tool === SignalTool.RequestDecision);
+    expect(ask?.evidence.some((e) => e.ref.startsWith("gates:"))).toBe(true);
+  });
+
+  test("A CLEAN RUN ASKS NOBODY — the signal fires on escalation, not on every run", async () => {
+    // The other half. A decision request on a run with nothing wrong would be noise that trains
+    // the level above to ignore them.
+    const report = await runOrg();
+    expect(report.escalations.length).toBe(0);
+    expect(report.signals.filter((s) => s.tool === SignalTool.RequestDecision)).toEqual([]);
+  });
+
+  test("the local decision is RECORDED AS WELL, not instead", async () => {
+    // The run did decide something, and the ask is what the organization was told. A supervisor
+    // overruling it later is the chain working, and it cannot overrule what it never heard.
+    const report = await failingRun();
+    for (const e of report.escalations) expect(e.action).not.toBe("");
   });
 });

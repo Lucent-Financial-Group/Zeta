@@ -1619,6 +1619,52 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
         break;
       }
       escalations.push({ taskId: task.workId, action: esc.action, effect: esc.effect, byHatId: esc.byHatId });
+
+      // ASK THE LEVEL THAT HOLDS THE AUTHORITY. `RequestDecision`'s own policy says when it is
+      // for — *"multiple valid paths exist and authority sits above the hat"* — and that is
+      // exactly an escalation. It had ZERO senders, so the one signal family meant to carry "how
+      // should we execute this?" upward was never used, and an escalation was a decision the hat
+      // that noticed the problem made for itself.
+      //
+      // Sent AS WELL AS recorded, not instead: the local decision is what the run did, and the
+      // signal is what the organization was asked. A supervisor overruling it later is the chain
+      // working, and it cannot overrule something it was never told about.
+      const askedDecision = sendSupervisorSignal(
+        deps.chart,
+        board,
+        {
+          signalId: deps.createId("sig"),
+          anchorId: deps.createId("anchor"),
+          fromHatId: esc.byHatId,
+          tool: SignalTool.RequestDecision,
+          title: `how to proceed with ${task.workId}`,
+          message: `escalated after repeated rejection; the local call was '${esc.action}'`,
+          // The gate verdicts ARE the document: a decision request with no record of what went
+          // wrong asks the supervisor to re-derive the problem before deciding anything.
+          evidence: [{ kind: "document", ref: `gates:${task.workId}` }],
+          atMs: warmedAt,
+          workItemId: task.workId,
+        },
+        deps.resourceAuthorityHatId,
+      );
+      if (askedDecision.ok) {
+        board = askedDecision.board;
+        signals.push(askedDecision.signal);
+        note({
+          kind: OrgEventKind.SupervisorSignalSent,
+          subjectId: task.workId,
+          actorHatId: askedDecision.signal.fromHatId,
+          decision: `${askedDecision.signal.tool} → ${askedDecision.signal.toHatId}`,
+          toState: askedDecision.signal.toHatId,
+          atMs: warmedAt,
+          evidenceRefs: askedDecision.signal.evidence.map((e) => e.ref),
+          fact: { kind: "supervisor_signal", signal: askedDecision.signal },
+        });
+      } else {
+        // The top of the chain has nobody to ask. Reported, because an escalation nobody above can
+        // take is the organization discovering it has run out of authority — not a quiet no-op.
+        refusals.push(`could not ask for a decision on ${task.workId}: ${askedDecision.reason}`);
+      }
       engage(esc.byHatId);
       note({
         kind: OrgEventKind.EscalationDecision,
