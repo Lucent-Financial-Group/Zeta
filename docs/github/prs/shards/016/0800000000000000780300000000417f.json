@@ -1,0 +1,12 @@
+{
+  "pr_number": 16767,
+  "archive_path": "docs/history/pr-reviews/PR-16767-ci-cluster-install-softhsm2-swtpm-2x2-so-missing-packages-fail.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-06T07:47:07.947Z",
+  "schema_version": "v1",
+  "commit_sha": "37cf831fa33a83b56d3c6070e600beb29410a9cc",
+  "title": "ci(cluster): Install SoftHSM2/swtpm 2x2 so missing packages fail",
+  "state": "MERGED",
+  "merged_at": "2026-09-06T07:46:34Z",
+  "head_ref": "cursor/seal-emulator-install-27c5"
+}

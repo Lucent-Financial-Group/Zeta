@@ -1,0 +1,12 @@
+{
+  "pr_number": 16762,
+  "archive_path": "docs/history/pr-reviews/PR-16762-docs-081m1trj3x5-where-zeta-actually-grows-64-of-new-files-are-the-pr-archive.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-06T07:25:37.825Z",
+  "schema_version": "v1",
+  "commit_sha": "f25bc782131185c5025d89ef6db7e4865bf00872",
+  "title": "docs(081M1TRJ3X5): where Zeta actually grows — 64% of new files are the PR archive",
+  "state": "MERGED",
+  "merged_at": "2026-09-06T07:24:59Z",
+  "head_ref": "shadow/where-zeta-grows-measured"
+}

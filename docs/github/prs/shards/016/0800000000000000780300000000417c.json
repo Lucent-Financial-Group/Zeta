@@ -1,0 +1,12 @@
+{
+  "pr_number": 16764,
+  "archive_path": "docs/history/pr-reviews/PR-16764-docs-decisions-draft-the-pr-review-archive-moves-to-its-own-repo.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-06T07:52:28.223Z",
+  "schema_version": "v1",
+  "commit_sha": "433da3879e40da856a7f27f0661e7176bc46a157",
+  "title": "docs(DECISIONS): DRAFT — the PR-review archive moves to its own repo",
+  "state": "MERGED",
+  "merged_at": "2026-09-06T07:51:53Z",
+  "head_ref": "shadow/archive-repo-split-draft"
+}
