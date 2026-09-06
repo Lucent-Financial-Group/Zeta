@@ -9,6 +9,8 @@
  *   * Two OpenBao seals (dual-vendor is ZetaFS k-of-n).
  *   * Today's Application.yaml gaining seal "pkcs11".
  *   * TPM overlay omitting CKM_RSA_PKCS_OAEP.
+ *   * Setup treating the restore filename as the .so.
+ *   * Companion path without an attached device as a seal.
  */
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
@@ -27,6 +29,7 @@ import {
   overlaySealHcl,
   overlayValuesObject,
   planPkcs11HostPathOverlay,
+  planSetupPkcs11Overlay,
   refuseSealWithoutReachableModule,
   resolveOverlayModulePath,
 } from "./pkcs11-hostpath-overlay.ts";
@@ -217,5 +220,50 @@ describe("committed Application.yaml stays Shamir until same-libc", () => {
     expect(JSON.stringify(values)).not.toContain("1234");
     expect(JSON.stringify(values)).not.toContain("BAO_HSM_PIN=");
     expect(values.envPointerName).toBe("BAO_HSM_PIN");
+  });
+});
+
+describe("setup wires companion contents into the current-chart overlay", () => {
+  test("companion contents win on an attached YubiHSM; stanza still cannot commit", () => {
+    const plan = planSetupPkcs11Overlay({
+      oracle: "yubihsm2",
+      companionModulePath: "/opt/vendor/yubihsm_pkcs11.so",
+      moduleFileExists: true,
+    });
+    expect(plan.modulePath).toBe("/opt/vendor/yubihsm_pkcs11.so");
+    expect(plan.mayCommitSeal).toBe(false);
+    expect(plan.abi).toBe("glibc-host-into-musl-image");
+    expect(overlaySealHcl(plan)).toBeNull();
+  });
+
+  test("blank companion falls back to the NixOS contract", () => {
+    const plan = planSetupPkcs11Overlay({
+      oracle: "smartcard-hsm",
+      companionModulePath: "  ",
+      moduleFileExists: true,
+    });
+    expect(plan.modulePath).toBe(NIXOS_PKCS11_MODULE_PATH["smartcard-hsm"]);
+    expect(plan.mayCommitSeal).toBe(false);
+  });
+
+  test("restore filename is not the .so", () => {
+    const plan = planSetupPkcs11Overlay({
+      oracle: "yubihsm2",
+      companionModulePath: USB_PKCS11_MODULE_POINTER,
+      moduleFileExists: true,
+    });
+    expect(plan.ok).toBe(false);
+    if (!plan.ok) expect(plan.reason).toBe("companion-pointer-is-not-the-module");
+  });
+
+  test("companion without an attached device is no-oracle, not a seal", () => {
+    const plan = planSetupPkcs11Overlay({
+      oracle: "none",
+      companionModulePath: "/opt/vendor/yubihsm_pkcs11.so",
+      moduleFileExists: true,
+    });
+    expect(plan.ok).toBe(false);
+    if (!plan.ok) expect(plan.reason).toBe("no-oracle");
+    expect(plan.mayCommitSeal).toBe(false);
   });
 });

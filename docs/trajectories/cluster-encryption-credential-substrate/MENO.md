@@ -137,7 +137,13 @@ assume the number.
    Probe path follow-on: `frost-hardware-probe.ts` now
    looks at those exact NixOS contracts
    (`081M1V19MC5087G0R002P2W9EK`); a `.so` on disk is
-   still a driver.
+   still a driver. Setup glue
+   (`081M1V32K68087G0R000SW5PJB`):
+   `planSetupPkcs11Overlay` joins USB companion
+   *contents* (not the restore filename) with the
+   attached-device oracle; NixOS contract is the
+   fallback; current chart ABI still cannot commit the
+   stanza.
 7. extraContainer sidecar — later, **same commit as the
    sidecar**, and only for the Shamir kind path until the
    emulator job replaces it. `valuesObject` only. Do not fork

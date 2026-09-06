@@ -1,0 +1,14 @@
+{
+  "id": "080d03b18a664010a0130008142ca754",
+  "at": "2026-09-06T10:08:57.544Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1V32K68087G0R000SW5PJB",
+    "type": "task",
+    "title": "Setup wires PKCS#11 overlay from USB companion contents; still not a seal stanza",
+    "slug": "setup-wires-pkcs-11-overlay-from-usb-companion-contents-stil",
+    "priority": "P2",
+    "filename": "081M1V32K68087G0R000SW5PJB-setup-wires-pkcs-11-overlay-from-usb-companion-contents-stil.md"
+  }
+}
