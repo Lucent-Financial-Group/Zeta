@@ -132,3 +132,61 @@ identities and fails open, 4.45.0 renders them and fails closed — and the "don
 holds: auth must be *demonstrated enforced* by a test. What is retracted is the implication that
 auth becoming real is *why mimir went Degraded*. It was not reachable to find out, because the
 store was never applied.
+
+## 2026-09-06 (shadow*) — the "Also noticed" question is ANSWERED, and both causes' conditions are gone from the tree
+
+### The chart-generated `anvReadOnly` identity: regenerated per render, not static
+
+The open question was: *"Whether that is deterministic per-chart or regenerated per-render
+decides whether it is a static credential in a rendered manifest."*
+
+**Regenerated per render.** Two `helm template` runs of 4.45.0 against this Application's
+own `valuesObject`, same inputs, back to back:
+
+```
+read_access_key_id: TfyV3sgj7l7wdsMzP3Mf
+read_access_key_id: 97iPWEs9okjBlwK8XdRT
+```
+
+So the chart mints it with `randAlphaNum`. **It is NOT a static credential in a rendered
+manifest**, and nothing in this tree declares it. That half of the finding is closed.
+
+**What it surfaces instead is a different and real dependency.** A Secret whose content is
+non-deterministic per render should churn on every ArgoCD sync — rotating a credential
+under the running gateway — and it does not. The reason is two annotations the chart puts
+on that object: `helm.sh/resource-policy: keep` and `helm.sh/hook: "pre-install,pre-upgrade"`,
+so it is created once and never updated. **Nothing in this tree asserts those annotations
+exist.** If either changed upstream, every sync would rotate an S3 identity and no check
+would say so — which is the same shape as this work-item's original finding, one layer over.
+
+### The `zeta-blob-store` admin literal DOES reach the render at 4.45.0
+
+Confirmed while measuring the above, because `s3.enabled: false` with `allInOne.enabled: true`
+makes the `s3.credentials` block look inert: it renders into the Secret **twice**, as
+`admin_secret_access_key` and inside the `seaweedfs_s3_config` identities JSON. Tracked for
+minting under `081M1S6Z5S3087G0R000GEPSS2`, which now carries the same measurement.
+
+### Both 2026-09-03 causes: the CONDITIONS are gone; the OUTCOME is unmeasured
+
+Stated as two separate claims on purpose, because collapsing them is how a fix gets
+believed before it is observed.
+
+| cause | condition it named | in the tree today |
+|---|---|---|
+| **A** — ArgoCD v2.13.2/Helm 3 cannot render `fromToml` | the kind bootstrap lagged the self-managed Application | **gone.** All FIVE pin sites are argo-cd 10.8.0 (v3.5.2, Helm 4) and that equality is now CHECKED by `audit-argocd-pin-parity.ts`. A fifth site — `infra/k8s/bootstrap/argocd-install.yaml`, the metal path — was still at 7.7.10 until 2026-09-06 and was never in the four-site roster this cause's write-up used |
+| **B** — `mimir-kafka-0` never schedules, `cpu: 1` | the lane applied the `metal` rung | **gone.** `mimir-kafka` is 1000m at `metal` and **25m at `dev`**, and the lane runs `--serve-tree dev` |
+
+**What is NOT claimed: that mimir is healthy.** Nobody has read a live proof since both
+conditions cleared. A condition removed from the tree is not an outcome observed in a
+cluster, and this work-item's own history is the argument for keeping those apart — the
+first write-up asserted that auth becoming real was why mimir went Degraded, and the live
+dump retracted it.
+
+### What is still genuinely open
+
+The **`Done when`** above, unchanged and untouched by any of this: S3 auth must be
+*demonstrated enforced* — an unauthenticated request to
+`blob-store-seaweedfs-all-in-one.object-store.svc:8333` refused, **by a test rather than by
+reading the values**. Nothing in the tree asserts enforcement today, only configuration,
+and that is the gap the original finding named.
+
