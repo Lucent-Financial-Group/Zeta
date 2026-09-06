@@ -464,6 +464,12 @@ names option D host `bao` (`081M1VB58YS087G0R001G1RSXW`);
 host HCL is not a chart seal.
 Installer parses `PT_INTERP` from ELF bytes
 (`081M1VDMK7R087G0R0038GVG66`); no `readelf`.
+First-boot names the bao site and path
+(`081M1VGV2N6087G0R001ZHWZDS`); `/dev/tpmrm0`
+does not pick `on-host`.
+Argv names both flags
+(`081M1VJGMMP087G0R002JRZ458`); a bare tpmrm0
+argv is not `on-host`.
 glibc-host-into-musl-image is not a
 module; Application.yaml stays Shamir.
 

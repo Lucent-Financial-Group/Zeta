@@ -219,14 +219,18 @@ CI tarball on disk is not the chart image.
 Installer bytes (`081M1VDMK7R087G0R0038GVG66`):
 `ptInterpFromElfBytes` plus `captureBaoElfFromRead`.
 No `readelf`. Overlay still does not open a filesystem.
+First-boot named site (`081M1VGV2N6087G0R001ZHWZDS`):
+`planSetupFromNamedBaoElf`. TPM present is not `on-host`.
+Argv (`081M1VJGMMP087G0R002JRZ458`): `--bao-load-site` plus
+`--bao-path`. One flag without the other refuses.
 
 1. Metal: `seal "pkcs11"` in Application.yaml still waits.
    Same commit as a **reachable** module: same-libc image
    (glibc OpenBao that can load the host `.so`) or option D
    host `bao`. Dual-vendor per node is ZetaFS k-of-n, not
    two active OpenBao seals. Do not treat this planner as
-   that commit. First-boot still has to pass a named site
-   plus a bao path into `captureBaoElfFromRead`.
+   that commit. `zeta-first-boot.sh` still has to pass those
+   flags (not from `/dev/tpmrm0`).
 2. extraContainer Shamir sidecar (`valuesObject` only) until
    kind/CI consume the emulator init.
 
