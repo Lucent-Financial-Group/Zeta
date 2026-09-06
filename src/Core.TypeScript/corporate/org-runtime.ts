@@ -99,7 +99,7 @@ import {
   type Pipeline,
   type ProducerPort,
 } from "./pipeline";
-import { fidelityLine, recordingProviders, runFidelityOf, type ChangeHandle, type ProviderSet, type ReviewVerdict, type RunFidelity } from "./providers";
+import { fidelityLine, recordingProviders, runFidelityOf, type ChangeHandle, type DataSourcePort, type ProviderSet, type ReviewVerdict, type RunFidelity } from "./providers";
 import { autoApproveReview, simulatedChangeControl, simulatedIntake, simulatedTestRunner, simulatedWorkExecutor } from "./adapters";
 import { associateGoal, EMPTY_BOOK, openPortfolio, type PortfolioKind } from "./portfolio";
 import {
@@ -109,6 +109,7 @@ import {
   type ReactorReport,
 } from "./org-reactor";
 import { reconcile, type ReconciliationReport } from "./reconciliation";
+import { groomingProducer } from "./grooming";
 import type { NamedDependency, WorkBatch } from "./work-batch";
 import {
   computeRecommendation,
@@ -280,6 +281,17 @@ export interface OrgRuntimeDeps {
    * load-bearing: someone has to leave the work undone for the agent to do it.
    */
   readonly deliverSelf?: readonly string[];
+  /**
+   * What agents READ from — a git repository, a directory of specs, a union of both.
+   *
+   * Absent means `business_context_grooming` stays a judgement-only phase, which is what it has
+   * always been. Supplying one gives that phase a producer, so grooming cites documents at a
+   * revision instead of approving a title.
+   *
+   * A PORT like the other five, so it appears in the run's fidelity report: a run groomed against
+   * a fixture says so, and cannot be mistaken for one that read a repository.
+   */
+  readonly dataSource?: DataSourcePort;
   /** Wearers per hat the RMO has authorized. */
   readonly supplyTarget?: number;
 }
@@ -445,7 +457,12 @@ export function defaultProviderSet(deps: {
 export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeReport> {
   // The ports, resolved ONCE. Defaulting here rather than at each call site means one place decides
   // what this run is touching, and one place reports it.
-  const configured: ProviderSet = deps.providers ?? defaultProviderSet(deps);
+  // The data source joins the set, so the fidelity report counts it. Merged HERE rather than being
+  // asked of the caller twice: `deps.dataSource` is where a run declares one, and a set that
+  // disagreed with it would report a fidelity the run did not have.
+  const declared: ProviderSet = deps.providers ?? defaultProviderSet(deps);
+  const configured: ProviderSet =
+    deps.dataSource === undefined ? declared : { ...declared, dataSource: deps.dataSource };
   // WRAPPED, so the report can say what the run DID and not only what it was configured to do.
   // `providers` below is the recording set; nothing in this function may reach the raw one, or the
   // count would silently miss whatever bypassed it.
@@ -1293,6 +1310,16 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
     const pipeline = withProducers(
       deps.pipeline ?? DEFAULT_PIPELINE,
       new Map<GateKind, ProducerPort>([
+        // Grooming reads a DATA SOURCE, when the run declared one. Without a source this phase
+        // stays judgement-only, exactly as it was — an organization that named no repository has
+        // nothing to groom against, and a producer that read nothing would be worse than none: it
+        // would put an empty citation list behind an approval and look like diligence.
+        // THE RECORDED source, never `deps.dataSource`. Reaching the raw one would leave a real
+        // adapter that read a repository absent from `invoked`, and the run would report it as
+        // configured-but-never-reached while its citations sat in the gate's evidence.
+        ...(providers.dataSource === undefined
+          ? []
+          : ([[GateKind.BusinessContextGrooming, groomingProducer(providers.dataSource)]] as const)),
         [GateKind.ImplementationReview, workProducer],
         [GateKind.RuntimeValidation, testProducer],
       ]),
