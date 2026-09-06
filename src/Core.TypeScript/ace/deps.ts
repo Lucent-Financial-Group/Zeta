@@ -464,7 +464,12 @@ export function generateArgoCD(resolved: ResolvedGraph, namespace: string = "def
         source: {
           repoURL: "https://github.com/Lucent-Financial-Group/Zeta",
           targetRevision: "main",
-          path: `infra/k8s/applications/${chart}`,
+          // The LIVE cluster tree. It used to be `infra/k8s/applications/${chart}`, which was
+          // wrong in two independent ways: that tree is scheduled for deletion and carries
+          // prune+selfHeal, so ArgoCD would prune whatever it found there — and it holds no
+          // per-chart directories at all (only `root-application.yaml`), so the path never
+          // resolved for ANY chart. The emitted Application pointed at nothing.
+          path: `full-ai-cluster/k8s/applications/${chart}`,
           helm: {
             releaseName: chart,
           },

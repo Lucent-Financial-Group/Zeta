@@ -19,6 +19,7 @@ import {
 } from "./deps";
 import { writeFileSync, mkdirSync, rmSync } from "node:fs";
 import { join } from "node:path";
+import { readDeclaredTrees } from "../cluster/declared-cluster-trees.ts";
 
 describe("YAML parser helpers", () => {
   test("parseYaml parses a valid YAML string", () => {
@@ -378,6 +379,27 @@ describe("Manifest Generation", () => {
 
     const pg = manifests["postgres-application.yaml"];
     expect(pg.metadata.annotations["argocd.argoproj.io/sync-wave"]).toBe("0");
+
+    // THE PATH IS ASSERTED, because it was not. `spec.source.path` is what ArgoCD syncs
+    // from; an emitted Application carrying a path that resolves to nothing is a manifest
+    // that looks correct and deploys nothing, and no test could go red on it. Assert the
+    // whole source block rather than a substring, so a repoURL or revision change is a
+    // visible diff here too.
+    expect(pg.spec.source.path).toBe("full-ai-cluster/k8s/applications/postgres");
+    expect(manifests["my-app-application.yaml"].spec.source.path).toBe(
+      "full-ai-cluster/k8s/applications/my-app",
+    );
+    // Negative half: no emitted path may sit under a tree the roster declares STALE. The
+    // stale set is read from the roster rather than spelled here, so this guard covers
+    // whatever is scheduled for deletion at the time it runs — and this file does not itself
+    // become a consumer of a tree that is going away.
+    const stale = readDeclaredTrees().stale;
+    expect(stale.length).toBeGreaterThan(0); // else the loop below asserts nothing
+    for (const name of Object.keys(manifests)) {
+      const emitted = manifests[name]?.spec?.source?.path;
+      if (typeof emitted !== "string") continue;
+      for (const s of stale) expect(emitted.startsWith(`${s}/`)).toBe(false);
+    }
 
     const app = manifests["my-app-application.yaml"];
     expect(app.metadata.annotations["argocd.argoproj.io/sync-wave"]).toBe("1");
