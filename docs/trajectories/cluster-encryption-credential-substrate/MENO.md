@@ -184,6 +184,9 @@ assume the number.
    assignments back into a named ask. One key without the
    other refuses. `/dev/tpmrm0` is still not an ask. Does
    not edit `zeta-first-boot.sh`.
+   Role conf plus named bao (`081M1VQ6CHS087G0R0036YJAQ5`):
+   one planner call. Null / tpmrm0 leave the role conf
+   byte-identical. Does not expand `ZetaFirstbootRole`.
 7. extraContainer sidecar — later, **same commit as the
    sidecar**, and only for the Shamir kind path until the
    emulator job replaces it. `valuesObject` only. Do not fork

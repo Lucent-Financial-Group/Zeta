@@ -37,6 +37,7 @@ import {
   parseFirstbootBaoElfConf,
   parseFirstbootBaoElfEnv,
   parseNamedBaoElfArgs,
+  planFirstbootConfWithNamedBaoElf,
   planSetupFromNamedBaoElf,
   planSetupFromNamedBaoElfArgv,
   planSetupFromNamedBaoElfConf,
@@ -461,5 +462,56 @@ describe("parseFirstbootBaoElfConf — consume both names or neither", () => {
     if (!empty.ok) return;
     expect(empty.plan.mayCommitHostHcl).toBe(false);
     expect(hostBaoSealHcl(empty.plan)).toBeNull();
+  });
+});
+
+describe("planFirstbootConfWithNamedBaoElf — role conf plus both names or neither", () => {
+  const founder = { kind: "first-control-plane" as const };
+  const tpmAsk: { site: "on-host"; openedPath: string } = {
+    site: "on-host",
+    openedPath: TPM_CHAR_DEVICE,
+  };
+  const soAsk: { site: "on-host"; openedPath: string } = {
+    site: "on-host",
+    openedPath: "/run/current-system/sw/lib/libtpm2_pkcs11.so",
+  };
+  const httpJoiner = { kind: "joiner" as const, serverUrl: "http://control-plane.local:6443" };
+
+  test("null ask is byte-identical to the role conf; config has no bao fields", () => {
+    const roleOnly = planFirstbootConfFileContent(founder);
+    const joined = planFirstbootConfWithNamedBaoElf(founder, null);
+    expect(roleOnly.ok).toBe(true);
+    expect(joined.ok).toBe(true);
+    if (!roleOnly.ok || !joined.ok) return;
+    expect(joined.value).toBe(roleOnly.value);
+    expect(joined.config).toEqual(roleOnly.config);
+  });
+
+  test("tpmrm0 and .so asks leave the role conf byte-identical", () => {
+    const roleOnly = planFirstbootConfFileContent(founder);
+    if (!roleOnly.ok) throw new Error(roleOnly.error);
+    expect(planFirstbootConfWithNamedBaoElf(founder, tpmAsk)).toEqual(roleOnly);
+    expect(planFirstbootConfWithNamedBaoElf(founder, soAsk)).toEqual(roleOnly);
+  });
+
+  test("option D appends both names; consume round-trips; HOST is unchanged", () => {
+    const ask = nixosHostBaoAsk();
+    const joined = planFirstbootConfWithNamedBaoElf(founder, ask);
+    const roleOnly = planFirstbootConfFileContent(founder);
+    expect(joined.ok).toBe(true);
+    expect(roleOnly.ok).toBe(true);
+    if (!joined.ok || !roleOnly.ok) return;
+    expect(joined.config).toEqual(roleOnly.config);
+    expect(joined.value).toBe(
+      `${roleOnly.value}${FIRSTBOOT_BAO_LOAD_SITE_KEY}='on-host'\n${FIRSTBOOT_BAO_PATH_KEY}='${NIXOS_HOST_BAO}'\n`,
+    );
+    expect(parseFirstbootBaoElfConf(joined.value)).toEqual({ ok: true, ask });
+  });
+
+  test("a refused role is unchanged — bao cannot paper over it", () => {
+    const roleOnly = planFirstbootConfFileContent(httpJoiner);
+    const withBao = planFirstbootConfWithNamedBaoElf(httpJoiner, nixosHostBaoAsk());
+    expect(roleOnly.ok).toBe(false);
+    expect(withBao).toEqual(roleOnly);
   });
 });

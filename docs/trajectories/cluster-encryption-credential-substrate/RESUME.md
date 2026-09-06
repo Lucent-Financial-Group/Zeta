@@ -1,7 +1,7 @@
 # Trajectory - Cluster Encryption / Credential Substrate
 
 Status: active — first surfaced 2026-05-29 from substrate inventory (was tracked only as scattered backlog rows; never had a trajectory surface, which is why it was easy to lose at cold-boot)
-Last refreshed: 2026-09-06 (first-boot conf consume names bao site+path; still not a seal)
+Last refreshed: 2026-09-06 (first-boot role conf plus named bao; still not a seal)
 Type: workstream (current-focus) — a trajectory the operator is *actively powering*. Many trajectories can be tracked; only a few are workstreams at once (finite-focus / WIP-bounded — a workstream is a trajectory under sustained thrust, and thrust budget is finite, so most trajectories coast). ("Trajectory" is the genus; "workstream" is the species: a trajectory under sustained thrust toward a deliverable, vs. emergent-posture trajectories like `anti-infection`, which self-describes as "not a workstream with a cadence." See [`factory-trajectory-surface`](../factory-trajectory-surface/RESUME.md) for the genus/species taxonomy.) One of the operator's three current cluster workstreams (encryption / usb-zflash / ts-workflow-engine).
 Eventual encoding (design-stage — the human maintainer 2026-05-23 genetic-ID substrate + Clifford/HKT): this trajectory's state is trackable as a 128-bit genetic-ID seed (discrete, reversible via parser-combinator ↔ generator-function) → Clifford-space path (continuous, eventual). Mirrors the three-lane I8-lattice / I9-manifold split.
 Current blocker: none operationally; the live design tension is interactive-login-vs-baked-in-keys-vs-CI-test (081KSGS9H0008QG0R003JNSVR5)
@@ -421,6 +421,21 @@ Workitem: `081M1VNS22M087G0R000P9A1XH`.
   `/dev/tpmrm0` is shell-safe and still not an ask.
 - Does not expand `ZetaFirstbootRole`. Does not edit
   `zeta-first-boot.sh`. Does not edit Application.yaml.
+
+## 2026-09-06 — first-boot role conf plus named bao (Riven)
+
+Aaron: continue after conf consume. The flash still has to
+compose a role conf with the bao carrier in one call.
+
+Consumer: `src/Core.TypeScript/installer/bao-elf-capture.ts`
+(`planFirstbootConfWithNamedBaoElf`).
+Workitem: `081M1VQ6CHS087G0R0036YJAQ5`.
+
+- Null / tpmrm0 / `.so` leave the role conf byte-identical.
+  Option D appends both names. A refused role is unchanged.
+- Does not expand `ZetaFirstbootRole` or `ZetaFirstbootConfig`.
+  Does not edit `zeta-first-boot.sh`. Does not import into
+  `src/Core.TypeScript/zflash/lib.ts` this slice. Does not edit Application.yaml.
 
 ## 2026-09-04 — production-hardening review (Riven)
 

@@ -229,15 +229,20 @@ Conf/argv carrier (`081M1VM7S47087G0R001VQ1QK5`): both
 Conf consume (`081M1VNS22M087G0R000P9A1XH`): parse those
 assignments back into a named ask. One key without the
 other refuses.
+Role conf plus named bao (`081M1VQ6CHS087G0R0036YJAQ5`):
+one planner call. Null / tpmrm0 leave the role conf
+byte-identical. Does not expand the role type.
 
 1. Metal: `seal "pkcs11"` in Application.yaml still waits.
    Same commit as a **reachable** module: same-libc image
    (glibc OpenBao that can load the host `.so`) or option D
    host `bao`. Dual-vendor per node is ZetaFS k-of-n, not
    two active OpenBao seals. Do not treat this planner as
-   that commit. `zeta-first-boot.sh` still has to *source
-   and pass* the carrier (not from `/dev/tpmrm0`). Does not
-   expand `ZetaFirstbootRole` until that bash consume lands.
+   that commit. `src/Core.TypeScript/zflash/lib.ts` still has to write the joined
+   conf onto the ESP (without importing installer `fs`).
+   `zeta-first-boot.sh` still has to *source and pass* the
+   carrier (not from `/dev/tpmrm0`). Does not expand
+   `ZetaFirstbootRole` until that bash consume lands.
 2. extraContainer Shamir sidecar (`valuesObject` only) until
    kind/CI consume the emulator init.
 

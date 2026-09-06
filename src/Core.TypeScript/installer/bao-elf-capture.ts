@@ -12,8 +12,9 @@
  * names `in-chart-image`. A bare tpmrm0 argv is not `on-host`.
  * First-boot conf/argv carrier emits both names or neither.
  * Conf consume parses those assignments back into a named ask.
- * Does not expand `ZetaFirstbootRole`. Does not edit
- * `zeta-first-boot.sh`.
+ * Role conf plus named bao is one planner call; the role type
+ * is unchanged. Does not expand `ZetaFirstbootRole`. Does not
+ * edit `zeta-first-boot.sh`.
  *
  * Cite: bao-load-site.ts, pkcs11-hostpath-overlay.ts,
  * docs/research/2026-08-21-hands-off-metal-*.md §1.4.
@@ -32,7 +33,12 @@ import {
   type IntegrateDecision,
   type RestoredPkcs11PointerCapture,
 } from "../cluster/unseal-path.ts";
-import { SHELL_SAFE_CONF_VALUE_REGEX } from "../zflash/firstboot-role.ts";
+import {
+  planFirstbootConfFileContent,
+  SHELL_SAFE_CONF_VALUE_REGEX,
+  type FirstbootConfFileContentResult,
+  type ZetaFirstbootRole,
+} from "../zflash/firstboot-role.ts";
 
 /**
  * Named NixOS host `bao` path (option D). First-boot may pass
@@ -359,4 +365,26 @@ export function planSetupFromNamedBaoElfConf(
   const parsed = parseFirstbootBaoElfConf(conf);
   if (!parsed.ok) return parsed;
   return { ok: true, plan: planSetupFromNamedBaoElf(decision, restore, parsed.ask, read) };
+}
+
+/**
+ * Join a role conf with the bao carrier. Null / tpmrm0 / `.so`
+ * leave the role conf byte-identical. Option D appends both
+ * names. A refused role is unchanged — bao cannot paper over
+ * it. Does not add bao fields to `ZetaFirstbootConfig`. Does
+ * not edit `zeta-first-boot.sh`. Does not import into
+ * `src/Core.TypeScript/zflash/lib.ts` (that module stays free of installer `fs`).
+ */
+export function planFirstbootConfWithNamedBaoElf(
+  role: ZetaFirstbootRole,
+  named: NamedBaoElfAsk | null,
+  restorePointer: string = USB_PKCS11_MODULE_POINTER,
+): FirstbootConfFileContentResult {
+  const planned = planFirstbootConfFileContent(role);
+  if (!planned.ok) return planned;
+  return {
+    ok: true,
+    value: appendFirstbootBaoElfConf(planned.value, named, restorePointer),
+    config: planned.config,
+  };
 }
