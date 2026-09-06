@@ -25,6 +25,8 @@
  */
 
 import { gateOwners, type GateKind } from "./quality-gate";
+import { SignalTool, sendSupervisorSignal, type SupervisorSignal } from "./supervisor-signal";
+import type { AnchorBoard } from "./discussion-anchor";
 import type { OrgChart } from "./org-chart";
 import {
   scheduleBlock,
@@ -166,4 +168,78 @@ export function bookQaBlocks(input: QaBookingInput): ReviewBookingResult {
     booked.push({ block, gate: "runtime_validation" as GateKind });
   }
   return { calendar, booked, refusals };
+}
+
+/**
+ * Ask the hats whose time was booked to actually do the reviews.
+ *
+ * ── THE READER THAT HAD NO WRITER ────────────────────────────────────────────
+ * `RequestReview` is one of the eight signal tools and the only place it appeared outside its own
+ * definition was a READER — `reviewsAskedOf`, deriving a hat's menu from review requests addressed
+ * to it. Nothing ever sent one, so that surface was always empty and `review_artifact` was a verb
+ * no agent could ever be offered. The review lane could not start, however well the rest of it
+ * worked.
+ *
+ * ── BUILT FROM WHAT WAS BOOKED, NOT DERIVED AGAIN ────────────────────────────
+ * The input is `bookReviewBlocks`' own output, so the hat that has the TIME is by construction the
+ * hat that gets the ASK. Deriving the reviewer twice would let the two drift, and the failure would
+ * be quiet in the worst way: a reviewer with an empty calendar and a request, and another with time
+ * booked for a review nobody asked it for.
+ *
+ * ── ROUTING IS STILL THE CHART'S ─────────────────────────────────────────────
+ * `sendSupervisorSignal` is what actually addresses it, so this cannot post a review request to a
+ * hat the chart would not route one to. The booked reviewer is the intended recipient; if the chart
+ * disagrees, the signal is REFUSED and the refusal says so — rather than a request being delivered
+ * along a line that does not exist.
+ */
+export function requestReviewsFor(input: {
+  readonly chart: OrgChart;
+  readonly board: AnchorBoard;
+  readonly booked: readonly BookedReview[];
+  readonly workId: string;
+  readonly fromHatId: string;
+  readonly atMs: number;
+  readonly createId: (prefix: string) => string;
+  readonly resourceAuthorityHatId: string;
+  /** What the reviewer is being asked to look at — the evidence the request must carry. */
+  readonly evidenceRefs: readonly string[];
+}): {
+  readonly board: AnchorBoard;
+  readonly signals: readonly SupervisorSignal[];
+  readonly refusals: readonly string[];
+} {
+  let board = input.board;
+  const signals: SupervisorSignal[] = [];
+  const refusals: string[] = [];
+
+  for (const b of input.booked) {
+    const sent = sendSupervisorSignal(
+      input.chart,
+      board,
+      {
+        signalId: input.createId("sig"),
+        anchorId: input.createId("anchor"),
+        fromHatId: input.fromHatId,
+        tool: SignalTool.RequestReview,
+        // The GATE is the title, because that is what `reviewsAskedOf` reads back as `forGate`.
+        // A reviewer told only "please review" cannot tell which of thirteen judgements is wanted.
+        title: b.gate,
+        message: `review ${input.workId} for '${b.gate}'`,
+        // A REVIEW REQUEST WITH NO EVIDENCE IS A REQUEST TO GO LOOKING. `evidenceSatisfies`
+        // refuses it, which is the right answer: the asker knows what it made and the reviewer
+        // should not have to reconstruct it.
+        evidence: input.evidenceRefs.map((ref) => ({ kind: "document" as const, ref })),
+        atMs: input.atMs,
+        workItemId: input.workId,
+      },
+      input.resourceAuthorityHatId,
+    );
+    if (!sent.ok) {
+      refusals.push(`could not ask ${b.block.hatId} to review '${b.gate}': ${sent.reason}`);
+      continue;
+    }
+    board = sent.board;
+    signals.push(sent.signal);
+  }
+  return { board, signals, refusals };
 }

@@ -8,10 +8,11 @@
  */
 
 import { describe, expect, test } from "bun:test";
-import { bookQaBlocks, bookReviewBlocks } from "./review-calendar";
+import { bookQaBlocks, bookReviewBlocks, requestReviewsFor } from "./review-calendar";
 import { buildOrgChart } from "./org-chart";
 import { SEED_HATS } from "./org-seed";
 import { GateKind, gateOwners, ORDERED_GATES } from "./quality-gate";
+import { EMPTY_BOARD } from "./discussion-anchor";
 import {
   EMPTY_CALENDAR,
   ScheduleBlockState,
@@ -205,5 +206,102 @@ describe("the calendar afterwards is one a hat can actually read", () => {
     // nothing on their calendars at all.
     const r = book();
     expect(new Set(r.booked.map((b) => b.block.hatId)).size).toBeGreaterThan(1);
+  });
+});
+
+describe("THE ASK GOES TO THE HAT WHOSE TIME WAS BOOKED", () => {
+  test("a review request is sent per booked gate, to the holder of that gate", () => {
+    // `RequestReview` had a READER (`reviewsAskedOf`, which builds a hat's menu) and no writer, so
+    // that surface was always empty and `review_artifact` was a verb no agent could be offered.
+    const booked = book();
+    const asked = requestReviewsFor({
+      chart,
+      board: EMPTY_BOARD,
+      booked: booked.booked,
+      workId: "task-1",
+      fromHatId: "backend_implementer",
+      atMs: 0,
+      createId,
+      resourceAuthorityHatId: "rmo_office",
+      evidenceRefs: ["work:task-1"],
+    });
+    expect(asked.refusals).toEqual([]);
+    expect(asked.signals.length).toBe(booked.booked.length);
+    // The reviewer with the TIME is the reviewer with the ASK. Deriving it twice would let the two
+    // drift, and the failure is quiet in the worst way: a hat with a booked block and no request,
+    // and another with a request and no time.
+    for (const sig of asked.signals) {
+      expect(gateOwners(chart, sig.title as GateKind).map((h) => h.id)).toContain(sig.toHatId);
+    }
+  });
+
+  test("THE GATE IS THE TITLE, so the reviewer knows which of thirteen judgements is wanted", () => {
+    const booked = book({ gates: [GateKind.AdversarialReview] });
+    const asked = requestReviewsFor({
+      chart,
+      board: EMPTY_BOARD,
+      booked: booked.booked,
+      workId: "task-1",
+      fromHatId: "backend_implementer",
+      atMs: 0,
+      createId,
+      resourceAuthorityHatId: "rmo_office",
+      evidenceRefs: ["work:task-1"],
+    });
+    expect(asked.signals[0]?.title).toBe(GateKind.AdversarialReview);
+  });
+
+  test("A REVIEW REQUEST WITH NO EVIDENCE IS REFUSED — not a request to go looking", () => {
+    // The asker knows what it made; a reviewer should not have to reconstruct it.
+    const booked = book({ gates: [GateKind.PeerReview] });
+    const asked = requestReviewsFor({
+      chart,
+      board: EMPTY_BOARD,
+      booked: booked.booked,
+      workId: "task-1",
+      fromHatId: "backend_implementer",
+      atMs: 0,
+      createId,
+      resourceAuthorityHatId: "rmo_office",
+      evidenceRefs: [],
+    });
+    expect(asked.signals).toEqual([]);
+    expect(asked.refusals.length).toBe(1);
+  });
+
+  test("THE REQUEST NEVER GOES BACK TO THE AUTHOR", () => {
+    // Same separation of duties as the booking, and as the pipeline's evaluator choice. A request
+    // routed to its own sender is a no-op reporting success.
+    const booked = book({ proposerHatId: "tech_lead" });
+    const asked = requestReviewsFor({
+      chart,
+      board: EMPTY_BOARD,
+      booked: booked.booked,
+      workId: "task-1",
+      fromHatId: "tech_lead",
+      atMs: 0,
+      createId,
+      resourceAuthorityHatId: "rmo_office",
+      evidenceRefs: ["work:task-1"],
+    });
+    for (const sig of asked.signals) expect(sig.toHatId).not.toBe("tech_lead");
+  });
+
+  test("REVIEWS REACH MANY HATS, not one — the defect that motivated scope routing", () => {
+    // `RequestReview` routed to `supervisor`, so twenty-six requests covering thirteen gates all
+    // landed on one lead while the calendar had booked thirteen different hats to do them.
+    const booked = book();
+    const asked = requestReviewsFor({
+      chart,
+      board: EMPTY_BOARD,
+      booked: booked.booked,
+      workId: "task-1",
+      fromHatId: "backend_implementer",
+      atMs: 0,
+      createId,
+      resourceAuthorityHatId: "rmo_office",
+      evidenceRefs: ["work:task-1"],
+    });
+    expect(new Set(asked.signals.map((s) => s.toHatId)).size).toBeGreaterThan(1);
   });
 });

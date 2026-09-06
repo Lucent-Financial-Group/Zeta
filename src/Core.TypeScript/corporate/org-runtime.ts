@@ -111,7 +111,7 @@ import {
 } from "./org-reactor";
 import { reconcile, type ReconciliationReport } from "./reconciliation";
 import { groomingProducer } from "./grooming";
-import { bookQaBlocks, bookReviewBlocks } from "./review-calendar";
+import { bookQaBlocks, bookReviewBlocks, requestReviewsFor } from "./review-calendar";
 import type { NamedDependency, WorkBatch } from "./work-batch";
 import {
   computeRecommendation,
@@ -1094,6 +1094,53 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
       });
     }
     cursor += chain.length * deps.workBlockMs;
+
+    // AND ACTUALLY ASK THEM. Booking the time and sending the request are two halves of one act:
+    // `RequestReview` had a reader (`reviewsAskedOf`, which builds a hat's menu) and no writer, so
+    // that surface was always empty and `review_artifact` was a verb no agent could be offered.
+    // Built from what was BOOKED, so the hat with the time is the hat with the ask.
+    const asked = requestReviewsFor({
+      chart: deps.chart,
+      board,
+      booked: reviews.booked,
+      workId: task.workId,
+      fromHatId: task.assigneeHatId!,
+      atMs: cursor,
+      createId: deps.createId,
+      resourceAuthorityHatId: deps.resourceAuthorityHatId,
+      evidenceRefs: [`work:${task.workId}`],
+    });
+    board = asked.board;
+    for (const r of asked.refusals) refusals.push(r);
+    for (const sig of asked.signals) {
+      signals.push(sig);
+      note({
+        kind: OrgEventKind.SupervisorSignalSent,
+        subjectId: task.workId,
+        actorHatId: sig.fromHatId,
+        decision: `${sig.tool} → ${sig.toHatId} for '${sig.title}'`,
+        toState: sig.toHatId,
+        atMs: cursor,
+        evidenceRefs: sig.evidence.map((e) => e.ref),
+        fact: { kind: "supervisor_signal", signal: sig },
+      });
+      // AND THE ANCHOR IT OPENED. Missed on the first pass: 28 anchors existed on the board and
+      // 2 were in the log, because only the staffing path emitted this fact. A deliberation the
+      // log does not hold is one no second process can read — the exact defect the board facts
+      // were added to close, reintroduced one code path over.
+      const opened = asked.board.anchors.find((x) => x.anchorId === sig.anchorId);
+      if (opened !== undefined) {
+        note({
+          kind: OrgEventKind.DecisionRecorded,
+          subjectId: opened.anchorId,
+          actorHatId: opened.openedByHatId,
+          decision: `opened '${opened.title}' owing ${opened.expectedOutput}`,
+          toState: opened.state,
+          atMs: cursor,
+          fact: { kind: "discussion_anchor", anchor: opened },
+        });
+      }
+    }
 
     const qa = bookQaBlocks({
       calendar,
