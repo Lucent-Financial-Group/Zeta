@@ -547,6 +547,10 @@ an integrate decision.
 Env request joins injected capture
 (`081M1WCEGYJ087G0R0039T2T39`); missing
 is unmeasured, not `auto`.
+Overlay env join reads unseal request
+(`081M1WE7Z5S087G0R001WT3K6G`) from
+`ZETA_UNSEAL_REQUEST`; capture stays
+injected.
 glibc-host-into-musl-image is not a
 module; Application.yaml stays Shamir.
 
