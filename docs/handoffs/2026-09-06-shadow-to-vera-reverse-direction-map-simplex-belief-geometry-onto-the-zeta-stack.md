@@ -306,6 +306,8 @@ the claims, and they were left in rather than trimmed.
 
 ## Pointers
 
+- **Measured response (2026-09-06):** [WSet comparison and stack verdicts](../research/2026-09-06-simplex-wset-comparison-and-stack-verdicts.md). Includes the runnable first experiment, order-dependence and correlation counterexamples, and the remaining scope. This response does not retrospectively change the handoff's original claims.
+
 - `docs/research/ip-questionable/2026-09-06-simplex-belief-state-geometry-transformers-update-beliefs-over-a-world-model-aaron-forwarded.md` — the source, transcript verbatim, both slides transcribed (**arrives with #16740**)
 - `docs/research/2026-09-05-reduction-without-widening-is-coercion-from-your-own-fitness-function.md` — the NCI thread this grew out of; six scales, and §1 is the widening argument
 - `docs/research/2026-09-05-reticulum-latency-is-a-candidate-instrument-for-the-tsirelson-measurement-and-reservoir-walls-as-sub-planck.md` — the latency-as-instrument note §7b builds on

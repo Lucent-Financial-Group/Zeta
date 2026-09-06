@@ -25,7 +25,7 @@ references in this tree fail that today, all OURS, and all for the same reason:
 
 | reference | manifests | measured 2026-08-23 |
 |---|---|---|
-| `ghcr.io/lucent-financial-group/zeta-orleans-silo:latest` | `full-ai-cluster/k8s/applications/orleans/statefulset.yaml`, `infra/k8s/applications/orleans/deployment.yaml` | anonymous manifest 401; `gh api /orgs/Lucent-Financial-Group/packages/container/zeta-orleans-silo` → `Package not found` |
+| `ghcr.io/lucent-financial-group/zeta-orleans-silo:latest` | `full-ai-cluster/k8s/applications/orleans/statefulset.yaml`, [former duplicate deployment](https://github.com/Lucent-Financial-Group/Zeta/blob/3616153778cbe041e9a59d2fee6523b0ee54090e/infra/k8s/applications/orleans/deployment.yaml) (removed by #16740) | anonymous manifest 401; `gh api /orgs/Lucent-Financial-Group/packages/container/zeta-orleans-silo` → `Package not found` |
 | `ghcr.io/lucent-financial-group/zeta-orleans-silo:bootstrap` | `infra/k8s/bootstrap/initial-orleans.yaml` | same |
 | `ghcr.io/lucent-financial-group/hat-system-operator:placeholder` | `full-ai-cluster/k8s/applications/hat-system/deployment.yaml` | same. The tag says `placeholder` in the manifest itself. |
 

@@ -39,7 +39,7 @@ is `StatefulSet/orleans-silo` with `replicas: 0` and a hardcoded
 has none of that protection — scaling it to 1 would move 500m onto the metal box with
 nothing in the repo reporting it.
 
-Note it is a near-duplicate by content of `infra/k8s/applications/orleans/deployment.yaml`
+Note it was a near-duplicate by content of the [former Orleans deployment](https://github.com/Lucent-Financial-Group/Zeta/blob/3616153778cbe041e9a59d2fee6523b0ee54090e/infra/k8s/applications/orleans/deployment.yaml) (removed by #16740)
 (same name, same namespace, same 500m/512Mi), which IS governed by the baseline. Two
 copies of one workload, one visible to the arithmetic and one not, is the part worth
 fixing regardless of the number.

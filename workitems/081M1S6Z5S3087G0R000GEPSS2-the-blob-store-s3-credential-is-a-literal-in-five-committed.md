@@ -71,7 +71,7 @@ already has a natural two-key mechanism.
 ## Still not started — but two more things are now MEASURED (2026-09-06, shadow*)
 
 Rendering the chart rather than reasoning about it, because
-`seaweedfs/Application.yaml` sets `s3.enabled: false` and `allInOne.enabled: true`,
+`full-ai-cluster/k8s/applications/seaweedfs/Application.yaml` sets `s3.enabled: false` and `allInOne.enabled: true`,
 which makes it look like the `s3.credentials` block might be inert. It is not.
 
 **1. CONFIRMED — the literal reaches a real Secret.** `helm template seaweedfs 4.45.0`

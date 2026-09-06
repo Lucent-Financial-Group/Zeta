@@ -1,0 +1,14 @@
+{
+  "id": "080d03ac62a14010a013000815e80a2d",
+  "at": "2026-09-06T07:08:45.992Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1TRRN18087G0R00082EDMR",
+    "type": "task",
+    "title": "Measure Simplex belief updates with WSet and audit the stack correspondences",
+    "slug": "measure-simplex-belief-updates-with-wset-and-audit-the-stack",
+    "priority": "P2",
+    "filename": "081M1TRRN18087G0R00082EDMR-measure-simplex-belief-updates-with-wset-and-audit-the-stack.md"
+  }
+}
