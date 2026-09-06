@@ -7,6 +7,7 @@
 #load "RenderedSignalPrediction.fs"
 #load "RenderedSignalDetection.fs"
 #load "RenderedSignalExperiment.fs"
+#load "RenderedSignalRuntime.fsx"
 
 open System
 open System.IO
@@ -19,6 +20,7 @@ if File.Exists output || File.Exists(output + ".partial") then eprintfn "refusin
 let root = Path.GetFullPath(Path.Combine(__SOURCE_DIRECTORY__, "../.."))
 let hashes = RenderedSignalExperiment.sourceHashes root
 let commit = RenderedSignalExperiment.sourceCommit root |> Result.defaultWith (fun reason -> eprintfn "%s" reason; exit 1)
+let assemblies = RenderedSignalRuntime.loadedAssemblies () |> Result.defaultWith (fun reason -> eprintfn "%s" reason; exit 1)
 let models = ResizeArray<RenderedSignalPrediction.ModelReceipt>()
 let fitting = ResizeArray<RenderedSignalExperiment.Fitting>()
 let predictions = ResizeArray<RenderedSignalExperiment.PredictionPanel>()
@@ -37,7 +39,7 @@ let save complete failure =
     let corpusReceipt = corpus |> Option.map (fun c -> {| Fingerprints = c.Fingerprints; Diagnostics = c.Diagnostics; Generation = c.Generation; Extraction = c.Extraction |})
     let result =
         {| Protocol = "rendered-signal-predictor-v1"; Complete = complete; Failure = failure; Config = config
-           SourceCommit = commit; SourceHashes = hashes; Runtime = RuntimeInformation.FrameworkDescription; OperatingSystem = RuntimeInformation.OSDescription
+           SourceCommit = commit; SourceHashes = hashes; LoadedAssemblies = assemblies; Runtime = RuntimeInformation.FrameworkDescription; OperatingSystem = RuntimeInformation.OSDescription
            ActionReturn = "not-measured-passive-carrier"; Corpus = corpusReceipt; Counts = counts; Models = models.ToArray()
            PredictionPanels = predictions.ToArray(); DetectionPanels = detections.ToArray(); Fitting = fitting.ToArray() |}
     File.WriteAllText(output + ".partial", JsonSerializer.Serialize(result, JsonSerializerOptions(WriteIndented = true)) + "\n")

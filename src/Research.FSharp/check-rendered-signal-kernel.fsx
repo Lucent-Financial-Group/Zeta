@@ -6,6 +6,7 @@
 #load "RenderedSignalCarrier.fs"
 #load "RenderedSignalPrediction.fs"
 #load "RenderedSignalDetection.fs"
+#load "RenderedSignalRuntime.fsx"
 
 open System
 open System.Security.Cryptography
@@ -38,7 +39,8 @@ let detection =
                let trace = RenderedSignalDetection.trace predictor sequence |> require
                {| Name = name; FirstCrossing = trace.FirstCrossing; FinalLogRatio = trace.FinalLogRatio; LogRatios = trace.LogRatios |}) |})
 let result =
-    {| Protocol = "rendered-signal-kernel-v1"; Tokens = tokens; TrainingRows = rows; Counts = counts
+    {| Protocol = "rendered-signal-kernel-v1"; LoadedAssemblies = RenderedSignalRuntime.loadedAssemblies () |> require
+       Tokens = tokens; TrainingRows = rows; Counts = counts
        Parameters = SmallRnn.parameters network; InitialSha256 = SmallRnn.parameters network |> RenderedSignalPrediction.parametersHash
        Carriers = [|RenderedSignalCarrier.TrainDot;RenderedSignalCarrier.HeldoutBar;RenderedSignalCarrier.Nuisance|] |> Array.map carrier
        Predictions = predictions; Detection = detection |}

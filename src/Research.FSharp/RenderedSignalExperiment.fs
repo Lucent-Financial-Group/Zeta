@@ -40,6 +40,7 @@ module RenderedSignalExperiment =
            "src/Research.FSharp/ResearchRandom.fs"; "src/Research.FSharp/SmallRnn.fs"; "src/Research.FSharp/SmallRnnTraining.fs"
            "src/Research.FSharp/RenderedSignalCarrier.fs"; "src/Research.FSharp/RenderedSignalPrediction.fs"
            "src/Research.FSharp/RenderedSignalDetection.fs"; "src/Research.FSharp/RenderedSignalExperiment.fs"
+           "src/Research.FSharp/RenderedSignalRuntime.fsx"
            "src/Research.FSharp/run-rendered-signal-experiment.fsx"; "src/Research.FSharp/measure-rendered-signal-inference.fsx"
            "docs/research/2026-09-06-rendered-signal-predictor-protocol.md" |]
         |> Array.map (fun file -> { File = file; Sha256 = File.ReadAllBytes(Path.Combine(root, file)) |> RenderedSignalCarrier.sha256 })

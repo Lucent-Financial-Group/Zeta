@@ -7,6 +7,7 @@
 #load "RenderedSignalPrediction.fs"
 #load "RenderedSignalDetection.fs"
 #load "RenderedSignalExperiment.fs"
+#load "RenderedSignalRuntime.fsx"
 
 open System
 open System.IO
@@ -20,6 +21,7 @@ if File.Exists output || File.Exists(output + ".partial") then eprintfn "refusin
 let root = Path.GetFullPath(Path.Combine(__SOURCE_DIRECTORY__, "../.."))
 let hashes = RenderedSignalExperiment.sourceHashes root
 let commit = RenderedSignalExperiment.sourceCommit root |> require
+let assemblies = RenderedSignalRuntime.loadedAssemblies () |> require
 let raw = File.ReadAllBytes input
 let document = JsonDocument.Parse raw
 let receipt = document.RootElement
@@ -30,6 +32,8 @@ RenderedSignalExperiment.validateModels models |> require
 let counts = JsonSerializer.Deserialize<RenderedSignalPrediction.Counts>(receipt.GetProperty("Counts").GetRawText())
 let inputHashes = JsonSerializer.Deserialize<RenderedSignalExperiment.SourceHash[]>(receipt.GetProperty("SourceHashes").GetRawText())
 if inputHashes <> hashes then eprintfn "input source fingerprints disagree with the measured source"; exit 2
+let inputAssemblies = JsonSerializer.Deserialize<RenderedSignalRuntime.LoadedAssembly[]>(receipt.GetProperty("LoadedAssemblies").GetRawText())
+if inputAssemblies <> assemblies then eprintfn "loaded assemblies changed since prediction measurement"; exit 2
 let candidates = RenderedSignalPrediction.candidates counts models |> require |> RenderedSignalExperiment.benchmarkOrder
 let panel = RenderedSignalCarrier.corpus RenderedSignalCarrier.TrainDot 256 64 3001UL 301 0.75 128 0 |> require
 type Row =
@@ -45,7 +49,7 @@ let run (candidate: RenderedSignalPrediction.Candidate) path (context: int[]) =
         RenderedSignalPrediction.predict candidate.Predictor decoded |> require
 let save complete =
     let result =
-        {| Protocol = "rendered-signal-inference-v1"; Complete = complete; SourceCommit = commit; SourceHashes = hashes
+        {| Protocol = "rendered-signal-inference-v1"; Complete = complete; SourceCommit = commit; SourceHashes = hashes; LoadedAssemblies = assemblies
            InputFile = Path.GetFileName input; InputSha256 = RenderedSignalCarrier.sha256 raw; Runtime = RuntimeInformation.FrameworkDescription
            OperatingSystem = RuntimeInformation.OSDescription; HostActivity = "ordinary host applications may remain; own builds/tests/training must be idle"
            Config = {| Seed = 3001; Domain = 301; Contexts = 256; ContextLength = 64; Renderer = "train-dot"; Repetitions = 5
