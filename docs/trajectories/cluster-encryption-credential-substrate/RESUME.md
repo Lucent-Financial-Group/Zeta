@@ -120,6 +120,28 @@ Workitem: `081M1T9X3ZE087G0R000JNAYE7`. Research addendum on
   cannot wear pass. No `seal "pkcs11"` in Application.yaml
   in this slice.
 
+## 2026-09-06 — CI job installs SoftHSM2 / swtpm 2×2 (Riven)
+
+Aaron: continue after the path picker. The next runtime
+rung is the job that **installs** the emulators so
+skip-if-absent cannot wear pass.
+
+Consumer: `src/Core.TypeScript/cluster/seal-emulator-install.ts`
+plus `.github/workflows/seal-emulator-install.yml`.
+Workitem: `081M1TS32Y3087G0R0026Y21F5`. Classifier already
+on main: `unseal-path.ts` `emulatorMatrixCell`.
+
+- Four cells: neither → kind-shamir; softhsm-only;
+  swtpm-only (OAEP pin); both → ci-softhsm (one seal).
+- The job apt-installs the declared packages, then the
+  witness measures the disk. A missing package is
+  fail-missing. Token init on SoftHSM cells (OpenBao
+  example PIN, not a ConfigMap secret).
+- Does **not** run `bao operator init`. Does **not** put
+  `seal "pkcs11"` in Application.yaml. SoftHSM green is
+  not YubiHSM green. CardContact and this board's TPM
+  stay metal. swtpm is not inferred from `/dev/tpmrm0`.
+
 ## 2026-09-04 — production-hardening review (Riven)
 
 Aaron asked to production-harden the CA, name the unseal startup, use

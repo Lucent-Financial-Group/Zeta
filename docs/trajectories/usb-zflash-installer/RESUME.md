@@ -436,7 +436,9 @@ a peer unseal path for boxes that do not have that silicon,
 or that choose it. Classifier:
 `src/Core.TypeScript/cluster/unseal-path.ts`. The repair
 stick still carries HSM-talk companions; it is not the
-detector. SoftHSM / swtpm 2×2 is a CI install matrix, not a
+detector. SoftHSM / swtpm 2×2 is a CI install matrix
+(`081M1TS32Y3087G0R0026Y21F5`,
+`.github/workflows/seal-emulator-install.yml`), not a
 USB path.
 
 ## Grounding (on `origin/main`)
