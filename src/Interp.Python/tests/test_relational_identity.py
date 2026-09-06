@@ -8,6 +8,7 @@ from hashlib import sha256
 from pathlib import Path
 
 import pytest
+
 from zeta_interp import relational_identity as r
 
 ROOT = Path(__file__).resolve().parents[3]

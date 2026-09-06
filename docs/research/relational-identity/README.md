@@ -46,3 +46,14 @@ every registered source hash against both its commit and the supplied checkout.
 The native receipt identifies the loaded Core assembly by SHA256 and MVID. Current-tree regression tests compare the complete semantic panel
 and hash schema, so historical source pins do not prohibit unrelated future
 source edits. A separate temporary-snapshot test checks hash rejection.
+
+For the lane's lint/typecheck gate, run from `src/Interp.Python` exactly as CI
+does. `uv --project` selects an environment but does not change Ruff's working
+directory or first-party import discovery:
+
+```sh
+cd src/Interp.Python
+uv run ruff check .
+uv run ruff format --check .
+uv run mypy zeta_interp/ tests/
+```
