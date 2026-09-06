@@ -173,6 +173,14 @@ The one wording finding required the growing-family claim to specify a
 positive threshold and give a general balanced-mask construction. The current
 module comment states that condition; the derivation is above. The parent then reviewed the complete report, the general derivation, and the
 referenced Lean/TLA boundaries and accepted them with no further finding.
+A final adjacent-comment audit found that the CHSH introduction still said
+captured entropy plus model-checked history proves distinctness. The sibling
+CHSH author confirmed this paragraph belongs to the present interpretation
+correction and authorized the neighboring comment range; its code begins at
+`chshS` and remains separate. The introduction now states the domain/sampling
+premises and treats entropy/history evidence as conditional. This was a
+comment-only clarification after the recorded native gates; their executed
+behavior and all nine counterexamples are unchanged.
 This is agent review, with no human review claimed.
 
 The full Release build passed with zero warnings and zero errors in 66.14

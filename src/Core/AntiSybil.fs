@@ -87,16 +87,14 @@ module AntiSybil =
 
     // ── CHSH escalation (2026-07-02, Addendum 4 of the name(name) doc) ──────────
     //
-    // `correlation` above is a ONE-setting Bell correlator (|E|): sound for exact
-    // replays, but a *strategic* forger can suppress a single-setting correlation.
-    // The randomized-settings CHSH closes that gap: two systems with no live
-    // channel and no shared seed cannot exceed |S| = 2 (Bell 1964; CHSH 1969) —
-    // whatever per-setting strategy they run — so |S| > 2 CONVICTS a common cause
-    // (shared seed or in-tick communication). Direction of inference is ONE-WAY
-    // and stays stated: high |S| convicts sameness; low |S| never acquits
-    // (firewalled puppets can decorrelate). Distinctness is proven by the other
-    // legs of the identity definition (captured irreducible entropy + an exchange
-    // history that model-checks), never by this oracle alone.
+    // CHSH adds probe settings and outcome-product statistics. Interpreting an
+    // observed score requires a stated classical/quantum domain, measurement
+    // independence, communication assumptions, and finite-sample eligibility.
+    // The score alone does not establish common control or physical distinctness;
+    // low scores do not certify separate controllers either.
+    // Captured entropy and cross-consistent disclosed histories are separate,
+    // conditional evidence. Their conjunction is not a controller-distinctness
+    // theorem; see the indexed component-interpretation correction above.
 
     /// One round of a CHSH identity probe: the SETTING this claimed identity was
     /// challenged with (0 or 1) and the ±1 OUTCOME it emitted.
