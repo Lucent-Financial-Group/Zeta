@@ -23,7 +23,7 @@ import { agentsFromChart, runOrgRuntime, type OrgRuntimeDeps } from "./org-runti
 import { buildOrgChart } from "./org-chart";
 import { SEED_HATS } from "./org-seed";
 import { appendRun, readEvents } from "./org-store";
-import { foldEscalations, foldSupervisorSignals, signalsTo } from "./org-fold";
+import { conversationOn, foldBoard, foldEscalations, foldSupervisorSignals, signalsTo } from "./org-fold";
 
 const chart = (() => {
   const r = buildOrgChart(SEED_HATS);
@@ -168,5 +168,156 @@ describe("the folds are separate because the questions are", () => {
     expect(foldSupervisorSignals([])).toEqual([]);
     expect(foldEscalations([])).toEqual([]);
     expect(signalsTo([], "anyone")).toEqual([]);
+  });
+});
+
+describe("THE DELIBERATION SURVIVES TOO — anchors, decisions and their rationale", () => {
+  test("the board comes back off disk with the anchors the run opened", async () => {
+    // Before these facts existed the board was an in-memory value returned in the report and
+    // recorded nowhere: `decision_recorded` was an event kind with ZERO emitters, so every anchor,
+    // post and decision vanished with the process that produced it.
+    const { report, fromDisk } = await roundTrip();
+    const folded = foldBoard(fromDisk);
+    expect(report.board.anchors.length).toBeGreaterThan(0);
+    expect(folded.anchors.length).toBe(report.board.anchors.length);
+  });
+
+  test("A DECISION KEEPS ITS RATIONALE — the thing that makes it revisitable", async () => {
+    const { report, fromDisk } = await roundTrip();
+    const folded = foldBoard(fromDisk);
+    expect(report.board.decisions.length).toBeGreaterThan(0);
+    expect(folded.decisions.length).toBe(report.board.decisions.length);
+    for (const d of folded.decisions) {
+      // A decision without a recorded reason is permanent by accident: when circumstances change
+      // nobody can tell whether the reason still holds.
+      expect(d.rationale.trim()).not.toBe("");
+      expect(d.decision.trim()).not.toBe("");
+    }
+  });
+
+  test("ANCHOR STATE IS LAST-WINS — a resolved anchor reads as resolved, not as opened", async () => {
+    // The asymmetry the fold encodes: state collapses to the newest, posts and decisions append.
+    const { fromDisk } = await roundTrip();
+    const folded = foldBoard(fromDisk);
+    const resolved = folded.anchors.filter((a) => a.state === "resolved");
+    expect(resolved.length).toBeGreaterThan(0);
+  });
+
+  test("a state change for an anchor the log never opened is IGNORED, not invented", () => {
+    // A fabricated anchor would carry no purpose and no expected output, so it would resolve
+    // vacuously — the fold would manufacture a deliberation nobody had.
+    const folded = foldBoard([
+      {
+        id: "e1",
+        kind: "decision_recorded",
+        atMs: 1,
+        subjectId: "ghost",
+        decision: "x",
+        supervisorChain: [],
+        evidenceRefs: [],
+        fact: { kind: "anchor_state", anchorId: "ghost", state: "resolved" },
+      },
+    ] as never);
+    expect(folded.anchors).toEqual([]);
+  });
+
+  test("re-folding the same log does not duplicate an anchor — idempotent", async () => {
+    const { fromDisk } = await roundTrip();
+    const once = foldBoard(fromDisk);
+    const twice = foldBoard([...fromDisk, ...fromDisk]);
+    expect(twice.anchors.length).toBe(once.anchors.length);
+  });
+
+  test("a conversation reads back in TIME ORDER, and an anchor nobody spoke on is empty", async () => {
+    // `conversationOn` is the question a team member asks: what has been said here? The runtime
+    // does not yet POST to anchors — it opens, decides and resolves — so this is empty today and
+    // the emptiness is honest rather than hidden.
+    const { fromDisk } = await roundTrip();
+    const anchorId = foldBoard(fromDisk).anchors[0]?.anchorId;
+    expect(anchorId).toBeDefined();
+    const said = conversationOn(fromDisk, anchorId!);
+    const times = said.map((p) => p.atMs);
+    expect([...times].sort((a, b) => a - b)).toEqual(times);
+    expect(conversationOn(fromDisk, "no-such-anchor")).toEqual([]);
+  });
+});
+
+/**
+ * Posts, built as facts directly.
+ *
+ * NOT a convenience: the runtime does not post to anchors at all — it opens, decides and resolves —
+ * so a log produced by a real run contains ZERO posts, and every assertion about post handling over
+ * such a log is vacuous. Three mutants proved it, surviving a matrix by breaking code no test could
+ * reach: dropping posts, unordering a conversation, and ignoring the anchor filter all changed
+ * nothing, because there was nothing to change.
+ *
+ * These falsifiers therefore drive the fold with the facts a conversation WOULD produce. They make
+ * the fold trustworthy; they do not make the runtime hold conversations, and the test below says so.
+ */
+function postEvent(id: string, anchorId: string, atMs: number, byHatId: string, refs: string[]) {
+  return {
+    id,
+    kind: "decision_recorded",
+    atMs,
+    subjectId: anchorId,
+    decision: "said something",
+    supervisorChain: [],
+    evidenceRefs: refs,
+    fact: {
+      kind: "anchor_post",
+      post: {
+        postId: id,
+        anchorId,
+        byHatId,
+        atMs,
+        body: `body of ${id}`,
+        evidence: refs.map((ref) => ({ kind: "document", ref })),
+      },
+    },
+  } as never;
+}
+
+describe("a conversation over ARTIFACTS, folded from the log", () => {
+  const log = [
+    postEvent("p3", "a1", 300, "tech_lead", ["doc:design@sha3"]),
+    postEvent("p1", "a1", 100, "solution_architect", ["doc:design@sha1"]),
+    postEvent("p2", "a1", 200, "qa_director", ["doc:design@sha2", "doc:tests@sha2"]),
+    postEvent("x1", "a2", 150, "tech_lead", ["doc:other@sha1"]),
+  ];
+
+  test("POSTS SURVIVE THE FOLD — a dropped post is a turn nobody can read", () => {
+    expect(foldBoard(log).posts.length).toBe(4);
+  });
+
+  test("A CONVERSATION IS TIME-ORDERED — iteration only reads as iteration in sequence", () => {
+    // Out of order, "the architect proposed and QA answered" becomes two unrelated remarks.
+    expect(conversationOn(log, "a1").map((p) => p.postId)).toEqual(["p1", "p2", "p3"]);
+  });
+
+  test("...and is SCOPED TO ITS ANCHOR — one deliberation is not another", () => {
+    expect(conversationOn(log, "a1").map((p) => p.postId)).not.toContain("x1");
+    expect(conversationOn(log, "a2").map((p) => p.postId)).toEqual(["x1"]);
+  });
+
+  test("EACH TURN CARRIES THE ARTIFACTS IT POINTED AT, at the revision it saw", () => {
+    // This is what makes it iterating over artifacts rather than chatting about them: turn two
+    // cites a different revision of the same document than turn one.
+    const said = conversationOn(log, "a1");
+    expect(said[0]?.evidence.map((e) => e.ref)).toEqual(["doc:design@sha1"]);
+    expect(said[1]?.evidence.map((e) => e.ref)).toEqual(["doc:design@sha2", "doc:tests@sha2"]);
+    expect(said[2]?.evidence.map((e) => e.ref)).toEqual(["doc:design@sha3"]);
+  });
+
+  test("different hats speak on one anchor — the 'team' half of a team conversation", () => {
+    expect([...new Set(conversationOn(log, "a1").map((p) => p.byHatId))].length).toBe(3);
+  });
+
+  test("THE RUNTIME ITSELF POSTS NOTHING — stated, so this file is not read as proof that it does", async () => {
+    // The gap these falsifiers do NOT close. `org-runtime` opens an anchor, records a decision and
+    // resolves it: one hop, no turns. Team iteration over artifacts is machinery that exists and is
+    // not yet driven, and a passing conversation test over synthetic facts must not be mistaken for
+    // evidence that agents are conversing.
+    const { fromDisk } = await roundTrip();
+    expect(foldBoard(fromDisk).posts).toEqual([]);
   });
 });

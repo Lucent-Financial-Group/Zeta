@@ -852,6 +852,21 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
       // about it. Without this the upward channel does not survive a process boundary.
       fact: { kind: "supervisor_signal", signal: sent.signal },
     });
+    // THE ANCHOR THE SIGNAL OPENED. Recorded separately because a signal and the deliberation it
+    // starts are different things: the signal is what was asked, the anchor is what the asking
+    // OWES. Reading one from the other would mean re-deriving the anchor's expected output from
+    // the tool that opened it, which is a mapping nobody wrote down.
+    for (const opened of sent.board.anchors.filter((x) => x.anchorId === sent.signal.anchorId)) {
+      note({
+        kind: OrgEventKind.DecisionRecorded,
+        subjectId: opened.anchorId,
+        actorHatId: opened.openedByHatId,
+        decision: `opened '${opened.title}' owing ${opened.expectedOutput}`,
+        toState: opened.state,
+        atMs: deps.nowMs,
+        fact: { kind: "discussion_anchor", anchor: opened },
+      });
+    }
 
     // TWO SEPARATE QUESTIONS, and conflating them is what made the first run of this pipeline
     // starve. `goal-cascade.assign` assigns a HAT to the task; `assignment-engine.assignHat` picks
@@ -927,8 +942,23 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
       rationale: `ranked first among eligible candidates in the owning line`,
       evidence: STAFFING_EVIDENCE,
     });
-    if (decided.ok) board = decided.board;
-    else refusals.push(`RMO decision for ${task.workId}: ${decided.reason}`);
+    if (decided.ok) {
+      board = decided.board;
+      // THE DECISION AS AN ARTIFACT, with its rationale. A decision whose reason is not recorded
+      // cannot be revisited when circumstances change — nobody can tell whether it still holds.
+      const record = decided.board.decisions[decided.board.decisions.length - 1];
+      if (record !== undefined) {
+        note({
+          kind: OrgEventKind.DecisionRecorded,
+          subjectId: record.anchorId,
+          actorHatId: record.byHatId,
+          decision: record.decision,
+          atMs: deps.nowMs,
+          evidenceRefs: record.evidence.map((e) => e.ref),
+          fact: { kind: "decision_record", record },
+        });
+      }
+    } else refusals.push(`RMO decision for ${task.workId}: ${decided.reason}`);
 
     const assigned = assign(cascade, deps.chart, task.workId, targetHat.id);
     if (!assigned.ok) {
@@ -949,8 +979,21 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
     });
 
     const resolved = resolveAnchor(board, sent.signal.anchorId);
-    if (resolved.ok) board = resolved.board;
-    else refusals.push(`resolve staffing anchor: ${resolved.reason}`);
+    if (resolved.ok) {
+      board = resolved.board;
+      const closed = resolved.board.anchors.find((x) => x.anchorId === sent.signal.anchorId);
+      if (closed !== undefined) {
+        note({
+          kind: OrgEventKind.DecisionRecorded,
+          subjectId: closed.anchorId,
+          actorHatId: sent.signal.toHatId,
+          decision: `anchor ${closed.state}`,
+          toState: closed.state,
+          atMs: deps.nowMs,
+          fact: { kind: "anchor_state", anchorId: closed.anchorId, state: closed.state },
+        });
+      }
+    } else refusals.push(`resolve staffing anchor: ${resolved.reason}`);
   }
 
   // Warm the bindings up so they authorize. `advanceAll` is the runtime tick.
