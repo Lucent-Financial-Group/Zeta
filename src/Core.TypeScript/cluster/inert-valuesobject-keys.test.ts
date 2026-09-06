@@ -133,6 +133,28 @@ describe("headscale — the value the container needs reaches the container", ()
     expect(cfg["tls_key_path"]).toBe("");
   });
 
+  test("`server_url`'s host is NOT inside `dns.base_domain` — headscale refuses that config", () => {
+    // MEASURED, not anticipated. Live run 33995838640 CrashLoopBackOff'd on:
+    //
+    //   Error: initializing: loading configuration: server_url cannot be part of
+    //   base_domain in a way that could make the DERP and headscale server unreachable
+    //
+    // `server_url` was `https://headscale.zeta.local` and `base_domain` was `zeta.local`,
+    // so the control server's own hostname sat inside the tailnet's MagicDNS zone. The
+    // chart shipped `example.com`; the conflict was introduced by changing it to
+    // `zeta.local` for tidiness, which is exactly the kind of edit that looks like
+    // cleanup and is a config error.
+    //
+    // Pinned as the PREDICATE headscale actually enforces rather than as the two literal
+    // strings, so it still catches the conflict if either value is changed later.
+    const cfg = configMap();
+    const host = new URL(String(cfg["server_url"])).hostname;
+    const base = String((cfg["dns"] as Record<string, unknown>)["base_domain"]);
+
+    expect(host === base).toBe(false);
+    expect(host.endsWith(`.${base}`)).toBe(false);
+  });
+
   test("no `pass:` literal survives in the mounted config — this repo is public", () => {
     // The chart rendered a full database.postgres stanza including `pass: bar`
     // while database.type was sqlite: dead config carrying a string that a scanner
