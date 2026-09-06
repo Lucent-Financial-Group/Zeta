@@ -1,7 +1,7 @@
 # Trajectory - Cluster Encryption / Credential Substrate
 
 Status: active — first surfaced 2026-05-29 from substrate inventory (was tracked only as scattered backlog rows; never had a trajectory surface, which is why it was easy to lose at cold-boot)
-Last refreshed: 2026-09-06 (setup-time HSM/TPM detect; TPM auto-unseal + Lucent peer path; emulator install 2×2)
+Last refreshed: 2026-09-06 (off-cluster bao PKCS#11 init against SoftHSM)
 Type: workstream (current-focus) — a trajectory the operator is *actively powering*. Many trajectories can be tracked; only a few are workstreams at once (finite-focus / WIP-bounded — a workstream is a trajectory under sustained thrust, and thrust budget is finite, so most trajectories coast). ("Trajectory" is the genus; "workstream" is the species: a trajectory under sustained thrust toward a deliverable, vs. emergent-posture trajectories like `anti-infection`, which self-describes as "not a workstream with a cadence." See [`factory-trajectory-surface`](../factory-trajectory-surface/RESUME.md) for the genus/species taxonomy.) One of the operator's three current cluster workstreams (encryption / usb-zflash / ts-workflow-engine).
 Eventual encoding (design-stage — the human maintainer 2026-05-23 genetic-ID substrate + Clifford/HKT): this trajectory's state is trackable as a 128-bit genetic-ID seed (discrete, reversible via parser-combinator ↔ generator-function) → Clifford-space path (continuous, eventual). Mirrors the three-lane I8-lattice / I9-manifold split.
 Current blocker: none operationally; the live design tension is interactive-login-vs-baked-in-keys-vs-CI-test (081KSGS9H0008QG0R003JNSVR5)
@@ -141,6 +141,30 @@ on main: `unseal-path.ts` `emulatorMatrixCell`.
   `seal "pkcs11"` in Application.yaml. SoftHSM green is
   not YubiHSM green. CardContact and this board's TPM
   stay metal. swtpm is not inferred from `/dev/tpmrm0`.
+
+## 2026-09-06 — off-cluster bao PKCS#11 init against SoftHSM (Riven)
+
+Aaron: continue after the install job. The next runtime hop
+is `bao operator init` against the installed module so
+Shamir is not the unseal.
+
+Consumer: `src/Core.TypeScript/cluster/seal-emulator-bao.ts`
+plus `.github/workflows/seal-emulator-bao.yml`.
+Workitem: `081M1TV43F6087G0R0008QFTKM`. SoftHSM can witness
+`openbao-inits-without-shamir`. It is still not YubiHSM
+green.
+
+- glibc `openbao-hsm` 2.6.2 tarball on ubuntu-24.04, SHA
+  pinned. The Alpine musl image is not this job's proof.
+- `pkcs11-tool` mints the AES wrap key **before** init.
+  PIN is `BAO_HSM_PIN`, never HCL / never a ConfigMap.
+- Init JSON with Shamir `unseal_keys_b64` fails the claim.
+  Recovery keys + root token + health 200 without
+  `bao operator unseal` is the pass.
+- Does **not** edit Application.yaml. extraContainer
+  sidecar stays a later hop (`valuesObject` only, same
+  commit as the sidecar). Lucent mint and metal `tty1`
+  stay human-blocked.
 
 ## 2026-09-04 — production-hardening review (Riven)
 

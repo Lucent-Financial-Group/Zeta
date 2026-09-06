@@ -439,7 +439,9 @@ stick still carries HSM-talk companions; it is not the
 detector. SoftHSM / swtpm 2×2 is a CI install matrix
 (`081M1TS32Y3087G0R0026Y21F5`,
 `.github/workflows/seal-emulator-install.yml`), not a
-USB path.
+USB path. Off-cluster `bao operator init` against that
+SoftHSM (`081M1TV43F6087G0R0008QFTKM`) is a CI witness,
+not a substitute for the metal companion set.
 
 ## Grounding (on `origin/main`)
 
