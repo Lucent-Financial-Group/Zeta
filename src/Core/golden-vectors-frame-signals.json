@@ -1,0 +1,235 @@
+{
+  "schemaVersion": 1,
+  "basisPointScale": 10000,
+  "observations": [
+    {
+      "name": "two-components",
+      "frame": {
+        "width": 5,
+        "height": 4,
+        "palette": 4,
+        "cells": [1, 1, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2]
+      },
+      "expected": {
+        "background": 0,
+        "foregroundPalette": [1, 2],
+        "colours": [
+          {
+            "colour": 1,
+            "pixels": 4,
+            "occupancyBasisPoints": 2000,
+            "componentCount": 1,
+            "edgeDensityBasisPoints": 5000
+          },
+          {
+            "colour": 2,
+            "pixels": 1,
+            "occupancyBasisPoints": 500,
+            "componentCount": 1,
+            "edgeDensityBasisPoints": 10000
+          }
+        ],
+        "shapes": [
+          { "width": 1, "height": 1, "area": 1, "perimeter": 4, "cells": [[0, 0]] },
+          {
+            "width": 2,
+            "height": 2,
+            "area": 4,
+            "perimeter": 8,
+            "cells": [
+              [0, 0],
+              [1, 0],
+              [0, 1],
+              [1, 1]
+            ]
+          }
+        ],
+        "origins": [
+          [0, 0],
+          [4, 3]
+        ]
+      }
+    },
+    {
+      "name": "single",
+      "frame": { "width": 4, "height": 2, "palette": 4, "cells": [1, 0, 0, 0, 0, 0, 0, 0] },
+      "expected": {
+        "background": 0,
+        "foregroundPalette": [1],
+        "colours": [
+          {
+            "colour": 1,
+            "pixels": 1,
+            "occupancyBasisPoints": 1250,
+            "componentCount": 1,
+            "edgeDensityBasisPoints": 10000
+          }
+        ],
+        "shapes": [{ "width": 1, "height": 1, "area": 1, "perimeter": 4, "cells": [[0, 0]] }],
+        "origins": [[0, 0]]
+      }
+    },
+    {
+      "name": "translated",
+      "frame": { "width": 4, "height": 2, "palette": 4, "cells": [0, 1, 0, 0, 0, 0, 0, 0] },
+      "expected": {
+        "background": 0,
+        "foregroundPalette": [1],
+        "colours": [
+          {
+            "colour": 1,
+            "pixels": 1,
+            "occupancyBasisPoints": 1250,
+            "componentCount": 1,
+            "edgeDensityBasisPoints": 10000
+          }
+        ],
+        "shapes": [{ "width": 1, "height": 1, "area": 1, "perimeter": 4, "cells": [[0, 0]] }],
+        "origins": [[1, 0]]
+      }
+    },
+    {
+      "name": "recoloured",
+      "frame": { "width": 4, "height": 2, "palette": 4, "cells": [2, 0, 0, 0, 0, 0, 0, 0] },
+      "expected": {
+        "background": 0,
+        "foregroundPalette": [2],
+        "colours": [
+          {
+            "colour": 2,
+            "pixels": 1,
+            "occupancyBasisPoints": 1250,
+            "componentCount": 1,
+            "edgeDensityBasisPoints": 10000
+          }
+        ],
+        "shapes": [{ "width": 1, "height": 1, "area": 1, "perimeter": 4, "cells": [[0, 0]] }],
+        "origins": [[0, 0]]
+      }
+    },
+    {
+      "name": "grown",
+      "frame": { "width": 4, "height": 2, "palette": 4, "cells": [1, 1, 0, 0, 0, 0, 0, 0] },
+      "expected": {
+        "background": 0,
+        "foregroundPalette": [1],
+        "colours": [
+          {
+            "colour": 1,
+            "pixels": 2,
+            "occupancyBasisPoints": 2500,
+            "componentCount": 1,
+            "edgeDensityBasisPoints": 7500
+          }
+        ],
+        "shapes": [
+          {
+            "width": 2,
+            "height": 1,
+            "area": 2,
+            "perimeter": 6,
+            "cells": [
+              [0, 0],
+              [1, 0]
+            ]
+          }
+        ],
+        "origins": [[0, 0]]
+      }
+    },
+    {
+      "name": "tie-prefers-low-colour",
+      "frame": { "width": 2, "height": 2, "palette": 4, "cells": [3, 3, 1, 1] },
+      "expected": {
+        "background": 1,
+        "foregroundPalette": [3],
+        "colours": [
+          {
+            "colour": 3,
+            "pixels": 2,
+            "occupancyBasisPoints": 5000,
+            "componentCount": 1,
+            "edgeDensityBasisPoints": 7500
+          }
+        ],
+        "shapes": [
+          {
+            "width": 2,
+            "height": 1,
+            "area": 2,
+            "perimeter": 6,
+            "cells": [
+              [0, 0],
+              [1, 0]
+            ]
+          }
+        ],
+        "origins": [[0, 0]]
+      }
+    },
+    {
+      "name": "all-background",
+      "frame": { "width": 3, "height": 2, "palette": 2, "cells": [0, 0, 0, 0, 0, 0] },
+      "expected": {
+        "background": 0,
+        "foregroundPalette": [],
+        "colours": [],
+        "shapes": [],
+        "origins": []
+      }
+    }
+  ],
+  "comparisons": [
+    {
+      "previous": "single",
+      "current": "translated",
+      "expected": {
+        "changedCells": 2,
+        "changeDensityBasisPoints": 2500,
+        "recolouredForegroundCells": 0,
+        "recolourDensityBasisPoints": 0,
+        "backgroundCrossings": 2,
+        "backgroundChanged": false,
+        "structureChanged": false,
+        "paletteChanged": false,
+        "colourOccupancyChanged": false,
+        "colourEdgeDensityChanged": false,
+        "placementChanged": true
+      }
+    },
+    {
+      "previous": "single",
+      "current": "recoloured",
+      "expected": {
+        "changedCells": 1,
+        "changeDensityBasisPoints": 1250,
+        "recolouredForegroundCells": 1,
+        "recolourDensityBasisPoints": 1250,
+        "backgroundCrossings": 0,
+        "backgroundChanged": false,
+        "structureChanged": false,
+        "paletteChanged": true,
+        "colourOccupancyChanged": true,
+        "colourEdgeDensityChanged": true,
+        "placementChanged": false
+      }
+    },
+    {
+      "previous": "single",
+      "current": "grown",
+      "expected": {
+        "changedCells": 1,
+        "changeDensityBasisPoints": 1250,
+        "recolouredForegroundCells": 0,
+        "recolourDensityBasisPoints": 0,
+        "backgroundCrossings": 1,
+        "backgroundChanged": false,
+        "structureChanged": true,
+        "paletteChanged": false,
+        "colourOccupancyChanged": true,
+        "colourEdgeDensityChanged": true,
+        "placementChanged": false
+      }
+    }
+  ]
+}

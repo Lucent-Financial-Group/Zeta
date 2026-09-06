@@ -89,6 +89,39 @@ let ``Journaled freeze ContentId matches the mutbuf snapshot, not a later pwrite
     }
 
 [<Fact>]
+let ``pwrite during freeze keeps ContentId at snapshot G`` () : Task =
+    task {
+        ensureHasher ()
+        FileSystem.Register(InMemoryFileSystem())
+        let store = "/pwrite-during-freeze"
+        let mutbuf = ZetaFsMutbuf.create store ZetaFsMutbuf.Coherence.Shared
+        let volume = ZetaFsFreeze.createManualStream store mutbuf None
+        let payloadG = [| 1uy; 2uy; 3uy |]
+        let payloadG1 = [| 9uy; 8uy; 7uy |]
+
+        try
+            let id = mintId ()
+            let h = ZetaFsMutbuf.openHandle volume.Mutbuf id
+            ZetaFsMutbuf.pwrite volume.Mutbuf h 0L payloadG |> ignore
+            let pending = (freezeAsync volume id ZetaFsFreeze.Journaled).AsTask()
+            ZetaFsMutbuf.pwrite volume.Mutbuf h 0L payloadG1 |> ignore
+            do! (ZetaFsFreeze.pumpLog volume CancellationToken.None).ConfigureAwait(false)
+            let! first = pending.ConfigureAwait(false)
+            match first with
+            | Error e -> Assert.Fail(ZetaFsFreeze.errorName e)
+            | Ok ok ->
+                let ropeG = ZetaFsJumprope.buildV1 payloadG
+                let ropeG1 = ZetaFsJumprope.buildV1 payloadG1
+                Assert.Equal(ropeG.Content.ToHex(), ok.Content.ToHex())
+                Assert.NotEqual<string>(ropeG1.Content.ToHex(), ok.Content.ToHex())
+                Assert.Equal(0UL, ok.Generation)
+                Assert.True(ZetaFsFreeze.isReadable volume ok.Content)
+        finally
+            ZetaFsFreeze.dispose volume
+            FileSystem.Reset()
+    }
+
+[<Fact>]
 let ``Journaled block CAS path is specific to the default profile, not the stream control`` () =
     ensureHasher ()
     let fs = InMemoryFileSystem()

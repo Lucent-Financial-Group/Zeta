@@ -1,0 +1,12 @@
+{
+  "pr_number": 16737,
+  "archive_path": "docs/history/pr-reviews/PR-16737-feat-benchmark-add-reflected-contextual-grid-control.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-06T04:09:59.535Z",
+  "schema_version": "v1",
+  "commit_sha": "dba1bdd89a02ee01bbcefec70583a43a53ce05ef",
+  "title": "feat(benchmark): add reflected contextual-grid control",
+  "state": "MERGED",
+  "merged_at": "2026-09-06T04:09:24Z",
+  "head_ref": "lumen/contextual-grid-reflection-implementation"
+}

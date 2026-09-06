@@ -1,0 +1,14 @@
+{
+  "id": "080d03a70b17e810a013000804727b53",
+  "at": "2026-09-06T04:02:03.133Z",
+  "by": "vera-codex",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1TE2RQW087G0R003DXT7C2",
+    "type": "task",
+    "title": "Lock FSharp and Python frame signal semantics with shared vectors",
+    "slug": "lock-fsharp-and-python-frame-signal-semantics-with-shared-ve",
+    "priority": "P2",
+    "filename": "081M1TE2RQW087G0R003DXT7C2-lock-fsharp-and-python-frame-signal-semantics-with-shared-ve.md"
+  }
+}

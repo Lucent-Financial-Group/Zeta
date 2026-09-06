@@ -53,9 +53,9 @@ class ComponentRegion:
 
 
 def background_colour(grid: Grid) -> int:
-    """The most common colour. Measured per frame, never assumed."""
+    """The most common colour, breaking equal-count ties by palette value."""
     counts: Counter[int] = Counter(v for row in grid for v in row)
-    return counts.most_common(1)[0][0]
+    return min(counts, key=lambda colour: (-counts[colour], colour))
 
 
 def component_regions(
@@ -126,7 +126,12 @@ def component_regions(
                             (cx, cy - 1),
                         )
                     ),
-                    shape=tuple(sorted((cx - min_x, cy - min_y) for cx, cy in cells)),
+                    shape=tuple(
+                        sorted(
+                            ((cx - min_x, cy - min_y) for cx, cy in cells),
+                            key=lambda cell: (cell[1], cell[0]),
+                        )
+                    ),
                 )
             )
 
