@@ -103,30 +103,62 @@ describe("determinism sets the legal options; the agent picks inside them", () =
   });
 });
 
+
+/**
+ * Every gate strictly before `gate`, which is what `passed` must hold to evaluate it.
+ *
+ * Derived from `ORDERED_GATES` so extending the chain does not require editing each test — the
+ * failure that made this helper necessary. Six gates were added and sixteen tests broke, every one
+ * of them because it had written down a position in the chain rather than asked for one.
+ */
+function priorsOf(gate: GateKind): Set<GateKind> {
+  return new Set(ORDERED_GATES.slice(0, ORDERED_GATES.indexOf(gate)));
+}
+
 // ─── The chain ──────────────────────────────────────────────────────────────
 
 describe("the gate chain", () => {
-  test("seven gates, in the reference order", () => {
-    expect(ORDERED_GATES).toEqual([
-      GateKind.CustomerRfpReview,
-      GateKind.BrdApproval,
-      GateKind.ArchitectureApproval,
-      GateKind.ImplementationReview,
-      GateKind.RuntimeValidation,
-      GateKind.FinalBusinessValidation,
-      GateKind.ReleaseReadiness,
-    ]);
+  test("the chain runs context -> design -> adversarial -> build -> validate -> release", () => {
+    // Asserted as ORDERING CONSTRAINTS rather than as a transcribed copy of the array. A copy is a
+    // second place to edit, and a test that only restates the source cannot disagree with it —
+    // which is the shape that lets a reordering land green.
+    const at = (g: GateKind) => ORDERED_GATES.indexOf(g);
+    for (const g of Object.values(GateKind)) expect(at(g)).toBeGreaterThanOrEqual(0);
+
+    // Context is groomed before anything argues about it.
+    expect(at(GateKind.BusinessContextGrooming)).toBeLessThan(at(GateKind.BrdApproval));
+    // A peer sees the context before an architecture is designed against it.
+    expect(at(GateKind.PeerReview)).toBeLessThan(at(GateKind.ArchitectureDesign));
+    // The document is produced before it is approved.
+    expect(at(GateKind.ArchitectureDesign)).toBeLessThan(at(GateKind.ArchitectureApproval));
+    // The adversarial pass comes AFTER the design and BEFORE the build — its whole value is
+    // breaking the plan while changing it is still cheap.
+    expect(at(GateKind.ArchitectureApproval)).toBeLessThan(at(GateKind.AdversarialReview));
+    expect(at(GateKind.AdversarialReview)).toBeLessThan(at(GateKind.ImplementationReview));
+    // Acceptance and the automated run both precede the business sign-off.
+    expect(at(GateKind.QaUat)).toBeLessThan(at(GateKind.FinalBusinessValidation));
+    expect(at(GateKind.RuntimeValidation)).toBeLessThan(at(GateKind.FinalBusinessValidation));
+    // The architect looks at what was BUILT, so that review follows the build and the tests.
+    expect(at(GateKind.ImplementationReview)).toBeLessThan(at(GateKind.FinalArchitectureReview));
+    expect(at(GateKind.RuntimeValidation)).toBeLessThan(at(GateKind.FinalArchitectureReview));
+    // Release is last, always.
+    expect(at(GateKind.ReleaseReadiness)).toBe(ORDERED_GATES.length - 1);
+  });
+
+  test("every gate appears exactly once — a duplicate would make the chain unreachable", () => {
+    expect(new Set(ORDERED_GATES).size).toBe(ORDERED_GATES.length);
+    expect(ORDERED_GATES.length).toBe(Object.values(GateKind).length);
   });
 
   test("the next gate is the first unpassed one", () => {
-    expect(nextLegalGate(new Set())).toBe(GateKind.CustomerRfpReview);
-    expect(nextLegalGate(new Set([GateKind.CustomerRfpReview]))).toBe(GateKind.BrdApproval);
+    expect(nextLegalGate(new Set())).toBe(ORDERED_GATES[0]);
+    expect(nextLegalGate(new Set([ORDERED_GATES[0]!]))).toBe(ORDERED_GATES[1]);
   });
 
   test("passing a LATER gate does not skip an earlier one", () => {
     // The whole point of ordering: an item cannot reach release readiness without an architecture
     // review by having the gates evaluated in a convenient order.
-    expect(nextLegalGate(new Set([GateKind.ReleaseReadiness]))).toBe(GateKind.CustomerRfpReview);
+    expect(nextLegalGate(new Set([GateKind.ReleaseReadiness]))).toBe(ORDERED_GATES[0]);
   });
 
   test("all seven passed means merged", () => {
@@ -190,7 +222,7 @@ describe("waiving is not one of three normal verdicts", () => {
       workId: "w1",
       gate: GateKind.CustomerRfpReview,
       evaluatorHatId: "product_director",
-      passed: new Set(),
+      passed: priorsOf(GateKind.CustomerRfpReview),
       chooser: preferChooser<GateOutcome>(GateOutcome.Waived, "waive"),
       atMs: 0,
       proposerHatId: NO_PROPOSER,
@@ -207,7 +239,7 @@ describe("waiving is not one of three normal verdicts", () => {
       workId: "w1",
       gate: GateKind.ImplementationReview,
       evaluatorHatId: "engineering_manager",
-      passed: new Set(ORDERED_GATES.slice(0, 3)),
+      passed: priorsOf(GateKind.ImplementationReview),
       chooser: preferChooser<GateOutcome>(GateOutcome.Waived, "waive"),
       atMs: 0,
       proposerHatId: NO_PROPOSER,
@@ -224,7 +256,7 @@ describe("evaluating one gate", () => {
       workId: "w1",
       gate: GateKind.CustomerRfpReview,
       evaluatorHatId: "product_manager",
-      passed: new Set(),
+      passed: priorsOf(GateKind.CustomerRfpReview),
       chooser: approve,
       atMs: 7,
       proposerHatId: NO_PROPOSER,
@@ -234,7 +266,8 @@ describe("evaluating one gate", () => {
     expect(r.evaluation.outcome).toBe(GateOutcome.Approved);
     expect(r.evaluation.byHatId).toBe("product_manager");
     expect(r.evaluation.atMs).toBe(7);
-    expect([...r.passed]).toEqual([GateKind.CustomerRfpReview]);
+    expect(r.passed.has(GateKind.CustomerRfpReview)).toBe(true);
+    expect(r.passed.size).toBe(priorsOf(GateKind.CustomerRfpReview).size + 1);
     expect(r.recovery).toBeUndefined();
   });
 
@@ -243,14 +276,15 @@ describe("evaluating one gate", () => {
       workId: "w1",
       gate: GateKind.CustomerRfpReview,
       evaluatorHatId: "product_manager",
-      passed: new Set(),
+      passed: priorsOf(GateKind.CustomerRfpReview),
       chooser: reject,
       atMs: 0,
       proposerHatId: NO_PROPOSER,
     });
     expect(r.ok).toBe(true);
     if (!r.ok) return;
-    expect(r.passed.size).toBe(0);
+    expect(r.passed.has(GateKind.CustomerRfpReview)).toBe(false);
+    expect(r.passed.size).toBe(priorsOf(GateKind.CustomerRfpReview).size);
     expect(r.recovery).toBe(RecoveryPath.ReopenDiscoveryOrBrd);
   });
 
@@ -261,7 +295,10 @@ describe("evaluating one gate", () => {
       workId: "w1",
       gate: GateKind.ReleaseReadiness,
       evaluatorHatId: "tpm",
-      passed: new Set(),
+      // EMPTY on purpose. An automated rewrite of this file once replaced this with the gate's
+      // priors, which made the call in-order and left the test asserting nothing while still
+      // passing — the vacuity class, introduced by a fix for an unrelated break.
+      passed: new Set<GateKind>(),
       chooser: approve,
       atMs: 0,
       proposerHatId: NO_PROPOSER,
@@ -275,7 +312,7 @@ describe("evaluating one gate", () => {
       workId: "w1",
       gate: GateKind.CustomerRfpReview,
       evaluatorHatId: "backend_implementer",
-      passed: new Set(),
+      passed: priorsOf(GateKind.CustomerRfpReview),
       chooser: approve,
       atMs: 0,
       proposerHatId: NO_PROPOSER,
@@ -290,7 +327,7 @@ describe("evaluating one gate", () => {
       workId: "w1",
       gate: GateKind.CustomerRfpReview,
       evaluatorHatId: "product_manager",
-      passed: new Set([GateKind.CustomerRfpReview]),
+      passed: new Set([...priorsOf(GateKind.CustomerRfpReview), GateKind.CustomerRfpReview]),
       chooser: approve,
       atMs: 0,
       proposerHatId: NO_PROPOSER,
@@ -304,7 +341,7 @@ describe("evaluating one gate", () => {
       workId: "w1",
       gate: GateKind.CustomerRfpReview,
       evaluatorHatId: "ghost",
-      passed: new Set(),
+      passed: priorsOf(GateKind.CustomerRfpReview),
       chooser: approve,
       atMs: 0,
       proposerHatId: NO_PROPOSER,
@@ -315,10 +352,10 @@ describe("evaluating one gate", () => {
 });
 
 describe("the whole chain", () => {
-  test("approving everything merges, with seven evaluations by seven authorized hats", () => {
+  test("approving everything merges — one evaluation per gate, each by an authorized hat", () => {
     const run = runGateChain(chart, { workId: "w1", chooser: approve, atMs: 0, proposerHatId: NO_PROPOSER });
     expect(run.merged).toBe(true);
-    expect(run.evaluations).toHaveLength(7);
+    expect(run.evaluations).toHaveLength(ORDERED_GATES.length);
     expect(run.refusals).toEqual([]);
     expect(run.evaluations.map((e) => e.gate)).toEqual([...ORDERED_GATES]);
     for (const e of run.evaluations) {
@@ -336,9 +373,10 @@ describe("the whole chain", () => {
     expect(run.merged).toBe(false);
     expect(run.blockedAt).toBe(GateKind.ImplementationReview);
     expect(run.recovery).toBe(RecoveryPath.BackToEngineering);
-    // Three gates passed before it; the fourth was evaluated and failed.
-    expect(run.passed.size).toBe(3);
-    expect(run.evaluations).toHaveLength(4);
+    // Everything before it passed; the gate itself was evaluated and failed.
+    const before = priorsOf(GateKind.ImplementationReview).size;
+    expect(run.passed.size).toBe(before);
+    expect(run.evaluations).toHaveLength(before + 1);
   });
 
   test("a gate nobody owns BLOCKS — it does not read as a pass", () => {
@@ -357,8 +395,8 @@ describe("the whole chain", () => {
     expect(run.merged).toBe(false);
     expect(run.blockedAt).toBe(GateKind.ReleaseReadiness);
     expect(run.refusals[0]).toContain("no hat holds the approval scope");
-    // The six before it did pass — the chain got as far as it legitimately could.
-    expect(run.passed.size).toBe(6);
+    // Everything before it did pass — the chain got as far as it legitimately could.
+    expect(run.passed.size).toBe(priorsOf(GateKind.ReleaseReadiness).size);
   });
 
   test("the evaluator can be chosen, and the choice is still authority-checked", () => {

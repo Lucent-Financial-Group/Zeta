@@ -33,12 +33,50 @@ import type { OrgChart, OrgHat } from "./org-chart";
 
 /** The seven gates. */
 export const GateKind = {
+  /**
+   * The business context, groomed from a SOURCE rather than from the agent's own recollection.
+   *
+   * First on purpose. Everything downstream — the BRD, the architecture, the adversarial pass —
+   * argues about a context; if that context was invented by whoever happened to start, the whole
+   * chain is a well-reviewed opinion about nothing. This gate asks the narrow question the rest
+   * cannot: was the context READ from somewhere a second party could read too?
+   */
+  BusinessContextGrooming: "business_context_grooming",
   CustomerRfpReview: "customer_rfp_review",
   BrdApproval: "brd_approval",
+  /**
+   * A PEER on the same work looks at the groomed context before anyone designs against it.
+   *
+   * Distinct from `BrdApproval`, which is a director signing off DOWNWARD. This is lateral: the
+   * cheapest place to catch a misread requirement is before an architecture exists to defend.
+   */
+  PeerReview: "peer_review",
+  /** The architecture document is PRODUCED. Separate from approving it — see the next two. */
+  ArchitectureDesign: "architecture_design",
+  /** The architecture document is REVIEWED and approved. */
   ArchitectureApproval: "architecture_approval",
+  /**
+   * An ADVERSARIAL pass across the context, the BRD and the architecture together.
+   *
+   * The one gate whose job is to fail. Every gate before it asks "is this acceptable?", which is a
+   * question a tired reviewer answers yes to; this one asks "where does this break?" — and it sits
+   * after the design rather than inside each review because the interesting failures are between
+   * the documents, not inside any one of them.
+   */
+  AdversarialReview: "adversarial_review",
   ImplementationReview: "implementation_review",
+  /** User-acceptance: does it do what the BRD said, judged by someone who did not build it. */
+  QaUat: "qa_uat",
+  /** The automated half — tests actually ran and actually passed. Decided by QA, not by opinion. */
   RuntimeValidation: "runtime_validation",
   FinalBusinessValidation: "final_business_validation",
+  /**
+   * The architect looks again, at what was BUILT rather than at what was drawn.
+   *
+   * `ArchitectureApproval` judged a document; six gates later the thing exists and can have drifted
+   * from it. Approving the drawing is not approving the building.
+   */
+  FinalArchitectureReview: "final_architecture_review",
   ReleaseReadiness: "release_readiness",
 } as const;
 
@@ -50,12 +88,18 @@ export type GateKind = (typeof GateKind)[keyof typeof GateKind];
  * table, so the two cannot disagree about what comes before what.
  */
 export const ORDERED_GATES: readonly GateKind[] = [
+  GateKind.BusinessContextGrooming,
   GateKind.CustomerRfpReview,
   GateKind.BrdApproval,
+  GateKind.PeerReview,
+  GateKind.ArchitectureDesign,
   GateKind.ArchitectureApproval,
+  GateKind.AdversarialReview,
   GateKind.ImplementationReview,
+  GateKind.QaUat,
   GateKind.RuntimeValidation,
   GateKind.FinalBusinessValidation,
+  GateKind.FinalArchitectureReview,
   GateKind.ReleaseReadiness,
 ];
 
@@ -138,7 +182,7 @@ export function gateProgress(passed: ReadonlySet<GateKind>): number {
   return ORDERED_GATES.filter((g) => passed.has(g)).length / ORDERED_GATES.length;
 }
 
-/** Have all seven passed? */
+/** Have all of them passed? The count is `ORDERED_GATES.length`, never a number written twice. */
 export function allGatesPassed(passed: ReadonlySet<GateKind>): boolean {
   return nextLegalGate(passed) === undefined;
 }
@@ -156,13 +200,25 @@ export type RecoveryPath = (typeof RecoveryPath)[keyof typeof RecoveryPath];
 
 export function recoveryPathFor(gate: GateKind): RecoveryPath {
   switch (gate) {
+    case GateKind.BusinessContextGrooming:
     case GateKind.CustomerRfpReview:
     case GateKind.BrdApproval:
+    case GateKind.PeerReview:
+      // A peer rejecting the groomed context sends it back to grooming, not to engineering: the
+      // defect is in what was understood, and building on it faster does not fix it.
       return RecoveryPath.ReopenDiscoveryOrBrd;
+    case GateKind.ArchitectureDesign:
     case GateKind.ArchitectureApproval:
+    case GateKind.FinalArchitectureReview:
       return RecoveryPath.ReopenArchitecture;
+    case GateKind.AdversarialReview:
+      // Deliberately BackToEngineering rather than a path of its own. An adversarial finding is a
+      // defect in the thing, and routing it somewhere special would let it become a note nobody
+      // has to act on — which is how this gate would quietly become decorative.
+      return RecoveryPath.BackToEngineering;
     case GateKind.ImplementationReview:
       return RecoveryPath.BackToEngineering;
+    case GateKind.QaUat:
     case GateKind.RuntimeValidation:
       return RecoveryPath.ValidationProcessImprovement;
     case GateKind.FinalBusinessValidation:
@@ -172,7 +228,7 @@ export function recoveryPathFor(gate: GateKind): RecoveryPath {
   return assertNeverGate(gate);
 }
 
-/** Exhaustiveness, enforced by the compiler: an eighth gate fails to typecheck here. */
+/** Exhaustiveness, enforced by the compiler: a new gate fails to typecheck until it is routed. */
 function assertNeverGate(x: never): never {
   throw new Error(`unhandled gate: ${String(x)}`);
 }
