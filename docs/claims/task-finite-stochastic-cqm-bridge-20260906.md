@@ -1,6 +1,7 @@
 # Claim - task-finite-stochastic-cqm-bridge-20260906
 
 - **Session ID:** `codex/native-20260906-73b9`
+- **Co-claimant (independent review only):** `codex/finite-stochastic-review-20260906-741c`, owns `docs/research/2026-09-06-finite-stochastic-cqm-bridge-review.md`.
 - **Harness:** codex
 - **Claimed at:** 2026-09-06T22:30:40.381880+00:00
 - **ETA:** first proof-contract review within one hour; bounded witnesses after review
