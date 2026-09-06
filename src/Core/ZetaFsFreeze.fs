@@ -36,7 +36,10 @@ open Zeta.Core.FSharp.Blake3
 /// `create` uses `rollingDefault`. DST manuals stay `KeepAll` until
 /// `known.pins` / slots record `history keep-none` / `rolling N`.
 /// Catalog also persists `ObjectSets` (`set <content> <id>...`) so reopen
-/// hash-verifies jumprope internals, not only trunk plus leaves.
+/// hash-verifies jumprope internals, not only trunk plus leaves. Buffered
+/// `putObject` maps catalog persist IOException/BUGGIFY to `FreezeError.Fsync`
+/// (Buffered does not ride FreezeLog). History setter and reclaim-meter persist
+/// still throw.
 ///
 /// DoP=1 on this log. No Task.Run except the ferry launch (injected context
 /// on the DST path; `manual` + `PumpToIdleAsync` for tests).
@@ -328,6 +331,28 @@ module ZetaFsFreeze =
         FileSystemIo.writeAllText fs copyPath text
         SimulatedFs.Write copyPath
 
+    let private catalogPersistError (storeDir: string) =
+        FreezeError.Fsync(FileSync.FileSyncError.FlushFailed(catalogPath storeDir, 5))
+
+    let private tryPersistCatalog
+        (storeDir: string)
+        (known: Dictionary<ContentHash256, uint64>)
+        (livePins: HashSet<ContentHash256>)
+        (history: ZetaFsPolicy.HistoryPolicy)
+        (meter: uint64)
+        (objectSets: Dictionary<ContentHash256, ContentHash256[]>)
+        : Result<unit, FreezeError> =
+        try
+            persistCatalog storeDir known livePins history meter objectSets
+            Ok()
+        with
+        | :? CrashMidWriteException as ex -> raise ex
+        | :? PowerOutageException as ex -> raise ex
+        | :? BadMemoryException as ex -> raise ex
+        | :? IOException -> Error(catalogPersistError storeDir)
+        | ex when ex.Message.IndexOf("BUGGIFY", StringComparison.Ordinal) >= 0 ->
+            Error(catalogPersistError storeDir)
+
     let private loadCatalog
         (storeDir: string)
         (known: Dictionary<ContentHash256, uint64>)
@@ -411,16 +436,9 @@ module ZetaFsFreeze =
 
             let persist () =
                 if err.IsNone then
-                    try
-                        persistCatalog storeDir known livePins !history !meter objectSets
-                    with
-                    | :? CrashMidWriteException as ex -> raise ex
-                    | :? PowerOutageException as ex -> raise ex
-                    | :? BadMemoryException as ex -> raise ex
-                    | :? IOException ->
-                        err <- Some(FreezeError.Fsync(FileSync.FileSyncError.FlushFailed(catalogPath storeDir, 5)))
-                    | ex when ex.Message.IndexOf("BUGGIFY", StringComparison.Ordinal) >= 0 ->
-                        err <- Some(FreezeError.Fsync(FileSync.FileSyncError.FlushFailed(catalogPath storeDir, 5)))
+                    match tryPersistCatalog storeDir known livePins !history !meter objectSets with
+                    | Ok() -> ()
+                    | Error e -> err <- Some e
 
             let succeed () =
                 persist ()
@@ -1552,7 +1570,7 @@ module ZetaFsFreeze =
             else
                 0L
 
-    let private putObject (volume: Volume) (id: ContentHash256) (bytes: byte[]) =
+    let private putObject (volume: Volume) (id: ContentHash256) (bytes: byte[]) : Result<unit, FreezeError> =
         let path = objectPath volume.StoreDir id
         let fs = FileSystem.Current
 
@@ -1563,7 +1581,13 @@ module ZetaFsFreeze =
 
         volume.KnownObjects.[id] <- uint64 bytes.Length
         volume.LivePins.Add id |> ignore
-        persistCatalog volume.StoreDir volume.KnownObjects volume.LivePins volume.History volume.FreezeBytesSinceReclaim volume.ObjectSets
+        tryPersistCatalog
+            volume.StoreDir
+            volume.KnownObjects
+            volume.LivePins
+            volume.History
+            volume.FreezeBytesSinceReclaim
+            volume.ObjectSets
 
     let private tryReadObject (volume: Volume) (id: ContentHash256) : byte[] option =
         match volume.Log.ObjectCas with
@@ -1777,21 +1801,29 @@ module ZetaFsFreeze =
 
             match cls with
             | Buffered ->
+                let mutable putErr: FreezeError option = None
+
                 for kv in rope.Cas.Objects do
-                    putObject volume kv.Key kv.Value
+                    if putErr.IsNone then
+                        match putObject volume kv.Key kv.Value with
+                        | Error e -> putErr <- Some e
+                        | Ok() -> ()
 
-                let result =
-                    { Entity = entity
-                      Content = rope.Content
-                      Span = rope.Span
-                      Class = cls
-                      Generation = snap.Generation
-                      IntentLsn = 0L
-                      CommitLsn = 0L }
+                match putErr with
+                | Some e -> ValueTask<Result<FreezeResult, FreezeError>>(Error e)
+                | None ->
+                    let result =
+                        { Entity = entity
+                          Content = rope.Content
+                          Span = rope.Span
+                          Class = cls
+                          Generation = snap.Generation
+                          IntentLsn = 0L
+                          CommitLsn = 0L }
 
-                ValueTask<Result<FreezeResult, FreezeError>>(
-                    afterFreeze volume ct (Ok(noteFreeze volume rope.Span result))
-                )
+                    ValueTask<Result<FreezeResult, FreezeError>>(
+                        afterFreeze volume ct (Ok(noteFreeze volume rope.Span result))
+                    )
             | Journaled
             | Durable ->
                 let intentLsn, commitLsn =
