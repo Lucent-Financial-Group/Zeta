@@ -38,22 +38,22 @@ let
   modules = ../modules;
 
   roleModules = {
-    server = [ "${modules}/k3s-server.nix" ];
-    agent = [ "${modules}/k3s-agent.nix" ];
+    server = [ (modules + "/k3s-server.nix") ];
+    agent = [ (modules + "/k3s-agent.nix") ];
   };
 
   # Valid under either role.
   nodeCapabilityModules = {
-    gpu = [ "${modules}/gpu.nix" "${modules}/gpu-passthrough.nix" ];
-    docker = [ "${modules}/docker.nix" ];
-    operator-credentials = [ "${modules}/initial-password.nix" "${modules}/operator-ssh-keys.nix" ];
-    longhorn-disks = [ "${modules}/longhorn-disks.nix" "${modules}/disko-shapes/longhorn-node.nix" ];
+    gpu = [ (modules + "/gpu.nix") (modules + "/gpu-passthrough.nix") ];
+    docker = [ (modules + "/docker.nix") ];
+    operator-credentials = [ (modules + "/initial-password.nix") (modules + "/operator-ssh-keys.nix") ];
+    longhorn-disks = [ (modules + "/longhorn-disks.nix") (modules + "/disko-shapes/longhorn-node.nix") ];
   };
 
   # Applied by the k3s deploy controller, which runs on a SERVER. Refused on an agent.
   clusterCapabilityModules = {
-    gpu-device-plugin = [ "${modules}/gpu-device-plugin.nix" ];
-    local-storage = [ "${modules}/local-storage.nix" ];
+    gpu-device-plugin = [ (modules + "/gpu-device-plugin.nix") ];
+    local-storage = [ (modules + "/local-storage.nix") ];
   };
 
   known = attrs: lib.concatStringsSep ", " (lib.attrNames attrs);
@@ -101,7 +101,7 @@ in
         + "agent the files are written and NOTHING reads them, silently. Declare them on the "
         + "control plane; a DaemonSet's nodeSelector is what places it on this node's hardware. "
         + "See 081M1XXA0FC087G0R002F92ZQC.");
-    [ hardware "${modules}/common.nix" ]
+    [ hardware (modules + "/common.nix") ]
     ++ roleModules.${role}
     ++ lib.concatMap (c: nodeCapabilityModules.${c}) nodeCapabilities
     ++ lib.concatMap (c: clusterCapabilityModules.${c}) clusterCapabilities

@@ -74,6 +74,8 @@
         "aarch64-linux"
       ];
 
+      mkHost = import ./nixos/lib/mk-host.nix { inherit (nixpkgs) lib; };
+
       mkSystem = { system ? "x86_64-linux", modules }: nixpkgs.lib.nixosSystem {
         inherit system;
         specialArgs = { inherit inputs stateVersion; };
@@ -121,6 +123,37 @@
           modules = [
             ./nixos/hosts/worker-gpu/configuration.nix
           ];
+        };
+
+        # CONTROL PLANE + GPU ON ONE MACHINE — the composition Aaron asked for
+        # 2026-09-07: "we want to be able to support more than one on a machine at
+        # the same time, control plane and gpu, not just one or the other."
+        #
+        # Assembled by `mkHostModules` from a ROLE and CAPABILITIES rather than by
+        # hand-listing modules, which is what made the combination unexpressible
+        # before — nothing technical prevented it; there was simply no bundle for it.
+        #
+        # It is a TEMPLATE: it borrows control-plane's hardware-configuration.nix
+        # because no such machine exists yet. Copy the directory, generate real
+        # hardware config, and add an entry here — the same shape as worker-template.
+        #
+        # Note what the capability split buys: `gpu-device-plugin` is a CLUSTER
+        # capability, so `mkHostModules` would REFUSE it on a role="agent" host. On
+        # this one it is correct, and that is checked rather than assumed —
+        # checks.mk-host-refuses-cluster-capability-on-an-agent proves both directions.
+        control-plane-gpu = mkSystem {
+          modules = mkHost.mkHostModules {
+            role = "server";
+            hardware = ./nixos/hosts/control-plane/hardware-configuration.nix;
+            nodeCapabilities = [ "gpu" "docker" "operator-credentials" ];
+            clusterCapabilities = [ "local-storage" "gpu-device-plugin" ];
+            extra = [
+              ({ lib, ... }: {
+                networking.hostName = lib.mkForce "control-plane-gpu";
+                zeta.gpu-device-plugin = { enable = true; vendors = [ "nvidia" ]; };
+              })
+            ];
+          };
         };
 
         # Cookie-cutter worker template — uses disko for declarative
