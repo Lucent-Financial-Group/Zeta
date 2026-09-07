@@ -747,6 +747,25 @@ Workitem: `081M1WMR8KD087G0R003HZYY14`.
 - Does not invent an integrate decision. Does not expand
   `ZetaFirstbootRole`. Does not edit Application.yaml.
 
+## 2026-09-07 — env integrate takes named probe (Riven)
+
+Aaron: detect HSM/TPM at setup. Overlay joins take a named
+probe. `integrateAtSetupFromEnv` still took
+`HostHardwareCapture`.
+
+Consumer: `src/Core.TypeScript/cluster/unseal-path.ts`
+(`integrateAtSetupFromEnv`).
+Workitem: `081M1WP0C7B087G0R000VK9E0V`.
+
+- Probe snapshot stays injected. Mapped via
+  `hostCaptureFromNamedProbe`. Null is unmeasured, not
+  present. `/dev/tpmrm0` on the probe is not a capture.
+  Overlay passes the probe through. Inner `integrateAtSetup`
+  still takes a capture. Does not import frost-hardware-probe.
+  Does not call this from `zeta-install.sh`.
+- Does not invent an integrate decision. Does not expand
+  `ZetaFirstbootRole`. Does not edit Application.yaml.
+
 ## 2026-09-04 — production-hardening review (Riven)
 
 Aaron asked to production-harden the CA, name the unseal startup, use

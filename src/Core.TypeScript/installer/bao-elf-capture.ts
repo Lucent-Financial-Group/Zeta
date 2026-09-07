@@ -19,8 +19,8 @@
  * is named from that same env (`ZETA_UNSEAL_REQUEST`) for
  * argv, conf, and env joins — a TypeScript caller cannot pass
  * `pkcs11-tpm` while env is missing. Probe snapshot stays
- * injected (`NamedHardwareProbe | null`); mapped via
- * `hostCaptureFromNamedProbe`. Null is unmeasured, not
+ * injected (`NamedHardwareProbe | null`). Env join maps it.
+ * Null is unmeasured, not
  * present. `/dev/tpmrm0` is not a capture. A TypeScript
  * caller cannot pass `tpm2: "present"` without naming it on
  * the probe. ISO current-system bao is not option D. Role
@@ -43,10 +43,7 @@ import {
   type BaoElfCapture,
   type BaoLoadSite,
 } from "../cluster/bao-load-site.ts";
-import {
-  hostCaptureFromNamedProbe,
-  type NamedHardwareProbe,
-} from "../cluster/host-seal-profile.ts";
+import { type NamedHardwareProbe } from "../cluster/host-seal-profile.ts";
 import { USB_PKCS11_MODULE_POINTER, type OverlayPlan } from "../cluster/pkcs11-hostpath-overlay.ts";
 import {
   integrateAtSetupFromEnv,
@@ -162,9 +159,9 @@ export type FirstBootBaoElfFromArgv = FirstBootBaoElfFromEnv;
 
 /**
  * Unmeasured request is not `auto`. Null probe is unmeasured,
- * not present. Overlay only checks `decision.ok`; mapping
- * null onto the existing refuse keeps oracle `"none"` without
- * expanding IntegrateRefuse.
+ * not present. Env join maps the probe. Overlay only checks
+ * `decision.ok`; mapping null onto the existing refuse keeps
+ * oracle `"none"` without expanding IntegrateRefuse.
  */
 function overlayDecisionFromEnv(
   env: { readonly [key: string]: string | undefined },
@@ -172,7 +169,7 @@ function overlayDecisionFromEnv(
 ):
   | { readonly ok: true; readonly decision: IntegrateDecision }
   | { readonly ok: false; readonly reason: NamedPathRequestError } {
-  const fromEnv = integrateAtSetupFromEnv(env, hostCaptureFromNamedProbe(probe));
+  const fromEnv = integrateAtSetupFromEnv(env, probe);
   if (!fromEnv.ok) return fromEnv;
   return { ok: true, decision: fromEnv.decision ?? { ok: false, reason: "no-path" } };
 }

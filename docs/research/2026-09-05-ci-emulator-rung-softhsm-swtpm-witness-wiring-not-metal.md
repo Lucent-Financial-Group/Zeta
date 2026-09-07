@@ -311,6 +311,10 @@ Overlay joins take named probe (`081M1WMR8KD087G0R003HZYY14`):
 argv/conf/env joins take `NamedHardwareProbe | null`.
 Mapped via `hostCaptureFromNamedProbe`. Null is unmeasured,
 not present. `/dev/tpmrm0` on the probe is not a capture.
+Env integrate takes named probe (`081M1WP0C7B087G0R000VK9E0V`):
+`integrateAtSetupFromEnv` takes `NamedHardwareProbe | null`.
+Overlay passes the probe through. Inner `integrateAtSetup`
+still takes a capture. Null is unmeasured, not present.
 
 1. Metal: `seal "pkcs11"` in Application.yaml still waits.
    Same commit as a **reachable** module: same-libc image

@@ -14,8 +14,12 @@
  * PathRequest from env (`ZETA_UNSEAL_REQUEST`) is the same
  * rule: missing is unmeasured, not `auto`; `/dev/tpmrm0` is
  * not `pkcs11-tpm`. Parse does not call `integrateAtSetup`.
- * Env join (`integrateAtSetupFromEnv`) still injects the
- * capture: missing request is unmeasured, not `auto`.
+ * Env join (`integrateAtSetupFromEnv`) injects a named probe
+ * snapshot (`NamedHardwareProbe | null`), mapped via
+ * `hostCaptureFromNamedProbe`. Missing request is unmeasured,
+ * not `auto`. Null probe is unmeasured, not present.
+ * `/dev/tpmrm0` is not a capture. Inner `integrateAtSetup`
+ * still takes a capture.
  *
  * OpenBao takes ONE seal per node. Multiple *paths* means the
  * fleet may mix PKCS#11-YubiHSM, PKCS#11-SmartCard-HSM,
@@ -44,7 +48,12 @@
  * docs/design/2026-09-04-credential-substrate-production-hardening-review.md.
  */
 
-import { emptyCapture, type HostHardwareCapture } from "./host-seal-profile.ts";
+import {
+  emptyCapture,
+  hostCaptureFromNamedProbe,
+  type HostHardwareCapture,
+  type NamedHardwareProbe,
+} from "./host-seal-profile.ts";
 import {
   planSetupPkcs11Overlay,
   USB_PKCS11_MODULE_POINTER,
@@ -358,19 +367,24 @@ export type IntegrateFromEnv =
   | { readonly ok: false; readonly reason: NamedPathRequestError };
 
 /**
- * Request from env, capture still injected. Missing request is
- * unmeasured (`decision` null) — not `auto`. `/dev/tpmrm0`
+ * Request from env, probe snapshot still injected. Missing
+ * request is unmeasured (`decision` null) — not `auto`.
+ * Null probe is unmeasured, not present. `/dev/tpmrm0`
  * refuses at parse and does not call `integrateAtSetup`.
- * Does not invent a capture from the char device.
+ * `tpmDeviceNode` does not invent `tpm2: "present"`. Inner
+ * `integrateAtSetup` still takes a capture.
  */
 export function integrateAtSetupFromEnv(
   env: { readonly [key: string]: string | undefined },
-  capture: HostHardwareCapture,
+  probe: NamedHardwareProbe | null,
 ): IntegrateFromEnv {
   const parsed = consumeUnsealRequestFromEnv(env);
   if (!parsed.ok) return parsed;
   if (parsed.requested === null) return { ok: true, decision: null };
-  return { ok: true, decision: integrateAtSetup({ requested: parsed.requested }, capture) };
+  return {
+    ok: true,
+    decision: integrateAtSetup({ requested: parsed.requested }, hostCaptureFromNamedProbe(probe)),
+  };
 }
 
 /**
