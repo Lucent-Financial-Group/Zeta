@@ -117,9 +117,19 @@ describe("TEXT ONLY", () => {
   test("the default extension list holds no binary formats", () => {
     // `no-binary-in-proof-lineage`: a grooming artifact citing a `.png` cites something nobody can
     // check, and decoding one would put replacement characters into an agent's context.
-    for (const bad of [".png", ".jpg", ".pdf", ".wasm", ".zip", ".exe"]) {
-      expect(DEFAULT_TEXT_EXTENSIONS).not.toContain(bad);
-    }
+    //
+    // The claim rides on a POSITIVE exact-equality pin, not an absence check. An `not.toContain`
+    // per binary extension only witnesses the six renderings we happened to name; a seventh binary
+    // format silently added to the allowlist would pass every one of them. Pinning the whole list
+    // makes ANY addition — binary or otherwise — fail here until the maintainer restates the set.
+    expect([...DEFAULT_TEXT_EXTENSIONS]).toEqual([".md", ".txt", ".json", ".yml", ".yaml", ".toml", ".csv"]);
+
+    // And, redundantly but explicitly: the intersection with a known binary set is empty. Expressed
+    // as an equality on the computed intersection so the check itself can fail rather than assert an
+    // absence.
+    const binary = [".png", ".jpg", ".pdf", ".wasm", ".zip", ".exe"];
+    const leaked = DEFAULT_TEXT_EXTENSIONS.filter((e) => binary.includes(e));
+    expect(leaked).toEqual([]);
   });
 
   test("a file outside the extension list is not read at all", async () => {
