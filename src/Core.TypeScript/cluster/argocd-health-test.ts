@@ -341,7 +341,7 @@ export const PLATFORM_APP_DIR = "platform";
 
 export const DEV_EXCLUDED_REASONS: ReadonlyMap<string, string> = new Map([
   [
-    "game-hosting",
+    "game-hosting/gmod",
     "A GARRY'S MOD DEDICATED SERVER, and the SINGLE LARGEST MEMORY RESERVATION the dev lane " +
       "carried: 2048Mi of a 9216Mi budget -- 18% -- to prove a Source-engine server loads a map " +
       "and idles. Its own manifest calls it 'a game-server sample workload, not on the PoC " +
@@ -362,7 +362,14 @@ export const DEV_EXCLUDED_REASONS: ReadonlyMap<string, string> = new Map([
       "anyway -- 'gmod did not schedule TODAY because its sync fails on gatekeeper's webhook' -- " +
       "so a red assertion is given up, not a green one. " +
       "LIFTS WHEN: the lane has 2048Mi of headroom again (a larger runner, or the metal cluster), " +
-      "at which point gmod returns UNCHANGED, because nothing about it was modified to make it leave.",
+      "at which point gmod returns UNCHANGED, because nothing about it was modified to make it leave. " +
+      "ANCHORS, CHECKED BY `reason-truth.ts` -- each names an artifact this tree holds, so a claim " +
+      "that outlives its artifact goes red instead of reading on: " +
+      "[cite: path full-ai-cluster/k8s/applications/game-hosting/gmod/statefulset.yaml] " +
+      "[cite: glob-defers game-hosting/gmod] " +
+      "[cite: resource-rung game-hosting/gmod dev 100] " +
+      "[cite: resource-rung game-hosting/gmod metal 1000] " +
+      "[cite: lane-cpu dev 1715 fits]",
   ],
   // `agent-memory` is NOT here. It LEFT this map on 2026-09-03, and the entry is
   // recorded as closed rather than the lines silently deleted.
@@ -640,14 +647,27 @@ export function auditDevExclusionReasons(
   repoRoot = REPO_ROOT,
   excludeGlob: string = DEFAULT_ROOT_DEV_CATALOG.excludeGlob,
 ): DevExclusionDrift {
+  // DEPTH 2, and this is the same blindness the resource ladder already had. A
+  // non-recursive walk reported a reason keyed on `game-hosting/gmod` as STALE --
+  // "a reason for a directory that no longer exists" -- about a directory that
+  // exists and that ArgoCD applies, because the include glob is not path-segment
+  // bounded (established against a live cluster in app-of-apps-discovery.ts). The
+  // ladder was widened when that cost 1000m; this audit was not. Depth 2 is where
+  // the tree actually stops, so that is where this stops.
   const applicationsRoot = join(repoRoot, "full-ai-cluster/k8s/applications");
-  const present = existsSync(applicationsRoot)
-    ? new Set(
-        readdirSync(applicationsRoot, { withFileTypes: true })
-          .filter((entry) => entry.isDirectory())
-          .map((entry) => entry.name),
-      )
-    : new Set<string>();
+  const topLevel = existsSync(applicationsRoot)
+    ? readdirSync(applicationsRoot, { withFileTypes: true })
+        .filter((entry) => entry.isDirectory())
+        .map((entry) => entry.name)
+    : [];
+  const present = new Set([
+    ...topLevel,
+    ...topLevel.flatMap((dir) =>
+      readdirSync(join(applicationsRoot, dir), { withFileTypes: true })
+        .filter((entry) => entry.isDirectory())
+        .map((entry) => `${dir}/${entry.name}`),
+    ),
+  ]);
   const globExcluded = rootDevCatalogExcludedDirs(excludeGlob);
 
   return {
@@ -1047,8 +1067,8 @@ export const APPLIED_BUT_UNASSERTED_REASONS: ReadonlyMap<string, string> = new M
       "[cite: chart-pin full-ai-cluster/hindsight hindsight 0.9.2] " +
       "[cite: resource-rung hindsight metal 1000] " +
       "[cite: resource-rung hindsight dev 75] " +
-      "[cite: lane-cpu metal 8390 over] " +
-      "[cite: lane-cpu dev 1815 fits] " +
+      "[cite: lane-cpu metal 7390 over] " +
+      "[cite: lane-cpu dev 1715 fits] " +
       "[cite: workflow-job k8s-argocd-health-test.yml dry-run] " +
       "[cite: path full-ai-cluster/k8s/bootstrap/root-application.yaml] " +
       "[cite: path maintainers/Addisons820/cluster-nodes/node-ad1efd/node.yaml] " +
