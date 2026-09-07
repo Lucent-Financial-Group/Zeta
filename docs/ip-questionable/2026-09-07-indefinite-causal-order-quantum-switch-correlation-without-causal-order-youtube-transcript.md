@@ -251,15 +251,27 @@ same *shape* as 2 < 2√2 < 4. **Same shape is not same bound**, and nothing her
 are related; recorded as a coincidence with its register attached per `numerology-vs-number-theory`,
 whose own worked example is that F₄ and D₄⊕D₄ both have 48 roots.
 
-### An unrecorded term: "root NFT"
+### "root NFT" is the ordinary word non-fungible — not a coinage
 
-`root NFT` **appears nowhere in the repo** (checked 2026-09-07: no hits in `docs/` or `src/`). Aaron
-flags it himself as tentative — *"i think we called this our root NFT"* — and explicitly **not** the
-crypto sense. It names the two-entity mutual-memory comparison object of route 2. Recorded here
-because an unrecorded coinage for a load-bearing object is the Babel risk
-(`anti-babel-preserve-reconcilability`): if the only name for it lives in one person's recall, a
-diverged peer cannot reconstruct it. **Naming it is not the same as defining it** — the definition
-is still owed, and this note is the marker for that debt, not its payment.
+I filed this as an unrecorded coinage carrying an unpaid definition debt. Aaron deflated it:
+
+> *"when i say root NFT i just mean it's our version of non fungible, not a special term, we don't
+> define NFT by crypto terms"*
+
+So there is no term to define and no Babel risk here — **the word is doing its ordinary work.** The
+two-entity mutual-memory object is **non-fungible**: the two agents are not interchangeable tokens,
+and you cannot substitute one for the other without destroying the thing being measured.
+
+**And that is not a label, it is the load-bearing property of this whole thread.** Non-fungibility
+is precisely why the pair cannot be pooled into one distribution — pooling is the fungible move,
+treating two holdings as interchangeable and summing them. Do that and there is one agent, the
+uncertainties have merged, and the agreement becomes bookkeeping rather than a result. So Aaron's
+plain word is a restatement of the separateness clause from the first correction: *"each side
+preserves its uncertainty separately."*
+
+Worth noting the vocabulary hazard runs the **other** way from the one I claimed: the risk is not
+that "NFT" is undefined here, it is that the crypto usage has captured the word so thoroughly that
+the ordinary economic sense reads as jargon. The ordinary sense is the older one and the one meant.
 
 ### The limit the code already states, and it should not be dropped
 
