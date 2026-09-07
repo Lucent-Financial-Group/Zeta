@@ -688,5 +688,12 @@
       "Conclusion": "success",
       "Url": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34123276502/job/101745989668"
     }
-  ]
+  ],
+  "LegacyStatusContextVerification": {
+    "ObservedUtc": "2026-09-07T13:30:03.044125+00:00",
+    "Endpoint": "repos/Lucent-Financial-Group/Zeta/commits/f52b00065eb8055a32aea4bd93628df7537f4949/status",
+    "TotalCount": 0,
+    "Statuses": [],
+    "Scope": "No legacy commit-status contexts supplement the paginated check-run snapshot. The legacy aggregate state is not used to infer check-run outcomes."
+  }
 }

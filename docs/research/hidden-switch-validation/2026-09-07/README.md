@@ -260,3 +260,36 @@ not a claim that production replay imports that roster: replay deliberately
 defines its own independent roster. The
 [review disposition](../../2026-09-07-hidden-switch-result-review.md)
 records independent source review and preserves the frozen module unchanged.
+
+## Corrected publication integration
+
+The independently reviewed TypeScript correction
+`91baf83d79c146367b8183c58732bb8f437eb55b` and F# correction
+`3149e2596fb12935ceb3c27568da7b16d405b548` were integrated through the
+source owner's `4b4d9a237b23e53a4b297af72eb2053f3c51c8b6` as root
+merge `76d2a58`. The owner's full mapped gate on that source passed a
+105.43-second Release build with zero warnings/errors and 7,539 tests,
+six existing skips and no failures; all 52 formal models and eighteen
+synthetic cases passed. Its original records belong to the
+[tooling correction](../../2026-09-07-tlc-attempt-retention.md).
+This is its smaller integration's actual count, distinct from the older
+root gate's 7,552 passes.
+
+Root then integrated current main `a3926e6b2` as `b3b120a` and compared
+all 103 of the owner's selected prelaunch inputs. The only difference is
+six additional hidden-switch source/test links in the F# test project;
+the [prelaunch record](root-publication-integration-attempt-1.json)
+retains that exact diff and all actual hashes. The
+[fresh mapped F# test-project build](root-publication-build-attempt-1.log)
+passed in 77.86 seconds with zero warnings/errors, and the
+[sixteen additional hidden-switch tests](root-publication-focused-attempt-1.log)
+passed. Their [original TRX](root-publication-focused.trx.gz) and
+[derived execution/hash record](root-publication-integration-results.json)
+are retained. All 103 local input hashes and nineteen scientific source
+hashes remained unchanged across this check.
+
+Root did not repeat the full formal-model gate or collect new scientific
+measurements for this integration. The source comparison plus targeted
+additional tests establishes the stated coverage; it is not whole-tree
+identity, a newly executed combined test count or source-to-binary proof.
+Final publication-head CI and main ancestry remain separate requirements.

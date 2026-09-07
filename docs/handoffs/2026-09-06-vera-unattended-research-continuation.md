@@ -6,7 +6,7 @@ Operational status: research-grade handoff
 Lifecycle: active
 Scope: continuation of the predictive-state, acting and relational research lanes
 Work item and retained publication review: [081M1WKKBQ2087G0R00221631M](../../workitems/done/2026/09/081M1WKKBQ2087G0R00221631M-publish-consolidated-unattended-research-handoff-with-verifi.md)
-Publication status: earlier eight substantive PRs merged; hidden-switch result prepared for checked publication
+Publication status: earlier eight substantive PRs merged; hidden-switch results in draft PR #16928 pending corrected tooling integration; next compiled-controller protocol remotely registered
 
 ## Paste-ready bootstrap
 
@@ -19,7 +19,9 @@ Publication status: earlier eight substantive PRs merged; hidden-switch result p
 > action meanings. Hidden-switch now passes its registered planning and matched-work
 > cost criteria with exact replay, using a supplied correct model and decoder.
 > ARC and learned dynamics remain untested by those trials. Read the result,
-> exact-envelope caveat and unregistered follow-up advisory before a new study. Keep
+> exact-envelope caveat and separately registered compiled-controller protocol
+> before implementing that next study. Preserve its prior-study main dependency;
+> action-conditioned model identification remains an unregistered advisory. Keep
 > conditional entropy premises separate from stipulated work: B=sum b_i,
 > R=sum r_e, M=1+R/B for B>0. Correlation components do not count controllers.
 > Preserve the declared-cut receipt invariant without calling it Lorentz
@@ -151,10 +153,48 @@ The [exact-envelope note](../research/2026-09-07-hidden-switch-exact-envelopes.m
 and [unregistered prospective advisory](../research/2026-09-07-hidden-switch-prospective-model-identification.md)
 define the next questions: independently certified compiled action selection
 and a separately frozen action-conditioned model-identification study.
-Neither proposal is a registered experiment or an earned learning result.
+The compiled-controller follow-up now has its own registration below;
+model identification remains an unregistered proposal. Neither is an earned
+learning result.
 Maintain explicit observation/model assumptions, admission falsifiers and
 fresh frozen evaluation streams before new measurements. No public ARC
 example becomes held-out evidence through this continuation.
+
+Draft [PR #16928](https://github.com/Lucent-Financial-Group/Zeta/pull/16928)
+retains the original hidden-switch result. Its initial CI failures are
+[indexed with exact source and logs](../research/hidden-switch-validation/2026-09-07/README.md):
+two TypeScript hygiene/race findings and a macOS inherited-pipe fixture
+failure, plus their aggregate gate and a separate historical drift advisory.
+The corrective dependency is [PR #16925](https://github.com/Lucent-Financial-Group/Zeta/pull/16925).
+The reviewer accepted its descriptor-bound copy and observed-exit cancellation
+fixture. Publication still requires the corrected dependency on main,
+the final result head's checks and ancestry proof. The original scientific
+files, once-collected receipts and archived implementation are unchanged.
+
+## Registered compiled-controller follow-up
+
+New task `081M1XXWTTF087G0R000X1HMD0` owns the
+[frozen protocol](https://github.com/Lucent-Financial-Group/Zeta/blob/8710ae4f4e37b727ccc8bb79e212a7bed433bbd0/docs/research/2026-09-07-hidden-switch-compiled-protocol.md)
+and its separately indexed mathematical and complete-protocol reviews.
+The annotated remote tag
+`archive/experiments/081M1XXWTTF087G0R000X1HMD0-registration`
+has object `52cfa5665c2e21cdfc2be6a08b4b159c1048bb04` and peels to
+`8710ae4f4e37b727ccc8bb79e212a7bed433bbd0`. Its owner verified the
+remote freeze at 13:21:45 UTC on 2026-09-07, and the coordinator independently
+read the same remote identities. Protocol size is 43,162 bytes; SHA256 is
+`8bbdfe44a0844dd8ce4f6c5dd77b060a56e5b84ea94ea7a6fdbb482aec9d738a`.
+
+At that freeze, no compiled implementation, guard bits, source streams or
+measurements existed. Implementation additionally waits for the prior
+hidden-switch study's main integration. The new protocol requires universal
+action agreement under a declared binary64 source/runtime model, independent
+certificate and exact replay, and the same action-only output service in
+both timed arms. Both ordinary panels must independently meet wall and
+allocation ratios at most one-half. Deliberate fallback stress and full
+episode costs remain descriptive. Runtime graph and loaded-image admission
+are real prerequisites; neither source hashes nor finite agreement tests
+constitute a JIT theorem. Preserve any admission refusal and never move the
+registration tag to accommodate implementation or observed results.
 
 ## Combined Interp evidence
 
