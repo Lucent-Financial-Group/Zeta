@@ -208,6 +208,14 @@ indexed in the integrated validation record. No model, test expectation,
 compiler setting, source-admission rule or scientific criterion was changed
 to obtain that recovery.
 
+The first published CI head subsequently exposed a separate test-harness
+defect on all three platforms: compiler-mapped source paths made two tests
+look for their frozen fixture under `/_/`. The
+[fixture-path correction](rendered-catch-validation/2026-09-06/ci-fixture-path-correction.md)
+retains the failures, review and validation using an explicit CI-mapped
+build. Only runtime fixture discovery in the test file changed; all 23
+scientific source fingerprints and all recorded result bytes remain intact.
+
 One explicit pre-archive CLI negative control refused with zero panels and
 retained its [failed receipt](rendered-catch-validation/2026-09-06/refused-before-archive.json).
 The inherited NCI test gate failure and upstream static-roster repair are

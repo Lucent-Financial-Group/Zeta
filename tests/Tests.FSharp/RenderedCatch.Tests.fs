@@ -8,7 +8,13 @@ open Zeta.Research
 
 let private require = function Ok value -> value | Error (reason: RenderedCatchReceipt.Failure) -> failwith (reason.Code + ": " + reason.Detail)
 let private counts () =
-    Path.Combine(__SOURCE_DIRECTORY__, "../../src/Research.FSharp/rendered-signal-results.json") |> File.ReadAllBytes |> RenderedCatchPolicy.readCounts |> require
+    // CI maps source locations to /_/. Resolve fixtures from the test assembly,
+    // whose base directory is stable even while another test changes the CWD.
+    let mutable directory = DirectoryInfo AppContext.BaseDirectory
+    while not (isNull directory) && not (File.Exists(Path.Combine(directory.FullName, "Zeta.sln"))) do
+        directory <- directory.Parent
+    if isNull directory then invalidOp "Could not locate rendered-catch fixture repository (Zeta.sln)"
+    Path.Combine(directory.FullName, "src", "Research.FSharp", "rendered-signal-results.json") |> File.ReadAllBytes |> RenderedCatchPolicy.readCounts |> require
 let private fixture = Array.init 66 (fun index -> [|0;0;1;0;1;1|].[index % 6])
 let private admitted geometry symbols = RenderedCatchCarrier.compile geometry symbols |> require |> RenderedCatchCarrier.admit geometry |> require
 let private bootstrap geometry symbols =

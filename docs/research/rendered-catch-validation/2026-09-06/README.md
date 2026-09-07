@@ -11,6 +11,9 @@ indexes all native, cost, full-replay and verdict receipts, publication logs
 and the quiet window. The implementation review below retains its earlier
 pre-measurement scope.
 
+The later [CI fixture-path correction](ci-fixture-path-correction.md) retains
+the three-platform publication failure and the test-only runtime path repair.
+
 This record indexes native implementation/conformance evidence for the
 [registered protocol](../../2026-09-06-rendered-catch-actions-protocol.md).
 The [integrated validation and verdict review](integration-review.md) retains
