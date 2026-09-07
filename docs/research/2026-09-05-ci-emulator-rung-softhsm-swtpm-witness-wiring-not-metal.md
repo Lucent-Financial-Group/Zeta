@@ -318,14 +318,22 @@ still takes a capture. Null is unmeasured, not present.
 ISO bun consume reports unmeasured probe (`081M1WQNTZ0087G0R002Q8T8RT`):
 bun JSON includes `probe: null`. A named PathRequest is not a
 named probe. `/dev/tpmrm0` is not a probe.
+Frost result becomes named probe (`081M1WS6HV4087G0R001K1YWMN`):
+`namedProbeFromFrostResult`. `/dev/tpmrm0` is not `present`.
+A YubiKey / CCID reader is not CardContact. A driver on disk
+is not an attached YubiHSM. Null frost result is unmeasured,
+not absent. OS family is named, not inferred. Does not run
+the live probe. Does not import frost into cluster.
 
 1. Metal: `seal "pkcs11"` in Application.yaml still waits.
    Same commit as a **reachable** module: same-libc image
    (glibc OpenBao that can load the host `.so`) or option D
    host `bao`. Dual-vendor per node is ZetaFS k-of-n, not
-   two active OpenBao seals. Do not treat this join as
-   that commit. A live installer call still must not invent
-   the probe. Does not expand `ZetaFirstbootRole`.
+   two active OpenBao seals. Do not treat this mapper as
+   that commit. Wiring `namedProbeFromFrostResult` on the
+   live ISO is later and still must not infer from
+   `/dev/tpmrm0`. Bun JSON `probe` stays null until that
+   wiring exists. Does not expand `ZetaFirstbootRole`.
    `/dev/tpmrm0` is still not an ask and not a PathRequest.
 2. extraContainer Shamir sidecar (`valuesObject` only) until
    kind/CI consume the emulator init.

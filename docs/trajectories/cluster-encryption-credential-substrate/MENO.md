@@ -287,6 +287,13 @@ assume the number.
    present. A named PathRequest is not a named probe.
    `/dev/tpmrm0` is not a probe. Does not invent a look. Does
    not invent an integrate decision.
+   Frost result becomes named probe (`081M1WS6HV4087G0R001K1YWMN`):
+   `namedProbeFromFrostResult`. `/dev/tpmrm0` is not `present`.
+   A YubiKey / CCID reader is not CardContact. A driver on
+   disk is not an attached YubiHSM. Null frost result is
+   unmeasured, not absent. OS family is named, not inferred.
+   Does not run the live probe. Does not import frost into
+   cluster. Does not invent an integrate decision.
 7. extraContainer sidecar — later, **same commit as the
    sidecar**, and only for the Shamir kind path until the
    emulator job replaces it. `valuesObject` only. Do not fork
