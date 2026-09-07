@@ -251,27 +251,57 @@ same *shape* as 2 < 2√2 < 4. **Same shape is not same bound**, and nothing her
 are related; recorded as a coincidence with its register attached per `numerology-vs-number-theory`,
 whose own worked example is that F₄ and D₄⊕D₄ both have 48 roots.
 
-### "root NFT" is the ordinary word non-fungible — not a coinage
+### "root NFT" — and the formal analysis I said did not exist
 
-I filed this as an unrecorded coinage carrying an unpaid definition debt. Aaron deflated it:
+Two corrections in sequence, the second worse than the first.
 
-> *"when i say root NFT i just mean it's our version of non fungible, not a special term, we don't
-> define NFT by crypto terms"*
+**(a)** I filed this as an unrecorded coinage with an unpaid definition debt. Aaron: *"when i say
+root NFT i just mean it's our version of non fungible, not a special term, we don't define NFT by
+crypto terms."* So the word is doing its ordinary work.
 
-So there is no term to define and no Babel risk here — **the word is doing its ordinary work.** The
-two-entity mutual-memory object is **non-fungible**: the two agents are not interchangeable tokens,
-and you cannot substitute one for the other without destroying the thing being measured.
+**(b)** I had also written *"`root NFT` appears nowhere in the repo (checked …: no hits in `docs/`
+or `src/`)"* and generalised that to *"an unrecorded coinage … the definition is still owed."*
+**The check was real and the conclusion was wrong.** Aaron: *"we have a lot of NFT non fungible
+formal analysis and maybe some code."* He is right — **78 files** mention fungibility, including
+two dedicated research documents and live F#. I had grepped a literal three-word string and
+concluded a *concept* was absent, which is the exact failure this repo already has on file: **grep
+answers "where is this string", not "does this exist."**
 
-**And that is not a label, it is the load-bearing property of this whole thread.** Non-fungibility
-is precisely why the pair cannot be pooled into one distribution — pooling is the fungible move,
-treating two holdings as interchangeable and summing them. Do that and there is one agent, the
-uncertainties have merged, and the agreement becomes bookkeeping rather than a result. So Aaron's
-plain word is a restatement of the separateness clause from the first correction: *"each side
-preserves its uncertainty separately."*
+**The formal analysis, which is substantial and directly load-bearing here:**
 
-Worth noting the vocabulary hazard runs the **other** way from the one I claimed: the risk is not
-that "NFT" is undefined here, it is that the crypto usage has captured the word so thoroughly that
-the ordinary economic sense reads as jargon. The ordinary sense is the older one and the one meant.
+- **`docs/research/2026-06-19-nft-as-non-fungible-relational-artifact-entropy-as-identity-mint-conditions-scoping.md`**
+  — the definition. *"our NFTs are based on our co-relational high-quality links … the only thing I
+  claim is real: the remembered links between travelers."* An NFT is **a high-quality co-relational
+  LINK between two travelers**, objectively *rateable* (QPG · ρ_owe · coupled-empowerment) rather
+  than speculative — **meaning lives in the edges, not the nodes.**
+- **`docs/research/2026-07-10-nft-is-the-converged-marginal-one-generator-three-approximations-infernet-qsharp-chip8.md`**
+  — the formal content, and it is the sentence this whole ferry needed:
+  **non-fungible = a unique FIXED POINT of a factor graph (`s = f(s)`, `src/Core/Fixpoint.fs`)**;
+  *NFT = the converged marginal, compression = the mint*, with Infer.NET / Q# / CHIP-8 as three
+  approximations of one generator.
+- Code touching fungibility: `src/Core/ForgerRace.fs`, `src/Core/CoincidenceClock.fs`,
+  `src/Core/ForwardMomentum.fs`; plus `docs/books/you-born-at-the-hinge/NUGGETS-minted-nfts.md`.
+
+**Why this is not a footnote.** Aaron's phrasing was *"two distinct Bayesian **factor graph** like
+entities … compared together over mutual memories … our root NFT"* — and the 07-10 doc defines
+non-fungibility as **uniqueness of a factor graph's fixed point**. Those are the same object, and
+the definition supplies the *mechanism* for the separateness clause that the rest of this note
+asserts:
+
+> Two agents are non-fungible because each is a **distinct fixed point of its own factor graph**.
+> Pooling them is the fungible move — treating two holdings as interchangeable and summing — and it
+> does not merely lose information, it **destroys the fixed points that were the objects**. That is
+> why the correlation has to be measured *between* them and cannot be computed *over* them.
+
+And it lands the edges/nodes point on the transcript: the physics story is about **correlations
+between parties**, not about states of parties. *Meaning lives in the edges* is the same claim in
+this substrate's own vocabulary, arrived at independently and years-scale earlier.
+
+**Register: the definition above is in-repo and dated; the correspondence to the transcript is
+argued, not measured.** What changed here is that the non-fungibility claim moved from *"an
+unrecorded coinage"* (my error) to *"a defined object with a formal criterion"* — which is exactly
+the promotion path `numerology-vs-number-theory` describes, except that in this case the structure
+was already written down and I had failed to find it.
 
 ### The limit the code already states, and it should not be dropped
 
