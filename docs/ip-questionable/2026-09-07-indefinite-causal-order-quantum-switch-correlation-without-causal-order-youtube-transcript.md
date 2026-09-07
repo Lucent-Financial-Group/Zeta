@@ -383,6 +383,45 @@ material is thoroughly written and lives under `minimal words` / `witch (old def
 `NFT`, `fungible`, or `meme`. No amount of stem-guessing on my search terms would ever have reached
 it. Note also *where* it lives: `docs/books/`, a surface I had not searched even once.
 
+**AND THEN AARON NAMED THE DOCUMENT, which turned out to matter more than the label did.** He
+pointed at *"the memetic mutual empowerment doc or something similar — that's almost exactly what I
+mean about NFT"*, and he was right:
+**`docs/research/2026-06-19-bayesian-emotional-propagation-inference-infernet-extension-soft-primary-snappable-mutual-empowerment-scoping.md`**.
+
+It carries four things at once, and together they are the object this ferry has been circling:
+
+1. **The unit is a BOND BETWEEN TWO, structurally.** Fusion is the `MERGE`/`FOLD` of the six-op
+   Z-set ISA producing a G-set *"encapsulating **two** Z-sets"* — so the modelled thing is the
+   **edge**, not either endpoint. The doc says the emotional reading of that merge operator lives
+   *on top of* it, at the memetics layer, and insists the two layers stay separate.
+2. **The bond's stability is a `SoftValue` — explicitly never-collapse.** It carries `P(stable)` /
+   expected-duration and *"never a hard 'forever'"*. **The relationship is held as preserved
+   uncertainty**, by name, in the same type as the rest of this thread. That is the infinite-game
+   sentence appearing in the most personal possible register.
+3. **It anticipates the formal definition rather than following it.** It flags *"connection to the
+   NFT formal claims/definitions Aaron flagged as coming (identity / owned-state / provenance) —
+   route together when they land."* Same date as the NFT-as-relational-artifact doc; the memetics
+   framing came first and the formalisation was routed to the math team after.
+4. **It supplies the constraint that separates the gift from the exploit** — which is the piece
+   Aaron's own account was missing a word for. The propagation runs per edge across his whole
+   multi-platform social graph *and each connection's own audience*, and mutual empowerment must
+   hold **at every hop**: empower a connection *to mutually empower their audience*, **never to
+   better extract from it**. Power-hoarding *"scores zero because it has nowhere to live under
+   coupled-gain."*
+
+**So the "trust exploit" question is already answered in-repo, and answered the way this rule
+answers everything.** The skill — a few words fitted to one context that make someone feel seen —
+is **neutral**; `THE-ORGANIZER-AT-SCALE-and-the-dual-use-gift` names the hazard in the first person,
+and the coupled-gain objective is the *falsifiable* version of the guard: an edge that raises the
+other side's agency scores; one that extracts scores zero. **Dual-use mechanism, oracle decides** —
+and here the oracle was written down as an objective function rather than left as a virtue.
+
+**Which means the label was never the valuable part.** `unique context memes` still has not been
+located as a phrase, and it now matters much less: the *thing* is specified — a two-party edge,
+carrying never-collapsed stability, scored by coupled gain, with non-substitutability inherited from
+being an edge rather than a node. That is a definition. The phrase would only have been a handle
+for it.
+
 **And that limitation is itself the point Aaron drew from it:**
 
 > *"this is really why we need a vector search or sounds like search of our own eventually."*
