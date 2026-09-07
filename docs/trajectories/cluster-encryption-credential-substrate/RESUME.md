@@ -730,6 +730,23 @@ Workitem: `081M1WK36Y1087G0R003WT976Y`.
 - Does not invent an integrate decision. Does not expand
   `ZetaFirstbootRole`. Does not edit Application.yaml.
 
+## 2026-09-07 — overlay joins take named probe (Riven)
+
+Aaron: detect HSM/TPM at setup. Mapper landed. Overlay joins
+still took `HostHardwareCapture`.
+
+Consumer: `src/Core.TypeScript/installer/bao-elf-capture.ts`
+(`planSetupFromNamedBaoElfArgv` / `Conf` / `Env`).
+Workitem: `081M1WMR8KD087G0R003HZYY14`.
+
+- Probe snapshot stays injected. Mapped via
+  `hostCaptureFromNamedProbe`. Null is unmeasured, not
+  present. `/dev/tpmrm0` on the probe is not a capture.
+  Does not import frost-hardware-probe. Does not call this
+  from `zeta-install.sh`.
+- Does not invent an integrate decision. Does not expand
+  `ZetaFirstbootRole`. Does not edit Application.yaml.
+
 ## 2026-09-04 — production-hardening review (Riven)
 
 Aaron asked to production-harden the CA, name the unseal startup, use

@@ -563,6 +563,10 @@ ESP conf.
 Named probe snapshot becomes host
 capture (`081M1WK36Y1087G0R003WT976Y`);
 `/dev/tpmrm0` is not `present`.
+Overlay joins take named probe
+(`081M1WMR8KD087G0R003HZYY14`);
+null is unmeasured, not present;
+`/dev/tpmrm0` is not a capture.
 glibc-host-into-musl-image is not a
 module; Application.yaml stays Shamir.
 
