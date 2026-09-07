@@ -5,8 +5,8 @@ From: Vera, OpenAI Codex using GPT-6 Astra
 Operational status: research-grade handoff
 Lifecycle: active
 Scope: continuation of the predictive-state, acting and relational research lanes
-Work item: 081M1WKKBQ2087G0R00221631M
-Publication status: seven substantive PRs merged; acting PR #16892 still pending
+Work item and retained publication review: [081M1WKKBQ2087G0R00221631M](../../workitems/done/2026/09/081M1WKKBQ2087G0R00221631M-publish-consolidated-unattended-research-handoff-with-verifi.md)
+Publication status: all eight substantive PRs merged and ancestry-verified
 
 ## Paste-ready bootstrap
 
@@ -59,9 +59,11 @@ CQM/WSet equivalence, universality, Clifford structure or Lorentz invariance.
 
 ## Publication snapshot
 
-Seven merge commits below were verified as ancestors of refreshed main
-`fa6918b9e9204183628594a4811346ec128c624c` on 2026-09-07 UTC. The final acting
-PR remains pending; final handoff publication waits for its verified merge.
+All eight merge commits below were verified as ancestors of refreshed main
+`972011ed1f6ff75483a475c6fc7ff485ac65e89e` on 2026-09-07 UTC. The acting PR
+merged at 00:53:49 UTC from checked head
+`c0a5ebd15f1025bb53da0d16eb2193a25817d639`, after 91 successful checks, two
+skips and zero failures in its pre-merge matrix.
 
 | PR | Observed state | Contribution |
 | --- | --- | --- |
@@ -72,7 +74,7 @@ PR remains pending; final handoff publication waits for its verified merge.
 | [#16878](https://github.com/Lucent-Financial-Group/Zeta/pull/16878) | Merged | Fixed sampled steady-state allocation check plus retained-copy discriminator; no inference-source or experimental-receipt change. |
 | [#16887](https://github.com/Lucent-Financial-Group/Zeta/pull/16887) | Merged | NCI emitter capability fixture and its compatibility/audit corrections. |
 | [#16891](https://github.com/Lucent-Financial-Group/Zeta/pull/16891) | Merged | Finite stochastic channel contract, implementations, receipts and reviews. |
-| [#16892](https://github.com/Lucent-Financial-Group/Zeta/pull/16892) | Open; pending | Registered rendered-catch result, full replay and verdict. |
+| [#16892](https://github.com/Lucent-Financial-Group/Zeta/pull/16892) | Merged | Registered rendered-catch result, full replay and verdict. |
 
 Verified merge commits, in the same order as the merged rows:
 
@@ -84,6 +86,7 @@ Verified merge commits, in the same order as the merged rows:
 16878 09117d8b505158f2a0deec9d7d193334e3e5f269
 16887 4b9906d7195233e1a5b6540904daf21bb66d446a
 16891 fa6918b9e9204183628594a4811346ec128c624c
+16892 972011ed1f6ff75483a475c6fc7ff485ac65e89e
 ```
 
 ## Immutable re-entry references
@@ -101,6 +104,8 @@ or move it from current main.
 | `archive/experiments/081M1W41PKD087G0R0024JFXHT` | `7f8d31e37f9d03acd0b4fd6f1643b4b3f01207de`; passive source/result ancestry. Its measured source is `468772e59b6a587469fd7fd576d0bd141d421af0`. |
 | `archive/experiments/081M1W41PKD087G0R0024JFXHT-native-validation` | `db9bb96d8b50489c0d5672d8ce579a083660cb24`; original passive native gate. |
 | `archive/relational-identity-20260906-source-v4` | `159f7b0e65245d4ffae9ecbfe0702b1b7e987b2c`; lightweight tag for identity measured source. Keep v1-v3 and their defect history unchanged. |
+| `archive/chsh-coverage/081M1W8PRK0087G0R000T7C4X8-before` | `d0a4fbbd7a57fe5c19a63804f2f83864d377faa1`; lightweight tag preserving the pre-fix CHSH witnesses. |
+| `archive/chsh-coverage/081M1W8PRK0087G0R000T7C4X8-repair` | `2241d8d0ff86ea0613a41a56a9b97c4f0d7fd2de`; lightweight tag preserving the reviewed coverage repair. |
 | `archive/experiments/081M1W8T690087G0R002DJ91MJ-registration` | `8e08b5424feb2a80d80c1807e403c52ab34e79d1`; acting registration. Clarification `1851a8bf5f5c3a7998cbe64506d9a88383930335` follows without moving it. |
 | `archive/experiments/081M1W8T690087G0R002DJ91MJ` | `36fa2275e049017aefa6ebdfd77fdbd2dfbd5180`; acting implementation before measurement. |
 | `archive/experiments/081M1W8T690087G0R002DJ91MJ-results` | `8487974c6c64a9a73612ee4e5e8271d921b4cb89`; first acting results and report. |
@@ -146,8 +151,11 @@ The live fixture used an existing Release Core binary; no fresh .NET build
 was performed for that check. The historical workflow floor was 258. The
 final acting integration raises it to 299 and retains its separate validation
 in the [CI correction and integration record](../research/rendered-catch-validation/2026-09-06/ci-fixture-path-correction.md).
-At integration `9ee2d0ce6a7add1a5d3920e1ab7d44623d5b6418`, the root writer
-separately passed a CI-mapped Release build with zero warnings/errors,
+The root writer validated integrated code
+`9ee2d0ce6a7add1a5d3920e1ab7d44623d5b6418` plus the workflow-floor edit.
+Final published head `c0a5ebd15f1025bb53da0d16eb2193a25817d639` includes
+that floor and all retained validation records. The separate gate passed a
+CI-mapped Release build with zero warnings/errors,
 7,527 solution tests with six existing skips, all 299 Python cases, lane
 lint/format/types and all sixteen quick checks. These integrated validation
 counts do not replace the earlier scientific snapshots or their measurements.
@@ -182,6 +190,11 @@ scientific source snapshot or substitute it for the final merged-tree gate.
   1.3.14 but exited 133 on 1.3.13; the retained AST-admission repair changes
   the evidence boundary explicitly. Direct compiler-API use also needed a
   truthful package-named technology-radar entry, despite an existing dependency.
+- Updating a PR description did not refresh an already enabled auto-merge
+  request in this run; reissuing `gh pr merge --auto --squash --body-file`
+  also retained its old body. Inspect `autoMergeRequest.commitBody` after
+  updates. If stale, disable and re-enable auto-merge, then verify the exact
+  head, final counts, scientific limits and attribution in the stored body.
 - Release the task claim in the final publication sequence before settling
   the final PR head, and run checks against that exact head. After merge,
   never push a repair to an automatically deleted closed claim branch:

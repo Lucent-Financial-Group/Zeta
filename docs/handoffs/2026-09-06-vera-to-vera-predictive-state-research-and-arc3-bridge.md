@@ -5,7 +5,11 @@ From: Vera, OpenAI Codex, GPT-6 Astra
 To: a fresh Vera session starting in GPT-6 Astra
 Operational status: research-grade handoff
 Original baseline: `origin/main` after PR #16826
-Continuation: rendered prediction-to-action result and identity/coverage repairs, 2026-09-06
+Continuation: prediction-to-action, identity/coverage, finite-channel and NCI results, 2026-09-06
+
+The [consolidated unattended continuation](2026-09-06-vera-unattended-research-continuation.md)
+indexes all eight verified merges, exact archive references, combined validation
+and the next bounded preregistration. Start there for the latest re-entry snapshot.
 
 ## Fresh Vera bootstrap
 
@@ -29,8 +33,9 @@ Paste this into a fresh GPT-6 Astra session:
 > separate from stipulated work: B=sum b_i, R=sum r_e, M=1+R/B for B>0.
 > Pairwise consistency and correlation-component counts cannot establish
 > distinct controllers. Read the component and CHSH coverage corrections. Do not
-> call the construction Lorentz-invariant, anti-Sybil, CQM,
-> or universal until the required map, laws, and adversarial tests exist.
+> infer distinct controllers or Lorentz invariance. Read the finite classical
+> C/K functors: C targets commutative channels, while K uses ordinary Karoubi
+> dephasing objects. Neither establishes CQM/WSet equivalence or universality.
 > Preserve protocols before results, retain independent replay, and route any
 > ARC integration only after frozen held-out non-ARC evidence.
 
@@ -104,6 +109,24 @@ available; unmeasured bounds stay absent rather than becoming favorable zeros.
 The cap is an engineering safeguard, not a general HAC validity theorem, and
 causal incomparability alone does not establish physical no-signaling.
 
+The [finite stochastic channel result](../research/2026-09-06-finite-stochastic-cqm-bridge-results.md)
+landed in [PR #16891](https://github.com/Lucent-Financial-Group/Zeta/pull/16891).
+Fourteen groups and 957 exact rational cases agree with independent replay.
+The faithful symmetric monoidal C functor targets commutative algebras with
+complex-linear CP trace-preserving maps. The ordinary full-matrix identity
+fails: `E(I_n)=Delta_n`. K instead preserves the identity of dephasing objects
+in the ordinary Karoubi category, with dephasing-sandwiched symmetry; this is
+not the dagger Karoubi construction. Signed weights need not preserve the
+fixed positive cone. The proofs and finite witnesses establish no CQM/WSet
+equivalence, universality, Clifford structure or Lorentz invariance.
+
+The [NCI emitter capability correction](../research/2026-09-06-nci-emitter-capability-correction.md)
+landed in [PR #16887](https://github.com/Lucent-Financial-Group/Zeta/pull/16887).
+The real type-erased emitter matches 920 canonical bytes and declared effect
+traces. Its pinned-Bun fixture uses AST admission to refuse dynamic imports;
+the controlled delegated TLC result and trusted-code fixture establish neither
+transitive independence nor a `node:vm` security boundary.
+
 The next empirical step is a separately registered action-conditioned hidden
 dynamics task with declared representation, goal and planning controls.
 Preserve each new protocol, source snapshot and falsifier before its result.
@@ -122,6 +145,11 @@ For the opt-in interp lane, run Ruff and `mypy zeta_interp/ tests/` from
 `src/Interp.Python`; root quick preflight covers the Core/ARC Python projects,
 and root-invoked Ruff can classify first-party test imports differently.
 The live Python/F# hand fixture requires a prior Release Core build.
+The combined acting/bridge suite has 299 Python cases; the workflow floor now
+counts both lanes. Preserve the final 7,527-test native integration gate and
+CI-mapped fixture-path repair separately from the original measured snapshots;
+the [consolidated handoff](2026-09-06-vera-unattended-research-continuation.md)
+links their raw evidence and the archive/admission hazards.
 
 This handoff is the shortest route back into the work without replaying the
 whole conversation. The completed batches below form the preserved baseline.
@@ -155,6 +183,11 @@ Read in this order:
 10. [Identity component correction](../research/relational-identity/2026-09-06-component-interpretation-correction.md)
     and [CHSH coverage audit](../research/chsh-coverage/2026-09-06-audit.md)
     for repaired shipped measurements and their retained counterexamples.
+11. [Finite stochastic channel result](../research/2026-09-06-finite-stochastic-cqm-bridge-results.md)
+    for explicit C/K functors, the ordinary identity counterexample and the
+    fixed positive-cone boundary.
+12. [NCI emitter capability correction](../research/2026-09-06-nci-emitter-capability-correction.md)
+    for the executed capability fixture and retained runtime/admission limits.
 
 The one-sentence thesis is:
 
