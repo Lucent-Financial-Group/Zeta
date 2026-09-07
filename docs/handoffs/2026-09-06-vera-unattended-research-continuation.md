@@ -5,7 +5,8 @@ From: Vera, OpenAI Codex using GPT-6 Astra
 Operational status: research-grade handoff
 Lifecycle: active
 Scope: continuation of the predictive-state, acting and relational research lanes
-Publication status: drafting snapshot; three final PRs remain pending below
+Work item: 081M1WKKBQ2087G0R00221631M
+Publication status: seven substantive PRs merged; acting PR #16892 still pending
 
 ## Paste-ready bootstrap
 
@@ -22,7 +23,7 @@ Publication status: drafting snapshot; three final PRs remain pending below
 > R=sum r_e, M=1+R/B for B>0. Correlation components do not count controllers.
 > Preserve the declared-cut receipt invariant without calling it Lorentz
 > invariance. Read the finite classical C/K functors and their counterexamples;
-> infer no CQM/WSet equivalence. Recheck pending PRs, combined Interp test
+> infer no CQM/WSet equivalence. Recheck main ancestry, combined Interp test
 > collection, immutable tags and exact input hashes. Retain failed attempts and
 > independent replay; close claims before the final PR head.
 
@@ -36,7 +37,7 @@ updates the next-work boundary without replacing those sources.
 | Record | Earned result and limit |
 | --- | --- |
 | [Passive rendered prediction](../research/2026-09-06-rendered-signal-predictor-results.md) | All three RNNs beat bigram on both held-out renderings; none meets the .01-bit improvement over order-two. Preserve all 102 prediction/detector arm-panels, 120 cost rows and independent seed-41 retraining. |
-| [Rendered catch](../research/2026-09-06-rendered-catch-actions-results.md) | Frozen order-two catches 74.74%-75.03% versus approximately 50% for controls on three structured panels. All 20,480 behavioral episodes and 1,800 cost episodes replay exactly. Wall/allocation ratios 0.987079/0.999461 meet the cap; they establish no speed advantage. Representation, goal and action meanings are supplied. |
+| [Rendered catch](../research/2026-09-06-rendered-catch-actions-results.md) | Frozen order-two catches 74.74%-75.03% versus approximately 50% for bigram, last-beacon and fair baselines on three structured panels; known-lag-two matches order-two. All 20,480 behavioral episodes and 1,800 cost episodes replay exactly. Wall/allocation ratios 0.987079/0.999461 meet the cap; they establish no speed advantage. Representation, goal and action meanings are supplied. |
 | [Relational identity](../research/relational-identity/2026-09-06-results.md) | The invariant is actor-bound authenticated receipt content, causal order and the signed claim map on a declared closed cut. All 288 coordinate transports replay. Authentication and conditional innovation bounds are assumptions; no physical metric or boost action was constructed. |
 | [Component correction](../research/relational-identity/2026-09-06-component-interpretation-correction.md) | `correlationComponentCount` names the shipped statistic. Shared-state XOR recodings can create singleton components; an added bridge can reduce the count. Components neither identify controllers nor provide a monotone liveness rank. |
 | [CHSH coverage correction](../research/chsh-coverage/2026-09-06-audit.md) | Missing setting buckets refuse calibrated inference; the minimum bucket caps effective sample size. Unmeasured public bounds remain absent. This is an engineering safeguard, not a HAC theorem, physical diagnosis or proof of no-signaling. |
@@ -58,9 +59,9 @@ CQM/WSet equivalence, universality, Clifford structure or Lorentz invariance.
 
 ## Publication snapshot
 
-GitHub reported the following states during drafting on 2026-09-06. Open PRs
-are preserved work, not verified main. The coordinating writer owns final
-CI, merge-ancestry proofs and index updates; refresh this table at publication.
+Seven merge commits below were verified as ancestors of refreshed main
+`fa6918b9e9204183628594a4811346ec128c624c` on 2026-09-07 UTC. The final acting
+PR remains pending; final handoff publication waits for its verified merge.
 
 | PR | Observed state | Contribution |
 | --- | --- | --- |
@@ -69,9 +70,21 @@ CI, merge-ancestry proofs and index updates; refresh this table at publication.
 | [#16869](https://github.com/Lucent-Financial-Group/Zeta/pull/16869) | Merged | CHSH coverage refusal and public unmeasured state. |
 | [#16871](https://github.com/Lucent-Financial-Group/Zeta/pull/16871) | Merged | Correlation-component API and caller interpretation. |
 | [#16878](https://github.com/Lucent-Financial-Group/Zeta/pull/16878) | Merged | Fixed sampled steady-state allocation check plus retained-copy discriminator; no inference-source or experimental-receipt change. |
-| [#16887](https://github.com/Lucent-Financial-Group/Zeta/pull/16887) | Open; pending | NCI emitter capability fixture and its compatibility/audit corrections. |
-| [#16891](https://github.com/Lucent-Financial-Group/Zeta/pull/16891) | Open; pending | Finite stochastic channel contract, implementations, receipts and reviews. |
+| [#16887](https://github.com/Lucent-Financial-Group/Zeta/pull/16887) | Merged | NCI emitter capability fixture and its compatibility/audit corrections. |
+| [#16891](https://github.com/Lucent-Financial-Group/Zeta/pull/16891) | Merged | Finite stochastic channel contract, implementations, receipts and reviews. |
 | [#16892](https://github.com/Lucent-Financial-Group/Zeta/pull/16892) | Open; pending | Registered rendered-catch result, full replay and verdict. |
+
+Verified merge commits, in the same order as the merged rows:
+
+```text
+16857 af444a679d4e08a6b3b69aa9be98d4a63b1f5f0f
+16858 d9787b016bc2ccc9a1d86bf3ab67a6df1f8df5e0
+16869 5aa54ebf9e4f9c269651eee8ef5c3b7b874dab55
+16871 113fdbf0ea7a88c9d234ea6655b3023681d1cea9
+16878 09117d8b505158f2a0deec9d7d193334e3e5f269
+16887 4b9906d7195233e1a5b6540904daf21bb66d446a
+16891 fa6918b9e9204183628594a4811346ec128c624c
+```
 
 ## Immutable re-entry references
 
@@ -118,6 +131,20 @@ and goals remain explicit. This is a proposed next experiment, not a completed
 preregistration, demonstrated planning result or authorization to reinterpret
 public ARC examples as held-out evidence.
 
+## Combined Interp evidence
+
+The [combined validation record](../research/rendered-catch-validation/2026-09-06/acting-bridge-combined-validation.json)
+records a local combined validation checkout
+`a8838542077e080c00963844422a1190c436cacd`: 299 JUnit cases, zero failures,
+errors or skips, and one existing HookedTransformer warning. Pytest completed
+in 104.92 seconds; Ruff, formatting, mypy and the live FSI fixture passed.
+The live fixture used an existing Release Core binary; no fresh .NET build
+was performed for that check. The historical workflow floor was 258. The
+final acting integration raises it to 299 and retains its separate validation
+in the [acting index](../research/rendered-catch-validation/2026-09-06/README.md).
+Do not present the earlier local integration as a remotely preserved
+scientific source snapshot or substitute it for the final merged-tree gate.
+
 ## Re-entry hazards already encountered
 
 - Work only in a writer-owned clone with trusted local mise configuration,
@@ -129,6 +156,12 @@ public ARC examples as held-out evidence.
   Recount the combined merged suite when setting `INTERP_MIN_TESTS` in
   [interp-lane.yml](../../.github/workflows/interp-lane.yml): taking the maximum
   of separate branch floors does not count both branches' new tests.
+- CI-mapped source paths are not runtime fixture locations. The acting test
+  helper's `__SOURCE_DIRECTORY__` became `/_/` under
+  `ContinuousIntegrationBuild=true`. Resolve test fixtures from immutable
+  `AppContext.BaseDirectory` and a repository marker, then retain exact input
+  hash admission. Validate the mapped build itself. This repair changes the
+  test harness, outside the archived 23-file scientific manifest.
 - Preserve the compiler exit-139 and TLC pool-file/unpickle failures alongside
   isolated unchanged recoveries and the final full gates. The bridge's full
   retry passed 7,515 tests with six skips; the acting snapshot passed 7,523
