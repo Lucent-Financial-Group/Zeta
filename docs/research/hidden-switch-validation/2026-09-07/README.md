@@ -390,3 +390,9 @@ not reformatted to make the documentation check pass.
 The [corrected final quick preflight](root-main-publication-quick-attempt-2.log)
 passed all sixteen checks. The publication push additionally runs the mandatory
 pre-push hook on the exact committed head.
+
+The [independent final recovery review](../../2026-09-07-hidden-switch-final-recovery-review.md)
+accepts the full seven-project XML outcomes, 1,955 selected source bindings,
+81 selected DLL fingerprints, unchanged original study records and figure.
+It preserves each tested/reviewed head and the first failed attempt as
+separate evidence; it performs no new test or scientific execution.
