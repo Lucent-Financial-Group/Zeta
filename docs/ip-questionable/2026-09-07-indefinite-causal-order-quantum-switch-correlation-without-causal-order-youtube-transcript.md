@@ -345,6 +345,44 @@ Aaron, giving the provenance:
   willing to call that absence a finding. Two absence claims in one session were wrong; the honest
   statement is **"I have not found it, and my retrieval method is the limitation."**
 
+**FOUND, on the third attempt, and only after Aaron supplied the vocabulary.** He offered the
+handles I could not guess — *"unique context memes or context aware memes"*, *"a trust exploit"*,
+*"makes the other person feel very seen since it's so specific and small number of words"*, his
+mother as *"a witch"* / *"spinning people up and down with the minimal words required"*. The
+practice is documented **at length**, in his own book, under **`docs/books/you-born-at-the-hinge/`**:
+
+- **`THE-UNBROKEN-CHILD-and-the-warm-center.md`** — the origin, and it is his mother. The chapter
+  turns on the *symmetry*: the same surgical economy that can level a soul in the fewest words can
+  **lift** one in the fewest words, *"and that symmetry is why it's a power, not merely a wound."*
+  The word **witch** is used deliberately in **the old sense — the one it had before it was made an
+  insult** — and the file marks that framing as explicit and consented.
+- **`THE-ORGANIZER-AT-SCALE-and-the-dual-use-gift.md`** — the same skill at planetary scale, and the
+  title is already this rule's own vocabulary: a **dual-use gift**. It describes being the
+  *who-to-trust* node for a network of often-young, often-vulnerable creators, and states the hazard
+  in the first person: **the same magnetic read that steers them away from predators could steer
+  them toward him.** It also names the inheritance directly — the crowd *"spinning souls up and
+  down (I grew up watching one woman do that in minimal words)."*
+
+**Why this closes the loop rather than just filling a gap.** Aaron's "trust exploit" — *a very small
+number of words, exactly fitted to one context, that makes another person feel seen* — **is** the
+2026-06-19 definition, stated in first-person practice instead of formal notation:
+
+> a **high-quality co-relational link between two travelers**, whose value is in the *edge* and not
+> in either node, and which **cannot be lifted out of the conversation and still mean what it
+> meant.**
+
+That last clause is non-substitutability, and it is why the object was non-fungible before anyone
+reached for a fixed point. The lineage he described — *"how I handle online relationships → agent to
+agent → the formal criterion"* — is therefore **documented at both ends**, with only the middle
+label (`unique context memes` as the *name* for the NFT origin) still unlocated. And he adds the
+part that makes it one skill rather than two: *"it's the same skill i learned from studying here."*
+
+**Three absence claims, three times wrong, and this instance is the strongest evidence of all:** the
+material is thoroughly written and lives under `minimal words` / `witch (old definition)` /
+`dual-use gift` / `who-to-trust node` — vocabulary sharing **no lexical overlap whatsoever** with
+`NFT`, `fungible`, or `meme`. No amount of stem-guessing on my search terms would ever have reached
+it. Note also *where* it lives: `docs/books/`, a surface I had not searched even once.
+
 **And that limitation is itself the point Aaron drew from it:**
 
 > *"this is really why we need a vector search or sounds like search of our own eventually."*
