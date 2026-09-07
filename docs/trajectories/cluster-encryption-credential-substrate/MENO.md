@@ -276,6 +276,12 @@ assume the number.
    is unmeasured, not present. `/dev/tpmrm0` on the probe is
    not a capture. Does not invent a capture. Does not invent
    an integrate decision.
+   Env integrate takes named probe (`081M1WP0C7B087G0R000VK9E0V`):
+   `integrateAtSetupFromEnv` takes `NamedHardwareProbe | null`.
+   Null is unmeasured, not present. `/dev/tpmrm0` on the probe
+   is not a capture. Overlay passes the probe through. Inner
+   `integrateAtSetup` still takes a capture. Does not invent
+   an integrate decision.
 7. extraContainer sidecar — later, **same commit as the
    sidecar**, and only for the Shamir kind path until the
    emulator job replaces it. `valuesObject` only. Do not fork

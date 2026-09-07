@@ -1,7 +1,13 @@
 import { describe, expect, test } from "bun:test";
 import { UNSEAL_THRESHOLD } from "./vault-unsealer.ts";
 import { ELF_INTERP_GLIBC_X86_64, TPM_CHAR_DEVICE } from "./bao-load-site.ts";
-import { emptyCapture, pickSealOracleFromCapture, type HostHardwareCapture } from "./host-seal-profile.ts";
+import {
+  emptyCapture,
+  hostCaptureFromNamedProbe,
+  pickSealOracleFromCapture,
+  type HostHardwareCapture,
+  type NamedHardwareProbe,
+} from "./host-seal-profile.ts";
 import {
   NIXOS_PKCS11_MODULE_PATH,
   USB_PKCS11_MODULE_POINTER,
@@ -36,6 +42,32 @@ const METAL: HostHardwareCapture = emptyCapture({
 
 function capture(partial: Partial<HostHardwareCapture>): HostHardwareCapture {
   return emptyCapture({ ...METAL, ...partial });
+}
+
+function namedTpmPresent(): NamedHardwareProbe {
+  return {
+    os: "nixos",
+    tpm2: "present",
+    tpmDeviceNode: TPM_CHAR_DEVICE,
+    yubiHsm2: "not-asked",
+    smartCardReaderAttached: false,
+    yubikeyDetected: false,
+    pkcs11ModuleOnDisk: false,
+    smartcardHsm: false,
+  };
+}
+
+function namedMetalAbsent(): NamedHardwareProbe {
+  return {
+    os: "nixos",
+    tpm2: "absent",
+    tpmDeviceNode: null,
+    yubiHsm2: "absent",
+    smartCardReaderAttached: false,
+    yubikeyDetected: false,
+    pkcs11ModuleOnDisk: false,
+    smartcardHsm: false,
+  };
 }
 
 describe("integrateAtSetup — PKCS#11 only when the device is accessible", () => {
@@ -567,29 +599,31 @@ describe("parsePathRequest — named, not inferred from tpmrm0", () => {
   });
 });
 
-describe("integrateAtSetupFromEnv — request from env, capture injected", () => {
+describe("integrateAtSetupFromEnv — request from env, probe injected", () => {
   test("missing request is unmeasured even when TPM is present — not auto", () => {
-    const tpmPresent = capture({ tpm2: "present" });
-    expect(integrateAtSetupFromEnv({}, tpmPresent)).toEqual({ ok: true, decision: null });
-    const auto = integrateAtSetup({ requested: "auto" }, tpmPresent);
+    const probe = namedTpmPresent();
+    expect(integrateAtSetupFromEnv({}, probe)).toEqual({ ok: true, decision: null });
+    const auto = integrateAtSetup({ requested: "auto" }, hostCaptureFromNamedProbe(probe));
     expect(auto.ok).toBe(true);
     if (!auto.ok) return;
     expect(auto.path).toBe("pkcs11-tpm");
   });
 
   test("named pkcs11-tpm with present TPM integrates; tpmrm0 still refuses", () => {
-    const tpmPresent = capture({ tpm2: "present" });
-    const named = integrateAtSetupFromEnv({ [UNSEAL_REQUEST_ENV_KEY]: "pkcs11-tpm" }, tpmPresent);
+    const probe = namedTpmPresent();
+    const named = integrateAtSetupFromEnv({ [UNSEAL_REQUEST_ENV_KEY]: "pkcs11-tpm" }, probe);
     expect(named.ok).toBe(true);
     if (!named.ok) return;
-    expect(named.decision).toEqual(integrateAtSetup({ requested: "pkcs11-tpm" }, tpmPresent));
+    expect(named.decision).toEqual(
+      integrateAtSetup({ requested: "pkcs11-tpm" }, hostCaptureFromNamedProbe(probe)),
+    );
     expect(
-      integrateAtSetupFromEnv({ [UNSEAL_REQUEST_ENV_KEY]: TPM_CHAR_DEVICE }, tpmPresent),
+      integrateAtSetupFromEnv({ [UNSEAL_REQUEST_ENV_KEY]: TPM_CHAR_DEVICE }, probe),
     ).toEqual({ ok: false, reason: "unknown-request" });
   });
 
-  test("named request still refuses when the injected capture has no device", () => {
-    const named = integrateAtSetupFromEnv({ [UNSEAL_REQUEST_ENV_KEY]: "pkcs11-tpm" }, METAL);
+  test("named request still refuses when the named look found no device", () => {
+    const named = integrateAtSetupFromEnv({ [UNSEAL_REQUEST_ENV_KEY]: "pkcs11-tpm" }, namedMetalAbsent());
     expect(named.ok).toBe(true);
     if (!named.ok) return;
     expect(named.decision).toEqual({
@@ -597,5 +631,29 @@ describe("integrateAtSetupFromEnv — request from env, capture injected", () =>
       reason: "requested-pkcs11-not-accessible",
       requested: "pkcs11-tpm",
     });
+  });
+
+  test("null probe is unmeasured, not present", () => {
+    const named = integrateAtSetupFromEnv({ [UNSEAL_REQUEST_ENV_KEY]: "pkcs11-tpm" }, null);
+    expect(named.ok).toBe(true);
+    if (!named.ok) return;
+    expect(named.decision).toEqual({
+      ok: false,
+      reason: "probe-did-not-run",
+      requested: "pkcs11-tpm",
+    });
+  });
+
+  test("tpmrm0 on the probe is not present", () => {
+    const look: NamedHardwareProbe = { ...namedTpmPresent(), tpm2: "indeterminate" };
+    const named = integrateAtSetupFromEnv({ [UNSEAL_REQUEST_ENV_KEY]: "pkcs11-tpm" }, look);
+    expect(named.ok).toBe(true);
+    if (!named.ok) return;
+    expect(named.decision).toEqual({
+      ok: false,
+      reason: "probe-did-not-run",
+      requested: "pkcs11-tpm",
+    });
+    expect(look.tpmDeviceNode).toBe(TPM_CHAR_DEVICE);
   });
 });

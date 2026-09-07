@@ -567,6 +567,9 @@ Overlay joins take named probe
 (`081M1WMR8KD087G0R003HZYY14`);
 null is unmeasured, not present;
 `/dev/tpmrm0` is not a capture.
+Env integrate takes named probe
+(`081M1WP0C7B087G0R000VK9E0V`);
+overlay passes the probe through.
 glibc-host-into-musl-image is not a
 module; Application.yaml stays Shamir.
 
