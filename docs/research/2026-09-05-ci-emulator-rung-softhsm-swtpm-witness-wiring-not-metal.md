@@ -341,12 +341,19 @@ Frost look with injected effects (`081M1WYXT4S087G0R002K1TK4Y`):
 live look. Does not default to `realProbeEffects`.
 `/dev/tpmrm0` is not `present`. Does not call this from
 `zeta-install.sh`. Does not change ISO bun `probe: null`.
+Overlay joins take frost look (`081M1XYSWV0087G0R000ZFKBTD`):
+`planSetupFromFrostLookEnv` / Argv / Conf. Maps via
+`namedProbeFromFrostLook` then the named-bao overlay joins.
+Null effects is unmeasured, not a live look. Does not
+default to `realProbeEffects`. Result joins stay
+result-only. Does not call this from `zeta-install.sh`.
+Does not change ISO bun `probe: null`.
 
 1. Metal: `seal "pkcs11"` in Application.yaml still waits.
    Same commit as a **reachable** module: same-libc image
    (glibc OpenBao that can load the host `.so`) or option D
    host `bao`. Dual-vendor per node is ZetaFS k-of-n, not
-   two active OpenBao seals. Do not treat this look as
+   two active OpenBao seals. Do not treat this look join as
    that commit. Wiring this look on the live ISO is later
    and still must not infer from `/dev/tpmrm0`. Bun JSON
    `probe` stays null until that wiring exists. Does not
