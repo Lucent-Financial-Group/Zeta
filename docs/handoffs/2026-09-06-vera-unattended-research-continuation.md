@@ -89,14 +89,18 @@ Verified merge commits, in the same order as the merged rows:
 ## Immutable re-entry references
 
 Resolve tags to commits, and compare the receipt's own admitted file bytes.
-Annotated tag object IDs differ from their peeled commit IDs. Squash merging
+Resolve annotated tags through their peeled commit IDs; a lightweight tag
+points directly to its commit and has no separate peeled entry. Squash merging
 need not retain branch ancestry, which is why these archives remain necessary.
+If a named tag is absent in a fresh writer clone, fetch that exact remote tag
+with `git fetch origin tag <name>` before receipt admission. Do not recreate
+or move it from current main.
 
-| Tag under `refs/tags/` | Peeled commit and purpose |
+| Tag under `refs/tags/` | Resolved commit and purpose |
 | --- | --- |
 | `archive/experiments/081M1W41PKD087G0R0024JFXHT` | `7f8d31e37f9d03acd0b4fd6f1643b4b3f01207de`; passive source/result ancestry. Its measured source is `468772e59b6a587469fd7fd576d0bd141d421af0`. |
 | `archive/experiments/081M1W41PKD087G0R0024JFXHT-native-validation` | `db9bb96d8b50489c0d5672d8ce579a083660cb24`; original passive native gate. |
-| `archive/relational-identity-20260906-source-v4` | `159f7b0e65245d4ffae9ecbfe0702b1b7e987b2c`; identity measured source. Keep v1-v3 and their defect history unchanged. |
+| `archive/relational-identity-20260906-source-v4` | `159f7b0e65245d4ffae9ecbfe0702b1b7e987b2c`; lightweight tag for identity measured source. Keep v1-v3 and their defect history unchanged. |
 | `archive/experiments/081M1W8T690087G0R002DJ91MJ-registration` | `8e08b5424feb2a80d80c1807e403c52ab34e79d1`; acting registration. Clarification `1851a8bf5f5c3a7998cbe64506d9a88383930335` follows without moving it. |
 | `archive/experiments/081M1W8T690087G0R002DJ91MJ` | `36fa2275e049017aefa6ebdfd77fdbd2dfbd5180`; acting implementation before measurement. |
 | `archive/experiments/081M1W8T690087G0R002DJ91MJ-results` | `8487974c6c64a9a73612ee4e5e8271d921b4cb89`; first acting results and report. |
@@ -141,7 +145,12 @@ in 104.92 seconds; Ruff, formatting, mypy and the live FSI fixture passed.
 The live fixture used an existing Release Core binary; no fresh .NET build
 was performed for that check. The historical workflow floor was 258. The
 final acting integration raises it to 299 and retains its separate validation
-in the [acting index](../research/rendered-catch-validation/2026-09-06/README.md).
+in the [CI correction and integration record](../research/rendered-catch-validation/2026-09-06/ci-fixture-path-correction.md).
+At integration `9ee2d0ce6a7add1a5d3920e1ab7d44623d5b6418`, the root writer
+separately passed a CI-mapped Release build with zero warnings/errors,
+7,527 solution tests with six existing skips, all 299 Python cases, lane
+lint/format/types and all sixteen quick checks. These integrated validation
+counts do not replace the earlier scientific snapshots or their measurements.
 Do not present the earlier local integration as a remotely preserved
 scientific source snapshot or substitute it for the final merged-tree gate.
 
