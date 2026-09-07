@@ -303,6 +303,10 @@ Argv/conf overlay joins read unseal request (`081M1WHKEEQ087G0R0002B3SPG`):
 `planSetupFromNamedBaoElfArgv` and `planSetupFromNamedBaoElfConf`
 take the request from env. Capture stays injected. Missing is
 unmeasured, not `auto`. Does not add the request to ESP conf.
+Named probe snapshot becomes host capture (`081M1WK36Y1087G0R003WT976Y`):
+`hostCaptureFromNamedProbe`. `/dev/tpmrm0` is not `present`.
+A YubiKey is not CardContact. A driver on disk is not attached
+YubiHSM. Null is unmeasured, not absent.
 
 1. Metal: `seal "pkcs11"` in Application.yaml still waits.
    Same commit as a **reachable** module: same-libc image

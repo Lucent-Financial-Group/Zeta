@@ -713,6 +713,23 @@ Workitem: `081M1WHKEEQ087G0R0002B3SPG`.
 - Does not invent an integrate decision. Does not expand
   `ZetaFirstbootRole`. Does not edit Application.yaml.
 
+## 2026-09-07 — named probe snapshot becomes host capture (Riven)
+
+Aaron: detect HSM/TPM at setup. Overlay joins read the request
+from env. Capture was still invented in tests.
+
+Consumer: `src/Core.TypeScript/cluster/host-seal-profile.ts`
+(`hostCaptureFromNamedProbe`).
+Workitem: `081M1WK36Y1087G0R003WT976Y`.
+
+- `/dev/tpmrm0` is not `present`. A YubiKey / CCID reader is
+  not CardContact SmartCard-HSM. A PKCS#11 driver on disk is
+  not an attached YubiHSM. Null is unmeasured, not absent.
+  Does not import frost-hardware-probe. Does not call
+  `integrateAtSetup`.
+- Does not invent an integrate decision. Does not expand
+  `ZetaFirstbootRole`. Does not edit Application.yaml.
+
 ## 2026-09-04 — production-hardening review (Riven)
 
 Aaron asked to production-harden the CA, name the unseal startup, use
