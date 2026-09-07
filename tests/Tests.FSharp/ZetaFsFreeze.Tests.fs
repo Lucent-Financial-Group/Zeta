@@ -1234,7 +1234,10 @@ let ``Journaled freeze crash during leaf put leaves extra garbage and is not rea
                 |> Array.filter (fun p ->
                     p.IndexOf("FORMAT", StringComparison.Ordinal) < 0
                     && p.IndexOf("ROOT", StringComparison.Ordinal) < 0
-                    && p.IndexOf("bindings", StringComparison.Ordinal) < 0)
+                    && p.IndexOf("bindings", StringComparison.Ordinal) < 0
+                    && p.IndexOf("posix-meta", StringComparison.Ordinal) < 0
+                    && p.IndexOf("policy", StringComparison.Ordinal) < 0
+                    && p.IndexOf("symlinks", StringComparison.Ordinal) < 0)
             Assert.Equal(logPath, freezeWrites.[0])
             ZetaFsFreeze.dispose volume
             let reopened = ZetaFsFreeze.createManualStream store mutbuf None

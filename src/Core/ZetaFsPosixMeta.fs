@@ -6,8 +6,9 @@ open System.Text
 
 /// POSIX metadata satellite (PR13). Display mtime/ctime are unix-ns
 /// attribute data, not fold keys. Auto-stamps come from the injected
-/// `ISimulationEnvironment` clock. Never `DateTime.UtcNow`. `utimensat`
-/// writes caller-supplied unix-ns. atime is view-local and is not stored.
+/// `ISimulationEnvironment` clock. Never the ambient wall clock.
+/// `utimensat` writes caller-supplied unix-ns. atime is view-local
+/// and is not stored.
 module ZetaFsPosixMeta =
 
     /// S_IFREG | 0644
