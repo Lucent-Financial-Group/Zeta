@@ -1740,6 +1740,18 @@ module ZetaFsFreeze =
             | Some state -> ZetaFsNamespace.liveResolve parent name state.Bindings
             | None -> None)
 
+    /// Title at `at` (inclusive). Tombstone does not erase prior Live.
+    let resolveAt
+        (volume: Volume)
+        (parent: ZetaFsNamespace.EntityId)
+        (name: byte[])
+        (at: Versionstamp)
+        : ZetaFsNamespace.BindingTarget option =
+        lock volume.Gate (fun () ->
+            match !volume.Ns with
+            | Some state -> ZetaFsNamespace.resolveAt parent name at state.Bindings
+            | None -> None)
+
     /// Journal for a crash-mid-sweep. Owned by the volume, not invented by
     /// the caller. `reclaimSweep` is the only apply door that uses it.
     let sweepJournalPath (volume: Volume) = journalPath volume.StoreDir

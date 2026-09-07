@@ -361,6 +361,45 @@ let ``unlinkFile tombstone makes liveResolve None after reopen`` () =
         FileSystem.Reset()
 
 [<Fact>]
+let ``resolveAt prior phase still sees Live after unlink`` () =
+    ensureHasher ()
+    FileSystem.Register(InMemoryFileSystem())
+    let store = "/freeze-resolve-at"
+    let mutbuf = ZetaFsMutbuf.create store ZetaFsMutbuf.Coherence.Shared
+    let volume = ZetaFsFreeze.createManualStream store mutbuf None
+    let name = [| 99uy |]
+    let liveStamp = Versionstamp.ofInt64 0L
+
+    try
+        match volume.Root with
+        | None -> Assert.Fail("Volume.Root must exist")
+        | Some root ->
+            match ZetaFsFreeze.bindFile volume name with
+            | Error e -> Assert.Fail(sprintf "bindFile failed: %A" e)
+            | Ok id ->
+                match ZetaFsFreeze.unlinkFile volume name with
+                | Error e -> Assert.Fail(sprintf "unlinkFile failed: %A" e)
+                | Ok() ->
+                    match ZetaFsFreeze.liveResolve volume name with
+                    | Some _ -> Assert.Fail("liveResolve must be None after unlink")
+                    | None -> ()
+                    match ZetaFsFreeze.resolveAt volume root name liveStamp with
+                    | Some(ZetaFsNamespace.Live prior) ->
+                        Assert.Equal(0, ZetaFsNamespace.EntityId.compare id prior)
+                    | other -> Assert.Fail(sprintf "resolveAt Live stamp must be Live, got %A" other)
+                    ZetaFsFreeze.dispose volume
+                    let reopened = ZetaFsFreeze.createManualStream store mutbuf None
+                    try
+                        match ZetaFsFreeze.resolveAt reopened root name liveStamp with
+                        | Some(ZetaFsNamespace.Live prior) ->
+                            Assert.Equal(0, ZetaFsNamespace.EntityId.compare id prior)
+                        | other -> Assert.Fail(sprintf "resolveAt after reopen must be Live, got %A" other)
+                    finally
+                        ZetaFsFreeze.dispose reopened
+    finally
+        FileSystem.Reset()
+
+[<Fact>]
 let ``bindName refuses a directory cycle and does not persist it`` () =
     ensureHasher ()
     FileSystem.Register(InMemoryFileSystem())
