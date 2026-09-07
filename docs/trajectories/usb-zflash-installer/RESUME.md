@@ -560,6 +560,9 @@ request (`081M1WHKEEQ087G0R0002B3SPG`)
 from `ZETA_UNSEAL_REQUEST`; capture stays
 injected; does not add the request to
 ESP conf.
+Named probe snapshot becomes host
+capture (`081M1WK36Y1087G0R003WT976Y`);
+`/dev/tpmrm0` is not `present`.
 glibc-host-into-musl-image is not a
 module; Application.yaml stays Shamir.
 
