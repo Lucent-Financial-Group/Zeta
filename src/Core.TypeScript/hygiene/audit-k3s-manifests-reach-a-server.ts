@@ -135,16 +135,20 @@ export const MIN_EXPECTED_HOSTS = 2;
 export const ACKNOWLEDGED: ReadonlyMap<string, string> = new Map([
   [
     "worker-gpu",
-    "nvidia-device-plugin + local-path-provisioner declared on a role=agent node. " +
-      "local-path-provisioner is ALSO declared on control-plane, so that one is dead weight " +
-      "rather than a gap. nvidia-device-plugin is NOT — it is declared nowhere else, and no " +
-      "ArgoCD Application exists, so GPUs are never advertised to the scheduler. " +
-      "LIFTS WHEN the device plugin is declared by a server (or by an Application).",
+    "local-path-provisioner only, and it is DEAD WEIGHT rather than a gap: the same manifest " +
+      "is declared on control-plane (role=server), where it is actually applied. The real " +
+      "defect this audit was built for — nvidia-device-plugin declared ONLY here, on an agent, " +
+      "so GPUs were never advertised to the scheduler — is FIXED in this same change: the " +
+      "DaemonSet is now declared on the control plane, whose deploy controller can apply it, " +
+      "and its nodeSelector places it on the GPU nodes. " +
+      "LIFTS WHEN local-storage.nix is split into its node-level half (systemd.tmpfiles, needed " +
+      "on every node) and its cluster-level half (the manifest, server-only) — the same " +
+      "node/cluster split this whole class comes from.",
   ],
   [
     "worker-template",
-    "The cookie-cutter this defect is copied FROM. Fixing worker-gpu without this one would " +
-      "reintroduce the bug on the next node provisioned. LIFTS WITH worker-gpu.",
+    "Same single remaining entry as worker-gpu, for the same reason — this is the cookie-cutter " +
+      "it is copied from. LIFTS WITH worker-gpu.",
   ],
 ]);
 
