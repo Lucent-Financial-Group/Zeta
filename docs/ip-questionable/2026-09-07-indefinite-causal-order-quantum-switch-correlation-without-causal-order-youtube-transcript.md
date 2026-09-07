@@ -82,7 +82,7 @@ refusal to read a probability as a fact about the world).
 
 ---
 
-## Where this lands in our code — SoftValue / SoftEmu / AmplitudeEmu / Q#
+## Where this lands in our code — the SoftValue, SoftEmu, AmplitudeEmu and Q# surfaces
 
 Aaron, immediately after the two framings above:
 
