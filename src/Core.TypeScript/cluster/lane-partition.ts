@@ -705,7 +705,31 @@ export function laneImages(model: PartitionModel, lane: Lane): readonly string[]
 export function laneRootExclude(model: PartitionModel, lane: Lane): string {
   const members = new Set(lane.members);
   const nonMembers = model.roster.filter((r) => !members.has(r.name)).map((r) => `${r.dir}/Application.yaml`);
-  const deferred = excludeGlobDirs(DEFAULT_ROOT_DEV_CATALOG.excludeGlob).map((dir) => `${dir}/Application.yaml`);
+
+  // A LANE NEVER DEFERS ITS OWN MEMBER, and this subtraction is the whole reason
+  // the line below is not a plain union. `DEFAULT_ROOT_DEV_CATALOG.excludeGlob` is
+  // the DEV/CI root's deferral list -- it says what that one lane does not stand
+  // up. Unioning it into every lane's exclude silently promotes a dev-lane
+  // deferral into a GLOBAL one, so an Application deferred for the dev lane's
+  // budget could never be stood up by ANY lane, including a lane built for the
+  // express purpose of testing it.
+  //
+  // CAUGHT 2026-09-07, and it was self-inflicted: `game-hosting/gmod/**` joined
+  // the dev catalog's excludeGlob that same day to make the dev lane's memory
+  // fit, on Aaron's "we can remove gmod and test it in its own lane". Without
+  // this filter that change did the opposite of what it was asked to do --
+  // `--lane lane-2 --root-exclude` emitted a glob containing
+  // `game-hosting/gmod/Application.yaml` while lane-2's own member list contained
+  // `gmod`. The lane would have come up green having applied everything EXCEPT
+  // the one Application it exists to exercise, which is the vacuity class in its
+  // purest form: a test that cannot fail because its subject was never present.
+  const memberDirs = new Set(
+    model.roster.filter((r) => members.has(r.name)).map((r) => `${r.dir}/Application.yaml`),
+  );
+  const deferred = excludeGlobDirs(DEFAULT_ROOT_DEV_CATALOG.excludeGlob)
+    .map((dir) => `${dir}/Application.yaml`)
+    .filter((relPath) => !memberDirs.has(relPath));
+
   const excluded = [...new Set([...nonMembers, ...deferred])].sort(stringCompare);
   return `{${excluded.join(",")}}`;
 }
