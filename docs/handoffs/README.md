@@ -37,11 +37,12 @@ Current:
   to pairwise relational memory, anti-Sybil identity, CQM, Clifford, and the soft/amplitude stack.
   Continuation results retain order-two after the rendered predictor comparison and formalize
   declared-cut memory invariance with conditional entropy and pairwise workload limits.
-  Ends with separately preregistered predictor and identity tasks and the gates required before
-  any ARC-AGI-3 policy integration.
+  Includes the registered rendered-catch result, identity component and CHSH coverage repairs,
+  and the gates required before any ARC-AGI-3 policy integration.
   The rendered predictor now has independently replayed results: all RNNs beat bigram,
-  none meets the stronger order-two criterion, and the simpler control is retained for
-  a separately registered action loop.
+  none meets the stronger order-two criterion. The subsequent supplied-goal catch trial
+  passes every registered return/cost condition with exact full replay; learned perception,
+  action-conditioned dynamics and planning remain separate future experiments.
 - `vera-qsharp-verification-package.txt` — the Q# verification hand-off (brief REVISION 2 +
   claim-bearing sources + known-answer table). Vera's verdict lines remain hers to write.
 - `kestrel-shape-validation-bundle.txt` — the faithful-renderer port bundle (sources + cartridges
