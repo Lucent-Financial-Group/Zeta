@@ -78,5 +78,11 @@ TypeScript checking passes with no diagnostics.
 The initial direct-commit query was refined to the original PR query path
 before source review/publication. Both final focused tests and the live
 read-only after check were repeated against that PR-scoped implementation.
-The complete quick gate and independent final review remain pending at this
-source-review checkpoint; their outcomes will be retained before publication.
+All sixteen quick-preflight checks pass. Independent review by the root Vera
+agent accepted source commit `04a61eeb0d756b645a391f0593f0749eab7b7b49`
+with no actionable correctness finding: the review covered exact PR/head
+binding on every page, context/count/cursor completeness, unmeasured failures,
+legacy-context handling and the executable second-page regression. Its sole
+formatting observation, indentation of the typed-number assertion, was
+corrected before publication; no test meaning or runtime source changed.
+The review did not rerun experiments or make a statistical claim.

@@ -240,7 +240,7 @@ if (args[0] === "pr" && args[1] === "list") {
         expect(calls.length).toBe(3);
         expect(calls[1]).not.toContain("endCursor=MTAw");
         expect(calls[2]).toContain("endCursor=MTAw");
-      expect(calls[1]![calls[1]!.indexOf("number=16911") - 1]).toBe("-F");
+        expect(calls[1]![calls[1]!.indexOf("number=16911") - 1]).toBe("-F");
         expect(calls.flat().some((arg) => arg.includes("/actions/workflows/"))).toBe(false);
       } finally {
         for (const file of readdirSync(bin)) unlinkSync(join(bin, file));
