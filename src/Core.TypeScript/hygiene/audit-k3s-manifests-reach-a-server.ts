@@ -35,7 +35,7 @@
 // imported module is not seen. It is a proxy for the eval, chosen because it can run everywhere.
 // The eval above is the ground truth and is quoted in the finding so a reader can re-run it.
 
-import { readFileSync, readdirSync, existsSync } from "node:fs";
+import { readFileSync, readdirSync } from "node:fs";
 import { join } from "node:path";
 
 export const HOSTS_DIR = "full-ai-cluster/nixos/hosts";
@@ -59,34 +59,44 @@ export function parseImports(text: string): readonly string[] {
 }
 
 export function moduleSetsManifests(dir: string, name: string): boolean {
-  const p = join(dir, name);
-  try {
-    return MANIFEST_SETTER.test(readFileSync(p, "utf-8"));
-  } catch {
-    return false;
-  }
+  const t = readOrNull(join(dir, name));
+  return t !== null && MANIFEST_SETTER.test(t);
 }
 
 export function moduleDeclaresServer(dir: string, name: string): boolean {
-  const p = join(dir, name);
+  const t = readOrNull(join(dir, name));
+  return t !== null && SERVER_ROLE.test(t);
+}
+
+/** Read a file, or null when it is not there. ONE syscall — no check-then-use window. */
+function readOrNull(p: string): string | null {
   try {
-    return SERVER_ROLE.test(readFileSync(p, "utf-8"));
-  } catch {
-    return false;
+    return readFileSync(p, "utf-8");
+  } catch (e) {
+    if ((e as NodeJS.ErrnoException).code === "ENOENT" || (e as NodeJS.ErrnoException).code === "ENOTDIR") {
+      return null;
+    }
+    throw e;
   }
 }
 
 export function auditHosts(root: string): readonly HostFacts[] {
   const hostsDir = join(root, HOSTS_DIR);
   const modulesDir = join(root, MODULES_DIR);
-  if (!existsSync(hostsDir)) return [];
+  let entries: readonly { name: string; isDirectory: () => boolean }[];
+  try {
+    entries = readdirSync(hostsDir, { withFileTypes: true });
+  } catch (e) {
+    if ((e as NodeJS.ErrnoException).code === "ENOENT") return [];
+    throw e;
+  }
   const out: HostFacts[] = [];
-  for (const host of readdirSync(hostsDir, { withFileTypes: true })) {
+  for (const host of entries) {
     if (!host.isDirectory()) continue;
-    const candidates = ["configuration.nix", "default.nix"];
-    const file = candidates.map((c) => join(hostsDir, host.name, c)).find((f) => existsSync(f));
-    if (file === undefined) continue;
-    const imports = parseImports(readFileSync(file, "utf-8"));
+    const texts = ["configuration.nix", "default.nix"].map((c) => readOrNull(join(hostsDir, host.name, c)));
+    const text = texts.find((t) => t !== null);
+    if (text === undefined || text === null) continue;
+    const imports = parseImports(text);
     out.push({
       host: host.name,
       imports,
