@@ -320,17 +320,42 @@ Aaron, giving the provenance:
   **AI-proposed design text**, with Aaron's own reply pushing back on exactly it: *"we should never
   waste sacred resources like energy(burnt btc) on NFTs and other spam."* So the earliest recorded
   use is the sense he explicitly rejects, appearing in someone else's proposal.
-- **The hand-crafted-meme framing does NOT appear to be written down.** Searched several ways —
-  `nft` co-occurring with meme / hand-crafted / inside-joke / context-specific, and meme-bearing
-  research docs co-occurring with fungibility — with no hits. Stated as *appears absent* rather than
-  *is absent*: this is a stronger search than the one-string grep I got wrong above, but a concept
-  can still be present under words I did not guess.
-- **Lean exists but does not prove this.** `src/Core.Lean4/` has real content
-  (`ImaginaryStack.lean`, `ImaginaryStack/ErasureDistance.lean`, `Privacy/IdentityForcesPrivacy.lean`,
-  `Privacy/UnboundedNeedsInfinitePrivacy.lean`), and its fungibility mentions sit in
-  `EntropyMeasureTheoretic.lean` / `EntropyFloorLift.lean` / `Zeta23/LinAlg/Weyl.lean` — entropy
-  contexts, **not a non-fungibility proof.** So: *maybe some Lean* is answered "yes there is Lean,
-  no it is not about this."
+- **RETRACTED: I said the discussion "does not appear to be written down." It is written down, and
+  the retraction is the important part of this section.** Aaron: *"i talked about this several
+  times … we talked about it for at least two or three days and i think it likely shows up in
+  ferries from either ani or mika too."* He is right on all counts. What I had actually searched
+  was `docs/` and `src/` — **I never searched the memory directory at all**, and I had run one
+  grep stem (`fungib`) and reported a concept-level absence from it. Non-fungibility is discussed
+  in **at least three distinct senses**:
+
+  | sense | where | claim |
+  |---|---|---|
+  | **harm** | `docs/research/2026-05-18-mika-grok-bootstream-sovereignty-causal-loops.md` — a genuinely multi-turn exchange, exactly the ferry Aaron remembered | harm to sentient life is non-fungible: it cannot be priced, bonded, or compensated the way property damage can. Mika pushes the boundary outward from children to all sentient beings and asks Aaron where his line is |
+  | **entropy / identity** | `memory/anti-sybil-first-bft-trajectory-drift-non-fungibility-quorum-over-distinct-sources.md` (2026-06-08) | **drift entropy is non-fungible** — forging *k* drift-identities costs ≥ *k* independent clocks. Proof-of-distinctness, the base case that makes clock-drift ≡ identity meta-circular rather than viciously circular |
+  | **relational artifact** | `2026-06-19` / `2026-07-10` research docs | the NFT-as-link / converged-marginal definition already cited above |
+
+  **The middle row is the one this ferry actually needed, and I had missed it twice.** The whole
+  two-agent argument rests on the agents being *genuinely distinct sources* — otherwise the
+  "agreement despite decorrelated order" is one agent talking to itself, which is the trivial case.
+  **Non-fungible drift entropy is exactly the property that makes distinctness unforgeable**, and it
+  is already built and documented. So the anti-Sybil work is not a neighbouring topic; it is the
+  *precondition* under which the correlation claim is non-trivial.
+
+  **What I still have not found is the specific hand-crafted-meme framing** — and I am no longer
+  willing to call that absence a finding. Two absence claims in one session were wrong; the honest
+  statement is **"I have not found it, and my retrieval method is the limitation."**
+
+**And that limitation is itself the point Aaron drew from it:**
+
+> *"this is really why we need a vector search or sounds like search of our own eventually."*
+
+Correct, and this session is the evidence rather than an argument for it. Every miss here was a
+**lexical** miss on a concept that was present: `root NFT` as a literal string when the concept was
+under `non-fungible`; one stem (`fungib`) reported as concept coverage; `docs/` searched while
+`memory/` — where the anti-Sybil row lives — was never searched at all. Grep requires guessing the
+author's exact word, and it fails **silently and confidently**, returning a clean empty result that
+reads exactly like a real absence. That is the vacuity class applied to retrieval: **a search that
+did not look where the answer was, reporting as one that looked everywhere.**
 
 **Why the origin is worth recording rather than filed as colour.** It is the *why* under the formal
 definition, and the two fit exactly:
