@@ -8,17 +8,22 @@
  *   * A PKCS#11 driver on disk selecting a metal oracle.
  *   * Unprobed / check-did-not-run collapsed into drift.
  *   * Darwin os-release parsed as NixOS.
+ *   * `/dev/tpmrm0` upgrading tpm2 to present.
+ *   * A YubiKey CCID reader selecting CardContact SmartCard-HSM.
  */
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { describe, expect, test } from "bun:test";
+import { TPM_CHAR_DEVICE } from "./bao-load-site.ts";
 import {
   assessHardware,
   classifyHostSeal,
   emptyCapture,
+  hostCaptureFromNamedProbe,
   osFamilyFromOsRelease,
   pickSealOracleFromCapture,
   type HostHardwareCapture,
+  type NamedHardwareProbe,
 } from "./host-seal-profile.ts";
 
 const nixosMetal = (overrides: Partial<HostHardwareCapture> = {}): HostHardwareCapture =>
@@ -189,5 +194,65 @@ describe("NixOS host-seal files (CI-executed twin — flake check is not in CI)"
     expect(profile).not.toMatch(/services\.pcscd\.enable\s*=\s*mkIf/);
     expect(common).toContain("./host-seal-profile.nix");
     expect(flake).toContain("host-seal-profile-model");
+  });
+});
+
+describe("hostCaptureFromNamedProbe — tpmrm0 is not present", () => {
+  function snapshot(partial: Partial<NamedHardwareProbe> = {}): NamedHardwareProbe {
+    return {
+      os: "nixos",
+      tpm2: "indeterminate",
+      tpmDeviceNode: TPM_CHAR_DEVICE,
+      yubiHsm2: "not-asked",
+      smartCardReaderAttached: true,
+      yubikeyDetected: true,
+      pkcs11ModuleOnDisk: true,
+      smartcardHsm: false,
+      ...partial,
+    };
+  }
+
+  test("null snapshot is unmeasured, not absent", () => {
+    expect(hostCaptureFromNamedProbe(null)).toEqual(emptyCapture());
+    expect(hostCaptureFromNamedProbe(null).tpm2).toBe("not-asked");
+    expect(hostCaptureFromNamedProbe(null).yubiHsm2).toBe("not-asked");
+  });
+
+  test("tpmrm0 plus indeterminate stays indeterminate; oracle is none", () => {
+    const capture = hostCaptureFromNamedProbe(snapshot());
+    expect(capture.tpm2).toBe("indeterminate");
+    expect(capture.tpm2 === "present").toBe(false);
+    expect(pickSealOracleFromCapture(capture)).toBe("none");
+  });
+
+  test("YubiKey plus CCID reader is not CardContact SmartCard-HSM", () => {
+    const capture = hostCaptureFromNamedProbe(snapshot());
+    expect(capture.yubikeyFido).toBe(true);
+    expect(capture.smartcardHsm).toBe(false);
+    expect(pickSealOracleFromCapture(capture)).toBe("none");
+  });
+
+  test("PKCS#11 driver on disk is not an attached YubiHSM", () => {
+    const capture = hostCaptureFromNamedProbe(snapshot());
+    expect(capture.pkcs11ModuleOnDisk).toBe(true);
+    expect(capture.yubiHsm2).toBe("not-asked");
+    expect(pickSealOracleFromCapture(capture)).toBe("none");
+  });
+
+  test("named TPM present and named CardContact stay named", () => {
+    const tpm = hostCaptureFromNamedProbe(
+      snapshot({
+        tpm2: "present",
+        yubikeyDetected: false,
+        smartCardReaderAttached: false,
+        pkcs11ModuleOnDisk: false,
+      }),
+    );
+    expect(tpm.tpm2).toBe("present");
+    expect(pickSealOracleFromCapture(tpm)).toBe("tpm2-pkcs11");
+    const card = hostCaptureFromNamedProbe(snapshot({ smartcardHsm: true, yubikeyDetected: false }));
+    expect(card.smartcardHsm).toBe(true);
+    expect(card.yubikeyFido).toBe(false);
+    expect(pickSealOracleFromCapture(card)).toBe("smartcard-hsm");
   });
 });

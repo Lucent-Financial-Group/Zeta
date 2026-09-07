@@ -9,8 +9,13 @@
  *
  * This module CLASSIFIES. It does not talk to USB, PAM, or OpenBao.
  * A capture is injected (from frost-hardware-probe / /etc/os-release /
- * sysfs). NixOS evaluation cannot see a hot-plugged HSM; it declares
- * the *role* and enables userspace. Presence is still a measurement.
+ * sysfs). A named probe snapshot maps to this capture
+ * (`hostCaptureFromNamedProbe`). `/dev/tpmrm0` is not `present`.
+ * A YubiKey CCID reader is not CardContact SmartCard-HSM. A
+ * PKCS#11 driver on disk is not an attached YubiHSM. A null
+ * snapshot is unmeasured, not absent. NixOS evaluation cannot
+ * see a hot-plugged HSM; it declares the *role* and enables
+ * userspace. Presence is still a measurement.
  *
  * A driver on disk is not a device (frost-hardware-probe). SoftHSM2
  * is never selected from a metal capture. Init stays gated on every
@@ -91,6 +96,44 @@ export function osFamilyFromOsRelease(text: string): OsFamily {
 
 export function emptyCapture(overrides: Partial<HostHardwareCapture> = {}): HostHardwareCapture {
   return { ...EMPTY_CAPTURE, ...overrides };
+}
+
+/**
+ * Named probe snapshot. Cluster does not open `/dev/tpmrm0`
+ * and does not import frost-hardware-probe (fs/spawn).
+ * `smartcardHsm` is named — a CCID reader / YubiKey is not
+ * CardContact SmartCard-HSM.
+ */
+export interface NamedHardwareProbe {
+  readonly os: OsFamily;
+  readonly tpm2: Tpm2CaptureState;
+  readonly tpmDeviceNode: string | null;
+  readonly yubiHsm2: YubiHsm2CaptureState;
+  readonly smartCardReaderAttached: boolean;
+  readonly yubikeyDetected: boolean;
+  readonly pkcs11ModuleOnDisk: boolean;
+  readonly smartcardHsm: boolean;
+}
+
+/**
+ * Map a named probe snapshot to a host capture. Null is
+ * unmeasured (`not-asked`), not `absent`. `/dev/tpmrm0` does
+ * not upgrade `tpm2` to `present`. A YubiKey / CCID reader
+ * does not set `smartcardHsm`. A PKCS#11 driver on disk does
+ * not set `yubiHsm2` to `attached`. Does not call
+ * `integrateAtSetup`.
+ */
+export function hostCaptureFromNamedProbe(probe: NamedHardwareProbe | null): HostHardwareCapture {
+  if (probe === null) return emptyCapture();
+  return emptyCapture({
+    os: probe.os,
+    tpm2: probe.tpm2,
+    yubiHsm2: probe.yubiHsm2,
+    smartcardHsm: probe.smartcardHsm,
+    yubikeyFido: probe.yubikeyDetected,
+    pkcs11ModuleOnDisk: probe.pkcs11ModuleOnDisk,
+    biometricEnrolled: false,
+  });
 }
 
 /**

@@ -266,6 +266,11 @@ assume the number.
    `IntegrateDecision`. Capture stays injected. Missing is
    unmeasured, not `auto`. Does not add the request to ESP
    conf. Does not invent an integrate decision.
+   Named probe snapshot becomes host capture (`081M1WK36Y1087G0R003WT976Y`):
+   `hostCaptureFromNamedProbe`. `/dev/tpmrm0` is not `present`.
+   A YubiKey is not CardContact. A driver on disk is not an
+   attached YubiHSM. Null is unmeasured, not absent. Does not
+   invent an integrate decision.
 7. extraContainer sidecar — later, **same commit as the
    sidecar**, and only for the Shamir kind path until the
    emulator job replaces it. `valuesObject` only. Do not fork
