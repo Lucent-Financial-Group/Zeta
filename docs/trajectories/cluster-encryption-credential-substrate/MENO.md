@@ -271,6 +271,11 @@ assume the number.
    A YubiKey is not CardContact. A driver on disk is not an
    attached YubiHSM. Null is unmeasured, not absent. Does not
    invent an integrate decision.
+   Overlay joins take named probe (`081M1WMR8KD087G0R003HZYY14`):
+   argv/conf/env joins take `NamedHardwareProbe | null`. Null
+   is unmeasured, not present. `/dev/tpmrm0` on the probe is
+   not a capture. Does not invent a capture. Does not invent
+   an integrate decision.
 7. extraContainer sidecar — later, **same commit as the
    sidecar**, and only for the Shamir kind path until the
    emulator job replaces it. `valuesObject` only. Do not fork

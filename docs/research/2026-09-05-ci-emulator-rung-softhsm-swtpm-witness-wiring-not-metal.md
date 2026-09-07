@@ -307,6 +307,10 @@ Named probe snapshot becomes host capture (`081M1WK36Y1087G0R003WT976Y`):
 `hostCaptureFromNamedProbe`. `/dev/tpmrm0` is not `present`.
 A YubiKey is not CardContact. A driver on disk is not attached
 YubiHSM. Null is unmeasured, not absent.
+Overlay joins take named probe (`081M1WMR8KD087G0R003HZYY14`):
+argv/conf/env joins take `NamedHardwareProbe | null`.
+Mapped via `hostCaptureFromNamedProbe`. Null is unmeasured,
+not present. `/dev/tpmrm0` on the probe is not a capture.
 
 1. Metal: `seal "pkcs11"` in Application.yaml still waits.
    Same commit as a **reachable** module: same-libc image
@@ -314,7 +318,7 @@ YubiHSM. Null is unmeasured, not absent.
    host `bao`. Dual-vendor per node is ZetaFS k-of-n, not
    two active OpenBao seals. Do not treat this join as
    that commit. A live installer call still must not invent
-   the capture. Does not expand `ZetaFirstbootRole`.
+   the probe. Does not expand `ZetaFirstbootRole`.
    `/dev/tpmrm0` is still not an ask and not a PathRequest.
 2. extraContainer Shamir sidecar (`valuesObject` only) until
    kind/CI consume the emulator init.
