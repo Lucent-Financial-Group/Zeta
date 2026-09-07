@@ -29,6 +29,13 @@ Current:
   the universal tensor, Riechers' nondiagonalizable spectral decomposition ↔ `SpectralPivot` /
   scene-change detection, `c_ℓ − h_ℓ` ↔ the uncertainty ledger. Six ranked experiments; every
   correspondence carries a register. Aaron is routing this through OpenAI's Astra.
+- [`2026-09-06-vera-unattended-research-continuation.md`](./2026-09-06-vera-unattended-research-continuation.md)
+  — **Vera, consolidated unattended continuation.** Paste-ready GPT-6 Astra bootstrap,
+  eight verified research/repair merges, immutable experiment references, combined
+  299-case Interp validation and encountered re-entry hazards. Separates supplied-goal
+  action success, conditional entropy/work accounting and finite classical C/K functors
+  from planning, controller-count and quantum-equivalence claims. The next bounded
+  action-conditioned hidden-dynamics preregistration remains proposed.
 - [`2026-09-06-vera-to-vera-predictive-state-research-and-arc3-bridge.md`](./2026-09-06-vera-to-vera-predictive-state-research-and-arc3-bridge.md)
   — **Fresh Astra re-entry.** Links Vera's landed ARC honesty audit, WSet/Simplex comparison,
   Mess3 and RRXOR learning, entropy/spectral work, learned-HMM and factored-state controls,
