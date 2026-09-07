@@ -1663,6 +1663,53 @@ module ZetaFsFreeze =
                     Ok id
             | _ -> Error(ZetaFsNamespace.UnknownEntity { Raw = System.UInt128.Zero }))
 
+    let private persistBind
+        (volume: Volume)
+        (state: ZetaFsNamespace.State)
+        (parent: ZetaFsNamespace.EntityId)
+        (name: byte[])
+        (target: ZetaFsNamespace.EntityId)
+        : Result<ZetaFsNamespace.State, ZetaFsNamespace.BindError> =
+        match ZetaFsNamespace.bind state parent name target (ZetaFsNamespace.ActorId "freeze") with
+        | Error e -> Error e
+        | Ok next ->
+            persistNamespace volume.StoreDir next
+            volume.Ns := Some next
+            Ok next
+
+    /// Mint a Directory under `parent` and persist the TagBinding.
+    let bindDirectory
+        (volume: Volume)
+        (parent: ZetaFsNamespace.EntityId)
+        (name: byte[])
+        : Result<ZetaFsNamespace.EntityId, ZetaFsNamespace.BindError> =
+        lock volume.Gate (fun () ->
+            match !volume.Ns with
+            | None -> Error(ZetaFsNamespace.UnknownEntity parent)
+            | Some state ->
+                let entropy =
+                    ZetaFsNamespace.Entropy(fun () -> SystemEnvironment.Default.NextInt64())
+                let id, minted = ZetaFsNamespace.mint state ZetaFsNamespace.EntityKind.Directory entropy
+
+                match persistBind volume minted parent name id with
+                | Error e -> Error e
+                | Ok _ -> Ok id)
+
+    /// Bind an existing entity under `parent`. Refuses a Directory cycle.
+    let bindName
+        (volume: Volume)
+        (parent: ZetaFsNamespace.EntityId)
+        (name: byte[])
+        (target: ZetaFsNamespace.EntityId)
+        : Result<unit, ZetaFsNamespace.BindError> =
+        lock volume.Gate (fun () ->
+            match !volume.Ns with
+            | None -> Error(ZetaFsNamespace.UnknownEntity parent)
+            | Some state ->
+                match persistBind volume state parent name target with
+                | Error e -> Error e
+                | Ok _ -> Ok())
+
     /// POSIX unlink: append Tombstone under ROOT. Does not retract the Live
     /// row. Reopen `liveResolve` must be None.
     let unlinkFile (volume: Volume) (name: byte[]) : Result<unit, ZetaFsNamespace.BindError> =
@@ -1682,6 +1729,16 @@ module ZetaFsFreeze =
             match volume.Root, !volume.Ns with
             | Some root, Some state -> ZetaFsNamespace.liveResolve root name state.Bindings
             | _ -> None)
+
+    let liveResolveUnder
+        (volume: Volume)
+        (parent: ZetaFsNamespace.EntityId)
+        (name: byte[])
+        : ZetaFsNamespace.EntityId option =
+        lock volume.Gate (fun () ->
+            match !volume.Ns with
+            | Some state -> ZetaFsNamespace.liveResolve parent name state.Bindings
+            | None -> None)
 
     /// Journal for a crash-mid-sweep. Owned by the volume, not invented by
     /// the caller. `reclaimSweep` is the only apply door that uses it.
