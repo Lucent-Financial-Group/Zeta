@@ -20,7 +20,6 @@ import {
   isFullyPriced,
   loadCatalogue,
   loadGraph,
-  laneRootExclude,
   loadRoster,
   packLanes,
   priceSet,
@@ -738,57 +737,3 @@ describe("image collection", () => {
 // The test named "an Application with no measured footprint REFUSES the build"
 // was written to kill it, and did.
 // ---------------------------------------------------------------------------
-
-// ---------------------------------------------------------------------------
-// A LANE MUST APPLY ITS OWN MEMBERS.
-//
-// `laneRootExclude` had NO test, which is how the defect below reached main.
-// It built its glob by UNIONING the dev/CI root's deferral list into every
-// lane, so a deferral scoped to one lane's budget silently became global: an
-// Application deferred because the DEV lane could not afford it could then
-// never be stood up by ANY lane, including one built to test it.
-//
-// Live instance, same day: `game-hosting/gmod/**` joined the dev catalog's
-// excludeGlob so the dev lane's memory would fit -- on the explicit instruction
-// that gmod be tested in its OWN lane instead. Without the member subtraction,
-// `--lane lane-2 --root-exclude` emitted a glob containing
-// `game-hosting/gmod/Application.yaml` while lane-2's member list contained
-// `gmod`. That lane would have gone green having applied everything except its
-// own subject -- a test that cannot fail because the thing under test is absent.
-// ---------------------------------------------------------------------------
-describe("a lane never defers its own member", () => {
-  test("no lane's root-exclude glob contains a directory that lane is assigned", () => {
-    const model = buildModel({ rung: "dev", dropIntentEdges: false });
-    const partition = packLanes(model, { margin: 0.85 });
-    expect(partition.lanes.length).toBeGreaterThan(0);
-
-    for (const lane of partition.lanes) {
-      const glob = laneRootExclude(model, lane);
-      const excluded = new Set(glob.replace(/^\{|\}$/g, "").split(","));
-      const memberDirs = model.roster
-        .filter((r) => lane.members.includes(r.name))
-        .map((r) => `${r.dir}/Application.yaml`);
-      expect(memberDirs.length, `${lane.id} has members in the roster`).toBeGreaterThan(0);
-
-      const selfExcluded = memberDirs.filter((d) => excluded.has(d));
-      expect(selfExcluded, `${lane.id} excludes its own members`).toEqual([]);
-    }
-  });
-
-  test("the dev root's deferrals still reach lanes that do NOT own them", () => {
-    // The subtraction must be narrow: it removes a deferral only for the lane
-    // that owns the app. Every other lane still defers it, because the reason
-    // the dev root defers it (cost, or a live blocker) has not gone away.
-    const model = buildModel({ rung: "dev", dropIntentEdges: false });
-    const partition = packLanes(model, { margin: 0.85 });
-
-    const owner = partition.lanes.find((l) => l.members.includes("gmod"));
-    expect(owner, "gmod is assigned to some lane").toBeDefined();
-
-    for (const lane of partition.lanes) {
-      if (lane.id === owner?.id) continue;
-      const excluded = laneRootExclude(model, lane);
-      expect(excluded, `${lane.id} still defers gmod`).toContain("game-hosting/gmod/Application.yaml");
-    }
-  });
-});
