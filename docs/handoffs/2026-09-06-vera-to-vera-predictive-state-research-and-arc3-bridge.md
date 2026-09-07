@@ -18,8 +18,10 @@ Paste this into a fresh GPT-6 Astra session:
 > source record linked below. Keep every correspondence in an evidence
 > register. Read the rendered-signal result: every RNN beats bigram but fails
 > the registered improvement over order-two. Read the registered rendered-catch
-> result: frozen order-two achieves approximately 75% versus 50% for controls
-> on three structured panels, with exact full replay and both cost caps met.
+> result: frozen order-two achieves approximately 75% versus 50% for the
+> bigram, last-beacon and fair baselines on three structured panels. The
+> known-lag-two diagnostic matches order-two. Full replay is exact and both
+> cost caps are met.
 > The goal, projection and action meanings are supplied; action-conditioned
 > hidden dynamics and planning still require a new preregistration. Read the relational-identity
 > result: its invariant is authenticated receipt content, causal order and the
@@ -55,7 +57,9 @@ The subsequent [registered rendered-catch result](../research/2026-09-06-rendere
 completes `081M1W8T690087G0R002DJ91MJ`. Its implementation archive is
 `36fa2275e049017aefa6ebdfd77fdbd2dfbd5180`, published before measurement.
 Across 20,480 behavioral episodes, frozen order-two catches 74.74% to 75.03%
-of targets on the dot, bar and palette panels versus roughly 50% for controls.
+of targets on the dot, bar and palette panels versus roughly 50% for the
+bigram, last-beacon and fair baselines. The known-lag-two diagnostic matches
+order-two's actions and returns.
 Its largest independent-symbol-panel advantage is 0.206 percentage points.
 All 20 behavioral arm-panels and 25 cost rows replay exactly, including 200
 warmup and 1,600 timed episodes. Order-two/bigram median wall and allocation

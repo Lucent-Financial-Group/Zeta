@@ -151,3 +151,12 @@ wording after inspecting its counts, gain bounds, retained first cost
 repetition, allocation/payload distinction, native-shadow/Python boundary,
 and supplied-goal claim limit. That acceptance is an evidence and report
 review; it does not create another independently authored interpreter.
+
+## Subsequent CI and combined-lane publication
+
+The [CI fixture-path correction](ci-fixture-path-correction.md) continues
+this record with the compiled test path failure, explicit CI-mapped build,
+test-only repair and later integration of the landed categorical bridge.
+It also preserves the independently counted 299-case Python suite and the
+corresponding CI collection-floor correction. The original scientific
+sources, archives and measurement receipts remain unchanged.

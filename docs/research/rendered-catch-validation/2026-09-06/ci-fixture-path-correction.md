@@ -53,3 +53,39 @@ passed. Retained logs:
 - [Focused ten-case test run](ci-mapped-focused.log).
 - [Full solution test run](ci-mapped-tests.log).
 - [All 16 quick checks](ci-path-preflight.log).
+
+## Combined research-lane integration
+
+After the finite stochastic bridge and NCI capability correction landed,
+the root writer integrated `origin/main` at
+`fa6918b9e9204183628594a4811346ec128c624c`. The resulting merge is
+`9ee2d0ce6a7add1a5d3920e1ab7d44623d5b6418`. All 23 acting and eight bridge
+scientific source hashes still match their first receipts. The Python
+workflow's minimum collected-test count increases from 258 to 299 because
+the merged suite includes both research lanes.
+
+The delegated integration check independently assembled earlier acting
+head `30dc175d2` and bridge head `378406111` over main `cb6ab68e0`.
+Its [original manifest](acting-bridge-combined-validation.json) records a
+local-only merge, reused Release Core and no manual scientific edits.
+All 299 cases passed, with one existing activation-access deprecation
+warning and no failures, errors or skips. Live FSI also passed. The manifest's
+absolute paths describe that check's original host locations; retained copies
+are indexed here:
+
+- [Pytest output](acting-bridge-initial-pytest.log) and [JUnit cases](acting-bridge-initial.xml).
+- [Ruff](acting-bridge-ruff.log), [format check](acting-bridge-format.log), and [mypy](acting-bridge-mypy.log).
+
+The root writer separately rebuilt the merged snapshot with CI path
+mapping: zero warnings and zero errors. Its Python suite also passed all
+299 cases, with one existing warning and no failures, errors or skips.
+Ruff, the 34-file format check and 33-file mypy check passed. All 16 quick
+checks passed. The combined solution gate passed 7,527 tests with six
+existing skips and no failures.
+These checks validate integration and test collection; they do not repeat
+the registered scientific measurements.
+
+- [Combined CI-mapped build](combined-build.log) and [full solution tests](combined-tests.log).
+- [Combined Python output](combined-python.log) and [JUnit cases](combined-python.xml).
+- [Combined Ruff](combined-ruff.log), [format check](combined-format.log), and [mypy](combined-mypy.log).
+- [Combined quick preflight](combined-quick.log).

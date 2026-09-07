@@ -10,7 +10,8 @@ Evidence snapshot: `36fa2275e049017aefa6ebdfd77fdbd2dfbd5180`
 The frozen order-two predictor satisfies every condition in the
 [registered acting protocol](2026-09-06-rendered-catch-actions-protocol.md).
 It catches 74.74% to 75.03% of targets on three structured rendered panels,
-while the registered controls catch approximately 50%. The gain survives
+while the bigram, last-beacon and fair baselines catch approximately 50%.
+The known-lag-two diagnostic matches order-two. The gain survives
 the dot-to-bar geometry change and alternating palette inversion. On the
 independent-symbol control, its largest absolute advantage is only 0.206
 percentage points. Whole-episode wall and allocation ratios against bigram
