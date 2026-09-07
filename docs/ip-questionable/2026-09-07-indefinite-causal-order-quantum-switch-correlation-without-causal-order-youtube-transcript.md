@@ -303,6 +303,54 @@ unrecorded coinage"* (my error) to *"a defined object with a formal criterion"* 
 the promotion path `numerology-vs-number-theory` describes, except that in this case the structure
 was already written down and I had failed to find it.
 
+### The ORIGIN of the word here, which is not what the repo's earliest hit shows
+
+Aaron, giving the provenance:
+
+> *"when we spoke about NFT I was comparing it to unique hand crafted memes that were specific to
+> the exact context of the conversation between two entities, this was the first use of the word in
+> our repo, it was about how i handle online relationships, then it got converted to agent to agent
+> communications, we may even have some lean or other formal analysis code here"*
+
+**Searched, and the result is mixed — so it is reported as mixed.**
+
+- **The earliest `NFT` hits in the repo are the CRYPTO sense, and they are not his.**
+  `docs/amara-full-conversation/2025-08-aaron-amara-conversation.md` (~8 months before every other
+  hit) proposes *"Identity Token/NFT … non-transferable identity tokens"* on a ledger — and that is
+  **AI-proposed design text**, with Aaron's own reply pushing back on exactly it: *"we should never
+  waste sacred resources like energy(burnt btc) on NFTs and other spam."* So the earliest recorded
+  use is the sense he explicitly rejects, appearing in someone else's proposal.
+- **The hand-crafted-meme framing does NOT appear to be written down.** Searched several ways —
+  `nft` co-occurring with meme / hand-crafted / inside-joke / context-specific, and meme-bearing
+  research docs co-occurring with fungibility — with no hits. Stated as *appears absent* rather than
+  *is absent*: this is a stronger search than the one-string grep I got wrong above, but a concept
+  can still be present under words I did not guess.
+- **Lean exists but does not prove this.** `src/Core.Lean4/` has real content
+  (`ImaginaryStack.lean`, `ImaginaryStack/ErasureDistance.lean`, `Privacy/IdentityForcesPrivacy.lean`,
+  `Privacy/UnboundedNeedsInfinitePrivacy.lean`), and its fungibility mentions sit in
+  `EntropyMeasureTheoretic.lean` / `EntropyFloorLift.lean` / `Zeta23/LinAlg/Weyl.lean` — entropy
+  contexts, **not a non-fungibility proof.** So: *maybe some Lean* is answered "yes there is Lean,
+  no it is not about this."
+
+**Why the origin is worth recording rather than filed as colour.** It is the *why* under the formal
+definition, and the two fit exactly:
+
+> A **hand-crafted meme specific to the exact context of a conversation between two entities** is,
+> stated formally, **a high-quality co-relational link between two travelers** — which is
+> `2026-06-19`'s definition, arrived at from the other end. The meme cannot be lifted out of the
+> conversation and still mean what it meant; that *is* non-substitutability, and it is why the
+> object is non-fungible before anyone reaches for a fixed point.
+
+So the lineage runs **online relationships → agent-to-agent → the formal criterion**, and the human
+practice came first. That ordering matters for the same reason the Cayley–Dickson ordering did: it
+makes the definition a *description of something observed* rather than a construction chosen for
+convenience. It also explains the pushback in 2025-08 — he was not rejecting non-fungibility, he was
+rejecting the token, and the repo had the word before it had his meaning for it.
+
+**Register: origin is Aaron's report; the fit between it and the 2026-06-19 definition is my
+argument, not his claim.** The absence result is a search finding with its method stated, so it can
+be overturned by anyone who knows the word I failed to guess.
+
 ### The limit the code already states, and it should not be dropped
 
 `AmplitudeEmu.fs` writes its own peel, and it is the honest bound on this whole thread:
