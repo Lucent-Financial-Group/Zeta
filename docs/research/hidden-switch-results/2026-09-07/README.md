@@ -79,3 +79,11 @@ checks after result/report assembly. The [record manifest](records-manifest.json
 binds retained original receipts, logs, snapshots and orchestration source.
 The [postmeasurement review](../../2026-09-07-hidden-switch-result-review.md)
 records the separate provenance/roster/scalar audit and final wording fixes.
+
+The [results archive verification](results-archive-verification.json) records
+remote annotated tag
+`archive/experiments/081M1XK02XM087G0R00043EW05-results`, peeled to
+`900c0f57a51bfb79d7e9a7b8156ef367d97824f8`. It preserves the original four
+receipts, accepted review and all observed rows independently of subsequent
+squash merging. The implementation archive remains at the earlier `4fc82b611` commit;
+never move either tag to a later publication head.

@@ -199,4 +199,10 @@ separate nonblocking historical Windows rows: 43 failures in 59 runs
 (72.9%), last main run 34118407589. It explicitly reports the manually
 disabled publisher/frozen ledger. Current required/platform tests passed;
 the matrix with this advisory failure must not be described as all-green.
-Final merge ancestry remains a separate publication check.
+The [publication proof](c1-final-publication.json) now verifies PR #16917
+merged as `536570576cfb980f6303be2040d8d3034b2ac13d` at 12:28:36 UTC,
+main ancestry and all eight changed source/test files against the exact
+checked head. The owner verified the complete signed squash body. Final
+expanded rollup: 93 successes, six skips and one nonblocking historical
+drift failure, with no pending checks; the earlier premerge snapshot was
+91 successes and four skips plus that same advisory failure.

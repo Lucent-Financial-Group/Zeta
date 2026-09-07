@@ -132,6 +132,9 @@ was registered before implementation. Its annotated remote implementation
 archive is `archive/experiments/081M1XK02XM087G0R00043EW05-implementation`,
 peeled to `4fc82b611012bd2620a26e02afe6baba491fe553`. All nineteen scientific
 files, original authoring histories and prerequisite gates are preserved.
+The annotated results archive is
+`archive/experiments/081M1XK02XM087G0R00043EW05-results`, peeled to
+`900c0f57a51bfb79d7e9a7b8156ef367d97824f8`.
 The [completed result](../research/2026-09-07-hidden-switch-results.md) and
 [raw records](../research/hidden-switch-results/2026-09-07/README.md) retain
 the once-collected behavior/cost receipts, independent replay, computed
