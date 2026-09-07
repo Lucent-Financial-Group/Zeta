@@ -239,6 +239,38 @@ let ``D10 DurabilityMode maps onto freeze class and Journaled has no twin`` () =
     | other -> Assert.Fail(sprintf "Durable maps to StableStorage, got %A" other)
 
 [<Fact>]
+let ``a POSIX-rooted store path is NOT rewritten by OS path resolution`` () =
+    // THE WINDOWS-ONLY FAILURE, pinned as a rule instead of as a platform.
+    //
+    // `ZetaFsDeltaLog` used to do `Path.GetFullPath dir` unconditionally. On Linux and macOS
+    // that is the identity for "/store"; on Windows it returns "D:\store" — drive-qualified and
+    // backslashed. The `FileSystem` still holds the store at "/store", so the FORMAT probe
+    // missed, an `ns=bindings` store was read as a NEW store, and the refusal the test below
+    // asserts never fired. One failure in 6545, on both Windows legs, every run.
+    //
+    // HONEST LIMIT: on a POSIX runner this assertion is trivially true and would NOT have gone
+    // red before the fix. It cannot be made to — the divergence only exists where the OS path
+    // rules differ. What it does is state the rule in a place a reader will find, so the guard
+    // is not just a comment inside a constructor: a virtual, POSIX-rooted ZetaFs path is
+    // resolved by `ZetaFsPath`, never by `System.IO.Path`.
+    ensureHasher ()
+    FileSystem.Register(InMemoryFileSystem())
+    try
+        let store = "/rooted-virtual-store"
+        let mutbuf = ZetaFsMutbuf.create store ZetaFsMutbuf.Coherence.Shared
+        let volume = ZetaFsFreeze.createManualStream store mutbuf None
+        try
+            // Every file the volume created must live under the path we asked for, unchanged.
+            let formatPath = ZetaFsPath.combine2 store ZetaFsFormat.FileName
+            Assert.True(FileSystem.Current.Exists formatPath)
+            Assert.StartsWith("/", formatPath, StringComparison.Ordinal)
+            Assert.DoesNotContain("\\", formatPath, StringComparison.Ordinal)
+        finally
+            ZetaFsFreeze.dispose volume
+    finally
+        FileSystem.Reset()
+
+[<Fact>]
 let ``new freeze volume writes ns=bindings and git-trees deltaLog still refuses`` () : Task =
     task {
         ensureHasher ()
@@ -2080,6 +2112,69 @@ let ``reclaimTick paces extra CAS garbage and keeps a committed freeze readable`
                 let n = ZetaFsFreeze.reclaimTick volume FileSystem.Current roots objects 100UL
                 Assert.Equal(1, n)
                 Assert.False(FileSystem.Current.Exists p2)
+                Assert.False(FileSystem.Current.Exists(ZetaFsFreeze.sweepJournalPath volume))
+                Assert.True(ZetaFsFreeze.isReadable volume first.Content)
+        finally
+            ZetaFsFreeze.dispose volume
+            FileSystem.Reset()
+    }
+
+[<Fact>]
+let ``BlockCas Delete crash-mid-sweep leaves extra garbage and a readable freeze`` () : Task =
+    task {
+        ensureHasher ()
+        FileSystem.Register(InMemoryFileSystem())
+        let store = "/freeze-blockcas-crash-delete"
+        let mutbuf = ZetaFsMutbuf.create store ZetaFsMutbuf.Coherence.Shared
+        let logDev = SimulatedBlockIo(4096)
+        let objDev = SimulatedBlockIo(4096)
+        let cas = BlockCas(objDev)
+        let volume = ZetaFsFreeze.createManualWithBlockStore store mutbuf None logDev cas
+        let dummy (n: byte) : ContentHash256 =
+            { Raw = Array.init 32 (fun i -> if i = 0 then n else 0uy) }
+        let objectKey (id: ContentHash256) =
+            (ContentHash256.toContentAddress128 id).ToHex()
+        let garbageObj (n: byte) : ZetaFsReclaim.Object =
+            { Id = dummy n; Size = 8UL; Refs = [||] }
+
+        try
+            let id = mintId ()
+            let h = ZetaFsMutbuf.openHandle volume.Mutbuf id
+            ZetaFsMutbuf.pwrite volume.Mutbuf h 0L [| 1uy; 2uy; 3uy |] |> ignore
+            let pending = (freezeAsync volume id ZetaFsFreeze.Journaled).AsTask()
+            do! (ZetaFsFreeze.pumpLog volume CancellationToken.None).ConfigureAwait(false)
+            let! first = pending.ConfigureAwait(false)
+
+            match first with
+            | Error e -> Assert.Fail(ZetaFsFreeze.errorName e)
+            | Ok first ->
+                let g1 = garbageObj 1uy
+                let g2 = garbageObj 2uy
+                let k1 = objectKey g1.Id
+                let k2 = objectKey g2.Id
+                cas.Put(k1, [| 9uy |])
+                cas.Put(k2, [| 8uy |])
+                let roots =
+                    { ZetaFsReclaim.emptyRoots with
+                        LiveRefs = [| ZetaFsReclaim.hex first.Content |] }
+                let objects = [| g1; g2 |]
+                Assert.Equal(0, ZetaFsFreeze.reclaimTick volume FileSystem.Current roots objects 0UL)
+                Assert.True(cas.Exists k1)
+                Assert.True(cas.Exists k2)
+                cas.ArmCrashOnDelete k1
+                let ex =
+                    Assert.Throws<CrashMidSweepException>(fun () ->
+                        ZetaFsFreeze.reclaimTick volume FileSystem.Current roots objects 100UL
+                        |> ignore)
+
+                Assert.Equal(k1, ex.Path)
+                Assert.False(cas.Exists k1)
+                Assert.True(cas.Exists k2)
+                Assert.True(FileSystem.Current.Exists(ZetaFsFreeze.sweepJournalPath volume))
+                Assert.True(ZetaFsFreeze.isReadable volume first.Content)
+                let n = ZetaFsFreeze.reclaimTick volume FileSystem.Current roots objects 100UL
+                Assert.Equal(1, n)
+                Assert.False(cas.Exists k2)
                 Assert.False(FileSystem.Current.Exists(ZetaFsFreeze.sweepJournalPath volume))
                 Assert.True(ZetaFsFreeze.isReadable volume first.Content)
         finally
