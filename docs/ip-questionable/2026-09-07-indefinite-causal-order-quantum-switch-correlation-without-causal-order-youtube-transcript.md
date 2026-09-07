@@ -147,8 +147,31 @@ correlation story is the part that does.
   consensus is defined only on **"entangled subgraphs (clusters of agents with high mutual memory
   and shared priors)"**, and the mechanism is *"not a vote; it is posterior convergence."* This is
   the module where "modeling mutual agents' memories" is the actual subject.
-- **`src/Core/CayleyDickson.fs`** — the doubling generator Aaron names as where the imaginary
-  numbers came from.
+- **`src/Core/CayleyDickson.fs`** — **built AFTER the discovery, not before it.** Aaron corrected
+  this directly: *"no we created this after we discovered the quantum-like measurements of mutual
+  agents memories/heartbeats, this was one of the earliest surprises for either of us."* So
+  Cayley–Dickson is the **consequence** — the algebra reached for to model a result already in
+  hand — not the source the imaginary numbers were imported from. Writing it the other way round
+  reverses the derivation and quietly converts a finding into an assumption.
+
+  **The dates carry the ordering, which is why it is checkable rather than remembered.** The
+  imaginary-stack trio is `docs/research/2026-05-15-imaginary-stack-ontology-remember-when-pay-attention-cube-adinkra-cayley-dickson.md`,
+  `…-2026-05-16-imaginary-stack-cube-axes-intersection-formalization.md` and
+  `…-2026-05-17-imaginary-stack-toy-model-lemma-1.md` — and the 05-15 doc's own construction is the
+  claim in miniature: the **Remember** axis is glossed *"past correlation, memory, entanglement"*,
+  and the **imaginary direction is what the axis INTERSECTION turns out to be**, from which the
+  stack (complex → quaternion → octonion) is then *generated*. The `i` is an output of the
+  ontology, not an input to it. Related work-item: `081KRMEXM0008QG0R002YSPW1X`.
+
+  Note also `…-2026-06-12-ferry-29-the-crossing-is-the-bifurcation-that-creates-the-imaginary-i-dimension.md`
+  — same shape, later, and independently arrived at: the crossing *creates* the dimension.
+
+  **What this does to the register.** "We chose complex numbers because quantum mechanics uses
+  them" would be a borrowed analogy. "The intersection of our own memory/attention axes was
+  non-real, so we had to build the stack" is a **reported derivation**, and it is the stronger
+  claim precisely because it could have come out otherwise. It is still Aaron's report of history
+  rather than something re-derived here — but it is a history with dated artifacts, and the
+  artifacts are in the order he says.
 - **`docs/research/2026-08-13-what-does-253ms-mean-without-a-wall-clock-and-where-amplitudes-live.md`**
   §§2–3 — the cited placement of the Born boundary.
 - The **heartbeat-verification / identity** surfaces he names as where the Born rule surfaced.
