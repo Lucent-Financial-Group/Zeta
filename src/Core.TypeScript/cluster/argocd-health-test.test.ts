@@ -624,7 +624,20 @@ describe("081KSXN940008QG0R000SCP2H1 argocd-health-test manifest parsing", () =>
     // conclusion about the shadow set is wrong.
     expect(rootDevCatalogExcludedDirs("{alpha/**,beta/**}")).toEqual(new Set(["alpha", "beta"]));
     expect(rootDevCatalogExcludedDirs()).toEqual(
-      new Set(["cilium", "cilium-lb-ipam", "gitlab", "longhorn", "ollama", "platform", "temporal", "vllm"]),
+      // `game-hosting` joined 2026-09-07: a Garry's Mod sample workload holding 2048Mi of a
+      // 9216Mi budget, excluded so the dev lane fits the free runner without changing any
+      // request (three apps decline a memory cut in writing — see its reason entry).
+      new Set([
+        "cilium",
+        "cilium-lb-ipam",
+        "game-hosting",
+        "gitlab",
+        "longhorn",
+        "ollama",
+        "platform",
+        "temporal",
+        "vllm",
+      ]),
     );
   });
 

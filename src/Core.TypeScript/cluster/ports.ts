@@ -234,8 +234,43 @@ export const DEFAULT_ROOT_DEV_CATALOG: RootDevCatalogSpec = {
   gitRef: "main",
   gitRepoUrl: process.env.ZETA_ARGOCD_GIT_REPO_URL ?? "https://github.com/Lucent-Financial-Group/Zeta",
   applicationsPath: "full-ai-cluster/k8s/applications",
+  // `game-hosting/**` ADDED 2026-09-07. A Garry's Mod dedicated server, and the
+  // SINGLE LARGEST MEMORY RESERVATION in the dev lane: 2048Mi of a 9216Mi budget
+  // — 18% — to prove a Source-engine server loads a map and idles. Its own
+  // manifest calls it "a game-server sample workload, not on the PoC critical
+  // path". It is not the platform under test.
+  //
+  // WHY EXCLUDED RATHER THAN SHRUNK, which was tried first and reverted. The dev
+  // lane measured 11148Mi against a 9216Mi budget — over by 1932Mi — and gmod is
+  // the obvious 2048Mi. But storage-profiles.json had already declined exactly
+  // that cut, per app, in writing:
+  //
+  //   gmod    "MEMORY IS UNCHANGED AT BOTH RUNGS AND DELIBERATELY SO: a map's
+  //            working set is real, memory is incompressible, and cutting this
+  //            request would trade a Pending pod for an evicted one."
+  //   kafka   "an OOMKill here loses the un-consumed tail."
+  //   orleans "evicting the silo does not slow the cluster down, it dissolves
+  //            the membership the cluster IS."
+  //
+  // Three reasoned refusals is not an obstacle to route around; it is the
+  // answer. The lane does not need a smaller game server, it needs one fewer.
+  //
+  // MEASURED: this takes the dev lane to 9100Mi, which FITS with 116Mi of spare,
+  // and NO REQUEST ANYWHERE CHANGES — so the metal rung, which the committed tree
+  // carries and the 16-core box deploys, is untouched. That mattered: applying
+  // the dev rung to the tree would have lowered requests for metal too, which
+  // argocd-health-test.ts names as "a maintainer call, not a CI convenience".
+  //
+  // WHAT IS LOST, stated rather than glossed: the lane stops applying and
+  // asserting gmod. That assertion is FAILING today anyway — its own record says
+  // "gmod did not schedule TODAY because its sync fails on gatekeeper's webhook"
+  // — so what is given up is a red assertion, not a green one.
+  //
+  // LIFTS WHEN: the lane has 2048Mi of headroom again — a larger runner, or the
+  // metal cluster — at which point gmod returns UNCHANGED, because nothing about
+  // it was modified to make it leave.
   excludeGlob:
-    "{cilium/**,cilium-lb-ipam/**,longhorn/**,ollama/**,vllm/**,gitlab/**,temporal/**,platform/**}",
+    "{cilium/**,cilium-lb-ipam/**,longhorn/**,ollama/**,vllm/**,gitlab/**,temporal/**,platform/**,game-hosting/**}",
 };
 
 /**
