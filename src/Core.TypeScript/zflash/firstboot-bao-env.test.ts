@@ -65,7 +65,7 @@ describe("runFirstbootBaoElfEnvCli", () => {
     );
     expect(code).toBe(0);
     expect(lines).toEqual([
-      `${JSON.stringify({ ok: true, ask: nixosHostBaoAsk(), epoch: null, requested: null })}\n`,
+      `${JSON.stringify({ ok: true, ask: nixosHostBaoAsk(), epoch: null, requested: null, probe: null })}\n`,
     ]);
   });
 
@@ -97,6 +97,7 @@ describe("firstboot-bao-env.ts process entry", () => {
       ask: nixosHostBaoAsk(),
       epoch: null,
       requested: null,
+      probe: null,
     });
   });
 
@@ -106,7 +107,7 @@ describe("firstboot-bao-env.ts process entry", () => {
       env: { PATH: process.env.PATH },
     });
     expect(spawned.status).toBe(0);
-    expect(JSON.parse(spawned.stdout)).toEqual({ ok: true, ask: null, epoch: null, requested: null });
+    expect(JSON.parse(spawned.stdout)).toEqual({ ok: true, ask: null, epoch: null, requested: null, probe: null });
   });
 });
 
@@ -197,7 +198,7 @@ describe("runFirstbootBaoElfEnvCli epoch", () => {
     );
     expect(code).toBe(0);
     expect(lines).toEqual([
-      `${JSON.stringify({ ok: true, ask: null, epoch: "installer-iso", requested: null })}\n`,
+      `${JSON.stringify({ ok: true, ask: null, epoch: "installer-iso", requested: null, probe: null })}\n`,
     ]);
   });
 });
@@ -221,10 +222,11 @@ describe("runFirstbootBaoElfEnvCli unseal request", () => {
       ask: null,
       epoch: "installer-iso",
       requested: null,
+      probe: null,
     });
   });
 
-  test("named pkcs11-tpm is reported and does not become auto", () => {
+  test("named pkcs11-tpm is reported; probe stays unmeasured", () => {
     const lines: string[] = [];
     const code = runFirstbootBaoElfEnvCli(
       {
@@ -243,6 +245,7 @@ describe("runFirstbootBaoElfEnvCli unseal request", () => {
       ask: null,
       epoch: "installer-iso",
       requested: "pkcs11-tpm",
+      probe: null,
     });
   });
 

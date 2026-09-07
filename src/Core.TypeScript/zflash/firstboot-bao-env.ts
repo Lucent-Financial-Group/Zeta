@@ -10,19 +10,22 @@
  * Named epoch filters ISO current-system bao from the JSON ask.
  * Named unseal request (`ZETA_UNSEAL_REQUEST`) is reported, not
  * inferred: missing is unmeasured (`requested` null), not `auto`.
- * `/dev/tpmrm0` still refuses. Does not call `integrateAtSetup`.
- * Does not invent a capture. Does not open files. bun invoke
- * lives in `zeta-install.sh` after Step 6.95a (mise/bun on PATH).
+ * Named probe is unmeasured (`probe` null), not present. A
+ * named PathRequest is not a named probe. `/dev/tpmrm0` is
+ * not a probe. Does not call `integrateAtSetup`. Does not
+ * invent a capture. Does not open files. bun invoke lives in
+ * `zeta-install.sh` after Step 6.95a (mise/bun on PATH).
  * bun invoke from `zeta-first-boot.sh` stays forbidden.
  * Does not expand `ZetaFirstbootRole`. Does not land
  * Application.yaml.
  *
  * Usage: bun src/Core.TypeScript/zflash/firstboot-bao-env.ts
- * Exit 0: JSON `{ ok: true, ask, epoch, requested }`
- * (ask, epoch, and requested may be null).
+ * Exit 0: JSON `{ ok: true, ask, epoch, requested, probe }`
+ * (ask, epoch, requested, and probe may be null).
  * Exit 2: JSON `{ ok: false, reason }`.
  */
 
+import { type NamedHardwareProbe } from "../cluster/host-seal-profile.ts";
 import { consumeUnsealRequestFromEnv } from "../cluster/unseal-path.ts";
 import { consumeFirstbootBaoElfEnvWithEpoch, type FirstbootBaoElfEnvConsume } from "./firstboot-bao-elf.ts";
 
@@ -42,12 +45,14 @@ export function runFirstbootBaoElfEnvCli(
     write(`${JSON.stringify(parsed)}\n`);
     return 2;
   }
+  const probe: NamedHardwareProbe | null = null;
   write(
     `${JSON.stringify({
       ok: true,
       ask: parsed.ask,
       epoch: parsed.epoch,
       requested: request.requested,
+      probe,
     })}\n`,
   );
   return 0;
