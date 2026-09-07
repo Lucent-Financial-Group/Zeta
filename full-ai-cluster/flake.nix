@@ -156,6 +156,57 @@
           };
         };
 
+        # worker-cpu — k3s agent, NO GPU. Row 2 of the taxonomy.
+        worker-cpu = mkSystem {
+          modules = mkHost.mkHostModules {
+            role = "agent";
+            hardware = ./nixos/hosts/worker-gpu/hardware-configuration.nix;
+            nodeCapabilities = [ "docker" ];
+            extra = [
+              ({ lib, ... }: {
+                networking.hostName = lib.mkForce "worker-cpu";
+                services.k3s.serverAddr = lib.mkForce "https://control-plane:6443";
+              })
+            ];
+          };
+        };
+
+        # worker-storage — k3s agent with the extra Longhorn data paths. Row 3:
+        # a storage-heavy node carrying many replicas, no GPU.
+        worker-storage = mkSystem {
+          modules = mkHost.mkHostModules {
+            role = "agent";
+            hardware = ./nixos/hosts/worker-gpu/hardware-configuration.nix;
+            nodeCapabilities = [ "docker" "longhorn-disks" ];
+            extra = [
+              inputs.disko.nixosModules.disko
+              ({ lib, ... }: {
+                networking.hostName = lib.mkForce "worker-storage";
+                services.k3s.serverAddr = lib.mkForce "https://control-plane:6443";
+              })
+            ];
+          };
+        };
+
+        # all-in-one — server + GPU + extra Longhorn disks. Row 4: a single-node
+        # lab cluster that fuses every role, which is the shape Aaron's original
+        # 2026-05-25 ask ends on ("or some that fuse all three").
+        all-in-one = mkSystem {
+          modules = mkHost.mkHostModules {
+            role = "server";
+            hardware = ./nixos/hosts/control-plane/hardware-configuration.nix;
+            nodeCapabilities = [ "gpu" "docker" "operator-credentials" "longhorn-disks" ];
+            clusterCapabilities = [ "local-storage" "gpu-device-plugin" ];
+            extra = [
+              inputs.disko.nixosModules.disko
+              ({ lib, ... }: {
+                networking.hostName = lib.mkForce "all-in-one";
+                zeta.gpu-device-plugin = { enable = true; vendors = [ "nvidia" ]; };
+              })
+            ];
+          };
+        };
+
         # Cookie-cutter worker template — uses disko for declarative
         # disk partitioning + Longhorn multi-disk wiring. Copy
         # ./nixos/hosts/worker-template/ to ./nixos/hosts/worker-gpu-NN/,
