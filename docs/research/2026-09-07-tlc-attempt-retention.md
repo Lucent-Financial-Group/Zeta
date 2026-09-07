@@ -8,7 +8,7 @@ Lifecycle: active; local combined validation completed, publication pending
 
 Author: Vera, OpenAI Codex using GPT-6 Astra
 
-Work item: [081M1XQM8E4087G0R0036P5RWY](../../workitems/081M1XQM8E4087G0R0036P5RWY-retain-tlc-failure-attempts-and-restrict-retries-to-jvm-star.md)
+Work item: [081M1XQM8E4087G0R0036P5RWY](../../workitems/done/2026/09/081M1XQM8E4087G0R0036P5RWY-retain-tlc-failure-attempts-and-restrict-retries-to-jvm-star.md)
 
 ## Problem and scope
 
@@ -164,10 +164,10 @@ archive/hash step at 11:20:19 is recorded without causal attribution.
 These observations do not establish all host activity.
 
 The original failed hidden-switch full gate remains failed. The parent
-coordinates one fresh mapped Release build and full solution/catalog gate
-on the combined C1-policy, retention and hidden-switch tree. Exact matched
-source bytes and that independent integration outcome are required before
-this repair's PR is presented as locally complete.
+coordinated the fresh mapped Release build and full solution/catalog gate
+on the combined C1-policy, retention and hidden-switch tree. The matched
+source bytes and completed integration outcome are retained below; the
+separate CI and main-integration evidence follows at publication.
 
 
 ## Completed combined gate
@@ -193,7 +193,7 @@ checks ran in this smaller repair branch. The repair's capture/retry code
 is unchanged from the accepted source pins; its two overlapping invocation
 files differ only by the separately reviewed C1 comment/assertion hunks.
 The project also contains the additional scientific test links. Final PR
-integration waits for the C1 policy on main and verifies the resulting
+integration includes the C1 policy from main and verifies the resulting
 runner/input bytes before publication. Later unrelated Python/TypeScript
 historical-receipt fixture fixes do not rewrite this native result.
 
@@ -202,3 +202,29 @@ establishes this tested integration result, not a general JVM stability
 claim or a root cause for the earlier failures. The activity record retains
 the already-running quick-lint overlap at root build start; this was not a
 registered quiet cost window.
+
+
+## Main integration and publication archive
+
+PR [16917](https://github.com/Lucent-Financial-Group/Zeta/pull/16917) merged
+as `536570576cfb980f6303be2040d8d3034b2ac13d`; the exact checked source head
+was `e2a11ebc9ca5e94c02656e904ddef9ba1b4f32f5`. Its required gates passed;
+the final rollup also retained one nonblocking historical Windows drift
+report, separately from those required checks.
+
+The repair integrated that main commit at `28a1170`. The
+[post-integration comparison](tlc-attempt-retention-validation/2026-09-07/main-integration-input-comparison.json)
+finds 97 of 98 combined-gate input hashes identical. The sole difference is
+[exactly six additional hidden-switch source/test project links](tlc-attempt-retention-validation/2026-09-07/combined-project-links.diff)
+in the larger combined run. The retention/capture/retry implementation,
+C1 policy, registry, jar and all local TLA inputs match. This does not imply
+identical whole-tree or DLL identity between the two writers. The focused
+branch's publication CI supplies its own execution evidence.
+
+The supplemental annotated archive is named
+`archive/validation/081M1XQM8E4087G0R0036P5RWY-tlc-attempt-retention`.
+It is created from the source/evidence head containing this record before
+opening the squashable PR, then remote-verified without moving the tag.
+The original `2e69017ff` and `07e399929` review pins remain reachable from
+that archive. Its git ref is the authority for the target commit; the
+publication proof records the resolved tag and commit separately.
