@@ -81,3 +81,26 @@ no numeric bound appears in the frozen protocol. The index now states only
 the observed 78,026,027-byte size and compact serialization. The correction
 changes reporting, not protocol, implementation or any raw receipt. The
 report also explicitly states that all twenty rows repeat one 72-tape corpus.
+
+## Publication review: public panel roster
+
+At publication head `f52b00065eb8055a32aea4bd93628df7537f4949`,
+[CodeQL](https://github.com/Lucent-Financial-Group/Zeta/pull/16928#discussion_r3949842024)
+reported `hidden_switch_reference.py:37`'s global `PANELS` unused.
+Root and the independent `protocol_review` reviewer inspected the exact
+source and found its direct public consumer at
+`tests/test_hidden_switch_reference.py:65`: the existing registered-constant
+test reads `ref.PANELS` and checks the four ordered panel names. The reviewer
+accepted this as a false positive for the unused-global claim. Replay has
+its own independently authored roster; this disposition does not claim
+that production replay consumes the reference module's definition.
+
+Root ran that one existing test on the unchanged publication head. It
+passed in 4.74 seconds; the [original log](hidden-switch-validation/2026-09-07/root-codeql-panel-roster-test.log)
+and [source/command record](hidden-switch-validation/2026-09-07/root-codeql-panel-roster-test.json)
+are retained. The reviewer performed source inspection and did not execute
+another test or scientific run. The frozen scientific module, nineteen-file
+manifest, native/reference receipts and immutable tags remain unchanged.
+
+The [recorded reply](https://github.com/Lucent-Financial-Group/Zeta/pull/16928#discussion_r3950047125)
+explains this consumer; the review thread was then resolved.

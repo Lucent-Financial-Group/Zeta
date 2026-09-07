@@ -137,7 +137,9 @@ unchanged Python/scientific source. A separately discovered CI failure in
 historical NCI receipt tests requires an explicit historical registry
 fixture and current-registry refusal checks; that Python/TypeScript
 correction has now completed the separate validation recorded below.
-Registered hidden-switch source streams and costs remain unexecuted.
+At that checkpoint, registered hidden-switch source streams and costs were
+still unexecuted. The later [result record](../../2026-09-07-hidden-switch-results.md)
+retains their completed first attempts after implementation archival.
 
 Original combined test records, losslessly compressed:
 [Bayesian.Tests](root-final-Bayesian.Tests.trx.gz),
@@ -206,3 +208,55 @@ checked head. The owner verified the complete signed squash body. Final
 expanded rollup: 93 successes, six skips and one nonblocking historical
 drift failure, with no pending checks; the earlier premerge snapshot was
 91 successes and four skips plus that same advisory failure.
+
+## Initial publication checks and retained failures
+
+Draft [PR #16928](https://github.com/Lucent-Financial-Group/Zeta/pull/16928)
+at `f52b00065eb8055a32aea4bd93628df7537f4949` completed its initial
+[expanded check snapshot](root-ci-initial-checks.json) with 86 successes,
+four skips and six failures. None remained pending at that observation.
+These publication failures do not replace the earlier native gate or the
+archived scientific outcomes.
+
+The original failed-job outputs are losslessly retained, with retrieval
+commands, source head, byte lengths and hashes in each adjacent record:
+
+| Job | Original output | Retrieval record |
+| --- | --- | --- |
+| Hygiene | [Log](root-ci-hygiene-failure.log.gz) | [Identity](root-ci-hygiene-failure.json) |
+| File-copy race audit | [Log](root-ci-toctou-failure.log.gz) | [Identity](root-ci-toctou-failure.json) |
+| TypeScript hermetic tests | [Log](root-ci-ts-hermetic-failure.log.gz) | [Identity](root-ci-ts-hermetic-failure.json) |
+| macOS build/tests | [Log](root-ci-macos-failure.log.gz) | [Identity](root-ci-macos-failure.json) |
+| Required aggregate gate | [Log](root-ci-gate-failure.log.gz) | [Identity](root-ci-gate-failure.json) |
+| Historical drift advisory | [Log](root-ci-drift-failure.log.gz) | [Identity](root-ci-drift-failure.json) |
+
+Hygiene identified the TypeScript fixture's `setTimeout(...,10000)`;
+the race audit identified path inspection followed by reopening/copying the
+path. The hermetic suite failed the corresponding two live-tree assertions.
+The macOS build succeeded, but the inherited-pipe fixture expected a launcher
+exit of zero and observed 137: its 500 ms deadline had not established the
+intended exited-launcher state. The required gate reflected the TypeScript
+failures; macOS was separately marked nonblocking in that workflow. These
+are actual tooling/test failures, not a fully green matrix.
+
+The drift advisory separately reports historical Windows rows with 46
+failures in 59 executions (78.0%), last run 34122703611, and the deliberately
+disabled publisher/frozen ledger. It is not a new hidden-switch test result.
+The corrective dependency is
+[PR #16925](https://github.com/Lucent-Financial-Group/Zeta/pull/16925).
+Its reviewed descriptor-based TypeScript copy and observed-exit F# fixture
+are validated separately before integration; no original scientific source,
+receipt, measurement or archive is changed to resolve these findings.
+
+## Public reference roster review
+
+CodeQL reported the reference module's `PANELS` global unused. The existing
+test `test_registered_constants_and_hand_tapes_are_complete_and_immutable`
+reads `ref.PANELS` and asserts its ordered names. The
+[targeted existing test](root-codeql-panel-roster-test.log) passed once;
+its [execution/source record](root-codeql-panel-roster-test.json) identifies
+the unchanged publication head and exact files. This is a test consumer,
+not a claim that production replay imports that roster: replay deliberately
+defines its own independent roster. The
+[review disposition](../../2026-09-07-hidden-switch-result-review.md)
+records independent source review and preserves the frozen module unchanged.
