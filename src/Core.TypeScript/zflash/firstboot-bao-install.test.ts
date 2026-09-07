@@ -5,6 +5,7 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { TPM_CHAR_DEVICE } from "../cluster/bao-load-site.ts";
+import { UNSEAL_REQUEST_ENV_KEY } from "../cluster/unseal-path.ts";
 import {
   FIRSTBOOT_BAO_ELF_EPOCH_KEY,
   FIRSTBOOT_BAO_LOAD_SITE_KEY,
@@ -332,6 +333,11 @@ describe("zeta-install.sh named bao bun consume after 6.95a", () => {
     expect(executable.split(`export ${FIRSTBOOT_BAO_LOAD_SITE_KEY}=`).length - 1).toBe(1);
     expect(executable.split(`${FIRSTBOOT_BAO_PATH_KEY}='`).length - 1).toBe(1);
     expect(executable.split(`${FIRSTBOOT_BAO_ELF_EPOCH_KEY}='installer-iso'`).length - 1).toBe(1);
+    expect(executable.split(`${UNSEAL_REQUEST_ENV_KEY}=`).length - 1).toBe(0);
+    expect(executable.split("jq -c '.requested'").length - 1).toBe(1);
+    expect(block.split("null request is unmeasured, not auto").length - 1).toBe(1);
+    expect(executable.split("planSetupFromNamedBaoElfEnv").length - 1).toBe(0);
+    expect(executable.split("integrateAtSetup").length - 1).toBe(0);
     expect(executable.split("[ -d /mnt ]").length - 1).toBe(0);
     expect(executable.split("test -d /mnt").length - 1).toBe(0);
     expect(executable.split(TPM_CHAR_DEVICE).length - 1).toBe(0);
@@ -353,7 +359,12 @@ describe("zeta-install.sh named bao bun consume after 6.95a", () => {
       },
     });
     expect(spawned.status).toBe(0);
-    expect(JSON.parse(spawned.stdout)).toEqual({ ok: true, ask: nixosHostBaoAsk(), epoch: null });
+    expect(JSON.parse(spawned.stdout)).toEqual({
+      ok: true,
+      ask: nixosHostBaoAsk(),
+      epoch: null,
+      requested: null,
+    });
   });
 
   test("the helper the installer names reports installer-iso and filters ISO current-system bao", () => {
@@ -372,6 +383,7 @@ describe("zeta-install.sh named bao bun consume after 6.95a", () => {
       ok: true,
       ask: null,
       epoch: "installer-iso",
+      requested: null,
     });
   });
 
@@ -385,6 +397,43 @@ describe("zeta-install.sh named bao bun consume after 6.95a", () => {
       },
     });
     expect(spawned.status).toBe(0);
-    expect(JSON.parse(spawned.stdout)).toEqual({ ok: true, ask: null, epoch: null });
+    expect(JSON.parse(spawned.stdout)).toEqual({
+      ok: true,
+      ask: null,
+      epoch: null,
+      requested: null,
+    });
+  });
+
+  test("the helper the installer names reports a named unseal request and refuses tpmrm0", () => {
+    const named = spawnSync(process.execPath, [helper], {
+      encoding: "utf8",
+      env: {
+        PATH: process.env.PATH,
+        [FIRSTBOOT_BAO_LOAD_SITE_KEY]: "on-host",
+        [FIRSTBOOT_BAO_PATH_KEY]: NIXOS_HOST_BAO,
+        [FIRSTBOOT_BAO_ELF_EPOCH_KEY]: "installer-iso",
+        [UNSEAL_REQUEST_ENV_KEY]: "pkcs11-tpm",
+      },
+    });
+    expect(named.status).toBe(0);
+    expect(JSON.parse(named.stdout)).toEqual({
+      ok: true,
+      ask: null,
+      epoch: "installer-iso",
+      requested: "pkcs11-tpm",
+    });
+    const fromTpmrm0 = spawnSync(process.execPath, [helper], {
+      encoding: "utf8",
+      env: {
+        PATH: process.env.PATH,
+        [FIRSTBOOT_BAO_LOAD_SITE_KEY]: "on-host",
+        [FIRSTBOOT_BAO_PATH_KEY]: NIXOS_HOST_BAO,
+        [FIRSTBOOT_BAO_ELF_EPOCH_KEY]: "installer-iso",
+        [UNSEAL_REQUEST_ENV_KEY]: TPM_CHAR_DEVICE,
+      },
+    });
+    expect(fromTpmrm0.status).toBe(2);
+    expect(JSON.parse(fromTpmrm0.stdout)).toEqual({ ok: false, reason: "unknown-request" });
   });
 });

@@ -256,6 +256,16 @@ assume the number.
    as a TypeScript `IntegrateDecision`. Capture stays injected.
    Missing request is unmeasured, not `auto`. Does not invent
    an integrate decision.
+   ISO bun consume reports named unseal request (`081M1WG1RJB087G0R001ADMJNK`):
+   bun JSON includes `requested`. Missing is unmeasured, not
+   `auto`. `/dev/tpmrm0` still refuses. Does not export a
+   default request. Does not invent an integrate decision.
+   Argv/conf overlay joins read unseal request (`081M1WHKEEQ087G0R0002B3SPG`):
+   `planSetupFromNamedBaoElfArgv` and `planSetupFromNamedBaoElfConf`
+   take the request from env, not as a TypeScript
+   `IntegrateDecision`. Capture stays injected. Missing is
+   unmeasured, not `auto`. Does not add the request to ESP
+   conf. Does not invent an integrate decision.
 7. extraContainer sidecar — later, **same commit as the
    sidecar**, and only for the Shamir kind path until the
    emulator job replaces it. `valuesObject` only. Do not fork

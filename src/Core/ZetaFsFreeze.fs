@@ -862,6 +862,143 @@ module ZetaFsFreeze =
         interface IDisposable with
             member _.Dispose() = (throttler :> IDisposable).Dispose()
 
+    let private bindingsPath (storeDir: string) =
+        ZetaFsPath.combine2 storeDir "bindings"
+
+    let private kindName (k: ZetaFsNamespace.EntityKind) =
+        match k with
+        | ZetaFsNamespace.EntityKind.File -> "file"
+        | ZetaFsNamespace.EntityKind.Directory -> "directory"
+        | ZetaFsNamespace.EntityKind.Essence -> "essence"
+        | ZetaFsNamespace.EntityKind.Symlink -> "symlink"
+
+    let private parseKind (s: string) : ZetaFsNamespace.EntityKind option =
+        if String.Equals(s, "file", StringComparison.Ordinal) then
+            Some ZetaFsNamespace.EntityKind.File
+        elif String.Equals(s, "directory", StringComparison.Ordinal) then
+            Some ZetaFsNamespace.EntityKind.Directory
+        elif String.Equals(s, "essence", StringComparison.Ordinal) then
+            Some ZetaFsNamespace.EntityKind.Essence
+        elif String.Equals(s, "symlink", StringComparison.Ordinal) then
+            Some ZetaFsNamespace.EntityKind.Symlink
+        else
+            None
+
+    let private persistNamespace (storeDir: string) (state: ZetaFsNamespace.State) =
+        let fs = FileSystem.Current
+        let sb = StringBuilder()
+
+        for kv in state.Entities do
+            sb
+                .Append("entity ")
+                .Append(ZetaFsNamespace.EntityId.format kv.Key)
+                .Append(' ')
+                .Append(kindName kv.Value)
+                .Append('\n')
+            |> ignore
+
+        for b in List.rev state.Bindings do
+            let nameHex = Convert.ToHexString b.Name
+            let asserter =
+                match b.Asserter with
+                | ZetaFsNamespace.ActorId a -> a
+
+            match b.Target with
+            | ZetaFsNamespace.Live target ->
+                sb
+                    .Append("live ")
+                    .Append(ZetaFsNamespace.EntityId.format b.Parent)
+                    .Append(' ')
+                    .Append(nameHex)
+                    .Append(' ')
+                    .Append(ZetaFsNamespace.EntityId.format target)
+                    .Append(' ')
+                    .Append(asserter)
+                    .Append(' ')
+                    .Append(b.Phase.Stamp.Version.ToString(CultureInfo.InvariantCulture))
+                    .Append('\n')
+                |> ignore
+            | ZetaFsNamespace.Tombstone ->
+                sb
+                    .Append("tombstone ")
+                    .Append(ZetaFsNamespace.EntityId.format b.Parent)
+                    .Append(' ')
+                    .Append(nameHex)
+                    .Append(' ')
+                    .Append(asserter)
+                    .Append(' ')
+                    .Append(b.Phase.Stamp.Version.ToString(CultureInfo.InvariantCulture))
+                    .Append('\n')
+                |> ignore
+
+        FileSystemIo.writeAllText fs (bindingsPath storeDir) (sb.ToString())
+
+    let private loadNamespace (storeDir: string) (root: ZetaFsNamespace.EntityId) : ZetaFsNamespace.State =
+        let fs = FileSystem.Current
+        let path = bindingsPath storeDir
+        let mutable entities = Map.add root ZetaFsNamespace.EntityKind.Directory Map.empty
+        let mutable bindings: ZetaFsNamespace.TagBinding list = []
+        let mutable next = Versionstamp.zero
+
+        if fs.Exists path then
+            let text = Encoding.UTF8.GetString(fs.ReadAllBytes path)
+            let lines =
+                text.Replace("\r\n", "\n", StringComparison.Ordinal).Split('\n')
+
+            for raw in lines do
+                if raw.Length > 0 then
+                    let parts = raw.Split(' ')
+
+                    if parts.Length >= 3 && String.Equals(parts.[0], "entity", StringComparison.Ordinal) then
+                        match ZetaFsNamespace.EntityId.tryParse parts.[1], parseKind parts.[2] with
+                        | Some id, Some kind -> entities <- Map.add id kind entities
+                        | _ -> ()
+                    elif parts.Length >= 6 && String.Equals(parts.[0], "live", StringComparison.Ordinal) then
+                        match
+                            ZetaFsNamespace.EntityId.tryParse parts.[1],
+                            ZetaFsNamespace.EntityId.tryParse parts.[3],
+                            Int64.TryParse(parts.[5], NumberStyles.Integer, CultureInfo.InvariantCulture)
+                        with
+                        | Some parent, Some target, (true, ver) ->
+                            let name = Convert.FromHexString parts.[2]
+                            let stamp = Versionstamp.ofInt64 ver
+                            if stamp.Version >= next.Version then
+                                next <- Versionstamp.tick stamp
+
+                            bindings <-
+                                { Name = name
+                                  Parent = parent
+                                  Target = ZetaFsNamespace.Live target
+                                  Phase = { Line = ZetaFsNamespace.PhaseLine; Stamp = stamp }
+                                  Asserter = ZetaFsNamespace.ActorId parts.[4] }
+                                :: bindings
+                        | _ -> ()
+                    elif parts.Length >= 5 && String.Equals(parts.[0], "tombstone", StringComparison.Ordinal) then
+                        match
+                            ZetaFsNamespace.EntityId.tryParse parts.[1],
+                            Int64.TryParse(parts.[4], NumberStyles.Integer, CultureInfo.InvariantCulture)
+                        with
+                        | Some parent, (true, ver) ->
+                            let name = Convert.FromHexString parts.[2]
+                            let stamp = Versionstamp.ofInt64 ver
+                            if stamp.Version >= next.Version then
+                                next <- Versionstamp.tick stamp
+
+                            bindings <-
+                                { Name = name
+                                  Parent = parent
+                                  Target = ZetaFsNamespace.Tombstone
+                                  Phase = { Line = ZetaFsNamespace.PhaseLine; Stamp = stamp }
+                                  Asserter = ZetaFsNamespace.ActorId parts.[3] }
+                                :: bindings
+                        | _ -> ()
+
+        { Root = root
+          Entities = entities
+          Bindings = bindings
+          Next = next
+          Line = ZetaFsNamespace.PhaseLine }
+
     [<Sealed>]
     type Volume
         (
@@ -891,6 +1028,12 @@ module ZetaFsFreeze =
                 None
             else
                 ZetaFsNamespace.EntityId.tryParse (Encoding.UTF8.GetString(fs.ReadAllBytes path))
+        let nsState =
+            ref (
+                match root with
+                | None -> None
+                | Some rootId -> Some(loadNamespace storeDir rootId)
+            )
         let log =
             new FreezeLog(
                 storeDir,
@@ -955,6 +1098,7 @@ module ZetaFsFreeze =
                 history := v
                 persistCatalogBestEffort storeDir known livePins v !freezeBytesSinceReclaim objectSets
         member _.Root = root
+        member internal _.Ns = nsState
 
         interface IDisposable with
             member _.Dispose() =
@@ -1500,6 +1644,44 @@ module ZetaFsFreeze =
         hostFileStore storeDir mutbuf observer (Some session) true
 
     let dispose (volume: Volume) = (volume :> IDisposable).Dispose()
+
+    /// Mint a File under ROOT and persist the TagBinding. Reopen
+    /// `liveResolve` must find the same id. No ROOT => None.
+    let bindFile (volume: Volume) (name: byte[]) : Result<ZetaFsNamespace.EntityId, ZetaFsNamespace.BindError> =
+        lock volume.Gate (fun () ->
+            match volume.Root, !volume.Ns with
+            | Some root, Some state ->
+                let entropy =
+                    ZetaFsNamespace.Entropy(fun () -> SystemEnvironment.Default.NextInt64())
+                let id, minted = ZetaFsNamespace.mint state ZetaFsNamespace.EntityKind.File entropy
+
+                match ZetaFsNamespace.bind minted root name id (ZetaFsNamespace.ActorId "freeze") with
+                | Error e -> Error e
+                | Ok next ->
+                    persistNamespace volume.StoreDir next
+                    volume.Ns := Some next
+                    Ok id
+            | _ -> Error(ZetaFsNamespace.UnknownEntity { Raw = System.UInt128.Zero }))
+
+    /// POSIX unlink: append Tombstone under ROOT. Does not retract the Live
+    /// row. Reopen `liveResolve` must be None.
+    let unlinkFile (volume: Volume) (name: byte[]) : Result<unit, ZetaFsNamespace.BindError> =
+        lock volume.Gate (fun () ->
+            match volume.Root, !volume.Ns with
+            | Some root, Some state ->
+                match ZetaFsNamespace.unlink state root name (ZetaFsNamespace.ActorId "freeze") with
+                | Error e -> Error e
+                | Ok next ->
+                    persistNamespace volume.StoreDir next
+                    volume.Ns := Some next
+                    Ok()
+            | _ -> Error(ZetaFsNamespace.UnknownEntity { Raw = System.UInt128.Zero }))
+
+    let liveResolve (volume: Volume) (name: byte[]) : ZetaFsNamespace.EntityId option =
+        lock volume.Gate (fun () ->
+            match volume.Root, !volume.Ns with
+            | Some root, Some state -> ZetaFsNamespace.liveResolve root name state.Bindings
+            | _ -> None)
 
     /// Journal for a crash-mid-sweep. Owned by the volume, not invented by
     /// the caller. `reclaimSweep` is the only apply door that uses it.

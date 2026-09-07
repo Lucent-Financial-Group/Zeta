@@ -16,10 +16,11 @@
  * into `planSetupFromNamedBaoElf`. Epoch is named from that
  * same env (`ZETA_BAO_ELF_EPOCH`) — a TypeScript caller cannot
  * pass a different epoch than the env names. Unseal request
- * is named from that same env (`ZETA_UNSEAL_REQUEST`) — a
- * TypeScript caller cannot pass `pkcs11-tpm` while env is
- * missing. Capture stays injected. ISO current-system bao is
- * not option D. Role conf plus named bao is one planner call;
+ * is named from that same env (`ZETA_UNSEAL_REQUEST`) for
+ * argv, conf, and env joins — a TypeScript caller cannot pass
+ * `pkcs11-tpm` while env is missing. Capture stays injected.
+ * ISO current-system bao is not option D. Role conf plus
+ * named bao is one planner call;
  * the role type is unchanged. Pure join + argv parse + conf/env
  * consume live in firstboot-bao-elf.ts so zflash can consume
  * sourced names without installer `fs`. Does not expand
@@ -145,36 +146,69 @@ export function planSetupFromNamedBaoElf(
   return planSetupFromRestoredCompanion(decision, restore, baoElf);
 }
 
-export type FirstBootBaoElfFromArgv =
-  { readonly ok: true; readonly plan: OverlayPlan } | { readonly ok: false; readonly reason: NamedBaoElfArgError };
-
 export type FirstBootFromEnvError = NamedBaoElfArgError | NamedPathRequestError;
 
 export type FirstBootBaoElfFromEnv =
   { readonly ok: true; readonly plan: OverlayPlan } | { readonly ok: false; readonly reason: FirstBootFromEnvError };
 
-/** First-boot calls this. Overlay still does not open files. */
-export function planSetupFromNamedBaoElfArgv(
-  decision: IntegrateDecision,
-  restore: RestoredPkcs11PointerCapture,
-  argv: readonly string[],
-  read: BaoElfRead,
-): FirstBootBaoElfFromArgv {
-  const parsed = parseNamedBaoElfArgs(argv);
-  if (!parsed.ok) return parsed;
-  return { ok: true, plan: planSetupFromNamedBaoElf(decision, restore, parsed.ask, read) };
+export type FirstBootBaoElfFromArgv = FirstBootBaoElfFromEnv;
+
+/**
+ * Unmeasured request is not `auto`. Overlay only checks
+ * `decision.ok`; mapping null onto the existing refuse keeps
+ * oracle `"none"` without expanding IntegrateRefuse.
+ */
+function overlayDecisionFromEnv(
+  env: { readonly [key: string]: string | undefined },
+  host: HostHardwareCapture,
+):
+  | { readonly ok: true; readonly decision: IntegrateDecision }
+  | { readonly ok: false; readonly reason: NamedPathRequestError } {
+  const fromEnv = integrateAtSetupFromEnv(env, host);
+  if (!fromEnv.ok) return fromEnv;
+  return { ok: true, decision: fromEnv.decision ?? { ok: false, reason: "no-path" } };
 }
 
-/** First-boot conf consume. Overlay still does not open files. */
+/**
+ * First-boot argv consume. Overlay still does not open files.
+ * Unseal request is named from env (`ZETA_UNSEAL_REQUEST`):
+ * missing is unmeasured, not `auto`. Capture stays injected.
+ * `/dev/tpmrm0` still refuses at parse. Does not add the
+ * request to ESP conf.
+ */
+export function planSetupFromNamedBaoElfArgv(
+  restore: RestoredPkcs11PointerCapture,
+  argv: readonly string[],
+  env: { readonly [key: string]: string | undefined },
+  read: BaoElfRead,
+  host: HostHardwareCapture,
+): FirstBootBaoElfFromEnv {
+  const fromEnv = overlayDecisionFromEnv(env, host);
+  if (!fromEnv.ok) return fromEnv;
+  const parsed = parseNamedBaoElfArgs(argv);
+  if (!parsed.ok) return parsed;
+  return { ok: true, plan: planSetupFromNamedBaoElf(fromEnv.decision, restore, parsed.ask, read) };
+}
+
+/**
+ * First-boot conf consume. Overlay still does not open files.
+ * Unseal request is named from env (`ZETA_UNSEAL_REQUEST`):
+ * missing is unmeasured, not `auto`. Capture stays injected.
+ * `/dev/tpmrm0` still refuses at parse. Does not add the
+ * request to the conf body.
+ */
 export function planSetupFromNamedBaoElfConf(
-  decision: IntegrateDecision,
   restore: RestoredPkcs11PointerCapture,
   conf: string,
+  env: { readonly [key: string]: string | undefined },
   read: BaoElfRead,
-): FirstBootBaoElfFromArgv {
+  host: HostHardwareCapture,
+): FirstBootBaoElfFromEnv {
+  const fromEnv = overlayDecisionFromEnv(env, host);
+  if (!fromEnv.ok) return fromEnv;
   const parsed = parseFirstbootBaoElfConf(conf);
   if (!parsed.ok) return parsed;
-  return { ok: true, plan: planSetupFromNamedBaoElf(decision, restore, parsed.ask, read) };
+  return { ok: true, plan: planSetupFromNamedBaoElf(fromEnv.decision, restore, parsed.ask, read) };
 }
 
 /**
@@ -197,7 +231,7 @@ export function planSetupFromNamedBaoElfEnv(
   read: BaoElfRead,
   host: HostHardwareCapture,
 ): FirstBootBaoElfFromEnv {
-  const fromEnv = integrateAtSetupFromEnv(env, host);
+  const fromEnv = overlayDecisionFromEnv(env, host);
   if (!fromEnv.ok) return fromEnv;
   const parsed = consumeFirstbootBaoElfEnvWithEpoch(env);
   if (!parsed.ok) return parsed;
@@ -208,9 +242,5 @@ export function planSetupFromNamedBaoElfEnv(
     parsed.ask === null || parsed.epoch === null
       ? null
       : namedBaoElfAskAtEpoch(parsed.ask.site, parsed.ask.openedPath, parsed.epoch);
-  // Unmeasured request is not `auto`. Overlay only checks
-  // `decision.ok`; mapping null onto the existing refuse keeps
-  // oracle `"none"` without expanding IntegrateRefuse.
-  const decision: IntegrateDecision = fromEnv.decision ?? { ok: false, reason: "no-path" };
-  return { ok: true, plan: planSetupFromNamedBaoElf(decision, restore, ask, read) };
+  return { ok: true, plan: planSetupFromNamedBaoElf(fromEnv.decision, restore, ask, read) };
 }

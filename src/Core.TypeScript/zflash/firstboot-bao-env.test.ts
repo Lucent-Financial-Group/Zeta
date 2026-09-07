@@ -2,6 +2,7 @@ import { describe, expect, test } from "bun:test";
 import { spawnSync } from "node:child_process";
 import { fileURLToPath } from "node:url";
 import { TPM_CHAR_DEVICE } from "../cluster/bao-load-site.ts";
+import { UNSEAL_REQUEST_ENV_KEY } from "../cluster/unseal-path.ts";
 import {
   FIRSTBOOT_BAO_ELF_EPOCH_KEY,
   FIRSTBOOT_BAO_LOAD_SITE_KEY,
@@ -63,7 +64,9 @@ describe("runFirstbootBaoElfEnvCli", () => {
       },
     );
     expect(code).toBe(0);
-    expect(lines).toEqual([`${JSON.stringify({ ok: true, ask: nixosHostBaoAsk(), epoch: null })}\n`]);
+    expect(lines).toEqual([
+      `${JSON.stringify({ ok: true, ask: nixosHostBaoAsk(), epoch: null, requested: null })}\n`,
+    ]);
   });
 
   test("writes a refusal and exits 2", () => {
@@ -89,7 +92,12 @@ describe("firstboot-bao-env.ts process entry", () => {
       },
     });
     expect(spawned.status).toBe(0);
-    expect(JSON.parse(spawned.stdout)).toEqual({ ok: true, ask: nixosHostBaoAsk(), epoch: null });
+    expect(JSON.parse(spawned.stdout)).toEqual({
+      ok: true,
+      ask: nixosHostBaoAsk(),
+      epoch: null,
+      requested: null,
+    });
   });
 
   test("spawned bun consume is unmeasured when neither key is exported", () => {
@@ -98,7 +106,7 @@ describe("firstboot-bao-env.ts process entry", () => {
       env: { PATH: process.env.PATH },
     });
     expect(spawned.status).toBe(0);
-    expect(JSON.parse(spawned.stdout)).toEqual({ ok: true, ask: null, epoch: null });
+    expect(JSON.parse(spawned.stdout)).toEqual({ ok: true, ask: null, epoch: null, requested: null });
   });
 });
 
@@ -189,7 +197,69 @@ describe("runFirstbootBaoElfEnvCli epoch", () => {
     );
     expect(code).toBe(0);
     expect(lines).toEqual([
-      `${JSON.stringify({ ok: true, ask: null, epoch: "installer-iso" })}\n`,
+      `${JSON.stringify({ ok: true, ask: null, epoch: "installer-iso", requested: null })}\n`,
     ]);
+  });
+});
+
+describe("runFirstbootBaoElfEnvCli unseal request", () => {
+  test("missing request is unmeasured, not auto", () => {
+    const lines: string[] = [];
+    const code = runFirstbootBaoElfEnvCli(
+      {
+        [FIRSTBOOT_BAO_LOAD_SITE_KEY]: "on-host",
+        [FIRSTBOOT_BAO_PATH_KEY]: NIXOS_HOST_BAO,
+        [FIRSTBOOT_BAO_ELF_EPOCH_KEY]: "installer-iso",
+      },
+      (line) => {
+        lines.push(line);
+      },
+    );
+    expect(code).toBe(0);
+    expect(JSON.parse(lines[0] ?? "")).toEqual({
+      ok: true,
+      ask: null,
+      epoch: "installer-iso",
+      requested: null,
+    });
+  });
+
+  test("named pkcs11-tpm is reported and does not become auto", () => {
+    const lines: string[] = [];
+    const code = runFirstbootBaoElfEnvCli(
+      {
+        [FIRSTBOOT_BAO_LOAD_SITE_KEY]: "on-host",
+        [FIRSTBOOT_BAO_PATH_KEY]: NIXOS_HOST_BAO,
+        [FIRSTBOOT_BAO_ELF_EPOCH_KEY]: "installer-iso",
+        [UNSEAL_REQUEST_ENV_KEY]: "pkcs11-tpm",
+      },
+      (line) => {
+        lines.push(line);
+      },
+    );
+    expect(code).toBe(0);
+    expect(JSON.parse(lines[0] ?? "")).toEqual({
+      ok: true,
+      ask: null,
+      epoch: "installer-iso",
+      requested: "pkcs11-tpm",
+    });
+  });
+
+  test("tpmrm0 as unseal request refuses and does not report auto", () => {
+    const lines: string[] = [];
+    const code = runFirstbootBaoElfEnvCli(
+      {
+        [FIRSTBOOT_BAO_LOAD_SITE_KEY]: "on-host",
+        [FIRSTBOOT_BAO_PATH_KEY]: NIXOS_HOST_BAO,
+        [FIRSTBOOT_BAO_ELF_EPOCH_KEY]: "installer-iso",
+        [UNSEAL_REQUEST_ENV_KEY]: TPM_CHAR_DEVICE,
+      },
+      (line) => {
+        lines.push(line);
+      },
+    );
+    expect(code).toBe(2);
+    expect(JSON.parse(lines[0] ?? "")).toEqual({ ok: false, reason: "unknown-request" });
   });
 });

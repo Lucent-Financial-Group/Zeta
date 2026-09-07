@@ -61,6 +61,8 @@
     <Compile Include="Algebra/ProbabilitySemiring.Boundary.Tests.fs" />
     <Compile Include="../../src/Research.FSharp/SimplexBeliefComparison.fs" Link="Research/SimplexBeliefComparison.fs" />
     <Compile Include="SimplexBeliefComparison.Tests.fs" />
+    <Compile Include="../../src/Research.FSharp/FiniteStochasticBridge.fs" Link="Research/FiniteStochasticBridge.fs" />
+    <Compile Include="FiniteStochasticBridge.Tests.fs" />
     <Compile Include="../../src/Research.FSharp/ResearchRandom.fs" Link="Research/ResearchRandom.fs" />
     <Compile Include="../../src/Research.FSharp/Mess3.fs" Link="Research/Mess3.fs" />
     <Compile Include="../../src/Research.FSharp/SmallRnn.fs" Link="Research/SmallRnn.fs" />

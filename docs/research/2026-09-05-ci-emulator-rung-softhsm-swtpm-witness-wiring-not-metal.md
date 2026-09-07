@@ -296,6 +296,13 @@ refuses at parse.
 Overlay env join reads unseal request (`081M1WE7Z5S087G0R001WT3K6G`):
 `planSetupFromNamedBaoElfEnv` takes the request from env.
 Capture stays injected. Missing is unmeasured, not `auto`.
+ISO bun consume reports named unseal request (`081M1WG1RJB087G0R001ADMJNK`):
+bun JSON includes `requested`. Missing is unmeasured, not `auto`.
+Does not export a default request. Does not call `integrateAtSetup`.
+Argv/conf overlay joins read unseal request (`081M1WHKEEQ087G0R0002B3SPG`):
+`planSetupFromNamedBaoElfArgv` and `planSetupFromNamedBaoElfConf`
+take the request from env. Capture stays injected. Missing is
+unmeasured, not `auto`. Does not add the request to ESP conf.
 
 1. Metal: `seal "pkcs11"` in Application.yaml still waits.
    Same commit as a **reachable** module: same-libc image
