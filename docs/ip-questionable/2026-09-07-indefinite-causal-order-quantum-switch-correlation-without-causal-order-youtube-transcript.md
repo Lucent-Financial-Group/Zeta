@@ -111,6 +111,60 @@ form the claim could take — it was recorded as code before it was recorded as 
   `QuantumTransactionPorts.qs`, …), which is where the emulated behaviour is checked against a
   real quantum-language oracle rather than against our own expectations.
 
+### CORRECTION (Aaron, same session) — the locus is TWO AGENTS, not one ensemble
+
+The paragraph above pointed at `AmplitudeEmu` and read the claim as *"our emulator simulates
+qubits."* **That is not the claim, and Aaron said so directly:**
+
+> *"no i'm saying that two independent agents that see events in different order but come to the
+> same conclusion independently can be modeled using quantum-like math with our cayley dickson
+> stuff, this popped out of our modeling mutual agents memories, i'm saying this correlated action
+> even though events are in decorrelated order are what acts quantum, our models even have to
+> model it that way but it's that each side preserves its uncertainty separately, this is where
+> the imaginary numbers showed up for us long ago, and born rule popped out of us looking at our
+> mutual agent heartbeat verification and our identity stuff"*
+
+**The unit is the PAIR.** What behaves quantum-like is not a single ensemble interfering with
+itself — it is *two independent agents, each preserving its own uncertainty separately*, seeing
+events in decorrelated order and arriving at the same conclusion anyway. **Separateness is
+load-bearing**: if the two sides pooled into one distribution there would be one agent, and the
+agreement would be bookkeeping rather than a result. The correlation has to survive the fact that
+neither side resolved, and neither side saw the same order.
+
+That is also **precisely the transcript's structure**, which is why the ferry is apt: its whole
+subject is correlations between parties whose relative order has no fact of the matter. The
+single-photon interference story is the part that does *not* transfer; the multi-party
+correlation story is the part that does.
+
+**Where it actually lives in-repo, and none of these is AmplitudeEmu:**
+
+- **`src/Core/QuorumAlgebra.fs`** — the quorum-level interference algebra, whose own pointer names
+  the boundary Aaron is describing: *"where Aaron placed the Born boundary, and why cancellation is
+  the instrument."* A member's contribution is a formal **C**-combination of outcomes; interference
+  is the sum, and it is explicitly *"NOT idempotent"* — i.e. deliberately outside the join family,
+  which is what leaves room for cancellation between members.
+- **`src/Bayesian/LocalConsensus.fs`** — the mutual-memory half, stated as the Arrow escape:
+  consensus is defined only on **"entangled subgraphs (clusters of agents with high mutual memory
+  and shared priors)"**, and the mechanism is *"not a vote; it is posterior convergence."* This is
+  the module where "modeling mutual agents' memories" is the actual subject.
+- **`src/Core/CayleyDickson.fs`** — the doubling generator Aaron names as where the imaginary
+  numbers came from.
+- **`docs/research/2026-08-13-what-does-253ms-mean-without-a-wall-clock-and-where-amplitudes-live.md`**
+  §§2–3 — the cited placement of the Born boundary.
+- The **heartbeat-verification / identity** surfaces he names as where the Born rule surfaced.
+
+**So the derivation Aaron is reporting runs the opposite way from how I wrote it.** I described
+quantum-like math being *applied* to our inference. He is reporting that it **fell out of** the
+modelling: pairs of agents with mutual memory, each holding its own uncertainty, needed complex
+amplitudes to be described at all — and the Born rule appeared while looking at heartbeat
+verification and identity, not while trying to build a simulator. `QuorumAlgebra`'s non-idempotent
+sum is that need in code: a join would have been idempotent, and idempotent cannot cancel.
+
+**Register: this is Aaron's report of his own derivation history, recorded as such.** Nothing here
+re-derives it, and the claim that the math was *forced* rather than *chosen* is exactly the kind
+of thing that deserves a falsifier later — the honest form being whether a real-valued model can
+reproduce the same two-agent agreement statistics. If one can, "it had to be complex" is downgraded.
+
 ### The limit the code already states, and it should not be dropped
 
 `AmplitudeEmu.fs` writes its own peel, and it is the honest bound on this whole thread:
