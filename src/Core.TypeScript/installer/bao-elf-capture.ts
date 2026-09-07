@@ -18,12 +18,16 @@
  * pass a different epoch than the env names. Unseal request
  * is named from that same env (`ZETA_UNSEAL_REQUEST`) for
  * argv, conf, and env joins — a TypeScript caller cannot pass
- * `pkcs11-tpm` while env is missing. Capture stays injected.
- * ISO current-system bao is not option D. Role conf plus
- * named bao is one planner call;
- * the role type is unchanged. Pure join + argv parse + conf/env
- * consume live in firstboot-bao-elf.ts so zflash can consume
- * sourced names without installer `fs`. Does not expand
+ * `pkcs11-tpm` while env is missing. Probe snapshot stays
+ * injected (`NamedHardwareProbe | null`); mapped via
+ * `hostCaptureFromNamedProbe`. Null is unmeasured, not
+ * present. `/dev/tpmrm0` is not a capture. A TypeScript
+ * caller cannot pass `tpm2: "present"` without naming it on
+ * the probe. ISO current-system bao is not option D. Role
+ * conf plus named bao is one planner call; the role type is
+ * unchanged. Pure join + argv parse + conf/env consume live
+ * in firstboot-bao-elf.ts so zflash can consume sourced
+ * names without installer `fs`. Does not expand
  * `ZetaFirstbootRole`. Does not edit `zeta-first-boot.sh`.
  * Does not open the installer ISO's
  * `/run/current-system/sw/bin/bao` as metal option D.
@@ -39,7 +43,10 @@ import {
   type BaoElfCapture,
   type BaoLoadSite,
 } from "../cluster/bao-load-site.ts";
-import { type HostHardwareCapture } from "../cluster/host-seal-profile.ts";
+import {
+  hostCaptureFromNamedProbe,
+  type NamedHardwareProbe,
+} from "../cluster/host-seal-profile.ts";
 import { USB_PKCS11_MODULE_POINTER, type OverlayPlan } from "../cluster/pkcs11-hostpath-overlay.ts";
 import {
   integrateAtSetupFromEnv,
@@ -154,17 +161,18 @@ export type FirstBootBaoElfFromEnv =
 export type FirstBootBaoElfFromArgv = FirstBootBaoElfFromEnv;
 
 /**
- * Unmeasured request is not `auto`. Overlay only checks
- * `decision.ok`; mapping null onto the existing refuse keeps
- * oracle `"none"` without expanding IntegrateRefuse.
+ * Unmeasured request is not `auto`. Null probe is unmeasured,
+ * not present. Overlay only checks `decision.ok`; mapping
+ * null onto the existing refuse keeps oracle `"none"` without
+ * expanding IntegrateRefuse.
  */
 function overlayDecisionFromEnv(
   env: { readonly [key: string]: string | undefined },
-  host: HostHardwareCapture,
+  probe: NamedHardwareProbe | null,
 ):
   | { readonly ok: true; readonly decision: IntegrateDecision }
   | { readonly ok: false; readonly reason: NamedPathRequestError } {
-  const fromEnv = integrateAtSetupFromEnv(env, host);
+  const fromEnv = integrateAtSetupFromEnv(env, hostCaptureFromNamedProbe(probe));
   if (!fromEnv.ok) return fromEnv;
   return { ok: true, decision: fromEnv.decision ?? { ok: false, reason: "no-path" } };
 }
@@ -172,18 +180,19 @@ function overlayDecisionFromEnv(
 /**
  * First-boot argv consume. Overlay still does not open files.
  * Unseal request is named from env (`ZETA_UNSEAL_REQUEST`):
- * missing is unmeasured, not `auto`. Capture stays injected.
- * `/dev/tpmrm0` still refuses at parse. Does not add the
- * request to ESP conf.
+ * missing is unmeasured, not `auto`. Probe snapshot stays
+ * injected. Null is unmeasured, not present. `/dev/tpmrm0`
+ * still refuses at parse and is not a capture. Does not add
+ * the request to ESP conf.
  */
 export function planSetupFromNamedBaoElfArgv(
   restore: RestoredPkcs11PointerCapture,
   argv: readonly string[],
   env: { readonly [key: string]: string | undefined },
   read: BaoElfRead,
-  host: HostHardwareCapture,
+  probe: NamedHardwareProbe | null,
 ): FirstBootBaoElfFromEnv {
-  const fromEnv = overlayDecisionFromEnv(env, host);
+  const fromEnv = overlayDecisionFromEnv(env, probe);
   if (!fromEnv.ok) return fromEnv;
   const parsed = parseNamedBaoElfArgs(argv);
   if (!parsed.ok) return parsed;
@@ -193,18 +202,19 @@ export function planSetupFromNamedBaoElfArgv(
 /**
  * First-boot conf consume. Overlay still does not open files.
  * Unseal request is named from env (`ZETA_UNSEAL_REQUEST`):
- * missing is unmeasured, not `auto`. Capture stays injected.
- * `/dev/tpmrm0` still refuses at parse. Does not add the
- * request to the conf body.
+ * missing is unmeasured, not `auto`. Probe snapshot stays
+ * injected. Null is unmeasured, not present. `/dev/tpmrm0`
+ * still refuses at parse and is not a capture. Does not add
+ * the request to the conf body.
  */
 export function planSetupFromNamedBaoElfConf(
   restore: RestoredPkcs11PointerCapture,
   conf: string,
   env: { readonly [key: string]: string | undefined },
   read: BaoElfRead,
-  host: HostHardwareCapture,
+  probe: NamedHardwareProbe | null,
 ): FirstBootBaoElfFromEnv {
-  const fromEnv = overlayDecisionFromEnv(env, host);
+  const fromEnv = overlayDecisionFromEnv(env, probe);
   if (!fromEnv.ok) return fromEnv;
   const parsed = parseFirstbootBaoElfConf(conf);
   if (!parsed.ok) return parsed;
@@ -218,8 +228,9 @@ export function planSetupFromNamedBaoElfConf(
  * `NIXOS_HOST_BAO` (that string is the live ISO's bao).
  * `installed-host` may. Unseal request is named from env
  * (`ZETA_UNSEAL_REQUEST`): missing is unmeasured, not `auto`.
- * Capture stays injected. `/dev/tpmrm0` still refuses at
- * parse. A named ask without a named epoch refuses
+ * Probe snapshot stays injected. Null is unmeasured, not
+ * present. `/dev/tpmrm0` still refuses at parse and is not
+ * a capture. A named ask without a named epoch refuses
  * (`empty-epoch`). Injected `read` is required. A refused
  * env is not filled with `NIXOS_HOST_BAO` or a `/mnt/...`
  * path. tpmrm0 is still not an ask. `/mnt` existing does
@@ -229,9 +240,9 @@ export function planSetupFromNamedBaoElfEnv(
   restore: RestoredPkcs11PointerCapture,
   env: { readonly [key: string]: string | undefined },
   read: BaoElfRead,
-  host: HostHardwareCapture,
+  probe: NamedHardwareProbe | null,
 ): FirstBootBaoElfFromEnv {
-  const fromEnv = overlayDecisionFromEnv(env, host);
+  const fromEnv = overlayDecisionFromEnv(env, probe);
   if (!fromEnv.ok) return fromEnv;
   const parsed = consumeFirstbootBaoElfEnvWithEpoch(env);
   if (!parsed.ok) return parsed;

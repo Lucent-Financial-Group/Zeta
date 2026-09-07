@@ -13,7 +13,7 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { describe, expect, test } from "bun:test";
 import { ELF_INTERP_GLIBC_X86_64, ELF_INTERP_MUSL_X86_64, TPM_CHAR_DEVICE } from "../cluster/bao-load-site.ts";
-import { emptyCapture } from "../cluster/host-seal-profile.ts";
+import { emptyCapture, type NamedHardwareProbe } from "../cluster/host-seal-profile.ts";
 import {
   NIXOS_PKCS11_MODULE_PATH,
   USB_PKCS11_MODULE_POINTER,
@@ -45,6 +45,23 @@ import {
   planSetupFromNamedBaoElfConf,
   planSetupFromNamedBaoElfEnv,
 } from "./bao-elf-capture.ts";
+
+function namedTpmPresent(): NamedHardwareProbe {
+  return {
+    os: "nixos",
+    tpm2: "present",
+    tpmDeviceNode: TPM_CHAR_DEVICE,
+    yubiHsm2: "not-asked",
+    smartCardReaderAttached: false,
+    yubikeyDetected: false,
+    pkcs11ModuleOnDisk: false,
+    smartcardHsm: false,
+  };
+}
+
+function namedTpmrm0Look(): NamedHardwareProbe {
+  return { ...namedTpmPresent(), tpm2: "indeterminate" };
+}
 
 function elf64LeWithInterp(interp: string): Uint8Array {
   const interpBytes = new TextEncoder().encode(`${interp}\0`);
@@ -224,10 +241,6 @@ describe("parseNamedBaoElfArgs — live installer names both flags", () => {
     resolvedModuleExists: true,
   };
 
-  function tpmHost() {
-    return emptyCapture({ os: "nixos", tpm2: "present" });
-  }
-
   function pkcs11Env() {
     return { [UNSEAL_REQUEST_ENV_KEY]: "pkcs11-tpm" };
   }
@@ -265,7 +278,7 @@ describe("parseNamedBaoElfArgs — live installer names both flags", () => {
         exists: true,
         bytes: path === NIXOS_HOST_BAO ? elf64LeWithInterp(ELF_INTERP_GLIBC_X86_64) : null,
       }),
-      tpmHost(),
+      namedTpmPresent(),
     );
     expect(fromArgv.ok).toBe(true);
     if (!fromArgv.ok) return;
@@ -280,7 +293,7 @@ describe("parseNamedBaoElfArgs — live installer names both flags", () => {
         exists: true,
         bytes: elf64LeWithInterp(ELF_INTERP_GLIBC_X86_64),
       }),
-      tpmHost(),
+      namedTpmPresent(),
     );
     expect(empty.ok).toBe(true);
     if (!empty.ok) return;
@@ -301,7 +314,7 @@ describe("parseNamedBaoElfArgs — live installer names both flags", () => {
           bytes: path === NIXOS_HOST_BAO ? elf64LeWithInterp(ELF_INTERP_GLIBC_X86_64) : null,
         };
       },
-      tpmHost(),
+      namedTpmPresent(),
     );
     expect(missingRequest.ok).toBe(true);
     if (!missingRequest.ok) return;
@@ -323,10 +336,33 @@ describe("parseNamedBaoElfArgs — live installer names both flags", () => {
           bytes: path === NIXOS_HOST_BAO ? elf64LeWithInterp(ELF_INTERP_GLIBC_X86_64) : null,
         };
       },
-      tpmHost(),
+      namedTpmPresent(),
     );
     expect(fromTpmrm0).toEqual({ ok: false, reason: "unknown-request" });
     expect(opened).toEqual([]);
+  });
+
+  test("null probe is unmeasured, not present — option D does not emit host HCL", () => {
+    const opened: string[] = [];
+    const fromNull = planSetupFromNamedBaoElfArgv(
+      missingRestore,
+      ["--bao-load-site=on-host", `--bao-path=${NIXOS_HOST_BAO}`],
+      pkcs11Env(),
+      (path) => {
+        opened.push(path);
+        return {
+          exists: true,
+          bytes: path === NIXOS_HOST_BAO ? elf64LeWithInterp(ELF_INTERP_GLIBC_X86_64) : null,
+        };
+      },
+      null,
+    );
+    expect(fromNull.ok).toBe(true);
+    if (!fromNull.ok) return;
+    expect(opened).toEqual([NIXOS_HOST_BAO]);
+    expect(fromNull.plan.oracle).toBe("none");
+    expect(fromNull.plan.mayCommitHostHcl).toBe(false);
+    expect(hostBaoSealHcl(fromNull.plan)).toBeNull();
   });
 });
 
@@ -426,10 +462,6 @@ describe("parseFirstbootBaoElfConf — consume both names or neither", () => {
     resolvedModuleExists: true,
   };
 
-  function tpmHost() {
-    return emptyCapture({ os: "nixos", tpm2: "present" });
-  }
-
   function pkcs11Env() {
     return { [UNSEAL_REQUEST_ENV_KEY]: "pkcs11-tpm" };
   }
@@ -507,7 +539,7 @@ describe("parseFirstbootBaoElfConf — consume both names or neither", () => {
         exists: true,
         bytes: path === NIXOS_HOST_BAO ? elf64LeWithInterp(ELF_INTERP_GLIBC_X86_64) : null,
       }),
-      tpmHost(),
+      namedTpmPresent(),
     );
     expect(fromConf.ok).toBe(true);
     if (!fromConf.ok) return;
@@ -522,7 +554,7 @@ describe("parseFirstbootBaoElfConf — consume both names or neither", () => {
         exists: true,
         bytes: elf64LeWithInterp(ELF_INTERP_GLIBC_X86_64),
       }),
-      tpmHost(),
+      namedTpmPresent(),
     );
     expect(empty.ok).toBe(true);
     if (!empty.ok) return;
@@ -546,7 +578,7 @@ describe("parseFirstbootBaoElfConf — consume both names or neither", () => {
           bytes: path === NIXOS_HOST_BAO ? elf64LeWithInterp(ELF_INTERP_GLIBC_X86_64) : null,
         };
       },
-      tpmHost(),
+      namedTpmPresent(),
     );
     expect(missingRequest.ok).toBe(true);
     if (!missingRequest.ok) return;
@@ -571,10 +603,36 @@ describe("parseFirstbootBaoElfConf — consume both names or neither", () => {
           bytes: path === NIXOS_HOST_BAO ? elf64LeWithInterp(ELF_INTERP_GLIBC_X86_64) : null,
         };
       },
-      tpmHost(),
+      namedTpmPresent(),
     );
     expect(fromTpmrm0).toEqual({ ok: false, reason: "unknown-request" });
     expect(opened).toEqual([]);
+  });
+
+  test("null probe is unmeasured, not present — option D does not emit host HCL", () => {
+    const planned = planFirstbootConfFileContent({ kind: "first-control-plane" });
+    if (!planned.ok) throw new Error(planned.error);
+    const withBao = appendFirstbootBaoElfConf(planned.value, nixosHostBaoAsk());
+    const opened: string[] = [];
+    const fromNull = planSetupFromNamedBaoElfConf(
+      missingRestore,
+      withBao,
+      pkcs11Env(),
+      (path) => {
+        opened.push(path);
+        return {
+          exists: true,
+          bytes: path === NIXOS_HOST_BAO ? elf64LeWithInterp(ELF_INTERP_GLIBC_X86_64) : null,
+        };
+      },
+      null,
+    );
+    expect(fromNull.ok).toBe(true);
+    if (!fromNull.ok) return;
+    expect(opened).toEqual([NIXOS_HOST_BAO]);
+    expect(fromNull.plan.oracle).toBe("none");
+    expect(fromNull.plan.mayCommitHostHcl).toBe(false);
+    expect(hostBaoSealHcl(fromNull.plan)).toBeNull();
   });
 });
 
@@ -611,10 +669,6 @@ describe("planSetupFromNamedBaoElfEnv — env join, still not a seal", () => {
     resolvedModuleExists: true,
   };
 
-  function tpmHost() {
-    return emptyCapture({ os: "nixos", tpm2: "present" });
-  }
-
   test("installed-host option D env may emit host HCL and cannot commit Application.yaml", () => {
     const opened: string[] = [];
     const fromEnv = planSetupFromNamedBaoElfEnv(
@@ -634,7 +688,7 @@ describe("planSetupFromNamedBaoElfEnv — env join, still not a seal", () => {
           bytes: path === NIXOS_HOST_BAO ? elf64LeWithInterp(ELF_INTERP_GLIBC_X86_64) : null,
         };
       },
-      tpmHost(),
+      namedTpmPresent(),
     );
     expect(fromEnv.ok).toBe(true);
     if (!fromEnv.ok) return;
@@ -660,7 +714,7 @@ describe("planSetupFromNamedBaoElfEnv — env join, still not a seal", () => {
           bytes: path === NIXOS_HOST_BAO ? elf64LeWithInterp(ELF_INTERP_GLIBC_X86_64) : null,
         };
       },
-      tpmHost(),
+      namedTpmPresent(),
     );
     expect(missingRequest.ok).toBe(true);
     if (!missingRequest.ok) return;
@@ -686,10 +740,64 @@ describe("planSetupFromNamedBaoElfEnv — env join, still not a seal", () => {
           bytes: path === NIXOS_HOST_BAO ? elf64LeWithInterp(ELF_INTERP_GLIBC_X86_64) : null,
         };
       },
-      tpmHost(),
+      namedTpmPresent(),
     );
     expect(fromTpmrm0).toEqual({ ok: false, reason: "unknown-request" });
     expect(opened).toEqual([]);
+  });
+
+  test("null probe is unmeasured, not present — option D does not emit host HCL", () => {
+    const opened: string[] = [];
+    const fromNull = planSetupFromNamedBaoElfEnv(
+      missingRestore,
+      {
+        ZETA_BAO_LOAD_SITE: "on-host",
+        ZETA_BAO_PATH: NIXOS_HOST_BAO,
+        [FIRSTBOOT_BAO_ELF_EPOCH_KEY]: "installed-host",
+        [UNSEAL_REQUEST_ENV_KEY]: "pkcs11-tpm",
+      },
+      (path) => {
+        opened.push(path);
+        return {
+          exists: true,
+          bytes: path === NIXOS_HOST_BAO ? elf64LeWithInterp(ELF_INTERP_GLIBC_X86_64) : null,
+        };
+      },
+      null,
+    );
+    expect(fromNull.ok).toBe(true);
+    if (!fromNull.ok) return;
+    expect(opened).toEqual([NIXOS_HOST_BAO]);
+    expect(fromNull.plan.oracle).toBe("none");
+    expect(fromNull.plan.mayCommitHostHcl).toBe(false);
+    expect(hostBaoSealHcl(fromNull.plan)).toBeNull();
+  });
+
+  test("tpmrm0 on the probe is not present — option D does not emit host HCL", () => {
+    const opened: string[] = [];
+    const fromNode = planSetupFromNamedBaoElfEnv(
+      missingRestore,
+      {
+        ZETA_BAO_LOAD_SITE: "on-host",
+        ZETA_BAO_PATH: NIXOS_HOST_BAO,
+        [FIRSTBOOT_BAO_ELF_EPOCH_KEY]: "installed-host",
+        [UNSEAL_REQUEST_ENV_KEY]: "pkcs11-tpm",
+      },
+      (path) => {
+        opened.push(path);
+        return {
+          exists: true,
+          bytes: path === NIXOS_HOST_BAO ? elf64LeWithInterp(ELF_INTERP_GLIBC_X86_64) : null,
+        };
+      },
+      namedTpmrm0Look(),
+    );
+    expect(fromNode.ok).toBe(true);
+    if (!fromNode.ok) return;
+    expect(opened).toEqual([NIXOS_HOST_BAO]);
+    expect(fromNode.plan.oracle).toBe("none");
+    expect(fromNode.plan.mayCommitHostHcl).toBe(false);
+    expect(hostBaoSealHcl(fromNode.plan)).toBeNull();
   });
 
   test("installer-iso does not open NIXOS_HOST_BAO even when glibc bytes are injected", () => {
@@ -709,7 +817,7 @@ describe("planSetupFromNamedBaoElfEnv — env join, still not a seal", () => {
           bytes: path === NIXOS_HOST_BAO ? elf64LeWithInterp(ELF_INTERP_GLIBC_X86_64) : null,
         };
       },
-      tpmHost(),
+      namedTpmPresent(),
     );
     expect(fromIso.ok).toBe(true);
     if (!fromIso.ok) return;
@@ -737,7 +845,7 @@ describe("planSetupFromNamedBaoElfEnv — env join, still not a seal", () => {
           bytes: path === storeBao ? elf64LeWithInterp(ELF_INTERP_GLIBC_X86_64) : null,
         };
       },
-      tpmHost(),
+      namedTpmPresent(),
     );
     expect(fromStore.ok).toBe(true);
     if (!fromStore.ok) return;
@@ -756,7 +864,7 @@ describe("planSetupFromNamedBaoElfEnv — env join, still not a seal", () => {
         opened.push(path);
         return { exists: true, bytes: elf64LeWithInterp(ELF_INTERP_GLIBC_X86_64) };
       },
-      tpmHost(),
+      namedTpmPresent(),
     );
     expect(empty.ok).toBe(true);
     if (!empty.ok) return;
@@ -778,7 +886,7 @@ describe("planSetupFromNamedBaoElfEnv — env join, still not a seal", () => {
         opened.push(path);
         return { exists: true, bytes: elf64LeWithInterp(ELF_INTERP_GLIBC_X86_64) };
       },
-      tpmHost(),
+      namedTpmPresent(),
     );
     expect(fromTpm.ok).toBe(true);
     if (!fromTpm.ok) return;
@@ -796,7 +904,7 @@ describe("planSetupFromNamedBaoElfEnv — env join, still not a seal", () => {
         opened.push(path);
         return { exists: true, bytes: elf64LeWithInterp(ELF_INTERP_GLIBC_X86_64) };
       },
-      tpmHost(),
+      namedTpmPresent(),
     );
     expect(siteOnly).toEqual({ ok: false, reason: "site-without-path" });
     expect(opened).toEqual([]);
@@ -807,7 +915,7 @@ describe("planSetupFromNamedBaoElfEnv — env join, still not a seal", () => {
         opened.push(path);
         return { exists: true, bytes: elf64LeWithInterp(ELF_INTERP_GLIBC_X86_64) };
       },
-      tpmHost(),
+      namedTpmPresent(),
     );
     expect(pathOnly).toEqual({ ok: false, reason: "path-without-site" });
     expect(opened).toEqual([]);
@@ -828,7 +936,7 @@ describe("planSetupFromNamedBaoElfEnv — env join, still not a seal", () => {
           bytes: path === NIXOS_HOST_BAO ? elf64LeWithInterp(ELF_INTERP_GLIBC_X86_64) : null,
         };
       },
-      tpmHost(),
+      namedTpmPresent(),
     );
     expect(missingEpoch).toEqual({ ok: false, reason: "empty-epoch" });
     expect(opened).toEqual([]);
@@ -850,7 +958,7 @@ describe("planSetupFromNamedBaoElfEnv — env join, still not a seal", () => {
           bytes: path === NIXOS_HOST_BAO ? elf64LeWithInterp(ELF_INTERP_GLIBC_X86_64) : null,
         };
       },
-      tpmHost(),
+      namedTpmPresent(),
     );
     expect(fromMnt).toEqual({ ok: false, reason: "unknown-epoch" });
     expect(opened).toEqual([]);
