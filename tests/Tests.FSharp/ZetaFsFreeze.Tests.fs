@@ -361,6 +361,45 @@ let ``unlinkFile tombstone makes liveResolve None after reopen`` () =
         FileSystem.Reset()
 
 [<Fact>]
+let ``bindName refuses a directory cycle and does not persist it`` () =
+    ensureHasher ()
+    FileSystem.Register(InMemoryFileSystem())
+    let store = "/freeze-bind-cycle"
+    let mutbuf = ZetaFsMutbuf.create store ZetaFsMutbuf.Coherence.Shared
+    let volume = ZetaFsFreeze.createManualStream store mutbuf None
+    let nameA = [| 97uy |]
+    let nameB = [| 98uy |]
+    let nameUp = [| 117uy |]
+
+    try
+        match volume.Root with
+        | None -> Assert.Fail("Volume.Root must exist")
+        | Some root ->
+            match ZetaFsFreeze.bindDirectory volume root nameA with
+            | Error e -> Assert.Fail(sprintf "bindDirectory a failed: %A" e)
+            | Ok a ->
+                match ZetaFsFreeze.bindDirectory volume a nameB with
+                | Error e -> Assert.Fail(sprintf "bindDirectory b failed: %A" e)
+                | Ok b ->
+                    match ZetaFsFreeze.bindName volume b nameUp a with
+                    | Ok() -> Assert.Fail("bindName must refuse a directory cycle")
+                    | Error(ZetaFsNamespace.Cycle _) -> ()
+                    | Error e -> Assert.Fail(sprintf "expected Cycle, got %A" e)
+                    match ZetaFsFreeze.liveResolveUnder volume b nameUp with
+                    | Some _ -> Assert.Fail("cycle must not be live")
+                    | None -> ()
+                    ZetaFsFreeze.dispose volume
+                    let reopened = ZetaFsFreeze.createManualStream store mutbuf None
+                    try
+                        match ZetaFsFreeze.liveResolveUnder reopened b nameUp with
+                        | Some _ -> Assert.Fail("cycle must not persist")
+                        | None -> ()
+                    finally
+                        ZetaFsFreeze.dispose reopened
+    finally
+        FileSystem.Reset()
+
+[<Fact>]
 let ``Durable freeze on a real directory fsyncs and is readable`` () : Task =
     task {
         ensureHasher ()
