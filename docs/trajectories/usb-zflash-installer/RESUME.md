@@ -555,6 +555,11 @@ ISO bun consume reports named unseal
 request (`081M1WG1RJB087G0R001ADMJNK`);
 missing is unmeasured, not `auto`; does
 not export a default request.
+Argv/conf overlay joins read unseal
+request (`081M1WHKEEQ087G0R0002B3SPG`)
+from `ZETA_UNSEAL_REQUEST`; capture stays
+injected; does not add the request to
+ESP conf.
 glibc-host-into-musl-image is not a
 module; Application.yaml stays Shamir.
 

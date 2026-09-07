@@ -696,6 +696,23 @@ Workitem: `081M1WG1RJB087G0R001ADMJNK`.
 - Does not invent an integrate decision. Does not expand
   `ZetaFirstbootRole`. Does not edit Application.yaml.
 
+## 2026-09-06 — argv and conf overlay joins read named unseal request (Riven)
+
+Aaron: continue after bun JSON reports the request. Argv and
+conf overlay joins still took an IntegrateDecision a caller
+could invent.
+
+Consumer: `src/Core.TypeScript/installer/bao-elf-capture.ts`
+(`planSetupFromNamedBaoElfArgv`, `planSetupFromNamedBaoElfConf`).
+Workitem: `081M1WHKEEQ087G0R0002B3SPG`.
+
+- Request from `ZETA_UNSEAL_REQUEST` via `integrateAtSetupFromEnv`.
+  Missing is unmeasured, not `auto`. Capture stays injected.
+  `/dev/tpmrm0` still refuses at parse. Does not add the
+  request to ESP conf.
+- Does not invent an integrate decision. Does not expand
+  `ZetaFirstbootRole`. Does not edit Application.yaml.
+
 ## 2026-09-04 — production-hardening review (Riven)
 
 Aaron asked to production-harden the CA, name the unseal startup, use
