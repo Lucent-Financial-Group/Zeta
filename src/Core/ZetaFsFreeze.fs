@@ -1663,6 +1663,20 @@ module ZetaFsFreeze =
                     Ok id
             | _ -> Error(ZetaFsNamespace.UnknownEntity { Raw = System.UInt128.Zero }))
 
+    /// POSIX unlink: append Tombstone under ROOT. Does not retract the Live
+    /// row. Reopen `liveResolve` must be None.
+    let unlinkFile (volume: Volume) (name: byte[]) : Result<unit, ZetaFsNamespace.BindError> =
+        lock volume.Gate (fun () ->
+            match volume.Root, !volume.Ns with
+            | Some root, Some state ->
+                match ZetaFsNamespace.unlink state root name (ZetaFsNamespace.ActorId "freeze") with
+                | Error e -> Error e
+                | Ok next ->
+                    persistNamespace volume.StoreDir next
+                    volume.Ns := Some next
+                    Ok()
+            | _ -> Error(ZetaFsNamespace.UnknownEntity { Raw = System.UInt128.Zero }))
+
     let liveResolve (volume: Volume) (name: byte[]) : ZetaFsNamespace.EntityId option =
         lock volume.Gate (fun () ->
             match volume.Root, !volume.Ns with
