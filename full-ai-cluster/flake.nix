@@ -214,6 +214,53 @@
         # x86_64). Run one with:
         #   nix build .#checks.x86_64-linux.k3s-control-plane-cluster-init -L
         checks = {
+          # 081M1XXA0FC087G0R002F92ZQC — the role/capability model REFUSES what the
+          # k3s-manifests audit merely detects.
+          #
+          # A cluster capability installs through `services.k3s.manifests`, which the k3s
+          # deploy controller applies ON A SERVER. Declared on an agent the files are written
+          # and nothing reads them — which is how the NVIDIA device plugin came to be declared
+          # only on worker-gpu and therefore never installed. `mkHostModules` asserts against
+          # it, and this check proves the assertion FIRES rather than trusting that it would.
+          #
+          # `builtins.tryEval` is what makes an assertion testable: `.success` is false when
+          # the assert throws. Both directions are asserted, so this cannot pass by the
+          # refusal never being reachable.
+          mk-host-refuses-cluster-capability-on-an-agent =
+            let
+              mkHost = import ./nixos/lib/mk-host.nix { inherit (nixpkgs) lib; };
+              hw = ./nixos/hosts/control-plane/hardware-configuration.nix;
+              bad = builtins.tryEval (builtins.length (mkHost.mkHostModules {
+                role = "agent";
+                hardware = hw;
+                clusterCapabilities = [ "gpu-device-plugin" ];
+              }));
+              goodServer = builtins.tryEval (builtins.length (mkHost.mkHostModules {
+                role = "server";
+                hardware = hw;
+                clusterCapabilities = [ "gpu-device-plugin" "local-storage" ];
+                nodeCapabilities = [ "docker" ];
+              }));
+              # The composition Aaron asked for: control plane AND gpu on one machine.
+              goodComposed = builtins.tryEval (builtins.length (mkHost.mkHostModules {
+                role = "server";
+                hardware = hw;
+                nodeCapabilities = [ "gpu" "docker" ];
+                clusterCapabilities = [ "gpu-device-plugin" ];
+              }));
+              unknownCap = builtins.tryEval (builtins.length (mkHost.mkHostModules {
+                role = "server";
+                hardware = hw;
+                nodeCapabilities = [ "not-a-capability" ];
+              }));
+            in
+            assert bad.success == false;          # the refusal fires
+            assert goodServer.success == true;    # a server may hold cluster capabilities
+            assert goodComposed.success == true;  # control-plane + gpu composes
+            assert unknownCap.success == false;   # a typo is refused, not silently dropped
+            pkgs.runCommand "mk-host-refuses-cluster-capability-on-an-agent" { } "touch $out";
+
+
           # 081M00KTH58087G0R00120WT6F — properties of the Secure Boot
           # desired-state model (nixos/modules/secure-boot-phase-model.nix).
           #
