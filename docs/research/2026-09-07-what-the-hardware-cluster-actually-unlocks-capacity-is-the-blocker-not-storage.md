@@ -102,10 +102,58 @@ behaviour above.
 pull credential), `weaviate` (never converges its sync), `cockroachdb` (never `init`ed), `orleans`
 (Progressing). Those are credentials and bugs, and they will follow the code onto the metal.
 
+## The measurement I said should not be guessed — it already existed, and it corrects this doc
+
+The section above ends by refusing to name a runner tier, on the grounds that the required size
+was unmeasured. It was measured, by a tool in this tree I had not found:
+`storage-profiles.ts --resource-profile dev --budget`.
+
+```
+runner envelope: github-hosted ubuntu-24.04 standard — 4000m CPU / 15360Mi RAM / 70Gi free disk
+reserved:        1500m / 6144Mi / 4Gi
+budget:          2500m / 9216Mi for application REQUESTS
+
+  dev    dev lane (41 apps):  1815m /  11148Mi  DOES NOT FIT
+```
+
+**The declared shortfall is MEMORY, not CPU.** CPU fits on paper — 1815m of a 2500m budget.
+Memory is over by 1932Mi. And it is already carried as debt keyed to its own arithmetic,
+`"dev memory 11148>9216"`, so moving either number by one millicore makes the acknowledgement
+STALE rather than quietly still-true. Three Applications stacked it: KEDA, then OpenSearch, then
+OpenBao.
+
+**So why does `hindsight` fail on CPU when CPU fits?** The tool answers that itself, and it is the
+sharpest sentence in the file:
+
+> *"REQUESTS ARE RESERVATIONS, NOT MEASUREMENTS. 26 of the 49 Applications render pods that
+> request nothing at all, so they are BestEffort and never appear in these sums."*
+
+Half the workload is invisible to the budget. BestEffort pods reserve nothing and consume anyway,
+so a paper CPU fit and a real `Insufficient cpu` are not a contradiction — they are two different
+quantities. The consequence is the one that matters for buying anything:
+
+> **A runner cannot be sized from the request sum alone, because the half that is biting is the
+> half the sum does not model.**
+
+Arithmetic on the declared half says an 8-vCPU / 32GiB runner clears both with margin (~6500m /
+~26.6GiB of budget against 1815m / 11148Mi). That is offered as arithmetic, not as a
+recommendation: it sizes the reserved half and says nothing about the BestEffort half, which is
+the one that failed.
+
+**What this says about the census above, and about me.** This document exists because three of
+four barriers I reported were wrong. This section is the fourth correction, in the document
+written to correct the first three — and the pattern is consistent enough to be worth stating as
+a finding rather than an apology: **the dated summaries in this tree are behind the tooling
+sitting next to them.** The census note, the roster reasons, the helm-validate measurement, the
+runner sizing — in every case a script in the same directory knew better than the prose. The
+operational lesson is to run the tool before quoting the note.
+
 ## Register
 
 Measured: the lane's failure history and final states, the `hindsight` capacity finding (quoted
 from its own record), the Longhorn alias outcome (quoted, from run 32519516070), the Cilium lane's
-existence, and both kind profiles being single-node. Argued, not measured: that a larger runner
-fixes the capacity red — the size needed is not yet measured, and the honest next step is to
-measure peak requested CPU against the runner's 4, not to guess a tier.
+existence, and both kind profiles being single-node. SUPERSEDED within this document: the claim that the required size was unmeasured. It was
+measured by `storage-profiles.ts --budget`, quoted above, and the finding inverts the resource —
+the DECLARED shortfall is memory, not CPU. Still argued and not measured: that any particular
+runner tier fixes the OBSERVED failure, because the BestEffort half of the workload is absent
+from every sum available.
