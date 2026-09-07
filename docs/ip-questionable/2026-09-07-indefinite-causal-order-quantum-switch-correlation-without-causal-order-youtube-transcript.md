@@ -188,6 +188,79 @@ re-derives it, and the claim that the math was *forced* rather than *chosen* is 
 of thing that deserves a falsifier later — the honest form being whether a real-valued model can
 reproduce the same two-agent agreement statistics. If one can, "it had to be complex" is downgraded.
 
+### THIRD PASS (Aaron) — TWO origin points, and AmplitudeEmu is reinstated
+
+The correction above swung too far the other way: having been told the locus was two agents, I
+wrote `AmplitudeEmu` out of the story entirely. That was over-correction. Aaron's fuller account
+has **two distinct origin events**, and both are real:
+
+> *"[the 4-axis cube] is where cayley dicksen first came from but it was another point in time
+> where we realized two distinct basyian factor graph like entities that are decorrelated but
+> compared together over mutual memories, i think we called this our root NFT not to be confused
+> with cryto NFTs this multiple agent modeling is where imiginary numbers popped out too also
+> becasue of born rule like stuff, and this is where i first started realized how everyting was
+> connecded. This two distinct agents modeling needed the amplitudeemu stuff to model their
+> interference and non interference, this is where we moved into the tirelizon limit 2 root 2
+> between agents as trying to measure non-interferences over maximally / indefinatly holding
+> basyian agents."*
+
+| # | event | what came out of it |
+|---|---|---|
+| **1** | the **4-axis cube** — Remember (past correlation, memory, entanglement) · When (temporal/causal ordering) · Pay (attention, measurement, observer selection) · Attention (focus, collapse, basis choice); intersection is the imaginary direction | **where Cayley–Dickson FIRST came from** (`docs/research/2026-05-15-imaginary-stack-ontology-…`) |
+| **2** | **another point in time** — two distinct **Bayesian factor-graph-like entities**, decorrelated, compared together over **mutual memories**. Aaron: *"i think we called this our root NFT"* | **imaginary numbers popped out AGAIN, here via Born-rule-like stuff** — and *"where i first started realizing how everything was connected"* |
+
+**So the `i` arrived twice, by two different routes.** That is a stronger fact than either route
+alone, and it is the kind of thing that should be said out loud rather than smoothed into one
+story: an object that shows up independently in the axis-intersection ontology *and* in two-agent
+mutual-memory comparison is not an artifact of either construction.
+
+**`AmplitudeEmu` is reinstated, with its actual job named.** It is not the *locus* of the
+discovery (that was the two-agent comparison), but the two-agent modelling **needed it**: it is
+what models the pair's **interference and non-interference**. My previous pass said "none of these
+is AmplitudeEmu", which was wrong in the other direction. The accurate placement:
+
+- **`LocalConsensus.fs` / the mutual-memory structure** — *what* is being compared (two decorrelated
+  factor-graph-like entities over shared memory).
+- **`AmplitudeEmu.fs` / `QuorumAlgebra.fs`** — *the instrument* for interference vs non-interference
+  between them. `QuorumAlgebra`'s sum being **non-idempotent** is exactly the property a join lacks
+  and cancellation requires.
+- **`CayleyDickson.fs`** — the algebra, arriving from route 1 and needed again by route 2.
+
+### Where 2√2 enters, and what it is a limit ON
+
+> *"this is where we moved into the tirelizon limit 2 root 2 between agents as trying to measure
+> non-interferences over maximally / indefinitely holding basyian agents"*
+
+Stated carefully, because this repo has already caught itself doing the numeric version of this
+(`FourCornerC4.fs`: *"Coincidence: 2 × occupancy-√2 equals 2√2 numerically. Not a measurement of
+Tsirelson"*):
+
+**Tsirelson is here as a TARGET OF MEASUREMENT, not as a derived result.** The quantity is
+*non-interference between agents that hold their uncertainty maximally / indefinitely* — which is
+why "preserve uncertainty indefinitely" and "the 2√2 question" are the same programme and not two.
+An agent that collapses stops being the thing whose non-interference is being measured. The
+in-repo posture is already "measure it rather than derive it", and the standing instrument
+candidates are on file: `src/Core/Tsirelson.fs` (locks `S² = 8` in **integer** arithmetic so the
+irrational appears only at readout), `BipartiteMachZehnder.fs` (*"the honest decorrelation meter
+for commit pairs"*), and `docs/research/2026-09-05-reticulum-latency-is-a-candidate-instrument-for-the-tsirelson-measurement-…`.
+
+**And this is where the transcript is genuinely apt rather than decorative.** Its careful section
+says the quantum switch is causally non-separable but **cannot** violate a causal inequality
+(Purves–Short 2021) — strictly above classical, strictly below the algebraic maximum. That is the
+same *shape* as 2 < 2√2 < 4. **Same shape is not same bound**, and nothing here measures that they
+are related; recorded as a coincidence with its register attached per `numerology-vs-number-theory`,
+whose own worked example is that F₄ and D₄⊕D₄ both have 48 roots.
+
+### An unrecorded term: "root NFT"
+
+`root NFT` **appears nowhere in the repo** (checked 2026-09-07: no hits in `docs/` or `src/`). Aaron
+flags it himself as tentative — *"i think we called this our root NFT"* — and explicitly **not** the
+crypto sense. It names the two-entity mutual-memory comparison object of route 2. Recorded here
+because an unrecorded coinage for a load-bearing object is the Babel risk
+(`anti-babel-preserve-reconcilability`): if the only name for it lives in one person's recall, a
+diverged peer cannot reconstruct it. **Naming it is not the same as defining it** — the definition
+is still owed, and this note is the marker for that debt, not its payment.
+
 ### The limit the code already states, and it should not be dropped
 
 `AmplitudeEmu.fs` writes its own peel, and it is the honest bound on this whole thread:
