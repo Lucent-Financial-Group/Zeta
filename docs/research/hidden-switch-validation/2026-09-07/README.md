@@ -293,3 +293,15 @@ measurements for this integration. The source comparison plus targeted
 additional tests establishes the stated coverage; it is not whole-tree
 identity, a newly executed combined test count or source-to-binary proof.
 Final publication-head CI and main ancestry remain separate requirements.
+
+The [independent publication-integration review](../../2026-09-07-hidden-switch-publication-integration-review.md)
+accepted those exact source/hash/log/TRX correspondences, unchanged original
+receipts, retained failed CI outcomes and the separately registered next-study
+pointer. It performed no new test or scientific execution. The completed
+[quick preflight](root-publication-integration-quick.log) passed all sixteen
+checks before publication's separate mandatory push hook.
+
+The [remote archive verification](root-tlc-correction-archives.json) preserves
+both the unchanged original TLC tag at `c247403be` and the supplemental
+correction tag at `038ff0e3c`, whose source/evidence was imported as
+`ac00602`. The supplemental tag does not replace the failed original version.
