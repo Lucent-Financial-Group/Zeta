@@ -90,9 +90,13 @@
     "Sha256": "A410B2944AA1EBB06B221E56720B0B38C5990050BD07492EC05611F8348E7217"
   },
   {
-    "File": "tlc-ci-merge-commit.json",
-    "Bytes": 711308,
-    "Sha256": "040B64E0A36A7935F28ABA75DC825040A1552910E47E3A3A10D2D61E44950205"
+    "File": "tlc-ci-merge-commit.json.gz",
+    "Bytes": 146476,
+    "Sha256": "D2509C1DC1282AA7AD4428274D85C2C139F2F72605FF52DD104DB6499FF98ACA",
+    "OriginalFile": "tlc-ci-merge-commit.json",
+    "OriginalBytes": 711308,
+    "OriginalSha256": "040B64E0A36A7935F28ABA75DC825040A1552910E47E3A3A10D2D61E44950205",
+    "Encoding": "gzip; original bytes recover exactly"
   },
   {
     "File": "tlc-ci-remote-archives.txt",

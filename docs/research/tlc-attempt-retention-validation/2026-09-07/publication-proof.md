@@ -112,3 +112,17 @@ remains a failure signal and is not described as all checks being green.
 The final [source/archive push log](publication/tlc-ci-publication-push.log)
 retains all sixteen successful pre-push checks and the new immutable
 correction tag publication.
+
+## Lossless packaging of the raw merge response
+
+A later hidden-switch publication check at `f3bd1347e` found three literal
+U+FEFF characters in the raw merge-commit API response. Its `files` array
+contains old log patches, including their original BOM characters. The
+[raw response is now losslessly compressed](publication/tlc-ci-merge-commit.json.gz);
+its [manifest](publication/file-hashes.json) records both compressed identity
+and the unchanged 711,308-byte original, SHA256
+`040B64E0A36A7935F28ABA75DC825040A1552910E47E3A3A10D2D61E44950205`.
+The [packaging record](../../hidden-switch-validation/2026-09-07/root-final-api-bom-packaging.json)
+retains exact byte offsets and JSON paths. Decompression recovers the full
+original response; no character was stripped, no raw JSON was reserialized,
+and no lint rule or scientific artifact changed.

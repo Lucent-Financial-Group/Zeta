@@ -396,3 +396,38 @@ accepts the full seven-project XML outcomes, 1,955 selected source bindings,
 81 selected DLL fingerprints, unchanged original study records and figure.
 It preserves each tested/reviewed head and the first failed attempt as
 separate evidence; it performs no new test or scientific execution.
+
+## Later publication scan and lossless API packaging
+
+The replacement CI run at published head `f3bd1347e` found three literal
+U+FEFF BOMs in a retained GitHub merge-response JSON file. These were within
+embedded old log patches, not scientific source. The [focused packaging
+record](root-final-api-bom-packaging.json) binds the exact original and its
+lossless gzip replacement. The original 711,308 bytes recover exactly;
+the twenty-four-record tooling publication manifest now records both forms.
+No broad rule exclusion, character stripping, raw-response reserialization,
+scientific criterion change or experiment rerun was used. The earlier native
+recovery and all nineteen scientific source hashes retain their stated scope.
+
+The [independent finding and original failed CI output](publication-json-bom-correction/README.md)
+retain replacement run `34133618773`, failed job `101780447107`, exact
+BOM locations and the original response/log identities. The diagnosis did
+not replace the failed check or mutate a CI run.
+
+The independent reviewer accepted the actual gzip correction: all twenty-four
+current tooling-manifest entries match their bytes, the other twenty-three
+entries remain identical to published `f3bd1347e`, and decompression exactly
+recovers the original response. The changed manifest and packaging record
+agree with the separately retained finding.
+
+Both [full local Semgrep scans](root-final-api-semgrep-validation.json) passed
+with zero findings using both exact CI configurations and Semgrep 1.174.0.
+The original compressed logs retain warnings and all scanner exclusions,
+including oversized and ignored files; zero findings is not a claim that
+excluded files were scanned. These are validation runs on the corrected
+working tree, not registered experiments or a new native gate.
+
+The [packaging correction quick preflight](root-final-api-gzip-quick.log.gz)
+passed all sixteen checks before its separate mandatory push hook. The
+native build/test gate was not repeated for this evidence-only packaging
+change; the nineteen scientific files and original result records are unchanged.
