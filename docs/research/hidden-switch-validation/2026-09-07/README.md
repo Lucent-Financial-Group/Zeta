@@ -305,3 +305,88 @@ The [remote archive verification](root-tlc-correction-archives.json) preserves
 both the unchanged original TLC tag at `c247403be` and the supplemental
 correction tag at `038ff0e3c`, whose source/evidence was imported as
 `ac00602`. The supplemental tag does not replace the failed original version.
+
+## Final main integration and local test-host crash
+
+PR #16925 merged as `c36ac21bf1c561ad0726d4dceb027d3c3cff823e`.
+Root integrated that main state as
+`4d7b13947bef9b53a65c043885971ceefa168e87`. Concurrent main changes
+included native filesystem code and tests, so this integration received a
+fresh full native gate. The [prelaunch inventory](root-main-gate-attempt-1.json)
+pins 1,955 selected native/build/TLC inputs plus the nineteen original
+scientific files. This selected inventory is not a complete transitive
+runtime dependency or source-to-binary proof.
+
+The [mapped Release build](root-main-build-attempt-1.log) passed in 96.29
+seconds with zero warnings and errors. The [original full-solution test
+command](root-main-tests-attempt-1.log) returned exit 1 at 13:57:11 UTC.
+Its F# test process reported a catastrophic exit 139. Six other projects
+completed with 990 passes; the F# TRX retained 1,204 completed passes but a
+failed result summary. The console's partial `Passed!` line therefore does
+not establish completion. The [derived failed-run index](root-main-gate-attempt-1-result.json)
+binds all seven losslessly compressed original TRX files and the original
+sequence record: 1,228 tests started, 1,204 completed and 24 were in flight.
+All 1,955 selected input hashes were unchanged after the failed command.
+
+The [original launcher](root-main-gate-launcher.py.txt) exits on command
+failure and emits its completion JSON only on success. That success-only
+file was therefore absent; the separately named failed-run index records
+the actual failed outcome rather than inventing a successful completion.
+No archived behavior or cost experiment was rerun or replaced.
+
+The affected TypeScript suites independently passed 73 tests and 265
+assertions on CI's Bun 1.3.13. Their [full log](root-main-typescript-tests.log)
+and [source/command identity](root-main-typescript-tests.json) are retained.
+This check ran concurrently with native tests; no exclusive-host or
+performance claim follows from these validation runs.
+
+The [bounded crash-location review](root-main-crash-review.md) matches the
+faulting process to a background server-GC stack in `libcoreclr.dylib`.
+The current runtime file has the same Mach-O UUID as the loaded faulting
+image. That identifies a location, not a cause: a runtime defect and prior
+memory corruption are not distinguished. The original process-memory dump
+and full macOS report remain local only; their identities and a bounded
+extract are retained, without claiming git-canonical custody of raw memory.
+No GC, JVM, source or runtime policy changed to obtain a passing run.
+
+The [single unchanged-source recovery](root-main-tests-attempt-2.log) ran
+from 14:09:31 to 14:17:03 UTC with the same full-solution command except a
+fresh TRX output prefix. The [prelaunch record](root-main-gate-attempt-2.json)
+checks all original selected inputs and additionally fingerprints selected
+test-output DLLs. The [completion record](root-main-gate-attempt-2-completion.json)
+records exit zero, all 1,955 selected inputs unchanged and all selected DLLs
+unchanged. All seven projects completed: **7,568 passes, six existing skips
+and no failures**. The [original TRX archive index](root-main-gate-attempt-2-result.json)
+and [executed indexer](root-main-result-indexer.py.txt) retain individual
+outcomes, all 52 exact registry model IDs, eighteen synthetic/metadata cases
+and sixteen hidden-switch cases. No unexpected TLC attempt directory remained.
+The [live BFT snapshot](root-main-attempt-2-bft-observation.json) independently
+retains its source/argument and runtime identity during this recovery; the
+completed TRX provides its outcome. The [recovery launcher](root-main-recovery-launcher.py.txt)
+records both command failure and success without replacing an earlier attempt.
+This completed recovery does not establish the first crash's cause or erase it.
+
+The [independent prior-head CI review](pr-16928-a2bf4225-review/README.md)
+retains four complete pages at exact published head `a2bf4225`: 92 successes,
+three skips, one failed historical-drift advisory and no pending checks.
+The required gate and all three native platforms passed; its sole review
+thread was resolved. That review also independently confirms the first
+local run's incomplete TRX outcome. The final publication head still requires
+its own current check and ancestry verification.
+
+The [TLC dependency publication proof](../../tlc-attempt-retention-validation/2026-09-07/publication-proof.md)
+retains merge `c36ac21bf`, its actual source correspondence, both unchanged
+archive identities, scoped CodeQL test-alert dispositions and original
+failed/recovery CI outputs. Neither these tooling records nor the later
+[descriptive figure](../../hidden-switch-results/2026-09-07/descriptive-figure/README.md)
+changes a scientific source or original result receipt.
+
+The [first final-publication quick preflight](root-main-publication-quick-attempt-1.log)
+passed fifteen checks and failed Markdown's MD012 rule on three extra blank
+lines in the two edited record indexes. Removing those blank lines passed
+targeted Markdown verification. Original logs and structured evidence were
+not reformatted to make the documentation check pass.
+
+The [corrected final quick preflight](root-main-publication-quick-attempt-2.log)
+passed all sixteen checks. The publication push additionally runs the mandatory
+pre-push hook on the exact committed head.

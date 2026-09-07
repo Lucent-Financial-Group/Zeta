@@ -6,7 +6,7 @@ Operational status: research-grade handoff
 Lifecycle: active
 Scope: continuation of the predictive-state, acting and relational research lanes
 Work item and retained publication review: [081M1WKKBQ2087G0R00221631M](../../workitems/done/2026/09/081M1WKKBQ2087G0R00221631M-publish-consolidated-unattended-research-handoff-with-verifi.md)
-Publication status: earlier eight substantive PRs merged; hidden-switch results in draft PR #16928 pending corrected tooling integration; next compiled-controller protocol remotely registered
+Publication status: earlier studies and tooling repairs merged; hidden-switch results in draft PR #16928 pending final integration validation and main proof; next compiled-controller protocol remotely registered
 
 ## Paste-ready bootstrap
 
@@ -167,8 +167,18 @@ two TypeScript hygiene/race findings and a macOS inherited-pipe fixture
 failure, plus their aggregate gate and a separate historical drift advisory.
 The corrective dependency is [PR #16925](https://github.com/Lucent-Financial-Group/Zeta/pull/16925).
 The reviewer accepted its descriptor-bound copy and observed-exit cancellation
-fixture. Publication still requires the corrected dependency on main,
-the final result head's checks and ancestry proof. The original scientific
+fixture. That dependency merged as `c36ac21bf1c561ad0726d4dceb027d3c3cff823e`
+and is integrated in the result writer. Its [publication proof](../research/tlc-attempt-retention-validation/2026-09-07/publication-proof.md)
+retains exact source identity, review dispositions and the full CI outcome.
+The result head `a2bf4225` completed 92 successful checks, three skips and
+one historical-drift failure, with the required gate passing and no pending
+checks. Final main integration `4d7b13947` passed its mapped Release build;
+its first local full-test attempt crashed in the F# test host. One unchanged
+recovery completed 7,568 tests with six existing skips, all 52 formal models,
+eighteen synthetic checks and sixteen hidden-switch cases. Source and selected
+DLL hashes stayed unchanged. The first crash remains retained with a bounded
+GC-stack review and no established cause. Publication still requires
+the final result head's current checks and ancestry proof. The original scientific
 files, once-collected receipts and archived implementation are unchanged.
 
 ## Registered compiled-controller follow-up

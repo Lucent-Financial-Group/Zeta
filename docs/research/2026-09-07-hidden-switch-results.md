@@ -203,3 +203,19 @@ commits and loaded assembly identities preserve specific artifacts; they do
 not prove process isolation or source-to-binary derivation. The raw replay
 and verdict establish conformance of these retained finite observations to
 the archived contract, not a universal empirical or physical claim.
+
+
+## Descriptive figure from the retained observations
+
+The [figure and reproducible rendering record](hidden-switch-results/2026-09-07/descriptive-figure/README.md)
+show all sixteen panel/arm means and every original timing row. Values are
+recomputed from the retained receipts and checked against the original
+verdict. The cost panel preserves collection order and includes the first
+planner row, `61.477042 / 64 = 0.96057878125` milliseconds per whole episode.
+The twenty rows repeat the same corpus; they are not twenty independent
+task samples. No row is removed, and no uncertainty interval, steady-state
+interpretation or cause of the early higher costs is inferred.
+
+This figure was prepared after measurement and is a descriptive rendering,
+not a newly preregistered analysis or an additional experiment. The original
+receipt bytes, eighteen-record manifest and results archive remain unchanged.

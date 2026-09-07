@@ -31,11 +31,13 @@ Current:
   correspondence carries a register. Aaron is routing this through OpenAI's Astra.
 - [`2026-09-06-vera-unattended-research-continuation.md`](./2026-09-06-vera-unattended-research-continuation.md)
   — **Vera, consolidated unattended continuation.** Paste-ready GPT-6 Astra bootstrap,
-  eight verified research/repair merges, immutable experiment references, combined
+  verified research/repair merges, immutable experiment references, combined
   431-case Interp validation and encountered re-entry hazards. Includes the completed
-  supplied-model hidden-switch planning result with exact replay and matched-work costs.
-  Keeps learned dynamics, online-search necessity, controller counts and quantum
-  equivalence outside the earned results; next-study advice remains unregistered.
+  supplied-model hidden-switch result, exact replay, matched-work costs, all-row
+  descriptive figure and separately retained publication failures/recovery. The next
+  compiled-controller protocol is remotely registered and waits for prior-study main
+  integration; model-identification advice remains unregistered. Keeps learning,
+  online-search necessity, controller counts and quantum equivalence outside earned results.
 - [`2026-09-06-vera-to-vera-predictive-state-research-and-arc3-bridge.md`](./2026-09-06-vera-to-vera-predictive-state-research-and-arc3-bridge.md)
   — **Fresh Astra re-entry.** Links Vera's landed ARC honesty audit, WSet/Simplex comparison,
   Mess3 and RRXOR learning, entropy/spectral work, learned-HMM and factored-state controls,

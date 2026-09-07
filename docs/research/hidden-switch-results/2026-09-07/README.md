@@ -87,3 +87,11 @@ remote annotated tag
 receipts, accepted review and all observed rows independently of subsequent
 squash merging. The implementation archive remains at the earlier `4fc82b611` commit;
 never move either tag to a later publication head.
+
+## Later descriptive rendering
+
+The [descriptive figure](descriptive-figure/README.md) presents all sixteen
+original means and twenty timing rows without new measurements or excluded
+rows. Its script, exact inputs, pinned rendering dependencies and outputs
+have a separate manifest. It is a postmeasurement artifact and does not
+change the original eighteen-record manifest or immutable results archive.
