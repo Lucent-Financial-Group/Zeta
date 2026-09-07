@@ -766,6 +766,22 @@ Workitem: `081M1WP0C7B087G0R000VK9E0V`.
 - Does not invent an integrate decision. Does not expand
   `ZetaFirstbootRole`. Does not edit Application.yaml.
 
+## 2026-09-07 — ISO bun consume reports unmeasured probe (Riven)
+
+Aaron: detect HSM/TPM at setup. Env integrate takes a named
+probe. ISO bun consume still omitted it.
+
+Consumer: `src/Core.TypeScript/zflash/firstboot-bao-env.ts`.
+Workitem: `081M1WQNTZ0087G0R002Q8T8RT`.
+
+- JSON includes `probe: null`. Missing is unmeasured, not
+  present. A named PathRequest is not a named probe.
+  `/dev/tpmrm0` is not a probe. Does not import
+  frost-hardware-probe. Does not call `integrateAtSetupFromEnv`.
+  Does not call overlay join from `zeta-install.sh`.
+- Does not invent an integrate decision. Does not expand
+  `ZetaFirstbootRole`. Does not edit Application.yaml.
+
 ## 2026-09-04 — production-hardening review (Riven)
 
 Aaron asked to production-harden the CA, name the unseal startup, use

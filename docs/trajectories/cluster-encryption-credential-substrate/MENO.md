@@ -282,6 +282,11 @@ assume the number.
    is not a capture. Overlay passes the probe through. Inner
    `integrateAtSetup` still takes a capture. Does not invent
    an integrate decision.
+   ISO bun consume reports unmeasured probe (`081M1WQNTZ0087G0R002Q8T8RT`):
+   bun JSON includes `probe: null`. Missing is unmeasured, not
+   present. A named PathRequest is not a named probe.
+   `/dev/tpmrm0` is not a probe. Does not invent a look. Does
+   not invent an integrate decision.
 7. extraContainer sidecar — later, **same commit as the
    sidecar**, and only for the Shamir kind path until the
    emulator job replaces it. `valuesObject` only. Do not fork

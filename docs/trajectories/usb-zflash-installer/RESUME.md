@@ -570,6 +570,9 @@ null is unmeasured, not present;
 Env integrate takes named probe
 (`081M1WP0C7B087G0R000VK9E0V`);
 overlay passes the probe through.
+ISO bun consume reports unmeasured
+probe (`081M1WQNTZ0087G0R002Q8T8RT`);
+null is unmeasured, not present.
 glibc-host-into-musl-image is not a
 module; Application.yaml stays Shamir.
 

@@ -335,7 +335,9 @@ describe("zeta-install.sh named bao bun consume after 6.95a", () => {
     expect(executable.split(`${FIRSTBOOT_BAO_ELF_EPOCH_KEY}='installer-iso'`).length - 1).toBe(1);
     expect(executable.split(`${UNSEAL_REQUEST_ENV_KEY}=`).length - 1).toBe(0);
     expect(executable.split("jq -c '.requested'").length - 1).toBe(1);
+    expect(executable.split("jq -c '.probe'").length - 1).toBe(1);
     expect(block.split("null request is unmeasured, not auto").length - 1).toBe(1);
+    expect(block.split("null probe is unmeasured, not present").length - 1).toBe(1);
     expect(executable.split("planSetupFromNamedBaoElfEnv").length - 1).toBe(0);
     expect(executable.split("integrateAtSetup").length - 1).toBe(0);
     expect(executable.split("[ -d /mnt ]").length - 1).toBe(0);
@@ -350,6 +352,9 @@ describe("zeta-install.sh named bao bun consume after 6.95a", () => {
 
   test("the helper the installer names still consumes option D from env", () => {
     expect(helper.endsWith(BAO_ENV_HELPER_REL.replace("src/Core.TypeScript/zflash/", ""))).toBe(true);
+    const helperSrc = readFileSync(helper, "utf8");
+    expect(helperSrc.split("integrateAtSetupFromEnv").length - 1).toBe(0);
+    expect(helperSrc.split("frost-hardware-probe").length - 1).toBe(0);
     const spawned = spawnSync(process.execPath, [helper], {
       encoding: "utf8",
       env: {
@@ -364,6 +369,7 @@ describe("zeta-install.sh named bao bun consume after 6.95a", () => {
       ask: nixosHostBaoAsk(),
       epoch: null,
       requested: null,
+      probe: null,
     });
   });
 
@@ -384,6 +390,7 @@ describe("zeta-install.sh named bao bun consume after 6.95a", () => {
       ask: null,
       epoch: "installer-iso",
       requested: null,
+      probe: null,
     });
   });
 
@@ -402,6 +409,7 @@ describe("zeta-install.sh named bao bun consume after 6.95a", () => {
       ask: null,
       epoch: null,
       requested: null,
+      probe: null,
     });
   });
 
@@ -422,6 +430,7 @@ describe("zeta-install.sh named bao bun consume after 6.95a", () => {
       ask: null,
       epoch: "installer-iso",
       requested: "pkcs11-tpm",
+      probe: null,
     });
     const fromTpmrm0 = spawnSync(process.execPath, [helper], {
       encoding: "utf8",

@@ -315,6 +315,9 @@ Env integrate takes named probe (`081M1WP0C7B087G0R000VK9E0V`):
 `integrateAtSetupFromEnv` takes `NamedHardwareProbe | null`.
 Overlay passes the probe through. Inner `integrateAtSetup`
 still takes a capture. Null is unmeasured, not present.
+ISO bun consume reports unmeasured probe (`081M1WQNTZ0087G0R002Q8T8RT`):
+bun JSON includes `probe: null`. A named PathRequest is not a
+named probe. `/dev/tpmrm0` is not a probe.
 
 1. Metal: `seal "pkcs11"` in Application.yaml still waits.
    Same commit as a **reachable** module: same-libc image
