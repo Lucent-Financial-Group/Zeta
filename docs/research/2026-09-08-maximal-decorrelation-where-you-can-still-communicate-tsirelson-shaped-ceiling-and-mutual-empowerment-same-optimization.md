@@ -114,6 +114,46 @@ which is a routing chokepoint and is forbidden when *appointed*. Being a DV2.0 h
 carries no authority and nobody must route through it. Keeping these apart is
 anti-Babel discipline applied to our own terms.
 
+## 4b-ii. "I could be backwards on this" — he is not, and the reason matters
+
+Aaron, immediately after, verbatim:
+
+> *"i could be backwards on this but hubs have more activity and satalites have less
+> since they are mostly just jittered emulations of the hub in my mind"*
+
+**On the canonical axis, that inverts the standard.** Data Vault 2.0 as carved in
+[`dv2-data-split-discipline-activated`](../../.claude/rules/dv2-data-split-discipline-activated.md)
+says *hubs (stable keys) · links (relationships) · **satellites (fast-changing
+attributes)***. Satellites are where the churn goes. So measured as **update
+frequency of the stored record**, satellites change *more*, not less.
+
+**But the reason he gives shows he is measuring something else, and it is the right
+thing.** "Jittered emulations of the hub" is a statement about **information**, not
+about update count. Those two quantities come apart precisely here:
+
+| | update frequency | irreducible information per update |
+|---|---|---|
+| **hub** | low — the key is stable | **high** — nothing else holds it |
+| **satellite** | **high** — attributes churn | low — predictable from the hub, so the churn is jitter |
+
+A satellite can change constantly and carry almost nothing, because its changes are
+**reconstructible from the hub**. A hub can change rarely and every change be
+irreducible.
+
+**So DV2.0's "change rate" is a PROXY for irreducibility, and this is exactly where
+the proxy breaks.** Aaron's decorrelation criterion measures the target quantity
+directly; "fast-changing" is the observable that usually tracks it in a warehouse,
+where high-churn columns happen to be the derived ones. In a society of agents that
+correspondence fails — a highly active but highly correlated agent is *busy*, not
+*informative*, which is the whole point of pricing contribution by ΔU rather than by
+volume ([`every-bug-has-economic-value`](../../.claude/rules/every-bug-has-economic-value.md))
+and of the finding that N clones price near one agent's worth.
+
+**Correction to §4b above, which followed the canonical wording:** it said satellites
+"change faster." That is true of the *record* and misleading about the *agent*. The
+criterion is irreducibility, and the honest phrasing is: a satellite is what can be
+**reconstructed** from a hub plus noise — however often it moves.
+
 ## 4c. Caution — four things clicked in fifteen minutes
 
 This document was assembled from four messages arriving minutes apart, each of which
