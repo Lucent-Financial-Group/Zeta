@@ -472,6 +472,93 @@ time and space.** Naming the axis does not measure that — the same warning Ast
 to `Φ` — and the cheapest honest first step is the error-message count above, which needs
 no new theory.
 
+## 5b. Bounded ticks are the halting-problem trade — and partial results are what keep it cool
+
+Aaron 2026-09-08, verbatim:
+
+> *"i tink the universe is all about tradeoff to move forward vs the halting problem this
+> is why we have all our compute / tick bounded then we never have to worry about the
+> halting problem just bounded computations that either complte or leave partial results,
+> without partial results the heat dominates"*
+
+**This is the strongest statement of the three-axis claim so far, and unlike §6 it is not
+a count — it is a mechanism.** It also turns out to be *already typed in F#*.
+
+### The halting problem is not solved here; it is made irrelevant by refusing to ask
+
+You cannot decide in general whether a computation terminates. A bounded tick never asks.
+It runs to a budget and reports **which** of several endings occurred — and the design
+decision that matters is that *not-finishing is an outcome, not a failure*.
+
+`src/Core/Chip8CrossRunStore.fs` + `Chip8ConsultCensus.fs` implement exactly that, with
+four first-class verdicts:
+
+| verdict | meaning | erasure? |
+|---|---|---|
+| `Halt` | completed | none |
+| `AwaitingInput` | blocked, resumable | none |
+| `Cycle` | non-termination *detected and recorded* | none |
+| **`OpenAtBound`** | **budget exhausted** — *"a distinct constructor that cannot be misread as closure"* | **none** |
+
+The census module's own sentence is the discipline: *"a halted orbit is recorded **as**
+halted, and budget exhaustion is `OpenAtBound`, a distinct constructor that cannot be
+misread as closure."* And at the reporting layer, the same refusal: *"a bucket with count
+zero is a **measurement, not an absence**."*
+
+**So three of the four endings are non-terminating, and all four are retained.** Nothing
+about running out of budget destroys what the run learned.
+
+### Why "without partial results the heat dominates" is exactly right
+
+Take the counterfactual. A bounded computation that returns **nothing** on exhaustion has
+**erased every bit of work it did** — the run happened, the state is gone, and the next
+tick must regenerate it from scratch. That is Landauer erasure at the scheduler level, and
+it recurs *every tick*, forever.
+
+A bounded computation that **retains the walk** has **deferred**, not destroyed. Which is
+`Heat.fs`'s one bit again — deferred vs annihilated — now appearing at the level of the
+tick loop rather than the shed.
+
+**Precision, because I checked rather than assumed:** the verdict constructor is
+`OpenAtBound of maxSteps: int` — it carries the **bound**, not the state. The no-erasure
+property comes from the **store**, not from the verdict: `Chip8CrossRunStore` is
+*"memoization of a deterministic transition function over a finite state space"* and
+records a `StateDigest` per visited state, so the walk survives the tick that ran out of
+budget. Verdict and retention are two separate mechanisms and only the second is what keeps
+the heat down. Saying "`OpenAtBound` plus its state" would have blurred them.
+
+**And this is Bennett's trade, at a different layer.** §5 noted that reversibility is
+bought *with space*. Here:
+
+> **bound the TIME (tick budget) · spend SPACE (retain the partial verdict and state) ·
+> avoid HEAT (nothing erased)**
+
+All three axes in a single design decision, trading against each other exactly as §5 said
+they must. That is a considerably better argument for the triple than a matching count of
+three, and it is why §6 stays labelled soft while this does not.
+
+### The Beacon anchor this has and should claim
+
+**Anytime algorithms** — Dean & Boddy (1988), and Zilberstein's *interruptible* vs
+*contract* distinction (1996): an algorithm that can be stopped at any point and still
+return a usable answer whose quality improves with time. Zeta's tick bound is the
+**interruptible** case, and `OpenAtBound` is the typed admission that an interruption
+happened.
+
+The repo's own framing goes one step further than the classical literature, and the step
+is worth naming: anytime algorithms are usually motivated by *decision quality under time
+pressure*. Aaron's motivation here is **thermodynamic** — partial results exist so the work
+is not erased. Same mechanism, a different and stricter reason to want it.
+
+### Limits
+
+- **`OpenAtBound` is CHIP-8-scoped today.** It is a `Chip8CrossRunStore.Verdict`, not a
+  substrate-wide scheduler contract. Whether every bounded path in Zeta retains its partial
+  state on exhaustion is **unverified** — and it is precisely the thing a heat audit would
+  check first.
+- The claim that *"the universe is all about tradeoff"* is Aaron's framing and is not
+  argued here; what is argued is the narrow engineering version, which stands on its own.
+
 ## 6. A soft claim, labelled by its author as soft
 
 Aaron 2026-09-08:
