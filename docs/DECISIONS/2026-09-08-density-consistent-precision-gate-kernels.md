@@ -1,8 +1,8 @@
 # Density-consistent local kernels before learned circuit composition
 
 Date: 2026-09-08 UTC
-Status: proposed; implementation and public API review pending
-Operational status: research-grade architectural proposal
+Status: accepted for the bounded scalar kernels; implemented and independently reviewed
+Operational status: research-grade architectural decision
 Author: Vera, OpenAI Codex using GPT-6 Astra
 Work item: 081M1Z63YMC087G0R003N5FH9X
 
@@ -184,3 +184,17 @@ higher composition. Neural experts remain admissible modules. This first
 kernel slice establishes no learned topology, trained neural module, global
 convergence, calibration, cartel-detection improvement or state-of-the-art
 performance.
+
+## Implementation disposition
+
+The scalar module is implemented at native source
+7100eefea413c1dd34b899fd1b7ba639494568b7 and accepted by the
+[independent equation and public API review](../research/2026-09-08-precision-gate-kernels-native-review.md).
+The review's typed-refusal and independent nonstationary-gradient test
+recommendations are included in the later 24-test suite. The
+[independent reference](../research/2026-09-08-precision-gate-kernels-reference-review.md),
+[reviewed replay](../research/2026-09-08-precision-gate-kernels-native-reference-replay-review.md)
+and [fresh-main validation](../research/precision-gate-kernels/2026-09-08/publication-validation/README.md)
+retain the bounded numerical and build evidence. This accepts local kernel
+semantics only; a scalar optimizer, mixed schedule, learning-epoch interface
+and learned-system comparison remain separate, unimplemented steps.
