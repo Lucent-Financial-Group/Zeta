@@ -155,6 +155,10 @@ let ``ZD4 freeze-storm thread alloc stays under 48 MiB`` () : Task =
                                     storm
                                 )
 
+                            // Current-thread alloc. Awaiting ConfigureAwait(false)
+                            // hops; ubuntu-24.04 then subtracted this thread's
+                            // `before` from another thread's lifetime (~57e9).
+                            // Wait/Result keep before and after on one thread.
                             let before = GC.GetAllocatedBytesForCurrentThread()
 
                             for i in 1..storm do
@@ -167,17 +171,18 @@ let ``ZD4 freeze-storm thread alloc stays under 48 MiB`` () : Task =
                                         .AsTask()
                                 )
 
-                            do! (ZetaFsFreeze.pumpLog volume ct).ConfigureAwait(false)
+                            ZetaFsFreeze.pumpLog volume ct |> fun t -> t.Wait(ct)
 
                             for t in pending do
-                                let! r = t.ConfigureAwait(false)
-
-                                match r with
+                                match t.Result with
                                 | Error e -> Assert.Fail(ZetaFsFreeze.errorName e)
                                 | Ok _ -> ()
 
                             let n = GC.GetAllocatedBytesForCurrentThread() - before
-                            Assert.True(n < 48L * 1024L * 1024L, sprintf "freeze storm allocated %d bytes" n)
+                            Assert.True(
+                                n >= 0L && n < 48L * 1024L * 1024L,
+                                sprintf "freeze storm allocated %d bytes" n
+                            )
                         finally
                             ZetaFsFreeze.dispose volume
                     })
