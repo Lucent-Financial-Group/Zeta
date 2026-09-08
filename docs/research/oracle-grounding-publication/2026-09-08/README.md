@@ -43,3 +43,7 @@ gate was rerun at c5f1fc0e6ff7b364404e602390cb37d5e2b51679. All 18
 checks passed in 606.892 seconds. The [second manifest](current-main-validation/manifest.json)
 retains the original conflict, explicit resolution, merge and process records.
 No earlier failure or validation cut was overwritten.
+
+The [independent composition review](../../2026-09-08-oracle-publication-composition-independent-review.md)
+verifies the original manifesto and operative HC-8 bytes, all 26 initial
+archive members, four source identities and the complete resolved merge tree.

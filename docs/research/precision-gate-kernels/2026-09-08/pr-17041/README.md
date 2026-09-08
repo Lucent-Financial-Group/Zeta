@@ -39,3 +39,7 @@ status, reporter log, ordinary merge request, full-tree proof and shared-view
 refresh. Archive verification reads members without extracting them. Source
 and numerical validation remain in the [earlier receipt](../publication-validation/README.md).
 No new numerical experiment was performed for this publication proof.
+
+The [independent merge-proof review](../../../2026-09-08-pr17041-merge-proof-independent-review.md)
+verifies all 347 corrected paths and every original archive member, retaining
+the initial rename-aware omission and its precise scope.
