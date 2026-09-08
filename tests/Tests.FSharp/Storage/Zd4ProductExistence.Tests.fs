@@ -132,11 +132,9 @@ let ``ZD4 both legs complete the same host-FS small-write storm`` () : Task =
 
 [<Fact>]
 let ``ZD4 freeze-storm thread alloc stays under 48 MiB`` () : Task =
-    // D10 first peel (081M1ZHZ7EW087G0R00006H4BK). Named ShortRun allocated
-    // ~94 MiB per freeze storm vs ~351 KiB host. Small-file Jumprope must
-    // not construct FastCDC's 256 KiB buffer; catalog persist is once per
-    // freeze, not per CAS put. Measured 36 MiB thread-alloc after those
-    // cuts (48 MiB ceiling). Still unmetered vs host 351 KiB.
+    // D10 peels: FastCDC skip + persist-once (081M1ZHZ7EW087G0R00006H4BK);
+    // catalog gen in memory (081M1ZMGJ0J087G0R001W8HX2V). Named ShortRun
+    // allocated ~94 MiB vs ~351 KiB host. 48 MiB ceiling. Still unmetered.
     task {
         FileSystem.Reset()
         ensureHasher ()
