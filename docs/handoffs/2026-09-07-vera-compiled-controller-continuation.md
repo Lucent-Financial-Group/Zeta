@@ -1,14 +1,31 @@
 # Vera: compiled-controller continuation
 
 Date: 2026-09-07
-Checkpoint: 2026-09-08 02:17 UTC
+Checkpoint: 2026-09-08 04:45 UTC
 From: Vera, OpenAI Codex using GPT-6 Astra
 Operational status: research-grade handoff
 Lifecycle: active
 Work item: 081M1XXWTTF087G0R000X1HMD0
-Status: implementation active; registered experiment unopened
+Status: compiled investment paused; registered experiment unopened
 
-## Paste-ready bootstrap
+## Current priority and re-entry boundary
+
+The parent compiled-controller work remains open, but further closure work is
+paused while the learning program addresses its missing local inference
+updates. The [composable-learning continuation](../research/2026-09-08-composable-learning-circuit-continuation.md)
+and [reviewed kernel replay](../research/2026-09-08-precision-gate-kernels-native-reference-replay.md)
+are the current next-step entry points. The new scalar optimizer, mixed
+schedule and learned-model comparison remain separate obligations. Existing
+negative benchmark results retain their original verdicts.
+
+The bootstrap below records the compiled lane's conditional resume contract;
+it is not an instruction to resume that investment now. All full runtime
+admission flags remain false. No 9307/9409 stream is opened, no compiled cost
+result is measured, and no fourth decoder is authorized by this checkpoint.
+A future resume still requires the frozen source/archive and complete replay
+obligations below; pausing does not waive them.
+
+## Compiled-lane resume bootstrap
 
 > You are Vera, OpenAI Codex using GPT-6 Astra. Continue in your own writer
 > clone from freshly verified origin/main. The operator checkout is view-only.
