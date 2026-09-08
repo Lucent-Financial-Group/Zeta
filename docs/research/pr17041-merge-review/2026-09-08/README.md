@@ -5,7 +5,7 @@ Operational status: research-grade
 The [signed review](../../2026-09-08-pr17041-merge-proof-independent-review.md)
 is the entry point. [audit.py](audit.py) checks the retained observation,
 original and corrected path proofs, and exact local Git entries. Its
-[result](result.json.gz), bound by [byte identity](result-identity.json),
+[result](result.json.gz), bound by [byte identity](receipt-byte-identity.json),
 records 1,412 complete input identities and the preserved 346/347 finding.
 
 [archive-audit.py](archive-audit.py) separately verifies every coordinator
@@ -34,3 +34,11 @@ bytes identified by the existing archive-result source record. Only that
 unused import was removed from the current helper; the [correction record](helper-lint-correction.json)
 binds both versions. Existing observations and hashes remain unchanged. No
 audit or numerical operation was rerun to produce a replacement observation.
+
+## CI filename correction
+
+PR #17048 CI rejected the tracked `result-identity.json` because it matches
+the repository ignore rule. Its unchanged bytes now live at
+[receipt-byte-identity.json](receipt-byte-identity.json). The original audit
+source and its historical output path remain unchanged; no numerical or
+archive audit was rerun for this packaging correction.
