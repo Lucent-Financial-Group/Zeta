@@ -85,3 +85,11 @@ and [native replay review](2026-09-08-precision-gate-kernels-native-reference-re
 accept their explicitly bounded source, numerical and custody claims. The
 [full integration gate and remote preservation](precision-gate-kernels/2026-09-08/integration-validation/README.md)
 retain all18 passed checks and normal push at the exact tested source cut.
+
+## Fresh-main publication validation
+
+The [publication receipt](precision-gate-kernels/2026-09-08/publication-validation/README.md)
+records a separate all-18 full gate and replay at c1e6f0497afcc5078b03bfe8e797dc12e684cf58,
+including actual direct assembly copies, ten rejected output controls, formatter
+coverage limits and the final capture-summary exception. This does not retime
+the earlier native/reference executions.
