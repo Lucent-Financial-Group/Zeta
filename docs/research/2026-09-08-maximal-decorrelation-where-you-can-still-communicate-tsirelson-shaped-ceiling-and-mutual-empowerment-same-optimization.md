@@ -246,6 +246,77 @@ until you ask what it can no longer represent.
 the claim that Zeta's generator/join stack *realises* that dimensional structure is the
 conjecture, and §6 remains the only thing that would settle it.
 
+## 3e. Four-corner ownership, the −1 as pseudo-retrocausality, and homoiconicity defect
+
+Aaron, continuing from §3d, verbatim:
+
+> *"this is where our four courner ownership feedback model comes from to allow each
+> side to communicate over time, with -1 zets psudo retrocausality via generator
+> fucntion updates this is very very similar to our homoiconic adenkra work, we have
+> several versions of adnenkra with some being dual homoiconic and some their
+> subalgebras are homoiconic"*
+
+### The four corners are C₄, and the −1 is the half-turn
+
+`src/Core/FourCornerC4.fs` names the 2×2 as `N S E W = {1, i, −1, −i} = C₄`, and its
+`FourCornerTrace` is a **WSet ping-return** in which **`−1 = i²` is a *ring* identity**
+(hence the `IStarRing` requirement; inverse-free corners — Boolean, tropical, EP,
+interval — stay at `ISemiring` and **refuse the trace at compile time**).
+
+That is the "each side communicates over time" structure in one object: a ping goes out
+and a return comes back, and the round trip is `i⁴ = 1`. Half-way round is `−1` — going
+*back*. Which is exactly the Z-set retraction.
+
+### Why the retraction is *pseudo*-retrocausal and not a cheat
+
+The word doing the work in Aaron's sentence is **"via generator function updates."** A
+`−1` does **not** mutate the past record. It updates the **generator** that produced it,
+and because the data is *derived*, what the past **means** changes while what was
+**asserted** is untouched.
+
+That is the raw vault's own sentence — *a single version of the **facts**, never a single
+version of the **truth*** — restated dynamically, and it is why the mechanism is
+retrocausal-*looking* rather than actually retrocausal. Nothing travels backward; the
+generating function is revised, and the derived view follows.
+
+### Homoiconicity defect — the measured quantity that ties it together
+
+The adinkra work carries a **number** for this, not a metaphor:
+
+| tower | dimension relation | defect | reading |
+|---|---|---|---|
+| **uncoded** `Cl(0,N)` — the regular representation | `dim = 2^N` = vertex count | **1** | **homoiconic**: the algebra and its representation are the same size |
+| **coded** (quotient by a doubly-even self-dual code `C`) | `dim A / dim M = 2^N / 2^(N−k) = 2^k = |C|` | **2^k** | not homoiconic globally — the operator algebra is `2^k` times the node set |
+
+(`FourCornerC4.uncodedHomoiconicityDefect = 1`; `codedHomoiconicityDefect =
+AdinkraCode.homoiconicityDefect = fullOperatorDimension / adinkraNodes`.)
+
+**That is Aaron's "several versions, some dual homoiconic, some their subalgebras are
+homoiconic," made quantitative.** The coded tower is not homoiconic as a whole, but
+`regular-representation-defect.ts` exposes `freeOverSubalgebra` — the coded
+representation can still be **free over a subalgebra**, which is the precise sense in
+which a *sub*algebra carries the property the whole does not.
+
+**My inference, flagged as mine and not Aaron's:** defect 1 is exactly the condition
+under which *"apply a −1 to the data"* and *"update the generator"* are **the same
+operation** — if code and data are the same object, revising the generator *is* an edit
+to the representation. At defect `2^k` they come apart, and the `−1` and the generator
+update are two different acts that must be kept in sync by something else. So the
+homoiconicity defect **measures how much the pseudo-retrocausality mechanism costs** in
+a given tower. That is a checkable claim and nothing in-tree asserts it yet.
+
+**Discipline already in-tree, worth copying rather than restating.**
+`homoiconicity-transport-seam.ts` says outright that it *"does not claim that error
+correction restores a quotient pre-image or establishes agent homoiconicity"* — the
+seam separates a code quotient from an error-correcting channel because they answer
+different questions. This section inherits that limit: nothing here claims agent-level
+homoiconicity.
+
+**Register:** the defects are **computed in code**; the C₄/ring-identity structure is
+**shipped and compile-time enforced**. The *identification* of the four-corner `−1` with
+the ρ-band story remains `toy`, and `FourCornerC4.fs` itself carries the standing warning
+against reading its numeric coincidences as measurements (§7).
+
 ## 4. The social reading — and why it makes mutual empowerment structural
 
 | layer | objective | constraint | the optimum is called |
