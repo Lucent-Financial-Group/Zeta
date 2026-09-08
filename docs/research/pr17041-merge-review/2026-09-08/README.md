@@ -25,3 +25,12 @@ Packaging history: the initial local review commit
 excluded it from directory staging. The explicit follow-up adds those
 unchanged bytes before the first push. The executed audit sources and
 results are unchanged; the original omission is retained in Git history.
+
+## Later helper lint correction
+
+PR 17048's code-quality review flagged an unused gzip import in the retained
+helper. The [original helper](archive-audit-original.py.gz) preserves the exact
+bytes identified by the existing archive-result source record. Only that
+unused import was removed from the current helper; the [correction record](helper-lint-correction.json)
+binds both versions. Existing observations and hashes remain unchanged. No
+audit or numerical operation was rerun to produce a replacement observation.

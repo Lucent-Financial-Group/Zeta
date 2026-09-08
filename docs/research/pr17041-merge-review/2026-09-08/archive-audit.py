@@ -1,6 +1,5 @@
 """Verify coordinator archive bytes without extracting or executing members."""
 
-import gzip
 import hashlib
 import io
 import json
