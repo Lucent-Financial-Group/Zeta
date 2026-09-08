@@ -132,6 +132,67 @@ the store* rather than of the model.
 limit of its own, and I have not read far enough into it to restate that limit accurately
 here. Anyone building on this should read that document rather than this summary of it.
 
+## 4c. SECOND CORRECTION — it is not "a total order nobody needs". Total order is never the goal
+
+Aaron, on §4b's phrasing:
+
+> *"never looking for total order just partial join memory based order that's cowberated"*
+> [corroborated]
+
+My sentence — *"Raft buys a total order nobody across sites needs"* — still priced total
+order as the thing being bought and declined. That concedes the wrong frame. **Total order is
+not an expensive luxury here; it is the wrong output type.**
+
+Every word of Aaron's replacement is load-bearing, and each one is already shipped:
+
+| word | what it names | where |
+|---|---|---|
+| **partial** | a semilattice induces a **partial** order — incomparable elements stay incomparable | — |
+| **join** | *"a bounded **join-semilattice** over a source-keyed set"* — idempotent, commutative, associative, unit `empty` | `src/Core/QuorumAlgebra.fs` |
+| **memory based** | the order comes from the accumulated **source-keyed set** of who observed what, not from a clock or a leader | same |
+| **corroborated** | *"independent evidence, so **the same source twice counts once**"* | same |
+
+### Why this is a stronger objection to Raft than latency
+
+A join-semilattice and a Raft log compute **different objects**:
+
+- **Raft** produces a **total order** over a log. Two concurrent writes are *forced* into a
+  sequence; which one "came first" is decided by a leader, and that decision is manufactured
+  rather than observed.
+- **`join`** produces a **least upper bound**. Two concurrent observations that are
+  incomparable **remain incomparable**, and their incomparability survives the merge.
+
+That surviving incomparability is not a loss of precision — it is
+[`anti-babel-preserve-reconcilability`](../../.claude/rules/anti-babel-preserve-reconcilability.md)'s
+*reintegration is NOT reconvergence*: two paths around a pole yield genuinely different
+results, and **that difference is information, not error**. It is the raw vault's *single
+version of the facts, never a single version of the truth*.
+
+**So a stretched etcd would be wrong even at zero latency.** It would take a partial order
+that correctly records "these two sites saw different things" and flatten it into "site A
+happened before site B" — inventing an ordering fact nobody observed, and destroying the one
+the design exists to preserve. Latency is the *second* objection; the first is that a
+sequencer answers a question the substrate never asks.
+
+### Corroboration is the part with a measured failure
+
+`QuorumAlgebra`'s source-keying is not bookkeeping — it is what makes the order
+*corroborated* rather than merely large. The header records what its absence cost:
+
+> deduplicating by source *"is the only thing that stops six agents on one data stream folding
+> to six times the confidence (bug B3, `precision = 66.0` on a mean wrong by 5.66)"*
+
+Six copies of one observation are **not** corroboration, and without source-keying the fold
+could not tell the difference. That is the same property the Astra ferry's escalation ladder
+climbs — *union → witnessed union → **distinct-source** quorum → BFT* — and the same reason
+that ferry's negative control matters: under a common seed, agreement between agents may just
+be one cause unfolding twice.
+
+**Note the split this module also makes, because it bears on the wording above:** `join` is
+where evidence is *counted* (idempotent, dedup by source) and `interfere` is where it is
+*combined* (**not** idempotent, `interfere a a = 2a`, opposite phases annihilate). Calling the
+whole thing "join" is right for the *ordering* question and wrong for the *amplitude* one.
+
 ## 5. The measurement that settles it, instead of a rule
 
 Aaron's framing — *"if we can do geo distributed clusters without penalty"* — is a
