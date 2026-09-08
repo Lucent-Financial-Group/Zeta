@@ -64,6 +64,62 @@ is also not yet an identification. **The competitor to exclude is that any two-s
 constrained optimization yields *some* interior optimum.** Landing on 2√2
 specifically needs the invariants, and nobody has produced them.
 
+## 3b. The bridge is BUILT, not conjectured — FourCorner feedback + `Meno`/μένω
+
+Aaron, on §3, verbatim:
+
+> *"we build the bridge with our fourcourner feedback system and our bridge/μένω
+> (menō) code"*
+
+This is the increment that moves the thread off analogy, because the structure is
+already an in-tree object with a byte-lockable implementation.
+
+`src/Core/Meno.fs` — μένω, Greek *"I remain / abide / persist"*, which is the same word
+as Aaron's carved *"agents are what remains, actors are what acts."* Its own header
+states the shape:
+
+> *"μένω ... is the **identity arrow** `Id_A : A → A` extended through time. But because
+> agents interact and exchange beliefs, their worldlines cross. This crossing is a
+> **braid**. A free braided monoidal category is the exact mathematical structure that
+> describes processes (arrows) that can run in parallel (⊗) and **cross over each other
+> ... without losing their individual persistence (μένω)**."*
+
+**Read that last clause against §2.** "Cross over each other without losing individual
+persistence" **is** *maximal decorrelation where you can still communicate*, stated
+categorically. Crossing is the communication; retained persistence is the decorrelation
+that survives it.
+
+### The symmetric/braided split is the ρ→1 cliff, algebraically
+
+`src/Core/MenoBraided.fs` makes the distinction that carries the whole weight:
+
+| structure | law | what it means for two agents |
+|---|---|---|
+| **symmetric** — `Meno.braid`, the tuple swap | **σ² = id** | interacting twice returns you exactly where you started: the exchange left **no trace**. Reconvergence — the **ρ→1 collapse** |
+| **genuine braid** — `MenoBraided`, conjugation-rack Yang–Baxter | **R² ≠ id** | the crossing **leaves a trace**: both branches survive with their paths recorded |
+| no braiding at all | — | no crossing, no communication: **Babel** |
+
+**`R² ≠ id` is monodromy as an algebraic object**, and monodromy is exactly what
+[`anti-babel-preserve-reconcilability`](../../.claude/rules/anti-babel-preserve-reconcilability.md)
+already names as load-bearing: *"reintegration is NOT reconvergence ... two paths around
+a pole yield genuinely different results, and that difference is information, not
+error."* That rule states the requirement in prose. `MenoBraided` **is that requirement
+as a Yang–Baxter operator over `V = ℤ[Fₙ]`, integer-only and byte-lockable** — no float
+in the proof lineage, so it survives the four-oracle treaty.
+
+So the middle of the band is not a metaphor about a number. It is the difference between
+a symmetric and a non-symmetric braiding, and the repo already carries both, knows which
+is which, and has a witness work-item for the non-symmetric one
+(`081M00EZXN2087G0R003AY3WSJ`).
+
+**Register discipline, unchanged.** The *code* is real and its correctness is argued in
+its own header (including a recorded 2026-08-13 correction that `⊗_Kronecker` is not
+cartesian, so the category genuinely admits many braidings rather than being forced
+symmetric). What remains `toy` is the **identification** of `R² ≠ id` with the
+decorrelation extremum of §2 — that is a correspondence between a built structure and a
+conjectured optimization, and §6's measurement is still the only thing that would settle
+it.
+
 ## 4. The social reading — and why it makes mutual empowerment structural
 
 | layer | objective | constraint | the optimum is called |
