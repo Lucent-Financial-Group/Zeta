@@ -559,6 +559,87 @@ is not erased. Same mechanism, a different and stricter reason to want it.
 - The claim that *"the universe is all about tradeoff"* is Aaron's framing and is not
   argued here; what is argued is the narrow engineering version, which stands on its own.
 
+## 5c. Where the heat actually comes from — pruning, and the arena's purpose
+
+Aaron 2026-09-08, three more, verbatim:
+
+> *"our chip8/9 arena is all about making infinate claims computable one bounded space and
+> time and now maybe heat at a time"*
+
+> *"our heat mostly comes from future pruning from our zeta scheduler and rodneys razor"*
+
+> on the degenerate all-refusing invariant being field-for-field identical to a no-op:
+> *"yes but they cost more heat than no-op"*
+
+### The arena's purpose, stated
+
+**Making infinite claims computable, one bounded chunk at a time** — and the bound is now
+proposed as three-dimensional rather than two. That is the clearest one-line statement of
+what the CHIP-8/9 arena is *for* that this thread has produced, and it explains why
+`OpenAtBound` had to be a first-class verdict rather than an error: an infinite claim
+examined under a bound **cannot** terminate, so a substrate that treats non-termination as
+failure could never host one.
+
+### Pruning is the dominant erasure source — and it is now measured
+
+This is the sentence that turned the thread into code. **Pruning *is* erasure**: a
+discarded future is a possibility that was computed and destroyed. And the two named
+sources are exact —
+
+- the **scheduler**, and
+- **Rodney's Razor** — specifically *Quantum* Rodney's Razor, whose stated job is
+  **possibility-space pruning on pending decisions**. A razor that prunes possibilities is,
+  under this reading, **a heat engine**: every branch it removes is an erased bit.
+
+**Measured at the one site where the pruning is explicit** (`StateSpace.exploreGuarded` /
+`exploreKeyed`):
+
+```fsharp
+let child = Chip8Cow.frameStep cyclesPerFrame { parent with Keys = a }
+if invariant child then ...   // kept
+                              // else: dropped, previously with NO record at all
+```
+
+`frameStep` runs **before** the invariant is checked, so a pruned child is a **fully
+materialised frame that is then discarded** — real computed work, precisely what Landauer
+prices. And it was the *only* ending that left no trace: `Revisits`, `SelfLoops` and
+`Truncated` were all already counted. `Graph.Pruned` now counts it (workitem
+`081M1ZKRBYR087G0R003BAFQT4`).
+
+**So the first erasure meter is not a new subsystem — it is one integer at the site the
+sentence pointed at.**
+
+### Why heat has to be a separate field, in one line
+
+Aaron's *"they cost more heat than no-op"* is the whole argument for a third axis:
+
+> **two runs can produce IDENTICAL observable results at DIFFERENT cost.**
+
+Heat is therefore **not recoverable from the output**. It has to be counted, not derived —
+which is exactly why `Pruned` is a record field and not a function of the returned graph.
+
+### Two disciplines Aaron corrected on the way
+
+**(1) A missing threshold is not the same as a refused one.** `Chip8ConsultCensus` attaches
+*"no threshold"* and returns *"no verdict"*, on the grounds that "how different is too
+different" has no defensible constant. Aaron: *"for me this one has to be **derived over
+time and accurate trusted measurements**."*
+
+That is a real amendment. The module's refusal correctly prevents an **invented** constant
+and incorrectly implies a **permanent** absence. The repo's own doctrine is that a claim is
+`toy` until it earns a falsifier — earning is the point, and a threshold accumulated from
+trusted measurement is *earned*, not invented. Refusing to invent one and refusing to ever
+have one are different positions, and only the first is what the razor requires.
+
+**(2) The degenerate case is to be resisted, not merely reported.** Aaron: *"nothing is
+safe is a degenerate case and belongs to our antibable to resist."* An invariant admitting
+nothing is the **ρ→0 cliff in invariant space** — total exclusion, nothing survives contact.
+`exploreGuarded` currently refuses the root and returns a graph **indistinguishable from a
+no-op**, which is a check that did not run looking like one that passed. The falsifier
+committed with `Pruned` **pins that indistinguishability explicitly**, comparing against an
+empty-action no-op, so a future fix breaks the assertion instead of silently passing it.
+Recorded as a gap, not blessed as behaviour.
+
 ## 6. A soft claim, labelled by its author as soft
 
 Aaron 2026-09-08:
