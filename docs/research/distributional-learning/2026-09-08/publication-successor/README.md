@@ -28,7 +28,18 @@ The original observation counted rename-aware diff names. A moved workitem
 contributes only its new name to that display. Independent review found the
 missing old-path count and verified its deletion too. The separately retained
 full-tree follow-up compares all 231 changed paths with mode, type and blob
-identities at successor `6a1f5d43a`; the only difference from the old
-publication is the declared explanatory/claim-tense document. This is a
+identities at successor `6a1f5d43a`; the two differences from the old
+publication are the explanatory/claim-tense document and the subsequently
+imported final publication-scope review. This is a
 source-scope count correction, with no lost source or evidence file. The
 original observation and original retainer remain byte-for-byte retained.
+
+The first follow-up helper incorrectly expected only one differing document,
+raised an assertion, and produced empty stdout. The enclosing shell continued
+and committed premature proof-complete wording in `929a141b8`. That failed
+script and empty stream remain intact; the tool-visible traceback is identified
+as a transcription because original stderr was not captured. The repaired
+attempt explicitly admits the two reviewed documentation changes and retains
+its separate process record: exit zero, 96,206 stdout bytes, zero stderr bytes,
+and every one of the 231 source-scoped tree comparisons. Subsequent editing
+and commits occur only after that captured subprocess succeeds.

@@ -36,7 +36,7 @@
       "MatchesCoordinatorSource": true
     }
   ],
-  "ArtifactCount": 25,
+  "ArtifactCount": 30,
   "Artifacts": [
     {
       "File": "000-distributional-final-review-import-1.log.gz",
@@ -253,7 +253,7 @@
       "StoredBytes": 761,
       "StoredSha256": "9d7a8907c718b5c8b99bbe60b5b5c420cdfd9839863d51ab67ffb9e055285bc6",
       "Encoding": "gzip",
-      "Stage": "Full tree count follow-up"
+      "Stage": "First count follow-up: assertion failed; stdout empty"
     },
     {
       "File": "count-correction-distributional-successor-tree-count-correction.json.gz",
@@ -263,10 +263,82 @@
       "StoredBytes": 20,
       "StoredSha256": "9ceffb7310338057cfe71a4ae1e2c98d2c485d81cdef906532a801f457a38d64",
       "Encoding": "gzip",
-      "Stage": "Full tree count follow-up"
+      "Stage": "First count follow-up: assertion failed; stdout empty"
+    },
+    {
+      "File": "repair-distributional-successor-tree-count-failure-transcription.txt.gz",
+      "OriginalPath": "distributional-successor-tree-count-failure-transcription.txt",
+      "Bytes": 719,
+      "Sha256": "f6d060eeee8e26e42850aecdef3e19cd5d5600835e1c739e805926b31574716e",
+      "StoredBytes": 452,
+      "StoredSha256": "b88e89af8f5d2a767e3928782a11e1e6fb2cdc28a2ac250c2928f3b1750a8dbc",
+      "Encoding": "gzip",
+      "Stage": "Captured count follow-up repair"
+    },
+    {
+      "File": "repair-distributional-successor-tree-count-correction-2.py.gz",
+      "OriginalPath": "distributional-successor-tree-count-correction-2.py",
+      "Bytes": 1337,
+      "Sha256": "6877d63337cb2a8b79b7d97ab353b43426834a7bdf52ac251d3dec91f3faa391",
+      "StoredBytes": 791,
+      "StoredSha256": "70a166034e9a236f790248d6aaa958f3795a1f5ec02a38a301bcb80186f136e2",
+      "Encoding": "gzip",
+      "Stage": "Captured count follow-up repair"
+    },
+    {
+      "File": "repair-distributional-successor-tree-count-correction-2.stdout.gz",
+      "OriginalPath": "distributional-successor-tree-count-correction-2.stdout",
+      "Bytes": 96206,
+      "Sha256": "aba1b622cd2afaa5b87d49ecfa5c376b50a7507f92a55fb94845822f7ea3b5e6",
+      "StoredBytes": 8766,
+      "StoredSha256": "059e314a96eb190ab1b0ed257aced5182b7e41f0f81dfa372702a0a3d645c9b0",
+      "Encoding": "gzip",
+      "Stage": "Captured count follow-up repair"
+    },
+    {
+      "File": "repair-distributional-successor-tree-count-correction-2.stderr.gz",
+      "OriginalPath": "distributional-successor-tree-count-correction-2.stderr",
+      "Bytes": 0,
+      "Sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "StoredBytes": 20,
+      "StoredSha256": "9ceffb7310338057cfe71a4ae1e2c98d2c485d81cdef906532a801f457a38d64",
+      "Encoding": "gzip",
+      "Stage": "Captured count follow-up repair"
+    },
+    {
+      "File": "repair-distributional-successor-tree-count-correction-2.process.json.gz",
+      "OriginalPath": "distributional-successor-tree-count-correction-2.process.json",
+      "Bytes": 523,
+      "Sha256": "05ab1abd1fd1bcd48ff90fa7a880e890b72a618cdeea750cfdbd127453f780d8",
+      "StoredBytes": 348,
+      "StoredSha256": "e749b245c76a479c849cc6ec9134687564506507033a58cbc8b1026f114f2df0",
+      "Encoding": "gzip",
+      "Stage": "Captured count follow-up repair"
     }
   ],
   "OriginalObservedRenameAwareDiffNameCount": 230,
   "VerifiedChangedTreePathCount": 231,
-  "AllObservedRenameAwareEntriesIdenticalBeforeExplanation": true
+  "AllObservedRenameAwareEntriesIdenticalBeforeExplanation": true,
+  "CountFollowup": {
+    "FirstAttempt": "Assertion failed; premature wording committed then corrected",
+    "RepairedProcess": {
+      "Command": [
+        "python3",
+        ".git/distributional-successor-tree-count-correction-2.py"
+      ],
+      "StartedAt": "2026-09-08T03:12:06.125724+00:00",
+      "FinishedAt": "2026-09-08T03:12:10.276574+00:00",
+      "ExitCode": 0,
+      "StdoutBytes": 96206,
+      "StderrBytes": 0,
+      "ScriptSha256": "6877d63337cb2a8b79b7d97ab353b43426834a7bdf52ac251d3dec91f3faa391",
+      "StdoutSha256": "aba1b622cd2afaa5b87d49ecfa5c376b50a7507f92a55fb94845822f7ea3b5e6",
+      "StderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "VerifiedSource": "6a1f5d43ad08f992bb8a0f80ac0c490ef4188d8a",
+    "ExpectedChangedDocumentation": [
+      "docs/research/2026-09-08-distributional-learning-controls-publication.md",
+      "docs/research/2026-09-08-distributional-learning-publication-scope-review.md"
+    ]
+  }
 }

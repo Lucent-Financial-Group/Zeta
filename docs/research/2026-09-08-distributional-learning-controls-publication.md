@@ -101,3 +101,11 @@ The [source/threat review](2026-09-08-yang-mills-source-and-threat-review.md)
 independently checks the supplied attachment bytes and the existing cartel
 mechanisms and formal premises. It retains the corrected distinction between
 LF separators and logical lines.
+
+The count-follow-up helper initially failed because a newly imported final
+scope review was a second changed document. A shell-control error allowed
+premature proof wording to be committed afterward. The successor archive
+retains that failed helper and empty stdout, labels the uncaptured stderr's
+transcription, and records the successful repaired process and full 231-path
+comparison with both documentation differences admitted explicitly. Earlier
+source/test and experiment archives remain unchanged.
