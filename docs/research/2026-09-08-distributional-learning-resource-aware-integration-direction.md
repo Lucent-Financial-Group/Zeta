@@ -375,3 +375,13 @@ multi-oracle preference to section 11, and indexes the independently reviewed
 interface census and two documentation-comment corrections. Runtime selection
 and enforcement remain unimplemented; warning versus required choice is not
 decided by this specification change.
+
+## Retained history and generators under repetition
+
+Aaron's [magnet-inspired history/generator direction](2026-09-08-history-generators-and-hidden-evolution-under-repetition.md)
+preserves his specific mapping: retained history supports generators whose
+outcomes can become new history. It distinguishes repeated visible output from
+unchanged internal state, names caller-owned persistence in the current algebra,
+and proposes chronological comparisons before any learning-performance claim.
+The supplied transcript is retained verbatim in the linked IP-questionable record.
+
