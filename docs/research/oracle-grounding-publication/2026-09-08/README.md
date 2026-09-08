@@ -68,3 +68,8 @@ current helper. It neither changes nor reruns the historical audit result.
 The [PR #17048 verification](pr-17048/README.md) retains the normal merge,
 complete CI and all 126 path/whole-tree checks. The shared view was refreshed
 cleanly to the merged main commit.
+
+The [independent publication review](../../2026-09-08-pr17050-publication-independent-review.md)
+checks both the magnet and oracle archives against their original records and
+actual main merge trees. It also verifies the paused compiled-investment wording;
+this adds no numerical or learned-system result.
