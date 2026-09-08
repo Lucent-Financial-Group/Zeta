@@ -47,3 +47,18 @@ No earlier failure or validation cut was overwritten.
 The [independent composition review](../../2026-09-08-oracle-publication-composition-independent-review.md)
 verifies the original manifesto and operative HC-8 bytes, all 26 initial
 archive members, four source identities and the complete resolved merge tree.
+
+## Composition with the landed magnet source
+
+After PR 17045 landed, one documentation append conflicted with this branch's
+append. The ordinary merge retains both complete sections, with a blank line
+between them. Main also supplied a ZetaFsFreeze source/test change, so the
+full gate was rerun at 9f422c77f3bec5ad647b32ef196c8493dc97dcef. All 18
+checks passed in 606.947 seconds. The formatter exited zero in 17.580 seconds,
+with its existing F#-unsupported limitation. The [later manifest](after-magnet-validation/manifest.json)
+retains the conflict, resolution, process records and exact unchanged hashes
+of all four oracle source/specification files.
+
+The separate [audit-helper lint correction](../../pr17041-merge-review/2026-09-08/helper-lint-correction.json)
+preserves its original source before removing one unused import from the
+current helper. It neither changes nor reruns the historical audit result.
