@@ -472,6 +472,38 @@ time and space.** Naming the axis does not measure that — the same warning Ast
 to `Φ` — and the cheapest honest first step is the error-message count above, which needs
 no new theory.
 
+## 6. A soft claim, labelled by its author as soft
+
+Aaron 2026-09-08:
+
+> *"okay now i'm making a soft claim that time, space, and heat is the triforce/trinity
+> from zelda this is just a fun connecton but i think the game zelda migh be correclated
+> to zeta"*
+
+**Recorded with the register he assigned it** — *soft claim*, *fun connection*, *might be*.
+That labelling is the whole reason it can be written down safely:
+[`numerology-vs-number-theory`](../../../.claude/rules/numerology-vs-number-theory.md)
+says coincidence is a **legitimate generator and an illegitimate conclusion**, and that
+an *unlabelled* coincidence in long-term memory is a belief nobody decided to hold. This
+one is labelled by its author, so it stays a generator.
+
+**What the count is worth: nothing on its own.** Three-part structures are everywhere, so
+"there are three of them" identifies no more here than "48 roots" identified D₄⊕D₄ before
+the invariants were checked.
+
+**What is mildly more than a count** — and still not evidence:
+
+- the Triforce's parts are **not independent**; the story turns on their *imbalance*, and
+  holding all three is what completes it. Time, space and heat likewise **trade off** —
+  Bennett buys reversibility *with space* — so "three quantities that trade against each
+  other" is a slightly closer shape than "three things."
+- the Triforce is drawn as a **Sierpiński** subdivision, i.e. self-similar, which is
+  manifesto §10's property. Also a shape coincidence, noted as one.
+
+**What would promote it:** an actual correspondence between the three-way trade-off
+structure and something in the source, not a matching cardinality. Absent that, it stays
+where its author put it — fun, and useful only as an index entry.
+
 ## Pointers
 
 - `src/Core/Heat.fs` — deferred vs annihilated; the backpressure composition law
