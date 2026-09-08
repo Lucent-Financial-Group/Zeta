@@ -391,11 +391,71 @@ So a DBSP fold is *information-preserving where an ordinary destructive aggregat
 which is the sense in which it "bridges the paradigms": the same computation, run without
 the erasures the classical version performs.
 
+### CORRECTION — I wrote "Zeta counts no erasures today" and that is wrong
+
+Aaron, immediately: *"we do try to count erasures vigorsouly we have a lot of work on
+this based on our zsets and +1 and -1 never erasing"*. He is right, and the error is the
+familiar one: **I searched the vocabulary of my question ("heat meter", "erasure
+counter") instead of the vocabulary of the answer.** What is actually in-tree:
+
+| artifact | what it is |
+|---|---|
+| `src/Core/ToffoliGate.fs` | *"Z-set encoding for reversible computing"* — **Z-set assert (+1) maps to Toffoli forward; retract (−1) to Toffoli reverse**, the universal reversible gate, self-inverse |
+| **`garbageBitCount`** (same file) | **the erasure counter.** Its own comment names the discipline exactly: the gate *"erases nothing internally — which is true of every reversible gate and is therefore not a claim about dissipation. That claim lives at the boundary: see `garbageBitCount`"*, and separately warns that `Ancilla = Wires.Count` is *"CAPACITY, not a garbage count … a restatement of construction, not a property"* |
+| `docs/research/2026-05-09-zset-reversible-computing-landauer-bridge-math-writeup.md` | **the Landauer bridge, established 2026-05-09** — four months before this ferry — with PROVEN / CONJECTURED / SPECULATIVE labels per the razor |
+| `src/Core/GiftOfErasure.fs` | erasure as a *deliberate* act: encrypt-and-mix first, then forget one, so neither outside nor contributors can say which. Aaron's *"mutual empowerment of erasure"* |
+| `src/Core/Heat.fs` | `isForgettingKind`, `ofCounts (heatKinds) (backpressured) (storageErrors)` |
+
+So the axis is **not** new to the repo and the bridge is **not** unbuilt. What was new on
+2026-09-08 is the **name** — "big O heat" as a third complexity axis stated beside time and
+space — and Aaron flagged that naming, correctly, as the first utterance. The
+substrate under it predates the name by four months.
+
+Note also that `ToffoliGate.fs` already carries the exact caution I was about to offer it
+(self-inverse ≠ a dissipation claim; capacity ≠ garbage count). The discipline was there
+first.
+
+### The operational reading — and this is what makes the axis countable TODAY
+
+Aaron, completing it:
+
+> *"it's all around error messages that give no information on how to update yoru generate
+> function vs ones that do"*
+
+This lands the whole thread on something measurable this afternoon. Recall §3e of the
+sibling document: a `−1` **updates the generator**, never the past record. An error is a
+signal that the generator needs updating. Therefore:
+
+| error message | information | thermodynamic reading |
+|---|---|---|
+| says **how to update the generator** | preserved — the failure is invertible into a fix | **reversible**; no erasure |
+| says only **that something failed** | **destroyed** — the run happened, the reason is gone, and the next run must rediscover it | **erasure**; this is the heat |
+
+**An uninformative error message is an erasure event**, and erasures are what Landauer
+charges for. That is not a metaphor stretched to fit: the information genuinely existed
+inside the failing process and was genuinely not propagated, so the next actor pays to
+regenerate it. The bill is deferred exactly as §1's ferry describes.
+
+**And this repo has been paying down that bill for months without calling it heat:**
+
+- `lint-graphql-transport-in-scripts.ts` — *its refusal **prints the REST replacement***
+- *"exit code 2 is a check that never ran"*, not one that failed
+- *"a failed probe is `unknown`, never a negative result"*
+- the drift reporter's *"`healed` and `unobserved` rows carry NO annotation on purpose"*
+- the whole vacuity-class program: a check that cannot fail emits no information at all,
+  which is the **maximum**-erasure case
+
+So the concrete, cheap first measurement is not a new instrument: **count the refusals that
+do not name their remedy.** That is an erasure count over the repo's own error surface, it
+needs no thermodynamics to be useful, and it is exactly the quantity `garbageBitCount` is
+already doing at the bit level.
+
 ### The honest limits
 
-1. **Zeta has no heat meter.** `cost-counter.ts` declares `{time, space}` — two axes, not
-   three. A `heat` field counting erasures does not exist, and adding one is the concrete
-   next step this section implies.
+1. **`cost-counter.ts` still declares only `{time, space}`.** The erasure accounting lives
+   in `ToffoliGate.garbageBitCount` and `Heat.fs`, not in the cost vector, so the three
+   axes are not yet reported together by one instrument. That — not "no counting exists" —
+   is the real gap.
 2. **Astra's unit caution still stands and is not weakened.** Counting erasures gives a
    complexity class, not joules. `kT ln 2` converts only under a stated temperature and an
    idealisation nobody here has argued for.
@@ -403,10 +463,14 @@ the erasures the classical version performs.
    — Bennett's construction buys reversibility *with space*. They are not orthogonal; they
    are not the same axis either.
 
-**Register: the axis is `metered` in the literature and `toy` in this repo.** Landauer and
-Bennett are established; Zeta counts no erasures today. The claim that Zeta's reconciliation
-obligations have an interesting heat complexity is unmeasured, and naming the axis does not
-measure it — the same warning Astra attached to `Φ`.
+**Register, restated after the correction above.** Landauer and Bennett are established.
+Zeta *does* count erasures — `garbageBitCount` at the bit level, `Heat.fs` at the shed
+boundary, with the Landauer bridge written up in May and labelled PROVEN / CONJECTURED /
+SPECULATIVE at the time. What remains `toy` is narrower and should be stated narrowly:
+**that Zeta's *reconciliation obligations* have a heat complexity worth reporting beside
+time and space.** Naming the axis does not measure that — the same warning Astra attached
+to `Φ` — and the cheapest honest first step is the error-message count above, which needs
+no new theory.
 
 ## Pointers
 
