@@ -120,6 +120,65 @@ decorrelation extremum of §2 — that is a correspondence between a built struc
 conjectured optimization, and §6's measurement is still the only thing that would settle
 it.
 
+## 3c. Where the imaginary numbers came from — anyons, and the Majorana comparison
+
+Aaron, on the `Meno.fs` braiding paragraph, verbatim:
+
+> *"this is also where our imiginary numbers and quantium popped out in these braids
+> similar to marajoana one from microsoft"*
+
+**The structural claim is exact, and it is the cleanest anchor in this whole
+document.** Exchange statistics in 2D are governed by the **braid** group, not the
+symmetric group, and that is precisely where phases enter:
+
+| particle | exchange | law |
+|---|---|---|
+| boson | +1 | R² = id |
+| fermion | −1 | R² = id |
+| **abelian anyon** | e^{iθ} — *any* phase, hence the name | R² ≠ id |
+| **non-abelian anyon** | a unitary **matrix** on a degenerate subspace | R² ≠ id |
+
+So **`R² ≠ id` is the anyonic condition.** The same inequality `MenoBraided` is built
+around is the one that separates anyons from ordinary particles — and braiding
+non-abelian anyons *is* the quantum gate, which is exactly Microsoft's topological
+programme: Majorana zero modes realising Ising anyons whose braiding performs
+fault-tolerant operations.
+
+**This closes a loop Aaron opened earlier in the same thread** — that modelling two
+distinct decorrelated agents is where imaginary numbers appeared, via Born-rule-like
+structure, needing `AmplitudeEmu` to model their interference and non-interference, and
+that this is where the 2√2 between agents came from. Two agents → worldlines cross →
+braid → representation → phases → interference → a correlation ceiling. Every arrow in
+that chain is standard mathematics; what is conjectural is only that Zeta's ceiling is
+*that* ceiling.
+
+### The distinction that must not be lost: our braid is INTEGER
+
+`MenoBraided` deliberately takes the **ℤ-linear shadow**: the conjugation-rack
+Yang–Baxter solution over `V = ℤ[Fₙ]`, chosen because it is *"integer / float-free /
+byte-lockable."* **There are no complex numbers in it.** The amplitudes live elsewhere
+(`AmplitudeEmu`, the four-corner feedback), and keeping them out of the braid is what
+lets the braid sit in the proof lineage under
+[`no-binary-in-proof-lineage`](../../.claude/rules/no-binary-in-proof-lineage.md) and
+survive the four-oracle byte-lock.
+
+So the honest statement is: **we implement the braid-group structure where anyons get
+their phases, in a representation that has none.** That is a deliberate engineering
+choice, not an oversight, and anyone reading §3c should not come away thinking
+`MenoBraided` is unitary or complex-valued.
+
+### One caution on the anchor itself
+
+The **mathematics** is solid and old: Kitaev (2003) on fault-tolerant computation by
+anyons; Freedman, Kitaev, Larsen & Wang on topological quantum computation; Leinaas &
+Myrheim (1977) and Wilczek (1982) for anyons themselves. **The Majorana *hardware* is
+contested** — Microsoft's experimental claims have a documented history of retraction
+and dispute, and this document takes no position on whether Majorana zero modes have
+been demonstrated. The comparison Aaron draws is to the **braiding structure**, which
+does not depend on that question. Anchoring to the contested half would be exactly the
+citation-not-checked failure
+[`anchor-to-human-prior-art`](../../.claude/rules/anchor-to-human-prior-art.md) forbids.
+
 ## 4. The social reading — and why it makes mutual empowerment structural
 
 | layer | objective | constraint | the optimum is called |
