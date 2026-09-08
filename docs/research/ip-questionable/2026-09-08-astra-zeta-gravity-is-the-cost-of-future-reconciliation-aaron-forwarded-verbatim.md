@@ -327,6 +327,87 @@ earning their keep only when metered
 ([`toy-is-free-metered-must-be-earned`](../../../.claude/rules/toy-is-free-metered-must-be-earned.md)),
 and "heat" is exactly the word that would smuggle a unit it has not earned.
 
+## 5. Aaron's reply to the unit caution — "big O heat", a THIRD axis
+
+Aaron 2026-09-08, verbatim, **and flagged by him as a first utterance**:
+
+> *"yes our big 0 today is based on classical computing but our zsets DBSP is all about
+> bridging these paradimes for reversable computing, even in reversable computing cpu vs
+> heat are not the same, big o time is decorrelated from big o heat i think and i think
+> this is the first time i've said big o heat version space time"*
+
+**Recorded with its date and its first-utterance flag**, because priority on a coinage is
+exactly the sort of thing that gets lost and then re-derived.
+
+### The proposal
+
+Classical complexity has two axes. Aaron proposes a third:
+
+| axis | counts | classical status |
+|---|---|---|
+| **time** | operations | standard |
+| **space** | peak live storage | standard |
+| **heat** | **irreversible bit erasures** | proposed here |
+
+And the load-bearing claim: **time and heat are decorrelated.**
+
+### That claim is not conjectural — it is a theorem, and it is the strongest thing in this document
+
+**Landauer's principle** charges `kT ln 2` per bit *erased*, not per operation performed.
+**Bennett's reversible simulation** then shows any computation can be made logically
+reversible, trading space (and some time) to drive erasures toward zero. So:
+
+> two algorithms can have **identical time complexity** and **different erasure counts**,
+> and an algorithm's dissipation can be driven down while its time stays polynomial.
+
+That is precisely what "decorrelated axes" means. Unlike almost everything else in this
+thread, this half does **not** need a Zeta measurement to be true — it is established
+physics and established computer science. What is open is whether Zeta's `Φ` obligations
+have a heat-complexity worth *measuring*, not whether the axis exists.
+
+### `Heat.fs`'s one bit already IS the Landauer bit
+
+This is the connection that makes the proposal more than a naming. §1's ferry quotes
+`Heat.fs` distinguishing whether a shed **deferred** the payload or **annihilated** it —
+*"the one bit the backpressure composition law turns on."*
+
+**Deferred is reversible. Annihilated is erasure.** So the repo's existing heat model
+already separates exactly the two cases a heat-complexity measure has to tell apart, and
+it separated them for a composition-law reason rather than a thermodynamic one. That is
+convergent, not circular — and it is a real, checkable point of contact rather than a
+resemblance.
+
+### Why Z-sets are the bridge Aaron says they are
+
+A Z-set retraction is `+1` then `−1`: the record of the assertion **and** the record of its
+withdrawal both persist, and the fold is the sum. Nothing is overwritten. This repo already
+insists on the distinction —
+[`dv2-data-split-discipline-activated`](../../../.claude/rules/dv2-data-split-discipline-activated.md)
+states that Z-set retraction is **correction, not a duplicate-guard** — and the raw vault
+requires the same thing: *a single version of the facts, never a single version of the
+truth*, which is a **refusal to erase** stated as a data-modelling rule.
+
+So a DBSP fold is *information-preserving where an ordinary destructive aggregate is not*,
+which is the sense in which it "bridges the paradigms": the same computation, run without
+the erasures the classical version performs.
+
+### The honest limits
+
+1. **Zeta has no heat meter.** `cost-counter.ts` declares `{time, space}` — two axes, not
+   three. A `heat` field counting erasures does not exist, and adding one is the concrete
+   next step this section implies.
+2. **Astra's unit caution still stands and is not weakened.** Counting erasures gives a
+   complexity class, not joules. `kT ln 2` converts only under a stated temperature and an
+   idealisation nobody here has argued for.
+3. **"Decorrelated" is the right word and "independent" would not be.** The axes trade off
+   — Bennett's construction buys reversibility *with space*. They are not orthogonal; they
+   are not the same axis either.
+
+**Register: the axis is `metered` in the literature and `toy` in this repo.** Landauer and
+Bennett are established; Zeta counts no erasures today. The claim that Zeta's reconciliation
+obligations have an interesting heat complexity is unmeasured, and naming the axis does not
+measure it — the same warning Astra attached to `Φ`.
+
 ## Pointers
 
 - `src/Core/Heat.fs` — deferred vs annihilated; the backpressure composition law
