@@ -92,10 +92,11 @@ export function httpUnsealClient(base: string = VAULT_LOCAL): UnsealHttp {
         headers: { "content-type": "application/json" },
         body: JSON.stringify({ key }),
       });
-      let sealed = true;
+      let sealed: boolean;
       try {
         sealed = ((await res.json()) as { sealed?: boolean }).sealed !== false;
       } catch {
+        // Unparseable body: stay sealed. Never report unsealed on a guess.
         sealed = true;
       }
       return { status: res.status, sealed };
