@@ -93,3 +93,9 @@ records a separate all-18 full gate and replay at c1e6f0497afcc5078b03bfe8e797dc
 including actual direct assembly copies, ten rejected output controls, formatter
 coverage limits and the final capture-summary exception. This does not retime
 the earlier native/reference executions.
+
+The [independent publication review](2026-09-08-precision-kernel-publication-independent-review.md)
+checks the full copied-file inventory, seven three-way compositions, review
+imports, fresh validation archive and the paused compiled-lane re-entry text.
+It accepts the bounded local API and evidence; it does not infer GitHub CI
+or main publication from local success.
