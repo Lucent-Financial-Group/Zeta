@@ -109,3 +109,8 @@ registered before comparing results or choosing the next investment.
 These are proposed comparisons, not completed ARC-AGI-3 trials or current
 state-of-the-art results. Local kernel agreement and a source-level analogy
 cannot substitute for actual fitting and held-out evaluation.
+
+The [independent source and learning review](2026-09-08-magnet-history-generator-learning-review.md)
+verifies the supplied transcript bytes and corrected consolidation/control
+wording. It traces existing ARC layers and scoped local outcome learning,
+while distinguishing these from an integrated ARC-AGI-3 evaluation.
