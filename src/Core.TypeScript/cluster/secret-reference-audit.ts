@@ -14,7 +14,7 @@
  * own count ("twelve ... against 22 references") was already stale when checked
  * on 2026-09-08, which is exactly the failure a roster has and a check does not.
  */
-import { readdirSync, readFileSync, statSync } from "node:fs";
+import { readdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 
 /** Where a reference was found, for a message that names the file. */
@@ -36,10 +36,14 @@ const PRODUCER_KINDS = /^kind:\s*(Secret|SealedSecret|ExternalSecret|ClusterSecr
 
 function yamlFilesUnder(root: string): string[] {
   const out: string[] = [];
+  // `withFileTypes` rather than readdir-then-stat: the Dirent already knows the
+  // kind, so there is no second question to the filesystem and no window in which
+  // the answer can change (TOCTOU, CWE-367). `lint-check-then-use-file-races`
+  // caught the first draft here, and its refusal printed this exact fix.
   const walk = (dir: string): void => {
-    for (const entry of readdirSync(dir)) {
-      const p = join(dir, entry);
-      if (statSync(p).isDirectory()) walk(p);
+    for (const entry of readdirSync(dir, { withFileTypes: true })) {
+      const p = join(dir, entry.name);
+      if (entry.isDirectory()) walk(p);
       else if (p.endsWith(".yaml") || p.endsWith(".yml")) out.push(p);
     }
   };
