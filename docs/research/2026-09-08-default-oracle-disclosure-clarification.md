@@ -32,3 +32,8 @@ This composes with the [HC-8 explanatory correction](2026-09-08-hc8-default-orac
 That correction preserves the operative non-coercion paragraph; this additive
 section 11 clarification makes the user's preference and disclosure requirement
 discoverable without altering the existing default moral baseline.
+
+The [independent clarification review](2026-09-08-default-oracle-clarification-independent-review.md)
+accepts the exact additive scope and verifies that removing the nine new
+lines restores every byte of the original specification. Its audit and
+source-cut identities are preserved alongside the review.

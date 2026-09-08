@@ -368,3 +368,10 @@ clarification. No runtime selection policy is changed by this research note.
 The default is a moral baseline, not an invented scalar rank or a preferred
 universal oracle. Existing fabrication/cartel detection remains part of the
 full threat model, and irreducible resources retain their separate units.
+
+The separate [oracle grounding and disclosure clarification](2026-09-08-hc8-default-oracle-explanation-correction.md)
+preserves the operative HC-8 rule, adds the user's conspicuous-default and
+multi-oracle preference to section 11, and indexes the independently reviewed
+interface census and two documentation-comment corrections. Runtime selection
+and enforcement remain unimplemented; warning versus required choice is not
+decided by this specification change.
