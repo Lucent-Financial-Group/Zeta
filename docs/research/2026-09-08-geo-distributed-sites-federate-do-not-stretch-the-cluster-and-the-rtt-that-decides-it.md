@@ -193,6 +193,131 @@ where evidence is *counted* (idempotent, dedup by source) and `interfere` is whe
 *combined* (**not** idempotent, `interfere a a = 2a`, opposite phases annihilate). Calling the
 whole thing "join" is right for the *ordering* question and wrong for the *amplitude* one.
 
+## 4d. Total order is RECONSTRUCTIBLE, and the descent into it is priced
+
+Aaron, completing the model:
+
+> *"in regular cases this total order can be reconstructed with enough research over partial
+> order with CRDT, when trust calculus fails it takes a gradient descent into slower time,
+> CAS over row, CAS over partition, CAS over table/stream, then BFT, each one slows down time
+> for the partial observer and makes the global observers job harder"*
+
+This is the piece §4c was missing. **Total order is not refused — it is derived.** Over a
+partial order plus CRDT you can reconstruct a sequence when you actually need one; what the
+substrate declines is *paying for it on every write*.
+
+### Why the partial order survives even at the bottom of the ladder
+
+The escalation spec
+(`2026-09-03-society-crdt-default-consensus-escalation-spec-per-key-ladder-over-disagreement-and-distrust.md`)
+is exact about this, and it is the sentence that makes "reconstructible" true rather than
+hopeful:
+
+> *"Consensus is never applied to the state; it is applied to **a key** ... Both branches of
+> every disagreement stay in the set forever; **a consensus certificate is one more atom, not
+> a deletion**."*
+
+So even **BFT does not collapse anything**. It appends a certificate saying "on this key, at
+this point, these sources agreed on this value" — and the losing branch is still there. That
+is the difference between *ordering* and *sequencing*: the certificate is an observation
+about the evidence, not a rewrite of it. Raft's log is the opposite — the order **is** the
+state.
+
+### The descent is demand-driven, and it climbs back
+
+Aaron's *"when trust calculus fails"* is the spec's trigger, measured **from the evidence set
+itself**: **disagreement** (how split the distinct sources are on that key) and **distrust**
+(what the rank ledger says about those sources). And critically, a key *"climbs back down on
+evidence, **never on a clock**"* — so this is a gradient in both directions, not a ratchet.
+
+**Two ladders, two axes** — the distinction Astra drew, and Aaron's sentence walks the first:
+
+| axis | rungs |
+|---|---|
+| **scope of coordination** (Aaron's) | CAS over **row** → over **partition** → over **table/stream** |
+| **failure class tolerated** (the spec's) | union → witnessed union → distinct-source quorum → **BFT** |
+
+BFT is not "an even bigger table lock"; it answers a different question — whether agreement
+survives participants behaving arbitrarily. Broader CAS scope is not stronger protection
+against a dishonest peer.
+
+### The two costs, and the second one is the interesting claim
+
+> *"each one slows down time for the partial observer and makes the global observers job
+> harder"*
+
+- **Partial observer** (a participant): each rung is more coordination before it may proceed.
+  Its own time dilates. That is the ordinary, expected price.
+- **Global observer:** I asserted this was uniformly harder. **Aaron immediately questioned
+  it** — *"it might be inversed too maybe the BFT is easier to observe for the global observer
+  i'm not sure"* — and on inspection he is right for the case that matters, so the claim is
+  replaced rather than defended.
+
+**The direction is SCOPE-DEPENDENT, and I had conflated two scopes.**
+
+**Per key, a higher rung is EASIER to observe globally.** A BFT rung produces a
+**certificate** — an explicit, signed, verifiable artifact saying *these sources agreed on
+this value at this point*. Anyone holding the public keys can read it without reconstructing
+anything. At the union rung there is no such artifact: to know what the system "believes" you
+must hold the whole evidence set and apply a policy.
+
+And the spec makes that worse than merely laborious: *"the rung is a **reading** each node
+takes with its own policy; the evidence set it reads is shared."* So at low rungs **there may
+be no single global fact to observe at all** — two nodes can legitimately read the same
+evidence differently, and neither is wrong. Escalation therefore *manufactures* global
+legibility: it converts a situation with no agreed answer into one with a citable one. That
+is the opposite of harder.
+
+**System-wide, the ladder is harder to describe** — but that is a property of the *ladder*,
+not of BFT. Because the rung is per key and dynamic, there is no uniform ordering rule to
+state; a global description is a time-varying map from keys to rungs. That holds no matter
+which rung any particular key currently sits at, so it was never an argument about BFT.
+
+**Resolution:**
+
+| question | direction |
+|---|---|
+| "what is the agreed value of THIS key?" | **higher rung = easier** — a certificate is a global fact; union may have no single answer |
+| "how does this system order writes, in general?" | **harder at every rung** — heterogeneous, demand-driven, time-varying |
+| "how long must I wait to proceed?" | **higher rung = slower**, unambiguously — the partial observer's cost is the one clear direction |
+
+**What stays true regardless:** the partial observer's time dilates with every rung, and that
+cost is the one the design deliberately keeps rare. The trade against a stretched etcd is
+unchanged — etcd buys one easy global story with every participant paying RTT for it, always,
+whether or not that key was ever contested.
+
+**Register:** the per-key direction is argued from the spec's own text and I am confident in
+it; the system-wide claim is my inference and is weaker; and the whole subsection began as an
+unjustified assertion of mine that its author caught. Recorded that way on purpose.
+
+### The certificate is NON-FUNGIBLE, and that is why it can only be added
+
+Aaron: *"a consensus certificate we kind of call non fungible or NFT"* — in the ordinary
+sense of the word, not the crypto one. His standing clarification: *"when i say root NFT i
+just mean it's our version of non fungable, not a special term, we don't define NFT by crypto
+terms."*
+
+**This supplies the reason behind the spec's sentence rather than restating it.** *"A
+consensus certificate is one more atom, not a deletion"* is not a policy choice that could
+have gone the other way — it follows from what the certificate **is**:
+
+| | consequence |
+|---|---|
+| **fungible** artifact | one is interchangeable with another, so a new one can *substitute* for an old one — and substitution is deletion wearing a merge's clothes |
+| **non-fungible** artifact | each is a distinct thing — *these* sources, on *this* key, over *this* evidence — so a later one can only be **added alongside** |
+
+So non-fungibility is what makes the evidence set append-only. If certificates were
+interchangeable, the raw vault's *single version of the facts, never a single version of the
+truth* would be unenforceable: you could swap one certificate for another and lose the fact
+that the first was ever issued.
+
+It also connects the ordering model to Aaron's earlier root-NFT framing — **two decorrelated
+Bayesian factor-graph-like entities, compared together over mutual memories.** A certificate
+is exactly that object: corroboration between *distinct* sources (§4c's source-keying) over
+*shared* memory, producing an artifact unique to that pairing. Which is why §4c's dedup and
+this section are the same property seen from two sides — the same source twice adds nothing
+*because* the atom it would produce is not a new one.
+
 ## 5. The measurement that settles it, instead of a rule
 
 Aaron's framing — *"if we can do geo distributed clusters without penalty"* — is a
