@@ -42,3 +42,7 @@ The separately authorized [default-disclosure clarification](2026-09-08-default-
 adds the user's multi-oracle preference and conspicuous-default requirement to
 section 11 while retaining its original prose. This is a specification
 clarification, not a claim of runtime enforcement or a choice of fallback policy.
+
+The [publication validation](oracle-grounding-publication/2026-09-08/README.md)
+retains the full 18-check gate, qualified formatter result and exact source
+identities for the combined explanation, disclosure and comment changes.
