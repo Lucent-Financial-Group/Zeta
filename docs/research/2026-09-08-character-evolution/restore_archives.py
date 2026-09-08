@@ -1,6 +1,6 @@
 """Verify the character archives and extract into a new directory.
 
-Usage: python restore_archives.py ARCHIVE_DIRECTORY NEW_OUTPUT_DIRECTORY
+Usage: python restore_archives.py ARCHIVE_DIRECTORY NEW_OUTPUT_DIRECTORY [MANIFEST]
 Download release assets first using the README command. No network or overwrite.
 """
 
@@ -66,7 +66,8 @@ def restore(archive_dir, destination, manifest_path):
 
 
 if __name__ == "__main__":
-    if len(sys.argv) != 3:
+    if len(sys.argv) not in (3, 4):
         sys.exit(__doc__)
-    count = restore(Path(sys.argv[1]), Path(sys.argv[2]), Path(__file__).with_name("inventory.json"))
+    manifest = Path(sys.argv[3]) if len(sys.argv) == 4 else Path(__file__).with_name("inventory.json")
+    count = restore(Path(sys.argv[1]), Path(sys.argv[2]), manifest)
     print(f"Verified and restored {count} files")

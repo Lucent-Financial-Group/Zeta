@@ -253,3 +253,12 @@ list are retained with the character experiment; these are opt-in local tools.
 
 The [character evolution record](research/2026-09-08-character-evolution/README.md)
 indexes the source, archive checks and remaining visual-quality limitations.
+
+TripoSG was subsequently installed in `Character-Learning-Lab/venv-sg` from
+source `fc5c40990181e2a756c4e0b1c2f4d6b5202faf8c`, with its MIT model at
+`2c1c516d22d58db486a058d98d31bb6177344e06`. Local inference uses Apple MPS,
+Diffusers 0.32.2, Transformers 4.48.3, PEFT 0.14.0 and PyTorch 2.14.0. The
+non-flash path avoids `diso`; the local patch and resolved dependencies are
+retained in the third character-study archive. U2Net was explicitly selected
+for masks after discovering rembg's newer default was BRIA RMBG 2.0; that
+default-mask intermediate is quarantined from unrestricted training.

@@ -165,3 +165,113 @@ as unconstrained training examples. The preliminary unmasked reconstruction
 revealed an actual preprocessing failure, which is retained as evidence rather
 than hidden by a better-looking reference image. Runtime and visual receipts
 for the next candidate are recorded separately from the historical inventory.
+
+## Reconstruction and projection checkpoint
+
+The [second immutable release](https://github.com/Lucent-Financial-Group/Zeta/releases/tag/research-character-reconstruction-20260908)
+adds 112 files covering derived references, reconstructed meshes, Blender scenes,
+actual renders, scripts, patches and failed trials. Its
+[separate inventory](reconstruction-inventory.json) was verified against the
+remote release digest, and all 112 members were restored and checked. Pass that
+inventory as the optional third argument to `restore_archives.py` to restore
+this release. GitHub's immutable-release setting prevents appending assets to
+the older release, so later stages use new releases rather than replacing bytes.
+
+The explicit U2Net/TripoSR runs yielded 38,138 vertices / 76,168 faces for AceHack
+and 37,517 / 74,916 for Xenaa at extraction resolution 256. Recorded inference
+plus extraction/export times were approximately 4.60 and 4.00 seconds after
+loading and preprocessing; these are single warm runs, not end-to-end latency
+or benchmark distributions. The mesh is unrigged and uses predicted vertex
+colors. World-frame conversion and actual four-camera Blender renders exposed
+orientation mistakes before final review.
+
+The second front-projection study restores recognizable reference detail but
+stretches at 30 degrees, leaves gray boundary artifacts, and does not recover
+unseen facial structure or separate garment layers. Emission-based material
+presentation reduces relighting distortion; it is not physically based material
+recovery. It remains a projection study, not a finished 360-degree character.
+The next investment is stronger shape/multiview reconstruction, before rigging
+or more ornamental detail.
+
+One intermediate run used the newer rembg package's default BRIA mask model.
+That intermediate is retained as quarantined provenance and is not eligible
+for unrestricted training. The subsequent runs explicitly select U2Net; never
+assume a library's default model or output terms stay unchanged. Hunyuan model
+inference was never run. The TripoSG investigation uses a separate environment
+and will receive its own source and output record.
+
+The first full preflight passed its test stage but its build stage hit a
+transient F# compiler exit 134 in CrmSample. Both subsequent release builds
+passed with zero warnings/errors, including the standard restore-enabled
+command. An additional test invocation omitted Bun from PATH and failed two
+TLC process fixtures for that explicit environment reason; it does not retract
+the earlier full-preflight test pass. All 70 TLC runner fixtures then passed with the
+configured PATH. The retained logs distinguish these invocations.
+
+## Stronger shape study: TripoSG
+
+The [third immutable release](https://github.com/Lucent-Financial-Group/Zeta/releases/tag/research-character-triposg-20260908)
+contains the TripoSG source patches, pinned model metadata, derived square inputs,
+meshes, Blender scenes and actual renders; its
+[inventory](triposg-inventory.json) uses the same restore/verification format.
+The upstream source is `fc5c40990181e2a756c4e0b1c2f4d6b5202faf8c`; model revision
+is `2c1c516d22d58db486a058d98d31bb6177344e06`. The public weights were downloaded
+at that exact revision and checked against their published hashes. They are
+external dependencies, not included in the archive. The separate Python
+3.11 environment and dependency versions are retained in the source snapshot.
+
+The first raw portrait pass revealed a preprocessing issue: the model's feature
+extractor center-crops after resizing the shorter image edge. The corrected
+pass uses an explicit U2Net alpha mask, 80-percent foreground square framing,
+50 denoising steps and a dense 256-cubed SDF sampling grid. The local MPS port
+uses the non-flash decoder and CPU scikit-image marching cubes, avoiding the
+CUDA-only `diso` dependency. It is an experimental port, not a certified
+numerical parity result against CUDA.
+
+| Character | Vertices | Faces | Inference + extraction/export seconds |
+| --- | ---: | ---: | ---: |
+| Xenaa | 117661 | 233302 | 70.94 |
+| AceHack | 118118 | 236144 | 70.19 |
+
+These single-run times exclude model loading and preprocessing. Frame, sampling
+resolution and step count changed together relative to the initial pass, so the
+comparison cannot isolate a tessellation benefit. Visual review found a more
+coherent body/coat scaffold but poor hair topology, incomplete facial depth and
+unacceptable texture stretching away from the front view. The projection shader
+is a study aid; it does not yield recovered PBR materials or an accepted rig.
+No method here has passed the user's requested likeness standard.
+
+The useful generator connection is now concrete at another scale: fixed model
+weights and a latent shape field can be sampled to obtain a mesh. That is a
+learned SDF generator alongside Zeta's elementary curve/glow generators; it is
+not evidence that TripoSG uses Clifford algebra or that increasing tessellation
+alone learns missing geometry. The next controlled experiment should persist
+one latent field and sample that identical field at multiple resolutions, with
+fixed references/cameras and explicit compute accounting. A separate multiview
+fit must address face, hair and occluded surfaces. Keep NN modules composable
+inside the higher-level DAG rather than defining the whole system as one NN.
+
+## Re-entry and reproducibility
+
+Start with the three inventories and their immutable release tags. Original art
+folders remain untouched; the new local lab is
+`/Users/acehack/Documents/Blender/Character-Learning-Lab`. The three exact visible
+image-generation calls are saved in [imagegen-call-records.json](imagegen-call-records.json).
+The first Xenaa input's checkerboard was opaque RGB, not transparency; that
+failed input and its white-background replacement both remain available.
+Generated references are conditioned on the user's artwork and must never be
+presented as actual Blender renders.
+
+Current review surfaces are `reconstruction-projected-v2/` for the TripoSR
+projection study and `reconstruction-sg-framed/` plus `reconstruction-sg-projected/`
+for the stronger shape study. Open the `.blend` files for the authoritative
+shader setup; do not assume the raw GLBs contain the projection materials.
+The earlier anatomy revision remains the rigged reference artifact. None of
+these new reconstruction studies is rigged or accepted for final delivery.
+
+Next work: persist and resample an identical latent field for a controlled
+resolution/cost comparison; obtain or generate clearly labeled multiview
+conditioning; fit facial geometry and hair against those views; bake a
+consistent material atlas; then revisit rigging. Retain each failure and each
+resource receipt. Continue the separate learning handoff independently: no
+predictive-learning holdouts were opened in this art work.
