@@ -80,6 +80,58 @@ It also collides with [`manifesto-13-specifications`](../../.claude/rules/manife
 **§1 scale-free** (no central point of coordination) and **§2 lock/wait-free**: a shared etcd
 quorum is exactly a coordination point that blocks progress on another party's availability.
 
+## 4b. CORRECTION — Zeta already has the geo layer, and it is not etcd-shaped
+
+Aaron, on reading §4:
+
+> *"our geodistibuted etcd like database is our zetafs/db it's supported to support consensus
+> even over distributed plants like earth and mars we have a lot of research on this"*
+
+**This corrects the framing of §1–§4, and in a way that strengthens the recommendation.** I
+wrote as though the cross-site plane were an unnamed future thing and GitHub a stopgap. It is
+neither: it is named, on the roadmap at **item #1**, and under active development today.
+
+| | evidence |
+|---|---|
+| **ROADMAP item #1 — "NO GIT CLI"** | route all persistence through `ZetaFsDualFold` / `ZetaFsDeltaLog` / `DagFs` (dual `+1 I` and `−1` generator-reinterpret over Merkle), *"not git(1) and not LibGit2Sharp-as-the-store. **The definition of done.**"* |
+| **actively developed** | four live branches at time of writing: `feat/zetafs-d10-skip-single-leaf-layout`, `feat/zetafs-groupcommit-blockio`, `feat/zetafs-posix-object-skip-existing`, `feat/zetafs-pr6-jumprope` |
+| **the geo design exists** | `2026-07-11-multi-planet-convergence-...md`, whose header states *"Grounded in code (not aspiration): every mechanism below already exists in the repo."* |
+
+### The mechanism difference is the whole point, and it is why §6 still holds
+
+The multi-planet design and Raft are solving **different problems under different couplings**:
+
+| | etcd / Raft | Zeta's multi-planet convergence |
+|---|---|---|
+| what it needs | a **quorum acknowledging every write**, fsync'd | the **same evidence set** to yield the same conclusion |
+| message loss | fatal to progress — a missed append stalls or re-elects | **tolerated by construction** — Adinkra ECC on the messaging, so you *"can miss messages also and arrive to the same conclusion"* |
+| ordering | a single leader imposes a total order | **commutative `observe`** + phase-canonical order — reorder is not an error |
+| clock | election timers are wall-clock | agreed phase only; local time never enters the shared fold |
+| cost of distance | **every write pays RTT to the majority** | latency delays *arrival*, not correctness |
+
+So the honest statement is **not** "geo consensus is impossible, therefore federate." It is:
+
+> **Zeta already solved the cross-site problem with a strictly weaker coupling than
+> consensus, and etcd's Raft is the wrong tool for it.** Raft buys a total order nobody
+> across sites needs, at a price — quorum per write, intolerance of loss — that scales with
+> distance. The convergence route buys agreement without either.
+
+That is the same distinction CALM draws: coordination is required only by the operations
+that actually need it. A stretched etcd imposes coordination on **every** control-plane write
+regardless.
+
+**Which means §6's recommendation stands, with its reason replaced.** Keep etcd per-site
+because it is a *local* consistency tool doing a local job well — not because the geo problem
+is unsolved. The geo layer is ZetaFS/ZetaDB, and GitHub is the **current implementation** of
+that plane rather than a placeholder for it: git is already the dual-fold shape (append-only,
+partition-tolerant, fork-as-divergence), which is precisely why item #1 is a *replacement of
+the store* rather than of the model.
+
+**One nuance I should not smooth over:** the multi-planet doc records that Aaron's HLC plan
+*"works multi-planet, but only in the role he actually needs"* — so the design has a stated
+limit of its own, and I have not read far enough into it to restate that limit accurately
+here. Anyone building on this should read that document rather than this summary of it.
+
 ## 5. The measurement that settles it, instead of a rule
 
 Aaron's framing — *"if we can do geo distributed clusters without penalty"* — is a
