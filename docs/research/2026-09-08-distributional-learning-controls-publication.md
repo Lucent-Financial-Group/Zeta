@@ -90,8 +90,14 @@ The successor starts from main
 `4d69d7a8cf77fed897c11bb179713ca67692c22f` and applies the reviewed
 publication by an ordinary three-way squash into a new branch. The old branch
 and PR retain their history; no published commit is amended or force-pushed.
-Before this explanatory addition, every one of the original publication's 230
-changed paths has the same index mode/blob or deletion as the reviewed head.
+Before this explanatory addition, all 230 rename-aware diff names matched the reviewed index entries.
+Independent review then checked all 231 actual changed tree paths, including
+the old path omitted by rename-aware display; its deletion also matches.
 All five source/test files remain unchanged. The [successor evidence](distributional-learning/2026-09-08/publication-successor/README.md)
 retains the coverage failure, complete first push and source/tree comparison.
 The successor still requires its own ordinary push and GitHub gates.
+
+The [source/threat review](2026-09-08-yang-mills-source-and-threat-review.md)
+independently checks the supplied attachment bytes and the existing cartel
+mechanisms and formal premises. It retains the corrected distinction between
+LF separators and logical lines.

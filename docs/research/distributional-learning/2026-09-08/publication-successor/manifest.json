@@ -4,8 +4,6 @@
   "OriginalPr": 17021,
   "ObservedCommitTotal": 278,
   "ApiCommitMessagesSupplied": 250,
-  "PublicationPathCount": 230,
-  "AllOriginalPublicationEntriesIdenticalBeforeExplanation": true,
   "SourceFiles": [
     {
       "Path": "src/Core/PrivacyEconomy.fs",
@@ -38,7 +36,7 @@
       "MatchesCoordinatorSource": true
     }
   ],
-  "ArtifactCount": 23,
+  "ArtifactCount": 25,
   "Artifacts": [
     {
       "File": "000-distributional-final-review-import-1.log.gz",
@@ -246,6 +244,29 @@
       "StoredBytes": 1749,
       "StoredSha256": "7f9efe60216f711cd8a0d5528803b1995012d7d889c752e718d4019a74cd013e",
       "Encoding": "gzip"
+    },
+    {
+      "File": "count-correction-distributional-successor-tree-count-correction.py.gz",
+      "OriginalPath": "distributional-successor-tree-count-correction.py",
+      "Bytes": 1234,
+      "Sha256": "d1dd11b0dc1bc4186e95e2b256c624a7f649e7a7cf2d805616e0890ad9882165",
+      "StoredBytes": 761,
+      "StoredSha256": "9d7a8907c718b5c8b99bbe60b5b5c420cdfd9839863d51ab67ffb9e055285bc6",
+      "Encoding": "gzip",
+      "Stage": "Full tree count follow-up"
+    },
+    {
+      "File": "count-correction-distributional-successor-tree-count-correction.json.gz",
+      "OriginalPath": "distributional-successor-tree-count-correction.json",
+      "Bytes": 0,
+      "Sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "StoredBytes": 20,
+      "StoredSha256": "9ceffb7310338057cfe71a4ae1e2c98d2c485d81cdef906532a801f457a38d64",
+      "Encoding": "gzip",
+      "Stage": "Full tree count follow-up"
     }
-  ]
+  ],
+  "OriginalObservedRenameAwareDiffNameCount": 230,
+  "VerifiedChangedTreePathCount": 231,
+  "AllObservedRenameAwareEntriesIdenticalBeforeExplanation": true
 }
