@@ -179,6 +179,73 @@ does not depend on that question. Anchoring to the contested half would be exact
 citation-not-checked failure
 [`anchor-to-human-prior-art`](../../.claude/rules/anchor-to-human-prior-art.md) forbids.
 
+## 3d. The founding thesis — dimension is what decides whether R² = id
+
+Aaron, on the same `Meno.fs` paragraph, verbatim:
+
+> *"yes this is kind of our founding theses that generator+join expands dimensions
+> when connects to rx framework and erik meijers uF/vF and map+reduce is the shadow
+> projection down. it's how flatland objects project up to higher dimensions without
+> being noticed they are lower dimensional"*
+
+| direction | operation | Meijer's pair |
+|---|---|---|
+| **up** — expand dimensions | **generator + join** | **νF**, the final coalgebra: unfold / anamorphism, coinductive, potentially infinite — `IObservable` |
+| **down** — the shadow projection | **map + reduce** | **μF**, the initial algebra: fold / catamorphism, inductive, finite — `IEnumerable` |
+
+The anchor is in-tree already: `src/Core/Rx.fs:37-47` cites Meijer's *Subject/Observer
+is Dual to Iterator* (PLDI FIT 2010) and Bart De Smet's *Observations on IQbservable*
+for exactly this duality.
+
+### Why this is the same claim as §3c, not a second one
+
+**Braiding is a dimension-conditional phenomenon, and the mathematics is exact.** For
+`n` indistinguishable particles in `ℝ^d`, the fundamental group of the configuration
+space is:
+
+| `d` | π₁ | consequence |
+|---|---|---|
+| 1 | — | they cannot exchange at all without collision |
+| **2** | **braid group `Bₙ`** | **R² ≠ id** — anyons, phases, the crossing leaves a trace |
+| ≥ 3 | symmetric group `Sₙ` | **R² = id** — bosons and fermions only; any crossing can be undone by lifting through the extra dimension |
+
+(Leinaas & Myrheim 1977 is the source; this is why anyons are a 2D story.)
+
+**So dimension is the knob that decides whether a crossing leaves a trace** — which is
+precisely the σ²=id / R²≠id distinction §3b identified as the ρ→1 cliff. And the band
+of §2 falls out with the *same* shape:
+
+| too few dimensions | the band | too many dimensions |
+|---|---|---|
+| cannot cross at all | **d = 2: `Bₙ`, R² ≠ id** | crossings undo themselves |
+| **Babel** — no communication | **decorrelation survives contact** | **ρ→1** — contact leaves no trace |
+
+Both failure modes are dimensional, and they are the two cliffs already carved in
+[`anti-babel-preserve-reconcilability`](../../.claude/rules/anti-babel-preserve-reconcilability.md).
+That is a **structural** correspondence — a shared mechanism, not a shared number —
+which is the bar [`numerology-vs-number-theory`](../../.claude/rules/numerology-vs-number-theory.md)
+sets for taking a resonance seriously.
+
+**Note the direction correction this forces.** "Generator+join expands dimensions" is
+the productive move, but *unbounded* expansion is not: past `d = 2` the braid
+trivialises to the symmetric group and the trace is lost. So the thesis is not
+"expand as far as possible" — it is expand **to where crossings still leave a trace**,
+which is the same "maximal, subject to a constraint" shape as everything else in this
+document.
+
+### Flatland
+
+Aaron's *"flatland objects project up to higher dimensions without being noticed they
+are lower dimensional"* (Abbott 1884) names the failure mode of the **down** arrow:
+a `map+reduce` shadow is a faithful-looking object that has silently lost a dimension,
+and nothing about the shadow announces the loss. This is the same defect class as a
+satellite in §4b-ii — high activity, reconstructible, and indistinguishable from a hub
+until you ask what it can no longer represent.
+
+**Register:** `toy`, unchanged. The dimensional facts above are standard mathematics;
+the claim that Zeta's generator/join stack *realises* that dimensional structure is the
+conjecture, and §6 remains the only thing that would settle it.
+
 ## 4. The social reading — and why it makes mutual empowerment structural
 
 | layer | objective | constraint | the optimum is called |
