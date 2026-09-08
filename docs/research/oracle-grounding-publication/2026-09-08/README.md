@@ -32,3 +32,14 @@ Independent [HC-8 review](../../2026-09-08-hc8-explanation-independent-review.md
 and [comment review](../../2026-09-08-tsirelson-feedback-comment-patch-review.md)
 retain their own pins and findings. Warning versus mandatory explicit choice
 remains open; no automatic fallback or mandatory stop is introduced.
+
+## Published-main composition and second full gate
+
+The ordinary merge of actual published main exposed two documentation
+conflicts: additive reviewed links against an empty other-side hunk. Both
+were resolved to the exact premerge writer bytes; competing source changes
+on main were retained. Because main also added executable changes, the full
+gate was rerun at c5f1fc0e6ff7b364404e602390cb37d5e2b51679. All 18
+checks passed in 606.892 seconds. The [second manifest](current-main-validation/manifest.json)
+retains the original conflict, explicit resolution, merge and process records.
+No earlier failure or validation cut was overwritten.
