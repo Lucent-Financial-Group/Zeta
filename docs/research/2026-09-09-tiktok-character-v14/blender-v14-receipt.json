@@ -3,14 +3,14 @@
     "character": "AceHack",
     "legs": {
       "Left": {
-        "faces_separated": 2462,
+        "faces_separated": 2465,
         "short_end_caps": 24,
-        "vertices": 1391
+        "vertices": 1397
       },
       "Right": {
-        "faces_separated": 2149,
+        "faces_separated": 2155,
         "short_end_caps": 15,
-        "vertices": 1265
+        "vertices": 1264
       }
     },
     "mouth_seam_edges": 23,
@@ -36,13 +36,13 @@
     "legs": {
       "Left": {
         "faces_separated": 1277,
-        "short_end_caps": 7,
-        "vertices": 729
+        "short_end_caps": 5,
+        "vertices": 728
       },
       "Right": {
-        "faces_separated": 1442,
-        "short_end_caps": 14,
-        "vertices": 834
+        "faces_separated": 1435,
+        "short_end_caps": 15,
+        "vertices": 835
       }
     },
     "mouth_seam_edges": 26,
