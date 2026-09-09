@@ -2123,6 +2123,58 @@ jobs:
           echo "all Hat Constraints applied"
           kubectl get constraints -o json 2>/dev/null | jq -r '.items[] | "\(.kind)/\(.metadata.name): byPod=\((.status.byPod // []) | length)"' || true
 
+      # THE POLICIES' DATA SOURCE, which the two checks above cannot see.
+      #
+      # Six of the seven Hat templates are REFERENTIAL -- their Rego reads other
+      # cluster objects out of `data.inventory`. Gatekeeper populates that
+      # inventory ONLY for kinds named in a `config.gatekeeper.sh` Config's
+      # `spec.sync.syncOnly`. MEASURED 2026-09-09: no such Config existed, so the
+      # inventory was empty, every comprehension over it yielded the empty list,
+      # and six policies that compiled and applied could not deny anything on any
+      # input (081M241X2YQ087G0R001K95PAB).
+      #
+      # `hat-constraint-roster.ts` refuses that STATICALLY, by tying each Rego
+      # inventory read to a syncOnly entry. This step is the live half, and it
+      # exists because the static check cannot see one thing: whether the Config
+      # the tree declares actually REACHED the cluster. ArgoCD gives a Config no
+      # health, exactly like a Constraint, so hat-system stays Healthy without it.
+      #
+      # The expected kinds are DERIVED from the committed Config, not restated:
+      # a hardcoded list of three would keep passing when a seventh policy adds a
+      # fourth kind.
+      - name: Gatekeeper syncs the kinds the Hat policies read
+        if: always() && steps.proof.conclusion != 'skipped'
+        run: |
+          set -o pipefail
+          want="$(bun -e '
+            const { readHatPolicyRoster } = await import("./src/Core.TypeScript/cluster/hat-constraint-roster.ts");
+            const roster = readHatPolicyRoster(process.cwd());
+            for (const e of roster.synced) console.log(e.group + "/" + e.version + "/" + e.kind);
+          ')"
+          if [ -z "$want" ]; then
+            echo "::error::the committed Gatekeeper Config syncs NOTHING -- an empty syncOnly leaves data.inventory empty, which is the defect this step exists to catch, and comparing against an empty list would pass trivially"
+            exit 1
+          fi
+          echo "expected syncOnly:"; echo "$want"
+          DEADLINE=$(( SECONDS + 180 ))
+          while :; do
+            got="$(kubectl -n gatekeeper-system get config.config.gatekeeper.sh config -o json 2>/dev/null \
+              | jq -r '(.spec.sync.syncOnly // [])[] | "\(.group)/\(.version)/\(.kind)"' 2>/dev/null || true)"
+            missing=""
+            while read -r key; do
+              [ -n "$key" ] || continue
+              printf '%s\n' "$got" | grep -qxF "$key" || missing="$missing $key"
+            done <<< "$want"
+            if [ -z "$missing" ]; then break; fi
+            if [ "$SECONDS" -ge "$DEADLINE" ]; then
+              echo "live syncOnly:"; echo "${got:-<none>}"
+              echo "::error::gatekeeper is not syncing:$missing -- data.inventory stays empty for those kinds, so every referential Hat policy compiles, applies, and CANNOT DENY ANYTHING"
+              exit 1
+            fi
+            sleep 10
+          done
+          echo "gatekeeper syncs every kind the Hat policies read"
+
       # NAME THE RESOURCE, NOT JUST THE APPLICATION.
       #
       # Added 2026-08-21 after a run where `weaviate` reported
