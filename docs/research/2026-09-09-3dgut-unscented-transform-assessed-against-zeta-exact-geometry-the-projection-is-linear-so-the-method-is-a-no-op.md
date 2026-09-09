@@ -38,13 +38,16 @@ and cites it.
 
 Four findings, in descending order of how much they should change what we do:
 
-1. **The Unscented Transform is a measured no-op on Zeta's projection.** Our 8D→3D/2D
-   projection is a **linear map** — dot products against orthonormal eigenvectors. For a
+1. **The Unscented Transform is a measured no-op on Zeta's projection.** Our 8D→3D
+   derivation is a **linear map** — dot products against orthonormal eigenvectors. For a
    linear map the UT and the EWA linearisation it replaces are provably and measurably
    identical, because linearising something already linear discards nothing. Measured on
    the real 240 E8 roots: worst mean discrepancy **6.7 × 10⁻¹⁶**, worst covariance
    discrepancy **7.1 × 10⁻¹⁵** — machine epsilon. **VERIFIED.** And it holds for *every*
-   UT parameterisation, so it cannot be tuned into a benefit.
+   UT parameterisation, so it cannot be tuned into a benefit. The one nonlinear step in the
+   pipeline is rung 7's pinhole camera, where the UT's margin is **1.52×** — the regime the
+   paper itself calls "consistent" — and which a ray tracer never projects through anyway
+   (§3.2).
 
 2. **The half of 3DGUT that would deliver Aaron's reflections is not the Bayesian half,
    and it is not really in this paper.** Reflections and refraction come from §4.2/§4.3 —
@@ -220,7 +223,25 @@ multiply. And rung 3's 3D embedding
 layer 1"* — three dot products against orthonormal eigenvectors of the bipartite Coxeter
 element. Also a matrix multiply. **VERIFIED** by reading both modules.
 
-There is no perspective divide in the derivation path; the projection is orthogonal.
+There is no perspective divide in the derivation path; that projection is orthogonal.
+
+**Precision about which step this is, because the pipeline has two.** The *derivation*
+`8D → 3D` is linear, as above. The *viewing* step `3D → 2D` in rung 7 is a **pinhole
+camera** — `clifford-e8-raytrace.ts` builds an orthonormal camera frame with the eye on a
+derived root and an image plane at unit distance, `DEFAULT_HALF_WIDTH = 0.48 = tan(fov/2)`
+for a 51° field (**VERIFIED** by reading the module on the rung-7 branch). A perspective
+divide *is* nonlinear, so the claim being made here is precise rather than global:
+
+| step | map | UT vs EWA |
+|---|---|---|
+| 8D → 3D derivation | **linear** (dot products against orthonormal eigenvectors) | **identical**, 7 × 10⁻¹⁵ (§3.3) |
+| 3D → 2D viewing | pinhole (perspective divide) | **1.52×** — the paper's "consistent" regime (§3.4) |
+
+Two things keep this from rescuing the transfer. First, the marginal case is the one the
+paper itself declines to claim a win on. Second, and decisively: **rung 7 is a ray tracer,
+and a ray tracer never projects a covariance at all.** It casts rays and returns a triangle
+index. The UT-versus-EWA question only exists for *rasterised splatting*, which is a
+representation we would have to adopt first — and §5 and §6 are why we should not.
 
 ### 3.3 The measurement
 
