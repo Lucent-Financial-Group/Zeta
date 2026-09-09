@@ -473,3 +473,135 @@ let ``a rendered frame is text`` () =
     let pgm = E8Raytracer.asciiPgm image 16 16
     Assert.StartsWith("P2\n16 16\n255\n", pgm, StringComparison.Ordinal)
     Assert.Equal(16 + 3, pgm.TrimEnd('\n').Split('\n').Length)
+
+// ── FALSIFIER 8: THE DESIGN-QUESTION MEASUREMENTS ────────────────────────────────────
+//
+// §7 of the sibling research note answers two of Aaron's questions — "will that work for a
+// mirror?" and "is five levels enough or is this a toy?" — with numbers. Prose rots and a
+// number in prose is an assertion, so every number §7 quotes is pinned here. If the
+// geometry ever says something different, the note goes red rather than stale.
+
+[<Fact>]
+let ``five levels is a property of ONE ROOT light, not a ceiling of the method`` () =
+    let census (l: int[]) =
+        faces
+        |> Array.map (fun f -> abs (E8Exact.dot l (E8Shading.faceNormal8d f roots)))
+        |> Array.distinct
+
+    // Baseline: one root light, |L|^2 = 8, denominator sqrt 384 = 8 sqrt 6.
+    Assert.Equal(8, E8Exact.dot light light)
+    Assert.Equal(5, (census light).Length)
+
+    // A light OFF the root lattice but still integral keeps the numerator an integer and
+    // costs no exactness — it only moves the field. 49 levels, denominator sqrt 9792 =
+    // 24 sqrt 17, so Q(sqrt 6) -> Q(sqrt 17).
+    let offLattice = [| 1; 2; 3; 4; 5; 6; 7; 8 |]
+    Assert.Equal(204, E8Exact.dot offLattice offLattice)
+    Assert.Equal(9792, E8Exact.dot offLattice offLattice * E8Exact.FaceNormalNormSquared)
+    Assert.Equal(49, (census offLattice).Length)
+
+    // A coordinate axis: 7 levels, denominator sqrt 48 = 4 sqrt 3.
+    let axis = [| 1; 0; 0; 0; 0; 0; 0; 0 |]
+    Assert.Equal(48, E8Exact.dot axis axis * E8Exact.FaceNormalNormSquared)
+    Assert.Equal(7, (census axis).Length)
+
+    // TWO root lights share the denominator sqrt 384, so the sum stays in Q(sqrt 6) —
+    // multi-light does not compound the field.
+    let second = E8Shading.lightFromRootIndex 137 roots
+    Assert.Equal(E8Exact.dot light light, E8Exact.dot second second)
+
+    let sums =
+        faces
+        |> Array.map (fun f ->
+            let n = E8Shading.faceNormal8d f roots
+            abs (E8Exact.dot light n) + abs (E8Exact.dot second n))
+        |> Array.distinct
+
+    Assert.Equal(9, sums.Length)
+
+[<Fact>]
+let ``the per-vertex normal is EXACTLY 1512 times the vertex, so Gouraud loses levels`` () =
+    // The interpolated-normal row of §7.2, and the reason it goes the wrong way: every
+    // vertex has 756 incident faces and their normals sum to a multiple of the vertex
+    // itself, so the smooth normal degenerates to the sphere normal.
+    let vertexNormal = Array.init roots.Length (fun _ -> Array.zeroCreate<int> E8Exact.AmbientDimension)
+    let incident = Array.zeroCreate<int> roots.Length
+
+    for f in faces do
+        let n = E8Shading.faceNormal8d f roots
+
+        for v in [| f.A; f.B; f.C |] do
+            incident.[v] <- incident.[v] + 1
+
+            for k in 0 .. E8Exact.AmbientDimension - 1 do
+                vertexNormal.[v].[k] <- vertexNormal.[v].[k] + n.[k]
+
+    Assert.All(incident, fun c -> Assert.Equal(3 * faces.Length / roots.Length, c))
+    Assert.Equal(756, incident.[0])
+
+    for v in 0 .. roots.Length - 1 do
+        Assert.Equal<int[]>(roots.[v] |> Array.map (fun x -> 1512 * x), vertexNormal.[v])
+
+    // |n_v|^2 = 1512^2 * 8, so the Lambert denominator sqrt(8 * that) = 8 * 1512 is
+    // RATIONAL: per-vertex shading leaves Q(sqrt 6) for Q, and drops to three levels.
+    Assert.Equal(1512 * 1512 * 8, E8Exact.dot vertexNormal.[0] vertexNormal.[0])
+    Assert.Equal(12096, 8 * 1512)
+
+    let vertexLevels =
+        vertexNormal |> Array.map (fun n -> abs (E8Exact.dot light n)) |> Array.distinct
+
+    Assert.Equal(3, vertexLevels.Length)
+
+[<Fact>]
+let ``a mirror off a ROOT view stays a lookup; a free camera leaves the exact lattice`` () =
+    // §7.1 obstacle 2, measured: specular is view-dependent, but on a root view the whole
+    // surface still takes at most five values — so a reflective 4_21 is one five-entry
+    // table PER VIEW (240 of them), not per-hit shading work.
+    for viewIndex in [ 0; 13; 61; 100; 137; 200; 239 ] do
+        let view = E8Shading.lightFromRootIndex viewIndex roots
+
+        let distinct =
+            faces
+            |> Array.map (fun f -> (E8Shading.specularCosine f light view roots).Numerator)
+            |> Array.distinct
+
+        Assert.InRange(distinct.Length, 1, 5)
+
+    // Obstacle 3: exactness ends at the camera. The denominator is 48 * sqrt(8|V|^2), which
+    // is rational exactly when 8|V|^2 is a perfect square — true for a root (8*8 = 64),
+    // false for a coordinate axis (8*1 = 8). The guard refuses the mismatch rather than
+    // silently returning a number whose denominator is irrational.
+    Assert.Throws<ArgumentException>(fun () ->
+        E8Shading.specularCosine faces.[0] light [| 1; 0; 0; 0; 0; 0; 0; 0 |] roots |> ignore)
+    |> ignore
+
+[<Fact>]
+let ``768 faces have no determinable front side, and that is a gap rather than a tolerance`` () =
+    // §7.1 obstacle 1. A mirror presupposes a side to reflect off. The count is rung 5's,
+    // re-measured here; what is new is the SEPARATION — the smallest non-zero distance is
+    // three orders of magnitude above the threshold, so the 768 are not near-misses.
+    let layers = E8Embedding.eigenLayers ()
+    let points = E8Embedding.embed3d roots layers
+    let mutable undetermined = 0
+    let mutable smallestNonZero = Double.PositiveInfinity
+
+    for f in faces do
+        let p0 = points.[f.A]
+        let p1 = points.[f.B]
+        let p2 = points.[f.C]
+        let ux, uy, uz = p1.X - p0.X, p1.Y - p0.Y, p1.Z - p0.Z
+        let vx, vy, vz = p2.X - p0.X, p2.Y - p0.Y, p2.Z - p0.Z
+        let nx = uy * vz - uz * vy
+        let ny = uz * vx - ux * vz
+        let nz = ux * vy - uy * vx
+        let len = sqrt (nx * nx + ny * ny + nz * nz)
+        Assert.True(len > 1e-9, "a projected face has zero area")
+        let distance = abs (nx * p0.X + ny * p0.Y + nz * p0.Z) / len
+
+        if distance < 1e-9 then
+            undetermined <- undetermined + 1
+        elif distance < smallestNonZero then
+            smallestNonZero <- distance
+
+    Assert.Equal(768, undetermined)
+    Assert.True(smallestNonZero > 1e-6, $"smallest non-zero distance {smallestNonZero} is inside tolerance range")

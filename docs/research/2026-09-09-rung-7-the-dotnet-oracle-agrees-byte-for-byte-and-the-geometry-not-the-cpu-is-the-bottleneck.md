@@ -262,7 +262,119 @@ independence for the byte-lock* rather than as a competing engine. The next hone
 measurement is the same kernel on a scene that a BVH can actually accelerate — that is what
 would tell us whether .NET is fast enough, and this scene cannot.
 
-## 7. Anchors (Beacon), cited because they are used
+## 7. Aaron's two design questions, answered by measurement
+
+Both are answered with numbers produced by the module this PR ships. Nothing below is
+argued from the shape of the mathematics alone.
+
+### 7.1 "Will that work for a mirror?"
+
+The question splits, and the two halves have opposite answers.
+
+**(a) A mirror in the scene, reflecting our object — yes, unchanged.** Secondary rays are
+ordinary rays hitting our geometry; the BVH, the kernels and the five-level lookup all serve
+them exactly as primary rays. This is the cheap half and nothing about 4_21 obstructs it.
+
+**(b) Our object BEING a mirror — three separate obstacles, two of them fatal as posed.**
+
+**Obstacle 1 — there is no front side, on 768 faces, measured.** A mirror presupposes an
+orientable surface with a side to reflect off. Measured here: **768 of 60,480 projected faces
+(1.27%) have their plane pass through the origin**, so no outward direction is determinable
+for them. That is not a tolerance artefact — the smallest *non-zero* origin-to-plane distance
+over the other 59,712 faces is **0.002329**, three orders of magnitude above the `1e-9`
+threshold, so the 768 are a genuine gap and not a near-miss. Rung 6 already closed the
+obvious repair: `embed3d` is linear, so the projection of the 8D normal `a + b + c` is
+*exactly three times* the projected centroid, which makes "import the 8D orientation" the
+same test that already failed. And underneath that sits the structural fact: every edge
+carries **27** incident faces, so the shell has no interior and "which side" is undefined
+globally, not merely undetermined on 768 faces.
+
+**Obstacle 2 — a view-dependent term breaks the precompute, but NOT as badly as expected.**
+This is the measurement that surprised me and it is worth stating carefully. The reason this
+tracer is cheap is that intensity is view-independent and precomputed to five levels. A
+specular term is view-dependent by definition. But specular reflection off a root-quantised
+view stays a lookup:
+
+| view (a root) | distinct specular numerators over all 60,480 faces |
+|---|---|
+| 0 | 3 — `{−384, −128, 384}` |
+| 13 | 5 — `{−320, −192, −64, 64, 192}` |
+| 61 / 100 / 200 | 5 — `{−256, −128, 0, 128, 256}` |
+| 137 / 239 | 5 — `{−192, −64, 64, 192, 320}` |
+
+So a mirror is not "per-hit shading work" *provided the camera direction is one of the 240
+roots*: it is **one five-entry table per view**, i.e. 240 tables, `240 × 60,480 =
+14,515,200` bytes ≈ 14 MB, fully precomputable and still exact. What it is not is *free*: the
+five-level table stops being a property of the object and becomes a property of
+(object, view). A **free** camera direction leaves that regime entirely — see obstacle 3.
+
+**Obstacle 3 — exactness ends at the camera, and the boundary is nameable.** Rung 6's
+specular term is exactly rational for the precise reason that it pairs **two roots**:
+`|L| |V| = √8 · √8 = 8`. `specularCosine` therefore *refuses* a view whose norm differs from
+the light's, and the refusal is tested. Generalised: with `|V|² = m` the denominator is
+`48 · √(8m)`, which is rational **iff `8m` is a perfect square**. A free camera direction is
+not a root, so a view-dependent term leaves the exact lattice — the same kind of boundary
+rung 6 drew at `√6`, one layer further out:
+
+> **The Lambert boundary is `√6` and lives in the object. The specular boundary is the
+> camera, and it is rational only on the 240 root directions.**
+
+**Honest disposition.** A reflective 4_21 is buildable in exactly one register: **root-
+quantised views, two-sided reflection, and a stated admission that 768 faces have no front**.
+Anything else — a free camera, a genuine mirror surface with an inside — is not a rendering
+feature we have not got around to; it is a claim the geometry does not support. Filed rather
+than faked.
+
+### 7.2 "Is five levels enough compared to real game engines, or is this a toy?"
+
+**As a renderer: it is a toy, in this repo's exact vocabulary, and I am not going to dress
+that up.** Game engines shade continuously in HDR float and tone-map to 256+ levels per
+channel, with many lights, shadows, ambient occlusion, textures and a microfacet BRDF. This
+has one light, Lambert only, no shadows, no textures, and occlusion added only in this rung.
+
+**The structural answer, which is the useful one: five is not a ceiling of the method.** It
+is the consequence of exactly two choices — *one* light that *is an E8 root*, meeting normals
+that are *root sums*. Change either and the count changes. Measured, each with the field the
+shading algebra then closes over:
+
+| change | distinct levels | denominator | field | exact? |
+|---|---|---|---|---|
+| **baseline** — one root light | **5** | `√384 = 8√6` | `Q(√6)` | yes |
+| light off the root lattice, still integral — `(1,…,8)`, `\|L\|² = 204` | **49** | `√9792 = 24√17` | `Q(√17)` | **yes** |
+| light on a coordinate axis, `\|L\|² = 1` | 7 | `√48 = 4√3` | `Q(√3)` | yes |
+| **two** root lights, summed | 9 | `√384` (shared!) | `Q(√6)` | **yes** |
+| per-**vertex** normals, at the vertices | 3 | `12096` | **`Q`** | yes |
+| per-vertex normals, interpolated across a face | continuous | — | — | **no** |
+| distance falloff `1/r²` | continuous | — | — | **no** |
+| specular, **root** view | 3–5 per view | `384` | `Q` | yes |
+| specular, **free** camera | continuous | `48√(8m)` | irrational unless `8m` is square | **no** |
+
+Three of those rows are worth reading twice.
+
+- **A light off the root lattice buys 49 levels and costs no exactness at all** — it only
+  moves the field from `Q(√6)` to `Q(√17)`. Quantisation is not the price of exactness here;
+  it is the price of *choosing a root as the light*. Any integer vector keeps the numerator
+  an integer.
+- **Two root lights stay in `Q(√6)`**, because both terms share the denominator `√384` and
+  the sum is `(k₁ + k₂)/√384`. Multi-light does not compound the field. Measured: 9 distinct
+  sums, `0 … 32`.
+- **Per-vertex ("Gouraud") normals go the wrong way**, and the reason is an exact identity
+  worth recording: every vertex has exactly **756** incident faces, and the sum of their
+  normals is **exactly `1512 × the vertex itself`** — verified on all 240. So the interpolated
+  normal degenerates to the sphere normal, `|n_v|² = 1512² · 8 = 18,289,152`, the Lambert
+  denominator becomes the *rational* `8 · 1512 = 12096`, and the level count **drops to
+  three** at the vertices. Smoothness would then come only from barycentric interpolation
+  across the face, which is float and leaves exactness. Gouraud on this object trades an
+  exact five-level shading for a rational three-level one plus a float interpolant.
+
+**The claim being made, stated so it cannot be over-read:** the exact-integer core is a
+differentiator for **correctness and cross-oracle byte-lock**, not for visual quality. Five
+levels is what one root light produces on this polytope, and it is a *measurement of 4_21*,
+not a rendering budget. A renderer that wanted more would take a non-root light (free) and
+per-pixel interpolation (leaves exact), and would be making an ordinary graphics trade rather
+than discovering a limit.
+
+## 8. Anchors (Beacon), cited because they are used
 
 - **Thorold Gosset** (1900) — 4_21. **H. S. M. Coxeter**, *Regular Polytopes* (3rd ed.,
   Dover 1973) — the f-vector and the Coxeter element.
