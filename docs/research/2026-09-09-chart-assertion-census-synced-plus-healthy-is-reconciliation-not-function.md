@@ -91,7 +91,7 @@ makes a number feel like proof.
 
 ```
 49 charts, 35 asserted Synced+Healthy, 2 manual-sync, 3 applied-unasserted,
-9 never applied, 3 health-blind, 0 with a POST-DEPLOY FUNCTIONAL assertion
+9 never applied, 3 healthy-by-vacuity, 0 with a POST-DEPLOY FUNCTIONAL assertion
 ```
 
 `helm-unknown` in the table below is the honest answer for a chart Application:
@@ -116,7 +116,7 @@ for them would be the move this census exists to refuse.
 | cloudnativepg | full | 0 | 0 | helm-unknown | NONE |  |
 | cockroachdb | full | 0 | 0 | helm-unknown | NONE |  |
 | dapr | full | 0 | 0 | helm-unknown | NONE |  |
-| deepseek-coder | full | 0 | 2 | NO -- every resource is health-less | NONE |  |
+| deepseek-coder | full | 0 | 2 | healthy-by-vacuity -- nothing exists that could be unhealthy | NONE |  |
 | external-secrets | full | 0 | 0 | helm-unknown | NONE |  |
 | forgejo | full | 0 | 0 | helm-unknown | NONE |  |
 | game-hosting/gmod | not-applied | 1 | 3 | n/a -- never applied | NONE |  |
@@ -140,7 +140,7 @@ for them would be the move this census exists to refuse.
 | orleans | full | 1 | 8 | reconciliation-only | NONE |  |
 | oz | full | 0 | 0 | helm-unknown | NONE |  |
 | platform | not-applied | 2 | 31 | n/a -- never applied | NONE |  |
-| qwen-coder | full | 0 | 1 | NO -- every resource is health-less | NONE |  |
+| qwen-coder | full | 0 | 1 | healthy-by-vacuity -- nothing exists that could be unhealthy | NONE |  |
 | redis | full | 0 | 0 | helm-unknown | NONE |  |
 | sealed-secrets | full | 0 | 0 | helm-unknown | NONE |  |
 | seaweedfs | full | 0 | 0 | helm-unknown | NONE |  |
@@ -151,8 +151,104 @@ for them would be the move this census exists to refuse.
 | trust-manager | full | 0 | 0 | helm-unknown | NONE |  |
 | vllm | not-applied | 2 | 2 | n/a -- never applied | NONE |  |
 | weaviate | applied-unasserted | 0 | 0 | helm-unknown | NONE |  |
-[chart-census] 49 charts, 35 asserted Synced+Healthy, 2 manual-sync, 3 applied-unasserted, 9 never applied, 3 health-blind, 0 with a POST-DEPLOY FUNCTIONAL assertion
 
+
+## The model-info charts — Aaron's question, answered as a measurement
+
+> *"for the deepseek-coder and the qwen-coder what's special about those charts
+> rather than the way we have our multi harness summoner and our own custom
+> harness both of which can use ollama and others and even call into other
+> harnesses?"*
+
+**Measured answer: nothing is special about them, and they are the two rows the
+census marks `healthy-by-vacuity`.** Each is exactly two files — `Application.yaml`
+and `configmap.yaml`. No Deployment, no StatefulSet, no Service, no image.
+**Nothing runs.** Their own Application header says so: *"This Application is
+structural — the model itself is pulled by whichever serving stack you chose."*
+
+### 1. What consumes those ConfigMaps? Nothing.
+
+Searched the whole tree for a consumer — `envFrom`, `configMapKeyRef`, a `volumes.configMap`,
+any workload in any namespace. **There is none.** Every reference to the names is
+**metadata *about* the charts**, never a reader:
+
+| reference | what it is |
+|---|---|
+| `lane-footprints.json`, `storage-profiles.json`, `image-footprint.measured.json` | cost rosters |
+| `sync-wave-dependency-graph.yaml`, `derive-sync-waves.ts` | wave ordering |
+| `ports.ts`, `argocd-health-test.ts`, the test rosters | which lane asserts them |
+| `ollama/Application.yaml` | **commented out** — `pull: [ ]` / `run: [ ]`, with `deepseek-coder:33b` and `qwen2.5-coder:32b` sitting in comments |
+
+That last row matters most: **the serving stack these ConfigMaps describe does not
+pull either model**, and `ollama`/`vllm` are themselves `excludeGlob`'d *and*
+`manualSync`. So the endpoints the ConfigMaps name resolve to Services that exist
+in no lane, for models nothing pulls, read by nobody.
+
+### 2. What the harness layer already does — and it disagrees
+
+The worker takes its model backend from the **environment**:
+
+```
+apps/workers/src/config.ts     LlmBaseUrl: "LLM_BASE_URL",  LlmModel: "LLM_MODEL"
+```
+
+set as **literals** in `agentic-organization/deploy/k8s/30-worker.yaml`:
+
+```yaml
+- { name: LLM_BASE_URL, value: "http://ollama:11434" }
+- { name: LLM_MODEL,    value: "qwen2:0.5b" }
+```
+
+Those are the same two facts the ConfigMaps carry — endpoint and model. So this is
+not merely redundancy:
+
+> **Two declarations of one pair, and they disagree.** The worker uses
+> `http://ollama:11434` with `qwen2:0.5b`; the ConfigMaps say
+> `http://ollama.ollama.svc.cluster.local:11434` with `deepseek-coder:33b` /
+> `qwen2.5-coder:32b`. **The one nothing reads is the one shipped as an ArgoCD
+> Application.**
+
+The agent-cli carries a third pair (`AGENTIC_ORG_LLM_BASE_URL` / `_MODEL`), also
+from env. Nothing anywhere resolves a model endpoint through Kubernetes.
+
+**Deliberately not "fixed" by editing one to match the other.** Which value is
+intended is a question the tree does not answer, and picking a winner without
+knowing is the single-version-of-the-truth collapse this repo already refuses
+(`dv2-data-split-discipline-activated.md`, raw vault). Both are recorded; the
+maintainer decides.
+
+### 3. Disposition
+
+| chart | disposition | reason |
+|---|---|---|
+| `deepseek-coder` | **RETIRE** (proposed) | nothing consumes it; the harness carries the same pair in env and disagrees with it; it contributes one uninformative green to the 37/37 |
+| `qwen-coder` | **RETIRE, with `deepseek-coder`** | same measurement — **and a coupling**: `qwen-coder` ships no Namespace of its own. It targets `models`, which `deepseek-coder/configmap.yaml` creates. Retiring one alone breaks the other |
+
+**Retiring removes charts rather than adding assertions**, which is the cheaper
+direction and matches the preference stated for the lanes the same day. It also
+*shrinks* the vacuity class rather than documenting it.
+
+**Not executed here.** Deleting a chart is a catalogue decision; the census records
+the measurement and the proposal, exactly as the lane audit does. If the answer is
+keep, the honest alternative is to make the ConfigMap *load-bearing* — have the
+worker read `LLM_BASE_URL`/`LLM_MODEL` from it via `envFrom` — which would end the
+divergence, give the chart a consumer, and make its `Healthy` verdict mean
+something for the first time.
+
+### How big is the class?
+
+**Three**, and the third costs nothing:
+
+| chart | tier | why it is / is not a problem |
+|---|---|---|
+| `deepseek-coder` | asserted `full` | **counted as proof** |
+| `qwen-coder` | asserted `full` | **counted as proof** |
+| `cilium-lb-ipam` | never applied | blind, but asserted by nothing, so it claims nothing |
+
+Plus `ddns` — the one directory the census cannot see, having no `Application.yaml`.
+So: **a pair, not a large class.** The category is named anyway, because it is the
+class that grows silently — every future "just a ConfigMap" Application lands in it
+by default, and until now would have been counted beside `cockroachdb`.
 ## Charts that belong to no job
 
 Nine directories are excluded from the dev root's glob, so no lane applies them.

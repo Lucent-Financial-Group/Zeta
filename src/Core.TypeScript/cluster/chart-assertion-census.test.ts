@@ -22,6 +22,7 @@ import {
   committedKinds,
   FUNCTIONAL_ASSERTIONS,
   healthVerdict,
+  HEALTHY_BY_VACUITY,
   HEALTH_BEARING_KINDS,
   NEVER_APPLIED_COVERAGE,
   renderMarkdown,
@@ -109,7 +110,8 @@ describe("chart assertion census", () => {
       healthBearing: 0,
       healthBlind: 2,
     });
-    expect(healthVerdict(blind)).toContain("every resource is health-less");
+    expect(healthVerdict(blind)).toBe(HEALTHY_BY_VACUITY);
+    expect(healthVerdict(blind)).toContain("nothing exists that could be unhealthy");
     expect(healthVerdict(row({}))).toBe("reconciliation-only");
   });
 
@@ -134,5 +136,38 @@ describe("chart assertion census", () => {
     const rows = census(REPO_ROOT);
     expect(renderMarkdown(rows)).toContain("functional assertion");
     expect(summarise(rows)).toContain("0 with a POST-DEPLOY FUNCTIONAL assertion");
+    expect(summarise(rows)).toContain("healthy-by-vacuity");
+  });
+});
+
+/**
+ * -- THE MODEL-INFO CHARTS ---------------------------------------------------
+ * Aaron 2026-09-09, on `deepseek-coder` and `qwen-coder`: "what's special about
+ * those charts rather than the way we have our multi harness summoner and our own
+ * custom harness both of which can use ollama and others?"
+ *
+ * The measured answer is "nothing", and these pin the two halves of it so the
+ * disposition cannot rot into folklore: the ConfigMaps have no consumer, and the
+ * harness reads the same pair from somewhere else.
+ */
+describe("the model-info charts", () => {
+  test("MEASURED: both are healthy-by-vacuity, and both are asserted anyway", () => {
+    const rows = census(REPO_ROOT);
+    for (const dir of ["deepseek-coder", "qwen-coder"]) {
+      const found = rows.find((r) => r.dir === dir);
+      if (found === undefined) throw new Error("missing row: " + dir);
+      expect(found.tier).toBe("full");
+      expect(found.healthBearing).toBe(0);
+      expect(healthVerdict(found)).toBe(HEALTHY_BY_VACUITY);
+    }
+  });
+
+  test("MEASURED: every committed resource is a ConfigMap or a Namespace", () => {
+    const kinds = new Set<string>();
+    for (const dir of ["deepseek-coder", "qwen-coder"]) {
+      for (const k of committedKinds(REPO_ROOT, dir)) kinds.add(k);
+    }
+    // No Deployment, no StatefulSet, no Service, no image: nothing RUNS here.
+    expect([...kinds].sort()).toEqual(["ConfigMap", "Namespace"]);
   });
 });

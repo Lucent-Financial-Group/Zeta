@@ -184,12 +184,26 @@ export const HEALTH_BLIND_ASSERTED_REASONS = new Map<string, string>();
 
 HEALTH_BLIND_ASSERTED_REASONS.set(
   "deepseek-coder",
-  "renders one Namespace and one ConfigMap. Applying it proves the manifests parse and reconcile; its Healthy verdict proves nothing, because ArgoCD assigns neither kind a health check",
+  "one Namespace + one ConfigMap, and NOTHING CONSUMES IT. Measured 2026-09-09 across the tree: " +
+    "no Deployment, no envFrom, no configMapKeyRef, no volume anywhere mounts or reads it -- every " +
+    "reference is metadata ABOUT the chart (lane footprints, storage profiles, sync-wave graph, test " +
+    "rosters), never a consumer. Its own Application header calls it `structural`. " +
+    "AND THE HARNESS ALREADY CARRIES THE SAME TWO FACTS, from a different place: the worker reads " +
+    "LLM_BASE_URL / LLM_MODEL from the ENVIRONMENT (apps/workers/src/config.ts), set as literals in " +
+    "agentic-organization/deploy/k8s/30-worker.yaml. Two declarations of one pair, and THEY DISAGREE " +
+    "-- the worker uses http://ollama:11434 with qwen2:0.5b, this ConfigMap says " +
+    "http://ollama.ollama.svc.cluster.local:11434 with deepseek-coder:33b. The one nothing reads is " +
+    "the one shipped as an ArgoCD Application. Disposition proposed: RETIRE (see the census doc); " +
+    "kept here until the maintainer rules, because deleting a chart is a catalogue decision",
 );
 
 HEALTH_BLIND_ASSERTED_REASONS.set(
   "qwen-coder",
-  "one ConfigMap. Same shape and same limit as deepseek-coder",
+  "one ConfigMap -- not even a Namespace, which it inherits from deepseek-coder's. Same shape, same " +
+    "measurement, same disposition as deepseek-coder: nothing consumes it, the harness carries the " +
+    "same pair in env, and the two disagree. Note the coupling this exposes -- if deepseek-coder were " +
+    "retired alone, the `models` Namespace would go with it and this chart would lose the namespace it " +
+    "targets. They retire together or not at all",
 );
 
 /** How strongly a lane asserts a chart. */
@@ -344,6 +358,17 @@ export function renderMarkdown(rows: readonly CensusRow[]): string {
 }
 
 /**
+ * THE NAME FOR THE CATEGORY, because it is its own thing and was going unnamed.
+ *
+ * Aaron 2026-09-09, on `deepseek-coder` and `qwen-coder`: a chart whose only
+ * resources are health-less does not report `Healthy` because it is well --
+ * it reports `Healthy` because **nothing exists that could be unhealthy**. That
+ * is not a weak pass; it is a different KIND of pass, and reading it as the
+ * first is how two uninformative greens got counted inside a 37/37.
+ */
+export const HEALTHY_BY_VACUITY = "healthy-by-vacuity -- nothing exists that could be unhealthy";
+
+/**
  * THE VACUITY COLUMN. Whether the `Healthy` half of the contract can carry a
  * verdict about this chart at all.
  *
@@ -354,7 +379,7 @@ export function renderMarkdown(rows: readonly CensusRow[]): string {
 export function healthVerdict(row: CensusRow): string {
   if (row.tier === "not-applied") return "n/a -- never applied";
   if (row.resourcesInTree === false) return "helm-unknown";
-  if (row.healthBearing === 0) return "NO -- every resource is health-less";
+  if (row.healthBearing === 0) return HEALTHY_BY_VACUITY;
   return "reconciliation-only";
 }
 
@@ -406,7 +431,7 @@ export function summarise(rows: readonly CensusRow[]): string {
   parts.push(String(tally.get("manual-sync") ?? 0) + " manual-sync");
   parts.push(String(tally.get("applied-unasserted") ?? 0) + " applied-unasserted");
   parts.push(String(tally.get("not-applied") ?? 0) + " never applied");
-  parts.push(String(blind) + " health-blind");
+  parts.push(String(blind) + " healthy-by-vacuity");
   parts.push(String(functional) + " with a POST-DEPLOY FUNCTIONAL assertion");
   return parts.join(", ");
 }
