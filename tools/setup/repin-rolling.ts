@@ -54,7 +54,7 @@
 // 081M23ESC5B087G0R002HJ39DG
 
 import { createHash } from "node:crypto";
-import { copyFileSync, existsSync, mkdirSync, readFileSync, unlinkSync, writeFileSync } from "node:fs";
+import { copyFileSync, mkdirSync, readFileSync, unlinkSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { spawnSync } from "node:child_process";
 import {
@@ -82,6 +82,32 @@ export function deriveIdentity(kind: string | undefined, absPath: string): strin
 
 export function sha256Of(bytes: Uint8Array): string {
   return createHash("sha256").update(bytes).digest("hex");
+}
+
+// An existsSync that gates a copy or an unlink is already stale by the time the
+// operation runs -- one question, a different answer. Do the operation and
+// interpret ENOENT, which is one syscall with one answer and no window.
+function isMissing(err: unknown): boolean {
+  return (err as NodeJS.ErrnoException | undefined)?.code === "ENOENT";
+}
+
+/** true when bytes were copied, false when the source simply was not there. */
+function copyIfPresent(from: string, to: string): boolean {
+  try {
+    copyFileSync(from, to);
+    return true;
+  } catch (err) {
+    if (isMissing(err)) return false;
+    throw err;
+  }
+}
+
+function removeIfPresent(path: string): void {
+  try {
+    unlinkSync(path);
+  } catch (err) {
+    if (!isMissing(err)) throw err;
+  }
 }
 
 /**
@@ -216,9 +242,8 @@ async function main(argv: readonly string[]): Promise<number> {
 
   const absDest = join(repoRoot, dest);
   const backup = absDest + ".prepin";
-  const hadBytes = existsSync(absDest);
-  const oldIdentity = hadBytes ? deriveIdentity(pin.identity, absDest) : null;
-  if (hadBytes) copyFileSync(absDest, backup);
+  const hadBytes = copyIfPresent(absDest, backup);
+  const oldIdentity = hadBytes ? deriveIdentity(pin.identity, backup) : null;
   mkdirSync(dirname(absDest), { recursive: true });
   writeFileSync(absDest, bytes);
   const newIdentity = deriveIdentity(pin.identity, absDest);
@@ -233,8 +258,8 @@ async function main(argv: readonly string[]): Promise<number> {
   const rollback = (): void => {
     for (const item of restore) writeFileSync(join(repoRoot, item.rel), item.text);
     if (hadBytes) copyFileSync(backup, absDest);
-    else unlinkSync(absDest);
-    if (existsSync(backup)) unlinkSync(backup);
+    else removeIfPresent(absDest);
+    removeIfPresent(backup);
   };
 
   // `derivedpins=` files have their OWN sha256 quoted inside a pin surface, so
@@ -317,7 +342,7 @@ async function main(argv: readonly string[]): Promise<number> {
     join(repoRoot, ROLLING_RECEIPTS),
     receipts + receiptRow(dest, newSha, measured, remeasure, evidence) + "\n",
   );
-  if (existsSync(backup)) unlinkSync(backup);
+  removeIfPresent(backup);
   process.stdout.write(
     `\nre-pinned ${dest} to sha256=${newSha}\n` +
       `evidence: ${evidence}\nreceipt appended to ${ROLLING_RECEIPTS}\n`,

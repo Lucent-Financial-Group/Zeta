@@ -125,7 +125,7 @@ a jar, a pin, or this table out of agreement and it fails.
   to stop: it swaps the model checker under every claim the model checker
   established. The immutable alternative, v1.7.4 (2024-08-05), was declined
   because it passes only 51/52 — it prints the generic
-  `Temporal properties were violated.` where 1.8.0 names *which* property, and
+  `Temporal properties were violated.` where 1.8.0 names _which_ property, and
   the registry pins that discrimination as `expectDetail`. tla2tools is not on
   Maven Central, so there is no immutable coordinate for the newer build.
   MEASURED 2026-09-09: the tag served two different builds three hours apart,

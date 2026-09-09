@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import json
 import shutil
+import subprocess
 from collections.abc import Iterator
 from contextlib import contextmanager
 from pathlib import Path
@@ -22,6 +23,39 @@ HISTORICAL_REGISTRY = (
     ROOT / "docs/research/data/2026-09-06-nci-witness-v1-registry.json"
 )
 
+# The historical subject's JAR, by git blob id.
+#
+# The 2026-09-06 witness is pinned to TLC2 2026.05.18.174321, and the tree
+# stopped carrying those bytes when src/Core.TLA/tla2tools.jar was de-vendored
+# onto the rolling from-url row (081M23ESC5B087G0R002HJ39DG). Upstream cannot
+# return them either -- tlaplus re-uploads the v1.8.0 asset in place, so the
+# build that produced this witness is gone from every URL.
+#
+# It is NOT gone from git. A blob stays reachable from the commits that carried
+# it, so `git cat-file` is a permanent, content-addressed source for exactly the
+# bytes the receipt names -- which is the whole point of pinning by digest.
+# Reading it here keeps the historical witness reproducible without either
+# re-committing a binary or republishing a dated research artefact to match a
+# newer checker. Mirrors the TypeScript oracle's test.
+HISTORICAL_JAR_BLOB = "2fb671d8be5a1e137f001965d0246509e882aed3"
+
+
+def historical_jar_bytes() -> bytes:
+    result = subprocess.run(
+        ["git", "cat-file", "blob", HISTORICAL_JAR_BLOB],
+        cwd=ROOT,
+        capture_output=True,
+        check=False,
+    )
+    if result.returncode != 0:
+        # A failed probe is UNKNOWN, never "the jar is wrong": a shallow clone or
+        # an absent git is a question that was not asked.
+        raise RuntimeError(
+            f"cannot read historical tla2tools blob {HISTORICAL_JAR_BLOB} from git "
+            f"(git exited {result.returncode}) -- that is an UNKNOWN, not a mismatch"
+        )
+    return result.stdout
+
 
 def copied_subject(tmp_path: Path) -> Path:
     for relative in (
@@ -32,6 +66,9 @@ def copied_subject(tmp_path: Path) -> Path:
     ):
         target = tmp_path / relative
         target.parent.mkdir(parents=True, exist_ok=True)
+        if relative == Path("src/Core.TLA/tla2tools.jar"):
+            target.write_bytes(historical_jar_bytes())
+            continue
         source = (
             HISTORICAL_REGISTRY
             if relative == Path("registry/tlc-models.json")
