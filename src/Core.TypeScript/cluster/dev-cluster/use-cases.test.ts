@@ -520,8 +520,17 @@ describe("dev/CI bootstrap credentials", () => {
     expect(DEV_BOOTSTRAP_SECRETS).toContain(DEV_ZITI_ADMIN_SECRET);
     // MOVED to DEV_SHARED_SECRETS 2026-09-09: it gained a second consumer in
     // another namespace, and a secretKeyRef resolves namespace-locally.
+    // The positive assertion carries the claim: an EXACT roster pin fails if
+    // redis-auth is on this list, and also if anything else appears or moves.
+    // `not.toContain` would have been the weak form -- it passes for any list
+    // that merely lacks one element, including an empty one.
     expect(DEV_SHARED_SECRETS).toContain(DEV_REDIS_AUTH_SECRET);
-    expect(DEV_BOOTSTRAP_SECRETS).not.toContain(DEV_REDIS_AUTH_SECRET);
+    expect([...DEV_BOOTSTRAP_SECRETS]).toEqual([
+      DEV_GRAFANA_ADMIN_SECRET,
+      DEV_ZITI_ADMIN_SECRET,
+      DEV_OPENSEARCH_ADMIN_SECRET,
+      DEV_FORGEJO_ADMIN_SECRET,
+    ]);
     // 3 -> 4 on 2026-09-05: `DEV_OPENSEARCH_ADMIN_SECRET`. OpenSearch >= 2.12
     // refuses to boot without OPENSEARCH_INITIAL_ADMIN_PASSWORD while the
     // security plugin is on, which is what the live lane reported as
