@@ -91,7 +91,7 @@ makes a number feel like proof.
 
 ```
 49 charts, 35 asserted Synced+Healthy, 2 manual-sync, 3 applied-unasserted,
-9 never applied, 3 healthy-by-vacuity, 0 with a POST-DEPLOY FUNCTIONAL assertion
+9 never applied, 3 healthy-by-vacuity, 0 of 49 with a POST-DEPLOY FUNCTIONAL assertion
 ```
 
 `helm-unknown` in the table below is the honest answer for a chart Application:
@@ -297,11 +297,9 @@ widening the key would change what every other row means.
 
 ## Proposal — post-deploy functional assertions
 
-`FUNCTIONAL_ASSERTIONS` is an empty map today, and a test pins it at zero. That
-test is written to go **red the moment the first one lands**: this is a
-measurement of a gap, not a rule that the gap must stay open.
-
-Ranked by *what a silent failure costs*, not by ease:
+The count is **0 of 49** in this tree, and it is **derived**, not hand-set — see
+*How the count stays true* below. Ranked by *what a silent failure costs*, not by
+ease:
 
 | # | chart | the assertion | why it is first |
 |---|---|---|---|
@@ -324,6 +322,66 @@ it tests. The green run finished in **513 s against a 2400 s cap** (4.7×
 headroom), so there is room for all six without touching the cap. That headroom
 is also what refuted the starvation premise — see below.
 
+
+## How the count stays true — the registry is DERIVED
+
+The first version of `FUNCTIONAL_ASSERTIONS` was a **hand-written map** with a
+docstring promising *"an entry must name a path that EXISTS"*. **That refusal was
+never implemented.** It went unnoticed because the map was empty, so the promise
+was never load-bearing — *unmetered by virtue of being unused*, which is the
+vacuity class in the file whose whole job is naming it.
+
+It was also the drift shape refused two files over: `hat-constraint-roster.ts`
+exists precisely so a list of seven policy names is derived rather than restated,
+and then this registry was hardcoded anyway.
+
+**And a hand-written map made the number depend on merge order.** The first real
+functional assertion (the live gatekeeper-sync step) and this census live in two
+different pull requests. Whichever landed second owed a hand-edit — at an
+**unattended** moment, since auto-merge is armed — or `main` would carry a census
+reporting a count that had stopped being true. The census, of all things,
+reporting a stale number.
+
+Deriving it removes all three at once:
+
+| before | after |
+|---|---|
+| a promised refusal with no implementation | a derived entry names a step that exists **by construction** — the refusal is unnecessary rather than unimplemented |
+| a restated list that can drift | nothing is restated |
+| a count that depended on merge order | a count that is a **function of the tree it is read in**, true in every order, owed to nobody |
+
+### The convention
+
+A workflow step that is a post-deploy functional assertion **declares itself**:
+
+```yaml
+      - name: Gatekeeper syncs the kinds the Hat policies read
+        env:
+          ZETA_FUNCTIONAL_ASSERTION_FOR: hat-system
+```
+
+Declared on the **step**, so it cannot drift from the thing it describes, and
+machine-readable, so *"does a functional assertion exist for this chart"* stops
+being a question anyone answers from memory.
+
+Parsed as **YAML, never grepped**. This repo's workflows carry long `#` comment
+blocks that quote their own mechanisms, and a marker inside a comment is not a
+declaration — a grep would count it and report coverage that does not exist. That
+is the same trap `parseMisePin` documents for the .NET pin, and there is a test for
+it here.
+
+**Stated limit:** this finds steps that *declare themselves*. A gating functional
+check written without the marker is invisible, which **under-reports** rather than
+over-reports — the safe direction, and what makes the number a floor rather than a
+claim. The complementary risk, a marker on a step that gates nothing, is not
+machine-checkable from YAML, which is why the marker is a declaration a reviewer
+can see rather than a heuristic.
+
+### Report the ratio, never the bare count
+
+`0 of 49`, not `0`; and when the first one lands, **`1 of 49`, not "we have
+post-deploy testing"**. A single entry is a foothold. The ratio answers what is
+*actually* tested; a non-zero flag would answer a question nobody asked.
 ## What this DEMOTES: the per-chart-set split
 
 The hypothesis that the lane was resource-starved is **refuted**: the green run

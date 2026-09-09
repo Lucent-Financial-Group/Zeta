@@ -75,7 +75,7 @@
 
 import { readFileSync, readdirSync } from "node:fs";
 import { join } from "node:path";
-import { parseAllDocuments } from "yaml";
+import { parse as parseYaml, parseAllDocuments } from "yaml";
 import { discoverExpectedApplications } from "./argocd-health-test.ts";
 import { applicationDirs, devLaneAppliedDirs } from "./storage-profiles.ts";
 import { stringCompare } from "../collation/collation.ts";
@@ -398,36 +398,153 @@ export function healthVerdict(row: CensusRow): string {
   return "reconciliation-only";
 }
 
+/** The step-level env key by which a functional assertion declares itself. */
+export const FUNCTIONAL_ASSERTION_MARKER = "ZETA_FUNCTIONAL_ASSERTION_FOR";
+
+/** Where workflows live, relative to the repo root. */
+export const WORKFLOWS_DIR = ".github/workflows";
+
 /**
  * Charts with a POST-DEPLOY FUNCTIONAL assertion -- something that exercises the
  * application and would FAIL if it deployed but did not work.
  *
- * -- WHY THIS MAP IS EMPTY, AND WHY THAT IS THE FINDING ---------------------
+ * -- WHY IT IS DERIVED AND NOT HAND-MAINTAINED -----------------------------
+ * This started as a hand-written `Map` with a docstring promising "an entry must
+ * name a path that EXISTS". THAT REFUSAL WAS NEVER IMPLEMENTED. It went unnoticed
+ * because the map was empty, so the promise was never load-bearing -- unmetered
+ * by virtue of being unused, which is the vacuity class in the file whose whole
+ * job is naming it.
+ *
+ * It was also the drift shape refused two files over: `hat-constraint-roster.ts`
+ * exists specifically so a list of seven policy names is DERIVED rather than
+ * restated, and then this registry was hardcoded anyway.
+ *
+ * And a hand-written map made the number depend on MERGE ORDER. The workflow step
+ * that is the first real functional assertion and this census live in two
+ * different pull requests; whichever landed second had to carry a hand-edit, at an
+ * unattended moment, or `main` would hold a census reporting a count that had
+ * stopped being true.
+ *
+ * Deriving it removes all three at once:
+ *   - a derived entry names a step that exists BY CONSTRUCTION, so the refusal is
+ *     unnecessary rather than unimplemented;
+ *   - nothing is restated, so nothing can drift;
+ *   - the count is a function of the tree it is read in, so it is true in EVERY
+ *     merge order and no hand-edit is owed to anyone at merge time.
+ *
+ * -- THE CONVENTION --------------------------------------------------------
+ * A workflow step that is a post-deploy functional assertion declares itself:
+ *
+ *     env:
+ *       ZETA_FUNCTIONAL_ASSERTION_FOR: <application directory>
+ *
+ * Declared on the STEP, so it cannot drift from the thing it describes, and
+ * machine-readable, so "does a functional assertion exist for this chart" stops
+ * being a question anyone answers from memory.
+ *
+ * STATED LIMIT: this finds steps that DECLARE themselves. A gating functional
+ * check written without the marker is invisible here, which under-reports rather
+ * than over-reports -- the safe direction, and the one that makes the number a
+ * floor rather than a claim. The complementary risk, a marker on a step that
+ * gates nothing, is not machine-checkable from the YAML and is the reason the
+ * marker is a declaration a reviewer can see rather than a heuristic.
+ *
+ * -- WHAT IT MEASURED WHEN WRITTEN -----------------------------------------
  * Aaron 2026-09-09: "can we not look at the logs or have some post deploy tests
  * to tell what's working and what's not?"
  *
  * MEASURED the same day: `argocd-health-test.ts` carries 72 references to
  * `Synced`/`Healthy` and ZERO functional assertions. The lane workflow does
  * contain `nc -z` reachability probes and `git ls-remote` checks -- and every one
- * of them prints `OPEN`/`FAIL` and then `return 0`. They are DIAGNOSTICS, and
- * diagnostics are the right shape for what they do; none of them gates.
+ * prints `OPEN`/`FAIL` and then `return 0`. They are DIAGNOSTICS, and diagnostics
+ * are the right shape for what they do; none of them gates.
  *
- * So the whole lane asserts exactly one class of thing: `Synced + Healthy`, which
- * is ARGOCD'S OPINION ABOUT RECONCILIATION, not evidence that anything works. The
- * proof that the gap is real rather than theoretical arrived the same day: all
- * seven Hat Constraints were unapplied in runs that reported green
- * (081M241X2YQ087G0R001K95PAB). A gatekeeper holding zero policies is a
- * gatekeeper that reconciled perfectly.
- *
- * The map is kept as a map rather than a comment because the honest way to record
- * "nothing does this" is a registry a check can read, and because the first entry
- * should be a diff to this file rather than a new mechanism.
- *
- * REFUSAL: an entry must name a path that EXISTS. A functional assertion that
- * points at nothing is the vacuity class one level up -- a registry claiming
- * coverage that no file provides.
+ * So the whole lane asserts one class of thing: `Synced + Healthy`, which is
+ * ARGOCD'S OPINION ABOUT RECONCILIATION, not evidence that anything works. The
+ * proof that the gap is real arrived the same day: all seven Hat Constraints were
+ * unapplied in runs that reported green (081M241X2YQ087G0R001K95PAB). A gatekeeper
+ * holding zero policies is a gatekeeper that reconciled perfectly.
  */
-export const FUNCTIONAL_ASSERTIONS = new Map<string, string>();
+/**
+ * Every self-declared functional assertion in one workflow body, as
+ * `chart -> "<workflow> :: <step name>"`.
+ *
+ * Parsed as YAML, never grepped: a `ZETA_FUNCTIONAL_ASSERTION_FOR` appearing in
+ * one of this repo's long `#` comment blocks must not be mistaken for a
+ * declaration, and that is exactly the mistake a grep makes.
+ */
+export function parseFunctionalAssertions(text: string, workflow: string): Map<string, string> {
+  const out = new Map<string, string>();
+  let doc: unknown;
+  try {
+    doc = parseYaml(text);
+  } catch {
+    return out;
+  }
+  if (doc === null) return out;
+  if (typeof doc !== "object") return out;
+  const jobs = (doc as { jobs?: Record<string, unknown> }).jobs;
+  if (jobs === undefined) return out;
+  for (const job of Object.values(jobs)) {
+    if (job === null) continue;
+    if (typeof job !== "object") continue;
+    const steps = (job as { steps?: unknown }).steps;
+    if (Array.isArray(steps) === false) continue;
+    for (const step of steps as unknown[]) {
+      if (step === null) continue;
+      if (typeof step !== "object") continue;
+      const shaped = step as { name?: unknown; env?: Record<string, unknown> };
+      const env = shaped.env;
+      if (env === undefined) continue;
+      const chart = env[FUNCTIONAL_ASSERTION_MARKER];
+      if (typeof chart !== "string") continue;
+      if (chart.length === 0) continue;
+      const stepName = typeof shaped.name === "string" ? shaped.name : "<unnamed step>";
+      out.set(chart, workflow + " :: " + stepName);
+    }
+  }
+  return out;
+}
+
+/** A workflow file suffix. */
+function isWorkflowFile(name: string): boolean {
+  if (name.endsWith(".yml")) return true;
+  if (name.endsWith(".yaml")) return true;
+  return false;
+}
+
+/** Scan every workflow and union what they declare. */
+export function readFunctionalAssertions(repoRoot: string): Map<string, string> {
+  const out = new Map<string, string>();
+  let files: string[];
+  try {
+    files = readdirSync(join(repoRoot, WORKFLOWS_DIR)).sort();
+  } catch {
+    return out;
+  }
+  for (const file of files) {
+    if (isWorkflowFile(file) === false) continue;
+    let text: string;
+    const full = join(repoRoot, WORKFLOWS_DIR, file);
+    try {
+      text = readFileSync(full, "utf8");
+    } catch {
+      continue;
+    }
+    for (const [chart, where] of parseFunctionalAssertions(text, file)) out.set(chart, where);
+  }
+  return out;
+}
+
+/**
+ * The derived registry, read once at module load from the workflows in THIS tree.
+ *
+ * Exported as a `Map` so every existing caller and test is unchanged -- what moved
+ * is where the contents come from.
+ */
+export const FUNCTIONAL_ASSERTIONS: ReadonlyMap<string, string> = readFunctionalAssertions(
+  join(import.meta.dir, "..", "..", ".."),
+);
 
 /** Repo root, from this file's location. */
 export function defaultRepoRoot(): string {
@@ -447,7 +564,10 @@ export function summarise(rows: readonly CensusRow[]): string {
   parts.push(String(tally.get("applied-unasserted") ?? 0) + " applied-unasserted");
   parts.push(String(tally.get("not-applied") ?? 0) + " never applied");
   parts.push(String(blind) + " healthy-by-vacuity");
-  parts.push(String(functional) + " with a POST-DEPLOY FUNCTIONAL assertion");
+  // THE RATIO, never the bare count. Aaron asked what is ACTUALLY tested, and
+  // "1" answers that far worse than "1 of 49": a single entry is a foothold, not
+  // post-deploy testing, and a non-zero flag would read as the latter.
+  parts.push(String(functional) + " of " + String(rows.length) + " with a POST-DEPLOY FUNCTIONAL assertion");
   return parts.join(", ");
 }
 

@@ -12,7 +12,8 @@
  *   - `deepseek-coder` and `qwen-coder` are asserted `Synced+Healthy` and every
  *     committed resource is a kind ArgoCD gives no health verdict;
  *   - nine directories are applied by no lane;
- *   - ZERO charts have a post-deploy functional assertion.
+ *   - the post-deploy functional assertion count is DERIVED from the workflows,
+ *     so it is true in every merge order rather than hand-set.
  */
 import { describe, expect, test } from "bun:test";
 import { fileURLToPath } from "node:url";
@@ -21,7 +22,10 @@ import {
   censusFailures,
   committedKinds,
   FUNCTIONAL_ASSERTIONS,
+  FUNCTIONAL_ASSERTION_MARKER,
   healthVerdict,
+  parseFunctionalAssertions,
+  readFunctionalAssertions,
   HEALTHY_BY_VACUITY,
   HEALTH_BEARING_KINDS,
   NEVER_APPLIED_COVERAGE,
@@ -60,11 +64,22 @@ describe("chart assertion census", () => {
     expect(tiers.has("not-applied")).toBe(true);
   });
 
-  test("THE FINDING: zero charts carry a post-deploy functional assertion", () => {
-    // Written to go RED the moment the first one lands, which is the point: this
-    // is a measurement of the gap, not a rule that it must stay open. Whoever
-    // closes it updates this number and gets to say which chart moved.
-    expect(FUNCTIONAL_ASSERTIONS.size).toBe(0);
+  test("THE FINDING, now DERIVED: the count matches what this tree's workflows declare", () => {
+    // NO LONGER A HAND-SET NUMBER. It was `toBe(0)` against a hand-written map,
+    // and that made the census's headline figure depend on MERGE ORDER: the first
+    // real functional assertion lives in a different pull request, so whichever
+    // landed second owed a hand-edit at an unattended moment -- or `main` would
+    // carry a census reporting a count that had stopped being true.
+    //
+    // Derived, the count is a function of the tree it is read in, so it is correct
+    // in every merge order and nobody owes an edit. What this pins instead is the
+    // AGREEMENT between the registry and the workflows -- the property that was
+    // never checkable while the map was written by hand.
+    const declared = readFunctionalAssertions(REPO_ROOT);
+    expect(FUNCTIONAL_ASSERTIONS.size).toBe(declared.size);
+    const rows = census(REPO_ROOT);
+    const counted = rows.filter((r) => r.functional !== null).length;
+    expect(counted).toBe(declared.size);
   });
 
   test("MUTATION: a never-applied chart with no coverage entry is refused", () => {
@@ -135,7 +150,9 @@ describe("chart assertion census", () => {
   test("the rendered table and summary both name the functional gap", () => {
     const rows = census(REPO_ROOT);
     expect(renderMarkdown(rows)).toContain("functional assertion");
-    expect(summarise(rows)).toContain("0 with a POST-DEPLOY FUNCTIONAL assertion");
+    // THE RATIO, not the bare count: "1" would read as "we have post-deploy
+    // testing"; "1 of 49" answers what is actually tested.
+    expect(summarise(rows)).toContain(" of " + String(rows.length) + " with a POST-DEPLOY FUNCTIONAL assertion");
     expect(summarise(rows)).toContain("healthy-by-vacuity");
   });
 });
@@ -220,5 +237,66 @@ describe("the orphan branch", () => {
     // rewritten to report unconditionally.
     const failures = censusFailures([row({})], new Map(), new Map());
     expect(failures.join(" ")).not.toContain("names a directory the tree no longer has");
+  });
+});
+
+/**
+ * -- THE DERIVATION -------------------------------------------------------
+ * The registry used to be hand-written, with a docstring promising "an entry must
+ * name a path that EXISTS" and NO CODE IMPLEMENTING IT. The promise went unnoticed
+ * because the map was empty: unmetered by virtue of being unused.
+ *
+ * Deriving it from the workflows makes that refusal unnecessary rather than
+ * unimplemented -- a derived entry names a step that exists by construction -- and
+ * removes the merge-order hand-edit the hand-written map owed.
+ */
+describe("the derived functional-assertion registry", () => {
+  test("a step that DECLARES the marker is found; an unmarked one is not", () => {
+    const lines = [
+      "jobs:",
+      "  live:",
+      "    steps:",
+      "      - name: the marked step",
+      "        env:",
+      "          " + FUNCTIONAL_ASSERTION_MARKER + ": hat-system",
+      "        run: echo assert",
+      "      - name: an ordinary step",
+      "        run: echo nothing",
+      "",
+    ];
+    const found = parseFunctionalAssertions(lines.join("\n"), "lane.yml");
+    expect(found.size).toBe(1);
+    expect(found.get("hat-system")).toBe("lane.yml :: the marked step");
+  });
+
+  test("THE GREP TRAP: the marker inside a COMMENT is not a declaration", () => {
+    // This repo's workflows carry very long `#` comment blocks that quote their
+    // own mechanisms. A grep would count this and report coverage that does not
+    // exist -- the same defect `parseMisePin` documents for the dotnet pin.
+    const lines = [
+      "# a step would declare " + FUNCTIONAL_ASSERTION_MARKER + ": hat-system here",
+      "jobs:",
+      "  live:",
+      "    steps:",
+      "      - name: a step with no marker",
+      "        run: echo nothing",
+      "",
+    ];
+    const text = lines.join("\n");
+    expect(text).toContain(FUNCTIONAL_ASSERTION_MARKER);
+    expect(parseFunctionalAssertions(text, "lane.yml").size).toBe(0);
+  });
+
+  test("CONTROL: malformed YAML yields nothing rather than throwing", () => {
+    const junk = "{{{ not yaml";
+    expect(parseFunctionalAssertions(junk, "lane.yml").size).toBe(0);
+  });
+
+  test("a declared chart must be a real Application -- otherwise the orphan refusal fires", () => {
+    // The refusal the hand-written map promised and never implemented, now
+    // reachable: a marker naming a chart the tree does not have is caught.
+    const bogus = new Map([["not-a-chart", "lane.yml :: step"]]);
+    const failures = censusFailures(census(REPO_ROOT), NEVER_APPLIED_COVERAGE, bogus);
+    expect(failures.join(" ")).toContain("not-a-chart: FUNCTIONAL_ASSERTIONS names a directory");
   });
 });
