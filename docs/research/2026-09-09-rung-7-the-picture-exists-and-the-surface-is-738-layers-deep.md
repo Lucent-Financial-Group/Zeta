@@ -48,7 +48,7 @@ relative to the scene. Here they are not, by two orders of magnitude.
 
 | | |
 |---|---|
-| **page** | `demo/clifford-e8/index.html` — 29,140 bytes |
+| **page** | `demo/clifford-e8/index.html` — 31,686 bytes |
 | **bundle** | `demo/clifford-e8/clifford-e8-substrate.js` — 27,621 bytes, generated |
 | **geometry shipped** | **0 bytes** |
 | **built in the browser** | 240 roots · 6,720 edges · 60,480 triangles · 181,440 vertices · 5 levels |
