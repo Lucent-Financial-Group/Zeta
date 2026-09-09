@@ -367,6 +367,14 @@ Measured now, **one thread, no SIMD, no threading, plain TypeScript**:
 | 256² | 936 ms — 1.07 fps | 127 ms — **7.9 fps** |
 | 512² | 3,341 ms — 0.30 fps | 437 ms — 2.3 fps |
 
+**This table says 319 ms at 128² where §1 says 268 ms, and the difference is the harness, not
+the tracer.** §1 traces a pre-built ray array and discards the hits; this one renders a full
+frame — it builds each ray inline, looks the level up per hit and writes the pixel buffer, which
+is what a viewer actually pays for. Both are real measurements of the same structure, 19% apart,
+and the slower one is quoted here because it is the one that answers the question in the
+heading. Quoting a single number for two harnesses would have been the cheaper choice and the
+less honest one.
+
 > **The answer changes, and it changes on algorithm alone.**
 > **128² is interactive today** — 27 fps subdivided, 3.1 fps exact, on one core in TypeScript,
 > against rung 7's 0.5.
