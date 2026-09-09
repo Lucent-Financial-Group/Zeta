@@ -48,7 +48,7 @@ relative to the scene. Here they are not, by two orders of magnitude.
 
 | | |
 |---|---|
-| **page** | `demo/clifford-e8/index.html` — 31,686 bytes |
+| **page** | `demo/clifford-e8/index.html` — 33,360 bytes |
 | **bundle** | `demo/clifford-e8/clifford-e8-substrate.js` — 27,621 bytes, generated |
 | **geometry shipped** | **0 bytes** |
 | **built in the browser** | 240 roots · 6,720 edges · 60,480 triangles · 181,440 vertices · 5 levels |
@@ -78,11 +78,25 @@ browser session used to verify it throttles `requestAnimationFrame` in a non-for
 so every reading taken here was 0–2 fps and means nothing. What *is* established is that all
 three backends draw the surface correctly. Register: `unmetered`.
 
-**A defect the page found on the way.** The WebGPU additive pass rendered silently black
-because the bind-group layout declared `visibility: GPUShaderStage.VERTEX` while the fragment
-shader read the exposure out of the same uniform. Nothing errored; the picture was just
-absent. Fixed, and pinned by a falsifier that greps for
-`GPUShaderStage.VERTEX | GPUShaderStage.FRAGMENT`.
+**Two defects the page found on the way.**
+
+The WebGPU additive pass rendered silently black because the bind-group layout declared
+`visibility: GPUShaderStage.VERTEX` while the fragment shader read the exposure out of the
+same uniform. Nothing errored; the picture was just absent. Fixed, and pinned by a falsifier
+that greps for `GPUShaderStage.VERTEX | GPUShaderStage.FRAGMENT`.
+
+**CodeQL caught a `js/xss-through-dom` (high) on the first push**: the `<select>` value for
+the surface mode flowed into `overlay.innerHTML`. It was not exploitable — the three options
+are authored twenty lines away in the same file — and that is precisely the argument that
+stops being true the moment someone adds a fourth option, or interpolates an `err.message`
+into the same sink, which this page also did. So the **sink class was removed rather than the
+taint argued away**: the page now assigns `innerHTML` nowhere, every dynamic value reaches
+the document as a text node through two small `el`/`fill` helpers, and a falsifier asserts
+`/\.innerHTML\s*=/` does not appear (with a control string proving the pattern fires).
+
+That is the same discipline as the rest of this ladder pointed at a security finding: *"I
+control the inputs"* is an unfalsifiable claim about the future, and a grep for the sink is
+a check that can fail.
 
 ---
 

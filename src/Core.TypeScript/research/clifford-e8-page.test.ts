@@ -159,7 +159,26 @@ describe("the viewable page — the committed artefact, executed", () => {
     expect(shaderText).toContain("#version 300 es");
   });
 
-  // ── FALSIFIER 7: THE PAGE LOADS THE ARTEFACT THIS SCRIPT WRITES ───────────
+  // ── FALSIFIER 7: NO HTML SINK TAKES A DYNAMIC VALUE ───────────────────────
+  it("never assigns markup, so there is no XSS-through-DOM sink to reason about", () => {
+    // CodeQL `js/xss-through-dom` (high) fired on the first version of this page: a <select>
+    // value reached `overlay.innerHTML`. It was not exploitable — the options are authored
+    // three lines away — and that is exactly the argument that stops being true when someone
+    // adds a fourth option or interpolates an error message. So the sink class is gone, not
+    // excused, and this pins it: every dynamic value reaches the document as a text node.
+    expect(HTML).not.toMatch(/\.innerHTML\s*=/);
+    expect(HTML).not.toMatch(/\.outerHTML\s*=/);
+    expect(HTML).not.toContain("insertAdjacentHTML");
+    expect(HTML).not.toContain("document.write");
+    expect(HTML).not.toContain("eval(");
+    // Control: the detector fires on the shape it is meant to catch.
+    expect('overlay.innerHTML = "<b>" + mode;').toMatch(/\.innerHTML\s*=/);
+    // And the replacement is actually present, so this is not a page that renders nothing.
+    expect(HTML).toContain("node.textContent = String(o.text)");
+    expect(HTML).toContain("document.createTextNode(part)");
+  });
+
+  // ── FALSIFIER 8: THE PAGE LOADS THE ARTEFACT THIS SCRIPT WRITES ───────────
   it("references the generated bundle by its generated name", () => {
     expect(HTML).toContain(`<script src="./${BUNDLE_FILE}"></script>`);
     expect(PAGE_DIRECTORY).toBe("demo/clifford-e8");

@@ -145,9 +145,39 @@
   var exposureInput = document.getElementById("exposure");
   var exposureValue = document.getElementById("exposurev");
 
+  // ── DOM construction, never innerHTML ───────────────────────────────────
+  // CodeQL flagged `js/xss-through-dom` on the overlay: a <select> value flowed into an
+  // innerHTML sink. The values are three options this file authors, so it was not
+  // exploitable -- and "not exploitable because I control the inputs" is a claim that rots
+  // the moment someone adds a fourth option or an error string. So the SINK CLASS is
+  // removed rather than the taint argued away: this page assigns `innerHTML` nowhere, and a
+  // falsifier in clifford-e8-page.test.ts asserts the string does not appear at all. Every
+  // dynamic value below reaches the document as a text node.
+  function el(tag, options) {
+    var node = document.createElement(tag);
+    var o = options || {};
+    if (o.text !== undefined) node.textContent = String(o.text);
+    if (o.cls) node.className = o.cls;
+    if (o.style) node.style.cssText = o.style;
+    return node;
+  }
+  function fill(node, parts) {
+    while (node.firstChild) node.removeChild(node.firstChild);
+    for (var i = 0; i < parts.length; i++) {
+      var part = parts[i];
+      node.appendChild(typeof part === "string" ? document.createTextNode(part) : part);
+    }
+    return node;
+  }
+
   if (!E8) {
-    overlay.innerHTML = "<b class='warn'>clifford-e8-substrate.js did not load.</b><br>" +
-      "Serve this directory over http (for example <code>python3 -m http.server</code>) or open it from GitHub Pages.";
+    fill(overlay, [
+      el("b", { cls: "warn", text: "clifford-e8-substrate.js did not load." }),
+      el("br"),
+      "Serve this directory over http (for example ",
+      el("code", { text: "python3 -m http.server" }),
+      ") or open it from GitHub Pages.",
+    ]);
     return;
   }
 
@@ -563,7 +593,10 @@
     var height = Math.max(1, Math.round(canvas.clientHeight * dpr));
     if (canvas.width !== width || canvas.height !== height) { canvas.width = width; canvas.height = height; }
     try { state.backend.draw(width, height); }
-    catch (err) { overlay.innerHTML = "<b class='warn'>draw failed:</b> " + err.message; return; }
+    catch (err) {
+      fill(overlay, [el("b", { cls: "warn", text: "draw failed:" }), " " + err.message]);
+      return;
+    }
 
     state.frames++;
     if (now - state.fpsAt > 500) {
@@ -575,30 +608,39 @@
   }
 
   function paintOverlay() {
-    overlay.innerHTML =
-      "<b>" + state.backend.label + "</b> · " + state.mode +
-      " · " + state.fps.toFixed(0) + " fps" +
-      "<br>60,480 triangles · 181,440 vertices · 5 levels" +
-      "<br>light = root " + state.light;
+    fill(overlay, [
+      el("b", { text: state.backend.label }),
+      " · " + state.mode + " · " + state.fps.toFixed(0) + " fps",
+      el("br"),
+      "60,480 triangles · 181,440 vertices · 5 levels",
+      el("br"),
+      "light = root " + state.light,
+    ]);
   }
 
   // ── panels ───────────────────────────────────────────────────────────────
   function paintLevels() {
-    var total = scene.faceCount;
-    var rows = "";
     var max = Math.max.apply(null, Array.prototype.slice.call(scene.histogram));
+    var rows = [];
     for (var i = 0; i < scene.levelNumerators.length; i++) {
-      var brightness = scene.brightness[i];
-      var grey = Math.round(brightness * 255);
+      var grey = Math.round(scene.brightness[i] * 255);
       var count = scene.histogram[i];
-      rows +=
-        "<tr><td class='k'><span class='swatch' style='background:rgb(" + grey + "," + grey + "," + grey + ")'></span>" +
-        scene.levelNumerators[i] + "/√" + scene.denominatorSquared + "</td>" +
-        "<td><div class='bar' style='width:" + Math.round((count / max) * 100) + "%'></div></td>" +
-        "<td class='v'>" + count.toLocaleString() + "</td></tr>";
+      var key = el("td", { cls: "k" });
+      key.appendChild(el("span", {
+        cls: "swatch",
+        style: "background:rgb(" + grey + "," + grey + "," + grey + ")",
+      }));
+      key.appendChild(document.createTextNode(scene.levelNumerators[i] + "/√" + scene.denominatorSquared));
+      var barCell = el("td");
+      barCell.appendChild(el("div", { cls: "bar", style: "width:" + Math.round((count / max) * 100) + "%" }));
+      rows.push(fill(el("tr"), [key, barCell, el("td", { cls: "v", text: count.toLocaleString() })]));
     }
-    rows += "<tr><td class='k'>total</td><td></td><td class='v'>" + total.toLocaleString() + "</td></tr>";
-    levelsTable.innerHTML = rows;
+    rows.push(fill(el("tr"), [
+      el("td", { cls: "k", text: "total" }),
+      el("td"),
+      el("td", { cls: "v", text: scene.faceCount.toLocaleString() }),
+    ]));
+    fill(levelsTable, rows);
   }
 
   function paintStats() {
@@ -613,12 +655,15 @@
       ["position buffer", (scene.positions.byteLength / 1048576).toFixed(2) + " MiB (in browser)"],
       ["geometry shipped", "0 bytes"],
     ];
-    statsTable.innerHTML = rows.map(function (r) {
-      return "<tr><td class='k'>" + r[0] + "</td><td class='v'>" + r[1] + "</td></tr>";
-    }).join("");
-    limitsNote.innerHTML =
-      "The page ships <b>no geometry</b>: it ships the derivation and runs it here. " +
-      "Every buffer above was built in your browser from the same functions the test suite runs.";
+    fill(statsTable, rows.map(function (r) {
+      return fill(el("tr"), [el("td", { cls: "k", text: r[0] }), el("td", { cls: "v", text: r[1] })]);
+    }));
+    fill(limitsNote, [
+      "The page ships ",
+      el("b", { text: "no geometry" }),
+      ": it ships the derivation and runs it here. Every buffer above was built in your " +
+        "browser from the same functions the test suite runs.",
+    ]);
   }
 
   // ── the CPU tracer ───────────────────────────────────────────────────────
@@ -636,10 +681,13 @@
         { eye: c.eye, forward: c.forward, right: c.right, up: c.up, halfWidth: E8.DEFAULT_HALF_WIDTH }, size, size);
       var traced = performance.now() - t;
       showFrame(frame, size);
-      traceNote.innerHTML = size + "×" + size + " in <b>" + traced.toFixed(0) + " ms</b>" +
+      fill(traceNote, [
+        size + "×" + size + " in ",
+        el("b", { text: traced.toFixed(0) + " ms" }),
         " (" + (traced / (size * size) * 1000).toFixed(1) + " µs/ray, " +
-        (frame.stats.triangleTests / (size * size)).toFixed(0) + " triangle tests/ray)" +
-        "; BVH " + built.toFixed(0) + " ms";
+          (frame.stats.triangleTests / (size * size)).toFixed(0) + " triangle tests/ray)" +
+          "; BVH " + built.toFixed(0) + " ms",
+      ]);
       traceButton.disabled = false;
     }, 20);
   });
@@ -685,7 +733,10 @@
   paintStats();
   var first = order.find(function (n) { return backends[n].available(); });
   selectBackend(first).catch(function (err) {
-    overlay.innerHTML = "<b class='warn'>" + first + " failed:</b> " + err.message + " — falling back.";
+    fill(overlay, [
+      el("b", { cls: "warn", text: first + " failed:" }),
+      " " + err.message + " — falling back.",
+    ]);
     var rest = order.slice(order.indexOf(first) + 1).find(function (n) { return backends[n].available(); });
     if (rest) selectBackend(rest);
   });
