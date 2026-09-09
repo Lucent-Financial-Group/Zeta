@@ -11,7 +11,7 @@ Current:
 
 - [TikTok character necks, mobile budgets and tracking prototypes](../research/2026-09-09-tiktok-character-seams/README.md)
   — **Vera, latest character iteration.** Separate 1.7/1.9 MB face effects pass
-  Effect House performance tests; improved neutral neck joins; failed full-body
+  Effect House performance tests; user-rejected neck joins; failed full-body
   rigs and remaining facial topology work are preserved explicitly.
 
 - [Character evolution, generator research and recovery](../research/2026-09-08-character-evolution/README.md)

@@ -7,12 +7,13 @@ Scope: AceHack/Xenaa Blender evolution and separate Effect House face prototypes
 
 ## Outcome
 
-Aaron's three side/back screenshots showed heads disconnected from the bodies.
-This iteration extends the cut head boundaries into neck geometry, overlaps the
-lower attachment inside the body, and adds fitted collars. Xenaa's blunt rear
-hair curtain is replaced with longer tapered strands. Neutral side/back views
-show improved attachment; skin transitions, hair and garments remain provisional.
-The head and body remain separate meshes, not a globally welded character.
+Aaron rejected the attachment again after the first pass: the heads still looked
+disconnected, an arm-rig attempt twisted the model, and some of Xenaa's hair
+remained attached to her outfit. This supersedes the agent's earlier judgment
+that neutral views showed sufficient improvement. The v3 joins and v1-v5 body
+rigs are failed iterations, retained for comparison. A Blender-first correction
+and motion review is in progress; the prior face budget results below retain only
+their stated scope. No corrected body rig has yet passed visual review.
 
 Two separate face-avatar projects import into Effect House 5.14.0, follow its
 preview person's head and connect the head's 11 morph channels to native Face
@@ -33,7 +34,7 @@ editor failures and limitations; it is not a fabricated screenshot receipt.
 
 ## What to open
 
-The immutable asset bundle is indexed by [inventory.json](inventory.json) and the
+The first-pass asset bundle is indexed by [inventory.json](inventory.json) and the
 [release](https://github.com/Lucent-Financial-Group/Zeta/releases/tag/research-tiktok-character-seams-20260909).
 The local workspace is
 `/Users/acehack/Documents/Blender/TikTok-Character-Evolution-20260909`.
@@ -41,7 +42,7 @@ The local workspace is
 - `AceHack-Face-v1/effect.ehproj` and `Xenaa-Face-v1/effect.ehproj`: separate
   face effects, with built-in Mouth Open preview selected and native graph wiring.
 - `face-assets-v1/`: independent compact face GLBs, including Xenaa's hair.
-- `rebuild-v3/Joined-Characters.blend`: selected high-detail neutral reference.
+- `rebuild-v3/Joined-Characters.blend`: rejected high-detail attachment reference.
 - `mobile-v1/Mobile-Characters.blend`: baked lightweight neutral reference.
 - `mobile-rig-v1/` and `AceHack-TikTok-v2/`: retained body-tracking experiments
   with known visual failures. They are not production-ready alternatives.
@@ -193,3 +194,29 @@ receipts; production facial/body quality claims would be unsupported. The reject
 T-pose meshes must remain explicitly marked rejected. The graph and neck overlap
 checks are structural checks with the limitations stated above. This was an
 agent self-review, not an independent review or maintainer acceptance.
+
+## Blender-first correction after renewed user rejection
+
+The [user correction](sources/user-review-attachment-correction.json.txt) makes
+the earlier neutral-view assessment obsolete. Isolated front/side/back renders
+showed a posterior head offset, old collar/head remnants in the torso, a missing
+rear scalp section, and hair tied to torso weights. The first arm rig also put
+its forearm and hand bones behind the reconstructed arm surfaces.
+
+Revisions v6-v11 are local experiments in progress. Flat shoulder cuts, an
+over-high Xenaa chin cut, simple arm-shell separation, and UV transfer across
+atlas seams each produced new defects and are retained as rejected trials.
+The current direction uses preserved raised collars, forward head placement,
+separate limb topology with frontal-reference projection, and a continuous
+scalp-to-hair surface with rigid Head weights. None is yet an accepted full-body
+rig. Blender motion review precedes any further Effect House body test.
+
+The [official rig inspection](sources/official-rig-inspection.json.txt) records
+the downloaded Effect House template's source URL, FBX digest, joint positions
+and matrices. It confirms anatomical Left on positive X in its imported T-pose.
+It does not establish that the current model is compatible with every retargeter.
+The vendor FBX is not redistributed in the project source record.
+
+[Full preflight](preflight-full.txt) passed all 17 locally available checks,
+including release build and full tests; the Go lint tool was unavailable.
+Geometry, motion and likeness still require separate visual validation.
