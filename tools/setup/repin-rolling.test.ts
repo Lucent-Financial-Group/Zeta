@@ -9,6 +9,7 @@ import { existsSync, mkdtempSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { tmpdir } from "node:os";
 import {
+  assertHttpsUrl,
   deriveIdentity,
   fetchToBuffer,
   receiptRow,
@@ -136,6 +137,12 @@ describe("fetchToBuffer", () => {
   test("a non-HTTPS row is refused before any request is made", async () => {
     await expect(fetchToBuffer("http://example.invalid/x.jar")).rejects.toThrow("HTTPS required");
     await expect(fetchToBuffer("file:///etc/passwd")).rejects.toThrow("HTTPS required");
+  });
+
+  test("the scheme is PARSED, not prefix-matched", () => {
+    expect(assertHttpsUrl("HTTPS://Example.test/x.jar").protocol).toBe("https:");
+    expect(() => assertHttpsUrl("httpsx://example.test/x.jar")).toThrow("HTTPS required");
+    expect(() => assertHttpsUrl("not a url")).toThrow("not a URL");
   });
 });
 

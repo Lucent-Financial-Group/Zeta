@@ -54,9 +54,19 @@
 // 081M23ESC5B087G0R002HJ39DG
 
 import { createHash } from "node:crypto";
-import { copyFileSync, mkdirSync, readFileSync, renameSync, unlinkSync, writeFileSync } from "node:fs";
+import { tmpdir } from "node:os";
+import {
+  copyFileSync,
+  mkdirSync,
+  mkdtempSync,
+  readFileSync,
+  renameSync,
+  unlinkSync,
+  writeFileSync,
+} from "node:fs";
 import { dirname, join } from "node:path";
 import { spawnSync } from "node:child_process";
+import { curlFetchToFile } from "../../src/Core.TypeScript/ace/setup-realizers/curl-fetch.ts";
 import {
   alloyVersionFromManifest,
   jarManifestText,
@@ -207,18 +217,40 @@ function findPin(repoRoot: string, dest: string): UrlPin {
  * here is trusted, it is measured, and it does not become the pin until the
  * declared re-measure has passed against it.
  */
-export async function fetchToBuffer(url: string): Promise<Uint8Array> {
-  // THROWS rather than exiting, so the guard is reachable from a test. A scheme
-  // guard no test can exercise is a guard nobody knows works -- and this one was
-  // missing entirely until CodeQL pointed at the flow.
-  if (!url.startsWith("https://")) {
+/**
+ * THROWS rather than exiting, so the guard is reachable from a test. A scheme
+ * guard no test can exercise is a guard nobody knows works -- and this one was
+ * missing entirely until CodeQL pointed at the flow. Parsed rather than
+ * prefix-matched: `new URL` normalises case and rejects the shapes a
+ * `startsWith` accepts by accident.
+ */
+export function assertHttpsUrl(url: string): URL {
+  let parsed: URL;
+  try {
+    parsed = new URL(url);
+  } catch {
+    throw new Error(`from-url ${url}: not a URL`);
+  }
+  if (parsed.protocol !== "https:") {
     throw new Error(`from-url ${url}: HTTPS required (the realizer refuses this row too)`);
   }
-  const response = await fetch(url, { redirect: "follow" });
-  if (!response.ok) {
-    throw new Error(`fetch ${url} -> HTTP ${String(response.status)} (a failed probe is unknown)`);
-  }
-  return new Uint8Array(await response.arrayBuffer());
+  return parsed;
+}
+
+/**
+ * ONE FETCHER, not two. This routes through `curlFetchToFile` -- the same
+ * function `setup-realizers/from-url.ts` uses for exactly these rows -- rather
+ * than adding a second downloader with its own timeout, redirect and retry
+ * behaviour that would drift from the realizer's. The digest that matters is
+ * computed by the caller from what actually landed.
+ */
+export async function fetchToBuffer(url: string): Promise<Uint8Array> {
+  const parsed = assertHttpsUrl(url);
+  const scratch = join(mkdtempSync(join(tmpdir(), "zeta-repin-")), "asset");
+  await curlFetchToFile(scratch, parsed.toString());
+  const bytes = readFileSync(scratch);
+  removeIfPresent(scratch);
+  return new Uint8Array(bytes);
 }
 
 /**
