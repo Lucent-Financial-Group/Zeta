@@ -1,5 +1,5 @@
 import { describe, expect, it } from "bun:test";
-import { e8Roots } from "./clifford-e8-coxeter-projection.ts";
+import { coxeterPlaneBasis, e8Roots, projectRoots } from "./clifford-e8-coxeter-projection.ts";
 import {
   bipartiteCoxeter,
   bipartiteCoxeterOrder,
@@ -81,6 +81,40 @@ describe("rung 3 — the layer construction is the same recipe rung 1 already us
     }
     // Layer 0's eigenvalue is the Perron one rung 1 uses.
     expect(layers[0]?.adjacencyEigenvalue ?? 0).toBeCloseTo(2 * Math.cos(Math.PI / 30), 9);
+  });
+
+  it("layer 0 IS rung 1's Coxeter plane — two eigensolvers, one plane", () => {
+    // The module docstring claims rung 3 runs rung 1's own recipe, so layer 0 must BE
+    // rung 1's plane rather than merely resemble it. Matching the eigenvalue is not
+    // that claim; this is. And the two arrive by different routes — rung 1 by power
+    // iteration, rung 3 by Jacobi — so agreement is a genuine cross-check and a
+    // disagreement would convict one of them.
+    const layer0 = eigenLayers()[0];
+    if (layer0 === undefined) throw new Error("no layer 0");
+    const dot = (a: readonly number[], b: readonly number[]): number => a.reduce((s, x, k) => s + x * (b[k] ?? 0), 0);
+
+    // Rung 1's basis, orthonormalised exactly as rung 1 orthonormalises it.
+    const { u, v } = coxeterPlaneBasis();
+    const a1 = u.map((x) => x / Math.sqrt(dot(u, u)));
+    const proj = dot(v, a1);
+    const w = v.map((x, k) => x - proj * (a1[k] ?? 0));
+    const a2 = w.map((x) => x / Math.sqrt(dot(w, w)));
+
+    // Each of rung 1's axes lies inside layer 0: zero out-of-plane residual.
+    for (const axis of [a1, a2]) {
+      const c1 = dot(axis, layer0.e1);
+      const c2 = dot(axis, layer0.e2);
+      const residual = axis.map((x, k) => x - c1 * (layer0.e1[k] ?? 0) - c2 * (layer0.e2[k] ?? 0));
+      expect(Math.hypot(...residual)).toBeLessThan(1e-9);
+    }
+
+    // And every root lands at the same radius under both — the picture is identical,
+    // not merely a rotation of a similar one.
+    const rung1 = projectRoots();
+    e8Roots().forEach((r, i) => {
+      const radius = Math.hypot(dot(r, layer0.e1), dot(r, layer0.e2));
+      expect(Math.abs(radius - (rung1[i]?.radius ?? -1))).toBeLessThan(1e-9);
+    });
   });
 
   // ── FALSIFIER 1: THE EXPONENTS ───────────────────────────────────────────
