@@ -390,12 +390,31 @@ strict behaviour, not a broken one.
 - **SO THE UNBLOCK IS PARTIAL, and the residue is named rather than discovered.**
   Once `install.sh` completes, the TLC runs proceed and judge the loaded jar
   against `registry/tlc-models.json`'s `versionBanner` — a committed restatement
-  of the pin — so on a rolled build **the TLA+ lane will report a banner
-  mismatch**. That is a *true* statement (a different verifier is running) and it
-  is deliberately left standing. What changes is the blast radius: an install
-  failure fails **every job that installs the toolchain** (20+ checks on the PRs
-  above), a banner mismatch fails **only the TLA+ lane**. Measured before/after
-  numbers for that claim are not in hand at time of writing and are not asserted.
+  of the pin — so on a rolled build **the TLA+ lane should report a banner
+  mismatch**. That would be a *true* statement (a different verifier is running)
+  and it is deliberately left standing.
+
+  **THE BLAST-RADIUS HALF IS NOW MEASURED.** Without this change, sibling PRs in
+  the same hour carried **15–24 failing checks each** (17176: 24, 17174: 22,
+  17179: 22, 17177: 21, 17173: 21, 17175: 20, 17180: 18, 17178: 18, 17145: 15),
+  and the failing step is literally `Install toolchain…` — confirmed on #17176
+  inside `build-and-test` on all three platforms, inside `full-verify`, and
+  inside `Analyze (csharp)`. With this change, head `b7b083dc`: 100 checks and
+  **zero install-toolchain failures**.
+
+  **THE TLA+ HALF IS UNTESTED — not refuted — and the distinction is the point.**
+  On that head the TLA+ lane did *not* go red, and reading that as "the
+  prediction was wrong, happily" would be a check that did not run looking like
+  one that passed. What actually happened: `build-and-test (ubuntu-24.04-arm)`
+  **did** auto-accept the rolled jar and **did** report 70 `TlcRunnerTests`
+  passing — but `Tlc.Runner.Tests.fs` gates the model runs on `isLinux && isX64`
+  by design ("TLC is pure-math computation, so running it on every leg of the
+  matrix is duplicate work; CI filters to standard Linux x64"), and that leg is
+  ARM64, so **no TLC model ran there**. The timing confirms it independently: the
+  whole `Test` step took ~2.5 minutes and `BftConsensus` alone is 192s. The one
+  leg that would have exercised it — `build-and-test (ubuntu-24.04)`, x64 — was
+  **cancelled** on that head, and cancelled is not passed. The prediction stands
+  open.
 
 ## 10. Falsifiers
 
