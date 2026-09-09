@@ -92,7 +92,7 @@ Independent outage sources from the runtimes; build/install/restore breaks when 
 
 | Dependency | Used for | Status source | Factory-relevant components |
 |---|---|---|---|
-| TLA+ (`tla2tools.jar`, `TLC2 Version 2026.09.09.201538 (rev: 94db4a6)`) | safety/liveness specs | <https://www.githubstatus.com/> -- `install.sh` fetches the tlaplus v1.8.0 asset, digest-pinned in `tools/setup/manifests/from-url` with `rolling=`, because that prerelease tag is re-uploaded in place. A rebuild fails the digest CLOSED and is re-pinned by `tools/setup/repin-rolling.ts`, which re-runs all 52 gate models first; sha256 `f629a67c1ade2cadfcd12670de9172e07629418502df76e9b9ccbf4a5aa0ed6e` | (GitHub release assets) |
+| TLA+ (`tla2tools.jar`, `TLC2 Version 2026.09.09.213036 (rev: ede5b88)`) | safety/liveness specs | <https://www.githubstatus.com/> -- `install.sh` fetches the tlaplus v1.8.0 asset, digest-pinned in `tools/setup/manifests/from-url` with `rolling=`, because that prerelease tag is re-uploaded in place. A rebuild fails the digest CLOSED and is re-pinned by `tools/setup/repin-rolling.ts`, which re-runs all 52 gate models first; sha256 `8836549e83db7f0b3f9fdde679ab56270d18e06198366d217d960738c02b9dbe` | (GitHub release assets) |
 | Alloy (`alloy.jar`, `6.2.0.202501090817 (rev: 794226d)`) | structural model checking | <https://www.githubstatus.com/> -- `install.sh` fetches upstream v6.2.0 from a GitHub release, digest-pinned in `tools/setup/manifests/from-url`; a GitHub outage delays install, and a re-uploaded asset fails the digest closed rather than being adopted | (GitHub release assets) |
 | Stryker (.NET tool) | mutation testing | <https://stryker-mutator.io/blog/> | (NuGet feed) |
 | Semgrep | static analysis | <https://semgrep.dev/blog> | (CLI registry) |
