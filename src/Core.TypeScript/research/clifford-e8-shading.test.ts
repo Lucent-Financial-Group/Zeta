@@ -128,9 +128,7 @@ describe("rung 6 — shading derived from the Clifford substrate", () => {
     expect(raw.denominator).toBe(8);
     // And it refuses rather than rounds when the exact form is not integral: e1 reflected in
     // the all-ones root lands on quarters. A defensive throw nothing reaches is not a guard.
-    expect(() => reflectRootExact([1, 0, 0, 0, 0, 0, 0, 0], [1, 1, 1, 1, 1, 1, 1, 1])).toThrow(
-      /not integral/,
-    );
+    expect(() => reflectRootExact([1, 0, 0, 0, 0, 0, 0, 0], [1, 1, 1, 1, 1, 1, 1, 1])).toThrow(/not integral/);
   });
 
   // ── FALSIFIER 3: THE ROTOR PRESERVES THE QUADRATIC FORM, EXACTLY ──────────
@@ -199,9 +197,7 @@ describe("rung 6 — shading derived from the Clifford substrate", () => {
       expect(s.twoSided.numerator).toBe(Math.abs(s.lambert.numerator));
       census.set(s.lambert.numerator, (census.get(s.lambert.numerator) ?? 0) + 1);
     }
-    expect([...census.entries()].sort((a, b) => a[0] - b[0])).toEqual(
-      MEASURED_LAMBERT_CENSUS.map(([k, v]) => [k, v]),
-    );
+    expect([...census.entries()].sort((a, b) => a[0] - b[0])).toEqual(MEASURED_LAMBERT_CENSUS.map(([k, v]) => [k, v]));
     expect([...intensityHistogram(shaded).entries()]).toEqual(MEASURED_TWO_SIDED_CENSUS.map(([k, v]) => [k, v]));
     // Both branches of `lit` are exercised by the real data — a clamp nothing ever trips is
     // a check that cannot fail.
@@ -250,9 +246,7 @@ describe("rung 6 — shading derived from the Clifford substrate", () => {
       const product = geometricProduct(vectorMultivector(LIGHT), bivectorMultivector(bivector));
       expect(multivectorVector(product)).toEqual(contractVectorBivector(LIGHT, bivector));
       const wedge = wedgeVectorBivector(LIGHT, bivector);
-      const fromProduct = TRIVECTOR_INDICES.map(
-        ([p, q, r]) => product[(1 << p) | (1 << q) | (1 << r)] ?? 0,
-      );
+      const fromProduct = TRIVECTOR_INDICES.map(([p, q, r]) => product[(1 << p) | (1 << q) | (1 << r)] ?? 0);
       expect(wedge).toEqual(fromProduct.map((x) => (x === 0 ? 0 : x)));
     }
     // The whole surface: Pythagoras and the inequality, both exact integers.
@@ -403,7 +397,11 @@ describe("rung 6 — shading derived from the Clifford substrate", () => {
   it("shades order-independently, which is the whole depth convention", () => {
     const straight = shadeFaces(LIGHT, FACES, ROOTS);
     const order = FACES.map((_, i) => i).sort((a, b) => ((a * 7919 + 13) % 60480) - ((b * 7919 + 13) % 60480));
-    const permuted = shadeFaces(LIGHT, order.map((i) => FACES[i] ?? ([0, 0, 0] as const)), ROOTS);
+    const permuted = shadeFaces(
+      LIGHT,
+      order.map((i) => FACES[i] ?? ([0, 0, 0] as const)),
+      ROOTS,
+    );
     expect(order[0]).not.toBe(0);
     for (let p = 0; p < permuted.length; p += 97) {
       const original = straight[order[p] ?? 0];

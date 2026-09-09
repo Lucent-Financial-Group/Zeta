@@ -363,10 +363,7 @@ export function rotorFromRoots(a: readonly number[], b: readonly number[]): Vers
 
 /** `R v R~ / (R R~)` — the rotor sandwich, exact. */
 export function applyVersor(rotor: Versor, v: readonly number[]): ExactVector {
-  const sandwich = geometricProduct(
-    geometricProduct(rotor.versor, vectorMultivector(v)),
-    reverse(rotor.versor),
-  );
+  const sandwich = geometricProduct(geometricProduct(rotor.versor, vectorMultivector(v)), reverse(rotor.versor));
   return { components: multivectorVector(sandwich), denominator: rotor.normSquared };
 }
 
@@ -436,11 +433,7 @@ export interface ExactRational {
  * The numerator is an exact integer and the denominator is the fixed `sqrt(384) = 8 sqrt 6`.
  * Over all of 4_21 the numerator takes nine values, `{-16,...,16}` in steps of 4 — measured.
  */
-export function lambertCosine(
-  face: Face,
-  light: readonly number[],
-  roots: readonly Root[] = e8Roots(),
-): ExactCosine {
+export function lambertCosine(face: Face, light: readonly number[], roots: readonly Root[] = e8Roots()): ExactCosine {
   return {
     numerator: dot(light, faceNormal8d(face, roots)),
     denominatorSquared: dot(light, light) * FACE_NORMAL_NORM_SQUARED,
@@ -768,7 +761,10 @@ export function renderLitObj(
 
   const mtl = levels
     .flatMap((level) => {
-      const value = cosineToNumber({ numerator: level, denominatorSquared: shaded[0]?.lambert.denominatorSquared ?? 1 });
+      const value = cosineToNumber({
+        numerator: level,
+        denominatorSquared: shaded[0]?.lambert.denominatorSquared ?? 1,
+      });
       const channel = value.toFixed(6);
       return [
         `newmtl lambert_${level}`,
