@@ -59,8 +59,22 @@ export interface ExceptionInputs {
   readonly exceptionsText: string;
   readonly fromUrlText: string;
   readonly today: string;
+  /**
+   * Does this SCRIPT path exist? A bare stat with nothing read behind it -- the
+   * row declares an argv, and what is checked is that the command names
+   * something in the tree, never what is inside it.
+   */
   readonly present: (rel: string) => boolean;
-  readonly readDoc: (rel: string) => string;
+  /**
+   * The doc's text, or null when it is simply not there.
+   *
+   * ONE SYSCALL, ONE ANSWER. This was an `existsSync` gate followed by a
+   * `readFileSync`, which is the check-then-use race (CWE-367) this repo's own
+   * lint refuses -- and which two other files in this same change already state
+   * out loud is wrong. Between the check and the use the path can be created,
+   * deleted or replaced, so the check reads as defensive and prevents nothing.
+   */
+  readonly readDoc: (rel: string) => string | null;
 }
 
 /** The first token of a colon-encoded argv — the script path. */
@@ -77,17 +91,17 @@ function checkTradeoffDoc(row: RollingException, inputs: ExceptionInputs, failur
     );
     return;
   }
-  if (!inputs.present(doc)) {
-    failures.push(
-      `${EXCEPTIONS_MANIFEST}:${String(row.line)} ${row.dest} cites tradeoff=${doc}, which is not in the tree`,
-    );
-    return;
-  }
-  let text: string;
+  let text: string | null;
   try {
     text = inputs.readDoc(doc);
   } catch {
     failures.push(`${EXCEPTIONS_MANIFEST}:${String(row.line)} tradeoff=${doc} is unreadable`);
+    return;
+  }
+  if (text === null) {
+    failures.push(
+      `${EXCEPTIONS_MANIFEST}:${String(row.line)} ${row.dest} cites tradeoff=${doc}, which is not in the tree`,
+    );
     return;
   }
   if (!text.includes(row.dest)) {
@@ -187,6 +201,16 @@ export function checkRollingExceptions(inputs: ExceptionInputs): string[] {
   return failures;
 }
 
+/** The file's text, or null when it is simply not there. Never a throw for absence. */
+export function readTextOrNull(absPath: string): string | null {
+  try {
+    return readFileSync(absPath, "utf8");
+  } catch (err) {
+    if ((err as NodeJS.ErrnoException | undefined)?.code === "ENOENT") return null;
+    throw err;
+  }
+}
+
 function realInputs(repoRoot: string): ExceptionInputs {
   let exceptionsText = "";
   try {
@@ -202,7 +226,7 @@ function realInputs(repoRoot: string): ExceptionInputs {
     fromUrlText: readFileSync(join(repoRoot, FROM_URL_MANIFEST), "utf8"),
     today: new Date().toISOString().slice(0, 10),
     present: (rel) => existsSync(join(repoRoot, rel)),
-    readDoc: (rel) => readFileSync(join(repoRoot, rel), "utf8"),
+    readDoc: (rel) => readTextOrNull(join(repoRoot, rel)),
   };
 }
 

@@ -42,6 +42,7 @@ import { join } from "node:path";
 import {
   checkRollingExceptions,
   argvScript,
+  readTextOrNull,
   type ExceptionInputs,
 } from "./lint-rolling-exceptions.ts";
 import {
@@ -72,7 +73,7 @@ function inputs(overrides: Partial<ExceptionInputs> = {}): ExceptionInputs {
     fromUrlText: FROM_URL_ROLLING,
     today: "2026-09-09",
     present: (rel) => ["src/premise.ts", "docs/tradeoff.md", "src/verify.ts"].includes(rel),
-    readDoc: () => TRADEOFF_DOC,
+    readDoc: (rel) => (rel === "docs/tradeoff.md" ? TRADEOFF_DOC : null),
     ...overrides,
   };
 }
@@ -157,6 +158,20 @@ describe("checkRollingExceptions", () => {
     expect(about(findings, "not in the tree")).toHaveLength(1);
   });
 
+  test("an UNREADABLE tradeoff doc is not the same finding as an absent one", () => {
+    // A permissions error is a question that could not be answered; reporting it
+    // as "not in the tree" would be a confident wrong reading.
+    const findings = checkRollingExceptions(
+      inputs({
+        readDoc: () => {
+          throw new Error("EACCES");
+        },
+      }),
+    );
+    expect(about(findings, "is unreadable")).toHaveLength(1);
+    expect(about(findings, "not in the tree")).toHaveLength(0);
+  });
+
   test("a tradeoff doc that does not name the dest is refused", () => {
     const findings = checkRollingExceptions(
       inputs({ readDoc: () => "an attacker could do things to some jar somewhere" }),
@@ -211,6 +226,25 @@ describe("checkRollingExceptions", () => {
   });
 });
 
+describe("readTextOrNull", () => {
+  test("an absent file is null, not a throw", () => {
+    expect(readTextOrNull(join(REPO_ROOT, "docs/definitely-not-here-081M24396B2.md"))).toBeNull();
+  });
+
+  test("a present file comes back as text", () => {
+    expect(readTextOrNull(join(REPO_ROOT, "tools/setup/manifests/from-url"))).toContain("Mechanism: from-url");
+  });
+
+  test("a NON-ENOENT error PROPAGATES rather than reading as absent", () => {
+    // Reading a directory fails EISDIR. That is a question that could not be
+    // answered, and returning null for it would make the caller report
+    // "not in the tree" -- a confident, wrong reading produced by a probe that
+    // did not run. MEASURED: without the ENOENT discrimination this test is the
+    // only thing that fails, i.e. it is the falsifier for that one line.
+    expect(() => readTextOrNull(join(REPO_ROOT, "tools/setup/manifests"))).toThrow();
+  });
+});
+
 describe("the tla2tools premise", () => {
   test("a gate-tier named temporal expectation keeps the premise alive", () => {
     const verdict = checkPremise(
@@ -261,17 +295,21 @@ describe("the tla2tools premise", () => {
 
 describe("the shipped tree", () => {
   test("CONTROL: the repo's own manifest and premise are green", () => {
-    const exceptionsPath = join(REPO_ROOT, EXCEPTIONS_MANIFEST);
-    expect(existsSync(exceptionsPath)).toBe(true);
+    // READ, do not stat-then-read. An `existsSync` gating the `readFileSync`
+    // below is the check-then-use race the repo's own lint refuses -- and it was
+    // here, in a file whose subject is refusing sloppy declarations. `null` is
+    // the absence answer and it fails this assertion just as loudly.
+    const exceptionsText = readTextOrNull(join(REPO_ROOT, EXCEPTIONS_MANIFEST));
+    expect(exceptionsText).not.toBeNull();
     const findings = checkRollingExceptions({
-      exceptionsText: readFileSync(exceptionsPath, "utf8"),
+      exceptionsText: exceptionsText ?? "",
       fromUrlText: readFileSync(join(REPO_ROOT, "tools/setup/manifests/from-url"), "utf8"),
       // Pinned, not `new Date()`: a test whose verdict changes at midnight is a
       // test that will fail for a reason unrelated to the change under review.
       // The EXPIRY itself is enforced by the gate step, which does read the clock.
       today: "2026-09-09",
       present: (rel) => existsSync(join(REPO_ROOT, rel)),
-      readDoc: (rel) => readFileSync(join(REPO_ROOT, rel), "utf8"),
+      readDoc: (rel) => readTextOrNull(join(REPO_ROOT, rel)),
     });
     expect(findings).toEqual([]);
     const premise = checkPremise(readFileSync(join(REPO_ROOT, "registry/tlc-models.json"), "utf8"));

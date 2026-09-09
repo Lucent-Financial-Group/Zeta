@@ -6,7 +6,7 @@
 // supposed to be one hair away from, and the mutation log names which line each
 // mutant changed.
 //
-// ── MUTATION LOG (2026-09-09) — 12 mutants, 12 killed ────────────────────────
+// ── MUTATION LOG (2026-09-09) — 14 mutants applied, 13 killed, 1 DISCLOSED ───
 //
 // Applied to rolling-exception.ts one at a time, `bun test` after each:
 //
@@ -34,6 +34,19 @@
 //      KILLED — "re-recording the same acceptance is idempotent"
 // M12  isCalendarDate: drop the round-trip check (regex only)
 //      KILLED — "2026-02-31 is not a calendar date"
+// M13  appendAcceptanceRecord: header write `wx` -> plain write (re-stamps)
+//      KILLED — "the header is stamped ONCE, not once per acceptance" and
+//               "an existing ledger is APPENDED to, never truncated"
+// M14  appendAcceptanceRecord: swallow every header-write error, not just EEXIST
+//      **SURVIVED — disclosed rather than dressed up.** No test kills it, and
+//      after trying I believe none can: every non-EEXIST failure of the header
+//      write (EACCES, EISDIR, EROFS) resurfaces immediately at the `readFileSync`
+//      or the `appendFileSync` on the same path, so swallowing it changes WHICH
+//      error is reported, not WHETHER one is. The discrimination is kept because
+//      "unknown is not absent" is the right disposition and the reported error is
+//      the accurate one -- but by this repo's own standard a line no test can
+//      kill is near the vacuity class, and saying so is better than a green tick
+//      that would be a lie. If someone finds the killer, delete this note.
 //
 // ── DECLARED CONTROLS — these MUST SURVIVE every mutant above ────────────────
 //
@@ -356,6 +369,40 @@ describe("the acceptance record", () => {
     const text = readFileSync(join(root, ACCEPTS_LEDGER), "utf8");
     const dataLines = text.split("\n").filter((l) => l.trim() !== "" && !l.startsWith("#"));
     expect(dataLines).toHaveLength(2);
+  });
+
+  test("the header is stamped ONCE, not once per acceptance", () => {
+    // The header is created with an atomic `wx` create-if-absent rather than an
+    // existence check followed by a write. Two acceptances (and, on a shared CI
+    // runner, two concurrent writers) must not each stamp one.
+    const root = mkdtempSync(join(tmpdir(), "zeta-accepts-"));
+    const base = {
+      dest: DEST, from: PINNED, when: "2026-09-09T12:00:00.000Z",
+      verify: "deferred", verdict: "not-run" as const, outcome: "accepted" as const,
+      expires: "2026-12-08",
+    };
+    appendAcceptanceRecord(root, acceptanceRecordLine({ ...base, to: FETCHED }));
+    appendAcceptanceRecord(root, acceptanceRecordLine({ ...base, to: "c".repeat(64) }));
+    const text = readFileSync(join(root, ACCEPTS_LEDGER), "utf8");
+    const headers = text.split("\n").filter((l) => l.includes("NOT A RE-MEASURE RECEIPT"));
+    expect(headers).toHaveLength(1);
+  });
+
+  test("an existing ledger is APPENDED to, never truncated", () => {
+    // The `wx` create must not clobber a ledger that already holds records --
+    // this file is the audit trail for a declined security check, so losing a
+    // row is losing the only evidence that the decline happened.
+    const root = mkdtempSync(join(tmpdir(), "zeta-accepts-"));
+    const base = {
+      dest: DEST, from: PINNED, when: "2026-09-09T12:00:00.000Z",
+      verify: "deferred", verdict: "not-run" as const, outcome: "accepted" as const,
+      expires: "2026-12-08",
+    };
+    appendAcceptanceRecord(root, acceptanceRecordLine({ ...base, to: FETCHED }));
+    appendAcceptanceRecord(root, acceptanceRecordLine({ ...base, to: "d".repeat(64) }));
+    const text = readFileSync(join(root, ACCEPTS_LEDGER), "utf8");
+    expect(text).toContain("to=" + FETCHED);
+    expect(text).toContain("to=" + "d".repeat(64));
   });
 
   test("the ledger is created with a header that says it is NOT a receipt", () => {

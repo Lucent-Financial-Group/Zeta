@@ -278,17 +278,51 @@ function withoutClock(line: string): string {
  * line per install and bury the event it exists to surface. The identity is the
  * whole row minus its clock: same dest, same digests, same verdict, same
  * outcome ⇒ the same fact, already recorded.
+ *
+ * ── CONCURRENCY, STATED RATHER THAN ASSUMED ──────────────────────────────────
+ *
+ * This ledger is written by `install.sh`, and parallel CI jobs share a runner
+ * and a checkout. So two writers can be inside this function at once, and the
+ * two halves behave differently under that:
+ *
+ *   * THE WRITE IS ATOMIC. `appendFileSync` opens `O_APPEND` and issues one
+ *     `write(2)`, so the kernel places it at the end atomically. Two concurrent
+ *     writers produce two whole lines, never one interleaved line. That is the
+ *     property that actually matters -- a torn record would be worse than a
+ *     duplicate one.
+ *   * THE DEDUP IS ADVISORY. It is a read followed by a write, so two writers
+ *     can both read "absent" and both append. The result is a duplicate row,
+ *     which costs a line of noise and loses nothing: the ledger is a record of
+ *     what happened, and the same fact recorded twice is still true. Closing
+ *     that window needs a lock file, and a lock in the install path is a worse
+ *     trade than a repeated line.
+ *
+ * So the guarantee is: **apply-N-times has the same EFFECT as apply-once for a
+ * single writer, and degrades to at-most-one-duplicate-per-racing-writer.** Said
+ * out loud because "idempotent" unqualified would be a stronger claim than the
+ * code earns.
+ *
+ * The header is created with `wx` -- an atomic create-if-absent -- rather than
+ * an existence check followed by a write, which would be both a check-then-use
+ * race (CWE-367) and a way for two starters to each stamp a header.
  */
 export function appendAcceptanceRecord(repoRoot: string, line: string): boolean {
   const path = join(repoRoot, ACCEPTS_LEDGER);
   mkdirSync(dirname(path), { recursive: true });
+  try {
+    writeFileSync(path, LEDGER_HEADER, { flag: "wx" });
+  } catch (err) {
+    // EEXIST is the normal case after the first ever acceptance on this machine.
+    if ((err as NodeJS.ErrnoException | undefined)?.code !== "EEXIST") throw err;
+  }
+  // Read to interpret, never to gate: absence here is answered by the read
+  // itself, so there is no window between a question and its use.
   let existing: string;
   try {
     existing = readFileSync(path, "utf8");
   } catch (err) {
     if ((err as NodeJS.ErrnoException | undefined)?.code !== "ENOENT") throw err;
-    writeFileSync(path, LEDGER_HEADER);
-    existing = LEDGER_HEADER;
+    existing = "";
   }
   const identity = withoutClock(line);
   for (const existingLine of existing.split("\n")) {
