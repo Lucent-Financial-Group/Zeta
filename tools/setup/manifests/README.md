@@ -11,6 +11,17 @@ tools/setup/manifests/windows     # Windows packages          -> install.ps1
 tools/setup/manifests/from-*      # 15 mechanism manifests    -> ace-realize
 ```
 
+**One file here is NOT a declaration and installs nothing:**
+`tools/setup/manifests/pinned-refs` (+ `pinned-refs-receipts`). It is a **mirror**
+of digests written at their point of use — a container digest lives in the
+Dockerfile, where `docker build` reads it with no package manager present — and it
+exists so `src/Core.TypeScript/ace/refresh-pins.ts` can *refresh* those pins and
+*report* their staleness. Nothing in any build path reads it, and
+`refresh-pins.ts --verify` (in `gate`) refuses whenever a row disagrees with the
+file, which is what keeps it a mirror rather than a source
+(`.claude/rules/clone-at-tag-stays-sufficient.md`). Design:
+`docs/agendas/ace-package-manager/2026-09-09-ace-refresh-pin-and-refresh-are-one-mechanism-design.md`.
+
 ## The halfway state, measured (2026-08-24)
 
 `ace` is mid-adoption, so "does ace handle this?" has different answers per
