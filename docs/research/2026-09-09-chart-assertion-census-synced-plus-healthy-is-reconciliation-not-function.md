@@ -268,10 +268,26 @@ checkable, and silent about whether another job picked them up.
 | `platform` | **nothing** | 33 resources, 31 of them health-blind — the largest unasserted surface in the tree |
 | `game-hosting/gmod` | **nothing** | 2048Mi of a 9216Mi budget to prove a Source-engine server idles |
 
-`NEVER_APPLIED_COVERAGE` now holds these, and the check reads **both ways**: a
-new never-applied directory with no entry fails, and an entry for a directory a
-lane now applies fails as **stale**. An excuse that outlives its defect is how a
-registry becomes a lie.
+`NEVER_APPLIED_COVERAGE` now holds these, and the check reads **three ways** — an
+excuse that outlives its defect is how a registry becomes a lie:
+
+| direction | verdict |
+|---|---|
+| a new never-applied directory with **no entry** | **fails** — a chart that belongs to no job |
+| an entry for a directory a lane **now applies** | fails as **stale** |
+| an entry naming a directory the tree **no longer has** | fails as an **orphan** |
+
+**The third one was written and falsified by nothing** until a review flagged
+`NEVER_APPLIED_COVERAGE` as an unused import in the test file. The flag was
+correct, and *deleting the import would have been the wrong fix*: the import was
+not decoration, it was added for an assertion that never got written. So the
+import is **used** and the branch got its falsifier — a small instance of exactly
+what this census exists to find, caught inside the census itself.
+
+The `FUNCTIONAL_ASSERTIONS` half of that refusal could not be reached at all,
+because the map is empty by design. `censusFailures` now takes both registries as
+**injectable parameters** — not for flexibility, but so a branch that cannot
+execute stops being a branch that cannot fail.
 
 **One stated limit.** The census keys on Application *directories*, so a
 directory carrying manifests and no `Application.yaml` is invisible to it. There

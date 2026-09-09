@@ -52,10 +52,13 @@
  * that fact was not written down anywhere a check could read.
  *
  * So every never-applied directory must carry a registry entry naming its
- * covering job or stating that it has none. The registry is checked BOTH ways --
- * a new never-applied directory with no entry fails, and an entry for a directory
- * that is now applied fails as stale -- because an excuse that outlives its
- * defect is how a registry becomes a lie.
+ * covering job or stating that it has none. The registry is checked THREE ways,
+ * because an excuse that outlives its defect is how a registry becomes a lie: a
+ * new never-applied directory with no entry FAILS; an entry for a directory a lane
+ * now applies fails as STALE; and an entry naming a directory the tree no longer
+ * has fails as an ORPHAN. That third one was written and never falsified until
+ * 2026-09-09 -- see the test file, which explains why the fix was to USE the
+ * flagged import rather than delete it.
  *
  * -- ONE STATED LIMIT, so it is not mistaken for coverage ------------------
  * The census keys on Application DIRECTORIES, so a directory carrying manifests
@@ -295,10 +298,22 @@ export function tierOfApplied(app: ExpectedShape | undefined): AssertionTier {
 /**
  * Everything the census refuses. Empty array means every chart is accounted for.
  *
- * Four refusals, and the last one is what stops this file joining the class it
+ * FIVE refusals, and the last one is what stops this file joining the class it
  * exists to catch.
+ *
+ * The two registries are INJECTABLE, defaulted to the module's own. Not for
+ * flexibility -- for falsifiability. Both "the registry names a directory the
+ * tree no longer has" branches read a module-level `Map`, and the
+ * `FUNCTIONAL_ASSERTIONS` one is EMPTY by design, so that branch could never
+ * fire and no test could reach it. A branch that cannot execute is the vacuity
+ * class hiding inside the file that exists to name it. Injection is what makes
+ * both orphan checks testable rather than merely present.
  */
-export function censusFailures(rows: readonly CensusRow[]): string[] {
+export function censusFailures(
+  rows: readonly CensusRow[],
+  coverage: ReadonlyMap<string, NoLaneCoverage> = NEVER_APPLIED_COVERAGE,
+  functional: ReadonlyMap<string, string> = FUNCTIONAL_ASSERTIONS,
+): string[] {
   const failures: string[] = [];
   const dirs = new Set(rows.map((r) => r.dir));
   if (rows.length === 0) {
@@ -306,7 +321,7 @@ export function censusFailures(rows: readonly CensusRow[]): string[] {
     failures.push("the census is EMPTY -- " + why);
   }
   for (const row of rows) {
-    const registered = NEVER_APPLIED_COVERAGE.has(row.dir);
+    const registered = coverage.has(row.dir);
     if (row.tier === "not-applied" && registered === false) {
       const why = "no lane applies it and NEVER_APPLIED_COVERAGE does not name a covering job or a reason -- a chart that belongs to no job";
       failures.push(row.dir + ": " + why);
@@ -326,11 +341,11 @@ export function censusFailures(rows: readonly CensusRow[]): string[] {
       failures.push(row.dir + ": " + why);
     }
   }
-  for (const dir of NEVER_APPLIED_COVERAGE.keys()) {
+  for (const dir of coverage.keys()) {
     if (dirs.has(dir)) continue;
     failures.push(dir + ": NEVER_APPLIED_COVERAGE names a directory the tree no longer has");
   }
-  for (const dir of FUNCTIONAL_ASSERTIONS.keys()) {
+  for (const dir of functional.keys()) {
     if (dirs.has(dir)) continue;
     failures.push(dir + ": FUNCTIONAL_ASSERTIONS names a directory the tree no longer has");
   }

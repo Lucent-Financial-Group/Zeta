@@ -171,3 +171,54 @@ describe("the model-info charts", () => {
     expect([...kinds].sort()).toEqual(["ConfigMap", "Namespace"]);
   });
 });
+
+/**
+ * -- THE BRANCH NOTHING ASSERTED -------------------------------------------
+ * `NEVER_APPLIED_COVERAGE` was IMPORTED into this file and never used. A review
+ * flagged it as an unused import, and the flag was right -- but "delete the
+ * import" would have been the wrong fix, because the import was not decoration:
+ * `censusFailures` carries a THIRD refusal on each registry -- "it names a
+ * directory the tree no longer has" -- and only two of the three were ever
+ * tested. The import was added for an assertion that never got written.
+ *
+ * That is a small instance of exactly what this census exists to find: a refusal
+ * that is present, reads as coverage, and is falsified by nothing. So the import
+ * is USED rather than removed, and the branch gets its falsifier.
+ *
+ * The `FUNCTIONAL_ASSERTIONS` half could not be reached at all while that map is
+ * empty by design, which is why `censusFailures` now takes both registries as
+ * injectable parameters -- see its docstring.
+ */
+describe("the orphan branch", () => {
+  test("MUTATION: a coverage entry naming a directory the tree no longer has is refused", () => {
+    // DERIVED from the real registry, never a hardcoded name: this test must
+    // follow the registry if its contents change.
+    const registered = [...NEVER_APPLIED_COVERAGE.keys()];
+    expect(registered.length).toBeGreaterThan(0);
+    const gone = registered[0];
+    if (gone === undefined) throw new Error("registry is empty");
+    // A census whose rows omit the registered dir == the dir was deleted.
+    const other = row({
+      dir: "some-other-chart",
+    });
+    const failures = censusFailures([other]);
+    expect(failures.join(" ")).toContain(gone + ": NEVER_APPLIED_COVERAGE names a directory");
+  });
+
+  test("MUTATION: the same refusal on FUNCTIONAL_ASSERTIONS -- reachable only by injection", () => {
+    // The real map is empty by design, so this branch could never fire against
+    // it. Injecting one is what makes the refusal falsifiable rather than merely
+    // written down -- which is the whole subject of this file.
+    const injected = new Map([["a-retired-chart", "some functional test"]]);
+    const rows = [row({})];
+    const failures = censusFailures(rows, new Map(), injected);
+    expect(failures.join(" ")).toContain("a-retired-chart: FUNCTIONAL_ASSERTIONS names a directory");
+  });
+
+  test("CONTROL: injecting EMPTY registries produces no orphan failure", () => {
+    // Without this, both tests above would still pass if the orphan loops were
+    // rewritten to report unconditionally.
+    const failures = censusFailures([row({})], new Map(), new Map());
+    expect(failures.join(" ")).not.toContain("names a directory the tree no longer has");
+  });
+});
