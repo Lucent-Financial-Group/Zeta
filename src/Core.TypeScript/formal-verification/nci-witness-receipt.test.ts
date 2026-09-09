@@ -32,21 +32,37 @@ const HISTORICAL_REGISTRY = "docs/research/data/2026-09-06-nci-witness-v1-regist
  */
 const HISTORICAL_JAR_BLOB = "2fb671d8be5a1e137f001965d0246509e882aed3";
 
+/**
+ * The last commit that carried the blob. CI checks out with the default
+ * `fetch-depth: 1`, so the object is NOT in the clone -- measured, on the first
+ * CI run after the de-vendoring, which is the only place that could have shown
+ * it. Fetching that one commit brings the blob with it, and GitHub serves a
+ * fetch by explicit sha.
+ */
+const HISTORICAL_JAR_COMMIT = "c6f83e35e20f8648a8a408d23f13ea3e42927264";
+
+function git(args: readonly string[]): { status: number | null; stdout: Buffer } {
+  const result = spawnSync("git", args, { cwd: LIVE_ROOT, maxBuffer: 64 * 1024 * 1024 });
+  return { status: result.status, stdout: result.stdout };
+}
+
 function historicalJarBytes(): Buffer {
-  const result = spawnSync("git", ["cat-file", "blob", HISTORICAL_JAR_BLOB], {
-    cwd: LIVE_ROOT,
-    maxBuffer: 64 * 1024 * 1024,
-  });
-  if (result.status !== 0) {
-    // A failed probe is UNKNOWN, never "the jar is wrong": a shallow clone or an
-    // absent git is a question that was not asked, and saying otherwise would
-    // report a provenance failure that was never measured.
-    throw new Error(
-      `cannot read historical tla2tools blob ${HISTORICAL_JAR_BLOB} from git` +
-        ` (git exited ${String(result.status)}) -- that is an UNKNOWN, not a mismatch`,
-    );
-  }
-  return result.stdout;
+  const direct = git(["cat-file", "blob", HISTORICAL_JAR_BLOB]);
+  if (direct.status === 0) return direct.stdout;
+  // Shallow clone: deepen by exactly the one commit that carries the blob.
+  git(["fetch", "--depth", "1", "--no-tags", "origin", HISTORICAL_JAR_COMMIT]);
+  const retry = git(["cat-file", "blob", HISTORICAL_JAR_BLOB]);
+  if (retry.status === 0) return retry.stdout;
+  // RAISE rather than skip. A silently-skipped historical witness is the exact
+  // vacuity this file exists to prevent -- a check that did not run reading as
+  // one that passed. What this cannot distinguish is "the bytes are wrong" from
+  // "git could not answer"; the message says so rather than picking one.
+  throw new Error(
+    `cannot obtain historical tla2tools blob ${HISTORICAL_JAR_BLOB}, even after` +
+      ` fetching ${HISTORICAL_JAR_COMMIT} -- that is an UNKNOWN, not a mismatch.` +
+      " Run in a clone with network access, or `git fetch --depth 1 origin" +
+      ` ${HISTORICAL_JAR_COMMIT}` + "` first.",
+  );
 }
 
 let historicalSubject: string | undefined;

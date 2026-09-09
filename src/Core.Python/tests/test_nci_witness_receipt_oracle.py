@@ -39,22 +39,34 @@ HISTORICAL_REGISTRY = (
 # newer checker. Mirrors the TypeScript oracle's test.
 HISTORICAL_JAR_BLOB = "2fb671d8be5a1e137f001965d0246509e882aed3"
 
+# The last commit that carried the blob. CI checks out with the default
+# `fetch-depth: 1`, so the object is NOT in the clone -- measured, on the first
+# CI run after the de-vendoring. Fetching that one commit brings the blob with
+# it, and GitHub serves a fetch by explicit sha.
+HISTORICAL_JAR_COMMIT = "c6f83e35e20f8648a8a408d23f13ea3e42927264"
+
+
+def _git(args: list[str]) -> subprocess.CompletedProcess[bytes]:
+    return subprocess.run(args, cwd=ROOT, capture_output=True, check=False)
+
 
 def historical_jar_bytes() -> bytes:
-    result = subprocess.run(
-        ["git", "cat-file", "blob", HISTORICAL_JAR_BLOB],
-        cwd=ROOT,
-        capture_output=True,
-        check=False,
+    direct = _git(["git", "cat-file", "blob", HISTORICAL_JAR_BLOB])
+    if direct.returncode == 0:
+        return direct.stdout
+    # Shallow clone: deepen by exactly the one commit that carries the blob.
+    _git(["git", "fetch", "--depth", "1", "--no-tags", "origin", HISTORICAL_JAR_COMMIT])
+    retry = _git(["git", "cat-file", "blob", HISTORICAL_JAR_BLOB])
+    if retry.returncode == 0:
+        return retry.stdout
+    # RAISE rather than skip. A silently-skipped historical witness is the exact
+    # vacuity this file exists to prevent. What this cannot distinguish is "the
+    # bytes are wrong" from "git could not answer"; the message says so.
+    raise RuntimeError(
+        f"cannot obtain historical tla2tools blob {HISTORICAL_JAR_BLOB}, even "
+        f"after fetching {HISTORICAL_JAR_COMMIT} -- that is an UNKNOWN, not a "
+        "mismatch"
     )
-    if result.returncode != 0:
-        # A failed probe is UNKNOWN, never "the jar is wrong": a shallow clone or
-        # an absent git is a question that was not asked.
-        raise RuntimeError(
-            f"cannot read historical tla2tools blob {HISTORICAL_JAR_BLOB} from git "
-            f"(git exited {result.returncode}) -- that is an UNKNOWN, not a mismatch"
-        )
-    return result.stdout
 
 
 def copied_subject(tmp_path: Path) -> Path:
