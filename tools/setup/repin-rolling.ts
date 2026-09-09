@@ -90,6 +90,51 @@ export function deriveIdentity(kind: string | undefined, absPath: string): strin
   throw new Error(`unknown identity=${kind} (jar-tlc|jar-alloy)`);
 }
 
+/**
+ * The SHAPE a derived identity takes, per `identity=` kind.
+ *
+ * WHY THIS EXISTS — a defect measured 2026-09-09 (081M24396B2087G0R000MDMDEA).
+ * The old identity was derived from the OLD BYTES, via the `.prepin` backup. On
+ * a tree that does not already hold the previously-pinned artefact -- every CI
+ * runner with a cold cache, every fresh clone, and every machine whose jar was
+ * replaced by an auto-accept -- there are no old bytes, `oldIdentity` came back
+ * `null`, and the identity restatement inside `pinsurfaces=` was silently never
+ * rewritten. The digest moved, `registry/tlc-models.json`'s `versionBanner` did
+ * not, and the re-measure then failed on a banner mismatch that says nothing
+ * about any model. MEASURED: 52 of 52 models "failed" that way, after six
+ * minutes, and the tool rolled back correctly and unhelpfully.
+ *
+ * The previous identity is not gone, though -- it is written down, in the pin
+ * surfaces, which is exactly where the tool is about to rewrite it. So read it
+ * from there. That is a fallback rather than the primary source because the
+ * BYTES are the better authority when they exist: a surface can already have
+ * drifted, and matching against bytes cannot.
+ */
+export function identityPattern(kind: string): RegExp {
+  // TLC: `TLC2 Version 2026.09.09.162536 (rev: 4ad12e8)`.
+  if (kind === "jar-tlc") return /TLC2 Version \d{4}\.\d{2}\.\d{2}\.\d{6} \(rev: [0-9a-f]+\)/g;
+  // Alloy: `<Bundle-Version> (rev: <Git-Descriptor>)`.
+  if (kind === "jar-alloy") return /\d+(?:\.\d+)+ \(rev: [^)\s]+\)/g;
+  throw new Error(`unknown identity=${kind} (jar-tlc|jar-alloy)`);
+}
+
+/**
+ * The single identity string the pin surfaces agree on, or null.
+ *
+ * FAILS CLOSED ON AMBIGUITY, deliberately: zero matches means the surfaces
+ * carry no identity to move, and two DIFFERENT matches means they already
+ * disagree with each other. Picking one in either case would rewrite half a
+ * tree and call it a re-pin, so both answer `null` and the caller refuses
+ * BEFORE spending a re-measure.
+ */
+export function identityFromSurfaces(kind: string, texts: readonly string[]): string | null {
+  const found = new Set<string>();
+  for (const text of texts) {
+    for (const match of text.matchAll(identityPattern(kind))) found.add(match[0]);
+  }
+  return found.size === 1 ? ([...found][0] as string) : null;
+}
+
 export function sha256Of(bytes: Uint8Array): string {
   return createHash("sha256").update(bytes).digest("hex");
 }
@@ -325,7 +370,12 @@ async function main(argv: readonly string[]): Promise<number> {
   const absDest = join(repoRoot, dest);
   const backup = absDest + ".prepin";
   const hadBytes = copyIfPresent(absDest, backup);
-  const oldIdentity = hadBytes ? deriveIdentity(pin.identity, backup) : null;
+  // The BYTES are the better authority and are tried first. They are also often
+  // absent (cold CI cache, fresh clone, an auto-accept having already replaced
+  // them), and `identityFromSurfaces` below is what makes those trees
+  // re-pinnable at all -- see `identityPattern`'s header for the measured
+  // failure this repairs.
+  const bytesIdentity = hadBytes ? deriveIdentity(pin.identity, backup) : null;
   mkdirSync(dirname(absDest), { recursive: true });
   stageVerifiedWrite(absDest, bytes, newSha);
   const newIdentity = deriveIdentity(pin.identity, absDest);
@@ -343,6 +393,38 @@ async function main(argv: readonly string[]): Promise<number> {
     else removeIfPresent(absDest);
     removeIfPresent(backup);
   };
+
+  // The identity to REPLACE. Bytes when we have them; otherwise whatever the pin
+  // surfaces themselves currently say, read from the snapshot above so it is the
+  // pre-edit text by construction.
+  //
+  // `bytesIdentity === newIdentity` also routes to the surfaces, and that case is
+  // not hypothetical: after an auto-accept the artefact on disk IS the new build,
+  // so the "old" bytes describe the new identity and would rewrite nothing.
+  const surfaceTexts = restore
+    .filter((item) => item.rel !== FROM_URL_MANIFEST)
+    .map((item) => item.text);
+  const oldIdentity =
+    bytesIdentity !== null && bytesIdentity !== newIdentity
+      ? bytesIdentity
+      : pin.identity === undefined || pin.identity === ""
+        ? null
+        : identityFromSurfaces(pin.identity, surfaceTexts);
+  if (pin.identity !== undefined && pin.identity !== "" && oldIdentity === null) {
+    rollback();
+    // Exit 2 BEFORE the re-measure, not exit 1 after it. Six minutes of TLC
+    // reporting a banner mismatch is a check that answered a question nobody
+    // asked; this is the question that actually failed.
+    die(
+      2,
+      `cannot determine the PREVIOUS identity=${pin.identity} for ${dest}.\n` +
+        `  ${hadBytes ? "The bytes on disk describe the NEW build" : "The previously-pinned bytes are not in this tree"},` +
+        " and the pin surfaces\n  carry no single identity string to move" +
+        " (none found, or two that already disagree).\n" +
+        "  Re-pinning would move the digest and leave the restatement behind, so it refuses.\n" +
+        "  Surfaces read: " + pin.pinSurfaces.join(", "),
+    );
+  }
 
   // `derivedpins=` files have their OWN sha256 quoted inside a pin surface, so
   // their before-value has to be captured BEFORE the digest edits land.

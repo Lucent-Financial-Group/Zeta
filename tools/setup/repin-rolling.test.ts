@@ -12,6 +12,8 @@ import {
   assertHttpsUrl,
   deriveIdentity,
   fetchToBuffer,
+  identityFromSurfaces,
+  identityPattern,
   receiptRow,
   rewriteManifestRow,
   sha256Of,
@@ -151,5 +153,75 @@ describe("sha256Of", () => {
     expect(sha256Of(new TextEncoder().encode("abc"))).toBe(
       "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad",
     );
+  });
+});
+
+// ── identityFromSurfaces — added 081M24396B2087G0R000MDMDEA ──────────────────
+//
+// The regression this locks: on a tree with no previously-pinned bytes (cold CI
+// cache, fresh clone, or an auto-accept having already replaced the artefact)
+// the old identity used to come back `null`, the `versionBanner` restatement was
+// never rewritten, and the re-measure failed six minutes later on a banner
+// mismatch that said nothing about any model. MEASURED 2026-09-09: 52/52 models
+// "failed" that way.
+//
+// MUTATION LOG (2026-09-09) — 3 mutants, 3 killed, MEASURED not asserted:
+//   M1 `found.size === 1` -> `found.size >= 1`   KILLED — "two disagreeing surfaces refuse"
+//   M2 jar-tlc pattern -> /TLC2 Version .*/       KILLED — 3 tests died, listed below
+//   M3 `identityFromSurfaces` returns "" on miss  KILLED — "no identity in the surfaces is null"
+//
+// DECLARED CONTROLS (must SURVIVE all three): `substituteAll` and
+// `rewriteManifestRow` — the rewrite paths this change does not touch. If either
+// dies, a mutant reached past the unit it claims to be confined to.
+//
+// A CORRECTION, recorded rather than quietly fixed. The first control declared
+// here was "CONTROL: a matching TLC banner is found verbatim", and MEASURING M2
+// killed it along with two siblings. That was a bad control by construction: it
+// exercises the very function M2 mutates, so it could never have been evidence of
+// anything. A control has to live OUTSIDE the mutated unit, which is why the two
+// above replaced it. The banner test is still a good FALSIFIER; it is simply not
+// a control.
+const TLC_A = "TLC2 Version 2026.09.09.162536 (rev: 4ad12e8)";
+const TLC_B = "TLC2 Version 2026.09.09.213036 (rev: ede5b88)";
+
+describe("identityFromSurfaces", () => {
+  test("a matching TLC banner is found verbatim", () => {
+    expect(identityFromSurfaces("jar-tlc", [`"versionBanner": "${TLC_A}",`])).toBe(TLC_A);
+  });
+
+  test("the same banner in several surfaces is one answer", () => {
+    expect(identityFromSurfaces("jar-tlc", [`x ${TLC_A} y`, `z ${TLC_A}`])).toBe(TLC_A);
+  });
+
+  test("two disagreeing surfaces refuse rather than pick one", () => {
+    expect(identityFromSurfaces("jar-tlc", [TLC_A, TLC_B])).toBeNull();
+  });
+
+  test("no identity in the surfaces is null", () => {
+    expect(identityFromSurfaces("jar-tlc", ["nothing to see", ""])).toBeNull();
+  });
+
+  test("the pattern stops at the identity and does not swallow the line", () => {
+    // Two hazards in one line: prose that says "TLC2 Version" without being one
+    // (the registry's own `note` field does exactly this), and a greedy pattern
+    // that would match from the first mention to the last and return a string
+    // that substitutes nothing. The answer must be the banner, exactly.
+    const line = `"versionBanner": "${TLC_A}", "note": "TLC2 Version is checked here"`;
+    expect(identityFromSurfaces("jar-tlc", [line])).toBe(TLC_A);
+    expect(identityPattern("jar-tlc").test(TLC_A)).toBe(true);
+  });
+
+  test("a NON-conforming version string is not an identity", () => {
+    // `TLC2 2026.05.18.174321` -- the nci-witness-receipt spelling, no "Version".
+    expect(identityFromSurfaces("jar-tlc", ["TLC2 2026.05.18.174321"])).toBeNull();
+  });
+
+  test("the alloy shape is recognised", () => {
+    expect(identityFromSurfaces("jar-alloy", ["6.2.0.202501090818 (rev: v6.2.0)"]))
+      .toBe("6.2.0.202501090818 (rev: v6.2.0)");
+  });
+
+  test("an unknown identity kind throws rather than returning null", () => {
+    expect(() => identityFromSurfaces("jar-mystery", ["x"])).toThrow("unknown identity=");
   });
 });
