@@ -42,5 +42,6 @@ Check neutral geometry, original UV retention, moving poses, head/hair attachmen
 facial behavior and mobile runtime separately. Failed candidates can be recorded
 as experiments without making them the default asset.
 
-Current experimental records: [v14](research/2026-09-09-tiktok-character-v14/README.md)
+Current experimental records: [v15](research/2026-09-09-tiktok-character-v15/README.md),
+[v14](research/2026-09-09-tiktok-character-v14/README.md)
 and [pre-rig composition](research/2026-09-09-character-evolution/README.md).

@@ -1,0 +1,92 @@
+{
+  "version": "v15-quality-study",
+  "contains_previous_versions": false,
+  "scope": "High-detail Blender research candidate, not a TikTok runtime release",
+  "files": [
+    {
+      "path": "evidence/left-arm.png",
+      "bytes": 2401511,
+      "sha256": "9131c34dbcf8b31b270ab515d7ef1ce9c7d3c8c3886b7efca9f4701f46d3aa74"
+    },
+    {
+      "path": "evidence/neutral.png",
+      "bytes": 2400667,
+      "sha256": "e8f18c9f5717ca15c60b3b65db8b171860fb36026c3f19e668abf458e223ceb6"
+    },
+    {
+      "path": "evidence/pose-0049.png",
+      "bytes": 2397753,
+      "sha256": "32bf26576baaeea593918b73bce256754e600707925da89d7bf6b9a6d4bfac45"
+    },
+    {
+      "path": "evidence/pose-0073.png",
+      "bytes": 2396669,
+      "sha256": "601c01731b4e85609050ab25a0104783fcd58d6842e3068bb4f57832dc0c2e48"
+    },
+    {
+      "path": "evidence/pose-0121.png",
+      "bytes": 2401446,
+      "sha256": "d9e96d0fc9f9dd021a172190b851d517abd271c60036b5ddfee58c3a37796c81"
+    },
+    {
+      "path": "evidence/pose-0145.png",
+      "bytes": 2398067,
+      "sha256": "c5dc0ae2dee101bb7bd97891eb59f972288e23768a652005ff7e4d085bcd67c0"
+    },
+    {
+      "path": "receipts/cleanup-summary.json",
+      "bytes": 2194,
+      "sha256": "ff54e62d2bcd7ef17fdfcc4c15cdf70762c47b1e3e3b7bb19fab8d0bae63b4ee"
+    },
+    {
+      "path": "receipts/delivery-validation.json",
+      "bytes": 1988,
+      "sha256": "9039addf3b30bffcc69ebc7bbc600d4c296f069cfca361343b147eaa0c785686"
+    },
+    {
+      "path": "receipts/local-cleanup-receipt.json",
+      "bytes": 1471088,
+      "sha256": "40cc6ba369fdf958bf927ad466419d4206ae95056d643947bda54b1bc42daf73"
+    },
+    {
+      "path": "receipts/pose-diagnostics.json",
+      "bytes": 18659,
+      "sha256": "5e7412708026600271d3b76a5de1efa43a9db2ec36203ffd87c487d7d8721ad0"
+    },
+    {
+      "path": "receipts/surface-retention.json",
+      "bytes": 859,
+      "sha256": "5d391b762f2b1633a9f4b3a4bde4e9e0144643eda5c75946163d5a73da6e945f"
+    },
+    {
+      "path": "review/Blender-Quality-Review-v15.blend",
+      "bytes": 46744679,
+      "sha256": "c43f79c01c8cf80a8d69101239e05509c0d805560348b1bf60ac9d8929ce682e"
+    },
+    {
+      "path": "sources/cleanup_verified_copies.py",
+      "bytes": 2795,
+      "sha256": "9e6f4ece65874cf4aec43084964121ea18926a6cb30197b8061b9a99fb90478a"
+    },
+    {
+      "path": "sources/package_v15.py",
+      "bytes": 3444,
+      "sha256": "b2d17cf0413cd1307989bd0b4a1c0b3a14529249b880eb10e3b70efb363312d4"
+    },
+    {
+      "path": "sources/preserve_surfaces_v15.py",
+      "bytes": 10981,
+      "sha256": "5aed30631c2e12c8de435a6f078e758b59dd8c871ff6c678dc627c5972ced9dc"
+    },
+    {
+      "path": "sources/review_poses_v15.py",
+      "bytes": 3141,
+      "sha256": "6d30dc387fc8f689309227fa0a200990e9d6a87f7bbf68b1b5bc9421af92af5f"
+    },
+    {
+      "path": "sources/validate_delivery_v15.py",
+      "bytes": 2220,
+      "sha256": "e714630eaf8cb993868cc5ea47d7191c55441c4a79add741719a35115942df9c"
+    }
+  ]
+}
