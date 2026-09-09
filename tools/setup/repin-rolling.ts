@@ -91,78 +91,74 @@ export function deriveIdentity(kind: string | undefined, absPath: string): strin
 }
 
 /**
- * The SHAPE a derived identity takes, per `identity=` kind.
+ * The substring `deriveIdentity` returns, so a pin-surface rewrite can use the
+ * same pair whether the old bytes were on disk or not.
  *
- * WHY THIS EXISTS — a defect measured 2026-09-09 (081M24396B2087G0R000MDMDEA).
- * The old identity was derived from the OLD BYTES, via the `.prepin` backup. On
- * a tree that does not already hold the previously-pinned artefact -- every CI
- * runner with a cold cache, every fresh clone, and every machine whose jar was
- * replaced by an auto-accept -- there are no old bytes, `oldIdentity` came back
- * `null`, and the identity restatement inside `pinsurfaces=` was silently never
- * rewritten. The digest moved, `registry/tlc-models.json`'s `versionBanner` did
- * not, and the re-measure then failed on a banner mismatch that says nothing
- * about any model. MEASURED: 52 of 52 models "failed" that way, after six
- * minutes, and the tool rolled back correctly and unhelpfully.
+ * TLC: `YYYY.MM.DD.HHMMSS (rev: hex)` — the jar manifest's Build-TimeStamp plus
+ * short rev, and the suffix of `TLC2 Version …` in registry/docs.
+ * Alloy: `bundleVersion (rev: descriptor)`.
  *
- * The previous identity is not gone, though -- it is written down, in the pin
- * surfaces, which is exactly where the tool is about to rewrite it. So read it
- * from there. That is a fallback rather than the primary source because the
- * BYTES are the better authority when they exist: a surface can already have
- * drifted, and matching against bytes cannot.
+ * Fresh regex per call: `matchAll` advances `lastIndex` on a shared `/g`
+ * object, and a reused pattern would silently skip matches in later texts.
  */
-export function identityPattern(kind: string): RegExp {
-  // THE PATTERN MUST MATCH EXACTLY WHAT `deriveIdentity` EMITS -- no more.
-  //
-  // MEASURED DEFECT, 2026-09-09, caught before it shipped: the first version of
-  // this pattern included the `TLC2 Version ` prefix, because that is how the
-  // banner READS in the surface. But `tlcVersionFromManifest` returns
-  // `2026.09.09.213036 (rev: ede5b88)` WITHOUT that prefix, so substituting the
-  // wider match with the narrower value silently DELETED the prefix from every
-  // pin surface -- turning `"versionBanner": "TLC2 Version 2026...(rev: ...)"`
-  // into `"versionBanner": "2026...(rev: ...)"`.
-  //
-  // WHY THAT IS DANGEROUS RATHER THAN COSMETIC: `judgeToolchainBanner` asks
-  // `stdout.includes(expected)`, and the truncated string is still a substring
-  // of TLC's real banner. So the sweep passed 52/52 and NOTHING went red -- the
-  // verifier pin just got weaker, permanently, in a diff that reads as a routine
-  // re-pin. A check that quietly stops checking part of what it checked is the
-  // vacuity class arriving by erosion.
-  //
-  // So: match the derived form only, and let the surrounding prose keep its own
-  // prefix. `identityRoundTrips` below is the falsifier for this.
-  if (kind === "jar-tlc") return /\d{4}\.\d{2}\.\d{2}\.\d{6} \(rev: [0-9a-f]+\)/g;
-  // Alloy: `<Bundle-Version> (rev: <Git-Descriptor>)`, as `alloyVersionFromManifest` emits it.
-  if (kind === "jar-alloy") return /\d+(?:\.\d+)+ \(rev: [^)\s]+\)/g;
+export function identityPatternSource(kind: string): string {
+  if (kind === "jar-tlc") return String.raw`\d{4}\.\d{2}\.\d{2}\.\d{6} \(rev: [0-9a-f]+\)`;
+  if (kind === "jar-alloy") return String.raw`\d+\.\d+\.\d+\.\d+ \(rev: [0-9A-Za-z._-]+\)`;
   throw new Error(`unknown identity=${kind} (jar-tlc|jar-alloy)`);
 }
 
 /**
- * The invariant the defect above violated: an identity DERIVED from bytes must
- * be matched WHOLE by the pattern used to find its predecessor in a surface.
- * If the pattern can match something wider, substitution truncates; if narrower,
- * substitution leaves a fragment. Either way the restatement stops meaning what
- * it meant.
+ * Recover the previous identity from pin-surface TEXT when the gitignored jar
+ * is not on disk. A fresh clone (and this Cloud VM) has no `tla2tools.jar`;
+ * skipping substitution in that case rewrites the digest and leaves the old
+ * banner in place, so re-measure then refuses 52/52 models as a "verifier
+ * disagreement" that is actually this tool skipping a step.
+ *
+ * Returns null when kind is unset, or when the surfaces name nothing.
+ * Throws when kind is unknown, or when the surfaces name more than one
+ * distinct identity (ambiguous — picking one would re-pin the wrong banner).
  */
-export function identityRoundTrips(kind: string, derived: string): boolean {
-  const matches = [...derived.matchAll(identityPattern(kind))].map((m) => m[0]);
-  return matches.length === 1 && matches[0] === derived;
+export function recoverIdentityFromSurfaces(
+  kind: string | undefined,
+  texts: readonly string[],
+): string | null {
+  if (kind === undefined || kind === "") return null;
+  const source = identityPatternSource(kind);
+  const found = new Set<string>();
+  for (const text of texts) {
+    const re = new RegExp(source, "g");
+    for (const match of text.matchAll(re)) found.add(match[0]);
+  }
+  if (found.size === 0) return null;
+  if (found.size > 1) {
+    throw new Error(
+      `ambiguous prior identity in pin surfaces (${kind}): ${[...found].sort().join(", ")}`,
+    );
+  }
+  return [...found][0] ?? null;
 }
 
 /**
- * The single identity string the pin surfaces agree on, or null.
- *
- * FAILS CLOSED ON AMBIGUITY, deliberately: zero matches means the surfaces
- * carry no identity to move, and two DIFFERENT matches means they already
- * disagree with each other. Picking one in either case would rewrite half a
- * tree and call it a re-pin, so both answer `null` and the caller refuses
- * BEFORE spending a re-measure.
+ * Fail closed: a row that declares `identity=` MUST substitute it. Skipping
+ * when the old jar is missing is how a digest-only re-pin looks like a
+ * verifier disagreement.
  */
-export function identityFromSurfaces(kind: string, texts: readonly string[]): string | null {
-  const found = new Set<string>();
-  for (const text of texts) {
-    for (const match of text.matchAll(identityPattern(kind))) found.add(match[0]);
+export function identitySubstitutionPairs(
+  kind: string | undefined,
+  oldIdentity: string | null,
+  newIdentity: string | null,
+): ReadonlyArray<readonly [string, string]> {
+  if (kind === undefined || kind === "") return [];
+  if (oldIdentity === null) {
+    throw new Error(
+      `identity=${kind} is set but the previous identity cannot be recovered ` +
+        "(no jar on disk, and pin surfaces carry none)",
+    );
   }
-  return found.size === 1 ? ([...found][0] as string) : null;
+  if (newIdentity === null) {
+    throw new Error(`identity=${kind} is set but the new bytes yielded no identity`);
+  }
+  return [[oldIdentity, newIdentity]];
 }
 
 export function sha256Of(bytes: Uint8Array): string {
@@ -400,12 +396,27 @@ async function main(argv: readonly string[]): Promise<number> {
   const absDest = join(repoRoot, dest);
   const backup = absDest + ".prepin";
   const hadBytes = copyIfPresent(absDest, backup);
-  // The BYTES are the better authority and are tried first. They are also often
-  // absent (cold CI cache, fresh clone, an auto-accept having already replaced
-  // them), and `identityFromSurfaces` below is what makes those trees
-  // re-pinnable at all -- see `identityPattern`'s header for the measured
-  // failure this repairs.
-  const bytesIdentity = hadBytes ? deriveIdentity(pin.identity, backup) : null;
+  // The dest is gitignored (de-vendored). A clone that never fetched the jar
+  // has no previous bytes, so identity must come from the pin surfaces the
+  // row already declares — the same strings a present jar would rewrite.
+  // Recover BEFORE writing the new bytes so an ambiguous/missing identity
+  // fails closed without leaving the new jar at dest.
+  const pinSurfaceTexts = pin.pinSurfaces.map((rel) => readFileSync(join(repoRoot, rel), "utf8"));
+  let oldIdentity: string | null;
+  try {
+    oldIdentity = hadBytes
+      ? deriveIdentity(pin.identity, backup)
+      : recoverIdentityFromSurfaces(pin.identity, pinSurfaceTexts);
+    if ((pin.identity ?? "") !== "" && oldIdentity === null) {
+      throw new Error(
+        `identity=${pin.identity} is set but the previous identity cannot be recovered ` +
+          `(no jar at ${dest}, and pin surfaces carry none)`,
+      );
+    }
+  } catch (err) {
+    removeIfPresent(backup);
+    die(2, err instanceof Error ? err.message : String(err));
+  }
   mkdirSync(dirname(absDest), { recursive: true });
   stageVerifiedWrite(absDest, bytes, newSha);
   const newIdentity = deriveIdentity(pin.identity, absDest);
@@ -424,54 +435,6 @@ async function main(argv: readonly string[]): Promise<number> {
     removeIfPresent(backup);
   };
 
-  // The identity to REPLACE. Bytes when we have them; otherwise whatever the pin
-  // surfaces themselves currently say, read from the snapshot above so it is the
-  // pre-edit text by construction.
-  //
-  // `bytesIdentity === newIdentity` also routes to the surfaces, and that case is
-  // not hypothetical: after an auto-accept the artefact on disk IS the new build,
-  // so the "old" bytes describe the new identity and would rewrite nothing.
-  const surfaceTexts = restore
-    .filter((item) => item.rel !== FROM_URL_MANIFEST)
-    .map((item) => item.text);
-  const oldIdentity =
-    bytesIdentity !== null && bytesIdentity !== newIdentity
-      ? bytesIdentity
-      : pin.identity === undefined || pin.identity === ""
-        ? null
-        : identityFromSurfaces(pin.identity, surfaceTexts);
-  // The round-trip invariant, ENFORCED rather than trusted. A pattern that does
-  // not match its own derived identity exactly will truncate or fragment every
-  // pin surface it touches, and -- because the banner check is a substring test
-  // -- it can do so without turning anything red. Refuse before writing.
-  if (pin.identity !== undefined && pin.identity !== "" && newIdentity !== null
-      && !identityRoundTrips(pin.identity, newIdentity)) {
-    rollback();
-    die(
-      2,
-      `identity=${pin.identity} does not round-trip: the derived value` +
-        `\n  "${newIdentity}"\n  is not matched WHOLE by identityPattern(${pin.identity}).` +
-        "\n  Substituting would truncate or fragment every pin surface, and because the" +
-        "\n  banner check is a substring test it could do so without failing anything." +
-        "\n  Fix identityPattern so it matches exactly what deriveIdentity emits.",
-    );
-  }
-  if (pin.identity !== undefined && pin.identity !== "" && oldIdentity === null) {
-    rollback();
-    // Exit 2 BEFORE the re-measure, not exit 1 after it. Six minutes of TLC
-    // reporting a banner mismatch is a check that answered a question nobody
-    // asked; this is the question that actually failed.
-    die(
-      2,
-      `cannot determine the PREVIOUS identity=${pin.identity} for ${dest}.\n` +
-        `  ${hadBytes ? "The bytes on disk describe the NEW build" : "The previously-pinned bytes are not in this tree"},` +
-        " and the pin surfaces\n  carry no single identity string to move" +
-        " (none found, or two that already disagree).\n" +
-        "  Re-pinning would move the digest and leave the restatement behind, so it refuses.\n" +
-        "  Surfaces read: " + pin.pinSurfaces.join(", "),
-    );
-  }
-
   // `derivedpins=` files have their OWN sha256 quoted inside a pin surface, so
   // their before-value has to be captured BEFORE the digest edits land.
   const derivedBefore = new Map<string, string>();
@@ -480,7 +443,12 @@ async function main(argv: readonly string[]): Promise<number> {
   }
 
   const pairs: Array<readonly [string, string]> = [[oldSha, newSha]];
-  if (oldIdentity !== null && newIdentity !== null) pairs.push([oldIdentity, newIdentity]);
+  try {
+    pairs.push(...identitySubstitutionPairs(pin.identity, oldIdentity, newIdentity));
+  } catch (err) {
+    rollback();
+    die(2, err instanceof Error ? err.message : String(err));
+  }
   for (const rel of pin.pinSurfaces) {
     const abs = join(repoRoot, rel);
     const before = readFileSync(abs, "utf8");

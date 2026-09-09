@@ -148,11 +148,12 @@ permanently stopped checking part of what it checked. It was found by reading th
 diff, not by a test — because a truncated substring pin has no symptom.
 
 **Under full rolling that identity-substitution becomes automatic and frequent.**
-So `identityRoundTrips` — which refuses, with exit 2, *before* touching any
-surface, when a pattern does not match its derived value exactly-once-and-whole —
-stops being a nicety and becomes **the safety property the whole mechanism rests
-on**. An automatic pin-rewriter without it would erode its own checks a little on
-every roll, silently, forever.
+So a **round-trip guard** — refusing, before any surface is touched, when the
+identity pattern does not match its derived value exactly-once-and-whole — stops
+being a nicety and becomes **the safety property the whole mechanism rests on**.
+It is not yet in `main` (see §8b) and is the named follow-up. An automatic
+pin-rewriter without it would erode its own checks a little on every roll,
+silently, forever.
 
 ## 2c. The governing idea: GRANTED versus ACCIDENTAL exceptions
 
@@ -439,31 +440,64 @@ colon-encoded argv for `verify=`/`exitcheck=`; the same **stated honest limit**
 what it buys is that the concession stops being invisible and becomes a
 reviewable assertion).
 
-### 8a. A defect found in `repin-rolling.ts`, and fixed here
+### 8a. The same defect, found twice, independently — and whose fix survived
 
-Attempting a re-pin during this work surfaced a real bug in the sibling tool, so
-it is repaired in this diff rather than left for the next person to lose six
-minutes to.
+`repin-rolling.ts` could not re-pin from a tree that does not already hold the
+previously-pinned artefact: every cold CI cache, every fresh clone, and every
+machine whose jar an auto-accept has already replaced. The old identity was
+derived from the old *bytes*; with no bytes it came back `null`, the `identity=`
+restatement inside `pinsurfaces=` was silently never rewritten, and the
+re-measure then failed on a banner mismatch that says nothing about any model.
+**MEASURED 2026-09-09: 52 of 52 models "failed" that way, after six minutes.**
 
-**`repin-rolling.ts` could not re-pin from a tree that does not already hold the
-previously-pinned artefact** — which is every cold CI cache, every fresh clone,
-and every machine whose jar an auto-accept has already replaced. The old identity
-was derived from the old *bytes*; with no bytes it came back `null`, the
-`identity=` restatement inside `pinsurfaces=` was silently never rewritten, and
-the re-measure then failed on a banner mismatch that says nothing about any
-model. **MEASURED 2026-09-09: 52 of 52 models "failed" that way, after six
-minutes**, and the tool rolled back correctly and unhelpfully.
+**Two agents hit this in the same hour and fixed it independently.** A sibling's
+fix landed on `main` first (`recoverIdentityFromSurfaces` /
+`identityPatternSource` / `identitySubstitutionPairs`), and **that is the version
+kept.** Mine was discarded on merge rather than reconciled: shipping a second
+implementation of one mechanism is the duplication this whole agenda exists to
+avoid, and theirs is better factored — it builds a fresh regex per call (a shared
+`/g` object advances `lastIndex` and would skip matches in later texts) and it
+*throws* rather than silently substituting nothing when the identity cannot be
+recovered.
 
-The previous identity was never actually gone — **it is written down in the pin
-surfaces**, which is exactly where the tool is about to rewrite it. So
-`identityFromSurfaces` reads it from there when the bytes cannot supply it, and
-**fails closed on ambiguity**: zero matches (nothing to move) and two different
-matches (surfaces that already disagree) both refuse, with **exit 2 before the
-re-measure** rather than exit 1 after it. Bytes remain the primary source when
-they exist, because a surface can have drifted and bytes cannot.
+**The convergence is the interesting part.** Both fixes recover the previous
+identity from the pin surfaces, because that is where it is already written down,
+and both refuse on ambiguity. Independent derivation reaching the same shape is
+evidence the shape is right — and it is also the N-version reminder that
+agreement between correlated implementations is weaker evidence than it feels.
 
-Re-run after the fix: `rewrote 2 value(s)` in each pin surface — the digest *and*
-the banner — where it had rewritten 1.
+### 8b. THE HAZARD THAT ALMOST SHIPPED, kept on the record because it has no symptom
+
+Fixing the above opened a second, nastier failure that a green run cannot
+distinguish from success. My first `identityPattern` matched
+`TLC2 Version <ts> (rev: <rev>)` — the way the banner *reads* in the surface —
+while `deriveIdentity` emits only `<ts> (rev: <rev>)`. Substituting the wider
+match with the narrower value **deleted `TLC2 Version ` from all three pin
+surfaces**.
+
+**Nothing went red.** `judgeToolchainBanner` asks `stdout.includes(pinned)`, and
+the truncated string is still a substring of TLC's real banner — so the sweep
+passed **52/52** while the verifier pin permanently stopped checking part of what
+it had checked. That is the vacuity class arriving by *erosion* rather than by
+omission, and it is strictly worse than a check that never existed, because the
+diff reads as a routine re-pin.
+
+It was caught by **reading the diff of the pin surfaces**, not by a test. And
+three of my own tests had *codified* the defect — they asserted the prefixed form
+**was** the identity, written from the same misunderstanding as the code, so they
+passed and proved nothing. **A falsifier authored alongside the thing it checks
+inherits its blind spot.**
+
+`main`'s surviving implementation does not have this bug: its pattern already
+excludes the prefix. What it does **not** yet have is an *enforced* guard against
+reintroducing it — an invariant that the pattern must match its derived identity
+exactly-once-and-whole, refused **before** any surface is touched rather than six
+minutes of TLC later. **That guard is the one piece of this worth carrying
+forward, and it is routed as a follow-up rather than smuggled into this diff.**
+
+It matters more under the full-rolling decision in §2b-bis than it does today:
+once identity substitution runs automatically on every roll, an un-guarded
+rewriter would erode its own checks a little each time, silently, forever.
 
 **`clone-at-tag-stays-sufficient` is unaffected.** No resolver was added to any
 bootstrap surface; `lint-clone-at-tag-is-sufficient.ts` must stay green and

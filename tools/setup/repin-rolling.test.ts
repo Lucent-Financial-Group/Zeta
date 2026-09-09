@@ -12,10 +12,10 @@ import {
   assertHttpsUrl,
   deriveIdentity,
   fetchToBuffer,
-  identityFromSurfaces,
-  identityPattern,
-  identityRoundTrips,
+  identityPatternSource,
+  identitySubstitutionPairs,
   receiptRow,
+  recoverIdentityFromSurfaces,
   rewriteManifestRow,
   sha256Of,
   stageVerifiedWrite,
@@ -107,6 +107,112 @@ describe("deriveIdentity", () => {
   });
 });
 
+describe("recoverIdentityFromSurfaces", () => {
+  const OLD_ID = "2026.09.09.162536 (rev: 4ad12e8)";
+  const NEW_ID = "2026.09.09.201538 (rev: 94db4a6)";
+
+  test("a row with no identity= asks for nothing and gets null", () => {
+    expect(recoverIdentityFromSurfaces(undefined, [`TLC2 Version ${OLD_ID}`])).toBeNull();
+    expect(recoverIdentityFromSurfaces("", [`TLC2 Version ${OLD_ID}`])).toBeNull();
+  });
+
+  test("an unknown identity kind is refused rather than guessed", () => {
+    expect(() => recoverIdentityFromSurfaces("jar-something-else", ["x"])).toThrow(
+      "unknown identity=",
+    );
+    expect(() => identityPatternSource("jar-something-else")).toThrow("unknown identity=");
+  });
+
+  // The gitignored jar is absent on a fresh clone. Pin surfaces still name the
+  // previous identity as the suffix of `TLC2 Version …`, which is the same
+  // substring deriveIdentity would return from the old bytes.
+  test("extracts the jar-tlc identity from a TLC2 Version banner", () => {
+    expect(
+      recoverIdentityFromSurfaces("jar-tlc", [`TLC2 Version ${OLD_ID}`]),
+    ).toBe(OLD_ID);
+  });
+
+  test("the same identity restated in every pin surface is still one identity", () => {
+    const texts = [
+      `  "versionBanner": "TLC2 Version ${OLD_ID}",`,
+      `| **TLA+ / TLC** | \`TLC2 Version ${OLD_ID}\` |`,
+      `| TLA+ (\`tla2tools.jar\`, \`TLC2 Version ${OLD_ID}\`) |`,
+    ];
+    expect(recoverIdentityFromSurfaces("jar-tlc", texts)).toBe(OLD_ID);
+  });
+
+  test("two distinct identities in pin surfaces is a refusal, not a pick", () => {
+    expect(() =>
+      recoverIdentityFromSurfaces("jar-tlc", [
+        `TLC2 Version ${OLD_ID}`,
+        `TLC2 Version ${NEW_ID}`,
+      ]),
+    ).toThrow("ambiguous prior identity");
+  });
+
+  test("surfaces that name no identity return null rather than inventing one", () => {
+    expect(recoverIdentityFromSurfaces("jar-tlc", ["sha256=" + OLD, "no banner"])).toBeNull();
+  });
+
+  test("extracts a jar-alloy identity in the same shape deriveIdentity would return", () => {
+    expect(
+      recoverIdentityFromSurfaces("jar-alloy", ["6.2.0.202501090817 (rev: 794226d)"]),
+    ).toBe("6.2.0.202501090817 (rev: 794226d)");
+  });
+
+  test("the recovered identity is the substring substituteAll needs to rewrite a banner", () => {
+    const surface = `"versionBanner": "TLC2 Version ${OLD_ID}"`;
+    const recovered = recoverIdentityFromSurfaces("jar-tlc", [surface]);
+    expect(recovered).toBe(OLD_ID);
+    const { text, replacements } = substituteAll(surface, [[recovered ?? "", NEW_ID]]);
+    expect(replacements).toBe(1);
+    expect(text).toBe(`"versionBanner": "TLC2 Version ${NEW_ID}"`);
+  });
+
+  // Against the committed pin surfaces, so a row whose pinsurfaces= list has
+  // drifted to historical banners (research notes, old evidence) fails here
+  // rather than at the next rolling rebuild. Shape, not a frozen timestamp:
+  // the live identity moves when the rolling pin moves.
+  test("committed tla2tools pin surfaces name exactly one jar-tlc identity", () => {
+    const texts = [
+      readFileSync(join(process.cwd(), "registry/tlc-models.json"), "utf8"),
+      readFileSync(join(process.cwd(), "docs/INSTALLED.md"), "utf8"),
+      readFileSync(join(process.cwd(), "docs/dependency-status.md"), "utf8"),
+    ];
+    const recovered = recoverIdentityFromSurfaces("jar-tlc", texts);
+    expect(recovered).toMatch(/^\d{4}\.\d{2}\.\d{2}\.\d{6} \(rev: [0-9a-f]+\)$/);
+  });
+});
+
+describe("identitySubstitutionPairs", () => {
+  const OLD_ID = "2026.09.09.162536 (rev: 4ad12e8)";
+  const NEW_ID = "2026.09.09.201538 (rev: 94db4a6)";
+
+  test("a row with no identity= contributes no pair", () => {
+    expect(identitySubstitutionPairs(undefined, OLD_ID, NEW_ID)).toEqual([]);
+    expect(identitySubstitutionPairs("", OLD_ID, NEW_ID)).toEqual([]);
+  });
+
+  test("both identities present become one substitution pair", () => {
+    expect(identitySubstitutionPairs("jar-tlc", OLD_ID, NEW_ID)).toEqual([[OLD_ID, NEW_ID]]);
+  });
+
+  // The failure this PR exists to close: identity= set, old jar absent,
+  // recovery returned null, and the previous tool skipped the pair. Digest
+  // moved, banner did not, re-measure then looked like a verifier finding.
+  test("identity= with no recovered prior identity is a refusal, not a skip", () => {
+    expect(() => identitySubstitutionPairs("jar-tlc", null, NEW_ID)).toThrow(
+      "previous identity cannot be recovered",
+    );
+  });
+
+  test("identity= with no identity from the new bytes is a refusal", () => {
+    expect(() => identitySubstitutionPairs("jar-tlc", OLD_ID, null)).toThrow(
+      "new bytes yielded no identity",
+    );
+  });
+});
+
 describe("stageVerifiedWrite", () => {
   // The write is staged and re-read before it is renamed into place: a short
   // write, a full disk, or a truncated body must never leave partial bytes at
@@ -154,137 +260,5 @@ describe("sha256Of", () => {
     expect(sha256Of(new TextEncoder().encode("abc"))).toBe(
       "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad",
     );
-  });
-});
-
-// ── identityFromSurfaces — added 081M24396B2087G0R000MDMDEA ──────────────────
-//
-// The regression this locks: on a tree with no previously-pinned bytes (cold CI
-// cache, fresh clone, or an auto-accept having already replaced the artefact)
-// the old identity used to come back `null`, the `versionBanner` restatement was
-// never rewritten, and the re-measure failed six minutes later on a banner
-// mismatch that said nothing about any model. MEASURED 2026-09-09: 52/52 models
-// "failed" that way.
-//
-// MUTATION LOG (2026-09-09) — 3 mutants, 3 killed, MEASURED not asserted:
-//   M1 `found.size === 1` -> `found.size >= 1`   KILLED — "two disagreeing surfaces refuse"
-//   M2 jar-tlc pattern -> /TLC2 Version .*/       KILLED — 3 tests died, listed below
-//   M3 `identityFromSurfaces` returns "" on miss  KILLED — "no identity in the surfaces is null"
-//
-// DECLARED CONTROLS (must SURVIVE all three): `substituteAll` and
-// `rewriteManifestRow` — the rewrite paths this change does not touch. If either
-// dies, a mutant reached past the unit it claims to be confined to.
-//
-// A CORRECTION, recorded rather than quietly fixed. The first control declared
-// here was "CONTROL: a matching TLC banner is found verbatim", and MEASURING M2
-// killed it along with two siblings. That was a bad control by construction: it
-// exercises the very function M2 mutates, so it could never have been evidence of
-// anything. A control has to live OUTSIDE the mutated unit, which is why the two
-// above replaced it. The banner test is still a good FALSIFIER; it is simply not
-// a control.
-// THE DERIVED FORM, which is what `tlcVersionFromManifest` emits and therefore
-// the only thing `identityPattern` may match. An earlier version of these
-// constants carried the `TLC2 Version ` prefix -- and so these tests ASSERTED
-// THE DEFECT: they passed while substitution silently truncated the prefix out
-// of every pin surface. Tests written from the same misunderstanding as the code
-// are not evidence, and this pair is the standing reminder.
-const TLC_A = "2026.09.09.162536 (rev: 4ad12e8)";
-const TLC_B = "2026.09.09.213036 (rev: ede5b88)";
-
-describe("identityFromSurfaces", () => {
-  test("a matching TLC banner is found verbatim", () => {
-    // The surface carries the prefix; the IDENTITY does not. Finding the derived
-    // substring is what lets substitution leave the prefix intact.
-    expect(identityFromSurfaces("jar-tlc", [`"versionBanner": "TLC2 Version ${TLC_A}",`])).toBe(TLC_A);
-  });
-
-  test("the same banner in several surfaces is one answer", () => {
-    expect(identityFromSurfaces("jar-tlc", [`x ${TLC_A} y`, `z ${TLC_A}`])).toBe(TLC_A);
-  });
-
-  test("two disagreeing surfaces refuse rather than pick one", () => {
-    expect(identityFromSurfaces("jar-tlc", [TLC_A, TLC_B])).toBeNull();
-  });
-
-  test("no identity in the surfaces is null", () => {
-    expect(identityFromSurfaces("jar-tlc", ["nothing to see", ""])).toBeNull();
-  });
-
-  test("the pattern stops at the identity and does not swallow the line", () => {
-    // Two hazards in one line: prose that says "TLC2 Version" without being one
-    // (the registry's own `note` field does exactly this), and a greedy pattern
-    // that would match from the first mention to the last and return a string
-    // that substitutes nothing. The answer must be the derived value, exactly.
-    const line = `"versionBanner": "TLC2 Version ${TLC_A}", "note": "TLC2 Version is checked here"`;
-    expect(identityFromSurfaces("jar-tlc", [line])).toBe(TLC_A);
-    expect(identityPattern("jar-tlc").test(TLC_A)).toBe(true);
-  });
-
-  test("a NON-conforming version string is not an identity", () => {
-    // `TLC2 2026.05.18.174321` -- the nci-witness-receipt spelling, no "Version".
-    expect(identityFromSurfaces("jar-tlc", ["TLC2 2026.05.18.174321"])).toBeNull();
-  });
-
-  test("the alloy shape is recognised", () => {
-    expect(identityFromSurfaces("jar-alloy", ["6.2.0.202501090818 (rev: v6.2.0)"]))
-      .toBe("6.2.0.202501090818 (rev: v6.2.0)");
-  });
-
-  test("an unknown identity kind throws rather than returning null", () => {
-    expect(() => identityFromSurfaces("jar-mystery", ["x"])).toThrow("unknown identity=");
-  });
-});
-
-// ── THE TRUNCATION DEFECT, 2026-09-09 — caught in the tree, before it shipped ─
-//
-// The first identityPattern for jar-tlc included the `TLC2 Version ` prefix,
-// because that is how the banner READS in registry/tlc-models.json. But
-// tlcVersionFromManifest emits the value WITHOUT that prefix, so substituting a
-// wider match with a narrower value deleted the prefix from all three pin
-// surfaces. `judgeToolchainBanner` is a substring test, so the truncated pin was
-// STILL satisfied by TLC's real banner: the sweep passed 52/52 and nothing went
-// red while the verifier pin got permanently weaker.
-//
-// MUTATION LOG — 3 mutants, 3 killed:
-//   T1 identityPattern(jar-tlc) -> include the `TLC2 Version ` prefix again
-//      KILLED — "a pattern matching more than the derived value does not round-trip"
-//              + "substitution PRESERVES the prefix in a real pin surface"
-//   T2 identityRoundTrips -> `matches.length >= 1` (ignore extra matches)
-//      KILLED — "a pattern matching more than the derived value does not round-trip"
-//   T3 identityRoundTrips -> always true
-//      KILLED — "a pattern matching more than the derived value does not round-trip"
-// CONTROL (must survive): `substituteAll` and `rewriteManifestRow`.
-const TLC_DERIVED = "2026.09.09.213036 (rev: ede5b88)";
-const TLC_SURFACE = '"versionBanner": "TLC2 Version 2026.09.09.162536 (rev: 4ad12e8)"';
-
-describe("identity round-trip — the anti-truncation invariant", () => {
-  test("the derived identity round-trips", () => {
-    // What deriveIdentity emits must be matched WHOLE, or substitution corrupts.
-    expect(identityRoundTrips("jar-tlc", TLC_DERIVED)).toBe(true);
-    expect(identityRoundTrips("jar-alloy", "6.2.0.202501090818 (rev: v6.2.0)")).toBe(true);
-  });
-
-  test("a pattern matching more than the derived value does not round-trip", () => {
-    // The shape of the defect: the surface form carries a prefix the derived
-    // form does not. The prefixed string must NOT round-trip, because a pattern
-    // that accepted it would truncate on substitution.
-    expect(identityRoundTrips("jar-tlc", "TLC2 Version " + TLC_DERIVED)).toBe(false);
-  });
-
-  test("substitution PRESERVES the prefix in a real pin surface", () => {
-    // The end-to-end regression: exactly what repin-rolling does, and the result
-    // must keep `TLC2 Version `.
-    const old = identityFromSurfaces("jar-tlc", [TLC_SURFACE]);
-    expect(old).toBe("2026.09.09.162536 (rev: 4ad12e8)");
-    const { text } = substituteAll(TLC_SURFACE, [[old as string, TLC_DERIVED]]);
-    expect(text).toBe('"versionBanner": "TLC2 Version ' + TLC_DERIVED + '"');
-    expect(text).toContain("TLC2 Version");
-  });
-
-  test("the truncated banner is still a SUBSTRING of the real one — why nothing went red", () => {
-    // Documents why this defect is dangerous rather than loud:
-    // judgeToolchainBanner asks stdout.includes(pinned), so a truncated pin
-    // keeps passing against the full banner it no longer fully describes.
-    expect(("TLC2 Version " + TLC_DERIVED).includes(TLC_DERIVED)).toBe(true);
   });
 });

@@ -1,10 +1,10 @@
-# tla2tools 8836549e — re-measure, 2026-09-09
+# tla2tools f629a67c — re-measure, 2026-09-09
 
 Evidence for the rolling re-pin of `src/Core.TLA/tla2tools.jar`.
 
 - upstream: https://github.com/tlaplus/tlaplus/releases/download/v1.8.0/tla2tools.jar (rolling=tlaplus-v1.8.0-prerelease)
-- previous sha256: `f629a67c1ade2cadfcd12670de9172e07629418502df76e9b9ccbf4a5aa0ed6e` (2026.09.09.201538 (rev: 94db4a6))
-- new sha256: `8836549e83db7f0b3f9fdde679ab56270d18e06198366d217d960738c02b9dbe` (2026.09.09.213036 (rev: ede5b88))
+- previous sha256: `bb82311bc0493a8d30112a1baa0aece42a5f91b928866c7593930e390c14c340` (2026.09.09.162536 (rev: 4ad12e8))
+- new sha256: `f629a67c1ade2cadfcd12670de9172e07629418502df76e9b9ccbf4a5aa0ed6e` (2026.09.09.201538 (rev: 94db4a6))
 - command: `bun src/Core.TypeScript/formal-verification/run-tlc.ts --all`, exit 0
 
 ## Transcript
