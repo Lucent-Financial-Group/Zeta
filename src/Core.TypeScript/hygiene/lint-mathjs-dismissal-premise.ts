@@ -65,7 +65,7 @@
 //
 // 081M23NT5VX087G0R000KAFE45
 
-import { readFileSync, readdirSync, existsSync, statSync } from "node:fs";
+import { readFileSync, readdirSync } from "node:fs";
 import { join } from "node:path";
 
 export const PACKAGE = "quantum-circuit";
@@ -114,15 +114,56 @@ export function importsModule(text: string, mod: string): boolean {
   return re.test(stripComments(text));
 }
 
-export function walk(p: string, acc: string[] = []): string[] {
-  if (!existsSync(p)) return acc;
-  if (statSync(p).isFile()) {
-    if (SOURCE_EXT.test(p)) acc.push(p);
-    return acc;
+function isMissing(err: unknown): boolean {
+  return (err as NodeJS.ErrnoException | undefined)?.code === "ENOENT";
+}
+
+/**
+ * Read a file, or null when it simply is not there.
+ *
+ * NOT `existsSync` then `readFileSync`. That is two syscalls asking one question
+ * and getting two answers, with a window between them in which the path can be
+ * created, deleted or replaced — CWE-367, and a check that reads as defensive
+ * while preventing nothing. `lint-check-then-use-file-races.ts` caught exactly
+ * this shape in the first draft of this file and was right to.
+ */
+export function readOrNull(p: string, read: (q: string) => string): string | null {
+  try {
+    return read(p);
+  } catch (err) {
+    if (isMissing(err)) return null;
+    throw err;
   }
-  for (const e of readdirSync(p)) {
-    if (SKIP_DIR.has(e) || e.startsWith(".")) continue;
-    walk(join(p, e), acc);
+}
+
+export function walk(p: string, acc: string[] = []): string[] {
+  // ONE syscall, one answer, no window. `readdirSync(..., withFileTypes)` returns
+  // each entry's kind with the listing, so nothing needs a second `statSync` that
+  // could disagree with it (CWE-367). A directory read that fails with ENOTDIR
+  // tells us `p` is itself a file; ENOENT means the root simply is not there,
+  // which is not an error — callers pass optional roots.
+  //
+  // SYMLINKS ARE SKIPPED, and that is not tidiness: `tests/cross-verification/
+  // experience/fixtures/tree1/subdir1/link_to_parent` is a deliberate symlink LOOP
+  // fixture, and following it recurses until ELOOP. The first draft of this
+  // function crashed there the moment `main()` walked `tests/`.
+  let entries: import("node:fs").Dirent[];
+  try {
+    entries = readdirSync(p, { withFileTypes: true });
+  } catch (err) {
+    const code = (err as NodeJS.ErrnoException | undefined)?.code;
+    if (code === "ENOTDIR") {
+      if (SOURCE_EXT.test(p)) acc.push(p);
+      return acc;
+    }
+    if (code === "ENOENT") return acc;
+    throw err;
+  }
+  for (const e of entries) {
+    if (SKIP_DIR.has(e.name) || e.name.startsWith(".") || e.isSymbolicLink()) continue;
+    const child = join(p, e.name);
+    if (e.isDirectory()) walk(child, acc);
+    else if (e.isFile() && SOURCE_EXT.test(child)) acc.push(child);
   }
   return acc;
 }
@@ -243,7 +284,9 @@ export function runPremise(
 const INSTALLED_MAIN = "node_modules/quantum-circuit/lib/quantum-circuit.js";
 
 function main(): number {
-  if (!existsSync("package.json")) {
+  const read = (p: string): string => readFileSync(p, "utf-8");
+  const pkg = readOrNull("package.json", read);
+  if (pkg === null) {
     console.error("lint-mathjs-dismissal-premise: no package.json — run from the repo root.");
     return 2;
   }
@@ -252,8 +295,10 @@ function main(): number {
     console.error("lint-mathjs-dismissal-premise: scanned zero source files — run from the repo root.");
     return 2;
   }
-  const installedMain = existsSync(INSTALLED_MAIN) ? readFileSync(INSTALLED_MAIN, "utf-8") : null;
-  const r = runPremise(readFileSync("package.json", "utf-8"), files, (p) => readFileSync(p, "utf-8"), installedMain);
+  // Absent is the ORDINARY case (no node_modules), and it is UNKNOWN rather than
+  // a pass — see checkUpstreamConfigSurface.
+  const installedMain = readOrNull(INSTALLED_MAIN, read);
+  const r = runPremise(pkg, files, read, installedMain);
 
   for (const p of r.passes) console.log(`  ok      ${p}`);
   for (const u of r.unknowns) console.log(`  UNKNOWN ${u}`);

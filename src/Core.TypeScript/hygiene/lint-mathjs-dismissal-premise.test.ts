@@ -17,22 +17,33 @@
 //       KILLED BY  "an uninstalled package is UNKNOWN, never a pass"
 //   N6  checkUpstreamConfigSurface: ignore the config surface regex
 //       KILLED BY  "an upstream math.config call breaks the premise"
+//   N7  readOrNull: swallow every error, not just ENOENT
+//       KILLED BY  "readOrNull rethrows a non-ENOENT error rather than swallowing it"
+//   N8  walk: follow symbolic links
+//       KILLED BY  "walk does not follow symlinks (the tests/ fixture is a LOOP)"
+//       (`tests/cross-verification/experience/fixtures/tree1/subdir1/link_to_parent`
+//        is a deliberate symlink loop. The first draft crashed with ELOOP the
+//        moment main() walked tests/ — a bug the old existsSync gate had been
+//        accidentally hiding, since existsSync returns false on ELOOP.)
 //
 //   CONTROL (must SURVIVE): "the real tree still satisfies every runnable part".
 //   It passes under N4 and N6 — a green happy path proves nothing on its own.
 
 import { describe, expect, test } from "bun:test";
-import { existsSync, readFileSync } from "node:fs";
+import { readFileSync } from "node:fs";
 import {
   IMPORT_SCAN_EXEMPT,
   checkNoDirectImport,
   checkScope,
   checkUpstreamConfigSurface,
   importsModule,
+  readOrNull,
   runPremise,
   stripComments,
   walk,
 } from "./lint-mathjs-dismissal-premise.ts";
+
+const read = (p: string): string => readFileSync(p, "utf-8");
 
 const PKG_OK = JSON.stringify({ private: true, devDependencies: { "quantum-circuit": "0.9.250" } });
 
@@ -141,14 +152,42 @@ describe("the real tree", () => {
   test("CONTROL: the real tree still satisfies every runnable part", () => {
     const files = [...walk("src"), ...walk("tools")];
     expect(files.length).toBeGreaterThan(100);
-    const installed = "node_modules/quantum-circuit/lib/quantum-circuit.js";
     const r = runPremise(
-      readFileSync("package.json", "utf-8"),
+      read("package.json"),
       files,
-      (p) => readFileSync(p, "utf-8"),
-      existsSync(installed) ? readFileSync(installed, "utf-8") : null,
+      read,
+      readOrNull("node_modules/quantum-circuit/lib/quantum-circuit.js", read),
     );
     expect(r.failures).toEqual([]);
+  });
+
+  test("readOrNull returns null for an absent path and never gates on existsSync", () => {
+    expect(readOrNull("definitely/not/here.js", read)).toBeNull();
+    expect(readOrNull("package.json", read)).toContain("quantum-circuit");
+  });
+
+  test("readOrNull rethrows a non-ENOENT error rather than swallowing it", () => {
+    expect(() =>
+      readOrNull("x", () => {
+        throw Object.assign(new Error("EACCES"), { code: "EACCES" });
+      }),
+    ).toThrow("EACCES");
+  });
+
+  test("walk treats an absent root as empty and a file root as one file", () => {
+    expect(walk("definitely/not/a/dir")).toEqual([]);
+    expect(walk("src/Core.TypeScript/hygiene/lint-mathjs-dismissal-premise.ts")).toEqual([
+      "src/Core.TypeScript/hygiene/lint-mathjs-dismissal-premise.ts",
+    ]);
+  });
+
+  // N8. The repo carries a deliberate symlink LOOP fixture. Following it recurses
+  // until ELOOP, which is what the first draft of walk() did the moment main()
+  // reached tests/ — the failure the removed existsSync gate had been hiding,
+  // because existsSync returns false on ELOOP as well as on ENOENT.
+  test("walk does not follow symlinks (the tests/ fixture is a LOOP)", () => {
+    const files = walk("tests/cross-verification/experience/fixtures/tree1");
+    expect(files.every((f) => !f.includes("link_to_parent"))).toBe(true);
   });
 
   test("quantum-circuit is still imported — the dismissal never claimed otherwise", () => {
