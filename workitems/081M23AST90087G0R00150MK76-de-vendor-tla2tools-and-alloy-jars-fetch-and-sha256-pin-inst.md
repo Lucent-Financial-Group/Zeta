@@ -91,6 +91,17 @@ while the jar was in git; armed the moment it started being fetched. Replaced by
 off the gate leg a skip is honest de-duplication, on it a missing toolchain is a
 failure.
 
+## Named gap: Windows dev laptops
+
+`tools/setup/install.ps1` does not drive the Bun setup realizers at all — only
+`linux.sh` and `macos.sh` call `realize_mechanisms`. While the jar was committed
+a Windows clone simply had it; now a Windows dev gets no Alloy jar and the Alloy
+suite skips there. **Not a CI regression**: `toolchainReady ()` already filtered
+Alloy to Linux x64 on CI, and the new gate-leg assertion skips off that leg by
+construction. Not a silent one either — `run-alloy.ts` exits 2 naming the missing
+jar. Wiring `from-url` into the PowerShell install graph is its own change;
+recorded here so it is a known gap rather than a discovered one.
+
 ## Not done, reported instead
 
 - **The fetched jar is not in the `actions/cache` blocks** (17 of them across
