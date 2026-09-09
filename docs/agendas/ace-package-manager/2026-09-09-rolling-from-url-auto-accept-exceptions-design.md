@@ -141,7 +141,7 @@ with **nothing** judging them — but it is not zero.
 
 ### The erosion finding is the safety property this rests on
 
-§8a records that a re-pin can silently **narrow** a verifier pin: `TLC2 Version `
+§8a records that a re-pin can silently **narrow** a verifier pin: `TLC2 Version` (prefix, trailing space included)
 was deleted from all three pin surfaces, `judgeToolchainBanner`'s
 `stdout.includes(pinned)` stayed satisfied, the sweep passed 52/52, and the check
 permanently stopped checking part of what it checked. It was found by reading the
@@ -472,7 +472,7 @@ Fixing the above opened a second, nastier failure that a green run cannot
 distinguish from success. My first `identityPattern` matched
 `TLC2 Version <ts> (rev: <rev>)` — the way the banner *reads* in the surface —
 while `deriveIdentity` emits only `<ts> (rev: <rev>)`. Substituting the wider
-match with the narrower value **deleted `TLC2 Version ` from all three pin
+match with the narrower value **deleted `TLC2 Version` (prefix, trailing space included) from all three pin
 surfaces**.
 
 **Nothing went red.** `judgeToolchainBanner` asks `stdout.includes(pinned)`, and
