@@ -82,3 +82,27 @@ A shared prerequisite step failing turns into N red checks with an annotation th
 neither the step nor the cause, while the checks those jobs exist to run report `skipped`.
 Sixteen jobs reporting failure for one install is an attribution problem of exactly the
 class the per-language lint split solved once already. Worth its own row.
+
+## Correction, 22:21 UTC — a rate I inferred from a count
+
+| time (UTC) | upstream digest |
+| --- | --- |
+| 21:40 | `8836549e83db7f0b...` (CI job 102654384302) |
+| 22:11 | `8836549e83db7f0b...` (independent measurement) |
+| 22:21 | `8836549e83db7f0b...` (independent measurement) |
+
+Upstream has held ONE digest for about 40 minutes.
+
+The section above called a fourth re-pin *"a bet with a three-hour half-life."* That was an
+extrapolation from three digests inside three hours — two intervals — and the measurements
+since do not support it. **A count is not a rate.** Withdrawn. Upstream most likely
+republished twice in one prerelease build burst and has been stable since, so **a re-pin to
+`8836549e...` may well hold**, and nothing here should be read as an argument against firing
+the documented remedy.
+
+Unchanged, because none of it rested on the cadence claim: the 21:29 re-pin **was already
+stale when its own CI ran at 21:40** (measured, not projected); the block is repo-wide;
+moving the pin still re-measures a verifier and stays the row owner.s call; and the
+attribution finding stands on its own.
+
+Re-measure before acting — including not taking the 22:21 reading here on trust.
