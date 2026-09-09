@@ -14,6 +14,7 @@ import {
   fetchToBuffer,
   identityFromSurfaces,
   identityPattern,
+  identityRoundTrips,
   receiptRow,
   rewriteManifestRow,
   sha256Of,
@@ -181,12 +182,20 @@ describe("sha256Of", () => {
 // anything. A control has to live OUTSIDE the mutated unit, which is why the two
 // above replaced it. The banner test is still a good FALSIFIER; it is simply not
 // a control.
-const TLC_A = "TLC2 Version 2026.09.09.162536 (rev: 4ad12e8)";
-const TLC_B = "TLC2 Version 2026.09.09.213036 (rev: ede5b88)";
+// THE DERIVED FORM, which is what `tlcVersionFromManifest` emits and therefore
+// the only thing `identityPattern` may match. An earlier version of these
+// constants carried the `TLC2 Version ` prefix -- and so these tests ASSERTED
+// THE DEFECT: they passed while substitution silently truncated the prefix out
+// of every pin surface. Tests written from the same misunderstanding as the code
+// are not evidence, and this pair is the standing reminder.
+const TLC_A = "2026.09.09.162536 (rev: 4ad12e8)";
+const TLC_B = "2026.09.09.213036 (rev: ede5b88)";
 
 describe("identityFromSurfaces", () => {
   test("a matching TLC banner is found verbatim", () => {
-    expect(identityFromSurfaces("jar-tlc", [`"versionBanner": "${TLC_A}",`])).toBe(TLC_A);
+    // The surface carries the prefix; the IDENTITY does not. Finding the derived
+    // substring is what lets substitution leave the prefix intact.
+    expect(identityFromSurfaces("jar-tlc", [`"versionBanner": "TLC2 Version ${TLC_A}",`])).toBe(TLC_A);
   });
 
   test("the same banner in several surfaces is one answer", () => {
@@ -205,8 +214,8 @@ describe("identityFromSurfaces", () => {
     // Two hazards in one line: prose that says "TLC2 Version" without being one
     // (the registry's own `note` field does exactly this), and a greedy pattern
     // that would match from the first mention to the last and return a string
-    // that substitutes nothing. The answer must be the banner, exactly.
-    const line = `"versionBanner": "${TLC_A}", "note": "TLC2 Version is checked here"`;
+    // that substitutes nothing. The answer must be the derived value, exactly.
+    const line = `"versionBanner": "TLC2 Version ${TLC_A}", "note": "TLC2 Version is checked here"`;
     expect(identityFromSurfaces("jar-tlc", [line])).toBe(TLC_A);
     expect(identityPattern("jar-tlc").test(TLC_A)).toBe(true);
   });
@@ -223,5 +232,59 @@ describe("identityFromSurfaces", () => {
 
   test("an unknown identity kind throws rather than returning null", () => {
     expect(() => identityFromSurfaces("jar-mystery", ["x"])).toThrow("unknown identity=");
+  });
+});
+
+// ── THE TRUNCATION DEFECT, 2026-09-09 — caught in the tree, before it shipped ─
+//
+// The first identityPattern for jar-tlc included the `TLC2 Version ` prefix,
+// because that is how the banner READS in registry/tlc-models.json. But
+// tlcVersionFromManifest emits the value WITHOUT that prefix, so substituting a
+// wider match with a narrower value deleted the prefix from all three pin
+// surfaces. `judgeToolchainBanner` is a substring test, so the truncated pin was
+// STILL satisfied by TLC's real banner: the sweep passed 52/52 and nothing went
+// red while the verifier pin got permanently weaker.
+//
+// MUTATION LOG — 3 mutants, 3 killed:
+//   T1 identityPattern(jar-tlc) -> include the `TLC2 Version ` prefix again
+//      KILLED — "a pattern matching more than the derived value does not round-trip"
+//              + "substitution PRESERVES the prefix in a real pin surface"
+//   T2 identityRoundTrips -> `matches.length >= 1` (ignore extra matches)
+//      KILLED — "a pattern matching more than the derived value does not round-trip"
+//   T3 identityRoundTrips -> always true
+//      KILLED — "a pattern matching more than the derived value does not round-trip"
+// CONTROL (must survive): `substituteAll` and `rewriteManifestRow`.
+const TLC_DERIVED = "2026.09.09.213036 (rev: ede5b88)";
+const TLC_SURFACE = '"versionBanner": "TLC2 Version 2026.09.09.162536 (rev: 4ad12e8)"';
+
+describe("identity round-trip — the anti-truncation invariant", () => {
+  test("the derived identity round-trips", () => {
+    // What deriveIdentity emits must be matched WHOLE, or substitution corrupts.
+    expect(identityRoundTrips("jar-tlc", TLC_DERIVED)).toBe(true);
+    expect(identityRoundTrips("jar-alloy", "6.2.0.202501090818 (rev: v6.2.0)")).toBe(true);
+  });
+
+  test("a pattern matching more than the derived value does not round-trip", () => {
+    // The shape of the defect: the surface form carries a prefix the derived
+    // form does not. The prefixed string must NOT round-trip, because a pattern
+    // that accepted it would truncate on substitution.
+    expect(identityRoundTrips("jar-tlc", "TLC2 Version " + TLC_DERIVED)).toBe(false);
+  });
+
+  test("substitution PRESERVES the prefix in a real pin surface", () => {
+    // The end-to-end regression: exactly what repin-rolling does, and the result
+    // must keep `TLC2 Version `.
+    const old = identityFromSurfaces("jar-tlc", [TLC_SURFACE]);
+    expect(old).toBe("2026.09.09.162536 (rev: 4ad12e8)");
+    const { text } = substituteAll(TLC_SURFACE, [[old as string, TLC_DERIVED]]);
+    expect(text).toBe('"versionBanner": "TLC2 Version ' + TLC_DERIVED + '"');
+    expect(text).toContain("TLC2 Version");
+  });
+
+  test("the truncated banner is still a SUBSTRING of the real one — why nothing went red", () => {
+    // Documents why this defect is dangerous rather than loud:
+    // judgeToolchainBanner asks stdout.includes(pinned), so a truncated pin
+    // keeps passing against the full banner it no longer fully describes.
+    expect(("TLC2 Version " + TLC_DERIVED).includes(TLC_DERIVED)).toBe(true);
   });
 });

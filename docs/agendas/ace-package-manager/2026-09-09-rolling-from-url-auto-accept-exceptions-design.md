@@ -90,12 +90,69 @@ that says which bytes arrived, **cannot distinguish a meaningful upstream change
 from a rebuild of identical source.** Every fleet-wide breakage above may have
 been paid for nothing.
 
-This is the strongest available argument for the option the maintainer has not
-yet decided: **mirror the measured bytes to one immutable asset under our own
-org.** It keeps every property asked for — no jar in git, newest checker, clone
-at a tag still sufficient — and removes the breakage window entirely, at the
-price of redistributing an MIT-licensed third-party binary. **Put in front of him
-with this incident attached rather than decided here.**
+That was the strongest available argument for mirroring the measured bytes to one
+immutable asset under our own org. **The maintainer has now DECIDED AGAINST IT**
+(2026-09-09):
+
+> *"i'd rather just allow the roll instead of mirror and have an exception that
+> allows for full rolling, we are going to run into this case again and again in
+> the future, the exception is the important thing, then i don't think we [need]
+> the mirror."*
+
+**So the mirror is off the table and the exception mechanism is the answer.** The
+reasoning is about generality rather than this one jar: rolling upstreams will
+recur, and a mirror solves one instance while an exception register solves the
+class. Recorded here because the paragraph above previously recommended the
+mirror, and a doc that argues for a decided-against option is worse than one that
+says nothing.
+
+## 2b-bis. FULL ROLLING is the follow-up this design is shaped for
+
+Today's exception unblocks `install.sh` and **stops there** — which is exactly why
+the head that carried it went red: install succeeded, then 52 TLC models refused
+the jar on the committed banner. Under the decision above **that residue is not an
+acceptable steady state**, because it would require a human re-pin every time
+upstream rebuilds, forever.
+
+**A fully-rolling ref must therefore advance BOTH the digest AND the pinned
+identity, with no human in the loop — and the sweep is what gates the advance.**
+
+```
+fetch → digest differs → run the ref's declared remeasure=
+        ├─ PASSES → advance digest AND identity together, write a receipt
+        └─ FAILS  → stop. Do not advance. Report.
+```
+
+**The gate is what keeps "full rolling" from being "trust whatever arrives."** It
+is a genuine falsifier and not a formality: if a new verifier disagreed with the
+old one about anything this repo asserts, 52 models would say so. A failing sweep
+is a real finding about a new verifier and must **never** be absorbed by advancing
+anyway.
+
+Every advance records old digest, new digest, old identity, new identity and the
+sweep result, so the claim traces to the measurement that earned it.
+
+**The residual risk the maintainer is accepting, stated plainly:** a verifier can
+change behaviour in a way the 52 models do not cover, and full rolling would adopt
+it silently because the sweep passed. The sweep bounds the risk to *behaviour our
+models do not exercise*; it does not eliminate it. That is a smaller and much
+better-characterised exposure than the auto-accept in §6, which adopts new bytes
+with **nothing** judging them — but it is not zero.
+
+### The erosion finding is the safety property this rests on
+
+§8a records that a re-pin can silently **narrow** a verifier pin: `TLC2 Version `
+was deleted from all three pin surfaces, `judgeToolchainBanner`'s
+`stdout.includes(pinned)` stayed satisfied, the sweep passed 52/52, and the check
+permanently stopped checking part of what it checked. It was found by reading the
+diff, not by a test — because a truncated substring pin has no symptom.
+
+**Under full rolling that identity-substitution becomes automatic and frequent.**
+So `identityRoundTrips` — which refuses, with exit 2, *before* touching any
+surface, when a pattern does not match its derived value exactly-once-and-whole —
+stops being a nicety and becomes **the safety property the whole mechanism rests
+on**. An automatic pin-rewriter without it would erode its own checks a little on
+every roll, silently, forever.
 
 ## 2c. The governing idea: GRANTED versus ACCIDENTAL exceptions
 
@@ -138,6 +195,11 @@ matter:
    The trade is legitimate precisely because the exceptions are recorded and
    countable. §6 states what an attacker who controls a granted-exception URL can do
    while it is live.
+
+**A fully-rolling ref is a granted exception**, and this register is its natural
+home: it carries a stated reason and an exit condition, and everything outside the
+register still fails closed. That is what keeps "allow the roll" from becoming
+"nothing is pinned".
 
 **Not built in this diff, deliberately** — the repository is red at
 `Install toolchain…` for three authors, and the unblock ships first. What is built

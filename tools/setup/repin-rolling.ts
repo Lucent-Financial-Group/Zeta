@@ -111,11 +111,41 @@ export function deriveIdentity(kind: string | undefined, absPath: string): strin
  * drifted, and matching against bytes cannot.
  */
 export function identityPattern(kind: string): RegExp {
-  // TLC: `TLC2 Version 2026.09.09.162536 (rev: 4ad12e8)`.
-  if (kind === "jar-tlc") return /TLC2 Version \d{4}\.\d{2}\.\d{2}\.\d{6} \(rev: [0-9a-f]+\)/g;
-  // Alloy: `<Bundle-Version> (rev: <Git-Descriptor>)`.
+  // THE PATTERN MUST MATCH EXACTLY WHAT `deriveIdentity` EMITS -- no more.
+  //
+  // MEASURED DEFECT, 2026-09-09, caught before it shipped: the first version of
+  // this pattern included the `TLC2 Version ` prefix, because that is how the
+  // banner READS in the surface. But `tlcVersionFromManifest` returns
+  // `2026.09.09.213036 (rev: ede5b88)` WITHOUT that prefix, so substituting the
+  // wider match with the narrower value silently DELETED the prefix from every
+  // pin surface -- turning `"versionBanner": "TLC2 Version 2026...(rev: ...)"`
+  // into `"versionBanner": "2026...(rev: ...)"`.
+  //
+  // WHY THAT IS DANGEROUS RATHER THAN COSMETIC: `judgeToolchainBanner` asks
+  // `stdout.includes(expected)`, and the truncated string is still a substring
+  // of TLC's real banner. So the sweep passed 52/52 and NOTHING went red -- the
+  // verifier pin just got weaker, permanently, in a diff that reads as a routine
+  // re-pin. A check that quietly stops checking part of what it checked is the
+  // vacuity class arriving by erosion.
+  //
+  // So: match the derived form only, and let the surrounding prose keep its own
+  // prefix. `identityRoundTrips` below is the falsifier for this.
+  if (kind === "jar-tlc") return /\d{4}\.\d{2}\.\d{2}\.\d{6} \(rev: [0-9a-f]+\)/g;
+  // Alloy: `<Bundle-Version> (rev: <Git-Descriptor>)`, as `alloyVersionFromManifest` emits it.
   if (kind === "jar-alloy") return /\d+(?:\.\d+)+ \(rev: [^)\s]+\)/g;
   throw new Error(`unknown identity=${kind} (jar-tlc|jar-alloy)`);
+}
+
+/**
+ * The invariant the defect above violated: an identity DERIVED from bytes must
+ * be matched WHOLE by the pattern used to find its predecessor in a surface.
+ * If the pattern can match something wider, substitution truncates; if narrower,
+ * substitution leaves a fragment. Either way the restatement stops meaning what
+ * it meant.
+ */
+export function identityRoundTrips(kind: string, derived: string): boolean {
+  const matches = [...derived.matchAll(identityPattern(kind))].map((m) => m[0]);
+  return matches.length === 1 && matches[0] === derived;
 }
 
 /**
@@ -410,6 +440,22 @@ async function main(argv: readonly string[]): Promise<number> {
       : pin.identity === undefined || pin.identity === ""
         ? null
         : identityFromSurfaces(pin.identity, surfaceTexts);
+  // The round-trip invariant, ENFORCED rather than trusted. A pattern that does
+  // not match its own derived identity exactly will truncate or fragment every
+  // pin surface it touches, and -- because the banner check is a substring test
+  // -- it can do so without turning anything red. Refuse before writing.
+  if (pin.identity !== undefined && pin.identity !== "" && newIdentity !== null
+      && !identityRoundTrips(pin.identity, newIdentity)) {
+    rollback();
+    die(
+      2,
+      `identity=${pin.identity} does not round-trip: the derived value` +
+        `\n  "${newIdentity}"\n  is not matched WHOLE by identityPattern(${pin.identity}).` +
+        "\n  Substituting would truncate or fragment every pin surface, and because the" +
+        "\n  banner check is a substring test it could do so without failing anything." +
+        "\n  Fix identityPattern so it matches exactly what deriveIdentity emits.",
+    );
+  }
   if (pin.identity !== undefined && pin.identity !== "" && oldIdentity === null) {
     rollback();
     // Exit 2 BEFORE the re-measure, not exit 1 after it. Six minutes of TLC
