@@ -121,7 +121,18 @@ triangles would have left the substrate, which is the whole line Aaron drew.
 
 Output format is Wavefront **OBJ** — text, so it stays diffable in the proof lineage
 (`no-binary-in-proof-lineage`), and it opens directly in Blender, which is the handoff
-surface the character work already uses.
+surface the character work already uses. It is **not committed**: the generator is the
+artifact, and a checked-in copy would be a second source of truth that can drift from it.
+
+```bash
+bun -e 'import {renderObj} from "./src/Core.TypeScript/research/clifford-e8-eigenlayer-tessellation.ts"; \
+  await Bun.write("e8-layer.obj", renderObj());'
+```
+
+**Measured: 11,854 bytes**, 240 `v` lines and 240 `l` lines. Against §2.4's 8 MB bundle
+ceiling that is **0.14%** — so for this rung, size is not a constraint and will not become
+one until a face set and textures arrive. Worth stating because "bake it all into 8 MB"
+sounds tight and, at rung 3, is not.
 
 ---
 
