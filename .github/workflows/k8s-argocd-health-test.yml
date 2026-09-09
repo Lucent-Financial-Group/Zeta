@@ -2066,6 +2066,63 @@ jobs:
           done
           echo "all $total ConstraintTemplates compiled and created"
 
+      # A COMPILED TEMPLATE IS NOT AN INSTALLED POLICY.
+      #
+      # The step above proves gatekeeper compiled the Rego and generated the
+      # constraint CRDs. It says nothing about whether the seven CONSTRAINTS --
+      # the policy instances, the objects that actually enforce anything -- were
+      # ever applied. Those are separate objects, ArgoCD assigns them NO HEALTH,
+      # and `isApplicationSynced` admits `OutOfSync + Healthy` for git-directory
+      # apps like hat-system. So an app holding zero installed policies reads
+      # exactly like one holding seven.
+      #
+      # MEASURED on run 34390707656 -- the GREEN 37/37 main run, taken AFTER the
+      # template check landed. hat-system was `OutOfSync/Healthy` at proof time
+      # with all seven ConstraintTemplates `sync=OutOfSync health=-`, and not one
+      # of the seven Constraints present in the resource list at all. The
+      # template step then passed 31 seconds later because it waits. The half
+      # that is checked recovers and says so; this half had never been observed.
+      #
+      # The roster is DERIVED from the committed policy YAML by
+      # `hat-constraint-roster.ts`, which exits 1 on an empty roster and refuses
+      # a Constraint whose kind no template declares. A hardcoded list of seven
+      # names is the drift this repo has already been bitten by: an eighth policy
+      # lands and the check keeps passing over seven.
+      #
+      # GATES ON EXISTENCE, not on `status.byPod[].enforced`. Existence is what
+      # was FALSE in the measured runs, so it is a real falsifier today;
+      # enforcement is printed as diagnostics rather than gated because nothing
+      # has yet measured how long gatekeeper takes to load a fresh constraint on
+      # a cold kind node, and a timeout nobody measured is a flake dressed as a
+      # check. Promoting it is a follow-up with a measurement attached.
+      - name: Every Hat Constraint is applied
+        if: always() && steps.proof.conclusion != 'skipped'
+        run: |
+          set -o pipefail
+          bun src/Core.TypeScript/cluster/hat-constraint-roster.ts > "$RUNNER_TEMP/hat-constraints.txt"
+          if [ ! -s "$RUNNER_TEMP/hat-constraints.txt" ]; then
+            echo "::error::the Hat Constraint roster is empty -- a loop over it would pass trivially, which is the check-that-cannot-fail this step exists to remove"
+            exit 1
+          fi
+          cat "$RUNNER_TEMP/hat-constraints.txt"
+          DEADLINE=$(( SECONDS + 300 ))
+          while :; do
+            missing=""
+            while read -r kind name; do
+              [ -n "$kind" ] || continue
+              resource="$(printf '%s' "$kind" | tr '[:upper:]' '[:lower:]').constraints.gatekeeper.sh"
+              kubectl get "$resource" "$name" >/dev/null 2>&1 || missing="$missing $kind/$name"
+            done < "$RUNNER_TEMP/hat-constraints.txt"
+            if [ -z "$missing" ]; then break; fi
+            if [ "$SECONDS" -ge "$DEADLINE" ]; then
+              echo "::error::Hat Constraints never applied:$missing -- gatekeeper holds fewer policies than the repo declares, and ArgoCD gives Constraints no health so hat-system still reads Healthy"
+              exit 1
+            fi
+            sleep 10
+          done
+          echo "all Hat Constraints applied"
+          kubectl get constraints -o json 2>/dev/null | jq -r '.items[] | "\(.kind)/\(.metadata.name): byPod=\((.status.byPod // []) | length)"' || true
+
       # NAME THE RESOURCE, NOT JUST THE APPLICATION.
       #
       # Added 2026-08-21 after a run where `weaviate` reported
