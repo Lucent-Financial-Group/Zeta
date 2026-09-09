@@ -43,11 +43,13 @@
 import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import {
+  ACCEPTS_LEDGER,
   EXCEPTIONS_MANIFEST,
   MAX_EXCEPTION_DAYS,
   daysBetween,
   isCalendarDate,
   parseRollingExceptions,
+  readAcceptanceLedger,
   verifyArgv,
   type RollingException,
 } from "../ace/setup-realizers/rolling-exception.ts";
@@ -242,4 +244,26 @@ if (import.meta.main) {
       ? "OK no rolling auto-accept exceptions are declared (every rolling row fails closed)\n"
       : rows.map((row) => `OK ${row.dest} accept=${String(row.accept)} expires=${String(row.expires)}\n`).join(""),
   );
+
+  // THE READ BOUNDARY, and the fold's consumer. Reading through
+  // `readAcceptanceLedger` rather than the file is the whole point: duplicate
+  // lines written by racing installs fold to one fact here, which is what lets
+  // the writers stay lock-free. `occurrences > 1` is reported rather than hidden
+  // -- it is the only evidence the ledger keeps that two installs raced.
+  //
+  // In CI the ledger is normally ABSENT (it is untracked and per-machine), so
+  // this prints one honest line and claims nothing. A fold nothing ever read
+  // would be a golden vector nobody opens.
+  const accepted = readAcceptanceLedger(repoRoot);
+  if (accepted.length === 0) {
+    process.stdout.write(`-- no local acceptances recorded in ${ACCEPTS_LEDGER}\n`);
+  } else {
+    for (const record of accepted) {
+      const raced = record.occurrences > 1 ? `  (folded ${String(record.occurrences)} racing writes)` : "";
+      process.stdout.write(
+        `-- accepted ${record.dest} ${String(record.from).slice(0, 8)} -> ${String(record.to).slice(0, 8)}` +
+          ` verdict=${String(record.verdict)} first-seen=${String(record.when)}${raced}\n`,
+      );
+    }
+  }
 }

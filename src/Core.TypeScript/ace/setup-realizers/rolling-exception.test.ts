@@ -6,7 +6,7 @@
 // supposed to be one hair away from, and the mutation log names which line each
 // mutant changed.
 //
-// ── MUTATION LOG (2026-09-09) — 14 mutants applied, 13 killed, 1 DISCLOSED ───
+// ── MUTATION LOG (2026-09-09) — 18 mutants applied, 17 killed, 1 DISCLOSED ───
 //
 // Applied to rolling-exception.ts one at a time, `bun test` after each:
 //
@@ -48,6 +48,15 @@
 //      kill is near the vacuity class, and saying so is better than a green tick
 //      that would be a lie. If someone finds the killer, delete this note.
 //
+// M15  foldAcceptanceRecords: return `rows` unfolded
+//      KILLED — "two racing writers' duplicate lines fold to ONE fact"
+// M16  foldAcceptanceRecords: identity = dest only (folds everything together)
+//      KILLED — "DIFFERENT facts are NOT folded together"
+// M17  foldAcceptanceRecords: keep the LATEST clock instead of the earliest
+//      KILLED — "the EARLIEST clock survives the fold"
+// M18  readAcceptanceLedger: return raw rows without folding
+//      KILLED — "duplicates that BYPASS the write-side scan still fold on read"
+//
 // ── DECLARED CONTROLS — these MUST SURVIVE every mutant above ────────────────
 //
 //  C1  "an active exception parses its fields"     — pure parsing, no policy
@@ -57,7 +66,7 @@
 // and the entry is wrong. Controls are marked `CONTROL:` in their names.
 
 import { describe, expect, test } from "bun:test";
-import { mkdtempSync, readFileSync, writeFileSync, mkdirSync } from "node:fs";
+import { appendFileSync, mkdtempSync, readFileSync, writeFileSync, mkdirSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import {
@@ -69,9 +78,12 @@ import {
   appendAcceptanceRecord,
   daysBetween,
   decideRollingAccept,
+  foldAcceptanceRecords,
   isCalendarDate,
   loadRollingExceptions,
+  parseAcceptanceLedger,
   parseRollingExceptions,
+  readAcceptanceLedger,
   rollingRemedy,
   verifyArgv,
   type AcceptEffects,
@@ -413,6 +425,112 @@ describe("the acceptance record", () => {
     }));
     const text = readFileSync(join(root, ACCEPTS_LEDGER), "utf8");
     expect(text).toContain("NOT A RE-MEASURE RECEIPT");
+  });
+});
+
+describe("the read-side fold — where idempotency actually lives", () => {
+  const row = (to: string, when: string): string =>
+    acceptanceRecordLine({
+      dest: DEST, from: PINNED, to, when,
+      verify: "deferred", verdict: "not-run", outcome: "accepted", expires: "2026-12-08",
+    });
+
+  test("two racing writers' duplicate lines fold to ONE fact", () => {
+    // This is the property that lets the write path stay lock-free: the
+    // duplicate is not prevented, it is made harmless.
+    const rows = parseAcceptanceLedger(
+      row(FETCHED, "2026-09-09T12:00:00.000Z") + "\n" + row(FETCHED, "2026-09-09T12:00:00.900Z"),
+    );
+    expect(rows).toHaveLength(2);
+    const folded = foldAcceptanceRecords(rows);
+    expect(folded).toHaveLength(1);
+    expect((folded[0] as { occurrences: number }).occurrences).toBe(2);
+  });
+
+  test("the EARLIEST clock survives the fold", () => {
+    const folded = foldAcceptanceRecords(
+      parseAcceptanceLedger(
+        row(FETCHED, "2026-09-09T18:00:00.000Z") + "\n" + row(FETCHED, "2026-09-09T09:00:00.000Z"),
+      ),
+    );
+    expect((folded[0] as { when: string | null }).when).toBe("2026-09-09T09:00:00.000Z");
+  });
+
+  test("fold(fold(x)) === fold(x) — the fold is idempotent", () => {
+    // `f(f(x)) = f(x)`, discipline #6 stated as the algebra rather than as a
+    // promise about writers. A second fold must be the identity on records.
+    const once = foldAcceptanceRecords(
+      parseAcceptanceLedger(
+        row(FETCHED, "2026-09-09T12:00:00.000Z") + "\n" +
+        row(FETCHED, "2026-09-09T12:00:00.900Z") + "\n" +
+        row("c".repeat(64), "2026-09-09T13:00:00.000Z"),
+      ),
+    );
+    const twice = foldAcceptanceRecords(once);
+    expect(twice).toEqual(once);
+  });
+
+  test("DIFFERENT facts are NOT folded together", () => {
+    // The control on the fold: collapsing everything would be a fold that
+    // cannot fail, and it would erase the second acceptance entirely.
+    const folded = foldAcceptanceRecords(
+      parseAcceptanceLedger(
+        row(FETCHED, "2026-09-09T12:00:00.000Z") + "\n" + row("c".repeat(64), "2026-09-09T13:00:00.000Z"),
+      ),
+    );
+    expect(folded).toHaveLength(2);
+    expect(folded.every((r) => r.occurrences === 1)).toBe(true);
+  });
+
+  test("a differing VERDICT is a different fact and stays separate", () => {
+    const accepted = row(FETCHED, "2026-09-09T12:00:00.000Z");
+    const refused = acceptanceRecordLine({
+      dest: DEST, from: PINNED, to: FETCHED, when: "2026-09-09T13:00:00.000Z",
+      verify: "tools/x.ts", verdict: "fail", outcome: "refused", expires: "2026-12-08",
+    });
+    expect(foldAcceptanceRecords(parseAcceptanceLedger(accepted + "\n" + refused))).toHaveLength(2);
+  });
+
+  test("order is by FIRST appearance, so the ledger still reads chronologically", () => {
+    const folded = foldAcceptanceRecords(
+      parseAcceptanceLedger(
+        row("c".repeat(64), "2026-09-09T13:00:00.000Z") + "\n" +
+        row(FETCHED, "2026-09-09T12:00:00.000Z") + "\n" +
+        row("c".repeat(64), "2026-09-09T14:00:00.000Z"),
+      ),
+    );
+    expect(folded.map((r) => r.to)).toEqual(["c".repeat(64), FETCHED]);
+  });
+
+  test("comments and blanks are not records", () => {
+    expect(parseAcceptanceLedger("# header\n\n   \n")).toHaveLength(0);
+  });
+
+  test("an ABSENT ledger reads as no acceptances, not a throw", () => {
+    const root = mkdtempSync(join(tmpdir(), "zeta-noledger-"));
+    expect(readAcceptanceLedger(root)).toHaveLength(0);
+  });
+
+  test("readAcceptanceLedger folds what appendAcceptanceRecord wrote", () => {
+    const root = mkdtempSync(join(tmpdir(), "zeta-ledger-"));
+    appendAcceptanceRecord(root, row(FETCHED, "2026-09-09T12:00:00.000Z"));
+    appendAcceptanceRecord(root, row("c".repeat(64), "2026-09-09T13:00:00.000Z"));
+    const read = readAcceptanceLedger(root);
+    expect(read).toHaveLength(2);
+    expect(read[0]?.dest).toBe(DEST);
+  });
+
+  test("duplicates that BYPASS the write-side scan still fold on read", () => {
+    // Simulates the racing-writer case the scan cannot prevent: append the raw
+    // line twice, straight to the file, as two concurrent O_APPEND writes would.
+    const root = mkdtempSync(join(tmpdir(), "zeta-race-"));
+    appendAcceptanceRecord(root, row(FETCHED, "2026-09-09T12:00:00.000Z"));
+    appendFileSync(join(root, ACCEPTS_LEDGER), row(FETCHED, "2026-09-09T12:00:00.900Z") + "\n");
+    const raw = parseAcceptanceLedger(readFileSync(join(root, ACCEPTS_LEDGER), "utf8"));
+    expect(raw).toHaveLength(2);
+    const read = readAcceptanceLedger(root);
+    expect(read).toHaveLength(1);
+    expect(read[0]?.occurrences).toBe(2);
   });
 });
 

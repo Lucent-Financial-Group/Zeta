@@ -201,9 +201,47 @@ too: a failed verification is the most informative event this mechanism can
 produce, and it is also what keeps `verdict=fail` reachable rather than
 decorative.
 
-Idempotent (discipline #6): the realizer re-fetches on every run while the pin
-and the accepted bytes disagree, so a naive append would write one line per
-install and bury the event. The dedup identity is the row minus its clock.
+### 4a. Idempotent at the READ boundary — and why not a lock
+
+The realizer re-fetches on every run while the pin and the accepted bytes
+disagree, so a naive append writes one line per install and buries the event.
+The obvious fix — dedup before appending — is a read followed by a write, i.e. a
+window: two concurrent installs can both see "absent" and both append. The
+reflex at that point is a lock file.
+
+**That reflex is wrong here.** The maintainer, 2026-09-09:
+
+> *"i really don't like locks if they can be avoided or swapped to a CAS, locks
+> are a small but sometimes they can be the best option but others should be
+> thought about first instead of just landing on locks."*
+
+**So duplicates are made HARMLESS rather than prevented.** The ledger is an
+append-only log; `foldAcceptanceRecords` collapses identical rows at **read**
+time, keeping the earliest clock and counting the copies. N lines describing one
+fact fold to one record, and the reader cannot tell how many writers raced.
+
+That is discipline #6 in its proper form — **apply-N-times equals apply-once in
+EFFECT, achieved by an idempotent fold rather than by serialising the writers** —
+and it is the same G-Set / Z-set merge shape the substrate already leans on. The
+claim it earns is therefore **idempotent at the read boundary**, which is both
+stronger and true, where the earlier draft could only say *advisory*.
+
+| piece | what it is for |
+|---|---|
+| `appendFileSync` (`O_APPEND`, one `write(2)`) | **atomic.** Two writers give two whole lines, never one torn line |
+| the write-side scan | **a noise reducer, not a correctness mechanism.** If it loses a race, the fold absorbs it |
+| `foldAcceptanceRecords` at read | **where idempotency lives.** `fold(fold(x)) == fold(x)`, pinned by a test |
+| the `wx` header create | the one genuine race, closed by the **filesystem** rather than by a lock |
+
+**The general rule this leaves behind, worth stating because this mechanism will
+grow consumers: prefer an idempotent read-side fold; then a CAS; and where a
+lock genuinely is the answer, say why the fold could not be, rather than
+reaching for it first.**
+
+`occurrences > 1` is **reported, not hidden** — it is the only evidence the
+ledger keeps that two installs ran concurrently, and `lint-rolling-exceptions.ts`
+prints it. That lint is the fold's consumer: a fold nothing reads would be a
+golden vector nobody opens.
 
 **It is emphatically NOT `from-url-rolling-receipts`.** That ledger means *this
 digest was judged by a re-measure that passed* and is what buys a moved pin.
@@ -376,6 +414,10 @@ strict behaviour, not a broken one.
 - **A hand-written acceptance record passes.** Same admission the two receipt
   ledgers make. The record is a convenience for the operator and an audit trail,
   never a proof.
+- **The fold makes duplicates harmless, not impossible.** Two racing installs
+  still write two lines; what is guaranteed is that every reader going through
+  `readAcceptanceLedger` sees one fact. A consumer that reads the file directly
+  re-exposes them, which is why the fold is the declared read boundary.
 - **The `attacker`-word check in the lint is crude.** It cannot tell a good
   security paragraph from a bad one. What it buys is that the section cannot be
   quietly dropped, which is the failure that actually happens.

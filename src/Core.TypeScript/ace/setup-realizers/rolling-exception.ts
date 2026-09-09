@@ -272,39 +272,145 @@ function withoutClock(line: string): string {
     .join(" ");
 }
 
+/** One folded row of the acceptance ledger. */
+export interface AcceptanceRecord {
+  readonly dest: string;
+  readonly from: string | null;
+  readonly to: string | null;
+  /** The EARLIEST clock among the folded copies -- when this fact first happened. */
+  readonly when: string | null;
+  readonly verify: string | null;
+  readonly verdict: string | null;
+  readonly outcome: string | null;
+  readonly expires: string | null;
+  /**
+   * How many raw lines folded into this record. `1` is the ordinary case; `>1`
+   * means writers raced, which is INFORMATION rather than corruption -- it is
+   * the only evidence the ledger keeps that two installs ran concurrently.
+   */
+  readonly occurrences: number;
+}
+
+function fieldOf(tokens: readonly string[], prefix: string): string | null {
+  for (const token of tokens) {
+    if (token.startsWith(prefix)) return token.slice(prefix.length);
+  }
+  return null;
+}
+
+/** Raw rows, one per non-comment line, in file order. */
+export function parseAcceptanceLedger(text: string): readonly AcceptanceRecord[] {
+  const rows: AcceptanceRecord[] = [];
+  for (const raw of text.split("\n")) {
+    const line = raw.trim();
+    if (line === "" || line.startsWith("#")) continue;
+    const tokens = line.split(/\s+/);
+    const dest = tokens[0];
+    if (dest === undefined) continue;
+    rows.push({
+      dest,
+      from: fieldOf(tokens, "from="),
+      to: fieldOf(tokens, "to="),
+      when: fieldOf(tokens, "when="),
+      verify: fieldOf(tokens, "verify="),
+      verdict: fieldOf(tokens, "verdict="),
+      outcome: fieldOf(tokens, "outcome="),
+      expires: fieldOf(tokens, "expires="),
+      occurrences: 1,
+    });
+  }
+  return rows;
+}
+
 /**
- * Append, IDEMPOTENTLY (discipline #6). The realizer re-fetches on every run
- * while a pin and its accepted bytes disagree, so a naive append would write one
- * line per install and bury the event it exists to surface. The identity is the
- * whole row minus its clock: same dest, same digests, same verdict, same
- * outcome ⇒ the same fact, already recorded.
+ * THE IDEMPOTENT FOLD. Collapses rows that describe the same fact -- same dest,
+ * digests, verify, verdict, outcome and expiry -- keeping the EARLIEST clock and
+ * counting how many copies there were.
  *
- * ── CONCURRENCY, STATED RATHER THAN ASSUMED ──────────────────────────────────
+ * `fold(fold(x)) == fold(x)`: folding an already-folded list is the identity on
+ * its records, because each is already the unique representative of its class.
+ * That is what makes duplicate lines harmless and lets the writers stay
+ * lock-free. Order is preserved by first appearance, so the ledger still reads
+ * chronologically.
+ */
+export function foldAcceptanceRecords(rows: readonly AcceptanceRecord[]): readonly AcceptanceRecord[] {
+  const byIdentity = new Map<string, AcceptanceRecord>();
+  const order: string[] = [];
+  for (const row of rows) {
+    const identity = [row.dest, row.from, row.to, row.verify, row.verdict, row.outcome, row.expires].join("\u0000");
+    const seen = byIdentity.get(identity);
+    if (seen === undefined) {
+      byIdentity.set(identity, row);
+      order.push(identity);
+      continue;
+    }
+    // Earliest clock wins: the fact happened when it FIRST happened, and a
+    // later duplicate is a re-observation, not a new event. String compare is
+    // correct for ISO-8601 UTC, which is what `nowIso` emits.
+    const when =
+      seen.when === null ? row.when
+      : row.when === null ? seen.when
+      : row.when < seen.when ? row.when : seen.when;
+    byIdentity.set(identity, { ...seen, when, occurrences: seen.occurrences + row.occurrences });
+  }
+  return order.map((identity) => byIdentity.get(identity) as AcceptanceRecord);
+}
+
+/**
+ * The ledger as FACTS, duplicates folded. This is the read boundary every
+ * consumer should use; reading the file directly re-exposes the duplicates the
+ * fold exists to absorb.
+ */
+export function readAcceptanceLedger(repoRoot: string): readonly AcceptanceRecord[] {
+  let text: string;
+  try {
+    text = readFileSync(join(repoRoot, ACCEPTS_LEDGER), "utf8");
+  } catch (err) {
+    // Absent means no acceptances on this machine -- the ordinary state, and the
+    // strict one. Any other error is a question that could not be answered.
+    if ((err as NodeJS.ErrnoException | undefined)?.code === "ENOENT") return [];
+    throw err;
+  }
+  return foldAcceptanceRecords(parseAcceptanceLedger(text));
+}
+
+/**
+ * Append one acceptance. Append-only, and correct under concurrent writers
+ * WITHOUT A LOCK.
  *
- * This ledger is written by `install.sh`, and parallel CI jobs share a runner
- * and a checkout. So two writers can be inside this function at once, and the
- * two halves behave differently under that:
+ * ── WHERE THE IDEMPOTENCY ACTUALLY LIVES: THE READ, NOT THE WRITE ────────────
+ *
+ * An earlier draft made the write-side scan load-bearing and then had to admit
+ * it was only "advisory", because a read followed by a write is a window: two
+ * installs can both see "absent" and both append. The reflex at that point is a
+ * lock file. That reflex is wrong here, and the repo's own disciplines say why.
+ *
+ * **The fix is to make duplicates HARMLESS instead of preventing them.** The
+ * ledger is an append-only log; `foldAcceptanceRecords` collapses identical rows
+ * at READ time, so N copies of one fact fold to one record and the reader cannot
+ * tell how many writers raced. That is discipline #6 in its proper form --
+ * apply-N-times equals apply-once in EFFECT, achieved by an idempotent fold
+ * rather than by serialising the writers -- and it is the same G-Set/Z-set merge
+ * shape the substrate already leans on. No lock, no CAS, no window, and the
+ * concurrency question stops being a caveat.
+ *
+ * Reach for a lock only after saying why a read-side fold could not work.
+ *
+ * ── WHAT EACH PIECE IS FOR, so nothing is mistaken for a guarantee it is not ─
  *
  *   * THE WRITE IS ATOMIC. `appendFileSync` opens `O_APPEND` and issues one
  *     `write(2)`, so the kernel places it at the end atomically. Two concurrent
- *     writers produce two whole lines, never one interleaved line. That is the
- *     property that actually matters -- a torn record would be worse than a
- *     duplicate one.
- *   * THE DEDUP IS ADVISORY. It is a read followed by a write, so two writers
- *     can both read "absent" and both append. The result is a duplicate row,
- *     which costs a line of noise and loses nothing: the ledger is a record of
- *     what happened, and the same fact recorded twice is still true. Closing
- *     that window needs a lock file, and a lock in the install path is a worse
- *     trade than a repeated line.
- *
- * So the guarantee is: **apply-N-times has the same EFFECT as apply-once for a
- * single writer, and degrades to at-most-one-duplicate-per-racing-writer.** Said
- * out loud because "idempotent" unqualified would be a stronger claim than the
- * code earns.
- *
- * The header is created with `wx` -- an atomic create-if-absent -- rather than
- * an existence check followed by a write, which would be both a check-then-use
- * race (CWE-367) and a way for two starters to each stamp a header.
+ *     writers produce two whole lines, never one interleaved line. A torn record
+ *     would be genuinely bad; a repeated one is not.
+ *   * THE WRITE-SIDE SCAN IS A NOISE REDUCER, NOT A CORRECTNESS MECHANISM. It
+ *     keeps the common single-writer case from appending one line per install
+ *     while a pin and its accepted bytes disagree. If it loses a race the fold
+ *     absorbs the result. Nothing depends on it, and its return value says only
+ *     whether THIS call wrote a line.
+ *   * THE HEADER IS CREATED WITH `wx` -- an atomic create-if-absent, the one
+ *     place a real race is closed, and closed by the filesystem rather than by a
+ *     lock. An existence check followed by a write would be both a check-then-use
+ *     race (CWE-367) and a way for two starters to each stamp a header.
  */
 export function appendAcceptanceRecord(repoRoot: string, line: string): boolean {
   const path = join(repoRoot, ACCEPTS_LEDGER);
