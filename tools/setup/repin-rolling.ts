@@ -54,7 +54,7 @@
 // 081M23ESC5B087G0R002HJ39DG
 
 import { createHash } from "node:crypto";
-import { copyFileSync, mkdirSync, readFileSync, unlinkSync, writeFileSync } from "node:fs";
+import { copyFileSync, mkdirSync, readFileSync, renameSync, unlinkSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { spawnSync } from "node:child_process";
 import {
@@ -194,10 +194,54 @@ function findPin(repoRoot: string, dest: string): UrlPin {
   return pin;
 }
 
-async function fetchToBuffer(url: string): Promise<Uint8Array> {
+/**
+ * The manifest is a committed, reviewed surface -- but "reviewed" is a process
+ * claim and this is a mechanical one, so the scheme is checked here rather than
+ * assumed. `realizeFromUrl` already refuses a non-HTTPS row; this tool reads the
+ * same rows and had no such guard, which was a real gap and is what CodeQL's
+ * "outbound request depends on file data" was pointing at.
+ *
+ * A redirect is followed, and that is deliberate -- GitHub release assets are
+ * served via a redirect to a CDN -- so the guard is on the row's declared URL,
+ * not on every hop. What makes that safe is the layer below: nothing fetched
+ * here is trusted, it is measured, and it does not become the pin until the
+ * declared re-measure has passed against it.
+ */
+export async function fetchToBuffer(url: string): Promise<Uint8Array> {
+  // THROWS rather than exiting, so the guard is reachable from a test. A scheme
+  // guard no test can exercise is a guard nobody knows works -- and this one was
+  // missing entirely until CodeQL pointed at the flow.
+  if (!url.startsWith("https://")) {
+    throw new Error(`from-url ${url}: HTTPS required (the realizer refuses this row too)`);
+  }
   const response = await fetch(url, { redirect: "follow" });
-  if (!response.ok) die(2, `fetch ${url} -> HTTP ${String(response.status)} (a failed probe is unknown)`);
+  if (!response.ok) {
+    throw new Error(`fetch ${url} -> HTTP ${String(response.status)} (a failed probe is unknown)`);
+  }
   return new Uint8Array(await response.arrayBuffer());
+}
+
+/**
+ * Stage, verify what landed, then rename -- the same discipline
+ * `setup-realizers/from-url.ts` uses, and for the same reason: a short write, a
+ * full disk, or a truncated body must never leave partial bytes at the path a
+ * runner loads from. `digest` is the hash of what we INTENDED to write, so this
+ * catches the write going wrong; it cannot and does not claim to say the
+ * upstream bytes are the right ones. Only the re-measure says that.
+ */
+export function stageVerifiedWrite(dest: string, bytes: Uint8Array, digest: string): void {
+  const part = dest + ".part";
+  writeFileSync(part, bytes);
+  const landed = sha256Of(readFileSync(part));
+  if (landed !== digest) {
+    removeIfPresent(part);
+    // THROWS rather than exiting: a process.exit here would be untestable, and a
+    // guard no test can exercise is a guard nobody knows works.
+    throw new Error(
+      `wrote ${part} but it hashes to ${landed}, not ${digest} -- the write did not land intact`,
+    );
+  }
+  renameSync(part, dest);
 }
 
 interface Restore {
@@ -225,7 +269,13 @@ async function main(argv: readonly string[]): Promise<number> {
   const remeasure = pin.remeasure as string;
 
   process.stdout.write(`fetching ${pin.url}\n`);
-  const bytes = await fetchToBuffer(pin.url);
+  let bytes: Uint8Array;
+  try {
+    bytes = await fetchToBuffer(pin.url);
+  } catch (err) {
+    // Exit 2, not 1: a fetch that could not happen is a check that did not run.
+    die(2, err instanceof Error ? err.message : String(err));
+  }
   const newSha = sha256Of(bytes);
   if (newSha === oldSha) {
     process.stdout.write(`no rebuild: ${dest} upstream still serves sha256=${newSha}\n`);
@@ -245,7 +295,7 @@ async function main(argv: readonly string[]): Promise<number> {
   const hadBytes = copyIfPresent(absDest, backup);
   const oldIdentity = hadBytes ? deriveIdentity(pin.identity, backup) : null;
   mkdirSync(dirname(absDest), { recursive: true });
-  writeFileSync(absDest, bytes);
+  stageVerifiedWrite(absDest, bytes, newSha);
   const newIdentity = deriveIdentity(pin.identity, absDest);
 
   // Snapshot every file we are about to touch so a failed re-measure restores

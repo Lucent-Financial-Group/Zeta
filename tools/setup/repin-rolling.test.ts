@@ -5,9 +5,18 @@
 // every place the tool REWRITES the tree, because a re-pin that silently edits
 // the wrong bytes is worse than one that refuses.
 import { describe, expect, test } from "bun:test";
-import { existsSync } from "node:fs";
+import { existsSync, mkdtempSync, readFileSync } from "node:fs";
 import { join } from "node:path";
-import { deriveIdentity, receiptRow, rewriteManifestRow, sha256Of, substituteAll } from "./repin-rolling.ts";
+import { tmpdir } from "node:os";
+import {
+  deriveIdentity,
+  fetchToBuffer,
+  receiptRow,
+  rewriteManifestRow,
+  sha256Of,
+  stageVerifiedWrite,
+  substituteAll,
+} from "./repin-rolling.ts";
 
 const OLD = "a".repeat(64);
 const NEW = "b".repeat(64);
@@ -91,6 +100,42 @@ describe("deriveIdentity", () => {
     if (!existsSync(jar)) return; // fetched jar; a probe that cannot run is unknown
     expect(deriveIdentity("jar-tlc", jar)).toContain("(rev:");
     expect(() => deriveIdentity("jar-something-else", jar)).toThrow("unknown identity=");
+  });
+});
+
+describe("stageVerifiedWrite", () => {
+  // The write is staged and re-read before it is renamed into place: a short
+  // write, a full disk, or a truncated body must never leave partial bytes at
+  // the path a runner loads from. It verifies WHAT WE INTENDED TO WRITE landed,
+  // and claims nothing about whether upstream sent the right bytes -- only the
+  // re-measure says that.
+  test("writes through a .part and leaves none behind", () => {
+    const dir = mkdtempSync(join(tmpdir(), "repin-stage-"));
+    const dest = join(dir, "thing.jar");
+    const body = new TextEncoder().encode("payload");
+    stageVerifiedWrite(dest, body, sha256Of(body));
+    expect(readFileSync(dest, "utf8")).toBe("payload");
+    expect(existsSync(dest + ".part")).toBe(false);
+  });
+
+  test("a digest that disagrees with the bytes refuses and leaves nothing at dest", () => {
+    const dir = mkdtempSync(join(tmpdir(), "repin-stage-"));
+    const dest = join(dir, "thing.jar");
+    const body = new TextEncoder().encode("payload");
+    expect(() => stageVerifiedWrite(dest, body, "0".repeat(64))).toThrow();
+    expect(existsSync(dest)).toBe(false);
+    expect(existsSync(dest + ".part")).toBe(false);
+  });
+});
+
+describe("fetchToBuffer", () => {
+  // A row's URL is file data, and "committed and reviewed" is a PROCESS claim --
+  // this is the mechanical one. `realizeFromUrl` already refuses a non-HTTPS row;
+  // this tool reads the same rows and had no such guard until CodeQL pointed at
+  // the flow. The check runs BEFORE any request, so this test needs no network.
+  test("a non-HTTPS row is refused before any request is made", async () => {
+    await expect(fetchToBuffer("http://example.invalid/x.jar")).rejects.toThrow("HTTPS required");
+    await expect(fetchToBuffer("file:///etc/passwd")).rejects.toThrow("HTTPS required");
   });
 });
 
