@@ -326,6 +326,26 @@ Anything else — a free camera, a genuine mirror surface with an inside — is 
 feature we have not got around to; it is a claim the geometry does not support. Filed rather
 than faked.
 
+**Held, on Aaron's instruction (2026-09-09): reflections wait for the projection
+measurement.** A sibling agent is measuring whether the interpenetration and the overdraw
+pathology are intrinsic to 4_21 or artifacts of `embed3d` specifically. Everything above is
+analysis and is offered to inform that decision; nothing here is being built toward.
+
+**And this rung already answers half of that question, in the negative, because of where
+each quantity is computed:**
+
+| property | computed in | projection-dependent? |
+|---|---|---|
+| **27 incident 2-faces per edge** | `E8Exact`, pure integer 8D — `3 · f₂ / f₁ = 3 · 60480 / 6720` | **NO — intrinsic to 4_21** |
+| f-vector, face normals, `\|n\|² = 48`, the five levels | `E8Exact` / `E8Shading`, pure integer 8D | **NO** |
+| **768 faces with no determinable front side** | `E8Embedding`, after projection | **YES** |
+| **leaf/root surface-area ratio ≈ 1,140** | `E8Raytracer`, over projected triangles | **YES** |
+
+The incidence is a **theorem about the polytope in eight dimensions**, with no float anywhere
+in its call graph — a different embedding cannot give the shell an inside, only change how
+the sidelessness manifests in 3D. The 768 and the overdraw ratio genuinely belong to
+`embed3d`, and those are the ones worth re-measuring under a different projection.
+
 ### 7.2 "Is five levels enough compared to real game engines, or is this a toy?"
 
 **As a renderer: it is a toy, in this repo's exact vocabulary, and I am not going to dress
@@ -374,6 +394,34 @@ levels is what one root light produces on this polytope, and it is a *measuremen
 not a rendering budget. A renderer that wanted more would take a non-root light (free) and
 per-pixel interpolation (leaves exact), and would be making an ordinary graphics trade rather
 than discovering a limit.
+
+### 7.3 On paying for eight dimensions and then projecting to three
+
+Aaron has questioned the representation layer itself: we carry 8D and then project to 3D,
+which is expensive, and the extra dimensions ought either to be doing calculations we
+actually need or to be simulating in 8D without projecting at all. That critique is aimed at
+the geometry pipeline rather than at this F# core, and the core's value — an exact-integer
+byte-lock across oracles — holds whichever algebra the engine ends up using. But the rung
+does supply one measured data point on it, and it points the same way he does:
+
+> **Almost nothing here needs the projection.** Every quantity in §2 — 240, 6,720, 60,480,
+> the f-vector, `|n|² = 48`, the nine Lambert numerators, the five levels, the plane-
+> illumination census, the specular numerators — is computed in 8-dimensional integer
+> arithmetic and never passes through `embed3d`. The projection is used for exactly one
+> thing: **placing pixels**. It places them; it never touches a brightness.
+
+So on this rung the extra dimensions are not overhead attached to a 3D pipeline — they are
+where the work happens, and the 3D step is the *thin* part. What the measurements then say
+is that the thin part is where all the cost and all the pathology live: the exact 8D layer
+builds the entire polytope in 872 ms, and the projected 3D layer is what defeats the BVH
+(§4.1) and what loses the front side on 768 faces (§7.1). That is at least consistent with
+his instinct that the projection is the expensive mistake rather than the dimensionality.
+
+What this rung does **not** establish is the stronger form of his claim — that we could
+simulate in 8D and never project. A viewer needs pixels, so *something* must reduce to two
+dimensions eventually; the open question is whether that reduction has to happen where it
+happens now, over the whole triangle set, or could happen per-ray at the very end. Nothing
+here measures that, and it is not claimed.
 
 ## 8. Anchors (Beacon), cited because they are used
 
