@@ -3,10 +3,52 @@ import { afterEach, beforeEach, describe, expect, test } from "bun:test";
 import { cpSync, existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { dirname, join } from "node:path";
+import { spawnSync } from "node:child_process";
 import { canonicalReceipt, renderCanonicalReceipt, verifyPinnedSubject, verifyReceipt } from "./nci-witness-receipt";
 
 const LIVE_ROOT = process.cwd();
 const HISTORICAL_REGISTRY = "docs/research/data/2026-09-06-nci-witness-v1-registry.json";
+
+/**
+ * The historical subject's JAR, by git blob id.
+ *
+ * The 2026-09-06 witness is pinned to TLC2 2026.05.18.174321, and the tree
+ * stopped carrying those bytes when `src/Core.TLA/tla2tools.jar` was de-vendored
+ * onto the rolling from-url row (081M23ESC5B087G0R002HJ39DG). Upstream cannot
+ * return them either -- tlaplus re-uploads the v1.8.0 asset in place, so the
+ * build that produced this witness is gone from every URL.
+ *
+ * It is NOT gone from git. A blob stays reachable from the commits that carried
+ * it, so `git cat-file` is a permanent, content-addressed source for exactly the
+ * bytes the receipt names -- which is the whole point of pinning by digest.
+ * Reading it here keeps the historical witness reproducible without either
+ * re-committing a binary or republishing a dated research artefact to match a
+ * newer checker.
+ *
+ * The live tree deliberately does NOT satisfy this pin any more, and
+ * `verifyPinnedSubject` says so: the current registry names a different jar, so
+ * a receipt minted from the current tree is refused rather than silently
+ * re-derived under a checker that did not produce it.
+ */
+const HISTORICAL_JAR_BLOB = "2fb671d8be5a1e137f001965d0246509e882aed3";
+
+function historicalJarBytes(): Buffer {
+  const result = spawnSync("git", ["cat-file", "blob", HISTORICAL_JAR_BLOB], {
+    cwd: LIVE_ROOT,
+    maxBuffer: 64 * 1024 * 1024,
+  });
+  if (result.status !== 0) {
+    // A failed probe is UNKNOWN, never "the jar is wrong": a shallow clone or an
+    // absent git is a question that was not asked, and saying otherwise would
+    // report a provenance failure that was never measured.
+    throw new Error(
+      `cannot read historical tla2tools blob ${HISTORICAL_JAR_BLOB} from git` +
+        ` (git exited ${String(result.status)}) -- that is an UNKNOWN, not a mismatch`,
+    );
+  }
+  return result.stdout;
+}
+
 let historicalSubject: string | undefined;
 
 function root(): string {
@@ -25,9 +67,13 @@ function copiedSubject(
       "src/Core.TLA/tla2tools.jar",
       "registry/tlc-models.json",
     ]) {
-      const from = join(LIVE_ROOT, relative === "registry/tlc-models.json" ? registry : relative);
       const to = join(subject, relative);
       mkdirSync(dirname(to), { recursive: true });
+      if (relative === "src/Core.TLA/tla2tools.jar") {
+        writeFileSync(to, historicalJarBytes());
+        continue;
+      }
+      const from = join(LIVE_ROOT, relative === "registry/tlc-models.json" ? registry : relative);
       cpSync(from, to, { recursive: false, force: true });
     }
     // Current model/config/jar bytes are usable only while all original pins hold.
