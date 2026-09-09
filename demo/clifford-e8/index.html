@@ -161,12 +161,19 @@
     if (o.style) node.style.cssText = o.style;
     return node;
   }
-  function fill(node, parts) {
+  // `fill` takes NODES ONLY -- never a string. The first version accepted either and
+  // branched at the sink (`appendChild(typeof p === "string" ? createTextNode(p) : p)`),
+  // which CodeQL then flagged as `js/xss-through-exception`: taint tracking cannot see
+  // through the ternary, so an `err.message` reaching that call looks like a string handed
+  // to `appendChild`. Narrowing the parameter removes the union rather than the warning --
+  // the sink now provably receives a Node built by `createTextNode` or `createElement`, and
+  // callers say `txt("...")` where they mean text.
+  function txt(value) {
+    return document.createTextNode(String(value));
+  }
+  function fill(node, nodes) {
     while (node.firstChild) node.removeChild(node.firstChild);
-    for (var i = 0; i < parts.length; i++) {
-      var part = parts[i];
-      node.appendChild(typeof part === "string" ? document.createTextNode(part) : part);
-    }
+    for (var i = 0; i < nodes.length; i++) node.appendChild(nodes[i]);
     return node;
   }
 
@@ -174,9 +181,9 @@
     fill(overlay, [
       el("b", { cls: "warn", text: "clifford-e8-substrate.js did not load." }),
       el("br"),
-      "Serve this directory over http (for example ",
+      txt("Serve this directory over http (for example "),
       el("code", { text: "python3 -m http.server" }),
-      ") or open it from GitHub Pages.",
+      txt(") or open it from GitHub Pages."),
     ]);
     return;
   }
@@ -594,7 +601,7 @@
     if (canvas.width !== width || canvas.height !== height) { canvas.width = width; canvas.height = height; }
     try { state.backend.draw(width, height); }
     catch (err) {
-      fill(overlay, [el("b", { cls: "warn", text: "draw failed:" }), " " + err.message]);
+      fill(overlay, [el("b", { cls: "warn", text: "draw failed:" }), txt(" " + err.message)]);
       return;
     }
 
@@ -610,11 +617,11 @@
   function paintOverlay() {
     fill(overlay, [
       el("b", { text: state.backend.label }),
-      " · " + state.mode + " · " + state.fps.toFixed(0) + " fps",
+      txt(" · " + state.mode + " · " + state.fps.toFixed(0) + " fps"),
       el("br"),
-      "60,480 triangles · 181,440 vertices · 5 levels",
+      txt("60,480 triangles · 181,440 vertices · 5 levels"),
       el("br"),
-      "light = root " + state.light,
+      txt("light = root " + state.light),
     ]);
   }
 
@@ -630,7 +637,7 @@
         cls: "swatch",
         style: "background:rgb(" + grey + "," + grey + "," + grey + ")",
       }));
-      key.appendChild(document.createTextNode(scene.levelNumerators[i] + "/√" + scene.denominatorSquared));
+      key.appendChild(txt(scene.levelNumerators[i] + "/√" + scene.denominatorSquared));
       var barCell = el("td");
       barCell.appendChild(el("div", { cls: "bar", style: "width:" + Math.round((count / max) * 100) + "%" }));
       rows.push(fill(el("tr"), [key, barCell, el("td", { cls: "v", text: count.toLocaleString() })]));
@@ -659,10 +666,10 @@
       return fill(el("tr"), [el("td", { cls: "k", text: r[0] }), el("td", { cls: "v", text: r[1] })]);
     }));
     fill(limitsNote, [
-      "The page ships ",
+      txt("The page ships "),
       el("b", { text: "no geometry" }),
-      ": it ships the derivation and runs it here. Every buffer above was built in your " +
-        "browser from the same functions the test suite runs.",
+      txt(": it ships the derivation and runs it here. Every buffer above was built in your " +
+        "browser from the same functions the test suite runs."),
     ]);
   }
 
@@ -682,11 +689,11 @@
       var traced = performance.now() - t;
       showFrame(frame, size);
       fill(traceNote, [
-        size + "×" + size + " in ",
+        txt(size + "×" + size + " in "),
         el("b", { text: traced.toFixed(0) + " ms" }),
-        " (" + (traced / (size * size) * 1000).toFixed(1) + " µs/ray, " +
+        txt(" (" + (traced / (size * size) * 1000).toFixed(1) + " µs/ray, " +
           (frame.stats.triangleTests / (size * size)).toFixed(0) + " triangle tests/ray)" +
-          "; BVH " + built.toFixed(0) + " ms",
+          "; BVH " + built.toFixed(0) + " ms"),
       ]);
       traceButton.disabled = false;
     }, 20);
@@ -735,7 +742,7 @@
   selectBackend(first).catch(function (err) {
     fill(overlay, [
       el("b", { cls: "warn", text: first + " failed:" }),
-      " " + err.message + " — falling back.",
+      txt(" " + err.message + " — falling back."),
     ]);
     var rest = order.slice(order.indexOf(first) + 1).find(function (n) { return backends[n].available(); });
     if (rest) selectBackend(rest);

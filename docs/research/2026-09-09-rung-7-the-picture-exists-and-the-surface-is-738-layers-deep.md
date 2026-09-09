@@ -48,7 +48,7 @@ relative to the scene. Here they are not, by two orders of magnitude.
 
 | | |
 |---|---|
-| **page** | `demo/clifford-e8/index.html` — 33,360 bytes |
+| **page** | `demo/clifford-e8/index.html` — 33,971 bytes |
 | **bundle** | `demo/clifford-e8/clifford-e8-substrate.js` — 27,621 bytes, generated |
 | **geometry shipped** | **0 bytes** |
 | **built in the browser** | 240 roots · 6,720 edges · 60,480 triangles · 181,440 vertices · 5 levels |
@@ -97,6 +97,21 @@ the document as a text node through two small `el`/`fill` helpers, and a falsifi
 That is the same discipline as the rest of this ladder pointed at a security finding: *"I
 control the inputs"* is an unfalsifiable claim about the future, and a grep for the sink is
 a check that can fail.
+
+**The fix's first version was itself flagged**, which is worth recording. `fill` accepted
+either a string or a node and branched at the sink —
+`appendChild(typeof part === "string" ? createTextNode(part) : part)` — and CodeQL raised
+`js/xss-through-exception` (medium): taint tracking cannot see through the ternary, so an
+`err.message` reaching that call reads as a string handed to `appendChild`. Narrowing the
+parameter to **nodes only**, with callers saying `txt("...")` where they mean text, removed
+the union rather than the warning.
+
+**And the falsifier for it had the classic defect on its first run.** The assertion
+`expect(HTML).not.toMatch(/appendChild\(typeof/)` failed — on the *comment* explaining why
+that shape had been removed. A source-scanning guard must match the **call**, not the prose
+about the call, so the negative assertions now read a comment-stripped copy of the page,
+with a control asserting the stripper kept the code. This is the third time in this
+repository's record that a guard has been satisfied by its own explanation.
 
 ---
 

@@ -12,6 +12,17 @@ const HTML = readFileSync(join(REPO, PAGE_DIRECTORY, "index.html"), "utf8");
 const BUNDLE = readFileSync(join(REPO, PAGE_DIRECTORY, BUNDLE_FILE), "utf8");
 
 /**
+ * The page with its comments removed.
+ *
+ * Every NEGATIVE source assertion below reads this and not `HTML`. Writing them against the
+ * raw file is a trap this test fell into on its first run: the comment explaining *why* the
+ * `appendChild(typeof part === "string" ? ...)` shape was removed contains that shape, so
+ * the guard fired on its own explanation. A source check must match the CALL, never the
+ * prose about the call.
+ */
+const HTML_CODE = HTML.replace(/\/\*[\s\S]*?\*\//g, "").replace(/(^|[^:])\/\/.*$/gm, "$1");
+
+/**
  * Run the committed bundle exactly as a browser would — a classic script that assigns one
  * global — and hand back what the page would see.
  */
@@ -34,7 +45,7 @@ describe("the viewable page — the committed artefact, executed", () => {
     // numeric array of any length. The whole claim of this rung is that the picture is
     // derived, and a smuggled table is exactly how that claim would quietly become false.
     const numericTable = /\[\s*(-?\d+(\.\d+)?\s*,\s*){20,}/;
-    expect(HTML).not.toMatch(numericTable);
+    expect(HTML_CODE).not.toMatch(numericTable);
     expect(BUNDLE).not.toMatch(numericTable);
     // Control: the detector must be able to fire. A table of 20 numbers is caught.
     expect("var t = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21];").toMatch(numericTable);
@@ -136,7 +147,7 @@ describe("the viewable page — the committed artefact, executed", () => {
     expect(HTML).toContain('cullMode: "none"');
     expect(HTML).toContain("gl.disable(gl.CULL_FACE)");
     // The Canvas 2D path must not sort: a painter's order over this surface is undefined.
-    expect(HTML).not.toContain(".sort(");
+    expect(HTML_CODE).not.toContain(".sort(");
     expect(HTML).toContain('ctx.globalCompositeOperation = "lighter"');
     // The uniform must be visible to the fragment stage. Declaring VERTEX alone made the
     // WebGPU additive pass silently black -- found by looking at it, fixed here, pinned now.
@@ -166,16 +177,27 @@ describe("the viewable page — the committed artefact, executed", () => {
     // three lines away — and that is exactly the argument that stops being true when someone
     // adds a fourth option or interpolates an error message. So the sink class is gone, not
     // excused, and this pins it: every dynamic value reaches the document as a text node.
-    expect(HTML).not.toMatch(/\.innerHTML\s*=/);
-    expect(HTML).not.toMatch(/\.outerHTML\s*=/);
-    expect(HTML).not.toContain("insertAdjacentHTML");
-    expect(HTML).not.toContain("document.write");
-    expect(HTML).not.toContain("eval(");
+    expect(HTML_CODE).not.toMatch(/\.innerHTML\s*=/);
+    expect(HTML_CODE).not.toMatch(/\.outerHTML\s*=/);
+    expect(HTML_CODE).not.toContain("insertAdjacentHTML");
+    expect(HTML_CODE).not.toContain("document.write");
+    expect(HTML_CODE).not.toContain("eval(");
     // Control: the detector fires on the shape it is meant to catch.
     expect('overlay.innerHTML = "<b>" + mode;').toMatch(/\.innerHTML\s*=/);
     // And the replacement is actually present, so this is not a page that renders nothing.
     expect(HTML).toContain("node.textContent = String(o.text)");
-    expect(HTML).toContain("document.createTextNode(part)");
+    expect(HTML).toContain("document.createTextNode(String(value))");
+    // And the sink takes NODES ONLY. The first fix branched at `appendChild` between a text
+    // node and a raw value, which CodeQL then flagged as `js/xss-through-exception` — taint
+    // cannot be tracked through the ternary. Narrowing the parameter removed the union
+    // rather than the warning, so this pins the narrow shape, not the alert's absence.
+    expect(HTML).toContain("for (var i = 0; i < nodes.length; i++) node.appendChild(nodes[i]);");
+    expect(HTML_CODE).not.toMatch(/appendChild\(typeof/);
+    // Control: the stripper removed prose and kept code. Without this, every negative
+    // assertion above would pass on an empty string.
+    expect(HTML_CODE).toContain("function fill(node, nodes)");
+    expect(HTML_CODE.length).toBeGreaterThan(10_000);
+    expect(HTML_CODE.length).toBeLessThan(HTML.length);
   });
 
   // ── FALSIFIER 8: THE PAGE LOADS THE ARTEFACT THIS SCRIPT WRITES ───────────
