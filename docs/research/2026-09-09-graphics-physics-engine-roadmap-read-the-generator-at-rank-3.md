@@ -121,6 +121,12 @@ forced self-intersection. **0 bytes of geometry survives and improves** — an H
 _smaller_ than the E8 one. Falsifier: an H3 golden document byte-locked across oracles, the
 same shape as the E8 one that held first try today.
 
+**The caveat Phase 0 rests on, named by the agent that measured it:** the H3 result is
+measured for the **ring**, not the **light**. `Z[φ]` closure, the single norm class and the
+rank-3-no-projection facts are run. **Exact shading over an H3 orbit polytope is `toy` and
+unrun.** If Phase 0 proceeds, that is the first thing to falsify — before the byte-lock, not
+after, because a golden document that locks an inexact shading model locks the wrong thing.
+
 **Phase 1 — one renderable object.** 4_21 cannot be an occlusion-correct 3D scene, and that
 is filed. The engine needs content whose 2-skeleton embeds. This is the phase that unblocks
 reflections, water and everything downstream, because all of them presuppose a surface with
@@ -147,6 +153,9 @@ proposal must answer, ahead of any solver choice. DST replay depends on it.
 
 - Whether H3 produces a _usable_ scene, or merely an exact one. Phase 0's falsifier tests
   the byte-lock, not the aesthetics.
+- **Whether shading stays exact over an H3 orbit polytope at all.** The ring is measured;
+  the light is not. E8's five levels came from a light that _is a root_ meeting root-sum
+  normals — an H3 analogue of that argument exists on paper and has not been run.
 - The fixed-point/rational/float decision. Named, not made.
 - Whether the fidelity meter's random-carrier control will vindicate Clifford or refute it.
   It is designed to be able to do either, which is the point.
