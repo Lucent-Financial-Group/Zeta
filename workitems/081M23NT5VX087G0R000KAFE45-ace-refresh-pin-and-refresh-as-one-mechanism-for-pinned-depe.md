@@ -57,3 +57,7 @@ ace design: `docs/agendas/ace-package-manager/2026-09-09-ace-refresh-pin-and-ref
   `"update": "pinned"`.
 - `downloadThenRun` is NOT a follow-up here: it belongs to `from-url` +
   `repin-rolling.ts` (081M23ESC5B087G0R002HJ39DG).
+- Nothing runs `--report` on a schedule yet. Staleness is observable, not yet
+  OBSERVED, and a reporter nobody runs is a silence — named in the design's honest
+  limits rather than glossed. Deliberate: the runner pool is saturated and a cron
+  workflow is a fleet-resource decision, not a rider on a security change.

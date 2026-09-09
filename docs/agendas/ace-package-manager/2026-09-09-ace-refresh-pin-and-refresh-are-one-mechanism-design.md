@@ -201,6 +201,15 @@ account, with measurements, is in that lint's header.
   is correct, and it means that row will be refreshed rarely.
 - **`--report` needs the network**, so it is a maintenance command and not a gate
   step. Only the offline `--verify` runs in `gate`.
+- **AND NOTHING RUNS `--report` ON A SCHEDULE YET — the one real gap in this
+  change.** Staleness is *observable*; it is not yet *observed*, and a reporter
+  nobody runs is a silence wearing a mechanism's clothes: the same defect class the
+  rest of this design exists to prevent. Left out deliberately rather than
+  overlooked — the runner pool is measurably saturated, and adding a cron workflow
+  is a fleet-resource decision that should be visible rather than slipped in beside
+  a security change. The follow-up is one scheduled job running
+  `refresh-pins.ts --report` and opening an issue (or a `--refresh` PR) on any
+  `moved` or `past-horizon` row.
 
 ## 10. Falsifiers
 
