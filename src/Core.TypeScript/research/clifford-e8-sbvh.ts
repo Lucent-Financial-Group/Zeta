@@ -412,11 +412,12 @@ export function buildSbvh(positions: Float32Array, options: SbvhOptions = {}): S
   const binBox = new Float64Array(binCount * 6);
   const binCountsIn = new Int32Array(binCount);
   const binCountsOut = new Int32Array(binCount);
-  const sweepBox = new Float64Array(binCount * 6);
   const sweepCount = new Int32Array(binCount);
   const sweepArea = new Float64Array(binCount);
   const chopped = new Float64Array(6);
-  const leftBoxes = new Float64Array(2 * 6);
+  /** The winning object-split axis's binning: `[lo, scale]`, so the partition below can
+   * reproduce exactly the candidate the cost model scored. */
+  const bestAxisBinning = new Float64Array(2);
 
   /**
    * Partition `refs.order[first .. first+count)` in place. Returns the pivot, or `-1` when no
@@ -472,7 +473,6 @@ export function buildSbvh(positions: Float32Array, options: SbvhOptions = {}): S
         growBox(binBox, b * 6, refs.box, i * 6);
       }
       // Right-to-left sweep, then left-to-right, so each candidate plane is O(1).
-      resetBox(sweepBox, 0);
       let running = 0;
       const suffixArea = sweepArea;
       const suffixCount = sweepCount;
@@ -507,8 +507,8 @@ export function buildSbvh(positions: Float32Array, options: SbvhOptions = {}): S
       }
       // Remember the axis's binning so the partition below can reproduce it.
       if (bestAxis === axis) {
-        leftBoxes[0] = lo;
-        leftBoxes[1] = scale;
+        bestAxisBinning[0] = lo;
+        bestAxisBinning[1] = scale;
       }
     }
 
@@ -673,8 +673,8 @@ export function buildSbvh(positions: Float32Array, options: SbvhOptions = {}): S
     } else {
       objectSplits++;
       const axis = bestAxis;
-      const lo = leftBoxes[0]!;
-      const scale = leftBoxes[1]!;
+      const lo = bestAxisBinning[0]!;
+      const scale = bestAxisBinning[1]!;
       let lower = first;
       let upper = first + count - 1;
       const swap = (a: number, b: number): void => {
