@@ -174,3 +174,11 @@ was tested on fixed latents without proving platform parity; the DAG is an
 execution record rather than a new runtime; release binaries and Git-native
 source/index records have distinct durability properties. No accepted-likeness,
 rigging, physics-equivalence or state-of-the-art claim is made.
+
+CI subsequently found an import-group formatting error in a newly landed
+`test_durable_room_finite_result_receipt.py` while testing the merge with newer
+main. After refreshing main, the missing separator was added. Ruff 0.16.5
+checking and format checking passed for all 40 files in `src/Core.Python`.
+Reproduce from that project directory: running Ruff from the repository root
+changes first-party import discovery. The existing uv executable was found at
+`/Users/acehack/.local/bin/uv`; it was absent from the initial preflight PATH.
