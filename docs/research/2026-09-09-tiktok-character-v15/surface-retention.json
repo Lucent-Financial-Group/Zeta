@@ -18,9 +18,9 @@
   {
     "character": "Xenaa",
     "source_body_faces": 161887,
-    "body_faces": 127159,
+    "body_faces": 120382,
     "leg_faces": 28236,
-    "hair_faces": 6492,
+    "hair_faces": 13269,
     "body_neutral_max_displacement_m": 1.519626234052415e-07,
     "head_translation_m": [
       0.0,

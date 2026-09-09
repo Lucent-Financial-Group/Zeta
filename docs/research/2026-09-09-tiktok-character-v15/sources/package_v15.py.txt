@@ -6,9 +6,9 @@ REPO=Path('/Users/acehack/.zeta/agents/codex/Zeta-character-evolution-20260908')
 D=REPO/'docs/research/2026-09-09-tiktok-character-v15'
 archive=R/'tiktok-character-quality-v15.zip'
 files={'review/Blender-Quality-Review-v15.blend':R/'review/Blender-Quality-Review-v15.blend'}
-for name in ['neutral.png','left-arm.png','pose-0049.png','pose-0073.png','pose-0121.png','pose-0145.png']:files['evidence/'+name]=R/'review'/name
+for name in ['neutral.png','left-arm.png','pose-0049.png','pose-0073.png','pose-0121.png','pose-0145.png','side-review.png','side-head-turn.png']:files['evidence/'+name]=R/'review'/name
 for name in ['surface-retention.json','pose-diagnostics.json','delivery-validation.json','cleanup-summary.json','local-cleanup-receipt.json']:files['receipts/'+name]=R/name
-for name in ['preserve_surfaces_v15.py','review_poses_v15.py','validate_delivery_v15.py','cleanup_verified_copies.py','package_v15.py']:files['sources/'+name]=R/name
+for name in ['preserve_surfaces_v15.py','review_poses_v15.py','validate_delivery_v15.py','cleanup_verified_copies.py','package_v15.py','profile_review_v15.py']:files['sources/'+name]=R/name
 manifest={'version':'v15-quality-study','contains_previous_versions':False,'scope':'High-detail Blender research candidate, not a TikTok runtime release','files':[{'path':name,'bytes':p.stat().st_size,'sha256':hashlib.sha256(p.read_bytes()).hexdigest()} for name,p in sorted(files.items())]}
 readme='''V15 quality study - Vera / OpenAI Codex (GPT-6)
 Open review/Blender-Quality-Review-v15.blend. All four used image textures are packed.

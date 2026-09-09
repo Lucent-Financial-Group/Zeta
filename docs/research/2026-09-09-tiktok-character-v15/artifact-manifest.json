@@ -5,33 +5,43 @@
   "files": [
     {
       "path": "evidence/left-arm.png",
-      "bytes": 2401511,
-      "sha256": "9131c34dbcf8b31b270ab515d7ef1ce9c7d3c8c3886b7efca9f4701f46d3aa74"
+      "bytes": 2402055,
+      "sha256": "2d0dcb778fd05a3be94c3027697dbba69a8f60709849379f643582418704e842"
     },
     {
       "path": "evidence/neutral.png",
-      "bytes": 2400667,
-      "sha256": "e8f18c9f5717ca15c60b3b65db8b171860fb36026c3f19e668abf458e223ceb6"
+      "bytes": 2400605,
+      "sha256": "cd6c437f78f9d7839632aca86b9365e02152245362d34a0cb20283f2e93d9dc0"
     },
     {
       "path": "evidence/pose-0049.png",
-      "bytes": 2397753,
-      "sha256": "32bf26576baaeea593918b73bce256754e600707925da89d7bf6b9a6d4bfac45"
+      "bytes": 2398077,
+      "sha256": "c13f6e0358f1d43abf0486aa55e5d1ceee50a7502071f85e381d49576bd4040e"
     },
     {
       "path": "evidence/pose-0073.png",
-      "bytes": 2396669,
-      "sha256": "601c01731b4e85609050ab25a0104783fcd58d6842e3068bb4f57832dc0c2e48"
+      "bytes": 2396632,
+      "sha256": "594e8f611b4aa921cc2ac2a837b62cec8f690e914e81d9b51a1a23b61727cbc6"
     },
     {
       "path": "evidence/pose-0121.png",
-      "bytes": 2401446,
-      "sha256": "d9e96d0fc9f9dd021a172190b851d517abd271c60036b5ddfee58c3a37796c81"
+      "bytes": 2400435,
+      "sha256": "9606a4340c6ba1a9ac13c9e29886c42f885e58f80d278e325be7eb7bd056425a"
     },
     {
       "path": "evidence/pose-0145.png",
-      "bytes": 2398067,
-      "sha256": "c5dc0ae2dee101bb7bd97891eb59f972288e23768a652005ff7e4d085bcd67c0"
+      "bytes": 2397365,
+      "sha256": "de672b6484f45e29869e0e6718f598fd4c586a904d1914e89e034ed775cc2e2b"
+    },
+    {
+      "path": "evidence/side-head-turn.png",
+      "bytes": 2169109,
+      "sha256": "7c667b7bc908751bfe99f105b62c25fecb3ef37e993facfc4267b649eab9d813"
+    },
+    {
+      "path": "evidence/side-review.png",
+      "bytes": 2179554,
+      "sha256": "ecf802d022ad4bfb7634be282198311a2e269799beaf0f371ea3c318043f49f0"
     },
     {
       "path": "receipts/cleanup-summary.json",
@@ -40,8 +50,8 @@
     },
     {
       "path": "receipts/delivery-validation.json",
-      "bytes": 1988,
-      "sha256": "9039addf3b30bffcc69ebc7bbc600d4c296f069cfca361343b147eaa0c785686"
+      "bytes": 2176,
+      "sha256": "e199931548e9bec62d2bf02f709fbf58d01ba5f6bfa8e6249b363def0518edf6"
     },
     {
       "path": "receipts/local-cleanup-receipt.json",
@@ -50,18 +60,18 @@
     },
     {
       "path": "receipts/pose-diagnostics.json",
-      "bytes": 18659,
-      "sha256": "5e7412708026600271d3b76a5de1efa43a9db2ec36203ffd87c487d7d8721ad0"
+      "bytes": 22203,
+      "sha256": "f54fb2fe50d1223f8097f3fd1dbd863259b46a7aed9124f8a4cfb0aa69c48954"
     },
     {
       "path": "receipts/surface-retention.json",
-      "bytes": 859,
-      "sha256": "5d391b762f2b1633a9f4b3a4bde4e9e0144643eda5c75946163d5a73da6e945f"
+      "bytes": 860,
+      "sha256": "c16dee07c499c3d5da3844124be08d6705422da52b1b42fd2caf1ccb4d8ded51"
     },
     {
       "path": "review/Blender-Quality-Review-v15.blend",
-      "bytes": 46744679,
-      "sha256": "c43f79c01c8cf80a8d69101239e05509c0d805560348b1bf60ac9d8929ce682e"
+      "bytes": 46625159,
+      "sha256": "0299c12ae53f74bf37ff8abf9ecf4a066237236c814718fef87d1597da1505cf"
     },
     {
       "path": "sources/cleanup_verified_copies.py",
@@ -70,13 +80,18 @@
     },
     {
       "path": "sources/package_v15.py",
-      "bytes": 3444,
-      "sha256": "b2d17cf0413cd1307989bd0b4a1c0b3a14529249b880eb10e3b70efb363312d4"
+      "bytes": 3507,
+      "sha256": "cc9fac1bbbdd3e60dc94605548627858cb182962f123c805938064ca108a86ca"
     },
     {
       "path": "sources/preserve_surfaces_v15.py",
-      "bytes": 10981,
-      "sha256": "5aed30631c2e12c8de435a6f078e758b59dd8c871ff6c678dc627c5972ced9dc"
+      "bytes": 12891,
+      "sha256": "049151fc17d4c1fbd9a6ee183e7fe7858408fed4717520ed6c53bf912f8cbe84"
+    },
+    {
+      "path": "sources/profile_review_v15.py",
+      "bytes": 667,
+      "sha256": "197f595498572b9c431bed65db182253907cea28451b6f38b013509e9f59f9d7"
     },
     {
       "path": "sources/review_poses_v15.py",
@@ -85,8 +100,8 @@
     },
     {
       "path": "sources/validate_delivery_v15.py",
-      "bytes": 2220,
-      "sha256": "e714630eaf8cb993868cc5ea47d7191c55441c4a79add741719a35115942df9c"
+      "bytes": 2747,
+      "sha256": "fe94bcae6adb1c5ffaf312e37bb3de0b498d6d11c3995b30a6d0124acfbd5168"
     }
   ]
 }

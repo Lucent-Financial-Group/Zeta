@@ -56,6 +56,17 @@ Separating source trouser/boot faces removed those extreme knee-edge cases in th
 next measured pass. Shoulder weighting still requires visual judgement; reducing
 an edge-stretch count alone produced an unattractive thin shoulder transition.
 
+A side-view pass also exposed a restored upper-back hair mass. The region was
+expanded around the neck and moved onto the Head-bound source-hair object; a
+bounded dark jacket back covers the opening independently. The first back panel
+sat too far behind the torso and was rejected; its depth was corrected before
+the selected side/head-turn evidence. Bright background contamination and the
+block-like scalp silhouette still need work. The expanded mask also captured
+shoulder surfaces in one trial; the selected mask excludes skin-like pixels and
+points within 9 cm of an upper-arm bone. These are explicit heuristic safeguards,
+not semantic segmentation ground truth. Passing the attachment calculation
+does not make this a finished hair groom.
+
 These are observed failures of this pipeline, not evidence against skeletal
 animation generally. Failed trial binaries are not repeatedly archived; the
 causes, source recipe and selected output are retained.
@@ -68,6 +79,9 @@ mesh deformation and extreme edge stretch; they do not relabel remaining
 failures as passing. [Surface receipt](surface-retention.json) records source
 face counts and neutral displacement. [Delivery validation](delivery-validation.json)
 checks packed textures, normalized skin weights and the extracted hair transform.
+Xenaa scalp-hair vertices selected by material/position are separately marked and
+required to have full Head weight. The earlier height-only neck blend incorrectly
+included low hair tips; only the remaining neck region now receives that blend.
 
 The next investment order is:
 
@@ -76,7 +90,8 @@ The next investment order is:
 2. Author mouth topology and restrained facial deformations on the accepted
    head; test eyelids, lips, teeth and combined channels before export. The v14
    expression prototype remains a reference, not automatically accepted anatomy.
-3. Fit finger influences to the detailed source hands; map hand, face and body
+3. Retopologize fused finger surfaces where needed, then fit influences to the
+   detailed source hands; map hand, face and body
    tracking together only after independent Blender deformation tests pass.
 4. Reduce a separate mobile derivative and bake its materials. Compare neutral
    and moving views against this source, then measure the actual Effect House
@@ -86,16 +101,17 @@ This is a composable geometry/material/deformation generator experiment. It
 provides concrete failure observations for the broader Clifford/generator research;
 it does not establish a new Clifford algorithm or state-of-the-art learning result.
 
-The selected pose pass still reports 3-58 edges longer than 1 mm stretched
-beyond 3x in individual arm cases. All selected knee and head cases report zero
-such edges. This is an explicit remaining shoulder-quality finding, not a clean
+The selected pose pass still reports 3-54 edges longer than 1 mm stretched
+beyond 3x in individual arm cases. All selected knee cases report zero such edges. Xenaa head turns
+report 9 and 12 such edges at the neck/scalp transition after freeing the hair
+from the neck blend. These are explicit remaining shoulder/neck-quality findings, not a clean
 deformation certificate. The extracted hair follows Head within 4.22e-8 m, and
 weights sum to one within 2.99e-8; these numerical checks do not settle appearance.
 
 ## Delivery
 
 The [v15 release](https://github.com/Lucent-Financial-Group/Zeta/releases/tag/research-tiktok-character-quality-v15-20260909)
-contains one selected editable review scene, packed textures, six pose images,
+contains one selected editable review scene, packed textures, eight pose images,
 source recipes and receipts. All full-resolution PNGs are inside the ZIP.
 [Manifest](artifact-manifest.json) and [archive verification](archive-verification.json)
 identify the exact files and read-back verification. The bundle contains no
@@ -125,6 +141,10 @@ input directories and the new v15 workspace are siblings. Then run:
    `--python-exit-code 1` and six threads.
 2. `review_poses_v15.py` with the same executable/options.
 3. `validate_delivery_v15.py` with the same executable/options.
+4. `profile_review_v15.py` for the neutral and head-turn side views.
+5. `package_v15.py` with Python for the explicit single-version ZIP allowlist
+   and read-back verification. This packaging helper uses the recorded local
+   writer path for its text receipts; adjust that path in another clone.
 
 Executed source snapshots are under [sources](sources/), with `.py.txt` suffixes;
 restore `.py` names in the asset workspace. Exact selected output bytes are

@@ -74,9 +74,22 @@ for name,H in [('AceHack',1.9),('Xenaa',1.82)]:
   for f in body.data.polygons:
    p=f.center
    t=sum((uv[i].uv for i in f.loop_indices),Vector((0,0)))/len(f.loop_indices);rgb=pixels[min(im.size[1]-1,max(0,int(t.y*im.size[1]))),min(im.size[0]-1,max(0,int(t.x*im.size[0])))][:3];skin=rgb[0]>.18 and rgb[0]>rgb[2]*1.35
-   if ((-.40<p.x<-.115 and p.z>1.34 and p.y<-.075 and not skin) or (p.z>1.54 and p.y>.005 and abs(p.x)<.16)):selected.add(f.index)
+   near_arm=min(segment(p,rig.data.bones[side+'UpperArm'].head_local,rig.data.bones[side+'UpperArm'].tail_local)[0] for side in ['Left','Right'])<.09
+   if ((-.40<p.x<-.115 and p.z>1.34 and p.y<-.075 and not skin) or (p.z>1.33 and p.y>-.12 and abs(p.x)<.205 and not skin and not near_arm)):selected.add(f.index)
   hair=split_faces(body,selected,name+' | Recovered source hair')
   bind(hair,rig,lambda p,i:{'Head':1.0})
+  # A fitted jacket back covers the removed reconstruction, independently of the hair.
+  verts=[];faces=[];rings=[(1.16,.155,.075),(1.32,.17,.095),(1.44,.185,.075),(1.51,.12,.025)]
+  for z,width,depth in rings:
+   for j in range(17):
+    theta=math.pi*j/16;verts.append((width*math.cos(theta),depth*math.sin(theta)-.11,z))
+  for k in range(len(rings)-1):
+   for j in range(16):a=k*17+j;faces.append((a,a+1,a+18,a+17))
+  mesh=bpy.data.meshes.new('Fitted jacket back');mesh.from_pydata(verts,[],faces);mesh.update();panel=bpy.data.objects.new(name+' | Jacket back lining',mesh);sc.collection.objects.link(panel);panel.location.x=rig.location.x
+  mat=bpy.data.materials.new('Xenaa | Dark violet jacket lining');mat.use_nodes=True;bs=mat.node_tree.nodes.get('Principled BSDF');bs.inputs['Base Color'].default_value=(.019,.008,.035,1);bs.inputs['Roughness'].default_value=.78;panel.data.materials.append(mat)
+  for f in mesh.polygons:f.use_smooth=True
+  bind(panel,rig,lambda p,i:{'Spine3':1.0})
+
  # Move the detailed original head to the corrected torso centre. Preserve its existing neck texture.
  delta=Vector((0,-.105,-.030)) if name=='AceHack' else Vector((0,-.115,-.018))
  for v in head.data.vertices:
@@ -88,14 +101,19 @@ for name,H in [('AceHack',1.9),('Xenaa',1.82)]:
   # Reuse its existing dark hair material only behind the facial surface.
   dark=next((i for i,m in enumerate(head.data.materials) if m and 'Dark back hair' in m.name),None)
   if dark is not None:
+   hairbs=head.data.materials[dark].node_tree.nodes.get('Principled BSDF');hairbs.inputs['Roughness'].default_value=.85;hairbs.inputs['Specular IOR Level'].default_value=.18
    for f in head.data.polygons:
-    if f.center.y>-.14 and f.center.z>1.60:f.material_index=dark
+    if (f.center.y>-.14 and f.center.z>1.60) or (abs(f.center.x)>.082 and f.center.y>-.20 and f.center.z>1.64):f.material_index=dark
    if hair:
     hair.data.materials.append(head.data.materials[dark]);slot=len(hair.data.materials)-1
     for f in hair.data.polygons:
-     if f.normal.y>-.35:f.material_index=slot
+     if f.center.y>-.12 or f.normal.y>-.35:f.material_index=slot
  base=1.53 if name=='AceHack' else 1.485;top=1.645 if name=='AceHack' else 1.575
- bind(head,rig,lambda p,i:{'Spine3':1-smooth((p.z-base)/(top-base)),'Head':smooth((p.z-base)/(top-base))})
+ hair_vertices={i for f in head.data.polygons if head.data.materials[f.material_index] and 'Dark back hair' in head.data.materials[f.material_index].name for i in f.vertices}
+ if name=='Xenaa':hair_vertices.update(v.index for v in head.data.vertices if abs(v.co.x)>.07 or v.co.y>-.10)
+ attr=head.data.attributes.new(name='reviewScalpHair',type='BOOLEAN',domain='POINT')
+ for i in hair_vertices:attr.data[i].value=True
+ bind(head,rig,lambda p,i:{'Spine3':0 if i in hair_vertices else 1-smooth((p.z-base)/(top-base)),'Head':1 if i in hair_vertices else smooth((p.z-base)/(top-base))})
  # Below the shoulder, arm surfaces are separate connected components of the source mesh.
  # Flood from the hand inside a height-limited graph; a spatial mask alone captures coat tails.
  limit=1.37*s

@@ -60,6 +60,8 @@
       "max_influences": 2,
       "max_weight_sum_error": 2.9802322387695312e-08,
       "hair_head_transform_max_error_m": null,
+      "selected_scalp_hair_vertices": 0,
+      "selected_scalp_hair_min_head_weight": null,
       "expression_channels": [],
       "scope": "Reference surface study; no v15 face/finger tracking or mobile acceptance"
     },
@@ -88,6 +90,8 @@
       "max_influences": 2,
       "max_weight_sum_error": 2.9802322387695312e-08,
       "hair_head_transform_max_error_m": 4.2146848510894035e-08,
+      "selected_scalp_hair_vertices": 101211,
+      "selected_scalp_hair_min_head_weight": 1.0,
       "expression_channels": [],
       "scope": "Reference surface study; no v15 face/finger tracking or mobile acceptance"
     }

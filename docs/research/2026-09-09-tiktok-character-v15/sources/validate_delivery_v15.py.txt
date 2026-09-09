@@ -18,6 +18,10 @@ for name in ['AceHack','Xenaa']:
  if hair:
   sc.frame_set(121);bpy.context.view_layer.update();bone=rig.pose.bones['Head'];m=bone.matrix@bone.bone.matrix_local.inverted();evaluated=hair.evaluated_get(bpy.context.evaluated_depsgraph_get());mesh=evaluated.to_mesh();hair_error=max((v.co-(m@hair.data.vertices[v.index].co)).length for v in mesh.vertices);evaluated.to_mesh_clear();assert hair_error<1e-5
  sc.frame_set(1);bpy.context.view_layer.update()
+ head=bpy.data.objects[name+' | Independent head generator'];attr=head.data.attributes.get('reviewScalpHair');marked=[v.index for v in head.data.vertices if attr.data[v.index].value];head_group=head.vertex_groups['Head'].index
+ if name=='Xenaa':assert marked
+ scalp_min=min((next((g.weight for g in head.data.vertices[i].groups if g.group==head_group),0) for i in marked),default=None)
+ if scalp_min is not None:assert scalp_min>1-1e-6
  face_channels=[k.name for o in meshes if o.data.shape_keys for k in o.data.shape_keys.key_blocks if k.name!='Basis']
- results.append({'character':name,'bones':len(rig.data.bones),'weighted_bones':sorted(nonzero),'max_influences':max(influences),'max_weight_sum_error':max_error,'hair_head_transform_max_error_m':hair_error,'expression_channels':face_channels,'scope':'Reference surface study; no v15 face/finger tracking or mobile acceptance'})
+ results.append({'character':name,'bones':len(rig.data.bones),'weighted_bones':sorted(nonzero),'max_influences':max(influences),'max_weight_sum_error':max_error,'hair_head_transform_max_error_m':hair_error,'selected_scalp_hair_vertices':len(marked),'selected_scalp_hair_min_head_weight':scalp_min,'expression_channels':face_channels,'scope':'Reference surface study; no v15 face/finger tracking or mobile acceptance'})
 (R/'delivery-validation.json').write_text(json.dumps({'blender_version':bpy.app.version_string,'packed_images':images,'characters':results},indent=2)+'\n')
