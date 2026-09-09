@@ -17,7 +17,8 @@ Operational status: research + falsifiers. **Nothing here implements an engine.*
 | `metered`, **on one named machine** | every ns/vertex figure in §2. Apple M2 Ultra (24 cores), 192 GB, macOS 26.6.2, **Bun 1.3.14**, single-threaded scalar TypeScript. Median of 41 trials after 20 discarded warm-up trials, three independent process runs |
 | `metered` | the algebraic results: motor sandwich against an independently written Euclidean control; the unrolled fast path against the general 16-component product; the exact-integer path; the overdraw and partition sweeps. Pure functions, seeded, no wall clock, byte-identical on replay |
 | `unmetered` | anything about other hardware, SIMD, or a GPU. No `v128` inner loop exists and none is claimed |
-| `toy` | §6's claim that a rank-3 exact root system would reproduce the 8D's exact shading. Argued, with a named falsifier, **not run** |
+| `metered` | §6's rank-3 exactness result: H3 closes at 30 roots in `Z[φ]` under its own reflections, one norm class, zero reflections leaving the ring. Exact `bigint`, no floating point, with a control that fails |
+| `toy` | §6's remaining claim — that H3-derived geometry reproduces rung 6's exact *shading*. The ring is measured; the light is not. Falsifier named, **not run** |
 
 **Aaron's words, kept intact because the critique is the requirement:**
 
@@ -153,7 +154,20 @@ This is a real idea and it gets a real test. Partition the 60,480 faces into `N`
 
 **It buys something real, and this is measured in-tree, not speculation.** Rung 6 computes shading in 8-dimensional integer arithmetic *before* any projection: the face normal is the sum of the face's three roots, `|n|² = 48` on all 60,480 faces with zero exceptions, the Lambert numerator is an integer, and brightness levels are compared by cross-multiplication without ever evaluating a square root. Rung 6's own sentence: *"The projection places pixels. It never touches a brightness."* That is a genuine computation the 8D performs and the 3D image cannot reproduce — the ~1% of rays meeting two triangles at bit-identical depth **with different shading levels** is the direct evidence that the 3D geometry does not determine the 8D answer.
 
-**But the exactness comes from the roots being integer vectors, not from the dimension being 8.** E8's roots are integers in doubled coordinates; that is why the arithmetic closes. A rank-3 root system would have the same property in a different ring — H3 (icosahedral, 30 roots) has coordinates in `Z[φ]`, which is exact, closed under multiplication, and cheap (pairs of integers with `φ² = φ + 1`). **Register: `toy`.** This is argued, not run. The falsifier is explicit: generate H3 by Clifford reflection closure in `Cl(3,0)`, compute Lambert shading over its orbit polytope in `Z[φ]`, and check that the level census is exact and the readout confines its irrationality to one named quadratic surd. If it does, dimension 8 was never what bought exactness.
+**But the exactness comes from the roots being algebraic integers in a ring closed under multiplication, not from the dimension being 8 — and this was RUN.**
+
+`representation-layer-rank3-exactness.ts` builds H3 — the icosahedral Coxeter group, and the rank-3 generator of the very chain that produces E8 — in `Z[φ]`, the ring of integers of `Q(√5)`, then closes it under its own reflections in exact `bigint` arithmetic with no floating point anywhere:
+
+| measured | H3 (rank 3, `Z[φ]`) | E8 (rank 8, doubled `Z`) |
+|---|---|---|
+| roots | **30**; closure adds none | 240 |
+| distinct squared norms | **one class — the rational integer 4**, `φ` component exactly zero | one class: 8 |
+| reflections that left the ring | **zero** | zero |
+| rank of span | **3 — no projection anywhere** | 8, then projected |
+
+The norm cancellation is the load-bearing part: `1 + φ² + (φ−1)² = 1 + (φ+1) + (φ²−2φ+1) = 4`, using `φ² = φ + 1`. Every root has the same rational-integer length, so `x − ((x·α)/2)·α` lands back in the ring on every reflection. **That is structurally the same property E8 has, one ring over, in three dimensions, with no projection step to destroy an embedding.** The test carries a control that fails on a root of the wrong norm, so the pass is not vacuous.
+
+**Still `toy`, and now narrowed to exactly what remains unrun:** whether H3-derived geometry reproduces rung 6's exact *shading*. This module measured the ring, not the light, and the falsifier is unchanged — compute Lambert over an H3 orbit polytope in `Z[φ]` and check the level census is exact with irrationality confined to one named quadratic surd. What *is* now established is the prerequisite everyone would have assumed and nobody had checked: **the exact regime survives at rank 3.**
 
 **What the 8D buys that rank 3 genuinely cannot** is *cardinality of distinguished structure*: 240 distinguished directions against H3's 30, and a Weyl group of order 696,729,600 against 120. If a computation needs that many distinguished directions or that large an equivariance group, only the 8D supplies it. **A 3D scene renderer needs neither.** A cross-domain reasoning space with several independent semantic axes plausibly does — which is the split §7 turns on.
 
@@ -215,7 +229,7 @@ Anchors, all in the Soraya verdict and cited there with the correction that the 
 
 | question | what would settle it |
 |---|---|
-| Does a rank-3 exact root system reproduce the 8D's exact shading? (`toy`) | Generate H3 in `Cl(3,0)`, shade its orbit polytope in `Z[φ]`, check the level census is exact and the readout confines one quadratic surd |
+| Does a rank-3 exact root system reproduce the 8D's exact **shading**? (`toy`) | §6 settled the ring: H3 closes at 30 roots in `Z[φ]`, one norm class, nothing leaving the ring. What remains is the light — shade an H3 orbit polytope in `Z[φ]` and check the level census is exact with one quadratic surd at readout |
 | Does PGA hold up for **dynamics**, not just transforms? | Implement a rigid-body step as a bivector ODE and measure against a quaternion+inertia-tensor baseline. Nothing here touches dynamics |
 | The fixed-point / rational / float decision for time integration | Unaddressed. The first wall an engine proposal hits |
 | Renormalisation strategy for exact composition | 6.1 bits/composition measured; the policy is not designed |
@@ -228,6 +242,7 @@ Anchors, all in the Soraya verdict and cited there with the correction that the 
 - `src/Core.TypeScript/research/representation-layer-pga-motor.ts` — `Cl(3,0,1)`: product table generated from the metric, general product as oracle, motor decomposition, exact `bigint` path.
 - `src/Core.TypeScript/research/representation-layer-projection-cost.ts` — the overdraw/partition sweeps.
 - `src/Core.TypeScript/research/representation-layer-benchmark.ts` — the five-path benchmark and the exactness probe.
-- `src/Core.TypeScript/research/representation-layer-pga-motor.test.ts` — 20 falsifiers, 1,533 assertions.
+- `src/Core.TypeScript/research/representation-layer-rank3-exactness.ts` — H3 in `Z[φ]` and its reflection closure.
+- `src/Core.TypeScript/research/representation-layer-pga-motor.test.ts` — 25 falsifiers, 1,605 assertions.
 
 **One defect worth recording, because it is the ordinary one.** The first version of the unrolled fast path was hand-transcribed from a twelve-term symbolic expansion and had a sign error in the vector part of the rotor-to-quaternion map. It was caught by the test that compares the fast path against the general-product oracle, and the correct convention was then determined by *measuring* the motor's own rotation matrix against all four candidate assignments — the right one agreed to `3.8e-15`, the nearest rival was wrong by `3.2`. The benchmark had already produced plausible timings with the wrong code. A timing of an incorrect kernel is a measurement of nothing, and only the oracle-agreement test stood between that and this document.

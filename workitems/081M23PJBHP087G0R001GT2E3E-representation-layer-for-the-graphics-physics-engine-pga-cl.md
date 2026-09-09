@@ -41,10 +41,16 @@ Findings, all in `docs/research/2026-09-09-the-representation-layer-measured-*.m
 - **PGA is a performance answer, not a correctness one.** 27 faces per edge is combinatorial;
   no algebra changes it.
 
+- **Exactness survives at rank 3 — run, not argued.** H3 closes at exactly 30 roots in
+  `Z[phi]` under its own reflections: one norm class (the rational integer 4, `phi`
+  component exactly zero), zero reflections leaving the ring, rank 3 with no projection
+  anywhere. So dimension 8 is not what bought the exact arithmetic.
+
 ## Next, in order
 
-1. Falsify the `toy` claim that a rank-3 exact root system (H3 in `Z[phi]`) reproduces the
-   8D's exact shading. If it does, dimension 8 was never what bought exactness.
+1. The remaining half of the rank-3 claim: shade an H3 orbit polytope in `Z[phi]` and check
+   the level census is exact with one quadratic surd at readout. The ring is measured; the
+   light is not.
 2. A 3D-native derived content source, so the engine has geometry that is not a projection.
 3. PGA for **dynamics** (bivector ODE) against a quaternion+inertia baseline — untouched.
 4. The fixed-point / rational / float decision for time integration. Unaddressed and the

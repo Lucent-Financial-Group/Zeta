@@ -39,6 +39,19 @@ import {
 } from "./representation-layer-pga-motor.ts";
 import { splitmix32 } from "./representation-layer-projection-cost.ts";
 import { measureExactness, runBenchmark } from "./representation-layer-benchmark.ts";
+import {
+  H3_ROOT_COUNT,
+  INV_PHI,
+  PHI,
+  h3Reflect,
+  h3Roots,
+  measureRank3Exactness,
+  zDot,
+  zHalf,
+  zMul,
+  zint,
+  type Zphi,
+} from "./representation-layer-rank3-exactness.ts";
 
 /** An independently written Euclidean reflection — the control, outside the algebra. */
 function reflectEuclid(n: readonly [number, number, number], d: number, p: readonly [number, number, number]): [number, number, number] {
@@ -257,5 +270,46 @@ describe("the benchmark measures what it says it measures", () => {
       expect(Number.isFinite(r.checksum)).toBe(true);
       expect(r.nsPerVertex).toBeGreaterThan(0);
     }
+  });
+});
+
+describe("rank-3 exactness — did the 8D actually buy the exact arithmetic?", () => {
+  test("H3 closes at exactly 30 roots, in Z[phi], with no reflection leaving the ring", () => {
+    const r = measureRank3Exactness();
+    expect(r.declared).toBe(H3_ROOT_COUNT);
+    expect(r.closure).toBe(H3_ROOT_COUNT);
+    expect(r.stayedExact).toBe(true);
+    expect(r.rank).toBe(3);
+  });
+
+  test("every root has squared norm the RATIONAL integer 4 — the phi components cancel", () => {
+    // The property that makes the arithmetic close, and the rank-3 analogue of E8's roots
+    // all having squared norm 8 in doubled integer coordinates.
+    for (const root of h3Roots()) {
+      const n = zDot(root, root);
+      expect(n[0]).toBe(4n);
+      expect(n[1]).toBe(0n);
+    }
+    // ONE norm class: every root the same length. `"4,0"` is the Z[phi] key for `4 + 0*phi`,
+    // i.e. the rational integer 4 — the phi component is exactly zero, not merely small.
+    expect(measureRank3Exactness().distinctSquaredNorms).toEqual(["4,0"]);
+  });
+
+  test("phi^2 = phi + 1 exactly, so the ring is closed under multiplication", () => {
+    expect(zMul(PHI, PHI)).toEqual([1n, 1n]);
+    expect(zMul(PHI, INV_PHI)).toEqual([1n, 0n]);
+  });
+
+  test("CONTROL: the probe can fail, so a pass means something", () => {
+    const bad: Zphi[] = [zint(1n), zint(0n), zint(0n)];
+    expect(h3Reflect(bad, bad)).toBeNull();
+    expect(zHalf([1n, 0n])).toBeNull();
+    expect(zHalf([4n, 2n])).toEqual([2n, 1n]);
+  });
+
+  test("closure reaches its fixed point and does not run away", () => {
+    const r = measureRank3Exactness();
+    expect(r.rounds).toBeGreaterThan(0);
+    expect(r.rounds).toBeLessThan(32);
   });
 });
