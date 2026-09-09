@@ -28,8 +28,8 @@ place.** This rung is the first .NET member of the ladder whose rungs 1–6 live
 | `.../E8Embedding.fs` | Jacobi eigen-decomposition → the Coxeter plane. **The declared float boundary** |
 | `.../E8Raytracer.fs` | binned-SAH BVH, ordered traversal, two-sided Möller–Trumbore, scalar and `Vector<float32>` kernels, a DoP knob |
 | `.../E8GoldenVector.fs` | the byte-lock, emitted as one canonical JSON document |
-| `tests/cross-verification/clifford-e8-rendering/` | the TypeScript emitter of the SAME document, and the committed treaty between them |
-| `tests/Tests.FSharp/E8Render.Tests.fs` | 27 falsifiers |
+| `tests/cross-verification/clifford-e8-rendering/` | the TypeScript emitter and the F# oracle script of the SAME document, the `cross-verify.ts` that runs both, and the committed treaty between them |
+| `tests/Tests.FSharp/E8Render.Tests.fs` | 31 falsifiers |
 | `bench/Benchmarks/E8RaytraceBench.fs` | the committed measurement harness |
 
 **This is a second oracle, not a port.** The repo already records that the language oracles
@@ -155,7 +155,8 @@ simply have more lanes to hide it with.
 
 ## 5. Mutation testing — every falsifier, with its killer, and a control that must survive
 
-Sixteen mutants, each built and run against the 27 falsifiers. Twelve had to die, four had
+Sixteen mutants, each built and run against the falsifier suite (27 at the time of the run;
+31 now, the four added by §7). Twelve had to die, four had
 to survive, and **one that was supposed to die did not** — which is where the value was.
 
 | # | mutant | verdict | killed by |
