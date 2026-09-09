@@ -1,0 +1,14 @@
+{
+  "id": "080d04289ce0f010a0130008baefe69d",
+  "at": "2026-09-09T07:30:50.014Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M22H770Y087G0R00375ZETA",
+    "type": "bug",
+    "title": "lint (Python) red on main: unsorted import block",
+    "slug": "lint-python-red-on-main-unsorted-import-block",
+    "priority": "P2",
+    "filename": "081M22H770Y087G0R00375ZETA-lint-python-red-on-main-unsorted-import-block.md"
+  }
+}
