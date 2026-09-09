@@ -2144,6 +2144,14 @@ jobs:
       # fourth kind.
       - name: Gatekeeper syncs the kinds the Hat policies read
         if: always() && steps.proof.conclusion != 'skipped'
+        # DECLARES ITSELF as a post-deploy functional assertion, so the chart
+        # census DERIVES the count rather than being told it. Without this the
+        # census reports `0 of 49` and is correct to; a hand-maintained registry
+        # would have owed an edit at whatever unattended moment these two branches
+        # happened to merge in. Convention + parser + limits:
+        # src/Core.TypeScript/cluster/chart-assertion-census.ts.
+        env:
+          ZETA_FUNCTIONAL_ASSERTION_FOR: hat-system
         run: |
           set -o pipefail
           want="$(bun -e '
