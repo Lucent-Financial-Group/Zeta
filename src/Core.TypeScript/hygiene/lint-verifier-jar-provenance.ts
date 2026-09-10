@@ -309,7 +309,16 @@ export function deriveJarProvenance(
       jarPath,
       regime,
       ...(pin?.rolling == null ? {} : { rolling: pin.rolling }),
-      ...(pin === undefined ? {} : { pinnedSha256: pin.sha256 ?? "", tagOnlyReason: pin.tagOnly }),
+      // Spread the optional key ONLY when it has a value: under exactOptionalPropertyTypes,
+      // `tagOnlyReason: undefined` is not the same as the key being absent, and the stricter
+      // tsconfig CI runs refuses it (TS2379). My local `tsc -p tsconfig.json` did not — a
+      // reminder that the orchestrator config is the one that decides.
+      ...(pin === undefined
+        ? {}
+        : {
+            pinnedSha256: pin.sha256 ?? "",
+            ...(pin.tagOnly === undefined ? {} : { tagOnlyReason: pin.tagOnly }),
+          }),
       sha256: present ? inputs.hashOf(jarPath) : null,
       version: present ? inputs.versionOf(jarPath) : null,
     });
