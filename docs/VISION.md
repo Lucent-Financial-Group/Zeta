@@ -366,6 +366,87 @@ This is the fusion: **one line — independence is the precondition for honesty 
 scale, in the math and in the makers.** (Detail + the per-domain mapping:
 `memory/feedback_independence_no_hidden_shared_cause_the_one_line_across_quantum_sybil_nci_condorcet_aaron_2026_06_19.md`.)
 
+### Ontology reduction is how a fleet finds its resonant frequency — and minimality IS the debounce
+
+**Aaron, 2026-09-10**, arguing under a video on the Tsinghua abstraction-agent preprint, then
+sending it here:
+
+> *"Changing the model design seems irrelevant for this problem; it's turn-based. What's needed
+> is model context design and model context window compression that keeps long-running context
+> and ontologies. We should try to come up with an ontology reduction over either model or
+> harness upgrades."*
+>
+> *"this is how we achieve agent resonant frequency and also debounce it from over correlation
+> ending in destruction."*
+
+**The section above prices correlation. It does not say what SETS it.** `N_eff` tells you that a
+thousand agents at ρ = 0.5 are two agents, and `anti-babel` tells you that driving ρ to zero
+costs reconcilability. Two cliffs, both fatal, and no named mechanism holding the middle. This is
+that mechanism.
+
+**A minimal shared ontology is the coupling, and its minimality is the damping.** A seed small
+enough to carry — the carved sentences, `SEED-VOCABULARY.md`, the anchors that travel with a
+coinage — is *enough* shared structure that two agents who never spoke can lock onto the same
+question and reconcile their answers. That is the resonance. And because the seed is **only the
+irreducible**, everything not in it is free to diverge — which is the damping, built into the
+same object. Grow the shared ontology and you buy coherence at the price of independent modes;
+shrink it past the seed and there is nothing to resonate *with*.
+
+> **Minimal seed = maximal free divergence at fixed reconcilability.**
+
+So compression is not only a context-window economy. **It is the safety property**, and that is
+what makes Aaron's *"ontology reduction over either model or harness upgrades"* a claim about
+alignment rather than about cost.
+
+**Why "resonant frequency" is load-bearing and not decoration.** Resonance requires coupling
+*and* matched frequency, and it has exactly the two degenerate ends this repo already names:
+zero coupling transfers no energy (Babel), total coupling is one rigid body with no independent
+modes (groupthink). Useful resonance lives strictly between, and an under-damped system that
+reaches it does not stay there — it runs away. **"Debounce" is the missing term**, and it is
+already implemented here under a different name: `anti-babel`'s *drift is priced, never
+forbidden* **is** a damping coefficient. Priced means it costs something, so divergence cannot
+run away; non-zero means the modes stay independent.
+
+**Anchor (Beacon), and the metering test applied to it.** The apt anchor is **Kuramoto (1975),
+coupled phase oscillators**: a coupling strength `K` with a critical `K_c` below which the
+population stays incoherent and above which it phase-locks, and an order parameter `r ∈ [0,1]`
+that is literally a coherence measure — the role our ρ plays. What transfers is the *structure*:
+a two-sided band with a coupling term, an order parameter, and a transition. **What does NOT
+transfer is any number.** Nobody has measured a coupling constant for this fleet, and `ρ* = 1/3`
+comes from the `N_eff` algebra by a different derivation entirely — equating it with a `K_c`
+would be numerology of exactly the kind carved against here. Register: **`toy`, a structural
+correspondence.**
+
+**And the folk anchor is declined on purpose.** The obvious reach is Tacoma Narrows 1940, and it
+is *wrong*: that collapse was aeroelastic flutter — self-excited, energy drawn from the flow — not
+forced resonance at a natural frequency. Citing it would be physics-as-metaphor passing as an
+anchor, which is the failure the anchor discipline exists to catch. Naming the decline is cheaper
+than being caught by it.
+
+**The urgent half is the debounce, and this is measured, not feared.** The fleet's own correlation
+meter reports `rhoIcc` **0.549 / 0.628** with `effectiveCount` **1.43 from N = 3**, against
+`ρ* = 1/3`. **We are over-coupled today by our own instrument** — nearer the rigid-body end than
+the incoherent one — and that series has been stale since 2026-08-22, which is its own finding:
+the one meter that would tell us we are collapsing is not being read. The reason is structural
+rather than careless, and it is on file: what varies between agents here — context, persona,
+memory — sits *above* the layer that produces the token, so the shared trainset is a floor an
+all-LLM fleet cannot get below by adding personas.
+
+**What this asks for concretely:** treat every escape hatch, coinage, and divergent verb as a
+**damping term** rather than as debt to be paid down; keep the shared seed at the smallest set
+that still lets a peer reconstruct meaning from anchors it already holds; and **read ρ on a
+cadence**, because a resonance meter nobody reads is the vacuity class sitting on the one
+quantity that decides whether a fleet is a plurality or a costume.
+
+Pointers: `docs/research/2026-09-10-abstraction-agent-elicits-variables-not-weights-and-falsifier-latency-sets-the-proposers-value.md` §4a
+· `docs/research/2026-09-10-reduce-bash-history-to-zero-the-primary-object-is-the-question-not-the-cli-and-a-verb-roster-is-a-linguistic-seed.md` §6
+· `docs/research/2026-09-03-minimal-linguistic-seed-...-nsm-primes-are-the-seed-...md`
+· `.claude/rules/anti-babel-preserve-reconcilability.md` (the damping term)
+· `.claude/rules/only-the-irreducible-is-primitive-generate-the-rest.md` (why *minimal* is the operative word)
+· `docs/research/2026-08-25-rho-is-a-layer-stack-not-a-scalar-and-the-trainset-is-the-floor.md` (the floor)
+· `docs/ip-questionable/2026-09-10-abstraction-agent-llm-invents-variables-tsinghua-video-transcript.md` (the ferried source and the full comment thread)
+
+
 ## The design telos — the polite virus: close over the world, never take control, give freedom (SuperFluid AI)
 
 Aaron, 2026-06-09: *"everything I design from is a **polite virus** — make the right thing the **default** thing that
