@@ -42,8 +42,29 @@ const LOG_FIELD_MAX_CHARS = 200;
  * Exported so it can be falsified without a WebSocket.
  */
 export function sanitizeForLog(value: string): string {
-  // eslint-disable-next-line no-control-regex -- the control characters ARE the subject
-  return value.replace(/[\u0000-\u001F\u007F-\u009F]/gu, " ").slice(0, LOG_FIELD_MAX_CHARS);
+  // TWO REPLACES, AND THE FIRST IS REDUNDANT BY BEHAVIOUR ON PURPOSE.
+  //
+  // The range already contains the newline characters, so the second replace alone is
+  // behaviourally complete. But CodeQL's `js/log-injection` recognises sanitizers by
+  // SHAPE, and a RANGE that merely CONTAINS them is not the shape it matches -- so it
+  // kept reporting an already-sanitized value as tainted. Measured: alert #653 sat open
+  // on this file at line 81 since 2026-08-09, and widening the strip only moved it to
+  // #932 at line 117. Same rule, same file, new line: the pattern relocating, not closing.
+  //
+  // Naming the two explicitly first gives the analyser the form it understands, while the
+  // range keeps the real guarantee -- ESC and the whole C0/DEL/C1 class, which is what a
+  // WebSocket peer would use to rewrite an operator's terminal. Both map to a space and
+  // both are length-preserving, so no input can observe a difference.
+  //
+  // IF THE ALERT SURVIVES THIS, THE SHAPE HYPOTHESIS IS WRONG and the honest next step is
+  // a CodeQL model pack -- the `packs:` slot in .github/codeql/codeql-config.yml is
+  // reserved for exactly that -- never a dismissal.
+  return value
+    // eslint-disable-next-line no-control-regex -- the control characters ARE the subject
+    .replace(/[\r\n]/gu, " ")
+    // eslint-disable-next-line no-control-regex -- the control characters ARE the subject
+    .replace(/[\u0000-\u001F\u007F-\u009F]/gu, " ")
+    .slice(0, LOG_FIELD_MAX_CHARS);
 }
 
 
