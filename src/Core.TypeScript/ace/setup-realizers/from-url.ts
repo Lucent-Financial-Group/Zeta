@@ -33,16 +33,75 @@ const SHA256_HEX = /^[0-9a-f]{64}$/;
 // at least two different tla2tools.jar builds -- so the digest is the only
 // thing that says which bytes arrived. Mandatory here as in from-elan and
 // from-autotools-tarball. See 081M001E114087G0R001AZF4KD.
-function requireSha256(destRel: string, attrs: Attrs): string {
+/**
+ * The one sanctioned way to say "this row is pinned by its TAG, not by a digest".
+ *
+ * MAINTAINER'S RULING, Aaron 2026-09-10:
+ *
+ *   "for some things we don't need a pin at all, or we can pin a tag instead of a
+ *    SHA, we can't be perfect with security here if it keeps blocking us over and
+ *    over and over and over, security on a product that never ships never matters."
+ *
+ * WHAT FORCED IT. The digest-on-a-re-cut-tag arrangement did not merely cost
+ * maintenance -- it DEADLOCKED. `repin-rolling.ts` advances a digest only after its
+ * declared `remeasure=` passes; for `tla2tools.jar` that sweep judges the jar against
+ * `registry/tlc-models.json`'s versionBanner, which is a committed restatement of the
+ * pin that only a successful re-pin updates. So the sweep reports "banner is X,
+ * registry pins Y" for all 52 models, the re-measure fails, the tool restores the tree,
+ * and the pin can NEVER advance. Measured 2026-09-10, exit 1, nothing re-pinned. Three
+ * hand re-pins in one day were people stepping around a tool that cannot succeed.
+ *
+ * WHAT IS GIVEN UP, said plainly rather than softened: for a tag-only row, whoever can
+ * publish to that tag chooses the bytes this repo installs, and nothing here will
+ * notice. That is the same exposure the auto-accept exception already granted for this
+ * dest -- this removes the ceremony around it, not a protection.
+ *
+ * WHAT IS NOT GIVEN UP, and why the trade is bounded:
+ *
+ *   * It is PER ROW and OPT-IN. `sha256=tag-only` matches that literal string and
+ *     nothing else; every other row still requires 64 hex and still fails closed.
+ *     There is no global switch and none may be added.
+ *   * It requires a REASON as a value (`tagonly=`), not a comment. A comment gets
+ *     copied along with the line it excuses; a required field does not.
+ *   * The URL must carry a version-shaped tag segment. A row pointing at `latest`,
+ *     `main`, or a bare filename is REFUSED -- "pin the tag" means there is a tag.
+ *   * Consumers keep their own verdicts. For tla2tools the four TLC model verdicts
+ *     (completion marker, expected-violation substring, exit code, and the pinned
+ *     exhaustive distinct-state count) still run on every gated run, so a substituted
+ *     jar that changes any RESULT still fails. The digest was never the only guard.
+ */
+const TAG_ONLY = "tag-only";
+const VERSION_TAG_SEGMENT = /\/(?:v?\d+[\w.-]*)\//u;
+
+export function requireSha256(destRel: string, attrs: Attrs): string {
   const sha256 = attrs.sha256;
   if (sha256 === undefined) {
     throw new Error(`from-url ${destRel}: sha256= pin required`);
   }
+  if (sha256 === TAG_ONLY) {
+    if (attrs.tagonly === undefined || attrs.tagonly.trim() === "") {
+      throw new Error(
+        `from-url ${destRel}: sha256=tag-only requires tagonly=<reason> saying why a digest is not used. A reason in a comment is not enough — it travels with the line that copies it.`,
+      );
+    }
+    const url = attrs.url ?? "";
+    if (!VERSION_TAG_SEGMENT.test(url)) {
+      throw new Error(
+        `from-url ${destRel}: sha256=tag-only requires a version-shaped tag in the URL, and ${JSON.stringify(url)} has none. "Pin the tag instead of the digest" is only meaningful when there IS a tag; a moving alias like latest/main pins nothing.`,
+      );
+    }
+    return TAG_ONLY;
+  }
   const normalized = sha256.toLowerCase();
   if (!SHA256_HEX.test(normalized)) {
-    throw new Error(`from-url ${destRel}: sha256= must be 64 hex chars`);
+    throw new Error(`from-url ${destRel}: sha256= must be 64 hex chars, or the literal ${TAG_ONLY}`);
   }
   return normalized;
+}
+
+/** True when the row declined a digest deliberately, rather than carrying one. */
+export function isTagOnly(pin: string): boolean {
+  return pin === TAG_ONLY;
 }
 
 /**
@@ -144,6 +203,17 @@ async function downloadWithOuterRetry(
       log(`  attempt ${String(attempt)}/${String(maxAttempts)} failed; retrying in ${String(sleepS)}s`);
       await Bun.sleep(sleepS * 1000);
       continue;
+    }
+
+    // A TAG-ONLY row has no digest to disagree with. It still hashes the bytes --
+    // the digest is RECORDED so an operator can see what arrived and diff two
+    // machines -- but the value is a report, never a verdict. Logged at accept time
+    // rather than swallowed: an unpinned install nobody can see is worse than the
+    // pin it replaced.
+    if (isTagOnly(sha256)) {
+      log(`  tag-only pin: accepted ${dest} sha256=${fetched} (no digest pinned; see tagonly= on its row)`);
+      renameSync(part, dest);
+      return;
     }
 
     if (fetched === sha256) {
