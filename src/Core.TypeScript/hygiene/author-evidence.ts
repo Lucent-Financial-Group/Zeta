@@ -995,11 +995,22 @@ if (import.meta.main) {
     process.exit(0);
   }
 
-  if (!existsSync(CONFIG_PATH)) {
-    console.error(`author-evidence: ${CONFIG_PATH} not found (run from the repo root)`);
-    process.exit(1);
+  // Read and interpret the failure rather than checking first: an `existsSync` gate in
+  // front of a read answers a question that is already stale by the time the read runs,
+  // and reads as defensive while preventing nothing (CWE-367, and this file tripped
+  // `lint-check-then-use-file-races.ts` on exactly this line in its first CI run).
+  let configText: string;
+  try {
+    configText = readFileSync(CONFIG_PATH, "utf8");
+  } catch (err) {
+    const code = (err as NodeJS.ErrnoException).code;
+    if (code === "ENOENT") {
+      console.error(`author-evidence: ${CONFIG_PATH} not found (run from the repo root)`);
+      process.exit(1);
+    }
+    throw err;
   }
-  const parsed = parseDeclarations(readFileSync(CONFIG_PATH, "utf8"));
+  const parsed = parseDeclarations(configText);
 
   if (wantCheck) {
     const violations = checkDeclarations(parsed.declarations, existsSync);
