@@ -2,6 +2,7 @@ import { spawnSync } from "node:child_process";
 import { mkdirSync, renameSync, unlinkSync } from "node:fs";
 import { dirname } from "node:path";
 import { parseMechanismManifest } from "../setup-manifest.ts";
+import { resolvePin, TAG_ONLY, UNPINNED, type PinAttrs } from "./unhashed-pin.ts";
 import {
   curlFetchToFile,
   resolveRepoRelativeDest,
@@ -26,7 +27,7 @@ const MANIFEST = "tools/setup/manifests/from-url";
 
 type Attrs = Readonly<Record<string, string>>;
 
-const SHA256_HEX = /^[0-9a-f]{64}$/;
+// SHA256_HEX moved to unhashed-pin.ts with the rest of the pin vocabulary.
 
 // A URL is a name, not a pin. GitHub release assets can be re-uploaded under
 // an unchanged tag -- tlaplus v1.8.0 is a rolling prerelease that has served
@@ -34,83 +35,43 @@ const SHA256_HEX = /^[0-9a-f]{64}$/;
 // thing that says which bytes arrived. Mandatory here as in from-elan and
 // from-autotools-tarball. See 081M001E114087G0R001AZF4KD.
 /**
- * The one sanctioned way to say "this row is pinned by its TAG, not by a digest".
+ * Pin resolution for a `from-url` row.
  *
- * MAINTAINER'S RULING, Aaron 2026-09-10:
+ * DELEGATES to `unhashed-pin.ts` rather than carrying its own copy. Both landed the
+ * same afternoon from the same instruction (Aaron 2026-09-10: "we need to wire these
+ * everywhere"), and for a few minutes this file and that module each implemented the
+ * vocabulary independently -- which is precisely the "fourth dialect" the instruction
+ * was meant to prevent. The shared module merged first, so this defers to it: one
+ * spelling of `tag-only` / `unpinned`, one reason-quality floor, one set of refusals.
  *
- *   "for some things we don't need a pin at all, or we can pin a tag instead of a
- *    SHA, we can't be perfect with security here if it keeps blocking us over and
- *    over and over and over, security on a product that never ships never matters."
- *
- * WHAT FORCED IT. The digest-on-a-re-cut-tag arrangement did not merely cost
- * maintenance -- it DEADLOCKED. `repin-rolling.ts` advances a digest only after its
- * declared `remeasure=` passes; for `tla2tools.jar` that sweep judges the jar against
- * `registry/tlc-models.json`'s versionBanner, which is a committed restatement of the
- * pin that only a successful re-pin updates. So the sweep reports "banner is X,
- * registry pins Y" for all 52 models, the re-measure fails, the tool restores the tree,
- * and the pin can NEVER advance. Measured 2026-09-10, exit 1, nothing re-pinned. Three
- * hand re-pins in one day were people stepping around a tool that cannot succeed.
- *
- * WHAT IS GIVEN UP, said plainly rather than softened: for a tag-only row, whoever can
- * publish to that tag chooses the bytes this repo installs, and nothing here will
- * notice. That is the same exposure the auto-accept exception already granted for this
- * dest -- this removes the ceremony around it, not a protection.
- *
- * WHAT IS NOT GIVEN UP, and why the trade is bounded:
- *
- *   * It is PER ROW and OPT-IN. `sha256=tag-only` matches that literal string and
- *     nothing else; every other row still requires 64 hex and still fails closed.
- *     There is no global switch and none may be added.
- *   * It requires a REASON as a value (`tagonly=`), not a comment. A comment gets
- *     copied along with the line it excuses; a required field does not.
- *   * The URL must carry a version-shaped tag segment. A row pointing at `latest`,
- *     `main`, or a bare filename is REFUSED -- "pin the tag" means there is a tag.
- *   * Consumers keep their own verdicts. For tla2tools the four TLC model verdicts
- *     (completion marker, expected-violation substring, exit code, and the pinned
- *     exhaustive distinct-state count) still run on every gated run, so a substituted
- *     jar that changes any RESULT still fails. The digest was never the only guard.
+ * The URL is passed as a PARAMETER because a manifest row's URL is POSITIONAL
+ * (`entry.tokens[1]`); an earlier draft read `attrs.url`, which does not exist, so the
+ * tag check saw an empty string and every real tag-only row would have thrown at
+ * install time while its unit tests stayed green. See `from-url-tag-only.test.ts`,
+ * which resolves the COMMITTED manifest rather than a hand-built shape.
  */
-const TAG_ONLY = "tag-only";
-const VERSION_TAG_SEGMENT = /\/(?:v?\d+[\w.-]*)\//u;
-
 export function requireSha256(destRel: string, attrs: Attrs, url: string): string {
-  const sha256 = attrs.sha256;
-  if (sha256 === undefined) {
-    throw new Error(`from-url ${destRel}: sha256= pin required`);
+  const pin = resolvePin("from-url", destRel, url, attrs as PinAttrs);
+  switch (pin.kind) {
+    case "digest":
+      return pin.sha256;
+    case "tag-only":
+      return TAG_ONLY;
+    case "unpinned":
+      return UNPINNED;
   }
-  if (sha256 === TAG_ONLY) {
-    if (attrs.tagonly === undefined || attrs.tagonly.trim() === "") {
-      throw new Error(
-        `from-url ${destRel}: sha256=tag-only requires tagonly=<reason> saying why a digest is not used. A reason in a comment is not enough — it travels with the line that copies it.`,
-      );
-    }
-    // URL AS A PARAMETER, NOT AN ATTR. The manifest row's URL is POSITIONAL
-    // (`entry.tokens[1]`); `attrs.url` does not exist and never did. The first draft
-    // of this function read `attrs.url ?? ""`, so the tag check saw an empty string
-    // and EVERY REAL tag-only row would have thrown at install time -- while its seven
-    // unit tests passed, because they handed in `url` as an attr, a shape the caller
-    // never produces. Green in test, red in production: a test that constructs an
-    // input the production path cannot create is not testing the production path.
-    // Caught in review by another agent before this merged. The falsifier added
-    // alongside runs the resolver over the COMMITTED manifest text, so the shape under
-    // test is the shape that ships.
-    if (!VERSION_TAG_SEGMENT.test(url)) {
-      throw new Error(
-        `from-url ${destRel}: sha256=tag-only requires a version-shaped tag in the URL, and ${JSON.stringify(url)} has none. "Pin the tag instead of the digest" is only meaningful when there IS a tag; a moving alias like latest/main pins nothing.`,
-      );
-    }
-    return TAG_ONLY;
-  }
-  const normalized = sha256.toLowerCase();
-  if (!SHA256_HEX.test(normalized)) {
-    throw new Error(`from-url ${destRel}: sha256= must be 64 hex chars, or the literal ${TAG_ONLY}`);
-  }
-  return normalized;
+  // `resolvePin` returns a closed union; this is unreachable and exists so the
+  // compiler can see a terminal path rather than inferring `undefined`.
+  throw new Error(`from-url ${destRel}: unreachable pin kind`);
 }
 
-/** True when the row declined a digest deliberately, rather than carrying one. */
-export function isTagOnly(pin: string): boolean {
-  return pin === TAG_ONLY;
+/**
+ * True when the row DECLARED it has no digest, either way. The verify path below has
+ * nothing to compare against in both cases, and the distinction between them is about
+ * whether a tag exists to pin -- which `resolvePin` has already enforced by here.
+ */
+export function isUnhashedPin(pin: string): boolean {
+  return pin === TAG_ONLY || pin === UNPINNED;
 }
 
 /**
@@ -219,8 +180,8 @@ async function downloadWithOuterRetry(
     // machines -- but the value is a report, never a verdict. Logged at accept time
     // rather than swallowed: an unpinned install nobody can see is worse than the
     // pin it replaced.
-    if (isTagOnly(sha256)) {
-      log(`  tag-only pin: accepted ${dest} sha256=${fetched} (no digest pinned; see tagonly= on its row)`);
+    if (isUnhashedPin(sha256)) {
+      log(`  ${sha256} pin: accepted ${dest} sha256=${fetched} (no digest pinned; see the reason on its row)`);
       renameSync(part, dest);
       return;
     }

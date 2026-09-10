@@ -1,6 +1,6 @@
 import { describe, expect, test } from "bun:test";
 import { readFileSync } from "node:fs";
-import { isTagOnly, requireSha256 } from "./from-url.ts";
+import { isUnhashedPin, requireSha256 } from "./from-url.ts";
 
 const HEX = "a".repeat(64);
 
@@ -46,7 +46,7 @@ describe("the COMMITTED manifest — the shape that actually ships", () => {
     expect(tagOnly.length).toBeGreaterThan(0);
     for (const line of tagOnly) {
       const { url, attrs } = parseRow(line);
-      expect(isTagOnly(requireSha256("row", attrs as never, url))).toBe(true);
+      expect(isUnhashedPin(requireSha256("row", attrs as never, url))).toBe(true);
     }
   });
 });
@@ -61,16 +61,18 @@ describe("the gate itself", () => {
   test("tag-only WITHOUT a reason is refused", () => {
     expect(() => requireSha256("d", { sha256: "tag-only" } as never, "https://x/v1.8.0/a.jar")).toThrow(/tagonly=<reason>/u);
   });
-  test("tag-only on a MOVING alias is refused", () => {
-    expect(() => requireSha256("d", { sha256: "tag-only", tagonly: "because upstream re-cuts" } as never, "https://x/latest/a.jar")).toThrow(/version-shaped tag/u);
+  test("tag-only on a MOVING alias is refused — with a VALID reason, so the tag is what fails", () => {
+    // The reason must satisfy the shared quality floor here, or this test would pass for
+    // the wrong cause and prove nothing about the tag requirement.
+    expect(() => requireSha256("d", { sha256: "tag-only", tagonly: "upstream-recuts-this-prerelease-asset-so-no-digest-is-stable" } as never, "https://x/latest/a.jar")).toThrow(/version-shaped tag/u);
   });
   test("tag-only with a reason and a real tag is accepted", () => {
-    expect(isTagOnly(requireSha256("d", { sha256: "tag-only", tagonly: "upstream re-cuts the tag" } as never, "https://x/v1.8.0/a.jar"))).toBe(true);
+    expect(isUnhashedPin(requireSha256("d", { sha256: "tag-only", tagonly: "upstream-recuts-this-prerelease-asset-so-no-digest-is-stable" } as never, "https://x/v1.8.0/a.jar"))).toBe(true);
   });
   test("a malformed digest is still refused", () => {
     expect(() => requireSha256("d", { sha256: "nothex" } as never, "https://x/v1/a")).toThrow(/64 hex chars/u);
   });
   test("isTagOnly is false for a real digest", () => {
-    expect(isTagOnly(HEX)).toBe(false);
+    expect(isUnhashedPin(HEX)).toBe(false);
   });
 });
