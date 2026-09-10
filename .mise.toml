@@ -353,13 +353,20 @@ node = "24"
 # and `src/Core.TypeScript/hygiene/audit-mise-lock-coverage.ts` is what keeps that roster
 # from growing without a diff.
 #
-# REFRESH: `MISE_LOCKED=0 mise lock` (plus `--platform windows-arm64`, run twice). The env
-# override is load-bearing — with `locked = true` active, `mise lock` cannot resolve a
-# version that is not already in the lockfile and PRUNES the entry instead.
+# REFRESH: `MISE_LOCKED=0 MISE_PYTHON_GITHUB_ATTESTATIONS=1 mise lock` (plus
+# `--platform windows-arm64`, run twice), with `MISE_GITHUB_TOKEN` set. `MISE_LOCKED=0` is
+# load-bearing — with `locked = true` active, `mise lock` cannot resolve a version that is
+# not already in the lockfile and PRUNES the entry instead. The full recipe and the reason
+# for each variable are printed by the audit's `refreshInstructions()`.
 #
-# The attestation settings are deliberately UNCHANGED by this. Relocating that check is a
-# separate change and only becomes legitimate now that a digest we own exists locally;
-# doing both at once would remove a check while claiming to move it.
+# THE ATTESTATION SETTINGS ARE UNCHANGED, and the lockfile is what makes them cheap.
+# Measured 2026-09-10: a `provenance = "github-attestations"` row in the lockfile is an
+# attestation mise verified AT LOCK TIME, and with it present mise SKIPS the live
+# attestation call on install; without it, mise makes the call. That is why the refresh
+# turns python attestations ON (against mise.sh's install-time `0`) — the check is
+# performed once, by us, and its result is committed as text, which is a relocation and
+# not a removal. Nothing here disables `github_attestations`; the tools that still lack a
+# provenance row still make the live call, exactly as before.
 locked = true
 # Explicit: use astral-sh/python-build-standalone precompiled binaries (fast
 # install on dev laptops + CI). Compile-from-source is opt-in via

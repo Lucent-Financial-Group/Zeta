@@ -111,21 +111,39 @@ jobs:
         #
         # Run twice, on purpose: the first pass over a platform set discovers the x86-64
         # `-baseline` variants, so a single pass is not a fixed point.
+        #
+        # `provenance` rows are compared SEPARATELY and never fail this step. A provenance row
+        # is an attestation mise verified AT LOCK TIME and recorded, and with it present mise
+        # SKIPS the live attestation call on install — measured 2026-09-10. Its presence
+        # therefore depends on GitHub's attestation service being reachable at lock time, so a
+        # byte-for-byte gate would let an attestation outage redden the very check that exists
+        # so an attestation outage would stop mattering. A failed probe is `unknown`.
         env:
           # Authenticated release metadata; the anonymous 60/hr limit is exhausted by a run
           # this size, exactly as tools/setup/common/mise.sh documents.
           MISE_GITHUB_TOKEN: ${{ github.token }}
+          # 1 at LOCK time on purpose, against mise.sh's 0 at INSTALL time: this is what
+          # records python's provenance so the install never has to make the call itself.
+          MISE_PYTHON_GITHUB_ATTESTATIONS: "1"
         run: |
           set -euo pipefail
+          git show HEAD:mise.lock > /tmp/committed-mise.lock
+          git show HEAD:mise.full.lock > /tmp/committed-mise.full.lock
           "$MISE_BIN" trust --all --yes
           MISE_LOCKED=0 "$MISE_BIN" lock
           MISE_LOCKED=0 "$MISE_BIN" lock --platform windows-arm64
           MISE_LOCKED=0 "$MISE_BIN" lock
-          if ! git diff --exit-code -- mise.lock mise.full.lock; then
-            echo "::error title=mise lock drift::A re-lock on the pinned mise does not reproduce the committed lockfile. Either a pin moved without a re-lock, a digest was hand-edited, or an upstream release asset changed after publication. The diff above is the difference; re-run the three MISE_LOCKED=0 commands locally and commit the result."
+          RC=0
+          bun src/Core.TypeScript/hygiene/audit-mise-lock-coverage.ts --relock-diff \
+            /tmp/committed-mise.lock mise.lock || RC=1
+          bun src/Core.TypeScript/hygiene/audit-mise-lock-coverage.ts --relock-diff \
+            /tmp/committed-mise.full.lock mise.full.lock || RC=1
+          git checkout -- mise.lock mise.full.lock
+          if [ "$RC" -ne 0 ]; then
+            echo "::error title=mise lock drift::A re-lock on the pinned mise does not reproduce the committed lockfile's urls, checksums, versions or platforms. Either a pin moved without a re-lock, a digest was hand-edited, or an upstream release asset changed after publication. Re-run the refresh commands printed above and commit the result."
             exit 1
           fi
-          echo "[verify] lockfile reproduces exactly on the pinned mise"
+          echo "[verify] lockfile reproduces on the pinned mise"
 
       - name: LIVE REFUSAL — a real fetch whose digest does not match the lockfile must be rejected
         # Cheap on purpose: shellcheck is ~1MB and is locked on every required platform, so this

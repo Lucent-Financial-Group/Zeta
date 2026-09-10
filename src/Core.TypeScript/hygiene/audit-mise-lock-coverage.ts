@@ -31,10 +31,11 @@
 //      from the roster. The exemption set can shrink; it cannot grow without a diff here.
 //
 // WHAT IT DOES NOT DO: prove the digests are right. Only a real fetch can, and that is
-// `.github/workflows/verify-mise-lock.yml` — a re-lock on the PINNED mise plus
-// `git diff --exit-code`, and a tampered-digest run that MUST be refused.
+// `.github/workflows/verify-mise-lock.yml` — a re-lock on the PINNED mise compared through
+// `--relock-diff` below, plus a tampered-digest run that MUST be refused.
 //
 // Run:   bun src/Core.TypeScript/hygiene/audit-mise-lock-coverage.ts
+//        bun src/Core.TypeScript/hygiene/audit-mise-lock-coverage.ts --relock-diff <a> <b>
 // Exit:  0 — every declared tool is locked, or named on the roster with a reason
 //        1 — drift, lost coverage, a missing `locked = true`, or a stale roster entry
 
@@ -353,17 +354,131 @@ export function checkPair(
 
 export function refreshInstructions(): string {
   return [
-    "REFRESH (never hand-edit a digest):",
-    "  MISE_LOCKED=0 mise lock                              # refresh every locked platform",
-    "  MISE_LOCKED=0 mise lock --platform windows-arm64     # windows-arm64 is not in mise's default set",
-    "  MISE_LOCKED=0 mise lock                              # run again: the first pass discovers x86-64 baseline variants",
+    "REFRESH (never hand-edit a digest), on the mise version tools/setup/linux.sh pins:",
+    "  export MISE_GITHUB_TOKEN=$(gh auth token)   # anonymous release metadata is 60/hr; a run this size exhausts it",
+    "  export MISE_PYTHON_GITHUB_ATTESTATIONS=1    # record python provenance AT LOCK TIME (see below)",
+    "  MISE_LOCKED=0 mise lock",
+    "  MISE_LOCKED=0 mise lock --platform windows-arm64   # not in mise's default platform set",
+    "  MISE_LOCKED=0 mise lock                            # again: pass 1 discovers the x86-64 baseline variants",
+    "",
     "MISE_LOCKED=0 is required, not cosmetic: with `locked = true` in the config, `mise lock`",
     "cannot resolve a version that is not already in the lockfile and PRUNES the old entry",
     "instead — measured 2026-09-10, it emptied a lockfile that way.",
-    "Use the mise version tools/setup/linux.sh pins: `mise lock` output differs between mise",
-    "releases (2026.6.12 vs 2026.8.14 disagree on header, `specifiers`, and the baseline",
-    "platform variants), so a re-lock on the wrong mise reads as drift that is not there.",
+    "",
+    "MISE_PYTHON_GITHUB_ATTESTATIONS is set to 0 by tools/setup/common/mise.sh for INSTALL, and",
+    "must be 1 here. A `provenance` row is an attestation verified at LOCK time and recorded;",
+    "with it present mise SKIPS the live attestation call at install time — measured. Locking",
+    "with it off silently drops those rows and hands the check back to install time.",
+    "",
+    "`mise lock` output differs between mise releases (2026.6.12 vs 2026.8.14 disagree on the",
+    "header, `specifiers`, and the baseline platform variants), so a re-lock on the wrong mise",
+    "reads as drift that is not there.",
   ].join("\n");
+}
+
+// ── RE-LOCK COMPARISON ────────────────────────────────────────────────────────────────────
+//
+// `provenance = "github-attestations"` is NOT a digest we own. It is the record that mise
+// verified an artifact's attestation AT LOCK TIME, and its presence therefore depends on
+// GitHub's attestation service being reachable at the moment somebody ran `mise lock`.
+//
+// Measured 2026-09-10, and this is the discovery that shapes the whole comparison: with the
+// row present mise SKIPS the live attestation call on install; with it absent mise makes the
+// call. So the row is the RELOCATION of the availability-coupled check into committed text —
+// exactly what the 503 that motivated this work argued for.
+//
+// Which means a byte-for-byte drift gate would be wrong in a specific and ironic way: an
+// attestation outage during the weekly re-lock would drop those rows and redden a check whose
+// entire purpose is to remove a dependency on that service being up. A failed probe is
+// `unknown`, never a negative result.
+//
+// So: url / checksum / version / platform differences are DRIFT and fail. A provenance row
+// that appears or disappears is REPORTED and does not fail.
+
+const PROVENANCE_PREFIX = "provenance = ";
+
+/** The lockfile with provenance rows removed — the part of it we actually own. */
+export function withoutProvenance(body: string): string {
+  return body
+    .split("\n")
+    .filter((l) => !l.trimStart().startsWith(PROVENANCE_PREFIX))
+    .join("\n");
+}
+
+/** `<tool>/<platform>` for every platform row carrying a provenance record. */
+export function provenanceKeys(body: string): Set<string> {
+  const out = new Set<string>();
+  let key: string | null = null;
+  for (const raw of body.split("\n")) {
+    const line = raw.trim();
+    const m = /^\[tools\.("[^"]+"|[^.\]]+)\."platforms\.([^"]+)"\]$/.exec(line);
+    if (m?.[1] !== undefined && m[2] !== undefined) {
+      key = `${m[1].replace(/^"|"$/g, "")}/${m[2]}`;
+      continue;
+    }
+    if (line.startsWith("[")) {
+      key = null;
+      continue;
+    }
+    if (key !== null && line.startsWith(PROVENANCE_PREFIX)) out.add(key);
+  }
+  return out;
+}
+
+export interface RelockVerdict {
+  /** Differing lines outside `provenance`. Non-empty ⇒ real drift ⇒ exit 1. */
+  readonly drift: string[];
+  /** Rows the committed file attests and a fresh lock did not — a lock-time `unknown`. */
+  readonly provenanceLost: string[];
+  /** Rows a fresh lock attests and the committed file does not — a refresh is available. */
+  readonly provenanceGained: string[];
+}
+
+export function classifyRelock(committed: string, relocked: string): RelockVerdict {
+  const a = withoutProvenance(committed).split("\n");
+  const b = withoutProvenance(relocked).split("\n");
+  const drift: string[] = [];
+  for (let i = 0; i < Math.max(a.length, b.length) && drift.length < 40; i++) {
+    const l = a[i] ?? "<absent>";
+    const r = b[i] ?? "<absent>";
+    if (l !== r) drift.push(`line ${String(i + 1)}: committed ${JSON.stringify(l)} vs re-locked ${JSON.stringify(r)}`);
+  }
+  const ka = provenanceKeys(committed);
+  const kb = provenanceKeys(relocked);
+  return {
+    drift,
+    provenanceLost: [...ka].filter((k) => !kb.has(k)).sort(),
+    provenanceGained: [...kb].filter((k) => !ka.has(k)).sort(),
+  };
+}
+
+/** `--relock-diff <committed-file> <relocked-file>`; exit 1 on drift, 0 otherwise. */
+function relockDiffMain(argv: readonly string[]): number {
+  const committedPath = argv[0];
+  const relockedPath = argv[1];
+  if (committedPath === undefined || relockedPath === undefined) {
+    console.error("[mise-lock-relock] usage: --relock-diff <committed-file> <relocked-file>");
+    return 2;
+  }
+  const v = classifyRelock(readFileSync(committedPath, "utf8"), readFileSync(relockedPath, "utf8"));
+  for (const k of v.provenanceLost) {
+    console.log(
+      `[mise-lock-relock] UNKNOWN: ${k} is attested in the committed lockfile and was not re-attested now. ` +
+        "That is the attestation service being unreachable at lock time, not a defect in the pin.",
+    );
+  }
+  for (const k of v.provenanceGained) {
+    console.log(`[mise-lock-relock] note: ${k} could now carry an attestation record; a refresh would add it.`);
+  }
+  if (v.drift.length === 0) {
+    console.log(
+      `[mise-lock-relock] OK — ${relockedPath} reproduces ${committedPath} in url, checksum, version and platform`,
+    );
+    return 0;
+  }
+  for (const d of v.drift) console.error(`[mise-lock-relock] ✗ ${d}`);
+  console.error(`\n${refreshInstructions()}`);
+  return 1;
 }
 
 function main(): void {
@@ -400,4 +515,8 @@ function main(): void {
   }
 }
 
-if (import.meta.main) main();
+if (import.meta.main) {
+  const argv = process.argv.slice(2);
+  if (argv[0] === "--relock-diff") process.exit(relockDiffMain(argv.slice(1)));
+  else main();
+}

@@ -19,12 +19,15 @@ import { join } from "node:path";
 import {
   checkLockedSettingPresent,
   checkPair,
+  classifyRelock,
   PAIRS,
   parseConfigTools,
   parseLock,
+  provenanceKeys,
   REQUIRED_PLATFORMS,
   UNLOCKABLE_BACKENDS,
   versionSatisfies,
+  withoutProvenance,
 } from "./audit-mise-lock-coverage.ts";
 
 const ROOT = join(import.meta.dir, "..", "..", "..");
@@ -192,5 +195,66 @@ describe("the parsers see what mise actually writes", () => {
 
   test("a config with an empty [tools] table convicts rather than reporting success", () => {
     expect(failures(checkPair("fixture", "[tools]\n[settings]\n", LOCK)).join(" ")).toContain("ZERO tools");
+  });
+});
+
+describe("5. the re-lock comparison separates what we own from what a third party attests", () => {
+  const withProv = `[[tools.zig]]
+version = "0.13.0"
+
+[tools.zig."platforms.linux-x64"]
+checksum = "sha256:${"a".repeat(64)}"
+url = "https://example.invalid/zig"
+provenance = "github-attestations"
+`;
+  const withoutProv = withProv.replace('provenance = "github-attestations"\n', "");
+
+  test("a provenance row LOST by a re-lock is `unknown`, not drift — the attestation service was down", () => {
+    const v = classifyRelock(withProv, withoutProv);
+    expect(v.drift).toEqual([]);
+    expect(v.provenanceLost).toEqual(["zig/linux-x64"]);
+    expect(v.provenanceGained).toEqual([]);
+  });
+
+  test("a provenance row GAINED is reported, not drift", () => {
+    const v = classifyRelock(withoutProv, withProv);
+    expect(v.drift).toEqual([]);
+    expect(v.provenanceGained).toEqual(["zig/linux-x64"]);
+  });
+
+  test("a CHECKSUM that moved IS drift — the one thing this must never wave through", () => {
+    const tampered = withProv.replace("a".repeat(64), "b".repeat(64));
+    const v = classifyRelock(withProv, tampered);
+    expect(v.drift.length).toBeGreaterThan(0);
+    expect(v.drift[0]).toContain("checksum");
+  });
+
+  test("a URL that moved IS drift", () => {
+    const moved = withProv.replace("https://example.invalid/zig", "https://elsewhere.invalid/zig");
+    expect(classifyRelock(withProv, moved).drift.length).toBeGreaterThan(0);
+  });
+
+  test("a VERSION that moved IS drift", () => {
+    const moved = withProv.replace('version = "0.13.0"', 'version = "0.14.0"');
+    expect(classifyRelock(withProv, moved).drift.length).toBeGreaterThan(0);
+  });
+
+  test("identical input is identical output — the control", () => {
+    const v = classifyRelock(withProv, withProv);
+    expect(v.drift).toEqual([]);
+    expect(v.provenanceLost).toEqual([]);
+    expect(v.provenanceGained).toEqual([]);
+  });
+
+  test("`withoutProvenance` removes provenance and nothing else", () => {
+    expect(withoutProvenance(withProv)).toBe(withoutProv);
+    expect(withoutProvenance(withProv)).toContain("checksum = ");
+    expect(withoutProvenance(withProv)).toContain("url = ");
+  });
+
+  test("the REAL lockfile carries provenance, so the attestation is already relocated to lock time", () => {
+    // A zero here would mean every install still makes the live attestation call — the exact
+    // coupling that took both ARM lanes down. This is the assertion that would notice.
+    expect(provenanceKeys(read("mise.lock")).size).toBeGreaterThan(0);
   });
 });
