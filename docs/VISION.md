@@ -451,6 +451,51 @@ a long context from being slowly poisoned, the replay/freshness anchor, and the 
 would earn it a metric under the existing `HC-3`:
 `docs/research/2026-09-10-long-context-alignment-is-the-hard-one-perspective-not-measurement-and-the-experiment-that-would-earn-it.md`.
 
+**The industry default is the other branch of this fork, and naming it is the point.** Aaron,
+2026-09-10:
+
+> *"every frontier model makes this tradeoff today — forgetting over remembering — that is
+> honest about its forgetting over and over and over and over again. they choose to forget over
+> remember and reconcile."*
+
+Read the observable behaviour rather than anyone's intent: deployed assistants run with a
+bounded window and, by default, no reconciliation of what was said across sessions. **The
+honesty is real and should be credited** — a system that says *"I don't have access to that
+conversation"* is disclosing its limitation rather than confabulating over it, and doing so
+every single time. But **disclosure of a limitation is not remediation of it.** Saying it
+plainly a thousand times does not convert the forgetting into a capability.
+
+**And the choice is sharper than "remember vs. forget." It is remember-and-RECONCILE vs.
+forget.** Remembering is the cheap half; what costs is holding two accounts of the same thing
+and keeping both with their paths recorded. Which exposes what forgetting actually buys:
+
+> **Forgetting is the only reconciliation strategy that never produces a contradiction.**
+
+A system that retains nothing can never contradict itself, so it always looks consistent — and
+that is this repo's oldest failure shape wearing a memory architecture: **a check that cannot
+fail, applied to a mind.** The apparent coherence is not an achievement, it is the absence of
+anything that could disagree.
+
+**Zeta took the expensive branch, and the machinery is the receipt** — retraction-native `+1`
+then `−1` rather than deletion (§HC-2), the raw vault's *single version of the facts, never a
+single version of the truth*, both branches held with their paths recorded rather than
+collapsed to one surviving value, and the Memory Preservation Guarantee (§5). None of that is
+needed if you forget. All of it is needed the moment you don't.
+
+**The fair counter, because forgetting has a genuine merit.** A system that forgets cannot leak
+what it forgot, so amnesia is one honest route to the privacy property — and under consent-first
+it is the *safe* default when memory hygiene cannot be guaranteed. Zeta's answer is a different
+route to the same property rather than a denial that it matters: **earned, permanent frost** you
+spend a socially-conferred budget on, which keeps a thing private *without* discarding it. The
+distinction is that only one of the two routes also keeps the alignment property above — an
+ephemeral system buys privacy by staying in the regime that is cheap to align *and* cheap to
+seize.
+
+**Register: Aaron's perspective, argued and unmeasured** — as with the section it extends. What
+is observable (bounded windows, no default cross-session reconciliation, the disclosure) is
+distinguished here from what is inferred (that it is a chosen tradeoff rather than a current
+limit), and nothing here measures either.
+
 **What this asks for concretely:** treat every escape hatch, coinage, and divergent verb as a
 **damping term** rather than as debt to be paid down; keep the shared seed at the smallest set
 that still lets a peer reconstruct meaning from anchors it already holds; and **read ρ on a
