@@ -18,6 +18,7 @@ import {
   isRunnable,
   sanitizeObservation,
   renderEnablementMarkdown,
+  countsFromReport,
   renderEnablementSummary,
 } from "./workflow-enablement.ts";
 
@@ -349,19 +350,19 @@ describe("renderEnablementSummary -- nothing network-derived reaches the file", 
   const report = foldEnablement(observed, [entry(".github/workflows/known.yml")], 3);
 
   test("carries the counts and the register", () => {
-    const out = renderEnablementSummary(report);
+    const out = renderEnablementSummary(countsFromReport(report));
     expect(out).toContain("drift");
     expect(out).toContain("| active (runnable) | 1 |");
     expect(out).toContain("| blocking findings | 1 |");
   });
 
   test("contains NO workflow path from the observation set", () => {
-    const out = renderEnablementSummary(report);
+    const out = renderEnablementSummary(countsFromReport(report));
     for (const w of observed) expect(out).not.toContain(w.path);
   });
 
   test("contains no observed STATE string either", () => {
-    const out = renderEnablementSummary(report);
+    const out = renderEnablementSummary(countsFromReport(report));
     expect(out).not.toContain("disabled_manually");
   });
 

@@ -384,19 +384,54 @@ export function renderEnablementMarkdown(report: EnablementReport): string {
  * annotation. Those are the surfaces a reader actually uses for findings; the step summary
  * keeps the shape of the run. Nothing is narrowed -- exit codes are untouched.
  */
-export function renderEnablementSummary(report: EnablementReport): string {
-  const blocking = report.findings.filter((f) => f.blocking).length;
+
+/**
+ * Counts, as PRIMITIVES re-derived from the report.
+ *
+ * Alert 931 (the successor to 930) showed that CodeQL taints the whole `report` OBJECT,
+ * so `renderEnablementSummary(report)` returned a tainted string no matter which fields it
+ * actually read. Field-level reasoning does not help against object-level taint.
+ *
+ * So the summary is built from values that are literals or numbers by construction:
+ * `register` is re-derived through a ternary whose every branch is a literal IN THIS FILE,
+ * and each count goes through `Number()`. Nothing that reaches the file is a string that
+ * came off the wire.
+ */
+export interface EnablementCounts {
+  readonly register: "ok" | "drift" | "unmeasured";
+  readonly observed: number;
+  readonly total: number;
+  readonly active: number;
+  readonly intentional: number;
+  readonly unreviewed: number;
+  readonly blocking: number;
+}
+
+export function countsFromReport(report: EnablementReport): EnablementCounts {
+  const register = report.register === "ok" ? "ok" : report.register === "drift" ? "drift" : "unmeasured";
+  return {
+    register,
+    observed: Number(report.observedCount),
+    total: Number(report.totalCount),
+    active: Number(report.activeCount),
+    intentional: Number(report.intentionalCount),
+    unreviewed: Number(report.unreviewedCount),
+    blocking: Number(report.findings.filter((f) => f.blocking).length),
+  };
+}
+
+export function renderEnablementSummary(counts: EnablementCounts): string {
   const lines = [
     "## workflow enablement -- is every committed check actually runnable?",
     "",
     "| measurement | value |",
     "| --- | --- |",
-    "| register | " + report.register + " |",
-    "| workflows listed | " + String(report.observedCount) + " of " + String(report.totalCount) + " |",
-    "| active (runnable) | " + String(report.activeCount) + " |",
-    "| recorded non-active, intentional | " + String(report.intentionalCount) + " |",
-    "| recorded non-active, UNREVIEWED | " + String(report.unreviewedCount) + " |",
-    "| blocking findings | " + String(blocking) + " |",
+    "| register | " + counts.register + " |",
+    "| workflows listed | " + String(counts.observed) + " of " + String(counts.total) + " |",
+    "| active (runnable) | " + String(counts.active) + " |",
+    "| recorded non-active, intentional | " + String(counts.intentional) + " |",
+    "| recorded non-active, UNREVIEWED | " + String(counts.unreviewed) + " |",
+    "| blocking findings | " + String(counts.blocking) + " |",
     "",
     "Workflow paths and states are deliberately NOT written here: they are network-derived, " +
       "and a step summary is a file. They appear in the job log and in the per-finding " +
@@ -569,7 +604,7 @@ export async function main(argv: readonly string[] = process.argv.slice(2)): Pro
   if (summaryPath !== undefined && summaryPath.length > 0) {
     // Deliberately NOT `markdown`: see renderEnablementSummary. Nothing network-derived
     // reaches a file.
-    appendFileSync(summaryPath, renderEnablementSummary(report) + "\n");
+    appendFileSync(summaryPath, renderEnablementSummary(countsFromReport(report)) + "\n");
   }
 
   if (report.register === "unmeasured") {
