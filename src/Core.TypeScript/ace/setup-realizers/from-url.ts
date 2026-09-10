@@ -73,7 +73,7 @@ const SHA256_HEX = /^[0-9a-f]{64}$/;
 const TAG_ONLY = "tag-only";
 const VERSION_TAG_SEGMENT = /\/(?:v?\d+[\w.-]*)\//u;
 
-export function requireSha256(destRel: string, attrs: Attrs): string {
+export function requireSha256(destRel: string, attrs: Attrs, url: string): string {
   const sha256 = attrs.sha256;
   if (sha256 === undefined) {
     throw new Error(`from-url ${destRel}: sha256= pin required`);
@@ -84,7 +84,16 @@ export function requireSha256(destRel: string, attrs: Attrs): string {
         `from-url ${destRel}: sha256=tag-only requires tagonly=<reason> saying why a digest is not used. A reason in a comment is not enough — it travels with the line that copies it.`,
       );
     }
-    const url = attrs.url ?? "";
+    // URL AS A PARAMETER, NOT AN ATTR. The manifest row's URL is POSITIONAL
+    // (`entry.tokens[1]`); `attrs.url` does not exist and never did. The first draft
+    // of this function read `attrs.url ?? ""`, so the tag check saw an empty string
+    // and EVERY REAL tag-only row would have thrown at install time -- while its seven
+    // unit tests passed, because they handed in `url` as an attr, a shape the caller
+    // never produces. Green in test, red in production: a test that constructs an
+    // input the production path cannot create is not testing the production path.
+    // Caught in review by another agent before this merged. The falsifier added
+    // alongside runs the resolver over the COMMITTED manifest text, so the shape under
+    // test is the shape that ships.
     if (!VERSION_TAG_SEGMENT.test(url)) {
       throw new Error(
         `from-url ${destRel}: sha256=tag-only requires a version-shaped tag in the URL, and ${JSON.stringify(url)} has none. "Pin the tag instead of the digest" is only meaningful when there IS a tag; a moving alias like latest/main pins nothing.`,
@@ -292,7 +301,7 @@ export const realizeFromUrl: SetupRealizer = async (ctx) => {
     const url = entry.tokens[1];
     if (destRel === undefined || url === undefined) continue;
 
-    const sha256 = requireSha256(destRel, entry.attrs);
+    const sha256 = requireSha256(destRel, entry.attrs, url);
     checkRequires(entry.attrs.requires, ctx.warn);
 
     const dest = resolveRepoRelativeDest(ctx.repoRoot, destRel);
