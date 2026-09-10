@@ -38,8 +38,10 @@ after the deletes, not inferred from the push output.
 | `liveness/observations` | 1 | the observation ledger |
 | `main` | 1 | default branch |
 
-`archive/*` **tags** (449 before this sweep, 468 after) were likewise never a
-deletion candidate.
+`archive/*` **tags** were read, never written over, and never a deletion
+candidate. `git ls-remote --tags origin` counts **485** of them after this sweep,
+19 of which it added. A local clone shows fewer (449 here) because not every
+remote tag is fetched; the remote count is the authoritative one.
 
 ## The gate each deleted branch passed
 
