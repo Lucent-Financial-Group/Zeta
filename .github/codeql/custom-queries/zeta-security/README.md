@@ -166,6 +166,34 @@ assert. That is a behaviour decision for that file's author, not something to
 change from a CodeQL round, and it is not something to dismiss either. The
 measurement is recorded here so the decision can be made from facts.
 
+## 5. The two `js/file-access-to-http` alerts left on `safe-io.ts`, diagnosed
+
+Alerts #933 and #934 sit on the two `fetch` calls in
+`src/Core.TypeScript/io/safe-io.ts`. That file already refuses a scheme it will
+not fetch, so it looks like it should be closed by section 3 — and it is not,
+for a reason worth writing down before someone re-derives it.
+
+The refusal is written as
+
+```ts
+const refusal = checkUrl(url);
+if (refusal !== null) return fail(refusal);
+```
+
+and `checkUrl` tests `ALLOWED_PROTOCOLS.has(parsed.protocol)` on a value it
+derived from `url`. Both halves miss:
+
+- the guard at the call site tests `refusal`, not `url`, so no barrier lands on
+  the value that flows to `fetch`;
+- the membership test inside `checkUrl` guards `parsed.protocol`, which is a
+  different node from `url` and is not what reaches the request.
+
+A barrier would need the membership or regular-expression test to be applied to
+`url` itself on the branch that continues. That is a real refactor of a core IO
+primitive with a large test surface, and it is a separate change from this
+round rather than something to bundle in behind it. Recorded here so the next
+attempt starts from the mechanism instead of from the alert.
+
 ## Running the falsifier
 
 ```bash
