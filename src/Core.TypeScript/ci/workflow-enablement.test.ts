@@ -12,12 +12,15 @@ import {
   type ObservedWorkflow,
   type RegistryEntry,
   enablementAnnotations,
+  REJECTED_PATH,
+  REJECTED_STATE,
   foldEnablement,
   isRunnable,
+  sanitizeObservation,
   renderEnablementMarkdown,
 } from "./workflow-enablement.ts";
 
-const wf = (path: string, state: string): ObservedWorkflow => ({ path, name: path, state });
+const wf = (path: string, state: string): ObservedWorkflow => ({ path, state });
 
 const entry = (path: string, classification = "unreviewed"): RegistryEntry => ({
   path,
@@ -255,5 +258,81 @@ describe("registry/workflow-enablement.json is well formed", () => {
     const observed = entries.map((e) => wf(e.path, e.state));
     const r = foldEnablement(observed, entries, observed.length);
     expect(r.register).toBe("ok");
+  });
+});
+
+// CodeQL alert 930 (`js/http-to-file-access`): main() writes the rendered report to
+// $GITHUB_STEP_SUMMARY and every string in it descends from a network fetch. These pin the
+// boundary. Each rejection case is paired with an ACCEPT control, because a sanitiser that
+// rejects everything closes the query and destroys the tool.
+describe("sanitizeObservation -- nothing unvalidated reaches a file", () => {
+  test("ACCEPT (control): a real workflow row passes through byte-identical", () => {
+    const out = sanitizeObservation({ path: ".github/workflows/gate.yml", state: "active" });
+    expect(out.path).toBe(".github/workflows/gate.yml");
+    expect(out.state).toBe("active");
+  });
+
+  test("ACCEPT (control): every state GitHub actually uses is admitted", () => {
+    for (const state of ["active", "disabled_manually", "disabled_inactivity"]) {
+      expect(sanitizeObservation({ path: ".github/workflows/a.yml", state }).state).toBe(state);
+    }
+  });
+
+  test("ACCEPT (control): .yaml and dashes/dots/underscores in the filename", () => {
+    for (const p of [
+      ".github/workflows/a.yaml",
+      ".github/workflows/build-ai-cluster-iso.yml",
+      ".github/workflows/a_b.c-d.yml",
+    ]) {
+      expect(sanitizeObservation({ path: p, state: "active" }).path).toBe(p);
+    }
+  });
+
+  test.each([
+    ["../../etc/passwd"],
+    [".github/workflows/../../../etc/passwd"],
+    ["/etc/passwd"],
+    ["src/Core.TypeScript/ci/workflow-enablement.ts"],
+    [".github/workflows/a.yml\ninjected: line"],
+    [".github/workflows/a.yml | rm -rf /"],
+    [".github/workflows/`whoami`.yml"],
+    [""],
+  ])("REJECT: a path that is not a workflow path -- {s", (path) => {
+    expect(sanitizeObservation({ path, state: "active" }).path).toBe(REJECTED_PATH);
+  });
+
+  test.each([["ACTIVE"], ["active\ndisabled"], ["active; rm -rf /"], ["<b>active</b>"], [""]])(
+    "REJECT: a state outside the allowlist -- {s",
+    (state) => {
+      expect(sanitizeObservation({ path: ".github/workflows/a.yml", state }).state).toBe(REJECTED_STATE);
+    },
+  );
+
+  // THE DIRECTION THAT MATTERS. Both substitutions must FAIL CLOSED: the rejection must
+  // never be the thing that makes a check pass.
+  test("a rejected state is NOT runnable", () => {
+    expect(isRunnable(REJECTED_STATE)).toBe(false);
+    expect(REJECTED_STATE).not.toBe("active");
+  });
+
+  test("a rejected path matches no registry entry, so it reports LOUD", () => {
+    const rejected = sanitizeObservation({ path: "../../etc/passwd", state: "disabled_manually" });
+    const r = foldEnablement([rejected], [entry(".github/workflows/known.yml")], 1);
+    expect(r.register).toBe("drift");
+    expect(r.findings.map((f) => f.kind)).toContain("undeclared-disabled");
+  });
+
+  test("the patterns are ANCHORED -- a prefix match is not a match", () => {
+    const out = sanitizeObservation({
+      path: "evil/.github/workflows/a.yml",
+      state: "active-ish",
+    });
+    expect(out.path).toBe(REJECTED_PATH);
+    expect(out.state).toBe(REJECTED_STATE);
+  });
+
+  test("length is bounded -- an enormous path is rejected, not written", () => {
+    const huge = ".github/workflows/" + "a".repeat(500) + ".yml";
+    expect(sanitizeObservation({ path: huge, state: "active" }).path).toBe(REJECTED_PATH);
   });
 });

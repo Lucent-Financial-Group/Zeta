@@ -116,7 +116,6 @@ export type Classification = (typeof KNOWN_CLASSIFICATIONS)[number];
 
 export interface ObservedWorkflow {
   readonly path: string;
-  readonly name: string;
   /** active | disabled_manually | disabled_inactivity | anything GitHub adds later. */
   readonly state: string;
 }
@@ -384,7 +383,6 @@ function flagValue(argv: readonly string[], flag: string, fallback: string): str
 
 interface ApiWorkflow {
   readonly path?: string;
-  readonly name?: string;
   readonly state?: string;
 }
 
@@ -393,8 +391,55 @@ interface ApiListing {
   readonly workflows?: readonly ApiWorkflow[];
 }
 
-function toObservation(w: ApiWorkflow): ObservedWorkflow {
-  return { path: w.path ?? "", name: w.name ?? "", state: w.state ?? "" };
+/**
+ * The ONLY shape a workflow path may take on its way to a file. Anchored, bounded, and a
+ * character allowlist rather than a denylist.
+ */
+export const WORKFLOW_PATH_PATTERN = /^\.github\/workflows\/[A-Za-z0-9._-]{1,120}\.ya?ml$/;
+
+/**
+ * The only shape a state may take. GitHub's states are `active`, `disabled_manually` and
+ * `disabled_inactivity`; the pattern admits any future lowercase/underscore name without
+ * admitting arbitrary bytes.
+ */
+export const WORKFLOW_STATE_PATTERN = /^[a-z_]{1,32}$/;
+
+/** Substituted for a path that failed validation. Never matches a registry entry. */
+export const REJECTED_PATH = "<rejected-workflow-path>";
+
+/**
+ * Substituted for a state that failed validation. Deliberately NOT `active`, so a
+ * rejected row is non-runnable and the report goes LOUD rather than quiet -- the
+ * substitution must never be the thing that makes a check pass.
+ */
+export const REJECTED_STATE = "unrecognized-state";
+
+/**
+ * Build an observation from an API row, admitting only values matched against the
+ * patterns above.
+ *
+ * WHY THIS EXISTS -- CodeQL `js/http-to-file-access`, alert 930. `main()` writes the
+ * rendered report to `$GITHUB_STEP_SUMMARY`, and every string in that report descends
+ * from a network fetch. The source is trusted TODAY, which is an argument about the
+ * remote rather than about this program: a compromised or merely changed API response
+ * would reach a file write unexamined. So nothing crosses that boundary unvalidated.
+ *
+ * IT IS ALSO A REAL IMPROVEMENT, not query appeasement. A registry that can only contain
+ * well-formed rows is better than one mirroring whatever arrived, and both substitutions
+ * FAIL CLOSED: a rejected path matches no registry entry (so it reports as
+ * `undeclared-disabled`) and a rejected state is not `active` (so it is never runnable).
+ * A malformed row makes noise instead of passing silently.
+ *
+ * The `name` field was DELETED rather than sanitised: nothing read it, and a free-text
+ * field nothing reads is a taint source with no consumer.
+ */
+export function sanitizeObservation(w: ApiWorkflow): ObservedWorkflow {
+  const rawPath = w.path ?? "";
+  const rawState = w.state ?? "";
+  return {
+    path: WORKFLOW_PATH_PATTERN.test(rawPath) ? rawPath : REJECTED_PATH,
+    state: WORKFLOW_STATE_PATTERN.test(rawState) ? rawState : REJECTED_STATE,
+  };
 }
 
 export async function main(argv: readonly string[] = process.argv.slice(2)): Promise<number> {
@@ -422,7 +467,7 @@ export async function main(argv: readonly string[] = process.argv.slice(2)): Pro
 
   if (observationsPath.length > 0) {
     const raw = JSON.parse(readFileSync(observationsPath, "utf8")) as ApiListing;
-    observed = (raw.workflows ?? []).map(toObservation);
+    observed = (raw.workflows ?? []).map(sanitizeObservation);
     totalCount = raw.total_count ?? observed.length;
   } else {
     const token = process.env["GH_TOKEN"] ?? process.env["GITHUB_TOKEN"] ?? "";
@@ -461,7 +506,7 @@ export async function main(argv: readonly string[] = process.argv.slice(2)): Pro
       }
       const body = (await res.json()) as ApiListing;
       declaredTotal = body.total_count ?? declaredTotal;
-      const rows = (body.workflows ?? []).map(toObservation);
+      const rows = (body.workflows ?? []).map(sanitizeObservation);
       for (const r of rows) collected[collected.length] = r;
       if (rows.length === 0 || collected.length >= declaredTotal) break;
       page += 1;
