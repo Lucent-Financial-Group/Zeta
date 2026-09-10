@@ -23,6 +23,30 @@
 
 import type { RealtimeEvent } from "./realtime-server";
 
+/** Longest server error string that reaches the log. */
+const LOG_FIELD_MAX_CHARS = 200;
+
+/**
+ * Make an untrusted string safe to print on one log line.
+ *
+ * Replaces every C0 control (U+0000-U+001F), DEL (U+007F) and C1 control
+ * (U+0080-U+009F) with a space, then bounds the result. Newlines are in that
+ * range, so forged log lines are still stopped; so is ESC, which a CR/LF-only
+ * filter let through.
+ *
+ * The replacement is LENGTH-PRESERVING -- one character in, one space out -- so
+ * the `slice` can never split a half-stripped sequence and the order of the two
+ * operations is immaterial. Said out loud because it is the kind of property
+ * that invites an assertion no mutant can kill.
+ *
+ * Exported so it can be falsified without a WebSocket.
+ */
+export function sanitizeForLog(value: string): string {
+  // eslint-disable-next-line no-control-regex -- the control characters ARE the subject
+  return value.replace(/[\u0000-\u001F\u007F-\u009F]/gu, " ").slice(0, LOG_FIELD_MAX_CHARS);
+}
+
+
 // ═══ Client Interface ════════════════════════════════════════════════════════════
 
 export interface RealtimeClient {
@@ -76,9 +100,21 @@ export function createRealtimeClient(opts: RealtimeClientOptions): RealtimeClien
           p.resolve({ ok: true, eventId: msg.receipt.eventId });
         }
       } else if (msg.error) {
-        // Server error response — sanitize before logging (CodeQL: no log injection)
-        const safeError = String(msg.error).slice(0, 200).replace(/[\n\r]/g, " ");
-        console.warn("[realtime-client] server error:", safeError);
+        // SANITIZE BEFORE LOGGING (CodeQL `js/log-injection`, alert #653).
+        //
+        // The previous form stripped only CR and LF, which stops a forged log
+        // LINE and nothing else. It left every other control character intact,
+        // and the one that matters is ESC: a server-supplied `\u001b[2K` or an
+        // OSC sequence rewrites the operator's terminal, moves the cursor over
+        // lines already printed, or sets the window title -- from a string that
+        // arrived over a WebSocket. Stripping C0, DEL and C1 covers the whole
+        // class rather than the two members of it that happen to be famous.
+        //
+        // The 200-character cut is unchanged and its ORDER relative to the strip
+        // is deliberately not claimed to matter: the replacement is
+        // length-preserving (one character to one space), so the two orders are
+        // equal on every input. Measured -- the swapped-order mutant survives.
+        console.warn("[realtime-client] server error:", sanitizeForLog(String(msg.error)));
       }
     } catch { /* malformed message — ignore */ }
   }
