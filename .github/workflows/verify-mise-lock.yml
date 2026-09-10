@@ -122,9 +122,12 @@ jobs:
           # Authenticated release metadata; the anonymous 60/hr limit is exhausted by a run
           # this size, exactly as tools/setup/common/mise.sh documents.
           MISE_GITHUB_TOKEN: ${{ github.token }}
-          # 1 at LOCK time on purpose, against mise.sh's 0 at INSTALL time: this is what
-          # records python's provenance so the install never has to make the call itself.
-          MISE_PYTHON_GITHUB_ATTESTATIONS: "1"
+          # MUST equal what tools/setup/common/mise.sh exports at INSTALL time. mise refuses to
+          # install a tool whose lockfile attests a check the settings disable ("This may indicate
+          # a downgrade attack"), so a re-lock with 1 here against mise.sh's 0 would manufacture
+          # drift AND, if committed, fail every install.sh consumer closed. Measured 2026-09-10:
+          # that is exactly what it did. audit-mise-lock-coverage.ts holds the two together.
+          MISE_PYTHON_GITHUB_ATTESTATIONS: "0"
         run: |
           set -euo pipefail
           git show HEAD:mise.lock > /tmp/committed-mise.lock

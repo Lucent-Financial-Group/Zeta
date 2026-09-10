@@ -19,7 +19,9 @@ import { join } from "node:path";
 import {
   checkLockedSettingPresent,
   checkPair,
+  checkProvenanceMatchesInstallSettings,
   classifyRelock,
+  MISE_SH_PATH,
   PAIRS,
   parseConfigTools,
   parseLock,
@@ -256,5 +258,43 @@ provenance = "github-attestations"
     // A zero here would mean every install still makes the live attestation call — the exact
     // coupling that took both ARM lanes down. This is the assertion that would notice.
     expect(provenanceKeys(read("mise.lock")).size).toBeGreaterThan(0);
+  });
+});
+
+describe("6. a provenance row and the install-time setting that governs it must agree", () => {
+  // The exact export line tools/setup/common/mise.sh carries.
+  const MISE_SH_DISABLED = 'export MISE_PYTHON_GITHUB_ATTESTATIONS="${MISE_PYTHON_GITHUB_ATTESTATIONS:-0}"\n';
+  const lockWithPythonProvenance = `[[tools.python]]
+version = "3.14.6"
+
+[tools.python."platforms.linux-x64"]
+checksum = "sha256:${"c".repeat(64)}"
+url = "https://example.invalid/cpython"
+provenance = "github-attestations"
+`;
+
+  test("CONVICTS on the state that took every container lane down on 2026-09-10", () => {
+    const f = checkProvenanceMatchesInstallSettings(MISE_SH_DISABLED, lockWithPythonProvenance);
+    expect(failures(f)).toHaveLength(1);
+    expect(failures(f)[0]).toContain("downgrade attack");
+    expect(failures(f)[0]).toContain("python/linux-x64");
+  });
+
+  test("passes when the lockfile does not attest what the installer disables", () => {
+    const noProv = lockWithPythonProvenance.replace('provenance = "github-attestations"\n', "");
+    expect(failures(checkProvenanceMatchesInstallSettings(MISE_SH_DISABLED, noProv))).toEqual([]);
+  });
+
+  test("passes when the installer stops disabling it — the coupling is read, not assumed", () => {
+    expect(failures(checkProvenanceMatchesInstallSettings("# nothing here\n", lockWithPythonProvenance))).toEqual([]);
+  });
+
+  test("a NON-python provenance row is untouched — the global setting still permits those", () => {
+    const uv = lockWithPythonProvenance.replace(/python/g, "uv");
+    expect(failures(checkProvenanceMatchesInstallSettings(MISE_SH_DISABLED, uv))).toEqual([]);
+  });
+
+  test("the REAL mise.sh and the REAL lockfile agree", () => {
+    expect(failures(checkProvenanceMatchesInstallSettings(read(MISE_SH_PATH), read("mise.lock")))).toEqual([]);
   });
 });

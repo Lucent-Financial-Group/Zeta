@@ -42,6 +42,9 @@
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 
+/** The installer that exports the install-time attestation settings the lockfile must agree with. */
+export const MISE_SH_PATH = "tools/setup/common/mise.sh";
+
 /** The two config/lockfile pairs. `MISE_ENV=full` merges the second onto the first. */
 export const PAIRS: readonly { readonly config: string; readonly lock: string }[] = [
   { config: ".mise.toml", lock: "mise.lock" },
@@ -254,6 +257,65 @@ export function checkLockedSettingPresent(miseToml: string): Finding {
       };
 }
 
+/**
+ * A `provenance` row and the install-time verification setting for that tool must AGREE.
+ *
+ * MEASURED THE HARD WAY, 2026-09-10. The first version of this change locked with
+ * `MISE_PYTHON_GITHUB_ATTESTATIONS=1` while `tools/setup/common/mise.sh` exports `0` at
+ * install time, and every containerised `install.sh` lane died — correctly, and with the
+ * right diagnosis, which is worth quoting because it is a better error than most:
+ *
+ *   core:python@3.14.6: Lockfile requires github-attestations provenance for
+ *   core:python@3.14.6 but the corresponding verification setting is disabled. This may
+ *   indicate a downgrade attack. Enable the setting or update the lockfile.
+ *
+ * mise will not honour an attestation record it has been told not to check, and it is right
+ * not to: silently accepting it would let a lockfile assert a verification that never ran.
+ * So the two halves are COUPLED, they live in two different files, and until this check
+ * existed nothing held them together — the classic shape of a pin whose restatement drifts.
+ *
+ * The mapping is derived from `mise.sh`'s own export line, not restated here, so moving the
+ * setting moves the check with it. Enabling python attestations and re-locking WITH
+ * provenance is a legitimate follow-up (it would remove the live call for those platforms
+ * entirely); what is refused is doing one of the two and not the other.
+ */
+export function checkProvenanceMatchesInstallSettings(miseShBody: string, lockBody: string): Finding[] {
+  const disabled = /MISE_PYTHON_GITHUB_ATTESTATIONS="\$\{MISE_PYTHON_GITHUB_ATTESTATIONS:-0\}"/.test(miseShBody);
+  const pythonAttested = [...provenanceKeys(lockBody)].filter((k) => k.startsWith("python/")).sort();
+  if (!disabled) {
+    return [
+      {
+        ok: true,
+        message:
+          "tools/setup/common/mise.sh no longer defaults MISE_PYTHON_GITHUB_ATTESTATIONS to 0 — " +
+          "python provenance rows are permitted, and re-locking with them is the improvement to make",
+      },
+    ];
+  }
+  if (pythonAttested.length === 0) {
+    return [
+      {
+        ok: true,
+        message:
+          "python carries no provenance row, matching mise.sh's install-time " +
+          "MISE_PYTHON_GITHUB_ATTESTATIONS=0 (mise refuses a lockfile that attests what it is told not to check)",
+      },
+    ];
+  }
+  return [
+    {
+      ok: false,
+      message:
+        `the lockfile attests python on ${pythonAttested.length.toString()} platform(s) ` +
+        `(${pythonAttested.join(", ")}) while tools/setup/common/mise.sh disables that check at install time. ` +
+        'mise refuses this outright — "Lockfile requires github-attestations provenance ... but the ' +
+        'corresponding verification setting is disabled. This may indicate a downgrade attack." — so every ' +
+        "install.sh consumer fails closed. Re-lock with MISE_PYTHON_GITHUB_ATTESTATIONS=0, or change mise.sh " +
+        "and re-lock with 1. Not one without the other.",
+    },
+  ];
+}
+
 export function checkPair(
   pairLabel: string,
   config: string,
@@ -356,7 +418,7 @@ export function refreshInstructions(): string {
   return [
     "REFRESH (never hand-edit a digest), on the mise version tools/setup/linux.sh pins:",
     "  export MISE_GITHUB_TOKEN=$(gh auth token)   # anonymous release metadata is 60/hr; a run this size exhausts it",
-    "  export MISE_PYTHON_GITHUB_ATTESTATIONS=1    # record python provenance AT LOCK TIME (see below)",
+    "  export MISE_PYTHON_GITHUB_ATTESTATIONS=0    # MUST match tools/setup/common/mise.sh (see below)",
     "  MISE_LOCKED=0 mise lock",
     "  MISE_LOCKED=0 mise lock --platform windows-arm64   # not in mise's default platform set",
     "  MISE_LOCKED=0 mise lock                            # again: pass 1 discovers the x86-64 baseline variants",
@@ -365,10 +427,12 @@ export function refreshInstructions(): string {
     "cannot resolve a version that is not already in the lockfile and PRUNES the old entry",
     "instead — measured 2026-09-10, it emptied a lockfile that way.",
     "",
-    "MISE_PYTHON_GITHUB_ATTESTATIONS is set to 0 by tools/setup/common/mise.sh for INSTALL, and",
-    "must be 1 here. A `provenance` row is an attestation verified at LOCK time and recorded;",
-    "with it present mise SKIPS the live attestation call at install time — measured. Locking",
-    "with it off silently drops those rows and hands the check back to install time.",
+    "MISE_PYTHON_GITHUB_ATTESTATIONS must equal what tools/setup/common/mise.sh exports at",
+    "INSTALL time. A `provenance` row is an attestation verified at LOCK time and recorded, and",
+    "with it present mise SKIPS the live attestation call at install — but mise REFUSES to",
+    'install a tool whose lockfile attests a check the settings disable ("This may indicate a',
+    "downgrade attack\"), so locking python with 1 against mise.sh's 0 fails every install.sh",
+    "consumer closed. checkProvenanceMatchesInstallSettings() holds the two together.",
     "",
     "`mise lock` output differs between mise releases (2026.6.12 vs 2026.8.14 disagree on the",
     "header, `specifiers`, and the baseline platform variants), so a re-lock on the wrong mise",
@@ -484,6 +548,12 @@ function relockDiffMain(argv: readonly string[]): number {
 function main(): void {
   const root = process.cwd();
   const findings: Finding[] = [checkLockedSettingPresent(readFileSync(join(root, ".mise.toml"), "utf8"))];
+  findings.push(
+    ...checkProvenanceMatchesInstallSettings(
+      readFileSync(join(root, MISE_SH_PATH), "utf8"),
+      readFileSync(join(root, "mise.lock"), "utf8"),
+    ),
+  );
   for (const pair of PAIRS) {
     let lockBody: string;
     try {

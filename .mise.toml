@@ -353,20 +353,25 @@ node = "24"
 # and `src/Core.TypeScript/hygiene/audit-mise-lock-coverage.ts` is what keeps that roster
 # from growing without a diff.
 #
-# REFRESH: `MISE_LOCKED=0 MISE_PYTHON_GITHUB_ATTESTATIONS=1 mise lock` (plus
+# REFRESH: `MISE_LOCKED=0 MISE_PYTHON_GITHUB_ATTESTATIONS=0 mise lock` (plus
 # `--platform windows-arm64`, run twice), with `MISE_GITHUB_TOKEN` set. `MISE_LOCKED=0` is
 # load-bearing — with `locked = true` active, `mise lock` cannot resolve a version that is
 # not already in the lockfile and PRUNES the entry instead. The full recipe and the reason
 # for each variable are printed by the audit's `refreshInstructions()`.
 #
-# THE ATTESTATION SETTINGS ARE UNCHANGED, and the lockfile is what makes them cheap.
-# Measured 2026-09-10: a `provenance = "github-attestations"` row in the lockfile is an
-# attestation mise verified AT LOCK TIME, and with it present mise SKIPS the live
-# attestation call on install; without it, mise makes the call. That is why the refresh
-# turns python attestations ON (against mise.sh's install-time `0`) — the check is
-# performed once, by us, and its result is committed as text, which is a relocation and
-# not a removal. Nothing here disables `github_attestations`; the tools that still lack a
-# provenance row still make the live call, exactly as before.
+# THE ATTESTATION SETTINGS ARE UNCHANGED, and the lockfile records what they already do.
+# Measured 2026-09-10: a `provenance = "github-attestations"` row is an attestation mise
+# verified AT LOCK TIME, and with it present mise SKIPS the live attestation call on
+# install; without it, mise makes the call. 36 such rows are committed (actionlint,
+# golangci-lint, uv), so those installs no longer depend on that service being reachable.
+#
+# THE LOCK-TIME SETTING MUST EQUAL THE INSTALL-TIME ONE. Locking python with
+# MISE_PYTHON_GITHUB_ATTESTATIONS=1 against mise.sh's `0` was tried and took every
+# containerised install.sh lane down: mise refuses a lockfile that attests a check the
+# settings disable -- "This may indicate a downgrade attack" -- and it is right to. So
+# python carries no provenance row today, and turning that setting on (which would remove
+# its live call too) is a follow-up that must move BOTH halves in one commit.
+# `audit-mise-lock-coverage.ts` holds them together.
 locked = true
 # Explicit: use astral-sh/python-build-standalone precompiled binaries (fast
 # install on dev laptops + CI). Compile-from-source is opt-in via
