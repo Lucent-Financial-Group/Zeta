@@ -63,26 +63,29 @@ See [`docs/CONFLICT-RESOLUTION.md`](docs/CONFLICT-RESOLUTION.md). On deadlock, t
   commits were growing the repo. So the refs are frozen: measured 2026-09-09, the newest is
   **12 days stale**. An agent following the old instruction reads that staleness as a dead
   fleet — **a false negative in the one check written to prevent false negatives.**
-  Ask `liveness/observations` instead (below); it is live, and on 2026-09-10T00:26 it
-  correctly reported `"outcome": "paused"` rather than pretending otherwise. Until the
-  telemetry redesign lands, **absence of `heartbeat/*` commits means the lanes are paused,
-  never that work stopped.**
+  **`liveness/observations` is paused too, as of 2026-09-10** — its writer
+  (`heartbeat-liveness.yml`, a 15-minute cron) was disabled for the same reason: 605
+  commits and 3,025 objects of history for a signal nobody was acting on. So there is
+  **no automated liveness telemetry at all** until the redesign lands, and that is a
+  deliberate choice, not a gap to route around.
+  **Do not read absence as death, and do not re-enable any of these to find out.**
+  Liveness comes from the work itself — commits on `main`, merged PRs, open work-items —
+  and if you need to know whether a lane runs, ask the Actions API for its `state`
+  (`disabled_manually` is a fact about the forge, not about the fleet).
   Every commit carries the
   AgencySignature v1 trailer (10 fields + `Co-authored-by:`); audit via
   `bun src/Core.TypeScript/hygiene/audit-agencysignature-main-tip.ts`.
   Full: `.claude/rules.bak/holding-without-named-dependency-is-standing-by-failure.md`;
   spec `docs/research/2026-04-26-gemini-deep-think-agencysignature-commit-attribution-convention-validation-and-refinement.md` §10.
-- **Liveness OBSERVATIONS live on `liveness/observations`, never on `main`** — the ticks flush via
-  PR (above); the _observations about_ those ticks must never need one, or the report of a broken
-  pipeline would depend on that pipeline. They are direct-pushed to an orphan ref, every run,
-  including runs that find nothing wrong. Fetch first, exactly like `heartbeat/*`:
-  `git fetch origin '+refs/heads/liveness/*:refs/remotes/origin/liveness/*'`, then ask
-  **"is anyone still observing?"** — a question a check-run annotation cannot answer —
-  by putting the LEDGER in a worktree and reading THAT — `--dir` is the ledger, never the
-  repo checkout, and pointing it at the checkout prints "holds NO records at all" and
-  exits 1, which is a FALSE ALARM in the one check whose job is telling real silence from
-  apparent silence: `git worktree add --detach /tmp/lw origin/liveness/observations && bun
-src/Core.TypeScript/agent-heartbeats/liveness-ledger.ts read --dir /tmp/lw`
-  (exit 1 = nobody has observed inside the threshold). One-file read, no worktree:
-  `git show origin/liveness/observations:latest.json`.
-  Full: `docs/DECISIONS/2026-08-27-liveness-observations-reach-main-without-a-pr.md`.
+- **Liveness observations are PAUSED (2026-09-10) — the ledger is frozen; do not read it as a
+  signal.** `heartbeat-liveness.yml` (a 15-minute cron that direct-pushed to the
+  `liveness/observations` orphan ref) is `disabled_manually`, alongside the 16 telemetry
+  workflows stopped earlier for the same reason: **the cost is history, not tip.** That ref
+  holds 605 commits and 3,025 objects for 409 KB of current content, and `drift-sweep.yml`
+  committed into `docs/` on every cadence run. So `liveness-ledger.ts read` will report
+  silence, and **that silence is the pause, not a finding** — reading it as one is the
+  false-negative this area keeps producing, the same shape as the frozen `heartbeat/*` refs
+  above. The design was sound and worth keeping for the redesign: observations about a broken
+  pipeline must not need that pipeline, which is why they went to an orphan ref rather than
+  through a PR. What it lacked was a bound on history. Full:
+  `docs/DECISIONS/2026-08-27-liveness-observations-reach-main-without-a-pr.md`.
