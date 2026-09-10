@@ -165,6 +165,75 @@ is the current ceiling on that width.
 
 ---
 
+## 4a. Aaron's own position, and why it is a different claim from §4
+
+Under the video, a commenter argued the whole approach is misconceived — *"the model has a
+design flaw and currently everyone is constantly compensating for it. Changing the model design
+fixes that … the harness codebase should be reduced by 90 percent."* Aaron replied
+(`@AceHack00`, 2026-09-10, ferried in the transcript file):
+
+> *"Changing the model design seems irrelevant for this problem; it's turn-based. What's needed
+> is model context design and model context window compression that keeps long-running context
+> and ontologies. We should try to come up with an ontology reduction over either model or
+> harness upgrades."*
+
+**Three things in that are worth separating out.**
+
+**(1) "It's turn-based" is the load-bearing observation, and it is a structural argument, not a
+preference.** In a loop where a model proposes and a solver disposes, a model upgrade improves
+what happens *inside* one turn. It does nothing whatsoever for what **crosses the boundary
+between turns** — and in this loop that boundary is where the entire product lives, because the
+product is a set of axes that has to survive to the next turn to be worth anything. So the
+architecture of the proposer is, for this problem class, the wrong variable to optimise. That
+is the same move as §4's, arrived at independently and by a different route: both say *the
+binding constraint is not the model*, and they disagree about what it is instead.
+
+**(2) It reframes what the paper is.** Read Aaron's way, the elicited state space is not
+primarily a solver input. It is an **ontology reduction**: a rule book compressed to a handful
+of named axes with stated anchors. That object has exactly the three properties a
+context-window-bound agent needs — it fits in any window, it is stable across turns, and it is
+transferable to another agent — and the solver's role is to keep the compression **honest**,
+which is the part every other context-compression scheme lacks. Under this reading the
+contribution is not state-space geometry at all. It is **lossy context compression with a
+falsifier attached.**
+
+**(3) The two-option framing was the actual error, and Aaron's reply is the third path.** The
+argument on offer was *fix the model* versus *shrink the harness*. Both locate the problem in a
+**substrate**. Aaron relocates it to the **representation** — which is his standing move, and
+the reason it is worth recording rather than agreeing with in passing.
+
+**Where his claim and §4's come apart — held separately, not merged.**
+
+| | claim | what it buys |
+|---|---|---|
+| §4 (mine) | **falsifier latency** bounds a proposer's value | how *cheaply* you can find a good axis |
+| §4a (Aaron's) | **ontology reduction** beats model or harness upgrades | whether you have to find it **again** |
+
+These are complements, not the same sentence, and stating them as one would lose the useful
+part. A fast falsifier with no retention re-derives the same axes every session and pays the
+search repeatedly; perfect retention with a slow falsifier cannot validate a *new* axis when
+the domain moves. Together they are the ratchet Aaron already carved elsewhere — *"a superagent
+routes the next same task to less intelligence"* — with an **elicited, retained axis as the
+ratchet artifact**: it is a written thing that removes work the next run would otherwise redo.
+
+**And the falsifier for his claim is that this repository has been running it for months.** The
+carved-sentence discipline is not an analogy for ontology reduction; it *is* ontology reduction
+aimed at exactly the boundary he names:
+
+> *"Anything auto-loaded at context startup is a carved sentence + pointers, not an essay …
+> a startup-loaded surface states only what an agent must hold to act, in 1–3 sentences."*
+> — `rules-are-small-carved-sentences-pointing-to-docs`
+
+Same for the `MEMORY.md` hub (210KB / 399 entries → ~1.5KB of pointers), the `CURRENT-*.md`
+fast path, and the DV2.0 hub/satellite split that governs both. So the position is not a
+speculation about what someone should build. It is a description of a substrate that exists,
+offered to a thread that was arguing about model weights — and it makes the claim **testable
+here**, because the fleet has the before/after: hold model and harness fixed, change only what
+crosses the turn boundary, and measure. Register: `toy`; nobody has run that comparison, and
+the confound (model versions changed underneath) is real.
+
+---
+
 ## 5. Where it plugs into what is already built here
 
 The EP/BP substrate Aaron names already exists, and is not a stub:

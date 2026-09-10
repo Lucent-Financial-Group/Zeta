@@ -365,3 +365,73 @@ understand what it means understand the mathematics and understand the general g
 they found in Chingua because this is the beauty of this paper. I hope you enjoyed it. See you in my next
 video.
 ```
+
+---
+
+## Comment thread (ferried 2026-09-10, partial — see the elision note)
+
+Video metadata as displayed: channel **Discover AI**, 91.1K subscribers, 5K views, posted
+1 day before capture, tags `#airesearch #aiexplained #aitechnology`, description line
+*"Abstraction Agent: AI Invents the optimal State Space. all rights w/ authors: …"*,
+17 comments.
+
+> **ELISION DECLARED, not silent.** Two comments in this thread are personal attacks between
+> two commenters. Their *technical* content is reproduced below; the ad hominem passages are
+> **not**, and this note is here so the record shows an omission was made rather than
+> pretending the thread was shorter than it was. Reason: this repository is public, and
+> `engagement-profiles-public-work-only-not-surveillance-dossiers` licenses compiling a
+> person's chosen-public **work**, not republishing insults directed at a named handle into a
+> permanently-indexed public tree. Nothing an argument below depends on was cut. Handles are
+> reproduced as published.
+
+```text
+@HELIX_ANTITHESIS (1 day ago)
+Going to blow it up this week. Thx for the mention
+
+@thatchinaboi1 (10 hours ago)
+Thanks for reviewing all of these papers. Every single one of them (over the past few weeks)
+have been directly relevant to the Truth Preserving Cognitive OS that I am designing. I will
+implement all the ideas from these papers directly into my Cognitive OS. Keep up the good work!
+
+@derekw8195 (23 hours ago)
+Ty so much for this content and ty ai algorithm for blessing my feed. Hello!
+
+@ambamichal (1 day ago)
+Enable auto dubbing please ; )
+
+@Cyberladen (22 hours ago)
+It's 3 state information triangulation it works like topographical triangulation with SIGNIT
+to approximate your target data
+
+@hajaani6417 (1 day ago)
+If your brain start to hurt then mine will stop to work
+
+@westernheritagenetwork1858 (1 day ago)
+Nice but this is the wrong approach to this solution.
+
+@animeplustrance (1 day ago)
+Oh really, then what's your ' correct' approach
+
+@westernheritagenetwork1858 (1 day ago, replying to @animeplustrance)
+[opening two sentences elided — personal characterisation of the other commenter]
+This published article like many are purely for the sake of being published. Making the
+assumption that an article from Tsinghua University must be worthwhile would be an ignorant
+stance. I would say I hope they understand why this approach is both needless and inaccurate,
+but as my team has already gone well past this limitation I am glad they are behind. As for
+the better solution I will put it simply so you can understand. The solution is to stop trying
+to make the harness do everything The model has a design flaw and currently everyone is
+constantly compensating for it. Changing the model design fixes that problem as well as a
+large number of others. The harness codebase should be reduced by 90 percent.
+
+@thatchinaboi1 (10 hours ago, replying to @animeplustrance)
+[elided in full — personal characterisation of another commenter, no technical content]
+
+@AceHack00 (at capture time)
+@westernheritagenetwork1858 Changing the model design seems irrelevant for this problem; it's
+turn-based. What's needed is model context design and model context window compression that
+keeps long-running context and ontologies. We should try to come up with an ontology reduction
+over either model or harness upgrades.
+```
+
+Aaron's own comment is quoted and engaged in
+`docs/research/2026-09-10-abstraction-agent-elicits-variables-not-weights-and-falsifier-latency-sets-the-proposers-value.md` §4a.
