@@ -41,7 +41,7 @@
 //
 // 081M24D4APR087G0R001QRQ071
 
-import { existsSync, readFileSync } from "node:fs";
+import { readFileSync } from "node:fs";
 import { join } from "node:path";
 
 /** An exact npm version: no range operators, no tags, no URLs. */
@@ -165,13 +165,39 @@ export function evaluate(overrides: Record<string, string>, lockfiles: readonly 
   return findings;
 }
 
+/**
+ * DO, THEN INTERPRET -- never `existsSync` and then read. The check answers a
+ * question about a path that can change before the read runs, so it reads as
+ * defensive and prevents nothing. `lint-check-then-use-file-races.ts` refuses
+ * that shape, and it refused an EARLIER DRAFT OF THIS FILE, which is the whole
+ * argument for the rule: the author of a TOCTOU guard wrote a TOCTOU.
+ *
+ * `null` means the file is not there, which every caller below reports as
+ * UNKNOWN. Any other errno is rethrown -- a permission error is not an absence,
+ * and collapsing the two would be the same conflation one layer down.
+ */
+function readOrNull(path: string): string | null {
+  try {
+    return readFileSync(path, "utf8");
+  } catch (err) {
+    if ((err as NodeJS.ErrnoException).code === "ENOENT") return null;
+    throw err;
+  }
+}
+
+/** The one UNKNOWN sentence, written once so the two call sites cannot drift. */
+function unknownLockfile(path: string): string {
+  return "UNKNOWN: " + path + " is missing, so no override can be checked against it. Not a pass.";
+}
+
 export function main(repoRoot: string): number {
   const pkgPath = join(repoRoot, "package.json");
-  if (!existsSync(pkgPath)) {
+  const pkgText = readOrNull(pkgPath);
+  if (pkgText === null) {
     console.error("UNKNOWN: no package.json at " + pkgPath + ". Not a pass.");
     return 2;
   }
-  const overrides = readOverrides(readFileSync(pkgPath, "utf8"));
+  const overrides = readOverrides(pkgText);
   if (Object.keys(overrides).length === 0) {
     console.log("no root overrides declared; nothing to enforce");
     return 0;
@@ -179,14 +205,19 @@ export function main(repoRoot: string): number {
 
   const bunLockPath = join(repoRoot, "bun.lock");
   const npmLockPath = join(repoRoot, "package-lock.json");
-  for (const p of [bunLockPath, npmLockPath]) {
-    if (!existsSync(p)) {
-      console.error("UNKNOWN: " + p + " is missing, so no override can be checked against it. Not a pass.");
-      return 2;
-    }
+  const bunLockText = readOrNull(bunLockPath);
+  const npmLockText = readOrNull(npmLockPath);
+  // Named one at a time rather than looped: a loop over a tuple does not narrow
+  // `string | null` to `string` for the reads below, and silencing that with a
+  // cast would be asserting the very thing the branch exists to establish.
+  if (bunLockText === null) {
+    console.error(unknownLockfile(bunLockPath));
+    return 2;
   }
-  const bunLockText = readFileSync(bunLockPath, "utf8");
-  const npmLockText = readFileSync(npmLockPath, "utf8");
+  if (npmLockText === null) {
+    console.error(unknownLockfile(npmLockPath));
+    return 2;
+  }
 
   const findings = evaluate(overrides, [
     { path: "bun.lock", resolve: (n) => bunLockResolutions(bunLockText, n) },
