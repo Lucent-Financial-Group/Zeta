@@ -134,8 +134,25 @@ export function auditWorkflow(wf: WorkflowUnderAudit): ConcurrencyFinding {
  */
 const EVIDENCE_WORKFLOWS = ["codeql.yml", "scorecard.yml"] as const;
 
+/**
+ * One attempt, no prior existence check.
+ *
+ * `existsSync(p)` then `readFileSync(p)` is a check-then-use race: the file can vanish
+ * between the two calls, and the answer to "does it exist?" is stale the instant it is
+ * returned. The single read IS the existence test -- it cannot disagree with itself.
+ * `lint-check-then-use-file-races` refused the first draft of this very file, which is a
+ * lint catching its own author and the strongest evidence it earns its place.
+ */
+function readOrNull(abs: string, read: (p: string, enc: "utf8") => string): string | null {
+  try {
+    return read(abs, "utf8");
+  } catch {
+    return null;
+  }
+}
+
 async function main(): Promise<number> {
-  const { readFileSync, existsSync } = await import("node:fs");
+  const { readFileSync } = await import("node:fs");
   const { join } = await import("node:path");
   const yaml = await import("yaml");
 
@@ -145,13 +162,14 @@ async function main(): Promise<number> {
 
   for (const name of EVIDENCE_WORKFLOWS) {
     const path = join(dir, name);
-    if (!existsSync(path)) {
+    const text = readOrNull(path, readFileSync);
+    if (text === null) {
       // A rostered workflow that has vanished is a REFUSAL, not a skip. Silently
       // auditing nothing is how a check stops checking without anyone noticing.
-      findings.push(`${path}: rostered as an evidence workflow but the file is absent — remove it from the roster or restore it`);
+      findings.push(`${path}: rostered as an evidence workflow but could not be read — remove it from the roster or restore it`);
       continue;
     }
-    const doc = yaml.parse(readFileSync(path, "utf8")) as Record<string, unknown>;
+    const doc = yaml.parse(text) as Record<string, unknown>;
     const conc = doc["concurrency"] as { group?: string; "cancel-in-progress"?: string | boolean } | undefined;
     const on = doc["on"] ?? doc[true as unknown as string];
     const triggers = on !== null && typeof on === "object" ? Object.keys(on as Record<string, unknown>) : [];
