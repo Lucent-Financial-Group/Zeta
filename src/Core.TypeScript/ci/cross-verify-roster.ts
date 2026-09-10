@@ -142,17 +142,25 @@ export const CROSS_VERIFY_AUDITS: readonly CrossVerifyAudit[] = [
   },
 
   // The `.claude/rules/no-binary-in-proof-lineage.md` exception, enforced rather than
-  // asserted. `src/wasm-dla/bytelock/` holds six committed `.wasm` substrate modules; they
-  // are the artifact UNDER TEST, not golden vectors, and the rule now says so — but a
-  // documented exception with no scope is a licence. This derives the allowed set from the
-  // byte-lock runner's own roster and the build script's own declared outputs, so a new
+  // asserted. `src/wasm-dla/bytelock/` HELD six committed `.wasm` substrate modules until
+  // 2026-09-10; they were the artifact UNDER TEST, not golden vectors, and the rule says so —
+  // but a documented exception with no scope is a licence. This derives the allowed set from
+  // the byte-lock runner's own roster and the build script's own declared outputs, so a new
   // binary in that directory is red until it is wired into both.
   //
-  // Two of its checks are here rather than in `bytelock.yml` on purpose. That workflow is
+  // The six are now BUILT in CI and the audit gained the other half: a roster substrate that
+  // is neither committed nor built-and-required is red too. That second condition is what
+  // this floor is actually buying now — `bytelock.yml` must NAME each built substrate in a
+  // required list, so a broken toolchain fails the byte-lock by name instead of quietly
+  // shrinking the roster.
+  //
+  // Its checks are here rather than in `bytelock.yml` on purpose. That workflow is
   // `push: main` — POST-MERGE by construction — so the malformed-artefact guard that would
   // have caught `dla-canonical-zig.wasm` shipping as an `ar` archive could only ever fire
-  // after the fact, and it did, for two weeks. The header check and the golden-vector text
-  // check need no toolchain, so they belong on the pre-merge floor.
+  // after the fact, and it did, for two weeks. Nothing this audit does needs a toolchain, so
+  // it belongs on the pre-merge floor: with the substrates built rather than committed, the
+  // header check has no subject on this lane and the audit prints the committed/built split
+  // so that shows as a stated fact rather than as a silent OK.
   {
     id: "proof-lineage-binaries",
     title: "Proof-lineage binary exception (no-binary-in-proof-lineage.md)",
@@ -586,6 +594,32 @@ export const CROSS_VERIFY_AUDITS: readonly CrossVerifyAudit[] = [
     id: "mise-toolchain-couplings",
     title: "mise toolchain couplings (rust restatements · zig byte-lock provenance)",
     command: "bun src/Core.TypeScript/hygiene/audit-mise-toolchain-couplings.ts",
+  },
+
+  // The committed mise digests, and the two ways they stop meaning anything WITHOUT any
+  // file here looking wrong. (a) A pin moves in `.mise.toml` and `mise.lock` is not
+  // regenerated, so the committed digest describes the previous artifact — a one-line diff
+  // that reads as housekeeping. (b) `locked = true` disappears from `[settings]`, at which
+  // point mise silently fills a missing platform row from upstream and rewrites the lockfile
+  // in place; a lockfile that repairs itself is a cache wearing a lock's name. Neither is
+  // visible in review, because the subject is 600 lines of generated TOML.
+  //
+  // OFFLINE, and on the floor rather than in verify-mise-lock.yml for that reason: this
+  // reads four files and opens no socket, so it cannot redden a PR because a release host
+  // is down. The network half — does the digest still match what upstream serves — is the
+  // weekly + on-touch lane, where a third party's bad day is allowed to fail a run.
+  {
+    id: "mise-lock-coverage",
+    title: "mise lock coverage (config↔lock agreement · locked mode · exemption roster)",
+    command: "bun src/Core.TypeScript/hygiene/audit-mise-lock-coverage.ts",
+  },
+
+  // The falsifiers for the audit above. It is a coverage check, and a coverage check that
+  // has only been shown to pass cannot tell a working lock from a decorative one.
+  {
+    id: "mise-lock-coverage-tests",
+    title: "mise lock coverage falsifiers (stale pin · dropped platform · stale exemption)",
+    command: "bun test src/Core.TypeScript/hygiene/audit-mise-lock-coverage.test.ts",
   },
 
   // Every zflash host arm must reach the ISO integrity gate before it writes to a block

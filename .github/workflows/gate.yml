@@ -267,6 +267,32 @@ jobs:
           # the only one whose checkout was being killed at the timeout.
           fetch-depth: 1
 
+          # TRUSTED BASE, NOT THE PR MERGE REF -- CodeQL alert #798,
+          # `actions/untrusted-checkout/medium`.
+          #
+          # The default for a `pull_request` trigger is the PR's merge ref, i.e.
+          # contributor-controlled code. This job never reads it: `detect` below
+          # fetches both SHAs explicitly and runs a TWO-DOT `git diff A B`, which
+          # compares two fetched OBJECTS and never consults the working tree. So
+          # the checkout existed only to provide a git directory.
+          #
+          # Checking out the base commit gives exactly the same git directory
+          # without placing untrusted code on disk. The diff is byte-identical
+          # because both endpoints are still fetched by SHA in `detect`, and the
+          # fail-closed property is unchanged -- a missing object still aborts on
+          # `fatal: bad object` rather than yielding a wrong changed-file set.
+          #
+          # Why this is a FIX and not a suppression: the alert is arguably a false
+          # positive today (workflow permissions are `contents: read`, the trigger
+          # is `pull_request` and not `pull_request_target`, and this job's only two
+          # `run:` blocks are inline shell that execute nothing from the tree). But
+          # "non-privileged AND executes nothing" is a property of the CURRENT job,
+          # held by nothing but review. A future step that reads a file from the
+          # tree would silently make the checkout load-bearing. Not putting the
+          # untrusted code there in the first place removes the class instead of
+          # arguing about this instance -- and it cost one line.
+          ref: ${{ github.event.pull_request.base.sha }}
+
       - id: detect
         if: github.event_name == 'pull_request'
         shell: bash
@@ -1050,8 +1076,16 @@ jobs:
         run: |
           set -euo pipefail
           python3 -m venv .venv-yamllint
-          .venv-yamllint/bin/python -m pip install --upgrade pip
-          .venv-yamllint/bin/pip install yamllint==1.38.0
+          # NO `pip install --upgrade pip`. That was an UNPINNED network install on
+          # every run (Scorecard #457) buying nothing: the venv's own pip installs a
+          # hash-pinned requirements file perfectly well, and upgrading it first meant
+          # the tool that enforces our pins was itself unpinned.
+          #
+          # `--require-hashes` is what makes the file below load-bearing: pip refuses
+          # ANY requirement in it that lacks a hash, so a future addition cannot be
+          # slipped in unpinned. Scorecard #458.
+          .venv-yamllint/bin/pip install --require-hashes --no-deps \
+            -r tools/setup/manifests/yamllint-requirements.txt
           go install github.com/yannh/kubeconform/cmd/kubeconform@v0.7.0
           echo "$PWD/.venv-yamllint/bin" >> "$GITHUB_PATH"
           echo "$(go env GOPATH)/bin" >> "$GITHUB_PATH"
@@ -2980,6 +3014,14 @@ jobs:
       - name: Install root dependencies (the builder's imports)
         run: bun install --frozen-lockfile
 
+      # `stagePagesWasmAssets` THROWS on a missing WASM source, and since 2026-09-10 the six
+      # oracle modules are BUILT rather than committed — so this job has to build them for the
+      # same reason `pages-deploy.yml` does. This job runs the deploy's own build entry; if
+      # that entry needs an artefact then so does this job, or the two have drifted apart,
+      # which is exactly what this job exists to prevent.
+      - name: Build the six WASM oracle substrates from source
+        uses: ./.github/actions/build-wasm-substrates
+
       - name: Build the site exactly as pages-deploy does (install + check + pages build)
         run: bun ./src/Core.TypeScript/discovery/identity-dla-pages-build.ts
 
@@ -3481,6 +3523,8 @@ jobs:
           - bootstrap-application-pin-parity-tests
           - argocd-pin-parity-tests
           - mise-toolchain-couplings
+          - mise-lock-coverage
+          - mise-lock-coverage-tests
           - flash-entrypoint-parity
           - chart-target-revisions
           - image-source-provenance
@@ -3685,6 +3729,15 @@ jobs:
         # executes the Z3 outcome sequence and the independent ephemeris fault control;
         # neither may be a documentation-only proof artifact.
         run: bun test src/Core.TypeScript/planning/light-time-endpoint-speed-envelope.test.ts src/Core.TypeScript/planning/orbital-independent-check.test.ts
+
+      # `identity-dla-pages-wasm-behavior.test.ts` INSTANTIATES all six oracle modules and
+      # checks each against `testdata/golden-seed-*.json`. It used to read them out of the
+      # tree, because they were committed; since 2026-09-10 they are built. A test that
+      # cannot find its subject is not a skip here — `identity-dla-pages-wasm-assets.test.ts`
+      # asserts each source exists — so this step is what keeps the suite honest rather than
+      # what keeps it green.
+      - name: Build the six WASM oracle substrates the discovery suite instantiates
+        uses: ./.github/actions/build-wasm-substrates
 
       - name: Tier manifest (what the hermetic tier deliberately does not run, and why)
         # Printed BEFORE the suite, pass or fail, so the log states the tier's own boundary
@@ -4332,12 +4385,21 @@ jobs:
             src/Core.TypeScript/ci/drift-loud.ts
             src/Core.TypeScript/ci/verdict-drought.ts
             src/Core.TypeScript/ci/workflow-enablement.ts
+            src/Core.TypeScript/io/safe-io.ts
             registry/workflow-enablement.json
             data/platform-drift.json
           sparse-checkout-cone-mode: false
 
-      # Bun only — the reporter imports nothing but node built-ins, so this job never
-      # runs `bun install` (~2-4 min) for a ~30 s fold.
+      # Bun only — the reporter imports nothing but node built-ins and ONE in-repo
+      # module (`io/safe-io.ts`, which itself imports only node built-ins), so this
+      # job never runs `bun install` (~2-4 min) for a ~30 s fold.
+      #
+      # THE SPARSE LIST ABOVE IS LOAD-BEARING AND SILENT ABOUT IT, which is worth a
+      # line because it already bit: a sparse checkout does not fail at checkout time
+      # when a file is missing, it fails at RUN time with `Cannot find module`, in a
+      # job whose whole job is to report on other jobs. If either reporter grows an
+      # in-repo import, it must be added above or this lane goes red for a reason that
+      # has nothing to do with drift.
       - name: Setup Bun
         uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
 
