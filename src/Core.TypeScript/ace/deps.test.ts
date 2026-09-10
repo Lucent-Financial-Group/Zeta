@@ -696,3 +696,35 @@ describe("defineOwn: assignment runs the __proto__ setter, defineProperty does n
     );
   });
 });
+
+// CodeQL alert 929 (`js/prototype-pollution-utility`) named a real gap rather than a false
+// positive: `defineOwn` is exported, and `defineProperty` makes the KEY inert without making
+// the TARGET safe. `setNestedProperty` refused this one level up; the exported helper did not.
+describe("defineOwn refuses a prototype object as its CONTAINER (alert 929)", () => {
+  test("Object.prototype is refused", () => {
+    expect(() => defineOwn(Object.prototype, "polluted929", "yes")).toThrow(/prototype object as its container/u);
+    expect(Object.prototype.hasOwnProperty.call(Object.prototype, "polluted929")).toBe(false);
+    expect(({} as Record<string, unknown>)["polluted929"]).toBeUndefined();
+  });
+
+  test("a class prototype is refused", () => {
+    class Widget {}
+    expect(() => defineOwn(Widget.prototype, "polluted929b", 1)).toThrow(/prototype object as its container/u);
+    expect(new Widget() as unknown as Record<string, unknown>).not.toHaveProperty("polluted929b");
+  });
+
+  test("an ordinary object is still accepted, and __proto__ is still inert", () => {
+    // The pre-existing property must survive the new guard: the guard is on the container,
+    // the falsifier varies the key.
+    const target: Record<string, unknown> = {};
+    defineOwn(target, "__proto__", { polluted: "no" });
+    expect(Object.prototype.hasOwnProperty.call(target, "__proto__")).toBe(true);
+    expect(Object.getPrototypeOf(target)).toBe(Object.prototype);
+  });
+
+  test("Object.create(null) is NOT a prototype object and is accepted", () => {
+    const bare = Object.create(null) as Record<string, unknown>;
+    defineOwn(bare, "k", 1);
+    expect(bare["k"]).toBe(1);
+  });
+});

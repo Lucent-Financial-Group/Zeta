@@ -235,6 +235,25 @@ function isPrototypeObject(value: object): boolean {
  * exported and tested against the key that separates the two.
  */
 export function defineOwn(container: object, key: string, value: unknown): void {
+  // THE CONTAINER, NOT THE KEY. `defineProperty` already makes every KEY inert -- that is
+  // what the tests below pin, and it is why `__proto__` is safe here. What it does NOT make
+  // safe is the TARGET: `defineOwn(Object.prototype, "x", …)` defines an own property on
+  // `Object.prototype` itself and reaches every object that inherits from it.
+  //
+  // Through the public path `setNestedProperty` already refuses this (PASS 2). But this
+  // helper is EXPORTED -- deliberately, so the defineProperty-vs-assignment property can be
+  // falsified -- and an exported function is a surface with its own callers, not an
+  // implementation detail. CodeQL alert 929 (`js/prototype-pollution-utility`) named exactly
+  // that gap, and it was right: the guard sat one level up from the door it protected.
+  //
+  // Guarding the container rather than the key leaves the existing falsifiers untouched --
+  // they pass a plain object and vary the key, which is the axis that separates
+  // `defineProperty` from assignment.
+  if (isPrototypeObject(container)) {
+    throw new Error(
+      `defineOwn refuses a prototype object as its container: writing ${JSON.stringify(key)} through it would reach every object that inherits from it`,
+    );
+  }
   Object.defineProperty(container, key, { value, writable: true, enumerable: true, configurable: true });
 }
 
