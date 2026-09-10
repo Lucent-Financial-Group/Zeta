@@ -131,7 +131,7 @@
 // Exit 0 report produced, 2 could not run. It never fails the build: this is a
 // measurement, not a gate.
 
-import { createReadStream, existsSync, readdirSync, statSync } from "node:fs";
+import { createReadStream, readdirSync, statSync } from "node:fs";
 import { createInterface } from "node:readline";
 import { join } from "node:path";
 
@@ -493,27 +493,34 @@ function parseArgs(argv: readonly string[]): AuditOptions {
 
 export async function main(argv: readonly string[]): Promise<number> {
   const opts = parseArgs(argv);
-  const historyOnly = opts.historyPath.length > 0 && !existsSync(opts.transcriptsDir);
-  if (opts.historyPath.length > 0 && !existsSync(opts.historyPath)) {
-    process.stderr.write(`could not run: no history file at ${opts.historyPath}\n`);
-    return 2;
-  }
-  if (!historyOnly && !existsSync(opts.transcriptsDir)) {
-    process.stderr.write(`could not run: no transcripts directory at ${opts.transcriptsDir}\n`);
+
+  // READ, THEN INTERPRET ENOENT -- never `existsSync` and then read.
+  //
+  // The first draft asked `existsSync` about both paths and then opened them,
+  // which `lint-check-then-use-file-races` refused at two sites. The window
+  // between the question and the answer is real, and the check is redundant
+  // anyway: the read itself already reports absence, more precisely than a
+  // boolean can. `io/safe-io.ts` makes the same argument at length about the
+  // forty authors who each wrote this shape once.
+  const listing = ((): { files: string[] } | { error: string } => {
+    try {
+      return {
+        files: readdirSync(opts.transcriptsDir)
+          .filter((f) => f.endsWith(".jsonl"))
+          .map((f) => join(opts.transcriptsDir, f)),
+      };
+    } catch (e) {
+      return { error: String(e) };
+    }
+  })();
+
+  const historyOnly = opts.historyPath.length > 0 && "error" in listing;
+  let files: string[] = "error" in listing ? [] : listing.files;
+
+  if (!historyOnly && "error" in listing) {
+    process.stderr.write(`could not run: ${listing.error}\n`);
     process.stderr.write("this is `unknown`, not a clean result -- pass --transcripts <dir>\n");
     return 2;
-  }
-  let files: string[] = [];
-  try {
-    if (historyOnly) throw new Error("history-only");
-    files = readdirSync(opts.transcriptsDir)
-      .filter((f) => f.endsWith(".jsonl"))
-      .map((f) => join(opts.transcriptsDir, f));
-  } catch (e) {
-    if (!historyOnly) {
-      process.stderr.write(`could not run: ${String(e)}\n`);
-      return 2;
-    }
   }
   if (files.length === 0 && !historyOnly) {
     process.stderr.write(`could not run: no .jsonl transcripts in ${opts.transcriptsDir}\n`);
@@ -528,7 +535,13 @@ export async function main(argv: readonly string[]): Promise<number> {
   }
   if (opts.historyPath.length > 0) {
     try { bytes += statSync(opts.historyPath).size; } catch { /* size is reporting only */ }
-    await foldHistory(opts.historyPath, state);
+    try {
+      await foldHistory(opts.historyPath, state);
+    } catch (e) {
+      // Absence surfaces HERE, from the read, rather than from a prior question.
+      process.stderr.write(`could not run: cannot read history at ${opts.historyPath}: ${String(e)}\n`);
+      return 2;
+    }
   }
 
   const stats: ShapeStat[] = [];

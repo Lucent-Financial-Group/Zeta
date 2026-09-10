@@ -630,7 +630,6 @@ Pointers: `docs/research/2026-09-10-abstraction-agent-elicits-variables-not-weig
 · `docs/research/2026-08-25-rho-is-a-layer-stack-not-a-scalar-and-the-trainset-is-the-floor.md` (the floor)
 · `docs/ip-questionable/2026-09-10-abstraction-agent-llm-invents-variables-tsinghua-video-transcript.md` (the ferried source and the full comment thread)
 
-
 ## The design telos — the polite virus: close over the world, never take control, give freedom (SuperFluid AI)
 
 Aaron, 2026-06-09: *"everything I design from is a **polite virus** — make the right thing the **default** thing that
