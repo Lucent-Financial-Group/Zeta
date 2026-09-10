@@ -69,7 +69,7 @@ export interface MechanismDescriptor {
   /** Manifest basename under tools/setup/manifests/. */
   readonly manifest: string;
   /** How the rows are shaped. */
-  readonly shape: "tokens" | "spec" | "lines" | "opaque";
+  readonly shape: "tokens" | "spec" | "lines" | "opaque" | "pip-hashed";
   /** Row-level: the manifest format has a `sha256=` slot and the realizer honours it. */
   readonly hasDigestSlot: boolean;
   /** Row-level: a `commit=<40 hex>` attribute is the content pin (git). */
@@ -87,6 +87,11 @@ export const MECHANISMS: readonly MechanismDescriptor[] = [
   { manifest: "from-autotools-tarball", shape: "tokens", hasDigestSlot: true },
   { manifest: "from-installer", shape: "tokens", hasDigestSlot: true },
   { manifest: "from-deb", shape: "tokens", hasDigestSlot: true },
+  // A pip requirements file under `--require-hashes`: every row carries `--hash=sha256:` and pip
+  // REFUSES any requirement in the file that does not. Landed on main 2026-09-10 for Scorecard
+  // #457/#458, and this audit refused it on the same day for being undescribed -- which is the
+  // third refusal doing its job on its first live case rather than in a test.
+  { manifest: "yamllint-requirements.txt", shape: "pip-hashed", hasDigestSlot: true },
 
   // ── CONTENT-PINNED BY GIT: a commit sha IS a content digest over a tree ────────────────
   { manifest: "from-opam-git", shape: "tokens", hasDigestSlot: false, commitPinned: true },
@@ -240,6 +245,26 @@ export function scanManifests(root: string): InventoryEntry[] {
     if (text === null) continue;
     const source = `${MANIFEST_DIR}/${m.manifest}`;
 
+    if (m.shape === "pip-hashed") {
+      for (const raw of text.split(/\r?\n/)) {
+        const line = raw.trim();
+        if (line.length === 0 || line.startsWith("#") || line.startsWith("-")) continue;
+        const name = line.split(/[\s<>=!~]/u)[0] ?? line;
+        out.push({
+          mechanism: m.manifest,
+          subject: name,
+          source,
+          coverage: /--hash=sha256:[0-9a-f]{64}/u.test(line) ? "digest" : "undeclared",
+          reason: "",
+          count: 1,
+          blocker: /--hash=/u.test(line)
+            ? ""
+            : "the file is installed under --require-hashes, so a row without --hash=sha256: makes pip refuse the whole install",
+        });
+      }
+      continue;
+    }
+
     if (m.shape === "opaque" || m.shape === "lines") {
       const rows = text.split(/\r?\n/).filter((l) => l.trim().length > 0 && !l.trimStart().startsWith("#"));
       if (rows.length > 0) {
@@ -286,7 +311,12 @@ export function scanManifests(root: string): InventoryEntry[] {
     for (const row of parseMechanismManifest(text)) {
       const subject = row.tokens[0];
       if (subject === undefined) continue;
-      const rowSource = `${source}:${String(row.line)}`;
+      // NO LINE NUMBER IN THE KEY. A line number makes an entry's identity depend on every
+      // edit ABOVE it, so an unrelated comment -- or a merge with main, which is how this was
+      // found -- reddens an audit on the `cross-verify` floor for a change that touched nothing
+      // it governs. A check that reddens on unrelated edits holds the floor closed for no
+      // reason, which is the blast-radius defect the floor split exists to avoid.
+      const rowSource = source;
       const dec = declaredEntry(m.manifest, subject, rowSource, row.attrs);
       if (dec !== null) {
         out.push(dec);
@@ -393,15 +423,14 @@ export function scanDockerfiles(root: string): InventoryEntry[] {
   for (const rel of walkFiles(root, (p) => p.split("/").pop()?.startsWith("Dockerfile") === true)) {
     const text = readIfPresent(resolve(root, rel));
     if (text === null) continue;
-    text.split(/\r?\n/).forEach((line, i) => {
+    for (const line of text.split(/\r?\n/)) {
       const match = /^\s*FROM\s+(\S+)/iu.exec(line);
       const image = match?.[1];
-      if (image === undefined || image.startsWith("$")) return;
-      const source = `${rel}:${String(i + 1)}`;
+      if (image === undefined || image.startsWith("$")) continue;
       out.push({
         mechanism: "docker",
         subject: image,
-        source,
+        source: rel,
         coverage: image.includes("@sha256:") ? "digest" : "undeclared",
         reason: "",
         count: 1,
@@ -409,7 +438,7 @@ export function scanDockerfiles(root: string): InventoryEntry[] {
           ? ""
           : "a container base is pinnable with @sha256: at its point of use; this one is not, and has no tools/setup/manifests/pinned-refs row either",
       });
-    });
+    }
   }
   return out;
 }
@@ -462,14 +491,14 @@ export function scanActions(root: string): InventoryEntry[] {
   for (const rel of files) {
     const text = readIfPresent(resolve(root, rel));
     if (text === null) continue;
-    text.split(/\r?\n/).forEach((line, i) => {
+    text.split(/\r?\n/).forEach((line) => {
       if (/^\s*#/u.test(line)) return;
       const match = /^\s*(?:-\s*)?uses:\s*([A-Za-z0-9_.-]+\/[A-Za-z0-9_./-]+)@(\S+)/u.exec(line);
       const action = match?.[1];
       const ref = match?.[2];
       if (action === undefined || ref === undefined) return;
       if (GIT_SHA.test(ref)) pinned += 1;
-      else floating.push(`${action}@${ref} (${rel}:${String(i + 1)})`);
+      else floating.push(`${action}@${ref} (${rel})`);
     });
   }
   const out: InventoryEntry[] = [];
@@ -496,14 +525,14 @@ export function scanPip(root: string): InventoryEntry[] {
   for (const rel of walkFiles(root, (p) => p.startsWith(".github/") && (p.endsWith(".yml") || p.endsWith(".yaml")))) {
     const text = readIfPresent(resolve(root, rel));
     if (text === null) continue;
-    text.split(/\r?\n/).forEach((line, i) => {
+    text.split(/\r?\n/).forEach((line) => {
       if (/^\s*#/u.test(line)) return;
       if (!/\bpip\b[^\n]*\binstall\b/u.test(line)) return;
       if (line.includes("--require-hashes")) return;
       out.push({
         mechanism: "pip",
         subject: line.trim().replace(/\s+/gu, " ").slice(0, 120),
-        source: `${rel}:${String(i + 1)}`,
+        source: rel,
         coverage: "undeclared",
         reason: "",
         count: 1,
@@ -523,7 +552,7 @@ function sortKey(e: InventoryEntry): string {
 }
 
 export function deriveInventory(root: string): Inventory {
-  const all = [
+  const raw = [
     ...scanManifests(root),
     ...scanMise(root),
     ...scanDockerfiles(root),
@@ -531,7 +560,18 @@ export function deriveInventory(root: string): Inventory {
     ...scanLockfiles(root),
     ...scanActions(root),
     ...scanPip(root),
-  ].sort((a, b) => (sortKey(a) < sortKey(b) ? -1 : sortKey(a) > sortKey(b) ? 1 : 0));
+  ];
+
+  // DEDUPE BY IDENTITY. Two `FROM` lines naming the same image in one Dockerfile are one
+  // dependency acquired twice, and with line numbers out of the key they now collide. Summing
+  // the counts keeps the number honest without inventing a second entry that a reader would
+  // have to reconcile against the first.
+  const merged = new Map<string, InventoryEntry>();
+  for (const e of raw) {
+    const existing = merged.get(sortKey(e));
+    merged.set(sortKey(e), existing === undefined ? e : { ...existing, count: existing.count + e.count });
+  }
+  const all = [...merged.values()].sort((a, b) => (sortKey(a) < sortKey(b) ? -1 : sortKey(a) > sortKey(b) ? 1 : 0));
 
   return {
     declared: all.filter((e) => e.coverage === TAG_ONLY || e.coverage === UNPINNED),
