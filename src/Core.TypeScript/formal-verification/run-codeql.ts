@@ -37,6 +37,7 @@ import { spawnSync } from "node:child_process";
 import { existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { homedir, tmpdir } from "node:os";
 import { dirname, isAbsolute, join, relative, resolve } from "node:path";
+import { stringCompare } from "../collation/collation.ts";
 
 const SPAWN_MAX_BUFFER = 256 * 1024 * 1024;
 
@@ -181,12 +182,18 @@ export function findingsFromSarif(document: unknown): readonly Finding[] {
   }
   // Stable ordering so two runs over the same tree produce byte-identical output — a diffable
   // result is what makes "did my guard close it" a one-line comparison rather than a re-read.
+  //
+  // ORDINAL, via the repo's own collation. `localeCompare` is linguistic and ICU-dependent, so
+  // two machines can order the same findings differently — which would make the diff between
+  // "before my guard" and "after my guard" depend on whose laptop produced it. That is the
+  // exact failure `.claude/rules/culture-invariant-by-default.md` exists to prevent, and this
+  // file's first draft had it.
   return [...findings].sort((a, b) =>
     a.uri === b.uri
       ? a.line === b.line
-        ? a.ruleId.localeCompare(b.ruleId, "en")
+        ? stringCompare(a.ruleId, b.ruleId)
         : a.line - b.line
-      : a.uri.localeCompare(b.uri, "en"),
+      : stringCompare(a.uri, b.uri),
   );
 }
 

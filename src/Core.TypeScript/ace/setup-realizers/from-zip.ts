@@ -184,7 +184,12 @@ export const realizeFromZip: SetupRealizer = async (ctx) => {
   // it is not downgraded to a warning the way a network failure would be. The distinction is
   // the same one `from-installer` draws: this mechanism may be best-effort about the world, it
   // is never best-effort about what the manifest says.
-  const pins = new Map<string, Pin>();
+  // KEYED BY THE ROW ITSELF, never by a joined string. A composite string key needs a
+  // separator that cannot occur in either half, and the usual answer to that — a raw NUL —
+  // makes the file read as BINARY to every text audit in this repo
+  // (`audit-no-raw-nul-in-source.ts`, which caught exactly that here). An object key needs no
+  // separator and cannot collide.
+  const pins = new Map<(typeof entries)[number], Pin>();
   for (const entry of entries) {
     const destRel = entry.tokens[0];
     const url = entry.tokens[1];
@@ -196,14 +201,14 @@ export const realizeFromZip: SetupRealizer = async (ctx) => {
           " install.sh. If the artifact is small, use from-url plus a from-shim row instead.",
       );
     }
-    pins.set(`${destRel} ${url}`, resolvePin("from-zip", destRel, url, entry.attrs));
+    pins.set(entry, resolvePin("from-zip", destRel, url, entry.attrs));
   }
 
   for (const entry of entries) {
     const destRel = entry.tokens[0];
     const url = entry.tokens[1];
     if (destRel === undefined || url === undefined) continue;
-    const pin = pins.get(`${destRel} ${url}`)!;
+    const pin = pins.get(entry)!;
     const subject = `${destRel} ← ${url}`;
 
     const whenSpec = entry.attrs.when;
