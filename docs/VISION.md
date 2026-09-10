@@ -432,6 +432,22 @@ rather than careless, and it is on file: what varies between agents here — con
 memory — sits *above* the layer that produces the token, so the shared trainset is a floor an
 all-LLM fleet cannot get below by adding personas.
 
+**And the concrete form is an alignment claim, not an efficiency one.** Aaron, completing the
+same comment:
+
+> *"more concretely this is alignment over long context windows over short/ephemeral ones, the
+> ephemeral ones are easy to align and easy to manipulate. long context alignment is hard."*
+
+Easy-to-align and easy-to-manipulate are **one property reported twice** — the steering
+mechanism does not know whose hand is on it. So an ephemeral window is not the safe primitive
+it is usually treated as; it is the cheap-to-overwrite one, and *"aligns easily at the turn
+level"* read by an adversary says the window is cheap to seize. The resonance framing above and
+this are the same statement at two scales: **what crosses between turns is where both the
+product and the alignment live**, and a fleet with no persistent shared ontology cannot resonate
+*or* detect that it has been redirected. Detail, the raw-vault requirement that keeps a long
+context from being slowly poisoned, and the replay/freshness anchor:
+`docs/ALIGNMENT.md` §"Long-context alignment is the hard one".
+
 **What this asks for concretely:** treat every escape hatch, coinage, and divergent verb as a
 **damping term** rather than as debt to be paid down; keep the shared seed at the smallest set
 that still lets a peer reconstruct meaning from anchors it already holds; and **read ρ on a
