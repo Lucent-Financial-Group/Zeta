@@ -22,7 +22,7 @@ Workitem: `081M24DW4G0087G0R000MD0QEP`.
 | merged + auto-deleted by GitHub mid-sweep (not this sweep) | 3 |
 | pushed by another agent mid-sweep, never triaged | 2 |
 | protected, never examined for deletion | 62 |
-| kept with a stated reason | 63 |
+| kept with a stated reason | 64 rows, 63 still present |
 | archive tags created by this sweep | 19 |
 | archive tags reused from the 2026-09-03 sweep | 15 |
 
@@ -129,7 +129,7 @@ Each is tagged `archive/2026-09-09-branch-sweep/<branch>`.
 
 Each is tagged `archive/2026-09-09-branch-sweep/<branch>`.
 
-## Kept, with the reason (63 triaged, plus 2 that appeared mid-sweep)
+## Kept, with the reason (64 rows; one merged mid-sweep, so 63 survive)
 
 ### Open PR at triage time — must survive (11; one merged mid-sweep)
 
