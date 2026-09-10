@@ -65,3 +65,30 @@ describe("the roster is a set of IDENTITIES, never agendas", () => {
     }
   });
 });
+
+describe("normalisation is READ-side — the raw assertion survives", () => {
+  test("attributionOf keeps the raw strings alongside the canonical ones", () => {
+    // The Z-set property, testable: a correction is +1 then -1, never a delete. If the raw
+    // value were dropped here, this module would be normalising on WRITE in disguise and the
+    // repo would lose the ability to ask what an author actually asserted.
+    const row = attributionOf("bun + git + gh CLI", "GitHub Actions", roster);
+    expect(row.model).toBe(NO_MODEL);
+    expect(row.rawModel).toBe("bun + git + gh CLI");
+    expect(row.harness).toBe("github-actions");
+    expect(row.rawHarness).toBe("GitHub Actions");
+  });
+
+  test("a re-reading of the past needs only an alias edit, never a history rewrite", () => {
+    // The payoff of read-side normalisation: move an alias, and every past grouping re-reads
+    // correctly. A write-side scheme could not — the distinguishing bytes would be gone.
+    const before = canonicalize("Claude", roster.models);
+    const rerostered = {
+      ...roster,
+      models: roster.models.map((m) =>
+        m.canonical === "claude-opus-5" ? { ...m, aliases: m.aliases.filter((a) => a !== "Claude") } : m,
+      ),
+    };
+    expect(before).toBe("claude-opus-5");
+    expect(canonicalize("Claude", rerostered.models)).toBeNull();
+  });
+});
