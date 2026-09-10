@@ -53,39 +53,11 @@ See [`docs/CONFLICT-RESOLUTION.md`](docs/CONFLICT-RESOLUTION.md). On deadlock, t
   Full: `.claude/rules.bak/references-prior-art-not-our-code-search-excludes.md`.
 - **Thoughts free, actions razored** — journal to `memory/` freely; CLAUDE.md additions
   are razored (cooling-period, disposition-shaping bar). Full: `memory/feedback_thoughts_free_actions_razored_*`.
-- **Heartbeat-via-commit = externalized idle counter** — "Quiet."/"Holding." with no commit in the
-  prior tick window AND no named dependency IS the standing-by failure (the narrative self-counter is
-  unreliable; externalize it via
-  `git log --since="2min ago" origin/main 'refs/remotes/origin/heartbeat/*'`).
-  **PAUSED SINCE 2026-08-29 — DO NOT READ `heartbeat/*` AS A LIVENESS SIGNAL.** The telemetry
-  workflows that wrote those refs (`agent-heartbeat`, `society-heartbeat`, `tick-metrics`,
-  `drift-sweep` and 12 others) are `disabled_manually`, deliberately, because their cadence
-  commits were growing the repo. So the refs are frozen: measured 2026-09-09, the newest is
-  **12 days stale**. An agent following the old instruction reads that staleness as a dead
-  fleet — **a false negative in the one check written to prevent false negatives.**
-  **`liveness/observations` is paused too, as of 2026-09-10** — its writer
-  (`heartbeat-liveness.yml`, a 15-minute cron) was disabled for the same reason: 605
-  commits and 3,025 objects of history for a signal nobody was acting on. So there is
-  **no automated liveness telemetry at all** until the redesign lands, and that is a
-  deliberate choice, not a gap to route around.
-  **Do not read absence as death, and do not re-enable any of these to find out.**
-  Liveness comes from the work itself — commits on `main`, merged PRs, open work-items —
-  and if you need to know whether a lane runs, ask the Actions API for its `state`
-  (`disabled_manually` is a fact about the forge, not about the fleet).
-  Every commit carries the
-  AgencySignature v1 trailer (10 fields + `Co-authored-by:`); audit via
-  `bun src/Core.TypeScript/hygiene/audit-agencysignature-main-tip.ts`.
-  Full: `.claude/rules.bak/holding-without-named-dependency-is-standing-by-failure.md`;
-  spec `docs/research/2026-04-26-gemini-deep-think-agencysignature-commit-attribution-convention-validation-and-refinement.md` §10.
-- **Liveness observations are PAUSED (2026-09-10) — the ledger is frozen; do not read it as a
-  signal.** `heartbeat-liveness.yml` (a 15-minute cron that direct-pushed to the
-  `liveness/observations` orphan ref) is `disabled_manually`, alongside the 16 telemetry
-  workflows stopped earlier for the same reason: **the cost is history, not tip.** That ref
-  holds 605 commits and 3,025 objects for 409 KB of current content, and `drift-sweep.yml`
-  committed into `docs/` on every cadence run. So `liveness-ledger.ts read` will report
-  silence, and **that silence is the pause, not a finding** — reading it as one is the
-  false-negative this area keeps producing, the same shape as the frozen `heartbeat/*` refs
-  above. The design was sound and worth keeping for the redesign: observations about a broken
-  pipeline must not need that pipeline, which is why they went to an orphan ref rather than
-  through a PR. What it lacked was a bound on history. Full:
-  `docs/DECISIONS/2026-08-27-liveness-observations-reach-main-without-a-pr.md`.
+- **Holding without a named dependency is the standing-by failure** — "Quiet."/"Holding." with
+  no work landed in the prior tick window AND no named dependency IS the failure; the narrative
+  self-counter is unreliable, so externalise it against something real (commits on `main`, a
+  merged PR, an open work-item). Every commit carries the AgencySignature v1 trailer: ten fields
+  plus `Co-authored-by:`. Audit via
+  `bun src/Core.TypeScript/hygiene/audit-agencysignature-main-tip.ts`. Full:
+  `.claude/rules.bak/holding-without-named-dependency-is-standing-by-failure.md`; spec
+  `docs/research/2026-04-26-gemini-deep-think-agencysignature-commit-attribution-convention-validation-and-refinement.md` §10.
