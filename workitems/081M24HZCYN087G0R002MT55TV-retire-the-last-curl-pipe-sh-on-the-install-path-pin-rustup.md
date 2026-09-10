@@ -159,3 +159,48 @@ what that check governs and belongs with the deletion, not with a pin.
 - The verify lane installs with `--default-toolchain none`: it proves the
   INSTALLER, which is all the pin covers, not rustup's own signature-checked
   toolchain fetch.
+
+## 5. The kubeconform attestation outage — evaluated, and the answer is NOT this mechanism
+
+Added on the coordinator's ask 2026-09-10: `github:yannh/kubeconform@0.7.0` fails
+`mise install` when GitHub's `trust-metadata-api` returns 503, taking down both ARM
+lanes (gate `build-and-test (windows-11-arm)` and
+`live kind ArgoCD health (ubuntu-24.04-arm)`, run 34427150482) while their x86
+siblings pass. Same defect class as the rustup pipe: a third party's _availability_
+on the critical path of `install.sh`.
+
+**Verdict: `from-url` does not fit, and neither does the pin mechanism this PR
+extends.** Four measured reasons —
+
+1. `from-url` is one URL for all hosts with no platform axis, no extraction and no
+   PATH placement; kubeconform ships **eight** platform archives each containing a
+   binary.
+2. `install-pinned-artifact.ts` has the platform axis and archive extraction, but its
+   rim is POSIX-only (`sudo` elevator, `PATH.split(":")`, hardcoded `tar --zstd`) and
+   the **gate** lane that fails is `windows-11-arm`. A Unix-only migration would leave
+   the blocking failure standing and fragment the tool graph.
+3. kubeconform's version is already pinned **twice** — `.mise.full.toml` and
+   `gate.yml:1055`'s `go install …@v0.7.0`. A third mechanism widens the drift surface.
+4. It fixes one exposure out of at least four: the same failing log shows
+   `golangci-lint`, `uv` and `actionlint` performing the same attestation call.
+   `github_attestations = true` is a GLOBAL default and `aqua.github_attestations` is
+   true too, so the exposure follows the **setting**, not the backend.
+
+The bigger finding, and the real fix, is filed as **081M24MADR2087G0R001FCD8K6**:
+there is **no `mise.lock` in this repo and `locked = false`**, so no mise-managed tool
+has a committed digest at all — the `[2/3] checksum` mise prints is verified against a
+checksum fetched from upstream at install time. `mise lock` produces exactly the
+committed per-platform `sha256` text this PR's pin gives rustup (verified by running
+it; `windows-arm64` supported explicitly), and only once that lands does turning the
+attestation call off stop being a bypass and start being a relocation of the check.
+
+### What IS fixed here: the misleading second failure
+
+Six `if: always()` teardown steps in `.github/workflows/k8s-argocd-health-test.yml` ran
+`bun …-down.ts` with no toolchain installed and died with `bun: command not found`,
+exit 127 — so the job showed two reds and the **last** one, the one a reader sees
+first, was a missing bun rather than the 503 five steps earlier. Each now exits 0 on
+exactly one condition (`bun` absent ⇒ the install never completed ⇒ no cluster was ever
+created) with a `::notice` naming the real failure. A genuine teardown failure — bun
+present, `kind-down.ts` non-zero — still goes red; nothing in the guard touches that
+path. No retry budget was extended anywhere.
