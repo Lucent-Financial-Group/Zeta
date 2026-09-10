@@ -470,7 +470,14 @@ const PIPED_INTERPRETERS: ReadonlySet<string> = new Set([
   "bun",
   "iex",
 ]);
-/** Words that may sit in front of the real command in a pipeline segment. */
+/**
+ * Words that may sit in front of the real command in a pipeline segment.
+ *
+ * A LEXER VOCABULARY, not an argv. Nothing here is spawned -- these are the tokens skipped
+ * while looking for the command word in text read off disk, so `curl … | sudo bash` is
+ * recognised as piping into bash rather than into sudo.
+ */
+// zeta-elevator-not-argv: parser vocabulary; these words are compared against file text, never spawned.
 const COMMAND_PREFIXES: ReadonlySet<string> = new Set(["sudo", "env", "command", "exec", "nohup", "time"]);
 
 /**

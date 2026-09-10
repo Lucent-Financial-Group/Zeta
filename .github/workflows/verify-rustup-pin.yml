@@ -146,6 +146,5 @@ jobs:
         # reviewer cannot see in the diff.
         run: |
           set -euo pipefail
-          # shellcheck disable=SC2016
           export PATH="$HOME/.cargo/bin:$PATH"
           RUST_VERSION=stable bash tools/setup/common/install-rust-wasm32.sh
