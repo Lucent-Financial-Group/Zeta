@@ -192,7 +192,7 @@ function tracked(): string[] {
     maxBuffer: 512 * 1024 * 1024,
     encoding: "utf8",
   });
-  return out.split("\0").filter((f) => f.length > 0);
+  return out.split("\u0000").filter((f) => f.length > 0);
 }
 
 export interface Edge {
@@ -364,19 +364,19 @@ export function analyse(
     }
     per[a]!.out += 1;
     per[b]!.in += 1;
-    const k = `${a} ${b}`;
+    const k = `${a}\u0000${b}`;
     pairCount.set(k, (pairCount.get(k) ?? 0) + 1);
   }
 
   const seen = new Set<string>();
   const pairs: PairStat[] = [];
   for (const k of pairCount.keys()) {
-    const [a, b] = k.split(" ") as [string, string];
-    const key = [a, b].sort().join(" ");
+    const [a, b] = k.split("\u0000") as [string, string];
+    const key = [a, b].sort().join("\u0000");
     if (seen.has(key)) continue;
     seen.add(key);
-    const aToB = pairCount.get(`${a} ${b}`) ?? 0;
-    const bToA = pairCount.get(`${b} ${a}`) ?? 0;
+    const aToB = pairCount.get(`${a}\u0000${b}`) ?? 0;
+    const bToA = pairCount.get(`${b}\u0000${a}`) ?? 0;
     pairs.push({ a, b, aToB, bToA, cyclic: aToB > 0 && bToA > 0 });
   }
   pairs.sort((x, y) => y.aToB + y.bToA - (x.aToB + x.bToA));

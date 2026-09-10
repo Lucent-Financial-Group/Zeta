@@ -67,7 +67,7 @@ export function fold(
   const pairs = new Map<string, number>();
   let commits = 0;
 
-  for (const chunk of raw.split("\0")) {
+  for (const chunk of raw.split("\u0000")) {
     if (chunk.trim().length === 0) continue;
     const lines = chunk.split("\n");
     const paths = lines.slice(1).filter((l) => l.length > 0);

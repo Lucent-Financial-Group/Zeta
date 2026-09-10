@@ -84,6 +84,14 @@ component assignment, so the two halves are directly comparable, and reports com
 5. **The CI attribution in §5 is a judgement**, applied by a rule printed in full, not a measurement. The
    runner-seconds are measured; which bucket a job belongs to is argued.
 
+**A worked instance of limit 1, found in this document's own tooling.** The first commit of
+`repo-split-cut-cost.ts` carried **five raw NUL bytes** — a pair-key separator written as a byte instead of
+the escape. `rg` and `grep` treat a file containing NUL as binary and report `binary file matches` with exit
+0, so **the tool that measures this repository would itself have been silently skipped by every text audit
+in it.** It was caught by `audit-no-raw-nul-in-source.ts` in the gate, fixed to `\u0000` (byte-identical at
+runtime), and the re-run reproduced every figure in this document unchanged. Recorded because it is the
+exact failure class §1 is warning about, arriving uninvited in the paragraph that warns about it.
+
 ---
 
 ## §2 The cut-cost table — every candidate, at its cheapest boundary
