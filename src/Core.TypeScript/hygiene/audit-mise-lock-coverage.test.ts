@@ -17,10 +17,13 @@ import { describe, expect, test } from "bun:test";
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import {
-  checkLockedSettingPresent,
+  checkLockedModeSafety,
   checkPair,
   checkProvenanceMatchesInstallSettings,
   classifyRelock,
+  INSTALL_PS1_PATH,
+  LINUX_SH_PATH,
+  MACOS_SH_PATH,
   MISE_SH_PATH,
   PAIRS,
   parseConfigTools,
@@ -77,29 +80,60 @@ describe("the audit passes on a correct pair (the control)", () => {
   });
 
   test("and on the REAL tree — a fixture-only suite would survive a rename", () => {
-    const findings = [checkLockedSettingPresent(read(".mise.toml"))];
+    const findings = [
+      ...checkLockedModeSafety(read(".mise.toml"), read(LINUX_SH_PATH), read(MACOS_SH_PATH), read(INSTALL_PS1_PATH)),
+    ];
     for (const p of PAIRS) findings.push(...checkPair(p.config, read(p.config), read(p.lock)));
     expect(failures(findings)).toEqual([]);
   });
 });
 
-describe("1. `locked = true` is what makes the lockfile a lock", () => {
-  test("its absence convicts", () => {
-    const f = checkLockedSettingPresent("[settings]\npython.compile = false\n");
-    expect(f.ok).toBe(false);
-    expect(f.message).toContain("repairs itself is not a lock");
+describe("1. locked mode is permitted only when every installer pins ONE mise version", () => {
+  const PINNED = 'MISE_PIN_VERSION="2026.6.12"\n';
+  const PS1_PINNED = "$MisePinVersion = '2026.6.12' # keep in sync\n";
+  const MACOS_FLOOR_ONLY = 'MISE_MIN_VERSION="2026.6.12"\n';
+  const LOCKED = "[settings]\nlocked = true\n";
+  const UNLOCKED = "[settings]\npython.compile = false\n";
+
+  test("CONVICTS on `locked = true` while macOS only declares a floor — the state measured unsafe", () => {
+    const f = checkLockedModeSafety(LOCKED, PINNED, MACOS_FLOOR_ONLY, PS1_PINNED);
+    expect(failures(f)).toHaveLength(1);
+    expect(failures(f)[0]).toContain("do NOT all pin the same");
+    expect(failures(f)[0]).toContain("no exact pin");
   });
 
-  test("`locked = false` convicts too — the word being present is not the check", () => {
-    expect(checkLockedSettingPresent("[settings]\nlocked = false\n").ok).toBe(false);
+  test("passes with locked mode OFF under that same divergence — the shipped state", () => {
+    expect(failures(checkLockedModeSafety(UNLOCKED, PINNED, MACOS_FLOOR_ONLY, PS1_PINNED))).toEqual([]);
   });
 
-  test("a `locked = true` in a COMMENT does not satisfy it", () => {
-    expect(checkLockedSettingPresent("[settings]\n# locked = true\n").ok).toBe(false);
+  test("REQUIRES locked mode once all three pins agree — so the exemption cannot become permanent", () => {
+    const f = checkLockedModeSafety(UNLOCKED, PINNED, PINNED, PS1_PINNED);
+    expect(failures(f)).toHaveLength(1);
+    expect(failures(f)[0]).toContain("Re-lock on that version");
   });
 
-  test("the real .mise.toml satisfies it", () => {
-    expect(checkLockedSettingPresent(read(".mise.toml")).ok).toBe(true);
+  test("and is satisfied once both halves move together", () => {
+    expect(failures(checkLockedModeSafety(LOCKED, PINNED, PINNED, PS1_PINNED))).toEqual([]);
+  });
+
+  test("pins that DISAGREE are a divergence too, not only a missing one", () => {
+    const other = 'MISE_PIN_VERSION="2026.8.14"\n';
+    expect(failures(checkLockedModeSafety(LOCKED, PINNED, other, PS1_PINNED))).toHaveLength(1);
+  });
+
+  test("a `locked = true` in a COMMENT is not a declaration", () => {
+    const commented = "[settings]\n# locked = true\n";
+    // Reads as OFF, so under the divergence it must PASS rather than convict.
+    expect(failures(checkLockedModeSafety(commented, PINNED, MACOS_FLOOR_ONLY, PS1_PINNED))).toEqual([]);
+  });
+
+  test("the REAL installers still diverge, and the REAL .mise.toml therefore has locked mode off", () => {
+    expect(read(".mise.toml")).not.toContain("\nlocked = true");
+    expect(
+      failures(
+        checkLockedModeSafety(read(".mise.toml"), read(LINUX_SH_PATH), read(MACOS_SH_PATH), read(INSTALL_PS1_PATH)),
+      ),
+    ).toEqual([]);
   });
 });
 

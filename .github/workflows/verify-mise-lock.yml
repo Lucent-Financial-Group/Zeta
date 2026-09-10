@@ -16,9 +16,10 @@
 # It exercises BOTH directions, deliberately:
 #   1. unit falsifiers      — the audit convicts on a stale pin, a dropped platform, a
 #                             missing `locked = true`, and an exemption that outlived its reason
-#   2. the DRIFT check      — a re-lock on the PINNED mise must produce a byte-identical file
-#   3. the live refusals    — a tampered digest MUST be rejected, and a platform absent from
-#                             the lockfile MUST fail closed with nothing installed
+#   2. the DRIFT check      — a re-lock on the PINNED mise must reproduce every url and digest
+#   3. the live refusal     — a tampered digest MUST be rejected, on the real install path
+#   3b. the honest limit    — a MISSING platform row is refilled from upstream (locked mode is
+#                             off; `.mise.toml` carries why, and the re-enable condition)
 #   4. the happy path       — a real install that uses the COMMITTED digest
 # Without (1) and (3) this workflow could not tell a working lock from a decorative one,
 # which is the defect class the lockfile exists to remove. Do not delete them to save a minute.
@@ -183,13 +184,23 @@ jobs:
           }
           echo "[verify] live refusal OK (rc=${RC}) — the committed digest can fail"
 
-      - name: FAIL CLOSED — a platform absent from the lockfile must install NOTHING
-        # The vacuity question the work item insisted be measured rather than assumed: does
-        # `locked = true` change resolution, or does an unlisted platform silently fall through
-        # to an unlocked install? A lockfile that is quietly bypassed is worse than none, because
-        # it manufactures the belief that a digest was checked.
+      - name: THE HONEST LIMIT — a MISSING platform row is filled from upstream, not refused
+        # The question the work item insisted be measured rather than assumed: does an unlisted
+        # platform fall through to an unlocked install? WITH `locked = true` it fails closed —
+        # measured, `rc=1`, "No lockfile URL found ... (--locked mode)", nothing installed. But
+        # locked mode is OFF in this repo, because a lockfile is not readable across the two mise
+        # versions the fleet runs (`.mise.toml` carries the measurement and the re-enable
+        # condition). So the shipped behaviour is: mise installs it and WRITES THE FETCHED DIGEST
+        # BACK into mise.lock.
+        #
+        # That is a weaker guarantee, and this step exists so it is a MEASURED weaker guarantee
+        # rather than a hopeful sentence. It asserts the behaviour in both directions — the tool
+        # lands AND the lockfile is rewritten — so if mise ever changes it, the claim in
+        # `.mise.toml` and in `audit-mise-lock-coverage.ts` stops being true loudly instead of
+        # quietly. The coverage loss itself is caught by that audit on the cross-verify floor.
         env:
-          MISE_DATA_DIR: /tmp/mise-data-failclosed
+          MISE_DATA_DIR: /tmp/mise-data-selfheal
+          MISE_GITHUB_TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
           python3 - <<'PY'
@@ -199,21 +210,18 @@ jobs:
                   if 'tools.shellcheck."platforms.linux-x64"' not in b]
           p.write_text("\n\n".join(kept))
           PY
-          set +e
-          "$MISE_BIN" install --yes shellcheck > /tmp/failclosed.log 2>&1
-          RC=$?
-          set -e
-          cat /tmp/failclosed.log
+          "$MISE_BIN" install --yes shellcheck
+          if [ ! -e /tmp/mise-data-selfheal/installs/shellcheck ]; then
+            echo "::error title=mise lock::shellcheck did not install; this step no longer measures what it claims."
+            exit 1
+          fi
+          if git diff --quiet -- mise.lock; then
+            echo "::error title=mise lock::mise did NOT rewrite the lockfile after an unlocked install. That is BETTER than documented -- but .mise.toml and audit-mise-lock-coverage.ts both state that it does, so one of them is now wrong and must be corrected."
+            git checkout -- mise.lock
+            exit 1
+          fi
           git checkout -- mise.lock
-          if [ "$RC" -eq 0 ]; then
-            echo "::error title=mise lock::mise installed shellcheck with NO lockfile entry for this platform. locked mode is failing OPEN."
-            exit 1
-          fi
-          if [ -e /tmp/mise-data-failclosed/installs/shellcheck ]; then
-            echo "::error title=mise lock::the command failed but the tool landed on disk anyway."
-            exit 1
-          fi
-          echo "[verify] fail-closed OK (rc=${RC}) — nothing installed"
+          echo "[verify] self-heal confirmed: unlocked, a missing row is refilled from upstream — which is why the coverage audit exists"
 
       - name: HAPPY PATH — install from the COMMITTED digest and prove it is the one used
         env:
@@ -238,10 +246,11 @@ jobs:
           echo "[verify] the committed digest matches the bytes at the committed URL"
           "$MISE_BIN" exec shellcheck -- shellcheck --version
 
-      - name: The tree is unchanged (no self-heal wrote back into the lockfile)
-        # With `locked = false` mise silently ADDS a missing platform row from upstream and
-        # rewrites the file in place — measured 2026-09-10. That is the behaviour `locked = true`
-        # exists to prevent, and this is the step that would notice if it ever came back.
+      - name: The tree is unchanged when coverage is COMPLETE
+        # The complement of the step above. Self-heal fires only on a MISSING row; with every
+        # required platform covered, an ordinary install must leave the lockfile byte-identical.
+        # If this ever reddens it means a platform we believe is covered is not — which is the
+        # dirty-tree symptom of a coverage hole, caught here before a laptop finds it.
         run: |
           set -euo pipefail
           if ! git diff --exit-code -- mise.lock mise.full.lock; then

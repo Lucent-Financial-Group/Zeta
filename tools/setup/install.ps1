@@ -509,23 +509,9 @@ try {
     # BEST-EFFORT BY DESIGN: the current behaviour on this platform is no Java, so a failed
     # install here can only restore the status quo. It must never fail the bootstrap -- a
     # hard failure would make this change strictly worse than the omission it replaces.
-    #
-    # THE ONE PLACE LOCKED MODE IS TURNED OFF, and the scope is one command.
-    # `.mise.toml` sets `locked = true`, so `mise install <spec>` refuses any version that
-    # is not in `mise.lock` -- correctly, because the lockfile is the declared tool graph.
-    # `java@zulu-25` is BY CONSTRUCTION not in that graph: the comment above is the reason
-    # it exists, and `mise lock` can only lock versions the config declares. Locking it
-    # would also not survive a refresh -- measured 2026-09-10, `mise lock` PRUNES lockfile
-    # versions the config no longer names, so an entry added by hand disappears on the next
-    # legitimate re-lock and this line would silently start failing again.
-    #
-    # The exemption costs nothing that was ever held: this platform's status quo is NO JAVA,
-    # the call is already best-effort inside a try/catch, and every other tool on this host
-    # still installs under locked mode from the specs below. Scoped to the child process of
-    # this one invocation so nothing later in the bootstrap inherits it.
     $armJavaSpec = 'java@zulu-25'
     try {
-      Invoke-Tool { $env:MISE_LOCKED = '0'; try { mise install --yes $armJavaSpec } finally { Remove-Item Env:MISE_LOCKED -ErrorAction SilentlyContinue } } "mise install --yes $armJavaSpec (Windows ARM64 Java fallback, MISE_LOCKED=0)"
+      Invoke-Tool { mise install --yes $armJavaSpec } "mise install --yes $armJavaSpec (Windows ARM64 Java fallback)"
       Write-Host "note: Windows ARM64 uses $armJavaSpec; .mise.toml's java 26 has no build for this platform."
     } catch {
       Write-Host "warn: Windows ARM64 Java fallback '$armJavaSpec' did not install: $($_.Exception.Message)"
