@@ -56,19 +56,24 @@ See [`docs/CONFLICT-RESOLUTION.md`](docs/CONFLICT-RESOLUTION.md). On deadlock, t
 - **Heartbeat-via-commit = externalized idle counter** — "Quiet."/"Holding." with no commit in the
   prior tick window AND no named dependency IS the standing-by failure (the narrative self-counter is
   unreliable; externalize it via
-  `git log --since="2min ago" origin/main 'refs/remotes/origin/heartbeat/*'`). **Include the
-  `heartbeat/*` refs**: telemetry lanes no longer push to `main` (ruleset "CI Gate" requires
-  `gate (required)` at push time, no bypass actors), they park on `heartbeat/*` and flush via PR.
-  Reading `origin/main` alone now under-reports liveness by up to a flush interval — and an
-  under-report here reads as the standing-by failure, i.e. a check that did not run looking like
-  one that passed. Fetch first: `git fetch origin '+refs/heads/heartbeat/*:refs/remotes/origin/heartbeat/*'`.
+  `git log --since="2min ago" origin/main 'refs/remotes/origin/heartbeat/*'`).
+  **PAUSED SINCE 2026-08-29 — DO NOT READ `heartbeat/*` AS A LIVENESS SIGNAL.** The telemetry
+  workflows that wrote those refs (`agent-heartbeat`, `society-heartbeat`, `tick-metrics`,
+  `drift-sweep` and 12 others) are `disabled_manually`, deliberately, because their cadence
+  commits were growing the repo. So the refs are frozen: measured 2026-09-09, the newest is
+  **12 days stale**. An agent following the old instruction reads that staleness as a dead
+  fleet — **a false negative in the one check written to prevent false negatives.**
+  Ask `liveness/observations` instead (below); it is live, and on 2026-09-10T00:26 it
+  correctly reported `"outcome": "paused"` rather than pretending otherwise. Until the
+  telemetry redesign lands, **absence of `heartbeat/*` commits means the lanes are paused,
+  never that work stopped.**
   Every commit carries the
   AgencySignature v1 trailer (10 fields + `Co-authored-by:`); audit via
   `bun src/Core.TypeScript/hygiene/audit-agencysignature-main-tip.ts`.
   Full: `.claude/rules.bak/holding-without-named-dependency-is-standing-by-failure.md`;
   spec `docs/research/2026-04-26-gemini-deep-think-agencysignature-commit-attribution-convention-validation-and-refinement.md` §10.
 - **Liveness OBSERVATIONS live on `liveness/observations`, never on `main`** — the ticks flush via
-  PR (above); the *observations about* those ticks must never need one, or the report of a broken
+  PR (above); the _observations about_ those ticks must never need one, or the report of a broken
   pipeline would depend on that pipeline. They are direct-pushed to an orphan ref, every run,
   including runs that find nothing wrong. Fetch first, exactly like `heartbeat/*`:
   `git fetch origin '+refs/heads/liveness/*:refs/remotes/origin/liveness/*'`, then ask
@@ -77,7 +82,7 @@ See [`docs/CONFLICT-RESOLUTION.md`](docs/CONFLICT-RESOLUTION.md). On deadlock, t
   repo checkout, and pointing it at the checkout prints "holds NO records at all" and
   exits 1, which is a FALSE ALARM in the one check whose job is telling real silence from
   apparent silence: `git worktree add --detach /tmp/lw origin/liveness/observations && bun
-  src/Core.TypeScript/agent-heartbeats/liveness-ledger.ts read --dir /tmp/lw`
+src/Core.TypeScript/agent-heartbeats/liveness-ledger.ts read --dir /tmp/lw`
   (exit 1 = nobody has observed inside the threshold). One-file read, no worktree:
   `git show origin/liveness/observations:latest.json`.
   Full: `docs/DECISIONS/2026-08-27-liveness-observations-reach-main-without-a-pr.md`.
