@@ -328,6 +328,39 @@ node = "24"
 "pipx:mypy" = "2.3.1"
 
 [settings]
+# LOCKED MODE. `mise.lock` / `mise.full.lock` are committed, and this is the line that
+# makes them a lock rather than a cache (081M24MADR2087G0R001FCD8K6).
+#
+# WHAT IT BUYS, measured on the pinned mise 2026.6.12 rather than assumed:
+#   - host platform ABSENT from the lockfile -> `mise install` exits 1 with
+#     "No lockfile URL found for <tool> on platform <p> (--locked mode)" and installs
+#     NOTHING. It fails CLOSED.
+#   - tool declared here but ABSENT from the lockfile -> exits 1, "<tool> is not in the
+#     lockfile". So a pin bumped without a re-lock cannot merge quietly; the audit named
+#     below catches it on the PR instead of in the fleet.
+#   - a digest that does not match the bytes -> exits 1, expected and actual both printed.
+#
+# WHY IT IS REQUIRED AND NOT AN EXTRA. With `locked = false` (the default) mise still
+# verifies a digest it HAS, but a MISSING platform entry is silently filled from upstream
+# and mise.lock is rewritten in place. A lockfile that repairs itself is not a lock — it is
+# a cache that reads like one, and the repair also leaves every checkout dirty.
+#
+# WHAT IT DOES NOT BUY, said out loud because the name implies more than it does. Seven
+# tools here have no lockable artifact — `dotnet` (dotnet-install script), `rust` (rustup),
+# `npm:*`, `pipx:*` — and locked mode PASSES THEM THROUGH rather than failing: measured,
+# they install unlocked with no committed digest. `1password-cli` locks a URL and no
+# checksum (vfox backend). So this setting covers fourteen of the twenty-two declared rows,
+# and `src/Core.TypeScript/hygiene/audit-mise-lock-coverage.ts` is what keeps that roster
+# from growing without a diff.
+#
+# REFRESH: `MISE_LOCKED=0 mise lock` (plus `--platform windows-arm64`, run twice). The env
+# override is load-bearing — with `locked = true` active, `mise lock` cannot resolve a
+# version that is not already in the lockfile and PRUNES the entry instead.
+#
+# The attestation settings are deliberately UNCHANGED by this. Relocating that check is a
+# separate change and only becomes legitimate now that a digest we own exists locally;
+# doing both at once would remove a check while claiming to move it.
+locked = true
 # Explicit: use astral-sh/python-build-standalone precompiled binaries (fast
 # install on dev laptops + CI). Compile-from-source is opt-in via
 # `python.compile = true` when a platform build is required.
