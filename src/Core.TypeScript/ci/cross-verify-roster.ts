@@ -296,6 +296,19 @@ export const CROSS_VERIFY_AUDITS: readonly CrossVerifyAudit[] = [
     command: "bun src/Core.TypeScript/hygiene/audit-workflow-write-token-consistency.ts",
   },
 
+  // An evidence-producing workflow that cancels its own default-branch runs makes every
+  // number downstream of it unfalsifiable. Measured 2026-09-09 on `codeql.yml`: 61 of the
+  // last 100 runs on `main` cancelled, and the three most recent `javascript-typescript`
+  // analyses reporting `rules_count: 0, results_count: 0,
+  // error: "unsuccessful execution, exit code: 0"`. Two of the cancelled runs were exactly
+  // the ones that would have verified that session's own security fixes -- the defect
+  // demonstrating itself.
+  //
+  // The workflow's comment asserted the opposite ("schedule runs carry a distinct ref so
+  // they don't cancel each other"), which is backwards: push, schedule and merge_group all
+  // resolve `github.ref` to the same value on `main`. Prose could not hold this; a check
+  // can. Offline (reads committed workflow text, no sockets), so it belongs on the
+  // pre-merge floor.
   // `install.ps1` retries a failed toolchain install on a known transient upstream signature.
   // The signature list is MIRRORED -- authority in `ci/transient-toolchain-failure.ts` where it
   // is unit-tested and mutation-checked, copy in the shell because a PowerShell bootstrap
@@ -311,6 +324,12 @@ export const CROSS_VERIFY_AUDITS: readonly CrossVerifyAudit[] = [
     id: "transient-retry-parity",
     title: "Transient-retry signatures identical in install.ps1 and the tested module",
     command: "bun src/Core.TypeScript/hygiene/audit-transient-retry-parity.ts",
+  },
+
+  {
+    id: "scanner-cancels-itself",
+    title: "Evidence workflows must not cancel their own default-branch runs",
+    command: "bun src/Core.TypeScript/hygiene/audit-scanner-cancels-itself-on-main.ts",
   },
 
   // The falsifier for the PR-free heartbeat lane. Design:
@@ -431,6 +450,21 @@ export const CROSS_VERIFY_AUDITS: readonly CrossVerifyAudit[] = [
     id: "dotnet-pin-parity",
     title: ".NET SDK pin declared once (.mise.toml canonical, global.json restates)",
     command: "bun src/Core.TypeScript/hygiene/audit-dotnet-pin-parity.ts",
+  },
+
+  // THE PIN'S CONSUMERS, which the entry above does not reach. `audit-dotnet-pin-parity`
+  // holds `.mise.toml` and `global.json` equal and is correct about those two files. It
+  // says nothing about the places that SPEND the pin. MEASURED 2026-09-09: 42 projects on
+  // `net10.0`, one on `net8.0` (`genesis/_src/auth-backend`), and two Dockerfiles naming
+  // `dotnet/sdk:8.0` / `dotnet/aspnet:8.0` while `orleans-silo` was on `10.0-noble`. The
+  // holdout is not in `Zeta.sln` and is not built by CI -- it carries a deliberately empty
+  // `Directory.Build.props` so it escapes the strict profile -- which is exactly why the
+  // drift was silent: the only surface that would have caught it is one nothing compiles.
+  // A pin nobody checks against the things it pins is a declaration, not a constraint.
+  {
+    id: "dotnet-band-unity",
+    title: "every TargetFramework and dotnet base image sits in the pinned band",
+    command: "bun src/Core.TypeScript/hygiene/audit-dotnet-runtime-band-unity.ts",
   },
 
   // FIVE places install ArgoCD and they must name ONE chart version. The response to the
