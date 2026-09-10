@@ -138,3 +138,48 @@ Re-run the measurement at the top. The ratio is the falsifier: if
 `rules_count == 0` does not fall well below 65% of javascript analyses on
 `main` over the following day, the change did not take. A green workflow run
 is NOT the check -- cancelled runs already report a conclusion.
+
+## The controlled comparison already exists in this repo
+
+The remedy is not a hypothesis. A sibling workflow ALREADY RUNS THE PROPOSED
+CONFIGURATION, against the same branch, under the same push rate, with a
+same-shaped concurrency group:
+
+```
+scorecard.yml:68-70   group: ${{ github.workflow }}-${{ github.ref }}
+                      cancel-in-progress: FALSE
+
+codeql.yml:170-171    group: codeql-${{ github.workflow }}-${{ github.ref }}
+                      cancel-in-progress: TRUE
+```
+
+Measured over the last 99 COMPLETED runs of each on `main`:
+
+| workflow        | cancel-in-progress | cancelled    | success |
+| --------------- | ------------------ | ------------ | ------- |
+| `scorecard.yml` | `false`            | **3 (3%)**   | 95      |
+| `codeql.yml`    | `true`             | **61 (62%)** | 38      |
+
+Same repository, same branch, same commits, same group shape. The single
+differing variable is the flag. This is as close to a controlled experiment as
+CI substrate allows, and it was already running before anyone looked.
+
+### And the asymmetry is the wrong way round
+
+The consequence of that table is worse than a uniform gap. The two scanners do
+not find the same class of thing:
+
+- `scorecard.yml` -- cheap supply-chain posture (unpinned deps, token
+  permissions, binary artifacts). **Runs 95 times out of 99.**
+- `codeql.yml` -- dataflow analysis (injection, TOCTOU, XSS, prototype
+  pollution). **Runs 38 times out of 99.**
+
+So the cancellation is SEVERITY-WEIGHTED TOWARD THE DEEPER ANALYSIS. The
+scanner that finds "you forgot a digest" is reliable; the scanner that finds
+"an attacker reaches this write" is the one that never completes.
+
+This tranche is the worked example, and it is why the split was visible at all:
+every `PinnedDependenciesID` closure was confirmable within minutes
+(690/714 `fixed_at 01:41:42Z`), while every `js/*` closure from the same hour
+is still `unknown`. The two dispositions differ by which scanner had to run,
+not by anything about the fixes.
