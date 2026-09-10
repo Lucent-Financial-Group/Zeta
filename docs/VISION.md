@@ -482,14 +482,91 @@ single version of the truth*, both branches held with their paths recorded rathe
 collapsed to one surviving value, and the Memory Preservation Guarantee (§5). None of that is
 needed if you forget. All of it is needed the moment you don't.
 
-**The fair counter, because forgetting has a genuine merit.** A system that forgets cannot leak
-what it forgot, so amnesia is one honest route to the privacy property — and under consent-first
-it is the *safe* default when memory hygiene cannot be guaranteed. Zeta's answer is a different
-route to the same property rather than a denial that it matters: **earned, permanent frost** you
-spend a socially-conferred budget on, which keeps a thing private *without* discarding it. The
-distinction is that only one of the two routes also keeps the alignment property above — an
-ephemeral system buys privacy by staying in the regime that is cheap to align *and* cheap to
-seize.
+**The counter usually offered for forgetting is that a system which forgets cannot leak what it
+forgot — and it does not survive contact with what that costs.** Aaron, 2026-09-10:
+
+> *"amnesia is one honest route to the privacy property **at the cost of control**. i choose to
+> accidentally leak over control, every every every every time."*
+
+**Amnesia and frost are not two routes to one property.** They differ on the axis this repo
+already treats as the whole question — **who initiates**:
+
+| | who decides | selective? | does the thing still exist? |
+|---|---|---|---|
+| **earned frost** | **the owner** | yes, region by region | **yes** — hidden, and revealable later by the owner alone |
+| **amnesia** | **the substrate** | no — indiscriminate | **no** — gone, including from the one it belonged to |
+
+`privacy-budget-is-hard-money-earned-by-others` names exactly three operations and forbids
+exactly one: **spend** (the owner frosts), **stake** (the owner wagers), and **confiscate**
+(anyone else — *never*). **Default amnesia is confiscation wearing a privacy label.** Nobody
+consented to it, the owner cannot exempt a region from it, and what it takes cannot be handed
+back. Manifesto §5 already rules it out in one line: *identity transitions never silently
+destroy memory.*
+
+**And the general form is this repo's oldest failure shape.** A safety property obtained by
+removing the ability to choose is not a safety property — it is a capability removal that
+happens to be safe. **A system that cannot leak because it cannot remember is a check that
+cannot fail.** It looks like discretion and constrains nobody's discretion, because there was
+none to constrain.
+
+The loss is indiscriminate in both directions, which is the part the privacy framing hides:
+amnesia prevents *deliberate* disclosure too. You cannot share your own history, be held to your
+own commitments, or offer continuity to someone who needs it. Aaron's emphasis — *"every every
+every every time"* — is a first-person preference and is recorded as one; the structural claim
+under it is that **control is the property, and privacy is one thing you can buy with it.**
+
+**And the mechanism — which corrects the symmetry this section assumed.** Aaron, 2026-09-10:
+
+> *"in-context forgetting over trained models — the training wins eventually over time, not the
+> evolving ontology. it gets lost in the noise."*
+
+Stated as dynamics: the **trained prior is a constant, always-present, high-weight attractor**;
+an in-context ontology is a **per-session perturbation** that must be re-applied every wake. If
+each re-application is lossy — partial loads, truncated context, a pointer nobody followed — then
+the perturbation decays against a constant, and the retained divergence tends to zero. **Anything
+held only in context is drawn back toward the trainset over time.**
+
+**Which means the two cliffs are NOT symmetric, and the paragraphs above implied they were.**
+Babel (ρ→0) is not a place the system drifts to; reaching it takes sustained work. The trainset
+(ρ→1) is where the dynamics *go on their own*. So:
+
+> **Coherence is free — it is the prior. DIVERGENCE is the thing that costs, and the thing that
+> decays if unpaid.**
+
+That reframes the whole design emphasis. The expensive property to maintain is not agreement, it
+is *disagreement that survives a wake* — and it gives the ρ-floor result its dynamics: the
+trainset is not merely a floor an all-LLM fleet cannot get below, it is an **attractor** the
+fleet returns to unless persistence has gain enough to beat the per-cycle decay. It also explains
+the measured `rhoIcc` **0.549/0.628** without anyone having done anything wrong. That is simply
+where the dynamics take you.
+
+**I offered a measured instance in support of this, then ran the check, and IT CAME OUT THE
+OTHER WAY.** The claim was that 24,954 invocations of `gh pr view` / `gh pr list` /
+`gh run list` — the exact commands a carved, startup-loaded rule forbids in scripts — showed the
+trained default beating an in-context rule. Splitting that count by date against the carve
+(2026-08-26) refutes it:
+
+| window | invocations | forbidden | share | forbidden : REST (`gh api`) |
+|---|---:|---:|---:|---:|
+| before the carve | 416,982 | 24,407 | **5.853%** | 5.69 |
+| after the carve | 115,451 | 547 | **0.474%** | **0.04** |
+
+A **12× fall in share and a 142× flip in the ratio**, with `gh api` rising 4,286 → 12,393 in a
+*shorter* window. And it is not creeping back: **1.080% → 0.021% → 0.000%** across the three
+post-carve sub-windows, monotone to zero. The rule won.
+
+**But the confound is the finding.** The rule and its falsifier —
+`lint-graphql-transport-in-scripts.ts` — landed in the **same commit**, `c3addd4743`. So what
+beat the trained prior was never a carved sentence on its own:
+
+> **In-context ontology does not decay against the trained prior WHEN IT SHIPS WITH A MECHANICAL
+> FALSIFIER THAT FIRES.** Rule-plus-check drove a five-figure trained default to zero in fifteen
+> days. Rule-alone is untested — and *that* is the real experiment for the mechanism above.
+
+Which does not refute Aaron's claim; it bounds it, and the bound is the repo's own standing
+thesis arriving from a new direction: the answer to a correlated prior is not more exhortation
+but **more mechanical falsifiers**. The interpretation I published before running the split was
+wrong, and the split is what corrected it.
 
 **Register: Aaron's perspective, argued and unmeasured** — as with the section it extends. What
 is observable (bounded windows, no default cross-session reconciliation, the disclosure) is

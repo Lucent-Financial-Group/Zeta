@@ -404,15 +404,37 @@ interface FoldState {
   invocations: number;
   /** Bash TOOL CALLS -- one question's worth of shell, however many commands it took. */
   toolCalls: number;
+  /** Bash lines with no readable timestamp, excluded when a window is set. */
+  undated: number;
   unparsed: number;
 }
 
-async function foldTranscript(path: string, sessionId: string, state: FoldState): Promise<void> {
+/**
+ * Ordinal ISO-8601 comparison. Lexicographic order IS chronological order for
+ * this format, so no Date parsing and no locale enters the decision.
+ * A line with no readable timestamp is `unknown` and is COUNTED as excluded
+ * when a window is set -- never silently kept, which would make a windowed
+ * count quietly wider than its window.
+ */
+export function inWindow(line: string, since: string, until: string): boolean | null {
+  if (since.length === 0 && until.length === 0) return true;
+  const m = /"timestamp":"([^"]+)"/u.exec(line);
+  if (m === null) return null;
+  const ts = m[1] ?? "";
+  if (since.length > 0 && ts < since) return false;
+  if (until.length > 0 && ts >= until) return false;
+  return true;
+}
+
+async function foldTranscript(path: string, sessionId: string, state: FoldState, since = "", until = ""): Promise<void> {
   const rl = createInterface({ input: createReadStream(path, { encoding: "utf8" }), crlfDelay: Infinity });
   try {
     for await (const line of rl) {
       if (line.length === 0) continue;
       if (line.includes('"name":"Bash"')) {
+        const w = inWindow(line, since, until);
+        if (w === null) { state.undated += 1; continue; }
+        if (!w) continue;
         const cmds = commandsInLine(line);
         if (cmds.length === 0) { state.unparsed += 1; continue; }
         state.toolCalls += cmds.length;
@@ -439,6 +461,10 @@ export interface AuditOptions {
   readonly top: number;
   readonly minCount: number;
   readonly json: boolean;
+  /** ISO date lower bound (inclusive) on the transcript line's timestamp; "" = no bound. */
+  readonly since: string;
+  /** ISO date upper bound (exclusive); "" = no bound. */
+  readonly until: string;
   /** Opt-in second corpus. Heavier privacy weight -- see the header. */
   readonly historyPath: string;
 }
@@ -450,6 +476,8 @@ function parseArgs(argv: readonly string[]): AuditOptions {
   let minCount = 2;
   let json = false;
   let historyPath = "";
+  let since = "";
+  let until = "";
   for (let i = 0; i < argv.length; i += 1) {
     const a = argv[i] ?? "";
     if (a === "--transcripts") { transcriptsDir = argv[++i] ?? transcriptsDir; }
@@ -457,8 +485,10 @@ function parseArgs(argv: readonly string[]): AuditOptions {
     else if (a === "--min-count") { minCount = Number.parseInt(argv[++i] ?? "", 10) || minCount; }
     else if (a === "--json") { json = true; }
     else if (a === "--history") { historyPath = argv[++i] ?? ""; }
+    else if (a === "--since") { since = argv[++i] ?? ""; }
+    else if (a === "--until") { until = argv[++i] ?? ""; }
   }
-  return { transcriptsDir, top, minCount, json, historyPath };
+  return { transcriptsDir, top, minCount, json, historyPath, since, until };
 }
 
 export async function main(argv: readonly string[]): Promise<number> {
@@ -490,11 +520,11 @@ export async function main(argv: readonly string[]): Promise<number> {
     return 2;
   }
 
-  const state: FoldState = { counts: new Map(), sessions: new Map(), invocations: 0, toolCalls: 0, unparsed: 0 };
+  const state: FoldState = { counts: new Map(), sessions: new Map(), invocations: 0, toolCalls: 0, undated: 0, unparsed: 0 };
   let bytes = 0;
   for (const f of files) {
     try { bytes += statSync(f).size; } catch { /* size is reporting only */ }
-    await foldTranscript(f, f, state);
+    await foldTranscript(f, f, state, opts.since, opts.until);
   }
   if (opts.historyPath.length > 0) {
     try { bytes += statSync(opts.historyPath).size; } catch { /* size is reporting only */ }
@@ -534,7 +564,8 @@ export async function main(argv: readonly string[]): Promise<number> {
     `${state.invocations} invocations in ${state.toolCalls} tool calls ` +
     `(${(state.toolCalls > 0 ? state.invocations / state.toolCalls : 0).toFixed(1)} commands per question), ` +
     `${stats.length} distinct shapes` +
-    (state.unparsed > 0 ? `, ${state.unparsed} Bash lines unparsed (unknown, not clean)` : "") + "\n\n",
+    (state.unparsed > 0 ? `, ${state.unparsed} Bash lines unparsed (unknown, not clean)` : "") +
+    (state.undated > 0 ? `, ${state.undated} Bash lines undated and EXCLUDED by the window` : "") + "\n\n",
   );
   process.stdout.write(
     `covered ${sum(covered)} (${covered.length} shapes) · ` +

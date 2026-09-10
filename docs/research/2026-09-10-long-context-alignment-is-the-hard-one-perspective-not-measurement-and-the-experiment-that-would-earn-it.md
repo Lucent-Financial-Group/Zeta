@@ -168,14 +168,19 @@ matched-salience control. Recorded before running, per the pre-declared-bias dis
 
 | | status |
 |---|---|
-| a persistent carved rule steers behaviour imperfectly | **there is data, and it is unflattering**: 24,954 invocations of the exact commands the GraphQL-transport rule forbids in scripts, measured 2026-09-10 |
+| a carved rule + its lint beat a trained default | **measured, and it is FLATTERING** — the 24,954 forbidden `gh` invocations are 24,407 before the 2026-08-26 carve and 547 after: share 5.853% → 0.474%, then 1.080% → 0.021% → **0.000%** across post-carve sub-windows |
+| rule **alone** (no falsifier) resists the trained prior | **untested** — rule and `lint-graphql-transport-in-scripts.ts` landed in the same commit `c3addd4743`, so nothing here isolates the carved sentence from the check |
 | the manipulation side | **no data at all** — nothing here has ever measured `C_subvert` |
 | the pairing | **untested**; this document is the argument, not the finding |
 
-The first row is worth naming for honesty's sake: it is weak evidence *against* the comfortable
-half of the claim. A rule sitting in every agent's startup context did not prevent a
-five-figure violation count — so persistent ontology is not, by itself, strong steering. Whether
-it is nonetheless strong *resistance* is exactly what is untested.
+**A correction, recorded because the check reversed my own claim.** An earlier draft of this
+document cited the 24,954 count as weak evidence *against* persistent ontology steering
+behaviour, and then as an instance of the in-context-decay mechanism. Splitting it by date
+refuted both readings: the violations are almost entirely pre-carve, and the post-carve trend is
+monotone to zero. What the data actually supports is narrower and more useful — **a carved rule
+shipped WITH a mechanical falsifier drove a five-figure trained default to zero in fifteen
+days** — and it leaves the interesting question open, because rule and lint landed together and
+nothing isolates them.
 
 ---
 
