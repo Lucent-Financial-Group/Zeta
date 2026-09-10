@@ -18,6 +18,7 @@ import {
   isRunnable,
   sanitizeObservation,
   renderEnablementMarkdown,
+  renderEnablementSummary,
 } from "./workflow-enablement.ts";
 
 const wf = (path: string, state: string): ObservedWorkflow => ({ path, state });
@@ -334,5 +335,47 @@ describe("sanitizeObservation -- nothing unvalidated reaches a file", () => {
   test("length is bounded -- an enormous path is rejected, not written", () => {
     const huge = ".github/workflows/" + "a".repeat(500) + ".yml";
     expect(sanitizeObservation({ path: huge, state: "active" }).path).toBe(REJECTED_PATH);
+  });
+});
+
+// The step summary is a FILE WRITE, so nothing network-derived may appear in it
+// (CodeQL js/http-to-file-access, alert 930).
+describe("renderEnablementSummary -- nothing network-derived reaches the file", () => {
+  const observed = [
+    wf(".github/workflows/known.yml", "disabled_manually"),
+    wf(".github/workflows/surprise.yml", "disabled_manually"),
+    wf(".github/workflows/gate.yml", "active"),
+  ];
+  const report = foldEnablement(observed, [entry(".github/workflows/known.yml")], 3);
+
+  test("carries the counts and the register", () => {
+    const out = renderEnablementSummary(report);
+    expect(out).toContain("drift");
+    expect(out).toContain("| active (runnable) | 1 |");
+    expect(out).toContain("| blocking findings | 1 |");
+  });
+
+  test("contains NO workflow path from the observation set", () => {
+    const out = renderEnablementSummary(report);
+    for (const w of observed) expect(out).not.toContain(w.path);
+  });
+
+  test("contains no observed STATE string either", () => {
+    const out = renderEnablementSummary(report);
+    expect(out).not.toContain("disabled_manually");
+  });
+
+  // MUTATION CONTROL. The full markdown DOES carry those strings -- which is why it goes
+  // to stdout and never to the file. Without this, the test above would pass just as well
+  // against an empty string.
+  test("GREEN (control): the stdout markdown DOES carry them", () => {
+    const full = renderEnablementMarkdown(report);
+    expect(full).toContain(".github/workflows/surprise.yml");
+    expect(full).toContain("disabled_manually");
+  });
+
+  test("the detail still reaches the annotations, which are not a file", () => {
+    const lines = enablementAnnotations(report).join("\n");
+    expect(lines).toContain(".github/workflows/surprise.yml");
   });
 });

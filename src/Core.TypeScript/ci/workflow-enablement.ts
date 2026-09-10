@@ -360,6 +360,51 @@ export function renderEnablementMarkdown(report: EnablementReport): string {
   return lines.join("\n");
 }
 
+/**
+ * The STEP-SUMMARY rendering, and the reason it is a second function rather than a reuse
+ * of `renderEnablementMarkdown`.
+ *
+ * CodeQL `js/http-to-file-access` (alert 930): "Write to file system depends on Untrusted
+ * data." `main()` appends to `$GITHUB_STEP_SUMMARY` -- a real file write -- and the full
+ * markdown embeds workflow paths and states that came from a network fetch.
+ *
+ * A FIRST ATTEMPT VALIDATED THOSE STRINGS AND THE ALERT STAYED OPEN. That is CodeQL being
+ * right and me being clever: a regex guard leaves the ORIGINAL string flowing on the true
+ * branch, so the taint path is intact however well the value was checked. Validation
+ * narrows what an attacker can put in a file; it does not stop the file depending on
+ * remote data. (The validation is KEPT -- see `sanitizeObservation` -- because it is worth
+ * having on its own merits. It is simply not what closes this.)
+ *
+ * So the flow is broken structurally instead: NOTHING network-derived reaches the file.
+ * This function emits counts (numbers), the register (a local union), and fixed prose.
+ * Every string here is a literal in this file.
+ *
+ * THE DETAIL IS NOT LOST, it moves to a channel that is not a file: the full markdown
+ * still goes to stdout, and every finding still emits a `::error::` / `::warning::`
+ * annotation. Those are the surfaces a reader actually uses for findings; the step summary
+ * keeps the shape of the run. Nothing is narrowed -- exit codes are untouched.
+ */
+export function renderEnablementSummary(report: EnablementReport): string {
+  const blocking = report.findings.filter((f) => f.blocking).length;
+  const lines = [
+    "## workflow enablement -- is every committed check actually runnable?",
+    "",
+    "| measurement | value |",
+    "| --- | --- |",
+    "| register | " + report.register + " |",
+    "| workflows listed | " + String(report.observedCount) + " of " + String(report.totalCount) + " |",
+    "| active (runnable) | " + String(report.activeCount) + " |",
+    "| recorded non-active, intentional | " + String(report.intentionalCount) + " |",
+    "| recorded non-active, UNREVIEWED | " + String(report.unreviewedCount) + " |",
+    "| blocking findings | " + String(blocking) + " |",
+    "",
+    "Workflow paths and states are deliberately NOT written here: they are network-derived, " +
+      "and a step summary is a file. They appear in the job log and in the per-finding " +
+      "annotations, which is where findings are read anyway (CodeQL js/http-to-file-access).",
+  ];
+  return lines.join("\n");
+}
+
 export function enablementAnnotations(report: EnablementReport): readonly string[] {
   const out: string[] = [];
   const emit = (s: string): void => {
@@ -522,7 +567,9 @@ export async function main(argv: readonly string[] = process.argv.slice(2)): Pro
 
   const summaryPath = process.env["GITHUB_STEP_SUMMARY"];
   if (summaryPath !== undefined && summaryPath.length > 0) {
-    appendFileSync(summaryPath, markdown + "\n");
+    // Deliberately NOT `markdown`: see renderEnablementSummary. Nothing network-derived
+    // reaches a file.
+    appendFileSync(summaryPath, renderEnablementSummary(report) + "\n");
   }
 
   if (report.register === "unmeasured") {
