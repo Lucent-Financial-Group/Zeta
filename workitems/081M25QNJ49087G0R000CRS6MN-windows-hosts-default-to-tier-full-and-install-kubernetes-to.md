@@ -27,11 +27,11 @@ entries that are deliberate byte-identical mirrors of the base tier.
 So the tier's entire Windows payload was the five Kubernetes tools, and no Windows surface
 invokes any of them:
 
-| consumer | runner |
-|---|---|
-| `lint (yaml/k8s)` (gate.yml) -- kubeconform | `ubuntu-24.04`, and it `go install`s its own copy |
-| `helm-validate.yml` -- helm + kubeconform | `ubuntu-24.04` |
-| `k8s-argocd-health-test.yml` -- k3d/kind/kubectl | `ubuntu-24.04` |
+| consumer                                         | runner                                                            |
+| ------------------------------------------------ | ----------------------------------------------------------------- |
+| `lint (yaml/k8s)` (gate.yml) -- kubeconform      | `ubuntu-24.04`, and it `go install`s its own copy                 |
+| `helm-validate.yml` -- helm + kubeconform        | `ubuntu-24.04`                                                    |
+| `k8s-argocd-health-test.yml` -- k3d/kind/kubectl | `ubuntu-24.04`                                                    |
 | `build-and-test (windows-2025 / windows-11-arm)` | `dotnet build` + `dotnet test` over `Zeta.sln`. None of the five. |
 
 `install.ps1` reads no manifest carrying a `tier=` token (`manifests/windows`,
