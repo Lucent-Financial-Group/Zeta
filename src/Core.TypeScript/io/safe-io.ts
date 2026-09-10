@@ -400,6 +400,76 @@ export function writeFileOwned(
   }
 }
 
+export interface WriteIfChangedOptions extends WriteOptions {
+  /**
+   * Refuse when the EXISTING file is larger than this. Defaults to
+   * `DEFAULT_MAX_BYTES`. A file too large to read is a file this function
+   * cannot decide about, and deciding anyway means overwriting it blind.
+   */
+  readonly maxBytes?: number;
+}
+
+export interface WriteIfChangedOutcome {
+  readonly path: string;
+  /** The file existed and already held exactly `text`. Nothing was written. */
+  readonly unchanged: boolean;
+  /** The file did not exist before this call. */
+  readonly created: boolean;
+  /** Bytes written, or bytes read when `unchanged`. */
+  readonly bytes: number;
+}
+
+/**
+ * Write `text` only when it differs from what the path already holds.
+ *
+ * THE SHAPE THIS REPLACES, which appeared nine times across the manifest,
+ * vocabulary and crypto writers:
+ *
+ *     const current = existsSync(p) ? readFileSync(p, "utf8") : "";
+ *     if (current !== next) writeFileSync(p, next, "utf8");
+ *
+ * That is THREE separate resolutions of one name -- `existsSync`,
+ * `readFileSync`, `writeFileSync` -- so "did it exist", "what was in it" and
+ * "what did we overwrite" can each describe a different inode. CodeQL reports
+ * it as `js/file-system-race`; the reason it is a defect and not only a
+ * finding is that the write is CONDITIONAL ON the check, so a replacement
+ * between them silently inverts the decision.
+ *
+ * Here the existence question is answered by the read that has to happen
+ * anyway, through one descriptor, and the write is not preceded by a check at
+ * all.
+ *
+ * TWO REFUSALS THAT THE OLD SHAPE SWALLOWED, and both are the point:
+ *
+ *   * an existing file that cannot be READ (permissions, a directory in the
+ *     way) is an error, not an absence. `existsSync` returning false for
+ *     EACCES made an unreadable file look like a missing one, and the next
+ *     line overwrote it.
+ *   * an existing file LARGER than `maxBytes` is an error. `readFileSync`
+ *     would have loaded it whole to compare it.
+ *
+ * The mtime-preserving property callers relied on is kept exactly: when the
+ * bytes already match, nothing is opened for writing, so a deterministic
+ * re-run stays a true no-op (no mtime churn, no git diff).
+ */
+export function writeTextIfChanged(
+  path: string,
+  text: string,
+  options: WriteIfChangedOptions = {},
+): Result<WriteIfChangedOutcome, IoError> {
+  const read = readFileBounded(path, { maxBytes: options.maxBytes ?? DEFAULT_MAX_BYTES });
+  if (!read.ok) {
+    // `not-found` is the ONLY error that means "absent". Everything else is a
+    // file this call must not overwrite.
+    if (read.error.kind !== "not-found") return fail(read.error);
+  } else if (read.value.text === text) {
+    return ok({ path, unchanged: true, created: false, bytes: read.value.bytes });
+  }
+  const written = writeFileOwned(path, text, options);
+  if (!written.ok) return fail(written.error);
+  return ok({ path, unchanged: false, created: !read.ok, bytes: written.value.bytes });
+}
+
 // ═══════════════════════════════════════════════════════════════════════════
 // COMMAND LINES -- SPLIT, NEVER INTERPRETED
 // ═══════════════════════════════════════════════════════════════════════════
@@ -824,6 +894,34 @@ export interface FetchOutcome {
   readonly body: string;
   readonly truncated: boolean;
   readonly bytes: number;
+  /**
+   * Response headers, lower-cased names, as a plain object.
+   *
+   * Present because a conditional-request cache cannot be built without
+   * `etag` / `last-modified`, and a caller forced back to bare `fetch` to read
+   * one header loses the cap, the deadline and the scheme check along with it.
+   * Copied out rather than handed over live: the `Response` is gone by the time
+   * this returns, and a header bag that can be mutated by a caller is a
+   * different object from the one that arrived.
+   */
+  readonly headers: Readonly<Record<string, string>>;
+}
+
+/**
+ * Lower-cased header names to values. Repeated names arrive already joined.
+ *
+ * The `toLowerCase()` is REDUNDANT under the Fetch spec, which already
+ * guarantees lower-cased names from `Headers.forEach`, and it is kept anyway as
+ * an explicit statement of this field's contract rather than an inherited one.
+ * Measured: removing it changes no observable behaviour, so no test pins it --
+ * said out loud in `safe-io.test.ts` instead of dressed up as a falsifier.
+ */
+function collectHeaders(res: Response): Readonly<Record<string, string>> {
+  const out: Record<string, string> = {};
+  res.headers.forEach((value, name) => {
+    out[name.toLowerCase()] = value;
+  });
+  return out;
 }
 
 function checkUrl(url: string): IoError | null {
@@ -869,6 +967,7 @@ export async function fetchBounded(url: string, options: FetchOptions = {}): Pro
     if ((options.failOnHttpError ?? true) && !res.ok) {
       return fail(ioError("http-status", `${url} answered HTTP ${String(res.status)}`));
     }
+    const headers = collectHeaders(res);
     const chunks = await drainBounded(res.body, maxBytes);
     if (!chunks.ok) return chunks;
     return ok({
@@ -876,6 +975,7 @@ export async function fetchBounded(url: string, options: FetchOptions = {}): Pro
       body: Buffer.concat(chunks.value.chunks).toString("utf8"),
       truncated: chunks.value.truncated,
       bytes: chunks.value.bytes,
+      headers,
     });
   } catch (e) {
     if ((e as Error | undefined)?.name === "AbortError") {

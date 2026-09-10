@@ -65,6 +65,7 @@ generator that read an EMPTY roster cannot pass.
 | `cross-verify (stage0-independence)`                    | Stage-0 independence ratchet (doors, not file count)                               |
 | `cross-verify (step-output-writers)`                    | Step outputs have writers (a step that cannot succeed)                             |
 | `cross-verify (action-sha-roster)`                      | Third-party actions match the SHA roster (AH007)                                   |
+| `cross-verify (unhashed-dependencies)`                  | Unhashed dependencies are declared and inventoried (AH011)                         |
 | `cross-verify (task-zetaid-resolves)`                   | Task ZetaIds resolve to work-items (AH006)                                         |
 | `cross-verify (credential-role-separation)`             | Workflow credential role separation (one role, one secret)                         |
 | `cross-verify (coauthor-identity-collision)`            | Co-author identity collision (AH005 — plain-username GitHub noreply form)          |
@@ -84,6 +85,8 @@ generator that read an EMPTY roster cannot pass.
 | `cross-verify (bootstrap-application-pin-parity-tests)` | bootstrap/Application pin falsifiers (multi-doc parse + stale acknowledgement)     |
 | `cross-verify (argocd-pin-parity-tests)`                | argocd-pin-parity falsifiers (roster refusal + chart-anchored parse)               |
 | `cross-verify (mise-toolchain-couplings)`               | mise toolchain couplings (rust restatements · zig byte-lock provenance)            |
+| `cross-verify (mise-lock-coverage)`                     | mise lock coverage (config↔lock agreement · locked mode · exemption roster)        |
+| `cross-verify (mise-lock-coverage-tests)`               | mise lock coverage falsifiers (stale pin · dropped platform · stale exemption)     |
 | `cross-verify (flash-entrypoint-parity)`                | zflash host-arm parity (every arm verifies the ISO before writing)                 |
 | `cross-verify (chart-target-revisions)`                 | ArgoCD chart targetRevisions resolve (offline, against the committed snapshot)     |
 | `cross-verify (image-source-provenance)`                | No private-source image dependencies (offline, against the committed provenance)   |
