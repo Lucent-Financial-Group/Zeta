@@ -444,9 +444,12 @@ it is usually treated as; it is the cheap-to-overwrite one, and *"aligns easily 
 level"* read by an adversary says the window is cheap to seize. The resonance framing above and
 this are the same statement at two scales: **what crosses between turns is where both the
 product and the alignment live**, and a fleet with no persistent shared ontology cannot resonate
-*or* detect that it has been redirected. Detail, the raw-vault requirement that keeps a long
-context from being slowly poisoned, and the replay/freshness anchor:
-`docs/ALIGNMENT.md` §"Long-context alignment is the hard one".
+*or* detect that it has been redirected. **Register: this is Aaron's perspective, argued and UNMEASURED**, and it lives here rather than
+in `docs/ALIGNMENT.md` for that reason — that file's every clause carries a measurement
+obligation, and this claim has never been tested. Detail, the raw-vault requirement that keeps
+a long context from being slowly poisoned, the replay/freshness anchor, and the experiment that
+would earn it a metric under the existing `HC-3`:
+`docs/research/2026-09-10-long-context-alignment-is-the-hard-one-perspective-not-measurement-and-the-experiment-that-would-earn-it.md`.
 
 **What this asks for concretely:** treat every escape hatch, coinage, and divergent verb as a
 **damping term** rather than as debt to be paid down; keep the shared seed at the smallest set
