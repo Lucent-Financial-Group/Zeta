@@ -459,10 +459,21 @@ describe("network primitives", () => {
       if (url.pathname === "/big") return new Response("x".repeat(100_000));
       if (url.pathname === "/teapot") return new Response("no", { status: 418 });
       if (url.pathname === "/slow") {
+        // A stream that never enqueues and never closes. NO TIMER: the only
+        // thing that ends this exchange is the CLIENT's own deadline, which is
+        // exactly the property under test. A wall-clock delay on the server
+        // side would make the verdict depend on machine load, which
+        // `hygiene/audit-ambient-time-in-tests.ts` refuses -- rightly, and it
+        // refused an earlier draft of this very handler.
+        //
+        // (That audit matches on raw source and does NOT mask comments, so an
+        // earlier version of this note -- which merely NAMED the sleep call it
+        // was explaining -- was itself reported as a finding. Same defect class
+        // as the lint this PR ships is built to avoid; noted in the PR body.)
         return new Response(
           new ReadableStream({
-            async start() {
-              await Bun.sleep(5_000);
+            start() {
+              // Deliberately silent.
             },
           }),
         );
