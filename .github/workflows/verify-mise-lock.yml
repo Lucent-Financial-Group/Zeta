@@ -210,18 +210,30 @@ jobs:
                   if 'tools.shellcheck."platforms.linux-x64"' not in b]
           p.write_text("\n\n".join(kept))
           PY
+          cp mise.lock /tmp/stripped-mise.lock
           "$MISE_BIN" install --yes shellcheck
           if [ ! -e /tmp/mise-data-selfheal/installs/shellcheck ]; then
             echo "::error title=mise lock::shellcheck did not install; this step no longer measures what it claims."
             exit 1
           fi
-          if git diff --quiet -- mise.lock; then
-            echo "::error title=mise lock::mise did NOT rewrite the lockfile after an unlocked install. That is BETTER than documented -- but .mise.toml and audit-mise-lock-coverage.ts both state that it does, so one of them is now wrong and must be corrected."
+          # COMPARE AGAINST THE STRIPPED SNAPSHOT, never against HEAD. `git diff` measures the
+          # tree against the COMMITTED file, and a successful self-heal restores exactly that —
+          # so a HEAD comparison reports "clean" for the very event this step exists to observe.
+          # The first version of this step made that mistake and reddened this lane; the snapshot
+          # is what makes the assertion measure the writeback rather than its absence.
+          if diff -q /tmp/stripped-mise.lock mise.lock >/dev/null; then
+            echo "::error title=mise lock::mise did NOT refill the missing platform row. That is BETTER than documented -- but .mise.toml and audit-mise-lock-coverage.ts both state that unlocked mise self-heals, so one of them is now wrong and must be corrected."
+            git checkout -- mise.lock
+            exit 1
+          fi
+          if ! git diff --quiet -- mise.lock; then
+            echo "::error title=mise lock::the refilled row does NOT match the committed digest. mise fetched something different from what this repo pinned, which is a supply-chain signal and not a formatting difference."
+            git diff -- mise.lock
             git checkout -- mise.lock
             exit 1
           fi
           git checkout -- mise.lock
-          echo "[verify] self-heal confirmed: unlocked, a missing row is refilled from upstream — which is why the coverage audit exists"
+          echo "[verify] self-heal confirmed: unlocked, a missing row is refilled from upstream — and it came back byte-identical to the committed digest, which is why the coverage audit rather than the install is what catches a hole"
 
       - name: HAPPY PATH — install from the COMMITTED digest and prove it is the one used
         env:
