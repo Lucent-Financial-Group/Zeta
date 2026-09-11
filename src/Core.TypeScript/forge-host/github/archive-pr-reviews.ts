@@ -57,6 +57,7 @@ import {
   writeShard,
   type ManifestEntry,
 } from "./pr-manifest-shards.ts";
+import { bucketFor } from "./pr-archive-paths.ts";
 import { isArchiveEligible } from "./archive-eligibility.ts";
 
 /**
@@ -853,7 +854,15 @@ export interface WriteArchiveResult {
 export function writeArchive(archive: PRReviewArchive, outputDir: string): WriteArchiveResult {
   const slug = slugify(archive.metadata.title);
   const filename = `PR-${archive.metadata.number}-${slug}.md`;
-  const path = resolve(outputDir, filename);
+  // DATED BUCKET, NOT THE FLAT ROOT (081M28KF7P5087G0R00046KB5M). `outputDir` used to be
+  // the whole answer and the directory reached 14,378 files. The bucket is derived from
+  // the PR's own `merged_at` — never from the wall clock — so a backfill of an old PR
+  // lands beside its neighbours instead of on the day the backfill happened to run, and a
+  // re-run is a byte-identical no-op rather than a move. See `pr-archive-paths.ts` for the
+  // measured fan-out that picked daily over monthly, and for why an undated record gets a
+  // named bucket rather than a guessed date.
+  const decision = bucketFor(archive.metadata.mergedAt);
+  const path = resolve(outputDir, decision.bucket, filename);
   const rendered = renderArchive(archive);
   try {
     mkdirSync(dirname(path), { recursive: true });
@@ -924,7 +933,8 @@ export const DEFAULT_OUTPUT_DIR = "docs/history/pr-reviews";
 export const WRITE_TARGETS: readonly string[] = [
   DEFAULT_OUTPUT_DIR,
   DEFAULT_SHARD_ROOT_RELATIVE,
-  DEFAULT_MANIFEST_RELATIVE,
+  // The manifest is NOT here any more: this tool no longer writes it, and a
+  // workflow that staged it would stage a path that never changes.
 ];
 
 export function readGitHeadSha(repoRoot: string): string {
@@ -1304,7 +1314,6 @@ export function main(argv: string[]): number {
   const args = parseArgs(argv);
   const repoRoot = resolve(args.repoRoot);
   const outputDirAbs = resolve(repoRoot, args.outputDir);
-  const manifestPathAbs = resolve(repoRoot, args.manifestPath);
   const shardRootAbs = resolve(repoRoot, args.shardRoot);
 
   let numbers: number[];
@@ -1344,14 +1353,27 @@ export function main(argv: string[]): number {
     // concurrent archive runs can never touch the same bytes (§2) and a re-run is an
     // upsert rather than a duplicate (§12).
     const shardResult = writeShard(entry, shardRootAbs);
-    // The manifest stays a derived index at its historical path/schema so every existing
-    // reader keeps working; `derive-pr-manifest.ts` can reproduce it from the shards.
-    const manifestResult = updateManifest(entry, manifestPathAbs);
+    // THE MANIFEST IS NO LONGER WRITTEN HERE, and the file is gone from the tree.
+    //
+    // It was always a DERIVED index over the shard ledger -- `derive-pr-manifest.ts` says so
+    // in its own first line -- kept current by a cadence lane and drift-gated so that
+    // regenerating had to reproduce the checked-in bytes.
+    //
+    // That lane was disabled on 2026-08-29, and the index then decayed exactly as an ungated
+    // derived file does. MEASURED before deleting it: all 13,592 manifest records are present
+    // in the shard store (ZERO missing), 13,475 match field-for-field, and the 117 that differ
+    // are WRONG IN THE MANIFEST -- they carry the repo HEAD at write time instead of the PR's
+    // own merge commit. PR #16014's manifest line said `e7b4cba597` (which is #16030's merge);
+    // the shard says `c3f9b017a9`, and the forge agrees with the shard.
+    //
+    // So the file was not a second copy of the truth, it was a stale one, and writing it on
+    // every archive re-created that hazard on each run. `derive-pr-manifest.ts` is KEPT: the
+    // view remains reproducible from the ledger on demand, which is what makes deleting the
+    // committed copy lossless rather than merely tidy.
     process.stdout.write(
       `wrote ${writeResult.path} ` +
         `(archive=${writeResult.changed ? "changed" : "noop"}, ` +
         `shard=${shardResult.classification} @ ${relative(repoRoot, shardResult.path)}, ` +
-        `manifest=${manifestResult.classification}, ` +
         `threads=${archive.outcome.totalThreads}, ` +
         `resolved=${archive.outcome.resolvedThreads}, ` +
         `unresolved=${archive.outcome.unresolvedThreads}, ` +
