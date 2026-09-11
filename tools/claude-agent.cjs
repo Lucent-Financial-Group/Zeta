@@ -190,6 +190,19 @@ function descendantsOf(rootPid, seen) {
 function sweepLeftovers(win, rootPid, seen, startedAt) {
   if (rootPid === undefined) return;
   if (!win) {
+    // WHAT THIS REACHES, AND WHAT IT DOES NOT. The child is spawned `detached` on POSIX, so
+    // it leads its own process group and `rootPid` IS that group. Process-group membership is
+    // INHERITED and SURVIVES REPARENTING - measured 2026-09-11: a grandchild whose parent has
+    // already exited still reports the parent's pgid, and this kill reaps it. That is the
+    // measured AIAGENT-1661 case (QA servers outliving their session).
+    //
+    // It does NOT reach a descendant that called `setsid()` itself (Node's `detached: true`):
+    // that process leaves the group, `kill(-rootPid)` returns ESRCH, and it survives. No POSIX
+    // group or session kill can reach it, because it is deliberately in neither. Catching that
+    // class needs a subreaper (`PR_SET_CHILD_SUBREAPER`, Linux-only, not reachable from Node)
+    // or a cgroup - or the sampling the Windows branch below does, which is why that branch
+    // exists at all. Stated rather than implied: a process that opts out of the group is out
+    // of this sweep's reach, and this function does not pretend otherwise.
     try {
       process.kill(-rootPid, "SIGKILL");
     } catch {
