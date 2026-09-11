@@ -242,9 +242,23 @@ function labelOf(spec: CheckSpec): string {
   return `${spec.gateJob} [${base}]`;
 }
 
+/**
+ * Is this program on PATH?
+ *
+ * `Bun.which` RESOLVES rather than spawns, which is what makes this correct
+ * rather than merely quieter. The first draft ran `spawnSync("command", ["-v",
+ * bin], { shell: true })` and `lint-hand-rolled-io` refused it: "`shell: true`
+ * turns an argument vector back into a shell string, discarding the one
+ * property that made the vector safe."
+ *
+ * And the obvious remedy does not apply here — `command` is a SHELL BUILTIN, so
+ * there is no argv vector to switch to; the shell was load-bearing for that
+ * spelling. Asking the runtime to resolve the name removes the process
+ * entirely, which is strictly better than either: no shell, no spawn, no argv,
+ * and nothing for a name to escape into.
+ */
 function toolExists(bin: string): boolean {
-  const r = spawnSync("command", ["-v", bin], { shell: true, encoding: "utf-8" });
-  return r.status === 0 && String(r.stdout ?? "").trim().length > 0;
+  return Bun.which(bin) !== null;
 }
 
 export function relevant(spec: CheckSpec, touched: Readonly<Record<Domain, boolean>>): boolean {
