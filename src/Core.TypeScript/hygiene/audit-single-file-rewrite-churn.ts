@@ -431,7 +431,7 @@
 // Exit 0 = every register row is well-formed and inside its ceiling. Exit 1 = one is not.
 
 import { execFileSync } from "node:child_process";
-import { existsSync, readFileSync } from "node:fs";
+import { readFileSync } from "node:fs";
 import { join } from "node:path";
 
 import { stringCompare } from "../collation/collation";
@@ -657,10 +657,20 @@ export function validateRegister(parsed: unknown): RegisterRow[] {
 
 export function loadRegister(root: string): RegisterRow[] {
   const p = join(root, REGISTER_PATH);
-  if (!existsSync(p)) {
-    throw new Error(`${REGISTER_PATH} is missing -- this audit refuses to pass with no register to check against`);
+  // READ, THEN INTERPRET ENOENT. `existsSync` gating `readFileSync` leaves a
+  // window the answer is already stale in, and the read reports absence itself --
+  // the refusal below is identical, one syscall earlier. An audit that lectures
+  // other files about check-then-use had better not open with one.
+  let text: string;
+  try {
+    text = readFileSync(p, "utf8");
+  } catch (err) {
+    if ((err as NodeJS.ErrnoException).code === "ENOENT") {
+      throw new Error(`${REGISTER_PATH} is missing -- this audit refuses to pass with no register to check against`);
+    }
+    throw err;
   }
-  return validateRegister(JSON.parse(readFileSync(p, "utf8")) as unknown);
+  return validateRegister(JSON.parse(text) as unknown);
 }
 
 // -- the history walk -------------------------------------------------------------------
