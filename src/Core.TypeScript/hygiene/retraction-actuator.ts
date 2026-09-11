@@ -58,7 +58,7 @@
 // bookkeeping commit (Riven-2: recipe verbatim).
 
 import { execFileSync } from "node:child_process";
-import { existsSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+import { readFileSync, rmSync, writeFileSync } from "node:fs";
 
 import { openMergePR } from "../agent-heartbeats/merge-heartbeats-to-main.ts";
 import { isValidLane, stagingRef } from "../forge-host/github/flush-via-staging.ts";
@@ -278,8 +278,21 @@ const EPISODES_PATH = "docs/drift-events/retraction-episodes.json";
  * red. The default keeps every existing caller unchanged.
  */
 export function readEpisodes(episodesPath: string = EPISODES_PATH): EpisodeFile {
-  if (!existsSync(episodesPath)) return {};
-  const parsed = JSON.parse(readFileSync(episodesPath, "utf8")) as EpisodeFile;
+  // READ, THEN INTERPRET ENOENT -- never `existsSync` then read. The pair was
+  // grandfathered here (a module constant, unparameterised); making the path a
+  // parameter re-presented it to `lint-check-then-use-file-races`, which is
+  // right to refuse it: between the check and the read the path can be created,
+  // deleted or replaced, so the boolean is stale before it is used. One syscall
+  // gives one answer, and the answer is more precise -- ENOENT distinguishes
+  // "no ledger yet" from a permission failure, which the boolean folded together.
+  let text: string;
+  try {
+    text = readFileSync(episodesPath, "utf8");
+  } catch (e) {
+    if ((e as NodeJS.ErrnoException).code === "ENOENT") return {}; // no ledger yet is an empty ledger
+    throw e; // a permission or I/O failure is NOT an empty ledger
+  }
+  const parsed = JSON.parse(text) as EpisodeFile;
   const checked: Record<string, EpisodeRecord> = {};
   for (const [episodeId, rec] of Object.entries(parsed)) {
     if (rec.pushedSha === undefined) {
