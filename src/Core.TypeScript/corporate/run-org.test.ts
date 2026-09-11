@@ -20,6 +20,24 @@ import { Severity } from "./intake";
 import { readEvents } from "./org-store";
 import { basePolicy } from "./org-policy";
 
+/**
+ * A child that simply STAYS ALIVE, with no wall-clock in it.
+ *
+ * These tests assert on a live process's EXISTENCE — who holds the run lock, that a
+ * second run is refused — and never wait for it to finish. The child used to be
+ * a one-minute timer, which reads to `audit-ambient-time-in-tests.ts` as a
+ * 60-second wall-clock dependency and failed the gate. It was not one: nothing awaited
+ * that timer. (Stated without writing the call out: this guard greps TEXT, so a comment
+ * quoting the pattern is itself a finding — which is how this comment first failed it.)
+ *
+ * A listening socket is a real libuv handle, so the event loop stays open for exactly
+ * as long as the parent lets it, and there is no duration anywhere to be load-sensitive
+ * about. Loopback so no local firewall has an opinion; port 0 so nothing collides.
+ * Fixing the idiom rather than allowlisting it: an allowlist row would have recorded a
+ * wall-clock dependency that does not exist.
+ */
+const KEEP_ALIVE = "require('net').createServer().listen(0, '127.0.0.1')";
+
 /** Run `main`, capturing what it printed. */
 async function capture(argv: readonly string[]): Promise<{ code: number; out: string }> {
   const lines: string[] = [];
@@ -993,7 +1011,7 @@ describe("ONE RUN AT A TIME ON A STORE", () => {
   test("a run over a store another living run holds is refused before it touches anything", async () => {
     const { spawn } = await import("node:child_process");
     const store = mkdtempSync(join(tmpdir(), "run-org-lock-"));
-    const other = spawn(process.execPath, ["-e", "setTimeout(() => {}, 60000)"], { stdio: "ignore" });
+    const other = spawn(process.execPath, ["-e", KEEP_ALIVE], { stdio: "ignore" });
     try {
       writeFileSync(join(store, "run.lock"), JSON.stringify({ pid: other.pid, startedAt: "earlier" }));
       const r = await capture(["--store", store]);

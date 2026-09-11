@@ -16,6 +16,24 @@ import { validateRunProfile, validateRunProfiles, type RunProfile } from "./run-
 import type { OrgEvent } from "./org-event";
 import type { OrgRecord } from "./org-registry";
 
+/**
+ * A child that simply STAYS ALIVE, with no wall-clock in it.
+ *
+ * These tests assert on a live process's EXISTENCE — who holds the run lock, that a
+ * second run is refused — and never wait for it to finish. The child used to be
+ * a one-minute timer, which reads to `audit-ambient-time-in-tests.ts` as a
+ * 60-second wall-clock dependency and failed the gate. It was not one: nothing awaited
+ * that timer. (Stated without writing the call out: this guard greps TEXT, so a comment
+ * quoting the pattern is itself a finding — which is how this comment first failed it.)
+ *
+ * A listening socket is a real libuv handle, so the event loop stays open for exactly
+ * as long as the parent lets it, and there is no duration anywhere to be load-sensitive
+ * about. Loopback so no local firewall has an opinion; port 0 so nothing collides.
+ * Fixing the idiom rather than allowlisting it: an allowlist row would have recorded a
+ * wall-clock dependency that does not exist.
+ */
+const KEEP_ALIVE = "require('net').createServer().listen(0, '127.0.0.1')";
+
 let seq = 0;
 const ev = (fact: unknown, atMs = ++seq): OrgEvent =>
   ({ id: `e${String(seq)}`, kind: "change_projected", subjectId: "task-40", decision: "", atMs, evidenceRefs: [], supervisorChain: [], fact }) as unknown as OrgEvent;
@@ -212,7 +230,7 @@ describe("A RUN IS STARTED ONLY WHEN THE STORE IS FREE, AND WHAT IT WAS STARTED 
 
   test("ONE RUN AT A TIME: a store another living process holds is left alone - including a run a person started", async () => {
     const store = mkdtempSync(join(tmpdir(), "watch-lock-"));
-    const other = spawn(process.execPath, ["-e", "setTimeout(() => {}, 60000)"], { stdio: "ignore" });
+    const other = spawn(process.execPath, ["-e", KEEP_ALIVE], { stdio: "ignore" });
     try {
       writeFileSync(join(store, "run.lock"), JSON.stringify({ pid: other.pid, startedAt: "t" }));
       expect(lockHolder(store)?.pid).toBe(other.pid);
