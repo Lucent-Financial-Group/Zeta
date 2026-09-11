@@ -185,7 +185,7 @@
     "tip": "bounded",
     "tipBoundedBy": "FROZEN 2026-04-30. Per-tick shards under docs/hygiene-history/ticks/YYYY/MM/DD/HHMMZ.md took over the write surface on 2026-04-29 and nothing has appended since; the file's own header now says so.",
     "history": "bounded",
-    "historyBoundedBy": "The writer stopped. 86 versions on HEAD's history and none since 2026-06-21; ticks/README.md's cadenced collator -- whose step 4 was literally 'Append to docs/hygiene-history/loop-tick-history.md' -- was removed in the same change that added this row, so the documented path back to rewriting it no longer exists.",
+    "historyBoundedBy": "The writer stopped. 87 versions on HEAD's history and no tick row appended since 2026-06-21; ticks/README.md's cadenced collator -- whose step 4 was literally 'Append to docs/hygiene-history/loop-tick-history.md' -- was removed in PR #17282, so the documented path back to rewriting it no longer exists.",
     "rate": null,
     "costPerUnit": null,
     "breaksFirst": null,
@@ -193,8 +193,8 @@
     "fidelityNeeded": null,
     "satelliteChain": null,
     "demotionPlan": null,
-    "ceiling": 86,
+    "ceiling": 87,
     "liftsWhen": "none -- there is no exit to wait for, because the row is already in its end state. It stays as a REGRESSION PIN: if this count ever moves, something started writing a frozen file again, and that is exactly the failure the ratchet exists to catch.",
-    "reason": "The register's worked example of a BOUNDED row, and of what success looks like. Kept rather than deleted because containment was measured (2026-09-11) and refuted the assumption that motivated deleting it: 191 of its 212 rows have NO shard at all and ZERO rows have a shard at the same UTC minute, so 2026-04-21 .. 2026-04-27 exists only here. Its churn was the defect and its content is not -- which is why a row can be bounded, kept, and 648 KB at tip all at once without contradiction."
+    "reason": "The register's worked example of a BOUNDED row, and of what success looks like. Kept rather than deleted because containment was measured (2026-09-11) and refuted the assumption that motivated deleting it: 191 of its 212 rows have NO shard at all and ZERO rows have a shard at the same UTC minute, so 2026-04-21 .. 2026-04-27 exists only here. Its churn was the defect and its content is not -- which is why a row can be bounded, kept, and 648 KB at tip all at once without contradiction. CEILING NOTE, and it is the ratchet's own first worked example: this row was drafted at 86 and is pinned at 87 because PR #17282 wrote the FROZEN header into the file, which is a real write and moved the count. The check went red on the draft for exactly the right reason -- a file everyone had agreed was frozen got written -- and the honest resolution was to re-measure and re-pin with the cause named, not to widen the ceiling until it stopped complaining."
   }
 ]
