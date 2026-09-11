@@ -5,7 +5,7 @@
 // final line (crash mid-append) is tolerated without losing the rest.
 
 import { afterEach, beforeEach, describe, expect, test } from "bun:test";
-import { appendFileSync, existsSync, mkdtempSync, readFileSync, rmSync } from "node:fs";
+import { appendFileSync, existsSync, mkdtempSync, readdirSync, readFileSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { FileRoomStore } from "./data-file.ts";
@@ -79,7 +79,11 @@ describe("FileRoomStore durability", () => {
       /refusing actor id/,
     );
     await expect(s.append("acme/clan", { id: "" }, { type: "message", text: "x" })).rejects.toThrow(/refusing actor id/);
-    expect(existsSync(join(dir, "acme~clan.jsonl"))).toBe(false); // nothing was written by either refusal
+    // `readdirSync(dir)`, not `existsSync(file)`: the directory listing says
+    // "no file was created under ANY name", which is the stronger claim, and it
+    // does not pair an existence CHECK with the read below on the same path
+    // (the repo's own check-then-use lint, and the CWE-367 class it enforces).
+    expect(readdirSync(dir)).toEqual([]); // nothing was written by either refusal
 
     // grant() reaches the log through a second door, so it gets its own guard.
     await s.append("acme/clan", { id: "otto" }, { type: "authorization-request", gated: "budget", action: { summary: "x" } });
