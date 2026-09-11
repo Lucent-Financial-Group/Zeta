@@ -1691,6 +1691,28 @@ jobs:
         # report success the way `lint:markdown` did (#10712).
         run: bun run hygiene:no-graphql-transport-in-scripts
 
+      - name: Unbounded-growth register (bounded vs unbounded per file and per folder)
+        id: unbounded_growth_register
+        # Aaron 2026-09-11: "basically we are trying to track bounded vs unbounded growth per
+        # file / folder, and for anything that is unbounded forever that's a huge smell ...
+        # anything that is unbounded history, we need a scaling and cost model, or else it's
+        # unfounded and will fall over eventually."
+        #
+        # Walks HEAD's history once (no network, no refs beyond the checked-out tip, so the
+        # verdict is a function of the repository) and checks `registry/unbounded-growth-
+        # register.json`. It REPORTS hot paths, unfounded rows, retired rows, and the
+        # bounded-at-tip/unbounded-in-history class; it FAILS only when a registered path
+        # crosses the ceiling somebody consciously set for it.
+        #
+        # DRIFT TIER, deliberately and for a specific reason: `memory/MEMORY.md` is a live
+        # surface that would trip the ratchet during an ordinary day's work, and a check that
+        # blocks main for doing the expected thing gets disabled rather than obeyed.
+        #
+        # NOT a disapproval list. The register is an OPTIMIZATION RECORD -- in a perfect world
+        # you keep every version of everything, and this is where we wrote down where we chose
+        # to pay instead.
+        run: bun run hygiene:unbounded-growth-register
+
       - name: No clean SARIF for a skipped analysis (security alerts stay honest)
         id: no_clean_sarif
         # A zero-result SARIF is read by GitHub as "this category was analysed
