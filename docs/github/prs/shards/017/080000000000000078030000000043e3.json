@@ -1,0 +1,12 @@
+{
+  "pr_number": 17379,
+  "archive_path": "docs/history/pr-reviews/2026/09/12/PR-17379-fix-corporate-the-follow-up-loop-converges-parallel-sessions-a-proof-spent-once-.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-12T20:24:49.299Z",
+  "schema_version": "v1",
+  "commit_sha": "3e4144578fdd7e156efbe12c4aff2c18a8d906c9",
+  "title": "fix(corporate): the follow-up loop converges - parallel sessions, a proof spent once, and a limit that is not a failure",
+  "state": "MERGED",
+  "merged_at": "2026-09-12T20:24:01Z",
+  "head_ref": "org-cost-and-model"
+}
