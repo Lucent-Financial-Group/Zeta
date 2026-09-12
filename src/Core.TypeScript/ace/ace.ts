@@ -17,7 +17,7 @@
 //
 // Future commands (not yet implemented): remove, inspect.
 
-import { chmodSync, existsSync, mkdirSync, readdirSync, readFileSync, writeFileSync } from "node:fs";
+import { chmodSync, existsSync, mkdirSync, readdirSync, readFileSync, writeFileSync, writeSync } from "node:fs";
 import { fetchBounded, readFileBounded, writeFileOwned } from "../io/safe-io.ts";
 import { createPublicKey, createPrivateKey } from "node:crypto";
 import {
@@ -50,6 +50,20 @@ import {
   buildLeafLockfile,
 } from "./lockfile.ts";
 import { solve } from "./solver.ts";
+import {
+  buildReport,
+  collectRepoPins,
+  defaultStalenessPolicy,
+  exitCodeFor,
+  loadSnapshots,
+  NETWORK_RESOLVERS,
+  refreshEcosystem,
+  renderJson,
+  renderReport,
+  summaryLine,
+  type ExitPolicy,
+} from "./outdated.ts";
+import { ECOSYSTEMS, type Ecosystem } from "./outdated-inventory.ts";
 
 function isValidDepEdge(e: unknown): boolean {
   if (typeof e !== "object" || e === null) return false;
@@ -76,6 +90,7 @@ import {
   type AppDependencyGraphSpec,
   type UpgradeScheduleSpec,
 } from "./deps.ts";
+import { aceErr } from "./stderr.ts";
 
 /**
  * 64 MiB for one package document or registry index. `ace`'s own manifests are
@@ -235,6 +250,18 @@ interface DepsArgs {
   readonly schedulePath?: string;
 }
 
+interface OutdatedArgs {
+  readonly command: "outdated";
+  readonly json: boolean;
+  readonly showAll: boolean;
+  /** The explicit, separate network act. Never taken by the read path. */
+  readonly refresh: boolean;
+  /** Restrict both reading and refreshing to these ecosystems. Empty means all. */
+  readonly only: readonly Ecosystem[];
+  readonly failOnUnknown: boolean;
+  readonly maxSnapshotAgeDays: number | null;
+}
+
 type ParsedArgs =
   | ListArgs
   | HelpArgs
@@ -245,6 +272,7 @@ type ParsedArgs =
   | TrustArgs
   | RegistryArgs
   | UpdateArgs
+  | OutdatedArgs
   | DepsArgs;
 
 interface ArgError {
@@ -586,6 +614,35 @@ export function parseArgs(argv: readonly string[]): ParsedArgs | ArgError {
     return { command: "list", storePath, json };
   }
 
+  if (command === "outdated") {
+    let json = false;
+    let showAll = false;
+    let refresh = false;
+    let failOnUnknown = false;
+    let maxSnapshotAgeDays: number | null = null;
+    const only: Ecosystem[] = [];
+    for (let i = 1; i < argv.length; i++) {
+      const a = argv[i];
+      if (a === "--json") json = true;
+      else if (a === "--all") showAll = true;
+      else if (a === "--refresh") refresh = true;
+      else if (a === "--fail-on-unknown") failOnUnknown = true;
+      else if (a === "--max-snapshot-age-days") {
+        const v = argv[++i];
+        const n = v === undefined ? Number.NaN : Number.parseInt(v, 10);
+        if (!Number.isInteger(n) || n < 0) return { error: "--max-snapshot-age-days requires a non-negative integer" };
+        maxSnapshotAgeDays = n;
+      } else if (a === "--ecosystem") {
+        const v = argv[++i];
+        if (v === undefined) return { error: `--ecosystem requires one of: ${ECOSYSTEMS.join(", ")}` };
+        const match = ECOSYSTEMS.find((e) => e === v);
+        if (match === undefined) return { error: `unknown ecosystem '${v}' -- known: ${ECOSYSTEMS.join(", ")}` };
+        only.push(match);
+      } else return { error: `Unknown option for outdated: ${String(a)}` };
+    }
+    return { command: "outdated", json, showAll, refresh, only, failOnUnknown, maxSnapshotAgeDays };
+  }
+
   if (command === "deps") {
     const sub = argv[1];
     if (sub !== "validate" && sub !== "resolve" && sub !== "query" && sub !== "evaluate-schedule") {
@@ -723,6 +780,12 @@ Usage:
                                                    Query temporal graph state and run rollback safety audits
   ace deps evaluate-schedule --graph <path> --schedule <path> --out-dir <dir> [--as-of <date>]
                                                    Evaluate scheduled upgrades and generate migration runbooks
+  ace outdated [--json] [--all] [--ecosystem <e>] [--fail-on-unknown] [--max-snapshot-age-days <n>]
+                                                   Report pinned vs known-latest versions from the COMMITTED snapshot. No network.
+                                                   exit 0 = ran, nothing behind; 1 = ran, something behind; 2 = could not run
+                                                   A dependency with no known latest reports 'unknown', never 'up to date'
+  ace outdated --refresh [--ecosystem <e>]       Re-observe known-latest from the registries and rewrite registry/latest-known/<e>.json
+                                                   THE ONLY networked path. Never run implicitly by the report above.
   ace help                                       Show this help
 
 Future commands (not yet implemented):
@@ -784,7 +847,7 @@ async function checkLockedMarks(
         const q = quarantined[pin.name]![pin.version]!;
         return `${pin.name}@${pin.version} is quarantined${q.reason ? ": " + q.reason : ""} (use --allow-quarantined)`;
       }
-      console.error(`ace: WARNING: installing quarantined ${pin.name}@${pin.version} (--allow-quarantined).`);
+      aceErr(`ace: WARNING: installing quarantined ${pin.name}@${pin.version} (--allow-quarantined).`);
     }
   }
   return null;
@@ -794,7 +857,7 @@ export async function main(argv: readonly string[]): Promise<number> {
   const parsed = parseArgs(argv);
 
   if ("error" in parsed) {
-    console.error(`ace: ${parsed.error}`);
+    aceErr(`ace: ${parsed.error}`);
     return 64;
   }
 
@@ -815,7 +878,7 @@ export async function main(argv: readonly string[]): Promise<number> {
       writeFileSync(keyPath, kp.privatePem, { mode: 0o600, flag: "wx" });
     } catch (e) {
       if ((e as NodeJS.ErrnoException).code === "EEXIST") {
-        console.error(
+        aceErr(
           `ace: keygen refused: ${keyPath} already exists — remove it or choose a different --out (refusing to overwrite a private key)`,
         );
         return 1;
@@ -841,12 +904,12 @@ export async function main(argv: readonly string[]): Promise<number> {
     try {
       pkg = JSON.parse(readFileSync(parsed.pkgPath, "utf8")) as AcePackage;
     } catch {
-      console.error("ace: package is not valid JSON");
+      aceErr("ace: package is not valid JSON");
       return 65;
     }
     const recomputed = contentHash(new TextEncoder().encode(JSON.stringify(pkg.files)));
     if (recomputed !== pkg.manifest.content_hash) {
-      console.error(
+      aceErr(
         `ace: sign refused: package content changed since its content_hash was computed — rebuild the package, then sign`,
       );
       return 1;
@@ -855,7 +918,7 @@ export async function main(argv: readonly string[]): Promise<number> {
     try {
       priv = readFileSync(parsed.keyPath, "utf8");
     } catch {
-      console.error(`ace: cannot read key ${parsed.keyPath}`);
+      aceErr(`ace: cannot read key ${parsed.keyPath}`);
       return 1;
     }
     const signature = signManifest(pkg.manifest, priv);
@@ -886,7 +949,7 @@ export async function main(argv: readonly string[]): Promise<number> {
     }
     // add: arg is a .pub file path OR a raw base64 SPKI
     if (!parsed.arg) {
-      console.error("ace: trust add requires a <pubkey-file-or-b64>");
+      aceErr("ace: trust add requires a <pubkey-file-or-b64>");
       return 64;
     }
     let publicB64: string;
@@ -909,7 +972,7 @@ export async function main(argv: readonly string[]): Promise<number> {
       if (der.length < 32) throw new Error("too short");
       const pub = createPublicKey({ key: der, format: "der", type: "spki" });
       if (pub.asymmetricKeyType !== "ed25519") {
-        console.error(
+        aceErr(
           `ace: trust add: not an Ed25519 public key (got ${pub.asymmetricKeyType ?? "unknown"}) — only Ed25519 keys are accepted`,
         );
         return 65;
@@ -921,7 +984,7 @@ export async function main(argv: readonly string[]): Promise<number> {
       // key_id no signature ever presents -> that publisher's packages never authenticate.
       canonicalB64 = (pub.export({ type: "spki", format: "der" }) as Buffer).toString("base64");
     } catch {
-      console.error(
+      aceErr(
         "ace: trust add: invalid Ed25519 public key (not a valid SPKI DER) -- check the .pub file or b64 string",
       );
       return 65;
@@ -980,18 +1043,18 @@ export async function main(argv: readonly string[]): Promise<number> {
       try {
         pem = readFileSync(parsed.pubKeyPath!, "utf8");
       } catch (e) {
-        console.error(`ace: publish: cannot read key ${parsed.pubKeyPath}: ${(e as Error).message}`);
+        aceErr(`ace: publish: cannot read key ${parsed.pubKeyPath}: ${(e as Error).message}`);
         return 1;
       }
       // P2-A: signIndex uses crypto.sign(null, ...) which only supports Ed25519/Ed448 — an RSA/EC key
       // THROWS rather than signing. Pre-check here to fail fast with a clear error before building the index.
       try {
         if (createPrivateKey(pem).asymmetricKeyType !== "ed25519") {
-          console.error("ace: publish refused: --key must be an ed25519 private key");
+          aceErr("ace: publish refused: --key must be an ed25519 private key");
           return 1;
         }
       } catch (e) {
-        console.error(`ace: publish refused: invalid private key: ${(e as Error).message}`);
+        aceErr(`ace: publish refused: invalid private key: ${(e as Error).message}`);
         return 1;
       }
       const dirs = parsed
@@ -999,7 +1062,7 @@ export async function main(argv: readonly string[]): Promise<number> {
         .map((s) => s.trim())
         .filter((s) => s.length > 0);
       if (dirs.length === 0) {
-        console.error("ace: publish refused: --packages requires at least one directory");
+        aceErr("ace: publish refused: --packages requires at least one directory");
         return 1;
       }
       const packages: { pkg: AcePackage; url?: string }[] = [];
@@ -1008,7 +1071,7 @@ export async function main(argv: readonly string[]): Promise<number> {
         try {
           entries = readdirSync(d).filter((f) => f.endsWith(".json"));
         } catch (e) {
-          console.error(`ace: publish: cannot read dir ${d}: ${(e as Error).message}`);
+          aceErr(`ace: publish: cannot read dir ${d}: ${(e as Error).message}`);
           return 1;
         }
         for (const f of entries) {
@@ -1017,14 +1080,14 @@ export async function main(argv: readonly string[]): Promise<number> {
           try {
             raw = readFileSync(full, "utf8");
           } catch {
-            console.error(`ace: publish: skip unreadable ${f}`);
+            aceErr(`ace: publish: skip unreadable ${f}`);
             continue;
           }
           let obj: unknown;
           try {
             obj = JSON.parse(raw);
           } catch {
-            console.error(`ace: publish: skip non-JSON ${f}`);
+            aceErr(`ace: publish: skip non-JSON ${f}`);
             continue;
           }
           if (
@@ -1037,18 +1100,18 @@ export async function main(argv: readonly string[]): Promise<number> {
             typeof (obj as AcePackage).files !== "object" ||
             (obj as AcePackage).files === null
           ) {
-            console.error(`ace: publish: skip non-package ${f}`);
+            aceErr(`ace: publish: skip non-package ${f}`);
             continue;
           }
           // P2-C: a package whose content_hash is missing or does not match its files would be indexed
           // but fail the consumer's content-hash gate. Skip + warn (consistent with the non-package skip).
           if (typeof (obj as AcePackage).manifest.content_hash !== "string") {
-            console.error(`ace: publish: skip ${f} — missing manifest.content_hash`);
+            aceErr(`ace: publish: skip ${f} — missing manifest.content_hash`);
             continue;
           }
           const fh = contentHash(new TextEncoder().encode(JSON.stringify((obj as AcePackage).files)));
           if (fh !== (obj as AcePackage).manifest.content_hash) {
-            console.error(`ace: publish: skip ${f} — content_hash does not match files`);
+            aceErr(`ace: publish: skip ${f} — content_hash does not match files`);
             continue;
           }
           // Optional top-level url override (publish-only, outside the signed manifest). When present
@@ -1058,13 +1121,13 @@ export async function main(argv: readonly string[]): Promise<number> {
           const rawUrl = (obj as { url?: unknown }).url;
           if (rawUrl !== undefined) {
             if (typeof rawUrl !== "string" || rawUrl.length === 0) {
-              console.error(`ace: publish: skip ${f} — url must be a non-empty string`);
+              aceErr(`ace: publish: skip ${f} — url must be a non-empty string`);
               continue;
             }
             try {
               new URL(rawUrl);
             } catch {
-              console.error(`ace: publish: skip ${f} — url is not an absolute URL: ${rawUrl}`);
+              aceErr(`ace: publish: skip ${f} — url is not an absolute URL: ${rawUrl}`);
               continue;
             }
             urlOverride = rawUrl;
@@ -1073,7 +1136,7 @@ export async function main(argv: readonly string[]): Promise<number> {
           if (urlOverride === undefined) {
             const expectedFile = `${(obj as AcePackage).manifest.name}-${(obj as AcePackage).manifest.version}.json`;
             if (f !== expectedFile) {
-              console.error(
+              aceErr(
                 `ace: publish: skip ${f} — filename must be ${expectedFile} to match its derived consumer URL`,
               );
               continue;
@@ -1081,7 +1144,7 @@ export async function main(argv: readonly string[]): Promise<number> {
           }
           const deps = (obj as AcePackage).manifest.dependencies;
           if (deps !== undefined && !Array.isArray(deps)) {
-            console.error(`ace: publish: skip ${f} — manifest.dependencies must be an array`);
+            aceErr(`ace: publish: skip ${f} — manifest.dependencies must be an array`);
             continue;
           }
           // P2: every files value must be a string — installPackage's writeFileSync(dest, contents)
@@ -1089,7 +1152,7 @@ export async function main(argv: readonly string[]): Promise<number> {
           // package. Skip + warn (consistent with the other scan skips).
           const fileVals = Object.values((obj as AcePackage).files as Record<string, unknown>);
           if (fileVals.some((v) => typeof v !== "string")) {
-            console.error(`ace: publish: skip ${f} — every file value must be a string`);
+            aceErr(`ace: publish: skip ${f} — every file value must be a string`);
             continue;
           }
           // P2: package name/version must be URL-safe — the derived consumer URL is
@@ -1098,21 +1161,21 @@ export async function main(argv: readonly string[]): Promise<number> {
           const nm = (obj as AcePackage).manifest.name;
           const ver = (obj as AcePackage).manifest.version;
           if (/[\x00-\x20#?%/\\]/.test(nm) || /[\x00-\x20#?%/\\]/.test(ver)) {
-            console.error(`ace: publish: skip ${f} — name/version has a URL-unsafe character`);
+            aceErr(`ace: publish: skip ${f} — name/version has a URL-unsafe character`);
             continue;
           }
           // P2: dependency edges must be well-formed (matching the consumer's AceDependency shape),
           // else a consumer resolve would break on a self-verified index.
           const depEdges = (obj as AcePackage).manifest.dependencies;
           if (Array.isArray(depEdges) && !depEdges.every(isValidDepEdge)) {
-            console.error(`ace: publish: skip ${f} — malformed dependency edge`);
+            aceErr(`ace: publish: skip ${f} — malformed dependency edge`);
             continue;
           }
           // P2: reuse the consumer's path guard — a package with an unsafe files key (../ or absolute)
           // would index but be rejected/unsafe at install. Skip + warn.
           const unsafePath = validatePackagePaths(obj as AcePackage);
           if (unsafePath !== null) {
-            console.error(`ace: publish: skip ${f} — unsafe file path: ${unsafePath}`);
+            aceErr(`ace: publish: skip ${f} — unsafe file path: ${unsafePath}`);
             continue;
           }
           packages.push(
@@ -1121,7 +1184,7 @@ export async function main(argv: readonly string[]): Promise<number> {
         }
       }
       if (packages.length === 0) {
-        console.error(`ace: publish refused: no valid packages in ${dirs.join(", ")}`);
+        aceErr(`ace: publish refused: no valid packages in ${dirs.join(", ")}`);
         return 1;
       }
       const outPath = parsed.pubOut ?? "index.json";
@@ -1133,13 +1196,13 @@ export async function main(argv: readonly string[]): Promise<number> {
       // answered atomically. See src/Core.TypeScript/io/safe-io.ts.
       const prevRead = readFileBounded(outPath);
       if (!prevRead.ok && prevRead.error.kind !== "not-found") {
-        console.error(`ace: publish refused: cannot read existing ${outPath}: ${prevRead.error.message}`);
+        aceErr(`ace: publish refused: cannot read existing ${outPath}: ${prevRead.error.message}`);
         return 1;
       }
       if (prevRead.ok) {
         const p = parseIndex(prevRead.value.text);
         if ("error" in p) {
-          console.error(
+          aceErr(
             `ace: publish refused: existing ${outPath} is not a valid index (${p.error}) — refusing to reset sequence (would look like a rollback to consumers); remove or fix it`,
           );
           return 1;
@@ -1152,7 +1215,7 @@ export async function main(argv: readonly string[]): Promise<number> {
           new Map([[prevInfo.keyId, { public_key: prevInfo.public_key }]]),
         );
         if (!prevVerify.ok) {
-          console.error(
+          aceErr(
             `ace: publish refused: existing ${outPath} signature does not verify under --key (${prevVerify.reason}) — refusing to auto-bump from an untrusted index; fix or remove it`,
           );
           return 1;
@@ -1163,7 +1226,7 @@ export async function main(argv: readonly string[]): Promise<number> {
       // Anti-rollback guard (defense-in-depth): unreachable while sequence is auto-bumped (+1),
       // but protects the deferred explicit --sequence flag from emitting a non-increasing index.
       if (prev && seq <= prev.sequence) {
-        console.error(`ace: publish refused: sequence ${seq} <= prev ${prev.sequence}`);
+        aceErr(`ace: publish refused: sequence ${seq} <= prev ${prev.sequence}`);
         return 1;
       }
       let serialized: string;
@@ -1178,24 +1241,24 @@ export async function main(argv: readonly string[]): Promise<number> {
           ...(prev?.quarantined ? { quarantined: prev.quarantined } : {}),
         });
         if ("error" in doc) {
-          console.error(`ace: publish refused: ${doc.error}`);
+          aceErr(`ace: publish refused: ${doc.error}`);
           return 1;
         }
         serialized = JSON.stringify(doc, null, 2);
         const reparsed = parseIndex(serialized);
         if ("error" in reparsed) {
-          console.error(`ace: publish refused: self-verify parse failed: ${reparsed.error}`);
+          aceErr(`ace: publish refused: self-verify parse failed: ${reparsed.error}`);
           return 1;
         }
         const info = publicKeyInfoFromPrivatePem(pem);
         const { signature, ...content } = doc;
         const sv = verifyIndexSignature(content, signature, new Map([[info.keyId, { public_key: info.public_key }]]));
         if (!sv.ok) {
-          console.error(`ace: publish refused: self-verify signature failed: ${sv.reason}`);
+          aceErr(`ace: publish refused: self-verify signature failed: ${sv.reason}`);
           return 1;
         }
       } catch (e) {
-        console.error(
+        aceErr(
           `ace: publish refused: signing failed (check --key is a valid Ed25519 PEM): ${(e as Error).message}`,
         );
         return 1;
@@ -1204,7 +1267,7 @@ export async function main(argv: readonly string[]): Promise<number> {
       // caller says otherwise) and a published index is meant to be world-readable.
       const wrote = writeFileOwned(outPath, serialized, { mode: 0o644 });
       if (!wrote.ok) {
-        console.error(`ace: publish failed: cannot write ${outPath}: ${wrote.error.message}`);
+        aceErr(`ace: publish failed: cannot write ${outPath}: ${wrote.error.message}`);
         return 1;
       }
       console.log(`ace: published ${packages.length} package(s) at sequence ${seq} → ${outPath}`);
@@ -1216,23 +1279,23 @@ export async function main(argv: readonly string[]): Promise<number> {
       try {
         pem = readFileSync(parsed.pubKeyPath!, "utf8");
       } catch (e) {
-        console.error(`ace: ${verb}: cannot read key ${parsed.pubKeyPath}: ${(e as Error).message}`);
+        aceErr(`ace: ${verb}: cannot read key ${parsed.pubKeyPath}: ${(e as Error).message}`);
         return 1;
       }
       try {
         if (createPrivateKey(pem).asymmetricKeyType !== "ed25519") {
-          console.error(`ace: ${verb} refused: --key must be an ed25519 private key`);
+          aceErr(`ace: ${verb} refused: --key must be an ed25519 private key`);
           return 1;
         }
       } catch (e) {
-        console.error(`ace: ${verb} refused: invalid private key: ${(e as Error).message}`);
+        aceErr(`ace: ${verb} refused: invalid private key: ${(e as Error).message}`);
         return 1;
       }
       const outPath = parsed.pubOut ?? "index.json";
       // One open, ENOENT interpreted — see the note on the publish path above.
       const prevRead = readFileBounded(outPath);
       if (!prevRead.ok) {
-        console.error(
+        aceErr(
           prevRead.error.kind === "not-found"
             ? `ace: ${verb} refused: ${outPath} does not exist — cannot mark a version in a nonexistent index`
             : `ace: ${verb} refused: cannot read ${outPath}: ${prevRead.error.message}`,
@@ -1241,7 +1304,7 @@ export async function main(argv: readonly string[]): Promise<number> {
       }
       const p = parseIndex(prevRead.value.text);
       if ("error" in p) {
-        console.error(`ace: ${verb} refused: ${outPath} is not a valid index (${p.error}) — no silent reset`);
+        aceErr(`ace: ${verb} refused: ${outPath} is not a valid index (${p.error}) — no silent reset`);
         return 1;
       }
       const prevInfo = publicKeyInfoFromPrivatePem(pem);
@@ -1252,7 +1315,7 @@ export async function main(argv: readonly string[]): Promise<number> {
         new Map([[prevInfo.keyId, { public_key: prevInfo.public_key }]]),
       );
       if (!prevVerify.ok) {
-        console.error(
+        aceErr(
           `ace: ${verb} refused: ${outPath} signature does not verify under --key (${prevVerify.reason}) — not your index`,
         );
         return 1;
@@ -1265,7 +1328,7 @@ export async function main(argv: readonly string[]): Promise<number> {
       else if (verb === "quarantine") next = applyQuarantine(prevContent, name, version, parsed.revReason, at);
       else next = applyUnquarantine(prevContent, name, version, at);
       if ("error" in next) {
-        console.error(`ace: ${verb} refused: ${next.error}`);
+        aceErr(`ace: ${verb} refused: ${next.error}`);
         return 1;
       }
       const seq = p.sequence + 1;
@@ -1277,21 +1340,21 @@ export async function main(argv: readonly string[]): Promise<number> {
         serialized = JSON.stringify(doc, null, 2);
         const reparsed = parseIndex(serialized);
         if ("error" in reparsed) {
-          console.error(`ace: ${verb} refused: self-verify parse failed: ${reparsed.error}`);
+          aceErr(`ace: ${verb} refused: self-verify parse failed: ${reparsed.error}`);
           return 1;
         }
         const sv = verifyIndexSignature(content, sig, new Map([[prevInfo.keyId, { public_key: prevInfo.public_key }]]));
         if (!sv.ok) {
-          console.error(`ace: ${verb} refused: self-verify signature failed: ${sv.reason}`);
+          aceErr(`ace: ${verb} refused: self-verify signature failed: ${sv.reason}`);
           return 1;
         }
       } catch (e) {
-        console.error(`ace: ${verb} refused: signing failed: ${(e as Error).message}`);
+        aceErr(`ace: ${verb} refused: signing failed: ${(e as Error).message}`);
         return 1;
       }
       const wrote = writeFileOwned(outPath, serialized, { mode: 0o644 });
       if (!wrote.ok) {
-        console.error(`ace: ${verb} failed: cannot write ${outPath}: ${wrote.error.message}`);
+        aceErr(`ace: ${verb} failed: cannot write ${outPath}: ${wrote.error.message}`);
         return 1;
       }
       const verbed = verb === "revoke" ? "revoked" : verb === "quarantine" ? "quarantined" : "unquarantined";
@@ -1309,14 +1372,14 @@ export async function main(argv: readonly string[]): Promise<number> {
       try {
         raw = await readPackageDocument(isHttp ? parsed.regUrl! : storedUrl);
       } catch (e) {
-        console.error(`ace: registry add: fetch/read failed: ${(e as Error).message}`);
+        aceErr(`ace: registry add: fetch/read failed: ${(e as Error).message}`);
         return 1;
       }
       let pkg: AcePackage;
       try {
         pkg = JSON.parse(raw) as AcePackage;
       } catch {
-        console.error("ace: registry add: package is not valid JSON");
+        aceErr("ace: registry add: package is not valid JSON");
         return 65;
       }
       // Shape guard before hashing: a parseable-but-malformed package (missing manifest/files)
@@ -1333,18 +1396,18 @@ export async function main(argv: readonly string[]): Promise<number> {
         typeof pm.files !== "object" ||
         pm.files === null
       ) {
-        console.error("ace: registry add: package is not a well-formed AcePackage (missing manifest/files)");
+        aceErr("ace: registry add: package is not a well-formed AcePackage (missing manifest/files)");
         return 65;
       }
       if (pm.manifest.name !== parsed.regName || pm.manifest.version !== parsed.regVersion) {
-        console.error(
+        aceErr(
           `ace: registry add: package identity ${String(pm.manifest.name)}@${String(pm.manifest.version)} != ${parsed.regName}@${parsed.regVersion}`,
         );
         return 65;
       }
       const phr = safePackageHash(pkg);
       if (!phr.ok) {
-        console.error(`ace: registry add: invalid package — ${phr.reason}`);
+        aceErr(`ace: registry add: invalid package — ${phr.reason}`);
         return 65;
       }
       pkgHash = phr.hash;
@@ -1387,14 +1450,14 @@ export async function main(argv: readonly string[]): Promise<number> {
     try {
       raw = await readPackageDocument(parsed.source);
     } catch (e) {
-      console.error(`ace: download/read failed: ${(e as Error).message}`);
+      aceErr(`ace: download/read failed: ${(e as Error).message}`);
       return 1;
     }
     let pkg: AcePackage;
     try {
       pkg = JSON.parse(raw) as AcePackage;
     } catch {
-      console.error("ace: package is not valid JSON");
+      aceErr("ace: package is not valid JSON");
       return 65;
     }
     if (
@@ -1405,31 +1468,31 @@ export async function main(argv: readonly string[]): Promise<number> {
       typeof pkg.files !== "object" ||
       pkg.files === null
     ) {
-      console.error("ace: update refused: not a well-formed AcePackage");
+      aceErr("ace: update refused: not a well-formed AcePackage");
       return 1;
     }
     // Signature gate (same policy as install): hard-refuse a present-but-invalid signature;
     // no-signature is only overridable with --allow-no-signature.
     const v = verifySignature(pkg.manifest, await storage.loadTrustStore(bundledTrustPath(), trustStorePath()));
     if (!v.ok && v.reason !== "no-signature") {
-      console.error(`ace: update refused: ${v.reason}`);
+      aceErr(`ace: update refused: ${v.reason}`);
       return 1;
     }
     if (!v.ok && v.reason === "no-signature" && !parsed.allowNoSignature) {
-      console.error("ace: update refused: unsigned package (use --allow-no-signature)");
+      aceErr("ace: update refused: unsigned package (use --allow-no-signature)");
       return 1;
     }
     // Root content_hash.
     const rootFilesHash = contentHash(new TextEncoder().encode(JSON.stringify(pkg.files)));
     if (rootFilesHash !== pkg.manifest.content_hash) {
-      console.error(`ace: update refused: bad-content-hash in ${pkg.manifest.name} (root)`);
+      aceErr(`ace: update refused: bad-content-hash in ${pkg.manifest.name} (root)`);
       return 1;
     }
     // Root is untrusted: guard a packageHash-throw ONCE before any helper (resolve / buildLockfile /
     // buildLeafLockfile) hashes it, so a malformed root refuses as invalid-package, not ace: fatal:.
     const rootHashCheck = safePackageHash(pkg);
     if (!rootHashCheck.ok) {
-      console.error(`ace: update refused: invalid-package — ${pkg.manifest.name} (root): ${rootHashCheck.reason}`);
+      aceErr(`ace: update refused: invalid-package — ${pkg.manifest.name} (root): ${rootHashCheck.reason}`);
       return 1;
     }
 
@@ -1439,14 +1502,14 @@ export async function main(argv: readonly string[]): Promise<number> {
         trustStore: await storage.loadTrustStore(bundledTrustPath(), trustStorePath()),
         offline: parsed.offline === true,
       });
-      for (const w of warnings) console.error(`ace: ${w}`);
+      for (const w of warnings) aceErr(`ace: ${w}`);
       if (errors.length > 0) {
-        for (const e of errors) console.error(`ace: update refused: ${e}`);
+        for (const e of errors) aceErr(`ace: update refused: ${e}`);
         return 1;
       }
       const solveResult = await solve(pkg, fetchPackage, registry);
       if (!solveResult.ok) {
-        console.error(
+        aceErr(
           `ace: update refused: ${solveResult.reason} — ${solveResult.detail} (path: ${solveResult.path.join(" → ")})`,
         );
         return 1;
@@ -1455,18 +1518,18 @@ export async function main(argv: readonly string[]): Promise<number> {
         allowNoSignature: parsed.allowNoSignature,
       });
       if (!res.ok) {
-        console.error(`ace: update refused: ${res.reason} — ${res.detail} (path: ${res.path.join(" → ")})`);
+        aceErr(`ace: update refused: ${res.reason} — ${res.detail} (path: ${res.path.join(" → ")})`);
         return 1;
       }
       // Preflight BEFORE writing — never write a lock the graph install would reject (preflight-before-write per spec #6412, fix-forward #6414).
       const pf = preflightGraph(res.order);
       if (pf !== null) {
-        console.error(`ace: update refused: ${pf}`);
+        aceErr(`ace: update refused: ${pf}`);
         return 1;
       }
       const lf = buildLockfile(pkg, res.order, registry);
       if ("error" in lf) {
-        console.error(`ace: update refused: could not build lockfile: ${lf.error}`);
+        aceErr(`ace: update refused: could not build lockfile: ${lf.error}`);
         return 1;
       }
       // The lockfile is DERIVED from registry documents that arrived over HTTP
@@ -1476,7 +1539,7 @@ export async function main(argv: readonly string[]): Promise<number> {
       // descriptor with an explicit mode instead of `writeFileSync`'s umask.
       const lockWrite = writeFileOwned(parsed.lockfile, serializeLockfile(lf), { mode: LOCKFILE_MODE });
       if (!lockWrite.ok) {
-        console.error(`ace: update failed: could not write lockfile ${parsed.lockfile}: ${lockWrite.error.message}`);
+        aceErr(`ace: update failed: could not write lockfile ${parsed.lockfile}: ${lockWrite.error.message}`);
         return 1;
       }
       console.log(`ace: wrote lockfile ${parsed.lockfile} (${lf.nodes.length} deps)`);
@@ -1487,12 +1550,12 @@ export async function main(argv: readonly string[]): Promise<number> {
     // graph path's preflightGraph).
     const leafUnsafe = validatePackagePaths(pkg);
     if (leafUnsafe !== null) {
-      console.error(`ace: update refused: unsafe file path in ${pkg.manifest.name}: ${leafUnsafe}`);
+      aceErr(`ace: update refused: unsafe file path in ${pkg.manifest.name}: ${leafUnsafe}`);
       return 1;
     }
     const leafWrite = writeFileOwned(parsed.lockfile, serializeLockfile(buildLeafLockfile(pkg)), { mode: LOCKFILE_MODE });
     if (!leafWrite.ok) {
-      console.error(`ace: update failed: could not write lockfile ${parsed.lockfile}: ${leafWrite.error.message}`);
+      aceErr(`ace: update failed: could not write lockfile ${parsed.lockfile}: ${leafWrite.error.message}`);
       return 1;
     }
     console.log(`ace: wrote lockfile ${parsed.lockfile} (0 deps)`);
@@ -1504,14 +1567,14 @@ export async function main(argv: readonly string[]): Promise<number> {
     try {
       raw = await readPackageDocument(parsed.source);
     } catch (e) {
-      console.error(`ace: download/read failed: ${(e as Error).message}`);
+      aceErr(`ace: download/read failed: ${(e as Error).message}`);
       return 1;
     }
     let pkg: AcePackage;
     try {
       pkg = JSON.parse(raw) as AcePackage;
     } catch {
-      console.error("ace: package is not valid JSON");
+      aceErr("ace: package is not valid JSON");
       return 65;
     }
 
@@ -1524,24 +1587,24 @@ export async function main(argv: readonly string[]): Promise<number> {
       signer = { key_id: v.key_id };
       if (v.label !== undefined) signer.label = v.label;
     } else if (v.reason === "bad-signature") {
-      console.error("ace: install refused: bad signature");
+      aceErr("ace: install refused: bad signature");
       return 1;
     } else if (v.reason === "unsupported-algo") {
-      console.error("ace: install refused: unsupported signature algorithm (expected ed25519)");
+      aceErr("ace: install refused: unsupported signature algorithm (expected ed25519)");
       return 1;
     } else if (v.reason === "untrusted-key") {
       const kid = pkg.manifest.signature?.key_id ?? "?";
-      console.error(
+      aceErr(
         `ace: install refused: signature from untrusted key ${kid} — unknown publisher. Run 'ace trust list' to see trusted keys, or obtain the publisher's .pub and run 'ace trust add <pub>'.`,
       );
       return 1;
     } else {
       // no-signature
       if (!parsed.allowNoSignature) {
-        console.error("ace: install refused: unsigned package (use --allow-no-signature to override)");
+        aceErr("ace: install refused: unsigned package (use --allow-no-signature to override)");
         return 1;
       }
-      console.error("ace: WARNING: installing UNSIGNED package (--allow-no-signature).");
+      aceErr("ace: WARNING: installing UNSIGNED package (--allow-no-signature).");
     }
 
     // CAPABILITY-DECLARATION GATE — before extraction, beside the authenticity gate.
@@ -1551,7 +1614,7 @@ export async function main(argv: readonly string[]): Promise<number> {
     // green install). Refusing here keeps "what installed" and "what verifies" the same set.
     const declaredCaps = validateCapabilities((pkg.manifest as { capabilities?: unknown }).capabilities);
     if (!declaredCaps.ok) {
-      console.error(`ace: install refused: invalid-capabilities in ${pkg.manifest.name}: ${declaredCaps.reason}`);
+      aceErr(`ace: install refused: invalid-capabilities in ${pkg.manifest.name}: ${declaredCaps.reason}`);
       return 1;
     }
 
@@ -1561,7 +1624,7 @@ export async function main(argv: readonly string[]): Promise<number> {
     // malformed root refuses as invalid-package instead of escaping to the ace: fatal: catch-all.
     const rootHashCheck = safePackageHash(pkg);
     if (!rootHashCheck.ok) {
-      console.error(`ace: install refused: invalid-package — ${pkg.manifest.name} (root): ${rootHashCheck.reason}`);
+      aceErr(`ace: install refused: invalid-package — ${pkg.manifest.name} (root): ${rootHashCheck.reason}`);
       return 1;
     }
 
@@ -1570,7 +1633,7 @@ export async function main(argv: readonly string[]): Promise<number> {
       // Verify root content_hash BEFORE resolving (no wasted graph fetch on a bad root).
       const rootFilesHash = contentHash(new TextEncoder().encode(JSON.stringify(pkg.files)));
       if (rootFilesHash !== pkg.manifest.content_hash) {
-        console.error(`ace: install refused: bad-content-hash in ${pkg.manifest.name} (root)`);
+        aceErr(`ace: install refused: bad-content-hash in ${pkg.manifest.name} (root)`);
         return 1;
       }
       if (parsed.frozen) {
@@ -1579,16 +1642,16 @@ export async function main(argv: readonly string[]): Promise<number> {
         try {
           lockRaw = readFileSync(parsed.lockfile, "utf8");
         } catch {
-          console.error(`ace: install refused: no lockfile at ${parsed.lockfile} — run install without --frozen first`);
+          aceErr(`ace: install refused: no lockfile at ${parsed.lockfile} — run install without --frozen first`);
           return 1;
         }
         const lf = parseLockfile(lockRaw);
         if ("error" in lf) {
-          console.error(`ace: install refused: malformed lockfile ${parsed.lockfile}: ${lf.error}`);
+          aceErr(`ace: install refused: malformed lockfile ${parsed.lockfile}: ${lf.error}`);
           return 1;
         }
         if (!verifyRootMatchesLock(pkg, lf)) {
-          console.error(
+          aceErr(
             `ace: install refused: lockfile out of date for ${pkg.manifest.name} — re-run without --frozen to regenerate`,
           );
           return 1;
@@ -1599,7 +1662,7 @@ export async function main(argv: readonly string[]): Promise<number> {
         // --allow-quarantined (warn when allowed).
         const fr = await checkLockedMarks(lf.nodes, parsed.allowQuarantined === true, parsed.offline === true);
         if (fr !== null) {
-          console.error(`ace: install refused: ${fr}`);
+          aceErr(`ace: install refused: ${fr}`);
           return 1;
         }
         const trust = await storage.loadTrustStore(bundledTrustPath(), trustStorePath());
@@ -1617,7 +1680,7 @@ export async function main(argv: readonly string[]): Promise<number> {
           try {
             nodeRaw = await readPackageDocument(node.url);
           } catch (e) {
-            console.error(
+            aceErr(
               `ace: install refused: fetch failed for ${node.name}@${node.version} (${node.url}): ${(e as Error).message}`,
             );
             return 1;
@@ -1626,7 +1689,7 @@ export async function main(argv: readonly string[]): Promise<number> {
           try {
             np = JSON.parse(nodeRaw) as AcePackage;
           } catch {
-            console.error(`ace: install refused: ${node.name}@${node.version} is not valid JSON`);
+            aceErr(`ace: install refused: ${node.name}@${node.version} is not valid JSON`);
             return 1;
           }
           // Shape-guard the untrusted fetched bytes (object-ness) before any verify primitive
@@ -1641,43 +1704,43 @@ export async function main(argv: readonly string[]): Promise<number> {
             typeof npm.files !== "object" ||
             npm.files === null
           ) {
-            console.error(`ace: install refused: ${node.name}@${node.version} is not a well-formed package`);
+            aceErr(`ace: install refused: ${node.name}@${node.version} is not a well-formed package`);
             return 1;
           }
           const nphr = safePackageHash(np);
           if (!nphr.ok) {
-            console.error(`ace: install refused: invalid-package — ${node.name}@${node.version}: ${nphr.reason}`);
+            aceErr(`ace: install refused: invalid-package — ${node.name}@${node.version}: ${nphr.reason}`);
             return 1;
           }
           const nph = nphr.hash;
           if (nph !== node.package_hash) {
-            console.error(
+            aceErr(
               `ace: install refused: package_hash mismatch for ${node.name}@${node.version} (lock pin violated)`,
             );
             return 1;
           }
           const fh = contentHash(new TextEncoder().encode(JSON.stringify(np.files)));
           if (fh !== np.manifest.content_hash) {
-            console.error(`ace: install refused: bad-content-hash in ${node.name}@${node.version}`);
+            aceErr(`ace: install refused: bad-content-hash in ${node.name}@${node.version}`);
             return 1;
           }
           const unsafe = validatePackagePaths(np);
           if (unsafe !== null) {
-            console.error(`ace: install refused: unsafe file path in ${node.name}@${node.version}: ${unsafe}`);
+            aceErr(`ace: install refused: unsafe file path in ${node.name}@${node.version}: ${unsafe}`);
             return 1;
           }
           const nv = verifySignature(np.manifest, trust);
           if (!nv.ok && nv.reason !== "no-signature") {
-            console.error(`ace: install refused: ${nv.reason} for ${node.name}@${node.version}`);
+            aceErr(`ace: install refused: ${nv.reason} for ${node.name}@${node.version}`);
             return 1;
           }
           if (!nv.ok && nv.reason === "no-signature" && !parsed.allowNoSignature) {
-            console.error(`ace: install refused: unsigned ${node.name}@${node.version} (use --allow-no-signature)`);
+            aceErr(`ace: install refused: unsigned ${node.name}@${node.version} (use --allow-no-signature)`);
             return 1;
           }
           const prior = byStoreKey.get(np.manifest.content_hash);
           if (prior !== undefined && prior !== nph) {
-            console.error(
+            aceErr(
               `ace: install refused: store-collision — ${node.name}@${node.version} shares a content_hash store key with a different package`,
             );
             return 1;
@@ -1691,17 +1754,17 @@ export async function main(argv: readonly string[]): Promise<number> {
           const node = lf.nodes[i]!;
           const ir = await storage.installPackage(parsed.storePath, np);
           if (!ir.ok) {
-            console.error(`ace: install refused: ${node.name}@${node.version}: ${ir.error}`);
+            aceErr(`ace: install refused: ${node.name}@${node.version}: ${ir.error}`);
             return 1;
           }
         }
         // Install the root last (already signature+content_hash verified above).
         const rootIr = await storage.installPackage(parsed.storePath, pkg);
         if (!rootIr.ok) {
-          console.error(`ace: install refused: ${pkg.manifest.name} (root): ${rootIr.error}`);
+          aceErr(`ace: install refused: ${pkg.manifest.name} (root): ${rootIr.error}`);
           return 1;
         }
-        console.error(`ace: installed ${lf.nodes.length + 1} from lockfile ${parsed.lockfile} (frozen)`);
+        aceErr(`ace: installed ${lf.nodes.length + 1} from lockfile ${parsed.lockfile} (frozen)`);
         return 0;
       }
       const fetchPackage = readPackageDocument;
@@ -1709,14 +1772,14 @@ export async function main(argv: readonly string[]): Promise<number> {
         trustStore: await storage.loadTrustStore(bundledTrustPath(), trustStorePath()),
         offline: parsed.offline === true,
       });
-      for (const w of warnings) console.error(`ace: ${w}`);
+      for (const w of warnings) aceErr(`ace: ${w}`);
       if (errors.length > 0) {
-        for (const e of errors) console.error(`ace: install refused: ${e}`);
+        for (const e of errors) aceErr(`ace: install refused: ${e}`);
         return 1;
       }
       const solveResult = await solve(pkg, fetchPackage, registry);
       if (!solveResult.ok) {
-        console.error(
+        aceErr(
           `ace: install refused: ${solveResult.reason} — ${solveResult.detail} (path: ${solveResult.path.join(" → ")})`,
         );
         return 1;
@@ -1734,7 +1797,7 @@ export async function main(argv: readonly string[]): Promise<number> {
         quarantined,
       });
       if (!res.ok) {
-        console.error(`ace: install refused: ${res.reason} — ${res.detail} (path: ${res.path.join(" → ")})`);
+        aceErr(`ace: install refused: ${res.reason} — ${res.detail} (path: ${res.path.join(" → ")})`);
         return 1;
       }
       // SLICE 5.4: --locked — assert the committed lock equals a fresh solve, else refuse
@@ -1744,23 +1807,23 @@ export async function main(argv: readonly string[]): Promise<number> {
         try {
           lockRaw = readFileSync(parsed.lockfile, "utf8");
         } catch {
-          console.error(
+          aceErr(
             `ace: install refused: --locked but no lockfile at ${parsed.lockfile} — run 'ace update' or install without --locked`,
           );
           return 1;
         }
         const onDisk = parseLockfile(lockRaw);
         if ("error" in onDisk) {
-          console.error(`ace: install refused: malformed lockfile ${parsed.lockfile}: ${onDisk.error}`);
+          aceErr(`ace: install refused: malformed lockfile ${parsed.lockfile}: ${onDisk.error}`);
           return 1;
         }
         const fresh = buildLockfile(pkg, res.order, registry);
         if ("error" in fresh) {
-          console.error(`ace: install refused: could not build lockfile: ${fresh.error}`);
+          aceErr(`ace: install refused: could not build lockfile: ${fresh.error}`);
           return 1;
         }
         if (!lockfilesEqual(onDisk, fresh)) {
-          console.error(`ace: install refused: lockfile out of date (--locked) — run 'ace update' to regenerate`);
+          aceErr(`ace: install refused: lockfile out of date (--locked) — run 'ace update' to regenerate`);
           return 1;
         }
       }
@@ -1768,25 +1831,25 @@ export async function main(argv: readonly string[]): Promise<number> {
       // graph BEFORE any extract (shared with `update`'s before-write guard via preflightGraph).
       const pf = preflightGraph(res.order);
       if (pf !== null) {
-        console.error(`ace: install refused: ${pf}`);
+        aceErr(`ace: install refused: ${pf}`);
         return 1;
       }
       // EXTRACT all, leaves first.
       for (const node of res.order) {
         const out = await storage.installPackage(parsed.storePath, node);
         if (!out.ok) {
-          console.error(`ace: install failed mid-graph: ${out.error}`);
+          aceErr(`ace: install failed mid-graph: ${out.error}`);
           return 1;
         }
       }
       // SLICE 5.3: write the lockfile (write failure is a warning, not a failed install).
       const lf = buildLockfile(pkg, res.order, registry);
       if ("error" in lf) {
-        console.error(`ace: WARNING: could not build lockfile: ${lf.error}`);
+        aceErr(`ace: WARNING: could not build lockfile: ${lf.error}`);
       } else {
         const lockWrite = writeFileOwned(parsed.lockfile, serializeLockfile(lf), { mode: LOCKFILE_MODE });
         if (!lockWrite.ok) {
-          console.error(`ace: WARNING: could not write lockfile ${parsed.lockfile}: ${lockWrite.error.message}`);
+          aceErr(`ace: WARNING: could not write lockfile ${parsed.lockfile}: ${lockWrite.error.message}`);
         }
       }
       console.log(
@@ -1804,16 +1867,16 @@ export async function main(argv: readonly string[]): Promise<number> {
       try {
         lockRaw = readFileSync(parsed.lockfile, "utf8");
       } catch {
-        console.error(`ace: install refused: no lockfile at ${parsed.lockfile} — run install without --frozen first`);
+        aceErr(`ace: install refused: no lockfile at ${parsed.lockfile} — run install without --frozen first`);
         return 1;
       }
       const lf = parseLockfile(lockRaw);
       if ("error" in lf) {
-        console.error(`ace: install refused: malformed lockfile ${parsed.lockfile}: ${lf.error}`);
+        aceErr(`ace: install refused: malformed lockfile ${parsed.lockfile}: ${lf.error}`);
         return 1;
       }
       if (!verifyRootMatchesLock(pkg, lf)) {
-        console.error(
+        aceErr(
           `ace: install refused: lockfile out of date for ${pkg.manifest.name} — re-run without --frozen to regenerate`,
         );
         return 1;
@@ -1824,7 +1887,7 @@ export async function main(argv: readonly string[]): Promise<number> {
         parsed.offline === true,
       );
       if (lr !== null) {
-        console.error(`ace: install refused: ${lr}`);
+        aceErr(`ace: install refused: ${lr}`);
         return 1;
       }
     } else if (parsed.locked) {
@@ -1832,25 +1895,25 @@ export async function main(argv: readonly string[]): Promise<number> {
       try {
         lockRaw = readFileSync(parsed.lockfile, "utf8");
       } catch {
-        console.error(
+        aceErr(
           `ace: install refused: --locked but no lockfile at ${parsed.lockfile} — run 'ace update' or install without --locked`,
         );
         return 1;
       }
       const onDisk = parseLockfile(lockRaw);
       if ("error" in onDisk) {
-        console.error(`ace: install refused: malformed lockfile ${parsed.lockfile}: ${onDisk.error}`);
+        aceErr(`ace: install refused: malformed lockfile ${parsed.lockfile}: ${onDisk.error}`);
         return 1;
       }
       if (!lockfilesEqual(onDisk, buildLeafLockfile(pkg))) {
-        console.error(`ace: install refused: lockfile out of date (--locked) — run 'ace update' to regenerate`);
+        aceErr(`ace: install refused: lockfile out of date (--locked) — run 'ace update' to regenerate`);
         return 1;
       }
     }
     // INTEGRITY + extract (slice 2, unchanged)
     const result = await storage.installPackage(parsed.storePath, pkg);
     if (!result.ok) {
-      console.error(`ace: install refused: ${result.error}`);
+      aceErr(`ace: install refused: ${result.error}`);
       return 1;
     }
     if (signer) {
@@ -1865,7 +1928,7 @@ export async function main(argv: readonly string[]): Promise<number> {
     if (!parsed.frozen) {
       const leafWrite = writeFileOwned(parsed.lockfile, serializeLockfile(buildLeafLockfile(pkg)), { mode: LOCKFILE_MODE });
       if (!leafWrite.ok) {
-        console.error(`ace: WARNING: could not write lockfile ${parsed.lockfile}: ${leafWrite.error.message}`);
+        aceErr(`ace: WARNING: could not write lockfile ${parsed.lockfile}: ${leafWrite.error.message}`);
       }
     }
     return 0;
@@ -1882,7 +1945,7 @@ export async function main(argv: readonly string[]): Promise<number> {
     const pkgs = await storage.listInstalled(parsed.storePath);
     const found = pkgs.find((p) => p.hash === parsed.hash || p.manifest.content_hash === parsed.hash);
     if (!found) {
-      console.error(`ace: no installed package with hash ${parsed.hash}`);
+      aceErr(`ace: no installed package with hash ${parsed.hash}`);
       return 1;
     }
     const label = `${found.manifest.name}@${found.manifest.version}`;
@@ -1894,17 +1957,17 @@ export async function main(argv: readonly string[]): Promise<number> {
         // unless the caller asked otherwise, so `--allow-no-signature` installs remain
         // inspectable — but it can never satisfy a --capability assertion below.
         if (parsed.requireSignature || parsed.requireCapabilities.length > 0) {
-          console.error(`ace: verify refused: ${label} is unsigned — no code identity to bind a capability to`);
+          aceErr(`ace: verify refused: ${label} is unsigned — no code identity to bind a capability to`);
           return 1;
         }
         console.log(`ace: ${label} present (manifest hash ${found.manifest.content_hash})`);
-        console.error("ace: WARNING: package is UNSIGNED — present, NOT authenticity-verified.");
+        aceErr("ace: WARNING: package is UNSIGNED — present, NOT authenticity-verified.");
         return 0;
       }
       // bad-signature / untrusted-key / unsupported-algo / invalid-capabilities. A manifest
       // mutated after signing (capabilities or anything else) lands here, because signing.ts
       // covers the whole manifest minus `signature`.
-      console.error(`ace: verify FAILED: ${label} — ${auth.reason} (manifest hash ${found.manifest.content_hash})`);
+      aceErr(`ace: verify FAILED: ${label} — ${auth.reason} (manifest hash ${found.manifest.content_hash})`);
       return 1;
     }
 
@@ -1920,15 +1983,80 @@ export async function main(argv: readonly string[]): Promise<number> {
     // the field from being a decoration nothing checks.
     const missing = parsed.requireCapabilities.filter((c) => !capabilityPermitted(auth, c));
     if (missing.length > 0) {
-      console.error(
+      aceErr(
         `ace: verify refused: ${label} is not authorized for ${missing.join(" ")} — declared: ${auth.capabilities.join(" ") || "(none)"}`,
       );
       return 1;
     }
 
     // Say the gap out loud on every success, so no operator reads this as a runtime guarantee.
-    console.error(`ace: NOTE: ${INSTALL_TIME_VS_RUNTIME}.`);
+    aceErr(`ace: NOTE: ${INSTALL_TIME_VS_RUNTIME}.`);
     return 0;
+  }
+
+  // ── outdated ─────────────────────────────────────────────────────────────────────────────
+  // The READ path touches no network at all -- that is the `clone-at-tag-stays-sufficient`
+  // requirement, not a performance choice. `--refresh` is the separate, explicit act.
+  if (parsed.command === "outdated") {
+    const root = process.env["REPO_ROOT"] ?? process.cwd();
+    const ecosystems = parsed.only.length > 0 ? parsed.only : ECOSYSTEMS;
+    const all = collectRepoPins(root);
+    // `--ecosystem` narrows BOTH halves. Narrowing only the snapshot half would report every
+    // dependency outside the selection as "no snapshot" -- an absence the caller created by
+    // asking a narrower question, dressed up as a gap in our knowledge.
+    const inventory =
+      parsed.only.length === 0
+        ? all
+        : { ...all, deps: all.deps.filter((d) => ecosystems.includes(d.ecosystem)) };
+
+    if (parsed.refresh) {
+      let anyResolved = 0;
+      let anyAttempted = 0;
+      const today = new Date().toISOString().slice(0, 10);
+      for (const eco of ecosystems) {
+        const resolver = NETWORK_RESOLVERS[eco];
+        if (resolver === undefined) {
+          // NOT SILENT. An ecosystem with no resolver keeps whatever snapshot it has and says so;
+          // writing an empty snapshot for it would turn "nobody asked" into "nothing found".
+          aceErr(`ace outdated --refresh: ${eco} has no registry resolver -- skipped, snapshot left untouched`);
+          continue;
+        }
+        anyAttempted += 1;
+        const names = inventory.deps.filter((d) => d.ecosystem === eco).map((d) => d.name);
+        if (names.length === 0) {
+          aceErr(`ace outdated --refresh: ${eco} -- no pinned dependencies found; nothing to observe`);
+          continue;
+        }
+        const outcome = await refreshEcosystem(root, eco, names, today, resolver);
+        anyResolved += outcome.resolved;
+        console.log(
+          `ace outdated --refresh: ${eco} ${String(outcome.resolved)}/${String(new Set(names).size)} resolved` +
+            `${outcome.failed.length > 0 ? `, ${String(outcome.failed.length)} unresolved` : ""} -> ${outcome.path}` +
+            `${outcome.written ? "" : " (unchanged)"}`,
+        );
+        for (const f of outcome.failed) aceErr(`    unresolved: ${f.name} -- ${f.reason}`);
+      }
+      if (anyAttempted === 0 || anyResolved === 0) {
+        aceErr("ace outdated --refresh: nothing was observed -- the refresh did not run");
+        return 2;
+      }
+    }
+
+    const snapshots = loadSnapshots(root, ecosystems);
+    const report = buildReport(inventory, snapshots, new Date(), defaultStalenessPolicy);
+    const exitPolicy: ExitPolicy = {
+      failOnUnknown: parsed.failOnUnknown,
+      maxSnapshotAgeDays: parsed.maxSnapshotAgeDays,
+    };
+    // writeSync, not console.log: `main()` is followed by `process.exit(code)`, and a piped
+    // stdout in Node is ASYNCHRONOUS -- a large report loses everything past the first 64 KB
+    // when the process exits before the pipe drains. Measured here: the `--json` output was
+    // cut mid-string at exactly 65536 bytes. A report that silently truncates is worse than one
+    // that refuses.
+    writeSync(1, parsed.json ? renderJson(report) : `${renderReport(report, { showAll: parsed.showAll })}\n`);
+    const code = exitCodeFor(report, exitPolicy);
+    if (code === 2) aceErr(`ace outdated: COULD NOT RUN -- ${summaryLine(report)}`);
+    return code;
   }
 
   if (parsed.command === "deps") {
@@ -1970,7 +2098,7 @@ export async function main(argv: readonly string[]): Promise<number> {
             }
           }
           if (!found) {
-            console.error(`ace: deps query: migration window or schedule for '${parsed.duringMigration}' not found`);
+            aceErr(`ace: deps query: migration window or schedule for '${parsed.duringMigration}' not found`);
             return 1;
           }
         }
@@ -1999,7 +2127,7 @@ export async function main(argv: readonly string[]): Promise<number> {
         if (parsed.rollbackWindow) {
           const node = graph.spec.dependsOn.find((n) => n.chart === parsed.rollbackWindow);
           if (!node) {
-            console.error(`ace: deps query: chart '${parsed.rollbackWindow}' not found in dependency graph`);
+            aceErr(`ace: deps query: chart '${parsed.rollbackWindow}' not found in dependency graph`);
             return 1;
           }
 
@@ -2032,7 +2160,7 @@ export async function main(argv: readonly string[]): Promise<number> {
 
       if (parsed.sub === "evaluate-schedule") {
         if (!parsed.schedulePath) {
-          console.error("ace: deps evaluate-schedule requires --schedule <path>");
+          aceErr("ace: deps evaluate-schedule requires --schedule <path>");
           return 1;
         }
         const schedule = parseYaml(readFileSync(parsed.schedulePath, "utf8")) as UpgradeScheduleSpec;
@@ -2058,7 +2186,7 @@ export async function main(argv: readonly string[]): Promise<number> {
       console.log(`ace: wrote manifests for '${graph.metadata.name}' to ${outDir}`);
       return 0;
     } catch (e) {
-      console.error(`ace: deps ${parsed.sub} failed: ${(e as Error).message}`);
+      aceErr(`ace: deps ${parsed.sub} failed: ${(e as Error).message}`);
       return 1;
     }
   }
@@ -2075,7 +2203,7 @@ if (import.meta.main) {
   main(process.argv.slice(2))
     .then((c) => process.exit(c))
     .catch((e) => {
-      console.error(`ace: fatal: ${(e as Error).message}`);
+      aceErr(`ace: fatal: ${(e as Error).message}`);
       process.exit(1);
     });
 }
