@@ -4021,6 +4021,28 @@ jobs:
         with:
           bun-version: "1.3.13"
 
+      - name: Install the pinned .NET SDK (byte-lock-oracles only -- it DOES execute F#)
+        # THE COMMENT ABOVE IS TRUE OF 29 OF THE 30 LEGS AND WAS FALSE OF THIS ONE.
+        # `byte-lock-oracles` runs `adinkra-halfspin-decomposition` and
+        # `adinkra-halfspin-intertwiner`, and both SPAWN AN F# ORACLE (`dotnet fsi`). Class 0
+        # gave them no SDK, so they borrowed whatever the runner image happened to ship --
+        # which worked only while `global.json`'s pin was satisfiable by that image.
+        #
+        # The dotnet-sdk 10.0.400 -> 10.0.401 bump is what exposed it: with
+        # `rollForward: latestPatch`, requesting 10.0.401 needs >= 10.0.401 and the image has
+        # no such SDK, so every dotnet-backed audit in this leg failed with "A compatible .NET
+        # SDK was not found". Nothing was wrong with the bump; the leg had been running on an
+        # accident. Every OTHER job already provisions dotnet through `install.sh`, so this
+        # restores the single-provisioner discipline (GOVERNANCE §24) rather than adding a
+        # second one -- `actions/setup-dotnet` is deliberately not used anywhere in this repo.
+        #
+        # SCOPED BY `if:` so the other 29 legs keep class 0 exactly: no install.sh, no cache
+        # step, 13 s of setup. Only the leg that actually executes a toolchain pays for it.
+        if: matrix.audit == 'byte-lock-oracles'
+        env:
+          ZETA_HOST_TIER: slim
+        run: ./tools/setup/install.sh
+
       - name: Install npm devDependencies (z3-solver for the ace solver Z3 differential, etc.)
         # The ace suite's solver.z3.test.ts spawns node to require('z3-solver') (assert-dont-skip:
         # it FAILS rather than skips if the dep is absent). --frozen-lockfile fails if the lockfile
