@@ -1,0 +1,12 @@
+{
+  "pr_number": 17380,
+  "archive_path": "docs/history/pr-reviews/2026/09/12/PR-17380-docs-081m2bhmw9n087g0r002araqaw-the-couplings-a-bump-forces-are-already-written-.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-12T19:56:23.415Z",
+  "schema_version": "v1",
+  "commit_sha": "a66e68d0eac70675f1d1cbec5f4e0a366e0934e3",
+  "title": "docs(081M2BHMW9N087G0R002ARAQAW): the couplings a bump forces are already written, as refusals",
+  "state": "MERGED",
+  "merged_at": "2026-09-12T19:55:36Z",
+  "head_ref": "shadow/ace-dependency-coupling-graph"
+}
