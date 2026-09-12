@@ -4021,6 +4021,16 @@ jobs:
         with:
           bun-version: "1.3.13"
 
+      - name: Restore apt archives (byte-lock-oracles only -- it is the one leg that installs)
+        # Paired with the install.sh step below and gated identically. 561 MB of .deb against a
+        # mirror measured at ~1.1 MB/s is ~510 s inside a 420 s budget, which is the exit-124
+        # class this action exists to remove. The other 29 legs never reach either step, so
+        # class 0 is unchanged for them.
+        if: matrix.audit == 'byte-lock-oracles'
+        uses: ./.github/actions/apt-archive-cache
+        with:
+          tier: slim
+
       - name: Install the pinned .NET SDK (byte-lock-oracles only -- it DOES execute F#)
         # THE COMMENT ABOVE IS TRUE OF 29 OF THE 30 LEGS AND WAS FALSE OF THIS ONE.
         # `byte-lock-oracles` runs `adinkra-halfspin-decomposition` and

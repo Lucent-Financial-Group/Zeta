@@ -39,6 +39,11 @@ const GATE_WORKFLOW = join(ROOT, ".github/workflows/gate.yml");
  * which is a separate measurement, not a guess to make here.
  */
 const SLIM_GATE_JOBS = [
+  // `cross-verify` installs on ONE of its 30 legs (`byte-lock-oracles`), which executes an
+  // F# oracle and had been borrowing the runner image's dotnet until the 10.0.401 bump
+  // stopped that working. Both its install.sh and its apt-archive-cache step carry the same
+  // `if:`, so the other 29 legs remain class 0.
+  "cross-verify",
   "lint", //                        semgrep, via the `pipx:semgrep` mise pin
   "lint-semgrep-drift",
   "lint-shell", //                  shellcheck, mise pin 0.11.0
