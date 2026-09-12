@@ -35,7 +35,7 @@ import { foldActionItems, foldAfterOpen, foldAfterUpdate, foldHandedOffChanges }
 import type { OrgEvent } from "./org-event";
 import { pollFeedback, readFeedbackDir } from "./followup-commands";
 import { parseRegistry, type OrgRecord } from "./org-registry";
-import { readEvents } from "./org-store";
+import { forgetEvents, readEvents } from "./org-store";
 import { profileArg, profileArgs, type RunProfile } from "./run-profile";
 import { lockHolder } from "./store-lock";
 
@@ -310,6 +310,10 @@ export async function watchProfile(
   const holder = lockHolder(store);
   if (holder !== undefined) return `a run holds the store (pid ${String(holder.pid)})`;
 
+  // ANOTHER PROCESS WRITES THIS STORE. `readEvents` remembers its last full read so one run does
+  // not re-read 17,169 shards twenty-two times; a watcher is the case that cache cannot see, because
+  // the writer is `run-org` in a different process. So it looks again, every tick, deliberately.
+  forgetEvents();
   const events = readEvents(store);
   const handed = foldHandedOffChanges(events);
   const feedbackDir = profileArg(profile, "--feedback-dir") ?? join(store, "feedback");
