@@ -66,6 +66,50 @@ by design, because the rule was written for precisely this temptation.
 | **ace binaries installable in one line** | FINE, and it is distribution rather than resolution. |
 | **install.sh uses ace** | ONLY as a fast path with a working fallback. The moment install.sh REQUIRES ace, clone-at-tag is dead and the lint says so. |
 
+## THE BETTER ANSWER: ACE SHIPS THE EQUIVALENT COMMANDS, SO EXIT IS FREE
+
+Aaron, 2026-09-12:
+
+> *"ace could ship with exact 3rd party commands that are equivalent or some array of them.
+> then it can run before the binary is installed. but in the end we want ace to be the tip
+> where it's super super easy to install on every platform."*
+
+This is better than the fast-path-with-a-fallback shape below, and it dissolves the tension
+rather than managing it. If every operation ace performs is RECORDED AS THE CONCRETE COMMAND
+(or an array of per-platform equivalents), then a consumer without ace runs those commands
+directly. Exit stops being a promise maintained by discipline and becomes a property of the
+data: the escape route is the same datum ace itself executes.
+
+**And it is not new machinery -- the pattern already ships.** `tools/setup/manifests/pinned-refs`
+carries `remeasure=docker:build:--quiet:-f:<dockerfile>:<context>` -- a colon-encoded command
+stored as data in a manifest, so the way to reproduce a pin's measurement travels WITH the pin.
+Generalising that field from pinned-refs to every realizer is the whole idea.
+
+**THE DESIGN RULE THAT MAKES IT WORK, and it is easy to get wrong:** ace must EXECUTE the
+recorded command, not maintain a parallel implementation of it.
+
+Today `setup-realizers/from-dotnet-global.ts` builds its argv in TypeScript --
+`["dotnet", "tool", "install", "-g", tool]` -- while the manifest declares only WHAT to install.
+The manifest says what, the code says how. If a "human equivalent" command were added to the
+manifest beside that code, there would be TWO copies of how, and they would drift -- a broken
+meter, in the vocabulary of 081M2BHMW9N087G0R002ARAQAW: an escape hatch that looks inspectable
+and no longer matches what runs.
+
+So the invariant is one copy: the manifest (or realizer declaration) carries the argv, and ace
+runs exactly that. Then `equivalent` needs no audit, because there is nothing for the
+equivalence to hold BETWEEN. Two copies need an audit and will eventually fail it; one copy
+cannot diverge from itself.
+
+**The array is the package-manager-of-package-managers idea again.** One logical operation with
+N concrete realisations (apt / brew / dnf / winget / a tarball) is exactly the normalisation ace
+already performs across ecosystems -- the array is that normalisation written down rather than
+compiled in.
+
+**And it keeps the tip.** ace remains the thing that is super easy to install on every platform
+and the path everyone actually uses; the recorded commands are not a competing interface, they
+are what ace was going to run anyway, legible. That satisfies the carved discriminator exactly:
+a consumer CAN resolve without it, so ace is an oracle chosen rather than a hub that holds.
+
 ## The fallback must be EXERCISED, not merely present
 
 This is the part most likely to be got wrong, and this repository already has the vocabulary
