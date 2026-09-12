@@ -24,6 +24,8 @@ import { execFileSync } from "node:child_process";
 import { homedir } from "node:os";
 import { join } from "node:path";
 import { autoDiscoverIso, human, validateIso } from "./flash-usb-windows.ts";
+import { compareHandleIdentity, describeHandleIdentity, handleIdentity } from "../io/handle-identity.ts";
+import type { HandleIdentity } from "../io/handle-identity.ts";
 import { injectKeyIntoEsp, parseEspGeom, readRegion, verifyKeyInEsp } from "./esp-inject.ts";
 
 const device = process.argv[2] ?? "\\\\.\\PhysicalDrive3";
@@ -93,51 +95,80 @@ try {
   W(execFileSync("diskpart", ["/s", t], { encoding: "utf8" }).trim());
 }
 const SECTOR = 4096; // pad unit (works for 512 & 4096 drives)
-{
-  const fd = openSync(device, "r+");
-  try {
-    W(`writing keyed ISO -> ${device} ...`);
-    {
-      const chunk = 4 * 1024 * 1024;
-      const buf = Buffer.allocUnsafe(chunk);
-      let written = 0, srcPos = 0, lastBucket = -1;
-      while (srcPos < isoSize) {
-        const n = readSync(isoFd, buf, 0, chunk, srcPos);
-        if (n <= 0) break;
-        let len = n;
-        if (len % SECTOR !== 0) { const padded = Math.ceil(len / SECTOR) * SECTOR; buf.fill(0, len, padded); len = padded; }
-        writeSync(fd, buf, 0, len, written);
-        written += len; srcPos += n;
-        const bucket = Math.floor((srcPos / isoSize) * 10);
-        if (bucket !== lastBucket) { lastBucket = bucket; W(`  ${Math.floor((srcPos / isoSize) * 100)}% (${human(Math.min(srcPos, isoSize))}/${human(isoSize)})`); }
-      }
-      fsyncSync(fd);
-      W(`ISO write complete (${human(written)})`);
+// The identity of the object the ISO is written to, taken from the DESCRIPTOR. Compared against
+// the read-back handle below so a re-resolution of `device` cannot verify a different object.
+//
+// `const`, ASSIGNED EXACTLY ONCE, AND THAT IS THE FIX -- NOT THE DELETION OF A DEAD LINE. This
+// was `let wroteTo = { dev: 0, ino: 0, known: false }` followed by an unconditional overwrite
+// inside a bare block, which the code-quality bot reported as a useless assignment. It was
+// right, and the useless value was the dangerous kind: `known: false` is the sentinel that the
+// verdict below reads as `unknown` and PASSES ON. So the dead initializer was a pre-armed
+// vacuous success -- any future edit that skipped the assignment (an early return, a guard, a
+// reordered block) would have silently downgraded the read-back to content-only while still
+// printing a verdict. Hoisting the descriptor makes `wroteTo` a `const` with no unassigned
+// state to fall back to, so that failure mode is unreachable rather than merely absent today.
+const writeFd = openSync(device, "r+");
+const wroteTo: HandleIdentity = handleIdentity(writeFd);
+try {
+  W(`writing keyed ISO -> ${device} ...`);
+  {
+    const chunk = 4 * 1024 * 1024;
+    const buf = Buffer.allocUnsafe(chunk);
+    let written = 0, srcPos = 0, lastBucket = -1;
+    while (srcPos < isoSize) {
+      const n = readSync(isoFd, buf, 0, chunk, srcPos);
+      if (n <= 0) break;
+      let len = n;
+      if (len % SECTOR !== 0) { const padded = Math.ceil(len / SECTOR) * SECTOR; buf.fill(0, len, padded); len = padded; }
+      writeSync(writeFd, buf, 0, len, written);
+      written += len; srcPos += n;
+      const bucket = Math.floor((srcPos / isoSize) * 10);
+      if (bucket !== lastBucket) { lastBucket = bucket; W(`  ${Math.floor((srcPos / isoSize) * 100)}% (${human(Math.min(srcPos, isoSize))}/${human(isoSize)})`); }
     }
-  } finally { closeSync(fd); }
-}
+    fsyncSync(writeFd);
+    W(`ISO write complete (${human(written)})`);
+  }
+} finally { closeSync(writeFd); }
 closeSync(isoFd);
 try { execFileSync("mountvol", ["/E"], { encoding: "utf8" }); W(`automount re-enabled (mountvol /E)`); } catch { /* best effort */ }
 
 // ── 4. device read-back: prove the key actually landed on the stick ──
 {
-  // THE RE-OPEN IS THE ASSERTION, and it must not be "fixed". CodeQL reports it
-  // as `js/file-system-race` (alert #259) because `device` was opened "r+"
-  // above; that report is correct about the shape and wrong about the intent.
-  // The whole point of this block is to ask the operating system for the device
-  // AGAIN, from scratch, and read back what is actually on the stick. Reusing
-  // the write handle would prove only that the bytes this process wrote are the
-  // bytes this process wrote -- a check that cannot fail, which is worse than
-  // no check. Nothing else on this machine is racing for `\\.\PhysicalDriveN`
-  // between two statements of an elevated single-purpose flasher; a check that
-  // cannot fail is a certainty.
-  const fd = openSync(device, "r");
+  // THE RE-OPEN IS THE ASSERTION, and it must not be "fixed" by deleting it. CodeQL reports
+  // it as `js/file-system-race` (alert #259) because `device` was opened "r+" above. The
+  // report is right about the SHAPE: `device` is a path, a path resolves afresh on every
+  // call, and a read-back that landed on a different object would verify the wrong thing and
+  // report a pass. Reusing the write handle is not the fix -- it would prove only that the
+  // bytes this process wrote are the bytes this process wrote, a check that cannot fail.
+  //
+  // So the re-resolution stays and is CHECKED. Node exposes no `openat`, so the second lookup
+  // cannot be eliminated; it can be made unable to pass on the wrong object.
+  //
+  // AND THE THIRD REGISTER IS LOAD-BEARING HERE, not decoration. `fstat` on a raw Windows
+  // device handle is not guaranteed to report a meaningful (dev, ino), and a comparison that
+  // read two zeroes as "same" would be the vacuity this block exists to avoid. `unknown` is
+  // therefore said out loud in the log rather than rounded up to a pass.
+  //
+  // HONEST LIMIT: this path has no automated falsifier. It needs an elevated Windows host and
+  // a physical stick, so nothing in the test suite executes it. The comparison it performs is
+  // the one unit-tested in `io/handle-identity.test.ts`, including the identical-bytes case a
+  // content check cannot see.
+  const readFd = openSync(device, "r");
   try {
-    parseEspGeom(readRegion(fd, 0, 256 * 1024), W); // logs MBR/ESP layout
-    if (!verifyKeyInEsp(fd, body, W)) fail("device-readback-mismatch");
+    const readBack = handleIdentity(readFd);
+    const verdict = compareHandleIdentity(wroteTo, readBack);
+    if (verdict === "different") {
+      W(`device identity CHANGED between write and read-back: wrote ${describeHandleIdentity(wroteTo)}, read ${describeHandleIdentity(readBack)}`);
+      fail("device-identity-changed");
+    }
+    W(verdict === "same"
+      ? `device identity confirmed (${describeHandleIdentity(readBack)})`
+      : `device identity UNKNOWN on this platform (${describeHandleIdentity(readBack)}) -- read-back is content-only`);
+    parseEspGeom(readRegion(readFd, 0, 256 * 1024), W); // logs MBR/ESP layout
+    if (!verifyKeyInEsp(readFd, body, W)) fail("device-readback-mismatch");
     W(`device verify OK — key is on the USB ESP`);
   } finally {
-    closeSync(fd);
+    closeSync(readFd);
   }
 }
 
