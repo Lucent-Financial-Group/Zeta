@@ -1828,6 +1828,20 @@ export async function main(argv: readonly string[]): Promise<number> {
     return 2;
   }
 
+  // ── WHAT IS WATCHING THE FILES THIS RUN WOULD CHURN ───────────────────────────────────────────
+  // A sync client under the store, the checkout or the worktrees turns every git command, every
+  // test run and every throwaway review copy into upload traffic, and contends with the process
+  // doing the work. Said BEFORE the refusals on purpose: it is true of a run that will not start,
+  // and somebody fixing up their flags is exactly who should hear it. Never a refusal itself -
+  // where a person keeps their work is their decision, not the organization's.
+  for (const line of syncedFolderWarnings({
+    "the event store": args.store,
+    "the checkout": args.git,
+    "the worktrees": args.worktrees,
+  })) {
+    console.error(`note: ${line}`);
+  }
+
   const refusals = argRefusals(args);
   if (refusals.length > 0) {
     for (const reason of refusals) console.error(`refused: ${reason}`);
@@ -1845,17 +1859,6 @@ export async function main(argv: readonly string[]): Promise<number> {
       return 2;
     }
     releaseOnExit(lock.release);
-  }
-  // ── WHAT IS WATCHING THE FILES THIS RUN IS ABOUT TO CHURN ─────────────────────────────────────
-  // A sync client under the store, the checkout or the worktrees turns every git command, every
-  // test run and every throwaway review copy into upload traffic. Said once, with the path, and
-  // never refused: where somebody keeps their work is their decision, not the organization's.
-  for (const line of syncedFolderWarnings({
-    "the event store": args.store,
-    "the checkout": args.git,
-    "the worktrees": args.worktrees,
-  })) {
-    console.error(`note: ${line}`);
   }
 
   // ── EVERY AGENT THIS RUN SPAWNS IS TOLD WHERE ITS WORLDVIEW IS ─────────────
