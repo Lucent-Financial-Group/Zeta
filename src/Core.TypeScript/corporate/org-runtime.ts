@@ -4225,6 +4225,12 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
       const node = nodeById(cascade, workId);
       const hatId = node?.assigneeHatId ?? node?.ownerHatId ?? "implementer";
       const canSync = deps.changeRequests?.sync === "merge_target" && providers.change.syncWithTarget !== undefined;
+      // ── WHAT THIS HAT ALREADY KNOWS, BEFORE IT ANSWERS ANYBODY ────────────────────────────────
+      // The memory circuit reached the original work walk and stopped there: the hat that WROTE the
+      // change was told what it had learned, and every follow-up session that answers a reviewer
+      // started from nothing. Those are the expensive ones - ~51 turns each on agentic-tpm - and
+      // they work on the same repository, about the same change, as the walk that did have memory.
+      const recalled = deps.recallFor?.(workId, hatId, "follow-up");
       const where = {
         workId,
         hatId,
@@ -4234,6 +4240,7 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
         items,
         canSync,
         ...(deps.changeRequests?.pipelines === undefined ? {} : { pipelines: deps.changeRequests.pipelines }),
+        ...(recalled === undefined || recalled.text.trim() === "" ? {} : { recall: recalled.text }),
       };
       // ── WHAT OTHERS PUSHED TO THIS CHANGE'S BRANCH COMES IN FIRST ──────────
       // MEASURED on dev-portal !1222: a bot pushed an `npm audit fix` commit to the request's branch
@@ -4274,6 +4281,16 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
         const why = `the follow-up of ${workId} did not complete: ${triage.reason}`;
         note({ kind: OrgEventKind.ChangeProjected, subjectId: workId, actorHatId: hatId, decision: why.split(/\s+/).join(" ").slice(0, 400), atMs: warmedAt });
         return { workId, decided: [], handedOffAgain: false, refused: [why] };
+      }
+      // WHAT THE SESSION ACTUALLY USED. Injection alone can never mark a memory useless, so the
+      // credit half of the circuit has to reach this seam too, not just the walk.
+      if (recalled !== undefined && recalled.injectedIds.length > 0 && deps.notedCitations !== undefined) {
+        for (const fact of deps.notedCitations(workId, hatId, recalled.injectedIds, [
+          triage.value.summary,
+          ...triage.value.decisions.map((d) => d.how),
+        ])) {
+          note({ kind: OrgEventKind.ChangeProjected, subjectId: workId, actorHatId: hatId, decision: "a follow-up said which memory it relied on", atMs: warmedAt, fact });
+        }
       }
       const { accepted: decided, refused: bad } = acceptedDecisions(items, triage.value.decisions);
       refused.push(...bad);

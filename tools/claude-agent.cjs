@@ -946,6 +946,19 @@ if (mode === "follow-up") {
     : [
         preamble(hat, workId),
         "",
+        ...(env.ORG_RECALL
+          ? [
+              "WHAT YOU ALREADY KNOW - the organization's memory for this hat and this work. It was written by",
+              "whoever did this before you, to save you working it out again. Read it FIRST: it is the cheapest",
+              "context you will get, and re-deriving what it already says is the most expensive thing you can do.",
+              "If you use one, say so with a line " + "`relied on [<its id>]`" + " in your summary - a memory",
+              "nobody ever relies on is one the organization should stop keeping, and it cannot know that unless",
+              "you say. If you work something out that the next session would otherwise work out again, record it",
+              "with " + "`learned: <key> :: <what>`" + ".",
+              env.ORG_RECALL,
+              "",
+            ]
+          : []),
         "YOUR TASK NOW: this change is already in front of people for review, and these ACTION ITEMS are open on it:",
         JSON.stringify(items, null, 2),
         "",

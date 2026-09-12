@@ -517,6 +517,16 @@ export interface FollowUpRequest {
    * for the last time (agentic-tpm !164, pipelines 189179 and 189289, both declined as flakes).
    */
   readonly pipelines?: PipelinePolicy;
+  /**
+   * WHAT THIS HAT ALREADY KNOWS, recalled from the organization's memory before the session starts.
+   *
+   * The memory circuit was wired to the ORIGINAL work walk only - a hat writing a change got what
+   * it had learned, and the follow-up sessions that answer reviewers got nothing. Those are the
+   * expensive ones: MEASURED on agentic-tpm, 2026-09-12, ~51 turns each, and reviews alone were 58%
+   * of the run's spend. So the hat that answers a reviewer now wakes up knowing what the hat that
+   * wrote the code knew.
+   */
+  readonly recall?: string;
 }
 
 /**

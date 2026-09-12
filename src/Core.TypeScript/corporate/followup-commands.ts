@@ -187,6 +187,14 @@ export const ATTEMPT_IN_PROMPT = 400;
 /** How many earlier attempts go in the prompt. The rest stay in the record for `observe`. */
 export const ATTEMPTS_IN_PROMPT = 2;
 
+/**
+ * How much recalled memory a follow-up session is handed.
+ *
+ * Bounded like everything else that crosses this seam: memory is meant to save a session from
+ * working something out again, and a wall of it would cost more context than the deriving did.
+ */
+export const RECALL_IN_PROMPT = 4000;
+
 /** The detail, cut, saying where the whole of it is - which is the worldview, not another message. */
 function detailForPrompt(detail: string, workId: string): string {
   const t = detail.trim();
@@ -231,6 +239,9 @@ export function commandFollowUp(spec: CommandSpec, fallbackCwd: string): (r: Fol
       ...(r.pipelines === undefined ? {} : { ORG_PIPELINE_POLICY: r.pipelines }),
       ORG_ASSIGNEE: r.hatId,
       ORG_BRANCH: r.branch,
+      // What this hat already knows. Absent when the organization has no memory configured, which
+      // is exactly how it read before the circuit reached this seam.
+      ...(r.recall === undefined || r.recall.trim() === "" ? {} : { ORG_RECALL: r.recall.trim().slice(0, RECALL_IN_PROMPT) }),
       ...(r.base === undefined ? {} : { ORG_BASE: r.base }),
       ...(r.workdir === undefined ? {} : { ORG_WORKDIR: r.workdir }),
       ...(r.conflicts === undefined ? {} : { ORG_CONFLICTS: JSON.stringify(r.conflicts) }),

@@ -17,7 +17,7 @@ import { existsSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "no
 import { spawnSync } from "node:child_process";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { commandFollowUp, commandFollowUpReview, commandVerifier } from "./followup-commands";
+import { commandFollowUp, commandFollowUpReview, commandVerifier, RECALL_IN_PROMPT } from "./followup-commands";
 import { ferry } from "./ferry";
 import type { FollowUpRequest } from "./change-followup";
 
@@ -347,4 +347,48 @@ describe("THE SCRATCH COPY A REVIEW MAKES IS THE ORGANIZATION'S TO REMOVE", () =
       rmSync(harness, { recursive: true, force: true });
     }
   }, 30_000);
+});
+
+describe("A FOLLOW-UP SESSION WAKES UP KNOWING WHAT THE HAT ALREADY LEARNED", () => {
+  // The memory circuit was wired to the ORIGINAL work walk and stopped there: the hat that wrote the
+  // change got what it had learned, and every follow-up session that answers a reviewer started from
+  // nothing - on the same repository, about the same change. Those are the expensive sessions.
+  async function told(recall: string | undefined): Promise<Record<string, string>> {
+    const dir = mkdtempSync(join(tmpdir(), "followup-recall-"));
+    const seen = join(dir, "env.json");
+    const stub = join(dir, "stub.cjs");
+    writeFileSync(
+      stub,
+      'require("fs").writeFileSync(' + JSON.stringify(seen) + ',JSON.stringify({recall:process.env.ORG_RECALL||""}));' +
+        'process.stdout.write(JSON.stringify({ decisions: [], syncWithTarget: false, summary: "s" }));',
+    );
+    try {
+      await commandFollowUp({ command: "node", args: [stub] }, dir)({
+        workId: "task-1",
+        hatId: "backend_implementer",
+        branch: "defect/x",
+        mode: "triage",
+        canSync: false,
+        items: [],
+        ...(recall === undefined ? {} : { recall }),
+      } as never);
+      return JSON.parse(readFileSync(seen, "utf-8")) as Record<string, string>;
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
+    }
+  }
+
+  test("recalled memory reaches the session", async () => {
+    expect((await told("[mem-7] prefer the repository's own fixture over a new one")).recall).toContain("mem-7");
+  });
+
+  test("no memory configured reads exactly as it did before - the variable is absent", async () => {
+    expect((await told(undefined)).recall).toBe("");
+    expect((await told("   ")).recall).toBe("");
+  });
+
+  test("a wall of memory is bounded - it must cost less than the deriving it saves", async () => {
+    const huge = `[mem-1] ${"z".repeat(20000)}`;
+    expect((await told(huge)).recall.length).toBeLessThanOrEqual(RECALL_IN_PROMPT);
+  });
 });
