@@ -1,0 +1,12 @@
+{
+  "pr_number": 17341,
+  "archive_path": "docs/history/pr-reviews/2026/09/12/PR-17341-deps-bump-dotnet-sdk-from-10-0-400-to-10-0-401.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-12T23:21:40.190Z",
+  "schema_version": "v1",
+  "commit_sha": "3a0c16a5dbe2bb45533552a29aa1af6449212519",
+  "title": "deps: Bump dotnet-sdk from 10.0.400 to 10.0.401",
+  "state": "MERGED",
+  "merged_at": "2026-09-12T23:20:55Z",
+  "head_ref": "dependabot/dotnet_sdk/dotnet-sdk-10.0.401"
+}
