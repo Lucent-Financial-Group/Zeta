@@ -41,6 +41,18 @@ name: lean-cslib
 #     of which cslib's own build .................. 186 MB   (no CDN -- compiled here)
 #   ~/.cache/mathlib for THIS pinned Mathlib rev ............ 430 MB
 #
+# AND THEN MEASURED ON THE REAL RUNNER -- run 34668990043, this lane's first, with every
+# cache cold (ubuntu-24.04, 4 vCPU). Per step: checkout 13s · cache restores 0s (miss) ·
+# apt-archive restore 4s · install.sh 103s · `lake exe cache get` 93s · setup-bun 1s ·
+# `lake build` 188s · artifact guard <1s · FLP axiom audit 3s. TOTAL 406 s = 6m46s, cold,
+# and green. `lake exe cache get` came in at 93s against 102s locally, so the local numbers
+# above transfer; `lake build` is 188s against 56s, which is the 4-vCPU runner.
+#
+# The part worth someone's follow-up: install.sh at ZETA_HOST_TIER=full is 103 s, a quarter
+# of the job, for a lane that needs elan and bun. The tier is declared `full` only because
+# lean-proof.yml declares it (see the step below). Trimming it is a real measurement nobody
+# has taken, and it is recorded in apt-job-timings.measured.json's row for this job too.
+#
 # TWO THINGS FOLLOW, and the first is the one that unblocked this lane.
 #
 # 1. "The lake cache is multi-GB" -- the roster's reason for zero CI -- was true of
