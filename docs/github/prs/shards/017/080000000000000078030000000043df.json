@@ -1,0 +1,12 @@
+{
+  "pr_number": 17375,
+  "archive_path": "docs/history/pr-reviews/2026/09/12/PR-17375-fix-research-re-record-the-minigrid-carrier-under-numpy-2-5-3-trajectory-unchang.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-12T17:15:41.877Z",
+  "schema_version": "v1",
+  "commit_sha": "9803a76a8316c26f7a85932c0637c84e0ce27962",
+  "title": "fix(research): re-record the MiniGrid carrier under numpy 2.5.3 — trajectory unchanged",
+  "state": "MERGED",
+  "merged_at": "2026-09-12T17:14:58Z",
+  "head_ref": "shadow/numpy-2-5-3-carrier-rerecord"
+}
