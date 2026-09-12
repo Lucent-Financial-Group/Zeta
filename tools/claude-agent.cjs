@@ -145,20 +145,34 @@ function claudeBudgetMs() {
  * shells and a jest run - with its own mongod - kept running after the agent was gone, competing
  * with the next step's test runs for the machine.
  */
-/** Every process on the machine as { pid, ppid, created } - Windows only; empty when unreadable. */
+/** Every process on the machine as { pid, ppid, created }.
+ *
+ * Windows carries a creation stamp so a recycled pid is never killed.
+ * Unix `ps` has no FILETIME; pid reuse in the session window is the residual
+ * risk, named rather than papered over. Empty when unreadable.
+ */
 function processTable() {
-  const r = spawnSync(
-    "powershell",
-    ["-NoProfile", "-NonInteractive", "-Command",
-      "Get-CimInstance Win32_Process | ForEach-Object { '' + $_.ProcessId + ',' + $_.ParentProcessId + ',' + $_.CreationDate.ToFileTimeUtc() }"],
-    { encoding: "utf-8", shell: false, windowsHide: true, timeout: 30_000, maxBuffer: 16 * 1024 * 1024 },
-  );
+  if (process.platform === "win32") {
+    const r = spawnSync(
+      "powershell",
+      ["-NoProfile", "-NonInteractive", "-Command",
+        "Get-CimInstance Win32_Process | ForEach-Object { '' + $_.ProcessId + ',' + $_.ParentProcessId + ',' + $_.CreationDate.ToFileTimeUtc() }"],
+      { encoding: "utf-8", shell: false, windowsHide: true, timeout: 30_000, maxBuffer: 16 * 1024 * 1024 },
+    );
+    if (r.status !== 0) return [];
+    return String(r.stdout || "")
+      .split(/\r?\n/)
+      .map((l) => l.trim().split(","))
+      .filter((p) => p.length === 3 && p[0] !== "")
+      .map(([pid, ppid, created]) => ({ pid: Number(pid), ppid: Number(ppid), created: String(created) }));
+  }
+  const r = spawnSync("ps", ["-Ao", "pid=,ppid="], { encoding: "utf-8", timeout: 10_000, maxBuffer: 16 * 1024 * 1024 });
   if (r.status !== 0) return [];
   return String(r.stdout || "")
-    .split(/\r?\n/)
-    .map((l) => l.trim().split(","))
-    .filter((p) => p.length === 3 && p[0] !== "")
-    .map(([pid, ppid, created]) => ({ pid: Number(pid), ppid: Number(ppid), created: String(created) }));
+    .split(/\n/)
+    .map((l) => l.trim().split(/\s+/))
+    .filter((p) => p.length >= 2 && p[0] !== "")
+    .map(([pid, ppid]) => ({ pid: Number(pid), ppid: Number(ppid), created: "" }));
 }
 
 /** The live descendants of `rootPid`, including children of ones already seen whose parent has died. */
@@ -193,7 +207,19 @@ function sweepLeftovers(win, rootPid, seen, startedAt) {
     try {
       process.kill(-rootPid, "SIGKILL");
     } catch {
-      // the group is gone - nothing was left behind
+      // the group is gone
+    }
+    // Detached grandchildren are their OWN process group (Node `detached:true`,
+    // Claude Code's shells). kill(-rootPid) never reaches them. The pids were
+    // sampled while the session still lived; after reparent-to-init a ppid
+    // walk cannot find them. AIAGENT-1662 on Linux CI: waitUntil 20s, still alive.
+    for (const pid of seen.keys()) {
+      if (pid === process.pid || pid === rootPid) continue;
+      try {
+        process.kill(pid, "SIGKILL");
+      } catch {
+        // already gone
+      }
     }
     return;
   }
@@ -231,8 +257,14 @@ function runBounded(command, args, { cwd, env: childEnvironment, input, budgetMs
     const err = [];
     let timedOut = false;
     let error;
-    child.stdout.on("data", (b) => out.push(b));
-    child.stderr.on("data", (b) => err.push(b));
+    child.stdout.on("data", (b) => {
+      out.push(b);
+      sample();
+    });
+    child.stderr.on("data", (b) => {
+      err.push(b);
+      sample();
+    });
     child.on("error", (e) => {
       error = e;
     });
@@ -244,10 +276,14 @@ function runBounded(command, args, { cwd, env: childEnvironment, input, budgetMs
     const startedAt = Date.now();
     const seen = new Map(); // pid -> creation stamp
     const sample = () => {
-      if (!win || child.pid === undefined) return;
+      if (child.pid === undefined) return;
       for (const p of descendantsOf(child.pid, seen)) seen.set(p.pid, p.created);
     };
-    const sampler = win ? setInterval(sample, 20_000) : undefined;
+    // Windows CIM is expensive so 20s; Unix `ps` is cheap and the 2.5s budget
+    // tests would miss a 20s sampler entirely. Also sample on spawn so a
+    // session shorter than the interval still records its tree.
+    const sampler = setInterval(sample, win ? 20_000 : 50);
+    child.on("spawn", sample);
     const stopTree = () => {
       if (win) {
         if (child.pid !== undefined) spawnSync("taskkill", ["/T", "/F", "/PID", String(child.pid)], { shell: false, windowsHide: true });
@@ -256,6 +292,14 @@ function runBounded(command, args, { cwd, env: childEnvironment, input, budgetMs
           process.kill(-child.pid, "SIGKILL");
         } catch {
           child.kill("SIGKILL");
+        }
+        for (const pid of seen.keys()) {
+          if (pid === process.pid) continue;
+          try {
+            process.kill(pid, "SIGKILL");
+          } catch {
+            // already gone
+          }
         }
       }
     };
