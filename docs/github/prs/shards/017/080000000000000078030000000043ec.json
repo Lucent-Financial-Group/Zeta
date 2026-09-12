@@ -1,0 +1,12 @@
+{
+  "pr_number": 17388,
+  "archive_path": "docs/history/pr-reviews/2026/09/12/PR-17388-fix-gate-move-five-f-executing-cross-verify-suites-out-of-the-hermetic-tier-unbl.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-12T22:55:50.450Z",
+  "schema_version": "v1",
+  "commit_sha": "6c39c5fe84a8efe7c8d793d28840ecf8efb1df3a",
+  "title": "fix(gate): move five F#-executing cross-verify suites out of the hermetic tier (unblocks #17341)",
+  "state": "MERGED",
+  "merged_at": "2026-09-12T22:55:07Z",
+  "head_ref": "fix/ts-hermetic-provisions-dotnet-sdk"
+}
