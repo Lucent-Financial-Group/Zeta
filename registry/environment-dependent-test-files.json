@@ -22,5 +22,10 @@
     "dependency": ".NET SDK 10.0.302 (global.json), Python 3, and a built src/Core/bin/Debug/net10.0/Zeta.Core.dll",
     "reason": "The non-skipping wrapper compares a finite F# lexical-geometric receipt with an independently authored Python SHA-256 oracle. It requires the Core receipt assembly and runtimes deliberately absent from the JavaScript-only hermetic tier. The wrapper remains mandatory in test (TS environment-dependent), where the full declared install runs and the Bayesian build realizes the Core dependency; an F# receipt, Python oracle, canonical-order control, visible correction-conflict control, or coordinate-mutation disagreement remains red.",
     "workitem": ""
+  },
+  {
+    "path": "src/Core.TypeScript/research/composable-factor-benchmark/gaussian-topology-cross-verify.test.ts",
+    "dependency": ".NET SDK per global.json (it runs `dotnet fsi` on gaussian-topology-oracle.fsx via tests/cross-verification/composable-factor-benchmark/cross-verify.ts)",
+    "reason": "MEASURED 2026-09-12 on the dotnet-sdk 10.0.400 -> 10.0.401 bump: this test builds an F# oracle and the hermetic lane provisions no .NET SDK, so it failed with CFB-A-FSHARP-BUILD-FAILED / 'A compatible .NET SDK was not found. Requested SDK version: 10.0.401'. IT WAS NEVER HERMETIC. It had been borrowing whatever SDK the runner image shipped, which satisfied the old pin by coincidence and stopped satisfying the new one -- `rollForward: latestPatch` means 10.0.401 requires >= 10.0.401 and the image has no such SDK. So this entry does not move a passing test out of the tier; it names a dependency the test always had. A test that shells out to a toolchain is by definition sensitive to the state of the machine, which is precisely what this config's own header says hermetic excludes: 'INSENSITIVE TO THE STATE OF THE MACHINE'. It continues to run in `test (TS environment-dependent)`, which provisions the SDK, so this is a tier split and not a deletion wearing a split's face."
   }
 ]

@@ -146,6 +146,7 @@ pathIgnorePatterns = [
   "src/Core.TypeScript/zflash/esp-inject.test.ts",
   "src/Core.TypeScript/research/signed-probit-ep-cross-verify.test.ts",
   "src/Core.TypeScript/research/lexical-geometric-receipt-cross-verify.test.ts",
+  "src/Core.TypeScript/research/composable-factor-benchmark/gaussian-topology-cross-verify.test.ts",
 ]
 coveragePathIgnorePatterns = [
   "**/BenchmarkDotNet.Artifacts/**",
