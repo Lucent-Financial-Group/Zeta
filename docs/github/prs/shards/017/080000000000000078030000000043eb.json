@@ -1,0 +1,12 @@
+{
+  "pr_number": 17387,
+  "archive_path": "docs/history/pr-reviews/2026/09/12/PR-17387-fix-081m2brqwct087g0r000xsxy3v-drop-receipt-existssync-park-slots-tests.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-12T22:09:43.821Z",
+  "schema_version": "v1",
+  "commit_sha": "2c43b7fbdaf863c0e931b99d57cbf5847315bc8e",
+  "title": "fix(081M2BRQWCT087G0R000XSXY3V): drop receipt existsSync; park slots tests",
+  "state": "MERGED",
+  "merged_at": "2026-09-12T22:09:00Z",
+  "head_ref": "cursor/followup-toctou-ambient-time-27c5"
+}
