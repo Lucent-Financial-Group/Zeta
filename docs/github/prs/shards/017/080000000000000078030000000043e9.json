@@ -1,0 +1,12 @@
+{
+  "pr_number": 17385,
+  "archive_path": "docs/history/pr-reviews/2026/09/12/PR-17385-perf-corporate-the-organization-stops-re-reading-what-it-already-knew.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-12T21:10:36.780Z",
+  "schema_version": "v1",
+  "commit_sha": "89d3afbbeb0c060faaddfc9e1f5400a55554e37e",
+  "title": "perf(corporate): the organization stops re-reading what it already knew",
+  "state": "MERGED",
+  "merged_at": "2026-09-12T21:08:59Z",
+  "head_ref": "org-cost-and-model"
+}
