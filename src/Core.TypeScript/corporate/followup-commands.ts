@@ -20,7 +20,7 @@
  * refusal carried back to the runtime - never a default that pretends it succeeded.
  */
 
-import { spawnSync } from "node:child_process";
+import { spawn, spawnSync } from "node:child_process";
 import { mkdirSync, mkdtempSync, readdirSync, readFileSync, renameSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
@@ -50,6 +50,72 @@ export interface CommandSpec {
 
 const MAX_OUTPUT = 32 * 1024 * 1024;
 
+/**
+ * THE SAME CALL, WITHOUT HOLDING THE ONLY THREAD.
+ *
+ * MEASURED on agentic-tpm, 2026-09-12: `--parallel 3` was set, the runtime queued both requests and
+ * said "3 at a time" in its own record - and task-032's session began at 15:15:46, the second
+ * task-040's ended. Perfectly serial. `ferry` was never at fault: it starts N ferries with
+ * `Promise.all`, but the first one called a session through `spawnSync`, which BLOCKS THE ONLY
+ * THREAD for as long as the session runs (21.6 min here). No other ferry can be scheduled while a
+ * thread is blocked, so the degree-of-parallelism could never be anything but one.
+ *
+ * `ferry.test.ts` passed throughout, because it is given async work. The abstraction was right and
+ * the port underneath it was synchronous - so the composition was the thing nobody tested.
+ *
+ * Returns exactly what `spawnSync` returns (`status`, `stdout`, `stderr`, `error`), so every caller
+ * reads the result the same way it always did; only the awaiting changed.
+ */
+async function runAsync(
+  spec: CommandSpec,
+  extra: readonly string[],
+  cwd: string,
+  env: Record<string, string>,
+  input?: string,
+): Promise<{ status: number | null; stdout: string; stderr: string; error?: Error }> {
+  return await new Promise((resolve) => {
+    const child = spawn(spec.command, [...spec.args, ...extra], {
+      cwd,
+      env: { ...process.env, ...env },
+      shell: false,
+      windowsHide: true,
+    });
+    let out = "";
+    let err = "";
+    let over = false;
+    let failed: Error | undefined;
+    let done = false;
+    // A child that outruns the buffer is stopped, exactly as spawnSync's maxBuffer stops one.
+    const cap = (add: string, which: "out" | "err"): void => {
+      if (over) return;
+      if (which === "out") out += add;
+      else err += add;
+      if (out.length + err.length <= MAX_OUTPUT) return;
+      over = true;
+      failed = new Error(`${spec.command} wrote more than ${String(MAX_OUTPUT)} bytes`);
+      child.kill("SIGKILL");
+    };
+    child.stdout?.setEncoding("utf-8");
+    child.stderr?.setEncoding("utf-8");
+    child.stdout?.on("data", (d: string) => { cap(d, "out"); });
+    child.stderr?.on("data", (d: string) => { cap(d, "err"); });
+    const timer = setTimeout(() => {
+      failed ??= new Error(`${spec.command} did not finish within ${String(spec.timeoutMs ?? 3_000_000)}ms`);
+      child.kill("SIGKILL");
+    }, spec.timeoutMs ?? 3_000_000);
+    const settle = (status: number | null): void => {
+      if (done) return;
+      done = true;
+      clearTimeout(timer);
+      resolve({ status, stdout: out, stderr: err, ...(failed === undefined ? {} : { error: failed }) });
+    };
+    child.on("error", (e: Error) => { failed ??= e; settle(null); });
+    child.on("close", (code) => { settle(failed === undefined ? code : null); });
+    if (input !== undefined) child.stdin?.end(input);
+    else child.stdin?.end();
+  });
+}
+
 function run(spec: CommandSpec, extra: readonly string[], cwd: string, env: Record<string, string>, input?: string) {
   return spawnSync(spec.command, [...spec.args, ...extra], {
     cwd,
@@ -67,7 +133,7 @@ const tail = (t: string | null | undefined): string => String(t ?? "").trim().sp
 /** A description author behind a command. See the module header for its protocol. */
 export function commandDescriber(spec: CommandSpec, fallbackCwd: string): (r: DescribeRequest) => Promise<PortResult<string>> {
   return async (r) => {
-    const ran = run(spec, ["describe", r.workId], r.workdir ?? fallbackCwd, {
+    const ran = await runAsync(spec, ["describe", r.workId], r.workdir ?? fallbackCwd, {
       ORG_MR_SECTIONS: sectionsBrief(r.sections),
       ...(r.settled === undefined || r.settled.length === 0
         ? {}
@@ -135,7 +201,7 @@ export function commandFollowUp(spec: CommandSpec, fallbackCwd: string): (r: Fol
       ...(i.reopenedTimes === undefined || i.reopenedTimes < 2 ? {} : { turnedBackTimes: i.reopenedTimes }),
       ...(i.deferred === undefined ? {} : { deferredBefore: i.deferred.why }),
     }));
-    const ran = run(spec, ["follow-up", r.workId], r.workdir ?? fallbackCwd, {
+    const ran = await runAsync(spec, ["follow-up", r.workId], r.workdir ?? fallbackCwd, {
       ORG_FOLLOWUP_MODE: r.mode,
       ORG_ACTION_ITEMS: JSON.stringify(items),
       ORG_CAN_SYNC: r.canSync ? "1" : "0",
@@ -231,7 +297,7 @@ export function commandAnswerChecker(spec: CommandSpec, fallbackCwd: string) {
     const file = join(dir, "check.json");
     try {
       writeFileSync(file, JSON.stringify({ description: r.description ?? null, items: r.items }), { mode: 0o600 });
-      const ran = run(spec, ["check-answers", r.workId], r.workdir ?? fallbackCwd, { ORG_CHECK_FILE: file, ORG_BRANCH: r.branch });
+      const ran = await runAsync(spec, ["check-answers", r.workId], r.workdir ?? fallbackCwd, { ORG_CHECK_FILE: file, ORG_BRANCH: r.branch });
       if (ran.error !== undefined) return { ok: false, reason: `the answer checker '${spec.command}' could not run: ${ran.error.message}` };
       if (ran.status !== 0) return { ok: false, reason: `the answer checker exited ${String(ran.status)}: ${tail(ran.stderr)}` };
       const out = lastJson(ran.stdout);
@@ -273,10 +339,10 @@ export function commandChangeReader(spec: CommandSpec, fallbackCwd: string) {
  */
 export function commandFollowUpReview(spec: CommandSpec, fallbackCwd: string) {
   return async (r: FollowUpReviewRequest): Promise<PortResult<FollowUpReviewVerdict>> => {
-    const ran = run(spec, [r.gate, r.workId], r.workdir ?? fallbackCwd, {
+    const ran = await runAsync(spec, [r.gate, r.workId], r.workdir ?? fallbackCwd, {
       ORG_REVIEW_AS: r.reviewerHatId,
       ORG_BRANCH: r.branch,
-      ORG_FOLLOWUP_REVIEW: JSON.stringify({ from: r.from, to: r.to, items: r.items }),
+      ORG_FOLLOWUP_REVIEW: JSON.stringify({ from: r.from, to: r.to, items: r.items, ...(r.alreadyProven === undefined ? {} : { alreadyProven: r.alreadyProven }) }),
       ...(r.workdir === undefined ? {} : { ORG_WORKDIR: r.workdir }),
     });
     if (ran.error !== undefined) return { ok: false, reason: `the reviewer '${spec.command}' could not run: ${ran.error.message}` };
@@ -308,7 +374,7 @@ export function commandFollowUpReview(spec: CommandSpec, fallbackCwd: string) {
  */
 export function commandFollowUpPlanner(spec: CommandSpec, fallbackCwd: string) {
   return async (r: FollowUpPlanRequest): Promise<PortResult<FollowUpPlan>> => {
-    const ran = run(spec, ["plan-round", r.workId], fallbackCwd, {
+    const ran = await runAsync(spec, ["plan-round", r.workId], fallbackCwd, {
       ORG_ROUND: JSON.stringify({
         workId: r.workId,
         available: r.available,

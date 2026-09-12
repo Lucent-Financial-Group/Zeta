@@ -68,6 +68,31 @@ describe("WHAT HAPPENED TO A REQUEST BECOMES DELIVERIES, AND ONLY READS ARE MADE
     expect(r.calls).not.toContain("--method");
   });
 
+  // MEASURED on !163/!164, 2026-09-12: this announcement arrives on every push as an ORDINARY note,
+  // so it became an action item, and three follow-up rounds spent a session each deciding that a bot
+  // had announced itself. The review it announces is a separate note and is still read.
+  test("a review bot's 'I have started' announcement is not work; the same bot's actual review still is", () => {
+    const review = "<details open>\n\n## Architect Code Review\n\n" + "x".repeat(400) + "\n\nis actively reviewing this merge request";
+    const r = poll(
+      {
+        "projects/:id/merge_requests/162/notes": [
+          { id: 21, system: false, body: "Seen, AI Code Review Agent is actively reviewing this merge request.", author: { username: "jenkins" } },
+          { id: 22, system: false, body: review, author: { username: "jenkins" } },
+          { id: 23, system: false, body: "Please explain the race.", author: { username: "reviewer" } },
+        ],
+        "projects/:id/merge_requests/162": { state: "opened", target_branch: "master" },
+        "projects/:id/repository/branches/master": { commit: { id: "abcdef0123456789" } },
+      },
+      [{ workId: "task-24", branch: "defect/AIAGENT-1660", url: MR }],
+    );
+    expect(r.status).toBe(0);
+    const ids = r.deliveries.map((d) => d["deliveryId"]);
+    expect(ids).not.toContain("note-21");
+    // Length is what separates an announcement from a review - the phrase alone must not drop one.
+    expect(ids).toContain("note-22");
+    expect(ids).toContain("note-23");
+  });
+
   test("a request somebody merged or closed is reported as such", () => {
     const r = poll(
       {

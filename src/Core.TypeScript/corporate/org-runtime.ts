@@ -139,6 +139,8 @@ import {
   type FollowUpRequest,
   type FollowUpReviewRequest,
   type FollowUpReviewVerdict,
+  itemsStillToProve,
+  PROVEN_IN_BRANCH,
 } from "./change-followup";
 import { afterOpenKey, DEFAULT_REVIEW_ROUNDS, missingSections, type ChangeRequestConfig, type DescribeRequest } from "./change-request";
 import { autoApproveReview, simulatedChangeControl, simulatedIntake, simulatedTestRunner, simulatedWorkExecutor } from "./adapters";
@@ -4349,6 +4351,12 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
             reviewRejected = `no independent reviewer for ${String(gate)}`;
             break;
           }
+          // ── A PROOF IS SPENT ONCE ────────────────────────────────────────────────────────────
+          // An item a reviewer already proved is in the branch and nobody has turned it back; it is
+          // still OPEN only because the round it rode in did not push. Re-proving it is the 42-minute
+          // review. If every item has been proved already, the whole set goes - a review with nothing
+          // to judge is not a review.
+          const { toProve, provenAlready } = itemsStillToProve(accepted, items);
           const v = await deps.reviewFollowUp({
             gate: String(gate),
             reviewerHatId: reviewer.id,
@@ -4357,7 +4365,8 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
             ...(handle.workdir === undefined ? {} : { workdir: handle.workdir }),
             from,
             to: afterRev.value.commit,
-            items: accepted.filter((d) => d.outcome !== "deferred").map((d) => ({ summary: summaryOf.get(d.actionItemId) ?? d.actionItemId, outcome: d.outcome, how: d.how })),
+            items: toProve.map((d) => ({ summary: summaryOf.get(d.actionItemId) ?? d.actionItemId, outcome: d.outcome, how: d.how })),
+            ...(provenAlready.length === 0 ? {} : { alreadyProven: provenAlready.map((id) => summaryOf.get(id) ?? id) }),
           });
           const verdict = !v.ok ? `could not be reviewed: ${v.reason}` : v.value.approved ? "approved" : "rejected";
           note({
@@ -4414,7 +4423,7 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
               workId,
               actionItemId: id,
               why:
-                `your change for this is in the branch and the reviewer proved it - it is NOT what turned the round back. ` +
+                `${PROVEN_IN_BRANCH} - it is NOT what turned the round back. ` +
                 `Leave it alone and fix only what was named: ${reviewRejected as string}`,
             },
           });

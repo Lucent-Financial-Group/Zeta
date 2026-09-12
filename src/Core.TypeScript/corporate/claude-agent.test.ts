@@ -253,6 +253,10 @@ describe("AFTER THE HANDOFF: THE DESCRIPTION AND THE FOLLOW-UP", () => {
     const items = JSON.stringify([{ id: "gitlab:note-1", kind: "comment", summary: "a very long review comment" }]);
     const r = run(["follow-up", "task-9"], ok({ decisions: [], syncWithTarget: false, summary: "s" }), { ORG_ACTION_ITEMS: items, ORG_CAN_SYNC: "0" });
     expect(r.seen?.input).toContain("WHAT IS PRINTED ABOVE IS WHAT YOU MUST DECIDE");
+    // MEASURED 2026-09-12: a session returned twelve decisions where one item was open; eleven were
+    // discarded, and the work behind them with it.
+    expect(r.seen?.input).toContain("THESE ARE THE ONLY ITEMS TO DECIDE");
+    expect(r.seen?.input).toContain("is DISCARDED");
     expect(r.seen?.input).toContain("is your worldview");
     expect(r.seen?.input).toContain("--passage <n>");
     expect(r.seen?.input).toContain("fills its context and answers nothing");
@@ -301,6 +305,28 @@ describe("A FAILURE IS NEVER FILED AS WORK DONE", () => {
     const r = run(["work", "task-9"], { type: "result", subtype: "success", is_error: true, result: "Not logged in · Please run /login" });
     expect(r.status).not.toBe(0);
     expect(r.stderr).toContain("Not logged in");
+    r.cleanup();
+  });
+
+  // A LIMIT IS NOT A FAILURE OF THE WORK - it says when it lifts, and leaves by its own code so the
+  // organization can wait for that instead of asking again on its usual cadence. MEASURED on
+  // agentic-tpm, 2026-09-12: six hours of runs read this as an ordinary follow-up failure.
+  test("the provider's usage limit exits 7 and carries the reset it named", () => {
+    const r = run(["work", "task-9"], {
+      type: "result",
+      subtype: "success",
+      is_error: true,
+      result: "You've hit your limit · resets Sep 13, 7am (America/New_York)",
+    });
+    expect(r.status).toBe(7);
+    expect(r.stderr).toContain("usage limit is reached");
+    expect(r.stderr).toContain("Sep 13, 7am (America/New_York)");
+    r.cleanup();
+  });
+
+  test("an ordinary error still exits 4, so the limit is the exception and not the rule", () => {
+    const r = run(["work", "task-9"], { type: "result", subtype: "success", is_error: true, result: "Not logged in · Please run /login" });
+    expect(r.status).toBe(4);
     r.cleanup();
   });
 
