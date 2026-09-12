@@ -146,6 +146,14 @@ pathIgnorePatterns = [
   "src/Core.TypeScript/zflash/esp-inject.test.ts",
   "src/Core.TypeScript/research/signed-probit-ep-cross-verify.test.ts",
   "src/Core.TypeScript/research/lexical-geometric-receipt-cross-verify.test.ts",
+  # Five F#-executing cross-verify suites, moved 2026-09-12. They were never
+  # hermetic -- they shell to `dotnet`/`fsi` and passed only while the runner
+  # image happened to ship the SDK global.json named. See the registry entries.
+  "src/Core.TypeScript/research/adinkra-ecc/nonquotient-adinkra-halfspin-decomposition-cross-verify.test.ts",
+  "src/Core.TypeScript/research/adinkra-ecc/nonquotient-adinkra-halfspin-intertwiner-fsharp-cross-verify.test.ts",
+  "src/Core.TypeScript/research/adinkra-ecc/nonquotient-half-spin-bracket-fsharp-cross-verify.test.ts",
+  "src/Core.TypeScript/research/multilayer-bnn-online-update-cross-verify.test.ts",
+  "src/Core.TypeScript/research/reference-frame-heterarchy-cross-verify.test.ts",
 ]
 coveragePathIgnorePatterns = [
   "**/BenchmarkDotNet.Artifacts/**",
