@@ -1,0 +1,12 @@
+{
+  "pr_number": 17349,
+  "archive_path": "docs/history/pr-reviews/2026/09/12/PR-17349-deps-bump-determinatesystems-nix-installer-action-from-22-to-23.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-12T15:08:46.165Z",
+  "schema_version": "v1",
+  "commit_sha": "701e8c7fc97fa800809191e6c8c3f6d313e98ea3",
+  "title": "deps: Bump DeterminateSystems/nix-installer-action from 22 to 23",
+  "state": "MERGED",
+  "merged_at": "2026-09-12T15:08:05Z",
+  "head_ref": "dependabot/github_actions/DeterminateSystems/nix-installer-action-23"
+}
