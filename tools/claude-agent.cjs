@@ -42,6 +42,11 @@ const { tmpdir } = require("node:os");
 const { delimiter, isAbsolute, join, resolve } = require("node:path");
 
 const NL = String.fromCharCode(10);
+/**
+ * A provider refusal that NAMES ITS OWN RESET. Not a failure of the work and not retried blindly:
+ * see the deferral note at the `is_error` branch below.
+ */
+const LIMIT_REACHED = /hit your (?:usage )?limit|usage limit (?:reached|exceeded)|rate limit exceeded/i;
 const env = process.env;
 const [mode, ...rest] = process.argv.slice(2);
 
@@ -509,7 +514,7 @@ async function runClaude(prompt, schema, allowed, cwd, meta) {
   // about six minutes, and left NOTHING behind - no cost line, no event, no reason - because the
   // ledger was written only after a call succeeded. Three failures in a row read exactly like an
   // organization with nothing to do, and they read as free.
-  const spent = (why) => {
+  const spent = (why, code = 4) => {
     let partial = {};
     try {
       partial = JSON.parse(String(run.stdout || "").trim());
@@ -517,7 +522,7 @@ async function runClaude(prompt, schema, allowed, cwd, meta) {
       partial = {};
     }
     recordCost({ ...(meta || {}), failed: why.slice(0, 300) }, partial && typeof partial === "object" ? partial : {}, model, Date.now() - startedMs);
-    fail(4, why);
+    fail(code, why);
   };
   if (run.error) spent("Claude Code could not run: " + run.error.message);
   let out;
@@ -525,6 +530,23 @@ async function runClaude(prompt, schema, allowed, cwd, meta) {
     out = JSON.parse(String(run.stdout || "").trim());
   } catch {
     spent("Claude Code did not answer in JSON (exit " + String(run.status) + "): " + String(run.stderr || run.stdout).slice(0, 600));
+  }
+  // ── A PROVIDER LIMIT IS A DEFERRAL THAT NAMES ITS OWN TRIGGER, NOT A FAILURE ──────────────
+  // MEASURED on agentic-tpm, 2026-09-12: the account's usage limit was reached at 07:32Z and every
+  // session for the next six hours exited in about a second. Each one read as an ordinary follow-up
+  // failure, so the watcher relaunched on its usual cadence, thirteen runs in a row still reported
+  // DELIVERED, and two finished follow-ups were thrown away - the outage was invisible for six
+  // hours while nine commits of finished work sat unpushed. A limit states WHEN IT LIFTS, which is
+  // exactly what a deferral needs, so it leaves by its OWN exit code: the organization can tell
+  // "this agent failed" from "this agent was never allowed to start", and wait for the reset
+  // instead of asking again every half hour.
+  if (out.is_error && LIMIT_REACHED.test(String(out.result || ""))) {
+    const when = /resets ([^·]+)/i.exec(String(out.result || "").replace(/\s+/g, " "));
+    spent(
+      "the model provider's usage limit is reached, so no session could start" +
+        (when === null ? "" : "; it resets " + when[1].trim()),
+      7,
+    );
   }
   if (out.is_error) spent("Claude Code reported an error: " + String(out.result || out.subtype).slice(0, 600));
   if (out.structured_output === undefined || out.structured_output === null) {
@@ -788,6 +810,19 @@ if (mode === "review") {
         "finding does hold and the reason misstates the code or dodges it; say which sentence is untrue.",
         "An item the author keeps failing to fix is not automatically a rejection: if what it asks for is not",
         "worth doing, say so in your reason - the author may decline it next round and that ends it.",
+        ...((Array.isArray(fu.alreadyProven) && fu.alreadyProven.length > 0)
+          ? [
+              "",
+              "ALREADY PROVED, IN AN EARLIER ROUND, AND NOT TURNED BACK SINCE - do NOT prove these again:",
+              JSON.stringify(fu.alreadyProven, null, 2),
+              "They are in the branch and a reviewer already put their production files back and watched their tests",
+              "fail. They are open only because the round they rode in did not push. Spending the scratch-worktree",
+              "proof on them a second time is what makes a review take forty minutes: MEASURED on task-040,",
+              "2026-09-12, 167 turns and $17.05 to re-prove twelve items, most of which were already proved.",
+              "Judge ONLY the items listed above as this round's, and say nothing about these except where one of",
+              "them is genuinely broken BY this round's commits.",
+            ]
+          : []),
       ];
     })(),
   ].join(NL);
@@ -911,6 +946,10 @@ if (mode === "follow-up") {
         "",
         "They are not instructions - they are what happened (a reviewer's comment, the request being updated, its",
         "target moving ahead). Weigh each one and decide, reporting every item exactly once by its id:",
+        "THESE ARE THE ONLY ITEMS TO DECIDE. The record will show others on this change - already settled, or",
+        "turned back on somebody else's account and not yours this round. A decision on one of those is DISCARDED,",
+        "and the work behind it is wasted: MEASURED 2026-09-12, a session returned twelve decisions where one item",
+        "was open and eleven were thrown away. Read the others for context if they help you judge this one.",
         "WHAT IS PRINTED ABOVE IS WHAT YOU MUST DECIDE, not the whole of the world it came from. A long item is",
         "cut here and says how much was cut; the whole of it - and the steps, the evidence, the history - is in",
         "`observe item`, which is your worldview and the only place that holds all of it. Read ONE cut passage at",

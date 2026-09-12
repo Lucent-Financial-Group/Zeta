@@ -127,14 +127,49 @@ export interface ItemDecision {
   readonly respond?: boolean;
 }
 
+// A follow-up's CODE, put through the same review the original work passed before it is pushed.
+//
+// MEASURED on MR !164: a follow-up commit claimed two review findings were fixed with tests; removing
+// one half of the fix left every test green. It went from "the tests pass" straight to the reviewer's
+// inbox, because a follow-up had no review step at all - the original work's implementation_review
+// and qa_uat were never asked about the commits that came after them.
 /**
- * A follow-up's CODE, put through the same review the original work passed before it is pushed.
+ * WHAT A REVIEWER ALREADY PROVED IS NOT PROVED AGAIN.
  *
- * MEASURED on MR !164: a follow-up commit claimed two review findings were fixed with tests; removing
- * one half of the fix left every test green. It went from "the tests pass" straight to the reviewer's
- * inbox, because a follow-up had no review step at all - the original work's implementation_review
- * and qa_uat were never asked about the commits that came after them.
+ * When a reviewer names the items it turned back, the rest were proved at that commit and are in the
+ * branch. They stay OPEN - the round did not push, so their threads are still owed an answer - but a
+ * later round must not spend the proof on them a second time.
+ *
+ * MEASURED on agentic-tpm, 2026-09-12: one `implementation_review` on task-040 ran 42.6 minutes,
+ * 167 turns and $17.05, because the prompt has the reviewer prove every claimed item non-vacuous by
+ * hand - a scratch worktree, the production file reverted, the test re-run - and it was handed all
+ * twelve items again, including the ones it had already proved.
+ *
+ * Written into the reopen reason and read back from it, so one constant keeps the two in step.
  */
+export const PROVEN_IN_BRANCH = "your change for this is in the branch and the reviewer proved it";
+
+/**
+ * Which of this round's claims the reviewer must actually prove, and which it already proved.
+ *
+ * A sibling of `turnedBackItems`: that one decides what is DONE AGAIN after a rejection, this one
+ * decides what is PROVED again at the next review. Both exist because a round is not all-or-nothing.
+ *
+ * If nothing is left to prove, the whole set is returned rather than none: a review with nothing to
+ * judge is not a review, and an empty payload would read as "the author claims nothing".
+ */
+export function itemsStillToProve<D extends { readonly actionItemId: string; readonly outcome: string }>(
+  decided: readonly D[],
+  items: readonly { readonly actionItemId: string; readonly reopened?: { readonly why: string } }[],
+): { readonly toProve: readonly D[]; readonly provenAlready: readonly string[] } {
+  const claimed = decided.filter((d) => d.outcome !== "deferred");
+  const proved = (id: string): boolean =>
+    (items.find((i) => i.actionItemId === id)?.reopened?.why ?? "").startsWith(PROVEN_IN_BRANCH);
+  const provenAlready = claimed.filter((d) => proved(d.actionItemId)).map((d) => d.actionItemId);
+  const notProven = claimed.filter((d) => !provenAlready.includes(d.actionItemId));
+  return { toProve: notProven.length === 0 ? claimed : notProven, provenAlready };
+}
+
 export interface FollowUpReviewRequest {
   readonly gate: string;
   /** Who reviews: an owner of the gate who is NOT the hat that made the follow-up. */
@@ -147,6 +182,11 @@ export interface FollowUpReviewRequest {
   readonly to: string;
   /** What the follow-up says those commits do, item by item. */
   readonly items: readonly { readonly summary: string; readonly outcome: string; readonly how: string }[];
+  /**
+   * Items a reviewer ALREADY proved, in an earlier round, and that nobody has turned back since.
+   * Named so the reviewer knows they are in the branch and does not spend the proof on them again.
+   */
+  readonly alreadyProven?: readonly string[];
 }
 
 export interface FollowUpReviewVerdict {
@@ -265,19 +305,33 @@ export function placeOnThisMachine(text: string): string | undefined {
   return (m[1] ?? m[2] ?? "").slice(0, 60);
 }
 
+// How many times IN A ROW a request's follow-up could not complete, and what it said last.
+//
+// MEASURED on dev-portal, 2026-09-12: every session in that repository dies the same way. Its own
+// `CLAUDE.md` transitively imports 499KB of documentation - `docs/RESILIENCE.md` alone is 359KB - so
+// a session starts with about 196,000 tokens of context already written and no room to work in; it
+// manages four tool calls, reports "autocompact is thrashing", and exits. Six minutes and about six
+// dollars, every thirty minutes, for nothing. The organization cannot fix a repository's own context
+// budget, and it must not keep paying to discover that.
+//
+// Counted from the record the runtime writes when a follow-up does not complete, and reset by one
+// that does: a request that starts working again is not carrying a history.
 /**
- * How many times IN A ROW a request's follow-up could not complete, and what it said last.
+ * A REFUSAL THE ORGANIZATION NEVER GOT TO MAKE IS NOT A FAILURE OF THE WORK.
  *
- * MEASURED on dev-portal, 2026-09-12: every session in that repository dies the same way. Its own
- * `CLAUDE.md` transitively imports 499KB of documentation - `docs/RESILIENCE.md` alone is 359KB - so
- * a session starts with about 196,000 tokens of context already written and no room to work in; it
- * manages four tool calls, reports "autocompact is thrashing", and exits. Six minutes and about six
- * dollars, every thirty minutes, for nothing. The organization cannot fix a repository's own context
- * budget, and it must not keep paying to discover that.
+ * The provider's usage limit stops a session BEFORE it starts, and says when it lifts. Counting it
+ * toward the give-up threshold punishes the request for the account's ceiling - and, because the
+ * count only clears on a follow-up that RAN, it is a one-way door: three limit refusals park the
+ * request, and a parked request never starts the session that would clear the count.
  *
- * Counted from the record the runtime writes when a follow-up does not complete, and reset by one
- * that does: a request that starts working again is not carrying a history.
+ * MEASURED on agentic-tpm, 2026-09-12: an outage between 07:32Z and 13:52Z left 13 such refusals on
+ * each of task-032 and task-040. Hours later, on an account with quota, the watcher's first tick
+ * read those 13 and parked BOTH requests - "a person is needed" - with nothing wrong with either.
+ * Matched on what the refusal SAYS rather than the code it left by, so the outage already in the log
+ * is read correctly too.
  */
+const LIMIT_REFUSAL = /usage limit is reached|hit your (?:usage )?limit|usage limit (?:reached|exceeded)/i;
+
 export function followUpFailures(events: readonly OrgEvent[], workId: string): { readonly inARow: number; readonly lastReason?: string } {
   let inARow = 0;
   let lastReason: string | undefined;
@@ -286,6 +340,9 @@ export function followUpFailures(events: readonly OrgEvent[], workId: string): {
     // cannot change an answer is one nobody can check.
     const said = e.decision ?? "";
     if (said.startsWith(`the follow-up of ${workId} did not complete`)) {
+      // Neither evidence of failure nor of success: the session never ran. Left uncounted, and the
+      // count left as it was, so a real failure either side of an outage still adds up.
+      if (LIMIT_REFUSAL.test(said)) continue;
       inARow += 1;
       lastReason = said;
       continue;

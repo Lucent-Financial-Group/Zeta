@@ -3,7 +3,7 @@ import { mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { commandFollowUp } from "./followup-commands";
-import { acceptedDecisions, answersOwed, correlateFeedback, followUpOrder, gatesForRound, keepRedPipelinesOpen, redPipelinesToReopen, turnedBackItems, type FeedbackDelivery } from "./change-followup";
+import { acceptedDecisions, answersOwed, correlateFeedback, followUpFailures, followUpOrder, itemsStillToProve, PROVEN_IN_BRANCH, gatesForRound, keepRedPipelinesOpen, redPipelinesToReopen, turnedBackItems, type FeedbackDelivery } from "./change-followup";
 import { foldActionItems, openActionItems, type ActionItem, type HandedOffChange } from "./org-fold";
 import type { OrgEvent } from "./org-event";
 
@@ -433,5 +433,65 @@ describe("THE PROMPT CARRIES WHAT MUST BE DECIDED - THE WORLDVIEW CARRIES THE RE
     } finally {
       rmSync(dir, { recursive: true, force: true });
     }
+  });
+});
+
+describe("GIVING UP ON A REQUEST COUNTS ITS FAILURES, NOT THE ACCOUNT'S CEILING", () => {
+  const said = (n: number, decision: string): OrgEvent =>
+    ({ id: `f-${String(n)}`, kind: "change_projected", subjectId: "task-24", decision, atMs: n, supervisorChain: [] }) as unknown as OrgEvent;
+  const LIMIT = "the follow-up of task-24 did not complete: the follow-up session exited 4: [claude-agent] Claude Code reported an error: You've hit your limit \u00b7 resets Sep 13, 7am (America/New_York)";
+  const REAL = "the follow-up of task-24 did not complete: the follow-up session exited 1: the worktree was dirty";
+
+  // MEASURED on agentic-tpm, 2026-09-12: an outage left 13 limit refusals on each of two requests,
+  // and the next watcher tick parked BOTH - "a person is needed" - with nothing wrong with either.
+  test("a usage limit never reached the work, so it does not count toward giving up", () => {
+    const events = Array.from({ length: 13 }, (_, i) => said(i + 1, LIMIT));
+    expect(followUpFailures(events, "task-24").inARow).toBe(0);
+  });
+
+  test("a real failure still counts, and still clears when a follow-up runs", () => {
+    expect(followUpFailures([said(1, REAL), said(2, REAL), said(3, REAL)], "task-24").inARow).toBe(3);
+    expect(followUpFailures([said(1, REAL), said(2, REAL), said(3, "followed up task-24: 2 of 2 item(s) decided")], "task-24").inARow).toBe(0);
+  });
+
+  // The outage must not erase what happened either side of it: a limit is skipped, not a reset.
+  test("failures either side of an outage still add up", () => {
+    const events = [said(1, REAL), said(2, LIMIT), said(3, LIMIT), said(4, REAL), said(5, REAL)];
+    expect(followUpFailures(events, "task-24").inARow).toBe(3);
+  });
+});
+
+describe("A PROOF IS SPENT ONCE", () => {
+  const decided = [
+    { actionItemId: "gitlab:n1", outcome: "addressed" },
+    { actionItemId: "gitlab:n2", outcome: "addressed" },
+    { actionItemId: "gitlab:n3", outcome: "declined" },
+    { actionItemId: "gitlab:n4", outcome: "deferred" },
+  ];
+  const proven = (id: string) => ({ actionItemId: id, reopened: { why: `${PROVEN_IN_BRANCH} - it is NOT what turned the round back.` } });
+  const turnedBack = (id: string) => ({ actionItemId: id, reopened: { why: "your change for this was reviewed and turned back - qa_uat by qa_director: the index is not covered" } });
+
+  // MEASURED on task-040, 2026-09-12: 167 turns and $17.05 re-proving twelve items, most already proved.
+  test("an item a reviewer already proved is not handed to the next reviewer to prove again", () => {
+    const { toProve, provenAlready } = itemsStillToProve(decided, [proven("gitlab:n1"), turnedBack("gitlab:n2")]);
+    expect(provenAlready).toEqual(["gitlab:n1"]);
+    expect(toProve.map((d) => d.actionItemId)).toEqual(["gitlab:n2", "gitlab:n3"]);
+  });
+
+  test("a deferred item is nobody's to prove", () => {
+    const { toProve } = itemsStillToProve(decided, []);
+    expect(toProve.map((d) => d.actionItemId)).not.toContain("gitlab:n4");
+  });
+
+  test("an item turned back for another reason is proved again - only the proved are skipped", () => {
+    const { provenAlready } = itemsStillToProve(decided, [turnedBack("gitlab:n1"), turnedBack("gitlab:n2")]);
+    expect(provenAlready).toEqual([]);
+  });
+
+  // A review with nothing to judge is not a review: an empty payload reads as "the author claims nothing".
+  test("when everything has been proved already, the whole set is judged rather than none", () => {
+    const all = [proven("gitlab:n1"), proven("gitlab:n2"), proven("gitlab:n3")];
+    const { toProve } = itemsStillToProve(decided, all);
+    expect(toProve.map((d) => d.actionItemId)).toEqual(["gitlab:n1", "gitlab:n2", "gitlab:n3"]);
   });
 });
