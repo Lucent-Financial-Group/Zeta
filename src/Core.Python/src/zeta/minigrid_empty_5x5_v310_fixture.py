@@ -28,7 +28,7 @@ from minigrid.core import actions, constants
 from minigrid.envs import empty
 
 ADAPTER_VERSION = "zeta.minigrid-empty-5x5-adapter/v1"
-CARRIER_FINGERPRINT = "49db9a4f6fd415ba4f15b613eba858511e6cf116ec7574cd5ee50cc7c2e46b07"
+CARRIER_FINGERPRINT = "d7ac363285b363f27b4855e90df3448138392ec50313e834d15ea1bdc2280fa8"
 CARRIER_PATH = Path(
     "docs/research/data/2026-09-06-minigrid-empty-5x5-v310-adapter-carrier.json"
 )
