@@ -30,7 +30,7 @@
  * fail when the fetch fails, and `.claude/rules/clone-at-tag-stays-sufficient.md` requires
  * the tree to stay checkable from a clone at a tag with nothing installed.
  */
-import { readdirSync, readFileSync, statSync } from "node:fs";
+import { readdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 
 /**
@@ -53,23 +53,20 @@ const SKIP: ReadonlySet<string> = new Set(["node_modules", ".git", "bin", "obj",
 export function findLockFiles(root: string): readonly string[] {
   const out: string[] = [];
   const walk = (dir: string): void => {
-    let entries: readonly string[];
+    // `withFileTypes` so the KIND arrives with the listing. Asking readdir for names and then
+    // stat'ing each one is the readdir-then-stat race (CWE-367): an entry can vanish or change
+    // kind between the two calls, and the listing already knew which it was.
+    let entries: ReturnType<typeof readdirSync<{ withFileTypes: true }>>;
     try {
-      entries = readdirSync(dir);
+      entries = readdirSync(dir, { withFileTypes: true });
     } catch {
       return; // unreadable directory is not a finding; it is a directory we cannot see
     }
     for (const e of entries) {
-      if (SKIP.has(e)) continue;
-      const p = join(dir, e);
-      let isDir = false;
-      try {
-        isDir = statSync(p).isDirectory();
-      } catch {
-        continue;
-      }
-      if (isDir) walk(p);
-      else if (e === "packages.lock.json") out.push(p);
+      if (SKIP.has(e.name)) continue;
+      const p = join(dir, e.name);
+      if (e.isDirectory()) walk(p);
+      else if (e.name === "packages.lock.json") out.push(p);
     }
   };
   walk(root);
