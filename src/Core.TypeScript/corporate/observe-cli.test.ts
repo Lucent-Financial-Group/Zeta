@@ -61,6 +61,63 @@ describe("THE RECORD OF A WORK ITEM, as an agent opens it", () => {
     expect(parent?.childIds).toContain(defect?.id);
   }, 60_000);
 
+  test("AN ITEM'S FULL TEXT IS IN THE WORLDVIEW, where the prompt's pointer sends the session", async () => {
+    // MEASURED on dev-portal, 2026-09-12: the prompt pasted an item's whole detail and `observe` did
+    // not carry it at all, so bounding the prompt would have pointed the session at nothing.
+    const recorded = await recordedRun();
+    const workId = worldFor({ events: recorded, hatId: "qa_engineer", actions: [] }).items[0]?.id as string;
+    expect(workId).toBeDefined();
+    const detail = "the runner said: " + "d".repeat(3000);
+    const events = [
+      ...recorded,
+      {
+        id: "injected-item",
+        kind: "change_projected",
+        subjectId: workId,
+        decision: "action item raised",
+        atMs: Number.MAX_SAFE_INTEGER - 2,
+        evidenceRefs: [],
+        supervisorChain: [],
+        fact: { kind: "action_item_raised", workId, actionItemId: "gitlab:pipeline-9", source: "gitlab", itemKind: "pipeline_failed", summary: "the pipeline failed", detail },
+      },
+    ] as unknown as typeof recorded;
+    const { items } = worldFor({ events, hatId: "qa_engineer", actions: [] });
+    const it = items.find((i) => i.id === workId);
+    const said = (it?.comments ?? []).find((c) => c.text.includes("gitlab:pipeline-9"));
+    expect(said).toBeDefined();
+    expect(said?.text).toContain("the runner said:");
+  }, 60_000);
+
+  test("AN ATTACHMENT IS SOMETHING THAT CAN BE OPENED: a step's inline log is not offered as one", async () => {
+    // MEASURED on agentic-tpm task-032, 2026-09-12: a listed attachment was 4,031 characters of a test
+    // run's stdout - a `log:` evidence ref, which carries its text INSIDE the ref. It was offered as
+    // openable, and opening it resolved the blob as a path and reported it missing.
+    const recorded = await recordedRun();
+    const anyGate = recorded.find((e) => e.fact?.kind === "phase_output");
+    expect(anyGate).toBeDefined();
+    const f = (anyGate as { fact: { workId: string; gate: string; refs: readonly string[]; producedByHatId: string } }).fact;
+    // The shape the runner really produces: `capture` puts up to four thousand characters of the
+    // command's own output INSIDE the ref, beside a genuine path.
+    const inlineLog = "stdout:" + ("mongod 7.0.14 binary cached for test workers" + String.fromCharCode(10)).repeat(80);
+    const events = [
+      ...recorded,
+      { ...(anyGate as object), id: "injected-1", atMs: Number.MAX_SAFE_INTEGER - 1, fact: { ...f, refs: [...f.refs, inlineLog, "exit:0"] } },
+    ] as typeof recorded;
+    const { items } = worldFor({ events, hatId: "qa_engineer", actions: [] });
+    const withGate = items.find((i) => i.id === f.workId);
+    expect(withGate).toBeDefined();
+    expect(withGate?.steps.some((st) => (st.attachments ?? []).includes(inlineLog))).toBe(true);
+    for (const it of items) {
+      for (const a of it.attachments) {
+        expect(a.ref.includes(String.fromCharCode(10))).toBe(false);
+        expect(a.ref.length).toBeLessThanOrEqual(400);
+        // And what IS offered can actually be found: the lookup accepts the name it was shown.
+        const got = readAttachment(items, it.id, a.ref);
+        expect(got.ok || !got.reason.includes("is not attached")).toBe(true);
+      }
+    }
+  }, 60_000);
+
   test("NO INHERITANCE: a child's attachments are its own, never its parent's", async () => {
     const events = await recordedRun();
     const { items } = worldFor({ events, hatId: "qa_engineer", actions: [] });
@@ -207,5 +264,70 @@ describe("THE DASHBOARD SAYS WHAT YOU HAVE, WHAT IS WAITING, WHAT MATTERS, AND W
     expect(opened).toContain("said: the test passes without the fix");
     expect(opened).toContain("ATTACHMENTS (0)");
     expect(opened).toContain("COMMENTS (0)");
+  });
+});
+
+describe("AN OPENED ITEM IS BOUNDED, AND SAYS WHERE THE REST IS", () => {
+  // MEASURED on agentic-tpm task-032, 2026-09-12: this view printed 71,565 characters - about 18,000
+  // tokens - into every session that opened the item, and the session then spent four turns slicing
+  // it. The comment bodies were duplicated besides: a follow-up is handed them in full in its prompt.
+  const bounded = { dashboard: "obs dashboard", item: (id: string) => `obs item ${id}`, attachment: (id: string, ref: string) => `obs attachment ${id} ${ref}` };
+  const long = (n: number, seed: string) => seed.repeat(n);
+  const big = {
+    id: "task-1",
+    status: "doing",
+    title: "a defect",
+    description: long(3000, "d"),
+    steps: [{ name: "qa_uat", state: "approved", done: true, note: long(1200, "n"), attachments: ["C:/Users/max/Work/AIAGENT-1595/org-work/wt-agentic-tpm/defect-AIAGENT-1661/docs/a.md", "C:/Users/max/Work/AIAGENT-1595/org-work/wt-agentic-tpm/defect-AIAGENT-1661/docs/b.md"] }],
+    attachments: [
+      { ref: "C:/Users/max/Work/AIAGENT-1595/org-work/wt-agentic-tpm/defect-AIAGENT-1661/docs/a.md", from: "qa_uat" },
+      { ref: "C:/Users/max/Work/AIAGENT-1595/org-work/wt-agentic-tpm/defect-AIAGENT-1661/docs/b.md", from: "qa_uat" },
+    ],
+    comments: [{ by: "jenkins", about: "review", text: long(2000, "c") }],
+  } as unknown as ItemContext;
+
+  test("long passages are cut, each says its own size, and the way to read it whole is said ONCE", () => {
+    const out = renderItem(big, bounded);
+    expect(out.length).toBeLessThan(6000);
+    expect(out).toContain("passage(s) above were cut");
+    expect(out.split("obs item task-1 --full").length - 1).toBe(1);
+    expect(out).toContain("(+1600, passage 3)");
+  });
+
+  test("A CUT PASSAGE CAN BE READ ON ITS OWN: numbered, and fetched without the rest of the item", () => {
+    // MEASURED on dev-portal, 2026-09-12: three runs died because the view offered exactly one escape
+    // from a cut passage - the whole item - so the session asked for the whole item and thrashed its
+    // context to nothing. Four tool calls, seven minutes, no answer, three times.
+    const out = renderItem(big, bounded);
+    expect(out).toContain("passage 1)");
+    expect(out).toContain("passage(s) above were cut");
+    // The cheap read is offered FIRST, and the expensive one carries its price.
+    expect(out.indexOf("read one:")).toBeLessThan(out.indexOf("read all:"));
+    expect(out).toContain("--passage <n>");
+    expect(out).toContain("cost a session its context");
+
+    // And one passage really is readable alone - the comment, not the item.
+    const one = renderItem(big, bounded, { passage: 3 });
+    expect(one).toContain("passage 3 of 3");
+    expect(one).toContain("cccccccccc");
+    expect(one).not.toContain("STEPS");
+    expect(one.length).toBeLessThan(out.length);
+    // A passage that does not exist says so rather than printing something else.
+    expect(renderItem(big, bounded, { passage: 9 })).toContain("there is no passage 9");
+  });
+
+  test("--full prints every passage whole", () => {
+    const out = renderItem(big, bounded, { full: true });
+    expect(out).toContain(long(2000, "c"));
+    expect(out).toContain(long(3000, "d"));
+    expect(out).not.toContain("passage(s) above were cut");
+  });
+
+  test("a step does not reprint the files ATTACHMENTS lists, and their shared root is said once", () => {
+    const out = renderItem(big, bounded);
+    expect(out).toContain("left: 2 file(s), listed under ATTACHMENTS");
+    expect(out).not.toContain("left: C:/Users/max/Work/AIAGENT-1595/org-work/wt-agentic-tpm/defect-AIAGENT-1661/docs/a.md");
+    expect(out).toContain("all under C:/Users/max/Work/AIAGENT-1595/org-work/wt-agentic-tpm/defect-AIAGENT-1661/docs/");
+    expect(out.split("C:/Users/max/Work/AIAGENT-1595/org-work/wt-agentic-tpm/defect-AIAGENT-1661/docs/").length - 1).toBe(1);
   });
 });

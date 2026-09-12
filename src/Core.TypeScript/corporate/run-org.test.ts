@@ -158,7 +158,7 @@ describe("argument parsing", () => {
       // which is now an adapter that says so rather than a constant nobody could see.
       reviewQueue: undefined, reviewCmd: undefined, reviewArgs: [],
       worktrees: undefined, worktreeSetup: undefined, worktreeSetupArgs: [], handoffCmd: undefined, handoffArgs: [],
-      describeCmd: undefined, describeArgs: [], followUpCmd: undefined, followUpArgs: [], feedbackDir: undefined, feedbackCmd: undefined, feedbackArgs: [], answerCmd: undefined, answerArgs: [], supplyTarget: undefined,
+      describeCmd: undefined, describeArgs: [], followUpCmd: undefined, followUpArgs: [], feedbackDir: undefined, feedbackCmd: undefined, feedbackArgs: [], answerCmd: undefined, answerArgs: [], supplyTarget: undefined, parallel: undefined, planRoundCmd: undefined, planRoundArgs: [],
       // The three ports that had no command-line path until now. Absent still means simulated, and
       // the fidelity block still says so — reaching a tracker, an agent or a model is opt-in.
       reviewModel: undefined, tracker: undefined, trackerItems: undefined,
@@ -621,7 +621,7 @@ describe("A REAL REPOSITORY IS HANDED TO PEOPLE UNLESS SOMEONE SAID MERGE", () =
     expect(missing.some((r) => r.includes("--follow-up-cmd"))).toBe(true);
     // WHETHER A REVIEWER IS ANSWERED is part of the statement: unstated is refused, never read as "none".
     expect(missing.some((r) => r.includes("reviewer's comment is answered") && r.includes("--replies"))).toBe(true);
-    const answering = { ...stated.changeRequests, replies: "reply_and_resolve" as const, afterOpen: [] as const, afterUpdate: [] as const };
+    const answering = { ...stated.changeRequests, replies: "reply_and_resolve" as const, afterOpen: [] as const, afterUpdate: [] as const, pipelines: "until_green" as const };
     const noAnswerer = argRefusals({ ...parseArgs([...handing, "--describe-cmd", "node", "--follow-up-cmd", "node"]), changeRequests: answering });
     expect(noAnswerer.some((r) => r.includes("--answer-cmd") && r.includes("reply_and_resolve"))).toBe(true);
     const complete = argRefusals({ ...parseArgs([...handing, "--describe-cmd", "node", "--follow-up-cmd", "node", "--answer-cmd", "node", "--answer-arg", "a.cjs"]), changeRequests: answering });

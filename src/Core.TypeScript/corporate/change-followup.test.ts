@@ -1,5 +1,9 @@
 import { describe, expect, test } from "bun:test";
-import { acceptedDecisions, answersOwed, correlateFeedback, followUpOrder, type FeedbackDelivery } from "./change-followup";
+import { mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
+import { commandFollowUp } from "./followup-commands";
+import { acceptedDecisions, answersOwed, correlateFeedback, followUpOrder, gatesForRound, keepRedPipelinesOpen, redPipelinesToReopen, turnedBackItems, type FeedbackDelivery } from "./change-followup";
 import { foldActionItems, openActionItems, type ActionItem, type HandedOffChange } from "./org-fold";
 import type { OrgEvent } from "./org-event";
 
@@ -179,5 +183,255 @@ describe("A SETTLEMENT THAT DID NOT STAND IS REOPENED, NOT DROPPED", () => {
     const settledAgain = foldActionItems(again).get("task-24") ?? [];
     expect(openActionItems(again).get("task-24")).toBeUndefined();
     expect(answersOwed(settledAgain).owed.map((o) => o.actionItemId)).toEqual(["gitlab:note-1975496"]);
+  });
+});
+
+describe("UNDER until_green A RED PIPELINE IS NOT FINISHED BY BEING EXPLAINED", () => {
+  const item = (actionItemId: string, itemKind: string): ActionItem =>
+    ({ workId: "task-40", actionItemId, source: "gitlab", itemKind, summary: "s", raisedAtMs: 1 });
+  const items = [item("gitlab:pipeline-55-failed", "pipeline_failed"), item("gitlab:note-7", "diff_comment")];
+  // What the organization actually said on agentic-tpm !164, in the shape a session returns it.
+  const asFlake = { actionItemId: "gitlab:pipeline-55-failed", outcome: "declined" as const, how: "a MongoMemoryServer flake; the suite is green locally at this SHA", respond: true };
+  const onComment = { actionItemId: "gitlab:note-7", outcome: "declined" as const, how: "the problem cannot happen: the filter runs first", respond: true };
+
+  test("a declined pipeline is kept open, with its reasoning, and named so a person can be told", () => {
+    const { decisions, kept } = keepRedPipelinesOpen(items, [asFlake, onComment], "until_green");
+    expect(kept).toEqual(["gitlab:pipeline-55-failed"]);
+    const red = decisions.find((d) => d.actionItemId === "gitlab:pipeline-55-failed");
+    expect(red?.outcome).toBe("deferred");
+    // THE REASONING SURVIVES: it is kept open, not overruled - the diagnosis may well be right.
+    expect(red?.how).toContain("a MongoMemoryServer flake");
+    expect(red?.how).toContain("not done until the pipeline passes");
+    // A comment is still the organization's to decline: this narrows one outcome on one kind of item.
+    expect(decisions.find((d) => d.actionItemId === "gitlab:note-7")).toEqual(onComment);
+  });
+
+  test("a pipeline it actually fixed, or one it already left open, passes through untouched", () => {
+    const fixed = { actionItemId: "gitlab:pipeline-55-failed", outcome: "addressed" as const, how: "the port was hardcoded; it now takes a free one", respond: true };
+    const left = { actionItemId: "gitlab:pipeline-55-failed", outcome: "deferred" as const, how: "waiting on the runner image", respond: true };
+    expect(keepRedPipelinesOpen(items, [fixed], "until_green")).toEqual({ decisions: [fixed], kept: [] });
+    expect(keepRedPipelinesOpen(items, [left], "until_green")).toEqual({ decisions: [left], kept: [] });
+  });
+
+  test("under flag_only, and where nobody has stated a policy, the organization decides for itself", () => {
+    expect(keepRedPipelinesOpen(items, [asFlake], "flag_only").decisions).toEqual([asFlake]);
+    expect(keepRedPipelinesOpen(items, [asFlake], "none").decisions).toEqual([asFlake]);
+    expect(keepRedPipelinesOpen(items, [asFlake], undefined).decisions).toEqual([asFlake]);
+  });
+});
+
+describe("A PIPELINE STILL REPORTED RED COMES BACK OPEN", () => {
+  const base = { workId: "task-40", source: "gitlab", itemKind: "pipeline_failed", summary: "s", raisedAtMs: 1 };
+  const red: FeedbackDelivery = { deliveryId: "pipeline-189289-failed", source: "gitlab", itemKind: "pipeline_failed", summary: "the request's pipeline 189289 failed at bcc152b4" };
+  const match = { workId: "task-40", actionItemId: "gitlab:pipeline-189289-failed", delivery: red };
+  // MEASURED on agentic-tpm !164: raised 21:31, declined 21:31, and the pipeline still red at 00:17.
+  const declined: ActionItem = {
+    ...base,
+    actionItemId: "gitlab:pipeline-189289-failed",
+    settled: { outcome: "declined", how: "Same signal as pipeline 189179 - infrastructure", atMs: 2, respond: false },
+  };
+  const items = (list: readonly ActionItem[]): ReadonlyMap<string, readonly ActionItem[]> => new Map([["task-40", list]]);
+
+  test("a settled item whose pipeline is still failing is reopened, saying what was decided and that it did not make it pass", () => {
+    const out = redPipelinesToReopen([match], items([declined]), "until_green");
+    expect(out.map((o) => o.actionItemId)).toEqual(["gitlab:pipeline-189289-failed"]);
+    expect(out[0]?.why).toContain("still not green");
+    expect(out[0]?.why).toContain("Same signal as pipeline 189179");
+  });
+
+  test("an item still open is left alone - it is already somebody's to do", () => {
+    expect(redPipelinesToReopen([match], items([{ ...base, actionItemId: "gitlab:pipeline-189289-failed" }]), "until_green")).toEqual([]);
+  });
+
+  test("a comment is never reopened this way, and nothing is reopened unless the organization asked for until_green", () => {
+    const comment = { workId: "task-40", actionItemId: "gitlab:note-7", delivery: { ...red, deliveryId: "note-7", itemKind: "diff_comment" } };
+    const settledComment: ActionItem = { ...declined, actionItemId: "gitlab:note-7", itemKind: "diff_comment" };
+    expect(redPipelinesToReopen([comment], items([settledComment]), "until_green")).toEqual([]);
+    expect(redPipelinesToReopen([match], items([declined]), "flag_only")).toEqual([]);
+    expect(redPipelinesToReopen([match], items([declined]), undefined)).toEqual([]);
+  });
+});
+
+describe("WHAT A ROUND OWES IS DECIDED, AND ONLY WITHIN WHAT THE CHAIN OWES", () => {
+  const request = {
+    workId: "task-40",
+    plannerHatId: "planner",
+    available: ["reproduction", "implementation_review", "qa_uat", "release_readiness"],
+    usual: ["implementation_review", "qa_uat"],
+    because: [{ kind: "comment", summary: "rename the flag" }],
+    roundsSoFar: 1,
+  };
+
+  test("a plan naming stages the chain owes is what the round owes, with its reason", () => {
+    const out = gatesForRound({ gates: ["implementation_review"], why: "a rename in one file; qa_uat judges behaviour and none changed" }, request);
+    expect(out.gates).toEqual(["implementation_review"]);
+    expect(out.why).toContain("a rename in one file");
+  });
+
+  test("NOTHING is a real answer - the repository's own tests still run either way", () => {
+    expect(gatesForRound({ gates: [], why: "the answer is in the description; no code changed" }, request).gates).toEqual([]);
+  });
+
+  test("a round that keeps coming back may owe MORE than usual", () => {
+    const out = gatesForRound({ gates: ["reproduction", "implementation_review", "qa_uat"], why: "turned back twice on the same test; reproduce it first" }, { ...request, roundsSoFar: 3, lastTurnedBackBy: "qa_uat: the test passes with the fix removed" });
+    expect(out.gates).toEqual(["reproduction", "implementation_review", "qa_uat"]);
+  });
+
+  test("REVIEWING LESS IS A DECISION, NEVER A PARSE FAILURE: no plan, or one naming a stage nobody holds, owes the usual stages", () => {
+    expect(gatesForRound(undefined, request).gates).toEqual(request.usual);
+    expect(gatesForRound(undefined, request).why).toContain("nobody decided");
+    const invented = gatesForRound({ gates: ["security_review"], why: "sounds important" }, request);
+    expect(invented.gates).toEqual(request.usual);
+    expect(invented.why).toContain("security_review");
+    expect(invented.why).toContain("does not owe");
+  });
+});
+
+describe("ONLY WHAT THE REVIEWER TURNED BACK IS DONE AGAIN", () => {
+  // MEASURED on agentic-tpm !164, 2026-09-12: a review rejected 2 of 12 items - "ten of the twelve
+  // check out under mutation, but two do not" - and all twelve were reopened. The next session spent
+  // 41 minutes and 140 turns reworking ten items the reviewer had already proved good, to fix two.
+  const decided = [
+    { actionItemId: "gitlab:note-1", outcome: "addressed" },
+    { actionItemId: "gitlab:note-2", outcome: "addressed" },
+    { actionItemId: "gitlab:note-3", outcome: "declined" },
+    { actionItemId: "gitlab:note-4", outcome: "deferred" },
+  ];
+  const summaries = new Map([
+    ["gitlab:note-1", "the oversight severity index"],
+    ["gitlab:note-2", "cap the batch size"],
+    ["gitlab:note-3", "rename the flag"],
+    ["gitlab:note-4", "split the module"],
+  ]);
+
+  test("named by summary: those come back, the rest are left alone", () => {
+    const out = turnedBackItems(decided, summaries, ["the oversight severity index"]);
+    expect(out.again).toEqual(["gitlab:note-1"]);
+    expect(out.kept).toEqual(["gitlab:note-2", "gitlab:note-3"]);
+  });
+
+  test("named by id works too - a reviewer is shown both", () => {
+    expect(turnedBackItems(decided, summaries, ["gitlab:note-2"]).again).toEqual(["gitlab:note-2"]);
+  });
+
+  test("a reviewer that names nothing turns the whole round back", () => {
+    expect(turnedBackItems(decided, summaries, undefined).again).toEqual(["gitlab:note-1", "gitlab:note-2", "gitlab:note-3"]);
+    expect(turnedBackItems(decided, summaries, []).kept).toEqual([]);
+  });
+
+  test("a rejection naming nothing THIS round decided turns it back whole - never quietly keeps everything", () => {
+    const out = turnedBackItems(decided, summaries, ["something from another change entirely"]);
+    expect(out.again).toEqual(["gitlab:note-1", "gitlab:note-2", "gitlab:note-3"]);
+    expect(out.kept).toEqual([]);
+  });
+
+  test("a deferred item is nobody's to turn back: it was never claimed", () => {
+    for (const r of [undefined, ["the oversight severity index"], ["split the module"]]) {
+      const out = turnedBackItems(decided, summaries, r);
+      expect([...out.again, ...out.kept]).not.toContain("gitlab:note-4");
+    }
+  });
+});
+
+describe("AN ITEM THAT KEEPS COMING BACK SAYS SO", () => {
+  // MEASURED on agentic-tpm !164, 2026-09-12: one finding was claimed fixed and turned back three
+  // rounds running. Only the latest reason was kept, so every session saw "this was turned back" and
+  // none saw "this has been turned back three times" - the fact that should change what it does.
+  const ev = (fact: unknown, atMs: number): OrgEvent =>
+    ({ id: "e" + String(atMs), kind: "change_projected", subjectId: "task-1", decision: "", atMs, evidenceRefs: [], supervisorChain: [], fact }) as unknown as OrgEvent;
+  const raised = ev({ kind: "action_item_raised", workId: "task-1", actionItemId: "gitlab:note-1", source: "gitlab", itemKind: "comment", summary: "add the index" }, 1);
+  const settled = (at: number) => ev({ kind: "action_item_settled", workId: "task-1", actionItemId: "gitlab:note-1", outcome: "addressed", how: "added it", respond: true }, at);
+  const reopened = (at: number, why: string) => ev({ kind: "action_item_reopened", workId: "task-1", actionItemId: "gitlab:note-1", why }, at);
+
+  test("each settlement that does not stand is counted, and the latest reason is kept", () => {
+    const item = (foldActionItems([
+      raised,
+      settled(2), reopened(3, "the test passes with the fix removed"),
+      settled(4), reopened(5, "same item, same missing proof"),
+      settled(6), reopened(7, "still not proved - the test fails for another reason"),
+    ]).get("task-1") ?? [])[0];
+    expect(item?.reopenedTimes).toBe(3);
+    expect(item?.reopened?.why).toContain("fails for another reason");
+    expect(item?.settled).toBeUndefined();
+  });
+
+  test("an item that was never turned back counts nothing", () => {
+    const item = (foldActionItems([raised, settled(2)]).get("task-1") ?? [])[0];
+    expect(item?.reopenedTimes).toBeUndefined();
+  });
+});
+
+describe("WHAT THE SESSION IS HANDED ABOUT AN ITEM INCLUDES HOW OFTEN IT HAS FAILED", () => {
+  // The count is folded from the log, but it only changes anything if it reaches the session that
+  // decides. A stand-in for the command records what it was told.
+  test("an item turned back twice or more is handed on with the count; once is just the reason", async () => {
+    const dir = mkdtempSync(join(tmpdir(), "followup-seam-"));
+    const seen = join(dir, "seen.json");
+    const stub = join(dir, "stub.cjs");
+    writeFileSync(
+      stub,
+      'require("fs").writeFileSync(' + JSON.stringify(seen) + ', process.env.ORG_ACTION_ITEMS || "");' +
+        'process.stdout.write(JSON.stringify({ decisions: [], syncWithTarget: false, summary: "s" }));',
+    );
+    try {
+      const followUp = commandFollowUp({ command: "node", args: [stub] }, dir);
+      const base = { workId: "task-1", source: "gitlab", itemKind: "comment", summary: "add the index", raisedAtMs: 1 };
+      await followUp({
+        workId: "task-1",
+        hatId: "backend_implementer",
+        branch: "defect/x",
+        mode: "triage",
+        canSync: false,
+        items: [
+          { ...base, actionItemId: "gitlab:once", reopened: { why: "turned back", atMs: 2 }, reopenedTimes: 1 },
+          { ...base, actionItemId: "gitlab:again", reopened: { why: "turned back again", atMs: 3 }, reopenedTimes: 3 },
+        ] as unknown as readonly ActionItem[],
+      });
+      const told = JSON.parse(readFileSync(seen, "utf-8")) as { id: string; turnedBackTimes?: number }[];
+      expect(told.find((t) => t.id === "gitlab:again")?.turnedBackTimes).toBe(3);
+      expect(told.find((t) => t.id === "gitlab:once")?.turnedBackTimes).toBeUndefined();
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
+    }
+  });
+});
+
+describe("THE PROMPT CARRIES WHAT MUST BE DECIDED - THE WORLDVIEW CARRIES THE REST", () => {
+  // MEASURED on dev-portal, 2026-09-12: an item's `detail` went into the prompt unbounded - for a
+  // pipeline item that is up to three CI jobs' logs - putting ~16KB of world into a session whose
+  // repository already spent most of the context window on its own documents. The session died.
+  test("a long detail is cut in the prompt and says where the whole of it is", async () => {
+    const dir = mkdtempSync(join(tmpdir(), "followup-detail-"));
+    const seen = join(dir, "seen.json");
+    const stub = join(dir, "stub.cjs");
+    writeFileSync(
+      stub,
+      'require("fs").writeFileSync(' + JSON.stringify(seen) + ', process.env.ORG_ACTION_ITEMS || "");' +
+        'process.stdout.write(JSON.stringify({ decisions: [], syncWithTarget: false, summary: "s" }));',
+    );
+    try {
+      const followUp = commandFollowUp({ command: "node", args: [stub] }, dir);
+      const long = "x".repeat(9000);
+      await followUp({
+        workId: "task-12",
+        hatId: "backend_implementer",
+        branch: "defect/x",
+        mode: "triage",
+        canSync: false,
+        items: [
+          { workId: "task-12", actionItemId: "gitlab:pipeline-1", source: "gitlab", itemKind: "pipeline_failed", summary: "the pipeline failed", detail: long, raisedAtMs: 1 },
+          { workId: "task-12", actionItemId: "gitlab:note-1", source: "gitlab", itemKind: "comment", summary: "short one", detail: "still short", raisedAtMs: 1 },
+        ] as unknown as readonly ActionItem[],
+      });
+      const told = JSON.parse(readFileSync(seen, "utf-8")) as { id: string; detail?: string }[];
+      const big = told.find((t) => t.id === "gitlab:pipeline-1");
+      expect(big?.detail?.length).toBeLessThan(800);
+      expect(big?.detail).toContain("+8400 more");
+      expect(big?.detail).toContain("observe item task-12");
+      // A short one is untouched: this bounds what is large, it does not hide what is small.
+      expect(told.find((t) => t.id === "gitlab:note-1")?.detail).toBe("still short");
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
+    }
   });
 });
