@@ -117,11 +117,12 @@ import {
 import { Fidelity, fidelityLine, recordingProviders, runFidelityOf, type ChangeHandle, type ChangeProposal, type DataSourcePort, type PortResult, type ProviderSet, type ReviewVerdict, type RunFidelity,
   fidelityOf,} from "./providers";
 import type { ActionItem, HandedOffChange } from "./org-fold";
-import { ferry, oneAtATime, SEQUENTIAL } from "./ferry";
+import { SEQUENTIAL, ferry, slots } from "./ferry";
 import {
   acceptedDecisions,
   answersOwed,
   correlateFeedback,
+  saysLeftReview,
   followUpOrder,
   gatesForRound,
   keepRedPipelinesOpen,
@@ -404,15 +405,25 @@ export interface OrgRuntimeDeps extends HumanCheckpointDeps {
    */
   readonly followUp?: (request: FollowUpRequest) => Promise<PortResult<FollowUpOutcome>>;
   /** Whether a change's checkout still passes after a follow-up changed it. Required before it is handed off again. */
-  readonly verifyChange?: (handle: ChangeHandle) => Promise<PortResult<string>>;
+  readonly verifyChange?: (handle: ChangeHandle, slot?: number) => Promise<PortResult<string>>;
   /** At most this many handed-off changes are followed up in one cycle. Default 2. */
   readonly maxFollowUps?: number;
   /**
    * How many requests the organization follows up AT ONCE. Default 1 - every run before this was one
    * at a time, and one stays the deterministic, replayable path (see `ferry.ts`). Above 1 the agent
-   * sessions overlap; the repository's own test suite still never does (see `oneAtATime`).
+   * sessions overlap; the repository's own test suite does so only as wide as `maxVerifyAtOnce` allows (see `slots`).
    */
   readonly maxParallel?: number;
+  /**
+   * How many followed-up changes may have their test suite running at the same moment. Default 1.
+   *
+   * SEPARATE FROM `maxParallel` because they are different risks: sessions overlapping costs
+   * nothing, two copies of a repository's suite on one machine fight over whatever the suite
+   * happens to bind - agentic-tpm's MongoMemoryServer port, and `Port "…" already in use` is the
+   * commonest red in its own pipeline. Only the operator knows whether their suite can take it,
+   * and each concurrent verification is handed a slot number to allocate from when they say it can.
+   */
+  readonly maxVerifyAtOnce?: number;
   /**
    * Decides which review stages a FOLLOW-UP ROUND owes - see `FollowUpPlanRequest`. Absent: every
    * round owes the same post-work stages the original work did, which is what every round did before
@@ -4039,9 +4050,12 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
   const actionItemsRaised: string[] = [];
   const actionItemsAnswered: string[] = [];
   const followUps: FollowUpReport[] = [];
-  // Sessions may overlap; the repository's own test suite may not - two of agentic-tpm's at once
-  // fight over the MongoMemoryServer port, already the commonest red in its own pipeline.
-  const verifyOneAtATime = oneAtATime();
+  // Sessions may overlap; the repository's own test suite may not, BY DEFAULT - two of agentic-tpm's
+  // at once fight over the MongoMemoryServer port, already the commonest red in its own pipeline.
+  // Whether that is true of a given repository is the operator's to say (`--verify-at-once`), and
+  // when they widen it each concurrent run is handed a slot to allocate ports from. At the default
+  // width of one this is exactly the critical section it replaces.
+  const verifyInASlot = slots(deps.maxVerifyAtOnce ?? SEQUENTIAL);
   if (providers.change.meta.fidelity === Fidelity.Real) {
     const handedMap = new Map<string, HandedOffChange>([...(deps.handedOffChanges ?? []), ...handedThisRun]);
     const allItems = new Map<string, ActionItem[]>([...(deps.actionItems ?? new Map<string, readonly ActionItem[]>())].map(([w, v]) => [w, [...v]]));
@@ -4127,7 +4141,40 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
     };
 
     const corr = correlateFeedback(deps.feedback ?? [], handedMap, deps.defaultBase ?? "master");
-    for (const m of corr.aboutChange) raise(m.workId, m.actionItemId, fromDelivery(m.delivery));
+    // ── A REQUEST THAT LEFT REVIEW IS NOT AN ACTION ITEM ────────────────────────────────────────
+    // "the merge request was merged" asks nothing of anyone. Raised as an item it became a session
+    // asked to address, decline or defer a thing already over - and the change stayed in the polled
+    // set for ever besides, because nothing ever left it. Recorded as the fact it is instead: the
+    // organization is done with this request, stops following it up and stops polling it.
+    const leftReview = new Set<string>();
+    for (const m of corr.aboutChange) {
+      if (!saysLeftReview(m.delivery.itemKind)) continue;
+      const h = handedMap.get(m.workId);
+      if (h === undefined || leftReview.has(m.workId)) continue;
+      leftReview.add(m.workId);
+      note({
+        kind: OrgEventKind.ChangeProjected,
+        subjectId: m.workId,
+        decision: `the request for ${m.workId} is no longer open (${m.delivery.itemKind}) - the organization has stopped following it up`,
+        atMs: warmedAt,
+        fact: {
+          kind: "change_left_review",
+          workId: m.workId,
+          changeId: h.changeId,
+          branch: h.branch,
+          state: m.delivery.itemKind,
+          ...(m.delivery.author === undefined ? {} : { by: m.delivery.author }),
+          ...(h.url === undefined ? {} : { url: h.url }),
+        },
+      });
+    }
+    // Its OPEN items go with it: nobody will read an answer on a request that is closed, and a
+    // session asked to settle one would be working for a reviewer who has gone.
+    for (const workId of leftReview) handedMap.delete(workId);
+    for (const m of corr.aboutChange) {
+      if (saysLeftReview(m.delivery.itemKind) || leftReview.has(m.workId)) continue;
+      raise(m.workId, m.actionItemId, fromDelivery(m.delivery));
+    }
     // A pipeline the poller STILL reports red, whose item was already closed, comes back open - see
     // `redPipelinesToReopen`. Without this the watcher starts runs for a red pipeline and the run
     // has no open item to hand anyone.
@@ -4301,7 +4348,7 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
       if (moved) {
         const verified = deps.verifyChange === undefined
           ? ({ ok: false, reason: "nothing is configured to verify a followed-up change" } as const)
-          : await verifyOneAtATime(() => (deps.verifyChange as (h: ChangeHandle) => Promise<PortResult<string>>)(handle));
+          : await verifyInASlot(async (slot) => await (deps.verifyChange as (h: ChangeHandle, s?: number) => Promise<PortResult<string>>)(handle, slot));
         if (!verified.ok) {
           verifyFailed = verified.reason;
           refused.push(`the followed-up change was not handed off again - it does not pass verification: ${verified.reason}`);

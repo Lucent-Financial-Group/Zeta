@@ -149,6 +149,20 @@ export interface ItemDecision {
  *
  * Written into the reopen reason and read back from it, so one constant keeps the two in step.
  */
+/**
+ * The item kinds that mean THE REQUEST IS OVER, not that something needs deciding.
+ *
+ * The poller reports these when a merge request leaves the open state. They are not action items:
+ * there is nothing for a session to address, decline or defer about a request somebody has already
+ * merged - the only correct response is to stop working on it.
+ */
+export const LEFT_REVIEW_KINDS: ReadonlySet<string> = new Set(["merged", "closed"]);
+
+/** Whether a delivery says its request left review rather than asking anything of it. */
+export function saysLeftReview(itemKind: string): boolean {
+  return LEFT_REVIEW_KINDS.has(itemKind.trim().toLowerCase());
+}
+
 export const PROVEN_IN_BRANCH = "your change for this is in the branch and the reviewer proved it";
 
 /**

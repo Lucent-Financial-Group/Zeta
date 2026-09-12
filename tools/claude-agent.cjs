@@ -790,6 +790,9 @@ if (mode === "review") {
       } catch {
         return [];
       }
+      // The organization names the throwaway checkout and removes it afterwards, so the reviewer
+      // does not have to remember to. Falling back to "<tmp>" keeps an older runtime working.
+      const scratch = env.ORG_REVIEW_SCRATCH || "<tmp>";
       return [
         "",
         "THIS IS A FOLLOW-UP REVIEW. The work was already reviewed and is in front of people; since then, the commits",
@@ -797,9 +800,11 @@ if (mode === "review") {
         "(`git diff " + fu.from + ".." + fu.to + "`), against what the follow-up claims they do:",
         JSON.stringify(fu.items || [], null, 2),
         "For every item claimed as addressed: is the problem really fixed, and does a test prove it? PROVE the test is",
-        "not vacuous: in a SCRATCH copy (`git -C <checkout> worktree add --detach <tmp> " + fu.to + "`), put the production",
-        "files back as they were (`git -C <tmp> checkout " + fu.from + " -- <production file>`), keep the new test, run it",
-        "and confirm it FAILS, then remove the copy (`git -C <checkout> worktree remove --force <tmp>`). Never change",
+        "not vacuous: in a SCRATCH copy at THE PATH YOU WERE GIVEN, " + scratch + " (`git -C <checkout> worktree add",
+        "--detach " + scratch + " " + fu.to + "`), put the production files back as they were (`git -C " + scratch,
+        "checkout " + fu.from + " -- <production file>`), keep the new test, run it and confirm it FAILS. Use that path",
+        "and no other - it is removed for you when you are done, so a copy anywhere else is one nobody cleans up.",
+        "Never change",
         "the author's checkout. A claimed fix with no test that fails without it, or an account that says more",
         "than the diff does, is a REJECTION - name the item and what is missing.",
         "AN ITEM CLAIMED AS DECLINED IS JUDGED ON ITS REASON, NOT ON A TEST. Nothing was changed, so there is",
@@ -964,6 +969,12 @@ if (mode === "follow-up") {
         "  have) is DECLINED for this change: say why and name where it belongs - that answer is posted and the",
         "  thread resolved. An item marked `deferredBefore` was already left open once; decide it now.",
         "- An item marked `reopenedBecause` was settled before and that did not stand - read why and do not repeat it.",
+        "- AN ITEM MARKED `alreadyTried` CARRIES WHAT EARLIER ROUNDS DID: what each decided, what it actually",
+        "  changed, and what became of it. START FROM IT. That work was done, it is in this branch, and the",
+        "  repository still holds it - re-deriving the same diagnosis from the same files is the single most",
+        "  expensive thing a session does here and it arrives where the last one did. Read it, then spend this",
+        "  round on what is NEW: the objection that turned it back. If what was tried is sound and the objection",
+        "  refutes it, change the approach; if the objection is wrong, decline it with what settles it.",
         "- AN ITEM MARKED `turnedBackTimes` HAS FAILED THAT MANY TIMES. Doing the same thing again is the one",
         "  answer that is certainly wrong. Read what the reviewer actually proved, and decide it DIFFERENTLY:",
         "  either change the approach so it survives the check they ran - not a variation of what they refuted -",

@@ -2,9 +2,9 @@ import { describe, expect, test } from "bun:test";
 import { mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { commandFollowUp } from "./followup-commands";
-import { acceptedDecisions, answersOwed, correlateFeedback, followUpFailures, followUpOrder, itemsStillToProve, PROVEN_IN_BRANCH, gatesForRound, keepRedPipelinesOpen, redPipelinesToReopen, turnedBackItems, type FeedbackDelivery } from "./change-followup";
-import { foldActionItems, openActionItems, type ActionItem, type HandedOffChange } from "./org-fold";
+import { ATTEMPT_IN_PROMPT, ATTEMPTS_IN_PROMPT, commandFollowUp } from "./followup-commands";
+import { acceptedDecisions, answersOwed, correlateFeedback, followUpFailures, followUpOrder, itemsStillToProve, PROVEN_IN_BRANCH, saysLeftReview, gatesForRound, keepRedPipelinesOpen, redPipelinesToReopen, turnedBackItems, type FeedbackDelivery } from "./change-followup";
+import { ATTEMPTS_KEPT, foldHandedOffChanges, foldActionItems, openActionItems, type ActionItem, type HandedOffChange } from "./org-fold";
 import type { OrgEvent } from "./org-event";
 
 const handed = new Map<string, HandedOffChange>([
@@ -493,5 +493,167 @@ describe("A PROOF IS SPENT ONCE", () => {
     const all = [proven("gitlab:n1"), proven("gitlab:n2"), proven("gitlab:n3")];
     const { toProve } = itemsStillToProve(decided, all);
     expect(toProve.map((d) => d.actionItemId)).toEqual(["gitlab:n1", "gitlab:n2", "gitlab:n3"]);
+  });
+});
+
+describe("A REOPEN DROPS THE SETTLEMENT, NOT THE WORK BEHIND IT", () => {
+  // ── WHY THIS EXISTS ──────────────────────────────────────────────────────────────────────────
+  // MEASURED on agentic-tpm, 2026-09-12: ~51 agent turns per call, 156 tokens READ for every one
+  // written. The reading is the cost. A reopened item arrived carrying the objection and nothing
+  // about what the last round had already done, so every round re-derived the same diagnosis from
+  // the same repository - the most expensive thing a session does, to arrive where one already was.
+  const ev = (fact: unknown, atMs: number): OrgEvent =>
+    ({ id: "a" + String(atMs), kind: "change_projected", subjectId: "task-9", decision: "", atMs, evidenceRefs: [], supervisorChain: [], fact }) as unknown as OrgEvent;
+  const raised = ev({ kind: "action_item_raised", workId: "task-9", actionItemId: "gitlab:n1", source: "gitlab", itemKind: "comment", summary: "add the index" }, 1);
+  const settled = (at: number, how: string) =>
+    ev({ kind: "action_item_settled", workId: "task-9", actionItemId: "gitlab:n1", outcome: "addressed", how, byHatId: "backend_implementer", respond: true }, at);
+  const reopened = (at: number, why: string) => ev({ kind: "action_item_reopened", workId: "task-9", actionItemId: "gitlab:n1", why }, at);
+
+  test("what a turned-back round did is carried forward with what became of it", () => {
+    const item = (foldActionItems([
+      raised,
+      settled(2, "added a covering index on (tenant_id, created_at)"),
+      reopened(3, "the query still scans - the index is not used by this plan"),
+    ]).get("task-9") ?? [])[0];
+    // The falsifier: before this, the reopen dropped `settled` and kept only `why`, so the next
+    // session was told the objection and had to find out for itself what had been tried.
+    expect(item?.settled).toBeUndefined();
+    expect(item?.attempts?.length).toBe(1);
+    expect(item?.attempts?.[0]?.how).toContain("covering index");
+    expect(item?.attempts?.[0]?.outcome).toBe("addressed");
+    expect(item?.attempts?.[0]?.byHatId).toBe("backend_implementer");
+    expect(item?.attempts?.[0]?.thenWhat).toContain("not used by this plan");
+  });
+
+  test("attempts accumulate in order and are bounded - the last few, not all of them", () => {
+    const events = [raised];
+    for (let n = 0; n < ATTEMPTS_KEPT + 2; n += 1) {
+      events.push(settled(2 + n * 2, `attempt ${String(n)}`), reopened(3 + n * 2, `no: ${String(n)}`));
+    }
+    const item = (foldActionItems(events).get("task-9") ?? [])[0];
+    expect(item?.reopenedTimes).toBe(ATTEMPTS_KEPT + 2);
+    expect(item?.attempts?.length).toBe(ATTEMPTS_KEPT);
+    // Oldest first, and it is the LATEST few that survive.
+    expect(item?.attempts?.map((a) => a.how)).toEqual(["attempt 2", "attempt 3", "attempt 4"]);
+  });
+
+  test("an item settled and never turned back carries no attempts, and one reopened with nothing settled adds none", () => {
+    expect((foldActionItems([raised, settled(2, "did it")]).get("task-9") ?? [])[0]?.attempts).toBeUndefined();
+    expect((foldActionItems([raised, reopened(2, "never settled")]).get("task-9") ?? [])[0]?.attempts).toBeUndefined();
+  });
+
+  test("the next session is handed what was already tried, bounded, with what became of it", async () => {
+    const dir = mkdtempSync(join(tmpdir(), "followup-attempts-"));
+    const seen = join(dir, "seen.json");
+    const stub = join(dir, "stub.cjs");
+    writeFileSync(
+      stub,
+      'require("fs").writeFileSync(' + JSON.stringify(seen) + ', process.env.ORG_ACTION_ITEMS || "");' +
+        'process.stdout.write(JSON.stringify({ decisions: [], syncWithTarget: false, summary: "s" }));',
+    );
+    try {
+      const followUp = commandFollowUp({ command: "node", args: [stub] }, dir);
+      await followUp({
+        workId: "task-9",
+        hatId: "backend_implementer",
+        branch: "defect/x",
+        mode: "triage",
+        canSync: false,
+        items: [
+          {
+            workId: "task-9",
+            actionItemId: "gitlab:n1",
+            source: "gitlab",
+            itemKind: "comment",
+            summary: "add the index",
+            raisedAtMs: 1,
+            reopened: { why: "still scans", atMs: 9 },
+            attempts: [
+              { outcome: "addressed", how: "first try", atMs: 2, thenWhat: "no - a" },
+              { outcome: "addressed", how: "second try", atMs: 4, thenWhat: "no - b" },
+              { outcome: "addressed", how: `third try ${"y".repeat(900)}`, atMs: 6, thenWhat: "no - c" },
+            ],
+          },
+        ] as unknown as readonly ActionItem[],
+      });
+      const told = JSON.parse(readFileSync(seen, "utf-8")) as { id: string; alreadyTried?: { decided: string; what: string; thenWhat: string }[] }[];
+      const tried = told.find((t) => t.id === "gitlab:n1")?.alreadyTried;
+      // Only the last few reach the prompt; the whole history stays in the record for `observe`.
+      expect(tried?.length).toBe(ATTEMPTS_IN_PROMPT);
+      expect(tried?.[0]?.what).toBe("second try");
+      expect(tried?.[0]?.thenWhat).toBe("no - b");
+      expect(tried?.[1]?.decided).toBe("addressed");
+      // And a long account is cut rather than pasted whole.
+      expect((tried?.[1]?.what ?? "").length).toBeLessThanOrEqual(ATTEMPT_IN_PROMPT + 1);
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
+    }
+  });
+
+  test("an item with no attempts is handed none - the key is absent, not empty", async () => {
+    const dir = mkdtempSync(join(tmpdir(), "followup-attempts-none-"));
+    const seen = join(dir, "seen.json");
+    const stub = join(dir, "stub.cjs");
+    writeFileSync(
+      stub,
+      'require("fs").writeFileSync(' + JSON.stringify(seen) + ', process.env.ORG_ACTION_ITEMS || "");' +
+        'process.stdout.write(JSON.stringify({ decisions: [], syncWithTarget: false, summary: "s" }));',
+    );
+    try {
+      const followUp = commandFollowUp({ command: "node", args: [stub] }, dir);
+      await followUp({
+        workId: "task-9",
+        hatId: "backend_implementer",
+        branch: "defect/x",
+        mode: "triage",
+        canSync: false,
+        items: [{ workId: "task-9", actionItemId: "gitlab:n2", source: "gitlab", itemKind: "comment", summary: "s", raisedAtMs: 1 }] as unknown as readonly ActionItem[],
+      });
+      const told = JSON.parse(readFileSync(seen, "utf-8")) as { id: string; alreadyTried?: unknown }[];
+      expect(told[0]?.alreadyTried).toBeUndefined();
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
+    }
+  });
+});
+
+describe("A REQUEST THAT LEFT REVIEW LEAVES THE ORGANIZATION'S ATTENTION", () => {
+  // ── WHY THIS EXISTS ──────────────────────────────────────────────────────────────────────────
+  // The poller has reported `merged` and `closed` since it was written. MEASURED on agentic-tpm,
+  // 2026-09-12: ZERO events ever consumed them. Two things followed. The delivery became an
+  // ordinary action item - a session asked to address, decline or defer "the merge request was
+  // merged", which asks nothing of anyone. And `foldHandedOffChanges` only ever GREW, so every
+  // request the organization had ever handed off was polled again on every tick, for ever.
+  const ev = (fact: unknown, atMs: number): OrgEvent =>
+    ({ id: "l" + String(atMs), kind: "change_projected", subjectId: "task-1", decision: "", atMs, evidenceRefs: [], supervisorChain: [], fact }) as unknown as OrgEvent;
+  const handedOff = (at: number, workId = "task-1") =>
+    ev({ kind: "change_handed_off", workId, changeId: "c1", branch: "defect/x", url: "https://git.example/p/-/merge_requests/1" }, at);
+  const left = (at: number, state: string, workId = "task-1") =>
+    ev({ kind: "change_left_review", workId, changeId: "c1", branch: "defect/x", state }, at);
+
+  test("merged and closed are the kinds that mean the request is over", () => {
+    expect(saysLeftReview("merged")).toBe(true);
+    expect(saysLeftReview("closed")).toBe(true);
+    expect(saysLeftReview("Merged")).toBe(true);
+    expect(saysLeftReview("comment")).toBe(false);
+    expect(saysLeftReview("pipeline_failed")).toBe(false);
+    expect(saysLeftReview("target_moved")).toBe(false);
+  });
+
+  test("a merged request is dropped from what gets polled", () => {
+    expect([...foldHandedOffChanges([handedOff(1)]).keys()]).toEqual(["task-1"]);
+    // The falsifier: before this the map only grew, so this was still ["task-1"].
+    expect([...foldHandedOffChanges([handedOff(1), left(2, "merged")]).keys()]).toEqual([]);
+  });
+
+  test("a closed request is dropped too, and other work is untouched", () => {
+    const folded = foldHandedOffChanges([handedOff(1), handedOff(2, "task-2"), left(3, "closed")]);
+    expect([...folded.keys()]).toEqual(["task-2"]);
+  });
+
+  test("work handed off AGAIN after it left review comes back - the events are read in order", () => {
+    const folded = foldHandedOffChanges([handedOff(1), left(2, "closed"), handedOff(3)]);
+    expect([...folded.keys()]).toEqual(["task-1"]);
+    expect(folded.get("task-1")?.branch).toBe("defect/x");
   });
 });

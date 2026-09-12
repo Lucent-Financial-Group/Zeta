@@ -21,7 +21,8 @@
  */
 
 import { spawn, spawnSync } from "node:child_process";
-import { mkdirSync, mkdtempSync, readdirSync, readFileSync, renameSync, rmSync, writeFileSync } from "node:fs";
+import { createHash } from "node:crypto";
+import { existsSync, mkdirSync, mkdtempSync, readdirSync, readFileSync, renameSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import type { ActionItem, HandedOffChange } from "./org-fold";
@@ -175,6 +176,17 @@ function lastJson(stdout: string | null | undefined): Record<string, unknown> | 
 /** How much of an item's detail travels in the prompt before the session is sent to `observe`. */
 export const DETAIL_IN_PROMPT = 600;
 
+/**
+ * How much of an earlier attempt's account the next session is shown.
+ *
+ * Shorter than a detail on purpose: what the last round DID is a few sentences, and the point of
+ * carrying it is to save the next session from re-deriving it - not to re-paste a transcript.
+ */
+export const ATTEMPT_IN_PROMPT = 400;
+
+/** How many earlier attempts go in the prompt. The rest stay in the record for `observe`. */
+export const ATTEMPTS_IN_PROMPT = 2;
+
 /** The detail, cut, saying where the whole of it is - which is the worldview, not another message. */
 function detailForPrompt(detail: string, workId: string): string {
   const t = detail.trim();
@@ -198,6 +210,17 @@ export function commandFollowUp(spec: CommandSpec, fallbackCwd: string): (r: Fol
       ...(i.url === undefined ? {} : { url: i.url }),
       // Decided once already, and that did not stand: the session is told why, so it does not repeat it.
       ...(i.reopened === undefined ? {} : { reopenedBecause: i.reopened.why }),
+      // WHAT EARLIER ROUNDS ALREADY TRIED, so this one starts from it rather than deriving it again.
+      // A reopened item used to arrive with the objection and no account of the work behind it.
+      ...(i.attempts === undefined || i.attempts.length === 0
+        ? {}
+        : {
+            alreadyTried: i.attempts.slice(-ATTEMPTS_IN_PROMPT).map((a) => ({
+              decided: a.outcome,
+              what: a.how.trim().length <= ATTEMPT_IN_PROMPT ? a.how.trim() : `${a.how.trim().slice(0, ATTEMPT_IN_PROMPT)}…`,
+              thenWhat: a.thenWhat.split(/s+/).join(" ").slice(0, ATTEMPT_IN_PROMPT),
+            })),
+          }),
       ...(i.reopenedTimes === undefined || i.reopenedTimes < 2 ? {} : { turnedBackTimes: i.reopenedTimes }),
       ...(i.deferred === undefined ? {} : { deferredBefore: i.deferred.why }),
     }));
@@ -237,15 +260,126 @@ export function commandFollowUp(spec: CommandSpec, fallbackCwd: string): (r: Fol
   };
 }
 
-/** Re-run the work verifier in a change's own checkout. Exit 0 is a pass; anything else is the reason. */
-export function commandVerifier(spec: CommandSpec, fallbackCwd: string): (h: ChangeHandle) => Promise<PortResult<string>> {
-  return async (h) => {
+/**
+ * Remove a scratch worktree the organization named, whatever state the session left it in.
+ *
+ * Deliberately total: unregister it, then delete whatever is still on disk, then prune the stale
+ * entries. Every step may legitimately fail - the session may have removed it already, or never
+ * made it - and none of them can be allowed to fail a review that has already been given.
+ */
+async function removeScratchWorktree(checkout: string, scratch: string): Promise<void> {
+  const git = { command: "git", args: [] as readonly string[] } satisfies CommandSpec;
+  try {
+    await runAsync(git, ["-C", checkout, "worktree", "remove", "--force", scratch], checkout, {});
+  } catch {
+    /* it may never have been registered */
+  }
+  try {
+    rmSync(scratch, { recursive: true, force: true });
+  } catch {
+    /* it may never have existed */
+  }
+  try {
+    await runAsync(git, ["-C", checkout, "worktree", "prune"], checkout, {});
+  } catch {
+    /* the checkout may not be a repository */
+  }
+}
+
+/**
+ * WHAT A GREEN SUITE AT A COMMIT IS WORTH: not running it again at that same commit.
+ *
+ * MEASURED on agentic-tpm, 2026-09-12: every check ran the whole suite - 81-88s of jest plus 7-8s of
+ * vitest - and `verify.log` shows the same two suites re-run round after round against the same two
+ * branches. A round that is turned back leaves its commits unpushed, so the NEXT round verifies the
+ * identical tree from scratch; a round that changes no code at all (an answer rewritten, a
+ * description amended) does too.
+ *
+ * The receipt is a file in the checkout's own `.git`, so it survives the run: `watch-org` spawns a
+ * fresh `run-org` every tick, and anything held in memory dies with it.
+ *
+ * IT IS ONLY EVER A PASS. A failure is not cached: a suite that failed once is exactly the thing
+ * somebody is about to change, and a cached red would outlive the fix.
+ *
+ * THREE THINGS MUST MATCH or the receipt is ignored - the commit, a clean working tree (uncommitted
+ * work is not in the commit and the suite has not seen it), and the verifier command itself.
+ */
+const VERIFY_RECEIPT = "org-verified";
+
+/** What the receipt is for: this commit, this verifier. A clean tree is checked separately. */
+function receiptFor(spec: CommandSpec, commit: string): string {
+  return `${commit} ${createHash("sha256").update(JSON.stringify([spec.command, spec.args ?? []])).digest("hex").slice(0, 16)}`;
+}
+
+/**
+ * The checkout's HEAD and whether anything is uncommitted - or undefined when either cannot be read,
+ * which means no receipt is written or believed and the suite simply runs, as it always did.
+ */
+async function treeState(cwd: string): Promise<{ readonly commit: string; readonly clean: boolean } | undefined> {
+  const git = { command: "git", args: [] as readonly string[] } satisfies CommandSpec;
+  const head = await runAsync(git, ["rev-parse", "HEAD"], cwd, {});
+  if (head.error !== undefined || head.status !== 0) return undefined;
+  const commit = String(head.stdout ?? "").trim();
+  if (!/^[0-9a-f]{40}$/.test(commit)) return undefined;
+  const dirty = await runAsync(git, ["status", "--porcelain"], cwd, {});
+  if (dirty.error !== undefined || dirty.status !== 0) return undefined;
+  return { commit, clean: String(dirty.stdout ?? "").trim() === "" };
+}
+
+/** Where the receipt lives for this checkout - inside its own git directory, worktree or not. */
+async function receiptPath(cwd: string): Promise<string | undefined> {
+  const where = await runAsync({ command: "git", args: [] }, ["rev-parse", "--absolute-git-dir"], cwd, {});
+  if (where.error !== undefined || where.status !== 0) return undefined;
+  const dir = String(where.stdout ?? "").trim();
+  return dir === "" ? undefined : join(dir, VERIFY_RECEIPT);
+}
+
+/**
+ * Re-run the work verifier in a change's own checkout. Exit 0 is a pass; anything else is the reason.
+ *
+ * AWAITED, NOT BLOCKING. MEASURED on agentic-tpm, 2026-09-12: the suite is 81-88s of jest plus 7-8s
+ * of vitest, and this port called `spawnSync` - so for a minute and a half NOTHING else in the run
+ * could proceed: not another item's session, not a poll, not the queue that is supposed to be
+ * running three at a time. The same defect as the follow-up port had, on the longest command here.
+ */
+export function commandVerifier(spec: CommandSpec, fallbackCwd: string): (h: ChangeHandle, slot?: number) => Promise<PortResult<string>> {
+  return async (h, slot) => {
     const workId = h.changeId.includes("@") ? h.changeId.slice(h.changeId.lastIndexOf("@") + 1) : h.changeId;
-    const ran = run(spec, [workId], h.workdir ?? fallbackCwd, { ORG_BRANCH: h.branch });
+    const cwd = h.workdir ?? fallbackCwd;
+    // ── A GREEN SUITE AT THIS EXACT COMMIT IS NOT RUN AGAIN ─────────────────────────────────────
+    const state = await treeState(cwd);
+    const receipt = state === undefined ? undefined : await receiptPath(cwd);
+    const want = state === undefined ? undefined : receiptFor(spec, state.commit);
+    if (state?.clean === true && receipt !== undefined && want !== undefined && existsSync(receipt)) {
+      try {
+        if (readFileSync(receipt, "utf-8").trim() === want) {
+          return {
+            ok: true,
+            value: `the suite already passed at ${state.commit.slice(0, 8)} and nothing has changed since`,
+            evidence: [{ kind: "trace", ref: `verified:${h.branch}@${state.commit.slice(0, 8)}` }],
+          };
+        }
+      } catch {
+        // An unreadable receipt is no receipt: run the suite.
+      }
+    }
+    // WHICH CONCURRENT VERIFICATION THIS IS. At the default width there is only ever slot 0; when
+    // the operator widens it, this is the number the project's own verify command allocates ports
+    // from, so two suites on one machine do not bind the same one.
+    const ran = await runAsync(spec, [workId], cwd, { ORG_BRANCH: h.branch, ORG_VERIFY_SLOT: String(slot ?? 0) });
     if (ran.error !== undefined) return { ok: false, reason: `'${spec.command}' could not run: ${ran.error.message}` };
-    return ran.status === 0
-      ? { ok: true, value: tail(ran.stdout), evidence: [{ kind: "trace", ref: `verified:${h.branch}` }] }
-      : { ok: false, reason: `exit ${String(ran.status)}: ${tail(ran.stderr) || tail(ran.stdout)}` };
+    if (ran.status !== 0) return { ok: false, reason: `exit ${String(ran.status)}: ${tail(ran.stderr) || tail(ran.stdout)}` };
+    // Only a pass is recorded, and only for a tree that was clean when it ran. Failing to write the
+    // receipt costs a re-run later and nothing else, so it never fails the verification.
+    if (state?.clean === true && receipt !== undefined && want !== undefined) {
+      try {
+        writeFileSync(receipt, `${want}
+`);
+      } catch {
+        /* the receipt is an optimisation, never a result */
+      }
+    }
+    return { ok: true, value: tail(ran.stdout), evidence: [{ kind: "trace", ref: `verified:${h.branch}` }] };
   };
 }
 
@@ -256,7 +390,7 @@ export function commandVerifier(spec: CommandSpec, fallbackCwd: string): (h: Cha
  */
 export function commandAnswerer(spec: CommandSpec, fallbackCwd: string): (r: AnswerRequest) => Promise<PortResult<readonly AnswerResult[]>> {
   return async (r) => {
-    const ran = run(spec, [], r.workdir ?? fallbackCwd, { ORG_BRANCH: r.branch }, JSON.stringify(r));
+    const ran = await runAsync(spec, [], r.workdir ?? fallbackCwd, { ORG_BRANCH: r.branch }, JSON.stringify(r));
     if (ran.error !== undefined) return { ok: false, reason: `the answerer '${spec.command}' could not run: ${ran.error.message}` };
     const results: AnswerResult[] = [];
     for (const line of String(ran.stdout ?? "").split(/\r?\n/)) {
@@ -324,7 +458,7 @@ export function commandAnswerChecker(spec: CommandSpec, fallbackCwd: string) {
 /** A request's current description, through the answerer command (`op: "read"`). */
 export function commandChangeReader(spec: CommandSpec, fallbackCwd: string) {
   return async (changeUrl: string): Promise<PortResult<{ readonly description: string }>> => {
-    const ran = run(spec, [], fallbackCwd, {}, JSON.stringify({ op: "read", changeUrl }));
+    const ran = await runAsync(spec, [], fallbackCwd, {}, JSON.stringify({ op: "read", changeUrl }));
     if (ran.error !== undefined) return { ok: false, reason: `'${spec.command}' could not run: ${ran.error.message}` };
     if (ran.status !== 0) return { ok: false, reason: `reading the request exited ${String(ran.status)}: ${tail(ran.stderr)}` };
     const out = lastJson(ran.stdout);
@@ -339,11 +473,22 @@ export function commandChangeReader(spec: CommandSpec, fallbackCwd: string) {
  */
 export function commandFollowUpReview(spec: CommandSpec, fallbackCwd: string) {
   return async (r: FollowUpReviewRequest): Promise<PortResult<FollowUpReviewVerdict>> => {
-    const ran = await runAsync(spec, [r.gate, r.workId], r.workdir ?? fallbackCwd, {
+    const checkout = r.workdir ?? fallbackCwd;
+    // ── THE SCRATCH COPY IS THE ORGANIZATION'S TO CLEAN UP, NOT THE REVIEWER'S ──────────────────
+    // Proving a test non-vacuous means a throwaway worktree, and the reviewer was told to make one
+    // at a path of its own choosing and remove it afterwards. Cleanup that depends on an agent
+    // remembering is cleanup that does not happen: the copies accumulate, and on a synced folder
+    // every one of them is a full checkout being uploaded. So the path is NAMED here, and removed
+    // here, whatever the session did or failed to do with it.
+    const scratch = join(tmpdir(), `org-review-${r.workId.replace(/[^A-Za-z0-9_-]/g, "_")}-${String(Date.now())}-${String(Math.floor(Math.random() * 1e6))}`);
+    const ran = await runAsync(spec, [r.gate, r.workId], checkout, {
       ORG_REVIEW_AS: r.reviewerHatId,
       ORG_BRANCH: r.branch,
+      ORG_REVIEW_SCRATCH: scratch,
       ORG_FOLLOWUP_REVIEW: JSON.stringify({ from: r.from, to: r.to, items: r.items, ...(r.alreadyProven === undefined ? {} : { alreadyProven: r.alreadyProven }) }),
       ...(r.workdir === undefined ? {} : { ORG_WORKDIR: r.workdir }),
+    }).finally(async () => {
+      await removeScratchWorktree(checkout, scratch);
     });
     if (ran.error !== undefined) return { ok: false, reason: `the reviewer '${spec.command}' could not run: ${ran.error.message}` };
     const lines = String(ran.stdout ?? "").trim().split(/\r?\n/).filter((l) => !l.startsWith("usage:"));
@@ -401,7 +546,7 @@ export function commandFollowUpPlanner(spec: CommandSpec, fallbackCwd: string) {
  */
 export function commandCommenter(spec: CommandSpec, fallbackCwd: string) {
   return async (r: { readonly workId: string; readonly changeUrl?: string; readonly branch: string; readonly body: string; readonly repeat?: boolean }): Promise<PortResult<{ readonly replyId?: string }>> => {
-    const ran = run(spec, [], fallbackCwd, { ORG_BRANCH: r.branch }, JSON.stringify({ op: "comment", changeUrl: r.changeUrl ?? "", body: r.body, repeat: r.repeat === true }));
+    const ran = await runAsync(spec, [], fallbackCwd, { ORG_BRANCH: r.branch }, JSON.stringify({ op: "comment", changeUrl: r.changeUrl ?? "", body: r.body, repeat: r.repeat === true }));
     if (ran.error !== undefined) return { ok: false, reason: `the commenter '${spec.command}' could not run: ${ran.error.message}` };
     if (ran.status !== 0) return { ok: false, reason: `the commenter exited ${String(ran.status)}: ${tail(ran.stderr)}` };
     const out = lastJson(ran.stdout);
