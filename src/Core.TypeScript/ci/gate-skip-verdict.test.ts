@@ -53,7 +53,7 @@ describe("the parse is against the real gate.yml, and it is not empty", () => {
     // the leg was claimed by four targets while the job smoke-checks seven toolchains,
     // so an F#-only change could not turn it on. Asserted rather than loosened, because
     // this is the one string that proves the job is still gated by SOMETHING.
-    expect(ifs.get("full-verify")).toBe("fromJSON(needs.path-filter.outputs.legs).gate_full_verify != false");
+    expect(ifs.get("full-verify")).toBe("fromJSON(needs.path-filter.outputs.legs).gate_full_verify != 'false'");
     expect(ifs.get(ROLLUP_JOB_ID)).toBe("always()");
     // `build-and-test` NOW CARRIES A JOB-LEVEL `if:` and did not before. That is a
     // real relaxation of this file's central safety property -- its skip used to be
@@ -102,7 +102,7 @@ describe("the parse is against the real gate.yml, and it is not empty", () => {
 describe("a docs-only PR stays GREEN", () => {
   // The shape a real docs-only PR produces, verified against gate.yml's declarations:
   // `path-filter` succeeds and emits code=false; `full-verify` carries
-  // `if: fromJSON(...).gate_full_verify != false` so it skips. `build-and-test` now
+  // `if: fromJSON(...).gate_full_verify != 'false'` so it skips. `build-and-test` now
   // also carries a job-level `if:` (its graph leg), so on a real docs-only PR it
   // SKIPS rather than running-and-skipping-its-steps. This fixture keeps it at
   // `success` on purpose: it is the shape from before the leg wiring, and a rollup
@@ -127,7 +127,7 @@ describe("a docs-only PR stays GREEN", () => {
   test("and `full-verify`'s skip is reported as LEGITIMATE, naming the condition", () => {
     const v = classifyFloorResult("full-verify", docsOnly, decls);
     expect(v.kind).toBe("legitimate-skip");
-    expect(v.reason).toContain("fromJSON(needs.path-filter.outputs.legs).gate_full_verify != false");
+    expect(v.reason).toContain("fromJSON(needs.path-filter.outputs.legs).gate_full_verify != 'false'");
     expect(v.reason).toContain("path-filter all succeeded");
   });
 
@@ -454,7 +454,7 @@ describe("the rendered verdict names every row, not only the failing ones", () =
     );
     expect(text).toContain("[ok  ] lint: success");
     expect(text).toContain("[skip] full-verify: skipped");
-    expect(text).toContain("fromJSON(needs.path-filter.outputs.legs).gate_full_verify != false");
+    expect(text).toContain("fromJSON(needs.path-filter.outputs.legs).gate_full_verify != 'false'");
   });
 
   test("a blocking render marks the failing row FAIL", () => {
