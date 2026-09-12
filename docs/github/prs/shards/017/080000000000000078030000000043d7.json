@@ -1,0 +1,12 @@
+{
+  "pr_number": 17367,
+  "archive_path": "docs/history/pr-reviews/2026/09/12/PR-17367-fix-deps-do-not-bump-the-four-packages-a-recorded-experiment-pins.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-12T16:45:19.045Z",
+  "schema_version": "v1",
+  "commit_sha": "06f138031181a37abef2abcd4f04d19a131443fd",
+  "title": "fix(deps): do not bump the four packages a recorded experiment pins",
+  "state": "MERGED",
+  "merged_at": "2026-09-12T16:44:41Z",
+  "head_ref": "shadow/uv-ignore-fixture-pinned-upstream"
+}

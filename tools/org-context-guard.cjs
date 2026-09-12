@@ -26,7 +26,7 @@
 
 const { appendFileSync, mkdirSync, readFileSync, statSync, writeFileSync } = require("node:fs");
 const { join, resolve } = require("node:path");
-const { homedir, tmpdir } = require("node:os");
+const { homedir } = require("node:os");
 
 const NL = String.fromCharCode(10);
 const env = process.env;
@@ -57,15 +57,27 @@ const WHOLE_FILE_LIMIT = Number(env.ORG_GUARD_WHOLE_FILE_BYTES || 100_000);
 function guardDir() {
   if (env.ORG_GUARD_DIR) return env.ORG_GUARD_DIR;
   const home = homedir();
-  // No home directory is the one case with no private place to write. Fall back to the temp
-  // dir but say so, rather than silently keeping the insecure path as if it were the plan.
-  if (!home) return join(tmpdir(), "org-context-guard");
+  // NO HOME DIRECTORY MEANS NO PRIVATE PLACE TO WRITE, so the guard writes NOWHERE.
+  //
+  // The previous version fell back to the shared temp dir "but said so", which is the whole
+  // defect wearing a disclaimer: CodeQL flagged it again (js/insecure-temporary-file), and
+  // rightly -- a comment does not make a guessable path in a world-writable directory safe,
+  // and the fallback would be taken exactly on the machines least likely to notice.
+  //
+  // Returning undefined is honest and costs nothing that matters. The dedupe is an
+  // OPTIMISATION: `stateFile` is only ever used to remember "already read in this session",
+  // and every write to it is already wrapped in a try/catch whose comment says failing to
+  // record must not fail the read. So with no home directory the guard still guards -- it
+  // refuses pictures and oversized whole-file reads exactly as before -- and only stops
+  // deduplicating repeat reads.
+  if (!home) return undefined;
   return join(home, ".zeta", "org-context-guard");
 }
 
 /** Where this session's "already in context" list lives. Per session, so nothing leaks between runs. */
 function stateFile(sessionId) {
   const dir = guardDir();
+  if (dir === undefined) return undefined;
   mkdirSync(dir, { recursive: true, mode: 0o700 });
   return join(dir, String(sessionId || "unknown").replace(/[^A-Za-z0-9_-]/g, "_") + ".json");
 }
@@ -127,10 +139,15 @@ function main(input) {
 
   const path = stateFile(ev.session_id);
   let seen = {};
-  try {
-    seen = JSON.parse(readFileSync(path, "utf-8"));
-  } catch {
-    seen = {};
+  // `path` is undefined when there is no home directory to keep session state in. The dedupe
+  // is then simply off: every read is treated as first-seen, which is the SAFE direction --
+  // it can only let a read through, never block one that should have been allowed.
+  if (path !== undefined) {
+    try {
+      seen = JSON.parse(readFileSync(path, "utf-8"));
+    } catch {
+      seen = {};
+    }
   }
   const key = norm + "@" + String((ev.tool_input && ev.tool_input.offset) || 0) + ":" + String((ev.tool_input && ev.tool_input.limit) || 0);
   if (seen[key]) {
@@ -141,10 +158,12 @@ function main(input) {
     );
   }
   seen[key] = true;
-  try {
-    writeFileSync(path, JSON.stringify(seen));
-  } catch {
-    // the dedupe is an optimisation; failing to record it must not fail the read
+  if (path !== undefined) {
+    try {
+      writeFileSync(path, JSON.stringify(seen));
+    } catch {
+      // the dedupe is an optimisation; failing to record it must not fail the read
+    }
   }
   process.exit(0);
 }
@@ -159,7 +178,13 @@ process.stdin.on("end", () => {
   } catch (err) {
     // FAILS OPEN. Never let the guard be the reason the organization stops.
     try {
-      appendFileSync(join(guardDir(), "error.log"), new Date().toISOString() + " " + String((err && err.message) || err) + NL);
+      // Same rule as the state file: with no private directory there is nowhere honest to put
+      // this, so it is not written. The catch below already swallows a failed log, and the
+      // guard's own contract is that it fails OPEN and can never be why a run stops.
+      const logDir = guardDir();
+      if (logDir !== undefined) {
+        appendFileSync(join(logDir, "error.log"), new Date().toISOString() + " " + String((err && err.message) || err) + NL);
+      }
     } catch {
       // nothing to do
     }

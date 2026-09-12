@@ -1,0 +1,15 @@
+{
+  "pr_number": 17299,
+  "archive_path": "docs/history/pr-reviews/2026/09/12/PR-17299-feat-corporate-every-agent-call-states-its-model-and-records-what-it-cost.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7uE25P",
+    "thread:PRRT_kwDOSF9kNM6hq-JI"
+  ],
+  "fetched_at": "2026-09-12T15:48:07.181Z",
+  "schema_version": "v1",
+  "commit_sha": "1608ad7d6ce262984a137e12793a2fcc7b3a78be",
+  "title": "feat(corporate): every agent call states its model and records what it cost",
+  "state": "MERGED",
+  "merged_at": "2026-09-12T15:46:57Z",
+  "head_ref": "org-cost-and-model"
+}
