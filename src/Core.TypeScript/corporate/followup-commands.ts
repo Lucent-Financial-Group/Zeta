@@ -271,6 +271,45 @@ export function commandFollowUp(spec: CommandSpec, fallbackCwd: string): (r: Fol
   };
 }
 
+/** How many changed files a review is handed before the list is cut. */
+export const CHANGED_FILES_IN_PROMPT = 60;
+
+/** A path that looks like a test, by the conventions every repository here actually uses. */
+export function looksLikeATest(path: string): boolean {
+  const parts = path.toLowerCase().split("/");
+  const file = parts[parts.length - 1] ?? "";
+  const inATestDirectory = parts.slice(0, -1).some((d) => d === "test" || d === "tests" || d === "__tests__" || d === "spec" || d === "specs");
+  const dot = file.split(".");
+  const suffixedWithOne = dot.length > 2 && (dot[dot.length - 2] === "test" || dot[dot.length - 2] === "spec");
+  const namedLikeOne = file.startsWith("test_") || file.startsWith("spec_");
+  return inATestDirectory || suffixedWithOne || namedLikeOne;
+}
+
+/**
+ * WHAT CHANGED BETWEEN TWO COMMITS, handed to a reviewer instead of made it go and find out.
+ *
+ * MEASURED across agentic-tpm and dev-portal, 2026-09-11..12 (94 calls, $242.53): a `review` call
+ * averages 72 agent turns, against 18 for the `follow-up` that produced the work it judges - four
+ * times the turns to check a change as to make it. Turns are the cost here: 156 tokens are READ for
+ * every one written, so what a session has to discover for itself is most of the bill.
+ *
+ * A reviewer's first several turns are always the same: what changed, and which of those are tests.
+ * Both are one git command, so the organization runs it once rather than paying a model to find out.
+ * Bounded, and empty when it cannot be read - a reviewer that is handed nothing does exactly what
+ * it did before, which is look for itself.
+ */
+async function changedBetween(checkout: string, from: string, to: string): Promise<{ readonly files: readonly string[]; readonly tests: readonly string[]; readonly more: number } | undefined> {
+  const ran = await runAsync({ command: "git", args: [] }, ["-C", checkout, "diff", "--name-only", `${from}..${to}`], checkout, {});
+  if (ran.error !== undefined || ran.status !== 0) return undefined;
+  const all = String(ran.stdout ?? "")
+    .split(/\r?\n/)
+    .map((l) => l.trim())
+    .filter((l) => l !== "");
+  if (all.length === 0) return undefined;
+  const shown = all.slice(0, CHANGED_FILES_IN_PROMPT);
+  return { files: shown, tests: all.filter(looksLikeATest).slice(0, CHANGED_FILES_IN_PROMPT), more: Math.max(0, all.length - shown.length) };
+}
+
 /**
  * Remove a scratch worktree the organization named, whatever state the session left it in.
  *
@@ -492,10 +531,14 @@ export function commandFollowUpReview(spec: CommandSpec, fallbackCwd: string) {
     // every one of them is a full checkout being uploaded. So the path is NAMED here, and removed
     // here, whatever the session did or failed to do with it.
     const scratch = join(tmpdir(), `org-review-${r.workId.replace(/[^A-Za-z0-9_-]/g, "_")}-${String(Date.now())}-${String(Math.floor(Math.random() * 1e6))}`);
+    // The first several turns of every review are "what changed, and which of those are tests".
+    // One git command, run once here, instead of a model discovering it at 72 turns a call.
+    const changed = await changedBetween(checkout, r.from, r.to);
     const ran = await runAsync(spec, [r.gate, r.workId], checkout, {
       ORG_REVIEW_AS: r.reviewerHatId,
       ORG_BRANCH: r.branch,
       ORG_REVIEW_SCRATCH: scratch,
+      ...(changed === undefined ? {} : { ORG_REVIEW_CHANGED: JSON.stringify(changed) }),
       ORG_FOLLOWUP_REVIEW: JSON.stringify({ from: r.from, to: r.to, items: r.items, ...(r.alreadyProven === undefined ? {} : { alreadyProven: r.alreadyProven }) }),
       ...(r.workdir === undefined ? {} : { ORG_WORKDIR: r.workdir }),
     }).finally(async () => {

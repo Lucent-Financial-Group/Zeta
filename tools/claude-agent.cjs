@@ -799,6 +799,24 @@ if (mode === "review") {
         String(fu.from).slice(0, 12) + ".." + String(fu.to).slice(0, 12) + " were made in answer to review feedback. Judge THOSE commits",
         "(`git diff " + fu.from + ".." + fu.to + "`), against what the follow-up claims they do:",
         JSON.stringify(fu.items || [], null, 2),
+        ...((() => {
+          if (!env.ORG_REVIEW_CHANGED) return [];
+          let ch;
+          try {
+            ch = JSON.parse(env.ORG_REVIEW_CHANGED);
+          } catch {
+            return [];
+          }
+          // Handed over rather than discovered: a review averages 72 agent turns against 18 for the
+          // follow-up it judges, and the first several are always spent finding this out.
+          return [
+            "",
+            "WHAT ACTUALLY CHANGED between those commits - you do not need to go and find this out:",
+            JSON.stringify(ch.files || [], null, 2),
+            (ch.more ? "(and " + ch.more + " more - the diff is the whole truth; this list is cut)" : ""),
+            "THE TESTS AMONG THEM: " + ((ch.tests || []).length ? JSON.stringify(ch.tests) : "NONE. A change claiming a fix with no test touched is the first thing to ask about."),
+          ].filter(function (l) { return l !== ""; });
+        })()),
         "For every item claimed as addressed: is the problem really fixed, and does a test prove it? PROVE the test is",
         "not vacuous: in a SCRATCH copy at THE PATH YOU WERE GIVEN, " + scratch + " (`git -C <checkout> worktree add",
         "--detach " + scratch + " " + fu.to + "`), put the production files back as they were (`git -C " + scratch,

@@ -17,7 +17,7 @@ import { existsSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "no
 import { spawnSync } from "node:child_process";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { commandFollowUp, commandFollowUpReview, commandVerifier, RECALL_IN_PROMPT } from "./followup-commands";
+import { commandFollowUp, commandFollowUpReview, commandVerifier, looksLikeATest, RECALL_IN_PROMPT } from "./followup-commands";
 import { ferry } from "./ferry";
 import type { FollowUpRequest } from "./change-followup";
 
@@ -353,7 +353,7 @@ describe("A FOLLOW-UP SESSION WAKES UP KNOWING WHAT THE HAT ALREADY LEARNED", ()
   // The memory circuit was wired to the ORIGINAL work walk and stopped there: the hat that wrote the
   // change got what it had learned, and every follow-up session that answers a reviewer started from
   // nothing - on the same repository, about the same change. Those are the expensive sessions.
-  async function told(recall: string | undefined): Promise<Record<string, string>> {
+  async function told(recall: string | undefined): Promise<Record<string, string | undefined>> {
     const dir = mkdtempSync(join(tmpdir(), "followup-recall-"));
     const seen = join(dir, "env.json");
     const stub = join(dir, "stub.cjs");
@@ -372,7 +372,7 @@ describe("A FOLLOW-UP SESSION WAKES UP KNOWING WHAT THE HAT ALREADY LEARNED", ()
         items: [],
         ...(recall === undefined ? {} : { recall }),
       } as never);
-      return JSON.parse(readFileSync(seen, "utf-8")) as Record<string, string>;
+      return JSON.parse(readFileSync(seen, "utf-8")) as Record<string, string | undefined>;
     } finally {
       rmSync(dir, { recursive: true, force: true });
     }
@@ -389,6 +389,83 @@ describe("A FOLLOW-UP SESSION WAKES UP KNOWING WHAT THE HAT ALREADY LEARNED", ()
 
   test("a wall of memory is bounded - it must cost less than the deriving it saves", async () => {
     const huge = `[mem-1] ${"z".repeat(20000)}`;
-    expect((await told(huge)).recall.length).toBeLessThanOrEqual(RECALL_IN_PROMPT);
+    expect(((await told(huge)).recall ?? "").length).toBeLessThanOrEqual(RECALL_IN_PROMPT);
   });
+});
+
+describe("A REVIEW IS HANDED WHAT CHANGED INSTEAD OF GOING TO FIND OUT", () => {
+  // MEASURED across agentic-tpm and dev-portal, 2026-09-11..12 (94 calls, $242.53): a `review` call
+  // averages 72 agent turns against 18 for the `follow-up` whose work it judges - four times the
+  // turns to CHECK a change as to MAKE one. The first several are always the same question, and it
+  // is one git command.
+  test("a path is recognised as a test by the conventions repositories actually use", () => {
+    expect(looksLikeATest("src/foo.test.ts")).toBe(true);
+    expect(looksLikeATest("client/src/x.spec.tsx")).toBe(true);
+    expect(looksLikeATest("server/__tests__/thing.js")).toBe(true);
+    expect(looksLikeATest("tests/integration/a.py")).toBe(true);
+    expect(looksLikeATest("api/test_workflow.py")).toBe(true);
+    expect(looksLikeATest("src/latest.ts")).toBe(false);
+    expect(looksLikeATest("docs/testing-guide.md")).toBe(false);
+  });
+
+  test("the reviewer is told which files moved and which of them are tests", async () => {
+    const dir = mkdtempSync(join(tmpdir(), "review-changed-"));
+    const harness = mkdtempSync(join(tmpdir(), "review-changed-h-"));
+    const git = (...a: string[]) => spawnSync("git", a, { cwd: dir, encoding: "utf-8" });
+    git("init", "-q");
+    git("config", "user.email", "org@example.invalid");
+    git("config", "user.name", "org");
+    writeFileSync(join(dir, "a.ts"), "one");
+    git("add", "-A");
+    git("commit", "-qm", "one");
+    const from = (git("rev-parse", "HEAD").stdout ?? "").trim();
+    writeFileSync(join(dir, "a.ts"), "two");
+    writeFileSync(join(dir, "a.test.ts"), "proof");
+    git("add", "-A");
+    git("commit", "-qm", "two");
+    const to = (git("rev-parse", "HEAD").stdout ?? "").trim();
+    const seen = join(harness, "env.json");
+    const stub = join(harness, "review.cjs");
+    writeFileSync(stub, 'require("fs").writeFileSync(' + JSON.stringify(seen) + ',process.env.ORG_REVIEW_CHANGED||"");process.exit(0);');
+    try {
+      await commandFollowUpReview({ command: "node", args: [stub] }, dir)({
+        gate: "implementation_review",
+        reviewerHatId: "staff_engineer",
+        workId: "task-1",
+        branch: "defect/x",
+        workdir: dir,
+        from,
+        to,
+        items: [{ summary: "s", outcome: "addressed", how: "h" }],
+      } as never);
+      const told = JSON.parse(readFileSync(seen, "utf-8")) as { files: string[]; tests: string[] };
+      expect(told.files.sort()).toEqual(["a.test.ts", "a.ts"]);
+      expect(told.tests).toEqual(["a.test.ts"]);
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
+      rmSync(harness, { recursive: true, force: true });
+    }
+  }, 30_000);
+
+  test("a range that cannot be read hands over nothing - the reviewer looks for itself, as before", async () => {
+    const dir = mkdtempSync(join(tmpdir(), "review-norepo-"));
+    const seen = join(dir, "env.json");
+    const stub = join(dir, "review.cjs");
+    writeFileSync(stub, 'require("fs").writeFileSync(' + JSON.stringify(seen) + ',process.env.ORG_REVIEW_CHANGED||"NONE");process.exit(0);');
+    try {
+      await commandFollowUpReview({ command: "node", args: [stub] }, dir)({
+        gate: "implementation_review",
+        reviewerHatId: "staff_engineer",
+        workId: "task-1",
+        branch: "defect/x",
+        workdir: dir,
+        from: "aaaaaaa",
+        to: "bbbbbbb",
+        items: [],
+      } as never);
+      expect(readFileSync(seen, "utf-8")).toBe("NONE");
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
+    }
+  }, 30_000);
 });
