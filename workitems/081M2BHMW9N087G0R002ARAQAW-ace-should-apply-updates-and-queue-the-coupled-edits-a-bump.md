@@ -86,6 +86,38 @@ roster is ours.
 
 **ace owns the MECHANISM. The repo owns the FACTS.**
 
+**AND THE LINE IS PACKAGE-MANAGER-INTRINSIC vs REPO-ARTIFACT, not "engine vs data".** Aaron,
+sharpening it a second time, 2026-09-12:
+
+> *"for ace we want to have coupling to most popular package managers, this is its value add.
+> it already integrates with most package managers in an AI friendly cli interface."*
+
+That is the correction to my "generic declaration engine" framing. ace's coupling is TO THE
+PACKAGE MANAGERS -- that breadth IS the product, and it is already substantial: `ECOSYSTEMS`
+covers cargo, go, mise, npm, nuget and pypi, and `setup-realizers/` reaches deb, dotnet-global,
+dotnet-workload, elan, opam-git, ollama, bun workspace/link/global, autotools tarballs,
+installers, shims and tag-only URLs. A uniform AI-legible CLI over that heterogeneity is the
+value add, not a coupling DSL.
+
+So a coupling belongs to ace when it is a property of a PACKAGE MANAGER, and to the repo when
+it is a property of THIS REPOSITORY. Re-sorting the measured table on that line:
+
+| bump | coupled edit | whose |
+|---|---|---|
+| any nuget version | 63 `packages.lock.json` must be re-locked | **ace** -- nuget intrinsic |
+| `dotnet-sdk` | `.mise.toml` -> `mise.lock` | **ace** -- mise intrinsic |
+| `dotnet-sdk` | `global.json` restates the mise pin | **ace** -- a dotnet+mise fact any such repo has |
+| GitHub Action | `action-sha-roster.json` regenerated | **repo** -- our roster |
+| `numpy` | MiniGrid carrier + 2 fingerprints + 2 receipts | **repo** -- our experiment |
+| `dotnet-sdk` | a `cross-verify` leg that needed an SDK | **repo** -- our workflow |
+
+Three of six are ace's, and they are the three that would recur in ANY repository using those
+package managers. That is the test for which side a coupling falls on: **would another repo
+using the same package manager have it?** If yes it is ace's and ace should already know it
+without being told. If no, the repo declares it.
+
+
+
 | layer | owns | example |
 |---|---|---|
 | **ace** (general) | the coupling VOCABULARY and the engine: read declarations, compute the closure of a proposed bump, apply what is mechanical, queue what is not, report what it cannot see | "pin P in ecosystem E is coupled to artifacts A; regenerate with command C" |
