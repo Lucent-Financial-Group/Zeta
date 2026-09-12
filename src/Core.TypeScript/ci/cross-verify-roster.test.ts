@@ -374,8 +374,21 @@ describe("the floor is not weakened", () => {
     const steps = GATE.jobs[MATRIX_JOB_ID]?.steps as Array<{ run?: string; uses?: string }> | undefined;
     expect(steps).toBeDefined();
     const runs = (steps ?? []).map((s) => s.run).filter((r): r is string => typeof r === "string");
-    expect(runs).toHaveLength(2); // `bun install --frozen-lockfile`, and the runner
-    expect(runs.some((r) => r.includes("cross-verify-roster.ts --run"))).toBe(true);
+
+    // The property is "no AUDIT except through the roster", not "no run: steps". Setup is
+    // enumerated by exact command so a new one is still a deliberate edit to this list, and
+    // anything that is neither setup nor the generic runner fails the assertion below.
+    //
+    // `install.sh` joined this list when `byte-lock-oracles` was found to spawn an F# oracle
+    // with no SDK provisioned -- it had been borrowing the runner image's dotnet, which the
+    // 10.0.400 -> 10.0.401 bump stopped satisfying. It is scoped by `if:` to that one leg.
+    const SETUP_RUNS: readonly string[] = ["bun install --frozen-lockfile", "./tools/setup/install.sh"];
+    const isSetup = (r: string): boolean => SETUP_RUNS.some((k) => r.trim() === k);
+    const isRunner = (r: string): boolean => r.includes("cross-verify-roster.ts --run");
+
+    expect(runs.filter(isRunner)).toHaveLength(1); // exactly one generic runner, still
+    const unaccounted = runs.filter((r) => !isSetup(r) && !isRunner(r));
+    expect(unaccounted).toEqual([]); // a 32nd audit pasted here lands HERE and fails
     expect(runs.every((r) => !r.includes("${{"))).toBe(true); // no template-injection surface
   });
 
