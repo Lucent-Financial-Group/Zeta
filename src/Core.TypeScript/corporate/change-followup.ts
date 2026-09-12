@@ -127,14 +127,12 @@ export interface ItemDecision {
   readonly respond?: boolean;
 }
 
-/**
- * A follow-up's CODE, put through the same review the original work passed before it is pushed.
- *
- * MEASURED on MR !164: a follow-up commit claimed two review findings were fixed with tests; removing
- * one half of the fix left every test green. It went from "the tests pass" straight to the reviewer's
- * inbox, because a follow-up had no review step at all - the original work's implementation_review
- * and qa_uat were never asked about the commits that came after them.
- */
+// A follow-up's CODE, put through the same review the original work passed before it is pushed.
+//
+// MEASURED on MR !164: a follow-up commit claimed two review findings were fixed with tests; removing
+// one half of the fix left every test green. It went from "the tests pass" straight to the reviewer's
+// inbox, because a follow-up had no review step at all - the original work's implementation_review
+// and qa_uat were never asked about the commits that came after them.
 /**
  * WHAT A REVIEWER ALREADY PROVED IS NOT PROVED AGAIN.
  *
@@ -307,19 +305,17 @@ export function placeOnThisMachine(text: string): string | undefined {
   return (m[1] ?? m[2] ?? "").slice(0, 60);
 }
 
-/**
- * How many times IN A ROW a request's follow-up could not complete, and what it said last.
- *
- * MEASURED on dev-portal, 2026-09-12: every session in that repository dies the same way. Its own
- * `CLAUDE.md` transitively imports 499KB of documentation - `docs/RESILIENCE.md` alone is 359KB - so
- * a session starts with about 196,000 tokens of context already written and no room to work in; it
- * manages four tool calls, reports "autocompact is thrashing", and exits. Six minutes and about six
- * dollars, every thirty minutes, for nothing. The organization cannot fix a repository's own context
- * budget, and it must not keep paying to discover that.
- *
- * Counted from the record the runtime writes when a follow-up does not complete, and reset by one
- * that does: a request that starts working again is not carrying a history.
- */
+// How many times IN A ROW a request's follow-up could not complete, and what it said last.
+//
+// MEASURED on dev-portal, 2026-09-12: every session in that repository dies the same way. Its own
+// `CLAUDE.md` transitively imports 499KB of documentation - `docs/RESILIENCE.md` alone is 359KB - so
+// a session starts with about 196,000 tokens of context already written and no room to work in; it
+// manages four tool calls, reports "autocompact is thrashing", and exits. Six minutes and about six
+// dollars, every thirty minutes, for nothing. The organization cannot fix a repository's own context
+// budget, and it must not keep paying to discover that.
+//
+// Counted from the record the runtime writes when a follow-up does not complete, and reset by one
+// that does: a request that starts working again is not carrying a history.
 /**
  * A REFUSAL THE ORGANIZATION NEVER GOT TO MAKE IS NOT A FAILURE OF THE WORK.
  *
