@@ -1,0 +1,14 @@
+{
+  "id": "080d04b009291010a0130008c2a461b6",
+  "at": "2026-09-12T14:24:12.578Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M2B02991087G0R002XYKG54",
+    "type": "task",
+    "title": "lock liveness assumes one machine and cannot age out a hung holder",
+    "slug": "lock-liveness-assumes-one-machine-and-cannot-age-out-a-hung",
+    "priority": "P2",
+    "filename": "081M2B02991087G0R002XYKG54-lock-liveness-assumes-one-machine-and-cannot-age-out-a-hung.md"
+  }
+}
