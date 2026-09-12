@@ -531,6 +531,7 @@
     <Compile Include="SoftValue.CrossVerify.Tests.fs" />
     <Compile Include="SoftValueWidening.Tests.fs" />
     <Compile Include="DualScore.Tests.fs" />
+    <Compile Include="DualScoreTreaty.Tests.fs" />
     <Compile Include="RetractionReading.Tests.fs" />
     <Compile Include="SoftValueWeightedSet.Tests.fs" />
     <Compile Include="TravelerFrame.Tests.fs" />

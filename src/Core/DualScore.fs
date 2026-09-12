@@ -144,22 +144,32 @@ namespace Zeta.Core
 /// of 0.7 predicts about the world, so every JUDGING function is named `toy*` and ships no
 /// default margin (`.claude/rules/toy-is-free-metered-must-be-earned.md`).
 ///
-/// ## Declared divergences from `dual-score.ts`
+/// ## Declared divergences from `dual-score.ts` — and what the TREATY did to them
 ///
-///   1. **`dualScore(t, f)` → `DualScore.create t f`.** The module already carries the name under
-///      `RequireQualifiedAccess`; `DualScore.dualScore` would stutter. Same function, same order
-///      of arguments, same refusals.
-///   2. **`residual` is ADDED, and it is SIGNED.** TypeScript ships `ignorance` and
-///      `contradiction`, which are the two clamped halves of one quantity. The signed `r` is added
-///      because the sign is what carries the meaning above (slack vs. Dutch book), and both TS
-///      functions remain, defined in terms of it, so nothing diverges numerically.
-///   3. **The four corners are NAMED** (`vacuous`, `onlyTrue`, `onlyFalse`, `both`, and the
-///      `corners` roster). TS names only `VACUOUS`. A corner that cannot be named cannot be
-///      tested for, and all four being representable is the point of the type.
+/// A cross-language treaty is where a declared divergence gets **paid off** rather than
+/// re-documented. `src/Core.TypeScript/belief/dual-score-treaty-transcript.json` is that treaty:
+/// generated from the TypeScript side, replayed by `tests/Tests.FSharp/DualScoreTreaty.Tests.fs`,
+/// with every double travelling as its exact IEEE-754 bit pattern in hex.
+///
+///   1. **`dualScore(t, f)` → `DualScore.create t f`.** STILL A DIVERGENCE, and a permanent one:
+///      the module already carries the name under `RequireQualifiedAccess`, so
+///      `DualScore.dualScore` would stutter. Same function, same argument order, same refusals —
+///      a SPELLING, and the treaty pins VALUES rather than spellings.
+///   2. **`residual`, SIGNED — CLOSED.** `dual-score.ts` exports `residual` now. The two sides
+///      still derive the excess independently (`max 0 (-(1 - mass))` here, `mass - 1` there) and
+///      the `Facts` vectors check the two derivations against each other BY BITS. That check
+///      immediately found its own exception: at `r = 0` the intermediates are `-0.0` and `+0.0`,
+///      which do not escape only because both clamps emit a positive literal zero.
+///   3. **The four corners NAMED — CLOSED.** `ONLY_TRUE`, `ONLY_FALSE`, `BOTH` and the `CORNERS`
+///      roster are exported there now, in the same `≤_k` order, pinned positionally.
+///   4. **`massShapeWithin` — CLOSED, and closing it found a live defect ON THIS SIDE.** The
+///      tolerance fold was `max 0.0 tolerance`, and F#'s `max` propagates `nan`, so a `nan`
+///      tolerance made **every** score read `Coherent`. See the note on that function.
 ///
 /// `equals` is not ported: F# structural equality on the record is that function, and shipping a
 /// duplicate would be noise. `parseDualScore` is ported as `ofDynamicValue`, over the repo's own
-/// dynamic carrier rather than `unknown`.
+/// dynamic carrier rather than `unknown` — so the treaty encodes parser inputs STRUCTURALLY and
+/// each runtime builds its own carrier from that encoding.
 ///
 /// ## Beacon anchors
 ///
@@ -324,8 +334,11 @@ module DualScore =
         else Coherent
 
     /// The shape with a **caller-supplied** tolerance: a residual within `+/-tolerance` of zero
-    /// reads as `Coherent`. A divergence from `dual-score.ts`, added because of the measurement
-    /// quoted on `massShape` above.
+    /// reads as `Coherent`. Added because of the measurement quoted on `massShape` above.
+    ///
+    /// `dual-score.ts` ships the same function under the same name, and the two are pinned against
+    /// each other by `dual-score-treaty-transcript.json` — see the NaN paragraph below, which is
+    /// there because the treaty found a live divergence, not because anyone anticipated one.
     ///
     /// **There is no default tolerance and there will not be one.** The honest value depends on
     /// how the legs were produced -- a directly-stated pair wants `0`, a sum of `n` floats wants
@@ -334,8 +347,20 @@ module DualScore =
     /// (`.claude/rules/toy-is-free-metered-must-be-earned.md`). A negative tolerance is folded to
     /// zero rather than refused: it is a degenerate input to a total arithmetic function, not a
     /// belief that could mislead anyone downstream.
+    ///
+    /// > **The fold is `if tolerance > 0.0 then tolerance else 0.0`, NOT `max 0.0 tolerance`, and
+    /// > the difference is a defect this treaty caught.** F#'s `max` **propagates `nan`**
+    /// > (measured: `max 0.0 nan = NaN` and `max nan 0.0 = NaN`) — and under a `nan` tolerance
+    /// > every comparison below is false, so **every score would read `Coherent`**. That is the
+    /// > vacuity class inside a reading function: a caller who passed `nan` by accident would be
+    /// > told, silently and for every belief, that nothing is contradictory and nothing is
+    /// > ignorant — the one answer that erases the whole signal this type exists to carry.
+    /// > `if tolerance > 0.0` sends `nan` to `0.0` (`nan > 0.0` is false), failing closed onto the
+    /// > exact reading. TypeScript's `tolerance > 0 ? tolerance : 0` was already correct for the
+    /// > same reason (`Math.max(0, NaN)` is `NaN` there too); the two sides genuinely disagreed
+    /// > until the `nan-tolerance-folds-to-zero` vector made them agree.
     let massShapeWithin (tolerance: float) (s: DualScore) : MassShape =
-        let tol = max 0.0 tolerance
+        let tol = if tolerance > 0.0 then tolerance else 0.0
         let r = residual s
         if r > tol then Ignorant
         elif r < -tol then Contradictory
