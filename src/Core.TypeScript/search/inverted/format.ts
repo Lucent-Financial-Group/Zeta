@@ -94,6 +94,12 @@ export const INDEX_SCHEMA = "zeta.search.inverted/v1";
  * It is on the *storage* constant and on nothing else, because the storage
  * design is the only part of this directory that lost its meter — see the
  * "WHICH HALF IS THE TOY" block at the top of this file.
+ *
+ * AND THE DURABLE ANSWER ALREADY EXISTS, which is why this one may stay a toy:
+ * durable reverse indexes are `GroupCommitDiskDeltaLog` + `IncrementalJoin` in
+ * `src/Core/ReverseIndex.fs` (#17302, 081M29ESZCQ087G0R001SM29DQ). This constant
+ * names a local cache with a replacement, not a gap. Never flush this directory
+ * onto main (#16919).
  */
 export const TOY_GIT_NATIVE_INDEX_DIR = "db/search-index/inverted";
 
