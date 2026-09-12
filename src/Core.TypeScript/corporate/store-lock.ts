@@ -49,6 +49,74 @@ export function isRunning(pid: number): boolean {
   }
 }
 
+/**
+ * The longest a run may hold the store's lock before another run may take it.
+ *
+ * WHY A DEADLINE EXISTS AT ALL. `isRunning` asks the operating system whether a pid is alive,
+ * which answers the CRASH case and nothing else. A holder that is alive but wedged -- a stalled
+ * network read, a stopped process, an agent that simply never called `release` -- is reported
+ * alive forever, and the lock is obeyed forever with it. Aaron 2026-09-12: *"we need timeouts
+ * cause agents often forget to release locks."* That is the ordinary case here, not the exotic
+ * one, so the absence of a deadline is the live defect rather than a theoretical one.
+ *
+ * WHY TAKING IT OVER IS SAFE HERE, which is the part that has to be argued rather than assumed.
+ * A deadline-based takeover means two runs can proceed at once, and in general that is worse than
+ * a wedge -- a lease without a fencing token converts "stuck forever" into "silent double write"
+ * (Kleppmann, *How to do distributed locking*, 2016). It is safe for THIS store because the store
+ * cannot interleave: every event is written as its own shard whose FILENAME IS ITS CONTENT
+ * ADDRESS (`identifyEvent` in org-store.ts), and `readEvents` orders by the event's own `atMs`,
+ * never by filename. Two byte-identical events collapse to one address; two different events get
+ * different addresses and BOTH SURVIVE. No file is shared between writers, so there is nothing to
+ * interleave -- two concurrent runs produce a union, which is two versions somebody can compare.
+ * Aaron, same day: *"duplicate work is okay, we can just compare the two versions."*
+ *
+ * That argument is load-bearing, so it is stated rather than implied: if a future run ever writes
+ * to a SHARED APPEND TARGET rather than to content-addressed shards, this deadline stops being
+ * safe on its own and needs the generation fenced at the resource (081M2B02991087G0R002XYKG54).
+ *
+ * Two hours by default: long enough that no honest run is interrupted, short enough that a
+ * forgotten lock does not outlive the working day. Override with ZETA_STORE_LOCK_MAX_HOLD_MS.
+ */
+export function defaultMaxHoldMs(): number {
+  const raw = process.env.ZETA_STORE_LOCK_MAX_HOLD_MS;
+  if (raw === undefined || raw.length === 0) return 2 * 60 * 60 * 1000;
+  const parsed = Number(raw);
+  // A malformed override is REPORTED and ignored, never silently treated as zero -- zero would
+  // expire every holder instantly, which is the loudest possible way to get this wrong quietly.
+  if (!Number.isFinite(parsed) || parsed <= 0) {
+    process.stderr.write(
+      `store-lock: ignoring ZETA_STORE_LOCK_MAX_HOLD_MS=${raw} (not a positive number); using the default\n`,
+    );
+    return 2 * 60 * 60 * 1000;
+  }
+  return parsed;
+}
+
+/**
+ * Has this owner held the lock longer than it is allowed to?
+ *
+ * `startedAt` is written by the HOLDER and compared against the OBSERVER's clock, so across two
+ * machines this carries their skew. That is acceptable precisely here and nowhere else: this
+ * decides a LOCAL action (do I wait, or do I proceed), which
+ * `.claude/rules/local-time-never-enters-the-shared-fold.md` explicitly permits. It must never be
+ * used to decide what enters a shared conclusion.
+ *
+ * AN UNPARSEABLE `startedAt` IS TREATED AS EXPIRED, and that is a deliberate choice against the
+ * usual instinct. The alternative -- obey a holder whose age cannot be established -- makes a
+ * single malformed record a permanent wedge, which is the exact failure this deadline exists to
+ * remove. It is defensible only because a takeover here costs a duplicated run and never
+ * corrupted state (see above); under a shared-append store the safe default would invert.
+ */
+export function heldPastDeadline(owner: StoreLockOwner, nowIso: string, maxHoldMs: number): boolean {
+  const started = Date.parse(owner.startedAt);
+  const now = Date.parse(nowIso);
+  if (!Number.isFinite(started) || !Number.isFinite(now)) return true;
+  // A holder whose clock is AHEAD of ours yields a negative age. That is skew, not freshness, and
+  // it must not read as "just started" forever -- clamp at zero so only elapsed time counts.
+  const heldMs = Math.max(0, now - started);
+  return heldMs >= maxHoldMs;
+}
+
 /** Where the generations live. A DIRECTORY, so a holder is a file only its creator can remove. */
 function lockRoot(store: string): string {
   return join(store, "run.lock.d");
@@ -94,7 +162,12 @@ export function releaseOnExit(release: () => void): void {
 }
 
 /** Take the store's lock for this process, or say who has it. */
-export function takeStoreLock(store: string, nowIso: string = new Date().toISOString(), pid: number = process.pid): StoreLock {
+export function takeStoreLock(
+  store: string,
+  nowIso: string = new Date().toISOString(),
+  pid: number = process.pid,
+  maxHoldMs: number = defaultMaxHoldMs(),
+): StoreLock {
   const legacy = legacyHolder(store);
   if (legacy !== undefined && legacy.pid !== pid) return { ok: false, heldBy: legacy };
 
@@ -102,7 +175,9 @@ export function takeStoreLock(store: string, nowIso: string = new Date().toISOSt
     pid,
     nowIso,
     // Our own pid is not an obstacle to ourselves: a re-entrant take is a takeover, as before.
-    isHeld: (owner) => owner.pid !== pid && isRunning(owner.pid),
+    // A holder must be BOTH running AND within its hold deadline. `isRunning` alone cannot see
+    // a hung holder, and an agent that forgets to release is the common case, not the exotic one.
+    isHeld: (owner) => owner.pid !== pid && isRunning(owner.pid) && !heldPastDeadline(owner, nowIso, maxHoldMs),
   });
   if (!held.ok) {
     // `heldBy` is absent only when every attempt lost the generation race without ever reading an
