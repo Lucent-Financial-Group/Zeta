@@ -657,3 +657,46 @@ describe("A REQUEST THAT LEFT REVIEW LEAVES THE ORGANIZATION'S ATTENTION", () =>
     expect(folded.get("task-1")?.branch).toBe("defect/x");
   });
 });
+
+describe("A ROUND MAY ASK FOR A STAGE ITS CHAIN DOES NOT OWE", () => {
+  // `available` used to be exactly the item's chain, so the one thing a round could never decide was
+  // that the change it just made needs a look the original work did not - a follow-up touching
+  // authentication cannot ask for a security review when the defect chain never owed one.
+  const base = {
+    workId: "task-1",
+    plannerHatId: "tech_lead",
+    usual: ["implementation_review", "qa_uat"],
+    because: [{ kind: "comment", summary: "s" }],
+    roundsSoFar: 1,
+  };
+
+  test("a stage beyond the chain is honoured, and the record says it was asked for", () => {
+    const decided = gatesForRound(
+      { gates: ["implementation_review", "security_review"], why: "this round changed the token check" },
+      { ...base, available: ["implementation_review", "qa_uat", "security_review"], beyondChain: ["security_review"] },
+    );
+    expect(decided.gates).toEqual(["implementation_review", "security_review"]);
+    expect(decided.why).toContain("this round changed the token check");
+    // Answerable from the log alone: why did this round run a stage nobody routinely runs?
+    expect(decided.why).toContain("security_review");
+    expect(decided.why).toContain("does not owe");
+  });
+
+  test("a stage nobody can staff is still refused, and the round owes the usual ones", () => {
+    const decided = gatesForRound(
+      { gates: ["implementation_review", "not_a_gate"], why: "w" },
+      { ...base, available: ["implementation_review", "qa_uat"] },
+    );
+    expect(decided.gates).toEqual(base.usual);
+    expect(decided.why).toContain("not_a_gate");
+  });
+
+  test("naming only chain stages reads exactly as it did before - no note about extras", () => {
+    const decided = gatesForRound(
+      { gates: ["qa_uat"], why: "one comment, behaviour changed" },
+      { ...base, available: ["implementation_review", "qa_uat", "security_review"], beyondChain: ["security_review"] },
+    );
+    expect(decided.gates).toEqual(["qa_uat"]);
+    expect(decided.why).toBe("one comment, behaviour changed");
+  });
+});

@@ -4367,11 +4367,21 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
         // The organization is asked which stages this round needs, and may add one when a round
         // keeps coming back. Refused or absent, it owes the usual ones: reviewing LESS must be a
         // decision somebody made, never a parse failure.
-        const usual = [GateKind.ImplementationReview, GateKind.QaUat].filter((g) => chain.includes(g)).map(String);
+        const usual = [GateKind.ImplementationReview, GateKind.QaUat].filter((gate) => chain.includes(gate)).map(String);
+        // ── WHAT THE ROUND MAY ASK FOR IS WIDER THAN WHAT ITS CHAIN OWES ───────────────────────
+        // A stage is on offer when somebody OTHER THAN THE AUTHOR owns it: an independent reviewer
+        // is the whole of what a review is, and a gate the chart cannot staff that way is refused
+        // below anyway. Offering only the chain meant a round could never decide that the change it
+        // just made needs a look the original work did not.
+        const staffable = Object.values(GateKind)
+          .map(String)
+          .filter((gate) => gateOwners(deps.chart, gate as GateKind).some((h) => h.id !== hatId));
+        const beyondChain = staffable.filter((gate) => !chain.map(String).includes(gate));
         const planRequest: FollowUpPlanRequest = {
           workId,
           plannerHatId: node?.ownerHatId ?? hatId,
-          available: chain.map(String),
+          available: [...new Set([...chain.map(String), ...staffable])],
+          ...(beyondChain.length === 0 ? {} : { beyondChain }),
           usual,
           because: items.map((i) => ({ kind: i.itemKind, summary: i.summary.split(/\s+/).join(" ").slice(0, 200) })),
           roundsSoFar: deps.afterUpdateDone?.get(workId)?.rounds ?? 0,

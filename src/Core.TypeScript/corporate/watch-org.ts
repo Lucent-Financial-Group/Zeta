@@ -56,6 +56,12 @@ export const FAST_FAILURES = 3;
  */
 export const FOLLOW_UP_FAILURES = 3;
 
+/** The same number, where a profile has stated one - see `ChangeRequestConfig.followUpAttempts`. */
+export function followUpAttemptsOf(config: ChangeRequestConfig | undefined): number {
+  const stated = config?.followUpAttempts;
+  return stated !== undefined && Number.isInteger(stated) && stated > 0 ? stated : FOLLOW_UP_FAILURES;
+}
+
 export interface WatchInput {
   readonly events: readonly OrgEvent[];
   /** What the profile's poller and its webhook directory report right now. */
@@ -110,7 +116,7 @@ export function watchReasons(input: WatchInput): WatchVerdict {
   const hopeless = new Set<string>();
   for (const [workId] of handed) {
     const failed = followUpFailures(input.events, workId);
-    if (failed.inARow < FOLLOW_UP_FAILURES) continue;
+    if (failed.inARow < followUpAttemptsOf(input.changeRequests)) continue;
     hopeless.add(workId);
     atLimit.push(`${workId}: ${String(failed.inARow)} follow-ups in a row could not complete - ${(failed.lastReason ?? "").slice(0, 200)}`);
   }

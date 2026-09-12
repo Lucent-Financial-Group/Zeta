@@ -536,8 +536,19 @@ export interface FollowUpPlanRequest {
   readonly workId: string;
   /** The hat deciding - the one that holds the work item's plan. */
   readonly plannerHatId: string;
-  /** Every stage this item's chain owes. The plan may name any of these and nothing else. */
+  /**
+   * Every stage the plan may name, and nothing else.
+   *
+   * WIDER THAN THE ITEM'S OWN CHAIN. It was exactly the chain, so the one thing a round could never
+   * decide was that this change needs a look the original work did not: a follow-up that touches
+   * authentication cannot ask for a security review if the defect chain never owed one. A stage is
+   * offered here when the chart has somebody other than the author who owns it - which is the only
+   * thing that makes a review mean anything - and `beyondChain` says which of these are extra, so
+   * a planner adding one knows it is adding one.
+   */
   readonly available: readonly string[];
+  /** Of `available`, the stages this item's chain does NOT owe - offered, but not routine. */
+  readonly beyondChain?: readonly string[];
   /** What this round would run if nobody decided: the post-work review stages. */
   readonly usual: readonly string[];
   /** What brought this round about, by kind - comment, pipeline_failed, target_moved, and so on. */
@@ -573,7 +584,11 @@ export function gatesForRound(plan: FollowUpPlan | undefined, request: FollowUpP
   if (refused.length > 0) {
     return { gates: request.usual, why: `the plan named ${refused.join(", ")}, which this item's chain does not owe - so this round owes the usual stages` };
   }
-  return { gates: named, why: plan.why.trim() === "" ? "decided, with no reason given" : plan.why };
+  // A stage the chain does not owe is a real decision, not a default - say so in the record, so
+  // "why did this round run a security review" is answerable from the log alone.
+  const extra = named.filter((g) => (request.beyondChain ?? []).includes(g));
+  const why = plan.why.trim() === "" ? "decided, with no reason given" : plan.why;
+  return { gates: named, why: extra.length === 0 ? why : `${why} (and asked for ${extra.join(", ")}, which this item's chain does not owe)` };
 }
 
 export interface FollowUpOutcome {

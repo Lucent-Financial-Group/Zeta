@@ -10,7 +10,7 @@ import { existsSync, mkdirSync, mkdtempSync, readdirSync, readFileSync, rmSync, 
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { EventEmitter } from "node:events";
-import { RETRY_EVERY, shouldLaunch, watchProfile, watchReasons, type WatchInput } from "./watch-org";
+import { FOLLOW_UP_FAILURES, RETRY_EVERY, followUpAttemptsOf, shouldLaunch, type WatchInput, watchProfile, watchReasons } from "./watch-org";
 import { isRunning, lockHolder, takeStoreLock } from "./store-lock";
 import { validateRunProfile, validateRunProfiles, type RunProfile } from "./run-profile";
 import type { OrgEvent } from "./org-event";
@@ -462,5 +462,30 @@ describe("A REQUEST WHOSE FOLLOW-UP KEEPS DYING IS A PERSON'S, NOT ANOTHER ATTEM
     const v = watchReasons(input({ events: [handedOff, aireviewDone, raised, ...died(3), ranFine, ...died(1)], deliveries: [comment("note-9")] }));
     expect(v.reasons.length).toBeGreaterThan(0);
     expect(v.atLimit).toEqual([]);
+  });
+});
+
+describe("HOW MANY FAILED FOLLOW-UPS BEFORE A PERSON IS ASKED IS A DECISION", () => {
+  // It was a constant. How many times it is worth trying again before a human is the better use of
+  // the next hour is a fact about the project and the machine it runs on - a repository whose
+  // sessions die on their own startup context wants a lower number; one that only fails during
+  // outages wants a higher one, because an outage is "not yet" and this cap is meant for "not ever".
+  test("absent, it is the default three - exactly as before", () => {
+    expect(followUpAttemptsOf(undefined)).toBe(FOLLOW_UP_FAILURES);
+    expect(followUpAttemptsOf({ sections: [], replies: "all", pipelines: "none", why: "w" } as never)).toBe(FOLLOW_UP_FAILURES);
+  });
+
+  test("a profile that states one is honoured", () => {
+    expect(followUpAttemptsOf({ followUpAttempts: 1 } as never)).toBe(1);
+    expect(followUpAttemptsOf({ followUpAttempts: 7 } as never)).toBe(7);
+  });
+
+  test("a number that cannot mean what it says falls back rather than disabling the guard", () => {
+    // Zero or negative would mean "give up before trying", which is not a thing anyone wants and is
+    // refused by `validateChangeRequests`; if one ever reaches here it must not silently park
+    // every request on its first tick.
+    expect(followUpAttemptsOf({ followUpAttempts: 0 } as never)).toBe(FOLLOW_UP_FAILURES);
+    expect(followUpAttemptsOf({ followUpAttempts: -2 } as never)).toBe(FOLLOW_UP_FAILURES);
+    expect(followUpAttemptsOf({ followUpAttempts: 2.5 } as never)).toBe(FOLLOW_UP_FAILURES);
   });
 });
