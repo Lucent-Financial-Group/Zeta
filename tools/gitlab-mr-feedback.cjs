@@ -12,7 +12,8 @@
  * webhooks and one that cannot are the same organization. Every delivery id is STABLE per event
  * (a note's id, a target's commit), which is what makes a second poll raise nothing new.
  *
- *   comment          a person's note on the request (system notes are GitLab's own and are skipped)
+ *   comment          a person's note on the request (GitLab's own system notes, and a review bot's
+ *                    announcement that it has STARTED reviewing, are skipped - see ANNOUNCED_REVIEW)
  *   merged / closed  the request left the open state - somebody integrated or abandoned it
  *   pipeline_failed  the request's head pipeline failed
  *   target_moved     the branch it targets is at a commit; the organization measures whether the
@@ -27,6 +28,22 @@
  * authenticates with glab's own stored login. No token passes through here or argv.
  */
 "use strict";
+
+/**
+ * A REVIEW BOT SAYING IT HAS STARTED IS NOT WORK.
+ *
+ * MEASURED on agentic-tpm !163 and !164, 2026-09-12: the AI review agent posts "Seen, AI Code Review
+ * Agent is actively reviewing this merge request." on EVERY push, as an ordinary note rather than a
+ * system one - so each one became an action item, and an action item is answered by a SESSION.
+ * Three separate follow-up rounds across the two requests spent a whole session each, tens of
+ * minutes and dollars apiece, to decide that a bot had announced itself - and the announcement came
+ * back with the next push, so the rounds could not converge. The review it announces arrives as its
+ * own note and is read on its own merits; the announcement carries no request at all.
+ *
+ * Narrow on purpose: the same author's actual review is thousands of characters and is NOT skipped.
+ */
+const ANNOUNCED_REVIEW = /is actively reviewing this merge request/i;
+const ANNOUNCEMENT_MAX = 300;
 const { spawnSync } = require("node:child_process");
 const { existsSync, readFileSync } = require("node:fs");
 const { join } = require("node:path");
@@ -149,6 +166,7 @@ for (const c of changes) {
         if (n.system) continue;
         const where = n.position && n.position.new_path ? " (on " + n.position.new_path + (n.position.new_line ? ":" + n.position.new_line : "") + ")" : "";
         const body = String(n.body || "").trim();
+        if (body.length <= ANNOUNCEMENT_MAX && ANNOUNCED_REVIEW.test(body)) continue;
         emit({
           deliveryId: "note-" + String(n.id),
           source,

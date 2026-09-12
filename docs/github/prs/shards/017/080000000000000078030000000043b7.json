@@ -1,0 +1,19 @@
+{
+  "pr_number": 17335,
+  "archive_path": "docs/history/pr-reviews/2026/09/12/PR-17335-fix-io-a-lock-that-deletes-another-process-s-lock-does-not-mutually-exclude.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7uILV9",
+    "comment:PRRC_kwDOSF9kNM7uILu4",
+    "comment:PRRC_kwDOSF9kNM7uOMRP",
+    "thread:PRRT_kwDOSF9kNM6htNZK",
+    "thread:PRRT_kwDOSF9kNM6htNnF",
+    "thread:PRRT_kwDOSF9kNM6hxTsS"
+  ],
+  "fetched_at": "2026-09-12T17:35:31.392Z",
+  "schema_version": "v1",
+  "commit_sha": "63dafd17d3d9661e5450d12fcd3c33e72cfb6885",
+  "title": "fix(io): a lock that deletes another process's lock does not mutually exclude",
+  "state": "MERGED",
+  "merged_at": "2026-09-12T17:34:48Z",
+  "head_ref": "shadow/fix-filesystem-race-alerts"
+}

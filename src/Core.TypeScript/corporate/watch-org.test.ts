@@ -6,7 +6,7 @@
 
 import { describe, expect, test } from "bun:test";
 import { spawn, type ChildProcess } from "node:child_process";
-import { mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+import { existsSync, mkdirSync, mkdtempSync, readdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { EventEmitter } from "node:events";
@@ -191,7 +191,6 @@ describe("A RUN IS STARTED ONLY WHEN THE STORE IS FREE, AND WHAT IT WAS STARTED 
       const { appendEvent } = await import("./org-store");
       appendEvent(handedOff, store);
       appendEvent(aireviewDone, store);
-      const { mkdirSync } = await import("node:fs");
       mkdirSync(join(store, "feedback"), { recursive: true });
       writeFileSync(join(store, "feedback", "hook-1.json"), JSON.stringify(comment("note-77")));
       const profile: RunProfile = { name: "tpm", args: ["--org", "acme", "--store", store], env: {}, everyMinutes: 5, maxRunMinutes: 60, why: "w" };
@@ -218,7 +217,6 @@ describe("A RUN IS STARTED ONLY WHEN THE STORE IS FREE, AND WHAT IT WAS STARTED 
       const { appendEvent } = await import("./org-store");
       appendEvent(handedOff, store);
       appendEvent(aireviewDone, store);
-      const { mkdirSync } = await import("node:fs");
       mkdirSync(join(store, "feedback"), { recursive: true });
       // An older comment a run already handled. A later crash must not resurrect it.
       writeFileSync(join(store, "feedback", "hook-0.json"), JSON.stringify(comment("note-11")));
@@ -283,7 +281,6 @@ describe("A RUN IS STARTED ONLY WHEN THE STORE IS FREE, AND WHAT IT WAS STARTED 
       const { appendEvent } = await import("./org-store");
       appendEvent(handedOff, store);
       appendEvent(aireviewDone, store);
-      const { mkdirSync } = await import("node:fs");
       mkdirSync(join(store, "feedback"), { recursive: true });
       writeFileSync(join(store, "feedback", "hook-1.json"), JSON.stringify(comment("note-77")));
       const profile: RunProfile = { name: "tpm", args: ["--org", "acme", "--store", store], env: {}, everyMinutes: 5, maxRunMinutes: 60, why: "w" };
@@ -317,19 +314,74 @@ describe("A RUN IS STARTED ONLY WHEN THE STORE IS FREE, AND WHAT IT WAS STARTED 
   });
 
   test("a lock whose owner is gone is taken over, and a release removes only its own lock", () => {
+    // WRITTEN AGAINST THE GENERATION LAYOUT, because the single-file version of this test had
+    // become vacuous: it planted the successor at `run.lock`, a path the current protocol never
+    // writes, so it would have passed even if release deleted the wrong generation. The
+    // successor is planted where a successor actually lands.
     const store = mkdtempSync(join(tmpdir(), "watch-stale-"));
+    const lockRoot = join(store, "run.lock.d");
     try {
-      writeFileSync(join(store, "run.lock"), JSON.stringify({ pid: 2_147_000_001, startedAt: "t" }));
+      mkdirSync(lockRoot, { recursive: true });
+      writeFileSync(join(lockRoot, "0.lock"), JSON.stringify({ pid: 2_147_000_001, startedAt: "2026-09-12T00:00:00.000Z" }));
       expect(isRunning(2_147_000_001)).toBe(false);
       const mine = takeStoreLock(store);
       expect(mine.ok).toBe(true);
       if (mine.ok) {
+        expect(mine.tookOverFrom?.pid).toBe(2_147_000_001);
         // A successor took over (e.g. after this run was presumed dead): our release must not remove its lock.
-        writeFileSync(join(store, "run.lock"), JSON.stringify({ pid: 999_999_991, startedAt: "t2" }));
+        writeFileSync(join(lockRoot, "2.lock"), JSON.stringify({ pid: 999_999_991, startedAt: "2026-09-12T00:00:05.000Z" }));
         mine.release();
-        expect(JSON.parse(readFileSync(join(store, "run.lock"), "utf-8")).pid).toBe(999_999_991);
+        expect(readdirSync(lockRoot)).toEqual(["2.lock"]);
+        expect(JSON.parse(readFileSync(join(lockRoot, "2.lock"), "utf-8")).pid).toBe(999_999_991);
       }
     } finally {
+      rmSync(store, { recursive: true, force: true });
+    }
+  });
+
+  test("a GENERATION lock whose owner is alive blocks a second run, and is not written to", () => {
+    // MEASURED GAP, recorded because it is the reason this test exists: every other
+    // live-holder test in this file plants the LEGACY `run.lock`, so a mutant that made the
+    // generation protocol's liveness predicate always-false survived the whole suite. A lock
+    // test that never exercises the live path is not testing mutual exclusion.
+    const store = mkdtempSync(join(tmpdir(), "watch-gen-live-"));
+    const lockRoot = join(store, "run.lock.d");
+    const other = spawn(process.execPath, ["-e", KEEP_ALIVE], { stdio: "ignore" });
+    try {
+      mkdirSync(lockRoot, { recursive: true });
+      // The timestamp must be RECENT, and that is load-bearing rather than incidental: a store
+      // lock now expires after a hold deadline as well as on death, so a fixed past instant
+      // would make this holder stale-by-age and the takeover would be correct -- testing the
+      // deadline path while claiming to test the live path. The deadline itself is tested in
+      // store-lock.test.ts, where the clock is injected instead of read.
+      const owner = JSON.stringify({ pid: other.pid, startedAt: new Date().toISOString() });
+      writeFileSync(join(lockRoot, "0.lock"), owner);
+      const mine = takeStoreLock(store);
+      expect(mine.ok).toBe(false);
+      if (!mine.ok) expect(mine.heldBy.pid).toBe(other.pid!);
+      expect(lockHolder(store)?.pid).toBe(other.pid);
+      // Refusing must write nothing: the incumbent's file and the directory are untouched.
+      expect(readdirSync(lockRoot)).toEqual(["0.lock"]);
+      expect(readFileSync(join(lockRoot, "0.lock"), "utf-8")).toBe(owner);
+    } finally {
+      other.kill();
+      rmSync(store, { recursive: true, force: true });
+    }
+  });
+
+  test("a run mid-flight under the OLD single-file lock is still obeyed", () => {
+    // The upgrade window. A run that took `<store>/run.lock` before this protocol landed is
+    // still holding the store; ignoring it would start the second run the lock exists to
+    // prevent. Read-only and never deleted — the delete is the defect being removed.
+    const store = mkdtempSync(join(tmpdir(), "watch-legacy-"));
+    const other = spawn(process.execPath, ["-e", KEEP_ALIVE], { stdio: "ignore" });
+    try {
+      writeFileSync(join(store, "run.lock"), JSON.stringify({ pid: other.pid, startedAt: "2026-09-12T00:00:00.000Z" }));
+      expect(takeStoreLock(store).ok).toBe(false);
+      expect(lockHolder(store)?.pid).toBe(other.pid);
+      expect(existsSync(join(store, "run.lock"))).toBe(true);
+    } finally {
+      other.kill();
       rmSync(store, { recursive: true, force: true });
     }
   });

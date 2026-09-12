@@ -1,0 +1,14 @@
+{
+  "id": "080d04b9da036810a0130008e54916fe",
+  "at": "2026-09-12T20:07:17.869Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M2BKPG3D087G0R002MR509G",
+    "type": "task",
+    "title": "prebuilt image provisioned by ace, and ace binaries installable in one line",
+    "slug": "prebuilt-image-provisioned-by-ace-and-ace-binaries-installab",
+    "priority": "P2",
+    "filename": "081M2BKPG3D087G0R002MR509G-prebuilt-image-provisioned-by-ace-and-ace-binaries-installab.md"
+  }
+}

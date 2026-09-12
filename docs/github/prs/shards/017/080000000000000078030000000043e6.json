@@ -1,0 +1,12 @@
+{
+  "pr_number": 17382,
+  "archive_path": "docs/history/pr-reviews/2026/09/12/PR-17382-docs-081m2bkpg3d087g0r002mr509g-ace-provisions-the-image-and-clone-at-tag-shapes.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-12T20:21:53.634Z",
+  "schema_version": "v1",
+  "commit_sha": "1c488cfffe436f19607cdb31674f701bc8449df4",
+  "title": "docs(081M2BKPG3D087G0R002MR509G): ace provisions the image — and clone-at-tag shapes it",
+  "state": "MERGED",
+  "merged_at": "2026-09-12T20:21:01Z",
+  "head_ref": "shadow/ace-provisions-the-image"
+}
