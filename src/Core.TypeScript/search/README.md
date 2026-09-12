@@ -107,9 +107,14 @@ exists to prevent.
   no scope budget and no streaming output, so on this tree it is itself the
   runaway it was written to prevent.
 - `concept-index.ts` / `lookup.ts` — a curated semantic index, a different job.
-- `inverted/` — the **git-native inverted index** (081M0QTXTR3087G0R002R439FH): corpus-wide
-  term -> files, built from an **explicit git rev**, committed to
-  `db/search-index/inverted/`, rebuilt on a ~6h cadence. Answers _"which files
+- `inverted/` — the **inverted index** (081M0QTXTR3087G0R002R439FH): corpus-wide
+  term -> files, built from an **explicit git rev** into a **local, gitignored
+  cache** (`db/search-index/inverted/` by default, or an explicit `--out`). It is
+  **no longer committed and no longer on a cadence** — that git-native _storage_
+  design is marked `toy` after 8 commits deposited 280 blobs / 409.67 MB raw /
+  25.03 MB on disk in 16 days (deleted in PR #16919; measured 2026-09-11). On a
+  fresh clone there is no index and `query.ts` exits **3 (REFUSED)** until one is
+  built — ~30 s. The retrieval half stays **metered**. Answers _"which files
   mention landauer?"_ in ~20 ms where `git grep` takes ~800 ms — and **refuses**
   rather than answering when its rev is not the rev you asked about. It exists
   because of the 2026-08-22 failure this directory's own README describes from

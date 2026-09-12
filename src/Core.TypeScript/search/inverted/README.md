@@ -1,4 +1,41 @@
-# `search/inverted/` — a git-native inverted index that refuses to answer from a stale corpus
+# `search/inverted/` — an inverted index that refuses to answer from a stale corpus
+
+## Register: the storage half is a **toy model**; the retrieval half is metered
+
+Two claims live here and they are in different registers
+(`.claude/rules/toy-is-free-metered-must-be-earned.md`). Stating one label for
+both would be false in one direction, so they are split:
+
+| claim | register | why |
+| --- | --- | --- |
+| **retrieval correctness** — tokenizer, corpus policy, freshness classification, `1` vs `3` | **metered** | 81 tests; byte-identical rebuild at a rev; a measured accounting against `git grep -il landauer` at rev `6426eacf` (447 vs 421, all 26 attributed to a declared corpus rule, **0 unexplained**); four defects found by checking output |
+| **git-native storage** — commit the index, rebuild on a ~6h cadence | **toy** | it had a meter and **failed** it |
+
+**The storage measurement, 2026-09-11.** Over the 8 commits that ever touched
+`db/search-index/`: **280 distinct blobs, 409.67 MB raw / 25.03 MB on disk
+(16.4x)**, landed in **16 days**. A derived artifact in a full-history repo
+costs `size x recalculations` forever and `git gc` reclaims none of it while a
+commit still reaches it. The committed tree was deleted in **PR #16919**, the
+cadence workflow is disabled, and `db/search-index/` is now **`.gitignore`d**.
+The output is a **cache**: build it to a scratch `--out`, regenerate in ~30 s.
+
+**Not established** about the storage half: that git is a viable store for a
+pure function of the tree it lives in (the one measurement says otherwise);
+that any retention bound exists (there is none — nothing prunes or caps); that
+the ~6h cadence is right, or that any cadence is (it was never falsified, it was
+switched off); that the in-RAM full rebuild (~2 GB heap at the 2026-08-23
+corpus) holds past ~4x this corpus.
+
+**What would earn the promotion:** a store with a **bound** — a
+history-not-preserved repo (`zeta-index` in the repo-split draft), a retention
+rule, or an artifact host — plus a measurement over at least one cadence period
+showing total cost stays bounded as rebuild count grows. That is the falsifier
+the design never had: nothing in it could ever have reported _"this is too
+expensive."_
+
+**On a fresh clone there is no index**, so `query.ts` exits **3 (REFUSED)** until
+one is built. That is designed, not broken — an absent index must never read as
+an empty corpus.
 
 ```bash
 # Query. Default target rev is origin/main; the index is repaired against it.
@@ -6,8 +43,9 @@ bun src/Core.TypeScript/search/inverted/query.ts landauer
 bun src/Core.TypeScript/search/inverted/query.ts landauer bennett   # AND
 bun src/Core.TypeScript/search/inverted/query.ts landauer --files --limit 0
 
-# Rebuild (also runs on a ~6h cadence — .github/workflows/search-index-cadence.yml)
+# Build the local cache. NOT committed, NOT on a cadence — regenerate it (~30 s).
 bun src/Core.TypeScript/search/inverted/build.ts --rev origin/main
+# ...or to an explicit scratch dir:  --out .zeta/search-index   (also gitignored)
 ```
 
 Exit codes, deliberately the same four as the sibling `../search.ts`:
