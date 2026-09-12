@@ -790,16 +790,39 @@ if (mode === "review") {
       } catch {
         return [];
       }
+      // The organization names the throwaway checkout and removes it afterwards, so the reviewer
+      // does not have to remember to. Falling back to "<tmp>" keeps an older runtime working.
+      const scratch = env.ORG_REVIEW_SCRATCH || "<tmp>";
       return [
         "",
         "THIS IS A FOLLOW-UP REVIEW. The work was already reviewed and is in front of people; since then, the commits",
         String(fu.from).slice(0, 12) + ".." + String(fu.to).slice(0, 12) + " were made in answer to review feedback. Judge THOSE commits",
         "(`git diff " + fu.from + ".." + fu.to + "`), against what the follow-up claims they do:",
         JSON.stringify(fu.items || [], null, 2),
+        ...((() => {
+          if (!env.ORG_REVIEW_CHANGED) return [];
+          let ch;
+          try {
+            ch = JSON.parse(env.ORG_REVIEW_CHANGED);
+          } catch {
+            return [];
+          }
+          // Handed over rather than discovered: a review averages 72 agent turns against 18 for the
+          // follow-up it judges, and the first several are always spent finding this out.
+          return [
+            "",
+            "WHAT ACTUALLY CHANGED between those commits - you do not need to go and find this out:",
+            JSON.stringify(ch.files || [], null, 2),
+            (ch.more ? "(and " + ch.more + " more - the diff is the whole truth; this list is cut)" : ""),
+            "THE TESTS AMONG THEM: " + ((ch.tests || []).length ? JSON.stringify(ch.tests) : "NONE. A change claiming a fix with no test touched is the first thing to ask about."),
+          ].filter(function (l) { return l !== ""; });
+        })()),
         "For every item claimed as addressed: is the problem really fixed, and does a test prove it? PROVE the test is",
-        "not vacuous: in a SCRATCH copy (`git -C <checkout> worktree add --detach <tmp> " + fu.to + "`), put the production",
-        "files back as they were (`git -C <tmp> checkout " + fu.from + " -- <production file>`), keep the new test, run it",
-        "and confirm it FAILS, then remove the copy (`git -C <checkout> worktree remove --force <tmp>`). Never change",
+        "not vacuous: in a SCRATCH copy at THE PATH YOU WERE GIVEN, " + scratch + " (`git -C <checkout> worktree add",
+        "--detach " + scratch + " " + fu.to + "`), put the production files back as they were (`git -C " + scratch,
+        "checkout " + fu.from + " -- <production file>`), keep the new test, run it and confirm it FAILS. Use that path",
+        "and no other - it is removed for you when you are done, so a copy anywhere else is one nobody cleans up.",
+        "Never change",
         "the author's checkout. A claimed fix with no test that fails without it, or an account that says more",
         "than the diff does, is a REJECTION - name the item and what is missing.",
         "AN ITEM CLAIMED AS DECLINED IS JUDGED ON ITS REASON, NOT ON A TEST. Nothing was changed, so there is",
@@ -941,6 +964,19 @@ if (mode === "follow-up") {
     : [
         preamble(hat, workId),
         "",
+        ...(env.ORG_RECALL
+          ? [
+              "WHAT YOU ALREADY KNOW - the organization's memory for this hat and this work. It was written by",
+              "whoever did this before you, to save you working it out again. Read it FIRST: it is the cheapest",
+              "context you will get, and re-deriving what it already says is the most expensive thing you can do.",
+              "If you use one, say so with a line " + "`relied on [<its id>]`" + " in your summary - a memory",
+              "nobody ever relies on is one the organization should stop keeping, and it cannot know that unless",
+              "you say. If you work something out that the next session would otherwise work out again, record it",
+              "with " + "`learned: <key> :: <what>`" + ".",
+              env.ORG_RECALL,
+              "",
+            ]
+          : []),
         "YOUR TASK NOW: this change is already in front of people for review, and these ACTION ITEMS are open on it:",
         JSON.stringify(items, null, 2),
         "",
@@ -964,6 +1000,12 @@ if (mode === "follow-up") {
         "  have) is DECLINED for this change: say why and name where it belongs - that answer is posted and the",
         "  thread resolved. An item marked `deferredBefore` was already left open once; decide it now.",
         "- An item marked `reopenedBecause` was settled before and that did not stand - read why and do not repeat it.",
+        "- AN ITEM MARKED `alreadyTried` CARRIES WHAT EARLIER ROUNDS DID: what each decided, what it actually",
+        "  changed, and what became of it. START FROM IT. That work was done, it is in this branch, and the",
+        "  repository still holds it - re-deriving the same diagnosis from the same files is the single most",
+        "  expensive thing a session does here and it arrives where the last one did. Read it, then spend this",
+        "  round on what is NEW: the objection that turned it back. If what was tried is sound and the objection",
+        "  refutes it, change the approach; if the objection is wrong, decline it with what settles it.",
         "- AN ITEM MARKED `turnedBackTimes` HAS FAILED THAT MANY TIMES. Doing the same thing again is the one",
         "  answer that is certainly wrong. Read what the reviewer actually proved, and decide it DIFFERENTLY:",
         "  either change the approach so it survives the check they ran - not a variation of what they refuted -",
@@ -1082,8 +1124,12 @@ if (mode === "plan-round") {
     "  turned back before owes MORE, not less: add the stage that would have caught it. That is the one case",
     "  where the right answer is a longer list than usual.",
     "",
-    "Name stages ONLY from `available` - they are the ones this item's chain owes and the only ones anybody",
-    "here holds. An empty list is a real answer: the repository's own tests still run either way, and they run",
+    "Name stages ONLY from `available` - the ones anybody here can staff with a reviewer who is not the author.",
+    "MOST OF THEM ARE THIS ITEM'S OWN CHAIN; the ones listed under `beyondChain` are NOT, and naming one says",
+    "this change needs a look the original work never asked for - a follow-up that touched authentication when",
+    "the chain owed no security review, say. That is a real and sometimes necessary answer, and it is recorded",
+    "as a decision you made: name one only when you can say in `why` what about THIS change calls for it.",
+    "An empty list is a real answer too: the repository's own tests still run either way, and they run",
     "BEFORE any stage you name. `why` is read by the next round and by a person: say what you weighed, in one",
     "or two sentences, naming the specific thing about THIS round that made the difference.",
   ].join(NL);

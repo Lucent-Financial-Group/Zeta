@@ -501,6 +501,27 @@ export type OrgFact =
       readonly reason: string;
     }
   | {
+      /**
+       * THE REQUEST IS NO LONGER OPEN - somebody merged it or closed it, and the organization is
+       * done with it. Distinct from `change_merged`, which is the organization recording a merge IT
+       * made: under `human_review` delivery the organization never merges, so the only way it can
+       * learn is the poller telling it the request left the open state.
+       *
+       * MEASURED on agentic-tpm, 2026-09-12: the poller has emitted this state since it was written
+       * and NOTHING consumed it - zero events. A finished request stayed in the polled set for ever,
+       * and its "the merge request was merged" delivery became an ordinary action item, which is a
+       * session asked to decide what to do about a thing that is already over.
+       */
+      readonly kind: "change_left_review";
+      readonly workId: string;
+      readonly changeId: string;
+      readonly branch: string;
+      /** As the review system reported it - `merged` or `closed`. */
+      readonly state: string;
+      readonly by?: string;
+      readonly url?: string;
+    }
+  | {
       readonly kind: "change_merged";
       readonly workId: string;
       readonly changeId: string;

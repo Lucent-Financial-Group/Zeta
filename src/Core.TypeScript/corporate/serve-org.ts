@@ -38,7 +38,7 @@ import {
 import { readFileSync } from "node:fs";
 import { resolve, sep } from "node:path";
 
-import { readEvents, readRuns } from "./org-store";
+import { forgetEvents, readEvents, readRuns } from "./org-store";
 import { renderHat, viewOf, type OrgView } from "./observe-org";
 import { appendAction, queueProblems, readActions } from "./action-queue";
 import { acceptAction } from "./human-action";
@@ -74,6 +74,7 @@ export function currentView(
   outboxDir?: string,
   requestUrls: Readonly<Record<string, string>> = {},
 ): OrgView {
+  forgetEvents();
   const events = readEvents(store);
   const atMs = events.length === 0 ? Date.now() : Math.max(...events.map((e) => e.atMs));
   return viewOf(events, readRuns(store).length, atMs, {
@@ -109,6 +110,7 @@ export function portalPayload(
   operator?: string,
   memoryDir?: string,
 ): unknown {
+  forgetEvents();
   const events = readEvents(store);
   const view = currentView(store, queueDir, rosterPath, checkpoints, outboxDir, requestUrls);
   const folded = foldOrganization(events);
@@ -1434,6 +1436,7 @@ export async function main(argv: readonly string[]): Promise<number> {
               if (closed) return;
               let events: readonly OrgEvent[];
               try {
+                forgetEvents();
                 events = readEvents(store);
               } catch (error) {
                 // A store that cannot be read is REPORTED down the socket. Swallowing it would

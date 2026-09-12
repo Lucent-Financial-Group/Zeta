@@ -127,12 +127,20 @@ export interface ItemDecision {
   readonly respond?: boolean;
 }
 
-// A follow-up's CODE, put through the same review the original work passed before it is pushed.
-//
-// MEASURED on MR !164: a follow-up commit claimed two review findings were fixed with tests; removing
-// one half of the fix left every test green. It went from "the tests pass" straight to the reviewer's
-// inbox, because a follow-up had no review step at all - the original work's implementation_review
-// and qa_uat were never asked about the commits that came after them.
+/**
+ * The item kinds that mean THE REQUEST IS OVER, not that something needs deciding.
+ *
+ * The poller reports these when a merge request leaves the open state. They are not action items:
+ * there is nothing for a session to address, decline or defer about a request somebody has already
+ * merged - the only correct response is to stop working on it.
+ */
+export const LEFT_REVIEW_KINDS: ReadonlySet<string> = new Set(["merged", "closed"]);
+
+/** Whether a delivery says its request left review rather than asking anything of it. */
+export function saysLeftReview(itemKind: string): boolean {
+  return LEFT_REVIEW_KINDS.has(itemKind.trim().toLowerCase());
+}
+
 /**
  * WHAT A REVIEWER ALREADY PROVED IS NOT PROVED AGAIN.
  *
@@ -170,6 +178,14 @@ export function itemsStillToProve<D extends { readonly actionItemId: string; rea
   return { toProve: notProven.length === 0 ? claimed : notProven, provenAlready };
 }
 
+/**
+ * A follow-up's CODE, put through the same review the original work passed before it is pushed.
+ *
+ * MEASURED on MR !164: a follow-up commit claimed two review findings were fixed with tests; removing
+ * one half of the fix left every test green. It went from "the tests pass" straight to the reviewer's
+ * inbox, because a follow-up had no review step at all - the original work's implementation_review
+ * and qa_uat were never asked about the commits that came after them.
+ */
 export interface FollowUpReviewRequest {
   readonly gate: string;
   /** Who reviews: an owner of the gate who is NOT the hat that made the follow-up. */
@@ -305,17 +321,6 @@ export function placeOnThisMachine(text: string): string | undefined {
   return (m[1] ?? m[2] ?? "").slice(0, 60);
 }
 
-// How many times IN A ROW a request's follow-up could not complete, and what it said last.
-//
-// MEASURED on dev-portal, 2026-09-12: every session in that repository dies the same way. Its own
-// `CLAUDE.md` transitively imports 499KB of documentation - `docs/RESILIENCE.md` alone is 359KB - so
-// a session starts with about 196,000 tokens of context already written and no room to work in; it
-// manages four tool calls, reports "autocompact is thrashing", and exits. Six minutes and about six
-// dollars, every thirty minutes, for nothing. The organization cannot fix a repository's own context
-// budget, and it must not keep paying to discover that.
-//
-// Counted from the record the runtime writes when a follow-up does not complete, and reset by one
-// that does: a request that starts working again is not carrying a history.
 /**
  * A REFUSAL THE ORGANIZATION NEVER GOT TO MAKE IS NOT A FAILURE OF THE WORK.
  *
@@ -332,6 +337,19 @@ export function placeOnThisMachine(text: string): string | undefined {
  */
 const LIMIT_REFUSAL = /usage limit is reached|hit your (?:usage )?limit|usage limit (?:reached|exceeded)/i;
 
+/**
+ * How many times IN A ROW a request's follow-up could not complete, and what it said last.
+ *
+ * MEASURED on dev-portal, 2026-09-12: every session in that repository dies the same way. Its own
+ * `CLAUDE.md` transitively imports 499KB of documentation - `docs/RESILIENCE.md` alone is 359KB - so
+ * a session starts with about 196,000 tokens of context already written and no room to work in; it
+ * manages four tool calls, reports "autocompact is thrashing", and exits. Six minutes and about six
+ * dollars, every thirty minutes, for nothing. The organization cannot fix a repository's own context
+ * budget, and it must not keep paying to discover that.
+ *
+ * Counted from the record the runtime writes when a follow-up does not complete, and reset by one
+ * that does: a request that starts working again is not carrying a history.
+ */
 export function followUpFailures(events: readonly OrgEvent[], workId: string): { readonly inARow: number; readonly lastReason?: string } {
   let inARow = 0;
   let lastReason: string | undefined;
@@ -499,6 +517,16 @@ export interface FollowUpRequest {
    * for the last time (agentic-tpm !164, pipelines 189179 and 189289, both declined as flakes).
    */
   readonly pipelines?: PipelinePolicy;
+  /**
+   * WHAT THIS HAT ALREADY KNOWS, recalled from the organization's memory before the session starts.
+   *
+   * The memory circuit was wired to the ORIGINAL work walk only - a hat writing a change got what
+   * it had learned, and the follow-up sessions that answer reviewers got nothing. Those are the
+   * expensive ones: MEASURED on agentic-tpm, 2026-09-12, ~51 turns each, and reviews alone were 58%
+   * of the run's spend. So the hat that answers a reviewer now wakes up knowing what the hat that
+   * wrote the code knew.
+   */
+  readonly recall?: string;
 }
 
 /**
@@ -518,8 +546,19 @@ export interface FollowUpPlanRequest {
   readonly workId: string;
   /** The hat deciding - the one that holds the work item's plan. */
   readonly plannerHatId: string;
-  /** Every stage this item's chain owes. The plan may name any of these and nothing else. */
+  /**
+   * Every stage the plan may name, and nothing else.
+   *
+   * WIDER THAN THE ITEM'S OWN CHAIN. It was exactly the chain, so the one thing a round could never
+   * decide was that this change needs a look the original work did not: a follow-up that touches
+   * authentication cannot ask for a security review if the defect chain never owed one. A stage is
+   * offered here when the chart has somebody other than the author who owns it - which is the only
+   * thing that makes a review mean anything - and `beyondChain` says which of these are extra, so
+   * a planner adding one knows it is adding one.
+   */
   readonly available: readonly string[];
+  /** Of `available`, the stages this item's chain does NOT owe - offered, but not routine. */
+  readonly beyondChain?: readonly string[];
   /** What this round would run if nobody decided: the post-work review stages. */
   readonly usual: readonly string[];
   /** What brought this round about, by kind - comment, pipeline_failed, target_moved, and so on. */
@@ -555,7 +594,11 @@ export function gatesForRound(plan: FollowUpPlan | undefined, request: FollowUpP
   if (refused.length > 0) {
     return { gates: request.usual, why: `the plan named ${refused.join(", ")}, which this item's chain does not owe - so this round owes the usual stages` };
   }
-  return { gates: named, why: plan.why.trim() === "" ? "decided, with no reason given" : plan.why };
+  // A stage the chain does not owe is a real decision, not a default - say so in the record, so
+  // "why did this round run a security review" is answerable from the log alone.
+  const extra = named.filter((g) => (request.beyondChain ?? []).includes(g));
+  const why = plan.why.trim() === "" ? "decided, with no reason given" : plan.why;
+  return { gates: named, why: extra.length === 0 ? why : `${why} (and asked for ${extra.join(", ")}, which this item's chain does not owe)` };
 }
 
 export interface FollowUpOutcome {

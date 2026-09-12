@@ -43,6 +43,7 @@
  */
 
 import { MemoryTier } from "./memory";
+import { syncedFolderWarnings } from "./synced-folder";
 import { lifeSummary, lifeTick, writeMemory, type HoldMeeting, type Study } from "./run-life";
 import { DEFAULT_STUDY_BUDGET, remainingStudy } from "./study-session";
 import { isPresence, type HatPresence } from "./org-life";
@@ -347,7 +348,7 @@ export const KNOWN_FLAGS: ReadonlySet<string> = new Set([
   "--tracker", "--tracker-header", "--tracker-items", "--tracker-map", "--tracker-severity",
   "--tracker-source", "--until", "--week", "--window-start", "--window-target", "--work-agent",
   "--work-agent-arg", "--work-arg", "--work-cmd", "--work-model", "--work-verify",
-  "--work-verify-arg", "--worktrees", "--worktree-setup", "--worktree-setup-arg", "--supply-target", "--parallel", "--plan-round-cmd", "--plan-round-arg", "--resume", "--help", "-h",
+  "--work-verify-arg", "--worktrees", "--worktree-setup", "--worktree-setup-arg", "--supply-target", "--parallel", "--follow-up-at-once", "--verify-at-once", "--plan-round-cmd", "--plan-round-arg", "--resume", "--help", "-h",
   "--handoff-cmd", "--handoff-arg", "--delivery",
   "--describe-cmd", "--describe-arg", "--follow-up-cmd", "--follow-up-arg", "--feedback-dir", "--feedback-cmd", "--feedback-arg",
   "--answer-cmd", "--answer-arg",
@@ -641,6 +642,26 @@ export interface Args {
   readonly changeRequests?: ChangeRequestConfig;
   /** Wearers per hat the RMO authorizes — how many open tasks one contributor hat may carry. */
   readonly supplyTarget: number | undefined;
+  /**
+   * How many handed-off requests one run follows up.
+   *
+   * ITS OWN FLAG BECAUSE `--supply-target` WAS DRIVING TWO UNRELATED KNOBS: wearers per hat (what
+   * it is named for, and what the assignment engine reads) and this. Raising the number of people
+   * who may wear a hat silently also changed how many merge requests the run would work on, and
+   * lowering either one meant lowering the other. Absent, `--supply-target` still sets it, so every
+   * existing profile behaves exactly as before.
+   */
+  readonly followUpAtOnce: number | undefined;
+  /**
+   * How many of those requests may have their test suite running at the same moment. Default 1.
+   *
+   * The default is one because a suite is not obviously safe to run twice at once: two of
+   * agentic-tpm's fight over the MongoMemoryServer port, already the commonest red in its own
+   * pipeline. That is a fact about the PROJECT, not about the organization - so it is the
+   * operator's to state, and a run told it may use more hands each verification a slot number
+   * (`ORG_VERIFY_SLOT`) to allocate ports from.
+   */
+  readonly verifyAtOnce: number | undefined;
   /** How many requests are followed up at once. Absent is one - the deterministic, replayable path. */
   readonly parallel: number | undefined;
   /** Decides which review stages each follow-up ROUND owes. Absent: every round owes the usual ones. */
@@ -882,6 +903,8 @@ export function parseArgs(argv: readonly string[]): Args {
     answerArgs: valuesAfter(argv, "--answer-arg"),
     supplyTarget: ((v) => (v === undefined ? undefined : Number.parseInt(v, 10)))(valueAfter(argv, "--supply-target")),
     parallel: ((v) => (v === undefined ? undefined : Number.parseInt(v, 10)))(valueAfter(argv, "--parallel")),
+    followUpAtOnce: ((v) => (v === undefined ? undefined : Number.parseInt(v, 10)))(valueAfter(argv, "--follow-up-at-once")),
+    verifyAtOnce: ((v) => (v === undefined ? undefined : Number.parseInt(v, 10)))(valueAfter(argv, "--verify-at-once")),
     planRoundCmd: valueAfter(argv, "--plan-round-cmd"),
     planRoundArgs: valuesAfter(argv, "--plan-round-arg"),
     qaFails: argv.includes("--qa-fails") || argv.includes("--churn"),
@@ -1059,7 +1082,13 @@ export function argRefusals(args: Args): readonly string[] {
     out.push("--jira-auth-file and --tracker both name the intake; supply one, because work can only have arrived one way");
   }
   if (args.supplyTarget !== undefined && (Number.isNaN(args.supplyTarget) || args.supplyTarget < 1)) {
-    out.push("--supply-target takes a positive count of wearers per hat");
+    out.push("--supply-target takes a positive count of wearers per hat (and, unless --follow-up-at-once says otherwise, how many handed-off requests one run follows up)");
+  }
+  if (args.followUpAtOnce !== undefined && (Number.isNaN(args.followUpAtOnce) || args.followUpAtOnce < 1)) {
+    out.push("--follow-up-at-once takes a positive count of handed-off requests to follow up in one run");
+  }
+  if (args.verifyAtOnce !== undefined && (Number.isNaN(args.verifyAtOnce) || args.verifyAtOnce < 1)) {
+    out.push("--verify-at-once takes a positive count of test suites that may run at the same moment - 1 is one at a time");
   }
   if (args.parallel !== undefined && (Number.isNaN(args.parallel) || args.parallel < 1)) {
     out.push("--parallel takes a positive count of requests to follow up at once - 1 is one at a time");
@@ -1641,6 +1670,9 @@ export function attachAfterHandoff(deps: Record<string, unknown>, args: Args, fe
   // here: a follow-up is a contributor's session like any other piece of work.
   if (args.supplyTarget !== undefined && Number.isFinite(args.supplyTarget) && args.supplyTarget > 0) deps["maxFollowUps"] = args.supplyTarget;
   if (args.parallel !== undefined && Number.isFinite(args.parallel) && args.parallel > 0) deps["maxParallel"] = args.parallel;
+  // AFTER `--supply-target`, so a flag that means only this wins over the one that means two things.
+  if (args.followUpAtOnce !== undefined && Number.isFinite(args.followUpAtOnce) && args.followUpAtOnce > 0) deps["maxFollowUps"] = args.followUpAtOnce;
+  if (args.verifyAtOnce !== undefined && Number.isFinite(args.verifyAtOnce) && args.verifyAtOnce > 0) deps["maxVerifyAtOnce"] = args.verifyAtOnce;
   if (feedback.length > 0) deps["feedback"] = feedback;
   if (args.changeRequests !== undefined) deps["changeRequests"] = args.changeRequests;
   if (args.describeCmd !== undefined) deps["describeChange"] = commandDescriber({ command: args.describeCmd, args: args.describeArgs, ...budget }, cwd);
@@ -1794,6 +1826,20 @@ export async function main(argv: readonly string[]): Promise<number> {
   if (unknown.length > 0) {
     for (const flag of unknown) console.error(`refused: unknown flag ${flag}`);
     return 2;
+  }
+
+  // ── WHAT IS WATCHING THE FILES THIS RUN WOULD CHURN ───────────────────────────────────────────
+  // A sync client under the store, the checkout or the worktrees turns every git command, every
+  // test run and every throwaway review copy into upload traffic, and contends with the process
+  // doing the work. Said BEFORE the refusals on purpose: it is true of a run that will not start,
+  // and somebody fixing up their flags is exactly who should hear it. Never a refusal itself -
+  // where a person keeps their work is their decision, not the organization's.
+  for (const line of syncedFolderWarnings({
+    "the event store": args.store,
+    "the checkout": args.git,
+    "the worktrees": args.worktrees,
+  })) {
+    console.error(`note: ${line}`);
   }
 
   const refusals = argRefusals(args);

@@ -62,3 +62,37 @@ export function oneAtATime(): <R>(work: () => Promise<R>) => Promise<R> {
     return mine;
   };
 }
+
+/**
+ * A gate at most `width` things may be inside at once, each told WHICH slot it holds.
+ *
+ * `oneAtATime` is this at width 1, and stays the default, because whether a repository's suite can
+ * run twice at once is a fact about that repository: agentic-tpm's starts a MongoMemoryServer and
+ * `Port "…" already in use` is the most common red in its own pipeline. Nothing the organization
+ * knows can settle that, so it is the operator's to state - and when they do state it, the thing
+ * standing in the way is port allocation, which needs a number nobody else is using. That is the
+ * slot: a small integer, stable for as long as the work holds it, that the project's own verify
+ * command can derive ports from.
+ *
+ * At width 1 this is exactly `oneAtATime` with a slot of 0 - same order, same one-at-a-time
+ * behaviour, so raising the width is the only thing that can change a run.
+ */
+export function slots(width: number): <R>(work: (slot: number) => Promise<R>) => Promise<R> {
+  const n = width > 1 ? Math.floor(width) : SEQUENTIAL;
+  /** Each lane is a promise chain, exactly like `oneAtATime`'s, and the slot is its index. */
+  const lanes: Promise<unknown>[] = Array.from({ length: n }, () => Promise.resolve());
+  /** Whatever is least deep wins the next arrival; at n=1 there is only ever one to pick. */
+  let turn = 0;
+  return <R>(work: (slot: number) => Promise<R>): Promise<R> => {
+    const slot = turn % n;
+    turn += 1;
+    const run = (): Promise<R> => work(slot);
+    // A failure does not poison the lane for whoever is behind it - same as `oneAtATime`.
+    const mine = (lanes[slot] as Promise<unknown>).then(run, run);
+    lanes[slot] = mine.then(
+      () => undefined,
+      () => undefined,
+    );
+    return mine;
+  };
+}

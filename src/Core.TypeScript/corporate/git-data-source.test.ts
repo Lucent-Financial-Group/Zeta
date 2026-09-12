@@ -19,7 +19,16 @@ import { tmpdir } from "node:os";
 import { DEFAULT_TEXT_EXTENSIONS, MAX_DOCUMENT_BYTES, directoryDataSource, gitDataSource, simulatedDataSource, unionOf, readBlobs } from "./git-data-source";
 import { Fidelity, Port, type SourceDocument } from "./providers";
 
-const REPO = process.cwd();
+/**
+ * THIS repository, wherever the suite was started from.
+ *
+ * It was `process.cwd()`, which is the repository root only when the whole suite is run from there.
+ * Run from this directory - `cd src/Core.TypeScript/corporate && bun test` - every path below
+ * resolved against `src/Core.TypeScript/corporate/docs/DECISIONS`, which does not exist, so five
+ * tests asserting "the subtree has documents in it" read an empty subtree and failed. The adapter
+ * was right each time; the fixture was pointing at the wrong place.
+ */
+const REPO = execFileSync("git", ["rev-parse", "--show-toplevel"], { cwd: process.cwd(), encoding: "utf-8" }).trim();
 const HEAD = execFileSync("git", ["rev-parse", "HEAD"], { cwd: REPO, encoding: "utf-8" }).trim();
 
 /** A small, stable subtree of this repository, so the tests stay quick. */

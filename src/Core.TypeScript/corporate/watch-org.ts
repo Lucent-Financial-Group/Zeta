@@ -35,7 +35,7 @@ import { foldActionItems, foldAfterOpen, foldAfterUpdate, foldHandedOffChanges }
 import type { OrgEvent } from "./org-event";
 import { pollFeedback, readFeedbackDir } from "./followup-commands";
 import { parseRegistry, type OrgRecord } from "./org-registry";
-import { readEvents } from "./org-store";
+import { forgetEvents, readEvents } from "./org-store";
 import { profileArg, profileArgs, type RunProfile } from "./run-profile";
 import { lockHolder } from "./store-lock";
 
@@ -55,6 +55,12 @@ export const FAST_FAILURES = 3;
  * nothing in the backoff could tell the difference between "not yet" and "not ever".
  */
 export const FOLLOW_UP_FAILURES = 3;
+
+/** The same number, where a profile has stated one - see `ChangeRequestConfig.followUpAttempts`. */
+export function followUpAttemptsOf(config: ChangeRequestConfig | undefined): number {
+  const stated = config?.followUpAttempts;
+  return stated !== undefined && Number.isInteger(stated) && stated > 0 ? stated : FOLLOW_UP_FAILURES;
+}
 
 export interface WatchInput {
   readonly events: readonly OrgEvent[];
@@ -110,7 +116,7 @@ export function watchReasons(input: WatchInput): WatchVerdict {
   const hopeless = new Set<string>();
   for (const [workId] of handed) {
     const failed = followUpFailures(input.events, workId);
-    if (failed.inARow < FOLLOW_UP_FAILURES) continue;
+    if (failed.inARow < followUpAttemptsOf(input.changeRequests)) continue;
     hopeless.add(workId);
     atLimit.push(`${workId}: ${String(failed.inARow)} follow-ups in a row could not complete - ${(failed.lastReason ?? "").slice(0, 200)}`);
   }
@@ -304,6 +310,10 @@ export async function watchProfile(
   const holder = lockHolder(store);
   if (holder !== undefined) return `a run holds the store (pid ${String(holder.pid)})`;
 
+  // ANOTHER PROCESS WRITES THIS STORE. `readEvents` remembers its last full read so one run does
+  // not re-read 17,169 shards twenty-two times; a watcher is the case that cache cannot see, because
+  // the writer is `run-org` in a different process. So it looks again, every tick, deliberately.
+  forgetEvents();
   const events = readEvents(store);
   const handed = foldHandedOffChanges(events);
   const feedbackDir = profileArg(profile, "--feedback-dir") ?? join(store, "feedback");

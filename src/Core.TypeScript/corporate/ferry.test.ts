@@ -6,7 +6,7 @@
  */
 
 import { describe, expect, test } from "bun:test";
-import { ferry, oneAtATime, SEQUENTIAL } from "./ferry";
+import { ferry, oneAtATime, SEQUENTIAL, slots } from "./ferry";
 
 /** A task that parks until it is released, so the test decides the interleaving, not a timer. */
 function parked<T>(): { promise: Promise<T>; release: (v: T) => void } {
@@ -107,5 +107,95 @@ describe("THE SUITES MAY NOT OVERLAP, HOWEVER WIDE THE FERRY IS", () => {
     const failed = gate(async () => { throw new Error("the suite crashed"); });
     await expect(failed).rejects.toThrow("the suite crashed");
     expect(await gate(async () => "the next one still ran")).toBe("the next one still ran");
+  });
+});
+
+describe("A GATE MAY BE WIDER THAN ONE, AND EACH THING INSIDE KNOWS WHICH SLOT IT HOLDS", () => {
+  // Whether a repository's suite can run twice at once is a fact about that repository, so the
+  // width is the operator's to state. What the organization CAN do is hand each concurrent run a
+  // number nobody else is using, which is what port allocation needs.
+  const settle = (ms: number) => new Promise((r) => setTimeout(r, ms));
+
+  test("at width 1 it is one at a time, and the slot is always 0", async () => {
+    const gate = slots(1);
+    let inside = 0;
+    let mostAtOnce = 0;
+    const seen: number[] = [];
+    await Promise.all(
+      [0, 1, 2, 3].map(async () =>
+        gate(async (slot) => {
+          seen.push(slot);
+          inside += 1;
+          mostAtOnce = Math.max(mostAtOnce, inside);
+          await settle(20);
+          inside -= 1;
+        }),
+      ),
+    );
+    expect(mostAtOnce).toBe(1);
+    expect(seen).toEqual([0, 0, 0, 0]);
+  });
+
+  test("at width 2 two run at once and no two inside hold the same slot", async () => {
+    const gate = slots(2);
+    let inside = 0;
+    let mostAtOnce = 0;
+    const held = new Set<number>();
+    let collided = false;
+    await Promise.all(
+      [0, 1, 2, 3].map(async () =>
+        gate(async (slot) => {
+          if (held.has(slot)) collided = true;
+          held.add(slot);
+          inside += 1;
+          mostAtOnce = Math.max(mostAtOnce, inside);
+          await settle(30);
+          inside -= 1;
+          held.delete(slot);
+        }),
+      ),
+    );
+    expect(mostAtOnce).toBe(2);
+    expect(collided).toBe(false);
+  });
+
+  test("a failure inside does not poison the slot for whoever is behind it", async () => {
+    const gate = slots(1);
+    const boom = gate(async () => {
+      throw new Error("no");
+    });
+    await expect(boom).rejects.toThrow("no");
+    await expect(gate(async () => "after")).resolves.toBe("after");
+  });
+
+  test("a width below one is one, and a fractional width is rounded down", async () => {
+    let mostAtOnce = 0;
+    let inside = 0;
+    const gate = slots(2.9);
+    await Promise.all(
+      [0, 1, 2, 3, 4].map(async () =>
+        gate(async () => {
+          inside += 1;
+          mostAtOnce = Math.max(mostAtOnce, inside);
+          await settle(15);
+          inside -= 1;
+        }),
+      ),
+    );
+    expect(mostAtOnce).toBe(2);
+    let zeroWide = 0;
+    let insideZero = 0;
+    const g0 = slots(0);
+    await Promise.all(
+      [0, 1, 2].map(async () =>
+        g0(async () => {
+          insideZero += 1;
+          zeroWide = Math.max(zeroWide, insideZero);
+          await settle(10);
+          insideZero -= 1;
+        }),
+      ),
+    );
+    expect(zeroWide).toBe(1);
   });
 });

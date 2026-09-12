@@ -129,6 +129,8 @@ export function mintRunId(input: {
  * FOLD OVER THE LOG rather than a second copy of the state that can drift.
  */
 export function appendEvent(event: OrgEvent, root: string): string {
+  // The log just changed: whatever was read before this is no longer all of it.
+  forgetEvents();
   return writeShard(
     { value: event, atMs: event.atMs, category: Category.Workflow, prefix: [EVENTS] },
     root,
@@ -154,6 +156,7 @@ export function appendRun(
   },
   root: string,
 ): { readonly runPath: string; readonly eventPaths: readonly string[] } {
+  forgetEvents();
   const eventPaths = input.trace.map((event) =>
     writeShard({ value: event, atMs: event.atMs, category: Category.Workflow, prefix: [EVENTS] }, root),
   );
@@ -178,14 +181,45 @@ export function appendRun(
 }
 
 /**
+ * THE LAST FULL READ, SO ONE PROCESS DOES NOT DO IT TWENTY-TWO TIMES.
+ *
+ * MEASURED on the agentic-team store, 2026-09-12: 17,169 event files, 64MB - and `run-org.ts`
+ * alone calls `readEvents` twenty-two times, four of them behind `get` accessors that re-read on
+ * EVERY property access. Each call reads every shard, parses it and sorts the lot. The fold is
+ * cheap; doing it from disk over and over is what makes a cold start minutes rather than seconds.
+ *
+ * ── WHY THIS IS SAFE, AND WHERE IT IS NOT ────────────────────────────────────
+ * Every write in this process goes through `appendEvent` or `appendRun`, and both drop the cache -
+ * so a run that appends and then re-reads sees its own writes, which is what the accessors are for.
+ * What the cache CANNOT see is another process appending: `watch-org` reads a store that `run-org`
+ * writes. Those readers call `forgetEvents` when they start a tick, and that is the whole contract.
+ * A windowed read is never cached - it is a different question with a different answer.
+ */
+let lastRead: { readonly root: string; readonly events: readonly OrgEvent[] } | undefined;
+
+/**
+ * Forget the cached read. A long-lived reader calls this whenever ANOTHER process may have written
+ * since it last looked - which for a watcher is every tick.
+ */
+export function forgetEvents(): void {
+  lastRead = undefined;
+}
+
+/**
  * Every event ever stored, in the order they happened.
  *
  * Ordered by the event's own `atMs`, with its id as the tie-break — never by filename, which is an
  * artefact of the store rather than of the organization.
  */
 export function readEvents(root: string, window?: ShardWindow): readonly OrgEvent[] {
-  const events = readShards<OrgEvent>(`${root}/${EVENTS}`, identifyEvent, window);
-  return [...events].sort(compareEvents);
+  // A window asks a narrower question; caching it under the same key would answer the wide one.
+  if (window !== undefined) {
+    return [...readShards<OrgEvent>(`${root}/${EVENTS}`, identifyEvent, window)].sort(compareEvents);
+  }
+  if (lastRead !== undefined && lastRead.root === root) return lastRead.events;
+  const events = [...readShards<OrgEvent>(`${root}/${EVENTS}`, identifyEvent, window)].sort(compareEvents);
+  lastRead = { root, events };
+  return events;
 }
 
 /**
