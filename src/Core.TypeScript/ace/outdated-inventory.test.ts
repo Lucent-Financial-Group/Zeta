@@ -213,3 +213,37 @@ describe("collectPinned", () => {
     expect(new Set(inv.deps.map((d) => d.ecosystem)).size).toBeGreaterThanOrEqual(4);
   });
 });
+
+describe("XML comment stripping reaches a FIXPOINT, not one pass", () => {
+  // CodeQL js/incomplete-multi-character-sanitization on the single-pass form.
+  //
+  // THE FIRST THREE CASES I WROTE FOR THIS WERE VACUOUS -- they passed with the single-pass
+  // form too, because stripping `<!--<!-- x -->-->` in one pass leaves only a harmless `-->`.
+  // Mutation found that; nothing else would have. The case below is the one that actually
+  // discriminates, and it is the dangerous direction: a pin that IS commented out gets
+  // REPORTED AS LIVE, so `ace outdated` would claim a dependency the build does not have.
+  test("removing one comment must not EXPOSE a pin by creating a new one", () => {
+    // One pass strips the inner `<!-- -->`, and the surviving `<!` + `--` fuse into a fresh
+    // `<!--` ... `-->` wrapper that a second pass removes. Single pass reports Hidden; the
+    // fixpoint does not.
+    const xml = [
+      "<Project><ItemGroup>",
+      '<!<!-- -->-- <PackageVersion Include="Commented.Out" Version="9.9.9" /> -->',
+      "</ItemGroup></Project>",
+    ].join("\n");
+    const got = parseNuGetCentralVersions(xml, "p");
+    expect(got.map((d) => d.name)).not.toContain("Commented.Out");
+    expect(got).toEqual([]);
+  });
+
+  test("an ordinary single comment still strips, and a real pin still parses", () => {
+    const xml = [
+      "<Project><ItemGroup>",
+      '<!-- <PackageVersion Include="Nope" Version="0.0.1" /> -->',
+      '<PackageVersion Include="Yes.Please" Version="4.5.6" />',
+      "</ItemGroup></Project>",
+    ].join("\n");
+    const got = parseNuGetCentralVersions(xml, "p");
+    expect(got.map((d) => d.name)).toEqual(["Yes.Please"]);
+  });
+});

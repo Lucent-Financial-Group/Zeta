@@ -107,11 +107,36 @@ export function classifyPin(text: string): PinKind {
  * Attribute order is not fixed by MSBuild, so both orders are matched rather than assuming the
  * order this file happens to use today.
  */
+/**
+ * Remove XML comments repeatedly until the text stops changing.
+ *
+ * Flagged by CodeQL as `js/incomplete-multi-character-sanitization` on the single-pass form.
+ * The HTML-injection framing in that rule's message does not apply here — nothing this
+ * function feeds is ever rendered — but the underlying complaint does: one pass is not a
+ * fixpoint, and a reader that can be made to see a pin that is commented out, or miss one
+ * that is not, is a reader that reports the wrong dependency set.
+ */
+function stripXmlComments(xml: string): string {
+  let live = xml;
+  for (;;) {
+    const next = live.replace(/<!--[\s\S]*?-->/gu, "");
+    if (next === live) return live;
+    live = next;
+  }
+}
+
 export function parseNuGetCentralVersions(xml: string, source: string): PinnedDependency[] {
   const out: PinnedDependency[] = [];
   // Strip XML comments first: several PackageVersion lines in this repo sit inside commented-out
   // blocks explaining why they are not referenced yet, and a commented pin is not a pin.
-  const live = xml.replace(/<!--[\s\S]*?-->/gu, "");
+  //
+  // TO A FIXPOINT, not one pass. A single `.replace` is not idempotent on overlapping markers:
+  // `<!--<!-- x -->-->` loses the inner comment and leaves a bare `-->` behind, and the reverse
+  // shape can leave a live `<!--` that swallows the next real element. XML forbids nested
+  // comments, so such input is malformed — but this is a REGEX reader, not a parser, and a
+  // malformed props file must not be able to hide or invent a pin. Each pass either shortens
+  // the string or changes nothing, so this terminates.
+  const live = stripXmlComments(xml);
   const tag = /<PackageVersion\b([^>]*)\/?>/gu;
   for (const m of live.matchAll(tag)) {
     const attrs = m[1] ?? "";
