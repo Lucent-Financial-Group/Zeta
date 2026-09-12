@@ -243,6 +243,7 @@ export const COMMANDS: readonly CommandSpec[] = [
       { name: "--review-rounds", what: "At most this many re-reviews are asked for on one request before a person decides (default 10).", takesValue: true },
       { name: "--pipelines", what: "What a red pipeline on the team's own merge request means: the work is not done until it passes, so the team keeps being asked after every push (`until_green`); a failure is raised once like any comment and the team may decide against it (`flag_only`); or pipelines are not this team's business (`none`).", required: true, takesValue: true, oneOf: ["until_green", "flag_only", "none"] },
       { name: "--pipeline-attempts", what: "Under `until_green`: runs spent on ONE red pipeline before the team stops and asks a person (default 3).", takesValue: true },
+      { name: "--follow-up-attempts", what: "Follow-ups that could not COMPLETE, in a row, before the request becomes a person's rather than a retry (default 3).", takesValue: true },
       { name: "--why", what: "Why merge requests are written this way here.", required: true, takesValue: true },
       JSON_FLAG,
     ],

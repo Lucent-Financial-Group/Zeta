@@ -825,6 +825,14 @@ export interface HandedOffChange {
 export function foldHandedOffChanges(events: readonly OrgEvent[]): ReadonlyMap<string, HandedOffChange> {
   const out = new Map<string, HandedOffChange>();
   for (const event of events) {
+    // ── A REQUEST THAT LEFT REVIEW LEAVES THIS SET ───────────────────────────────────────────
+    // Before this the map only ever GREW: every request the organization had ever handed off was
+    // polled on every tick for ever, whether or not it had been merged months earlier. A later
+    // handoff of the same work (a reopen) puts it back, because the events are read in order.
+    if (event.fact?.kind === "change_left_review") {
+      out.delete(event.fact.workId);
+      continue;
+    }
     if (event.fact?.kind !== "change_handed_off") continue;
     const x = event.fact;
     const firstCommit = out.get(x.workId)?.firstCommit ?? x.commit;
@@ -910,7 +918,31 @@ export interface ActionItem {
    * which is the fact that should change what a session does about it.
    */
   readonly reopenedTimes?: number;
+  /**
+   * WHAT EARLIER ROUNDS ALREADY TRIED ON THIS ITEM, oldest first, and what became of each.
+   *
+   * A reopen drops the settlement, because the item is open again and an open item has none. Before
+   * this it dropped the WORK with it: the next session was told "this was turned back, here is why"
+   * and nothing about what had already been done, so it re-derived the same diagnosis from the same
+   * repository and arrived in the same place. MEASURED on agentic-tpm, 2026-09-12: ~51 agent turns
+   * per call and 156 tokens read for every one written - the READING is the cost, and re-deriving
+   * what a previous round had already established is most of it.
+   *
+   * Bounded at `ATTEMPTS_KEPT`: an item turned back many times needs its last few attempts, not all
+   * of them, and the whole history stays in the log for `observe`.
+   */
+  readonly attempts?: readonly {
+    readonly outcome: string;
+    readonly how: string;
+    readonly byHatId?: string;
+    readonly atMs: number;
+    /** What became of that attempt - the reason the item was reopened after it. */
+    readonly thenWhat: string;
+  }[];
 }
+
+/** How many earlier attempts an item carries forward to the next session. The rest stay in the log. */
+export const ATTEMPTS_KEPT = 3;
 
 /**
  * Every action item, by work id, in the order raised - open and settled alike.
@@ -958,8 +990,28 @@ export function foldActionItems(events: readonly OrgEvent[]): ReadonlyMap<string
       const item = byId.get(f.actionItemId);
       if (item === undefined) continue;
       // OPEN AGAIN: the settlement and its answer are dropped, the reason kept for whoever decides next.
-      const { settled: _s, answered: _a, ...rest } = item;
-      byId.set(f.actionItemId, { ...rest, reopened: { why: f.why, atMs: event.atMs }, reopenedTimes: (item.reopenedTimes ?? 0) + 1 });
+      // THE WORK IS NOT DROPPED WITH THEM. The settlement moves onto `attempts` with what became of
+      // it, so the next session starts from what was already tried instead of deriving it again.
+      const { settled, answered: _a, ...rest } = item;
+      const attempts =
+        settled === undefined
+          ? item.attempts
+          : [
+              ...(item.attempts ?? []),
+              {
+                outcome: settled.outcome,
+                how: settled.how,
+                ...(settled.byHatId === undefined ? {} : { byHatId: settled.byHatId }),
+                atMs: settled.atMs,
+                thenWhat: f.why,
+              },
+            ].slice(-ATTEMPTS_KEPT);
+      byId.set(f.actionItemId, {
+        ...rest,
+        reopened: { why: f.why, atMs: event.atMs },
+        reopenedTimes: (item.reopenedTimes ?? 0) + 1,
+        ...(attempts === undefined || attempts.length === 0 ? {} : { attempts }),
+      });
     } else if (f?.kind === "action_item_answered") {
       const item = byId.get(f.actionItemId);
       if (item === undefined) continue;

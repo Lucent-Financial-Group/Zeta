@@ -10,18 +10,7 @@ import { afterEach, describe, expect, test } from "bun:test";
 import { mkdirSync, mkdtempSync, readdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { basename, join } from "node:path";
-import {
-  appendEvent,
-  appendRun,
-  compareMintedIds,
-  decidedUnder,
-  deliveryRate,
-  eventsFor,
-  logHighWater,
-  mintRunId,
-  readEvents,
-  readRuns,
-} from "./org-store";
+import { appendEvent, appendRun, compareMintedIds, decidedUnder, deliveryRate, eventsFor, forgetEvents, logHighWater, mintRunId, readEvents, readRuns } from "./org-store";
 import { agentsFromChart, runOrgRuntime, type OrgRuntimeDeps } from "./org-runtime";
 import { buildOrgChart } from "./org-chart";
 import { SEED_HATS } from "./org-seed";
@@ -394,5 +383,73 @@ describe("THE LOG IS READ IN THE ORDER IT WAS MINTED", () => {
     // `bind-512` is buried in a fact and still counts; the ticket key is not a minted id.
     expect(hw.counter).toBe(512);
     expect(logHighWater([])).toEqual({ atMs: undefined, counter: 0 });
+  });
+});
+
+describe("ONE PROCESS DOES NOT READ THE WHOLE LOG TWENTY-TWO TIMES", () => {
+  // MEASURED on the agentic-team store, 2026-09-12: 17,169 event files, 64MB - and `run-org.ts`
+  // alone calls `readEvents` twenty-two times, four of them behind `get` accessors that re-read on
+  // every property access. The fold is cheap; doing it from disk over and over is what makes a cold
+  // start minutes rather than seconds.
+  const anEvent = (id: string, atMs: number): OrgEvent =>
+    ({ id, kind: "change_projected", subjectId: "task-1", decision: "d", atMs, evidenceRefs: [], supervisorChain: [] }) as unknown as OrgEvent;
+
+  test("a second read of the same store is served from the first", () => {
+    const root = mkdtempSync(join(tmpdir(), "store-cache-"));
+    try {
+      appendEvent(anEvent("evt-001", 1), root);
+      const first = readEvents(root);
+      const second = readEvents(root);
+      expect(first.length).toBe(1);
+      // The same array, not merely an equal one: nothing went back to disk.
+      expect(second).toBe(first);
+    } finally {
+      rmSync(root, { recursive: true, force: true });
+    }
+  });
+
+  test("a run sees its OWN writes - appending drops the cache", () => {
+    const root = mkdtempSync(join(tmpdir(), "store-cache-"));
+    try {
+      appendEvent(anEvent("evt-001", 1), root);
+      expect(readEvents(root).length).toBe(1);
+      appendEvent(anEvent("evt-002", 2), root);
+      // The falsifier for the whole idea: if this were still 1, the accessors that re-read during a
+      // run would be serving a stale log, which is worse than the cost the cache saves.
+      expect(readEvents(root).length).toBe(2);
+    } finally {
+      rmSync(root, { recursive: true, force: true });
+    }
+  });
+
+  test("a reader that is told to look again does", () => {
+    const root = mkdtempSync(join(tmpdir(), "store-cache-"));
+    try {
+      appendEvent(anEvent("evt-001", 1), root);
+      expect(readEvents(root).length).toBe(1);
+      // What a watcher cannot see: another process appending. Stand in for it by writing the shard
+      // the way that process would and then doing what a watcher does at the top of a tick.
+      appendEvent(anEvent("evt-002", 2), root);
+      forgetEvents();
+      expect(readEvents(root).length).toBe(2);
+    } finally {
+      rmSync(root, { recursive: true, force: true });
+    }
+  });
+
+  test("a different store is not served the other's log", () => {
+    const a = mkdtempSync(join(tmpdir(), "store-cache-a-"));
+    const b = mkdtempSync(join(tmpdir(), "store-cache-b-"));
+    try {
+      appendEvent(anEvent("evt-001", 1), a);
+      appendEvent(anEvent("evt-002", 2), b);
+      appendEvent(anEvent("evt-003", 3), b);
+      expect(readEvents(a).length).toBe(1);
+      expect(readEvents(b).length).toBe(2);
+      expect(readEvents(a).length).toBe(1);
+    } finally {
+      rmSync(a, { recursive: true, force: true });
+      rmSync(b, { recursive: true, force: true });
+    }
   });
 });

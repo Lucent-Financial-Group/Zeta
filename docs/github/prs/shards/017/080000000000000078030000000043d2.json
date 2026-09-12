@@ -1,0 +1,17 @@
+{
+  "pr_number": 17362,
+  "archive_path": "docs/history/pr-reviews/2026/09/12/PR-17362-feat-corporate-the-store-lock-expires-kill-pid-0-cannot-see-a-hung-holder.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7uNjFj",
+    "comment:PRRC_kwDOSF9kNM7uNlPo",
+    "thread:PRRT_kwDOSF9kNM6hw34i",
+    "thread:PRRT_kwDOSF9kNM6hw5VY"
+  ],
+  "fetched_at": "2026-09-12T20:30:11.541Z",
+  "schema_version": "v1",
+  "commit_sha": "3e3bf49b1280ea3392788118515313bd44c81777",
+  "title": "feat(corporate): the store lock expires — kill(pid,0) cannot see a hung holder",
+  "state": "MERGED",
+  "merged_at": "2026-09-12T20:29:14Z",
+  "head_ref": "shadow/lock-hold-deadline"
+}

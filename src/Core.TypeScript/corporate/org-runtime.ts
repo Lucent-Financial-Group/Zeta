@@ -117,11 +117,12 @@ import {
 import { Fidelity, fidelityLine, recordingProviders, runFidelityOf, type ChangeHandle, type ChangeProposal, type DataSourcePort, type PortResult, type ProviderSet, type ReviewVerdict, type RunFidelity,
   fidelityOf,} from "./providers";
 import type { ActionItem, HandedOffChange } from "./org-fold";
-import { ferry, oneAtATime, SEQUENTIAL } from "./ferry";
+import { SEQUENTIAL, ferry, slots } from "./ferry";
 import {
   acceptedDecisions,
   answersOwed,
   correlateFeedback,
+  saysLeftReview,
   followUpOrder,
   gatesForRound,
   keepRedPipelinesOpen,
@@ -404,15 +405,25 @@ export interface OrgRuntimeDeps extends HumanCheckpointDeps {
    */
   readonly followUp?: (request: FollowUpRequest) => Promise<PortResult<FollowUpOutcome>>;
   /** Whether a change's checkout still passes after a follow-up changed it. Required before it is handed off again. */
-  readonly verifyChange?: (handle: ChangeHandle) => Promise<PortResult<string>>;
+  readonly verifyChange?: (handle: ChangeHandle, slot?: number) => Promise<PortResult<string>>;
   /** At most this many handed-off changes are followed up in one cycle. Default 2. */
   readonly maxFollowUps?: number;
   /**
    * How many requests the organization follows up AT ONCE. Default 1 - every run before this was one
    * at a time, and one stays the deterministic, replayable path (see `ferry.ts`). Above 1 the agent
-   * sessions overlap; the repository's own test suite still never does (see `oneAtATime`).
+   * sessions overlap; the repository's own test suite does so only as wide as `maxVerifyAtOnce` allows (see `slots`).
    */
   readonly maxParallel?: number;
+  /**
+   * How many followed-up changes may have their test suite running at the same moment. Default 1.
+   *
+   * SEPARATE FROM `maxParallel` because they are different risks: sessions overlapping costs
+   * nothing, two copies of a repository's suite on one machine fight over whatever the suite
+   * happens to bind - agentic-tpm's MongoMemoryServer port, and `Port "…" already in use` is the
+   * commonest red in its own pipeline. Only the operator knows whether their suite can take it,
+   * and each concurrent verification is handed a slot number to allocate from when they say it can.
+   */
+  readonly maxVerifyAtOnce?: number;
   /**
    * Decides which review stages a FOLLOW-UP ROUND owes - see `FollowUpPlanRequest`. Absent: every
    * round owes the same post-work stages the original work did, which is what every round did before
@@ -4039,9 +4050,12 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
   const actionItemsRaised: string[] = [];
   const actionItemsAnswered: string[] = [];
   const followUps: FollowUpReport[] = [];
-  // Sessions may overlap; the repository's own test suite may not - two of agentic-tpm's at once
-  // fight over the MongoMemoryServer port, already the commonest red in its own pipeline.
-  const verifyOneAtATime = oneAtATime();
+  // Sessions may overlap; the repository's own test suite may not, BY DEFAULT - two of agentic-tpm's
+  // at once fight over the MongoMemoryServer port, already the commonest red in its own pipeline.
+  // Whether that is true of a given repository is the operator's to say (`--verify-at-once`), and
+  // when they widen it each concurrent run is handed a slot to allocate ports from. At the default
+  // width of one this is exactly the critical section it replaces.
+  const verifyInASlot = slots(deps.maxVerifyAtOnce ?? SEQUENTIAL);
   if (providers.change.meta.fidelity === Fidelity.Real) {
     const handedMap = new Map<string, HandedOffChange>([...(deps.handedOffChanges ?? []), ...handedThisRun]);
     const allItems = new Map<string, ActionItem[]>([...(deps.actionItems ?? new Map<string, readonly ActionItem[]>())].map(([w, v]) => [w, [...v]]));
@@ -4127,7 +4141,40 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
     };
 
     const corr = correlateFeedback(deps.feedback ?? [], handedMap, deps.defaultBase ?? "master");
-    for (const m of corr.aboutChange) raise(m.workId, m.actionItemId, fromDelivery(m.delivery));
+    // ── A REQUEST THAT LEFT REVIEW IS NOT AN ACTION ITEM ────────────────────────────────────────
+    // "the merge request was merged" asks nothing of anyone. Raised as an item it became a session
+    // asked to address, decline or defer a thing already over - and the change stayed in the polled
+    // set for ever besides, because nothing ever left it. Recorded as the fact it is instead: the
+    // organization is done with this request, stops following it up and stops polling it.
+    const leftReview = new Set<string>();
+    for (const m of corr.aboutChange) {
+      if (!saysLeftReview(m.delivery.itemKind)) continue;
+      const h = handedMap.get(m.workId);
+      if (h === undefined || leftReview.has(m.workId)) continue;
+      leftReview.add(m.workId);
+      note({
+        kind: OrgEventKind.ChangeProjected,
+        subjectId: m.workId,
+        decision: `the request for ${m.workId} is no longer open (${m.delivery.itemKind}) - the organization has stopped following it up`,
+        atMs: warmedAt,
+        fact: {
+          kind: "change_left_review",
+          workId: m.workId,
+          changeId: h.changeId,
+          branch: h.branch,
+          state: m.delivery.itemKind,
+          ...(m.delivery.author === undefined ? {} : { by: m.delivery.author }),
+          ...(h.url === undefined ? {} : { url: h.url }),
+        },
+      });
+    }
+    // Its OPEN items go with it: nobody will read an answer on a request that is closed, and a
+    // session asked to settle one would be working for a reviewer who has gone.
+    for (const workId of leftReview) handedMap.delete(workId);
+    for (const m of corr.aboutChange) {
+      if (saysLeftReview(m.delivery.itemKind) || leftReview.has(m.workId)) continue;
+      raise(m.workId, m.actionItemId, fromDelivery(m.delivery));
+    }
     // A pipeline the poller STILL reports red, whose item was already closed, comes back open - see
     // `redPipelinesToReopen`. Without this the watcher starts runs for a red pipeline and the run
     // has no open item to hand anyone.
@@ -4178,6 +4225,12 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
       const node = nodeById(cascade, workId);
       const hatId = node?.assigneeHatId ?? node?.ownerHatId ?? "implementer";
       const canSync = deps.changeRequests?.sync === "merge_target" && providers.change.syncWithTarget !== undefined;
+      // ── WHAT THIS HAT ALREADY KNOWS, BEFORE IT ANSWERS ANYBODY ────────────────────────────────
+      // The memory circuit reached the original work walk and stopped there: the hat that WROTE the
+      // change was told what it had learned, and every follow-up session that answers a reviewer
+      // started from nothing. Those are the expensive ones - ~51 turns each on agentic-tpm - and
+      // they work on the same repository, about the same change, as the walk that did have memory.
+      const recalled = deps.recallFor?.(workId, hatId, "follow-up");
       const where = {
         workId,
         hatId,
@@ -4187,6 +4240,7 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
         items,
         canSync,
         ...(deps.changeRequests?.pipelines === undefined ? {} : { pipelines: deps.changeRequests.pipelines }),
+        ...(recalled === undefined || recalled.text.trim() === "" ? {} : { recall: recalled.text }),
       };
       // ── WHAT OTHERS PUSHED TO THIS CHANGE'S BRANCH COMES IN FIRST ──────────
       // MEASURED on dev-portal !1222: a bot pushed an `npm audit fix` commit to the request's branch
@@ -4227,6 +4281,16 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
         const why = `the follow-up of ${workId} did not complete: ${triage.reason}`;
         note({ kind: OrgEventKind.ChangeProjected, subjectId: workId, actorHatId: hatId, decision: why.split(/\s+/).join(" ").slice(0, 400), atMs: warmedAt });
         return { workId, decided: [], handedOffAgain: false, refused: [why] };
+      }
+      // WHAT THE SESSION ACTUALLY USED. Injection alone can never mark a memory useless, so the
+      // credit half of the circuit has to reach this seam too, not just the walk.
+      if (recalled !== undefined && recalled.injectedIds.length > 0 && deps.notedCitations !== undefined) {
+        for (const fact of deps.notedCitations(workId, hatId, recalled.injectedIds, [
+          triage.value.summary,
+          ...triage.value.decisions.map((d) => d.how),
+        ])) {
+          note({ kind: OrgEventKind.ChangeProjected, subjectId: workId, actorHatId: hatId, decision: "a follow-up said which memory it relied on", atMs: warmedAt, fact });
+        }
       }
       const { accepted: decided, refused: bad } = acceptedDecisions(items, triage.value.decisions);
       refused.push(...bad);
@@ -4301,7 +4365,7 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
       if (moved) {
         const verified = deps.verifyChange === undefined
           ? ({ ok: false, reason: "nothing is configured to verify a followed-up change" } as const)
-          : await verifyOneAtATime(() => (deps.verifyChange as (h: ChangeHandle) => Promise<PortResult<string>>)(handle));
+          : await verifyInASlot(async (slot) => await (deps.verifyChange as (h: ChangeHandle, s?: number) => Promise<PortResult<string>>)(handle, slot));
         if (!verified.ok) {
           verifyFailed = verified.reason;
           refused.push(`the followed-up change was not handed off again - it does not pass verification: ${verified.reason}`);
@@ -4320,11 +4384,21 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
         // The organization is asked which stages this round needs, and may add one when a round
         // keeps coming back. Refused or absent, it owes the usual ones: reviewing LESS must be a
         // decision somebody made, never a parse failure.
-        const usual = [GateKind.ImplementationReview, GateKind.QaUat].filter((g) => chain.includes(g)).map(String);
+        const usual = [GateKind.ImplementationReview, GateKind.QaUat].filter((gate) => chain.includes(gate)).map(String);
+        // ── WHAT THE ROUND MAY ASK FOR IS WIDER THAN WHAT ITS CHAIN OWES ───────────────────────
+        // A stage is on offer when somebody OTHER THAN THE AUTHOR owns it: an independent reviewer
+        // is the whole of what a review is, and a gate the chart cannot staff that way is refused
+        // below anyway. Offering only the chain meant a round could never decide that the change it
+        // just made needs a look the original work did not.
+        const staffable = Object.values(GateKind)
+          .map(String)
+          .filter((gate) => gateOwners(deps.chart, gate as GateKind).some((h) => h.id !== hatId));
+        const beyondChain = staffable.filter((gate) => !chain.map(String).includes(gate));
         const planRequest: FollowUpPlanRequest = {
           workId,
           plannerHatId: node?.ownerHatId ?? hatId,
-          available: chain.map(String),
+          available: [...new Set([...chain.map(String), ...staffable])],
+          ...(beyondChain.length === 0 ? {} : { beyondChain }),
           usual,
           because: items.map((i) => ({ kind: i.itemKind, summary: i.summary.split(/\s+/).join(" ").slice(0, 200) })),
           roundsSoFar: deps.afterUpdateDone?.get(workId)?.rounds ?? 0,
@@ -4632,7 +4706,12 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
       // at a time, with nothing in the organization requiring that - there is an agent per hat, and
       // the assignment engine will bind a hat for a second piece of work. `maxParallel` ferries
       // drain this queue; at 1 it is the loop it replaces, in the same order.
-      const queue = followUpOrder(open).slice(0, Math.max(0, deps.maxFollowUps ?? 2));
+      const ordered = followUpOrder(open);
+      const queue = ordered.slice(0, Math.max(0, deps.maxFollowUps ?? 2));
+      // WHAT THE CAP LEFT, BY NAME. The count was already said; which requests are waiting was not,
+      // so "the organization is not answering that reviewer" and "the organization took three and
+      // that was the fourth" read identically from the log.
+      const waiting = ordered.slice(queue.length);
       // SAID, so "why was it not parallel" is answerable from the record instead of from a process
       // list. How many requests were owed follow-up, how many this run may take, and how many at once.
       note({
@@ -4640,7 +4719,8 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
         subjectId: goalId,
         decision:
           `${String(open.size)} request(s) owe follow-up, this run takes ${String(queue.length)} (${queue.join(", ")})` +
-          `, ${String(Math.max(1, deps.maxParallel ?? SEQUENTIAL))} at a time`,
+          `, ${String(Math.max(1, deps.maxParallel ?? SEQUENTIAL))} at a time` +
+          (waiting.length === 0 ? "" : `; ${String(waiting.length)} wait for a later run (${waiting.join(", ")})`),
         atMs: warmedAt,
       });
       followUps.push(

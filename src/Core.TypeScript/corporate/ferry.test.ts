@@ -6,7 +6,7 @@
  */
 
 import { describe, expect, test } from "bun:test";
-import { ferry, oneAtATime, SEQUENTIAL } from "./ferry";
+import { ferry, oneAtATime, SEQUENTIAL, slots } from "./ferry";
 
 /** A task that parks until it is released, so the test decides the interleaving, not a timer. */
 function parked<T>(): { promise: Promise<T>; release: (v: T) => void } {
@@ -107,5 +107,108 @@ describe("THE SUITES MAY NOT OVERLAP, HOWEVER WIDE THE FERRY IS", () => {
     const failed = gate(async () => { throw new Error("the suite crashed"); });
     await expect(failed).rejects.toThrow("the suite crashed");
     expect(await gate(async () => "the next one still ran")).toBe("the next one still ran");
+  });
+});
+
+describe("A GATE MAY BE WIDER THAN ONE, AND EACH THING INSIDE KNOWS WHICH SLOT IT HOLDS", () => {
+  // Whether a repository's suite can run twice at once is a fact about that repository, so the
+  // width is the operator's to state. What the organization CAN do is hand each concurrent run a
+  // number nobody else is using, which is what port allocation needs.
+  // Concurrency is observed with parked() barriers, not wall-clock sleeps: the work stays inside
+  // until the test releases it, so mostAtOnce is a fact about the gate, not this machine.
+
+  test("at width 1 it is one at a time, and the slot is always 0", async () => {
+    const gate = slots(1);
+    const held = [parked<void>(), parked<void>(), parked<void>(), parked<void>()];
+    let inside = 0;
+    let mostAtOnce = 0;
+    const seen: number[] = [];
+    const all = [0, 1, 2, 3].map((n) =>
+      gate(async (slot) => {
+        seen.push(slot);
+        inside += 1;
+        mostAtOnce = Math.max(mostAtOnce, inside);
+        await (held[n] as { promise: Promise<void> }).promise;
+        inside -= 1;
+      }),
+    );
+    await Promise.resolve();
+    expect(mostAtOnce).toBe(1);
+    expect(seen).toEqual([0]);
+    for (const h of held) h.release();
+    await Promise.all(all);
+    expect(mostAtOnce).toBe(1);
+    expect(seen).toEqual([0, 0, 0, 0]);
+  });
+
+  test("at width 2 two run at once and no two inside hold the same slot", async () => {
+    const gate = slots(2);
+    const held = [parked<void>(), parked<void>(), parked<void>(), parked<void>()];
+    let inside = 0;
+    let mostAtOnce = 0;
+    const heldSlots = new Set<number>();
+    let collided = false;
+    const all = [0, 1, 2, 3].map((n) =>
+      gate(async (slot) => {
+        if (heldSlots.has(slot)) collided = true;
+        heldSlots.add(slot);
+        inside += 1;
+        mostAtOnce = Math.max(mostAtOnce, inside);
+        await (held[n] as { promise: Promise<void> }).promise;
+        inside -= 1;
+        heldSlots.delete(slot);
+      }),
+    );
+    await Promise.resolve();
+    expect(mostAtOnce).toBe(2);
+    expect(collided).toBe(false);
+    for (const h of held) h.release();
+    await Promise.all(all);
+    expect(mostAtOnce).toBe(2);
+  });
+
+  test("a failure inside does not poison the slot for whoever is behind it", async () => {
+    const gate = slots(1);
+    const boom = gate(async () => {
+      throw new Error("no");
+    });
+    await expect(boom).rejects.toThrow("no");
+    await expect(gate(async () => "after")).resolves.toBe("after");
+  });
+
+  test("a width below one is one, and a fractional width is rounded down", async () => {
+    let mostAtOnce = 0;
+    let inside = 0;
+    const gate = slots(2.9);
+    const held = [parked<void>(), parked<void>(), parked<void>(), parked<void>(), parked<void>()];
+    const all = [0, 1, 2, 3, 4].map((n) =>
+      gate(async () => {
+        inside += 1;
+        mostAtOnce = Math.max(mostAtOnce, inside);
+        await (held[n] as { promise: Promise<void> }).promise;
+        inside -= 1;
+      }),
+    );
+    await Promise.resolve();
+    expect(mostAtOnce).toBe(2);
+    for (const h of held) h.release();
+    await Promise.all(all);
+
+    let zeroWide = 0;
+    let insideZero = 0;
+    const g0 = slots(0);
+    const heldZero = [parked<void>(), parked<void>(), parked<void>()];
+    const allZero = [0, 1, 2].map((n) =>
+      g0(async () => {
+        insideZero += 1;
+        zeroWide = Math.max(zeroWide, insideZero);
+        await (heldZero[n] as { promise: Promise<void> }).promise;
+        insideZero -= 1;
+      }),
+    );
+    await Promise.resolve();
+    expect(zeroWide).toBe(1);
+    for (const h of heldZero) h.release();
+    await Promise.all(allZero);
   });
 });

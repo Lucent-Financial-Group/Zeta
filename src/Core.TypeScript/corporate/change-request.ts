@@ -178,6 +178,16 @@ export interface ChangeRequestConfig {
    * A guard against retrying a failure it cannot fix, never a quiet stop. Default 3.
    */
   readonly pipelineAttempts?: number;
+  /**
+   * Follow-ups that could not COMPLETE, in a row, before the request becomes a person's. Default 3.
+   *
+   * A number, not a constant, for the same reason `pipelineAttempts` is one: how many times it is
+   * worth trying again before a human is the better use of the next hour is a fact about the
+   * project and the machine it runs on, not about the organization. A repository whose sessions die
+   * on their own startup context wants a lower one; one that fails only on genuine outages wants a
+   * higher one, because an outage is "not yet" and this cap is meant for "not ever".
+   */
+  readonly followUpAttempts?: number;
   /** Why merge requests are written this way here. A convention with no reason is followed until it is wrong. */
   readonly why: string;
 }
@@ -225,6 +235,9 @@ export function validateChangeRequests(c: ChangeRequestConfig): PracticeCheck {
       ok: false,
       reason: `'${String(c.pipelines)}' is not a way to treat a red pipeline — known: ${Object.values(PipelinePolicy).join(", ")}`,
     };
+  }
+  if (c.followUpAttempts !== undefined && (!Number.isInteger(c.followUpAttempts) || c.followUpAttempts < 1 || c.followUpAttempts > 20)) {
+    return { ok: false, reason: `followUpAttempts must be a whole number from 1 to 20 - it is when a person is asked, not whether` };
   }
   if (c.pipelineAttempts !== undefined && (!Number.isInteger(c.pipelineAttempts) || c.pipelineAttempts < 1 || c.pipelineAttempts > 20)) {
     return { ok: false, reason: `pipelineAttempts must be a whole number from 1 to 20 - it is when a person is asked, not whether` };

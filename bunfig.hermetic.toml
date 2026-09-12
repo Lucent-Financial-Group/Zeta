@@ -146,6 +146,22 @@ pathIgnorePatterns = [
   "src/Core.TypeScript/zflash/esp-inject.test.ts",
   "src/Core.TypeScript/research/signed-probit-ep-cross-verify.test.ts",
   "src/Core.TypeScript/research/lexical-geometric-receipt-cross-verify.test.ts",
+  # SIX F#-EXECUTING CROSS-VERIFY SUITES. None was ever hermetic: each shells out to
+  # `dotnet`/`fsi` and was green only while the runner image happened to ship an SDK
+  # satisfying global.json's pin. The 10.0.400 -> 10.0.401 bump broke that coincidence
+  # and they went red -- the first time this tier's boundary was ever tested.
+  #
+  # THE SET WAS FOUND EMPIRICALLY, AND THAT IS THE HONEST DESCRIPTION OF IT. A grep for
+  # `dotnet` in each test file finds five of the six and misses gaussian-topology, which
+  # spawns a dispatcher by a RUNTIME-COMPUTED PATH that runs `dotnet fsi` two hops away --
+  # invisible to a grep of the file and of its static imports alike. So this list is
+  # every one CI has turned red so far, NOT every one that exists; a later red
+  # hermetic run is what would reveal a seventh.
+  "src/Core.TypeScript/research/adinkra-ecc/nonquotient-adinkra-halfspin-decomposition-cross-verify.test.ts",
+  "src/Core.TypeScript/research/adinkra-ecc/nonquotient-adinkra-halfspin-intertwiner-fsharp-cross-verify.test.ts",
+  "src/Core.TypeScript/research/adinkra-ecc/nonquotient-half-spin-bracket-fsharp-cross-verify.test.ts",
+  "src/Core.TypeScript/research/multilayer-bnn-online-update-cross-verify.test.ts",
+  "src/Core.TypeScript/research/reference-frame-heterarchy-cross-verify.test.ts",
   "src/Core.TypeScript/research/composable-factor-benchmark/gaussian-topology-cross-verify.test.ts",
 ]
 coveragePathIgnorePatterns = [

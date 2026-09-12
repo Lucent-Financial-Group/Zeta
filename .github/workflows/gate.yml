@@ -4520,6 +4520,31 @@ jobs:
       - name: Clifford cross-verify (Cl(3,0) geometric algebra)
         run: bun test tests/cross-verification/_harness/codegen-clifford.test.ts
 
+      # SIX F#-EXECUTING CROSS-VERIFY SUITES, RELOCATED HERE 2026-09-12 (PR #17341).
+      # They lived in `test (TS hermetic)`, which provisions no .NET SDK and by its own
+      # contract never will ("Not if you have no .NET SDK"). They passed anyway, for as
+      # long as the ubuntu-24.04 image happened to ship the SDK global.json named; the
+      # SDK bump outran the image and they went red. gaussian-topology was excluded from
+      # the hermetic tier on this branch but was never added to any lane that runs it --
+      # a deletion wearing a split's face. It runs here now, with the other five.
+      #
+      # THE TIER THEY BELONG TO AND THE FLOOR THEY BELONG TO ARE DIFFERENT QUESTIONS, and
+      # conflating them is how this move becomes a softening. `test (TS
+      # environment-dependent)` is the right TIER -- it provisions the SDK -- but it is
+      # NOT in `gate (required)`'s needs, so landing them there would have quietly taken
+      # five oracle checks out of the blocking floor while the commit message said the
+      # tests still run. They do still run; they would no longer BLOCK. This job is in
+      # the floor AND has the toolchain, so it is the one home that changes neither.
+      - name: Adinkra / BNN / reference-frame / gaussian-topology F# cross-verify oracles
+        run: |
+          bun test \
+            src/Core.TypeScript/research/adinkra-ecc/nonquotient-adinkra-halfspin-decomposition-cross-verify.test.ts \
+            src/Core.TypeScript/research/adinkra-ecc/nonquotient-adinkra-halfspin-intertwiner-fsharp-cross-verify.test.ts \
+            src/Core.TypeScript/research/adinkra-ecc/nonquotient-half-spin-bracket-fsharp-cross-verify.test.ts \
+            src/Core.TypeScript/research/multilayer-bnn-online-update-cross-verify.test.ts \
+            src/Core.TypeScript/research/reference-frame-heterarchy-cross-verify.test.ts \
+            src/Core.TypeScript/research/composable-factor-benchmark/gaussian-topology-cross-verify.test.ts
+
       # Q4 of the Clifford-GPU hold (081M0R18878087G0R001XY5A2J): CGA(3D) = Cl(4,1) is
       # M_2(Cl(3,0)), one suspension step above the in-tree algebra -- plus the conformal
       # distance identity and the curvature budget the reservoir thread turns on. Wired here

@@ -733,6 +733,7 @@ export async function main(argv: readonly string[], deps: CliDeps): Promise<numb
       }
       const roundsRaw = flagValue(flags, "--review-rounds");
       const triesRaw = flagValue(flags, "--pipeline-attempts");
+      const followUpTriesRaw = flagValue(flags, "--follow-up-attempts");
       const config: ChangeRequestConfig = {
         sections,
         keepOut: flagValues(flags, "--keep-out").map((v) => v.trim()).filter((v) => v !== ""),
@@ -745,6 +746,7 @@ export async function main(argv: readonly string[], deps: CliDeps): Promise<numb
         // Asked here too: an organization that was asked and said nothing is refused, not defaulted.
         pipelines: (flagValue(flags, "--pipelines") ?? "").trim() as PipelinePolicy,
         ...(triesRaw === undefined ? {} : { pipelineAttempts: Number(triesRaw) }),
+        ...(followUpTriesRaw === undefined ? {} : { followUpAttempts: Number(followUpTriesRaw) }),
         why: (flagValue(flags, "--why") ?? "").trim(),
       };
       const valid = validateChangeRequests(config);
