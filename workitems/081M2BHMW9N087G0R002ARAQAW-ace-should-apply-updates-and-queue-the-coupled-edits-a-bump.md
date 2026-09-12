@@ -201,14 +201,51 @@ community script for a package ace's authors never touched is not a lesser artif
 crystal with a different author, and it is judged the same way: does replaying it reproduce the
 committed result?
 
-## HELM IS THE KNOWN HARD CASE
+## HELM IS THE KNOWN HARD CASE, AND THE HARDNESS IS THE ALGEBRA
 
-Aaron: *"our helm work is the hardest."* Recorded here so the design is not validated only
-against easy ecosystems. A Helm chart bump is not one pin: it carries values schemas, subchart
-ranges, CRDs whose upgrades are ordered and sometimes irreversible, and a rendered manifest
-that other things diff against. It is the case most likely to need a per-package agent script
-rather than a crystal, and therefore the honest test of the promotion path above -- if the
-design only works where a bump is a version string, it has not been tested.
+Aaron, 2026-09-12: *"helm is the harder package manager to model cause it requires state
+updates sometimes and this is one of our hardest package managers to model in our zsets and
+such for 0 down time."*
+
+This sharpens an existing P1 row rather than opening a new one --
+`docs/backlog/P1/081KSGS9H0008QG0R002PT5C7J-time-modeled-dependencies-for-helm-clusters-as-long-running-*`
+already carries the 2026-05-26 form, *"helm needs time modeled in the dependencies like no
+others"*, with the table showing why every other PM escapes it (Maven, npm, apt, brew are all
+point-in-time; Helm runs long-lived stateful clusters where postgres v15 and v17 may run side
+by side for hours to weeks). What today adds is WHERE the difficulty lands in our own algebra.
+
+**A Z-set models what is TRUE. Zero downtime is a constraint on the PATH.**
+
+A desired cluster state maps onto a Z-set beautifully: resources are elements, an upgrade is a
+retraction of the old and an insertion of the new, and DBSP folds it incrementally. That is the
+easy half and it is genuinely easy. Three things break on the other half:
+
+1. **The overlap is the SPEC, not a transient.** During a zero-downtime rollout both versions
+   are required to be present simultaneously. A single desired-state Z-set has no way to say
+   "both, for a while, on purpose" -- it reads the overlap as a diff still to be applied.
+
+2. **A migration cannot be retracted.** This repository already states the reason:
+   Z-set retraction is CORRECTION, not a duplicate-guard -- emitting a `-1` revises what we
+   BELIEVE, and a schema migration or a CRD conversion has already happened in the world. The
+   algebra's inverse is not the world's inverse.
+
+3. **Idempotency (§12) holds for the manifest and not for the migration.** `kubectl apply` of a
+   resource is apply-N-times == apply-once. A data migration generally is not, which is why
+   ordering and guards exist around it at all.
+
+So a model that constrains only the endpoints under-determines the upgrade: the same start and
+end states are reachable by paths that differ in whether service was ever interrupted. The
+repository already has the word for a system where the path carries information --
+**monodromy**, from `anti-babel-preserve-reconcilability.md`: *two paths around a pole yield
+genuinely different results, and that difference is information, not error*. For most package
+managers monodromy is a curiosity. For Helm it is the defining feature, and any model that
+folds it away has modelled the wrong thing.
+
+**Which makes Helm the honest test of the crystal/agent split above.** A patch bump to a
+stateless chart is a crystal. A stateful upgrade with an ordered, partly irreversible migration
+is agent work every time it is new -- and the promotion path only earns its keep if what the
+agent produced can be frozen INCLUDING its ordering and its irreversible steps, not just its
+final manifest. A design validated only where a bump is a version string has not been tested.
 
 ## The shape
 
