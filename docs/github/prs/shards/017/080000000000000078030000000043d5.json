@@ -1,0 +1,12 @@
+{
+  "pr_number": 17365,
+  "archive_path": "docs/history/pr-reviews/2026/09/12/PR-17365-fix-081m2b4e5b6087g0r002dhdfch-regenerate-nuget-locks-after-cpm-10-0-12.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-12T16:04:03.539Z",
+  "schema_version": "v1",
+  "commit_sha": "d35f8d1702301b7d53ec996494d6c6182a5e3303",
+  "title": "fix(081M2B4E5B6087G0R002DHDFCH): regenerate NuGet locks after CPM 10.0.12",
+  "state": "MERGED",
+  "merged_at": "2026-09-12T16:03:21Z",
+  "head_ref": "cursor/nuget-lock-cpm-10-0-12-27c5"
+}
