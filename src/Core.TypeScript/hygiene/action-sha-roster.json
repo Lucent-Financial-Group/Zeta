@@ -1,5 +1,5 @@
 {
-  "DeterminateSystems/nix-installer-action": "ef8a148080ab6020fd15196c2084a2eea5ff2d25",
+  "DeterminateSystems/nix-installer-action": "3138316df39ed29be04236d7ffc686fa525866aa",
   "Vampire/setup-wsl": "d1da7f2c0322a5ee4f24975344f67fc0f5baf364",
   "actions/cache": "55cc8345863c7cc4c66a329aec7e433d2d1c52a9",
   "actions/cache/restore": "55cc8345863c7cc4c66a329aec7e433d2d1c52a9",
