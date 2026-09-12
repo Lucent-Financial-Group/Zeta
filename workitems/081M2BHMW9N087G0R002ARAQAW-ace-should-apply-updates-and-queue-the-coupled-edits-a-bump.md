@@ -139,6 +139,77 @@ declares what it knows, and ace reports the closure it computed PLUS the fact th
 declarations are not a proof of completeness. The un-audited CI leg from the SDK bump is then a
 gap in ZETA'S declarations, which is the right place for it to be visible.
 
+## BOTH, AND THE DSL IS THE COMMON INTERFACE (Aaron, 2026-09-12)
+
+> *"we can do both, the coupling DSL can allow other repos unknown to ace to integrate with the
+> and also at the same time be the cli verb/noun ish common interface between all other package
+> managers."*
+
+I had posed DSL-versus-breadth as a choice. It is not one, and the reason is the better idea:
+**the DSL and the uniform CLI are the same grammar, with two producers.**
+
+  - ace SPEAKS it for the package managers it knows -- the normalised verb/noun surface over
+    cargo, go, mise, npm, nuget, pypi and the ~20 realizers. That normalisation IS the DSL.
+  - A REPO ace has never seen WRITES it for its own artifacts, and is understood without ace
+    being taught anything.
+
+One vocabulary, so an unknown repo's declaration is not a second-class bolt-on: it is the same
+sentence ace already says to itself about nuget. That is what makes it an extension point
+rather than a plugin API.
+
+## UPDATE SCRIPTS, AND WHY THEY ARE QUASI TIME CRYSTALS
+
+> *"ace would like to have update scripts for every dependency, many will be the same, but
+> major version changes will likely require per package instructions that AI can follow so we
+> can play on both sides here. We write the scripts for updates for popular packages, community
+> can also write their own scripts for their packages ... we call this update process quasi time
+> crystals for our agents skills and other files whose velocity changes at AI speed but still
+> need to be some common core to reference back to."*
+
+The naming is already carved, in `docs/CONCEPT-REGISTRY.md`:
+
+> *"its a persistent pattern that propagates over time but can evolve, if it's frozen like a
+> quasi time crystal then it's an ACTOR not an agent cause it can be copied and reproduced in
+> deterministic simulation testing"* -- and *"agents are what remains, actors are what acts."*
+
+An update script is exactly that frozen pattern, and the split falls out of the definition
+rather than being imposed on it:
+
+| | what it is | which |
+|---|---|---|
+| patch / minor update | a FROZEN procedure, replayed identically every time, inspectable in advance, reproducible under DST | **actor** -- a crystal |
+| major version update | fresh judgement, per package, about what the new API means for this caller | **agent** -- it must evolve |
+
+And there is a promotion path, which is the part that makes "play on both sides" concrete: an
+agent works out a major upgrade ONCE, and the verified result is frozen into a new crystal that
+later runs merely replay. The judgement is paid for once and then copied -- which is precisely
+the meter/oracle argument already made in
+`.claude/rules/dual-use-detection-is-neutral-oracle-decides.md`, where a METER is judgement
+crystallised once in a treaty (frozen, inspectable, DST-reproducible = actor) and an ORACLE is
+judgement applied per reading (can evolve = agent). Update scripts are that distinction applied
+to dependency maintenance.
+
+**The failure mode already has a name too, and it is the one to guard.** That same rule names
+the BROKEN METER: crystallised once, then drifted -- "presents as a frozen, inspectable meter
+but is actually drifting". An update script that silently stops matching upstream is exactly
+that, and the guard is the one the rule prescribes: re-run the crystal against committed
+vectors, and make the not-running loud. A script nobody replays is not a crystal, it is a
+belief.
+
+**Community-authored scripts are the same object.** Because the DSL is one grammar, a
+community script for a package ace's authors never touched is not a lesser artifact -- it is a
+crystal with a different author, and it is judged the same way: does replaying it reproduce the
+committed result?
+
+## HELM IS THE KNOWN HARD CASE
+
+Aaron: *"our helm work is the hardest."* Recorded here so the design is not validated only
+against easy ecosystems. A Helm chart bump is not one pin: it carries values schemas, subchart
+ranges, CRDs whose upgrades are ordered and sometimes irreversible, and a rendered manifest
+that other things diff against. It is the case most likely to need a per-package agent script
+rather than a crystal, and therefore the honest test of the promotion path above -- if the
+design only works where a bump is a version string, it has not been tested.
+
 ## The shape
 
 1. **`ace update <pin>` applies**, rather than only reporting. The classifier already decides
