@@ -70,11 +70,50 @@ this repository's standing discipline everywhere else -- `action-sha-roster.json
 so a second copy cannot drift from the first. A hand-written coupling table would be that
 second copy.
 
+## THE LAYER SPLIT (Aaron's correction, and it is a correction)
+
+The table above conflates two layers, and the first draft of this row got it wrong. Aaron,
+2026-09-12:
+
+> *"your split is okay but carrier json is project specific, if ace is going to track
+> project/repo specific things then someone has to declare that dependency in repo, ace is
+> supposed to be a general AI speed oriented package manager of package managers."*
+
+He is right. `numpy -> MiniGrid carrier + two fingerprints + two receipts` is a **Zeta** fact.
+An ace that knows what a carrier is has become repo-aware, which is precisely what a package
+manager of package managers must not be. The same is true of `action-sha-roster.json`: that
+roster is ours.
+
+**ace owns the MECHANISM. The repo owns the FACTS.**
+
+| layer | owns | example |
+|---|---|---|
+| **ace** (general) | the coupling VOCABULARY and the engine: read declarations, compute the closure of a proposed bump, apply what is mechanical, queue what is not, report what it cannot see | "pin P in ecosystem E is coupled to artifacts A; regenerate with command C" |
+| **the repo** (specific) | the DECLARATIONS themselves | "`numpy` couples to the carrier and both fingerprints; regenerate by running the fixture" |
+
+This is the shape the repository already uses for every other cross-cutting fact: `.mise.toml`
+declares tools, `.github/dependabot.yml` declares ecosystems, `tools/setup/manifests/*` declare
+packages. A coupling declaration is the same move -- **declared in the repo, consumed by a
+general tool**, never known by the tool.
+
+**And it relocates the derive-from-audits idea to where it belongs.** Deriving Zeta's coupling
+declarations from Zeta's audits is a ZETA implementation detail: it is how this repo avoids
+hand-maintaining its declarations and lets them drift. ace neither knows nor cares that they
+were derived -- it reads declarations. Another repo might write them by hand, or generate them
+some other way, and ace is unchanged.
+
+The `unknown` requirement survives the split intact, and moves with the declarations: a repo
+declares what it knows, and ace reports the closure it computed PLUS the fact that a repo's
+declarations are not a proof of completeness. The un-audited CI leg from the SDK bump is then a
+gap in ZETA'S declarations, which is the right place for it to be visible.
+
 ## The shape
 
 1. **`ace update <pin>` applies**, rather than only reporting. The classifier already decides
-   whether a proposal is `AutoEligible`; nothing acts on the verdict.
-2. **`ace update` emits the COUPLED SET** from the derived graph, and queues each edge as work:
+   whether a proposal is `AutoEligible`; nothing acts on the verdict. GENERAL: no repo
+   knowledge.
+2. **`ace update` emits the COUPLED SET** by reading the REPO'S OWN declarations, and queues
+   each edge as work:
    the ones a tool can do (regenerate a derived roster, re-lock) applied directly, the ones
    needing judgement (re-record a research carrier, provision a toolchain in a CI leg) raised
    for an agent with the reason attached.
