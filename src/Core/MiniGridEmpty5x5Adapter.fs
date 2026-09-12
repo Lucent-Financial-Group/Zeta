@@ -16,7 +16,7 @@ open System.Text.Json
 module MiniGridEmpty5x5Adapter =
 
     [<Literal>]
-    let CarrierFingerprint = "49db9a4f6fd415ba4f15b613eba858511e6cf116ec7574cd5ee50cc7c2e46b07"
+    let CarrierFingerprint = "d7ac363285b363f27b4855e90df3448138392ec50313e834d15ea1bdc2280fa8"
 
     [<Literal>]
     let CarrierRelativePath = "docs/research/data/2026-09-06-minigrid-empty-5x5-v310-adapter-carrier.json"
