@@ -420,3 +420,33 @@ describe("differingEntryKeys names what moved", () => {
     expect(differingEntryKeys(BASE, fewer)).toEqual(["net10.0/FSharp.Core"]);
   });
 });
+
+describe("XML comment stripping reaches a FIXPOINT (CodeQL js/incomplete-multi-character-sanitization)", () => {
+  // The direction that matters here: this function decides which platforms a lock file must
+  // cover, so a comment read as live invents a platform nobody builds for. The case below is
+  // the one that DISCRIMINATES -- `<!--<!-- x -->-->` does not, because one pass leaves only a
+  // harmless trailing `-->`. Chosen by measuring, after three vacuous candidates elsewhere.
+  test("removing one comment must not EXPOSE a commented-out RuntimeIdentifier", () => {
+    // One pass strips the inner `<!-- -->`; the surviving `<!` and `--` fuse into a fresh
+    // wrapper that a second pass removes. Single pass sees win-x64; the fixpoint does not.
+    const text = [
+      "<Project>",
+      "  <PropertyGroup>",
+      "<!<!-- -->-- <RuntimeIdentifier>win-x64</RuntimeIdentifier> -->",
+      "  </PropertyGroup>",
+      "</Project>",
+    ].join("\n");
+    expect(declaredPerOsSignals([text]).runtimeIdentifiers).toEqual([]);
+  });
+
+  test("the same shape must not hide a REAL RuntimeIdentifier", () => {
+    // The other direction: over-stripping would silently drop a platform that IS built for.
+    const text = [
+      "<Project><PropertyGroup>",
+      "<!-- we deliberately do not set one for the bench -->",
+      "<RuntimeIdentifier>linux-x64</RuntimeIdentifier>",
+      "</PropertyGroup></Project>",
+    ].join("\n");
+    expect(declaredPerOsSignals([text]).runtimeIdentifiers).toEqual(["linux-x64"]);
+  });
+});

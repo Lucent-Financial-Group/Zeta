@@ -145,7 +145,17 @@ export function declaredPerOsSignals(texts: readonly string[]): PerOsSignals {
   for (const text of texts) {
     // Comments are stripped first: a `<!-- RuntimeIdentifier ... -->` explaining why the
     // repo does NOT set one would otherwise read as setting one.
-    const code = text.replace(/<!--[\s\S]*?-->/g, "");
+    //
+    // TO A FIXPOINT, not one pass (CodeQL js/incomplete-multi-character-sanitization). A single
+    // `.replace` is not idempotent on overlapping markers: stripping the inner comment of
+    // `<!<!-- -->-- <RuntimeIdentifier>win-x64</RuntimeIdentifier> -->` fuses the surviving `<!`
+    // and `--` into a fresh wrapper that never gets removed, so the element regex matches INSIDE
+    // it and a COMMENTED-OUT RuntimeIdentifier is read as a live one. That is the direction that
+    // matters here: this function decides which platforms a lock file must cover, so a phantom
+    // RID invents a platform nobody builds for. XML forbids nested comments, so such input is
+    // malformed -- but this is a regex reader, not a parser. Each pass either shortens the
+    // string or changes nothing, so it terminates.
+    const code = stripXmlCommentsToFixpoint(text);
     for (const m of code.matchAll(/<RuntimeIdentifiers?\s*[^>]*>([^<]*)<\/RuntimeIdentifiers?>/gi)) {
       for (const rid of (m[1] ?? "").split(";")) if (rid.trim() !== "") rids.push(rid.trim());
     }
@@ -162,6 +172,16 @@ export function declaredPerOsSignals(texts: readonly string[]): PerOsSignals {
  * Read a project's MSBuild text chain: the project file itself plus every
  * `Directory.Build.props` from its directory up to the repo root.
  */
+/** Remove XML comments repeatedly until the text stops changing. See the call site for why. */
+function stripXmlCommentsToFixpoint(xml: string): string {
+  let live = xml;
+  for (;;) {
+    const next = live.replace(/<!--[\s\S]*?-->/gu, "");
+    if (next === live) return live;
+    live = next;
+  }
+}
+
 export function msbuildTextChain(root: string, lockPath: string): string[] {
   const texts: string[] = [];
   const projDir = join(root, dirname(lockPath));
