@@ -319,6 +319,33 @@ updates:
         update-types:
           - "patch"
           - "minor"
+    # FOUR PACKAGES ARE PINNED BY A RECORDED EXPERIMENT, NOT BY PREFERENCE.
+    #
+    # `minigrid_empty_5x5_v310_fixture.py` replays a recorded MiniGrid trajectory and
+    # calls `validate_upstream_runtime`, which compares the LIVE versions of python,
+    # minigrid, gymnasium, numpy and pygame-ce against the carrier committed at
+    # `docs/research/data/2026-09-06-minigrid-empty-5x5-v310-adapter-carrier.json`,
+    # then hashes three minigrid source files. Any difference raises
+    # UPSTREAM_IDENTITY_MISMATCH. That is the fixture working: the carrier records what
+    # the experiment ran under, so a replay under other versions is a different
+    # experiment wearing the same name.
+    #
+    # This is why those four carry `==` in pyproject.toml while everything else carries
+    # `>=`. A bump to any of them makes `full-verify` red BY CONSTRUCTION -- #17343 moved
+    # numpy 2.5.1 -> 2.5.3 and did exactly that -- and the remedy is never to widen the
+    # pin or edit the carrier to match. Re-recording a dated provenance artifact so a
+    # patch bump can pass would destroy the only evidence that the trajectory was ever
+    # reproduced.
+    #
+    # LIFTS WHEN: someone deliberately re-runs the adapter under new upstream versions,
+    # confirms the trajectory is unchanged (or records that it changed, and why), and
+    # commits a NEW dated carrier beside the old one. That is a research act with an
+    # artifact, not a dependency update, so it does not belong to a bot.
+    ignore:
+      - dependency-name: "minigrid"
+      - dependency-name: "gymnasium"
+      - dependency-name: "numpy"
+      - dependency-name: "pygame-ce"
 
   # dotnet-sdk — watches `global.json`.
   #

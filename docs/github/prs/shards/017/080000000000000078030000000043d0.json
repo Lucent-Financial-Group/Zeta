@@ -1,0 +1,12 @@
+{
+  "pr_number": 17360,
+  "archive_path": "docs/history/pr-reviews/2026/09/12/PR-17360-docs-081m2b02991087g0r002xykg54-lock-liveness-is-single-machine-and-has-no-deadl.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-12T14:30:25.373Z",
+  "schema_version": "v1",
+  "commit_sha": "bee1a9c39ae78112b8af70e01f0529897966545a",
+  "title": "docs(081M2B02991087G0R002XYKG54): lock liveness is single-machine and has no deadline",
+  "state": "MERGED",
+  "merged_at": "2026-09-12T14:29:44Z",
+  "head_ref": "shadow/lock-liveness-cross-machine"
+}
