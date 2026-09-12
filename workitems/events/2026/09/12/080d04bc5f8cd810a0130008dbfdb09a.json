@@ -1,0 +1,14 @@
+{
+  "id": "080d04bc5f8cd810a0130008dbfdb09a",
+  "at": "2026-09-12T21:35:26.107Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M2BRQWCT087G0R000XSXY3V",
+    "type": "bug",
+    "title": "followup receipt existsSync is TOCTOU; ferry.test setTimeout is ambient time",
+    "slug": "followup-receipt-existssync-is-toctou-ferry-test-settimeout",
+    "priority": "P1",
+    "filename": "081M2BRQWCT087G0R000XSXY3V-followup-receipt-existssync-is-toctou-ferry-test-settimeout.md"
+  }
+}

@@ -22,7 +22,7 @@
 
 import { spawn, spawnSync } from "node:child_process";
 import { createHash } from "node:crypto";
-import { existsSync, mkdirSync, mkdtempSync, readdirSync, readFileSync, renameSync, rmSync, writeFileSync } from "node:fs";
+import { mkdirSync, mkdtempSync, readdirSync, readFileSync, renameSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import type { ActionItem, HandedOffChange } from "./org-fold";
@@ -400,8 +400,10 @@ export function commandVerifier(spec: CommandSpec, fallbackCwd: string): (h: Cha
     const state = await treeState(cwd);
     const receipt = state === undefined ? undefined : await receiptPath(cwd);
     const want = state === undefined ? undefined : receiptFor(spec, state.commit);
-    if (state?.clean === true && receipt !== undefined && want !== undefined && existsSync(receipt)) {
+    if (state?.clean === true && receipt !== undefined && want !== undefined) {
       try {
+        // One syscall, one answer. existsSync-then-read is a window the check-then-use
+        // lint refuses; an absent or unreadable receipt is no receipt and the suite runs.
         if (readFileSync(receipt, "utf-8").trim() === want) {
           return {
             ok: true,
@@ -410,7 +412,7 @@ export function commandVerifier(spec: CommandSpec, fallbackCwd: string): (h: Cha
           };
         }
       } catch {
-        // An unreadable receipt is no receipt: run the suite.
+        // An unreadable or absent receipt is no receipt: run the suite.
       }
     }
     // WHICH CONCURRENT VERIFICATION THIS IS. At the default width there is only ever slot 0; when
