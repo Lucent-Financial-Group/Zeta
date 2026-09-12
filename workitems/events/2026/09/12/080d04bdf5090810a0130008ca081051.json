@@ -1,0 +1,14 @@
+{
+  "id": "080d04bdf5090810a0130008ca081051",
+  "at": "2026-09-12T22:30:47.841Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M2BVX890087G0R0024DXVTA",
+    "type": "bug",
+    "title": "Five F#-executing cross-verify suites sat in the hermetic tier and passed only while the runner image shipped the pinned SDK",
+    "slug": "five-f-executing-cross-verify-suites-sat-in-the-hermetic-tie",
+    "priority": "P2",
+    "filename": "081M2BVX890087G0R0024DXVTA-five-f-executing-cross-verify-suites-sat-in-the-hermetic-tie.md"
+  }
+}
