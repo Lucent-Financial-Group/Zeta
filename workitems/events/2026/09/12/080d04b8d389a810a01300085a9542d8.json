@@ -1,0 +1,14 @@
+{
+  "id": "080d04b8d389a810a01300085a9542d8",
+  "at": "2026-09-12T19:31:27.669Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M2BHMW9N087G0R002ARAQAW",
+    "type": "task",
+    "title": "ace should apply updates and queue the coupled edits a bump forces",
+    "slug": "ace-should-apply-updates-and-queue-the-coupled-edits-a-bump",
+    "priority": "P2",
+    "filename": "081M2BHMW9N087G0R002ARAQAW-ace-should-apply-updates-and-queue-the-coupled-edits-a-bump.md"
+  }
+}
