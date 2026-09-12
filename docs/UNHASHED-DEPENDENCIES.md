@@ -16,7 +16,7 @@
 
 - **Declared unhashed:** 7 — each one names its own reason on its own row.
 - **Undeclared unhashed:** 171 — visible and countable, but not yet declarable. This number must only fall.
-- **Digest-covered:** 1945.
+- **Digest-covered:** 1957.
 
 ## Declared — an unhashed dependency that says why
 
@@ -81,7 +81,7 @@ Listed so the numbers above are a ratio rather than a scare.
 | `from-url` | `src/Core.Alloy/alloy.jar` | `tools/setup/manifests/from-url` |
 | `from-zip` | `~/.zeta/codeql-cli` | `tools/setup/manifests/from-zip` |
 | `from-zip` | `~/.zeta/fricas` | `tools/setup/manifests/from-zip` |
-| `github-actions` | `325 SHA-pinned reference(s)` | `.github/workflows` |
+| `github-actions` | `329 SHA-pinned reference(s)` | `.github/workflows` |
 | `npm` | `40 integrity-covered package(s)` | `agentic-organization/package-lock.json` |
 | `npm` | `433 integrity-covered package(s)` | `bun.lock` |
 | `npm` | `5 integrity-covered package(s)` | `full-ai-cluster/platform-controller/bun.lock` |
@@ -90,6 +90,7 @@ Listed so the numbers above are a ratio rather than a scare.
 | `npm` | `870 integrity-covered package(s)` | `package-lock.json` |
 | `npm` | `43 integrity-covered package(s)` | `src/apps/twitch-ai/bun.lock` |
 | `npm` | `92 integrity-covered package(s)` | `src/apps/twitch-ai/package-lock.json` |
+| `npm` | `8 integrity-covered package(s)` | `tools/setup/persona-keys/bun.lock` |
 | `yamllint-requirements.txt` | `PyYAML` | `tools/setup/manifests/yamllint-requirements.txt` |
 | `yamllint-requirements.txt` | `pathspec` | `tools/setup/manifests/yamllint-requirements.txt` |
 | `yamllint-requirements.txt` | `yamllint` | `tools/setup/manifests/yamllint-requirements.txt` |
