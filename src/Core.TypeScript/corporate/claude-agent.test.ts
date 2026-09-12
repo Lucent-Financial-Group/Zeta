@@ -526,10 +526,13 @@ describe("THE SWEEP KILLS BY PROCESS GROUP, so a reaping test may not leave the 
   //
   // THE NEEDLE IS ASSEMBLED, NEVER SPELLED. A source-grepping guard that writes its own
   // pattern as a literal convicts itself -- which this one did on its first run, and which
-  // is the FOURTH time that shape has bitten in a single session (a comment quoting
-  // `setTimeout(..., 60000)` tripped the ambient-time guard the same day). Stripping
-  // comments is not enough: the control below needs the pattern in *code*. Building it from
-  // fragments is what actually works.
+  // is the FIFTH time that shape has bitten in a single session. The FOURTH was this very
+  // paragraph: it originally spelled out a one-minute timer call while explaining that
+  // spelling out a one-minute timer call trips `audit-ambient-time-in-tests.ts` -- and it
+  // duly tripped it, on a clean tree, in CI. The pattern is named here in prose only.
+  //
+  // Stripping comments is not enough either: the control below needs the pattern in *code*.
+  // Building it from fragments is what actually works, and it is the only thing that does.
   const OPT = "detach" + "ed";
   const NEEDLES = [`${OPT}:true`, `${OPT}: true`];
 
