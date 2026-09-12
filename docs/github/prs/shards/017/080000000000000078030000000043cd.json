@@ -1,0 +1,12 @@
+{
+  "pr_number": 17357,
+  "archive_path": "docs/history/pr-reviews/2026/09/12/PR-17357-deps-bump-vitejs-plugin-react-from-5-2-0-to-6-1-1-in-src-renderers-website.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-12T14:12:35.088Z",
+  "schema_version": "v1",
+  "commit_sha": "dc4dae7c5ec0b32b3417a2ad63aecfddf307f667",
+  "title": "deps: Bump @vitejs/plugin-react from 5.2.0 to 6.1.1 in /src/Renderers/website",
+  "state": "MERGED",
+  "merged_at": "2026-09-12T14:11:54Z",
+  "head_ref": "dependabot/npm_and_yarn/src/Renderers/website/vitejs/plugin-react-6.1.1"
+}

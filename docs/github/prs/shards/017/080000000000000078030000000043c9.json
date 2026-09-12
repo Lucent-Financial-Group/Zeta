@@ -1,0 +1,12 @@
+{
+  "pr_number": 17353,
+  "archive_path": "docs/history/pr-reviews/2026/09/12/PR-17353-deps-bump-vitejs-plugin-react-from-5-2-0-to-6-1-1-in-demo-identity-dla-site.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-12T14:12:42.330Z",
+  "schema_version": "v1",
+  "commit_sha": "4cee437256b6c2e497d9a14952b04411094db5b9",
+  "title": "deps: Bump @vitejs/plugin-react from 5.2.0 to 6.1.1 in /demo/identity-dla-site",
+  "state": "MERGED",
+  "merged_at": "2026-09-12T14:12:03Z",
+  "head_ref": "dependabot/npm_and_yarn/demo/identity-dla-site/vitejs/plugin-react-6.1.1"
+}
