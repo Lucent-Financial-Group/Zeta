@@ -1,7 +1,7 @@
 // stderr.ts — ace's ONE diagnostic-output door.
 //
 // WHY THIS EXISTS. `console.error` is not a byte-exact primitive: Bun styles its
-// stderr output in ANSI red (`[0m[31m…[0m`) and Node does not, and
+// stderr output in ANSI red (`\u001b[0m\u001b[31m…\u001b[0m`) and Node does not, and
 // Bun does it even when stderr is a PIPE rather than a TTY. So the *same* ace source
 // emitting the *same* message produces different bytes on the two runtimes. That is
 // precisely the divergence `ace-node-runtime-parity.test.ts` exists to catch, and it
