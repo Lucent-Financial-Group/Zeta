@@ -181,12 +181,6 @@ export function appendRun(
 }
 
 /**
- * Every event ever stored, in the order they happened.
- *
- * Ordered by the event's own `atMs`, with its id as the tie-break — never by filename, which is an
- * artefact of the store rather than of the organization.
- */
-/**
  * THE LAST FULL READ, SO ONE PROCESS DOES NOT DO IT TWENTY-TWO TIMES.
  *
  * MEASURED on the agentic-team store, 2026-09-12: 17,169 event files, 64MB - and `run-org.ts`
@@ -211,6 +205,12 @@ export function forgetEvents(): void {
   lastRead = undefined;
 }
 
+/**
+ * Every event ever stored, in the order they happened.
+ *
+ * Ordered by the event's own `atMs`, with its id as the tie-break — never by filename, which is an
+ * artefact of the store rather than of the organization.
+ */
 export function readEvents(root: string, window?: ShardWindow): readonly OrgEvent[] {
   // A window asks a narrower question; caching it under the same key would answer the wide one.
   if (window !== undefined) {
