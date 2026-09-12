@@ -277,7 +277,12 @@ describe("A RUN IS STARTED ONLY WHEN THE STORE IS FREE, AND WHAT IT WAS STARTED 
     const other = spawn(process.execPath, ["-e", KEEP_ALIVE], { stdio: "ignore" });
     try {
       mkdirSync(lockRoot, { recursive: true });
-      const owner = JSON.stringify({ pid: other.pid, startedAt: "2026-09-12T00:00:00.000Z" });
+      // The timestamp must be RECENT, and that is load-bearing rather than incidental: a store
+      // lock now expires after a hold deadline as well as on death, so a fixed past instant
+      // would make this holder stale-by-age and the takeover would be correct -- testing the
+      // deadline path while claiming to test the live path. The deadline itself is tested in
+      // store-lock.test.ts, where the clock is injected instead of read.
+      const owner = JSON.stringify({ pid: other.pid, startedAt: new Date().toISOString() });
       writeFileSync(join(lockRoot, "0.lock"), owner);
       const mine = takeStoreLock(store);
       expect(mine.ok).toBe(false);
