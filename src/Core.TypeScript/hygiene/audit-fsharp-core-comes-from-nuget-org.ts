@@ -42,6 +42,9 @@ import { join } from "node:path";
  */
 const NUGET_ORG_HASHES: ReadonlyMap<string, string> = new Map([
   ["10.1.400", "H9wlZ/tWgNp+Q4WQ5aUSi3XOBXrL6z+UkR0PNeyDFyoZR3c3PbtA21B9FqlthrhEwQ6f5AtQV0JLhBBDqjjscw=="],
+  // 10.1.401, verified 2026-09-12 the same way: restored with the SDK folder source disabled,
+  // and the resulting `.nupkg.metadata` reads `source: https://api.nuget.org/v3/index.json`.
+  ["10.1.401", "/lvOK51KD8IangBYkfDVna3/HrE/r4VUnX3dI01KDspctoYXmind3POeoYkqWKeXHwiKlf6Hc9TxwSnoSCWcjw=="],
 ]);
 
 /** Hashes known to come from an SDK's library-packs, named so the failure can say WHICH. */

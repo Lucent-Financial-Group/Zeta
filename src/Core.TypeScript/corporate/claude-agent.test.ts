@@ -13,6 +13,7 @@ import { spawnSync } from "node:child_process";
 import { existsSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
+import { fileURLToPath } from "node:url";
 
 const AGENT = resolve(import.meta.dir, "..", "..", "..", "tools", "claude-agent.cjs");
 
@@ -34,6 +35,8 @@ function run(args: readonly string[], result: Record<string, unknown>, extraEnv:
       ...process.env,
       ORG_CLAUDE_BIN: "node",
       ORG_CLAUDE_BIN_ARGS: JSON.stringify([stub]),
+      // A model is required of every call - the tests state one, exactly as an organization must.
+      ORG_CLAUDE_MODEL: "stub-model",
       ORG_OBSERVE_CMD: "observe --store S",
       ORG_DOCS_DIR: join(dir, "docs"),
       ORG_TICKET: "AIAGENT-1659",
@@ -105,7 +108,7 @@ describe("THE WORLDVIEW IS ASKED FOR — the prompt carries the observe command,
       expect(input).toContain("Never mention the organization's internal ids");
       r.cleanup();
     }
-  });
+  }, 30_000);
 
   test("A FAILED REPRODUCTION IS NOT A QUESTION: the author is told to chase the code before asking a person", () => {
     // MEASURED on AIAGENT-1659: the reproduction passed on the mock provider, production runs SQL,
@@ -183,7 +186,7 @@ describe("AFTER THE HANDOFF: THE DESCRIPTION AND THE FOLLOW-UP", () => {
     const plain = run(["review", "implementation_review", "task-9"], ok({ verdict: "approve", reason: "ok", lookedAt: [] }));
     expect(plain.seen?.input).not.toContain("FOLLOW-UP REVIEW");
     plain.cleanup();
-  });
+  }, 30_000);
 
   test("describe on a re-handoff is told what reviewers were answered, and that the description must carry it", () => {
     // MEASURED on MR !162: a reply said the rollout note was in the description; the rewrite had none.
@@ -226,6 +229,57 @@ describe("AFTER THE HANDOFF: THE DESCRIPTION AND THE FOLLOW-UP", () => {
     const canSync = run(["follow-up", "task-9"], answer, { ORG_ACTION_ITEMS: items, ORG_CAN_SYNC: "1" });
     expect((JSON.parse(canSync.stdout.trim().split(/\r?\n/).pop() as string) as { syncWithTarget: boolean }).syncWithTarget).toBe(true);
     canSync.cleanup();
+  });
+
+  test("follow-up: under until_green the session is told a red pipeline cannot be declined - and is told nothing about pipelines otherwise", () => {
+    const items = JSON.stringify([{ id: "gitlab:pipeline-55-failed", kind: "pipeline_failed", summary: "the request's pipeline 55 failed" }]);
+    const answer = ok({ decisions: [{ id: "gitlab:pipeline-55-failed", outcome: "deferred", how: "the runner ran out of disk" }], syncWithTarget: false, summary: "s" });
+    const told = run(["follow-up", "task-9"], answer, { ORG_ACTION_ITEMS: items, ORG_CAN_SYNC: "0", ORG_PIPELINE_POLICY: "until_green" });
+    expect(told.status).toBe(0);
+    // MEASURED on agentic-tpm !164: two red pipelines were declined as a flake, and the request stayed red.
+    expect(told.seen?.input).toContain("A RED PIPELINE (item kind `pipeline_failed`) IS NOT FINISHED BY BEING EXPLAINED");
+    expect(told.seen?.input).toContain("A green run locally is not a green pipeline");
+    told.cleanup();
+    // An organization whose pipelines are its own business is not lectured about them.
+    const quiet = run(["follow-up", "task-9"], answer, { ORG_ACTION_ITEMS: items, ORG_CAN_SYNC: "0", ORG_PIPELINE_POLICY: "flag_only" });
+    expect(quiet.seen?.input).not.toContain("IS NOT FINISHED BY BEING EXPLAINED");
+    quiet.cleanup();
+  }, 30_000);
+
+  test("THE PROMPT CARRIES WHAT MUST BE DECIDED, and sends the session to its worldview for the rest", () => {
+    // MEASURED on dev-portal, 2026-09-12: sessions died reading whole items to recover text that had
+    // been cut, in a repository whose own documents already fill most of the context window. The fix
+    // is not more pasting: an item's full text lives in `observe`, one passage at a time.
+    const items = JSON.stringify([{ id: "gitlab:note-1", kind: "comment", summary: "a very long review comment" }]);
+    const r = run(["follow-up", "task-9"], ok({ decisions: [], syncWithTarget: false, summary: "s" }), { ORG_ACTION_ITEMS: items, ORG_CAN_SYNC: "0" });
+    expect(r.seen?.input).toContain("WHAT IS PRINTED ABOVE IS WHAT YOU MUST DECIDE");
+    expect(r.seen?.input).toContain("is your worldview");
+    expect(r.seen?.input).toContain("--passage <n>");
+    expect(r.seen?.input).toContain("fills its context and answers nothing");
+    r.cleanup();
+  }, 30_000);
+
+  test("A REPEAT FAILURE IS DECIDED DIFFERENTLY: the session is told the count, and that declining is a complete answer", () => {
+    // MEASURED on agentic-tpm !164: the same finding claimed fixed and turned back three rounds running.
+    const items = JSON.stringify([{ id: "gitlab:note-1", kind: "comment", summary: "add the index", reopenedBecause: "the test passes with the fix removed", turnedBackTimes: 3 }]);
+    const answer = ok({ decisions: [{ id: "gitlab:note-1", outcome: "declined", how: "the premise does not hold: the query is covered by the existing index" }], syncWithTarget: false, summary: "s" });
+    const r = run(["follow-up", "task-9"], answer, { ORG_ACTION_ITEMS: items, ORG_CAN_SYNC: "0" });
+    expect(r.status).toBe(0);
+    expect(r.seen?.input).toContain("turnedBackTimes");
+    expect(r.seen?.input).toContain("Doing the same thing again is the one");
+    expect(r.seen?.input).toContain("A finding is a");
+    expect(r.seen?.input).toContain("DECLINED with the");
+    r.cleanup();
+  });
+
+  test("A REVIEWER JUDGES A DECLINE ON ITS REASON, not on a test that cannot exist", () => {
+    const r = run(["review", "implementation_review", "task-9"], ok({ verdict: "approve", reason: "the decline holds", lookedAt: ["the query planner output"] }), {
+      ORG_FOLLOWUP_REVIEW: JSON.stringify({ from: "aaaaaaa", to: "bbbbbbb", items: [{ summary: "add the index", outcome: "declined", how: "the premise does not hold" }] }),
+    });
+    expect(r.seen?.input).toContain("JUDGED ON ITS REASON, NOT ON A TEST");
+    expect(r.seen?.input).toContain("not every claim is right");
+    expect(r.seen?.input).toContain("the author may decline it next round and that ends it");
+    r.cleanup();
   });
 
   test("follow-up in resolve mode is told the conflicted paths and decides nothing about items", () => {
@@ -356,7 +410,10 @@ describe("AUTHENTICATION", () => {
     const withToken = r.seen?.argv ?? [];
     const without = run(["work", "task-9"], ok({ summary: "s", commit: "", testsRun: [], blocked: "" }));
     expect(withToken.length).toBeGreaterThan(0);
-    expect(withToken).toEqual(without.seen?.argv ?? []);
+    // The guard settings file is a fresh temp path each run; the claim is about the TOKEN, so the
+    // one path that legitimately differs is normalised rather than compared.
+    const sameShape = (argv: readonly string[]) => argv.map((a, i) => (argv[i - 1] === "--settings" ? "<guard settings>" : a));
+    expect(sameShape(withToken)).toEqual(sameShape(without.seen?.argv ?? []));
     without.cleanup();
     r.cleanup();
     rmSync(dir, { recursive: true, force: true });
@@ -400,7 +457,7 @@ describe("AN AGENT STOPS ONLY WHAT IT STARTED", () => {
       expect(r.seen?.input).toContain("by their PID - never by name");
       r.cleanup();
     }
-  });
+  }, 30_000);
 });
 
 describe("A SESSION THAT RUNS OUT OF TIME IS STOPPED WITH EVERYTHING IT STARTED", () => {
@@ -441,7 +498,7 @@ describe("A SESSION THAT RUNS OUT OF TIME IS STOPPED WITH EVERYTHING IT STARTED"
     const r = spawnSync("node", [AGENT, "work", "task-9"], {
       cwd: dir,
       encoding: "utf-8",
-      env: { ...process.env, ORG_CLAUDE_BIN: "node", ORG_CLAUDE_BIN_ARGS: JSON.stringify([stub]), ORG_CLAUDE_TIMEOUT_MS: "2500" },
+      env: { ...process.env, ORG_CLAUDE_BIN: "node", ORG_CLAUDE_BIN_ARGS: JSON.stringify([stub]), ORG_CLAUDE_MODEL: "stub-model", ORG_CLAUDE_TIMEOUT_MS: "2500" },
       timeout: 60_000,
     });
     try {
@@ -483,7 +540,7 @@ describe("A SESSION THAT ENDS NORMALLY LEAVES NOTHING RUNNING", () => {
     const r = spawnSync("node", [AGENT, "review", "qa_uat", "task-9"], {
       cwd: dir,
       encoding: "utf-8",
-      env: { ...process.env, ORG_CLAUDE_BIN: "node", ORG_CLAUDE_BIN_ARGS: JSON.stringify([stub]) },
+      env: { ...process.env, ORG_CLAUDE_BIN: "node", ORG_CLAUDE_BIN_ARGS: JSON.stringify([stub]), ORG_CLAUDE_MODEL: "stub-model" },
       timeout: 90_000,
     });
     try {
@@ -504,6 +561,148 @@ describe("A SESSION THAT ENDS NORMALLY LEAVES NOTHING RUNNING", () => {
       rmSync(dir, { recursive: true, force: true });
     }
   }, 120_000);
+});
+
+describe("A CALL THAT FAILED STILL SPENT THE MONEY AND THE MINUTES", () => {
+  // MEASURED on dev-portal, 2026-09-12: three runs in a row each ran a session for about six minutes
+  // and left nothing behind - no cost line, no reason - because the ledger was written only after a
+  // call succeeded. Three failures read exactly like an organization with nothing to do, and free.
+  test("a session that answers nothing is recorded, with what went wrong and what it cost", () => {
+    const dir = mkdtempSync(join(tmpdir(), "claude-agent-cost-"));
+    const stub = join(dir, "stub.cjs");
+    // The CLI's own envelope, with a cost and a session - and no structured answer at all.
+    writeFileSync(
+      stub,
+      'let i="";process.stdin.on("data",d=>i+=d);process.stdin.on("end",()=>{process.stdout.write(JSON.stringify(' +
+        '{ type: "result", session_id: "s-1", total_cost_usd: 3.5, num_turns: 42, usage: { output_tokens: 10 }, result: "I could not comply" }' +
+        '));});',
+    );
+    const r = spawnSync("node", [AGENT, "work", "task-9"], {
+      cwd: dir,
+      encoding: "utf-8",
+      env: { ...process.env, ORG_CLAUDE_BIN: "node", ORG_CLAUDE_BIN_ARGS: JSON.stringify([stub]), ORG_CLAUDE_MODEL: "stub-model", ORG_ASSIGNEE: "backend_implementer", ORG_COST_DIR: join(dir, "cost") },
+    });
+    expect(r.status).toBe(4);
+    const day = new Date().toISOString().slice(0, 10);
+    const line = JSON.parse(readFileSync(join(dir, "cost", day + ".jsonl"), "utf-8").trim().split(String.fromCharCode(10))[0] as string) as Record<string, unknown>;
+    expect(line["costUsd"]).toBe(3.5);
+    expect(line["agentTurns"]).toBe(42);
+    expect(String(line["failed"])).toContain("no structured answer");
+    rmSync(dir, { recursive: true, force: true });
+  }, 30_000);
+});
+
+describe("A MODEL IS CHOSEN BY THE ORGANIZATION, NEVER INHERITED FROM WHATEVER IS INSTALLED", () => {
+  test("no model configured is a REFUSAL - the call is not made", () => {
+    // MEASURED 2026-09-11: nothing set a model, so every agent silently took the installed CLI's
+    // default (an Opus build from a package 127 releases old) and a day of runs cost about $3,900
+    // at Opus rates. An unstated model is now the same as any other unstated configuration: refused.
+    const r = run(["work", "task-9"], ok({ summary: "s", commit: "", testsRun: [], blocked: "" }), { ORG_CLAUDE_MODEL: "", ORG_CLAUDE_MODEL_BY_HAT: "" });
+    expect(r.status).toBe(2);
+    expect(r.stderr).toContain("no model is configured");
+    expect(r.seen).toBeUndefined();
+    r.cleanup();
+  });
+
+  test("each hat thinks with the model the organization gave IT, and the map is the operator's", () => {
+    const byHat = JSON.stringify({ default: "cheap-model", backend_implementer: "expensive-model" });
+    const a = run(["work", "task-9"], ok({ summary: "s", commit: "", testsRun: [], blocked: "" }), { ORG_CLAUDE_MODEL: "", ORG_CLAUDE_MODEL_BY_HAT: byHat, ORG_ASSIGNEE: "backend_implementer" });
+    expect(a.seen?.argv.join(" ")).toContain("--model expensive-model");
+    a.cleanup();
+    const b = run(["work", "task-9"], ok({ summary: "s", commit: "", testsRun: [], blocked: "" }), { ORG_CLAUDE_MODEL: "", ORG_CLAUDE_MODEL_BY_HAT: byHat, ORG_ASSIGNEE: "release_manager" });
+    expect(b.seen?.argv.join(" ")).toContain("--model cheap-model");
+    b.cleanup();
+  }, 30_000);
+
+  test("THE WORK, NOT ONLY THE WEARER: the narrowest thing the organization said is what is used", () => {
+    // MEASURED on agentic-tpm, 2026-09-12: the hat that writes a fix also DECIDES which stages a round
+    // owes, and naming only hats put that decision on the same model as the implementing.
+    const round = JSON.stringify({ workId: "task-9", available: ["qa_uat"], usual: ["qa_uat"], because: [], roundsSoFar: 1 });
+    const plan = ok({ gates: [], why: "nothing changed" });
+    const byHat = JSON.stringify({
+      default: "cheap-model",
+      backend_implementer: "expensive-model",
+      "mode:plan-round": "deciding-model",
+      "backend_implementer/plan-round": "this-hats-deciding-model",
+    });
+    const env = { ORG_CLAUDE_MODEL: "", ORG_CLAUDE_MODEL_BY_HAT: byHat, ORG_ROUND: round };
+    // hat/mode beats mode beats hat.
+    const a = run(["plan-round", "task-9"], plan, { ...env, ORG_PLAN_AS: "backend_implementer" });
+    expect(a.seen?.argv.join(" ")).toContain("--model this-hats-deciding-model");
+    a.cleanup();
+    const b = run(["plan-round", "task-9"], plan, { ...env, ORG_PLAN_AS: "qa_director" });
+    expect(b.seen?.argv.join(" ")).toContain("--model deciding-model");
+    b.cleanup();
+    // ...and the hat still decides its own implementing work.
+    const c = run(["work", "task-9"], ok({ summary: "s", commit: "", testsRun: [], blocked: "" }), { ...env, ORG_ASSIGNEE: "backend_implementer" });
+    expect(c.seen?.argv.join(" ")).toContain("--model expensive-model");
+    c.cleanup();
+  }, 30_000);
+
+  test("a hat with no entry and no default is refused rather than quietly given the other hat's model", () => {
+    const r = run(["work", "task-9"], ok({ summary: "s", commit: "", testsRun: [], blocked: "" }), { ORG_CLAUDE_MODEL: "", ORG_CLAUDE_MODEL_BY_HAT: JSON.stringify({ reviewer: "m" }), ORG_ASSIGNEE: "backend_implementer" });
+    expect(r.status).toBe(2);
+    expect(r.stderr).toContain("backend_implementer");
+    r.cleanup();
+  });
+});
+
+describe("EVERY CALL LEAVES A COST LINE SAYING WHERE THE MONEY WENT AND WHY", () => {
+  test("the ledger carries the money AND its provenance - work item, hat, mode, model, session, reason", () => {
+    const store = mkdtempSync(join(tmpdir(), "org-cost-"));
+    try {
+      const answered = {
+        type: "result", subtype: "success", is_error: false,
+        structured_output: { summary: "s", commit: "", testsRun: [], blocked: "" },
+        session_id: "sess-77", total_cost_usd: 1.25, num_turns: 12, duration_ms: 900,
+        usage: { input_tokens: 10, output_tokens: 5, cache_read_input_tokens: 4000, cache_creation_input_tokens: 200 },
+      };
+      const r = run(["work", "task-9"], answered, {
+        ORG_STORE: store, ORG_ASSIGNEE: "backend_implementer", ORG_CLAUDE_MODEL: "stated-model",
+        ORG_ID: "acme", ORG_PROFILE: "dev-portal",
+        ORG_RUN_REASON: "a comment was left on the request of task-9",
+      });
+      expect(r.status).toBe(0);
+      const day = new Date().toISOString().slice(0, 10);
+      const lines = readFileSync(join(store, "cost", day + ".jsonl"), "utf-8").trim().split(String.fromCharCode(10));
+      expect(lines.length).toBe(1);
+      const line = JSON.parse(lines[0] as string) as Record<string, unknown>;
+      expect(line["costUsd"]).toBe(1.25);
+      expect(line["workId"]).toBe("task-9");
+      expect(line["hat"]).toBe("backend_implementer");
+      expect(line["mode"]).toBe("work");
+      expect(line["model"]).toBe("stated-model");
+      expect(line["sessionId"]).toBe("sess-77");
+      expect(line["cacheReadTokens"]).toBe(4000);
+      expect(line["cacheWriteTokens"]).toBe(200);
+      // WHY the money was spent, not only how much: the reason the run was started travels with it.
+      expect(line["reason"]).toBe("a comment was left on the request of task-9");
+      expect(line["org"]).toBe("acme");
+      expect(line["profile"]).toBe("dev-portal");
+      r.cleanup();
+    } finally {
+      rmSync(store, { recursive: true, force: true });
+    }
+  });
+
+  test("the cost of a call is on the usage line too, so a run log shows it without opening the ledger", () => {
+    const answered = {
+      type: "result", subtype: "success", is_error: false,
+      structured_output: { summary: "s", commit: "", testsRun: [], blocked: "" },
+      total_cost_usd: 0.5, usage: { input_tokens: 1, output_tokens: 2 },
+    };
+    const r = run(["work", "task-9"], answered, { ORG_CLAUDE_MODEL: "stated-model" });
+    expect(r.stdout).toContain("cost=$0.5000");
+    expect(r.stdout).toContain("model=stated-model");
+    r.cleanup();
+  });
+
+  test("nowhere to write the ledger is SAID, never swallowed", () => {
+    const r = run(["work", "task-9"], ok({ summary: "s", commit: "", testsRun: [], blocked: "" }), { ORG_CLAUDE_MODEL: "m", ORG_STORE: "", ORG_COST_DIR: "" });
+    expect(r.status).toBe(0);
+    expect(r.stderr).toContain("cost not recorded");
+    r.cleanup();
+  });
 });
 
 describe("THE SWEEP KILLS BY PROCESS GROUP, so a reaping test may not leave the group", () => {
@@ -537,7 +736,8 @@ describe("THE SWEEP KILLS BY PROCESS GROUP, so a reaping test may not leave the 
   const NEEDLES = [`${OPT}:true`, `${OPT}: true`];
 
   test("no stub in this file puts its grandchild in a new process group", () => {
-    const src = readFileSync(new URL(import.meta.url).pathname, "utf-8");
+    // fileURLToPath, never `.pathname`: on Windows the latter is "/C:/…%20…", which no read can open.
+    const src = readFileSync(fileURLToPath(import.meta.url), "utf-8");
     const code = src
       .split("\n")
       .filter((l) => !l.trimStart().startsWith("//"))

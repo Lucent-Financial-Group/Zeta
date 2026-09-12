@@ -22,6 +22,8 @@
  */
 
 import type { ActionItem, HandedOffChange } from "./org-fold";
+import type { PipelinePolicy } from "./change-request";
+import type { OrgEvent } from "./org-event";
 
 /** One thing that happened, normalized, before it is known which work it concerns. */
 export interface FeedbackDelivery {
@@ -150,6 +152,47 @@ export interface FollowUpReviewRequest {
 export interface FollowUpReviewVerdict {
   readonly approved: boolean;
   readonly reason: string;
+  /**
+   * The items this verdict is about, by the summary it was shown. Empty or absent on a rejection
+   * means the reviewer did not say - and then the whole round is turned back, as it always was.
+   *
+   * MEASURED on agentic-tpm !164, 2026-09-12: a review rejected 2 of 12 claimed items - "ten of the
+   * twelve check out under mutation, but two do not" - and all twelve were reopened. The next session
+   * spent 41 minutes and 140 turns reworking ten items the reviewer had already proved good, to fix
+   * two. Three rounds of that pushed nothing.
+   */
+  readonly rejected?: readonly string[];
+}
+
+/**
+ * Which of a round's decisions a rejection actually turns back.
+ *
+ * A reviewer that names nothing turns back everything: a verdict that cannot say what is wrong is not
+ * a verdict anyone can act on selectively. A reviewer that names items turns back THOSE, and the rest
+ * are left alone with what the reviewer found - they are in the branch, they were proven, and redoing
+ * them is how a round costs an hour to fix one thing.
+ */
+export function turnedBackItems(
+  decided: readonly { readonly actionItemId: string; readonly outcome: string }[],
+  summaryOf: ReadonlyMap<string, string>,
+  rejected: readonly string[] | undefined,
+): { readonly again: readonly string[]; readonly kept: readonly string[] } {
+  const mine = decided.filter((d) => d.outcome !== "deferred").map((d) => d.actionItemId);
+  if (rejected === undefined || rejected.length === 0) return { again: mine, kept: [] };
+  const named = (id: string): boolean => {
+    const summary = (summaryOf.get(id) ?? "").trim();
+    return rejected.some((r) => {
+      const said = r.trim();
+      if (said === "") return false;
+      // Named by id, or by the summary the reviewer was shown - it is given both and may use either.
+      return said === id || said.includes(id) || (summary !== "" && (said.includes(summary) || summary.includes(said)));
+    });
+  };
+  const again = mine.filter(named);
+  // A rejection that names nothing this round decided is a reviewer talking about something else:
+  // turn the round back whole rather than quietly settling everything it objected to.
+  if (again.length === 0) return { again: mine, kept: [] };
+  return { again, kept: mine.filter((id) => !again.includes(id)) };
 }
 
 /**
@@ -223,6 +266,106 @@ export function placeOnThisMachine(text: string): string | undefined {
 }
 
 /**
+ * How many times IN A ROW a request's follow-up could not complete, and what it said last.
+ *
+ * MEASURED on dev-portal, 2026-09-12: every session in that repository dies the same way. Its own
+ * `CLAUDE.md` transitively imports 499KB of documentation - `docs/RESILIENCE.md` alone is 359KB - so
+ * a session starts with about 196,000 tokens of context already written and no room to work in; it
+ * manages four tool calls, reports "autocompact is thrashing", and exits. Six minutes and about six
+ * dollars, every thirty minutes, for nothing. The organization cannot fix a repository's own context
+ * budget, and it must not keep paying to discover that.
+ *
+ * Counted from the record the runtime writes when a follow-up does not complete, and reset by one
+ * that does: a request that starts working again is not carrying a history.
+ */
+export function followUpFailures(events: readonly OrgEvent[], workId: string): { readonly inARow: number; readonly lastReason?: string } {
+  let inARow = 0;
+  let lastReason: string | undefined;
+  for (const e of events) {
+    // The work id is IN the sentence, so no second test on the subject is needed - and a guard that
+    // cannot change an answer is one nobody can check.
+    const said = e.decision ?? "";
+    if (said.startsWith(`the follow-up of ${workId} did not complete`)) {
+      inARow += 1;
+      lastReason = said;
+      continue;
+    }
+    // Anything that shows the follow-up DID run clears the count.
+    if (said.startsWith(`followed up ${workId}`)) {
+      inARow = 0;
+      lastReason = undefined;
+    }
+  }
+  return { inARow, ...(lastReason === undefined ? {} : { lastReason }) };
+}
+
+/**
+ * A PIPELINE THE POLLER STILL REPORTS RED, WHOSE ITEM THE ORGANIZATION ALREADY CLOSED.
+ *
+ * MEASURED on agentic-tpm !164, and it is the hole in this rule's own first half. The pipeline item
+ * was raised at 21:31 and settled `declined` in the same minute. `keepRedPipelinesOpen` narrows a
+ * DECISION a follow-up is making now; it cannot touch one already made. And `raise` is idempotent by
+ * design, so a later poll reporting the same pipeline still failing raises nothing. So the watcher
+ * dutifully started runs saying "the request of task-040 is red (try 1 of 3)" and the run had no
+ * OPEN item to give a session - a writer with no reader, one layer further in.
+ *
+ * So: while the poller still reports it failing, a settled pipeline item is REOPENED. That is the
+ * mechanism the organization already has for "this was decided and the decision did not stand"
+ * (a follow-up's review turning work back), pointed at the one fact that outranks the decision -
+ * the pipeline is still red. An item still open, or one nothing reports as red any more, is left
+ * alone: this reopens what was closed while the reason it was raised for is still true.
+ */
+export function redPipelinesToReopen(
+  matches: readonly { readonly workId: string; readonly actionItemId: string; readonly delivery: FeedbackDelivery }[],
+  items: ReadonlyMap<string, readonly ActionItem[]>,
+  policy: PipelinePolicy | undefined,
+): readonly { readonly workId: string; readonly actionItemId: string; readonly why: string }[] {
+  if (policy !== "until_green") return [];
+  const out: { workId: string; actionItemId: string; why: string }[] = [];
+  for (const m of matches) {
+    if (m.delivery.itemKind !== "pipeline_failed") continue;
+    const item = (items.get(m.workId) ?? []).find((i) => i.actionItemId === m.actionItemId);
+    if (item === undefined || item.settled === undefined) continue;
+    out.push({
+      workId: m.workId,
+      actionItemId: m.actionItemId,
+      why: `the pipeline is still not green (${m.delivery.summary}), and this organization's work is not done until it passes - what was decided (${item.settled.outcome}: ${item.settled.how.split(/\s+/).join(" ").slice(0, 300)}) did not make it pass`,
+    });
+  }
+  return out;
+}
+
+/**
+ * UNDER `until_green`, A RED PIPELINE CANNOT BE DECLINED.
+ *
+ * MEASURED on agentic-tpm !164: pipelines 189179 and 189289 were raised as action items, diagnosed
+ * as a MongoMemoryServer flake - carefully, with the whole suite green locally at the same SHA - and
+ * DECLINED. The reasoning may well be right. The request was still red, and the organization
+ * considered itself finished with it; the person who merges reads the pipeline, not the argument.
+ *
+ * So the decision is KEPT, with its reasoning, and turned into a DEFERRAL: the item stays open, and
+ * the organization is asked about it again after the next pipeline, until it passes or a person is
+ * told. The follow-up prompt says the same thing; this is what holds when the session says it anyway.
+ * Everything else - addressed, deferred, any decision on any other kind of item - passes through
+ * untouched: this narrows one outcome on one kind of item, and decides nothing about the work.
+ */
+export function keepRedPipelinesOpen(
+  items: readonly ActionItem[],
+  decisions: readonly ItemDecision[],
+  policy: PipelinePolicy | undefined,
+): { readonly decisions: readonly ItemDecision[]; readonly kept: readonly string[] } {
+  if (policy !== "until_green") return { decisions, kept: [] };
+  const pipelines = new Set(items.filter((i) => i.itemKind === "pipeline_failed").map((i) => i.actionItemId));
+  const kept: string[] = [];
+  const out = decisions.map((d) => {
+    if (d.outcome !== "declined" || !pipelines.has(d.actionItemId)) return d;
+    kept.push(d.actionItemId);
+    return { ...d, outcome: "deferred" as const, how: `${d.how} (kept open: this organization's work is not done until the pipeline passes)` };
+  });
+  return { decisions: out, kept };
+}
+
+/**
  * The settled items on one change still owed an answer, and those the organization decided to leave
  * unanswered (recorded as such without asking anyone, so they are not owed forever).
  *
@@ -293,6 +436,69 @@ export interface FollowUpRequest {
   readonly conflicts?: readonly string[];
   /** Whether bringing the change up to date is on offer here (`merge_target`), or only noting it (`flag_only`). */
   readonly canSync: boolean;
+  /**
+   * What a red pipeline means here. Under `until_green` a pipeline item cannot be finished by
+   * explaining it: the session is told so, because a careful diagnosis is exactly what it reached
+   * for the last time (agentic-tpm !164, pipelines 189179 and 189289, both declined as flakes).
+   */
+  readonly pipelines?: PipelinePolicy;
+}
+
+/**
+ * WHAT THIS ROUND OWES, decided per round rather than fixed.
+ *
+ * MEASURED on agentic-tpm, 2026-09-12: every follow-up round - including one that answered a single
+ * review comment - ran the item's whole post-work review chain. Two independent agent reviews, ~30
+ * minutes of the most expensive model, on a round whose change was three lines. The chain is right
+ * for the ORIGINAL work; a round that answers a comment, or one that chases a red pipeline, is not
+ * the original work.
+ *
+ * So the organization is asked, per round, which of the stages the chain owes this round actually
+ * needs - and may ADD one it did not run before when a round keeps coming back. It is asked; it is
+ * never told by this register, which knows nothing about what any particular change is worth.
+ */
+export interface FollowUpPlanRequest {
+  readonly workId: string;
+  /** The hat deciding - the one that holds the work item's plan. */
+  readonly plannerHatId: string;
+  /** Every stage this item's chain owes. The plan may name any of these and nothing else. */
+  readonly available: readonly string[];
+  /** What this round would run if nobody decided: the post-work review stages. */
+  readonly usual: readonly string[];
+  /** What brought this round about, by kind - comment, pipeline_failed, target_moved, and so on. */
+  readonly because: readonly { readonly kind: string; readonly summary: string }[];
+  /** Rounds already spent on this request, and what turned the last one back (nothing: it was not). */
+  readonly roundsSoFar: number;
+  readonly lastTurnedBackBy?: string;
+  /** How much the branch has changed since people last saw it, when it can be measured. */
+  readonly changedFiles?: number;
+  readonly changedLines?: number;
+}
+
+export interface FollowUpPlan {
+  /** The stages this round must pass. Empty is a real answer: nothing beyond the tests. */
+  readonly gates: readonly string[];
+  /** Why these and not the others - recorded, and read by the next round. */
+  readonly why: string;
+}
+
+/**
+ * The plan, held to what the item's chain actually owes.
+ *
+ * A planner that names a stage the chain does not owe is naming a stage nobody here holds - and one
+ * that says nothing is answering a different question than the one asked. Both fall back to the
+ * usual stages, saying so, because a round that reviews LESS than the organization normally would
+ * must be a decision somebody made, never a parse failure.
+ */
+export function gatesForRound(plan: FollowUpPlan | undefined, request: FollowUpPlanRequest): { readonly gates: readonly string[]; readonly why: string } {
+  if (plan === undefined) return { gates: request.usual, why: "nobody decided which stages this round owes, so it owes the usual ones" };
+  const allowed = new Set(request.available);
+  const named = plan.gates.filter((g) => allowed.has(g));
+  const refused = plan.gates.filter((g) => !allowed.has(g));
+  if (refused.length > 0) {
+    return { gates: request.usual, why: `the plan named ${refused.join(", ")}, which this item's chain does not owe - so this round owes the usual stages` };
+  }
+  return { gates: named, why: plan.why.trim() === "" ? "decided, with no reason given" : plan.why };
 }
 
 export interface FollowUpOutcome {
