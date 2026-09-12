@@ -1,0 +1,14 @@
+{
+  "id": "080d04b439e73010a01300088ab1345a",
+  "at": "2026-09-12T16:50:40.486Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M2B8EF75087G0R002YPM4SZ",
+    "type": "task",
+    "title": "byte-lock receipts pin third-party versions no other oracle can witness",
+    "slug": "byte-lock-receipts-pin-third-party-versions-no-other-oracle",
+    "priority": "P2",
+    "filename": "081M2B8EF75087G0R002YPM4SZ-byte-lock-receipts-pin-third-party-versions-no-other-oracle.md"
+  }
+}
