@@ -1,0 +1,12 @@
+{
+  "pr_number": 17355,
+  "archive_path": "docs/history/pr-reviews/2026/09/12/PR-17355-deps-bump-pnpm-from-11-25-0-to-12-4-0-in-src-renderers-website.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-12T14:06:15.912Z",
+  "schema_version": "v1",
+  "commit_sha": "69cbe07facc3f9029ddff38d119da9d732ecf1be",
+  "title": "deps: Bump pnpm from 11.25.0 to 12.4.0 in /src/Renderers/website",
+  "state": "MERGED",
+  "merged_at": "2026-09-12T14:05:29Z",
+  "head_ref": "dependabot/npm_and_yarn/src/Renderers/website/pnpm-12.4.0"
+}
