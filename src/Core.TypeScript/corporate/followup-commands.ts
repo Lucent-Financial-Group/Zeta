@@ -33,6 +33,8 @@ import type {
   FeedbackDelivery,
   FollowUpOutcome,
   FollowUpRequest,
+  FollowUpPlan,
+  FollowUpPlanRequest,
   FollowUpReviewRequest,
   FollowUpReviewVerdict,
   ItemDecision,
@@ -104,6 +106,16 @@ function lastJson(stdout: string | null | undefined): Record<string, unknown> | 
   return undefined;
 }
 
+/** How much of an item's detail travels in the prompt before the session is sent to `observe`. */
+export const DETAIL_IN_PROMPT = 600;
+
+/** The detail, cut, saying where the whole of it is - which is the worldview, not another message. */
+function detailForPrompt(detail: string, workId: string): string {
+  const t = detail.trim();
+  if (t.length <= DETAIL_IN_PROMPT) return t;
+  return `${t.slice(0, DETAIL_IN_PROMPT)}… (+${String(t.length - DETAIL_IN_PROMPT)} more — open \`observe item ${workId}\` and read its passage)`;
+}
+
 /** A follow-up session behind a command. See the module header for its protocol. */
 export function commandFollowUp(spec: CommandSpec, fallbackCwd: string): (r: FollowUpRequest) => Promise<PortResult<FollowUpOutcome>> {
   return async (r) => {
@@ -112,17 +124,22 @@ export function commandFollowUp(spec: CommandSpec, fallbackCwd: string): (r: Fol
       kind: i.itemKind,
       source: i.source,
       summary: i.summary,
-      ...(i.detail === undefined ? {} : { detail: i.detail }),
+      // BOUNDED, and the whole of it is in `observe`. An item's detail is a reviewer's entire
+      // comment or a pipeline's job logs; pasting it here put ~16KB of world into a prompt whose
+      // repository already spends most of the context window on its own documents.
+      ...(i.detail === undefined ? {} : { detail: detailForPrompt(i.detail, r.workId) }),
       ...(i.author === undefined ? {} : { author: i.author }),
       ...(i.url === undefined ? {} : { url: i.url }),
       // Decided once already, and that did not stand: the session is told why, so it does not repeat it.
       ...(i.reopened === undefined ? {} : { reopenedBecause: i.reopened.why }),
+      ...(i.reopenedTimes === undefined || i.reopenedTimes < 2 ? {} : { turnedBackTimes: i.reopenedTimes }),
       ...(i.deferred === undefined ? {} : { deferredBefore: i.deferred.why }),
     }));
     const ran = run(spec, ["follow-up", r.workId], r.workdir ?? fallbackCwd, {
       ORG_FOLLOWUP_MODE: r.mode,
       ORG_ACTION_ITEMS: JSON.stringify(items),
       ORG_CAN_SYNC: r.canSync ? "1" : "0",
+      ...(r.pipelines === undefined ? {} : { ORG_PIPELINE_POLICY: r.pipelines }),
       ORG_ASSIGNEE: r.hatId,
       ORG_BRANCH: r.branch,
       ...(r.base === undefined ? {} : { ORG_BASE: r.base }),
@@ -263,9 +280,52 @@ export function commandFollowUpReview(spec: CommandSpec, fallbackCwd: string) {
       ...(r.workdir === undefined ? {} : { ORG_WORKDIR: r.workdir }),
     });
     if (ran.error !== undefined) return { ok: false, reason: `the reviewer '${spec.command}' could not run: ${ran.error.message}` };
-    const said = String(ran.stdout ?? "").trim().split(/\r?\n/).filter((l) => !l.startsWith("usage:")).join(" ").slice(0, 2000);
+    const lines = String(ran.stdout ?? "").trim().split(/\r?\n/).filter((l) => !l.startsWith("usage:"));
+    const said = lines.filter((l) => !l.trim().startsWith("{")).join(" ").slice(0, 2000);
     if (ran.status !== 0 && ran.status !== 1) return { ok: false, reason: `the reviewer exited ${String(ran.status)}: ${tail(ran.stderr) || said}` };
-    return { ok: true, value: { approved: ran.status === 0, reason: said === "" ? `exit ${String(ran.status)}` : said }, evidence: [] };
+    // WHAT IT TURNED BACK, when it said. A reviewer that names nothing turns the whole round back.
+    const structured = lastJson(ran.stdout);
+    const rejected = Array.isArray(structured?.["rejected"]) ? (structured["rejected"] as unknown[]).map((x) => String(x)) : undefined;
+    return {
+      ok: true,
+      value: {
+        approved: ran.status === 0,
+        reason: said === "" ? `exit ${String(ran.status)}` : said,
+        ...(rejected === undefined || rejected.length === 0 ? {} : { rejected }),
+      },
+      evidence: [],
+    };
+  };
+}
+
+/**
+ * WHICH STAGES A ROUND OWES, decided by the organization through a command.
+ *
+ * Invoked as `plan-round <workId>`, told what the round is about in ORG_ROUND. Prints one JSON
+ * object: `{"gates":[...],"why":"..."}`. Anything else - a crash, no JSON, a stage the item's chain
+ * does not owe - leaves the round owing its usual stages, which is what every round owed before
+ * anyone was asked. Deciding to review LESS has to be a decision, never a parse failure.
+ */
+export function commandFollowUpPlanner(spec: CommandSpec, fallbackCwd: string) {
+  return async (r: FollowUpPlanRequest): Promise<PortResult<FollowUpPlan>> => {
+    const ran = run(spec, ["plan-round", r.workId], fallbackCwd, {
+      ORG_ROUND: JSON.stringify({
+        workId: r.workId,
+        available: r.available,
+        usual: r.usual,
+        because: r.because,
+        roundsSoFar: r.roundsSoFar,
+        ...(r.lastTurnedBackBy === undefined ? {} : { lastTurnedBackBy: r.lastTurnedBackBy }),
+      }),
+      ORG_PLAN_AS: r.plannerHatId,
+    });
+    if (ran.error !== undefined) return { ok: false, reason: `the planner '${spec.command}' could not run: ${ran.error.message}` };
+    if (ran.status !== 0) return { ok: false, reason: `the planner exited ${String(ran.status)}: ${tail(ran.stderr)}` };
+    const out = lastJson(ran.stdout);
+    if (out === undefined) return { ok: false, reason: "the planner printed no plan" };
+    const gates = Array.isArray(out["gates"]) ? (out["gates"] as unknown[]).map((g) => String(g)) : undefined;
+    if (gates === undefined) return { ok: false, reason: "the plan named no stages - not even none, which would be a list" };
+    return { ok: true, value: { gates, why: String(out["why"] ?? "") }, evidence: [] };
   };
 }
 

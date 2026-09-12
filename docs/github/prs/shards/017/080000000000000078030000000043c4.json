@@ -1,0 +1,12 @@
+{
+  "pr_number": 17348,
+  "archive_path": "docs/history/pr-reviews/2026/09/12/PR-17348-deps-bump-actions-download-artifact-from-6-0-0-to-8-0-1.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-12T15:09:48.932Z",
+  "schema_version": "v1",
+  "commit_sha": "9cd73d524513faee6ac4589d5ccbda3fe497a001",
+  "title": "deps: Bump actions/download-artifact from 6.0.0 to 8.0.1",
+  "state": "MERGED",
+  "merged_at": "2026-09-12T15:09:07Z",
+  "head_ref": "dependabot/github_actions/actions/download-artifact-8.0.1"
+}
