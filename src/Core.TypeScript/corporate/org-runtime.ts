@@ -117,12 +117,19 @@ import {
 import { Fidelity, fidelityLine, recordingProviders, runFidelityOf, type ChangeHandle, type ChangeProposal, type DataSourcePort, type PortResult, type ProviderSet, type ReviewVerdict, type RunFidelity,
   fidelityOf,} from "./providers";
 import type { ActionItem, HandedOffChange } from "./org-fold";
+import { ferry, oneAtATime, SEQUENTIAL } from "./ferry";
 import {
   acceptedDecisions,
   answersOwed,
   correlateFeedback,
   followUpOrder,
+  gatesForRound,
+  keepRedPipelinesOpen,
+  redPipelinesToReopen,
+  turnedBackItems,
   type AnswerCheck,
+  type FollowUpPlan,
+  type FollowUpPlanRequest,
   type AnswerCheckRequest,
   type AnswerRequest,
   type AnswerResult,
@@ -398,6 +405,18 @@ export interface OrgRuntimeDeps extends HumanCheckpointDeps {
   readonly verifyChange?: (handle: ChangeHandle) => Promise<PortResult<string>>;
   /** At most this many handed-off changes are followed up in one cycle. Default 2. */
   readonly maxFollowUps?: number;
+  /**
+   * How many requests the organization follows up AT ONCE. Default 1 - every run before this was one
+   * at a time, and one stays the deterministic, replayable path (see `ferry.ts`). Above 1 the agent
+   * sessions overlap; the repository's own test suite still never does (see `oneAtATime`).
+   */
+  readonly maxParallel?: number;
+  /**
+   * Decides which review stages a FOLLOW-UP ROUND owes - see `FollowUpPlanRequest`. Absent: every
+   * round owes the same post-work stages the original work did, which is what every round did before
+   * anyone was asked.
+   */
+  readonly planFollowUp?: (r: FollowUpPlanRequest) => Promise<PortResult<FollowUpPlan>>;
   /**
    * Reviews a follow-up's commits at one of the item's post-work gates before they are pushed - the
    * same review the original work passed. Absent: follow-up code is verified but not reviewed.
@@ -4018,6 +4037,9 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
   const actionItemsRaised: string[] = [];
   const actionItemsAnswered: string[] = [];
   const followUps: FollowUpReport[] = [];
+  // Sessions may overlap; the repository's own test suite may not - two of agentic-tpm's at once
+  // fight over the MongoMemoryServer port, already the commonest red in its own pipeline.
+  const verifyOneAtATime = oneAtATime();
   if (providers.change.meta.fidelity === Fidelity.Real) {
     const handedMap = new Map<string, HandedOffChange>([...(deps.handedOffChanges ?? []), ...handedThisRun]);
     const allItems = new Map<string, ActionItem[]>([...(deps.actionItems ?? new Map<string, readonly ActionItem[]>())].map(([w, v]) => [w, [...v]]));
@@ -4104,6 +4126,18 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
 
     const corr = correlateFeedback(deps.feedback ?? [], handedMap, deps.defaultBase ?? "master");
     for (const m of corr.aboutChange) raise(m.workId, m.actionItemId, fromDelivery(m.delivery));
+    // A pipeline the poller STILL reports red, whose item was already closed, comes back open - see
+    // `redPipelinesToReopen`. Without this the watcher starts runs for a red pipeline and the run
+    // has no open item to hand anyone.
+    for (const r of redPipelinesToReopen(corr.aboutChange, allItems, deps.changeRequests?.pipelines)) {
+      note({
+        kind: OrgEventKind.ChangeProjected,
+        subjectId: r.workId,
+        decision: `action item ${r.actionItemId} reopened: the pipeline is still red`,
+        atMs: warmedAt,
+        fact: { kind: "action_item_reopened", workId: r.workId, actionItemId: r.actionItemId, why: r.why },
+      });
+    }
     for (const d of corr.unmatched) {
       note({
         kind: OrgEventKind.ChangeProjected,
@@ -4134,7 +4168,11 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
     const followUpOne = async (workId: string, items: readonly ActionItem[]): Promise<FollowUpReport> => {
       const refused: string[] = [];
       const handle = await reopen(workId);
-      if (handle === undefined) return { workId, decided: [], handedOffAgain: false, refused: [`could not reopen the change for ${workId}`] };
+      if (handle === undefined) {
+        const why = `could not reopen the change for ${workId}, so nothing was followed up on it`;
+        note({ kind: OrgEventKind.ChangeProjected, subjectId: workId, decision: why, atMs: warmedAt });
+        return { workId, decided: [], handedOffAgain: false, refused: [why] };
+      }
       const node = nodeById(cascade, workId);
       const hatId = node?.assigneeHatId ?? node?.ownerHatId ?? "implementer";
       const canSync = deps.changeRequests?.sync === "merge_target" && providers.change.syncWithTarget !== undefined;
@@ -4146,6 +4184,7 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
         ...(handle.workdir === undefined ? {} : { workdir: handle.workdir }),
         items,
         canSync,
+        ...(deps.changeRequests?.pipelines === undefined ? {} : { pipelines: deps.changeRequests.pipelines }),
       };
       // ── WHAT OTHERS PUSHED TO THIS CHANGE'S BRANCH COMES IN FIRST ──────────
       // MEASURED on dev-portal !1222: a bot pushed an `npm audit fix` commit to the request's branch
@@ -4182,9 +4221,18 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
       }
       const before = providers.change.revision === undefined ? undefined : await providers.change.revision(handle);
       const triage = await deps.followUp!({ ...where, mode: "triage" });
-      if (!triage.ok) return { workId, decided: [], handedOffAgain: false, refused: [`the follow-up of ${workId} did not complete: ${triage.reason}`] };
-      const { accepted, refused: bad } = acceptedDecisions(items, triage.value.decisions);
+      if (!triage.ok) {
+        const why = `the follow-up of ${workId} did not complete: ${triage.reason}`;
+        note({ kind: OrgEventKind.ChangeProjected, subjectId: workId, actorHatId: hatId, decision: why.split(/\s+/).join(" ").slice(0, 400), atMs: warmedAt });
+        return { workId, decided: [], handedOffAgain: false, refused: [why] };
+      }
+      const { accepted: decided, refused: bad } = acceptedDecisions(items, triage.value.decisions);
       refused.push(...bad);
+      // A red pipeline is not finished by being explained - see `keepRedPipelinesOpen`.
+      const { decisions: accepted, kept } = keepRedPipelinesOpen(items, decided, deps.changeRequests?.pipelines);
+      for (const id of kept) {
+        refused.push(`${id} on ${workId} was declined, and a red pipeline is not declined here (pipelines: until_green) - it stays open`);
+      }
 
       let synced: FollowUpReport["synced"];
       if (triage.value.syncWithTarget) {
@@ -4238,17 +4286,64 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
             : true;
       let handedOffAgain = false;
       let attempted = false;
+      // ── RED CODE IS NOT REVIEWED ──────────────────────────────────────────────────────────────
+      // MEASURED on agentic-tpm !164, 2026-09-12: implementation_review (18 min) and qa_uat (17 min)
+      // both approved 8c2767c4, and then the verifier found new failures in workflowStage.test.ts and
+      // refused the push. Thirty-five minutes of the most expensive model spent reading a commit that
+      // a nine-minute test run rejects. The suite is also the one judge that cannot be talked round,
+      // so it goes FIRST, and the reviewers are only asked about code that already passes.
+      let reviewRejected: string | undefined;
+      let verifyFailed: string | undefined;
+      /** What the reviewer named, when it named anything - see `turnedBackItems`. */
+      let rejectedItems: readonly string[] | undefined;
+      if (moved) {
+        const verified = deps.verifyChange === undefined
+          ? ({ ok: false, reason: "nothing is configured to verify a followed-up change" } as const)
+          : await verifyOneAtATime(() => (deps.verifyChange as (h: ChangeHandle) => Promise<PortResult<string>>)(handle));
+        if (!verified.ok) {
+          verifyFailed = verified.reason;
+          refused.push(`the followed-up change was not handed off again - it does not pass verification: ${verified.reason}`);
+        }
+      }
       // ── THE FOLLOW-UP'S CODE IS REVIEWED LIKE THE ORIGINAL WAS, BEFORE IT IS PUSHED ──────────
       // The item's own post-work review gates (implementation_review, qa_uat - whichever its chain
       // owes), each by an owner who is not the hat that made the change. A rejection stops the push,
       // and its reason goes back to the next session on the items it claimed to settle.
-      let reviewRejected: string | undefined;
-      if (moved && deps.reviewFollowUp !== undefined && afterRev?.ok === true) {
+      if (moved && verifyFailed === undefined && deps.reviewFollowUp !== undefined && afterRev?.ok === true) {
         const chain = node === undefined ? [] : chainOf(node);
         const from = lastShown ?? (before?.ok === true ? before.value.commit : undefined);
-        for (const gate of [GateKind.ImplementationReview, GateKind.QaUat].filter((g) => chain.includes(g))) {
+        // ── WHAT THIS ROUND OWES IS DECIDED, NOT ASSUMED ────────────────────────────────────────
+        // A round that answers one review comment used to owe the same two agent reviews as the
+        // original work - about thirty minutes of the most expensive model, on a three-line change.
+        // The organization is asked which stages this round needs, and may add one when a round
+        // keeps coming back. Refused or absent, it owes the usual ones: reviewing LESS must be a
+        // decision somebody made, never a parse failure.
+        const usual = [GateKind.ImplementationReview, GateKind.QaUat].filter((g) => chain.includes(g)).map(String);
+        const planRequest: FollowUpPlanRequest = {
+          workId,
+          plannerHatId: node?.ownerHatId ?? hatId,
+          available: chain.map(String),
+          usual,
+          because: items.map((i) => ({ kind: i.itemKind, summary: i.summary.split(/\s+/).join(" ").slice(0, 200) })),
+          roundsSoFar: deps.afterUpdateDone?.get(workId)?.rounds ?? 0,
+          ...((): { lastTurnedBackBy?: string } => {
+            const back = items.find((i) => i.reopened !== undefined)?.reopened?.why;
+            return back === undefined ? {} : { lastTurnedBackBy: back.split(/\s+/).join(" ").slice(0, 300) };
+          })(),
+        };
+        const planned = deps.planFollowUp === undefined ? undefined : await deps.planFollowUp(planRequest);
+        if (planned !== undefined && !planned.ok) refused.push(`the stages for this round could not be decided (${planned.reason}), so it owes the usual ones`);
+        const decided = gatesForRound(planned?.ok === true ? planned.value : undefined, planRequest);
+        note({
+          kind: OrgEventKind.ChangeProjected,
+          subjectId: workId,
+          actorHatId: planRequest.plannerHatId,
+          decision: `this round owes ${decided.gates.length === 0 ? "no review stage beyond the tests" : decided.gates.join(", ")}: ${decided.why.split(/\s+/).join(" ").slice(0, 300)}`,
+          atMs: warmedAt,
+        });
+        for (const gate of decided.gates) {
           if (from === undefined) break;
-          const reviewer = gateOwners(deps.chart, gate).find((h) => h.id !== hatId);
+          const reviewer = gateOwners(deps.chart, gate as GateKind).find((h) => h.id !== hatId);
           if (reviewer === undefined) {
             refused.push(`nobody but ${hatId} may review ${String(gate)} on ${workId}'s follow-up, so it was not pushed`);
             reviewRejected = `no independent reviewer for ${String(gate)}`;
@@ -4274,34 +4369,59 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
           });
           if (!v.ok || !v.value.approved) {
             reviewRejected = `${String(gate)} by ${reviewer.id}: ${v.ok ? v.value.reason : v.reason}`;
+            rejectedItems = v.ok ? v.value.rejected : undefined;
             refused.push(`the follow-up on ${workId} was not pushed - ${reviewRejected.slice(0, 300)}`);
             break;
           }
         }
       }
-      if (moved && reviewRejected !== undefined) {
-        // Turned back: nothing is pushed, and each item this session claimed is REOPENED with the
-        // reviewer's reason - open and due, not deferred - so the watcher starts the next round at
-        // once and the next session fixes what was found. Review is a back-and-forth until it passes.
-        for (const d of accepted.filter((x) => x.outcome !== "deferred")) {
+      if (moved && (verifyFailed !== undefined || reviewRejected !== undefined)) {
+        // Turned back by whichever judge stopped it, and SAID: nothing is pushed, and each item this
+        // session claimed is REOPENED with that reason - open and due, not deferred - so the watcher
+        // starts the next round at once and the next session fixes what was found. A failing suite is
+        // told to the next session the same way a reviewer's objection is; before this, a change that
+        // did not verify was simply left open with nothing recorded about why.
+        const why =
+          verifyFailed === undefined
+            ? `your change for this was reviewed and turned back - ${reviewRejected as string}`
+            : `your change for this did not pass the repository's own tests, so nobody reviewed it and nothing was pushed - ${verifyFailed}`;
+        // ── ONLY WHAT THE REVIEWER TURNED BACK IS DONE AGAIN ──────────────────────────────────
+        // A failing suite turns the whole round back: it says nothing about which item is at fault.
+        // A reviewer that NAMED items turns back those, and the rest are told they are already in the
+        // branch and proven - redoing them is how a round costs an hour to fix one thing.
+        const { again, kept } = verifyFailed === undefined
+          ? turnedBackItems(accepted, summaryOf, rejectedItems)
+          : { again: accepted.filter((x) => x.outcome !== "deferred").map((d) => d.actionItemId), kept: [] as readonly string[] };
+        for (const id of again) {
           note({
             kind: OrgEventKind.ChangeProjected,
             subjectId: workId,
             actorHatId: hatId,
-            decision: `action item ${d.actionItemId} reopened: the follow-up's review turned it back`,
+            decision: `action item ${id} reopened: ${verifyFailed === undefined ? "the follow-up's review turned it back" : "the follow-up did not pass verification"}`,
             atMs: warmedAt,
-            fact: { kind: "action_item_reopened", workId, actionItemId: d.actionItemId, why: `your change for this was reviewed and turned back - ${reviewRejected}` },
+            fact: { kind: "action_item_reopened", workId, actionItemId: id, why },
+          });
+        }
+        for (const id of kept) {
+          note({
+            kind: OrgEventKind.ChangeProjected,
+            subjectId: workId,
+            actorHatId: hatId,
+            decision: `action item ${id} is still open because the round was turned back on other items - this one was not`,
+            atMs: warmedAt,
+            fact: {
+              kind: "action_item_reopened",
+              workId,
+              actionItemId: id,
+              why:
+                `your change for this is in the branch and the reviewer proved it - it is NOT what turned the round back. ` +
+                `Leave it alone and fix only what was named: ${reviewRejected as string}`,
+            },
           });
         }
       } else if (moved) {
-        const verified = deps.verifyChange === undefined
-          ? ({ ok: false, reason: "nothing is configured to verify a followed-up change" } as const)
-          : await deps.verifyChange(handle);
-        if (!verified.ok) refused.push(`the followed-up change was not handed off again - it does not pass verification: ${verified.reason}`);
-        else {
-          attempted = true;
-          handedOffAgain = await handOff(workId, handle, true, settledForDescription);
-        }
+        attempted = true;
+        handedOffAgain = await handOff(workId, handle, true, settledForDescription);
       } else if (accepted.some((d) => d.outcome === "addressed")) {
         // NOTHING MOVED, AND SOMETHING WAS STILL ADDRESSED - an answered question, a description
         // asked to be rewritten. The request is re-described so what people read matches what the
@@ -4370,30 +4490,29 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
       return { workId, decided: accepted, ...(synced === undefined ? {} : { synced }), handedOffAgain, refused };
     };
 
-    if (deps.followUp !== undefined) {
-      const open = new Map<string, readonly ActionItem[]>();
-      for (const [w, items] of allItems) {
-        const o = items.filter((i) => i.settled === undefined);
-        if (o.length > 0 && handedMap.has(w)) open.set(w, o);
-      }
-      for (const workId of followUpOrder(open).slice(0, Math.max(0, deps.maxFollowUps ?? 2))) {
-        followUps.push(await followUpOne(workId, open.get(workId) ?? []));
-      }
-    } else if ([...allItems.values()].some((items) => items.some((i) => i.settled === undefined))) {
-      // SAID, not silently kept: open items nobody is configured to look at are work waiting on nobody.
-      refusals.push("handed-off changes have open action items and nothing is configured to follow them up");
-    }
-
     // ── A REVIEWER IS ANSWERED WHERE THEY ASKED ────────────────────────────
     // MEASURED on MRs !162-!164: 26 comments decided and acted on, and not one reviewer was told -
     // the decision lived only in this log. Every SETTLED item still owed an answer is answered now:
     // the ones settled above (after their push) and any settled earlier that never were, including
     // those whose answer failed last time. An answer that errors is not recorded, so it is tried again.
-    const replies = deps.changeRequests?.replies;
-    if (replies !== undefined && replies !== "none") {
-      for (const [workId, items] of allItems) {
-        const change = handedMap.get(workId);
-        if (change === undefined) continue;
+    //
+    // PER REQUEST, as soon as ITS OWN fix is pushed - not after every follow-up in the run. Called
+    // again in a sweep below for anything settled earlier that was never answered; `answersOwed`
+    // excludes what is already answered, so calling it twice costs nothing and misses nothing.
+    /**
+     * Items the answer port was ASKED about this run, posted or failed.
+     *
+     * Answering happens twice over: once up front for what was already owed, once per request as its
+     * own fix is pushed. Without this an item in both passes is answered TWICE - the same reviewer
+     * gets the same reply on the same thread. And an item the port FAILED on stays in here too: a
+     * failure is still owed, and it waits for the next run rather than being retried a second later.
+     */
+    const triedThisRun = new Set<string>();
+    const answerOn = async (workId: string, items: readonly ActionItem[]): Promise<void> => {
+      const replies = deps.changeRequests?.replies;
+      if (replies === undefined || replies === "none") return;
+      const change = handedMap.get(workId);
+      if (change === undefined) return;
         const { owed, unanswered, withheld } = answersOwed(items);
         for (const w of withheld) {
           note({
@@ -4418,10 +4537,11 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
           actionItemsAnswered.push(actionItemId);
         };
         for (const u of unanswered) answered(u.actionItemId, { resolved: false, skipped: u.why });
-        if (owed.length === 0) continue;
+        const owedNow = owed.filter((o) => !triedThisRun.has(o.actionItemId));
+        if (owedNow.length === 0) return;
         if (deps.answer === undefined) {
           refusals.push(`settled items on ${workId} are owed an answer (replies: ${replies}) and nothing is configured to give it`);
-          continue;
+          return;
         }
         // ── EVERY ANSWER IS CHECKED BEFORE A REVIEWER READS IT ──────────────
         // MEASURED on MR !162: a reply told the reviewer the description carried a rollout note it did
@@ -4429,7 +4549,7 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
         // description; an answer with a claim that does not hold is not posted, and its item goes back
         // to be decided with what failed. A check that could not run posts nothing: unchecked is not
         // confirmed.
-        let toPost = owed;
+        let toPost = owedNow;
         if (deps.checkAnswers !== undefined) {
           const at = await reopen(workId);
           const read = change.url !== undefined && deps.readChange !== undefined ? await deps.readChange(change.url) : undefined;
@@ -4439,7 +4559,7 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
             branch: change.branch,
             ...(at?.workdir === undefined ? {} : { workdir: at.workdir }),
             ...(read?.ok === true ? { description: read.value.description } : {}),
-            items: owed.map((o) => ({
+            items: owedNow.map((o) => ({
               actionItemId: o.actionItemId,
               summary: summaryOfItem.get(o.actionItemId) ?? o.actionItemId,
               outcome: o.outcome,
@@ -4449,7 +4569,7 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
           });
           if (!checked.ok) {
             refusals.push(`the answers owed on ${workId} could not be checked, so none was posted: ${checked.reason}`);
-            continue;
+            return;
           }
           const failed = checked.value.filter((c) => !c.confirmed);
           for (const c of failed) {
@@ -4464,9 +4584,10 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
               fact: { kind: "action_item_reopened", workId, actionItemId: c.actionItemId, why },
             });
           }
-          toPost = owed.filter((o) => checked.value.some((c) => c.actionItemId === o.actionItemId && c.confirmed));
-          if (toPost.length === 0) continue;
+          toPost = owedNow.filter((o) => checked.value.some((c) => c.actionItemId === o.actionItemId && c.confirmed));
+          if (toPost.length === 0) return;
         }
+        for (const t of toPost) triedThisRun.add(t.actionItemId);
         const r = await deps.answer({
           workId,
           ...(change.url === undefined ? {} : { changeUrl: change.url }),
@@ -4476,14 +4597,58 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
         });
         if (!r.ok) {
           refusals.push(`could not answer the items on ${workId}: ${r.reason}`);
-          continue;
+          return;
         }
         for (const x of r.value) {
           if ("error" in x) refusals.push(`could not answer ${x.actionItemId}: ${x.error}`);
           else answered(x.actionItemId, x);
         }
+    };
+
+    // ── WHAT IS ALREADY OWED GOES OUT FIRST ───────────────────────────────
+    // MEASURED on agentic-tpm, 2026-09-12 00:51: six answers on !163 and one on !162 were written,
+    // checked and ready, and sat unposted while a third request's session ran - the reviewers saw
+    // nothing for an hour. An answer owed from an earlier round needs nothing from this run's work,
+    // so it is posted BEFORE any session starts. The follow-up loop below then answers each request
+    // it works as soon as that request's own fix is pushed.
+    for (const [workId, items] of allItems) await answerOn(workId, items);
+
+    if (deps.followUp !== undefined) {
+      const open = new Map<string, readonly ActionItem[]>();
+      for (const [w, items] of allItems) {
+        const o = items.filter((i) => i.settled === undefined);
+        if (o.length > 0 && handedMap.has(w)) open.set(w, o);
       }
+      // MEASURED on agentic-tpm, 2026-09-12: three requests took 2h04m, every second of it one thing
+      // at a time, with nothing in the organization requiring that - there is an agent per hat, and
+      // the assignment engine will bind a hat for a second piece of work. `maxParallel` ferries
+      // drain this queue; at 1 it is the loop it replaces, in the same order.
+      const queue = followUpOrder(open).slice(0, Math.max(0, deps.maxFollowUps ?? 2));
+      // SAID, so "why was it not parallel" is answerable from the record instead of from a process
+      // list. How many requests were owed follow-up, how many this run may take, and how many at once.
+      note({
+        kind: OrgEventKind.ChangeProjected,
+        subjectId: goalId,
+        decision:
+          `${String(open.size)} request(s) owe follow-up, this run takes ${String(queue.length)} (${queue.join(", ")})` +
+          `, ${String(Math.max(1, deps.maxParallel ?? SEQUENTIAL))} at a time`,
+        atMs: warmedAt,
+      });
+      followUps.push(
+        ...(await ferry(queue, deps.maxParallel ?? SEQUENTIAL, async (workId) => {
+          const report = await followUpOne(workId, open.get(workId) ?? []);
+          // MEASURED the same night: !163's seven answers were written and its fix pushed at 00:21,
+          // and the reviewer would have seen nothing until the other requests' sessions finished.
+          // A request is answered as soon as what settles ITS items is in front of people.
+          await answerOn(workId, allItems.get(workId) ?? []);
+          return report;
+        })),
+      );
+    } else if ([...allItems.values()].some((items) => items.some((i) => i.settled === undefined))) {
+      // SAID, not silently kept: open items nobody is configured to look at are work waiting on nobody.
+      refusals.push("handed-off changes have open action items and nothing is configured to follow them up");
     }
+
 
     // ── REVIEW IS A BACK-AND-FORTH UNTIL IT COMES BACK CLEAN ──────────────
     // After a follow-up PUSHED a fix and its answers are posted, the organization asks for review

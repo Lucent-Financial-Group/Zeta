@@ -28,9 +28,9 @@
 import { spawn, spawnSync, type ChildProcess } from "node:child_process";
 import { closeSync, mkdirSync, openSync, readFileSync, renameSync, writeFileSync } from "node:fs";
 import { join, resolve } from "node:path";
-import { answersOwed, correlateFeedback, type FeedbackDelivery } from "./change-followup";
+import { answersOwed, correlateFeedback, followUpFailures, type FeedbackDelivery } from "./change-followup";
 import type { ChangeRequestConfig } from "./change-request";
-import { afterOpenKey, DEFAULT_REVIEW_ROUNDS } from "./change-request";
+import { afterOpenKey, DEFAULT_PIPELINE_ATTEMPTS, DEFAULT_REVIEW_ROUNDS } from "./change-request";
 import { foldActionItems, foldAfterOpen, foldAfterUpdate, foldHandedOffChanges } from "./org-fold";
 import type { OrgEvent } from "./org-event";
 import { pollFeedback, readFeedbackDir } from "./followup-commands";
@@ -47,6 +47,15 @@ export const FAST_FAILURE_MS = 60_000;
 /** How many of those in a row are retried at once before the backoff applies anyway. */
 export const FAST_FAILURES = 3;
 
+/**
+ * Follow-ups that could not complete, in a row, before the request is a person's rather than a retry.
+ *
+ * MEASURED on dev-portal, 2026-09-12: three runs, then three more, each starting a session that died
+ * on the repository's own startup context and left nothing decided. The reasons never changed, so
+ * nothing in the backoff could tell the difference between "not yet" and "not ever".
+ */
+export const FOLLOW_UP_FAILURES = 3;
+
 export interface WatchInput {
   readonly events: readonly OrgEvent[];
   /** What the profile's poller and its webhook directory report right now. */
@@ -55,6 +64,8 @@ export interface WatchInput {
   readonly defaultBase: string;
   /** Delivery ids a run has already been started for. */
   readonly seen: ReadonlySet<string>;
+  /** Runs already spent on each red pipeline, by action item id - see PipelinePolicy.UntilGreen. */
+  readonly pipelineTries?: Readonly<Record<string, number>>;
 }
 
 export interface WatchVerdict {
@@ -64,6 +75,10 @@ export interface WatchVerdict {
   readonly signature: string;
   /** Deliveries this run would be started for, to mark seen once it is. */
   readonly newDeliveries: readonly string[];
+  /** Red pipelines this run is being started for, to count the try once it is. */
+  readonly redPipelines: readonly string[];
+  /** Red pipelines the organization has tried enough times - a person is told, no run is started. */
+  readonly atLimit: readonly string[];
 }
 
 /** Is there anything the organization has not seen? Pure: everything it reads is handed in. */
@@ -80,7 +95,51 @@ export function watchReasons(input: WatchInput): WatchVerdict {
   const corr = correlateFeedback(input.deliveries, handed, input.defaultBase);
   const fresh = (id: string, bareId: string): boolean => !known.has(id) && !ownReplies.has(id) && !ownPosted.has(bareId) && !input.seen.has(id);
   const newDeliveries: string[] = [];
+  // ── A RED PIPELINE IS NOT SETTLED BY BEING EXPLAINED ──────────────────────
+  // Under `until_green` a failed pipeline stays a reason for as long as it is failing, however the
+  // organization decided about it - so a fix, a push, and the next pipeline all happen before the
+  // request stops asking. The cap is what stops it retrying a failure it cannot turn green: at the
+  // limit it is no longer a reason, and `atLimit` names it so a person is told instead.
+  const untilGreen = input.changeRequests?.pipelines === "until_green";
+  const attempts = input.changeRequests?.pipelineAttempts ?? DEFAULT_PIPELINE_ATTEMPTS;
+  const isPipeline = (kind: string): boolean => kind === "pipeline_failed";
+  const atLimit: string[] = [];
+  const redPipelines: string[] = [];
+  // A REQUEST WHOSE FOLLOW-UP KEEPS DYING IS NOT ASKED AGAIN. Its items stay open and are still the
+  // organization's to do - what stops is spending another session to find out it cannot start.
+  const hopeless = new Set<string>();
+  for (const [workId] of handed) {
+    const failed = followUpFailures(input.events, workId);
+    if (failed.inARow < FOLLOW_UP_FAILURES) continue;
+    hopeless.add(workId);
+    atLimit.push(`${workId}: ${String(failed.inARow)} follow-ups in a row could not complete - ${(failed.lastReason ?? "").slice(0, 200)}`);
+  }
+  const decidedOn = new Map([...items.values()].flat().map((i) => [i.actionItemId, i] as const));
   for (const m of corr.aboutChange) {
+    if (hopeless.has(m.workId)) continue;
+    if (untilGreen && isPipeline(m.delivery.itemKind)) {
+      // ── A DEFERRAL NAMES ITS OWN TRIGGER ────────────────────────────────────────────────────
+      // MEASURED on agentic-tpm !164, 2026-09-12: pipeline 189289 is an EXTERNAL status with no jobs
+      // to read, failing on the build agent's own MongoMemoryServer while the organization's
+      // verification of that same commit passed. The organization deferred it - correctly - and this
+      // asked again twice more about the same pipeline, which had not changed, before giving up and
+      // calling for a person. A deferred item waits for news, and a NEW pipeline is the news: it
+      // arrives with its own delivery id and is raised fresh.
+      if (decidedOn.get(m.actionItemId)?.deferred !== undefined) continue;
+      const tried = input.pipelineTries?.[m.actionItemId] ?? 0;
+      if (tried >= attempts) {
+        atLimit.push(`${m.actionItemId} on ${m.workId}`);
+        continue;
+      }
+      redPipelines.push(m.actionItemId);
+      if (fresh(m.actionItemId, m.delivery.deliveryId)) newDeliveries.push(m.actionItemId);
+      reasons.push(`the request of ${m.workId} is red: ${m.delivery.summary} (try ${String(tried + 1)} of ${String(attempts)})`);
+      // The try is NOT in the key: one pipeline is one reason, so the ordinary unchanged-reasons
+      // backoff spaces the tries out. A pipeline takes minutes to run, and a second session on the
+      // same red one five minutes later would be reading the same failure.
+      keys.push(`p:${m.actionItemId}`);
+      continue;
+    }
     if (!fresh(m.actionItemId, m.delivery.deliveryId)) continue;
     newDeliveries.push(m.actionItemId);
     reasons.push(`new ${m.delivery.itemKind} on ${m.workId}${m.delivery.author === undefined ? "" : ` by ${m.delivery.author}`}`);
@@ -94,7 +153,7 @@ export function watchReasons(input: WatchInput): WatchVerdict {
   }
 
   for (const [workId, list] of items) {
-    if (!handed.has(workId)) continue;
+    if (!handed.has(workId) || hopeless.has(workId)) continue;
     const replies = input.changeRequests?.replies;
     if (replies !== undefined && replies !== "none") {
       const { owed, withheld } = answersOwed(list);
@@ -120,6 +179,7 @@ export function watchReasons(input: WatchInput): WatchVerdict {
   const afterUpdate = foldAfterUpdate(input.events);
   const limit = input.changeRequests?.reviewRounds ?? DEFAULT_REVIEW_ROUNDS;
   for (const [workId, change] of handed) {
+    if (hopeless.has(workId)) continue;
     const steps = input.changeRequests?.afterUpdate ?? [];
     if (steps.length === 0 || change.commit === undefined || change.firstCommit === undefined || change.commit === change.firstCommit) continue;
     const rec = afterUpdate.get(workId);
@@ -131,6 +191,7 @@ export function watchReasons(input: WatchInput): WatchVerdict {
   }
 
   for (const [workId] of handed) {
+    if (hopeless.has(workId)) continue;
     const done = afterOpen.get(workId)?.done ?? new Set<string>();
     for (const step of input.changeRequests?.afterOpen ?? []) {
       if (done.has(afterOpenKey(step))) continue;
@@ -139,7 +200,7 @@ export function watchReasons(input: WatchInput): WatchVerdict {
     }
   }
 
-  return { reasons, signature: [...keys].sort().join("|"), newDeliveries };
+  return { reasons, signature: [...keys].sort().join("|"), newDeliveries, redPipelines, atLimit };
 }
 
 interface WatchState {
@@ -148,6 +209,8 @@ interface WatchState {
   readonly lastLaunchMs?: number;
   /** Consecutive runs that died before they ran. Cleared by one that ran. */
   readonly fastFailures?: number;
+  /** Runs spent on each red pipeline, by action item id. A pipeline is only red once. */
+  readonly pipelineTries?: Readonly<Record<string, number>>;
 }
 
 function readState(store: string): WatchState {
@@ -185,14 +248,20 @@ export function shouldLaunch(verdict: WatchVerdict, state: WatchState, nowMs: nu
 }
 
 export interface WatchDeps {
-  /** Starts the run; returns the child so its end (and its limit) can be watched. */
-  readonly start: (profile: RunProfile, logFile: string) => ChildProcess;
+  /**
+   * Starts the run; returns the child so its end (and its limit) can be watched.
+   *
+   * `reason` is why the watcher wanted this run, and it travels INTO the run so that every agent
+   * call the run makes records what it was spent on - money with its provenance attached, rather
+   * than a total nobody can account for later.
+   */
+  readonly start: (profile: RunProfile, logFile: string, reason: string) => ChildProcess;
   readonly nowMs: () => number;
 }
 
 /** The real start: run-org under this same runtime, its output to the store's run.log (the previous one kept). */
 export function startRunOrg(runOrgPath: string): WatchDeps["start"] {
-  return (profile, logFile) => {
+  return (profile, logFile, reason) => {
     try {
       renameSync(logFile, logFile.replace(/run\.log$/, `run-${new Date().toISOString().replace(/[:.]/g, "-")}.log`));
     } catch {
@@ -200,7 +269,7 @@ export function startRunOrg(runOrgPath: string): WatchDeps["start"] {
     }
     const fd = openSync(logFile, "a");
     const child = spawn(process.execPath, [runOrgPath, ...profile.args], {
-      env: { ...process.env, ...profile.env },
+      env: { ...process.env, ...profile.env, ORG_RUN_REASON: reason },
       stdio: ["ignore", fd, fd],
       shell: false,
       windowsHide: true,
@@ -250,21 +319,28 @@ export async function watchProfile(
     ...(org.changeRequests === undefined ? {} : { changeRequests: org.changeRequests }),
     defaultBase: profileArg(profile, "--base") ?? "main",
     seen: new Set(state.seen),
+    ...(state.pipelineTries === undefined ? {} : { pipelineTries: state.pipelineTries }),
   });
+  // A pipeline the organization has tried its allowance of times and not turned green is a person's
+  // to look at. Said once per look, in the log a person reads - never swallowed, never retried on.
+  for (const stuck of verdict.atLimit) log(store, `STILL RED after ${String(org.changeRequests?.pipelineAttempts ?? DEFAULT_PIPELINE_ATTEMPTS)} tries, and a person is needed: ${stuck}`);
   const decision = shouldLaunch(verdict, state, deps.nowMs(), profile.everyMinutes);
   const polledNote = "refusal" in polled && polled.refusal !== undefined ? ` (the poll said: ${polled.refusal})` : "";
   if (!decision.launch) return decision.why + polledNote;
 
   const startedMs = deps.nowMs();
-  const child = deps.start(profile, join(store, "run.log"));
+  const child = deps.start(profile, join(store, "run.log"), decision.why);
   running.set(profile.name, child);
   // The consecutive-fast-failure count is carried across the launch - dropping it here would reset
   // the cap on every retry, and the retrying would never stop.
+  const tries = { ...state.pipelineTries };
+  for (const id of verdict.redPipelines) tries[id] = (tries[id] ?? 0) + 1;
   writeState(store, {
     seen: [...state.seen, ...verdict.newDeliveries],
     lastSignature: verdict.signature,
     lastLaunchMs: deps.nowMs(),
     ...(state.fastFailures === undefined ? {} : { fastFailures: state.fastFailures }),
+    ...(Object.keys(tries).length === 0 ? {} : { pipelineTries: tries }),
   });
   log(store, `started a run (pid ${String(child.pid)}): ${decision.why}`);
   const limit = setTimeout(() => {
@@ -293,7 +369,15 @@ export async function watchProfile(
       // never contains anything an earlier run already handled.
       const claimed = new Set(verdict.newDeliveries);
       const { lastSignature: _forgotten, ...rest } = now;
-      const handedBack: WatchState = { ...rest, seen: now.seen.filter((id) => !claimed.has(id)), fastFailures: fails };
+      // The try it never took is given back with everything else it never saw.
+      const back = { ...now.pipelineTries };
+      for (const id of verdict.redPipelines) back[id] = Math.max(0, (back[id] ?? 0) - 1);
+      const handedBack: WatchState = {
+        ...rest,
+        seen: now.seen.filter((id) => !claimed.has(id)),
+        fastFailures: fails,
+        ...(Object.keys(back).length === 0 ? {} : { pipelineTries: back }),
+      };
       if (fails <= FAST_FAILURES) {
         writeState(store, handedBack);
         log(store, `it died in under ${String(FAST_FAILURE_MS / 1000)}s (${String(fails)} in a row) - it saw nothing, so the next look tries again`);
