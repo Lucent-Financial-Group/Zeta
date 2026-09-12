@@ -97,31 +97,38 @@ try {
 const SECTOR = 4096; // pad unit (works for 512 & 4096 drives)
 // The identity of the object the ISO is written to, taken from the DESCRIPTOR. Compared against
 // the read-back handle below so a re-resolution of `device` cannot verify a different object.
-let wroteTo: HandleIdentity = { dev: 0, ino: 0, known: false };
-{
-  const fd = openSync(device, "r+");
-  wroteTo = handleIdentity(fd);
-  try {
-    W(`writing keyed ISO -> ${device} ...`);
-    {
-      const chunk = 4 * 1024 * 1024;
-      const buf = Buffer.allocUnsafe(chunk);
-      let written = 0, srcPos = 0, lastBucket = -1;
-      while (srcPos < isoSize) {
-        const n = readSync(isoFd, buf, 0, chunk, srcPos);
-        if (n <= 0) break;
-        let len = n;
-        if (len % SECTOR !== 0) { const padded = Math.ceil(len / SECTOR) * SECTOR; buf.fill(0, len, padded); len = padded; }
-        writeSync(fd, buf, 0, len, written);
-        written += len; srcPos += n;
-        const bucket = Math.floor((srcPos / isoSize) * 10);
-        if (bucket !== lastBucket) { lastBucket = bucket; W(`  ${Math.floor((srcPos / isoSize) * 100)}% (${human(Math.min(srcPos, isoSize))}/${human(isoSize)})`); }
-      }
-      fsyncSync(fd);
-      W(`ISO write complete (${human(written)})`);
+//
+// `const`, ASSIGNED EXACTLY ONCE, AND THAT IS THE FIX -- NOT THE DELETION OF A DEAD LINE. This
+// was `let wroteTo = { dev: 0, ino: 0, known: false }` followed by an unconditional overwrite
+// inside a bare block, which the code-quality bot reported as a useless assignment. It was
+// right, and the useless value was the dangerous kind: `known: false` is the sentinel that the
+// verdict below reads as `unknown` and PASSES ON. So the dead initializer was a pre-armed
+// vacuous success -- any future edit that skipped the assignment (an early return, a guard, a
+// reordered block) would have silently downgraded the read-back to content-only while still
+// printing a verdict. Hoisting the descriptor makes `wroteTo` a `const` with no unassigned
+// state to fall back to, so that failure mode is unreachable rather than merely absent today.
+const writeFd = openSync(device, "r+");
+const wroteTo: HandleIdentity = handleIdentity(writeFd);
+try {
+  W(`writing keyed ISO -> ${device} ...`);
+  {
+    const chunk = 4 * 1024 * 1024;
+    const buf = Buffer.allocUnsafe(chunk);
+    let written = 0, srcPos = 0, lastBucket = -1;
+    while (srcPos < isoSize) {
+      const n = readSync(isoFd, buf, 0, chunk, srcPos);
+      if (n <= 0) break;
+      let len = n;
+      if (len % SECTOR !== 0) { const padded = Math.ceil(len / SECTOR) * SECTOR; buf.fill(0, len, padded); len = padded; }
+      writeSync(writeFd, buf, 0, len, written);
+      written += len; srcPos += n;
+      const bucket = Math.floor((srcPos / isoSize) * 10);
+      if (bucket !== lastBucket) { lastBucket = bucket; W(`  ${Math.floor((srcPos / isoSize) * 100)}% (${human(Math.min(srcPos, isoSize))}/${human(isoSize)})`); }
     }
-  } finally { closeSync(fd); }
-}
+    fsyncSync(writeFd);
+    W(`ISO write complete (${human(written)})`);
+  }
+} finally { closeSync(writeFd); }
 closeSync(isoFd);
 try { execFileSync("mountvol", ["/E"], { encoding: "utf8" }); W(`automount re-enabled (mountvol /E)`); } catch { /* best effort */ }
 
@@ -146,9 +153,9 @@ try { execFileSync("mountvol", ["/E"], { encoding: "utf8" }); W(`automount re-en
   // a physical stick, so nothing in the test suite executes it. The comparison it performs is
   // the one unit-tested in `io/handle-identity.test.ts`, including the identical-bytes case a
   // content check cannot see.
-  const fd = openSync(device, "r");
+  const readFd = openSync(device, "r");
   try {
-    const readBack = handleIdentity(fd);
+    const readBack = handleIdentity(readFd);
     const verdict = compareHandleIdentity(wroteTo, readBack);
     if (verdict === "different") {
       W(`device identity CHANGED between write and read-back: wrote ${describeHandleIdentity(wroteTo)}, read ${describeHandleIdentity(readBack)}`);
@@ -157,11 +164,11 @@ try { execFileSync("mountvol", ["/E"], { encoding: "utf8" }); W(`automount re-en
     W(verdict === "same"
       ? `device identity confirmed (${describeHandleIdentity(readBack)})`
       : `device identity UNKNOWN on this platform (${describeHandleIdentity(readBack)}) -- read-back is content-only`);
-    parseEspGeom(readRegion(fd, 0, 256 * 1024), W); // logs MBR/ESP layout
-    if (!verifyKeyInEsp(fd, body, W)) fail("device-readback-mismatch");
+    parseEspGeom(readRegion(readFd, 0, 256 * 1024), W); // logs MBR/ESP layout
+    if (!verifyKeyInEsp(readFd, body, W)) fail("device-readback-mismatch");
     W(`device verify OK — key is on the USB ESP`);
   } finally {
-    closeSync(fd);
+    closeSync(readFd);
   }
 }
 
