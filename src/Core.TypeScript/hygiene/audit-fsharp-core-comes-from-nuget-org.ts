@@ -31,6 +31,7 @@
  * the tree to stay checkable from a clone at a tag with nothing installed.
  */
 import { readdirSync, readFileSync } from "node:fs";
+import type { Dirent } from "node:fs";
 import { join } from "node:path";
 
 /**
@@ -56,7 +57,7 @@ export function findLockFiles(root: string): readonly string[] {
     // `withFileTypes` so the KIND arrives with the listing. Asking readdir for names and then
     // stat'ing each one is the readdir-then-stat race (CWE-367): an entry can vanish or change
     // kind between the two calls, and the listing already knew which it was.
-    let entries: ReturnType<typeof readdirSync<{ withFileTypes: true }>>;
+    let entries: readonly Dirent[];
     try {
       entries = readdirSync(dir, { withFileTypes: true });
     } catch {
