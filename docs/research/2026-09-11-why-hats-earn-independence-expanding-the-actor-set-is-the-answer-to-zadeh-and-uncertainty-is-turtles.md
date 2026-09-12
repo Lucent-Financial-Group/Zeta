@@ -31,11 +31,34 @@ Aaron, 2026-09-11:
 divide among, and the absurd conclusion does not survive. **The fix is not a better rule. It is
 more actors.**
 
-And that is exactly what a hat is for. A hat is a *role* whose holder is ranked separately per
-domain (`src/Core/TravelerRankLedger.fs`: TrueSkill-style, per `(traveler × hat-domain)`, held
-by others, never self-asserted, **domain-isolated** — standing earned as a verifier does not
-buy standing as a signer). Domain isolation is precisely what makes a second hat an
-*independent* actor rather than a correlated copy of the first.
+And that is exactly what a hat is for.
+
+**A hat is not a role, and the avoidance is deliberate.** Aaron, correcting this document's
+first draft:
+
+> *"roles is the human term — I just try to avoid it because it gets tangled in **identity vs
+> bounded-duration job** for the named entity/agent. **Names are what store our memories, not
+> hats.**"*
+
+So the vocabulary carries a distinction the human word collapses:
+
+| | what it is | what it holds |
+|---|---|---|
+| **name** | the persistent identity | **memory** — what remains (`agents are what remain, actors are what act`) |
+| **hat** | a **bounded-duration job** the named entity takes on | standing *in that domain*, for as long as it is worn |
+
+A hat is temporary and a name is not, which is why a hat can be *earned and lost* without the
+entity being destroyed — and why "wearing two hats" is not two identities. Calling a hat a role
+imports the human muddle where a job title and a person's identity blur together, and that
+muddle is precisely what a memory-preserving substrate cannot afford (§5 Memory Preservation:
+identity transitions never silently destroy memory — **because memory is keyed to the name, not
+the hat**).
+
+With that fixed, the mechanism: a hat's holder is ranked separately per domain
+(`src/Core/TravelerRankLedger.fs`: TrueSkill-style, per `(traveler × hat-domain)`, held by
+others, never self-asserted, **domain-isolated** — standing earned as a verifier does not buy
+standing as a signer). Domain isolation is precisely what makes a second hat an *independent*
+actor rather than a correlated copy of the first.
 
 > **So hats earn independence because independence is what defeats the two-party pathology.**
 > The isolation is not bureaucratic tidiness; it is the property that makes "expand the actor
@@ -59,15 +82,42 @@ suppresses the Zadeh explosion" is arithmetic and can be checked directly. The c
 and it has a measurement: whether verdicts from different hat-domains are less correlated than
 verdicts within one. `TravelerRankLedger` already holds the data.
 
-**Standing caution, because this is the rule's own trap.** Lumen's §7.5 concluded that for
+### Dilution is the POINT, not the caveat — blame should be hard
+
+The first draft of this document recorded dilution as a weakness: Lumen's §7.5 says that for
 `r < 0` *"no default is defensible without measurement — every rule in the family is a
-different answer to 'whose fault is the conflict', and that is a source-reliability question
-the algebra cannot answer."* Expanding the actor set does not answer that question either; it
-*dilutes* it. A quorum of correlated actors is one actor wearing several hats, which is the
-Sybil shape, and the defence against it is already built and named
-(`privacy-budget-is-hard-money-earned-by-others.md`: contribution does not scale with copies;
-`SocietyUsefulWork.fs` prices clones near one agent's worth). **Independence must still be
-earned; this observation says what it is *for*.**
+different answer to 'whose fault is the conflict'"*, and I noted that expanding the actor set
+does not answer that question, it merely *dilutes* it.
+
+Aaron inverted it, and he is right:
+
+> *"**dilution is the point when it comes to blame. blame should be hard, not binary.**"*
+
+Read as a design requirement rather than a concession, that is sharp. A fusion rule that
+*localises* blame makes attribution **binary** — some party is at fault, cleanly — and binary
+attribution is exactly what
+[`never-assume-malice-where-mistake-is-possible.md`](../../.claude/rules/never-assume-malice-where-mistake-is-possible.md)
+refuses: it turns a defect into a verdict about a party, and it does so on the strength of an
+algebraic artifact rather than evidence. Expanding the actor set spreads the conflict mass
+across more parties, and the spreading **is the correct behaviour** — it makes blame *hard to
+concentrate*, which is the honest state when the evidence does not concentrate it either.
+
+"Hard, not binary" also matches that rule's carved threshold, which is **conjunctive**:
+repeated **and** irreversible **and** harming other travelers. All three, or the answer is
+mistake. A blame signal that is difficult to accumulate is what makes a conjunctive threshold
+meaningful — a binary one would trip on the first arithmetic accident.
+
+> **So the residual does double duty.** It keeps uncertainty open about the *claim* (Lumen §5),
+> and it keeps blame diffuse about the *claimant*. Discarding it collapses both at once, which
+> is what makes Dempster's `1−K` normalisation worse than a mere accuracy bug: it manufactures
+> certainty **and** it manufactures a culprit.
+
+**What still has to be earned.** Dilution is only honest if the actors are genuinely
+independent. A quorum of correlated actors is one actor wearing several hats — the Sybil shape
+— and diluting blame across copies of one party is laundering, not fairness. The defence is
+built and named (`privacy-budget-is-hard-money-earned-by-others.md`: contribution does not
+scale with copies; `SocietyUsefulWork.fs` prices clones near one agent's worth). **Independence
+must still be earned; this observation says what it is *for* — and now also what it protects.**
 
 ---
 
@@ -202,6 +252,61 @@ legitimate hypothesis source and an illegitimate conclusion); each candidate str
 pass the invariant test on its own before it may carry the word.
 
 ---
+
+## 6. No generator is root — many towers, joined, addressed by ZetaId
+
+Aaron, on being told that "bilattice seems right for many of our structures" is a generator
+rather than a conclusion:
+
+> *"yes — zeta is all about **generator + join**, like **rx join**, addressed by **zetaids**.
+> **no generator is root** — we have **many roots / towers**."*
+
+**This corrects a reading of a carved rule, and the correction matters.**
+[`only-the-irreducible-is-primitive-generate-the-rest.md`](../../.claude/rules/only-the-irreducible-is-primitive-generate-the-rest.md)
+says *"only the irreducible is primitive… generate the rest from the irreducible generator (the
+**free object**)"*, and it is easy — I did it in the same breath — to read that as **one**
+generator at the bottom of everything. Aaron says there is no such bottom. There are **many
+towers**, each with its own generator, and what relates them is not containment in a single
+root but **join**.
+
+The distinction is not pedantic; it changes what the substrate is:
+
+| single-root reading | many-towers reading |
+|---|---|
+| one free object, everything is a quotient of it | many free objects, each irreducible *in its own tower* |
+| composition is *specialisation downward* | composition is **join across towers** |
+| identity of a structure = its derivation path from the root | identity = a **ZetaId**, minted, conflict-free, not positional |
+
+And the third row is why ZetaId is load-bearing here rather than incidental. If there were one
+root, a structure could be *addressed by its path* from that root. With many towers there is no
+canonical path, so addressing has to be **name-based and mint-based** — which is exactly what
+`workitems-mint-with-zetaid.md` already requires for work items and what
+`docs/DECISIONS/2026-08-23-zetaid-keyed-agenda-declarations.md` extends to agendas. The same
+argument that killed sequential `B-NNNN` ids (they need cross-agent consensus, which does not
+scale to concurrent agents) applies to structures: **a positional address needs a single root,
+and a single root is a central point of coordination** — manifesto §1.
+
+**The Rx anchor is exact and worth keeping.** Erik Meijer's Rx makes `join` a first-class
+combinator over independently-produced streams: the streams are not sub-cases of one master
+stream, they are peers, and `join` is what relates them without subordinating either. Meijer is
+already a named root anchor for this repo (Enumerable/Observable duality). *Generator + join,
+addressed by id* is that shape applied to structure rather than to events.
+
+**Consequence for the belief pair, and it is immediate.** Lumen's analysis asked whether the
+pair is admissible as a weight for *the* universal tensor. Under the many-towers reading the
+question is better posed as: **is it a tower of its own that joins with the existing ones?** The
+answer already looks like yes-and-separately — it is a lawful semiring only under the
+possibilistic operations, it has a *star without an additive inverse* (a rung the current
+`ISemiring :> IRing :> IStarRing` tower cannot express), and its natural structure is a
+**bilattice with two orders** where `ISemiring` has one `(Add, Mul)` slot. Those are three
+independent signs that it does not fit *inside* the existing tower. Under a single-root reading
+that is a failure; under many-towers it is the ordinary case, and the work is the **join**.
+
+**Register: CORRECTION to a reading, on the author's own statement.** The carved rule is
+unchanged — it says the *irreducible* is primitive, not that there is exactly one irreducible.
+What is corrected is my gloss on it. Whether the many towers here actually join in a
+mathematically load-bearing sense (a colimit? a fibration? merely a naming convention?) is
+**open and unmeasured**, and naming it as open is the honest end of this section.
 
 ## Open, routed elsewhere
 
