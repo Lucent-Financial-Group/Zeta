@@ -4706,7 +4706,12 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
       // at a time, with nothing in the organization requiring that - there is an agent per hat, and
       // the assignment engine will bind a hat for a second piece of work. `maxParallel` ferries
       // drain this queue; at 1 it is the loop it replaces, in the same order.
-      const queue = followUpOrder(open).slice(0, Math.max(0, deps.maxFollowUps ?? 2));
+      const ordered = followUpOrder(open);
+      const queue = ordered.slice(0, Math.max(0, deps.maxFollowUps ?? 2));
+      // WHAT THE CAP LEFT, BY NAME. The count was already said; which requests are waiting was not,
+      // so "the organization is not answering that reviewer" and "the organization took three and
+      // that was the fourth" read identically from the log.
+      const waiting = ordered.slice(queue.length);
       // SAID, so "why was it not parallel" is answerable from the record instead of from a process
       // list. How many requests were owed follow-up, how many this run may take, and how many at once.
       note({
@@ -4714,7 +4719,8 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
         subjectId: goalId,
         decision:
           `${String(open.size)} request(s) owe follow-up, this run takes ${String(queue.length)} (${queue.join(", ")})` +
-          `, ${String(Math.max(1, deps.maxParallel ?? SEQUENTIAL))} at a time`,
+          `, ${String(Math.max(1, deps.maxParallel ?? SEQUENTIAL))} at a time` +
+          (waiting.length === 0 ? "" : `; ${String(waiting.length)} wait for a later run (${waiting.join(", ")})`),
         atMs: warmedAt,
       });
       followUps.push(

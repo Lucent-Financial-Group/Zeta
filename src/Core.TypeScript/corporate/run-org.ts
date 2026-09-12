@@ -43,6 +43,7 @@
  */
 
 import { MemoryTier } from "./memory";
+import { syncedFolderWarnings } from "./synced-folder";
 import { lifeSummary, lifeTick, writeMemory, type HoldMeeting, type Study } from "./run-life";
 import { DEFAULT_STUDY_BUDGET, remainingStudy } from "./study-session";
 import { isPresence, type HatPresence } from "./org-life";
@@ -1844,6 +1845,17 @@ export async function main(argv: readonly string[]): Promise<number> {
       return 2;
     }
     releaseOnExit(lock.release);
+  }
+  // ── WHAT IS WATCHING THE FILES THIS RUN IS ABOUT TO CHURN ─────────────────────────────────────
+  // A sync client under the store, the checkout or the worktrees turns every git command, every
+  // test run and every throwaway review copy into upload traffic. Said once, with the path, and
+  // never refused: where somebody keeps their work is their decision, not the organization's.
+  for (const line of syncedFolderWarnings({
+    "the event store": args.store,
+    "the checkout": args.git,
+    "the worktrees": args.worktrees,
+  })) {
+    console.error(`note: ${line}`);
   }
 
   // ── EVERY AGENT THIS RUN SPAWNS IS TOLD WHERE ITS WORLDVIEW IS ─────────────
