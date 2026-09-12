@@ -1,0 +1,19 @@
+{
+  "pr_number": 17310,
+  "archive_path": "docs/history/pr-reviews/2026/09/12/PR-17310-feat-ci-measure-nuget-lock-stability-across-the-gate-s-five-platform-legs.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7uGE2c",
+    "comment:PRRC_kwDOSF9kNM7uGE2p",
+    "comment:PRRC_kwDOSF9kNM7uGE2y",
+    "thread:PRRT_kwDOSF9kNM6hrx86",
+    "thread:PRRT_kwDOSF9kNM6hrx8l",
+    "thread:PRRT_kwDOSF9kNM6hrx8x"
+  ],
+  "fetched_at": "2026-09-12T16:20:57.027Z",
+  "schema_version": "v1",
+  "commit_sha": "243f9c69d6fddffe433f79cb0e5efadfd6152c48",
+  "title": "feat(ci): measure NuGet lock stability across the gate's five platform legs",
+  "state": "MERGED",
+  "merged_at": "2026-09-12T16:20:09Z",
+  "head_ref": "shadow/lock-cross-os-stability"
+}

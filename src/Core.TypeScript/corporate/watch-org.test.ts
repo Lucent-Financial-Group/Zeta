@@ -96,6 +96,78 @@ describe("IS THERE ANYTHING THE ORGANIZATION HAS NOT SEEN?", () => {
   });
 });
 
+describe("A RED PIPELINE IS NOT SETTLED BY BEING EXPLAINED", () => {
+  const red = {
+    deliveryId: "pipeline-55-failed",
+    source: "gitlab",
+    itemKind: "pipeline_failed",
+    summary: "the request's pipeline 55 failed at bcc152b0aa11",
+    changeUrl: "https://git.example/p/-/merge_requests/164",
+  };
+  // The organization decided about it already - raised, then declined as a flake. That is what
+  // happened on agentic-tpm !164, and the request stayed red.
+  const declined = [
+    ev({ kind: "action_item_raised", workId: "task-40", actionItemId: "gitlab:pipeline-55-failed", source: "gitlab", itemKind: "pipeline_failed", summary: "s" }),
+    ev({ kind: "action_item_settled", workId: "task-40", actionItemId: "gitlab:pipeline-55-failed", outcome: "declined", how: "a MongoMemoryServer flake; green locally at the same SHA", respond: true }),
+    ev({ kind: "action_item_answered", workId: "task-40", actionItemId: "gitlab:pipeline-55-failed", replyId: "note-51", resolved: true }),
+  ];
+  const untilGreen = { ...cr, pipelines: "until_green" as const };
+
+  test("under until_green a failing pipeline is still a reason, however the organization decided about it", () => {
+    const v = watchReasons(input({ events: [handedOff, aireviewDone, ...declined], deliveries: [red], changeRequests: untilGreen, seen: new Set(["gitlab:pipeline-55-failed"]) }));
+    expect(v.reasons).toEqual(["the request of task-40 is red: the request's pipeline 55 failed at bcc152b0aa11 (try 1 of 3)"]);
+    expect(v.redPipelines).toEqual(["gitlab:pipeline-55-failed"]);
+  });
+
+  test("under flag_only the same pipeline, already decided, is not news again", () => {
+    const v = watchReasons(input({ events: [handedOff, aireviewDone, ...declined], deliveries: [red], changeRequests: { ...cr, pipelines: "flag_only" as const } }));
+    expect(v.reasons).toEqual([]);
+  });
+
+  test("A DEFERRAL NAMES ITS OWN TRIGGER: a pipeline the organization decided to wait on is not asked about again until a NEW one fails", () => {
+    // MEASURED on agentic-tpm !164, 2026-09-12: an EXTERNAL pipeline with no jobs to read, failing on
+    // the build agent's own MongoMemoryServer while the organization's verification of that same
+    // commit passed. It deferred - correctly - and was asked twice more about the same pipeline.
+    const waited = [
+      ev({ kind: "action_item_raised", workId: "task-40", actionItemId: "gitlab:pipeline-55-failed", source: "gitlab", itemKind: "pipeline_failed", summary: "s" }),
+      ev({ kind: "action_item_deferred", workId: "task-40", actionItemId: "gitlab:pipeline-55-failed", why: "not reproducible here: our own verification of this commit passes; the next pipeline is the trigger" }),
+    ];
+    const v = watchReasons(input({ events: [handedOff, aireviewDone, ...waited], deliveries: [red], changeRequests: untilGreen }));
+    expect(v.reasons).toEqual([]);
+    expect(v.redPipelines).toEqual([]);
+    // ...and a NEW pipeline failing IS news, raised fresh.
+    const next = { ...red, deliveryId: "pipeline-56-failed", summary: "the request's pipeline 56 failed at 9aa1b2c3" };
+    const after = watchReasons(input({ events: [handedOff, aireviewDone, ...waited], deliveries: [next], changeRequests: untilGreen }));
+    expect(after.reasons).toEqual(["the request of task-40 is red: the request's pipeline 56 failed at 9aa1b2c3 (try 1 of 3)"]);
+  });
+
+  test("a pipeline that went green stops being a reason, and the tries do not carry to the next one", () => {
+    const v = watchReasons(input({ events: [handedOff, aireviewDone, ...declined], deliveries: [], changeRequests: untilGreen, pipelineTries: { "gitlab:pipeline-55-failed": 3 } }));
+    expect(v.reasons).toEqual([]);
+    const next = { ...red, deliveryId: "pipeline-56-failed", summary: "the request's pipeline 56 failed at 9aa1b2c3" };
+    const after = watchReasons(input({ events: [handedOff, aireviewDone, ...declined], deliveries: [next], changeRequests: untilGreen, pipelineTries: { "gitlab:pipeline-55-failed": 3 } }));
+    expect(after.reasons).toEqual(["the request of task-40 is red: the request's pipeline 56 failed at 9aa1b2c3 (try 1 of 3)"]);
+  });
+
+  test("SPENT, NOT SPINNING: after its allowance the pipeline is a person's, and no run is started for it", () => {
+    const v = watchReasons(input({ events: [handedOff, aireviewDone, ...declined], deliveries: [red], changeRequests: untilGreen, pipelineTries: { "gitlab:pipeline-55-failed": 3 } }));
+    expect(v.reasons).toEqual([]);
+    expect(v.atLimit).toEqual(["gitlab:pipeline-55-failed on task-40"]);
+    // The allowance is the organization's to state.
+    const generous = watchReasons(input({ events: [handedOff, aireviewDone, ...declined], deliveries: [red], changeRequests: { ...untilGreen, pipelineAttempts: 5 }, pipelineTries: { "gitlab:pipeline-55-failed": 3 } }));
+    expect(generous.reasons).toEqual(["the request of task-40 is red: the request's pipeline 55 failed at bcc152b0aa11 (try 4 of 5)"]);
+    expect(generous.atLimit).toEqual([]);
+  });
+
+  test("an organization that has not stated a pipeline policy is not treated as having said `none`", () => {
+    // NOT STATED is refused by run-org, never quietly read as "pipelines do not matter here". What a
+    // watcher does with it is the old behaviour: raised once, like any other delivery.
+    const v = watchReasons(input({ events: [handedOff, aireviewDone], deliveries: [red] }));
+    expect(v.reasons).toEqual(["new pipeline_failed on task-40"]);
+    expect(v.redPipelines).toEqual([]);
+  });
+});
+
 describe("THE SAME REASONS DO NOT START THE SAME RUN OVER AND OVER", () => {
   const v = watchReasons(input({ deliveries: [comment("note-9")] }));
   test("unchanged reasons inside the retry window: no run; after it: one more try", () => {
@@ -351,5 +423,49 @@ describe("THE WATCHER KEEPS THE REVIEW LOOP MOVING", () => {
     expect(after.reasons).toEqual(["gitlab:note-3 on task-40 was reopened"]);
     expect(after.signature).not.toBe(before.signature);
     expect(shouldLaunch(after, { seen: [], lastSignature: before.signature, lastLaunchMs: 0 }, 60_000, 5).launch).toBe(true);
+  });
+});
+
+describe("A REQUEST WHOSE FOLLOW-UP KEEPS DYING IS A PERSON'S, NOT ANOTHER ATTEMPT", () => {
+  // MEASURED on dev-portal, 2026-09-12: every session in that repository died the same way - its own
+  // CLAUDE.md transitively imports 499KB of docs, so a session starts with ~196,000 tokens already
+  // written, manages four tool calls, reports "autocompact is thrashing", and exits. Six minutes and
+  // about six dollars, every thirty minutes, for nothing.
+  const died = (n: number) =>
+    Array.from({ length: n }, () =>
+      ({ id: "e", kind: "change_projected", subjectId: "task-40", decision: "the follow-up of task-40 did not complete: the follow-up session exited 4: Autocompact is thrashing", atMs: 1, evidenceRefs: [], supervisorChain: [] }) as unknown as OrgEvent,
+    );
+  const ranFine = { id: "e", kind: "change_projected", subjectId: "task-40", decision: "followed up task-40: 2 of 2 item(s) decided", atMs: 1, evidenceRefs: [], supervisorChain: [] } as unknown as OrgEvent;
+  const raised = ev({ kind: "action_item_raised", workId: "task-40", actionItemId: "gitlab:note-9", source: "gitlab", itemKind: "comment", summary: "s" });
+
+  // A SECOND request, healthy, on its own branch: silencing one must silence exactly one.
+  const otherHandedOff = ev({ kind: "change_handed_off", workId: "task-41", changeId: "c2", branch: "defect/y", url: "https://git.example/p/-/merge_requests/165", base: "master", commit: "def" });
+  const otherComment = { deliveryId: "note-77", source: "gitlab", itemKind: "diff_comment", summary: "and this one", author: "reviewer", branch: "defect/y" };
+
+  test("after three failures in a row it stops asking about THAT request, and says what it kept failing on", () => {
+    const v = watchReasons(input({
+      events: [handedOff, aireviewDone, otherHandedOff, raised, ...died(3)],
+      // An UNRAISED comment on the failing request: even fresh news about it is not asked again.
+      deliveries: [comment("note-fresh"), otherComment],
+    }));
+    expect(v.reasons.some((r) => r.includes("note-fresh"))).toBe(false);
+    expect(v.reasons.some((r) => r.includes("task-40"))).toBe(false);
+    expect(v.atLimit.length).toBe(1);
+    expect(v.atLimit[0]).toContain("3 follow-ups in a row could not complete");
+    expect(v.atLimit[0]).toContain("Autocompact is thrashing");
+    // ...and the OTHER request is untouched: one request's history is its own.
+    expect(v.reasons.some((r) => r.includes("task-41"))).toBe(true);
+  });
+
+  test("two failures is not a pattern - it is still the organization's to try", () => {
+    const v = watchReasons(input({ events: [handedOff, aireviewDone, raised, ...died(2)], deliveries: [comment("note-9")] }));
+    expect(v.reasons.length).toBeGreaterThan(0);
+    expect(v.atLimit).toEqual([]);
+  });
+
+  test("a follow-up that DID run clears the history: a request that works again is not carrying one", () => {
+    const v = watchReasons(input({ events: [handedOff, aireviewDone, raised, ...died(3), ranFine, ...died(1)], deliveries: [comment("note-9")] }));
+    expect(v.reasons.length).toBeGreaterThan(0);
+    expect(v.atLimit).toEqual([]);
   });
 });

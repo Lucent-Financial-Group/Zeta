@@ -1,0 +1,14 @@
+{
+  "id": "080d04b238ab3810a01300080c68d10f",
+  "at": "2026-09-12T15:40:36.071Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M2B4E5B6087G0R002DHDFCH",
+    "type": "bug",
+    "title": "NU1004: Core.CSharp.Tests lock still records 10.0.11 after CPM 10.0.12",
+    "slug": "nu1004-core-csharp-tests-lock-still-records-10-0-11-after-cp",
+    "priority": "P1",
+    "filename": "081M2B4E5B6087G0R002DHDFCH-nu1004-core-csharp-tests-lock-still-records-10-0-11-after-cp.md"
+  }
+}

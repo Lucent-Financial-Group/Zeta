@@ -1,0 +1,12 @@
+{
+  "pr_number": 17358,
+  "archive_path": "docs/history/pr-reviews/2026/09/12/PR-17358-deps-bump-the-nuget-minor-patch-group-with-8-updates.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-12T14:02:44.761Z",
+  "schema_version": "v1",
+  "commit_sha": "22f9d4548349ed7e3a70e1a4912228be46ae031a",
+  "title": "deps: Bump the nuget-minor-patch group with 8 updates",
+  "state": "MERGED",
+  "merged_at": "2026-09-12T14:02:02Z",
+  "head_ref": "dependabot/nuget/bench/Benchmarks/nuget-minor-patch-06c604c8a5"
+}

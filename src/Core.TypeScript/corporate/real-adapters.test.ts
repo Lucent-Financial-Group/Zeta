@@ -979,6 +979,390 @@ describe("AFTER THE HANDOFF: THE REQUEST SAYS WHAT THE ORGANIZATION CONFIGURED, 
     }
   }, 120_000);
 
+  test("A ROUND RUNS THE STAGES THE ORGANIZATION DECIDED IT OWES - and the usual ones when it decides nothing", async () => {
+    // MEASURED on agentic-tpm, 2026-09-12: a round answering one review comment ran the same two
+    // agent reviews as the original work - about thirty minutes of the most expensive model.
+    const repo = realRepo();
+    const git = (at: string, ...a: string[]) => execFileSync("git", a, { cwd: at, encoding: "utf-8" });
+    const inbox = realInbox();
+    const wt = mkdtempSync(join(tmpdir(), "zeta-plan-wt-"));
+    const scratch = mkdtempSync(join(tmpdir(), "zeta-plan-"));
+    const h = stubCounting(scratch);
+    const events: OrgEvent[] = [];
+    try {
+      const change = () => gitWorktreeChangeControl({ cwd: repo, baseBranch: "main", worktreeRoot: wt, handoff: { command: h.command, args: h.args } });
+      const noComment = { postComment: async () => ({ ok: true as const, value: {}, evidence: [] }) };
+      const base = { settings: [], changeRequests, describeChange: fullDescription, ...noComment, onEvent: (e: OrgEvent) => events.push(e) };
+      const first = await runAgainst(repo, inbox, { change: change() }, base);
+      const workId = first.changesHandedOff[0] as string;
+      const handed = foldHandedOffChanges(events);
+      const reviewed: string[] = [];
+      let asked: Record<string, unknown> | undefined;
+      // Each round brings a NEW comment: the same delivery twice is not news, and would raise nothing.
+      let note = 0;
+      const round = (over: Record<string, unknown>) => {
+        note += 1;
+        return runAgainst(repo, inbox, { change: change() }, {
+          ...base,
+          priorCascade: first.cascade,
+          alreadyHandedOff: new Set(handed.keys()),
+          handedOffChanges: handed,
+          actionItems: foldActionItems(events),
+          afterOpenDone: foldAfterOpen(events),
+          feedback: [{ deliveryId: "note-" + String(note), source: "gitlab", itemKind: "comment", summary: "rename the flag", author: "reviewer", branch: handed.get(workId)?.branch as string }],
+          defaultBase: "main",
+          verifyChange: async () => ({ ok: true as const, value: "green", evidence: [] }),
+          answer: async (r: AnswerRequest) => ({ ok: true as const, value: r.items.map((i) => ({ actionItemId: i.actionItemId, replyId: "note-9", resolved: true })), evidence: [] }),
+          reviewFollowUp: async (r: FollowUpReviewRequest) => {
+            reviewed.push(r.gate);
+            return { ok: true as const, value: { approved: true, reason: "fine" }, evidence: [] };
+          },
+          followUp: async (req: { items: readonly { actionItemId: string }[]; workdir?: string }) => {
+            writeFileSync(join(req.workdir as string, "note-" + String(note) + ".md"), "renamed" + String.fromCharCode(10));
+            git(req.workdir as string, "add", "-A");
+            git(req.workdir as string, "commit", "-q", "-m", "rename the flag");
+            return { ok: true as const, value: { decisions: req.items.map((i) => ({ actionItemId: i.actionItemId, outcome: "addressed" as const, how: "renamed it" })), syncWithTarget: false, summary: "s" }, evidence: [] };
+          },
+          ...over,
+        });
+      };
+
+      // DECIDED: one stage, and only that stage's reviewer is asked.
+      await round({
+        planFollowUp: async (r: Record<string, unknown>) => {
+          asked = r;
+          return { ok: true as const, value: { gates: ["implementation_review"], why: "a rename in one file; qa_uat judges behaviour and none changed" }, evidence: [] };
+        },
+      });
+      expect(reviewed).toEqual(["implementation_review"]);
+      // The decision was made from what the round is actually about.
+      expect((asked?.["because"] as { kind: string }[])[0]?.kind).toBe("comment");
+      expect(asked?.["usual"]).toEqual(["implementation_review", "qa_uat"]);
+      expect((asked?.["available"] as string[]).length).toBeGreaterThan(2);
+      // And it is on the record, with its reason, for the next round and for a person.
+      expect(events.some((e) => (e.decision ?? "").includes("this round owes implementation_review") && (e.decision ?? "").includes("qa_uat judges behaviour"))).toBe(true);
+
+      // NOT DECIDED: the round owes what it always did.
+      reviewed.length = 0;
+      await round({});
+      expect(reviewed).toEqual(["implementation_review", "qa_uat"]);
+
+      // REFUSED: likewise - reviewing less is a decision, never a failure to answer.
+      reviewed.length = 0;
+      await round({ planFollowUp: async () => ({ ok: false as const, reason: "the planner exited 2" }) });
+      expect(reviewed).toEqual(["implementation_review", "qa_uat"]);
+    } finally {
+      for (const d of [repo, inbox, wt, scratch]) rmSync(d, { recursive: true, force: true });
+    }
+  }, 240_000);
+
+  test("A FOLLOW-UP THAT COULD NOT RUN LEAVES A MARK: the run says so instead of ending quietly", async () => {
+    // MEASURED on dev-portal, 2026-09-12: runs at 03:53, 04:55 and 05:30 each took a request, ran a
+    // session for about six minutes, decided nothing, and left NOTHING in the record - no event, no
+    // cost line, no reason. Three rounds of silence read exactly like an organization with no work.
+    const repo = realRepo();
+    const inbox = realInbox();
+    const wt = mkdtempSync(join(tmpdir(), "zeta-fufail-wt-"));
+    const scratch = mkdtempSync(join(tmpdir(), "zeta-fufail-"));
+    const h = stubCounting(scratch);
+    const events: OrgEvent[] = [];
+    try {
+      const change = () => gitWorktreeChangeControl({ cwd: repo, baseBranch: "main", worktreeRoot: wt, handoff: { command: h.command, args: h.args } });
+      const noComment = { postComment: async () => ({ ok: true as const, value: {}, evidence: [] }) };
+      const base = { settings: [], changeRequests, describeChange: fullDescription, ...noComment, onEvent: (e: OrgEvent) => events.push(e) };
+      const first = await runAgainst(repo, inbox, { change: change() }, base);
+      const workId = first.changesHandedOff[0] as string;
+      const handed = foldHandedOffChanges(events);
+      const second = await runAgainst(repo, inbox, { change: change() }, {
+        ...base,
+        priorCascade: first.cascade,
+        alreadyHandedOff: new Set(handed.keys()),
+        handedOffChanges: handed,
+        actionItems: foldActionItems(events),
+        afterOpenDone: foldAfterOpen(events),
+        feedback: [{ deliveryId: "note-1", source: "gitlab", itemKind: "comment", summary: "please explain the race", author: "reviewer", branch: handed.get(workId)?.branch as string }],
+        defaultBase: "main",
+        // The shape a dying session really has: it ran, and answered nothing.
+        followUp: async () => ({ ok: false as const, reason: "the follow-up session exited 4: Claude Code returned no structured answer" }),
+      });
+      expect(second.followUps?.[0]?.refused.some((r) => r.includes("did not complete"))).toBe(true);
+      // AND IT IS IN THE RECORD, not only in a report nobody keeps.
+      expect(events.some((e) => (e.decision ?? "").includes("did not complete") && (e.decision ?? "").includes("no structured answer"))).toBe(true);
+    } finally {
+      for (const d of [repo, inbox, wt, scratch]) rmSync(d, { recursive: true, force: true });
+    }
+  }, 240_000);
+
+  test("RED CODE IS NOT REVIEWED: the suite runs first, and a failing one costs no reviewer at all", async () => {
+    // MEASURED on agentic-tpm !164, 2026-09-12: two reviewers spent 35 minutes approving 8c2767c4,
+    // and the verifier then found new failures in workflowStage.test.ts and refused the push. The
+    // cheap judge that cannot be talked round goes first.
+    const repo = realRepo();
+    const git = (at: string, ...a: string[]) => execFileSync("git", a, { cwd: at, encoding: "utf-8" });
+    const inbox = realInbox();
+    const wt = mkdtempSync(join(tmpdir(), "zeta-red-wt-"));
+    const scratch = mkdtempSync(join(tmpdir(), "zeta-red-"));
+    const h = stubCounting(scratch);
+    const events: OrgEvent[] = [];
+    try {
+      const change = () => gitWorktreeChangeControl({ cwd: repo, baseBranch: "main", worktreeRoot: wt, handoff: { command: h.command, args: h.args } });
+      const noComment = { postComment: async () => ({ ok: true as const, value: {}, evidence: [] }) };
+      const base = { settings: [], changeRequests, describeChange: fullDescription, ...noComment, onEvent: (e: OrgEvent) => events.push(e) };
+      const first = await runAgainst(repo, inbox, { change: change() }, base);
+      const workId = first.changesHandedOff[0] as string;
+      const handed = foldHandedOffChanges(events);
+      const order: string[] = [];
+      const second = await runAgainst(repo, inbox, { change: change() }, {
+        ...base,
+        priorCascade: first.cascade,
+        alreadyHandedOff: new Set(handed.keys()),
+        handedOffChanges: handed,
+        actionItems: foldActionItems(events),
+        afterOpenDone: foldAfterOpen(events),
+        feedback: [{ deliveryId: "note-1", source: "gitlab", itemKind: "comment", summary: "please explain the race", author: "reviewer", branch: handed.get(workId)?.branch as string }],
+        defaultBase: "main",
+        verifyChange: async () => {
+          order.push("verify");
+          return { ok: false as const, reason: "NEW FAILURE introduced by this change: workflowStage.test.ts :: an unmapped status is REPORTED", evidence: [] };
+        },
+        reviewFollowUp: async () => {
+          order.push("review");
+          return { ok: true as const, value: { approved: true, reason: "looks fine to me" }, evidence: [] };
+        },
+        answer: async (r: AnswerRequest) => ({ ok: true as const, value: r.items.map((i) => ({ actionItemId: i.actionItemId, replyId: "note-9", resolved: true })), evidence: [] }),
+        followUp: async (req: { items: readonly { actionItemId: string }[]; workdir?: string }) => {
+          writeFileSync(join(req.workdir as string, "note.md"), "explained" + String.fromCharCode(10));
+          git(req.workdir as string, "add", "-A");
+          git(req.workdir as string, "commit", "-q", "-m", "explain the race");
+          return { ok: true as const, value: { decisions: req.items.map((i) => ({ actionItemId: i.actionItemId, outcome: "addressed" as const, how: "explained the race" })), syncWithTarget: false, summary: "s" }, evidence: [] };
+        },
+      });
+      // THE SUITE RAN, AND NO REVIEWER WAS EVER ASKED.
+      expect(order).toEqual(["verify"]);
+      expect(second.followUps?.[0]?.handedOffAgain).toBe(false);
+      expect(h.count()).toBe(1); // not pushed again
+      // And the next session is TOLD why, in the failure's own words - not left to rediscover it.
+      const item = foldActionItems(events).get(workId)?.find((i) => i.actionItemId === "gitlab:note-1");
+      expect(item?.settled).toBeUndefined();
+      expect(item?.reopened?.why).toContain("did not pass the repository's own tests");
+      expect(item?.reopened?.why).toContain("workflowStage.test.ts");
+      expect(second.followUps?.[0]?.refused.some((r) => r.includes("does not pass verification"))).toBe(true);
+    } finally {
+      for (const d of [repo, inbox, wt, scratch]) rmSync(d, { recursive: true, force: true });
+    }
+  }, 240_000);
+
+  test("AT maxParallel 2 THE SESSIONS OVERLAP AND THE TEST SUITES STILL DO NOT", async () => {
+    // MEASURED on agentic-tpm, 2026-09-12: three requests took 2h04m end to end, one thing at a time.
+    // Nothing required that - so the follow-ups ferry. What may NOT overlap is the repository's own
+    // suite: two of agentic-tpm's at once fight over the MongoMemoryServer port, which is already the
+    // commonest red in its pipeline. No clock in this test: overlap is measured by what is in flight.
+    const repo = realRepo();
+    const git = (at: string, ...a: string[]) => execFileSync("git", a, { cwd: at, encoding: "utf-8" });
+    const inbox = mkdtempSync(join(tmpdir(), "zeta-par-inbox-"));
+    for (const [id, title] of [["PROJ-1", "coupon applies twice"], ["PROJ-2", "totals round the wrong way"]]) {
+      writeFileSync(join(inbox, id + ".json"), JSON.stringify({ source: "jira", externalId: id, title, body: title, kind: "defect", severity: "high", reproduction: title, evidenceRefs: ["log:" + id] }));
+    }
+    const wt = mkdtempSync(join(tmpdir(), "zeta-par-wt-"));
+    const scratch = mkdtempSync(join(tmpdir(), "zeta-par-"));
+    const h = stubCounting(scratch);
+    const events: OrgEvent[] = [];
+    try {
+      const change = () => gitWorktreeChangeControl({ cwd: repo, baseBranch: "main", worktreeRoot: wt, handoff: { command: h.command, args: h.args } });
+      const noComment = { postComment: async () => ({ ok: true as const, value: {}, evidence: [] }) };
+      const base = { settings: [], changeRequests, describeChange: fullDescription, ...noComment, onEvent: (e: OrgEvent) => events.push(e) };
+      const first = await runAgainst(repo, inbox, { change: change() }, base);
+      const afterFirst = foldHandedOffChanges(events);
+      await runAgainst(repo, inbox, { change: change() }, {
+        ...base,
+        priorCascade: first.cascade,
+        alreadyHandedOff: new Set(afterFirst.keys()),
+        handedOffChanges: afterFirst,
+        actionItems: foldActionItems(events),
+        afterOpenDone: foldAfterOpen(events),
+      });
+      const handed = foldHandedOffChanges(events);
+      expect(handed.size).toBe(2);
+      const ids = [...handed.keys()];
+
+      const flight: string[] = [];
+      let sessionsInFlight = 0;
+      let sessionsAtOnce = 0;
+      let suitesInFlight = 0;
+      let suitesAtOnce = 0;
+      const yieldOnce = () => new Promise<void>((r) => setImmediate(r));
+      const third = await runAgainst(repo, inbox, { change: change() }, {
+        ...base,
+        priorCascade: first.cascade,
+        alreadyHandedOff: new Set(handed.keys()),
+        handedOffChanges: handed,
+        actionItems: foldActionItems(events),
+        afterOpenDone: foldAfterOpen(events),
+        feedback: ids.map((w, i) => ({ deliveryId: `note-${String(i + 1)}`, source: "gitlab", itemKind: "comment", summary: "please explain the race", author: "reviewer", branch: handed.get(w)?.branch as string })),
+        defaultBase: "main",
+        maxParallel: 2,
+        verifyChange: async () => {
+          suitesInFlight++;
+          suitesAtOnce = Math.max(suitesAtOnce, suitesInFlight);
+          await yieldOnce();
+          suitesInFlight--;
+          return { ok: true as const, value: "green", evidence: [] };
+        },
+        answer: async (r: AnswerRequest) => ({ ok: true as const, value: r.items.map((i) => ({ actionItemId: i.actionItemId, replyId: "note-9", resolved: true })), evidence: [] }),
+        followUp: async (req: { workId: string; items: readonly { actionItemId: string }[]; workdir?: string }) => {
+          sessionsInFlight++;
+          sessionsAtOnce = Math.max(sessionsAtOnce, sessionsInFlight);
+          flight.push("enter:" + req.workId);
+          // A yield, never a sleep: it lets the other ferry run if there IS another ferry.
+          await yieldOnce();
+          writeFileSync(join(req.workdir as string, "note.md"), "explained\n");
+          git(req.workdir as string, "add", "-A");
+          git(req.workdir as string, "commit", "-q", "-m", "explain the race");
+          flight.push("exit:" + req.workId);
+          sessionsInFlight--;
+          return {
+            ok: true as const,
+            value: { decisions: req.items.map((i) => ({ actionItemId: i.actionItemId, outcome: "addressed" as const, how: "explained the race" })), syncWithTarget: false, summary: "s" },
+            evidence: [],
+          };
+        },
+      });
+      expect(third.followUps?.length).toBe(2);
+      // And the run SAYS how wide it went, so "why was it not parallel" is answerable from the record.
+      expect(events.some((e) => (e.decision ?? "").includes("2 request(s) owe follow-up, this run takes 2") && (e.decision ?? "").includes("2 at a time"))).toBe(true);
+      // BOTH SESSIONS WERE IN FLIGHT AT ONCE - the second one started before the first came back.
+      expect(sessionsAtOnce).toBe(2);
+      expect(flight.slice(0, 2)).toEqual(["enter:" + String(ids[0]), "enter:" + String(ids[1])]);
+      // AND THE SUITES DID NOT: each change was verified, one at a time.
+      expect(suitesAtOnce).toBe(1);
+      // Both requests were still followed up and reported, in the order they were queued.
+      expect(third.followUps?.map((f) => f.workId)).toEqual(ids);
+    } finally {
+      for (const d of [repo, inbox, wt, scratch]) rmSync(d, { recursive: true, force: true });
+    }
+  }, 240_000);
+
+  test("A REVIEWER IS ANSWERED AS SOON AS THEIR REQUEST IS PUSHED - not after every other request's follow-up", async () => {
+    // MEASURED on agentic-tpm, 2026-09-12: !163's seven answers were written and its fix pushed at
+    // 00:21, and nothing appeared on the merge request, because the answering ran after EVERY
+    // follow-up in the run - and the next one took another forty-five minutes. To a reviewer that is
+    // indistinguishable from being ignored. Two requests, so the difference is visible: the second
+    // request's follow-up must not be able to delay the first request's replies.
+    const repo = realRepo();
+    const inbox = mkdtempSync(join(tmpdir(), "zeta-two-inbox-"));
+    for (const [id, title] of [["PROJ-1", "coupon applies twice"], ["PROJ-2", "totals round the wrong way"]]) {
+      writeFileSync(
+        join(inbox, id + ".json"),
+        JSON.stringify({ source: "jira", externalId: id, title, body: title, kind: "defect", severity: "high", reproduction: title, evidenceRefs: ["log:" + id] }),
+      );
+    }
+    const wt = mkdtempSync(join(tmpdir(), "zeta-two-wt-"));
+    const scratch = mkdtempSync(join(tmpdir(), "zeta-two-"));
+    const h = stubCounting(scratch);
+    const events: OrgEvent[] = [];
+    try {
+      const change = () => gitWorktreeChangeControl({ cwd: repo, baseBranch: "main", worktreeRoot: wt, handoff: { command: h.command, args: h.args } });
+      const noComment = { postComment: async () => ({ ok: true as const, value: {}, evidence: [] }) };
+      const first = await runAgainst(repo, inbox, { change: change() }, {
+        settings: [],
+        changeRequests,
+        describeChange: fullDescription,
+        ...noComment,
+        onEvent: (e: OrgEvent) => events.push(e),
+      });
+      // One request per cycle is what this organization's supply allows, so the second cycle opens
+      // the second request. Both are then open, which is the situation being tested.
+      const afterFirst = foldHandedOffChanges(events);
+      await runAgainst(repo, inbox, { change: change() }, {
+        settings: [],
+        changeRequests,
+        describeChange: fullDescription,
+        ...noComment,
+        priorCascade: first.cascade,
+        alreadyHandedOff: new Set(afterFirst.keys()),
+        handedOffChanges: afterFirst,
+        actionItems: foldActionItems(events),
+        afterOpenDone: foldAfterOpen(events),
+        onEvent: (e: OrgEvent) => events.push(e),
+      });
+      const handed = foldHandedOffChanges(events);
+      expect(handed.size).toBe(2);
+      const ids = [...handed.keys()];
+
+      // One comment on each request, and a log of WHEN each session and each answer happened.
+      const order: string[] = [];
+      const answers: AnswerRequest[] = [];
+      const feedback = ids.map((w, i) => ({
+        deliveryId: `note-${String(i + 1)}`,
+        source: "gitlab",
+        itemKind: "comment",
+        summary: "please explain the race",
+        author: "reviewer",
+        branch: handed.get(w)?.branch as string,
+      }));
+      const byWork = new Map(ids.map((w) => [w, (handed.get(w)?.branch ?? w) as string]));
+      const second = await runAgainst(repo, inbox, { change: change() }, {
+        settings: [],
+        changeRequests,
+        describeChange: fullDescription,
+        ...noComment,
+        priorCascade: first.cascade,
+        alreadyHandedOff: new Set(handed.keys()),
+        handedOffChanges: handed,
+        // An item the LAST round settled and never got to answer - the situation on !163 at 00:51:
+        // six replies written, checked, and unposted. It is owed, and its request also has a new
+        // comment to work, so it lands in BOTH answering passes.
+        actionItems: new Map([
+          ...foldActionItems(events),
+          [
+            ids[0] as string,
+            [
+              ...(foldActionItems(events).get(ids[0] as string) ?? []),
+              { workId: ids[0] as string, actionItemId: "gitlab:note-owed", source: "gitlab", itemKind: "comment", summary: "from the round before", raisedAtMs: 1, settled: { outcome: "addressed" as const, how: "fixed it last round", atMs: 2, respond: true } },
+            ],
+          ],
+        ]),
+        afterOpenDone: foldAfterOpen(events),
+        feedback,
+        defaultBase: "main",
+        verifyChange: async () => ({ ok: true as const, value: "green", evidence: [] }),
+        followUp: async (req: { workId: string; items: readonly { actionItemId: string }[] }) => {
+          order.push("followUp:" + String(byWork.get(req.workId) ?? req.workId));
+          return {
+            ok: true as const,
+            value: { decisions: req.items.map((i) => ({ actionItemId: i.actionItemId, outcome: "addressed" as const, how: "explained the race in the description" })), syncWithTarget: false, summary: "s" },
+            evidence: [],
+          };
+        },
+        answer: async (r: AnswerRequest) => {
+          order.push("answer:" + String(byWork.get(r.workId) ?? r.workId));
+          answers.push(r);
+          return { ok: true as const, value: r.items.map((i) => ({ actionItemId: i.actionItemId, replyId: "note-9", resolved: true })), evidence: [] };
+        },
+        onEvent: (e: OrgEvent) => events.push(e),
+      });
+      expect(second.followUps?.length).toBe(2);
+      // Every item was answered EXACTLY once - answering runs twice over (what was already owed, then
+      // each request as its fix lands), and an item in both passes must not reach the reviewer twice.
+      const posted = answers.flatMap((a) => a.items.map((i) => i.actionItemId));
+      expect(new Set(posted).size).toBe(posted.length);
+      // The one owed from before was posted, and posted once.
+      expect(posted.filter((p) => p === "gitlab:note-owed")).toEqual(["gitlab:note-owed"]);
+      // ...and it went out BEFORE any session ran, not after the last one.
+      expect(order[0]).toBe("answer:" + String(byWork.get(ids[0] as string)));
+      // THE POINT, in order: what was already owed goes out first, and then each request's answer
+      // lands before the NEXT request's session even starts.
+      expect(order.length).toBe(5);
+      expect(order[1]?.startsWith("followUp:")).toBe(true);
+      expect(order[2]).toBe(order[1]?.replace("followUp:", "answer:"));
+      expect(order[3]?.startsWith("followUp:")).toBe(true);
+      expect(order[4]).toBe(order[3]?.replace("followUp:", "answer:"));
+      expect(order[1]).not.toBe(order[3]);
+    } finally {
+      for (const d of [repo, inbox, wt, scratch]) rmSync(d, { recursive: true, force: true });
+    }
+  }, 240_000);
+
   test("a comment and a moved target become action items; the organization decides, brings the change level, re-verifies and updates the request - and only then are the items settled", async () => {
     const repo = realRepo();
     const git = (at: string, ...a: string[]) => execFileSync("git", a, { cwd: at, encoding: "utf-8" });

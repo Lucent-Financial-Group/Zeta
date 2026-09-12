@@ -1,0 +1,12 @@
+{
+  "pr_number": 17352,
+  "archive_path": "docs/history/pr-reviews/2026/09/12/PR-17352-deps-bump-vitest-from-4-1-11-to-5-0-0-in-demo-identity-dla-site.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-12T14:06:39.377Z",
+  "schema_version": "v1",
+  "commit_sha": "801e42d666ba705c2ed634a11704954e67b03e67",
+  "title": "deps: Bump vitest from 4.1.11 to 5.0.0 in /demo/identity-dla-site",
+  "state": "MERGED",
+  "merged_at": "2026-09-12T14:05:58Z",
+  "head_ref": "dependabot/npm_and_yarn/demo/identity-dla-site/vitest-5.0.0"
+}
