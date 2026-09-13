@@ -1318,6 +1318,94 @@ instruments.** The test for whether it has been done properly is whether the fie
 apparatus* comes along. Here it did: Allan deviation, the CRLB, and the innovation residual are all
 things you can run, not things you can only say.
 
+## 18. The residual IS our uncertainty — and what it does NOT buy
+
+Aaron, closing: *"this is our uncertainty, our residual to make us commutative over out of order."*
+
+Two claims. **The first is right and closes the thread. The second is right about the goal and the
+repo already proves the residual cannot be the mechanism** — which is the more useful finding.
+
+### 18a. Residual = ΔU. The identification holds.
+
+In **information form** the Kalman update is **addition** (`Y += HᵀR⁻¹H`), and addition is
+commutative and associative. So a recursive estimator expressed that way is a **commutative monoid**
+— which is exactly the algebra `BeliefConvergence` implements, in its own words:
+
+> *"Pointwise multiplication is commutative and associative, so this is a commutative MONOID."*
+
+And the quantity each update contributes — the part of an observation not predicted by the state —
+is the **innovation**. `db/uncertainty/` banks exactly that: ΔU is *reducible uncertainty exposed*,
+ordinal and witnessed. **§11d's missing entropy premise, §16's fold, and the ΔU ledger are one
+quantity seen three ways.** That is the closure, and it is sound.
+
+### 18b. But the fold is NOT idempotent, and the repo says so in capitals
+
+`BeliefConvergence.observe`:
+
+> **"NOT IDEMPOTENT — stated here because the omission reads as a guarantee."** ... *"Folding the
+> same evidence twice moves the belief."*
+
+And `observeAll` names the gap with a precision I had not reached:
+
+> **"SECOND INVARIANT — the evidence must be DEDUPLICATED before it gets here."** ...
+> *"Order-independence (proved in the tests) makes this look safe and does not make it safe — **the
+> defect is in MULTIPLICITY, not order.**"* ... *"This is load-bearing over a store-and-forward,
+> opportunistically-retransmitting transport (Reticulum), where **redelivery is the ordinary case
+> rather than the exception**. **The dedup key must be supplied by the caller; the operator's
+> algebra does not provide one.**"*
+
+So "commutative over out-of-order" is **already achieved and already proved in tests**. The open
+problem was never order. It is multiplicity.
+
+### 18c. And the residual CANNOT close it — checked, not assumed
+
+The tempting move is: *innovation measures novelty, so zero innovation means duplicate, so the
+residual is the dedup key the algebra lacks.* **It does not work, and the reason is worth writing
+down so nobody tries it twice.**
+
+| | |
+|---|---|
+| **innovation** | a **continuous** measure of *information content* — how much this observation moved the estimate |
+| **dedup** | a **discrete** test of *identity* — have I incorporated this exact item before |
+
+Under redelivery of `z`, the second arrival's innovation `ν = z − Hx̂` is **smaller** (the estimate
+has already moved toward `z`) but **not zero** unless the measurement is noiseless. And in the
+multiplicative form `BeliefConvergence` actually uses, a redelivered `l` multiplies the belief by
+`l` a second time — the change is not attenuated at all.
+
+Worse in the other direction: **two genuinely independent confirmations of the same fact also have
+small innovation**, and they *should* accumulate — that is what independent corroboration means. So
+low innovation does not imply duplicate, and duplicate does not imply low innovation. **The two
+quantities are not interchangeable, and `BeliefConvergence`'s statement that the key must come from
+outside the algebra stands.**
+
+### 18d. What the identification does buy
+
+Three things, none of them the dedup key:
+
+1. **ΔU is the innovation, so the ledger is already the right instrument** for §11d. No new
+   measurement to design — `db/uncertainty/` records novelty, which is what an entropy floor needs.
+2. **A redelivery-pressure detector, not a filter.** A stream whose per-item innovation is
+   systematically collapsing is a stream you are probably double-counting. That is a *drift signal*
+   about the transport — genuinely useful over Reticulum — and it belongs in the drift tier, never
+   in the fold.
+3. **The right division of labour, now visible.** The substrate already carries three combining
+   operations and they are not interchangeable:
+
+| operation | algebra | duplicate-safe? | used for |
+|---|---|---|---|
+| `observe` | commutative **monoid** | **no** — multiplicity is the defect | belief accumulation |
+| `measure.ts` upsert by work-item | **idempotent** | yes | the ΔU ledger |
+| `TravelerFrame` causal join | **join-semilattice** (idempotent) | yes | frame merge |
+
+Which is §10.3's finding arriving from the other end: **idempotence is the property that decides
+duplicate-safety**, and the one operation here that lacks it is the one that explicitly documents
+the obligation it therefore places on its caller.
+
+**Register: `metered` for 18a and 18b** — both are readings of shipped code that states these
+properties itself. **`toy` for 18d.2**, the redelivery-pressure detector: nobody has measured
+whether innovation collapse actually tracks redelivery on this transport.
+
 ## Anchors (Beacon)
 
 - **Condorcet's jury theorem** (1785) and its correlated-voter extensions — the `N_eff = N/(1+(N−1)ρ)`
