@@ -111,28 +111,71 @@ export function judge(commits: readonly CommitScan[]): Verdict {
 }
 
 // ── the network half, kept apart from `judge` so the rule is testable without a token ──
+//
+// API COST IS PART OF THE DESIGN HERE, not an afterthought. This runs in `drift (loud)` on
+// every PR and every push, and `.claude/rules/rest-is-the-default-transport-graphql-is-the-
+// contested-budget.md` exists because this fleet has exhausted a 5000/hour budget before --
+// by OBSERVATION, not action. So the cost is measured and written down.
+//
+// MEASURED 2026-09-13 with a shim counting every `gh` invocation, window=30:
+//
+//     first version   77 calls   20 paging the COMMITS list + 57 check-runs
+//     this version    31 calls    1 commits (per_page=window) + 30 check-runs
+//
+// The 20 was a defect, not a cost: the original helper paged the commit list to exhaustion
+// -- about 2000 commits -- and THEN sliced to 30. Nineteen calls fetched data that was
+// immediately discarded. Asking for exactly `window` commits in one request is the whole fix.
+//
+// The remaining 30 is irreducible over REST: there is no endpoint that returns check runs for
+// many commits at once. GraphQL could do it in one query and is deliberately NOT used --
+// that is the contested budget, and this is an observation loop, which is exactly the class
+// the rule says must stay on REST.
+//
+// Per-commit paging stops as soon as a successful Analyze run is found, because that alone
+// decides the verdict. A commit whose first page is all non-success and whose `total_count`
+// says more exist is paged further rather than assumed unscanned -- a short read must not be
+// able to manufacture a failure any more than it can manufacture a pass.
 
-/** Page a GitHub list endpoint to exhaustion, and refuse a short read rather than return one. */
-async function ghAll(path: string, pick: (page: unknown) => readonly unknown[]): Promise<readonly unknown[]> {
-  const out: unknown[] = [];
-  for (let page = 1; page <= 20; page += 1) {
-    const sep = path.includes("?") ? "&" : "?";
-    const proc = Bun.spawn(["gh", "api", `${path}${sep}per_page=100&page=${String(page)}`], {
-      stdout: "pipe",
-      stderr: "pipe",
-    });
-    const text = await new Response(proc.stdout).text();
-    if ((await proc.exited) !== 0) throw new Error(`gh api failed for ${path} page ${String(page)}`);
-    const got = pick(JSON.parse(text));
-    out.push(...got);
-    if (got.length < 100) break;
+const MAX_WINDOW = 100; // one page; a larger window would reintroduce commit-list paging
+
+interface CheckRunsPage {
+  readonly total_count: number;
+  readonly check_runs: readonly { readonly name: string; readonly conclusion: string | null }[];
+}
+
+async function ghJson(path: string): Promise<unknown> {
+  const proc = Bun.spawn(["gh", "api", path], { stdout: "pipe", stderr: "pipe" });
+  const text = await new Response(proc.stdout).text();
+  if ((await proc.exited) !== 0) throw new Error(`gh api failed: ${path}`);
+  return JSON.parse(text);
+}
+
+/** Scan one commit, paging only while the answer is still undecided. */
+export async function scanCommit(repo: string, sha: string): Promise<CommitScan> {
+  let ok = 0;
+  let bad = 0;
+  let seen = 0;
+  for (let page = 1; page <= 10; page += 1) {
+    const body = (await ghJson(
+      `repos/${repo}/commits/${sha}/check-runs?per_page=100&page=${String(page)}`,
+    )) as CheckRunsPage;
+    seen += body.check_runs.length;
+    for (const r of body.check_runs) {
+      if (!r.name.startsWith("Analyze")) continue;
+      if (r.conclusion === "success") ok += 1;
+      else bad += 1;
+    }
+    // Decided: a success is all the verdict needs. Stop paying for pages.
+    if (ok > 0) break;
+    // Undecided and the page was short of what the forge says exists -> keep going.
+    if (seen >= body.total_count || body.check_runs.length === 0) break;
   }
-  return out;
+  return { sha, successfulAnalyze: ok, unsuccessfulAnalyze: bad };
 }
 
 async function main(argv: readonly string[]): Promise<number> {
   const at = argv.indexOf("--window");
-  const window = at >= 0 ? Number(argv[at + 1] ?? "30") : 30;
+  const window = Math.min(at >= 0 ? Number(argv[at + 1] ?? "30") : 30, MAX_WINDOW);
   const jsonAt = argv.indexOf("--json");
 
   let commits: CommitScan[];
@@ -145,21 +188,12 @@ async function main(argv: readonly string[]): Promise<number> {
     commits = JSON.parse(await Bun.file(p).text()) as CommitScan[];
   } else {
     const repo = process.env.GITHUB_REPOSITORY ?? "Lucent-Financial-Group/Zeta";
-    const shas = (await ghAll(`repos/${repo}/commits?sha=main`, (p) => p as unknown[]))
-      .slice(0, window)
-      .map((c) => (c as { sha: string }).sha);
+    // ONE call. `per_page` is the window, so nothing is fetched that is not used.
+    const listed = (await ghJson(`repos/${repo}/commits?sha=main&per_page=${String(window)}`)) as {
+      readonly sha: string;
+    }[];
     commits = [];
-    for (const sha of shas) {
-      const runs = (await ghAll(`repos/${repo}/commits/${sha}/check-runs`, (p) =>
-        (p as { check_runs: unknown[] }).check_runs,
-      )) as { name: string; conclusion: string | null }[];
-      const analyze = runs.filter((r) => r.name.startsWith("Analyze"));
-      commits.push({
-        sha,
-        successfulAnalyze: analyze.filter((r) => r.conclusion === "success").length,
-        unsuccessfulAnalyze: analyze.filter((r) => r.conclusion !== "success").length,
-      });
-    }
+    for (const { sha } of listed) commits.push(await scanCommit(repo, sha));
   }
 
   const v = judge(commits);
