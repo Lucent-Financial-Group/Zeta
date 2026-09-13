@@ -1425,3 +1425,67 @@ describe("A HAT CARRIES AS MANY OPEN TASKS AS WEARERS ARE AUTHORIZED FOR IT", ()
     expect(leaves.every((n) => n.assigneeHatId !== undefined)).toBe(true);
   }, 60_000);
 });
+
+describe("TWO UNRELATED TICKETS' GATE WALKS OVERLAP WHEN `maxParallel` SAYS SO", () => {
+  // MEASURED this session: six FlowDent tickets with no dependency between them ran their entire
+  // gate chains one at a time, real multi-minute Claude calls included, because the runtime's own
+  // staffed-task loop `await`ed each task's walk before starting the next — regardless of whether
+  // anything actually required that order. `ferry` at its default dop is byte-identical to that
+  // loop; this proves the OTHER half — that raising it genuinely lets independent tickets' calls
+  // run at the same time, not just that the flag is accepted and silently ignored.
+  //
+  // A review port that RECORDS ITS OWN START AND END, not one that returns instantly, because a
+  // sequential and a concurrent run look identical if nothing in the fake port takes measurable
+  // time — the exact way a bug here could hide behind a test that finishes either way.
+  const two: ExternalEvent[] = [
+    { ...GOOD, externalId: "T-1", title: "checkout double-charges" },
+    { ...GOOD, externalId: "T-2", title: "refund posts twice" },
+  ];
+
+  function timedReviewer(delayMs: number) {
+    const calls: { readonly gate: string; readonly workId: string; readonly startMs: number; readonly endMs: number }[] = [];
+    const review = {
+      meta: { port: Port.Review, name: "timed", fidelity: Fidelity.Real, describes: "records overlap" },
+      review: async (req: { readonly gate: GateKind; readonly workId: string }) => {
+        const startMs = performance.now();
+        await new Promise((resolve) => setTimeout(resolve, delayMs));
+        calls.push({ gate: String(req.gate), workId: req.workId, startMs, endMs: performance.now() });
+        return { ok: true as const, value: { outcome: GateOutcome.Approved, reason: "ok" }, evidence: [] };
+      },
+    };
+    return { calls, review };
+  }
+  // Two calls OVERLAP when one starts before the other has ended — order-independent, so it does
+  // not matter which of the two concurrent calls this test's own ferry happened to start first.
+  const overlaps = (
+    a: { readonly startMs: number; readonly endMs: number },
+    b: { readonly startMs: number; readonly endMs: number },
+  ): boolean => a.startMs < b.endMs && b.startMs < a.endMs;
+
+  test("at the default (sequential), two tickets' reviews never overlap — the control", async () => {
+    const rec = timedReviewer(80);
+    const base = deps({ externalEvents: two, supplyTarget: 2 });
+    await runOrgRuntime({ ...base, providers: { ...defaultProviderSet(base), review: rec.review as never } } as OrgRuntimeDeps);
+    // Every recorded call anywhere in the run is checked against every other — sequential means
+    // NONE of them overlap, not merely that same-ticket ones don't (they never would anyway).
+    for (let i = 0; i < rec.calls.length; i++) {
+      for (let j = i + 1; j < rec.calls.length; j++) {
+        expect(overlaps(rec.calls[i] as never, rec.calls[j] as never)).toBe(false);
+      }
+    }
+    expect(rec.calls.length).toBeGreaterThan(0);
+  }, 60_000);
+
+  test("with maxParallel 2, at least one pair of calls genuinely overlaps in time", async () => {
+    const rec = timedReviewer(80);
+    const base = deps({ externalEvents: two, supplyTarget: 2, maxParallel: 2 });
+    await runOrgRuntime({ ...base, providers: { ...defaultProviderSet(base), review: rec.review as never } } as OrgRuntimeDeps);
+    let sawOverlap = false;
+    for (let i = 0; i < rec.calls.length && !sawOverlap; i++) {
+      for (let j = i + 1; j < rec.calls.length && !sawOverlap; j++) {
+        if (overlaps(rec.calls[i] as never, rec.calls[j] as never)) sawOverlap = true;
+      }
+    }
+    expect(sawOverlap).toBe(true);
+  }, 60_000);
+});
