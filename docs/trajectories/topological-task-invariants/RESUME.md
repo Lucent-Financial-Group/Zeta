@@ -107,7 +107,26 @@ direction, `expectedGain is strictly positive when c is in (0,1) and rho < 1`. M
 and anti-Sybil are therefore **one problem**: the quantity that measures the goal prices a Sybil
 at zero.
 
-**But the coordinate has the opposite shape to theirs, and that is a finding:**
+**The coordinate has the OPPOSITE shape to theirs, and Aaron's framing says WHY — it is caused
+by the individual/society split, not incidental to it:**
+
+```
+individual goal  →  FINITE game      →  has a terminal state
+                 →  coordinate = distance to that state
+                 →  ZERO AT SUCCESS  (arrive and stop)
+
+society goal     →  INFINITE game    →  must have NO terminal state
+                 →  a distance-to-done coordinate is FORBIDDEN, not merely absent
+                 →  ZERO LANDS ON COLLAPSE INSTEAD  (ρ=1: nothing left to discover)
+```
+
+The middle step is the load-bearing one and the repo already argued it from the other side:
+`docs/research/2026-08-23-backward-induction-is-the-missing-term-*.md` shows a KNOWN terminal
+state unravels cooperation by backward induction. So a well-defined finish line would not merely
+fail to describe our game — **it would destroy it**. The absence of a terminal state is
+load-bearing, which is exactly why the zero had nowhere to go but the degenerate case.
+
+**The consequence for method, and it is a branch change:**
 
 | | arXiv:2609.11014 | Zeta |
 |---|---|---|
@@ -116,7 +135,14 @@ at zero.
 | monotone along a trajectory? | yes (Theorem T1, an identity) | **unknown** |
 
 Their shells are "equally far from done"; ours would be "equally decorrelated", which is not a
-progress ordering. **So eikonal shells do not obviously port** — a result for the lane, not a gap.
+progress ordering at all. **So eikonal shells do not port, and now for a structural reason rather
+than a practical one**: eikonal solves a REACHABILITY problem (descend toward a target), and an
+infinite game is a **VIABILITY** problem (stay inside an admissible set indefinitely). Those are
+dual branches of control theory sharing vocabulary and almost no machinery — Aubin's viability
+theory and its viability kernel, rather than shortest paths and shells.
+
+Measured 2026-09-13: `viability` in that control-theoretic sense appears **nowhere** in this repo,
+so this is a new anchor, not a re-reading of an old one. Full argument in the research doc §5.
 
 Full treatment, including the six degenerate cases and which two are NOT closed:
 `docs/research/2026-09-13-mutual-empowerment-is-measured-by-decorrelation-and-its-degenerate-cases-are-closed-by-self-claim-consistency.md`.

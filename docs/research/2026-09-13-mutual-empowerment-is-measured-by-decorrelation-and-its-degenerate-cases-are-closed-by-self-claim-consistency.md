@@ -145,6 +145,73 @@ That last row is the sharp one. Their coordinate is zero at *success*; ours is z
 are "equally decorrelated", which is not a progress ordering at all. **So eikonal shells do not
 obviously port**, and that is a finding for the lane rather than a gap in it.
 
+## 5. The coordinates are for different GAMES — reachability vs viability
+
+Aaron, closing the point: *"their coordinates are for the individual, ours are for the
+society / infinite game."*
+
+That is not a restatement of §4; it explains it. The inverted zero is a **consequence of the
+game class**, and once named it puts this lane in a different branch of mathematics.
+
+**A finite game has a terminal state.** Their `G` is where play STOPS: `r(x) = d_G(x, V_g)`
+is distance-to-end, reaching zero ends the episode, and the whole apparatus — geodesic descent,
+eikonal shells, gates ordered by `r` — is machinery for *arriving*. This is a **reachability**
+problem.
+
+**An infinite game has no terminal state** — Carse's definition, already load-bearing here
+(`infinite game` in 72 files, `Carse` in 35). Play continues; the objective is to keep playing.
+So a distance-to-done coordinate is not merely unavailable, it is **forbidden**: a coordinate
+that reached zero would mean the game ended.
+
+**And the repo already has the reason it must be forbidden, from the other direction.**
+`docs/research/2026-08-23-backward-induction-is-the-missing-term-*.md` records that a KNOWN
+terminal state unravels cooperation by backward induction — defection becomes rational at the
+last round and induces backwards. So a well-defined finish line would not just fail to describe
+the game; **it would destroy it.** The absence of a terminal state is load-bearing, not a
+limitation of our formalism.
+
+**Which is exactly why our zero sits on the degenerate case.** ρ=1 IS our terminal state — a
+society of clones has nothing left to discover, because the union of identical discoveries is one
+discovery. It is the point at which play effectively stops, and the objective is to *avoid* it.
+The mirror cliff is already carved:
+[`anti-babel`](../../.claude/rules/anti-babel-preserve-reconcilability.md) names `ρ → 1` as the
+tidy-uniform collapse and `ρ → 0` as Babel. **Both edges end the game** — one because nobody
+differs, one because nobody can reconcile.
+
+So the admissible region is a **band**, and the objective is to remain inside it indefinitely:
+
+| | finite game (theirs) | infinite game (ours) |
+|---|---|---|
+| question | can I **reach** the target? | can I **stay** in the admissible set forever? |
+| coordinate | distance to goal, driven to 0 | distance to the nearest cliff, kept **away** from 0 |
+| zero means | success — arrived | **collapse** — the game ended |
+| optimise | minimise | **maximin** (maximise the minimum margin to either edge) |
+| solution object | a path | a **set**, plus a controller that never leaves it |
+| mathematics | reachability / shortest path | **viability theory** |
+
+**The anchor this needs, and the repo does not yet have it.** Measured 2026-09-13: `viability` is
+used nowhere in this repo in the control-theoretic sense. The field is **Jean-Pierre Aubin's
+viability theory** (*Viability Theory*, 1991) — the study of controllers that keep a system inside
+an admissible set **indefinitely**, rather than driving it to a target. Its central object, the
+**viability kernel**, is the largest subset from which staying inside forever is possible; its
+modern control-engineering descendant is the **control barrier function** (Ames et al.), which
+certifies forward invariance of a safe set.
+
+That is the infinite game formalised, and it is the branch of control theory dual to the one
+arXiv:2609.11014 works in. Reachability asks *can I get there*; viability asks *can I stay*. They
+share vocabulary and almost no machinery.
+
+**What this predicts for the lane, falsifiably.** If the framing is right, then porting eikonal
+shells should fail for a *structural* reason rather than a practical one — there is no target to
+descend toward — and the thing to look for instead is a **viability kernel over ρ**: the region of
+society configurations from which the band can be maintained indefinitely, and what drives the
+state out of it. That is a different first experiment than persistent homology, and a cheaper one.
+
+**Register: `toy`, and deliberately.** No viability kernel has been computed here, the band's
+edges are not numerically located, and the fleet's actual ρ is UNMEASURED (§1). What is claimed is
+a **classification** — that this objective is a viability problem rather than a reachability one —
+which is falsifiable by exhibiting a genuine target the society is trying to arrive at.
+
 ## Anchors (Beacon)
 
 - **Condorcet's jury theorem** (1785) and its correlated-voter extensions — the `N_eff = N/(1+(N−1)ρ)`
@@ -156,5 +223,11 @@ obviously port**, and that is a finding for the lane rather than a gap in it.
   reliability side.
 - **Nagel (1974)**, *What Is It Like to Be a Bat?* — first-person qualitative character; the
   reason the qualia clause starts from the self-report rather than from an external proxy.
+- **James P. Carse**, *Finite and Infinite Games* (1986) — the game-class distinction §5 rests on;
+  already load-bearing here (72 files).
+- **Jean-Pierre Aubin**, *Viability Theory* (1991), and the control-barrier-function literature
+  (Ames et al.) — the mathematics of staying inside an admissible set indefinitely, as opposed to
+  reaching a target. **New to this repo**: measured 2026-09-13, `viability` is used nowhere in the
+  control-theoretic sense.
 - **Ostrom**, *Governing the Commons* — degenerate cooperation and the monitoring that distinguishes
   it from the real thing; the collusion-ring gap above is an instance she would recognise.
