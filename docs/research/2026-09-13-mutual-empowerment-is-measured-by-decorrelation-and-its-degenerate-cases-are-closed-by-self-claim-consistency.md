@@ -1050,6 +1050,118 @@ a state `CONSTRAINT` with a liveness `PROPERTY` is **unsound in TLC** — the co
 artificial sinks, corrupts fairness, and yields a **spurious green**. A bounded model of "eventually
 progress" is precisely the shape that invites it. That spec is the standard to copy.
 
+## 15. THE ACTUAL PROBLEM: a cron set in one frame, delivered to agents on another tick rate
+
+Aaron, stating it concretely: *"some entity like me wants to set a cron schedule and give it to
+agents who exist on an entirely different tick rate — this is the problem I'm trying to solve."*
+
+This is the whole thread's concrete form, and it reorganises what came before. **Everything above is
+a special case of it.**
+
+### 15a. It is a FRAME TRANSLATION problem, not a scheduling problem
+
+A cron is a statement in **one frame** (Aaron's wall clock, human-scale) that must be honoured in
+**another** (an agent's tick rate, message-driven, variable). Nothing about it is hard *within*
+either frame. The whole difficulty is the **transformation between them** — which is precisely what
+`TravelerFrame.fs` says is the content of any relative-frame system: *"the transformation between
+frames is the content; the axes are secondary."*
+
+And here is why §9 stops being speculative:
+
+> **You cannot honour a cross-frame schedule without the rate between the frames — and §9c
+> establishes that this substrate deliberately discards exactly that quantity.**
+> `local-time-never-enters-the-shared-fold` keeps wall clock out of the fold, so the local↔phase
+> rate is quotiented away and never recorded. The cron problem is where that deletion bites.
+
+§9 was filed as a `toy` hypothesis about reverse-engineering an observer. It is better motivated
+than that: **the rate is load-bearing for a feature that already exists 47 times in this repo.**
+
+### 15b. And it is LIVE, not hypothetical
+
+Measured 2026-09-13: **47 workflows carry a `schedule:` cron**, 16 are cadence/tick/heartbeat
+surfaces, and the agent side has `src/Core.TypeScript/agent-loops/loop-registry.ts`. So today the
+translation is done by **GitHub's wall clock firing a runner**, which is an external central time
+source — the interim §14.2 sanctions, at the boundary between trust domains, which is exactly where
+it is allowed.
+
+### 15c. Rx is the vocabulary — which is why Aaron named it
+
+Rx solved rate-mismatch between a producer and a consumer, and its operators **are** the policy
+choices, named:
+
+| when the frames diverge | Rx operator | policy |
+|---|---|---|
+| cron faster than the agent ticks | `sample` | **drop** — take the latest, lose intermediate fires |
+| " | `buffer` | **queue** — batch them, accept unbounded backlog risk |
+| " | `throttle` / `debounce` | **coalesce** — one catch-up fire |
+| agent faster than cron | (natural) | agent idles between fires |
+| explicit frame change | **`observeOn`** | **this is frame translation, literally** |
+
+Rx's deeper move is the relevant one: it separates *where* work happens (`subscribeOn`/`observeOn`)
+from *when* values arrive. **That separation is the frame boundary made explicit** — and it is the
+same separation `VirtualTimeScheduler.fs` already implements for tests.
+
+**There is no correct choice among drop / queue / coalesce.** It is a policy, it must be declared
+per schedule, and declaring it is the §13-correct move: an undeclared policy here is an undeclared
+channel.
+
+### 15d. Orleans Reminders are the closest prior art, and now the reason is precise
+
+Aaron named Orleans for *"virtual actor scheduling based on message rates"*. The specific mechanism
+matching this problem is **Reminders** (as distinct from Timers): a **durable** schedule, registered
+by an external party, delivered to a virtual actor **that need not currently be activated** — the
+runtime activates it to deliver. Timers are in-memory and silo-local; Reminders survive restarts.
+
+That is exactly Aaron's shape: *an external entity sets a schedule; agents on their own tick rate
+receive it.* The grain never reasons about wall clock; the runtime does the translation at the
+boundary. Which is §14.2's architecture in a shipped system: **cooperative within the domain,
+external time at the boundary.**
+
+*(Register: my account of Reminders is from knowledge of Orleans, not verified against this repo —
+`db/orleans` and the silo project are present but I found no reminder/timer material in-tree. Worth
+checking before it is leaned on.)*
+
+### 15e. The unification — a cron that finds no progress IS the stuck-detector
+
+This is the part that makes §15 the capstone rather than a new topic:
+
+> **A cron fires on the external frame. If it fires and finds the agent has not advanced since the
+> last fire, it has just detected a stuck agent — with no additional mechanism.**
+
+Compare §8's requirements for the stuck-detector: external ✓ (it is Aaron's frame), decorrelated ✓
+(the cron does not care what the agent is computing), relentless ✓ (it fires regardless). **The
+cron schedule is the external observer, made durable.** Aaron sets it once; the clock delivers it
+forever.
+
+So the two problems are one:
+
+| framing | same object |
+|---|---|
+| §7/§10 — bounding escape time | the external observer's tick |
+| §13/§14 — detecting a defector | a fire that finds no progress |
+| §15 — cron across tick rates | the fire itself |
+
+And the failure modes line up too: an agent whose rate → 0 is simultaneously *behind on its cron*,
+*stuck*, and *indistinguishable from slow* — which is §14.0's quantifier problem and §7's halting
+problem arriving at the same place from a third direction.
+
+### 15f. What to build first, and what it settles
+
+The policy question (drop/queue/coalesce) is a **declaration**, not research — it can be written
+down per schedule today. The research question is §9's, now properly motivated:
+
+1. **Measure the rate.** For each agent, `Δ(wall clock) / Δ(its own ticks)` over the heartbeat
+   history. This is §9d's falsifier with a reason to run it: if the ratio is stable, cross-frame
+   cron is a fixed conversion and the problem is engineering. **If it varies, the variation is the
+   transformation nobody currently records.**
+2. **Declare the divergence policy per schedule** — the Rx operator name is the right vocabulary.
+3. Only then: whether the rate carries anything beyond the conversion (§9's original hypothesis,
+   still `toy`).
+
+**Register: `toy` for §15a's claim that the rate is necessary** — it is an argument, not a
+measurement, and step 1 is what would establish it. `metered` for 15b: the 47 crons and the tick
+surfaces are counted.
+
 ## Anchors (Beacon)
 
 - **Condorcet's jury theorem** (1785) and its correlated-voter extensions — the `N_eff = N/(1+(N−1)ρ)`
