@@ -1162,6 +1162,85 @@ down per schedule today. The research question is §9's, now properly motivated:
 measurement, and step 1 is what would establish it. `metered` for 15b: the 47 crons and the tick
 surfaces are counted.
 
+## 16. The rate between frames IS the variance — co/contra is not an analogy here
+
+Aaron: *"the rate between frames is closely related to our co and contra variance."*
+
+This is the exact mathematical form of §15, and it is an **identity in the standard theory**, not a
+resemblance — which is worth saying because most connections in this document are analogies and
+this one is not.
+
+### 16a. The identification
+
+A change of frame has a **rate** (the Jacobian of the transformation). **Co- and contravariance are
+the definitions of how a quantity transforms under it:**
+
+| | transforms | example in this problem |
+|---|---|---|
+| **covariant** | **with** the basis | a **period**: "every hour". Halve the tick length and the period *in ticks* doubles |
+| **contravariant** | **inversely** to the basis | a **rate**: "fires per hour". Halve the tick length and the rate *per tick* halves |
+
+> **A period and a rate are reciprocals, and they transform in OPPOSITE directions under a frame
+> change.** So the same schedule expressed the two ways translates by `k` and by `1/k`.
+
+**That is a concrete, checkable bug class, not a philosophical point.** Translate a period as though
+it were a rate — or read a config field as one when it was written as the other — and you get the
+**reciprocal** of the intended schedule. Fast becomes slow, and it is silently plausible at k≈1.
+
+### 16b. The anchor is already in this repo, one level down
+
+`docs/CONCEPT-REGISTRY.md` cites **Meijer, Fokkinga & Paterson (1991)**, *Functional Programming
+with Bananas, Lenses, Envelopes and Barbed Wire*, via `src/Core/DynamicValueFold.fs`. That paper's
+subject is the **catamorphism/anamorphism duality**:
+
+| | direction | variance | who drives |
+|---|---|---|---|
+| **catamorphism** (fold) | **consumes** a structure — algebra | contravariant position | the **consumer** |
+| **anamorphism** (unfold) | **produces** a structure — coalgebra | covariant position | the **producer** |
+
+And Meijer's own later work made that duality operational as **`IEnumerable` (pull) ↔ `IObservable`
+(push)** — which is why the variance annotations land where they do: `IEnumerable<out T>` and
+`IObserver<in T>`. **Same duality, three vocabularies:** category theory, type variance, and Rx.
+
+### 16c. Which says exactly what the cron problem IS
+
+> **A cron is an ANAMORPHISM — a producer unfolding fires on its own clock. An agent tick loop is a
+> CATAMORPHISM — a consumer folding work on its own clock. §15 is a push source meeting a pull
+> consumer, and that is the duality in operational form.**
+
+This is not a restatement. It predicts where the difficulty must live, and correctly:
+
+- The two sides are **dual**, so neither is privileged — there is no "correct" frame to translate
+  into, which is why §15d's policy choice cannot be derived and must be declared.
+- The mismatch has a standard name: **backpressure**, the hardest problem in push-based systems.
+- And §15c's drop / queue / coalesce **are the standard backpressure strategies**, which is why Rx
+  already has operators for each. They were not invented for this problem; they are what the
+  duality forces.
+
+So `async-all-the-way`'s existing Rx lineage, `VirtualTimeScheduler.fs`, and §15's operator table
+are one thing viewed at three depths: **duality → variance → operator.**
+
+### 16d. The cheap audit this makes available, and it is worth running
+
+The bug class in 16a is mechanically searchable, and this repo has **47 cron schedules** plus 16
+cadence surfaces to search:
+
+> For every schedule and every tick-rate config: is the field a **period** or a **rate**, and does
+> every consumer read it as the same kind? A period read as a rate is the reciprocal, and at values
+> near 1 it looks right.
+
+That is a grep-and-read audit, not research, and it is the sort of defect that survives review
+precisely because both readings type-check as a number. Filing it as the concrete deliverable of
+§16 — everything else in this section is vocabulary alignment, which is worth exactly as much as
+the bug it lets you find.
+
+### 16e. Register
+
+**`metered` for the mathematics** — the co/contra identification is the standard definition of a
+frame transformation, and the Meijer anchor is checked and in-tree. **`toy` for the claim that
+Zeta's cron/tick surfaces actually exhibit the period↔rate confusion** — that is 16d's audit, and
+nobody has run it. The section's value stands or falls on that audit returning something.
+
 ## Anchors (Beacon)
 
 - **Condorcet's jury theorem** (1785) and its correlated-voter extensions — the `N_eff = N/(1+(N−1)ρ)`
@@ -1187,6 +1266,9 @@ surfaces are counted.
   collapse stated in cybernetic rather than statistical terms.
 - **Kantz & Grassberger (1985); Tél & Lai (2008)** — transient chaos and escape from chaotic
   saddles; the source of the exponential-dwell model §7 checks against.
+- **Meijer, Fokkinga & Paterson (1991)**, *Functional Programming with Bananas, Lenses, Envelopes
+  and Barbed Wire* — the catamorphism/anamorphism duality underneath §16; already cited in-tree via
+  `src/Core/DynamicValueFold.fs` and `docs/CONCEPT-REGISTRY.md`.
 - **Erik Meijer** (Rx; `TestScheduler` / virtual time) — a root anchor in this repo, and the
   pattern `VirtualTimeScheduler.fs` implements: replace the ambient clock with one you advance.
 - **Zhou et al.**, *FoundationDB* (SIGMOD 2021), and **Will Wilson**, *Testing Distributed Systems
