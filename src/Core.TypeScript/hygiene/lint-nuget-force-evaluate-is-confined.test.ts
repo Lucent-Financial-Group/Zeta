@@ -48,3 +48,18 @@ describe("scan — the exception's scope", () => {
     expect(scan([{ name: EXPERIMENT, text: use + use }]).experimentSites).toBe(2);
   });
 });
+
+describe("a step NAME is documentation, not an invocation", () => {
+  // The regression that actually happened: wiring this checker into gate.yml added a step
+  // named "--force-evaluate stays confined to the lock experiment", and the checker flagged
+  // its own step. A guard that greps source must match the CALL, not the identifier.
+  it("ignores the flag appearing in a step name", () => {
+    expect(usesForceEvaluate('      - name: --force-evaluate stays confined to the lock experiment\n')).toBe(0);
+    expect(usesForceEvaluate('        name: --force-evaluate confinement\n')).toBe(0);
+  });
+
+  it("still counts the invocation on the very next line", () => {
+    const y = "      - name: --force-evaluate confinement\n        run: dotnet restore x --force-evaluate\n";
+    expect(usesForceEvaluate(y)).toBe(1);
+  });
+});

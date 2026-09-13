@@ -33,13 +33,20 @@ const WORKFLOW_DIR = ".github/workflows";
 export const EXPERIMENT = "lock-cross-os-stability.yml";
 const FORCE_EVALUATE = /--force-evaluate\b/u;
 
-/** Strip `#` comments so a line merely DISCUSSING the flag is not counted as using it.
- *  The repo's own prose says "--force-evaluate" while explaining it; a checker that greps
- *  the identifier instead of the invocation reports its own documentation. */
+/** Drop the lines that DISCUSS the flag rather than INVOKE it: `#` comments, and YAML
+ *  `name:` keys.
+ *
+ *  Both halves were learned the hard way. The repo's own workflow header explains
+ *  `--force-evaluate` in a comment. And the gate step that RUNS this very checker is named
+ *  "--force-evaluate stays confined to the lock experiment" — a step name is documentation,
+ *  but it is not a `#` comment, so the first version of this file flagged its own wiring the
+ *  moment it was installed. A guard that greps source must match the CALL, not the
+ *  identifier; a step name is the identifier wearing YAML. */
 export function strippedLines(yaml: string): readonly string[] {
   return yaml
     .split("\n")
     .map((l) => l.replace(/#.*$/u, ""))
+    .filter((l) => !/^\s*-?\s*name:\s/u.test(l))
     .filter((l) => l.trim().length > 0);
 }
 

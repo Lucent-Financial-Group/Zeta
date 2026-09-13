@@ -36,7 +36,14 @@
 
 import { readFileSync, readdirSync } from "node:fs";
 import { join } from "node:path";
-import { parse } from "yaml";
+
+// NO EXTERNAL IMPORTS. This runs in the `lint (build-graph completeness)` job, which sets up
+// bun but never runs `bun install` -- every sibling premise checker there imports `node:`
+// builtins only. The first version of this file imported `yaml` and died in CI with
+// "Cannot find package 'yaml'" while passing locally, which is the tier lesson in miniature:
+// a checker is only as available as the job it runs in. The line-oriented reader below is
+// validated against the `yaml` parser over all 96 real workflows by the test file, which DOES
+// run in a tier with dependencies -- so the hand parser is checked, not trusted.
 
 const WORKFLOW_DIR = ".github/workflows";
 const GATE = "gate.yml";
@@ -61,38 +68,84 @@ export interface Finding {
   readonly detail: string;
 }
 
-/** The `on:` keys of a parsed workflow. YAML 1.1 parses a bare `on` as boolean true, so
- *  both spellings are read — missing that is how a privileged trigger hides from a checker. */
-export function triggersOf(doc: unknown): readonly string[] {
-  if (doc === null || typeof doc !== "object") return [];
-  const d = doc as Record<string, unknown>;
-  const on = d["on"] ?? d["true"] ?? (d as Record<string, unknown>)[String(true)];
-  if (typeof on === "string") return [on];
-  if (Array.isArray(on)) return on.filter((k): k is string => typeof k === "string");
-  if (on !== null && typeof on === "object") return Object.keys(on as Record<string, unknown>);
+/** Strip a `#` comment, but never inside quotes. Workflow refs contain `#` in pinned
+ *  action SHAs (`uses: actions/checkout@sha # v7`), so a naive split corrupts them. */
+function uncomment(line: string): string {
+  let q: string | null = null;
+  for (let i = 0; i < line.length; i++) {
+    const c = line[i];
+    if (q !== null) { if (c === q) q = null; continue; }
+    if (c === '"' || c === "'") { q = c; continue; }
+    if (c === "#") return line.slice(0, i);
+  }
+  return line;
+}
+
+function indentOf(line: string): number {
+  const m = /^(\s*)/u.exec(line);
+  return m === null ? 0 : m[1].length;
+}
+
+/** The top-level `on:` keys. YAML 1.1 also lets `on` be written quoted, and some workflows
+ *  use the flow form `on: [a, b]` or the scalar `on: push` — all three are read here. A
+ *  reader that only handled the block form would see NO triggers on a flow-form workflow and
+ *  pass it unconditionally, which is the vacuity class by parser gap. */
+export function triggersOf(text: string): readonly string[] {
+  const lines = text.split("\n");
+  for (let i = 0; i < lines.length; i++) {
+    const raw = uncomment(lines[i]);
+    const m = /^(?:on|"on"|'on'):\s*(.*)$/u.exec(raw);
+    if (m === null) continue;
+    const inline = m[1].trim();
+    if (inline.startsWith("[")) {
+      return inline.replace(/^\[|\]$/gu, "").split(",")
+        .map((t) => t.trim().replace(/^["']|["']$/gu, "")).filter((t) => t.length > 0);
+    }
+    if (inline.length > 0) return [inline.replace(/^["']|["']$/gu, "")];
+    const keys: string[] = [];
+    for (let j = i + 1; j < lines.length; j++) {
+      const l = uncomment(lines[j]);
+      if (l.trim().length === 0) continue;
+      if (indentOf(l) === 0) break;            // dedent to column 0 ends the block
+      const k = /^\s+([A-Za-z_][\w-]*):/u.exec(l);
+      if (k !== null && indentOf(l) <= 2) keys.push(k[1]);
+    }
+    return keys;
+  }
   return [];
 }
 
-/** Every `ref:` given to an actions/checkout step, in document order. */
-export function checkoutRefs(doc: unknown): readonly string[] {
+/** Every `ref:` handed to an actions/checkout step, in document order. A checkout with no
+ *  `ref:` is recorded as `<default>` rather than skipped — absence is a fact about trust,
+ *  never an excuse to say nothing. */
+export function checkoutRefs(text: string): readonly string[] {
+  const lines = text.split("\n").map(uncomment);
   const refs: string[] = [];
-  const walk = (node: unknown): void => {
-    if (Array.isArray(node)) { for (const n of node) walk(n); return; }
-    if (node === null || typeof node !== "object") return;
-    const o = node as Record<string, unknown>;
-    const uses = o["uses"];
-    if (typeof uses === "string" && uses.startsWith("actions/checkout")) {
-      const w = o["with"];
-      const ref = w !== null && typeof w === "object"
-        ? (w as Record<string, unknown>)["ref"]
-        : undefined;
-      // A checkout with NO ref defaults to the merge ref under pull_request* — which is
-      // author-controlled. Absence is recorded as such, never as trusted.
-      refs.push(typeof ref === "string" ? ref : "<default>");
+  for (let i = 0; i < lines.length; i++) {
+    if (!/uses:\s*actions\/checkout/u.test(lines[i])) continue;
+    const stepIndent = indentOf(lines[i]);
+    // A `with: { ref: ... }` flow mapping may sit on the `uses:` line's own step.
+    let found: string | null = null;
+    for (let j = i + 1; j < lines.length && found === null; j++) {
+      const l = lines[j];
+      if (l.trim().length === 0) continue;
+      // Next step (a `- ` at or left of this step) or a dedent ends the window.
+      if (indentOf(l) < stepIndent) break;
+      if (indentOf(l) === stepIndent && /^\s*-\s/u.test(l)) break;
+      const m = /\bref:\s*(.+)$/u.exec(l);
+      if (m !== null) {
+        let v = m[1].trim();
+        // Only a FLOW mapping (`with: { ref: x }`) puts a closing brace after the value.
+        // A block-form `ref: ${{ ... }}` ends in `}}` that belongs to the expression — the
+        // first version stripped at the first `}` and reported a truncated ref.
+        if (/\{/u.test(l.slice(0, l.indexOf("ref:"))) && v.endsWith("}")) {
+          v = v.slice(0, -1).trim().replace(/,$/u, "").trim();
+        }
+        found = v.replace(/^["']|["']$/gu, "");
+      }
     }
-    for (const v of Object.values(o)) walk(v);
-  };
-  walk(doc);
+    refs.push(found ?? "<default>");
+  }
   return refs;
 }
 
@@ -117,11 +170,11 @@ export function isUntrusted(ref: string, triggers: readonly string[]): boolean {
 }
 
 /** The critical pair: a privileged trigger AND a checkout the PR author controls. */
-export function findPrivilegedUntrustedCheckout(name: string, doc: unknown): Finding | null {
-  const all = triggersOf(doc);
+export function findPrivilegedUntrustedCheckout(name: string, text: string): Finding | null {
+  const all = triggersOf(text);
   const trig = all.filter((t) => PRIVILEGED_TRIGGERS.includes(t));
   if (trig.length === 0) return null;
-  const bad = checkoutRefs(doc).filter((r) => isUntrusted(r, all));
+  const bad = checkoutRefs(text).filter((r) => isUntrusted(r, all));
   if (bad.length === 0) return null;
   return {
     workflow: name,
@@ -130,9 +183,9 @@ export function findPrivilegedUntrustedCheckout(name: string, doc: unknown): Fin
 }
 
 /** #798's own premise: gate.yml's PR-event checkout stays pinned to a base-side ref. */
-export function gatePinsBaseRef(doc: unknown): boolean {
-  const refs = checkoutRefs(doc);
-  if (refs.length === 0) return false; // no checkout to inspect ⇒ cannot confirm ⇒ not a pass
+export function gatePinsBaseRef(text: string): boolean {
+  const refs = checkoutRefs(text);
+  if (refs.length === 0) return false; // no checkout to inspect => cannot confirm => not a pass
   return refs.some((r) => BASE_REF.test(r));
 }
 
@@ -144,17 +197,17 @@ function main(): number {
   let gateOk = false;
 
   for (const f of files) {
-    let doc: unknown;
+    let text: string;
     try {
-      doc = parse(readFileSync(join(WORKFLOW_DIR, f), "utf8"));
+      text = readFileSync(join(WORKFLOW_DIR, f), "utf8");
     } catch (e) {
-      // A workflow this cannot parse is UNKNOWN, never assumed safe.
+      // A workflow this cannot read is UNKNOWN, never assumed safe.
       unreadable.push(`${f}: ${e instanceof Error ? e.message : String(e)}`);
       continue;
     }
-    const finding = findPrivilegedUntrustedCheckout(f, doc);
+    const finding = findPrivilegedUntrustedCheckout(f, text);
     if (finding !== null) findings.push(finding);
-    if (f === GATE) { gateSeen = true; gateOk = gatePinsBaseRef(doc); }
+    if (f === GATE) { gateSeen = true; gateOk = gatePinsBaseRef(text); }
   }
 
   console.log(`scanned ${String(files.length)} workflow file(s) in ${WORKFLOW_DIR}`);
