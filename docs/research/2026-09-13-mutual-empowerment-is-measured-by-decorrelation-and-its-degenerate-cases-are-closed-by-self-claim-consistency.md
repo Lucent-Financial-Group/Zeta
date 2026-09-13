@@ -1241,6 +1241,83 @@ frame transformation, and the Meijer anchor is checked and in-tree. **`toy` for 
 Zeta's cron/tick surfaces actually exhibit the period↔rate confusion** — that is 16d's audit, and
 nobody has run it. The section's value stands or falls on that audit returning something.
 
+## 17. Beckman is the right anchor — and he closes §11d against §16
+
+Aaron: *"Erik Meijer is close but I was thinking Brian Beckman understood this better and connects
+it to physics as well."*
+
+Correct, and the repo already says so more strongly than §16 did. `docs/PRIOR-ART-LIST.md`:
+
+> **Brian Beckman** ⭐ **(REQUIRED READING — Aaron 2026-06-09, "the Brian Beckman in me")** —
+> *Don't Fear the Monad* + the Rx/category-theory + quaternions/physics-from-structure talks. **The
+> derive-the-physics-from-the-math-structure style.**
+
+§16 reached for Meijer/Fokkinga/Paterson because that is the citation in `DynamicValueFold.fs`. It
+is the right paper for the *duality* and the wrong person for *this* question: the physics half —
+frames, variance, metrology — is Beckman's, and it is the half §15 and §16 actually need.
+
+### 17a. Kalman Folding closes the gap §11d left open
+
+Beckman's *Kalman Folding* series shows the **Kalman filter is a catamorphism** — a fold over an
+observation stream. Set that beside two things already in this document:
+
+| | |
+|---|---|
+| §16 | an agent's tick loop is a **catamorphism** — a consumer folding work |
+| §11d | the missing premise for any entropy floor is **Kalman innovation** — the part of an observation not predictable from what is held |
+
+> **These are the same object.** A fold that consumes observations while carrying state *is* a
+> recursive estimator, and **the innovation is the residual of that fold**. §11d asked for a
+> quantity and §16 identified a structure without noticing they were one thing.
+
+That matters practically: §11d's question (*"how much of this entropy source was not predictable
+given what the society already holds?"*) is not a new instrument to design. **It is the innovation
+term of a fold the agent is already performing** — which is why Beckman's framing is the useful one
+and Meijer's is merely adjacent.
+
+*(Register: I am citing Kalman Folding from knowledge of Beckman's work, not from an in-repo
+artifact — `Kalman` appears in six docs here but I did not verify the folding series is among them.
+Check before leaning on it.)*
+
+### 17b. And the physics half supplies the INSTRUMENT for §9 — which I proposed as if it were new
+
+This is the correction. §9d proposed measuring `Δ(wall clock) / Δ(phase)` as a cheap falsifier. The
+repo already specifies that measurement, better, and names the metrology:
+
+`docs/research/2026-06-09-proving-the-plateau-…-crlb-allan-over-ischeduler-tick-one-io-at-a-time.md`
+§7 — *"Measurement protocol — **Allan deviation** over the tick, one IO interface at a time"*:
+
+> *"Compute the **Allan deviation `σ_y(τ)`** of the tick/latency stream ... Expect `τ^(−1/2)`
+> descent while white jitter dominates → **flat floor**"*, and then *"**tag the floor's cause:**
+> GC/scheduler pauses, syscall overhead, clock granularity."*
+
+**Allan variance is the standard measure of clock stability across averaging intervals** — exactly
+the "how does local time relate to phase time, and does the relation vary" question of §9, asked by
+the field that owns it. So §9's falsifier is not merely cheap, it is **specified**: expected curve
+shape, a floor to find, and a protocol for attributing the floor's cause.
+
+I proposed a measurement the corpus had already designed. The honest version of §9d is: *run the
+existing Allan-deviation protocol against the heartbeat tick streams* — and the doc even names the
+consolidation it belongs to (`Clock` / `BellTest` / `FeedbackThrottle` / `CoincidenceClock` /
+`UncertainClock` → **one `Time` treaty**).
+
+### 17c. Why Beckman's style is the load-bearing part, not the citation
+
+*Physics-from-structure* is the method, and both §16 and §17 are instances of it rather than
+analogies to it:
+
+- **§16** — co/contravariance is not borrowed from physics to describe frames; it **is** the
+  definition of how quantities transform under a frame change. The mathematics is the same object
+  in both domains.
+- **§17b** — Allan deviation is not a metaphor for tick jitter; it is the instrument metrology
+  built for exactly this measurement, and a scheduler tick is a clock.
+
+Which is the discipline `anchor-to-human-prior-art` asks for, stated as a style: **do not import
+the vocabulary of a field and then reason by resemblance — import the structure and inherit the
+instruments.** The test for whether it has been done properly is whether the field's *measurement
+apparatus* comes along. Here it did: Allan deviation, the CRLB, and the innovation residual are all
+things you can run, not things you can only say.
+
 ## Anchors (Beacon)
 
 - **Condorcet's jury theorem** (1785) and its correlated-voter extensions — the `N_eff = N/(1+(N−1)ρ)`
@@ -1266,6 +1343,14 @@ nobody has run it. The section's value stands or falls on that audit returning s
   collapse stated in cybernetic rather than statistical terms.
 - **Kantz & Grassberger (1985); Tél & Lai (2008)** — transient chaos and escape from chaotic
   saddles; the source of the exponential-dwell model §7 checks against.
+- **Brian Beckman** — *Kalman Folding* (the Kalman filter as a catamorphism), *Don't Fear the
+  Monad*, and the Rx/category-theory/physics-from-structure talks. **Required reading per
+  `docs/PRIOR-ART-LIST.md`** (Aaron 2026-06-09). The better anchor for §15–§17 than Meijer: the
+  physics half — frames, variance, metrology — is his, and Kalman Folding is what identifies §11d's
+  innovation premise with §16's fold.
+- **David Allan** (Allan variance / Allan deviation, 1966) — the metrology instrument for clock
+  stability across averaging intervals; already the corpus's specified protocol over the IScheduler
+  tick, and therefore the instrument §9 needs.
 - **Meijer, Fokkinga & Paterson (1991)**, *Functional Programming with Bananas, Lenses, Envelopes
   and Barbed Wire* — the catamorphism/anamorphism duality underneath §16; already cited in-tree via
   `src/Core/DynamicValueFold.fs` and `docs/CONCEPT-REGISTRY.md`.
