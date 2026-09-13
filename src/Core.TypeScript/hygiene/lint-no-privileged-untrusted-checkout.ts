@@ -82,8 +82,12 @@ function uncomment(line: string): string {
 }
 
 function indentOf(line: string): number {
+  // NARROWED, NOT ASSERTED. `noUncheckedIndexedAccess` types a capture group as
+  // `string | undefined` even where the pattern guarantees it, and the house style here is to
+  // narrow rather than reach for `!`.
   const m = /^(\s*)/u.exec(line);
-  return m === null ? 0 : m[1].length;
+  const lead = m === null ? undefined : m[1];
+  return lead === undefined ? 0 : lead.length;
 }
 
 /** The top-level `on:` keys. YAML 1.1 also lets `on` be written quoted, and some workflows
@@ -93,22 +97,24 @@ function indentOf(line: string): number {
 export function triggersOf(text: string): readonly string[] {
   const lines = text.split("\n");
   for (let i = 0; i < lines.length; i++) {
-    const raw = uncomment(lines[i]);
-    const m = /^(?:on|"on"|'on'):\s*(.*)$/u.exec(raw);
+    const line = lines[i];
+    if (line === undefined) continue;
+    const m = /^(?:on|"on"|'on'):\s*(.*)$/u.exec(uncomment(line));
     if (m === null) continue;
-    const inline = m[1].trim();
+    const inline = (m[1] ?? "").trim();
     if (inline.startsWith("[")) {
       return inline.replace(/^\[|\]$/gu, "").split(",")
         .map((t) => t.trim().replace(/^["']|["']$/gu, "")).filter((t) => t.length > 0);
     }
     if (inline.length > 0) return [inline.replace(/^["']|["']$/gu, "")];
     const keys: string[] = [];
-    for (let j = i + 1; j < lines.length; j++) {
-      const l = uncomment(lines[j]);
+    for (const rest of lines.slice(i + 1)) {
+      const l = uncomment(rest);
       if (l.trim().length === 0) continue;
       if (indentOf(l) === 0) break;            // dedent to column 0 ends the block
       const k = /^\s+([A-Za-z_][\w-]*):/u.exec(l);
-      if (k !== null && indentOf(l) <= 2) keys.push(k[1]);
+      const key = k === null ? undefined : k[1];
+      if (key !== undefined && indentOf(l) <= 2) keys.push(key);
     }
     return keys;
   }
@@ -122,19 +128,19 @@ export function checkoutRefs(text: string): readonly string[] {
   const lines = text.split("\n").map(uncomment);
   const refs: string[] = [];
   for (let i = 0; i < lines.length; i++) {
-    if (!/uses:\s*actions\/checkout/u.test(lines[i])) continue;
-    const stepIndent = indentOf(lines[i]);
-    // A `with: { ref: ... }` flow mapping may sit on the `uses:` line's own step.
+    const head = lines[i];
+    if (head === undefined || !/uses:\s*actions\/checkout/u.test(head)) continue;
+    const stepIndent = indentOf(head);
     let found: string | null = null;
-    for (let j = i + 1; j < lines.length && found === null; j++) {
-      const l = lines[j];
+    for (const l of lines.slice(i + 1)) {
       if (l.trim().length === 0) continue;
       // Next step (a `- ` at or left of this step) or a dedent ends the window.
       if (indentOf(l) < stepIndent) break;
       if (indentOf(l) === stepIndent && /^\s*-\s/u.test(l)) break;
       const m = /\bref:\s*(.+)$/u.exec(l);
-      if (m !== null) {
-        let v = m[1].trim();
+      const raw = m === null ? undefined : m[1];
+      if (raw !== undefined) {
+        let v = raw.trim();
         // Only a FLOW mapping (`with: { ref: x }`) puts a closing brace after the value.
         // A block-form `ref: ${{ ... }}` ends in `}}` that belongs to the expression — the
         // first version stripped at the first `}` and reported a truncated ref.
@@ -142,6 +148,7 @@ export function checkoutRefs(text: string): readonly string[] {
           v = v.slice(0, -1).trim().replace(/,$/u, "").trim();
         }
         found = v.replace(/^["']|["']$/gu, "");
+        break;
       }
     }
     refs.push(found ?? "<default>");
