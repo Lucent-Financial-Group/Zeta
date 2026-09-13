@@ -91,10 +91,39 @@ and nothing in the paper addresses the second half — a carrier over one goal s
 
 **What this means for the lane, concretely.** The transferable part is the *construction* (a
 carrier from many members' traces; an invariant belonging to none of them; a frozen artifact
-injected into a weaker consumer). The part that does **not** transfer is the *objective*: their
-eikonal shells measure distance to one goal, and our objective has no such target. Whether a
-mutual-empowerment objective admits any progress coordinate at all is an open question this
-lane may have to answer before persistent homology is even applicable.
+injected into a weaker consumer). The part that does **not** transfer is the *objective*.
+
+### ANSWERED: the objective does admit a coordinate, and we already built it (Aaron, same day)
+
+I raised "whether a mutual-empowerment objective admits any progress coordinate at all" as an
+open question. Aaron answered it: *"our mutual empowerment is closely related to our decorrelation
+and our antisybil work so you can even measure decorrelation."*
+
+`src/Core/SocietyUsefulWork.fs` computes
+`E[U_society] − E[U_i] = (1−ρ)(1−c)(1−(1−c)^(n−1))·Σv`. The `(1−ρ)` factor makes the hardest
+degenerate case an identity: **at ρ=1 — clones — the gain is exactly zero for every n**, pinned
+by the property tests `expectedGain collapses to zero when rho = 1...` and, in the other
+direction, `expectedGain is strictly positive when c is in (0,1) and rho < 1`. Mutual empowerment
+and anti-Sybil are therefore **one problem**: the quantity that measures the goal prices a Sybil
+at zero.
+
+**But the coordinate has the opposite shape to theirs, and that is a finding:**
+
+| | arXiv:2609.11014 | Zeta |
+|---|---|---|
+| coordinate | `r(x) = d_G(x, V_g)` | `(1−ρ)`-weighted society ΔU gain |
+| zero at | **the goal** | **clones** — the degenerate case |
+| monotone along a trajectory? | yes (Theorem T1, an identity) | **unknown** |
+
+Their shells are "equally far from done"; ours would be "equally decorrelated", which is not a
+progress ordering. **So eikonal shells do not obviously port** — a result for the lane, not a gap.
+
+Full treatment, including the six degenerate cases and which two are NOT closed:
+`docs/research/2026-09-13-mutual-empowerment-is-measured-by-decorrelation-and-its-degenerate-cases-are-closed-by-self-claim-consistency.md`.
+
+**Standing caveat:** the measure is metered as MATHEMATICS; `SocietyUsefulWork.fs` states in its
+own header that a real fleet's actual ρ and c are **UNMEASURED**. We have a coordinate and no
+reading on it.
 
 ## What Zeta already has that this would attach to
 
