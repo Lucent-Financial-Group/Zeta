@@ -657,6 +657,112 @@ artificially slowed step. That is buildable today and is the one that protects p
   a ρ**. It needs its own `toy` marker until that measurement runs.
 - §8's ρ≈0 is true of a wall clock, false of the shipped increment counter.
 
+## 11. Entropy is CAPTURED, not excluded — which answers §10.4, and meets a standing correction
+
+Aaron: *"yes wall clock is ambient entropy for sure. we have work around our zeta scheduler to
+capture this entropy for antisybil entropy capture for decorrelation. network jitter /
+communication speed between pairs is the 2nd entropy capture we have."*
+
+### 11a. This dissolves §10.4's objection rather than conceding it
+
+Formal-verification's correction was: *a wall clock is ambient entropy; a clock-triggered restart
+makes the run non-replayable at the same seed.* True **of an ambient read**. It is not true of a
+**captured** one.
+
+That is §13 exactly — *"entropy/influence flows ONLY through declared, metered channels; the
+injected `Source` is the only door."* The rule was never "no entropy"; it is "no **undeclared**
+entropy". A clock reading taken through the injected `Source`, recorded, and replayed is an
+**input**, and DST replays inputs by construction. So:
+
+> Capturing the clock is not a violation of the replay property — **it is the mechanism that
+> preserves it.** The non-replayable thing is the ambient `DateTime.Now`, which is exactly what
+> §10.5's lint refuses.
+
+This also strengthens §10.5's routing rather than contradicting it: the lint stays, because it is
+what distinguishes the captured path from the ambient one. Its refusal list is the point.
+
+### 11b. Two capture channels, and the second has the better shape
+
+| channel | what varies | shape |
+|---|---|---|
+| **scheduler timing** | per-node execution jitter | **per-node** |
+| **inter-pair network jitter / comm speed** | round-trip variation between two specific members | **PAIRWISE** |
+
+The second is the interesting one, and for a structural reason worth stating: **ρ in
+`SocietyUsefulWork.fs` is a pairwise correlation**, and inter-pair jitter is a *pairwise physical
+channel*. The entropy source and the quantity it is meant to move have the same index structure.
+Per-node clock jitter does not — it is one value per member, and a pairwise ρ cannot be driven
+directly by a per-node quantity without an assumption about how they compose.
+
+**The obvious failure mode, stated before anyone builds on it:** two clones co-located on one host
+share a network path. Jitter between A and B, where both sit on host H, is *not* independent of
+jitter between A and C. So inter-pair jitter is decorrelating **across hosts** and much weaker
+**within** one — which is precisely the Sybil case it is meant to price.
+
+### 11c. And the repo has ALREADY corrected an over-claim here — this must not be re-made
+
+`src/Core/AntiSybil.fs` is unusually careful, and the carefulness is scar tissue:
+
+> *"They do not count physical clocks, independent entropy sources, or distinct controllers. One
+> shared stream deterministically recoded with balanced XOR masks can yield arbitrarily many
+> disconnected components at positive thresholds as the record length grows."*
+>
+> *"**The earlier physical-source floor claim confused source reuse with exact record replay.**
+> ... Entropy floors require a separate conditional-innovation premise; admission and controller
+> identity require evidence not supplied by this statistic."*
+>
+> *"Captured entropy and cross-consistent disclosed histories are separate, conditional evidence.
+> **Their conjunction is not a controller-distinctness theorem.**"*
+
+So the honest state of Aaron's mechanism:
+
+| claim | status |
+|---|---|
+| clock + inter-pair jitter are entropy sources worth capturing | **yes, and capture is the §13-correct move** |
+| capturing them makes runs replayable where ambient reads do not | **yes** — this is 11a |
+| captured entropy **proves** members are distinct controllers | **NO — explicitly refuted in-tree.** A shared stream recoded with balanced XOR masks defeats the statistic |
+| captured entropy therefore drives ρ away from 1 | **unproved.** Needs the missing premise below |
+
+### 11d. The missing premise has a name, and it is already in this repo's anchor list
+
+`AntiSybil.fs`: *"Entropy floors require a separate **conditional-innovation** premise."*
+
+That is **Kalman's innovation** — the component of a new observation not predictable from the
+history already held — and it is already cited as an anchor in
+`docs/research/2026-07-05-noticing-your-own-flaws-in-math-*.md` alongside Gödel, Turing, Friston and
+Vapnik. The question captured entropy must answer is therefore not *"is this source physically
+real?"* but:
+
+> **Given everything the society already holds, how much of this source's contribution was not
+> predictable?** Zero innovation ⇒ zero decorrelation, regardless of how physical the source is.
+
+That is the right test and it is also the one a recoded shared stream fails: a balanced XOR mask
+produces a *different record* with *zero conditional innovation*. **The statistic sees difference;
+innovation sees none.** Which is the same distinction §3's qualia clause draws between a claim and
+a self-consistent claim, and the same one `toy-is-free-metered-must-be-earned` draws between
+implemented and falsified.
+
+### 11e. What this adds to the lane
+
+Three things, in increasing order of cost:
+
+1. **The §10.5 lint gets a companion requirement, not just a prohibition.** Refusing ambient
+   `DateTime` is half; the other half is that the budget path *reads its clock through the injected
+   `Source`*, so the same value is recorded and replayed. A lint that only forbids is a lint that
+   pushes the read one call deeper.
+2. **The quorum-floor experiment (§10.5, highest information-per-hour) gains a second arm.** It was
+   to vary ρ continuously and see whether the floor is `(1−ρ)`-shaped or `ln(1/ε)/λ`-shaped. Add:
+   drive the decorrelation with *captured inter-pair jitter* rather than a synthetic parameter, and
+   see whether real captured entropy moves the floor at all.
+3. **The conditional-innovation measurement is the one that would settle 11c**, and nothing
+   measures it today. Until it exists, captured entropy is a **candidate** decorrelation source,
+   not a demonstrated one — and `AntiSybil.fs` already says so in its own header.
+
+**Register: `toy` for the decorrelation claim, `metered` for the capture mechanism's §13
+correctness.** The capture-not-exclude argument (11a) is a straightforward reading of §13 and DST.
+Everything downstream of it — that captured entropy raises `(1−ρ)`, that it prices Sybils — is
+exactly what the in-tree correction says is not yet established.
+
 ## Anchors (Beacon)
 
 - **Condorcet's jury theorem** (1785) and its correlated-voter extensions — the `N_eff = N/(1+(N−1)ρ)`
@@ -682,5 +788,7 @@ artificially slowed step. That is buildable today and is the one that protects p
   collapse stated in cybernetic rather than statistical terms.
 - **Kantz & Grassberger (1985); Tél & Lai (2008)** — transient chaos and escape from chaotic
   saddles; the source of the exponential-dwell model §7 checks against.
+- **Rudolf Kálmán** (innovation: the unpredictable component of a new observation) — the premise
+  `AntiSybil.fs` names as missing for any entropy floor; already an anchor in the self-audit doc.
 - **Ostrom**, *Governing the Commons* — degenerate cooperation and the monitoring that distinguishes
   it from the real thing; the collusion-ring gap above is an instance she would recognise.
