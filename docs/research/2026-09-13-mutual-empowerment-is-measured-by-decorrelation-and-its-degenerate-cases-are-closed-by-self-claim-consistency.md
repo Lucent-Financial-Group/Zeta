@@ -212,6 +212,94 @@ edges are not numerically located, and the fleet's actual ρ is UNMEASURED (§1)
 a **classification** — that this objective is a viability problem rather than a reachability one —
 which is falsifiable by exhibiting a genuine target the society is trying to arrive at.
 
+## 6. The pieces already exist here — the pole IS the hole, and the quorum IS the controller
+
+Aaron: *"this is similar to our homoclinical tangles and we built a way to escape with external
+observers. for us this is similar to our singularities."*
+
+Both connections check out against committed work, and **one of them is an identity rather than
+an analogy** — but the tangle half carries two corrections this repo already made, and neither may
+be walked back.
+
+### 6a. Their H1 hole IS our pole. Not "like" — the same object.
+
+`docs/research/2026-08-20-harmonious-division-*-pole-erasure-*.md`, in its own words:
+
+> *"The pole is not a wall; it is a point you [go around]."*
+> *"**Two travelers who circled the pole differently *should* disagree, and both are correct.**"*
+> *"Two travelers who circled the pole differently produce two satellite rows with two record
+> sources."*
+
+Set beside arXiv:2609.11014 §A.12: the carrier's bounded complement is a hole; admissible paths
+split into **route classes that cannot be continuously deformed into one another**; each is tagged
+by a **winding number** that "flips only when the agent physically circumnavigates the separating
+obstacle block."
+
+| theirs | ours |
+|---|---|
+| bounded hole in the coverage complex | the **pole** |
+| route classes γ⁺, γ⁻ | two travelers who circled differently |
+| winding number ∈ ℤ | which way you went, recorded in the satellite row |
+| classes not continuously deformable | *"should disagree, and both are correct"* |
+| H1 of the complement | monodromy |
+
+**These are the same mathematics reached from opposite ends** — they from persistent homology over
+robot trajectories, us from analytic continuation and Data Vault raw-vault semantics. The
+`anti-babel` clause *"reintegration is NOT reconvergence"* is the H1 statement in governance
+vocabulary: collapsing two classes to one value destroys the invariant.
+
+### 6b. The tangle connection is real, and carries two corrections that stand
+
+`docs/research/2026-08-15-navigating-the-chaotic-regime-*.md` frames the goal as *"steering orbits
+to **avoid the tangle** keeps the system in the regular, controllable regime"* — **which is
+viability stated in dynamical language**, three weeks before the term was available here.
+
+Two things that document measured, both of which constrain what may be claimed now:
+
+1. **ρ→1 collapse is NOT a homoclinic tangle.** Measured **λ = −0.029276**, strictly negative: an
+   *attracting fixed point*, classified `Frozen`. A tangle is a **saddle with λ > 0**. *"Anti-mirror
+   collapse is real; it is not a tangle."* The phenomenon and the decorrelation conclusion survived;
+   only the mechanism identification failed.
+2. **Escape does not require an external observer**, and the expected escape time was never
+   unbounded. Self-escape works (mean dwell 53 → 7 from a kick of 0.35% of state); the escape-time
+   distribution is **exponential**, κ = 0.0528, finite mean 18.95. **The tail is unbounded, not the
+   expectation.**
+
+**So "we built a way to escape with external observers" is right about the mechanism and needs
+those two qualifiers** — and note line 36 of that audit: the fix is *"named in prose; the fix is
+not implemented"*, status **partial**.
+
+### 6c. Why this makes the viability framing stronger, not weaker
+
+The band's two edges have **opposite dynamics**: ρ→1 is an attractor (λ<0, fall in and stay); a
+chaotic tangle is a saddle (λ>0, transient and escapable). A reachability formulation would care
+which — descending toward a target requires knowing the landscape. **A viability kernel does not**:
+it is defined against the *complement* of the admissible set, whatever happens inside it. That
+indifference is an argument for the classification rather than a convenience.
+
+**And the controller viability asks for is already measured.** Viability theory wants *a set plus a
+controller that never leaves it*. The decorrelated quorum is that controller, with its authority
+bounded by measurement rather than assumption:
+
+| quorum N | decorrelated E[min dwell] | correlated (same probe N times) |
+|---|---|---|
+| 1 | 18.81 | 19.35 |
+| 4 | 8.65 | 18.33 |
+| 16 | 6.70 | 18.79 |
+| 64 | 6.35 | 20.11 |
+
+Two results that carry straight into this lane:
+
+- **A correlated quorum buys exactly nothing** — consulting one witness sixteen times is consulting
+  one witness. This is `(1−ρ)` again, now in dwell time instead of ΔU: **the same factor that zeroes
+  society gain at ρ=1 zeroes the controller's authority at ρ=1.** Two independent derivations of one
+  quantity.
+- **A decorrelated quorum saturates.** 1→4 buys a large reduction, 16→64 almost nothing, with the
+  floor set by the quorum's own decorrelation time `ln(1/ε)/λ`. **Headcount is not the knob.**
+
+So the lane inherits a controller with a known saturation and a known floor, rather than needing
+to invent one — and the thing that makes it work is the same ρ the objective is measured in.
+
 ## Anchors (Beacon)
 
 - **Condorcet's jury theorem** (1785) and its correlated-voter extensions — the `N_eff = N/(1+(N−1)ρ)`
