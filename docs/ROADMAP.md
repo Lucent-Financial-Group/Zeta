@@ -37,6 +37,17 @@ clause, delivers **zero route switches and no measured success-rate gain**, so w
 expect a performance win from formalising ours. Trajectory:
 [`docs/trajectories/topological-task-invariants/RESUME.md`](trajectories/topological-task-invariants/RESUME.md).
 Ferry: `docs/ip-questionable/2026-09-13-topological-intelligence-persistent-homology-ai-planning-transcript.md`.
+**The biggest difference is the objective, not the method** (Aaron): their goal is
+*individual* — one goal set, one deploying executor — while ours is *across most society
+members*: mutual empowerment, and dependency injection from higher- to lower-intelligence
+models. Their transfer axis is LATERAL (same task, different embodiment); ours is VERTICAL
+(down a capability gradient), which is the superagent definition. What transfers is their
+**construction** — a carrier built from many members' traces, an invariant "belonging to none
+of them", frozen and injected into a consumer that did not produce it, measurably lifting it
+(96.1 vs 85.3). What does **not** transfer is the objective: eikonal shells measure distance to
+one goal, and mutual empowerment has no such target. Whether that objective admits a progress
+coordinate at all may have to be answered before any of this applies.
+
 Work item `081M2DYZQQN087G0R000K24MTE`. Closes on a measured invariant or a written
 does-not-transfer finding — not on "interesting".
 

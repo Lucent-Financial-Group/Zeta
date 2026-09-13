@@ -46,6 +46,56 @@ genuinely different object from the one the paper defines, and whether persisten
 it means anything is a question the source literature has not asked. That is this lane's only
 original hypothesis; everything else here is application.
 
+## THE BIGGEST DIFFERENCE: their goal is individual, ours is the society (Aaron 2026-09-13)
+
+> *"one of the biggest differences is our goal over the entire society, theirs is individual,
+> ours is across all / most society members, mutual empowerment, and dependency injection from
+> higher intelligence to lower intelligence models"*
+
+This is the load-bearing distinction and it is not a matter of scale. Stated exactly:
+
+|  | arXiv:2609.11014 | Zeta |
+|---|---|---|
+| **objective** | one goal set `G ⊂ M`; reach any `g ∈ G` | mutual empowerment across most members |
+| **who benefits** | the deploying executor | the society, including members not in the run |
+| **transfer axis** | LATERAL — same task, different embodiment (PointMaze → Ant → Humanoid) | VERTICAL — down a capability gradient |
+| **what transfers** | a frozen gate set, no retraining | a routing decision that lowers what the next agent needs |
+
+**The lateral/vertical split is the sharp part.** Their Humanoid is not *less capable* than
+PointMaze — it is differently embodied, and dynamically harder. Their invariance claim is
+"the task structure survives changing WHO executes". Aaron's is "the structure lets a LESSER
+intelligence succeed at what a greater one did", which is
+[[user_aaron_superagent_is_the_best_honest_router]]: *"every time it works decides how to route
+the next same task to an agent with less experience or intelligence."* Those are different
+claims and the paper does not make the second one.
+
+**But it supplies the first real evidence for it anyway**, which is why this belongs in the lane
+rather than in a footnote. The gates are a **frozen artifact handed to a consumer that did not
+produce it, with no retraining** — dependency injection in the literal sense — and the measured
+effect is a capability lift on the receiving side: 96.1 with gates against 85.3 for a
+map-privileged reference without them, and coverage-class baselines at 0.1–49.5. On the
+multi-route task the margin is +36.0 (p=1.4×10⁻⁵). So an injected structural dependency
+*measurably raises what the weaker configuration achieves*. That is the mechanism Aaron's
+superagent definition asserts, demonstrated on an axis adjacent to ours.
+
+**And their object is already collectively constructed — only its aim is individual.** The
+paper's own sentence:
+
+> *"an order of unavoidable stages transmitted by the trajectories of any successful executor
+> and belonging to none of them."*
+
+Structure carried by all members, owned by none. That is a society-shaped object with a
+single-agent goal bolted on. **Zeta wants it collectively constructed AND collectively aimed**,
+and nothing in the paper addresses the second half — a carrier over one goal set cannot express
+"everyone gets better", because there is no `G` for mutual empowerment to be the distance to.
+
+**What this means for the lane, concretely.** The transferable part is the *construction* (a
+carrier from many members' traces; an invariant belonging to none of them; a frozen artifact
+injected into a weaker consumer). The part that does **not** transfer is the *objective*: their
+eikonal shells measure distance to one goal, and our objective has no such target. Whether a
+mutual-empowerment objective admits any progress coordinate at all is an open question this
+lane may have to answer before persistent homology is even applicable.
+
 ## What Zeta already has that this would attach to
 
 | their object | ours | relation |
