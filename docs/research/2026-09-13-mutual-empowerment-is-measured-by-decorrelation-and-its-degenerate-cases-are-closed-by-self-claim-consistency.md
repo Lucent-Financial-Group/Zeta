@@ -388,6 +388,58 @@ than to statistics.
 there is no stuck-detector in this substrate, and the 2026-08-15 audit's own status line for the
 witness fix is *"named in prose; the fix is not implemented."*
 
+## 8. The clock IS the observer — Aaron's reframe, and what it settles
+
+> *"wall clock time is just a clever external observer that is relentless"* — Aaron, 2026-09-13
+
+This collapses §7's two legs into one object, and it is worth stating why it is not a metaphor.
+§7 asked what an external observer must be to supply the decision an agent cannot make about
+itself. The requirements fall out as three properties, and the wall clock has all three:
+
+| requirement from §7 | wall clock |
+|---|---|
+| **external** — not self-generated, or it is the agent's own verdict on itself | yes, by construction |
+| **decorrelated** — a correlated observer returns the agent's own emission (§6c: buys nothing) | **maximally so.** ρ ≈ 0 with the agent's internal state: the clock does not care what is being computed |
+| **relentless** — must not itself get stuck, or the problem recurses | yes. It always answers, on schedule, forever |
+
+That third property is the one with no name in §7 and it is the load-bearing one. An observer that
+can itself stall inherits the halting problem instead of resolving it; the clock cannot stall.
+
+**And it answers the question I sent to the math team as obligation 2.** I asked what the observer
+is allowed to decide that the agent cannot, without the observer also solving the halting problem,
+and guessed the honest answer was "a different, decidable question." Aaron's reframe says it
+exactly: **the clock decides `has t elapsed`, which is decidable and relentless, not `will this
+terminate`, which is neither.** The halting problem is never solved — it is *routed around* by
+substituting a decidable question answered by an observer that cannot fail to answer.
+
+So the framing in §7 should be read down accordingly: *the halting problem is the motivation, the
+decidable substitute is the mechanism.* A timeout is not an approximation to deciding termination;
+it is the cheapest possible external decorrelated observer.
+
+### What this does to the wall-clock rule — it is not about TIME
+
+[`local-time-never-enters-the-shared-fold`](../../.claude/rules/local-time-never-enters-the-shared-fold.md)
+reads as a prohibition on clocks. Under this reframe it is not: a clock is an observer like any
+other, and the rule's own framing already says so — it calls itself *"§13 noninterference, stated
+for time."*
+
+So the defect the rule guards is **an undeclared observer**, not a clock. An agent that silently
+filters its fold inputs on a clock reading has admitted an unmetered channel; the same agent that
+records *"observer `clock` reported budget-exhausted at phase p"* has declared it, and the fold
+sees an ordinary phase-stamped observation. Same information, one is a leak and one is evidence.
+
+**This sharpens obligation 4 rather than dissolving it.** The remaining question for the math team
+is unchanged in substance and clearer in form: does a bounded **increment count** (logical,
+DST-replayable) plus a **phase-stamped restart observation** keep the fold's inputs a pure
+function of (evidence set, agreed phase)? The litmus is still "two nodes with different
+receive-times must not fold different sets" — and an increment counter is the same on both nodes
+where a wall-clock reading is not. That is why the budget must be counted, not timed, even though
+the observer behind it is a clock.
+
+**Register: `toy`.** This is a reframe, not a result: it makes §7's mechanism coherent and answers
+one obligation in advance, but nothing here is proved, and the composition bound (§7) and the fold
+purity (obligation 4) are both still out for review.
+
 ## Anchors (Beacon)
 
 - **Condorcet's jury theorem** (1785) and its correlated-voter extensions — the `N_eff = N/(1+(N−1)ρ)`
