@@ -355,11 +355,15 @@ an agent cannot distinguish *"still searching"* from *"will never escape"* — t
 problem in its own dynamics, and no amount of self-generated perturbation resolves it, because the
 question is about the agent's own future behaviour. An outside observer can answer it.
 
-**And that decision is what converts an unbounded wait into a bounded action.** With a detector for
-"stuck", a deadline-plus-restart strategy becomes available: wait `T`, and if the observer reports
-no progress, perturb and restart. That composition has the bound the raw search lacks. Without the
-detector there is no `T` you may act on, because you cannot tell a slow success from a
-non-termination.
+**And that decision is what makes a bounded ACTION available** — with the crucial qualification
+that the action's value comes from the perturbation, not from the deadline. See §10.1: for an
+exponential dwell, deadline-plus-restart with a *correlated* restart provably buys **zero**, because
+`P(D > kB) = e^{−κkB}` and the restart tail `(1−p)^k = (e^{−κB})^k` are the same number. That is
+memorylessness, by definition. What the detector buys is a **stopping rule**; what makes the restart
+progress rather than livelock is that it resamples the initial condition **decorrelated** from the
+one that got stuck. Without the detector there is no `T` you may act on, because you cannot tell a
+slow success from a non-termination — but a `T` alone, with a correlated restart, is a bounded
+procedure that goes nowhere.
 
 > **The corrected statement, which is what this lane should carry:** an individual *can* escape —
 > by luck, or given unbounded time. A decorrelated quorum makes escape exponentially likelier by
@@ -379,14 +383,22 @@ own verdict on its own state, which is precisely the self-reference Gödel forbi
 | §6c quorum dwell | correlated quorum buys nothing: no escape speedup |
 | **§7 audit** | **the observer becomes the agent: no decision, halting problem returns** |
 
-Three independent derivations landing on one quantity. That is the strongest evidence in this
-document that ρ is the coordinate — and the third is the one that ties it to computability rather
-than to statistics.
+**RETRACTED — see §10.3.** These are not three independent derivations of one quantity; they are
+four quantities wearing one Greek letter, agreeing at the endpoints and differing in the interior,
+and `SocietyUsefulWork.fs` says so in a comment on the very function cited: *"Endpoints agree with
+Kish (m = n at rho = 0, m = 1 at rho = 1) **and the interior does not** — which is precisely why
+both exist."* Citing the density of agreement as the evidence is the exact inversion
+`numerology-vs-number-theory` names: *"too many correlations is a warning, not a confirmation
+signal."* What survives is stronger and is stated in §10.3: **idempotence** is the shared cause.
 
-**Register: `toy` for the composition, `metered` for the parts.** The dwell measurements and
-`(1−ρ)` identity are measured; the deadline-plus-restart bound is **argued, not implemented** —
-there is no stuck-detector in this substrate, and the 2026-08-15 audit's own status line for the
-witness fix is *"named in prose; the fix is not implemented."*
+**Register: `toy` for the composition, `metered` for the parts — with one factual correction.**
+I wrote that *"there is no stuck-detector in this substrate."* **That is false.**
+`src/Core/TangleNavigator.fs` ships one: `dwell` takes a `budget: int` and returns `Escaped n` or
+`Trapped`, it is marked **metered**, and it already documents its own false-positive mode (*"A
+budget shorter than the true dwell reports `Trapped` for an orbit that was merely slow"*). What is
+absent is the *composition* — the restart half — not the detector. The 2026-08-15 audit's status
+line for the **witness** fix (*"named in prose; the fix is not implemented"*) stands and is a
+different claim.
 
 ## 8. The clock IS the observer — Aaron's reframe, and what it settles
 
@@ -518,6 +530,132 @@ in-repo precedent being `FourCornerC4.fs`, which carries its own warning that a 
 
 Step 2 can close this lane for the price of one query, which is the right shape for a hypothesis
 this speculative. **Nothing here may be cited as support for any Zeta claim until step 2 runs.**
+
+## 10. Corrections from formal-verification routing (Soraya, 2026-09-13)
+
+Routed for tool selection; came back with four refutations of claims made above. They are recorded
+here in full because **three of them are mine and two of them are load-bearing.** Anchoring first
+collapsed most of the work: of four obligations, only one and a half are genuine proof obligations.
+
+### 10.1 §7's composition bound is FALSE as written — restart buys ZERO here
+
+> *"For an exponential dwell, deadline-plus-restart buys exactly zero. `P(D > kB) = e^{−κkB}` and
+> the restart tail `(1−p)^k = e^{−κkB}` are the same number — memorylessness, by definition."*
+
+Restart helps only under a **decreasing hazard rate** (Luby, Sinclair & Zuckerman 1993, optimal
+speedup of Las Vegas algorithms; Gomes/Selman/Kautz 1998 on heavy tails). **Our measured
+κ-exponential fit is precisely the case that denies it.** I wrote *"that composition has the bound
+the raw search lacks"*; it has the **same** exponential tail. Corrected inline in §7.
+
+**What the restart's value actually is:** resampling the initial condition **decorrelated** from
+the one that got stuck — not continuing the process. Which splits §7's single mechanism into two:
+
+| role | requires | supplied by |
+|---|---|---|
+| **A — the stopping rule** | monotone, unbounded, decidable, **preemptive** | the counter. **Decorrelation irrelevant** |
+| **B — the restart direction** | **decorrelation**, or you re-enter the same basin | the quorum. The clock supplies nothing here |
+
+> **The falsifiable statement this yields, and it belongs in §8: a clock plus a correlated restart
+> is a provably bounded procedure that makes no progress — livelock with a heartbeat.** Our own
+> table already measures it: 19.35 / 18.33 / 18.79 / 20.11, flat across N.
+
+That also answers the question I asked unprompted (does the quorum buy anything beyond speed?):
+**not variance reduction — a different role entirely.** The clock supplies the bound; the
+decorrelation supplies the progress.
+
+### 10.2 §8 proves too much: decorrelation is not what does the work — PREEMPTION is
+
+> *"A step counter is maximally correlated with the agent's own execution and answers the decidable
+> question perfectly well. Of the three properties, only relentlessness does work."*
+
+And relentlessness reduces to something sharper and directly actionable in production:
+
+> **The counter must be enforced by the SCHEDULER, not by the room's own code.** Externality
+> returns not for decidability but for **preemption** — a budget counted cooperatively by a room
+> that does not return has not fired.
+
+So §8's three-property table is right that the clock qualifies and wrong about *why*. The ρ≈0 claim
+is true of a wall clock and **false of the shipped increment counter**, which is the thing we
+actually intend to build. Obligation 2 itself is settled by citation, not proof: *"does M halt
+within n steps"* is primitive recursive — **Kleene's T predicate**, Blum (1967) step-counting.
+
+### 10.3 "Three independent derivations" — RETRACTED
+
+> *"There are **four** quantities wearing one Greek letter ... They agree at the endpoints and
+> differ in the interior — which your own module says in a comment. Nor are they independent: the
+> first two are dependence parameters of the same model family, chosen by the same author for the
+> same purpose."*
+
+And the rule was already on point: `numerology-vs-number-theory` says **"too many correlations is a
+warning, not a confirmation signal"** — §7 cited the *density of agreement* as the evidence, which
+is the inversion that rule names. I made the error inside a document that quotes the rule.
+
+**What survives is stronger, and it is a theorem rather than a coincidence:**
+
+> **Any aggregation whose combining operation is IDEMPOTENT has an effective multiplicity that
+> collapses to 1 as member dependence goes to total.** Union is idempotent; `min` is idempotent;
+> the design effect is the variance analogue. **Idempotence is the shared cause** — which is why
+> the endpoints agree and the interiors do not.
+
+That is `dv2-data-split-discipline-activated` §6 (idempotency) turning out to be the load-bearing
+property, not ρ.
+
+### 10.4 Obligation 4's fold half is refuted — keep the counter, change the justification
+
+> *"A restart changes what evidence a node PRODUCES; it does not FILTER evidence on its way into
+> the fold. The rule constrains the fold's input function, not the generator."*
+
+A node that is slow, crashes, or restarts produces a different evidence set, and the fold remains a
+pure function of whatever set exists. Divergence requires two nodes given the **same** set folding
+it differently. **So a wall-clock-triggered restart would not violate the fold litmus either** —
+my §8 reasoning reached the right design by the wrong argument.
+
+**The counted budget is still right, for a stronger reason:** DST replay and §13 noninterference.
+A wall clock is **ambient entropy**; a clock-triggered restart makes the run non-replayable at the
+same seed. That is the justification to carry.
+
+And on the phase-stamped restart observation: **not necessary for fold purity** (nothing threatens
+it), **necessary for raw-vault completeness** — a restart is a path event, exactly the *which way
+did you go around the pole* data that `anti-babel` forbids collapsing. Necessary for the **audit**
+property, not the purity property.
+
+**The real divergence risk is one I did not raise:** if the budget `B` is **per-node local policy**,
+two nodes emit different restart observations at the same phase — a genuine divergence caused by an
+undeclared per-node parameter, not by time. The counted budget does **not** fix that. `B` must be
+shared configuration.
+
+### 10.5 Routing outcome
+
+| obligation | verdict | tool |
+|---|---|---|
+| no almost-sure bound exists | **provable, and the answer is NO** | Lean 4 + Mathlib (~20 lines) |
+| tail/expectation bound | provable | Z3 (QF_NRA) + FsCheck |
+| **does restart actually reset?** | **empirical — the load-bearing assumption** | simulation on the existing `TangleNavigator` dwell harness |
+| detector impossibility | **already answered — cite Kleene's T** | none |
+| counter must be preemptive | provable, small | TLA+/TLC or FsCheck |
+| the three ρ's are one quantity | **refuted in-tree** | none — read the comment |
+| idempotence ⇒ multiplicity → 1 | provable | Z3 first, Lean only for publication |
+| quorum floor: is it ρ or `ln(1/ε)/λ`? | **empirical, highest information-per-hour** | simulation, ρ varied continuously |
+| fold purity under restart | provable (bounded) | **Alloy** at bound 5 |
+| **budget is a counter, not a clock** | **provable statically — cheapest artefact** | Semgrep/hygiene lint + FsCheck DST harness |
+| `B` shared, not per-node | provable (bounded) | Alloy, same model |
+
+Only the fold-divergence pair is P0 (unrecoverable after the fact) and gets ≥2 tools. **TLA+ is
+routed around, not chosen:** `docs/TECH-RADAR.md` records the lane dark since 2026-07-01 with
+62/100 runs cancelled in toolchain install, so Alloy leads and TLC is gated on one green run first.
+
+**The cheapest real artefact in the whole set is the lint**: refuse `DateTime` / `Stopwatch` /
+`Environment.TickCount` in the budget path, and assert a byte-identical trajectory under an
+artificially slowed step. That is buildable today and is the one that protects production.
+
+### 10.6 Register corrections carried
+
+- §7's *"the quorum then makes the bounded procedure cheap"* → the floor is `ln(1/ε)/λ`,
+  **independent of N**. Correct phrasing: *reduces the constant to a floor set by λ.*
+- §6c's *"This is `(1−ρ)` again"* sits inside a `metered` section while being itself **unmeasured**
+  — the dwell experiment varied a **binary** (same probe ×N vs independent ×N) and **never computed
+  a ρ**. It needs its own `toy` marker until that measurement runs.
+- §8's ρ≈0 is true of a wall clock, false of the shipped increment counter.
 
 ## Anchors (Beacon)
 
