@@ -763,6 +763,83 @@ correctness.** The capture-not-exclude argument (11a) is a straightforward readi
 Everything downstream of it — that captured entropy raises `(1−ρ)`, that it prices Sybils — is
 exactly what the in-tree correction says is not yet established.
 
+## 12. The scheduler is ONE mechanism serving both requirements — Rx virtual time + FDB simulation
+
+Aaron: *"zeta scheduler is how we capture it on the existing OS too based on its preemptive
+multitasking"* / *"this is based on rx framework testing and foundation db like testing"* /
+*"deterministic simulation"*.
+
+### 12a. Preemptive multitasking supplies BOTH things the analysis asked for, and they were asked for separately
+
+§10.2 (formal-verification) concluded: *"the counter must be enforced by the **scheduler**, not by
+the room's own code ... a budget counted cooperatively by a room that does not return has not
+fired."* §11 (Aaron) concluded: the wall clock must be **captured**, not read ambiently.
+
+These were reached independently, from a computability argument and from a §13 argument. **The OS's
+preemptive multitasking answers both with one mechanism:**
+
+| requirement | why preemption satisfies it |
+|---|---|
+| **§10.2 — preemption** | the OS interrupts the room *whether or not it cooperates*. A room that never returns is still descheduled. This is exactly the property a cooperative counter lacks |
+| **§11 — entropy** | preemption lands at points the room cannot predict. **The unpredictability is the entropy**, and it is the OS's, not the room's |
+
+That is a genuinely economical result: the thing that makes the budget *enforceable* is the same
+thing that makes it *a source*. They are not two subsystems.
+
+### 12b. The testing lineage is why capture is coherent — and half of it is already shipped
+
+Rx's `TestScheduler` and FoundationDB's deterministic simulation are the same discipline: **replace
+the ambient clock with an injected one you advance explicitly**, and the run becomes replayable.
+That is "inject the `Source`" applied to time, and it is the reason §11a holds.
+
+Both are already anchored or shipped here:
+
+- **`src/Core/VirtualTimeScheduler.fs`** — its own header: *"Rx-inspired virtual-time scheduler —
+  wall clock is replaced by a manual counter you advance explicitly. Lets tests that depend on
+  timing ... run deterministic and fast because no real sleeps happen."* **Shipped.**
+- **FoundationDB** — `.claude/rules/async-all-the-way-truthful-signatures.md` already carries it as
+  the reference standard (*"FoundationDB's run loop (Flow actors + deterministic simulation) ...
+  replays the same interleaving from the same seed"*), with Zhou et al. (SIGMOD 2021) and Will
+  Wilson (Strange Loop 2014) as named anchors.
+- **`src/Core/CellScheduler.fs`** — proves the law that makes one code path serve both modes:
+  `run(DoP=1) == run(DoP=N)` *"by construction (the scale-free law, tested at DoP 1/4/16)"*.
+
+### 12c. This is `async-all-the-way` applied to TIME rather than THREADS
+
+That rule's carved sentence is *"beautiful on 1, scales to N"*: DoP=1 gives a deterministic,
+DST-replayable single loop; DoP=N gives throughput; **same code path, no special cases**. §12 is the
+same shape with time as the knob:
+
+| | threads (the existing rule) | time (this section) |
+|---|---|---|
+| deterministic mode | DoP=1, single cooperative loop | **virtual time**, counter advanced explicitly |
+| production mode | DoP=N ferries | **OS preemption** — real interrupts, real entropy |
+| what makes it one path | the DoP knob | the injected clock `Source` |
+| law | `run(1) == run(N)` | replay at the same recorded time-trace |
+
+So the entropy capture is not a new subsystem bolted onto the scheduler — **it is the production
+half of a two-mode scheduler whose test half already exists.** That is why §11a's
+capture-preserves-replay argument works: the recorded trace *is* what virtual time replays.
+
+### 12d. What is shipped, and the one gap — stated plainly
+
+| piece | status |
+|---|---|
+| virtual-time scheduler (Rx pattern) | **shipped** — `VirtualTimeScheduler.fs` |
+| DoP determinism, `run(1)==run(N)` | **shipped and tested** at DoP 1/4/16 |
+| FoundationDB DST as the reference standard | **carved** in `async-all-the-way`, with anchors |
+| preemption as the budget enforcer | **argued** (§10.2), not wired to a budget |
+| **preemption timing recorded as a captured `Source` value** | **NOT PRESENT.** Measured 2026-09-13: nothing under `src/Core/` records preemption timing as an entropy source |
+
+That last row is the gap, and it is the difference between *"the OS gives us entropy"* (true, and
+unexploited) and *"we capture it"* (the claim). Until a preemption trace is recorded through the
+injected `Source`, the entropy exists and the substrate does not hold it — which is §9c's complaint
+about the local↔phase rate, arriving a second time from a different direction.
+
+**Register.** `metered`: the virtual-time scheduler and the DoP law, both shipped and tested.
+`toy`: everything about preemption as an entropy source — the mechanism is right and the recording
+does not exist yet.
+
 ## Anchors (Beacon)
 
 - **Condorcet's jury theorem** (1785) and its correlated-voter extensions — the `N_eff = N/(1+(N−1)ρ)`
@@ -788,6 +865,11 @@ exactly what the in-tree correction says is not yet established.
   collapse stated in cybernetic rather than statistical terms.
 - **Kantz & Grassberger (1985); Tél & Lai (2008)** — transient chaos and escape from chaotic
   saddles; the source of the exponential-dwell model §7 checks against.
+- **Erik Meijer** (Rx; `TestScheduler` / virtual time) — a root anchor in this repo, and the
+  pattern `VirtualTimeScheduler.fs` implements: replace the ambient clock with one you advance.
+- **Zhou et al.**, *FoundationDB* (SIGMOD 2021), and **Will Wilson**, *Testing Distributed Systems
+  with Deterministic Simulation* (Strange Loop 2014) — already anchors of
+  `async-all-the-way-truthful-signatures`; the deterministic-simulation half of §12.
 - **Rudolf Kálmán** (innovation: the unpredictable component of a new observation) — the premise
   `AntiSybil.fs` names as missing for any entropy floor; already an anchor in the self-audit doc.
 - **Ostrom**, *Governing the Commons* — degenerate cooperation and the monitoring that distinguishes
