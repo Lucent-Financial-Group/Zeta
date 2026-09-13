@@ -771,12 +771,13 @@ multitasking"* / *"this is based on rx framework testing and foundation db like 
 
 > ### ⚠ §12 DESCRIBES A BORROWED MECHANISM, NOT THE TARGET ARCHITECTURE — see §13
 >
-> Aaron, immediately after: *"we are trying to replace all preemptive systems with cooperative
-> ones, even with outliers that try to steal it, based on society enforcement not centralized
-> enforcement."* **A preemptive scheduler is a central enforcer** — an appointed hub for time, and
-> therefore a manifesto §1 violation wearing an OS. §12 below is correct about what the *existing
-> OS* gives us and correct that it satisfies both requirements; it is **wrong as a destination**.
-> Read it as: this is what we borrow while running on someone else's kernel.
+> Aaron: *"we are trying to replace all preemptive systems with cooperative ones ... based on
+> society enforcement not centralized enforcement."* I first recorded this as disqualifying §12
+> outright. **That was over-broad and §14.2 corrects it:** the §1 objection reaches preemption
+> **across trust domains**, not preemption *inside a domain you own*. A scheduler that preempts
+> only rooms inside your own process controls nobody but yourself — self-governance, not an
+> appointed hub, because there is no second party denied exit. **§12 is therefore correct and
+> scoped, not borrowed.** The cooperative requirement applies at the boundary between domains.
 
 ### 12a. Preemptive multitasking supplies BOTH things the analysis asked for, and they were asked for separately
 
@@ -888,18 +889,23 @@ lives:
 So the open question is whether society enforcement can deliver **liveness**, or only
 **incentive-compatibility** — and those are different properties with different proof obligations.
 
-### 13c. The constraint already carved here, which makes this harder than it looks
+### 13c. ~~The singular-limit constraint~~ — WRONG ANCHOR, corrected in §14.1
 
-`docs/research/2026-08-10-synchrony-non-transfer-audit-*.md` records the result that governs any
-such migration:
+I cited the synchrony non-transfer result (*"the limit is singular, so uniformity in τ must be
+proven rather than inherited"*) and claimed *"the preemptive→cooperative move is exactly that
+limit."*
 
-> *"a property verified under a synchrony assumption does not transfer to `τ > 0` by continuity,
-> **because the limit is singular**, so uniformity in `τ` must be proven rather than inherited."*
+**It is not.** That result is about **delay τ**, where the limit is singular because the *state
+space dimension changes* (ℝⁿ at τ=0, infinite-dimensional at τ>0). **Preemptive→cooperative has no
+τ** — there is no partially-preemptive scheduler interpolating between them — so the theorem is
+invoked for a limit nobody is taking, and `anchor-to-human-prior-art` requires anchors be
+**checked**, not cited. I failed my own rule inside a document that quotes it.
 
-**The preemptive→cooperative move is exactly that limit.** Preemption is a hard timing guarantee;
-cooperation plus eventual social pressure is not. So any bounded-time property proved under
-preemption **does not carry over by continuity** — it must be re-proved uniformly, and the singular
-limit says the naive expectation will be wrong.
+The framing is rescuable and gets *stronger*: parameterise by **defection probability `p`**. At
+`p=0` total time is bounded; at any `p>0` a never-yielding defector drives it unbounded. **That** is
+a genuine singular limit, it is provable, and it is measurable. See §14.1 — and note the real
+blocker underneath is worse than non-transfer: the move is synchronous→asynchronous, where **FLP is
+a flat impossibility**, with no continuum to be uniform over.
 
 ### 13d. What exists here already, and what it carefully does not claim
 
@@ -920,6 +926,129 @@ The question is well-posed and well-anchored (FLP; Dwork–Lynch–Stockmeyer pa
 Chandra–Toueg failure-detector hierarchy; the in-repo FLP/Lean scoping doc of 2026-06-19), so it has
 been routed rather than speculated on further. **Register: `toy`** — nothing below §13a is
 established, and the section exists to state the problem correctly, not to answer it.
+
+## 14. Second formal-verification pass — the question was malformed, and three more of my claims fail
+
+### 14.0 "Liveness of WHAT?" — the dissolution
+
+The obligation rode two properties on one word, and separating them answers it:
+
+| property | achievable? |
+|---|---|
+| **the defector yields** | **NO — and not for want of a better scheme** |
+| **the society makes progress** | **YES**, by *exclusion*, interrupting nobody |
+
+> **Incentive-compatibility quantifies over RATIONAL players; liveness quantifies over ALL players.
+> A Byzantine participant is by definition not utility-maximising, so no penalty at any severity
+> yields liveness against a player indifferent to it.**
+
+My §13b sentence (*"reputation is a deterrent, liveness is a guarantee"*) was **correct, and is not
+a gap to be closed** — it is a quantifier difference. The second property is the standard BFT
+construction and is §1-compatible: state liveness **over the cooperating subset** and remove the
+defector from the set the property depends on. **Ostrom's ultimate sanction in every commons case
+is exclusion, not fine** — punishment does not return the cycles; exclusion means they were never
+needed from that member.
+
+### 14.1 ✗ My singular-limit citation was the wrong anchor (corrected in §13c)
+
+Hale's singularity is in **delay τ**, where the state-space dimension changes. Preemptive→
+cooperative has no such parameter. Rescue: parameterise by **defection probability `p`** — bounded
+at `p=0`, unbounded at any `p>0`, a real singular limit and cheaply measurable. And the actual
+blocker is **FLP**, a flat impossibility rather than a non-transfer: there is no continuum over
+which to prove uniformity.
+
+### 14.2 ✗ My §1 disqualification of preemption was over-broad — and this REOPENS a design
+
+> *"A preemptive scheduler that only preempts rooms inside one process you own controls nobody but
+> yourself. That is self-governance, not an appointed hub; there is no second party with no exit."*
+
+The `itron` discriminator is about control **over others**. So the §1 objection is scoped to
+preemption **across trust domains**, and the target architecture is:
+
+| scope | scheduling | why |
+|---|---|---|
+| **across trust domains** | **cooperative**, enforced by exclusion | §1: no party may interrupt another |
+| **inside your own domain** | anything you like, preemption included | self-governance; nobody else's exit is denied |
+
+I closed an affordable design by over-reading a rule. **§12 is correct and scoped, not borrowed.**
+
+### 14.3 ✗ "Right shape for §1" is not sufficient — the TICK-SOURCE CIRCULARITY (new defect)
+
+`SybilBftLiveness.onTick` is **caller-driven** — the module says so: *"the caller drives logical
+time."* Therefore:
+
+> **If ticks advance by room execution, a co-located hog stops the very ticks that would detect
+> it.** The detector is starved by the thing it exists to detect.
+
+Worse, and independent: **a chatty hog is undetectable in principle by this class.** Muteness
+detectors (◇M) detect failure-to-*send*. A defector that consumes its budget while heartbeating
+punctually is mute to nobody, so ◇P/◇S/Ω do not apply — they classify detectors over
+**communication**, and a CPU hog steals a **local** resource. *The crash-fault hierarchy is simply
+the wrong instrument.*
+
+### 14.4 The third path — do not share the isolation domain
+
+The dilemma *preemptive hub vs unenforceable cooperation* is false
+([`gated-action-find-the-third-path`](../../.claude/rules/gated-action-find-the-third-path.md)):
+
+> **If a room that hogs only hogs its OWN resources, there is no victim** — no enforcement needed,
+> no preemption needed. The society enforces by **exclusion from the quorum**, which interrupts
+> nobody.
+
+§1-compatible, no appointed hub, no impossible detector. Its cost is **engineering** (one isolation
+domain per room), not principle — a budget decision to be taken knowingly, which is the right shape
+for it.
+
+**And that isolates the one experiment worth running first**, which needs no formal tool: two
+co-located rooms, one never yields, measure the other's increment rate. **If it hits zero,
+reputation is provably irrelevant to the outcome** and the architecture question is settled in
+minutes rather than argued.
+
+### 14.5 Orleans — Aaron's pointer, and where it sits under the corrected scoping
+
+Aaron: *"orleans is the closest project I've seen to this — virtual actor scheduling based on
+message rates."* Orleans is already present here (`db/orleans`, the silo project, several
+work-items, and `docs/CONCEPT-REGISTRY.md` / `VISION.md`).
+
+Under §14.2's scoping Orleans is a **worked instance of the correct answer, not a counterexample**:
+grains are **cooperatively** scheduled, turn-based, one message to completion — inside a silo, which
+is one trust domain. Failure handling at the **silo boundary** is timeout-based. So Orleans does
+exactly what §14.2 prescribes: cooperative within, external time at the boundary between domains.
+
+And the part worth taking: **message rate as a decentralised clock.** Each grain's temporal
+experience is its message arrival, not a global tick — which is a per-member local time with no
+central source, and therefore a candidate for §9's local↔phase rate measured *without* a privileged
+clock. **Register `toy`:** Orleans is prior art to read, not a result; whether message-rate time
+carries the innovation §11d requires is unmeasured.
+
+### 14.6 The recommendation, and its honest price
+
+If an FLP escape is needed: **randomisation (Ben-Or 1983), not partial synchrony** — and the
+argument is internal consistency, not taste:
+
+- §10.5 already established **no almost-sure bound exists** for this mechanism; only expected-time
+  and tail bounds do.
+- **Partial synchrony** (Dwork–Lynch–Stockmeyer) buys a *deterministic* bound after GST — a
+  property already proved unavailable — and pays by **re-importing the wall clock** that §11 and
+  §13 exist to remove.
+- **Randomised consensus** buys **expected-time termination with no timing assumption** — exactly
+  the bound class that *is* available — drawing on the declared entropy `Source` the substrate
+  already requires.
+
+**Price, named rather than smuggled:** naive Ben-Or is exponential in *n* without a common coin,
+and a common coin needs setup. That is the cost of not making the timing assumption, and Aaron
+should get to weigh it knowingly.
+
+### 14.7 Routing and one trap
+
+P0 is **progress over the cooperating subset under exclusion** (a false liveness claim ships a
+system that deadlocks on one defector) → TLC + Alloy + FsCheck. Everything else is literature or a
+single cheap experiment.
+
+**TLC trap, specific and already documented in-tree:** `PredictiveLookahead.cfg` records that mixing
+a state `CONSTRAINT` with a liveness `PROPERTY` is **unsound in TLC** — the constraint manufactures
+artificial sinks, corrupts fairness, and yields a **spurious green**. A bounded model of "eventually
+progress" is precisely the shape that invites it. That spec is the standard to copy.
 
 ## Anchors (Beacon)
 
