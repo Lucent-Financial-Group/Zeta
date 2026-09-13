@@ -300,6 +300,94 @@ Two results that carry straight into this lane:
 So the lane inherits a controller with a known saturation and a known floor, rather than needing
 to invent one — and the thing that makes it work is the same ρ the objective is measured in.
 
+## 7. Bounded time is the right claim — and it rests on the Gödel leg, not the dynamical one
+
+Aaron, sharpening: *"we have a lot of work saying it takes a 2nd observer or a quorum to escape a
+homoclinical tangle ... sometimes an individual can get lucky and escape without an external
+observer, or given enough time, but to make it happen in BOUNDED TIME so we avoid the HALTING
+PROBLEM we need external observers."*
+
+**This is a stronger claim than the one that was refuted, and it survives both corrections** —
+because it concedes exactly what they established (lucky self-escape; escape given enough time)
+and asks for a property neither addressed: a **bound**.
+
+### The distinction the earlier round missed: finite expectation ≠ bounded time
+
+Correction 2 established `E[dwell] = 18.95`, finite. That was offered as the fix to "unbounded
+expected time". **It does not deliver bounded time, and the difference is the whole argument.**
+For an exponential dwell, `P(dwell > t) = e^{−κt} > 0` for every finite `t`. There is no `T` such
+that escape is guaranteed by `T`. A finite mean and an almost-sure bound are different properties,
+and only the second avoids the halting problem.
+
+### And a quorum alone does NOT supply the bound either — checked, not assumed
+
+Under the idealised model (escape = min of N independent exponentials, so `Exp(Nκ)`):
+
+| N | model `E[min] = 1/(Nκ)` | `P(dwell > 100)` | **measured** `E[min]` |
+|---|---|---|---|
+| 1 | 18.94 | 5.1×10⁻³ | 18.81 |
+| 4 | 4.73 | 6.7×10⁻¹⁰ | **8.65** |
+| 16 | 1.18 | 2.1×10⁻³⁷ | **6.70** |
+| 64 | 0.30 | ~0 | **6.35** |
+
+Two readings, and both matter:
+
+1. **The tail stays strictly positive for every N.** A quorum makes escape exponentially more
+   likely by any deadline; it never makes it certain. So *the quorum's speedup is not the source
+   of the bound.*
+2. **The measured values diverge from the model exactly where the model says they should keep
+   falling.** `1/(Nκ)` predicts 0.30 at N=64; measurement says 6.35. The idealised independence
+   assumption fails, and the audit already named why: two trajectories `ε` apart stay together for
+   `≈ ln(1/ε)/λ` steps, so **a quorum cannot resolve an escape faster than its own decorrelation
+   time.** The saturation is that floor, visible as a 20× gap from the iid prediction.
+
+### So where does the bound come from? The other leg — and it is already written here
+
+`docs/research/2026-07-05-noticing-your-own-flaws-in-math-*.md`:
+
+> *"a consistent system **cannot fully verify itself** (Gödel 2nd incompleteness; the halting
+> problem). Some flaws are structurally invisible from inside — meta-awareness buys the *partial*
+> audit, never the complete one ... the rest needs a genuinely **external, decorrelated
+> observer**."*
+
+**The external observer's load-bearing contribution is a DECISION, not a speedup.** From inside,
+an agent cannot distinguish *"still searching"* from *"will never escape"* — that is the halting
+problem in its own dynamics, and no amount of self-generated perturbation resolves it, because the
+question is about the agent's own future behaviour. An outside observer can answer it.
+
+**And that decision is what converts an unbounded wait into a bounded action.** With a detector for
+"stuck", a deadline-plus-restart strategy becomes available: wait `T`, and if the observer reports
+no progress, perturb and restart. That composition has the bound the raw search lacks. Without the
+detector there is no `T` you may act on, because you cannot tell a slow success from a
+non-termination.
+
+> **The corrected statement, which is what this lane should carry:** an individual *can* escape —
+> by luck, or given unbounded time. A decorrelated quorum makes escape exponentially likelier by
+> any deadline and is floored by its own decorrelation time. **Neither bounds the time.** The bound
+> comes from an external observer supplying the stopping decision the agent cannot make about
+> itself — Gödel/Turing, not dynamics — and the quorum then makes the bounded procedure cheap.
+
+### The same ρ, a third time
+
+The doc does not ask for *an* observer; it asks for a *"genuinely external, **decorrelated**
+observer"*. A correlated observer is the agent hearing its own emission — it returns the agent's
+own verdict on its own state, which is precisely the self-reference Gödel forbids. So:
+
+| where | what `ρ → 1` destroys |
+|---|---|
+| §1 society gain | `(1−ρ)` → 0: no empowerment |
+| §6c quorum dwell | correlated quorum buys nothing: no escape speedup |
+| **§7 audit** | **the observer becomes the agent: no decision, halting problem returns** |
+
+Three independent derivations landing on one quantity. That is the strongest evidence in this
+document that ρ is the coordinate — and the third is the one that ties it to computability rather
+than to statistics.
+
+**Register: `toy` for the composition, `metered` for the parts.** The dwell measurements and
+`(1−ρ)` identity are measured; the deadline-plus-restart bound is **argued, not implemented** —
+there is no stuck-detector in this substrate, and the 2026-08-15 audit's own status line for the
+witness fix is *"named in prose; the fix is not implemented."*
+
 ## Anchors (Beacon)
 
 - **Condorcet's jury theorem** (1785) and its correlated-voter extensions — the `N_eff = N/(1+(N−1)ρ)`
@@ -317,5 +405,13 @@ to invent one — and the thing that makes it work is the same ρ the objective 
   (Ames et al.) — the mathematics of staying inside an admissible set indefinitely, as opposed to
   reaching a target. **New to this repo**: measured 2026-09-13, `viability` is used nowhere in the
   control-theoretic sense.
+- **Gödel** (2nd incompleteness) and **Turing** (halting) — §7's leg: a consistent system cannot
+  fully verify itself, which is why the stopping decision must come from outside.
+- **Louis Kauffman / Heinz von Foerster** (eigenform, second-order cybernetics) — the in-repo
+  treatment is `2026-07-05-ani-ferry-3-eigenform-self-boundary-the-rho-spiral-needs-external-observers-kauffman.md`;
+  a system observing itself converges to a fixed point *of its own observation*, which is the ρ→1
+  collapse stated in cybernetic rather than statistical terms.
+- **Kantz & Grassberger (1985); Tél & Lai (2008)** — transient chaos and escape from chaotic
+  saddles; the source of the exponential-dwell model §7 checks against.
 - **Ostrom**, *Governing the Commons* — degenerate cooperation and the monitoring that distinguishes
   it from the real thing; the collusion-ring gap above is an instance she would recognise.
