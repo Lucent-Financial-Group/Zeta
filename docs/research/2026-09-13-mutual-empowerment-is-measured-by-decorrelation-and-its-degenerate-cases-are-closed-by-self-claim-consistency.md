@@ -769,6 +769,15 @@ Aaron: *"zeta scheduler is how we capture it on the existing OS too based on its
 multitasking"* / *"this is based on rx framework testing and foundation db like testing"* /
 *"deterministic simulation"*.
 
+> ### ⚠ §12 DESCRIBES A BORROWED MECHANISM, NOT THE TARGET ARCHITECTURE — see §13
+>
+> Aaron, immediately after: *"we are trying to replace all preemptive systems with cooperative
+> ones, even with outliers that try to steal it, based on society enforcement not centralized
+> enforcement."* **A preemptive scheduler is a central enforcer** — an appointed hub for time, and
+> therefore a manifesto §1 violation wearing an OS. §12 below is correct about what the *existing
+> OS* gives us and correct that it satisfies both requirements; it is **wrong as a destination**.
+> Read it as: this is what we borrow while running on someone else's kernel.
+
 ### 12a. Preemptive multitasking supplies BOTH things the analysis asked for, and they were asked for separately
 
 §10.2 (formal-verification) concluded: *"the counter must be enforced by the **scheduler**, not by
@@ -839,6 +848,78 @@ about the local↔phase rate, arriving a second time from a different direction.
 **Register.** `metered`: the virtual-time scheduler and the DoP law, both shipped and tested.
 `toy`: everything about preemption as an entropy source — the mechanism is right and the recording
 does not exist yet.
+
+## 13. The target is COOPERATIVE with society enforcement — and §12 is the thing being replaced
+
+Aaron: *"we are trying to replace all preemptive systems with cooperative ones, even with outliers
+that try to steal it, based on society enforcement not centralized enforcement."*
+
+This inverts §12's conclusion and it is the more interesting claim, so it is recorded as its own
+section rather than as a caveat inside one.
+
+### 13a. Why preemption is disqualified, and it is not a preference
+
+§10.2 concluded the budget must be **scheduler-enforced**. §12 observed the OS supplies that. Both
+are correct and both describe a **central enforcer**: a preemptive scheduler is the one party that
+can interrupt everyone, which is an **appointed hub** for time.
+[`itron-hub-patent-boundary-p2p-is-the-upgrade`](../../.claude/rules/itron-hub-patent-boundary-p2p-is-the-upgrade.md)
+gives the discriminator — *exit, not degree*: you cannot route around your own kernel's scheduler.
+That makes it a hub in the strict sense, and manifesto §1 (no central point of control) disallows
+it as a destination.
+
+So the honest reading of §12 is: **borrowed, not chosen.** While Zeta runs as a process on someone
+else's kernel, that kernel's preemption is available and satisfies both requirements. It is not
+what the architecture is aiming at.
+
+### 13b. The hard problem, stated without softening
+
+Cooperative scheduling is §1-compatible — every participant yields voluntarily, no privileged
+interruptor. Its failure mode is exactly the one formal-verification named: **a participant that
+does not yield has not fired the budget.** Aaron's answer is that this is a **defection** problem,
+not an architecture problem, and defection is handled by society enforcement.
+
+That relocates the question rather than answering it, and the relocation is where the difficulty
+lives:
+
+> **Reputation is a DETERRENT; liveness is a GUARANTEE.** A defector who does not value standing
+> still holds the CPU. Pricing the defect after the fact does not return the cycles, and a society
+> that can only punish cannot preempt.
+
+So the open question is whether society enforcement can deliver **liveness**, or only
+**incentive-compatibility** — and those are different properties with different proof obligations.
+
+### 13c. The constraint already carved here, which makes this harder than it looks
+
+`docs/research/2026-08-10-synchrony-non-transfer-audit-*.md` records the result that governs any
+such migration:
+
+> *"a property verified under a synchrony assumption does not transfer to `τ > 0` by continuity,
+> **because the limit is singular**, so uniformity in `τ` must be proven rather than inherited."*
+
+**The preemptive→cooperative move is exactly that limit.** Preemption is a hard timing guarantee;
+cooperation plus eventual social pressure is not. So any bounded-time property proved under
+preemption **does not carry over by continuity** — it must be re-proved uniformly, and the singular
+limit says the naive expectation will be wrong.
+
+### 13d. What exists here already, and what it carefully does not claim
+
+`src/Core/SybilBftLiveness.fs` is the nearest shipped thing — *"logical-tick heartbeats, timeout
+suspicion, and view changes"*, which is a **failure detector** in the Chandra–Toueg sense. And it is
+scrupulous about its own limits:
+
+> *"A caller can fabricate a regular history, so neither observation authenticates a clock or
+> proves identity strength. The caller drives logical time; transport and wall-clock provenance are
+> external."*
+
+So the detector exists, is driven by **logical** time, and explicitly does not authenticate a clock
+— which is the right shape for §1 and leaves precisely the gap §13b names.
+
+### 13e. Routed to formal-verification
+
+The question is well-posed and well-anchored (FLP; Dwork–Lynch–Stockmeyer partial synchrony;
+Chandra–Toueg failure-detector hierarchy; the in-repo FLP/Lean scoping doc of 2026-06-19), so it has
+been routed rather than speculated on further. **Register: `toy`** — nothing below §13a is
+established, and the section exists to state the problem correctly, not to answer it.
 
 ## Anchors (Beacon)
 
