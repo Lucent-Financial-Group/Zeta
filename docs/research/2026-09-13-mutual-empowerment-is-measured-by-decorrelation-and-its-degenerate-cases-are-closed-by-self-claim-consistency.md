@@ -440,6 +440,85 @@ the observer behind it is a clock.
 one obligation in advance, but nothing here is proved, and the composition bound (§7) and the fold
 purity (obligation 4) are both still out for review.
 
+## 9. The clock is LOCAL, and the local↔phase rate is discarded information about the observer
+
+Aaron, continuing: *"it's the cheapest probably not the only one and it's very localized, it's not
+constant everywhere like a gauge theory is, time flows at different rates in different
+localizations, we can actually reverse engineer a lot about the external observer by how local
+time connects to our phase time."*
+
+Three claims, and they separate cleanly by how checkable they are.
+
+### 9a. "Cheapest, probably not the only one" — accepted, and it matters for §7
+
+§8 establishes the clock as *an* observer satisfying external + decorrelated + relentless. It does
+not establish uniqueness, and nothing should be built as if it did. Any observer with those three
+properties qualifies; a peer agent qualifies when genuinely decorrelated, but it is **not
+relentless** — a peer can stall, and a stalled observer returns the halting problem to the caller.
+That is a real ordering between observer classes and it favours the clock for the *stuck-detector*
+role specifically, not for observation generally.
+
+### 9b. "Not constant like a gauge theory" — and the existing frame law is FLAT BY CONSTRUCTION
+
+This is the part where the repo already has an answer, and it is not the one the analogy expects.
+
+`src/Core/TravelerFrame.fs` discharges the **inter-frame transformation law** and states the
+motivation in exactly Aaron's terms: *"in every system that has relative frames — relativity
+(worldline + tetrad, related by transformations) and distributed systems (causal views, merged) —
+the transformation between frames is the content; the axes are secondary."*
+
+But the transformation it proves is the **causal join** (pointwise `max`), and it is shown to be a
+**bounded join-semilattice**: idempotent, commutative, associative, monotone, therefore
+**order-independent** — *"any set of travelers reaches one common frame (the LUB) regardless of the
+order in which views are merged."*
+
+> **Order-independent means path-independent, and path-independent means ZERO HOLONOMY.** Going
+> around a loop in the causal frame graph returns exactly the LUB it started from. So the existing
+> inter-frame law is **flat by construction** — there is no monodromy in it, and there cannot be.
+
+That is a genuine constraint on the analogy, not a decoration: whatever curvature Aaron is pointing
+at, **it is not in the vector-clock transformation**, which is provably flat.
+
+### 9c. Where the information actually is — and we are throwing it away
+
+The rate Aaron names is a *different object* from the vector clock. The vector clock is purely
+logical; the **local-wall-clock ↔ phase rate** is the relationship between a node's proper time and
+the agreed order. And this substrate deliberately **discards** it:
+[`local-time-never-enters-the-shared-fold`](../../.claude/rules/local-time-never-enters-the-shared-fold.md)
+exists precisely to keep local time out of the shared conclusion, so the rate is quotiented away by
+design and never recorded.
+
+**Aaron's claim is that the discarded quantity is exactly the one that characterises the observer.**
+If true, this substrate is systematically deleting its only signal about the thing §7 depends on.
+That is a sharp and uncomfortable claim, and it is the reason this section exists.
+
+Note it does **not** contradict the rule. The rule forbids local time from entering the *shared
+fold*; it says nothing against **measuring** the local↔phase relation and treating that measurement
+as ordinary phase-stamped evidence — which is precisely the declared-observer move of §8.
+
+### 9d. Register and the cheap falsifier
+
+**Register: `toy`, and flagged as the shape this repo has been burned by.** "Local time vs phase
+looks like a connection, and connections have holonomy, and holonomy is monodromy" is a chain of
+resemblances, and [`numerology-vs-number-theory`](../../.claude/rules/numerology-vs-number-theory.md)
+is explicit that a structural rhyme is a **generator of hypotheses, never a conclusion** — the
+in-repo precedent being `FourCornerC4.fs`, which carries its own warning that a numeric match to
+2√2 *"is not a measurement of Tsirelson."* Treat §9 the same way until measured.
+
+**The falsifier is cheap and the data already exists.** Heartbeat ticks carry wall-clock timestamps
+*and* sit in a logical order; `heartbeat/*` refs hold months of them across multiple agents. So:
+
+1. For each agent, measure `Δ(wall clock) / Δ(phase)` over its own tick sequence.
+2. **If the ratio is constant across agents and epochs, there is no signal** and §9 closes — the
+   relation is a global rescaling, carrying nothing about any observer.
+3. If it varies *systematically* (not as jitter), fit what it varies with. That variation is the
+   candidate object.
+4. Only then ask whether the variation composes around a loop — i.e. whether there is holonomy in
+   the *rate* even though there is provably none in the *join* (9b).
+
+Step 2 can close this lane for the price of one query, which is the right shape for a hypothesis
+this speculative. **Nothing here may be cited as support for any Zeta claim until step 2 runs.**
+
 ## Anchors (Beacon)
 
 - **Condorcet's jury theorem** (1785) and its correlated-voter extensions — the `N_eff = N/(1+(N−1)ρ)`
