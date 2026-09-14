@@ -185,7 +185,7 @@ import { jiraIntake } from "./jira-source";
 import { resolve as resolveSkill, type Resolution, type SkillBinding } from "./skill-binding";
 import { orgById, parseRegistry, runReadinessOf } from "./org-registry";
 import { HumanActionKind, isPaused, type HumanAction } from "./human-action";
-import { mkdirSync, readdirSync, readFileSync, writeFileSync, statSync } from "node:fs";
+import { mkdirSync, mkdtempSync, readdirSync, readFileSync, writeFileSync, statSync } from "node:fs";
 import { releaseOnExit, takeStoreLock } from "./store-lock";
 import { join, resolve } from "node:path";
 import { tmpdir } from "node:os";
@@ -902,7 +902,19 @@ export function reviewContextEnv(
   readonly brief?: string;
   readonly evidence?: readonly { readonly ref: string }[];
 }) => Readonly<Record<string, string>> {
-  const dir = join(tmpdir(), "org-review-context");
+  // A PRIVATE directory, not a fixed name in the shared temp dir.
+  //
+  // `join(tmpdir(), "org-review-context")` is world-predictable: any local user can pre-create
+  // that path -- or a symlink standing in for it -- before this process does, and the
+  // `writeFileSync` calls below follow symlinks. That is an arbitrary-file-write primitive
+  // handed to anyone with a shell on the box, which is why CodeQL flags it
+  // (`js/insecure-temporary-file`, CWE-377/378). `mkdtempSync` creates a fresh 0700 directory
+  // with an unguessable suffix and fails rather than adopting an existing one.
+  //
+  // Created ONCE per `reviewContextEnv`, exactly as the fixed path was, so the per-request
+  // behaviour and the env-var contract below are unchanged -- the paths simply stop being
+  // guessable by anyone who is not this process.
+  const dir = mkdtempSync(join(tmpdir(), "org-review-context-"));
   return (request) => {
     // ── WHAT THE WORK IS, BEFORE ANYTHING THAT CAN FAIL ──────────────────────
     // Outside the `try` on purpose. These two come from the request itself — no file is read and

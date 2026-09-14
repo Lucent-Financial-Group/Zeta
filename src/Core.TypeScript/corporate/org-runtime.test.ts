@@ -1442,50 +1442,60 @@ describe("TWO UNRELATED TICKETS' GATE WALKS OVERLAP WHEN `maxParallel` SAYS SO",
     { ...GOOD, externalId: "T-2", title: "refund posts twice" },
   ];
 
-  function timedReviewer(delayMs: number) {
-    const calls: { readonly gate: string; readonly workId: string; readonly startMs: number; readonly endMs: number }[] = [];
+  // OCCUPANCY, NOT ELAPSED TIME. The property under test is "were two reviews inside at the
+  // same time", and the first version of this reached for it through an 80ms `setTimeout` plus
+  // `performance.now()` timestamps. That made a wall clock the arbiter of a verdict about
+  // CONCURRENCY -- a stand-in for the observable rather than the observable itself, which is
+  // what `audit-ambient-time-in-tests` refuses (it failed here on the unallowlisted timer).
+  //
+  // Counting occupancy answers the question DIRECTLY and deterministically: a reviewer bumps a
+  // counter on entry, yields a fixed number of event-loop TURNS, and drops it on exit. If the
+  // ferry runs them sequentially the counter can never exceed 1, however slow or fast the
+  // machine is; if it runs them together the peak rises. The yield is a LITERAL-zero
+  // `setTimeout`, which is deterministic in turns and is the one form the detector permits.
+  //
+  // This is also strictly stronger than the timestamp version: it cannot pass by accident on a
+  // loaded runner where two sequential calls happen to straddle the same millisecond, and it
+  // cannot fail on one where a concurrent pair is scheduled too far apart to overlap.
+  const YIELD_TURNS = 8;
+
+  function occupancyReviewer() {
+    const calls: { readonly gate: string; readonly workId: string }[] = [];
+    let inside = 0;
+    let peak = 0;
     const review = {
-      meta: { port: Port.Review, name: "timed", fidelity: Fidelity.Real, describes: "records overlap" },
+      meta: { port: Port.Review, name: "occupancy", fidelity: Fidelity.Real, describes: "records overlap" },
       review: async (req: { readonly gate: GateKind; readonly workId: string }) => {
-        const startMs = performance.now();
-        await new Promise((resolve) => setTimeout(resolve, delayMs));
-        calls.push({ gate: String(req.gate), workId: req.workId, startMs, endMs: performance.now() });
+        inside += 1;
+        peak = Math.max(peak, inside);
+        // Hold the call open across several turns so a genuinely concurrent sibling has somewhere
+        // to interleave. A reviewer that returned instantly would make sequential and concurrent
+        // runs indistinguishable -- the same trap the 80ms sleep was there to avoid.
+        for (let turn = 0; turn < YIELD_TURNS; turn++) {
+          await new Promise<void>((resolve) => setTimeout(resolve, 0));
+        }
+        inside -= 1;
+        calls.push({ gate: String(req.gate), workId: req.workId });
         return { ok: true as const, value: { outcome: GateOutcome.Approved, reason: "ok" }, evidence: [] };
       },
     };
-    return { calls, review };
+    return { calls, review, peak: () => peak };
   }
-  // Two calls OVERLAP when one starts before the other has ended — order-independent, so it does
-  // not matter which of the two concurrent calls this test's own ferry happened to start first.
-  const overlaps = (
-    a: { readonly startMs: number; readonly endMs: number },
-    b: { readonly startMs: number; readonly endMs: number },
-  ): boolean => a.startMs < b.endMs && b.startMs < a.endMs;
 
-  test("at the default (sequential), two tickets' reviews never overlap — the control", async () => {
-    const rec = timedReviewer(80);
+  test("at the default (sequential), two tickets' reviews are never inside at once — the control", async () => {
+    const rec = occupancyReviewer();
     const base = deps({ externalEvents: two, supplyTarget: 2 });
     await runOrgRuntime({ ...base, providers: { ...defaultProviderSet(base), review: rec.review as never } } as OrgRuntimeDeps);
-    // Every recorded call anywhere in the run is checked against every other — sequential means
-    // NONE of them overlap, not merely that same-ticket ones don't (they never would anyway).
-    for (let i = 0; i < rec.calls.length; i++) {
-      for (let j = i + 1; j < rec.calls.length; j++) {
-        expect(overlaps(rec.calls[i] as never, rec.calls[j] as never)).toBe(false);
-      }
-    }
+    // Peak occupancy of 1 means no two review calls anywhere in the run were ever open together.
+    expect(rec.peak()).toBe(1);
+    // Without this the control passes vacuously when no review ever runs.
     expect(rec.calls.length).toBeGreaterThan(0);
   }, 60_000);
 
-  test("with maxParallel 2, at least one pair of calls genuinely overlaps in time", async () => {
-    const rec = timedReviewer(80);
+  test("with maxParallel 2, two reviews are genuinely inside at the same time", async () => {
+    const rec = occupancyReviewer();
     const base = deps({ externalEvents: two, supplyTarget: 2, maxParallel: 2 });
     await runOrgRuntime({ ...base, providers: { ...defaultProviderSet(base), review: rec.review as never } } as OrgRuntimeDeps);
-    let sawOverlap = false;
-    for (let i = 0; i < rec.calls.length && !sawOverlap; i++) {
-      for (let j = i + 1; j < rec.calls.length && !sawOverlap; j++) {
-        if (overlaps(rec.calls[i] as never, rec.calls[j] as never)) sawOverlap = true;
-      }
-    }
-    expect(sawOverlap).toBe(true);
+    expect(rec.peak()).toBeGreaterThanOrEqual(2);
   }, 60_000);
 });
