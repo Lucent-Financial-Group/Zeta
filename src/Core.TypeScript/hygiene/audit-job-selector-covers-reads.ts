@@ -56,7 +56,7 @@
 //
 // Usage:  bun src/Core.TypeScript/hygiene/audit-job-selector-covers-reads.ts [--json FILE]
 
-import { existsSync, readFileSync, readdirSync, statSync } from "node:fs";
+import { existsSync, readFileSync, readdirSync } from "node:fs";
 import { parse } from "yaml";
 
 const WORKFLOW = ".github/workflows/gate.yml";
@@ -156,7 +156,13 @@ export function slugOfLeg(leg: string): string {
  *  unreadable paths answer with nothing, which reads as NOT covered -- the loud direction. */
 function filesUnder(dir: string, depth = 3): readonly string[] {
   try {
-    if (!statSync(dir).isDirectory()) return [];
+    // NO `statSync(...).isDirectory()` GATE. It was there and it prevented nothing: between the
+    // stat and the readdir the path can be created, deleted or replaced, so the answer was
+    // already stale when it was used (CWE-367). `readdirSync` throws ENOTDIR on a non-directory
+    // by itself, which is one syscall, one answer, and no window — and the catch below already
+    // interprets every failure as "nothing under here". Caught by
+    // `lint-check-then-use-file-races` on this very PR, which is the right joke to record: a
+    // check that constrains nothing, inside a tool about checks that do not cover their subject.
     const out: string[] = [];
     for (const e of readdirSync(dir, { withFileTypes: true })) {
       if (e.isFile()) out.push(e.name);
