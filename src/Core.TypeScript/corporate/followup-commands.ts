@@ -132,7 +132,6 @@ function run(spec: CommandSpec, extra: readonly string[], cwd: string, env: Reco
 
 const tail = (t: string | null | undefined): string => String(t ?? "").trim().split(/\r?\n/).slice(-6).join(" | ").slice(0, 600);
 
-/** A description author behind a command. See the module header for its protocol. */
 /**
  * THE TWO HALVES OF TELLING A TICKET SOMETHING: compose it, then post it.
  *
@@ -181,6 +180,7 @@ export function commandTicketPoster(spec: CommandSpec, fallbackCwd: string): (r:
   };
 }
 
+/** A description author behind a command. See the module header for its protocol. */
 export function commandDescriber(spec: CommandSpec, fallbackCwd: string): (r: DescribeRequest) => Promise<PortResult<string>> {
   return async (r) => {
     const ran = await runAsync(spec, ["describe", r.workId], r.workdir ?? fallbackCwd, {

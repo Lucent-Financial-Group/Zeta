@@ -849,7 +849,6 @@ export function foldHandedOffChanges(events: readonly OrgEvent[]): ReadonlyMap<s
   return out;
 }
 
-/** The after-open steps already performed, by work id: step keys, and the ids of what they posted. */
 /**
  * WHAT EACH TICKET HAS ALREADY BEEN TOLD - work id to the gates reported on it.
  *
@@ -868,6 +867,7 @@ export function foldTicketReports(events: readonly OrgEvent[]): ReadonlyMap<stri
   return out;
 }
 
+/** The after-open steps already performed, by work id: step keys, and the ids of what they posted. */
 export function foldAfterOpen(events: readonly OrgEvent[]): ReadonlyMap<string, { readonly done: ReadonlySet<string>; readonly replyIds: readonly string[] }> {
   const out = new Map<string, { done: Set<string>; replyIds: string[] }>();
   for (const event of events) {

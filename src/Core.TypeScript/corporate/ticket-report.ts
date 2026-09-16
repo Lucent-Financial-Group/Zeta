@@ -28,6 +28,7 @@
  */
 
 import type { PracticeCheck } from "./practice";
+import { stringCompare } from "../collation/collation.ts";
 
 /** A gate whose passing this organization treats as progress worth telling the ticket about. */
 export interface TicketReportConfig {
@@ -129,7 +130,12 @@ export function milestonesOwed(input: OwedInput): readonly MilestoneOwed[] {
       ...(v.reason === undefined ? {} : { reason: v.reason }),
     });
   }
-  return [...earliest.values()].sort((a, b) => (a.atMs === b.atMs ? a.workId.localeCompare(b.workId) : a.atMs - b.atMs));
+  // ORDINAL, NOT LINGUISTIC. `localeCompare` orders by ICU collation, which is locale- and
+  // ICU-version dependent — two machines can disagree on the same two work ids, so the tie-break
+  // is not stable and DST replay / the N-oracle byte-lock diverge on it. `stringCompare` is this
+  // repo's canonical codepoint ordering, already imported by portal-view.ts and room-store.ts.
+  // Rule: .claude/rules/culture-invariant-by-default.md.
+  return [...earliest.values()].sort((a, b) => (a.atMs === b.atMs ? stringCompare(a.workId, b.workId) : a.atMs - b.atMs));
 }
 
 /** What the composer is asked, when a milestone owes the ticket an update. */
