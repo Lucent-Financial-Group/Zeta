@@ -78,6 +78,7 @@ already pairs "zeta" with "spectral residue" in our own corpus.
 |---|---|
 | `src/Core.FSharp.E8Render/E8Exact.fs`, `E8Clifford.fs`, `E8Embedding.fs`, `E8GoldenVector.fs` | E₈ root lattice as the discrete substrate |
 | `src/Core.TypeScript/algebra/e8-blade-mask-sandwich.ts`, `e8-tier-law-lemmas.ts` | Clifford Cl(8)⊗Cl(8) → the "Rosetta constant" ε = 2/π |
+| `src/Core/CayleyDickson.fs` — the doubling the E₈ work is built on (see §4) | the octonions their "cage" argument rests on |
 | `tests/Tests.FSharp/Formal/CliffordE8BladeMask.Tests.fs` — RC-2 (240 roots) / RC-3 (48 = D₄⊕D₄) | 240 roots, 120 positive roots, Casimir sums |
 
 **The RC-3 precedent is the directly relevant one.** Our own
@@ -85,23 +86,69 @@ already pairs "zeta" with "spectral residue" in our own corpus.
 to prove it structurally — norms, rank, orthogonal decomposition — since **F₄ also has 48
 roots**. That is the exact discipline this framework's numerical matches would have to pass.
 
-### 3. Spectral signatures
+### 3. Spectral work — CORRECTED 2026-09-17, and the correction is substantive
 
-Ours are decorrelation meters over commit pairs — `src/Core/BipartiteMachZehnder.fs`
-(`correlator`/`classifyS`), `src/Core/Tsirelson.fs` (S² = 8 in pure integer arithmetic).
-Theirs are zeta zeros as operator eigenvalues. **Shared vocabulary, unshared object.**
+**My first pass said "shared vocabulary, unshared object." That was wrong**, and wrong in the
+direction of understating what this repo holds. Aaron: *"we have a lot more spectrum and
+spectrial analysis work too from before the meter work."* He is right; I had looked only at
+the decorrelation meters and stopped.
 
-Worth noting against ourselves: `FourCornerC4.fs` already carries a comment reading
-*"Coincidence: 2 × occupancy-√2 equals 2√2 numerically. Not a measurement of Tsirelson"* — we
-have already been tempted by precisely this class of match and wrote the refusal down.
+**The direct contact is `src/Core.TypeScript/oracle/berry-keating-spectral-check.ts`.**
+Berry–Keating IS the Hilbert–Pólya programme — the same lineage the ferry's central claim sits
+in. Its own docstring already carries:
 
-### 4. "multiple different e8 towers"
+- the Berry–Keating Hamiltonian `H = xp`
+- the Riemann–von Mangoldt formula `t_n ~ 2πn / log(t_n / 2πe)`
+- `ζ(−1) = −1/12` set against the Euler–Maclaurin `B₂/2! = +1/12`
+- and a **`STATUS: §B interpretation`** line stating that identifying the tick-sampling
+  operator with the Berry–Keating Hamiltonian **is not yet proven**
 
-Our "tower" is the algebra tower (`docs/handoffs/2026-08-26-otto-clifford-towers-and-dynamics-factor.md`,
-`gate/cross-verify (algebra-tower-drift)`), and `2026-06-03-kestrel-aaron-multi-tower-proofs-foundation-independence-*`
-records the multi-tower/foundation-independence idea. Theirs is a Cayley–Dickson-style ladder
-to octonions. **The same word for two different constructions** — reconcilable only through the
-anchors both sides already hold (`anti-babel-preserve-reconcilability.md`).
+So this is not two fields sharing a word. It is **the same programme with a different candidate
+operator**: theirs is built on the E₈ root lattice and caged by G₂; ours is the tick-sampling
+operator `T_Δ`. And ours already ships with its own register label saying it is unproven —
+which is the standard the ferry's material has not been held to.
+
+The wider spectral surface, also pre-dating the meters:
+
+| module | what it is |
+|---|---|
+| `src/Core/SpectralPivot.fs` | "soft and hard FFT — fingerprinting into spectral, a pivot in phase spaces" (Aaron, 2026-06-11) |
+| `src/Core/CoordinationSpectrum.fs` | the dual-use `SpectrumMatch` fact (reunion vs sybil is caller policy) |
+| `research/adinkra-ecc/representation-defect-spectrum.ts` | finite representation-defect spectrum over four Adinkra/Clifford lanes |
+| `hygiene/change-rate-spectrum.ts` | per-file change-rate spectrum; hub uniqueness holds iff the spectrum is GAPPED |
+| `BipartiteMachZehnder.fs`, `Tsirelson.fs` | the decorrelation meters — the *later* work, which is all I had cited |
+
+### 4. Cayley–Dickson — CORRECTED. We have the ladder, and it builds the E₈ work
+
+**My first pass said "the same word for two different constructions." Also wrong.** Aaron:
+*"we have a cayley dicksen latter too, its what's we build our e8 with."*
+
+`src/Core/CayleyDickson.fs` is the doubling primitive, and it carries **the same ladder the
+ferry describes**, loss-by-loss:
+
+```
+ℝ → ℂ   loses total ordering
+ℂ → ℍ   loses commutativity
+ℍ → 𝕆   loses associativity        <- the non-associativity the ferry's "cage" rests on
+𝕆 → 𝕊   loses alternativity + division algebra
+```
+
+with `Doubled<'A> = { Real: 'A; Imag: 'A }` and the derived aliases `Complex`, `Quaternion`,
+`Octonion`, `Sedenion`. Its docstring calls this **the "imaginary stack"** and names the
+trajectory `081KRW63S0008QG0R000QJR08H`.
+
+**And it is applied, not just defined.** `tests/Tests.FSharp/CayleyWeightedSet.Tests.fs` runs
+`ImaginaryStack.quaternion :> IRing<Quaternion>` through `WeightedSet` — Aaron: *"we have the
+ability to apply our imaginary stack doublings I think in our wset."* He was right about the
+location. The doubling tower is an `IStarRing`, hence an `IRing`, hence drops into `WeightedSet`
+with retraction intact (`081KWG9JQ9H` tower).
+
+**One boundary this repo already drew, and it is the relevant one.** `src/Core/BitAdinkra.fs`
+states outright that its Adinkra work is *"NOT a claim that we discovered the SUSY code, nor
+that our `CayleyDickson` stack **induces**"* it. We built the same ladder and then explicitly
+refused the inductive claim. The ferry's material makes exactly that inductive step — octonionic
+non-associativity *forcing* the zeros onto the critical line — which is the claim our own file
+declines to make about a much smaller target.
 
 ---
 
@@ -126,6 +173,18 @@ What would have to happen before any of it moved register, using this repo's own
 - **Aaron's own bar**, from `numerology-vs-number-theory.md`: *"too many correlations is a
   warning, not a confirmation signal."* A framework resolving six or seven Millennium problems
   with one construction is, by that bar, a prompt to check independence — not a score.
+
+**THREE OF MY FOUR CROSS-LINKS WERE WRONG ON THE FIRST PASS, and the corrections are recorded
+above rather than silently edited.** I wrote "shared vocabulary, unshared object" for the
+spectral work and "the same word for two different constructions" for the towers; Aaron
+corrected both, and a third — that the imaginary-stack doublings are applied in `wset` — which
+I had not found at all. Every correction moved in the same direction: **this repo holds MORE
+of the ferry's machinery than I credited it with.**
+
+That matters for the register rather than against it. The closer our own construction is to
+theirs, the more tempting the inductive step becomes, and the more load the refusal in
+`BitAdinkra.fs` is carrying. A reader who finds the overlap on their own should find this
+paragraph too.
 
 **One thing that is genuinely checkable cheaply**, if anyone wants a first measurement: the
 five falsifiable predictions in the Navier–Stokes piece are stated numerically and the
