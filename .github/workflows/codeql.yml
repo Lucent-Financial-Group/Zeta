@@ -117,30 +117,25 @@ on:
     branches: [ "main" ]
   pull_request:
     branches: [ "main" ]
-    # Telemetry PRs contain no code, and CodeQL analysing no code is the single
-    # largest cost on them. Measured on #16143 (a `data/**`-only flush): 76 checks,
-    # 3,256 job-seconds, of which CodeQL was 605s --
-    #   Analyze (javascript-typescript) 295s · (csharp) 158s · (go) 152s
-    # for a diff containing zero source files.
+    # NO `paths-ignore` HERE -- DELIBERATELY, and this is a reversal.
     #
-    # `paths-ignore` FAILS SAFE and that is why it is usable here: GitHub skips the
-    # workflow only when EVERY changed path matches. One source file anywhere in the
-    # PR and the whole analysis runs as before, so a mixed data+code PR is still
-    # fully analysed. There is no way for this list to let code through unscanned.
+    # It used to skip the whole workflow on telemetry-only diffs (data/**,
+    # docs/github/**, docs/history/**, docs/observe-events/**, docs/drift-events/**,
+    # docs/room-evidence/**, db/mutation-findings/**, db/drift-dashboard/**), saving
+    # the 605 job-seconds measured on #16143. The saving was real. The problem is
+    # what it does to a REQUIRED check: a workflow skipped by `paths-ignore`
+    # produces no check at all, and an absent required check is not a passing one --
+    # it blocks the PR forever.
     #
-    # Roots are listed individually rather than as `docs/**` + `db/**` wholesale:
-    # `db/` holds six files carrying .fs/.ts/.sh extensions (they are markdown stubs,
-    # but a scanner should not be asked to trust that), so only the two db subtrees
-    # measured to be pure generated data are listed.
-    paths-ignore:
-      - 'data/**'
-      - 'docs/github/**'
-      - 'docs/history/**'
-      - 'docs/observe-events/**'
-      - 'docs/drift-events/**'
-      - 'docs/room-evidence/**'
-      - 'db/mutation-findings/**'
-      - 'db/drift-dashboard/**'
+    # Measured 2026-09-17 across the 25 most recent merged PRs: 15 carried NO check
+    # named `CodeQL` (verified against a control -- those same head SHAs carried 96
+    # and 99 other check-runs, so the absence is real and not a query artifact).
+    # Requiring the check on that population would have deadlocked 60% of PRs.
+    #
+    # The cost saving is kept, one layer down: `path-gate` still decides, `analyze`
+    # is still skipped on no-code diffs, and only the ~1.1-minute gate job runs
+    # where nothing used to. What changes is that the workflow now always RUNS, so
+    # `codeql (required)` below is always PRESENT to be required.
   merge_group:
   schedule:
     # Weekly sweep - Tuesday 06:43 UTC. Cheaper than a full
@@ -789,3 +784,88 @@ jobs:
         uses: github/codeql-action/analyze@b96794f015dfd88f77b49b1c93e0fa7110f94c63 # v4.38.0
         with:
           category: "/language:${{ matrix.language }}"
+
+  # ---------------------------------------------------------------------------
+  # The always-present rollup. This is the check that is safe to require.
+  #
+  # Requiring `Analyze (javascript-typescript)` and its five siblings directly is
+  # NOT safe, and the repo has already paid to learn it: the cadence note on
+  # `analyze` above records an attempt to skip the matrix on PRs that hit
+  # GitHub's `code_quality severity:all` rule and left the merge gate stuck on
+  # "Code quality results are pending for 4 analyzed languages." A per-language
+  # leg that legitimately skips is indistinguishable, to a required-checks
+  # ruleset, from one that never reported.
+  #
+  # So the required check is a job that ALWAYS runs and always reports, and the
+  # question it answers is not "were there zero alerts" but the weaker, honest
+  # one: "did the analysis this diff deserved actually happen?"
+  # ---------------------------------------------------------------------------
+  codeql-gate:
+    name: codeql (required)
+    needs: [path-gate, analyze]
+    if: always()
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    permissions:
+      contents: read
+      # `security-events` DELIBERATELY ABSENT, for the same reason path-gate
+      # drops it: this job decides nothing about findings and uploads nothing.
+      # It must never be able to close an alert.
+    steps:
+      - name: Did the analysis this diff deserved actually run?
+        shell: bash
+        env:
+          PATH_GATE_RESULT: ${{ needs.path-gate.result }}
+          ANALYZE_RESULT: ${{ needs.analyze.result }}
+          CODE_CHANGED: ${{ needs.path-gate.outputs.code_changed }}
+        run: |
+          set -euo pipefail
+          echo "path-gate=${PATH_GATE_RESULT} analyze=${ANALYZE_RESULT} code_changed=${CODE_CHANGED:-<empty>}"
+
+          # (1) If the decider itself did not succeed we know NOTHING about
+          # whether code changed. Fail. Never infer "no code" from a broken gate.
+          if [ "${PATH_GATE_RESULT}" != "success" ]; then
+            echo "::error::path-gate did not succeed (${PATH_GATE_RESULT}); cannot tell whether code changed."
+            exit 1
+          fi
+
+          # (2) The vacuity guard. `code_changed` is consulted as a STRING, and
+          # an absent output arrives as the empty string -- so a guard written
+          # the tempting way, `!= "true"`, would read a MISSING answer as "no
+          # code changed" and wave the PR through unanalysed.
+          #
+          # Honest scope, measured rather than asserted (see
+          # `codeql-gate-decision.test.ts`): this `case` is NOT what saves us
+          # today. Branch (3) below tests `= "false"` positively, so an empty
+          # value already falls through to (4) and fails there even with this
+          # block deleted. The mutation test shows it takes removing BOTH to
+          # open the hole. That makes this defence-in-depth against a future
+          # rewrite of (3) into the naive form -- real, but not the load-bearing
+          # guard, and the first draft of this comment claimed otherwise.
+          case "${CODE_CHANGED}" in
+            true|false) ;;
+            *) echo "::error::code_changed is '${CODE_CHANGED:-<empty>}', neither 'true' nor 'false'. Unknown is not permission."
+               exit 1 ;;
+          esac
+
+          # (3) No code changed: `analyze` is SUPPOSED to be skipped, and a skip
+          # is the correct outcome rather than a missing one. Anything else means
+          # the two jobs disagree about what this diff was, so fail loudly.
+          if [ "${CODE_CHANGED}" = "false" ]; then
+            if [ "${ANALYZE_RESULT}" = "skipped" ]; then
+              echo "No code paths changed; analysis correctly skipped."
+              exit 0
+            fi
+            echo "::error::path-gate said no code changed but analyze reported '${ANALYZE_RESULT}', not 'skipped'."
+            exit 1
+          fi
+
+          # (4) Code changed: the matrix must have actually succeeded. `success`
+          # only -- `skipped`, `cancelled` and `failure` all mean this diff went
+          # unanalysed, and a cancelled check is one that never ran.
+          if [ "${ANALYZE_RESULT}" = "success" ]; then
+            echo "Code changed; CodeQL analysis completed."
+            exit 0
+          fi
+          echo "::error::Code changed but analyze reported '${ANALYZE_RESULT}'. This diff was not analysed."
+          exit 1
