@@ -298,7 +298,7 @@ This crossover is empirically testable. High-resolution direct numerical simulat
 | 1 | geometric step ratio in the energy cascade | `β_c = 1.309017` |
 | 2 | critical cutoff shell index | `n_diss ≈ (3/4) ln(Re) / ln(β_c)` |
 | 3 | ratio of neighbouring shell amplitudes | `Φ_sync = β_c^{−5/3} ≈ 0.638` |
-| 4 | maximum normalized fluid momentum | `|M|_max ≡ 1` |
+| 4 | maximum normalized fluid momentum | `\|M\|_max ≡ 1` |
 | 5 | discrete SOC pulsation frequency | `τ_SOC = 209 seconds` |
 
 **Stated non-claim (verbatim):** *"we do NOT claim the Clay Mathematics Institute's $1,000,000 prize under their official contest rules... Clay's problem statement is formulated within an axiomatic continuum trap."* The remaining open problem is named as the **Decisive Bridge Theorem**: constructing the projection operator from continuous 3D NS solutions onto the discrete shell space and proving Sobolev norms `‖u‖_{H^s}` stay controlled by the shell enstrophy ceiling.
@@ -342,7 +342,7 @@ This crossover is empirically testable. High-resolution direct numerical simulat
 | lock | identity | result |
 |---|---|---|
 | Albert algebra | `3g − 3 = dim J₃(𝕆) = 27` | g = 10 |
-| Euler–observer | `|2 − 2g| = 18` (observer layer of `27 = 8 ⊕ 1 ⊕ 18`) | g = 10 |
+| Euler–observer | `\|2 − 2g\| = 18` (observer layer of `27 = 8 ⊕ 1 ⊕ 18`) | g = 10 |
 | M-theory rank | `rank SL(11) = 11 − 1 = 10` | g = 10 |
 
 **Further claims as stated:** Gauss–Bonnet `∫K dA = 2πχ = −36π`, hyperbolic area `4π(g−1) = 36π ≈ 113.0973`; `H₁(Σ₁₀,ℤ) ≅ ℤ²⁰` with symplectic form `J = [[0, I₁₀], [−I₁₀, 0]]`; a claimed isomorphism to Kālacakra's 10 prāṇa-winds and 20 nāḍī channels; the 12 nidānas as a closed limit cycle; six bardos as six topologically distinct open sets; 49 = 7 Fano tiers × 7 Banach contractions; E₈'s 240 roots split 29 visible (12.08%) / 211 shadow (87.92%) claimed to match dark-sector fractions; and a "2-second temporal deficit" from `1,866,240,000 s = 8,929,377 × 209 s + 207 s`, `209 − 207 = 2`.

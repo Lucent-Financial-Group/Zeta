@@ -13,8 +13,8 @@
 import { describe, expect, test } from "bun:test";
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
-import { spawnSync } from "node:child_process";
 import { parse } from "yaml";
+import { spawnShellDeclared } from "../io/safe-io.ts";
 
 const REPO = join(import.meta.dir, "..", "..", "..");
 
@@ -29,22 +29,35 @@ function decisionScript(): string {
   return run;
 }
 
-/** Runs the real script under bash with one env combination; returns its exit code. */
+/**
+ * Runs the real script under bash with one env combination; returns its exit code.
+ *
+ * `spawnShellDeclared` rather than a hand-rolled `spawnSync("bash", ["-c", ...])`:
+ * this is the case its escape hatch exists for -- the shell command line IS the
+ * artifact under test, not data being passed to one. Nothing here is attacker
+ * input; the script comes from a file in this repo. Using the declared primitive
+ * keeps the site enumerable, which is the whole point of the lint that caught the
+ * first draft of this file.
+ */
 function decide(
   script: string,
   env: { pathGate: string; analyze: string; codeChanged: string },
 ): number {
-  const r = spawnSync("bash", ["-c", script], {
+  const r = spawnShellDeclared("bash", script, {
+    reason:
+      "The subject under test IS a shell script -- the `run:` block of codeql.yml's " +
+      "sentinel job, executed verbatim so the test cannot drift from what ships.",
     env: {
       ...process.env,
       PATH_GATE_RESULT: env.pathGate,
       ANALYZE_RESULT: env.analyze,
       CODE_CHANGED: env.codeChanged,
     },
-    encoding: "utf8",
   });
-  if (r.status === null) throw new Error(`script did not exit (signal ${String(r.signal)})`);
-  return r.status;
+  if (!r.ok) throw new Error(`spawn refused: ${r.error.kind}: ${r.error.message}`);
+  const { status } = r.value;
+  if (status === null) throw new Error("script did not exit (killed by timeout or signal)");
+  return status;
 }
 
 const PASS = 0;
