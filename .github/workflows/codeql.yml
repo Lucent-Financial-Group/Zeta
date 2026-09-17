@@ -740,13 +740,34 @@ jobs:
           languages: ${{ matrix.language }}
           build-mode: ${{ matrix.build-mode }}
           config-file: ./.github/codeql/codeql-config.yml
-          # PR / push: security-extended only (fast, high-
-          # confidence, security-only).
-          # Schedule: add security-and-quality on top for
-          # breadth. The expression below resolves to the
-          # comma-separated pack list CodeQL's init action
-          # expects.
-          queries: ${{ (github.event_name == 'schedule') && 'security-extended,security-and-quality' || 'security-extended' }}
+          # SAME PACK ON EVERY EVENT, and the reason is that the split made the
+          # quality findings unusable rather than cheap.
+          #
+          # This used to read security-extended on push/PR and add
+          # security-and-quality only on `schedule`. MEASURED 2026-09-15: the
+          # nightly raised 411 quality alerts; every push run afterwards
+          # analysed without the quality pack, found none, and GitHub CLOSED
+          # them. 353 alerts left the API entirely rather than moving to
+          # `fixed`. The count therefore oscillated daily between 411 and 0.
+          #
+          # That is not a cheap-signal tradeoff, it is an unusable one. A fix
+          # made during the day was invisible until the next nightly, and any
+          # finding NOT fixed vanished on its own -- so the list could never
+          # function as a work queue, and the number a reader saw depended on
+          # which run happened to complete last. A queue that empties itself
+          # is the vacuity class wearing a dashboard.
+          #
+          # Running one pack everywhere makes the count STABLE and therefore
+          # actionable, which is the precondition for the two steps that
+          # follow it: burn the backlog down, then make it required. Required
+          # cannot come first -- 411 findings would block every PR on day one,
+          # and the backlog cannot be burned down while the target moves.
+          #
+          # COST, measured on recent runs: CodeQL takes ~10-13 min on push
+          # today and already runs on every build, so this widens an existing
+          # job rather than adding one. It is NOT in `gate (required)`'s needs
+          # and does not block anything yet -- see 081M2NM2TAD087G0R000WH1BPX.
+          queries: security-extended,security-and-quality
 
       # ---- Manual build for csharp ---------------------------
       # BASH_ENV (emitted by tools/setup/shellenv.sh during the
