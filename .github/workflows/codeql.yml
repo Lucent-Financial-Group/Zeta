@@ -803,6 +803,26 @@ jobs:
   codeql-gate:
     name: codeql (required)
     needs: [path-gate, analyze]
+    # `always()` -- NOT `!cancelled()`, and this is the one line most likely to
+    # get "fixed" into the deadlock this job exists to prevent.
+    #
+    # Observed on its first live firing (run 35248083154, f7f93ff): the run was
+    # cancelled by the concurrency group above when the next commit was pushed,
+    # this job ran anyway, and reported
+    #   "Code changed but analyze reported 'cancelled'. This diff was not analysed."
+    # That red is correct and it is harmless: `cancel-in-progress` only fires when
+    # a NEWER run starts on the same ref, so a cancelled run's SHA is by
+    # construction no longer the PR head, and nothing requires a check there.
+    #
+    # The tempting cleanup is `if: !cancelled()`, to stop the noise on superseded
+    # SHAs. Do not. It makes this job SKIP on a cancelled run, and a skipped
+    # required check is an ABSENT one -- so a run cancelled without a successor
+    # (a manual cancel, or a cascade from a sibling job) would leave the head with
+    # no check at all, blocking forever with nothing red to point at. That is
+    # exactly the 60%-of-PRs failure measured on 2026-09-17 that this whole
+    # change exists to close.
+    #
+    # Noisy-but-present beats quiet-but-absent. Every time.
     if: always()
     runs-on: ubuntu-24.04
     timeout-minutes: 5
