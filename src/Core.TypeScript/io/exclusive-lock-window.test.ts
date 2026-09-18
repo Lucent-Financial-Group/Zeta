@@ -42,8 +42,8 @@ import { claimGeneration } from "./exclusive-lock.ts";
 
 const READER = `
 const { readFileSync, existsSync } = require("node:fs");
-const target = process.argv[1];
-const sentinel = process.argv[2];
+const target = process.argv[2];
+const sentinel = process.argv[3];
 let empty = 0, full = 0, missing = 0;
 process.stdout.write("ready\\n");
 while (!existsSync(sentinel)) {
@@ -64,7 +64,14 @@ async function observeClaims(claims: number): Promise<RaceResult> {
   const target = join(lockRoot, "0.lock");
   const sentinel = join(root, "DONE");
 
-  const child = spawn("node", ["-e", READER, target, sentinel], { stdio: ["ignore", "pipe", "inherit"] });
+  // `process.execPath`, never the string "node". Resolving a program name through PATH
+  // means whatever PATH happens to hold runs -- which `sonarjs/no-os-command-from-path`
+  // flags, correctly, and which this file's own sibling `exclusive-lock.test.ts` already
+  // avoids by spawning a script FILE with the current runtime. Same shape here. The file
+  // also costs the child one argv slot, which is why READER reads argv[2]/[3] above.
+  const readerPath = join(root, "reader.cjs");
+  writeFileSync(readerPath, READER);
+  const child = spawn(process.execPath, [readerPath, target, sentinel], { stdio: ["ignore", "pipe", "inherit"] });
   let out = "";
   child.stdout.on("data", (d: Buffer) => { out += String(d); });
 
