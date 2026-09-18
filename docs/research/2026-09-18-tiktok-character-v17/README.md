@@ -116,3 +116,31 @@ at ten diagnostic frames; the auxiliary scalp shell is hidden in the selected
 study. These checks neither certify absence of collisions nor visual acceptance.
 [Repository checks](repository-checks.md) distinguish local gate failures from
 Blender-specific results.
+
+## Follow-on skinning ablation
+
+While release checks ran, the [same ten-pose evaluator](sources/compare_skinning.py.txt)
+compared v16 linear skinning with Blender's preserve-volume option enabled on the
+audited armature modifiers. Neither geometry nor weights were changed. These
+are diagnostic observations over the existing pose suite, not a held-out test.
+
+| Pose | Linear extreme stretches | Preserve-volume extreme stretches | Linear compressed edges | Preserve-volume compressed edges |
+| --- | ---: | ---: | ---: | ---: |
+| Left arm | 0 | 0 | 6 | 2 |
+| Both arms 75 degrees | 5 | 17 | 274 | 240 |
+| Elbows | 0 | 1 | 0 | 0 |
+| Left knee | 0 | 0 | 45 | 35 |
+| Right knee | 0 | 0 | 30 | 42 |
+| Combined | 0 | 0 | 36 | 44 |
+
+These sums combine both characters and all audited meshes. As in v16, extreme
+stretch means greater than 3x, compression below one-third, and rest edges of
+1 mm or less are excluded. Repeated observations are not unique defects.
+[Full measurements](skinning-comparison.json) retain mesh-level results.
+
+The blanket preserve-volume switch is not adopted: compression improves in some
+poses but worsens in others, and new extreme stretches appear. No visual
+improvement is claimed from these numerical results, and no altered skinning
+model is saved or included in the ZIP. This follow-on text-only experiment lives
+in Git alongside the archive manifest. Run its recipe in a sibling
+`Character-Skinning-Review-20260918` directory with the exact v16 input restored.
