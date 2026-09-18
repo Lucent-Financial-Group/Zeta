@@ -5,7 +5,7 @@ from pathlib import Path
 from mathutils import Matrix
 R=Path(__file__).resolve().parent
 SOURCE=R.parent/'TikTok-Character-Quality-v16/review/Blender-Quality-Review-v16.blend'
-assert hashlib.sha256(SOURCE.read_bytes()).hexdigest()=='899cf39959455af43942c2163691775582bafdf0f1a971d1d8322cd79fb3d35f', 'Restore the exact archived v15 input'
+assert hashlib.sha256(SOURCE.read_bytes()).hexdigest()=='899cf39959455af43942c2163691775582bafdf0f1a971d1d8322cd79fb3d35f', 'Restore the exact archived v16 input'
 O=R/'review';O.mkdir(exist_ok=True)
 bpy.ops.wm.open_mainfile(filepath=str(SOURCE));sc=bpy.context.scene
 rigs=[bpy.data.objects[n+' | Motion rig'] for n in ['AceHack','Xenaa']]
@@ -16,14 +16,8 @@ sc.frame_set(1);bpy.context.view_layer.update()
 meshes=[o for o in sc.objects if o.type=='MESH' and any(m.type=='ARMATURE' for m in o.modifiers) and 'Collar' not in o.name]
 def array(collection,property,width,dtype=float):
  a=np.empty(len(collection)*width,dtype=dtype);collection.foreach_get(property,a);return a.reshape(-1,width)
-def fingerprint(o):
- digest=hashlib.sha256()
- for data,prop,width,dtype in [(o.data.vertices,'co',3,np.float32),(o.data.loops,'vertex_index',1,np.int32),(o.data.polygons,'material_index',1,np.int32)]:digest.update(array(data,prop,width,dtype).tobytes())
- for uv in o.data.uv_layers:digest.update(array(uv.data,'uv',2,np.float32).tobytes())
- return digest.hexdigest()
 base={o.name:array(o.data.vertices,'co',3) for o in meshes}
 edges={o.name:array(o.data.edges,'vertices',2,np.int32) for o in meshes}
-original_hashes={o.name:fingerprint(o) for o in meshes}
 def pose(ops):
  for rig in rigs:
   for b in rig.pose.bones:b.matrix_basis=Matrix.Identity(4)
