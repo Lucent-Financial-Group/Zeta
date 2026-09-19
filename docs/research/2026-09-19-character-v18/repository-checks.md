@@ -17,7 +17,8 @@ The five failures are outside the character study:
 
 Quick preflight passes its scoped markdown, TypeScript and Rust checks, but
 fails on 51 pre-existing dangling references elsewhere in the repository.
-F#, C#, Python and Go lint toolchains are unavailable locally and reported as
+An initial restricted PATH skipped F#, C#, Python and Go. The final run with
+the complete toolchain PATH passes F#, C# and Python too; only Go remains
 skipped. Targeted markdownlint covers this study and the handoff index.
 
 The documented `ZETA_SKIP_PREFLIGHT=1` exception is used only for that known
