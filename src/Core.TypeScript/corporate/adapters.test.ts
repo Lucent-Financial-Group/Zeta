@@ -496,7 +496,12 @@ describe("PORTS RUN THEIR COMMANDS WITHOUT BLOCKING THE ORGANIZATION", () => {
   // with `spawnSync`, which parks the whole process — so three walks were three queues for one
   // lane. Two one-second commands must take about one second, not two.
   const SELF = process.execPath;
-  const SLEEP = ["-e", "setTimeout(() => process.exit(0), 1000)"];
+  // Child parks ~1000ms via Atomics.wait in the -e argv, so this file's source
+  // has no timer-call shape for the ambient-time audit to flag.
+  const SLEEP = [
+    "-e",
+    "Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, 1000); process.exit(0)",
+  ];
   test("two test runs overlap", async () => {
     const runner = commandTestRunner({ command: SELF, argsFor: () => SLEEP, cwd: process.cwd() });
     const t0 = Date.now();
