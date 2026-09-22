@@ -327,8 +327,10 @@ describe("internal-secret-seeding.yaml — matches DEV_BLOB_STORE_SECRET (shared
     const fromFileEntries = containers.map((c) =>
       [...(c.args ?? [])].filter((a) => a.startsWith("--from-file=")).sort(),
     );
-    for (const entries of fromFileEntries) {
-      expect(entries).toEqual(fromFileEntries[0]);
+    const [first, ...rest] = fromFileEntries;
+    if (first === undefined) throw new Error("no zeta-blob-store containers found");
+    for (const entries of rest) {
+      expect(entries).toEqual(first);
     }
   });
 });
