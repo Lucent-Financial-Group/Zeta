@@ -198,6 +198,9 @@ in
             ${pkgs.systemd}/bin/systemctl status network-online.target NetworkManager-wait-online.service systemd-networkd-wait-online.service --no-pager -n 5
             ${pkgs.systemd}/bin/systemctl --failed --no-pager
             ${pkgs.systemd}/bin/journalctl -u k3s.service -b --no-pager -n 60
+            # systemd breaks an ordering cycle by DELETING a start job, which
+            # leaves the unit inactive forever with nothing in its own journal.
+            ${pkgs.systemd}/bin/journalctl -b --no-pager | ${pkgs.gnugrep}/bin/grep -iE "ordering cycle|deleted to break|Job .* failed|dependency failed" | ${pkgs.coreutils}/bin/tail -n 40
           } 2>&1 | while IFS= read -r _l; do log "[wp11-k3s-diag] $_l"; done
         }
 
