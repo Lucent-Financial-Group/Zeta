@@ -26,6 +26,14 @@
     # Imported here for the same reason the two above are: this file owns the
     # option's value, so it owns the import.
     ./k3s-join-intent-preflight.nix
+
+    # WP9 (081M33STPKN087G0R0004B5CAK): the Docker Hub pull-through mirror.
+    # Imported here AND on k3s-server.nix — an agent pulls its own images
+    # (kubelet, CNI, workload pods) independently of the control plane, and a
+    # worker sharing the founder's home NAT is exactly the "second node
+    # behind the same NAT" case that pushes first boot over Docker Hub's
+    # 100-pull/6h anonymous quota. See k3s-registry-mirrors.nix's header.
+    ./k3s-registry-mirrors.nix
   ];
 
   # k3s's join is the join (Aaron 2026-08-13, closing PR #10493's open
@@ -65,6 +73,15 @@
       # rejects them on agents with a `flag not supported` error.
       # Cilium owns CNI on both sides; the server-side flags are
       # what disables flannel cluster-wide.
+
+      # `--kubelet-arg` is NOT one of those server-only flags — it configures
+      # THIS node's own kubelet, so it must be repeated here rather than
+      # inherited. Same value and same reasoning as k3s-server.nix's copy:
+      # the kubelet default `max-pods` (110) is a pod-COUNT ceiling a
+      # single-node metal install's measured steady state (~124 pods, see
+      # k3s-server.nix's comment) already exceeds, and 220 stays under the
+      # 254-address /24 Cilium's cluster-pool IPAM hands each node.
+      "--kubelet-arg=max-pods=220"
     ];
   };
 
