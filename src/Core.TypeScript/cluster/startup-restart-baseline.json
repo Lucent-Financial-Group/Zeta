@@ -1,5 +1,46 @@
 {
-  "$comment": "081KSXN940008QG0R000SCP2H1 Task B soak-phase STARTUP-RESTARTS ratchet. Read by readStartupRestartBaseline() in argocd-health-test.ts, compared against startupRestartEntries() by ratchetStartupRestarts(). Keyed by (app, container) -- NEVER by pod name/hash, which churns on every rollout. A NEW entry (measured but not here) or a GONE entry (here but not measured) both fail the ratchet, same discipline as full-ai-cluster/k8s/tests/ratchet-app-failures.ts: the baseline is the git-history record of the tree getting better or worse, and it moves only by an explicit edit in the PR that earned it. UNSEEDED as committed -- the first live run with --soak-sec names the real entries (0 is also a legitimate outcome), and this file is updated in the same PR from that run's evidence per the task instructions ('Seed the baseline from a real CI run's evidence').",
-  "measured": "UNSEEDED -- pending first live run of the included lane with --soak-sec",
-  "allowed": []
+  "$comment": "081KSXN940008QG0R000SCP2H1 Task B soak-phase STARTUP-RESTARTS ratchet. Read by readStartupRestartBaseline() in argocd-health-test.ts, compared against startupRestartEntries() by ratchetStartupRestarts(). Keyed by (app, container) -- NEVER by pod name/hash, which churns on every rollout. A NEW entry (measured but not here) or a GONE entry (here but not measured) both fail the ratchet, same discipline as full-ai-cluster/k8s/tests/ratchet-app-failures.ts: the baseline is the git-history record of the tree getting better or worse, and it moves only by an explicit edit in the PR that earned it.",
+  "measured": "run 35692573183 (PR #17480, live-kind-included, ubuntu-24.04, 2026-09-22T06:12:09Z) -- the first live run of the included lane with --soak-sec 300; every entry below is a container that had already restarted and recovered by the all-Healthy moment (waitForApplications' own verdict), before the soak's restart-regression check even starts counting.",
+  "allowed": [
+    {
+      "app": "dapr",
+      "container": "dapr-operator",
+      "reason": "fatal at first boot: 'unable to load configuration, config: daprsystem, err: configurations.dapr.io \"daprsystem\" not found'. dapr's own Configuration CRD instance is applied by the same Application moments after the operator container starts; the restarted replica finds it. restarts=3 on run 35692573183."
+    },
+    {
+      "app": "dapr",
+      "container": "dapr-sentry",
+      "reason": "fatal at first boot: 'loading default config. couldn't find config name \"daprsystem\": config CRD not found' -- same Configuration-CRD-not-applied-yet ordering as dapr-operator. restarts=3 on run 35692573183."
+    },
+    {
+      "app": "mimir",
+      "container": "distributor",
+      "reason": "'module failed' / distributor-service: 'dial tcp 10.96.5.131:9092: connect: connection refused' to mimir-kafka -- the ingest-storage backend, a sibling StatefulSet applied in the same sync wave with no ordering guarantee ahead of the distributor. restarts=3 on run 35692573183."
+    },
+    {
+      "app": "mimir",
+      "container": "ingester",
+      "reason": "same mimir-kafka-not-ready-yet 'connection refused' as distributor/ruler, observed on all three ingester zone pods (zone-a/b/c). restarts=2,2,3 on run 35692573183."
+    },
+    {
+      "app": "mimir",
+      "container": "ruler",
+      "reason": "same mimir-kafka-not-ready-yet 'connection refused' -- ruler's own module failure is 'depends on module distributor-service, which has failed'. restarts=3 on run 35692573183."
+    },
+    {
+      "app": "hindsight",
+      "container": "api",
+      "reason": "Killing event: 'Container api failed liveness probe, will be restarted' -- readiness/liveness probes fired ('dial tcp ...:8888: connect: connection refused') before the app server finished its own startup; a probe-timing race, not a dependency failure. restarts=2 on run 35692573183."
+    },
+    {
+      "app": "keda",
+      "container": "keda-operator",
+      "reason": "leader-election + admission-webhook CA cert rotation on first boot (visible: 'Attempting to acquire leader lease' -> 'Successfully acquired lease' -> 'Ensuring CA cert' -> 'CA certs are injected to webhooks'); no fatal error captured, consistent with a probe-timing restart during that sequence, not a crash. restarts=1 on run 35692573183."
+    },
+    {
+      "app": "spire",
+      "container": "spire-agent",
+      "reason": "'Health check has failed' / 'subsystem is not live or ready' -> 'Health check recovered' one second later -- the agent's own health-check subsystem briefly not ready while its workload-API socket comes up. restarts=2 on run 35692573183."
+    }
+  ]
 }
