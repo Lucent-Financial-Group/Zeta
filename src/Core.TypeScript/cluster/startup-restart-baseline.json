@@ -1,0 +1,5 @@
+{
+  "$comment": "081KSXN940008QG0R000SCP2H1 Task B soak-phase STARTUP-RESTARTS ratchet. Read by readStartupRestartBaseline() in argocd-health-test.ts, compared against startupRestartEntries() by ratchetStartupRestarts(). Keyed by (app, container) -- NEVER by pod name/hash, which churns on every rollout. A NEW entry (measured but not here) or a GONE entry (here but not measured) both fail the ratchet, same discipline as full-ai-cluster/k8s/tests/ratchet-app-failures.ts: the baseline is the git-history record of the tree getting better or worse, and it moves only by an explicit edit in the PR that earned it. UNSEEDED as committed -- the first live run with --soak-sec names the real entries (0 is also a legitimate outcome), and this file is updated in the same PR from that run's evidence per the task instructions ('Seed the baseline from a real CI run's evidence').",
+  "measured": "UNSEEDED -- pending first live run of the included lane with --soak-sec",
+  "allowed": []
+}
