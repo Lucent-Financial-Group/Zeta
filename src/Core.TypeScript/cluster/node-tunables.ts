@@ -25,6 +25,7 @@
 import { readFileSync } from "node:fs";
 import { spawnSync } from "node:child_process";
 import { resolve } from "node:path";
+import { resolveElevatorPathOrThrow } from "../privilege/elevator.ts";
 
 const REPO_ROOT = resolve(import.meta.dir, "../../..");
 export const NODE_TUNABLES_PATH = "full-ai-cluster/k8s/node-tunables.json";
@@ -73,9 +74,13 @@ export function sysctlCommands(entries: readonly SysctlEntry[]): readonly string
 
 /** Apply every declared sysctl on THIS machine via `sudo sysctl -w`, printing what took. */
 function applyAll(entries: readonly SysctlEntry[]): number {
+  // Resolved to an absolute, ownership-checked path, never spawned by bare name — a
+  // `sudo` earlier on PATH would run silently and leave no git diff to review
+  // (src/Core.TypeScript/privilege/elevator.ts; docs/BUGS.md P1 2026-08-24).
+  const sudoPath = resolveElevatorPathOrThrow("sudo");
   let failures = 0;
   for (const entry of entries) {
-    const result = spawnSync("sudo", ["sysctl", "-w", `${entry.key}=${entry.value}`], {
+    const result = spawnSync(sudoPath, ["sysctl", "-w", `${entry.key}=${entry.value}`], {
       encoding: "utf8",
     });
     if (result.status !== 0) {
