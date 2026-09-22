@@ -53,7 +53,20 @@ export function verifyPagesArtifact(artifactRoot: string): PagesArtifactEvidence
   if (!authorizationAsset) {
     throw new Error("teaching error: Pages artifact omits the current one-time device authorization control");
   }
-  const evidenceRouteAsset = scripts.find(script => script.body.includes("evidence-seam"))?.asset;
+  // The route/seam marker belongs to the ENTRY chunk by construction -- it is what
+  // makes the entry the routing shell. Checking ONLY entryAsset's own body (rather
+  // than scanning every script for the substring) was a real, silently order-
+  // dependent defect: a lazily-loaded page chunk that itself references the
+  // evidence-seam route (e.g. "evidence-seam docs/room-evidence/index.json", the
+  // realistic shape of EvidenceRoomPage's own body) ALSO contains the substring, so
+  // `scripts.find(...)` could return either asset depending on `readdirSync`'s
+  // filesystem-ordering -- unspecified by POSIX, and observed to differ between
+  // CI runner filesystems for the identical fixture content (run 35790030804 vs the
+  // passing main-tip run, same code, same test, different order). Anchoring to the
+  // already-unambiguous `entryAsset` (parsed from index.html's own hashed script
+  // tag) makes the check deterministic instead of merely usually-lucky.
+  const entryScript = scripts.find(script => script.asset === entryAsset);
+  const evidenceRouteAsset = entryScript?.body.includes("evidence-seam") ? entryScript.asset : undefined;
   if (!evidenceRouteAsset) {
     throw new Error("teaching error: Pages artifact omits the evidence-room route");
   }
