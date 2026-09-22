@@ -216,6 +216,22 @@ in
             k3s_diag "not active after 300s"
             DIAG_EARLY_DONE=true
           fi
+          # FAIL FAST on a unit that never even tried. Upstream k3s carries
+          # Restart=always/RestartSec=5s, so a k3s that is going to come up is
+          # active, activating, or visibly cycling within a couple of minutes.
+          # `inactive` with ZERO start attempts at 10 minutes means its start
+          # job never ran: an ordering dependency that never settles, or a job
+          # systemd deleted. The remaining 60 minutes of the 4200s budget add
+          # no information -- MEASURED run 35717757526 spent 4201s to print one
+          # `false` -- and an hour of wall clock is the scarce thing here.
+          if [ "$(elapsed)" -ge 600 ]; then
+            _state=$(${pkgs.systemd}/bin/systemctl show k3s.service -p ActiveState --value 2>/dev/null || echo unknown)
+            _tries=$(${pkgs.systemd}/bin/systemctl show k3s.service -p NRestarts --value 2>/dev/null || echo 0)
+            if [ "$_state" = "inactive" ] && [ "$_tries" = "0" ]; then
+              log "[wp11-k3s-verify] giving up early: k3s.service inactive with 0 start attempts after $(elapsed)s -- its start job never ran"
+              break
+            fi
+          fi
           "$SLEEP" 5
         done
         K3S_ACTIVE_ELAPSED=$(elapsed)
