@@ -133,14 +133,22 @@ jobs:
           retention-days: 14
 
       # NAMED VERDICTS, not a bare pass/fail — the whole point of the test file, carried
-      # through to the humans reading CI. The test script's own three outcomes leave
-      # distinctive text in the build log (see k3s-first-boot-roster.nix LINK 5): a
-      # STUCK or INCONCLUSIVE run raises an AssertionError whose message starts with
-      # that word, which nixosTest's own failure output prints. A run that never reaches
-      # that subtest (harness failure, an earlier LINK failing, KVM/network problems) is
-      # reported as UNKNOWN rather than guessed at — a probe that cannot tell "no
-      # internet" from "STUCK" must say so, not report one as the other
-      # (rest-is-the-default-transport's failed-probe-is-unknown discipline, applied
+      # through to the humans reading CI.
+      #
+      # CORRECTED 2026-09-22 (081M33NZP3J087G0R003WS1BFH, second pass). This step used to
+      # derive the verdict by grepping the AssertionError TEXT of the STUCK/INCONCLUSIVE
+      # branches and falling back to `steps.roster_test.outcome` for the success case —
+      # which meant the passing case (VERDICT A) left NO distinctive line in the log at
+      # all; a human reading the raw artifact could not find the verdict, only infer it
+      # from the job's green checkmark. k3s-first-boot-roster.nix now prints an explicit,
+      # unconditional `VERDICT_NAME=ROOT_LANDED|ROOT_INCONCLUSIVE|ROOT_NEVER_LANDED` line
+      # in ALL three branches (see LINK 5), so this step reads that marker directly instead
+      # of re-deriving it from prose or from the step's own pass/fail. A run that never
+      # reaches LINK 5 at all (harness failure, an earlier LINK failing, KVM/network
+      # problems, or — new — the helm-install first-attempt / no-bad-pods health gates
+      # failing) has no marker and is reported as UNKNOWN rather than guessed at: a probe
+      # that cannot tell "no internet" from "STUCK" must say so, not report one as the
+      # other (rest-is-the-default-transport's failed-probe-is-unknown discipline, applied
       # here to a VM boot instead of an API call).
       - name: Print named verdicts to the job summary
         if: always()
@@ -156,34 +164,62 @@ jobs:
 
           if [ ! -f "$log" ]; then
             echo "**root-application (zeta-root): UNKNOWN** — the VM build produced no log at all (installer/build step itself failed before the test ran)." >> "$GITHUB_STEP_SUMMARY"
-          elif grep -q "STUCK: applications.argoproj.io EXISTS" "$log"; then
+          elif grep -q "VERDICT_NAME=ROOT_NEVER_LANDED" "$log"; then
             {
-              echo "**root-application (zeta-root): STUCK.** The Application CRD exists but"
-              echo "\`Application/zeta-root\` was never created — the k3s deploy controller does"
-              echo "not retry an apply whose kind was unknown at submission time. The"
-              echo "app-of-apps root never lands on a first boot."
+              echo "**root-application (zeta-root): STUCK (ROOT_NEVER_LANDED).** The Application"
+              echo "CRD exists but \`Application/zeta-root\` was never created — the k3s deploy"
+              echo "controller does not retry an apply whose kind was unknown at submission time."
+              echo "The app-of-apps root never lands on a first boot."
             } >> "$GITHUB_STEP_SUMMARY"
-          elif grep -q "INCONCLUSIVE: applications.argoproj.io never appeared" "$log"; then
+          elif grep -q "VERDICT_NAME=ROOT_INCONCLUSIVE" "$log"; then
             {
-              echo "**root-application (zeta-root): INCONCLUSIVE.** \`applications.argoproj.io\`"
-              echo "never appeared — the ArgoCD chart itself did not finish installing, so this"
-              echo "run says nothing about deploy-controller retry behaviour."
+              echo "**root-application (zeta-root): INCONCLUSIVE (ROOT_INCONCLUSIVE).**"
+              echo "\`applications.argoproj.io\` never appeared — the ArgoCD chart itself did not"
+              echo "finish installing, so this run says nothing about deploy-controller retry"
+              echo "behaviour."
             } >> "$GITHUB_STEP_SUMMARY"
-          elif [ "${{ steps.roster_test.outcome }}" = "success" ]; then
+          elif grep -q "VERDICT_NAME=ROOT_LANDED" "$log"; then
             {
-              echo "**root-application (zeta-root): SELF-HEALS.** The deploy controller"
-              echo "re-applied \`root-application\` after the ArgoCD chart established the CRD —"
-              echo "the outcome the design silently assumed, now measured rather than hoped for."
+              echo "**root-application (zeta-root): SELF-HEALS (ROOT_LANDED).** The deploy"
+              echo "controller re-applied \`root-application\` after the ArgoCD chart established"
+              echo "the CRD — the outcome the design silently assumed, now measured rather than"
+              echo "hoped for."
             } >> "$GITHUB_STEP_SUMMARY"
           else
             {
-              echo "**root-application (zeta-root): UNKNOWN.** The run did not reach a named"
-              echo "verdict in LINK 5 — an earlier subtest failed, or the job was cancelled /"
-              echo "timed out / hit a harness problem (KVM, network, image pulls). See the"
+              echo "**root-application (zeta-root): UNKNOWN.** No \`VERDICT_NAME=\` marker in the"
+              echo "log — the run did not reach LINK 5. Could be an earlier subtest (including the"
+              echo "helm-install first-attempt or no-bad-pods health gates below), a cancelled /"
+              echo "timed-out job, or a harness problem (KVM, network, image pulls). See the"
               echo "uploaded log and the per-subtest markers below before treating this as a"
               echo "finding about the roster."
             } >> "$GITHUB_STEP_SUMMARY"
           fi
+
+          {
+            echo ""
+            echo "### root-application poll transcript (\`VERDICT root_crd=... zeta_root=...\`)"
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+          grep -E '^VERDICT root_crd=' "$log" 2>/dev/null >> "$GITHUB_STEP_SUMMARY" \
+            || echo "(no root_crd/zeta_root poll lines found — LINK 5 was not reached)" >> "$GITHUB_STEP_SUMMARY"
+          echo '```' >> "$GITHUB_STEP_SUMMARY"
+
+          {
+            echo ""
+            echo "### helm-install first-attempt evidence (spire-crds / spire / trust-manager / external-secrets)"
+            echo ""
+            echo "A chart's Job reaching \`Complete\` is NOT enough on its own — measured on run"
+            echo "35687536936: \`helm-install-spire\` reached Complete only after 301s, behind a"
+            echo "failed pod attempt on a bad image pin, and the older version of this workflow"
+            echo "read that as green. \`job_status_failed\` and \`pod_container_restarts_total\` must"
+            echo "both read 0 for a genuinely clean install; anything else means \`kubectl wait\`"
+            echo "was quietly retried underneath this workflow's own assertion."
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+          grep -E '^VERDICT helm-install-' "$log" 2>/dev/null >> "$GITHUB_STEP_SUMMARY" \
+            || echo "(no helm-install VERDICT lines found — that subtest was not reached)" >> "$GITHUB_STEP_SUMMARY"
+          echo '```' >> "$GITHUB_STEP_SUMMARY"
 
           {
             echo ""

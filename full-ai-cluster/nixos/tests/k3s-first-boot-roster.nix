@@ -75,7 +75,17 @@
 # form -- see the longhorn test. Their helm-install JOB completing is a
 # materially stronger check than "the HelmChart CR exists" (a CR is created
 # by the deploy controller regardless of whether `helm install` ever
-# succeeds); Job completion means the chart actually installed a release.
+# succeeds); Job completion means the chart actually installed a release --
+# but Job completion ALONE was measured (run 35687536936) to hide a real
+# defect: helm-install-spire took 301s and reached Complete only after a
+# failed pod attempt behind a bad image pin, and the earlier version of this
+# test read that as green. So the Job-completion subtest also asserts
+# `Job.status.failed == 0` and zero container restarts across its pod(s) --
+# reached Complete on the FIRST attempt, not eventually. A separate health
+# gate additionally snapshots spire/cert-manager/external-secrets/argocd/
+# kube-system for any pod stuck in ErrImagePull/ImagePullBackOff/
+# CrashLoopBackOff, and every run prints per-pod container restart counts for
+# all namespaces at the end regardless of verdict.
 #
 # WHAT IT IS NOT
 # --------------
@@ -238,12 +248,76 @@ pkgs.testers.nixosTest {
     # release was deployed. This is still short of "the workload is healthy"
     # (no readiness assertion follows), but it is real evidence the chart
     # install itself did not fail, which "HelmChart CR exists" cannot give.
-    with subtest("spire, trust-manager and external-secrets helm-install Jobs complete"):
+    #
+    # CORRECTED 2026-09-22 (081M33NZP3J087G0R003WS1BFH, second pass). "Job
+    # reaches Complete" is NOT "the install succeeded cleanly" -- measured live
+    # on run 35687536936: the spire chart's post-install hook hit ErrImagePull
+    # on a bad `rancher/kubectl` tag, `helm-install-spire` timed out, and the
+    # `spire-server` StatefulSet was deleted and recreated before a later
+    # attempt reached Complete. `wait_until_succeeds` just needs ONE successful
+    # `kubectl wait` call, so it retried quietly for 301s and reported green --
+    # exactly the silent-retry failure mode this whole test file exists to
+    # refuse for root-application, now caught happening to ITS OWN
+    # assertions. So "the Job is Complete" is no longer sufficient: this
+    # subtest also asserts NO evidence of a failed attempt behind that
+    # Complete -- `Job.status.failed` (pods k8s gave up on under this Job) and
+    # every pod's own container restart count must both be zero. A Job that
+    # only reached Complete after a failed attempt or a container restart is
+    # FAILED here, not silently accepted, with the counts in the message.
+    with subtest("spire, trust-manager and external-secrets helm-install Jobs complete on the FIRST attempt"):
         for chart in ["spire-crds", "spire", "trust-manager", "external-secrets"]:
             server.wait_until_succeeds(
                 f"{kc} -n kube-system wait --for=condition=complete "
                 f"job/helm-install-{chart} --timeout=30s",
                 timeout=1800,
+            )
+
+            # `.status.failed` counts POD ATTEMPTS the Job gave up on (new pods
+            # under restartPolicy: Never) -- absent/empty means zero, per the
+            # k8s API, so an empty string is normalised to 0 rather than
+            # tripping `int()`.
+            job_failed_raw = server.succeed(
+                f"{kc} -n kube-system get job helm-install-{chart} "
+                f"-o jsonpath='{{.status.failed}}' || true"
+            ).strip()
+            job_failed = int(job_failed_raw) if job_failed_raw.isdigit() else 0
+
+            # Container RESTARTS (restartPolicy: OnFailure retries the SAME
+            # pod, which never increments `.status.failed`) are the other half
+            # of "silently retried" -- summed on the driver side rather than in
+            # a nested kubectl jsonpath, and deliberately per-pod's FIRST
+            # container only: every helm-install Job in this roster runs one
+            # container, and the honest limit is stated rather than a nested
+            # jsonpath range risking a silent parse mismatch.
+            restart_raw = server.succeed(
+                f"{kc} -n kube-system get pods -l job-name=helm-install-{chart} "
+                f"-o jsonpath='{{range .items[*]}}{{.metadata.name}}={{.status.containerStatuses[0].restartCount}} {{end}}' "
+                f"|| true"
+            ).strip()
+            restart_total = sum(
+                int(tok.split("=", 1)[1])
+                for tok in restart_raw.split()
+                if "=" in tok and tok.split("=", 1)[1].isdigit()
+            )
+
+            print(
+                f"VERDICT helm-install-{chart} job_status_failed={job_failed} "
+                f"pod_container_restarts_total={restart_total} "
+                f"raw_per_pod_restarts=({restart_raw or 'none'})"
+            )
+            assert job_failed == 0 and restart_total == 0, (
+                f"helm-install-{chart} reached Complete but NOT on its first "
+                f"attempt: Job.status.failed={job_failed}, total container "
+                f"restarts across its pod(s)={restart_total} "
+                f"({restart_raw or 'none'}). `kubectl wait` eventually matched "
+                "condition=complete AFTER a failed pod attempt and/or a "
+                "container restart -- this is the silent-retry failure mode "
+                "this assertion exists to catch (e.g. a bad image pin whose "
+                "pull eventually succeeded, or a post-install hook that failed "
+                "once and was skipped on a later helm upgrade). See "
+                "`kubectl describe job/pod` and cluster events for the cause; "
+                "do NOT weaken this assertion to make it pass -- fix the "
+                "underlying chart/image."
             )
 
     # -- LINK 4: ArgoCD itself -------------------------------------------
@@ -256,6 +330,41 @@ pkgs.testers.nixosTest {
             f"{kc} -n argocd wait --for=condition=Available "
             f"deploy/argocd-server --timeout=60s",
             timeout=3000,
+        )
+
+    # -- HEALTH GATE: no pod is stuck pulling images or crash-looping ----
+    # Added alongside the helm-install first-attempt assertions above, for the
+    # same measured reason (run 35687536936): a chart's Job can reach Complete
+    # while a pod it created (or a pod in a namespace it touches) sits in
+    # ErrImagePull/ImagePullBackOff/CrashLoopBackOff, and nothing before this
+    # point looks at pod state directly -- only Job/Deployment conditions and
+    # HelmChart CR existence. This is a SNAPSHOT, taken once, here, after the
+    # pre-ArgoCD charts and ArgoCD itself have had time to settle; it is not a
+    # substitute for the per-Job first-attempt assertions above (a pod can
+    # recover into Running by the time this runs) -- it exists to catch bad
+    # states in namespaces this file does not otherwise inspect (kube-system,
+    # cert-manager, argocd), not to re-litigate spire/trust-manager/external-secrets.
+    with subtest("no pod in the watched namespaces is stuck pulling images or crash-looping"):
+        import re
+
+        bad_pattern = re.compile(r"ErrImagePull|ImagePullBackOff|CrashLoopBackOff")
+        watched_namespaces = ["spire", "cert-manager", "external-secrets", "argocd", "kube-system"]
+        bad_lines = []
+        for ns in watched_namespaces:
+            snapshot = server.succeed(
+                f"{kc} -n {ns} get pods --no-headers 2>/dev/null || true"
+            )
+            print(f"=== pods, namespace {ns} ===")
+            print(snapshot or "(namespace not yet created, or no pods)")
+            for line in snapshot.splitlines():
+                if bad_pattern.search(line):
+                    bad_lines.append(f"{ns}: {line}")
+
+        assert not bad_lines, (
+            "pod(s) stuck pulling images or crash-looping in a watched "
+            "namespace -- a Job/Deployment condition elsewhere in this test "
+            "can still read green while a pod sits here broken:\n"
+            + "\n".join(bad_lines)
         )
 
     # -- LINK 5: DOES root-application APPLY, OR DOES IT STICK? ----------
@@ -281,6 +390,13 @@ pkgs.testers.nixosTest {
         crd_seen = False
         applied = False
 
+        # CORRECTED 2026-09-22 (081M33NZP3J087G0R003WS1BFH, second pass). This
+        # loop used to compute crd_seen/applied from `echo yes`/`echo no` and
+        # throw the answer away until the loop ended -- so nothing in the log
+        # showed the verdict actually forming, and a reader (human or a CI
+        # summary step grepping the log) had no line to find. Print the state
+        # EVERY poll: cheap (one line), and it turns "the log says nothing" into
+        # a live transcript of the two facts this verdict is decided from.
         while time.monotonic() < deadline:
             if not crd_seen:
                 crd_seen = server.succeed(
@@ -291,6 +407,7 @@ pkgs.testers.nixosTest {
                 f"{kc} -n argocd get application zeta-root "
                 f">/dev/null 2>&1 && echo yes || echo no"
             ).strip() == "yes"
+            print(f"VERDICT root_crd={'yes' if crd_seen else 'no'} zeta_root={'yes' if applied else 'no'}")
             if applied:
                 break
             time.sleep(15)
@@ -311,18 +428,31 @@ pkgs.testers.nixosTest {
         print(server.succeed(f"{kc} get crd | grep argoproj || true"))
         print("=== all addons ===")
         print(server.succeed(f"{kc} -n kube-system get addon || true"))
+        # Container restart counts, ALL namespaces, reported at the end
+        # regardless of verdict -- added alongside the helm-install
+        # first-attempt assertions above so a reader gets the same evidence
+        # even when every earlier subtest passed outright.
+        print("=== container restart counts, all namespaces ===")
+        print(server.succeed(
+            f"{kc} get pods -A -o custom-columns="
+            f"'NAMESPACE:.metadata.namespace,POD:.metadata.name,"
+            f"RESTARTS:.status.containerStatuses[0].restartCount' "
+            f"--no-headers || true"
+        ))
 
         if applied:
             # VERDICT A -- SELF-HEALS. The deploy controller re-applied
             # root-application after the ArgoCD chart established the CRD.
             # This is the outcome the current design silently assumes; it is
             # now measured rather than hoped for.
+            print("VERDICT_NAME=ROOT_LANDED")
             pass
         elif not crd_seen:
             # VERDICT B -- INCONCLUSIVE. The Application CRD never appeared,
             # so the ArgoCD chart is what failed and the retry question is
             # untouched. Reported as its own failure so a reader never mistakes
             # it for evidence about the deploy controller.
+            print("VERDICT_NAME=ROOT_INCONCLUSIVE")
             raise AssertionError(
                 "INCONCLUSIVE: applications.argoproj.io never appeared, so the "
                 "ArgoCD chart did not finish installing. This run says NOTHING "
@@ -336,6 +466,7 @@ pkgs.testers.nixosTest {
             # Consequence: the app-of-apps root never lands, ArgoCD has no
             # catalog, and a fresh cluster stops at the bootstrap charts with
             # every pod healthy and nothing reconciling.
+            print("VERDICT_NAME=ROOT_NEVER_LANDED")
             raise AssertionError(
                 "STUCK: applications.argoproj.io EXISTS but Application/zeta-root "
                 "was never created. The k3s deploy controller does not retry an "
