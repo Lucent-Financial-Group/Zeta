@@ -79,13 +79,29 @@
 # but Job completion ALONE was measured (run 35687536936) to hide a real
 # defect: helm-install-spire took 301s and reached Complete only after a
 # failed pod attempt behind a bad image pin, and the earlier version of this
-# test read that as green. So the Job-completion subtest also asserts
-# `Job.status.failed == 0` and zero container restarts across its pod(s) --
-# reached Complete on the FIRST attempt, not eventually. A separate health
-# gate additionally snapshots spire/cert-manager/external-secrets/argocd/
-# kube-system for any pod stuck in ErrImagePull/ImagePullBackOff/
-# CrashLoopBackOff, and every run prints per-pod container restart counts for
-# all namespaces at the end regardless of verdict.
+# test read that as green.
+#
+# The first fix for that (081M33NZP3J087G0R003WS1BFH, second pass) asserted
+# the Job completed on its FIRST attempt -- zero restarts, no exceptions --
+# and that was WRONG in the other direction (third pass, architect
+# correction): run 35700526070, AFTER the bad image pin was fixed
+# (#17478), still failed with 2 container restarts on helm-install-spire-crds
+# at ~T+128s, before Cilium/CoreDNS had fully come up. That is
+# helm-controller's ORDINARY retry while cluster networking stabilizes -- a
+# Docker replica showed 0-2 retries for nearly every chart on a normal run --
+# and refusing it entirely made the test fail on healthy churn. The rule is
+# now EVIDENCE-based rather than count-based: FAIL only on (a) any pod
+# EVER showing ErrImagePull/ImagePullBackOff/InvalidImageName, checked
+# against that pod's event history (the record survives after the container
+# recovers) and its current waiting-state reason, or (b) restarts exceeding a
+# stated bound. A Job that retried a few times against a not-yet-ready
+# network and then succeeded is exactly what this assertion now PASSES, with
+# the restart count and evidence printed so the retries stay visible. A
+# separate health gate additionally snapshots
+# spire/cert-manager/external-secrets/argocd/kube-system for any pod stuck in
+# ErrImagePull/ImagePullBackOff/CrashLoopBackOff, and every run prints
+# per-pod container restart counts for all namespaces at the end regardless
+# of verdict.
 #
 # WHAT IT IS NOT
 # --------------
@@ -249,22 +265,43 @@ pkgs.testers.nixosTest {
     # (no readiness assertion follows), but it is real evidence the chart
     # install itself did not fail, which "HelmChart CR exists" cannot give.
     #
-    # CORRECTED 2026-09-22 (081M33NZP3J087G0R003WS1BFH, second pass). "Job
-    # reaches Complete" is NOT "the install succeeded cleanly" -- measured live
-    # on run 35687536936: the spire chart's post-install hook hit ErrImagePull
-    # on a bad `rancher/kubectl` tag, `helm-install-spire` timed out, and the
-    # `spire-server` StatefulSet was deleted and recreated before a later
-    # attempt reached Complete. `wait_until_succeeds` just needs ONE successful
-    # `kubectl wait` call, so it retried quietly for 301s and reported green --
-    # exactly the silent-retry failure mode this whole test file exists to
-    # refuse for root-application, now caught happening to ITS OWN
-    # assertions. So "the Job is Complete" is no longer sufficient: this
-    # subtest also asserts NO evidence of a failed attempt behind that
-    # Complete -- `Job.status.failed` (pods k8s gave up on under this Job) and
-    # every pod's own container restart count must both be zero. A Job that
-    # only reached Complete after a failed attempt or a container restart is
-    # FAILED here, not silently accepted, with the counts in the message.
-    with subtest("spire, trust-manager and external-secrets helm-install Jobs complete on the FIRST attempt"):
+    # CORRECTED 2026-09-22 (081M33NZP3J087G0R003WS1BFH). Two passes so far:
+    #
+    #   second pass: "Job reaches Complete" is NOT "the install succeeded
+    #   cleanly" -- measured live on run 35687536936: the spire chart's
+    #   post-install hook hit ErrImagePull on a bad `rancher/kubectl` tag,
+    #   `helm-install-spire` timed out, and `wait_until_succeeds` retried
+    #   quietly for 301s and reported green. So that pass added a hard
+    #   requirement: zero container restarts, zero `Job.status.failed`,
+    #   reached Complete on the FIRST attempt.
+    #
+    #   third pass (architect correction, same day): that was too strict in
+    #   the OTHER direction. Run 35700526070, taken AFTER the bad image pin
+    #   was actually fixed (#17478), still failed -- 2 container restarts on
+    #   helm-install-spire-crds at ~T+128s, before Cilium/CoreDNS had fully
+    #   come up, with NO ErrImagePull anywhere. A Docker replica showed 0-2
+    #   retries for nearly every chart on an otherwise-healthy run: that is
+    #   helm-controller's ORDINARY retry while cluster networking stabilizes,
+    #   not a defect, and refusing it outright made the test fail on healthy
+    #   churn -- the same "check that cannot see the difference between
+    #   ordinary and broken" failure shape this file exists to refuse
+    #   elsewhere.
+    #
+    # So the rule is EVIDENCE-based, not count-based: FAIL only when a pod
+    # EVER shows ErrImagePull/ImagePullBackOff/InvalidImageName -- checked
+    # against that pod's EVENT HISTORY (the authoritative record: it survives
+    # after the container recovers and the current state no longer shows it)
+    # and its CURRENT waiting-state reason (in case it is still stuck) -- or
+    # when restarts exceed a stated bound. Completing within budget is still
+    # enforced by the outer `wait_until_succeeds` timeout below; a Job that
+    # never reaches Complete fails there, unconditionally. Otherwise: PASS,
+    # with the restart count, the bad-pull evidence (or its absence), and --
+    # when there was a retry -- the crashed attempt's own last words printed,
+    # so ordinary retries stay VISIBLE without being refused.
+    with subtest("spire, trust-manager and external-secrets helm-install Jobs complete without a bad image pull or excessive restarts"):
+        RESTART_BOUND = 5
+        BAD_PULL_REASONS = ("ErrImagePull", "ImagePullBackOff", "InvalidImageName")
+
         for chart in ["spire-crds", "spire", "trust-manager", "external-secrets"]:
             server.wait_until_succeeds(
                 f"{kc} -n kube-system wait --for=condition=complete "
@@ -273,9 +310,10 @@ pkgs.testers.nixosTest {
             )
 
             # `.status.failed` counts POD ATTEMPTS the Job gave up on (new pods
-            # under restartPolicy: Never) -- absent/empty means zero, per the
-            # k8s API, so an empty string is normalised to 0 rather than
-            # tripping `int()`.
+            # under restartPolicy: Never) -- printed for visibility; not
+            # asserted on directly, because a Job that exhausted its
+            # backoffLimit would already have failed the `wait_until_succeeds`
+            # above rather than reaching Complete.
             job_failed_raw = server.succeed(
                 f"{kc} -n kube-system get job helm-install-{chart} "
                 f"-o jsonpath='{{.status.failed}}' || true"
@@ -283,12 +321,12 @@ pkgs.testers.nixosTest {
             job_failed = int(job_failed_raw) if job_failed_raw.isdigit() else 0
 
             # Container RESTARTS (restartPolicy: OnFailure retries the SAME
-            # pod, which never increments `.status.failed`) are the other half
-            # of "silently retried" -- summed on the driver side rather than in
-            # a nested kubectl jsonpath, and deliberately per-pod's FIRST
-            # container only: every helm-install Job in this roster runs one
-            # container, and the honest limit is stated rather than a nested
-            # jsonpath range risking a silent parse mismatch.
+            # pod, which never increments `.status.failed`) -- summed on the
+            # driver side rather than in a nested kubectl jsonpath, and
+            # deliberately per-pod's FIRST container only: every helm-install
+            # Job in this roster runs one container, and the honest limit is
+            # stated rather than a nested jsonpath range risking a silent
+            # parse mismatch.
             restart_raw = server.succeed(
                 f"{kc} -n kube-system get pods -l job-name=helm-install-{chart} "
                 f"-o jsonpath='{{range .items[*]}}{{.metadata.name}}={{.status.containerStatuses[0].restartCount}} {{end}}' "
@@ -299,49 +337,88 @@ pkgs.testers.nixosTest {
                 for tok in restart_raw.split()
                 if "=" in tok and tok.split("=", 1)[1].isdigit()
             )
+            pod_names = [tok.split("=", 1)[0] for tok in restart_raw.split() if "=" in tok]
+
+            # THE EVIDENCE THAT ACTUALLY DISCRIMINATES: a bad image pull does
+            # not self-heal by waiting; ordinary early-boot network churn
+            # does. Events are queried per pod (not grepped from the journal)
+            # because they are the k8s-native historical record and survive
+            # past the moment the container recovers; the CURRENT waiting
+            # reason is checked too, in case the pod is still stuck when this
+            # runs.
+            bad_pull_evidence = []
+            for pod_name in pod_names:
+                events = server.succeed(
+                    f"{kc} -n kube-system get events "
+                    f"--field-selector involvedObject.name={pod_name} "
+                    f"-o jsonpath='{{range .items[*]}}{{.reason}}: {{.message}}|{{end}}' "
+                    f"|| true"
+                )
+                for reason in BAD_PULL_REASONS:
+                    if reason in events:
+                        bad_pull_evidence.append(f"{pod_name} event history: {events.strip()}")
+                        break
+                waiting_reason = server.succeed(
+                    f"{kc} -n kube-system get pod {pod_name} "
+                    f"-o jsonpath='{{.status.containerStatuses[0].state.waiting.reason}}' "
+                    f"|| true"
+                ).strip()
+                if waiting_reason in BAD_PULL_REASONS:
+                    bad_pull_evidence.append(f"{pod_name} currently waiting: {waiting_reason}")
 
             print(
                 f"VERDICT helm-install-{chart} job_status_failed={job_failed} "
                 f"pod_container_restarts_total={restart_total} "
-                f"raw_per_pod_restarts=({restart_raw or 'none'})"
+                f"raw_per_pod_restarts=({restart_raw or 'none'}) "
+                f"bad_image_pull_evidence=({'; '.join(bad_pull_evidence) or 'none'})"
             )
 
-            # ROOT CAUSE, not just the symptom -- added 2026-09-22
-            # (081M33NZP3J087G0R003WS1BFH, third pass) after this exact
-            # assertion caught a real restart with no explanation attached: run
-            # 35700526070 failed on helm-install-spire-crds with
-            # restarts_total=2 and NO ErrImagePull anywhere in the journal --
-            # a different failure than the kubectl-tag defect this assertion
-            # was written for. `kubectl describe pod` (events, exit codes) and
-            # `kubectl logs --previous` (the crashed attempt's own stdout) are
-            # printed HERE, unconditionally but only when there is something to
-            # explain, so the NEXT time this fires the log carries the actual
-            # cause instead of only the count. `|| true` throughout: a
-            # diagnostic that itself fails must not replace the verdict.
-            if job_failed != 0 or restart_total != 0:
+            # ORDERING RETRIES STAY VISIBLE even when they do not fail the
+            # run: the restarted container's last termination and its
+            # previous log tail, printed whenever a restart happened, whether
+            # or not it turns out to be a bad-pull failure. `|| true`
+            # throughout: a diagnostic that itself fails must not replace the
+            # verdict.
+            if restart_total > 0:
+                # Space-separated per-pod, one `kubectl get pods` call per pod
+                # rather than a nested `{range}` -- matching restart_raw's own
+                # style above, and sidestepping any ambiguity in getting a
+                # literal jsonpath newline token through the nix -> Python ->
+                # bash -> kubectl quoting chain intact.
+                print(f"=== last termination, job-name=helm-install-{chart} ===")
+                for pod_name in pod_names:
+                    print(server.succeed(
+                        f"{kc} -n kube-system get pod {pod_name} -o jsonpath="
+                        f"'{pod_name}: reason={{.status.containerStatuses[0].lastState.terminated.reason}} "
+                        f"exitCode={{.status.containerStatuses[0].lastState.terminated.exitCode}} "
+                        f"message={{.status.containerStatuses[0].lastState.terminated.message}}' "
+                        f"|| true"
+                    ))
+                print(f"=== previous container log tail, job-name=helm-install-{chart} ===")
+                print(server.succeed(
+                    f"{kc} -n kube-system logs -l job-name=helm-install-{chart} "
+                    f"--all-containers --previous --tail=20 || true"
+                ))
+
+            if bad_pull_evidence or restart_total > RESTART_BOUND:
                 print(f"=== kubectl describe pod, job-name=helm-install-{chart} ===")
                 print(server.succeed(
                     f"{kc} -n kube-system describe pod -l job-name=helm-install-{chart} || true"
                 ))
-                print(f"=== kubectl logs --previous, job-name=helm-install-{chart} ===")
-                print(server.succeed(
-                    f"{kc} -n kube-system logs -l job-name=helm-install-{chart} "
-                    f"--all-containers --previous --tail=200 || true"
-                ))
 
-            assert job_failed == 0 and restart_total == 0, (
-                f"helm-install-{chart} reached Complete but NOT on its first "
-                f"attempt: Job.status.failed={job_failed}, total container "
-                f"restarts across its pod(s)={restart_total} "
-                f"({restart_raw or 'none'}). `kubectl wait` eventually matched "
-                "condition=complete AFTER a failed pod attempt and/or a "
-                "container restart -- this is the silent-retry failure mode "
-                "this assertion exists to catch (e.g. a bad image pin whose "
-                "pull eventually succeeded, or a post-install hook that failed "
-                "once and was skipped on a later helm upgrade). See "
-                "`kubectl describe job/pod` and cluster events for the cause; "
-                "do NOT weaken this assertion to make it pass -- fix the "
-                "underlying chart/image."
+            assert not bad_pull_evidence and restart_total <= RESTART_BOUND, (
+                f"helm-install-{chart}: "
+                + (f"bad image pull evidence -- {'; '.join(bad_pull_evidence)}. " if bad_pull_evidence else "")
+                + (
+                    f"restart count {restart_total} exceeds the bound of {RESTART_BOUND}. "
+                    if restart_total > RESTART_BOUND
+                    else ""
+                )
+                + "Ordinary helm-controller retry while cluster networking comes up is "
+                "EXPECTED and is not what this assertion refuses -- a bad image pin "
+                "(ErrImagePull/ImagePullBackOff/InvalidImageName) or an excessive "
+                "restart count are. See the diagnostics above; do NOT loosen the bound "
+                "further to make this pass -- fix the underlying chart/image."
             )
 
     # -- LINK 4: ArgoCD itself -------------------------------------------
