@@ -455,10 +455,18 @@ pkgs.testers.nixosTest {
             f"{kc} -n kube-system delete pod dns-probe-hostnet "
             f"--ignore-not-found --wait=true --timeout=30s || true"
         )
+        # FULLY QUALIFIED name, not the short "kubernetes.default" form. MEASURED
+        # (run 35706223651): busybox's nslookup does not reliably chase resolv.conf
+        # search-domain expansion for a bare two-label name here -- the short form
+        # came back "can't find kubernetes.default: NXDOMAIN" even when the SERVER
+        # was reached fine (the same false-negative shape a pod-network control
+        # probe hit on the Docker replica with "spire-server.spire"). The FQDN
+        # sidesteps search-list behaviour entirely and answers the one question
+        # this subtest exists for: did the query REACH the DNS server at all.
         server.succeed(
             f"{kc} -n kube-system run dns-probe-hostnet --image=busybox:1.36.1 --restart=Never "
             f"--overrides='{overrides}' "
-            f"--command -- sh -c \"nslookup kubernetes.default 2>&1; echo RC=$?\""
+            f"--command -- sh -c \"nslookup kubernetes.default.svc.cluster.local 2>&1; echo RC=$?\""
         )
         server.wait_until_succeeds(
             f"{kc} -n kube-system get pod dns-probe-hostnet -o jsonpath='{{.status.phase}}' "
@@ -473,9 +481,11 @@ pkgs.testers.nixosTest {
         )
         assert "RC=0" in dns_log and "can't find" not in dns_log and "timed out" not in dns_log, (
             "a hostNetwork pod with dnsPolicy ClusterFirstWithHostNet could not resolve "
-            "kubernetes.default via the ClusterIP DNS server on REAL NixOS networking -- "
-            "this is the metal oracle for 081M343EM0R087G0R003C8ZHJ7 (the Docker replica's "
-            "spire-agent CrashLoopBackOff showed the identical i/o-timeout shape). If this "
+            "kubernetes.default.svc.cluster.local via the ClusterIP DNS server on REAL "
+            "NixOS networking -- this is the metal oracle for 081M343EM0R087G0R003C8ZHJ7 "
+            "(the Docker replica's spire-agent CrashLoopBackOff showed the identical "
+            "i/o-timeout shape, and its own hostNetwork control probe there could not "
+            "even REACH the DNS server). If this "
             f"fails HERE, the defect is real on metal, not a container-nesting artifact. log:\n{dns_log}"
         )
 
