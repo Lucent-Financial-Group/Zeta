@@ -3184,49 +3184,130 @@ export function startupRestartEntries(
 }
 
 /**
- * The startup-restart RATCHET (same discipline as
- * `full-ai-cluster/k8s/tests/ratchet-app-failures.ts`, keyed differently: by
- * `(app, container)` -- never by pod name/hash, which churns on every
- * rollout -- because two runs of the same tree should name the same
- * offenders even though every pod got a fresh generated name). Reported, not
- * gated, on the FIRST measurement (the baseline is seeded FROM that
- * measurement); gated on every run after, in BOTH directions: a NEW entry not
- * in the checked-in baseline is a regression, and a baseline entry that no
- * longer measures is an IMPROVEMENT NOBODY RECORDED -- same reasoning as the
- * sibling ratchet: a ceiling that only ever moves is a ceiling nobody
- * believes, and forcing the baseline file to be edited is what keeps its git
- * history an honest record of the tree getting better or worse.
+ * STARTUP-RESTART POLICY -- threshold-based, not a both-directions exact
+ * ratchet.
+ *
+ * MEASURED, 081KSXN940008QG0R000SCP2H1: run 35692573183 (the first live run
+ * with --soak-sec) named 8 (app, container) pairs, all restartCount 1-3. Run
+ * 35695291413 -- the SAME tree, one push later -- named two DIFFERENT pairs
+ * (argocd/repo-server, spire/spire-controller-manager) that had not restarted
+ * the first time. A both-directions exact-match ratchet (the original design
+ * here) treats a 1-2-restart dependency-ordering wait as equivalent in
+ * severity to a genuine crash loop, and BOTH directions of "the set changed"
+ * as a failure -- which cannot be right for a signal this run-to-run
+ * nondeterministic: it would flake red on an unrelated PR most nights.
+ *
+ * So the policy is a THRESHOLD, per (app, container), not a set-equality
+ * ratchet:
+ *
+ *   restartCount >= STARTUP_RESTART_HARD_FAIL_THRESHOLD (a real crash loop,
+ *   not a single dependency-ordering retry) -- FAIL, unless the baseline
+ *   names this (app, container) with a `maxRestarts` at or above the
+ *   observed count (a KNOWN, bounded startup race, already investigated).
+ *
+ *   restartCount below the threshold and not covered by the baseline -- a
+ *   WARNING (annotation + summary line), never a failure. This is the
+ *   ordinary, expected shape of a first-rollout dependency wait.
+ *
+ *   A baseline entry NOT measured this run -- a NOTICE, never a failure.
+ *   Absence is the expected case most runs (the dependency happened to come
+ *   up in the right order this time). Its `lastSeen` date is what stops a
+ *   baseline entry from silently documenting a container that no longer
+ *   exists: unseen for more than STARTUP_RESTART_STALE_DAYS is flagged
+ *   `stale`, a prompt to re-verify or retire the row, not a failure either.
  */
 export interface StartupRestartBaselineEntry {
   readonly app: string;
   readonly container: string;
+  /** Tolerated restartCount for this (app, container): observed <= maxRestarts is covered, never fails or warns. */
+  readonly maxRestarts: number;
   readonly reason: string;
+  /** ISO date (YYYY-MM-DD) this entry was last actually measured. */
+  readonly lastSeen: string;
 }
 
-export interface StartupRestartRatchetResult {
-  readonly newEntries: readonly { readonly app: string; readonly container: string }[];
-  readonly disappearedEntries: readonly StartupRestartBaselineEntry[];
-  readonly ok: boolean;
-}
+/** A real crash loop, never a single dependency-ordering retry: kubelet does not usually report CrashLoopBackOff below this either. */
+export const STARTUP_RESTART_HARD_FAIL_THRESHOLD = 3;
+/** A baseline row unseen this long is a prompt to re-verify or retire it, not evidence it is still true. */
+export const STARTUP_RESTART_STALE_DAYS = 14;
 
 function startupRestartKey(app: string, container: string): string {
   return `${app}::${container}`;
 }
 
-export function ratchetStartupRestarts(
-  baseline: readonly StartupRestartBaselineEntry[],
+/** `null` when the baseline covers this entry (observed <= maxRestarts): no action. */
+export function classifyStartupRestartEntry(
+  entry: StartupRestartEntry,
+  baseline: ReadonlyMap<string, StartupRestartBaselineEntry>,
+): "ok" | "warn" | "fail" {
+  const known = baseline.get(startupRestartKey(entry.app, entry.container));
+  const covered = known !== undefined && known.maxRestarts >= entry.restartCount;
+  if (covered) return "ok";
+  return entry.restartCount >= STARTUP_RESTART_HARD_FAIL_THRESHOLD ? "fail" : "warn";
+}
+
+export interface StartupRestartFailureDetail {
+  readonly entry: StartupRestartEntry;
+  /** `null` when this (app, container) is not in the baseline at all. */
+  readonly baselineMaxRestarts: number | null;
+}
+
+export interface AbsentBaselineEntry {
+  readonly entry: StartupRestartBaselineEntry;
+  readonly daysSinceLastSeen: number;
+  readonly stale: boolean;
+}
+
+export interface StartupRestartClassification {
+  readonly failures: readonly StartupRestartFailureDetail[];
+  readonly warnings: readonly StartupRestartEntry[];
+  readonly absent: readonly AbsentBaselineEntry[];
+}
+
+/** Pure: the whole policy above, applied to one measurement against one baseline. */
+export function classifyStartupRestarts(
   measured: readonly StartupRestartEntry[],
-): StartupRestartRatchetResult {
-  const baselineKeys = new Map(baseline.map((entry) => [startupRestartKey(entry.app, entry.container), entry]));
+  baseline: readonly StartupRestartBaselineEntry[],
+  nowMs: number,
+): StartupRestartClassification {
+  const byKey = new Map(baseline.map((entry) => [startupRestartKey(entry.app, entry.container), entry]));
+  const failures: StartupRestartFailureDetail[] = [];
+  const warnings: StartupRestartEntry[] = [];
+  for (const entry of measured) {
+    const verdict = classifyStartupRestartEntry(entry, byKey);
+    if (verdict === "ok") continue;
+    if (verdict === "fail") {
+      failures.push({ entry, baselineMaxRestarts: byKey.get(startupRestartKey(entry.app, entry.container))?.maxRestarts ?? null });
+    } else {
+      warnings.push(entry);
+    }
+  }
   const measuredKeys = new Set(measured.map((entry) => startupRestartKey(entry.app, entry.container)));
-  const newEntries = [...measuredKeys]
-    .filter((key) => !baselineKeys.has(key))
-    .map((key) => {
-      const [app, container] = key.split("::");
-      return { app: app ?? "", container: container ?? "" };
+  const absent: AbsentBaselineEntry[] = baseline
+    .filter((entry) => !measuredKeys.has(startupRestartKey(entry.app, entry.container)))
+    .map((entry) => {
+      const lastSeenMs = Date.parse(entry.lastSeen);
+      const daysSinceLastSeen = Number.isNaN(lastSeenMs) ? Number.POSITIVE_INFINITY : (nowMs - lastSeenMs) / 86_400_000;
+      return { entry, daysSinceLastSeen, stale: daysSinceLastSeen > STARTUP_RESTART_STALE_DAYS };
     });
-  const disappearedEntries = baseline.filter((entry) => !measuredKeys.has(startupRestartKey(entry.app, entry.container)));
-  return { newEntries, disappearedEntries, ok: newEntries.length === 0 && disappearedEntries.length === 0 };
+  return { failures, warnings, absent };
+}
+
+/** `null` when nothing crossed the hard-fail threshold -- warnings and absences never produce a Failure. */
+export function startupRestartFailure(classification: StartupRestartClassification): Failure | null {
+  if (classification.failures.length === 0) return null;
+  const lines = classification.failures.map((f) => {
+    const covered =
+      f.baselineMaxRestarts === null ? "not in the baseline" : `exceeds baseline maxRestarts=${String(f.baselineMaxRestarts)}`;
+    return `${f.entry.app === "" ? "(unmatched)" : f.entry.app}/${f.entry.container}: restartCount=${String(f.entry.restartCount)} (${covered})`;
+  });
+  return {
+    kind: "ApplicationUnhealthy",
+    message:
+      `startup restart(s) at or above the crash-loop threshold (${String(STARTUP_RESTART_HARD_FAIL_THRESHOLD)}): ` +
+      lines.join("; "),
+    detail: classification,
+  };
 }
 
 export const REPO_BACKED_CHILD_WAIT_DIAGNOSTIC_COMMANDS: readonly {
@@ -3950,10 +4031,10 @@ interface StartupRestartBaselineFile {
 
 /**
  * A missing or unparseable baseline reads as EMPTY, never as "skip the
- * ratchet" -- an empty baseline makes every currently-restarting container a
- * `newEntries` hit, which is the correct, loud failure the first time this
- * runs on a tree with no baseline committed yet (the seeding case the task
- * describes), not a silently-passing gate.
+ * policy" -- an empty baseline covers nothing, so every currently-restarting
+ * container is classified fresh against the hard-fail threshold (see
+ * `classifyStartupRestarts`), which is the correct behaviour on a tree with
+ * no baseline committed yet, not a silently-passing gate.
  */
 function readStartupRestartBaseline(): readonly StartupRestartBaselineEntry[] {
   // READ, then interpret failure -- rather than existsSync() then read, which
@@ -3961,8 +4042,7 @@ function readStartupRestartBaseline(): readonly StartupRestartBaselineEntry[] {
   // two calls; CWE-367). A missing file (ENOENT) and an unparseable one are
   // both folded into the same "empty baseline" result on purpose: this is not
   // a fatal-error path, it is what makes every currently-restarting container
-  // read as a NEW ratchet entry -- the correct, loud failure on a tree with no
-  // baseline committed yet, never a silent skip of the ratchet.
+  // classify fresh (uncovered) rather than silently skip the policy.
   try {
     const parsed = JSON.parse(readFileSync(STARTUP_RESTART_BASELINE_PATH, "utf8")) as Partial<StartupRestartBaselineFile>;
     return Array.isArray(parsed.allowed) ? parsed.allowed : [];
@@ -3974,17 +4054,18 @@ function readStartupRestartBaseline(): readonly StartupRestartBaselineEntry[] {
 export interface SoakReport {
   readonly soakSeconds: number;
   readonly startupRestarts: readonly StartupRestartEntry[];
-  readonly ratchet: StartupRestartRatchetResult;
+  readonly classification: StartupRestartClassification;
 }
 
 /**
  * The soak phase's impure driver: fetches the baseline pod/Application
- * snapshot, prints + ratchets the STARTUP-RESTARTS report, then polls for
+ * snapshot, prints + classifies the STARTUP-RESTARTS report, then polls for
  * `options.soakSeconds` watching for a restartCount regression or an
  * Application leaving Healthy/Synced for more than one poll. All DECISIONS
  * are the pure functions above (`soakRestartRegressions`,
  * `soakApplicationInstabilityStep`, `soakRegressionFailure`,
- * `ratchetStartupRestarts`); this function only fetches and loops.
+ * `classifyStartupRestarts`, `startupRestartFailure`); this function only
+ * fetches and loops.
  *
  * `options.soakSeconds <= 0` (the default -- see `DEFAULT_SOAK_SECONDS`) is a
  * full no-op: no extra kubectl calls, no report, no ratchet. Every caller
@@ -4022,7 +4103,7 @@ async function runSoakPhase(
   if (isFailure(baselineSnapshots)) return { report: null, failure: baselineSnapshots };
   const applicationsForMatch = baselineSnapshots;
 
-  // STARTUP-RESTARTS report + ratchet. Measured ONCE, at the all-Healthy
+  // STARTUP-RESTARTS report + threshold policy. Measured ONCE, at the all-Healthy
   // moment these pods were already retrieved for -- restarts the workload
   // recovered from BEFORE the soak started, an ordering smell, not a
   // soak-phase regression (that is `soakRestartRegressions` in the poll loop
@@ -4038,24 +4119,29 @@ async function runSoakPhase(
     console.log(`  ${entry.app === "" ? "(unmatched)" : entry.app} ${entry.namespace}/${entry.pod} [${entry.container}] restarts=${String(entry.restartCount)}`);
   }
   const baseline = readStartupRestartBaseline();
-  const ratchet = ratchetStartupRestarts(baseline, startupRestarts);
-  const report: SoakReport = { soakSeconds: options.soakSeconds, startupRestarts, ratchet };
-  if (!ratchet.ok) {
-    const lines = [
-      ...ratchet.newEntries.map((e) => `NEW, not in ${STARTUP_RESTART_BASELINE_PATH}: ${e.app === "" ? "(unmatched)" : e.app}/${e.container}`),
-      ...ratchet.disappearedEntries.map((e) => `GONE, still in the baseline but not measured: ${e.app}/${e.container}`),
-    ];
-    return {
-      report,
-      failure: {
-        kind: "ApplicationUnhealthy",
-        message:
-          `startup-restart baseline drift -- update ${STARTUP_RESTART_BASELINE_PATH} in this PR, either direction ` +
-          `is a real change worth recording: ${lines.join("; ")}`,
-        detail: ratchet,
-      },
-    };
+  const classification = classifyStartupRestarts(startupRestarts, baseline, Date.now());
+  const report: SoakReport = { soakSeconds: options.soakSeconds, startupRestarts, classification };
+  // WARNINGS never fail the run -- a 1-2 restart dependency-ordering wait is
+  // the ordinary shape of a first rollout (081KSXN940008QG0R000SCP2H1: run
+  // 35695291413 named two such pairs the immediately preceding run had not,
+  // on the identical tree). Printed as GitHub Actions annotations (`::warning::`)
+  // so they surface in the Checks UI without failing the job.
+  for (const entry of classification.warnings) {
+    console.log(
+      `::warning::startup restart below the crash-loop threshold, not yet in the baseline: ` +
+        `${entry.app === "" ? "(unmatched)" : entry.app}/${entry.container} restartCount=${String(entry.restartCount)} ` +
+        `(namespace ${entry.namespace}, pod ${entry.pod})`,
+    );
   }
+  // ABSENT baseline entries are a notice, not a failure -- absence is the
+  // expected case most runs. Only flagged when stale, as a prompt to
+  // re-verify or retire the row.
+  for (const absent of classification.absent) {
+    const staleNote = absent.stale ? ` -- STALE (unseen ${String(Math.floor(absent.daysSinceLastSeen))}d > ${String(STARTUP_RESTART_STALE_DAYS)}d)` : "";
+    console.log(`  baseline entry not measured this run: ${absent.entry.app}/${absent.entry.container}${staleNote}`);
+  }
+  const startupFailure = startupRestartFailure(classification);
+  if (startupFailure !== null) return { report, failure: startupFailure };
 
   // The soak polling loop: does anything crash-loop, or leave Healthy/Synced,
   // AFTER the all-Healthy verdict.

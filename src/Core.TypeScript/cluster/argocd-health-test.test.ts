@@ -59,7 +59,11 @@ import {
   soakApplicationInstabilityStep,
   soakRegressionFailure,
   startupRestartEntries,
-  ratchetStartupRestarts,
+  classifyStartupRestartEntry,
+  classifyStartupRestarts,
+  startupRestartFailure,
+  STARTUP_RESTART_HARD_FAIL_THRESHOLD,
+  STARTUP_RESTART_STALE_DAYS,
   type StartupRestartBaselineEntry,
   isGitHubHostUnresolvableText,
   isTerminalFailure,
@@ -2653,40 +2657,131 @@ describe("081KSXN940008QG0R000SCP2H1 soak phase -- does it crash-loop after the 
     });
   });
 
-  describe("ratchetStartupRestarts -- keyed by (app, container), never by pod name/hash", () => {
-    const baseline: readonly StartupRestartBaselineEntry[] = [
-      { app: "mimir", container: "mimir", reason: "ring doesn't exist in KV store; self-heals" },
+  describe("classifyStartupRestarts -- threshold policy, not a both-directions ratchet (081KSXN940008QG0R000SCP2H1: run 35695291413 flaked the old exact-match ratchet on an unrelated pair the very next push)", () => {
+    const now = Date.parse("2026-09-22T12:00:00Z");
+    const mimirEntry = (restartCount: number) => ({
+      app: "mimir",
+      namespace: "mimir",
+      pod: "mimir-ingester-zone-a-0",
+      container: "ingester",
+      restartCount,
+    });
+    const baselineWithMimir = (maxRestarts: number): readonly StartupRestartBaselineEntry[] => [
+      { app: "mimir", container: "ingester", maxRestarts, reason: "mimir-kafka not ready yet at first boot", lastSeen: "2026-09-22" },
     ];
 
-    test("the exact baseline set, measured again (different pod name), is OK", () => {
-      const measured = [
-        { app: "mimir", namespace: "mimir", pod: "mimir-ingester-7f8b9c-xyz12", container: "mimir", restartCount: 1 },
-      ];
-      const result = ratchetStartupRestarts(baseline, measured);
-      expect(result.ok).toBe(true);
-      expect(result.newEntries).toEqual([]);
-      expect(result.disappearedEntries).toEqual([]);
+    describe("classifyStartupRestartEntry -- the per-(app,container) verdict", () => {
+      test("covered by the baseline (observed <= maxRestarts): ok, however high the count", () => {
+        const byKey = new Map(baselineWithMimir(4).map((e) => [`${e.app}::${e.container}`, e]));
+        expect(classifyStartupRestartEntry(mimirEntry(4), byKey)).toBe("ok");
+        expect(classifyStartupRestartEntry(mimirEntry(1), byKey)).toBe("ok");
+      });
+
+      test("NOT covered and below the hard-fail threshold: warn, never fail", () => {
+        const byKey = new Map<string, StartupRestartBaselineEntry>();
+        expect(classifyStartupRestartEntry(mimirEntry(1), byKey)).toBe("warn");
+        expect(classifyStartupRestartEntry(mimirEntry(STARTUP_RESTART_HARD_FAIL_THRESHOLD - 1), byKey)).toBe("warn");
+      });
+
+      test("NOT covered and AT/ABOVE the hard-fail threshold: fail", () => {
+        const byKey = new Map<string, StartupRestartBaselineEntry>();
+        expect(classifyStartupRestartEntry(mimirEntry(STARTUP_RESTART_HARD_FAIL_THRESHOLD), byKey)).toBe("fail");
+        expect(classifyStartupRestartEntry(mimirEntry(STARTUP_RESTART_HARD_FAIL_THRESHOLD + 5), byKey)).toBe("fail");
+      });
+
+      test("MUTATION-SANITY: one restart below the threshold does not fail; the baseline exactly at the observed count covers it", () => {
+        const byKey = new Map<string, StartupRestartBaselineEntry>();
+        expect(classifyStartupRestartEntry(mimirEntry(STARTUP_RESTART_HARD_FAIL_THRESHOLD - 1), byKey)).not.toBe("fail");
+        const covered = new Map(baselineWithMimir(STARTUP_RESTART_HARD_FAIL_THRESHOLD).map((e) => [`${e.app}::${e.container}`, e]));
+        expect(classifyStartupRestartEntry(mimirEntry(STARTUP_RESTART_HARD_FAIL_THRESHOLD), covered)).toBe("ok");
+        // one restart OVER the covered ceiling is fail again, not silently absorbed
+        expect(classifyStartupRestartEntry(mimirEntry(STARTUP_RESTART_HARD_FAIL_THRESHOLD + 1), covered)).toBe("fail");
+      });
+
+      test("in the baseline but EXCEEDING maxRestarts is not covered", () => {
+        const byKey = new Map(baselineWithMimir(1).map((e) => [`${e.app}::${e.container}`, e]));
+        expect(classifyStartupRestartEntry(mimirEntry(2), byKey)).toBe("warn"); // 2 < threshold 3
+        expect(classifyStartupRestartEntry(mimirEntry(3), byKey)).toBe("fail"); // 3 >= threshold
+      });
     });
 
-    test("a NEW app/container not in the baseline fails the ratchet", () => {
-      const measured = [
-        { app: "mimir", namespace: "mimir", pod: "mimir-ingester-0", container: "mimir", restartCount: 1 },
-        { app: "headscale", namespace: "headscale", pod: "headscale-0", container: "headscale", restartCount: 2 },
-      ];
-      const result = ratchetStartupRestarts(baseline, measured);
-      expect(result.ok).toBe(false);
-      expect(result.newEntries).toEqual([{ app: "headscale", container: "headscale" }]);
-    });
+    describe("classifyStartupRestarts -- the whole-measurement orchestration", () => {
+      test("a crash loop (restartCount>=3, uncovered) is a failure; a 1-2 wait is a warning, not a failure", () => {
+        const measured = [
+          mimirEntry(3),
+          { app: "dapr", namespace: "dapr-system", pod: "dapr-operator-0", container: "dapr-operator", restartCount: 1 },
+        ];
+        const result = classifyStartupRestarts(measured, [], now);
+        expect(result.failures.map((f) => f.entry.container)).toEqual(["ingester"]);
+        expect(result.warnings.map((w) => w.container)).toEqual(["dapr-operator"]);
+      });
 
-    test("a baseline entry that no longer measures (an improvement) ALSO fails the ratchet", () => {
-      const result = ratchetStartupRestarts(baseline, []);
-      expect(result.ok).toBe(false);
-      expect(result.newEntries).toEqual([]);
-      expect(result.disappearedEntries).toEqual(baseline);
-    });
+      test("startupRestartFailure is null unless something actually crossed the threshold uncovered", () => {
+        const warnOnly = classifyStartupRestarts(
+          [{ app: "dapr", namespace: "dapr-system", pod: "p", container: "dapr-operator", restartCount: 1 }],
+          [],
+          now,
+        );
+        expect(startupRestartFailure(warnOnly)).toBeNull();
+        const failing = classifyStartupRestarts([mimirEntry(3)], [], now);
+        const failure = startupRestartFailure(failing);
+        expect(failure).not.toBeNull();
+        expect(failure?.message).toContain("mimir/ingester");
+        expect(failure?.message).toContain("not in the baseline");
+      });
 
-    test("MUTATION-SANITY: an empty baseline against empty measurements is trivially OK", () => {
-      expect(ratchetStartupRestarts([], []).ok).toBe(true);
+      test("a baseline entry not measured this run is ABSENT, never a failure by itself", () => {
+        const result = classifyStartupRestarts([], baselineWithMimir(3), now);
+        expect(result.failures).toEqual([]);
+        expect(startupRestartFailure(result)).toBeNull();
+        expect(result.absent).toHaveLength(1);
+        expect(result.absent[0]?.entry.container).toBe("ingester");
+      });
+
+      test("an absent entry seen recently is not stale; one older than the window is", () => {
+        const recentBaseline: readonly StartupRestartBaselineEntry[] = [
+          { app: "mimir", container: "ingester", maxRestarts: 3, reason: "x", lastSeen: "2026-09-20" }, // 2 days before `now`
+        ];
+        const recent = classifyStartupRestarts([], recentBaseline, now);
+        expect(recent.absent[0]?.stale).toBe(false);
+
+        const staleBaseline: readonly StartupRestartBaselineEntry[] = [
+          { app: "mimir", container: "ingester", maxRestarts: 3, reason: "x", lastSeen: "2026-09-01" }, // 21 days before `now`
+        ];
+        const stale = classifyStartupRestarts([], staleBaseline, now);
+        expect(stale.absent[0]?.stale).toBe(true);
+        expect(stale.absent[0]?.daysSinceLastSeen).toBeGreaterThan(STARTUP_RESTART_STALE_DAYS);
+      });
+
+      test("MUTATION-SANITY: exactly STARTUP_RESTART_STALE_DAYS is NOT stale; one day more IS", () => {
+        const msPerDay = 86_400_000;
+        const exactly: readonly StartupRestartBaselineEntry[] = [
+          {
+            app: "mimir",
+            container: "ingester",
+            maxRestarts: 3,
+            reason: "x",
+            lastSeen: new Date(now - STARTUP_RESTART_STALE_DAYS * msPerDay).toISOString(),
+          },
+        ];
+        expect(classifyStartupRestarts([], exactly, now).absent[0]?.stale).toBe(false);
+        const oneDayOlder: readonly StartupRestartBaselineEntry[] = [
+          {
+            app: "mimir",
+            container: "ingester",
+            maxRestarts: 3,
+            reason: "x",
+            lastSeen: new Date(now - (STARTUP_RESTART_STALE_DAYS + 1) * msPerDay).toISOString(),
+          },
+        ];
+        expect(classifyStartupRestarts([], oneDayOlder, now).absent[0]?.stale).toBe(true);
+      });
+
+      test("empty measurement against empty baseline: no failures, no warnings, nothing absent", () => {
+        const result = classifyStartupRestarts([], [], now);
+        expect(result).toEqual({ failures: [], warnings: [], absent: [] });
+        expect(startupRestartFailure(result)).toBeNull();
+      });
     });
   });
 });
