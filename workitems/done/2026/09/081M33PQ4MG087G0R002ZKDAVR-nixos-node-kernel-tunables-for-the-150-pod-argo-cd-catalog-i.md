@@ -1,11 +1,12 @@
 ---
 id: 081M33PQ4MG087G0R002ZKDAVR
 type: task
-state: in-progress
+state: done
 priority: P1
 slug: nixos-node-kernel-tunables-for-the-150-pod-argo-cd-catalog-i
 title: "NixOS node kernel tunables for the ~150-pod Argo CD catalog (inotify, vm.max_map_count) + CI sysctl parity"
 created: 2026-09-22T04:41:50.992Z
+completed: 2026-09-22T04:59:21.658Z
 depends_on: []
 composes_with: []
 ---
