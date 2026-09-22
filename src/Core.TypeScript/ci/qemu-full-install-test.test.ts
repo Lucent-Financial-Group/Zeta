@@ -917,10 +917,14 @@ describe("ISO workflow: restore decrypt runs with budget left", () => {
 
   it("job timeout is an integer via fromJSON (expression results are strings)", () => {
     // GitHub casts expression results to strings. `timeout-minutes` wants a
-    // number; without fromJSON the job can ignore 240/180 and die at the old
-    // 90-minute bound (measured: run 32647553460, restore still in_progress).
+    // number; without fromJSON the job can ignore the dispatch/schedule
+    // budget and die at the old 90-minute bound (measured: run 32647553460,
+    // restore still in_progress). WP11 (2026-09-22) widened the dispatch
+    // condition to also cover `schedule` and bumped 240 -> 330 for the new
+    // installed-disk first-boot k3s verify step; the pattern below tracks
+    // that, not the original 240/workflow_dispatch-only literal.
     expect(workflow).toMatch(
-      /timeout-minutes:\s*\$\{\{\s*fromJSON\(github\.event_name == 'workflow_dispatch' && '240' \|\| '180'\)\s*\}\}/,
+      /timeout-minutes:\s*\$\{\{\s*fromJSON\(\(github\.event_name == 'workflow_dispatch' \|\| github\.event_name == 'schedule'\) && '330' \|\| '180'\)\s*\}\}/,
     );
   });
 
