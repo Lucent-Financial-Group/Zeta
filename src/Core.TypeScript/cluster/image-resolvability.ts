@@ -469,7 +469,18 @@ export function canonicalRef(image: string): string {
   return `${host}/${repository}${sep}${reference}`;
 }
 
-function sleep(ms: number): Promise<void> {
+/**
+ * The clock this module waits on between retries. INJECTABLE, never hardcoded
+ * to a real timer at the call site — per `audit-ambient-time-in-tests.ts` /
+ * `.claude/rules/local-time-never-enters-the-shared-fold.md`, a real backoff
+ * wait is an undeclared ambient time channel, and this is the declared door
+ * it enters through. Production (`resolveImage`'s default) uses the real
+ * clock; tests inject a no-op so the RETRY COUNT and CLASSIFICATION are still
+ * exercised for real while zero wall-clock time is spent proving it.
+ */
+export type SleepFn = (ms: number) => Promise<void>;
+
+function realSleep(ms: number): Promise<void> {
   return new Promise((r) => setTimeout(r, ms));
 }
 
@@ -490,6 +501,7 @@ async function fetchWithRetry(
   repository: string,
   tokens: Map<string, string>,
   maxAttempts = 4,
+  sleepFn: SleepFn = realSleep,
 ): Promise<FetchOutcome> {
   let lastReason = "no attempt made";
   for (let attempt = 1; attempt <= maxAttempts; attempt++) {
@@ -498,7 +510,7 @@ async function fetchWithRetry(
       if (response.status === 429 || response.status >= 500) {
         lastReason = `HTTP ${String(response.status)}`;
         if (attempt < maxAttempts) {
-          await sleep(backoffMs(attempt));
+          await sleepFn(backoffMs(attempt));
           continue;
         }
         return { ok: false, reason: lastReason };
@@ -507,7 +519,7 @@ async function fetchWithRetry(
     } catch (e) {
       lastReason = e instanceof Error ? e.message : String(e);
       if (attempt < maxAttempts) {
-        await sleep(backoffMs(attempt));
+        await sleepFn(backoffMs(attempt));
         continue;
       }
       return { ok: false, reason: lastReason };
@@ -627,6 +639,7 @@ export async function resolveImage(
   image: string,
   tokens = new Map<string, string>(),
   maxAttempts = 4,
+  sleepFn: SleepFn = realSleep,
 ): Promise<ResolvedImage> {
   const { host, repository, reference } = parseImageReference(image);
   const canonical = canonicalRef(image);
@@ -636,7 +649,7 @@ export async function resolveImage(
   const today = new Date().toISOString().slice(0, 10);
   const base = `https://${host}/v2/${repository}/manifests/`;
 
-  const first = await fetchWithRetry(base + reference, repository, tokens, maxAttempts);
+  const first = await fetchWithRetry(base + reference, repository, tokens, maxAttempts, sleepFn);
   if (!first.ok) return unresolved(canonical, "unknown", null, first.reason, isDockerHub, isLatestOrUntagged, hasDigest, today);
   const response = first.response;
   if (response.status === 404) {
@@ -731,7 +744,7 @@ export async function resolveImage(
         today,
       );
     }
-    const blob = await fetchWithRetry(`https://${host}/v2/${repository}/blobs/${configDigest}`, repository, tokens, maxAttempts);
+    const blob = await fetchWithRetry(`https://${host}/v2/${repository}/blobs/${configDigest}`, repository, tokens, maxAttempts, sleepFn);
     if (!blob.ok) return unresolved(canonical, "unknown", null, blob.reason, isDockerHub, isLatestOrUntagged, hasDigest, today);
     if (blob.response.status === 404) {
       return unresolved(

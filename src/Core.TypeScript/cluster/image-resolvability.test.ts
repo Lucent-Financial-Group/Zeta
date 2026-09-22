@@ -242,9 +242,20 @@ describe("resolveImage", () => {
       if (url.endsWith("/blobs/sha256:cfg")) return jsonResponse(200, { architecture: "amd64" });
       return null;
     });
-    const r = await resolveImage("example.com/foo/bar:v1.0", new Map(), 3);
+    // The real backoff between attempts is a genuine wall-clock wait in
+    // production (real jittered milliseconds) and MUST stay real there — but
+    // this test exists to prove the RETRY COUNT and CLASSIFICATION, not to
+    // observe elapsed time, so the clock is injected as a no-op. Same
+    // discipline as `mapWithConcurrency`'s tests above: eliminate the real
+    // wait rather than allowlist it.
+    const sleepCalls: number[] = [];
+    const noSleep = async (ms: number): Promise<void> => {
+      sleepCalls.push(ms);
+    };
+    const r = await resolveImage("example.com/foo/bar:v1.0", new Map(), 3, noSleep);
     expect(r.status).toBe("ok");
     expect(calls).toBeGreaterThan(1);
+    expect(sleepCalls.length).toBe(1);
   });
 
   test("docker.io / latest / digest flags are read off the reference, not the resolution", async () => {
