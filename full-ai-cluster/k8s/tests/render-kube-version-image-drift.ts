@@ -47,7 +47,7 @@
  *       bun full-ai-cluster/k8s/tests/render-kube-version-image-drift.ts --scope catalog
  */
 
-import { mkdtempSync, readFileSync, readdirSync, rmSync, statSync, writeFileSync } from "node:fs";
+import { mkdtempSync, readFileSync, readdirSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { parseArgs } from "node:util";
@@ -117,11 +117,18 @@ function yamlFilesIn(dir: string): string[] {
   return names.filter((n) => n.endsWith(".yaml") || n.endsWith(".yml")).sort();
 }
 
-/** Every `Application.yaml` under `dir`, walked recursively. */
+/**
+ * Every `Application.yaml` under `dir`, walked recursively.
+ *
+ * `{ withFileTypes: true }`, not a readdir followed by a separate `statSync` per entry:
+ * the two-call form is a check-then-use race an entry can vanish or change kind inside
+ * (lint-check-then-use-file-races.ts's `readdir-then-stat` rule) -- the Dirent the listing
+ * already returns knows its own kind, so there is no second syscall to race against.
+ */
 function applicationYamls(dir: string): string[] {
   let entries: { name: string; isDir: boolean }[];
   try {
-    entries = readdirSync(dir).map((name) => ({ name, isDir: statSync(join(dir, name)).isDirectory() }));
+    entries = readdirSync(dir, { withFileTypes: true }).map((e) => ({ name: e.name, isDir: e.isDirectory() }));
   } catch {
     return [];
   }
