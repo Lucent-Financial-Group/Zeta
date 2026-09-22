@@ -120,6 +120,19 @@ function isValidMirrorBaseUrl(url: string): boolean {
   return MIRROR_BASE_URL_PATTERN.test(url);
 }
 
+// The SECOND, HOST-LEVEL barrier: a hardcoded allowlist of hostnames this
+// script is willing to send a request to, checked against a `URL` object's
+// `.hostname` AFTER parsing — the shape CodeQL's js/request-forgery query
+// models as a sanitizing "URL whitelist check"
+// (https://codeql.github.com/codeql-query-help/javascript/js-request-forgery/,
+// "Validate the URL against a list of trusted values"). `mirrorBaseUrl` is
+// still read from `registry-mirrors.json` (the single-source discipline), but
+// it is no longer trusted merely for having come from that file: it must ALSO
+// name a host this script already knows about. A mirror added to the JSON
+// without a matching entry here is refused, loudly, rather than silently
+// trusted.
+const KNOWN_SAFE_MIRROR_HOSTNAMES: ReadonlySet<string> = new Set(["mirror.gcr.io"]);
+
 const MANIFEST_ACCEPT = [
   "application/vnd.oci.image.index.v1+json",
   "application/vnd.docker.distribution.manifest.list.v2+json",
@@ -127,14 +140,50 @@ const MANIFEST_ACCEPT = [
   "application/vnd.oci.image.manifest.v1+json",
 ].join(",");
 
-async function probeMirror(mirrorBaseUrl: string, ref: ParsedDockerHubRef): Promise<number | "error" | "invalid"> {
-  // The allow-list check IS the fix for the SSRF-shaped finding above: only a
-  // repo/tag that matches the OCI grammar ever reaches `fetch`, so file data
-  // can no longer redirect this request's host or path.
+/**
+ * Build the manifest-HEAD request URL, or refuse. Three independent
+ * barriers, all required before a `URL` is returned:
+ *
+ *   1. `repo`/`tag` must match the OCI distribution-spec grammar (the
+ *      charset barrier — refuses anything that isn't a legal image
+ *      reference to begin with).
+ *   2. Each already-validated segment is ALSO passed through
+ *      `encodeURIComponent` before it is placed in the path (repo's `/`
+ *      separators are preserved by encoding segment-by-segment, never the
+ *      whole string) — belt-and-suspenders against the path grammar having a
+ *      gap, since charset validation and percent-encoding guard against
+ *      overlapping but not identical failure modes.
+ *   3. The parsed URL's `.hostname` must be in the hardcoded
+ *      `KNOWN_SAFE_MIRROR_HOSTNAMES` allowlist (the host barrier — a fixed
+ *      hostname, not merely "whatever registry-mirrors.json said").
+ *
+ * A `URL` object — not a template-literal string — is what `probeMirror`
+ * actually fetches, which is the CodeQL-recognized shape for "this value was
+ * validated as a URL, not merely as a string that looks like one".
+ */
+function buildManifestUrl(mirrorBaseUrl: string, ref: ParsedDockerHubRef): URL | undefined {
   if (!isValidRepo(ref.repo) || !isValidTagOrDigest(ref.tag)) {
+    return undefined;
+  }
+  const encodedRepo = ref.repo.split("/").map(encodeURIComponent).join("/");
+  const encodedTag = encodeURIComponent(ref.tag);
+  let url: URL;
+  try {
+    url = new URL(`/v2/${encodedRepo}/manifests/${encodedTag}`, mirrorBaseUrl);
+  } catch {
+    return undefined;
+  }
+  if (url.protocol !== "https:" || !KNOWN_SAFE_MIRROR_HOSTNAMES.has(url.hostname)) {
+    return undefined;
+  }
+  return url;
+}
+
+async function probeMirror(mirrorBaseUrl: string, ref: ParsedDockerHubRef): Promise<number | "error" | "invalid"> {
+  const url = buildManifestUrl(mirrorBaseUrl, ref);
+  if (url === undefined) {
     return "invalid";
   }
-  const url = `${mirrorBaseUrl}/v2/${ref.repo}/manifests/${ref.tag}`;
   try {
     const res = await fetch(url, {
       method: "HEAD",
@@ -190,6 +239,17 @@ async function main(): Promise<void> {
     process.exitCode = 1;
     return;
   }
+  // The same hostname allowlist buildManifestUrl() enforces per-request,
+  // checked once up front so an unrecognized mirror added to the JSON fails
+  // loudly here rather than silently reporting every entry as a miss.
+  if (!KNOWN_SAFE_MIRROR_HOSTNAMES.has(new URL(mirrorBaseUrl).hostname)) {
+    console.error(
+      `registry-mirror-coverage: "${mirrorBaseUrl}" is not in this script's hardcoded mirror allowlist ` +
+        `(${[...KNOWN_SAFE_MIRROR_HOSTNAMES].join(", ")}) — add it to KNOWN_SAFE_MIRROR_HOSTNAMES first.`,
+    );
+    process.exitCode = 1;
+    return;
+  }
 
   const imageResolvabilityText = tryReadFileSync(IMAGE_RESOLVABILITY_PATH);
   if (imageResolvabilityText === undefined) {
@@ -239,4 +299,11 @@ if (import.meta.main) {
   await main();
 }
 
-export { parseDockerHubReference, isValidRepo, isValidTagOrDigest, isValidMirrorBaseUrl };
+export {
+  parseDockerHubReference,
+  isValidRepo,
+  isValidTagOrDigest,
+  isValidMirrorBaseUrl,
+  buildManifestUrl,
+  KNOWN_SAFE_MIRROR_HOSTNAMES,
+};

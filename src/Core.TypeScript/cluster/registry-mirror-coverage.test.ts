@@ -7,9 +7,11 @@ import { describe, expect, test } from "bun:test";
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import {
+  buildManifestUrl,
   isValidMirrorBaseUrl,
   isValidRepo,
   isValidTagOrDigest,
+  KNOWN_SAFE_MIRROR_HOSTNAMES,
   parseDockerHubReference,
 } from "./registry-mirror-coverage.ts";
 
@@ -97,6 +99,57 @@ describe("isValidMirrorBaseUrl", () => {
     ["not-a-url", false],
   ])("%s -> %s", (url, expected) => {
     expect(isValidMirrorBaseUrl(url)).toBe(expected);
+  });
+});
+
+describe("buildManifestUrl — the actual fetch target, host- and path-barriered", () => {
+  test("known-safe mirror + valid repo/tag builds the expected URL", () => {
+    const url = buildManifestUrl("https://mirror.gcr.io", {
+      reference: "registry-1.docker.io/library/alpine:latest",
+      repo: "library/alpine",
+      tag: "latest",
+    });
+    expect(url).toBeInstanceOf(URL);
+    expect(url!.toString()).toBe("https://mirror.gcr.io/v2/library/alpine/manifests/latest");
+  });
+
+  test("refuses a mirror hostname outside KNOWN_SAFE_MIRROR_HOSTNAMES, even with a valid repo/tag", () => {
+    expect(KNOWN_SAFE_MIRROR_HOSTNAMES.has("evil.example.com")).toBe(false);
+    const url = buildManifestUrl("https://evil.example.com", {
+      reference: "x",
+      repo: "library/alpine",
+      tag: "latest",
+    });
+    expect(url).toBeUndefined();
+  });
+
+  test("refuses an http (non-TLS) mirror", () => {
+    const url = buildManifestUrl("http://mirror.gcr.io", {
+      reference: "x",
+      repo: "library/alpine",
+      tag: "latest",
+    });
+    expect(url).toBeUndefined();
+  });
+
+  test("refuses a repo/tag that fails OCI-grammar validation, without ever calling `new URL`", () => {
+    expect(
+      buildManifestUrl("https://mirror.gcr.io", { reference: "x", repo: "../../etc/passwd", tag: "latest" }),
+    ).toBeUndefined();
+    expect(
+      buildManifestUrl("https://mirror.gcr.io", { reference: "x", repo: "library/alpine", tag: "../evil" }),
+    ).toBeUndefined();
+  });
+
+  test("a tag containing URL-structural characters cannot escape the manifest path segment", () => {
+    // Rejected by isValidTagOrDigest's charset (TAG_PATTERN has no "/" or "?" or "#"), so this
+    // never reaches encodeURIComponent/new URL at all -- the charset barrier is the first line.
+    const url = buildManifestUrl("https://mirror.gcr.io", {
+      reference: "x",
+      repo: "library/alpine",
+      tag: "latest/../../../admin?x=1",
+    });
+    expect(url).toBeUndefined();
   });
 });
 
