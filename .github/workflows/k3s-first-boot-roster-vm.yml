@@ -52,7 +52,15 @@ on:
     # src/Core.TypeScript/forge-host/github/workflow-triggers.ts derives this
     # workflow's liveness EXPECTATION straight from this line — no separate
     # registration needed.
-    - cron: "34 5 * * *"
+    #
+    # Minute 45 chosen because it collides with NOTHING repo-wide: measured via
+    # `src/Core.TypeScript/pr-categorization/pr-categorization.test.ts`'s own
+    # "this lane does not collide with another lane on the same cron minute"
+    # falsifier (that test scans EVERY workflow's leading cron minute, so the
+    # collision it caught on the first attempt -- minute 34, shared with
+    # pr-categorization-cadence.yml's `34 */6 * * *` -- was real, not a false
+    # positive).
+    - cron: "45 5 * * *"
   workflow_dispatch: {}
   pull_request:
     paths:
