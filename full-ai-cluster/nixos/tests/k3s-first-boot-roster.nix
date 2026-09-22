@@ -48,8 +48,10 @@
 #
 # COST: budget 45-70 min on a KVM-capable runner, and ~10 GB of image pulls.
 # That is the most expensive check in this repo, which is why it is NOT wired
-# to run per-PR -- it is a manual/nightly lane. The per-PR half of this
-# question is k3s-first-boot-apply-order (eval-only, no VM, every system).
+# to run per-PR -- it is a manual/nightly lane:
+# .github/workflows/k3s-first-boot-roster-vm.yml (daily cron + workflow_dispatch +
+# PRs scoped to this test's own inputs). The per-PR half of this question is
+# k3s-first-boot-apply-order (eval-only, no VM, every system).
 #
 # WHAT IT COVERS -- 11 of 11 rostered manifests are APPLIED, because none is
 # overridden. What it ASSERTS about varies by manifest, and the difference is
@@ -59,14 +61,21 @@
 #                                          cert-manager, argocd
 #   asserted to be SUBMITTED (Addon CR
 #   exists) but not asserted healthy       gateway-api-crds, cilium-namespace,
-#                                          argocd-namespace, spire,
-#                                          trust-manager, external-secrets
+#                                          argocd-namespace
+#   asserted that the HELM-INSTALL JOB
+#   completed (release deployed) but
+#   WORKLOAD readiness not asserted        spire-crds, spire, trust-manager,
+#                                          external-secrets
 #   THE SUBJECT OF THE TEST                root-application
 #
-# SPIRE, trust-manager and external-secrets are submitted and left to run;
-# their readiness is not asserted because each has real prerequisites this
-# single-node VM does not model, and a flaky assertion is worse than an
-# absent one. Naming them here is the honest form -- see the longhorn test.
+# SPIRE, trust-manager and external-secrets are left to run past their
+# helm-install Job; their workload readiness is not asserted because each has
+# real prerequisites this single-node VM does not model, and a flaky
+# assertion is worse than an absent one. Naming them here is the honest
+# form -- see the longhorn test. Their helm-install JOB completing is a
+# materially stronger check than "the HelmChart CR exists" (a CR is created
+# by the deploy controller regardless of whether `helm install` ever
+# succeeds); Job completion means the chart actually installed a release.
 #
 # WHAT IT IS NOT
 # --------------
@@ -218,6 +227,23 @@ pkgs.testers.nixosTest {
         for chart in ["spire-crds", "spire", "trust-manager", "external-secrets"]:
             server.wait_until_succeeds(
                 f"{kc} -n kube-system get helmchart {chart}", timeout=900
+            )
+
+    # A HelmChart CR existing only proves the deploy controller submitted the
+    # file -- it is created whether or not `helm install` ever succeeds. The
+    # STRONGER, still-cheap check is that helm-controller's own Job
+    # (`helm-install-<name>`, same namespace as the HelmChart CR: k3s
+    # rancher/helm-controller convention) reaches Complete, which means the
+    # chart actually rendered and `helm install`/`upgrade` exited zero -- a
+    # release was deployed. This is still short of "the workload is healthy"
+    # (no readiness assertion follows), but it is real evidence the chart
+    # install itself did not fail, which "HelmChart CR exists" cannot give.
+    with subtest("spire, trust-manager and external-secrets helm-install Jobs complete"):
+        for chart in ["spire-crds", "spire", "trust-manager", "external-secrets"]:
+            server.wait_until_succeeds(
+                f"{kc} -n kube-system wait --for=condition=complete "
+                f"job/helm-install-{chart} --timeout=30s",
+                timeout=1800,
             )
 
     # -- LINK 4: ArgoCD itself -------------------------------------------
