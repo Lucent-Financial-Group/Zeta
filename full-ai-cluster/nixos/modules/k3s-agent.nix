@@ -34,6 +34,11 @@
     # behind the same NAT" case that pushes first boot over Docker Hub's
     # 100-pull/6h anonymous quota. See k3s-registry-mirrors.nix's header.
     ./k3s-registry-mirrors.nix
+
+    # WP20 (081M34R7P99087G0R000H77GX9): see that module's header. Imported
+    # here AND on k3s-server.nix -- nixpkgs names the unit "k3s" on both
+    # roles, so the ordering risk and the node-ip risk are identical.
+    ./k3s-wait-for-address.nix
   ];
 
   # k3s's join is the join (Aaron 2026-08-13, closing PR #10493's open
@@ -107,17 +112,5 @@
     "d /var/lib/rancher/k3s 0755 root root - -"
   ];
 
-  # WP20: the same fix as k3s-server.nix, applied to the SAME unit (k3s.nix
-  # and k3s-agent.nix both configure `systemd.services.k3s` -- nixpkgs' rancher
-  # module names the unit after `services.k3s.role`'s command, "k3s", on both
-  # roles). See k3s-server.nix's comment for the full citation and the
-  # measured precedent (zeta-first-boot-k3s-verify.nix,
-  # 081M33XMWME087G0R000825CCB) this mirrors. Not independently reproduced on
-  # an agent by run 35717757526 (that run was control-plane only), but the
-  # dependency is identical and there is no reason to leave a worker install
-  # carrying the same suspect ordering the server install was just fixed for.
-  systemd.services.k3s = {
-    after = lib.mkForce [ "firewall.service" ];
-    wants = lib.mkForce [ "firewall.service" ];
-  };
+  # WP20 root-cause fix: see ./k3s-wait-for-address.nix (imported above).
 }

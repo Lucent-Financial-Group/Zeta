@@ -42,6 +42,16 @@
     # fallback-safety argument (a mirror miss/outage can never make a pull
     # fail that would otherwise succeed).
     ./k3s-registry-mirrors.nix
+
+    # WP20 (081M34R7P99087G0R000H77GX9): drops k3s.service's After=/Wants=
+    # network-online.target (root-cause work for run 35717757526: k3s.service
+    # never reached active in 4201s on the real installed disk) and adds a
+    # bounded ExecStartPre wait for an address in its place. See that
+    # module's header for the full citation, the honest limit on what a VM
+    # negative control could and could not validate, and why the drop and the
+    # bounded wait are both needed. Imported here AND on k3s-agent.nix --
+    # nixpkgs names the unit "k3s" on both roles.
+    ./k3s-wait-for-address.nix
   ];
 
   services.k3s = {
@@ -454,54 +464,7 @@
   zeta.k3sJoinIntentPreflight.enable = lib.mkDefault true;
   zeta.k3sJoinIntentPreflight.role = lib.mkDefault "server";
 
-  # WP20 root-cause fix (run 35717757526: k3s.service NEVER reached `active`
-  # in 4201s on the real installed disk; reproduced hermetically by
-  # nixos/tests/control-plane-host-boots-k3s.nix, which boots the FULL
-  # `control-plane` host config rather than this module in isolation).
-  #
-  # nixpkgs' k3s/rancher module orders the service on network readiness --
-  # confirmed against the PINNED `nixos-26.05` branch (commit 1e8bc658),
-  # `nixos/modules/services/cluster/rancher/default.nix`:
-  #
-  #   after = [ "firewall.service" "network-online.target" ];
-  #   wants = [ "firewall.service" "network-online.target" ];
-  #
-  # `wants`, not `requires` -- so a failing network-online.target would not
-  # normally take k3s down with it. The problem is the ORDERING half:
-  # `After=` defers k3s's start job until network-online.target's own job has
-  # SETTLED (reached active or failed), and this repo already has a directly
-  # measured, named precedent for that never happening on this image.
-  # `zeta-first-boot-k3s-verify.nix` (081M33XMWME087G0R000825CCB, run
-  # 35697298781) carried the identical `after = [ ... "network-online.target"
-  # ... ]` shape and printed NOTHING -- not even its own unconditional first
-  # line -- across a 75+ minute window on "this image's first boot (QEMU
-  # user-mode NIC + NetworkManager)". Sibling units on the SAME boot ordered
-  # only on `local-fs.target` (zeta-first-session-ci, zeta-creds-restore) DID
-  # print, which rules out "serial not found" and "multi-user.target never
-  # reached" and isolates the `After=network-online.target` ordering itself
-  # as the difference. That fix (already landed) removed the dependency
-  # rather than waiting on it; this is the same fix applied to k3s.service,
-  # which carries the identical dependency from upstream and shows the
-  # identical symptom (never active, not merely slow).
-  #
-  # k3s does not need network readiness as a START precondition: it binds
-  # 0.0.0.0 and resolves its own node IP at startup, workers reach it over
-  # a connection k3s itself retries (see k3s-join-observer.nix), and the
-  # image-pulling manifests roster is applied ASYNCHRONOUSLY by the deploy
-  # controller once the API is already up (k3s-first-boot-roster.nix's own
-  # header) -- so nothing in the startup path actually requires "online",
-  # only "has an interface", which NetworkManager.service (already ordered
-  # well before multi-user.target via sysinit) provides regardless.
-  # `firewall.service` stays: k3s opens ports the firewall must have already
-  # shaped.
-  #
-  # `lib.mkForce` because nixpkgs' own module is the sole other declarant of
-  # `systemd.services.k3s.after`/`.wants` (checked:
-  # `grep -rn 'systemd.services.k3s\b' nixos/` finds only `.wantedBy`
-  # overrides in two VM tests, mkForce there too) -- nothing in this tree
-  # additively contributes to these two lists that needs preserving.
-  systemd.services.k3s = {
-    after = lib.mkForce [ "firewall.service" ];
-    wants = lib.mkForce [ "firewall.service" ];
-  };
+  # WP20 root-cause fix: see ./k3s-wait-for-address.nix (imported above) for
+  # the systemd.services.k3s.after/wants override, the ExecStartPre bounded
+  # address wait, and the full citation + honest limits on validation.
 }
