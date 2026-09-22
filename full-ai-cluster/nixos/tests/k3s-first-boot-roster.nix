@@ -305,6 +305,30 @@ pkgs.testers.nixosTest {
                 f"pod_container_restarts_total={restart_total} "
                 f"raw_per_pod_restarts=({restart_raw or 'none'})"
             )
+
+            # ROOT CAUSE, not just the symptom -- added 2026-09-22
+            # (081M33NZP3J087G0R003WS1BFH, third pass) after this exact
+            # assertion caught a real restart with no explanation attached: run
+            # 35700526070 failed on helm-install-spire-crds with
+            # restarts_total=2 and NO ErrImagePull anywhere in the journal --
+            # a different failure than the kubectl-tag defect this assertion
+            # was written for. `kubectl describe pod` (events, exit codes) and
+            # `kubectl logs --previous` (the crashed attempt's own stdout) are
+            # printed HERE, unconditionally but only when there is something to
+            # explain, so the NEXT time this fires the log carries the actual
+            # cause instead of only the count. `|| true` throughout: a
+            # diagnostic that itself fails must not replace the verdict.
+            if job_failed != 0 or restart_total != 0:
+                print(f"=== kubectl describe pod, job-name=helm-install-{chart} ===")
+                print(server.succeed(
+                    f"{kc} -n kube-system describe pod -l job-name=helm-install-{chart} || true"
+                ))
+                print(f"=== kubectl logs --previous, job-name=helm-install-{chart} ===")
+                print(server.succeed(
+                    f"{kc} -n kube-system logs -l job-name=helm-install-{chart} "
+                    f"--all-containers --previous --tail=200 || true"
+                ))
+
             assert job_failed == 0 and restart_total == 0, (
                 f"helm-install-{chart} reached Complete but NOT on its first "
                 f"attempt: Job.status.failed={job_failed}, total container "
