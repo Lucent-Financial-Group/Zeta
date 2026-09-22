@@ -60,22 +60,49 @@
 #      it is sized at least as generously as the heaviest existing lane
 #      (k3s-first-boot-roster.nix: 10240 MB / 4 cores / 32768 MB disk).
 #
+# WHY THIS TEST MUST BOOT THROUGH THE REAL BOOTLOADER (`useBootLoader` /
+# `useEFIBoot`), AND WHY THE ORIGINAL VERSION OF THIS FILE WAS WRONG NOT TO
+# ---------------------------------------------------------------------------
+# MEASURED 2026-09-22 (architect-requested negative control, run 35742067241,
+# claude/control-plane-host-vm-boot-repro WITHOUT the k3s.service fix): this
+# test did NOT reproduce run 35717757526's finding. k3s.service reached
+# `active` in 0.30s, with zero ordering-cycle evidence -- a clean pass, on the
+# UNFIXED config, which is exactly the false-positive risk the architect
+# warned about ("green because the test config differs from the ISO-installed
+# system, not because of the fix").
+#
+# ROOT CAUSE OF THE GAP: `pkgs.testers.nixosTest`'s DEFAULT boot path
+# (`virtualisation.useBootLoader = false`) boots the built `toplevel` directly
+# via QEMU `-kernel`/`-initrd`, skipping UEFI firmware, the boot manager, and
+# systemd-boot entirely. The REAL WP11 harness does not:
+# `src/Core.TypeScript/ci/qemu-full-install-test.ts`'s
+# `buildQemuK3sVerifyBootArgsPure` boots the installed qcow2 disk through
+# real OVMF firmware (`-drive if=pflash,...OVMF_CODE...` /
+# `...OVMF_VARS...`) with `bootindex=1` on the disk -- the same path a real
+# machine's UEFI takes: firmware -> boot manager -> systemd-boot -> a REAL
+# initrd mounting a REAL disk. The original version of this file's "NOT
+# overridden, and why" section claimed `hardware-configuration.nix` and
+# `boot.loader.*` were safely irrelevant under nixosTest's default path --
+# true only in the sense that they evaluate without error, and exactly the
+# wrong thing to accept once the goal is reproducing a boot-timing-sensitive
+# defect. Fixed below: `virtualisation.useBootLoader = true;` and
+# `virtualisation.useEFIBoot = true;` make this test build a real disk image
+# and boot it through OVMF + systemd-boot, the same chain WP11 exercises --
+# at real cost (a slower build and boot; see the COST section).
+#
 # WHAT IS DELIBERATELY *NOT* OVERRIDDEN, AND WHY
 # -------------------------------------------------
 #   * `hardware-configuration.nix` -- NOT replaced with a VM-specific stub.
 #     The committed file (`hosts/control-plane/hardware-configuration.nix`) is
 #     ITSELF already a QEMU-shaped placeholder (`lib.mkDefault` fileSystems on
 #     `/dev/disk/by-label/{nixos,boot}`, virtio_pci/virtio_blk initrd modules)
-#     kept so `nix flake check` passes pre-install -- and nixpkgs'
-#     `qemu-vm.nix` test-driver module overrides `fileSystems` via
-#     `mkVMOverride` regardless of what the host declares (it boots the built
-#     `toplevel` directly with `-kernel`/`-initrd`, never through
-#     `boot.loader`). So the stub already evaluates safely under nixosTest and
-#     a second, VM-specific copy would be a second thing to keep in sync with
-#     nothing corresponding on real hardware.
-#   * `boot.loader.*` (systemd-boot / EFI vars) -- same reason: unused by the
-#     nixosTest driver's default (non-bootloader) boot path; it evaluates and
-#     is simply never exercised.
+#     kept so `nix flake check` passes pre-install, and it is now actually
+#     EXERCISED (see the bootloader note above) rather than merely evaluated,
+#     so it needs no VM-specific replacement.
+#   * `boot.loader.*` (systemd-boot / EFI vars) -- `common.nix` already sets
+#     `boot.loader.systemd-boot.enable = lib.mkDefault true;` and
+#     `efi.canTouchEfiVariables = lib.mkDefault true;`, which is exactly what
+#     `useBootLoader`/`useEFIBoot` need to find in place; nothing to add here.
 #   * `/etc/zeta/*` installer-written fixtures (cluster-node-id, join-server,
 #     cluster-segment, initial-hashedpassword, operator pubkeys, cred blobs)
 #     -- NOT staged. Every module that reads one of these is gated by
@@ -129,9 +156,11 @@
 # COST: heavier than k3s-first-boot-roster.nix -- this host's closure adds the
 # full byte-lock toolchain (wabt/binaryen/emscripten/nodejs/zig/llvm/rustup/go/
 # lua5), three AI-agent systemd services, avahi, samba and docker on top of
-# everything the roster test already boots. Not wired per-PR for that reason;
-# see `.github/workflows/control-plane-host-boots-k3s-vm.yml` (PRs scoped to
-# this test's own inputs + daily cron + workflow_dispatch).
+# everything the roster test already boots, AND (since the bootloader fix
+# above) a real qcow2 disk image build plus an OVMF/systemd-boot boot instead
+# of nixosTest's fast default path. Not wired per-PR for that reason; see
+# `.github/workflows/control-plane-host-boots-k3s-vm.yml` (PRs scoped to this
+# test's own inputs + daily cron + workflow_dispatch).
 #
 # WHAT IT IS NOT
 # ----------------
@@ -191,6 +220,21 @@ pkgs.testers.nixosTest {
       virtualisation.memorySize = 10240;
       virtualisation.cores = 4;
       virtualisation.diskSize = 40960;
+
+      # THE FIDELITY FIX -- see the file header's "WHY THIS TEST MUST BOOT
+      # THROUGH THE REAL BOOTLOADER" section. Without these two, nixosTest
+      # boots the built toplevel directly via `-kernel`/`-initrd`, skipping
+      # UEFI/OVMF and systemd-boot entirely -- measured (run 35742067241) to
+      # make this test unable to reproduce run 35717757526's finding at all
+      # (k3s.service went active in 0.30s). `useBootLoader` builds a real
+      # disk image and boots it through the loader `common.nix` already
+      # configures (`boot.loader.systemd-boot.enable` /
+      # `efi.canTouchEfiVariables`, both `lib.mkDefault true`);
+      # `useEFIBoot` is what makes that loader OVMF/UEFI rather than BIOS/
+      # GRUB-legacy, matching `buildQemuK3sVerifyBootArgsPure`'s
+      # `-drive if=pflash,...OVMF_CODE/OVMF_VARS...` exactly.
+      virtualisation.useBootLoader = true;
+      virtualisation.useEFIBoot = true;
     };
 
   testScript = ''
