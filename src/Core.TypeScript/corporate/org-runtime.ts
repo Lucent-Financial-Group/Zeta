@@ -284,6 +284,11 @@ export const DEFAULT_GATE_REJECTION_CEILING = 6;
  * An EMPTY intersection means the run's pipeline covers none of this type's gates. It walks
  * nothing rather than falling back to the whole pipeline, because the fallback is the defect.
  */
+function chainForTask(node: CascadeNode, pipeline: Pipeline): readonly GateKind[] {
+  const owed = new Set(chainOf(node));
+  return gatesOf(pipeline).filter((g) => owed.has(g));
+}
+
 /**
  * How many contributor SEATS a line has free: wearers per hat (`supplyTarget`) minus what each hat
  * is already carrying, summed over the individual contributors that report up to `hatId`.
@@ -303,11 +308,6 @@ export function freeSeatsUnder(chart: OrgChart, cascade: Cascade, hatId: string,
   return chart.hats
     .filter((h) => h.level === "individual_contributor" && reportsUpTo(chart, h.id, hatId))
     .reduce((free, h) => free + Math.max(0, supplyTarget - (carried.get(h.id) ?? 0)), 0);
-}
-
-function chainForTask(node: CascadeNode, pipeline: Pipeline): readonly GateKind[] {
-  const owed = new Set(chainOf(node));
-  return gatesOf(pipeline).filter((g) => owed.has(g));
 }
 
 /** An agent that exists and the hat it occupies in the chart. */
