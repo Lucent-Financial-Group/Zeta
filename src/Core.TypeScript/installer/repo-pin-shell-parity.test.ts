@@ -25,7 +25,7 @@ import { spawnSync } from "node:child_process";
 import {
   validateRepoPin,
   decideRepoPinOnFailure,
-  GIT_COMMIT_SHA_REGEX,
+  isFullGitCommitSha,
   REPO_PIN_ALLOW_DRIFT_TOKEN,
   type RepoPinValidation,
   type RepoPinFailureDecision,
@@ -47,20 +47,42 @@ const workdir = mkdtempSync(join(tmpdir(), "zeta-repo-pin-"));
 const blockPath = join(workdir, "parity-block.sh");
 writeFileSync(blockPath, extractParityBlock() + "\n", "utf8");
 
-function runShell(script: string): string {
+/**
+ * Runs `script` under bash with the parity block sourced, passing untrusted
+ * fixture VALUES through the child process's ENVIRONMENT rather than
+ * interpolating them into the script text.
+ *
+ * Interpolating a fixture value directly into a shell command line — even
+ * `JSON.stringify`-quoted — is exactly the shell-metacharacters test case
+ * this file exists to run, and `JSON.stringify` only escapes for JS string
+ * syntax; it does nothing to defang `$(...)`, backticks or `$VAR` for BASH,
+ * which still expands all three inside double quotes. An earlier version of
+ * this harness did `zeta_repo_pin_validate ${JSON.stringify(raw)}` and, with
+ * `raw = "$(rm -rf /)"`, that line literally ran `rm -rf /` as a command
+ * substitution before the function ever saw its argument (caught by CI:
+ * GNU `rm`'s `--preserve-root` default is the only reason the runner was
+ * unharmed). A shell VARIABLE's value is never re-scanned for `$(...)` when
+ * merely expanded via `"$VAR"`, so env-var passing is immune to this class
+ * by construction — this is the fix, not a narrower test case.
+ */
+function runShellWithEnvValue(script: string, envVarName: string, value: string): string {
   const runner = join(workdir, "runner.sh");
   writeFileSync(runner, "set -uo pipefail\nsource " + blockPath + "\n" + script + "\n", "utf8");
-  const r = spawnSync("bash", [runner], { encoding: "utf8" });
+  const r = spawnSync("bash", [runner], { encoding: "utf8", env: { ...process.env, [envVarName]: value } });
   if (r.status !== 0) throw new Error("shell block exited " + String(r.status) + ": " + String(r.stderr));
   return String(r.stdout).trim();
 }
 
 function shellValidate(raw: string): string {
-  return runShell(`zeta_repo_pin_validate ${JSON.stringify(raw)}`);
+  return runShellWithEnvValue('zeta_repo_pin_validate "$ZETA_TEST_RAW_PIN"', "ZETA_TEST_RAW_PIN", raw);
 }
 
 function shellDecideOnFailure(allowDrift: string): string {
-  return runShell(`zeta_repo_pin_decide_on_failure ${JSON.stringify(allowDrift)}`);
+  return runShellWithEnvValue(
+    'zeta_repo_pin_decide_on_failure "$ZETA_TEST_ALLOW_DRIFT"',
+    "ZETA_TEST_ALLOW_DRIFT",
+    allowDrift,
+  );
 }
 
 const VALID_SHA = "a1b2c3d4e5f60718293a4b5c6d7e8f9012345678";
@@ -92,9 +114,9 @@ describe("validateRepoPin: shell decision == TypeScript decision", () => {
     expect(VALIDATE_CASES.filter((c) => c.expect === "empty").length).toBe(1);
   });
 
-  test("the regex both sides implicitly agree on is exactly 40 hex chars", () => {
-    expect(GIT_COMMIT_SHA_REGEX.test(VALID_SHA)).toBe(true);
-    expect(GIT_COMMIT_SHA_REGEX.test(VALID_SHA.slice(0, 39))).toBe(false);
+  test("the check both sides implicitly agree on is exactly 40 hex chars", () => {
+    expect(isFullGitCommitSha(VALID_SHA)).toBe(true);
+    expect(isFullGitCommitSha(VALID_SHA.slice(0, 39))).toBe(false);
   });
 });
 

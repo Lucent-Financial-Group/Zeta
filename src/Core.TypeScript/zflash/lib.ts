@@ -11,7 +11,7 @@ import {
   type ZetaFirstbootRole,
 } from "./firstboot-role.ts";
 import { planFirstbootConfWithNamedBaoElf, type NamedBaoElfAsk } from "./firstboot-bao-elf.ts";
-import { GIT_COMMIT_SHA_REGEX } from "../installer/repo-pin.ts";
+import { isFullGitCommitSha } from "../installer/repo-pin.ts";
 
 /**
  * RFC1123 hostname regex.
@@ -517,7 +517,7 @@ export function planFileBackedZflashImage(input: FileBackedZflashImagePlanInput)
   }
   if (input.repoPinCommit !== undefined) {
     const commit = input.repoPinCommit.trim();
-    if (!GIT_COMMIT_SHA_REGEX.test(commit)) {
+    if (!isFullGitCommitSha(commit)) {
       return {
         ok: false,
         error: `repoPinCommit must be a full 40-hex git commit sha: ${JSON.stringify(input.repoPinCommit)}`,

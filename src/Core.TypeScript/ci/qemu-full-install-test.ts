@@ -52,7 +52,7 @@ import {
   assertWifiEspInstallSerial,
   serialFirstBootInProgress,
 } from "../zflash/test-harness/serial-markers";
-import { GIT_COMMIT_SHA_REGEX } from "../installer/repo-pin.ts";
+import { isFullGitCommitSha } from "../installer/repo-pin.ts";
 import {
   DEFAULT_QEMU_PASSPHRASE,
   DEFAULT_QEMU_WIFI_PASSWORD,
@@ -81,11 +81,11 @@ const TEST_INFRA_PUBKEY = resolve(REPO_ROOT, "src/Core.TypeScript/zflash/test-ha
  */
 function resolveRepoPinCommit(): string | undefined {
   const fromEnv = (process.env.GITHUB_SHA ?? "").trim();
-  if (GIT_COMMIT_SHA_REGEX.test(fromEnv)) return fromEnv;
+  if (isFullGitCommitSha(fromEnv)) return fromEnv;
   const result = spawnSync("git", ["-C", REPO_ROOT, "rev-parse", "HEAD"], { encoding: "utf8" });
   if (result.status === 0) {
     const sha = result.stdout.trim();
-    if (GIT_COMMIT_SHA_REGEX.test(sha)) return sha;
+    if (isFullGitCommitSha(sha)) return sha;
   }
   return undefined;
 }

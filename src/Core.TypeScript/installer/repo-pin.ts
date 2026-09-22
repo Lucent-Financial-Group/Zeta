@@ -41,8 +41,20 @@
  * today's behaviour, unchanged.
  */
 
-/** A full, unabbreviated git commit sha: 40 hex characters. */
-export const GIT_COMMIT_SHA_REGEX = /^[0-9a-fA-F]{40}$/;
+/**
+ * Whether `value` is a full, unabbreviated git commit sha: exactly 40 hex
+ * characters. A function rather than an exported `RegExp` constant on
+ * purpose — the regex itself is an implementation detail callers never need
+ * to hold onto, and every prior cross-module `IMPORTED_REGEX.test(x)` call
+ * site in this repo is exactly the shape CodeQL's JS/TS dataflow flags as
+ * "the base expression of this property access is always undefined" for a
+ * relative import resolved through an explicit `.ts` specifier. Exporting
+ * the check as a function sidesteps that false-positive class entirely
+ * rather than working around it per call site.
+ */
+export function isFullGitCommitSha(value: string): boolean {
+  return /^[0-9a-fA-F]{40}$/.test(value);
+}
 
 /** The exact literal that arms the drift override. Anything else is refused. */
 export const REPO_PIN_ALLOW_DRIFT_TOKEN = "1";
@@ -63,7 +75,7 @@ export function validateRepoPin(raw: string): RepoPinValidation {
   if (raw.length === 0) {
     return "empty";
   }
-  return GIT_COMMIT_SHA_REGEX.test(raw) ? "valid" : "invalid-format";
+  return isFullGitCommitSha(raw) ? "valid" : "invalid-format";
 }
 
 export type RepoPinFailureDecision = "override-proceed" | "fail-closed";
