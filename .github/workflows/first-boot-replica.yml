@@ -102,15 +102,19 @@ jobs:
       - name: Show the plan (dry-run — flags, roster, HelmCharts, divergences)
         run: bun src/Core.TypeScript/cluster/first-boot-replica.ts --dry-run
 
-      - name: "Buffer the ref/repo this run targets (no attacker-controlled text in run blocks)"
+      - name: Boot the real roster and report stage verdicts
+        # MEASURED (2026-09-22): src/Core.TypeScript/hygiene/workflow-step-env-vars-are-defined.test.ts
+        # requires a step's env vars to be defined in THAT STEP's own scope — the
+        # earlier two-step shape (a "Buffer the ref/repo" step writing to
+        # $GITHUB_ENV, consumed here) failed it even though GITHUB_ENV genuinely
+        # does persist the values. One step, one env: block, same security
+        # property (attacker-controlled PR head SHA / repo URL reach `run:` only
+        # via a quoted shell variable, never inlined) — the exact shape
+        # k8s-argocd-health-test.yml's "Run live kind ArgoCD health check" step
+        # already uses for the equivalent ZETA_ARGOCD_GIT_REF / _REPO_URL pair.
         env:
           ZETA_FBR_GIT_REF: ${{ inputs.target-revision || github.event.pull_request.head.sha || github.sha }}
           ZETA_FBR_GIT_REPO_URL: ${{ github.event.pull_request.head.repo.clone_url || 'https://github.com/Lucent-Financial-Group/Zeta' }}
-        run: |
-          echo "ZETA_FBR_GIT_REF=$ZETA_FBR_GIT_REF" >> "$GITHUB_ENV"
-          echo "ZETA_FBR_GIT_REPO_URL=$ZETA_FBR_GIT_REPO_URL" >> "$GITHUB_ENV"
-
-      - name: Boot the real roster and report stage verdicts
         run: |
           bun src/Core.TypeScript/cluster/first-boot-replica.ts \
             --run \

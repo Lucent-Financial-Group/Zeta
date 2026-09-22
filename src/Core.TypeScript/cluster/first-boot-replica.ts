@@ -342,10 +342,18 @@ export interface HelmChartRef {
   readonly bootstrap: boolean;
 }
 
+/** `apiVersion` group boundary, anchored: `"helm.cattle.io/v1"` matches, `"helm.cattle.io.evil.example/v1"` does not. */
+function isHelmCattleIoApiVersion(apiVersion: string): boolean {
+  return apiVersion === "helm.cattle.io" || apiVersion.startsWith("helm.cattle.io/");
+}
+
 function isHelmChartDoc(doc: unknown): doc is { apiVersion: string; kind: string; metadata: Record<string, unknown>; spec: Record<string, unknown> } {
   if (typeof doc !== "object" || doc === null) return false;
   const d = doc as Record<string, unknown>;
-  return typeof d["apiVersion"] === "string" && (d["apiVersion"] as string).startsWith("helm.cattle.io") && d["kind"] === "HelmChart";
+  // CodeQL js/incomplete-url-substring-sanitization: a bare `startsWith("helm.cattle.io")`
+  // also accepts "helm.cattle.io.evil.example/v1" — anchor on the "/" group
+  // separator (or an exact match) so only the real API group passes.
+  return typeof d["apiVersion"] === "string" && isHelmCattleIoApiVersion(d["apiVersion"]) && d["kind"] === "HelmChart";
 }
 
 /** Every `helm.cattle.io/v1 HelmChart` document across the roster's YAML content. */
