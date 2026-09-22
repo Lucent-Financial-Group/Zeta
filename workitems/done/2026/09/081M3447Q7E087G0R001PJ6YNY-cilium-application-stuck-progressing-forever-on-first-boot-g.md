@@ -1,11 +1,12 @@
 ---
 id: 081M3447Q7E087G0R001PJ6YNY
 type: bug
-state: backlog
+state: done
 priority: P2
 slug: cilium-application-stuck-progressing-forever-on-first-boot-g
 title: "cilium Application stuck Progressing forever on first-boot: GatewayClass never Accepted (vendored Gateway API CRDs v1.2.1 missing v1 TLSRoute/BackendTLSPolicy/ReferenceGrant that cilium 1.20.1 requires)"
 created: 2026-09-22T08:38:05.806Z
+completed: 2026-09-22T08:59:41.115Z
 depends_on: []
 composes_with: []
 ---

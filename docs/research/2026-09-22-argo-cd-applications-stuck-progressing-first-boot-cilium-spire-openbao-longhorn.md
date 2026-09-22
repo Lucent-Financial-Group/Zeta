@@ -23,7 +23,7 @@ subtest to get a direct answer rather than reasoning from Docker-only evidence.
 | App | Resource | Root cause | Classification | Fix |
 |---|---|---|---|---|
 | cilium | `GatewayClass/cilium` | `status.conditions[Accepted]` stuck at the chart's static `Unknown/Pending: Waiting for controller` placeholder — cilium-operator 1.20.1 refuses to start its Gateway API controller because the vendored Gateway API CRD bundle (v1.2.1 STANDARD) is missing `TLSRoute`/`BackendTLSPolicy` entirely and ships `ReferenceGrant` at `v1beta1` only, while `RequiredGVKs` wants all seven Gateway API kinds at `v1` | **METAL DEFECT** — `full-ai-cluster/k8s/bootstrap/gateway-api-crds.yaml` is applied identically by `k3s-server.nix` on real NixOS metal; nothing here depends on Docker | Bumped the vendored bundle to the official Gateway API v1.6.1 STANDARD channel install (verbatim release asset). Live-verified: `GatewayClass/cilium` went `Accepted=True` and the Application went `Healthy` after re-running the operator against the new CRDs. |
-| spire | `spire-agent` DaemonSet pods | CrashLoopBackOff: `could not open attestation stream to SPIRE server: ... dial udp <clusterIP>:53: i/o timeout` — a control probe (identical hostNetwork + `dnsPolicy: ClusterFirstWithHostNet` busybox pod) could not reach kube-dns's ClusterIP at all, while an otherwise-identical pod-network probe reached the same server fine. Isolated to hostNetwork sockets not being covered by Cilium's ClusterIP socket-LB in this environment | **Metal-oracle subtests added; see `docs/research/2026-09-22-*` follow-up / the PR for the VM run's verdict** — this repo's own `first-boot-replica.ts` already needs a `mount --make-rshared /` workaround for Cilium that NixOS metal's systemd-managed shared root gives for free, so container-nesting cgroup/mount differences are a live, named hypothesis, not confirmed | Added two subtests to `k3s-first-boot-roster.nix` (the metal oracle) rather than guessing: (1) hostNetwork+ClusterFirstWithHostNet resolves `kubernetes.default` via ClusterIP DNS on real NixOS networking, (2) `spire-agent` stays Ready with a stable restart count for a 180s window. If both pass on the VM, the replica's finding is a container-nesting artifact (record as a `first-boot-replica.ts` DIVERGENCE); if either fails, it is a metal defect and needs a Cilium-values or spire-agent-config fix, proven on the VM before landing. |
+| spire | `spire-agent` DaemonSet pods | CrashLoopBackOff: `could not open attestation stream to SPIRE server: ... dial udp <clusterIP>:53: i/o timeout` — a control probe (identical hostNetwork + `dnsPolicy: ClusterFirstWithHostNet` busybox pod) could not reach kube-dns's ClusterIP at all, while an otherwise-identical pod-network probe reached the same server fine. Isolated to hostNetwork sockets not being covered by Cilium's ClusterIP socket-LB in this environment | **REPLICA ARTIFACT — CONFIRMED on the metal oracle, not inferred** (run 35706939767) | Two subtests added to `k3s-first-boot-roster.nix` and run on a real NixOS VM: (1) hostNetwork+`ClusterFirstWithHostNet` resolved `kubernetes.default.svc.cluster.local` via ClusterIP DNS — **PASS**; (2) `spire-agent`'s restartCount held flat (`[3,3,3,...]`, settled during ordinary startup churn) over a 180s window — **PASS**, no ongoing crash loop. Recorded as a named `first-boot-replica.ts` DIVERGENCE (`spire-agent-hostnetwork-dns-in-nested-container`); no metal-side fix needed. |
 | openbao | `openbao-0` (server container) | `core: security barrier not initialized`, `core: seal configuration missing, not initialized` — no PKCS#11/TPM seal is wired yet (no HSM/TPM in CI or in this Docker replica) and no `openbao-unseal-shares` Secret exists to auto-unseal via the `extraContainers` sidecar | **EXPECTED, by design, on BOTH the replica and metal today** — the Application.yaml's own header states this explicitly: "NO PKCS#11 SEAL HERE YET, AND THAT IS THE HONEST PART... A missing share cache must wait, not crash-loop: the Secret is optional and the sidecar returns `[]` rather than exiting." Not a replica artifact to fix; it becomes Healthy once real HSM/TPM seal wiring and an unseal-shares Secret land on metal | None needed. Confirmed the ONLY cause is the absent seal/unseal material, not a secondary defect. |
 | longhorn | `longhorn-manager` DaemonSet | CrashLoopBackOff — no block devices are attached to the Docker replica container, so Longhorn (an ArgoCD-owned child Application, not in the bootstrap roster) cannot discover any disk to manage | **REPLICA ARTIFACT** — already named in `first-boot-replica.ts`'s `DIVERGENCES` list (`no-longhorn-disks`) before this investigation started; confirmed correct and unchanged. A NixOS metal node has real block devices (`longhorn-disks.nix`) | None needed for the replica; already correctly classified and printed. |
 
@@ -79,20 +79,30 @@ Because `first-boot-replica.ts` boots k3s nested inside a Docker container —
 and already needs a `mount --make-rshared /` workaround purely to let Cilium's
 sibling-container bind mounts succeed, a workaround NixOS metal's
 systemd-managed shared root does not need — container-nesting cgroup/mount
-differences are the leading hypothesis for why this reproduces here. It is
-**not asserted as fact**: the honest state is that this class of defect was
-never confirmed or ruled out on real metal before this investigation, because
-every attempt to reach that point (the k3d lane's own diagnostics, and the
-`k3s-first-boot-roster-vm.yml` run that had been in flight for this WP) either
-ran on a different nested-container topology (k3d) or failed on an earlier,
-unrelated assertion before reaching spire-agent's runtime stability.
+differences were the leading hypothesis for why this reproduces here. Rather
+than assert that, two subtests were added directly to `k3s-first-boot-roster.nix`
+— the one test in this repo that boots the real roster on an actual NixOS VM
+with no container nesting between spire-agent's host network namespace and
+Cilium's socket-LB attachment point — and run on a real VM to get a direct
+answer:
 
-Rather than fix on a guess, two subtests were added directly to
-`k3s-first-boot-roster.nix` — the one test in this repo that boots the real
-roster on an actual NixOS VM with no container nesting between spire-agent's
-host network namespace and Cilium's socket-LB attachment point — and a run
-was triggered to get a direct, named answer. See the PR for the run's
-outcome and the resulting fix or DIVERGENCE entry.
+- First attempt (run 35706223651) FAILED, but the log showed the query
+  actually REACHED CoreDNS and got an authoritative `NXDOMAIN` for the short
+  name `kubernetes.default` — a search-domain-expansion false negative in
+  busybox's `nslookup`, the same shape as the `spire-server.spire` short-name
+  NXDOMAIN seen on the pod-network control probe above. Fixed to query
+  `kubernetes.default.svc.cluster.local` (FQDN) instead.
+- Re-run (run 35706939767): **PASS** on both subtests — the FQDN resolved
+  cleanly via the ClusterIP DNS server from a hostNetwork pod, and
+  `spire-agent`'s own restartCount held flat at 3 (settled during ordinary
+  startup churn, then completely stable) across a 180-second sampling window.
+
+**Verdict: CONFIRMED REPLICA ARTIFACT, not a metal defect.** hostNetwork
+ClusterIP DNS resolution and `spire-agent` itself both work correctly on real
+NixOS metal. Recorded as a named DIVERGENCE in `first-boot-replica.ts`
+(`spire-agent-hostnetwork-dns-in-nested-container`) so the Docker replica
+reports this crash loop as expected rather than as an unexplained FAIL. No
+Cilium-values or spire-agent-config change was needed on the metal side.
 
 ## Pointers
 
