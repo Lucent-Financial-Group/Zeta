@@ -273,13 +273,22 @@ export function buildRoster(inputs: RosterBuildInputs): RosterEntry[] {
       throw new Error(`duplicate manifest attribute \`${entry.attr}\` — a silent overwrite in the real roster`);
     }
     seenAttrs.add(entry.attr);
-    if (!existsSync(entry.path)) {
-      throw new Error(`${entry.attr}: source ${entry.literal} resolves to ${entry.path}, which does not exist`);
+    // One syscall, one answer: read and interpret the failure, rather than
+    // existsSync-then-readFileSync (a check-then-use race — the path can be
+    // created/deleted/replaced between the two calls, CWE-367).
+    let content: string;
+    try {
+      content = readFileSync(entry.path, "utf-8");
+    } catch (e) {
+      if ((e as NodeJS.ErrnoException).code === "ENOENT") {
+        throw new Error(`${entry.attr}: source ${entry.literal} resolves to ${entry.path}, which does not exist`);
+      }
+      throw e;
     }
     roster.push({
       attr: entry.attr,
       filename: manifestTargetFilename(entry.attr),
-      content: readFileSync(entry.path, "utf-8"),
+      content,
       sourceDescription: entry.literal,
     });
   }
@@ -736,8 +745,13 @@ export async function runReplica(opts: RunOptions): Promise<RunReport> {
   }
   if (opts.withLonghornAlias) {
     const aliasPath = join(REPO_ROOT, "full-ai-cluster/dev-cluster/manifests/longhorn.yaml");
-    if (existsSync(aliasPath)) {
+    // One syscall, one answer — see the identical fix (and its reason) in buildRoster above.
+    try {
       writeFileSync(join(manifestsDir, "zz-longhorn-alias.yaml"), readFileSync(aliasPath, "utf-8"), "utf-8");
+    } catch (e) {
+      if ((e as NodeJS.ErrnoException).code !== "ENOENT") throw e;
+      // --with-longhorn-alias is best-effort: the alias manifest not existing
+      // is a recorded divergence, not a fatal error for the replica run.
     }
   }
 

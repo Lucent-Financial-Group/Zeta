@@ -52,7 +52,15 @@ on:
         type: string
 
 concurrency:
-  group: first-boot-replica-${{ github.head_ref || github.ref }}
+  # MEASURED (2026-09-22): `github.head_ref || github.ref` collided across
+  # event types — a `workflow_dispatch` run on this branch cancelled the
+  # PR's own `pull_request`-triggered run ("Canceling since a higher priority
+  # waiting request for first-boot-replica-claude/first-boot-replica exists"),
+  # because `github.ref` for a branch-targeted dispatch and `github.head_ref`
+  # for the PR can normalize to the same group key. Event name is now part of
+  # the key: a manual test run and the PR's own run no longer fight over the
+  # one real k3s cluster this job needs.
+  group: first-boot-replica-${{ github.event_name }}-${{ github.head_ref || github.ref }}
   cancel-in-progress: true
 
 jobs:
