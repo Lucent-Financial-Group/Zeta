@@ -16,13 +16,15 @@
  */
 
 import { describe, expect, test } from "bun:test";
-import { mkdtempSync, mkdirSync, rmSync, writeFileSync } from "node:fs";
+import { mkdtempSync, mkdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
 import {
   allApplicationsSettled,
   appsFailedToRecover,
   applyServeTreeOverride,
+  attributePodIssues,
+  attributePodToApp,
   buildDockerRunArgs,
   buildPlan,
   buildRoster,
@@ -31,19 +33,24 @@ import {
   classifySoakRegressions,
   computeAppVerdict,
   computeAppVerdicts,
+  computeNamespaceOwnership,
   computePowerCycleVerdict,
   containerCrashLoopsAfterRecovery,
   dedentNixIndentedString,
+  EMPTY_APP_VERDICT_CONTEXT,
   evaluatePowerCycle,
+  externalSecretGapFor,
   extractBracedBlock,
   extractHelmCharts,
   hashSecretData,
   injectRootApplicationExclude,
+  isKnownSealedByDesign,
   isKnownSoakRegression,
   k3sVersionToDockerTag,
   manifestTargetFilename,
   parseAppConvergenceSnapshots,
   parseCrashLoopSubject,
+  parseExternalSecretCatalog,
   parseExtraFlags,
   parseFailedSchedulingEvents,
   parseInlineWriteTextManifest,
@@ -53,6 +60,7 @@ import {
   parseRestartSamples,
   parseSecretSnapshots,
   patchRootApplicationRevision,
+  podBelongsToResource,
   pvcsReboundAfterRecovery,
   readClusterIdentity,
   readKubernetesVersionPin,
@@ -63,6 +71,7 @@ import {
   secretDataChangedAfterRecovery,
   seededInternalSecretTargets,
   type AppConvergenceSnapshot,
+  type AppVerdictContext,
   type FailedSchedulingEvent,
   type PodSummary,
   type PodVerdict,
@@ -71,6 +80,7 @@ import {
   type RosterEntry,
   type SecretSnapshot,
 } from "./first-boot-replica.ts";
+import { manualSyncDeclarations } from "./manual-sync-policy.ts";
 
 // ───────────────────────────── extractBracedBlock ────────────────────────
 
@@ -613,6 +623,8 @@ function pod(overrides: Partial<PodSummary> = {}): PodSummary {
     scheduled: false,
     containerWaitingReasons: [],
     restartCount: 0,
+    ownerRefs: [],
+    instanceLabel: null,
     ...overrides,
   };
 }
@@ -785,6 +797,309 @@ describe("computeAppVerdicts", () => {
   });
 });
 
+// ──────── WP23: namespace ownership + owner-reference/label attribution ────────
+// Fixed the bug the WP23 problem statement measured: `pod.namespace === app.name`
+// is FALSE for cilium (kube-system), kube-prometheus-stack (monitoring),
+// openziti-controller (openziti), seaweedfs (object-store), ... Each test below
+// fails if the rule it names were inverted.
+
+describe("computeNamespaceOwnership", () => {
+  test("a namespace only one app's destination/resources touch has exactly one claimant", () => {
+    const apps: AppConvergenceSnapshot[] = [
+      { name: "hindsight", sync: "Synced", health: "Healthy", destinationNamespace: "hindsight", resources: [], conditions: [] },
+      { name: "weaviate", sync: "Synced", health: "Healthy", destinationNamespace: "weaviate", resources: [], conditions: [] },
+    ];
+    const ownership = computeNamespaceOwnership(apps);
+    expect(ownership.get("hindsight")).toEqual(["hindsight"]);
+    expect(ownership.get("weaviate")).toEqual(["weaviate"]);
+  });
+
+  test("a SHARED namespace (kube-system: cilium, cilium-lb-ipam, sealed-secrets) lists every claimant, sorted", () => {
+    const apps: AppConvergenceSnapshot[] = [
+      { name: "sealed-secrets", sync: "Synced", health: "Healthy", destinationNamespace: "kube-system", resources: [], conditions: [] },
+      { name: "cilium", sync: "Synced", health: "Healthy", destinationNamespace: "kube-system", resources: [], conditions: [] },
+      { name: "cilium-lb-ipam", sync: "Synced", health: "Healthy", destinationNamespace: "kube-system", resources: [], conditions: [] },
+    ];
+    expect(computeNamespaceOwnership(apps).get("kube-system")).toEqual(["cilium", "cilium-lb-ipam", "sealed-secrets"]);
+  });
+
+  test("a resource landing in a namespace OTHER than destinationNamespace also claims it", () => {
+    const apps: AppConvergenceSnapshot[] = [
+      {
+        name: "cert-manager",
+        sync: "Synced",
+        health: "Healthy",
+        destinationNamespace: "cert-manager",
+        resources: [{ kind: "ClusterRole", namespace: "kube-system", name: "cert-manager-view", health: null }],
+        conditions: [],
+      },
+    ];
+    expect(computeNamespaceOwnership(apps).get("kube-system")).toEqual(["cert-manager"]);
+  });
+
+  test("undefined/absent destinationNamespace never falls back to the app NAME (item 1's core refusal)", () => {
+    const apps: AppConvergenceSnapshot[] = [{ name: "cilium", sync: "Synced", health: "Healthy" }];
+    expect(computeNamespaceOwnership(apps).has("cilium")).toBe(false);
+  });
+});
+
+describe("podBelongsToResource", () => {
+  test("StatefulSet/DaemonSet/Job: exact ownerRef match", () => {
+    const daemonsetPod = pod({ namespace: "kube-system", name: "cilium-abcde", ownerRefs: [{ kind: "DaemonSet", name: "cilium" }] });
+    expect(podBelongsToResource(daemonsetPod, { kind: "DaemonSet", namespace: "kube-system", name: "cilium", health: null })).toBe(true);
+    expect(podBelongsToResource(daemonsetPod, { kind: "DaemonSet", namespace: "kube-system", name: "other", health: null })).toBe(false);
+  });
+
+  test("Deployment: one-hop ReplicaSet PREFIX match (a Pod's direct owner is the ReplicaSet, never the Deployment)", () => {
+    const deploymentPod = pod({
+      namespace: "kube-system",
+      name: "cilium-operator-7d8f9-abcde",
+      ownerRefs: [{ kind: "ReplicaSet", name: "cilium-operator-7d8f9" }],
+    });
+    expect(podBelongsToResource(deploymentPod, { kind: "Deployment", namespace: "kube-system", name: "cilium-operator", health: null })).toBe(true);
+    // A DIFFERENT deployment whose name happens to prefix-collide must not match past the hyphen boundary check below.
+    expect(podBelongsToResource(deploymentPod, { kind: "Deployment", namespace: "kube-system", name: "sealed-secrets-controller", health: null })).toBe(
+      false,
+    );
+  });
+
+  test("wrong namespace never matches, regardless of name", () => {
+    const p = pod({ namespace: "monitoring", name: "cilium-abcde", ownerRefs: [{ kind: "DaemonSet", name: "cilium" }] });
+    expect(podBelongsToResource(p, { kind: "DaemonSet", namespace: "kube-system", name: "cilium", health: null })).toBe(false);
+  });
+
+  test("a non-workload resource kind (ConfigMap) never matches a pod", () => {
+    const p = pod({ namespace: "kube-system", name: "cilium-abcde", ownerRefs: [{ kind: "DaemonSet", name: "cilium" }] });
+    expect(podBelongsToResource(p, { kind: "ConfigMap", namespace: "kube-system", name: "cilium", health: null })).toBe(false);
+  });
+});
+
+describe("attributePodToApp", () => {
+  const apps: AppConvergenceSnapshot[] = [
+    { name: "cilium", sync: "Synced", health: "Healthy", destinationNamespace: "kube-system", resources: [{ kind: "DaemonSet", namespace: "kube-system", name: "cilium", health: null }], conditions: [] },
+    { name: "sealed-secrets", sync: "Synced", health: "Healthy", destinationNamespace: "kube-system", resources: [], conditions: [] },
+    { name: "hindsight", sync: "Synced", health: "Healthy", destinationNamespace: "hindsight", resources: [], conditions: [] },
+  ];
+  const ownership = computeNamespaceOwnership(apps);
+
+  test("namespace-exclusive fast path: hindsight's own namespace has one claimant", () => {
+    const p = pod({ namespace: "hindsight", name: "hindsight-api-0" });
+    expect(attributePodToApp(p, apps, ownership)).toBe("hindsight");
+  });
+
+  test("shared namespace, resolved via owner-reference match to the declared resource", () => {
+    const p = pod({ namespace: "kube-system", name: "cilium-abcde", ownerRefs: [{ kind: "DaemonSet", name: "cilium" }] });
+    expect(attributePodToApp(p, apps, ownership)).toBe("cilium");
+  });
+
+  test("shared namespace, resolved via the app.kubernetes.io/instance label when no resource entry explains it", () => {
+    const p = pod({ namespace: "kube-system", name: "sealed-secrets-controller-abcde-xyz", instanceLabel: "sealed-secrets" });
+    expect(attributePodToApp(p, apps, ownership)).toBe("sealed-secrets");
+  });
+
+  test("shared namespace, no owner-ref match and no matching instance label: unattributed (null), never guessed", () => {
+    const p = pod({ namespace: "kube-system", name: "coredns-abcde", ownerRefs: [{ kind: "ReplicaSet", name: "coredns-abcde" }] });
+    expect(attributePodToApp(p, apps, ownership)).toBeNull();
+  });
+
+  test("a namespace no app claims at all: unattributed (null)", () => {
+    const p = pod({ namespace: "kube-node-lease", name: "x" });
+    expect(attributePodToApp(p, apps, ownership)).toBeNull();
+  });
+});
+
+describe("attributePodIssues", () => {
+  test("tags each PodVerdict with its resolved appName", () => {
+    const apps: AppConvergenceSnapshot[] = [
+      { name: "cilium", sync: "Synced", health: "Progressing", destinationNamespace: "kube-system", resources: [{ kind: "DaemonSet", namespace: "kube-system", name: "cilium", health: null }], conditions: [] },
+    ];
+    const pods: PodSummary[] = [pod({ namespace: "kube-system", name: "cilium-abcde", ownerRefs: [{ kind: "DaemonSet", name: "cilium" }] })];
+    const issues: PodVerdict[] = [{ namespace: "kube-system", name: "cilium-abcde", category: "CRASHLOOP", isFailure: true, detail: "CrashLoopBackOff" }];
+    const [attributed] = attributePodIssues(pods, issues, apps);
+    expect(attributed?.appName).toBe("cilium");
+  });
+
+  test("an issue for a pod not in the snapshot resolves to appName: null", () => {
+    const attributed = attributePodIssues([], [{ namespace: "ns", name: "ghost", category: "UNKNOWN", isFailure: true, detail: "x" }], []);
+    expect(attributed[0]?.appName).toBeNull();
+  });
+});
+
+// ──────── WP23: item 2 — named, sourced expected-divergence classification ────────
+
+describe("parseExternalSecretCatalog", () => {
+  test("parses the real INJECTION-POINTS.md and finds hindsight-llm-api-key + ghcr-pull as EXTERNAL", () => {
+    const markdown = readFileSync(resolve(REPO_ROOT, "full-ai-cluster/INJECTION-POINTS.md"), "utf-8");
+    const catalog = parseExternalSecretCatalog(markdown);
+    const names = catalog.map((e) => e.secretName);
+    expect(names).toContain("hindsight-llm-api-key");
+    expect(names).toContain("ghcr-pull");
+    // INTERNAL rows (minted by internal-secret-seeding.yaml on metal) must NOT appear.
+    expect(names).not.toContain("grafana-admin-credentials");
+  });
+
+  test("a fixture table with no EXTERNAL rows yields []", () => {
+    const markdown = [
+      "## In-cluster catalog Secrets",
+      "",
+      "| Secret | Namespace(s) | Class | Mints on metal | Mints in dev/CI |",
+      "| --- | --- | --- | --- | --- |",
+      "| `redis-auth` | `redis` | INTERNAL | seeding job | DEV_REDIS_AUTH_SECRET |",
+      "",
+      "## Next section",
+    ].join("\n");
+    expect(parseExternalSecretCatalog(markdown)).toEqual([]);
+  });
+
+  test("an EXTERNAL row with no backtick-quoted Secret name throws rather than silently skipping", () => {
+    const markdown = [
+      "## In-cluster catalog Secrets",
+      "",
+      "| Secret | Namespace(s) | Class | Mints on metal | Mints in dev/CI |",
+      "| --- | --- | --- | --- | --- |",
+      "| no-backticks | `hindsight` | **EXTERNAL** | nobody | placeholder |",
+    ].join("\n");
+    expect(() => parseExternalSecretCatalog(markdown)).toThrow(/no backtick-quoted name/);
+  });
+
+  test("missing section heading throws", () => {
+    expect(() => parseExternalSecretCatalog("# nothing here")).toThrow(/In-cluster catalog Secrets/);
+  });
+});
+
+describe("externalSecretGapFor", () => {
+  test("matches a namespace the catalog names", () => {
+    const catalog = [{ secretName: "hindsight-llm-api-key", namespaces: ["hindsight"], note: "NOBODY" }];
+    expect(externalSecretGapFor("hindsight", catalog)?.secretName).toBe("hindsight-llm-api-key");
+  });
+
+  test("no match for an unrelated namespace", () => {
+    const catalog = [{ secretName: "hindsight-llm-api-key", namespaces: ["hindsight"], note: "NOBODY" }];
+    expect(externalSecretGapFor("weaviate", catalog)).toBeNull();
+  });
+});
+
+describe("isKnownSealedByDesign", () => {
+  test("openbao is sealed-by-design", () => {
+    expect(isKnownSealedByDesign("openbao")).toBe(true);
+  });
+
+  test("nothing else is", () => {
+    expect(isKnownSealedByDesign("weaviate")).toBe(false);
+    expect(isKnownSealedByDesign("hindsight")).toBe(false);
+  });
+});
+
+describe("manualSyncDeclarations against the real applications tree", () => {
+  test("cdi and kubevirt are declared manual-sync, with non-empty reasons", () => {
+    const declarations = manualSyncDeclarations(resolve(REPO_ROOT, "full-ai-cluster/k8s/applications"));
+    const byApp = new Map(declarations.map((d) => [d.app, d.reason]));
+    expect(byApp.get("cdi")?.length).toBeGreaterThan(0);
+    expect(byApp.get("kubevirt")?.length).toBeGreaterThan(0);
+  });
+
+  test("forgejo is NOT manual-sync (the 2026-09-06 retirement — automated like any other app)", () => {
+    const declarations = manualSyncDeclarations(resolve(REPO_ROOT, "full-ai-cluster/k8s/applications"));
+    expect(declarations.some((d) => d.app === "forgejo")).toBe(false);
+  });
+});
+
+// ──────── WP23: computeAppVerdict end-to-end with the full context ────────
+
+describe("computeAppVerdict — expected-divergence classification (WP23)", () => {
+  test("openbao Progressing with no classified pod issue -> DIVERGENCE, sealed-by-design", () => {
+    const app: AppConvergenceSnapshot = { name: "openbao", sync: "Synced", health: "Progressing", destinationNamespace: "openbao", resources: [], conditions: [] };
+    const v = computeAppVerdict(app, [], EMPTY_APP_VERDICT_CONTEXT);
+    expect(v.verdict).toBe("DIVERGENCE");
+    expect(v.reason).toContain("sealed by design");
+  });
+
+  test("a DIFFERENT app Progressing with no classified pod issue still FAILs (the rule stays narrow)", () => {
+    const app: AppConvergenceSnapshot = { name: "weaviate", sync: "Synced", health: "Progressing", destinationNamespace: "weaviate", resources: [], conditions: [] };
+    const v = computeAppVerdict(app, [], EMPTY_APP_VERDICT_CONTEXT);
+    expect(v.verdict).toBe("FAIL");
+  });
+
+  test("item 3: an unexplained Progressing app reports its unhealthy status.resources and conditions, never a bare 'no classified pod issue'", () => {
+    const app: AppConvergenceSnapshot = {
+      name: "weaviate",
+      sync: "OutOfSync",
+      health: "Progressing",
+      destinationNamespace: "weaviate",
+      resources: [
+        { kind: "StatefulSet", namespace: "weaviate", name: "weaviate", health: "Progressing" },
+        { kind: "Service", namespace: "weaviate", name: "weaviate", health: "Healthy" },
+      ],
+      conditions: [{ type: "ComparisonError", message: "context deadline exceeded" }],
+    };
+    const v = computeAppVerdict(app, [], EMPTY_APP_VERDICT_CONTEXT);
+    expect(v.verdict).toBe("FAIL");
+    expect(v.reason).toContain("StatefulSet/weaviate/weaviate=Progressing");
+    expect(v.reason).toContain("context deadline exceeded");
+    expect(v.reason).not.toContain("Service/weaviate/weaviate"); // Healthy resources are not noise in the report
+  });
+
+  test("a declared manual-sync app Missing in this lane -> DIVERGENCE, citing manual-sync-policy.ts's reason", () => {
+    const app: AppConvergenceSnapshot = { name: "cdi", sync: "OutOfSync", health: "Missing", destinationNamespace: "cdi", resources: [], conditions: [] };
+    const context: AppVerdictContext = { manualSyncApps: new Map([["cdi", "adopts a hand-installed operator; automated sync could disturb live VMs"]]), externalSecretCatalog: [] };
+    const v = computeAppVerdict(app, [], context);
+    expect(v.verdict).toBe("DIVERGENCE");
+    expect(v.reason).toContain("manual-sync-policy.ts");
+    expect(v.reason).toContain("adopts a hand-installed operator");
+  });
+
+  test("a declared manual-sync app that is genuinely Degraded still FAILs — the weaker contract is not a blanket excuse", () => {
+    const app: AppConvergenceSnapshot = { name: "cdi", sync: "Synced", health: "Degraded", destinationNamespace: "cdi", resources: [], conditions: [] };
+    const context: AppVerdictContext = { manualSyncApps: new Map([["cdi", "reason"]]), externalSecretCatalog: [] };
+    const v = computeAppVerdict(app, [], context);
+    expect(v.verdict).toBe("FAIL");
+  });
+
+  test("a SECRET pod issue in a namespace the EXTERNAL-secret catalog names -> DIVERGENCE, not FAIL", () => {
+    const app: AppConvergenceSnapshot = { name: "hindsight", sync: "OutOfSync", health: "Progressing", destinationNamespace: "hindsight", resources: [], conditions: [] };
+    const issues: PodVerdict[] = [
+      { namespace: "hindsight", name: "hindsight-api-0", category: "SECRET", isFailure: true, detail: "CreateContainerConfigError", appName: "hindsight" },
+    ];
+    const context: AppVerdictContext = {
+      manualSyncApps: new Map(),
+      externalSecretCatalog: [{ secretName: "hindsight-llm-api-key", namespaces: ["hindsight"], note: "NOBODY — a real Groq API key" }],
+    };
+    const v = computeAppVerdict(app, issues, context);
+    expect(v.verdict).toBe("DIVERGENCE");
+    expect(v.reason).toContain("hindsight-llm-api-key");
+    expect(v.reason).toContain("EXTERNAL credential");
+  });
+
+  test("a SECRET pod issue in a namespace NOT in the catalog still FAILs — the reclassification stays narrow", () => {
+    const app: AppConvergenceSnapshot = { name: "gitlab", sync: "OutOfSync", health: "Progressing", destinationNamespace: "gitlab", resources: [], conditions: [] };
+    const issues: PodVerdict[] = [
+      { namespace: "gitlab", name: "gitlab-webservice-0", category: "SECRET", isFailure: true, detail: "CreateContainerConfigError", appName: "gitlab" },
+    ];
+    const context: AppVerdictContext = {
+      manualSyncApps: new Map(),
+      externalSecretCatalog: [{ secretName: "hindsight-llm-api-key", namespaces: ["hindsight"], note: "NOBODY" }],
+    };
+    const v = computeAppVerdict(app, issues, context);
+    expect(v.verdict).toBe("FAIL");
+  });
+
+  test("cilium attributed correctly via the full pipeline: namespace kube-system, resolved by owner-reference, not by app-name equality", () => {
+    const app: AppConvergenceSnapshot = {
+      name: "cilium",
+      sync: "OutOfSync",
+      health: "Progressing",
+      destinationNamespace: "kube-system",
+      resources: [{ kind: "DaemonSet", namespace: "kube-system", name: "cilium", health: "Progressing" }],
+      conditions: [],
+    };
+    const pods: PodSummary[] = [pod({ namespace: "kube-system", name: "cilium-abcde", phase: "Running", scheduled: true, containerWaitingReasons: ["CrashLoopBackOff"], ownerRefs: [{ kind: "DaemonSet", name: "cilium" }] })];
+    const issues = attributePodIssues(pods, classifyPods(pods, []), [app]);
+    const v = computeAppVerdict(app, issues, EMPTY_APP_VERDICT_CONTEXT);
+    expect(v.verdict).toBe("FAIL"); // CrashLoopBackOff is a real FAIL, now correctly ATTRIBUTED rather than invisible
+    expect(v.reason).toContain("CRASHLOOP");
+  });
+});
+
 // ──────────────────────────── allApplicationsSettled ──────────────────────
 
 describe("allApplicationsSettled", () => {
@@ -870,11 +1185,16 @@ describe("isKnownSoakRegression / classifySoakRegressions", () => {
 // ──────────────────── kubectl JSON parsers (pure, never throw) ────────────
 
 describe("parsePodSummaries", () => {
-  test("parses phase, scheduled, waiting reasons and max restartCount", () => {
+  test("parses phase, scheduled, waiting reasons, max restartCount, ownerRefs and instanceLabel", () => {
     const stdout = JSON.stringify({
       items: [
         {
-          metadata: { name: "p1", namespace: "ns1" },
+          metadata: {
+            name: "p1",
+            namespace: "ns1",
+            labels: { "app.kubernetes.io/instance": "cilium" },
+            ownerReferences: [{ kind: "DaemonSet", name: "cilium" }],
+          },
           status: {
             phase: "Running",
             conditions: [{ type: "PodScheduled", status: "True" }],
@@ -894,13 +1214,17 @@ describe("parsePodSummaries", () => {
       scheduled: true,
       containerWaitingReasons: ["CrashLoopBackOff"],
       restartCount: 5,
+      ownerRefs: [{ kind: "DaemonSet", name: "cilium" }],
+      instanceLabel: "cilium",
     });
   });
 
-  test("an unscheduled pod (no containerStatuses, no PodScheduled condition) reports scheduled=false", () => {
+  test("an unscheduled pod (no containerStatuses, no PodScheduled condition) reports scheduled=false, no owner/label", () => {
     const stdout = JSON.stringify({ items: [{ metadata: { name: "p2", namespace: "ns1" }, status: { phase: "Pending" } }] });
     const [summary] = parsePodSummaries(stdout);
     expect(summary?.scheduled).toBe(false);
+    expect(summary?.ownerRefs).toEqual([]);
+    expect(summary?.instanceLabel).toBeNull();
   });
 
   test("malformed JSON yields [] rather than throwing", () => {
@@ -1054,13 +1378,46 @@ describe("parseAppConvergenceSnapshots", () => {
       items: [{ metadata: { name: "zeta-a" }, status: { sync: { status: "Synced" }, health: { status: "Healthy" } } }, { metadata: { name: "zeta-b" } }],
     });
     expect(parseAppConvergenceSnapshots(stdout)).toEqual([
-      { name: "zeta-a", sync: "Synced", health: "Healthy" },
-      { name: "zeta-b", sync: "Unknown", health: "Unknown" },
+      { name: "zeta-a", sync: "Synced", health: "Healthy", resources: [], conditions: [] },
+      { name: "zeta-b", sync: "Unknown", health: "Unknown", resources: [], conditions: [] },
     ]);
   });
 
   test("malformed JSON yields [] rather than throwing", () => {
     expect(parseAppConvergenceSnapshots("nope")).toEqual([]);
+  });
+
+  test("reads spec.destination.namespace, status.resources[] and status.conditions[] (item 1/item 3)", () => {
+    const stdout = JSON.stringify({
+      items: [
+        {
+          metadata: { name: "cilium" },
+          spec: { destination: { namespace: "kube-system" } },
+          status: {
+            sync: { status: "Synced" },
+            health: { status: "Progressing" },
+            resources: [
+              { kind: "DaemonSet", namespace: "kube-system", name: "cilium", health: { status: "Progressing" } },
+              { kind: "ConfigMap", namespace: "kube-system", name: "cilium-config" }, // no health -> null
+            ],
+            conditions: [{ type: "ComparisonError", message: "rpc error: deadline exceeded" }],
+          },
+        },
+      ],
+    });
+    expect(parseAppConvergenceSnapshots(stdout)).toEqual([
+      {
+        name: "cilium",
+        sync: "Synced",
+        health: "Progressing",
+        destinationNamespace: "kube-system",
+        resources: [
+          { kind: "DaemonSet", namespace: "kube-system", name: "cilium", health: "Progressing" },
+          { kind: "ConfigMap", namespace: "kube-system", name: "cilium-config", health: null },
+        ],
+        conditions: [{ type: "ComparisonError", message: "rpc error: deadline exceeded" }],
+      },
+    ]);
   });
 });
 
