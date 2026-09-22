@@ -51,6 +51,14 @@ on:
         required: false
         type: string
 
+# Least-privilege GITHUB_TOKEN — this job only checks out the repo and boots
+# a throwaway local Docker cluster; it never writes to this repo, never
+# pulls a private GHCR image (unlike k8s-argocd-health-test.yml's platform/
+# lane), and never opens an issue or PR. Flagged by CodeQL on PR #17481
+# ("Workflow does not contain permissions") before this line existed.
+permissions:
+  contents: read
+
 concurrency:
   # MEASURED (2026-09-22): `github.head_ref || github.ref` collided across
   # event types — a `workflow_dispatch` run on this branch cancelled the
