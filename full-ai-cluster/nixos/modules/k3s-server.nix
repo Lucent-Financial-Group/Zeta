@@ -454,54 +454,12 @@
   zeta.k3sJoinIntentPreflight.enable = lib.mkDefault true;
   zeta.k3sJoinIntentPreflight.role = lib.mkDefault "server";
 
-  # WP20 root-cause fix (run 35717757526: k3s.service NEVER reached `active`
-  # in 4201s on the real installed disk; reproduced hermetically by
-  # nixos/tests/control-plane-host-boots-k3s.nix, which boots the FULL
-  # `control-plane` host config rather than this module in isolation).
-  #
-  # nixpkgs' k3s/rancher module orders the service on network readiness --
-  # confirmed against the PINNED `nixos-26.05` branch (commit 1e8bc658),
-  # `nixos/modules/services/cluster/rancher/default.nix`:
-  #
-  #   after = [ "firewall.service" "network-online.target" ];
-  #   wants = [ "firewall.service" "network-online.target" ];
-  #
-  # `wants`, not `requires` -- so a failing network-online.target would not
-  # normally take k3s down with it. The problem is the ORDERING half:
-  # `After=` defers k3s's start job until network-online.target's own job has
-  # SETTLED (reached active or failed), and this repo already has a directly
-  # measured, named precedent for that never happening on this image.
-  # `zeta-first-boot-k3s-verify.nix` (081M33XMWME087G0R000825CCB, run
-  # 35697298781) carried the identical `after = [ ... "network-online.target"
-  # ... ]` shape and printed NOTHING -- not even its own unconditional first
-  # line -- across a 75+ minute window on "this image's first boot (QEMU
-  # user-mode NIC + NetworkManager)". Sibling units on the SAME boot ordered
-  # only on `local-fs.target` (zeta-first-session-ci, zeta-creds-restore) DID
-  # print, which rules out "serial not found" and "multi-user.target never
-  # reached" and isolates the `After=network-online.target` ordering itself
-  # as the difference. That fix (already landed) removed the dependency
-  # rather than waiting on it; this is the same fix applied to k3s.service,
-  # which carries the identical dependency from upstream and shows the
-  # identical symptom (never active, not merely slow).
-  #
-  # k3s does not need network readiness as a START precondition: it binds
-  # 0.0.0.0 and resolves its own node IP at startup, workers reach it over
-  # a connection k3s itself retries (see k3s-join-observer.nix), and the
-  # image-pulling manifests roster is applied ASYNCHRONOUSLY by the deploy
-  # controller once the API is already up (k3s-first-boot-roster.nix's own
-  # header) -- so nothing in the startup path actually requires "online",
-  # only "has an interface", which NetworkManager.service (already ordered
-  # well before multi-user.target via sysinit) provides regardless.
-  # `firewall.service` stays: k3s opens ports the firewall must have already
-  # shaped.
-  #
-  # `lib.mkForce` because nixpkgs' own module is the sole other declarant of
-  # `systemd.services.k3s.after`/`.wants` (checked:
-  # `grep -rn 'systemd.services.k3s\b' nixos/` finds only `.wantedBy`
-  # overrides in two VM tests, mkForce there too) -- nothing in this tree
-  # additively contributes to these two lists that needs preserving.
-  systemd.services.k3s = {
-    after = lib.mkForce [ "firewall.service" ];
-    wants = lib.mkForce [ "firewall.service" ];
-  };
+  # WP20 REPRO BRANCH (claude/control-plane-host-vm-boot-repro): deliberately
+  # WITHOUT the systemd.services.k3s after/wants override that
+  # claude/control-plane-host-vm-boot carries. This branch exists ONLY to let
+  # nixos/tests/control-plane-host-boots-k3s.nix run against the UNFIXED
+  # config and record whether it reproduces run 35717757526's finding
+  # (k3s.service never active) and what the diagnostics say (ordering cycle?
+  # a stuck network-online.target job? NetworkManager-wait-online state?).
+  # Throwaway -- see the PR description.
 }
