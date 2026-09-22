@@ -94,6 +94,34 @@ helm-install Job succeeded.
   oscillating (which is what "two reconcilers fighting" looks like from the
   side that doesn't use classic Helm release tracking at all).
 
+## Confirmed independently on real CI (GitHub-hosted ubuntu-24.04, 4 vCPU / 16 GB)
+
+First run of `.github/workflows/first-boot-replica.yml` (`workflow_dispatch`,
+run 35693387184, job 106634925317): **ROOT_LANDED again**, and HelmChart
+retries again observed (argocd=2, cert-manager=2, external-secrets=2, spire=2,
+spire-crds=2, trust-manager=3, cilium=0) — same pattern as both local runs, on
+different, smaller (4 vCPU vs 20) hardware. This is the strongest evidence yet
+that ROOT_LANDED is a property of the roster's design, not an artifact of one
+machine's timing.
+
+Stage 7 (dual-owner churn) flagged `cilium`: its ArgoCD Application's
+`sync.status` sequence was `Synced, Synced, Synced, Synced, OutOfSync,
+OutOfSync, OutOfSync, OutOfSync, Synced` while its k3s-side Helm release
+Secret's `resourceVersion` stayed constant (755) throughout. **Read this
+honestly, not alarmingly**: helm-controller never re-installed/upgraded the
+release, so this is not two reconcilers overwriting each other's writes — it
+is ArgoCD noticing transient drift (plausible cause: Cilium agent/envoy pods
+restarting or settling during their own startup convergence, which is a
+known-noisy period for a CNI) and self-healing back to Synced on its own, a
+single dip-and-recover cycle. **A calibration gap in the harness, not a cluster
+defect**: the oscillation heuristic (`>=2 status changes`) cannot distinguish
+one clean dip-and-recover from genuine repeated fighting, because *any* single
+recovery from an initial `Synced` sample necessarily produces exactly 2
+changes. Worth sharpening (e.g. require >=2 *separate* excursions, or ignore a
+single contiguous OutOfSync run) before trusting this signal at face value —
+noted rather than silently accepted, per the same discipline that fixed the
+targetNamespace bug this signal exists to guard against.
+
 ## Not yet closed
 
 - **NixOS metal itself was not booted** — this is a Docker replica configured
