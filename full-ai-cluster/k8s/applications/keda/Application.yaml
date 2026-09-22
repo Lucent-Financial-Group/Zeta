@@ -48,6 +48,13 @@ metadata:
     # Before the workloads that would declare a ScaledObject, after the CRD-bearing
     # platform pieces. Same rung as `dapr`, which it composes with rather than competes.
     argocd.argoproj.io/sync-wave: "0"
+    # Perpetual OutOfSync on CustomResourceDefinition/scaledjobs.keda.sh: the
+    # soak on PR #17524's included-lane run caught keda leaving Synced after
+    # all-Healthy. This is the same CRD class argo-workflows hit (#17522):
+    # apiserver-defaulted CRD fields that the SSA-emulated client diff reports.
+    # The same upstream-documented remedy (argo-cd#11143), scoped to this one
+    # Application.
+    argocd.argoproj.io/compare-options: ServerSideDiff=true
   name: keda
   namespace: argocd
   finalizers: [ resources-finalizer.argocd.argoproj.io ]
