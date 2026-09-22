@@ -47,13 +47,26 @@ export function verifyPagesArtifact(artifactRoot: string): PagesArtifactEvidence
   if (!entryMatch?.[1]) throw new Error("teaching error: Pages index does not reference a hashed JavaScript entry asset");
   const entryAsset = entryMatch[1];
   const assetsDirectory = join(artifactRoot, "assets");
-  const scriptAssets = readdirSync(assetsDirectory).filter(asset => asset.endsWith(".js"));
+  // SORTED, because `readdirSync` order is filesystem-defined and several of the
+  // `find`s below match more than one chunk. An assertion whose answer depends on
+  // directory order passes on one runner and fails on another for no change in the
+  // artifact -- measured 2026-09-22, when `gate (required)` went red on main with
+  // `evidenceRouteAsset` resolving to EvidenceRoomPage-* instead of the entry chunk.
+  const scriptAssets = readdirSync(assetsDirectory)
+    .filter(asset => asset.endsWith(".js"))
+    .sort((left, right) => (left < right ? -1 : left > right ? 1 : 0));
   const scripts = scriptAssets.map(asset => ({ asset, body: readFileSync(join(assetsDirectory, asset), "utf8") }));
   const authorizationAsset = scripts.find(script => script.body.includes(CURRENT_PROPOSAL_MARKER))?.asset;
   if (!authorizationAsset) {
     throw new Error("teaching error: Pages artifact omits the current one-time device authorization control");
   }
-  const evidenceRouteAsset = scripts.find(script => script.body.includes("evidence-seam"))?.asset;
+  // The route table lives in the ENTRY chunk index.html names; lazy route chunks
+  // mention `evidence-seam` too, so "any chunk that mentions it" is ambiguous by
+  // construction. Prefer the entry, fall back to the first sorted match so the
+  // error case below still fires when no chunk carries the route at all.
+  const evidenceRouteAsset =
+    scripts.find(script => script.asset === entryAsset && script.body.includes("evidence-seam"))?.asset ??
+    scripts.find(script => script.body.includes("evidence-seam"))?.asset;
   if (!evidenceRouteAsset) {
     throw new Error("teaching error: Pages artifact omits the evidence-room route");
   }
