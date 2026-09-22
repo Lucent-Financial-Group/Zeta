@@ -11,17 +11,22 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 
 import {
+  ACKNOWLEDGED_MISSING,
   KUBE_VERSION_PATH,
   OPERATOR_INJECTED_RULES,
   REQUIRED_ARCHES,
   SNAPSHOT_PATH,
+  acknowledgedAndLive,
   audit,
   canonicalRef,
   declaredKubeVersion,
+  dockerHubDisambiguate,
   formatReport,
+  gatingRows,
   isKubeVersionDerived,
   mapWithConcurrency,
   resolveImage,
+  type Acknowledgement,
   type DiscoveredImage,
   type ResolvedImage,
 } from "./image-resolvability.ts";
@@ -227,6 +232,129 @@ describe("resolveImage", () => {
     expect(r.isLatestOrUntagged).toBe(true);
     expect(r.hasDigest).toBe(false);
   });
+
+  // The minio incident: a docker.io 401 is ambiguous (private repo AND a
+  // deleted one both answer it the same way) — disambiguated against Docker
+  // Hub's own catalog API rather than left as `unknown`.
+
+  test("docker.io 401 + Hub catalog 404 on the REPOSITORY promotes to `missing`", async () => {
+    installFetch((url) => {
+      if (url.includes("registry-1.docker.io") && url.endsWith("/manifests/RELEASE.2017-12-28T01-21-00Z")) {
+        return new Response("", { status: 401 });
+      }
+      if (url === "https://hub.docker.com/v2/repositories/minio/minio") return new Response("", { status: 404 });
+      return null;
+    });
+    const r = await resolveImage("minio/minio:RELEASE.2017-12-28T01-21-00Z");
+    expect(r.status).toBe("missing");
+    expect(r.reason).toContain("does not exist");
+  });
+
+  test("docker.io 401 + Hub repo 200 + Hub catalog 404 on the TAG promotes to `missing`", async () => {
+    installFetch((url) => {
+      if (url.includes("registry-1.docker.io") && url.endsWith("/manifests/some-old-tag")) {
+        return new Response("", { status: 401 });
+      }
+      if (url === "https://hub.docker.com/v2/repositories/foo/bar") return new Response("", { status: 200 });
+      if (url === "https://hub.docker.com/v2/repositories/foo/bar/tags/some-old-tag") return new Response("", { status: 404 });
+      return null;
+    });
+    const r = await resolveImage("foo/bar:some-old-tag");
+    expect(r.status).toBe("missing");
+    expect(r.reason).toContain('tag "some-old-tag"');
+  });
+
+  test("docker.io 401 + Hub catalog confirms the tag EXISTS stays `unknown` (a genuine access restriction)", async () => {
+    installFetch((url) => {
+      if (url.includes("registry-1.docker.io") && url.endsWith("/manifests/v1.0")) return new Response("", { status: 401 });
+      if (url === "https://hub.docker.com/v2/repositories/foo/bar") return new Response("", { status: 200 });
+      if (url === "https://hub.docker.com/v2/repositories/foo/bar/tags/v1.0") return new Response("", { status: 200 });
+      return null;
+    });
+    const r = await resolveImage("foo/bar:v1.0");
+    expect(r.status).toBe("unknown");
+    expect(r.reason).toContain("genuine access restriction");
+  });
+
+  test("docker.io 401 + an unreachable Hub API stays `unknown` — inconclusive is not missing", async () => {
+    installFetch((url) => {
+      if (url.includes("registry-1.docker.io") && url.endsWith("/manifests/v1.0")) return new Response("", { status: 401 });
+      if (url.includes("hub.docker.com")) throw new Error("ECONNRESET");
+      return null;
+    });
+    const r = await resolveImage("foo/bar:v1.0");
+    expect(r.status).toBe("unknown");
+  });
+
+  test("a non-docker.io registry's 401 is NEVER disambiguated against Docker Hub", async () => {
+    let hubCalled = false;
+    installFetch((url) => {
+      if (url.includes("hub.docker.com")) {
+        hubCalled = true;
+        return new Response("", { status: 404 });
+      }
+      if (url.endsWith("/manifests/v1.0")) return new Response("", { status: 401 });
+      return null;
+    });
+    const r = await resolveImage("ghcr.io/foo/bar:v1.0");
+    expect(r.status).toBe("unknown");
+    expect(hubCalled).toBe(false);
+  });
+
+  test("a DIGEST reference on docker.io is never sent to the Hub tags-by-name API", async () => {
+    let hubCalled = false;
+    installFetch((url) => {
+      if (url.includes("hub.docker.com")) {
+        hubCalled = true;
+        return new Response("", { status: 404 });
+      }
+      if (url.includes("registry-1.docker.io") && url.endsWith("/manifests/sha256:abcd")) return new Response("", { status: 401 });
+      return null;
+    });
+    const r = await resolveImage("foo/bar@sha256:abcd");
+    expect(r.status).toBe("unknown");
+    expect(hubCalled).toBe(false);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// dockerHubDisambiguate — the underlying Hub-catalog probe, direct
+// ---------------------------------------------------------------------------
+
+describe("dockerHubDisambiguate", () => {
+  test("repository 404 -> missing", async () => {
+    installFetch((url) => (url === "https://hub.docker.com/v2/repositories/minio/minio" ? new Response("", { status: 404 }) : null));
+    const r = await dockerHubDisambiguate("minio", "minio", "latest");
+    expect(r.verdict).toBe("missing");
+  });
+
+  test("repository ok, tag 404 -> missing", async () => {
+    installFetch((url) => {
+      if (url === "https://hub.docker.com/v2/repositories/foo/bar") return new Response("", { status: 200 });
+      if (url === "https://hub.docker.com/v2/repositories/foo/bar/tags/gone") return new Response("", { status: 404 });
+      return null;
+    });
+    const r = await dockerHubDisambiguate("foo", "bar", "gone");
+    expect(r.verdict).toBe("missing");
+  });
+
+  test("repository ok, tag ok -> null (inconclusive, not missing)", async () => {
+    installFetch((url) => {
+      if (url === "https://hub.docker.com/v2/repositories/foo/bar") return new Response("", { status: 200 });
+      if (url === "https://hub.docker.com/v2/repositories/foo/bar/tags/present") return new Response("", { status: 200 });
+      return null;
+    });
+    const r = await dockerHubDisambiguate("foo", "bar", "present");
+    expect(r.verdict).toBeNull();
+  });
+
+  test("network failure on the repository call -> null, never missing", async () => {
+    installFetch(() => {
+      throw new Error("ECONNRESET");
+    });
+    const r = await dockerHubDisambiguate("foo", "bar", "v1");
+    expect(r.verdict).toBeNull();
+  });
 });
 
 // ---------------------------------------------------------------------------
@@ -337,14 +465,14 @@ describe("audit (offline, snapshot-gated)", () => {
     writeSnapshot([resolvedFixture({ reference: "example.com/foo/bar:1.0", status: "missing", httpStatus: 404 })]);
     const report = audit(root, fakeDiscover([{ image: "example.com/foo/bar:1.0", sources: ["app/one"], kubeVersionDerived: false }]));
     expect(report.rows[0]?.resolution?.status).toBe("missing");
-    const gating = report.rows.some((r) => r.resolution?.status === "missing" || r.resolution?.status === "arch-missing");
+    const gating = gatingRows(report.rows).length > 0;
     expect(gating).toBe(true);
   });
 
   test("an image the snapshot marks `unknown` is reported but not gating", () => {
     writeSnapshot([resolvedFixture({ reference: "example.com/foo/bar:1.0", status: "unknown", httpStatus: 401 })]);
     const report = audit(root, fakeDiscover([{ image: "example.com/foo/bar:1.0", sources: ["app/one"], kubeVersionDerived: false }]));
-    const gating = report.rows.some((r) => r.resolution?.status === "missing" || r.resolution?.status === "arch-missing");
+    const gating = gatingRows(report.rows).length > 0;
     expect(gating).toBe(false);
     expect(report.rows[0]?.resolution?.status).toBe("unknown");
   });
@@ -353,7 +481,7 @@ describe("audit (offline, snapshot-gated)", () => {
     writeSnapshot([]);
     const report = audit(root, fakeDiscover([{ image: "example.com/brand-new:1.0", sources: ["app/one"], kubeVersionDerived: false }]));
     expect(report.rows[0]?.resolution).toBeNull();
-    const gating = report.rows.some((r) => r.resolution?.status === "missing" || r.resolution?.status === "arch-missing");
+    const gating = gatingRows(report.rows).length > 0;
     expect(gating).toBe(false);
   });
 
@@ -368,6 +496,50 @@ describe("audit (offline, snapshot-gated)", () => {
     writeSnapshot([resolvedFixture({ reference: "ghcr.io/foo/bar@sha256:abcd", status: "ok" })]);
     const report = audit(root, fakeDiscover([{ image: "ghcr.io/foo/bar:v1@sha256:abcd", sources: ["app/one"], kubeVersionDerived: false }]));
     expect(report.rows[0]?.resolution?.status).toBe("ok");
+  });
+
+  test("a `missing` image ACKNOWLEDGED and still within its window does not gate, but is still reported", () => {
+    writeSnapshot([resolvedFixture({ reference: "registry-1.docker.io/minio/minio:RELEASE.2017-12-28T01-21-00Z", status: "missing", httpStatus: 404 })]);
+    const report = audit(root, fakeDiscover([{ image: "minio/minio:RELEASE.2017-12-28T01-21-00Z", sources: ["app/gitlab"], kubeVersionDerived: false }]));
+    expect(report.rows[0]?.resolution?.status).toBe("missing");
+    expect(gatingRows(report.rows).length).toBe(0);
+    // Still visible in the report — acknowledged is not hidden.
+    expect(formatReport(report)).toContain("ACKNOWLEDGED");
+  });
+
+  test("an acknowledged `missing` image with a PAST expiry date gates again — the allowlist self-expires", () => {
+    const expiredRegister: ReadonlyMap<string, Acknowledgement> = new Map([
+      ["example.com/foo/bar:1.0", { tracking: "some-branch", recordedOn: "2020-01-01", expiresOn: "2020-01-15", reason: "fixture" }],
+    ]);
+    expect(acknowledgedAndLive("example.com/foo/bar:1.0", "2026-09-22", expiredRegister)).toBe(false);
+
+    writeSnapshot([resolvedFixture({ reference: "example.com/foo/bar:1.0", status: "missing", httpStatus: 404 })]);
+    const report = audit(root, fakeDiscover([{ image: "example.com/foo/bar:1.0", sources: ["app/one"], kubeVersionDerived: false }]));
+    // This uses the REAL ACKNOWLEDGED_MISSING register (not expiredRegister),
+    // and this reference is not in it at all — asserting the production
+    // register does not accidentally cover an unrelated fixture reference.
+    expect(gatingRows(report.rows).length).toBe(1);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// ACKNOWLEDGED_MISSING — the production allowlist itself
+// ---------------------------------------------------------------------------
+
+describe("ACKNOWLEDGED_MISSING (the real, checked-in register)", () => {
+  test("every entry names a tracking branch/PR/work-item and a reason — never a bare suppression", () => {
+    for (const [reference, ack] of ACKNOWLEDGED_MISSING) {
+      expect(ack.tracking.length, `${reference} has no tracking`).toBeGreaterThan(0);
+      expect(ack.reason.length, `${reference} has no reason`).toBeGreaterThan(0);
+      expect(ack.recordedOn).toMatch(/^\d{4}-\d{2}-\d{2}$/);
+      expect(ack.expiresOn).toMatch(/^\d{4}-\d{2}-\d{2}$/);
+    }
+  });
+
+  test("every entry's key is already in CANONICAL reference form", () => {
+    for (const reference of ACKNOWLEDGED_MISSING.keys()) {
+      expect(canonicalRef(reference)).toBe(reference);
+    }
   });
 });
 

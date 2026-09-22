@@ -113,11 +113,23 @@
 // -- A FAILED PROBE IS `unknown`, NEVER `missing` ----------------------------
 // Same stance `DerivationProtocol.fs` takes for licences and
 // `image-source-provenance.ts` takes for provenance: an unchecked reference must
-// never be indistinguishable, in the output, from a checked one. Only a registry
+// never be indistinguishable, in the output, from a checked one. A registry
 // 404 (repository open, tag/digest not in it — MANIFEST_UNKNOWN) is `missing`.
-// Network errors, timeouts, 429, 5xx (after retry) and 401/403 (closed door —
-// `image-source-provenance.ts` owns the public/private question) are all
-// `unknown`.
+// Network errors, timeouts, 429, 5xx (after retry) are `unknown`.
+//
+// 401/403 is AMBIGUOUS on its own — MEASURED 2026-09-22: `minio/minio` and
+// `minio/mc` were DELETED from Docker Hub around 2026-09-11 and every tag now
+// answers 401, indistinguishable at the OCI distribution API from a genuinely
+// private repository. `image-source-provenance.ts` owns the public/private
+// question for repositories that DO exist; a repository that no longer
+// exists at all is this file's business (a guaranteed ImagePullBackOff either
+// way), so a 401/403 on `docker.io` is disambiguated against Docker Hub's own
+// catalog API (`dockerHubDisambiguate`) before settling for `unknown` — a
+// DEFINITIVE 404 from that API promotes it to `missing`; anything else
+// (exists, unreachable, ambiguous) stays `unknown`. ghcr.io/quay.io/etc. keep
+// the plain 401/403 → `unknown` reading; they have no equivalent public
+// catalog API this checker consults (`image-source-provenance.ts` already
+// covers ghcr.io's packages API for the provenance question).
 //
 // Usage:
 //   bun src/Core.TypeScript/cluster/image-resolvability.ts             # offline, snapshot-gated
@@ -541,6 +553,71 @@ function unresolved(
   };
 }
 
+export interface DockerHubVerdict {
+  readonly verdict: "missing" | null;
+  readonly detail: string;
+}
+
+/**
+ * Docker Hub's own catalog API, consulted ONLY when the OCI distribution
+ * registry answered 401/403 for a docker.io TAG reference — the ambiguous
+ * case `image-source-provenance.ts`'s own header already names: "Both
+ * ghcr.io and Docker Hub answer 401 ... for a repository that was never
+ * created". Left alone, that reading swallows a real deletion: MEASURED
+ * 2026-09-22 — `minio/minio` and `minio/mc` were DELETED from Docker Hub
+ * around 2026-09-11, every tag now 401s at the OCI registry exactly like a
+ * private repo would, and this checker's first cut classified both as
+ * `unknown` rather than the `missing` they actually are.
+ *
+ * Unlike the OCI distribution API, Docker Hub's catalog
+ * (`hub.docker.com/v2/repositories/...`) is a plain, anonymous-readable REST
+ * API that answers a real 404 when the repository or the tag is gone — it is
+ * not gated by the same pull-scope check that produces the ambiguous 401.
+ *
+ * Returns `verdict: "missing"` ONLY on a DEFINITIVE 404 (repository or tag).
+ * A 200 (the repo/tag exists — the 401 is then a genuine access
+ * restriction), a network failure, or any other status returns
+ * `verdict: null`: the caller stays `unknown`, never promoted to `missing`
+ * on an inconclusive signal — the same "a failed probe is `unknown`, never
+ * `missing`" stance this file's header already commits to, extended one
+ * level: an INCONCLUSIVE disambiguation is exactly as failed as no probe at
+ * all.
+ */
+export async function dockerHubDisambiguate(namespace: string, repoName: string, tag: string): Promise<DockerHubVerdict> {
+  const repoUrl = `https://hub.docker.com/v2/repositories/${namespace}/${repoName}`;
+  let repoStatus: number;
+  try {
+    repoStatus = (await fetch(repoUrl)).status;
+  } catch (e) {
+    return { verdict: null, detail: `Docker Hub repository API unreachable: ${e instanceof Error ? e.message : String(e)}` };
+  }
+  if (repoStatus === 404) {
+    return { verdict: "missing", detail: `Docker Hub confirms ${namespace}/${repoName} does not exist (catalog API 404)` };
+  }
+  let tagStatus: number;
+  try {
+    tagStatus = (await fetch(`${repoUrl}/tags/${encodeURIComponent(tag)}`)).status;
+  } catch (e) {
+    return { verdict: null, detail: `Docker Hub tags API unreachable: ${e instanceof Error ? e.message : String(e)}` };
+  }
+  if (tagStatus === 404) {
+    return {
+      verdict: "missing",
+      detail: `Docker Hub confirms the tag "${tag}" does not exist on ${namespace}/${repoName} (catalog API 404)`,
+    };
+  }
+  if (tagStatus === 200) {
+    return {
+      verdict: null,
+      detail: `Docker Hub catalog shows ${namespace}/${repoName}:${tag} exists; the registry 401/403 is a genuine access restriction, not absence`,
+    };
+  }
+  return {
+    verdict: null,
+    detail: `Docker Hub catalog API gave no definitive answer (repository ${String(repoStatus)}, tag ${String(tagStatus)})`,
+  };
+}
+
 /**
  * Resolve one reference exactly as a node pulling it at first boot would
  * experience it. `maxAttempts` defaults to 4; tests pass 1 to keep the
@@ -575,6 +652,31 @@ export async function resolveImage(
     );
   }
   if (!response.ok) {
+    // docker.io's 401/403 is ambiguous by construction (private repo AND a
+    // deleted one both answer it) — disambiguate against Docker Hub's own
+    // catalog API before settling for `unknown`. Digest references skip this:
+    // the Hub tags API answers by TAG name, and a digest is not one.
+    if (isDockerHub && !hasDigest && (response.status === 401 || response.status === 403)) {
+      const slash = repository.indexOf("/");
+      const namespace = slash === -1 ? "" : repository.slice(0, slash);
+      const repoName = slash === -1 ? "" : repository.slice(slash + 1);
+      if (namespace !== "" && repoName !== "") {
+        const disambiguated = await dockerHubDisambiguate(namespace, repoName, reference);
+        if (disambiguated.verdict === "missing") {
+          return unresolved(canonical, "missing", response.status, disambiguated.detail, isDockerHub, isLatestOrUntagged, hasDigest, today);
+        }
+        return unresolved(
+          canonical,
+          "unknown",
+          response.status,
+          `registry HTTP ${String(response.status)}; ${disambiguated.detail}`,
+          isDockerHub,
+          isLatestOrUntagged,
+          hasDigest,
+          today,
+        );
+      }
+    }
     return unresolved(
       canonical,
       "unknown",
@@ -757,6 +859,82 @@ const SNAPSHOT_COMMENT =
   "the offline/--refresh split and why a failed probe is `unknown`, never `missing`.";
 
 // ---------------------------------------------------------------------------
+// Acknowledgements — a dated, tracked, EXPIRING allowlist for a finding this
+// checker is right about but that a DIFFERENT change already owns fixing.
+// ---------------------------------------------------------------------------
+
+export interface Acknowledgement {
+  /** The branch, PR, or work-item that owns the fix. Mandatory — this is coordination, not a hiding place. */
+  readonly tracking: string;
+  readonly recordedOn: string;
+  /**
+   * ISO date. Once `today > expiresOn` the acknowledgement stops suppressing
+   * the finding and the gate goes red again on its own — no second mechanism
+   * has to remember to remove it, and a fix that landed late re-reds loudly
+   * rather than staying quiet forever.
+   */
+  readonly expiresOn: string;
+  readonly reason: string;
+}
+
+/**
+ * Keyed by CANONICAL reference (`ResolvedImage.reference`), same key space as
+ * the snapshot. An entry here does not mean "ignore" — `formatReport` prints
+ * it in its own section on every run, gating or not, and `--json` carries it
+ * too. It means "this is tracked elsewhere; don't make an unrelated PR red
+ * for it in the meantime."
+ *
+ * WHY AN ALLOWLIST HERE RATHER THAN JUST WAITING FOR THE OTHER PR: the fix
+ * (disambiguating docker.io's 401 against Docker Hub's own catalog API, added
+ * alongside this register) correctly promoted `minio/minio` and `minio/mc` —
+ * bundled by GitLab's chart at ancient default tags, DELETED from Docker Hub
+ * around 2026-09-11 — from `unknown` to `missing`. That is the checker
+ * working. But `claude/gitlab-minio-image-gone` (a separate change) owns
+ * disabling/repointing GitLab's bundled minio subchart, and had not landed
+ * when this register was written — an unrelated PR touching this tree would
+ * otherwise inherit a red gate it cannot fix. Two entries, one per image,
+ * because the fix might land for one tag and not the other.
+ */
+export const ACKNOWLEDGED_MISSING: ReadonlyMap<string, Acknowledgement> = new Map([
+  [
+    "registry-1.docker.io/minio/minio:RELEASE.2017-12-28T01-21-00Z",
+    {
+      tracking: "claude/gitlab-minio-image-gone",
+      recordedOn: "2026-09-22",
+      expiresOn: "2026-10-06",
+      reason:
+        "GitLab's bundled `minio` subchart (full-ai-cluster/k8s/applications/gitlab) defaults to this " +
+        "ancient tag; Docker Hub confirms the whole minio/minio repository is gone (catalog API 404), " +
+        "not merely this tag. LIFTS WHEN: claude/gitlab-minio-image-gone disables or repoints the " +
+        "bundled minio subchart and this reference stops rendering, OR its own --refresh confirms it " +
+        "resolves. Two weeks is deliberately short — renew explicitly rather than let this go stale.",
+    },
+  ],
+  [
+    "registry-1.docker.io/minio/mc:RELEASE.2018-07-13T00-53-22Z",
+    {
+      tracking: "claude/gitlab-minio-image-gone",
+      recordedOn: "2026-09-22",
+      expiresOn: "2026-10-06",
+      reason:
+        "Same incident, the paired mc (client) image the same subchart bundles. Docker Hub confirms " +
+        "minio/mc is gone the same way. LIFTS WHEN: see the minio/minio entry above.",
+    },
+  ],
+]);
+
+/** Is `reference` acknowledged, and is the acknowledgement still within its stated window? */
+export function acknowledgedAndLive(
+  reference: string,
+  today: string,
+  register: ReadonlyMap<string, Acknowledgement> = ACKNOWLEDGED_MISSING,
+): boolean {
+  const ack = register.get(reference);
+  if (ack === undefined) return false;
+  return today <= ack.expiresOn;
+}
+
+// ---------------------------------------------------------------------------
 // Report
 // ---------------------------------------------------------------------------
 
@@ -774,7 +952,23 @@ export interface Report {
   readonly mode: "offline" | "refresh";
 }
 
-function counts(rows: readonly ReportRow[]) {
+/** A row whose status is `missing`/`arch-missing` and is NOT acknowledged-and-live today. */
+export function isGatingRow(row: ReportRow, today: string = new Date().toISOString().slice(0, 10)): boolean {
+  const status = row.resolution?.status;
+  if (status !== "missing" && status !== "arch-missing") return false;
+  return !acknowledgedAndLive(row.resolution?.reference ?? "", today);
+}
+
+/**
+ * The rows that actually fail the gate — the ONE definition of "gating",
+ * shared by `formatReport` and `main`'s exit code so the printed report and
+ * the process exit status can never disagree about which rows counted.
+ */
+export function gatingRows(rows: readonly ReportRow[], today: string = new Date().toISOString().slice(0, 10)): readonly ReportRow[] {
+  return rows.filter((r) => isGatingRow(r, today));
+}
+
+function counts(rows: readonly ReportRow[], today: string = new Date().toISOString().slice(0, 10)) {
   let ok = 0;
   let missing = 0;
   let archMissing = 0;
@@ -784,6 +978,7 @@ function counts(rows: readonly ReportRow[]) {
   let latestOrUntagged = 0;
   let noDigest = 0;
   let kubeVersionDerived = 0;
+  let acknowledged = 0;
   for (const row of rows) {
     // A property of the REFERENCE, not of whether it has been resolved yet —
     // counted for every row, including not-yet-measured ones.
@@ -797,15 +992,16 @@ function counts(rows: readonly ReportRow[]) {
     else if (r.status === "missing") missing += 1;
     else if (r.status === "arch-missing") archMissing += 1;
     else unknown += 1;
+    if ((r.status === "missing" || r.status === "arch-missing") && acknowledgedAndLive(r.reference, today)) acknowledged += 1;
     if (r.isDockerHub) dockerHub += 1;
     if (r.isLatestOrUntagged) latestOrUntagged += 1;
     if (!r.hasDigest) noDigest += 1;
   }
-  return { ok, missing, archMissing, unknown, notYetMeasured, dockerHub, latestOrUntagged, noDigest, kubeVersionDerived };
+  return { ok, missing, archMissing, unknown, notYetMeasured, dockerHub, latestOrUntagged, noDigest, kubeVersionDerived, acknowledged };
 }
 
-export function formatReport(report: Report): string {
-  const c = counts(report.rows);
+export function formatReport(report: Report, today: string = new Date().toISOString().slice(0, 10)): string {
+  const c = counts(report.rows, today);
   const lines: string[] = [];
   lines.push(
     `image resolvability (${report.mode}) — ${String(report.rows.length)} distinct image reference(s), ` +
@@ -813,7 +1009,8 @@ export function formatReport(report: Report): string {
   );
   lines.push(
     `  ok=${String(c.ok)} missing=${String(c.missing)} arch-missing=${String(c.archMissing)} ` +
-      `unknown=${String(c.unknown)} not-yet-measured=${String(c.notYetMeasured)}`,
+      `unknown=${String(c.unknown)} not-yet-measured=${String(c.notYetMeasured)} ` +
+      `acknowledged=${String(c.acknowledged)} (of missing+arch-missing; still printed below, does not gate)`,
   );
   lines.push(
     `  risk (report-only): docker.io=${String(c.dockerHub)} (anonymous pull limit is 100/6h per IP) ` +
@@ -839,12 +1036,40 @@ export function formatReport(report: Report): string {
   }
 
   const bad = report.rows.filter((r) => r.resolution?.status === "missing" || r.resolution?.status === "arch-missing");
-  if (bad.length > 0) {
-    lines.push(`  ${String(bad.length)} MISSING / ARCH-MISSING — first boot WILL ImagePullBackOff on these:`);
-    for (const row of bad) {
+  const gating = gatingRows(report.rows, today);
+  const acked = bad.filter((r) => !gating.includes(r));
+  if (gating.length > 0) {
+    lines.push(`  ${String(gating.length)} MISSING / ARCH-MISSING (GATING) — first boot WILL ImagePullBackOff on these:`);
+    for (const row of gating) {
       const r = row.resolution;
       lines.push(`    [${r?.status ?? "?"}] ${row.image} (${row.sources.join(", ")}) — ${r?.reason ?? ""}`);
     }
+    lines.push("");
+  }
+
+  if (acked.length > 0) {
+    lines.push(
+      `  ${String(acked.length)} MISSING / ARCH-MISSING, ACKNOWLEDGED (dated, tracked, expiring — does not gate):`,
+    );
+    for (const row of acked) {
+      const r = row.resolution;
+      const ack = r === null || r === undefined ? undefined : ACKNOWLEDGED_MISSING.get(r.reference);
+      lines.push(
+        `    [${r?.status ?? "?"}] ${row.image} (${row.sources.join(", ")}) — tracking ${ack?.tracking ?? "?"}, ` +
+          `expires ${ack?.expiresOn ?? "?"}`,
+      );
+    }
+    lines.push("");
+  }
+
+  // The OTHER direction of drift: an acknowledgement whose target is no
+  // longer a finding at all (fixed) is safe to delete but easy to forget —
+  // named here so it does not just quietly keep matching nothing forever.
+  const liveMissingRefs = new Set(bad.map((r) => r.resolution?.reference).filter((r): r is string => r !== undefined));
+  const staleAcks = [...ACKNOWLEDGED_MISSING.entries()].filter(([ref]) => !liveMissingRefs.has(ref));
+  if (staleAcks.length > 0) {
+    lines.push(`  ${String(staleAcks.length)} ACKNOWLEDGEMENT(S) NO LONGER MATCH A FINDING — safe to delete:`);
+    for (const [ref, ack] of staleAcks) lines.push(`    ${ref} (tracking ${ack.tracking}, recorded ${ack.recordedOn})`);
     lines.push("");
   }
 
@@ -864,7 +1089,8 @@ export function formatReport(report: Report): string {
     lines.push("");
   }
 
-  if (bad.length === 0) lines.push("  no missing or arch-missing images among currently-rendered manifests.");
+  if (gating.length === 0 && bad.length === 0) lines.push("  no missing or arch-missing images among currently-rendered manifests.");
+  else if (gating.length === 0) lines.push("  no GATING missing/arch-missing images (all are acknowledged above).");
   return lines.join("\n") + "\n";
 }
 
@@ -977,9 +1203,8 @@ export async function main(argv: readonly string[], repoRoot: string = REPO_ROOT
       process.stdout.write(formatReport(report));
       process.stdout.write(changed ? `\nsnapshot REWRITTEN — commit ${SNAPSHOT_PATH}\n` : "\nsnapshot unchanged.\n");
     }
-    const gating = report.rows.some((r) => r.resolution?.status === "missing" || r.resolution?.status === "arch-missing");
     if (report.renderFailures.length > 0) return 1;
-    return gating ? 1 : 0;
+    return gatingRows(report.rows).length > 0 ? 1 : 0;
   }
 
   const report = audit(repoRoot);
@@ -988,9 +1213,8 @@ export async function main(argv: readonly string[], repoRoot: string = REPO_ROOT
   } else {
     process.stdout.write(formatReport(report));
   }
-  const gating = report.rows.some((r) => r.resolution?.status === "missing" || r.resolution?.status === "arch-missing");
   if (report.renderFailures.length > 0) return 1;
-  return gating ? 1 : 0;
+  return gatingRows(report.rows).length > 0 ? 1 : 0;
 }
 
 if (import.meta.main) {
