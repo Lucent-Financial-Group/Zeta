@@ -86,6 +86,40 @@ function parseDockerHubReference(reference: string): ParsedDockerHubRef {
   return { reference, repo: noHost.slice(0, colonIndex), tag: noHost.slice(colonIndex + 1) };
 }
 
+// -- ALLOW-LIST VALIDATION, before any of this reaches `fetch` --------------
+//
+// `registry-mirrors.json` and `image-resolvability.json` are both committed,
+// repo-local files, but CodeQL (js/request-forgery, "File data in outbound
+// network request") does not know that, and its concern is real regardless
+// of provenance: nothing between `JSON.parse` and the `fetch` call was
+// checking that a `repo`/`tag` (from a parsed reference) or a mirror
+// `endpoint` (from the mirror config) look like the things they are supposed
+// to be. A corrupted or maliciously-edited JSON file could otherwise steer
+// this script's outbound HEAD request at an arbitrary host or path — an SSRF
+// shape, not merely a lint nit. Every component that reaches the request URL
+// is now checked against the grammar the OCI distribution spec actually
+// defines for it (https://github.com/opencontainers/distribution-spec) before
+// it is used; anything that does not match is refused, not fetched.
+const OCI_NAME_COMPONENT = "[a-z0-9]+(?:[._-]+[a-z0-9]+)*";
+const REPO_PATTERN = new RegExp(`^${OCI_NAME_COMPONENT}(?:\\/${OCI_NAME_COMPONENT})*$`);
+const TAG_PATTERN = /^[A-Za-z0-9_][A-Za-z0-9_.-]{0,127}$/;
+const DIGEST_PATTERN = /^[A-Za-z0-9]+:[A-Fa-f0-9]{32,}$/;
+/** A bare `https://host[:port]` — no path, no query, no userinfo, no IP-literal tricks. */
+const MIRROR_BASE_URL_PATTERN =
+  /^https:\/\/[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?(?:\.[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?)*(?::[0-9]{1,5})?$/;
+
+function isValidRepo(repo: string): boolean {
+  return REPO_PATTERN.test(repo);
+}
+
+function isValidTagOrDigest(tag: string): boolean {
+  return TAG_PATTERN.test(tag) || DIGEST_PATTERN.test(tag);
+}
+
+function isValidMirrorBaseUrl(url: string): boolean {
+  return MIRROR_BASE_URL_PATTERN.test(url);
+}
+
 const MANIFEST_ACCEPT = [
   "application/vnd.oci.image.index.v1+json",
   "application/vnd.docker.distribution.manifest.list.v2+json",
@@ -93,7 +127,13 @@ const MANIFEST_ACCEPT = [
   "application/vnd.oci.image.manifest.v1+json",
 ].join(",");
 
-async function probeMirror(mirrorBaseUrl: string, ref: ParsedDockerHubRef): Promise<number | "error"> {
+async function probeMirror(mirrorBaseUrl: string, ref: ParsedDockerHubRef): Promise<number | "error" | "invalid"> {
+  // The allow-list check IS the fix for the SSRF-shaped finding above: only a
+  // repo/tag that matches the OCI grammar ever reaches `fetch`, so file data
+  // can no longer redirect this request's host or path.
+  if (!isValidRepo(ref.repo) || !isValidTagOrDigest(ref.tag)) {
+    return "invalid";
+  }
   const url = `${mirrorBaseUrl}/v2/${ref.repo}/manifests/${ref.tag}`;
   try {
     const res = await fetch(url, {
@@ -108,7 +148,7 @@ async function probeMirror(mirrorBaseUrl: string, ref: ParsedDockerHubRef): Prom
 }
 
 interface CoverageRow extends ParsedDockerHubRef {
-  readonly status: number | "error";
+  readonly status: number | "error" | "invalid";
   readonly hit: boolean;
 }
 
@@ -142,6 +182,14 @@ async function main(): Promise<void> {
     return;
   }
   const mirrorBaseUrl = dockerIoMirror.endpoint[0]!;
+  if (!isValidMirrorBaseUrl(mirrorBaseUrl)) {
+    console.error(
+      `registry-mirror-coverage: registry-mirrors.json's docker.io endpoint "${mirrorBaseUrl}" is not a bare ` +
+        "https://host[:port] — refusing to build a request URL from it.",
+    );
+    process.exitCode = 1;
+    return;
+  }
 
   const imageResolvabilityText = tryReadFileSync(IMAGE_RESOLVABILITY_PATH);
   if (imageResolvabilityText === undefined) {
@@ -191,4 +239,4 @@ if (import.meta.main) {
   await main();
 }
 
-export { parseDockerHubReference };
+export { parseDockerHubReference, isValidRepo, isValidTagOrDigest, isValidMirrorBaseUrl };

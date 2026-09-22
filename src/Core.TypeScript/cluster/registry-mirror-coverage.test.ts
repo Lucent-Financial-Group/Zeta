@@ -6,7 +6,12 @@
 import { describe, expect, test } from "bun:test";
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
-import { parseDockerHubReference } from "./registry-mirror-coverage.ts";
+import {
+  isValidMirrorBaseUrl,
+  isValidRepo,
+  isValidTagOrDigest,
+  parseDockerHubReference,
+} from "./registry-mirror-coverage.ts";
 
 const REPO_ROOT = join(import.meta.dir, "..", "..", "..");
 const MIRROR_CONFIG_PATH = join(REPO_ROOT, "full-ai-cluster", "k8s", "registry-mirrors.json");
@@ -43,6 +48,55 @@ describe("parseDockerHubReference", () => {
       repo: "library/nginx",
       tag: "latest",
     });
+  });
+});
+
+// The allow-list that closes the CodeQL "file data in outbound network
+// request" finding: repo/tag/mirror values from parsed JSON must match the
+// OCI distribution-spec grammar before reaching `fetch`'s URL.
+describe("isValidRepo", () => {
+  test.each([
+    ["library/alpine", true],
+    ["grafana/loki", true],
+    ["temporalio/admin-tools", true],
+    ["a", true],
+    ["", false],
+    ["Library/Alpine", false], // uppercase is not valid in a docker repo name
+    ["../../etc/passwd", false],
+    ["library/alpine@evil.com", false],
+    ["library//alpine", false],
+    ["library/alpine?x=1", false],
+  ])("%s -> %s", (repo, expected) => {
+    expect(isValidRepo(repo)).toBe(expected);
+  });
+});
+
+describe("isValidTagOrDigest", () => {
+  test.each([
+    ["latest", true],
+    ["3.7.7", true],
+    ["v1.35.6", true],
+    ["sha256:deadbeef".padEnd(7 + 64, "0"), true],
+    ["", false],
+    ["../etc", false],
+    ["latest/../../x", false],
+    ["tag with spaces", false],
+  ])("%s -> %s", (tag, expected) => {
+    expect(isValidTagOrDigest(tag)).toBe(expected);
+  });
+});
+
+describe("isValidMirrorBaseUrl", () => {
+  test.each([
+    ["https://mirror.gcr.io", true],
+    ["https://mirror.gcr.io:443", true],
+    ["http://mirror.gcr.io", false], // not https
+    ["https://mirror.gcr.io/v2", false], // no path allowed
+    ["https://mirror.gcr.io?x=1", false], // no query allowed
+    ["https://user@mirror.gcr.io", false], // no userinfo allowed
+    ["not-a-url", false],
+  ])("%s -> %s", (url, expected) => {
+    expect(isValidMirrorBaseUrl(url)).toBe(expected);
   });
 });
 
