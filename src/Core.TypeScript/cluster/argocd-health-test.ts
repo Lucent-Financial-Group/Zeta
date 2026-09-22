@@ -3956,7 +3956,13 @@ interface StartupRestartBaselineFile {
  * describes), not a silently-passing gate.
  */
 function readStartupRestartBaseline(): readonly StartupRestartBaselineEntry[] {
-  if (!existsSync(STARTUP_RESTART_BASELINE_PATH)) return [];
+  // READ, then interpret failure -- rather than existsSync() then read, which
+  // is a check-then-use race (the file can vanish, or be created, between the
+  // two calls; CWE-367). A missing file (ENOENT) and an unparseable one are
+  // both folded into the same "empty baseline" result on purpose: this is not
+  // a fatal-error path, it is what makes every currently-restarting container
+  // read as a NEW ratchet entry -- the correct, loud failure on a tree with no
+  // baseline committed yet, never a silent skip of the ratchet.
   try {
     const parsed = JSON.parse(readFileSync(STARTUP_RESTART_BASELINE_PATH, "utf8")) as Partial<StartupRestartBaselineFile>;
     return Array.isArray(parsed.allowed) ? parsed.allowed : [];
