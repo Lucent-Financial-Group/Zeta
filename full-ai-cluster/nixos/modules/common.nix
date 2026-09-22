@@ -174,6 +174,12 @@
     # pods can mount the GitHub / AI-login creds restore already wrote.
     # Control-plane only (enable flip below). Not a Helm chart.
     ./zeta-creds-to-k8s.nix
+    # WP11: verify k3s + the first-boot roster on the INSTALLED disk's own
+    # first multi-user boot. Test-only, gated by ConditionPathExists on
+    # /etc/zeta/qemu-k3s-first-boot-verify -- a marker only the QEMU test
+    # harness's zeta-install.sh probe ever writes, so this import is a no-op
+    # (unit never starts) on every real install.
+    ./zeta-first-boot-k3s-verify.nix
   ];
 
   # B-0852.4 default-on flip (operator pain point closure 2026-05-27).
