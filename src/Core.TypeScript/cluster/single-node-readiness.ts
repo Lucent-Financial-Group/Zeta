@@ -45,7 +45,7 @@
 // reports "this StatefulSet's redundancy is nominal, not real on N nodes".
 // Whether that is acceptable for a PoC is the ledger's (human's) call.
 
-import { readFileSync, readdirSync, existsSync, statSync } from "node:fs";
+import { readFileSync, readdirSync, existsSync, statSync, type Dirent } from "node:fs";
 import { clusterDirs } from "./declared-cluster-trees.ts";
 import { join, relative, resolve, sep } from "node:path";
 import { parseAllDocuments } from "yaml";
@@ -1435,13 +1435,24 @@ export interface PodBudget {
  */
 export function manualSyncAppIds(repoRoot = REPO_ROOT): ReadonlySet<string> {
   const appsDir = resolve(repoRoot, "full-ai-cluster/k8s/applications");
-  if (!existsSync(appsDir)) return new Set();
   const out = new Set<string>();
-  for (const entry of readdirSync(appsDir, { withFileTypes: true })) {
+  // ATTEMPT the read; do not `existsSync` first — the check-then-use pair is a
+  // TOCTOU window (`lint-check-then-use-file-races.ts`): the directory can be
+  // created, removed or replaced between the check and the use, so the
+  // answer the check returned is already stale. One syscall, one answer — a
+  // miss IS the ENOENT. Same discipline `readIfPresent` above applies to files.
+  let entries: readonly Dirent[];
+  try {
+    entries = readdirSync(appsDir, { withFileTypes: true });
+  } catch (error) {
+    if ((error as NodeJS.ErrnoException).code === "ENOENT") return out;
+    throw error;
+  }
+  for (const entry of entries) {
     if (!entry.isDirectory()) continue;
-    const manifestPath = join(appsDir, entry.name, "Application.yaml");
-    if (!existsSync(manifestPath)) continue;
-    const declaration = classifySyncPolicy(readFileSync(manifestPath, "utf8"));
+    const manifestText = readIfPresent(join(appsDir, entry.name, "Application.yaml"));
+    if (manifestText === null) continue;
+    const declaration = classifySyncPolicy(manifestText);
     if (declaration.kind === "manual") out.add(`full-ai-cluster/${entry.name}`);
   }
   return out;
