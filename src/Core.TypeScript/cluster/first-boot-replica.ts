@@ -315,7 +315,18 @@ export function buildRoster(inputs: RosterBuildInputs): RosterEntry[] {
 export interface HelmChartRef {
   readonly rosterAttr: string;
   readonly name: string;
+  /** The HelmChart CR's OWN namespace — where its helm-install Job runs. Always kube-system in this roster. */
   readonly namespace: string;
+  /**
+   * Where the CHART ITSELF is installed (`spec.targetNamespace`) — where the
+   * `sh.helm.release.v1.<name>.*` Secret helm/helm-controller creates lives.
+   * MEASURED (2026-09-22): five of seven charts here target a DIFFERENT
+   * namespace than the CR itself (argocd, cert-manager, external-secrets,
+   * spire, trust-manager) — a dual-owner check that queried `namespace` for
+   * the release secret found nothing for any of them. Defaults to the CR's
+   * own namespace when unset, matching k3s's helm-controller default.
+   */
+  readonly targetNamespace: string;
   readonly chart: string;
   readonly version: string;
   /** `bootstrap: true` — tolerates the not-ready:NoSchedule taint (only Cilium). */
@@ -338,14 +349,16 @@ export function extractHelmCharts(roster: readonly RosterEntry[]): HelmChartRef[
       const value = doc.toJS() as unknown;
       if (!isHelmChartDoc(value)) continue;
       const metadata = value.metadata as { name?: unknown; namespace?: unknown };
-      const spec = value.spec as { chart?: unknown; version?: unknown; bootstrap?: unknown };
+      const spec = value.spec as { chart?: unknown; version?: unknown; bootstrap?: unknown; targetNamespace?: unknown };
       if (typeof metadata.name !== "string" || typeof spec.chart !== "string" || typeof spec.version !== "string") {
         throw new Error(`${entry.attr}: HelmChart is missing name/chart/version — cannot track its install Job`);
       }
+      const namespace = typeof metadata.namespace === "string" ? metadata.namespace : "default";
       charts.push({
         rosterAttr: entry.attr,
         name: metadata.name,
-        namespace: typeof metadata.namespace === "string" ? metadata.namespace : "default",
+        namespace,
+        targetNamespace: typeof spec.targetNamespace === "string" ? spec.targetNamespace : namespace,
         chart: spec.chart,
         version: spec.version,
         bootstrap: spec.bootstrap === true,
@@ -527,6 +540,17 @@ export function buildPlan(options: BuildPlanOptions): ReplicaPlan {
       id: "no-gpu",
       reason: "No nvidia.com/gpu device plugin or GPU hardware; worker-gpu-only manifests and GPU-requesting child Applications cannot schedule.",
     },
+    {
+      id: "mount-propagation-forced-shared-post-start",
+      reason:
+        "MEASURED (2026-09-22): a container-create-time --mount of the host's /sys/fs/bpf with propagation=rshared " +
+        "is refused by Docker ('is not a shared mount') unless the DOCKER HOST's own /sys/fs/bpf is already a " +
+        "shared mount, which NixOS metal guarantees (systemd mounts the root shared by default) but Docker " +
+        "Desktop and a bare CI runner do not. Cilium bind-mounts TWO paths for its sibling envoy container to " +
+        "share (bpffs at /sys/fs/bpf, a cgroup2 view at /run/cilium/cgroupv2), each failing the same way in turn. " +
+        "This harness execs `mount --make-rshared /` INSIDE the replica right after it starts, achieving the " +
+        "same node-level property metal's shared root gives Cilium for free, without touching the Docker host.",
+    },
   ];
 
   return {
@@ -613,8 +637,24 @@ export function buildDockerRunArgs(opts: {
     "/var/run",
     "-v",
     `${opts.containerName}-data:/var/lib/rancher/k3s`,
+    // NOT read-only. MEASURED (2026-09-22): a read-only mount here makes k3s
+    // fail hard at startup — "failed to write to /ccm.yaml: open
+    // .../manifests/ccm.yaml: read-only file system" — because k3s itself
+    // writes additional static manifests (the cloud-controller-manager addon,
+    // etc.) into this SAME directory at boot, on top of whatever
+    // services.k3s.manifests declared. Real NixOS metal mounts this directory
+    // read-write for the same reason; `:ro` was an artificial divergence from
+    // metal, not a safety measure, and it made the replica fail before stage 1.
     "-v",
-    `${opts.manifestsHostDir}:/var/lib/rancher/k3s/server/manifests:ro`,
+    `${opts.manifestsHostDir}:/var/lib/rancher/k3s/server/manifests`,
+    // NOTE: no --mount of the HOST's /sys/fs/bpf here. A bind-mount with
+    // propagation=rshared at container-CREATE time requires the SOURCE to
+    // already be a shared mount on the Docker daemon's own host — which fails
+    // outright ("path /sys/fs/bpf is mounted on /sys/fs/bpf but it is not a
+    // shared mount", MEASURED 2026-09-22) on Docker Desktop and is not
+    // guaranteed on a bare Linux CI runner either. Fixed differently, AFTER
+    // the container starts — see the `mount --make-rshared /` call in
+    // `runReplica` below, right after the container is confirmed exec-able.
     "--add-host",
     "control-plane:127.0.0.1",
     "-p",
@@ -730,6 +770,33 @@ export async function runReplica(opts: RunOptions): Promise<RunReport> {
 
   const kubeconfigPath = join(opts.scratchDir, "kubeconfig.yaml");
 
+  // Make the replica's ENTIRE mount tree recursively SHARED, inside its OWN
+  // mount namespace (not the Docker host's — see buildDockerRunArgs' note on
+  // why a container-create-time --mount rshared bind fails on Docker Desktop
+  // and is not portable to a bare-Linux CI runner either).
+  //
+  // MEASURED (2026-09-22), in order, each only visible once the previous one
+  // was fixed: Cilium's agent bind-mounts (1) bpffs at /sys/fs/bpf and (2) a
+  // cgroup2 view at /run/cilium/cgroupv2, EACH so its sibling envoy container
+  // in the same pod can see it. Docker's default propagation is PRIVATE for
+  // both --tmpfs (/run) and the image's own /sys, so every cilium/
+  // cilium-envoy container failed with "is not a shared [or slave] mount" —
+  // first on /sys/fs/bpf, then on /run/cilium/cgroupv2 the moment the first
+  // one was fixed. Rather than chase each bind mount Cilium creates
+  // one-by-one, `mount --make-rshared /` covers this one and any future one
+  // the same way NixOS metal's systemd-managed shared root does.
+  for (let attempt = 0; attempt < 10; attempt++) {
+    const probe = runner.run("docker", ["exec", opts.containerName, "true"], { timeoutMs: 5_000 });
+    if (probe.status === 0) break;
+    await new Promise((r) => setTimeout(r, 1_000));
+  }
+  const shareResult = runner.run("docker", ["exec", opts.containerName, "mount", "--make-rshared", "/"], {
+    timeoutMs: 10_000,
+  });
+  if (shareResult.status !== 0) {
+    log(`WARNING: could not make / recursively shared (${shareResult.stderr || shareResult.stdout}) — Cilium will likely fail with CreateContainerError`);
+  }
+
   try {
     // ── Stage 1: k3s API up ───────────────────────────────────────────
     const s1Start = nowSeconds();
@@ -817,9 +884,39 @@ export async function runReplica(opts: RunOptions): Promise<RunReport> {
           lastDetail = "job not created yet";
           return false;
         }
+        // MEASURED (2026-09-22): k3s's helm-install Jobs use restartPolicy:
+        // OnFailure with a SINGLE pod, not one fresh pod per attempt — so
+        // job.status.failed (which counts failed PODS) stays 0 even after a
+        // chart retried repeatedly (trust-manager: 3 retries waiting for
+        // cert-manager's webhook to come up, cert-manager: 3 retries waiting
+        // for Cilium). The real retry count lives in that one pod's
+        // containerStatuses[].restartCount, which is what "attempts" reports.
+        const pods = kubectl(runner, kubeconfigPath, [
+          "-n",
+          chart.namespace,
+          "get",
+          "pods",
+          "-l",
+          `job-name=helm-install-${chart.name}`,
+          "-o",
+          "json",
+        ]);
+        let podRestarts = 0;
+        try {
+          const podsParsed = JSON.parse(pods.stdout) as {
+            items?: { status?: { containerStatuses?: { restartCount?: number }[] } }[];
+          };
+          for (const pod of podsParsed.items ?? []) {
+            for (const cs of pod.status?.containerStatuses ?? []) {
+              podRestarts = Math.max(podRestarts, cs.restartCount ?? 0);
+            }
+          }
+        } catch {
+          /* pod query best-effort; job succeeded/failed below is the authoritative signal */
+        }
         try {
           const parsed = JSON.parse(job.stdout) as { status?: { succeeded?: number; failed?: number } };
-          failedAttempts = parsed.status?.failed ?? 0;
+          failedAttempts = Math.max(parsed.status?.failed ?? 0, podRestarts);
           succeeded = (parsed.status?.succeeded ?? 0) > 0;
           lastDetail = succeeded
             ? `Job Succeeded after ${String(failedAttempts)} failed attempt(s)`
@@ -899,15 +996,19 @@ export async function runReplica(opts: RunOptions): Promise<RunReport> {
     const podsJson = kubectl(runner, kubeconfigPath, ["get", "pods", "-A", "-o", "json"], 30_000);
     let appConvergence: unknown[] = [];
     let podConvergence: unknown[] = [];
-    try {
-      const apps = JSON.parse(appsJson.stdout) as { items?: { metadata?: { name?: string }; status?: { sync?: { status?: string }; health?: { status?: string } } }[] };
-      appConvergence = (apps.items ?? []).map((a) => ({
-        name: a.metadata?.name,
-        sync: a.status?.sync?.status ?? "Unknown",
-        health: a.status?.health?.status ?? "Unknown",
-      }));
-    } catch {
-      /* reported as empty; the raw JSON call's exit status is what a reader checks */
+    if (appsJson.status !== 0) {
+      log(`WARNING: stage 6 could not list Applications (kubectl exit ${String(appsJson.status)}): ${appsJson.stderr || "(no stderr)"}`);
+    } else {
+      try {
+        const apps = JSON.parse(appsJson.stdout) as { items?: { metadata?: { name?: string }; status?: { sync?: { status?: string }; health?: { status?: string } } }[] };
+        appConvergence = (apps.items ?? []).map((a) => ({
+          name: a.metadata?.name,
+          sync: a.status?.sync?.status ?? "Unknown",
+          health: a.status?.health?.status ?? "Unknown",
+        }));
+      } catch (e) {
+        log(`WARNING: stage 6 could not parse Applications JSON: ${reason(e)}`);
+      }
     }
     try {
       const pods = JSON.parse(podsJson.stdout) as {
@@ -940,38 +1041,92 @@ export async function runReplica(opts: RunOptions): Promise<RunReport> {
     });
 
     // ── Stage 7: dual-owner churn check ───────────────────────────────
+    //
+    // Six components in this roster are installed BOTH by k3s's
+    // helm-controller (the bootstrap HelmChart CR) AND, once zeta-root lands,
+    // by an ArgoCD Application: argocd, cilium, cert-manager, spire (+
+    // spire-crds), trust-manager, external-secrets.
+    //
+    // Two independent signals, because they watch different owners:
+    //   (a) the k3s-side Helm release Secret's resourceVersion — churns only
+    //       if helm-controller re-installs/upgrades the release. MEASURED
+    //       (2026-09-22): this secret lives in `spec.targetNamespace`, NOT
+    //       the HelmChart CR's own namespace (kube-system) — five of the six
+    //       target a DIFFERENT namespace, so a check that queried kube-system
+    //       for all of them found nothing for any but cilium.
+    //   (b) the ArgoCD Application's sync-status SEQUENCE — a healthy
+    //       one-time reconcile goes OutOfSync -> Synced and stays there.
+    //       Oscillating back to OutOfSync repeatedly (with no user-initiated
+    //       change) is what "two reconcilers fighting" looks like from
+    //       ArgoCD's own side, and it is visible even though ArgoCD's plain
+    //       `kubectl apply`-style reconciliation never touches (a)'s secret.
+    const DUAL_OWNED = plan.helmCharts.filter((c) =>
+      ["argocd", "cilium", "cert-manager", "spire", "spire-crds", "trust-manager", "external-secrets"].includes(c.name),
+    );
+    const helmSecretSamples: Record<string, string[]> = {};
+    const argoSyncSamples: Record<string, string[]> = {};
+    for (const chart of DUAL_OWNED) {
+      helmSecretSamples[chart.name] = [];
+      argoSyncSamples[chart.name] = [];
+    }
     const s7Start = nowSeconds();
-    const DUAL_OWNED = ["argocd", "cilium", "cert-manager", "spire", "spire-crds", "trust-manager", "external-secrets"];
-    const samples: Record<string, string[]> = {};
-    for (const name of DUAL_OWNED) samples[name] = [];
     const sampleWindowSec = Math.min(opts.stage567TimeoutSec, 180);
     const sampleDeadline = s7Start + sampleWindowSec;
     while (nowSeconds() < sampleDeadline) {
-      for (const name of DUAL_OWNED) {
+      for (const chart of DUAL_OWNED) {
         const secret = kubectl(runner, kubeconfigPath, [
           "-n",
-          "kube-system",
+          chart.targetNamespace,
           "get",
           "secret",
           "-l",
-          `owner=helm,name=${name}`,
+          `owner=helm,name=${chart.name}`,
           "-o",
           "jsonpath={.items[*].metadata.resourceVersion}",
         ]);
         if (secret.status === 0 && secret.stdout.trim().length > 0) {
-          (samples[name] ?? []).push(secret.stdout.trim());
+          (helmSecretSamples[chart.name] ?? []).push(secret.stdout.trim());
+        }
+        // The ArgoCD Application for this component, if one exists under
+        // k8s/applications/<name>/ — not guaranteed to match the HelmChart's
+        // own name 1:1, so a miss here is reported as "no Application" rather
+        // than treated as a parse error.
+        const app = kubectl(runner, kubeconfigPath, [
+          "-n",
+          "argocd",
+          "get",
+          "application",
+          chart.name,
+          "-o",
+          "jsonpath={.status.sync.status}",
+        ]);
+        if (app.status === 0 && app.stdout.trim().length > 0) {
+          (argoSyncSamples[chart.name] ?? []).push(app.stdout.trim());
         }
       }
       await new Promise((r) => setTimeout(r, 20_000));
     }
-    const churning = Object.entries(samples).filter(([, versions]) => new Set(versions).size > 1).map(([name]) => name);
+    // (a) helm release Secret resourceVersion changed more than once — helm-controller re-installed/upgraded.
+    const helmChurning = Object.entries(helmSecretSamples)
+      .filter(([, versions]) => new Set(versions).size > 1)
+      .map(([name]) => name);
+    // (b) ArgoCD's OWN sync-status oscillated — changed more than once, which a
+    // one-time "OutOfSync -> Synced" settle does NOT trigger (that is exactly
+    // one change). Two or more changes means it left Synced again on its own.
+    const argoOscillating = Object.entries(argoSyncSamples)
+      .filter(([, statuses]) => statuses.filter((s, i) => i > 0 && s !== statuses[i - 1]).length >= 2)
+      .map(([name]) => name);
+    const churning = [...new Set([...helmChurning, ...argoOscillating])];
     stages.push({
       stage: 7,
       name: "dual-owner churn check (helm-controller vs ArgoCD)",
       ok: churning.length === 0,
       elapsedSeconds: nowSeconds() - s7Start,
-      detail: churning.length === 0 ? "no release resourceVersion churn observed" : `CHURNING: ${churning.join(", ")}`,
-      evidence: { samples },
+      detail:
+        churning.length === 0
+          ? "no release resourceVersion churn and no ArgoCD sync-status oscillation observed"
+          : `CHURNING: ${churning.join(", ")} (helm-secret: ${helmChurning.join(", ") || "none"}; argo-sync-oscillation: ${argoOscillating.join(", ") || "none"})`,
+      evidence: { helmSecretSamples, argoSyncSamples },
     });
 
     return {

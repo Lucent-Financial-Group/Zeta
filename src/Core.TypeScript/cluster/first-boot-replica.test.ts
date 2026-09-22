@@ -287,6 +287,7 @@ describe("extractHelmCharts", () => {
           "spec:",
           "  chart: argo-cd",
           "  version: 10.7.2",
+          "  targetNamespace: argocd",
         ].join("\n"),
       },
     ];
@@ -294,6 +295,13 @@ describe("extractHelmCharts", () => {
     expect(charts.map((c) => c.name)).toEqual(["argocd", "cilium"]);
     expect(charts.find((c) => c.name === "cilium")?.bootstrap).toBe(true);
     expect(charts.find((c) => c.name === "argocd")?.bootstrap).toBe(false);
+    // targetNamespace: declared explicitly (argocd) vs defaults to the CR's
+    // OWN namespace when absent (cilium) — the bug this harness's dual-owner
+    // check hit (2026-09-22): the helm release Secret lives in
+    // targetNamespace, not the HelmChart CR's namespace, and five of the real
+    // roster's seven charts declare a DIFFERENT targetNamespace than kube-system.
+    expect(charts.find((c) => c.name === "argocd")?.targetNamespace).toBe("argocd");
+    expect(charts.find((c) => c.name === "cilium")?.targetNamespace).toBe("kube-system");
   });
 
   test("throws when a HelmChart is missing name/chart/version", () => {
@@ -369,9 +377,14 @@ describe("buildDockerRunArgs", () => {
     });
     expect(args).toContain("--privileged");
     expect(args).toContain("zeta-replica-data:/var/lib/rancher/k3s");
-    expect(args).toContain("/tmp/manifests:/var/lib/rancher/k3s/server/manifests:ro");
+    expect(args).toContain("/tmp/manifests:/var/lib/rancher/k3s/server/manifests");
+    expect(args).not.toContain("/tmp/manifests:/var/lib/rancher/k3s/server/manifests:ro");
     expect(args).toContain("control-plane:127.0.0.1");
     expect(args).toContain("127.0.0.1:16443:6443");
+    // No host bind-mount of /sys/fs/bpf: that requires the DOCKER HOST's own
+    // /sys/fs/bpf to already be a shared mount, which fails on Docker Desktop
+    // (MEASURED 2026-09-22) — see runReplica's post-start `mount --make-rshared /`.
+    expect(args.some((a) => a.includes("/sys/fs/bpf"))).toBe(false);
     expect(args.slice(-3)).toEqual(["server", "--tls-san=control-plane", "--flannel-backend=none"]); // order preserved
     expect(args.at(-2)).toBe("--tls-san=control-plane");
     expect(args.at(-1)).toBe("--flannel-backend=none");
@@ -428,6 +441,21 @@ describe("buildPlan against the real repository files (LIVE, no Docker)", () => 
     for (const chart of plan.helmCharts) {
       expect(chart.bootstrap).toBe(chart.name === "cilium");
     }
+
+    // targetNamespace — MEASURED 2026-09-22: five of seven charts install into
+    // a DIFFERENT namespace than the HelmChart CR itself (kube-system). A
+    // dual-owner check that queries the CR's namespace for the helm release
+    // Secret finds it for cilium alone; this table is what fixed that.
+    const targetNamespaceByChart = Object.fromEntries(plan.helmCharts.map((c) => [c.name, c.targetNamespace]));
+    expect(targetNamespaceByChart).toEqual({
+      argocd: "argocd",
+      "cert-manager": "cert-manager",
+      cilium: "kube-system",
+      "external-secrets": "external-secrets",
+      spire: "spire",
+      "spire-crds": "spire",
+      "trust-manager": "cert-manager",
+    });
 
     // The one permitted modification landed, and nothing else about the roster did.
     expect(plan.rootTargetRevision).toBe("test-fixture-ref");
