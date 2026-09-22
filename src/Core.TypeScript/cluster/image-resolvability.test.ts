@@ -10,6 +10,8 @@ import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 
+import { deferred } from "../testing/deterministic-async.ts";
+
 import {
   ACKNOWLEDGED_MISSING,
   KUBE_VERSION_PATH,
@@ -131,6 +133,26 @@ function jsonResponse(status: number, body: unknown, headers: Record<string, str
   return new Response(JSON.stringify(body), { status, headers });
 }
 
+/**
+ * The exact hostname a fixture URL targets — parsed via `new URL`, never a
+ * substring check. The prior form, `url.includes("registry-1.docker.io")`,
+ * would also match `https://evil.example/?registry-1.docker.io` or a
+ * path/query carrying the same text; CodeQL's "Incomplete URL substring
+ * sanitization" flags exactly that (js/incomplete-url-substring-sanitization).
+ * These are test fixtures with no untrusted input, so nothing here was
+ * exploitable — parsing anyway is what makes that true by construction rather
+ * than by argument, and it matches the discipline `dockerHubDisambiguate`
+ * itself uses in the module under test (host comes from `parseImageReference`,
+ * never from string-matching a URL).
+ */
+function hostnameOf(url: string): string {
+  try {
+    return new URL(url).hostname;
+  } catch {
+    return "";
+  }
+}
+
 describe("resolveImage", () => {
   test("a manifest LIST covering linux/amd64 and linux/arm64 resolves ok with both arches reported", async () => {
     installFetch((url) => {
@@ -239,7 +261,7 @@ describe("resolveImage", () => {
 
   test("docker.io 401 + Hub catalog 404 on the REPOSITORY promotes to `missing`", async () => {
     installFetch((url) => {
-      if (url.includes("registry-1.docker.io") && url.endsWith("/manifests/RELEASE.2017-12-28T01-21-00Z")) {
+      if (hostnameOf(url) === "registry-1.docker.io" && url.endsWith("/manifests/RELEASE.2017-12-28T01-21-00Z")) {
         return new Response("", { status: 401 });
       }
       if (url === "https://hub.docker.com/v2/repositories/minio/minio") return new Response("", { status: 404 });
@@ -252,7 +274,7 @@ describe("resolveImage", () => {
 
   test("docker.io 401 + Hub repo 200 + Hub catalog 404 on the TAG promotes to `missing`", async () => {
     installFetch((url) => {
-      if (url.includes("registry-1.docker.io") && url.endsWith("/manifests/some-old-tag")) {
+      if (hostnameOf(url) === "registry-1.docker.io" && url.endsWith("/manifests/some-old-tag")) {
         return new Response("", { status: 401 });
       }
       if (url === "https://hub.docker.com/v2/repositories/foo/bar") return new Response("", { status: 200 });
@@ -266,7 +288,7 @@ describe("resolveImage", () => {
 
   test("docker.io 401 + Hub catalog confirms the tag EXISTS stays `unknown` (a genuine access restriction)", async () => {
     installFetch((url) => {
-      if (url.includes("registry-1.docker.io") && url.endsWith("/manifests/v1.0")) return new Response("", { status: 401 });
+      if (hostnameOf(url) === "registry-1.docker.io" && url.endsWith("/manifests/v1.0")) return new Response("", { status: 401 });
       if (url === "https://hub.docker.com/v2/repositories/foo/bar") return new Response("", { status: 200 });
       if (url === "https://hub.docker.com/v2/repositories/foo/bar/tags/v1.0") return new Response("", { status: 200 });
       return null;
@@ -278,8 +300,8 @@ describe("resolveImage", () => {
 
   test("docker.io 401 + an unreachable Hub API stays `unknown` — inconclusive is not missing", async () => {
     installFetch((url) => {
-      if (url.includes("registry-1.docker.io") && url.endsWith("/manifests/v1.0")) return new Response("", { status: 401 });
-      if (url.includes("hub.docker.com")) throw new Error("ECONNRESET");
+      if (hostnameOf(url) === "registry-1.docker.io" && url.endsWith("/manifests/v1.0")) return new Response("", { status: 401 });
+      if (hostnameOf(url) === "hub.docker.com") throw new Error("ECONNRESET");
       return null;
     });
     const r = await resolveImage("foo/bar:v1.0");
@@ -289,7 +311,7 @@ describe("resolveImage", () => {
   test("a non-docker.io registry's 401 is NEVER disambiguated against Docker Hub", async () => {
     let hubCalled = false;
     installFetch((url) => {
-      if (url.includes("hub.docker.com")) {
+      if (hostnameOf(url) === "hub.docker.com") {
         hubCalled = true;
         return new Response("", { status: 404 });
       }
@@ -304,11 +326,11 @@ describe("resolveImage", () => {
   test("a DIGEST reference on docker.io is never sent to the Hub tags-by-name API", async () => {
     let hubCalled = false;
     installFetch((url) => {
-      if (url.includes("hub.docker.com")) {
+      if (hostnameOf(url) === "hub.docker.com") {
         hubCalled = true;
         return new Response("", { status: 404 });
       }
-      if (url.includes("registry-1.docker.io") && url.endsWith("/manifests/sha256:abcd")) return new Response("", { status: 401 });
+      if (hostnameOf(url) === "registry-1.docker.io" && url.endsWith("/manifests/sha256:abcd")) return new Response("", { status: 401 });
       return null;
     });
     const r = await resolveImage("foo/bar@sha256:abcd");
@@ -363,25 +385,43 @@ describe("dockerHubDisambiguate", () => {
 
 describe("mapWithConcurrency", () => {
   test("preserves result order regardless of completion order", async () => {
-    const delays = [30, 10, 20, 5];
-    const results = await mapWithConcurrency(delays, 4, async (ms, i) => {
-      await new Promise((r) => setTimeout(r, ms));
-      return i;
-    });
+    // Barriers, not a wall-clock delay: each item's `fn` suspends on its OWN
+    // gate, and the gates are resolved in a deliberately scrambled order — the
+    // property under test (results land at their INDEX, not their completion
+    // order) needs no real time at all to demonstrate.
+    const gates = [deferred<number>(), deferred<number>(), deferred<number>(), deferred<number>()];
+    const promise = mapWithConcurrency([0, 1, 2, 3], 4, async (_item, i) => gates[i]?.promise);
+    gates[3]?.resolve(3);
+    gates[1]?.resolve(1);
+    gates[2]?.resolve(2);
+    gates[0]?.resolve(0);
+    const results = await promise;
     expect(results).toEqual([0, 1, 2, 3]);
   });
 
   test("never runs more than `dop` at once", async () => {
+    // Same barrier discipline. `mapWithConcurrency` calls its `dop` workers
+    // SYNCHRONOUSLY (each runs up to its own first `await`) as part of
+    // constructing the worker array, so the ceiling is already enforced the
+    // instant this call returns — checked below with no turn or timer needed
+    // — and releasing every gate immediately still cannot let a THIRD worker
+    // start early: a worker can only reach its next item by finishing its
+    // current `await` first, regardless of when that gate resolved.
+    const gates = Array.from({ length: 6 }, () => deferred<number>());
     let inFlight = 0;
     let maxInFlight = 0;
-    await mapWithConcurrency([1, 2, 3, 4, 5, 6], 2, async (n) => {
+    const promise = mapWithConcurrency([0, 1, 2, 3, 4, 5], 2, async (n) => {
       inFlight += 1;
       maxInFlight = Math.max(maxInFlight, inFlight);
-      await new Promise((r) => setTimeout(r, 5));
+      const result = await gates[n]?.promise;
       inFlight -= 1;
-      return n;
+      return result;
     });
+    expect(inFlight).toBe(2);
+    gates.forEach((gate, i) => gate.resolve(i));
+    const results = await promise;
     expect(maxInFlight).toBeLessThanOrEqual(2);
+    expect(results).toEqual([0, 1, 2, 3, 4, 5]);
   });
 
   test("DoP=1 drains the queue one at a time (the deterministic/DST-friendly floor)", async () => {
