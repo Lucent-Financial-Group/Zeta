@@ -4,7 +4,7 @@
 // assumes.
 
 import { describe, expect, test } from "bun:test";
-import { existsSync, readFileSync } from "node:fs";
+import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { parseDockerHubReference } from "./registry-mirror-coverage.ts";
 
@@ -48,7 +48,9 @@ describe("parseDockerHubReference", () => {
 
 describe("registry-mirrors.json — the single source this script and the nix module both read", () => {
   test("exists, parses, and declares a docker.io mirror with an https endpoint", () => {
-    expect(existsSync(MIRROR_CONFIG_PATH)).toBe(true);
+    // No existsSync check-then-use: readFileSync itself is the existence
+    // check, and a missing file throws ENOENT here, failing the test with a
+    // clear error rather than a stale pre-check.
     const parsed = JSON.parse(readFileSync(MIRROR_CONFIG_PATH, "utf8")) as {
       mirrors: Record<string, { endpoint: string[] }>;
     };

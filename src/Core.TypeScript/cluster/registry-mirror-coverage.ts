@@ -44,7 +44,7 @@
 // anonymous pulls — this script only ever talks to the mirror, so no token
 // flow is needed.
 
-import { existsSync, readFileSync } from "node:fs";
+import { readFileSync } from "node:fs";
 import { join, resolve } from "node:path";
 
 const REPO_ROOT = resolve(import.meta.dir, "../../..");
@@ -112,13 +112,29 @@ interface CoverageRow extends ParsedDockerHubRef {
   readonly hit: boolean;
 }
 
+/**
+ * Read a file, distinguishing "does not exist" from every other failure — no
+ * `existsSync` check-then-use (CWE-367: the path can be created, deleted, or
+ * replaced between the check and the read, so a prior `existsSync` answer is
+ * already stale when the read runs). One syscall, one answer, no window.
+ */
+function tryReadFileSync(path: string): string | undefined {
+  try {
+    return readFileSync(path, "utf8");
+  } catch (e) {
+    if ((e as NodeJS.ErrnoException).code === "ENOENT") return undefined;
+    throw e;
+  }
+}
+
 async function main(): Promise<void> {
-  if (!existsSync(MIRROR_CONFIG_PATH)) {
+  const mirrorConfigText = tryReadFileSync(MIRROR_CONFIG_PATH);
+  if (mirrorConfigText === undefined) {
     console.error(`registry-mirror-coverage: missing ${MIRROR_CONFIG_PATH}`);
     process.exitCode = 1;
     return;
   }
-  const mirrorConfig = JSON.parse(readFileSync(MIRROR_CONFIG_PATH, "utf8")) as MirrorConfig;
+  const mirrorConfig = JSON.parse(mirrorConfigText) as MirrorConfig;
   const dockerIoMirror = mirrorConfig.mirrors["docker.io"];
   if (!dockerIoMirror || dockerIoMirror.endpoint.length === 0) {
     console.error("registry-mirror-coverage: registry-mirrors.json has no docker.io mirror configured");
@@ -127,7 +143,8 @@ async function main(): Promise<void> {
   }
   const mirrorBaseUrl = dockerIoMirror.endpoint[0]!;
 
-  if (!existsSync(IMAGE_RESOLVABILITY_PATH)) {
+  const imageResolvabilityText = tryReadFileSync(IMAGE_RESOLVABILITY_PATH);
+  if (imageResolvabilityText === undefined) {
     console.log(
       "registry-mirror-coverage: no full-ai-cluster/k8s/image-resolvability.json snapshot found " +
         "(the tool that writes it — src/Core.TypeScript/cluster/image-resolvability.ts, PR #17475 " +
@@ -136,7 +153,7 @@ async function main(): Promise<void> {
     );
     return;
   }
-  const snapshot = JSON.parse(readFileSync(IMAGE_RESOLVABILITY_PATH, "utf8")) as ImageResolvabilitySnapshot;
+  const snapshot = JSON.parse(imageResolvabilityText) as ImageResolvabilitySnapshot;
   const dockerHubEntries = snapshot.entries.filter((e) => e.isDockerHub);
 
   console.log(

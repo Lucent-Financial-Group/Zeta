@@ -110,7 +110,7 @@ let
 
   registriesYamlText =
     "# GENERATED from full-ai-cluster/k8s/registry-mirrors.json by\n"
-    + "# nixos/modules/k3s-registry-mirrors.nix — do not hand-edit; edit the JSON.\n"
+    + "# nixos/modules/k3s-registry-mirrors.nix - do not hand-edit; edit the JSON.\n"
     + "mirrors:\n"
     + lib.concatStringsSep "" (lib.mapAttrsToList renderRegistry mirrors);
 in
