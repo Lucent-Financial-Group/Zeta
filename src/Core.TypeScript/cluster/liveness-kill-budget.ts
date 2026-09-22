@@ -81,6 +81,18 @@ function isRecord(value: unknown): value is Record<string, unknown> {
 }
 
 /**
+ * Ordinal string order, deliberately NOT `localeCompare`:
+ * .claude/rules/culture-invariant-by-default.md -- table row order (and so
+ * `formatTable`'s output) must not vary with the runner's locale. Mirrors
+ * `validate-applications.ts`'s own `compareOrdinal`.
+ */
+function compareOrdinal(a: string, b: string): number {
+  if (a < b) return -1;
+  if (a > b) return 1;
+  return 0;
+}
+
+/**
  * Seconds from container start to first kill, or `null` when `probe` is not a
  * probe object (liveness absent) or declares a non-positive period/threshold
  * (malformed -- refused rather than silently treated as "safe").
@@ -421,7 +433,7 @@ export function formatTable(result: AuditResult, thresholdSeconds = DEFAULT_KILL
     `|---|---|---|---|---|---|---|---|`,
   );
   const sorted = [...result.containers].sort(
-    (a, b) => a.app.localeCompare(b.app) || a.container.localeCompare(b.container),
+    (a, b) => compareOrdinal(a.app, b.app) || compareOrdinal(a.container, b.container),
   );
   for (const c of sorted) {
     const flagged = needsStartupProbe(c, thresholdSeconds);
