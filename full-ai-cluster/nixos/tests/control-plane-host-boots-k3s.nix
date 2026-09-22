@@ -35,14 +35,24 @@
 # THE TWO DELIBERATE DEVIATIONS FROM `nixosConfigurations.control-plane`, AND
 # WHY EACH ONE IS SAFE
 # -----------------------------------------------------------------------------
-#   1. `stateVersion` is not threaded through `specialArgs` (nixosTest's node
-#      modules don't carry the flake's `inputs`/`stateVersion` specialArgs).
-#      `common.nix` declares `stateVersion ? "25.11"` with a default, so this
-#      evaluates to "25.11" here instead of the flake's "26.05". Checked
-#      (`grep -rl stateVersion nixos/modules/*.nix`): the ONLY consumer is the
-#      `system.stateVersion = lib.mkDefault stateVersion;` line at the bottom
-#      of common.nix, which affects nixpkgs' own backward-compat defaults, not
-#      k3s or systemd ordering. Cosmetic; not worth threading specialArgs for.
+#   1. `stateVersion` is not threaded through the flake's `inputs`/`specialArgs`
+#      (nixosTest's node modules don't carry them). `common.nix` declares
+#      `stateVersion ? "25.11"` with a Nix-level default, and the ORIGINAL
+#      version of this file assumed that default would just apply, cosmetically,
+#      leaving `system.stateVersion` at "25.11" instead of the flake's "26.05".
+#      MEASURED WRONG (run 35741126744): `nixos/modules/tasks/swraid.nix`
+#      forces `config.system.stateVersion` for its own compat check BEFORE
+#      common.nix's `mkDefault stateVersion` line supplies a value, and
+#      `pkgs.testers.nixosTest`'s `evalModules` call does not resolve an
+#      absent, defaulted specialArg the way plain function application would
+#      -- it throws `attribute 'stateVersion' missing`. Fixed below with an
+#      explicit `_module.args.stateVersion = "26.05";` on `nodes.server`,
+#      which both fixes the eval AND restores full fidelity (the real "26.05",
+#      not the assumed-safe "25.11" fallback). Checked
+#      (`grep -rl stateVersion nixos/modules/*.nix`): the only OTHER consumer
+#      of the value once supplied is that same `system.stateVersion =
+#      lib.mkDefault stateVersion;` line -- unrelated to k3s or systemd
+#      ordering.
 #   2. `virtualisation.{memorySize,cores,diskSize}` are VM-only options with no
 #      hardware equivalent -- every other VM test in this directory sets them,
 #      and this host boots MORE (avahi, samba, docker, k3s, three AI-agent
@@ -144,6 +154,23 @@ pkgs.testers.nixosTest {
   nodes.server =
     { config, pkgs, lib, ... }:
     {
+      # MEASURED 2026-09-22 (run 35741126744): `pkgs.testers.nixosTest`'s own
+      # `evalModules` call does not thread arbitrary specialArgs, so
+      # `common.nix`'s `{ ..., stateVersion ? "25.11", ... }` default was
+      # expected to cover the gap (see the file header's deviation-2 note) --
+      # it did NOT. The actual failure is `error: attribute 'stateVersion'
+      # missing` at `lib/modules.nix:729` (`config._module.args.${name}`),
+      # surfaced through `nixos/modules/tasks/swraid.nix` forcing
+      # `config.system.stateVersion` (an upstream stateVersion-gated
+      # compat check) before `common.nix`'s own `mkDefault stateVersion`
+      # line ever gets to apply ITS default -- so the lazy-arg-default path
+      # the header assumed never fires. Setting `_module.args.stateVersion`
+      # directly is the documented, unconditional way to answer any such
+      # lookup regardless of which module forces it first; using "26.05"
+      # (rather than the "25.11" the header originally assumed) also
+      # restores full fidelity with `flake.nix`'s real specialArgs.
+      _module.args.stateVersion = "26.05";
+
       # THE REAL HOST CONFIG, whole -- see the file header for why this one
       # line is "reuse the flake's own definition" rather than a paraphrase.
       imports = [
