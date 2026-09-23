@@ -119,6 +119,16 @@ on:
         description: "Run only the 3-node HA cluster + replicated Longhorn job"
         type: boolean
         default: false
+      # Symmetric to only_cluster_ha, for the same reason: a plain dispatch runs
+      # every dispatch-only scenario (3/4, wifi ESP, keyfile, WP11), several of
+      # them 90-100 min, so iterating on ONE of them costs hours of unrelated
+      # QEMU. WP11 is the installed-disk first-boot k3s verify -- the lane that
+      # answers "does Kubernetes come up on a real install", which is the one
+      # under active diagnosis. Default false: a plain dispatch is unchanged.
+      only_wp11:
+        description: "Run only the WP11 installed-disk first-boot k3s verify"
+        type: boolean
+        default: false
   # WP11 — the installed-disk first-boot k3s verify step below (gated to
   # workflow_dispatch + schedule; see that step's own comment for why it is
   # not on the PR path) needs a way to run unattended. Daily, off the hour,
@@ -665,7 +675,7 @@ jobs:
           bun ../src/Core.TypeScript/ci/qemu-full-install-test.ts "$iso_abs"
 
       - name: Upload UEFI keyfile restore serial log
-        if: always() && github.event_name == 'workflow_dispatch'
+        if: always() && github.event_name == 'workflow_dispatch' && !inputs.only_wp11
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: qemu-uefi-keyfile-restore-serial-log
@@ -682,7 +692,7 @@ jobs:
       # picker / scenarios 3–4 skipped). Keep restore itself without always()
       # so a restore red still fails the job. Keep all of this off gate.
       - name: 081KSGS9H0008QG0R003V23XNZ wifi ESP acceptance (workflow_dispatch only)
-        if: always() && github.event_name == 'workflow_dispatch'
+        if: always() && github.event_name == 'workflow_dispatch' && !inputs.only_wp11
         timeout-minutes: 90
         working-directory: full-ai-cluster
         env:
@@ -703,7 +713,7 @@ jobs:
           bun ../src/Core.TypeScript/ci/qemu-full-install-test.ts "$iso_abs"
 
       - name: Upload 081KSGS9H0008QG0R003V23XNZ wifi ESP serial log
-        if: always() && github.event_name == 'workflow_dispatch'
+        if: always() && github.event_name == 'workflow_dispatch' && !inputs.only_wp11
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: qemu-wifi-esp-serial-log
@@ -712,7 +722,7 @@ jobs:
           retention-days: 7
 
       - name: UEFI keyfile install-time write (workflow_dispatch only)
-        if: always() && github.event_name == 'workflow_dispatch'
+        if: always() && github.event_name == 'workflow_dispatch' && !inputs.only_wp11
         timeout-minutes: 90
         working-directory: full-ai-cluster
         env:
@@ -731,7 +741,7 @@ jobs:
           bun ../src/Core.TypeScript/ci/qemu-full-install-test.ts "$iso_abs"
 
       - name: Upload UEFI keyfile phase-1 serial log
-        if: always() && github.event_name == 'workflow_dispatch'
+        if: always() && github.event_name == 'workflow_dispatch' && !inputs.only_wp11
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: qemu-uefi-keyfile-serial-log
@@ -740,7 +750,7 @@ jobs:
           retention-days: 7
 
       - name: UEFI keyfile picker bind (workflow_dispatch only)
-        if: always() && github.event_name == 'workflow_dispatch'
+        if: always() && github.event_name == 'workflow_dispatch' && !inputs.only_wp11
         timeout-minutes: 90
         working-directory: full-ai-cluster
         env:
@@ -759,7 +769,7 @@ jobs:
           bun ../src/Core.TypeScript/ci/qemu-full-install-test.ts "$iso_abs"
 
       - name: Upload UEFI keyfile picker serial log
-        if: always() && github.event_name == 'workflow_dispatch'
+        if: always() && github.event_name == 'workflow_dispatch' && !inputs.only_wp11
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: qemu-uefi-keyfile-picker-serial-log
@@ -768,7 +778,7 @@ jobs:
           retention-days: 7
 
       - name: 081KSNY2Z0008QG0R0008PN7RQ scenario 3 — reformat with retention (workflow_dispatch only)
-        if: always() && github.event_name == 'workflow_dispatch'
+        if: always() && github.event_name == 'workflow_dispatch' && !inputs.only_wp11
         timeout-minutes: 90
         working-directory: full-ai-cluster
         env:
@@ -788,7 +798,7 @@ jobs:
           bun ../src/Core.TypeScript/zflash/test-harness/run.ts --scenario reformat-with-retention "$iso_abs"
 
       - name: 081KSNY2Z0008QG0R0008PN7RQ scenario 4 — path-fork migrate vs fresh (workflow_dispatch only)
-        if: always() && github.event_name == 'workflow_dispatch'
+        if: always() && github.event_name == 'workflow_dispatch' && !inputs.only_wp11
         timeout-minutes: 90
         working-directory: full-ai-cluster
         env:
@@ -809,7 +819,7 @@ jobs:
           bun ../src/Core.TypeScript/zflash/test-harness/run.ts --scenario reformat-from-scratch "$iso_abs"
 
       - name: Upload 081KSNY2Z0008QG0R0008PN7RQ retention serial logs
-        if: always() && github.event_name == 'workflow_dispatch'
+        if: always() && github.event_name == 'workflow_dispatch' && !inputs.only_wp11
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: b0891-retention-serial-logs
@@ -818,7 +828,7 @@ jobs:
           retention-days: 7
 
       - name: Upload 081KSNY2Z0008QG0R0008PN7RQ path-fork serial logs
-        if: always() && github.event_name == 'workflow_dispatch'
+        if: always() && github.event_name == 'workflow_dispatch' && !inputs.only_wp11
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: b0891-path-fork-serial-logs
@@ -1351,18 +1361,34 @@ jobs:
   # than one shared with a cold ISO build's nix store. It runs in parallel, so it
   # adds runner-minutes, not wall-clock.
   #
-  # SAME TIER AS longhorn-volume-binds: push + workflow_dispatch (+ schedule),
-  # not PRs — it needs internet and pulls Cilium + Longhorn images onto three
-  # guests. Advisory like every job in this workflow: `gate (required)` is the
-  # only required check on main. `only_cluster_ha` on a dispatch runs this job
-  # alone.
-  #
-  # BUDGET: guests are 3 x 4096 MiB on a 16 GiB / 4 vCPU runner (public repo).
-  # The sampler below records host memory every 10 s and the summary step
-  # prints the peak, so the budget is read off the run, not asserted here.
+  # TIER: workflow_dispatch ONLY, until it has one green run on a hosted runner.
+  # It was wired at longhorn-volume-binds' tier (push + schedule) and has not
+  # yet passed there, so on push it would be a standing red on every
+  # full-ai-cluster change. Measured on ubuntu-24.04 (16 GiB / 4 vCPU):
+  #   run 35920509908  3 x 4096 MiB, all on root images: join + 3 Ready +
+  #                    Longhorn on 3 nodes in 1476 s; PVC bind timed out —
+  #                    etcd fdatasync > 1 s, applies up to 5.7 s, k3s restarts
+  #                    on every server. Host RAM peak 14572 / 15989 MiB.
+  #   run 35926193063  3 x 3584 MiB, /var/lib/rancher on a cache=unsafe disk:
+  #                    3 Ready in 336 s, Longhorn in 1155 s; PVC bind timed out
+  #                    again — 26847 slow-fdatasync warnings, k3s still
+  #                    restarting. Host RAM peak 13213 / 15989 MiB.
+  #   run 35930213010  + etcd db on tmpfs: slow-fdatasync gone (1 warning),
+  #                    3 Ready at 329 s, Longhorn at 566 s — and the PVC bind
+  #                    STILL timed out. 16825 `apply request took too long`
+  #                    (2-5 s on read-only ranges, i.e. CPU, not disk) and 12
+  #                    k3s exits on `leaderelection lost`. Host RAM 13156 MiB.
+  # VERDICT from those three: three full control planes + the product Cilium
+  # (envoy, hubble relay/ui) + Longhorn do NOT fit 4 hosted vCPUs; the guests'
+  # 6 vCPUs starve each other past the leader-election renew deadline. This
+  # needs a larger runner (8+ vCPU); relaxing the election timers would hide
+  # the starvation rather than fix it. Restore push/schedule in the change
+  # that records its first green run.
+  # `only_cluster_ha` on a dispatch runs this job alone. Advisory either way:
+  # `gate (required)` is the only required check on main.
   cluster-ha:
     name: k3s HA cluster + replicated Longhorn (3 VMs)
-    if: ${{ github.event_name == 'push' || github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' }}
+    if: ${{ github.event_name == 'workflow_dispatch' }}
     runs-on: ubuntu-24.04
     timeout-minutes: 120
     permissions:
