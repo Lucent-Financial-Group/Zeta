@@ -29,7 +29,7 @@
  *
  * Every other rule, and this rule on every other file, passes through untouched.
  */
-import { readFileSync, readdirSync, statSync, writeFileSync } from "node:fs";
+import { readFileSync, readdirSync, writeFileSync } from "node:fs";
 import { isAbsolute, join, relative, resolve } from "node:path";
 
 export const DOMINATED_RULE = "js/call-to-non-callable";
@@ -106,9 +106,24 @@ export function parseTscFileList(text: string, repoRoot: string): ReadonlySet<st
   return out;
 }
 
+/**
+ * `path` as a list of SARIF files: its `.sarif` entries if it is a directory,
+ * itself if it is a file.
+ *
+ * ONE SYSCALL, ONE ANSWER. Not `statSync(path).isFile()` followed by a read --
+ * between the check and the use the path can change, and the answer the check
+ * returned is already stale (CWE-367; `lint-check-then-use-file-races.ts` is the
+ * standing guard, and it caught the first version of this function). The
+ * directory read either succeeds or fails with ENOTDIR, and that failure IS the
+ * "it is a file" answer.
+ */
 function sarifFilesIn(path: string): string[] {
-  if (statSync(path).isFile()) return [path];
-  return readdirSync(path).filter((f) => f.endsWith(".sarif")).map((f) => join(path, f));
+  try {
+    return readdirSync(path).filter((f) => f.endsWith(".sarif")).map((f) => join(path, f));
+  } catch (e) {
+    if ((e as NodeJS.ErrnoException).code === "ENOTDIR") return [path];
+    throw e;
+  }
 }
 
 function main(argv: readonly string[]): number {
