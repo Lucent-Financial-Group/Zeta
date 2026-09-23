@@ -176,7 +176,7 @@ export function decideAfterObservation(
   },
 ): Step {
   if (obs.kind === "run" && obs.run.status === "completed") return { kind: "completed", run: obs.run };
-  const pastDeadline = ctx.nowMs > ctx.deadlineMs;
+  const pastDeadline = ctx.nowMs >= ctx.deadlineMs;
   if (obs.kind === "error") {
     const cls = classifyProbeError(obs.error);
     if (cls === "fatal") {
@@ -184,7 +184,7 @@ export function decideAfterObservation(
     }
     if (pastDeadline) {
       return {
-        kind: "timed-out",
+        kind: "unknown",
         reason: `deadline reached while the last probe was failing (${cls}): ${obs.error.message}`,
       };
     }
