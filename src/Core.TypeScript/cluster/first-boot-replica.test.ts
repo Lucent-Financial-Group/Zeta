@@ -928,14 +928,17 @@ describe("attributePodIssues", () => {
 // ──────── WP23: item 2 — named, sourced expected-divergence classification ────────
 
 describe("parseExternalSecretCatalog", () => {
-  test("parses the real INJECTION-POINTS.md and finds hindsight-llm-api-key + ghcr-pull as EXTERNAL", () => {
+  test("parses the real INJECTION-POINTS.md: EXACTLY hindsight-llm-api-key + ghcr-pull are EXTERNAL, the six INTERNAL rows are not", () => {
+    // Exact-equality on the whole set, not an absence check on one name — a
+    // positive pin carries the "INTERNAL rows are excluded" claim on a check
+    // that can fail if EITHER an INTERNAL row leaks in OR an EXTERNAL row
+    // silently disappears, which `not.toContain` on a single name cannot see
+    // (audit-check-arity-nonequality.ts R5: an absence assertion witnesses one
+    // rendering of a leak, never its absence).
     const markdown = readFileSync(resolve(REPO_ROOT, "full-ai-cluster/INJECTION-POINTS.md"), "utf-8");
     const catalog = parseExternalSecretCatalog(markdown);
-    const names = catalog.map((e) => e.secretName);
-    expect(names).toContain("hindsight-llm-api-key");
-    expect(names).toContain("ghcr-pull");
-    // INTERNAL rows (minted by internal-secret-seeding.yaml on metal) must NOT appear.
-    expect(names).not.toContain("grafana-admin-credentials");
+    const names = catalog.map((e) => e.secretName).sort();
+    expect(names).toEqual(["ghcr-pull", "hindsight-llm-api-key"]);
   });
 
   test("a fixture table with no EXTERNAL rows yields []", () => {
