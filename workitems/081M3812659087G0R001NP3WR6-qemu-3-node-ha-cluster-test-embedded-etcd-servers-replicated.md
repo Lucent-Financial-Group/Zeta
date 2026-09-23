@@ -64,3 +64,19 @@ separate from the CNI endpoint), or a VIP / kube-vip-style address.
   the product" eval check. The known violation is gone; the check is not built.
 - `longhorn-volume-binds.nix` pins chart 1.7.2 while prod runs 1.12.1; this
   test uses 1.12.1.
+
+## Run log
+
+- **Run 35920509908 (first CI run, #17569 as merged): RED at the PVC bind.**
+  PASSED: server2 + server3 joined as etcd members, one CA, source-scoped etcd
+  rules present, all three nodes Ready on Cilium, Longhorn manager Ready on all
+  three with each node's own disk registered, StorageClass `numberOfReplicas=3`
+  — 1476 s of test-script time. FAILED: `pvc ha-proof` never Bound in 900 s.
+  Cause, from the journal: etcd starved of disk on the shared runner disk
+  (`slow fdatasync` > 1 s, applies up to 5.7 s, raft re-elections), k3s exiting
+  on `failed to wait for apiserver being healthy` on every server, 20+
+  restarts. Host RAM peak 14572 / 15989 MiB. Also found: Longhorn's disk
+  annotator `wants` k3s, so the joiners' held-back k3s started at boot anyway.
+  Fix in the follow-up PR: /var/lib/rancher on its own `cache=unsafe` disk,
+  guests 3584 MiB, annotator held back with the joiners' k3s, and a
+  diagnostic dump on every long wait.
