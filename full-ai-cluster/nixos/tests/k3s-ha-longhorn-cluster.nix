@@ -203,6 +203,21 @@ let
       fsType = "ext4";
       autoFormat = true;
     };
+    # ...and etcd's own directory on tmpfs, because the disk move above was NOT
+    # enough (run 35926193063): with /var/lib/rancher on a cache=unsafe disk,
+    # etcd still logged 26847 `slow fdatasync` warnings (max 1.84 s) and k3s
+    # kept restarting. At ~13.2 GiB of 16 GiB host RAM used, the host has no
+    # page cache to absorb three guests' writes, so qemu's writes block on
+    # host dirty-page throttling whatever the cache mode. tmpfs takes etcd off
+    # the host disk entirely. Harness-only, and harmless to what this test
+    # proves: the only node that crashes is server3, and quorum survives on
+    # the two that do not. `db/etcd` itself is NOT pre-created, so
+    # k3s-datastore-preflight still sees a from-scratch node.
+    virtualisation.fileSystems."/var/lib/rancher/k3s/server/db" = {
+      device = "tmpfs";
+      fsType = "tmpfs";
+      options = [ "size=1g" "mode=0700" ];
+    };
 
     # 3584, not 4096 (run 35920509908: host peak 14572 of 15989 MiB with three
     # 4096 MiB guests, while each guest reported ~1.0-1.3 GiB used — the rest

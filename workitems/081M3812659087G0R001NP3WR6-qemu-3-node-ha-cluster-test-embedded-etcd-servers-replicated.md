@@ -80,3 +80,10 @@ separate from the CNI endpoint), or a VIP / kube-vip-style address.
   Fix in the follow-up PR: /var/lib/rancher on its own `cache=unsafe` disk,
   guests 3584 MiB, annotator held back with the joiners' k3s, and a
   diagnostic dump on every long wait.
+- **Run 35926193063 (rancher on a cache=unsafe disk, 3584 MiB): RED at the PVC
+  bind again.** Much faster formation (3 Ready at 336 s, Longhorn at 1155 s),
+  but 26847 `slow fdatasync` warnings and continued k3s restarts; the CSI
+  sidecars were only created 2 min before the timeout (driver-deployer had
+  restarted 16 times). Host RAM peak 13213 / 15989 MiB. Next: etcd's db dir
+  on tmpfs, and the job moved to workflow_dispatch only until it has a green
+  run on a hosted runner.
