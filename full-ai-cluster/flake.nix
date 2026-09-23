@@ -89,7 +89,14 @@
 
       mkSystem = { system ? "x86_64-linux", modules }: nixpkgs.lib.nixosSystem {
         inherit system;
-        specialArgs = { inherit inputs stateVersion; };
+        # `self` added 081M35C7NJR087G0R002S4R654 (WP21): the installer
+        # configuration reads `self.rev` to embed the exact commit this ISO was
+        # built from (`/etc/zeta-iso-provenance`), so `zeta-install.sh` can pin
+        # the post-clone checkout to it instead of always installing the
+        # remote's default-branch HEAD. Harmless for every other host: `self`
+        # is just one more unused specialArg to a module whose signature ends
+        # in `...`.
+        specialArgs = { inherit inputs stateVersion self; };
         modules = [
           ({ nixpkgs.overlays = [ (import ./nixos/overlays/mise-pin.nix) ]; })
         ] ++ modules;
@@ -714,6 +721,17 @@
           longhorn-volume-binds =
             import ./nixos/tests/longhorn-volume-binds.nix { inherit pkgs; };
 
+          # A CLUSTER, not a node: three role=server members with embedded-etcd
+          # HA (founder + two joins through injected-server-join.nix, etcd peers
+          # admitted by the PRODUCT option zeta.k3sServer.etcdPeers), all Ready
+          # on Cilium, Longhorn with 3 replicas placed on 3 distinct nodes, then
+          # one replica-holding node hard power-cut: API reads + quorum writes
+          # survive and the data reads back on a survivor.
+          # REQUIRES internet -> build with `--option sandbox false`.
+          # See nixos/tests/k3s-ha-longhorn-cluster.nix.
+          k3s-ha-longhorn-cluster =
+            import ./nixos/tests/k3s-ha-longhorn-cluster.nix { inherit pkgs; };
+
           # THE ONLY CHECK THAT APPLIES THE REAL FIRST-BOOT ROSTER. Every
           # other VM test above overrides `services.k3s.manifests` away, so
           # the declared boot sequence had never run anywhere. This one boots
@@ -807,6 +825,26 @@
               };
             in
             pkgs.runCommand "k8s-node-tunables-model" { inherit (report) status; } ''
+              echo "$status" | tee "$out"
+            '';
+
+          # EVAL-ONLY (no VM, no boot): properties of k3s-etcd-peers.nix — the
+          # opt-in, source-scoped etcd 2379/2380 admission multi-server HA needs,
+          # and the evaluation-time refusal of a JOINING control plane nothing
+          # admits etcd traffic to (081M10ZG61D087G0R001A70F0P). Reads the real
+          # nixosConfigurations.control-plane to prove the shipped host's
+          # firewall is UNCHANGED, and pins the mutation that made the refusal
+          # vacuous in its first draft (NixOS's implicit trusted `lo`).
+          # See nixos/tests/k3s-etcd-peers-eval-test.nix.
+          k3s-etcd-peers-model =
+            let
+              report = import ./nixos/tests/k3s-etcd-peers-eval-test.nix {
+                inherit (nixpkgs) lib;
+                inherit nixpkgs;
+                controlPlaneConfig = self.nixosConfigurations.control-plane;
+              };
+            in
+            pkgs.runCommand "k3s-etcd-peers-model" { inherit (report) status; } ''
               echo "$status" | tee "$out"
             '';
         };
