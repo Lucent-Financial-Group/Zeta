@@ -70,10 +70,14 @@ const RULES: readonly { name: string; find: RegExp; replace: (m: string) => stri
   { name: "boolean-false→true", find: /\bfalse\b/g, replace: () => "true" },
   { name: "arith+→-", find: /\s\+\s/g, replace: () => " - " },
   // numeric literal perturbation: 1.71 → 1.81 (changes the value, keeps the type)
-  { name: "float-literal", find: /\b(\d+)\.(\d+)\b/g, replace: (m) => {
+  {
+    name: "float-literal",
+    find: /\b(\d+)\.(\d+)\b/g,
+    replace: (m) => {
       const [i, f] = m.split(".");
       return `${i}.${String(Number(f) + 1)}`;
-    } },
+    },
+  },
 ];
 
 /** Every single-site mutation available in a source, one per (rule, occurrence). */
@@ -193,9 +197,7 @@ function main(): void {
     console.log(`\n[mutation-probe] restored ${file}`);
   }
 
-  console.log(
-    `\nSummary: ${survivors.length} SURVIVED, ${mutations.length - survivors.length - invalid} killed`,
-  );
+  console.log(`\nSummary: ${survivors.length} SURVIVED, ${mutations.length - survivors.length - invalid} killed`);
   if (survivors.length > 0) {
     console.error(
       `\n${survivors.length} mutant(s) survived — those regions can change behaviour with NO test noticing.\n` +

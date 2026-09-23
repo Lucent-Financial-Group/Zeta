@@ -72,9 +72,7 @@ switch (command) {
       "00:00:30",
     ]);
     run("dotnet-trace", ["convert", "--format", "speedscope", "trace.nettrace"]);
-    process.stdout.write(
-      "Open trace.speedscope.json at https://www.speedscope.app\n",
-    );
+    process.stdout.write("Open trace.speedscope.json at https://www.speedscope.app\n");
     break;
   }
 
@@ -112,7 +110,8 @@ switch (command) {
       "profile.ts coverage: unavailable under Microsoft.Testing.Platform until coverlet.MTP is added " +
         "(workitem 081M380V792087G0R001PR993V). Nothing was run.\n",
     );
-    process.exit(2);
+    process.exitCode = 2;
+    break;
 
   default:
     process.stdout.write(`DBSP profiling helper.
@@ -122,9 +121,8 @@ switch (command) {
   bun tools/profile.ts trace <pid>        # session trace for speedscope.app
   bun tools/profile.ts gcdump <pid>       # heap dump for PerfView
   bun tools/profile.ts bench [filter]     # BenchmarkDotNet run with memory diagnoser
-  bun tools/profile.ts coverage           # run tests with coverage, emit HTML
+  bun tools/profile.ts coverage           # unavailable under MTP (081M380V792087G0R001PR993V)
 `);
-    if (command !== "" && command !== "-h" && command !== "--help")
-      process.exit(64);
+    if (command !== "" && command !== "-h" && command !== "--help") process.exit(64);
     break;
 }
