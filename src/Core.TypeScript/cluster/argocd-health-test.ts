@@ -30,6 +30,7 @@ import { tmpdir } from "node:os";
 import { basename, join, resolve } from "node:path";
 import { parse as parseYaml } from "yaml";
 import { bootstrapKindClusterInProcess, bootstrapK3dClusterInProcess } from "./harness/bootstrap.ts";
+import { listApplicationDirs, parseLaneDirs } from "./application-dirs.ts";
 import {
   DEV_BOOTSTRAP_SECRETS,
   DEV_SHARED_SECRETS,
@@ -136,6 +137,13 @@ export interface CliOptions {
    * is for our real hardware, dev is for testing on our github runners."
    */
   readonly serveTreeProfile: string | null;
+  /**
+   * Scope the run to ONE lane: these Application directories are applied AND
+   * asserted, every other directory is excluded from the root catalogue. `null`
+   * -- the default -- is the whole roster, exactly as before this flag existed.
+   * Apply and assert both derive from this one list (`application-dirs.ts`).
+   */
+  readonly laneDirs: readonly string[] | null;
   /**
    * Seconds to keep watching AFTER the all-Healthy verdict for a container
    * restartCount increase or an Application leaving Healthy/Synced -- "does
@@ -274,6 +282,7 @@ interface MutableCliOptions {
   kindCni: KindCni;
   ephemeralVaultInit: boolean;
   serveTreeProfile: string | null;
+  laneDirs: readonly string[] | null;
   soakSeconds: number;
 }
 
@@ -332,13 +341,13 @@ const DEFAULT_POLL_SECONDS = 10;
 export const DEFAULT_SOAK_SECONDS = 0;
 const SPAWN_MAX_BUFFER = 64 * 1024 * 1024;
 const HELP_TEXT =
-  "usage: bun src/Core.TypeScript/cluster/argocd-health-test.ts [--dry-run|--preflight|--run] [--provider k3d|kind] [--cni kindnetd|cilium] [--scope smoke|included|full] [--runtime docker|podman] [--git-ref REF] [--cluster-name NAME] [--config PATH] [--serve-tree RUNG] [--existing] [--timeout-sec N] [--poll-sec N] [--soak-sec N] [--drift-check] [--ephemeral-vault-init]";
+  "usage: bun src/Core.TypeScript/cluster/argocd-health-test.ts [--dry-run|--preflight|--run] [--provider k3d|kind] [--cni kindnetd|cilium] [--scope smoke|included|full] [--runtime docker|podman] [--git-ref REF] [--cluster-name NAME] [--config PATH] [--serve-tree RUNG] [--lane-dirs D1,D2] [--existing] [--timeout-sec N] [--poll-sec N] [--soak-sec N] [--drift-check] [--ephemeral-vault-init]";
 const MODE_FLAGS: Readonly<Record<string, Mode>> = {
   "--dry-run": "dry-run",
   "--preflight": "preflight",
   "--run": "run",
 };
-const STRING_FLAGS = new Set(["--git-ref", "--cluster-name", "--config", "--serve-tree"]);
+const STRING_FLAGS = new Set(["--git-ref", "--cluster-name", "--config", "--serve-tree", "--lane-dirs"]);
 const INTEGER_FLAGS = new Set(["--timeout-sec", "--poll-sec", "--soak-sec"]);
 const K3D_CLUSTER_NAME_PATTERN = /^\s+name:\s*([A-Za-z\d-]+)\s*$/;
 const DNS_LABEL_PATTERN = /^[a-z\d]([-a-z\d]*[a-z\d])?$/;
@@ -505,6 +514,14 @@ export const DEV_EXCLUDED_REASONS: ReadonlyMap<string, string> = new Map([
       "LIFTS WHEN: `gitlab-initial-root-password` has a source in the tree -- a SealedSecret or an " +
       "ExternalSecret, the same shape the other credentialled apps use -- AND one included run reports this " +
       "Application's actual verdict, which is also what would settle the capacity prediction either way. " +
+      "UPDATE 2026-09-22 (WP24, 081M35K4PV6087G0R001Z3E0P8): THE ROOT-PASSWORD HALF OF THIS BLOCKER IS " +
+      "CLOSED -- `k8s/bootstrap/internal-secret-seeding.yaml` now mints `gitlab-initial-root-password` on a " +
+      "real metal first boot (a create-only Job, same shape as every sibling credential in that file), and " +
+      "`DEV_GITLAB_ROOT_SECRET` mints it in dev/CI. The reference itself was found to be invisible to " +
+      "`audit-existing-secret-is-minted.ts` (a bare `secret:` leaf, not `existingSecret`/`secretName`), which " +
+      "is why it read as unsourced above -- that detection gap is also fixed. This Application STAYS " +
+      "glob-deferred: the capacity reason below (chart size, multi-GB images, a kind runner's assertion " +
+      "budget) is untouched and is the reason that remains. " +
       "ANCHORS, CHECKED BY `reason-truth.ts`: each names an artifact this tree holds, so a claim that " +
       "outlives its artifact goes red instead of reading on. " +
       "[cite: no-unrenderable full-ai-cluster/gitlab] " +
@@ -829,10 +846,15 @@ const DEV_INCLUDED_PROOF_DEFERRED_DIRS = new Set([
   // reach Synced/Healthy, which is the point -- "both up" that nothing checks is the
   // same claim the standby posture was making. gitlab STAYS deferred below, for
   // reasons that are about chart size rather than about the pair.
-  // charts.gitlab.io/gitlab 8.7.0: ~40 subcharts, a `gitlab-initial-root-password`
-  // Secret CI has no source for, and a Postgres/Redis/Gitaly/MinIO stack wanting
-  // several PVCs plus multi-GB images. A kind runner cannot schedule that inside
-  // the lane's assertion budget.
+  // charts.gitlab.io/gitlab 8.7.0: ~40 subcharts, and a Postgres/Redis/Gitaly/MinIO
+  // stack wanting several PVCs plus multi-GB images. A kind runner cannot schedule
+  // that inside the lane's assertion budget.
+  //
+  // WP24 (081M35K4PV6087G0R001Z3E0P8), 2026-09-22: `gitlab-initial-root-password`
+  // is NO LONGER a reason gitlab is deferred -- `k8s/bootstrap/internal-secret-
+  // seeding.yaml` mints it on metal and `DEV_GITLAB_ROOT_SECRET` mints it in
+  // dev/CI (see argocd-health-test.ts's `gitlab` entry in `DEV_EXCLUDED_REASONS`
+  // for the full trace). Chart size alone is what keeps this entry.
   "gitlab",
   // `headscale` is NOT here. It LEFT this set on 2026-08-22 after ONE cycle, and
   // the entry is recorded as closed rather than the lines silently deleted.
@@ -1548,6 +1570,7 @@ function defaultCliOptions(env: NodeJS.ProcessEnv): ParseOptionsResult {
       kindCni: "kindnetd",
       ephemeralVaultInit: false,
       serveTreeProfile: null,
+      laneDirs: null,
       soakSeconds: DEFAULT_SOAK_SECONDS,
     },
   };
@@ -1563,6 +1586,7 @@ function readFlagValue(argv: readonly string[], index: number, flag: string, des
 
 function assignStringFlag(options: MutableCliOptions, flag: string, value: string): void {
   if (flag === "--serve-tree") options.serveTreeProfile = value;
+  if (flag === "--lane-dirs") options.laneDirs = parseLaneDirs(value);
   if (flag === "--git-ref") options.gitRef = value;
   if (flag === "--cluster-name") options.clusterName = value;
   if (flag === "--config") {
@@ -1796,6 +1820,12 @@ export function discoverExpectedApplications(
   /** See `isExcludedFromIncludedProof`'s `provider` note: optional, `null` lifts nothing. */
   provider: Provider | null = null,
   kindCni: KindCni = "kindnetd",
+  /**
+   * One lane's Application directories, or `null` for the whole roster. The
+   * SAME list scopes what the root catalogue applies (`laneScopedExcludeGlob`),
+   * so apply and assert cannot disagree about which charts a lane owns.
+   */
+  laneDirs: readonly string[] | null = null,
 ): readonly ExpectedApplication[] {
   // Read the substrate condition ONCE for the whole roster: it is a property of
   // the repo, not of any one Application, and re-reading it per directory would
@@ -1803,10 +1833,12 @@ export function discoverExpectedApplications(
   // `longhorn` StorageClass.
   const aliasDeclared = devLonghornStorageClassAliasDeclared(repoRoot);
   const appsDir = resolve(repoRoot, "full-ai-cluster/k8s/applications");
-  const dirs = readdirSync(appsDir, { withFileTypes: true })
-    .filter((entry) => entry.isDirectory())
-    .map((entry) => entry.name)
-    .sort(stringCompare);
+  // DEPTH 2, via the module the root catalogue also uses. Depth 1 missed
+  // `game-hosting/gmod`, which ArgoCD's non-segment-bounded glob does apply --
+  // see `application-dirs.ts`.
+  const all = listApplicationDirs(repoRoot);
+  const lane = laneDirs === null ? null : new Set(laneDirs);
+  const dirs = lane === null ? all : all.filter((d) => lane.has(d));
 
   return dirs.flatMap((dir) => {
     const appPath = join(appsDir, dir, "Application.yaml");
@@ -1862,7 +1894,7 @@ export function buildPlan(options: CliOptions, repoRoot = REPO_ROOT): HarnessPla
     // which is the same defect (a lift condition nothing can evaluate) one
     // layer up. `buildPlan` is the only caller that knows which substrate the
     // proof is about; the repo-level callers keep the `null` default.
-    expectedApplications = discoverExpectedApplications(repoRoot, options.provider, options.kindCni);
+    expectedApplications = discoverExpectedApplications(repoRoot, options.provider, options.kindCni, options.laneDirs);
   } catch (error) {
     return {
       kind: "ApplicationManifestInvalid",
@@ -2192,7 +2224,7 @@ export function buildLaneTreeForProfile(
     // could only be excluded from CI entirely. Twelve were.
     //
     // `applyRungOverrides` is the second point: arbitrary dotted-path set/remove,
-    // declared in `rung-overrides.json`, each entry carrying a substrate reason
+    // declared in `rung-overrides.yaml`, each entry carrying a substrate reason
     // and a lift condition, and each REFUSED if it produces no edits. It runs
     // AFTER the rung so a resource claim and an override can address the same
     // manifest without the override being silently reverted.
@@ -2230,6 +2262,7 @@ function bootstrapCluster(plan: HarnessPlan, options: CliOptions): Failure | nul
         containerRuntime: options.runtime,
         cni: options.kindCni,
         ...(laneTree === null ? {} : { laneTree }),
+        ...(options.laneDirs === null ? {} : { laneDirs: options.laneDirs }),
       });
       return null;
     } catch (e) {
@@ -2250,6 +2283,7 @@ function bootstrapCluster(plan: HarnessPlan, options: CliOptions): Failure | nul
       configPath: options.configPath,
       gitRef: options.gitRef,
       ...(laneTree === null ? {} : { laneTree }),
+      ...(options.laneDirs === null ? {} : { laneDirs: options.laneDirs }),
     });
     return null;
   } catch (e) {
