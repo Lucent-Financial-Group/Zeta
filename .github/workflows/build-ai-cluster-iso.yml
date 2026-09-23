@@ -1373,7 +1373,17 @@ jobs:
   #                    3 Ready in 336 s, Longhorn in 1155 s; PVC bind timed out
   #                    again — 26847 slow-fdatasync warnings, k3s still
   #                    restarting. Host RAM peak 13213 / 15989 MiB.
-  # Restore push/schedule in the change that records its first green run.
+  #   run 35930213010  + etcd db on tmpfs: slow-fdatasync gone (1 warning),
+  #                    3 Ready at 329 s, Longhorn at 566 s — and the PVC bind
+  #                    STILL timed out. 16825 `apply request took too long`
+  #                    (2-5 s on read-only ranges, i.e. CPU, not disk) and 12
+  #                    k3s exits on `leaderelection lost`. Host RAM 13156 MiB.
+  # VERDICT from those three: three full control planes + the product Cilium
+  # (envoy, hubble relay/ui) + Longhorn do NOT fit 4 hosted vCPUs; the guests'
+  # 6 vCPUs starve each other past the leader-election renew deadline. This
+  # needs a larger runner (8+ vCPU); relaxing the election timers would hide
+  # the starvation rather than fix it. Restore push/schedule in the change
+  # that records its first green run.
   # `only_cluster_ha` on a dispatch runs this job alone. Advisory either way:
   # `gate (required)` is the only required check on main.
   cluster-ha:

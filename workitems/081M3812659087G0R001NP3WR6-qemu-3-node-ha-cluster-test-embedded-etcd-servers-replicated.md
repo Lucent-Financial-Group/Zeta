@@ -87,3 +87,13 @@ separate from the CNI endpoint), or a VIP / kube-vip-style address.
   restarted 16 times). Host RAM peak 13213 / 15989 MiB. Next: etcd's db dir
   on tmpfs, and the job moved to workflow_dispatch only until it has a green
   run on a hosted runner.
+- **Run 35930213010 (etcd db on tmpfs): RED at the PVC bind, cause now CPU.**
+  slow-fdatasync gone (1 warning); 3 Ready at 329 s, Longhorn up at 566 s. But
+  16825 `apply request took too long` (2-5 s on read-only ranges) and 12 k3s
+  exits on `leaderelection lost` (renew deadline missed), so Longhorn's CSI
+  never settled. Host RAM 13156 / 15989 MiB.
+  **Verdict: this 3-server + Cilium + Longhorn test does not fit a 4-vCPU
+  hosted runner.** Options, not done here: (a) run it on an 8+ vCPU runner;
+  (b) a hosted-runner variant with 1 server + 2 agents (agents run no
+  apiserver/etcd), keeping this one for the HA claim. NOT an option: relaxing
+  leader-election timers in the harness, which would hide starvation.
