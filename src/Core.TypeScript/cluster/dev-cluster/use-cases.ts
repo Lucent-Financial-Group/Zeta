@@ -22,6 +22,7 @@ import {
   DEV_GHCR_PULL_SECRET,
   devCiliumLbKindManifestPath,
   devStorageAliasManifestPath,
+  DEV_STOCK_DEFAULT_STORAGE_CLASSES,
   resolveRegistryToken,
   REPO_ROOT,
 } from "./lib.ts";
@@ -30,27 +31,45 @@ import { CHART_ROTATION_CONSTRAINTS } from "../chart-rotation-conformance.ts";
 import { SERVED_GIT_REF } from "../lane-tree-source.ts";
 
 /**
- * Apply the dev/CI alias StorageClasses, BEFORE the app-of-apps root syncs.
+ * Apply the dev/CI storage-CAPABILITY bindings, BEFORE the app-of-apps root syncs.
+ *
+ * Charts name a capability (`zeta-block-replicated`, `zeta-block-local`), never
+ * a provider (storage-capabilities.ts); this is where dev binds the two RWO
+ * capabilities, both to `rancher.io/local-path`, the provisioner kind and k3s
+ * already run -- it declares NAMES, never a second provisioner Deployment.
  *
  * Order is load-bearing: a PVC created by a synced Application before its class
- * exists sits `Pending` and only a `WaitForFirstConsumer` retry saves it. Both
- * aliases bind to `rancher.io/local-path`, the provisioner kind and k3s already
- * run -- this declares NAMES, never a second provisioner Deployment.
+ * exists sits `Pending` and only a `WaitForFirstConsumer` retry saves it.
+ *
+ * THEN IT CLEARS THE STOCK DEFAULT. kind ships `standard` and k3s ships
+ * `local-path`, each marked default; `zeta-block-local` is the default on metal
+ * and is marked default here too, so the stock class is un-marked and a chart
+ * that omits `storageClassName` resolves the same way on both substrates. A
+ * class that is absent (k3d with local-storage disabled, a future kind) is
+ * skipped -- absence is not a failure here, it is already the state we want.
  *
  * Shared by the kind and k3d bring-ups on purpose. `isExcludedFromIncludedProof`
- * is provider-independent, so if only one provider created the `longhorn` alias
- * the harness would assert longhorn-backed Applications on a substrate that
- * cannot bind them, and they would hang `Pending` instead of failing.
+ * is provider-independent, so if only one provider bound a capability the
+ * harness would assert Applications on a substrate that cannot bind them, and
+ * they would hang `Pending` instead of failing.
  *
  * EXPORTED because `apply-root-app.ts` is a THIRD entrypoint that applies the
  * root catalogue without going through either bring-up. Left alone it would
- * sync longhorn-backed Applications into a cluster with no such class -- the
+ * sync storage-backed Applications into a cluster with no such class -- the
  * same hazard, reached by a door the bring-up falsifiers do not watch.
  */
 export function applyDevStorageClassAliases(ports: DevClusterPorts): void {
-  console.log("Ensuring dev/CI alias StorageClasses (zeta-local-path, longhorn) ...");
-  ports.controlPlane.applyFileManifest(devStorageAliasManifestPath("zetaLocalPath"));
-  ports.controlPlane.applyFileManifest(devStorageAliasManifestPath("longhorn"));
+  console.log("Binding dev/CI storage capabilities (zeta-block-local [default], zeta-block-replicated) ...");
+  ports.controlPlane.applyFileManifest(devStorageAliasManifestPath("blockLocal"));
+  ports.controlPlane.applyFileManifest(devStorageAliasManifestPath("blockReplicated"));
+  for (const stock of DEV_STOCK_DEFAULT_STORAGE_CLASSES) {
+    if (!ports.controlPlane.resourceExists(`storageclass/${stock}`, null)) continue;
+    ports.controlPlane.mergePatch(
+      `storageclass/${stock}`,
+      null,
+      JSON.stringify({ metadata: { annotations: { "storageclass.kubernetes.io/is-default-class": "false" } } }),
+    );
+  }
 }
 
 /**
@@ -501,6 +520,11 @@ export function applyDevRegistryPullSecret(
 }
 
 export interface KindCiBringUpOptions {
+  /**
+   * One lane's Application directories; absent is the whole roster. Scopes the
+   * root catalogue's exclude glob via `laneScopedExcludeGlob`.
+   */
+  readonly laneDirs?: readonly string[];
   readonly configPath: string;
   readonly clusterName: string;
   readonly gitRef: string;
@@ -550,6 +574,11 @@ export interface KindCiBringUpOptions {
 }
 
 export interface K3dDevBringUpOptions {
+  /**
+   * One lane's Application directories; absent is the whole roster. Scopes the
+   * root catalogue's exclude glob via `laneScopedExcludeGlob`.
+   */
+  readonly laneDirs?: readonly string[];
   readonly configPath: string;
   readonly clusterName: string;
   readonly agentCount: number;
@@ -674,7 +703,7 @@ export function bringUpKindCiCluster(ports: DevClusterPorts, options: KindCiBrin
   // readiness wait removes entirely.
   const rootRepoUrl = applyLaneTreeSource(ports, options.laneTree) ?? options.gitRepoUrl;
   const catalogRef = laneTreeCatalogRef(options.laneTree, options.gitRef);
-  appCatalog.applyRootDevCatalog(catalogRef, rootRepoUrl, "kind", cni);
+  appCatalog.applyRootDevCatalog(catalogRef, rootRepoUrl, "kind", cni, options.laneDirs ?? null);
 }
 
 /**
@@ -1059,7 +1088,7 @@ export function bringUpK3dDevCluster(ports: DevClusterPorts, options: K3dDevBrin
   // PROVIDER PASSED. Without it the catalogue keeps the static exclude glob
   // while the harness asserts the k3d-lifted roster -- asserted-but-unapplied,
   // which hangs for the full timeout and blames the Application.
-  appCatalog.applyRootDevCatalog(catalogRef, rootRepoUrl, "k3d");
+  appCatalog.applyRootDevCatalog(catalogRef, rootRepoUrl, "k3d", "kindnetd", options.laneDirs ?? null);
 }
 
 export function tearDownK3dDevCluster(ports: DevClusterPorts, clusterName: string): void {
