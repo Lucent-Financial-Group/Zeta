@@ -928,17 +928,20 @@ describe("attributePodIssues", () => {
 // ──────── WP23: item 2 — named, sourced expected-divergence classification ────────
 
 describe("parseExternalSecretCatalog", () => {
-  test("parses the real INJECTION-POINTS.md: EXACTLY hindsight-llm-api-key + ghcr-pull are EXTERNAL, the six INTERNAL rows are not", () => {
+  test("parses the real INJECTION-POINTS.md: EXACTLY the EXTERNAL-marked rows, none of the INTERNAL ones", () => {
     // Exact-equality on the whole set, not an absence check on one name — a
     // positive pin carries the "INTERNAL rows are excluded" claim on a check
     // that can fail if EITHER an INTERNAL row leaks in OR an EXTERNAL row
     // silently disappears, which `not.toContain` on a single name cannot see
     // (audit-check-arity-nonequality.ts R5: an absence assertion witnesses one
-    // rendering of a leak, never its absence).
+    // rendering of a leak, never its absence). This is a LIVE test (this
+    // file's own header) — it is EXPECTED to need updating whenever the
+    // catalog gains or loses an EXTERNAL row; that is the drift this parser
+    // exists to keep from going unnoticed, not a flake.
     const markdown = readFileSync(resolve(REPO_ROOT, "full-ai-cluster/INJECTION-POINTS.md"), "utf-8");
     const catalog = parseExternalSecretCatalog(markdown);
     const names = catalog.map((e) => e.secretName).sort();
-    expect(names).toEqual(["ghcr-pull", "hindsight-llm-api-key"]);
+    expect(names).toEqual(["arc-github-app", "ghcr-pull", "hindsight-llm-api-key"]);
   });
 
   test("a fixture table with no EXTERNAL rows yields []", () => {
