@@ -46,6 +46,7 @@ import {
   injectRootApplicationExclude,
   isKnownSealedByDesign,
   isKnownSoakRegression,
+  isKnownSpireAgentDnsCrashLoop,
   k3sVersionToDockerTag,
   manifestTargetFilename,
   parseAppConvergenceSnapshots,
@@ -996,6 +997,33 @@ describe("isKnownSealedByDesign", () => {
   });
 });
 
+// MEASURED on run 35929340131 (2026-09-23): stage 6 reported `spire` FAIL for
+// TWO issues — a spire-agent CrashLoopBackOff (the already-confirmed
+// non-metal hostNetwork-DNS artifact) alongside a genuinely-unexplained
+// spire-server UNKNOWN. The first was invisible to the classification layer
+// even though the SOAK layer (`isKnownSoakRegression`) already knew about it.
+describe("isKnownSpireAgentDnsCrashLoop", () => {
+  test("a spire-agent CrashLoopBackOff in the spire namespace is the known artifact", () => {
+    const issue: PodVerdict = { namespace: "spire", name: "spire-agent-6rwwr", category: "CRASHLOOP", isFailure: true, detail: "CrashLoopBackOff" };
+    expect(isKnownSpireAgentDnsCrashLoop(issue)).toBe(true);
+  });
+
+  test("spire-server in the same namespace is NOT covered — narrow on purpose", () => {
+    const issue: PodVerdict = { namespace: "spire", name: "spire-server-0", category: "UNKNOWN", isFailure: true, detail: "not converged" };
+    expect(isKnownSpireAgentDnsCrashLoop(issue)).toBe(false);
+  });
+
+  test("a spire-agent issue that is NOT a crash loop is not covered", () => {
+    const issue: PodVerdict = { namespace: "spire", name: "spire-agent-6rwwr", category: "IMAGE", isFailure: true, detail: "ImagePullBackOff" };
+    expect(isKnownSpireAgentDnsCrashLoop(issue)).toBe(false);
+  });
+
+  test("a CrashLoopBackOff named spire-agent* in a DIFFERENT namespace is not covered", () => {
+    const issue: PodVerdict = { namespace: "other", name: "spire-agent-x", category: "CRASHLOOP", isFailure: true, detail: "CrashLoopBackOff" };
+    expect(isKnownSpireAgentDnsCrashLoop(issue)).toBe(false);
+  });
+});
+
 describe("manualSyncDeclarations against the real applications tree", () => {
   test("cdi and kubevirt are declared manual-sync, with non-empty reasons", () => {
     const declarations = manualSyncDeclarations(resolve(REPO_ROOT, "full-ai-cluster/k8s/applications"));
@@ -1103,6 +1131,33 @@ describe("computeAppVerdict — expected-divergence classification (WP23)", () =
     const v = computeAppVerdict(app, issues, EMPTY_APP_VERDICT_CONTEXT);
     expect(v.verdict).toBe("FAIL"); // CrashLoopBackOff is a real FAIL, now correctly ATTRIBUTED rather than invisible
     expect(v.reason).toContain("CRASHLOOP");
+  });
+
+  // MEASURED on run 35929340131 (2026-09-23): `spire` FAILed with BOTH a
+  // known-artifact spire-agent CrashLoopBackOff AND a genuinely-unexplained
+  // spire-server UNKNOWN. The known one must stop being blamed; the genuine
+  // one must still fail the app — mixing them in one Application is the
+  // precise case `isKnownSpireAgentDnsCrashLoop`'s narrowness has to survive.
+  test("spire: the known spire-agent DNS crash loop is reclassified, but a genuine spire-server issue still FAILs the app", () => {
+    const app: AppConvergenceSnapshot = { name: "spire", sync: "Synced", health: "Progressing", destinationNamespace: "spire", resources: [], conditions: [] };
+    const issues: PodVerdict[] = [
+      { namespace: "spire", name: "spire-agent-6rwwr", category: "CRASHLOOP", isFailure: true, detail: "CrashLoopBackOff", appName: "spire" },
+      { namespace: "spire", name: "spire-server-0", category: "UNKNOWN", isFailure: true, detail: "not converged: phase=Running scheduled=true restartCount=1", appName: "spire" },
+    ];
+    const v = computeAppVerdict(app, issues, EMPTY_APP_VERDICT_CONTEXT);
+    expect(v.verdict).toBe("FAIL"); // spire-server's issue is real and unexplained
+    expect(v.reason).toContain("spire-server-0");
+    expect(v.reason).not.toContain("spire-agent"); // the known artifact is not part of the FAIL reason
+  });
+
+  test("spire: with ONLY the known spire-agent crash loop (no other issue), the app is DIVERGENCE, not FAIL", () => {
+    const app: AppConvergenceSnapshot = { name: "spire", sync: "Synced", health: "Progressing", destinationNamespace: "spire", resources: [], conditions: [] };
+    const issues: PodVerdict[] = [
+      { namespace: "spire", name: "spire-agent-6rwwr", category: "CRASHLOOP", isFailure: true, detail: "CrashLoopBackOff", appName: "spire" },
+    ];
+    const v = computeAppVerdict(app, issues, EMPTY_APP_VERDICT_CONTEXT);
+    expect(v.verdict).toBe("DIVERGENCE");
+    expect(v.reason).toContain("confirmed non-metal");
   });
 });
 

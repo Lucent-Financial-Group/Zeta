@@ -1081,6 +1081,25 @@ export function isKnownSealedByDesign(appName: string): boolean {
   return appName === "openbao";
 }
 
+/**
+ * The `spire-agent-hostnetwork-dns-in-nested-container` DIVERGENCE (see
+ * `buildPlan`'s `divergences` array) reaching stage 6 as a pod-level
+ * CrashLoopBackOff — CONFIRMED non-metal via the same VM oracle
+ * `isKnownSoakRegression` already cites (`k3s-first-boot-roster-vm.yml` run
+ * 35706939767: spire-agent's restartCount held flat with no container
+ * nesting). This is the APP-VERDICT sibling of that soak-level allowlist —
+ * `isKnownSoakRegression` only stopped a soak REGRESSION from failing stage
+ * 6; it never taught `computeAppVerdict` that the SAME crash loop, caught at
+ * the initial convergence snapshot rather than during the soak, is the
+ * identical known artifact. NARROW ON PURPOSE, matching
+ * `isKnownSoakRegression`'s own discipline: only the `spire-agent` container
+ * qualifies. A `spire-server` (or any other) issue in this namespace is NOT
+ * covered and still fails the app, exactly as before.
+ */
+export function isKnownSpireAgentDnsCrashLoop(issue: PodVerdict): boolean {
+  return issue.namespace === "spire" && issue.category === "CRASHLOOP" && issue.name.startsWith("spire-agent");
+}
+
 export interface AppVerdictContext {
   /** Application name -> its declared reason, from `manual-sync-policy.ts`'s own convention — never a hand list. */
   readonly manualSyncApps: ReadonlyMap<string, string>;
@@ -1117,8 +1136,10 @@ function describeUnexplainedDivergence(app: AppConvergenceSnapshot): string {
  *      never the bare, uninformative "no classified pod issue".
  *   4. Attributed pod issues exist: a `SECRET` issue in a namespace the
  *      EXTERNAL-secret catalog names is reclassified DIVERGENCE (an operator
- *      gap, not a defect); any OTHER isFailure issue still FAILs the app;
- *      otherwise DIVERGENCE (the existing CAPACITY/STORAGE class).
+ *      gap, not a defect); a `spire-agent` CrashLoopBackOff is reclassified
+ *      DIVERGENCE too (`isKnownSpireAgentDnsCrashLoop` — confirmed non-metal);
+ *      any OTHER isFailure issue still FAILs the app; otherwise DIVERGENCE
+ *      (the existing CAPACITY/STORAGE class).
  */
 export function computeAppVerdict(
   app: AppConvergenceSnapshot,
@@ -1161,6 +1182,11 @@ export function computeAppVerdict(
     const gap = p.category === "SECRET" ? externalSecretGapFor(app.destinationNamespace ?? "", context.externalSecretCatalog) : null;
     if (gap !== null) {
       divergent.push({ ...p, detail: `${p.detail} — EXTERNAL credential \`${gap.secretName}\` per full-ai-cluster/INJECTION-POINTS.md (${gap.note}); operator-supplied, no first-boot lane mints it` });
+    } else if (isKnownSpireAgentDnsCrashLoop(p)) {
+      divergent.push({
+        ...p,
+        detail: `${p.detail} — confirmed non-metal (spire-agent-hostnetwork-dns-in-nested-container DIVERGENCE; VM oracle run 35706939767 held restartCount flat with no container nesting)`,
+      });
     } else {
       trulyFailing.push(p);
     }
