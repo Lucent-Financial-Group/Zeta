@@ -79,7 +79,7 @@
 // Application tree or in the committed render must be one of the three names.
 // A denylist of provider names would pass the next provider nobody listed.
 
-import { existsSync, readdirSync, readFileSync } from "node:fs";
+import { readdirSync, readFileSync, type Dirent } from "node:fs";
 import { join, relative, resolve } from "node:path";
 import { parseAllDocuments } from "yaml";
 
@@ -167,9 +167,28 @@ export function storageClassValues(text: string): readonly { line: number; value
   return found;
 }
 
+/**
+ * `null` when absent -- one syscall, one answer (CWE-367): read, then interpret
+ * ENOENT, rather than an existence check whose answer is stale when the read runs.
+ */
+function readIfPresent(path: string): string | null {
+  try {
+    return readFileSync(path, "utf8");
+  } catch (error) {
+    if ((error as NodeJS.ErrnoException).code === "ENOENT") return null;
+    throw error;
+  }
+}
+
 function yamlFilesUnder(dir: string): readonly string[] {
-  if (!existsSync(dir)) return [];
-  return readdirSync(dir, { withFileTypes: true }).flatMap((entry) => {
+  let entries: Dirent[];
+  try {
+    entries = readdirSync(dir, { withFileTypes: true });
+  } catch (error) {
+    if ((error as NodeJS.ErrnoException).code === "ENOENT") return [];
+    throw error;
+  }
+  return entries.flatMap((entry) => {
     const path = join(dir, entry.name);
     if (entry.isDirectory()) return yamlFilesUnder(path);
     return entry.isFile() && /\.ya?ml$/.test(entry.name) ? [path] : [];
@@ -197,9 +216,9 @@ export function findProviderNamedClasses(repoRoot = REPO_ROOT): readonly ClassNa
       }
     }
   }
-  const snapshotPath = join(repoRoot, RENDER_SNAPSHOT);
-  if (existsSync(snapshotPath)) {
-    const snapshot = JSON.parse(readFileSync(snapshotPath, "utf8")) as {
+  const snapshotText = readIfPresent(join(repoRoot, RENDER_SNAPSHOT));
+  if (snapshotText !== null) {
+    const snapshot = JSON.parse(snapshotText) as {
       rendered?: { appId?: string; name?: string; storageClassName?: string }[];
     };
     for (const claim of snapshot.rendered ?? []) {
@@ -252,9 +271,8 @@ export function storageClassesIn(text: string): readonly StorageClassBinding[] {
  * every `writeText "<name>.yaml" ''` block and parses each as YAML.
  */
 export function metalStorageBindings(repoRoot = REPO_ROOT): readonly StorageClassBinding[] {
-  const path = join(repoRoot, METAL_STORAGE_BINDINGS_SOURCE);
-  if (!existsSync(path)) return [];
-  const text = readFileSync(path, "utf8");
+  const text = readIfPresent(join(repoRoot, METAL_STORAGE_BINDINGS_SOURCE));
+  if (text === null) return [];
   const blocks = [...text.matchAll(/writeText\s+"[^"]+\.yaml"\s+''\n([\s\S]*?)\n\s*'';/g)];
   return blocks.flatMap((block) => {
     const body = block[1] ?? "";
