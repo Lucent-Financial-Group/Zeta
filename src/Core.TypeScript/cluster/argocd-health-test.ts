@@ -45,7 +45,13 @@ import {
 } from "./dev-cluster/lib.ts";
 import { DEFAULT_ROOT_DEV_CATALOG, ciliumOwnsCniSlot, type KindCni } from "./ports.ts";
 import { buildLaneTreeBundle, laneTreeRepoUrl, SERVED_GIT_REF } from "./lane-tree-source.ts";
-import { applyResourceProfile, loadResourceCatalogue } from "./storage-profiles.ts";
+import {
+  applyProfile,
+  applyResourceProfile,
+  loadCatalogue,
+  loadResourceCatalogue,
+  storageProfileForResourceRung,
+} from "./storage-profiles.ts";
 import { storageClassValues } from "./storage-capabilities.ts";
 // Ordinal (code-point) ordering, per .claude/rules/culture-invariant-by-default.md.
 // NOT localeCompare: it is culture-SENSITIVE, so the same directory names sort
@@ -219,6 +225,17 @@ export interface ArgoApplicationSnapshot {
    * traces to, not only the Application).
    */
   readonly outOfSyncResources?: readonly string[];
+  /**
+   * `${kind}/${name} ${health}: ${message}` for every `status.resources[]` entry
+   * whose OWN `health.status` is present and not `Healthy`. The sync-side twin
+   * of `outOfSyncResources`: that field names which resources DIVERGED, this one
+   * names which resources are NOT HEALTHY -- the only way to explain an
+   * Application that went `Synced/Progressing` during the soak with nothing
+   * out of sync. Measured 2026-09-23: 12 of 18 `included` failures since the
+   * soak phase landed were such flips, and for the `Synced/Progressing` ones the
+   * verdict named no resource at all. Ordinal-sorted; absent when none.
+   */
+  readonly unhealthyResources?: readonly string[];
 }
 
 export interface ApplicationVerdict {
@@ -229,6 +246,8 @@ export interface ApplicationVerdict {
   readonly reason?: string;
   /** Carried straight from `ArgoApplicationSnapshot.outOfSyncResources` -- see its docstring. */
   readonly outOfSyncResources?: readonly string[];
+  /** Carried straight from `ArgoApplicationSnapshot.unhealthyResources` -- see its docstring. */
+  readonly unhealthyResources?: readonly string[];
 }
 
 export interface HarnessPlan {
@@ -2217,6 +2236,25 @@ function waitForKubectl(
  * callers get the SAME staged tree, the SAME refusals (zero-file copy, zero-edit
  * rung apply, un-rewritten repoURL, over-budget pack), and the same `LANE_TREE_IMAGE`.
  */
+/**
+ * Everything `--serve-tree <rung>` does to the STAGED copy, in order, as one
+ * function the unit tests can drive against a staged tree without building the
+ * bare repository: the resource rung, then the storage profile the catalogue maps
+ * the rung to, then the rung overrides. Never touches the committed tree.
+ */
+export function applyServeTreeRung(
+  profile: string,
+  stagedRoot: string,
+): { readonly rungEdits: number; readonly storageEdits: number; readonly overrideEdits: number; readonly storageProfile: string | null } {
+  const catalogue = loadResourceCatalogue(undefined, stagedRoot);
+  const rungEdits = applyResourceProfile(catalogue, profile, stagedRoot).length;
+  const storageProfile = storageProfileForResourceRung(profile, undefined, stagedRoot);
+  const storageEdits =
+    storageProfile === null ? 0 : applyProfile(loadCatalogue(undefined, stagedRoot), storageProfile, stagedRoot).length;
+  const overrideEdits = applyRungOverrides(loadRungOverrides(catalogue.profiles, stagedRoot), profile, stagedRoot).length;
+  return { rungEdits, storageEdits, overrideEdits, storageProfile };
+}
+
 export function buildLaneTreeForProfile(
   profile: string | null,
   gitRef: string,
@@ -2248,15 +2286,19 @@ export function buildLaneTreeForProfile(
     // and a lift condition, and each REFUSED if it produces no edits. It runs
     // AFTER the rung so a resource claim and an override can address the same
     // manifest without the override being silently reverted.
+    //
+    // A THIRD, BETWEEN THEM (2026-09-23): the STORAGE profile the catalogue maps
+    // this rung to (`storageProfileForResourceRung`, today `dev -> ci`). The
+    // committed tree carries the metal box's disk sizes; the staged dev tree
+    // carries sizes a hosted runner can actually hold. Same `applyProfile` the
+    // `--apply` path uses, so the numbers are the ones `--verify` checks.
     applyRung: (stagedRoot: string) => {
-      const rungEdits = applyResourceProfile(catalogue, profile, stagedRoot).length;
-      const overrideEdits = applyRungOverrides(
-        loadRungOverrides(catalogue.profiles, stagedRoot),
-        profile,
-        stagedRoot,
-      ).length;
-      console.log(`[serve-tree] rung edits=${String(rungEdits)} override edits=${String(overrideEdits)}`);
-      return rungEdits + overrideEdits;
+      const applied = applyServeTreeRung(profile, stagedRoot);
+      console.log(
+        `[serve-tree] rung edits=${String(applied.rungEdits)} storage edits=${String(applied.storageEdits)} ` +
+          `(profile ${applied.storageProfile ?? "unchanged"}) override edits=${String(applied.overrideEdits)}`,
+      );
+      return applied.rungEdits + applied.storageEdits + applied.overrideEdits;
     },
   });
   console.log(
@@ -3235,7 +3277,14 @@ export function soakRegressionFailure(
       a.outOfSyncResources !== undefined && a.outOfSyncResources.length > 0
         ? ` [${a.outOfSyncResources.join(", ")}]`
         : "";
-    return `${a.name} left Healthy/Synced (${a.syncStatus}/${a.healthStatus})${resources}`;
+    // The HEALTH side, which the line above cannot carry: an Application that
+    // went Synced/Progressing had no out-of-sync resource to name, so this is
+    // the only thing that says which Deployment/StatefulSet regressed and why.
+    const unhealthy =
+      a.unhealthyResources !== undefined && a.unhealthyResources.length > 0
+        ? ` {unhealthy: ${a.unhealthyResources.join("; ")}}`
+        : "";
+    return `${a.name} left Healthy/Synced (${a.syncStatus}/${a.healthStatus})${resources}${unhealthy}`;
   });
   return {
     kind: "ApplicationUnhealthy",
@@ -3793,6 +3842,32 @@ function parseOutOfSyncResources(status: Record<string, unknown> | null): readon
   return [...names].sort(stringCompare);
 }
 
+/**
+ * `${kind}/${name} ${health}: ${message}` for every `status.resources[]` entry
+ * whose own `health.status` is present and not `Healthy` -- see
+ * `ArgoApplicationSnapshot.unhealthyResources`. Resources ArgoCD assesses no
+ * health for (CRDs, ConfigMaps, most RBAC) carry no `health` and are skipped:
+ * absence of a health verdict is not an unhealthy one. Ordinal-sorted.
+ */
+export function parseUnhealthyResources(status: Record<string, unknown> | null): readonly string[] {
+  if (status === null) return [];
+  const raw = status.resources;
+  if (!Array.isArray(raw)) return [];
+  const lines = raw.flatMap((item) => {
+    const record = asRecord(item);
+    if (record === null) return [];
+    const health = recordAt(record, "health");
+    if (health === null) return [];
+    const h = stringAt(health, "status");
+    if (h.length === 0 || h === "Healthy") return [];
+    const kind = stringAt(record, "kind");
+    const name = stringAt(record, "name");
+    const message = stringAt(health, "message");
+    return [`${kind}/${name} ${h}${message.length > 0 ? `: ${message}` : ""}`];
+  });
+  return [...lines].sort(stringCompare);
+}
+
 export function parseApplicationList(jsonText: string): readonly ArgoApplicationSnapshot[] {
   const root = asRecord(JSON.parse(jsonText));
   const items = Array.isArray(root?.items) ? root.items : [];
@@ -3811,6 +3886,7 @@ export function parseApplicationList(jsonText: string): readonly ArgoApplication
     const syncRevision = sync ? stringAt(sync, "revision") : "";
     const conditions = parseApplicationConditions(status);
     const outOfSyncResources = parseOutOfSyncResources(status);
+    const unhealthyResources = parseUnhealthyResources(status);
     const snapshot: ArgoApplicationSnapshot = {
       name,
       syncStatus: sync ? stringAt(sync, "status") : "",
@@ -3821,6 +3897,7 @@ export function parseApplicationList(jsonText: string): readonly ArgoApplication
       ...(syncRevision.length > 0 ? { syncRevision } : {}),
       ...(conditions.length > 0 ? { conditions } : {}),
       ...(outOfSyncResources.length > 0 ? { outOfSyncResources } : {}),
+      ...(unhealthyResources.length > 0 ? { unhealthyResources } : {}),
     };
     return [snapshot];
   });
@@ -3981,6 +4058,8 @@ export function classifyApplications(
         syncStatus: snapshot.syncStatus || "Unknown",
         healthStatus: snapshot.healthStatus || "Unknown",
         ...(snapshot.outOfSyncResources !== undefined ? { outOfSyncResources: snapshot.outOfSyncResources } : {}),
+    ...(snapshot.unhealthyResources !== undefined ? { unhealthyResources: snapshot.unhealthyResources } : {}),
+        ...(snapshot.unhealthyResources !== undefined ? { unhealthyResources: snapshot.unhealthyResources } : {}),
       };
       return ok ? base : { ...base, reason: outcome.reason };
     });
