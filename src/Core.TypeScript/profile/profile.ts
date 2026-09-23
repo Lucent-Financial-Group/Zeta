@@ -102,31 +102,17 @@ switch (command) {
     break;
 
   case "coverage":
-    run(
-      "dotnet",
-      [
-        "test",
-        "Zeta.sln",
-        "-c",
-        "Release",
-        "/p:CollectCoverage=true",
-        "/p:CoverletOutputFormat=cobertura",
-        "/p:CoverletOutput=./TestResults/",
-        '/p:Exclude=[Dbsp.Tests.*]*',
-      ],
-      repoRoot(),
+    // REFUSED, not run. This used coverlet.msbuild (`/p:CollectCoverage=true`), which hooks
+    // the VSTest target — and `dotnet test` now runs in Microsoft.Testing.Platform mode
+    // (global.json `test.runner`), where that target never executes. Running it would print a
+    // green test run and write no coverage file: a coverage command that cannot produce
+    // coverage. The MTP extension (coverlet.MTP) must match xunit.v3's MTP major, so it lands
+    // after the xunit.v3 4.x bump — workitem 081M380V792087G0R001PR993V.
+    process.stderr.write(
+      "profile.ts coverage: unavailable under Microsoft.Testing.Platform until coverlet.MTP is added " +
+        "(workitem 081M380V792087G0R001PR993V). Nothing was run.\n",
     );
-    run(
-      "reportgenerator",
-      [
-        "-reports:tests/**/TestResults/coverage.cobertura.xml",
-        "-targetdir:./coverage-report",
-        "-reporttypes:Html",
-      ],
-      repoRoot(),
-    );
-    process.stdout.write("Coverage HTML at ./coverage-report/index.html\n");
-    break;
+    process.exit(2);
 
   default:
     process.stdout.write(`DBSP profiling helper.
