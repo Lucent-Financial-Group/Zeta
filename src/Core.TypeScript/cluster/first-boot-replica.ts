@@ -2335,6 +2335,16 @@ export async function runReplica(opts: RunOptions): Promise<RunReport> {
     const divergentApps = appVerdicts.filter((v) => v.verdict === "DIVERGENCE");
     const healthyCount = appVerdicts.length - failingApps.length - divergentApps.length;
 
+    // WP26: a stage-6 FAIL never throws (the stage just records `ok: false`
+    // and stages 7/8 still run), so the top-level catch's own
+    // `collectFailureDiagnostics` never fires for one — a FAIL app carried only
+    // `classifyPod`'s one-line summary ("not converged: phase=Running
+    // restartCount=1") with no record of WHY, and that evidence is gone once
+    // the throwaway container is torn down. Pulled here, before it disappears.
+    if (failingApps.length > 0) {
+      collectAppFailureDiagnostics(runner, kubeconfigPath, failingApps, podIssues, appConvergence, log);
+    }
+
     log(
       `stage 6: settled=${String(settled)} apps=${String(appVerdicts.length)} Healthy=${String(healthyCount)} ` +
         `DIVERGENCE=${String(divergentApps.length)} FAIL=${String(failingApps.length)}`,
@@ -2676,6 +2686,78 @@ export async function runReplica(opts: RunOptions): Promise<RunReport> {
       runner.run("docker", ["volume", "rm", "-f", `${opts.containerName}-data`], { timeoutMs: 30_000 });
     } else {
       log(`--keep set: leaving ${opts.containerName} running. Tear down with: docker rm -f ${opts.containerName} && docker volume rm -f ${opts.containerName}-data`);
+    }
+  }
+}
+
+/**
+ * WP26 (081M35ETM11087G0R0002Y62F5): stage 6's own diagnostics collector for
+ * a FAIL verdict, called from inside stage 6 itself rather than a `catch` —
+ * see the call site's comment for why the existing `collectFailureDiagnostics`
+ * (only reachable via a thrown exception) never runs for a FAIL app that
+ * stage 6 records without throwing. For every pod-level issue attributed to
+ * a failing app: `describe pod`, `logs --previous` (falling back to the
+ * current instance's logs when no previous terminated container exists — the
+ * same fallback `collectCrashLoopDiagnostics` uses), and the destination
+ * namespace's events. A FAIL app with NO attributed pod issue (Argo's own
+ * resource health stuck Progressing with every pod already converged, e.g.
+ * weaviate's StatefulSet health check) instead dumps the Application's own
+ * `status.resources[]` snapshot plus every workload + event in its
+ * destination namespace, since there is no single pod name to target.
+ * Printed to the job log only — unbounded text, never folded into the
+ * report JSON artifact.
+ */
+function collectAppFailureDiagnostics(
+  runner: Runner,
+  kubeconfigPath: string,
+  failingApps: readonly AppVerdict[],
+  podIssues: readonly PodVerdict[],
+  appConvergence: readonly AppConvergenceSnapshot[],
+  log: (line: string) => void,
+): void {
+  const snapshotByName = new Map(appConvergence.map((a) => [a.name, a]));
+  const namespacesLogged = new Set<string>();
+  const logNamespaceEvents = (ns: string): void => {
+    if (namespacesLogged.has(ns)) return;
+    namespacesLogged.add(ns);
+    const events = kubectl(runner, kubeconfigPath, ["-n", ns, "get", "events", "--sort-by=.lastTimestamp"], 20_000);
+    log(`--- events in ${ns} ---`);
+    log(events.stdout || events.stderr || "(no output)");
+  };
+  for (const app of failingApps) {
+    const relevant = podIssues.filter((p) => p.isFailure && p.appName === app.name);
+    log(`=== FAIL diagnostics: ${app.name} (${app.reason}) ===`);
+    if (relevant.length === 0) {
+      const snap = snapshotByName.get(app.name);
+      const ns = snap?.destinationNamespace;
+      log(`--- ${app.name}: no attributed pod issue; Application resources: ${JSON.stringify(snap?.resources ?? [])} ---`);
+      if (ns !== undefined) {
+        const workloads = kubectl(runner, kubeconfigPath, ["-n", ns, "get", "pods,statefulsets,deployments,daemonsets", "-o", "wide"], 20_000);
+        log(`--- workloads in ${ns} ---`);
+        log(workloads.stdout || workloads.stderr || "(no output)");
+        logNamespaceEvents(ns);
+      }
+      continue;
+    }
+    for (const issue of relevant) {
+      const describe = kubectl(runner, kubeconfigPath, ["-n", issue.namespace, "describe", "pod", issue.name], 20_000);
+      log(`--- describe pod ${issue.namespace}/${issue.name} ---`);
+      log(describe.stdout || describe.stderr || "(no output)");
+      const previous = kubectl(
+        runner,
+        kubeconfigPath,
+        ["-n", issue.namespace, "logs", issue.name, "--all-containers", "--previous", "--tail=200"],
+        20_000,
+      );
+      const usePrevious = previous.status === 0 && previous.stdout.trim().length > 0;
+      log(usePrevious ? "--- logs --previous (crashed instance) ---" : "--- logs (no previous terminated container; current instance) ---");
+      if (usePrevious) {
+        log(previous.stdout);
+      } else {
+        const current = kubectl(runner, kubeconfigPath, ["-n", issue.namespace, "logs", issue.name, "--all-containers", "--tail=200"], 20_000);
+        log(current.stdout || current.stderr || "(no output)");
+      }
+      logNamespaceEvents(issue.namespace);
     }
   }
 }
