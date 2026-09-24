@@ -2136,6 +2136,48 @@ describe("081M0JXXFV0087G0R00...: the four newly-visible non-storage defects", (
     // the CNI's shared resources) are unrelated to this fix -- it must stay.
     expect(document.spec?.syncPolicy?.syncOptions ?? []).toContain("ServerSideApply=true");
   });
+
+  /**
+   * SEAWEEDFS (081M39EMBRW087G0R001RHMEDJ). Third instance of the same
+   * class: `templates/sftp/sftp-secret.yaml` mints fresh SFTP credentials +
+   * an ed25519 private key on every render (MEASURED offline, two-render
+   * diff). The release name is `blob-store-seaweedfs` (set explicitly in
+   * this Application's `helm.releaseName`), so the rendered Secret's name
+   * carries that prefix -- pinned here so a release-name rename does not
+   * silently leave the ignore rule pointed at a Secret that no longer
+   * exists (which would read as Synced/Healthy while quietly no longer
+   * protecting anything).
+   */
+  test("seaweedfs's ignore rule is KEPT and stays scoped to its SFTP credential Secret", () => {
+    const document = parseYaml(readApp("seaweedfs")) as {
+      spec?: {
+        ignoreDifferences?: readonly {
+          group?: string;
+          kind?: string;
+          name?: string;
+          jsonPointers?: readonly string[];
+          jqPathExpressions?: readonly string[];
+          managedFieldsManagers?: readonly string[];
+        }[];
+        syncPolicy?: { syncOptions?: readonly string[] };
+      };
+    };
+    const rules = document.spec?.ignoreDifferences ?? [];
+    expect(rules.length).toBe(1);
+    const rule = rules[0]!;
+    expect(rule.kind).toBe("Secret");
+    expect(rule.name).toBe("blob-store-seaweedfs-sftp-secret");
+    expect(rule.jsonPointers).toEqual([
+      "/data/admin_password",
+      "/data/readonly_password",
+      "/data/public_user_password",
+      "/data/seaweedfs_sftp_config",
+      "/data/seaweedfs_sftp_ssh_private_key",
+    ]);
+    expect(rule.jqPathExpressions).toBeUndefined();
+    expect(rule.managedFieldsManagers).toBeUndefined();
+    expect(document.spec?.syncPolicy?.syncOptions ?? []).toContain("RespectIgnoreDifferences=true");
+  });
 });
 
 describe("crash-loop containers are found, not guessed", () => {
