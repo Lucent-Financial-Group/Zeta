@@ -258,6 +258,25 @@ ZETA_LONGHORN_USABLE_PERCENT=75
 # roster has moved past this number — so it cannot go stale quietly.
 ZETA_LONGHORN_DEMAND_GIB=943
 
+# What the installer actually REFUSES at: the demand the CURRENTLY REGISTERED
+# fleet could ever be asked for, GiB. 081M397QHX8087G0R003DQSY0B.
+#
+# Equal to the declared total today, and that is the point rather than an
+# oversight. 400 GiB of the 943 belongs to ollama and vllm, both
+# `nodeSelector: zeta.io/gpu: nvidia`, and every checked-in ClusterNode records
+# an Intel adapter -- but under the old `lspci ... | head -1` capture those
+# records establish what IS present and never what is NOT, so the exclusion is
+# UNDECIDABLE and an unproven exclusion must not shrink the number a gate
+# convicts on.
+#
+# One node re-registering under the fixed capture (spec.hardware.gpus, every
+# display device) makes it provable, the split becomes exact at 543, and this
+# constant drops. single-node-readiness.ts REFUSES while the two disagree.
+#
+# BOTH are printed. Convicting on one while showing only the other is how a
+# number stops meaning what its reader thinks it means.
+ZETA_LONGHORN_SCHEDULABLE_GIB=943
+
 # A positive whole number, or 0. Negative, fractional and non-numeric all
 # collapse to 0 so both sides of the parity refuse junk identically.
 zeta_clamp_gib() {
@@ -335,6 +354,19 @@ ZETA_ROOT_FLOOR_GIB=120
 
 # The ESP: `sgdisk -n "1:0:+1G"` below.
 ZETA_ESP_GIB=1
+
+# The smallest longhorn1 tail this installer will create, GiB.
+#
+# Reached ONLY under ZETA_ALLOW_LONGHORN_UNDERSIZED=1, on a boot disk too small
+# for the root floor. It is the pre-WP28 layout -- a minimum tail, root takes
+# the rest -- kept as a named fallback rather than as a default, because as a
+# DEFAULT it is the exact defect WP28 exists to close: a 1 TiB disk handing
+# Longhorn one gibibyte. As an explicitly-named fallback on a 40 GiB virtual
+# disk it is the only layout that installs at all.
+#
+# It also matches the lower bound an explicit LONGHORN1_TAIL already has, so
+# there is one minimum in this file rather than two that agree by coincidence.
+ZETA_LONGHORN_MIN_TAIL_GIB=1
 
 # Declared local-path PVC capacity that also lands on ROOT. ADVISORY, NOT
 # RESERVED, and not part of the root floor: local-storage.nix binds
@@ -461,7 +493,30 @@ if [[ -z "$LONGHORN1_TAIL_BYTES" ]]; then
   boot_gib="$(zeta_bytes_to_gib "$(blockdev --getsize64 "$BOOT_DISK")")"
   auto_tail_gib="$(zeta_auto_longhorn1_tail_gib "$boot_gib" "$ZETA_ROOT_FLOOR_GIB")"
   if [[ "$auto_tail_gib" -lt 1 ]]; then
-    bail "BOOT disk $BOOT_DISK is ${boot_gib} GiB, which cannot hold ESP ${ZETA_ESP_GIB} GiB + root floor ${ZETA_ROOT_FLOOR_GIB} GiB + a 1 GiB minimum longhorn1 tail (need >= $((ZETA_ESP_GIB + ZETA_ROOT_FLOOR_GIB + 1)) GiB). The root floor is the whole roster's unpacked container images (73 GiB) plus OS/swap/logs (30 GiB) with a 1.15 safety factor. Nothing has been wiped. Use a larger boot disk, or set LONGHORN1_TAIL explicitly to take the floor decision yourself (>=1G, <=1T) and accept that root may not hold every image."
+    # The disk cannot hold ESP + root floor + a 1 GiB minimum tail.
+    #
+    # ONE OVERRIDE COVERS BOTH GATES, and that is deliberate. This refusal and
+    # the pool refusal below are the SAME claim measured at two points -- "this
+    # disk cannot hold the committed roster" -- so an operator who has already
+    # said `ZETA_ALLOW_LONGHORN_UNDERSIZED=1` has answered both. A second env
+    # var would make them name the same fact twice, and the second one would be
+    # the one nobody sets.
+    #
+    # The fallback is the MINIMUM tail with root taking the rest -- the
+    # pre-WP28 layout -- because on a disk this small that is the only layout
+    # that installs at all. It is the right shape for a lane testing install
+    # MECHANICS on a deliberately small virtual disk, and the wrong shape for a
+    # real cluster, which is exactly why it costs a named override.
+    if [[ "${ZETA_ALLOW_LONGHORN_UNDERSIZED:-}" == "1" ]]; then
+      auto_tail_gib="$ZETA_LONGHORN_MIN_TAIL_GIB"
+      echo
+      echo "BOOT disk $BOOT_DISK is ${boot_gib} GiB — too small for the ${ZETA_ROOT_FLOOR_GIB} GiB root floor."
+      echo "  Proceeding on ZETA_ALLOW_LONGHORN_UNDERSIZED=1 with a MINIMUM ${ZETA_LONGHORN_MIN_TAIL_GIB} GiB longhorn1 tail;"
+      echo "  root takes the rest. The committed roster will NOT fit and its PVCs will pend."
+      echo "  This is debt you named, not a cleared check."
+    else
+      bail "BOOT disk $BOOT_DISK is ${boot_gib} GiB, which cannot hold ESP ${ZETA_ESP_GIB} GiB + root floor ${ZETA_ROOT_FLOOR_GIB} GiB + a 1 GiB minimum longhorn1 tail (need >= $((ZETA_ESP_GIB + ZETA_ROOT_FLOOR_GIB + 1)) GiB). The root floor is the whole roster's unpacked container images (73 GiB) plus OS/swap/logs (30 GiB) with a 1.15 safety factor. Nothing has been wiped. Three remedies: (1) use a larger boot disk; (2) set LONGHORN1_TAIL explicitly to take the floor decision yourself (>=1G, <=1T), accepting that root may not hold every image; (3) install anyway on a MINIMUM ${ZETA_LONGHORN_MIN_TAIL_GIB} GiB tail with ZETA_ALLOW_LONGHORN_UNDERSIZED=1, accepting that the roster's PVCs will pend — which is what the QEMU install lanes do, because their virtual disk is sized for install mechanics rather than for the roster."
+    fi
   fi
   LONGHORN1_TAIL="${auto_tail_gib}G"
   LONGHORN1_TAIL_BYTES=$(( auto_tail_gib * 1024 * 1024 * 1024 ))
@@ -1650,7 +1705,7 @@ assert_longhorn_pool_holds_the_roster() {
   done
   raw_gib="$(zeta_provisioned_longhorn_gib "$tail_gib" "${data_sizes[@]:-}")"
   schedulable="$(zeta_schedulable_longhorn_gib "$raw_gib" "$ZETA_LONGHORN_USABLE_PERCENT")"
-  verdict="$(zeta_longhorn_capacity_verdict "$schedulable" "$ZETA_LONGHORN_DEMAND_GIB" "${ZETA_ALLOW_LONGHORN_UNDERSIZED:-}")"
+  verdict="$(zeta_longhorn_capacity_verdict "$schedulable" "$ZETA_LONGHORN_SCHEDULABLE_GIB" "${ZETA_ALLOW_LONGHORN_UNDERSIZED:-}")"
 
   # Printed on EVERY install, green or not. A standing decision that only
   # appears when it fails is a decision nobody revisits.
@@ -1668,12 +1723,13 @@ assert_longhorn_pool_holds_the_roster() {
   fi
   echo "  raw pool                          ${raw_gib} GiB"
   echo "  x ${ZETA_LONGHORN_USABLE_PERCENT}% Longhorn will place       ${schedulable} GiB"
-  echo "  committed roster demands          ${ZETA_LONGHORN_DEMAND_GIB} GiB  (driver.longhorn.io classes)"
+  echo "  committed roster DECLARES         ${ZETA_LONGHORN_DEMAND_GIB} GiB  (driver.longhorn.io classes)"
+  echo "  SCHEDULABLE on registered nodes   ${ZETA_LONGHORN_SCHEDULABLE_GIB} GiB  <- the refusal is measured against THIS"
 
   case "$verdict" in
-    ok) echo "  verdict: fits, $((schedulable - ZETA_LONGHORN_DEMAND_GIB)) GiB spare" ;;
+    ok) echo "  verdict: fits, $((schedulable - ZETA_LONGHORN_SCHEDULABLE_GIB)) GiB spare" ;;
     override)
-      echo "  verdict: UNDERSIZED by $((ZETA_LONGHORN_DEMAND_GIB - schedulable)) GiB — proceeding on ZETA_ALLOW_LONGHORN_UNDERSIZED=1 override"
+      echo "  verdict: UNDERSIZED by $((ZETA_LONGHORN_SCHEDULABLE_GIB - schedulable)) GiB — proceeding on ZETA_ALLOW_LONGHORN_UNDERSIZED=1 override"
       echo "  those PVCs will pend. This is debt you named, not a cleared check."
       ;;
     *)
@@ -3306,7 +3362,23 @@ zeta_self_reg_compose_node_yaml() {
   CPU_MODEL=$(grep 'model name' /proc/cpuinfo 2>/dev/null | head -1 | cut -d: -f2- | sed 's/^[[:space:]]*//' | sed 's/"//g' || echo "")
   MEM_TOTAL=$(free -h --si 2>/dev/null | awk '/Mem:/{print $2}' || echo "")
   CPU_CORES=$(nproc 2>/dev/null || echo "")
+  # WP28 (081M397QHX8087G0R003DQSY0B): capture EVERY display device, not the first.
+  #
+  # `head -1` recorded one line, and a box with integrated Intel graphics plus a
+  # discrete NVIDIA card records the Intel one -- it sits at 00:02.0 and sorts
+  # first -- while the NVIDIA card is simply absent from the registration. So
+  # the record established what IS present and could never establish what is
+  # NOT, which makes "no registered node has an NVIDIA GPU" unprovable from the
+  # committed fleet. That matters because
+  # src/Core.TypeScript/cluster/schedulable-demand.ts wants to EXCLUDE claims
+  # whose workload can never be placed, and an exclusion shrinks the demand a
+  # capacity gate convicts on -- so it has to be proven, not inferred.
+  #
+  # GPU_LINE is kept for `spec.hardware.gpu` so existing readers and existing
+  # registrations are unaffected; GPU_LINES adds `spec.hardware.gpus`, whose
+  # PRESENCE is what marks a registration as a complete enumeration.
   GPU_LINE=$(lspci -nn 2>/dev/null | grep -iE 'vga|3d|display' | head -1 | sed 's/"//g' || echo "")
+  GPU_LINES=$(lspci -nn 2>/dev/null | grep -iE 'vga|3d|display' | sed 's/"//g' | awk 'NF{print "      - \"" $0 "\""}' || echo "")
   IP_ADDR=$(ip -4 -o addr 2>/dev/null | awk '/inet/ && !/lo/{print $4; exit}' || echo "")
   MAC_ADDR=$(ip -o link 2>/dev/null | awk '/state UP/ && !/lo/{for(i=1;i<=NF;i++) if($i=="link/ether"){print $(i+1); exit}}' || echo "")
   STORAGE_LINES=$(lsblk -ndo NAME,SIZE,TYPE -e7 2>/dev/null | awk '$3=="disk" && $2!="0B"{print "      - \"/dev/" $1 " " $2 "\""}' || echo "")
@@ -3346,6 +3418,12 @@ spec:
     cores: $CPU_CORES"
   [ -n "$GPU_LINE" ] && NODE_YAML="$NODE_YAML
     gpu: \"$GPU_LINE\""
+  # `gpus` present == this registration enumerates ALL display devices. Its
+  # ABSENCE is meaningful and is what older registrations carry, so nothing
+  # backfills it.
+  [ -n "$GPU_LINES" ] && NODE_YAML="$NODE_YAML
+    gpus:
+$GPU_LINES"
   [ -n "$STORAGE_LINES" ] && NODE_YAML="$NODE_YAML
     storage:
 $STORAGE_LINES"
