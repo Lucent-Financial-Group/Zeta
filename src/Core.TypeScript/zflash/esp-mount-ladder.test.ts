@@ -15,9 +15,9 @@
 // work item stays open.
 
 import { describe, expect, test } from "bun:test";
-import { spawnSync } from "node:child_process";
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
+import { spawnShellDeclared } from "../io/safe-io.ts";
 
 const INSTALL_SH = join(import.meta.dir, "../../../full-ai-cluster/usb-nixos-installer/zeta-install.sh");
 const FIRST_BOOT_SH = join(import.meta.dir, "../../../full-ai-cluster/usb-nixos-installer/zeta-first-boot.sh");
@@ -92,8 +92,28 @@ function runLadder(scenario: LadderScenario): LadderOutcome {
     'while IFS= read -r line; do printf "MOUNTCALL=%s\\n" "$line"; done < "$CALLS"',
   ].join("\n");
 
-  const run = spawnSync("bash", ["-c", script], { encoding: "utf8" });
-  const out = run.stdout ?? "";
+  // `spawnShellDeclared` and not a raw `bash -c`: here the command line
+  // genuinely IS the contract — the "program" is the shipped shell function
+  // text plus stubs, and there is nothing to turn into an argv. Going through
+  // the declared primitive keeps the reason a VALUE rather than a comment, so
+  // every deliberate shell in the tree stays enumerable
+  // (lint-hand-rolled-io / io/safe-io.ts).
+  //
+  // Note it pins `/bin/bash`, so this suite runs on Linux and macOS and not on
+  // a Windows dev host — the same limit the repo's other bash-parity suites
+  // already carry. That is a worse local signal and a better primitive, and
+  // "it runs on my machine" is not a reason to route around a security lint.
+  const run = spawnShellDeclared("bash", script, {
+    reason:
+      "081M39CJP96087G0R001T4J2R3: drives the SHIPPED zeta-install.sh mount ladder under stubbed " +
+      "mount/findmnt/umount. The script is composed in-process from repo text and test literals; " +
+      "there is no argv form of 'run this synthesized shell program'.",
+  });
+  // Loud, not lenient: an unspawnable shell would otherwise parse to empty
+  // strings in every field and fail these tests with the wrong story.
+  if (!run.ok) throw new Error(`ladder harness could not run bash: ${JSON.stringify(run.error)}`);
+  if (run.value.truncated) throw new Error("ladder harness output was truncated; the assertions below would be partial");
+  const out = run.value.stdout;
   const field = (key: string): string => new RegExp(`^${key}=(.*)$`, "mu").exec(out)?.[1] ?? "";
   return {
     status: Number(field("STATUS")),
@@ -105,10 +125,10 @@ function runLadder(scenario: LadderScenario): LadderOutcome {
 }
 
 /**
- * Each of these spawns `bash` at least once. Bun's 5 s default is comfortable
- * on a Linux runner and is not on every developer machine (measured ~5 s per
- * spawn under Git-for-Windows), and a suite that goes red on a slow host
- * teaches people to ignore it.
+ * Each of these spawns `bash` at least once. Measured at 15-24 ms per test on
+ * Linux, so Bun's 5 s default is ample — this is headroom for a loaded runner,
+ * not a workaround. A suite that goes red under load teaches people to ignore
+ * it, and an ignored falsifier is not one.
  */
 const BASH_TEST_TIMEOUT_MS = 30_000;
 
