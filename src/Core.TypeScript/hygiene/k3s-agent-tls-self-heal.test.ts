@@ -9,17 +9,23 @@
 // forever on zero-length agent cert/kubeconfig files left by an unclean
 // stop (measured: run 35927439681, every file under
 // /var/lib/rancher/k3s/agent at 0 bytes, "error loading key from
-// .../serving-kubelet.key: <nil>" every ~8s for 70+ minutes). The script
-// under test removes only zero-length files under the agent directory
-// before k3s starts, so dynamiclistener's LoadOrGenerateKeyFile sees a
-// genuine IsNotExist and regenerates them (full citation in the sibling
-// `.nix` module).
+// .../serving-kubelet.key: <nil>" every ~8s for 70+ minutes). Fixing that
+// alone was not the whole story -- a follow-up real CI run (WP25's own
+// first re-run) proved the `<nil>` bug gone and then measured a SECOND,
+// different failure at the same bootstrap endpoint: "node password not
+// set" -- so the script under test now covers three targets, and this
+// suite exercises all three independently. The script removes only
+// zero-length files, before k3s starts, so k3s's own regeneration logic
+// (dynamiclistener's LoadOrGenerateKeyFile for target 1; the agent/server
+// node-password bootstrap for targets 2 and 3) sees a genuine "absent" and
+// regenerates (full citation in the sibling `.nix` module).
 //
 // THE PROPERTY THAT MATTERS MOST is the negative one, same shape as the
 // datastore-preflight suite: a zero-length file is removed, a NON-EMPTY
 // file is NEVER removed (however small or suspicious), and nothing outside
-// the agent directory is ever touched -- the script must refuse outright
-// rather than widen its own scope if ever pointed at a "server" path.
+// the three named targets is ever touched -- target 1 must refuse outright
+// rather than widen its own scope if ever pointed at a "server" path, and
+// targets 2/3 touch only their own exact, named path.
 //
 // PATH FORM: fixture paths are built with `posix.join` and passed to the
 // script (which always runs under bash, including here on a Windows CI/dev
@@ -86,13 +92,24 @@ function truncatedAgentFixture(): { readonly root: string; readonly agentDir: st
   return { root, agentDir };
 }
 
-function run(agentDir: string, serialDevice: string): { readonly status: number; readonly stdout: string } {
+interface RunOpts {
+  readonly agentDir: string;
+  readonly serialDevice: string;
+  /** Target 2. Defaults to a path that does not exist, so old callers stay a clean no-op. */
+  readonly nodePasswordFile?: string;
+  /** Target 3. Defaults to a path that does not exist, so old callers stay a clean no-op. */
+  readonly serverNodePasswdFile?: string;
+}
+
+function run(opts: RunOpts): { readonly status: number; readonly stdout: string } {
   const result = spawnSync("bash", [SCRIPT], {
     env: {
       PATH: process.env.PATH ?? "/usr/bin:/bin",
       LC_ALL: "C",
-      ZETA_K3S_AGENT_DIR: agentDir,
-      ZETA_SERIAL_DEVICE: serialDevice,
+      ZETA_K3S_AGENT_DIR: opts.agentDir,
+      ZETA_SERIAL_DEVICE: opts.serialDevice,
+      ZETA_K3S_NODE_PASSWORD_FILE: opts.nodePasswordFile ?? posixJoin(opts.serialDevice, "..", "no-such-node-password"),
+      ZETA_K3S_SERVER_NODE_PASSWD_FILE: opts.serverNodePasswdFile ?? posixJoin(opts.serialDevice, "..", "no-such-node-passwd"),
     },
     encoding: "utf8",
     maxBuffer: 64 * 1024,
@@ -100,13 +117,13 @@ function run(agentDir: string, serialDevice: string): { readonly status: number;
   return { status: result.status ?? -1, stdout: `${result.stdout}${result.stderr}` };
 }
 
-describe("removes only zero-length files", () => {
+describe("target 1 -- removes only zero-length files under the agent dir", () => {
   test("every zero-length file under the agent dir is removed, logged, and k3s can regenerate", () => {
     const { root, agentDir } = truncatedAgentFixture();
     const before = readdirSync(agentDir);
     expect(before.length).toBeGreaterThan(0);
 
-    const r = run(agentDir, posixJoin(root, "no-such-serial-device"));
+    const r = run({ agentDir, serialDevice: posixJoin(root, "no-such-serial-device") });
 
     expect(r.status).toBe(0);
     const after = readdirSync(agentDir);
@@ -130,7 +147,7 @@ describe("removes only zero-length files", () => {
     const content = "x";
     writeFileSync(survivor, content);
 
-    run(agentDir, posixJoin(root, "no-such-serial-device"));
+    run({ agentDir, serialDevice: posixJoin(root, "no-such-serial-device") });
 
     // `readFileSync` alone: it proves existence (throws ENOENT if the
     // script wrongly removed the file) AND content in one syscall, rather
@@ -148,7 +165,7 @@ describe("removes only zero-length files", () => {
     writeFileSync(posixJoin(agentDir, "serving-kubelet.crt"), "real cert material, not empty\n");
     const before = inventory(agentDir);
 
-    const r = run(agentDir, posixJoin(root, "no-such-serial-device"));
+    const r = run({ agentDir, serialDevice: posixJoin(root, "no-such-serial-device") });
 
     expect(r.status).toBe(0);
     expect(r.stdout).toContain("clear: no zero-length files");
@@ -160,22 +177,20 @@ describe("removes only zero-length files", () => {
     const agentDir = posixJoin(root, "var/lib/rancher/k3s/agent");
     // Deliberately not created.
 
-    const r = run(agentDir, posixJoin(root, "no-such-serial-device"));
+    const r = run({ agentDir, serialDevice: posixJoin(root, "no-such-serial-device") });
 
     expect(r.status).toBe(0);
     expect(r.stdout).toContain("does not exist yet");
     expect(existsSync(agentDir)).toBe(false);
   });
-});
 
-describe("the datastore is never touched, even under misconfiguration", () => {
   test("a partial-match sibling directory (agent-backup) outside the agent dir is untouched", () => {
     const { root, agentDir } = truncatedAgentFixture();
     const decoy = posixJoin(root, "var/lib/rancher/k3s/agent-backup/serving-kubelet.key");
     mkdirSync(posixJoin(root, "var/lib/rancher/k3s/agent-backup"), { recursive: true });
     writeFileSync(decoy, "");
 
-    run(agentDir, posixJoin(root, "no-such-serial-device"));
+    run({ agentDir, serialDevice: posixJoin(root, "no-such-serial-device") });
 
     expect(existsSync(decoy)).toBe(true);
   });
@@ -187,7 +202,7 @@ describe("the datastore is never touched, even under misconfiguration", () => {
     const caKey = posixJoin(serverTlsDir, "server-ca.key");
     writeFileSync(caKey, "");
 
-    const r = run(serverTlsDir, posixJoin(root, "no-such-serial-device"));
+    const r = run({ agentDir: serverTlsDir, serialDevice: posixJoin(root, "no-such-serial-device") });
 
     expect(r.status).toBe(0);
     expect(r.stdout).toContain("refusing");
@@ -204,14 +219,144 @@ describe("the datastore is never touched, even under misconfiguration", () => {
     const member = posixJoin(etcdDir, "member-marker");
     writeFileSync(member, "");
 
-    const r = run(etcdDir, posixJoin(root, "no-such-serial-device"));
+    const r = run({ agentDir: etcdDir, serialDevice: posixJoin(root, "no-such-serial-device") });
 
     expect(r.status).toBe(0);
     expect(r.stdout).toContain("refusing");
     expect(existsSync(member)).toBe(true);
   });
+});
 
-  test("the script contains no destructive verb beyond the one scoped rm -f on found zero-length files", () => {
+describe("target 2 -- the agent's own node-password file (/etc/rancher/node/password)", () => {
+  test("a zero-length node-password file is removed and logged", () => {
+    const root = tempRoot();
+    const agentDir = posixJoin(root, "var/lib/rancher/k3s/agent"); // absent; irrelevant to this target
+    const nodePasswordFile = posixJoin(root, "etc/rancher/node/password");
+    mkdirSync(posixJoin(root, "etc/rancher/node"), { recursive: true });
+    writeFileSync(nodePasswordFile, "");
+
+    const r = run({ agentDir, serialDevice: posixJoin(root, "no-such-serial-device"), nodePasswordFile });
+
+    expect(r.status).toBe(0);
+    expect(r.stdout).toContain(`removing zero-length file: ${nodePasswordFile}`);
+    expect(r.stdout).toContain(`removed ${nodePasswordFile}`);
+    expect(existsSync(nodePasswordFile)).toBe(false);
+  });
+
+  test("a non-empty node-password file is left alone", () => {
+    const root = tempRoot();
+    const agentDir = posixJoin(root, "var/lib/rancher/k3s/agent");
+    const nodePasswordFile = posixJoin(root, "etc/rancher/node/password");
+    mkdirSync(posixJoin(root, "etc/rancher/node"), { recursive: true });
+    const content = "a-real-generated-password\n";
+    writeFileSync(nodePasswordFile, content);
+
+    const r = run({ agentDir, serialDevice: posixJoin(root, "no-such-serial-device"), nodePasswordFile });
+
+    expect(r.status).toBe(0);
+    expect(readFileSync(nodePasswordFile, "utf8")).toBe(content);
+  });
+
+  test("an absent node-password file is a clean no-op", () => {
+    const root = tempRoot();
+    const agentDir = posixJoin(root, "var/lib/rancher/k3s/agent");
+    const nodePasswordFile = posixJoin(root, "etc/rancher/node/password"); // deliberately not created
+
+    const r = run({ agentDir, serialDevice: posixJoin(root, "no-such-serial-device"), nodePasswordFile });
+
+    expect(r.status).toBe(0);
+    expect(existsSync(nodePasswordFile)).toBe(false);
+  });
+});
+
+describe("target 3 -- the server's node-passwd table (server/cred/node-passwd)", () => {
+  test("a zero-length node-passwd table is removed and logged", () => {
+    const root = tempRoot();
+    const agentDir = posixJoin(root, "var/lib/rancher/k3s/agent");
+    const serverNodePasswdFile = posixJoin(root, "var/lib/rancher/k3s/server/cred/node-passwd");
+    mkdirSync(posixJoin(root, "var/lib/rancher/k3s/server/cred"), { recursive: true });
+    writeFileSync(serverNodePasswdFile, "");
+
+    const r = run({ agentDir, serialDevice: posixJoin(root, "no-such-serial-device"), serverNodePasswdFile });
+
+    expect(r.status).toBe(0);
+    expect(r.stdout).toContain(`removing zero-length file: ${serverNodePasswdFile}`);
+    expect(existsSync(serverNodePasswdFile)).toBe(false);
+  });
+
+  test("a non-empty node-passwd table is left alone", () => {
+    const root = tempRoot();
+    const agentDir = posixJoin(root, "var/lib/rancher/k3s/agent");
+    const serverNodePasswdFile = posixJoin(root, "var/lib/rancher/k3s/server/cred/node-passwd");
+    mkdirSync(posixJoin(root, "var/lib/rancher/k3s/server/cred"), { recursive: true });
+    const content = "node-qemu-k3s-verify:$2a$10$realbcryptlikehash\n";
+    writeFileSync(serverNodePasswdFile, content);
+
+    const r = run({ agentDir, serialDevice: posixJoin(root, "no-such-serial-device"), serverNodePasswdFile });
+
+    expect(r.status).toBe(0);
+    expect(readFileSync(serverNodePasswdFile, "utf8")).toBe(content);
+  });
+
+  test("the two named siblings in server/cred -- encryption-config.json and ipsec.psk -- are NEVER removed, even at zero length", () => {
+    const root = tempRoot();
+    const agentDir = posixJoin(root, "var/lib/rancher/k3s/agent");
+    const credDir = posixJoin(root, "var/lib/rancher/k3s/server/cred");
+    mkdirSync(credDir, { recursive: true });
+    const encryptionConfig = posixJoin(credDir, "encryption-config.json");
+    const ipsecPsk = posixJoin(credDir, "ipsec.psk");
+    const serverNodePasswdFile = posixJoin(credDir, "node-passwd");
+    writeFileSync(encryptionConfig, "");
+    writeFileSync(ipsecPsk, "");
+    writeFileSync(serverNodePasswdFile, "");
+
+    const r = run({ agentDir, serialDevice: posixJoin(root, "no-such-serial-device"), serverNodePasswdFile });
+
+    expect(r.status).toBe(0);
+    // The named target is gone...
+    expect(existsSync(serverNodePasswdFile)).toBe(false);
+    // ...but its zero-length siblings, never named to this script, survive --
+    // proving target 3 is a by-name removal, not a directory sweep.
+    expect(existsSync(encryptionConfig)).toBe(true);
+    expect(existsSync(ipsecPsk)).toBe(true);
+  });
+
+  test("absent entirely (an agent-role node) is a clean no-op, not a refusal", () => {
+    const root = tempRoot();
+    const agentDir = posixJoin(root, "var/lib/rancher/k3s/agent");
+    const serverNodePasswdFile = posixJoin(root, "var/lib/rancher/k3s/server/cred/node-passwd"); // deliberately not created
+
+    const r = run({ agentDir, serialDevice: posixJoin(root, "no-such-serial-device"), serverNodePasswdFile });
+
+    expect(r.status).toBe(0);
+    expect(r.stdout).not.toContain("refusing");
+  });
+});
+
+describe("all three targets fire together, matching the MEASURED failure chain", () => {
+  test("agent dir zero-length files, node-password, and server node-passwd are all healed in one run", () => {
+    const root = tempRoot();
+    const agentDir = posixJoin(root, "var/lib/rancher/k3s/agent");
+    mkdirSync(agentDir, { recursive: true });
+    writeFileSync(posixJoin(agentDir, "serving-kubelet.key"), "");
+    const nodePasswordFile = posixJoin(root, "etc/rancher/node/password");
+    mkdirSync(posixJoin(root, "etc/rancher/node"), { recursive: true });
+    writeFileSync(nodePasswordFile, "");
+    const serverNodePasswdFile = posixJoin(root, "var/lib/rancher/k3s/server/cred/node-passwd");
+    mkdirSync(posixJoin(root, "var/lib/rancher/k3s/server/cred"), { recursive: true });
+    writeFileSync(serverNodePasswdFile, "");
+
+    const r = run({ agentDir, serialDevice: posixJoin(root, "no-such-serial-device"), nodePasswordFile, serverNodePasswdFile });
+
+    expect(r.status).toBe(0);
+    expect(existsSync(posixJoin(agentDir, "serving-kubelet.key"))).toBe(false);
+    expect(existsSync(nodePasswordFile)).toBe(false);
+    expect(existsSync(serverNodePasswdFile)).toBe(false);
+  });
+});
+
+describe("the script's own text", () => {
+  test("contains no destructive verb beyond the scoped rm -f removals it documents", () => {
     const text = readFileSync(SCRIPT, "utf8");
     const body = text
       .split("\n")
@@ -220,8 +365,10 @@ describe("the datastore is never touched, even under misconfiguration", () => {
     for (const verb of ["rm -r", "rm -R", "rmdir", "shred", "mkfs", "dd if=", "truncate", "wipefs", "find /", "find $HOME"]) {
       expect({ verb, present: body.includes(verb) }).toEqual({ verb, present: false });
     }
-    // Exactly the scoped, justified removal this script exists to perform.
+    // Exactly the scoped, justified removals this script exists to perform.
     expect(body).toContain('rm -f -- "$f"');
+    expect(body).toContain('rm -f -- "$NODE_PASSWORD_FILE"');
+    expect(body).toContain('rm -f -- "$SERVER_NODE_PASSWD_FILE"');
   });
 });
 
