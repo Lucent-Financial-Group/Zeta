@@ -28,7 +28,7 @@
  */
 
 import { spawnSync } from "node:child_process";
-import { closeSync, existsSync, mkdtempSync, openSync, readSync, writeFileSync } from "node:fs";
+import { existsSync, mkdtempSync, readFileSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -120,43 +120,38 @@ export interface PrepareBootImageResult {
 }
 
 /**
- * How much of the ISO's front the ESP scan is allowed to see.
+ * The ESP offset AND whether anything confirmed it — see {@link IsohybridEspOffset}.
  *
- * 081M39CJP96087G0R001T4J2R3 (WP29) — this bound used to be
- * `max(512, ISOHYBRID_ESP_OFFSET_FALLBACK_BYTES + 512)` = 141_824, i.e.
- * exactly enough to check the LBA-276 fallback and nothing else. An MBR 0xEF
- * entry pointing anywhere past LBA 276 failed `isoHead.length >= partOffset +
- * 512`, so the scan skipped its own best evidence and silently returned the
- * constant. The measured ISO of run 36044770870 puts its ESP at LBA 268
- * (offset 137_216, 3 MiB, FAT12) — under the old bound by 4_608 bytes. An ESP
- * one megabyte further in would not have been, and nothing would have said so.
+ * 081M39CJP96087G0R001T4J2R3 (WP29) — THE SCAN USED TO BE HANDED A BUFFER
+ * TRIMMED TO EXACTLY THE ANSWER IT WAS ALLOWED TO FIND. The old body was
  *
- * 8 MiB, read with a bounded `read()` rather than by loading the file.
+ *     const headSize = Math.max(512, ISOHYBRID_ESP_OFFSET_FALLBACK_BYTES + 512);
+ *     readFileSync(isoPath).subarray(0, headSize)
+ *
+ * i.e. 141_824 bytes: enough to check the LBA-276 fallback and nothing else.
+ * An MBR 0xEF entry pointing anywhere past LBA 276 then failed
+ * `isoHead.length >= partOffset + 512` inside the scan, the MBR branch was
+ * skipped in silence, and the constant came back for an image it does not
+ * describe. The measured ISO of run 36044770870 puts its ESP at LBA 268
+ * (offset 137_216, 3 MiB, FAT12) — inside the old bound by 4_608 bytes. One
+ * megabyte further in and it would not have been, with nothing saying so.
+ *
+ * The whole image is passed now. The scan indexes at computed offsets rather
+ * than walking, so a larger buffer costs nothing and removes the bound as a
+ * source of wrong answers.
+ *
+ * KNOWN LIMIT, deliberately left: `readFileSync` pulls the entire ISO into
+ * memory (1.67 GiB for the measured installer) and would throw outright past
+ * its ~2 GiB ceiling. The bounded `openSync`/`readSync` version that fixes
+ * both is a `js/insecure-temporary-file` CodeQL sink — every QEMU lane hands
+ * this function an ISO path under `os.tmpdir()`, and the query models
+ * `fs.openSync` as file creation regardless of the `"r"` flag. Changing it is
+ * a separate change with its own argument to make; it is not worth smuggling
+ * in behind an offset fix, and this is the pre-existing behaviour, not a
+ * regression.
  */
-export const ISO_HEAD_SCAN_BYTES = 8 * 1024 * 1024;
-
-/**
- * Read a bounded head of the ISO.
- *
- * The previous implementation was `readFileSync(isoPath).subarray(0, headSize)`
- * — it pulled the ENTIRE image into memory (1.67 GiB for the measured
- * installer ISO) in order to look at its first 138 KB, and an ISO past
- * `readFileSync`'s ~2 GiB ceiling would have thrown rather than degraded.
- */
-export function readIsoHead(isoPath: string, length: number = ISO_HEAD_SCAN_BYTES): Buffer {
-  const head = Buffer.alloc(length);
-  const fd = openSync(isoPath, "r");
-  try {
-    const bytesRead = readSync(fd, head, 0, length, 0);
-    return head.subarray(0, bytesRead);
-  } finally {
-    closeSync(fd);
-  }
-}
-
-/** The ESP offset AND whether anything confirmed it — see {@link IsohybridEspOffset}. */
 export function resolveEspOffsetForIso(isoPath: string): IsohybridEspOffset {
-  return detectIsohybridEspOffset(readIsoHead(isoPath));
+  return detectIsohybridEspOffset(readFileSync(isoPath));
 }
 
 export function resolveEspOffsetBytesForIso(isoPath: string): number {

@@ -163,21 +163,25 @@ describe("ESP offset resolution — 081M39CJP96087G0R001T4J2R3 (WP29)", () => {
     }
   }
 
-  test("readIsoHead reads a bounded prefix instead of the whole image", async () => {
-    const { readIsoHead } = await import("./prepare-boot-image");
-    withIso(syntheticIso(268, 4 * 1024 * 1024), (isoPath) => {
-      expect(readIsoHead(isoPath, 1024)).toHaveLength(1024);
-      // Asking for more than the file holds yields the file, not a crash and
-      // not a buffer padded with zeros that would read as real bytes.
-      expect(readIsoHead(isoPath, 8 * 1024 * 1024)).toHaveLength(4 * 1024 * 1024);
+  test("the real ISO's LBA-268 ESP resolves from the MBR, not from the fallback constant", async () => {
+    // The measured installer ISO of run 36044770870: ESP at LBA 268 (137_216
+    // bytes), 3 MiB, FAT12. The LBA-276 fallback constant is 4_096 bytes
+    // INSIDE that partition, so "fell back" and "read the MBR" are not
+    // distinguishable by the number alone.
+    const { resolveEspOffsetForIso } = await import("./prepare-boot-image");
+    withIso(syntheticIso(268, 1024 * 1024), (isoPath) => {
+      expect(resolveEspOffsetForIso(isoPath)).toEqual({
+        offsetBytes: 268 * 512,
+        source: "mbr",
+      });
     });
   });
 
   test("an ESP past the old 141_824-byte head bound is now FOUND, not silently guessed", async () => {
-    // The measured installer ISO of run 36044770870 puts its ESP at LBA 268
-    // (137_216 bytes), which cleared the old bound by 4_608 bytes. One
-    // megabyte further in and the scan would have skipped its own MBR
-    // evidence and returned the LBA-276 constant with nothing saying so.
+    // The old `resolveEspOffsetBytesForIso` handed the scan exactly
+    // `fallback + 512` bytes, so this ISO's 0xEF entry failed
+    // `isoHead.length >= partOffset + 512`, the MBR branch was skipped without
+    // a word, and 141_312 came back for an image whose ESP is at 2_097_152.
     const { resolveEspOffsetForIso } = await import("./prepare-boot-image");
     withIso(syntheticIso(4096, 4 * 1024 * 1024), (isoPath) => {
       expect(resolveEspOffsetForIso(isoPath)).toEqual({
