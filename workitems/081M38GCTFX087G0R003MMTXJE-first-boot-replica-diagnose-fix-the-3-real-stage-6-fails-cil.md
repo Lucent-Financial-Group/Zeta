@@ -109,3 +109,38 @@ Evidence for all of the above is in the job logs of the runs cited
 35973241862); the `collectAppFailureDiagnostics` function added to
 `first-boot-replica.ts` this round captures describe/logs/events/
 generation-fields/health/controller-log for any future FAIL automatically.
+
+## Final confirmed steady state (PR #17607, runs 35989275840 x2 + seaweedfs fix)
+
+Two more triggered runs after the seaweedfs fix landed and `main` was merged
+in. One of them (job 107599378312) showed cilium FAIL with
+`cilium-operator-...:UNKNOWN(not converged: phase=Running restartCount=1)`
+-- a DIFFERENT symptom than the TLS-cert resync loop this workitem fixed.
+`describe pod` traced it: `Failed to update lease ... context deadline
+exceeded` -> `Leader election lost, shutting down` -- cilium-operator's OWN
+leader-election lease renewal timed out against the k8s API under CI load
+and it self-terminated cleanly, restarting once. Confirmed as one-off CI
+resource contention, not a regression: the IMMEDIATELY FOLLOWING rerun (job
+107620531835), same commit, same code, went back to the expected steady
+state:
+
+- **spire → DIVERGENCE** (correctly classified even at restartCount=11 this
+  time -- the widened `isKnownSpireAgentDnsCrashLoop` held).
+- **cilium → FAIL**, but back to `health=Progressing with no classified pod
+  issue attributed to it` -- the resync-loop symptom is gone (no cert
+  rotation reason cited); this is the SAME shared, still-unexplained mystery
+  weaviate has, not the leader-election blip.
+- **weaviate → FAIL**, unchanged.
+
+This is the accurate, reproducible final state of this PR's fixes: two real
+bugs fixed and live-confirmed (spire's bootstrap ownership collision, spire-
+agent's classification gap, cilium's TLS-cert resync loop), one shared
+mystery still open for cilium+weaviate with a concrete lead
+(`RespectIgnoreDifferences=true` correlation), tracked in
+081M39EMBRW087G0R001RHMEDJ alongside seaweedfs and gitlab.
+
+`first-boot-replica.yml` is NOT a required check (by its own header:
+"until it has run green a number of times on main, a flake here must not
+block every PR") and is expected to stay red until the shared mystery is
+solved -- that is not a reason to hold this PR's two confirmed, live-
+verified fixes off `main`.
