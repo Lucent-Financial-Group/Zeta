@@ -2780,6 +2780,32 @@ function collectAppFailureDiagnostics(
       const snap = snapshotByName.get(app.name);
       const ns = snap?.destinationNamespace;
       log(`--- ${app.name}: no attributed pod issue; Application resources: ${JSON.stringify(snap?.resources ?? [])} ---`);
+      // WP26: MEASURED (run 35954645236) that the generation/revision dump
+      // below reads Healthy-by-the-book for cilium and weaviate (generation
+      // == observedGeneration, currentRevision == updateRevision, every
+      // replica Ready) while ArgoCD still reports the Application itself
+      // Progressing -- so whatever ArgoCD's health verdict is reading, it is
+      // NOT lagging workload-controller status. Dump the Application's own
+      // full `.status.health` (its `message` field, which
+      // `AppConvergenceSnapshot` does not carry, may name the resource or
+      // reason gitops-engine's aggregation picked) and the last lines of the
+      // application-controller's own log mentioning this app, to see ArgoCD's
+      // reasoning directly rather than re-deriving it from workload state.
+      const appHealth = kubectl(runner, kubeconfigPath, ["-n", "argocd", "get", "applications.argoproj.io", app.name, "-o", "jsonpath={.status.health}"], 20_000);
+      log(`--- ${app.name}: full Application .status.health ---`);
+      log(appHealth.stdout || appHealth.stderr || "(no output)");
+      const controllerLogs = kubectl(
+        runner,
+        kubeconfigPath,
+        ["-n", "argocd", "logs", "deployment/argocd-application-controller", "--tail=3000"],
+        20_000,
+      );
+      const matchingLines = controllerLogs.stdout
+        .split("\n")
+        .filter((line) => line.includes(`"${app.name}"`) || line.includes(`=${app.name} `) || line.includes(`app=${app.name}`))
+        .slice(-60);
+      log(`--- ${app.name}: application-controller log lines mentioning it (last 60 of ${String(matchingLines.length)} matched) ---`);
+      log(matchingLines.length > 0 ? matchingLines.join("\n") : controllerLogs.stderr || "(no matching lines; controller may log by different key)");
       if (ns !== undefined) {
         const workloads = kubectl(runner, kubeconfigPath, ["-n", ns, "get", "pods,statefulsets,deployments,daemonsets", "-o", "wide"], 20_000);
         log(`--- workloads in ${ns} ---`);
