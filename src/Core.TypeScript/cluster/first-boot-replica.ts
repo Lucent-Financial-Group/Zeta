@@ -2794,15 +2794,18 @@ function collectAppFailureDiagnostics(
       const appHealth = kubectl(runner, kubeconfigPath, ["-n", "argocd", "get", "applications.argoproj.io", app.name, "-o", "jsonpath={.status.health}"], 20_000);
       log(`--- ${app.name}: full Application .status.health ---`);
       log(appHealth.stdout || appHealth.stderr || "(no output)");
-      const controllerLogs = kubectl(
-        runner,
-        kubeconfigPath,
-        ["-n", "argocd", "logs", "deployment/argocd-application-controller", "--tail=3000"],
-        20_000,
-      );
+      // MEASURED (run 35960112028): the official ArgoCD Helm chart runs the
+      // application-controller as a StatefulSet, not a Deployment --
+      // `logs deployment/argocd-application-controller` returned a flat
+      // NotFound every time, so this workload's own reasoning was never
+      // actually captured. Try both; log which one (if either) resolved.
+      let controllerLogs = kubectl(runner, kubeconfigPath, ["-n", "argocd", "logs", "statefulset/argocd-application-controller", "--tail=3000"], 20_000);
+      if (controllerLogs.status !== 0) {
+        controllerLogs = kubectl(runner, kubeconfigPath, ["-n", "argocd", "logs", "deployment/argocd-application-controller", "--tail=3000"], 20_000);
+      }
       const matchingLines = controllerLogs.stdout
         .split("\n")
-        .filter((line) => line.includes(`"${app.name}"`) || line.includes(`=${app.name} `) || line.includes(`app=${app.name}`))
+        .filter((line) => line.includes(app.name))
         .slice(-60);
       log(`--- ${app.name}: application-controller log lines mentioning it (last 60 of ${String(matchingLines.length)} matched) ---`);
       log(matchingLines.length > 0 ? matchingLines.join("\n") : controllerLogs.stderr || "(no matching lines; controller may log by different key)");
