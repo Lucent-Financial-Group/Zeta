@@ -133,6 +133,46 @@
 # principle touch. The datastore (server/db) is outside this module's scope
 # entirely -- no target above is a path under it.
 #
+# A SECOND, NAMED RESIDUAL RISK -- THE ASYMMETRIC-CORRUPTION CASE. Targets 2
+# and 3 are two ends of one handshake: the agent presents the secret at
+# target 2, the server checks it against target 3's table. The measured
+# failure truncated BOTH together (same crash, same instant), which is why
+# clearing both and letting each side regenerate independently works -- a
+# freshly empty table has no stale entry to contradict the agent's freshly
+# generated password. k3s's own semantics (community precedent, same
+# sources as targets 2/3 above) are that a MISMATCH -- not an absence -- is
+# a DIFFERENT, and NOT self-healing, failure: if only target 2 were
+# truncated while target 3 SURVIVED non-empty with a real (non-zero-length)
+# entry already recorded for this exact node name, this script would
+# correctly regenerate a brand-new random password at target 2 (it is
+# zero-length, so it qualifies) and leave target 3 untouched (it is
+# non-empty, so it does not qualify) -- and the server would then reject the
+# NEW password against the OLD stored hash for the SAME node name. That
+# rejection is reported as "node password rejected" (RPi4/Buster case,
+# k3s-io/k3s#746), a DIFFERENT string from "node password not set", and
+# retries exactly as unproductively as the bug this module fixes.
+#
+# THIS IS NOT HANDLED, ON PURPOSE, RATHER THAN HOPED PAST. Curing it would
+# mean finding and deleting only THIS node's entry inside target 3's table
+# -- but k3s's node-password store is not one fixed on-disk shape across
+# datastore backends (community sources describe both a flat per-node table
+# under server/cred AND a `<nodename>.node-password.k3s` Secret in the
+# kube-system namespace for datastore-backed clusters), and this module
+# reads no Kubernetes API and parses no k3s-internal format -- doing either
+# on a guess would be a stronger and less justified claim than the
+# zero-length case this module already limits itself to. So: if a node ever
+# changes its locally-stored password (target 2 regenerated) while the
+# SAME node name keeps a stale, non-empty entry server-side, this module
+# does not resolve it, and the operator remedy is the same one the
+# community sources name for a plain node-password rejection -- clear the
+# specific stale entry for that node name (server-side table row or Secret)
+# by hand. NOT the scenario measured on this branch (which truncated both
+# sides together, and remains fully self-healed); named here because the
+# coordinator asked the question directly and "if it can, handle it
+# explicitly rather than hoping" is the right bar -- this paragraph is the
+# explicit handling: named, bounded, and left to a human rather than
+# silently assumed away.
+#
 # PREVENTION, CONSIDERED AND DEFERRED. A power cut can land at any instant,
 # so no amount of "sync before the install phase ends" makes this
 # unreachable in general -- self-heal is the durable fix because it covers
