@@ -1249,6 +1249,36 @@ export function allApplicationsSettled(apps: readonly { readonly health: string 
   return apps.every((a) => a.health !== "Progressing");
 }
 
+/** One poll's roster shape, as `rosterHasStabilized` compares across two consecutive polls. */
+export interface RosterPollState {
+  readonly settled: boolean;
+  readonly count: number;
+}
+
+/**
+ * WP26 (081M38GCTFX087G0R003MMTXJE): `allApplicationsSettled` is vacuously
+ * true over any list with no Application still Progressing -- including a
+ * list that has barely started growing. MEASURED, run 35943167812: stage 6's
+ * poll observed `apps.every(...)` true at apps=2 (only `argocd` +
+ * `zeta-root`, both trivially Healthy) *before* ArgoCD's app-of-apps
+ * recursion had created the other ~40 Applications the lane-tree actually
+ * declares -- stage 8's baseline 8 minutes later saw the real roster at 37.
+ * Stage 6 recorded "2 Applications: 2 Healthy, 0 FAIL" and every downstream
+ * stage treated that as a real green, never assessing cilium/spire/weaviate/
+ * or anything else at all. `apps.every(f)` over a list that has not finished
+ * being populated is not "nothing is mid-reconcile", it is "nothing has been
+ * asked yet" -- the same vacuity class as a check that cannot fail.
+ *
+ * Requires the settled state to hold, AND the roster SIZE to be unchanged,
+ * across two consecutive polls before the roster counts as stabilized. A
+ * roster still being populated grows between polls (2 -> 37 took under 8
+ * minutes here; `opts.pollMs` polls far more often than that), so the count
+ * check catches exactly the window `allApplicationsSettled` alone cannot.
+ */
+export function rosterHasStabilized(previous: RosterPollState | null, current: RosterPollState): boolean {
+  return previous !== null && previous.settled && current.settled && previous.count === current.count;
+}
+
 /** One container's restart count, sampled during the soak phase. */
 export interface RestartSample {
   readonly namespace: string;
@@ -2310,6 +2340,7 @@ export async function runReplica(opts: RunOptions): Promise<RunReport> {
     const s6Deadline = s6Start + opts.stage567TimeoutSec;
     let appConvergence: readonly AppConvergenceSnapshot[] = [];
     let settled = false;
+    let previousRosterPoll: RosterPollState | null = null;
     await waitUntil(s6Deadline, opts.pollMs, () => {
       const appsJson = kubectl(runner, kubeconfigPath, ["-n", "argocd", "get", "applications.argoproj.io", "-o", "json"], 30_000);
       if (appsJson.status !== 0) return false;
@@ -2318,7 +2349,12 @@ export async function runReplica(opts: RunOptions): Promise<RunReport> {
         log("WARNING: stage 6 could not parse Applications JSON (or the roster is empty)");
         return false;
       }
-      settled = allApplicationsSettled(appConvergence);
+      // WP26: settled-and-stable, not just settled -- see `rosterHasStabilized`.
+      // A single poll's "nothing Progressing" is vacuous while the app-of-apps
+      // roster is still being created.
+      const currentRosterPoll: RosterPollState = { settled: allApplicationsSettled(appConvergence), count: appConvergence.length };
+      settled = rosterHasStabilized(previousRosterPoll, currentRosterPoll);
+      previousRosterPoll = currentRosterPoll;
       return settled;
     });
 
