@@ -139,6 +139,19 @@ pkgs.testers.nixosTest {
         f"test -s {node_passwd} && {{ echo yes; exit 0; }}; "
         f"sleep 5; done; echo no"
     ).strip() == "yes"
+    # MAKE THE SKIP LOUD: whichever branch was taken, print it unconditionally,
+    # so a reader of a green run's own log can tell which one happened without
+    # reading this file's header -- an observation that was skipped must never
+    # look identical to one that passed.
+    print(
+        "[k3s-self-heal-test] target 3 (server/cred/node-passwd): "
+        + (
+            "EXERCISED"
+            if node_passwd_present
+            else "NOT PRESENT within 120s -- skipped on this substrate; "
+            "authoritative evidence is runs 35943840554 and 35954415942"
+        )
+    )
 
     # ── Reproduce the MEASURED defect CHAIN: stop k3s, truncate every agent
     #    file (bug 1, run 35927439681's `ls -l`) PLUS the agent-side
