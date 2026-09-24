@@ -2086,6 +2086,15 @@ export interface K3sFirstBootVerifyVerdict {
     readonly podCount?: number;
     /** Number of samples the soak took before settling or hitting its bound (SOAK_SECONDS=180). Optional for the same reason as `podCount`. */
     readonly samples?: number;
+    /**
+     * Same value as `k3sServiceActive.ok` above, carried directly onto this
+     * verdict so a reader never has to cross-reference two verdicts to know
+     * whether `ok: true` here means "checked and clean" or "k3s never
+     * became active, so nothing was ever checked" -- the exact ambiguity
+     * that let main read green all night on a cluster with no pods at all.
+     * Optional for the same reason as `podCount`.
+     */
+    readonly k3sActive?: boolean;
   };
 }
 

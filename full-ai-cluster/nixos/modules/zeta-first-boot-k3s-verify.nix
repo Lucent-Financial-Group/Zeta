@@ -480,10 +480,14 @@ in
         fi
 
         # 081M39T5661087G0R001FTJ78W item 4: distinguish "no bad pods among N"
-        # from "no pods at all" (k3s never active, or genuinely zero pods) --
-        # both currently read noBadPods=true, and only the pod count told
-        # apart what that true actually means. Cheap: report it, do not
-        # change what "ok" means.
+        # from "no pods at all" (k3s never active, so this block never even
+        # ran) -- both used to read noBadPods=true with nothing to tell them
+        # apart, which is a SIXTH verdict reading green as confirmation that
+        # nothing was wrong while measuring nothing (MEASURED: this is what
+        # main printed all night on runs where k3s never became active).
+        # $K3S_ACTIVE is carried into the verdict directly rather than left
+        # to be inferred from podCount=0, which a genuinely-empty-but-active
+        # cluster could also produce.
         TOTAL_POD_COUNT=$("$WC" -l < "$CUR_PODS_FILE" | "$TR" -d ' ')
 
         BAD_PODS_JSON="[]"
@@ -504,7 +508,9 @@ in
         # look-identical this repo has been bitten by all night. Say what
         # was waited for, for how long, and how it resolved -- pass and fail
         # are different sentences, not just a different word.
-        if [ "$NO_BAD_PODS" = "true" ]; then
+        if [ "$K3S_ACTIVE" != "true" ]; then
+          log "[wp11-k3s-verify] verdict 6/6 noBadPods=true after ''${BAD_PODS_ELAPSED}s -- k3s.service NEVER BECAME ACTIVE, 0 pods were ever checked; this is NOT a confirmation that nothing was wrong (see verdict 2/6 above)"
+        elif [ "$NO_BAD_PODS" = "true" ]; then
           log "[wp11-k3s-verify] verdict 6/6 noBadPods=true after ''${BAD_PODS_ELAPSED}s (''${SAMPLES} sample(s), ''${TOTAL_POD_COUNT} pod(s) total, all settled)"
         else
           BAD_SUMMARY="$("$AWK" 'BEGIN{sep=""} {printf "%s%s/%s restartCount=%s", sep, $1, $2, $4; sep=", "} END{print ""}' "$UNSETTLED_FILE")"
@@ -529,13 +535,14 @@ in
           --argjson badPodsElapsedSeconds "$BAD_PODS_ELAPSED" \
           --argjson podCount "$TOTAL_POD_COUNT" \
           --argjson samples "$SAMPLES" \
+          --argjson k3sActiveForPods "$K3S_ACTIVE" \
           '{
             bootedMultiUser: {ok: $bootedMultiUser, elapsedSeconds: $bootedMultiUserElapsedSeconds},
             k3sServiceActive: {ok: $k3sServiceActive, elapsedSeconds: $k3sServiceActiveElapsedSeconds},
             nodeReady: {ok: $nodeReady, elapsedSeconds: $nodeReadyElapsedSeconds},
             helmJobs: {jobs: $helmJobs, elapsedSeconds: $helmJobsElapsedSeconds},
             rootLanded: {ok: $rootLanded, verdict: $rootLandedVerdict, elapsedSeconds: $rootLandedElapsedSeconds},
-            noBadPods: {ok: $noBadPods, pods: $badPods, elapsedSeconds: $badPodsElapsedSeconds, podCount: $podCount, samples: $samples}
+            noBadPods: {ok: $noBadPods, pods: $badPods, elapsedSeconds: $badPodsElapsedSeconds, podCount: $podCount, samples: $samples, k3sActive: $k3sActiveForPods}
           }')"
 
         log "${jsonBeginMarker}"
