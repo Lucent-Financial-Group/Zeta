@@ -14,6 +14,14 @@
 #      /var/lib/rancher/k3s/server/cred/node-passwd suffering the identical
 #      truncation. This test now reproduces and heals all three targets.
 #
+# THIS TEST'S OWN FIRST WIRED RUN (PR #17608, run 35967573812) caught a race
+# in itself, not in the module under test: an immediate `succeed` on
+# server/cred/node-passwd right after `/readyz` failed the whole build,
+# because that file is written when the kubelet's node REGISTRATION
+# completes -- a few hundred ms after `/readyz` starts answering, not at
+# `/readyz` itself. Both assertions on that path now use
+# `wait_until_succeeds` (60s), the same tolerance `/readyz` already gets.
+#
 # `lint-k3s-datastore-preflight.test.ts`'s sibling,
 # `src/Core.TypeScript/hygiene/k3s-agent-tls-self-heal.test.ts`, already
 # EXECUTES the repair SCRIPT over fixture directories and proves the pure
@@ -78,7 +86,18 @@ pkgs.testers.nixosTest {
     machine.succeed("test -s /var/lib/rancher/k3s/agent/serving-kubelet.key")
     machine.succeed("test -s /var/lib/rancher/k3s/agent/client-kubelet.crt")
     machine.succeed("test -s /etc/rancher/node/password")
-    machine.succeed("test -s /var/lib/rancher/k3s/server/cred/node-passwd")
+    # NOT an immediate `succeed` like the three above -- MEASURED (PR run
+    # 35967573812) to race: server/cred/node-passwd is written when the
+    # kubelet's own node REGISTRATION completes, which lands a few hundred
+    # ms after `/readyz` starts answering (the journal shows "Attempting to
+    # register node" then "Successfully registered node" only after this
+    # point), not at `/readyz` itself. An immediate `succeed` here caught
+    # that gap and failed the whole build. `wait_until_succeeds` is the same
+    # tolerance `/readyz` above already gets, for the same reason.
+    machine.wait_until_succeeds(
+        "test -s /var/lib/rancher/k3s/server/cred/node-passwd",
+        timeout=60,
+    )
 
     # ── Reproduce the MEASURED defect CHAIN: stop k3s, truncate every agent
     #    file (bug 1, run 35927439681's `ls -l`) PLUS the two node-password
@@ -145,7 +164,11 @@ pkgs.testers.nixosTest {
     machine.succeed("test -s /var/lib/rancher/k3s/agent/serving-kubelet.key")
     machine.succeed("test -s /var/lib/rancher/k3s/agent/client-kubelet.crt")
     machine.succeed("test -s /etc/rancher/node/password")
-    machine.succeed("test -s /var/lib/rancher/k3s/server/cred/node-passwd")
+    # Same race as the first-boot assertion above, same fix.
+    machine.wait_until_succeeds(
+        "test -s /var/lib/rancher/k3s/server/cred/node-passwd",
+        timeout=60,
+    )
 
     # ── The planted containerd-snapshot fixture survived, untouched -- the
     #    allowlist never names $AGENT_DIR/containerd, so this was never a
