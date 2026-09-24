@@ -1,11 +1,12 @@
 ---
 id: 081M39B2MDA087G0R003CCEJPQ
 type: task
-state: backlog
+state: done
 priority: P1
 slug: k3s-crash-loops-495-times-on-first-boot-after-self-heal-clea
 title: "k3s crash-loops ~495 times on first boot after self-heal clears the truncation (WP25 follow-up)"
 created: 2026-09-24T09:13:51.274Z
+completed: 2026-09-24T09:43:50.736Z
 depends_on: []
 composes_with: []
 ---
@@ -15,6 +16,25 @@ composes_with: []
 <!-- Work-item body. ZetaId-keyed (conflict-free, time-sortable). "Backlog" is a
      STATE = this folder; completion moves the file to workitems/done/YYYY/MM/.
      Identity is the zetaid prefix — resolve cross-refs by `081M39B2MDA087G0R003CCEJPQ-*.md` glob. -->
+
+## RESOLVED -- diagnosis complete, fix tracked in 081M39CR74D087G0R002BEG2G4
+
+WP27 measured the root cause independently on run 35968222668 (their branch: graceful
+teardown, no self-heal, ESP marker intact so all six WP11 verdicts fired):
+`k3sServiceActive=false`, `NRestarts=58`, `Result=exit-code`, 76x
+`level=fatal msg="Error: preparing server: failed to bootstrap cluster data: failed
+to reconcile with local datastore: no bootstrap data found in datastore - check
+server token value and verify datastore integrity"`.
+
+This is the same shape as WP25's ~495 restarts here: k3s creates
+`/var/lib/rancher/k3s/server/db`, gets stopped ~20s later before writing bootstrap
+data, and then refuses forever to initialise into the non-empty datastore it finds
+on the next start. A crash-loop with no verdict unit running (this workitem's
+original finding) is exactly what that produces. The fix -- a has-ever-bootstrapped
+sentinel so a stillborn (never-served) datastore can be safely discarded while a
+served one is never touched -- is designed and tracked in
+`081M39CR74D087G0R002BEG2G4`, on its own branch/PR per the architect's explicit
+instruction not to stack it on #17608.
 
 ## What WP25 (081M38G8NGC087G0R001GEGEDK, PR #17608) already proved
 
