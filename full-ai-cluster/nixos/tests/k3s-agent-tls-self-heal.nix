@@ -78,6 +78,25 @@ pkgs.testers.nixosTest {
     # Hermetic: no image-pull bootstrap manifests in the sandbox.
     services.k3s.manifests = lib.mkForce { };
 
+    # MEASURED, PR run 35972134922: this test is the first in this repo to
+    # `systemctl stop k3s.service` / `systemctl start k3s.service` on a LIVE
+    # embedded-etcd server node without a full VM reboot (every sibling test
+    # either boots once or restarts the whole machine). On the second start,
+    # etcd refused to rejoin its own single-member cluster:
+    #   "this server is not a member of the etcd cluster. Found
+    #    [machine-<id>=https://[fec0::...]:2380], expect:
+    #    machine-<id>=https://10.0.2.15:2380"
+    # -- etcd's PERSISTED member list recorded this node's address as an
+    # IPv6 one (QEMU's slirp backend advertises both v4 and a legacy
+    # site-local v6 range by default), while the second start resolved its
+    # own advertise address as the v4 one, and etcd's self-membership check
+    # treats that as a different node. This is a QEMU-networking artifact of
+    # a live-restart-without-reboot test shape, not a k3s or self-heal
+    # defect. Disabling IPv6 removes the ambiguity at its source: only one
+    # address family exists to advertise, so the same one is resolved both
+    # times.
+    networking.enableIPv6 = false;
+
     virtualisation.memorySize = 2560; # MB
     virtualisation.cores = 2;
     virtualisation.diskSize = 6144; # MB
