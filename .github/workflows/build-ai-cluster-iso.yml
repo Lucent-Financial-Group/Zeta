@@ -453,6 +453,39 @@ jobs:
         working-directory: full-ai-cluster
         run: nix build .#checks.x86_64-linux.k3s-datastore-preflight-fail-closed -L --print-build-logs --fallback
 
+      # ZERO-LENGTH k3s CREDENTIALS SELF-HEAL, on a real boot. WP25
+      # (081M38G8NGC087G0R001GEGEDK). `nixos/tests/k3s-agent-tls-self-heal.nix`
+      # was wired into `flake.nix` (`k3s-agent-tls-self-heal`) but named by NO
+      # workflow step -- the same gap this file's own history already has two
+      # precedents for (see "node platform fixes" and "cluster CIDR
+      # derivation" above): a check that only `nix flake check`/`nix build`
+      # locally would ever run is a check CI never runs, and this repo
+      # refuses that shape (a check that did not run must never look like one
+      # that passed).
+      #
+      # k3s-agent-tls-self-heal.test.ts already EXECUTES the repair script
+      # over fixture directories and proves the pure "which files get
+      # removed" logic, including the allowlist regression this step's
+      # sibling VM test also carries (a real WP25 CI run measured the
+      # pre-allowlist revision removing 3243 legitimately zero-length files
+      # from inside containerd's own image store in one boot -- see PR
+      # #17608). What no fixture-directory test can reach is whether systemd
+      # actually runs the ExecStartPre before k3s on a REAL boot, and whether
+      # a REAL k3s regenerates the files and reaches active once they're
+      # gone -- and whether the planted containerd-snapshot fixture survives
+      # that same real boot. That is this step's job.
+      #
+      # Hermetic (no internet, no image pulls) and boots ONE node twice
+      # (write real cert material, stop, truncate, restart) -- same shape and
+      # cost class as "dirty disk FAILS CLOSED" immediately above; on the PR
+      # path rather than gated to workflow_dispatch because it is cheap (see
+      # the measured wall-clock this comment will carry once the first PR run
+      # completes).
+      - name: NixOS test — zero-length k3s credentials self-heal on boot
+        timeout-minutes: 30
+        working-directory: full-ai-cluster
+        run: nix build .#checks.x86_64-linux.k3s-agent-tls-self-heal -L --print-build-logs --fallback
+
       # ONLINE end-to-end proof: boots the control-plane WITH internet,
       # installs Cilium for real, asserts the node reaches Ready + CoreDNS
       # Running. This is the gate that catches the full bring-up chain
