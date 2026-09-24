@@ -1026,6 +1026,31 @@ describe("isKnownSpireAgentDnsCrashLoop", () => {
     const issue: PodVerdict = { namespace: "other", name: "spire-agent-x", category: "CRASHLOOP", isFailure: true, detail: "CrashLoopBackOff" };
     expect(isKnownSpireAgentDnsCrashLoop(issue)).toBe(false);
   });
+
+  // MEASURED on run 35946414428 (2026-09-24): the SAME confirmed non-metal
+  // artifact (restartCount 20, `describe pod`'s Last State: Terminated,
+  // Exit Code 1, liveness/readiness connection-refused events matching the
+  // documented hostNetwork DNS failure) was sampled while the container
+  // happened to be in its `Running` window between crashes rather than
+  // sitting in `CrashLoopBackOff` — `classifyPod`'s fallback branch reports
+  // that as UNKNOWN, not CRASHLOOP, even though it is the identical
+  // artifact caught at a different point in the same cycle.
+  test("the same crash loop caught between crashes (Running, high restartCount) IS covered", () => {
+    const issue: PodVerdict = {
+      namespace: "spire",
+      name: "spire-agent-w4dgw",
+      category: "UNKNOWN",
+      isFailure: true,
+      detail: "not converged: phase=Running scheduled=true restartCount=20",
+    };
+    expect(isKnownSpireAgentDnsCrashLoop(issue)).toBe(true);
+  });
+
+  test("an UNKNOWN spire-agent issue that is NOT the Running fallback shape is still not covered", () => {
+    // e.g. a FailedScheduling UNKNOWN -- a real, different failure mode.
+    const issue: PodVerdict = { namespace: "spire", name: "spire-agent-w4dgw", category: "UNKNOWN", isFailure: true, detail: "FailedScheduling: 0/1 nodes are available" };
+    expect(isKnownSpireAgentDnsCrashLoop(issue)).toBe(false);
+  });
 });
 
 describe("manualSyncDeclarations against the real applications tree", () => {

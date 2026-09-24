@@ -1134,9 +1134,22 @@ export function isKnownSealedByDesign(appName: string): boolean {
  * `isKnownSoakRegression`'s own discipline: only the `spire-agent` container
  * qualifies. A `spire-server` (or any other) issue in this namespace is NOT
  * covered and still fails the app, exactly as before.
+ *
+ * WP26, MEASURED on run 35946414428: the identical artifact (restartCount
+ * 20, `describe pod`'s Last State Terminated/Exit Code 1, connection-refused
+ * liveness/readiness events) was sampled while the container happened to be
+ * in its brief `Running` window BETWEEN crashes rather than sitting in
+ * `CrashLoopBackOff` at poll time — `classifyPod`'s fallback branch reports
+ * that as `UNKNOWN` with detail `"not converged: phase=Running ..."`, not
+ * `CRASHLOOP`. Same pod, same cycle, different instant sampled. Widened to
+ * cover that specific fallback shape too, still scoped to `spire-agent`
+ * pods only — a `FailedScheduling` or any other UNKNOWN detail shape is a
+ * real, different failure and stays uncovered.
  */
 export function isKnownSpireAgentDnsCrashLoop(issue: PodVerdict): boolean {
-  return issue.namespace === "spire" && issue.category === "CRASHLOOP" && issue.name.startsWith("spire-agent");
+  if (issue.namespace !== "spire" || !issue.name.startsWith("spire-agent")) return false;
+  if (issue.category === "CRASHLOOP") return true;
+  return issue.category === "UNKNOWN" && issue.detail.startsWith("not converged: phase=Running");
 }
 
 export interface AppVerdictContext {
@@ -2771,6 +2784,23 @@ function collectAppFailureDiagnostics(
         const workloads = kubectl(runner, kubeconfigPath, ["-n", ns, "get", "pods,statefulsets,deployments,daemonsets", "-o", "wide"], 20_000);
         log(`--- workloads in ${ns} ---`);
         log(workloads.stdout || workloads.stderr || "(no output)");
+        // gitops-engine's built-in StatefulSet/Deployment/DaemonSet health
+        // check reads exactly these fields -- a `Progressing` Application
+        // with every pod already Ready is most often `.metadata.generation`
+        // outrunning `.status.observedGeneration` (the controller has not
+        // caught up to the LAST spec write ArgoCD's own sync applied) rather
+        // than anything a pod-level or `kubectl get -o wide` view shows.
+        const revisionKinds: ReadonlySet<string> = new Set(["StatefulSet", "Deployment", "DaemonSet"]);
+        for (const r of snap?.resources ?? []) {
+          if (!revisionKinds.has(r.kind)) continue;
+          const jsonpath =
+            "generation={.metadata.generation} observedGeneration={.status.observedGeneration} " +
+            "readyReplicas={.status.readyReplicas} replicas={.status.replicas} updatedReplicas={.status.updatedReplicas} " +
+            "currentRevision={.status.currentRevision} updateRevision={.status.updateRevision}";
+          const rev = kubectl(runner, kubeconfigPath, ["-n", r.namespace, "get", r.kind.toLowerCase(), r.name, "-o", `jsonpath=${jsonpath}`], 20_000);
+          log(`--- ${r.kind}/${r.namespace}/${r.name} generation/revision fields ---`);
+          log(rev.stdout || rev.stderr || "(no output)");
+        }
         logNamespaceEvents(ns);
       }
       continue;
