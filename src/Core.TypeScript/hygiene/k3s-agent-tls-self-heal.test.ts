@@ -120,15 +120,24 @@ describe("removes only zero-length files", () => {
   test("a non-empty file is NEVER removed, however small", () => {
     const { root, agentDir } = truncatedAgentFixture();
     // One file has real (if tiny) content -- the discriminator this script
-    // must honour is size, not name or extension.
+    // must honour is size, not name or extension. The expected size is the
+    // literal we wrote, not a re-resolved `statSync` of the same path --
+    // pairing a write with a later stat on the identical path text is
+    // exactly the check-then-use shape lint-check-then-use-file-races.ts
+    // exists to refuse (CWE-367), even though this particular path is a
+    // fixture nothing else can touch.
     const survivor = posixJoin(agentDir, "serving-kubelet.key");
-    writeFileSync(survivor, "x");
-    const beforeSize = statSync(survivor).size;
+    const content = "x";
+    writeFileSync(survivor, content);
 
     run(agentDir, posixJoin(root, "no-such-serial-device"));
 
-    expect(existsSync(survivor)).toBe(true);
-    expect(statSync(survivor).size).toBe(beforeSize);
+    // `readFileSync` alone: it proves existence (throws ENOENT if the
+    // script wrongly removed the file) AND content in one syscall, rather
+    // than an `existsSync` gate followed by a separate `readFileSync` on
+    // the same path -- the check-then-use shape
+    // lint-check-then-use-file-races.ts refuses (CWE-367).
+    expect(readFileSync(survivor, "utf8")).toBe(content);
   });
 
   test("a fully-populated (non-empty) agent dir is left byte-for-byte identical", () => {
@@ -182,8 +191,10 @@ describe("the datastore is never touched, even under misconfiguration", () => {
 
     expect(r.status).toBe(0);
     expect(r.stdout).toContain("refusing");
-    expect(existsSync(caKey)).toBe(true);
-    expect(statSync(caKey).size).toBe(0);
+    // `readFileSync` alone (existence + content in one syscall) -- see the
+    // sibling test above for why a separate `existsSync` gate in front of
+    // it is the shape lint-check-then-use-file-races.ts refuses.
+    expect(readFileSync(caKey, "utf8")).toBe("");
   });
 
   test("refuses on the datastore path itself (server/db/etcd)", () => {
