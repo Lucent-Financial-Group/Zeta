@@ -187,3 +187,36 @@ Not yet verified end-to-end on a real QEMU boot (that costs a full ISO
 build + boot cycle); verified by shell-parity (the actual decision logic,
 proven against a real bash+awk) and `tsc`/`bun test` for the TS side. The
 next triggered `build-ai-cluster-iso` run is what closes that gap.
+
+## End-to-end verified (run 36020388280, `workflow_dispatch` with `only_wp11: true`, this branch)
+
+The `build-iso-aarch64 + qemu-boot` job -- the one that runs the actual WP11
+verify unit on a real QEMU boot of the actual installed disk -- **passed**.
+Serial log, verdict 6/6 exactly as designed:
+
+    [wp11-k3s-verify] verdict 6/6 noBadPods=true after 155s (2 sample(s), 38 pod(s) total, all settled)
+
+Two samples (matching `POLL_SECONDS=15`), settled cleanly, the richer
+report (sample count + pod count) present in both the log line and the
+JSON (`"noBadPods": {"ok": true, "pods": [], "elapsedSeconds": 155,
+"podCount": 38, "samples": 2}`). All six verdicts passed on this run.
+
+**The overall workflow run still reported "failure"** -- from two OTHER
+jobs (`build-iso`, `k3s HA cluster + replicated Longhorn (3 VMs)`),
+unrelated to this fix: `build-iso`'s failure is a disk-floor refusal in a
+completely different test scenario (`boot-cluster-up`, WP28's Longhorn-
+capacity-preflight work, "BOOT disk /dev/vda is 40 GiB... need >= 122
+GiB"), nothing to do with `zeta-first-boot-k3s-verify.nix`. CONFIRMED
+pre-existing and branch-independent: the SAME overall "failure" status
+occurs on `main` itself, on the SAME run the coordinator cited as WP11's
+first clean green (36014672753) -- `gh run list --workflow=build-ai-
+cluster-iso.yml --branch main` shows it as `failure` too. This fix's own
+job is unaffected and green; the other failure is a separate, pre-existing
+issue out of this workitem's scope.
+
+The `k3sActive` addition (item 4 follow-up, commit after this dispatch was
+triggered) was NOT covered by this specific QEMU run -- it landed
+milliseconds after dispatch, so this run's verify unit predates it by one
+commit. Covered by `tsc` + the unchanged 134 shell-parity/unit tests; a
+fresh end-to-end run would need a second dispatch if that specific line's
+live behavior needs its own proof.
