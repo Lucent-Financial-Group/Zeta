@@ -70,15 +70,36 @@
 # trust root.
 #
 # TARGET 1 -- /var/lib/rancher/k3s/agent, SWEPT (every zero-length file
-# under the tree). Every file here is a per-node LEAF certificate or
-# kubeconfig: k3s's agent bootstrap is "ask the server for my certs again",
-# so the control plane re-issues all of it to a rejoining node on request --
-# nothing under this directory is a trust root, and this is true on BOTH
-# roles (a server node also runs its own embedded agent/kubelet, writing the
-# identical files under the same path -- nixpkgs' rancher module names the
-# systemd unit "k3s" on both roles, which is why this module is imported by
-# BOTH k3s-server.nix and k3s-agent.nix, same as its sibling
-# k3s-wait-for-address.nix).
+# under the tree, WITH ONE PRUNED SUBTREE). Every file here is a per-node
+# LEAF certificate or kubeconfig: k3s's agent bootstrap is "ask the server
+# for my certs again", so the control plane re-issues all of it to a
+# rejoining node on request -- nothing under this directory is a trust root,
+# and this is true on BOTH roles (a server node also runs its own embedded
+# agent/kubelet, writing the identical files under the same path -- nixpkgs'
+# rancher module names the systemd unit "k3s" on both roles, which is why
+# this module is imported by BOTH k3s-server.nix and k3s-agent.nix, same as
+# its sibling k3s-wait-for-address.nix).
+#
+# THE SWEEP HAS ONE EXCLUSION, ADDED AFTER A MEASURED REGRESSION. A real
+# WP25 CI run (targets-1-and-2 revision, once real image pulls had run)
+# found this script removing 3243 files in one boot under
+# .../agent/containerd/io.containerd.<component>.<version>.<name>/... --
+# containerd's own plugin-namespaced working data (content-addressed blob
+# store, overlayfs snapshot content, the runtime task state, the metadata
+# bolt db). Every one of those was genuinely zero bytes and genuinely NOT a
+# truncated credential: OCI runtimes create empty
+# `snapshots/*/fs/etc/{hosts,resolv.conf,hostname}` files ON PURPOSE as
+# bind-mount targets, and container images legitimately ship zero-length
+# marker/lock files (`py.typed`, empty `__init__.py`, `.rpm.lock`,
+# `dpkg/lock`, …). The script's own citation for target 1 — dynamiclistener
+# regenerates a missing k3s credential -- has no analogue for containerd's
+# extracted image content, so deleting there is deleting the runtime's own
+# state on a guess, exactly what the "SCOPE, STRICT" section of the
+# script's header already forbids. The fix (in
+# `k3s-agent-tls-self-heal.sh`): `find` PRUNES
+# `$AGENT_DIR/containerd/io.containerd.*` as a whole subtree, by
+# containerd's own stable plugin-naming convention, rather than filtering
+# it file-by-file after the fact.
 #
 # TARGET 2 -- /etc/rancher/node/password, ONE NAMED FILE. This is the
 # agent's own generated per-node registration secret, presented on every

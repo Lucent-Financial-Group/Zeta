@@ -7,10 +7,10 @@
 # WP25 (081M38G8NGC087G0R001GEGEDK). THREE TARGETS, EACH MEASURED ON A REAL
 # RUN OF THIS EXACT FIX, IN SEQUENCE -- fixing the first exposed the second:
 #
-# TARGET 1 -- /var/lib/rancher/k3s/agent (swept: every zero-length file under
-# the tree). ROOT CAUSE, MEASURED on run 35927439681: k3s.service stuck
-# `activating` for 70+ minutes, retrying "error loading key from
-# .../serving-kubelet.key: <nil>". CITED: rancher/dynamiclistener's
+# TARGET 1 -- an ALLOWLIST of two places under /var/lib/rancher/k3s/agent,
+# never a sweep of the whole tree. ROOT CAUSE, MEASURED on run 35927439681:
+# k3s.service stuck `activating` for 70+ minutes, retrying "error loading key
+# from .../serving-kubelet.key: <nil>". CITED: rancher/dynamiclistener's
 # cert.LoadOrGenerateKeyFile (cert/io.go) only regenerates a key when
 # `os.ReadFile` returns `os.IsNotExist(err) == true`. A file that EXISTS with
 # 0 bytes reads with `err == nil`, so the function takes its "real read
@@ -18,6 +18,45 @@
 # `%v` as the literal string `<nil>`, character for character the text
 # measured. Deleting the zero-length file turns the next read into a genuine
 # IsNotExist, which the same function already handles by regenerating.
+#
+# THE ALLOWLIST, AND WHY IT REPLACED A SWEEP-WITH-EXCLUSION. A real WP25 CI
+# run (`-f only_wp11=true`, an earlier revision that swept the whole
+# AGENT_DIR tree minus one excluded subtree) found and removed 3243
+# "zero-length" files in one boot, the overwhelming majority under
+# .../agent/containerd/io.containerd.<component>.<version>.<name>/... --
+# containerd's own plugin-namespaced working data (content-addressed blob
+# store, overlayfs snapshot content, runtime task state, the metadata bolt
+# db). Every one of those was genuinely zero bytes and genuinely NOT a
+# truncated credential: OCI runtimes create empty
+# `snapshots/*/fs/etc/{hosts,resolv.conf,hostname}` files ON PURPOSE as
+# bind-mount targets, and container images legitimately ship zero-length
+# marker/lock files (`py.typed`, empty `__init__.py`, `.rpm.lock`,
+# `dpkg/lock`, …). A single excluded subtree only defends against the ONE
+# unsafe location this run happened to reach -- an allowlist defends by
+# construction, because the measured-safe set is exactly two places and the
+# healthy first invocation on that same run proves it:
+#
+#   1. $AGENT_DIR itself, ONE LEVEL DEEP ONLY (`-maxdepth 1`) -- the
+#      certs/keys/kubeconfigs this target exists for: client-kubelet.{crt,key},
+#      client-k3s-controller.{crt,key}, client-kube-proxy.{crt,key},
+#      serving-kubelet.{crt,key}, k3scontroller.kubeconfig,
+#      kubelet.kubeconfig, kubeproxy.kubeconfig.
+#   2. $AGENT_DIR/etc, RECURSIVELY -- containerd's own PROCESS CONFIG, not
+#      its image data: etc/containerd/config.toml, etc/crictl.yaml,
+#      etc/containerd/certs.d/<registry>/hosts.toml. These are written by
+#      containerd itself at startup from static config, the same
+#      write-fresh-every-boot shape as the depth-1 credentials, and
+#      unrelated to anything under $AGENT_DIR/containerd (note: different
+#      directory -- agent/etc/containerd/ is config, agent/containerd/ is
+#      the runtime's working directory).
+#
+# $AGENT_DIR/containerd is NEVER considered, by construction -- neither
+# clause names it, so no exclusion is needed and none can be forgotten when
+# a third containerd-internal directory shape shows up later. The only
+# thing this allowlist gives up versus the old sweep is
+# agent/containerd/containerd.log, whose own zero-length state is normal
+# and healthy (a fresh empty log) and was never load-bearing for k3s's
+# bootstrap in the first place.
 #
 # TARGET 2 -- /etc/rancher/node/password (single file). MEASURED on run
 # 35945... (WP25's own first re-run, after target 1 alone): target 1's fix
@@ -66,6 +105,17 @@
 #     unreadable, which is destruction, not repair.
 #   - /var/lib/rancher/k3s/server/db (the datastore) -- never read by this
 #     script at all; no target above is a path under it.
+#   - $AGENT_DIR/containerd (the whole directory, both roles) -- containerd's
+#     own runtime working data: the content-addressed blob store, overlayfs
+#     (or equivalent) snapshot content for every pulled image, the metadata
+#     bolt db, CRI/runtime task state. This class is named explicitly because
+#     a measured regression reached it (see target 1's header): it holds
+#     files that are LEGITIMATELY zero-length as shipped image content or as
+#     OCI-runtime bind-mount placeholders, which k3s does not own and does
+#     not regenerate the way it regenerates its own bootstrap credentials --
+#     a sweep that reaches it destroys image content rather than repairing
+#     k3s state. Target 1's allowlist never names this directory, so nothing
+#     under it is ever a candidate.
 # Residual risk, stated rather than papered over: a power cut that truncates
 # one of the NOT-TOUCHED files above is not self-healed by this script and
 # still needs manual, deliberate recovery.
@@ -107,7 +157,7 @@ say() {
   fi
 }
 
-# ── Target 1: sweep AGENT_DIR for zero-length files ─────────────────────
+# ── Target 1: an ALLOWLIST of two places under AGENT_DIR ─────────────────
 #
 # Independent guard, on top of the caller only ever pointing this at the
 # agent directory: refuse to touch anything under a "server" path segment
@@ -123,11 +173,24 @@ case "$AGENT_DIR" in
       say "[zeta-k3s-agent-tls-self-heal]   $AGENT_DIR does not exist yet; nothing to heal."
     else
       removed=0
+      # Clause 1: AGENT_DIR itself, one level deep only -- the credentials
+      # and kubeconfigs this target exists for. Clause 2: AGENT_DIR/etc,
+      # recursively -- containerd's own process config, a different
+      # directory from AGENT_DIR/containerd (the runtime's working data,
+      # NEVER named here -- see the module header's "NOT TOUCHED" section).
+      # `2>/dev/null` on the second covers AGENT_DIR/etc not existing at all,
+      # which is a normal state (nothing has been pulled yet) and not a
+      # refusal.
       while IFS= read -r -d '' f; do
         say "[zeta-k3s-agent-tls-self-heal]   removing zero-length file: $f"
         rm -f -- "$f"
         removed=$((removed + 1))
-      done < <(find "$AGENT_DIR" -type f -size 0 -print0 2>/dev/null)
+      done < <(find "$AGENT_DIR" -maxdepth 1 -type f -size 0 -print0 2>/dev/null)
+      while IFS= read -r -d '' f; do
+        say "[zeta-k3s-agent-tls-self-heal]   removing zero-length file: $f"
+        rm -f -- "$f"
+        removed=$((removed + 1))
+      done < <(find "$AGENT_DIR/etc" -type f -size 0 -print0 2>/dev/null)
 
       if [ "$removed" -eq 0 ]; then
         say "[zeta-k3s-agent-tls-self-heal]   clear: no zero-length files under $AGENT_DIR"

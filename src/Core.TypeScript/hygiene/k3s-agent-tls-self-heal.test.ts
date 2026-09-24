@@ -225,6 +225,80 @@ describe("target 1 -- removes only zero-length files under the agent dir", () =>
     expect(r.stdout).toContain("refusing");
     expect(existsSync(member)).toBe(true);
   });
+
+  test("PRUNES containerd's own snapshot/content store -- legitimately zero-length image-layer content is never touched", () => {
+    // MEASURED regression: a real WP25 CI run found this script removing
+    // 3243 files under exactly this subtree in one boot -- OCI bind-mount
+    // placeholders and other content that ships zero-length inside a
+    // container image, not a truncated k3s credential. This fixture is the
+    // falsifier for that regression.
+    const { root, agentDir } = truncatedAgentFixture();
+    const snapshotDir = posixJoin(
+      agentDir,
+      "containerd/io.containerd.snapshotter.v1.overlayfs/snapshots/117/fs/etc",
+    );
+    mkdirSync(snapshotDir, { recursive: true });
+    // A real shape: an OCI runtime bind-mount placeholder (created empty on
+    // purpose so a pod's real /etc/hosts can be mounted over it) plus a
+    // Python packaging marker that ships zero-length by design.
+    const hostsPlaceholder = posixJoin(snapshotDir, "hosts");
+    const pyTyped = posixJoin(
+      agentDir,
+      "containerd/io.containerd.snapshotter.v1.overlayfs/snapshots/579/fs/app/.venv/lib/site-packages/certifi/py.typed",
+    );
+    mkdirSync(posixJoin(pyTyped, ".."), { recursive: true });
+    writeFileSync(hostsPlaceholder, "");
+    writeFileSync(pyTyped, "");
+    // A content-store blob and the metadata bolt db -- both must survive
+    // even though they too are zero-length here; deleting the metadata db
+    // wipes ALL of containerd's image/container state.
+    const contentBlob = posixJoin(agentDir, "containerd/io.containerd.content.v1.content/blobs/sha256/deadbeef");
+    const metadataDb = posixJoin(agentDir, "containerd/io.containerd.metadata.v1.bolt/meta.db");
+    mkdirSync(posixJoin(contentBlob, ".."), { recursive: true });
+    mkdirSync(posixJoin(metadataDb, ".."), { recursive: true });
+    writeFileSync(contentBlob, "");
+    writeFileSync(metadataDb, "");
+
+    const r = run({ agentDir, serialDevice: posixJoin(root, "no-such-serial-device") });
+
+    expect(r.status).toBe(0);
+    // The genuine k3s bootstrap credentials (truncatedAgentFixture's own
+    // files, all top-level) are still healed...
+    expect(readdirSync(agentDir).includes("serving-kubelet.key")).toBe(false);
+    // ...but nothing under the containerd plugin namespace was ever a
+    // candidate, whatever its size.
+    for (const survivor of [hostsPlaceholder, pyTyped, contentBlob, metadataDb]) {
+      expect(existsSync(survivor)).toBe(true);
+    }
+    expect(r.stdout).not.toContain("io.containerd");
+  });
+
+  test("the allowlist shape, minimally: depth-1 cred + agent/etc config removed, a containerd snapshot file untouched", () => {
+    // The precise falsifier for the allowlist redesign: a depth-1
+    // credential (clause 1), an agent/etc config file (clause 2), and a
+    // containerd snapshot file that must survive because NEITHER clause
+    // ever names $AGENT_DIR/containerd.
+    const root = tempRoot();
+    const agentDir = posixJoin(root, "var/lib/rancher/k3s/agent");
+    const cred = posixJoin(agentDir, "serving-kubelet.key");
+    const etcConfig = posixJoin(agentDir, "etc/crictl.yaml");
+    const snapshotFile = posixJoin(
+      agentDir,
+      "containerd/io.containerd.snapshotter.v1.overlayfs/snapshots/1/fs/etc/hosts",
+    );
+    mkdirSync(posixJoin(etcConfig, ".."), { recursive: true });
+    mkdirSync(posixJoin(snapshotFile, ".."), { recursive: true });
+    writeFileSync(cred, "");
+    writeFileSync(etcConfig, "");
+    writeFileSync(snapshotFile, "");
+
+    const r = run({ agentDir, serialDevice: posixJoin(root, "no-such-serial-device") });
+
+    expect(r.status).toBe(0);
+    expect(existsSync(cred)).toBe(false);
+    expect(existsSync(etcConfig)).toBe(false);
+    expect(existsSync(snapshotFile)).toBe(true);
+  });
 });
 
 describe("target 2 -- the agent's own node-password file (/etc/rancher/node/password)", () => {

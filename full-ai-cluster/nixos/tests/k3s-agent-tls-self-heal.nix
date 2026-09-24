@@ -110,6 +110,24 @@ pkgs.testers.nixosTest {
     # encryption-config.json at all -- not re-asserted here to avoid a
     # claim about a file this VM config may not produce.
 
+    # ── A MEASURED REGRESSION, reproduced here too. A real WP25 CI run
+    #    found the pre-prune revision of this script deleting 3243
+    #    legitimately zero-length files inside containerd's own snapshot
+    #    content once real images had been pulled -- OCI bind-mount
+    #    placeholders and packaging markers, not truncated credentials. This
+    #    hermetic sandbox pulls no images, so the fixture is planted by
+    #    hand: a fake snapshot path with a zero-length file shaped exactly
+    #    like the measured ones, which must survive the ExecStartPre. ──────
+    machine.succeed(
+        "mkdir -p /var/lib/rancher/k3s/agent/containerd/"
+        "io.containerd.snapshotter.v1.overlayfs/snapshots/1/fs/etc"
+    )
+    machine.succeed(
+        "install -m 0644 /dev/null "
+        "/var/lib/rancher/k3s/agent/containerd/io.containerd.snapshotter.v1.overlayfs/"
+        "snapshots/1/fs/etc/hosts"
+    )
+
     # ── Second start, into the broken state. Without the self-heal this is
     #    where the test times out -- k3s retries "error loading key ...:
     #    <nil>" (bug 1) or "node password not set" (bug 2) every few seconds
@@ -128,6 +146,18 @@ pkgs.testers.nixosTest {
     machine.succeed("test -s /var/lib/rancher/k3s/agent/client-kubelet.crt")
     machine.succeed("test -s /etc/rancher/node/password")
     machine.succeed("test -s /var/lib/rancher/k3s/server/cred/node-passwd")
+
+    # ── The planted containerd-snapshot fixture survived, untouched -- the
+    #    allowlist never names $AGENT_DIR/containerd, so this was never a
+    #    candidate regardless of its size. ─────────────────────────────────
+    machine.succeed(
+        "test -f /var/lib/rancher/k3s/agent/containerd/"
+        "io.containerd.snapshotter.v1.overlayfs/snapshots/1/fs/etc/hosts"
+    )
+    machine.succeed(
+        "test ! -s /var/lib/rancher/k3s/agent/containerd/"
+        "io.containerd.snapshotter.v1.overlayfs/snapshots/1/fs/etc/hosts"
+    )
 
     # ── The self-heal's own log lines prove EACH target ran (not that k3s
     #    merely recovered by some other means) -- named in
