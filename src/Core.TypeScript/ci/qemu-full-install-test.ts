@@ -308,6 +308,109 @@ export function assertNothingToHealAfterGracefulShutdown(
   };
 }
 
+// -- WP11 PRECONDITION: a run that measured NOTHING must not look like a timeout --
+//
+// MEASURED on run 35965945581 (workflow_dispatch, full). The harness logged
+//
+//   QEMU_K3S_FIRST_BOOT_PHASE=1 (WP11) -- baking /zeta-qemu-k3s-first-boot-verify
+//
+// and the guest's own phase-1 serial then said
+//
+//   [k3s-first-boot-verify] no zeta-qemu-k3s-first-boot-verify on boot USB ESP
+//
+// so `/mnt/etc/zeta/qemu-k3s-first-boot-verify` was never written, the verdict
+// unit was never enabled, and `wp11-k3s-verify` appears ZERO times in a 445 KB
+// serial log. The harness then sat for 100 MINUTES printing "waiting for k3s
+// first-boot verdict" and failed on timeout -- which reads as "k3s was slow"
+// and was in fact "k3s was never measured".
+//
+// AND THE DEFECT IS WIDER THAN WP11, which is why the diagnosis below names it.
+// In that same run the guest ALSO reported `no operator SSH pubkey found on boot
+// USB ESP` and `no zeta-hostname.txt on USB ESP`, and generated a random
+// hostname instead of the baked `node-qemu-k3s-verify`. EVERY ESP injection was
+// lost, not just this one. The comparison case is main's scheduled run
+// 35960376641, whose guest found `/tmp/zeta-boot-esp/zeta-authorized-keys.pub`,
+// the injected hostname, and the WP11 marker, and produced all six verdicts.
+// Both bakes took ~2s and printed the same two harness lines, so the divergence
+// is on the guest's ESP-probe side, not in the bake's own output.
+//
+// This does not fix that. It makes it LOUD AND IMMEDIATE instead of silent and
+// 100 minutes long, and it says which of the two shapes was seen.
+
+/** zeta-install.sh, WP11 block. The marker was found and the unit will be enabled. */
+export const WP11_ESP_MARKER_FOUND = "[k3s-first-boot-verify] found zeta-qemu-k3s-first-boot-verify on boot USB ESP";
+
+/** zeta-install.sh, WP11 block. The marker was NOT found -- no verdict can ever come. */
+export const WP11_ESP_MARKER_ABSENT = "[k3s-first-boot-verify] no zeta-qemu-k3s-first-boot-verify on boot USB ESP";
+
+/** zeta-install.sh, WP11 block. POSITIVE evidence that the unit was actually enabled. */
+export const WP11_VERDICT_UNIT_ENABLED =
+  "[k3s-first-boot-verify]   wrote /mnt/etc/zeta/qemu-k3s-first-boot-verify";
+
+/** iter-4.2's own failure line. Present means the ESP probe found nothing at all. */
+export const ESP_PROBE_NO_PUBKEY = "reason: no operator SSH pubkey found on boot USB ESP";
+
+/** iter-5.2's own failure line. The baked hostname was lost with everything else. */
+export const ESP_PROBE_NO_HOSTNAME = "[iter-5.2]   no zeta-hostname.txt on USB ESP";
+
+/**
+ * Exported for unit tests. Why the WP11 verdict can never arrive, or null when
+ * nothing rules it out.
+ *
+ * Call ONLY when QEMU_K3S_FIRST_BOOT_PHASE=1: on every other lane the guest
+ * prints the `no ...` line legitimately, because no marker was baked.
+ */
+export function wp11PreconditionFailure(phase1Serial: string): string | null {
+  if (!phase1Serial.includes(WP11_ESP_MARKER_ABSENT)) return null;
+  // Was the whole ESP lost, or only this marker? Both are failures; they point
+  // at different producers, so the message says which one was measured.
+  const wholeEspLost =
+    phase1Serial.includes(ESP_PROBE_NO_PUBKEY) || phase1Serial.includes(ESP_PROBE_NO_HOSTNAME);
+  const scope = wholeEspLost
+    ? "THE WHOLE BOOT-USB ESP PROBE CAME BACK EMPTY — the guest also reported no " +
+      "operator pubkey and/or no injected hostname, so every ESP injection was lost, " +
+      "not just this marker. Look at the image bake and at the guest's ESP mount " +
+      "(zeta-install.sh iter-4.2 probes it; a healthy run prints " +
+      "'found: /tmp/zeta-boot-esp/zeta-authorized-keys.pub'), not at k3s."
+    : "Only the WP11 marker is missing; the rest of the ESP was readable. Look at " +
+      "the marker bake (prepareBootImage qemuK3sFirstBootVerifyMarker -> " +
+      "lib.ts /zeta-qemu-k3s-first-boot-verify) and at zeta-install.sh's WP11 block.";
+  return (
+    "the WP11 verdict unit was never enabled on this install — nothing about k3s was measured. " +
+    `The guest said "${WP11_ESP_MARKER_ABSENT}" during phase 1, so ` +
+    "/mnt/etc/zeta/qemu-k3s-first-boot-verify was never written and " +
+    "zeta-first-boot-k3s-verify.nix's ConditionPathExists can never fire. " +
+    `${scope} ` +
+    "Aborting now rather than waiting out the phase-3 timeout: a run that measured " +
+    "nothing must never look like a run that measured something and was slow."
+  );
+}
+
+/**
+ * Exported for unit tests. POSITIVE evidence that phase 1 enabled the verdict
+ * unit — never merely the absence of the `no ...` line.
+ *
+ * A serial truncated before the WP11 block, and a reworded producer, both leave
+ * NEITHER line present. Requiring the `wrote` line means that case is reported
+ * instead of passing on silence.
+ */
+export function assertWp11VerdictUnitEnabled(phase1Serial: string):
+  | { readonly ok: true }
+  | { readonly ok: false; readonly reason: string } {
+  const precondition = wp11PreconditionFailure(phase1Serial);
+  if (precondition !== null) return { ok: false, reason: precondition };
+  if (phase1Serial.includes(WP11_VERDICT_UNIT_ENABLED)) return { ok: true };
+  return {
+    ok: false,
+    reason:
+      `phase-1 serial carries NEITHER "${WP11_ESP_MARKER_FOUND}" + "${WP11_VERDICT_UNIT_ENABLED}" ` +
+      `NOR "${WP11_ESP_MARKER_ABSENT}". The WP11 block either did not run, was reworded, or the ` +
+      "serial was truncated before it. Nothing enabled the verdict unit this lane then waits for, " +
+      "and passing on that silence is how a 100-minute timeout gets reported instead of a " +
+      "precondition failure.",
+  };
+}
+
 /** Separator between phase-1 installer serial and phase-2 disk-boot serial in artifacts. */
 export const PHASE2_SERIAL_SEPARATOR = "\n\n=== PHASE 2: boot installed disk (no ISO) ===\n\n";
 
@@ -1516,7 +1619,10 @@ function checkFailureMarkers(content: string): string | null {
   return null;
 }
 
-async function waitForInstallComplete(serialLogPath: string): Promise<InstallResult> {
+async function waitForInstallComplete(
+  serialLogPath: string,
+  requireK3sFirstBootVerify = false,
+): Promise<InstallResult> {
   const start = Date.now();
   const deadline = start + INSTALL_TIMEOUT_SECONDS * 1000;
   let lastReportedMinute = -1;
@@ -1568,6 +1674,23 @@ async function waitForInstallComplete(serialLogPath: string): Promise<InstallRes
         serialLogTail: content.slice(-2000),
         elapsedSeconds: elapsedSec,
       };
+    }
+
+    // WP11 precondition, checked DURING phase 1 rather than after it. The guest
+    // states this failure out loud a couple of minutes into the install, and
+    // everything after it — the rest of the install, the phase-2 boot, and 75
+    // minutes of phase-3 polling — is spent waiting for a verdict that cannot
+    // come. Abort at the sentence, not at the timeout.
+    if (requireK3sFirstBootVerify) {
+      const precondition = wp11PreconditionFailure(content);
+      if (precondition !== null) {
+        return {
+          exitCode: 1,
+          reason: `phase 1 FAILURE — ${precondition}`,
+          serialLogTail: content.slice(-3000),
+          elapsedSeconds: elapsedSec,
+        };
+      }
     }
 
     if (
@@ -2197,6 +2320,27 @@ async function main(): Promise<never> {
       ...(requireUefiKeyfilePicker ? { qemuCredsPassphrase: DEFAULT_QEMU_PASSPHRASE } : {}),
       ...(requireUefiKeyfileRestore ? { qemuBakeTestCredMarker: true } : {}),
       ...(requireK3sFirstBootVerify ? { qemuK3sFirstBootVerifyMarker: true } : {}),
+      // WP27 — stage the Longhorn-undersized override on THIS image's ESP.
+      //
+      // #17611/#17614 added a pre-wipe refusal: the installer bails when the
+      // provisioned Longhorn pool cannot hold the committed roster. Every lane
+      // in this harness runs on ONE virtual disk of 40 GiB (64 for WP11), which
+      // is BY DESIGN — these lanes test install MECHANICS, not capacity — and
+      // `zeta_auto_longhorn1_tail_gib` computes `disk - 1 GiB ESP - 120 GiB root
+      // floor`, i.e. a negative tail clamped to 0, which refuses. Correctly: on
+      // real hardware that disk genuinely cannot hold the 943 GiB roster.
+      //
+      // So the override is staged on the flashed image, never baked into the
+      // ISO's own /etc/zeta-firstboot.conf — that file ships on every USB cut
+      // from this ISO and a value there would clear the guard for real operator
+      // installs, which is the guard deleting itself.
+      //
+      // Unconditional in this branch on purpose: all five workflow invocations
+      // of this harness set one of the flags that reaches it, so there is no
+      // lane that needs the override and does not get it — and no lane that
+      // gets it without needing it, since every one of them is a single-disk
+      // 40/64 GiB QEMU install.
+      allowLonghornUndersized: true,
       ...(repoPinCommit === undefined ? {} : { repoPinCommit }),
     });
     if ("error" in prepared) {
@@ -2232,7 +2376,7 @@ async function main(): Promise<never> {
   const phase1 = await runQemuUntil(
     buildQemuInstallArgs(bootMedia, diskPath, phase1SerialLogPath, tmpDir, phase1QmpSocket),
     phase1SerialLogPath,
-    () => waitForInstallComplete(phase1SerialLogPath),
+    () => waitForInstallComplete(phase1SerialLogPath, requireK3sFirstBootVerify),
     phase1Label,
     phase1QmpSocket,
   );
@@ -2372,6 +2516,30 @@ async function main(): Promise<never> {
     }
     console.log(
       "[qemu-full-install-test] UEFI keyfile phase-1 contract ok (install-time write; no restore-decrypt / metal claim)",
+    );
+  }
+
+  // WP11 — POSITIVE evidence that phase 1 enabled the verdict unit, checked
+  // before anything else consumes phase 1's success. The in-poll abort above
+  // catches the guest SAYING the marker is absent; this catches the case where
+  // it said neither thing, which a "did the bad line appear?" check passes on.
+  if (requireK3sFirstBootVerify) {
+    const unitEnabled = assertWp11VerdictUnitEnabled(phase1Serial);
+    if (!unitEnabled.ok) {
+      writeArtifactSerialLog(phase1Serial, "");
+      reportResult(
+        {
+          exitCode: 1,
+          reason: `WP11 precondition failed — ${unitEnabled.reason}`,
+          serialLogTail: phase1Serial.slice(-3000),
+          ...(phase1.elapsedSeconds !== undefined ? { elapsedSeconds: phase1.elapsedSeconds } : {}),
+        },
+        artifactSerialLogPath,
+      );
+    }
+    console.log(
+      "[qemu-full-install-test] WP11 precondition ok — the installed disk carries " +
+        "/etc/zeta/qemu-k3s-first-boot-verify, so the phase-3 verdict unit will run",
     );
   }
 
