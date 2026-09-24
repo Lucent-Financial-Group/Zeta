@@ -775,7 +775,7 @@ describe("WP27 — allowLonghornUndersized stages the override on the ESP", () =
     expect(confs[0]?.content).toContain("ZETA_ALLOW_LONGHORN_UNDERSIZED='1'");
     // The override is LAST, so it cannot be clobbered by a role key re-assigned
     // further down the same sourced file.
-    expect(confs[0]?.content.trimEnd().split("\n").at(-1)).toBe("ZETA_ALLOW_LONGHORN_UNDERSIZED='1'");
+    expect(confs[0]?.content?.trimEnd().split("\n").at(-1)).toBe("ZETA_ALLOW_LONGHORN_UNDERSIZED='1'");
   });
 
   test("omitting it leaves the plan byte-identical", () => {

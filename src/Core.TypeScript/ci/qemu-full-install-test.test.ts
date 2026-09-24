@@ -1557,6 +1557,24 @@ describe("WP11 — a run that measured NOTHING must not report as a timeout", ()
     expect(verdict.ok).toBe(false);
   });
 
+  it("convicts on the LOST INJECTED HOSTNAME even when the WP11 marker survived", () => {
+    // A second observable of the same condition. The harness always bakes a
+    // hostname for a USB-image lane, so a guest that generated a random one
+    // installed a node whose identity nobody chose — and the phase-2 login
+    // contract downstream would then assert against that random name and pass.
+    const reason = wp11PreconditionFailure(
+      `${ESP_PROBE_NO_HOSTNAME}\n${WP11_ESP_MARKER_FOUND}\n${WP11_VERDICT_UNIT_ENABLED}\n`,
+    );
+    expect(reason).not.toBeNull();
+    expect(reason).toContain("lost the INJECTED HOSTNAME");
+    expect(reason).toContain("caught one observable earlier");
+  });
+
+  it("stays silent on a healthy serial that carries neither symptom", () => {
+    // The falsifier for the widening above: it must not fire on the good case.
+    expect(wp11PreconditionFailure(HEALTHY)).toBeNull();
+  });
+
   it("keeps the duplicated markers coherent with zeta-install.sh", () => {
     const sh = readFileSync(
       resolve(import.meta.dir, "../../../full-ai-cluster/usb-nixos-installer/zeta-install.sh"),
