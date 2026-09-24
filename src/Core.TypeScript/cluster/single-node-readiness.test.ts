@@ -6,7 +6,7 @@
 // that only proves the green path is the bug it is meant to catch.
 
 import { describe, expect, test } from "bun:test";
-import { metalPoolCapabilities } from "./storage-capabilities.ts";
+import { metalPoolCapabilities, metalStorageBindings } from "./storage-capabilities.ts";
 import { COMMITTED_LONGHORN_DEMAND_GIB } from "../installer/longhorn-capacity-preflight.ts";
 import { mkdtempSync, mkdirSync, writeFileSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
@@ -36,6 +36,7 @@ import {
   installerLonghornTailGib,
   longhornGeometryShortfallKey,
   longhornPoolDemandGib,
+  printedBringUpNote,
   REPO_ROOT,
   findStorageBudgetOverruns,
   instantiatedBlueprints,
@@ -2029,5 +2030,69 @@ describe("findLonghornGeometry", () => {
       finding.message.includes("The installer refuses at"),
     );
     expect(drift).toHaveLength(0);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// THE BINDING MODE IS READ, NOT RESTATED — WP28 (081M393B9TB087G0R000Y529Z8).
+//
+// Until 2026-09-24 this file PRINTED, on every run: "Longhorn's StorageClass is
+// volumeBindingMode Immediate, so any PVC that gets applied provisions with
+// zero pods." That is false of every class this roster claims on, and it had
+// never been true of them — `git log -L` shows `zeta-block-replicated` was
+// created `WaitForFirstConsumer` by #17576. The claim described the pre-rename
+// provider-named class and was carried across without being re-checked.
+//
+// These tests fail against the pre-fix tree: the function did not exist, and
+// the string it replaced contained the word this group refuses.
+// ---------------------------------------------------------------------------
+
+describe("printedBringUpNote reads local-storage.nix instead of restating it", () => {
+  test("it reports the mode the bindings actually declare", () => {
+    const modes = [...new Set(metalStorageBindings(REPO_ROOT).map((binding) => binding.bindingMode))];
+    expect(modes.length).toBeGreaterThan(0);
+    const note = printedBringUpNote(REPO_ROOT);
+    for (const mode of modes) expect(note).toContain(mode);
+  });
+
+  test("today that mode is WaitForFirstConsumer for EVERY capability class", () => {
+    // Pinned as a measurement, not as a preference. If somebody rebinds a class
+    // to Immediate this test records it and the printed line follows on the
+    // same edit — which is the whole point of reading rather than restating.
+    const bindings = metalStorageBindings(REPO_ROOT).filter((binding) => binding.name.startsWith("zeta-"));
+    expect(bindings.length).toBeGreaterThan(0);
+    for (const binding of bindings) expect(binding.bindingMode).toBe("WaitForFirstConsumer");
+  });
+
+  test("it never claims Immediate while the bindings say otherwise", () => {
+    const note = printedBringUpNote(REPO_ROOT);
+    const declaresImmediate = metalStorageBindings(REPO_ROOT).some(
+      (binding) => binding.bindingMode === "Immediate",
+    );
+    if (!declaresImmediate) expect(note).not.toContain("Immediate");
+  });
+
+  test("it cites the file it read, so a reader can check the claim", () => {
+    // A derived value that does not say where it came from is only marginally
+    // better than prose: the next reader has to trust it rather than check it.
+    expect(printedBringUpNote(REPO_ROOT)).toContain("full-ai-cluster/nixos/modules/local-storage.nix");
+  });
+
+  test("an unreadable bindings file says UNKNOWN, never a default mode", () => {
+    // Naming a mode that was not read is the exact defect this replaces.
+    const note = printedBringUpNote(join(REPO_ROOT, "does-not-exist"));
+    expect(note).toContain("could not be read");
+    expect(note).not.toContain("Immediate");
+    expect(note).not.toContain("WaitForFirstConsumer");
+  });
+
+  test("the conclusion survives the correction — bring-up is still not a discount", () => {
+    // The correction would be worthless if it quietly turned a REPORT into a
+    // discount. Under WaitForFirstConsumer the reason changes and the verdict
+    // does not: a manual-sync app is still one sync (and now one schedulable
+    // pod) from being counted.
+    const note = printedBringUpNote(REPO_ROOT);
+    expect(note).toContain("REPORT, never a");
+    expect(note).toContain("argocd app sync");
   });
 });

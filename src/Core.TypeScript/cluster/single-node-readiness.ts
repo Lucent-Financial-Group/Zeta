@@ -77,7 +77,11 @@ import {
   type ResourceCatalogue,
 } from "./storage-profiles.ts";
 import { clusterDefaultStorageClass } from "./cluster-default-storage-class.ts";
-import { metalPoolCapabilities } from "./storage-capabilities.ts";
+import {
+  METAL_STORAGE_BINDINGS_SOURCE,
+  metalPoolCapabilities,
+  metalStorageBindings,
+} from "./storage-capabilities.ts";
 import { COMMITTED_LONGHORN_DEMAND_GIB } from "../installer/longhorn-capacity-preflight.ts";
 import { classifySyncPolicy } from "./manual-sync-policy.ts";
 import {
@@ -2705,6 +2709,61 @@ function printLonghornGeometrySection(
   );
 }
 
+/**
+ * The bring-up note, with the binding mode READ from `local-storage.nix`
+ * instead of restated in prose.
+ *
+ * WHY THIS IS A FUNCTION AND NOT A STRING (WP28, 2026-09-24). Until this
+ * change the line printed on every run said:
+ *
+ *   "Longhorn's StorageClass is volumeBindingMode Immediate, so any PVC that
+ *    gets applied provisions with zero pods, and a manual-sync app is one
+ *    `argocd app sync` from being counted."
+ *
+ * That is FALSE, and it has never been true of the class it names.
+ * `full-ai-cluster/nixos/modules/local-storage.nix` binds all three capability
+ * classes `volumeBindingMode: WaitForFirstConsumer` — `zeta-block-local`,
+ * `zeta-block-replicated` and `zeta-shared` alike — and `git log -L` on that
+ * block shows `zeta-block-replicated` was CREATED that way by #17576 ("charts
+ * name a storage capability, never a provider"). The prose described the older
+ * provider-named `longhorn` class and was carried across the rename without
+ * being re-checked.
+ *
+ * It is the worst place for a stale claim: this file's entire job is refusing
+ * unchecked assertions, and this particular assertion was PRINTED to every
+ * reader on every run. It measurably misled one — the premise "Longhorn prices
+ * ceilings, local-path prices use" was built on it, and is false under
+ * WaitForFirstConsumer because an unconsumed PVC reserves nothing either way.
+ *
+ * So the fix is not a better sentence. A sentence can rot again; a value read
+ * out of the authoritative file cannot. `metalStorageBindings()` already parses
+ * `local-storage.nix` for `storage-capabilities.ts`, so this costs one import
+ * and no new parser.
+ *
+ * WHAT DOES NOT CHANGE: bring-up is still a REPORT and never a discount. Under
+ * WaitForFirstConsumer the reason is different — an applied PVC waits for a
+ * schedulable consumer rather than provisioning at once — but a manual-sync app
+ * is still one `argocd app sync` and one schedulable pod away from being
+ * counted, and sizing a node for the smaller number is still a bet.
+ */
+export function printedBringUpNote(repoRoot = REPO_ROOT): string {
+  const modes = [...new Set(metalStorageBindings(repoRoot).map((binding) => binding.bindingMode))].sort((a, b) =>
+    stringCompare(a, b),
+  );
+  // UNKNOWN, not a default. If the bindings cannot be read, saying nothing
+  // about the mode is honest; naming one would be the same defect again.
+  const measured =
+    modes.length === 0
+      ? "volumeBindingMode could not be read from " + METAL_STORAGE_BINDINGS_SOURCE
+      : `volumeBindingMode ${modes.join(" / ")} (read from ${METAL_STORAGE_BINDINGS_SOURCE})`;
+  return (
+    "  Bring-up is the subset whose Application is actually applied on a fresh sync. It is a REPORT, never a\n" +
+    `  discount: this cluster's StorageClasses are ${measured},\n` +
+    "  so an applied PVC waits for a schedulable consumer rather than provisioning at once — but a manual-sync\n" +
+    "  app is still one `argocd app sync` and one schedulable pod away from being counted."
+  );
+}
+
 /** The pod-count half of the report — printed on EVERY run, same reasoning as `printComputeSection`. */
 function printPodBudgetSection(ledger: Ledger, repoRoot = REPO_ROOT): void {
   console.log("\nPod count — the kubelet's --max-pods ceiling is a COUNT limit, independent of CPU/memory:");
@@ -2801,11 +2860,7 @@ function main(argv: readonly string[]): void {
           (name === profile ? "   <- ACTIVE (ledger.activeStorageProfile)" : ""),
       );
     }
-    console.log(
-      "  Bring-up is the subset whose Application is actually applied on a fresh sync. It is a REPORT, never a\n" +
-        "  discount: Longhorn's StorageClass is volumeBindingMode Immediate, so any PVC that gets applied\n" +
-        "  provisions with zero pods, and a manual-sync app is one `argocd app sync` from being counted.",
-    );
+    console.log(printedBringUpNote(REPO_ROOT));
     console.log("\nDerived per-node storage requirement (sum of declared PVC capacity x replicas):");
     const floor = verifiedNodeCapacity(report.measuredNodes);
     const rendered = readRenderedTotals();
