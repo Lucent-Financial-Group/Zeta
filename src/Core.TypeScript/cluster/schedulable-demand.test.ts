@@ -13,9 +13,11 @@
 
 import { describe, expect, test } from "bun:test";
 import { execFileSync } from "node:child_process";
-import { readFileSync } from "node:fs";
+import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { parseAllDocuments } from "yaml";
+
+import { spawnShellDeclared } from "../io/safe-io.ts";
 
 import {
   classifySelector,
@@ -287,20 +289,66 @@ describe("the installer capture enumerates every display device", () => {
     expect(line).not.toContain("head");
   });
 
-  test("its output parses as YAML and round-trips both GPUs", () => {
+  /**
+   * The installer's own `GPU_LINES=` pipeline, with only its `lspci` source
+   * swapped for a fixture.
+   *
+   * EXTRACTED rather than restated: a copy would test a second pipeline that
+   * agrees with the installer's by coincidence, which is the drift this whole
+   * work package keeps finding.
+   */
+  function extractedPipeline(): string {
+    const line = INSTALL_SH.split("\n").find((l) => l.trimStart().startsWith("GPU_LINES="));
+    if (line === undefined) throw new Error("GPU_LINES= not found in zeta-install.sh");
+    return line
+      .replace(/^\s*GPU_LINES=\$\(/, "")
+      .replace(/\|\|\s*echo\s*""\s*\)\s*$/, "")
+      .replace(/lspci -nn 2>\/dev\/null/, 'printf "%s\\n" "$FIXTURE"');
+  }
+
+  test("the extraction finds the real pipeline, with its sed and awk stages intact", () => {
+    // Runs EVERYWHERE, including where no POSIX shell exists. It is what keeps
+    // the skipped test below from being the only thing guarding this line: if
+    // the pipeline is renamed or its stages removed, this fails on every host.
+    const pipeline = extractedPipeline();
+    expect(pipeline).toContain("$FIXTURE");
+    expect(pipeline).not.toContain("lspci");
+    expect(pipeline).toContain("sed");
+    expect(pipeline).toContain("awk");
+    expect(pipeline).not.toContain("head");
+  });
+
+  // `spawnShellDeclared` runs `/bin/bash`, which does not exist on Windows.
+  // SKIPPED LOUDLY, with the requirement in the name, rather than silently
+  // passing: a test that cannot run is not a test that passed, and CI is Linux
+  // so this executes there. The extraction itself is asserted above on every
+  // host, so a Windows run still guards the line — it just cannot run the shell.
+  const HAS_POSIX_SHELL = existsSync("/bin/bash");
+
+  test.skipIf(!HAS_POSIX_SHELL)("the REAL pipeline's output parses as YAML and round-trips both GPUs (needs /bin/bash)", () => {
     // The capture builds YAML by string concatenation, so "it looks right" is
     // not enough — a mis-indented list item or an unescaped quote produces a
-    // registration nothing can read. Run the real awk and parse the result.
+    // registration nothing can read.
+    const pipeline = extractedPipeline();
+
     const lspci = [
       "00:02.0 VGA compatible controller [0300]: Intel Corporation Arrow Lake-P [Arc Pro 140T] [8086:7d51] (rev 03)",
+      // An embedded quote, because the capture's `sed 's/"//g'` is the only
+      // thing standing between it and YAML that will not parse.
       '01:00.0 VGA compatible controller [0300]: NVIDIA "quoted" GA102 [10de:2204] (rev a1)',
     ].join("\n");
-    const awk = execFileSync(
-      "bash",
-      ["-c", `printf '%s\\n' "$FIXTURE" | sed 's/"//g' | awk 'NF{print "      - \\"" $0 "\\""}'`],
-      { encoding: "utf8", env: { ...process.env, FIXTURE: lspci } },
-    );
-    const yaml = `spec:\n  hardware:\n    gpus:\n${awk}`;
+
+    // A DECLARED shell: the thing under test IS a shell pipeline, so an argv
+    // vector cannot express it. The fixture crosses via the ENVIRONMENT and
+    // never through the command line, so nothing in it can become syntax.
+    const ran = spawnShellDeclared("bash", pipeline, {
+      reason:
+        "the subject under test is zeta-install.sh's own sed|awk pipeline, extracted verbatim; " +
+        "an argv vector would test a different program than the installer runs",
+      env: { ...process.env, FIXTURE: lspci },
+    });
+    expect(ran.ok).toBe(true);
+    const yaml = `spec:\n  hardware:\n    gpus:\n${ran.ok ? ran.value.stdout : ""}`;
     const parsed = parseAllDocuments(yaml)[0]?.toJS() as { spec: { hardware: { gpus: string[] } } };
     expect(parsed.spec.hardware.gpus).toHaveLength(2);
     expect(vendorOfLspciLine(parsed.spec.hardware.gpus[1] ?? "", VENDOR_IDS ?? new Map())).toBe("nvidia");
