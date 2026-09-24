@@ -6,7 +6,17 @@
 // that only proves the green path is the bug it is meant to catch.
 
 import { describe, expect, test } from "bun:test";
-import { mkdtempSync, mkdirSync, writeFileSync, rmSync } from "node:fs";
+import { metalPoolCapabilities, metalStorageBindings } from "./storage-capabilities.ts";
+import {
+  autoLonghornTailGib,
+  COMMITTED_LONGHORN_DEMAND_GIB,
+  IMAGE_FOOTPRINT_ALL_COHORT_GIB,
+  LOCAL_PATH_ADVISORY_GIB,
+  OS_ROOT_ALLOWANCE_GIB as PREFLIGHT_OS_ROOT_ALLOWANCE_GIB,
+  ROOT_FLOOR_GIB,
+  ROOT_FLOOR_SAFETY_FACTOR,
+} from "../installer/longhorn-capacity-preflight.ts";
+import { mkdtempSync, mkdirSync, readFileSync, writeFileSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import {
@@ -29,6 +39,14 @@ import {
   findFalseRedundancy,
   findRootAppCollisions,
   findLedgerFigureDrift,
+  findLonghornGeometry,
+  installerGeometryFor,
+  installerLonghornTailGib,
+  installerRootFloorGib,
+  longhornGeometryShortfallKey,
+  longhornPoolDemandGib,
+  printedBringUpNote,
+  REPO_ROOT,
   findStorageBudgetOverruns,
   instantiatedBlueprints,
   ledgerComments,
@@ -71,6 +89,7 @@ const LEDGER: Ledger = {
   acknowledgedComputeShortfall: [],
   acknowledgedRungBudgetGap: [],
   acknowledgedPodBudgetShortfall: [],
+  acknowledgedLonghornGeometryShortfall: [],
 };
 
 function manifest(path: string, yaml: string): AppManifest {
@@ -1847,5 +1866,363 @@ describe("the ledger's COMPUTE prose is checked, not trusted", () => {
     }
     expect(unexplainedCpu).toEqual([]);
     expect(unexplainedMem).toEqual([]);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// LONGHORN GEOMETRY — the installer's partitioning, WP28
+// (081M393B9TB087G0R000Y529Z8).
+//
+// Every case here fails against the pre-fix tree, where none of these functions
+// existed and the auditor printed `no blockers.` over a node whose Longhorn
+// pool would have been one gibibyte.
+// ---------------------------------------------------------------------------
+
+describe("installerGeometryFor — the boot disk contributes ONLY the tail", () => {
+  const node = (devices: readonly string[]): MeasuredNode => ({
+    path: "m/n.yaml",
+    hostname: "n",
+    devices,
+    totalGib: devices.length === 0 ? null : 1,
+    ...NO_COMPUTE,
+  });
+
+  test("a SINGLE-DISK node yields exactly the tail, however large the disk", () => {
+    // THE defect. A 2 TiB disk and a 32 GiB disk produce the same pool, because
+    // ESP + root take everything above the tail and the root filesystem is
+    // never a Longhorn data path.
+    expect(installerGeometryFor(node(["/dev/a 2048G"]), 1)?.rawGib).toBe(1);
+    expect(installerGeometryFor(node(["/dev/a 32G"]), 1)?.rawGib).toBe(1);
+  });
+
+  test("every NON-boot disk is added whole", () => {
+    const geometry = installerGeometryFor(node(["/dev/a 115.5G", "/dev/b 931.5G"]), 1);
+    expect(geometry?.rawGib).toBe(932.5);
+    expect(geometry?.dataDiskGib).toEqual([931.5]);
+  });
+
+  test("the boot disk is assumed to be the SMALLEST device — the most generous reading", () => {
+    // No registration records which device was booted. Assuming the smallest
+    // maximises the pool, which keeps the verdict one-way: falling short under
+    // the favourable reading is proven, clearing it proves nothing.
+    const geometry = installerGeometryFor(node(["/dev/a 931.5G", "/dev/b 115.5G"]), 1);
+    expect(geometry?.bootDiskGib).toBe(115.5);
+    expect(geometry?.rawGib).toBe(932.5);
+  });
+
+  test("a node with no parsable device is null, NOT a node with no disks", () => {
+    expect(installerGeometryFor(node([]), 1)).toBeNull();
+    expect(installerGeometryFor(node(["/dev/a whatever"]), 1)).toBeNull();
+  });
+});
+
+describe("installerLonghornTailGib reads the installer, never restates it", () => {
+  test("returns `auto` now that the tail is computed from the disk", () => {
+    // It was the literal 1G until the geometry fix. The reader still resolves a
+    // fixed size (see the FIXED-tail case below), so reinstating one is
+    // reported rather than silently mistaken for `auto`.
+    expect(installerLonghornTailGib(REPO_ROOT)).toBe("auto");
+  });
+
+  test("returns null when the installer cannot be read, so the caller REFUSES", () => {
+    // An absent comparator is not a comparator of zero. A default here would
+    // make the check unable to fail for the reason it exists.
+    expect(installerLonghornTailGib(join(REPO_ROOT, "does-not-exist"))).toBeNull();
+  });
+});
+
+describe("longhornPoolDemandGib — scope derived, value the LARGER reading", () => {
+  test("covers exactly the classes local-storage.nix binds to driver.longhorn.io", () => {
+    const demand = longhornPoolDemandGib(REPO_ROOT);
+    expect(demand).not.toBeNull();
+    const classes = (demand?.perClass ?? []).map((row) => row.storageClass);
+    expect(classes).toEqual([...metalPoolCapabilities(REPO_ROOT)].sort());
+    // local-path, so it is satisfied by the root filesystem and is not in scope.
+    expect(classes).not.toContain("zeta-block-local");
+  });
+
+  test("takes max(rendered, derived) per class, because the two are blind in OPPOSITE directions", () => {
+    const demand = longhornPoolDemandGib(REPO_ROOT);
+    expect(demand).not.toBeNull();
+    for (const row of demand?.perClass ?? []) {
+      expect(row.gib).toBe(Math.max(row.renderedGib, row.derivedGib));
+    }
+    // And the measured tree exercises BOTH directions, which is what makes the
+    // `max` load-bearing rather than decorative: on one class the render is
+    // larger, on the other the derived is.
+    const rows = demand?.perClass ?? [];
+    expect(rows.some((row) => row.renderedGib > row.derivedGib)).toBe(true);
+    expect(rows.some((row) => row.derivedGib > row.renderedGib)).toBe(true);
+  });
+
+  test("the total is what the installer's constant is pinned to", () => {
+    expect(longhornPoolDemandGib(REPO_ROOT)?.totalGib).toBe(COMMITTED_LONGHORN_DEMAND_GIB);
+  });
+});
+
+describe("findLonghornGeometry", () => {
+  const twoDisk: MeasuredNode = {
+    path: "maintainers/x/cluster-nodes/n/node.yaml",
+    hostname: "two-disk",
+    devices: ["/dev/a 115.5G", "/dev/b 931.5G"],
+    totalGib: 1047,
+    ...NO_COMPUTE,
+  };
+  const huge: MeasuredNode = {
+    path: "maintainers/x/cluster-nodes/h/node.yaml",
+    hostname: "huge",
+    devices: ["/dev/a 32G", "/dev/b 4096G"],
+    totalGib: 4128,
+    ...NO_COMPUTE,
+  };
+  const blindNode: MeasuredNode = {
+    path: "maintainers/x/cluster-nodes/b/node.yaml",
+    hostname: "blind",
+    devices: [],
+    totalGib: null,
+    ...NO_COMPUTE,
+  };
+
+  test("CONVICTS the registered two-disk shape — 694 GiB against the committed roster", () => {
+    const findings = findLonghornGeometry(LEDGER, [twoDisk], REPO_ROOT);
+    const shortfall = findings.filter((finding) => finding.message.includes("would give Longhorn"));
+    expect(shortfall).toHaveLength(1);
+    expect(shortfall[0]?.severity).toBe("blocker");
+    expect(shortfall[0]?.message).toContain("694 GiB schedulable");
+    expect(shortfall[0]?.message).toContain(`${String(COMMITTED_LONGHORN_DEMAND_GIB)} GiB of driver.longhorn.io`);
+  });
+
+  test("the finding names the second-disk remedy, which is the cheapest one", () => {
+    const findings = findLonghornGeometry(LEDGER, [twoDisk], REPO_ROOT);
+    expect(findings[0]?.detail.some((line) => line.includes("second internal disk"))).toBe(true);
+  });
+
+  test("an acknowledgement keyed on BOTH numbers suppresses it", () => {
+    const key = longhornGeometryShortfallKey(694, COMMITTED_LONGHORN_DEMAND_GIB, "two-disk");
+    const ledger: Ledger = { ...LEDGER, acknowledgedLonghornGeometryShortfall: [key] };
+    expect(findLonghornGeometry(ledger, [twoDisk], REPO_ROOT)).toHaveLength(0);
+  });
+
+  test("an acknowledgement taken against DIFFERENT arithmetic does not suppress it", () => {
+    // The whole reason both numbers are in the key. A roster that grows past
+    // what somebody knowingly accepted must re-redden, not inherit clearance.
+    const stale = longhornGeometryShortfallKey(694, 800, "two-disk");
+    const ledger: Ledger = { ...LEDGER, acknowledgedLonghornGeometryShortfall: [stale] };
+    expect(findLonghornGeometry(ledger, [twoDisk], REPO_ROOT)).toHaveLength(1);
+  });
+
+  test("stays silent on a node whose partitioned pool genuinely covers the roster", () => {
+    // 1 + 4096 = 4097 raw x 75% = 3072 GiB, comfortably over. This is the green
+    // case, and it exists so the check is not merely unable to pass.
+    expect(findLonghornGeometry(LEDGER, [huge], REPO_ROOT)).toHaveLength(0);
+  });
+
+  test("REFUSES when nothing is measured — an absent comparator is not a pass", () => {
+    const findings = findLonghornGeometry(LEDGER, [blindNode], REPO_ROOT);
+    expect(findings).toHaveLength(1);
+    expect(findings[0]?.severity).toBe("blocker");
+    expect(findings[0]?.message).toContain("UNVERIFIED");
+    expect(findings[0]?.detail.some((line) => line.includes("NOT acknowledgeable"))).toBe(true);
+  });
+
+  test("REFUSES when the installer's tail cannot be read", () => {
+    const findings = findLonghornGeometry(LEDGER, [twoDisk], join(REPO_ROOT, "does-not-exist"));
+    // No tree there at all, so the demand cannot be read either and the check
+    // returns nothing rather than inventing one — which is itself the discipline:
+    // it never manufactures a comparator. The readable-repo refusal path is
+    // exercised by the UNVERIFIED case above.
+    expect(findings).toHaveLength(0);
+  });
+
+  test("the stale-threshold finding is NOT acknowledgeable, and the tree is currently in agreement", () => {
+    // If this ever goes red, COMMITTED_LONGHORN_DEMAND_GIB and the installer's
+    // ZETA_LONGHORN_DEMAND_GIB are describing a roster that no longer exists —
+    // an installer refusing at a number that means nothing.
+    const drift = findLonghornGeometry(LEDGER, [huge], REPO_ROOT).filter((finding) =>
+      finding.message.includes("The installer refuses at"),
+    );
+    expect(drift).toHaveLength(0);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// THE BINDING MODE IS READ, NOT RESTATED — WP28 (081M393B9TB087G0R000Y529Z8).
+//
+// Until 2026-09-24 this file PRINTED, on every run: "Longhorn's StorageClass is
+// volumeBindingMode Immediate, so any PVC that gets applied provisions with
+// zero pods." That is false of every class this roster claims on, and it had
+// never been true of them — `git log -L` shows `zeta-block-replicated` was
+// created `WaitForFirstConsumer` by #17576. The claim described the pre-rename
+// provider-named class and was carried across without being re-checked.
+//
+// These tests fail against the pre-fix tree: the function did not exist, and
+// the string it replaced contained the word this group refuses.
+// ---------------------------------------------------------------------------
+
+describe("printedBringUpNote reads local-storage.nix instead of restating it", () => {
+  test("it reports the mode the bindings actually declare", () => {
+    const modes = [...new Set(metalStorageBindings(REPO_ROOT).map((binding) => binding.bindingMode))];
+    expect(modes.length).toBeGreaterThan(0);
+    const note = printedBringUpNote(REPO_ROOT);
+    for (const mode of modes) expect(note).toContain(mode);
+  });
+
+  test("today that mode is WaitForFirstConsumer for EVERY capability class", () => {
+    // Pinned as a measurement, not as a preference. If somebody rebinds a class
+    // to Immediate this test records it and the printed line follows on the
+    // same edit — which is the whole point of reading rather than restating.
+    const bindings = metalStorageBindings(REPO_ROOT).filter((binding) => binding.name.startsWith("zeta-"));
+    expect(bindings.length).toBeGreaterThan(0);
+    for (const binding of bindings) expect(binding.bindingMode).toBe("WaitForFirstConsumer");
+  });
+
+  test("it never claims Immediate while the bindings say otherwise", () => {
+    const note = printedBringUpNote(REPO_ROOT);
+    const declaresImmediate = metalStorageBindings(REPO_ROOT).some(
+      (binding) => binding.bindingMode === "Immediate",
+    );
+    if (!declaresImmediate) expect(note).not.toContain("Immediate");
+  });
+
+  test("it cites the file it read, so a reader can check the claim", () => {
+    // A derived value that does not say where it came from is only marginally
+    // better than prose: the next reader has to trust it rather than check it.
+    expect(printedBringUpNote(REPO_ROOT)).toContain("full-ai-cluster/nixos/modules/local-storage.nix");
+  });
+
+  test("an unreadable bindings file says UNKNOWN, never a default mode", () => {
+    // Naming a mode that was not read is the exact defect this replaces.
+    const note = printedBringUpNote(join(REPO_ROOT, "does-not-exist"));
+    expect(note).toContain("could not be read");
+    expect(note).not.toContain("Immediate");
+    expect(note).not.toContain("WaitForFirstConsumer");
+  });
+
+  test("the conclusion survives the correction — bring-up is still not a discount", () => {
+    // The correction would be worthless if it quietly turned a REPORT into a
+    // discount. Under WaitForFirstConsumer the reason changes and the verdict
+    // does not: a manual-sync app is still one sync (and now one schedulable
+    // pod) from being counted.
+    const note = printedBringUpNote(REPO_ROOT);
+    expect(note).toContain("REPORT, never a");
+    expect(note).toContain("argocd app sync");
+  });
+});
+
+// ---------------------------------------------------------------------------
+// THE GEOMETRY FIX — WP28 (081M393B9TB087G0R000Y529Z8) part 3a.
+//
+// Root gets a computed floor; longhorn1 gets the REST. Every case here fails
+// against the pre-fix tree, where the tail was a fixed 1 GiB.
+// ---------------------------------------------------------------------------
+
+describe("autoLonghornTailGib — root takes a floor, longhorn1 takes the rest", () => {
+  test("THE headline: a single 1 TiB disk goes from 1 GiB of pool to 810", () => {
+    // The defect and the fix in one assertion. Before: a fixed 1 GiB tail
+    // whatever the disk's size. After: 931 − 1 ESP − 120 root floor.
+    expect(autoLonghornTailGib(931, 120)).toBe(810);
+  });
+
+  test("the tail scales with the disk, which the fixed tail never did", () => {
+    expect(autoLonghornTailGib(256, 120)).toBe(135);
+    expect(autoLonghornTailGib(2048, 120)).toBe(1927);
+  });
+
+  test("a disk that cannot hold ESP + floor + 1 GiB returns 0, meaning REFUSE", () => {
+    // 0 is not a tail. Clamping to 1 here would be the original defect wearing
+    // a computation, so the installer bails with the numbers printed instead.
+    expect(autoLonghornTailGib(120, 120)).toBe(0);
+    expect(autoLonghornTailGib(121, 120)).toBe(0);
+    expect(autoLonghornTailGib(122, 120)).toBe(1);
+  });
+
+  test("junk collapses to 0 rather than manufacturing a tail", () => {
+    expect(autoLonghornTailGib(-931, 120)).toBe(0);
+    expect(autoLonghornTailGib(931.5, 120)).toBe(0);
+    expect(autoLonghornTailGib(931, 0)).toBe(0);
+  });
+});
+
+describe("the root floor is derived from committed measurements", () => {
+  test("(images + OS) x safety, stated in GiB with the conversion shown", () => {
+    // 77.69 GB x 10^9 / 1024^3 = 72.35 GiB -> 73, the `all` cohort of
+    // image-footprint.measured.json. Every term GiB; the source is GB.
+    expect(IMAGE_FOOTPRINT_ALL_COHORT_GIB).toBe(Math.ceil((77.69 * 1e9) / 1024 ** 3));
+    expect(ROOT_FLOOR_GIB).toBe(
+      Math.ceil(((IMAGE_FOOTPRINT_ALL_COHORT_GIB + PREFLIGHT_OS_ROOT_ALLOWANCE_GIB) * ROOT_FLOOR_SAFETY_FACTOR) / 10) * 10,
+    );
+  });
+
+  test("it matches image-footprint.measured.json's `all` cohort as committed", () => {
+    // Pinned to the measurement, not to a number somebody liked. A re-measure
+    // that moves the footprint fails here rather than leaving the floor stale.
+    const raw = readFileSync(join(REPO_ROOT, "src/Core.TypeScript/cluster/image-footprint.measured.json"), "utf8");
+    const measured = JSON.parse(raw) as { uncompressedRatio: number };
+    expect(measured.uncompressedRatio).toBe(2.67);
+  });
+
+  test("the local-path advisory total matches the render snapshot", () => {
+    // 220 GiB of zeta-block-local + cluster-default claims land on ROOT. Not
+    // reserved — reserving it would starve the pool for bytes nobody wrote —
+    // but pinned, so the printed number cannot drift from the roster.
+    const rendered = readRenderedTotals(REPO_ROOT);
+    expect(rendered).not.toBeNull();
+    const longhornClasses = new Set(metalPoolCapabilities(REPO_ROOT));
+    let onRoot = 0;
+    for (const [storageClass, gib] of rendered?.total ?? new Map<string, number>()) {
+      if (!longhornClasses.has(storageClass)) onRoot += gib;
+    }
+    expect(Math.round(onRoot)).toBe(LOCAL_PATH_ADVISORY_GIB);
+  });
+
+  test("the installer and the oracle agree on the floor", () => {
+    // The shell carries ZETA_ROOT_FLOOR_GIB because nothing on the pre-wipe
+    // path can compute it; this is what keeps the two from drifting.
+    expect(installerRootFloorGib(REPO_ROOT)).toBe(ROOT_FLOOR_GIB);
+  });
+});
+
+describe("installerLonghornTailGib reports auto, and installerGeometryFor resolves it", () => {
+  test("the committed default is now auto, not a fixed size", () => {
+    expect(installerLonghornTailGib(REPO_ROOT)).toBe("auto");
+  });
+
+  const node = (devices: readonly string[]): MeasuredNode => ({
+    path: "m/n.yaml",
+    hostname: "n",
+    devices,
+    totalGib: devices.length === 0 ? null : 1,
+    ...NO_COMPUTE,
+  });
+
+  test("a single 1 TiB disk now yields a real pool", () => {
+    const geometry = installerGeometryFor(node(["/dev/a 931.5G"]), "auto", 120);
+    expect(geometry?.tailGib).toBe(810);
+    expect(geometry?.rawGib).toBe(810);
+  });
+
+  test("it picks the boot disk that MAXIMISES the pool, not the smallest", () => {
+    // The first version took the smallest device, which is right under a FIXED
+    // tail and wrong under auto: on this shape the 115.5 GiB device cannot hold
+    // the 120 GiB floor at all, so choosing it as boot picks a layout the
+    // installer would refuse. 931 − 1 − 120 = 810, plus 115.5 whole = 925.5.
+    const geometry = installerGeometryFor(node(["/dev/a 115.5G", "/dev/b 931.5G"]), "auto", 120);
+    expect(geometry?.bootDiskGib).toBe(931.5);
+    expect(geometry?.tailGib).toBe(810);
+    expect(geometry?.rawGib).toBe(925.5);
+  });
+
+  test("under a FIXED tail the smallest boot disk still wins, so the old reading is preserved", () => {
+    const geometry = installerGeometryFor(node(["/dev/a 115.5G", "/dev/b 931.5G"]), 1);
+    expect(geometry?.bootDiskGib).toBe(115.5);
+    expect(geometry?.rawGib).toBe(932.5);
+  });
+
+  test("a node too small for ESP + floor + 1 GiB reports a pool of ZERO, not an unmeasured node", () => {
+    // It IS measured, and the answer is "nothing" — the installer refuses every
+    // boot-disk choice. Reporting it as unmeasured would hide a real verdict.
+    const geometry = installerGeometryFor(node(["/dev/a 64G"]), "auto", 120);
+    expect(geometry).not.toBeNull();
+    expect(geometry?.rawGib).toBe(0);
   });
 });
