@@ -1,4 +1,5 @@
 import { describe, expect, test } from "bun:test";
+import { parse as parseYaml } from "yaml";
 import { readFileSync } from "node:fs";
 import { buildRootDevCatalogManifest } from "../ports.ts";
 import {
@@ -309,6 +310,57 @@ describe("kind CI use case", () => {
    * that reads as "Cilium does not do LoadBalancer". Applying it after the
    * catalogue lets a LoadBalancer Service land with no pool.
    */
+  /**
+   * 081M388JAGM087G0R00054MXWN -- control-plane PARITY on kind --cni cilium.
+   * The included lane lifts the `cilium` Application; ArgoCD then reverts
+   * Cilium's `k8sServiceHost` to the metal name `control-plane`. Unless the kind
+   * node resolves that name (and the API cert carries it -- the profile half,
+   * pinned below) the agent init CrashLoops and the lane goes Degraded, which is
+   * what dispatch run 35929570637 measured. Pinned: the mapping is written into
+   * `<cluster>-control-plane`, BEFORE the catalogue can lift the Application;
+   * and kindnetd never gets it (it has no Cilium to adopt).
+   */
+  test("kind --cni cilium maps control-plane on the kind node before the catalogue; kindnetd does not", () => {
+    const log: string[] = [];
+    bringUpKindCiCluster(fakePorts(log), {
+      configPath: "/tmp/kind-cilium.yaml",
+      clusterName: "zeta-ci-cilium",
+      gitRef: "main",
+      gitRepoUrl: "https://github.com/Lucent-Financial-Group/Zeta",
+      cni: "cilium",
+    });
+    const alias = log.findIndex((entry) => entry.startsWith("run:docker exec zeta-ci-cilium-control-plane sh -c ") && entry.includes("127.0.0.1 control-plane"));
+    expect(alias).toBeGreaterThan(-1);
+    const catalogAt = log.findIndex((entry) => entry.startsWith("catalog:"));
+    expect(alias).toBeLessThan(catalogAt);
+
+    const plain: string[] = [];
+    bringUpKindCiCluster(fakePorts(plain), {
+      configPath: "/tmp/kind.yaml",
+      clusterName: "zeta-ci",
+      gitRef: "main",
+      gitRepoUrl: "https://github.com/Lucent-Financial-Group/Zeta",
+    });
+    expect(plain.some((entry) => entry.includes("127.0.0.1 control-plane"))).toBe(false);
+  });
+
+  test("the kind cilium profile SANs control-plane on the API server -- resolving the name is only half", () => {
+    const profile = readFileSync(
+      new URL("../../../../full-ai-cluster/dev-cluster/profiles/ci.cilium.kind-config.yaml", import.meta.url),
+      "utf8",
+    );
+    const docs = (parseYaml(profile) as { nodes?: { role?: string; kubeadmConfigPatches?: string[] }[] }).nodes ?? [];
+    const patches = docs.find((node) => node.role === "control-plane")?.kubeadmConfigPatches ?? [];
+    const cluster = patches.map((patch) => parseYaml(patch) as { kind?: string; apiServer?: { certSANs?: string[] } });
+    const sans = cluster.find((patch) => patch.kind === "ClusterConfiguration")?.apiServer?.certSANs ?? [];
+    expect(sans).toContain("control-plane");
+    // A kind merge patch REPLACES the list, so kind's own SANs must be restated or
+    // the host's kubeconfig (https://127.0.0.1:<port>) fails TLS -- the regression
+    // the first version of this patch shipped (live kind Cilium CNI, #17595).
+    expect(sans).toContain("localhost");
+    expect(sans).toContain("127.0.0.1");
+  });
+
   test("kind --cni cilium applies the LB-IPAM alias after Cilium helm and CRDs, before the catalogue", () => {
     const log: string[] = [];
     bringUpKindCiCluster(fakePorts(log), {
