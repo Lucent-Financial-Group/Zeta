@@ -111,15 +111,26 @@
  * BEFORE THE OOM KILLER EVER REACHES THEM. `OOMKilled` is what a pod's own memory
  * cgroup produces; a kubelet probe kill produces `Error`.
  *
+ * READ THE LIST IN THIS ORDER, BECAUSE TWO OF THE 28 ARE NOT WORKLOADS.
+ * `coredns` and `metrics-server` are the NODE'S OWN FLOOR. DNS being liveness-
+ * killed under this envelope means an unknown share of the other 26 are DOWNSTREAM
+ * VICTIMS rather than independent findings: a pod that cannot resolve a Service
+ * name fails its own probe for a reason that has nothing to do with its own
+ * resource budget. So the 26 are a list of SYMPTOMS of at least two causes, and
+ * the floor is the one to fix first -- widening a budget on `db` or `tempo` while
+ * DNS is being killed underneath them is treating a symptom of a cause still
+ * running. The list may shorten on its own once the floor holds.
+ *
  * The probe failures are `context deadline exceeded` rather than `connection
  * refused` almost throughout -- the endpoint is there and cannot answer in time,
- * which is starvation, not a crash. Named components include argocd-repo-server,
- * argocd-server, cert-manager-webhook, cilium-operator, hubble-relay/ui,
- * dapr-{operator,sentry,placement-server,scheduler-server}, keda's manager,
- * argo-workflows, spire-{server,agent,controller-manager}, coredns,
- * metrics-server, kube-state-metrics, prometheus, grafana, tempo, loki's canary,
- * sealed-secrets' controller, headlamp, and cockroachdb (which also logged `slow
- * range RPC: have been waiting 118.13s`).
+ * which is starvation, not a crash. Beyond the two floor components, named
+ * components include argocd-repo-server, argocd-server, cert-manager-webhook,
+ * cilium-operator, hubble-relay/ui, dapr-{operator,sentry,placement-server,
+ * scheduler-server}, keda's manager, argo-workflows,
+ * spire-{server,agent,controller-manager}, kube-state-metrics, prometheus,
+ * grafana, tempo, loki's canary, sealed-secrets' controller, headlamp,
+ * postgresql, and cockroachdb's `db` (which also logged `slow range RPC: have
+ * been waiting 118.13s`).
  *
  * SO WP32'S PREDICTION IS CONSISTENT WITH THIS AND IS NOT CONFIRMED IN THE FORM
  * IT WAS STATED. The failure did move, and it moved when memory was the only
@@ -142,6 +153,14 @@
  * run compared against a remembered unconstrained number from an earlier commit
  * confounds the envelope with whatever landed in between, and the difference
  * reads as "constraint" when part of it is "the fixes".
+ *
+ * WHAT THIS LANE IS FOR, in one sentence, because a future reader needs the
+ * purpose and not only the behaviour: IT IS THE FASTEST INSTRUMENT IN THIS REPO
+ * FOR THE QUESTION THE MAINTAINER ACTUALLY ASKED -- does the roster come up on a
+ * modest box without applications crash-looping or failing to start. Sixty
+ * minutes, no ISO build, controlled against an unconstrained twin on the SAME
+ * COMMIT, and it reproduces the crash-loop cascade that previously needed a
+ * ~90-minute installed-disk run to see at all.
  *
  * AND THE MODE IS REPORTED ON EVERY RUN, in stdout, in the JSON report and in
  * the step-summary markdown — with the HOST capacity beside it, so a reader can
