@@ -27,16 +27,38 @@
 #      fixture suite would go red. So: boot a real server, and assert the
 #      sentinel file genuinely appears.
 #
-#   2. A HAS-SERVED DATASTORE SURVIVES THE REAL AMBIGUOUS FATAL. The module
-#      header's whole justification is that k3s's message ("no bootstrap
-#      data found in datastore - check server token value and verify
-#      datastore integrity") is ambiguous BY CONSTRUCTION: the identical
-#      text appears when a GOOD datastore meets a WRONG TOKEN. That claim is
-#      asserted in prose everywhere in this module and is nowhere MEASURED.
-#      This test measures it -- it produces the fatal the honest way, by
-#      presenting a real, already-served cluster with a wrong token, and
-#      then asserts the datastore is still there afterwards. Without the
-#      sentinel guard, that is a destroyed cluster.
+#   2. A HAS-SERVED DATASTORE SURVIVES A WRONG TOKEN. This target was added
+#      to MEASURE a claim the module asserted in prose in five files and had
+#      never checked: that k3s's message is "ambiguous by construction", so
+#      that the identical text appears when a GOOD datastore meets a WRONG
+#      TOKEN. THE MEASUREMENT REFUTED IT, which is the best thing this test
+#      has done so far.
+#
+#      MEASURED, run 36095623765. A real, already-served datastore given a
+#      well-formed wrong token does NOT print the stillborn message. Over 151s
+#      of polling, every restart printed:
+#
+#        level=fatal msg="... failed to reconcile with local datastore:
+#        bootstrap data already found and encrypted with different token"
+#
+#      So k3s distinguishes the two cases. The corrected reasoning lives in
+#      `../modules/k3s-datastore-bootstrap-recovery.nix`'s header; the short
+#      form is that FATAL_SIGNATURE matches only the stillborn message, so the
+#      wrong-token case is filtered one step BEFORE the sentinel is consulted,
+#      and the sentinel is the second of two independent guards.
+#
+#      TARGET 2 IS THEREFORE OBSERVED, NOT REQUIRED (target 1 is required),
+#      AND THAT IS WHY WE LEARNED THIS. On run 36095623765 it printed
+#      "NOT REPRODUCED within 150s on this substrate" -- loudly, on a GREEN
+#      run. A required assertion would have gone red and been read as a test
+#      bug, which is exactly what happened the first time round (36093540290,
+#      where a malformed token died at normalisation instead). An observation
+#      that announces its own absence is the opposite of the defect class this
+#      whole module was written inside of.
+#
+#      The datastore-survival assertions are unconditional and bind on every
+#      run, on both branches -- they are what the module actually promises,
+#      and they do not depend on which fatal appeared.
 #
 # WHY WRONG-TOKEN AND NOT A REAL POWER CUT: the stillborn case needs the
 # machine stopped inside a ~20 second window on its first boot, which is a
@@ -150,11 +172,13 @@ pkgs.testers.nixosTest {
         " | grep -q 'VERDICT unbootstrapped-watching:'"
     )
 
-    # ── TARGET 2: reproduce the REAL ambiguous fatal, the honest way.
-    #    A good, already-served datastore presented with a WRONG TOKEN
-    #    makes k3s emit the identical message a stillborn datastore does.
-    #    This is the claim the whole module rests on, measured here rather
-    #    than asserted in a comment. ─────────────────────────────────────
+    # ── TARGET 2: present a good, already-served datastore with a WRONG
+    #    TOKEN, and see what k3s actually says. This was written to measure
+    #    the module's claim that k3s emits the IDENTICAL message it emits for
+    #    a stillborn datastore. The measurement REFUTED that claim (run
+    #    36095623765 -- see this file's header); what is asserted below is
+    #    what the module actually promises, which is that the datastore and
+    #    its sentinel survive. ───────────────────────────────────────────
     machine.systemctl("stop k3s.service")
     # Prove the fixture is real before trusting the assertion that follows:
     # the datastore must be present and non-trivial going in, or the
@@ -164,8 +188,19 @@ pkgs.testers.nixosTest {
     machine.succeed(f"test -e {sentinel}")
 
     machine.succeed("cp /var/lib/rancher/k3s/server/token /root/token.good")
+    # THE WRONG TOKEN MUST STILL BE A WELL-FORMED ONE. MEASURED, run
+    # 36093540290: a hand-written 'K10deadbeef::server:0000...' never reached
+    # the datastore comparison at all -- k3s rejected it 25 times at token
+    # NORMALISATION, "failed to normalize server token; must be in format
+    # K10<CA hash>::<username>:<password>", which is a different fatal with a
+    # different cause. The fixture was wrong, not the claim: a malformed
+    # token tests k3s's parser, and this test is about its datastore
+    # reconcile. So derive the bad token FROM THE REAL ONE, replacing only
+    # the password field after the final colon -- the K10<real CA hash> and
+    # the username survive, normalisation passes, and the mismatch lands
+    # where it is supposed to.
     machine.succeed(
-        "printf '%s\\n' 'K10deadbeef::server:0000000000000000000000000000000000000000000000000000000000000000'"
+        "sed 's/:[^:]*$/:wrongpasswordwrongpasswordwrong/' /root/token.good"
         " > /var/lib/rancher/k3s/server/token"
     )
     # The recovery unit latches one verdict per boot on /run; clear it so the
@@ -175,29 +210,62 @@ pkgs.testers.nixosTest {
 
     machine.systemctl("start k3s.service")
 
-    # k3s now crash-loops on the ambiguous fatal. Confirm the message we
-    # claim is ambiguous is the message k3s actually prints -- if k3s ever
-    # changes this text, FATAL_SIGNATURE in the script stops matching and
-    # this test is where that is discovered.
-    machine.wait_until_succeeds(
+    # ── TARGET 2 IS OBSERVED, NOT REQUIRED -- same disposition, and for the
+    #    same kind of reason, as target 3 in k3s-agent-tls-self-heal.nix.
+    #
+    #    What this test can GUARANTEE is target 1 above, and that is already
+    #    asserted unconditionally. Whether a wrong token reproduces the
+    #    *stillborn* fatal specifically is a fact about k3s's internals on
+    #    THIS substrate (single-node, embedded etcd, --cluster-init), and run
+    #    36093540290 showed it is easy to get a DIFFERENT fatal instead. A
+    #    bounded poll decides which happened, and BOTH BRANCHES PRINT, so a
+    #    green run's own log says which one it took. An observation that was
+    #    skipped must never look identical to one that passed.
+    stillborn_fatal_seen = machine.succeed(
+        "for i in $(seq 1 30); do "
         "journalctl -u k3s.service -o cat"
-        " | grep -q 'no bootstrap data found in datastore'",
-        timeout=300,
+        " | grep -q 'no bootstrap data found in datastore'"
+        " && { echo yes; exit 0; }; sleep 5; done; echo no"
+    ).strip() == "yes"
+    print(
+        "[k3s-datastore-bootstrap-sentinel] TARGET 2 (does a WRONG TOKEN produce the "
+        "STILLBORN fatal?): "
+        + (
+            "YES on this run -- the two cases are NOT distinguishable by message here, "
+            "which CONTRADICTS the measurement of run 36095623765 and means k3s's "
+            "behaviour or wording has changed. Read this file's header before trusting "
+            "either result: the corrected reasoning assumes these are two distinct "
+            "messages. The refusal path below is exercised."
+            if stillborn_fatal_seen
+            else "NO -- not reproduced within 150s, which MATCHES run 36095623765: a "
+            "wrong token reports 'bootstrap data already found and encrypted with "
+            "different token' instead, a different message, so it never matches "
+            "FATAL_SIGNATURE and is filtered one step before the sentinel is consulted. "
+            "The refusal path is not exercised on this run; it is pinned over fixtures "
+            "in k3s-datastore-bootstrap-recovery.test.ts. The datastore-survival "
+            "assertions below still run and still bind."
+        )
     )
 
-    # ── THE ASSERTION THIS TEST EXISTS FOR: the recovery unit saw the exact
-    #    fatal it knows how to act on, on a node that has crash-looped past
-    #    its threshold -- and did NOT delete the datastore, because the
-    #    sentinel says it has served. ────────────────────────────────────
-    machine.wait_until_succeeds(
-        "journalctl -u zeta-k3s-datastore-bootstrap-recovery.service -o cat"
-        " | grep -q 'VERDICT served-refused'",
-        timeout=300,
-    )
-    machine.succeed(
-        "journalctl -u zeta-k3s-datastore-bootstrap-recovery.service -o cat"
-        " | grep -q 'NOTHING HAS BEEN DELETED'"
-    )
+    if stillborn_fatal_seen:
+        # ── THE ASSERTION THIS TEST EXISTS FOR: the recovery unit saw the
+        #    exact fatal it knows how to act on, on a node crash-looped past
+        #    its threshold -- and did NOT delete the datastore, because the
+        #    sentinel says it has served. ────────────────────────────────
+        machine.wait_until_succeeds(
+            "journalctl -u zeta-k3s-datastore-bootstrap-recovery.service -o cat"
+            " | grep -q 'VERDICT served-refused'",
+            timeout=300,
+        )
+        machine.succeed(
+            "journalctl -u zeta-k3s-datastore-bootstrap-recovery.service -o cat"
+            " | grep -q 'NOTHING HAS BEEN DELETED'"
+        )
+
+    # UNCONDITIONAL, both branches: whatever k3s was failing with, and however
+    # many times, the datastore and its sentinel are still here. This is the
+    # property the module promises, and it does not depend on which fatal was
+    # reproduced.
     machine.succeed(f"test -d {datastore}")
     machine.succeed(f"test \"$(find {datastore} -type f | wc -l)\" -gt 0")
     machine.succeed(f"test -e {sentinel}")
