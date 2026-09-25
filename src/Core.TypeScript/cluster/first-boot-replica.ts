@@ -82,6 +82,38 @@
  * permanent. It is derived from that host config rather than set to a literal
  * so that it stays true if someone gives the node swap later.
  *
+ * FIRST MEASURED RESULT (dispatch 36119931377, both jobs in parallel on 5855983,
+ * a commit carrying both #17654 and #17666). THE LANE CAN FAIL, AND IT DOES:
+ *
+ *              unconstrained                    constrained
+ *   stage 6    35 Healthy / 5 DIV / 2 FAIL      22 Healthy / 3 DIV / 17 FAIL
+ *   soak       0 unexpected restart regressions 11 unexpected
+ *   stage 8    PASS  RECOVERED                  FAIL  NOT_RECOVERED (spire-server)
+ *   wall       65m51s                           59m44s
+ *
+ * Memory was the ONLY limit that bound (`cpu-limit-binds=no memory-limit-binds=yes`
+ * on both lines, host 4 vCPU / 15989m), and constraining it cost 13 Healthy
+ * Applications and produced 15 more FAILs. Note the constrained run was FASTER
+ * while converging far worse -- stage 6 gives up and moves on, so wall clock is
+ * not a convergence proxy.
+ *
+ * WHAT THE FAILURE LOOKS LIKE, stated without rounding up. Broad
+ * `Liveness probe failed: ... context deadline exceeded` across argocd-repo-server,
+ * argocd-server, cert-manager, cilium-envoy, hubble-relay, dapr-scheduler, keda,
+ * argo-workflows and cockroachdb (which also logged `slow range RPC: have been
+ * waiting 118.13s`), plus six containers exiting 137 with `Reason: Error`. There
+ * were ZERO `OOMKilled`, ZERO `Evicted`, and no `MemoryPressure` node condition.
+ *
+ * So WP32's prediction is CONSISTENT WITH this and is NOT confirmed in the form it
+ * was stated. The failure did move, and it moved when memory was the only thing
+ * constrained -- but it presents as timeout-under-starvation, the same symptom
+ * class the pre-fix installed-disk lane showed, not as the OOM kill or eviction
+ * "the failure mode moves to memory" would predict. `Reason: Error` rather than
+ * `OOMKilled` says the SIGKILL did not come from a pod's own memory cgroup, which
+ * is what a node-level squeeze looks like from inside -- but this harness has not
+ * measured the kill's origin, and saying which it was would be a claim past the
+ * evidence.
+ *
  * COMPARING TWO RUNS: use two runs OF THE SAME COMMIT. On schedule and dispatch
  * both jobs run in parallel on one commit for exactly this reason. A constrained
  * run compared against a remembered unconstrained number from an earlier commit
