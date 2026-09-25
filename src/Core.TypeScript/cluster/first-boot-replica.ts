@@ -97,22 +97,45 @@
  * while converging far worse -- stage 6 gives up and moves on, so wall clock is
  * not a convergence proxy.
  *
- * WHAT THE FAILURE LOOKS LIKE, stated without rounding up. Broad
- * `Liveness probe failed: ... context deadline exceeded` across argocd-repo-server,
- * argocd-server, cert-manager, cilium-envoy, hubble-relay, dapr-scheduler, keda,
- * argo-workflows and cockroachdb (which also logged `slow range RPC: have been
- * waiting 118.13s`), plus six containers exiting 137 with `Reason: Error`. There
- * were ZERO `OOMKilled`, ZERO `Evicted`, and no `MemoryPressure` node condition.
+ * THE MECHANISM IT REPRODUCES IS A LIVENESS CRASH-LOOP CASCADE:
  *
- * So WP32's prediction is CONSISTENT WITH this and is NOT confirmed in the form it
- * was stated. The failure did move, and it moved when memory was the only thing
- * constrained -- but it presents as timeout-under-starvation, the same symptom
- * class the pre-fix installed-disk lane showed, not as the OOM kill or eviction
- * "the failure mode moves to memory" would predict. `Reason: Error` rather than
- * `OOMKilled` says the SIGKILL did not come from a pod's own memory cgroup, which
- * is what a node-level squeeze looks like from inside -- but this harness has not
- * measured the kill's origin, and saying which it was would be a claim past the
- * evidence.
+ *   memory pressure -> containers slow -> LIVENESS PROBES TIME OUT ->
+ *   the kubelet SIGKILLs them -> restart -> more pressure
+ *
+ * and the kill's origin is MEASURED, not inferred: the cluster emitted 61 kubelet
+ * `Normal Killing ... Container <name> failed liveness probe, will be restarted`
+ * events, over 28 DISTINCT containers -- including `coredns` and `metrics-server`,
+ * which are not workloads but the node's own floor. That is why exit 137 arrives
+ * with `Reason: Error` and there are ZERO `OOMKilled`, ZERO `Evicted` and no
+ * `MemoryPressure` node condition: the LIVENESS PROBES KILL THESE CONTAINERS
+ * BEFORE THE OOM KILLER EVER REACHES THEM. `OOMKilled` is what a pod's own memory
+ * cgroup produces; a kubelet probe kill produces `Error`.
+ *
+ * The probe failures are `context deadline exceeded` rather than `connection
+ * refused` almost throughout -- the endpoint is there and cannot answer in time,
+ * which is starvation, not a crash. Named components include argocd-repo-server,
+ * argocd-server, cert-manager-webhook, cilium-operator, hubble-relay/ui,
+ * dapr-{operator,sentry,placement-server,scheduler-server}, keda's manager,
+ * argo-workflows, spire-{server,agent,controller-manager}, coredns,
+ * metrics-server, kube-state-metrics, prometheus, grafana, tempo, loki's canary,
+ * sealed-secrets' controller, headlamp, and cockroachdb (which also logged `slow
+ * range RPC: have been waiting 118.13s`).
+ *
+ * SO WP32'S PREDICTION IS CONSISTENT WITH THIS AND IS NOT CONFIRMED IN THE FORM
+ * IT WAS STATED. The failure did move, and it moved when memory was the only
+ * thing constrained -- but it arrives as a liveness cascade rather than as the OOM
+ * kill or eviction that "the failure mode moves to memory" predicted. Memory
+ * pressure is the plausible upstream cause and this harness has not measured that
+ * it is the ONLY one; what it has measured is the kill mechanism.
+ *
+ * THIS REPO ALREADY OWNS THE LEVER: `liveness-kill-budget.ts` computes
+ * `initialDelaySeconds + (failureThreshold - 1) * periodSeconds`, and keda's
+ * Application carries the worked precedent (threshold widened 3 -> 20 after
+ * keda-operator was measured restarting in 4 of 5 CI runs, because that chart
+ * ships no `startupProbe`). The 28 containers above are a LIST, not an anecdote,
+ * and unlike the run that motivated keda's fix this one is controlled. Deliberately
+ * NOT acted on in the change that produced it: a budget widened in the same commit
+ * would make the measurement unreviewable.
  *
  * COMPARING TWO RUNS: use two runs OF THE SAME COMMIT. On schedule and dispatch
  * both jobs run in parallel on one commit for exactly this reason. A constrained
