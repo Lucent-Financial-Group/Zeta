@@ -296,12 +296,17 @@ export function checkAdoptionValuesParity(bootstrapText: string, applicationText
  * convergence that is slow, so no timeout and no amount of extra wall clock could have
  * reached it.
  *
- * WHAT IS NOT CLAIMED: which mechanism produced the fall. Eviction (BestEffort goes
- * first) and overlapping 180s reconciliation sweeps (081M3BPJNRS087G0R0008WFXBZ) both fit
- * the curve, the failing rows' ComparisonError text favours the second, and no pod-level
- * eviction counts were collected to decide it. This check does not depend on the answer:
- * a BestEffort control plane is a defect under either reading, which is why the assertion
- * is on the REQUEST and not on the mechanism.
+ * EVICTION WAS THE FIRST EXPLANATION OFFERED FOR THAT FALL, AND IS REFUTED. The same
+ * dispatch's serial carries zero evictions, zero OOM kills and no MemoryPressure, and 22
+ * of the 102 unconverged rows sit at `sync=Unknown` with `health=Healthy` while zero sit
+ * at the eviction signature `sync=Synced` + `health=Missing`. The pods were up; the
+ * RENDER is what failed -- which is the repo-server, the organ a missing request starves.
+ *
+ * THIS CHECK NEVER DEPENDED ON THAT ANSWER, and that is the reason it is written this
+ * way. It asserts on the REQUEST, not on the mechanism, so the retraction above moved
+ * none of its cases. A falsifier pinned to a mechanism would have had to be rewritten
+ * when the mechanism changed, which is how a check ends up documenting a belief rather
+ * than a defect.
  *
  * The regression this refuses is specific and cheap to make: argo-cd ships
  * `resources: {}` for every component, so DELETING a request here is invisible in a

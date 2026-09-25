@@ -244,10 +244,10 @@ spec:
         # single place it is written -- including the part this short form must
         # not flatten. Short form: every ArgoCD container was BestEffort
         # (measured), and the WP11 roster went BACKWARDS from 25/35 to 13/35,
-        # which rules out "needs longer" (measured). WHY it fell -- eviction, or
-        # overlapping 180s reconciliation sweeps per 081M3BPJNRS087G0R0008WFXBZ --
-        # is NOT settled and is deliberately not claimed here. Both readings share
-        # one root cause and this fix serves both. These literals are the `metal`
+        # which rules out "needs longer" (measured). Eviction was the first
+        # explanation offered for the fall and is REFUTED -- zero evictions, zero
+        # OOM kills, and 22 rows at sync=Unknown with health=Healthy: the pods
+        # were up and the RENDER is what failed. These literals are the `metal`
         # rung and are governed by `resourceClaims` in storage-profiles.json.
         controller:
           replicas: 1
