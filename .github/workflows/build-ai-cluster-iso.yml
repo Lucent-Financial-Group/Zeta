@@ -613,10 +613,64 @@ jobs:
         working-directory: full-ai-cluster
         run: nix build .#checks.x86_64-linux.longhorn-volume-binds -L --print-build-logs --fallback --option sandbox false
 
+      # ── WP34 (081M3BZ111D087G0R000YBMKRY): the bootstrap container images ──
+      #
+      # A first boot pulls 134 images across EIGHT registries and the
+      # pull-through mirror covers ONE. These 25 are the bootstrap roster -- 21
+      # of them on registries the mirror does not cover -- so preloading them
+      # turns a spent rate limit from "partially provisioned node with no
+      # explanation" into "cluster up, ArgoCD visibly behind".
+      #
+      # VERIFY EARLIER, NOT LESS. `--verify` re-resolves every pinned digest
+      # BEFORE anything is fetched, so an image that moved under its tag fails
+      # HERE -- in CI, with credentials, no meaningful rate limit, and a human
+      # reading a red build -- instead of on an operator's first boot. The
+      # builder then fetches BY DIGEST and checks every blob against the digest
+      # that asked for it, so what ships is exactly what was verified.
+      #
+      # NOT `continue-on-error`. A silently-skipped preload is the defect class
+      # this work item exists to remove: an ISO that quietly shipped without one
+      # would be indistinguishable from an ISO that shipped with a broken one.
+      - name: Verify the bootstrap image pins still resolve
+        run: bun src/Core.TypeScript/cluster/bootstrap-image-preload.ts --verify
+
+      - name: Build the bootstrap image archive the ISO carries
+        run: |
+          set -euo pipefail
+          bun src/Core.TypeScript/cluster/bootstrap-image-preload.ts \
+            --build-archive --out full-ai-cluster/usb-nixos-installer/preload/zeta-bootstrap-images.tar
+          ls -l full-ai-cluster/usb-nixos-installer/preload/zeta-bootstrap-images.tar
+          # Flakes only see GIT-TRACKED files, so an untracked artifact is
+          # invisible to `nix build` wherever it sits. `git add -f` stages it
+          # for THIS runner's evaluation only -- nothing is committed, nothing
+          # is pushed. It is not committed because a 1 GB binary in a tree whose
+          # verification discipline is that proofs are TEXT is exactly what
+          # `no-binary-in-proof-lineage` forbids.
+          git add -f full-ai-cluster/usb-nixos-installer/preload/zeta-bootstrap-images.tar
+
       - name: Build installer ISO
         id: iso_build
         working-directory: full-ai-cluster
         run: nix build .#installer-iso --print-build-logs --fallback
+
+      # The archive only matters if it actually reached the image. This asserts
+      # the ARTIFACT rather than the option that was supposed to place it -- the
+      # same discipline as the ISO-name check below, and for the same reason
+      # that check exists: an option evaluating to the right value is not
+      # evidence that a file is on the ISO.
+      - name: The built ISO carries the bootstrap image archive
+        working-directory: full-ai-cluster
+        run: |
+          set -euo pipefail
+          iso="$(find result/iso -name '*.iso' -print -quit)"
+          if [ -z "$iso" ]; then echo "no ISO found under result/iso"; exit 1; fi
+          if ! 7z l "$iso" | grep -q 'zeta-bootstrap-images.tar'; then
+            echo "The ISO does not contain /zeta/zeta-bootstrap-images.tar."
+            echo "Every node installed from it would PULL all 25 bootstrap images on first boot,"
+            echo "21 of them from registries the pull-through mirror does not cover."
+            exit 1
+          fi
+          echo "bootstrap image archive present on the ISO"
 
       - name: The built ISO carries the name this repo chose
         working-directory: full-ai-cluster
