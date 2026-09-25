@@ -18,6 +18,7 @@ import { describe, expect, test } from "bun:test";
 
 import {
   archivePlan,
+  assertContentAddress,
   blackholeHostnames,
   buildArchive,
   compareToSnapshot,
@@ -312,5 +313,32 @@ describe("containerdImageName — the untagged name that cost a whole archive", 
   test("archivePlan uses the normalised name", () => {
     const { plan } = archivePlan(snapshotOf([{ reference: "busybox" }]));
     expect(plan[0]?.destinationName).toBe("docker.io/library/busybox:latest");
+  });
+});
+
+describe("assertContentAddress — a registry's digest becomes a filesystem path", () => {
+  const good = `sha256:${"a".repeat(64)}`;
+
+  test("a bare sha256 digest is accepted", () => {
+    expect(assertContentAddress(good)).toBe(good);
+  });
+
+  test("a traversal attempt is REFUSED, not sanitised", () => {
+    // The blobs are written at `blobs/sha256/<digest>`. A registry answering
+    // with a digest containing separators would write outside the layout.
+    expect(() => assertContentAddress("sha256:../../../etc/passwd")).toThrow(/content address/);
+  });
+
+  test("an absolute path is refused", () => {
+    expect(() => assertContentAddress("/etc/passwd")).toThrow(/content address/);
+  });
+
+  test("a wrong-length or non-hex digest is refused", () => {
+    expect(() => assertContentAddress("sha256:abc")).toThrow(/content address/);
+    expect(() => assertContentAddress(`sha256:${"z".repeat(64)}`)).toThrow(/content address/);
+  });
+
+  test("an uppercase digest is refused — one spelling, so one path", () => {
+    expect(() => assertContentAddress(`sha256:${"A".repeat(64)}`)).toThrow(/content address/);
   });
 });

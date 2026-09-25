@@ -248,3 +248,49 @@ describe("dockerRunArgs", () => {
     expect(args.join(" ")).toContain("/m:/var/lib/rancher/k3s/server/manifests");
   });
 });
+
+describe("the SANDBOX pull failure — the one with no container status to report through", () => {
+  const sandbox = "docker.io/rancher/mirrored-pause:3.10.2";
+
+  test("a FailedCreatePodSandBox event marks the sandbox image BLOCKED", () => {
+    // MEASURED 2026-09-25: with docker.io blackholed the pod never gets a
+    // container, so `containerStatuses` is empty and the pod sits in
+    // ContainerCreating. Reading container states alone called the NEGATIVE
+    // CONTROL inconclusive — which under this harness's own rule would have
+    // voided a correct positive result.
+    const event =
+      `Failed to create pod sandbox: rpc error: failed to get sandbox image "${sandbox}": ` +
+      `failed to pull image "${sandbox}": dial tcp 127.0.0.1:443: connect: connection refused`;
+    expect(classifyProbes([sandbox], [event], new Map(), new Set())[0]?.outcome).toBe("blocked");
+  });
+
+  test("the ordinary capitalised container phrasing is caught too", () => {
+    const event = `Failed to pull image "${sandbox}": dial tcp 127.0.0.1:443: connection refused`;
+    expect(classifyProbes([sandbox], [event], new Map(), new Set())[0]?.outcome).toBe("blocked");
+  });
+
+  test("a pull-failure EVENT beats an 'already present' event for the same image", () => {
+    const events = [
+      `Container image "${sandbox}" ${ALREADY_PRESENT}`,
+      `Failed to pull image "${sandbox}": connection refused`,
+    ];
+    expect(classifyProbes([sandbox], events, new Map(), new Set())[0]?.outcome).toBe("blocked");
+  });
+
+  test("a sandbox failure for ANOTHER image does not blame this one", () => {
+    const event = `failed to get sandbox image "docker.io/other/pause:1": failed to pull image`;
+    expect(classifyProbes([sandbox], [event], new Map(), new Set())[0]?.outcome).toBe("undecided");
+  });
+
+  test("one BLOCKED image makes the run BLOCKED even when the rest are merely stuck", () => {
+    // The real shape of the negative control: the sandbox is blocked and every
+    // other probe is honestly undecided because it never got to try.
+    const result = outcomeFromProbes([
+      { image: sandbox, outcome: "blocked" },
+      { image: "quay.io/a/b:v1", outcome: "undecided" },
+      { image: "quay.io/c/d:v1", outcome: "undecided" },
+    ]);
+    expect(result.verdict).toBe("BLOCKED");
+    expect(result.blockedImages).toEqual([sandbox]);
+  });
+});

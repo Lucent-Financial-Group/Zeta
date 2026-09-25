@@ -43,9 +43,15 @@ let
 
   module = import (modulesDir + "/k3s-bootstrap-image-preload.nix") moduleArgs;
 
-  # `config` here is the module's own `config` attribute (the `lib.mkIf` body),
-  # evaluated with the options set above. `lib.mkIf true` yields the attrset.
-  body = module.config;
+  # THE `mkIf` WRAPPER, UNWRAPPED EXPLICITLY.
+  #
+  # `lib.mkIf cond attrs` does NOT return `attrs`. It returns
+  # `{ _type = "if"; condition = cond; content = attrs; }`, and the module
+  # system unwraps it during a real evaluation. Reading `module.config.systemd`
+  # straight off the import therefore finds nothing — which is how the first
+  # version of this file failed the flake check rather than the module, on the
+  # aarch64 ISO lane, 2026-09-25.
+  body = if module.config ? content then module.config.content else module.config;
   statusUnit = body.systemd.services.zeta-bootstrap-image-preload-status;
   script = statusUnit.script;
 

@@ -50,10 +50,18 @@
  * image rather than in aggregate, so a single reference the archive names
  * wrongly cannot hide behind twenty-four that it names correctly.
  *
- * The real roster is applied alongside, so the charts do boot and their own
- * pulls are observed too — but the VERDICT does not wait for them to
- * converge. Waiting for ArgoCD is `first-boot-replica.ts`'s job and it takes
- * an order of magnitude longer.
+ * The real roster is applied alongside and does boot, but the VERDICT READS
+ * ONLY THE PROBE NAMESPACE, and that scoping is load-bearing rather than
+ * tidiness. MEASURED 2026-09-25: reading events cluster-wide made a correct
+ * positive run report BLOCKED, because the roster's own pods start SECONDS
+ * into boot — before k3s has finished importing a 1 GB archive — and their
+ * pre-import `ErrImagePull` events never expire. The probes are applied AFTER
+ * the import completes, so they are the only pods observed under the condition
+ * the claim is about. An experiment that also counts observations made before
+ * the setup finished is not a controlled one.
+ *
+ * The verdict also does not wait for the roster to CONVERGE. That is
+ * `first-boot-replica.ts`'s job and it takes an order of magnitude longer.
  *
  * -- WHAT IT PROVES, AND WHAT IT DOES NOT --------------------------------
  * PROVES: with every registry in the set unreachable, every image in the
@@ -213,6 +221,19 @@ export const PULL_FAILURE_REASONS: readonly string[] = ["ImagePullBackOff", "Err
  */
 export const ALREADY_PRESENT = "already present on machine";
 
+/**
+ * Event phrasings that mean a pull was attempted and failed.
+ *
+ * All three are needed. The capitalised form is the ordinary container case;
+ * the sandbox form is the one with no container status to report through,
+ * because the pod never gets far enough to have a container.
+ */
+export const PULL_FAILURE_EVENT_PHRASES: readonly string[] = [
+  "Failed to pull image",
+  "failed to pull image",
+  "failed to get sandbox image",
+];
+
 export interface ProbeObservation {
   readonly image: string;
   readonly outcome: ImageOutcome;
@@ -236,6 +257,19 @@ export function classifyProbes(
       const waiting = waitingReasonsByImage.get(image) ?? [];
       if (waiting.some((r) => PULL_FAILURE_REASONS.includes(r))) return { image, outcome: "blocked" as const };
       const quoted = `"${image}"`;
+      // A PULL FAILURE REPORTED IN AN EVENT, not in a container's waiting reason.
+      //
+      // MEASURED 2026-09-25, and it is why this branch exists: the SANDBOX
+      // image's pull failure never reaches a container status at all. The pod
+      // sits in `ContainerCreating` forever and the only record is an event —
+      // `FailedCreatePodSandBox ... failed to get sandbox image "...": failed to
+      // pull image ...`. A classifier reading container states alone called the
+      // NEGATIVE CONTROL "INCONCLUSIVE", which under this harness's own rule
+      // would have voided a correct positive result. A pull that was attempted
+      // and failed is BLOCKED wherever the cluster chose to write it down.
+      if (eventMessages.some((m) => m.includes(quoted) && PULL_FAILURE_EVENT_PHRASES.some((p) => m.includes(p)))) {
+        return { image, outcome: "blocked" as const };
+      }
       if (eventMessages.some((m) => m.includes(quoted) && m.includes(ALREADY_PRESENT))) {
         return { image, outcome: "local" as const };
       }
@@ -524,7 +558,10 @@ export async function runHalf(opts: {
     // mistake for one that did.
     if (plan.archivePath !== null) {
       let imported = false;
-      while (Date.now() < deadline && !imported) {
+      // No `&& !imported` in the condition: the only assignment to `imported`
+      // is followed immediately by `break`, so the negation could never be
+      // false and CodeQL is right to call it trivial (js/trivial-conditional).
+      while (Date.now() < deadline) {
         const logs = docker(["logs", name], 120_000);
         if (`${logs.stdout}${logs.stderr}`.includes(`Imported`) && `${logs.stdout}${logs.stderr}`.includes(ARCHIVE_NAME)) {
           imported = true;
@@ -558,8 +595,8 @@ export async function runHalf(opts: {
 
     let last = nothing;
     while (Date.now() < deadline) {
-      const pods = docker(["exec", name, "kubectl", "get", "pods", "-A", "-o", "json"], 60_000);
-      const events = docker(["exec", name, "kubectl", "get", "events", "-A", "-o", "json"], 60_000);
+      const pods = docker(["exec", name, "kubectl", "get", "pods", "-n", PROBE_NAMESPACE, "-o", "json"], 60_000);
+      const events = docker(["exec", name, "kubectl", "get", "events", "-n", PROBE_NAMESPACE, "-o", "json"], 60_000);
       if (pods.status === 0 && events.status === 0) {
         const { waitingReasonsByImage, runcFailedImages } = parsePodImageStates(pods.stdout);
         const messages = parseEventMessages(events.stdout);

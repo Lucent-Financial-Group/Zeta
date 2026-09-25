@@ -790,8 +790,32 @@ function hexDigest(bytes: Uint8Array): string {
   return `sha256:${createHash("sha256").update(bytes).digest("hex")}`;
 }
 
+/**
+ * A digest is a PATH COMPONENT here, so it is validated before it becomes one.
+ *
+ * Every digest written into the layout arrives from a registry response — a
+ * manifest's `layers[].digest`, its `config.digest`, an index's child digest.
+ * That is network data being used to build a filesystem path, which CodeQL
+ * flags as `js/http-to-file-access` and is right to: a registry that answered
+ * with `sha256:../../../etc/anything` would write outside the layout. The
+ * registries this pulls from are not the adversary anybody expects, which is
+ * exactly why the check is cheap to add and worth having.
+ *
+ * `^sha256:[0-9a-f]{64}$` admits nothing that contains a separator or a dot,
+ * so the joined path cannot escape `blobs/sha256/`.
+ */
+export function assertContentAddress(digest: string): string {
+  if (!/^sha256:[0-9a-f]{64}$/.test(digest)) {
+    throw new Error(
+      `refusing to use ${JSON.stringify(digest.slice(0, 120))} as a content address: ` +
+        "it is not a bare sha256 digest, and it would be written to the filesystem as a path component.",
+    );
+  }
+  return digest;
+}
+
 function blobFile(layout: string, digest: string): string {
-  return join(layout, "blobs", "sha256", digest.slice("sha256:".length));
+  return join(layout, "blobs", "sha256", assertContentAddress(digest).slice("sha256:".length));
 }
 
 /**
