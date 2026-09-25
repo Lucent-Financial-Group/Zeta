@@ -221,7 +221,7 @@ export function pairVerdict(
   return {
     verdict: "PROVEN",
     reason:
-      `with ${String(positive.localImages.length)} image(s) resolved locally and every unmirrored registry ` +
+      `with ${String(positive.localImages.length)} image(s) resolved locally and every registry in the set ` +
       "blackholed, the preload carried the boot (positive: CARRIED) and the same boot could NOT obtain them " +
       "without it (negative: BLOCKED). Both halves behaved as a falsifier requires.",
   };
