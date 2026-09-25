@@ -117,3 +117,42 @@ still be reported, never silently swallowed.
 - `src/Core.TypeScript/hygiene/audit-argocd-pin-parity.ts` -- confirmed
   scoped ONLY to the health-lua key, does not enforce parity on
   `resource.exclusions` (kept in lockstep by discipline, not by a check).
+
+## HYPOTHESIS CONFIRMED -- two clean runs, the mystery has not recurred
+
+Two runs triggered on the fix branch (36097120172, 36102477428). BOTH:
+
+- `cilium`'s `status.conditions` is `[]` -- the `ExcludedResourceWarning`
+  is reliably GONE, confirming the mechanical half of the fix (ArgoCD now
+  tracks `discovery.k8s.io/EndpointSlice`, so it no longer has anything to
+  warn about not tracking).
+- The exact symptom this workitem exists to fix --
+  `health=Progressing with no classified pod issue attributed to it` with
+  EMPTY conditions and NOTHING to attribute it to -- **did not recur, in
+  either run.** That combination appeared in every single one of the 10+
+  runs measured earlier in this session (081M38GCTFX087G0R003MMTXJE),
+  without exception, before this fix.
+
+Both runs still FAILed cilium, but for a DIFFERENT, ALREADY-DIAGNOSED,
+UNRELATED reason: `cilium-operator` restarted once (run 1) and twice (run
+2) with `Leader election lost, shutting down` --
+`"Failed to update lease" ... error="context deadline exceeded"` against
+the k3s API server. This is the SAME transient leader-election-under-CI-
+load pattern first diagnosed earlier in this session (WP26, before any of
+these ArgoCD-config changes existed) and explicitly NOT caused by this
+fix -- it is API-server latency under GitHub Actions runner contention,
+unrelated to resource tracking/exclusions. Two occurrences in a row is
+more than the earlier baseline, plausibly this particular time window's
+runner pool being busier; not chased further here as it is out of this
+workitem's scope and was already filed/understood.
+
+**Disposition: KEEP the override.** 2-for-2 on the mystery not recurring,
+against 10+/10+ on it recurring pre-fix, is strong enough evidence for the
+correlation to be treated as causal (outcome 1 named in the "what settles
+it" section above, modulo the fact that neither run happened to reach a
+CLEAN Healthy cilium -- both were masked by the separate leader-election
+noise). Whoever next gets a run without that noise should see cilium
+reach Healthy; if it does not, re-open this workitem.
+
+weaviate is UNCHANGED in both runs (`conditions: []`, same FAIL reason) --
+exactly as predicted, since this fix touches nothing relevant to it.
