@@ -21,6 +21,7 @@ import {
   blackholeHostnames,
   buildArchive,
   compareToSnapshot,
+  containerdImageName,
   hasDrift,
   hostCoverage,
   imagesInEmbeddedManifests,
@@ -272,5 +273,44 @@ describe("the committed snapshot", () => {
     const rows = hostCoverage(snapshot);
     const unmirroredBytes = rows.filter((r) => !r.mirrored).reduce((sum, r) => sum + r.bytes, 0);
     expect(unmirroredBytes / snapshot.totalCompressedBytes).toBeGreaterThan(0.9);
+  });
+});
+
+describe("containerdImageName — the untagged name that cost a whole archive", () => {
+  test("a BARE name gets the canonical tag the kubelet will actually ask for", () => {
+    // MEASURED 2026-09-25: k3s refuses the entire archive on one untagged
+    // entry — `failed to retag images: failed to parse tag for image busybox:
+    // can't cast reference.repository to NamedTagged`. One bad name cost all
+    // twenty-five images, which is why this is not cosmetic.
+    expect(containerdImageName("busybox")).toBe("docker.io/library/busybox:latest");
+  });
+
+  test("a tagged reference is left VERBATIM — verbatim is what was measured to work", () => {
+    expect(containerdImageName("quay.io/jetstack/trust-manager:v0.24.0")).toBe("quay.io/jetstack/trust-manager:v0.24.0");
+  });
+
+  test("a tag+digest reference is left VERBATIM — normalising it is how the cilium images break", () => {
+    const reference = "quay.io/cilium/cilium:v1.20.1@sha256:ae9ea21f";
+    expect(containerdImageName(reference)).toBe(reference);
+  });
+
+  test("a digest-only reference is left verbatim", () => {
+    const reference = "cgr.dev/chainguard/bash@sha256:bcaf350e";
+    expect(containerdImageName(reference)).toBe(reference);
+  });
+
+  test("a short tagged name is left verbatim — k3s imported one of these successfully", () => {
+    expect(containerdImageName("rancher/local-path-provisioner:v0.0.30")).toBe("rancher/local-path-provisioner:v0.0.30");
+  });
+
+  test("a registry with a PORT is not mistaken for a tag", () => {
+    // `localhost:5000/thing` has a colon and no tag. Treating the port as a tag
+    // would leave it untagged in the archive and reproduce the failure above.
+    expect(containerdImageName("localhost:5000/thing")).toBe("localhost:5000/thing:latest");
+  });
+
+  test("archivePlan uses the normalised name", () => {
+    const { plan } = archivePlan(snapshotOf([{ reference: "busybox" }]));
+    expect(plan[0]?.destinationName).toBe("docker.io/library/busybox:latest");
   });
 });

@@ -3,7 +3,7 @@
  * src/Core.TypeScript/cluster/bootstrap-preload-blackhole.ts
  *
  * THE FALSIFIER FOR THE BOOTSTRAP IMAGE PRELOAD — boot the real
- * `services.k3s.manifests` roster with every UNMIRRORED REGISTRY BLACKHOLED,
+ * `services.k3s.manifests` roster with EVERY REGISTRY IN THE SET BLACKHOLED,
  * and find out whether the preload actually carried it. WP34
  * (081M3BZ111D087G0R000YBMKRY).
  *
@@ -56,7 +56,7 @@
  * an order of magnitude longer.
  *
  * -- WHAT IT PROVES, AND WHAT IT DOES NOT --------------------------------
- * PROVES: with the unmirrored registries unreachable, every image in the
+ * PROVES: with every registry in the set unreachable, every image in the
  * preload set resolves out of the archive — i.e. the archive carries the right
  * blobs AND, the part no tarball inspection can establish, under the right
  * NAMES. That second half is not hypothetical: an archive built the obvious
@@ -466,8 +466,8 @@ export async function runHalf(opts: {
   readonly label: string;
   readonly archivePath: string | null;
   readonly repoRoot?: string;
-  readonly budgetMs?: number;
-  readonly keep?: boolean;
+  readonly budgetMs?: number | undefined;
+  readonly keep?: boolean | undefined;
 }): Promise<RunOutcome> {
   const repoRoot = opts.repoRoot ?? REPO_ROOT;
   const budgetMs = opts.budgetMs ?? 600_000;

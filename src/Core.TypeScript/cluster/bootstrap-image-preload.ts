@@ -42,15 +42,27 @@
  *     bootstrap set is almost exactly the part of the 134 the mirror does not
  *     cover, which is why 1 GB here buys more than 1 GB anywhere else.
  *
- * -- WHAT IS DELIBERATELY *NOT* IN THE SET -------------------------------
- * k3s's OWN built-ins — `rancher/mirrored-pause`, `mirrored-coredns-coredns`,
- * `mirrored-metrics-server`, `klipper-lb` and `klipper-helm` (the image that
- * runs every HelmChart install Job) — are NOT derived here, because they are
- * not in `services.k3s.manifests`; k3s supplies them itself. They are all
- * `docker.io/rancher/*`, i.e. the ONE registry the mirror already covers, so
- * they are the covered case rather than an omission. Preloading them is a
- * separate, ~150 MB decision with a ready mechanism (nixpkgs exposes the
- * official airgap tarball as `k3s.airgapImages`) and it is not made here.
+ * -- k3s's OWN IMAGES: ONE IS IN, THE REST ARE NOT, AND A CLAIM IS CORRECTED
+ * An earlier version of this header said k3s's built-ins "ship inside the k3s
+ * release image and are in containerd before the agent starts". THAT WAS
+ * WRONG, and it was wrong in the way this whole work item is about: it was
+ * inferred from `ctr images ls` on a booted container, where the images were
+ * present because they had just been PULLED. Measured directly afterwards,
+ * `rancher/k3s:v1.35.7-k3s1` has no `/var/lib/rancher/k3s/agent/images/` and
+ * ships no airgap tarball at all. The falsifier is what caught it.
+ *
+ * So: the SANDBOX (pause) image IS in this set, derived from the pinned k3s
+ * binary by `deriveSandboxImage`, because without it a node cannot start a
+ * single pod — including the pods whose own images are preloaded. 0.3 MB, and
+ * the best ratio in the payload.
+ *
+ * `mirrored-coredns-coredns`, `mirrored-metrics-server`, `klipper-lb` and
+ * `klipper-helm` are still out. They ARE pulled at first boot, and that is now
+ * stated rather than denied — but they are all `docker.io/rancher/*`, i.e. the
+ * one registry the mirror covers, and each supports a service that degrades
+ * rather than a node that cannot run. Preloading them is a separate ~150 MB
+ * decision with a ready mechanism (nixpkgs exposes the official airgap tarball
+ * as `k3s.airgapImages`), and it is not made here.
  *
  * -- DERIVED, NEVER LISTED ------------------------------------------------
  * A second hand-maintained copy of a roster is a defect class this repo has
@@ -64,9 +76,11 @@
  *   `imagesInDocuments()`  (image-footprint.ts) — every `image:` in a tree.
  *   `measureImage()`       (image-footprint.ts) — the ONE sizer. Not a second.
  *
- * The roster is read through `buildRoster`, so the `infra/k8s/bootstrap/` tree
- * is excluded automatically and correctly: nothing in the NixOS roster
- * references it, so nothing on a first boot pulls it.
+ * The roster is read through `buildRoster`, so the tree's SECOND, legacy
+ * bootstrap directory is excluded automatically and correctly: nothing in the
+ * NixOS roster references it, so nothing on a first boot pulls it. That is a
+ * consequence of deriving rather than listing — a hand-written set would have
+ * had to remember to leave it out.
  *
  * -- VERIFY EARLIER, NOT LESS --------------------------------------------
  * The snapshot pins each image to the DIGEST its linux/amd64 manifest resolved
@@ -96,7 +110,7 @@ import { parseArgs } from "node:util";
 import { parseAllDocuments } from "yaml";
 
 import { stringCompare } from "../collation/collation.ts";
-import { buildRoster, type RosterEntry } from "./first-boot-replica.ts";
+import { buildRoster, k3sVersionToDockerTag, type RosterEntry } from "./first-boot-replica.ts";
 import { fetchManifest, imagesInDocuments, measureImage, parseImageReference } from "./image-footprint.ts";
 import { parseHelmChartCrs } from "../../../full-ai-cluster/k8s/tests/render-first-boot-charts.ts";
 
@@ -118,6 +132,18 @@ export const KUBE_VERSION_PATH = "full-ai-cluster/k8s/kubernetes-version.json";
  * derived rather than declared — see `unmirroredHosts()`.
  */
 export const MIRRORED_HOST = "registry-1.docker.io";
+
+/** A command runner that returns stdout too — used only by `deriveSandboxImage`. */
+export type RunCommandWithOutput = (cmd: readonly string[]) => {
+  readonly status: number;
+  readonly stdout: string;
+  readonly stderr: string;
+};
+
+const spawnRunWithOutput: RunCommandWithOutput = (cmd) => {
+  const r = Bun.spawnSync(cmd as string[], { stdout: "pipe", stderr: "pipe" });
+  return { status: r.exitCode ?? 1, stdout: r.stdout.toString(), stderr: r.stderr.toString() };
+};
 
 // ---------------------------------------------------------------------------
 // Derivation — roster to images
@@ -156,6 +182,65 @@ export interface DeriveOptions {
   readonly kubeVersion?: string;
   /** Injected by the tests; defaults to a real `helm template`. */
   readonly renderChart?: RenderChart;
+  /** Injected by the tests; defaults to reading it out of the pinned k3s binary. */
+  readonly sandboxImage?: string;
+}
+
+/**
+ * The SANDBOX (pause) image k3s pulls before it can start ANY pod.
+ *
+ * THIS SECTION CORRECTS A CLAIM I MADE AND SHOULD NOT HAVE. An earlier version
+ * of this module stated that k3s's own built-ins "ship inside the k3s release
+ * image and are in containerd before the agent starts", citing `ctr images ls`
+ * on a booted container. That observation was real and the inference was wrong:
+ * the images were there because they had just been PULLED. Measured directly:
+ * `rancher/k3s:v1.35.7-k3s1` has no `/var/lib/rancher/k3s/agent/images/` at all
+ * and ships no airgap tarball anywhere in its filesystem.
+ *
+ * What made it visible was the falsifier, and only the falsifier. With docker.io
+ * blackholed, all twenty-five probes sat in `ContainerCreating` for twelve
+ * minutes:
+ *
+ *     Failed to create pod sandbox: failed to get sandbox image
+ *     "rancher/mirrored-pause:3.10.2": ... dial tcp 127.0.0.1:443: connect:
+ *     connection refused
+ *
+ * So the sandbox image is the single most load-bearing image on the node —
+ * WITHOUT IT NOTHING RUNS, including the pods whose own images are preloaded —
+ * and a preload that omitted it would have produced a node that still could not
+ * start a container. It is 0.3 MB. It is the best ratio in the entire payload.
+ *
+ * DERIVED FROM THE PINNED k3s IMAGE, not written down: the tag is read out of
+ * the k3s binary itself, so it follows `kubernetes-version.json` with no second
+ * pin to drift. Fully qualified on purpose — CRI normalises the sandbox
+ * reference to `docker.io/...` before looking it up, so that is the name the
+ * archive must carry.
+ *
+ * A failure to derive it THROWS. It must never be silently absent: an archive
+ * missing the sandbox image is an archive that looks complete and produces a
+ * node that cannot run a single pod.
+ */
+export function deriveSandboxImage(k3sDockerTag: string, run: RunCommandWithOutput = spawnRunWithOutput): string {
+  const result = run([
+    "docker",
+    "run",
+    "--rm",
+    "--entrypoint",
+    "sh",
+    `rancher/k3s:${k3sDockerTag}`,
+    "-c",
+    "grep -ao 'rancher/mirrored-pause:[0-9][0-9.]*' /bin/k3s | sort -u | head -1",
+  ]);
+  const found = result.stdout.trim().split("\n")[0]?.trim() ?? "";
+  if (!/^rancher\/mirrored-pause:[0-9][0-9.]*$/.test(found)) {
+    throw new Error(
+      `could not derive the k3s sandbox image from rancher/k3s:${k3sDockerTag} ` +
+        `(got ${JSON.stringify(found)}; stderr: ${result.stderr.trim().slice(0, 200)}). ` +
+        "Refusing to build a preload set without it: without the sandbox image a node cannot start ANY pod, " +
+        "so an archive that omits it looks complete and provisions a machine that runs nothing.",
+    );
+  }
+  return `docker.io/${found}`;
 }
 
 /** The one declared Kubernetes version; the same read every other renderer here does. */
@@ -333,6 +418,19 @@ export function deriveBootstrapImages(options: DeriveOptions = {}): DerivedSet {
       for (const image of imagesInEmbeddedManifests(result.documents)) note(image, entry.attr);
     }
   }
+
+  // The sandbox image is not in the roster and never will be — k3s supplies it
+  // — but nothing on the node starts without it, so a preload that omits it is
+  // an archive that looks complete and provisions a machine that runs nothing.
+  // See `deriveSandboxImage` for the measurement that put it here.
+  const pin = JSON.parse(readFileSync(join(repoRoot, KUBE_VERSION_PATH), "utf8")) as { k3sVersion?: unknown };
+  if (typeof pin.k3sVersion !== "string") {
+    throw new Error(`${KUBE_VERSION_PATH} declares no \`k3sVersion\` string`);
+  }
+  // `k3sVersionToDockerTag` is the ONE conversion in this tree from a k3s
+  // version pin to the tag `rancher/k3s` publishes; a second spelling here is
+  // a second thing to get wrong.
+  note(options.sandboxImage ?? deriveSandboxImage(k3sVersionToDockerTag(pin.k3sVersion)), "k3s-sandbox-image");
 
   const images = [...byImage.entries()]
     .map(([reference, attrs]) => ({ reference, rosterAttrs: [...attrs].sort(stringCompare) }))
@@ -611,6 +709,38 @@ export interface ArchiveItem {
  * preserves its digest by construction. Re-measured the same day against the
  * same blackhole: the digest-pinned pod reached `Succeeded`.
  */
+/**
+ * The name to put in the archive — the rendered reference, except when it has
+ * no tag at all.
+ *
+ * MEASURED 2026-09-25, and it took down the whole archive rather than one
+ * image. `local-storage.nix`'s helper pod names `busybox` bare, and k3s's
+ * importer refuses it outright:
+ *
+ *     failed to import .../zeta-bootstrap-images.tar: failed to retag images:
+ *     failed to parse tag for image busybox: can't cast reference.repository
+ *     to NamedTagged
+ *
+ * k3s retags every entry as it imports, and a reference with no tag and no
+ * digest is not a `NamedTagged`, so the retag pass errors and the import does
+ * not complete. ONE untagged entry therefore costs all twenty-five — which is
+ * why this normalisation is not cosmetic.
+ *
+ * The canonical form is what the kubelet will ask for anyway: CRI normalises a
+ * pod's `image: busybox` to `docker.io/library/busybox:latest` before looking
+ * it up, so naming the archive entry that way is naming it what the lookup
+ * uses. Everything that already carries a tag or a digest is left VERBATIM,
+ * because verbatim is what was measured to work and a normalisation applied
+ * where it is not needed is a chance to be wrong.
+ */
+export function containerdImageName(reference: string): string {
+  const parsed = parseImageReference(reference);
+  const hasTagOrDigest = reference.includes("@") || /:[^/]+$/.test(reference);
+  if (hasTagOrDigest) return reference;
+  const host = parsed.host === MIRRORED_HOST ? "docker.io" : parsed.host;
+  return `${host}/${parsed.repository}:${parsed.reference}`;
+}
+
 export function archivePlan(snapshot: Snapshot): {
   readonly plan: readonly ArchiveItem[];
   readonly unpinned: readonly string[];
@@ -630,7 +760,7 @@ export function archivePlan(snapshot: Snapshot): {
       // amd64 child: the child is what gets unpacked, the top is what gets
       // named, and conflating them is the defect described above.
       topReference: reference,
-      destinationName: image.reference,
+      destinationName: containerdImageName(image.reference),
     });
   }
   return { plan, unpinned };

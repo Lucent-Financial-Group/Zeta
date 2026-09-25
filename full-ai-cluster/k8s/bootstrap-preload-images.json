@@ -6,7 +6,7 @@
     "full-ai-cluster/nixos/modules/k3s-server.nix",
     "full-ai-cluster/nixos/modules/local-storage.nix"
   ],
-  "totalCompressedBytes": 1022469597,
+  "totalCompressedBytes": 1022787139,
   "unsized": 0,
   "images": [
     {
@@ -40,6 +40,14 @@
       ],
       "amd64Digest": "sha256:da5097fcf72a7cfd16fd1d1d70e5f350b136a6cfe62ac19ef85f2fb756a140fd",
       "compressedBytes": 17745794
+    },
+    {
+      "reference": "docker.io/rancher/mirrored-pause:3.10.2",
+      "rosterAttrs": [
+        "k3s-sandbox-image"
+      ],
+      "amd64Digest": "sha256:412c4a7219cb8a299a37337f3d87810c5340095322e15594a1637785adad0f17",
+      "compressedBytes": 317542
     },
     {
       "reference": "ecr-public.aws.com/docker/library/redis:8.6.4-alpine",
