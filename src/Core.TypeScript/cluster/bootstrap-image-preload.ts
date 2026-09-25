@@ -505,6 +505,13 @@ export async function resolveAmd64Digest(
     throw new Error(`refusing to build a registry URL for ${JSON.stringify(repository)}: not a repository path`);
   }
   const base = `https://${host}/v2/${repository}/manifests/`;
+  // The TAG or DIGEST is the last piece of the URL path, and it comes out of
+  // the same committed snapshot the host and repository do. Guarding two of
+  // three would be the partly-guarded fixture, which this repo pins as still
+  // REPORTED on purpose.
+  if (!/^[a-zA-Z0-9_][a-zA-Z0-9._-]{0,127}$|^sha256:[0-9a-f]{64}$/.test(ref)) {
+    throw new Error(`refusing to request ${JSON.stringify(ref)}: not a tag or a digest`);
+  }
   const response = await fetchManifest(base + ref, repository, tokens);
   if (!response.ok) return { digest: null, reason: `manifest HTTP ${String(response.status)}` };
   const manifest = (await response.json()) as Record<string, unknown>;
@@ -989,6 +996,13 @@ async function stageImage(
     throw new Error(`refusing to build a registry URL for ${JSON.stringify(item.repository)}: not a repository path`);
   }
   const base = `https://${item.host}/v2/${item.repository}/manifests/`;
+  // The TAG or DIGEST is the last piece of the URL path, and it comes out of
+  // the same committed snapshot the host and repository do. Guarding two of
+  // three would be the partly-guarded fixture, which this repo pins as still
+  // REPORTED on purpose.
+  if (!/^[a-zA-Z0-9_][a-zA-Z0-9._-]{0,127}$|^sha256:[0-9a-f]{64}$/.test(item.topReference)) {
+    throw new Error(`refusing to request ${JSON.stringify(item.topReference)}: not a tag or a digest`);
+  }
   const response = await fetchManifest(base + item.topReference, item.repository, tokens);
   if (!response.ok) throw new Error(`manifest HTTP ${String(response.status)}`);
   const mediaType = (response.headers.get("content-type") ?? "").split(";")[0] ?? "";
@@ -1011,6 +1025,13 @@ async function stageImage(
   if (Array.isArray(parsed.manifests)) {
     const amd64 = parsed.manifests.find((m) => m.platform?.architecture === "amd64" && m.platform.os === "linux");
     if (typeof amd64?.digest !== "string") throw new Error("no linux/amd64 entry in the index");
+    // The TAG or DIGEST is the last piece of the URL path, and it comes out of
+    // the same committed snapshot the host and repository do. Guarding two of
+    // three would be the partly-guarded fixture, which this repo pins as still
+    // REPORTED on purpose.
+    if (!/^[a-zA-Z0-9_][a-zA-Z0-9._-]{0,127}$|^sha256:[0-9a-f]{64}$/.test(amd64.digest)) {
+      throw new Error(`refusing to request ${JSON.stringify(amd64.digest)}: not a tag or a digest`);
+    }
     const childResponse = await fetchManifest(base + amd64.digest, item.repository, tokens);
     if (!childResponse.ok) throw new Error(`amd64 manifest HTTP ${String(childResponse.status)}`);
     const childBytes = new Uint8Array(await childResponse.arrayBuffer());

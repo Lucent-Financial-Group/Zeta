@@ -399,28 +399,46 @@ describe("the inline CodeQL guards must not drift from their named definition", 
   // otherwise entirely about, so this reads the module's own source.
   const source = readFileSync(join(REPO_ROOT, "src/Core.TypeScript/cluster/bootstrap-image-preload.ts"), "utf8");
 
+  /**
+   * Count literal occurrences WITHOUT `String.prototype.split`.
+   *
+   * `split(regexLookingString)` is `js/string-instead-of-regex`, and CodeQL is
+   * right to flag it even here: a reader cannot tell at a glance whether the
+   * argument is meant as a pattern or as text. `indexOf` cannot be misread.
+   */
+  const occurrences = (haystack: string, needle: string): number => {
+    let count = 0;
+    let from = 0;
+    for (;;) {
+      const at = haystack.indexOf(needle, from);
+      if (at === -1) return count;
+      count++;
+      from = at + needle.length;
+    }
+  };
+
   const HOST_LITERAL = "/^[a-z0-9]([a-z0-9.-]*[a-z0-9])?(:[0-9]{1,5})?$/";
   const REPO_LITERAL = String.raw`/^[a-z0-9]+([._-][a-z0-9]+)*(\/[a-z0-9]+([._-][a-z0-9]+)*)*$/`;
   const DIGEST_LITERAL = "/^sha256:[0-9a-f]{64}$/";
 
   test("every host guard is the SAME literal, named and inline alike", () => {
     // 1 named + 3 inline (two manifest sites, one blob site).
-    expect(source.split(HOST_LITERAL).length - 1).toBe(4);
+    expect(occurrences(source, HOST_LITERAL)).toBe(4);
   });
 
   test("every repository guard is the same literal", () => {
-    expect(source.split(REPO_LITERAL).length - 1).toBe(4);
+    expect(occurrences(source, REPO_LITERAL)).toBe(4);
   });
 
   test("every content-address guard is the same literal", () => {
     // 1 named + blobFile + the blob-request site.
-    expect(source.split(DIGEST_LITERAL).length - 1).toBeGreaterThanOrEqual(3);
+    expect(occurrences(source, DIGEST_LITERAL)).toBeGreaterThanOrEqual(3);
   });
 
   test("no URL is built without a guard beside it", () => {
     // Each `https://${...}/v2/` template must be preceded by the host test.
-    const urlSites = source.split("https://${").length - 1;
+    const urlSites = occurrences(source, "https://${");
     expect(urlSites).toBeGreaterThan(0);
-    expect(source.split(HOST_LITERAL).length - 1).toBeGreaterThanOrEqual(urlSites);
+    expect(occurrences(source, HOST_LITERAL)).toBeGreaterThanOrEqual(urlSites);
   });
 });
