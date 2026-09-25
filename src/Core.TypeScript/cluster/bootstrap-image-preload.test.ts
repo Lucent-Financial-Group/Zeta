@@ -300,14 +300,30 @@ describe("containerdImageName — the untagged name that cost a whole archive", 
     expect(containerdImageName(reference)).toBe(reference);
   });
 
-  test("a short tagged name is left verbatim — k3s imported one of these successfully", () => {
-    expect(containerdImageName("rancher/local-path-provisioner:v0.0.30")).toBe("rancher/local-path-provisioner:v0.0.30");
+  test("a HOSTLESS tagged name is canonicalised — containerd asks for the docker.io form", () => {
+    // MEASURED 2026-09-25: with the archive mounted and every registry
+    // blackholed, this was the LAST image still going ImagePullBackOff. k3s
+    // imported it under the short name it was given; the kubelet asked for
+    // `docker.io/rancher/local-path-provisioner:v0.0.30` and found nothing.
+    expect(containerdImageName("rancher/local-path-provisioner:v0.0.30")).toBe(
+      "docker.io/rancher/local-path-provisioner:v0.0.30",
+    );
   });
 
-  test("a registry with a PORT is not mistaken for a tag", () => {
-    // `localhost:5000/thing` has a colon and no tag. Treating the port as a tag
-    // would leave it untagged in the archive and reproduce the failure above.
-    expect(containerdImageName("localhost:5000/thing")).toBe("localhost:5000/thing:latest");
+  test("a hostless tag+digest keeps BOTH, and gains library/", () => {
+    expect(containerdImageName("busybox:1.36@sha256:73aa")).toBe("docker.io/library/busybox:1.36@sha256:73aa");
+  });
+
+  test("a reference that already names its registry is untouched", () => {
+    expect(containerdImageName("docker.io/rancher/mirrored-pause:3.10.2")).toBe(
+      "docker.io/rancher/mirrored-pause:3.10.2",
+    );
+  });
+
+  test("a registry with a PORT is an explicit host, so it is left verbatim", () => {
+    // `localhost:5000/thing` has a colon in its FIRST segment, which makes it a
+    // host and not a tag. Treating the port as a tag would rewrite the name.
+    expect(containerdImageName("localhost:5000/thing")).toBe("localhost:5000/thing");
   });
 
   test("archivePlan uses the normalised name", () => {

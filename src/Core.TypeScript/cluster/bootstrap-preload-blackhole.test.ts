@@ -15,6 +15,7 @@ import {
   classifyProbes,
   dockerRunArgs,
   IMAGES_DIR,
+  importCompleted,
   outcomeFromProbes,
   pairVerdict,
   parseEventMessages,
@@ -292,5 +293,41 @@ describe("the SANDBOX pull failure — the one with no container status to repor
     ]);
     expect(result.verdict).toBe("BLOCKED");
     expect(result.blockedImages).toEqual([sandbox]);
+  });
+});
+
+describe("importCompleted — a check that the START of a thing must not satisfy", () => {
+  const archive = "/var/lib/rancher/k3s/agent/images/zeta-bootstrap-images.tar";
+
+  test("the START line alone is NOT completion", () => {
+    // This is the exact false-positive that produced a plausible red: the
+    // archive name is already on the "Importing images from" line, so any check
+    // combining "Imported" with the archive name fires mid-import.
+    const logs = [
+      `time="..." level=info msg="Importing images from ${archive}"`,
+      `time="..." level=info msg="Imported quay.io/jetstack/trust-manager:v0.24.0"`,
+    ].join("\n");
+    expect(importCompleted(logs)).toBe(false);
+  });
+
+  test("the COMPLETION line, which is the only one carrying a count, IS completion", () => {
+    const logs = `time="..." level=info msg="Imported 26 images from ${archive} in 35.652867975s"`;
+    expect(importCompleted(logs)).toBe(true);
+  });
+
+  test("a completion line for a DIFFERENT archive does not count", () => {
+    const logs = `msg="Imported 5 images from /var/lib/rancher/k3s/agent/images/k3s-airgap.tar in 2s"`;
+    expect(importCompleted(logs)).toBe(false);
+  });
+
+  test("an import FAILURE is not completion", () => {
+    const logs =
+      `msg="Failed to process image event: failed to import ${archive}: failed to retag images: ` +
+      `failed to parse tag for image busybox: can't cast reference.repository to NamedTagged"`;
+    expect(importCompleted(logs)).toBe(false);
+  });
+
+  test("empty logs are not completion", () => {
+    expect(importCompleted("")).toBe(false);
   });
 });

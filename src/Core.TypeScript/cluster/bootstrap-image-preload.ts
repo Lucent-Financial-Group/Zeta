@@ -735,10 +735,22 @@ export interface ArchiveItem {
  */
 export function containerdImageName(reference: string): string {
   const parsed = parseImageReference(reference);
-  const hasTagOrDigest = reference.includes("@") || /:[^/]+$/.test(reference);
-  if (hasTagOrDigest) return reference;
+  const firstSegment = reference.includes("/") ? (reference.split("/")[0] ?? "") : "";
+  const hasExplicitHost =
+    firstSegment !== "" && (firstSegment.includes(".") || firstSegment.includes(":") || firstSegment === "localhost");
+  // A reference that already names its registry is left VERBATIM. Verbatim is
+  // what was measured to work for the five digest-pinned cilium references, and
+  // a normalisation applied where it is not needed is a chance to be wrong.
+  if (hasExplicitHost) return reference;
+
   const host = parsed.host === MIRRORED_HOST ? "docker.io" : parsed.host;
-  return `${host}/${parsed.repository}:${parsed.reference}`;
+  // Split the bare name from whatever tag/digest suffix it carries, and keep
+  // the suffix EXACTLY as written — a `repo:tag@sha256:...` must stay that way.
+  const withoutDigest = reference.split("@")[0] ?? reference;
+  const nameOnly = withoutDigest.replace(/:[^/]+$/, "");
+  const suffix = reference.slice(nameOnly.length);
+  const repository = nameOnly.includes("/") ? nameOnly : `library/${nameOnly}`;
+  return `${host}/${repository}${suffix === "" ? ":latest" : suffix}`;
 }
 
 export function archivePlan(snapshot: Snapshot): {

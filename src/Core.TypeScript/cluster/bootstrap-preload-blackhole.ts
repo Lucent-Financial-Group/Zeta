@@ -126,6 +126,32 @@ export const PROBE_NAMESPACE = "zeta-preload-probe";
  */
 export const PROBE_COMMAND = "/zeta-preload-probe-no-such-binary";
 
+/**
+ * Has k3s FINISHED importing the archive?
+ *
+ * MEASURED 2026-09-25, and the first version of this check was wrong in a way
+ * that is worth keeping on the record because it produced a plausible-looking
+ * red. k3s logs three shapes:
+ *
+ *     Importing images from /var/.../zeta-bootstrap-images.tar     <- START
+ *     Imported quay.io/jetstack/trust-manager:v0.24.0              <- each one
+ *     Imported 26 images from /var/.../zeta-bootstrap-images.tar in 35.6s
+ *
+ * The original test — "the logs contain `Imported` AND the archive name" — is
+ * satisfied the instant the FIRST per-image line appears, because the archive
+ * name is already on the START line. So the harness began probing mid-import
+ * and reported BLOCKED for exactly the images that had not been reached yet:
+ * the five cilium references and local-path-provisioner, i.e. the ones sorting
+ * late in the layout. It looked like a naming defect and was a timing one.
+ *
+ * The completion line is the only one that carries a COUNT, so that is what is
+ * matched. A check that can be satisfied by the beginning of the thing it is
+ * waiting for is not a wait.
+ */
+export function importCompleted(logs: string, archiveName: string = ARCHIVE_NAME): boolean {
+  return new RegExp(`Imported \\d+ images? from \\S*${archiveName.replace(/\./g, "\\.")}`).test(logs);
+}
+
 // ---------------------------------------------------------------------------
 // Verdicts — named, never a timeout
 // ---------------------------------------------------------------------------
@@ -563,7 +589,7 @@ export async function runHalf(opts: {
       // false and CodeQL is right to call it trivial (js/trivial-conditional).
       while (Date.now() < deadline) {
         const logs = docker(["logs", name], 120_000);
-        if (`${logs.stdout}${logs.stderr}`.includes(`Imported`) && `${logs.stdout}${logs.stderr}`.includes(ARCHIVE_NAME)) {
+        if (importCompleted(`${logs.stdout}${logs.stderr}`)) {
           imported = true;
           break;
         }
