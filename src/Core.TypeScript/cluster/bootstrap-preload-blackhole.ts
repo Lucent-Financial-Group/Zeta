@@ -149,8 +149,20 @@ export const PROBE_COMMAND = "/zeta-preload-probe-no-such-binary";
  * waiting for is not a wait.
  */
 export function importCompleted(logs: string, archiveName: string = ARCHIVE_NAME): boolean {
-  return new RegExp(`Imported \\d+ images? from \\S*${archiveName.replace(/\./g, "\\.")}`).test(logs);
+  // NO REGEX BUILT FROM `archiveName`. Escaping only `.` — which the first
+  // version did — leaves every other metacharacter live, and CodeQL's
+  // js/incomplete-sanitization is right that a half-escaped pattern is worse
+  // than none: it reads as safe. A line scan needs no escaping at all, and is
+  // easier to read besides.
+  for (const line of logs.split("\n")) {
+    if (!line.includes(archiveName)) continue;
+    if (COMPLETION_LINE.test(line)) return true;
+  }
+  return false;
 }
+
+/** `Imported 26 images from <path> in 35.6s` — the only line carrying a COUNT. */
+const COMPLETION_LINE = /Imported \d+ images? from /;
 
 // ---------------------------------------------------------------------------
 // Verdicts — named, never a timeout

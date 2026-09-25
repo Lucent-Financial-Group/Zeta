@@ -492,7 +492,7 @@ export async function resolveAmd64Digest(
   tokens: Map<string, string> = new Map(),
 ): Promise<{ readonly digest: string | null; readonly reason?: string }> {
   const { host, repository, reference: ref } = parseImageReference(reference);
-  const base = `https://${host}/v2/${repository}/manifests/`;
+  const base = `https://${assertRegistryHost(host)}/v2/${assertRepository(repository)}/manifests/`;
   const response = await fetchManifest(base + ref, repository, tokens);
   if (!response.ok) return { digest: null, reason: `manifest HTTP ${String(response.status)}` };
   const manifest = (await response.json()) as Record<string, unknown>;
@@ -826,8 +826,51 @@ export function assertContentAddress(digest: string): string {
   return digest;
 }
 
+/**
+ * A registry host, checked against the shape a hostname actually has.
+ *
+ * Same reasoning as `assertContentAddress` one layer over: the host comes out
+ * of a committed snapshot and is interpolated into a URL, so it is file data
+ * steering an outbound request (`js/file-access-to-http`). The snapshot is
+ * reviewed, which is an argument about process; this is the same argument made
+ * at run time, where it also catches a typo.
+ */
+export function assertRegistryHost(host: string): string {
+  if (!/^[a-z0-9]([a-z0-9.-]*[a-z0-9])?(:[0-9]{1,5})?$/.test(host)) {
+    throw new Error(`refusing to build a registry URL for ${JSON.stringify(host.slice(0, 120))}: not a hostname`);
+  }
+  return host;
+}
+
+/** A repository path, checked against the characters a repository may contain. */
+export function assertRepository(repository: string): string {
+  if (!/^[a-z0-9]+([._-][a-z0-9]+)*(\/[a-z0-9]+([._-][a-z0-9]+)*)*$/.test(repository)) {
+    throw new Error(
+      `refusing to build a registry URL for repository ${JSON.stringify(repository.slice(0, 160))}: ` +
+        "not a registry repository path",
+    );
+  }
+  return repository;
+}
+
+/**
+ * `<layout>/blobs/sha256/<digest>` — with the digest checked RIGHT HERE.
+ *
+ * The regex test is inline rather than delegated, and that is deliberate on two
+ * counts. It is the shape `.github/codeql/codeql-config.yml` records as the one
+ * that actually closes a first-party alert ("a guard in the code that CodeQL's
+ * DEFAULT taint barriers already recognise — an allowlist membership test, a
+ * regular-expression test"), and it is a real refusal at run time: a registry
+ * answering `sha256:../../../etc/x` would otherwise write outside the layout.
+ */
 function blobFile(layout: string, digest: string): string {
-  return join(layout, "blobs", "sha256", assertContentAddress(digest).slice("sha256:".length));
+  if (!/^sha256:[0-9a-f]{64}$/.test(digest)) {
+    throw new Error(
+      `refusing to use ${JSON.stringify(digest.slice(0, 120))} as a content address: ` +
+        "it is not a bare sha256 digest, and it would be written to the filesystem as a path component.",
+    );
+  }
+  return join(layout, "blobs", "sha256", digest.slice("sha256:".length));
 }
 
 /**
@@ -845,7 +888,7 @@ async function fetchBlob(
   digest: string,
   tokens: Map<string, string>,
 ): Promise<Uint8Array> {
-  const url = `https://${host}/v2/${repository}/blobs/${digest}`;
+  const url = `https://${assertRegistryHost(host)}/v2/${assertRepository(repository)}/blobs/${assertContentAddress(digest)}`;
   const headers: Record<string, string> = { "User-Agent": "zeta-bootstrap-image-preload/1" };
   const cached = tokens.get(repository);
   if (cached !== undefined) headers.Authorization = `Bearer ${cached}`;
@@ -895,7 +938,7 @@ async function stageImage(
   item: ArchiveItem,
   tokens: Map<string, string>,
 ): Promise<{ readonly mediaType: string; readonly digest: string; readonly size: number }> {
-  const base = `https://${item.host}/v2/${item.repository}/manifests/`;
+  const base = `https://${assertRegistryHost(item.host)}/v2/${assertRepository(item.repository)}/manifests/`;
   const response = await fetchManifest(base + item.topReference, item.repository, tokens);
   if (!response.ok) throw new Error(`manifest HTTP ${String(response.status)}`);
   const mediaType = (response.headers.get("content-type") ?? "").split(";")[0] ?? "";

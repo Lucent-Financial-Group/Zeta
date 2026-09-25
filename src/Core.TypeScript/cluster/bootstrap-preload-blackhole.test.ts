@@ -331,3 +331,15 @@ describe("importCompleted — a check that the START of a thing must not satisfy
     expect(importCompleted("")).toBe(false);
   });
 });
+
+describe("importCompleted — no regex is built from the archive name", () => {
+  test("an archive name full of regex metacharacters is matched LITERALLY", () => {
+    // The first version escaped only `.`, which CodeQL's
+    // js/incomplete-sanitization flagged: a half-escaped pattern reads as safe
+    // and is not. A line scan needs no escaping at all.
+    const weird = "a+b(c).tar";
+    expect(importCompleted(`Imported 3 images from /images/${weird} in 1s`, weird)).toBe(true);
+    // `a+b(c).tar` as a REGEX would also match `abbc9tar`; as a literal it must not.
+    expect(importCompleted("Imported 3 images from /images/abbc9tar in 1s", weird)).toBe(false);
+  });
+});

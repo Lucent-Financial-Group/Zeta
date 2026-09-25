@@ -19,6 +19,8 @@ import { describe, expect, test } from "bun:test";
 import {
   archivePlan,
   assertContentAddress,
+  assertRegistryHost,
+  assertRepository,
   blackholeHostnames,
   buildArchive,
   compareToSnapshot,
@@ -356,5 +358,31 @@ describe("assertContentAddress — a registry's digest becomes a filesystem path
 
   test("an uppercase digest is refused — one spelling, so one path", () => {
     expect(() => assertContentAddress(`sha256:${"A".repeat(64)}`)).toThrow(/content address/);
+  });
+});
+
+describe("URL guards — file data steering an outbound request", () => {
+  test("a real registry host passes", () => {
+    for (const h of ["quay.io", "ghcr.io", "registry-1.docker.io", "cgr.dev", "localhost:5000"]) {
+      expect(assertRegistryHost(h)).toBe(h);
+    }
+  });
+
+  test("anything that is not a hostname is REFUSED", () => {
+    for (const h of ["evil.com/../x", "http://evil.com", "a b", "", "-lead.io"]) {
+      expect(() => assertRegistryHost(h)).toThrow(/not a hostname/);
+    }
+  });
+
+  test("a real repository path passes", () => {
+    for (const r of ["library/busybox", "cilium/hubble-ui", "sig-storage/csi-node-driver-registrar", "docker/library/redis"]) {
+      expect(assertRepository(r)).toBe(r);
+    }
+  });
+
+  test("a repository containing traversal or a scheme is REFUSED", () => {
+    for (const r of ["../../etc", "a//b", "a/@evil", "UPPER/case"]) {
+      expect(() => assertRepository(r)).toThrow(/repository path/);
+    }
   });
 });
