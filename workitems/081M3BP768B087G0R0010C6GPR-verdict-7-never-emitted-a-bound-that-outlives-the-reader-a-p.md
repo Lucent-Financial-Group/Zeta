@@ -94,3 +94,26 @@ All three are covered by `wp11-roster-shell-parity.test.ts` (26 tests, up from
 them under real bash+awk. The jq changes were run against real jq 1.7.1,
 including the `has("items")` guard: an empty Application **list** passes, an
 empty or garbage **body** fails.
+
+## Two things this run did NOT establish, said out loud
+
+**The manual-sync exclusion path was never exercised on a cluster.** `excluded`
+read **0 on every one of the 59 samples**, because `zeta-root` never completed
+a comparison and so `cdi`, `kubevirt`, `ollama` and `vllm` were never created.
+That path is covered by `wp11-roster-shell-parity.test.ts` and **not** by any
+live cluster. An untested path that everyone believes is tested is how this
+class of defect keeps recurring, so it is recorded here rather than assumed.
+
+**The verdict's scope is narrower than its name.** The lane's guest is 4 vCPU /
+12 GiB against registered ClusterNodes of 16-22 cores / 66 G — roughly a
+quarter of the CPU and a fifth of the memory. That ceiling is hard (the
+GitHub-hosted runner is itself 4 vCPU / 16 GiB), and it is now stated in the
+module header so a green is not over-read. The cluster consequence is
+081M3BPJNRS087G0R0008WFXBZ.
+
+## Cross-lane agreement worth keeping
+
+`cilium`'s `ExcludedResourceWarning: Resource discovery.k8s.io/EndpointSlice
+cilium-ingress is excluded in the settings` appeared **here, on real metal**,
+independently of the Docker replica that first measured it. Two substrates, two
+independent derivations, the same defect named. WP26 owns that fix.

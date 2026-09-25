@@ -60,7 +60,39 @@
 #                            Synced+Healthy inside a bound; every one that
 #                            cannot is NAMED with its reason and excluded.
 #                            See "VERDICT 7" below -- it is the one that
-#                            answers the maintainer's actual question.
+#                            answers the maintainer's actual question, WITHIN
+#                            THE SUBSTRATE LIMIT stated immediately below.
+#
+# WHAT VERDICT 7 ACTUALLY MEASURES -- READ THIS BEFORE QUOTING IT
+# ----------------------------------------------------------------
+# NOT "the roster converges". "THE ROSTER CONVERGES ON A 4-vCPU / 12 GiB NODE."
+# The two hardware figures, side by side and both MEASURED:
+#
+#                   this lane's guest        registered ClusterNodes     ratio
+#   vCPU / cores    4                        16, 16, 22, 22             18-25%
+#   memory          12 GiB                   66 G (all four)             ~18%
+#
+# Sources: `K3S_VERIFY_CPU_COUNT` / `K3S_VERIFY_MEMORY_MB` in
+# src/Core.TypeScript/ci/qemu-full-install-test.ts, and
+# maintainers/*/cluster-nodes/*/node.yaml.
+#
+# THE GUEST CANNOT BE GIVEN MORE. The GitHub-hosted ubuntu-24.04 runner is
+# itself 4 vCPU / 16 GiB, so the guest already takes ALL FOUR vCPUs and 12 of
+# the host's 16 GiB. That is a hard ceiling on what this lane can ever measure,
+# not a setting someone forgot to raise. And those 4 vCPUs are simultaneously
+# running k3s + kubelet, containerd pulling against a 134-entry image roster,
+# and ArgoCD rendering 49 Applications.
+#
+# So a GREEN verdict 7 says the roster converges on roughly a QUARTER of the
+# CPU and a FIFTH of the memory of the box it is meant to represent -- which is
+# a strong result, and a narrower claim than the verdict's name suggests. A RED
+# one does NOT automatically transfer to the target hardware either. The first
+# live run (36097310492) went red for exactly this reason: the ArgoCD control
+# plane was starved, convergence PEAKED at 25/35 and regressed to 13/35, and
+# `zeta-root` itself never completed a comparison. Filed, with the substrate
+# measurement, as 081M3BPJNRS087G0R0008WFXBZ -- which is a REAL finding about
+# modest hardware (an operator installing on a small box gets exactly that),
+# not a CI artifact to wave away.
 #
 # VERDICT 7 -- WHY IT EXISTS AND WHY IT IS NOT "ALL APPLICATIONS HEALTHY"
 # -----------------------------------------------------------------------
