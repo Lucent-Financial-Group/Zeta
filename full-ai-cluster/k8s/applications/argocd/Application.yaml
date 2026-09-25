@@ -241,10 +241,14 @@ spec:
         redis-ha:
           enabled: false   # single-control-plane bootstrap
         # Requests: see the long rationale on the bootstrap copy, which is the
-        # single place it is written. Short form: every ArgoCD container was
-        # BestEffort, BestEffort is evicted first, and the WP11 roster went
-        # BACKWARDS from 25/35 to 13/35 because of it. These literals are the
-        # `metal` rung and are governed by `resourceClaims` in storage-profiles.json.
+        # single place it is written -- including the part this short form must
+        # not flatten. Short form: every ArgoCD container was BestEffort
+        # (measured), and the WP11 roster went BACKWARDS from 25/35 to 13/35,
+        # which rules out "needs longer" (measured). WHY it fell -- eviction, or
+        # overlapping 180s reconciliation sweeps per 081M3BPJNRS087G0R0008WFXBZ --
+        # is NOT settled and is deliberately not claimed here. Both readings share
+        # one root cause and this fix serves both. These literals are the `metal`
+        # rung and are governed by `resourceClaims` in storage-profiles.json.
         controller:
           replicas: 1
           resources:

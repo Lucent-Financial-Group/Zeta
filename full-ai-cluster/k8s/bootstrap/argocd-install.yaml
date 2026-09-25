@@ -226,15 +226,48 @@ spec:
     # roster then peaked at 25/35 Synced+Healthy at t=1214s and went BACKWARDS
     # to 13/35 by t=3007s, flat across the last four samples 723s apart.
     #
-    # THE BACKWARDS CURVE IS THE WHOLE DIAGNOSIS, and it is what rules out every
-    # other fix. Convergence that LOSES ground is not convergence that is slow,
-    # so no timeout increase and no extra wall clock can reach it — more time
-    # made it worse. What goes backwards is what gets EVICTED, and the kubelet
-    # evicts by QoS class, BestEffort first. Every ArgoCD container was
-    # BestEffort: this file and k8s/applications/argocd/Application.yaml between
+    # THE BACKWARDS CURVE RULES OUT "IT NEEDS LONGER", WHICH IS THE PART THAT IS
+    # MEASURED. Convergence that LOSES ground is not convergence that is slow, so
+    # no timeout increase and no extra wall clock reaches it — more time made it
+    # worse.
+    #
+    # WHICH MECHANISM PRODUCED THE FALL IS NOT SETTLED, AND THIS COMMENT MUST NOT
+    # PRETEND OTHERWISE. Two candidates fit the same curve:
+    #
+    #   (a) EVICTION. The kubelet evicts by QoS class, BestEffort first, and
+    #       every ArgoCD container was BestEffort. The roster's declared memory
+    #       exceeds this guest's RAM at both rungs (1.47x dev, 2.09x metal), so
+    #       memory pressure is not hypothetical.
+    #   (b) SWEEP OVERLAP — 081M3BPJNRS087G0R0008WFXBZ, reached independently
+    #       from the same dispatch. `timeout.reconciliation` defaults to 180s, so
+    #       all 49 Applications are re-rendered every three minutes forever. If
+    #       one sweep cannot finish inside one period the sweeps overlap, renders
+    #       time out, and Applications that HAD converged flip to `sync=Unknown`.
+    #
+    # (b) IS THE BETTER-EVIDENCED OF THE TWO, and saying so is worth the words:
+    # the 19 failing rows read `sync=Unknown` with a ComparisonError, which is a
+    # RENDER that did not finish rather than a workload that died — an eviction
+    # would more naturally surface as an unhealthy pod. Nothing in the dispatch
+    # discriminates them; no pod-level eviction counts were collected. So this
+    # file claims NEITHER, and an earlier draft of this comment asserting (a)
+    # outright was wrong to.
+    #
+    # WHY THE FIX IS RIGHT UNDER BOTH, which is why it lands before the question
+    # is settled: (a) is repaired by moving off BestEffort; (b) is repaired by a
+    # repo-server that renders fast enough to finish a sweep inside a period.
+    # They are the same root cause — a control plane with no reserved capacity —
+    # and requests are the smallest change that addresses it.
+    #
+    # THE DISCRIMINATOR, for whoever settles it: collect pod restart/eviction
+    # counts alongside the Application roster. Evictions present ⇒ (a) is live.
+    # Absent, with renders still timing out ⇒ (b), and the next levers are
+    # `reposerver.parallelism.limit` and `timeout.reconciliation`.
+    #
+    # WHAT IS MEASURED RATHER THAN INFERRED: every ArgoCD container was
+    # BestEffort. This file and k8s/applications/argocd/Application.yaml between
     # them set not one `resources` key, and argo-cd 10.8.0 ships `resources: {}`
     # for every component. Rendering BOTH value sets at the pinned chart
-    # confirmed it directly — nine containers, zero requests, no exceptions.
+    # confirmed it — nine containers, zero requests, no exceptions.
     #
     # THE CPU HALF, in cgroup terms. Kubernetes maps a request to a share
     # (MilliCPUToShares: max(2, m*1024/1000)); an ABSENT request takes the floor

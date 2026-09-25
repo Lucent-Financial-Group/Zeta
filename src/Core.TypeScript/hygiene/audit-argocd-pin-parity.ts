@@ -292,9 +292,16 @@ export function checkAdoptionValuesParity(bootstrapText: string, applicationText
  *
  * MEASURED 2026-09-25, dispatch 36097310492 (WP11, real installed disk): with every
  * ArgoCD container requesting nothing, the roster peaked at 25/35 Synced+Healthy at
- * t=1214s and fell BACKWARDS to 13/35 by t=3007s. Convergence that loses ground is
- * eviction, not slowness -- the kubelet evicts BestEffort first -- so no timeout and no
- * amount of extra wall clock could have reached it.
+ * t=1214s and fell BACKWARDS to 13/35 by t=3007s. Convergence that loses ground is not
+ * convergence that is slow, so no timeout and no amount of extra wall clock could have
+ * reached it.
+ *
+ * WHAT IS NOT CLAIMED: which mechanism produced the fall. Eviction (BestEffort goes
+ * first) and overlapping 180s reconciliation sweeps (081M3BPJNRS087G0R0008WFXBZ) both fit
+ * the curve, the failing rows' ComparisonError text favours the second, and no pod-level
+ * eviction counts were collected to decide it. This check does not depend on the answer:
+ * a BestEffort control plane is a defect under either reading, which is why the assertion
+ * is on the REQUEST and not on the mechanism.
  *
  * The regression this refuses is specific and cheap to make: argo-cd ships
  * `resources: {}` for every component, so DELETING a request here is invisible in a
