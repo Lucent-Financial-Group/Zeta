@@ -144,6 +144,40 @@
 # (ISO boot + install + reboot + all six verdicts) took 19m48s, so ~80 min of
 # that budget was unused. No workflow or harness timeout changes with this.
 #
+# WHAT THIS DELIBERATELY DOES *NOT* EXCLUDE, CROSS-CHECKED AGAINST THE REPLICA.
+# The Docker-replica lane (first-boot-replica.ts stage 6) measured the same
+# roster on 2026-09-25: 42 Applications, 35 Healthy, 5 DIVERGENCE, 2 FAIL. The
+# two derivations agree on four and differ on three, and every difference runs
+# in the same direction -- THIS verdict excludes LESS:
+#
+#   cdi, kubevirt    -> both call it manual-sync. AGREE.
+#   cilium, weaviate -> both red (Synced+Progressing; cilium names its own
+#                       cause, an ExcludedResourceWarning on EndpointSlice
+#                       cilium-ingress). AGREE, and WP26 owns that fix.
+#   spire            -> the replica classifies its crash loop as confirmed
+#                       NON-METAL (nested-container DNS). This lane IS metal,
+#                       so spire must converge here, and excluding it would
+#                       import a Docker artifact into a metal verdict.
+#                       DIFFERING IS THE CORRECT BEHAVIOUR -- and spire reading
+#                       unconverged here would be a finding about that
+#                       classification, not about this check.
+#   openbao          -> sealed by design on a fresh cluster.
+#   hindsight        -> needs an external API key no fresh cluster can hold.
+#
+# openbao and hindsight are a REAL gap, left open on purpose. Both are
+# defensible non-convergences that hold on metal too, and neither carries a
+# machine-readable declaration this unit could read off the live object.
+# `zeta.io/sync-policy: manual` is the wrong annotation for them -- neither is
+# manual-SYNC; both are converges-only-after-an-operator-action, which the
+# convention has no word for yet. `full-ai-cluster/INJECTION-POINTS.md`'s
+# `**EXTERNAL**` table is the maintained source for hindsight's half and
+# first-boot-replica.ts already parses it, but that table lives in the REPO and
+# this unit runs on an installed disk with no checkout; baking a snapshot in at
+# Nix eval time would create a second, separately-drifting copy of a roster.
+# So they stay `unconverged`, named on serial with their last Sync+Health
+# state. Widening a bucket until a red goes green is the one move that would
+# make this verdict stop meaning anything.
+#
 # AND IT REPORTS WHILE IT WAITS. Sixty-seven minutes of silence on a serial log
 # is indistinguishable from a hang, so every poll prints a counts line
 # (`N Synced+Healthy, M progressing, K excluded, U undecidable`) and every

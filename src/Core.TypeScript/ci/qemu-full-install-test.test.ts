@@ -1337,7 +1337,11 @@ describe("WP11 — installed-disk first-boot k3s verify", () => {
     // ABSENT must read as a FAILURE, never as a pass. The module emitting the
     // verdict block ships with this parser, so a missing verdict 7 on a live
     // run means the unit stopped before reaching it.
-    const rosterAbsent: K3sFirstBootVerifyVerdict = { ...passing, rosterConverged: undefined };
+    // The key is OMITTED, never set to `undefined` — `exactOptionalPropertyTypes`
+    // is on, and the distinction is the point: an omitted key is what an older
+    // verdict JSON, or a unit that stopped before emitting verdict 7, actually
+    // parses to.
+    const { rosterConverged: _absentRoster, ...rosterAbsent } = passing;
     const absentSummary = summarizeK3sFirstBootVerifyVerdict(rosterAbsent);
     expect(absentSummary.ok).toBe(false);
     expect(absentSummary.lines.join("\n")).toContain("ABSENT");
