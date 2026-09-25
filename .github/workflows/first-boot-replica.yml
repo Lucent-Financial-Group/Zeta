@@ -37,6 +37,20 @@
 #   CONVERGE WHEN THE CONTROL PLANE HAS TO COMPETE?", which the installed-disk
 #   lane otherwise charges a ~90-minute ISO build to ask.
 #
+# WHAT IT BINDS, AND WHY THAT IS THE POINT: both jobs run on ubuntu-24.04
+# (4 vCPU / ~15.9 GiB), so --cpus=4 is at or above what the host gives anyway and
+# DOES NOT BIND -- the harness says so on every run (cpu-limit-binds=no). The CPU
+# tax the installed-disk lane pays is QEMU-s own overhead, which no --cpus number
+# expresses, and inventing a tax fraction would be a fabricated constant. So this
+# lane binds MEMORY and DENIES SWAP while leaving CPU alone, which is precisely
+# the instrument WP32-s standing prediction needs: after #17666 the failure mode
+# should MOVE to memory (the roster over-commits the guest 1.47x at dev, masked
+# until now because CPU starvation stopped 14 of 49 Applications from ever being
+# created). Swap denial is derived from swapDevices = [ ] in the guest-s own
+# hardware-configuration.nix -- Docker-s 2x default would otherwise lend the
+# container 12 GiB of runner swapfile the real node does not have, turning an OOM
+# kill into thrash and excusing the lane from the condition it is testing.
+#
 # WHY THE CONSTRAINED JOB IS NOT ON pull_request, argued from a measurement:
 # the five most recent completed runs of the unconstrained job took 64-70 min
 # each (36108486753: 07:36:19Z -> 08:41:16Z = 65 min). The constrained job runs

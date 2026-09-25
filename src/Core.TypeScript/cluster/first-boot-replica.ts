@@ -55,6 +55,39 @@
  *     TO COMPETE?" — the question the installed-disk lane costs a ~90-minute
  *     ISO build to ask, and this lane asks in minutes.
  *
+ * WHAT THE CONSTRAINED MODE ACTUALLY BINDS, and why that is its PURPOSE rather
+ * than its limitation. Both lanes run on `ubuntu-24.04` (4 vCPU / ~15.9 GiB), so
+ * `--cpus=4` there is at or above what the host would give anyway and DOES NOT
+ * BIND. The CPU tax the installed-disk lane really pays is QEMU's own overhead,
+ * which is not expressible as a `--cpus` number, and inventing a tax fraction
+ * ("QEMU costs about 40%, so --cpus=2.5") would be a fabricated constant wearing
+ * a measurement's clothes. So this mode binds MEMORY, DENIES SWAP, and leaves
+ * CPU effectively unbound -- and says so.
+ *
+ * That is exactly the instrument WP32's standing prediction needs. After the
+ * control-plane capacity fix (#17666) the claim on record is that the failure
+ * mode should MOVE TO MEMORY rather than vanish: the roster over-commits the
+ * guest's memory (1.47x at the dev rung), and that never bit only because CPU
+ * starvation stopped 14 of 49 Applications from ever being created. A lane that
+ * constrains memory while leaving CPU alone tests that claim IN ISOLATION.
+ *
+ * THE SWAP DENIAL IS THE SHARPER HALF, and it is derived, not chosen. Docker's
+ * default `--memory-swap` is 2x `--memory`, so a plain `--memory=12288m` would
+ * have handed the container 12 GiB of the RUNNER'S SWAPFILE that the real node
+ * does not have -- `hosts/control-plane/hardware-configuration.nix` declares
+ * `swapDevices = [ ]`. Memory pressure would then have surfaced as thrash
+ * instead of the OOM kill the guest actually takes, and the lane would have
+ * looked like it survived a condition it had quietly been excused from: a
+ * fidelity defect that is invisible by construction and would have been
+ * permanent. It is derived from that host config rather than set to a literal
+ * so that it stays true if someone gives the node swap later.
+ *
+ * COMPARING TWO RUNS: use two runs OF THE SAME COMMIT. On schedule and dispatch
+ * both jobs run in parallel on one commit for exactly this reason. A constrained
+ * run compared against a remembered unconstrained number from an earlier commit
+ * confounds the envelope with whatever landed in between, and the difference
+ * reads as "constraint" when part of it is "the fixes".
+ *
  * AND THE MODE IS REPORTED ON EVERY RUN, in stdout, in the JSON report and in
  * the step-summary markdown — with the HOST capacity beside it, so a reader can
  * tell whether each declared limit actually BINDS. A `--cpus=4` on a 4-vCPU
