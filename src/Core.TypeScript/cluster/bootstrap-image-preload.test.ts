@@ -14,6 +14,9 @@
 //   - `archivePlan`'s naming, which is where a preload silently does nothing
 //   - drift, which is what makes the committed snapshot a check and not a note
 
+import { readFileSync } from "node:fs";
+import { join } from "node:path";
+
 import { describe, expect, test } from "bun:test";
 
 import {
@@ -31,6 +34,7 @@ import {
   loadSnapshot,
   MIRRORED_HOST,
   plainDocuments,
+  REPO_ROOT,
   type PreloadImage,
   type Snapshot,
   unmirroredHosts,
@@ -384,5 +388,39 @@ describe("URL guards — file data steering an outbound request", () => {
     for (const r of ["../../etc", "a//b", "a/@evil", "UPPER/case"]) {
       expect(() => assertRepository(r)).toThrow(/repository path/);
     }
+  });
+});
+
+describe("the inline CodeQL guards must not drift from their named definition", () => {
+  // The production guards are inline at each URL-building site, because that is
+  // the only shape CodeQL's default taint barriers recognise. `assertRegistryHost`
+  // and `assertRepository` are the readable home for the SAME shapes. A
+  // duplicated constant with no drift check is the defect this module is
+  // otherwise entirely about, so this reads the module's own source.
+  const source = readFileSync(join(REPO_ROOT, "src/Core.TypeScript/cluster/bootstrap-image-preload.ts"), "utf8");
+
+  const HOST_LITERAL = "/^[a-z0-9]([a-z0-9.-]*[a-z0-9])?(:[0-9]{1,5})?$/";
+  const REPO_LITERAL = String.raw`/^[a-z0-9]+([._-][a-z0-9]+)*(\/[a-z0-9]+([._-][a-z0-9]+)*)*$/`;
+  const DIGEST_LITERAL = "/^sha256:[0-9a-f]{64}$/";
+
+  test("every host guard is the SAME literal, named and inline alike", () => {
+    // 1 named + 3 inline (two manifest sites, one blob site).
+    expect(source.split(HOST_LITERAL).length - 1).toBe(4);
+  });
+
+  test("every repository guard is the same literal", () => {
+    expect(source.split(REPO_LITERAL).length - 1).toBe(4);
+  });
+
+  test("every content-address guard is the same literal", () => {
+    // 1 named + blobFile + the blob-request site.
+    expect(source.split(DIGEST_LITERAL).length - 1).toBeGreaterThanOrEqual(3);
+  });
+
+  test("no URL is built without a guard beside it", () => {
+    // Each `https://${...}/v2/` template must be preceded by the host test.
+    const urlSites = source.split("https://${").length - 1;
+    expect(urlSites).toBeGreaterThan(0);
+    expect(source.split(HOST_LITERAL).length - 1).toBeGreaterThanOrEqual(urlSites);
   });
 });

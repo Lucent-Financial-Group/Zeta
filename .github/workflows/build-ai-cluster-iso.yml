@@ -631,6 +631,35 @@ jobs:
       # NOT `continue-on-error`. A silently-skipped preload is the defect class
       # this work item exists to remove: an ISO that quietly shipped without one
       # would be indistinguishable from an ISO that shipped with a broken one.
+      # OPTION 1 OF THREE, and the choice is the reviewable part.
+      #
+      # MEASURED: run 36129391858 failed this step with
+      # `Cannot find package 'yaml' from .../bootstrap-image-preload.ts`. This
+      # job installs Bun but never ran `bun install`, because every other `bun`
+      # step in it is node-builtins-only. The preload module is not: it reads
+      # YAML to derive the roster.
+      #
+      # The three ways out, and why this one:
+      #
+      #   1. DO THE WORK OUTSIDE NIX AND PASS THE RESULT IN -- taken. These two
+      #      steps are ordinary `run:` steps that execute BEFORE `nix build`,
+      #      produce a file, and the nix build consumes that file. `bun install`
+      #      here gives them the dependency they need and touches nothing nix
+      #      sees. It also leaves the derivation in TypeScript, where its 47
+      #      falsifiers live.
+      #   2. Drop the `yaml` dependency by hand-parsing the HelmChart CRs.
+      #      Rejected: a second YAML parser in this tree is its own defect class,
+      #      and this module exists precisely to avoid a second copy of a roster.
+      #   3. Make `node_modules` reachable from inside the nix build. REJECTED
+      #      outright -- it breaks nix's isolation and makes the ISO build depend
+      #      on a `bun install` having happened, which is exactly the property
+      #      `.claude/rules/clone-at-tag-stays-sufficient.md` protects. Note
+      #      that (1) does NOT have that effect: `isoImage.contents` falls back
+      #      to a loud `lib.warn` and an ISO with no preload, so a clone at a tag
+      #      with no bun still builds a working ISO.
+      - name: Install TypeScript dependencies for the preload steps
+        run: bun install --frozen-lockfile
+
       - name: Verify the bootstrap image pins still resolve
         run: bun src/Core.TypeScript/cluster/bootstrap-image-preload.ts --verify
 

@@ -492,7 +492,19 @@ export async function resolveAmd64Digest(
   tokens: Map<string, string> = new Map(),
 ): Promise<{ readonly digest: string | null; readonly reason?: string }> {
   const { host, repository, reference: ref } = parseImageReference(reference);
-  const base = `https://${assertRegistryHost(host)}/v2/${assertRepository(repository)}/manifests/`;
+  // INLINE, not behind a helper: `.github/codeql/codeql-config.yml` records that only a
+  // guard CodeQL's DEFAULT taint barriers recognise closes a first-party alert, and its
+  // own `guarded.ts` fixture tests the value AT THE SITE THAT USES IT. Delegating the same
+  // regex to a named function left the alert open -- measured 2026-09-25, this PR.
+  // It is also a real refusal: file data must not steer an outbound request to something
+  // that is not a registry.
+  if (!/^[a-z0-9]([a-z0-9.-]*[a-z0-9])?(:[0-9]{1,5})?$/.test(host)) {
+    throw new Error(`refusing to build a registry URL for ${JSON.stringify(host)}: not a hostname`);
+  }
+  if (!/^[a-z0-9]+([._-][a-z0-9]+)*(\/[a-z0-9]+([._-][a-z0-9]+)*)*$/.test(repository)) {
+    throw new Error(`refusing to build a registry URL for ${JSON.stringify(repository)}: not a repository path`);
+  }
+  const base = `https://${host}/v2/${repository}/manifests/`;
   const response = await fetchManifest(base + ref, repository, tokens);
   if (!response.ok) return { digest: null, reason: `manifest HTTP ${String(response.status)}` };
   const manifest = (await response.json()) as Record<string, unknown>;
@@ -827,7 +839,18 @@ export function assertContentAddress(digest: string): string {
 }
 
 /**
- * A registry host, checked against the shape a hostname actually has.
+ * The registry-host shape, as a NAMED predicate.
+ *
+ * The production guards are INLINE at each URL-building site, because that is
+ * the only shape CodeQL's default taint barriers recognise (measured in this
+ * PR: the same regex behind this function left the alert open). This export is
+ * therefore not the guard -- it is the guard's DEFINITION, kept so the shape
+ * has one readable home and so the falsifiers have something to call.
+ *
+ * The test file asserts the inline copies and this one are
+ * the same literal, so the duplication cannot drift silently. A duplicated
+ * constant with no drift check would be the defect this module is otherwise
+ * about.
  *
  * Same reasoning as `assertContentAddress` one layer over: the host comes out
  * of a committed snapshot and is interpolated into a URL, so it is file data
@@ -842,7 +865,7 @@ export function assertRegistryHost(host: string): string {
   return host;
 }
 
-/** A repository path, checked against the characters a repository may contain. */
+/** The repository-path shape, as a named predicate. See assertRegistryHost for why. */
 export function assertRepository(repository: string): string {
   if (!/^[a-z0-9]+([._-][a-z0-9]+)*(\/[a-z0-9]+([._-][a-z0-9]+)*)*$/.test(repository)) {
     throw new Error(
@@ -888,7 +911,22 @@ async function fetchBlob(
   digest: string,
   tokens: Map<string, string>,
 ): Promise<Uint8Array> {
-  const url = `https://${assertRegistryHost(host)}/v2/${assertRepository(repository)}/blobs/${assertContentAddress(digest)}`;
+  // INLINE, not behind a helper: `.github/codeql/codeql-config.yml` records that only a
+  // guard CodeQL's DEFAULT taint barriers recognise closes a first-party alert, and its
+  // own `guarded.ts` fixture tests the value AT THE SITE THAT USES IT. Delegating the same
+  // regex to a named function left the alert open -- measured 2026-09-25, this PR.
+  // It is also a real refusal: file data must not steer an outbound request to something
+  // that is not a registry.
+  if (!/^[a-z0-9]([a-z0-9.-]*[a-z0-9])?(:[0-9]{1,5})?$/.test(host)) {
+    throw new Error(`refusing to build a registry URL for ${JSON.stringify(host)}: not a hostname`);
+  }
+  if (!/^[a-z0-9]+([._-][a-z0-9]+)*(\/[a-z0-9]+([._-][a-z0-9]+)*)*$/.test(repository)) {
+    throw new Error(`refusing to build a registry URL for ${JSON.stringify(repository)}: not a repository path`);
+  }
+  if (!/^sha256:[0-9a-f]{64}$/.test(digest)) {
+    throw new Error(`refusing to request ${JSON.stringify(digest)}: not a content address`);
+  }
+  const url = `https://${host}/v2/${repository}/blobs/${digest}`;
   const headers: Record<string, string> = { "User-Agent": "zeta-bootstrap-image-preload/1" };
   const cached = tokens.get(repository);
   if (cached !== undefined) headers.Authorization = `Bearer ${cached}`;
@@ -938,7 +976,19 @@ async function stageImage(
   item: ArchiveItem,
   tokens: Map<string, string>,
 ): Promise<{ readonly mediaType: string; readonly digest: string; readonly size: number }> {
-  const base = `https://${assertRegistryHost(item.host)}/v2/${assertRepository(item.repository)}/manifests/`;
+  // INLINE, not behind a helper: `.github/codeql/codeql-config.yml` records that only a
+  // guard CodeQL's DEFAULT taint barriers recognise closes a first-party alert, and its
+  // own `guarded.ts` fixture tests the value AT THE SITE THAT USES IT. Delegating the same
+  // regex to a named function left the alert open -- measured 2026-09-25, this PR.
+  // It is also a real refusal: file data must not steer an outbound request to something
+  // that is not a registry.
+  if (!/^[a-z0-9]([a-z0-9.-]*[a-z0-9])?(:[0-9]{1,5})?$/.test(item.host)) {
+    throw new Error(`refusing to build a registry URL for ${JSON.stringify(item.host)}: not a hostname`);
+  }
+  if (!/^[a-z0-9]+([._-][a-z0-9]+)*(\/[a-z0-9]+([._-][a-z0-9]+)*)*$/.test(item.repository)) {
+    throw new Error(`refusing to build a registry URL for ${JSON.stringify(item.repository)}: not a repository path`);
+  }
+  const base = `https://${item.host}/v2/${item.repository}/manifests/`;
   const response = await fetchManifest(base + item.topReference, item.repository, tokens);
   if (!response.ok) throw new Error(`manifest HTTP ${String(response.status)}`);
   const mediaType = (response.headers.get("content-type") ?? "").split(";")[0] ?? "";
