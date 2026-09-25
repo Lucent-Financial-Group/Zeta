@@ -912,11 +912,65 @@ function blobFile(layout: string, digest: string): string {
  * not match here would be a corrupt image nothing ever catches. Failing in CI
  * is the "verify EARLIER, not LESS" half of this feature.
  */
-async function fetchBlob(
+/**
+ * THE CONTENT CHECK THE CodeQL DISMISSAL RESTS ON — refuse any bytes that do not
+ * hash to the address that asked for them.
+ *
+ * -- READ THIS BEFORE CHANGING ANYTHING BELOW ----------------------------
+ * `js/http-to-file-access` fires three times in this module: "Write to file
+ * system depends on Untrusted DATA". THAT IS A TRUE DESCRIPTION OF THE FLOW.
+ * Registry bytes are fetched and written to disk, because that is the entire
+ * feature. There is no path guard that answers it — the path is separately
+ * guarded and content-addressed, and the alert is about the CONTENT.
+ *
+ * Those three alerts were DISMISSED, and this function is the whole reason the
+ * dismissal is defensible: the content is constrained rather than the
+ * destination, which is a strictly stronger mitigation than any path check and
+ * one CodeQL cannot model because it is semantic, not syntactic. Nothing is
+ * written until it has hashed to the digest that requested it.
+ *
+ * -- WHAT WOULD MAKE THE DISMISSAL WRONG ---------------------------------
+ * IF THIS VERIFICATION IS EVER REMOVED OR WEAKENED, THE DISMISSAL IS VOID AND
+ * THE ALERTS MUST BE REINSTATED. Weakened includes: comparing a prefix,
+ * catching and continuing past a mismatch, making the check conditional on a
+ * flag, or writing the bytes anywhere before this function has returned them.
+ * A dismissal typed into a GitHub UI is invisible to anyone reading the tree;
+ * this comment is the version a future reader can check, and the falsifiers in
+ * `bootstrap-image-preload.test.ts` §"the content check" are the version a
+ * future BUILD can check. They assert REFUSAL, not acceptance: a blob whose
+ * bytes do not hash to the requested digest must throw.
+ *
+ * Precedent and its bar: `no-binary-in-proof-lineage.md` records six Scorecard
+ * alerts closed by DELETING the binaries rather than dismissing, and names that
+ * the disposition to prefer "whenever it is reachable". Here it is not
+ * reachable without a worse trade (the alternative moved a bearer token onto a
+ * command line), so the fallback applies — and that rule's own sentence sets
+ * what a dismissal then has to be: "a dismissal is a claim about the alert".
+ * This is the claim, in writing, where it can be audited.
+ */
+export function verifyContentAddress(bytes: Uint8Array, digest: string, source: string): Uint8Array {
+  const actual = hexDigest(bytes);
+  if (actual !== digest) {
+    throw new Error(
+      `content from ${source} hashed to ${actual} but was requested as ${digest} — ` +
+        "refusing it. Nothing is written to disk that did not hash to the address that asked for it.",
+    );
+  }
+  return bytes;
+}
+
+export type FetchLike = (url: string, init?: { headers?: Record<string, string> }) => Promise<Response>;
+
+export async function fetchBlob(
   host: string,
   repository: string,
   digest: string,
   tokens: Map<string, string>,
+  // Injected ONLY by the falsifiers. `verifyContentAddress` is what the CodeQL
+  // dismissal rests on, and a claim about a refusal that nothing exercises is
+  // the defect class this whole work item is about — so the refusal is proven
+  // end to end, with a registry that lies about what it is serving.
+  fetchImpl: FetchLike = fetch,
 ): Promise<Uint8Array> {
   // INLINE, not behind a helper: `.github/codeql/codeql-config.yml` records that only a
   // guard CodeQL's DEFAULT taint barriers recognise closes a first-party alert, and its
@@ -937,22 +991,17 @@ async function fetchBlob(
   const headers: Record<string, string> = { "User-Agent": "zeta-bootstrap-image-preload/1" };
   const cached = tokens.get(repository);
   if (cached !== undefined) headers.Authorization = `Bearer ${cached}`;
-  let response = await fetch(url, { headers });
+  let response = await fetchImpl(url, { headers });
   if (response.status === 401) {
     // Warm the token through the manifest path, which already knows every
     // registry's realm/service shape, then retry exactly once.
     await fetchManifest(`https://${host}/v2/${repository}/manifests/${digest}`, repository, tokens);
     const refreshed = tokens.get(repository);
     if (refreshed !== undefined) headers.Authorization = `Bearer ${refreshed}`;
-    response = await fetch(url, { headers });
+    response = await fetchImpl(url, { headers });
   }
   if (!response.ok) throw new Error(`blob ${digest} HTTP ${String(response.status)}`);
-  const bytes = new Uint8Array(await response.arrayBuffer());
-  const actual = hexDigest(bytes);
-  if (actual !== digest) {
-    throw new Error(`blob ${digest} from ${host}/${repository} hashed to ${actual} — content does not match its address`);
-  }
-  return bytes;
+  return verifyContentAddress(new Uint8Array(await response.arrayBuffer()), digest, `${host}/${repository}`);
 }
 
 /**

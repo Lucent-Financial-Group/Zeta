@@ -14,6 +14,7 @@
 //   - `archivePlan`'s naming, which is where a preload silently does nothing
 //   - drift, which is what makes the committed snapshot a check and not a note
 
+import { createHash } from "node:crypto";
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 
@@ -27,6 +28,7 @@ import {
   blackholeHostnames,
   buildArchive,
   compareToSnapshot,
+  fetchBlob,
   containerdImageName,
   hasDrift,
   hostCoverage,
@@ -38,6 +40,7 @@ import {
   type PreloadImage,
   type Snapshot,
   unmirroredHosts,
+  verifyContentAddress,
 } from "./bootstrap-image-preload.ts";
 
 function snapshotOf(images: readonly { reference: string; amd64Digest?: string | null; bytes?: number }[]): Snapshot {
@@ -440,5 +443,71 @@ describe("the inline CodeQL guards must not drift from their named definition", 
     const urlSites = occurrences(source, "https://${");
     expect(urlSites).toBeGreaterThan(0);
     expect(occurrences(source, HOST_LITERAL)).toBeGreaterThanOrEqual(urlSites);
+  });
+});
+
+describe("the content check — the falsifiers the CodeQL dismissal rests on", () => {
+  // THREE `js/http-to-file-access` alerts were DISMISSED on the claim that the
+  // content is constrained rather than the destination. These prove the claim by
+  // proving REFUSAL, not acceptance. If any of them starts passing for the wrong
+  // reason — or is deleted — the dismissal is void and the alerts must be
+  // reinstated. See `verifyContentAddress`'s own header.
+  const bytes = new TextEncoder().encode("hello");
+  const trueDigest = `sha256:${createHash("sha256").update(bytes).digest("hex")}`;
+
+  test("bytes that DO hash to the requested address are returned unchanged", () => {
+    expect(verifyContentAddress(bytes, trueDigest, "test")).toBe(bytes);
+  });
+
+  test("bytes that do NOT hash to the requested address are REFUSED", () => {
+    const wrong = `sha256:${"0".repeat(64)}`;
+    expect(() => verifyContentAddress(bytes, wrong, "quay.io/x/y")).toThrow(/refusing it/);
+  });
+
+  test("ONE FLIPPED BYTE is refused — the check is over the whole content", () => {
+    const tampered = new TextEncoder().encode("hellp");
+    expect(() => verifyContentAddress(tampered, trueDigest, "quay.io/x/y")).toThrow(/refusing it/);
+  });
+
+  test("TRUNCATED content is refused — a short read is not a small success", () => {
+    expect(() => verifyContentAddress(bytes.slice(0, 3), trueDigest, "quay.io/x/y")).toThrow(/refusing it/);
+  });
+
+  test("EMPTY content is refused — the failure mode a silent 200 produces", () => {
+    expect(() => verifyContentAddress(new Uint8Array(0), trueDigest, "quay.io/x/y")).toThrow(/refusing it/);
+  });
+
+  test("the refusal names BOTH digests, so a reader can tell tampering from a typo", () => {
+    const wrong = `sha256:${"0".repeat(64)}`;
+    try {
+      verifyContentAddress(bytes, wrong, "quay.io/x/y");
+      throw new Error("expected a refusal");
+    } catch (e) {
+      const message = e instanceof Error ? e.message : String(e);
+      expect(message).toContain(trueDigest);
+      expect(message).toContain(wrong);
+      expect(message).toContain("quay.io/x/y");
+    }
+  });
+
+  test("END TO END: a registry that serves the WRONG BYTES is refused by fetchBlob", async () => {
+    // The whole point. A path guard cannot catch this — the path is perfectly
+    // well-formed and the bytes are wrong. Nothing reaches the filesystem.
+    const lyingRegistry = (): Promise<Response> =>
+      Promise.resolve(new Response(new TextEncoder().encode("not what you asked for"), { status: 200 }));
+    await expect(
+      fetchBlob("quay.io", "cilium/cilium", trueDigest, new Map(), lyingRegistry),
+    ).rejects.toThrow(/refusing it/);
+  });
+
+  test("END TO END: a registry serving the RIGHT bytes is accepted", async () => {
+    const honestRegistry = (): Promise<Response> => Promise.resolve(new Response(bytes, { status: 200 }));
+    const got = await fetchBlob("quay.io", "cilium/cilium", trueDigest, new Map(), honestRegistry);
+    expect(new TextDecoder().decode(got)).toBe("hello");
+  });
+
+  test("a NON-OK response is refused before any content check", async () => {
+    const down = (): Promise<Response> => Promise.resolve(new Response("", { status: 503 }));
+    await expect(fetchBlob("quay.io", "cilium/cilium", trueDigest, new Map(), down)).rejects.toThrow(/HTTP 503/);
   });
 });
