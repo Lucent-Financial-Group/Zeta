@@ -32,7 +32,7 @@
  * What that CANNOT prove is recorded in the test file.
  */
 
-import { existsSync, readdirSync, readFileSync, statSync } from "node:fs";
+import { readdirSync, readFileSync } from "node:fs";
 import { join, resolve } from "node:path";
 import { parseAllDocuments, parse as parseYaml } from "yaml";
 import { discoverGitDirectorySources, sourceReconciles } from "./app-of-apps-discovery.ts";
@@ -201,11 +201,17 @@ export function placeholderFindings(objects: readonly K8sObject[], where: string
 }
 
 function listYaml(dir: string): string[] {
-  if (!existsSync(dir)) return [];
-  return readdirSync(dir).flatMap((e) => {
-    const p = join(dir, e);
-    if (statSync(p).isDirectory()) return listYaml(p);
-    return e.endsWith(".yaml") || e.endsWith(".yml") ? [p] : [];
+  let entries;
+  try {
+    entries = readdirSync(dir, { withFileTypes: true });
+  } catch (e) {
+    if ((e as NodeJS.ErrnoException).code === "ENOENT") return [];
+    throw e;
+  }
+  return entries.flatMap((e) => {
+    const p = join(dir, e.name);
+    if (e.isDirectory()) return listYaml(p);
+    return e.isFile() && (e.name.endsWith(".yaml") || e.name.endsWith(".yml")) ? [p] : [];
   });
 }
 

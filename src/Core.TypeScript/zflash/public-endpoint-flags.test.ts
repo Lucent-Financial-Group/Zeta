@@ -8,8 +8,9 @@
  */
 
 import { describe, expect, test } from "bun:test";
-import { readFileSync } from "node:fs";
-import { resolve } from "node:path";
+import { mkdtempSync, readFileSync, writeFileSync } from "node:fs";
+import { tmpdir } from "node:os";
+import { join, resolve } from "node:path";
 import { spawnSync } from "node:child_process";
 import { parseFileBackedZflashArgs } from "./file-backed.ts";
 import { planFileBackedZflashImage } from "./lib.ts";
@@ -65,10 +66,12 @@ describe("(d) file-backed zflash: --acme-email / --public-domain", () => {
     const conf = planned.value.espWrites.find((w) => w.destination === "/zeta-firstboot.conf");
     expect(conf?.content).toBe(`ZETA_ACME_EMAIL='${EMAIL}'\nZETA_PUBLIC_DOMAIN='${DOMAIN}'\n`);
     // actually sourceable by bash, and yields exactly the values
-    const r = spawnSync("bash", ["-c", `eval "$CONF"; printf '%s|%s' "$ZETA_ACME_EMAIL" "$ZETA_PUBLIC_DOMAIN"`], {
-      encoding: "utf8",
-      env: { ...process.env, CONF: conf?.content ?? "" },
-    });
+    const dir = mkdtempSync(join(tmpdir(), "zeta-pe-conf-"));
+    const confPath = join(dir, "zeta-firstboot.conf").replaceAll("\\", "/");
+    const runner = join(dir, "runner.sh");
+    writeFileSync(confPath, conf?.content ?? "", "utf8");
+    writeFileSync(runner, `. ${confPath}\nprintf '%s|%s' "$ZETA_ACME_EMAIL" "$ZETA_PUBLIC_DOMAIN"\n`, "utf8");
+    const r = spawnSync("bash", [runner.replaceAll("\\", "/")], { encoding: "utf8" });
     expect(r.stdout).toBe(`${EMAIL}|${DOMAIN}`);
   });
 
