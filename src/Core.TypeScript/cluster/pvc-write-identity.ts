@@ -40,7 +40,7 @@
  *     `fsGroupChangePolicy: Always` recursive relabel, which this file does not model.
  */
 
-import { readFileSync, readdirSync, statSync } from "node:fs";
+import { readFileSync, readdirSync } from "node:fs";
 import { join, relative } from "node:path";
 import { parseAllDocuments } from "yaml";
 
@@ -154,10 +154,10 @@ export function auditYaml(text: string, source: string): readonly Finding[] {
 }
 
 function* yamlFiles(dir: string): Generator<string> {
-  for (const entry of readdirSync(dir)) {
-    const p = join(dir, entry);
-    if (statSync(p).isDirectory()) yield* yamlFiles(p);
-    else if (/\.ya?ml$/.test(entry)) yield p;
+  for (const entry of readdirSync(dir, { withFileTypes: true })) {
+    const p = join(dir, entry.name);
+    if (entry.isDirectory()) yield* yamlFiles(p);
+    else if (entry.isFile() && /\.ya?ml$/.test(entry.name)) yield p;
   }
 }
 
