@@ -1,7 +1,9 @@
 import { describe, expect, it } from "bun:test";
-import { execFileSync, spawnSync } from "node:child_process";
-import { readFileSync } from "node:fs";
+import { execFileSync } from "node:child_process";
+import { mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+import { tmpdir } from "node:os";
 import { join } from "node:path";
+import { spawnArgv } from "../io/safe-io.ts";
 
 /**
  * 081M3BWJ96T087G0R0028WT3S3 — the first-boot dependency inventory
@@ -31,9 +33,17 @@ function runHasInternet(pingRc: number, curlRc: number | "absent"): number {
   const curlStub = curlRc === "absent" ? "" : `curl() { return ${String(curlRc)}; }\n`;
   // PATH is emptied INSIDE the script, so the real ping/curl can never answer.
   const script = `PATH=/nonexistent\nping() { return ${String(pingRc)}; }\n${curlStub}${hasInternetFunction()}has_internet\n`;
-  const result = spawnSync("bash", ["-c", script], { encoding: "utf8" });
-  if (result.error !== undefined) throw result.error;
-  return result.status ?? -1;
+  // The script goes to a FILE and bash receives its path as data (argv), not a -c program.
+  const dir = mkdtempSync(join(tmpdir(), "has-internet-"));
+  try {
+    const file = join(dir, "probe.sh");
+    writeFileSync(file, script);
+    const result = spawnArgv("bash", [file], { timeoutMs: 20_000 });
+    if (!result.ok) throw new Error(`bash did not run: ${JSON.stringify(result.error)}`);
+    return result.value.status ?? -1;
+  } finally {
+    rmSync(dir, { recursive: true, force: true });
+  }
 }
 
 describe("zeta-first-boot.sh has_internet does not equate 'no ICMP' with 'offline'", () => {
