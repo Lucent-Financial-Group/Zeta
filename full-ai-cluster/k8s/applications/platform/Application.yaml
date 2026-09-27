@@ -25,6 +25,12 @@ kind: Application
 metadata:
   annotations:
     argocd.argoproj.io/sync-wave: "-20"   # CRDs early — before anything that creates these resources
+    # StatefulSet/portal's volumeClaimTemplates under ServerSideApply read as
+    # perpetually OutOfSync with the client-side SSA diff (the live template gains
+    # apiVersion/kind/volumeMode/status; the predicted one gains
+    # creationTimestamp:null — argo-cd#11143). SSA stays for the large CRDs; the
+    # diff moves server-side. Checked by cluster/ssa-volumeclaimtemplate-drift.ts.
+    argocd.argoproj.io/compare-options: ServerSideDiff=true
   name: platform
   namespace: argocd
   finalizers: [ resources-finalizer.argocd.argoproj.io ]
