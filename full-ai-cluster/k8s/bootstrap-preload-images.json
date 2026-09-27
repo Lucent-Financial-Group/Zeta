@@ -6,7 +6,7 @@
     "full-ai-cluster/nixos/modules/k3s-server.nix",
     "full-ai-cluster/nixos/modules/local-storage.nix"
   ],
-  "totalCompressedBytes": 1069793319,
+  "totalCompressedBytes": 1051040335,
   "unsized": 0,
   "images": [
     {
@@ -36,6 +36,7 @@
     {
       "reference": "docker.io/rancher/kubectl:v1.35.6",
       "rosterAttrs": [
+        "internal-secret-seeding",
         "spire-install"
       ],
       "amd64Digest": "sha256:da5097fcf72a7cfd16fd1d1d70e5f350b136a6cfe62ac19ef85f2fb756a140fd",
@@ -216,14 +217,6 @@
       ],
       "amd64Digest": "sha256:25d291fde59974547bac6f07fa9d6cf6f5bedd1f19d60c893311c5e741e0a42f",
       "compressedBytes": 23253467
-    },
-    {
-      "reference": "registry.k8s.io/kubectl:v1.32.3",
-      "rosterAttrs": [
-        "internal-secret-seeding"
-      ],
-      "amd64Digest": "sha256:2b1b8162c835502691b27e1f9f87c43a0f8e82b097eee07a9933a71eae36b7e9",
-      "compressedBytes": 18752984
     },
     {
       "reference": "registry.k8s.io/sig-storage/csi-node-driver-registrar:v2.9.4",

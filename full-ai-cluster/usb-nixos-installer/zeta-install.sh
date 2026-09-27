@@ -1211,7 +1211,9 @@ zeta_squeeze_mount_error() {
 # constant that was wrong and could not disagree with itself; a second constant
 # would be the same mistake. `lsblk -bno START` reads sysfs, so it needs no
 # open of the partition -- which is the whole point, since the partition is
-# what cannot be opened. Unreadable or zero => REFUSE, never guess.
+# what cannot be opened. Unreadable => REFUSE, never guess. Zero (the LBA-0
+# alias) or a whole-disk candidate => look the ESP up BY TYPE among the parent
+# disk's partitions (081M3B7Z38Q087G0R003F9X7HM) -- still derived, never assumed.
 #
 # READ-ONLY BY CONSTRUCTION: this materialises a COPY of the ESP onto a fresh
 # tmpfs at the caller's mountpoint. Every consumer keeps working on a path and
@@ -1219,24 +1221,52 @@ zeta_squeeze_mount_error() {
 # no read-only consumer writes, and the `rw` ledger mount is a different
 # function that is deliberately untouched.
 zeta_esp_copy_out_mtools() {
-  local part="$1" mnt="$2" start disk offset err
-  start="$(lsblk -bno START "$part" 2>/dev/null | head -1 | tr -cd '0-9')" || start=""
-  case "$start" in
-    "" | *[!0-9]*)
-      ZETA_FAT_MOUNT_WHY="${ZETA_FAT_MOUNT_WHY}|mtools=no-partition-start-in-sysfs"
-      return 1
-      ;;
-  esac
-  offset=$(( start * 512 ))
-  if [ "$offset" -le 0 ]; then
-    # A partition at LBA 0 is the whole-disk alias, not an ESP.
-    ZETA_FAT_MOUNT_WHY="${ZETA_FAT_MOUNT_WHY}|mtools=start-lba-0-not-a-partition"
-    return 1
+  local part="$1" mnt="$2" start disk offset err devtype alias=""
+  # 081M3B7Z38Q087G0R003F9X7HM: a candidate that IS the boot medium's alias --
+  # the whole disk, or the isohybrid partition 1 at LBA 0 that spans it -- is
+  # not an ESP, but the ESP is INSIDE it. Measured on nightly run 36297481926:
+  # `/dev/sda1(...|mtools=start-lba-0-not-a-partition)` with boot-medium
+  # `/dev/sda1`, i.e. this rung refused the one candidate whose parent disk
+  # holds the ESP. Resolve the parent and read the ESP partition's own offset
+  # out of sysfs/udev instead of refusing.
+  devtype="$(lsblk -dnro TYPE "$part" 2>/dev/null | head -1 | tr -cd 'a-z')" || devtype=""
+  if [ "$devtype" = "disk" ]; then
+    alias="whole-disk"
+    disk="$(lsblk -dnro KNAME "$part" 2>/dev/null | head -1 | tr -cd 'A-Za-z0-9._-')" || disk=""
+  else
+    start="$(lsblk -bno START "$part" 2>/dev/null | head -1 | tr -cd '0-9')" || start=""
+    case "$start" in
+      "" | *[!0-9]*)
+        ZETA_FAT_MOUNT_WHY="${ZETA_FAT_MOUNT_WHY}|mtools=no-partition-start-in-sysfs"
+        return 1
+        ;;
+    esac
+    offset=$(( start * 512 ))
+    # A partition at LBA 0 is the whole-disk alias, not an ESP -- `@@0` would
+    # read the iso9660 at the front of the image. Its PARENT still holds the ESP.
+    [ "$offset" -le 0 ] && alias="lba-0"
+    disk="$(lsblk -bno PKNAME "$part" 2>/dev/null | head -1 | tr -cd 'A-Za-z0-9._-')" || disk=""
   fi
-  disk="$(lsblk -bno PKNAME "$part" 2>/dev/null | head -1 | tr -cd 'A-Za-z0-9._-')" || disk=""
   if [ -z "$disk" ]; then
     ZETA_FAT_MOUNT_WHY="${ZETA_FAT_MOUNT_WHY}|mtools=no-parent-disk-in-sysfs"
     return 1
+  fi
+  if [ -n "$alias" ]; then
+    # The ESP partition's start, by TYPE, from the parent's partition list:
+    # MBR 0xEF or the GPT ESP GUID. lsblk takes both from sysfs/the udev
+    # database, so this opens nothing the boot medium's claim could refuse.
+    # First match only; zero/unreadable starts are skipped, never guessed.
+    start="$(lsblk -bnro START,PARTTYPE "/dev/${disk}" 2>/dev/null | awk '
+      { t = tolower($2) }
+      (t == "0xef" || t == "c12a7328-f81f-11d2-ba4b-00a0c93ec93b") && $1 ~ /^[0-9]+$/ && $1 > 0 { print $1; exit }
+    ')" || start=""
+    case "$start" in
+      "" | *[!0-9]*)
+        ZETA_FAT_MOUNT_WHY="${ZETA_FAT_MOUNT_WHY}|mtools=${alias}-alias-no-esp-partition-on-/dev/${disk}"
+        return 1
+        ;;
+    esac
+    offset=$(( start * 512 ))
   fi
   if ! sudo mount -t tmpfs -o size=16m,mode=0700 zeta-esp-copyout "$mnt" 2>/dev/null; then
     ZETA_FAT_MOUNT_WHY="${ZETA_FAT_MOUNT_WHY}|mtools=tmpfs-mount-failed"
@@ -1247,7 +1277,10 @@ zeta_esp_copy_out_mtools() {
   # a working read. A non-FAT offset makes mcopy exit non-zero (`init ::
   # non DOS media`), so success here implies a real FAT at that offset.
   if err="$(sudo mcopy -s -n -o -i "/dev/${disk}@@${offset}" "::/" "$mnt/" 2>&1 >/dev/null)"; then
-    ZETA_FAT_MOUNT_VIA="mtools-copy:/dev/${disk}@@${offset}"
+    # Say when the ESP was reached THROUGH an alias: the candidate name the
+    # caller records is then not the ESP's own device, and a reader of the
+    # scan line has to be able to tell.
+    ZETA_FAT_MOUNT_VIA="mtools-copy:/dev/${disk}@@${offset}${alias:+:from-${alias}-alias}"
     return 0
   fi
   sudo umount "$mnt" 2>/dev/null || true
@@ -2131,9 +2164,35 @@ echo "[preflight] UEFI mode confirmed (/sys/firmware/efi present)."
 # most common failure -- no working network at all.
 echo "[preflight] checking the repository is reachable before anything is destroyed ..."
 if ! GIT_TERMINAL_PROMPT=0 timeout 60 git ls-remote "$REPO_URL" HEAD >/dev/null 2>&1; then
-  bail "cannot reach $REPO_URL (git ls-remote failed or timed out after 60s). The install clones this repo AFTER wiping every disk in scope, so proceeding would destroy the current system and then fail with nothing bootable. Fix networking first -- the role prompt offers nmtui, or configure from the shell and re-run. Nothing has been wiped."
+  bail "cannot reach $REPO_URL (git ls-remote failed or timed out after 60s). The install clones this repo AFTER wiping every disk in scope, so proceeding would destroy the current system and then fail with nothing bootable. Fix networking first -- the role prompt offers nmtui, or configure from the shell and re-run. If networking looks fine, check the clock: TLS fails on a skewed clock, and this machine reads $(date -u +%Y-%m-%dT%H:%M:%SZ) UTC. Nothing has been wiped."
 fi
 echo "[preflight] repository reachable ($REPO_URL)."
+
+# ── B6: the binary cache is the SECOND network dependency, also after the wipe ──
+#
+# 081M3BWJ96T087G0R0028WT3S3 (first-boot dependency inventory). The paragraph
+# above says it plainly: a network that reaches GitHub but not cache.nixos.org
+# still fails after the wipe. `nixos-install` below runs with `fallback true`,
+# so an unreachable cache does not refuse -- it turns into building the whole
+# closure from source, each download bounded but the total not, and the only
+# thing the operator sees is a Nix error or a build that never ends, on a disk
+# that has already been wiped. Same shape as B3/B4, so the same answer: probe
+# before anything is destroyed and say which dependency it was.
+#
+# nix-cache-info is the substituter's own handshake file (a few bytes). The
+# escape hatch mirrors ZETA_ALLOW_REPO_DRIFT: set ZETA_ALLOW_NO_BINARY_CACHE=1
+# to proceed on a from-source build deliberately, and the log records that you
+# did. A missing curl is a probe that DID NOT RUN, reported as such, never a pass.
+ZETA_BINARY_CACHE_URL="${ZETA_BINARY_CACHE_URL:-https://cache.nixos.org}"
+if ! command -v curl >/dev/null 2>&1; then
+  echo "[preflight] binary-cache probe DID NOT RUN: curl is not on PATH. This is a check that did not run, NOT a check that passed." >&2
+elif timeout 30 curl -fsS --connect-timeout 10 --max-time 20 -o /dev/null "$ZETA_BINARY_CACHE_URL/nix-cache-info" 2>/dev/null; then
+  echo "[preflight] binary cache reachable ($ZETA_BINARY_CACHE_URL)."
+elif [ "${ZETA_ALLOW_NO_BINARY_CACHE:-}" = "1" ]; then
+  echo "[preflight] WARNING: $ZETA_BINARY_CACHE_URL is unreachable and ZETA_ALLOW_NO_BINARY_CACHE=1 is set -- proceeding; nixos-install will build from source and may take hours." >&2
+else
+  bail "cannot reach the Nix binary cache $ZETA_BINARY_CACHE_URL (GET /nix-cache-info failed or timed out). GitHub is reachable, but nixos-install downloads the system closure from this cache AFTER wiping every disk in scope; without it every package builds from source, which fails or runs for hours on a machine that no longer has an OS. Fix the network path to $ZETA_BINARY_CACHE_URL (proxy, firewall, DNS) and re-run, or set ZETA_ALLOW_NO_BINARY_CACHE=1 to accept a from-source build. Nothing has been wiped."
+fi
 
 # ── Step 3: wipe every disk in scope ──────────────────────────────
 for d in "$BOOT_DISK" "${DATA_DISKS[@]}"; do
@@ -4090,8 +4149,11 @@ if [ -d "$ZETA_HOME" ]; then
   # .mise.toml). Subsequent 6.95d block is a no-op if directory exists.
   if [ ! -d "$ZETA_HOME/Zeta" ]; then
     echo "[iter-5.5.0] pre-cloning Zeta repo to $ZETA_HOME/Zeta..."
-    sudo -u "#$ZETA_UID" git clone https://github.com/Lucent-Financial-Group/Zeta.git "$ZETA_HOME/Zeta" 2>&1 | tail -3 || \
-      echo "[iter-5.5.0]   WARN: clone failed — target runtime/agent bootstrap cannot run; can retry post-reboot"
+    # Bounded (081M3BWJ96T087G0R0028WT3S3): git has no default network timeout, so
+    # a route that accepts SYN and never replies would stall the install here
+    # forever with nothing on screen. 600s is generous for a full clone.
+    timeout 600 sudo -u "#$ZETA_UID" env GIT_TERMINAL_PROMPT=0 git clone https://github.com/Lucent-Financial-Group/Zeta.git "$ZETA_HOME/Zeta" 2>&1 | tail -3 || \
+      echo "[iter-5.5.0]   WARN: clone of github.com/Lucent-Financial-Group/Zeta failed or timed out after 600s — target runtime/agent bootstrap cannot run; can retry post-reboot"
   fi
 
   # 6.95a-bootstrap — invoke the canonical install entry from the
