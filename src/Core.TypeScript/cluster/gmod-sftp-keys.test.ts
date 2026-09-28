@@ -44,7 +44,7 @@ function effectiveScript(): string {
   const args: string[] = sftp.args ?? [];
   if (!cmd) return `exec /entrypoint ${args.join(" ")}`;
   expect(cmd.slice(-1)[0]).toBe("-c");
-  return args[0];
+  return args[0] ?? "";
 }
 
 const ROOT = mkdtempSync(join(tmpdir(), "gmod-sftp-keys-")).replaceAll("\\", "/");
