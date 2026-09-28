@@ -8,7 +8,7 @@
  * long name (checksum-verified), and the cluster chain in BOTH FAT copies.
  */
 import { describe, expect, test } from "bun:test";
-import { closeSync, mkdtempSync, openSync, readFileSync, writeFileSync } from "node:fs";
+import { closeSync, mkdtempSync, openSync, readSync, writeSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 
@@ -28,15 +28,17 @@ function bakeIntoFixture(spec: FixtureSpec, files: readonly EspFile[], image?: B
   const dir = mkdtempSync(join(tmpdir(), "esp-fat-"));
   const path = join(dir, "image.iso");
   const before = image ?? buildIsohybridFixture(spec);
-  writeFileSync(path, before);
-  const fd = openSync(path, "r+");
-  let result;
+  // ONE descriptor for write, bake and read-back: the image checked is the image baked.
+  const fd = openSync(path, "wx+");
   try {
-    result = bakeEspFiles(fdBlockIo(fd), files);
+    writeSync(fd, before, 0, before.length, 0);
+    const result = bakeEspFiles(fdBlockIo(fd), files);
+    const after = Buffer.alloc(before.length);
+    readSync(fd, after, 0, after.length, 0);
+    return { result, before, after };
   } finally {
     closeSync(fd);
   }
-  return { result, before, after: readFileSync(path) };
 }
 
 describe("bakeEspFiles — FAT12 ESP shaped like the real installer ISO", () => {
