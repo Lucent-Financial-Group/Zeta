@@ -158,13 +158,17 @@ function apply(opts: { marker: boolean; rootManifest?: string; preexisting?: Rec
   writeFileSync(join(dir, "runner.sh"), `${runner}\n`, "utf8");
   const r = spawnSync("bash", ["runner.sh"], { cwd: dir, encoding: "utf8" });
   if (r.error !== undefined) throw r.error;
-  const statePath = join(dir, "state", "state");
-  return {
-    dir,
-    rc: r.status ?? -1,
-    stdout: r.stdout,
-    state: existsSync(statePath) ? readFileSync(statePath, "utf8") : "",
-  };
+  return { dir, rc: r.status ?? -1, stdout: r.stdout, state: readOrEmpty(join(dir, "state", "state")) };
+}
+
+/** One read; a missing file is "", anything else is a real error. */
+function readOrEmpty(path: string): string {
+  try {
+    return readFileSync(path, "utf8");
+  } catch (e) {
+    if ((e as NodeJS.ErrnoException).code === "ENOENT") return "";
+    throw e;
+  }
 }
 
 const TAG = "# zeta-wp11-ci-envelope";
