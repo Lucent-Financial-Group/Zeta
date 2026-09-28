@@ -101,8 +101,8 @@ describe("zeta_resolve_home_ids — the installed system's account database, rea
 
   it("with no passwd entry, the home directory's owner is the second witness (unless it is root)", () => {
     const r = resolve("root:x:0:0::/root:/bin/sh\n", "home-zeta");
-    const stat = spawnSync("bash", ["-c", "stat -c '%u %g' home-zeta"], { cwd: workdir, encoding: "utf8" })
-      .stdout.trim();
+    const stat = (spawnSync("stat", ["-c", "%u %g", "home-zeta"], { cwd: workdir, encoding: "utf8" }).stdout ?? "")
+      .trim();
     if (stat.startsWith("0 ")) {
       // Running as root (a container): a root-owned home is the bug, never a witness.
       expect(r).toEqual({ rc: 1, out: "" });
