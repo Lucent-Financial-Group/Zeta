@@ -24,7 +24,7 @@
 
 import { describe, expect, it } from "bun:test";
 import { execFileSync, spawnSync } from "node:child_process";
-import { chmodSync, existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+import { chmodSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { delimiter, join } from "node:path";
 
@@ -147,13 +147,21 @@ function runRunner(installBody: string, env: Record<string, string> = {}, mode =
         ...env,
       },
     });
-    const read = (p: string) => (existsSync(join(workdir, p)) ? readFileSync(join(workdir, p), "utf8") : null);
+    // Read-or-null in ONE call: an existence check followed by a read is a
+    // check-then-use race (lint-check-then-use-file-races).
+    const read = (p: string): string | null => {
+      try {
+        return readFileSync(join(workdir, p), "utf8");
+      } catch {
+        return null;
+      }
+    };
     return {
       rc: r.status ?? -1,
       serial: read("serial") ?? "",
       log: read("home/.zeta/install-sh-firstboot.log") ?? "",
       partial: read("home/.zeta/PARTIAL-PROVISION"),
-      ok: existsSync(join(workdir, "home/.zeta/dev-toolchain.ok")),
+      ok: read("home/.zeta/dev-toolchain.ok") !== null,
     };
   } finally {
     rmSync(workdir, { recursive: true, force: true });
