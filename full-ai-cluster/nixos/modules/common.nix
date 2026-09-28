@@ -376,7 +376,7 @@
 
   # 081M3K16QKA087G0R002GT2F8X: /etc/zeta is the flake this node REBUILDS FROM,
   # cloned by the installer as root. It stays root-owned on purpose: root
-  # evaluates and activates it (`sudo nixos-rebuild --flake /etc/zeta/...`), it
+  # evaluates and activates it (`sudo nixos-rebuild switch --impure --flake /etc/zeta/...`), it
   # holds root-only files (initial-hashedpassword), and a tree the unprivileged
   # user could write is a tree that user could turn into root the next time
   # anyone rebuilds. What it must NOT do is refuse to be READ -- measured on
