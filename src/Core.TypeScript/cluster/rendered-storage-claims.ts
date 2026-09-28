@@ -818,7 +818,7 @@ export function extractRenderedPvcs(
     // to mean "an operator will claim this". (`spec.walStorage`, a second volume
     // per instance, is read the same way when present.)
     const apiVersion = typeof doc["apiVersion"] === "string" ? doc["apiVersion"] : "";
-    if (kind === "Cluster" && apiVersion.startsWith("postgresql.cnpg.io/")) {
+    if (kind === "Cluster" && apiVersion.split("/")[0] === "postgresql.cnpg.io") {
       const instances = typeof spec["instances"] === "number" ? spec["instances"] : 1;
       for (const [volume, field] of [
         ["pgdata", "storage"],

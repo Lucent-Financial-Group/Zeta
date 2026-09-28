@@ -171,7 +171,12 @@ export interface CnpgCluster {
   readonly manifest: string;
 }
 
-const CNPG_API_PREFIX = "postgresql.cnpg.io/";
+/** The CNPG API GROUP, compared as a whole `group/version` segment -- never a substring. */
+const CNPG_API_GROUP = "postgresql.cnpg.io";
+/** Cheap prefilter: a document line `apiVersion: postgresql.cnpg.io/...`. */
+const CNPG_API_LINE = /^apiVersion:\s*postgresql\.cnpg\.io\//m;
+const isCnpgApiVersion = (apiVersion: unknown): boolean =>
+  typeof apiVersion === "string" && apiVersion.split("/")[0] === CNPG_API_GROUP;
 
 /**
  * Every CNPG `Cluster` a directory-source Application in this tree applies.
@@ -195,13 +200,13 @@ export function collectCnpgClusters(repoRoot = REPO_ROOT): readonly CnpgCluster[
   for (const rel of listSupportingManifests(repoRoot)) {
     const repoRel = `${APPLICATIONS_DIR}/${rel.split("\\").join("/")}`;
     const text = readFileSync(resolve(repoRoot, repoRel), "utf8");
-    if (!text.includes(CNPG_API_PREFIX)) continue;
+    if (!CNPG_API_LINE.test(text)) continue;
     const owner = sources.find((s) => sourceReconciles(s, repoRel));
     if (owner === undefined) continue;
     const appNs = applicationNamespaceFromManifest(resolve(repoRoot, owner.origin));
     for (const doc of parseAllDocuments(text)) {
       const value = doc.toJS() as unknown;
-      if (!isRecord(value) || typeof value.apiVersion !== "string" || !value.apiVersion.startsWith(CNPG_API_PREFIX)) {
+      if (!isRecord(value) || !isCnpgApiVersion(value.apiVersion)) {
         continue;
       }
       const metadata = isRecord(value.metadata) ? value.metadata : {};

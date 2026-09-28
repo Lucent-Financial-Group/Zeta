@@ -265,7 +265,7 @@ export function extractRenderedRequests(
     // only pod templates would make every CNPG instance cost 0m / 0Mi here while
     // it consumes a real reservation on the node -- the invisible-consumer defect.
     const apiVersion = typeof doc.apiVersion === "string" ? doc.apiVersion : "";
-    if (kind === "Cluster" && apiVersion.startsWith("postgresql.cnpg.io/")) {
+    if (kind === "Cluster" && apiVersion.split("/")[0] === "postgresql.cnpg.io") {
       const spec = asRecord(doc.spec);
       const name = typeof asRecord(doc.metadata).name === "string" ? String(asRecord(doc.metadata).name) : "";
       const workload = `${kind}/${name}`;
