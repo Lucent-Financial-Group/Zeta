@@ -9,7 +9,7 @@
  */
 
 import { describe, expect, test } from "bun:test";
-import { existsSync, readdirSync, readFileSync } from "node:fs";
+import { readdirSync, readFileSync } from "node:fs";
 import { join, resolve } from "node:path";
 import { parse as parseYaml } from "yaml";
 import { LB_POOL_TEMPLATE } from "./lb-ipam-pool.ts";
@@ -51,7 +51,7 @@ describe("the cluster layer tracks main", () => {
 
 describe("the decision is written down, and the installer says it on every install", () => {
   test("the ADR exists and names its evidence", () => {
-    expect(existsSync(join(REPO_ROOT, ADR))).toBe(true);
+    // One read, no existence pre-check: a missing ADR is the failure, reported by the read itself.
     const text = readFileSync(join(REPO_ROOT, ADR), "utf8");
     for (const evidence of ["root-application.yaml", "2026-07-09-drift-and-heal", "repo-pin.ts", "lane-tree-source.ts"]) {
       expect(text).toContain(evidence);

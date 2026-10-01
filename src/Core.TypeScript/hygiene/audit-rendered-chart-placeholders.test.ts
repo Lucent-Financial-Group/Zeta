@@ -6,9 +6,9 @@
  */
 
 import { describe, expect, test } from "bun:test";
-import { existsSync, readFileSync } from "node:fs";
+import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
-import { type BaselineEntry, BASELINE_PATH, compare, loadBaseline, scanRendered, stableDocumentKey } from "./audit-rendered-chart-placeholders.ts";
+import { type BaselineEntry, BASELINE_PATH, compare, scanRendered, stableDocumentKey } from "./audit-rendered-chart-placeholders.ts";
 
 const forgejoConfig = {
   apiVersion: "v1",
@@ -75,11 +75,12 @@ describe("compare", () => {
 describe("the committed baseline", () => {
   const root = resolve(import.meta.dir, "../../..");
   test("exists, is adjudicated, and does not carry the FIXED forgejo finding", () => {
-    expect(existsSync(resolve(root, BASELINE_PATH))).toBe(true);
-    const entries = loadBaseline(root);
+    // Read the file ONCE and parse that text (no existsSync gate): a missing baseline throws here.
+    const text = readFileSync(resolve(root, BASELINE_PATH), "utf8");
+    const entries = (JSON.parse(text) as { entries: BaselineEntry[] }).entries;
     expect(entries.length).toBeGreaterThan(0);
     expect(compare([], entries, new Set()).reasonless).toEqual([]);
     expect(entries.some((e) => e.app.endsWith("/forgejo"))).toBe(false);
-    expect(readFileSync(resolve(root, BASELINE_PATH), "utf8")).not.toContain("UNASSIGNED");
+    expect(text).not.toContain("UNASSIGNED");
   });
 });

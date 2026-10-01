@@ -5835,7 +5835,7 @@ fi
 # the node runs TWO trees by design; say so on every install instead of letting it be discovered.
 echo "  TWO TREES, BY DESIGN: this node's OS is pinned to ${REPO_PIN_ACTUAL_SHA:-<no pin: default-branch HEAD at install time>};"
 echo "    its cluster workloads (ArgoCD) follow github.com/Lucent-Financial-Group/Zeta 'main' HEAD, so a fix merged"
-echo "    to main reaches the cluster layer without re-flashing, and a node with no route to GitHub does not sync."
+echo "    to main reaches the cluster layer without re-flashing, and a node with no route to GitHub never receives updates."
 echo
 # 081M3K23YCP087G0R003BVDS1P — say where the dev toolchain went, so an operator
 # who logs in to a node with no dotnet/go/claude yet is not left guessing.

@@ -14,7 +14,7 @@ the app-of-apps root `bootstrap/root-application.yaml`, says `repoURL: https://g
 and `targetRevision: main`. So one node runs two trees: a NixOS closure at the ISO commit and a
 cluster that follows `main` HEAD. Is that a defect to close, or the design?
 
-## Decision: it is the design. Keep it. Say so, and make the skew visible.
+## Decision: it is the design. Keep it. Say so, and make the skew visible
 
 ### Evidence it is deliberate
 
