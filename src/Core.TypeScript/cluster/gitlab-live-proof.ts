@@ -875,9 +875,19 @@ async function runProof(opts: ProofOptions, report: ProofReport): Promise<void> 
       const sync = app?.status?.sync?.status ?? "?";
       const health = app?.status?.health?.status ?? "?";
       const phase = app?.status?.operationState?.phase ?? "?";
-      return { done: sync === "Synced" && health === "Healthy" && phase === "Succeeded", detail: `sync=${sync} health=${health} operation=${phase}` };
+      // The operation that just Succeeded may be the FIRST one (rendered with the sentinel) while the pin's second
+      // sync has not started yet -- Healthy + Succeeded there is a false settle. ArgoCD records the source each
+      // operation synced (`operationState.syncResult.source`), so "settled" means the operation that finished is the
+      // one that carried the pinned address.
+      const syncedValues = getLeaf(app, ["status", "operationState", "syncResult", "source", "helm", "valuesObject"]);
+      const onPinned = PINNED_LEAVES.every((leaf) => getLeaf(syncedValues, leaf) === address);
+      // SYNC STATUS IS NOT PART OF "SETTLED". After the pin the chart renames its migrations Job (its name carries a
+      // hash of the values), and `prune: false` leaves the first one behind -- "requires pruning" -- so a healthy,
+      // finished install reads OutOfSync forever (measured, run 36886512326: health=Healthy operation=Succeeded,
+      // one Job OutOfSync). What settles is: the operation finished and nothing is Progressing/Degraded.
+      return { done: health === "Healthy" && phase === "Succeeded" && onPinned, detail: `sync=${sync} health=${health} operation=${phase} lastOperationSyncedPinnedAddress=${String(onPinned)}` };
     });
-    log(`settle: ${s.done ? "gitlab Application Synced+Healthy" : "NOT settled"} (${s.detail})`);
+    log(`settle: ${s.done ? "gitlab Application Healthy, the operation that finished carried the pinned address" : "NOT settled"} (${s.detail})`);
     const items = kubectlJson<{ items: WorkloadItem[] }>(["get", "deploy,sts", "-n", GITLAB_NAMESPACE]);
     for (const [id, label] of comps) {
       if (report.statusOf(id) !== "passed" || items === null) continue;
