@@ -314,8 +314,8 @@ describe("B2. the token Job's authority", () => {
   test("it can patch ONE named Secret and cannot create Secrets (the Secret is pre-created empty)", () => {
     const secretRules = (role.rules as Doc[]).filter((r) => (r.resources as string[]).includes("secrets"));
     expect(secretRules).toHaveLength(1);
-    expect(secretRules[0].resourceNames).toEqual(["gitlab-windows-runner-token"]);
-    expect(secretRules[0].verbs.sort()).toEqual(["get", "patch"]);
+    expect(secretRules[0]?.["resourceNames"]).toEqual(["gitlab-windows-runner-token"]);
+    expect((secretRules[0]?.["verbs"] as string[]).slice().sort()).toEqual(["get", "patch"]);
     const secret = kindOf(tokenDocs, "Secret")[0]!;
     expect(secret.metadata.name).toBe("gitlab-windows-runner-token");
     expect(secret.metadata.namespace).toBe("gitlab");
@@ -504,10 +504,18 @@ describe("C2. what the guest installs and where it connects", () => {
     expect(registerLine).toContain("--clone-url $settings.gitlabUrl");
   });
 
-  test("the script never echoes the token", () => {
-    for (const line of script.split("\n")) {
-      if (/Write-(Host|Output)|Out-File|Add-Content|echo/i.test(line)) expect(line).not.toContain("$token");
-    }
+  test("everything the script can write to its log is an exact, known set of lines (none of which is the token)", () => {
+    // An EXACT pin on the whole set of output statements, so a new one -- which could be a leak -- is a diff
+    // here rather than a negative assertion that witnesses one rendering of a leak.
+    const outputs = script
+      .split("\n")
+      .map((l) => l.trim())
+      .filter((l) => /Write-(Host|Output|Warning|Verbose|Error)|Out-File|Add-Content|Set-Content|echo /i.test(l) && !l.startsWith("(Get-Content"));
+    expect(outputs).toEqual([
+      "Write-Host 'runner already registered; nothing to do'",
+      'catch { Write-Host "download attempt $i failed: $($_.Exception.Message)"; Start-Sleep -Seconds 20 }',
+      "Write-Host 'gitlab-runner registered and started'",
+    ]);
   });
 
   test("it is idempotent: an already-registered runner exits before downloading or registering anything", () => {
