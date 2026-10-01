@@ -199,6 +199,7 @@ describe("buildInventoryReport", () => {
           // bun; the dev toolchain moved here from zeta-install.sh.
           "full-ai-cluster/nixos/modules/zeta-dev-toolchain.sh",
           // The one-time kubevirt + cdi sync on a fresh cluster; boot-path edge.
+          "full-ai-cluster/nixos/modules/zeta-postgres-instances.sh",
           "full-ai-cluster/nixos/modules/zeta-virt-first-sync.sh",
         ],
       },
@@ -330,7 +331,7 @@ describe("renderReport", () => {
       report.retainedCategories.find((summary) => summary.category === "setup/bootstrap")?.files.length ?? 0;
     expect(renderReport(report)).toContain(`- setup/bootstrap: ${bootstrapCount.toString()}`);
     expect(renderReport(report)).toContain("- git hooks: 4");
-    expect(renderReport(report)).toContain("- host-service wrappers: 10");
+    expect(renderReport(report)).toContain("- host-service wrappers: 11");
   });
 
   test("renders drift sections", () => {

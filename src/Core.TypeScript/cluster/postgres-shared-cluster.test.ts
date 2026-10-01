@@ -207,6 +207,23 @@ describe("a Postgres that is backed up is backed up by the PLUGIN, because the i
   });
 });
 
+describe("a consumer of CRDs it does not own must not give up", () => {
+  // WP11 run 36221053730 measured `platform` -- a consumer of kube-prometheus-stack's CRDs -- stuck
+  // OutOfSync/Degraded for good: "retried 5 times" and ArgoCD never re-attempts an automated sync for
+  // a revision whose sync already failed. The ISO run 36832486494 left postgres-shared
+  // OutOfSync/Unknown for 3000s on a control plane that restarted 14 times. Each of these
+  // Applications consumes a CRD or webhook another Application provides, so each carries the
+  // same unbounded, capped-backoff retry `platform` does.
+  for (const dir of ["postgres-shared", "temporal/postgres", "cnpg-barman-cloud"]) {
+    test(`${dir} retries without a limit`, () => {
+      const retry = app(dir).spec.syncPolicy.retry;
+      expect(retry, "no syncPolicy.retry: ArgoCD's default is 5 attempts, then never again for that revision").toBeDefined();
+      expect(retry.limit).toBe(-1);
+      expect(retry.backoff.maxDuration).toBe("5m");
+    });
+  }
+});
+
 describe("every archiving Cluster is wired end to end to the in-cluster object store", () => {
   const seeding = yamlDocs(resolve(K8S, "bootstrap/internal-secret-seeding.yaml"));
   const seedJob = seeding.find((d) => d.kind === "Job" && d.metadata.name === "seed-blob-store")!;
@@ -228,6 +245,15 @@ describe("every archiving Cluster is wired end to end to the in-cluster object s
         expect(store.metadata.name).toBe(plugin.parameters.barmanObjectName);
         expect(store.metadata.namespace).toBe(cluster.metadata.namespace);
         expect(store.metadata.namespace).toBe(c.namespace);
+      });
+
+      test("the plugin entry spells out the field CNPG's webhook defaults, so ArgoCD can read the Cluster as Synced", () => {
+        // MEASURED on live run 36855350178: with `enabled` omitted the webhook added `enabled: true`
+        // to the live list element; ArgoCD diffs a CRD's list ATOMICALLY, so desired (no `enabled`)
+        // never equalled live, the Cluster stayed OutOfSync, and selfHeal re-applied it in a loop
+        // (autoHealAttemptsCount 9) while the database itself was healthy. Every defaulted field of
+        // a list element we ship must therefore be written out.
+        expect(plugin.enabled).toBe(true);
       });
 
       test("a base backup is SCHEDULED, through the same plugin, for THIS cluster, with a six-field cron", () => {

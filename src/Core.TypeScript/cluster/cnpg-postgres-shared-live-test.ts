@@ -147,6 +147,46 @@ export function conditionIs(obj: Doc, type: string, status: "True" | "False"): b
   return ((obj?.status?.conditions ?? []) as Doc[]).some((c) => c.type === type && c.status === status);
 }
 
+/**
+ * The kind config for this lane: the CI control plane (maxPods 250, as ci.kind-config.yaml) plus
+ * `workers` workers, so the instance-count stage has real schedulable nodes to follow. Workers
+ * rather than extra control planes: a kind control plane may carry a NoSchedule taint, a worker
+ * never does, so the eligible-node count does not depend on kind's taint behaviour.
+ */
+export function kindConfigWithWorkers(workers: number): string {
+  const nodes: Doc[] = [
+    { role: "control-plane", kubeadmConfigPatches: ["kind: KubeletConfiguration\nmaxPods: 250\n"] },
+    ...Array.from({ length: workers }, () => ({ role: "worker" })),
+  ];
+  return stringifyYaml({ kind: "Cluster", apiVersion: "kind.x-k8s.io/v1alpha4", nodes });
+}
+
+/**
+ * The fields where a desired manifest disagrees with the live object, the way ArgoCD's diff
+ * disagrees: MAPS are merged key by key (a field only the live object has is the operator's
+ * default and is NOT a difference), but LISTS and scalars are compared whole -- a CRD has no
+ * strategic-merge keys, so a defaulted field inside a list element makes the whole list differ.
+ * That asymmetry is exactly what left postgres-shared OutOfSync forever (live run 36855350178),
+ * and this makes the next such defect name its field instead of needing a human to diff by eye.
+ */
+export function desiredLiveDifferences(desired: unknown, live: unknown, path = ""): string[] {
+  const isMap = (v: unknown): v is Record<string, unknown> => typeof v === "object" && v !== null && !Array.isArray(v);
+  if (isMap(desired)) {
+    if (!isMap(live)) return [`${path || "/"}: desired is an object, live is ${live === undefined ? "absent" : JSON.stringify(live)}`];
+    return Object.entries(desired).flatMap(([k, v]) => desiredLiveDifferences(v, live[k], `${path}/${k}`));
+  }
+  return canonical(desired) === canonical(live) ? [] : [`${path}: desired ${canonical(desired)} != live ${live === undefined ? "absent" : canonical(live)}`];
+}
+
+/** JSON with object keys sorted, so two lists that differ only in key ORDER compare equal (as they do to ArgoCD). */
+function canonical(v: unknown): string {
+  if (Array.isArray(v)) return `[${v.map(canonical).join(",")}]`;
+  if (typeof v === "object" && v !== null) {
+    return `{${Object.entries(v as Record<string, unknown>).sort(([x], [y]) => (x < y ? -1 : x > y ? 1 : 0)).map(([k, x]) => `${JSON.stringify(k)}:${canonical(x)}`).join(",")}}`;
+  }
+  return JSON.stringify(v) ?? "undefined";
+}
+
 /** A Backup is only done at `completed`; `started`/`running`/`walArchiving` are not. */
 export function backupIsCompleted(backup: Doc): boolean {
   return backup?.status?.phase === "completed";
@@ -177,8 +217,10 @@ function run(cmd: string, args: readonly string[], opts: { input?: string; timeo
 }
 
 class Lane {
+  readonly clusterName: string;
   readonly context: string;
-  constructor(readonly clusterName: string) {
+  constructor(clusterName: string) {
+    this.clusterName = clusterName;
     this.context = `kind-${clusterName}`;
   }
   kubectl(args: readonly string[], opts: { input?: string; timeoutMs?: number; quiet?: boolean } = {}): RunResult {
@@ -233,7 +275,8 @@ interface Options {
   repoUrl: string;
   timeoutSec: number;
   keepCluster: boolean;
-  replicas: number | null;
+  /** Worker nodes beside the control plane. >= 2 lets the instance-count stage scale the Cluster. */
+  workers: number;
 }
 
 function parseArgs(argv: readonly string[]): Options {
@@ -243,10 +286,10 @@ function parseArgs(argv: readonly string[]): Options {
     repoUrl: "https://github.com/Lucent-Financial-Group/Zeta",
     timeoutSec: 900,
     keepCluster: false,
-    replicas: null,
+    workers: 3,
   };
   const usage = (): never => {
-    console.error("usage: bun cnpg-postgres-shared-live-test.ts --run [--cluster-name zeta-ci-<x>] [--git-ref SHA] [--repo-url URL] [--timeout-sec N] [--keep-cluster]");
+    console.error("usage: bun cnpg-postgres-shared-live-test.ts --run [--cluster-name zeta-ci-<x>] [--git-ref SHA] [--repo-url URL] [--timeout-sec N] [--workers N] [--keep-cluster]");
     process.exit(2);
   };
   let run = false;
@@ -258,6 +301,7 @@ function parseArgs(argv: readonly string[]): Options {
     else if (a === "--git-ref") o.gitRef = argv[++i] ?? usage();
     else if (a === "--repo-url") o.repoUrl = argv[++i] ?? usage();
     else if (a === "--timeout-sec") o.timeoutSec = Number.parseInt(argv[++i] ?? usage(), 10);
+    else if (a === "--workers") o.workers = Number.parseInt(argv[++i] ?? usage(), 10);
     else usage();
   }
   if (!run) usage();
@@ -266,6 +310,7 @@ function parseArgs(argv: readonly string[]): Options {
     process.exit(2);
   }
   if (!Number.isFinite(o.timeoutSec) || o.timeoutSec <= 0) usage();
+  if (!Number.isInteger(o.workers) || o.workers < 0 || o.workers > 6) usage();
   return o;
 }
 
@@ -368,6 +413,17 @@ function dumpDiagnostics(lane: Lane): void {
       console.log(JSON.stringify({ sync: app.status?.sync, health: app.status?.health, conditions: app.status?.conditions, operationState: app.status?.operationState, resources: (app.status?.resources ?? []).map((r: Doc) => `${r.kind}/${r.name} sync=${r.status} health=${r.health?.status ?? "-"} ${r.health?.message ?? ""}`) }, null, 2).slice(-9000));
     }
   }
+  try {
+    const desired = parseYaml(readFileSync(join(K8S, "applications/postgres-shared/cluster.yaml"), "utf8")) as Doc;
+    const live = lane.json(["-n", "postgres-shared", "get", "cluster.postgresql.cnpg.io", "postgres-shared"]);
+    if (live !== null) {
+      console.log("\n===== postgres-shared Cluster: fields where desired != live (ArgoCD's atomic-list reading of drift) =====");
+      const diffs = desiredLiveDifferences(desired.spec, live.spec, "/spec");
+      console.log(diffs.length === 0 ? "(none: every desired field equals live)" : diffs.join("\n"));
+    }
+  } catch (e) {
+    console.log(`desired-vs-live diff could not run: ${e instanceof Error ? e.message : String(e)}`);
+  }
   sh("postgres-shared Cluster (yaml)", ["-n", "postgres-shared", "get", "cluster.postgresql.cnpg.io", "postgres-shared", "-o", "yaml"]);
   sh("postgres-shared objects", ["-n", "postgres-shared", "get", "all,pvc,backup.postgresql.cnpg.io,scheduledbackup.postgresql.cnpg.io,objectstore.barmancloud.cnpg.io,secret", "-o", "wide"]);
   sh("postgres-shared events", ["-n", "postgres-shared", "get", "events", "--sort-by=.lastTimestamp"]);
@@ -392,7 +448,9 @@ async function main(): Promise<void> {
   const existing = run("kind", ["get", "clusters"], { quiet: true }).stdout.split("\n");
   if (!existing.includes(opts.clusterName)) {
     console.log(`creating kind cluster ${opts.clusterName}`);
-    const r = run("kind", ["create", "cluster", "--name", opts.clusterName, "--config", join(REPO_ROOT, "full-ai-cluster/dev-cluster/profiles/ci.kind-config.yaml"), "--wait", "300s"], { timeoutMs: 600_000 });
+    const configPath = join(mkdtempSync(join(tmpdir(), "zeta-cnpg-kind-")), "kind-config.yaml");
+    writeFileSync(configPath, kindConfigWithWorkers(opts.workers));
+    const r = run("kind", ["create", "cluster", "--name", opts.clusterName, "--config", configPath, "--wait", "300s"], { timeoutMs: 900_000 });
     if (r.code !== 0) throw new Error("kind create failed");
   }
 
@@ -512,6 +570,45 @@ async function main(): Promise<void> {
     prove(`bucket zeta-backups holds ${base} base-backup object(s) and ${wals} WAL object(s) under postgres/postgres-shared/`);
     if (!bucketOut.includes("SCOPE:DENIED")) throw new Error(`the pgBackup credential could read another bucket (loki-chunks):\n${bucketOut}`);
     prove("the pgBackup credential cannot read another bucket (scope is real)");
+
+    // 7. THE INSTANCE COUNT FOLLOWS THE NODES. Run the real host script (one pass) against this
+    //    cluster, exactly as zeta-postgres-instances.service runs it, then prove ArgoCD leaves the
+    //    result alone and the replicas are real.
+    if (opts.workers >= 2) {
+      const nodesNow = lane.kubectl(["get", "nodes", "--no-headers"], { quiet: true }).stdout.trim().split("\n").length;
+      console.log(`cluster has ${nodesNow} node(s); running zeta-postgres-instances.sh once`);
+      const pass = spawnSync("bash", [join(REPO_ROOT, "full-ai-cluster/nixos/modules/zeta-postgres-instances.sh")], {
+        env: { ...process.env, ZETA_PG_ONCE: "1", ZETA_KUBECTL_CMD: `kubectl --context ${lane.context}`, ZETA_SERIAL_DEVICE: "/nonexistent", ZETA_PG_LAST_STATE_FILE: join(tmpdir(), `zeta-pg-last-${Date.now()}`) },
+        encoding: "utf8",
+      });
+      console.log(pass.stdout + pass.stderr);
+      if (!pass.stdout.includes("VERDICT scaled")) throw new Error(`the instance-count script did not scale the Cluster:\n${pass.stdout}${pass.stderr}`);
+      const want = Math.min(nodesNow, 3);
+      let scaleWhy = "";
+      await waitFor(`Cluster healthy at ${want} instances`, 600, () => {
+        const c = lane.json(["-n", "postgres-shared", "get", "cluster.postgresql.cnpg.io", "postgres-shared"]);
+        if (c === null) return null;
+        const h = clusterIsHealthy(c);
+        scaleWhy = `${h.why} (spec.instances=${c.spec?.instances})`;
+        return h.ok && Number(c.spec?.instances) === want ? "ok" : null;
+      }, () => scaleWhy);
+      prove(`zeta-postgres-instances.sh scaled the Cluster to ${want} instances on ${nodesNow} nodes and it reached healthy: ${scaleWhy}`);
+
+      // ArgoCD must not put `instances: 1` back: wait out several reconcile cycles, then re-read.
+      await Bun.sleep(150_000);
+      const after = lane.json(["-n", "postgres-shared", "get", "cluster.postgresql.cnpg.io", "postgres-shared"]);
+      if (Number(after?.spec?.instances) !== want) throw new Error(`ArgoCD reverted the scale-up: spec.instances is ${String(after?.spec?.instances)}, want ${want}`);
+      await waitSyncedHealthy(lane, "postgres-shared", 300);
+      prove(`ArgoCD left spec.instances=${want} alone for 150s and postgres-shared stayed Synced+Healthy`);
+
+      const replicaOut = await runJob(
+        lane, "pg-read-replica", "postgres-shared", pgImage,
+        `set -eu; export PGHOST=postgres-shared-ro; psql -v ON_ERROR_STOP=1 -tAc "select 'REPLICA:' || pg_is_in_recovery()::text || ':' || (select count(*) from live_probe where k='${marker}')::text"`,
+        pgEnv,
+      );
+      if (!replicaOut.includes("REPLICA:true:1")) throw new Error(`the -ro Service did not reach a streaming replica holding the row: ${replicaOut}`);
+      prove("the -ro Service reaches a streaming replica (pg_is_in_recovery) that holds the row written before the scale-up");
+    }
 
     console.log(`\nALL PROVED (${checks.length}):\n  - ${checks.join("\n  - ")}`);
   } catch (error) {

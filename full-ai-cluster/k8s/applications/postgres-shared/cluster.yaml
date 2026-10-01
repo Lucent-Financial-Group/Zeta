@@ -75,8 +75,16 @@ spec:
   # `isWALArchiver: true` makes this Cluster archive every WAL segment; base backups are
   # scheduled in scheduledbackup.yaml. Without an archiver a Cluster has no point-in-time
   # recovery at all.
+  # `enabled: true` is written out although it is the CRD's default, and that is NOT cosmetic.
+  # CNPG's mutating webhook fills `plugins[].enabled`, and ArgoCD diffs a LIST atomically (a CRD
+  # has no strategic-merge keys): the desired element without `enabled` replaces the live one
+  # that has it, so the Cluster read OutOfSync FOREVER and selfHeal re-applied it in a loop
+  # (live run 36855350178: Application OutOfSync/Healthy for 1200s, autoHealAttemptsCount 9,
+  # Cluster otherwise healthy with a completed backup). Spelling the defaulted field makes the
+  # desired and live elements equal.
   plugins:
     - name: barman-cloud.cloudnative-pg.io
+      enabled: true
       isWALArchiver: true
       parameters:
         barmanObjectName: postgres-shared

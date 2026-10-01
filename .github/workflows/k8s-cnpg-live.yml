@@ -99,7 +99,7 @@ jobs:
             --cluster-name zeta-ci-cnpg \
             --git-ref "$ZETA_CNPG_GIT_REF" \
             --repo-url "$ZETA_CNPG_REPO_URL" \
-            --timeout-sec 1200 \
+            --timeout-sec 900 \
             | tee "$RUNNER_TEMP/cnpg-proof.log"
 
       - name: Upload the proof log
