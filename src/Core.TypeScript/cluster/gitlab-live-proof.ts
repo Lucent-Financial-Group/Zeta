@@ -180,7 +180,7 @@ export class ProofReport {
       "",
       "| check | status | detail |",
       "| --- | --- | --- |",
-      ...rows.map((r) => `| ${r.name}${r.blocking ? "" : " (informational)"} | ${icon(r.status)} | ${r.detail.replace(/\|/g, "\\|").replace(/\n/g, " ")} |`),
+      ...rows.map((r) => `| ${r.name}${r.blocking ? "" : " (informational)"} | ${icon(r.status)} | ${r.detail.replace(/\\/g, "\\\\").replace(/\|/g, "\\|").replace(/\n/g, " ")} |`),
       ...extra,
     ];
     return lines.join("\n") + "\n";
@@ -547,7 +547,7 @@ async function pollUntil(
   intervalMs: number,
   probe: () => Promise<{ done: boolean; detail: string }> | { done: boolean; detail: string },
 ): Promise<{ done: boolean; detail: string }> {
-  let last = { done: false, detail: "never probed" };
+  let last: { done: boolean; detail: string };
   for (;;) {
     try {
       last = await probe();
