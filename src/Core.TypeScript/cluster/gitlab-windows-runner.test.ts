@@ -625,14 +625,28 @@ describe("D. the runbook", () => {
 // ---------------------------------------------------------------------------
 
 /** The answer file with its comments removed: prose inside a comment must not satisfy (or trip) a structural check. */
-const stripXmlComments = (xml: string): string => xml.replace(/<!--[\s\S]*?-->/g, "");
+function stripXmlComments(xml: string): string {
+  // A scan, not a regex replace: a single replace pass can leave a `<!--` behind when comments nest or are
+  // malformed (CodeQL js/incomplete-multi-character-sanitization), and this strips for a CHECK, so it must be exact.
+  let out = "";
+  let i = 0;
+  for (;;) {
+    const open = xml.indexOf("<!--", i);
+    if (open < 0) return out + xml.slice(i);
+    out += xml.slice(i, open);
+    const close = xml.indexOf("-->", open + 4);
+    if (close < 0) return out + xml.slice(open); // an unterminated comment is kept, so xmlProblems sees it
+    i = close + 3;
+  }
+}
 
 /** A tiny well-formedness check: balanced element tags, and no `--` inside a comment (illegal XML). */
 function xmlProblems(xml: string): string[] {
   const problems: string[] = [];
   for (const c of xml.matchAll(/<!--([\s\S]*?)-->/g)) if (c[1]!.includes("--")) problems.push("`--` inside a comment");
   const stack: string[] = [];
-  for (const m of stripXmlComments(xml).replace(/<\?[\s\S]*?\?>/g, "").matchAll(/<(\/?)([A-Za-z][\w:.-]*)([^>]*?)(\/?)>/g)) {
+  // (the `<?xml ...?>` declaration is not matched by the element pattern, so it needs no stripping)
+  for (const m of stripXmlComments(xml).matchAll(/<(\/?)([A-Za-z][\w:.-]*)([^>]*?)(\/?)>/g)) {
     const [, closing, name, , selfClosing] = m;
     if (selfClosing === "/") continue;
     if (closing === "/") {
@@ -741,7 +755,7 @@ describe("E. evaluation media (the free default)", () => {
     expect((parseYaml(ok.out) as Doc).metadata.name).toBe(SECRET_NAME);
     // the refusals never echo the password
     expect(weak.err.includes("weak")).toBe(false);
-  });
+  }, 60_000); // five bun processes: the default 5s is not enough on a loaded CI runner
 
   test("the bootstrap installs the virtio guest tools only when the guest has NO network adapter, from the virtio-win CD", () => {
     expect(bootstrap).toContain("Get-NetAdapter");
