@@ -54,7 +54,7 @@
  */
 
 import { spawnSync } from "node:child_process";
-import { existsSync, mkdtempSync, readFileSync, writeFileSync } from "node:fs";
+import { mkdtempSync, readFileSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
 import { parse as parseYaml, stringify as stringifyYaml } from "yaml";
@@ -315,9 +315,8 @@ function parseArgs(argv: readonly string[]): Options {
 }
 
 function readText(rel: string): string {
-  const p = join(K8S, rel);
-  if (!existsSync(p)) throw new Error(`missing ${p}`);
-  return readFileSync(p, "utf8");
+  // One syscall, one answer: a missing file is reported by the read itself, not by a check that goes stale.
+  return readFileSync(join(K8S, rel), "utf8");
 }
 
 function installBootstrapChart(lane: Lane, rel: string): void {
@@ -581,6 +580,8 @@ async function main(): Promise<void> {
       const pass = spawnSync("bash", [join(REPO_ROOT, "full-ai-cluster/nixos/modules/zeta-postgres-instances.sh")], {
         env: { ...process.env, ZETA_PG_ONCE: "1", ZETA_KUBECTL_CMD: `kubectl --context ${lane.context}`, ZETA_SERIAL_DEVICE: "/nonexistent", ZETA_PG_LAST_STATE_FILE: join(tmpdir(), `zeta-pg-last-${Date.now()}`) },
         encoding: "utf8",
+        timeout: 120_000,
+        maxBuffer: 64 * 1024 * 1024,
       });
       console.log(pass.stdout + pass.stderr);
       if (!pass.stdout.includes("VERDICT scaled")) throw new Error(`the instance-count script did not scale the Cluster:\n${pass.stdout}${pass.stderr}`);
