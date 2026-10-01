@@ -289,6 +289,12 @@ export const KILL_BUDGET_ALLOWLIST: readonly AllowlistEntry[] = [
   // gitlab-exporter: hardcoded `exec: [pgrep, -f, gitlab-exporter]` liveness in
   // charts/gitlab-exporter/templates/deployment.yaml -- no toYaml, no .Values
   // reference on initialDelaySeconds/periodSeconds/failureThreshold at all.
+  // cnpg-barman-cloud/barman-cloud (2026-10-01): plugin-barman-cloud 0.8.1's Deployment
+  // hardcodes `tcpSocket :8081`, initialDelaySeconds 10, periodSeconds 10 for BOTH probes and
+  // its values.yaml has no probe keys at all (read from `helm template` and the chart's
+  // values.yaml). A fast Go gRPC controller, not a JVM/DB/migration-on-start shape; no
+  // values coordinate exists, so the only route is an upstream chart change.
+  { app: "cnpg-barman-cloud", container: "barman-cloud", reason: WP18_NO_COORDINATE_REASON },
   { app: "gitlab", container: "gitlab-exporter", reason: WP18_NO_COORDINATE_REASON },
   // kas: charts/kas/templates/deployment.yaml hardcodes
   // `initialDelaySeconds: 15, periodSeconds: 20` with no .Values reference on
@@ -300,8 +306,6 @@ export const KILL_BUDGET_ALLOWLIST: readonly AllowlistEntry[] = [
   // on `controlPlane.livenessProbe`), so there is no valuesObject fix at all,
   // only an upstream chart PR. Left in the shared workitem rather than split out.
   { app: "hindsight", container: "postgresql", reason: WP18_NO_COORDINATE_REASON },
-  { app: "kube-prometheus-stack", container: "kube-prometheus-stack", reason: WP18_RANK_C_REASON },
-  { app: "kube-prometheus-stack", container: "node-exporter", reason: WP18_RANK_C_REASON },
   { app: "kubevirt", container: "virt-operator", reason: WP18_RANK_C_REASON },
   { app: "ollama", container: "ollama", reason: WP18_RANK_C_REASON },
   // Covers BOTH gatekeeper-audit and gatekeeper-controller-manager Deployments --
@@ -315,7 +319,6 @@ export const KILL_BUDGET_ALLOWLIST: readonly AllowlistEntry[] = [
   // parts). Unlike its sibling spire-server container below (which DOES have a
   // `.Values.livenessProbe` coordinate), there is nothing to widen here.
   { app: "spire", container: "spire-controller-manager", reason: WP18_NO_COORDINATE_REASON },
-  { app: "tempo", container: "tempo", reason: WP18_RANK_C_REASON },
   // admin-tools: charts/temporal/templates/admintools-deployment.yaml hardcodes
   // `exec: [ls, /], initialDelaySeconds: 5, periodSeconds: 5` -- no .Values
   // reference anywhere on this probe.
@@ -367,6 +370,15 @@ export const STALL_TOLERANCE_FLOORS: readonly StallToleranceFloor[] = [
   { app: "node-feature-discovery", container: "worker", minStallToleranceSeconds: 100, why: STALL_WIDENED },
   { app: "sealed-secrets", container: "controller", minStallToleranceSeconds: 100, why: STALL_WIDENED },
   { app: "spire", container: "spire-server", minStallToleranceSeconds: 100, why: STALL_WIDENED },
+  // The observability + data group. All widened through chart values, none of them a
+  // values-coordinate gap: redis (exec `valkey-cli ping`, 1s timeout -- a fork is the first
+  // thing a starved node cannot do), tempo (liveness probes /ready), the prometheus
+  // operator and node-exporter (1s timeout), kube-state-metrics (25s).
+  { app: "redis", container: "redis-valkey", minStallToleranceSeconds: 50, why: STALL_WIDENED },
+  { app: "tempo", container: "tempo", minStallToleranceSeconds: 100, why: STALL_WIDENED },
+  { app: "kube-prometheus-stack", container: "kube-prometheus-stack", minStallToleranceSeconds: 100, why: STALL_WIDENED },
+  { app: "kube-prometheus-stack", container: "node-exporter", minStallToleranceSeconds: 100, why: STALL_WIDENED },
+  { app: "kube-prometheus-stack", container: "kube-state-metrics", minStallToleranceSeconds: 60, why: STALL_WIDENED },
   {
     // The chart exposes only `livenessTimeout`; period 10s x 3 failures is hardcoded,
     // so 1s -> 10s is the whole lever: (3-1)*10 + 10 = 30s.
