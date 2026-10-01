@@ -543,7 +543,8 @@ async function main(): Promise<void> {
     prove(`base Backup completed (${backupWhy})`);
 
     // 6. The bytes are in the bucket, read with the credential the Postgres pods hold.
-    await runJob(lane, "pg-switch-wal", "postgres-shared", pgImage, `set -eu; export PGHOST=postgres-shared-rw; psql -v ON_ERROR_STOP=1 -tAc "select pg_switch_wal() is not null"`, pgEnv);
+    // (No pg_switch_wal here: the app role is deliberately not a superuser, and the completed base
+    // backup above has already archived the WAL segments it needs, so `wals/` is populated.)
     const awsEnv: Doc[] = [
       { name: "AWS_ACCESS_KEY_ID", valueFrom: { secretKeyRef: { name: "postgres-backup-s3", key: "ACCESS_KEY_ID" } } },
       { name: "AWS_SECRET_ACCESS_KEY", valueFrom: { secretKeyRef: { name: "postgres-backup-s3", key: "ACCESS_SECRET_KEY" } } },
