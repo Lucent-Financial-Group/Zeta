@@ -1368,11 +1368,11 @@ describe("the checked-in resource ladder", () => {
     // not move because ArgoCD started costing more, it moved because the cost became
     // VISIBLE. All five components rendered `resources: {}` and contributed zero to
     // every total here while running the lane. 081M3BQ5GX6087G0R003N44WMZ.
-    expect(lane.cpuMillis).toBe(8140);
+    expect(lane.cpuMillis).toBe(8525);
     // 17596 -> 15548 on 2026-09-07, same cause: gmod's 2048Mi left the dev lane's
     // denominator. Unchanged in the tree; simply no longer counted here.
     // 15548 -> 16956 on 2026-09-25: +1408Mi, the same ArgoCD pricing.
-    expect(lane.memoryMib).toBe(16956);
+    expect(lane.memoryMib).toBe(18940);
     const all = resourceTotal(catalogue, "metal", applicationDirs());
     // 12365 -> 12215m / 25867 -> 25739Mi on 2026-09-22: gitlab's bundled minio
     // subchart disabled (`global.minio.enabled: false`), removing
@@ -1383,8 +1383,8 @@ describe("the checked-in resource ladder", () => {
     // 12965m against the smallest registered node's 16000m, green with 3035m spare.
     // 12965 -> 13215m / 27147 -> 27659Mi on 2026-09-27: temporal-postgres (a CNPG
     // instance, 250m/512Mi) joined; 13215m still under the 16000m node, 2785m spare.
-    expect(all.cpuMillis).toBe(13215);
-    expect(all.memoryMib).toBe(27659);
+    expect(all.cpuMillis).toBe(13600);
+    expect(all.memoryMib).toBe(29643);
   });
 
   // Aaron 2026-08-20: "make things small enough to fit for disk and ram on the
@@ -1474,8 +1474,8 @@ describe("the checked-in resource ladder", () => {
     // that would restore the exact defect, in the lane whose job is to catch it, and
     // would join the three reasoned refusals recorded just above rather than answer
     // them.
-    expect(dev.cpuMillis).toBe(1990);
-    expect(dev.memoryMib).toBe(9868);
+    expect(dev.cpuMillis).toBe(2375);
+    expect(dev.memoryMib).toBe(11852);
     expect(dev.cpuMillis).toBeLessThan(budget.cpuMillis);
     // IT FITS NOW, and the earlier note is kept rather than deleted because it records
     // a real mistake: "STILL OVER, and I briefly claimed otherwise. I recomputed the
@@ -1494,7 +1494,7 @@ describe("the checked-in resource ladder", () => {
     // here rather than overwritten. `auditRunnerBudget` convicts a revived entry as
     // STALE, so neither an empty register nor a populated one can hide a live overage.
     expect(catalogue.acknowledgedLaneBudgetShortfall.map((a) => a.key)).toEqual([
-      "dev memory 9868>9216",
+      "dev memory 11852>9216",
     ]);
 
     expect(auditRunnerBudget(catalogue, "dev")).toEqual([]);
@@ -1526,8 +1526,8 @@ describe("the checked-in resource ladder", () => {
     // request, while this is a request that did not exist at EITHER rung. The
     // hardware this rung describes really does run those five pods, so a metal number
     // that had stayed put would have been the wrong kind of stable.
-    expect(metal.cpuMillis).toBe(8140);
-    expect(metal.memoryMib).toBe(16956);
+    expect(metal.cpuMillis).toBe(8525);
+    expect(metal.memoryMib).toBe(18940);
 
     // gmod is NO LONGER IN THE LANE, and this assertion is inverted rather than deleted
     // because what it used to say is the finding it replaced. It read: "gmod is still

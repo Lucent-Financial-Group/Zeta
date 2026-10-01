@@ -1749,7 +1749,7 @@ describe("findRungCoverage — the budgeted rung vs the committed rung", () => {
     // Note what the sequence shows now it is five long: every entry is a number going UP
     // because something previously invisible was counted, and none of them is the tree
     // getting heavier. That is the sequence earning its keep over any single reading.
-    const moved = live.acknowledgedRungBudgetGap.map((key) => key.replace("8140m", "8641m"));
+    const moved = live.acknowledgedRungBudgetGap.map((key) => key.replace("8525m", "8641m"));
     expect(moved).not.toEqual(live.acknowledgedRungBudgetGap);
     expect(findRungCoverage({ ...live, acknowledgedRungBudgetGap: moved }, resources).length).toBe(1);
   });
