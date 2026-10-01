@@ -19,7 +19,7 @@
  */
 
 import { afterAll, beforeAll, describe, expect, it } from "bun:test";
-import { chmodSync, mkdirSync, mkdtempSync, readFileSync, rmSync, statSync, writeFileSync } from "node:fs";
+import { chmodSync, closeSync, fstatSync, mkdirSync, mkdtempSync, openSync, readdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { buildBlob, composeBundle } from "./zeta-creds-persist";
@@ -37,6 +37,19 @@ beforeAll(() => {
 afterAll(() => {
   rmSync(tmp, { recursive: true, force: true });
 });
+
+/**
+ * Mode bits and content of ONE open file. A path-based stat followed by a path-based read
+ * resolves the name twice (check-then-use, CWE-367); one descriptor answers both.
+ */
+function inspect(path: string): { mode: number; text: string } {
+  const fd = openSync(path, "r");
+  try {
+    return { mode: fstatSync(fd).mode & 0o777, text: readFileSync(fd, "utf8") };
+  } finally {
+    closeSync(fd);
+  }
+}
 
 function blobFor(bake: readonly string[]): Buffer {
   const args = { usbUuid: UUID, output: join(tmp, "unused.enc"), passphrase: PASS, persona: null, bakeCredArgs: [...bake] };
@@ -73,7 +86,7 @@ describe("applyPlan modes (POSIX only)", () => {
     if ("error" in plan) throw new Error(plan.error);
     expect(applyPlan(plan)).toBe(1);
     const path = resolveCredPaths(DEFAULT_MANIFEST.credentials.find((c) => c.id === "gh-cli")!, root)[0]!;
-    expect(statSync(path).mode & 0o777).toBe(0o600);
+    expect(inspect(path).mode).toBe(0o600);
   });
 
   it.skipIf(!posix)("a token left 0644 by an earlier generation is re-written 0600, not skipped as already-present", () => {
@@ -89,8 +102,9 @@ describe("applyPlan modes (POSIX only)", () => {
     expect(plan.writes.length).toBe(1);
     expect(plan.skipped.some((s) => s.reason === "already-present")).toBe(false);
     applyPlan(plan);
-    expect(statSync(path).mode & 0o777).toBe(0o600);
-    expect(readFileSync(path, "utf8")).toBe("TOKEN-TWO");
+    const repaired = inspect(path);
+    expect(repaired.mode).toBe(0o600);
+    expect(repaired.text).toBe("TOKEN-TWO");
 
     // And once repaired it IS idempotent: a third run changes nothing.
     const again = planRestore(blobFor(["gh-cli=TOKEN-TWO"]), UUID, PASS, null, root);
@@ -105,7 +119,7 @@ describe("applyPlan modes (POSIX only)", () => {
     if ("error" in plan) throw new Error(plan.error);
     applyPlan(plan);
     const file = join(root, "etc", "NetworkManager", "system-connections", RESTORED_WIFI_PROFILE);
-    expect(statSync(file).mode & 0o777).toBe(0o600);
+    expect(inspect(file).mode).toBe(0o600);
   });
 });
 
@@ -120,7 +134,8 @@ describe("wifi restore targets a file INSIDE system-connections", () => {
     expect(plan.writes.map((w) => w.path)).toEqual([join(dir, RESTORED_WIFI_PROFILE)]);
     // Before the fix this threw: the planned path WAS the directory.
     expect(() => applyPlan(plan)).not.toThrow();
-    expect(statSync(dir).isDirectory()).toBe(true);
+    // The directory is still a directory and now holds the profile.
+    expect(readdirSync(dir)).toEqual([RESTORED_WIFI_PROFILE]);
   });
 
   it("converts the {ssid, psk} JSON the persist side accepts into a real keyfile", () => {
