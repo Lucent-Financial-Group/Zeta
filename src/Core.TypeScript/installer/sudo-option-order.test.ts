@@ -20,8 +20,25 @@ import { join } from "node:path";
 
 const REPO_ROOT = execFileSync("git", ["rev-parse", "--show-toplevel"], { encoding: "utf8" }).trim();
 
-/** A `sudo` whose first word after it is an assignment and which carries a later -u/--user/-g/-E... option. */
-const BAD = /\bsudo\s+(?:[A-Za-z_][A-Za-z0-9_]*=(?:"[^"]*"|'[^']*'|\S)*\s+)+-(?:u|-user|g|-group|E|H|n)\b/;
+/**
+ * A `sudo` whose first word(s) after it are VAR=value assignments and which then carries an
+ * option (-u/--user/-g/--group/-E/-H/-n). Tokenised on whitespace rather than matched with a
+ * nested-quantifier regex, which CodeQL rightly flags as exponential on repeated quotes.
+ */
+const BAD = {
+  test(line: string): boolean {
+    const words = line.trim().split(/\s+/);
+    const at = words.indexOf("sudo");
+    if (at < 0) return false;
+    let i = at + 1;
+    let sawAssignment = false;
+    while (i < words.length && /^[A-Za-z_][A-Za-z0-9_]*=/.test(words[i]!)) {
+      sawAssignment = true;
+      i++;
+    }
+    return sawAssignment && i < words.length && /^(-u|--user|-g|--group|-E|-H|-n)$/.test(words[i]!);
+  },
+};
 
 function shellFiles(): string[] {
   const out = execFileSync("git", ["ls-files", "--", "full-ai-cluster", "tools/setup", "tools/installer"], {
