@@ -494,7 +494,7 @@ now resolved per install by the **same mechanism as §10** — nothing is invent
 
 **Resolution order** (`zeta_lb_pool_resolve`): **(1)** the ESP value (`auto` or a range) when it
 validates **against the LAN the installer measured** → **(2)** otherwise ask, offering `.240–.250`
-of the node's /24 *only on an explicit `y`* → **(3)** otherwise **UNSET, loudly**. A range is refused
+of the node's /24 _only on an explicit `y`_ → **(3)** otherwise **UNSET, loudly**. A range is refused
 if it is outside the node's subnet, includes the network/broadcast address, the node itself or the
 gateway, overlaps the cluster's derived pod/service CIDR or the `10.88.0.0/24` segment, spans more
 than 256 addresses, **or any of its addresses already answers a ping**. An ESP value that fails any of
