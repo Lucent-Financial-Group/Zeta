@@ -5,7 +5,7 @@ import { describe, expect, test } from "bun:test";
 import { readFileSync } from "node:fs";
 import { join, resolve } from "node:path";
 import { parse as parseYaml } from "yaml";
-import { blankDataVolumeManifest, CIRROS_IMAGE, cirrosVmiManifest, templateKinds, WINDOWS_TEMPLATE_PATH } from "./kubevirt-vm-live-test.ts";
+import { blankDataVolumeManifest, CIRROS_IMAGE, cirrosVmiManifest, templateKinds, templateNamespaces, WINDOWS_TEMPLATE_PATH } from "./kubevirt-vm-live-test.ts";
 
 const REPO_ROOT = resolve(import.meta.dir, "../../..");
 
@@ -61,6 +61,25 @@ describe("the Windows template the dry-run is judged against", () => {
     expect(kinds).toContain("VirtualMachine");
     expect(kinds).toContain("DataVolume");
     expect(kinds.length).toBeGreaterThanOrEqual(3);
+  });
+
+  test("its Hyper-V enlightenments are only fields KubeVirt's FeatureHyperv declares", () => {
+    // Run 36862639220 (KubeVirt v1.8.4): the server rejected `.spec.template.spec.domain.features.hyperv.stimer:
+    // field not declared in schema`. The field is `synictimer`. The list below is FeatureHyperv's json tags in
+    // staging/src/kubevirt.io/api/core/v1/schema.go at v1.8.4; this keeps the template honest offline, and the
+    // live dry-run remains the authority.
+    const declared = new Set(["relaxed", "vapic", "spinlocks", "vpindex", "runtime", "synic", "synictimer", "reset", "vendorid", "frequencies", "reenlightenment", "tlbflush", "ipi", "evmcs"]);
+    const docs = readFileSync(join(REPO_ROOT, WINDOWS_TEMPLATE_PATH), "utf8").split(/^---\s*$/m).map((d) => parseYaml(d) as any);
+    const vm = docs.find((d) => d?.kind === "VirtualMachine");
+    const hyperv = vm.spec.template.spec.domain.features.hyperv as Record<string, unknown>;
+    expect(Object.keys(hyperv).filter((k) => !declared.has(k))).toEqual([]);
+    // synictimer needs synic
+    if ("synictimer" in hyperv) expect(hyperv.synic).toBeDefined();
+  });
+
+  test("the template's Namespace is found, so the lane can create it before a server-side dry-run", () => {
+    expect(templateNamespaces(readFileSync(join(REPO_ROOT, WINDOWS_TEMPLATE_PATH), "utf8"))).toContain("windows-example");
+    expect(templateNamespaces("kind: ConfigMap\nmetadata: { name: x }\n")).toEqual([]);
   });
 
   test("an empty or kindless document yields no kinds rather than a crash", () => {

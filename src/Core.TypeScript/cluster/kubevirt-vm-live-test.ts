@@ -96,6 +96,19 @@ export function cirrosVmiManifest(namespace: string): string {
   });
 }
 
+/**
+ * Every Namespace the template declares. A server-side dry-run does not CREATE a namespace, so the
+ * objects inside it are refused with `namespaces "x" not found` unless it exists -- which is what an
+ * ArgoCD sync with CreateNamespace does first. The lane makes the same one-step bootstrap.
+ */
+export function templateNamespaces(templateText: string): readonly string[] {
+  return templateText
+    .split(/^---\s*$/m)
+    .map((d) => parseYaml(d) as { kind?: string; metadata?: { name?: string } } | null)
+    .filter((o): o is { kind: string; metadata: { name: string } } => o?.kind === "Namespace" && typeof o.metadata?.name === "string")
+    .map((o) => o.metadata.name);
+}
+
 /** The template must declare every kind the dry-run is meant to exercise. */
 export function templateKinds(templateText: string): readonly string[] {
   return templateText
@@ -199,6 +212,10 @@ async function main(): Promise<void> {
 
     // 2. The Windows template against the live admission webhooks.
     const template = join(REPO_ROOT, WINDOWS_TEMPLATE_PATH);
+    for (const name of templateNamespaces(readFileSync(template, "utf8"))) {
+      const made = kube.run(["create", "namespace", name]);
+      if (made.code !== 0 && !made.out.includes("AlreadyExists")) throw new Error(`could not create the template's namespace ${name}: ${made.out}`);
+    }
     const dry = kube.run(["apply", "--server-side", "--dry-run=server", "-f", template]);
     if (dry.code !== 0) throw new Error(`the Windows VM template failed server-side dry-run:\n${dry.out}`);
     const kinds = templateKinds(readFileSync(template, "utf8"));
