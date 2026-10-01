@@ -12,7 +12,11 @@
 #   src/Core.TypeScript/cluster/cnpg-postgres-shared-live-test.ts
 # (Application Synced+Healthy, Cluster healthy, a row written via -rw reads back with the
 # operator-minted credentials, ContinuousArchiving, a completed base Backup, and the bytes
-# in the bucket under the scoped credential).
+# in the bucket under the scoped credential). The committed tree is the `metal` rung, which
+# is three instances, so the lane also proves the replica set: the -ro Service reaches a
+# streaming replica, and after the PRIMARY POD IS DELETED another instance takes over, the
+# earlier row survives and a new write lands. It runs on one control plane plus three
+# workers, so the preferred anti-affinity has real nodes to spread over.
 #
 # DISPATCH-ONLY, and not in the `gate (required)` floor: it pulls ~1.5 GiB of images and
 # runs ~15 minutes, and a lane this heavy belongs on demand until it has a measured

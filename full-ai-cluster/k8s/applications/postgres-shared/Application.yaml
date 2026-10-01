@@ -34,33 +34,35 @@
 # convenience everyone may route around is an oracle that was chosen, not a hub that was
 # appointed (itron-hub-patent-boundary-p2p-is-the-upgrade: exit, not degree).
 #
-# ── SIZING: ONE INSTANCE TODAY, AND WHY NOT THREE ───────────────────────────
-# `instances: 1`, on purpose. This tree is a single-node install (longhorn's own
-# values say "keep this == node count; bump as workers join"). Three instances on one
-# node cost 3x the memory and three PVCs and protect against NOTHING that matters
-# there -- all three share one disk and one kernel. The template's own header says
-# so. What one instance DOES give: operator-managed restart and self-healing, a
-# rolling-update path, and -- the point of this change -- CONTINUOUS BACKUP with
-# point-in-time recovery. Requests/limits are governed rows in storage-profiles.json
-# (`full-ai-cluster/postgres-shared/postgres`, dev and metal rungs), not a number in
-# a manifest only.
+# ── SIZING: THREE INSTANCES ON METAL, ONE ON THE CI RUNG, AND WHAT THAT COSTS ─
+# The committed tree is the `metal` rung, and it carries `instances: 3` (one primary + two
+# streaming replicas), `enablePDB: true` and `primaryUpdateMethod: switchover`: the owner's goal
+# is clusters of pods, and a Postgres that is already replicated is the one that is still
+# there when a node joins or a pod is lost. The CI/dev rung serves ONE instance, through
+# rung-overrides.yaml entry `postgres-shared/single-instance-dev` (the repo's existing
+# per-rung field override -- the same ladder the resource requests are on), because a hosted
+# runner is a single 4-vCPU node and three Postgres pods would spend three times its share
+# for a replica set that cannot spread. The three fields travel together: a PodDisruptionBudget
+# on a lone primary hangs `kubectl drain` forever and a switchover has no replica to promote;
+# postgres-shared-cluster.test.ts fails if `instances`, `enablePDB`, `primaryUpdateMethod`, the
+# ledger row's `pods` and the dev override ever disagree.
 #
-# THE COUNT FOLLOWS THE NODES (the owner's goal: "clusters of pods"). A value in git
-# cannot know the final node count -- at first boot, the only moment ArgoCD syncs this,
-# joining workers have not arrived -- so it is not read once from here. The server
-# role's `zeta-postgres-instances.service` (nixos/modules/zeta-postgres-instances.{nix,sh},
-# executed by hygiene/zeta-postgres-instances.test.ts) counts schedulable Ready nodes
-# continuously and patches this Cluster to min(nodes, 3): 1 on one node, 2 on two, 3 from
-# three. It only ever scales UP -- a node that blips out of the count must not delete a
-# replica. It writes `instances`, `enablePDB` and `primaryUpdateMethod` TOGETHER, the triple
-# postgres-shared-cluster.test.ts requires to agree (a PDB on a lone primary hangs
-# `kubectl drain`; a switchover needs a replica). THIS Application therefore ignores exactly
-# those three fields on the Cluster (spec.ignoreDifferences) AND sets
-# RespectIgnoreDifferences, so neither the diff nor a sync -- selfHeal included -- puts
-# `instances: 1` back and takes a three-instance cluster down to one. cluster.yaml stays the
-# single-node default; edit it, and the ledger row's `pods`, only to change what a ONE-node
-# install runs. temporal's `temporal-postgres` does not follow nodes (it is a separate
-# Cluster with its own decision).
+# THE COST, STATED HONESTLY. On the ONE-node install this tree ships to today, three instances
+# are 3x the memory (3 x 512Mi requested, 1Gi limit each, plus a ~64Mi Barman sidecar apiece),
+# 3 x 250m CPU requested, and THREE 20Gi PVCs on one disk. The anti-affinity is `preferred`, not
+# `required`, so all three co-locate -- and they STAY there: each replica's PVC is node-local
+# (zeta-block-local), so a node that joins later does not pull an existing replica across; it
+# receives only pods the operator creates afterwards. That is not high availability against
+# losing the NODE, and this Application is acknowledged as nominal redundancy in
+# single-node-budget.json (`acknowledgedFalseRedundancy`) exactly as cockroachdb, nats and
+# redis are. What it IS: safe (the same data on three pods is never less safe than one),
+# resilient to a lost or crashing POD (a replica is promoted without waiting for a restart or
+# a PVC reattach), a working rolling-update path, and a topology that is already correct the
+# moment nodes exist. CONTINUOUS BACKUP with point-in-time recovery -- below -- is what
+# survives a logical error. Requests/limits are governed rows in storage-profiles.json
+# (`full-ai-cluster/postgres-shared/postgres`, dev and metal rungs; `pods` is the instance
+# count), not a number in a manifest only. temporal's `temporal-postgres` is a separate
+# Cluster with its own decision and is unchanged.
 #
 # ── WHAT BACKUP DOES AND DOES NOT PROTECT ───────────────────────────────────
 # Base backup daily + WAL continuously, to bucket `zeta-backups` in the in-cluster
@@ -115,16 +117,6 @@ spec:
   destination:
     server: https://kubernetes.default.svc
     namespace: postgres-shared
-  # The instance count is owned by zeta-postgres-instances.service, not by this file: see the
-  # header ("THE COUNT FOLLOWS THE NODES"). Exactly these three fields, on exactly this Cluster.
-  ignoreDifferences:
-    - group: postgresql.cnpg.io
-      kind: Cluster
-      name: postgres-shared
-      jsonPointers:
-        - /spec/instances
-        - /spec/enablePDB
-        - /spec/primaryUpdateMethod
   syncPolicy:
     automated:
       # NEVER prune: pruning the Cluster CR deletes the PVCs the data lives on.
@@ -138,9 +130,6 @@ spec:
       # crd-provider-consumer-order.ts requires a consumer of a non-gating provider to
       # defer rather than SyncFail when the CRD is a beat late.
       - SkipDryRunOnMissingResource=true
-      # Makes the ignoreDifferences above bind SYNC as well as the diff; without it a sync (and
-      # therefore selfHeal) would re-apply `instances: 1` over a scaled-up Cluster.
-      - RespectIgnoreDifferences=true
     # UNBOUNDED retry, because this Application consumes CRDs it does not own. With no `retry`
     # block ArgoCD gives up after 5 attempts and never re-attempts an automated sync for a
     # revision whose sync already failed, so losing a race against the operator's webhook or CRD

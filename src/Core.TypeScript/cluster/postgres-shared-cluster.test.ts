@@ -21,10 +21,12 @@
 // handed agree with each other (names, namespaces, keys, buckets, endpoint, waves).
 
 import { describe, expect, test } from "bun:test";
-import { readFileSync } from "node:fs";
-import { resolve } from "node:path";
+import { mkdirSync, mkdtempSync, readFileSync, writeFileSync } from "node:fs";
+import { tmpdir } from "node:os";
+import { dirname, join, resolve } from "node:path";
 import { parseAllDocuments, parse as parseYaml } from "yaml";
 import { DEFAULT_ROOT_DEV_CATALOG } from "./ports.ts";
+import { applyRungOverrides, loadRungOverrides } from "./rung-overrides.ts";
 
 const REPO_ROOT = resolve(import.meta.dir, "../../..");
 const K8S = resolve(REPO_ROOT, "full-ai-cluster/k8s");
@@ -101,22 +103,60 @@ describe("postgres-shared is sized, not guessed: a governed row, one instance on
     expect(req.memory).toBe(`${String(row.memoryMib.metal)}Mi`);
   });
 
-  test("the ledger's pod count IS the instance count (a bump to 3 must touch both)", () => {
+  test("the ledger's pod count IS the metal instance count (a change to either must touch both)", () => {
     expect(row.pods).toBe(cluster.spec.instances);
   });
 
-  test("one instance today; the knobs that depend on that number agree with it", () => {
-    const n = cluster.spec.instances as number;
-    expect(n).toBe(1);
+  /** instances, enablePDB and primaryUpdateMethod are ONE decision: assert they agree for a given spec. */
+  const expectTripleAgrees = (spec: Doc): void => {
+    const n = spec.instances as number;
     if (n === 1) {
       // A lone primary's PDB (minAvailable 1) makes `kubectl drain` hang on the only node, and a
-      // switchover has no replica to promote. Both flip when instances grows.
-      expect(cluster.spec.enablePDB).toBe(false);
-      expect(cluster.spec.primaryUpdateMethod).toBe("restart");
+      // switchover has no replica to promote.
+      expect(spec.enablePDB).toBe(false);
+      expect(spec.primaryUpdateMethod).toBe("restart");
     } else {
-      expect(cluster.spec.enablePDB).not.toBe(false);
-      expect(cluster.spec.primaryUpdateMethod).toBe("switchover");
+      expect(n).toBeGreaterThan(1);
+      expect(spec.enablePDB).not.toBe(false);
+      expect(spec.primaryUpdateMethod).toBe("switchover");
     }
+  };
+
+  test("METAL (the committed tree): three instances, and the knobs that depend on that number agree with it", () => {
+    expect(cluster.spec.instances).toBe(3);
+    expectTripleAgrees(cluster.spec);
+  });
+
+  test("DEV/CI (the rung override applied): one instance, and the same three knobs flip WITH it", () => {
+    // The override is the repo's per-rung field ladder (rung-overrides.yaml). Apply it to a copy of
+    // the real file and judge the result by the same rule as the committed one, so a half-done edit
+    // -- instances changed, the PDB or the update method left behind -- is red on EITHER rung.
+    const overrides = loadRungOverrides(["dev", "metal"], REPO_ROOT).filter((o) => o.id === "postgres-shared/single-instance-dev");
+    expect(overrides, "no postgres-shared/single-instance-dev override").toHaveLength(1);
+    const root = mkdtempSync(join(tmpdir(), "zeta-pg-rung-"));
+    const rel = "full-ai-cluster/k8s/applications/postgres-shared/cluster.yaml";
+    mkdirSync(dirname(join(root, rel)), { recursive: true });
+    writeFileSync(join(root, rel), read(resolve(REPO_ROOT, rel)));
+    const edits = applyRungOverrides(overrides, "dev", root);
+    expect(edits.length).toBeGreaterThan(0);
+    const dev = parseYaml(read(join(root, rel))) as Doc;
+    expect(dev.spec.instances).toBe(1);
+    expectTripleAgrees(dev.spec);
+    // metal is untouched by a dev override
+    expect(cluster.spec.instances).toBe(3);
+  });
+
+  test("three instances on one node is ACKNOWLEDGED as nominal redundancy, not presented as HA", () => {
+    const budget = JSON.parse(read(resolve(K8S, "single-node-budget.json"))) as { acknowledgedFalseRedundancy: string[] };
+    expect(budget.acknowledgedFalseRedundancy).toContain("full-ai-cluster/postgres-shared");
+    // ...which is only honest while the anti-affinity is soft (hard would leave replicas Pending on one node)
+    expect(cluster.spec.affinity.podAntiAffinityType).toBe("preferred");
+  });
+
+  test("ArgoCD owns the instance count: nothing ignores it, so no out-of-band writer can disagree with git", () => {
+    const application = app("postgres-shared");
+    expect(application.spec.ignoreDifferences ?? []).toEqual([]);
+    expect(application.spec.syncPolicy.syncOptions).not.toContain("RespectIgnoreDifferences=true");
   });
 
   test("anti-affinity is on and PREFERRED, so it never leaves an instance Pending on one node", () => {

@@ -94,11 +94,6 @@
     # the VM layer instead of two Applications `Missing` forever. Skips any
     # cluster that already runs either operator. See that module's header.
     ./zeta-virt-first-sync.nix
-
-    # The shared PostgreSQL's instance count follows the number of schedulable
-    # nodes (1 on one node, up to 3 as nodes join; never scales down). See the
-    # module's header and zeta-postgres-instances.sh.
-    ./zeta-postgres-instances.nix
   ];
 
   # The server's reservation TARGETS (see "NODE RESERVATIONS" below for the

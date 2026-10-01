@@ -571,37 +571,13 @@ async function main(): Promise<void> {
     if (!bucketOut.includes("SCOPE:DENIED")) throw new Error(`the pgBackup credential could read another bucket (loki-chunks):\n${bucketOut}`);
     prove("the pgBackup credential cannot read another bucket (scope is real)");
 
-    // 7. THE INSTANCE COUNT FOLLOWS THE NODES. Run the real host script (one pass) against this
-    //    cluster, exactly as zeta-postgres-instances.service runs it, then prove ArgoCD leaves the
-    //    result alone and the replicas are real.
-    if (opts.workers >= 2) {
-      const nodesNow = lane.kubectl(["get", "nodes", "--no-headers"], { quiet: true }).stdout.trim().split("\n").length;
-      console.log(`cluster has ${nodesNow} node(s); running zeta-postgres-instances.sh once`);
-      const pass = spawnSync("bash", [join(REPO_ROOT, "full-ai-cluster/nixos/modules/zeta-postgres-instances.sh")], {
-        env: { ...process.env, ZETA_PG_ONCE: "1", ZETA_KUBECTL_CMD: `kubectl --context ${lane.context}`, ZETA_SERIAL_DEVICE: "/nonexistent", ZETA_PG_LAST_STATE_FILE: join(tmpdir(), `zeta-pg-last-${Date.now()}`) },
-        encoding: "utf8",
-        timeout: 120_000,
-        maxBuffer: 64 * 1024 * 1024,
-      });
-      console.log(pass.stdout + pass.stderr);
-      if (!pass.stdout.includes("VERDICT scaled")) throw new Error(`the instance-count script did not scale the Cluster:\n${pass.stdout}${pass.stderr}`);
-      const want = Math.min(nodesNow, 3);
-      let scaleWhy = "";
-      await waitFor(`Cluster healthy at ${want} instances`, 600, () => {
-        const c = lane.json(["-n", "postgres-shared", "get", "cluster.postgresql.cnpg.io", "postgres-shared"]);
-        if (c === null) return null;
-        const h = clusterIsHealthy(c);
-        scaleWhy = `${h.why} (spec.instances=${c.spec?.instances})`;
-        return h.ok && Number(c.spec?.instances) === want ? "ok" : null;
-      }, () => scaleWhy);
-      prove(`zeta-postgres-instances.sh scaled the Cluster to ${want} instances on ${nodesNow} nodes and it reached healthy: ${scaleWhy}`);
-
-      // ArgoCD must not put `instances: 1` back: wait out several reconcile cycles, then re-read.
-      await Bun.sleep(150_000);
-      const after = lane.json(["-n", "postgres-shared", "get", "cluster.postgresql.cnpg.io", "postgres-shared"]);
-      if (Number(after?.spec?.instances) !== want) throw new Error(`ArgoCD reverted the scale-up: spec.instances is ${String(after?.spec?.instances)}, want ${want}`);
-      await waitSyncedHealthy(lane, "postgres-shared", 300);
-      prove(`ArgoCD left spec.instances=${want} alone for 150s and postgres-shared stayed Synced+Healthy`);
+    // 7. THE REPLICA SET IS REAL. The committed (metal) tree runs three instances, so by now there
+    //    are two replicas: prove they stream, then prove the point of having them -- lose the
+    //    primary pod and the database stays up with the data intact and accepts a new write.
+    const want = Number(lane.json(["-n", "postgres-shared", "get", "cluster.postgresql.cnpg.io", "postgres-shared"])?.spec?.instances ?? 0);
+    if (want >= 2) {
+      const placement = lane.kubectl(["-n", "postgres-shared", "get", "pods", "-l", "cnpg.io/cluster=postgres-shared", "-o", "custom-columns=POD:.metadata.name,NODE:.spec.nodeName,ROLE:.metadata.labels.cnpg\\.io/instanceRole", "--no-headers"], { quiet: true }).stdout;
+      console.log(`instance placement (preferred anti-affinity, ${opts.workers} worker(s)):\n${placement}`);
 
       const replicaOut = await runJob(
         lane, "pg-read-replica", "postgres-shared", pgImage,
@@ -609,7 +585,29 @@ async function main(): Promise<void> {
         pgEnv,
       );
       if (!replicaOut.includes("REPLICA:true:1")) throw new Error(`the -ro Service did not reach a streaming replica holding the row: ${replicaOut}`);
-      prove("the -ro Service reaches a streaming replica (pg_is_in_recovery) that holds the row written before the scale-up");
+      prove(`the -ro Service reaches a streaming replica (pg_is_in_recovery) holding the row, with ${want} instances`);
+
+      const before = lane.json(["-n", "postgres-shared", "get", "cluster.postgresql.cnpg.io", "postgres-shared"]);
+      const oldPrimary = String(before?.status?.currentPrimary ?? "");
+      if (oldPrimary === "") throw new Error("the Cluster reports no currentPrimary");
+      console.log(`deleting primary pod ${oldPrimary}`);
+      const del = lane.kubectl(["-n", "postgres-shared", "delete", "pod", oldPrimary, "--wait=false"]);
+      if (del.code !== 0) throw new Error(`could not delete the primary pod: ${del.stderr}`);
+      let failoverWhy = "";
+      const newPrimary = await waitFor("a different instance becomes primary and the Cluster is healthy again", 420, () => {
+        const c = lane.json(["-n", "postgres-shared", "get", "cluster.postgresql.cnpg.io", "postgres-shared"]);
+        if (c === null) return null;
+        const h = clusterIsHealthy(c);
+        failoverWhy = `currentPrimary=${String(c.status?.currentPrimary)} ${h.why}`;
+        return h.ok && c.status?.currentPrimary !== oldPrimary ? String(c.status?.currentPrimary) : null;
+      }, () => failoverWhy);
+      const afterOut = await runJob(
+        lane, "pg-after-failover", "postgres-shared", pgImage,
+        `set -eu; export PGHOST=postgres-shared-rw; psql -v ON_ERROR_STOP=1 -c "insert into live_probe(k) values ('${marker}-after')" -tAc "select 'AFTER:' || pg_is_in_recovery()::text || ':' || (select count(*) from live_probe where k like '${marker}%')::text"`,
+        pgEnv,
+      );
+      if (!afterOut.includes("AFTER:false:2")) throw new Error(`after losing the primary the -rw Service did not accept a write on a primary that kept the data: ${afterOut}`);
+      prove(`lost the primary pod ${oldPrimary}: ${newPrimary} took over, the Cluster is healthy at ${want} instances again, the earlier row survived and a new write landed on the new primary`);
     }
 
     console.log(`\nALL PROVED (${checks.length}):\n  - ${checks.join("\n  - ")}`);
