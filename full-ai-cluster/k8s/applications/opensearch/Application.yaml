@@ -202,6 +202,16 @@ spec:
 
         persistence:
           enabled: true
+          # THE CHOWN INIT CONTAINER RAN `busybox:latest`. MEASURED (helm template opensearch
+          # 3.8.0): `templates/statefulset.yaml:252` renders `persistence.image` default
+          # "busybox" and `persistence.imageTag` default "latest" -- both commented out in the
+          # chart's own values.yaml, so nothing here or upstream pinned them. A moving tag on a
+          # root (runAsUser: 0) init container that chowns the data volume is an unreviewed
+          # image running as root on every node this lands on, and its digest changes under
+          # you between two first boots. 1.38.0 is the tag kube-prometheus-stack's grafana
+          # init already pulls, so it also costs no extra Docker Hub pull.
+          image: busybox
+          imageTag: 1.38.0
           size: 20Gi
           # zeta-local-path, NOT longhorn. A derived index does not earn a
           # replicated volume while 1,168 GiB of longhorn PVCs in this tree have
