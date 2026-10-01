@@ -28,7 +28,7 @@ spec:
           # one pod holding the WAL, and a CPU limit throttles the compactor.
           resources:
             requests:
-              cpu: 50m
+              cpu: 12m
               memory: 256Mi
           storage:
             trace:

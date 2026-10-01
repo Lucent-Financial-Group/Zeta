@@ -39,7 +39,7 @@ spec:
           # log volume spikes.
           resources:
             requests:
-              cpu: 25m
+              cpu: 8m
               memory: 128Mi
           # OTLP ingress. The chart opens only 12345 (Alloy own UI/metrics);
           # otelcol.receiver.otlp below listens on 4317/4318, and without

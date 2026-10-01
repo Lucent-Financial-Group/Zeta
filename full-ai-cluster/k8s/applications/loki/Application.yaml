@@ -75,13 +75,13 @@ spec:
         # (loki-write is the one with a working set), not measurements of what loki uses.
         write:
           replicas: 1
-          resources: { requests: { cpu: 50m, memory: 256Mi } }
+          resources: { requests: { cpu: 12m, memory: 256Mi } }
         read:
           replicas: 1
-          resources: { requests: { cpu: 25m, memory: 128Mi } }
+          resources: { requests: { cpu: 6m, memory: 128Mi } }
         backend:
           replicas: 1
-          resources: { requests: { cpu: 25m, memory: 192Mi } }
+          resources: { requests: { cpu: 6m, memory: 192Mi } }
         chunksCache: { enabled: false }
         resultsCache: { enabled: false }
         # STARTUP PROBES -- ALL THREE CONTAINERS BELOW HAVE THE COORDINATE. MEASURED
@@ -103,21 +103,21 @@ spec:
         # 0+29*10=290s for each; the chart's own (unchanged) liveness resumes once
         # startup succeeds.
         lokiCanary:
-          resources: { requests: { cpu: 5m, memory: 32Mi } }
+          resources: { requests: { cpu: 2m, memory: 32Mi } }
           startupProbe:
             httpGet: { path: /metrics, port: http-metrics }
             periodSeconds: 10
             failureThreshold: 30
         gateway:
-          resources: { requests: { cpu: 5m, memory: 32Mi } }
+          resources: { requests: { cpu: 2m, memory: 32Mi } }
           metrics:
-            resources: { requests: { cpu: 5m, memory: 32Mi } }
+            resources: { requests: { cpu: 2m, memory: 32Mi } }
             startupProbe:
               httpGet: { path: /metrics, port: http-metrics }
               periodSeconds: 10
               failureThreshold: 30
         sidecar:
-          resources: { requests: { cpu: 5m, memory: 64Mi } }
+          resources: { requests: { cpu: 2m, memory: 64Mi } }
           startupProbe:
             enabled: true
             httpGet: { path: /healthz, port: http-sidecar }

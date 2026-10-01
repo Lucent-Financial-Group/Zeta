@@ -78,13 +78,13 @@ spec:
         container:
           resources:
             requests:
-              cpu: 25m
+              cpu: 6m
               memory: 64Mi
         reloader:
           merge:
             resources:
               requests:
-                cpu: 5m
+                cpu: 2m
                 memory: 16Mi
         natsBox:
           enabled: true
@@ -92,7 +92,7 @@ spec:
             merge:
               resources:
                 requests:
-                  cpu: 5m
+                  cpu: 2m
                   memory: 16Mi
   destination:
     server: https://kubernetes.default.svc

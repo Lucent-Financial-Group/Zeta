@@ -1368,7 +1368,7 @@ describe("the checked-in resource ladder", () => {
     // not move because ArgoCD started costing more, it moved because the cost became
     // VISIBLE. All five components rendered `resources: {}` and contributed zero to
     // every total here while running the lane. 081M3BQ5GX6087G0R003N44WMZ.
-    expect(lane.cpuMillis).toBe(8525);
+    expect(lane.cpuMillis).toBe(8245);
     // 17596 -> 15548 on 2026-09-07, same cause: gmod's 2048Mi left the dev lane's
     // denominator. Unchanged in the tree; simply no longer counted here.
     // 15548 -> 16956 on 2026-09-25: +1408Mi, the same ArgoCD pricing.
@@ -1383,7 +1383,7 @@ describe("the checked-in resource ladder", () => {
     // 12965m against the smallest registered node's 16000m, green with 3035m spare.
     // 12965 -> 13215m / 27147 -> 27659Mi on 2026-09-27: temporal-postgres (a CNPG
     // instance, 250m/512Mi) joined; 13215m still under the 16000m node, 2785m spare.
-    expect(all.cpuMillis).toBe(13600);
+    expect(all.cpuMillis).toBe(13320);
     expect(all.memoryMib).toBe(29643);
   });
 
@@ -1474,7 +1474,7 @@ describe("the checked-in resource ladder", () => {
     // that would restore the exact defect, in the lane whose job is to catch it, and
     // would join the three reasoned refusals recorded just above rather than answer
     // them.
-    expect(dev.cpuMillis).toBe(2375);
+    expect(dev.cpuMillis).toBe(2095);
     expect(dev.memoryMib).toBe(11852);
     expect(dev.cpuMillis).toBeLessThan(budget.cpuMillis);
     // IT FITS NOW, and the earlier note is kept rather than deleted because it records
@@ -1526,7 +1526,7 @@ describe("the checked-in resource ladder", () => {
     // request, while this is a request that did not exist at EITHER rung. The
     // hardware this rung describes really does run those five pods, so a metal number
     // that had stayed put would have been the wrong kind of stable.
-    expect(metal.cpuMillis).toBe(8525);
+    expect(metal.cpuMillis).toBe(8245);
     expect(metal.memoryMib).toBe(18940);
 
     // gmod is NO LONGER IN THE LANE, and this assertion is inverted rather than deleted

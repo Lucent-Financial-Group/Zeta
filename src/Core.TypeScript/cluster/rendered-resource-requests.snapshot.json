@@ -75,14 +75,14 @@
         },
         {
           "appId": "full-ai-cluster/alloy",
-          "cpuMillis": 35,
+          "cpuMillis": 18,
           "memoryMib": 178,
           "pods": 1,
           "workloads": [
             {
               "workload": "DaemonSet/alloy",
               "replicas": 1,
-              "cpuMillis": 35,
+              "cpuMillis": 18,
               "memoryMib": 178
             }
           ],
@@ -685,32 +685,32 @@
         },
         {
           "appId": "full-ai-cluster/kube-prometheus-stack",
-          "cpuMillis": 95,
+          "cpuMillis": 27,
           "memoryMib": 608,
           "pods": 6,
           "workloads": [
             {
               "workload": "DaemonSet/kube-prometheus-stack-prometheus-node-exporter",
               "replicas": 1,
-              "cpuMillis": 5,
+              "cpuMillis": 3,
               "memoryMib": 32
             },
             {
               "workload": "Deployment/kube-prometheus-stack-grafana",
               "replicas": 1,
-              "cpuMillis": 60,
+              "cpuMillis": 14,
               "memoryMib": 384
             },
             {
               "workload": "Deployment/kube-prometheus-stack-kube-state-metrics",
               "replicas": 1,
-              "cpuMillis": 5,
+              "cpuMillis": 2,
               "memoryMib": 64
             },
             {
               "workload": "Deployment/kube-prometheus-stack-operator",
               "replicas": 1,
-              "cpuMillis": 25,
+              "cpuMillis": 8,
               "memoryMib": 128
             },
             {
@@ -745,38 +745,38 @@
         },
         {
           "appId": "full-ai-cluster/loki",
-          "cpuMillis": 120,
+          "cpuMillis": 32,
           "memoryMib": 736,
           "pods": 5,
           "workloads": [
             {
               "workload": "DaemonSet/loki-canary",
               "replicas": 1,
-              "cpuMillis": 5,
+              "cpuMillis": 2,
               "memoryMib": 32
             },
             {
               "workload": "Deployment/loki-gateway",
               "replicas": 1,
-              "cpuMillis": 10,
+              "cpuMillis": 4,
               "memoryMib": 64
             },
             {
               "workload": "Deployment/loki-read",
               "replicas": 1,
-              "cpuMillis": 25,
+              "cpuMillis": 6,
               "memoryMib": 128
             },
             {
               "workload": "StatefulSet/loki-backend",
               "replicas": 1,
-              "cpuMillis": 30,
+              "cpuMillis": 8,
               "memoryMib": 256
             },
             {
               "workload": "StatefulSet/loki-write",
               "replicas": 1,
-              "cpuMillis": 50,
+              "cpuMillis": 12,
               "memoryMib": 256
             }
           ],
@@ -953,20 +953,20 @@
         },
         {
           "appId": "full-ai-cluster/nats",
-          "cpuMillis": 95,
+          "cpuMillis": 26,
           "memoryMib": 256,
           "pods": 4,
           "workloads": [
             {
               "workload": "Deployment/nats-box",
               "replicas": 1,
-              "cpuMillis": 5,
+              "cpuMillis": 2,
               "memoryMib": 16
             },
             {
               "workload": "StatefulSet/nats",
               "replicas": 3,
-              "cpuMillis": 30,
+              "cpuMillis": 8,
               "memoryMib": 80
             }
           ],
@@ -1250,14 +1250,14 @@
         },
         {
           "appId": "full-ai-cluster/tempo",
-          "cpuMillis": 50,
+          "cpuMillis": 12,
           "memoryMib": 256,
           "pods": 1,
           "workloads": [
             {
               "workload": "StatefulSet/tempo",
               "replicas": 1,
-              "cpuMillis": 50,
+              "cpuMillis": 12,
               "memoryMib": 256
             }
           ],
@@ -1405,14 +1405,14 @@
         },
         {
           "appId": "full-ai-cluster/alloy",
-          "cpuMillis": 35,
+          "cpuMillis": 18,
           "memoryMib": 178,
           "pods": 1,
           "workloads": [
             {
               "workload": "DaemonSet/alloy",
               "replicas": 1,
-              "cpuMillis": 35,
+              "cpuMillis": 18,
               "memoryMib": 178
             }
           ],
@@ -2015,32 +2015,32 @@
         },
         {
           "appId": "full-ai-cluster/kube-prometheus-stack",
-          "cpuMillis": 95,
+          "cpuMillis": 27,
           "memoryMib": 608,
           "pods": 6,
           "workloads": [
             {
               "workload": "DaemonSet/kube-prometheus-stack-prometheus-node-exporter",
               "replicas": 1,
-              "cpuMillis": 5,
+              "cpuMillis": 3,
               "memoryMib": 32
             },
             {
               "workload": "Deployment/kube-prometheus-stack-grafana",
               "replicas": 1,
-              "cpuMillis": 60,
+              "cpuMillis": 14,
               "memoryMib": 384
             },
             {
               "workload": "Deployment/kube-prometheus-stack-kube-state-metrics",
               "replicas": 1,
-              "cpuMillis": 5,
+              "cpuMillis": 2,
               "memoryMib": 64
             },
             {
               "workload": "Deployment/kube-prometheus-stack-operator",
               "replicas": 1,
-              "cpuMillis": 25,
+              "cpuMillis": 8,
               "memoryMib": 128
             },
             {
@@ -2075,38 +2075,38 @@
         },
         {
           "appId": "full-ai-cluster/loki",
-          "cpuMillis": 120,
+          "cpuMillis": 32,
           "memoryMib": 736,
           "pods": 5,
           "workloads": [
             {
               "workload": "DaemonSet/loki-canary",
               "replicas": 1,
-              "cpuMillis": 5,
+              "cpuMillis": 2,
               "memoryMib": 32
             },
             {
               "workload": "Deployment/loki-gateway",
               "replicas": 1,
-              "cpuMillis": 10,
+              "cpuMillis": 4,
               "memoryMib": 64
             },
             {
               "workload": "Deployment/loki-read",
               "replicas": 1,
-              "cpuMillis": 25,
+              "cpuMillis": 6,
               "memoryMib": 128
             },
             {
               "workload": "StatefulSet/loki-backend",
               "replicas": 1,
-              "cpuMillis": 30,
+              "cpuMillis": 8,
               "memoryMib": 256
             },
             {
               "workload": "StatefulSet/loki-write",
               "replicas": 1,
-              "cpuMillis": 50,
+              "cpuMillis": 12,
               "memoryMib": 256
             }
           ],
@@ -2283,20 +2283,20 @@
         },
         {
           "appId": "full-ai-cluster/nats",
-          "cpuMillis": 95,
+          "cpuMillis": 26,
           "memoryMib": 256,
           "pods": 4,
           "workloads": [
             {
               "workload": "Deployment/nats-box",
               "replicas": 1,
-              "cpuMillis": 5,
+              "cpuMillis": 2,
               "memoryMib": 16
             },
             {
               "workload": "StatefulSet/nats",
               "replicas": 3,
-              "cpuMillis": 30,
+              "cpuMillis": 8,
               "memoryMib": 80
             }
           ],
@@ -2580,14 +2580,14 @@
         },
         {
           "appId": "full-ai-cluster/tempo",
-          "cpuMillis": 50,
+          "cpuMillis": 12,
           "memoryMib": 256,
           "pods": 1,
           "workloads": [
             {
               "workload": "StatefulSet/tempo",
               "replicas": 1,
-              "cpuMillis": 50,
+              "cpuMillis": 12,
               "memoryMib": 256
             }
           ],
